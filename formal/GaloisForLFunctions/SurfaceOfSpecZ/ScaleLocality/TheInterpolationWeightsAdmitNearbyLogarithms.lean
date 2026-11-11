@@ -35,17 +35,20 @@ theorem exists_scaled_log_near_imaginary {c b : ℂ} (hc : c ≠ 0) (hb : b.re =
       ← Complex.exp_add, hlog, Complex.exp_log hc]
   · have hTne : (T : ℂ) ≠ 0 := by exact_mod_cast hT.ne'
     have hid : a / (T : ℂ) - b = ((Real.log ‖c‖ / T : ℝ) : ℂ) + (η : ℂ) * I := by
-      dsimp only [a]
-      rw [hb']
-      push_cast
-      field_simp [hTne] <;> ring
+      calc
+        _ = a / (T : ℂ) - (b.im : ℂ) * I :=
+          congrArg (fun q : ℂ => a / (T : ℂ) - q) hb'
+        _ = _ := by
+          dsimp only [a]
+          push_cast
+          field_simp [hTne] <;> ring
     rw [hid]
     calc
       _ ≤ ‖((Real.log ‖c‖ / T : ℝ) : ℂ)‖ + ‖(η : ℂ) * I‖ := norm_add_le _ _
       _ = |Real.log ‖c‖| / T + η := by
         rw [Complex.norm_real, Real.norm_eq_abs, abs_div, abs_of_pos hT,
           norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hη0, Complex.norm_I, mul_one]
-      _ ≤ |Real.log ‖c‖| / T + 2 * Real.pi / T := add_le_add_left hη _
+      _ ≤ |Real.log ‖c‖| / T + 2 * Real.pi / T := add_le_add le_rfl hη
       _ = _ := by ring
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -91,12 +94,12 @@ theorem abs_log_norm_zeroInterpolationWeight_le {b : ι → ℂ} {s B : ℝ}
       apply Finset.sum_le_sum
       intro k hk
       have hjk : j ≠ k := (Finset.mem_erase.mp hk).1.symm
-      have hn := abs_log_le_of_between hs (hb k) ((hupper k).trans (by linarith only [hB]))
-      have hd := abs_log_le_of_between hs (hsep j k hjk)
+      have hn := abs_log_le_of_between (B := 2 * B) hs (hb k) ((hupper k).trans (by linarith only [hB]))
+      have hd := abs_log_le_of_between (B := 2 * B) hs (hsep j k hjk)
         ((norm_sub_le (b j) (b k)).trans (by linarith only [hupper j, hupper k]))
       rw [norm_div, norm_neg, Real.log_div (norm_ne_zero_iff.mpr (hbn k))
         (norm_ne_zero_iff.mpr (hdn k hk))]
-      exact (abs_sub _ _).trans (by linarith only [hn, hd])
+      exact (abs_sub _ _).trans ((add_le_add hn hd).trans_eq (by ring))
     _ ≤ _ := by
       rw [Finset.sum_const, nsmul_eq_mul]
       have hh : ((univ.erase j).card : ℝ) ≤ Fintype.card ι := by

@@ -40204,7 +40204,7 @@ end TruncatedPrincipalPoisson
 
 namespace LocalLogFourier
 open MeasureTheory
-open scoped SchwartzMap FourierTransform
+open scoped SchwartzMap FourierTransform ContDiff
 
 /-- Euler derivatives are ordinary derivatives along multiplicative flow. -/
 noncomputable def eulerDeriv (F : ℝ → ℂ) (j : ℕ) (x : ℝ) : ℂ :=
@@ -40228,7 +40228,7 @@ end LocalLogFourier
 
 namespace SchwartzPlanePoisson
 open Eisenstein MeasureTheory
-open scoped SchwartzMap FourierTransform
+open scoped SchwartzMap FourierTransform ContDiff
 
 /-- Half the Euler operator governs a Schwartz profile composed with square root. -/
 def halfEulerCLM : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) :=
@@ -40249,7 +40249,7 @@ theorem hasDerivAt_halfFlow (g : 𝓢(ℝ, ℂ)) (a t : ℝ) :
       (halfEulerCLM g (a * Real.exp (t / 2))) t := by
   have hf : HasDerivAt (fun y : ℝ => a * Real.exp (y / 2))
       ((a * Real.exp (t / 2)) / 2) t := by
-    convert (((hasDerivAt_id t).div_const 2).exp.const_mul a) using 1 <;> simp only [id_eq] ; ring
+    convert (((hasDerivAt_id t).div_const 2).exp.const_mul a) using 1 <;> ring
   simpa only [halfEulerCLM_apply, Function.comp_def] using
     (g.hasDerivAt (a * Real.exp (t / 2))).scomp t hf
 
@@ -40473,7 +40473,7 @@ end SchwartzPlanePoisson
 
 namespace SchwartzPlanePoisson
 open Eisenstein MeasureTheory
-open scoped SchwartzMap FourierTransform
+open scoped SchwartzMap FourierTransform ContDiff
 
 /-- Bounded logarithmic shifts preserve uniform decay of every radial Fourier derivative. -/
 theorem paperRadialFourier_exp_local_derivative_bound (V : 𝓢(ℝ, ℂ))
@@ -41566,6 +41566,140 @@ theorem actual_dual_middle_all_frequencies
     _ = _ := by dsimp only [C, r]; ring
 
 end
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein DivisorBlockCauchy
+open scoped SchwartzMap
+
+theorem HasSieveExponent.reverse {α : ℝ} (h : HasSieveExponent α) :
+    ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 < C ∧ ∀ M N : ℝ, 1 ≤ M → 1 ≤ N →
+      sieveNorm M N ≤ C * (M * N) ^ ε * (N + M ^ α) := by
+  intro ε hε
+  obtain ⟨C, hC, hb⟩ := h ε hε
+  refine ⟨262144 * C, by positivity, ?_⟩
+  intro M N hM hN
+  calc
+    _ ≤ 262144 * sieveNorm N M := sieveNorm_reverse M N
+    _ ≤ 262144 * (C * (N * M) ^ ε * (N + M ^ α)) :=
+      mul_le_mul_of_nonneg_left (hb N M hN hM) (by norm_num)
+    _ = _ := by rw [mul_comm N M]; ring
+
+theorem sqrt_divisor_sieve_pair_le (M N D₁ D₂ Q C : ℝ)
+    (hN : 0 ≤ N) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hQ : 0 ≤ Q) (hC : 0 ≤ C)
+    (h₁ : sieveNorm M (N / D₁) ≤ C * (N / D₁ + Q))
+    (h₂ : sieveNorm M (N / D₂) ≤ C * (N / D₂ + Q)) :
+    Real.sqrt (D₁ * D₂ * sieveNorm M (N / D₁) * sieveNorm M (N / D₂)) ≤
+      C * (N + Q * (D₁ * D₂)) := by
+  have hD₁0 : 0 < D₁ := by linarith
+  have hD₂0 : 0 < D₂ := by linarith
+  have hD₁le : D₁ ≤ D₁ * D₂ := by nlinarith
+  have hD₂le : D₂ ≤ D₁ * D₂ := by nlinarith
+  apply Real.sqrt_le_iff.mpr
+  refine ⟨by positivity, ?_⟩
+  calc
+    _ ≤ D₁ * D₂ * (C * (N / D₁ + Q)) * (C * (N / D₂ + Q)) := by
+      gcongr
+      exact sieveNorm_nonneg _ _
+    _ = C ^ 2 * ((N + Q * D₁) * (N + Q * D₂)) := by field_simp
+    _ ≤ C ^ 2 * ((N + Q * (D₁ * D₂)) * (N + Q * (D₁ * D₂))) := by gcongr
+    _ = _ := by ring
+
+theorem HasSieveExponent.divisor_pair {α : ℝ} (h : HasSieveExponent α) :
+    ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 < C ∧ ∀ M N D₁ D₂ : ℝ,
+      1 ≤ M → 1 ≤ N → 1 ≤ D₁ → 1 ≤ D₂ → D₁ ≤ N → D₂ ≤ N →
+      Real.sqrt (D₁ * D₂ * sieveNorm M (N / D₁) * sieveNorm M (N / D₂)) ≤
+        C * (M * N) ^ ε * (N + M ^ α * (D₁ * D₂)) := by
+  intro ε hε
+  obtain ⟨C, hC, hb⟩ := h.reverse ε hε
+  refine ⟨C, hC, ?_⟩
+  intro M N D₁ D₂ hM hN hD₁ hD₂ hD₁N hD₂N
+  have hbound (D : ℝ) (hD : 1 ≤ D) (hDN : D ≤ N) :
+      sieveNorm M (N / D) ≤ (C * (M * N) ^ ε) * (N / D + M ^ α) := by
+    have hD0 : 0 < D := by linarith
+    have hND : 1 ≤ N / D := (le_div_iff₀ hD0).mpr (by simpa using hDN)
+    apply (hb M (N / D) hM hND).trans
+    have hprod : M * (N / D) ≤ M * N := by
+      apply mul_le_mul_of_nonneg_left _ (by linarith)
+      exact div_le_self (by linarith) hD
+    gcongr
+  exact sqrt_divisor_sieve_pair_le M N D₁ D₂ (M ^ α) (C * (M * N) ^ ε)
+    (by linarith) hD₁ hD₂ (Real.rpow_nonneg (by linarith) _) (by positivity)
+    (hbound D₁ hD₁ hD₁N) (hbound D₂ hD₂ hD₂N)
+
+section
+variable {n p : Type*} [Fintype n] [Fintype p]
+
+/-- The two column energies and divisor multiplicities, after counting dyadic divisor families. -/
+def divisorEnergyFactor (ε : ℝ) (hε : 0 < ε) (N : ℝ) (a : n → ℂ) (b : p → ℂ) : ℝ :=
+  (2 * diagonalControl sieveCutoff) * (divisorConstant ε hε * N ^ ε) ^ 2 *
+    Real.sqrt (∑ j, ‖a j‖ ^ 2) * Real.sqrt (∑ k, ‖b k‖ ^ 2)
+
+lemma divisorEnergyFactor_nonneg (ε : ℝ) (hε : 0 < ε) (N : ℝ) (a : n → ℂ) (b : p → ℂ) :
+    0 ≤ divisorEnergyFactor ε hε N a b := by
+  have hd := diagonalControl_nonneg sieveCutoff
+  unfold divisorEnergyFactor
+  positivity
+
+/-- Norm-ball counting removes the cardinalities of the two divisor families. -/
+theorem divisorBlockCost_sqrt_bound (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ M N : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂)
+    (hS : ∀ D ∈ S, (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+    (hT : ∀ E ∈ T, (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+    (a : n → ℂ) (b : p → ℂ) :
+    Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ M N a b) ≤
+      divisorEnergyFactor ε hε N a b *
+        Real.sqrt (D₁ * D₂ * sieveNorm M (N / D₁) * sieveNorm M (N / D₂)) := by
+  have hA := sieveNorm_nonneg M (N / D₁)
+  have hB := sieveNorm_nonneg M (N / D₂)
+  have hd := diagonalControl_nonneg sieveCutoff
+  have ha : 0 ≤ ∑ j, ‖a j‖ ^ 2 := Finset.sum_nonneg (fun _ _ => sq_nonneg _)
+  have hb : 0 ≤ ∑ k, ‖b k‖ ^ 2 := Finset.sum_nonneg (fun _ _ => sq_nonneg _)
+  have hp : 0 ≤ D₁ * D₂ * sieveNorm M (N / D₁) * sieveNorm M (N / D₂) := by positivity
+  have hcs := finite_ideal_card_bound S (2 * D₁) (by linarith) hS
+  have hct := finite_ideal_card_bound T (2 * D₂) (by linarith) hT
+  have hc : (S.card : ℝ) * T.card ≤ (2 * diagonalControl sieveCutoff) ^ 2 * D₁ * D₂ := by
+    calc
+      _ ≤ (diagonalControl sieveCutoff * (2 * D₁)) *
+          (diagonalControl sieveCutoff * (2 * D₂)) :=
+        mul_le_mul hcs hct (Nat.cast_nonneg _) (by positivity)
+      _ = _ := by ring
+  apply Real.sqrt_le_iff.mpr
+  refine ⟨mul_nonneg (divisorEnergyFactor_nonneg ε hε N a b) (Real.sqrt_nonneg _), ?_⟩
+  simp only [divisorEnergyFactor, mul_pow, Real.sq_sqrt ha, Real.sq_sqrt hb, Real.sq_sqrt hp]
+  calc
+    _ ≤ ((2 * diagonalControl sieveCutoff) ^ 2 * D₁ * D₂) *
+        sieveNorm M (N / D₁) * sieveNorm M (N / D₂) *
+        (divisorConstant ε hε * N ^ ε) ^ 4 * (∑ j, ‖a j‖ ^ 2) * (∑ k, ‖b k‖ ^ 2) := by
+      unfold divisorBlockCost
+      gcongr
+    _ = _ := by ring
+
+end
+
+def divisorExponentConstant {α : ℝ} (h : HasSieveExponent α) (δ : ℝ) (hδ : 0 < δ) : ℝ :=
+  (h.divisor_pair δ hδ).choose
+
+lemma divisorExponentConstant_pos {α : ℝ} (h : HasSieveExponent α) (δ : ℝ) (hδ : 0 < δ) :
+    0 < divisorExponentConstant h δ hδ := (h.divisor_pair δ hδ).choose_spec.1
+
+theorem divisor_cost_with_constant {α : ℝ} (h : HasSieveExponent α) (δ : ℝ) (hδ : 0 < δ)
+    {n p : Type*} [Fintype n] [Fintype p]
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O)) (B N D₁ D₂ : ℝ)
+    (hB : 1 ≤ B) (hN : 1 ≤ N) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂)
+    (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N)
+    (hS : ∀ D ∈ S, (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+    (hT : ∀ E ∈ T, (Ideal.absNorm E : ℝ) ≤ 2 * D₂) (a : n → ℂ) (b : p → ℂ) :
+    Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) ≤
+      divisorEnergyFactor ε hε N a b *
+        (divisorExponentConstant h δ hδ * (B * N) ^ δ * (N + B ^ α * (D₁ * D₂))) := by
+  apply (divisorBlockCost_sqrt_bound ε hε S T D₁ D₂ B N hD₁ hD₂ hS hT a b).trans
+  exact mul_le_mul_of_nonneg_left
+    ((h.divisor_pair δ hδ).choose_spec.2 B N D₁ D₂ hB hN hD₁ hD₂ hD₁N hD₂N)
+    (divisorEnergyFactor_nonneg ε hε N a b)
 
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
 

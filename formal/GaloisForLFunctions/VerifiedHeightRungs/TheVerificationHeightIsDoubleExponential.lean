@@ -275,8 +275,10 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     unfold spreadR spreadL spreadFloor
     positivity
   obtain ⟨den, hden⟩ : ∃ den, den = 8 * winT₁ a * winD₀ a * spreadK a + 2 * spreadR a + 1 := ⟨_, rfl⟩
-  have hden1 : 1 ≤ den := by rw [hden]; have : 0 ≤ 8 * winT₁ a * winD₀ a * spreadK a := by positivity
-                                        linarith only [this, hR0]
+  have hden1 : 1 ≤ den := by
+    rw [hden]
+    have : 0 ≤ 8 * winT₁ a * winD₀ a * spreadK a := by positivity
+    linarith only [this, hR0]
   have hdenle : den ≤ Real.exp (1985 * Λ) := by
     have h1 : 8 * winT₁ a * winD₀ a * spreadK a ≤ 8 * Real.exp (1982 * Λ) := by
       have := mul_le_mul (mul_le_mul hT₁ hD₀ (by linarith only [hD₀1]) (Real.exp_pos _).le) hK hK0 (by positivity)
@@ -358,7 +360,7 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     _ ≤ Real.exp ((C₁ + 31) * a ^ ((4 : ℝ) / 3)) := Real.exp_le_exp.2 (by rw [← hu]; nlinarith only [hu1])
 
 /-- RH verified through a height is verified through every lower height. -/
-theorem RHVerifiedThrough.mono {T T' : ℝ} (h : RHVerifiedThrough T') (hT : T ≤ T') : RHVerifiedThrough T :=
+theorem rhVerifiedThrough_mono {T T' : ℝ} (h : RHVerifiedThrough T') (hT : T ≤ T') : RHVerifiedThrough T :=
   fun _ hxi h0 h1 hpos hle => h hxi h0 h1 hpos (hle.trans hT)
 
 /-- **A double-exponential verification height.** There is `C` such that RH verified through
@@ -368,7 +370,7 @@ theorem exists_doubleExp_windowPositive : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
       WindowVisibilityLaw.WindowPositiveAt zetaZeroConfig a := by
   obtain ⟨C, hC⟩ := spreadHeight_le
   exact ⟨C, fun a ha hRH f hf hfs => re_W_nonneg_of_rhVerifiedThrough_spread ha le_rfl
-    (hRH.mono (hC a ha)) hf hfs⟩
+    (rhVerifiedThrough_mono hRH (hC a ha)) hf hfs⟩
 
 end
 

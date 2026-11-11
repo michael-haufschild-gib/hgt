@@ -151,6 +151,7 @@ theorem tsum_norm_localTerm_one_sub_one_le (ηp X Y V : ℂ) {δ : ℝ} (hδ : �
   have ib0 : 0 ≤ (1 - b)⁻¹ := inv_nonneg.mpr (by linarith)
   have ir0 : 0 ≤ (1 - r)⁻¹ := inv_nonneg.mpr (by linarith)
   have ha1 : (1 - a)⁻¹ - 1 = a * (1 - a)⁻¹ := by
+    have h1a : 1 - a ≠ 0 := (show (0 : ℝ) < 1 - a by linarith).ne'
     field_simp
     ring
   have hinner : ‖primeR π ηp X V * (1 - (primeQ π)⁻¹)‖ * (1 - a)⁻¹ + ‖Y * primeR π ηp X V‖ +

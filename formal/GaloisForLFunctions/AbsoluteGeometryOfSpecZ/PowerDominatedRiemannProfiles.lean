@@ -122,10 +122,12 @@ theorem riemannOn_of_powerBound_and_cuts {g : ℝ → ℝ} {a C : ℝ}
   have he (t : ℝ) : g t = l t + u t := by
     dsimp only [l, u]
     by_cases ht : t ≤ δ
-    · rw [Set.indicator_of_mem ht, Set.indicator_of_notMem (not_lt.mpr ht), add_zero]
-    · rw [Set.indicator_of_notMem ht, Set.indicator_of_mem (lt_of_not_ge ht), zero_add]
+    · rw [Set.indicator_of_mem (show t ∈ Set.Iic δ from ht),
+        Set.indicator_of_notMem (show t ∉ Set.Ioi δ from not_lt.mpr ht), add_zero]
+    · rw [Set.indicator_of_notMem (show t ∉ Set.Iic δ from ht),
+        Set.indicator_of_mem (show t ∈ Set.Ioi δ from lt_of_not_ge ht), zero_add]
   have hm (N : ℕ) : tailRiemannSum g N = tailRiemannSum l N + tailRiemannSum u N := by
-    rw [tailRiemannSum, sum_congr rfl (fun n _ => he ((n : ℝ) / N)),
+    rw [tailRiemannSum, sum_congr rfl (fun (n : ℕ) _ => he ((n : ℝ) / N)),
       sum_add_distrib, add_div]
     rfl
   have hint : (∫ t in Set.Ioc (0 : ℝ) 1, g t) =
@@ -150,7 +152,7 @@ theorem riemannOn_of_powerBound_and_cuts {g : ℝ → ℝ} {a C : ℝ}
         (tailRiemannSum l N - ∫ t in Set.Ioc (0 : ℝ) 1, l t) +
           (tailRiemannSum u N - ∫ t in Set.Ioc (0 : ℝ) 1, u t) := by ring
     rw [heq]
-    exact (abs_add _ _).trans (add_le_add (abs_sub _ _) le_rfl)
+    exact (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
   linarith only [ht, hmB, hiB, hmid, hsmall]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

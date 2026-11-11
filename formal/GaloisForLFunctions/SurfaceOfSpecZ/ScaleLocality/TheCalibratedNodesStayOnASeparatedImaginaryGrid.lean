@@ -114,7 +114,7 @@ theorem calibrated_grid_geometry {Γ r : ℝ} (hΓ : 0 < Γ) {k : ℕ} (hk : 0 <
             (z i - z j) + (z j - imaginaryInterpolationGrid Γ k j)‖ := by congr 1; ring
         _ ≤ ‖imaginaryInterpolationGrid Γ k i - z i‖ + ‖z i - z j‖ +
             ‖z j - imaginaryInterpolationGrid Γ k j‖ :=
-          (norm_add_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+          (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
         _ ≤ _ := by rw [norm_sub_rev]; linarith only [hz i, hz j]
     rw [imaginaryInterpolationGrid_separation hΓ hk] at htri
     nlinarith only [htri, hmult, hsmall, hr]
@@ -143,7 +143,7 @@ theorem calibrated_grid_ordinate_separation {Γ r : ℝ} (hΓ : 0 < Γ) {k : ℕ
         ring
       _ ≤ |(imaginaryInterpolationGrid Γ k i).im - (z i).im| +
           |(z i).im - (z j).im| + |(z j).im - (imaginaryInterpolationGrid Γ k j).im| :=
-        (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+        (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
       _ ≤ _ := by rw [abs_sub_comm (imaginaryInterpolationGrid Γ k i).im]; linarith only [hi, hj]
   have he : (imaginaryInterpolationGrid Γ k i).im - (imaginaryInterpolationGrid Γ k j).im =
       (2 * Γ / k) * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) := by
