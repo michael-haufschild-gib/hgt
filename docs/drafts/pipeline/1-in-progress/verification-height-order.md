@@ -92,11 +92,34 @@ Lean status: formalized with `Y = κ a^{4/3}`: `exists_doubleExp_windowPositive`
 (slots: `4(m+1)` separated zeros in windows of length `10(m+1)σ ≥ 2e^{2Y}` above `t_* = e^{O(Y)}`),
 `LocalSamplingFromVerifiedZeros` (`spreadHeight`, window positivity).
 
-## Open: `O(a)` (not started)
+## Route to `O(a)`: the derivative minorant (paper proof)
 
-The exponent `4/3` is the gap test: a `C²` profile pays a cluster of `C log t` zeros at distance `σ` by
-`(Yσ)^{−4}/Y²`, so `Y³ ≳ σ^{−4}`; any fixed-test gap theorem with only the unit count needs `Yσ → ∞`.
-Candidate: the minorant form `D = σ²W(g, g) − W(g', g')`. Since `ĝ'(x) = −ixĝ(x)`, an on-line zero at
-distance `x` contributes `m(σ² − x²)|ĝ(x)|² ≤ 0` for `|x| ≥ σ`, so clusters only lower `D`; the symbol side
-is `(σ²‖g‖² − ‖g'‖²) log t + O(σ² + Y^{−2})` (`|μ'|` bounded), positive for `Y ≍ 1/σ`. With a smooth
-bump profile this gives `Y = O(a)`, hence `log log H = O(a)`. Paper proof not yet written.
+**Test.** `φ` a smooth bump, `0 ≤ φ ≤ 1`, `φ = 1` on `[−½, ½]`, support in `[−1, 1]`; `g(u) = φ(u/Y)`,
+`g' = Y⁻¹φ'(·/Y)`. Then `ĝ(z) = Yφ̂(Yz)`, `ĝ'(z) = φ̂'(Yz) = −izĝ(z)`; `|φ̂(w)|, |φ̂'(w)| ≤ Be^{|Im w|}/(1+|Re w|)²`;
+`‖g‖₂² = YE₀` (`E₀ ≥ 1`), `‖g'‖₂² = E₁/Y`. Write `t = −2πξ`, `x_ρ = γ − t`,
+`D(ξ) = σ²W(S_ξg, S_ξg) − W(S_ξg', S_ξg')`.
+
+**Zero side.** Let `0 < σ ≤ 1 ≤ Y`, RH for `|x_ρ| ≤ e^Y`, no zero with `|x_ρ| < σ`. At an on-line zero the
+summand is `m(σ² − x²)|ĝ(x)|² ≤ 0`. At `|x| > e^Y` it is at most
+`m(σ²Y² + 1)B²e^Y(1+Yx)^{−4} ≤ 16mB²Y^{−2}(1+x)^{−3}` (`e^Y ≤ x`). With `Σ m(1+|x_ρ|)^{−3} ≤ 5760 log(|t|+3)`:
+`Re D ≤ 16·5760 B² Y^{−2} log(|t| + 3)`.
+
+**Symbol side.** `W(S_ξf) = A_f(ξ) − Π_f(ξ)` for `f = g, g'`, and
+`σ²Re A_g − Re A_{g'} = σ²P_g − P_{g'} + ∫(σ² − s²)|ĝ(s)|² μ(s + t) ds`. With `|μ(s+t) − μ(t)| ≤ D_μ|s|`,
+`|s||ĝ|² ≤ B²Y(1+Y²s²)^{−1}`, `|s|·s²|ĝ|² = |s||ĝ'|² ≤ B²Y^{−1}(1+Y²s²)^{−1}` and Plancherel:
+`σ²Re A_g − Re A_{g'} ≥ F·(L − 10) − πD_μB²(σ² + Y^{−2}) − 64e^YY²N²(1+|t|)^{−4}`,
+`F = σ²YE₀ − E₁/Y`, `L = log(1 + |t|/4)`, `N = Σ_{k≤3}‖φ^{(k)}‖₁` (poles: `abs_re_pole_terms_heightShift_le_decay`).
+
+**Gap theorem.** Take `σY = κ ≥ 1`, `κ² ≥ 2E₁`, `κ³ ≥ 2949120B²` (so `F ≥ σ²Y/2`, `σ²Y³ ≥ 2949120B²`). If
+`L ≥ 40 + 32πD_μB²`, `|t| ≥ 1024e^YY³N²`, `‖Π_g‖ ≤ YE₀L/32` and `‖Π_{g'}‖ ≤ σ²YE₀L/32`, the symbol side gives
+`Re D ≥ FL/4`, the zero side `Re D ≤ FL/8`: a zero lies within `σ` of `t`. No cluster assumption enters.
+
+**Rare bad heights.** By the windowed Chebyshev bound (any test of support `[−Y, Y]`, windows of length
+`≥ 2e^{2Y}`) with `V_g ≤ 4Y⁴E₀²(2+C₀)`, `V_{g'} ≤ 4E₁²(2+C₀)`, each bad set has density `≤ 1/80` once
+`log(1 + t_*/4) ≥ C Y`. So `t_* = 4e^{C_*Y}`.
+
+**Height.** `σ = nodeStep a/4`, `Y = κ/σ = 36·48⁴κ a`. The slot argument, local Taylor–Lagrange and
+`window_numeric` are those of the `a^{4/3}` proof, with `n ≍ (t_* + e^{2Y})/σ + log T₁ = e^{O(a)}`,
+`K = e^{O(n)}`: RH through `exp(exp(C a))` gives Weil positivity on `[−a, a]`.
+
+Lean status: in progress.

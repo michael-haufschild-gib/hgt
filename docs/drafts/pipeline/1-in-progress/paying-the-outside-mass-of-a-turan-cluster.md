@@ -43,8 +43,9 @@ A sector cluster of at most `N` zeros within `η` of the top retains signal
 
 Centering has a controlled prime cost: the mean square acquires
 `exp(-2b(y-δ))`; the constant is uniform in `b` and the centre.
-The exterior-mass module is checked in Lean. The near-top Turán receiver,
-prime cost, and explicit-formula remainder are written, not yet checked.
+The exterior-mass and near-top cluster-signal modules are checked in Lean.
+The eventual receiver, prime cost, and explicit-formula remainder are
+written, not yet checked.
 
 ## Quantitative receiver
 
@@ -57,6 +58,9 @@ It uses `exp(-x)≤4/x²`. With `h=A log T`, `c<(M+1)A`, and
 `η=E/log T`, the cluster signal stays above
 `(∫v)/4 κ(N,M) exp(-E((M+N)A+c))` for all sufficiently large T.
 `TheCenteredCameraPaysTheTuranLoss` contains the uncompiled proof.
+Without an exterior hypothesis it also gives a dichotomy: the cluster is
+visible, or another zero outside it has depth at least `b-d` and ordinate
+distance less than `g`. Shallow zeros alone cannot hide the cluster.
 
 The centered explicit-formula remainder is bounded by
 `C_v exp(-b(y-δ))(1+log(2+t)/δ)` under the usual positive-support and
