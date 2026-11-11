@@ -47,7 +47,7 @@ to zero supplies both tempering and the required future-tail weights.
 
 ## Lean status and gaps
 
-Thirteen full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
+Eighteen full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -70,4 +70,13 @@ Thirteen full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheSublogarithmicWindowsLeaveRoomForSparseBlocks`: arbitrary late blocks satisfying small mass, local count and depth-gap domination bounds.
 
-The full configuration remains unproved; all thirteen drafts still need Lean checks.
+- `TheSparseCalibratedWindowTowerExists`: recursive tower with separated frequency bands, local counts, tempering and future-tail bounds.
+
+- `TheCalibratedTowerIsATemperedConfiguration`: simple reflected `ZeroConfig`, tempering and unattained top.
+
+- `TheCalibratedTowerHasLogarithmicLocalCounts`: unit-window counts and membership in `InClassZ`.
+
+- `TheCalibratedTowerHasItsLiteralSplineTrace`: exact lag-series identity and actual coefficient masses.
+- `EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace`: full prescribed-radius theorem via tower domination.
+
+The complete proof is drafted; all eighteen modules still need Lean checks.

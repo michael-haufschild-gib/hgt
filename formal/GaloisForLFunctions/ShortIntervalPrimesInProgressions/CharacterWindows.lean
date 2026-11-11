@@ -320,7 +320,6 @@ theorem tendsto_window_principal :
     have := (Complex.continuous_ofReal.tendsto 1).comp hH
     refine this.congr fun x => ?_
     simp only [Function.comp]
-    push_cast
   set E := ∑ p ∈ q.primeFactors, Real.log p with hE
   have hE0 : Tendsto (fun x : ℝ => E / x ^ windowExponent) atTop (𝓝 0) := by
     have := (tendsto_rpow_neg_atTop hθ0).const_mul E

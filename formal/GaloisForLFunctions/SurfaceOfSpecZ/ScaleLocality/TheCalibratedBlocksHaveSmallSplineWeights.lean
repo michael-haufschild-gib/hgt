@@ -31,7 +31,7 @@ theorem norm_calibrated_spline_coefficient_le {Γ : ℝ} (hΓ : 0 < Γ)
     exact him.trans hh
   have hh := norm_paperFT_boxSpline_le' 7 hwim (by positivity : 0 ≤ Γ / 2) hy
   rw [paperFT_boxSpline_eq] at hh
-  norm_num at hh
+  norm_num only [Nat.reduceAdd, Nat.cast_ofNat] at hh
   have hden : Γ ^ 8 ≤ 256 * (1 + Γ / 2) ^ 8 := by
     have hp := pow_le_pow_left₀ hΓ.le (show Γ ≤ 2 * (1 + Γ / 2) by linarith) 8
     norm_num only [mul_pow] at hp

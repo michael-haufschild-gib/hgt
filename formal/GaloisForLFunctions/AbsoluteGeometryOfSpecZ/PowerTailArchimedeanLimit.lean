@@ -72,7 +72,6 @@ theorem tendsto_normalized_powerTailPrefix {a : ℝ} (ha : 0 < a) (ha1 : a < 1) 
   apply tendsto_sub_nhds_zero_iff.mp
   apply squeeze_zero_norm' _ hzero
   filter_upwards [eventually_ge_atTop 1] with N hN
-  dsimp only
   have hNp : (0 : ℝ) < N := by exact_mod_cast hN
   have hp := powerTailPrefix_sub_integral_bounds ha ha1 hNp.le
   have habs : |powerTailPrefix a N - (N : ℝ) ^ (1 - a) / (1 - a)| ≤ 1 / (1 - a) :=
