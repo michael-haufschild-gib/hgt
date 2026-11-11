@@ -4,68 +4,53 @@
 - **Type:** CONJECTURE
 - **Target:** A89, prescribed `R(T)=o(log T)`.
 
-For distinct nodes `z_j`, let
-`c_j(z)=∏_{k≠j} (−z_k)/(z_j−z_k)` be the Lagrange weights at zero.
-Seek conjugate-paired nodes near a separated imaginary grid satisfying
+For distinct nodes, put `c_j(z)=∏_{l≠j}(−z_l)/(z_j−z_l)`.
+Solve `exp(Tz_j)=c_j(z)` by moving the nodes. Then the literal sum
+`Σ_j exp((T+v)z_j)` is the Lagrange interpolation of `exp(vz)` at zero.
+Exact self-consistency avoids the exponential error from perturbing fixed
+weights after their phases have been chosen.
 
-`exp(T z_j)=c_j(z)`.
+## Finite block
 
-Then `Σ_j exp((T+v)z_j)=Σ_j c_j(z)exp(vz_j)` is the interpolation
-of the exponential at zero. A contour remainder bounds its difference
-from `1` by `exp(8Γ|v|)3^(−M)` for `M` nodes in `|z|≤2Γ`.
-Taking `M≥16Γ(R+8)` would give a positive block throughout the window.
+Normalize every numerator and denominator factor at reference nodes `b`.
+Their logarithms stay near `1` on coordinate disks of radius `r`, provided
+`8r≤s`, where `s` bounds node norms and separations below. The logarithmic
+correction has Lipschitz constant `6M/s`. Thus `12M≤sT` gives contraction.
+A phase shift of at most `2π/T` supplies the initial logarithms. If
+`‖b_j‖≤B₀`, their real parts have size at most
+`2M(|log s|+|log(2B₀)|)`, yielding an explicit self-map inequality.
 
-The proposed construction solves
-`z_j=(2π i k_j+log c_j(z))/T` by contraction. Define each logarithm
-through its individual numerator and denominator factors near the grid;
-this avoids a branch cut for negative interpolation weights. Logarithmic
-derivatives involve reciprocal node spacings, not the exponentially large
-weights. With spacing comparable to `1/R`, coarse bounds are
-`O(MR/T)` for the contraction and `O(M log M/T)` for node displacement.
-For `Γ=T^(1/4)` and `R=o(log T)`, these vanish; the local node density
-`O(R)` also fits a logarithmic zero-count bound.
+For `k+1` calibrated nodes with `‖z_j‖≤B` and index separation `δ`,
+Taylor interpolation gives error at most
 
-## Quantitative route
+`((2B/δ)^k/k!) ((RB)^(k+1)/(k+1)!) exp(RB)`.
 
-On a product of disks of radius `s/8` about nodes of minimum separation
-`s`, expand `log c_j` as a sum of logarithms of individual factors.
-Their arguments stay within `1/4` of `1`. A sufficient contraction bound
-is `6M/(sT)≤1/2`; a sufficient self-map bound is
-`(M log(4Γ/s)+π)/T≤s/16`. Both hold for `M≈ΓR`, `s≈1/R`,
-`Γ=T^(1/4)` and `R=o(log T)`. Construct the upper-half-plane nodes first and append their conjugates;
-this supplies symmetry without imposing it on the fixed-point map.
+The inequalities `2B/δ≤8k`, `512RB≤k`, `k≥1` make this `≤1/4`, using `e<3`.
 
-The contour remainder can instead be replaced by the existing exponential
-Taylor remainder and exact polynomial interpolation. For ordered separated
-nodes, the factorial denominator in each Lagrange weight bounds their total
-mass exponentially in `M`; choosing a larger fixed constant in `M≈ΓR`
-then makes the Taylor tail negligible.
+Candidate grid: `Γ=T^(1/4)`, `k=ceil(2048Γ(R(T)+8))`,
+`b_j=i(Γ+2Γj/k)`, `s=Γ/k`, `r=min(s/8,η)` for a fixed depth tolerance `η>0`.
+Perturbation preserves norm bound `B=4Γ` and index separation `δ=s`.
+The calibration inequalities follow from `ΓR²log Γ/T→0`;
+local node density `O(R)` fits `C log Γ` because `R=o(log T)`.
 
 ## Configuration assembly
 
-Append the conjugate nodes and reflect their depths. A common positive
-depth multiplies the interpolated trace by a positive exponential; the
-reflected negative-depth terms are negligible at the chosen centre.
-Positivity on the enlarged window must survive convolution with the
-nonnegative spline kernel of support `[-8,8]`. Choose successive common
-depths strictly increasing to the unattained top. Earlier blocks then
-have a strict exponential deficit; later blocks have summable spline
-tails by taking their frequencies sufficiently large.
+Take twice the real part and reflect depths, retaining positive ordinates.
+A common positive depth supplies exponential growth; reflected negative
+terms are negligible. The nonnegative, unit-mass kernel `upow 1 7`,
+supported on `[-8,8]`, transfers positivity to the spline trace.
+Successive common depths increase strictly to the unattained top. Earlier
+blocks have an exponential deficit; later blocks have summable spline tails.
 
-## Missing proof
+## Lean status and gaps
 
-Uniform constants, conjugate symmetry, the contour remainder and the
-configuration assembly remain unproved. In particular, the construction
-must preserve the exact identity above after node displacement; treating
-the weights as fixed would reintroduce the exponential phase-error cost.
-`TheLogarithmsOfInterpolationWeightsAreStable.lean` contains an unchecked
-proof draft of the exact exponential change-of-weights identity and the
-`6M/s` Lipschitz estimate.
-`TheInterpolationWeightsCanBeExponentialCoefficients.lean` contains an
-unchecked contraction proof with explicit separation and displacement
-bounds. `TheInterpolationWeightsAdmitNearbyLogarithms.lean` supplies those data
-from explicit geometric inequalities.
-`TheCalibratedExponentialBlockApproximatesAConstant.lean` bounds the error by
-`((2B/δ)^k/k!) ((RB)^(k+1)/(k+1)!) exp(RB)` for `k+1` calibrated nodes.
-All four drafts are unchecked. Discharging the scalar bounds on a growing
-grid and assembling the configuration remain unfinished.
+Six full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
+
+- `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
+- `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
+- `TheInterpolationWeightsAdmitNearbyLogarithms`: logarithm data from geometric bounds.
+- `TheCalibratedExponentialBlockApproximatesAConstant`: factorial interpolation error.
+- `TheExponentialInterpolationErrorIsSmallAtDenseGrids`: error `≤1/4`, real part `≥3/4`.
+- `TheCalibratedNodesStayOnASeparatedImaginaryGrid`: positive blocks from explicit grid inequalities.
+
+Growing-grid estimates, spline transfer and the full configuration remain unproved.

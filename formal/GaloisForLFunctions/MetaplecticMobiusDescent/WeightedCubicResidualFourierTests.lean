@@ -37276,4 +37276,833 @@ lemma weighted_energy_sector_bound {m n r : Type*} [Fintype m] [Fintype n] [Fint
 
 end FiniteSieveRestriction
 
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein QuadraticPhase.Eisenstein
+
+lemma principalTraceChar_star (c : O) (hc : c ≠ 0) (x : O ⧸ Ideal.span {c}) :
+    star (principalTraceChar c hc x) = principalTraceChar c hc (-x) := by
+  obtain ⟨z, rfl⟩ := Ideal.Quotient.mk_surjective x
+  rw [← map_neg, principalTraceChar_apply, principalTraceChar_apply,
+    Complex.star_def, ← Complex.exp_conj]
+  congr 1
+  simp only [map_neg, neg_div, Rat.cast_neg, map_mul, map_ofNat, map_ratCast,
+    Complex.conj_ofReal, Complex.conj_I]
+  ring
+
+lemma quadraticTraceGauss_star (c : O) (hc : c ≠ 0) :
+    star (quadraticTraceGauss c hc) = quadraticTraceTwist c hc (-1) := by
+  letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  change star (∑ x : O ⧸ Ideal.span {c}, principalTraceChar c hc (x ^ 2)) =
+    ∑ x : O ⧸ Ideal.span {c}, principalTraceChar c hc (Ideal.Quotient.mk _ (-1) * x ^ 2)
+  simp only [star_sum, principalTraceChar_star, map_neg, map_one, neg_one_mul]
+
+/-- The value at minus one is determined by the fixed quadratic Gauss phase. -/
+lemma prime_quadratic_neg_one_phase {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2) :
+    primeCuspRowCharacter p (fun i => complexQuadraticChar (Ideal.span {p i})) (-1) *
+      fixedDualAverage (∏ i, p i) = star (fixedDualAverage (∏ i, p i)) := by
+  let c := ∏ i, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hn : (‖ringComplex c‖ : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (ringComplex_ne_zero hc))
+  have hG : quadraticTraceGauss c hc = (‖ringComplex c‖ : ℂ) * fixedDualAverage c := by
+    have h := normalizedQuadraticTraceGauss_eq_fixedDualAverage c hc
+    exact ((div_eq_iff hn).mp h).trans (mul_comm _ _)
+  have ht := prime_quadratic_trace_twist p hp hinj hodd (-1)
+    (show IsCoprime (∏ i, p i) (-1) from ⟨0, -1, by ring⟩)
+  change quadraticTraceTwist c hc (-1) = _ at ht
+  rw [← quadraticTraceGauss_star, hG] at ht
+  simp only [star_mul, Complex.star_def, Complex.conj_ofReal] at ht
+  change _ = _ * ((‖ringComplex c‖ : ℂ) * fixedDualAverage c) at ht
+  apply mul_right_cancel₀ hn
+  calc
+    _ = primeCuspRowCharacter p (fun i => complexQuadraticChar (Ideal.span {p i})) (-1) *
+        ((‖ringComplex c‖ : ℂ) * fixedDualAverage c) := by ring
+    _ = star (fixedDualAverage c) * (‖ringComplex c‖ : ℂ) := by
+      simpa only [Complex.star_def] using ht.symm
+
+lemma canonicalQuadraticRow_phase_norm (I : QuadraticIdeal) :
+    ‖fixedDualAverage (primaryIdealGenerator I.val)‖ = 1 := by
+  have h := prime_quadratic_phase_norm (fun P : quadraticIdealSupport I => quadraticPrimeGenerator P.val)
+    (fun P => quadraticPrimeGenerator_ne_zero P.val)
+    (quadraticPrimeGenerator_span_injective.comp Subtype.val_injective)
+    (fun P => quadraticPrimeGenerator_odd P.val)
+  simpa only [Finset.prod_coe_sort, quadraticIdealSupport_product] using h
+
+lemma canonicalQuadraticRow_neg_one_phase (I : QuadraticIdeal) :
+    canonicalQuadraticRow I (-1) * fixedDualAverage (primaryIdealGenerator I.val) =
+      star (fixedDualAverage (primaryIdealGenerator I.val)) := by
+  have h := prime_quadratic_neg_one_phase (fun P : quadraticIdealSupport I => quadraticPrimeGenerator P.val)
+    (fun P => quadraticPrimeGenerator_ne_zero P.val)
+    (quadraticPrimeGenerator_span_injective.comp Subtype.val_injective)
+    (fun P => quadraticPrimeGenerator_odd P.val)
+  have hrow : primeCuspRowCharacter
+      (fun P : quadraticIdealSupport I => quadraticPrimeGenerator P.val)
+      (fun P => complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P.val})) (-1) =
+      canonicalQuadraticRow I (-1) := by
+    change (∏ P : quadraticIdealSupport I,
+      complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P.val})
+        (Ideal.Quotient.mk _ (-1))) = _
+    exact Finset.prod_coe_sort (s := quadraticIdealSupport I)
+      (f := fun P => complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P}) (Ideal.Quotient.mk _ (-1)))
+  rw [hrow] at h
+  simpa only [Finset.prod_coe_sort, quadraticIdealSupport_product] using h
+
+/-- The conductor class modulo four is the finite ray parameter for quadratic pairs. -/
+def quadraticColumnRay (I : QuadraticIdeal) : QuadraticRayRing :=
+  Ideal.Quotient.mk (Ideal.span {(4 : O)}) (primaryIdealGenerator I.val)
+
+lemma canonicalQuadraticRow_neg_one_eq_of_same_ray (I J : QuadraticIdeal)
+    (h : quadraticColumnRay I = quadraticColumnRay J) :
+    canonicalQuadraticRow I (-1) = canonicalQuadraticRow J (-1) := by
+  have he := fixedDualAverage_eq_of_mod_four (primaryIdealGenerator I.val) (primaryIdealGenerator J.val) h
+  have hI := canonicalQuadraticRow_neg_one_phase I
+  rw [he] at hI
+  have hn : fixedDualAverage (primaryIdealGenerator J.val) ≠ 0 := by
+    intro hz
+    have hh := canonicalQuadraticRow_phase_norm J
+    rw [hz, norm_zero] at hh
+    exact zero_ne_one hh
+  exact mul_right_cancel₀ hn (hI.trans (canonicalQuadraticRow_neg_one_phase J).symm)
+
+lemma canonicalQuadraticRow_unit_sq (I : QuadraticIdeal) (u : Oˣ) :
+    canonicalQuadraticRow I (u : O) ^ 2 = 1 := by
+  apply quadraticSubsetRow_sq
+  exact ⟨0, ((u⁻¹ : Oˣ) : O), by simp⟩
+
+@[simp] lemma canonicalQuadraticRow_one (I : QuadraticIdeal) : canonicalQuadraticRow I 1 = 1 := by
+  simp only [canonicalQuadraticRow, primeSubsetRow, map_one, Finset.prod_const_one]
+
+lemma canonicalQuadraticRow_unit_cube (I : QuadraticIdeal) (u : Oˣ) :
+    canonicalQuadraticRow I ((u : O) ^ 3) = canonicalQuadraticRow I (u : O) := by
+  have hs := canonicalQuadraticRow_unit_sq I u
+  rw [pow_succ, pow_two,
+    canonicalQuadraticRow_mul, canonicalQuadraticRow_mul, ← pow_two, hs, one_mul]
+
+/-- Equal conductor rays have equal values on every Eisenstein unit. -/
+lemma canonicalQuadraticRow_unit_eq_of_same_ray (I J : QuadraticIdeal)
+    (h : quadraticColumnRay I = quadraticColumnRay J) (u : Oˣ) :
+    canonicalQuadraticRow I (u : O) = canonicalQuadraticRow J (u : O) := by
+  rw [← canonicalQuadraticRow_unit_cube I u, ← canonicalQuadraticRow_unit_cube J u]
+  rcases unit_cube_eq_sign u with hu | hu
+  · rw [hu, canonicalQuadraticRow_one, canonicalQuadraticRow_one]
+  · rw [hu]
+    exact canonicalQuadraticRow_neg_one_eq_of_same_ray I J h
+
+lemma canonicalQuadraticPair_unit_invariant (I J : QuadraticIdeal)
+    (h : quadraticColumnRay I = quadraticColumnRay J) (u : Oˣ) (z : O) :
+    canonicalQuadraticRow I ((u : O) * z) * canonicalQuadraticRow J ((u : O) * z) =
+      canonicalQuadraticRow I z * canonicalQuadraticRow J z := by
+  rw [canonicalQuadraticRow_mul, canonicalQuadraticRow_mul,
+    canonicalQuadraticRow_unit_eq_of_same_ray I J h]
+  calc
+    _ = canonicalQuadraticRow J (u : O) ^ 2 * (canonicalQuadraticRow I z * canonicalQuadraticRow J z) := by ring
+    _ = _ := by rw [canonicalQuadraticRow_unit_sq, one_mul]
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein Eisenstein.Coordinates QuadraticPhase.Eisenstein
+
+/-- Equal odd rays multiply to a ray with trivial quadratic Gauss phase. -/
+lemma fixedDualAverage_product_of_same_ray (c d : O)
+    (h : Ideal.Quotient.mk (Ideal.span {(4 : O)}) c =
+      Ideal.Quotient.mk (Ideal.span {(4 : O)}) d)
+    (hc : ‖fixedDualAverage c‖ = 1) : fixedDualAverage (c * d) = 1 := by
+  obtain ⟨⟨a, b⟩, hab⟩ := (rationalCoordEquiv 4 (by decide)).surjective
+    (Ideal.Quotient.mk (Ideal.span {(4 : O)}) c)
+  change Ideal.Quotient.mk (Ideal.span {(4 : O)})
+    (eval (ZMod.cast a) (ZMod.cast b)) = Ideal.Quotient.mk (Ideal.span {(4 : O)}) c at hab
+  have hp : Ideal.Quotient.mk (Ideal.span {(4 : O)}) (c * d) =
+      Ideal.Quotient.mk (Ideal.span {(4 : O)})
+        (eval (ZMod.cast a) (ZMod.cast b) * eval (ZMod.cast a) (ZMod.cast b)) := by
+    rw [map_mul, map_mul, ← h, hab]
+  rw [fixedDualAverage_eq_of_mod_four c _ hab.symm, fixedDualAverage_formula] at hc
+  rw [fixedDualAverage_eq_of_mod_four (c * d) _ hp, eval_mul, fixedDualAverage_formula]
+  fin_cases a <;> fin_cases b <;>
+    norm_num [ZMod.cast, ZMod.val, zpow_neg, zpow_ofNat, Complex.I_sq, Complex.I_pow_three, Complex.inv_I] at * <;>
+    ring_nf at * <;> norm_num [zpow_ofNat, neg_pow, Complex.I_pow_eq_pow_mod,
+      Complex.I_sq, Complex.I_pow_three, Complex.inv_I] at * <;> ring
+
+lemma quadraticIdealSupport_disjoint_of_coprime (I J : QuadraticIdeal)
+    (h : IsCoprime I.val J.val) : Disjoint (quadraticIdealSupport I) (quadraticIdealSupport J) := by
+  apply Finset.disjoint_left.mpr
+  intro P hP hQ
+  have hpI := Multiset.mem_toFinset.mp ((mem_quadraticIdealSupport I P).mp hP)
+  have hpJ := Multiset.mem_toFinset.mp ((mem_quadraticIdealSupport J P).mp hQ)
+  exact (UniqueFactorizationMonoid.prime_of_normalized_factor P.val hpI).2.1
+    (h.isUnit_of_dvd' (UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hpI)
+      (UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hpJ))
+
+open MeasureTheory
+open scoped SchwartzMap
+
+/-- On a fixed conductor ray, Poisson reflection of a coprime pair has phase one. -/
+theorem canonical_same_ray_pair_poisson {κ : Type*}
+    (I J : QuadraticIdeal) (hcop : IsCoprime I.val J.val)
+    (hray : quadraticColumnRay I = quadraticColumnRay J)
+    (q : κ → O) (hq : ∀ i, q i ≠ 0)
+    (hqc : Pairwise (Function.onFun IsCoprime q)) (S : Finset κ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, primeCoprimeMask q S z *
+      (canonicalQuadraticRow I z * canonicalQuadraticRow J z) * W (‖ringComplex z‖ ^ 2 / Y)) =
+      ((Y : ℂ) / (‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ : ℂ)) *
+        ∑ E ∈ S.powerset,
+          ((-1 : ℂ) ^ E.card *
+            (canonicalQuadraticRow I (∏ i ∈ E, q i) * canonicalQuadraticRow J (∏ i ∈ E, q i)) /
+              (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 : ℝ)) *
+            ∑' z : O, (canonicalQuadraticRow I z * canonicalQuadraticRow J z) *
+              paperRadialFourier W (Y * ‖ringComplex z‖ ^ 2 /
+                (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 *
+                  ‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ ^ 2)) := by
+  classical
+  let U := quadraticIdealSupport I ∪ quadraticIdealSupport J
+  have hd := quadraticIdealSupport_disjoint_of_coprime I J hcop
+  have hp : (∏ P : U, quadraticPrimeGenerator P.val) =
+      primaryIdealGenerator I.val * primaryIdealGenerator J.val := by
+    rw [Finset.prod_coe_sort, Finset.prod_union hd,
+      quadraticIdealSupport_product, quadraticIdealSupport_product]
+  have hphase : fixedDualAverage (primaryIdealGenerator I.val * primaryIdealGenerator J.val) = 1 := by
+    exact fixedDualAverage_product_of_same_ray _ _ hray (canonicalQuadraticRow_phase_norm I)
+  have hrow (z : O) :
+      primeCuspRowCharacter (fun P : U => quadraticPrimeGenerator P.val)
+        (fun P => complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P.val})) z =
+      canonicalQuadraticRow I z * canonicalQuadraticRow J z := by
+    change (∏ P : U, complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P.val})
+      (Ideal.Quotient.mk _ z)) = _
+    rw [Finset.prod_coe_sort (s := U) (f := fun P : QuadraticPrime =>
+      complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P}) (Ideal.Quotient.mk _ z))]
+    exact Finset.prod_union hd
+  have ht := quadratic_row_masked_radial_poisson
+    (fun P : U => quadraticPrimeGenerator P.val) (fun P => quadraticPrimeGenerator_ne_zero P.val)
+    (quadraticPrimeGenerator_span_injective.comp Subtype.val_injective)
+    (fun P => quadraticPrimeGenerator_odd P.val) q hq hqc S W Y hY
+  simpa only [hphase, hp, hrow, mul_one] using ht
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- Every nonzero Eisenstein integer is a unique unit multiple of the chosen ideal generator. -/
+def unitIdealElement (p : NonzeroIdeal × Oˣ) : {z : O // z ≠ 0} :=
+  ⟨(p.2 : O) * cubicIdealGenerator p.1.val, mul_ne_zero p.2.ne_zero (cubicIdealGenerator_ne_zero _ p.1.property)⟩
+
+lemma unitIdealElement_bijective : Function.Bijective unitIdealElement := by
+  constructor
+  · rintro ⟨I, u⟩ ⟨J, v⟩ he
+    have hv := congrArg (fun z : {z : O // z ≠ 0} => z.val) he
+    change (u : O) * cubicIdealGenerator I.val = (v : O) * cubicIdealGenerator J.val at hv
+    have hi := congrArg (fun z : O => Ideal.span {z}) hv
+    rw [Ideal.span_singleton_mul_left_unit u.isUnit, Ideal.span_singleton_mul_left_unit v.isUnit,
+      span_cubicIdealGenerator, span_cubicIdealGenerator] at hi
+    have hIJ : I = J := Subtype.ext hi
+    subst J
+    have huv : u = v := Units.ext (mul_right_cancel₀ (cubicIdealGenerator_ne_zero _ I.property) hv)
+    subst v
+    rfl
+  · intro z
+    let I : NonzeroIdeal := ⟨Ideal.span {z.val}, by
+      exact Ideal.span_singleton_eq_bot.not.mpr z.property⟩
+    have ha : Associated (cubicIdealGenerator I.val) z.val :=
+      Ideal.span_singleton_eq_span_singleton.mp (span_cubicIdealGenerator I.val)
+    obtain ⟨u, hu⟩ := ha
+    refine ⟨(I, u), Subtype.ext ?_⟩
+    simpa only [unitIdealElement, mul_comm] using hu
+
+def unitIdealElementEquiv : NonzeroIdeal × Oˣ ≃ {z : O // z ≠ 0} :=
+  Equiv.ofBijective unitIdealElement unitIdealElement_bijective
+
+/-- Unit-invariant lattice sums are ideal sums with the exact unit multiplicity. -/
+theorem tsum_unit_invariant_ideals (f : O → ℂ) (hf : Summable f) (h0 : f 0 = 0)
+    (hu : ∀ (u : Oˣ) (z : O), f ((u : O) * z) = f z) :
+    (∑' z : O, f z) = (Nat.card Oˣ : ℂ) * ∑' I : NonzeroIdeal, f (cubicIdealGenerator I.val) := by
+  letI : Finite Oˣ := cubic_units_finite
+  letI : Fintype Oˣ := Fintype.ofFinite _
+  have hs := (hf.subtype (fun z => z ≠ 0)).comp_injective unitIdealElementEquiv.injective
+  change Summable (fun p : NonzeroIdeal × Oˣ => f ((p.2 : O) * cubicIdealGenerator p.1.val)) at hs
+  calc
+    _ = ∑' z : {z : O // z ≠ 0}, f z.val := by
+      symm
+      apply tsum_subtype_eq_of_support_subset
+      intro z hz he
+      subst z
+      exact hz h0
+    _ = ∑' p : NonzeroIdeal × Oˣ, f ((p.2 : O) * cubicIdealGenerator p.1.val) :=
+      (unitIdealElementEquiv.tsum_eq (fun z => f z.val)).symm
+    _ = ∑' I : NonzeroIdeal, ∑' u : Oˣ, f ((u : O) * cubicIdealGenerator I.val) := hs.tsum_prod
+    _ = ∑' I : NonzeroIdeal, (Nat.card Oˣ : ℂ) * f (cubicIdealGenerator I.val) := by
+      apply tsum_congr
+      intro I
+      simp only [hu, tsum_fintype, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+        Nat.card_eq_fintype_card]
+    _ = _ := tsum_mul_left
+
+/-- A same-ray quadratic pair descends to all ideals, independently of generator choice. -/
+def canonicalQuadraticPairIdeal (I J : QuadraticIdeal) (D : Ideal O) : ℂ :=
+  canonicalQuadraticRow I (cubicIdealGenerator D) * canonicalQuadraticRow J (cubicIdealGenerator D)
+
+lemma canonicalQuadraticPairIdeal_span (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (z : O) :
+    canonicalQuadraticPairIdeal I J (Ideal.span {z}) = canonicalQuadraticRow I z * canonicalQuadraticRow J z := by
+  have ha : Associated (cubicIdealGenerator (Ideal.span {z})) z :=
+    Ideal.span_singleton_eq_span_singleton.mp (span_cubicIdealGenerator _)
+  obtain ⟨u, hu⟩ := ha
+  have hv := canonicalQuadraticPair_unit_invariant I J hray u (cubicIdealGenerator (Ideal.span {z}))
+  have he : (u : O) * cubicIdealGenerator (Ideal.span {z}) = z := by simpa only [mul_comm] using hu
+  rw [he] at hv
+  exact hv.symm
+
+lemma canonicalQuadraticPairIdeal_mul (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (A B : Ideal O) :
+    canonicalQuadraticPairIdeal I J (A * B) =
+      canonicalQuadraticPairIdeal I J A * canonicalQuadraticPairIdeal I J B := by
+  have hs : Ideal.span {cubicIdealGenerator A * cubicIdealGenerator B} = A * B := by
+    rw [← Ideal.span_singleton_mul_span_singleton, span_cubicIdealGenerator, span_cubicIdealGenerator]
+  rw [← hs, canonicalQuadraticPairIdeal_span I J hray, canonicalQuadraticRow_mul, canonicalQuadraticRow_mul]
+  unfold canonicalQuadraticPairIdeal
+  ring
+
+lemma canonicalQuadraticPairIdeal_primary (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (D : Ideal O) (hD : primaryIdealGenerator D ≠ 0) :
+    canonicalQuadraticPairIdeal I J D =
+      canonicalQuadraticRow I (primaryIdealGenerator D) * canonicalQuadraticRow J (primaryIdealGenerator D) := by
+  have h := canonicalQuadraticPairIdeal_span I J hray (primaryIdealGenerator D)
+  rw [(primaryIdealGenerator_spec D hD).1] at h
+  exact h
+
+lemma canonicalQuadraticPairIdeal_norm_le_one (I J : QuadraticIdeal) (D : Ideal O) :
+    ‖canonicalQuadraticPairIdeal I J D‖ ≤ 1 := by
+  rw [canonicalQuadraticPairIdeal, norm_mul]
+  exact (mul_le_mul (canonicalQuadraticRow_norm_le_one I _)
+    (canonicalQuadraticRow_norm_le_one J _) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+lemma canonicalQuadraticRow_zero_of_ne_one (I : QuadraticIdeal) (hI : I.val ≠ 1) :
+    canonicalQuadraticRow I 0 = 0 := by
+  classical
+  have hs : (quadraticIdealSupport I).Nonempty := by
+    by_contra h
+    have he := quadraticIdealSupport_product I
+    rw [Finset.not_nonempty_iff_eq_empty.mp h, Finset.prod_empty] at he
+    have hi := (primaryIdealGenerator_spec I.val I.property.1).1
+    rw [← he, Ideal.span_singleton_one] at hi
+    exact hI (by simpa only [Ideal.one_eq_top] using hi.symm)
+  unfold canonicalQuadraticRow primeSubsetRow
+  apply Finset.prod_eq_zero hs.choose_spec
+  simp only [map_zero, MulChar.map_zero]
+
+lemma canonicalQuadraticPair_zero (I J : QuadraticIdeal) (h : I.val ≠ 1 ∨ J.val ≠ 1) :
+    canonicalQuadraticRow I 0 * canonicalQuadraticRow J 0 = 0 := by
+  rcases h with h | h
+  · rw [canonicalQuadraticRow_zero_of_ne_one I h, zero_mul]
+  · rw [canonicalQuadraticRow_zero_of_ne_one J h, mul_zero]
+
+lemma canonicalQuadraticPair_fourier_summable (I J : QuadraticIdeal)
+    (W : 𝓢(ℝ, ℂ)) (t : ℝ) (ht : 0 < t) :
+    Summable (fun z : O => (canonicalQuadraticRow I z * canonicalQuadraticRow J z) *
+      paperRadialFourier W (t * ‖ringComplex z‖ ^ 2)) := by
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
+    (fun z => ?_) (paperRadialFourier_lattice_summable_norm W t ht)
+  rw [norm_mul, norm_mul]
+  have hrow : ‖canonicalQuadraticRow I z‖ * ‖canonicalQuadraticRow J z‖ ≤ 1 :=
+    (mul_le_mul (canonicalQuadraticRow_norm_le_one I z)
+      (canonicalQuadraticRow_norm_le_one J z) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+  exact mul_le_of_le_one_left (norm_nonneg _) hrow
+
+/-- Removing the zero frequency and unit orbit gives the exact unrestricted dual ideal sum. -/
+theorem canonicalQuadraticPair_fourier_ideal_reindex (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (hnt : I.val ≠ 1 ∨ J.val ≠ 1)
+    (W : 𝓢(ℝ, ℂ)) (t : ℝ) (ht : 0 < t) :
+    (∑' z : O, (canonicalQuadraticRow I z * canonicalQuadraticRow J z) *
+      paperRadialFourier W (t * ‖ringComplex z‖ ^ 2)) =
+      (Nat.card Oˣ : ℂ) * ∑' D : NonzeroIdeal, canonicalQuadraticPairIdeal I J D.val *
+        paperRadialFourier W (t * (Ideal.absNorm D.val : ℝ)) := by
+  let f : O → ℂ := fun z => (canonicalQuadraticRow I z * canonicalQuadraticRow J z) *
+    paperRadialFourier W (t * ‖ringComplex z‖ ^ 2)
+  have h0 : f 0 = 0 := by
+    dsimp only [f]
+    rw [canonicalQuadraticPair_zero I J hnt, zero_mul]
+  have hu (u : Oˣ) (z : O) : f ((u : O) * z) = f z := by
+    dsimp only [f]
+    rw [canonicalQuadraticPair_unit_invariant I J hray, map_mul, norm_mul,
+      norm_ringComplex_unit, one_mul]
+  have he := tsum_unit_invariant_ideals f (canonicalQuadraticPair_fourier_summable I J W t ht) h0 hu
+  simpa only [f, ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator,
+    canonicalQuadraticPairIdeal] using he
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+lemma canonicalQuadraticPairIdeal_one (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) :
+    canonicalQuadraticPairIdeal I J 1 = 1 := by
+  have h := canonicalQuadraticPairIdeal_span I J hray 1
+  simpa only [Ideal.span_singleton_one, canonicalQuadraticRow_one, one_mul,
+    Ideal.one_eq_top] using h
+
+/-- Normalizing by the square root of the ideal norm preserves multiplicativity. -/
+def normalizedQuadraticPair (I J : QuadraticIdeal) (D : Ideal O) : ℂ :=
+  canonicalQuadraticPairIdeal I J D / (Real.sqrt (Ideal.absNorm D : ℝ) : ℂ)
+
+lemma normalizedQuadraticPair_mul (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (A B : Ideal O) :
+    normalizedQuadraticPair I J (A * B) =
+      normalizedQuadraticPair I J A * normalizedQuadraticPair I J B := by
+  simp only [normalizedQuadraticPair, canonicalQuadraticPairIdeal_mul I J hray,
+    map_mul, Nat.cast_mul, Real.sqrt_mul (Nat.cast_nonneg _), Complex.ofReal_mul,
+    div_mul_div_comm]
+
+def normalizedQuadraticPairHom (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) : Ideal O →* ℂ where
+  toFun := normalizedQuadraticPair I J
+  map_one' := by
+    rw [normalizedQuadraticPair, canonicalQuadraticPairIdeal_one I J hray, map_one]
+    norm_num
+  map_mul' := normalizedQuadraticPair_mul I J hray
+
+lemma normalizedQuadraticPair_square (I J : QuadraticIdeal) (D : Ideal O) :
+    normalizedQuadraticPair I J D ^ 2 =
+      (quadraticIdealMask I (cubicIdealGenerator D) * quadraticIdealMask J (cubicIdealGenerator D)) /
+        (Ideal.absNorm D : ℂ) := by
+  have hr (L : QuadraticIdeal) : canonicalQuadraticRow L (cubicIdealGenerator D) ^ 2 =
+      quadraticIdealMask L (cubicIdealGenerator D) := by
+    simpa only [pow_two, canonicalQuadraticRow_mul] using
+      canonicalQuadraticRow_square L (cubicIdealGenerator D)
+  have hn : (Real.sqrt (Ideal.absNorm D : ℝ) : ℂ) ^ 2 = (Ideal.absNorm D : ℂ) := by
+    exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg (Ideal.absNorm D) : (0 : ℝ) ≤ _)
+  rw [normalizedQuadraticPair, div_pow, canonicalQuadraticPairIdeal, mul_pow, hr, hr, hn]
+
+/-- Divisors of a squarefree ideal are precisely products of subsets of its prime support. -/
+lemma squarefree_ideal_divisor_sum (G : Ideal O) (hG : Squarefree G) (f : Ideal O → ℂ) :
+    (∑ D ∈ idealDivisors G, f D) =
+      ∑ S ∈ (primeSupport G).powerset, f (∏ P ∈ S, P) := by
+  have hf : (idealDivisors G).filter Squarefree = idealDivisors G :=
+    Finset.filter_eq_self.mpr (fun D hD => hG.squarefree_of_dvd ((mem_idealDivisors hG.ne_zero).mp hD))
+  rw [← hf, squarefree_divisors_eq_image G hG.ne_zero, Finset.sum_image]
+  intro S hS T hT he
+  exact support_product_injective (Finset.mem_powerset.mp hS) (Finset.mem_powerset.mp hT) he
+
+lemma squarefree_ideal_signed_divisor_product (G : Ideal O) (hG : Squarefree G)
+    (f : Ideal O →* ℂ) :
+    (∑ D ∈ idealDivisors G, (moebius D : ℂ) * f D) = ∏ P ∈ primeSupport G, (1 - f P) := by
+  rw [squarefree_ideal_divisor_sum G hG, Finset.prod_sub]
+  apply Finset.sum_congr rfl
+  intro S hS
+  rw [moebius_support_product (Finset.mem_powerset.mp hS), map_prod]
+  simp only [Finset.prod_const_one, mul_one]
+
+lemma squarefree_ideal_divisor_product (G : Ideal O) (hG : Squarefree G)
+    (f : Ideal O →* ℂ) :
+    (∑ D ∈ idealDivisors G, f D) = ∏ P ∈ primeSupport G, (f P + 1) := by
+  rw [squarefree_ideal_divisor_sum G hG, Finset.prod_add]
+  apply Finset.sum_congr rfl
+  intro S hS
+  simp only [map_prod, Finset.prod_const_one, mul_one]
+
+/-- Source and dual divisor densities agree exactly before imposing the norm cutoff. -/
+theorem normalizedQuadraticPair_density (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (G : Ideal O) (hG : Squarefree G) :
+    (∑ D ∈ idealDivisors G, ∑ E ∈ idealDivisors G,
+      (moebius E : ℂ) * normalizedQuadraticPair I J (D * E)) =
+      ∏ P ∈ primeSupport G,
+        (1 - (quadraticIdealMask I (cubicIdealGenerator P) * quadraticIdealMask J (cubicIdealGenerator P)) /
+          (Ideal.absNorm P : ℂ)) := by
+  let f := normalizedQuadraticPairHom I J hray
+  have he : (∑ D ∈ idealDivisors G, ∑ E ∈ idealDivisors G,
+      (moebius E : ℂ) * normalizedQuadraticPair I J (D * E)) =
+      (∑ D ∈ idealDivisors G, f D) * (∑ E ∈ idealDivisors G, (moebius E : ℂ) * f E) := by
+    rw [Finset.sum_mul]
+    simp only [Finset.mul_sum, f, normalizedQuadraticPairHom,
+      MonoidHom.coe_mk, OneHom.coe_mk, normalizedQuadraticPair_mul I J hray]
+    apply Finset.sum_congr rfl
+    intro D hD
+    apply Finset.sum_congr rfl
+    intro E hE
+    ring
+  rw [he, squarefree_ideal_divisor_product G hG, squarefree_ideal_signed_divisor_product G hG,
+    ← Finset.prod_mul_distrib]
+  apply Finset.prod_congr rfl
+  intro P hP
+  change (normalizedQuadraticPair I J P + 1) * (1 - normalizedQuadraticPair I J P) = _
+  rw [show (normalizedQuadraticPair I J P + 1) * (1 - normalizedQuadraticPair I J P) =
+    1 - normalizedQuadraticPair I J P ^ 2 by ring, normalizedQuadraticPair_square]
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+lemma ideal_coprime_of_isRelPrime (A B : Ideal O) (h : IsRelPrime A B) : IsCoprime A B := by
+  apply Ideal.isCoprime_iff_sup_eq.mpr
+  exact Ideal.isUnit_iff.mp (h (Ideal.dvd_iff_le.mpr le_sup_left) (Ideal.dvd_iff_le.mpr le_sup_right))
+
+/-- Removing the common prime divisors of a squarefree ideal leaves a coprime quotient. -/
+lemma squarefree_sup_quotient_coprime (B G : Ideal O) (hB : Squarefree B) :
+    IsCoprime (quadraticIdealQuotient (B ⊔ G) B) G := by
+  let D := B ⊔ G
+  have hDB : D ∣ B := Ideal.dvd_iff_le.mpr le_sup_left
+  have hDG : D ∣ G := Ideal.dvd_iff_le.mpr le_sup_right
+  have hD : D ≠ 0 := ne_zero_of_dvd_ne_zero hB.ne_zero hDB
+  have hc : IsCoprime (quadraticIdealQuotient D B) (quadraticIdealQuotient D G) :=
+    Ideal.isCoprime_iff_sup_eq.mpr ((quadraticIdealQuotient_coprime_iff D B G hD hDB hDG).mpr rfl)
+  have hs : Squarefree (D * quadraticIdealQuotient D B) := by
+    rw [quadraticIdeal_mul_quotient hDB]
+    exact hB
+  have hq := ideal_coprime_of_isRelPrime D (quadraticIdealQuotient D B) (squarefree_mul_iff.mp hs).1
+  have ht := hq.symm.mul_right hc
+  rw [quadraticIdeal_mul_quotient hDG] at ht
+  exact ht
+
+lemma ideal_sup_mul_of_coprime_divisor (D H G : Ideal O)
+    (hDG : D ∣ G) (hHG : IsCoprime H G) : (D * H) ⊔ G = D := by
+  have hleft : D ∣ (D * H) ⊔ G :=
+    Ideal.dvd_iff_le.mpr (sup_le (Ideal.dvd_iff_le.mp (dvd_mul_right D H)) (Ideal.dvd_iff_le.mp hDG))
+  have hcop : IsCoprime ((D * H) ⊔ G) H :=
+    (hHG.mono (dvd_refl H) (Ideal.dvd_iff_le.mpr le_sup_right)).symm
+  have hright : (D * H) ⊔ G ∣ D := hcop.dvd_of_dvd_mul_right (Ideal.dvd_iff_le.mpr le_sup_left)
+  exact associated_iff_eq.mp (associated_of_dvd_dvd hright hleft)
+
+/-- Splitting a squarefree ideal at a fixed squarefree support is unique. -/
+def squarefreeIdealSplit (G : Ideal O) (hG : Squarefree G) :
+    {B : Ideal O // Squarefree B} ≃
+      (idealDivisors G) × {H : Ideal O // Squarefree H ∧ IsCoprime H G} where
+  toFun B := (⟨B.val ⊔ G, (mem_idealDivisors hG.ne_zero).mpr (Ideal.dvd_iff_le.mpr le_sup_right)⟩,
+    ⟨quadraticIdealQuotient (B.val ⊔ G) B.val,
+      B.property.squarefree_of_dvd (quadraticIdealQuotient_dvd (Ideal.dvd_iff_le.mpr le_sup_left)),
+      squarefree_sup_quotient_coprime B.val G B.property⟩)
+  invFun p := ⟨p.1.val * p.2.val, squarefree_mul_iff.mpr
+    ⟨(p.2.property.2.mono (dvd_refl _) ((mem_idealDivisors hG.ne_zero).mp p.1.property)).symm.isRelPrime,
+      hG.squarefree_of_dvd ((mem_idealDivisors hG.ne_zero).mp p.1.property), p.2.property.1⟩⟩
+  left_inv B := Subtype.ext (quadraticIdeal_mul_quotient (Ideal.dvd_iff_le.mpr le_sup_left))
+  right_inv p := by
+    have hDG := (mem_idealDivisors hG.ne_zero).mp p.1.property
+    have hs := ideal_sup_mul_of_coprime_divisor p.1.val p.2.val G hDG p.2.property.2
+    apply Prod.ext (Subtype.ext hs)
+    apply Subtype.ext
+    change quadraticIdealQuotient ((p.1.val * p.2.val) ⊔ G) (p.1.val * p.2.val) = p.2.val
+    rw [hs]
+    exact mul_left_cancel₀ (ne_zero_of_dvd_ne_zero hG.ne_zero hDG)
+      (quadraticIdeal_mul_quotient (dvd_mul_right p.1.val p.2.val))
+
+def squarefreeIdealBall (K : ℝ) : Finset (Ideal O) :=
+  (Ideal.finite_setOf_absNorm_le (S := O) ⌈K⌉₊).toFinset.filter
+    (fun I => Squarefree I ∧ (Ideal.absNorm I : ℝ) ≤ K)
+
+lemma mem_squarefreeIdealBall {K : ℝ} {I : Ideal O} :
+    I ∈ squarefreeIdealBall K ↔ Squarefree I ∧ (Ideal.absNorm I : ℝ) ≤ K := by
+  simp only [squarefreeIdealBall, Finset.mem_filter, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+  constructor
+  · exact And.right
+  · intro h
+    exact ⟨by exact_mod_cast h.2.trans (Nat.le_ceil K), h⟩
+
+def coprimeSquarefreeIdealBall (G : Ideal O) (K : ℝ) : Finset (Ideal O) :=
+  (squarefreeIdealBall K).filter (fun H => IsCoprime H G)
+
+lemma squarefreeIdeal_cutoff_summable (K : ℝ) (f : Ideal O → ℂ) :
+    Summable (fun B : {B : Ideal O // Squarefree B} =>
+      if (Ideal.absNorm B.val : ℝ) ≤ K then f B.val else 0) := by
+  let e : squarefreeIdealBall K → {B : Ideal O // Squarefree B} :=
+    fun B => ⟨B.val, (mem_squarefreeIdealBall.mp B.property).1⟩
+  apply summable_of_hasFiniteSupport
+  apply (Set.finite_range e).subset
+  intro B hB
+  have hN : (Ideal.absNorm B.val : ℝ) ≤ K := by
+    by_contra hn
+    exact hB (if_neg hn)
+  exact ⟨⟨B.val, mem_squarefreeIdealBall.mpr ⟨B.property, hN⟩⟩, Subtype.ext rfl⟩
+
+lemma tsum_squarefreeIdeal_cutoff (K : ℝ) (f : Ideal O → ℂ) :
+    (∑' B : {B : Ideal O // Squarefree B}, if (Ideal.absNorm B.val : ℝ) ≤ K then f B.val else 0) =
+      ∑ B : squarefreeIdealBall K, f B.val := by
+  let e : squarefreeIdealBall K → {B : Ideal O // Squarefree B} :=
+    fun B => ⟨B.val, (mem_squarefreeIdealBall.mp B.property).1⟩
+  have he : Function.Injective e := fun B C h => Subtype.ext (congrArg (fun I : {B : Ideal O // Squarefree B} => I.val) h)
+  let F : {B : Ideal O // Squarefree B} → ℂ := fun B =>
+    if (Ideal.absNorm B.val : ℝ) ≤ K then f B.val else 0
+  have hs : Function.support F ⊆ Set.range e := by
+    intro B hB
+    have hN : (Ideal.absNorm B.val : ℝ) ≤ K := by
+      by_contra hn
+      exact hB (if_neg hn)
+    exact ⟨⟨B.val, mem_squarefreeIdealBall.mpr ⟨B.property, hN⟩⟩, Subtype.ext rfl⟩
+  change (∑' B, F B) = _
+  rw [← he.tsum_eq hs, tsum_fintype]
+  apply Finset.sum_congr rfl
+  intro B _
+  exact if_pos (mem_squarefreeIdealBall.mp B.property).2
+
+lemma tsum_coprimeSquarefreeIdeal_cutoff (G D : Ideal O) (hD : D ≠ 0) (K : ℝ) (f : Ideal O → ℂ) :
+    (∑' H : {H : Ideal O // Squarefree H ∧ IsCoprime H G},
+      if (Ideal.absNorm (D * H.val) : ℝ) ≤ K then f (D * H.val) else 0) =
+      ∑ H : coprimeSquarefreeIdealBall G K,
+        if (Ideal.absNorm (D * H.val) : ℝ) ≤ K then f (D * H.val) else 0 := by
+  let e : coprimeSquarefreeIdealBall G K → {H : Ideal O // Squarefree H ∧ IsCoprime H G} :=
+    fun H => ⟨H.val, (mem_squarefreeIdealBall.mp (Finset.mem_filter.mp H.property).1).1,
+      (Finset.mem_filter.mp H.property).2⟩
+  have he : Function.Injective e := fun H J h => Subtype.ext (congrArg (fun I : {H : Ideal O // Squarefree H ∧ IsCoprime H G} => I.val) h)
+  let F : {H : Ideal O // Squarefree H ∧ IsCoprime H G} → ℂ := fun H =>
+    if (Ideal.absNorm (D * H.val) : ℝ) ≤ K then f (D * H.val) else 0
+  have hs : Function.support F ⊆ Set.range e := by
+    intro H hH
+    have hN : (Ideal.absNorm (D * H.val) : ℝ) ≤ K := by
+      by_contra hn
+      exact hH (if_neg hn)
+    have hD1 : 1 ≤ Ideal.absNorm D := Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hD)
+    have hHN : (Ideal.absNorm H.val : ℝ) ≤ K := by
+      have hn : Ideal.absNorm H.val ≤ Ideal.absNorm (D * H.val) := by
+        simpa only [one_mul, map_mul] using Nat.mul_le_mul_right (Ideal.absNorm H.val) hD1
+      exact (Nat.cast_le.mpr hn).trans hN
+    exact ⟨⟨H.val, Finset.mem_filter.mpr
+      ⟨mem_squarefreeIdealBall.mpr ⟨H.property.1, hHN⟩, H.property.2⟩⟩, Subtype.ext rfl⟩
+  simpa only [tsum_fintype, F, e] using (he.tsum_eq hs).symm
+
+/-- A sharp norm cutoff differs from the coprime decomposition only at its boundary. -/
+theorem squarefreeIdeal_split_sum (G : Ideal O) (hG : Squarefree G) (K : ℝ) (f : Ideal O → ℂ) :
+    (∑ B : squarefreeIdealBall K, f B.val) =
+      ∑ D : idealDivisors G, ∑ H : coprimeSquarefreeIdealBall G K,
+        if (Ideal.absNorm (D.val * H.val) : ℝ) ≤ K then f (D.val * H.val) else 0 := by
+  let F : {B : Ideal O // Squarefree B} → ℂ := fun B =>
+    if (Ideal.absNorm B.val : ℝ) ≤ K then f B.val else 0
+  have hs := (squarefreeIdealSplit G hG).symm.summable_iff.mpr (squarefreeIdeal_cutoff_summable K f)
+  have he := ((squarefreeIdealSplit G hG).symm.tsum_eq F).symm
+  calc
+    _ = ∑' B : {B : Ideal O // Squarefree B}, F B := (tsum_squarefreeIdeal_cutoff K f).symm
+    _ = ∑' p : (idealDivisors G) × {H : Ideal O // Squarefree H ∧ IsCoprime H G},
+        if (Ideal.absNorm (p.1.val * p.2.val) : ℝ) ≤ K then f (p.1.val * p.2.val) else 0 := he
+    _ = ∑' D : idealDivisors G, ∑' H : {H : Ideal O // Squarefree H ∧ IsCoprime H G},
+        if (Ideal.absNorm (D.val * H.val) : ℝ) ≤ K then f (D.val * H.val) else 0 := hs.tsum_prod
+    _ = _ := by
+      rw [tsum_fintype]
+      apply Finset.sum_congr rfl
+      intro D _
+      exact tsum_coprimeSquarefreeIdeal_cutoff G D.val
+        (ne_zero_of_dvd_ne_zero hG.ne_zero ((mem_idealDivisors hG.ne_zero).mp D.property)) K f
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+/-- The difference is supported where multiplication by a divisor crosses the norm cutoff. -/
+def quadraticCutoffDifference (K : ℝ) (H D : Ideal O) : ℝ :=
+  (if (Ideal.absNorm (H * D) : ℝ) ≤ K then 1 else 0) -
+    (if (Ideal.absNorm H : ℝ) ≤ K then 1 else 0)
+
+lemma quadraticCutoffDifference_nonzero (K : ℝ) (H D : Ideal O) (hD : D ≠ 0) :
+    quadraticCutoffDifference K H D ≠ 0 ↔
+      (Ideal.absNorm H : ℝ) ≤ K ∧ K < (Ideal.absNorm (H * D) : ℝ) := by
+  have hd : 1 ≤ Ideal.absNorm D := Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hD)
+  have hm : (Ideal.absNorm H : ℝ) ≤ Ideal.absNorm (H * D) := by
+    exact_mod_cast (show Ideal.absNorm H ≤ Ideal.absNorm (H * D) by
+      simpa only [map_mul, mul_one] using Nat.mul_le_mul_left (Ideal.absNorm H) hd)
+  unfold quadraticCutoffDifference
+  split_ifs <;> simp_all <;> linarith
+
+lemma quadraticCutoffDifference_eq_neg_one (K : ℝ) (H D : Ideal O) (hD : D ≠ 0)
+    (h : quadraticCutoffDifference K H D ≠ 0) : quadraticCutoffDifference K H D = -1 := by
+  obtain ⟨hH, hHD⟩ := (quadraticCutoffDifference_nonzero K H D hD).mp h
+  simp only [quadraticCutoffDifference, if_neg (not_le.mpr hHD), if_pos hH]
+  norm_num
+
+def quadraticBoundaryWeight (K : ℝ) (H D E : Ideal O) : ℂ :=
+  (quadraticCutoffDifference K H D : ℂ) / (Real.sqrt (Ideal.absNorm (H * D * E) : ℝ) : ℂ)
+
+lemma quadraticBoundaryWeight_norm_le (K : ℝ) (hK : 0 < K) (H D E : Ideal O)
+    (hD : D ≠ 0) (hE : E ≠ 0) : ‖quadraticBoundaryWeight K H D E‖ ≤ 1 / Real.sqrt K := by
+  by_cases hc : quadraticCutoffDifference K H D = 0
+  · simp only [quadraticBoundaryWeight, hc, Complex.ofReal_zero, zero_div, norm_zero]
+    positivity
+  have he : 1 ≤ Ideal.absNorm E := Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hE)
+  have hN : (Ideal.absNorm (H * D) : ℝ) ≤ Ideal.absNorm (H * D * E) := by
+    exact_mod_cast (show Ideal.absNorm (H * D) ≤ Ideal.absNorm (H * D * E) by
+      simpa only [map_mul, mul_one] using Nat.mul_le_mul_left (Ideal.absNorm (H * D)) he)
+  have hlt := ((quadraticCutoffDifference_nonzero K H D hD).mp hc).2.trans_le hN
+  rw [quadraticBoundaryWeight, quadraticCutoffDifference_eq_neg_one K H D hD hc]
+  simp only [Complex.ofReal_neg, Complex.ofReal_one, norm_div, norm_neg, norm_one,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
+  exact one_div_le_one_div_of_le (Real.sqrt_pos.mpr hK) (Real.sqrt_le_sqrt hlt.le)
+
+def quadraticPairPartial (I J : QuadraticIdeal) (K : ℝ) : ℂ :=
+  ∑ B : squarefreeIdealBall K, normalizedQuadraticPair I J B.val
+
+def quadraticPairCoprimePartial (I J : QuadraticIdeal) (G : Ideal O) (K : ℝ) : ℂ :=
+  ∑ H : coprimeSquarefreeIdealBall G K, normalizedQuadraticPair I J H.val
+
+def quadraticPairDivisors (I J : QuadraticIdeal) (G : Ideal O) : ℂ :=
+  ∑ E ∈ idealDivisors G, (moebius E : ℂ) * normalizedQuadraticPair I J E
+
+def quadraticPairDensity (I J : QuadraticIdeal) (G : Ideal O) : ℂ :=
+  ∏ P ∈ primeSupport G,
+    (1 - (quadraticIdealMask I (cubicIdealGenerator P) * quadraticIdealMask J (cubicIdealGenerator P)) /
+      (Ideal.absNorm P : ℂ))
+
+def quadraticNormCutoff (K : ℝ) (H : Ideal O) : ℂ :=
+  if (Ideal.absNorm H : ℝ) ≤ K then 1 else 0
+
+lemma quadraticPairPartial_split (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (G : Ideal O) (hG : Squarefree G) (K : ℝ) :
+    quadraticPairPartial I J K =
+      ∑ H : coprimeSquarefreeIdealBall G K, ∑ D ∈ idealDivisors G,
+        normalizedQuadraticPair I J H.val * normalizedQuadraticPair I J D * quadraticNormCutoff K (H.val * D) := by
+  rw [quadraticPairPartial, squarefreeIdeal_split_sum G hG K, Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro H _
+  rw [Finset.sum_coe_sort (s := idealDivisors G)
+    (f := fun D => if (Ideal.absNorm (D * H.val) : ℝ) ≤ K then normalizedQuadraticPair I J (D * H.val) else 0)]
+  apply Finset.sum_congr rfl
+  intro D hD
+  rw [mul_comm D H.val, normalizedQuadraticPair_mul I J hray]
+  unfold quadraticNormCutoff
+  split_ifs <;> ring
+
+/-- The uncancelled principal contribution is exactly the cutoff boundary term. -/
+theorem quadraticPair_main_difference (I J : QuadraticIdeal)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (G : Ideal O) (hG : Squarefree G) (K : ℝ) :
+    quadraticPairPartial I J K * quadraticPairDivisors I J G -
+      quadraticPairCoprimePartial I J G K * quadraticPairDensity I J G =
+      ∑ H : coprimeSquarefreeIdealBall G K, ∑ D ∈ idealDivisors G, ∑ E ∈ idealDivisors G,
+        (moebius E : ℂ) * normalizedQuadraticPair I J (H.val * D * E) *
+          (quadraticCutoffDifference K H.val D : ℂ) := by
+  have hd : quadraticPairDensity I J G =
+      ∑ D ∈ idealDivisors G, ∑ E ∈ idealDivisors G,
+        (moebius E : ℂ) * (normalizedQuadraticPair I J D * normalizedQuadraticPair I J E) := by
+    rw [quadraticPairDensity, ← normalizedQuadraticPair_density I J hray G hG]
+    simp only [normalizedQuadraticPair_mul I J hray]
+  rw [quadraticPairPartial_split I J hray G hG K, hd]
+  unfold quadraticPairDivisors quadraticPairCoprimePartial
+  simp only [Finset.sum_mul]
+  simp only [Finset.mul_sum]
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro H _
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro D hD
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro E hE
+  have hHN := (mem_squarefreeIdealBall.mp (Finset.mem_filter.mp H.property).1).2
+  have hc : (quadraticCutoffDifference K H.val D : ℂ) = quadraticNormCutoff K (H.val * D) - 1 := by
+    unfold quadraticCutoffDifference quadraticNormCutoff
+    rw [if_pos hHN]
+    split_ifs <;> norm_num
+  rw [hc, normalizedQuadraticPair_mul I J hray, normalizedQuadraticPair_mul I J hray]
+  ring
+
+end SchwartzPlanePoisson
+
+
+namespace IdealCoprimeBilinearSieve
+open Eisenstein DivisorBlockCauchy FiniteSieveOperator
+
+/-- A bounded row weight multiplies the coprime Gram bound by its supremum. -/
+theorem weighted_coprime_gram_bound {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (ε : ℝ) (hε : 0 < ε)
+    (cols : n → Ideal O) (hc : ∀ j, cols j ≠ 0) (N : ℝ) (hN : 0 ≤ N)
+    (hcols : ∀ j, (Ideal.absNorm (cols j) : ℝ) ≤ N) (A : Matrix m n ℂ) (a : n → ℂ)
+    (w : m → ℂ) (C : ℝ) (hC : 0 ≤ C) (hw : ∀ i, ‖w i‖ ≤ C) :
+    ‖∑ i, w i * (∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+      star (A i j * a j) * (A i k * a k) else 0)‖ ≤
+      C * (‖operator A‖ ^ 2 * (divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2) := by
+  have hs := ideal_coprime_bilinear_operator_bound ε hε cols cols hc hc N N hcols hcols A A a a
+  have hb : 0 ≤ ‖operator A‖ ^ 2 * (divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2 := by
+    have hd := (divisorConstant_pos ε hε).le
+    have hn := Real.rpow_nonneg hN ε
+    positivity
+  have hsum : (∑ i, ‖∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+      star (A i j * a j) * (A i k * a k) else 0‖) ≤
+      ‖operator A‖ ^ 2 * (divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2 := by
+    nlinarith only [hs, hb]
+  calc
+    _ ≤ ∑ i, ‖w i‖ * ‖∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+        star (A i j * a j) * (A i k * a k) else 0‖ := by
+      simpa only [norm_mul] using norm_sum_le Finset.univ (fun i => w i *
+        (∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then star (A i j * a j) * (A i k * a k) else 0))
+    _ ≤ ∑ i, C * ‖∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+        star (A i j * a j) * (A i k * a k) else 0‖ :=
+      Finset.sum_le_sum (fun i _ => mul_le_mul_of_nonneg_right (hw i) (norm_nonneg _))
+    _ = C * ∑ i, ‖∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+        star (A i j * a j) * (A i k * a k) else 0‖ := (Finset.mul_sum ..).symm
+    _ ≤ _ := mul_le_mul_of_nonneg_left hsum hC
+
+end IdealCoprimeBilinearSieve
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid DivisorBlockCauchy IdealCoprimeBilinearSieve
+
+/-- The surviving principal boundary gains the inverse square root of its cutoff. -/
+theorem quadratic_boundary_operator_bound {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (ε : ℝ) (hε : 0 < ε) (K : ℝ) (hK : 0 < K)
+    (G : Ideal O) (hG : G ≠ 0) (rows : m → Ideal O) (cols : n → Ideal O)
+    (hc : ∀ j, cols j ≠ 0) (N : ℝ) (hN : 0 ≤ N)
+    (hcols : ∀ j, (Ideal.absNorm (cols j) : ℝ) ≤ N)
+    (A : Matrix m n ℂ) (a : n → ℂ) (r : Ideal O → Ideal O → n → ℂ)
+    (hr : ∀ D E j, ‖r D E j‖ ≤ 1) :
+    ‖∑ D ∈ idealDivisors G, ∑ E ∈ idealDivisors G, (moebius E : ℂ) *
+      (∑ i, quadraticBoundaryWeight K (rows i) D E *
+        (∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+          star (A i j * (a j * r D E j)) * (A i k * (a k * r D E k)) else 0))‖ ≤
+      ((idealDivisors G).card : ℝ) ^ 2 *
+        ((1 / Real.sqrt K) * ‖FiniteSieveOperator.operator A‖ ^ 2 *
+          (divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2) := by
+  let B := (1 / Real.sqrt K) * ‖FiniteSieveOperator.operator A‖ ^ 2 *
+    (divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2
+  have hb (D : Ideal O) (hD : D ∈ idealDivisors G) (E : Ideal O) (hE : E ∈ idealDivisors G) :
+      ‖(moebius E : ℂ) * (∑ i, quadraticBoundaryWeight K (rows i) D E *
+        (∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+          star (A i j * (a j * r D E j)) * (A i k * (a k * r D E k)) else 0))‖ ≤ B := by
+    have he := weighted_coprime_gram_bound ε hε cols hc N hN hcols A (fun j => a j * r D E j)
+      (fun i => quadraticBoundaryWeight K (rows i) D E) (1 / Real.sqrt K) (by positivity)
+      (fun i => quadraticBoundaryWeight_norm_le K hK (rows i) D E
+        (IdealDivisorBound.divisor_ne_zero hG hD) (IdealDivisorBound.divisor_ne_zero hG hE))
+    have hm : (∑ j, ‖a j * r D E j‖ ^ 2) ≤ ∑ j, ‖a j‖ ^ 2 := by
+      apply Finset.sum_le_sum
+      intro j _
+      apply pow_le_pow_left₀ (norm_nonneg _)
+      rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (hr D E j)
+    rw [norm_mul]
+    apply (mul_le_of_le_one_left (norm_nonneg _) (moebius_norm_le_one E)).trans
+    apply he.trans
+    dsimp only [B]
+    rw [← mul_assoc, ← mul_assoc]
+    apply mul_le_mul_of_nonneg_left hm
+    have hd := (divisorConstant_pos ε hε).le
+    have hn := Real.rpow_nonneg hN ε
+    positivity
+  calc
+    _ ≤ ∑ D ∈ idealDivisors G, ‖∑ E ∈ idealDivisors G, (moebius E : ℂ) *
+        (∑ i, quadraticBoundaryWeight K (rows i) D E *
+          (∑ j, ∑ k, if cols j ⊔ cols k = ⊤ then
+            star (A i j * (a j * r D E j)) * (A i k * (a k * r D E k)) else 0))‖ := norm_sum_le _ _
+    _ ≤ ∑ D ∈ idealDivisors G, ∑ E ∈ idealDivisors G, B := by
+      apply Finset.sum_le_sum
+      intro D hD
+      exact (norm_sum_le _ _).trans (Finset.sum_le_sum (fun E hE => hb D hD E hE))
+    _ = _ := by simp only [Finset.sum_const, nsmul_eq_mul, B]; ring
+
+end SchwartzPlanePoisson
+
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

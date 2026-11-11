@@ -27,12 +27,12 @@ at the same normalization.
 
 ## Required proof
 
-1. Exact arithmetic increment/Dirichlet identity for the literal power comb.
-2. Analytic continuation of the remaining terms in the required half-plane.
-3. Convergence or growth control implies exclusion of uncancelled zeta poles;
-   exclude cancellation using the Euler half-plane.
-4. Prove the converse from existing zero-free prime-error estimates, including
-   singular weighted sums and the actual finite-comb limit.
+1. Exact arithmetic contact convolution for the literal power comb — proved.
+2. Weighted Möbius inversion and the exact prime-error growth criterion — proved.
+3. Polar and archimedean remainder bounds, and the normalized comb's exact
+   zero-half-plane criterion — proved.
+4. Actual convergence under RH from prime-error estimates, including singular
+   weighted sums and the Mellin-pairing limit — open.
 
 ## Existing sources
 

@@ -70,6 +70,8 @@ Actual interval energy is dominated by its taper. Along every admissible
 large-block family it is bounded by `C a`; above `δ U/log U` it is bounded
 by `(18/5)(v−a)+εa`. These estimates are formalized in
 `TheMatchedDetectorHasItsBlockBounds`.
+`TheMatchedDetectorBoundsAreUniform` supplies a common constant and
+threshold for all admissible blocks and all gate displacements.
 
 The dyadic law, fixed-coefficient transfer and count insertion have complete
 Lean proof drafts, pending dependency checks. The capstone is

@@ -187,9 +187,9 @@ theorem abs_powerTailJetProfile_le {a t : ℝ} (ha : 0 < a) (ha1 : a < 1)
 
 /-- The rescaled regular part of the newest jet row converges to its integral. -/
 theorem tendsto_powerTailJetProfile_mesh {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
-    Filter.Tendsto (powerTailMesh (powerTailJetProfile a)) Filter.atTop
+    Filter.Tendsto (tailRiemannSum (powerTailJetProfile a)) Filter.atTop
       (nhds (∫ t in (0 : ℝ)..1, powerTailJetProfile a t)) :=
-  tendsto_powerTailMesh_of_powerBound ha ha1 (continuousOn_powerTailJetProfile a)
+  tendsto_tailRiemannSum_of_powerBound ha ha1 (continuousOn_powerTailJetProfile a)
     (fun t ht => abs_powerTailJetProfile_le ha ha1 ht)
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

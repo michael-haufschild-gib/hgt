@@ -1,5 +1,5 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceRemainder
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTwistedDensityOfTheCarrierIsWeilsSymbol
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.SumsOverTheDegreePointsOfATailAreRiemannSums
 
 /-!
 # Riemann sums with a subcritical power singularity
@@ -48,10 +48,6 @@ theorem normalized_powerTail_head_le {a δ : ℝ} (ha : 0 < a) (ha1 : a < 1)
 /-- Clip the singular endpoint by holding its value constant below `δ`. -/
 def powerTailClip (g : ℝ → ℝ) (δ t : ℝ) : ℝ := g (max δ t)
 
-/-- Right-endpoint mesh average on the unit interval. -/
-def powerTailMesh (g : ℝ → ℝ) (N : ℕ) : ℝ :=
-  (N : ℝ)⁻¹ * ∑ n ∈ Icc 1 N, g ((n : ℝ) / N)
-
 theorem continuousOn_powerTailClip {g : ℝ → ℝ} {δ : ℝ}
     (hg : ContinuousOn g (Set.Ioc 0 1)) (hδ : 0 < δ) (hδ1 : δ ≤ 1) :
     ContinuousOn (powerTailClip g δ) (Set.Icc 0 1) := by
@@ -96,17 +92,17 @@ theorem intervalIntegrable_of_powerTailBound {g : ℝ → ℝ} {a C : ℝ}
 
 /-- Clipping a power-dominated profile changes every mesh average by a uniformly
 small quantity, including meshes meeting the singular endpoint. -/
-theorem abs_powerTailMesh_sub_clip_le {g : ℝ → ℝ} {a C δ : ℝ}
+theorem abs_tailRiemannSum_sub_clip_le {g : ℝ → ℝ} {a C δ : ℝ}
     (ha : 0 < a) (ha1 : a < 1) (hδ : 0 < δ) (hδ1 : δ ≤ 1)
     (hB : ∀ t ∈ Set.Ioc (0 : ℝ) 1, |g t| ≤ C * t ^ (-a))
     {N : ℕ} (hN : 1 ≤ N) :
-    |powerTailMesh g N - powerTailMesh (powerTailClip g δ) N| ≤
+    |tailRiemannSum g N - tailRiemannSum (powerTailClip g δ) N| ≤
       2 * C * (δ ^ (1 - a) / (1 - a)) := by
   have hNp : (0 : ℝ) < N := by exact_mod_cast hN
   have hC : 0 ≤ C := by
     have h := hB 1 ⟨one_pos, le_rfl⟩
     simpa only [Real.one_rpow, mul_one] using (abs_nonneg (g 1)).trans h
-  let S := (Icc 1 N).filter (fun n => (n : ℝ) / N < δ)
+  let S : Finset ℕ := (Icc 1 N).filter (fun n : ℕ => (n : ℝ) / N < δ)
   have hsub : S ⊆ Icc 1 ⌊δ * N⌋₊ := by
     intro n hn
     obtain ⟨hnN, hnδ⟩ := mem_filter.mp hn
@@ -131,7 +127,7 @@ theorem abs_powerTailMesh_sub_clip_le {g : ℝ → ℝ} {a C δ : ℝ}
     apply mul_le_mul_of_nonneg_left _ (by positivity)
     exact sum_le_sum_of_subset_of_nonneg hsub (fun n _ _ =>
       Real.rpow_nonneg (div_nonneg (Nat.cast_nonneg n) hNp.le) _)
-  rw [powerTailMesh, powerTailMesh, ← mul_sub, ← sum_sub_distrib,
+  rw [tailRiemannSum, tailRiemannSum, div_eq_inv_mul, div_eq_inv_mul, ← mul_sub, ← sum_sub_distrib,
     abs_mul, abs_of_pos (inv_pos.mpr hNp)]
   calc
     _ ≤ (N : ℝ)⁻¹ * (2 * C * ∑ n ∈ Icc 1 ⌊δ * N⌋₊, ((n : ℝ) / N) ^ (-a)) :=
@@ -152,7 +148,8 @@ theorem abs_integral_sub_powerTailClip_le {g : ℝ → ℝ} {a C δ : ℝ}
     have h := hB 1 ⟨one_pos, le_rfl⟩
     simpa only [Real.one_rpow, mul_one] using (abs_nonneg (g 1)).trans h
   have hi := intervalIntegrable_of_powerTailBound ha1 hg hB
-  have hci := (continuousOn_powerTailClip hg hδ hδ1).intervalIntegrable_of_Icc zero_le_one
+  have hci : IntervalIntegrable (powerTailClip g δ) volume 0 1 :=
+    (continuousOn_powerTailClip hg hδ hδ1).intervalIntegrable_of_Icc zero_le_one
   rw [← intervalIntegral.integral_sub hi hci]
   have hdiff := hi.sub hci
   have hleft : IntervalIntegrable (fun t => g t - powerTailClip g δ t) volume 0 δ :=
@@ -192,10 +189,10 @@ theorem abs_integral_sub_powerTailClip_le {g : ℝ → ℝ} {a C δ : ℝ}
 
 /-- Riemann sums converge for every profile dominated by an integrable power
 at zero and continuous at every positive point of the unit interval. -/
-theorem tendsto_powerTailMesh_of_powerBound {g : ℝ → ℝ} {a C : ℝ}
+theorem tendsto_tailRiemannSum_of_powerBound {g : ℝ → ℝ} {a C : ℝ}
     (ha : 0 < a) (ha1 : a < 1) (hg : ContinuousOn g (Set.Ioc 0 1))
     (hB : ∀ t ∈ Set.Ioc (0 : ℝ) 1, |g t| ≤ C * t ^ (-a)) :
-    Tendsto (powerTailMesh g) atTop (𝓝 (∫ t in (0 : ℝ)..1, g t)) := by
+    Tendsto (tailRiemannSum g) atTop (𝓝 (∫ t in (0 : ℝ)..1, g t)) := by
   have hb : 0 < 1 - a := by linarith only [ha1]
   have hC : 0 ≤ C := by
     have h := hB 1 ⟨one_pos, le_rfl⟩
@@ -217,23 +214,23 @@ theorem tendsto_powerTailMesh_of_powerBound {g : ℝ → ℝ} {a C : ℝ}
     simpa only [Real.dist_eq, sub_zero, abs_of_nonneg (show 0 ≤ 2 * C * (δ ^ (1 - a) / (1 - a)) by positivity)] using h
   have hclip := GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.tendsto_riemannSum_of_continuousOn
     (continuousOn_powerTailClip hg hδ hδ1)
-  have hclip' : Tendsto (powerTailMesh (powerTailClip g δ)) atTop
+  have hclip' : Tendsto (tailRiemannSum (powerTailClip g δ)) atTop
       (𝓝 (∫ t in (0 : ℝ)..1, powerTailClip g δ t)) := by
     refine hclip.congr fun N => ?_
     have he := RHTower.sum_range_succ_eq_sourcePartialSum
       (fun n => powerTailClip g δ ((n : ℝ) / N)) N
-    simpa only [RHTower.sourcePartialSum, powerTailMesh, Nat.cast_add, Nat.cast_one] using
+    simpa only [RHTower.sourcePartialSum, tailRiemannSum, div_eq_inv_mul, Nat.cast_add, Nat.cast_one] using
       congrArg (fun z : ℝ => (N : ℝ)⁻¹ * z) he
   obtain ⟨M, hM⟩ := (Metric.tendsto_atTop.mp hclip') (ε / 3) (by positivity)
   refine ⟨max M 1, fun N hN => ?_⟩
   have hN1 := (le_max_right M 1).trans hN
-  have hmesh := abs_powerTailMesh_sub_clip_le ha ha1 hδ hδ1 hB hN1
+  have hmesh := abs_tailRiemannSum_sub_clip_le ha ha1 hδ hδ1 hB hN1
   have hint := abs_integral_sub_powerTailClip_le ha ha1 hδ hδ1 hg hB
   have hmid := hM N ((le_max_left M 1).trans hN)
   rw [Real.dist_eq] at hmid ⊢
-  have htriangle := abs_sub_le (powerTailMesh g N) (powerTailMesh (powerTailClip g δ) N)
+  have htriangle := abs_sub_le (tailRiemannSum g N) (tailRiemannSum (powerTailClip g δ) N)
     (∫ t in (0 : ℝ)..1, g t)
-  have htriangle' := abs_sub_le (powerTailMesh (powerTailClip g δ) N)
+  have htriangle' := abs_sub_le (tailRiemannSum (powerTailClip g δ) N)
     (∫ t in (0 : ℝ)..1, powerTailClip g δ t) (∫ t in (0 : ℝ)..1, g t)
   rw [abs_sub_comm (∫ t in (0 : ℝ)..1, powerTailClip g δ t)] at htriangle'
   linarith only [htriangle, htriangle', hmesh, hint, hmid, hsmall]

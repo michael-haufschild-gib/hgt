@@ -35,7 +35,7 @@ private theorem detector_energy_intervalIntegrable (N : ℕ) (b : ℕ → ℂ)
   have hf := (analyticAt_levinsonMollifiedDetector (lam : ℂ) b hs hz).continuousAt
   have hmap : ContinuousAt (fun t : ℝ => (σ : ℂ) + (t : ℂ) * I) t := by fun_prop
   simpa only [Function.comp_def, Pi.pow_apply] using
-      ((continuous_pow 2).continuousAt.comp (hf.comp hmap).norm).continuousWithinAt
+      ((continuous_pow 2).continuousAt.comp (hf.comp (f := fun u : ℝ => (σ : ℂ) + (u : ℂ) * I) hmap).norm).continuousWithinAt
         (s := uIcc a v)
 
 private theorem norm_sq_young (z w : ℂ) {ε : ℝ} (hε : 0 < ε) :

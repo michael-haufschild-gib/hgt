@@ -683,6 +683,177 @@ private theorem dyadic_scale_sub_half {c X : ℝ} (hc0 : 0 < c) (hc_le : c ≤ 1
       exact Real.log_le_log hρ0 hρX
     linarith
 
+private lemma block_rpow_sum_le_sub_half {c X M₁ K_hi u Δ : ℝ}
+    (hc0 : 0 < c) (hc_le : c ≤ 1 / 32) (hX1 : 1 ≤ X)
+    (hM₁ : M₁ = X ^ (15 / 16 : ℝ)) (hK_hi : K_hi = X ^ (1 - c / 4))
+    (hΔ : Δ = X ^ (-3 * c / 5)) (hu_lo : M₁ ≤ u) (hu_hi : u ≤ 2 * K_hi) :
+    u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) * Δ ^ (-(1 / 2 + 2 * (c / 2))) +
+      Δ ^ (1 - c / 2) * u ^ (1 / 2 + c / 8) ≤ 3 * X ^ (1 / 2 - c / 4) := by
+  have hX0 : 0 < X := lt_of_lt_of_le zero_lt_one hX1
+  have hc_sq : c * c ≤ (1 / 32) * c := mul_le_mul_of_nonneg_right hc_le hc0.le
+  have hM₁0 : 0 < M₁ := hM₁ ▸ Real.rpow_pos_of_pos hX0 _
+  have hK0 : 0 < K_hi := hK_hi ▸ Real.rpow_pos_of_pos hX0 _
+  have hu0 : 0 < u := lt_of_lt_of_le hM₁0 hu_lo
+  have hα0 : 0 < 1 / 2 + c / 8 := by linarith
+  have hα : 1 / 2 + c / 8 < 1 := by linarith
+  have hT1_le : u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) * Δ ^ (-(1 / 2 + 2 * (c / 2))) ≤
+      X ^ (1 / 2 - c / 4) := by
+    have hrew : u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) =
+        u ^ (-3 * c / 2) * X ^ (1 / 2 + c / 2) := by
+      rw [Real.div_rpow hX0.le hu0.le,
+        div_eq_mul_inv (X ^ (1 / 2 + c / 2)) (u ^ (1 / 2 + c / 2)),
+        ← Real.rpow_neg hu0.le, mul_comm (X ^ (1 / 2 + c / 2)), ← mul_assoc,
+        ← Real.rpow_add hu0]
+      congr 2; ring
+    have hu_pow : u ^ (-3 * c / 2) ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) := by
+      calc u ^ (-3 * c / 2) ≤ M₁ ^ (-3 * c / 2) :=
+            Real.rpow_le_rpow_of_nonpos hM₁0 hu_lo (by linarith)
+        _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) := by
+            rw [hM₁, ← Real.rpow_mul hX0.le]
+    have hΔ_pow : Δ ^ (-(1 / 2 + 2 * (c / 2))) =
+        X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by
+      rw [hΔ, ← Real.rpow_mul hX0.le]
+    rw [hrew, hΔ_pow]
+    calc u ^ (-3 * c / 2) * X ^ (1 / 2 + c / 2) *
+          X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2)))
+        ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) * X ^ (1 / 2 + c / 2) *
+            X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hu_pow (by positivity)) (by positivity)
+      _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + c / 2) +
+            (-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by
+          rw [← Real.rpow_add hX0, ← Real.rpow_add hX0]
+      _ ≤ X ^ (1 / 2 - c / 4) := by
+          refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
+          have hexp : (15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + c / 2) +
+              (-3 * c / 5) * -(1 / 2 + 2 * (c / 2)) =
+              1 / 2 - 97 * c / 160 + (3 / 5) * (c * c) := by ring
+          rw [hexp]; linarith [hc_sq]
+  have hT2_le : Δ ^ (1 - c / 2) * u ^ (1 / 2 + c / 8) ≤ 2 * X ^ (1 / 2 - c / 4) := by
+    have h2α : (2 : ℝ) ^ (1 / 2 + c / 8) ≤ 2 := by
+      calc (2 : ℝ) ^ (1 / 2 + c / 8) ≤ (2 : ℝ) ^ (1 : ℝ) :=
+            Real.rpow_le_rpow_of_exponent_le (by norm_num) hα.le
+        _ = 2 := Real.rpow_one 2
+    have hu_α : u ^ (1 / 2 + c / 8) ≤ 2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8)) := by
+      calc u ^ (1 / 2 + c / 8) ≤ (2 * K_hi) ^ (1 / 2 + c / 8) :=
+            Real.rpow_le_rpow hu0.le hu_hi hα0.le
+        _ = (2 : ℝ) ^ (1 / 2 + c / 8) * K_hi ^ (1 / 2 + c / 8) :=
+            Real.mul_rpow (by norm_num) hK0.le
+        _ ≤ 2 * K_hi ^ (1 / 2 + c / 8) := mul_le_mul_of_nonneg_right h2α (by positivity)
+        _ = 2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8)) := by
+            rw [hK_hi, ← Real.rpow_mul hX0.le]
+    have hΔ_pow : Δ ^ (1 - c / 2) = X ^ ((-3 * c / 5) * (1 - c / 2)) := by
+      rw [hΔ, ← Real.rpow_mul hX0.le]
+    rw [hΔ_pow]
+    calc X ^ ((-3 * c / 5) * (1 - c / 2)) * u ^ (1 / 2 + c / 8)
+        ≤ X ^ ((-3 * c / 5) * (1 - c / 2)) *
+            (2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8))) :=
+          mul_le_mul_of_nonneg_left hu_α (by positivity)
+      _ = 2 * (X ^ ((-3 * c / 5) * (1 - c / 2)) *
+            X ^ ((1 - c / 4) * (1 / 2 + c / 8))) := by ring
+      _ = 2 * X ^ ((-3 * c / 5) * (1 - c / 2) + (1 - c / 4) * (1 / 2 + c / 8)) := by
+          rw [← Real.rpow_add hX0]
+      _ ≤ 2 * X ^ (1 / 2 - c / 4) := by
+          refine mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX1 ?_) (by norm_num)
+          have hexp : (-3 * c / 5) * (1 - c / 2) + (1 - c / 4) * (1 / 2 + c / 8) =
+              1 / 2 - 3 * c / 5 + (43 / 160) * (c * c) := by ring
+          rw [hexp]; linarith [hc_sq]
+  linarith
+
+private lemma norm_dyadic_blocks_le_sub_half {c KB X M₁ K_hi M₂ : ℝ} {J : ℕ}
+    (hc0 : 0 < c) (hc_le : c ≤ 1 / 32)
+    (D : DeletionData (1 / 2 + c / 8))
+    (hKB0 : 0 ≤ KB)
+    (hKB : ∀ M x Δ : ℝ, 1 ≤ M → M ≤ x → 0 < Δ → Δ ≤ 1 →
+      ‖∑ m ∈ Finset.Icc 1 ⌊4 * M⌋₊,
+          D.mobS m * BeurlingDeletion.bumpC (m / M) * (saw (x / m) : ℂ)‖ ≤
+        KB * (M ^ (1 / 2 - c) * (x / M) ^ (1 / 2 + c / 2) * Δ ^ (-(1 / 2 + 2 * (c / 2))) +
+          Δ ^ (1 - c / 2) * M ^ (1 / 2 + c / 8)))
+    (hX1 : 1 ≤ X) (h8_K : 8 * K_hi ≤ X)
+    (hM₁ : M₁ = X ^ (15 / 16 : ℝ)) (hK_hi : K_hi = X ^ (1 - c / 4))
+    (hM₂ : M₂ = 2 ^ J * M₁) (hhi : M₂ ≤ 2 * K_hi)
+    (hJ_log : (J : ℝ) ≤ Real.log X / Real.log 2 + 1) :
+    ‖∑ j ∈ Finset.range J, ∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+        D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ ≤
+      3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) := by
+  have hX0 : 0 < X := lt_of_lt_of_le zero_lt_one hX1
+  have hM₁1 : 1 ≤ M₁ := hM₁ ▸ Real.one_le_rpow hX1 (by norm_num)
+  have hM₁0 : 0 < M₁ := lt_of_lt_of_le zero_lt_one hM₁1
+  obtain ⟨Δ, hΔ⟩ : ∃ Δ : ℝ, Δ = X ^ (-3 * c / 5) := ⟨_, rfl⟩
+  have hΔ0 : 0 < Δ := hΔ ▸ Real.rpow_pos_of_pos hX0 _
+  have hΔ1 : Δ ≤ 1 := hΔ ▸ Real.rpow_le_one_of_one_le_of_nonpos hX1 (by linarith)
+  have hblock : ∀ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+      D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ ≤
+      KB * (3 * X ^ (1 / 2 - c / 4)) := by
+    intro j hj
+    have hjJ : j + 1 ≤ J := Finset.mem_range.mp hj
+    obtain ⟨u, hu⟩ : ∃ u : ℝ, u = 2 ^ j * M₁ := ⟨_, rfl⟩
+    have hu_lo : M₁ ≤ u := hu ▸ le_mul_of_one_le_left hM₁0.le (one_le_pow₀ (by norm_num))
+    have hu_hi : u ≤ 2 * K_hi := by
+      have hu_M₂ : u ≤ M₂ := by
+        rw [hu, hM₂]
+        exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ (by norm_num) (by omega)) hM₁0.le
+      exact le_trans hu_M₂ hhi
+    have hu1 : 1 ≤ u := le_trans hM₁1 hu_lo
+    have huX : u ≤ X := by linarith
+    have hsum_le := block_rpow_sum_le_sub_half hc0 hc_le hX1 hM₁ hK_hi hΔ hu_lo hu_hi
+    rw [← hu]
+    exact (hKB u X Δ hu1 huX hΔ0 hΔ1).trans (mul_le_mul_of_nonneg_left hsum_le hKB0)
+  have hJb := nat_le_rpow_of_le_log hX1 (ε := c / 16) (by positivity) hJ_log
+  have hx_add : X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16)) = X ^ (1 / 2 - c / 8) := by
+    rw [← Real.rpow_add hX0]; congr 1; ring
+  calc ‖∑ j ∈ Finset.range J, ∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+          D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖
+      ≤ ∑ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+          D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ :=
+            norm_sum_le _ _
+    _ ≤ ∑ _j ∈ Finset.range J, KB * (3 * X ^ (1 / 2 - c / 4)) := Finset.sum_le_sum hblock
+    _ = (J : ℝ) * (KB * (3 * X ^ (1 / 2 - c / 4))) := by
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    _ ≤ ((1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (2 * (c / 16))) *
+          (KB * (3 * X ^ (1 / 2 - c / 4))) :=
+        mul_le_mul_of_nonneg_right hJb (by positivity)
+    _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) *
+          (X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16))) := by ring
+    _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) := by rw [hx_add]
+
+private lemma rpow_pieces_sub_half {c X K_hi M₂ : ℝ}
+    (hc0 : 0 < c) (hc_le : c ≤ 1 / 32) (hX1 : 1 ≤ X)
+    (hK_hi : K_hi = X ^ (1 - c / 4)) (hlo : K_hi ≤ M₂) :
+    X * M₂ ^ ((1 / 2 - c) - 1) ≤ X ^ (1 / 2 - c / 8) ∧
+    X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4)) ≤ X ^ (1 / 2 - c / 8) := by
+  have hX0 : 0 < X := lt_of_lt_of_le zero_lt_one hX1
+  have hc_sq : c * c ≤ (1 / 32) * c := mul_le_mul_of_nonneg_right hc_le hc0.le
+  have hK0 : 0 < K_hi := hK_hi ▸ Real.rpow_pos_of_pos hX0 _
+  constructor
+  · calc X * M₂ ^ ((1 / 2 - c) - 1)
+        ≤ X * K_hi ^ ((1 / 2 - c) - 1) :=
+          mul_le_mul_of_nonneg_left
+            (Real.rpow_le_rpow_of_nonpos hK0 hlo (by linarith)) hX0.le
+      _ = X ^ (1 + (1 - c / 4) * ((1 / 2 - c) - 1)) := by
+          rw [hK_hi, ← Real.rpow_mul hX0.le, Real.rpow_add hX0, Real.rpow_one]
+      _ ≤ X ^ (1 / 2 - c / 8) := by
+          refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
+          have hexp : 1 + (1 - c / 4) * ((1 / 2 - c) - 1) =
+              1 / 2 - 7 * c / 8 + (1 / 4) * (c * c) := by ring
+          rw [hexp]; linarith [hc_sq]
+  · have hdiv_eq : X / K_hi = X ^ (c / 4) := by
+      rw [hK_hi, ← Real.rpow_one_sub' hX0.le (by linarith)]
+      congr 1; ring
+    calc X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4))
+        ≤ X ^ (1 / 2 - 3 * c / 4) * (X / K_hi) ^ (1 - (1 / 2 - 3 * c / 4)) :=
+          mul_le_mul_of_nonneg_left
+            (Real.rpow_le_rpow (by positivity)
+              (div_le_div_of_nonneg_left hX0.le hK0 hlo) (by linarith))
+            (by positivity)
+      _ = X ^ ((1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4))) := by
+          rw [hdiv_eq, ← Real.rpow_mul hX0.le, ← Real.rpow_add hX0]
+      _ ≤ X ^ (1 / 2 - c / 8) := by
+          refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
+          have hexp : (1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4)) =
+              1 / 2 - 5 * c / 8 + (3 / 16) * (c * c) := by ring
+          rw [hexp]; linarith [hc_sq]
+
 private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
     (hc0 : 0 < c) (hc_le : c ≤ 1 / 32)
     (D : DeletionData (1 / 2 + c / 8))
@@ -702,16 +873,13 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
   have hE_sm0 : 0 ≤ E_sm := hE_sm ▸ (Real.exp_pos _).le
   have h8_ge1 : (1 : ℝ) ≤ (8 : ℝ) ^ (4 / c) := Real.one_le_rpow (by norm_num) (by positivity)
   have hX1 : 1 ≤ X := le_trans h8_ge1 hX
-  have hX0 : 0 < X := by linarith
-  have hc_sq : c * c ≤ (1 / 32) * c := mul_le_mul_of_nonneg_right hc_le hc0.le
+  have hX0 : 0 < X := lt_of_lt_of_le zero_lt_one hX1
   have hα0 : 0 < 1 / 2 + c / 8 := by linarith
   have hα : 1 / 2 + c / 8 < 1 := by linarith
   obtain ⟨M₁, hM₁⟩ : ∃ M₁ : ℝ, M₁ = X ^ (15 / 16 : ℝ) := ⟨_, rfl⟩
   obtain ⟨K_hi, hK_hi⟩ : ∃ K_hi : ℝ, K_hi = X ^ (1 - c / 4) := ⟨_, rfl⟩
-  have hM₁1 : 1 ≤ M₁ := hM₁ ▸ Real.one_le_rpow hX1 (by norm_num)
-  have hM₁0 : 0 < M₁ := by linarith
+  have hM₁0 : 0 < M₁ := hM₁ ▸ Real.rpow_pos_of_pos hX0 _
   have hK1 : 1 ≤ K_hi := hK_hi ▸ Real.one_le_rpow hX1 (by linarith)
-  have hK0 : 0 < K_hi := by linarith
   obtain ⟨hlo_raw, hhi_raw, hJ_log_raw⟩ := dyadic_scale_sub_half hc0 hc_le hX1
   obtain ⟨J, hJ⟩ : ∃ J : ℕ, J = ⌈Real.logb 2 (K_hi / M₁)⌉₊ := ⟨_, rfl⟩
   obtain ⟨M₂, hM₂⟩ : ∃ M₂ : ℝ, M₂ = 2 ^ J * M₁ := ⟨_, rfl⟩
@@ -721,7 +889,7 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
   have hhi : M₂ ≤ 2 * K_hi := by rw [hK_hi, hM₂, hJ_raw, hM₁]; exact hhi_raw
   have hJ_log : (J : ℝ) ≤ Real.log X / Real.log 2 + 1 := by rw [hJ_raw]; exact hJ_log_raw
   have hM₂1 : 1 ≤ M₂ := le_trans hK1 hlo
-  have hM₂0 : 0 < M₂ := by linarith
+  have hM₂0 : 0 < M₂ := lt_of_lt_of_le zero_lt_one hM₂1
   have h8_K : 8 * K_hi ≤ X := by
     have hpow8 : (8 : ℝ) ≤ X ^ (c / 4) := by
       calc (8 : ℝ) = ((8 : ℝ) ^ (4 / c)) ^ (c / 4) := by
@@ -729,13 +897,13 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
               show 4 / c * (c / 4) = 1 by field_simp, Real.rpow_one]
         _ ≤ X ^ (c / 4) := Real.rpow_le_rpow (by positivity) hX (by positivity)
     calc 8 * K_hi = 8 * X ^ (1 - c / 4) := by rw [hK_hi]
-      _ ≤ X ^ (c / 4) * X ^ (1 - c / 4) :=
-          mul_le_mul_of_nonneg_right hpow8 (by positivity)
+      _ ≤ X ^ (c / 4) * X ^ (1 - c / 4) := mul_le_mul_of_nonneg_right hpow8 (by positivity)
       _ = X := by rw [← Real.rpow_add hX0, show c / 4 + (1 - c / 4) = 1 by ring, Real.rpow_one]
   have hN : 2 * (2 ^ J * M₁) ≤ (⌊X⌋₊ : ℝ) := by
     rw [← hM₂]
     have hfl := Nat.lt_floor_add_one X
     linarith
+  obtain ⟨hM₂_pow, hprod_le⟩ := rpow_pieces_sub_half hc0 hc_le hX1 hK_hi hlo
   rw [D.count_decomposition hα0 hα hX0.le hM₁0 J hN, ← hM₂]
   obtain ⟨S₂, hS₂⟩ : ∃ S₂ : ℂ, S₂ = ∑ m ∈ Finset.Ioc 0 ⌊X⌋₊, D.mobS m * (cut (m / M₂) : ℂ) :=
     ⟨_, rfl⟩
@@ -752,38 +920,21 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
   have e : (X : ℂ) * D.mainSum M₂ - 1 / 2 * S₂ - Sm - Bl + Hy - D.mobSum * X =
       (X : ℂ) * (D.mainSum M₂ - D.mobSum) - 1 / 2 * S₂ - Sm - Bl + Hy := by ring
   rw [e]
-  -- (a) Main term remainder.
   have ha : ‖(X : ℂ) * (D.mainSum M₂ - D.mobSum)‖ ≤ CA * X ^ (1 / 2 - c / 8) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hX0]
-    have hM₂_pow : X * M₂ ^ ((1 / 2 - c) - 1) ≤ X ^ (1 / 2 - c / 8) := by
-      calc X * M₂ ^ ((1 / 2 - c) - 1)
-          ≤ X * K_hi ^ ((1 / 2 - c) - 1) :=
-            mul_le_mul_of_nonneg_left
-              (Real.rpow_le_rpow_of_nonpos hK0 hlo (by linarith)) hX0.le
-        _ = X ^ (1 + (1 - c / 4) * ((1 / 2 - c) - 1)) := by
-            rw [hK_hi, ← Real.rpow_mul hX0.le, Real.rpow_add hX0, Real.rpow_one]
-        _ ≤ X ^ (1 / 2 - c / 8) := by
-            refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
-            have hexp : 1 + (1 - c / 4) * ((1 / 2 - c) - 1) =
-                1 / 2 - 7 * c / 8 + (1 / 4) * (c * c) := by ring
-            rw [hexp]; linarith [hc_sq]
     calc X * ‖D.mainSum M₂ - D.mobSum‖
         ≤ X * (CA * M₂ ^ ((1 / 2 - c) - 1)) := mul_le_mul_of_nonneg_left (hCA M₂ hM₂1) hX0.le
       _ = CA * (X * M₂ ^ ((1 / 2 - c) - 1)) := by ring
       _ ≤ CA * X ^ (1 / 2 - c / 8) := mul_le_mul_of_nonneg_left hM₂_pow hCA0
-  -- (b) Smoothly cut Möbius sum.
   have hb : ‖1 / 2 * S₂‖ ≤ 2 * CM * X ^ (1 / 2 - c / 8) := by
     rw [norm_mul, show ‖(1 / 2 : ℂ)‖ = 1 / 2 by norm_num]
     have h := D.norm_sum_mobS_cut_le (θ := 1 / 2 - 3 * c / 4) (M₂ := M₂) hCM0 (by linarith)
       hCM hX1 hM₂0
     rw [← hS₂] at h
-    have hθ_le : X ^ (1 / 2 - 3 * c / 4) ≤ X ^ (1 / 2 - c / 8) :=
-      Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)
+    have hθ_le : 3 * CM * X ^ (1 / 2 - 3 * c / 4) ≤ 3 * CM * X ^ (1 / 2 - c / 8) :=
+      mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)) (by positivity)
     have hCM_X : 0 ≤ CM * X ^ (1 / 2 - c / 8) := by positivity
-    calc 1 / 2 * ‖S₂‖ ≤ 1 / 2 * (3 * CM * X ^ (1 / 2 - 3 * c / 4)) := by gcongr
-      _ ≤ 1 / 2 * (3 * CM * X ^ (1 / 2 - c / 8)) := by gcongr
-      _ ≤ 2 * CM * X ^ (1 / 2 - c / 8) := by linarith
-  -- (c) Small range via Rankin.
+    linarith
   have hc_piece : ‖Sm‖ ≤ E_sm * X ^ (1 / 2 - c / 8) := by
     have h := D.norm_small_le hα0 hα (σ := 1 / 2 + c / 4) (by linarith)
       (X := X) (M₁ := M₁) (by linarith)
@@ -799,127 +950,16 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
         exact Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)
       exact mul_le_mul h2_le hM_le (by positivity) (by norm_num)
     calc ‖Sm‖ ≤ 1 / 2 * ((2 * M₁) ^ (1 / 2 + c / 4) * E_sm) := h
-      _ ≤ 1 / 2 * ((2 * X ^ (1 / 2 - c / 8)) * E_sm) := by gcongr
+      _ ≤ 1 / 2 * ((2 * X ^ (1 / 2 - c / 8)) * E_sm) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h2M₁ hE_sm0) (by norm_num)
       _ = E_sm * X ^ (1 / 2 - c / 8) := by ring
-  -- (d) Dyadic sawtooth blocks.
   have hd : ‖Bl‖ ≤ 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) := by
-    obtain ⟨Δ, hΔ⟩ : ∃ Δ : ℝ, Δ = X ^ (-3 * c / 5) := ⟨_, rfl⟩
-    have hΔ0 : 0 < Δ := hΔ ▸ Real.rpow_pos_of_pos hX0 _
-    have hΔ1 : Δ ≤ 1 := hΔ ▸ Real.rpow_le_one_of_one_le_of_nonpos hX1 (by linarith)
-    have hblock : ∀ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
-        D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ ≤
-        KB * (3 * X ^ (1 / 2 - c / 4)) := by
-      intro j hj
-      have hjJ : j + 1 ≤ J := Finset.mem_range.mp hj
-      obtain ⟨u, hu⟩ : ∃ u : ℝ, u = 2 ^ j * M₁ := ⟨_, rfl⟩
-      have hu_lo : M₁ ≤ u := hu ▸ le_mul_of_one_le_left hM₁0.le (one_le_pow₀ (by norm_num))
-      have hu_hi : u ≤ 2 * K_hi := by
-        have hu_M₂ : u ≤ M₂ := by
-          rw [hu, hM₂]
-          exact mul_le_mul_of_nonneg_right
-            (pow_le_pow_right₀ (by norm_num) (by omega)) hM₁0.le
-        exact le_trans hu_M₂ hhi
-      have hu1 : 1 ≤ u := le_trans hM₁1 hu_lo
-      have hu0 : 0 < u := by linarith
-      have huX : u ≤ X := by linarith
-      have hT1_le : u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) * Δ ^ (-(1 / 2 + 2 * (c / 2))) ≤
-          X ^ (1 / 2 - c / 4) := by
-        have hrew : u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) =
-            u ^ (-3 * c / 2) * X ^ (1 / 2 + c / 2) := by
-          rw [Real.div_rpow hX0.le hu0.le, div_eq_mul_inv, ← Real.rpow_neg hu0.le,
-            mul_comm (X ^ (1 / 2 + c / 2)), ← mul_assoc, ← Real.rpow_add hu0]
-          congr 2; ring
-        have hu_pow : u ^ (-3 * c / 2) ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) := by
-          calc u ^ (-3 * c / 2) ≤ M₁ ^ (-3 * c / 2) :=
-                Real.rpow_le_rpow_of_nonpos hM₁0 hu_lo (by linarith)
-            _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) := by
-                rw [hM₁, ← Real.rpow_mul hX0.le]
-        have hΔ_pow : Δ ^ (-(1 / 2 + 2 * (c / 2))) =
-            X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by
-          rw [hΔ, ← Real.rpow_mul hX0.le]
-        rw [hrew, hΔ_pow]
-        calc u ^ (-3 * c / 2) * X ^ (1 / 2 + c / 2) *
-              X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2)))
-            ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) * X ^ (1 / 2 + c / 2) *
-                X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by gcongr
-          _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + c / 2) +
-                (-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by
-              rw [← Real.rpow_add hX0, ← Real.rpow_add hX0]
-          _ ≤ X ^ (1 / 2 - c / 4) := by
-              refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
-              have hexp : (15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + c / 2) +
-                  (-3 * c / 5) * -(1 / 2 + 2 * (c / 2)) =
-                  1 / 2 - 97 * c / 160 + (3 / 5) * (c * c) := by ring
-              rw [hexp]; linarith [hc_sq]
-      have hT2_le : Δ ^ (1 - c / 2) * u ^ (1 / 2 + c / 8) ≤ 2 * X ^ (1 / 2 - c / 4) := by
-        have h2α : (2 : ℝ) ^ (1 / 2 + c / 8) ≤ 2 := by
-          calc (2 : ℝ) ^ (1 / 2 + c / 8) ≤ (2 : ℝ) ^ (1 : ℝ) :=
-                Real.rpow_le_rpow_of_exponent_le (by norm_num) hα.le
-            _ = 2 := Real.rpow_one 2
-        have hu_α : u ^ (1 / 2 + c / 8) ≤ 2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8)) := by
-          calc u ^ (1 / 2 + c / 8) ≤ (2 * K_hi) ^ (1 / 2 + c / 8) :=
-                Real.rpow_le_rpow hu0.le hu_hi hα0.le
-            _ = (2 : ℝ) ^ (1 / 2 + c / 8) * K_hi ^ (1 / 2 + c / 8) :=
-                Real.mul_rpow (by norm_num) hK0.le
-            _ ≤ 2 * K_hi ^ (1 / 2 + c / 8) := mul_le_mul_of_nonneg_right h2α (by positivity)
-            _ = 2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8)) := by
-                rw [hK_hi, ← Real.rpow_mul hX0.le]
-        have hΔ_pow : Δ ^ (1 - c / 2) = X ^ ((-3 * c / 5) * (1 - c / 2)) := by
-          rw [hΔ, ← Real.rpow_mul hX0.le]
-        rw [hΔ_pow]
-        calc X ^ ((-3 * c / 5) * (1 - c / 2)) * u ^ (1 / 2 + c / 8)
-            ≤ X ^ ((-3 * c / 5) * (1 - c / 2)) *
-                (2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8))) :=
-              mul_le_mul_of_nonneg_left hu_α (by positivity)
-          _ = 2 * (X ^ ((-3 * c / 5) * (1 - c / 2)) *
-                X ^ ((1 - c / 4) * (1 / 2 + c / 8))) := by ring
-          _ = 2 * X ^ ((-3 * c / 5) * (1 - c / 2) + (1 - c / 4) * (1 / 2 + c / 8)) := by
-              rw [← Real.rpow_add hX0]
-          _ ≤ 2 * X ^ (1 / 2 - c / 4) := by
-              refine mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX1 ?_) (by norm_num)
-              have hexp : (-3 * c / 5) * (1 - c / 2) + (1 - c / 4) * (1 / 2 + c / 8) =
-                  1 / 2 - 3 * c / 5 + (43 / 160) * (c * c) := by ring
-              rw [hexp]; linarith [hc_sq]
-      rw [← hu]
-      exact (hKB u X Δ hu1 huX hΔ0 hΔ1).trans
-        (mul_le_mul_of_nonneg_left (by linarith) hKB0)
-    have hJb := nat_le_rpow_of_le_log hX1 (ε := c / 16) (by positivity) hJ_log
-    have hx_add : X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16)) = X ^ (1 / 2 - c / 8) := by
-      rw [← Real.rpow_add hX0]; congr 1; ring
     rw [hBl]
-    calc ‖∑ j ∈ Finset.range J, ∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
-            D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖
-        ≤ ∑ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
-            D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ :=
-              norm_sum_le _ _
-      _ ≤ ∑ _j ∈ Finset.range J, KB * (3 * X ^ (1 / 2 - c / 4)) := Finset.sum_le_sum hblock
-      _ = (J : ℝ) * (KB * (3 * X ^ (1 / 2 - c / 4))) := by
-          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-      _ ≤ ((1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (2 * (c / 16))) *
-            (KB * (3 * X ^ (1 / 2 - c / 4))) :=
-          mul_le_mul_of_nonneg_right hJb (by positivity)
-      _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) *
-            (X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16))) := by ring
-      _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) := by rw [hx_add]
-  -- (e) Hyperbola remainder.
+    exact norm_dyadic_blocks_le_sub_half hc0 hc_le D hKB0 hKB hX1 h8_K hM₁ hK_hi hM₂ hhi hJ_log
   have he : ‖Hy‖ ≤ 2 * CM / (1 - (1 / 2 - 3 * c / 4)) * X ^ (1 / 2 - c / 8) := by
     have h := D.norm_hyperbola_le (θ := 1 / 2 - 3 * c / 4) (M₂ := M₂) hCM0 (by linarith)
       (by linarith) hCM hX1 hM₂1
     rw [← hHy] at h
-    have hprod_le : X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4)) ≤
-        X ^ (1 / 2 - c / 8) := by
-      have hdiv_eq : X / K_hi = X ^ (c / 4) := by
-        rw [hK_hi, ← Real.rpow_one_sub' hX0.le (by linarith)]
-        congr 1; ring
-      calc X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4))
-          ≤ X ^ (1 / 2 - 3 * c / 4) * (X / K_hi) ^ (1 - (1 / 2 - 3 * c / 4)) := by gcongr
-        _ = X ^ ((1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4))) := by
-            rw [hdiv_eq, ← Real.rpow_mul hX0.le, ← Real.rpow_add hX0]
-        _ ≤ X ^ (1 / 2 - c / 8) := by
-            refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
-            have hexp : (1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4)) =
-                1 / 2 - 5 * c / 8 + (3 / 16) * (c * c) := by ring
-            rw [hexp]; linarith [hc_sq]
     calc ‖Hy‖ ≤ 2 * CM / (1 - (1 / 2 - 3 * c / 4)) *
             X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4)) := h
       _ = 2 * CM / (1 - (1 / 2 - 3 * c / 4)) *
@@ -935,7 +975,8 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
     _ ≤ CA * X ^ (1 / 2 - c / 8) + 2 * CM * X ^ (1 / 2 - c / 8) +
         E_sm * X ^ (1 / 2 - c / 8) +
         3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) +
-        2 * CM / (1 - (1 / 2 - 3 * c / 4)) * X ^ (1 / 2 - c / 8) := by gcongr
+        2 * CM / (1 - (1 / 2 - 3 * c / 4)) * X ^ (1 / 2 - c / 8) :=
+          add_le_add (add_le_add (add_le_add (add_le_add ha hb) hc_piece) hd) he
     _ = _ := by ring
 
 /-- **Sub-`1/2` integer-norm Beurling fake from any zero-free half-plane `Re z > Θ` (`Θ < 1`).**

@@ -424,7 +424,6 @@ theorem finite_carrier_im_le (R : ℝ) :
   have h := zetaZeroConfig.finite_window (-R - 1) R
   refine (h.preimage Subtype.val_injective.injOn).subset fun ρ hρ => ?_
   simp only [Set.mem_setOf_eq] at hρ
-  simp only [Set.mem_preimage, ZeroConfig.window, Set.mem_setOf_eq]
   obtain ⟨h1, h2⟩ := abs_le.1 hρ
   exact ⟨ρ.2, by linarith only [h1], h2⟩
 

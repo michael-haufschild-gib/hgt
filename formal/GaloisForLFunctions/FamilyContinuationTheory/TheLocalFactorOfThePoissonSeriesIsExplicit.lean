@@ -363,13 +363,13 @@ theorem sexticChar_ne_zero (x : O ⧸ Ideal.span {π}) (hx : IsUnit x) :
 /-! ### The local term -/
 
 /-- `|π|` as a complex number. -/
-def primeNorm : ℂ := (‖ringComplex π‖ : ℂ)
+def primeAbs : ℂ := (‖ringComplex π‖ : ℂ)
 
 /-- `Q = N(π)` as a complex number. -/
 def primeQ : ℂ := (Ideal.absNorm (Ideal.span {π}) : ℂ)
 
 /-- `κ = ᾱ η_π`, `α = π/|π|`. -/
-def primeKappa (ηp : ℂ) : ℂ := conj (ringComplex π / primeNorm π) * ηp
+def primeKappa (ηp : ℂ) : ℂ := conj (ringComplex π / primeAbs π) * ηp
 
 /-- `R = κ⁶ Q⁴ X⁶ V`. -/
 def primeR (ηp X V : ℂ) : ℂ := primeKappa π ηp ^ 6 * primeQ π ^ 4 * X ^ 6 * V
@@ -379,7 +379,7 @@ def primeR (ηp X V : ℂ) : ℂ := primeKappa π ηp ^ 6 * primeQ π ^ 4 * X ^ 
 def localTerm (ηp X Y V : ℂ) (u : O) (j : ℕ) (v : Fin 2 × ℕ × ℕ × ℕ) : ℂ :=
   primeKappa π ηp ^ ((v.1 : ℕ) + 3 * v.2.1) *
     correctedCoeff (π ^ v.2.2.1) (π ^ (v.1 : ℕ)) (π ^ v.2.1) (u * π ^ (j + 6 * v.2.2.2)) *
-      (X / primeNorm π) ^ (v.1 : ℕ) * (X ^ 3 / primeQ π) ^ v.2.1 * (Y / primeQ π) ^ v.2.2.1 *
+      (X / primeAbs π) ^ (v.1 : ℕ) * (X ^ 3 / primeQ π) ^ v.2.1 * (Y / primeQ π) ^ v.2.2.1 *
         V ^ v.2.2.2
 
 include h2 hprim in
@@ -396,7 +396,7 @@ theorem localTerm_eq (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j :
           (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ k *
             (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ ((e : ℕ) + 3 * l))⁻¹ *
               poissonCoeff (π ^ k) (π ^ ((e : ℕ) + 3 * l)) (π ^ (j + 6 * m)))) *
-        (X / primeNorm π) ^ (e : ℕ) * (X ^ 3 / primeQ π) ^ l * (Y / primeQ π) ^ k * V ^ m := by
+        (X / primeAbs π) ^ (e : ℕ) * (X ^ 3 / primeQ π) ^ l * (Y / primeQ π) ^ k * V ^ m := by
   unfold localTerm
   dsimp only
   rw [correctedCoeff_prime_pow π h2, quadraticPhase_self π hlam h2 hprim,
@@ -493,7 +493,7 @@ theorem localTerm_eq_coef (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π})
     (l k m : ℕ) :
     localTerm π ηp X Y V u j (e, l, k, m) =
       primeKappa π ηp ^ ((e : ℕ) + 3 * l) * localCoef π hlam u e ((e : ℕ) + 3 * l) k (j + 6 * m) *
-        (X / primeNorm π) ^ (e : ℕ) * (X ^ 3 / primeQ π) ^ l * (Y / primeQ π) ^ k * V ^ m :=
+        (X / primeAbs π) ^ (e : ℕ) * (X ^ 3 / primeQ π) ^ l * (Y / primeQ π) ^ k * V ^ m :=
   localTerm_eq π hlam h2 hprim ηp X Y V hu j e l k m
 
 include h2 hprim in
@@ -533,7 +533,7 @@ theorem localTerm_shift (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (
   have key : primeQ π ^ 6 * (X ^ 3 / primeQ π) ^ 2 = primeQ π ^ 4 * X ^ 6 := by
     field_simp
   generalize localCoef π hlam u (e : ℕ) ((e : ℕ) + 3 * l) k (j + 6 * m) = C
-  generalize (X / primeNorm π) ^ (e : ℕ) = A
+  generalize (X / primeAbs π) ^ (e : ℕ) = A
   generalize (Y / primeQ π) ^ k = B
   unfold primeR
   rw [pow_add (primeKappa π ηp), pow_add (X ^ 3 / primeQ π), pow_succ V]
@@ -596,12 +596,12 @@ theorem conj_sexticChar_four :
 
 include hlam hprim in
 /-- `Q = N²`. -/
-theorem primeQ_eq : primeQ π = primeNorm π ^ 2 := (norm_sq_eq_absNorm π hlam hprim).symm
+theorem primeQ_eq : primeQ π = primeAbs π ^ 2 := (norm_sq_eq_absNorm π hlam hprim).symm
 
 omit hP in
 /-- `κ π = N η_π`. -/
-theorem primeKappa_mul (ηp : ℂ) : primeKappa π ηp * ringComplex π = primeNorm π * ηp := by
-  unfold primeKappa primeNorm
+theorem primeKappa_mul (ηp : ℂ) : primeKappa π ηp * ringComplex π = primeAbs π * ηp := by
+  unfold primeKappa primeAbs
   rw [mul_right_comm, conj_alpha_mul]
 
 include h2 in
@@ -621,7 +621,7 @@ include h2 hprim in
 /-- `G₅ = ε N² / G₁`. -/
 theorem gauss_five_eq :
     gaussSum (complexSexticChar (Ideal.span {π}) hlam ^ 5) (principalTraceChar π (NeZero.ne π)) =
-      complexSexticChar (Ideal.span {π}) hlam (-1) * primeNorm π ^ 2 /
+      complexSexticChar (Ideal.span {π}) hlam (-1) * primeAbs π ^ 2 /
         gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π)) := by
   have h := gauss_mul_gauss_compl π hlam h2 1 (by norm_num) (by norm_num)
   rw [pow_one, pow_one, show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
@@ -633,13 +633,13 @@ include h2 hprim in
 /-- `G₂ = −π N Γ / (c₄ G₁)`. -/
 theorem gauss_two_eq :
     gaussSum (complexSexticChar (Ideal.span {π}) hlam ^ 2) (principalTraceChar π (NeZero.ne π)) =
-      -ringComplex π * primeNorm π * fixedDualAverage π /
+      -ringComplex π * primeAbs π * fixedDualAverage π /
         (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
           gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π))) := by
   have h := sextic_gauss_product π hlam h2 hprim
   rw [gauss_three_eq π hlam h2] at h
   rw [eq_div_iff (mul_ne_zero (sexticChar_four_ne_zero π hlam h2) (gauss_one_ne_zero π hlam h2))]
-  rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl,
+  rw [show (‖ringComplex π‖ : ℂ) = primeAbs π from rfl,
     ← map_ofNat (Ideal.Quotient.mk (Ideal.span {π})) 4] at h
   linear_combination h
 
@@ -647,7 +647,7 @@ include h2 hprim in
 /-- `G₄ = −N c₄ G₁ / (π Γ)`. -/
 theorem gauss_four_eq :
     gaussSum (complexSexticChar (Ideal.span {π}) hlam ^ 4) (principalTraceChar π (NeZero.ne π)) =
-      -(primeNorm π * complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
+      -(primeAbs π * complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
         gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π))) /
           (ringComplex π * fixedDualAverage π) := by
   have h := gauss_mul_gauss_compl π hlam h2 2 (by norm_num) (by norm_num)
@@ -657,7 +657,7 @@ theorem gauss_four_eq :
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hc := sexticChar_four_ne_zero π hlam h2
   have hg := gauss_one_ne_zero π hlam h2
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   rw [eq_div_iff (mul_ne_zero hπ hΓ)]
   field_simp at h
   linear_combination -h
@@ -669,8 +669,8 @@ theorem thetaGauss_prime_eq :
       (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
         gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π))) := by
   rw [thetaGauss_congr (pow_one π), thetaGauss_prime π hlam h2 hprim, gauss_two_eq π hlam h2 hprim]
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
-  rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
+  rw [show (‖ringComplex π‖ : ℂ) = primeAbs π from rfl]
   field_simp
 
 /-! ### The base terms of the families -/
@@ -746,7 +746,7 @@ theorem localTerm_A1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
   have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
   have hc := conj_sexticChar_four_pow_three π hlam h2
   have hε := mulChar_neg_one_sq (complexSexticChar (Ideal.span {π}) hlam)
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hg := gauss_one_ne_zero π hlam h2
   rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 0 2 1 i]
   unfold localCoef
@@ -778,7 +778,7 @@ theorem localTerm_B0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       if i = 0 ∧ j = 0 then
         -(ηp * (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u))⁻¹ * X) else 0 := by
   have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hg := gauss_one_ne_zero π hlam h2
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hc0 := sexticChar_four_ne_zero π hlam h2
@@ -795,7 +795,7 @@ theorem localTerm_B0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       conj_sexticChar_four π hlam h2]
     have hκ := primeKappa_mul π ηp
     generalize primeKappa π ηp = κ at hκ ⊢
-    obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
+    obtain rfl : ηp = κ * ringComplex π / primeAbs π := by
       rw [eq_div_iff hN, mul_comm ηp, hκ]
     simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
       show (1 : ℕ) % 2 = 1 from rfl, show (1 : ℕ) - 1 = 0 from rfl]
@@ -810,7 +810,7 @@ theorem localTerm_B1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       if 1 ≤ i ∨ 2 ≤ j then -(ηp * (primeQ π - 1) * X * Y * V ^ i)
       else if j = 1 then ηp * X * Y else 0 := by
   have hQ := primeQ_ne_zero π
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hg := gauss_one_ne_zero π hlam h2
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hc0 := sexticChar_four_ne_zero π hlam h2
@@ -826,7 +826,7 @@ theorem localTerm_B1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
   have hκ := primeKappa_mul π ηp
   generalize primeKappa π ηp = κ at hκ ⊢
-  obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
+  obtain rfl : ηp = κ * ringComplex π / primeAbs π := by
     rw [eq_div_iff hN, mul_comm ηp, hκ]
   simp only [pow_zero, pow_one, mul_one,
     show (1 : ℕ) % 2 = 1 from rfl, show (1 : ℕ) + 1 = 2 from rfl,
@@ -852,8 +852,8 @@ theorem localTerm_C0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     localTerm π ηp X Y V u j (0, 1, 0, i) =
       if i = 0 ∧ j = 2 then primeKappa π ηp ^ 3 *
         (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
-          primeNorm π ^ 3 * X ^ 3 else 0 := by
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+          primeAbs π ^ 3 * X ^ 3 else 0 := by
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
   have hc := conj_sexticChar_four_pow_three π hlam h2
@@ -868,7 +868,7 @@ theorem localTerm_C0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     rw [if_pos rfl, if_pos ⟨rfl, rfl⟩, gauss_three_eq π hlam h2, primeQ_eq π hlam hprim]
     simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
       show (3 : ℕ) % 2 = 1 from rfl, show (3 : ℕ) - 1 = 2 from rfl]
-    rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
+    rw [show (‖ringComplex π‖ : ℂ) = primeAbs π from rfl]
     field_simp
   · rw [if_neg (by omega), if_neg hcnd]
     simp
@@ -881,7 +881,7 @@ theorem localTerm_C1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
         conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) *
           (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 2)⁻¹ *
             primeQ π ^ 2 * X ^ 3 * Y) else 0 := by
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
   have hc := conj_sexticChar_four_pow_three π hlam h2
@@ -901,7 +901,7 @@ theorem localTerm_C1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       conj_sexticChar_four π hlam h2]
     have hκ := primeKappa_mul π ηp
     generalize primeKappa π ηp = κ at hκ ⊢
-    obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
+    obtain rfl : ηp = κ * ringComplex π / primeAbs π := by
       rw [eq_div_iff hN, mul_comm ηp, hκ]
     simp only [pow_zero, pow_one, one_mul, mul_one,
       show (3 : ℕ) % 2 = 1 from rfl, show (3 : ℕ) + 1 = 4 from rfl,
@@ -920,7 +920,7 @@ theorem localTerm_D0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
         conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) ^ 2 *
           (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 4)⁻¹ *
             primeQ π ^ 2 * X ^ 4 else 0 := by
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
   have hc3 := sexticChar_four_pow_three π hlam h2
@@ -951,8 +951,8 @@ theorem localTerm_D1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     localTerm π ηp X Y V u j (1, 1, 1, i) =
       if i = 0 ∧ j = 4 then -(ηp * primeKappa π ηp ^ 3 *
         (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
-          primeNorm π ^ 5 * X ^ 4 * Y) else 0 := by
-  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+          primeAbs π ^ 5 * X ^ 4 * Y) else 0 := by
+  have hN : primeAbs π ≠ 0 := norm_ringComplex_ne_zero π
   have hΓ := fixedDualAverage_prime_ne_zero π h2
   have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
   have hc3 := sexticChar_four_pow_three π hlam h2
@@ -973,12 +973,12 @@ theorem localTerm_D1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       conj_sexticChar_four π hlam h2, thetaGauss_prime_eq π hlam h2 hprim]
     have hκ := primeKappa_mul π ηp
     generalize primeKappa π ηp = κ at hκ ⊢
-    obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
+    obtain rfl : ηp = κ * ringComplex π / primeAbs π := by
       rw [eq_div_iff hN, mul_comm ηp, hκ]
     simp only [pow_zero, pow_one, mul_one,
       show (4 : ℕ) % 2 = 0 from rfl, show (4 : ℕ) + 1 = 5 from rfl,
       show (5 : ℕ) - 1 = 4 from rfl]
-    rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
+    rw [show (‖ringComplex π‖ : ℂ) = primeAbs π from rfl]
     field_simp
     set ε := complexSexticChar (Ideal.span {π}) hlam (-1)
     set c := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)
@@ -1003,7 +1003,7 @@ def baseSum (ηp X Y V : ℂ) (u : O) (j : ℕ) (e p k : Fin 2) : ℂ :=
       (if k = 0 then
         (if j = 2 then primeKappa π ηp ^ 3 *
           (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
-            primeNorm π ^ 3 * X ^ 3 else 0)
+            primeAbs π ^ 3 * X ^ 3 else 0)
       else if j = 3 then -(ηp * (primeKappa π ηp ^ 2 *
         conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) *
           (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 2)⁻¹ *
@@ -1023,7 +1023,7 @@ def baseSum (ηp X Y V : ℂ) (u : O) (j : ℕ) (e p k : Fin 2) : ℂ :=
               primeQ π ^ 2 * X ^ 4 else 0)
       else if j = 4 then -(ηp * primeKappa π ηp ^ 3 *
         (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
-          primeNorm π ^ 5 * X ^ 4 * Y) else 0)
+          primeAbs π ^ 5 * X ^ 4 * Y) else 0)
 
 include h2 hprim in
 /-- The base series of each family has its sum, with summable norms. -/
@@ -1165,6 +1165,56 @@ theorem hasSum_localTerm (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) 
       · exact hasSum_blockMap_none π hlam h2 hprim ηp X Y V hu j hV hW
       · exact hasSum_blockMap_some π hlam h2 hprim ηp X Y V hu hj hV hR e p k)
     (fun e l k m ht hk => localTerm_eq_zero_of_two_le π hlam h2 hprim ηp X Y V hu j e l k m ht hk)
+  convert h using 1
+  simp only [Fintype.sum_option, Fintype.sum_prod_type, Option.elim, Finset.mul_sum]
+
+include h2 hprim in
+/-- **Absolute convergence of the local series**, with the sum of the norms
+`(1 − ‖V‖)⁻¹ + [j = 0] ‖W‖ (1 − ‖W‖)⁻¹ + (1 − ‖R‖)⁻¹ Σ_{e, l mod 2, k} Σ_i ‖base term‖`. -/
+theorem hasSum_norm_localTerm (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : ℕ}
+    (hj : j < 6) (hV : ‖V‖ < 1)
+    (hW : ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y‖ < 1)
+    (hR : ‖primeR π ηp X V‖ < 1) :
+    HasSum (fun v => ‖localTerm π ηp X Y V u j v‖)
+      (((1 - ‖V‖)⁻¹ + if j = 0 then
+          ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y‖ *
+            (1 - ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y‖)⁻¹
+        else 0) +
+        (1 - ‖primeR π ηp X V‖)⁻¹ * ∑ e : Fin 2, ∑ p : Fin 2, ∑ k : Fin 2,
+          ∑' i, ‖localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i)‖) := by
+  set W := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y
+  have h := hasSum_of_blockMap (fun v => ‖localTerm π ηp X Y V u j v‖)
+    (fun b => b.elim ((1 - ‖V‖)⁻¹ + if j = 0 then ‖W‖ * (1 - ‖W‖)⁻¹ else 0)
+      fun b => (1 - ‖primeR π ηp X V‖)⁻¹ *
+        ∑' i, ‖localTerm π ηp X Y V u j (b.1, blockBase b.1 b.2.1, (b.2.2 : ℕ), i)‖)
+    (fun b => by
+      rcases b with _ | ⟨e, p, k⟩
+      · have hfun : (fun v => ‖localTerm π ηp X Y V u j v‖) ∘ blockMap none = fun q : ℕ × ℕ =>
+            if q.1 = 0 then ‖V‖ ^ q.2 else if q.2 = 0 ∧ j = 0 then ‖W‖ ^ q.1 else 0 := by
+          funext q
+          simp only [Function.comp, blockMap]
+          rw [localTerm_T0 π hlam h2 hprim ηp X Y V hu j q.1 q.2]
+          split_ifs <;> simp [W, norm_pow]
+        rw [hfun]
+        show HasSum _ ((1 - ‖V‖)⁻¹ + if j = 0 then ‖W‖ * (1 - ‖W‖)⁻¹ else 0)
+        exact hasSum_zeroBlock (𝕜 := ℝ) (by rwa [norm_norm]) (by rwa [norm_norm]) (j = 0)
+      · obtain ⟨-, hφn⟩ := hasSum_base π hlam h2 hprim ηp X Y V hu hj hV e p k
+        have hfun : (fun v => ‖localTerm π ηp X Y V u j v‖) ∘ blockMap (some (e, p, k)) =
+            fun q : ℕ × ℕ => if q.1 ≤ q.2 then ‖primeR π ηp X V‖ ^ q.1 *
+              ‖localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), q.2 - q.1)‖ else 0 := by
+          funext q
+          rw [Function.comp_apply, blockMap_some_apply,
+            localTerm_family π hlam h2 hprim ηp X Y V hu hj e (blockBase e p) k
+              (one_le_blockBase e p) q.1 q.2]
+          split_ifs <;> simp [norm_pow]
+        rw [hfun]
+        show HasSum _ ((1 - ‖primeR π ηp X V‖)⁻¹ *
+          ∑' i, ‖localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i)‖)
+        exact hasSum_block (𝕜 := ℝ)
+          (φ := fun i => ‖localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i)‖)
+          hφn.hasSum (by simpa using hφn) (by rwa [norm_norm]))
+    (fun e l k m ht hk => by
+      rw [localTerm_eq_zero_of_two_le π hlam h2 hprim ηp X Y V hu j e l k m ht hk, norm_zero])
   convert h using 1
   simp only [Fintype.sum_option, Fintype.sum_prod_type, Option.elim, Finset.mul_sum]
 
