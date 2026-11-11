@@ -383,10 +383,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 before we did create these documents:
-- docs/reports/review-1011/walls-ledger.md
-- docs/reports/review-1011/route-obstacles.md
-- docs/reports/review-1011/route-unification-ledger.md
-- docs/reports/review-1011/obstacles-summary.md
+- docs/reports/review-1111/walls-ledger.md
+- docs/reports/review-1111/route-obstacles.md
+- docs/reports/review-1111/route-unification-ledger.md
+- docs/reports/review-1111/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
@@ -410,8 +410,8 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.13 assume that RH is a problem of topology or geometry. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
    2.14 design a research programme aiming at constructing (\(\mathbb{F}_{1}\)) (the field with one element),  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.15. Design a research programme aiming at closing the RH proof route WD,  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-   2.16.  Design a research programme aiming at closing the RH proof route WD,  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-3. What is the one big question the is less hard than proving AAL, RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
+   2.16.  Design a research programme aiming at closing the RH proof route ACS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.17.  Design a research programme aiming at closing the RH proof route ZCG, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.3. What is the one big question the is less hard than proving AAL, RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
 4. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 5. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
@@ -422,7 +422,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-1111/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-1111/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -477,8 +477,8 @@ The questions for you to answer:
 7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 8. Assume that neither positivity, weil positivity, "spectral" in any form can be part of any rh proof. Then you can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 9. Design a research programme aiming at constructing (\(\mathbb{F}_{1}\)) (the field with one element),  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-10. Design a research programme aiming at closing the RH proof route WD,  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-11.  Design a research programme aiming at closing the RH proof route WD,  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+10. Design a research programme aiming at closing the RH proof route WD, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+11.  Design a research programme aiming at closing the RH proof route ACS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
 12. Design a research programme to develop general Galois theory that treats the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
 13. Lets assume that RH is false. Design a research programme to a) prove that RH is wrong, b) find a concrete counterexample (without computation). s the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
 14. Missed opportunities: Do you see anything in our lean corpus that are missed opportunities to assemble theorems that would bring us a significant breakthrough in solving AAL, ZAL, B13, quasiRH, or RH, or kill a proof route so we do not waste time on researching something that will become a dead end?  

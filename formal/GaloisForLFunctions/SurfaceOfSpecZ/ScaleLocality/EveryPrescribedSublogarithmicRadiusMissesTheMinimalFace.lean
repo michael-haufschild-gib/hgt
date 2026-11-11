@@ -572,10 +572,12 @@ theorem exists_sparse_calibrated_block {R : ℝ → ℝ} (hR0 : ∀ T, 0 ≤ R T
   have hΓtop : Tendsto calibratedGridFrequency atTop atTop :=
     tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 4)
   have hleft := tendsto_sublogarithmic_window_left hR
+  have harg : Tendsto (fun T => d * (T - R T) - 8 * x) atTop atTop := by
+    simpa only [sub_eq_add_neg] using
+      tendsto_atTop_add_const_right atTop (-(8 * x)) (hleft.const_mul_atTop hd)
   have hexp : Tendsto (fun T => (3 / 2 : ℝ) * Real.exp (d * (T - R T) - 8 * x))
       atTop atTop :=
-    (Real.tendsto_exp_atTop.comp ((hleft.const_mul_atTop hd).sub_const (8 * x))).const_mul_atTop
-      (by norm_num)
+    (Real.tendsto_exp_atTop.comp harg).const_mul_atTop (by norm_num)
   have hevent : ∀ᶠ T : ℝ in atTop,
       H ≤ calibratedGridFrequency T ∧ P ≤ T - R T ∧
       M ≤ (3 / 2 : ℝ) * Real.exp (d * (T - R T) - 8 * x) ∧
@@ -685,7 +687,7 @@ structure Tower (γmin C Θ : ℝ) (R : ℝ → ℝ) where
   weight_succ : ∀ j, 524288 * Real.exp 4 * ((block (j + 1)).k : ℝ) /
       (block (j + 1)).Γ ^ 2 ≤
     (1 / 2 : ℝ) ^ (j + 1) * Real.exp (-(Θ * ((block j).T + R (block j).T)))
-  gain : ∀ j, (j : ℝ) + 12 ≤ (3 / 2 : ℝ) * Real.exp
+  gain : ∀ j : ℕ, (j : ℝ) + 12 ≤ (3 / 2 : ℝ) * Real.exp
     ((calibratedDepthCenter Θ (j + 1) - calibratedDepthUpper Θ j) *
       ((block (j + 1)).T - R (block (j + 1)).T) - 8 * calibratedDepthCenter Θ (j + 1))
 
@@ -713,8 +715,13 @@ theorem exists_tower (hC : 0 < C) (hΘ : 0 < Θ) (hR0 : ∀ T, 0 ≤ R T)
   let B : ∀ j, Block γmin C Θ R j := fun j => Nat.rec B₀ (fun j Bj => next j Bj) j
   have hzero : B 0 = B₀ := rfl
   have hsucc (j : ℕ) : B (j + 1) = next j (B j) := rfl
-  refine ⟨{ block := B, weight_zero := ?_, frequency_gap := ?_, window_gap := ?_,
-    weight_succ := ?_, gain := ?_ }⟩
+  refine ⟨{
+    block := B
+    weight_zero := ?_
+    frequency_gap := ?_
+    window_gap := ?_
+    weight_succ := ?_
+    gain := ?_ }⟩
   · simpa only [hzero] using hw₀
   · intro j
     rw [hsucc]
@@ -841,7 +848,7 @@ theorem pt_injective (hΘ : 0 < Θ) : Function.Injective W.pt := by
 
 theorem reflect_pt (j : ℕ) (i : Fin ((W.block j).k + 1)) (b : Bool) :
     reflect (W.pt ⟨j, (i, b)⟩) = W.pt ⟨j, (i, !b)⟩ := by
-  cases b <;> simp [pt, calibratedReflectedExponent, reflect] <;> ring
+  cases b <;> apply Complex.ext <;> simp [pt, calibratedReflectedExponent, reflect] <;> ring
 
 /-- A simple zero configuration supported on the calibrated reflected blocks. -/
 def config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : ZeroConfig where
@@ -902,6 +909,8 @@ theorem temperedConfig_config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
   show Summable fun ρ : Set.range W.pt => ((1 : ℕ) : ℝ) / (1 + Complex.normSq (gammaOf ρ))
   refine (e.summable_iff).mp ?_
   let F : W.Idx → ℝ := fun p => 1 / (1 + Complex.normSq (gammaOf (W.pt p)))
+  have he (p : W.Idx) : (e p : ℂ) = W.pt p := by simp [e]
+  simp only [Function.comp_def, he, Nat.cast_one]
   change Summable F
   have hF0 : ∀ p, 0 ≤ F p := fun p => by
     dsimp only [F]
@@ -1102,6 +1111,7 @@ theorem weight_le_bound (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (j : ℕ) :
     (W.exponent_abs_re_le hΘ j p).trans ((calibratedDepth_bounds hΘ j).2.2.2.le.trans hΘ2)
   have him : ∀ p, (W.block j).Γ / 2 ≤ (W.exponent j p).im := by
     intro p
+    dsimp only [exponent]
     rw [(hgeom p).1]
     exact ((W.block j).geometry p.1).2.1
   have hh := splineBlockWeight_le hΓ (W.exponent j) hw him
@@ -1161,7 +1171,7 @@ theorem two_re_lagStructure_config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (u : ℝ
     simp [Z, config, e, F]
   have hS : HasSum F (lagStructure Z (boxSpline 1 3) u) := by
     have hh := (e.hasSum_iff).mpr hs.hasSum
-    simpa only [Function.comp_def, hcomp] using hh
+    simpa only [Function.comp_def, hcomp, lagStructure] using hh
   have hI (w : ℂ) : I * (-I * w) = w := by
     rw [← mul_assoc, mul_neg, I_mul_I]
     ring
@@ -1228,8 +1238,9 @@ private theorem normalized_block_dominates (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
     linarith only [hul, hh, hj]
   obtain ⟨hη, hlo, _, _⟩ := calibratedDepth_bounds hΘ (j + 1)
   have htvu : (W.block (j + 1)).T + (u - (W.block (j + 1)).T) = u := by ring
-  have hfinite := two_re_reflected_calibrated_block_ge (W.block (j + 1)).z hη.le
-    (by linarith only [hlo]) (fun i => ((W.block (j + 1)).geometry i).1
+  have hfinite := two_re_reflected_calibrated_block_ge (x := calibratedDepthCenter Θ (j + 1))
+    (W.block (j + 1)).z hη.le
+    (by linarith only [hlo]) (fun i => ((W.block (j + 1)).geometry i).1)
     (T := (W.block (j + 1)).T) (v := u - (W.block (j + 1)).T)
     (by simpa only [htvu] using hu0) hu (W.block (j + 1)).positive
   have hfinite' : (3 / 2 : ℝ) * Real.exp (calibratedDepthCenter Θ (j + 1) * (u - 8)) -
@@ -1257,10 +1268,11 @@ private theorem normalized_block_dominates (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
   have hm' : (3 / 2 : ℝ) * Real.exp ((x - b) * u - 8 * x) -
       Real.exp (-(b * u)) * W.weight (j + 1) ≤
         Real.exp (-(b * u)) * W.blockTrace (j + 1) u := by
-    convert hm using 1
-    rw [mul_sub]
-    rw [show Real.exp (-(b * u)) * ((3 / 2 : ℝ) * Real.exp (x * (u - 8))) =
-      (3 / 2 : ℝ) * (Real.exp (-(b * u)) * Real.exp (x * (u - 8))) by ring, hp]
+    change Real.exp (-(b * u)) * ((3 / 2 : ℝ) * Real.exp (x * (u - 8)) -
+      W.weight (j + 1)) ≤ Real.exp (-(b * u)) * W.blockTrace (j + 1) u at hm
+    rw [mul_sub, show Real.exp (-(b * u)) * ((3 / 2 : ℝ) * Real.exp (x * (u - 8))) =
+      (3 / 2 : ℝ) * (Real.exp (-(b * u)) * Real.exp (x * (u - 8))) by ring, hp] at hm
+    exact hm
   have he : Real.exp ((calibratedDepthUpper Θ (j + 1) - calibratedDepthUpper Θ j) * u) *
       (Real.exp (-(calibratedDepthUpper Θ (j + 1) * u)) * W.blockTrace (j + 1) u) =
         Real.exp (-(b * u)) * W.blockTrace (j + 1) u := by

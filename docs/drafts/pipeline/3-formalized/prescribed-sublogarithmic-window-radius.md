@@ -1,8 +1,8 @@
 # Every prescribed sublogarithmic radius misses the minimal face
 
 - **ID:** A89
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 
 ## Statement
 
@@ -33,10 +33,9 @@ prescribed window. The exact configuration trace is the sum of these blocks.
 
 ## Lean status
 
-The calibration, interpolation, grid geometry and asymptotic density bounds
-passed Lean. The complete spline and configuration proof is drafted in
-`SurfaceOfSpecZ/ScaleLocality/EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace.lean`;
-its final check remains.
+All seven proof modules passed direct Lean checks. The final theorem is in
+`SurfaceOfSpecZ/ScaleLocality/EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace.lean`,
+wired into `SurfaceOfSpecZ.lean`.
 
 Declaration:
 `SurfaceOfSpecZ.ScaleLocality.exists_classZ_prescribed_sublogarithmic_windows_bddBelow_beyond_every_bound`.

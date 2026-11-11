@@ -105,6 +105,9 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRiemannSums
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanProfile
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerDominatedRiemannProfiles
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ArithmeticPowerRiemannProfiles
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceProfile
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailCombLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailContactGrowthDetectsZeros
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailCombGrowth
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombTailConvergenceCriterion
@@ -151,3 +154,5 @@ over the zeros; and a ring that is not abelian, the ring of the cube roots of tw
 degree points and its Hodge index, and the index law of its Artin character of degree two
 through the cubic character of two. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ArithmeticPowerRiemannProfiles
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceProfile

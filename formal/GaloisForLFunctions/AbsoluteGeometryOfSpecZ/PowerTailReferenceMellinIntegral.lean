@@ -72,11 +72,13 @@ private theorem integral_cut_powerTailReferenceProfile {a : ℝ}
           (1 / (1 - a)) * (Set.Ioi (1 / (N : ℝ))).indicator
             (fun t : ℝ => t ^ (-(1 + a))) t := by
     by_cases hδt : 1 / (N : ℝ) < t
-    · rw [Set.indicator_of_mem hδt, Set.indicator_of_mem hδt,
-        Set.indicator_of_mem hδt, powerTailReferenceProfile_eq a ht.1]
+    · have hmem : t ∈ Set.Ioi (1 / (N : ℝ)) := hδt
+      rw [Set.indicator_of_mem hmem, Set.indicator_of_mem hmem,
+        Set.indicator_of_mem hmem, powerTailReferenceProfile_eq a ht.1]
       ring
-    · rw [Set.indicator_of_notMem hδt, Set.indicator_of_notMem hδt,
-        Set.indicator_of_notMem hδt, mul_zero, sub_zero]
+    · have hmem : t ∉ Set.Ioi (1 / (N : ℝ)) := hδt
+      rw [Set.indicator_of_notMem hmem, Set.indicator_of_notMem hmem,
+        Set.indicator_of_notMem hmem, mul_zero, sub_zero]
   rw [setIntegral_congr_fun measurableSet_Ioc he, integral_sub hu (hv.const_mul _),
     integral_const_mul, integral_inverse_cut_rpow ha hN,
     integral_cut_arithmeticPowerProfile (show 0 ≤ 2 * a by linarith only [ha])

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.VerifiedHeightRungs.ZerosNearMostHeights
+import GaloisForLFunctions.VerifiedHeightRungs.ThePrimePolynomialIsRarelyLarge
 import GaloisForLFunctions.RHTower.EvenSectorFullPositivity
 
 /-!
@@ -42,7 +42,8 @@ theorem minorantProfile_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) 
 
 theorem minorantProfileD_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) minorantProfileD := by
   have h := ContDiff.iterate_deriv 1 minorantProfile_smooth
-  simpa using h
+  rw [Function.iterate_one] at h
+  exact h
 
 theorem minorantProfile_contDiff {n : ℕ} : ContDiff ℝ n minorantProfile :=
   minorantProfile_smooth.of_le (by exact_mod_cast (le_top : (n : ℕ∞) ≤ ⊤))
@@ -159,7 +160,7 @@ theorem abs_le_of_inv_mul {Y u : ℝ} (hY : 0 < Y) (h : |Y⁻¹ * u| ≤ 1) : |u
   rw [abs_mul, abs_inv, abs_of_pos hY, inv_mul_le_iff₀ hY, mul_one] at h
   exact h
 
-theorem minorantTest_supp {Y : ℝ} (hY : 0 < Y) : ∀ u, minorantTest Y u ≠ 0 → |u| ≤ Y := fun u hu =>
+theorem minorantTest_supp {Y : ℝ} (hY : 0 < Y) : ∀ u, minorantTest Y u ≠ 0 → |u| ≤ Y := fun _ hu =>
   abs_le_of_inv_mul hY (minorantProfile_supp _ hu)
 
 theorem minorantTestD_supp {Y : ℝ} (hY : 0 < Y) : ∀ u, minorantTestD Y u ≠ 0 → |u| ≤ Y := by
@@ -298,7 +299,9 @@ theorem norm_minorant_summands_le {σ Y t : ℝ} (hY : 0 < Y) {ρ : ℂ} (hρ : 
     simp only [Complex.sub_im, Complex.conj_im, Complex.ofReal_im, sub_zero, WeilEF.gammaOf_im, abs_neg]
   obtain ⟨x, hx⟩ : ∃ x, x = |ρ.im - t| := ⟨_, rfl⟩
   obtain ⟨δ, hδdef⟩ : ∃ δ, δ = |1 / 2 - ρ.re| := ⟨_, rfl⟩
-  have hD : 0 < (1 + Y * x) ^ 2 := by rw [hx]; positivity
+  have hx0 : 0 ≤ x := hx ▸ abs_nonneg _
+  have hD1 : 0 < 1 + Y * x := by nlinarith only [hx0, hY]
+  have hD : 0 < (1 + Y * x) ^ 2 := pow_pos hD1 2
   have g1 := norm_paperFT_minorantTest_le hY (gammaOf ρ - t)
   have g2 := norm_paperFT_minorantTest_le hY (conj (gammaOf ρ) - t)
   have d1 := norm_paperFT_minorantTestD_le hY (gammaOf ρ - t)
@@ -314,8 +317,8 @@ theorem norm_minorant_summands_le {σ Y t : ℝ} (hY : 0 < Y) {ρ : ℂ} (hρ : 
   have hprod1 : ‖paperFT (minorantTest Y) (gammaOf ρ - t)‖ * ‖paperFT (minorantTest Y) (conj (gammaOf ρ) - t)‖ ≤
       Y ^ 2 * minorantB ^ 2 * Real.exp Y / (1 + Y * x) ^ 4 := by
     refine (mul_le_mul g1 g2 (norm_nonneg _)
-      (div_nonneg (mul_nonneg (mul_nonneg hY.le hB) (Real.exp_pos _).le) (by positivity))).trans ?_
-    rw [div_mul_div_comm, ← pow_add, div_le_div_iff_of_pos_right (by positivity)]
+      (div_nonneg (mul_nonneg (mul_nonneg hY.le hB) (Real.exp_pos _).le) hD.le)).trans ?_
+    rw [div_mul_div_comm, ← pow_add, div_le_div_iff_of_pos_right (pow_pos hD1 _)]
     have : Y * minorantB * Real.exp (Y * δ) * (Y * minorantB * Real.exp (Y * δ)) =
         Y ^ 2 * minorantB ^ 2 * (Real.exp (Y * δ) * Real.exp (Y * δ)) := by ring
     rw [this]
@@ -323,8 +326,8 @@ theorem norm_minorant_summands_le {σ Y t : ℝ} (hY : 0 < Y) {ρ : ℂ} (hρ : 
   have hprod2 : ‖paperFT (minorantTestD Y) (gammaOf ρ - t)‖ *
       ‖paperFT (minorantTestD Y) (conj (gammaOf ρ) - t)‖ ≤ minorantB ^ 2 * Real.exp Y / (1 + Y * x) ^ 4 := by
     refine (mul_le_mul d1 d2 (norm_nonneg _)
-      (div_nonneg (mul_nonneg hB (Real.exp_pos _).le) (by positivity))).trans ?_
-    rw [div_mul_div_comm, ← pow_add, div_le_div_iff_of_pos_right (by positivity)]
+      (div_nonneg (mul_nonneg hB (Real.exp_pos _).le) hD.le)).trans ?_
+    rw [div_mul_div_comm, ← pow_add, div_le_div_iff_of_pos_right (pow_pos hD1 _)]
     have : minorantB * Real.exp (Y * δ) * (minorantB * Real.exp (Y * δ)) =
         minorantB ^ 2 * (Real.exp (Y * δ) * Real.exp (Y * δ)) := by ring
     rw [this]
@@ -343,7 +346,7 @@ theorem norm_minorant_summands_le {σ Y t : ℝ} (hY : 0 < Y) {ρ : ℂ} (hρ : 
     _ ≤ (zetaZeroConfig.mult ρ : ℝ) * (σ ^ 2 * (Y ^ 2 * minorantB ^ 2 * Real.exp Y / (1 + Y * x) ^ 4) +
         minorantB ^ 2 * Real.exp Y / (1 + Y * x) ^ 4) :=
       mul_le_mul_of_nonneg_left (add_le_add (mul_le_mul_of_nonneg_left hprod1 hσ2) hprod2) hm
-    _ = _ := by ring
+    _ = _ := by rw [← hx]; ring
 
 /-- `(σ²Y² + 1) e^Y (1 + Yx)⁻⁴ ≤ 16 Y⁻² (1 + x)⁻³` beyond `x ≥ e^Y`. -/
 theorem minorant_far_weight_le {σ Y x : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hY : 1 ≤ Y) (hx : Real.exp Y ≤ x) :

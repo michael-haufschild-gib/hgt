@@ -2,22 +2,18 @@ import GaloisForLFunctions.VerifiedHeightRungs.ZeroGapsFromVerifiedZeros
 import GaloisForLFunctions.«arithmetic-positivity-theory».SingleHeightPhaseSelectiveApertureAndPowerSaving
 
 /-!
-# Zeros near most heights
+# The prime polynomial is rarely large
 
-`exists_zero_near_of_onLine` needs heights above `gapHeight σ ≈ exp(138 e^Y)`: it pays the prime polynomial
-by its maximum and the poles by `sinh Y` at every height. Paying both at the actual height:
+For a `C²` test `f` supported in `[−Y, Y]` the localized Weil form is `W(S_ξ f) = A_f(ξ) − Π_f(ξ)`, with `Π_f` the prime
+polynomial over `n ≤ e^{2Y}`. The windowed variance law averages `|Π_f(ξ + ξ₀)|²` against the window `|η̂(−2πξ)|²` of width
+`r`, `2r e^{2Y} ≤ 1`, and finds the diagonal energy `V_f`. By Chebyshev:
 
-* `re_W_modulatedTest_gapTest_le_of_far`: if every zero within `e^Y` of `t` is on the line and none lies within `σ`
-  of `t`, then `Re W(g_t, g_t) ≤ gapWeight σ Y · 5760 log(|t| + 3)`, where `g_t` is the test of width `Y`
-  modulated to `t`;
-* `re_W_modulatedTest_gapTest_ge`: `Re W(g_t, g_t)` is at least `(log(1 + |t|/8) − 10) Y m₂` minus a tail `O(1/|t|)`,
-  a pole term `O(e^Y/|t|⁴)` and the prime polynomial `Re Π(−t/2π)`;
-* `volume_window_prime_ge_le`: by the windowed variance law, in every window `|ξ| ≤ 1/(4πr)` (`2r e^{2Y} ≤ 1`) the
-  heights where `‖Π‖ ≥ A₀` have measure at most `4 m₂ V/(3 r m₁² A₀²)`, `V` the diagonal energy of the prime
-  polynomial and `m₁, m₂` the mass and energy of the profile.
+* `volume_window_prime_ge_le`: on `|ξ| ≤ 1/(4πr)`, where the window is at least `(3/4) r² m₁²`, the frequencies with
+  `‖Π_f‖ ≥ A` have measure at most `4 m₂ V_f/(3 r m₁² A²)`;
+* `volume_bad_heights_le`: in heights `t = −2πξ`, every window of length `L ≥ 2e^{2Y}` has at most
+  `8π m₂ V_f L/(3 m₁² A²)` of heights with `‖Π_f(−t/2π)‖ ≥ A`.
 
-So the heights where the gap test fails are rare in every window of length `≍ e^{2Y}`, once the height is
-`exp(O(Y))`; this replaces the double-exponential `gapHeight`.
+`m₁, m₂` are the mass and energy of the window profile.
 -/
 
 open Complex MeasureTheory Real Set Filter Topology
@@ -28,73 +24,6 @@ namespace GaloisForLFunctions.VerifiedHeightRungs
 open _root_.RHTower _root_.RHTower.WeilRegular Zeta23 GaloisForLFunctions.SquareRootThreshold
 
 noncomputable section
-
-/-! ### The zero side -/
-
-/-- **No zero within `σ`.** The modulated gap test then has a small form. -/
-theorem re_W_modulatedTest_gapTest_le_of_far {σ Y t : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hY : 0 < Y)
-    (hon : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im - t| ≤ Real.exp Y → ρ.re = 1 / 2)
-    (hfar : ∀ ρ ∈ zetaZeroConfig.carrier, σ ≤ |ρ.im - t|) :
-    (zetaZeroConfig.W (modulatedTest t (gapTest Y)) (modulatedTest t (gapTest Y))).re ≤
-      gapWeight σ Y * (24 * 240 * Real.log (|t| + 3)) := by
-  have hloc := zeta_unit_count_le_240
-  obtain ⟨hwsum, hwle⟩ := window_tsum_le zetaZeroConfig (A₀ := 240) (by norm_num) hloc t
-  have hbd : ∀ ρ : zetaZeroConfig.carrier,
-      ‖zetaZeroConfig.Wsummand (modulatedTest t (gapTest Y)) (modulatedTest t (gapTest Y)) ρ‖ ≤
-        gapWeight σ Y * ((zetaZeroConfig.mult ρ : ℝ) / (1 + |(ρ : ℂ).im - t|) ^ 3) := fun ρ =>
-    norm_Wsummand_gapTest_le hσ hσ1 hY ρ.2 (hfar ρ ρ.2) fun h => hon ρ ρ.2 h
-  have hw0 : 0 ≤ gapWeight σ Y := by unfold gapWeight; positivity
-  have hsumN : Summable fun ρ : zetaZeroConfig.carrier =>
-      ‖zetaZeroConfig.Wsummand (modulatedTest t (gapTest Y)) (modulatedTest t (gapTest Y)) ρ‖ :=
-    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hbd (hwsum.mul_left _)
-  rw [ZeroConfig.W]
-  refine (Complex.re_le_norm _).trans ((norm_tsum_le_tsum_norm hsumN).trans ?_)
-  refine (hsumN.tsum_le_tsum hbd (hwsum.mul_left _)).trans ?_
-  rw [tsum_mul_left]
-  exact mul_le_mul_of_nonneg_left hwle hw0
-
-/-- **A large form forces a zero within `σ`.** -/
-theorem exists_zero_near_of_re_W_gt {σ Y t : ℝ} (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hY : 0 < Y)
-    (hon : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im - t| ≤ Real.exp Y → ρ.re = 1 / 2)
-    (hgt : gapWeight σ Y * (24 * 240 * Real.log (|t| + 3)) <
-      (zetaZeroConfig.W (modulatedTest t (gapTest Y)) (modulatedTest t (gapTest Y))).re) :
-    ∃ ρ ∈ zetaZeroConfig.carrier, |ρ.im - t| < σ := by
-  by_contra hno
-  push Not at hno
-  exact absurd (re_W_modulatedTest_gapTest_le_of_far hσ hσ1 hY hon hno) (not_le.mpr hgt)
-
-/-! ### The symbol side at the actual height -/
-
-theorem heightShift_gapTestC_eq (Y t : ℝ) :
-    heightShift (-t / (2 * π)) (gapTestC Y) = modulatedTest t (gapTest Y) := by
-  funext u
-  simp only [heightShift, modulatedTest, gapTestC]
-  congr 2
-  have hπ : (π : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  push_cast
-  field_simp
-
-/-- **The gap test at height `t`.** Main term, tail, decaying pole term and the prime polynomial at `−t/2π`. -/
-theorem re_W_modulatedTest_gapTest_ge {Y : ℝ} (hY : 0 < Y) (t : ℝ) :
-    (Real.log (1 + |t| / 8) - 10) * (Y * gapEnergy) - gapTail Y / (8 * (1 + |t| / 2)) -
-        2 * Real.exp Y * gapTail Y / (1 + |t|) ^ 4 -
-        (primePolynomial (gapTestC Y) ⌊Real.exp (2 * Y)⌋₊ (-t / (2 * π))).re ≤
-      (zetaZeroConfig.W (modulatedTest t (gapTest Y)) (modulatedTest t (gapTest Y))).re := by
-  have h := ArithmeticPositivityTheory.zetaZeroConfig_re_W_heightShift_ge_sub_re_primePolynomial_decay
-    hY.le (gapTestC_contDiff Y) (tsupport_gapTestC hY) (-t / (2 * π))
-  rw [heightShift_gapTestC_eq, integral_gapTestC_sq hY] at h
-  have habs : |(-t / (2 * π))| = |t| / (2 * π) := by
-    rw [abs_div, abs_neg, abs_of_pos (by positivity : 0 < 2 * π)]
-  have hπ : (0 : ℝ) < π := Real.pi_pos
-  have e1 : 1 + π * |(-t / (2 * π))| / 4 = 1 + |t| / 8 := by rw [habs]; field_simp; ring
-  have e2 : 1 + π * |(-t / (2 * π))| = 1 + |t| / 2 := by rw [habs]; field_simp
-  have e3 : 1 + 2 * π * |(-t / (2 * π))| = 1 + |t| := by rw [habs]; field_simp
-  rw [e1, e2, e3] at h
-  have hg : (4 * ((∫ u, ‖gapTestC Y u‖) + ∫ u, ‖deriv (deriv (gapTestC Y)) u‖)) ^ 2 = gapTail Y := rfl
-  rw [hg] at h
-  exact h
-
-/-! ### The windowed Chebyshev bound -/
 
 /-- The window transform is at least `(√3/2) r m₁` on `|ξ| ≤ 1/(4πr)`. -/
 theorem three_quarters_le_norm_sq_paperFT_gapTestC {r ξ : ℝ} (hr : 0 < r) (hξ : |ξ| ≤ 1 / (4 * π * r)) :
@@ -128,16 +57,14 @@ theorem three_quarters_le_norm_sq_paperFT_gapTestC {r ξ : ℝ} (hr : 0 < r) (h�
     _ = (r * (gapMass * |q|)) ^ 2 := by ring
 
 /-- **Large values of the prime polynomial are rare in every window.** -/
-theorem volume_window_prime_ge_le {Y r : ℝ} (hY : 0 < Y) (hr : 0 < r)
-    (hX : 2 * r * Real.exp (2 * Y) ≤ 1) (ξ₀ : ℝ) {A₀ : ℝ} (hA₀ : 0 < A₀) :
+theorem volume_window_prime_ge_le {f : ℝ → ℂ} {Y r : ℝ} (hY : 0 ≤ Y) (hf : ContDiff ℝ 2 f)
+    (hfs : tsupport f ⊆ Icc (-Y) Y) (hr : 0 < r) (hX : 2 * r * Real.exp (2 * Y) ≤ 1) (ξ₀ : ℝ) {A₀ : ℝ}
+    (hA₀ : 0 < A₀) :
     volume (Icc (-(1 / (4 * π * r))) (1 / (4 * π * r)) ∩
-        {ξ | A₀ ≤ ‖primePolynomial (gapTestC Y) ⌊Real.exp (2 * Y)⌋₊ (ξ + ξ₀)‖}) ≤
-      ENNReal.ofReal (4 * gapEnergy * primeVariance (gapTestC Y) ⌊Real.exp (2 * Y)⌋₊ /
+        {ξ | A₀ ≤ ‖primePolynomial f ⌊Real.exp (2 * Y)⌋₊ (ξ + ξ₀)‖}) ≤
+      ENNReal.ofReal (4 * gapEnergy * primeVariance f ⌊Real.exp (2 * Y)⌋₊ /
         (3 * r * gapMass ^ 2 * A₀ ^ 2)) := by
-  set f := gapTestC Y with hfdef
   set η := gapTestC r with hηdef
-  have hf : ContDiff ℝ 2 f := gapTestC_contDiff Y
-  have hfs : tsupport f ⊆ Icc (-Y) Y := tsupport_gapTestC hY
   have hη : ContDiff ℝ 2 η := gapTestC_contDiff r
   have hηs : tsupport η ⊆ Icc (-r) r := tsupport_gapTestC hr
   have hηc := hasCompactSupport_of_tsupport_subset_Icc hηs
@@ -172,7 +99,7 @@ theorem volume_window_prime_ge_le {Y r : ℝ} (hY : 0 < Y) (hr : 0 < r)
     rw [mul_div_assoc]
     gcongr
   have hGint : ∫ ξ, G ξ = (∫ t, ‖η t‖ ^ 2) * primeVariance f N / A₀ ^ 2 := by
-    have hvar := integral_windowed_sq_deviation_eq hY.le hf hfs hη hηs hX ξ₀
+    have hvar := integral_windowed_sq_deviation_eq hY hf hfs hη hηs hX ξ₀
     have hdev : ∀ ξ : ℝ, ‖zetaZeroConfig.W (heightShift (ξ + ξ₀) f) (heightShift (ξ + ξ₀) f) -
         archPart f (ξ + ξ₀)‖ = ‖Q ξ‖ := by
       intro ξ
@@ -217,6 +144,73 @@ theorem volume_window_prime_ge_le {Y r : ℝ} (hY : 0 < Y) (hr : 0 < r)
   rw [heq] at hvol
   calc volume B = ENNReal.ofReal (volume B).toReal := (ENNReal.ofReal_toReal hBfin.ne).symm
     _ ≤ _ := ENNReal.ofReal_le_ofReal hvol
+
+/-- **The windowed Chebyshev bound in heights.** -/
+theorem volume_bad_heights_le {f : ℝ → ℂ} {Y L A : ℝ} (hY : 0 ≤ Y) (hf : ContDiff ℝ 2 f)
+    (hfs : tsupport f ⊆ Icc (-Y) Y) (hL : 2 * Real.exp (2 * Y) ≤ L) (hA : 0 < A) (c : ℝ) :
+    volume (Icc c (c + L) ∩
+        {t : ℝ | A ≤ ‖primePolynomial (f) ⌊Real.exp (2 * Y)⌋₊ (-t / (2 * π))‖}) ≤
+      ENNReal.ofReal (8 * π * gapEnergy * primeVariance (f) ⌊Real.exp (2 * Y)⌋₊ * L /
+        (3 * gapMass ^ 2 * A ^ 2)) := by
+  have hπ := Real.pi_pos
+  have hm := gapMass_pos
+  have hL0 : 0 < L := lt_of_lt_of_le (by positivity) hL
+  obtain ⟨r, hr⟩ : ∃ r, r = 1 / L := ⟨_, rfl⟩
+  have hr0 : 0 < r := by rw [hr]; positivity
+  have hX : 2 * r * Real.exp (2 * Y) ≤ 1 := by
+    rw [hr, show 2 * (1 / L) * Real.exp (2 * Y) = 2 * Real.exp (2 * Y) / L by ring, div_le_one hL0]
+    exact hL
+  obtain ⟨ξ₀, hξ₀⟩ : ∃ ξ₀, ξ₀ = -(c + L / 2) / (2 * π) := ⟨_, rfl⟩
+  have hB := volume_window_prime_ge_le hY hf hfs hr0 hX ξ₀ hA
+  set S := Icc (-(1 / (4 * π * r))) (1 / (4 * π * r)) ∩
+    {ξ | A ≤ ‖primePolynomial (f) ⌊Real.exp (2 * Y)⌋₊ (ξ + ξ₀)‖} with hS
+  obtain ⟨k, hk⟩ : ∃ k : ℝ, k = -(2 * π)⁻¹ := ⟨_, rfl⟩
+  have hk0 : k ≠ 0 := by rw [hk]; exact neg_ne_zero.2 (inv_ne_zero (by positivity))
+  obtain ⟨d, hd⟩ : ∃ d : ℝ, d = (c + L / 2) / (2 * π) := ⟨_, rfl⟩
+  have hpre : Icc c (c + L) ∩
+      {t : ℝ | A ≤ ‖primePolynomial (f) ⌊Real.exp (2 * Y)⌋₊ (-t / (2 * π))‖} =
+      (fun t => k * t) ⁻¹' ((fun x => x + d) ⁻¹' S) := by
+    ext t
+    have hφ : k * t + d + ξ₀ = -t / (2 * π) := by
+      rw [hk, hd, hξ₀]
+      field_simp
+      ring
+    have hφ' : k * t + d = (c + L / 2 - t) / (2 * π) := by
+      rw [hk, hd]
+      field_simp
+      ring
+    have hD : 1 / (4 * π * r) = L / 2 / (2 * π) := by
+      rw [hr]
+      field_simp
+      ring
+    simp only [Set.mem_inter_iff, Set.mem_Icc, Set.mem_setOf_eq, Set.mem_preimage, hS, hφ, hD]
+    rw [hφ']
+    constructor
+    · rintro ⟨⟨h1, h2⟩, h3⟩
+      refine ⟨⟨?_, ?_⟩, h3⟩
+      · rw [neg_le, ← neg_div, div_le_div_iff_of_pos_right (by positivity)]
+        linarith only [h2]
+      · rw [div_le_div_iff_of_pos_right (by positivity)]
+        linarith only [h1]
+    · rintro ⟨⟨h1, h2⟩, h3⟩
+      refine ⟨⟨?_, ?_⟩, h3⟩
+      · rw [div_le_div_iff_of_pos_right (by positivity)] at h2
+        linarith only [h2]
+      · rw [neg_le, ← neg_div, div_le_div_iff_of_pos_right (by positivity)] at h1
+        linarith only [h1]
+  rw [hpre, Real.volume_preimage_mul_left hk0, measure_preimage_add_right]
+  have hkabs : |k⁻¹| = 2 * π := by
+    rw [hk, inv_neg, inv_inv, abs_neg, abs_of_pos (by positivity)]
+  rw [hkabs]
+  calc ENNReal.ofReal (2 * π) * volume S
+      ≤ ENNReal.ofReal (2 * π) * ENNReal.ofReal (4 * gapEnergy * primeVariance (f)
+          ⌊Real.exp (2 * Y)⌋₊ / (3 * r * gapMass ^ 2 * A ^ 2)) := by gcongr
+    _ = _ := by
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      congr 1
+      rw [hr]
+      field_simp
+      ring
 
 end
 

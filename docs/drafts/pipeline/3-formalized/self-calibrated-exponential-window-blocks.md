@@ -1,7 +1,7 @@
 # Exponential blocks with self-consistent interpolation weights
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Target:** A89, prescribed `R(T)=o(log T)`.
 
 For distinct nodes, put `c_j(z)=∏_{l≠j}(−z_l)/(z_j−z_l)`.
@@ -27,7 +27,7 @@ Taylor interpolation gives error at most
 
 The inequalities `2B/δ≤8k`, `512RB≤k`, `k≥1` make this `≤1/4`, using `e<3`.
 
-Candidate grid: `Γ=T^(1/4)`, `k=ceil(2048Γ(R(T)+8))`,
+Use the grid `Γ=T^(1/4)`, `k=ceil(2048Γ(R(T)+8))`,
 `b_j=i(Γ+2Γj/k)`, `s=Γ/k`, `r=min(s/8,η)` for a fixed depth tolerance `η>0`.
 Perturbation preserves norm bound `B=4Γ` and index separation `δ=s`.
 The calibration inequalities follow from `ΓR²log Γ/T→0`;
@@ -47,7 +47,7 @@ to zero supplies both tempering and the required future-tail weights.
 
 ## Lean status
 
-Seven modules in `SurfaceOfSpecZ/ScaleLocality/`; the first six passed Lean.
+Seven modules in `SurfaceOfSpecZ/ScaleLocality/`; all seven passed Lean.
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -57,4 +57,5 @@ Seven modules in `SurfaceOfSpecZ/ScaleLocality/`; the first six passed Lean.
 - `TheSublogarithmicGridsHaveVanishingNormalizedDensity`: grid geometry, calibration inequalities, vanishing quadratic mass and logarithmic density.
 - `EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace`: positive spline smoothing, reflected block bounds, sparse tower, simple tempered configuration, logarithmic counts, exact spline trace and full prescribed-radius theorem.
 
-The complete proof is drafted; the final module remains under verification.
+The full configuration theorem passed `lake --old env lean`; all modules are wired
+into `SurfaceOfSpecZ.lean`. See [the prescribed-radius theorem](prescribed-sublogarithmic-window-radius.md).

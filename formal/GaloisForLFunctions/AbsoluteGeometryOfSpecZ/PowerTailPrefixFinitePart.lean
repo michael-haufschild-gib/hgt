@@ -52,8 +52,8 @@ theorem tendsto_rpow_mul_powerTailPrefix_error {a θ : ℝ}
     Tendsto (fun N : ℕ => (N : ℝ) ^ (-θ) *
       (powerTailPrefix a N - (N : ℝ) ^ (1 - a) / (1 - a))) atTop (𝓝 0) := by
   have hb : 0 < 1 - a := by linarith only [ha1]
-  have hz := ((tendsto_rpow_neg_atTop hθ).comp (tendsto_natCast_atTop_atTop (R := ℝ)))
-    .mul_const (1 / (1 - a))
+  have hz := ((tendsto_rpow_neg_atTop hθ).comp
+    (tendsto_natCast_atTop_atTop (R := ℝ))).mul_const (1 / (1 - a))
   simp only [zero_mul] at hz
   apply squeeze_zero_norm' _ hz
   filter_upwards [eventually_ge_atTop 1] with N hN

@@ -57,7 +57,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | M4 Reflection | Krein forms, ringdown, horocycles, cavity energies | complete and sharp receivers; rates and signs open |
 | M5 Square-root cancellation | smoothed prime counts, long moments, squarefree counts | receivers closed; estimates open |
 | M6 Continuation | heat, cosine, Jensen | collision-free flow ⇔ RH; purity thresholds are the width |
-| M7 Zero geometry | cameras, Blaschke factors, inner field | isolated zeros at rate 2; clusters and depth density `o(T)` open |
+| M7 Zero geometry | cameras, Blaschke factors, inner field | isolated zeros at rate 2; near-top Turán loss paid under a deep exterior gap; general clusters and depth density `o(T)` open |
 | M8 Finite-layer receiver | damping filters, centred Vaughan currents, half-period deletion | complete in world I; a top of `k` quartets is seen on windows of length `(k+1)π/67` |
 | M9 Production | integer stencils, integrality, Stepanov over ℤ | rate = Mertens level; exact count = Chebyshev; cost `m·θ(S)` |
 | M10 Count | nonnegative count with quadratic Tate limit | every hyperelliptic curve; over ℤ: RH ⇔ counts on the surviving prime rays; the object's own count is the split norm |

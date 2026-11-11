@@ -19,10 +19,14 @@ open Filter Topology MeasureTheory
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
-/-- The arithmetic Mellin limit equals the reflected zero pairing. -/
-theorem powerTailCombMellinIntegral_eq_zeroPairing (hRH : RiemannHypothesis)
-    {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+open SquareRootThreshold (zetaZeroWidth zetaZeroWidth_nonneg)
+
+/-- Below the actual zero-width boundary, the arithmetic Mellin limit
+equals the reflected zero pairing without an assumed analytic input. -/
+theorem powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half
+    {a : ℝ} (ha : 0 < a) (haw : a + zetaZeroWidth < 1 / 2) :
     (powerTailCombMellinIntegral a : ℂ) = powerTailZeroPairing a := by
+  have ha2 : a < 1 / 2 := by linarith only [haw, zetaZeroWidth_nonneg]
   have ha1 : a < 1 := by linarith only [ha2]
   have hθ : 1 - 2 * (a : ℂ) ≠ 0 := by
     exact_mod_cast (show (1 : ℝ) - 2 * a ≠ 0 by linarith only [ha2])
@@ -35,10 +39,10 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing (hRH : RiemannHypothesis)
   have hre : 0 < (1 - (a : ℂ)).re := by
     simp only [Complex.sub_re, Complex.one_re, Complex.ofReal_re]
     linarith only [ha1]
-  have hhalf : 1 / 2 < (1 - (a : ℂ)).re := by
-    simp only [Complex.sub_re, Complex.one_re, Complex.ofReal_re]
-    linarith only [ha2]
-  have hζ := ArithmeticCorrespondencePositivity.riemannZeta_ne_zero_of_riemannHypothesis hRH hhalf
+  have hζ : riemannZeta (1 - (a : ℂ)) ≠ 0 := by
+    simpa only [Complex.ofReal_sub, Complex.ofReal_one] using
+      RHTower.riemannZeta_ne_zero_of_ofReal_mem_Ioo
+        (show 0 < 1 - a by linarith only [ha2]) (show 1 - a < 1 by linarith only [ha])
   have hxi := ArithmeticCorrespondencePositivity.logDeriv_xi_eq_add hre hs1 hζ
   have hpoles : ∀ n : ℕ, (1 - (a : ℂ)) / 2 ≠ -(n : ℂ) := by
     intro n h
@@ -49,7 +53,7 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing (hRH : RiemannHypothesis)
     linarith only [ha1, hh, hn]
   rw [BohrGeneratorAxis.logDeriv_GammaR _ hpoles] at hxi
   conv_rhs at hxi => rw [logDeriv_apply]
-  have hprime := mul_primePowerMellinIntegral_eq hRH ha ha2
+  have hprime := mul_primePowerMellinIntegral_eq_of_add_width_lt_half ha haw
   have href := mul_referencePowerMellinIntegral_eq ha ha2
   have harch := ofReal_powerTailArchimedeanRowLimit ha ha1
   have hsplit : (1 - 2 * (a : ℂ)) * (powerTailCombMellinIntegral a : ℂ) =
@@ -71,17 +75,36 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing (hRH : RiemannHypothesis)
     field_simp
     ring
   apply (mul_left_cancel₀ hθ)
-  rw [powerTailZeroPairing_eq_logDeriv hRH ha ha2, hmain]
+  rw [powerTailZeroPairing_eq_logDeriv ha2, hmain]
   field_simp
+
+/-- The literal power comb converges to its zero pairing throughout the
+strict range determined by the actual zero width. -/
+theorem tendsto_powerCombTail_zeroPairing_of_add_width_lt_half
+    {a : ℝ} (ha : 0 < a) (haw : a + zetaZeroWidth < 1 / 2) :
+    Tendsto (fun N => (powerCombTail a N : ℂ)) atTop (𝓝 (powerTailZeroPairing a)) := by
+  have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
+    (tendsto_powerCombTail_of_add_width_lt_half ha haw)
+  simpa only [Function.comp_apply,
+    powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half ha haw] using h
+
+/-- Under RH the arithmetic Mellin value equals the zero pairing for every
+positive subcritical power. -/
+theorem powerTailCombMellinIntegral_eq_zeroPairing (hRH : RiemannHypothesis)
+    {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+    (powerTailCombMellinIntegral a : ℂ) = powerTailZeroPairing a := by
+  apply powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half ha
+  rw [SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mp hRH, add_zero]
+  exact ha2
 
 /-- Under RH the normalized literal power comb converges to its Mellin pairing
 summed over all zeros with multiplicity. -/
 theorem tendsto_powerCombTail_zeroPairing (hRH : RiemannHypothesis)
     {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
     Tendsto (fun N => (powerCombTail a N : ℂ)) atTop (𝓝 (powerTailZeroPairing a)) := by
-  have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
-    (tendsto_powerCombTail_of_rh hRH ha ha2)
-  simpa only [Function.comp_apply, powerTailCombMellinIntegral_eq_zeroPairing hRH ha ha2] using h
+  apply tendsto_powerCombTail_zeroPairing_of_add_width_lt_half ha
+  rw [SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mp hRH, add_zero]
+  exact ha2
 
 /-- The zero-side Mellin limits of all positive subcritical power combs
 characterize RH without an additional analytic premise. -/

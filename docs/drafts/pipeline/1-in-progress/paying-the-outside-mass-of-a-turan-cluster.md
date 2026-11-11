@@ -22,7 +22,8 @@ For `δ=c log T`, `y-δ≥a log T`, and positive `a,c,d,g`, the bound is
 `C=8 profileMass(v)(Cξ+2)[(1+g²)/(c²g²)+4/(da)²]`.
 
 Lean: `TheDepthCenteredCameraPaysItsExteriorMass`,
-`TheCenteredCameraPaysTheTuranLoss.sum_widthCenteredCamera_deep_exterior_le_inv_log`.
+`sum_widthCenteredCamera_deep_exterior_le_inv_log` in
+`TheCenteredCameraPaysTheTuranLoss`.
 
 ## Formalized Turán receiver
 
@@ -47,8 +48,10 @@ Lean: `eventually_exists_nu_widthCenteredZeroField_ge`,
 `exp(-2b(y-δ))`, with an explicit constant uniform in b and the centre.
 The arithmetic square-weight bound is supplied, not assumed.
 
-`TheCenteredCameraRemainder` contains the still-unchecked remainder bound
+`TheCenteredCameraRemainder` proves the remainder bound
 `C_v exp(-b(y-δ))(1+log(2+t)/δ)` under the usual support and length conditions.
+Its constant depends only on the original profile; tilting introduces no
+uncontrolled profile constant.
 
 ## Remaining obstruction
 

@@ -21,7 +21,7 @@ theorem arithmeticPowerProfile_cut_eq_sum (p : ℝ) (f : ℕ → ℝ)
         (if 1 / (N : ℝ) < t ∧ t ≤ 1 / (n : ℝ) then t ^ (-p) else 0) := by
   have hNp : (0 : ℝ) < N := by exact_mod_cast hN
   by_cases htN : 1 / (N : ℝ) < t
-  · rw [Set.indicator_of_mem htN, arithmeticPowerProfile,
+  · rw [Set.indicator_of_mem (show t ∈ Set.Ioi (1 / (N : ℝ)) from htN), arithmeticPowerProfile,
       sum_inverse_floor_eq (one_div_pos.mpr hNp) htN,
       one_div_one_div, Nat.floor_natCast, mul_sum]
     apply sum_congr rfl
@@ -29,7 +29,7 @@ theorem arithmeticPowerProfile_cut_eq_sum (p : ℝ) (f : ℕ → ℝ)
     by_cases hn : t ≤ 1 / (n : ℝ)
     · rw [if_pos hn, if_pos ⟨htN, hn⟩, mul_comm]
     · rw [if_neg hn, if_neg (fun h => hn h.2), mul_zero, mul_zero]
-  · rw [Set.indicator_of_notMem htN]
+  · rw [Set.indicator_of_notMem (show t ∉ Set.Ioi (1 / (N : ℝ)) from htN)]
     exact (sum_eq_zero fun n _ => by rw [if_neg (fun h => htN h.1), mul_zero]).symm
 
 /-- Integration of a finite inverse staircase retains precisely its endpoint
@@ -97,7 +97,7 @@ theorem tendsto_integral_inverse_cut {g : ℝ → ℝ} (hg : Measurable g)
     refine tendsto_const_nhds.congr' ?_
     have h := (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ)).eventually (gt_mem_nhds ht.1)
     filter_upwards [h] with N hN
-    rw [Set.indicator_of_mem hN]
+    rw [Set.indicator_of_mem (show t ∈ Set.Ioi (1 / (N : ℝ)) from hN)]
 
 /-- The summatory Mellin integral is the limit of the weighted source series;
 absolute summability of the source is unnecessary. -/
@@ -110,8 +110,8 @@ theorem tendsto_weighted_sums_arithmeticPowerProfile {p β C : ℝ} {f : ℕ →
   have hp1 : p < 1 := by linarith only [hβ, hsub]
   have hθ : 0 < 1 - p := by linarith only [hp1]
   have hi := (riemannOn_arithmeticPowerProfile hp hβ hpos hsub hC hbound).1
-  have hcut := (tendsto_integral_inverse_cut (measurable_arithmeticPowerProfile p f) hi)
-    .const_mul (1 - p)
+  have hcut := (tendsto_integral_inverse_cut
+    (measurable_arithmeticPowerProfile p f) hi).const_mul (1 - p)
   have hz : Tendsto (fun N : ℕ => (N : ℝ) ^ (-(1 - p)) * ∑ n ∈ Icc 1 N, f n)
       atTop (𝓝 0) := by
     have hmaj : Tendsto (fun N : ℕ => C * (N : ℝ) ^ (β - (1 - p))) atTop (𝓝 0) := by

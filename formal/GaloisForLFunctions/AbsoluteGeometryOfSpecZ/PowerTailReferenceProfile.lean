@@ -21,8 +21,11 @@ def powerTailReferenceProfile (a t : ℝ) : ℝ :=
 
 theorem measurable_powerTailReferenceProfile (a : ℝ) :
     Measurable (powerTailReferenceProfile a) := by
-  have hp : Measurable (fun t : ℝ => powerTailPrefix a (1 / t)) :=
-    measurable_from_nat.comp (Nat.measurable_floor.comp (measurable_const.div measurable_id))
+  have hs : Measurable (fun N : ℕ => ∑ n ∈ Icc 1 N, powerTailWeight a n) :=
+    measurable_from_nat
+  have hf : Measurable (fun t : ℝ => ⌊1 / t⌋₊) :=
+    Nat.measurable_floor.comp (measurable_const.div measurable_id)
+  have hp : Measurable (fun t : ℝ => powerTailPrefix a (1 / t)) := hs.comp hf
   exact (measurable_id.pow_const (-(2 * a))).mul
     (hp.sub (((measurable_const.div measurable_id).pow_const (1 - a)).div_const (1 - a)))
 
@@ -33,8 +36,9 @@ theorem powerTailReferenceProfile_eq (a : ℝ) {t : ℝ} (ht : 0 < t) :
     rw [← Real.rpow_add ht]
     congr 1
     ring
-  rw [powerTailReferenceProfile, mul_sub, ← mul_div_assoc,
-    Real.div_rpow zero_le_one ht.le, Real.one_rpow, one_div, ← Real.rpow_neg ht.le, hp]
+  have hq : (1 / t) ^ (1 - a) = t ^ (-(1 - a)) := by
+    rw [one_div, Real.inv_rpow ht.le, ← Real.rpow_neg ht.le]
+  rw [powerTailReferenceProfile, mul_sub, ← mul_div_assoc, hq, hp]
   rfl
 
 /-- The cancellation inside the reference profile leaves a subcritical power. -/
@@ -56,14 +60,16 @@ theorem riemannOn_cut_powerTailReferenceProfile {a δ : ℝ} (ha : 0 < a)
     RiemannOn ((Set.Ioi δ).indicator (powerTailReferenceProfile a)) := by
   have hu := riemannOn_cut_arithmeticPowerProfile
     (show 0 ≤ 2 * a by linarith only [ha]) hδ (powerTailWeight a)
-  have hv := (riemannOn_rpow_interval (show 0 ≤ 1 + a by linarith only [ha]) hδ hδ1)
-    .const_mul (1 / (1 - a))
+  have hv := (riemannOn_rpow_interval (show 0 ≤ 1 + a by linarith only [ha])
+    hδ hδ1).const_mul (1 / (1 - a))
   refine (hu.sub hv).congr fun t ht => ?_
   by_cases hδt : δ < t
-  · rw [Set.indicator_of_mem hδt, Set.indicator_of_mem hδt, if_pos ⟨hδt, ht.2⟩,
+  · rw [Set.indicator_of_mem (show t ∈ Set.Ioi δ from hδt),
+      Set.indicator_of_mem (show t ∈ Set.Ioi δ from hδt), if_pos ⟨hδt, ht.2⟩,
       powerTailReferenceProfile_eq a ht.1]
     ring
-  · rw [Set.indicator_of_notMem hδt, Set.indicator_of_notMem hδt,
+  · rw [Set.indicator_of_notMem (show t ∉ Set.Ioi δ from hδt),
+      Set.indicator_of_notMem (show t ∉ Set.Ioi δ from hδt),
       if_neg (fun h => hδt h.1), mul_zero, sub_zero]
 
 /-- The normalized reference-convolution profile has an actual limiting

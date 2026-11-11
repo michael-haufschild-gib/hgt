@@ -176,7 +176,7 @@ theorem norm_paperFT_depthCenteredCamera_pole_le
   have hk : companionWeight δ y t ((q : ℂ) - (b : ℂ)) ≤
       Real.exp (-(b * (y - δ))) := by
     simp only [companionWeight, Complex.sub_re, Complex.ofReal_re,
-      Complex.sub_im, Complex.ofReal_im, sub_self, zero_sub, sq_neg]
+      Complex.sub_im, Complex.ofReal_im, sub_self, zero_sub, neg_sq]
     rw [div_le_iff₀ (by positivity)]
     calc
       _ ≤ Real.exp (-(b * (y - δ)) + (y + δ)) := Real.exp_le_exp.mpr he
@@ -209,8 +209,8 @@ theorem exists_norm_widthCenteredZeroField_add_poly_le
   have he1 : gammaOf (1 : ℂ) = -I / 2 := by
     simp only [gammaOf, Complex.div_I]
     ring
-  rw [he0] at h0
-  rw [he1] at h1
+  rw [Complex.ofReal_zero, he0] at h0
+  rw [Complex.ofReal_one, he1] at h1
   have hG := hCG zetaZeroWidth δ y t hb hδ hy.le
   rw [abs_of_nonneg (one_pos.le.trans ht)] at hG
   rw [widthCenteredZeroField_add_poly_eq hv hsupp (one_pos.trans_le hδ) hy t]

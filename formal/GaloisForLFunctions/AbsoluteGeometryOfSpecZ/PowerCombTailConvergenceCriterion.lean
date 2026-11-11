@@ -15,6 +15,8 @@ open Filter Topology Finset
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
+open SquareRootThreshold (zetaZeroWidth zetaZeroWidth_nonneg zetaZeroWidth_le_half)
+
 /-- Convergence of the actual normalized finite power comb. -/
 def PowerCombTailConverges (a : ℝ) : Prop :=
   ∃ L : ℝ, Tendsto (powerCombTail a) atTop (𝓝 L)
@@ -47,6 +49,63 @@ theorem powerCombTailGrowth_zero_of_converges {a : ℝ} (h : PowerCombTailConver
     PowerCombTailGrowth a 0 := by
   obtain ⟨L, hL⟩ := h
   exact strictGrowth_zero_of_tendsto hL
+
+/-- Convergence cannot cross the boundary set by the actual zero width. -/
+theorem add_zeroWidth_le_half_of_powerCombTailConverges {a : ℝ}
+    (ha : 0 < a) (ha2 : a < 1 / 2) (h : PowerCombTailConverges a) :
+    a + zetaZeroWidth ≤ 1 / 2 := by
+  have hplane : RHTower.XiZeroHalfPlaneBound (1 / 2 - a) := by
+    simpa only [add_zero] using (powerCombTailGrowth_iff_zeroHalfPlane ha ha2 le_rfl).mp
+      (powerCombTailGrowth_zero_of_converges h)
+  have hw := (SquareRootThreshold.zetaZeroWidth_le_iff_xiZeroHalfPlaneBound
+    (show 0 ≤ 1 / 2 - a by linarith only [ha2])).mpr hplane
+  linarith only [hw]
+
+/-- Every positive subcritical parameter beyond the width boundary diverges. -/
+theorem not_powerCombTailConverges_of_half_lt_add_width {a : ℝ}
+    (ha : 0 < a) (ha2 : a < 1 / 2) (haw : 1 / 2 < a + zetaZeroWidth) :
+    ¬ PowerCombTailConverges a :=
+  fun h => (not_le.mpr haw) (add_zeroWidth_le_half_of_powerCombTailConverges ha ha2 h)
+
+/-- The supremum of the positive subcritical convergence parameters,
+with zero included to cover an empty positive range. -/
+def powerCombConvergenceRadius : ℝ :=
+  sSup (insert 0 {a : ℝ | 0 < a ∧ a < 1 / 2 ∧ PowerCombTailConverges a})
+
+/-- The convergence radius of the literal power comb reads the actual zero
+width exactly. Boundary convergence is not needed for this equality. -/
+theorem powerCombConvergenceRadius_eq_half_sub_zeroWidth :
+    powerCombConvergenceRadius = 1 / 2 - zetaZeroWidth := by
+  have hBdd : BddAbove (insert 0 {a : ℝ | 0 < a ∧ a < 1 / 2 ∧ PowerCombTailConverges a}) := by
+    refine ⟨1 / 2, fun a ha => ?_⟩
+    rcases Set.mem_insert_iff.mp ha with rfl | ⟨_, ha2, _⟩
+    · norm_num
+    · exact ha2.le
+  have hr0 : 0 ≤ powerCombConvergenceRadius := by
+    apply Real.sSup_nonneg
+    intro a ha
+    rcases Set.mem_insert_iff.mp ha with rfl | ⟨ha, _, _⟩
+    · exact le_rfl
+    · exact ha.le
+  apply le_antisymm
+  · apply Real.sSup_le _ (sub_nonneg.mpr zetaZeroWidth_le_half)
+    intro a ha
+    rcases Set.mem_insert_iff.mp ha with rfl | ⟨ha, ha2, hconv⟩
+    · exact sub_nonneg.mpr zetaZeroWidth_le_half
+    · have h := add_zeroWidth_le_half_of_powerCombTailConverges ha ha2 hconv
+      linarith only [h]
+  · by_contra h
+    have hlt : powerCombConvergenceRadius < 1 / 2 - zetaZeroWidth := lt_of_not_ge h
+    let a := (powerCombConvergenceRadius + (1 / 2 - zetaZeroWidth)) / 2
+    have ha : 0 < a := by dsimp only [a]; linarith only [hr0, hlt]
+    have haw : a + zetaZeroWidth < 1 / 2 := by dsimp only [a]; linarith only [hlt]
+    have ha2 : a < 1 / 2 := by linarith only [haw, zetaZeroWidth_nonneg]
+    have hconv : PowerCombTailConverges a :=
+      ⟨powerTailCombMellinIntegral a, tendsto_powerCombTail_of_add_width_lt_half ha haw⟩
+    have hle : a ≤ powerCombConvergenceRadius :=
+      le_csSup hBdd (Set.mem_insert_iff.mpr (Or.inr ⟨ha, ha2, hconv⟩))
+    dsimp only [a] at hle
+    linarith only [hle, hlt]
 
 /-- Convergence of every positive subcritical power tail forces RH. -/
 theorem riemannHypothesis_of_all_powerCombTails_converge

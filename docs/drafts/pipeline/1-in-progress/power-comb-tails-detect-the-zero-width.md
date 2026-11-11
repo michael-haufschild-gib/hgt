@@ -14,6 +14,20 @@ limit in the convergent range by the Mellin pairing of the two powers.
 The primary theorem must be unconditional; no zero-free or analytic input
 may be assumed without proving the corresponding implication.
 
+Stronger target: for actual width `w=zetaZeroWidth`, every `0<a` with
+`a+w<1/2` converges to the same zero pairing. The corpus proves
+`XiZeroHalfPlaneBound w`; the prime-error abscissa theorem then gives
+cancellation exponent `1/2+w`. The weighted profile is integrable because
+`2a+(1/2+w-a)<1`. RH is the specialization `w=0`.
+The zero pairing itself is summable without RH, using ξ's real-axis
+nonvanishing. These strengthened proofs are in progress.
+
+Exact width target: adjoining `0` to the positive subcritical convergence
+parameters, their supremum should be `1/2-w`. Convergence implies
+subpolynomial growth and hence `a+w≤1/2`; the strict converse above fills
+every smaller positive parameter. This identifies the supremum without
+assuming or deciding convergence at the boundary.
+
 ## Connection
 
 The existing Laguerre-tail theorem reaches all logarithmic moments, but
@@ -31,8 +45,10 @@ at the same normalization.
 2. Weighted Möbius inversion and the exact prime-error growth criterion — proved.
 3. Polar and archimedean remainder bounds, and the normalized comb's exact
    zero-half-plane criterion — proved.
-4. Actual convergence under RH from prime-error estimates, including singular
-   weighted sums and the Mellin-pairing limit — open.
+4. Actual convergence whenever `0<a` and `a+w<1/2`, including singular
+   weighted sums — proved in `tendsto_powerCombTail_of_add_width_lt_half`.
+5. Exact convergence radius and identification of the Mellin limit with
+   the zero pairing — verification pending.
 
 ## Existing sources
 
@@ -51,8 +67,8 @@ Reference and archimedean bounds are formalized; the literal-comb growth
 theorem `powerCombTailGrowth_iff_zeroHalfPlane` is formalized.
 `riemannHypothesis_iff_all_powerCombTails_subpolynomial` gives the exact
 RH criterion for subpolynomial growth of all positive subcritical tails.
-Convergence and its Mellin limit remain open;
-a growth-only intermediate result does not finish the target.
+Actual convergence in the strict width range is formalized. The exact
+radius and zero-side identification remain to be checked.
 
 ## Arithmetic reduction
 

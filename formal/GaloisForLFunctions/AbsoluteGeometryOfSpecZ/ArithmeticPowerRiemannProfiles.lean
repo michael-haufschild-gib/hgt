@@ -19,9 +19,11 @@ def arithmeticPowerProfile (p : ℝ) (f : ℕ → ℝ) (t : ℝ) : ℝ :=
   t ^ (-p) * ∑ n ∈ Icc 1 ⌊1 / t⌋₊, f n
 
 theorem measurable_arithmeticPowerProfile (p : ℝ) (f : ℕ → ℝ) :
-    Measurable (arithmeticPowerProfile p f) :=
-  (measurable_id.pow_const (-p)).mul
-    (measurable_from_nat.comp (Nat.measurable_floor.comp (measurable_const.div measurable_id)))
+    Measurable (arithmeticPowerProfile p f) := by
+  have hs : Measurable (fun N : ℕ => ∑ n ∈ Icc 1 N, f n) := measurable_from_nat
+  have hf : Measurable (fun t : ℝ => ⌊1 / t⌋₊) :=
+    Nat.measurable_floor.comp (measurable_const.div measurable_id)
+  exact (measurable_id.pow_const (-p)).mul (hs.comp hf)
 
 /-- Holding a negative power constant below a positive cutoff gives a bounded
 nonnegative antitone profile. -/
@@ -29,8 +31,10 @@ theorem riemannOn_clipped_rpow {p δ : ℝ} (hp : 0 ≤ p) (hδ : 0 < δ) :
     RiemannOn (fun t : ℝ => (max δ t) ^ (-p)) := by
   apply riemannOn_of_continuousOn_of_bounded (B := δ ^ (-p))
   · intro t _
-    exact ((continuousAt_const.max continuousAt_id).rpow_const
-      (Or.inl (ne_of_gt (hδ.trans_le (le_max_left _ _))))).continuousWithinAt
+    have hc : ContinuousAt (fun x : ℝ => (max δ x) ^ (-p)) t :=
+      (continuousAt_const.max continuousAt_id).rpow_const
+        (Or.inl (ne_of_gt (hδ.trans_le (le_max_left _ _))))
+    exact hc.continuousWithinAt
   · intro t _
     rw [abs_of_nonneg (Real.rpow_nonneg (hδ.le.trans (le_max_left _ _)) _)]
     exact Real.rpow_le_rpow_of_nonpos hδ (le_max_left _ _) (neg_nonpos.mpr hp)
@@ -53,15 +57,16 @@ theorem riemannOn_rpow_interval {p δ c : ℝ} (hp : 0 ≤ p) (hδ : 0 < δ)
       (fun t _ => Real.rpow_nonneg (hδ.le.trans (le_max_left _ _)) _) hi b
   refine ((hc c).sub (hc δ)).congr fun t _ => ?_
   by_cases htδ : t ≤ δ
-  · rw [Set.indicator_of_mem (htδ.trans hδc), Set.indicator_of_mem htδ,
+  · rw [Set.indicator_of_mem (show t ∈ Set.Iic c from htδ.trans hδc),
+      Set.indicator_of_mem (show t ∈ Set.Iic δ from htδ),
       sub_self, if_neg (fun h => (not_lt.mpr htδ) h.1)]
   · have hδt := lt_of_not_ge htδ
-    rw [Set.indicator_of_notMem htδ, sub_zero]
+    rw [Set.indicator_of_notMem (show t ∉ Set.Iic δ from htδ), sub_zero]
     by_cases htc : t ≤ c
-    · rw [Set.indicator_of_mem htc, if_pos ⟨hδt, htc⟩]
+    · rw [Set.indicator_of_mem (show t ∈ Set.Iic c from htc), if_pos ⟨hδt, htc⟩]
       dsimp only [h]
       rw [max_eq_right hδt.le]
-    · rw [Set.indicator_of_notMem htc, if_neg (fun h => htc h.2)]
+    · rw [Set.indicator_of_notMem (show t ∉ Set.Iic c from htc), if_neg (fun h => htc h.2)]
 
 /-- Above a positive cutoff, the inverse staircase sees finitely many terms. -/
 theorem sum_inverse_floor_eq {f : ℕ → ℝ} {δ t : ℝ}
@@ -99,13 +104,14 @@ theorem riemannOn_cut_arithmeticPowerProfile {p δ : ℝ} (hp : 0 ≤ p)
         ((Nat.le_floor_iff (by positivity)).mp (mem_Icc.mp hn).2))).const_mul (f n))
   refine hs.congr fun t _ => ?_
   by_cases ht : δ < t
-  · rw [Set.indicator_of_mem ht, arithmeticPowerProfile, sum_inverse_floor_eq hδ ht, mul_sum]
+  · rw [Set.indicator_of_mem (show t ∈ Set.Ioi δ from ht), arithmeticPowerProfile,
+      sum_inverse_floor_eq hδ ht, mul_sum]
     apply sum_congr rfl
     intro n _
     by_cases hn : t ≤ 1 / (n : ℝ)
     · rw [if_pos ⟨ht, hn⟩, if_pos hn, mul_comm]
     · rw [if_neg (fun h => hn h.2), if_neg hn, mul_zero, mul_zero]
-  · rw [Set.indicator_of_notMem ht]
+  · rw [Set.indicator_of_notMem (show t ∉ Set.Ioi δ from ht)]
     exact sum_eq_zero fun n _ => by rw [if_neg (fun h => ht h.1), mul_zero]
 
 /-- Cancellation of order `x^β` makes the inverse staircase integrable against
@@ -120,7 +126,7 @@ theorem riemannOn_arithmeticPowerProfile {p β C : ℝ} {f : ℕ → ℝ}
   · intro t ht
     rw [arithmeticPowerProfile, abs_mul,
       abs_of_nonneg (Real.rpow_nonneg ht.1.le _)]
-    have hfloor : (⌊1 / t⌋₊ : ℝ) ≤ 1 / t := Nat.floor_le (by positivity)
+    have hfloor : (⌊1 / t⌋₊ : ℝ) ≤ 1 / t := Nat.floor_le (one_div_nonneg.mpr ht.1.le)
     calc
       _ ≤ t ^ (-p) * (C * (⌊1 / t⌋₊ : ℝ) ^ β) :=
         mul_le_mul_of_nonneg_left (hbound _) (Real.rpow_nonneg ht.1.le _)
@@ -152,7 +158,6 @@ theorem tailRiemannSum_inverse_power_eq (p : ℝ) (f : ℝ → ℝ)
     rw [Real.div_rpow hm0.le hNp.le, Real.rpow_neg hNp.le,
       div_eq_mul_inv, inv_inv]
     rfl
-  dsimp only
   rw [one_div_div, hscale, Real.rpow_sub hNp, Real.rpow_one]
   ring
 
@@ -164,7 +169,8 @@ theorem tailRiemannSum_arithmeticPowerProfile_eq (p : ℝ) (f : ℕ → ℝ)
         powerTailWeight p m * ∑ n ∈ Icc 1 (N / m), f n := by
   have h := tailRiemannSum_inverse_power_eq p
     (fun x => ∑ n ∈ Icc 1 ⌊x⌋₊, f n) hN
-  simpa only [arithmeticPowerProfile, Nat.floor_div_eq_div] using h
+  change tailRiemannSum (fun t : ℝ => t ^ (-p) * ∑ n ∈ Icc 1 ⌊1 / t⌋₊, f n) N = _
+  simpa only [Nat.floor_div_eq_div] using h
 
 /-- A normalized arithmetic convolution converges to its summatory Mellin
 integral once the source cancellation exponent is below the pole exponent. -/

@@ -1,14 +1,16 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceProfile
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailCombGrowth
+import GaloisForLFunctions.SquareRootThreshold.TheWallsMeasureOneZeroWidth
 
 /-!
 # Convergence of subcritical power combs
 
 The finite polar term cancels the leading reference convolution exactly.
-The remaining arithmetic terms are two improper Riemann sums. Under RH,
-the prime deviation has a power envelope strictly below the integrability
-threshold, so the literal comb has a finite Mellin-integral limit.
+The remaining arithmetic terms are two improper Riemann sums. Whenever
+the power parameter plus the actual zero width is below one half, the
+prime deviation has an integrable power envelope. The literal comb then
+has a finite Mellin-integral limit; RH gives the whole subcritical interval.
 -/
 
 noncomputable section
@@ -19,6 +21,7 @@ open scoped ArithmeticFunction.zeta
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
 open HodgeTheoryOfAFixedPart
+open SquareRootThreshold (zetaZeroWidth zetaZeroWidth_nonneg)
 
 /-- The finite first degree times the bounded power-prefix discrepancy,
 at the normalization of the comb. -/
@@ -94,15 +97,22 @@ theorem tendsto_powerTailCombRemainder {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) 
         he (abs_nonneg _) (by have := powerTailPole_nonneg a; positivity)
     _ = _ := by ring
 
-/-- RH supplies cancellation strictly stronger than the threshold required by
-the power-convolution integral. -/
-theorem exists_powerTailPrimeDeviation_bound_of_rh (hRH : RiemannHypothesis)
-    {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+/-- The actual zero width supplies the strict growth exponent of the prime error. -/
+theorem partialSumPowerBound_primeError_at_zeroWidth :
+    RHTower.PartialSumPowerBound RHTower.vonMangoldtMinusOne (1 / 2 + zetaZeroWidth) := by
+  apply (RHTower.partialSumPowerBound_iff_convergesRightOf _
+    (by linarith only [zetaZeroWidth_nonneg])).mpr
+  exact (RHTower.xiZeroHalfPlaneBound_iff_vonMangoldtMinusOne_converges
+    zetaZeroWidth_nonneg).mp SquareRootThreshold.xiZeroHalfPlaneBound_zetaZeroWidth
+
+/-- Below the actual width boundary, prime cancellation is strictly stronger
+than the threshold required by the power-convolution integral. -/
+theorem exists_powerTailPrimeDeviation_bound_of_add_width_lt_half
+    {a : ℝ} (ha : 0 < a) (haw : a + zetaZeroWidth < 1 / 2) :
     ∃ β C : ℝ, 0 ≤ β ∧ 2 * a + β < 1 ∧ 0 ≤ C ∧
       ∀ N : ℕ, |∑ n ∈ Icc 1 N, powerTailPrimeDeviation a n| ≤ C * (N : ℝ) ^ β := by
-  have hg : RHTower.PartialSumPowerBound RHTower.vonMangoldtMinusOne (1 / 2) :=
-    (RHTower.partialSumPowerBound_iff_convergesRightOf _ (by norm_num)).mpr
-      (RHTower.riemannHypothesis_iff_vonMangoldtMinusOne_converges.mp hRH)
+  have ha2 : a < 1 / 2 := by linarith only [haw, zetaZeroWidth_nonneg]
+  have hg := partialSumPowerBound_primeError_at_zeroWidth
   have he : (fun n : ℕ =>
       (ArithmeticFunction.vonMangoldt - (ζ : ArithmeticFunction ℝ)) (n + 1)) =
       RHTower.vonMangoldtMinusOne := by
@@ -112,33 +122,46 @@ theorem exists_powerTailPrimeDeviation_bound_of_rh (hRH : RiemannHypothesis)
         ArithmeticFunction.vonMangoldt (n + 1) - 1
     simp
   have hw : RHTower.PartialSumPowerBound (fun n => powerTailPrimeDeviation a (n + 1))
-      (1 / 2 - a) := by
+      (1 / 2 + zetaZeroWidth - a) := by
     apply (partialSumPowerBound_powerTailTwist_iff
-      (ArithmeticFunction.vonMangoldt - (ζ : ArithmeticFunction ℝ)) a (1 / 2)
-      (by norm_num) (by linarith only [ha2])).mpr
+      (ArithmeticFunction.vonMangoldt - (ζ : ArithmeticFunction ℝ)) a (1 / 2 + zetaZeroWidth)
+      (by linarith only [zetaZeroWidth_nonneg])
+      (by linarith only [ha2, zetaZeroWidth_nonneg])).mpr
     simpa only [he] using hg
   have hs : _root_.HTGeometry.StrictNaturalPowerGrowth
-      (fun N => ∑ n ∈ Icc 1 N, powerTailPrimeDeviation a n) (1 / 2 - a) := by
+      (fun N => ∑ n ∈ Icc 1 N, powerTailPrimeDeviation a n) (1 / 2 + zetaZeroWidth - a) := by
     apply (_root_.HTGeometry.strictNaturalPowerGrowth_iff_succ (by simp)
-      (by linarith only [ha2])).mpr
+      (by linarith only [ha2, zetaZeroWidth_nonneg])).mpr
     simpa only [RHTower.PartialSumPowerBound, RHTower.sum_range_succ_eq_sourcePartialSum,
       RHTower.sourcePartialSum] using hw
-  let δ : ℝ := (1 / 2 - a) / 2
-  have hδ : 0 < δ := by dsimp only [δ]; linarith only [ha2]
+  let δ : ℝ := (1 / 2 - a - zetaZeroWidth) / 2
+  have hδ : 0 < δ := by dsimp only [δ]; linarith only [haw]
   obtain ⟨C, hC, hbound⟩ := hs δ hδ
-  refine ⟨1 / 2 - a + δ, C, by dsimp only [δ]; linarith only [ha2],
-    by dsimp only [δ]; linarith only [ha2], hC, fun N => ?_⟩
+  refine ⟨1 / 2 + zetaZeroWidth - a + δ, C,
+    by dsimp only [δ]; linarith only [ha2, zetaZeroWidth_nonneg],
+    by dsimp only [δ]; linarith only [haw], hC, fun N => ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · simp only [Icc_eq_empty_of_lt (by omega : 0 < 1), sum_empty, abs_zero]
     positivity
   · exact hbound N hN
 
-/-- Every positive subcritical power comb converges under RH, with the
-archimedean and arithmetic Mellin integrals evaluated at its actual scale. -/
-theorem tendsto_powerCombTail_of_rh (hRH : RiemannHypothesis)
+/-- RH supplies the full subcritical range of prime-error power envelopes. -/
+theorem exists_powerTailPrimeDeviation_bound_of_rh (hRH : RiemannHypothesis)
     {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+    ∃ β C : ℝ, 0 ≤ β ∧ 2 * a + β < 1 ∧ 0 ≤ C ∧
+      ∀ N : ℕ, |∑ n ∈ Icc 1 N, powerTailPrimeDeviation a n| ≤ C * (N : ℝ) ^ β := by
+  apply exists_powerTailPrimeDeviation_bound_of_add_width_lt_half ha
+  rw [SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mp hRH, add_zero]
+  exact ha2
+
+/-- Every positive power below the actual zero-width boundary converges,
+with no assumed zero-free half-plane or analytic input. -/
+theorem tendsto_powerCombTail_of_add_width_lt_half
+    {a : ℝ} (ha : 0 < a) (haw : a + zetaZeroWidth < 1 / 2) :
     Tendsto (powerCombTail a) atTop (𝓝 (powerTailCombMellinIntegral a)) := by
-  obtain ⟨β, C, hβ, hsub, hC, hbound⟩ := exists_powerTailPrimeDeviation_bound_of_rh hRH ha ha2
+  have ha2 : a < 1 / 2 := by linarith only [haw, zetaZeroWidth_nonneg]
+  obtain ⟨β, C, hβ, hsub, hC, hbound⟩ :=
+    exists_powerTailPrimeDeviation_bound_of_add_width_lt_half ha haw
   have hp := tendsto_normalized_power_convolution (show 0 ≤ 2 * a by linarith only [ha])
     hβ (show 0 < 2 * a + β by linarith only [ha, hβ]) hsub hC hbound
   have hr := (riemannOn_powerTailReferenceProfile ha ha2).2
@@ -148,5 +171,13 @@ theorem tendsto_powerCombTail_of_rh (hRH : RiemannHypothesis)
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with N hN
   exact (powerCombTail_eq_mellin_meshes a hN).symm
+
+/-- Under RH every positive subcritical power comb has its Mellin-integral limit. -/
+theorem tendsto_powerCombTail_of_rh (hRH : RiemannHypothesis)
+    {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+    Tendsto (powerCombTail a) atTop (𝓝 (powerTailCombMellinIntegral a)) := by
+  apply tendsto_powerCombTail_of_add_width_lt_half ha
+  rw [SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mp hRH, add_zero]
+  exact ha2
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
