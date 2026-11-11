@@ -36,7 +36,7 @@ theorem tendsto_high_detector_main_error
   have hu := tendsto_gate_normalized_displacement hU (by norm_num : (0 : ℝ) ≤ 13 / 10) hgate
   have hlam : Tendsto (fun i => (1 / Real.log (U i)) *
       Real.log (shortLevinsonCutoff (U i))) l (𝓝 (13 / 50 : ℝ)) := by
-    simpa only [Function.comp_def, one_div, mul_comm, ← div_eq_mul_inv] using
+    simpa only [Function.comp_def, div_mul_eq_mul_div, one_mul] using
       tendsto_log_shortLevinsonCutoff_div_log.comp hU
   obtain ⟨hca, hcb⟩ := tendsto_tapered_block_conductor_endpoints hU ha hρ hδ hblock
   have hca' : Tendsto (fun i => Real.log ((a i - a i ^ ρ) / (2 * Real.pi)) /

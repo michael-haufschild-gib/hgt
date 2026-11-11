@@ -537,6 +537,7 @@ private theorem exists_disjoint_subsets_of_sum_card_le {α : Type*} [DecidableEq
       have hd_left : ∀ j < n, Disjoint A (T j) := fun j hj =>
         Disjoint.mono hAW (Finset.subset_biUnion_of_mem T (Finset.mem_range.mpr hj))
           sdiff_disjoint
+      dsimp only
       by_cases h₁ : j₁ = n
       · rw [if_pos h₁, if_neg (h₁ ▸ hne.symm)]
         exact hd_left j₂ (by omega)
@@ -1437,7 +1438,8 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
         calc 16 = 16 ^ 1 := (pow_one 16).symm
           _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
           _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
-      have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+      have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le (s := s) hMk16
+        (le_trans (by norm_num) hs.le)
       rw [norm_mul, Complex.norm_natCast]
       calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
           ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
@@ -1470,7 +1472,8 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
           calc 16 = 16 ^ 1 := (pow_one 16).symm
             _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
             _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
-        have hnorm_M := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+        have hnorm_M := norm_natCast_cpow_neg_le_half_of_sixteen_le (s := s) hMk16
+          (le_trans (by norm_num) hs.le)
         have hy_cast : (((M ^ (k + 1) : ℕ) : ℂ)) = (y : ℂ) := by simp [y]
         have hy1 : 1 ≤ y := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ M))
         calc ‖∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s‖
@@ -1479,7 +1482,8 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
               refine Finset.sum_le_sum fun p hp => ?_
               obtain ⟨hgt, hle⟩ := hwin (k + 1) hkge p hp
               have hp16 : 16 ≤ p := (hprime (k + 1) p hp).2.le
-              have hnorm_p := norm_natCast_cpow_neg_le_half_of_sixteen_le hp16 (by linarith)
+              have hnorm_p := norm_natCast_cpow_neg_le_half_of_sixteen_le (s := s) hp16
+                (le_trans (by norm_num) hs.le)
               have hyp : y ≤ (p : ℝ) := by
                 have : ((M ^ (k + 1) : ℕ) : ℝ) ≤ (p : ℝ) := by exact_mod_cast hgt.le
                 simpa [y] using this
@@ -1494,7 +1498,8 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
                   _ = y ^ (-1 - 2 / 5 : ℝ) := by rw [← Real.rpow_add hy0]; congr 1; ring
               have hs_le : ‖s‖ ≤ ‖s‖ + 1 := by linarith
               calc ‖neckPertTerm M (k + 1) p s‖
-                  ≤ 2 * (‖s‖ * (y ^ (-s.re - 1) * ((p : ℝ) - y))) := by linarith
+                  ≤ 2 * ‖(p : ℂ) ^ (-s) - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖ := h1
+                _ ≤ 2 * (‖s‖ * (y ^ (-s.re - 1) * ((p : ℝ) - y))) := by linarith only [h2]
                 _ ≤ 2 * ((‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ)) := by gcongr
                 _ = 2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ) := by ring
           _ = ((S_seq (k + 1)).card : ℝ) * (2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ)) := by

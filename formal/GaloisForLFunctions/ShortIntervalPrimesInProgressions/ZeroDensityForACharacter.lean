@@ -590,7 +590,7 @@ theorem exists_zeroDensity_character (hχ : χ ≠ 1) :
   -- finiteness
   have hfin : {r : LZero χ | σ ≤ r.point.re ∧ |r.point.im| ≤ T}.Finite := by
     refine (GaloisForLFunctions.EntireZeroDivisor.locallyFinite_zeroCopyPoint
-      (analyticOnNhd_shiftedL hχ) (T + 3)).subset fun r hr => ?_
+      (analyticOnNhd_shiftedL hχ) (T + 3)).subset fun (r : LZero χ) hr => ?_
     obtain ⟨hre, him⟩ := hr
     have hlt := point_re_lt_one hχ r
     simp only [Set.mem_setOf_eq]
@@ -616,7 +616,8 @@ theorem exists_zeroDensity_character (hχ : χ ≠ 1) :
         (detCoeffChi χ X y) Λ c.2.2 (σ + c.1 / Λ) r.point.im‖ := by
     intro r hr
     obtain ⟨i, hi, hiσ, j, hj, m, hm, hbig⟩ := exists_class_of_zero hχ hT hσ r (hmemZ r hr)
-    exact ⟨(i, j, m), by simp [hC, hi, hj, hm], hiσ, hbig⟩
+    exact ⟨(i, j, m), Finset.mem_product.mpr ⟨Finset.mem_range.mpr hi,
+      Finset.mem_product.mpr ⟨Finset.mem_range.mpr hj, Finset.mem_range.mpr hm⟩⟩, hiσ, hbig⟩
   set cls : LZero χ → ℕ × ℕ × ℕ := fun r =>
     if h : r ∈ Z then Classical.choose (hcls r h) else (0, 0, 0) with hclsdef
   have hclsC : ∀ r ∈ Z, cls r ∈ C ∧ σ + (cls r).1 / Λ ≤ r.point.re ∧
@@ -633,8 +634,7 @@ theorem exists_zeroDensity_character (hχ : χ ≠ 1) :
   -- the polylogarithmic sizes
   have hΛT : Λ ≤ 6 * lT := by
     have h := Real.log_le_log (by exact_mod_cast (show 0 < X * y by omega)) hXy6
-    rw [Real.log_pow] at h
-    push_cast at h
+    rw [Real.log_pow, Nat.cast_ofNat] at h
     linarith
   have hΛ0 : 0 ≤ Λ := Real.log_nonneg (by exact_mod_cast (show 1 ≤ X * y by omega))
   have hCcard : (C.card : ℝ) ≤ (6 * (1 + lT)) * ((12 * (1 + lT)) * (20 * (1 + lT))) := by

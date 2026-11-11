@@ -29,7 +29,8 @@ theorem norm_edPoly_le_sqrt_of_envelope {N : ℕ} {b : ℕ → ℂ} {s : ℂ} {B
     _ ≤ ∑ n ∈ Finset.Icc 1 N, B * (n : ℝ) ^ (-(1 / 2 : ℝ)) := by
       apply Finset.sum_le_sum
       intro n hn
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
+      have hn0 : (0 : ℝ) < n := by
+        exact_mod_cast (Nat.succ_le_iff.mp (Finset.mem_Icc.mp hn).1)
       rw [norm_mul, ← Complex.ofReal_natCast, Complex.norm_cpow_eq_rpow_re_of_pos hn0,
         Complex.neg_re]
       refine (mul_le_mul_of_nonneg_right (hb n hn) (Real.rpow_nonneg hn0.le _)).trans_eq ?_

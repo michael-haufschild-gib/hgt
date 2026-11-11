@@ -42,7 +42,7 @@ theorem exists_eventually_matchedDetectorBlockEnergy_le
   have hu := tendsto_gate_normalized_displacement hU (by norm_num : (0 : ℝ) ≤ 13 / 10) hgate
   have hlam : Tendsto (fun i => (1 / Real.log (U i)) *
       Real.log (shortLevinsonCutoff (U i))) l (𝓝 (13 / 50 : ℝ)) := by
-    simpa only [Function.comp_def, one_div, mul_comm, ← div_eq_mul_inv] using
+    simpa only [Function.comp_def, div_mul_eq_mul_div, one_mul] using
       tendsto_log_shortLevinsonCutoff_div_log.comp hU
   have hmain := isBigO_detectorThreeMomentMain hn hp hu (by norm_num) hlam
     (by norm_num : (0 : ℝ) ≤ 2) (by norm_num : (0 : ℝ) ≤ 10) hgeom

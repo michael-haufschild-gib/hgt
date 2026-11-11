@@ -91,7 +91,7 @@ theorem eventually_gate_block_moment_hypotheses
   have hratio := (tendsto_log_shortLevinsonCutoff_div_log.comp hU).eventually
     (Iio_mem_nhds (by norm_num : (13 / 50 : ℝ) < 1))
   filter_upwards [ha, hgate, hsmall', hU.eventually_gt_atTop 1, hL.eventually_ge_atTop 1,
-    hd.eventually (Iio_mem_nhds (lt_min hr (by norm_num))), hratio,
+    hd.eventually (Iio_mem_nhds (lt_min hr (by norm_num : (0 : ℝ) < 1 / 40))), hratio,
     (tendsto_shortLevinsonCutoff.comp hU).eventually_ge_atTop 2]
     with i hai hgi hsi hUi hLi hdi hri hni
   change 2 ≤ shortLevinsonCutoff (U i) at hni
@@ -109,6 +109,6 @@ theorem eventually_gate_block_moment_hypotheses
       _ ≤ d i := (div_le_iff₀ hLU).mpr hgi.1
   refine ⟨hlow, hdi.le, by omega, shortLevinsonCutoff_le_block_power hUi0 hai,
     (one_div_pos.mpr hLU).le, (one_div_le_one_div_of_le zero_lt_one hLi).trans_eq (by norm_num), ?_⟩
-  simpa only [Function.comp_def, one_div, mul_comm, ← div_eq_mul_inv] using hri.le
+  simpa only [Function.comp_def, div_mul_eq_mul_div, one_mul] using hri.le
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

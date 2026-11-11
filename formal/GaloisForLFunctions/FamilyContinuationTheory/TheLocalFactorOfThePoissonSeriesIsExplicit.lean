@@ -127,6 +127,12 @@ def blockMap : Option (Fin 2 × Fin 2 × Fin 2) → ℕ × ℕ → Fin 2 × ℕ 
   | none => fun q => (0, 0, q.1, q.2)
   | some b => fun q => (b.1, blockBase b.1 b.2.1 + 2 * q.1, (b.2.2 : ℕ), q.2)
 
+theorem blockMap_some_apply (e p k : Fin 2) (q : ℕ × ℕ) :
+    blockMap (some (e, p, k)) q = (e, blockBase e p + 2 * q.1, (k : ℕ), q.2) := rfl
+
+theorem one_le_blockBase (e p : Fin 2) : 1 ≤ (e : ℕ) + 3 * blockBase e p := by
+  fin_cases e <;> fin_cases p <;> decide
+
 theorem blockMap_injective (b : Option (Fin 2 × Fin 2 × Fin 2)) :
     Function.Injective (blockMap b) := by
   rcases b with _ | b
@@ -167,7 +173,7 @@ theorem exists_blockMap (v : Fin 2 × ℕ × ℕ × ℕ) (hv : ((v.1 : ℕ) = 0 
     · have h1 : l % 2 = 0 := by simpa [Fin.ext_iff] using h.2
       have h2 : l ≠ 0 := fun hl => h0 ⟨by rw [h.1]; rfl, hl⟩
       omega
-    · simp only [Fin.val_mk]
+    · simp only []
       omega
 
 section Prime
@@ -605,7 +611,7 @@ theorem localTerm_T0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j k
     by_cases hc : m = 0 ∧ j = 0
     · obtain ⟨rfl, rfl⟩ := hc
       rw [if_pos rfl, if_pos ⟨rfl, rfl⟩]
-      simp only [Fin.val_zero, pow_zero, mul_zero, zero_mul, Nat.zero_mod, inv_one, mul_one,
+      simp only [pow_zero, zero_mul, Nat.zero_mod, inv_one, mul_one,
         one_mul, div_pow, mul_pow]
       field_simp
     · rw [if_neg (by omega), if_neg hc]
@@ -629,7 +635,7 @@ theorem localTerm_A0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
   unfold sexticLayer
   rw [if_pos (dvd_refl 6), show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
     show (6 : ℕ) = 3 * 2 from rfl, pow_mul (conj _), hc, show 3 * 2 = 6 from rfl, hρ]
-  simp only [Fin.val_zero, pow_zero, mul_zero, one_pow, one_mul, inv_one, mul_one,
+  simp only [pow_zero, mul_zero, one_pow, one_mul, inv_one, mul_one,
     show (6 : ℕ) % 2 = 0 from rfl, show (6 : ℕ) - 1 = 5 from rfl]
   rcases i with _ | i
   · by_cases hj5 : j = 5
@@ -637,7 +643,7 @@ theorem localTerm_A0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
       simp (disch := omega) only [if_pos, if_neg, ite_true]
       field_simp
       ring
-    · simp (disch := omega) only [if_pos, if_neg]
+    · simp (disch := omega) only [if_neg]
       simp
   · simp (disch := omega) only [if_pos, if_neg]
     unfold primeR
@@ -667,11 +673,11 @@ theorem localTerm_A1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
   unfold sexticLayer
   rw [if_neg (by norm_num), show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
     show (6 : ℕ) = 3 * 2 from rfl, pow_mul (conj _), hc, show 3 * 2 = 6 from rfl, hρ]
-  simp only [Fin.val_zero, pow_zero, one_pow, one_mul, inv_one, mul_one,
+  simp only [pow_zero, one_pow, inv_one, mul_one,
     show (6 : ℕ) % 2 = 0 from rfl, show (6 : ℕ) - 1 = 5 from rfl, show (6 : ℕ) + 1 - 1 = 6 from rfl]
   by_cases hcnd : i = 1 ∧ j = 0
   · obtain ⟨rfl, rfl⟩ := hcnd
-    simp (disch := omega) only [if_pos, if_neg, and_self, ite_true]
+    simp (disch := omega) only [and_self, ite_true]
     rw [gauss_five_eq π hlam h2 hprim, primeQ_eq π hlam hprim]
     unfold primeR
     rw [primeQ_eq π hlam hprim]
@@ -708,7 +714,7 @@ theorem localTerm_B0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     generalize primeKappa π ηp = κ at hκ ⊢
     obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
       rw [eq_div_iff hN, mul_comm ηp, hκ]
-    simp only [Fin.val_one, pow_zero, pow_one, mul_zero, one_mul, mul_one,
+    simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
       show (1 : ℕ) % 2 = 1 from rfl, show (1 : ℕ) - 1 = 0 from rfl]
     field_simp
   · rw [if_neg (by omega), if_neg hcnd]
@@ -739,11 +745,11 @@ theorem localTerm_B1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
   generalize primeKappa π ηp = κ at hκ ⊢
   obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
     rw [eq_div_iff hN, mul_comm ηp, hκ]
-  simp only [Fin.val_one, pow_zero, pow_one, one_mul, mul_one,
-    show (1 : ℕ) % 2 = 1 from rfl, show (1 : ℕ) - 1 = 0 from rfl, show (1 : ℕ) + 1 = 2 from rfl,
+  simp only [pow_zero, pow_one, mul_one,
+    show (1 : ℕ) % 2 = 1 from rfl, show (1 : ℕ) + 1 = 2 from rfl,
     show (2 : ℕ) - 1 = 1 from rfl]
   by_cases h1 : 1 ≤ i ∨ 2 ≤ j
-  · simp (disch := omega) only [if_pos, if_neg]
+  · simp (disch := omega) only [if_pos]
     field_simp
     linear_combination (-(κ * (primeQ π - 1) * X * Y * V ^ i)) * hε
   · rw [if_neg h1]
@@ -754,7 +760,7 @@ theorem localTerm_B1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       simp (disch := omega) only [if_pos, if_neg, ite_true]
       field_simp
       linear_combination (κ * primeQ π * X * Y) * hε
-    · simp (disch := omega) only [if_pos, if_neg]
+    · simp (disch := omega) only [if_neg]
       simp
 
 include hlam h2 hprim in
@@ -814,8 +820,8 @@ theorem localTerm_C1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     generalize primeKappa π ηp = κ at hκ ⊢
     obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
       rw [eq_div_iff hN, mul_comm ηp, hκ]
-    simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
-      show (3 : ℕ) % 2 = 1 from rfl, show (3 : ℕ) - 1 = 2 from rfl, show (3 : ℕ) + 1 = 4 from rfl,
+    simp only [pow_zero, pow_one, one_mul, mul_one,
+      show (3 : ℕ) % 2 = 1 from rfl, show (3 : ℕ) + 1 = 4 from rfl,
       show (4 : ℕ) - 1 = 3 from rfl]
     field_simp
     set ε := complexSexticChar (Ideal.span {π}) hlam (-1)
@@ -886,8 +892,8 @@ theorem localTerm_D1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     generalize primeKappa π ηp = κ at hκ ⊢
     obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
       rw [eq_div_iff hN, mul_comm ηp, hκ]
-    simp only [pow_zero, pow_one, one_mul, mul_one,
-      show (4 : ℕ) % 2 = 0 from rfl, show (4 : ℕ) - 1 = 3 from rfl, show (4 : ℕ) + 1 = 5 from rfl,
+    simp only [pow_zero, pow_one, mul_one,
+      show (4 : ℕ) % 2 = 0 from rfl, show (4 : ℕ) + 1 = 5 from rfl,
       show (5 : ℕ) - 1 = 4 from rfl]
     rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
     field_simp
@@ -945,32 +951,32 @@ theorem hasSum_base (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : 
       Summable (fun i => ‖localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i)‖) := by
   fin_cases e <;> fin_cases p <;> fin_cases k
   · simp only [blockBase, baseSum]
-    simp only [Fin.zero_eta, Fin.isValue, and_self, ↓reduceIte, Fin.val_zero]
+    simp only [Fin.zero_eta, Fin.isValue, and_self, ↓reduceIte]
     simp only [localTerm_A0 π hlam h2 hprim ηp X Y V hu hj]
     exact ⟨hasSum_shift_geom _ _ V hV, summable_norm_shift_geom _ _ V hV⟩
   · simp only [blockBase, baseSum]
-    simp only [Fin.zero_eta, Fin.isValue, and_self, ↓reduceIte, Fin.mk_one, Fin.val_one,
+    simp only [Fin.zero_eta, Fin.isValue, and_self, ↓reduceIte, Fin.mk_one, 
       one_ne_zero]
     simp only [localTerm_A1 π hlam h2 hprim ηp X Y V hu hj]
     exact ⟨hasSum_point_and 1 _ _, summable_norm_point_and 1 _ _⟩
   · simp only [blockBase, baseSum]
-    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.val_one, one_ne_zero, and_false,
-      ↓reduceIte, Fin.val_zero]
+    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, one_ne_zero, and_false,
+      ↓reduceIte]
     simp only [localTerm_C0 π hlam h2 hprim ηp X Y V hu]
     exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
   · simp only [blockBase, baseSum]
-    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.val_one, one_ne_zero, and_false,
+    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, one_ne_zero, and_false,
       ↓reduceIte]
     simp only [localTerm_C1 π hlam h2 hprim ηp X Y V hu]
     exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
   · simp only [blockBase, baseSum]
     simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte,
-      Fin.val_zero]
+      ]
     simp only [localTerm_B0 π hlam h2 hprim ηp X Y V hu]
     exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
   · simp only [blockBase, baseSum]
     simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte,
-      Fin.val_zero, Fin.val_one]
+      ]
     simp only [localTerm_B1 π hlam h2 hprim ηp X Y V hu]
     by_cases h2j : 2 ≤ j
     · simp only [h2j, or_true, ↓reduceIte]
@@ -1000,14 +1006,147 @@ theorem hasSum_base (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : 
         exact hasSum_geom_from _ _ V hV
       · exact (summable_norm_geom_from _ _ V hV).congr fun i => by rw [hfun i]
   · simp only [blockBase, baseSum]
-    simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte, Fin.val_one,
-      Fin.val_zero]
+    simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte, 
+      ]
     simp only [localTerm_D0 π hlam h2 hprim ηp X Y V hu]
     exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
   · simp only [blockBase, baseSum]
-    simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte, Fin.val_one]
+    simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte]
     simp only [localTerm_D1 π hlam h2 hprim ηp X Y V hu]
     exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
+
+include hlam h2 hprim in
+/-- The local term vanishes for `t ≥ 1` and `k ≥ 2`. -/
+theorem localTerm_eq_zero_of_two_le (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j : ℕ)
+    (e : Fin 2) (l k m : ℕ) (ht : 1 ≤ (e : ℕ) + 3 * l) (hk : 2 ≤ k) :
+    localTerm π ηp X Y V u j (e, l, k, m) = 0 := by
+  rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j e l k m]
+  unfold localCoef
+  rw [poissonCoeff_pow_eq_zero π hlam h2 hprim ht hk]
+  simp
+
+include h2 hprim in
+/-- **A family block** has sum `(1 − R)⁻¹` times its base sum. -/
+theorem hasSum_blockMap_some (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : ℕ}
+    (hj : j < 6) (hV : ‖V‖ < 1) (hR : ‖primeR π ηp X V‖ < 1) (e p k : Fin 2) :
+    HasSum (localTerm π ηp X Y V u j ∘ blockMap (some (e, p, k)))
+      ((1 - primeR π ηp X V)⁻¹ * baseSum π hlam ηp X Y V u j e p k) := by
+  obtain ⟨hφ, hφn⟩ := hasSum_base π hlam h2 hprim ηp X Y V hu hj hV e p k
+  have hfam : localTerm π ηp X Y V u j ∘ blockMap (some (e, p, k)) = fun q : ℕ × ℕ =>
+      if q.1 ≤ q.2 then primeR π ηp X V ^ q.1 *
+        localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), q.2 - q.1) else 0 := by
+    funext q
+    rw [Function.comp_apply, blockMap_some_apply]
+    exact localTerm_family π hlam h2 hprim ηp X Y V hu hj e (blockBase e p) k
+      (one_le_blockBase e p) q.1 q.2
+  rw [hfam]
+  exact hasSum_block (φ := fun i => localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i))
+    hφ hφn hR
+
+include h2 hprim in
+/-- **The block `t = 0`** has sum `(1 − V)⁻¹ + [j = 0] W (1 − W)⁻¹`, `W = ρY`. -/
+theorem hasSum_blockMap_none (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j : ℕ)
+    (hV : ‖V‖ < 1)
+    (hW : ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y‖ < 1) :
+    HasSum (localTerm π ηp X Y V u j ∘ blockMap none)
+      ((1 - V)⁻¹ + if j = 0 then complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) *
+        Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0) := by
+  set W := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y
+  have hfun : localTerm π ηp X Y V u j ∘ blockMap none =
+      (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else 0) +
+        (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ j = 0 then W ^ q.1 else 0) := by
+    funext q
+    simp only [Function.comp, blockMap, Pi.add_apply]
+    rw [localTerm_T0 π hlam h2 hprim ηp X Y V hu j q.1 q.2]
+    by_cases h0 : q.1 = 0
+    · simp [h0]
+    · simp only [h0, ↓reduceIte, ne_eq, not_false_eq_true, true_and, zero_add]
+      rfl
+  rw [hfun]
+  refine HasSum.add ?_ ?_
+  · have hg : Function.Injective fun m : ℕ => ((0, m) : ℕ × ℕ) := fun a b h => by
+      simpa using h
+    refine (hg.hasSum_iff ?_).mp ?_
+    · rintro ⟨k, m⟩ hq
+      rw [if_neg]
+      rintro rfl
+      exact hq ⟨m, rfl⟩
+    · have hc : (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else 0) ∘
+          (fun m : ℕ => ((0, m) : ℕ × ℕ)) = fun m : ℕ => V ^ m := by
+        funext m
+        simp
+      rw [hc]
+      exact hasSum_geometric_of_norm_lt_one hV
+  · by_cases hj0 : j = 0
+    · rw [if_pos hj0]
+      have hg : Function.Injective fun k : ℕ => ((k + 1, 0) : ℕ × ℕ) := fun a b h => by
+        simpa using h
+      refine (hg.hasSum_iff ?_).mp ?_
+      · rintro ⟨k, m⟩ hq
+        rw [if_neg]
+        rintro ⟨hk, rfl, -⟩
+        exact hq ⟨k - 1, by simp; omega⟩
+      · have hc : (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ j = 0 then W ^ q.1 else 0) ∘
+            (fun k : ℕ => ((k + 1, 0) : ℕ × ℕ)) = fun k : ℕ => W * W ^ k := by
+          funext k
+          simp [hj0, pow_succ']
+        rw [hc]
+        exact (hasSum_geometric_of_norm_lt_one hW).mul_left W
+    · rw [if_neg hj0]
+      have hc : (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ j = 0 then W ^ q.1 else 0) =
+          fun _ => 0 := by
+        funext q
+        simp [hj0]
+      rw [hc]
+      exact hasSum_zero
+
+include h2 hprim in
+/-- **The complete local identity.** For `j < 6`, `π ∤ u`, `‖V‖, ‖ρY‖, ‖R‖ < 1`, the local series
+of the Poisson coefficient sums to
+`(1 − V)⁻¹ + [j = 0] W (1 − W)⁻¹ + (1 − R)⁻¹ Σ_{e, l mod 2, k} (base sums)`. -/
+theorem hasSum_localTerm (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : ℕ} (hj : j < 6)
+    (hV : ‖V‖ < 1)
+    (hW : ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y‖ < 1)
+    (hR : ‖primeR π ηp X V‖ < 1) :
+    HasSum (localTerm π ηp X Y V u j)
+      ((1 - V)⁻¹ + (if j = 0 then complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) *
+        Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0) +
+        (1 - primeR π ηp X V)⁻¹ *
+          ∑ e : Fin 2, ∑ p : Fin 2, ∑ k : Fin 2, baseSum π hlam ηp X Y V u j e p k) := by
+  let a : Option (Fin 2 × Fin 2 × Fin 2) → ℂ := fun b => b.elim
+    ((1 - V)⁻¹ + if j = 0 then complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) *
+      Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0)
+    fun b => (1 - primeR π ηp X V)⁻¹ * baseSum π hlam ηp X Y V u j b.1 b.2.1 b.2.2
+  have hsub : ∀ b, HasSum (localTerm π ηp X Y V u j ∘ (↑) : Set.range (blockMap b) → ℂ) (a b) := by
+    intro b
+    refine (Equiv.ofInjective (blockMap b) (blockMap_injective b)).hasSum_iff.mp ?_
+    have hcomp : (localTerm π ηp X Y V u j ∘ (↑) : Set.range (blockMap b) → ℂ) ∘
+        (Equiv.ofInjective (blockMap b) (blockMap_injective b)) =
+          localTerm π ηp X Y V u j ∘ blockMap b := by
+      funext q
+      simp [Equiv.ofInjective_apply]
+    rw [hcomp]
+    rcases b with _ | ⟨e, p, k⟩
+    · exact hasSum_blockMap_none π hlam h2 hprim ηp X Y V hu j hV hW
+    · exact hasSum_blockMap_some π hlam h2 hprim ηp X Y V hu hj hV hR e p k
+  have hU := hasSum_sum_disjoint (f := localTerm π ηp X Y V u j) Finset.univ
+    (fun b _ b' _ hne => blockMap_disjoint hne) (fun b _ => hsub b)
+  have hsupp : Function.support (localTerm π ηp X Y V u j) ⊆
+      ⋃ b ∈ (Finset.univ : Finset (Option (Fin 2 × Fin 2 × Fin 2))), Set.range (blockMap b) := by
+    intro v hv
+    obtain ⟨e, l, k, m⟩ := v
+    have hcase : ((e : ℕ) = 0 ∧ l = 0) ∨ k ≤ 1 := by
+      by_contra hc
+      push Not at hc
+      exact hv (localTerm_eq_zero_of_two_le π hlam h2 hprim ηp X Y V hu j e l k m
+        (by rcases Nat.eq_zero_or_pos l with hl | hl
+            · have := hc.1; omega
+            · omega) hc.2)
+    obtain ⟨b, q, hq⟩ := exists_blockMap (e, l, k, m) hcase
+    exact Set.mem_iUnion₂.mpr ⟨b, Finset.mem_univ _, q, hq⟩
+  rw [← hasSum_subtype_iff_of_support_subset hsupp]
+  convert hU using 1
+  simp only [Fintype.sum_option, Fintype.sum_prod_type, a, Option.elim, Finset.mul_sum]
 
 end Prime
 

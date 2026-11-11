@@ -35414,7 +35414,13 @@ theorem sieveNorm_reverse (M N : ℝ) : sieveNorm M N ≤ 262144 * sieveNorm N M
     (fun J : QuadraticIdealRange N => quadraticIdealSupport J.val)
   simp only [← canonicalQuadraticRow_eq_symbol] at h
   have hsq := pow_le_pow_left₀ (norm_nonneg _) h 2
-  simpa only [sieveNorm, matrix, mul_pow, show (512 : ℝ) ^ 2 = 262144 by norm_num] using hsq
+  change ‖FiniteSieveOperator.operator
+    (fun I : QuadraticIdealRange M => fun J : QuadraticIdealRange N =>
+      canonicalQuadraticRow J.val (primaryIdealGenerator I.val.val))‖ ^ 2 ≤
+    262144 * ‖FiniteSieveOperator.operator
+      (fun J : QuadraticIdealRange N => fun I : QuadraticIdealRange M =>
+        canonicalQuadraticRow I.val (primaryIdealGenerator J.val.val))‖ ^ 2
+  simpa only [mul_pow, show (512 : ℝ) ^ 2 = 262144 by norm_num] using hsq
 
 /-- Uniform power bounds for the actual quadratic residue matrix. -/
 def HasSieveExponent (α : ℝ) : Prop :=
@@ -35985,7 +35991,7 @@ def quadraticTransformedSquareProfile (W : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) :=
     radialFourierCLM W (complexPoint 0 (((ringComplex omega).im)⁻¹ * t)) =
       (2 / Real.sqrt 3 : ℝ) • (𝓕 (radialTest W)) (paperFrequency (t : ℂ))
   rw [radialFourierCLM_apply, paperFrequency_coordinates]
-  simp only [Complex.ofReal_im, Complex.ofReal_re, zero_div, div_eq_mul_inv, mul_comm]
+  simp only [Complex.ofReal_im, Complex.ofReal_re, zero_div, div_eq_mul_inv, zero_mul, mul_comm]
 
 lemma quadraticSquareProfile_seminorm_control (S : Finset (ℕ × ℕ)) :
     ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧ ∀ W : 𝓢(ℝ, ℂ),
@@ -35998,6 +36004,689 @@ lemma quadraticTransformedSquareProfile_seminorm_control (S : Finset (ℕ × ℕ
       S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (quadraticTransformedSquareProfile W) ≤
         C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W :=
   schwartzCLM_finite_seminorm_control quadraticTransformedSquareCLM S
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+lemma quadraticIdealAdmissible_of_dvd {I J : Ideal O}
+    (hI : quadraticIdealAdmissible I) (hJI : J ∣ I) : quadraticIdealAdmissible J := by
+  obtain ⟨K, rfl⟩ := hJI
+  have hJ := ((quadraticSupported_mul J K).mp ⟨hI.1, hI.2.2⟩).1
+  exact ⟨hJ.1, hI.2.1.of_mul_left, hJ.2⟩
+
+/-- Exact ideal quotient, used only on divisor columns. -/
+def quadraticIdealQuotient (D I : Ideal O) : Ideal O :=
+  if h : D ∣ I then h.choose else 0
+
+lemma quadraticIdeal_mul_quotient {D I : Ideal O} (h : D ∣ I) :
+    D * quadraticIdealQuotient D I = I := by
+  rw [quadraticIdealQuotient, dif_pos h]
+  exact h.choose_spec.symm
+
+lemma quadraticIdealQuotient_dvd {D I : Ideal O} (h : D ∣ I) :
+    quadraticIdealQuotient D I ∣ I :=
+  ⟨D, by rw [mul_comm, quadraticIdeal_mul_quotient h]⟩
+
+lemma quadraticIdealQuotient_admissible {D I : Ideal O}
+    (hI : quadraticIdealAdmissible I) (h : D ∣ I) :
+    quadraticIdealAdmissible (quadraticIdealQuotient D I) :=
+  quadraticIdealAdmissible_of_dvd hI (quadraticIdealQuotient_dvd h)
+
+lemma quadraticIdealQuotient_injective (D : Ideal O) :
+    Set.InjOn (quadraticIdealQuotient D) {I : Ideal O | D ∣ I} := by
+  intro I hI J hJ h
+  rw [← quadraticIdeal_mul_quotient hI, ← quadraticIdeal_mul_quotient hJ, h]
+
+lemma quadraticIdealQuotient_norm {D I : Ideal O} (hD : D ≠ 0) (h : D ∣ I) :
+    (Ideal.absNorm (quadraticIdealQuotient D I) : ℝ) = (Ideal.absNorm I : ℝ) / Ideal.absNorm D := by
+  have hDnorm : (Ideal.absNorm D : ℝ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hD)
+  apply (eq_div_iff hDnorm).mpr
+  have hn := congrArg (fun J : Ideal O => (Ideal.absNorm J : ℝ)) (quadraticIdeal_mul_quotient h)
+  simpa only [map_mul, Nat.cast_mul, mul_comm] using hn
+
+lemma quadraticIdealGenerator_factor {D I : Ideal O} (h : D ∣ I) :
+    primaryIdealGenerator I = primaryIdealGenerator D * primaryIdealGenerator (quadraticIdealQuotient D I) := by
+  rw [← primaryIdealGenerator_mul, quadraticIdeal_mul_quotient h]
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+lemma mem_quadraticIdealSupport (I : QuadraticIdeal) (P : QuadraticPrime) :
+    P ∈ quadraticIdealSupport I ↔ P.val ∈ primeSupport I.val := by
+  constructor
+  · intro h
+    obtain ⟨Q, _, he⟩ := Finset.mem_map.mp h
+    have hval : Q.val = P.val := congrArg (fun R : QuadraticPrime => R.val) he
+    simpa only [← hval] using Q.property
+  · intro h
+    exact Finset.mem_map.mpr ⟨⟨P.val, h⟩, Finset.mem_attach _ _, Subtype.ext rfl⟩
+
+lemma quadraticIdealSupport_mul (I J : Ideal O) (h : quadraticIdealAdmissible (I * J)) :
+    quadraticIdealSupport ⟨I * J, h⟩ =
+      quadraticIdealSupport ⟨I, quadraticIdealAdmissible_of_dvd h (dvd_mul_right I J)⟩ ∪
+      quadraticIdealSupport ⟨J, quadraticIdealAdmissible_of_dvd h (dvd_mul_left J I)⟩ := by
+  have hI := quadraticIdealAdmissible_of_dvd h (dvd_mul_right I J)
+  have hJ := quadraticIdealAdmissible_of_dvd h (dvd_mul_left J I)
+  ext P
+  simp only [Finset.mem_union, mem_quadraticIdealSupport, primeSupport,
+    normalizedFactors_mul (primaryIdealGenerator_ne_zero_ideal I hI.1)
+      (primaryIdealGenerator_ne_zero_ideal J hJ.1), Multiset.toFinset_add]
+
+lemma quadraticIdealSupport_disjoint (I J : Ideal O) (h : quadraticIdealAdmissible (I * J)) :
+    Disjoint
+      (quadraticIdealSupport ⟨I, quadraticIdealAdmissible_of_dvd h (dvd_mul_right I J)⟩)
+      (quadraticIdealSupport ⟨J, quadraticIdealAdmissible_of_dvd h (dvd_mul_left J I)⟩) := by
+  apply Finset.disjoint_left.mpr
+  intro P hP hQ
+  have hpI := Multiset.mem_toFinset.mp ((mem_quadraticIdealSupport _ P).mp hP)
+  have hpJ := Multiset.mem_toFinset.mp ((mem_quadraticIdealSupport _ P).mp hQ)
+  have hp := prime_of_normalized_factor P.val hpI
+  exact hp.2.1 ((IsRelPrime.of_squarefree_mul h.2.1)
+    (dvd_of_mem_normalizedFactors hpI) (dvd_of_mem_normalizedFactors hpJ))
+
+/-- Squarefree products split into independent quadratic characters. -/
+lemma canonicalQuadraticRow_conductor_mul (I J : Ideal O)
+    (h : quadraticIdealAdmissible (I * J)) (z : O) :
+    canonicalQuadraticRow ⟨I * J, h⟩ z =
+      canonicalQuadraticRow ⟨I, quadraticIdealAdmissible_of_dvd h (dvd_mul_right I J)⟩ z *
+      canonicalQuadraticRow ⟨J, quadraticIdealAdmissible_of_dvd h (dvd_mul_left J I)⟩ z := by
+  simp only [canonicalQuadraticRow]
+  rw [quadraticIdealSupport_mul I J h,
+    primeSubsetRow_union _ _ _ _ (quadraticIdealSupport_disjoint I J h)]
+
+lemma canonicalQuadraticRow_divisor_factor (I : QuadraticIdeal) (D : Ideal O)
+    (h : D ∣ I.val) (z : O) :
+    canonicalQuadraticRow I z =
+      canonicalQuadraticRow ⟨D, quadraticIdealAdmissible_of_dvd I.property h⟩ z *
+      canonicalQuadraticRow ⟨quadraticIdealQuotient D I.val,
+        quadraticIdealQuotient_admissible I.property h⟩ z := by
+  have hprod : quadraticIdealAdmissible (D * quadraticIdealQuotient D I.val) := by
+    rw [quadraticIdeal_mul_quotient h]
+    exact I.property
+  have he := canonicalQuadraticRow_conductor_mul D (quadraticIdealQuotient D I.val) hprod z
+  simpa only [quadraticIdeal_mul_quotient h] using he
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+/-- Columns divisible by a fixed ideal, with that common factor removed. -/
+def quotientMatrix {m n : Type*} (D : Ideal O)
+    (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal) : Matrix m n ℂ :=
+  fun i j => if h : D ∣ (cols j).val then
+    canonicalQuadraticRow ⟨quadraticIdealQuotient D (cols j).val,
+      quadraticIdealQuotient_admissible (cols j).property h⟩ (primaryIdealGenerator (rows i).val)
+    else 0
+
+lemma quotientMatrix_squared_norm_le {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (D : Ideal O) (hD : D ≠ 0)
+    (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (M N : ℝ) (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N) :
+    ‖FiniteSieveOperator.operator (quotientMatrix D rows cols)‖ ^ 2 ≤
+      sieveNorm M (N / Ideal.absNorm D) := by
+  classical
+  let S : Finset n := Finset.univ.filter (fun j => D ∣ (cols j).val)
+  have hS (j : S) : D ∣ (cols j.val).val := (Finset.mem_filter.mp j.property).2
+  let q : S → QuadraticIdeal := fun j => ⟨quadraticIdealQuotient D (cols j.val).val,
+    quadraticIdealQuotient_admissible (cols j.val).property (hS j)⟩
+  have hq : Function.Injective q := by
+    intro i j he
+    apply Subtype.ext
+    apply hc
+    apply Subtype.ext
+    apply quadraticIdealQuotient_injective D (hS i) (hS j)
+    exact congrArg (fun I : QuadraticIdeal => I.val) he
+  have hqn (j : S) : (Ideal.absNorm (q j).val : ℝ) ≤ N / Ideal.absNorm D := by
+    change (Ideal.absNorm (quadraticIdealQuotient D (cols j.val).val) : ℝ) ≤ _
+    rw [quadraticIdealQuotient_norm hD (hS j)]
+    exact div_le_div_of_nonneg_right (hcols j.val) (Nat.cast_nonneg _)
+  have hb := family_squared_norm_le rows q hr hq M (N / Ideal.absNorm D) hrows hqn
+  apply FiniteSieveOperator.squared_norm_le_of_energy _ _ (sieveNorm_nonneg _ _)
+  intro a
+  have hsum (i : m) : (∑ j, quotientMatrix D rows cols i j * a j) =
+      ∑ j : S, canonicalQuadraticRow (q j) (primaryIdealGenerator (rows i).val) * a j.val := by
+    calc
+      _ = ∑ j ∈ S, quotientMatrix D rows cols i j * a j := by
+        symm
+        apply Finset.sum_subset (Finset.subset_univ S)
+        intro j _ hj
+        have hd : ¬ D ∣ (cols j).val := by
+          simpa only [S, Finset.mem_filter, Finset.mem_univ, true_and] using hj
+        simp only [quotientMatrix, dif_neg hd, zero_mul]
+      _ = ∑ j : S, quotientMatrix D rows cols i j.val * a j.val :=
+        (Finset.sum_coe_sort (s := S) (f := fun j => quotientMatrix D rows cols i j * a j)).symm
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        simp only [quotientMatrix, dif_pos (hS j)]
+        rfl
+  simp_rw [hsum]
+  have he := FiniteSieveOperator.energy_bound
+    (fun i j => canonicalQuadraticRow (q j) (primaryIdealGenerator (rows i).val)) (fun j : S => a j.val)
+  have hE : (∑ j : S, ‖a j.val‖ ^ 2) ≤ ∑ j, ‖a j‖ ^ 2 := by
+    rw [Finset.sum_coe_sort (s := S) (f := fun j : n => ‖a j‖ ^ 2)]
+    exact Finset.sum_le_univ_sum_of_nonneg (fun j => sq_nonneg ‖a j‖)
+  exact he.trans ((mul_le_mul_of_nonneg_right hb (by positivity)).trans
+    (mul_le_mul_of_nonneg_left hE (sieveNorm_nonneg _ _)))
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace IdealCoprimeBilinearSieve
+open Eisenstein UniqueFactorizationMonoid FiniteSieveOperator DivisorBlockCauchy
+
+/-- Coprimality is an exact signed sum over common ideal divisors. -/
+lemma common_divisor_indicator (S : Finset (Ideal O)) (I J : Ideal O)
+    (hI : I ≠ 0) (hS : idealDivisors I ⊆ S) :
+    (if I ⊔ J = ⊤ then (1 : ℂ) else 0) =
+      ∑ D ∈ S, if D ∣ I ∧ D ∣ J then (moebius D : ℂ) else 0 := by
+  have hG : I ⊔ J ≠ (0 : Ideal O) := by
+    intro h
+    exact hI (le_antisymm (h ▸ le_sup_left) bot_le)
+  have hfilter : S.filter (fun D => D ∣ I ∧ D ∣ J) = idealDivisors (I ⊔ J) := by
+    ext D
+    simp only [Finset.mem_filter, mem_idealDivisors hG, Ideal.dvd_iff_le, sup_le_iff]
+    constructor
+    · exact And.right
+    · intro h
+      exact ⟨hS ((mem_idealDivisors hI).mpr (Ideal.dvd_iff_le.mpr h.1)), h⟩
+  rw [← Finset.sum_filter, hfilter, sum_moebius_divisors _ hG]
+
+lemma moebius_norm_le_one (D : Ideal O) : ‖(moebius D : ℂ)‖ ≤ 1 := by
+  by_cases h : Squarefree D
+  · rw [h.moebius_eq]
+    simp only [Int.cast_pow, Int.cast_neg, Int.cast_one, norm_pow, norm_neg,
+      norm_one, one_pow, le_refl]
+  · rw [moebius_of_not_squarefree h, Int.cast_zero, norm_zero]
+    norm_num
+
+/-- Möbius expansion keeps left and right coefficient masks separate. -/
+lemma bilinear_expansion {n p : Type*} [Fintype n] [Fintype p]
+    (S : Finset (Ideal O)) (left : n → Ideal O) (right : p → Ideal O)
+    (hl : ∀ j, left j ≠ 0) (hS : ∀ j, idealDivisors (left j) ⊆ S)
+    (z : n → ℂ) (v : p → ℂ) :
+    (∑ j, ∑ k, if left j ⊔ right k = ⊤ then star (z j) * v k else 0) =
+      ∑ D ∈ S, (moebius D : ℂ) *
+        (star (∑ j, if D ∣ left j then z j else 0) *
+          (∑ k, if D ∣ right k then v k else 0)) := by
+  have hp (j : n) (k : p) :
+      (if left j ⊔ right k = ⊤ then star (z j) * v k else 0) =
+        ∑ D ∈ S, (moebius D : ℂ) *
+          (if D ∣ left j ∧ D ∣ right k then star (z j) * v k else 0) := by
+    calc
+      _ = (if left j ⊔ right k = ⊤ then (1 : ℂ) else 0) *
+          (star (z j) * v k) := by split_ifs <;> simp
+      _ = _ := by
+        rw [common_divisor_indicator S _ _ (hl j) (hS j), Finset.sum_mul]
+        apply Finset.sum_congr rfl
+        intro D _
+        split_ifs <;> simp
+  simp_rw [hp]
+  calc
+    _ = ∑ j, ∑ D ∈ S, ∑ k, (moebius D : ℂ) *
+        (if D ∣ left j ∧ D ∣ right k then star (z j) * v k else 0) := by
+      apply Finset.sum_congr rfl
+      intro j _
+      exact Finset.sum_comm
+    _ = ∑ D ∈ S, ∑ j, ∑ k, (moebius D : ℂ) *
+        (if D ∣ left j ∧ D ∣ right k then star (z j) * v k else 0) := Finset.sum_comm
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro D _
+      simp_rw [← Finset.mul_sum]
+      congr 1
+      simp only [star_sum, Finset.sum_mul_sum]
+      apply Finset.sum_congr rfl
+      intro j _
+      apply Finset.sum_congr rfl
+      intro k _
+      by_cases hj : D ∣ left j <;> by_cases hk : D ∣ right k <;> simp [hj, hk]
+
+/-- Coprime restriction costs only a small power of both column norms. -/
+theorem ideal_coprime_bilinear_operator_bound {m n p : Type*}
+    [Fintype m] [Fintype n] [Fintype p]
+    [DecidableEq m] [DecidableEq n] [DecidableEq p]
+    (ε : ℝ) (hε : 0 < ε) (left : n → Ideal O) (right : p → Ideal O)
+    (hl : ∀ j, left j ≠ 0) (hr : ∀ k, right k ≠ 0)
+    (N₁ N₂ : ℝ) (hlN : ∀ j, (Ideal.absNorm (left j) : ℝ) ≤ N₁)
+    (hrN : ∀ k, (Ideal.absNorm (right k) : ℝ) ≤ N₂)
+    (A : Matrix m n ℂ) (B : Matrix m p ℂ) (a : n → ℂ) (b : p → ℂ) :
+    (∑ i, ‖∑ j, ∑ k, if left j ⊔ right k = ⊤ then
+      star (A i j * a j) * (B i k * b k) else 0‖) ^ 2 ≤
+      (‖operator A‖ ^ 2 * (divisorConstant ε hε * N₁ ^ ε) * ∑ j, ‖a j‖ ^ 2) *
+      (‖operator B‖ ^ 2 * (divisorConstant ε hε * N₂ ^ ε) * ∑ k, ‖b k‖ ^ 2) := by
+  classical
+  let S := Finset.univ.biUnion (fun j : n => idealDivisors (left j))
+  have hS (j : n) : idealDivisors (left j) ⊆ S := by
+    intro D hD
+    exact Finset.mem_biUnion.mpr ⟨j, Finset.mem_univ _, hD⟩
+  let X (D : Ideal O) (i : m) : ℂ := ∑ j, A i j * (if D ∣ left j then a j else 0)
+  let Y (D : Ideal O) (i : m) : ℂ := ∑ k, B i k * (if D ∣ right k then b k else 0)
+  have heq (i : m) :
+      (∑ j, ∑ k, if left j ⊔ right k = ⊤ then
+        star (A i j * a j) * (B i k * b k) else 0) =
+        ∑ D ∈ S, (moebius D : ℂ) * (star (X D i) * Y D i) := by
+    simpa only [X, Y, mul_ite, mul_zero] using
+      bilinear_expansion S left right hl hS (fun j => A i j * a j) (fun k => B i k * b k)
+  have hnorm :
+      (∑ i, ‖∑ j, ∑ k, if left j ⊔ right k = ⊤ then
+        star (A i j * a j) * (B i k * b k) else 0‖) ≤
+        ∑ D ∈ S, ∑ i, ‖X D i‖ * ‖Y D i‖ := by
+    rw [Finset.sum_comm]
+    apply Finset.sum_le_sum
+    intro i _
+    rw [heq]
+    apply (norm_sum_le _ _).trans
+    apply Finset.sum_le_sum
+    intro D _
+    rw [norm_mul, norm_mul, norm_star]
+    exact mul_le_of_le_one_left (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+      (moebius_norm_le_one D)
+  have hCS := Finset.sum_mul_sq_le_sq_mul_sq (S ×ˢ (Finset.univ : Finset m))
+    (fun di => ‖X di.1 di.2‖) (fun di => ‖Y di.1 di.2‖)
+  simp only [Finset.sum_product] at hCS
+  have hX : (∑ D ∈ S, ∑ i, ‖X D i‖ ^ 2) ≤
+      ‖operator A‖ ^ 2 * (divisorConstant ε hε * N₁ ^ ε) * ∑ j, ‖a j‖ ^ 2 := by
+    calc
+      _ ≤ ∑ D ∈ S, ‖operator A‖ ^ 2 * ∑ j, ‖if D ∣ left j then a j else 0‖ ^ 2 :=
+        Finset.sum_le_sum (fun D _ => energy_bound A _)
+      _ = ‖operator A‖ ^ 2 * (∑ D ∈ S, ∑ j, ‖if D ∣ left j then a j else 0‖ ^ 2) :=
+        (Finset.mul_sum ..).symm
+      _ ≤ _ := by
+        rw [mul_assoc]
+        exact mul_le_mul_of_nonneg_left
+          (divisor_mask_energy_small_power ε hε S left hl N₁ hlN a) (sq_nonneg _)
+  have hY : (∑ D ∈ S, ∑ i, ‖Y D i‖ ^ 2) ≤
+      ‖operator B‖ ^ 2 * (divisorConstant ε hε * N₂ ^ ε) * ∑ k, ‖b k‖ ^ 2 := by
+    calc
+      _ ≤ ∑ D ∈ S, ‖operator B‖ ^ 2 * ∑ k, ‖if D ∣ right k then b k else 0‖ ^ 2 :=
+        Finset.sum_le_sum (fun D _ => energy_bound B _)
+      _ = ‖operator B‖ ^ 2 * (∑ D ∈ S, ∑ k, ‖if D ∣ right k then b k else 0‖ ^ 2) :=
+        (Finset.mul_sum ..).symm
+      _ ≤ _ := by
+        rw [mul_assoc]
+        exact mul_le_mul_of_nonneg_left
+          (divisor_mask_energy_small_power ε hε S right hr N₂ hrN b) (sq_nonneg _)
+  exact (pow_le_pow_left₀ (Finset.sum_nonneg (fun _ _ => norm_nonneg _)) hnorm 2).trans
+    (hCS.trans (mul_le_mul hX hY (by positivity) ((by positivity : 0 ≤ ∑ D ∈ S, ∑ i, ‖X D i‖ ^ 2).trans hX)))
+
+end IdealCoprimeBilinearSieve
+
+namespace IdealDivisorBilinearBlocks
+open Eisenstein FiniteSieveOperator DivisorBlockCauchy IdealCoprimeBilinearSieve
+
+/-- A coprime bilinear block with fixed divisor masks on its two columns. -/
+def blockValue {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+    (left : n → Ideal O) (right : p → Ideal O)
+    (A : Ideal O → Matrix m n ℂ) (B : Ideal O → Matrix m p ℂ)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) : ℝ :=
+  ∑ i, ‖∑ j, ∑ k, if left j ⊔ right k = ⊤ then
+    star (A D i j * (if D ∣ left j then a j else 0)) *
+      (B E i k * (if E ∣ right k then b k else 0)) else 0‖
+
+lemma blockValue_nonneg {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+    (left : n → Ideal O) (right : p → Ideal O)
+    (A : Ideal O → Matrix m n ℂ) (B : Ideal O → Matrix m p ℂ)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) : 0 ≤ blockValue left right A B a b D E :=
+  Finset.sum_nonneg (fun _ _ => norm_nonneg _)
+
+/-- Two divisor Cauchy inequalities reduce the block to ordinary operator norms. -/
+theorem divisor_block_bound {m n p : Type*}
+    [Fintype m] [Fintype n] [Fintype p]
+    [DecidableEq m] [DecidableEq n] [DecidableEq p]
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (left : n → Ideal O) (right : p → Ideal O)
+    (hl : ∀ j, left j ≠ 0) (hr : ∀ k, right k ≠ 0)
+    (N₁ N₂ : ℝ) (hN₁ : 0 ≤ N₁) (hN₂ : 0 ≤ N₂)
+    (hlN : ∀ j, (Ideal.absNorm (left j) : ℝ) ≤ N₁)
+    (hrN : ∀ k, (Ideal.absNorm (right k) : ℝ) ≤ N₂)
+    (A : Ideal O → Matrix m n ℂ) (B : Ideal O → Matrix m p ℂ)
+    (a : n → ℂ) (b : p → ℂ) (UA UB : ℝ) (hUA : 0 ≤ UA) (hUB : 0 ≤ UB)
+    (hA : ∀ D ∈ S, ‖operator (A D)‖ ^ 2 ≤ UA)
+    (hB : ∀ E ∈ T, ‖operator (B E)‖ ^ 2 ≤ UB) :
+    (∑ D ∈ S, ∑ E ∈ T, blockValue left right A B a b D E) ^ 2 ≤
+      (S.card : ℝ) * T.card * UA * UB *
+        (divisorConstant ε hε * N₁ ^ ε) ^ 2 *
+        (divisorConstant ε hε * N₂ ^ ε) ^ 2 *
+        (∑ j, ‖a j‖ ^ 2) * (∑ k, ‖b k‖ ^ 2) := by
+  let EL (D : Ideal O) : ℝ := ∑ j, ‖if D ∣ left j then a j else 0‖ ^ 2
+  let ER (E : Ideal O) : ℝ := ∑ k, ‖if E ∣ right k then b k else 0‖ ^ 2
+  let C := UA * UB * (divisorConstant ε hε * N₁ ^ ε) * (divisorConstant ε hε * N₂ ^ ε)
+  have hd := (divisorConstant_pos ε hε).le
+  have hC : 0 ≤ C := by dsimp [C]; positivity
+  have hEL (D) : 0 ≤ EL D := by dsimp [EL]; positivity
+  have hER (E) : 0 ≤ ER E := by dsimp [ER]; positivity
+  have hp (D : Ideal O) (hD : D ∈ S) (E : Ideal O) (hE : E ∈ T) :
+      (blockValue left right A B a b D E) ^ 2 ≤ C * EL D * ER E := by
+    have h := ideal_coprime_bilinear_operator_bound ε hε left right hl hr N₁ N₂ hlN hrN
+      (A D) (B E) (fun j => if D ∣ left j then a j else 0)
+      (fun k => if E ∣ right k then b k else 0)
+    change (blockValue left right A B a b D E) ^ 2 ≤
+      (‖operator (A D)‖ ^ 2 * (divisorConstant ε hε * N₁ ^ ε) * EL D) *
+      (‖operator (B E)‖ ^ 2 * (divisorConstant ε hε * N₂ ^ ε) * ER E) at h
+    apply h.trans
+    calc
+      _ ≤ (UA * (divisorConstant ε hε * N₁ ^ ε) * EL D) *
+          (UB * (divisorConstant ε hε * N₂ ^ ε) * ER E) := by
+        gcongr
+        · exact hA D hD
+        · exact hB E hE
+      _ = _ := by dsimp [C]; ring
+  have hc := rectangular_cauchy S T (blockValue left right A B a b) EL ER C hC hp
+  have hL := divisor_mask_energy_small_power ε hε S left hl N₁ hlN a
+  have hR := divisor_mask_energy_small_power ε hε T right hr N₂ hrN b
+  change (∑ D ∈ S, EL D) ≤ _ at hL
+  change (∑ E ∈ T, ER E) ≤ _ at hR
+  calc
+    _ ≤ (S.card : ℝ) * T.card * C * (∑ D ∈ S, EL D) * (∑ E ∈ T, ER E) := hc
+    _ ≤ (S.card : ℝ) * T.card * C *
+        ((divisorConstant ε hε * N₁ ^ ε) * ∑ j, ‖a j‖ ^ 2) *
+        ((divisorConstant ε hε * N₂ ^ ε) * ∑ k, ‖b k‖ ^ 2) := by gcongr
+    _ = _ := by dsimp [C]; ring
+
+end IdealDivisorBilinearBlocks
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein IdealDivisorBilinearBlocks DivisorBlockCauchy
+
+def quotientBlock {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) : ℝ :=
+  blockValue (fun j => (left j).val) (fun k => (right k).val)
+    (fun D => quotientMatrix D rows left) (fun E => quotientMatrix E rows right) a b D E
+
+/-- Removing divisors shrinks the two conductor ranges independently. -/
+theorem quotient_divisor_block_bound {m n p : Type*}
+    [Fintype m] [Fintype n] [Fintype p]
+    [DecidableEq m] [DecidableEq n] [DecidableEq p]
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ M N : ℝ) (hD₁ : 0 < D₁) (hD₂ : 0 < D₂) (hN : 0 ≤ N)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ))
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N) (a : n → ℂ) (b : p → ℂ) :
+    (∑ D ∈ S, ∑ E ∈ T, quotientBlock rows left right a b D E) ^ 2 ≤
+      (S.card : ℝ) * T.card * sieveNorm M (N / D₁) * sieveNorm M (N / D₂) *
+        (divisorConstant ε hε * N ^ ε) ^ 4 * (∑ j, ‖a j‖ ^ 2) * (∑ k, ‖b k‖ ^ 2) := by
+  have hA (D : Ideal O) (hD : D ∈ S) :
+      ‖FiniteSieveOperator.operator (quotientMatrix D rows left)‖ ^ 2 ≤ sieveNorm M (N / D₁) := by
+    have hD0 : D ≠ 0 := by
+      intro hz
+      have hn := hS D hD
+      simp only [hz, map_zero, Nat.cast_zero] at hn
+      exact (not_le_of_gt hD₁) hn
+    exact (quotientMatrix_squared_norm_le D hD0 rows left hr hl M N hrows hleft).trans
+      (sieveNorm_mono le_rfl (div_le_div_of_nonneg_left hN hD₁ (hS D hD)))
+  have hB (E : Ideal O) (hE : E ∈ T) :
+      ‖FiniteSieveOperator.operator (quotientMatrix E rows right)‖ ^ 2 ≤ sieveNorm M (N / D₂) := by
+    have hE0 : E ≠ 0 := by
+      intro hz
+      have hn := hT E hE
+      simp only [hz, map_zero, Nat.cast_zero] at hn
+      exact (not_le_of_gt hD₂) hn
+    exact (quotientMatrix_squared_norm_le E hE0 rows right hr hri M N hrows hright).trans
+      (sieveNorm_mono le_rfl (div_le_div_of_nonneg_left hN hD₂ (hT E hE)))
+  have h := divisor_block_bound ε hε S T (fun j => (left j).val) (fun k => (right k).val)
+    (fun j => primaryIdealGenerator_ne_zero_ideal _ (left j).property.1)
+    (fun k => primaryIdealGenerator_ne_zero_ideal _ (right k).property.1)
+    N N hN hN hleft hright
+    (fun D => quotientMatrix D rows left) (fun E => quotientMatrix E rows right) a b
+    (sieveNorm M (N / D₁)) (sieveNorm M (N / D₂)) (sieveNorm_nonneg _ _) (sieveNorm_nonneg _ _) hA hB
+  change (∑ D ∈ S, ∑ E ∈ T, quotientBlock rows left right a b D E) ^ 2 ≤ _ at h
+  convert h using 1 <;> ring
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- The quadratic character vanishes outside its squarefree odd conductor family. -/
+def canonicalQuadraticRowOfIdeal (I : Ideal O) (z : O) : ℂ :=
+  if h : quadraticIdealAdmissible I then canonicalQuadraticRow ⟨I, h⟩ z else 0
+
+lemma canonicalQuadraticRowOfIdeal_norm_le_one (I : Ideal O) (z : O) :
+    ‖canonicalQuadraticRowOfIdeal I z‖ ≤ 1 := by
+  unfold canonicalQuadraticRowOfIdeal
+  split_ifs
+  · exact canonicalQuadraticRow_norm_le_one _ _
+  · simp
+
+namespace CanonicalQuadraticSieve
+open IdealDivisorBilinearBlocks DivisorBlockCauchy
+
+/-- The original characters, before their common divisor is removed. -/
+def originalBlock {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) : ℝ :=
+  blockValue (fun j => (left j).val) (fun k => (right k).val)
+    (fun _ i j => canonicalQuadraticRow (left j) (primaryIdealGenerator (rows i).val))
+    (fun _ i k => canonicalQuadraticRow (right k) (primaryIdealGenerator (rows i).val)) a b D E
+
+lemma original_entry_factor {m n : Type*} (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal)
+    (a : n → ℂ) (D : Ideal O) (i : m) (j : n) :
+    canonicalQuadraticRow (cols j) (primaryIdealGenerator (rows i).val) *
+        (if D ∣ (cols j).val then a j else 0) =
+      canonicalQuadraticRowOfIdeal D (primaryIdealGenerator (rows i).val) *
+        (quotientMatrix D rows cols i j * (if D ∣ (cols j).val then a j else 0)) := by
+  by_cases h : D ∣ (cols j).val
+  · simp only [if_pos h, quotientMatrix, dif_pos h, canonicalQuadraticRowOfIdeal,
+      dif_pos (quadraticIdealAdmissible_of_dvd (cols j).property h)]
+    rw [canonicalQuadraticRow_divisor_factor (cols j) D h]
+    exact mul_assoc _ _ _
+  · simp only [if_neg h, mul_zero]
+
+lemma originalBlock_le_quotientBlock {m n p : Type*}
+    [Fintype m] [Fintype n] [Fintype p]
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) :
+    originalBlock rows left right a b D E ≤ quotientBlock rows left right a b D E := by
+  apply Finset.sum_le_sum
+  intro i _
+  have he : (∑ j, ∑ k, if (left j).val ⊔ (right k).val = ⊤ then
+      star (canonicalQuadraticRow (left j) (primaryIdealGenerator (rows i).val) *
+        (if D ∣ (left j).val then a j else 0)) *
+      (canonicalQuadraticRow (right k) (primaryIdealGenerator (rows i).val) *
+        (if E ∣ (right k).val then b k else 0)) else 0) =
+      (star (canonicalQuadraticRowOfIdeal D (primaryIdealGenerator (rows i).val)) *
+        canonicalQuadraticRowOfIdeal E (primaryIdealGenerator (rows i).val)) *
+      (∑ j, ∑ k, if (left j).val ⊔ (right k).val = ⊤ then
+        star (quotientMatrix D rows left i j * (if D ∣ (left j).val then a j else 0)) *
+          (quotientMatrix E rows right i k * (if E ∣ (right k).val then b k else 0)) else 0) := by
+    simp only [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro k _
+    by_cases h : (left j).val ⊔ (right k).val = ⊤
+    · rw [if_pos h, if_pos h, original_entry_factor rows left a D i j,
+        original_entry_factor rows right b E i k, star_mul]
+      ring
+    · simp only [if_neg h, mul_zero]
+  change ‖_‖ ≤ ‖_‖
+  rw [he, norm_mul]
+  apply mul_le_of_le_one_left (norm_nonneg _)
+  rw [norm_mul, norm_star]
+  exact (mul_le_mul (canonicalQuadraticRowOfIdeal_norm_le_one D _)
+    (canonicalQuadraticRowOfIdeal_norm_le_one E _) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+
+/-- Divisor removal retains the original coprime bilinear block bound. -/
+theorem original_divisor_block_bound {m n p : Type*}
+    [Fintype m] [Fintype n] [Fintype p]
+    [DecidableEq m] [DecidableEq n] [DecidableEq p]
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ M N : ℝ) (hD₁ : 0 < D₁) (hD₂ : 0 < D₂) (hN : 0 ≤ N)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ))
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N) (a : n → ℂ) (b : p → ℂ) :
+    (∑ D ∈ S, ∑ E ∈ T, originalBlock rows left right a b D E) ^ 2 ≤
+      (S.card : ℝ) * T.card * sieveNorm M (N / D₁) * sieveNorm M (N / D₂) *
+        (divisorConstant ε hε * N ^ ε) ^ 4 * (∑ j, ‖a j‖ ^ 2) * (∑ k, ‖b k‖ ^ 2) := by
+  apply le_trans _ (quotient_divisor_block_bound ε hε S T D₁ D₂ M N hD₁ hD₂ hN hS hT
+    rows left right hr hl hri hrows hleft hright a b)
+  apply pow_le_pow_left₀
+  · exact Finset.sum_nonneg (fun _ _ => Finset.sum_nonneg (fun _ _ => blockValue_nonneg ..))
+  · exact Finset.sum_le_sum (fun D _ => Finset.sum_le_sum
+      (fun E _ => originalBlock_le_quotientBlock rows left right a b D E))
+
+end CanonicalQuadraticSieve
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+/-- Any injective high-kernel row family is a restriction of the canonical norm ball. -/
+lemma highKernel_family_squared_norm_le {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (rows : m → QuadraticSupportedIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (M N K : ℝ) (hM : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hN : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N)
+    (hK : ∀ i, K < (Ideal.absNorm (quadraticSquarefreePart (rows i).val) : ℝ)) :
+    ‖FiniteSieveOperator.operator
+      (fun i j => canonicalQuadraticRow (cols j) (primaryIdealGenerator (rows i).val))‖ ^ 2 ≤
+      highKernelNorm M N K := by
+  let r : m → QuadraticSupportedRange M := fun i => ⟨rows i, hM i⟩
+  let c : n → QuadraticIdealRange N := fun j => ⟨cols j, hN j⟩
+  have hr' : Function.Injective r := fun i j h => hr (congrArg (fun J : QuadraticSupportedRange M => J.val) h)
+  have hc' : Function.Injective c := fun i j h => hc (congrArg (fun J : QuadraticIdealRange N => J.val) h)
+  classical
+  have hb := FiniteSieveRestriction.submatrix_norm_le r hr' c hc' (highMatrix M N K)
+  have he : (fun i j => highMatrix M N K (r i) (c j)) =
+      fun i j => canonicalQuadraticRow (cols j) (primaryIdealGenerator (rows i).val) := by
+    funext i j
+    exact if_pos (hK i)
+  rw [he] at hb
+  exact pow_le_pow_left₀ (norm_nonneg _) hb 2
+
+/-- Enlarging either norm ball or lowering the squarefree threshold enlarges the kernel bound. -/
+lemma highKernelNorm_mono {M N K M' N' K' : ℝ}
+    (hM : M ≤ M') (hN : N ≤ N') (hK : K' ≤ K) :
+    highKernelNorm M N K ≤ highKernelNorm M' N' K' := by
+  classical
+  let r : QuadraticSupportedRange M → QuadraticSupportedRange M' :=
+    fun I => ⟨I.val, I.property.trans hM⟩
+  let c := rangeInclusion hN
+  have hr : Function.Injective r := fun I J h =>
+    Subtype.ext (congrArg (fun J : QuadraticSupportedRange M' => J.val) h)
+  let B : Matrix (QuadraticSupportedRange M) (QuadraticIdealRange N) ℂ :=
+    fun I J => highMatrix M' N' K' (r I) (c J)
+  let w : QuadraticSupportedRange M → ℂ := fun I =>
+    if K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ) then 1 else 0
+  have hw (I : QuadraticSupportedRange M) : ‖w I‖ ≤ 1 := by
+    dsimp only [w]
+    split_ifs <;> norm_num
+  have he : highMatrix M N K = fun I J => w I * B I J * 1 := by
+    funext I J
+    change (if K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ) then _ else 0) = _
+    by_cases h : K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ)
+    · have h' := hK.trans_lt h
+      simp only [highMatrix, w, B, r, c, rangeInclusion, if_pos h, if_pos h', one_mul, mul_one]
+    · simp only [highMatrix, w, if_neg h, zero_mul]
+  have hb := FiniteSieveRestriction.submatrix_norm_le r hr c (rangeInclusion_injective hN)
+    (highMatrix M' N' K')
+  have ht := FiniteSieveOperator.diagonal_twist_norm_le B w (fun _ => 1) hw
+    (fun _ => by norm_num)
+  rw [← he] at ht
+  exact pow_le_pow_left₀ (norm_nonneg _) (ht.trans hb) 2
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+/-- Divisor columns in the high kernel keep the squarefree-part threshold unchanged. -/
+def highQuotientMatrix {m n : Type*} (D : Ideal O)
+    (rows : m → QuadraticSupportedIdeal) (cols : n → QuadraticIdeal) : Matrix m n ℂ :=
+  fun i j => if h : D ∣ (cols j).val then
+    canonicalQuadraticRow ⟨quadraticIdealQuotient D (cols j).val,
+      quadraticIdealQuotient_admissible (cols j).property h⟩ (primaryIdealGenerator (rows i).val)
+    else 0
+
+lemma highQuotientMatrix_squared_norm_le {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (D : Ideal O) (hD : D ≠ 0)
+    (rows : m → QuadraticSupportedIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (M N K : ℝ) (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N)
+    (hK : ∀ i, K < (Ideal.absNorm (quadraticSquarefreePart (rows i).val) : ℝ)) :
+    ‖FiniteSieveOperator.operator (highQuotientMatrix D rows cols)‖ ^ 2 ≤
+      highKernelNorm M (N / Ideal.absNorm D) K := by
+  classical
+  let S : Finset n := Finset.univ.filter (fun j => D ∣ (cols j).val)
+  have hS (j : S) : D ∣ (cols j.val).val := (Finset.mem_filter.mp j.property).2
+  let q : S → QuadraticIdeal := fun j => ⟨quadraticIdealQuotient D (cols j.val).val,
+    quadraticIdealQuotient_admissible (cols j.val).property (hS j)⟩
+  have hq : Function.Injective q := by
+    intro i j he
+    apply Subtype.ext
+    apply hc
+    apply Subtype.ext
+    apply quadraticIdealQuotient_injective D (hS i) (hS j)
+    exact congrArg (fun I : QuadraticIdeal => I.val) he
+  have hqn (j : S) : (Ideal.absNorm (q j).val : ℝ) ≤ N / Ideal.absNorm D := by
+    change (Ideal.absNorm (quadraticIdealQuotient D (cols j.val).val) : ℝ) ≤ _
+    rw [quadraticIdealQuotient_norm hD (hS j)]
+    exact div_le_div_of_nonneg_right (hcols j.val) (Nat.cast_nonneg _)
+  have hb := highKernel_family_squared_norm_le rows q hr hq M (N / Ideal.absNorm D) K hrows hqn hK
+  apply FiniteSieveOperator.squared_norm_le_of_energy _ _ (highKernelNorm_nonneg _ _ _)
+  intro a
+  have hsum (i : m) : (∑ j, highQuotientMatrix D rows cols i j * a j) =
+      ∑ j : S, canonicalQuadraticRow (q j) (primaryIdealGenerator (rows i).val) * a j.val := by
+    calc
+      _ = ∑ j ∈ S, highQuotientMatrix D rows cols i j * a j := by
+        symm
+        apply Finset.sum_subset (Finset.subset_univ S)
+        intro j _ hj
+        have hd : ¬ D ∣ (cols j).val := by
+          simpa only [S, Finset.mem_filter, Finset.mem_univ, true_and] using hj
+        simp only [highQuotientMatrix, dif_neg hd, zero_mul]
+      _ = ∑ j : S, highQuotientMatrix D rows cols i j.val * a j.val :=
+        (Finset.sum_coe_sort (s := S) (f := fun j => highQuotientMatrix D rows cols i j * a j)).symm
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro j _
+        simp only [highQuotientMatrix, dif_pos (hS j)]
+        rfl
+  simp_rw [hsum]
+  have he := FiniteSieveOperator.energy_bound
+    (fun i j => canonicalQuadraticRow (q j) (primaryIdealGenerator (rows i).val)) (fun j : S => a j.val)
+  have hE : (∑ j : S, ‖a j.val‖ ^ 2) ≤ ∑ j, ‖a j‖ ^ 2 := by
+    rw [Finset.sum_coe_sort (s := S) (f := fun j : n => ‖a j‖ ^ 2)]
+    exact Finset.sum_le_univ_sum_of_nonneg (fun j => sq_nonneg ‖a j‖)
+  exact he.trans ((mul_le_mul_of_nonneg_right hb (by positivity)).trans
+    (mul_le_mul_of_nonneg_left hE (highKernelNorm_nonneg _ _ _)))
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- Chosen generators inject ideal norm balls into Eisenstein lattice norm balls. -/
+lemma finite_ideal_card_bound (S : Finset (Ideal O)) (N : ℝ) (hN : 1 ≤ N)
+    (hn : ∀ I ∈ S, (Ideal.absNorm I : ℝ) ≤ N) :
+    (S.card : ℝ) ≤ diagonalControl sieveCutoff * N := by
+  classical
+  rw [← Finset.card_image_iff.mpr cubicIdealGenerator_injective.injOn]
+  apply finite_norm_ball_card_bound _ N hN
+  intro z hz
+  obtain ⟨I, hI, rfl⟩ := Finset.mem_image.mp hz
+  rw [ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator]
+  exact hn I hI
 
 end SchwartzPlanePoisson
 
