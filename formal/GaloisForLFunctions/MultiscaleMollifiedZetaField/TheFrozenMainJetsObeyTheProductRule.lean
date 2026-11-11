@@ -72,7 +72,7 @@ private theorem hasDerivAt_triple {a b c : ℝ → ℝ} {a₁ b₁ c₁ z : ℝ}
     HasDerivAt (fun x => a x * b x * c x)
       (scalarTripleFirstJet (a z) a₁ (b z) b₁ (c z) c₁) z := by
   apply ((ha.mul hb).mul hc).congr_deriv
-  dsimp only [scalarTripleFirstJet]
+  simp only [scalarTripleFirstJet, Pi.mul_apply]
   ring
 
 private theorem hasDerivAt_scalarTripleFirstJet {a a₁ b b₁ c c₁ : ℝ → ℝ} {a₂ b₂ c₂ z : ℝ}
@@ -83,7 +83,7 @@ private theorem hasDerivAt_scalarTripleFirstJet {a a₁ b b₁ c c₁ : ℝ → 
       (scalarTripleSecondJet (a z) (a₁ z) a₂ (b z) (b₁ z) b₂ (c z) (c₁ z) c₂) z := by
   apply ((((ha₁.mul hb).mul hc).add ((ha.mul hb₁).mul hc)).add
     ((ha.mul hb).mul hc₁)).congr_deriv
-  dsimp only [scalarTripleSecondJet]
+  simp only [scalarTripleSecondJet, Pi.mul_apply]
   ring
 
 /-- The first product-rule expression for the normalized main term. -/
@@ -123,15 +123,15 @@ private theorem shifted_pole_derivatives {L u z : ℝ} (hL : L ≠ 0)
       (scaledZetaPoleSecondJet L κ (u + z)) z := by
   have h := (hasDerivAt_id z).const_add u
   constructor
-  · simpa only [id_eq, mul_one] using (hasDerivAt_scaledZetaPoleValue hL hκ hu).comp z h
-  · simpa only [id_eq, mul_one] using (hasDerivAt_scaledZetaPoleFirstJet L hκ hu).comp z h
+  · simpa only [Function.comp_def, id_eq, mul_one] using! (hasDerivAt_scaledZetaPoleValue hL hκ hu).comp z h
+  · simpa only [Function.comp_def, id_eq, mul_one] using! (hasDerivAt_scaledZetaPoleFirstJet L hκ hu).comp z h
 
 private theorem shifted_chi_derivative {L u p q η z : ℝ}
     (hL : 0 < L) (hu : 0 < u + z) (hη : 0 < η) (hp : 4 ≤ p - η)
     (hu20 : (u + z) / L ≤ 1 / 20) (j : ℕ) :
     HasDerivAt (fun y => realNormalizedChiTaperJet L p q η j (u + y))
       (realNormalizedChiTaperJet L p q η (j + 1) (u + z)) z := by
-  simpa only [id_eq, mul_one] using
+  simpa only [Function.comp_def, id_eq, mul_one] using!
     (hasDerivAt_realNormalizedChiTaperJet hL hu hη hp hu20 j).comp z
       ((hasDerivAt_id z).const_add u)
 
@@ -144,7 +144,7 @@ theorem normalizedFrozenMainJet_one_eq {N : ℕ} (hN : 1 < N)
   have hu : 0 < u + z := (div_pos_iff_of_pos_right hL).mp hz
   obtain ⟨hd, _⟩ := shifted_pole_derivatives hL.ne' hu.ne' (by norm_num : (-2 : ℝ) ≠ 0)
   obtain ⟨hr, _⟩ := shifted_pole_derivatives hL.ne' hu.ne' (by norm_num : (2 : ℝ) ≠ 0)
-  have hc := shifted_chi_derivative hL hu hη hp hz20 0
+  have hc := shifted_chi_derivative (q := q) hL hu hη hp hz20 0
   have hf := (hasDerivAt_triple (hasDerivAt_frozenDirectGcd hN P u z) hd
     (hasDerivAt_const z (∫ t, blockWindow p q η t))).add
       (hasDerivAt_triple (hasDerivAt_frozenReflectedGcd hN P u z) hr hc)
@@ -155,7 +155,7 @@ theorem normalizedFrozenMainJet_one_eq {N : ℕ} (hN : 1 < N)
           realNormalizedChiTaperJet (Real.log N) p q η 0 (u + y) := by
     funext y
     rw [normalizedFrozenMainJet_zero_eq hN, realNormalizedChiTaperJet_zero]
-  have hm := hasDerivAt_normalizedFrozenMainJet hN P u hη hp 0 hz hz20
+  have hm := hasDerivAt_normalizedFrozenMainJet (q := q) hN P u hη hp 0 hz hz20
   rw [he] at hm
   exact hm.deriv.symm.trans hf.deriv
 
@@ -168,8 +168,8 @@ private theorem hasDerivAt_frozenMainProductFirst {N : ℕ} (hN : 1 < N)
   have hu : 0 < u + z := (div_pos_iff_of_pos_right hL).mp hz
   obtain ⟨hd, hd₁⟩ := shifted_pole_derivatives hL.ne' hu.ne' (by norm_num : (-2 : ℝ) ≠ 0)
   obtain ⟨hr, hr₁⟩ := shifted_pole_derivatives hL.ne' hu.ne' (by norm_num : (2 : ℝ) ≠ 0)
-  have hc := shifted_chi_derivative hL hu hη hp hz20 0
-  have hc₁ := shifted_chi_derivative hL hu hη hp hz20 1
+  have hc := shifted_chi_derivative (q := q) hL hu hη hp hz20 0
+  have hc₁ := shifted_chi_derivative (q := q) hL hu hη hp hz20 1
   exact (hasDerivAt_scalarTripleFirstJet (hasDerivAt_frozenDirectGcd hN P u z)
     (hasDerivAt_frozenDirectGcdFirst P N u z) hd hd₁
     (hasDerivAt_const z (∫ t, blockWindow p q η t)) (hasDerivAt_const z 0)).add

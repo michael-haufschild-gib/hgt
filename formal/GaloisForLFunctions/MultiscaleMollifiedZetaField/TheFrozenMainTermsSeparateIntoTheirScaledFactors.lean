@@ -60,7 +60,7 @@ theorem normalizedFrozenMainJet_zero_eq {N : ℕ} (hN : 1 < N)
   rw [pow_zero, div_one, realTwistedMomentMainJet_zero]
   unfold twistedMomentMain
   rw [integral_chiPairWeight_eq_ofReal]
-  have hW : (∫ t, blockWindowC p q η t) = ((∫ t, blockWindow p q η t) : ℂ) := integral_ofReal
+  have hW : (∫ t, blockWindowC p q η t) = ((∫ t, blockWindow p q η t : ℝ) : ℂ) := integral_ofReal
   rw [hW]
   simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     mul_zero, zero_mul, sub_zero]
@@ -81,7 +81,7 @@ theorem hasDerivAt_normalizedFrozenMainJet {N : ℕ} (hN : 1 < N)
       (normalizedFrozenMainJet P N u p q η (j + 1) z) z := by
   have hL : Real.log (N : ℝ) ≠ 0 := (Real.log_pos (by exact_mod_cast hN)).ne'
   have hg := (((hasDerivAt_id z).const_add u).div_const (Real.log N))
-  have hh := ((hasDerivAt_realTwistedMomentMainJet hη hp N
+  have hh := ((hasDerivAt_realTwistedMomentMainJet (q := q) hη hp N
     (moebiusProfileWeights P N (-u)) hz hz20 j).comp z hg).div_const ((Real.log N) ^ j)
   apply hh.congr_deriv
   simp only [normalizedFrozenMainJet, id_eq, one_div]
@@ -102,7 +102,7 @@ theorem normalizedFrozenMainJet_derivatives {N : ℕ} (hN : 1 < N)
   · exact (hasDerivAt_normalizedFrozenMainJet hN P u hη hp 0 h0 h020).deriv
   · have hc : ContinuousAt (fun z : ℝ => (u + z) / Real.log N) 0 := by fun_prop
     have hnear : ∀ᶠ z in 𝓝 (0 : ℝ), (u + z) / Real.log N ∈ Ioo 0 (1 / 20) :=
-      hc.eventually (isOpen_Ioo.mem_nhds (by simpa only [add_zero] using And.intro hu hu20))
+      hc.eventually (isOpen_Ioo.mem_nhds (by simpa only [Set.mem_Ioo, add_zero] using And.intro hu hu20))
     have he : deriv (normalizedFrozenMainJet P N u p q η 0) =ᶠ[𝓝 (0 : ℝ)]
         normalizedFrozenMainJet P N u p q η 1 := by
       filter_upwards [hnear] with z hz

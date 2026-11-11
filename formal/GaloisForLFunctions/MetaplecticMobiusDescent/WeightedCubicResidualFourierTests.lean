@@ -29705,9 +29705,9 @@ theorem actual_radial_crt_character_poisson_normalized {ι : Type*} [Fintype ι]
   · rw [norm_div, hnorm, Complex.norm_real, Real.norm_of_nonneg (norm_nonneg _), div_self hn]
   · intro W Y hY
     rw [hP W Y hY]
-    simp only [Algebra.smul_def, map_div₀, map_pow]
+    change ((Y / ‖ringComplex c‖ ^ 2 : ℝ) : ℂ) * _ = _
     push_cast
-    field_simp
+    ring
 
 lemma span_finset_prime_product {ι : Type*} (p : ι → O) (s : Finset ι) :
     Ideal.span {∏ i ∈ s, p i} = ∏ i ∈ s, Ideal.span {p i} := by
@@ -29743,7 +29743,701 @@ theorem prime_row_radial_poisson {ι : Type*} [Fintype ι] [DecidableEq ι]
     (fun i => O ⧸ P i) c hc e χ hχ
   refine ⟨β, hβ, ?_⟩
   intro W Y hY
-  simpa only [he, primeCuspRowCharacter] using h W Y hY
+  change (∑' z : O, (∏ i, χ i (Ideal.Quotient.mk (P i) z)) * W (‖ringComplex z‖ ^ 2 / Y)) =
+    ((Y : ℂ) * β / (‖ringComplex c‖ : ℂ)) * ∑' h : O,
+      (∏ i, (χ i)⁻¹ (Ideal.Quotient.mk (P i) h)) *
+        paperRadialFourier W (Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex c‖ ^ 2)
+  simpa only [he] using h W Y hY
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory Set
+open scoped FourierTransform SchwartzMap RealInnerProductSpace ContDiff
+
+lemma paperFrequency_norm_sq (u : ℂ) :
+    ‖paperFrequency u‖ ^ 2 = (4 / 3 : ℝ) * ‖u‖ ^ 2 := by
+  rw [paperFrequency_coordinates]
+  simp only [Complex.sq_norm, Complex.normSq_apply, ← pow_two]
+  change (u.im / (ringComplex omega).im) ^ 2 + (u.re / (ringComplex omega).im) ^ 2 =
+    (4 / 3 : ℝ) * (u.re ^ 2 + u.im ^ 2)
+  rw [div_pow, div_pow, complex_omega_coordinates.2]
+  ring
+
+def radialTestCLM : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℂ, ℂ) :=
+  SchwartzMap.compCLM ℝ (Function.hasTemperateGrowth_norm_sq ℂ)
+    ⟨1, 1, fun z => by
+      simp only [pow_one, one_mul, norm_pow, Real.norm_of_nonneg (norm_nonneg z)]
+      nlinarith [sq_nonneg (‖z‖ - 1)]⟩
+
+@[simp] theorem radialTestCLM_apply (W : 𝓢(ℝ, ℂ)) : radialTestCLM W = radialTest W := by
+  ext z
+  rfl
+
+def radialFourierCLM : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℂ, ℂ) :=
+  (FourierTransform.fourierCLM ℝ 𝓢(ℂ, ℂ)).comp radialTestCLM
+
+@[simp] theorem radialFourierCLM_apply (W : 𝓢(ℝ, ℂ)) :
+    radialFourierCLM W = 𝓕 (radialTest W) := by
+  simp [radialFourierCLM]
+
+theorem paperRadialFourier_eq_plane (W : 𝓢(ℝ, ℂ)) (t : ℝ) :
+    paperRadialFourier W t =
+      (2 / Real.sqrt 3 : ℝ) • radialFourierCLM W (paperFrequency (Real.sqrt t : ℂ)) := by
+  rw [paperRadialFourier, paperFourier_eq_standard, radialFourierCLM_apply]
+  rfl
+
+theorem paperFrequency_sqrt_norm_sq (t : ℝ) (ht : 0 ≤ t) :
+    ‖paperFrequency (Real.sqrt t : ℂ)‖ ^ 2 = (4 / 3 : ℝ) * t := by
+  rw [paperFrequency_norm_sq]
+  simp only [Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.sqrt_nonneg t), Real.sq_sqrt ht]
+
+theorem paperRadialFourier_weighted_bound (W : 𝓢(ℝ, ℂ)) (A : ℕ)
+    (t : ℝ) (ht : 0 ≤ t) :
+    (1 + t) ^ A * ‖paperRadialFourier W t‖ ≤
+      (2 / Real.sqrt 3 : ℝ) * 2 ^ (2 * A) *
+        (Finset.Iic (2 * A, 0)).sup (schwartzSeminormFamily ℝ ℂ ℂ)
+          (radialFourierCLM W) := by
+  let ξ : ℂ := paperFrequency (Real.sqrt t : ℂ)
+  have hn : ‖ξ‖ ^ 2 = (4 / 3 : ℝ) * t := paperFrequency_sqrt_norm_sq t ht
+  have hscale : 0 ≤ (2 / Real.sqrt 3 : ℝ) := by positivity
+  have hpow : (1 + t) ^ A ≤ (1 + ‖ξ‖) ^ (2 * A) := by
+    have hbase : 1 + t ≤ (1 + ‖ξ‖) ^ 2 := by
+      nlinarith [norm_nonneg ξ]
+    calc
+      (1 + t) ^ A ≤ ((1 + ‖ξ‖) ^ 2) ^ A := pow_le_pow_left₀ (by positivity) hbase A
+      _ = _ := by rw [← pow_mul]
+  have hb := SchwartzMap.one_add_le_sup_seminorm_apply (𝕜 := ℝ)
+    (m := (2 * A, 0)) (k := 2 * A) (n := 0) le_rfl le_rfl (radialFourierCLM W) ξ
+  simp only [norm_iteratedFDeriv_zero] at hb
+  have hsf : (fun m : ℕ × ℕ => SchwartzMap.seminorm ℝ m.1 m.2) =
+      schwartzSeminormFamily ℝ ℂ ℂ := by
+    funext m
+    rcases m with ⟨k, n⟩
+    rfl
+  rw [hsf] at hb
+  rw [paperRadialFourier_eq_plane, norm_smul, Real.norm_eq_abs, abs_of_nonneg hscale]
+  change (1 + t) ^ A * ((2 / Real.sqrt 3) * ‖radialFourierCLM W ξ‖) ≤ _
+  calc
+    _ = (2 / Real.sqrt 3) * ((1 + t) ^ A * ‖radialFourierCLM W ξ‖) := by ring
+    _ ≤ (2 / Real.sqrt 3) * ((1 + ‖ξ‖) ^ (2 * A) * ‖radialFourierCLM W ξ‖) :=
+      mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_right hpow (norm_nonneg _)) hscale
+    _ ≤ _ := by
+      simpa only [mul_assoc, add_zero] using mul_le_mul_of_nonneg_left hb hscale
+
+theorem schwartzCLM_finite_seminorm_control
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (T : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(E, ℂ)) (S : Finset (ℕ × ℕ)) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧ ∀ W : 𝓢(ℝ, ℂ),
+      S.sup (schwartzSeminormFamily ℝ E ℂ) (T W) ≤
+        C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W := by
+  let q : Seminorm ℝ 𝓢(ℝ, ℂ) :=
+    (S.sup (schwartzSeminormFamily ℝ E ℂ)).comp T.toLinearMap
+  have hq : Continuous q :=
+    (((schwartz_withSeminorms ℝ E ℂ).finset_sups).continuous_seminorm S).comp T.continuous
+  obtain ⟨s, C, hC, hbound⟩ :=
+    Seminorm.bound_of_continuous (schwartz_withSeminorms ℝ ℝ ℂ) q hq
+  refine ⟨s, C, ?_, ?_⟩
+  · exact_mod_cast (pos_iff_ne_zero.mpr hC : 0 < C)
+  · intro W
+    exact Seminorm.le_def.mp hbound W
+
+theorem paperRadialFourier_source_weighted_bound (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (t : ℝ), 0 ≤ t →
+        (1 + t) ^ A * ‖paperRadialFourier W t‖ ≤
+          C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W := by
+  obtain ⟨s, C, hC, hbound⟩ :=
+    schwartzCLM_finite_seminorm_control radialFourierCLM (Finset.Iic (2 * A, 0))
+  refine ⟨s, (2 / Real.sqrt 3) * 2 ^ (2 * A) * C, by positivity, ?_⟩
+  intro W t ht
+  apply (paperRadialFourier_weighted_bound W A t ht).trans
+  simpa only [mul_assoc] using
+    mul_le_mul_of_nonneg_left (hbound W)
+      (show 0 ≤ (2 / Real.sqrt 3) * 2 ^ (2 * A) by positivity)
+
+theorem paperRadialFourier_source_decay (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (t : ℝ), 0 ≤ t →
+        ‖paperRadialFourier W t‖ ≤
+          (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / (1 + t) ^ A := by
+  obtain ⟨s, C, hC, hbound⟩ := paperRadialFourier_source_weighted_bound A
+  refine ⟨s, C, hC, ?_⟩
+  intro W t ht
+  apply (le_div_iff₀ (by positivity : 0 < (1 + t) ^ A)).mpr
+  simpa only [mul_comm] using hbound W t ht
+
+theorem inverse_square_le_cauchy_product (a b q : ℝ) (hq : 0 ≤ q)
+    (hQ : (a ^ 2 + b ^ 2) / 2 ≤ q) :
+    ((1 + q) ^ 2)⁻¹ ≤
+      4 * ((1 + a ^ 2)⁻¹ * (1 + b ^ 2)⁻¹) := by
+  have hsum : 1 + a ^ 2 + b ^ 2 ≤ 2 * (1 + q) := by linarith
+  have hsquare : (1 + a ^ 2 + b ^ 2) ^ 2 ≤ (2 * (1 + q)) ^ 2 := by
+    apply pow_le_pow_left₀ (by positivity) hsum
+  have hden : (1 + a ^ 2) * (1 + b ^ 2) ≤ 4 * (1 + q) ^ 2 := by
+    nlinarith [sq_nonneg (a ^ 2), sq_nonneg (b ^ 2),
+      mul_nonneg (sq_nonneg a) (sq_nonneg b)]
+  calc
+    _ = 1 / (1 + q) ^ 2 := by simp only [one_div]
+    _ ≤ 4 / ((1 + a ^ 2) * (1 + b ^ 2)) :=
+      (div_le_div_iff₀ (by positivity) (by positivity)).mpr (by simpa using hden)
+    _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev]; ring
+
+theorem eisenstein_cauchy_summable :
+    Summable (fun h : O => ((1 + ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) := by
+  apply (Eisenstein.Coordinates.coordinateEquiv.symm.summable_iff).mp
+  change Summable (fun p : ℤ × ℤ =>
+    ((1 + ‖ringComplex (Eisenstein.Coordinates.coordinateEquiv.symm p)‖ ^ 2) ^ 2)⁻¹)
+  apply Summable.of_nonneg_of_le (fun _ => inv_nonneg.mpr (sq_nonneg _)) _
+    (summable_int_cauchy_product.mul_left 4)
+  intro p
+  apply inverse_square_le_cauchy_product (p.1 : ℝ) (p.2 : ℝ)
+    (‖ringComplex (Eisenstein.Coordinates.coordinateEquiv.symm p)‖ ^ 2) (sq_nonneg _)
+  change ((p.1 : ℝ) ^ 2 + (p.2 : ℝ) ^ 2) / 2 ≤
+    ‖ringComplex (Eisenstein.Coordinates.eval p.1 p.2)‖ ^ 2
+  rw [Eisenstein.Coordinates.complex_norm_eval_sq]
+  push_cast
+  nlinarith [sq_nonneg ((p.1 : ℝ) - (p.2 : ℝ))]
+
+def eisensteinCauchyMass : ℝ :=
+  ∑' h : O, ((1 + ‖ringComplex h‖ ^ 2) ^ 2)⁻¹
+
+theorem eisensteinCauchyMass_nonneg : 0 ≤ eisensteinCauchyMass :=
+  tsum_nonneg (fun _ => by positivity)
+
+theorem eisensteinCauchyMass_subtype (S : Set O) :
+    (∑' h : S, ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) ≤ eisensteinCauchyMass := by
+  exact (eisenstein_cauchy_summable.subtype S).tsum_le_tsum_of_inj
+    Subtype.val Subtype.val_injective (fun _ _ => by positivity) (fun _ => le_rfl)
+    eisenstein_cauchy_summable
+
+theorem polynomial_tail_majorant (A : ℕ) (K T q B f : ℝ)
+    (hK : 0 < K) (hT : 0 ≤ T) (hq : 0 ≤ q) (hf : 0 ≤ f)
+    (htail : T ≤ K * q) (hbound : (1 + K * q) ^ (A + 2) * f ≤ B) :
+    f ≤ (B / ((min 1 K) ^ 2 * (1 + T) ^ A)) * ((1 + q) ^ 2)⁻¹ := by
+  have hm : 0 < min 1 K := lt_min (by norm_num) hK
+  have hm1 : min 1 K ≤ 1 := min_le_left _ _
+  have hmK : min 1 K ≤ K := min_le_right _ _
+  have hbase : min 1 K * (1 + q) ≤ 1 + K * q := by
+    nlinarith [mul_le_mul_of_nonneg_right hmK hq]
+  have htwo : (min 1 K) ^ 2 * (1 + q) ^ 2 ≤ (1 + K * q) ^ 2 := by
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (by positivity) hbase _
+  have hpow : (1 + T) ^ A ≤ (1 + K * q) ^ A :=
+    pow_le_pow_left₀ (by positivity) (by linarith) _
+  have hden : ((min 1 K) ^ 2 * (1 + T) ^ A) * (1 + q) ^ 2 ≤
+      (1 + K * q) ^ (A + 2) := by
+    have hh := mul_le_mul hpow htwo (by positivity) (by positivity)
+    rw [pow_add]
+    nlinarith
+  have hprod : f * (((min 1 K) ^ 2 * (1 + T) ^ A) * (1 + q) ^ 2) ≤ B := by
+    calc
+      _ = (((min 1 K) ^ 2 * (1 + T) ^ A) * (1 + q) ^ 2) * f := mul_comm _ _
+      _ ≤ (1 + K * q) ^ (A + 2) * f := mul_le_mul_of_nonneg_right hden hf
+      _ ≤ B := hbound
+  have hraw := (le_div_iff₀ (show 0 < ((min 1 K) ^ 2 * (1 + T) ^ A) * (1 + q) ^ 2
+      by positivity)).mpr hprod
+  simpa only [div_eq_mul_inv, mul_inv_rev, mul_comm, mul_left_comm, mul_assoc] using hraw
+
+theorem paperRadialFourier_lattice_summable_norm (W : 𝓢(ℝ, ℂ)) (K : ℝ) (hK : 0 < K) :
+    Summable (fun h : O => ‖paperRadialFourier W (K * ‖ringComplex h‖ ^ 2)‖) := by
+  obtain ⟨s, C, hC, hb⟩ := paperRadialFourier_source_weighted_bound 2
+  let B := C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  let D := (min 1 K) ^ 2 * (1 + (0 : ℝ)) ^ (0 : ℕ)
+  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) _
+    (eisenstein_cauchy_summable.mul_left (B / D))
+  intro h
+  exact polynomial_tail_majorant 0 K 0 _ B _ hK (by norm_num)
+    (sq_nonneg _) (norm_nonneg _) (by positivity) (hb W _ (by positivity))
+
+
+theorem scaled_cauchy_antitone (b : ℝ) :
+    AntitoneOn (fun x : ℝ => (1 + (b * x) ^ 2)⁻¹) (Ici 0) := by
+  intro x hx y hy hxy
+  change 0 ≤ x at hx
+  change 0 ≤ y at hy
+  apply inv_anti₀ (by positivity)
+  nlinarith [sq_nonneg b, sq_nonneg (y - x),
+    mul_nonneg (sq_nonneg b) (show 0 ≤ y ^ 2 - x ^ 2 by nlinarith)]
+
+theorem scaled_cauchy_nat_bound (b : ℝ) (hb : 0 < b) :
+    (∑' n : ℕ, (1 + (b * (n : ℝ)) ^ 2)⁻¹) ≤ 1 + Real.pi / (2 * b) := by
+  have hi := (integrable_inv_one_add_sq.comp_mul_left' hb.ne').integrableOn (s := Ioi 0)
+  have ht := (scaled_cauchy_antitone b).tsum_le_integral hi
+    (fun t ht => by positivity)
+  have he : (∫ x : ℝ in Ioi 0, (1 + (b * x) ^ 2)⁻¹) = Real.pi / (2 * b) := by
+    rw [integral_comp_mul_left_Ioi (fun x : ℝ => (1 + x ^ 2)⁻¹) 0 hb]
+    simp only [mul_zero, integral_Ioi_inv_one_add_sq, Real.arctan_zero, sub_zero,
+      smul_eq_mul]
+    ring
+  simpa [he] using ht
+
+theorem summable_scaled_cauchy_nat (b : ℝ) (hb : 0 < b) :
+    Summable (fun n : ℕ => (1 + (b * (n : ℝ)) ^ 2)⁻¹) := by
+  exact (scaled_cauchy_antitone b).summable_of_integrableOn_Ioi_zero
+    (integrable_inv_one_add_sq.comp_mul_left' hb.ne').integrableOn (fun _ _ => by positivity)
+
+theorem summable_scaled_cauchy_int (b : ℝ) (hb : 0 < b) :
+    Summable (fun n : ℤ => (1 + (b * (n : ℝ)) ^ 2)⁻¹) := by
+  rw [summable_int_iff_summable_nat_and_neg]
+  constructor
+  · simpa using summable_scaled_cauchy_nat b hb
+  · simpa [mul_neg] using summable_scaled_cauchy_nat b hb
+
+theorem scaled_cauchy_int_bound (b : ℝ) (hb : 0 < b) :
+    (∑' n : ℤ, (1 + (b * (n : ℝ)) ^ 2)⁻¹) ≤ 1 + Real.pi / b := by
+  have hs := summable_scaled_cauchy_nat b hb
+  have hs1 := (summable_nat_add_iff 1).mpr hs
+  have hneg : Summable (fun n : ℕ =>
+      (1 + (b * ((-(n + 1) : ℤ) : ℝ)) ^ 2)⁻¹) := by
+    simpa only [Int.cast_neg, Int.cast_add, Int.cast_natCast, Int.cast_one,
+      Nat.cast_add, Nat.cast_one, mul_neg, neg_sq] using hs1
+  rw [tsum_of_nat_of_neg_add_one
+    (f := fun n : ℤ => (1 + (b * (n : ℝ)) ^ 2)⁻¹)
+    (by simpa only [Int.cast_natCast] using hs) hneg]
+  simp only [Int.cast_natCast, Int.cast_neg, Int.cast_add, Int.cast_one, mul_neg,
+    neg_sq]
+  have hz := hs.tsum_eq_zero_add
+  have he : (∑' n : ℕ, (1 + (b * (↑n + 1)) ^ 2)⁻¹) =
+      (∑' n : ℕ, (1 + (b * (n : ℝ)) ^ 2)⁻¹) - 1 := by
+    apply eq_sub_iff_add_eq.mpr
+    simpa [add_comm] using hz.symm
+  rw [he]
+  have := scaled_cauchy_nat_bound b hb
+  have hh : Real.pi / (2 * b) = (Real.pi / b) / 2 := by ring
+  rw [hh] at this
+  linarith
+
+open Eisenstein
+
+theorem scaled_eisenstein_cauchy_summable (K : ℝ) (hK : 0 < K) :
+    Summable (fun h : O => ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) := by
+  let b := Real.sqrt K
+  have hb : 0 < b := Real.sqrt_pos.mpr hK
+  have hbsq : b ^ 2 = K := Real.sq_sqrt hK.le
+  have hs := summable_scaled_cauchy_int b hb
+  have hp := hs.mul_of_nonneg hs (fun _ => by positivity) (fun _ => by positivity)
+  apply (Eisenstein.Coordinates.coordinateEquiv.symm.summable_iff).mp
+  change Summable (fun p : ℤ × ℤ =>
+    ((1 + K * ‖ringComplex (Eisenstein.Coordinates.coordinateEquiv.symm p)‖ ^ 2) ^ 2)⁻¹)
+  apply Summable.of_nonneg_of_le (fun _ => by positivity) _ (hp.mul_left 4)
+  intro p
+  apply inverse_square_le_cauchy_product (b * (p.1 : ℝ)) (b * (p.2 : ℝ))
+    (K * ‖ringComplex (Eisenstein.Coordinates.coordinateEquiv.symm p)‖ ^ 2) (by positivity)
+  change ((b * (p.1 : ℝ)) ^ 2 + (b * (p.2 : ℝ)) ^ 2) / 2 ≤
+    K * ‖ringComplex (Eisenstein.Coordinates.eval p.1 p.2)‖ ^ 2
+  rw [Eisenstein.Coordinates.complex_norm_eval_sq]
+  push_cast
+  nlinarith [mul_nonneg hK.le (sq_nonneg ((p.1 : ℝ) - (p.2 : ℝ)))]
+
+theorem scaled_eisenstein_cauchy_bound (K : ℝ) (hK : 0 < K) :
+    (∑' h : O, ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) ≤
+      4 * (1 + Real.pi / Real.sqrt K) ^ 2 := by
+  let b := Real.sqrt K
+  have hb : 0 < b := Real.sqrt_pos.mpr hK
+  have hbsq : b ^ 2 = K := Real.sq_sqrt hK.le
+  have hs := summable_scaled_cauchy_int b hb
+  have hp := hs.mul_of_nonneg hs (fun _ => by positivity) (fun _ => by positivity)
+  have he : (∑' h : O, ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) =
+      ∑' p : ℤ × ℤ, ((1 + K * ‖ringComplex (Eisenstein.Coordinates.coordinateEquiv.symm p)‖ ^ 2) ^ 2)⁻¹ :=
+    (Eisenstein.Coordinates.coordinateEquiv.symm.tsum_eq _).symm
+  rw [he]
+  calc
+    _ ≤ ∑' p : ℤ × ℤ, 4 * ((1 + (b * (p.1 : ℝ)) ^ 2)⁻¹ *
+          (1 + (b * (p.2 : ℝ)) ^ 2)⁻¹) := by
+      apply ((Eisenstein.Coordinates.coordinateEquiv.symm.summable_iff).mpr
+        (scaled_eisenstein_cauchy_summable K hK)).tsum_le_tsum _ (hp.mul_left 4)
+      intro p
+      apply inverse_square_le_cauchy_product _ _ _ (by positivity)
+      change ((b * (p.1 : ℝ)) ^ 2 + (b * (p.2 : ℝ)) ^ 2) / 2 ≤
+        K * ‖ringComplex (Eisenstein.Coordinates.eval p.1 p.2)‖ ^ 2
+      rw [Eisenstein.Coordinates.complex_norm_eval_sq]
+      push_cast
+      nlinarith [mul_nonneg hK.le (sq_nonneg ((p.1 : ℝ) - (p.2 : ℝ)))]
+    _ = 4 * (∑' n : ℤ, (1 + (b * (n : ℝ)) ^ 2)⁻¹) ^ 2 := by
+      rw [tsum_mul_left, ← hs.tsum_mul_tsum hs hp, pow_two]
+    _ ≤ 4 * (1 + Real.pi / b) ^ 2 := by
+      gcongr
+      exact scaled_cauchy_int_bound b hb
+
+theorem scaled_eisenstein_cauchy_small (K : ℝ) (hK : 0 < K) (hK1 : K ≤ 1) :
+    K * (∑' h : O, ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) ≤
+      4 * (1 + Real.pi) ^ 2 := by
+  have hs := scaled_eisenstein_cauchy_bound K hK
+  have hb : 0 < Real.sqrt K := Real.sqrt_pos.mpr hK
+  have hb1 : Real.sqrt K ≤ 1 := by simpa using Real.sqrt_le_sqrt hK1
+  have hsq := Real.sq_sqrt hK.le
+  calc
+    _ ≤ K * (4 * (1 + Real.pi / Real.sqrt K) ^ 2) :=
+      mul_le_mul_of_nonneg_left hs hK.le
+    _ = 4 * (Real.sqrt K + Real.pi) ^ 2 := by
+      nth_rw 1 [← hsq]
+      field_simp
+    _ ≤ _ := by gcongr
+
+theorem one_le_eisenstein_norm_sq (h : O) (hh : h ≠ 0) :
+    1 ≤ ‖ringComplex h‖ ^ 2 := by
+  rw [ringComplex_norm_sq_eq_absNorm_span]
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (show Ideal.absNorm (Ideal.span {h}) ≠ 0 by
+    rw [ne_eq, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
+    exact hh)
+
+theorem cauchy_large_scale_pointwise (K q : ℝ) (hK : 1 ≤ K) (hq : 1 ≤ q) :
+    K * ((1 + K * q) ^ 2)⁻¹ ≤ 4 * ((1 + q) ^ 2)⁻¹ := by
+  have hKp : 0 < K := by linarith
+  have hqp : 0 < q := by linarith
+  have h1 : K * (1 + q) ≤ 2 * (1 + K * q) := by nlinarith
+  have h2 := pow_le_pow_left₀ (by positivity : 0 ≤ K * (1 + q)) h1 2
+  have h3 : K * (1 + q) ^ 2 ≤ K ^ 2 * (1 + q) ^ 2 := by
+    nlinarith [sq_nonneg (1 + q)]
+  apply (div_le_div_iff₀ (by positivity : 0 < (1 + K * q) ^ 2)
+    (by positivity : 0 < (1 + q) ^ 2)).mpr
+  nlinarith
+
+theorem lattice_profile_nonzero_scaled_bound
+    (F : ℝ → ℂ) (B : ℝ) (hB : 0 ≤ B)
+    (hF : ∀ t : ℝ, 0 ≤ t → (1 + t) ^ 2 * ‖F t‖ ≤ B)
+    (K : ℝ) (hK : 0 < K) :
+    K * (∑' h : {h : O // h ≠ 0}, ‖F (K * ‖ringComplex h.val‖ ^ 2)‖) ≤
+      (4 * (1 + Real.pi) ^ 2 + 4 * eisensteinCauchyMass) * B := by
+  have hm (h : O) : ‖F (K * ‖ringComplex h‖ ^ 2)‖ ≤
+      B * ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹ := by
+    rw [← div_eq_mul_inv]
+    apply (le_div_iff₀ (by positivity)).mpr
+    simpa only [mul_comm] using hF (K * ‖ringComplex h‖ ^ 2) (by positivity)
+  have hs := scaled_eisenstein_cauchy_summable K hK
+  have hf : Summable (fun h : O => ‖F (K * ‖ringComplex h‖ ^ 2)‖) :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hm (hs.mul_left B)
+  have hsub := hf.subtype (fun h : O => h ≠ 0)
+  have hc := eisenstein_cauchy_summable.subtype (fun h : O => h ≠ 0)
+  by_cases hK1 : K ≤ 1
+  · have htotal : (∑' h : {h : O // h ≠ 0}, ‖F (K * ‖ringComplex h.val‖ ^ 2)‖) ≤
+        ∑' h : O, ‖F (K * ‖ringComplex h‖ ^ 2)‖ :=
+      hsub.tsum_le_tsum_of_inj Subtype.val Subtype.val_injective
+        (fun _ _ => norm_nonneg _) (fun _ => le_rfl) hf
+    have hbound := hf.tsum_le_tsum hm (hs.mul_left B)
+    rw [tsum_mul_left] at hbound
+    calc
+      _ ≤ K * (B * ∑' h : O, ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) :=
+        mul_le_mul_of_nonneg_left (htotal.trans hbound) hK.le
+      _ = B * (K * ∑' h : O, ((1 + K * ‖ringComplex h‖ ^ 2) ^ 2)⁻¹) := by ring
+      _ ≤ B * (4 * (1 + Real.pi) ^ 2) :=
+        mul_le_mul_of_nonneg_left (scaled_eisenstein_cauchy_small K hK hK1) hB
+      _ ≤ _ := by nlinarith [eisensteinCauchyMass_nonneg]
+  · have hp (h : {h : O // h ≠ 0}) :
+        K * ‖F (K * ‖ringComplex h.val‖ ^ 2)‖ ≤
+          (4 * B) * ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ := by
+      calc
+        _ ≤ K * (B * ((1 + K * ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) :=
+          mul_le_mul_of_nonneg_left (hm h.val) hK.le
+        _ = B * (K * ((1 + K * ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) := by ring
+        _ ≤ B * (4 * ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) :=
+          mul_le_mul_of_nonneg_left (cauchy_large_scale_pointwise K _
+            (le_of_not_ge hK1) (one_le_eisenstein_norm_sq h.val h.property)) hB
+        _ = _ := by ring
+    calc
+      _ = ∑' h : {h : O // h ≠ 0}, K * ‖F (K * ‖ringComplex h.val‖ ^ 2)‖ := tsum_mul_left.symm
+      _ ≤ ∑' h : {h : O // h ≠ 0}, (4 * B) * ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ :=
+        (hsub.mul_left K).tsum_le_tsum hp (hc.mul_left (4 * B))
+      _ = (4 * B) * ∑' h : {h : O // h ≠ 0}, ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ := tsum_mul_left
+      _ ≤ (4 * B) * eisensteinCauchyMass := mul_le_mul_of_nonneg_left
+        (eisensteinCauchyMass_subtype (fun h : O => h ≠ 0)) (by positivity)
+      _ ≤ _ := by nlinarith [sq_nonneg (1 + Real.pi)]
+
+theorem paperRadialFourier_nonzero_lattice_uniform :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : SchwartzMap ℝ ℂ) (K : ℝ), 0 < K →
+        K * (∑' h : {h : O // h ≠ 0},
+          ‖paperRadialFourier W (K * ‖ringComplex h.val‖ ^ 2)‖) ≤
+            C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W := by
+  obtain ⟨s, C, hC, hb⟩ := paperRadialFourier_source_weighted_bound 2
+  refine ⟨s, (4 * (1 + Real.pi) ^ 2 + 4 * eisensteinCauchyMass) * C, ?_, ?_⟩
+  · have := eisensteinCauchyMass_nonneg
+    have := Real.pi_pos
+    positivity
+  · intro W K hK
+    simpa only [mul_assoc] using lattice_profile_nonzero_scaled_bound
+      (paperRadialFourier W) (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)
+        (by positivity) (hb W) K hK
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+lemma primeCuspRowCharacter_norm_le_one {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (x : O) :
+    ‖primeCuspRowCharacter p χ x‖ ≤ 1 := by
+  change ‖∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) x)‖ ≤ 1
+  rw [norm_prod]
+  exact Finset.prod_le_one (fun _ _ => norm_nonneg _)
+    (fun i _ => finiteMulChar_norm_le_one (χ i) _)
+
+lemma primeCuspRowCharacter_zero {ι : Type*} [Fintype ι] [Nonempty ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) :
+    primeCuspRowCharacter p χ 0 = 0 := by
+  classical
+  obtain ⟨i⟩ := ‹Nonempty ι›
+  exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [map_zero, MulChar.map_zero])
+
+/-- The smoothed Pólya–Vinogradov bound is uniform in scale and in every nontrivial prime row. -/
+theorem prime_row_polya_vinogradov :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+        (p : ι → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+        ‖∑' z : O, primeCuspRowCharacter p χ z * W (‖ringComplex z‖ ^ 2 / Y)‖ ≤
+          (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * ‖ringComplex (∏ i, p i)‖ := by
+  obtain ⟨s, C, hC, hb⟩ := paperRadialFourier_nonzero_lattice_uniform
+  refine ⟨s, C, hC, ?_⟩
+  intro ι _ _ _ p hp _ hinj χ hχ W Y hY
+  let c := ∏ i, p i
+  let q := ‖ringComplex c‖
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hq : 0 < q := norm_pos_iff.mpr (ringComplex_ne_zero hc)
+  let t := Y / q ^ 2
+  have ht : 0 < t := div_pos hY (sq_pos_of_pos hq)
+  let F : O → ℂ := fun h => primeCuspRowCharacter p (fun i => (χ i)⁻¹) h *
+    paperRadialFourier W (t * ‖ringComplex h‖ ^ 2)
+  have hF (h : O) : ‖F h‖ ≤ ‖paperRadialFourier W (t * ‖ringComplex h‖ ^ 2)‖ := by
+    dsimp only [F]
+    rw [norm_mul]
+    exact mul_le_of_le_one_left (norm_nonneg _) (primeCuspRowCharacter_norm_le_one p _ h)
+  have hs := paperRadialFourier_lattice_summable_norm W t ht
+  have hFs : Summable (fun h : O => ‖F h‖) :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hF hs
+  have hzero : F 0 = 0 := by simp only [F, primeCuspRowCharacter_zero, zero_mul]
+  have heq : (∑' h : O, F h) = ∑' h : {h : O // h ≠ 0}, F h := by
+    symm
+    apply tsum_subtype_eq_of_support_subset
+    intro h hh hz
+    subst h
+    exact hh hzero
+  have hn : ‖∑' h : O, F h‖ ≤
+      ∑' h : {h : O // h ≠ 0}, ‖paperRadialFourier W (t * ‖ringComplex h.val‖ ^ 2)‖ := by
+    rw [heq]
+    exact (norm_tsum_le_tsum_norm (hFs.subtype _)).trans
+      ((hFs.subtype _).tsum_le_tsum (fun h => hF h) (hs.subtype _))
+  have hbound : t * ‖∑' h : O, F h‖ ≤ C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W :=
+    (mul_le_mul_of_nonneg_left hn ht.le).trans (hb W t ht)
+  obtain ⟨β, hβ, hpoisson⟩ := prime_row_radial_poisson p hp hinj χ hχ
+  rw [hpoisson W Y hY]
+  have hargs (h : O) : Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex c‖ ^ 2 =
+      t * ‖ringComplex h‖ ^ 2 := by dsimp [t, q]; ring
+  change ‖((Y : ℂ) * β / (q : ℂ)) *
+    ∑' h : O, primeCuspRowCharacter p (fun i => (χ i)⁻¹) h *
+      paperRadialFourier W (Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex c‖ ^ 2)‖ ≤ _
+  simp_rw [hargs]
+  change ‖((Y : ℂ) * β / (q : ℂ)) * ∑' h : O, F h‖ ≤ _
+  rw [norm_mul, norm_div, norm_mul, hβ,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_pos hY, mul_one,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_pos hq]
+  calc
+    Y / q * ‖∑' h : O, F h‖ = q * (t * ‖∑' h : O, F h‖) := by dsimp [t]; field_simp
+    _ ≤ q * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) :=
+      mul_le_mul_of_nonneg_left hbound hq.le
+    _ = _ := mul_comm _ _
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+/-- The finite coprimality mask keeps precisely the rows avoiding the selected primes. -/
+def primeCoprimeMask {ι : Type*} (p : ι → O) (s : Finset ι) (z : O) : ℂ :=
+  ∏ i ∈ s, (1 - if p i ∣ z then (1 : ℂ) else 0)
+
+lemma primeCoprimeMask_divisor_expansion {ι : Type*} (p : ι → O)
+    (hcop : Pairwise (Function.onFun IsCoprime p)) (s : Finset ι) (z : O) :
+    primeCoprimeMask p s z = ∑ E ∈ s.powerset,
+      (-1 : ℂ) ^ E.card * (if (∏ i ∈ E, p i) ∣ z then 1 else 0) := by
+  classical
+  rw [primeCoprimeMask, Finset.prod_sub]
+  apply Finset.sum_congr rfl
+  intro E hE
+  simp only [Finset.prod_const_one, mul_one]
+  have hd : (∏ i ∈ E, p i) ∣ z ↔ ∀ i ∈ E, p i ∣ z := by
+    constructor
+    · intro h i hi
+      exact (Finset.dvd_prod_of_mem p hi).trans h
+    · exact Finset.prod_dvd_of_isRelPrime (fun i _ j _ hij => (hcop hij).isRelPrime)
+  have he : (∏ i ∈ E, if p i ∣ z then (1 : ℂ) else 0) =
+      if ∀ i ∈ E, p i ∣ z then 1 else 0 := by
+    by_cases h : ∀ i ∈ E, p i ∣ z
+    · simp only [if_pos h]
+      calc
+        _ = ∏ _i ∈ E, (1 : ℂ) := Finset.prod_congr rfl (fun i hi => if_pos (h i hi))
+        _ = 1 := Finset.prod_const_one
+    · rw [if_neg h]
+      push_neg at h
+      obtain ⟨i, hi, hn⟩ := h
+      exact Finset.prod_eq_zero hi (if_neg hn)
+  rw [he, hd]
+  split_ifs <;> rfl
+
+/-- Multiples of a nonzero Eisenstein integer are parametrized without multiplicity. -/
+lemma tsum_divisibility_dilation (d : O) (hd : d ≠ 0) (f : O → ℂ) :
+    (∑' z : O, if d ∣ z then f z else 0) = ∑' z : O, f (d * z) := by
+  classical
+  let e : O ≃ {z : O // d ∣ z} := Equiv.ofBijective
+    (fun z => ⟨d * z, ⟨z, rfl⟩⟩)
+    ⟨fun x y h => mul_left_cancel₀ hd (congrArg Subtype.val h), by
+      rintro ⟨z, w, hw⟩
+      exact ⟨w, Subtype.ext hw.symm⟩⟩
+  calc
+    _ = ∑' z : {z : O // d ∣ z}, if d ∣ z.val then f z.val else 0 := by
+      symm
+      apply tsum_subtype_eq_of_support_subset
+        (f := fun z : O => if d ∣ z then f z else 0) (s := {z : O | d ∣ z})
+      intro z hz
+      by_contra hn
+      exact hz (if_neg hn)
+    _ = ∑' z : {z : O // d ∣ z}, f z.val := tsum_congr (fun z => if_pos z.property)
+    _ = ∑' z : O, f (d * z) := (e.tsum_eq (fun z => f z.val)).symm
+
+/-- Inclusion–exclusion converts a coprimality mask into exact radial dilations. -/
+theorem prime_row_masked_dilations {ι κ : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+    (q : κ → O) (hq : ∀ i, q i ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime q)) (S : Finset κ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, primeCoprimeMask q S z * primeCuspRowCharacter p χ z *
+      W (‖ringComplex z‖ ^ 2 / Y)) =
+      ∑ E ∈ S.powerset, (-1 : ℂ) ^ E.card * primeCuspRowCharacter p χ (∏ i ∈ E, q i) *
+        ∑' z : O, primeCuspRowCharacter p χ z *
+          W (‖ringComplex z‖ ^ 2 / (Y / ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2)) := by
+  classical
+  let F : O → ℂ := fun z => primeCuspRowCharacter p χ z * W (‖ringComplex z‖ ^ 2 / Y)
+  have hsW : Summable (fun z : O => ‖W (‖ringComplex z‖ ^ 2 / Y)‖) := by
+    simpa only [scaledRadialTest_apply] using actual_eisenstein_summable_norm (scaledRadialTest W Y hY)
+  have hsF : Summable (fun z => ‖F z‖) := by
+    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun z => ?_) hsW
+    dsimp only [F]
+    rw [norm_mul]
+    exact mul_le_of_le_one_left (norm_nonneg _) (primeCuspRowCharacter_norm_le_one p χ z)
+  have hsE (E : Finset κ) : Summable (fun z : O =>
+      (-1 : ℂ) ^ E.card * (if (∏ i ∈ E, q i) ∣ z then F z else 0)) := by
+    apply Summable.mul_left
+    apply Summable.of_norm
+    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun z => ?_) hsF
+    split_ifs <;> simp only [norm_zero, le_refl, norm_nonneg]
+  have he (z : O) : primeCoprimeMask q S z * primeCuspRowCharacter p χ z *
+      W (‖ringComplex z‖ ^ 2 / Y) = ∑ E ∈ S.powerset,
+        (-1 : ℂ) ^ E.card * (if (∏ i ∈ E, q i) ∣ z then F z else 0) := by
+    rw [primeCoprimeMask_divisor_expansion q hcop, Finset.sum_mul, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro E hE
+    split_ifs <;> simp only [F, mul_one, mul_zero, zero_mul, mul_assoc]
+  simp_rw [he]
+  rw [Summable.tsum_finsetSum (fun E _ => hsE E)]
+  apply Finset.sum_congr rfl
+  intro E hE
+  let d := ∏ i ∈ E, q i
+  have hd : d ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hq i)
+  rw [tsum_mul_left, tsum_divisibility_dilation d hd, mul_assoc]
+  congr 1
+  rw [← tsum_mul_left]
+  apply tsum_congr
+  intro z
+  dsimp only [F]
+  rw [map_mul, map_mul, norm_mul, mul_pow]
+  have harg : ‖ringComplex d‖ ^ 2 * ‖ringComplex z‖ ^ 2 / Y =
+      ‖ringComplex z‖ ^ 2 / (Y / ‖ringComplex d‖ ^ 2) := by
+    field_simp
+  rw [harg]
+  ring
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+/-- Masks preserve the same Gauss phase; selected divisors only rescale the dual radial variable. -/
+theorem prime_row_masked_radial_poisson {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1) :
+    ∃ β : ℂ, ‖β‖ = 1 ∧ ∀ {κ : Type*} (q : κ → O) (hq : ∀ i, q i ≠ 0)
+      (hcop : Pairwise (Function.onFun IsCoprime q)) (S : Finset κ)
+      (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+      (∑' z : O, primeCoprimeMask q S z * primeCuspRowCharacter p χ z *
+        W (‖ringComplex z‖ ^ 2 / Y)) =
+        ((Y : ℂ) * β / (‖ringComplex (∏ i, p i)‖ : ℂ)) *
+          ∑ E ∈ S.powerset,
+            ((-1 : ℂ) ^ E.card * primeCuspRowCharacter p χ (∏ i ∈ E, q i) /
+              (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 : ℝ)) *
+              ∑' h : O, primeCuspRowCharacter p (fun i => (χ i)⁻¹) h *
+                paperRadialFourier W
+                  (Y * ‖ringComplex h‖ ^ 2 /
+                    (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 * ‖ringComplex (∏ i, p i)‖ ^ 2)) := by
+  classical
+  obtain ⟨β, hβ, hP⟩ := prime_row_radial_poisson p hp hinj χ hχ
+  refine ⟨β, hβ, ?_⟩
+  intro κ q hq hcop S W Y hY
+  rw [prime_row_masked_dilations p χ q hq hcop S W Y hY, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro E hE
+  have hd : (∏ i ∈ E, q i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hq i)
+  have hn : 0 < ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 :=
+    sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hd))
+  rw [hP W _ (div_pos hY hn)]
+  have harg (h : O) :
+      Y / ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 * ‖ringComplex h‖ ^ 2 /
+          ‖ringComplex (∏ i, p i)‖ ^ 2 =
+        Y * ‖ringComplex h‖ ^ 2 /
+          (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 * ‖ringComplex (∏ i, p i)‖ ^ 2) := by ring
+  simp_rw [harg]
+  push_cast
+  ring
+
+/-- Finite coprimality exclusions cost at most the number of their divisors in Pólya–Vinogradov. -/
+theorem prime_row_masked_polya_vinogradov :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+        (p : ι → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (q : κ → O) (hq : ∀ i, q i ≠ 0)
+        (hcop : Pairwise (Function.onFun IsCoprime q)) (S : Finset κ)
+        (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+        ‖∑' z : O, primeCoprimeMask q S z * primeCuspRowCharacter p χ z *
+          W (‖ringComplex z‖ ^ 2 / Y)‖ ≤
+          (2 : ℝ) ^ S.card *
+            ((C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * ‖ringComplex (∏ i, p i)‖) := by
+  obtain ⟨s, C, hC, hPV⟩ := prime_row_polya_vinogradov
+  refine ⟨s, C, hC, ?_⟩
+  intro ι κ _ _ _ p hp _ hinj χ hχ q hq hcop S W Y hY
+  classical
+  rw [prime_row_masked_dilations p χ q hq hcop S W Y hY]
+  refine (norm_sum_le _ _).trans ?_
+  calc
+    _ ≤ ∑ _E ∈ S.powerset,
+        (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * ‖ringComplex (∏ i, p i)‖ := by
+      apply Finset.sum_le_sum
+      intro E hE
+      have hd : (∏ i ∈ E, q i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hq i)
+      have hn : 0 < ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 :=
+        sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hd))
+      simp only [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
+      exact (mul_le_of_le_one_left (norm_nonneg _)
+        (primeCuspRowCharacter_norm_le_one p χ _)).trans
+          (hPV p hp hinj χ hχ W _ (div_pos hY hn))
+    _ = _ := by
+      simp only [Finset.sum_const, Finset.card_powerset, nsmul_eq_mul, Nat.cast_pow, Nat.cast_ofNat]
 
 end SchwartzPlanePoisson
 

@@ -49,3 +49,15 @@ Frequencies at density `≤ C log t` approximate on a window of length `2R` only
 **Survivor (formalized).** One configuration serves every prescribed `R(T) ≤ (C/256) log log T`:
 `3-formalized/double-logarithmic-windows-miss-the-minimal-face.md`. Open: `log log T ≪ R(T) = o(log T)`.
 
+## Barrier for phase-coupled levels
+
+A zero of frequency `γ` has phase `γT + θ(γ, x)` at the centre, so a phase `φ` costs the
+frequency shift `(c − φ)/T`: the realizable terms are `cos(dδv + φ + (c_d − φ)v/T)`, `φ ∈ [0, 2π)`.
+By LP duality a nonnegative combination is `≥ 1` on `|v| ≤ R` unless some probability measure `μ`
+on `[−R, R]` has `Re(e^{iφ}∫e^{idδv + i(c_d−φ)v/T}dμ) ≤ 0` for all `d, φ`, which holds once
+`|μ̂(dδ)| ≲ R/T` on the harmonic range. A Gevrey bump gives `|μ̂(γ)| ≤ exp(−c(γR)^α)`, so such
+levels need `T ≳ exp(c(ΓR)^α)/R`; with `Γ ≥ e^{R/(πC)}` (Landau density) this is
+`R ≲ (πC/α) log log T`. Depth tuning has the same coupling (`e^{(x_d − x)v}`). Beyond `log log T`
+a construction must avoid phase alignment at the centre altogether. The dual (detection) side
+fails for every `R = o(log T)`: annihilating the frequencies below `T/R` is impossible at density
+`C log T > R/π`. Neither direction is proved between `log log T` and `log T`.

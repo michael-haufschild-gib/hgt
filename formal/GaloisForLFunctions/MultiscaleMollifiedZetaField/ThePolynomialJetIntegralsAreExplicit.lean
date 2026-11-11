@@ -44,10 +44,11 @@ private theorem integral_three_terms {f g h : ℝ → ℝ}
     a * (∫ t in (0 : ℝ)..1, f t) + b * (∫ t in (0 : ℝ)..1, g t) +
       c * (∫ t in (0 : ℝ)..1, h t) =
       ∫ t in (0 : ℝ)..1, a * f t + b * g t + c * h t := by
-  rw [intervalIntegral.integral_add
+  rw [intervalIntegral.integral_add (f := fun t => a * f t + b * g t) (g := fun t => c * h t)
     (((hf.const_mul a).add (hg.const_mul b)).intervalIntegrable 0 1)
     ((hh.const_mul c).intervalIntegrable 0 1),
-    intervalIntegral.integral_add ((hf.const_mul a).intervalIntegrable 0 1)
+    intervalIntegral.integral_add (f := fun t => a * f t) (g := fun t => b * g t)
+      ((hf.const_mul a).intervalIntegrable 0 1)
       ((hg.const_mul b).intervalIntegrable 0 1)]
   simp only [intervalIntegral.integral_const_mul]
 
@@ -73,7 +74,7 @@ theorem polynomialProfileFirstLimit_eq_integral (P Q : ℝ[X]) (v κ ν : ℝ) (
     (hc P (complementPolynomial Q) k)]
   apply intervalIntegral.integral_congr
   intro t _
-  rw [polynomialDifferentialProfile_complement, polynomialDifferentialProfile_complement, pow_succ]
+  simp only [polynomialDifferentialProfile_complement, pow_succ]
   ring
 
 /-- The second jet includes both profile derivatives and their mixed term. -/
@@ -98,8 +99,7 @@ theorem polynomialProfileSecondLimit_eq_integral (P Q : ℝ[X]) (v κ ν : ℝ) 
     (hc P (complementPolynomial Q) k)]
   apply intervalIntegral.integral_congr
   intro t _
-  rw [polynomialDifferentialProfile_complement, polynomialDifferentialProfile_complement,
-    complement_at_one_sub, complement_at_one_sub, pow_succ]
+  simp only [polynomialDifferentialProfile_complement, complement_at_one_sub, pow_succ]
   ring
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

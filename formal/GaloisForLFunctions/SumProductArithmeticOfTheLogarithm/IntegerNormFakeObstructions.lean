@@ -247,7 +247,10 @@ theorem moebiusSeriesC_mul_zetaSeriesC_of_summable {B : BeurlingSystem} (hdisc :
     rw [hF, norm_mul, norm_mul, B.norm_intNorm_cpow, B.norm_intNorm_cpow]
     have hp1 : 0 ≤ (B.intNorm p.1) ^ (-s.re) := Real.rpow_nonneg (B.intNorm_pos _).le _
     have hp2 : 0 ≤ (B.intNorm p.2) ^ (-s.re) := Real.rpow_nonneg (B.intNorm_pos _).le _
-    nlinarith
+    calc ‖(B.moebius p.1 : ℂ)‖ * (B.intNorm p.1) ^ (-s.re) * (B.intNorm p.2) ^ (-s.re)
+        ≤ 1 * (B.intNorm p.1) ^ (-s.re) * (B.intNorm p.2) ^ (-s.re) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hnorm hp1) hp2
+      _ = (B.intNorm p.1) ^ (-s.re) * (B.intNorm p.2) ^ (-s.re) := by rw [one_mul]
   rw [BeurlingSystem.moebiusSeriesC, BeurlingSystem.zetaSeriesC, hM.tsum_mul_tsum hZ hFsum]
   set e := Equiv.sigmaFiberEquiv fun p : (Multiset B.Label) × (Multiset B.Label) => p.1 + p.2
   have hsigma : Summable (F ∘ e) := e.summable_iff.mpr hFsum
@@ -282,7 +285,10 @@ theorem moebiusSeriesC_mul_zetaSeriesC_of_summable {B : BeurlingSystem} (hdisc :
     by_cases hn : n = 0
     · rw [if_pos hn, if_pos hn, hn, B.intNorm_zero]; norm_num
     · rw [if_neg hn, if_neg hn]; norm_num
-  rw [tsum_congr hfibre, tsum_eq_single 0 (fun n hn => if_neg hn), if_pos rfl]
+  have hfibre' : ∀ b : Multiset B.Label,
+      (∑' c : {x : (Multiset B.Label) × (Multiset B.Label) // x.1 + x.2 = b}, (F ∘ e) ⟨b, c⟩) =
+        if b = 0 then 1 else 0 := hfibre
+  rw [tsum_congr hfibre', tsum_eq_single 0 (fun n hn => if_neg hn), if_pos rfl]
 
 theorem zetaSeriesC_ne_zero_of_summable {B : BeurlingSystem} (hdisc : B.IsDiscrete) {s : ℂ}
     (hZr : Summable fun g : Multiset B.Label => (B.intNorm g) ^ (-s.re)) :
@@ -363,7 +369,7 @@ theorem countBall_eq_sum_intCount {B : BeurlingSystem} (h : HasIntegerNorms B)
   rw [intCount, Set.ncard_eq_toFinset_card _ (finite_fiber_natIntNorm h hdisc n)]
   congr 1
   ext g
-  simp only [Finset.mem_filter, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+  simp only [S, Finset.mem_filter, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
   constructor
   · exact fun hg => hg.2
   · intro hgn
@@ -398,7 +404,8 @@ theorem zetaSeriesC_eq_LSeries_of_summable {B : BeurlingSystem} (h : HasIntegerN
         (B.intNorm c.1) ^ (-s.re) = (n : ℝ) ^ (-s.re) := fun c => by
       rw [← natIntNorm_spec h c.1, c.2]
     simp_rw [hval, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-    rw [intCount, Set.ncard, @Nat.card_eq_fintype_card _ (finite_fiber_natIntNorm h hdisc n).fintype]
+    rw [← @Nat.card_eq_fintype_card _ (finite_fiber_natIntNorm h hdisc n).fintype,
+      Nat.card_coe_set_eq, ← intCount]
   have hfibC : ∀ n : ℕ,
       (∑' c : {g : B.Integer // natIntNorm h g = n}, ((B.intNorm c.1 : ℝ) : ℂ) ^ (-s)) =
         LSeries.term (fun m => (intCount B h m : ℂ)) s n := by
@@ -415,8 +422,8 @@ theorem zetaSeriesC_eq_LSeries_of_summable {B : BeurlingSystem} (h : HasIntegerN
           ((B.intNorm c.1 : ℝ) : ℂ) ^ (-s) = (n : ℂ) ^ (-s) := fun c => by
         rw [← natIntNorm_spec h c.1, c.2]; push_cast; rfl
       simp_rw [hval, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-      rw [intCount, Set.ncard, @Nat.card_eq_fintype_card _ (finite_fiber_natIntNorm h hdisc n).fintype,
-        Complex.cpow_neg, div_eq_mul_inv]
+      rw [← @Nat.card_eq_fintype_card _ (finite_fiber_natIntNorm h hdisc n).fintype,
+        Nat.card_coe_set_eq, ← intCount, Complex.cpow_neg, div_eq_mul_inv]
   have hcolsR : Summable fun n : ℕ => (intCount B h n : ℝ) * (n : ℝ) ^ (-s.re) :=
     (hsigmaR.sigma).congr hfibR
   have hLS : LSeriesSummable (fun n => (intCount B h n : ℂ)) s := by
@@ -462,8 +469,8 @@ theorem summable_intNorm_rpow_of_lseriesSummable {B : BeurlingSystem} (h : HasIn
         change (B.intNorm c.1) ^ (-σ) = (n : ℝ) ^ (-σ)
         rw [← natIntNorm_spec h c.1, c.2]
       simp_rw [hval, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-      rw [intCount, Set.ncard, @Nat.card_eq_fintype_card _ (finite_fiber_natIntNorm h hdisc n).fintype,
-        Real.rpow_neg (Nat.cast_nonneg _), div_eq_mul_inv]
+      rw [← @Nat.card_eq_fintype_card _ (finite_fiber_natIntNorm h hdisc n).fintype,
+        Nat.card_coe_set_eq, ← intCount, Real.rpow_neg (Nat.cast_nonneg _), div_eq_mul_inv]
 
 /-- When `intCount B h` is `LSeriesSummable` at every `σ > 1/2`, `B.zetaSeriesC` is holomorphic and
 nonvanishing on `{Re s > 1/2}`. -/
@@ -501,14 +508,19 @@ theorem eqOn_halfPlane_of_eq_on_one {F₁ F₂ : ℂ → ℂ}
     intro x hx y hy a b ha hb hab
     simp only [Set.mem_setOf_eq, Complex.add_re, Complex.real_smul, Complex.mul_re,
       Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at *
-    nlinarith
+    rcases eq_or_lt_of_le ha with rfl | ha'
+    · have hb1 : b = 1 := by linarith
+      subst hb1; linarith
+    · have h1 : a * (1 / 2) < a * x.re := mul_lt_mul_of_pos_left hx ha'
+      have h2 : b * (1 / 2) ≤ b * y.re := mul_le_mul_of_nonneg_left hy.le hb
+      linarith
   have hconn : IsPreconnected {s : ℂ | 1 / 2 < s.re} := hconv.isPreconnected
   have ha₁ : AnalyticOnNhd ℂ F₁ {s : ℂ | 1 / 2 < s.re} := h₁.analyticOnNhd hU
   have ha₂ : AnalyticOnNhd ℂ F₂ {s : ℂ | 1 / 2 < s.re} := h₂.analyticOnNhd hU
   have hmem : (2 : ℂ) ∈ {s : ℂ | 1 / 2 < s.re} := by simp; norm_num
   have hev : F₁ =ᶠ[𝓝 (2 : ℂ)] F₂ := by
     have hU1 : IsOpen {s : ℂ | 1 < s.re} := isOpen_lt continuous_const Complex.continuous_re
-    exact eventuallyEq_of_mem (hU1.mem_nhds (by simp; norm_num)) fun s hs => heq s hs
+    exact eventuallyEq_of_mem (hU1.mem_nhds (by simp)) fun s hs => heq s hs
   exact ha₁.eqOn_of_preconnected_of_eventuallyEq ha₂ hconn hmem hev
 
 /-- **Zero-density obstruction at `β ≤ 1/2`.**  Every integer-norm fake `B` with count remainder
@@ -608,13 +620,15 @@ theorem hasIntegerNorms_keptPrimeSystem (S : Set ℕ) : HasIntegerNorms (keptPri
   fun p => ⟨p.1, rfl⟩
 
 theorem intNorm_keptPrimeSystem (S : Set ℕ) (u : (keptPrimeSystem S).Integer) :
-    (keptPrimeSystem S).intNorm u = ((u.map (fun p : KeptPrime S => p.1)).prod : ℝ) := by
+    (keptPrimeSystem S).intNorm u =
+      ((Multiset.map (fun p : KeptPrime S => p.1) u).prod : ℝ) := by
   induction u using Multiset.induction_on with
-  | empty => simp [keptPrimeSystem]
+  | empty => simp [BeurlingSystem.intNorm]; rfl
   | cons p u ih =>
-    rw [← Multiset.singleton_add, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton,
-      ih, Multiset.singleton_add, Multiset.map_cons, Multiset.prod_cons, Nat.cast_mul]
-    rfl
+    rw [← Multiset.singleton_add, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton, ih]
+    change (p.1 : ℝ) * ((Multiset.map (fun q : KeptPrime S => q.1) u).prod : ℝ) =
+      ((Multiset.map (fun q : KeptPrime S => q.1) (p ::ₘ u)).prod : ℝ)
+    rw [Multiset.map_cons, Multiset.prod_cons, Nat.cast_mul]
 
 theorem natIntNorm_keptPrimeSystem (S : Set ℕ) (u : (keptPrimeSystem S).Integer) :
     natIntNorm (hasIntegerNorms_keptPrimeSystem S) u = (u.map (fun p : KeptPrime S => p.1)).prod := by
@@ -640,10 +654,11 @@ theorem intCount_keptPrimeSystem (S : Set ℕ) (n : ℕ) :
   unfold intCount sFreeR
   split_ifs with hsf
   · obtain ⟨u, hu⟩ := exists_kept_of_sFree S hsf
+    set u' : (keptPrimeSystem S).Integer := u
     have hset : {g : (keptPrimeSystem S).Integer |
-        natIntNorm (hasIntegerNorms_keptPrimeSystem S) g = n} = {u} := by
+        natIntNorm (hasIntegerNorms_keptPrimeSystem S) g = n} = {u'} := by
       ext g
-      simp only [Set.mem_setOf_eq, Set.mem_singleton_iff, natIntNorm_keptPrimeSystem]
+      rw [Set.mem_setOf_eq, Set.mem_singleton_iff, natIntNorm_keptPrimeSystem]
       exact ⟨fun hg => prod_kept_injective S (hg.trans hu.symm), fun hg => hg ▸ hu⟩
     rw [hset, Set.ncard_singleton, Nat.cast_one]
   · have hempty : {g : (keptPrimeSystem S).Integer |
@@ -683,8 +698,8 @@ theorem notNormEquivPrimes_keptPrimeSystem {S : Set ℕ} {p₀ : ℕ} (hp₀ : p
     (hmem : p₀ ∈ S) : NotNormEquivPrimes (keptPrimeSystem S) := by
   rintro ⟨⟨e, he⟩⟩
   set l : KeptPrime S := e.symm ⟨p₀, hp₀⟩
-  have hl := he l
-  simp only [keptPrimeSystem, Equiv.apply_symm_apply] at hl
+  have hl : (l.1 : ℝ) = ((e l : ℕ) : ℝ) := he l
+  rw [e.apply_symm_apply] at hl
   have hval : l.1 = p₀ := by exact_mod_cast hl
   exact l.2.2 (hval ▸ hmem)
 
@@ -708,17 +723,16 @@ theorem sFreeR_eq_sum_divisors_mobSet (S : Set ℕ) {n : ℕ} (hn : n ≠ 0) :
       rw [if_neg hP]
       exact Finset.prod_eq_zero hp (by ring)
   have hsf_iff : SFree S n ↔ P = ∅ := by
-    simp only [SFree, hn, not_false_eq_true, true_and, P, Finset.filter_eq_empty_iff]
+    simp only [SFree, P, Finset.filter_eq_empty_iff]
+    exact ⟨fun h => h.2, fun h => ⟨hn, h⟩⟩
   have hlhs : sFreeR S n = ∏ p ∈ P, ((1 : ℝ) - 1) := by
     unfold sFreeR
     rw [hprod_sub]
-    split_ifs with h1 h2
-    · rfl
-    · exact absurd (hsf_iff.mp h1) h2
-    · exact absurd (hsf_iff.mpr h2) h1
-    · rfl
+    by_cases h1 : SFree S n
+    · rw [if_pos h1, if_pos (hsf_iff.mp h1)]
+    · rw [if_neg h1, if_neg (mt hsf_iff.mpr h1)]
   rw [hlhs, Finset.prod_sub]
-  simp only [Finset.prod_const_one, one_mul]
+  simp only [Finset.prod_const_one]
   set A : Finset ℕ := n.divisors.filter (fun d => mobSet S d ≠ 0)
   have hrhs : ∑ d ∈ n.divisors, mobSet S d = ∑ d ∈ A, mobSet S d := by
     rw [Finset.sum_filter]
@@ -730,18 +744,21 @@ theorem sFreeR_eq_sum_divisors_mobSet (S : Set ℕ) {n : ℕ} (hn : n ≠ 0) :
     obtain ⟨hdn, hdm⟩ := Finset.mem_filter.mp hd
     unfold mobSet at hdm
     split_ifs at hdm with hso
-    rw [Finset.mem_powerset]
-    intro p hp
-    exact Finset.mem_filter.mpr ⟨Nat.primeFactors_mono (Nat.dvd_of_mem_divisors hdn) hn hp,
-      hso.2 p hp⟩
+    · rw [Finset.mem_powerset]
+      intro p hp
+      exact Finset.mem_filter.mpr ⟨Nat.primeFactors_mono (Nat.dvd_of_mem_divisors hdn) hn hp,
+        hso.2 p hp⟩
+    · exact absurd rfl hdm
   · intro d₁ hd₁ d₂ hd₂ heq
     have sq : ∀ d ∈ A, Squarefree d := by
       intro d hd
       have hdm := (Finset.mem_filter.mp hd).2
       unfold mobSet at hdm
       split_ifs at hdm with hso
-      rw [← ArithmeticFunction.moebius_ne_zero_iff_squarefree]
-      exact fun h0 => hdm (by simp [h0])
+      · rw [← ArithmeticFunction.moebius_ne_zero_iff_squarefree]
+        exact fun h0 => hdm (by simp [h0])
+      · exact absurd rfl hdm
+    dsimp only at heq
     rw [← Nat.prod_primeFactors_of_squarefree (sq d₁ hd₁),
       ← Nat.prod_primeFactors_of_squarefree (sq d₂ hd₂), heq]
   · intro T hT
@@ -754,10 +771,10 @@ theorem sFreeR_eq_sum_divisors_mobSet (S : Set ℕ) {n : ℕ} (hn : n ≠ 0) :
       intro q hq hmul
       have hqd1 : q ∣ ∏ p ∈ T, p := dvd_trans (dvd_mul_right q q) hmul
       obtain ⟨p, hpT, hqp⟩ := Prime.exists_mem_finset_dvd hq.prime hqd1
-      have hpq : p = q := ((Nat.prime_dvd_prime_iff_eq hq.prime (hTp p hpT)).mp hqp).symm
+      have hpq : p = q := ((Nat.prime_dvd_prime_iff_eq hq (hTp p hpT)).mp hqp).symm
       subst hpq
       have hrest : p * p ∣ p * ∏ r ∈ T.erase p, r := by
-        rwa [Finset.mul_prod_erase T id hpT] at hmul
+        rwa [Finset.mul_prod_erase T (fun x => x) hpT]
       have hdvd2 : p ∣ ∏ r ∈ T.erase p, r :=
         (mul_dvd_mul_iff_left (hTp p hpT).ne_zero).mp hrest
       obtain ⟨r, hr, hpr⟩ := Prime.exists_mem_finset_dvd (hTp p hpT).prime hdvd2
@@ -790,11 +807,28 @@ theorem sFreeR_eq_sum_divisors_mobSet (S : Set ℕ) {n : ℕ} (hn : n ≠ 0) :
     have hdm := (Finset.mem_filter.mp hd).2
     unfold mobSet at hdm ⊢
     split_ifs at hdm with hso
-    rw [if_pos hso]
-    have hsq : Squarefree d := ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp
-      fun h0 => hdm (by simp [h0])
-    rw [ArithmeticFunction.moebius_apply_of_squarefree hsq]
-    push_cast; rfl
+    · rw [if_pos hso]
+      have hsq : Squarefree d := ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp
+        fun h0 => hdm (by simp [h0])
+      have hcf : ArithmeticFunction.cardFactors d = d.primeFactors.card := by
+        rw [ArithmeticFunction.cardFactors_eq_sum_factorization, Finsupp.sum]
+        have hsup : d.factorization.support = d.primeFactors := Nat.support_factorization d
+        rw [hsup]
+        have h1 : ∀ p ∈ d.primeFactors, d.factorization p = 1 := by
+          intro p hp
+          have hpp := Nat.prime_of_mem_primeFactors hp
+          have hpos : 1 ≤ d.factorization p :=
+            hpp.factorization_pos_of_dvd hso.1 (Nat.dvd_of_mem_primeFactors hp)
+          by_contra hne1
+          have hge2 : 2 ≤ d.factorization p := by omega
+          have hdvd2 : p * p ∣ d := by
+            rw [← sq]
+            exact dvd_trans (pow_dvd_pow p hge2) (Nat.ordProj_dvd d p)
+          exact Nat.squarefree_iff_prime_squarefree.mp hsq p hpp hdvd2
+        rw [Finset.sum_congr rfl h1, Finset.sum_const, smul_eq_mul, mul_one]
+      rw [ArithmeticFunction.moebius_apply_of_squarefree hsq, hcf]
+      push_cast; ring
+    · exact absurd rfl hdm
 
 theorem countBall_keptPrimeSystem_eq_sum_floor (S : Set ℕ) {X : ℝ} (hX : 0 ≤ X) :
     ((keptPrimeSystem S).countBall X : ℝ) =
@@ -825,13 +859,14 @@ theorem sum_abs_mobSet_mul_rpow_le {S : Set ℕ} {σ : ℝ}
     have hnm := (Finset.mem_filter.mp hn).2
     unfold mobSet at hnm
     split_ifs at hnm with hso
-    exact ⟨ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp fun h0 => hnm (by simp [h0]), hso⟩
+    · exact ⟨ArithmeticFunction.moebius_ne_zero_iff_squarefree.mp fun h0 => hnm (by simp [h0]), hso⟩
+    · exact absurd rfl hnm
   have habs1 : ∀ n ∈ A, |mobSet S n| = 1 := by
     intro n hn
     obtain ⟨hs, hso⟩ := hsq n hn
     unfold mobSet
-    rw [if_pos hso, ArithmeticFunction.moebius_apply_of_squarefree hs]
-    simp
+    rw [if_pos hso, ← Int.cast_abs, ArithmeticFunction.abs_moebius_eq_one_of_squarefree hs]
+    norm_num
   have hsum1 : ∑ n ∈ Finset.Icc 1 N, |mobSet S n| * (n : ℝ) ^ (-σ) =
       ∑ n ∈ A, (n : ℝ) ^ (-σ) := by
     rw [Finset.sum_filter]
@@ -854,7 +889,7 @@ theorem sum_abs_mobSet_mul_rpow_le {S : Set ℕ} {σ : ℝ}
       (hsq n hn).2.2 p hp⟩
   rw [hsum1, ← Finset.sum_congr rfl (fun n hn =>
       congrArg (fun k : ℕ => (k : ℝ) ^ (-σ)) (Nat.prod_primeFactors_of_squarefree (hsq n hn).1)),
-    ← Finset.sum_image hinj]
+    ← Finset.sum_image (f := fun T : Finset ℕ => ((∏ p ∈ T, p : ℕ) : ℝ) ^ (-σ)) hinj]
   calc ∑ T ∈ A.image Nat.primeFactors, ((∏ p ∈ T, p : ℕ) : ℝ) ^ (-σ)
       ≤ ∑ T ∈ P.powerset, ((∏ p ∈ T, p : ℕ) : ℝ) ^ (-σ) :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
@@ -870,7 +905,9 @@ theorem sum_abs_mobSet_mul_rpow_le {S : Set ℕ} {σ : ℝ}
         refine Real.exp_le_exp.mpr ?_
         have heq : ∑ p ∈ P, (p : ℝ) ^ (-σ) =
             ∑ p ∈ P, S.indicator (fun n => (n : ℝ) ^ (-σ)) p :=
-          Finset.sum_congr rfl fun p hp => (Set.indicator_of_mem (Finset.mem_filter.mp hp).2 _).symm
+          Finset.sum_congr rfl fun p hp =>
+            (Set.indicator_of_mem (Finset.mem_filter.mp hp).2
+              (fun n : ℕ => (n : ℝ) ^ (-σ))).symm
         rw [heq]
         exact hsum.sum_le_tsum P fun n _ => by rw [Set.indicator_apply]; split_ifs <;> positivity
 
@@ -900,39 +937,57 @@ theorem keptPrimeSystem_count_sub_le_of_summable {S : Set ℕ} {β : ℝ}
     ∃ A : ℝ, 0 ≤ A ∧ ∀ x : ℝ, 1 ≤ x →
       |((keptPrimeSystem S).countBall x : ℝ) - A * x| ≤
         2 * Real.exp (∑' p : ℕ, S.indicator (fun n => (n : ℝ) ^ (-β)) p) * x ^ β := by
-  set R : ℝ := Real.exp (∑' p : ℕ, S.indicator (fun n => (n : ℝ) ^ (-β)) p)
-  have hR0 : 0 < R := Real.exp_pos _
+  let R : ℝ := Real.exp (∑' p : ℕ, S.indicator (fun n => (n : ℝ) ^ (-β)) p)
   have hmobβ := summable_abs_mobSet_mul_rpow hsum
+  have htsum_le_R : (∑' m : ℕ, |mobSet S m| * (m : ℝ) ^ (-β)) ≤ R := by
+    refine Real.tsum_le_of_sum_range_le (fun _ => by positivity) fun N => ?_
+    calc ∑ n ∈ Finset.range N, |mobSet S n| * (n : ℝ) ^ (-β)
+        ≤ ∑ n ∈ Finset.range (N + 1), |mobSet S n| * (n : ℝ) ^ (-β) :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (Nat.le_succ N))
+            fun _ _ _ => by positivity
+      _ = ∑ n ∈ Finset.Icc 1 N, |mobSet S n| * (n : ℝ) ^ (-β) := by
+          rw [Finset.range_eq_Ico, Finset.sum_eq_sum_Ico_succ_bot (by omega)]
+          have h0 : mobSet S 0 = 0 := by simp [mobSet, sOnly]
+          rw [h0, abs_zero, zero_mul, zero_add]; rfl
+      _ ≤ R := sum_abs_mobSet_mul_rpow_le hsum N
   have hmob1_abs : Summable fun m : ℕ => |mobSet S m / m| := by
     refine Summable.of_nonneg_of_le (fun _ => abs_nonneg _) (fun m => ?_) hmobβ
     rcases eq_or_ne m 0 with rfl | hm
-    · simp
+    · simp [mobSet, sOnly]
     · rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < m), div_eq_mul_inv, ← Real.rpow_neg_one]
       exact mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast Nat.pos_of_ne_zero hm) (by linarith))
         (abs_nonneg _)
   have hmob1 : Summable fun m : ℕ => mobSet S m / m := hmob1_abs.of_abs
-  set A : ℝ := ∑' m : ℕ, mobSet S m / m
+  let A : ℝ := ∑' m : ℕ, mobSet S m / m
   have hbound : ∀ x : ℝ, 1 ≤ x →
       |((keptPrimeSystem S).countBall x : ℝ) - A * x| ≤ 2 * R * x ^ β := by
     intro x hx
     have hx0 : 0 < x := by linarith
+    let K : ℕ := ⌊x⌋₊ + 1
     rw [countBall_keptPrimeSystem_eq_sum_floor S hx0.le]
     have hsplit : A * x = (∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, (mobSet S m / m) * x) +
-        ∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x := by
+        ∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x := by
       have hmul := hmob1.mul_right x
-      have := (hmul.sum_add_tsum_compl (s := Finset.Ioc 0 ⌊x⌋₊)).symm
-      rwa [tsum_mul_right] at this
+      have hnat := (hmul.sum_add_tsum_nat_add K).symm
+      rw [tsum_mul_right] at hnat
+      rw [hnat]
+      congr 1
+      rw [Finset.range_eq_Ico, Finset.sum_eq_sum_Ico_succ_bot (Nat.succ_pos ⌊x⌋₊)]
+      have h0 : mobSet S 0 = 0 := by simp [mobSet, sOnly]
+      rw [h0, zero_div, zero_mul, zero_add]
+      have hIco : Finset.Ico 1 K = Finset.Ioc 0 ⌊x⌋₊ := by
+        ext m; simp only [Finset.mem_Ico, Finset.mem_Ioc, K]; omega
+      rw [hIco]
     rw [hsplit]
     have e : (∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, mobSet S m * ((⌊x⌋₊ / m : ℕ) : ℝ)) -
         ((∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, (mobSet S m / m) * x) +
-          ∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x) =
+          ∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x) =
         (∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, mobSet S m * (((⌊x⌋₊ / m : ℕ) : ℝ) - x / m)) -
-          ∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x := by
-      rw [← Finset.sum_sub_distrib]
+          ∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x := by
+      rw [sub_add_eq_sub_sub, ← Finset.sum_sub_distrib]
       congr 1
-      refine Finset.sum_congr rfl fun m _ => ?_
-      ring
+      exact Finset.sum_congr rfl fun m _ => by ring
     rw [e]
     have hhead : |∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, mobSet S m * (((⌊x⌋₊ / m : ℕ) : ℝ) - x / m)| ≤
         R * x ^ β := by
@@ -958,70 +1013,57 @@ theorem keptPrimeSystem_count_sub_le_of_summable {S : Set ℕ} {β : ℝ}
         _ = (∑ m ∈ Finset.Icc 1 ⌊x⌋₊, |mobSet S m| * (m : ℝ) ^ (-β)) * x ^ β := by
             rw [← Finset.sum_mul]; rfl
         _ ≤ R * x ^ β := mul_le_mul_of_nonneg_right (sum_abs_mobSet_mul_rpow_le hsum _) (by positivity)
-    have htail : |∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x| ≤
-        R * x ^ β := by
-      have hterm : ∀ m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊},
-          |(mobSet S m.1 / m.1) * x| ≤ (|mobSet S m.1| * (m.1 : ℝ) ^ (-β)) * x ^ β := by
-        intro ⟨m, hm⟩
-        rcases eq_or_ne m 0 with rfl | hm0
-        · simp [mobSet, sOnly]
-        · have hmpos : 0 < m := Nat.pos_of_ne_zero hm0
-          have hgt : ⌊x⌋₊ < m := by
-            by_contra hle; push Not at hle
-            exact hm (Finset.mem_Ioc.mpr ⟨hmpos, hle⟩)
-          have hxm : x ≤ (m : ℝ) := (Nat.lt_floor_add_one x).le.trans (by exact_mod_cast hgt)
-          have hmR : (0 : ℝ) < m := by exact_mod_cast hmpos
-          rw [abs_mul, abs_div, abs_of_pos hmR, abs_of_pos hx0]
-          have hpow : x / m ≤ (m : ℝ) ^ (-β) * x ^ β := by
-            have h1 : x ^ (1 - β) ≤ (m : ℝ) ^ (1 - β) :=
-              Real.rpow_le_rpow hx0.le hxm (by linarith)
-            have h2 : x = x ^ (1 - β) * x ^ β := by
-              rw [← Real.rpow_add hx0, sub_add_cancel, Real.rpow_one]
-            have h3 : (m : ℝ) = (m : ℝ) ^ (1 - β) * (m : ℝ) ^ β := by
-              rw [← Real.rpow_add hmR, sub_add_cancel, Real.rpow_one]
-            rw [Real.rpow_neg hmR.le, div_le_iff₀ hmR]
-            calc x = x ^ (1 - β) * x ^ β := h2
-              _ ≤ (m : ℝ) ^ (1 - β) * x ^ β := mul_le_mul_of_nonneg_right h1 (by positivity)
-              _ = ((m : ℝ) ^ (-β) * x ^ β) * m := by
-                  rw [Real.rpow_neg hmR.le, h3]
-                  field_simp
-          calc |mobSet S m| / m * x = |mobSet S m| * (x / m) := by ring
-            _ ≤ |mobSet S m| * ((m : ℝ) ^ (-β) * x ^ β) :=
-                mul_le_mul_of_nonneg_left hpow (abs_nonneg _)
-            _ = _ := by ring
-      have hsub_sum : Summable fun m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊} =>
-          (|mobSet S m.1| * (m.1 : ℝ) ^ (-β)) * x ^ β :=
-        (hmobβ.mul_right (x ^ β)).subtype _
-      have hsub_orig : Summable fun m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊} =>
-          (mobSet S m.1 / m.1) * x := (hmob1.mul_right x).subtype _
-      have hsub_abs : Summable fun m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊} =>
-          |(mobSet S m.1 / m.1) * x| :=
-        Summable.of_nonneg_of_le (fun _ => abs_nonneg _) hterm hsub_sum
-      calc |∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x|
-          ≤ ∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, |(mobSet S m.1 / m.1) * x| :=
-            Real.norm_tsum_le_tsum_norm hsub_abs
-        _ ≤ ∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊},
-              (|mobSet S m.1| * (m.1 : ℝ) ^ (-β)) * x ^ β :=
-            hsub_abs.tsum_le_tsum hterm hsub_sum
-        _ ≤ ∑' m : ℕ, (|mobSet S m| * (m : ℝ) ^ (-β)) * x ^ β :=
-            (hmobβ.mul_right (x ^ β)).tsum_subtype_le _ fun _ => by positivity
-        _ = (∑' m : ℕ, |mobSet S m| * (m : ℝ) ^ (-β)) * x ^ β := tsum_mul_right
-        _ ≤ R * x ^ β := by
-            refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-            exact Real.tsum_le_of_sum_range_le hmobβ (fun _ => by positivity) fun N => by
-              calc ∑ n ∈ Finset.range N, |mobSet S n| * (n : ℝ) ^ (-β)
-                  ≤ ∑ n ∈ Finset.range (N + 1), |mobSet S n| * (n : ℝ) ^ (-β) :=
-                    Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (Nat.le_succ N))
-                      fun _ _ _ => by positivity
-                _ = ∑ n ∈ Finset.Icc 1 N, |mobSet S n| * (n : ℝ) ^ (-β) := by
-                    rw [Finset.range_eq_Ico, Finset.sum_eq_sum_Ico_succ_bot (by omega)]
-                    have h0 : mobSet S 0 = 0 := by simp [mobSet, sOnly]
-                    rw [h0, abs_zero, zero_mul, zero_add]; rfl
-                _ ≤ R := sum_abs_mobSet_mul_rpow_le hsum N
+    have htail : |∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x| ≤ R * x ^ β := by
+      have hterm : ∀ k : ℕ,
+          |(mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x| ≤
+            (|mobSet S (k + K)| * ((k + K : ℕ) : ℝ) ^ (-β)) * x ^ β := by
+        intro k
+        have hmpos : 0 < k + K := by dsimp [K]; omega
+        have hgt : ⌊x⌋₊ + 1 ≤ k + K := by dsimp [K]; omega
+        have hxm : x ≤ ((k + K : ℕ) : ℝ) :=
+          (Nat.lt_floor_add_one x).le.trans (by exact_mod_cast hgt)
+        have hmR : (0 : ℝ) < ((k + K : ℕ) : ℝ) := by exact_mod_cast hmpos
+        rw [abs_mul, abs_div, abs_of_pos hmR, abs_of_pos hx0]
+        have hpow : x / ((k + K : ℕ) : ℝ) ≤ ((k + K : ℕ) : ℝ) ^ (-β) * x ^ β := by
+          rw [div_le_iff₀ hmR]
+          have h1 : x ^ (1 - β) ≤ ((k + K : ℕ) : ℝ) ^ (1 - β) :=
+            Real.rpow_le_rpow hx0.le hxm (by linarith)
+          have h2 : x = x ^ (1 - β) * x ^ β := by
+            rw [← Real.rpow_add hx0, sub_add_cancel, Real.rpow_one]
+          have h3 : ((k + K : ℕ) : ℝ) ^ (1 - β) =
+              ((k + K : ℕ) : ℝ) * ((k + K : ℕ) : ℝ) ^ (-β) := by
+            rw [show 1 - β = 1 + (-β) by ring, Real.rpow_add hmR, Real.rpow_one]
+          calc x = x ^ (1 - β) * x ^ β := h2
+            _ ≤ ((k + K : ℕ) : ℝ) ^ (1 - β) * x ^ β :=
+                mul_le_mul_of_nonneg_right h1 (by positivity)
+            _ = (((k + K : ℕ) : ℝ) ^ (-β) * x ^ β) * ((k + K : ℕ) : ℝ) := by rw [h3]; ring
+        calc |mobSet S (k + K)| / ((k + K : ℕ) : ℝ) * x
+            = |mobSet S (k + K)| * (x / ((k + K : ℕ) : ℝ)) := by ring
+          _ ≤ |mobSet S (k + K)| * (((k + K : ℕ) : ℝ) ^ (-β) * x ^ β) :=
+              mul_le_mul_of_nonneg_left hpow (abs_nonneg _)
+          _ = _ := by ring
+      have hshift_β : Summable fun k : ℕ => |mobSet S (k + K)| * ((k + K : ℕ) : ℝ) ^ (-β) :=
+        (_root_.summable_nat_add_iff K).mpr hmobβ
+      have hmaj : Summable fun k : ℕ =>
+          (|mobSet S (k + K)| * ((k + K : ℕ) : ℝ) ^ (-β)) * x ^ β := hshift_β.mul_right (x ^ β)
+      have habs_k : Summable fun k : ℕ => |(mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x| :=
+        Summable.of_nonneg_of_le (fun _ => abs_nonneg _) hterm hmaj
+      have hshift_le : (∑' k : ℕ, |mobSet S (k + K)| * ((k + K : ℕ) : ℝ) ^ (-β)) ≤ R := by
+        have hadd := hmobβ.sum_add_tsum_nat_add K
+        have hsum_nn : 0 ≤ ∑ i ∈ Finset.range K, |mobSet S i| * (i : ℝ) ^ (-β) :=
+          Finset.sum_nonneg fun _ _ => by positivity
+        linarith
+      calc |∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x|
+          ≤ ∑' k : ℕ, |(mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x| := by
+            simpa [Real.norm_eq_abs] using norm_tsum_le_tsum_norm habs_k
+        _ ≤ ∑' k : ℕ, (|mobSet S (k + K)| * ((k + K : ℕ) : ℝ) ^ (-β)) * x ^ β :=
+            habs_k.tsum_le_tsum hterm hmaj
+        _ = (∑' k : ℕ, |mobSet S (k + K)| * ((k + K : ℕ) : ℝ) ^ (-β)) * x ^ β := tsum_mul_right
+        _ ≤ R * x ^ β := mul_le_mul_of_nonneg_right hshift_le (by positivity)
     calc |(∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, mobSet S m * (((⌊x⌋₊ / m : ℕ) : ℝ) - x / m)) -
-          ∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x|
+          ∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x|
         ≤ |∑ m ∈ Finset.Ioc 0 ⌊x⌋₊, mobSet S m * (((⌊x⌋₊ / m : ℕ) : ℝ) - x / m)| +
-          |∑' m : {m : ℕ // m ∉ Finset.Ioc 0 ⌊x⌋₊}, (mobSet S m.1 / m.1) * x| := abs_sub _ _
+          |∑' k : ℕ, (mobSet S (k + K) / ((k + K : ℕ) : ℝ)) * x| := abs_sub _ _
       _ ≤ R * x ^ β + R * x ^ β := add_le_add hhead htail
       _ = 2 * R * x ^ β := by ring
   have hA0 : 0 ≤ A := by
@@ -1031,7 +1073,7 @@ theorem keptPrimeSystem_count_sub_le_of_summable {S : Set ℕ} {β : ℝ}
       have hc0 : (0 : ℝ) ≤ ((keptPrimeSystem S).countBall x : ℝ) := Nat.cast_nonneg _
       have hb := (neg_le_abs _).trans (hbound x hx)
       have hAx : -A * x ≤ 2 * R * x ^ β := by linarith
-      rw [Real.rpow_sub hx0, Real.rpow_one, mul_div_assoc', le_div_iff₀ hx0]
+      rw [Real.rpow_sub hx0, Real.rpow_one, mul_div_assoc, le_div_iff₀ hx0]
       linarith
     have hlim : Tendsto (fun x : ℝ => 2 * R * x ^ (β - 1)) atTop (𝓝 0) := by
       have t1 : Tendsto (fun x : ℝ => x ^ (β - 1)) atTop (𝓝 0) := by
@@ -1052,7 +1094,7 @@ private theorem LSeries_sFreeR_finset_eq {D : Finset ℕ} (hD : ∀ p ∈ D, p.P
   induction D using Finset.induction_on with
   | empty =>
     rw [Finset.prod_empty, one_mul, ← LSeries_one_eq_riemannZeta hs]
-    refine LSeries.congr _ fun n hn => ?_
+    refine LSeries_congr (fun {n} hn => ?_) s
     simp [sFreeR, SFree, hn]
   | @insert q D' hqD ih =>
     have hqP : q.Prime := hD q (Finset.mem_insert_self q D')
@@ -1077,11 +1119,13 @@ private theorem LSeries_sFreeR_finset_eq {D : Finset ℕ} (hD : ∀ p ∈ D, p.P
         · simp
         · simp [LSeries.term_of_ne_zero hk0, fq, hk.1, hk.2]]
       rw [Finset.sum_pair hqP.one_lt.ne]
-      simp [LSeries.term_of_ne_zero one_ne_zero, LSeries.term_of_ne_zero hqP.ne_zero, fq,
-        hqP.one_lt.ne', Complex.cpow_neg, sub_eq_add_neg]
+      simp [LSeries.term_of_ne_zero hqP.ne_zero, fq,
+        hqP.one_lt.ne', Complex.cpow_neg, div_eq_mul_inv]
+      ring
     rw [← hLfq, ← LSeries_convolution' hfq_sum hfD_sum]
-    refine LSeries.congr _ fun n hn => ?_
+    refine LSeries_congr (fun {n} hn => ?_) s
     rw [LSeries.convolution_def]
+    dsimp only
     by_cases hqn : q ∣ n
     · obtain ⟨m, rfl⟩ := hqn
       have hm0 : m ≠ 0 := right_ne_zero_of_mul hn
@@ -1091,8 +1135,11 @@ private theorem LSeries_sFreeR_finset_eq {D : Finset ℕ} (hD : ∀ p ∈ D, p.P
           Nat.mem_divisorsAntidiagonal.mpr ⟨rfl, hn⟩⟩
       have hsub : ∑ x ∈ (q * m).divisorsAntidiagonal, fq x.1 * fD x.2 =
           fq 1 * fD (q * m) + fq q * fD m := by
-        rw [← Finset.sum_pair (show (1, q * m) ≠ (q, m) from fun h =>
-          hqP.one_lt.ne (congrArg Prod.fst h))]
+        have hpair_sum : ∑ x ∈ ({(1, q * m), (q, m)} : Finset (ℕ × ℕ)), fq x.1 * fD x.2 =
+            fq 1 * fD (q * m) + fq q * fD m :=
+          Finset.sum_pair (fun h => hqP.one_lt.ne (congrArg Prod.fst h))
+        rw [← hpair_sum]
+        symm
         refine Finset.sum_subset (fun x hx => ?_) (fun x hx hnot => ?_)
         · simp only [Finset.mem_insert, Finset.mem_singleton] at hx
           exact hx.elim (· ▸ hpair.1) (· ▸ hpair.2)
@@ -1185,31 +1232,24 @@ theorem no_fake_zero_of_finite_missing_primes {B : BeurlingSystem} (hInt : HasIn
     · exact hι_norm q
     · rfl
   -- Generalized-integer bijection `(keptPrimeSystem D).Integer × B_add.Integer ≃ B.Integer`.
+  let mapEquivL : Multiset (KeptPrime (D : Set ℕ) ⊕ B_add.Label) ≃ B.Integer := {
+    toFun := Multiset.map eL
+    invFun := Multiset.map eL.symm
+    left_inv := fun s => by simp [Multiset.map_map]
+    right_inv := fun s => by simp [Multiset.map_map]
+  }
   let eM : (keptPrimeSystem (D : Set ℕ)).Integer × B_add.Integer ≃ B.Integer :=
-    joinEquiv.trans (Multiset.mapEquiv eL)
+    joinEquiv.trans mapEquivL
   have heM_norm : ∀ uv : (keptPrimeSystem (D : Set ℕ)).Integer × B_add.Integer,
       B.intNorm (eM uv) =
         (keptPrimeSystem (D : Set ℕ)).intNorm uv.1 * B_add.intNorm uv.2 := by
     rintro ⟨u, v⟩
     change B.intNorm ((u.map Sum.inl + v.map Sum.inr).map eL) = _
     rw [Multiset.map_add, B.intNorm_add]
-    congr 1
-    · induction u using Multiset.induction_on with
-      | empty => simp
-      | cons q u ih =>
-        rw [Multiset.map_cons, Multiset.map_cons, ← Multiset.singleton_add, B.intNorm_add,
-          B.intNorm_singleton, heL_norm (Sum.inl q), ih,
-          ← Multiset.singleton_add q, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton]
-        rfl
-    · induction v using Multiset.induction_on with
-      | empty => simp
-      | cons l v ih =>
-        rw [Multiset.map_cons, Multiset.map_cons, ← Multiset.singleton_add, B.intNorm_add,
-          B.intNorm_singleton, heL_norm (Sum.inr l), ih,
-          ← Multiset.singleton_add l, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton]
-        rfl
+    simp only [BeurlingSystem.intNorm, Multiset.map_map, Function.comp_def, heL_norm,
+      Sum.elim_inl, Sum.elim_inr]
   have hinj_right : Function.Injective (fun v : B_add.Integer => eM (0, v)) :=
-    fun v₁ v₂ h => (Prod.mk.inj_left 0).mp (eM.injective h)
+    fun v₁ v₂ h => (Prod.mk.inj (eM.injective h)).2
   have hnorm_right : ∀ v : B_add.Integer, B.intNorm (eM (0, v)) = B_add.intNorm v := fun v => by
     rw [heM_norm, BeurlingSystem.intNorm_zero, one_mul]
   have hDisc_add : B_add.IsDiscrete := by
@@ -1245,8 +1285,8 @@ theorem no_fake_zero_of_finite_missing_primes {B : BeurlingSystem} (hInt : HasIn
       rw [heM_norm uv, Complex.ofReal_mul,
         Complex.mul_cpow_ofReal_nonneg ((keptPrimeSystem _).intNorm_pos _).le
           (B_add.intNorm_pos _).le]
-    rw [BeurlingSystem.zetaSeriesC, BeurlingSystem.zetaSeriesC, hZ₁.tsum_mul_tsum hZ₂ hpair,
-      BeurlingSystem.zetaSeriesC, ← eM.tsum_eq]
+    simp only [BeurlingSystem.zetaSeriesC]
+    rw [hZ₁.tsum_mul_tsum hZ₂ hpair, ← eM.tsum_eq]
     refine tsum_congr fun uv => ?_
     rw [heM_norm uv, Complex.ofReal_mul,
       Complex.mul_cpow_ofReal_nonneg ((keptPrimeSystem _).intNorm_pos _).le
@@ -1254,10 +1294,11 @@ theorem no_fake_zero_of_finite_missing_primes {B : BeurlingSystem} (hInt : HasIn
   -- Define `K(s) = ζ_u(s) ∏_{p ∈ D} (1 − p^{−s})`.
   set K : ℂ → ℂ := fun s => zetaResidueUnit s * ∏ p ∈ D, (1 - (p : ℂ) ^ (-s))
   have hKd : Differentiable ℂ K := by
-    refine (fun s => (analyticAt_zetaResidueUnit s).differentiableAt).mul ?_
-    exact Differentiable.finset_prod fun p hp =>
+    have hd₁ : Differentiable ℂ zetaResidueUnit :=
+      fun s => (analyticAt_zetaResidueUnit s).differentiableAt
+    exact hd₁.mul (Differentiable.finset_prod fun p hp =>
       (differentiable_const 1).sub
-        (differentiable_id.neg.const_cpow (Or.inl (by exact_mod_cast (hDp p hp).ne_zero)))
+        (differentiable_id.neg.const_cpow (Or.inl (by exact_mod_cast (hDp p hp).ne_zero))))
   have hprod_ne : ∀ s : ℂ, 0 < s.re → ∏ p ∈ D, (1 - (p : ℂ) ^ (-s)) ≠ 0 := by
     intro s hs
     refine Finset.prod_ne_zero_iff.mpr fun p hp => sub_ne_zero.mpr ?_
@@ -1302,8 +1343,9 @@ theorem no_fake_zero_of_finite_missing_primes {B : BeurlingSystem} (hInt : HasIn
         (Metric.closedBall ((2 + 1 : ℝ) : ℂ) (R : ℝ)) := by
       intro z hz
       have hdist : ‖z - 3‖ ≤ 5 / 2 - δ := by
-        rw [Metric.mem_closedBall, Complex.dist_eq, hRval] at hz
-        simpa [norm_num] using hz
+        have h3 : ((2 + 1 : ℝ) : ℂ) = 3 := by norm_num
+        rw [Metric.mem_closedBall, Complex.dist_eq, hRval, h3] at hz
+        exact hz
       have hre : 1 / 2 < z.re := by
         have h1 := Complex.abs_re_le_norm (z - 3)
         simp only [Complex.sub_re, Complex.re_ofNat] at h1
@@ -1408,22 +1450,8 @@ theorem intNorm_joinEquiv_sumSystem {B₁ B₂ : BeurlingSystem}
     (u : B₁.Integer) (v : B₂.Integer) :
     (sumSystem B₁ B₂).intNorm (joinEquiv (u, v)) = B₁.intNorm u * B₂.intNorm v := by
   change (sumSystem B₁ B₂).intNorm (u.map Sum.inl + v.map Sum.inr) = _
-  rw [(sumSystem B₁ B₂).intNorm_add]
-  congr 1
-  · induction u using Multiset.induction_on with
-    | empty => simp
-    | cons a u ih =>
-      rw [Multiset.map_cons, ← Multiset.singleton_add, BeurlingSystem.intNorm_add,
-        BeurlingSystem.intNorm_singleton, ih,
-        ← Multiset.singleton_add a, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton]
-      rfl
-  · induction v using Multiset.induction_on with
-    | empty => simp
-    | cons b v ih =>
-      rw [Multiset.map_cons, ← Multiset.singleton_add, BeurlingSystem.intNorm_add,
-        BeurlingSystem.intNorm_singleton, ih,
-        ← Multiset.singleton_add b, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton]
-      rfl
+  simp only [BeurlingSystem.intNorm, sumSystem, Multiset.map_add, Multiset.prod_add,
+    Multiset.map_map, Function.comp_def, Sum.elim_inl, Sum.elim_inr]
 
 theorem natIntNorm_joinEquiv_sumSystem {B₁ B₂ : BeurlingSystem}
     (h₁ : HasIntegerNorms B₁) (h₂ : HasIntegerNorms B₂)
@@ -1440,20 +1468,20 @@ theorem isDiscrete_sumSystem {B₁ B₂ : BeurlingSystem}
     (sumSystem B₁ B₂).IsDiscrete := by
   intro X
   refine ((hd₁ X).prod (hd₂ X) |>.image joinEquiv).subset fun w hw => ?_
-  rw [Set.mem_setOf_eq] at hw
+  have hw' : (sumSystem B₁ B₂).intNorm w ≤ X := hw
   set uv := joinEquiv.symm w
   have hw_eq : joinEquiv uv = w := joinEquiv.apply_symm_apply w
-  rw [← hw_eq, intNorm_joinEquiv_sumSystem] at hw
+  rw [← hw_eq, intNorm_joinEquiv_sumSystem] at hw'
   have h1 : B₁.intNorm uv.1 ≤ X := by
     calc B₁.intNorm uv.1 = B₁.intNorm uv.1 * 1 := (mul_one _).symm
       _ ≤ B₁.intNorm uv.1 * B₂.intNorm uv.2 :=
           mul_le_mul_of_nonneg_left (B₂.one_le_intNorm _) (B₁.intNorm_pos _).le
-      _ ≤ X := hw
+      _ ≤ X := hw'
   have h2 : B₂.intNorm uv.2 ≤ X := by
     calc B₂.intNorm uv.2 = 1 * B₂.intNorm uv.2 := (one_mul _).symm
       _ ≤ B₁.intNorm uv.1 * B₂.intNorm uv.2 :=
           mul_le_mul_of_nonneg_right (B₁.one_le_intNorm _) (B₂.intNorm_pos _).le
-      _ ≤ X := hw
+      _ ≤ X := hw'
   exact ⟨uv, ⟨h1, h2⟩, hw_eq⟩
 
 theorem intCount_sumSystem {B₁ B₂ : BeurlingSystem}
@@ -1467,36 +1495,44 @@ theorem intCount_sumSystem {B₁ B₂ : BeurlingSystem}
   · set F : Finset (B₁.Integer × B₂.Integer) :=
       ((hd₁ n).toFinset ×ˢ (hd₂ n).toFinset).filter
         (fun uv => natIntNorm h₁ uv.1 * natIntNorm h₂ uv.2 = n)
+    let jF : B₁.Integer × B₂.Integer → (sumSystem B₁ B₂).Integer := joinEquiv
+    have hjF_inj : Function.Injective jF := joinEquiv.injective
     have hset : {w : (sumSystem B₁ B₂).Integer |
         natIntNorm (hasIntegerNorms_sumSystem h₁ h₂) w = n} =
-        joinEquiv '' (F : Set (B₁.Integer × B₂.Integer)) := by
+        jF '' (F : Set (B₁.Integer × B₂.Integer)) := by
       ext w
-      simp only [Set.mem_setOf_eq, Set.mem_image, Finset.mem_coe, F, Finset.mem_filter,
-        Finset.mem_product, Set.Finite.mem_toFinset]
+      rw [Set.mem_setOf_eq, Set.mem_image]
       constructor
       · intro hw
-        refine ⟨joinEquiv.symm w, ⟨⟨?_, ?_⟩, ?_⟩, joinEquiv.apply_symm_apply w⟩
+        refine ⟨joinEquiv.symm w, ?_, joinEquiv.apply_symm_apply w⟩
+        rw [Finset.mem_coe, Finset.mem_filter, Finset.mem_product,
+          Set.Finite.mem_toFinset, Set.Finite.mem_toFinset]
+        refine ⟨⟨?_, ?_⟩, ?_⟩
         · have heq := natIntNorm_joinEquiv_sumSystem h₁ h₂ (joinEquiv.symm w).1 (joinEquiv.symm w).2
           rw [joinEquiv.apply_symm_apply, hw] at heq
-          rw [← natIntNorm_spec h₁]
-          exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ⟨_, heq.symm⟩
+          rw [Set.mem_setOf_eq, ← natIntNorm_spec h₁]
+          exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ⟨_, heq⟩
         · have heq := natIntNorm_joinEquiv_sumSystem h₁ h₂ (joinEquiv.symm w).1 (joinEquiv.symm w).2
           rw [joinEquiv.apply_symm_apply, hw] at heq
-          rw [← natIntNorm_spec h₂]
-          exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ⟨_, (mul_comm _ _).trans heq.symm⟩
+          rw [Set.mem_setOf_eq, ← natIntNorm_spec h₂]
+          exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ⟨_, heq.trans (mul_comm _ _)⟩
         · have heq := natIntNorm_joinEquiv_sumSystem h₁ h₂ (joinEquiv.symm w).1 (joinEquiv.symm w).2
-          rwa [joinEquiv.apply_symm_apply, hw] at heq
-      · rintro ⟨uv, ⟨_, huv⟩, rfl⟩
-        rw [natIntNorm_joinEquiv_sumSystem, huv]
-    rw [intCount, hset, Set.ncard_image_of_injective _ joinEquiv.injective, Set.ncard_coe_finset]
+          rw [joinEquiv.apply_symm_apply, hw] at heq
+          exact heq.symm
+      · rintro ⟨⟨u, v⟩, huvF, rfl⟩
+        have huv := (Finset.mem_filter.mp huvF).2
+        change natIntNorm (hasIntegerNorms_sumSystem h₁ h₂) (joinEquiv (u, v)) = n
+        rw [natIntNorm_joinEquiv_sumSystem h₁ h₂ u v, huv]
+    rw [intCount, hset, Set.ncard_image_of_injective _ hjF_inj, Set.ncard_coe_finset]
     have hmaps : ∀ uv ∈ F, (natIntNorm h₁ uv.1, natIntNorm h₂ uv.2) ∈ n.divisorsAntidiagonal :=
       fun uv huv => Nat.mem_divisorsAntidiagonal.mpr ⟨(Finset.mem_filter.mp huv).2, hn⟩
     rw [Finset.card_eq_sum_card_fiberwise hmaps]
-    refine Finset.sum_congr rfl fun ab hab => ?_
-    have hab_eq := (Nat.mem_divisorsAntidiagonal.mp hab).1
-    have hfib : F.filter (fun uv => (natIntNorm h₁ uv.1, natIntNorm h₂ uv.2) = ab) =
-        (finite_fiber_natIntNorm h₁ hd₁ ab.1).toFinset ×ˢ
-          (finite_fiber_natIntNorm h₂ hd₂ ab.2).toFinset := by
+    refine Finset.sum_congr rfl ?_
+    rintro ⟨a, b⟩ hab
+    have hab_eq : a * b = n := (Nat.mem_divisorsAntidiagonal.mp hab).1
+    have hfib : F.filter (fun uv => (natIntNorm h₁ uv.1, natIntNorm h₂ uv.2) = (a, b)) =
+        (finite_fiber_natIntNorm h₁ hd₁ a).toFinset ×ˢ
+          (finite_fiber_natIntNorm h₂ hd₂ b).toFinset := by
       ext ⟨u, v⟩
       simp only [F, Finset.mem_filter, Finset.mem_product, Set.Finite.mem_toFinset,
         Set.mem_setOf_eq, Prod.mk.injEq]
@@ -1506,13 +1542,13 @@ theorem intCount_sumSystem {B₁ B₂ : BeurlingSystem}
       · rintro ⟨hu, hv⟩
         refine ⟨⟨⟨?_, ?_⟩, by rw [hu, hv, hab_eq]⟩, hu, hv⟩
         · rw [← natIntNorm_spec h₁, hu]
-          exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ⟨ab.2, hab_eq.symm⟩
+          exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ⟨b, hab_eq.symm⟩
         · rw [← natIntNorm_spec h₂, hv]
           exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hn)
-            ⟨ab.1, (mul_comm _ _).trans hab_eq.symm⟩
+            ⟨a, hab_eq.symm.trans (mul_comm a b)⟩
     rw [hfib, Finset.card_product, intCount, intCount,
-      Set.ncard_eq_toFinset_card _ (finite_fiber_natIntNorm h₁ hd₁ ab.1),
-      Set.ncard_eq_toFinset_card _ (finite_fiber_natIntNorm h₂ hd₂ ab.2)]
+      Set.ncard_eq_toFinset_card _ (finite_fiber_natIntNorm h₁ hd₁ a),
+      Set.ncard_eq_toFinset_card _ (finite_fiber_natIntNorm h₂ hd₂ b)]
 
 /-- Kept primes outside `S` given squared integer norms `p^2`. -/
 def sqKeptPrimeSystem (S : Set ℕ) : BeurlingSystem where
@@ -1529,12 +1565,13 @@ theorem hasIntegerNorms_sqKeptPrimeSystem (S : Set ℕ) :
 theorem intNorm_sqKeptPrimeSystem (S : Set ℕ) (u : (sqKeptPrimeSystem S).Integer) :
     (sqKeptPrimeSystem S).intNorm u = (((u.map (fun p : KeptPrime S => p.1)).prod ^ 2 : ℕ) : ℝ) := by
   induction u using Multiset.induction_on with
-  | empty => simp [sqKeptPrimeSystem]
+  | empty => simp [BeurlingSystem.intNorm]; rfl
   | cons p u ih =>
-    rw [← Multiset.singleton_add, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton,
-      ih, Multiset.singleton_add, Multiset.map_cons, Multiset.prod_cons]
-    change ((p.1 ^ 2 : ℕ) : ℝ) * (((u.map (fun q : KeptPrime S => q.1)).prod ^ 2 : ℕ) : ℝ) = _
-    rw [← Nat.cast_mul]
+    rw [← Multiset.singleton_add, BeurlingSystem.intNorm_add, BeurlingSystem.intNorm_singleton, ih]
+    change ((p.1 ^ 2 : ℕ) : ℝ) *
+      (((Multiset.map (fun q : KeptPrime S => q.1) u).prod ^ 2 : ℕ) : ℝ) =
+      (((Multiset.map (fun q : KeptPrime S => q.1) (p ::ₘ u)).prod ^ 2 : ℕ) : ℝ)
+    rw [Multiset.map_cons, Multiset.prod_cons, ← Nat.cast_mul]
     congr 1
     ring
 
@@ -1550,10 +1587,11 @@ theorem isDiscrete_sqKeptPrimeSystem (S : Set ℕ) : (sqKeptPrimeSystem S).IsDis
   rcases lt_or_ge X 0 with hX | hX
   · refine Set.Finite.subset Set.finite_empty fun u hu => ?_
     exact absurd ((sqKeptPrimeSystem S).intNorm_pos u) (not_lt.mpr (hu.trans hX.le))
-  · have hinj : Function.Injective (fun u : (sqKeptPrimeSystem S).Integer =>
+  · have hinj : Function.Injective (fun u : Multiset (KeptPrime S) =>
         (u.map (fun p : KeptPrime S => p.1)).prod ^ 2) :=
       (Nat.pow_left_injective (by decide : 2 ≠ 0)).comp (prod_kept_injective S)
-    refine Set.Finite.of_finite_image _ ?_ hinj.injOn
+    refine Set.Finite.of_finite_image (f := fun u : Multiset (KeptPrime S) =>
+      (u.map (fun p : KeptPrime S => p.1)).prod ^ 2) ?_ hinj.injOn
     refine (Set.finite_Iic ⌊X⌋₊).subset ?_
     rintro n ⟨u, hu, rfl⟩
     rw [Set.mem_setOf_eq, intNorm_sqKeptPrimeSystem] at hu
@@ -1569,17 +1607,18 @@ theorem intCount_sqKeptPrimeSystem (S : Set ℕ) (n : ℕ) :
   split_ifs with hex
   · obtain ⟨m, rfl, hsf⟩ := hex
     obtain ⟨u, hu⟩ := exists_kept_of_sFree S hsf
+    set u' : (sqKeptPrimeSystem S).Integer := u
     have hset : {g : (sqKeptPrimeSystem S).Integer |
-        natIntNorm (hasIntegerNorms_sqKeptPrimeSystem S) g = m ^ 2} = {u} := by
+        natIntNorm (hasIntegerNorms_sqKeptPrimeSystem S) g = m ^ 2} = {u'} := by
       ext g
-      simp only [Set.mem_setOf_eq, Set.mem_singleton_iff, natIntNorm_sqKeptPrimeSystem]
+      rw [Set.mem_setOf_eq, Set.mem_singleton_iff, natIntNorm_sqKeptPrimeSystem]
       exact ⟨fun hg => hinj (hg.trans (congrArg (· ^ 2) hu.symm)),
         fun hg => hg ▸ congrArg (· ^ 2) hu⟩
     rw [intCount, hset, Set.ncard_singleton, Nat.cast_one]
   · have hempty : {g : (sqKeptPrimeSystem S).Integer |
         natIntNorm (hasIntegerNorms_sqKeptPrimeSystem S) g = n} = ∅ := by
       ext g
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, natIntNorm_sqKeptPrimeSystem]
+      rw [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, natIntNorm_sqKeptPrimeSystem]
       intro hg
       exact hex ⟨_, hg, sFree_prod_kept S g⟩
     rw [intCount, hempty, Set.ncard_empty, Nat.cast_zero]
@@ -1609,7 +1648,7 @@ private def sqSFreeArith (S : Set ℕ) : ArithmeticFunction ℂ :=
     classical
     simp only [ite_eq_right_iff, one_ne_zero]
     rintro ⟨m, hm, hsf⟩
-    exact hsf.1 (pow_eq_zero hm)⟩
+    exact hsf.1 ((pow_eq_zero_iff (by decide : 2 ≠ 0)).mp hm)⟩
 
 private theorem coprime_sq_factor {a b m : ℕ} (ha : a ≠ 0) (hb : b ≠ 0)
     (hcop : a.Coprime b) (hm2 : m ^ 2 = a * b) : (m.gcd a) ^ 2 = a := by
@@ -1638,9 +1677,8 @@ private theorem isMultiplicative_sqSFreeArith (S : Set ℕ) : (sqSFreeArith S).I
   classical
   rw [ArithmeticFunction.IsMultiplicative.iff_ne_zero]
   refine ⟨?_, fun {a b} ha hb hcop => ?_⟩
-  · simp only [sqSFreeArith, ArithmeticFunction.coe_mk, ite_eq_left_iff, zero_ne_one, imp_false,
-      not_forall]
-    exact ⟨1, one_pow 2, one_ne_zero, by simp⟩
+  · simp only [sqSFreeArith, ArithmeticFunction.coe_mk]
+    rw [if_pos ⟨1, one_pow 2, one_ne_zero, by simp⟩]
   · simp only [sqSFreeArith, ArithmeticFunction.coe_mk]
     have hiff : (∃ m : ℕ, m ^ 2 = a * b ∧ SFree S m) ↔
         (∃ m₁ : ℕ, m₁ ^ 2 = a ∧ SFree S m₁) ∧ (∃ m₂ : ℕ, m₂ ^ 2 = b ∧ SFree S m₂) := by
@@ -1676,7 +1714,8 @@ private theorem sFreeArith_prime_pow (S : Set ℕ) {p : ℕ} (hp : p.Prime) (k :
   · simp [SFree]
   · have hpf : (p ^ k).primeFactors = {p} := Nat.primeFactors_prime_pow hk hp
     have hsf : SFree S (p ^ k) ↔ p ∉ S := by
-      simp [SFree, pow_ne_zero k hp.ne_zero, hpf]
+      simp only [SFree, pow_ne_zero k hp.ne_zero, ne_eq, not_false_eq_true, true_and, hpf,
+        Finset.mem_singleton, forall_eq]
     simp only [hk, false_or]
     by_cases hpS : p ∉ S
     · rw [if_pos (hsf.mpr hpS), if_pos hpS]; norm_num
@@ -1699,7 +1738,7 @@ private theorem sqSFreeArith_prime_pow (S : Set ℕ) {p : ℕ} (hp : p.Prime) (k
         have hdvd : p ∣ m ^ 2 := hm2 ▸ dvd_pow_self p hk
         exact Nat.mem_primeFactors.mpr ⟨hp, hp.dvd_of_dvd_pow hdvd, hsf.1⟩
     · rintro ⟨⟨r, rfl⟩, hcond⟩
-      refine ⟨p ^ r, by rw [← pow_mul, two_mul], pow_ne_zero r hp.ne_zero, fun q hq => ?_⟩
+      refine ⟨p ^ r, by rw [sq, ← pow_add], pow_ne_zero r hp.ne_zero, fun q hq => ?_⟩
       rcases eq_or_ne r 0 with rfl | hr
       · simp at hq
       · rw [Nat.primeFactors_prime_pow hr hp, Finset.mem_singleton] at hq
@@ -1767,15 +1806,20 @@ theorem notNormEquivPrimes_quadraticCharacterSystem {N : ℕ} [NeZero N]
   · -- `χ(p₀) = −1`: no prime label has norm `p₀`.
     set l := e.symm ⟨p₀, hp₀⟩
     have hl : (quadraticCharacterSystem χ).labelNorm l = (p₀ : ℝ) := by
-      simpa using he l
+      have h := he l
+      rwa [e.apply_symm_apply] at h
     rcases l with q | (q | q)
-    · have hqp : q.1 = p₀ := by exact_mod_cast hl
+    · change (q.1 : ℝ) = (p₀ : ℝ) at hl
+      have hqp : q.1 = p₀ := by exact_mod_cast hl
       exact q.2.2 (hqp ▸ hneg)
-    · have hqp : q.1 = p₀ := by exact_mod_cast hl
+    · change (q.1 : ℝ) = (p₀ : ℝ) at hl
+      have hqp : q.1 = p₀ := by exact_mod_cast hl
       apply q.2.2
+      change χ (q.1 : ZMod N) ≠ 1
       rw [hqp, hneg]
       norm_num
-    · have hqp : q.1 ^ 2 = p₀ := by exact_mod_cast hl
+    · change ((q.1 ^ 2 : ℕ) : ℝ) = (p₀ : ℝ) at hl
+      have hqp : q.1 ^ 2 = p₀ := by exact_mod_cast hl
       have hdvd : q.1 ∣ p₀ := ⟨q.1, by rw [← sq, hqp]⟩
       rcases hp₀.eq_one_or_self_of_dvd q.1 hdvd with h1 | hself
       · exact absurd h1 q.2.1.ne_one
@@ -1795,7 +1839,8 @@ theorem intCount_quadraticCharacterSystem {N : ℕ} {χ : DirichletCharacter ℂ
   have hconv_val :
       (intCount (quadraticCharacterSystem χ) (hasIntegerNorms_quadraticCharacterSystem χ) n : ℂ) =
         (sFreeArith S₁ * (sFreeArith S₂ * sqSFreeArith S₃)) n := by
-    rw [quadraticCharacterSystem, intCount_sumSystem _ _
+    unfold quadraticCharacterSystem hasIntegerNorms_quadraticCharacterSystem
+    rw [intCount_sumSystem _ _
         (isDiscrete_keptPrimeSystem S₁)
         (isDiscrete_sumSystem (isDiscrete_keptPrimeSystem S₂) (isDiscrete_sqKeptPrimeSystem S₃)),
       Nat.cast_sum, ArithmeticFunction.mul_apply]
@@ -1816,12 +1861,13 @@ theorem intCount_quadraticCharacterSystem {N : ℕ} {χ : DirichletCharacter ℂ
     (isMultiplicative_sFreeArith S₁).mul
       ((isMultiplicative_sFreeArith S₂).mul (isMultiplicative_sqSFreeArith S₃))
   suffices hfn : sFreeArith S₁ * (sFreeArith S₂ * sqSFreeArith S₃) = χ.zetaMul by rw [hfn]
-  rw [hmult.eq_iff_eq_on_prime_powers χ.isMultiplicative_zetaMul]
+  rw [ArithmeticFunction.IsMultiplicative.eq_iff_eq_on_prime_powers _ hmult _
+    χ.isMultiplicative_zetaMul]
   intro p k hp
-  rw [zetaMul_prime_pow_eq χ hp k, ArithmeticFunction.mul_apply_prime_pow _ _ hp]
+  rw [zetaMul_prime_pow_eq χ hp k, RHTower.mul_apply_prime_pow _ _ hp]
   have inner_eq : ∀ j : ℕ, (sFreeArith S₂ * sqSFreeArith S₃) (p ^ j) =
       ∑ r ∈ Finset.range (j + 1), sFreeArith S₂ (p ^ r) * sqSFreeArith S₃ (p ^ (j - r)) :=
-    fun j => ArithmeticFunction.mul_apply_prime_pow _ _ hp
+    fun j => RHTower.mul_apply_prime_pow _ _ hp
   simp_rw [inner_eq, sFreeArith_prime_pow _ hp, sqSFreeArith_prime_pow _ hp]
   rcases MulChar.isQuadratic_iff_sq_eq_one.mpr hq (p : ZMod N) with h0 | h1 | hm1
   · -- `χ(p) = 0`: `p ∉ S₁`, `p ∈ S₂`, `p ∈ S₃`.
@@ -1902,7 +1948,7 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
   refine ⟨hLpos, fun x hx => ?_⟩
   have hx0 : 0 < x := by linarith
   set X : ℕ := ⌊x⌋₊
-  have hX1 : 1 ≤ X := Nat.one_le_floor_iff.mpr hx
+  have hX1 : 1 ≤ X := Nat.le_floor (by exact_mod_cast hx : ((1 : ℕ) : ℝ) ≤ x)
   set M : ℕ := Nat.sqrt X
   have hM2 : M * M ≤ X := Nat.sqrt_le X
   have hX_lt : X < (M + 1) * (M + 1) := Nat.lt_succ_sqrt X
@@ -1940,15 +1986,14 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
   have hH_sum : ∑ n ∈ Finset.Icc 1 X, χ.zetaMul n = ∑ p ∈ H, χ (p.2 : ZMod N) := by
     have hmaps : ∀ p ∈ H, p.1 * p.2 ∈ Finset.Icc 1 X := by
       intro p hp
-      obtain ⟨⟨ha, hb⟩, hle⟩ := Finset.mem_filter.mp hp
-      rw [Finset.mem_product] at *
+      obtain ⟨hp_prod, hle⟩ := Finset.mem_filter.mp hp
+      obtain ⟨ha, hb⟩ := Finset.mem_product.mp hp_prod
       exact Finset.mem_Icc.mpr
         ⟨Nat.mul_pos (Finset.mem_Icc.mp ha).1 (Finset.mem_Icc.mp hb).1, hle⟩
     rw [← Finset.sum_fiberwise_of_maps_to hmaps]
     refine Finset.sum_congr rfl fun n hn => ?_
-    have hn0 : n ≠ 0 := (Finset.mem_Icc.mp hn).1.ne'
+    have hn0 : n ≠ 0 := by have := (Finset.mem_Icc.mp hn).1; omega
     have hnX : n ≤ X := (Finset.mem_Icc.mp hn).2
-    rw [DirichletCharacter.zetaMul, ArithmeticFunction.coe_zeta_mul_apply]
     have hfib_eq : H.filter (fun p => p.1 * p.2 = n) = n.divisorsAntidiagonal := by
       ext ⟨a, b⟩
       simp only [H, Finset.mem_filter, Finset.mem_product, Finset.mem_Icc,
@@ -1960,11 +2005,11 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
         have hb0 : 1 ≤ b := Nat.pos_of_ne_zero (right_ne_zero_of_mul (hab ▸ hn0))
         exact ⟨⟨⟨⟨ha0, (Nat.le_mul_of_pos_right a hb0).trans (hab.le.trans hnX)⟩,
           ⟨hb0, (Nat.le_mul_of_pos_left b ha0).trans (hab.le.trans hnX)⟩⟩, hab.le.trans hnX⟩, hab⟩
-    rw [hfib_eq, ← Nat.sum_divisorsAntidiagonal' (f := fun a b =>
-      (DirichletCharacter.toArithmeticFunction (χ ·)) b)]
+    rw [DirichletCharacter.zetaMul, ArithmeticFunction.mul_apply, hfib_eq]
     refine Finset.sum_congr rfl fun p hp => ?_
+    have hp1 : p.1 ≠ 0 := left_ne_zero_of_mul ((Nat.mem_divisorsAntidiagonal.mp hp).1 ▸ hn0)
     have hp2 : p.2 ≠ 0 := right_ne_zero_of_mul ((Nat.mem_divisorsAntidiagonal.mp hp).1 ▸ hn0)
-    simp [DirichletCharacter.toArithmeticFunction, hp2]
+    simp [ArithmeticFunction.zeta, ArithmeticFunction.toArithmeticFunction, hp1, hp2]
   -- Split `H` along `p.1 ≤ M` vs `M < p.1` (forcing `p.2 ≤ M`).
   have hsplit : ∑ p ∈ H, χ (p.2 : ZMod N) =
       (∑ p ∈ H with p.1 ≤ M, χ (p.2 : ZMod N)) +
@@ -1990,9 +2035,10 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
         exact ⟨⟨⟨⟨ha1, haX⟩, ⟨hb1, hbX⟩⟩, hab⟩, haM⟩
     rw [heqset, Finset.sum_biUnion]
     · refine Finset.sum_congr rfl fun a _ => by simp
-    · intro a₁ _ a₂ _ hne s hs₁ hs₂ p hp
-      obtain ⟨b₁, _, he₁⟩ := Finset.mem_map.mp (hs₁ hp)
-      obtain ⟨b₂, _, he₂⟩ := Finset.mem_map.mp (hs₂ hp)
+    · intro a₁ _ a₂ _ hne
+      refine Finset.disjoint_left.mpr fun p hp₁ hp₂ => ?_
+      obtain ⟨b₁, _, he₁⟩ := Finset.mem_map.mp hp₁
+      obtain ⟨b₂, _, he₂⟩ := Finset.mem_map.mp hp₂
       exact hne (congrArg Prod.fst (he₁.trans he₂.symm))
   have hB_eq : ∑ p ∈ H with ¬ p.1 ≤ M, χ (p.2 : ZMod N) =
       ∑ b ∈ Finset.Icc 1 M, ((X / b - M : ℕ) : ℂ) * χ (b : ZMod N) := by
@@ -2017,13 +2063,20 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
     rw [heqset, Finset.sum_biUnion]
     · refine Finset.sum_congr rfl fun b _ => ?_
       simp [Finset.sum_const, Nat.card_Ioc, nsmul_eq_mul]
-    · intro b₁ _ b₂ _ hne s hs₁ hs₂ p hp
-      obtain ⟨a₁, _, he₁⟩ := Finset.mem_map.mp (hs₁ hp)
-      obtain ⟨a₂, _, he₂⟩ := Finset.mem_map.mp (hs₂ hp)
+    · intro b₁ _ b₂ _ hne
+      refine Finset.disjoint_left.mpr fun p hp₁ hp₂ => ?_
+      obtain ⟨a₁, _, he₁⟩ := Finset.mem_map.mp hp₁
+      obtain ⟨a₂, _, he₂⟩ := Finset.mem_map.mp hp₂
       exact hne (congrArg Prod.snd (he₁.trans he₂.symm))
   -- Partial character sum bound on `Finset.Icc 1 K`.
   have hchar_Icc : ∀ K : ℕ, ‖∑ b ∈ Finset.Icc 1 K, χ (b : ZMod N)‖ ≤ N := by
     intro K
+    have hN1 : 1 < N := by
+      by_contra hle1
+      have hN_eq : N = 1 := by have := NeZero.pos N; omega
+      subst hN_eq
+      exact hχ (by ext a; rw [Subsingleton.elim a 1, map_one]; simp)
+    haveI : Fact (1 < N) := ⟨hN1⟩
     have heq : ∑ b ∈ Finset.Icc 1 K, χ (b : ZMod N) =
         ∑ m ∈ Finset.range (K + 1), χ (m : ZMod N) := by
       have h0 : χ (0 : ZMod N) = 0 := map_zero χ
@@ -2063,7 +2116,6 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
         ← Finset.sum_Ico_add (fun j => ((x / ((j + 1 : ℕ) : ℝ) : ℝ) : ℂ) * χ ((j + 1 : ℕ) : ZMod N)) 0 M,
         Finset.range_eq_Ico]
       refine Finset.sum_congr rfl fun j _ => ?_
-      have hjpos : (0 : ℝ) < (j : ℝ) + 1 := by positivity
       have hcpow : (((j : ℝ) + 1 : ℂ)) ^ (-(1 : ℂ)) = (((j + 1 : ℕ) : ℝ)⁻¹ : ℂ) := by
         rw [cpow_neg_one]
         push_cast; rfl
@@ -2090,7 +2142,8 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
           exact Real.rpow_pos_of_pos hx0 _
       _ = 4 * (N : ℝ) * x ^ (1 / 2 : ℝ) := by
           congr 1
-          rw [← Real.rpow_sub_one hx0.ne']
+          conv_lhs => rw [← Real.rpow_one x]
+          rw [← Real.rpow_sub hx0]
           norm_num
   have hB2_norm : ‖∑ b ∈ Finset.Icc 1 M, (((X / b : ℕ) : ℝ) - x / b : ℂ) * χ (b : ZMod N)‖ ≤
       x ^ (1 / 2 : ℝ) := by
@@ -2099,7 +2152,9 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
       _ ≤ ∑ _b ∈ Finset.Icc 1 M, (1 : ℝ) := by
           refine Finset.sum_le_sum fun b hb => ?_
           have hb0 : (0 : ℝ) < b := by exact_mod_cast (Finset.mem_Icc.mp hb).1
-          rw [norm_mul, ← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs]
+          have hsub_real : (((X / b : ℕ) : ℝ) - x / b : ℂ) =
+              ((((X / b : ℕ) : ℝ) - x / b : ℝ) : ℂ) := by push_cast; rfl
+          rw [norm_mul, hsub_real, Complex.norm_real, Real.norm_eq_abs]
           have hfl : X / b = ⌊x / b⌋₊ := (Nat.floor_div_natCast x b).symm
           rw [hfl]
           have h1 : (⌊x / b⌋₊ : ℝ) ≤ x / b := Nat.floor_le (div_nonneg hx0.le hb0.le)
@@ -2127,7 +2182,8 @@ theorem quadraticCharacterSystem_count_sub_le {N : ℕ} [NeZero N]
         (DirichletCharacter.LFunction χ 1).re * x : ℂ) =
         (((quadraticCharacterSystem χ).countBall x : ℝ) : ℂ) -
           DirichletCharacter.LFunction χ 1 * (x : ℂ) := by
-      rw [hLreal]; push_cast; ring
+      conv_rhs => rw [hLreal]
+      push_cast; ring
     rw [hcast, hcount_C, hH_sum, hsplit, hA_eq, hB_eq, hB_decomp]
     set S_A := ∑ a ∈ Finset.Icc 1 M, ∑ b ∈ Finset.Icc 1 (X / a), χ (b : ZMod N)
     set S_B1 := (x : ℂ) * dirichletPartialSum (fun j => χ (j + 1)) M 1 -
@@ -2164,14 +2220,17 @@ theorem quadraticCharacterSystem_zetaSeriesC_eq {N : ℕ} [NeZero N]
   rw [hcongr]
   have hz : LSeriesSummable (fun n => ((ArithmeticFunction.zeta : ArithmeticFunction ℂ)) n) s := by
     simpa [ArithmeticFunction.natCoe_apply] using ArithmeticFunction.LSeriesSummable_zeta_iff.mpr hs
-  have h1 := DirichletCharacter.LSeriesSummable_toArithmeticFunction_of_norm_le
+  have h1 := RHTower.LSeriesSummable_toArithmeticFunction_of_norm_le
     (fun n => χ.norm_le_one n) hs
   have hprod : LSeries (fun n => χ.zetaMul n) s =
       riemannZeta s * DirichletCharacter.LFunction χ s := by
     rw [DirichletCharacter.zetaMul, ArithmeticFunction.LSeries_mul' hz h1,
-      DirichletCharacter.LSeries_toArithmeticFunction, DirichletCharacter.LFunction_eq_LSeries χ hs,
-      ← LSeries_one_eq_riemannZeta hs]
-    congr 2; ext n; simp [ArithmeticFunction.zeta]
+      RHTower.LSeries_toArithmeticFunction, DirichletCharacter.LFunction_eq_LSeries χ hs]
+    have hζ : LSeries (fun n => ((ArithmeticFunction.zeta : ArithmeticFunction ℂ)) n) s =
+        riemannZeta s := by
+      rw [← LSeries_zeta_eq_riemannZeta hs]
+      congr 1
+    rw [hζ]
   have hs1 : s ≠ 1 := fun h => by rw [h] at hs; norm_num at hs
   have hzu : zetaResidueUnit s = (s - 1) * riemannZeta s := by
     simp [zetaResidueUnit, Function.update_of_ne hs1]
@@ -2192,9 +2251,10 @@ theorem isIntegerNormFakeAt_half_of_quadratic_LFunction_zero {N : ℕ} [NeZero N
     notNormEquivPrimes_quadraticCharacterSystem hq,
     ⟨(DirichletCharacter.LFunction χ 1).re, 6 * (N : ℝ) + 1, hLpos.le, hcnt⟩,
     fun s => zetaResidueUnit s * DirichletCharacter.LFunction χ s, ?_, ?_,
-    ρ₀, hρ, hρ1, by rw [hL0, mul_zero], hζ⟩
-  · exact ((fun s => (analyticAt_zetaResidueUnit s).differentiableAt).mul
-      (DirichletCharacter.differentiable_LFunction hχ)).differentiableOn
+    ρ₀, hρ, hρ1, by simp only [hL0, mul_zero], hζ⟩
+  · have hd₁ : Differentiable ℂ zetaResidueUnit :=
+      fun s => (analyticAt_zetaResidueUnit s).differentiableAt
+    exact (hd₁.mul (DirichletCharacter.differentiable_LFunction hχ)).differentiableOn
   · exact fun s hs => (quadraticCharacterSystem_zetaSeriesC_eq hq hχ hs).symm
 
 end GaloisForLFunctions.SumProductArithmeticOfTheLogarithm

@@ -35,7 +35,7 @@ private theorem shortScalar_inner_integral (v : ℝ) :
     change HasDerivAt F _ u at hh
     exact hh.congr_deriv (by
       dsimp only [A, B, levinsonLinearOptimizationDerivativeAt]
-      simp only [id_eq, Pi.pow_apply]
+      simp only [id_eq, Pi.pow_apply, Pi.add_apply]
       ring)
   have hi : IntervalIntegrable
       (fun u : ℝ => levinsonLinearOptimizationDerivativeAt (13 / 50) u v ^ 2) volume 0 1 :=
@@ -64,7 +64,7 @@ private theorem hasDerivAt_shortScalarPrimitive (v : ℝ) :
   change HasDerivAt shortScalarPrimitive _ v at hh
   exact hh.congr_deriv (by
     dsimp only [shortScalarPolynomial]
-    simp only [id_eq, Pi.pow_apply]
+    simp only [id_eq, Pi.pow_apply, Pi.add_apply]
     ring)
 
 private theorem shortScalar_exact :

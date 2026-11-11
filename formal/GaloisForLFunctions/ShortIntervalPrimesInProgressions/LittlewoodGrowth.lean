@@ -519,43 +519,13 @@ theorem eventually_littlewood_conditions :
       _ ≤ 1 * L := ho3
       _ ≤ 2 * L := by linarith
 
-/-- **Littlewood's growth bound at positive heights.** -/
-theorem norm_LFunction_le_littlewood_pos (q : ℕ) [NeZero q] :
-    ∃ T₀ : ℝ, 3 ≤ T₀ ∧ ∀ χ : DirichletCharacter ℂ q, χ ≠ 1 → ∀ σ t : ℝ, T₀ ≤ t →
-      1 - litEta t ≤ σ → σ ≤ 2 →
-      ‖DirichletCharacter.LFunction χ ((σ : ℂ) + (t : ℂ) * I)‖
-        ≤ (3 + 4888 * q) * Real.log t ^ 3 := by
-  have hev : ∀ᶠ t : ℝ in atTop, (4 ≤ Real.log (Real.log t) ∧
-      32 * Real.log (Real.log t) ^ 2 ≤ Real.sqrt (Real.log t) ∧
-      Real.log (Real.log t) ^ 2 * Real.log (Real.log (Real.log t)) ≤ 2 * Real.log t) ∧
-      400 ≤ t :=
-    (Real.tendsto_log_atTop.eventually eventually_littlewood_conditions).and
-      (eventually_ge_atTop 400)
-  obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp hev
-  refine ⟨max T₁ 400, by linarith [le_max_right T₁ 400], ?_⟩
-  intro χ hχ σ t ht hσ hσ2
-  obtain ⟨⟨h4, hc1, hc2⟩, h400⟩ := hT₁ t (le_of_max_le_left ht)
-  set L := Real.log t with hLdef
-  have ht1 : 1 < t := by linarith
-  have ht0 : 0 < t := by linarith
-  have hL0 : 0 < L := Real.log_pos ht1
-  have hℓ0 : 0 < Real.log L := by linarith
-  have hL1 : 1 < L := by
-    by_contra h
-    have : Real.log L ≤ 0 := Real.log_nonpos hL0.le (not_lt.mp h)
-    linarith
-  have hsL : Real.sqrt L ≤ L := by
-    rw [Real.sqrt_le_left hL0.le]; nlinarith
-  have hη : litEta t ≤ 1 / 2 := by
-    unfold litEta
-    rw [← hLdef, div_le_iff₀ hL0]
-    nlinarith
-  have hσ12 : 1 / 2 ≤ σ := by linarith
-  have hσ0 : 0 ≤ σ := by linarith
-  set s : ℂ := (σ : ℂ) + (t : ℂ) * I with hs
-  have hsre : s.re = σ := by simp [hs]
-  -- the number of dyadic blocks
+/-- The number `K = log₂⌊t²/200⌋` of dyadic blocks: `t²/400 < 2^K ≤ t²/200` and `K ≤ 3 log t`. -/
+theorem dyadic_count_facts {t : ℝ} (ht : 400 ≤ t) :
+    (2 : ℝ) ^ (Nat.log 2 ⌊t ^ 2 / 200⌋₊) ≤ t ^ 2 / 200 ∧
+      t ^ 2 / 400 < (2 : ℝ) ^ (Nat.log 2 ⌊t ^ 2 / 200⌋₊) ∧
+      ((Nat.log 2 ⌊t ^ 2 / 200⌋₊ : ℕ) : ℝ) ≤ 3 * Real.log t := by
   set K := Nat.log 2 ⌊t ^ 2 / 200⌋₊ with hK
+  have ht0 : 0 < t := by linarith
   have hfl : 1 ≤ ⌊t ^ 2 / 200⌋₊ := by
     rw [Nat.one_le_floor_iff]
     nlinarith
@@ -569,27 +539,40 @@ theorem norm_LFunction_le_littlewood_pos (q : ℕ) [NeZero q] :
     have h2 : (⌊t ^ 2 / 200⌋₊ : ℝ) + 1 ≤ ((2 ^ (K + 1) : ℕ) : ℝ) := by exact_mod_cast h1
     have h3 := Nat.lt_floor_add_one (t ^ 2 / 200)
     push_cast at h2
-    rw [pow_succ] at h2
+    rw [pow_succ (2 : ℝ) K] at h2
     linarith
-  have hK3 : (K : ℝ) ≤ 3 * L := by
-    have h1 : (2 : ℝ) ^ K ≤ t ^ 2 := by nlinarith
-    have h2 : (K : ℝ) * Real.log 2 ≤ 2 * L := by
-      have := Real.log_le_log (by positivity) h1
-      rw [Real.log_pow, Real.log_pow] at this
-      push_cast at this
-      linarith
-    have h3 := Real.log_two_gt_d9
-    nlinarith
-  -- the truncation
+  refine ⟨hK1, hK2, ?_⟩
+  have h1 : (2 : ℝ) ^ K ≤ t ^ 2 := by nlinarith
+  have h2 : (K : ℝ) * Real.log 2 ≤ 2 * Real.log t := by
+    have := Real.log_le_log (by positivity) h1
+    rw [Real.log_pow, Real.log_pow] at this
+    push_cast at this
+    linarith
+  have h3 := Real.log_two_gt_d9
+  have hlt : 0 ≤ Real.log t := Real.log_nonneg (by linarith)
+  nlinarith
+
+/-- **The truncation.**  `L(s, χ)` is the partial sum over `n < 2^K` up to `120 q`. -/
+theorem norm_LFunction_sub_dyadic_le {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
+    (hχ : χ ≠ 1) {σ t : ℝ} (ht : 400 ≤ t) (hσ12 : 1 / 2 ≤ σ) (hσ2 : σ ≤ 2) :
+    ‖DirichletCharacter.LFunction χ ((σ : ℂ) + (t : ℂ) * I) -
+        ∑ n ∈ Finset.Ico (1 : ℕ) (2 ^ (Nat.log 2 ⌊t ^ 2 / 200⌋₊)),
+          χ n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℂ) * I))‖ ≤ 120 * q := by
+  obtain ⟨_, hK2, _⟩ := dyadic_count_facts ht
+  set K := Nat.log 2 ⌊t ^ 2 / 200⌋₊ with hK
+  set s : ℂ := (σ : ℂ) + (t : ℂ) * I with hs
+  have ht0 : 0 < t := by linarith
+  have hσ0 : 0 < σ := by linarith
+  have hsre : s.re = σ := by simp [hs]
   have hpart : RHTower.dirichletPartialSum (fun j => χ (j + 1)) (2 ^ K - 1) s
-      = ∑ n ∈ Finset.Ico 1 (2 ^ K), χ n * (n : ℂ) ^ (-s) := by
+      = ∑ n ∈ Finset.Ico (1 : ℕ) (2 ^ K), χ n * (n : ℂ) ^ (-s) := by
     unfold RHTower.dirichletPartialSum
     rw [Finset.sum_Ico_eq_sum_range]
     refine Finset.sum_congr rfl fun j _ => ?_
     push_cast
     ring_nf
-  have herr := RHTower.norm_LFunction_sub_character_partial_le hχ (s := s) (by rw [hsre]; linarith)
-    (2 ^ K - 1)
+  have herr := RHTower.norm_LFunction_sub_character_partial_le hχ (s := s)
+    (by rw [hsre]; linarith) (2 ^ K - 1)
   rw [hpart, hsre] at herr
   have hcast : (((2 ^ K - 1 : ℕ) : ℝ) + 1) = (2 : ℝ) ^ K := by
     have : 1 ≤ 2 ^ K := Nat.one_le_two_pow
@@ -599,9 +582,9 @@ theorem norm_LFunction_le_littlewood_pos (q : ℕ) [NeZero q] :
   have hsnorm : ‖s‖ ≤ 2 + t := by
     calc ‖s‖ ≤ ‖(σ : ℂ)‖ + ‖(t : ℂ) * I‖ := norm_add_le _ _
       _ = |σ| + |t| := by simp
-      _ ≤ 2 + t := by rw [abs_of_nonneg hσ0, abs_of_pos ht0]; linarith
+      _ ≤ 2 + t := by rw [abs_of_pos hσ0, abs_of_pos ht0]; linarith
   have h2K1 : (1 : ℝ) ≤ (2 : ℝ) ^ K := one_le_pow₀ (by norm_num)
-  have hdecay : (2 : ℝ) ^ K ^ (-σ) ≤ 20 / t := by
+  have hdecay : ((2 : ℝ) ^ K) ^ (-σ) ≤ 20 / t := by
     have h1 : ((2 : ℝ) ^ K) ^ (-σ) ≤ ((2 : ℝ) ^ K) ^ (-(1 / 2 : ℝ)) :=
       Real.rpow_le_rpow_of_exponent_le h2K1 (by linarith)
     have h2 : ((2 : ℝ) ^ K) ^ (-(1 / 2 : ℝ)) ≤ (t ^ 2 / 400) ^ (-(1 / 2 : ℝ)) :=
@@ -611,31 +594,50 @@ theorem norm_LFunction_le_littlewood_pos (q : ℕ) [NeZero q] :
         show t ^ 2 / 400 = (t / 20) ^ 2 by ring, Real.sqrt_sq (by positivity)]
       field_simp
     exact h1.trans (h2.trans h3.le)
-  have herr' : ‖DirichletCharacter.LFunction χ s - ∑ n ∈ Finset.Ico 1 (2 ^ K), χ n * (n : ℂ) ^ (-s)‖
-      ≤ 120 * q := by
-    refine herr.trans ?_
-    have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
-    have h1 : 1 + ‖s‖ / σ ≤ 5 + 2 * t := by
-      rw [div_le_iff₀ (by linarith)] at *
-      have : ‖s‖ / σ ≤ 2 * (2 + t) := by
-        rw [div_le_iff₀ (by linarith)]; nlinarith
-      linarith
-    calc 2 * (q : ℝ) * (1 + ‖s‖ / σ) * ((2 : ℝ) ^ K) ^ (-σ)
-        ≤ 2 * q * (5 + 2 * t) * (20 / t) := by
-          refine mul_le_mul (mul_le_mul_of_nonneg_left h1 (by positivity)) hdecay
-            (by positivity) (by positivity)
-      _ = 40 * q * (5 / t + 2) := by field_simp; ring
-      _ ≤ 40 * q * 3 := by
-          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-          have : 5 / t ≤ 1 := by rw [div_le_one ht0]; linarith
-          linarith
-      _ = 120 * q := by ring
-  -- the blocks
+  refine herr.trans ?_
+  have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
+  have h1 : 1 + ‖s‖ / σ ≤ 5 + 2 * t := by
+    have : ‖s‖ / σ ≤ 2 * (2 + t) := by
+      rw [div_le_iff₀ hσ0]; nlinarith [norm_nonneg s]
+    linarith
+  calc 2 * (q : ℝ) * (1 + ‖s‖ / σ) * ((2 : ℝ) ^ K) ^ (-σ)
+      ≤ 2 * q * (5 + 2 * t) * (20 / t) := by
+        refine mul_le_mul (mul_le_mul_of_nonneg_left h1 (by positivity)) hdecay
+          (by positivity) (by positivity)
+    _ = 40 * q * (5 / t + 2) := by field_simp; ring
+    _ ≤ 40 * q * 3 := by
+        refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+        have : 5 / t ≤ 1 := by rw [div_le_one ht0]; linarith
+        linarith
+    _ = 120 * q := by ring
+
+/-- **The dyadic blocks.**  On Littlewood's region the partial sum over `n < 2^K` is at most
+`3 L³ + 4608 q`. -/
+theorem norm_dyadic_partial_le {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {σ t : ℝ}
+    (ht : 400 ≤ t) (h4 : 4 ≤ Real.log (Real.log t))
+    (hc1 : 32 * Real.log (Real.log t) ^ 2 ≤ Real.sqrt (Real.log t))
+    (hc2 : Real.log (Real.log t) ^ 2 * Real.log (Real.log (Real.log t)) ≤ 2 * Real.log t)
+    (hσ0 : 0 ≤ σ) (hσ : 1 - litEta t ≤ σ) :
+    ‖∑ n ∈ Finset.Ico (1 : ℕ) (2 ^ (Nat.log 2 ⌊t ^ 2 / 200⌋₊)),
+        χ n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℂ) * I))‖ ≤ 3 * Real.log t ^ 3 + 4608 * q := by
+  obtain ⟨hK1, _, hK3⟩ := dyadic_count_facts ht
+  set K := Nat.log 2 ⌊t ^ 2 / 200⌋₊ with hK
+  set L := Real.log t with hLdef
+  have ht1 : 1 < t := by linarith
+  have hL0 : 0 < L := Real.log_pos ht1
+  have hℓ0 : 0 < Real.log L := by linarith
+  have hL1 : 1 < L := by
+    by_contra h
+    have : Real.log L ≤ 0 := Real.log_nonpos hL0.le (not_lt.mp h)
+    linarith
+  have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
   have hblock : ∀ m ∈ Finset.range K,
-      ‖∑ n ∈ Finset.Ico (2 ^ m) (2 * 2 ^ m), χ n * (n : ℂ) ^ (-s)‖ ≤ L ^ 2 + q * 1536 / L ^ 2 := by
+      ‖∑ n ∈ Finset.Ico (2 ^ m : ℕ) (2 * 2 ^ m), χ n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℂ) * I))‖
+        ≤ L ^ 2 + q * 1536 / L ^ 2 := by
     intro m hm
     rw [Finset.mem_range] at hm
-    have hq0 : (0 : ℝ) ≤ q * 1536 / L ^ 2 := by positivity
+    have hq1 : (0 : ℝ) ≤ q * 1536 / L ^ 2 := by positivity
+    have hL2 : (0 : ℝ) ≤ L ^ 2 := sq_nonneg L
     have hM : 1 ≤ 2 ^ m := Nat.one_le_two_pow
     by_cases hsmall : ((2 ^ m : ℕ) : ℝ) ≤ Real.exp (2 * Real.log t / Real.log (Real.log t))
     · have := norm_character_block_small χ ht1 hℓ0 hσ0 hσ hM hsmall
@@ -652,27 +654,55 @@ theorem norm_LFunction_le_littlewood_pos (q : ℕ) [NeZero q] :
         nlinarith [Real.pi_pos]
       have := norm_character_block_saving χ ht1 h4 hc1 hc2 hσ0 hσ (not_le.mp hsmall) hMt
       linarith
-  have hsum : ‖∑ n ∈ Finset.Ico 1 (2 ^ K), χ n * (n : ℂ) ^ (-s)‖ ≤ 3 * L ^ 3 + 4608 * q := by
-    rw [sum_Ico_one_two_pow]
-    calc ‖∑ m ∈ Finset.range K, ∑ n ∈ Finset.Ico (2 ^ m) (2 * 2 ^ m), χ n * (n : ℂ) ^ (-s)‖
-        ≤ ∑ _m ∈ Finset.range K, (L ^ 2 + q * 1536 / L ^ 2) :=
-          (norm_sum_le _ _).trans (Finset.sum_le_sum hblock)
-      _ = K * (L ^ 2 + q * 1536 / L ^ 2) := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-      _ ≤ 3 * L * (L ^ 2 + q * 1536 / L ^ 2) :=
-          mul_le_mul_of_nonneg_right hK3 (by positivity)
-      _ = 3 * L ^ 3 + 4608 * q * (1 / L) := by field_simp; ring
-      _ ≤ 3 * L ^ 3 + 4608 * q * 1 := by
-          have : 1 / L ≤ 1 := by rw [div_le_one hL0]; linarith
-          have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
-          nlinarith
-      _ = 3 * L ^ 3 + 4608 * q := by ring
-  have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1.le
+  rw [sum_Ico_one_two_pow]
+  calc ‖∑ m ∈ Finset.range K, ∑ n ∈ Finset.Ico (2 ^ m : ℕ) (2 * 2 ^ m),
+        χ n * (n : ℂ) ^ (-((σ : ℂ) + (t : ℂ) * I))‖
+      ≤ ∑ _m ∈ Finset.range K, (L ^ 2 + q * 1536 / L ^ 2) :=
+        (norm_sum_le _ _).trans (Finset.sum_le_sum hblock)
+    _ = K * (L ^ 2 + q * 1536 / L ^ 2) := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    _ ≤ 3 * L * (L ^ 2 + q * 1536 / L ^ 2) :=
+        mul_le_mul_of_nonneg_right hK3 (by positivity)
+    _ = 3 * L ^ 3 + 4608 * q * (1 / L) := by field_simp; ring
+    _ ≤ 3 * L ^ 3 + 4608 * q * 1 := by
+        have : 1 / L ≤ 1 := by rw [div_le_one hL0]; linarith
+        nlinarith
+    _ = 3 * L ^ 3 + 4608 * q := by ring
+
+/-- **Littlewood's growth bound at positive heights.** -/
+theorem norm_LFunction_le_littlewood_pos (q : ℕ) [NeZero q] :
+    ∃ T₀ : ℝ, 3 ≤ T₀ ∧ ∀ χ : DirichletCharacter ℂ q, χ ≠ 1 → ∀ σ t : ℝ, T₀ ≤ t →
+      1 - litEta t ≤ σ → σ ≤ 2 →
+      ‖DirichletCharacter.LFunction χ ((σ : ℂ) + (t : ℂ) * I)‖
+        ≤ (3 + 4888 * q) * Real.log t ^ 3 := by
+  have hev : ∀ᶠ t : ℝ in atTop, (4 ≤ Real.log (Real.log t) ∧
+      32 * Real.log (Real.log t) ^ 2 ≤ Real.sqrt (Real.log t) ∧
+      Real.log (Real.log t) ^ 2 * Real.log (Real.log (Real.log t)) ≤ 2 * Real.log t) ∧
+      400 ≤ t :=
+    (Real.tendsto_log_atTop.eventually eventually_littlewood_conditions).and
+      (eventually_ge_atTop 400)
+  obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp hev
+  refine ⟨max T₁ 400, by linarith [le_max_right T₁ 400], ?_⟩
+  intro χ hχ σ t ht hσ hσ2
+  obtain ⟨⟨h4, hc1, hc2⟩, h400⟩ := hT₁ t (le_of_max_le_left ht)
+  have hL0 : 0 < Real.log t := Real.log_pos (by linarith)
+  have hL1 : 1 ≤ Real.log t := by
+    by_contra h
+    have : Real.log (Real.log t) ≤ 0 := Real.log_nonpos hL0.le (le_of_lt (not_le.mp h))
+    linarith
+  have hsL : Real.sqrt (Real.log t) ≤ Real.log t := by
+    rw [Real.sqrt_le_left hL0.le]; nlinarith
+  have hη : litEta t ≤ 1 / 2 := by
+    unfold litEta
+    rw [div_le_iff₀ hL0]
+    nlinarith
+  have herr := norm_LFunction_sub_dyadic_le hχ h400 (σ := σ) (by linarith) hσ2
+  have hsum := norm_dyadic_partial_le χ h400 h4 hc1 hc2 (by linarith) hσ
+  have hL3 : 1 ≤ Real.log t ^ 3 := one_le_pow₀ hL1
   have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
-  calc ‖DirichletCharacter.LFunction χ s‖
-      ≤ ‖DirichletCharacter.LFunction χ s - ∑ n ∈ Finset.Ico 1 (2 ^ K), χ n * (n : ℂ) ^ (-s)‖
-        + ‖∑ n ∈ Finset.Ico 1 (2 ^ K), χ n * (n : ℂ) ^ (-s)‖ := norm_le_norm_sub_add _ _
-    _ ≤ 120 * q + (3 * L ^ 3 + 4608 * q) := add_le_add herr' hsum
-    _ ≤ (3 + 4888 * q) * L ^ 3 := by nlinarith
+  calc ‖DirichletCharacter.LFunction χ ((σ : ℂ) + (t : ℂ) * I)‖
+      ≤ _ + _ := norm_le_norm_sub_add _ _
+    _ ≤ 120 * q + (3 * Real.log t ^ 3 + 4608 * q) := add_le_add herr hsum
+    _ ≤ (3 + 4888 * q) * Real.log t ^ 3 := by nlinarith
 
 /-- **Littlewood's growth bound.**  For every modulus `q` there is `T₀` such that every
 nonprincipal `χ` modulo `q` has `|L(σ + it, χ)| ≤ (3 + 4888 q)(log |t|)³` for `|t| ≥ T₀` and

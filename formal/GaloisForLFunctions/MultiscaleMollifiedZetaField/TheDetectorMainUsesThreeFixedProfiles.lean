@@ -1,6 +1,7 @@
 import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheDetectorMomentErrorsAreSmall
 import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheActualGcdSumsAreShiftedProfileForms
 import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheCorrectedPolynomialJetsConverge
+import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheFrozenMainTermsSeparateIntoTheirScaledFactors
 
 /-!
 # Three fixed profiles suffice for the detector main term
@@ -184,5 +185,63 @@ theorem linearDetector_mainJet_eq_profile {N : ℕ} (hN : 1 < N)
   apply realTwistedMomentMainJet_congr
   intro n hn
   simpa only [Polynomial.eval_X] using linearDetectorWeights_eq_moebiusProfileWeights hN hn d
+
+/-- The detector combination in normalized displacement coordinates. -/
+def normalizedThreeProfileMain (N : ℕ) (u p q η α : ℝ) : ℝ :=
+  (1 - α) * normalizedFrozenMainJet X.eval N u p q η 0 0 +
+    (α ^ 2 - α) * normalizedFrozenMainJet (complementPolynomial X).eval N u p q η 0 0 +
+    α * normalizedFrozenMainJet (X + complementPolynomial X).eval N u p q η 0 0 -
+    α / 2 * ((2 - α) * normalizedFrozenMainJet X.eval N u p q η 1 0 -
+      α * normalizedFrozenMainJet (complementPolynomial X).eval N u p q η 1 0 +
+      α * normalizedFrozenMainJet (X + complementPolynomial X).eval N u p q η 1 0) +
+    α ^ 2 / 4 * normalizedFrozenMainJet X.eval N u p q η 2 0
+
+/-- Exact bridge from the actual linear detector main term to three normalized polynomial profiles. -/
+theorem detectorThreeMomentMain_eq_normalizedProfiles {p q η : ℝ}
+    (hη : 0 < η) (hp : 4 ≤ p - η) {N : ℕ} (hN : 1 < N)
+    {d : ℝ} (hd : 0 < d) (hd20 : d ≤ 1 / 20) (lam : ℝ) :
+    detectorThreeMomentMain p q η N (linearDetectorWeights N d) d lam =
+      normalizedThreeProfileMain N (d * Real.log N) p q η (lam * Real.log N) := by
+  have hL : Real.log (N : ℝ) ≠ 0 := (Real.log_pos (by exact_mod_cast hN)).ne'
+  have he (P : ℝ[X]) (j : ℕ) :
+      realTwistedMomentMainJet p q η N (moebiusProfileWeights P.eval N (-d * Real.log N)) j d =
+        (Real.log N) ^ j * normalizedFrozenMainJet P.eval N (d * Real.log N) p q η j 0 := by
+    unfold normalizedFrozenMainJet
+    rw [add_zero, mul_div_cancel_right₀ d hL]
+    rw [neg_mul]
+    field_simp [hL]
+  have hF (j : ℕ) :
+      realTwistedMomentMainJet p q η N (linearDetectorWeights N d) j d =
+        (Real.log N) ^ j * normalizedFrozenMainJet X.eval N (d * Real.log N) p q η j 0 :=
+    (linearDetector_mainJet_eq_profile hN p q η d j).trans (he X j)
+  have hc (n : ℕ) (hn : n ∈ Finset.Icc 1 N) :
+      detectorComplementWeights N (linearDetectorWeights N d) n =
+        moebiusProfileWeights (complementPolynomial X).eval N (-d * Real.log N) n := by
+    have hw := linearDetectorWeights_eq_moebiusProfileWeights hN hn d
+    have hh := congrFun (detectorComplementWeights_profile X N (-d * Real.log N)) n
+    dsimp only [detectorComplementWeights] at hh ⊢
+    rw [show linearDetectorWeights N d n = moebiusProfileWeights X.eval N (-d * Real.log N) n by
+      simpa only [Polynomial.eval_X] using hw]
+    exact hh
+  have hS (j : ℕ) :
+      realTwistedMomentMainJet p q η N (detectorComplementWeights N (linearDetectorWeights N d)) j d =
+        (Real.log N) ^ j * normalizedFrozenMainJet (complementPolynomial X).eval N
+          (d * Real.log N) p q η j 0 :=
+    (realTwistedMomentMainJet_congr p q η N hc j d).trans (he (complementPolynomial X) j)
+  have hH (j : ℕ) :
+      realTwistedMomentMainJet p q η N
+        (fun n => linearDetectorWeights N d n + detectorComplementWeights N (linearDetectorWeights N d) n) j d =
+        (Real.log N) ^ j * normalizedFrozenMainJet (X + complementPolynomial X).eval N
+          (d * Real.log N) p q η j 0 := by
+    refine (realTwistedMomentMainJet_congr p q η N ?_ j d).trans (he (X + complementPolynomial X) j)
+    intro n hn
+    rw [hc n hn, moebiusProfileWeights_add]
+    congr 1
+    simpa only [Polynomial.eval_X] using linearDetectorWeights_eq_moebiusProfileWeights hN hn d
+  rw [detectorThreeMomentMain_three_weights hη hp hN _ hd hd20 lam,
+    hF 0, hS 0, hH 0, hF 1, hS 1, hH 1, hF 2]
+  unfold normalizedThreeProfileMain
+  simp only [pow_zero, pow_one, one_mul]
+  ring
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

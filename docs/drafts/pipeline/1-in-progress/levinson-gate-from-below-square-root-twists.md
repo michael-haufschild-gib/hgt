@@ -58,8 +58,9 @@ formalized for arbitrary diverging scales. Every normalized chi-conductor
 error jet vanishes. The actual chi jets converge uniformly across moving
 blocks whose endpoint conductor ratios converge. Differentiation under
 the taper and its integrated jet limits are formalized; only bounded
-relative support length is required. The complete main-term product
-assembly and the three-profile scalar identification remain under
+relative support length is required. Exact first and second product
+formulas for the actual normalized main term are formalized. Their common
+scalar limits and the three-profile scalar identification remain under
 formalization.
 
 The final obligations are the dyadic law for one fixed mollifier and its
@@ -78,10 +79,11 @@ The detector Weyl bound and the resulting bound `C B² N A^(11/8)` for
 coefficients satisfying `|b_n|≤B n^(σ−1/2)` have Lean proof drafts.
 Their checks and the block assembly remain required.
 
-For `R=13/10`, exact integration of Young's linear scalar predicts
-`c(13/50)<18/5<exp(13/10)`, hence a positive proportion.
-`TheShortLevinsonMollifierHasAPositiveScalarMargin` contains the full proof
-draft using rational bounds on `exp(13/20)`; Lean check pending.
+For `R=13/10`, exact integration of the linear scalar proves
+`c(13/50)<18/5<exp(13/10)`, giving a strictly positive gate margin.
+`TheShortLevinsonMollifierHasAPositiveScalarMargin` formalizes these bounds
+using rational estimates for `exp(13/20)`. Identification with the actual
+three-profile main scalar remains under formalization.
 
 The receiver fixes coefficients before choosing its nearby abscissa.
 Using coefficients at `d_U=R/log U` instead of `d=R/log T₂` changes each
