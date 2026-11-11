@@ -100,7 +100,7 @@ theorem hasDerivAt_realNormalizedCorrectionCoeffJet (N m n j : ℕ) (C : ℝ) :
     induction k with
     | zero => exact hf.differentiableOn.analyticOnNhd isOpen_univ _ (mem_univ _)
     | succ k hk => simpa only [iteratedDeriv_succ] using hk.deriv
-  simpa only [realNormalizedCorrectionCoeffJet, iteratedDeriv_succ] using
+  simpa only [realNormalizedCorrectionCoeffJet, iteratedDeriv_succ, f] using
     (ha j).differentiableAt.hasDerivAt.real_of_complex
 
 /-- Real jets inherit the absolute pair majorant. -/
@@ -119,7 +119,7 @@ theorem tendsto_realNormalizedCorrectionCoeffJet_succ {C : ℕ → ℝ} {R : ℝ
     simpa only [Complex.norm_real, Real.norm_eq_abs] using hR
   have hh := tendsto_entire_normalized_jet_succ_of_bounded_centres
     (differentiable_complexSelbergCorrectionCoeff m n) hc j
-  simpa only [realNormalizedCorrectionCoeffJet, Complex.zero_re] using
+  simpa only [realNormalizedCorrectionCoeffJet, Complex.zero_re, Function.comp_def] using
     Complex.continuous_re.continuousAt.tendsto.comp hh
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

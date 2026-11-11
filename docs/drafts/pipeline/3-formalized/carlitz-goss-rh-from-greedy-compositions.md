@@ -1,6 +1,6 @@
 # Carlitz–Goss RH from greedy compositions
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.4.
 
 ## Exact target
@@ -103,9 +103,19 @@ standard axioms. No further axiom audit was run for `DigitSelection` or
 
 General greedy optimality is formalized and audited; see
 `../3-formalized/greedy-carry-free-compositions-are-uniquely-optimal.md`.
-The actual Goss coefficient valuations, their identification with the proved
-strict combinatorial slopes, and the entire-series argument remain. The target
-includes every prime power and every `p`-adic parameter.
+
+The exact target is formalized for every prime power and every `p`-adic parameter:
+
+| Module | Proved statement |
+|---|---|
+| `PowerSumChains` | `S_d(N)` is the integer recursion `gossPoly` (`monicPowerSum_eq_gossPoly`); in characteristic `p` its support consists of exponents of digit chains, and a top chain with unique part values has a nonzero coefficient |
+| `GreedyDegreesOfPowerSums` | `deg S_d(N) = wt(G) − N` for the greedy `(d+1)`-part composition (or the `d`-part one at a zero remainder); `S_d(N) ≠ 0` iff a chain of length `d` exists; degrees strictly concave in `d` |
+| `TheGossZetaAtNegativeIntegers` | `gossZetaNeg_eq_prod`: `ζ(x, −N) = ∏ (1 − xᵢ/x)` in every field containing `𝔽_q` and `𝔽_p((1/T))`, with pairwise distinct nonzero `xᵢ ∈ 𝔽_p((1/T))` of distinct norms |
+| `TheUltrametricNewtonPolygonOfAnEntireSeries` | entire series over a complete ultrametric field with strictly log-concave coefficient norms: zeros only on the spheres `r_d`, exactly one on each (contraction), `‖F(v)‖ = r_dᵈ‖a_{d+1}‖‖v − u‖` there |
+| `GossCoefficientsAtPadicIntegers` | `deg(S_d(N + p^k c) − T^{dp^k c}S_d(N)) ≤ d(N + p^k c) − p^k`; `γ_d(z) = lim T^{−dN_k}S_d(N_k)` exists in `𝔽_p((1/T))`; for `z ∉ ℕ` the exponent `dN_k − deg S_d(N_k)` is eventually `< p^k` |
+| `TheRiemannHypothesisForTheGossZetaFunction` | `gossZeta_riemannHypothesis`: for `z ∉ ℕ` the zeros of `x ↦ ζ(x, −z) = ∑ x^{−d} ∑ ⟨a⟩^z` in every complete ultrametric `L ⊇ 𝔽_q, 𝔽_p((1/T))` are exactly `ρ_d ∈ 𝔽_p((1/T))` (strictly decreasing norms), each simple: `‖ζ(x, −z)‖ = C_d‖x − ρ_d‖` on `‖x‖ = ‖ρ_d‖` |
+
+The two headline theorems depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Combinatorial mechanism
 

@@ -63,6 +63,12 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MonicPowerSums
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryFreeBinomial
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitSelection
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ZeroRemainderBoundary
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PowerSumChains
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GreedyDegreesOfPowerSums
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.TheGossZetaAtNegativeIntegers
+import GaloisForLFunctions.SignFreePurityMechanisms.TheUltrametricNewtonPolygonOfAnEntireSeries
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GossCoefficientsAtPadicIntegers
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.TheRiemannHypothesisForTheGossZetaFunction
 
 /-!
 # Sign-free purity mechanisms
@@ -88,6 +94,12 @@ carries of each.
 **Separation.**
 * For every base `p≥2` and positive residue degree, the greedy carry-free composition
   uniquely maximizes the weighted sum of its numerical part values (`CarlitzGoss.GreedyOptimality`).
+* The degree of the power sum `∑_{deg a = d} aᴺ` over `𝔽_q[T]` is the greedy weight minus `N`,
+  strictly concave in `d` (`CarlitzGoss.GreedyDegreesOfPowerSums`). Hence the Goss zeta function
+  of `𝔽_q[T]` satisfies the Riemann hypothesis at every `z ∈ ℤ_p`: its zeros in `x` are simple
+  and lie in `𝔽_p((1/T))` (`CarlitzGoss.TheGossZetaAtNegativeIntegers`,
+  `CarlitzGoss.TheRiemannHypothesisForTheGossZetaFunction`; entire series through
+  `TheUltrametricNewtonPolygonOfAnEntireSeries`).
 * A Galois-invariant function injective on the roots forces them into the base field
   (`SeparationForcesRationality`).
 * Over a complete ultrametric field the coefficients produce the separation: strictly

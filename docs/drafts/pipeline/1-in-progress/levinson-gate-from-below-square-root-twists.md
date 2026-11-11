@@ -64,3 +64,24 @@ identities; analytic main-term asymptotics; insertion into
 `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw` and the proved
 count receiver. Details: `shifted-selberg-euler-correction.md`.
 No detector gate from these inputs is yet claimed.
+
+## Low-height split and scalar choice
+
+The dyadic receiver uses one mollifier for every block down to height 20.
+Take length exponent `θ=13/50` and split exponent `α=53/100`:
+`θ/α=26/53<1/2`, while `θ+(11/8)α=791/800<1`.
+A thin-strip Weyl bound for the detector then makes the initial segment
+`O(U^(791/800))`; larger blocks admit the proved short twisted moment.
+The derivative version of that Weyl bound and the block assembly remain
+required.
+
+For `R=13/10`, exact integration of Young's linear scalar predicts
+`c(13/50)<18/5<exp(13/10)`, hence a positive proportion.
+`TheShortLevinsonMollifierHasAPositiveScalarMargin` contains the full proof
+draft using rational bounds on `exp(13/20)`; Lean check pending.
+
+The receiver fixes coefficients before choosing its nearby abscissa.
+Using coefficients at `d_U=R/log U` instead of `d=R/log T₂` changes each
+coefficient by relative size `O((d−d_U)log N)=O(1/(U log U))`.
+Its detector-energy effect must be bounded explicitly; the matched-shift
+remainder theorem alone does not discharge this obligation.

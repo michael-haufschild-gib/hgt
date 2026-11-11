@@ -23409,16 +23409,20 @@ lemma SourceCuspDatum.smoothing_left_integrable (d : SourceCuspDatum)
         mellinEulerData V 0 ((3 / 2 : ℂ) + t * Complex.I))
   have hK := inverseMellinIntegrand_vertical_integrable V a b ha hVs hV 2 0 (3 / 2)
     (by norm_num) (paperScale * d.smoothingScale X) (mul_pos paperScale_pos (d.smoothingScale_pos X hX))
+  have hc : Summable (fun h : O => ‖sourceCuspRadialCoefficient d.index d.dualPoint h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [neg_div] using
+      sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint
   have hi : Integrable M := by
     simpa only [M, inverseMellinIntegrand, Complex.ofReal_div, Complex.ofReal_ofNat] using
       weighted_vertical_sum_mul_integrable sourceCuspRadialLength sourceCuspRadialLength_pos
         (sourceCuspRadialCoefficient d.index d.dualPoint) (3 / 2)
-        (sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint)
+        hc
         (fun t : ℝ => inverseMellinIntegrand V 0 (paperScale * d.smoothingScale X)
           (((3 / 2 : ℝ) : ℂ) + t * Complex.I)) hK
   apply ((hi.comp_neg).const_mul d.smoothingMultiplier).congr
   filter_upwards with t
-  simpa only [neg_neg] using (d.smoothing_reflected_line V X hX (-t)).symm
+  simpa only [M, Complex.ofReal_neg, neg_neg] using (d.smoothing_reflected_line V X hX (-t)).symm
 
 theorem SourceCuspDatum.smoothing_left_kernel (d : SourceCuspDatum)
     (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
@@ -23430,15 +23434,19 @@ theorem SourceCuspDatum.smoothing_left_kernel (d : SourceCuspDatum)
       d.smoothingMultiplier * ∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
         paperKernel V (d.smoothingScale X * sourceCuspRadialLength h) := by
   letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  have hc : Summable (fun h : O => ‖sourceCuspRadialCoefficient d.index d.dualPoint h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [neg_div] using
+      sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint
   have hk := paperKernel_weighted_mellin sourceCuspRadialLength sourceCuspRadialLength_pos
     (sourceCuspRadialCoefficient d.index d.dualPoint)
-    (sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint) V a b ha hVs hV
+    hc V a b ha hVs hV
     (d.smoothingScale X) (d.smoothingScale_pos X hX)
   rw [hk]
   rw [← integral_neg_eq_self (fun t : ℝ => besselSmoothingIntegrand
     (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
     (sourceCuspRadialScale 0) V X ((-1 : ℂ) + t * Complex.I)) volume]
-  simp only [d.smoothing_reflected_line V X hX]
+  simp only [Complex.ofReal_neg, d.smoothing_reflected_line V X hX]
   rw [integral_const_mul]
   ring
 
@@ -23481,11 +23489,21 @@ theorem SourceCuspDatum.smoothed_reflection (d : SourceCuspDatum)
     filter_upwards with t
     simp only [Complex.ofReal_div, Complex.ofReal_ofNat]
     ring
+  have hleft' : Integrable (fun t : ℝ => besselSmoothingIntegrand
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+      (sourceCuspRadialScale 0) V X (((-1 : ℝ) : ℂ) + t * Complex.I)) := by
+    simpa only [Complex.ofReal_neg, Complex.ofReal_one] using
+      d.smoothing_left_integrable V a b ha hVs hV X hX
+  have hright' : Integrable (fun t : ℝ => besselSmoothingIntegrand
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+      (sourceCuspRadialScale 0) V X (((2 : ℝ) : ℂ) + t * Complex.I)) := by
+    simpa only [Complex.ofReal_ofNat] using hright
   have hshift := besselSmoothingIntegrand_contour_eq
     (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
     (sourceCuspRadialScale 0) (sourceCuspRadialScale_pos 0)
     d.mellin_entire.1.1 d.mellin_entire.1.2 V a b ha hVs hV X hX (-1) 2 (by norm_num)
-    (d.smoothing_left_integrable V a b ha hVs hV X hX) hright
+    hleft' hright'
+  simp only [Complex.ofReal_neg, Complex.ofReal_one, Complex.ofReal_ofNat] at hshift
   have hm' : (∑' h : O, sourceBarRadialCoefficient d.point h * V (sourceCuspRadialLength h / X)) =
       (1 / (2 * Real.pi) : ℂ) * (∫ t : ℝ, besselSmoothingIntegrand
         (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
@@ -23636,5 +23654,26 @@ theorem thetaSmoothedGaussSum_finite_reflection (c : O) (hc : c ≠ 0)
       congr 1
       rw [← finiteTwistCusp_point (9 * c) (mul_ne_zero (by norm_num) hc) i]
       exact (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothed_reflection V a b ha hVs hV X hX
+
+lemma sourceCuspRadialScale_ratio (j : Fin 3) :
+    sourceCuspRadialScale 0 / sourceCuspRadialScale j = sourceCuspScale j := by
+  have h0 : sourceCuspRadialScale 0 = thetaBesselScale := by
+    simp only [sourceCuspRadialScale, sourceCuspScale, Matrix.cons_val_zero, div_one]
+  rw [h0, sourceCuspRadialScale]
+  field_simp [thetaBesselScale_pos.ne']
+
+/-- The cusp denominator cancels from the reflected amplitude. -/
+lemma SourceCuspDatum.smoothingMultiplier_norm (d : SourceCuspDatum) :
+    ‖d.smoothingMultiplier‖ = (sourceCuspScale d.index) ^ 2 := by
+  rw [SourceCuspDatum.smoothingMultiplier, sourceCuspRadialScale_ratio,
+    norm_mul, d.multiplier_norm, Complex.norm_of_nonneg
+      (mul_nonneg d.heightScale_pos.le (sq_nonneg _)), ← mul_assoc,
+    inv_mul_cancel₀ d.heightScale_pos.ne', one_mul]
+
+lemma SourceCuspDatum.smoothingMultiplier_norm_le (d : SourceCuspDatum) :
+    ‖d.smoothingMultiplier‖ ≤ 9 := by
+  rw [d.smoothingMultiplier_norm]
+  rcases d with ⟨G, j, hj⟩
+  fin_cases j <;> norm_num [sourceCuspScale]
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

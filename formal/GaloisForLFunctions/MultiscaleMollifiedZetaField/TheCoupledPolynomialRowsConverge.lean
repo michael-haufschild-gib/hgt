@@ -38,7 +38,8 @@ theorem tendsto_normalizedHarmonicArray_eval (p : ℝ[X]) {c : ℕ} (hc : 0 < c)
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
       simpa only [Polynomial.eval_add, normalizedHarmonicArray_add,
-        intervalIntegral.integral_add p.continuous.intervalIntegrable q.continuous.intervalIntegrable] using hp.add hq
+        intervalIntegral.integral_add (p.continuous.intervalIntegrable 0 1)
+          (q.continuous.intervalIntegrable 0 1)] using hp.add hq
   | monomial j a =>
       simpa only [Polynomial.eval_monomial, normalizedHarmonicArray_const_mul,
         normalizedHarmonicArray_pow, intervalIntegral.integral_const_mul, integral_pow,
@@ -96,7 +97,7 @@ theorem tendsto_shiftedProfileHarmonicRow_coupled (P Q : ℝ[X])
       (show Tendsto (fun N : ℕ => (Real.log a + Real.log b) / Real.log N) atTop (𝓝 0) from
         tendsto_const_nhds.div_atTop hlog)
   have hexp : Tendsto (fun N : ℕ => Real.exp (v N * (Real.log a + Real.log b) / Real.log N))
-      atTop (𝓝 1) := by simpa only [Real.exp_zero] using Real.continuous_exp.continuousAt.tendsto.comp hexponent
+      atTop (𝓝 1) := by simpa only [Real.exp_zero, Function.comp_def] using Real.continuous_exp.continuousAt.tendsto.comp hexponent
   have hh := hexp.mul hprod
   simp only [one_mul] at hh
   refine hh.congr' ?_
