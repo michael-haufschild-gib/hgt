@@ -1124,16 +1124,6 @@ theorem asymptoticAbscissaLaw_iff_no_eulerPoly_horocycle_acceleration :
         (α := α) (by simp only [α]; linarith)
     exact hno ⟨P, α, hP, by simp only [α]; linarith, hrate⟩
 
-#print axioms horocycle_rate_zetaZeroAbscissa
-#print axioms cusp_energy_rate_zetaZeroAbscissa
-#print axioms sSup_universalHorocycleExponents
-#print axioms re_le_or_eval_eq_zero_of_eulerPoly_horocycle_rate
-#print axioms not_eulerPoly_horocycle_rate_gt_three_quarters
-#print axioms exists_eulerPoly_horocycle_rate_of_lt_one_sub_half_zetaAsymptoticAbscissa
-#print axioms sSup_eulerFilteredHorocycleExponents
-#print axioms zerosApproachLine_iff_eulerPoly_horocycle_rate
-#print axioms asymptoticAbscissaLaw_iff_no_eulerPoly_horocycle_acceleration
-
 end
 
 end GaloisForLFunctions.BlackHoleRingdown

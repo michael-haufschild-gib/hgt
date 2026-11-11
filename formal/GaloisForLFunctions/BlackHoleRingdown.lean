@@ -77,6 +77,7 @@ import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleReadsTheZeros
 import GaloisForLFunctions.BlackHoleRingdown.TheAlgebraOfCuspSupportedProfiles
 import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleRateIsTheZeroFreeRegion
 import GaloisForLFunctions.BlackHoleRingdown.TheLaxPhillipsSemigroupOfTheModularSurface
+import GaloisForLFunctions.BlackHoleRingdown.TheOptimalHorocycleExponentAndEulerAnnihilators
 
 /-!
 # Black-hole ringdown and the zeros of zeta

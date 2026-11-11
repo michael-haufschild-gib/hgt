@@ -56,6 +56,10 @@ Fix `K ≥ 2`, `N ≥ 2K`, `m₀ = ⌊N/K⌋`.
 - The integrand of `κ_j` is at most `C_j/(t (1 + log(1/t))²)`, integrable; so
   `∫_0^{1/K} → 0` as `K → ∞`.
 
+Of `log^j(1/t)` the argument uses only that it is continuous on `(0, 1]`, at most a multiple of
+a logarithmic profile, and has convergent Riemann sums after every cut; the Lean statement is
+for every such profile `w` in place of `log^j(1/t)`.
+
 **T3. Archimedean part.** `log M + γ ≤ H_M ≤ log M + γ + 1/M` (`M ≥ 1`). For `1 ≤ n < N`:
 `|H_N − ½(H_{N−n} + H_{N+n}) + 3/(4n) − log 2π − a(n/N)| ≤ 1/(N−n) + 1/n`,
 `a(t) = −½ log(1 − t²) − log 2π`. With `log(N/n) ≤ (N−n)/n` the error sums to
@@ -100,7 +104,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 |---|---|---|
 | T1 | `TheFormOfLogarithmicTailsIsDeterminedByTheRowsOfTheFlatTail` | `logTail`, `logTailForm`, `scaleStep`, `formBilin_of_subset`, `logTailForm_succ`, `tendsto_div_natCast_of_tendsto_succ_sub`, `tendsto_logTailForm_div`, `polyLogTail`, `tendsto_combForm_polyLogTail_div`, `logTailForm_zero_left` |
 | tool | `SumsOverTheDegreePointsOfATailAreRiemannSums` | `tailRiemannSum`, `RiemannOn`, `riemannOn_of_continuousOn_of_bounded`, `tailRiemannSum_le_integral`, `riemannOn_of_antitoneOn`, `riemannOn_indicator_Iic` |
-| T2 | `TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail` | `exists_abs_sub_psi_mul_log_pow_le`, `primeRemainder`, `logMajorant`, `integrableOn_logMajorant`, `sum_inv_mul_one_add_log_sq_le`, `psi_one_div_eq_sum`, `riemannOn_cut_primeProfile`, `tendsto_sum_logTail_mul_primeRemainder` |
+| T2 | `TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail` | `exists_abs_sub_psi_mul_log_pow_le`, `primeRemainder`, `logMajorant`, `integrableOn_logMajorant`, `sum_inv_mul_one_add_log_sq_le`, `psi_one_div_eq_sum`, `TailWeight`, `TailWeight.riemannOn_cut_primeProfile`, `TailWeight.tendsto_tailRiemannSum_primeProfile`, `tendsto_sum_logTail_mul_primeRemainder` |
 | T3 | `TheJetsOfTheFlatTailHaveLogarithmicMoments` | `jetRow`, `tailRow_eq`, `archRow`, `harm_sub_log_mem`, `continuousOn_logSqProfile`, `riemannOn_logPow_mul_archRow`, `abs_jetRow_sub_archRow_le`, `tendsto_sum_logTail_mul_jetRow` |
 | T4 | `TheRowOfTheFlatTailHasTheMellinTransformOfTheZeros` | `rowProfile`, `rowMoment`, `hasSum_integral_rpow_mul_psi`, `hasSum_integral_rpow_mul_neg_log`, `ofReal_integral_rpow_mul_neg_log`, `mellin_rowProfile` |
 | T4 | `TheLogarithmicMomentsOfTheRowOfTheFlatTailAreSumsOverTheZeros` | `expRem`, `abs_expRem_le`, `tailZeroSum`, `tailZeroSum_sub`, `tendsto_remIntegral_div`, `remIntegral_eq_and_rowMoment`, `rowMoment_eq_tsum` |

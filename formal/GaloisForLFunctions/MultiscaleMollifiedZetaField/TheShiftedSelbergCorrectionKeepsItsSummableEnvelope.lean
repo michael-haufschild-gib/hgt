@@ -26,8 +26,9 @@ def localizedShiftedSelbergAmplitude (c : ℝ) (r n : ℕ) : ℝ := by
 theorem localizedShiftedSelbergAmplitude_zero (r n : ℕ) :
     localizedShiftedSelbergAmplitude 0 r n = localizedReciprocalMoebiusAmplitude r n := by
   classical
-  simp only [localizedShiftedSelbergAmplitude, powerShiftedReciprocalAmplitude_zero,
-    localizedReciprocalMoebiusAmplitude]
+  change (if primeSupportedOn r n then powerShiftedReciprocalAmplitude 0 n else 0) =
+    (if primeSupportedOn r n then reciprocalMoebiusAmplitude n else 0)
+  rw [powerShiftedReciprocalAmplitude_zero]
 
 theorem continuous_localizedShiftedSelbergAmplitude (r n : ℕ) :
     Continuous (fun c : ℝ => localizedShiftedSelbergAmplitude c r n) := by
@@ -43,11 +44,12 @@ theorem abs_localizedShiftedSelbergAmplitude_le {N : ℕ} (hN : 1 < N)
     |localizedShiftedSelbergAmplitude (c / Real.log N) r n| ≤
       Real.exp (2 * |c|) * |localizedReciprocalMoebiusAmplitude r n| := by
   classical
+  change |if primeSupportedOn r n then powerShiftedReciprocalAmplitude (c / Real.log N) n else 0| ≤
+    Real.exp (2 * |c|) * |if primeSupportedOn r n then reciprocalMoebiusAmplitude n else 0|
   by_cases h : primeSupportedOn r n
-  · simpa only [localizedShiftedSelbergAmplitude, localizedReciprocalMoebiusAmplitude, if_pos h]
+  · simpa only [if_pos h]
       using abs_powerShiftedReciprocalAmplitude_log_shift_le hN c hn
-  · simp only [localizedShiftedSelbergAmplitude, localizedReciprocalMoebiusAmplitude,
-      if_neg h, abs_zero, mul_zero, le_refl]
+  · simp only [if_neg h, abs_zero, mul_zero, le_refl]
 
 /-- The parameterized squarefree-support Euler correction fibre. -/
 def shiftedSelbergCorrectionWeight (c : ℝ) (r u v : ℕ) : ℝ :=
@@ -115,8 +117,9 @@ theorem tendsto_tsum_cutoffShiftedSelbergCorrection (c : ℝ) :
     rw [shiftedSelbergCorrectionWeight_zero] at hh
     refine hh.congr' ?_
     filter_upwards [eventually_ge_atTop (max (x.1 * x.2.1) (x.1 * x.2.2))] with N hN
-    simp only [Function.comp_def, cutoffShiftedSelbergCorrection,
-      if_pos ⟨(le_max_left _ _).trans hN, (le_max_right _ _).trans hN⟩]
+    have hx : x.1 * x.2.1 ≤ N ∧ x.1 * x.2.2 ≤ N :=
+      ⟨(le_max_left _ _).trans hN, (le_max_right _ _).trans hN⟩
+    simp only [Function.comp_def, cutoffShiftedSelbergCorrection, if_pos hx]
   have hbound : ∀ᶠ N : ℕ in atTop, ∀ x : ℕ × (ℕ × ℕ),
       ‖cutoffShiftedSelbergCorrection c N x‖ ≤
         Real.exp (4 * |c|) * |selbergCorrectionWeight x.1 x.2.1 x.2.2| := by

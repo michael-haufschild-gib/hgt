@@ -31,7 +31,7 @@ Thus no new infinite power-weighted divisor majorant is needed.
 
 ## Remaining proof obligations
 
-Formalize the parameterized amplitude, exact convolution, and fibre majorant.
+Prove the exact parameterized Euler convolution. The amplitude and fibre majorant are formalized.
 Combine the smoothed Möbius test-function limit with harmonic scaling.
 Transfer the first two frozen-coefficient displacement jets; their proof
 must retain uniformity of the shifted correction, not merely pointwise limits.
@@ -43,4 +43,17 @@ must retain uniformity of the shifted correction, not merely pointwise limits.
   Direct Lean check passed; umbrella import added.
 - `TheShiftedSelbergCorrectionKeepsItsSummableEnvelope`: localized fibres,
   their continuity, the common summable envelope, and limiting unit mass
-  of the actual finite-cutoff fibre sum. Direct check pending.
+  of the actual finite-cutoff fibre sum. Direct Lean check passed; umbrella import added.
+
+The exact convolution reduces primewise to
+`(1−xy/p² A_c(x)A_c(y)) (1−x/p)(1−y/p)/(1−p^(c−1)xy)`
+`=1−x/p−y/p+p^(c−1)xy`.
+The shifted amplitude cancels the reciprocal Möbius factor by ordinary
+Dirichlet inversion. Pair-coprime multiplicativity transfers this identity
+to every positive integer pair.
+
+`TheShiftedSelbergCorrectionIsMultiplicative` proves pair-coprime
+multiplicativity and the exact prime-power fibre formula. Lean check passed.
+`TheShiftedSelbergEulerFactorsCancel` and
+`TheShiftedSelbergFormIsAHarmonicModel` contain the complete drafts of the
+parameterized convolution and its arbitrary-weight harmonic collapse.

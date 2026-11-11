@@ -18460,7 +18460,7 @@ lemma cuspResidueAugmentation_neg (x : O) : cuspResidueAugmentation (-x) = -cusp
 lemma cuspResidueAugmentation_mul (x y : O) :
     cuspResidueAugmentation (x * y) = cuspResidueAugmentation x * cuspResidueAugmentation y := by
   simp only [cuspResidueAugmentation, cuspResidue_mul, cuspResidueMul]
-  have h3 : (3 : ZMod 3) = 0 := by norm_num
+  have h3 : (3 : ZMod 3) = 0 := rfl
   linear_combination -(cuspResidue x).2 * (cuspResidue y).2 * h3
 
 lemma cuspResidueAugmentation_one : cuspResidueAugmentation (1 : O) = 1 := by
@@ -18518,8 +18518,12 @@ def cuspNilpotentUnit (q : ZMod 3) : Oˣ := cuspOmegaUnit ^ q.val
 lemma cuspNilpotentUnit_residue (q : ZMod 3) :
     cuspResidue (cuspNilpotentUnit q : O) = (1 - q, q) := by
   fin_cases q
-  · simp [cuspNilpotentUnit, cuspResidue_one]
-  · simp [cuspNilpotentUnit, cuspOmegaUnit_val, cuspResidue_omega]
+  · change cuspResidue ((cuspOmegaUnit : O) ^ 0) = (1, 0)
+    rw [pow_zero]
+    exact cuspResidue_one
+  · change cuspResidue ((cuspOmegaUnit : O) ^ 1) = (0, 1)
+    rw [pow_one, cuspOmegaUnit_val]
+    exact cuspResidue_omega
   · change cuspResidue (omega ^ 2) = _
     rw [cuspResidue_omega_sq]
     rfl
@@ -18574,7 +18578,10 @@ theorem cuspResidue_column_classify (a c : ZMod 3 × ZMod 3)
         linear_combination -hq1
       · exact hq1
   · rcases cuspModThree_nonzero _ hd with hdet | hdet
-    · let g : SL(2, ZMod 3) := ⟨!![a.1, a.2; c.1, c.2], by simpa only [Matrix.det_fin_two] using hdet⟩
+    · let g : SL(2, ZMod 3) := ⟨!![a.1, a.2; c.1, c.2], by
+        rw [Matrix.det_fin_two]
+        change a.1 * c.2 - a.2 * c.1 = 1
+        exact hdet⟩
       refine ⟨g, 1, 0, ?_, ?_⟩ <;> apply Prod.ext <;>
         simp [cuspResidueColumn, cuspResidueParameter, cuspResidueMul, g]
     · let g : SL(2, ZMod 3) := ⟨!![a.1 - a.2, -a.2; c.1 - c.2, -c.2], by
@@ -18645,7 +18652,10 @@ theorem rationalReductionThree_surjective : Function.Surjective rationalReductio
   let K : SL(2, ZMod 3) := (rationalReductionThree r)⁻¹ * g
   obtain ⟨hK0, hK1⟩ := sameColumn_inverse_mul g (rationalReductionThree r) hr0 hr1
   have hK11 : K 1 1 = 1 := by
-    simpa only [Matrix.det_fin_two, hK0, hK1, one_mul, mul_zero, sub_zero] using K.property
+    have h0 : K 0 0 = 1 := hK0
+    have h1 : K 1 0 = 0 := hK1
+    have hd : K 0 0 * K 1 1 - K 0 1 * K 1 0 = 1 := by simpa only [Matrix.det_fin_two] using K.property
+    rwa [h0, h1, one_mul, mul_zero, sub_zero] at hd
   let T : SL(2, ℤ) := rationalCuspTranslation ((K 0 1).val : ℤ)
   have hT : rationalReductionThree T = K := by
     apply Matrix.SpecialLinearGroup.ext
@@ -18706,12 +18716,370 @@ theorem three_cusp_decomposition (M : SL(2, O)) :
     change (∑ k : Fin 2, unitCuspDiagonal (cuspNilpotentUnit q) 1 k * (N⁻¹ * M) k 0) = 0
     rw [Fin.sum_univ_two]
     change 0 * (N⁻¹ * M) 0 0 + (↑(cuspNilpotentUnit q)⁻¹ : O) * (N⁻¹ * M) 1 0 = 0
-    rw [hz, mul_zero, mul_zero, add_zero]
+    rw [hz, mul_zero, zero_mul, add_zero]
   have hd : T 0 0 * T 1 1 = 1 := by
     simpa only [Matrix.det_fin_two, hT, mul_zero, sub_zero] using T.property
   refine ⟨G, j, T, hT, IsUnit.of_mul_eq_one _ hd,
     IsUnit.of_mul_eq_one _ (show T 1 1 * T 0 0 = 1 by simpa only [mul_comm] using hd), ?_⟩
   dsimp only [G, T, B, columnCuspRepresentative]
   group
+
+def sourceBarBesselCoefficient (h : O) : ℂ :=
+  (2 * Real.pi * Complex.I * star (cuspFrequency h)) * rationalSourceResidualFourierCoefficient h
+
+lemma sourceBarBesselCoefficient_subexponential (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖sourceBarBesselCoefficient h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  apply cubicBesselCoefficient_linearWeight_subexponential _ _
+    rationalSourceResidualFourierCoefficient_subexponential (2 * Real.pi) (by positivity) _ ε hε
+  intro h hh
+  exact le_of_eq (by norm_num [norm_mul, norm_star, abs_of_pos Real.pi_pos])
+
+theorem cubicSource_wirtingerBar_bessel (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    horizontalWirtingerBar (fun w => cubicSourceResidualFunction (upperPoint w v hv)) z =
+      ∑' h : O, cubicBesselTerm sourceBarBesselCoefficient h (v, z) := by
+  have he : (fun w => cubicSourceResidualFunction (upperPoint w v hv)) =
+      fun w => ∑' h : O, rationalSourceModeAmplitude v h * tracePhase (cuspFrequency h * w) :=
+    funext (cubicSourceResidualFunction_fourier_expansion v hv)
+  rw [he, traceFourierSeries_wirtingerBar _ _ (rationalSourceModeAmplitude_summable v hv)
+    (rationalSourceModeAmplitude_frequency_summable v hv)]
+  apply tsum_congr
+  intro h
+  by_cases hh : h = 0
+  · subst h
+    simp only [cuspFrequency, map_zero, zero_div, star_zero, mul_zero, zero_mul,
+      cubicBesselTerm, cubicBesselAmplitude, if_true]
+  · rw [rationalSourceModeAmplitude_bessel v hv h hh]
+    simp only [cubicBesselTerm, cubicBesselAmplitude, if_neg hh, sourceBarBesselCoefficient, mul_assoc]
+
+theorem cubicSource_barProfile_continuousOn (z : ℂ) :
+    ContinuousOn (cuspBarProfile cubicSourceResidualFunction z) (Set.Ioi 0) := by
+  intro v hv
+  change 0 < v at hv
+  have hs := (cubicBesselSeries_hasFDerivAt sourceBarBesselCoefficient
+    sourceBarBesselCoefficient_subexponential (v, z) hv).differentiableAt
+  have hp : DifferentiableAt ℝ (fun y : ℝ => (y, z)) v := by fun_prop
+  apply ContinuousAt.continuousWithinAt
+  apply (hs.comp v hp).continuousAt.congr_of_eventuallyEq
+  filter_upwards [Ioi_mem_nhds hv] with y hy
+  rw [cuspBarProfile_positive _ _ _ hy, cubicSource_wirtingerBar_bessel y hy z]
+  rfl
+
+lemma conjugateSource_zProfile (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspZProfile (fun w => star (cubicSourceResidualFunction w)) z v =
+      star (cuspBarProfile cubicSourceResidualFunction z v) := by
+  rw [cuspZProfile_positive _ _ _ hv, cuspBarProfile_positive _ _ _ hv]
+  exact horizontalWirtingerZ_conjugate _ z (cubicSource_horizontal_differentiableAt v hv z)
+
+theorem conjugateSource_zProfile_continuousOn (z : ℂ) :
+    ContinuousOn (cuspZProfile (fun w => star (cubicSourceResidualFunction w)) z) (Set.Ioi 0) := by
+  apply (cubicSource_barProfile_continuousOn z).star.congr
+  intro v hv
+  exact conjugateSource_zProfile z v hv
+
+theorem conjugateSource_zProfile_isBigO (z : ℂ) :
+    cuspZProfile (fun w => star (cubicSourceResidualFunction w)) z =O[atTop]
+      (fun v : ℝ => Real.exp (-residualBesselDecayRate * v)) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselSeries_exponential_decay sourceBarBesselCoefficient
+    sourceBarBesselCoefficient_subexponential 1 (by norm_num)
+  apply Asymptotics.IsBigO.of_bound C
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with v hv
+  have hp : 0 < v := zero_lt_one.trans_le hv
+  rw [conjugateSource_zProfile z v hp, norm_star, cuspBarProfile_positive _ _ _ hp,
+    cubicSource_wirtingerBar_bessel v hp z]
+  simpa only [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)] using hb v hv z
+
+lemma horizontalWirtingerZ_const_mul (a : ℂ) (f : ℂ → ℂ) (z : ℂ) (hf : DifferentiableAt ℝ f z) :
+    horizontalWirtingerZ (fun w => a * f w) z = a * horizontalWirtingerZ f z := by
+  have hline (direction : ℂ) : DifferentiableAt ℝ (fun t : ℝ => f (z + (t : ℂ) * direction)) 0 := by
+    have hp : DifferentiableAt ℝ (fun t : ℝ => z + (t : ℂ) * direction) 0 := by fun_prop
+    have hf' : DifferentiableAt ℝ f (z + (0 : ℂ) * direction) := by simpa only [zero_mul, add_zero] using hf
+    exact hf'.comp 0 hp
+  have h1 := ((hline 1).hasDerivAt.const_mul a).deriv
+  have hI := ((hline Complex.I).hasDerivAt.const_mul a).deriv
+  simp only [mul_one] at h1
+  rw [horizontalWirtingerZ, h1, hI, horizontalWirtingerZ]
+  ring
+
+lemma conjugateSource_translate_horizontal_differentiableAt (g : SL(2, ℂ))
+    (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    DifferentiableAt ℝ (fun w => star (cubicSourceResidualFunction (g • upperPoint w v hv))) z := by
+  have hf := cubicSourceResidualFunction_translate_coordinate_differentiableAt g (v, z) hv
+  have hp : DifferentiableAt ℝ (fun w : ℂ => (v, w)) z := by fun_prop
+  have hh := Complex.conjCLE.differentiableAt.comp z (hf.comp z hp)
+  have he : (fun w => star (cubicSourceResidualFunction (g • upperPoint w v hv))) =
+      fun w => Complex.conjCLE (cubicSourceResidualFunction (g • cuspCoordinateLift (v, w))) := by
+    funext w
+    rw [cuspCoordinateLift_positive v w hv]
+    rfl
+  rw [he]
+  convert! hh using 1
+
+lemma conjugateSource_zProfile_transform (G : rationalExtension) (H : SL(2, ℂ))
+    (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspZProfile (fun w => star (cubicSourceResidualFunction
+      ((integralComplexMatrix (G : SL(2, O)) * H) • w))) z v =
+      star (extendedComplexCharacter G) * cuspZProfile (fun w => star (cubicSourceResidualFunction (H • w))) z v := by
+  rw [cuspZProfile_positive _ _ _ hv, cuspZProfile_positive _ _ _ hv]
+  have he : (fun w : ℂ => star (cubicSourceResidualFunction
+      ((integralComplexMatrix (G : SL(2, O)) * H) • upperPoint w v hv))) =
+      fun w => star (extendedComplexCharacter G) * star (cubicSourceResidualFunction (H • upperPoint w v hv)) := by
+    funext w
+    rw [mul_smul, cubicSourceResidualFunction_automorphy G, star_mul]
+  rw [he]
+  exact horizontalWirtingerZ_const_mul (star (extendedComplexCharacter G))
+    (fun w : ℂ => star (cubicSourceResidualFunction (H • upperPoint w v hv))) z
+    (conjugateSource_translate_horizontal_differentiableAt H v hv z)
+
+lemma conjugateSource_barProfile_reflection_rational (G : rationalExtension)
+    (g H : SL(2, ℂ)) (hfactor : g = integralComplexMatrix (G : SL(2, O)) * H)
+    (hc : g 1 0 ≠ 0) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0) v =
+      reflectedCuspProfile (-star (extendedComplexCharacter G) / (g 1 0) ^ 2) (‖g 1 0‖ ^ 2)
+        (cuspZProfile (fun w => star (cubicSourceResidualFunction (H • w))) (-g 1 1 / g 1 0)) v := by
+  have hd : 0 < (‖g 1 0‖ ^ 2 * v)⁻¹ := by positivity
+  have he : cuspZProfile (fun w => star (cubicSourceResidualFunction (g • w))) (-g 1 1 / g 1 0)
+      ((‖g 1 0‖ ^ 2 * v)⁻¹) = star (extendedComplexCharacter G) *
+        cuspZProfile (fun w => star (cubicSourceResidualFunction (H • w))) (-g 1 1 / g 1 0)
+          ((‖g 1 0‖ ^ 2 * v)⁻¹) := by
+    conv_lhs => arg 1; rw [hfactor]
+    exact conjugateSource_zProfile_transform G H _ _ hd
+  rw [conjugateSource_barProfile_reflection g hc v hv, reflectedCuspProfile, reflectedCuspProfile, he]
+  ring
+
+lemma lowerCuspMatrix_zero : lowerCuspMatrix 0 = 1 := by
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;> rfl
+
+lemma conjugateSource_cuspRepresentative_zProfile_continuousOn (j : Fin 3) (z : ℂ) :
+    ContinuousOn (cuspZProfile (fun w => star (cubicSourceResidualFunction
+      (integralComplexMatrix (cuspRepresentative j) • w))) z) (Set.Ioi 0) := by
+  fin_cases j
+  · simpa [cuspRepresentative, cuspParameter, lowerCuspMatrix_zero] using conjugateSource_zProfile_continuousOn z
+  · simpa [cuspRepresentative, cuspParameter, ramifiedSourceFunction, ramifiedCuspRoot, cuspOmegaUnit_val] using
+      conjugateRamifiedSource_zProfile_continuousOn false z
+  · simpa [cuspRepresentative, cuspParameter, ramifiedSourceFunction, ramifiedCuspRoot, cuspOmegaUnit_val] using
+      conjugateRamifiedSource_zProfile_continuousOn true z
+
+lemma conjugateSource_cuspRepresentative_zProfile_decay (j : Fin 3) (z : ℂ) :
+    ∃ δ : ℝ, 0 < δ ∧ cuspZProfile (fun w => star (cubicSourceResidualFunction
+      (integralComplexMatrix (cuspRepresentative j) • w))) z =O[atTop]
+        (fun v : ℝ => Real.exp (-δ * v)) := by
+  fin_cases j
+  · refine ⟨residualBesselDecayRate, residualBesselDecayRate_pos, ?_⟩
+    simpa [cuspRepresentative, cuspParameter, lowerCuspMatrix_zero] using conjugateSource_zProfile_isBigO z
+  · refine ⟨residualBesselDecayRate / 3, div_pos residualBesselDecayRate_pos (by norm_num), ?_⟩
+    simpa [cuspRepresentative, cuspParameter, ramifiedSourceFunction, ramifiedCuspRoot, cuspOmegaUnit_val] using
+      conjugateRamifiedSource_zProfile_isBigO false z
+  · refine ⟨residualBesselDecayRate / 3, div_pos residualBesselDecayRate_pos (by norm_num), ?_⟩
+    simpa [cuspRepresentative, cuspParameter, ramifiedSourceFunction, ramifiedCuspRoot, cuspOmegaUnit_val] using
+      conjugateRamifiedSource_zProfile_isBigO true z
+
+theorem conjugateSource_three_cusp_mellin_entire (G : rationalExtension) (j : Fin 3)
+    (g : SL(2, ℂ)) (hfactor : g = integralComplexMatrix (G : SL(2, O)) * integralComplexMatrix (cuspRepresentative j))
+    (hc : g 1 0 ≠ 0) :
+    (∀ s : ℂ, MellinConvergent (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0)) s) ∧
+      Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0))) := by
+  obtain ⟨δ, hδ, hb⟩ := conjugateSource_cuspRepresentative_zProfile_decay j (-g 1 1 / g 1 0)
+  exact cusp_mellin_entire _ _ (-star (extendedComplexCharacter G) / (g 1 0) ^ 2)
+    (‖g 1 0‖ ^ 2) residualBesselDecayRate δ (sq_pos_of_pos (norm_pos_iff.mpr hc)) residualBesselDecayRate_pos hδ
+    (conjugateSource_barProfile_continuousOn _) (conjugateSource_cuspRepresentative_zProfile_continuousOn j _)
+    (conjugateSource_barProfile_isBigO _) hb
+    (fun v hv => conjugateSource_barProfile_reflection_rational G g _ hfactor hc v hv)
+
+lemma upperTriangular_right_cusp_ratio (g T : SL(2, ℂ)) (hT : T 1 0 = 0)
+    (hc : (g * T) 1 0 ≠ 0) :
+    g 1 0 ≠ 0 ∧ (g * T) 0 0 / (g * T) 1 0 = g 0 0 / g 1 0 := by
+  have hcol (i : Fin 2) : (g * T) i 0 = g i 0 * T 0 0 := by
+    change (∑ k : Fin 2, g i k * T k 0) = _
+    rw [Fin.sum_univ_two, hT, mul_zero, add_zero]
+  have hn : g 1 0 * T 0 0 ≠ 0 := by rwa [hcol] at hc
+  have hg := (mul_ne_zero_iff.mp hn).1
+  have ht := (mul_ne_zero_iff.mp hn).2
+  refine ⟨hg, ?_⟩
+  rw [hcol, hcol]
+  field_simp
+
+/-- Every integral finite cusp has an entire derivative Mellin transform. -/
+theorem conjugateSource_integral_cusp_mellin_entire (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (∀ s : ℂ, MellinConvergent (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+      (ringComplex (M 0 0) / ringComplex (M 1 0))) s) ∧
+      Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+        (ringComplex (M 0 0) / ringComplex (M 1 0)))) := by
+  obtain ⟨G, j, T, hT, _, _, hM⟩ := three_cusp_decomposition M
+  let g := integralComplexMatrix (G : SL(2, O)) * integralComplexMatrix (cuspRepresentative j)
+  have he : integralComplexMatrix M = g * integralComplexMatrix T := by rw [hM, map_mul, map_mul]
+  have ht : integralComplexMatrix T 1 0 = 0 := by
+    change ringComplex (T 1 0) = 0
+    rw [hT, map_zero]
+  have hmc : (g * integralComplexMatrix T) 1 0 ≠ 0 := by
+    rw [← he]
+    exact ringComplex_ne_zero hc
+  obtain ⟨hg, hratio⟩ := upperTriangular_right_cusp_ratio g (integralComplexMatrix T) ht hmc
+  have hh := conjugateSource_three_cusp_mellin_entire G j g rfl hg
+  rw [← hratio, ← he] at hh
+  exact hh
+
+theorem cusp_mellin_reflection_of_identity (f g : ℝ → ℂ) (A s : ℂ) (Q : ℝ) (hQ : 0 < Q)
+    (hfg : ∀ v : ℝ, 0 < v → f v = reflectedCuspProfile A Q g v) :
+    mellin f s = A * (Q : ℂ) ^ (2 - s) * mellin g (2 - s) := by
+  rw [← reflectedCuspProfile_mellin g A s Q hQ]
+  unfold mellin
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro v hv
+  dsimp only
+  rw [hfg v hv]
+
+lemma reflectedCuspProfile_involution (f : ℝ → ℂ) (A : ℂ) (hA : A ≠ 0)
+    (Q : ℝ) (hQ : 0 < Q) (v : ℝ) (hv : 0 < v) :
+    reflectedCuspProfile (A⁻¹ / (Q : ℂ) ^ 2) Q (reflectedCuspProfile A Q f) v = f v := by
+  have harg : (Q * (Q * v)⁻¹)⁻¹ = v := by field_simp
+  have hp (t : ℝ) : (t : ℂ) ^ (-2 : ℂ) = ((t : ℂ) ^ 2)⁻¹ := by
+    rw [Complex.cpow_neg, Complex.cpow_ofNat]
+  rw [reflectedCuspProfile, reflectedCuspProfile, harg, hp, hp]
+  simp only [Complex.ofReal_inv, Complex.ofReal_mul]
+  field_simp [hA, Complex.ofReal_ne_zero.mpr hQ.ne', Complex.ofReal_ne_zero.mpr hv.ne']
+
+theorem cusp_mellin_entire_both (f g : ℝ → ℂ) (A : ℂ) (hA : A ≠ 0) (Q decayF decayG : ℝ)
+    (hQ : 0 < Q) (hF : 0 < decayF) (hG : 0 < decayG)
+    (hf : ContinuousOn f (Set.Ioi 0)) (hg : ContinuousOn g (Set.Ioi 0))
+    (hfbound : f =O[atTop] (fun v : ℝ => Real.exp (-decayF * v)))
+    (hgbound : g =O[atTop] (fun v : ℝ => Real.exp (-decayG * v)))
+    (hfg : ∀ v : ℝ, 0 < v → f v = reflectedCuspProfile A Q g v) :
+    ((∀ s : ℂ, MellinConvergent f s) ∧ Differentiable ℂ (mellin f)) ∧
+      ((∀ s : ℂ, MellinConvergent g s) ∧ Differentiable ℂ (mellin g)) := by
+  have hgf (v : ℝ) (hv : 0 < v) : g v = reflectedCuspProfile (A⁻¹ / (Q : ℂ) ^ 2) Q f v := by
+    calc
+      _ = reflectedCuspProfile (A⁻¹ / (Q : ℂ) ^ 2) Q (reflectedCuspProfile A Q g) v :=
+        (reflectedCuspProfile_involution g A hA Q hQ v hv).symm
+      _ = _ := by
+        change (A⁻¹ / (Q : ℂ) ^ 2) * ((v : ℂ) ^ (-2 : ℂ) * reflectedCuspProfile A Q g ((Q * v)⁻¹)) =
+          (A⁻¹ / (Q : ℂ) ^ 2) * ((v : ℂ) ^ (-2 : ℂ) * f ((Q * v)⁻¹))
+        rw [hfg _ (by positivity)]
+  exact ⟨cusp_mellin_entire f g A Q decayF decayG hQ hF hG hf hg hfbound hgbound hfg,
+    cusp_mellin_entire g f (A⁻¹ / (Q : ℂ) ^ 2) Q decayG decayF hQ hG hF hg hf hgbound hfbound hgf⟩
+
+/-- Both profiles in the reflected three-cusp identity have entire Mellin transforms. -/
+theorem conjugateSource_three_cusp_mellin_entire_both (G : rationalExtension) (j : Fin 3)
+    (g : SL(2, ℂ)) (hfactor : g = integralComplexMatrix (G : SL(2, O)) * integralComplexMatrix (cuspRepresentative j))
+    (hc : g 1 0 ≠ 0) :
+    ((∀ s : ℂ, MellinConvergent (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0)) s) ∧
+      Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0)))) ∧
+    ((∀ s : ℂ, MellinConvergent (cuspZProfile (fun w => star (cubicSourceResidualFunction
+      (integralComplexMatrix (cuspRepresentative j) • w))) (-g 1 1 / g 1 0)) s) ∧
+      Differentiable ℂ (mellin (cuspZProfile (fun w => star (cubicSourceResidualFunction
+        (integralComplexMatrix (cuspRepresentative j) • w))) (-g 1 1 / g 1 0)))) := by
+  have hchar : extendedComplexCharacter G ≠ 0 := by
+    intro hz
+    have he : extendedComplexCharacter G * extendedComplexCharacter G⁻¹ = 1 := by
+      rw [← map_mul, mul_inv_cancel, map_one]
+    rw [hz, zero_mul] at he
+    exact zero_ne_one he
+  have hA : -star (extendedComplexCharacter G) / (g 1 0) ^ 2 ≠ 0 :=
+    div_ne_zero (neg_ne_zero.mpr (star_ne_zero.mpr hchar)) (pow_ne_zero 2 hc)
+  obtain ⟨δ, hδ, hb⟩ := conjugateSource_cuspRepresentative_zProfile_decay j (-g 1 1 / g 1 0)
+  exact cusp_mellin_entire_both _ _ (-star (extendedComplexCharacter G) / (g 1 0) ^ 2) hA
+    (‖g 1 0‖ ^ 2) residualBesselDecayRate δ (sq_pos_of_pos (norm_pos_iff.mpr hc)) residualBesselDecayRate_pos hδ
+    (conjugateSource_barProfile_continuousOn _) (conjugateSource_cuspRepresentative_zProfile_continuousOn j _)
+    (conjugateSource_barProfile_isBigO _) hb
+    (fun v hv => conjugateSource_barProfile_reflection_rational G g _ hfactor hc v hv)
+
+theorem conjugateSource_cusp_mellin_reflection (G : rationalExtension)
+    (g H : SL(2, ℂ)) (hfactor : g = integralComplexMatrix (G : SL(2, O)) * H)
+    (hc : g 1 0 ≠ 0) (s : ℂ) :
+    mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0)) (2 * s) =
+      (-star (extendedComplexCharacter G) / (g 1 0) ^ 2) * ((‖g 1 0‖ ^ 2 : ℝ) : ℂ) ^ (2 - 2 * s) *
+        mellin (cuspZProfile (fun w => star (cubicSourceResidualFunction (H • w))) (-g 1 1 / g 1 0)) (2 - 2 * s) :=
+  cusp_mellin_reflection_of_identity _ _ _ (2 * s) _ (sq_pos_of_pos (norm_pos_iff.mpr hc))
+    (fun v hv => conjugateSource_barProfile_reflection_rational G g H hfactor hc v hv)
+
+lemma exists_integral_matrix_cusp_ratio (a c : O) (hc : c ≠ 0) :
+    ∃ M : SL(2, O), M 1 0 ≠ 0 ∧ ringComplex (M 0 0) / ringComplex (M 1 0) = ringComplex a / ringComplex c := by
+  let d := IsBezout.gcd a c
+  obtain ⟨a', ha⟩ := IsBezout.gcd_dvd_left a c
+  obtain ⟨c', hcc⟩ := IsBezout.gcd_dvd_right a c
+  change a = d * a' at ha
+  change c = d * c' at hcc
+  have hd : d ≠ 0 := by intro hz; exact hc (by rw [hcc, hz, zero_mul])
+  have hc' : c' ≠ 0 := by intro hz; exact hc (by rw [hcc, hz, mul_zero])
+  obtain ⟨u, v, huv⟩ := IsBezout.gcd_eq_sum a c
+  change u * a + v * c = d at huv
+  have hred : u * a' + v * c' = 1 := by
+    apply mul_left_cancel₀ hd
+    calc
+      d * (u * a' + v * c') = u * a + v * c := by rw [ha, hcc]; ring
+      _ = d := huv
+      _ = d * 1 := (mul_one d).symm
+  let M : SL(2, O) := ⟨!![a', -v; c', u], by
+    rw [Matrix.det_fin_two]
+    change a' * u - -v * c' = 1
+    linear_combination hred⟩
+  refine ⟨M, hc', ?_⟩
+  change ringComplex a' / ringComplex c' = ringComplex a / ringComplex c
+  rw [ha, hcc, map_mul, map_mul]
+  have hde := ringComplex_ne_zero hd
+  have hce := ringComplex_ne_zero hc'
+  field_simp
+
+/-- Every Eisenstein rational cusp has an entire horizontal-derivative Mellin transform. -/
+theorem conjugateSource_rational_cusp_mellin_entire (a c : O) (hc : c ≠ 0) :
+    (∀ s : ℂ, MellinConvergent (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+      (ringComplex a / ringComplex c)) s) ∧
+      Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+        (ringComplex a / ringComplex c))) := by
+  obtain ⟨M, hM, he⟩ := exists_integral_matrix_cusp_ratio a c hc
+  simpa only [he] using conjugateSource_integral_cusp_mellin_entire M hM
+
+theorem conjugateSource_finite_twist_cusp_mellin_entire (h c : O) (hc : c ≠ 0) :
+    (∀ s : ℂ, MellinConvergent (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+      (-3 * ringComplex h / ringComplex c)) s) ∧
+      Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+        (-3 * ringComplex h / ringComplex c))) := by
+  simpa only [map_mul, map_neg, map_ofNat] using conjugateSource_rational_cusp_mellin_entire (-3 * h) c hc
+
+lemma finiteMellin_linearCombination_entire {ι : Type*} [Fintype ι]
+    (weight : ι → ℂ) (f : ι → ℝ → ℂ)
+    (hc : ∀ i s, MellinConvergent (f i) s) (hd : ∀ i, Differentiable ℂ (mellin (f i))) :
+    (∀ s : ℂ, MellinConvergent (fun v => ∑ i, weight i * f i v) s) ∧
+      Differentiable ℂ (mellin (fun v => ∑ i, weight i * f i v)) := by
+  have hi (i : ι) (s : ℂ) : Integrable (fun v : ℝ => (v : ℂ) ^ (s - 1) * (weight i * f i v))
+      (volume.restrict (Set.Ioi 0)) := by
+    simpa only [MellinConvergent, smul_eq_mul] using (hc i s).const_smul (weight i)
+  have hs (s : ℂ) : MellinConvergent (fun v => ∑ i, weight i * f i v) s := by
+    unfold MellinConvergent
+    simp only [smul_eq_mul, Finset.mul_sum]
+    exact integrable_finset_sum _ (fun i _ => hi i s)
+  have he (s : ℂ) : mellin (fun v => ∑ i, weight i * f i v) s = ∑ i, weight i * mellin (f i) s := by
+    unfold mellin
+    simp only [smul_eq_mul, Finset.mul_sum]
+    rw [integral_finset_sum _ (fun i _ => hi i s)]
+    apply Finset.sum_congr rfl
+    intro i hmem
+    rw [← integral_const_mul]
+    exact integral_congr_ae (Eventually.of_forall (fun v => by ring))
+  refine ⟨hs, ?_⟩
+  rw [funext he]
+  intro s
+  apply AnalyticAt.differentiableAt
+  apply Finset.analyticAt_fun_sum
+  intro i hmem
+  exact analyticAt_const.mul ((hd i).analyticAt s)
+
+/-- The derivative profile of a finite residue-class twist, expressed at rational cusps. -/
+def traceTwistedBarProfile (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {c})]
+    (φ : (O ⧸ Ideal.span {c}) → ℂ) (v : ℝ) : ℂ :=
+  ∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (thetaFourierTranslation c h) v
+
+theorem traceTwistedBarProfile_mellin_entire (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {c})]
+    (φ : (O ⧸ Ideal.span {c}) → ℂ) :
+    (∀ s : ℂ, MellinConvergent (traceTwistedBarProfile c hc φ) s) ∧
+      Differentiable ℂ (mellin (traceTwistedBarProfile c hc φ)) := by
+  apply finiteMellin_linearCombination_entire
+  · intro h s
+    exact (conjugateSource_finite_twist_cusp_mellin_entire (Quotient.out h) c hc).1 s
+  · intro h
+    exact (conjugateSource_finite_twist_cusp_mellin_entire (Quotient.out h) c hc).2
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

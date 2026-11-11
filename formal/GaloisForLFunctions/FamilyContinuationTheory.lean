@@ -23,6 +23,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheLargeSieveOverTheEisenste
 import GaloisForLFunctions.FamilyContinuationTheory.TheNormCountOfTheEisensteinIntegers
 import GaloisForLFunctions.FamilyContinuationTheory.TheEisensteinLatticeSumIsZetaTimesAnLFunction
 import GaloisForLFunctions.FamilyContinuationTheory.TheSevenEighthsGeometryIsAVertex
+import GaloisForLFunctions.FamilyContinuationTheory.TheExponentPlaneOfTheLowSide
 import GaloisForLFunctions.FamilyContinuationTheory.TheReturnTransferIsTheRiemannHypothesisUnderAStrip
 
 /-!
@@ -103,6 +104,15 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   dual-length term the low boundary is at least `5/6`. Designs with more row variables, or with
   frequencies of lower order and rows of larger conductor, have larger boundaries in the same
   model.
+* **The exponent plane of the low side.** In the range of the reflection the low boundary is
+  `5/6 + (M − 2ℓ)/12`; with the allowance of the marked rows inactive it is at least `13/15`.
+  The reflection of a row and the summation in the row index are two reflections of the plane of
+  exponents, and their product is a translation in scale. In the positive form a term `K^u N^v`
+  of the large sieve for the reflected rows with `4u + 3v ≥ 5` gives no half-plane: the square
+  row indices (`K^{1/2} N`), one summation applied to the trivial bound (`N³/K`) and a bound by
+  the square root of the conductor (`N²`) are on or past this threshold; the optimal sieve gives
+  `11/12`, and a term `(KN)^{2/3}` would give `71/72`. Without the reflection the sextic large
+  sieve gives no half-plane.
 * **From a half-plane to the line.** The transfer from return-free intervals of the prime orbit to
   bounded prime traces follows from the Riemann hypothesis, and under a zero-free strip it is
   equivalent to it.
