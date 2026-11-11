@@ -119,7 +119,6 @@ theorem minorantTails_le {Y : ℝ} (hY : 1 ≤ Y) :
   have hd2 : deriv (minorantTestD Y) = fun u => (Y : ℂ)⁻¹ * (Y : ℂ)⁻¹ * deriv minorantProfileD (Y⁻¹ * u) := by
     rw [hd1, deriv_const_mul_comp]
     push_cast
-    rfl
   have hd3 : deriv (deriv (minorantTestD Y)) =
       fun u => (Y : ℂ)⁻¹ * (Y : ℂ)⁻¹ * (Y : ℂ)⁻¹ * deriv (deriv minorantProfileD) (Y⁻¹ * u) := by
     rw [hd2, deriv_const_mul_comp]
@@ -341,9 +340,13 @@ theorem minorant_integral_ge {σ Y t : ℝ} (hY : 1 ≤ Y)
   have hLint : ∫ τ : ℝ, (mu t * (σ ^ 2 * ‖paperFT (minorantTest Y) ((τ - t : ℝ) : ℂ)‖ ^ 2 -
       ‖paperFT (minorantTestD Y) ((τ - t : ℝ) : ℂ)‖ ^ 2) - c * (1 + (Y * (τ - t)) ^ 2)⁻¹) =
       mu t * (σ ^ 2 * (2 * π * (Y * minorantE₀)) - 2 * π * (minorantE₁ / Y)) - c * (π / Y) := by
-    rw [integral_sub (((hi1.const_mul (σ ^ 2)).sub hi1').const_mul (mu t)) (hci.const_mul c),
-      integral_const_mul, integral_const_mul, integral_sub (hi1.const_mul _) hi1', integral_const_mul, hI1, hI2,
-      hcint]
+    have i1 : Integrable fun τ : ℝ => mu t * (σ ^ 2 * ‖paperFT (minorantTest Y) ((τ - t : ℝ) : ℂ)‖ ^ 2 -
+        ‖paperFT (minorantTestD Y) ((τ - t : ℝ) : ℂ)‖ ^ 2) := ((hi1.const_mul (σ ^ 2)).sub hi1').const_mul (mu t)
+    have i2 : Integrable fun τ : ℝ => c * (1 + (Y * (τ - t)) ^ 2)⁻¹ := hci.const_mul c
+    have i3 : Integrable fun τ : ℝ => σ ^ 2 * ‖paperFT (minorantTest Y) ((τ - t : ℝ) : ℂ)‖ ^ 2 :=
+      hi1.const_mul (σ ^ 2)
+    rw [integral_sub i1 i2, integral_const_mul, integral_const_mul, integral_sub i3 hi1', integral_const_mul,
+      hI1, hI2, hcint]
   have hRint : ∫ τ : ℝ, (σ ^ 2 * (‖paperFT (minorantTest Y) ((τ - t : ℝ) : ℂ)‖ ^ 2 * mu τ) -
       ‖paperFT (minorantTestD Y) ((τ - t : ℝ) : ℂ)‖ ^ 2 * mu τ) =
       σ ^ 2 * (∫ τ : ℝ, ‖paperFT (minorantTest Y) ((τ - t : ℝ) : ℂ)‖ ^ 2 * mu τ) -

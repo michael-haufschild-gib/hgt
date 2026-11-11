@@ -19,14 +19,16 @@ Stronger target: for actual width `w=zetaZeroWidth`, every `0<a` with
 `XiZeroHalfPlaneBound w`; the prime-error abscissa theorem then gives
 cancellation exponent `1/2+w`. The weighted profile is integrable because
 `2a+(1/2+w-a)<1`. RH is the specialization `w=0`.
-The zero pairing itself is summable without RH, using ξ's real-axis
-nonvanishing. These strengthened proofs are in progress.
+The convergence theorem is formalized. Identification with the zero pairing
+remains pending; its proof uses ξ's unconditional real-axis nonvanishing.
 
-Exact width target: adjoining `0` to the positive subcritical convergence
-parameters, their supremum should be `1/2-w`. Convergence implies
+Exact width theorem: adjoining `0` to the positive subcritical convergence
+parameters, their supremum is `1/2-w`. Convergence implies
 subpolynomial growth and hence `a+w≤1/2`; the strict converse above fills
 every smaller positive parameter. This identifies the supremum without
-assuming or deciding convergence at the boundary.
+assuming or deciding convergence at the boundary. Formalized as
+`powerCombConvergenceRadius_eq_half_sub_zeroWidth` in
+`PowerCombTailConvergenceCriterion`.
 
 ## Connection
 
@@ -47,8 +49,8 @@ at the same normalization.
    zero-half-plane criterion — proved.
 4. Actual convergence whenever `0<a` and `a+w<1/2`, including singular
    weighted sums — proved in `tendsto_powerCombTail_of_add_width_lt_half`.
-5. Exact convergence radius and identification of the Mellin limit with
-   the zero pairing — verification pending.
+5. Exact convergence radius and RH equivalence for convergence — proved.
+6. Identification of the Mellin limit with the zero pairing — verification pending.
 
 ## Existing sources
 
@@ -67,8 +69,9 @@ Reference and archimedean bounds are formalized; the literal-comb growth
 theorem `powerCombTailGrowth_iff_zeroHalfPlane` is formalized.
 `riemannHypothesis_iff_all_powerCombTails_subpolynomial` gives the exact
 RH criterion for subpolynomial growth of all positive subcritical tails.
-Actual convergence in the strict width range is formalized. The exact
-radius and zero-side identification remain to be checked.
+Actual convergence, the exact radius, and
+`riemannHypothesis_iff_all_powerCombTails_converge` are formalized.
+The zero-side identification remains to be checked.
 
 ## Arithmetic reduction
 

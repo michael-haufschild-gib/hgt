@@ -245,7 +245,7 @@ theorem principalRow_eq_continued (S : Finset (HeightOneSpectrum O))
   rw [principalRow_eq 𝔪 η S hS hx hw hz]
   congr 1
   unfold principalRowCorrection principalCorrectionC
-  refine tsum_congr fun v => ?_
+  refine tprod_congr fun v => ?_
   have hlam : lambda ∉ v.1.asIdeal := fun h => v.2 (hS _ (Or.inl h))
   have hn2 : 2 ≤ v.1.asIdeal.absNorm := ArtinMertens.two_le_absNorm_of_isPrime v.1.isPrime v.1.ne_bot
   have hn1 : 1 ≤ v.1.asIdeal.absNorm := by omega
@@ -293,7 +293,7 @@ theorem principalCorrectionC_residue (S : Finset (HeightOneSpectrum O))
       principalCorrection (fun v => primeKappaAt 𝔪 η v ^ 6) (fun v => heckeValue 𝔪 η v.asIdeal)
         S x := by
   unfold principalCorrectionC principalCorrection
-  refine tsum_congr fun v => ?_
+  refine tprod_congr fun v => ?_
   have hlarge : 160 < v.1.asIdeal.absNorm := lt_of_not_ge fun h => v.2 (hS _ h)
   have hn7 : 7 ≤ v.1.asIdeal.absNorm := by omega
   obtain ⟨-, hR, hD⟩ := principalFactor_small hn7 (norm_primeKappaAt_le 𝔪 η v.1)
