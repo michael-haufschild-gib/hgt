@@ -39,7 +39,7 @@ theorem digitValueNat_digitsOf {p : ℕ} (hp : 2 ≤ p) (N : ℕ) :
   rw [sum_filter, sum_product]
   have hterm (e : ℕ) : (∑ i : Fin (p - 1), if i.val < N / p ^ e % p then p ^ e else 0) =
       (N / p ^ e % p) * p ^ e := by
-    rw [← sum_filter, sum_const, smul_eq_mul, card_filter_val_lt]
+    rw [← sum_filter, sum_const, smul_eq_mul, Fin.card_filter_val_lt]
     have : N / p ^ e % p < p := Nat.mod_lt _ (by omega)
     congr 1
     omega
@@ -86,7 +86,9 @@ def toComposition (c : DigitChain p s d S) (hR : c.remainder.Nonempty) :
   parts := Fin.snoc c.parts c.remainder
   subset i := by
     induction i using Fin.lastCases with
-    | last => simpa only [Fin.snoc_last] using sdiff_subset
+    | last =>
+      simp only [Fin.snoc_last]
+      exact sdiff_subset
     | cast j => simpa only [Fin.snoc_castSucc] using c.subset j
   disjoint := pairwise_disjoint_snoc c.disjoint_remainder c.disjoint
   cover x hx := by
@@ -121,9 +123,9 @@ theorem toComposition_weight (c : DigitChain p s d S) (hR : c.remainder.Nonempty
 remainder. -/
 def ofComposition (C : DigitComposition p s (d + 1) S) : DigitChain p s d S where
   parts i := C.parts i.castSucc
-  subset i := C.subset _
+  subset _ := C.subset _
   disjoint _ _ hij := C.disjoint fun h => hij (Fin.castSucc_injective _ h)
-  nonempty i := C.nonempty _
+  nonempty _ := C.nonempty _
   divisible i := C.divisible i.castSucc (by simp only [Fin.val_castSucc]; omega)
 
 theorem ofComposition_remainder (C : DigitComposition p s (d + 1) S) :
@@ -166,7 +168,7 @@ def toCompositionZero (c : DigitChain p s (d + 1) S) (hR : c.remainder = ∅) :
     push Not at h
     have hmem : x ∈ c.remainder := mem_remainder.mpr ⟨hx, h⟩
     rw [hR] at hmem
-    exact not_mem_empty x hmem
+    exact Finset.notMem_empty x hmem
   nonempty := c.nonempty
   divisible i _ := c.divisible i
 
@@ -192,7 +194,7 @@ def ofCompositionDivisible (C : DigitComposition p s (d + 1) S)
 
 theorem ofCompositionDivisible_remainder (C : DigitComposition p s (d + 1) S)
     (hN : ((p : ℤ) ^ s - 1) ∣ digitValue p S) : (ofCompositionDivisible C hN).remainder = ∅ := by
-  simp only [remainder, ofCompositionDivisible, C.biUnion_parts, sdiff_self]
+  simp only [remainder, ofCompositionDivisible, C.biUnion_parts, sdiff_self, bot_eq_empty]
 
 theorem ofCompositionDivisible_weight (C : DigitComposition p s (d + 1) S)
     (hN : ((p : ℤ) ^ s - 1) ∣ digitValue p S) :
@@ -213,10 +215,10 @@ theorem total_divisible_of_remainder_eq_empty (c : DigitChain p s d S) (hR : c.r
 /-- Forget the last part, which joins the remainder. -/
 def dropLast (c : DigitChain p s (d + 1) S) : DigitChain p s d S where
   parts i := c.parts i.castSucc
-  subset i := c.subset _
+  subset _ := c.subset _
   disjoint _ _ hij := c.disjoint fun h => hij (Fin.castSucc_injective _ h)
-  nonempty i := c.nonempty _
-  divisible i := c.divisible _
+  nonempty _ := c.nonempty _
+  divisible _ := c.divisible _
 
 theorem dropLast_remainder_nonempty (c : DigitChain p s (d + 1) S) :
     c.dropLast.remainder.Nonempty := by
@@ -234,7 +236,8 @@ theorem weight_lt_of_remainder_eq_empty (hp : 2 ≤ p) {G : DigitComposition p s
     (hG : G.IsGreedy) (c : DigitChain p s (d + 1) S) (hR : c.remainder = ∅) :
     (c.weight : ℤ) < G.weight := by
   have h := hG.zeroRemainderWeight_lt hp (c.toCompositionZero hR) (fun i => by
-    simpa only [DigitComposition.zeroRemainderParts, Fin.snoc_castSucc] using c.divisible i)
+    simpa only [DigitComposition.zeroRemainderParts, Fin.snoc_castSucc, toCompositionZero]
+      using c.divisible i)
   rwa [DigitComposition.zeroRemainderWeight_eq, toCompositionZero_weight] at h
 
 /-- **The top chain, positive remainder.** A greedy `(d + 1)`-part composition dominates every
@@ -252,7 +255,7 @@ theorem top_of_greedy (hp : 2 ≤ p) {G : DigitComposition p s (d + 1) S} (hG : 
       have hmem : x ∈ c.remainder :=
         mem_remainder.mpr ⟨G.subset 0 hx, fun i => i.elim0⟩
       rw [hR] at hmem
-      exact not_mem_empty x hmem
+      exact Finset.notMem_empty x hmem
     | succ d => exact weight_lt_of_remainder_eq_empty hp hG c hR
   refine ⟨fun c => ?_, fun c hc i => ?_⟩
   · by_cases hR : c.remainder.Nonempty
@@ -388,33 +391,35 @@ theorem natDegree_gossPoly_strictConcave (hc : Nonempty (DigitChain p s (d + 2) 
       2 * (gossPoly F (p ^ s) (d + 1) (digitValueNat p S)).natDegree := by
   have hp2 := hp.out.two_le
   obtain ⟨c₂⟩ := hc
-  set N := digitValueNat p S
+  suffices key : ((gossPoly F (p ^ s) d (digitValueNat p S)).natDegree : ℤ) +
+      (gossPoly F (p ^ s) (d + 2) (digitValueNat p S)).natDegree <
+      2 * ((gossPoly F (p ^ s) (d + 1) (digitValueNat p S)).natDegree : ℤ) by
+    exact_mod_cast key
   by_cases hpos : Nonempty (DigitComposition p s (d + 3) S)
   · obtain ⟨G₃, hG₃⟩ := DigitComposition.exists_greedy hpos
     obtain ⟨G₂, hG₂⟩ := DigitComposition.exists_greedy ⟨G₃.mergeLast⟩
     obtain ⟨G₁, hG₁⟩ := DigitComposition.exists_greedy ⟨G₂.mergeLast⟩
-    have h₁ := (natDegree_gossPoly_of_greedy (F := F) hG₁).2
-    have h₂ := (natDegree_gossPoly_of_greedy (F := F) hG₂).2
-    have h₃ := (natDegree_gossPoly_of_greedy (F := F) hG₃).2
     have hconv := hG₂.prefixCost_strictConvex G₁ hp2 hG₃
     simp only [DigitComposition.prefixCost] at hconv
+    rw [(natDegree_gossPoly_of_greedy (F := F) hG₁).2, (natDegree_gossPoly_of_greedy (F := F) hG₂).2,
+      (natDegree_gossPoly_of_greedy (F := F) hG₃).2]
     push_cast at hconv
-    omega
+    linarith only [hconv]
   · have hR : c₂.remainder = ∅ := not_nonempty_iff_eq_empty.mp fun h =>
       hpos ⟨c₂.toComposition h⟩
     have hN := c₂.total_divisible_of_remainder_eq_empty hR
     obtain ⟨G₂, hG₂⟩ := DigitComposition.exists_greedy ⟨c₂.toCompositionZero hR⟩
     obtain ⟨G₁, hG₁⟩ := DigitComposition.exists_greedy ⟨G₂.mergeLast⟩
-    have h₁ := (natDegree_gossPoly_of_greedy (F := F) hG₁).2
-    have h₂ := (natDegree_gossPoly_of_greedy (F := F) hG₂).2
-    have h₃ := (natDegree_gossPoly_of_greedy_zero (F := F) (not_nonempty_iff.mp hpos) hN hG₂).2
     have hcost := hG₂.prefixCost_lt_total hp2 hN
     have hle := G₁.weight_le (by omega : 0 < p)
     simp only [DigitComposition.prefixCost] at hcost
+    rw [(natDegree_gossPoly_of_greedy (F := F) hG₁).2, (natDegree_gossPoly_of_greedy (F := F) hG₂).2,
+      (natDegree_gossPoly_of_greedy_zero (F := F) (not_nonempty_iff.mp hpos) hN hG₂).2]
     rw [← natCast_digitValueNat] at hcost hle
     push_cast at hcost hle
-    omega
+    linarith only [hcost, hle]
 
+omit hp [NeZero s] in
 /-- Chains of length `d + 1` give chains of length `d`. -/
 theorem nonempty_chain_of_succ (h : Nonempty (DigitChain p s (d + 1) S)) :
     Nonempty (DigitChain p s d S) :=

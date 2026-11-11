@@ -45,8 +45,11 @@ theorem map_gossPoly {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S) (q 
   induction d generalizing N with
   | zero => simp only [gossPoly_zero, Polynomial.map_one]
   | succ d ih =>
-    simp only [gossPoly_succ, Polynomial.map_neg, Polynomial.map_sum, Polynomial.map_mul,
-      Polynomial.map_natCast, Polynomial.map_pow, Polynomial.map_X, ih]
+    rw [gossPoly_succ, gossPoly_succ, Polynomial.map_neg, Polynomial.map_sum]
+    congr 1
+    refine sum_congr rfl fun j _ => ?_
+    rw [Polynomial.map_mul, Polynomial.map_mul, Polynomial.map_C, map_natCast,
+      Polynomial.map_pow, Polynomial.map_X, ih]
 
 /-- **The actual power sums.** Over a finite field the monic power sums are the recursion with
 `q = |K|`. -/

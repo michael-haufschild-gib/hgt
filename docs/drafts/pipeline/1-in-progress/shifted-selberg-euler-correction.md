@@ -58,3 +58,32 @@ Thus the normalized correction on `|z−C|≤1` is bounded by
 `j! exp(4(|C|+1))|W_0|`. On each fixed fibre the normalized continuation
 converges locally uniformly to a constant, so every positive-order jet
 converges to zero. This avoids separate primewise Leibniz estimates.
+
+`TheShiftedAmplitudeIsHolomorphic` formalizes the entire continuation,
+real-axis identity, and complex majorant. Direct Lean check passed.
+`TheCorrectionJetsKeepTheSummableEnvelope` contains the Cauchy estimates
+and vanishing positive-order fibre sums; direct Lean check passed.
+`TheShiftedMobiusProfilesConvergeUniformly` contains the full-cutoff bound
+and uniform `P′−vP` profile limit on compact shift intervals; direct check pending.
+
+The actual shift `R log N/log T` varies with height. Profile limits must be
+uniform on compact shift intervals; the current profile draft has this
+scope. For correction jets, the Cauchy continuity argument also works
+uniformly for bounded centres, since the source argument is bounded by
+`(R+1)/log N`. This moving-centre version remains to be extracted.
+
+At the detector base point, write `A=P′−vP`. After division by the
+appropriate power of `log N`, the direct arithmetic jets have integrands
+`A²`, `2tA²−4PA`, and `4t²A²−16tPA+8P²`.
+The reflected jets have integrands `A²`, `2tA²`, and `4t²A²` with the
+reflected value of `v`. Here the profiles are evaluated at `1−t`.
+Correction jets and derivatives of fixed outer dilation factors vanish
+in the fixed-fibre limit. Existing polynomial harmonic moments evaluate
+all six remaining integrals.
+
+The harmonic endpoint strip can be removed using the already proved
+moments, without a new floor-sum asymptotic. For `t≥1−δ`, choose `δ` so
+`(1−δ)^k≥1/2`; then its indicator is bounded by `2t^k`.
+The normalized harmonic mass of this strip has limsup at most `2/(k+1)`.
+Taking `k` large transfers every bounded profile array that converges
+uniformly away from `t=1` to its limiting harmonic polynomial.

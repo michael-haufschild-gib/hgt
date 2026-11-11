@@ -72,18 +72,15 @@ def scaledMobiusLogTest (f : ℝ → ℝ) (L u : ℝ) : ℝ :=
   L * (∑ n ∈ Finset.Icc 1 ⌊Real.exp (L * u)⌋₊,
     ((moebius n : ℤ) : ℝ) / (n : ℝ) * f (u - Real.log n / L))
 
-/-- A compact second-derivative bound controls every cutoff by one absolute-mean error. -/
-theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
+/-- An explicit second-derivative bound controls all cutoffs by the same absolute-mean error. -/
+theorem scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
     (hf : ∀ x, HasDerivAt f (f₁ x) x) (hf₁ : ∀ x, HasDerivAt f₁ (f₂ x) x)
-    (hc₂ : Continuous f₂) (hf0 : f 0 = 0) :
-    ∃ M : ℝ, 0 ≤ M ∧ ∀ L : ℝ, 0 < L → ∀ u ∈ Icc (0 : ℝ) 1,
-      |scaledMobiusLogTest f L u - f₁ u| ≤
-        |f₁ 0| * |smoothedMobiusKernel (L * u) - 1| + M * smoothedMobiusKernelMeanError L := by
-  obtain ⟨M, hM⟩ := (isCompact_Icc : IsCompact (Icc (0 : ℝ) 1)).exists_bound_of_continuousOn
-    hc₂.continuousOn
+    (hc₂ : Continuous f₂) (hf0 : f 0 = 0) (M : ℝ)
+    (hM : ∀ x ∈ Icc (0 : ℝ) 1, ‖f₂ x‖ ≤ M)
+    {L u : ℝ} (hL : 0 < L) (hu : u ∈ Icc (0 : ℝ) 1) :
+    |scaledMobiusLogTest f L u - f₁ u| ≤
+      |f₁ 0| * |smoothedMobiusKernel (L * u) - 1| + M * smoothedMobiusKernelMeanError L := by
   have hM0 : 0 ≤ M := (norm_nonneg (f₂ 0)).trans (hM 0 ⟨le_rfl, zero_le_one⟩)
-  refine ⟨M, hM0, ?_⟩
-  intro L hL u hu
   have hK : ContinuousOn (fun x => smoothedMobiusKernel (L * x) - 1) (Icc 0 1) :=
     (continuousOn_dilatedSmoothedMobiusKernel hL.le).sub continuous_const.continuousOn
   have hsub : Icc (0 : ℝ) u ⊆ Icc (0 : ℝ) 1 := Icc_subset_Icc le_rfl hu.2
@@ -140,6 +137,19 @@ theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
   refine (abs_add_le _ _).trans ?_
   rw [abs_mul]
   exact add_le_add le_rfl hib
+
+/-- Compactness supplies a finite second-derivative bound for each smooth test. -/
+theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
+    (hf : ∀ x, HasDerivAt f (f₁ x) x) (hf₁ : ∀ x, HasDerivAt f₁ (f₂ x) x)
+    (hc₂ : Continuous f₂) (hf0 : f 0 = 0) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ L : ℝ, 0 < L → ∀ u ∈ Icc (0 : ℝ) 1,
+      |scaledMobiusLogTest f L u - f₁ u| ≤
+        |f₁ 0| * |smoothedMobiusKernel (L * u) - 1| + M * smoothedMobiusKernelMeanError L := by
+  obtain ⟨M, hM⟩ := (isCompact_Icc : IsCompact (Icc (0 : ℝ) 1)).exists_bound_of_continuousOn
+    hc₂.continuousOn
+  refine ⟨M, (norm_nonneg (f₂ 0)).trans (hM 0 ⟨le_rfl, zero_le_one⟩), ?_⟩
+  intro L hL u hu
+  exact scaledMobiusLogTest_error_bound hf hf₁ hc₂ hf0 M hM hL hu
 
 /-- Smooth logarithmic Möbius tests converge uniformly away from the cutoff endpoint. -/
 theorem scaledMobiusLogTest_converges_uniformly {f f₁ f₂ : ℝ → ℝ}

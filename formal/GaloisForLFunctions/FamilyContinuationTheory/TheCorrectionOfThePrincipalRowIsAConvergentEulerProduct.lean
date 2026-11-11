@@ -22,7 +22,7 @@ properties the continuation step asks for, uniformly in the phases.
 * `exists_principalCorrection_cutoff`: for `σ > 2/3` there is `N₀` such that for every finite set
   `S` of primes containing those of norm `≤ N₀` and all phases, `H` is holomorphic on
   `Re s > σ` and `‖H − 1‖ ≤ 1/2` there; in particular `H ≠ 0`.
-* `zetaZeroAbscissa_le_of_two_estimates_principalCorrection`: the native endpoint for
+* `exists_cutoff_zetaZeroAbscissa_le_of_two_estimates`: the native endpoint for
   `K = ℚ(ζ₃)` with this correction (the deleted Euler factors of `S` included), whose only
   premise is the pair of estimates.
 -/
@@ -252,6 +252,12 @@ def defectExponent (σ : ℝ) : ℝ := min (6 * σ - 3) (min (1 + σ) 2)
 theorem one_lt_defectExponent {σ : ℝ} (hσ : 2 / 3 < σ) : 1 < defectExponent σ :=
   lt_min (by linarith) (lt_min (by linarith) (by norm_num))
 
+/-- The summable majorant `14 N(v)^{−e}` of the local defects. -/
+def defectWeight (e : ℝ) (v : HeightOneSpectrum (𝓞 K)) : ℝ := 14 * primeNorm v ^ (-e)
+
+theorem defectWeight_nonneg (e : ℝ) (v : HeightOneSpectrum (𝓞 K)) : 0 ≤ defectWeight e v :=
+  mul_nonneg (by norm_num) (Real.rpow_nonneg (by positivity) _)
+
 /-- **The correction is close to `1`.** For `σ > 2/3` there is a norm `N₀` such that, whenever
 `S` contains every prime of norm `≤ N₀`, the correction with any phases of modulus `≤ 1` is
 holomorphic on `Re s > σ` and satisfies `‖H(s) − 1‖ ≤ 1/2` there. -/
@@ -261,47 +267,56 @@ theorem exists_principalCorrection_cutoff {σ : ℝ} (hσ : 2 / 3 < σ) :
       ∀ A η : HeightOneSpectrum (𝓞 K) → ℂ, (∀ v, ‖A v‖ ≤ 1) → (∀ v, ‖η v‖ ≤ 1) →
         DifferentiableOn ℂ (principalCorrection A η S) {s : ℂ | σ < s.re} ∧
           ∀ s : ℂ, σ < s.re → ‖principalCorrection A η S s - 1‖ ≤ 1 / 2 := by
-  set e := defectExponent σ with hedef
-  have he1 : 1 < e := one_lt_defectExponent hσ
-  have he6 : e ≤ 6 * σ - 3 := min_le_left _ _
-  have heσ : e ≤ 1 + σ := (min_le_right _ _).trans (min_le_left _ _)
-  have he2 : e ≤ 2 := (min_le_right _ _).trans (min_le_right _ _)
-  -- the defect bound and its tail
-  set B : HeightOneSpectrum (𝓞 K) → ℝ := fun v => 14 * primeNorm v ^ (-e) with hBdef
-  have hB : Summable B := (numberField_summable_finitePlace_absNorm_rpow (K := K) he1).mul_left 14
-  have hB0 : ∀ v, 0 ≤ B v := fun v => mul_nonneg (by norm_num) (Real.rpow_nonneg (by positivity) _)
-  obtain ⟨F, hF⟩ := ((tendsto_order.1 (tendsto_tsum_compl_atTop_zero B)).2 (1 / 6)
-    (by norm_num)).exists
+  have he1 : 1 < defectExponent σ := one_lt_defectExponent hσ
+  have he6 : defectExponent σ ≤ 6 * σ - 3 := min_le_left _ _
+  have heσ : defectExponent σ ≤ 1 + σ := (min_le_right _ _).trans (min_le_left _ _)
+  have he2 : defectExponent σ ≤ 2 := (min_le_right _ _).trans (min_le_right _ _)
+  have hB : Summable (defectWeight (K := K) (defectExponent σ)) :=
+    (numberField_summable_finitePlace_absNorm_rpow (K := K) he1).mul_left 14
+  -- primes outside a finite set `F` carry total defect `< 1/6`
+  obtain ⟨F, hF⟩ := ((tendsto_order.1 (tendsto_tsum_compl_atTop_zero
+    (defectWeight (K := K) (defectExponent σ)))).2 (1 / 6) (by norm_num)).exists
   refine ⟨max 4 (F.sup fun v => v.asIdeal.absNorm), le_max_left _ _, ?_⟩
   intro S hS A η hA hη
-  set T := {v : HeightOneSpectrum (𝓞 K) // v ∉ S}
-  have hbig : ∀ v : T, 4 ≤ primeNorm v.1 ∧ v.1 ∉ F := by
+  have hbig : ∀ v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S}, 4 ≤ primeNorm v.1 ∧ v.1 ∉ F := by
     intro v
-    have hv : ¬ v.1.asIdeal.absNorm ≤ max 4 (F.sup fun v => v.asIdeal.absNorm) :=
-      fun h => v.2 (hS v.1 h)
-    push_neg at hv
+    have hv : max 4 (F.sup fun v => v.asIdeal.absNorm) < v.1.asIdeal.absNorm :=
+      lt_of_not_ge fun h => v.2 (hS v.1 h)
     refine ⟨?_, fun hF' => ?_⟩
     · have : 4 < v.1.asIdeal.absNorm := (le_max_left _ _).trans_lt hv
       unfold primeNorm
       exact_mod_cast this.le
-    · exact absurd ((Finset.le_sup (f := fun v => v.asIdeal.absNorm) hF').trans (le_max_right _ _))
-        (not_le.mpr hv)
-  have hBT : Summable fun v : T => B v.1 := hB.subtype _
-  have hsmall : ∑' v : T, B v.1 ≤ 1 / 6 := by
-    let inc : T → {v // v ∉ F} := fun v => ⟨v.1, (hbig v).2⟩
-    have hi : Function.Injective inc := fun v w h => Subtype.ext (congrArg Subtype.val h)
-    exact (Summable.tsum_le_tsum_of_inj inc hi (fun _ _ => hB0 _) (fun _ => le_rfl) hBT
-      (hB.subtype _)).trans hF.le
-  have hhalf : ∀ v : T, B v.1 ≤ 1 / 2 := fun v => by
-    have := Summable.le_tsum hBT v fun w _ => hB0 w.1
+    · exact absurd ((Finset.le_sup (f := fun v => v.asIdeal.absNorm) hF').trans
+        (le_max_right _ _)) (not_le.mpr hv)
+  have hBT : Summable fun v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S} =>
+      defectWeight (defectExponent σ) v.1 := hB.comp_injective Subtype.val_injective
+  have hsmall : ∑' v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S},
+      defectWeight (defectExponent σ) v.1 ≤ 1 / 6 := by
+    have hi : Function.Injective fun v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S} =>
+        (⟨v.1, (hbig v).2⟩ : {v // v ∉ F}) := fun v w h =>
+      Subtype.ext (congrArg (fun x : {v // v ∉ F} => x.1) h)
+    have hBF : Summable fun v : {v : HeightOneSpectrum (𝓞 K) // v ∉ F} =>
+        defectWeight (defectExponent σ) v.1 := hB.comp_injective Subtype.val_injective
+    have h1 : ∑' v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S}, defectWeight (defectExponent σ) v.1 ≤
+        ∑' v : {v : HeightOneSpectrum (𝓞 K) // v ∉ F}, defectWeight (defectExponent σ) v.1 :=
+      Summable.tsum_le_tsum_of_inj (f := fun v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S} =>
+          defectWeight (defectExponent σ) v.1)
+        (g := fun v : {v : HeightOneSpectrum (𝓞 K) // v ∉ F} => defectWeight (defectExponent σ) v.1)
+        _ hi (fun _ _ => defectWeight_nonneg _ _) (fun _ => le_rfl) hBT hBF
+    exact h1.trans hF.le
+  have hhalf : ∀ v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S},
+      defectWeight (defectExponent σ) v.1 ≤ 1 / 2 := fun v => by
+    have := Summable.le_tsum hBT v fun w _ => defectWeight_nonneg _ w.1
     linarith
   have hU : IsOpen {s : ℂ | σ < s.re} := isOpen_lt continuous_const continuous_re
-  have hσ23 : ∀ s : ℂ, σ < s.re → 2 / 3 ≤ s.re := fun s hs => by linarith
-  obtain ⟨hdiff, hrep⟩ := hasProd_and_bounds_of_defect (f := fun (v : T) s =>
-      principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s) (b := fun v : T => B v.1) hU hBT
+  obtain ⟨hdiff, hrep⟩ := hasProd_and_bounds_of_defect
+    (f := fun (v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S}) s =>
+      principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)
+    (b := fun v => defectWeight (defectExponent σ) v.1) hU hBT
     (fun v s hs => by
-      obtain ⟨hD, hR⟩ := principalLocalFactor_denominators (hbig v).1 (hA v.1) (hη v.1)
-        (hσ23 s hs)
+      have hs' : σ < s.re := hs
+      obtain ⟨hD, hR⟩ := principalLocalFactor_denominators (s := s) (hbig v).1 (hA v.1) (hη v.1)
+        (by linarith)
       exact (differentiableAt_principalLocalFactor (by linarith [(hbig v).1]) _ _ hD hR)
         |>.differentiableWithinAt)
     (fun v s hs => norm_principalLocalFactor_sub_one_le (hbig v).1 (hA v.1) (hη v.1)
@@ -309,11 +324,14 @@ theorem exists_principalCorrection_cutoff {σ : ℝ} (hσ : 2 / 3 < σ) :
     hhalf
   refine ⟨hdiff, fun s hs => ?_⟩
   obtain ⟨hexp, hlog⟩ := hrep s hs
-  change ‖∏' v : T, principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s - 1‖ ≤ 1 / 2
-  rw [hexp]
-  have hz : ‖∑' v : T, Complex.log (principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)‖ ≤
-      1 / 4 := hlog.trans (by linarith)
-  calc _ ≤ 2 * ‖∑' v : T, Complex.log (principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)‖ :=
+  have hexp' : principalCorrection A η S s = cexp (∑' v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S},
+      Complex.log (principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)) := hexp
+  have hz : ‖∑' v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S},
+      Complex.log (principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)‖ ≤ 1 / 4 :=
+    hlog.trans (by linarith)
+  rw [hexp']
+  calc _ ≤ 2 * ‖∑' v : {v : HeightOneSpectrum (𝓞 K) // v ∉ S},
+        Complex.log (principalLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)‖ :=
         Complex.norm_exp_sub_one_le (hz.trans (by norm_num))
     _ ≤ 1 / 2 := by linarith
 
@@ -397,24 +415,27 @@ theorem exists_fullPrincipalCorrection_cutoff {σ : ℝ} (hσ : 2 / 3 < σ) :
         DifferentiableOn ℂ (fullPrincipalCorrection 𝔪 ψ A S) {s : ℂ | σ < s.re} ∧
           (∀ s : ℂ, σ < s.re → fullPrincipalCorrection 𝔪 ψ A S s ≠ 0) ∧
           ∀ s : ℂ, 2 ≤ s.re → ‖fullPrincipalCorrection 𝔪 ψ A S s‖ ≤ 3 / 2 * (4 / 3) ^ S.card := by
-  obtain ⟨N₀, hN₀, hcut⟩ := exists_principalCorrection_cutoff (K := K) hσ
+  have hσ' : 2 / 3 < min σ 1 := lt_min hσ (by norm_num)
+  obtain ⟨N₀, hN₀, hcut⟩ := exists_principalCorrection_cutoff (K := K) hσ'
   refine ⟨N₀, hN₀, fun S hS 𝔪 ψ A hA => ?_⟩
   obtain ⟨hdiff, hclose⟩ := hcut S hS A (fun v => heckeValue 𝔪 ψ v.asIdeal) hA
     (fun v => norm_heckeValue_le_one 𝔪 ψ _)
-  have hσ0 : 0 < σ := by linarith
+  have hlow : ∀ s : ℂ, σ < s.re → min σ 1 < s.re := fun s hs =>
+    lt_of_le_of_lt (min_le_left _ _) hs
   have hsub : {s : ℂ | σ < s.re} ⊆ {s : ℂ | 0 < s.re} := fun s hs => by
-    simp only [Set.mem_setOf_eq] at hs ⊢
+    have := hlow s hs
+    simp only [Set.mem_setOf_eq]
     linarith
-  refine ⟨hdiff.mul ((differentiableOn_deletedEulerFactors 𝔪 ψ S).mono hsub), fun s hs => ?_,
-    fun s hs => ?_⟩
+  refine ⟨(hdiff.mono fun s hs => hlow s hs).mul
+      ((differentiableOn_deletedEulerFactors 𝔪 ψ S).mono hsub), fun s hs => ?_, fun s hs => ?_⟩
   · have hH : principalCorrection A (fun v => heckeValue 𝔪 ψ v.asIdeal) S s ≠ 0 := by
       intro h0
-      have := hclose s hs
+      have := hclose s (hlow s hs)
       rw [h0, zero_sub, norm_neg, norm_one] at this
       linarith
     refine mul_ne_zero hH (Finset.prod_ne_zero_iff.mpr fun v _ => inv_ne_zero ?_)
-    exact deletedTerm_denominator_ne_zero 𝔪 ψ v (by linarith [show σ < s.re from hs])
-  · have hs' : σ < s.re := by linarith
+    exact deletedTerm_denominator_ne_zero 𝔪 ψ v (hsub hs)
+  · have hs' : min σ 1 < s.re := lt_of_le_of_lt (min_le_right _ _) (by linarith)
     have hH : ‖principalCorrection A (fun v => heckeValue 𝔪 ψ v.asIdeal) S s‖ ≤ 3 / 2 := by
       have h1 := hclose s hs'
       have h2 := norm_sub_norm_le (principalCorrection A (fun v => heckeValue 𝔪 ψ v.asIdeal) S s) 1
@@ -436,39 +457,34 @@ end NumberField
 
 /-! ### The endpoint with the corrections -/
 
-/-- **The native endpoint with the principal corrections.** Over `K = ℚ(ζ₃)`, let `σ₀ ∈ (2/3, 1)`,
-let `S` contain the primes of norm `≤ N₀` (`N₀` from `exists_fullPrincipalCorrection_cutoff`),
-and let `A_η` be phases of modulus `≤ 1`. If, whenever every `L(s, η)` is zero-free in `Re s > β`
-off `1`, each ray class character has a sum with a direct bound `Z^{a₁}` and a comparison
-`Z^{a₂}` with the signal of `exp((s − c)²) H_η(s)/L(s, η)`, `H_η` the full principal correction
-and `a₁, a₂ < β` common to all characters, then `zetaZeroAbscissa ≤ σ₀`. -/
-theorem zetaZeroAbscissa_le_of_two_estimates_principalCorrection {K : Type*} [Field K]
+/-- **The native endpoint with the principal corrections.** Over `K = ℚ(ζ₃)`, for
+`σ₀ ∈ (2/3, 1)` there is `N₀` with the following property. Let `S` contain the primes of norm
+`≤ N₀` and let `A_η` be phases of modulus `≤ 1`. If, whenever every `L(s, η)` is zero-free in
+`Re s > β` off `1`, each ray class character has a sum with a direct bound `Z^{a₁}` and a
+comparison `Z^{a₂}` with the signal of `exp((s − c)²) H_η(s)/L(s, η)`, `H_η` the full principal
+correction and `a₁, a₂ < β` common to all characters, then `zetaZeroAbscissa ≤ σ₀`. -/
+theorem exists_cutoff_zetaZeroAbscissa_le_of_two_estimates {K : Type*} [Field K]
     [NumberField K] [IsCyclotomicExtension {3} ℚ K] {σ₀ : ℝ} (hσ₀ : σ₀ < 1)
-    (hσ₀' : 2 / 3 < σ₀) (c : ℝ) {N₀ : ℕ}
-    (hN₀ : ∀ (S : Finset (HeightOneSpectrum (𝓞 K))),
+    (hσ₀' : 2 / 3 < σ₀) :
+    ∃ N₀ : ℕ, ∀ (S : Finset (HeightOneSpectrum (𝓞 K))),
       (∀ v : HeightOneSpectrum (𝓞 K), v.asIdeal.absNorm ≤ N₀ → v ∈ S) →
-      ∀ (𝔪 : Modulus K) (ψ : HeckeCharacter 𝔪) (A : HeightOneSpectrum (𝓞 K) → ℂ),
-        (∀ v, ‖A v‖ ≤ 1) →
-        DifferentiableOn ℂ (fullPrincipalCorrection 𝔪 ψ A S) {s : ℂ | σ₀ < s.re} ∧
-          (∀ s : ℂ, σ₀ < s.re → fullPrincipalCorrection 𝔪 ψ A S s ≠ 0) ∧
-          ∀ s : ℂ, 2 ≤ s.re → ‖fullPrincipalCorrection 𝔪 ψ A S s‖ ≤ 3 / 2 * (4 / 3) ^ S.card)
-    (S : Finset (HeightOneSpectrum (𝓞 K)))
-    (hS : ∀ v : HeightOneSpectrum (𝓞 K), v.asIdeal.absNorm ≤ N₀ → v ∈ S)
-    (A : (Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) → HeightOneSpectrum (𝓞 K) → ℂ)
-    (hA : ∀ η v, ‖A η v‖ ≤ 1)
-    (hstep : ∀ β : ℝ, σ₀ < β → β ≤ 1 →
-      (∀ (η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) (ρ : ℂ), β < ρ.re → ρ ≠ 1 →
-        heckeLFunction η.1 η.2 ρ ≠ 0) →
-      ∃ a₁ a₂ : ℝ, a₁ < β ∧ a₂ < β ∧
-        ∀ η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫,
-          ∃ (J : ℝ → ℂ) (C Z₀ : ℝ), 1 ≤ Z₀ ∧
-            (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ C * Z ^ a₁) ∧
-            (∀ Z : ℝ, Z₀ ≤ Z →
-              ‖J Z - signal (fun s : ℂ => cexp ((s - c) ^ 2) *
-                fullPrincipalCorrection η.1 η.2 (A η) S s / heckeLFunction η.1 η.2 s) 2 Z‖ ≤
-                  C * Z ^ a₂)) :
-    zetaZeroAbscissa ≤ σ₀ :=
-  zetaZeroAbscissa_le_of_two_reciprocal_estimates hσ₀ c
+      ∀ (c : ℝ) (A : (Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) → HeightOneSpectrum (𝓞 K) → ℂ),
+        (∀ η v, ‖A η v‖ ≤ 1) →
+        (∀ β : ℝ, σ₀ < β → β ≤ 1 →
+          (∀ (η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) (ρ : ℂ), β < ρ.re → ρ ≠ 1 →
+            heckeLFunction η.1 η.2 ρ ≠ 0) →
+          ∃ a₁ a₂ : ℝ, a₁ < β ∧ a₂ < β ∧
+            ∀ η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫,
+              ∃ (J : ℝ → ℂ) (C Z₀ : ℝ), 1 ≤ Z₀ ∧
+                (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ C * Z ^ a₁) ∧
+                (∀ Z : ℝ, Z₀ ≤ Z →
+                  ‖J Z - signal (fun s : ℂ => cexp ((s - c) ^ 2) *
+                    fullPrincipalCorrection η.1 η.2 (A η) S s / heckeLFunction η.1 η.2 s) 2 Z‖ ≤
+                      C * Z ^ a₂)) →
+        zetaZeroAbscissa ≤ σ₀ := by
+  obtain ⟨N₀, -, hN₀⟩ := exists_fullPrincipalCorrection_cutoff (K := K) hσ₀'
+  refine ⟨N₀, fun S hS c A hA hstep => ?_⟩
+  exact zetaZeroAbscissa_le_of_two_reciprocal_estimates hσ₀ c
     (fun η => fullPrincipalCorrection η.1 η.2 (A η) S)
     (fun η => (hN₀ S hS η.1 η.2 (A η) (hA η)).1)
     (fun η => (hN₀ S hS η.1 η.2 (A η) (hA η)).2.1)

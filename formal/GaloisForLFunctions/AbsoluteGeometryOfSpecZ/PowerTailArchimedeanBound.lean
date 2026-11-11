@@ -59,7 +59,7 @@ private theorem abs_counterterm_le {n N : ℕ} (hn : n ∈ Icc 1 N) :
     _ ≤ |Real.log n| + |Real.log (2 * Real.pi)| := abs_sub _ _
     _ = Real.log n + |Real.log (2 * Real.pi)| := by
       rw [abs_of_nonneg (Real.log_nonneg hnR)]
-    _ ≤ _ := add_le_add_right (Real.log_le_log hn0 hNn) _
+    _ ≤ _ := add_le_add (Real.log_le_log hn0 hNn) le_rfl
 
 /-- Absolute archimedean size before normalization, retaining the diagonal. -/
 theorem abs_powerTailArchimedean_le_squareMass (a : ℝ) (N : ℕ) :
@@ -148,15 +148,14 @@ theorem exists_powerTailArchimedean_bound {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 
   have hNp : (0 : ℝ) < N := by exact_mod_cast hN
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hNe : 1 ≤ (N : ℝ) ^ e := Real.one_le_rpow hN1 he.le
-  have hlog : Real.log N ≤ (N : ℝ) ^ e / e := Real.log_le_rpow_div hNp he
+  have hlog : Real.log N ≤ (N : ℝ) ^ e / e := Real.log_le_rpow_div hNp.le he
   have hharm := harm_le_rpow_div he he1 (2 * N)
   rw [Nat.cast_mul, Nat.cast_ofNat, Real.mul_rpow (by norm_num) hNp.le] at hharm
   have hconst : |Real.log (2 * Real.pi)| ≤ |Real.log (2 * Real.pi)| * (N : ℝ) ^ e :=
     le_mul_of_one_le_right (abs_nonneg _) hNe
   have hfactor : Real.log N + |Real.log (2 * Real.pi)| + harm (2 * N) ≤
       B * (N : ℝ) ^ e := by
-    dsimp only [B]
-    nlinarith only [hlog, hharm, hconst]
+    exact (add_le_add (add_le_add hlog hconst) hharm).trans_eq (by dsimp only [B]; ring)
   calc
     _ ≤ (Real.log N + |Real.log (2 * Real.pi)| + harm (2 * N)) *
         ∑ n ∈ Icc 1 N, powerTailWeight a n ^ 2 := abs_powerTailArchimedean_le_squareMass a N

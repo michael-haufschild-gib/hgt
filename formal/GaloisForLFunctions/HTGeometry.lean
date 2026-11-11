@@ -10346,6 +10346,7 @@ import GaloisForLFunctions.HTGeometry.RpowExpAsymptotics
 import GaloisForLFunctions.HTGeometry.RpowHarmonicTailAsymptotic
 import GaloisForLFunctions.HTGeometry.RpowKernelRemainder
 import GaloisForLFunctions.HTGeometry.RpowPartialSumBound
+import GaloisForLFunctions.HTGeometry.StrictNaturalPowerGrowth
 import GaloisForLFunctions.HTGeometry.RpowUnitStepQuotient
 import GaloisForLFunctions.HTGeometry.RungeDenseWitnesses
 import GaloisForLFunctions.HTGeometry.IntervalRiemannSum

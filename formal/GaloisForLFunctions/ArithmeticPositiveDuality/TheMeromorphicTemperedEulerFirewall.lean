@@ -997,8 +997,8 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
   rcases eq_or_ne n 0 with rfl | hn0
   · simp
   · simp only [LSeries.term_of_ne_zero hn0]
-    change _ = (if n.minFac ≤ P₀ then (Λ n : ℝ) else
-      Λ n * (1 - 2 * (n : ℝ) ^ (β - 1) * Real.cos (γ₀ * Real.log n)) : ℂ) / (n : ℂ) ^ s
+    change _ = ((if n.minFac ≤ P₀ then Λ n else
+      Λ n * (1 - 2 * (n : ℝ) ^ (β - 1) * Real.cos (γ₀ * Real.log n)) : ℝ) : ℂ) / (n : ℂ) ^ s
     split_ifs with hmin
     · ring
     · have hn_pos : 0 < n := Nat.pos_of_ne_zero hn0
@@ -1021,7 +1021,7 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
         _ = (Λ n : ℂ) * (1 - ((n : ℂ) ^ c₁ + (n : ℂ) ^ c₂)) / (n : ℂ) ^ s := by ring
         _ = ((Λ n * (1 - 2 * (n : ℝ) ^ (β - 1) * Real.cos (γ₀ * Real.log n)) : ℝ) : ℂ) /
               (n : ℂ) ^ s := by
-              rw [hsum_c]; push_cast; ring
+              simp only [hsum_c, ofReal_mul, ofReal_sub, ofReal_one]
 
 /-! ## 5. Meromorphicity, holomorphy, simple pole at `s = 1`, zero set, and vertical bounds -/
 
@@ -1732,13 +1732,5 @@ theorem asymptoticAbscissaLaw_or_exists_meromorphic_tempered_euler_oneOff :
       zeroSet_posTruncatedZeta_eq_pair hΘ_half hΘβ hβ1 hγ₀ hzf _,
       not_halfPlaneAbscissaLaw_posTruncatedZeta hΘ_half hΘβ hβ1 hγ₀ hzf _,
       exists_left_strip_pole_posTruncatedZeta hΘ_lt hΘβ hβ1 hγ₀ _⟩
-
-#print axioms asymptoticAbscissaLaw_of_zetaZeroAbscissa_eq_one
-#print axioms hasProd_and_LSeries_posTruncatedZeta
-#print axioms neg_logDeriv_posTruncatedZeta_eq_LSeries
-#print axioms exists_poly_bounds_posTruncatedZeta
-#print axioms exists_left_strip_pole_posTruncatedZeta
-#print axioms exists_left_strip_pole_above_of_riemannHypothesis
-#print axioms asymptoticAbscissaLaw_or_exists_meromorphic_tempered_euler_oneOff
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

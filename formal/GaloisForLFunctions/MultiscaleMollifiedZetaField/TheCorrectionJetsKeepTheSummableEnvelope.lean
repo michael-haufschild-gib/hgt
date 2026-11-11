@@ -44,11 +44,10 @@ theorem complexSelbergCorrectionWeight_ofReal (r u v : ℕ) (c : ℝ) :
 theorem differentiable_complexLocalizedSelbergAmplitude (r n : ℕ) :
     Differentiable ℂ (complexLocalizedSelbergAmplitude r n) := by
   classical
-  by_cases h : primeSupportedOn r n
-  · simpa only [complexLocalizedSelbergAmplitude, if_pos h] using
-      differentiable_complexShiftedSelbergAmplitude n
-  · simpa only [complexLocalizedSelbergAmplitude, if_neg h] using
-      (differentiable_const : Differentiable ℂ (fun _ : ℂ => (0 : ℂ)))
+  unfold complexLocalizedSelbergAmplitude
+  split_ifs
+  · exact differentiable_complexShiftedSelbergAmplitude n
+  · exact (differentiable_const (0 : ℂ) : Differentiable ℂ (fun _ : ℂ => (0 : ℂ)))
 
 theorem differentiable_complexSelbergCorrectionWeight (r u v : ℕ) :
     Differentiable ℂ (complexSelbergCorrectionWeight r u v) :=
@@ -77,9 +76,9 @@ theorem norm_complexSelbergCorrectionWeight_log_shift_le {N : ℕ} (hN : 1 < N)
   rw [norm_mul, norm_mul]
   have hscalar : ‖((moebius r : ℤ) : ℂ) / (r : ℂ) ^ 2‖ =
       |((moebius r : ℤ) : ℝ) / (r : ℝ) ^ 2| := by
-    rw [norm_div, norm_pow, Complex.norm_natCast, Complex.norm_intCast, abs_div,
-      abs_pow, abs_of_nonneg (Nat.cast_nonneg r)]
-    norm_cast
+    have he : ((((moebius r : ℤ) : ℝ) / (r : ℝ) ^ 2 : ℝ) : ℂ) =
+        ((moebius r : ℤ) : ℂ) / (r : ℂ) ^ 2 := by push_cast; rfl
+    rw [← he, Complex.norm_real, Real.norm_eq_abs]
   rw [hscalar]
   calc
     _ ≤ |((moebius r : ℤ) : ℝ) / (r : ℝ) ^ 2| *
@@ -110,9 +109,9 @@ theorem norm_normalizedCorrectionJet_le {N : ℕ} (hN : 1 < N)
       ‖complexSelbergCorrectionWeight r u v (z / (Real.log N : ℂ))‖ ≤
         Real.exp (4 * (‖C‖ + 1)) * |selbergCorrectionWeight r u v| := by
     intro z hz
-    have hz1 : ‖z - C‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
-    have hzn : ‖z‖ ≤ ‖C‖ + 1 := by
-      have hh := norm_add_le (z - C) C
+    have hz1 : ‖z - C N‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
+    have hzn : ‖z‖ ≤ R + 1 := by
+      have hh := norm_add_le (z - C N) (C N)
       rw [sub_add_cancel, hz1] at hh
       linarith only [hh]
     refine (norm_complexSelbergCorrectionWeight_log_shift_le hN z r hu hv).trans ?_
@@ -130,13 +129,15 @@ private theorem iteratedDeriv_succ_sub_constant (f : ℂ → ℂ) (a : ℂ) (j :
       simp only [Nat.zero_add, iteratedDeriv_one]
       funext z
       exact deriv_sub_const a
-  | succ j ih => rw [iteratedDeriv_succ, iteratedDeriv_succ, ih]
+  | succ j ih =>
+      simpa only [iteratedDeriv_succ] using congrArg (fun g : ℂ → ℂ => deriv g) ih
 
 /-- Every positive-order jet of an entire function under reciprocal-logarithmic dilation vanishes. -/
-theorem tendsto_entire_normalized_jet_succ {f : ℂ → ℂ} (hf : Differentiable ℂ f)
-    (C : ℂ) (j : ℕ) :
+theorem tendsto_entire_normalized_jet_succ_of_bounded_centres {f : ℂ → ℂ}
+    (hf : Differentiable ℂ f) {C : ℕ → ℂ} {R : ℝ}
+    (hR : ∀ᶠ N : ℕ in atTop, ‖C N‖ ≤ R) (j : ℕ) :
     Tendsto (fun N : ℕ => iteratedDeriv (j + 1)
-      (fun z => f (z / (Real.log N : ℂ))) C) atTop (𝓝 0) := by
+      (fun z => f (z / (Real.log N : ℂ))) (C N)) atTop (𝓝 0) := by
   apply Metric.tendsto_nhds.2
   intro ε hε
   let η : ℝ := ε / (2 * ((j + 1).factorial : ℝ))
@@ -145,17 +146,17 @@ theorem tendsto_entire_normalized_jet_succ {f : ℂ → ℂ} (hf : Differentiabl
   obtain ⟨δ, hδ, hclose⟩ := Metric.continuousAt_iff.mp (hf 0).continuousAt η hη
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  filter_upwards [eventually_ge_atTop 2, hlog.eventually_gt_atTop ((‖C‖ + 1) / δ)] with N hN hlarge
+  filter_upwards [eventually_ge_atTop 2, hlog.eventually_gt_atTop ((R + 1) / δ), hR] with N hN hlarge hCN
   have hl : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast hN)
   have hd : Differentiable ℂ (fun z => f (z / (Real.log N : ℂ)) - f 0) :=
     (hf.comp (differentiable_id.div_const _)).sub_const _
-  have hb : ∀ z ∈ sphere C 1, ‖f (z / (Real.log N : ℂ)) - f 0‖ ≤ η := by
+  have hb : ∀ z ∈ sphere (C N) 1, ‖f (z / (Real.log N : ℂ)) - f 0‖ ≤ η := by
     intro z hz
     have hz1 : ‖z - C‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
     have hzn : ‖z‖ ≤ ‖C‖ + 1 := by
       have hh := norm_add_le (z - C) C
       rw [sub_add_cancel, hz1] at hh
-      linarith only [hh]
+      linarith only [hh, hCN]
     have hsmall : dist (z / (Real.log N : ℂ)) 0 < δ := by
       rw [dist_zero_right, norm_div, Complex.norm_real, Real.norm_of_nonneg hl.le]
       refine (div_le_div_of_nonneg_right hzn hl.le).trans_lt ?_
@@ -175,6 +176,14 @@ theorem tendsto_entire_normalized_jet_succ {f : ℂ → ℂ} (hf : Differentiabl
   rw [he]
   exact half_lt_self hε
 
+/-- Fixed-centre form of reciprocal-logarithmic jet decay. -/
+theorem tendsto_entire_normalized_jet_succ {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (C : ℂ) (j : ℕ) :
+    Tendsto (fun N : ℕ => iteratedDeriv (j + 1)
+      (fun z => f (z / (Real.log N : ℂ))) C) atTop (𝓝 0) :=
+  tendsto_entire_normalized_jet_succ_of_bounded_centres hf
+    (Eventually.of_forall (fun _ => le_refl ‖C‖)) j
+
 /-- Retained normalized correction jet, before the fibres are pushed forward. -/
 def cutoffNormalizedCorrectionJet (C : ℂ) (j N : ℕ) (x : ℕ × (ℕ × ℕ)) : ℂ :=
   if x.1 * x.2.1 ≤ N ∧ x.1 * x.2.2 ≤ N then
@@ -182,26 +191,27 @@ def cutoffNormalizedCorrectionJet (C : ℂ) (j N : ℕ) (x : ℕ × (ℕ × ℕ)
       (z / (Real.log N : ℂ))) C else 0
 
 /-- Every positive-order normalized correction jet has vanishing total fibre mass. -/
-theorem tendsto_tsum_cutoffNormalizedCorrectionJet_succ (C : ℂ) (j : ℕ) :
-    Tendsto (fun N : ℕ => ∑' x : ℕ × (ℕ × ℕ), cutoffNormalizedCorrectionJet C (j + 1) N x)
+theorem tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres
+    {C : ℕ → ℂ} {R : ℝ} (hR : ∀ᶠ N : ℕ in atTop, ‖C N‖ ≤ R) (j : ℕ) :
+    Tendsto (fun N : ℕ => ∑' x : ℕ × (ℕ × ℕ), cutoffNormalizedCorrectionJet (C N) (j + 1) N x)
       atTop (𝓝 0) := by
-  let B : ℝ := ((j + 1).factorial : ℝ) * Real.exp (4 * (‖C‖ + 1))
+  let B : ℝ := ((j + 1).factorial : ℝ) * Real.exp (4 * (R + 1))
   have hB : 0 ≤ B := by dsimp only [B]; positivity
   have hs : Summable (fun x : ℕ × (ℕ × ℕ) => B * |selbergCorrectionWeight x.1 x.2.1 x.2.2|) := by
     simpa only [Real.norm_eq_abs] using summable_selbergCorrectionWeight.norm.mul_left B
   have hp (x : ℕ × (ℕ × ℕ)) :
-      Tendsto (fun N : ℕ => cutoffNormalizedCorrectionJet C (j + 1) N x) atTop (𝓝 0) := by
-    have hh := tendsto_entire_normalized_jet_succ
-      (differentiable_complexSelbergCorrectionWeight x.1 x.2.1 x.2.2) C j
+      Tendsto (fun N : ℕ => cutoffNormalizedCorrectionJet (C N) (j + 1) N x) atTop (𝓝 0) := by
+    have hh := tendsto_entire_normalized_jet_succ_of_bounded_centres
+      (differentiable_complexSelbergCorrectionWeight x.1 x.2.1 x.2.2) hR j
     refine hh.congr' ?_
     filter_upwards [eventually_ge_atTop (max (x.1 * x.2.1) (x.1 * x.2.2))] with N hN
     have hx : x.1 * x.2.1 ≤ N ∧ x.1 * x.2.2 ≤ N :=
       ⟨(le_max_left _ _).trans hN, (le_max_right _ _).trans hN⟩
     simp only [cutoffNormalizedCorrectionJet, if_pos hx]
   have hb : ∀ᶠ N : ℕ in atTop, ∀ x : ℕ × (ℕ × ℕ),
-      ‖cutoffNormalizedCorrectionJet C (j + 1) N x‖ ≤
+      ‖cutoffNormalizedCorrectionJet (C N) (j + 1) N x‖ ≤
         B * |selbergCorrectionWeight x.1 x.2.1 x.2.2| := by
-    filter_upwards [eventually_ge_atTop 2] with N hN
+    filter_upwards [eventually_ge_atTop 2, hR] with N hN hCN
     rintro ⟨r, u, v⟩
     by_cases hr : r = 0
     · simp [cutoffNormalizedCorrectionJet, hr, complexSelbergCorrectionWeight,
@@ -217,10 +227,21 @@ theorem tendsto_tsum_cutoffNormalizedCorrectionJet_succ (C : ℂ) (j : ℕ) :
         _ ≤ r * v := Nat.mul_le_mul_right v hr1
         _ ≤ N := hx.2
       simp only [cutoffNormalizedCorrectionJet, if_pos hx]
-      exact norm_normalizedCorrectionJet_le (by omega) C (j + 1) r hu hv
+      refine (norm_normalizedCorrectionJet_le (by omega) (C N) (j + 1) r hu hv).trans ?_
+      apply mul_le_mul_of_nonneg_right _ (abs_nonneg _)
+      apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+      apply Real.exp_le_exp.mpr
+      linarith only [hCN]
     · simp only [cutoffNormalizedCorrectionJet, if_neg hx, norm_zero]
       exact mul_nonneg hB (abs_nonneg _)
   have hh := tendsto_tsum_of_dominated_convergence hs hp hb
   simpa only [tsum_zero] using hh
+
+/-- Fixed-centre form of the vanishing total positive-order correction jets. -/
+theorem tendsto_tsum_cutoffNormalizedCorrectionJet_succ (C : ℂ) (j : ℕ) :
+    Tendsto (fun N : ℕ => ∑' x : ℕ × (ℕ × ℕ), cutoffNormalizedCorrectionJet C (j + 1) N x)
+      atTop (𝓝 0) :=
+  tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres
+    (Eventually.of_forall (fun _ => le_refl ‖C‖)) j
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

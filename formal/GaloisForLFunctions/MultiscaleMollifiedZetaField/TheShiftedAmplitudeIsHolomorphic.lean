@@ -107,6 +107,7 @@ theorem complexShiftedSelbergAmplitude_ofReal (n : ℕ) (c : ℝ) :
     ring
   rw [show (c : ℂ) * (Real.log p : ℂ) = ((c * Real.log p : ℝ) : ℂ) by push_cast; rfl,
     ← Complex.ofReal_exp]
+  change _ = (((1 - (p : ℝ) ^ (1 + c)) / (p : ℝ) ^ (k + 1) : ℝ) : ℂ)
   exact_mod_cast congrArg (fun a : ℝ => (1 - a) / (p : ℝ) ^ (k + 1)) hexp
 
 /-- The amplitude is entire, including its zero-index convention. -/

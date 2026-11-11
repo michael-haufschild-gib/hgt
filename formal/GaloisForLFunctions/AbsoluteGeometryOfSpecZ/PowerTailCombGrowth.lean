@@ -1,6 +1,7 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailContactGrowthDetectsZeros
 import GaloisForLFunctions.HTGeometry.StrictNaturalPowerGrowth
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnNestedWindowsTheCombFormTendsToWeilsFormOfTheStepPacket
 
 /-!
 # Power growth of the literal power comb
@@ -20,6 +21,24 @@ open HTGeometry HodgeTheoryOfAFixedPart
 /-- Strict growth threshold of the normalized finite power comb. -/
 def PowerCombTailGrowth (a σ : ℝ) : Prop :=
   HTGeometry.StrictNaturalPowerGrowth (powerCombTail a) σ
+
+/-- The normalization is the form of the literal coefficients `(N/n)^a`, divided by `N`. -/
+theorem powerCombTail_eq_literal (a : ℝ) {N : ℕ} (hN : 1 ≤ N) :
+    powerCombTail a N = HodgeTheoryOfAFixedPart.combForm (Icc 1 N)
+      (fun n => ((N : ℝ) / n) ^ a) / N := by
+  have hNp : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw : (fun n : ℕ => ((N : ℝ) / n) ^ a) =
+      fun n => (N : ℝ) ^ a * powerTailWeight a n := by
+    funext n
+    rw [powerTailWeight, Real.div_rpow hNp.le (Nat.cast_nonneg n),
+      Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
+  rw [hw, ← HodgeTheoryOfAFixedPart.formBilin_self,
+    formBilin_const_mul_left, formBilin_const_mul_right,
+    HodgeTheoryOfAFixedPart.formBilin_self]
+  unfold powerCombTail
+  rw [Real.rpow_sub hNp, Real.rpow_one,
+    show 2 * a = a + a by ring, Real.rpow_add hNp]
+  ring
 
 private theorem partialSumPowerBound_iff_strictGrowth (f : ℕ → ℝ) {θ : ℝ} (hθ : 0 ≤ θ) :
     RHTower.PartialSumPowerBound f θ ↔
@@ -165,5 +184,29 @@ theorem powerCombTailGrowth_iff_zeroHalfPlane {a σ : ℝ}
   rw [powerCombTailGrowth_iff_unscaledGrowth,
     strictGrowth_combForm_iff_centeredContact ha ha2 hσ]
   exact strictGrowth_centeredContact_iff_zeroHalfPlane ha ha2 hσ
+
+/-- RH is equivalent to subpolynomial growth of every positive subcritical
+power tail of the actual comb. -/
+theorem riemannHypothesis_iff_all_powerCombTails_subpolynomial :
+    RiemannHypothesis ↔ ∀ a : ℝ, 0 < a → a < 1 / 2 → PowerCombTailGrowth a 0 := by
+  rw [RHTower.riemannHypothesis_iff_xiZeroHalfPlaneBound_zero]
+  constructor
+  · intro h a ha ha2
+    apply (powerCombTailGrowth_iff_zeroHalfPlane ha ha2 le_rfl).mpr
+    intro ρ hρ
+    have hh := h ρ hρ
+    linarith only [hh, ha2]
+  · intro h ρ hρ
+    by_contra hbad
+    have hρhalf : 1 / 2 < ρ.re := by simpa only [add_zero, not_le] using hbad
+    let ε := min ((ρ.re - 1 / 2) / 2) (1 / 4)
+    have hε : 0 < ε := lt_min (by linarith only [hρhalf]) (by norm_num)
+    have hεsmall : ε ≤ 1 / 4 := min_le_right _ _
+    have hεgap : ε ≤ (ρ.re - 1 / 2) / 2 := min_le_left _ _
+    have ha : 0 < 1 / 2 - ε := by linarith only [hεsmall]
+    have ha2 : 1 / 2 - ε < 1 / 2 := by linarith only [hε]
+    have hb := (powerCombTailGrowth_iff_zeroHalfPlane ha ha2 le_rfl).mp
+      (h (1 / 2 - ε) ha ha2) ρ hρ
+    linarith only [hb, hεgap, hρhalf]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

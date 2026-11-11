@@ -23,7 +23,7 @@ theorem StrictNaturalPowerGrowth.mono {u : ℕ → ℝ} {θ η : ℝ}
   obtain ⟨C, hC, h⟩ := hu δ hδ
   refine ⟨C, hC, fun N hN => (h N hN).trans ?_⟩
   exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le
-    (by exact_mod_cast hN) (add_le_add_right hθη δ)) hC
+    (by exact_mod_cast hN) (add_le_add hθη le_rfl)) hC
 
 theorem StrictNaturalPowerGrowth.add {u v : ℕ → ℝ} {θ : ℝ}
     (hu : StrictNaturalPowerGrowth u θ) (hv : StrictNaturalPowerGrowth v θ) :
@@ -80,6 +80,7 @@ theorem strictNaturalPowerGrowth_rpow_mul_iff (u : ℕ → ℝ) (θ b : ℝ) :
     refine ⟨C, hC, fun N hN => ?_⟩
     have hNp : (0 : ℝ) < N := by exact_mod_cast hN
     have hn := hCbound N hN
+    dsimp only at hn
     rw [← mul_assoc, ← Real.rpow_add hNp, neg_add_cancel,
       Real.rpow_zero, one_mul] at hn
     simpa only [add_neg_cancel_right] using hn

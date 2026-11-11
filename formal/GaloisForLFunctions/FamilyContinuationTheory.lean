@@ -25,6 +25,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheEisensteinLatticeSumIsZet
 import GaloisForLFunctions.FamilyContinuationTheory.TheSevenEighthsGeometryIsAVertex
 import GaloisForLFunctions.FamilyContinuationTheory.TheExponentPlaneOfTheLowSide
 import GaloisForLFunctions.FamilyContinuationTheory.TheReturnTransferIsTheRiemannHypothesisUnderAStrip
+import GaloisForLFunctions.FamilyContinuationTheory.TheFamilyStepReadsTheZerosOfTheLFunctions
+import GaloisForLFunctions.FamilyContinuationTheory.TheCorrectionOfThePrincipalRowIsAConvergentEulerProduct
 
 /-!
 # Family continuation theory
@@ -40,19 +42,24 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   kernels `exp((s − c)²)/L(s, ψ)`; their signal is the smoothed Möbius sum
   `Σ_S (−1)^{|S|} ψ(∏ S) w(Z/N(∏ S))` over the finite sets of primes, with the log-normal weight
   `w(y) = (2√π)⁻¹ y^c exp(−(log y)²/4)`, and a bound `O(Z^b)` for it excludes the zeros of
-  `L(s, ψ)` in `Re s > b`. With the pole-cleared functions
-  `(s − 1) L(s, ψ)` the family step covers every ray class character, the trivial ones
-  included, and produces `HeckeHalfPlane K σ₀`. Over `ℚ` the trivial character of the unit
+  `L(s, ψ)` in `Re s > b`. The pole-cleared function `(s − 1) L(s, ψ)` vanishes at `1` for a
+  nontrivial character, so the family steps stated with it have an unsatisfiable premise as soon
+  as `K` has a nontrivial ray class character. The step that reads only the zeros of `L(s, ψ)`
+  off `1`, with the kernels `exp((s − c)²) H(s)/L(s, ψ)` of the source, covers every ray class
+  character and produces `HeckeHalfPlane K σ₀`. Over `ℚ` the trivial character of the unit
   modulus is `ζ`: `HeckeHalfPlane ℚ σ₀` puts the zeros of `ξ` in `Re ρ ≤ σ₀`. A comparison with
   an auxiliary height `Z^τ`, with losses `(1 + Z^τ)^A` and `Z^B (Z^τ)^{−N}` for every small `τ`
   and every `N`, keeps half of its saving, whatever the orders `A`, `B`; the family step holds
   with comparisons of this form. Among the largest real parts of the zeros of a row in `I`
   nested height windows, two consecutive ones differ by at most `e` when `(I − 1) e` exceeds the
   width of the strip; rounding to a grid gives the bin of the row with its buffer.
-  The family step also holds with signals `exp((s − c)²) H(s)/((s − 1) L(s, ψ))`, `H` holomorphic
-  and nonvanishing right of the boundary and bounded on `Re s ≥ 2`: the local factors that an
-  identity leaves over.
-  For the third cyclotomic field the two estimates for every ray class character give
+  The family step holds with signals `exp((s − c)²) H(s)/L(s, ψ)`, `H` holomorphic and
+  nonvanishing right of the boundary and bounded on `Re s ≥ 2`: the local factors that an identity
+  leaves over. The correction of the principal row of the cubic-theta probe is such an `H`: its
+  local factor at the double residue is `(1 − q²)(1 − q(R − D)/(1 − D))/(1 − R)`, its defect is
+  `O(N(P)^{−min(6σ−3, 1+σ, 2)})`, so the Euler product converges on `Re s > 2/3`, and after
+  deleting the primes of small norm it lies within `1/2` of `1`. For the third cyclotomic field
+  the two estimates for every ray class character, with this correction, give
   `zetaZeroAbscissa ≤ σ₀`: the half-plane route as one implication.
 * **The signal of `ζ`.** The kernel `exp((s − c)²)/((s − 1)ζ(s))` is a signal kernel; a bound
   `O(Z^b)`, `b < 1`, for its signal gives the half-plane `Re s > b` and positivity of the dressed

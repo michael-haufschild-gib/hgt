@@ -372,14 +372,29 @@ decomposition (`three_cusp_decomposition`, checked).
 Every Eisenstein rational cusp has an entire derivative Mellin transform, with
 exact reflected cusp weight (`conjugateSource_rational_cusp_mellin_entire`,
 `SourceCuspDatum.mellin_reflection`, checked).
+Finite residue-class twists inherit entire Mellin transforms. Their normalized
+squarefree–cube Gauss–Bessel series is the actual horizontal source derivative
+(`thetaDerivativeBesselProfile_mellin_entire`,
+`traceTwistedBarProfile_mellin_reflection`, checked).
 Every nonzero source coefficient has unit–ramified–squarefree–cube support;
 removing the squarefree part preserves its norm, while the cube contributes
 its absolute value (`rationalSourceResidualFourierCoefficient_full_squarefree_cube_support`,
 `rationalSourceResidualFourierCoefficient_full_squarefree_cube_norm`, checked).
-Unramified Gauss residues depend on the ramified exponent modulo three, giving
-a finite norm bound for each unit–ramified family. Transferring primary-cube
-invariance from the projected source to these residues still requires inversion
-of the finite ramified transform.
+Unramified Gauss residues depend on the ramified exponent modulo three.
+Pairing opposite units bounds the low ramified transform's remainder by
+`2671/900 < 3`; its leading coefficient is `3`. The resulting nine-class
+maximum argument makes the transform injective and transfers primary-prime-cube
+invariance from the projected source to every unramified Gauss residue
+(`lowRamifiedTransform_injective`, `unramifiedGaussResidue_prime_cube`, checked).
+The unramified prime-power table is explicit; normalized squarefree factors
+preserve coefficient norm and primary cubes contribute their absolute value
+(`unramifiedGaussResidue_prime_power_table`,
+`unramifiedResidualCoefficient_squarefree_cube_norm`, checked).
+Finite geometric bounds control the source arithmetic residue by its finite
+unit–ramified Gauss family. Both normalized coefficient families satisfy
+`C |uλᵐ|^(1/3)` on ramified frequencies
+(`rationalSourceResidualFourierCoefficient_ramified_bound`,
+`unramifiedResidualCoefficient_ramified_bound`, checked).
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

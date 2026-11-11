@@ -44,9 +44,12 @@ at the same normalization.
   literal contacts, counterterm and pole degrees.
 
 The finite contact reduction is formalized in
-`PowerTailContactDirichletCoefficients.combForm_powerTailWeight_eq`.
-Analytic growth and convergence remain open; a growth-only intermediate
-result does not finish the target.
+`AbsoluteGeometryOfSpecZ.combForm_powerTailWeight_eq`.
+`partialSumPowerBound_centeredContact_iff_zeroHalfPlane` classifies the
+centered contact exponent `1-2a+σ` by `Re ρ≤1-a+σ`.
+Reference and archimedean bounds are formalized; the literal-comb growth
+theorem awaits compilation. Convergence and its Mellin limit remain open;
+a growth-only intermediate result does not finish the target.
 
 ## Arithmetic reduction
 

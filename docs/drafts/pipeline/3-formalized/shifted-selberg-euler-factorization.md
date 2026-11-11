@@ -48,3 +48,16 @@ Namespace `GaloisForLFunctions.MultiscaleMollifiedZetaField`:
 
 Direct Lean checks passed; umbrella imports added. Shifted harmonic limits
 and frozen-coefficient displacement derivatives remain separate obligations.
+
+## Normalized correction derivatives
+
+`TheShiftedAmplitudeIsHolomorphic` extends the amplitude to an entire
+function and proves the same complex absolute majorant.
+`TheCorrectionJetsKeepTheSummableEnvelope.norm_normalizedCorrectionJet_le`
+bounds its normalized fibre jet of order `j` at `C` by
+`j! exp(4(|C|+1))|W_0|`.
+
+Every positive-order normalized jet tends to zero on each fixed fibre.
+Dominated convergence gives
+`tendsto_tsum_cutoffNormalizedCorrectionJet_succ`: the corresponding
+retained fibre sum tends to zero at every order. Direct Lean checks passed.

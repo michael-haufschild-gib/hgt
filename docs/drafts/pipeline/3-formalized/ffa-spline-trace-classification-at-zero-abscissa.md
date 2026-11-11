@@ -7,7 +7,7 @@
 - **Lean Module:** `GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa`
 - **Lean Declarations:**
   - `GaloisForLFunctions.FloorFreeArithmetic.IsRealTrigPoly`
-  - `GaloisForLFunctions.FloorFreeArithmetic.tendsto_normTrace_sub_trigPoly_iff`
+  - `GaloisForLFunctions.FloorFreeArithmetic.tendsto_normTrace_sub_trigPoly_iff_finite_activeTop`
   - `GaloisForLFunctions.FloorFreeArithmetic.tendsto_normTrace_sub_nonzero_trigPoly_iff`
   - `GaloisForLFunctions.FloorFreeArithmetic.zetaNormTrace_quadrichotomy`
   - `GaloisForLFunctions.FloorFreeArithmetic.zeta_offLine_tendsto_zero_iff`
