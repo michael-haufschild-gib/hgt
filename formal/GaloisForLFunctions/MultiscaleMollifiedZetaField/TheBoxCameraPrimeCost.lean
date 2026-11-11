@@ -17,9 +17,9 @@ open RHTower Zeta23
 namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 
 theorem eventually_integral_boxCameraPoly_sq_le
-    {A h r c : ℝ} (hA : 0 ≤ A) (hh : 0 < h) (hr : 0 < r)
-    (hc0 : 0 < c) (hc : c < 1 / 3) :
-    ∀ᶠ T : ℝ in atTop, ∀ (n : ℕ) (b y : ℝ),
+    {A h r c₀ : ℝ} (hA : 0 ≤ A) (hh : 0 < h) (hr : 0 < r)
+    (hc₀ : 0 < c₀) :
+    ∀ᶠ T : ℝ in atTop, ∀ (n : ℕ) (b y c : ℝ), c₀ ≤ c → c < 1 / 3 →
       boxCameraRadius A h n r = c * Real.log T → 0 ≤ b →
       boxCameraRadius A h n r ≤ y →
       y + boxCameraRadius A h n r ≤ (1 - c) * Real.log T →
@@ -29,14 +29,19 @@ theorem eventually_integral_boxCameraPoly_sq_le
   obtain ⟨CΛ, hCΛ⟩ := exists_sum_vonMangoldt_sq_div_le
   filter_upwards [eventually_ge_atTop 3,
     Real.tendsto_log_atTop.eventually_ge_atTop 2,
-    Real.tendsto_log_atTop.eventually_ge_atTop (64 / c ^ 2),
+    Real.tendsto_log_atTop.eventually_ge_atTop (64 / c₀ ^ 2),
     Real.tendsto_log_atTop.eventually_ge_atTop (1 + |CΛ|)]
-    with T hT hL hLd hLC n b y heq hb hy hyT
+    with T hT hL hLd hLC n b y c hcmin hc heq hb hy hyT
+  have hc0 : 0 < c := hc₀.trans_le hcmin
+  have hLc : 64 / c ^ 2 ≤ Real.log T := by
+    apply le_trans _ hLd
+    exact div_le_div_of_nonneg_left (by norm_num) (sq_pos_of_pos hc₀)
+      (pow_le_pow_left₀ hc₀.le hcmin 2)
   have hδ := boxCameraRadius_pos hA hh hr n
   have hy0 : 0 ≤ y + c * Real.log T := by rw [← heq]; linarith only [hδ, hy]
   have hbnd := integral_depthCenteredCameraPoly_sq_le
     (abs_boxTuranProfile_le hA hh hr n) (boxTuranProfile_support hA hh hr n)
-    hb hCΛ hc0 hc hT hL hLd hLC hy0 (by rwa [← heq])
+    hb hCΛ hc0 hc hT hL hLc hLC hy0 (by rwa [← heq])
   have hcoef : 8 * (boxCameraRadius A h n r) ^ 2 / c ^ 2 * T =
       8 * Real.log T ^ 2 * T := by
     rw [heq]

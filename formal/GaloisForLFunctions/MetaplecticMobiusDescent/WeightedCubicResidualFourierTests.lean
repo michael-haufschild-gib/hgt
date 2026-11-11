@@ -57648,9 +57648,14 @@ lemma secondNormalizedGaussTerm_zero_of_ne (S T : Finset ι) (hne : S ≠ T) (e 
 
 lemma secondNormalizedGaussTerm_empty (e k : O) :
     secondNormalizedGaussTerm p hp hg ∅ ∅ e k = 1 := by
-  letI : IsEmpty ↥(((∅ : Finset ι) \ ∅) ∪ (∅ \ ∅)) := ⟨fun i => by simpa using i.property⟩
+  letI : IsEmpty ↥(((∅ : Finset ι) \ ∅) ∪ (∅ \ ∅)) := ⟨fun i => by
+    rcases Finset.mem_union.mp i.property with hi | hi
+    · exact Finset.notMem_empty i.val (Finset.mem_sdiff.mp hi).1
+    · exact Finset.notMem_empty i.val (Finset.mem_sdiff.mp hi).1⟩
   simp only [secondNormalizedGaussTerm, primeRowTraceGauss_empty, primeCuspRowCharacter,
     Fintype.prod_empty, Finset.prod_empty, map_one, norm_one, Complex.ofReal_one, one_mul, div_one]
+  change (1 : ℂ) * 1 = 1
+  exact mul_one 1
 
 theorem secondGaussTerm_empty (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
     (H₁ H₂ : Finset ι → ℂ) :
@@ -57875,6 +57880,7 @@ theorem fixedSecondTest_normPhase (V : ℝ → ℂ) (X a b : ℝ) (hX : 0<X)
 variable [∀i,(Ideal.span {p i}).IsMaximal]
   (hg : ∀i,lambda∉Ideal.span {p i})
 
+include hp in
 theorem fixedChildRow_secondTest_normPhase (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : O →* ℂ) (m f y : O)
     (V : ℝ → ℂ) (X a b : ℝ) (hX : 0<X) (negative : Bool) :
     fixedChildRow p hg pool Ψ m (weightedSecondTest p H V X a b negative) f y=
@@ -57900,6 +57906,7 @@ variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀i,p i≠0)
   [∀i,(Ideal.span {p i}).IsMaximal]
   (hg : ∀i,lambda∉Ideal.span {p i})
 
+include hp in
 theorem childEnergy_normHeight (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : O →* ℂ) (m : O)
     (T : Finset (Ideal O × O)) (V : ℝ → ℂ) (X a b : ℝ) (hX : 0<X)
     (testNegative rowNegative : Bool) :
@@ -57910,6 +57917,7 @@ theorem childEnergy_normHeight (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : 
   simp_rw [fixedChildRow_secondTest_normPhase p hp hg H pool Ψ m _ _ V X a b hX testNegative,
     norm_mul,kernelLogPhase_norm,one_mul]
 
+include hp in
 theorem childEnergy_previousNormHeight (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : O →* ℂ) (m : O)
     (T : Finset (Ideal O × O)) (V : ℝ → ℂ) (X t a b : ℝ) (hX : 0<X)
     (testNegative rowNegative : Bool) :
@@ -57939,6 +57947,7 @@ variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀i,p i≠0)
   (hg : ∀i,lambda∉Ideal.span {p i})
   (H₁ H₂ : Finset ι → ℂ)
 
+include hp in
 theorem densityChildEnergy_normHeight_polynomial
     (pool : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
     (V₁ V₂ : ℝ → ℂ) (X₁ X₂ t₁ t₂ B₁ B₂ : ℝ) (J : ℕ)
@@ -58445,5 +58454,1421 @@ theorem actualSecondLabel_span
   ring
 
 end SecondPassArithmetic
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein
+open scoped Classical
+
+/-- Primes where the two cube columns leave a nontrivial conductor. -/
+def cubeActiveSupport {ι : Type*} (B : Finset ι) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) : Finset ι :=
+  B.filter (fun i => conductorExponent (parity (v i)) (ε₁ i) (ε₂ i) ≠ 0)
+
+end FirstPassCubeLabels
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson FirstPassCubeLabels
+open scoped Classical
+
+lemma element_norm_ge_one (a : O) (ha : a ≠ 0) : 1 ≤ ‖ringComplex a‖ ^ 2 := by
+  rw [ringComplex_norm_sq_eq_absNorm_span]
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (show Ideal.absNorm (Ideal.span {a}) ≠ 0 by
+    rw [ne_eq, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
+    exact ha)
+
+theorem primeProductNorm_eq_ideal_norm {ι : Type*} (p : ι → O) (S : Finset ι) :
+    primeProductNorm p S = (Ideal.absNorm (∏ i ∈ S, Ideal.span {p i}) : ℝ) := by
+  rw [primeProductNorm, ringComplex_norm_sq_eq_absNorm_span, span_finset_prime_product]
+
+theorem primeProductNorm_ge_one {ι : Type*} (p : ι → O) (hp : ∀ i, p i ≠ 0) (S : Finset ι) :
+    1 ≤ primeProductNorm p S :=
+  element_norm_ge_one _ (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+
+theorem primeProductNorm_mono {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) {S T : Finset ι} (hST : S ⊆ T) :
+    primeProductNorm p S ≤ primeProductNorm p T := by
+  have hd : Disjoint S (T \ S) := Finset.disjoint_sdiff
+  have hu : S ∪ (T \ S) = T := Finset.union_sdiff_of_subset hST
+  rw [← hu, primeProductNorm_union p S (T \ S) hd]
+  exact le_mul_of_one_le_right (primeProductNorm_pos p hp S).le (primeProductNorm_ge_one p hp _)
+
+lemma element_norm_le_of_dvd {a b : O} (hb : b ≠ 0) (h : a ∣ b) :
+    ‖ringComplex a‖^2 ≤ ‖ringComplex b‖^2 := by
+  obtain ⟨c,rfl⟩ := h
+  have hc : c ≠ 0 := (mul_ne_zero_iff.mp hb).2
+  rw [map_mul, norm_mul, mul_pow]
+  exact le_mul_of_one_le_right (sq_nonneg _) (element_norm_ge_one c hc)
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+
+include hp in
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma primeProduct_ne_zero (B : Finset ι) (v : ι → ℕ) : primeProduct p B v ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr (fun i _hi => pow_ne_zero _ (hp i))
+
+include hp in
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma squarefreeLabel_active_bound (B : Finset ι) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) :
+    ‖ringComplex (squarefreeLabel p B v)‖^2 ≤ primeProductNorm p (cubeActiveSupport B v ε₁ ε₂) := by
+  let S := B.filter (fun i => parity (v i))
+  have he : squarefreeLabel p B v = ∏ i ∈ S, p i := by
+    unfold squarefreeLabel primeProduct S
+    rw [Finset.prod_filter]
+    apply Finset.prod_congr rfl
+    intro i hi
+    cases hb : parity (v i) <;> simp [bit,hb]
+  have hsub : S ⊆ cubeActiveSupport B v ε₁ ε₂ := by
+    intro i hi
+    obtain ⟨hi,hpi⟩ := Finset.mem_filter.mp hi
+    apply Finset.mem_filter.mpr
+    refine ⟨hi,?_⟩
+    change parity (v i) = true at hpi
+    rw [hpi]
+    cases h1 : ε₁ i <;> cases h2 : ε₂ i <;> decide
+  rw [he]
+  exact primeProductNorm_mono p hp hsub
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma jLabel_dvd_cube_product (B : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool)
+    (hv : ∀ i ∈ B, 0 < v₁ i+v₂ i) :
+    jLabel p B (fun i => v₁ i+v₂ i) ε₁ ε₂ ∣ primeProduct p B v₁ * primeProduct p B v₂ := by
+  rw [← primeProduct_add]
+  apply Finset.prod_dvd_prod_of_dvd
+  intro i hi
+  apply pow_dvd_pow
+  dsimp only
+  unfold bit
+  split <;> have h := hv i hi <;> omega
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma b0_square_dvd_cube_product (B : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool)
+    (hv : ∀ i ∈ B, 0 < v₁ i+v₂ i) :
+    b0Label p B (fun i => v₁ i+v₂ i) ε₁ ε₂ ^ 2 ∣ primeProduct p B v₁ * primeProduct p B v₂ := by
+  rw [FirstPassCubeLabels.cube_pair_product_decomposition p B v₁ v₂ ε₁ ε₂ hv]
+  exact dvd_mul_of_dvd_left (dvd_mul_right _ _) _
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma b0_jLabel_square (B : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool)
+    (hv : ∀ i ∈ B, 0 < v₁ i+v₂ i) :
+    (b0Label p B (fun i => v₁ i+v₂ i) ε₁ ε₂ * jLabel p B (fun i => v₁ i+v₂ i) ε₁ ε₂)^2 =
+      primeProduct p B v₁ * primeProduct p B v₂ * squarefreeLabel p B (fun i => v₁ i+v₂ i) := by
+  rw [FirstPassCubeLabels.jLabel_eq_squarefree_mul_j2,
+    FirstPassCubeLabels.cube_pair_product_decomposition p B v₁ v₂ ε₁ ε₂ hv]
+  ring
+
+include hp in
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem cube_label_norm_bounds (B : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool)
+    (hv : ∀ i ∈ B, 0 < v₁ i+v₂ i) (B₀ : ℝ) (hB : 0 ≤ B₀)
+    (hb₁ : ‖ringComplex (primeProduct p B v₁)‖^2 ≤ B₀)
+    (hb₂ : ‖ringComplex (primeProduct p B v₂)‖^2 ≤ B₀) :
+    let v := fun i => v₁ i+v₂ i
+    ‖ringComplex (jLabel p B v ε₁ ε₂)‖^2 ≤ B₀^2 ∧
+    ‖ringComplex (b0Label p B v ε₁ ε₂)‖^2 ≤ B₀ ∧
+    ‖ringComplex (b0Label p B v ε₁ ε₂)‖^2 ≤
+      B₀*‖ringComplex (∏ i ∈ cubeActiveSupport B v ε₁ ε₂,p i)‖ /
+        ‖ringComplex (jLabel p B v ε₁ ε₂)‖^2 := by
+  dsimp only
+  have hbb : ‖ringComplex (primeProduct p B v₁ * primeProduct p B v₂)‖^2 ≤ B₀^2 := by
+    rw [map_mul,norm_mul,mul_pow]
+    simpa only [pow_two] using mul_le_mul hb₁ hb₂ (sq_nonneg _) hB
+  have hbb0 := mul_ne_zero (primeProduct_ne_zero p hp B v₁) (primeProduct_ne_zero p hp B v₂)
+  have hJ := (element_norm_le_of_dvd hbb0 (jLabel_dvd_cube_product p B v₁ v₂ ε₁ ε₂ hv)).trans hbb
+  have hb0sq := (element_norm_le_of_dvd hbb0 (b0_square_dvd_cube_product p B v₁ v₂ ε₁ ε₂ hv)).trans hbb
+  simp only [map_pow,norm_pow] at hb0sq
+  have hb0 : ‖ringComplex (b0Label p B (fun i => v₁ i+v₂ i) ε₁ ε₂)‖^2 ≤ B₀ := by
+    nlinarith only [hb0sq, hB, sq_nonneg ‖ringComplex (b0Label p B (fun i => v₁ i+v₂ i) ε₁ ε₂)‖]
+  refine ⟨hJ,hb0,?_⟩
+  have heq := congrArg (fun a : O => ‖ringComplex a‖^2) (b0_jLabel_square p B v₁ v₂ ε₁ ε₂ hv)
+  simp only [map_pow,map_mul,norm_pow,norm_mul,mul_pow] at heq
+  have hs := squarefreeLabel_active_bound p hp B (fun i => v₁ i+v₂ i) ε₁ ε₂
+  have hNprod : ‖ringComplex (primeProduct p B v₁)‖^2 * ‖ringComplex (primeProduct p B v₂)‖^2 ≤ B₀^2 := by
+    simpa only [map_mul,norm_mul,mul_pow] using hbb
+  have hmul := mul_le_mul hNprod hs (sq_nonneg _) (sq_nonneg B₀)
+  change _ ≤ B₀^2*‖ringComplex (∏ i ∈ cubeActiveSupport B (fun i => v₁ i+v₂ i) ε₁ ε₂,p i)‖^2 at hmul
+  have hjpos : 0 < ‖ringComplex (jLabel p B (fun i => v₁ i+v₂ i) ε₁ ε₂)‖^2 := by
+    exact zero_lt_one.trans_le (element_norm_ge_one _ (primeProduct_ne_zero p hp B _))
+  apply (le_div_iff₀ hjpos).mpr
+  apply (sq_le_sq₀ (mul_nonneg (sq_nonneg _) (sq_nonneg _))
+    (mul_nonneg hB (norm_nonneg _))).mp
+  simp only [mul_pow]
+  exact heq.trans_le hmul
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson FirstPassCubeLabels UniqueFactorizationMonoid
+open scoped Classical
+
+section
+variable {ι : Type*} [DecidableEq ι] (P : ι → Ideal O)
+  [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+include hinj
+
+theorem primeIdealProduct_emultiplicity (S : Finset ι) (v : ι → ℕ) (i : ι) :
+    emultiplicity (P i) (∏ j ∈ S, P j ^ v j) = if i ∈ S then (v i : ℕ∞) else 0 := by
+  have hp (j : ι) : Prime (P j) := Ideal.prime_of_isPrime (NeZero.ne (P j)) inferInstance
+  rw [Finset.emultiplicity_prod (hp i)]
+  have hz (j : ι) (hji : j ≠ i) : emultiplicity (P i) (P j ^ v j) = 0 := by
+    rw [emultiplicity_pow (hp i), emultiplicity_eq_zero_of_irreducible_ne
+      (hp i).irreducible (hp j).irreducible (fun he => hji (hinj he).symm), mul_zero]
+  by_cases hi : i ∈ S
+  · rw [if_pos hi,Finset.sum_eq_single i]
+    · exact emultiplicity_pow_self_of_prime (hp i) (v i)
+    · intro j hj hji
+      exact hz j hji
+    · exact fun hn => (hn hi).elim
+  · rw [if_neg hi]
+    apply Finset.sum_eq_zero
+    intro j hj
+    exact hz j (fun he => hi (he ▸ hj))
+
+theorem primeIdealProduct_exponents_eq
+    (B C : Finset ι) (v w : ι → ℕ)
+    (hv : ∀ i, i ∉ B → v i = 0) (hw : ∀ i, i ∉ C → w i = 0)
+    (heq : (∏ i ∈ B, P i ^ v i) = ∏ i ∈ C, P i ^ w i) : v = w := by
+  funext i
+  have he := congrArg (fun I => emultiplicity (P i) I) heq
+  rw [primeIdealProduct_emultiplicity P hinj,primeIdealProduct_emultiplicity P hinj] at he
+  have hB : (if i ∈ B then (v i : ℕ∞) else 0) = (v i : ℕ∞) := by
+    by_cases h : i ∈ B <;> simp [h,hv i]
+  have hC : (if i ∈ C then (w i : ℕ∞) else 0) = (w i : ℕ∞) := by
+    by_cases h : i ∈ C <;> simp [h,hw i]
+  rw [hB,hC] at he
+  exact_mod_cast he
+
+end
+
+theorem primeProduct_span_exponents_eq {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (B C : Finset ι) (v w : ι → ℕ)
+    (hv : ∀ i, i ∉ B → v i = 0) (hw : ∀ i, i ∉ C → w i = 0)
+    (heq : Ideal.span {FirstPassCubeLabels.primeProduct p B v} =
+      Ideal.span {FirstPassCubeLabels.primeProduct p C w}) : v = w := by
+  apply primeIdealProduct_exponents_eq (fun i => Ideal.span {p i}) hinj B C v w hv hw
+  simpa only [FirstPassCubeLabels.primeProduct,span_finset_prime_product,
+    ←Ideal.span_singleton_pow] using heq
+
+
+theorem primeIdealFamily_product_injective {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P) :
+    Function.Injective (fun S : Finset ι => ∏ i ∈ S, P i) := by
+  intro S T he
+  ext i
+  have h := congrArg (fun I => emultiplicity (P i) I) he
+  have hS := primeIdealProduct_emultiplicity P hinj S (fun _ => 1) i
+  have hT := primeIdealProduct_emultiplicity P hinj T (fun _ => 1) i
+  simp only [pow_one] at hS hT
+  rw [hS, hT] at h
+  by_cases hs : i ∈ S <;> by_cases ht : i ∈ T <;> simp_all
+
+@[ext] structure SecondExpansionData (ι : Type*) where
+  sourceCommon : Finset ι
+  divisor : Finset ι
+  overlap : Finset ι
+  frequency : O
+  deriving DecidableEq
+
+@[ext] structure CubeCoordinates (ι : Type*) where
+  leftExponent : ι →₀ ℕ
+  rightExponent : ι →₀ ℕ
+  leftDivisor : Finset ι
+  rightDivisor : Finset ι
+
+namespace CubeCoordinates
+variable {ι : Type*} [DecidableEq ι]
+
+def support (x : CubeCoordinates ι) : Finset ι :=
+  x.leftExponent.support ∪ x.rightExponent.support
+
+def leftBit (x : CubeCoordinates ι) (i : ι) : Bool := decide (i ∈ x.leftDivisor)
+def rightBit (x : CubeCoordinates ι) (i : ι) : Bool := decide (i ∈ x.rightDivisor)
+
+def Admissible (x : CubeCoordinates ι) : Prop :=
+  x.leftDivisor ⊆ x.support ∧ x.rightDivisor ⊆ x.support
+
+theorem support_pos (x : CubeCoordinates ι) (i : ι) (hi : i ∈ x.support) :
+    0 < x.leftExponent i+x.rightExponent i := by
+  simp only [support,Finset.mem_union,Finsupp.mem_support_iff] at hi
+  omega
+
+theorem left_off (x : CubeCoordinates ι) (i : ι) (hi : i ∉ x.support) :
+    x.leftExponent i=0 := by
+  by_contra hv
+  exact hi (Finset.mem_union_left _ (Finsupp.mem_support_iff.mpr hv))
+
+theorem right_off (x : CubeCoordinates ι) (i : ι) (hi : i ∉ x.support) :
+    x.rightExponent i=0 := by
+  by_contra hv
+  exact hi (Finset.mem_union_right _ (Finsupp.mem_support_iff.mpr hv))
+
+theorem aLabel_left (p : ι → O) (x : CubeCoordinates ι) (hx : x.Admissible) :
+    aLabel p x.support x.leftBit = ∏ i ∈ x.leftDivisor,p i := by
+  simp only [aLabel,primeProduct,leftBit,FirstPassCubeLabels.bit,decide_eq_true_eq]
+  simp_rw [apply_ite, pow_one, pow_zero]
+  rw [← Finset.prod_filter]
+  have he : x.support.filter (fun i => i ∈ x.leftDivisor)=x.leftDivisor := by
+    ext i
+    simp only [Finset.mem_filter]
+    exact and_iff_right_of_imp (fun hi => hx.1 hi)
+  rw [he]
+
+theorem aLabel_right (p : ι → O) (x : CubeCoordinates ι) (hx : x.Admissible) :
+    aLabel p x.support x.rightBit = ∏ i ∈ x.rightDivisor,p i := by
+  simp only [aLabel,primeProduct,rightBit,FirstPassCubeLabels.bit,decide_eq_true_eq]
+  simp_rw [apply_ite, pow_one, pow_zero]
+  rw [← Finset.prod_filter]
+  have he : x.support.filter (fun i => i ∈ x.rightDivisor)=x.rightDivisor := by
+    ext i
+    simp only [Finset.mem_filter]
+    exact and_iff_right_of_imp (fun hi => hx.2 hi)
+  rw [he]
+
+end CubeCoordinates
+
+@[ext] structure GlobalSecondData (ι : Type*) where
+  cube : CubeCoordinates ι
+  firstCommon : Finset ι
+  common : Finset ι
+  firstDivisor : Finset ι
+  source : SecondExpansionData ι
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+
+def globalSecondTuple (x : GlobalSecondData ι) : SecondPassFiber.OldTuple :=
+  actualSecondTuple p x.cube.support x.common x.firstDivisor x.source.divisor x.source.overlap
+    x.cube.leftExponent x.cube.rightExponent x.cube.leftBit x.cube.rightBit x.source.frequency
+
+def globalSecondFixedTriple (x : GlobalSecondData ι) : Ideal O × Ideal O × Ideal O :=
+  (Ideal.span {b0Label p x.cube.support
+    (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit},
+   ∏ i ∈ x.firstCommon,Ideal.span {p i},
+   ∏ i ∈ x.source.sourceCommon\x.source.divisor,Ideal.span {p i})
+
+def GlobalSecondAdmissible (x : GlobalSecondData ι) : Prop :=
+  x.cube.Admissible ∧ x.source.divisor ⊆ x.source.sourceCommon ∧
+  Disjoint x.common x.cube.support ∧ x.firstDivisor ⊆ x.common∪x.cube.support
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem globalSecondTuple_valid (x : GlobalSecondData ι) (hx : GlobalSecondAdmissible x) :
+    SecondPassFiber.Valid (globalSecondTuple p x)
+      (SecondPassFiber.newLabel (globalSecondTuple p x))
+      (globalSecondFixedTriple p x).1
+      (SecondPassFiber.newRow (globalSecondTuple p x)) := by
+  unfold globalSecondTuple
+  rw [actualSecondTuple_newLabel, actualSecondTuple_newRow]
+  exact actualSecondTuple_valid p x.cube.support x.common x.firstDivisor x.source.divisor x.source.overlap
+    hx.2.2.1 hx.2.2.2 x.cube.leftExponent x.cube.rightExponent x.cube.leftBit x.cube.rightBit
+    x.cube.support_pos x.source.frequency
+
+theorem globalSecondFixedTriple_nonzero (hp : ∀ i,p i ≠ 0) (x : GlobalSecondData ι) :
+    (globalSecondFixedTriple p x).1 ≠ ⊥ ∧
+    (globalSecondFixedTriple p x).2.1 ≠ ⊥ ∧
+    (globalSecondFixedTriple p x).2.2 ≠ ⊥ := by
+  refine ⟨?_, ?_, ?_⟩
+  · change Ideal.span {_} ≠ ⊥
+    intro h
+    exact primeProduct_ne_zero p hp _ _ (Ideal.span_singleton_eq_bot.mp h)
+  · exact Finset.prod_ne_zero_iff.mpr (fun i _ => NeZero.ne (Ideal.span {p i}))
+  · exact Finset.prod_ne_zero_iff.mpr (fun i _ => NeZero.ne (Ideal.span {p i}))
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem globalSecondFixedTriple_norm_bounds (hp : ∀ i,p i ≠ 0)
+    (x : GlobalSecondData ι) (B H J T R : ℝ) (hB : 0 ≤ B) (hJ : 0 < J)
+    (hb₁ : ‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ B)
+    (hb₂ : ‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ B)
+    (hactive : ‖ringComplex (∏ i ∈ cubeActiveSupport x.cube.support
+      (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖ ≤ H)
+    (hlabel : J ≤ ‖ringComplex (jLabel p x.cube.support
+      (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2)
+    (ht : primeProductNorm p x.firstCommon ≤ T)
+    (hr : primeProductNorm p (x.source.sourceCommon\x.source.divisor) ≤ R) :
+    (Ideal.absNorm (globalSecondFixedTriple p x).1 : ℝ) ≤ B*H/J ∧
+    (Ideal.absNorm (globalSecondFixedTriple p x).2.1 : ℝ) ≤ T ∧
+    (Ideal.absNorm (globalSecondFixedTriple p x).2.2 : ℝ) ≤ R := by
+  obtain ⟨_,_,hb0⟩ := cube_label_norm_bounds p hp x.cube.support
+    x.cube.leftExponent x.cube.rightExponent x.cube.leftBit x.cube.rightBit
+    x.cube.support_pos B hB hb₁ hb₂
+  refine ⟨?_,?_,?_⟩
+  · change (Ideal.absNorm (Ideal.span {_}) : ℝ) ≤ _
+    rw [← ringComplex_norm_sq_eq_absNorm_span]
+    apply hb0.trans
+    exact div_le_div₀ (mul_nonneg hB ((norm_nonneg _).trans hactive))
+      (mul_le_mul_of_nonneg_left hactive hB) hJ hlabel
+  · exact (primeProductNorm_eq_ideal_norm p _).symm ▸ ht
+  · exact (primeProductNorm_eq_ideal_norm p _).symm ▸ hr
+
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson FirstPassCubeLabels
+open scoped Classical
+
+/-- Three ideal norm bounds control the number of fixed divisor triples. -/
+theorem fixed_triple_count
+    (s : Finset (Ideal O × Ideal O × Ideal O)) (B T W : ℝ)
+    (hB : 1 ≤ B) (hT : 1 ≤ T) (hW : 1 ≤ W)
+    (hN : ∀ x ∈ s, (Ideal.absNorm x.1 : ℝ) ≤ B ∧
+      (Ideal.absNorm x.2.1 : ℝ) ≤ T ∧ (Ideal.absNorm x.2.2 : ℝ) ≤ W) :
+    (s.card : ℝ) ≤ (diagonalControl sieveCutoff) ^ 3 * B * T * W := by
+  let a := s.image Prod.fst
+  let b := s.image (fun x => x.2.1)
+  let c := s.image (fun x => x.2.2)
+  have hsub : s ⊆ a ×ˢ (b ×ˢ c) := by
+    intro x hx
+    exact Finset.mem_product.mpr ⟨Finset.mem_image.mpr ⟨x, hx, rfl⟩,
+      Finset.mem_product.mpr ⟨Finset.mem_image.mpr ⟨x, hx, rfl⟩,
+        Finset.mem_image.mpr ⟨x, hx, rfl⟩⟩⟩
+  have ha : (a.card : ℝ) ≤ diagonalControl sieveCutoff * B := by
+    apply finite_ideal_card_bound a B hB
+    intro I hI
+    obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hI
+    exact (hN x hx).1
+  have hb : (b.card : ℝ) ≤ diagonalControl sieveCutoff * T := by
+    apply finite_ideal_card_bound b T hT
+    intro I hI
+    obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hI
+    exact (hN x hx).2.1
+  have hc : (c.card : ℝ) ≤ diagonalControl sieveCutoff * W := by
+    apply finite_ideal_card_bound c W hW
+    intro I hI
+    obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hI
+    exact (hN x hx).2.2
+  have hs : (s.card : ℝ) ≤ (a.card : ℝ) * ((b.card : ℝ) * c.card) := by
+    have hcard := Finset.card_le_card hsub
+    simp only [Finset.card_product] at hcard
+    exact_mod_cast hcard
+  apply hs.trans
+  calc
+    _ ≤ (diagonalControl sieveCutoff * B) *
+        ((diagonalControl sieveCutoff * T) * (diagonalControl sieveCutoff * W)) :=
+      mul_le_mul ha
+        (mul_le_mul hb hc (Nat.cast_nonneg _) ((Nat.cast_nonneg _).trans hb))
+        (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) ((Nat.cast_nonneg _).trans ha)
+    _ = _ := by ring
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+
+theorem globalSecondFixedTriple_count (hp : ∀ i,p i ≠ 0)
+    (s : Finset (GlobalSecondData ι)) (B H J T R : ℝ)
+    (hB : 0 ≤ B) (hJ : 0 < J) (hscale : 1 ≤ B*H/J) (hT : 1 ≤ T) (hR : 1 ≤ R)
+    (hb₁ : ∀ x∈s, ‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ B)
+    (hb₂ : ∀ x∈s, ‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ B)
+    (hactive : ∀ x∈s, ‖ringComplex (∏ i ∈ cubeActiveSupport x.cube.support
+      (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖ ≤ H)
+    (hlabel : ∀ x∈s, J ≤ ‖ringComplex (jLabel p x.cube.support
+      (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2)
+    (ht : ∀ x∈s, primeProductNorm p x.firstCommon ≤ T)
+    (hr : ∀ x∈s, primeProductNorm p (x.source.sourceCommon\x.source.divisor) ≤ R) :
+    ((s.image (globalSecondFixedTriple p)).card : ℝ) ≤ (diagonalControl sieveCutoff)^3*(B*H/J)*T*R := by
+  apply fixed_triple_count _ _ _ _ hscale hT hR
+  intro q hq
+  obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hq
+  exact globalSecondFixedTriple_norm_bounds p hp x B H J T R hB hJ
+      (hb₁ x hx) (hb₂ x hx) (hactive x hx) (hlabel x hx) (ht x hx) (hr x hx)
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem sum_globalSecondFixedTriple {M : Type*} [AddCommMonoid M]
+    (s : Finset (GlobalSecondData ι)) (f : GlobalSecondData ι → M) :
+    ∑ x∈s,f x = ∑ q∈s.image (globalSecondFixedTriple p),
+      ∑ x∈s with globalSecondFixedTriple p x=q,f x := by
+  symm
+  exact Finset.sum_fiberwise_of_maps_to (fun x hx => Finset.mem_image.mpr ⟨x,hx,rfl⟩) f
+
+variable (hinj : Function.Injective (fun i => Ideal.span {p i}))
+include hinj
+
+theorem globalSecondTuple_cube_eq {x y : GlobalSecondData ι}
+    (hx : x.cube.Admissible) (hy : y.cube.Admissible)
+    (h : globalSecondTuple p x=globalSecondTuple p y) : x.cube=y.cube := by
+  have h₁ := congrArg (fun z : SecondPassFiber.OldTuple => z.core 4) h
+  have h₂ := congrArg SecondPassFiber.OldTuple.b2 h
+  have hA₁ := congrArg (fun z : SecondPassFiber.OldTuple => z.core 5) h
+  have hA₂ := congrArg (fun z : SecondPassFiber.OldTuple => z.core 6) h
+  change Ideal.span {primeProduct p x.cube.support x.cube.leftExponent} =
+    Ideal.span {primeProduct p y.cube.support y.cube.leftExponent} at h₁
+  change Ideal.span {primeProduct p x.cube.support x.cube.rightExponent} =
+    Ideal.span {primeProduct p y.cube.support y.cube.rightExponent} at h₂
+  have hv₁ := primeProduct_span_exponents_eq p hinj x.cube.support y.cube.support
+    x.cube.leftExponent y.cube.leftExponent x.cube.left_off y.cube.left_off h₁
+  have hv₂ := primeProduct_span_exponents_eq p hinj x.cube.support y.cube.support
+    x.cube.rightExponent y.cube.rightExponent x.cube.right_off y.cube.right_off h₂
+  change Ideal.span {aLabel p x.cube.support x.cube.leftBit} =
+    Ideal.span {aLabel p y.cube.support y.cube.leftBit} at hA₁
+  change Ideal.span {aLabel p x.cube.support x.cube.rightBit} =
+    Ideal.span {aLabel p y.cube.support y.cube.rightBit} at hA₂
+  rw [CubeCoordinates.aLabel_left p x.cube hx,CubeCoordinates.aLabel_left p y.cube hy,
+    span_finset_prime_product,span_finset_prime_product] at hA₁
+  rw [CubeCoordinates.aLabel_right p x.cube hx,CubeCoordinates.aLabel_right p y.cube hy,
+    span_finset_prime_product,span_finset_prime_product] at hA₂
+  apply CubeCoordinates.ext
+  · exact Finsupp.ext (congrFun hv₁)
+  · exact Finsupp.ext (congrFun hv₂)
+  · exact primeIdealFamily_product_injective _ hinj hA₁
+  · exact primeIdealFamily_product_injective _ hinj hA₂
+
+theorem globalSecondEncoding_injective {x y : GlobalSecondData ι}
+    (hx : GlobalSecondAdmissible x) (hy : GlobalSecondAdmissible y)
+    (ht : globalSecondFixedTriple p x=globalSecondFixedTriple p y)
+    (h : globalSecondTuple p x=globalSecondTuple p y) : x=y := by
+  have hc := globalSecondTuple_cube_eq p hinj hx.1 hy.1 h
+  have hA := congrArg (fun q : Ideal O × Ideal O × Ideal O => q.2.1) ht
+  have hR := congrArg (fun q : Ideal O × Ideal O × Ideal O => q.2.2) ht
+  have hC := congrArg (fun z : SecondPassFiber.OldTuple => z.core 1) h
+  have hD := congrArg (fun z : SecondPassFiber.OldTuple => z.core 7) h
+  have hE := congrArg (fun z : SecondPassFiber.OldTuple => z.core 2) h
+  have hV := congrArg SecondPassFiber.OldTuple.v h
+  have hk := congrArg SecondPassFiber.OldTuple.row h
+  have hA' : x.firstCommon=y.firstCommon := primeIdealFamily_product_injective _ hinj hA
+  have hC' : x.common=y.common := primeIdealFamily_product_injective _ hinj hC
+  have hD' : x.firstDivisor=y.firstDivisor := primeIdealFamily_product_injective _ hinj hD
+  have hE' : x.source.divisor=y.source.divisor := primeIdealFamily_product_injective _ hinj hE
+  have hV' : x.source.overlap=y.source.overlap := primeIdealFamily_product_injective _ hinj hV
+  have hR' : x.source.sourceCommon\x.source.divisor=y.source.sourceCommon\y.source.divisor :=
+    primeIdealFamily_product_injective _ hinj hR
+  have hG : x.source.sourceCommon=y.source.sourceCommon := by
+    calc
+      _ = x.source.divisor ∪ (x.source.sourceCommon\x.source.divisor) :=
+        (Finset.union_sdiff_of_subset hx.2.1).symm
+      _ = y.source.divisor ∪ (y.source.sourceCommon\y.source.divisor) := by rw [hR',hE']
+      _ = _ := Finset.union_sdiff_of_subset hy.2.1
+  have hk' : x.source.frequency = y.source.frequency := by
+    change (subsetProductUnit p x.firstDivisor : O) *
+        (subsetProductUnit p x.source.divisor : O) * x.source.frequency =
+      (subsetProductUnit p y.firstDivisor : O) *
+        (subsetProductUnit p y.source.divisor : O) * y.source.frequency at hk
+    rw [hD', hE'] at hk
+    exact mul_left_cancel₀ (mul_ne_zero (Units.ne_zero _) (Units.ne_zero _)) hk
+  exact GlobalSecondData.ext hc hA' hC' hD' (SecondExpansionData.ext hG hE' hV' hk')
+
+theorem globalSecond_fiber_card (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (s : Finset (GlobalSecondData ι))
+      (q : Ideal O × Ideal O × Ideal O) (f : Ideal O) (y : O),
+      (∀ x∈s,GlobalSecondAdmissible x) → f ≠ ⊥ → q.1 ≠ ⊥ →
+      (∀ x∈s,globalSecondFixedTriple p x=q) →
+      (∀ x∈s,SecondPassFiber.newLabel (globalSecondTuple p x)=f) →
+      (∀ x∈s,SecondPassFiber.newRow (globalSecondTuple p x)=y) →
+      (s.card : ℝ) ≤ C*((Ideal.absNorm f : ℝ)*Ideal.absNorm q.1)^ε := by
+  obtain ⟨C,hC,hbound⟩ := SecondPassFiber.valid_tuple_small_power ε hε
+  refine ⟨C,hC,?_⟩
+  intro s q f y hs hf hq htr hlabel hrow
+  have hi : Set.InjOn (globalSecondTuple p) s := by
+    intro x hx z hz he
+    exact globalSecondEncoding_injective p hinj (hs x hx) (hs z hz)
+      ((htr x hx).trans (htr z hz).symm) he
+  rw [← Finset.card_image_of_injOn hi]
+  apply hbound _ f q.1 y hf hq
+  intro t ht
+  obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp ht
+  have hv := globalSecondTuple_valid p x (hs x hx)
+  simpa only [htr x hx,hlabel x hx,hrow x hx] using hv
+
+end SecondPassArithmetic
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic CubicJacobi
+open scoped Classical
+
+def crossSymbol {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (i k : ι) : ℂ :=
+  complexSexticChar (Ideal.span {p i}) (hg i) (Ideal.Quotient.mk (Ideal.span {p i}) (p k))
+
+def quadraticCrossPhase {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S T : Finset ι) : ℂ :=
+  ∏ i ∈ S, ∏ k ∈ T, crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3
+
+lemma cross_square_primary {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (i k : ι) :
+    crossSymbol p hg i k ^ 2 = crossSymbol p hg k i ^ 2 := by
+  have hi := sexticRow_square_symbol p hg {i} (p k)
+  have hk := sexticRow_square_symbol p hg {k} (p i)
+  simp only [primeSubsetRow, Finset.prod_singleton] at hi hk
+  rw [crossSymbol, crossSymbol, hi, hk, symbol_reciprocity _ _ (hpr k) (hpr i)]
+
+private theorem cross_sixth {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (i k : ι) (hik : i ≠ k) :
+    crossSymbol p hg i k ^ 6 = 1 := by
+  have hnot : p k ∉ Ideal.span {p i} := by
+    intro hm
+    have hle : Ideal.span {p k} ≤ Ideal.span {p i} :=
+      Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hm)
+    have ht := (hcop hik).sup_eq
+    rw [sup_eq_left.mpr hle] at ht
+    exact (inferInstance : (Ideal.span {p i}).IsMaximal).ne_top ht
+  have hm : primeCoprimeMask p {i} (p k) = 1 := by
+    rw [primeCoprimeMask_indicator]
+    apply if_pos
+    intro j hj hd
+    have hji := Finset.mem_singleton.mp hj
+    subst j
+    exact hnot (Ideal.mem_span_singleton.mpr hd)
+  simpa only [primeSubsetRow, Finset.prod_singleton, crossSymbol] using
+    (row_sixth p hg {i} (p k)).trans hm
+
+theorem reverse_cross_eq_quadratic {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (i k : ι) (hik : i ≠ k) :
+    crossSymbol p hg k i = crossSymbol p hg i k *
+      (crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3) := by
+  have hr : crossSymbol p hg i k ^ 2 = crossSymbol p hg k i ^ 2 :=
+    cross_square_primary p hg hpr i k
+  symm
+  calc
+    _ = crossSymbol p hg i k ^ 4 *
+        (crossSymbol p hg k i ^ 2 * crossSymbol p hg k i) := by ring
+    _ = crossSymbol p hg i k ^ 6 * crossSymbol p hg k i := by rw [← hr]; ring
+    _ = _ := by rw [cross_sixth p hcop hg i k hik, one_mul]
+
+private theorem local_quadratic_sq {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (i k : ι) (hik : i ≠ k) :
+    (crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3) ^ 2 = 1 := by
+  rw [mul_pow, ← pow_mul, ← pow_mul]
+  norm_num only [show 3 * 2 = 6 by decide, cross_sixth p hcop hg i k hik,
+    cross_sixth p hcop hg k i hik.symm, one_mul]
+
+private theorem crt_exponent_table (side parityBit ε₁ ε₂ : Bool)
+    (he : conductorExponent parityBit ε₁ ε₂ ≠ 0) :
+    ((if side then 5 else 1) + (conductorExponent parityBit ε₁ ε₂).val) % 6 =
+      ((if side then 5 else 1) * crtExponent side parityBit ε₁ ε₂) % 6 := by
+  cases side <;> cases parityBit <;> cases ε₁ <;> cases ε₂ <;>
+    first | exact False.elim (he (by decide)) | decide
+
+theorem active_cube_cross_local {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (i k : ι) (hik : i ≠ k)
+    (side parityBit ε₁ ε₂ : Bool) (he : conductorExponent parityBit ε₁ ε₂ ≠ 0) :
+    crossSymbol p hg i k ^ (if side then 5 else 1) *
+      crossSymbol p hg k i ^ (conductorExponent parityBit ε₁ ε₂).val =
+    (if side then star (crossSymbol p hg i k ^ crtExponent side parityBit ε₁ ε₂)
+      else crossSymbol p hg i k ^ crtExponent side parityBit ε₁ ε₂) *
+      (crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3) ^
+        (conductorExponent parityBit ε₁ ε₂).val := by
+  let x := crossSymbol p hg i k
+  let q := crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3
+  have hrev : crossSymbol p hg k i = x * q := reverse_cross_eq_quadratic p hcop hg hpr i k hik
+  have h6 : x ^ 6 = 1 := cross_sixth p hcop hg i k hik
+  have hs : star x = x ^ 5 := by
+    simpa only [primeSubsetRow, Finset.prod_singleton, crossSymbol, x] using
+      sexticRow_star p hg {i} (p k)
+  calc
+    _ = x ^ ((if side then 5 else 1) + (conductorExponent parityBit ε₁ ε₂).val) *
+        q ^ (conductorExponent parityBit ε₁ ε₂).val := by rw [hrev, mul_pow, pow_add]; ring
+    _ = _ := by
+      congr 1
+      cases side
+      · change x ^ (1 + (conductorExponent parityBit ε₁ ε₂).val) = x ^ crtExponent false parityBit ε₁ ε₂
+        conv_lhs => rw [pow_eq_pow_mod _ h6]
+        conv_rhs => rw [pow_eq_pow_mod _ h6]
+        congr 1
+        simpa only [Bool.false_eq_true, ↓reduceIte, one_mul] using crt_exponent_table false parityBit ε₁ ε₂ he
+      · change x ^ (5 + (conductorExponent parityBit ε₁ ε₂).val) = star (x ^ crtExponent true parityBit ε₁ ε₂)
+        rw [star_pow, hs, ← pow_mul]
+        conv_lhs => rw [pow_eq_pow_mod _ h6]
+        conv_rhs => rw [pow_eq_pow_mod _ h6]
+        congr 1
+        exact crt_exponent_table true parityBit ε₁ ε₂ he
+
+def cubeOddSupport {ι : Type*} (B : Finset ι) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) : Finset ι :=
+  B.filter fun k => (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val % 2 = 1
+
+def mixedCubeCross {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (U B : Finset ι)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) : ℂ :=
+  ∏ i ∈ U, ∏ k ∈ B.filter (fun k => conductorExponent (parity (v k)) (ε₁ k) (ε₂ k) ≠ 0),
+    crossSymbol p hg i k ^ (if side then 5 else 1) *
+      crossSymbol p hg k i ^ (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val
+
+theorem mixedCubeCross_eq_ordered {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (U B : Finset ι)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    mixedCubeCross p hg U B v ε₁ ε₂ side =
+      (∏ i ∈ U, ∏ k ∈ B.filter (fun k => conductorExponent (parity (v k)) (ε₁ k) (ε₂ k) ≠ 0),
+        crossSymbol p hg i k ^ (if side then 5 else 1)) *
+      (∏ k ∈ B.filter (fun k => conductorExponent (parity (v k)) (ε₁ k) (ε₂ k) ≠ 0),
+        ∏ i ∈ U, crossSymbol p hg k i ^ (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val) := by
+  rw [Finset.prod_comm (s := B.filter _) (t := U)]
+  simp only [mixedCubeCross, Finset.prod_mul_distrib]
+
+private theorem cube_cross_local_if {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (i k : ι) (hik : i ≠ k)
+    (side parityBit ε₁ ε₂ : Bool) :
+    (if conductorExponent parityBit ε₁ ε₂ ≠ 0 then
+      crossSymbol p hg i k ^ (if side then 5 else 1) *
+        crossSymbol p hg k i ^ (conductorExponent parityBit ε₁ ε₂).val else 1) =
+    (if side then star (crossSymbol p hg i k ^ crtExponent side parityBit ε₁ ε₂)
+      else crossSymbol p hg i k ^ crtExponent side parityBit ε₁ ε₂) *
+      (if (conductorExponent parityBit ε₁ ε₂).val % 2 = 1 then
+        crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3 else 1) := by
+  by_cases he : conductorExponent parityBit ε₁ ε₂ = 0
+  · simp [he, crtExponent]
+  · rw [if_pos he, active_cube_cross_local p hcop hg hpr i k hik side parityBit ε₁ ε₂ he]
+    congr 1
+    rw [pow_eq_pow_mod _ (local_quadratic_sq p hcop hg i k hik)]
+    by_cases ho : (conductorExponent parityBit ε₁ ε₂).val % 2 = 1
+    · simp [ho]
+    · have hz : (conductorExponent parityBit ε₁ ε₂).val % 2 = 0 := by omega
+      simp [ hz]
+
+theorem mixedCubeCross_eq_row_quadratic {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (U B : Finset ι) (hd : Disjoint U B)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    mixedCubeCross p hg U B v ε₁ ε₂ side =
+      (if side then star (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U
+          (crtLabel p B v ε₁ ε₂ side))
+        else primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U
+          (crtLabel p B v ε₁ ε₂ side)) *
+      quadraticCrossPhase p hg U (cubeOddSupport B v ε₁ ε₂) := by
+  have hr : primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U
+      (crtLabel p B v ε₁ ε₂ side) =
+      ∏ i ∈ U, ∏ k ∈ B, crossSymbol p hg i k ^
+        crtExponent side (parity (v k)) (ε₁ k) (ε₂ k) := by
+    simp only [primeSubsetRow, crtLabel, primeProduct, map_prod, map_pow, crossSymbol]
+  calc
+    _ = (∏ i ∈ U, ∏ k ∈ B,
+        if side then star (crossSymbol p hg i k ^ crtExponent side (parity (v k)) (ε₁ k) (ε₂ k))
+        else crossSymbol p hg i k ^ crtExponent side (parity (v k)) (ε₁ k) (ε₂ k)) *
+      (∏ i ∈ U, ∏ k ∈ B,
+        if (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val % 2 = 1 then
+          crossSymbol p hg i k ^ 3 * crossSymbol p hg k i ^ 3 else 1) := by
+      simp only [mixedCubeCross, Finset.prod_filter, ← Finset.prod_mul_distrib]
+      apply Finset.prod_congr rfl
+      intro i hi
+      apply Finset.prod_congr rfl
+      intro k hk
+      apply cube_cross_local_if p hcop hg hpr i k
+      exact fun he => Finset.disjoint_left.mp hd hi (he ▸ hk)
+    _ = _ := by
+      congr 1
+      · rw [hr]
+        cases side <;> simp only [Bool.false_eq_true, ↓reduceIte, star_prod]
+      · simp only [quadraticCrossPhase, cubeOddSupport, Finset.prod_filter]
+
+
+end FirstPassCubeLabels
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open scoped Classical
+
+def localTraceGauss (p : O) (hp : p ≠ 0) [IsMaximal : (Ideal.span {p}).IsMaximal]
+    (hg : lambda ∉ Ideal.span {p}) (e : ℕ) : ℂ :=
+  residueRowGauss p hp (fun z =>
+    (complexSexticChar (Ideal.span {p}) hg ^ e) (Ideal.Quotient.mk (Ideal.span {p}) z)) /
+      (‖ringComplex p‖ : ℂ)
+
+def gaussBlock {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (e : ι → ℕ) : ℂ :=
+  ∏ i ∈ S, (∏ k ∈ S.erase i, crossSymbol p hg i k ^ e i) *
+    localTraceGauss (p i) (hp i) (hg i) (e i)
+
+def blockCross {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S T : Finset ι) (e : ι → ℕ) : ℂ :=
+  ∏ i ∈ S, ∏ k ∈ T,
+    crossSymbol p hg i k ^ e i * crossSymbol p hg k i ^ e k
+
+theorem gaussBlock_union {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S T : Finset ι) (hd : Disjoint S T)
+    (e : ι → ℕ) :
+    gaussBlock p hp hg (S ∪ T) e =
+      gaussBlock p hp hg S e * gaussBlock p hp hg T e * blockCross p hg S T e := by
+  have hS (i : ι) (hi : i ∈ S) :
+      (∏ k ∈ (S ∪ T).erase i, crossSymbol p hg i k ^ e i) =
+      (∏ k ∈ S.erase i, crossSymbol p hg i k ^ e i) *
+        ∏ k ∈ T, crossSymbol p hg i k ^ e i := by
+    have hn : i ∉ T := fun h => Finset.disjoint_left.mp hd hi h
+    rw [Finset.erase_union_distrib, Finset.erase_eq_of_notMem hn,
+      Finset.prod_union (hd.mono_left (Finset.erase_subset _ _))]
+  have hT (i : ι) (hi : i ∈ T) :
+      (∏ k ∈ (S ∪ T).erase i, crossSymbol p hg i k ^ e i) =
+      (∏ k ∈ T.erase i, crossSymbol p hg i k ^ e i) *
+        ∏ k ∈ S, crossSymbol p hg i k ^ e i := by
+    have hn : i ∉ S := fun h => Finset.disjoint_left.mp hd h hi
+    rw [Finset.union_comm S T, Finset.erase_union_distrib, Finset.erase_eq_of_notMem hn,
+      Finset.prod_union (hd.symm.mono_left (Finset.erase_subset _ _))]
+  have hpS : (∏ i ∈ S, (∏ k ∈ (S ∪ T).erase i, crossSymbol p hg i k ^ e i) *
+      localTraceGauss (p i) (hp i) (hg i) (e i)) =
+      gaussBlock p hp hg S e * (∏ i ∈ S, ∏ k ∈ T, crossSymbol p hg i k ^ e i) := by
+    rw [gaussBlock, ← Finset.prod_mul_distrib]
+    apply Finset.prod_congr rfl
+    intro i hi
+    rw [hS i hi]
+    ring
+  have hpT : (∏ i ∈ T, (∏ k ∈ (S ∪ T).erase i, crossSymbol p hg i k ^ e i) *
+      localTraceGauss (p i) (hp i) (hg i) (e i)) =
+      gaussBlock p hp hg T e * (∏ i ∈ T, ∏ k ∈ S, crossSymbol p hg i k ^ e i) := by
+    rw [gaussBlock, ← Finset.prod_mul_distrib]
+    apply Finset.prod_congr rfl
+    intro i hi
+    rw [hT i hi]
+    ring
+  rw [gaussBlock, Finset.prod_union hd, hpS, hpT,
+    Finset.prod_comm (s := T) (t := S)]
+  simp only [blockCross, Finset.prod_mul_distrib]
+  ring
+
+theorem gaussBlock_congr {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (e f : ι → ℕ)
+    (he : ∀ i ∈ S, e i = f i) : gaussBlock p hp hg S e = gaussBlock p hp hg S f := by
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [he i hi]
+
+def blockCubeExponent {ι : Type*} [DecidableEq ι] (U : Finset ι)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) (i : ι) : ℕ :=
+  if i ∈ U then (if side then 5 else 1)
+  else (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val
+
+theorem gaussBlock_cube_partition {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (U B : Finset ι) (hd : Disjoint U B)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    gaussBlock p hp hg (U ∪ cubeActiveSupport B v ε₁ ε₂)
+      (blockCubeExponent U v ε₁ ε₂ side) =
+    gaussBlock p hp hg U (fun _ => if side then 5 else 1) *
+      gaussBlock p hp hg (cubeActiveSupport B v ε₁ ε₂)
+        (fun k => (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val) *
+      mixedCubeCross p hg U B v ε₁ ε₂ side := by
+  have hdc : Disjoint U (cubeActiveSupport B v ε₁ ε₂) := hd.mono_right (Finset.filter_subset _ _)
+  have hU : ∀ i ∈ U, blockCubeExponent U v ε₁ ε₂ side i = (if side then 5 else 1) := by
+    intro i hi
+    simp only [blockCubeExponent, if_pos hi]
+  have hB : ∀ i ∈ cubeActiveSupport B v ε₁ ε₂, blockCubeExponent U v ε₁ ε₂ side i =
+      (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val := by
+    intro i hi
+    exact if_neg (fun hu => Finset.disjoint_left.mp hdc hu hi)
+  rw [gaussBlock_union p hp hg U _ hdc,
+    gaussBlock_congr p hp hg U _ _ hU, gaussBlock_congr p hp hg _ _ _ hB]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  apply Finset.prod_congr rfl
+  intro k hk
+  rw [hU i hi, hB k hk]
+
+
+theorem gaussBlock_cube_partition_row {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (U B : Finset ι) (hd : Disjoint U B) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    gaussBlock p hp hg (U ∪ cubeActiveSupport B v ε₁ ε₂)
+      (blockCubeExponent U v ε₁ ε₂ side) =
+    gaussBlock p hp hg U (fun _ => if side then 5 else 1) *
+      gaussBlock p hp hg (cubeActiveSupport B v ε₁ ε₂)
+        (fun k => (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val) *
+      ((if side then star (primeSubsetRow p
+          (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U (crtLabel p B v ε₁ ε₂ side))
+        else primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U
+          (crtLabel p B v ε₁ ε₂ side)) * quadraticCrossPhase p hg U (cubeOddSupport B v ε₁ ε₂)) := by
+  rw [gaussBlock_cube_partition p hp hg U B hd,
+    mixedCubeCross_eq_row_quadratic p hcop hg hpr U B hd]
+
+theorem blockCross_two_eq_row_four {ι : Type*}
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (S T : Finset ι) :
+    blockCross p hg S T (fun _ => 2) =
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S (∏ k ∈ T, p k) ^ 4 := by
+  simp only [blockCross, primeSubsetRow, map_prod, ← Finset.prod_pow]
+  apply Finset.prod_congr rfl
+  intro i hi
+  apply Finset.prod_congr rfl
+  intro k hk
+  have hr : crossSymbol p hg i k ^ 2 = crossSymbol p hg k i ^ 2 :=
+    cross_square_primary p hg hpr i k
+  change crossSymbol p hg i k ^ 2 * crossSymbol p hg k i ^ 2 = crossSymbol p hg i k ^ 4
+  rw [← hr]
+  ring
+
+
+end FirstPassCubeLabels
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+/-- Disjoint conductors split the trace Gauss sum with both cross-row factors. -/
+theorem subsetTraceGauss_union {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι) (hd : Disjoint S T) :
+    subsetTraceGauss p hp χ (S ∪ T) =
+      primeSubsetRow p χ S (∏ i ∈ T, p i) * primeSubsetRow p χ T (∏ i ∈ S, p i) *
+        subsetTraceGauss p hp χ S * subsetTraceGauss p hp χ T := by
+  let c := ∏ i ∈ S, p i
+  let d := ∏ i ∈ T, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hd0 : d ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  let A := primeCuspRowCharacter (fun i : S => p i.val) (fun i => χ i.val)
+  let B := primeCuspRowCharacter (fun i : T => p i.val) (fun i => χ i.val)
+  have hA (z : O) : A z = primeSubsetRow p χ S z := primeCuspRowCharacter_restrict p χ S z
+  have hB (z : O) : B z = primeSubsetRow p χ T z := primeCuspRowCharacter_restrict p χ T z
+  have hAc (x y : O) (h : c ∣ x-y) : A x = A y := by
+    rw [hA, hA]
+    exact primeSubsetRow_congr p χ S x y h
+  have hBd (x y : O) (h : d ∣ x-y) : B x = B y := by
+    rw [hB, hB]
+    exact primeSubsetRow_congr p χ T x y h
+  have ha : residueRowGauss c hc A = subsetTraceGauss p hp χ S := by
+    rw [show (A : O → ℂ) = primeSubsetRow p χ S from funext hA]
+    exact (subsetTraceGauss_eq_residueRowGauss p hp χ S).symm
+  have hb : residueRowGauss d hd0 B = subsetTraceGauss p hp χ T := by
+    rw [show (B : O → ℂ) = primeSubsetRow p χ T from funext hB]
+    exact (subsetTraceGauss_eq_residueRowGauss p hp χ T).symm
+  have hAB : ((A : O → ℂ)*B) = primeSubsetRow p χ (S ∪ T) := by
+    funext z
+    change A z * B z = _
+    simp only [hA, hB, primeSubsetRow, Finset.prod_union hd]
+  have h := residueRowGauss_mul c d hc hd0 (prime_subsets_coprime p hinj S T hd) A B hAc hBd
+  rw [hAB, ha, hb, hA, hB] at h
+  rw [subsetTraceGauss_eq_residueRowGauss, Finset.prod_union hd]
+  exact h
+
+def normalizedSubsetTraceGauss {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) : ℂ :=
+  subsetTraceGauss p hp χ S / (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)
+
+theorem normalizedSubsetTraceGauss_union {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι) (hd : Disjoint S T) :
+    normalizedSubsetTraceGauss p hp χ (S ∪ T) =
+      primeSubsetRow p χ S (∏ i ∈ T, p i) * primeSubsetRow p χ T (∏ i ∈ S, p i) *
+        normalizedSubsetTraceGauss p hp χ S * normalizedSubsetTraceGauss p hp χ T := by
+  simp only [normalizedSubsetTraceGauss, subsetTraceGauss_union p hp hinj χ S T hd,
+    Finset.prod_union hd, map_mul, norm_mul, Complex.ofReal_mul, div_eq_mul_inv, mul_inv_rev]
+  ring
+
+end SecondPassArithmetic
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+theorem poweredRow_product (S T : Finset ι) (e : ι → ℕ) (he : ∀ i ∈ S, e i ≠ 0) :
+    primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ e i) S
+      (∏ k ∈ T, p k) = ∏ i ∈ S, ∏ k ∈ T, crossSymbol p hg i k ^ e i := by
+  simp only [primeSubsetRow, map_prod]
+  apply Finset.prod_congr rfl
+  intro i hi
+  apply Finset.prod_congr rfl
+  intro k _
+  exact MulChar.pow_apply' _ (he i hi) _
+
+theorem blockCross_eq_poweredRows (S T : Finset ι) (e : ι → ℕ)
+    (heS : ∀ i ∈ S, e i ≠ 0) (heT : ∀ i ∈ T, e i ≠ 0) :
+    blockCross p hg S T e =
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ e i) S
+        (∏ k ∈ T, p k) *
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ e i) T
+        (∏ k ∈ S, p k) := by
+  rw [poweredRow_product p hg S T e heS, poweredRow_product p hg T S e heT]
+  rw [Finset.prod_comm (s := T) (t := S)]
+  simp only [blockCross, Finset.prod_mul_distrib]
+
+theorem normalizedSubsetTraceGauss_singleton_power (i : ι) (e : ι → ℕ) :
+    normalizedSubsetTraceGauss p hp (fun k => complexSexticChar (Ideal.span {p k}) (hg k) ^ e k) {i} =
+      localTraceGauss (p i) (hp i) (hg i) (e i) := by
+  rw [normalizedSubsetTraceGauss, subsetTraceGauss_eq_residueRowGauss]
+  simp only [Finset.prod_singleton, primeSubsetRow, localTraceGauss]
+
+/-- Local Gauss blocks multiply to the normalized trace Gauss sum. -/
+theorem normalizedSubsetTraceGauss_eq_gaussBlock
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (S : Finset ι) (e : ι → ℕ) (he : ∀ i ∈ S, e i ≠ 0) :
+    normalizedSubsetTraceGauss p hp (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ e i) S =
+      gaussBlock p hp hg S e := by
+  induction S using Finset.induction_on with
+  | empty =>
+    simp only [normalizedSubsetTraceGauss, subsetTraceGauss, primeRowTraceGauss_empty,
+      gaussBlock, Finset.prod_empty, map_one, norm_one, Complex.ofReal_one, div_one]
+  | @insert i S hi ih =>
+    have hS : ∀ k ∈ S, e k ≠ 0 := fun k hk => he k (Finset.mem_insert_of_mem hk)
+    have hi' : ∀ k ∈ ({i} : Finset ι), e k ≠ 0 := fun k hk =>
+      he k (Finset.mem_insert.mpr (Or.inl (Finset.mem_singleton.mp hk)))
+    have hd : Disjoint ({i} : Finset ι) S := Finset.disjoint_singleton_left.mpr hi
+    have hs : insert i S = ({i} : Finset ι) ∪ S := by ext k; simp
+    rw [hs, normalizedSubsetTraceGauss_union p hp hinj _ {i} S hd,
+      gaussBlock_union p hp hg {i} S hd, ih hS,
+      normalizedSubsetTraceGauss_singleton_power p hp hg i e,
+      blockCross_eq_poweredRows p hg {i} S e hi' hS]
+    simp only [gaussBlock, Finset.prod_singleton, Finset.erase_singleton,
+      Finset.prod_empty, one_mul]
+    ring
+
+end FirstPassCubeLabels
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hinj : Function.Injective (fun i => Ideal.span {p i}))
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+include hp hinj in
+theorem quadraticCrossPhase_eq_ray
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (S T : Finset ι) (hd : Disjoint S T) :
+    quadraticCrossPhase p hg S T =
+      rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i))
+        (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ T, p i)) := by
+  have hrow (A B : Finset ι) :
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) A
+        (∏ i ∈ B, p i) ^ 3 = ∏ i ∈ A, ∏ k ∈ B, crossSymbol p hg i k ^ 3 := by
+    simp only [primeSubsetRow, map_prod, ← Finset.prod_pow, crossSymbol]
+  have he : quadraticCrossPhase p hg S T =
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S
+        (∏ i ∈ T, p i) ^ 3 *
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) T
+        (∏ i ∈ S, p i) ^ 3 := by
+    rw [hrow, hrow, Finset.prod_comm (s := T) (t := S)]
+    simp only [quadraticCrossPhase, Finset.prod_mul_distrib]
+  rw [he, sexticRow_cube p hg, sexticRow_cube p hg]
+  change quadraticSubsetSymbol p S T * quadraticSubsetSymbol p T S = _
+  have hcop := prime_subsets_coprime p hinj S T hd
+  have hq : quadraticSubsetSymbol p T S ^ 2 = 1 := quadraticSubsetRow_sq p T _ hcop.symm
+  rw [quadraticSubsetSymbol_reciprocity p hp hinj hodd S T, mul_assoc,
+    ← pow_two, hq, mul_one, rayQuadraticPair_mk]
+
+include hp hinj in
+theorem mixedCubeCross_eq_ray
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (U B : Finset ι) (hd : Disjoint U B)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    mixedCubeCross p hg U B v ε₁ ε₂ side =
+      (if side then star (primeSubsetRow p
+          (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U (crtLabel p B v ε₁ ε₂ side))
+        else primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U
+          (crtLabel p B v ε₁ ε₂ side)) *
+      rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ U, p i))
+        (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ cubeOddSupport B v ε₁ ε₂, p i)) := by
+  rw [mixedCubeCross_eq_row_quadratic p hcop hg hpr U B hd,
+    quadraticCrossPhase_eq_ray p hp hinj hg hodd U (cubeOddSupport B v ε₁ ε₂)
+      (hd.mono_right (Finset.filter_subset _ _))]
+
+theorem blockCubeExponent_ne_zero (U B : Finset ι) (v : ι → ℕ)
+    (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    ∀ i ∈ U ∪ cubeActiveSupport B v ε₁ ε₂, blockCubeExponent U v ε₁ ε₂ side i ≠ 0 := by
+  intro i hi
+  by_cases hiU : i ∈ U
+  · cases side <;> simp [blockCubeExponent, hiU]
+  · have hiB := (Finset.mem_union.mp hi).resolve_left hiU
+    simp only [blockCubeExponent, if_neg hiU]
+    exact (ZMod.val_eq_zero _).not.mpr (Finset.mem_filter.mp hiB).2
+
+/-- The first conductor splits into squarefree and cube blocks, with an explicit residue phase. -/
+include hinj in
+theorem normalizedTraceGauss_cube_partition
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (U B : Finset ι) (hd : Disjoint U B)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (side : Bool) :
+    normalizedSubsetTraceGauss p hp
+      (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ blockCubeExponent U v ε₁ ε₂ side i)
+      (U ∪ cubeActiveSupport B v ε₁ ε₂) =
+    gaussBlock p hp hg U (fun _ => if side then 5 else 1) *
+      gaussBlock p hp hg (cubeActiveSupport B v ε₁ ε₂)
+        (fun k => (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val) *
+      ((if side then star (primeSubsetRow p
+          (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U (crtLabel p B v ε₁ ε₂ side))
+        else primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) U
+          (crtLabel p B v ε₁ ε₂ side)) *
+      rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ U, p i))
+        (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ cubeOddSupport B v ε₁ ε₂, p i))) := by
+  rw [normalizedSubsetTraceGauss_eq_gaussBlock p hp hg hinj _ _
+    (blockCubeExponent_ne_zero U B v ε₁ ε₂ side), gaussBlock_cube_partition p hp hg U B hd,
+    mixedCubeCross_eq_ray p hp hinj hg hcop hodd hpr U B hd]
+
+end FirstPassCubeLabels
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hinj : Function.Injective (fun i => Ideal.span {p i}))
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+include hinj in
+theorem normalizedSubsetTraceGauss_norm_one
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι)
+    (hχ : ∀ i ∈ S, χ i ≠ 1) : ‖normalizedSubsetTraceGauss p hp χ S‖ = 1 := by
+  have hs := (prime_row_trace_poisson (fun i : S => p i.val) (fun i => hp i.val)
+    (hinj.comp Subtype.val_injective) (fun i => χ i.val) (fun i => hχ i.val i.property)).1
+  have hn : ‖subsetTraceGauss p hp χ S‖ = ‖ringComplex (∏ i ∈ S, p i)‖ := by
+    apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+    simpa only [subsetTraceGauss, Finset.prod_coe_sort] using hs
+  have hne : ‖ringComplex (∏ i ∈ S, p i)‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr (ringComplex_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)))
+  rw [normalizedSubsetTraceGauss, norm_div, hn, Complex.norm_real,
+    Real.norm_of_nonneg (norm_nonneg _), div_self hne]
+
+include hinj in
+theorem gaussBlock_norm_one
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (S : Finset ι) (e : ι → ℕ) (he : ∀ i ∈ S, e i ≠ 0) (he6 : ∀ i ∈ S, e i < 6) :
+    ‖gaussBlock p hp hg S e‖ = 1 := by
+  rw [← normalizedSubsetTraceGauss_eq_gaussBlock p hp hg hinj S e he]
+  exact normalizedSubsetTraceGauss_norm_one p hp hinj _ S (fun i hi =>
+    complexSexticChar_pow_ne_one (Ideal.span {p i}) (hg i) (hodd i) (e i) (he6 i hi) (he i hi))
+
+include hinj in
+theorem cubeGaussBlock_norm_one
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (B : Finset ι) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) :
+    ‖gaussBlock p hp hg (cubeActiveSupport B v ε₁ ε₂)
+      (fun i => (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val)‖ = 1 := by
+  apply gaussBlock_norm_one p hp hinj hg hodd
+  · intro i hi
+    exact (ZMod.val_eq_zero _).not.mpr (Finset.mem_filter.mp hi).2
+  · intro i _
+    exact ZMod.val_lt _
+
+include hinj in
+theorem secondColumnCoefficient_eq_gaussBlock (S : Finset ι) :
+    secondColumnCoefficient p S =
+      star (ringComplex (∏ i ∈ S, p i) / (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)) *
+        gaussBlock p hp hg S (fun _ => 2) := by
+  rw [← normalizedSubsetTraceGauss_eq_gaussBlock p hp hg hinj S (fun _ => 2)
+    (fun _ _ => by decide)]
+  have hχ : (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ 2) =
+      (fun i => complexCubicChar (Ideal.span {p i}) (hg i)) :=
+    funext (fun i => (complexSexticChar_powers (Ideal.span {p i}) (hg i)).1)
+  rw [normalizedSubsetTraceGauss, hχ]
+  have h := primeRowTraceGauss_cubic (fun i : S => p i.val) (fun i => hp i.val)
+    (hinj.comp Subtype.val_injective) (fun i => hg i.val)
+  have hG : subsetTraceGauss p hp (fun i => complexCubicChar (Ideal.span {p i}) (hg i)) S =
+      cubicUnitGaussSum 1 (∏ i ∈ S, p i) := by
+    simpa only [subsetTraceGauss, Finset.prod_coe_sort] using h
+  rw [hG]
+  rfl
+
+end FirstPassCubeLabels
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open scoped Classical
+
+theorem blockCross_union_left {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S T C : Finset ι)
+    (hd : Disjoint S T) (e : ι → ℕ) :
+    blockCross p hg (S ∪ T) C e = blockCross p hg S C e * blockCross p hg T C e :=
+  Finset.prod_union hd
+
+def threeBlockExponent {ι : Type*} [DecidableEq ι] (N P : Finset ι)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (i : ι) : ℕ :=
+  if i ∈ N then 5 else if i ∈ P then 1
+  else (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val
+
+theorem gaussBlock_three_cube_partition {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (N P B : Finset ι) (hNP : Disjoint N P) (hNB : Disjoint N B) (hPB : Disjoint P B)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) :
+    gaussBlock p hp hg ((N ∪ P) ∪ cubeActiveSupport B v ε₁ ε₂)
+      (threeBlockExponent N P v ε₁ ε₂) =
+    gaussBlock p hp hg N (fun _ => 5) * gaussBlock p hp hg P (fun _ => 1) *
+      gaussBlock p hp hg (cubeActiveSupport B v ε₁ ε₂)
+        (fun k => (conductorExponent (parity (v k)) (ε₁ k) (ε₂ k)).val) *
+      quadraticCrossPhase p hg N P * mixedCubeCross p hg N B v ε₁ ε₂ true *
+        mixedCubeCross p hg P B v ε₁ ε₂ false := by
+  let C := cubeActiveSupport B v ε₁ ε₂
+  let e := threeBlockExponent N P v ε₁ ε₂
+  have hNC : Disjoint N C := hNB.mono_right (Finset.filter_subset _ _)
+  have hPC : Disjoint P C := hPB.mono_right (Finset.filter_subset _ _)
+  have hNPC : Disjoint (N ∪ P) C := Finset.disjoint_union_left.mpr ⟨hNC, hPC⟩
+  have hN (i : ι) (hi : i ∈ N) : e i = 5 := by simp [e, threeBlockExponent, hi]
+  have hP (i : ι) (hi : i ∈ P) : e i = 1 := by
+    have hn : i ∉ N := fun h => Finset.disjoint_left.mp hNP h hi
+    simp [e, threeBlockExponent, hn, hi]
+  have hC (i : ι) (hi : i ∈ C) : e i =
+      (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val := by
+    have hn : i ∉ N := fun h => Finset.disjoint_left.mp hNC h hi
+    have hp' : i ∉ P := fun h => Finset.disjoint_left.mp hPC h hi
+    simp [e, threeBlockExponent, hn, hp']
+  have hcrossNP : blockCross p hg N P e = quadraticCrossPhase p hg N P := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    apply Finset.prod_congr rfl
+    intro k hk
+    rw [hN i hi, hP k hk, pow_one]
+    have hr := cross_square_primary p hg hpr i k
+    calc
+      _ = crossSymbol p hg i k ^ 3 * crossSymbol p hg i k ^ 2 * crossSymbol p hg k i := by ring
+      _ = _ := by rw [hr]; ring
+  have hcrossNC : blockCross p hg N C e = mixedCubeCross p hg N B v ε₁ ε₂ true := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    apply Finset.prod_congr rfl
+    intro k hk
+    rw [hN i hi, hC k hk]
+    rfl
+  have hcrossPC : blockCross p hg P C e = mixedCubeCross p hg P B v ε₁ ε₂ false := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    apply Finset.prod_congr rfl
+    intro k hk
+    rw [hP i hi, hC k hk]
+    rfl
+  change gaussBlock p hp hg ((N ∪ P) ∪ C) e = _
+  rw [gaussBlock_union p hp hg (N ∪ P) C hNPC, gaussBlock_union p hp hg N P hNP,
+    blockCross_union_left p hg N P C hNP,
+    gaussBlock_congr p hp hg N e (fun _ => 5) hN,
+    gaussBlock_congr p hp hg P e (fun _ => 1) hP,
+    gaussBlock_congr p hp hg C e _ hC, hcrossNP, hcrossNC, hcrossPC]
+  ring
+
+
+def blockRow {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (e : ι → ℕ) (u : O) : ℂ :=
+  primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ e i) S u
+
+theorem blockRow_eq_product {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (e : ι → ℕ) (u : O) :
+    blockRow p hg S e u = ∏ i ∈ S,
+      (complexSexticChar (Ideal.span {p i}) (hg i) ^ e i) (Ideal.Quotient.mk (Ideal.span {p i}) u) := rfl
+
+theorem blockRow_union {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S T : Finset ι) (hd : Disjoint S T)
+    (e : ι → ℕ) (u : O) :
+    blockRow p hg (S ∪ T) e u = blockRow p hg S e u * blockRow p hg T e u := by
+  simp only [blockRow_eq_product, Finset.prod_union hd]
+
+theorem blockRow_congr {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (e f : ι → ℕ)
+    (hef : ∀ i ∈ S, e i = f i) (u : O) : blockRow p hg S e u = blockRow p hg S f u := by
+  simp only [blockRow_eq_product]
+  exact Finset.prod_congr rfl (fun i hi => by rw [hef i hi])
+
+theorem blockRow_one {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (u : O) :
+    blockRow p hg S (fun _ => 1) u = primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S u := by
+  simp only [blockRow_eq_product, pow_one, primeSubsetRow]
+
+theorem blockRow_five {ι : Type*} (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (u : O) :
+    blockRow p hg S (fun _ => 5) u = star (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S u) := by
+  rw [sexticRow_star p hg S u]
+  simp only [blockRow_eq_product, primeSubsetRow, ← Finset.prod_pow]
+  apply Finset.prod_congr rfl
+  intro i _
+  exact MulChar.pow_apply' _ (by decide : (5 : ℕ) ≠ 0) _
+
+
+theorem threeBlockRow_factor {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (N P B : Finset ι) (hNP : Disjoint N P) (hNB : Disjoint N B) (hPB : Disjoint P B)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (u : O) :
+    blockRow p hg ((N ∪ P) ∪ cubeActiveSupport B v ε₁ ε₂)
+      (threeBlockExponent N P v ε₁ ε₂) u =
+    star (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) N u) *
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) P u *
+      blockRow p hg (cubeActiveSupport B v ε₁ ε₂)
+        (fun i => (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val) u := by
+  have hNC : Disjoint N (cubeActiveSupport B v ε₁ ε₂) := hNB.mono_right (Finset.filter_subset _ _)
+  have hPC : Disjoint P (cubeActiveSupport B v ε₁ ε₂) := hPB.mono_right (Finset.filter_subset _ _)
+  have hN : ∀ i ∈ N, threeBlockExponent N P v ε₁ ε₂ i = 5 := by
+    intro i hi; simp [threeBlockExponent, hi]
+  have hP : ∀ i ∈ P, threeBlockExponent N P v ε₁ ε₂ i = 1 := by
+    intro i hi
+    simp [threeBlockExponent, hi, show i ∉ N from fun hn => Finset.disjoint_left.mp hNP hn hi]
+  have hC : ∀ i ∈ cubeActiveSupport B v ε₁ ε₂, threeBlockExponent N P v ε₁ ε₂ i =
+      (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val := by
+    intro i hi
+    simp [threeBlockExponent,
+      show i ∉ N from fun hn => Finset.disjoint_left.mp hNC hn hi,
+      show i ∉ P from fun hp => Finset.disjoint_left.mp hPC hp hi]
+  rw [blockRow_union p hg (N ∪ P) _ (Finset.disjoint_union_left.mpr ⟨hNC, hPC⟩),
+    blockRow_union p hg N P hNP, blockRow_congr p hg N _ _ hN,
+    blockRow_congr p hg P _ _ hP, blockRow_congr p hg _ _ _ hC,
+    blockRow_five, blockRow_one]
+
+def cubeBaseFactor {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (B : Finset ι)
+    (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (d h : O) : ℂ :=
+  let C := cubeActiveSupport B v ε₁ ε₂
+  let e := fun i => (conductorExponent (parity (v i)) (ε₁ i) (ε₂ i)).val
+  gaussBlock p hp hg C e * blockRow p hg C e d * star (blockRow p hg C e h)
+
+
+theorem blockRow_norm_le_one {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (S : Finset ι) (e : ι → ℕ) (a : O) : ‖blockRow p hg S e a‖ ≤ 1 :=
+  primeSubsetRow_norm_le_one p _ S a
+
+theorem cubeBaseFactor_norm_le_one {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (B : Finset ι) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool) (d h : O) :
+    ‖cubeBaseFactor p hp hg B v ε₁ ε₂ d h‖ ≤ 1 := by
+  simp only [cubeBaseFactor, norm_mul, norm_star,
+    cubeGaussBlock_norm_one p hp hinj hg hodd, one_mul]
+  exact (mul_le_of_le_one_left (norm_nonneg _)
+    (blockRow_norm_le_one p hg _ _ _)).trans (blockRow_norm_le_one p hg _ _ _)
+
+
+end FirstPassCubeLabels
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hinj : Function.Injective (fun i => Ideal.span {p i}))
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+  (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+  (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+
+include hp hinj hg hodd in
+theorem secondColumnCoefficient_mul_star (S : Finset ι) :
+    secondColumnCoefficient p S * star (secondColumnCoefficient p S) = 1 := by
+  have hn : ‖secondColumnCoefficient p S‖ = 1 := by
+    rw [secondColumnCoefficient_eq_gaussBlock p hp hinj hg S, norm_mul, norm_star,
+      gaussBlock_norm_one p hp hinj hg hodd S (fun _ => 2)
+        (fun _ _ => by decide) (fun _ _ => by decide), mul_one, norm_div,
+      Complex.norm_real, Real.norm_of_nonneg (norm_nonneg _)]
+    exact div_self (norm_ne_zero_iff.mpr
+      (ringComplex_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))))
+  rw [← starRingEnd_apply, Complex.mul_conj', hn]
+  norm_num
+
+include hinj hodd hpr in
+theorem gaussBlock_one_mobius (S : Finset ι) :
+    supportMobius S * gaussBlock p hp hg S (fun _ => 1) =
+      star (subsetTraceRayFactor p hg S * secondColumnCoefficient p S) := by
+  rw [← normalizedSubsetTraceGauss_eq_gaussBlock p hp hg hinj S (fun _ => 1)
+    (fun _ _ => by decide)]
+  have h := congrArg (starRingEnd ℂ) (subsetTraceGauss_mobius_conversion p hp hinj hg hodd hpr S)
+  rw [map_div₀, map_mul, Complex.conj_ofReal] at h
+  simpa only [normalizedSubsetTraceGauss, starRingEnd_apply, star_supportMobius,
+    star_star, pow_one, div_eq_mul_inv, mul_assoc] using h
+
+include hinj in
+theorem gaussBlock_five (S : Finset ι) :
+    gaussBlock p hp hg S (fun _ => 5) =
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S (-1) *
+        star (gaussBlock p hp hg S (fun _ => 1)) := by
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  have hi : (fun i => χ i ^ 5) = (fun i => (χ i)⁻¹) := by
+    funext i
+    have h6 : χ i ^ 6 = 1 := (complexSexticChar_powers _ _).2.2
+    calc
+      _ = (χ i)⁻¹ * χ i ^ 6 := by group
+      _ = _ := by rw [h6, mul_one]
+  rw [← normalizedSubsetTraceGauss_eq_gaussBlock p hp hg hinj S (fun _ => 5)
+      (fun _ _ => by decide),
+    ← normalizedSubsetTraceGauss_eq_gaussBlock p hp hg hinj S (fun _ => 1)
+      (fun _ _ => by decide)]
+  change normalizedSubsetTraceGauss p hp (fun i => χ i ^ 5) S =
+    primeSubsetRow p χ S (-1) * star (normalizedSubsetTraceGauss p hp (fun i => χ i ^ 1) S)
+  rw [hi]
+  simp only [pow_one, normalizedSubsetTraceGauss, subsetTraceGauss_inverse p hp hinj χ S]
+  have hs : star (subsetTraceGauss p hp χ S / (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)) =
+      star (subsetTraceGauss p hp χ S) / (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ) := by
+    change (starRingEnd ℂ) (_ / _) = _
+    rw [map_div₀, Complex.conj_ofReal]
+  rw [hs]
+  ring
+
+/-- The first reflection leaves the conjugate finite ray factor after cubic cancellation. -/
+def firstColumnPhase (S : Finset ι) : ℂ := star (subsetTraceRayFactor p hg S)
+
+include hinj hodd hpr in
+theorem first_gauss_cancellation (S : Finset ι) :
+    secondColumnCoefficient p S * gaussBlock p hp hg S (fun _ => 1) =
+      supportMobius S * firstColumnPhase p hg S ∧
+    star (secondColumnCoefficient p S) * gaussBlock p hp hg S (fun _ => 5) =
+      supportMobius S *
+        primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S (-1) *
+        star (firstColumnPhase p hg S) := by
+  have hc := secondColumnCoefficient_mul_star p hp hinj hg hodd S
+  have h1 : secondColumnCoefficient p S * gaussBlock p hp hg S (fun _ => 1) =
+      supportMobius S * firstColumnPhase p hg S := by
+    calc
+      _ = supportMobius S * secondColumnCoefficient p S *
+          (supportMobius S * gaussBlock p hp hg S (fun _ => 1)) := by
+        calc
+          _ = (supportMobius S * supportMobius S) *
+              (secondColumnCoefficient p S * gaussBlock p hp hg S (fun _ => 1)) := by
+            rw [supportMobius_sq, one_mul]
+          _ = _ := by ring
+      _ = _ := by
+        rw [gaussBlock_one_mobius p hp hinj hg hodd hpr S, star_mul]
+        calc
+          _ = supportMobius S * star (subsetTraceRayFactor p hg S) *
+              (secondColumnCoefficient p S * star (secondColumnCoefficient p S)) := by ring
+          _ = _ := by rw [hc, mul_one]; rfl
+  refine ⟨h1, ?_⟩
+  rw [gaussBlock_five p hp hinj hg S]
+  calc
+    _ = primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S (-1) *
+        star (secondColumnCoefficient p S * gaussBlock p hp hg S (fun _ => 1)) := by
+      rw [star_mul]
+      ring
+    _ = _ := by rw [h1, star_mul, star_supportMobius]; ring
+
+end FirstPassCubeLabels
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -31,7 +31,7 @@ theorem norm_paperFT_widthCenteredBoxCamera_le_of_gap
     simp [ZeroConfigurationGeometry.gammaOf_eq]
   have hzi : (gammaOf ρ - (t : ℂ) + I * (zetaZeroWidth : ℂ)).im =
       zetaZeroWidth - ((ρ : ℂ).re - 1 / 2) := by
-    simp [ZeroConfigurationGeometry.gammaOf_eq, ZeroConfigurationGeometry.depth] <;> ring
+    simp [ZeroConfigurationGeometry.gammaOf_eq, ZeroConfigurationGeometry.depth]; ring
   have hw : (ρ : ℂ).re - 1 / 2 ≤ zetaZeroWidth :=
     (le_abs_self _).trans (SquareRootThreshold.abs_re_sub_half_le_zetaZeroWidth ρ.2)
   rw [paperFT_boxCenteredCamera]
@@ -82,7 +82,7 @@ theorem norm_paperFT_widthCenteredBoxCamera_le_of_shallow
     simp [ZeroConfigurationGeometry.gammaOf_eq]
   have hzi : (gammaOf ρ - (t : ℂ) + I * (zetaZeroWidth : ℂ)).im =
       zetaZeroWidth - ((ρ : ℂ).re - 1 / 2) := by
-    simp [ZeroConfigurationGeometry.gammaOf_eq, ZeroConfigurationGeometry.depth] <;> ring
+    simp [ZeroConfigurationGeometry.gammaOf_eq, ZeroConfigurationGeometry.depth]; ring
   rw [paperFT_boxCenteredCamera]
   have hb := norm_damped_boxPlateau_le_lorentz hA hh hr n hy hd
     (z := gammaOf ρ - (t : ℂ) + I * (zetaZeroWidth : ℂ))
@@ -105,7 +105,7 @@ theorem summable_widthCenteredBoxCamera
     (t := t)
   simp only [zero_mul, neg_zero, Real.exp_zero, mul_one] at hb
   rw [norm_mul, Complex.norm_natCast]
-  simpa only [lorentzKernel, one_pow, one_mul, mul_assoc, mul_left_comm, mul_comm] using
+  simpa only [lorentzKernel, one_pow, one_mul, mul_one, mul_assoc, mul_left_comm, mul_comm] using
     mul_le_mul_of_nonneg_left hb (Nat.cast_nonneg (zetaZeroConfig.mult ρ))
 
 /-- Only deep exterior zeros need a gap; all shallow multiplicities are

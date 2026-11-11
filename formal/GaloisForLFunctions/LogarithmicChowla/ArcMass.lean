@@ -33,7 +33,7 @@ theorem normSq_le_sq_of_norm_le {z : ℂ} {B : ℝ} (h : ‖z‖ ≤ B) : Comple
   rw [Complex.normSq_eq_norm_sq]
   exact pow_le_pow_left₀ (norm_nonneg z) h 2
 
-theorem norm_sum_lam_ex_le (n T : ℕ) (f : ℕ → ℕ) (φ : ℕ → ℝ) :
+theorem norm_sum_lam_ex_le (T : ℕ) (f : ℕ → ℕ) (φ : ℕ → ℝ) :
     ‖∑ u ∈ range T, (lam (f u) : ℂ) * ex (φ u)‖ ≤ T := by
   calc ‖∑ u ∈ range T, (lam (f u) : ℂ) * ex (φ u)‖
       ≤ ∑ u ∈ range T, ‖(lam (f u) : ℂ) * ex (φ u)‖ := norm_sum_le _ _
@@ -44,7 +44,7 @@ theorem norm_sum_lam_ex_le (n T : ℕ) (f : ℕ → ℕ) (φ : ℕ → ℝ) :
     _ = T := by simp
 
 theorem norm_lamSum_le (n M : ℕ) (α : ℝ) : ‖lamSum n M α‖ ≤ M :=
-  norm_sum_lam_ex_le n M (fun m => n + m) (fun m => m * α)
+  norm_sum_lam_ex_le M (fun m => n + m) (fun m => m * α)
 
 theorem bdd_normSq_lamSum (M : ℕ) (α : ℝ) : Bdd fun n => Complex.normSq (lamSum n M α) :=
   ⟨(M : ℝ) ^ 2, fun n => by
@@ -111,13 +111,21 @@ theorem sum_box_mul_ex (n M T : ℕ) (θ φ : ℝ) :
       congr 1
       push_cast
       ring
-    rw [← this]
-    ring
+    linear_combination (↑(lam (n + m)) : ℂ) * this
   rw [hLHS, hRHS]
 
 /-- The residues `r mod R` with `r/R` within `1/(4T)` of `θ` modulo `1`. -/
-def arcSet (R T : ℕ) (θ : ℝ) : Finset ℕ :=
-  (range R).filter fun r => ∃ j : ℤ, |(r : ℝ) / R - θ - j| ≤ 1 / (4 * T)
+def arcSet (R T : ℕ) (θ : ℝ) : Finset ℕ := by
+  classical
+  exact (range R).filter fun r => ∃ j : ℤ, |(r : ℝ) / R - θ - j| ≤ 1 / (4 * T)
+
+theorem mem_arcSet {R T r : ℕ} {θ : ℝ} :
+    r ∈ arcSet R T θ ↔ r < R ∧ ∃ j : ℤ, |(r : ℝ) / R - θ - j| ≤ 1 / (4 * T) := by
+  classical
+  simp [arcSet]
+
+theorem arcSet_subset (R T : ℕ) (θ : ℝ) : arcSet R T θ ⊆ range R := fun _ hr =>
+  mem_range.mpr (mem_arcSet.mp hr).1
 
 /-- **The arc, pointwise in `n`.** `Σ_{r ∈ arc} |S_n(r/R)|² ≤ (4R/T²) Σ_s |B_s|²`. -/
 theorem sum_arc_normSq_le (n M T R : ℕ) (hT : 0 < T) (hR : M + T ≤ R) (θ : ℝ) :
@@ -129,7 +137,7 @@ theorem sum_arc_normSq_le (n M T R : ℕ) (hT : 0 < T) (hR : M + T ≤ R) (θ : 
   have hpoint : ∀ r ∈ arcSet R T θ, Complex.normSq (lamSum n M (r / R))
       ≤ 4 / (T : ℝ) ^ 2 * Complex.normSq (∑ s ∈ range (M + T), c s * ex (s * r / R)) := by
     intro r hr
-    obtain ⟨j, hj⟩ := (mem_filter.mp hr).2
+    obtain ⟨j, hj⟩ := (mem_arcSet.mp hr).2
     set φ : ℝ := (r : ℝ) / R - θ - j with hφ
     have hD := half_le_norm_dirichlet hT hj
     have hbox := sum_box_mul_ex n M T θ φ
@@ -144,8 +152,6 @@ theorem sum_arc_normSq_le (n M T R : ℕ) (hT : 0 < T) (hR : M + T ≤ R) (θ : 
       have : (s : ℝ) * φ = -(s * θ) + s * r / R + ((-(s * j) : ℤ) : ℝ) := by
         rw [hφ]; push_cast; ring
       rw [this, ex_add_int]
-      congr 2
-      ring
     rw [hsum, hS] at hbox
     have hnorm : ‖lamSum n M (r / R)‖ * (T / 2) ≤ ‖∑ s ∈ range (M + T), c s * ex (s * r / R)‖ := by
       rw [hbox, norm_mul, norm_mul, norm_ex, one_mul]
@@ -164,7 +170,7 @@ theorem sum_arc_normSq_le (n M T R : ℕ) (hT : 0 < T) (hR : M + T ≤ R) (θ : 
         sum_le_sum hpoint
     _ ≤ ∑ r ∈ range R,
           4 / (T : ℝ) ^ 2 * Complex.normSq (∑ s ∈ range (M + T), c s * ex (s * r / R)) :=
-        sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ =>
+        sum_le_sum_of_subset_of_nonneg (arcSet_subset R T θ) fun _ _ _ =>
           mul_nonneg (by positivity) (Complex.normSq_nonneg _)
     _ = 4 / (T : ℝ) ^ 2 * (R * ∑ s ∈ range (M + T), Complex.normSq (c s)) := by
         rw [← mul_sum, sum_normSq_eq hR0 hR c]
@@ -217,7 +223,7 @@ theorem arc_mass_le {U : Ultrafilter ℝ} (hU : (U : Filter ℝ) ≤ atTop) (M T
   have hwin : Bdd fun n => Complex.normSq (∑ u ∈ range T, (lam (n + u) : ℂ) * ex (u * θ)) :=
     ⟨(T : ℝ) ^ 2, fun n => by
       rw [abs_of_nonneg (Complex.normSq_nonneg _)]
-      exact normSq_le_sq_of_norm_le (norm_sum_lam_ex_le n T _ _)⟩
+      exact normSq_le_sq_of_norm_le (norm_sum_lam_ex_le T _ _)⟩
   -- the arc sum under `L`
   have h1 : ∑ r ∈ arcSet R T θ, limAvg U (fun n => Complex.normSq (lamSum n M (r / R)))
       ≤ 4 * R / (T : ℝ) ^ 2 * ∑ s ∈ range (M + T), limAvg U (fun n => Complex.normSq (box n M T θ s)) := by
@@ -248,8 +254,7 @@ theorem arc_mass_le {U : Ultrafilter ℝ} (hU : (U : Filter ℝ) ≤ atTop) (M T
           (∑ u ∈ range T, (lam (n + (s - T) + u) : ℂ) * ex (u * θ)))
         = limAvg U (fun n => Complex.normSq (∑ u ∈ range T, (lam (n + u) : ℂ) * ex (u * θ))) :=
       limAvg_shift_add hU hwin (s - T)
-    rw [hcongr, hshift, hV]
-    field_simp
+    rw [hcongr, hshift, hV, ← mul_assoc, mul_inv_cancel₀ (by positivity), one_mul]
   have hpart : ∀ s, limAvg U (fun n => Complex.normSq (box n M T θ s)) ≤ (T : ℝ) ^ 2 := by
     intro s
     have := abs_limAvg_le hU (f := fun n => Complex.normSq (box n M T θ s)) fun n => by

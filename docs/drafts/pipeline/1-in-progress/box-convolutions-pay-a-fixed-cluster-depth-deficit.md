@@ -3,8 +3,9 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Target:** Exterior mass in the Turán cluster receiver; M7/A78.
-- **Status:** Camera Fourier bound checked. Mass, uniform Lorentzian envelope,
-  full deep/shallow exterior bound, and Turán receiver written; checks pending.
+- **Status:** Fourier estimates, exact mass, uniform Lorentzian envelope, full
+  deep/shallow exterior bound, and absolute summability checked. Turán
+  receiver, fixed-deficit rate, and uniform prime/remainder costs await checks.
 
 ## Proposed estimate
 
@@ -14,7 +15,7 @@ Let `Bₙ=boxPlateau A h (n+1) r`, with `A,h,r>0`,
 Every zero has `Im z≥0`, so centering removes exponential amplification.
 
 If exterior zeros with depth at least `b-d` have ordinate gap `g>0`,
-the proposed complete multiplicity-weighted exterior norm bound is
+the proved complete multiplicity-weighted exterior norm bound is
 
 `[(2/h)(1+g⁻²)(hg)⁻ⁿ + (4A+4/h)exp(-d(y-δ))] lorentzMass(t)`.
 
@@ -64,5 +65,5 @@ Written capstone: `BoxCamerasPayFixedDepthDeficits` selects a fixed positive
 full field, or a deep exterior companion within `g`. The relative exterior
 ratios are `exp(ηb)/(hg)` and `exp(ηb-da)`, both strictly below one.
 
-Remaining formalization: verify the written envelope/receiver/rate chain
-and the uniform prime/remainder bounds.
+Remaining formalization: verify the written Turán profile, receiver, rate
+capstone, and uniform prime/remainder bounds.

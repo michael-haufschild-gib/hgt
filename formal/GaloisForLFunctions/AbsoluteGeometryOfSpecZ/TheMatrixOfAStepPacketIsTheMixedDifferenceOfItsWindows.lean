@@ -90,8 +90,7 @@ theorem packetForm_stepPacket_eq_sum_blockEntry {R : ℕ} (hR : 1 ≤ R) (Q J : 
       ∑ j ∈ range J, ∑ l ∈ range J, σ j * σ l * blockEntry Q R j l := by
   have hE : ∀ j l, stepEntry Q R (fun j => R + j) j l =
       windowValue Q R 0 j + windowValue Q R 0 l - windowValue Q R j l := fun j l => by
-    rw [windowValue_zero_left, windowValue_zero_left, windowValue, Nat.cast_min, Nat.cast_max]
-    rfl
+    rw [windowValue_zero_left, windowValue_zero_left, windowValue, stepEntry]
   rw [stepPacket_eq_nested hR J σ,
     packetForm_nested_eq (x := fun j => R + j) hR (nested_bounds R J) (nestedCoeff J σ)]
   simp only [hE]

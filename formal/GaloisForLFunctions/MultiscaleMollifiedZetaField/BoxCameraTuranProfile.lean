@@ -107,7 +107,6 @@ theorem depthCenteredCamera_boxTuranProfile {A h r b y : ℝ}
   rw [Complex.ofReal_exp]
   congr 2
   push_cast
-  ring
 
 /-- A near-top sector cluster keeps its Turán signal for the box camera. -/
 theorem exists_nu_widthCenteredBox_cluster_signal

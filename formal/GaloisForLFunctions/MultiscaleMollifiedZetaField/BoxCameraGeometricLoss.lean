@@ -53,10 +53,11 @@ theorem boxExteriorBound_mul_exp_le
     (ht : Real.log (|t| + 4) ≤ L * ((n : ℝ) + 1)) :
     boxExteriorBound A h n r g d y t * Real.exp (η * b * ((n : ℝ) + 1)) ≤
       boxRelativeExteriorMajorant A h g d a b η L n := by
+  have hξ := xiLineTwoLogDerivConstant_nonneg
   have hmass : lorentzMass t ≤
       (8 * (xiLineTwoLogDerivConstant + L)) * ((n : ℝ) + 1) := by
     have hc := le_mul_of_one_le_right xiLineTwoLogDerivConstant_nonneg
-      (show (1 : ℝ) ≤ (n : ℝ) + 1 by positivity)
+      (show (1 : ℝ) ≤ (n : ℝ) + 1 from le_add_of_nonneg_left (Nat.cast_nonneg n))
     have hm := lorentzMass_le_log t
     nlinarith only [hc, hm, ht]
   have he : Real.exp (η * b * ((n : ℝ) + 1)) =
@@ -107,9 +108,10 @@ theorem exists_positive_box_depth_deficit {h g d a b : ℝ}
   have he : min (Real.log (h * g)) (d * a) / (2 * b) * b =
       min (Real.log (h * g)) (d * a) / 2 := by field_simp [hb.ne']
   refine ⟨min (Real.log (h * g)) (d * a) / (2 * b), by positivity, ?_, ?_⟩
-  · rw [he, ← Real.exp_log (zero_lt_one.trans hgap)]
-    apply Real.exp_lt_exp.mpr
-    linarith only [hm, min_le_left (Real.log (h * g)) (d * a)]
+  · rw [he]
+    have hlt : min (Real.log (h * g)) (d * a) / 2 < Real.log (h * g) := by
+      linarith only [hm, min_le_left (Real.log (h * g)) (d * a)]
+    exact (Real.exp_lt_exp.mpr hlt).trans_eq (Real.exp_log (zero_lt_one.trans hgap))
   · rw [he]
     linarith only [hm, min_le_right (Real.log (h * g)) (d * a)]
 
