@@ -43,7 +43,6 @@ theorem tendsto_log_shortLevinsonCutoff_div_log :
   dsimp only [shortLevinsonCutoff, Function.comp_def]
   rw [Real.log_rpow hU0]
   field_simp [hlog]
-  ring
 
 /-- The cutoff stays below the upper edge with room for the gate's mass bound. -/
 theorem eventually_shortLevinsonCutoff_add_one_le :

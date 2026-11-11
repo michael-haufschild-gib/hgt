@@ -195,11 +195,12 @@ theorem sum_norm_detCoeffChi_block_le (X y j : ℕ) {σ₀ : ℝ} (hσ₀ : 0 �
 omit [NeZero q] in
 /-- **The class of a detected point.**  If the detection polynomial is at least `½` at
 `β + iγ` with `σ ≤ β ≤ 1`, then some slab `i ≤ ⌊Λ⌋`, block `j < J` and order `m < J + 8` have
-`1/(12J) ≤ |P_{j,m}(σ + i/Λ + iγ)|`. -/
+`1/(12J) ≤ |P_{j,m}(σ + i/Λ + iγ)|`, with `σ + i/Λ ≤ β`. -/
 theorem exists_class_of_detected {X y : ℕ} (hXy : 2 ≤ X * y) {σ β γ : ℝ} (hσ : 0 ≤ σ)
     (hσβ : σ ≤ β) (hβ1 : β ≤ 1)
     (hdet : 1 / 2 ≤ ‖detPolyChi χ X y ((β : ℂ) + (γ : ℂ) * I)‖) :
-    ∃ i < ⌊Real.log (X * y : ℕ)⌋₊ + 1, ∃ j < detBlockCount X y, ∃ m < detBlockCount X y + 8,
+    ∃ i < ⌊Real.log (X * y : ℕ)⌋₊ + 1, σ + i / Real.log (X * y : ℕ) ≤ β ∧
+      ∃ j < detBlockCount X y, ∃ m < detBlockCount X y + 8,
       1 / (12 * detBlockCount X y) ≤
         ‖abscissaTaylorPoly (detDyadicBlock X y j) (detCoeffChi χ X y) (Real.log (X * y : ℕ)) m
           (σ + i / Real.log (X * y : ℕ)) γ‖ := by
@@ -244,7 +245,7 @@ theorem exists_class_of_detected {X y : ℕ} (hXy : 2 ≤ X * y) {σ β γ : ℝ
     exact this
   obtain ⟨m, hm, hmbig⟩ := exists_abscissaTaylorPoly_large hblock1 (detCoeffChi χ X y)
     (sub_nonneg.mpr hσ₀β) hΛ0 hblockΛ hβσ₀ (by omega) hjbig htail
-  refine ⟨i, hiΛ, j, hj, m, hm, le_trans (le_of_eq ?_) hmbig⟩
+  refine ⟨i, hiΛ, hσ₀β, j, hj, m, hm, le_trans (le_of_eq ?_) hmbig⟩
   field_simp
   ring
 

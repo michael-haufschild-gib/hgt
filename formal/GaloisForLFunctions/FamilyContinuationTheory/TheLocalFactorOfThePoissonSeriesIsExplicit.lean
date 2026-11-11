@@ -457,11 +457,12 @@ theorem localTerm_T0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j k
   have hQ := primeQ_ne_zero π
   rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 0 0 k m]
   unfold localCoef
-  rw [show ((0 : Fin 2) : ℕ) + 3 * 0 = 0 from rfl, thetaGauss_of_eq_one (pow_zero π)]
+  rw [show ((0 : Fin 2) : ℕ) = 0 from rfl, show 0 + 3 * 0 = 0 from rfl,
+    thetaGauss_of_eq_one (pow_zero π)]
   rcases Nat.eq_zero_or_pos k with rfl | hk
   · rw [poissonCoeff_of_eq_one (pow_zero π) (pow_zero π), if_pos rfl]
     simp
-  · rw [poissonCoeff_pow_zero_right π hlam h2 hprim hk, if_neg (by omega),
+  · rw [poissonCoeff_pow_zero_right π hlam h2 hprim hk, if_neg (Nat.pos_iff_ne_zero.mp hk),
       show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
     by_cases hc : m = 0 ∧ j = 0
     · obtain ⟨rfl, rfl⟩ := hc
@@ -484,7 +485,8 @@ theorem localTerm_A0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
   have hc := conj_sexticChar_four_pow_three π hlam h2
   rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 0 2 0 i]
   unfold localCoef
-  rw [show ((0 : Fin 2) : ℕ) + 3 * 2 = 6 from rfl, thetaGauss_of_eq_one (pow_zero π),
+  rw [show ((0 : Fin 2) : ℕ) = 0 from rfl, show 0 + 3 * 2 = 6 from rfl,
+    thetaGauss_of_eq_one (pow_zero π),
     poissonCoeff_pow_zero_left π hlam h2 hprim (by norm_num)]
   unfold sexticLayer
   rw [if_pos (dvd_refl 6), show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
@@ -503,7 +505,6 @@ theorem localTerm_A0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
     unfold primeR
     rw [show i + 1 - 1 = i by omega, pow_succ V]
     field_simp
-    ring
 
 include hlam h2 hprim in
 /-- **Base of `(0, 2r+2)`, `k = 1`.** -/
@@ -522,7 +523,8 @@ theorem localTerm_A1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
   have hg := gauss_one_ne_zero π hlam h2
   rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 0 2 1 i]
   unfold localCoef
-  rw [show ((0 : Fin 2) : ℕ) + 3 * 2 = 6 from rfl, thetaGauss_of_eq_one (pow_zero π),
+  rw [show ((0 : Fin 2) : ℕ) = 0 from rfl, show 0 + 3 * 2 = 6 from rfl,
+    thetaGauss_of_eq_one (pow_zero π),
     poissonCoeff_pow_one_left π hlam h2 hprim (by norm_num)]
   unfold sexticLayer
   rw [if_neg (by norm_num), show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
@@ -536,9 +538,9 @@ theorem localTerm_A1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j :
     unfold primeR
     rw [primeQ_eq π hlam hprim]
     field_simp
-    rw [show complexSexticChar (Ideal.span {π}) hlam (-1) ^ 6 = (complexSexticChar
-      (Ideal.span {π}) hlam (-1) ^ 2) ^ 3 by ring, hε]
-    ring
+    linear_combination (primeKappa π ηp ^ 6 * X ^ 6 * Y * V *
+      (complexSexticChar (Ideal.span {π}) hlam (-1) ^ 6 + complexSexticChar (Ideal.span {π}) hlam (-1) ^ 4
+        + complexSexticChar (Ideal.span {π}) hlam (-1) ^ 2 + 1)) * hε
   · rw [if_neg (by omega), if_neg hcnd]
     simp
 
@@ -556,7 +558,8 @@ theorem localTerm_B0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
   have hπ := ringComplex_ne_zero π
   rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 1 0 0 i]
   unfold localCoef
-  rw [show ((1 : Fin 2) : ℕ) + 3 * 0 = 1 from rfl, poissonCoeff_pow_zero_left π hlam h2 hprim le_rfl]
+  rw [show ((1 : Fin 2) : ℕ) = 1 from rfl, show 1 + 3 * 0 = 1 from rfl,
+    poissonCoeff_pow_zero_left π hlam h2 hprim le_rfl]
   unfold sexticLayer
   rw [if_neg (by norm_num)]
   by_cases hcnd : i = 0 ∧ j = 0
@@ -570,7 +573,6 @@ theorem localTerm_B0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
     simp only [Fin.val_one, pow_zero, pow_one, mul_zero, one_mul, mul_one,
       show (1 : ℕ) % 2 = 1 from rfl, show (1 : ℕ) - 1 = 0 from rfl]
     field_simp
-    ring
   · rw [if_neg (by omega), if_neg hcnd]
     simp
 
@@ -590,7 +592,8 @@ theorem localTerm_B1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
   have hε := mulChar_neg_one_sq (complexSexticChar (Ideal.span {π}) hlam)
   rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 1 0 1 i]
   unfold localCoef
-  rw [show ((1 : Fin 2) : ℕ) + 3 * 0 = 1 from rfl, poissonCoeff_pow_one_left π hlam h2 hprim le_rfl]
+  rw [show ((1 : Fin 2) : ℕ) = 1 from rfl, show 1 + 3 * 0 = 1 from rfl,
+    poissonCoeff_pow_one_left π hlam h2 hprim le_rfl]
   unfold sexticLayer
   rw [if_pos (by norm_num), thetaGauss_prime_eq π hlam h2 hprim, conj_sexticChar_four π hlam h2,
     show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
@@ -604,17 +607,158 @@ theorem localTerm_B1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
   by_cases h1 : 1 ≤ i ∨ 2 ≤ j
   · simp (disch := omega) only [if_pos, if_neg]
     field_simp
-    linear_combination (exp := 1) 0 * hε
+    linear_combination (-(κ * (primeQ π - 1) * X * Y * V ^ i)) * hε
   · rw [if_neg h1]
     by_cases hj1 : j = 1
     · subst hj1
       have hi : i = 0 := by omega
       subst hi
-      simp (disch := omega) only [if_pos, if_neg]
+      simp (disch := omega) only [if_pos, if_neg, ite_true]
       field_simp
-      linear_combination 0 * hε
+      linear_combination (κ * primeQ π * X * Y) * hε
     · simp (disch := omega) only [if_pos, if_neg]
       simp
+
+include hlam h2 hprim in
+/-- **Base of `(0, 2r+1)`, `k = 0`.** -/
+theorem localTerm_C0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i : ℕ) :
+    localTerm π ηp X Y V u j (0, 1, 0, i) =
+      if i = 0 ∧ j = 2 then primeKappa π ηp ^ 3 *
+        (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
+          primeNorm π ^ 3 * X ^ 3 else 0 := by
+  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hΓ := fixedDualAverage_prime_ne_zero π h2
+  have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
+  have hc := conj_sexticChar_four_pow_three π hlam h2
+  rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 0 1 0 i]
+  unfold localCoef
+  rw [show ((0 : Fin 2) : ℕ) = 0 from rfl, show 0 + 3 * 1 = 3 from rfl,
+    thetaGauss_of_eq_one (pow_zero π), poissonCoeff_pow_zero_left π hlam h2 hprim (by norm_num)]
+  unfold sexticLayer
+  rw [if_neg (by norm_num), hc, show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
+  by_cases hcnd : i = 0 ∧ j = 2
+  · obtain ⟨rfl, rfl⟩ := hcnd
+    rw [if_pos rfl, if_pos ⟨rfl, rfl⟩, gauss_three_eq π hlam h2, primeQ_eq π hlam hprim]
+    simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
+      show (3 : ℕ) % 2 = 1 from rfl, show (3 : ℕ) - 1 = 2 from rfl]
+    rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
+    field_simp
+  · rw [if_neg (by omega), if_neg hcnd]
+    simp
+
+include hlam h2 hprim in
+/-- **Base of `(0, 2r+1)`, `k = 1`.** -/
+theorem localTerm_C1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i : ℕ) :
+    localTerm π ηp X Y V u j (0, 1, 1, i) =
+      if i = 0 ∧ j = 3 then -(ηp * (primeKappa π ηp ^ 2 *
+        conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) *
+          (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 2)⁻¹ *
+            primeQ π ^ 2 * X ^ 3 * Y) else 0 := by
+  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hΓ := fixedDualAverage_prime_ne_zero π h2
+  have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
+  have hc := conj_sexticChar_four_pow_three π hlam h2
+  have hc0 := sexticChar_four_ne_zero π hlam h2
+  have hg := gauss_one_ne_zero π hlam h2
+  have hπ := ringComplex_ne_zero π
+  have hε := mulChar_neg_one_sq (complexSexticChar (Ideal.span {π}) hlam)
+  rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 0 1 1 i]
+  unfold localCoef
+  rw [show ((0 : Fin 2) : ℕ) = 0 from rfl, show 0 + 3 * 1 = 3 from rfl,
+    thetaGauss_of_eq_one (pow_zero π), poissonCoeff_pow_one_left π hlam h2 hprim (by norm_num)]
+  unfold sexticLayer
+  rw [if_neg (by norm_num), hc, show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
+  by_cases hcnd : i = 0 ∧ j = 3
+  · obtain ⟨rfl, rfl⟩ := hcnd
+    rw [if_pos rfl, if_pos ⟨rfl, rfl⟩, gauss_two_eq π hlam h2 hprim, primeQ_eq π hlam hprim,
+      conj_sexticChar_four π hlam h2]
+    have hκ := primeKappa_mul π ηp
+    generalize primeKappa π ηp = κ at hκ ⊢
+    obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
+      rw [eq_div_iff hN, mul_comm ηp, hκ]
+    simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
+      show (3 : ℕ) % 2 = 1 from rfl, show (3 : ℕ) - 1 = 2 from rfl, show (3 : ℕ) + 1 = 4 from rfl,
+      show (4 : ℕ) - 1 = 3 from rfl]
+    field_simp
+    set ε := complexSexticChar (Ideal.span {π}) hlam (-1)
+    linear_combination (-(κ ^ 3 * X ^ 3 * Y * (ε ^ 2 + 1))) * hε
+  · rw [if_neg (by omega), if_neg hcnd]
+    simp
+
+include hlam h2 hprim in
+/-- **Base of `(1, 2r+1)`, `k = 0`.** -/
+theorem localTerm_D0 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i : ℕ) :
+    localTerm π ηp X Y V u j (1, 1, 0, i) =
+      if i = 0 ∧ j = 3 then (primeKappa π ηp ^ 2 *
+        conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) ^ 2 *
+          (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 4)⁻¹ *
+            primeQ π ^ 2 * X ^ 4 else 0 := by
+  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hΓ := fixedDualAverage_prime_ne_zero π h2
+  have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
+  have hc3 := sexticChar_four_pow_three π hlam h2
+  have hc0 := sexticChar_four_ne_zero π hlam h2
+  have hg := gauss_one_ne_zero π hlam h2
+  have hπ := ringComplex_ne_zero π
+  rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 1 1 0 i]
+  unfold localCoef
+  rw [show ((1 : Fin 2) : ℕ) = 1 from rfl, show 1 + 3 * 1 = 4 from rfl,
+    poissonCoeff_pow_zero_left π hlam h2 hprim (by norm_num)]
+  unfold sexticLayer
+  rw [if_neg (by norm_num), show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
+  by_cases hcnd : i = 0 ∧ j = 3
+  · obtain ⟨rfl, rfl⟩ := hcnd
+    rw [if_pos rfl, if_pos ⟨rfl, rfl⟩, gauss_four_eq π hlam h2 hprim, primeQ_eq π hlam hprim,
+      conj_sexticChar_four π hlam h2, thetaGauss_prime_eq π hlam h2 hprim]
+    simp only [pow_zero, pow_one, mul_zero, one_mul, mul_one,
+      show (4 : ℕ) % 2 = 0 from rfl, show (4 : ℕ) - 1 = 3 from rfl]
+    field_simp
+    set c := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)
+    linear_combination (primeKappa π ηp ^ 4 * X ^ 4 * (c ^ 3 + 1)) * hc3
+  · rw [if_neg (by omega), if_neg hcnd]
+    simp
+
+include hlam h2 hprim in
+/-- **Base of `(1, 2r+1)`, `k = 1`.** -/
+theorem localTerm_D1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i : ℕ) :
+    localTerm π ηp X Y V u j (1, 1, 1, i) =
+      if i = 0 ∧ j = 4 then -(ηp * primeKappa π ηp ^ 3 *
+        (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
+          primeNorm π ^ 5 * X ^ 4 * Y) else 0 := by
+  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  have hΓ := fixedDualAverage_prime_ne_zero π h2
+  have hρ0 := sexticChar_ne_zero π hlam _ (unit_mk_of_not_mem π hu)
+  have hc3 := sexticChar_four_pow_three π hlam h2
+  have hc0 := sexticChar_four_ne_zero π hlam h2
+  have hg := gauss_one_ne_zero π hlam h2
+  have hπ := ringComplex_ne_zero π
+  have hε := mulChar_neg_one_sq (complexSexticChar (Ideal.span {π}) hlam)
+  have hΓ2 := gamma_sq_eq_sextic π hlam h2 hprim
+  rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j 1 1 1 i]
+  unfold localCoef
+  rw [show ((1 : Fin 2) : ℕ) = 1 from rfl, show 1 + 3 * 1 = 4 from rfl,
+    poissonCoeff_pow_one_left π hlam h2 hprim (by norm_num)]
+  unfold sexticLayer
+  rw [if_neg (by norm_num), show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl]
+  by_cases hcnd : i = 0 ∧ j = 4
+  · obtain ⟨rfl, rfl⟩ := hcnd
+    rw [if_pos rfl, if_pos ⟨rfl, rfl⟩, gauss_three_eq π hlam h2, primeQ_eq π hlam hprim,
+      conj_sexticChar_four π hlam h2, thetaGauss_prime_eq π hlam h2 hprim]
+    have hκ := primeKappa_mul π ηp
+    generalize primeKappa π ηp = κ at hκ ⊢
+    obtain rfl : ηp = κ * ringComplex π / primeNorm π := by
+      rw [eq_div_iff hN, mul_comm ηp, hκ]
+    simp only [pow_zero, pow_one, one_mul, mul_one,
+      show (4 : ℕ) % 2 = 0 from rfl, show (4 : ℕ) - 1 = 3 from rfl, show (4 : ℕ) + 1 = 5 from rfl,
+      show (5 : ℕ) - 1 = 4 from rfl]
+    rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
+    field_simp
+    set ε := complexSexticChar (Ideal.span {π}) hlam (-1)
+    set c := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)
+    linear_combination (-(κ ^ 4 * X ^ 4 * Y * ε ^ 5 * c ^ 3)) * hΓ2 +
+      (-(κ ^ 4 * X ^ 4 * Y * c ^ 3 * (ε ^ 4 + ε ^ 2 + 1))) * hε + (-(κ ^ 4 * X ^ 4 * Y)) * hc3
+  · rw [if_neg (by omega), if_neg hcnd]
+    simp
 
 end Prime
 

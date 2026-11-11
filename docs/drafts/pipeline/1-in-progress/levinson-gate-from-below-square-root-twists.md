@@ -66,10 +66,10 @@ have these scalar limits in `TheFrozenMainJetsHaveTheirScalarLimits`,
 for arbitrary diverging cutoffs and convergent normalized displacement
 and endpoint conductor ratios.
 
-The final obligations are the dyadic law for one fixed mollifier and its
-insertion into `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw`
-and the proved count receiver. No detector gate from these inputs is yet
-claimed.
+The dyadic law, fixed-coefficient transfer and count insertion have complete
+Lean proof drafts, pending dependency checks. The capstone is
+`TheTwistedMomentGivesAPositiveCriticalProportion`: its target fraction is
+`(1−log(18/5)/(13/10))/4`. No detector gate from these inputs is yet claimed.
 
 ## Low-height split and scalar choice
 
@@ -96,3 +96,9 @@ Proof drafts now bound the full gate-strip exponent change by `R/(U−1)`,
 the coefficient discrepancy by `D exp D · n⁻ᵈ`, and the resulting energy
 via Young's inequality and the Weyl bound. These checks and their dyadic
 assembly remain required.
+
+The block argument uses the Weyl head below `U^(53/100)`, a uniform linear
+energy bound up to `δ U/log U`, and the sharp scalar above that threshold.
+Choosing `δ` after the linear bound absorbs the middle range into the
+gate's additive slack. The squared coefficient perturbation has exponent
+`13/50+11/8−2=−73/200`, so the same fixed coefficients serve every block.

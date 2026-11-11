@@ -49,7 +49,7 @@ theorem norm_scaled_holomorphicChiPair_jet_le {R K L t : ℝ}
     linarith only [hh, hz, hC]
   have hf : DifferentiableOn ℂ (fun z => holomorphicChiPair (z / (L : ℂ)) t) (ball C 2) := by
     intro z hz
-    have hz2 : ‖z - C‖ ≤ 2 := (show ‖z - C‖ < 2 by simpa only [dist_eq_norm] using hz).le
+    have hz2 : ‖z - C‖ ≤ 2 := (show ‖z - C‖ < 2 by simpa only [mem_ball, dist_eq_norm] using hz).le
     have hn : ‖z / (L : ℂ)‖ ≤ 1 := by
       rw [norm_div, Complex.norm_real, Real.norm_of_nonneg hL0.le]
       exact (div_le_one hL0).mpr ((hzn hz2).trans (by linarith only [hL]))
@@ -71,7 +71,7 @@ theorem norm_scaled_holomorphicChiPair_jet_le {R K L t : ℝ}
     have hz1 : ‖z - C‖ ≤ 1 := by simpa only [mem_sphere, dist_eq_norm] using (show dist z C = 1 from hz).le
     have hzR := hzn hz1
     have herror : ‖scaledChiConductorError L t z‖ ≤ Real.exp 9 - 1 := by
-      have hh := norm_scaledChiConductorError_jet_le (R := R + 1) (by positivity)
+      have hh := norm_scaledChiConductorError_jet_le (R := R + 1) (L := L) (by positivity)
         (by linarith only [hL]) ht hzR 0
       simp only [iteratedDeriv_zero, Nat.factorial_zero, Nat.cast_one, one_mul] at hh
       exact hh.trans (sub_le_sub_right (Real.exp_le_exp.mpr

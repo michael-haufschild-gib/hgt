@@ -156,10 +156,13 @@ theorem isBigO_normalizedThreeProfileMain
   have hm {f g : ι → ℝ} {c : ℝ} (hf : Tendsto f l (𝓝 c)) (hg : g =O[l] M) :
       (fun i => f i * g i) =O[l] M := by
     simpa only [one_mul] using (hf.isBigO_one ℝ).mul hg
-  have e0 := hm (tendsto_const_nhds.sub hα) hf0
+  have hcoef0 : Tendsto (fun i => 1 - α i) l (𝓝 (1 - α₀)) := tendsto_const_nhds.sub hα
+  have hcoef3 : Tendsto (fun i => -(α i / 2 * (2 - α i))) l (𝓝 (-(α₀ / 2 * (2 - α₀)))) :=
+    ((hα.div_const 2).mul (tendsto_const_nhds.sub hα)).neg
+  have e0 := hm hcoef0 hf0
   have e1 := hm ((hα.pow 2).sub hα) hs0
   have e2 := hm hα hh0
-  have e3 := hm (((hα.div_const 2).mul (tendsto_const_nhds.sub hα)).neg) hf1
+  have e3 := hm hcoef3 hf1
   have e4 := hm ((hα.pow 2).div_const 2) hs1
   have e5 := hm (((hα.pow 2).div_const 2).neg) hh1
   have e6 := hm ((hα.pow 2).div_const 4) hf2

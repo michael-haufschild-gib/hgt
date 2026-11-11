@@ -1393,34 +1393,33 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
       exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < M)) (by linarith)
     have hMod := exp_tsum_necklaceCount_log_cpow_eq ha2 (by omega) haM_lt
     -- Both row series converge absolutely on `{Re s > 1}`.
+    have hsum_M : Summable (fun k : ℕ =>
+        (necklaceCount a (k + 1) : ℂ) *
+          Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) := by
+      refine Summable.of_norm_bounded
+        (((summable_nat_add_iff 1).mpr
+          (summable_geometric_of_lt_one (by positivity) haM_lt)).mul_left (3 / 2))
+        fun k => ?_
+      have hMk16 : 16 ≤ M ^ (k + 1) := by
+        calc 16 = 16 ^ 1 := (pow_one 16).symm
+          _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
+          _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+      have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+      rw [norm_mul, Complex.norm_natCast]
+      calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
+          ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
+            refine mul_le_mul ?_ (norm_log_one_sub_le hnorm) (norm_nonneg _) (by positivity)
+            exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
+        _ = 3 / 2 * ((a : ℝ) * (M : ℝ) ^ (-s.re)) ^ (k + 1) := by
+            rw [norm_natCast_cpow_neg _ (Nat.pow_pos (by omega)), Nat.cast_pow,
+              ← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+              mul_comm ((k + 1 : ℕ) : ℝ) (-s.re), Real.rpow_mul (by positivity),
+              Real.rpow_natCast, mul_pow]
+            ring
     have hsum_L : Summable (fun k : ℕ =>
         ∑ p ∈ S_seq (k + 1), Complex.log (1 - (p : ℂ) ^ (-s))) := by
-      have hmod : Summable (fun k : ℕ =>
-          (necklaceCount a (k + 1) : ℂ) *
-            Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) := by
-        refine Summable.of_norm_bounded
-          (((summable_nat_add_iff 1).mpr
-            (summable_geometric_of_lt_one (by positivity) haM_lt)).mul_left (3 / 2))
-          fun k => ?_
-        have hMk16 : 16 ≤ M ^ (k + 1) := by
-          calc 16 = 16 ^ 1 := (pow_one 16).symm
-            _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
-            _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
-        have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
-        rw [norm_mul, Complex.norm_natCast]
-        calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
-            ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
-              refine mul_le_mul ?_ (norm_log_one_sub_le hnorm) (norm_nonneg _) (by positivity)
-              exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
-          _ = 3 / 2 * ((a : ℝ) * (M : ℝ) ^ (-s.re)) ^ (k + 1) := by
-              rw [norm_natCast_cpow_neg _ (Nat.pow_pos (by omega)), Nat.cast_pow,
-                ← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
-                mul_comm ((k + 1 : ℕ) : ℝ) (-s.re), Real.rpow_mul (by positivity),
-                Real.rpow_natCast, mul_pow]
-              ring
       have hpert : Summable (fun k : ℕ =>
           ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s) := by
-        -- Rewrite `L_k = pert_k + mod_k`, or establish `hpert` directly from geometric bound!
         set q₁ : ℝ := (M : ℝ) ^ (β₀ - 1 - 2 / 5)
         have hq₁1 : q₁ < 1 :=
           Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < M)) (by linarith)
@@ -1485,32 +1484,9 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
               calc y ^ β₀ * (2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ))
                   = 2 * (‖s‖ + 1) * (y ^ β₀ * y ^ (-1 - 2 / 5 : ℝ)) := by ring
                 _ = 2 * (‖s‖ + 1) * q₁ ^ (j + (k₀ + 1)) := by rw [hexp_eq]
-      refine (hpert.add hmod).congr fun k => ?_
+      refine (hpert.add hsum_M).congr fun k => ?_
       simp only [neckPertTerm, Finset.sum_sub_distrib, Finset.sum_const,
         hcard (k + 1) (by omega), nsmul_eq_mul, sub_add_cancel]
-    have hsum_M : Summable (fun k : ℕ =>
-        (necklaceCount a (k + 1) : ℂ) *
-          Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) := by
-      refine Summable.of_norm_bounded
-        (((summable_nat_add_iff 1).mpr
-          (summable_geometric_of_lt_one (by positivity) haM_lt)).mul_left (3 / 2))
-        fun k => ?_
-      have hMk16 : 16 ≤ M ^ (k + 1) := by
-        calc 16 = 16 ^ 1 := (pow_one 16).symm
-          _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
-          _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
-      have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
-      rw [norm_mul, Complex.norm_natCast]
-      calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
-          ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
-            refine mul_le_mul ?_ (norm_log_one_sub_le hnorm) (norm_nonneg _) (by positivity)
-            exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
-        _ = 3 / 2 * ((a : ℝ) * (M : ℝ) ^ (-s.re)) ^ (k + 1) := by
-            rw [norm_natCast_cpow_neg _ (Nat.pow_pos (by omega)), Nat.cast_pow,
-              ← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
-              mul_comm ((k + 1 : ℕ) : ℝ) (-s.re), Real.rpow_mul (by positivity),
-              Real.rpow_natCast, mul_pow]
-            ring
     have hsplit : (∑' k : ℕ, ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s) =
         (∑' k : ℕ, ∑ p ∈ S_seq (k + 1), Complex.log (1 - (p : ℂ) ^ (-s))) -
           (∑' k : ℕ, (necklaceCount a (k + 1) : ℂ) *

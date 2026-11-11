@@ -71,4 +71,23 @@ theorem tendsto_gate_displacement_zero {ι : Type*} {l : Filter ι}
     (Real.log_pos (by exact_mod_cast (by omega : 1 < shortLevinsonCutoff (U i)))).ne'
   exact mul_div_cancel_right₀ (d i) hne
 
+/-- The entire admissible gate strip eventually lies in every positive displacement neighbourhood. -/
+theorem eventually_gate_displacements_small {R r : ℝ} (hR : 0 < R) (hr : 0 < r) :
+    ∀ᶠ U : ℝ in atTop, ∀ d : ℝ,
+      R ≤ d * Real.log U → d * Real.log (U - 1) ≤ R → 0 < d ∧ d ≤ r := by
+  have hUm : Tendsto (fun U : ℝ => U - 1) atTop atTop := by
+    apply Filter.tendsto_atTop.2
+    intro A
+    filter_upwards [eventually_ge_atTop (A + 1)] with U hi
+    linarith only [hi]
+  have hL := Real.tendsto_log_atTop.comp hUm
+  have hs : Tendsto (fun U : ℝ => R / Real.log (U - 1)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop hL
+  filter_upwards [eventually_gt_atTop (2 : ℝ), hL.eventually_gt_atTop 0,
+    hs.eventually (Iio_mem_nhds hr)] with U hU hLU hsU
+  intro d hlo hhi
+  have hlog : 0 < Real.log U := Real.log_pos (by linarith only [hU])
+  exact ⟨(div_pos hR hlog).trans_le ((div_le_iff₀ hlog).mpr hlo),
+    ((le_div_iff₀ hLU).mpr hhi).trans hsU.le⟩
+
 end GaloisForLFunctions.MultiscaleMollifiedZetaField
