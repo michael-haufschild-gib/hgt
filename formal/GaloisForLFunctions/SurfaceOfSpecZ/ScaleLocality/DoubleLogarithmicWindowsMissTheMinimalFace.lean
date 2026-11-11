@@ -538,13 +538,12 @@ theorem localCount_config (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (t :
       linarith
   have hΓ₀ : (4 : ℝ) ≤ (W.Γ k₀ : ℝ) := by exact_mod_cast W.four_le k₀
   have ht3 : 3 < t := by linarith
-  set r₀ : ℝ := (W.ρ k₀ : ℝ)
-  set d_min : ℕ := ⌊4 * (r₀ + 1) * (t - 1)⌋₊
-  set d_max : ℕ := ⌊4 * (r₀ + 1) * (t + 1)⌋₊
+  set d_min : ℕ := ⌊4 * ((W.ρ k₀ : ℝ) + 1) * (t - 1)⌋₊
+  set d_max : ℕ := ⌊4 * ((W.ρ k₀ : ℝ) + 1) * (t + 1)⌋₊
   set S : Finset ℂ :=
     (Finset.Icc d_min d_max ×ˢ (Finset.univ : Finset (Bool × Bool))).image (W.ptAtLevel k₀)
-  have hr₀ : 0 ≤ r₀ := Nat.cast_nonneg _
-  have hpos_k : 0 < 4 * (r₀ + 1) := by positivity
+  have hr₀ : 0 ≤ (W.ρ k₀ : ℝ) := Nat.cast_nonneg _
+  have hpos_k : 0 < 4 * ((W.ρ k₀ : ℝ) + 1) := by positivity
   have hfin := Z.finite_window t (t + 1)
   have hsub : hfin.toFinset ⊆ S := by
     intro ρ hρ
@@ -568,25 +567,25 @@ theorem localCount_config (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (t :
       rw [← hk_eq]
       cases b <;> linarith
     unfold levelBaseFreq levelStep levelRadius at hbase_gt hbase_lt
-    have h2 : 4 * (r₀ + 1) * ((d : ℝ) * (1 / (4 * (r₀ + 1)))) = (d : ℝ) := by
+    have h2 : 4 * ((W.ρ k₀ : ℝ) + 1) * ((d : ℝ) * (1 / (4 * ((W.ρ k₀ : ℝ) + 1)))) = (d : ℝ) := by
       field_simp [hpos_k.ne']
     refine ⟨Finset.mem_Icc.mpr ⟨?_, ?_⟩, Finset.mem_univ _⟩
-    · have hmul : 4 * (r₀ + 1) * (t - 1) < (d : ℝ) := by
+    · have hmul : 4 * ((W.ρ k₀ : ℝ) + 1) * (t - 1) < (d : ℝ) := by
         have h1 := mul_lt_mul_of_pos_left hbase_gt hpos_k
         linarith
-      have hfl : (d_min : ℝ) ≤ 4 * (r₀ + 1) * (t - 1) :=
+      have hfl : (d_min : ℝ) ≤ 4 * ((W.ρ k₀ : ℝ) + 1) * (t - 1) :=
         Nat.floor_le (mul_nonneg hpos_k.le (by linarith))
       exact_mod_cast (hfl.trans_lt hmul).le
-    · have hmul : (d : ℝ) ≤ 4 * (r₀ + 1) * (t + 1) := by
+    · have hmul : (d : ℝ) ≤ 4 * ((W.ρ k₀ : ℝ) + 1) * (t + 1) := by
         have h1 := mul_lt_mul_of_pos_left hbase_lt hpos_k
         linarith
       exact Nat.le_floor hmul
   have hcard_Icc : (Finset.Icc d_min d_max).card ≤ 8 * W.ρ k₀ + 10 := by
     rw [Nat.card_Icc]
-    have hfl_hi : (d_max : ℝ) ≤ 4 * (r₀ + 1) * (t + 1) :=
+    have hfl_hi : (d_max : ℝ) ≤ 4 * ((W.ρ k₀ : ℝ) + 1) * (t + 1) :=
       Nat.floor_le (mul_nonneg hpos_k.le (by linarith))
-    have hfl_lo : 4 * (r₀ + 1) * (t - 1) - 1 < (d_min : ℝ) := Nat.sub_one_lt_floor _
-    have hdiff_R : (d_max : ℝ) < (d_min : ℝ) + (8 * r₀ + 9) := by linarith
+    have hfl_lo : 4 * ((W.ρ k₀ : ℝ) + 1) * (t - 1) - 1 < (d_min : ℝ) := Nat.sub_one_lt_floor _
+    have hdiff_R : (d_max : ℝ) < (d_min : ℝ) + (8 * (W.ρ k₀ : ℝ) + 9) := by linarith
     have hdiff_nat : d_max < d_min + (8 * W.ρ k₀ + 9) := by exact_mod_cast hdiff_R
     omega
   have hcard_S : S.card ≤ 32 * W.ρ k₀ + 40 := by
@@ -604,19 +603,19 @@ theorem localCount_config (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (t :
       _ = hfin.toFinset.card := by simp [Z, config]
       _ ≤ S.card := Finset.card_le_card hsub
       _ ≤ 32 * W.ρ k₀ + 40 := hcard_S
-  have hexp_le : Real.exp ((32 * r₀ + 40) / C) ≤ |t| + 3 := by
+  have hexp_le : Real.exp ((32 * (W.ρ k₀ : ℝ) + 40) / C) ≤ |t| + 3 := by
     have h1 := W.count_le k₀
     have ht_abs : t ≤ |t| := le_abs_self t
     linarith
-  have hlog_le : (32 * r₀ + 40) / C ≤ Real.log (|t| + 3) := by
-    rw [← Real.log_exp ((32 * r₀ + 40) / C)]
+  have hlog_le : (32 * (W.ρ k₀ : ℝ) + 40) / C ≤ Real.log (|t| + 3) := by
+    rw [← Real.log_exp ((32 * (W.ρ k₀ : ℝ) + 40) / C)]
     exact Real.log_le_log (Real.exp_pos _) hexp_le
-  have hcount_R : 32 * r₀ + 40 ≤ C * Real.log (|t| + 3) := by
+  have hcount_R : 32 * (W.ρ k₀ : ℝ) + 40 ≤ C * Real.log (|t| + 3) := by
     have := (div_le_iff₀ hC).mp hlog_le
     linarith
   calc (Z.N t (t + 1) : ℝ)
       ≤ ((32 * W.ρ k₀ + 40 : ℕ) : ℝ) := by exact_mod_cast hN_le
-    _ = 32 * r₀ + 40 := by push_cast; ring
+    _ = 32 * (W.ρ k₀ : ℝ) + 40 := by push_cast; ring
     _ ≤ C * Real.log (|t| + 3) := hcount_R
 
 theorem inClassZ_config (hγ : 0 < γ_min) (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
@@ -629,5 +628,723 @@ theorem inClassZ_config (hγ : 0 < γ_min) (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : �
     exact him.le
 
 end RadiusTower
+
+/-! ### An explicit tower with radius of double-logarithmic order -/
+
+/-- Radius index of level `j`, from the previous right window end `U` and base ordinate `Γ'`:
+at least `C(j + 1)`, `C²`, `CΘU/224` and `(C/64) log(2Γ' + ⌈γ_min⌉ + ⌈16/Θ⌉ + 14)`. -/
+def dlIndex (γ_min C Θ : ℝ) (j : ℕ) (U : ℝ) (Γ' : ℕ) : ℕ :=
+  ⌈C⌉₊ * (j + 1 + ⌈C⌉₊) + ⌈C * Θ / 224 * U⌉₊ +
+    ⌈C / 64 * Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14)⌉₊
+
+/-- Base ordinate `⌈exp(64(ρ + 1)/C)⌉` of radius index `ρ`. -/
+def dlFreq (C : ℝ) (ρ : ℕ) : ℕ := ⌈Real.exp (64 * levelRadius ρ / C)⌉₊
+
+/-- The tower `(T_k, Γ_k, ρ_k)`: the radius index is read off the previous level, the base
+ordinate off the radius index, and the centre off both. -/
+def dlTower (γ_min C Θ : ℝ) : ℕ → ℕ × ℕ × ℕ
+  | 0 =>
+      let ρ := dlIndex γ_min C Θ 0 0 0
+      (max (104 * (ρ + 1) + 1) (faceErrThresh (dlFreq C ρ) ρ (SplineTower.depth Θ 0)),
+        dlFreq C ρ, ρ)
+  | k + 1 =>
+      let prev := dlTower γ_min C Θ k
+      let ρ := dlIndex γ_min C Θ (k + 1) ((prev.1 : ℝ) + levelRadius prev.2.2) prev.2.1
+      let Γ := dlFreq C ρ
+      (max (max (prev.1 + prev.2.2 + 11) (104 * (ρ + 1) + 1))
+          (max (faceErrThresh Γ ρ (SplineTower.depth Θ (k + 1)))
+            (ρ + 1 + ⌈Real.log (((k : ℝ) + 10) /
+              faceFloorVal Γ ρ (SplineTower.depth Θ (k + 1)) + 1) /
+              (SplineTower.depth Θ (k + 1) - SplineTower.depth Θ k)⌉₊)), Γ, ρ)
+
+/-- Window centre `T_k`. -/
+def dlT (γ_min C Θ : ℝ) (k : ℕ) : ℕ := (dlTower γ_min C Θ k).1
+
+/-- Base ordinate `Γ_k`. -/
+def dlΓ (γ_min C Θ : ℝ) (k : ℕ) : ℕ := (dlTower γ_min C Θ k).2.1
+
+/-- Radius index `ρ_k`. -/
+def dlρ (γ_min C Θ : ℝ) (k : ℕ) : ℕ := (dlTower γ_min C Θ k).2.2
+
+section DoubleLogTower
+
+variable {γ_min C Θ : ℝ}
+
+theorem dlT_zero : dlT γ_min C Θ 0 = max (104 * (dlρ γ_min C Θ 0 + 1) + 1)
+    (faceErrThresh (dlΓ γ_min C Θ 0) (dlρ γ_min C Θ 0) (SplineTower.depth Θ 0)) := rfl
+
+theorem dlT_succ (k : ℕ) : dlT γ_min C Θ (k + 1) =
+    max (max (dlT γ_min C Θ k + dlρ γ_min C Θ k + 11) (104 * (dlρ γ_min C Θ (k + 1) + 1) + 1))
+      (max (faceErrThresh (dlΓ γ_min C Θ (k + 1)) (dlρ γ_min C Θ (k + 1))
+          (SplineTower.depth Θ (k + 1)))
+        (dlρ γ_min C Θ (k + 1) + 1 + ⌈Real.log (((k : ℝ) + 10) /
+          faceFloorVal (dlΓ γ_min C Θ (k + 1)) (dlρ γ_min C Θ (k + 1))
+            (SplineTower.depth Θ (k + 1)) + 1) /
+          (SplineTower.depth Θ (k + 1) - SplineTower.depth Θ k)⌉₊)) := rfl
+
+theorem dlΓ_eq (k : ℕ) : dlΓ γ_min C Θ k = dlFreq C (dlρ γ_min C Θ k) := by
+  cases k <;> rfl
+
+theorem dlρ_succ (k : ℕ) : dlρ γ_min C Θ (k + 1) =
+    dlIndex γ_min C Θ (k + 1) ((dlT γ_min C Θ k : ℝ) + levelRadius (dlρ γ_min C Θ k))
+      (dlΓ γ_min C Θ k) := rfl
+
+theorem exists_dlρ_eq (k : ℕ) :
+    ∃ U : ℝ, ∃ Γ' : ℕ, 0 ≤ U ∧ dlρ γ_min C Θ k = dlIndex γ_min C Θ k U Γ' := by
+  cases k with
+  | zero => exact ⟨0, 0, le_rfl, rfl⟩
+  | succ k =>
+    exact ⟨_, _, by have := levelRadius_pos (dlρ γ_min C Θ k); positivity, dlρ_succ k⟩
+
+/-! #### Bounds on the radius index -/
+
+theorem le_levelRadius_dlIndex (hC : 0 < C) (j : ℕ) (U : ℝ) (Γ' : ℕ) :
+    C * ((j : ℝ) + 1) ≤ levelRadius (dlIndex γ_min C Θ j U Γ') ∧
+      C * C ≤ levelRadius (dlIndex γ_min C Θ j U Γ') := by
+  have hc : C ≤ (⌈C⌉₊ : ℝ) := Nat.le_ceil C
+  have hle : ⌈C⌉₊ * (j + 1 + ⌈C⌉₊) ≤ dlIndex γ_min C Θ j U Γ' := by unfold dlIndex; omega
+  have hleR : (⌈C⌉₊ : ℝ) * ((j : ℝ) + 1 + ⌈C⌉₊) ≤ (dlIndex γ_min C Θ j U Γ' : ℝ) := by
+    exact_mod_cast hle
+  have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
+  have h1 := mul_le_mul_of_nonneg_right hc (by positivity : (0 : ℝ) ≤ (j : ℝ) + 1)
+  have h2 := mul_le_mul hc hc hC.le (hC.le.trans hc)
+  unfold levelRadius
+  constructor <;> nlinarith
+
+theorem theta_le_levelRadius_dlIndex (j : ℕ) (U : ℝ) (Γ' : ℕ) :
+    C * Θ / 224 * U ≤ levelRadius (dlIndex γ_min C Θ j U Γ') := by
+  have h1 := Nat.le_ceil (C * Θ / 224 * U)
+  have hle : ⌈C * Θ / 224 * U⌉₊ ≤ dlIndex γ_min C Θ j U Γ' := by unfold dlIndex; omega
+  have hleR : (⌈C * Θ / 224 * U⌉₊ : ℝ) ≤ dlIndex γ_min C Θ j U Γ' := by exact_mod_cast hle
+  unfold levelRadius
+  linarith
+
+theorem log_le_levelRadius_dlIndex (j : ℕ) (U : ℝ) (Γ' : ℕ) :
+    C / 64 * Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14) ≤
+      levelRadius (dlIndex γ_min C Θ j U Γ') := by
+  have h1 := Nat.le_ceil (C / 64 * Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14))
+  have hle : ⌈C / 64 * Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14)⌉₊ ≤
+      dlIndex γ_min C Θ j U Γ' := by unfold dlIndex; omega
+  have hleR : (⌈C / 64 * Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14)⌉₊ : ℝ) ≤
+      dlIndex γ_min C Θ j U Γ' := by exact_mod_cast hle
+  unfold levelRadius
+  linarith
+
+/-- `exp(64y/C)` dominates the separation and floor constants. -/
+theorem sep_le_exp_dlIndex (hC : 0 < C) (j : ℕ) (U : ℝ) (Γ' : ℕ) :
+    2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14 ≤
+      Real.exp (64 * levelRadius (dlIndex γ_min C Θ j U Γ') / C) := by
+  have hA : 0 < 2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14 := by positivity
+  have h := log_le_levelRadius_dlIndex (γ_min := γ_min) (C := C) (Θ := Θ) j U Γ'
+  have hlog : Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14) ≤
+      64 * levelRadius (dlIndex γ_min C Θ j U Γ') / C := by
+    rw [le_div_iff₀ hC]
+    linarith
+  calc 2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14
+      = Real.exp (Real.log (2 * (Γ' : ℝ) + ⌈γ_min⌉₊ + ⌈16 / Θ⌉₊ + 14)) := (Real.exp_log hA).symm
+    _ ≤ _ := Real.exp_le_exp.mpr hlog
+
+/-- `exp(16y/C) ≥ 128y` once `y ≥ C²`, from `exp z ≥ z²/2`. -/
+theorem exp_sixteen_ge (hC : 0 < C) {y : ℝ} (hy : C * C ≤ y) :
+    128 * y ≤ Real.exp (16 * y / C) := by
+  have hy0 : 0 ≤ y := (mul_self_nonneg C).trans hy
+  have hz : 0 ≤ 16 * y / C := by positivity
+  have hq := Real.quadratic_le_exp_of_nonneg hz
+  have hkey : 128 * y ≤ (16 * y / C) ^ 2 / 2 := by
+    rw [div_pow, div_div, le_div_iff₀ (by positivity)]
+    nlinarith [mul_le_mul_of_nonneg_left hy hy0]
+  linarith
+
+theorem sixty_four_mul_two_pow_le_exp (j : ℕ) :
+    64 * (2 : ℝ) ^ j ≤ Real.exp (16 * ((j : ℝ) + 1)) := by
+  have h2 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+  have h1 : (2 : ℝ) ^ (j + 6) ≤ Real.exp 1 ^ (j + 6) := pow_le_pow_left₀ (by norm_num) h2 _
+  rw [← Real.exp_nat_mul, mul_one] at h1
+  calc 64 * (2 : ℝ) ^ j = 2 ^ (j + 6) := by rw [pow_add]; ring
+    _ ≤ Real.exp (((j + 6 : ℕ) : ℝ)) := h1
+    _ ≤ Real.exp (16 * ((j : ℝ) + 1)) :=
+        Real.exp_le_exp.mpr (by push_cast; linarith [Nat.cast_nonneg (α := ℝ) j])
+
+/-- `exp(64y/C)` dominates the level weight constraint `8192 y 2^j exp(ΘU/7)`. -/
+theorem weight_le_exp_dlIndex (hC : 0 < C) (j : ℕ) (U : ℝ) (Γ' : ℕ) :
+    8192 * levelRadius (dlIndex γ_min C Θ j U Γ') * 2 ^ j * Real.exp (Θ * U / 7) ≤
+      Real.exp (64 * levelRadius (dlIndex γ_min C Θ j U Γ') / C) := by
+  obtain ⟨hj, hcc⟩ := le_levelRadius_dlIndex (γ_min := γ_min) (Θ := Θ) hC j U Γ'
+  have hθ := theta_le_levelRadius_dlIndex (γ_min := γ_min) (C := C) (Θ := Θ) j U Γ'
+  set y := levelRadius (dlIndex γ_min C Θ j U Γ')
+  have e1 : 128 * y ≤ Real.exp (16 * y / C) := exp_sixteen_ge hC hcc
+  have e2 : 64 * (2 : ℝ) ^ j ≤ Real.exp (16 * y / C) := by
+    refine (sixty_four_mul_two_pow_le_exp j).trans (Real.exp_le_exp.mpr ?_)
+    rw [le_div_iff₀ hC]
+    linarith
+  have e3 : Real.exp (Θ * U / 7) ≤ Real.exp (32 * y / C) := by
+    refine Real.exp_le_exp.mpr ?_
+    rw [div_le_div_iff₀ (by norm_num) hC]
+    linarith
+  have hsplit : Real.exp (64 * y / C) =
+      Real.exp (16 * y / C) * Real.exp (16 * y / C) * Real.exp (32 * y / C) := by
+    rw [← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  rw [hsplit]
+  calc 8192 * y * 2 ^ j * Real.exp (Θ * U / 7)
+      = (128 * y) * (64 * 2 ^ j) * Real.exp (Θ * U / 7) := by ring
+    _ ≤ Real.exp (16 * y / C) * Real.exp (16 * y / C) * Real.exp (32 * y / C) :=
+        mul_le_mul (mul_le_mul e1 e2 (by positivity) (Real.exp_pos _).le) e3
+          (Real.exp_pos _).le (by positivity)
+
+/-! #### Bounds on the base ordinates -/
+
+theorem exp_le_dlΓ (k : ℕ) :
+    Real.exp (64 * levelRadius (dlρ γ_min C Θ k) / C) ≤ (dlΓ γ_min C Θ k : ℝ) := by
+  rw [dlΓ_eq]
+  exact Nat.le_ceil _
+
+theorem dlΓ_lt (k : ℕ) :
+    (dlΓ γ_min C Θ k : ℝ) < Real.exp (64 * levelRadius (dlρ γ_min C Θ k) / C) + 1 := by
+  rw [dlΓ_eq]
+  exact Nat.ceil_lt_add_one (Real.exp_pos _).le
+
+theorem C_le_levelRadius_dlρ (hC : 0 < C) (k : ℕ) : C ≤ levelRadius (dlρ γ_min C Θ k) := by
+  obtain ⟨U, Γ', -, hρ⟩ := exists_dlρ_eq (γ_min := γ_min) (C := C) (Θ := Θ) k
+  rw [hρ]
+  have h := (le_levelRadius_dlIndex (γ_min := γ_min) (Θ := Θ) hC k U Γ').1
+  nlinarith [Nat.cast_nonneg (α := ℝ) k]
+
+theorem weight_le_dlΓ (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
+    8192 * levelRadius (dlρ γ_min C Θ k) * 2 ^ k ≤ (dlΓ γ_min C Θ k : ℝ) := by
+  obtain ⟨U, Γ', hU, hρ⟩ := exists_dlρ_eq (γ_min := γ_min) (C := C) (Θ := Θ) k
+  have h := weight_le_exp_dlIndex (γ_min := γ_min) (Θ := Θ) hC k U Γ'
+  rw [← hρ] at h
+  have hE : 1 ≤ Real.exp (Θ * U / 7) := Real.one_le_exp (by positivity)
+  have hy := levelRadius_pos (dlρ γ_min C Θ k)
+  have hmono : 8192 * levelRadius (dlρ γ_min C Θ k) * 2 ^ k ≤
+      8192 * levelRadius (dlρ γ_min C Θ k) * 2 ^ k * Real.exp (Θ * U / 7) :=
+    le_mul_of_one_le_right (by positivity) hE
+  exact hmono.trans (h.trans (exp_le_dlΓ k))
+
+theorem const_le_dlΓ (hC : 0 < C) (k : ℕ) :
+    (⌈γ_min⌉₊ : ℝ) + ⌈16 / Θ⌉₊ + 14 ≤ (dlΓ γ_min C Θ k : ℝ) := by
+  obtain ⟨U, Γ', -, hρ⟩ := exists_dlρ_eq (γ_min := γ_min) (C := C) (Θ := Θ) k
+  have h := sep_le_exp_dlIndex (γ_min := γ_min) (Θ := Θ) hC k U Γ'
+  rw [← hρ] at h
+  have := Nat.cast_nonneg (α := ℝ) Γ'
+  linarith [exp_le_dlΓ (γ_min := γ_min) (C := C) (Θ := Θ) k]
+
+theorem two_mul_dlΓ_add_four_le (hC : 0 < C) (k : ℕ) :
+    2 * dlΓ γ_min C Θ k + 4 ≤ dlΓ γ_min C Θ (k + 1) := by
+  have h := sep_le_exp_dlIndex (γ_min := γ_min) (Θ := Θ) hC (k + 1)
+    ((dlT γ_min C Θ k : ℝ) + levelRadius (dlρ γ_min C Θ k)) (dlΓ γ_min C Θ k)
+  rw [← dlρ_succ] at h
+  have h2 := exp_le_dlΓ (γ_min := γ_min) (C := C) (Θ := Θ) (k + 1)
+  have : ((2 * dlΓ γ_min C Θ k + 4 : ℕ) : ℝ) ≤ dlΓ γ_min C Θ (k + 1) := by
+    push_cast
+    have := Nat.cast_nonneg (α := ℝ) ⌈γ_min⌉₊
+    have := Nat.cast_nonneg (α := ℝ) ⌈16 / Θ⌉₊
+    linarith
+  exact_mod_cast this
+
+theorem exp_right_le_dlΓ_succ (hC : 0 < C) (k : ℕ) :
+    8192 * levelRadius (dlρ γ_min C Θ (k + 1)) * 2 ^ (k + 1) *
+        Real.exp (Θ * ((dlT γ_min C Θ k : ℝ) + levelRadius (dlρ γ_min C Θ k)) / 7) ≤
+      (dlΓ γ_min C Θ (k + 1) : ℝ) := by
+  have h := weight_le_exp_dlIndex (γ_min := γ_min) (Θ := Θ) hC (k + 1)
+    ((dlT γ_min C Θ k : ℝ) + levelRadius (dlρ γ_min C Θ k)) (dlΓ γ_min C Θ k)
+  rw [← dlρ_succ] at h
+  exact h.trans (exp_le_dlΓ (k + 1))
+
+theorem sixteen_div_le_dlΓ (hC : 0 < C) (k : ℕ) : 16 / Θ ≤ (dlΓ γ_min C Θ k : ℝ) := by
+  have h := const_le_dlΓ (γ_min := γ_min) (Θ := Θ) hC k
+  have := Nat.le_ceil (16 / Θ)
+  have := Nat.cast_nonneg (α := ℝ) ⌈γ_min⌉₊
+  linarith
+
+/-! #### The tower satisfies the constraints -/
+
+theorem levelWeightBound_dl_le (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
+    levelWeightBound (dlΓ γ_min C Θ k) (dlρ γ_min C Θ k) ≤
+      8192 * levelRadius (dlρ γ_min C Θ k) / (dlΓ γ_min C Θ k : ℝ) ^ 7 := by
+  have h := levelWeightBound_le_div_pow_seven
+    (le_trans (by norm_num) (show 8192 ≤ dlΓ γ_min C Θ k by
+      have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ k
+      have hy : 1 ≤ levelRadius (dlρ γ_min C Θ k) := by
+        unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ k)]
+      have h2 : (1 : ℝ) ≤ 2 ^ k := one_le_pow₀ (by norm_num)
+      have : (8192 : ℝ) ≤ dlΓ γ_min C Θ k := by nlinarith
+      exact_mod_cast this)) (dlρ γ_min C Θ k)
+  refine h.trans (le_of_eq ?_)
+  unfold levelRadius
+  push_cast
+  ring
+
+/-- If `Γ ≥ 8192 y 2^{j+1} exp(ΘU/7)` then `8192 y/Γ⁷ ≤ 2^{-(j+1)} exp(−ΘU)`. -/
+theorem weight_div_pow_seven_le {y U Γ : ℝ} {j : ℕ} (hy : 1 ≤ y) (hU : 0 ≤ U) (hΘ : 0 < Θ)
+    (hw : 8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U / 7) ≤ Γ) :
+    8192 * y / Γ ^ 7 ≤ (1 / 2) ^ (j + 1) * Real.exp (-(Θ * U)) := by
+  have hA : 1 ≤ 8192 * y * 2 ^ (j + 1) := by
+    have h2 : (1 : ℝ) ≤ 2 ^ (j + 1) := one_le_pow₀ (by norm_num)
+    nlinarith
+  have hE7 : Real.exp (Θ * U / 7) ^ 7 = Real.exp (Θ * U) := by
+    rw [← Real.exp_nat_mul]
+    congr 1
+    push_cast
+    ring
+  have hA7 : 8192 * y * 2 ^ (j + 1) ≤ (8192 * y * 2 ^ (j + 1)) ^ 7 := le_self_pow₀ hA (by norm_num)
+  have hpow : 8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U) ≤ Γ ^ 7 := by
+    calc 8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U)
+        = 8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U / 7) ^ 7 := by rw [hE7]
+      _ ≤ (8192 * y * 2 ^ (j + 1)) ^ 7 * Real.exp (Θ * U / 7) ^ 7 :=
+          mul_le_mul_of_nonneg_right hA7 (by positivity)
+      _ = (8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U / 7)) ^ 7 := (mul_pow _ _ 7).symm
+      _ ≤ Γ ^ 7 := pow_le_pow_left₀ (by positivity) hw 7
+  have hΓpos : 0 < Γ ^ 7 := lt_of_lt_of_le (by positivity) hpow
+  rw [div_le_iff₀ hΓpos]
+  have hpow2 : (1 / 2 : ℝ) ^ (j + 1) * (2 : ℝ) ^ (j + 1) = 1 := by rw [← mul_pow]; norm_num
+  have hexp0 : Real.exp (-(Θ * U)) * Real.exp (Θ * U) = 1 := by rw [← Real.exp_add]; simp
+  have hid : (1 / 2 : ℝ) ^ (j + 1) * Real.exp (-(Θ * U)) *
+      (8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U)) = 8192 * y := by
+    calc (1 / 2 : ℝ) ^ (j + 1) * Real.exp (-(Θ * U)) *
+          (8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U))
+        = 8192 * y * ((1 / 2 : ℝ) ^ (j + 1) * (2 : ℝ) ^ (j + 1)) *
+            (Real.exp (-(Θ * U)) * Real.exp (Θ * U)) := by ring
+      _ = 8192 * y := by rw [hpow2, hexp0]; ring
+  have hmul := mul_le_mul_of_nonneg_left hpow
+    (show (0 : ℝ) ≤ (1 / 2) ^ (j + 1) * Real.exp (-(Θ * U)) by positivity)
+  linarith
+
+/-- **The explicit tower.** -/
+def dlRadiusTower (hC : 0 < C) (hΘ : 0 < Θ) : RadiusTower γ_min C Θ where
+  T := dlT γ_min C Θ
+  Γ := dlΓ γ_min C Θ
+  ρ := dlρ γ_min C Θ
+  step_le k := by
+    cases k with
+    | zero => rw [dlT_zero]; exact le_max_left _ _
+    | succ k => rw [dlT_succ]; exact (le_max_right _ _).trans (le_max_left _ _)
+  right_le k := by rw [dlT_succ]; exact (le_max_left _ _).trans (le_max_left _ _)
+  errThresh_le k := by
+    cases k with
+    | zero => rw [dlT_zero]; exact le_max_right _ _
+    | succ k => rw [dlT_succ]; exact (le_max_left _ _).trans (le_max_right _ _)
+  dom_le k := by rw [dlT_succ]; exact (le_max_right _ _).trans (le_max_right _ _)
+  four_le k := by
+    have h := const_le_dlΓ (γ_min := γ_min) (Θ := Θ) hC k
+    have : (4 : ℝ) ≤ dlΓ γ_min C Θ k := by
+      have := Nat.cast_nonneg (α := ℝ) ⌈γ_min⌉₊
+      have := Nat.cast_nonneg (α := ℝ) ⌈16 / Θ⌉₊
+      linarith
+    exact_mod_cast this
+  sep k := two_mul_dlΓ_add_four_le hC k
+  k_le k := by
+    have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ k
+    have hy : 1 ≤ levelRadius (dlρ γ_min C Θ k) := by
+      unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ k)]
+    have hk : (k : ℝ) ≤ 2 ^ k := by exact_mod_cast k.lt_two_pow_self.le
+    have h2 : (0 : ℝ) ≤ 2 ^ k := by positivity
+    have : (k : ℝ) ≤ dlΓ γ_min C Θ k := by nlinarith
+    exact_mod_cast this
+  gamma_min_le k := by
+    have h := const_le_dlΓ (γ_min := γ_min) (Θ := Θ) hC k
+    have := Nat.le_ceil γ_min
+    have := Nat.cast_nonneg (α := ℝ) ⌈16 / Θ⌉₊
+    linarith
+  count_le k := by
+    refine le_trans (Real.exp_le_exp.mpr ?_) (exp_le_dlΓ k)
+    rw [div_le_div_iff_of_pos_right hC]
+    unfold levelRadius
+    linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ k)]
+  temper_le k := by
+    have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ k
+    have hy : 0 ≤ levelRadius (dlρ γ_min C Θ k) := (levelRadius_pos _).le
+    have : ((32 * (dlρ γ_min C Θ k + 1) * 2 ^ k : ℕ) : ℝ) ≤ dlΓ γ_min C Θ k := by
+      have h2 : (0 : ℝ) ≤ 2 ^ k := by positivity
+      push_cast
+      unfold levelRadius at hw hy
+      nlinarith
+    exact_mod_cast this
+  weight_zero := by
+    refine (levelWeightBound_dl_le hC hΘ 0).trans ?_
+    have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ 0
+    rw [pow_zero, mul_one] at hw
+    have hy1 : 1 ≤ levelRadius (dlρ γ_min C Θ 0) := by
+      unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ 0)]
+    have hΓ1 : (1 : ℝ) ≤ dlΓ γ_min C Θ 0 := by linarith
+    have hpow : (dlΓ γ_min C Θ 0 : ℝ) ≤ (dlΓ γ_min C Θ 0 : ℝ) ^ 7 := le_self_pow₀ hΓ1 (by norm_num)
+    rw [div_le_one (by positivity)]
+    linarith
+  weight_succ j := by
+    refine (levelWeightBound_dl_le hC hΘ (j + 1)).trans ?_
+    have hy1 : 1 ≤ levelRadius (dlρ γ_min C Θ (j + 1)) := by
+      unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ (j + 1))]
+    have hU : 0 ≤ (dlT γ_min C Θ j : ℝ) + levelRadius (dlρ γ_min C Θ j) := by
+      have := levelRadius_pos (dlρ γ_min C Θ j)
+      positivity
+    exact weight_div_pow_seven_le hy1 hU hΘ (exp_right_le_dlΓ_succ hC j)
+
+/-! #### The centres are at most `exp(Γ_k²)` -/
+
+theorem half_le_depth (hΘ : 0 < Θ) (k : ℕ) : Θ / 2 ≤ SplineTower.depth Θ k := by
+  unfold SplineTower.depth
+  have h : (1 / 2 : ℝ) ^ (k + 1) ≤ 1 / 2 := by
+    rw [pow_succ]
+    have := pow_le_one₀ (n := k) (by norm_num : (0 : ℝ) ≤ 1 / 2) (by norm_num)
+    nlinarith
+  nlinarith
+
+/-- `64^{m₀} ≤ exp(6m₀)` and `(4Γ/x)^8 ≤ exp(16Γ)` when `xΓ ≥ 8`. -/
+theorem levelCoeffBound_le_exp (Γ ρ : ℕ) :
+    levelCoeffBound Γ ρ ≤ Real.exp (24 * levelRadius ρ * Γ) := by
+  unfold levelCoeffBound
+  have h2 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+  have h64 : (64 : ℝ) ≤ Real.exp 6 := by
+    calc (64 : ℝ) = 2 ^ 6 := by norm_num
+      _ ≤ Real.exp 1 ^ 6 := pow_le_pow_left₀ (by norm_num) h2 6
+      _ = Real.exp 6 := by rw [← Real.exp_nat_mul]; norm_num
+  calc (64 : ℝ) ^ levelStart Γ ρ ≤ Real.exp 6 ^ levelStart Γ ρ :=
+        pow_le_pow_left₀ (by norm_num) h64 _
+    _ = Real.exp (24 * levelRadius ρ * Γ) := by
+        rw [← Real.exp_nat_mul]
+        unfold levelStart levelRadius
+        push_cast
+        ring_nf
+
+theorem inv_levelMinWeight_le_exp {Γ : ℕ} {x : ℝ} (hx : 0 < x) (hxΓ : 8 ≤ x * Γ) :
+    1 / levelMinWeight Γ x ≤ Real.exp (16 * Γ) := by
+  have hΓ : 0 < (Γ : ℝ) := by
+    by_contra h
+    push Not at h
+    nlinarith
+  have heq : 1 / levelMinWeight Γ x = (4 * Γ / x) ^ 8 := by
+    unfold levelMinWeight
+    rw [one_div, ← inv_pow, inv_div]
+  rw [heq]
+  have h1 : 4 * (Γ : ℝ) / x ≤ (Γ : ℝ) ^ 2 := by
+    rw [div_le_iff₀ hx]
+    nlinarith
+  have h2 : (Γ : ℝ) ^ 2 ≤ Real.exp (2 * Γ) := by
+    have := Real.add_one_le_exp (Γ : ℝ)
+    rw [show (2 : ℝ) * Γ = (2 : ℕ) * (Γ : ℝ) by norm_num, Real.exp_nat_mul]
+    exact pow_le_pow_left₀ hΓ.le (by linarith) 2
+  calc (4 * (Γ : ℝ) / x) ^ 8 ≤ (Real.exp (2 * Γ)) ^ 8 :=
+        pow_le_pow_left₀ (by positivity) (h1.trans h2) 8
+    _ = Real.exp (16 * Γ) := by
+        rw [← Real.exp_nat_mul]
+        congr 1
+        push_cast
+        ring
+
+theorem exp_add_one_le_exp_add_one {b : ℝ} (hb : 0 ≤ b) :
+    Real.exp b + 1 ≤ Real.exp (b + 1) := by
+  rw [Real.exp_add]
+  have h1 : 1 ≤ Real.exp b := Real.one_le_exp hb
+  have h2 : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+  nlinarith
+
+theorem faceErrThresh_le_exp_sq {Γ ρ : ℕ} {x : ℝ} (hx : 0 < x) (hxΓ : 8 ≤ x * Γ)
+    (hΓ : 8192 * levelRadius ρ ≤ (Γ : ℝ)) :
+    (faceErrThresh Γ ρ x : ℝ) ≤ Real.exp ((Γ : ℝ) ^ 2) := by
+  have hy : 1 ≤ levelRadius ρ := by unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) ρ]
+  set y := levelRadius ρ
+  have hΓ1 : 8192 ≤ (Γ : ℝ) := by linarith
+  have hm : ((levelStart Γ ρ : ℕ) : ℝ) = 4 * y * Γ := by
+    unfold y levelStart levelRadius; push_cast; ring
+  have f1 : ((levelStart Γ ρ + 1 : ℕ) : ℝ) ≤ Real.exp (4 * y * Γ) := by
+    rw [Nat.cast_add_one, hm]
+    exact Real.add_one_le_exp _
+  have f2 : 80 * (y + 8) ≤ Real.exp (80 * (y + 8)) := by
+    linarith [Real.add_one_le_exp (80 * (y + 8))]
+  have f3 := levelCoeffBound_le_exp Γ ρ
+  have f4 := inv_levelMinWeight_le_exp hx hxΓ
+  have hV : ((levelStart Γ ρ + 1 : ℕ) : ℝ) * (80 * (y + 8)) * levelCoeffBound Γ ρ /
+      levelMinWeight Γ x ≤ Real.exp (28 * y * Γ + 80 * (y + 8) + 16 * Γ) := by
+    rw [div_eq_mul_one_div]
+    have hcb : 0 ≤ levelCoeffBound Γ ρ := by unfold levelCoeffBound; positivity
+    calc ((levelStart Γ ρ + 1 : ℕ) : ℝ) * (80 * (y + 8)) * levelCoeffBound Γ ρ *
+          (1 / levelMinWeight Γ x)
+        ≤ Real.exp (4 * y * Γ) * Real.exp (80 * (y + 8)) * Real.exp (24 * y * Γ) *
+            Real.exp (16 * Γ) := by
+          refine mul_le_mul (mul_le_mul (mul_le_mul f1 f2 (by positivity) (by positivity)) f3
+            hcb (by positivity)) f4 ?_ (by positivity)
+          unfold levelMinWeight
+          positivity
+      _ = Real.exp (28 * y * Γ + 80 * (y + 8) + 16 * Γ) := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+          congr 1
+          ring
+  set a := 28 * y * Γ + 80 * (y + 8) + 16 * Γ
+  have ha : 0 ≤ a := by positivity
+  have hceil : (faceErrThresh Γ ρ x : ℝ) < Real.exp a + 1 := by
+    unfold faceErrThresh
+    refine (Nat.ceil_lt_add_one ?_).trans_le (by linarith)
+    rw [div_eq_mul_one_div]
+    unfold levelMinWeight levelCoeffBound
+    positivity
+  have he : Real.exp a + 1 ≤ Real.exp (a + 1) := exp_add_one_le_exp_add_one ha
+  have hyΓ : y * Γ ≤ (Γ : ℝ) ^ 2 / 8192 := by
+    rw [le_div_iff₀ (by norm_num)]
+    nlinarith
+  have hfin : a + 1 ≤ (Γ : ℝ) ^ 2 := by
+    unfold a
+    nlinarith
+  exact hceil.le.trans (he.trans (Real.exp_le_exp.mpr hfin))
+
+/-- The dominance threshold of level `k + 1` is at most `exp(Γ_{k+1}²)`. -/
+theorem dom_le_exp_sq {Γ ρ : ℕ} (hΘ : 0 < Θ) (k : ℕ)
+    (hΓ : 8192 * levelRadius ρ * 2 ^ (k + 1) ≤ (Γ : ℝ)) (hΓΘ : 16 / Θ ≤ (Γ : ℝ)) :
+    ((ρ + 1 + ⌈Real.log (((k : ℝ) + 10) / faceFloorVal Γ ρ (SplineTower.depth Θ (k + 1)) + 1) /
+      (SplineTower.depth Θ (k + 1) - SplineTower.depth Θ k)⌉₊ : ℕ) : ℝ) ≤
+      Real.exp ((Γ : ℝ) ^ 2) := by
+  have hy : 1 ≤ levelRadius ρ := by unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) ρ]
+  set y := levelRadius ρ
+  set x := SplineTower.depth Θ (k + 1)
+  have hx : Θ / 2 ≤ x := half_le_depth hΘ (k + 1)
+  have hx0 : 0 < x := by linarith
+  have h2k : (1 : ℝ) ≤ 2 ^ (k + 1) := one_le_pow₀ (by norm_num)
+  have hΓ1 : 8192 ≤ (Γ : ℝ) := by nlinarith
+  have hy_le : 8192 * y ≤ (Γ : ℝ) := by nlinarith
+  have h2k_le : 8192 * (2 : ℝ) ^ (k + 1) ≤ Γ := by nlinarith
+  have hΘinv : 1 / Θ ≤ (Γ : ℝ) / 16 := by
+    rw [div_le_div_iff₀ hΘ (by norm_num)]
+    rw [div_le_iff₀ hΘ] at hΓΘ
+    linarith
+  have hxΓ : 8 ≤ x * Γ := by
+    have : 16 ≤ Θ * Γ := by rw [div_le_iff₀ hΘ] at hΓΘ; linarith
+    nlinarith
+  -- `1/L ≤ exp(24yΓ + 16Γ)`
+  set X := Real.exp (24 * y * Γ + 16 * Γ)
+  have hX1 : 1 ≤ X := Real.one_le_exp (by positivity)
+  have hLinv : 1 / faceFloorVal Γ ρ x ≤ X := by
+    have hcb : 0 < levelCoeffBound Γ ρ := by unfold levelCoeffBound; positivity
+    have hmw : 0 < levelMinWeight Γ x := by
+      unfold levelMinWeight
+      have : (0 : ℝ) < Γ := by linarith
+      positivity
+    have heq : 1 / faceFloorVal Γ ρ x = levelCoeffBound Γ ρ * (1 / levelMinWeight Γ x) / 2 := by
+      unfold faceFloorVal
+      field_simp
+    rw [heq, show X = Real.exp (24 * y * Γ) * Real.exp (16 * Γ) by rw [← Real.exp_add]]
+    have := mul_le_mul (levelCoeffBound_le_exp Γ ρ) (inv_levelMinWeight_le_exp hx0 hxΓ)
+      (by positivity) (Real.exp_pos _).le
+    have hpos : 0 ≤ levelCoeffBound Γ ρ * (1 / levelMinWeight Γ x) := by positivity
+    linarith
+  set Q := ((k : ℝ) + 10) / faceFloorVal Γ ρ x + 1
+  have hQ1 : 1 ≤ Q := by
+    have : 0 ≤ ((k : ℝ) + 10) / faceFloorVal Γ ρ x := by
+      unfold faceFloorVal levelMinWeight levelCoeffBound
+      have : (0 : ℝ) < Γ := by linarith
+      positivity
+    linarith
+  have hQ : Q ≤ ((k : ℝ) + 11) * X := by
+    have h1 : ((k : ℝ) + 10) / faceFloorVal Γ ρ x = ((k : ℝ) + 10) * (1 / faceFloorVal Γ ρ x) := by
+      ring
+    have h2 := mul_le_mul_of_nonneg_left hLinv (by positivity : (0 : ℝ) ≤ (k : ℝ) + 10)
+    unfold Q
+    rw [h1]
+    nlinarith
+  have hk10 : (k : ℝ) + 10 ≤ Γ := by
+    have hk : ((k + 1 : ℕ) : ℝ) ≤ 2 ^ (k + 1) := by exact_mod_cast (k + 1).lt_two_pow_self.le
+    push_cast at hk
+    nlinarith
+  have hlogQ : Real.log Q ≤ (Γ : ℝ) ^ 2 := by
+    have h1 : Real.log Q ≤ Real.log (((k : ℝ) + 11) * X) :=
+      Real.log_le_log (by linarith) hQ
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_exp] at h1
+    have h2 := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < (k : ℝ) + 11)
+    have hyΓ : y * Γ ≤ (Γ : ℝ) ^ 2 / 8192 := by
+      rw [le_div_iff₀ (by norm_num)]
+      nlinarith
+    nlinarith
+  have hlogQ0 : 0 ≤ Real.log Q := Real.log_nonneg hQ1
+  set Δ := x - SplineTower.depth Θ k
+  have hΔ : Δ = Θ * (1 / 2) ^ (k + 2) := SplineTower.depth_succ_sub k
+  have hΔpos : 0 < Δ := by rw [hΔ]; positivity
+  have hΔinv : 1 / Δ ≤ (Γ : ℝ) ^ 2 / 65536 := by
+    have heq : 1 / Δ = 2 * 2 ^ (k + 1) * (1 / Θ) := by
+      rw [hΔ, show k + 2 = (k + 1) + 1 by ring, pow_succ, one_div_pow]
+      field_simp
+    rw [heq]
+    have h1 : 2 * (2 : ℝ) ^ (k + 1) ≤ (Γ : ℝ) / 4096 := by linarith
+    calc 2 * (2 : ℝ) ^ (k + 1) * (1 / Θ) ≤ ((Γ : ℝ) / 4096) * ((Γ : ℝ) / 16) :=
+          mul_le_mul h1 hΘinv (by positivity) (by positivity)
+      _ = (Γ : ℝ) ^ 2 / 65536 := by ring
+  have hratio : Real.log Q / Δ ≤ (Γ : ℝ) ^ 2 * ((Γ : ℝ) ^ 2 / 65536) := by
+    rw [div_eq_mul_one_div]
+    exact mul_le_mul hlogQ hΔinv (by positivity) (by positivity)
+  have hceil : (⌈Real.log Q / Δ⌉₊ : ℝ) < Real.log Q / Δ + 1 :=
+    Nat.ceil_lt_add_one (div_nonneg hlogQ0 hΔpos.le)
+  have hexp := Real.quadratic_le_exp_of_nonneg (sq_nonneg (Γ : ℝ))
+  push_cast
+  have hyR : (ρ : ℝ) + 1 = y := rfl
+  nlinarith
+
+theorem dlT_le_exp_sq (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
+    (dlT γ_min C Θ k : ℝ) ≤ Real.exp ((dlΓ γ_min C Θ k : ℝ) ^ 2) := by
+  have hstep : ∀ j, ((104 * (dlρ γ_min C Θ j + 1) + 1 : ℕ) : ℝ) ≤
+      Real.exp ((dlΓ γ_min C Θ j : ℝ) ^ 2) := by
+    intro j
+    have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ j
+    have h2 : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
+    have hy : 1 ≤ levelRadius (dlρ γ_min C Θ j) := by
+      unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ j)]
+    have hexp := Real.add_one_le_exp ((dlΓ γ_min C Θ j : ℝ) ^ 2)
+    have h1 : 8192 * levelRadius (dlρ γ_min C Θ j) ≤ dlΓ γ_min C Θ j := by nlinarith
+    have hΓ1 : (1 : ℝ) ≤ dlΓ γ_min C Θ j := by linarith
+    have hΓsq : (dlΓ γ_min C Θ j : ℝ) ≤ (dlΓ γ_min C Θ j : ℝ) ^ 2 := by nlinarith
+    push_cast
+    unfold levelRadius at h1 hy
+    linarith
+  have herr : ∀ j, (faceErrThresh (dlΓ γ_min C Θ j) (dlρ γ_min C Θ j)
+      (SplineTower.depth Θ j) : ℝ) ≤ Real.exp ((dlΓ γ_min C Θ j : ℝ) ^ 2) := by
+    intro j
+    have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ j
+    have h2 : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
+    have hy := levelRadius_pos (dlρ γ_min C Θ j)
+    have hx := half_le_depth hΘ j
+    have hΓΘ := sixteen_div_le_dlΓ (γ_min := γ_min) hC (Θ := Θ) j
+    have hxΓ : 8 ≤ SplineTower.depth Θ j * dlΓ γ_min C Θ j := by
+      have : 16 ≤ Θ * dlΓ γ_min C Θ j := by rw [div_le_iff₀ hΘ] at hΓΘ; linarith
+      nlinarith [Nat.cast_nonneg (α := ℝ) (dlΓ γ_min C Θ j)]
+    exact faceErrThresh_le_exp_sq (by linarith) hxΓ (by nlinarith)
+  cases k with
+  | zero =>
+    rw [dlT_zero, Nat.cast_max]
+    exact max_le (hstep 0) (herr 0)
+  | succ k =>
+    rw [dlT_succ, Nat.cast_max, Nat.cast_max, Nat.cast_max]
+    refine max_le (max_le ?_ (hstep (k + 1))) (max_le (herr (k + 1)) ?_)
+    · -- the previous right end `U_k + 10`
+      have hw := exp_right_le_dlΓ_succ (γ_min := γ_min) hC k
+      set U := (dlT γ_min C Θ k : ℝ) + levelRadius (dlρ γ_min C Θ k)
+      set Γ := (dlΓ γ_min C Θ (k + 1) : ℝ)
+      have hy := levelRadius_pos (dlρ γ_min C Θ (k + 1))
+      have hU : 0 ≤ U := by have := levelRadius_pos (dlρ γ_min C Θ k); positivity
+      have hA : 1 ≤ 8192 * levelRadius (dlρ γ_min C Θ (k + 1)) * 2 ^ (k + 1) := by
+        have h2 : (1 : ℝ) ≤ 2 ^ (k + 1) := one_le_pow₀ (by norm_num)
+        have hy1 : 1 ≤ levelRadius (dlρ γ_min C Θ (k + 1)) := by
+          unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ (k + 1))]
+        nlinarith
+      have hE : Real.exp (Θ * U / 7) ≤ Γ := by
+        have := Real.exp_pos (Θ * U / 7)
+        nlinarith
+      have hlin : Θ * U / 7 ≤ Γ := by linarith [Real.add_one_le_exp (Θ * U / 7)]
+      have hΓΘ := sixteen_div_le_dlΓ (γ_min := γ_min) hC (Θ := Θ) (k + 1)
+      have hΘΓ : 16 ≤ Θ * Γ := by rw [div_le_iff₀ hΘ] at hΓΘ; linarith
+      have hUΓ : 16 * U ≤ 7 * Γ ^ 2 := by nlinarith
+      have hΓ1 : 1 ≤ Γ := by
+        have := const_le_dlΓ (γ_min := γ_min) (Θ := Θ) hC (k + 1)
+        have := Nat.cast_nonneg (α := ℝ) ⌈γ_min⌉₊
+        have := Nat.cast_nonneg (α := ℝ) ⌈16 / Θ⌉₊
+        linarith
+      have hexp := Real.add_one_le_exp (Γ ^ 2)
+      have hUeq : ((dlT γ_min C Θ k + dlρ γ_min C Θ k + 11 : ℕ) : ℝ) = U + 10 := by
+        unfold U levelRadius; push_cast; ring
+      rw [hUeq]
+      nlinarith
+    · -- the dominance threshold
+      have hw := weight_le_dlΓ (γ_min := γ_min) hC hΘ (k + 1)
+      exact dom_le_exp_sq hΘ k hw (sixteen_div_le_dlΓ hC (k + 1))
+
+/-- **Double-logarithmic radius.** `(C/256) log log T_k ≤ ρ_k + 1`. -/
+theorem log_log_dlT_le (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
+    C / 256 * Real.log (Real.log (dlT γ_min C Θ k)) ≤ levelRadius (dlρ γ_min C Θ k) := by
+  have hCy := C_le_levelRadius_dlρ (γ_min := γ_min) (Θ := Θ) hC k
+  set y := levelRadius (dlρ γ_min C Θ k)
+  have hT1 : (1 : ℝ) < dlT γ_min C Θ k := by
+    have h := (dlRadiusTower (γ_min := γ_min) hC hΘ).step_le k
+    have : 2 ≤ dlT γ_min C Θ k := by
+      change 104 * (dlρ γ_min C Θ k + 1) + 1 ≤ dlT γ_min C Θ k at h
+      omega
+    exact_mod_cast this
+  have hlogT : 0 < Real.log (dlT γ_min C Θ k) := Real.log_pos hT1
+  have hlogT_le : Real.log (dlT γ_min C Θ k) ≤ (dlΓ γ_min C Θ k : ℝ) ^ 2 :=
+    (Real.log_le_iff_le_exp (by linarith)).mpr (dlT_le_exp_sq hC hΘ k)
+  have hΓpos : (0 : ℝ) < dlΓ γ_min C Θ k := by
+    have := exp_le_dlΓ (γ_min := γ_min) (C := C) (Θ := Θ) k
+    linarith [Real.exp_pos (64 * y / C)]
+  have hy0 : 0 < y := levelRadius_pos _
+  have hE1 : 1 ≤ Real.exp (64 * y / C) := Real.one_le_exp (by positivity)
+  have hΓ2 : (dlΓ γ_min C Θ k : ℝ) ≤ 2 * Real.exp (64 * y / C) := by
+    linarith [dlΓ_lt (γ_min := γ_min) (C := C) (Θ := Θ) k]
+  have h1 : Real.log (Real.log (dlT γ_min C Θ k)) ≤ 2 * Real.log (dlΓ γ_min C Θ k) := by
+    have := Real.log_le_log hlogT hlogT_le
+    rwa [Real.log_pow, Nat.cast_ofNat] at this
+  have h2 : Real.log (dlΓ γ_min C Θ k) ≤ Real.log 2 + 64 * y / C := by
+    calc Real.log (dlΓ γ_min C Θ k) ≤ Real.log (2 * Real.exp (64 * y / C)) :=
+          Real.log_le_log hΓpos hΓ2
+      _ = Real.log 2 + 64 * y / C := by
+          rw [Real.log_mul (by norm_num) (Real.exp_pos _).ne', Real.log_exp]
+  have hlog2 : Real.log 2 ≤ 1 := by
+    linarith [Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)]
+  have h3 : Real.log (Real.log (dlT γ_min C Θ k)) ≤ 2 + 128 * y / C := by
+    have : 128 * y / C = 2 * (64 * y / C) := by ring
+    linarith
+  calc C / 256 * Real.log (Real.log (dlT γ_min C Θ k))
+      ≤ C / 256 * (2 + 128 * y / C) := mul_le_mul_of_nonneg_left h3 (by positivity)
+    _ = C / 128 + y / 2 := by field_simp; ring
+    _ ≤ y := by linarith
+
+end DoubleLogTower
+
+/-! ### Main theorems -/
+
+/-- **Every radius below `(C/256) log log T` misses the minimal face.** For `γ_min > 0`, `C > 0`,
+`0 < Θ ≤ 1/2` one configuration `Z ∈ 𝒵(γ_min, C)` of simple zeros with unattained top
+`sup Re ρ = 1/2 + Θ` has, for every radius `R` with `R(T) ≤ (C/256) log log T` for large `T`,
+arbitrarily late windows `|u − T| ≤ R(T)` on which `2 Re S_Z(u)` exceeds any given floor. -/
+theorem exists_classZ_doubleLog_windows_bddBelow_beyond_every_bound
+    {γ_min C Θ : ℝ} (hγ : 0 < γ_min) (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
+    ∃ Z : ZeroConfig,
+      InClassZ γ_min C Z ∧
+      (∀ ρ ∈ Z.carrier, Z.mult ρ = 1) ∧
+      (∀ ρ ∈ Z.carrier, ρ.re < 1 / 2 + Θ) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ ρ ∈ Z.carrier, 1 / 2 + Θ - ε < ρ.re) ∧
+      ∀ R : ℝ → ℝ, (∀ᶠ T in atTop, R T ≤ C / 256 * Real.log (Real.log T)) →
+        ∀ K U : ℝ, ∃ T : ℝ, U ≤ T ∧
+          ∀ u : ℝ, |u - T| ≤ R T → K ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re := by
+  set W := dlRadiusTower (γ_min := γ_min) hC hΘ
+  refine ⟨W.config hΘ hΘ2, W.inClassZ_config hγ hC hΘ hΘ2, fun _ _ => rfl,
+    fun _ hρ => W.re_lt_half_add hΘ hΘ2 hρ, fun _ hε => W.exists_re_gt_half_add_sub hΘ hΘ2 hε,
+    fun R hR K U => ?_⟩
+  obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp hR
+  set k := max ⌈max K 0⌉₊ ⌈max (max U T₀) 0⌉₊
+  have hkT : (k : ℝ) + 1 ≤ (W.T (k + 1) : ℝ) := by exact_mod_cast W.k_le_T (k + 1)
+  have hUT : max U T₀ ≤ (k : ℝ) := by
+    have h1 : max U T₀ ≤ (⌈max (max U T₀) 0⌉₊ : ℝ) := (le_max_left _ 0).trans (Nat.le_ceil _)
+    have h2 : (⌈max (max U T₀) 0⌉₊ : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_max_right _ _
+    linarith
+  refine ⟨(W.T (k + 1) : ℝ), by linarith [le_max_left U T₀], fun u hu => ?_⟩
+  have hRT := hT₀ (W.T (k + 1) : ℝ) (by linarith [le_max_right U T₀])
+  have hrad := log_log_dlT_le (γ_min := γ_min) hC hΘ (k + 1)
+  have hu' : |u - (W.T (k + 1) : ℝ)| ≤ levelRadius (W.ρ (k + 1)) :=
+    hu.trans (hRT.trans hrad)
+  have hfloor := W.k_add_one_le_two_re_lagStructure hΘ hΘ2 k hu'
+  have hK1 : K ≤ (⌈max K 0⌉₊ : ℝ) := (le_max_left K 0).trans (Nat.le_ceil _)
+  have hK2 : (⌈max K 0⌉₊ : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_max_left _ _
+  linarith
+
+/-- **No radius of double-logarithmic order decides `𝒵`.** Radii with `R(T) → ∞` and
+`R(T) ≤ (C/256) log log T` (for instance `R(T) = (C/256) log log T`) do not force the zeros of
+configurations in `𝒵(γ_min, C)` with bounded-below traces onto the critical line. -/
+theorem not_forall_doubleLog_radius_decides_classZ {γ_min C : ℝ} (hγ : 0 < γ_min) (hC : 0 < C) :
+    ¬ (∀ R : ℝ → ℝ, Tendsto R atTop atTop →
+        (∀ᶠ T in atTop, R T ≤ C / 256 * Real.log (Real.log T)) →
+        ∀ Z : ZeroConfig, InClassZ γ_min C Z →
+          (∃ K : ℝ, ∀ U : ℝ, ∃ T : ℝ, U ≤ T ∧
+            ∀ u : ℝ, |u - T| ≤ R T → -K ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re) →
+          ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) := by
+  intro hdecide
+  obtain ⟨Z, hZ, _, _, hex_top, hwin⟩ :=
+    exists_classZ_doubleLog_windows_bddBelow_beyond_every_bound hγ hC
+      (Θ := 1 / 2) (by norm_num) le_rfl
+  set R : ℝ → ℝ := fun T => C / 256 * Real.log (Real.log T)
+  have hRtop : Tendsto R atTop atTop :=
+    (Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).const_mul_atTop (by positivity)
+  have hRle : ∀ᶠ T in atTop, R T ≤ C / 256 * Real.log (Real.log T) :=
+    Eventually.of_forall fun _ => le_rfl
+  obtain ⟨ρ, hρ, hρ_re⟩ := hex_top (1 / 4) (by norm_num)
+  have hcrit := hdecide R hRtop hRle Z hZ ⟨0, fun U => by
+    obtain ⟨T, hTU, hT⟩ := hwin R hRle 0 U
+    exact ⟨T, hTU, fun u hu => by linarith [hT u hu]⟩⟩ ρ hρ
+  linarith
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

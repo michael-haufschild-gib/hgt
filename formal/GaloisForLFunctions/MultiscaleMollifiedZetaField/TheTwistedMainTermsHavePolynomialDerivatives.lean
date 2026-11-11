@@ -286,7 +286,8 @@ private theorem continuous_holomorphicChiPair_height {z : ℂ} (hz : 0 ≤ z.re)
   rw [he]
   exact hc.mul (hc.comp continuous_neg)
 
-private theorem differentiableOn_chi_integral {p q η : ℝ} (hη : 0 < η)
+/-- The reflected tapered chi integral is holomorphic on its displacement disk. -/
+theorem differentiableOn_chi_integral {p q η : ℝ} (hη : 0 < η)
     (hp : 4 ≤ p - η) {d : ℝ} (hd : 0 < d) (hd20 : d ≤ 1 / 20) :
     DifferentiableOn ℂ (fun z => ∫ t, blockWindowC p q η t * holomorphicChiPair z t)
       (ball (d : ℂ) d) := by

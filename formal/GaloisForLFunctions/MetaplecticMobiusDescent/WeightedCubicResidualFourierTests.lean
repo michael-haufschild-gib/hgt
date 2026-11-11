@@ -27461,7 +27461,7 @@ theorem completedT_constructed_active_reflection {ι : Type*} [Fintype ι]
       ringComplex traceLambda ^ 2 * ∑ i : s, ringComplex (lift k s v i) / ringComplex (p i.val) := by
     dsimp only [D]
     rw [fixedMatrixCusp_point, hMa, hMc,
-      cuspCrossNumerator_fraction _ _ _ _ _ (hc₀ k) (fun i => hp0 i.val), hbasePoint]
+      cuspCrossNumerator_fraction (a₀ k) (c₀ k) traceLambda (fun i : s => p i.val) (lift k s v) (hc₀ k) (fun i => hp0 i.val), hbasePoint]
   refine ⟨c₀, sector, d₀, U, κ, σ, ε, (fun k => ⟨hc₀ k, hcdiv k⟩), hκ, ?_⟩
   intro W A B hA hs hW X hX
   have hVs := Vstar_support W A B hs
@@ -27601,6 +27601,7 @@ lemma finiteReflectionDivisorTerm_eisenstein {ι : Type*} [Fintype ι]
   unfold finiteReflectionDivisorTerm
   simp only [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
   rw [finite_divisor_indicator_product]
+  split_ifs <;> rfl
 
 
 /-- A reflected prime row has one scalar phase and explicit exceptional divisor factors. -/
@@ -27721,6 +27722,455 @@ theorem nativeCuspStratumKernel_divisor_blocks {ι : Type*} [Fintype ι] (p : ι
   simp only [mul_assoc]
   rw [fixedCuspRadialArray_tsum_full_index]
   simp only [thetaFullFrequency_radialLength]
+
+
+
+/-- Cubing the argument retains exactly the quadratic parity of a sextic character power. -/
+lemma sextic_character_cube_parity {F : Type*} [Field F]
+    (χ : MulChar F ℂ) (hχ : χ ^ 6 = 1) (k : ℕ) (a b : F) :
+    (χ ^ k) (a * b ^ 3) = (χ ^ k) a * (χ ^ (3 * (k % 2))) b := by
+  have he : k * 3 = 6 * (k / 2) + 3 * (k % 2) := by omega
+  rw [map_mul, map_pow, ← MulChar.pow_apply' (χ ^ k) (by decide : (3 : ℕ) ≠ 0),
+    ← pow_mul, he, pow_add, pow_mul, hχ, one_pow, one_mul]
+
+lemma reflectedSexticExponent_parity (j : ℕ) (hj : j < 6) :
+    reflectedSexticExponent j % 2 = j % 2 := by
+  interval_cases j <;> norm_num [reflectedSexticExponent]
+
+/-- The cube factor in every nonexceptional reflected row carries only a quadratic character. -/
+lemma reflected_sextic_cube_parity (P : Ideal O) [P.IsMaximal]
+    (hg : lambda ∉ P) (j : ℕ) (hj : j < 6) (a b : O ⧸ P) :
+    (complexSexticChar P hg ^ reflectedSexticExponent j) (a * b ^ 3) =
+      (complexSexticChar P hg ^ reflectedSexticExponent j) a *
+        (complexSexticChar P hg ^ (3 * (j % 2))) b := by
+  rw [sextic_character_cube_parity _ (complexSexticChar_powers P hg).2.2,
+    reflectedSexticExponent_parity j hj]
+
+/-- The simultaneous reflected cube character separates before the squarefree and cube sums. -/
+theorem reflected_character_product_cube_parity {ι : Type*} [Fintype ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hg : ∀ i, lambda ∉ P i)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) (a b : O) :
+    (∏ i ∈ Finset.univ.filter (fun i => j i ≠ 4),
+      (complexSexticChar (P i) (hg i) ^ reflectedSexticExponent (j i))
+        (Ideal.Quotient.mk (P i) (a * b ^ 3))) =
+      (∏ i ∈ Finset.univ.filter (fun i => j i ≠ 4),
+        (complexSexticChar (P i) (hg i) ^ reflectedSexticExponent (j i)) (Ideal.Quotient.mk (P i) a)) *
+      ∏ i ∈ Finset.univ.filter (fun i => j i ≠ 4),
+        (complexSexticChar (P i) (hg i) ^ (3 * (j i % 2))) (Ideal.Quotient.mk (P i) b) := by
+  rw [← Finset.prod_mul_distrib]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [map_mul, map_pow, reflected_sextic_cube_parity _ _ _ (hj i)]
+
+/-- The exceptional divisor condition splits into disjoint squarefree and cube cases. -/
+lemma prime_divisor_cube_indicator (p a b : O) (hp : Prime p) :
+    (if p ∣ a * b ^ 3 then (1 : ℂ) else 0) =
+      (if p ∣ a then 1 else 0) + (if ¬ p ∣ a ∧ p ∣ b then 1 else 0) := by
+  have hd : p ∣ a * b ^ 3 ↔ p ∣ a ∨ p ∣ b := by
+    rw [hp.dvd_mul]
+    constructor
+    · exact fun h => h.elim Or.inl (fun hb => Or.inr (hp.dvd_of_dvd_pow hb))
+    · exact fun h => h.elim Or.inl (fun hb => Or.inr (dvd_pow hb (by decide)))
+  by_cases ha : p ∣ a <;> by_cases hb : p ∣ b <;> simp only [hd, ha, hb, or_true,
+    true_or, false_or, not_true_eq_false, not_false_eq_true, and_true, and_false,
+    false_and, true_and, reduceIte] <;> norm_num
+
+/-- An omitted prime contributes its coprimality density exactly when its row exponent vanishes. -/
+lemma finiteAdditiveFourier_sextic_zero (P : Ideal O) [P.IsMaximal]
+    (hg : lambda ∉ P) (hchar : ringChar (O ⧸ P) ≠ 2)
+    (ψ : AddChar (O ⧸ P) ℂ) (j : ℕ) (hj : j < 6) :
+    finiteAdditiveFourierCoeff ψ (complexSexticChar P hg ^ j : MulChar (O ⧸ P) ℂ) 0 =
+      if j = 0 then ((Fintype.card (O ⧸ P) : ℂ) - 1) / Fintype.card (O ⧸ P) else 0 := by
+  rw [finiteAdditiveFourierCoeff_mulChar_zero]
+  by_cases hj0 : j = 0
+  · simp only [hj0, pow_zero, reduceIte]
+    rw [Nat.card_eq_fintype_card, Fintype.card_units,
+      Nat.cast_sub (Nat.succ_le_of_lt Fintype.card_pos), Nat.cast_one]
+  · rw [if_neg (complexSexticChar_pow_ne_one P hg hchar j hj hj0), if_neg hj0]
+
+
+/-- Away from the fixed modulus, the integral cusp frequency differs from the original by a unit. -/
+theorem sourceCuspIntegralPhaseNumerator_quotient_unit (p N : O)
+    [hp : (Ideal.span {p}).IsMaximal] (hN : (9 : O) ∣ N) (hNp : IsCoprime N p)
+    (s : FixedCuspSector) :
+    ∃ u : (O ⧸ Ideal.span {p})ˣ, ∀ h : O,
+      Ideal.Quotient.mk (Ideal.span {p})
+        (sourceCuspIntegralPhaseNumerator (fixedCuspIndex s) (fixedCuspTriangular s 0 0) h) =
+        (u : O ⧸ Ideal.span {p}) * Ideal.Quotient.mk (Ideal.span {p}) h := by
+  let q := Ideal.Quotient.mk (Ideal.span {p})
+  have h3N : (3 : O) ∣ N := (show (3 : O) ∣ 9 from ⟨3, by norm_num⟩).trans hN
+  have hlN : traceLambda ∣ N := (show traceLambda ∣ (9 : O) from
+    ⟨traceLambda ^ 3, by rw [← traceLambda_pow_four]; ring⟩).trans hN
+  have h3 : IsUnit (q 3) := (isUnit_quotient_span_iff p 3).mpr
+    (hNp.of_isCoprime_of_dvd_left h3N).symm
+  have hl : IsUnit (q traceLambda) := (isUnit_quotient_span_iff p traceLambda).mpr
+    (hNp.of_isCoprime_of_dvd_left hlN).symm
+  have hu : IsUnit (q (fixedCuspTriangular s 0 0)) :=
+    (fixedCuspTriangular_properties s).2.1.map q
+  have hfactor : IsUnit (q ((if fixedCuspIndex s = 0 then 3 else 1) * traceLambda *
+      fixedCuspTriangular s 0 0 ^ 2)) := by
+    rw [map_mul, map_mul, map_pow]
+    apply IsUnit.mul _ (hu.pow 2)
+    apply IsUnit.mul _ hl
+    split_ifs
+    · exact h3
+    · exact isUnit_one
+  obtain ⟨u, he⟩ := hfactor
+  refine ⟨u, ?_⟩
+  intro h
+  change q (_ * h) = (u : O ⧸ Ideal.span {p}) * q h
+  rw [map_mul, ← he]
+
+/-- Unit changes of local coordinates contribute a single norm-one row factor. -/
+theorem finiteReflectionBracket_unit_family {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+    (χ : ∀ i, MulChar (F i) ℂ) (j : ι → ℕ) (u : ∀ i, (F i)ˣ) :
+    ∃ γ : ℂ, ‖γ‖ = 1 ∧ ∀ x : ∀ i, F i,
+      (∏ i, finiteReflectionBracket (χ i) (j i) ((u i : F i) * x i)) =
+        γ * ∏ i, finiteReflectionBracket (χ i) (j i) (x i) := by
+  refine ⟨∏ i, finiteReflectionUnitFactor (χ i) (j i) (u i), ?_, ?_⟩
+  · simp only [norm_prod, finiteReflectionUnitFactor_norm, Finset.prod_const_one]
+  · intro x
+    simp only [finiteReflectionBracket_unit_mul, Finset.prod_mul_distrib]
+
+/-- A nonzero integral frequency scaling changes only the constant phase of a reflected row. -/
+theorem cuspLocalReflectedProduct_original_frequency {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hchar : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (N : O) (hN : (9 : O) ∣ N) (hNp : ∀ i, IsCoprime N (p i)) (s : FixedCuspSector)
+    (σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ) (j : ι → ℕ) (hj : ∀ i, j i < 6) :
+    ∃ β : ℂ, ‖β‖ ^ 2 = (∏ i, if j i = 0 ∨ j i = 4 then
+        (Fintype.card (O ⧸ Ideal.span {p i}) : ℝ)⁻¹ else 1) ∧
+      ∀ h : O, cuspLocalReflectedProduct p hp hg σ ε j
+          (sourceCuspIntegralPhaseNumerator (fixedCuspIndex s) (fixedCuspTriangular s 0 0) h) =
+        β * ∏ i, finiteReflectionBracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+          (Ideal.Quotient.mk (Ideal.span {p i}) h) := by
+  classical
+  choose u hu using fun i => sourceCuspIntegralPhaseNumerator_quotient_unit (p i) N hN (hNp i) s
+  obtain ⟨β, hn, he⟩ := cuspLocalReflectedProduct_brackets p hp hg hchar σ ε j hj
+  obtain ⟨γ, hγ, hγe⟩ := finiteReflectionBracket_unit_family
+    (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) j u
+  refine ⟨β * γ, ?_, ?_⟩
+  · rw [norm_mul, mul_pow, hγ, one_pow, mul_one, hn]
+  · intro h
+    rw [he]
+    simp_rw [hu]
+    rw [hγe, mul_assoc]
+
+
+/-- Reflected arithmetic coefficients range over a fixed residue modulus, independently of the prime row. -/
+def fixedCuspPeriodicArray (N c : O) (s : FixedCuspSector)
+    (b : O ⧸ Ideal.span {N}) (h : O) : ℂ :=
+  fixedCuspRadialArray s h * fixedCuspInversePhase s c (Quotient.out b) h
+
+lemma fixedCuspPeriodicArray_norm (N c : O) (s : FixedCuspSector)
+    (b : O ⧸ Ideal.span {N}) (h : O) :
+    ‖fixedCuspPeriodicArray N c s b h‖ = ‖fixedCuspRadialArray s h‖ := by
+  rw [fixedCuspPeriodicArray, norm_mul, fixedCuspInversePhase_norm, mul_one]
+
+lemma fixedCuspInversePhase_residue (N c d : O) (hc : c ≠ 0) (hN : 27 * c ∣ N)
+    (s : FixedCuspSector) (h : O) :
+    fixedCuspInversePhase s c d h =
+      fixedCuspInversePhase s c (Quotient.out (Ideal.Quotient.mk (Ideal.span {N}) d)) h := by
+  have hmod : N ∣ d - Quotient.out (Ideal.Quotient.mk (Ideal.span {N}) d) :=
+    Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp (Ideal.Quotient.mk_out _).symm)
+  have he := cuspInverse_fixed_phase_congr (3 * c) d
+    (Quotient.out (Ideal.Quotient.mk (Ideal.span {N}) d)) 1
+    (sourceCuspIntegralPhaseNumerator (fixedCuspIndex s) (fixedCuspTriangular s 0 0) h)
+    (mul_ne_zero (by norm_num) hc) (((cuspInverse_fixed_modulus_dvd c).trans hN).trans hmod)
+  simpa only [fixedCuspInversePhase, map_one, mul_one] using he
+
+lemma fixedCuspPeriodicArray_tsum_full_index (N c : O) (s : FixedCuspSector)
+    (b : O ⧸ Ideal.span {N}) (W : O → ℂ) :
+    (∑' h : O, fixedCuspPeriodicArray N c s b h * W h) =
+      ∑' q : ThetaFullIndex, fixedCuspPeriodicArray N c s b (thetaFullFrequency q) * W (thetaFullFrequency q) := by
+  simp only [fixedCuspPeriodicArray, mul_assoc]
+  exact fixedCuspRadialArray_tsum_full_index s _
+
+lemma fixedCuspPeriodicArray_kernel_norm_summable (N c : O) (s : FixedCuspSector)
+    (b : O ⧸ Ideal.span {N}) (V : ℝ → ℂ) (A B : ℝ) (hA : 0 < A)
+    (hs : Function.support V ⊆ Set.Icc A B) (hV : ContDiff ℝ ∞ V) (R : ℝ) (hR : 0 < R) :
+    Summable (fun h : O => ‖fixedCuspPeriodicArray N c s b h * paperKernel V (R * sourceCuspRadialLength h)‖) := by
+  simpa only [norm_mul, fixedCuspPeriodicArray_norm] using
+    fixedCuspRadialArray_kernel_norm_summable s V A B hA hs hV R hR
+
+lemma fixedCuspReflectionScale_prime_product {ι : Type*} [Fintype ι]
+    (p : ι → O) (s : FixedCuspSector) (c : O) (X : ℝ) :
+    fixedCuspReflectionScale s (c * ∏ i, p i) X =
+      fixedCuspReflectionScale s c (X / ‖ringComplex (∏ i, p i)‖ ^ 4) := by
+  unfold fixedCuspReflectionScale
+  rw [map_mul, norm_mul, mul_pow]
+  ring
+
+lemma fixedCuspReflectionScalar_norm (s : FixedCuspSector) (c : O) (hc : c ≠ 0) :
+    ‖fixedCuspReflectionScalar s c‖ = (sourceCuspScale (fixedCuspIndex s)) ^ 2 := by
+  obtain ⟨u, hu⟩ := (fixedCuspTriangular_properties s).2.1
+  have hn : ‖ringComplex (fixedCuspTriangular s 0 0)‖ = 1 := by
+    rw [← hu]
+    exact norm_ringComplex_unit u
+  have hc' : ‖ringComplex c‖ ≠ 0 := (norm_pos_iff.mpr (ringComplex_ne_zero hc)).ne'
+  simp only [fixedCuspReflectionScalar, norm_mul, norm_neg, norm_pow, norm_div, norm_star,
+    hn, one_pow, div_self hc', one_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (sourceCuspScale_pos _)]
+
+lemma fixedCuspReflectionScalar_norm_sq_le (s : FixedCuspSector) (c : O) (hc : c ≠ 0) :
+    ‖fixedCuspReflectionScalar s c‖ ^ 2 ≤ 81 := by
+  rw [fixedCuspReflectionScalar_norm s c hc]
+  have hs : (sourceCuspScale (fixedCuspIndex s)) ^ 2 ≤ 9 := by
+    generalize fixedCuspIndex s = j
+    fin_cases j <;> norm_num [sourceCuspScale]
+  exact (pow_le_pow_left₀ (sq_nonneg _) hs 2).trans_eq (by norm_num)
+
+
+/-- Signed divisor blocks built from a fixed cusp coefficient array and quadratic cube characters. -/
+def fixedCuspDivisorSeries {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (N c : O) (s : FixedCuspSector) (b : O ⧸ Ideal.span {N}) (j : ι → ℕ) (V : ℝ → ℂ) (X : ℝ) : ℂ :=
+  ∑ t ∈ (Finset.univ.filter (fun i => j i = 4)).powerset,
+    ∑' q : ThetaFullIndex,
+      (fixedCuspPeriodicArray N c s b (thetaFullFrequency q) *
+        paperKernel V (fixedCuspReflectionScale s c (X / ‖ringComplex (∏ i, p i)‖ ^ 4) *
+          (‖ringComplex lambda‖ ^ (2 * q.2.1) * completedMellinLength q.2.2))) *
+      finiteReflectionDivisorTerm (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) j t
+        (fun i => Ideal.Quotient.mk (Ideal.span {p i}) (thetaFullFrequency q))
+
+/-- The arithmetic reflection is an exact finite-modulus divisor series with the sharp Gauss normalization. -/
+theorem nativeCuspStratumKernel_canonical {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hchar : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (N c d U : O) (hc : c ≠ 0) (hN : 27 * c ∣ N) (hNp : ∀ i, IsCoprime N (p i))
+    (s : FixedCuspSector) (κ : ℂ) (σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) :
+    ∃ β : ℂ, ‖β‖ ^ 2 = (∏ i, if j i = 0 ∨ j i = 4 then
+        (Fintype.card (O ⧸ Ideal.span {p i}) : ℝ)⁻¹ else 1) ∧
+      ∀ (V : ℝ → ℂ) (A B : ℝ), 0 < A → Function.support V ⊆ Set.Icc A B →
+        ContDiff ℝ ∞ V → ∀ X : ℝ, 0 < X →
+        nativeCuspStratumKernel p hp hg s c d U κ σ ε j V X =
+          (fixedCuspReflectionScalar s (c * ∏ i, p i) * star κ * β) *
+          fixedCuspDivisorSeries p hg N c s (Ideal.Quotient.mk (Ideal.span {N}) (d * U)) j V X := by
+  classical
+  have h9N : (9 : O) ∣ N := (show (9 : O) ∣ 27 * c from ⟨3 * c, by ring⟩).trans hN
+  obtain ⟨β, hn, he⟩ := cuspLocalReflectedProduct_original_frequency p hp hg hchar N h9N hNp s σ ε j hj
+  refine ⟨β, hn, ?_⟩
+  intro V A B hA hs hV X hX
+  let b := Ideal.Quotient.mk (Ideal.span {N}) (d * U)
+  let R := fixedCuspReflectionScale s c (X / ‖ringComplex (∏ i, p i)‖ ^ 4)
+  have hpR : 0 < R := by
+    dsimp only [R]
+    rw [← fixedCuspReflectionScale_prime_product p s c X]
+    exact fixedCuspReflectionScale_pos s _ (mul_ne_zero hc (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))) X hX
+  let a : O → ℂ := fun h => fixedCuspPeriodicArray N c s b h * paperKernel V (R * sourceCuspRadialLength h)
+  have ha : Summable (fun h => ‖a h‖) := fixedCuspPeriodicArray_kernel_norm_summable N c s b V A B hA hs hV R hpR
+  have hphase (h : O) : tracePhase (-(ringComplex d * ringComplex U * ringComplex
+      (sourceCuspIntegralPhaseNumerator (fixedCuspIndex s) (fixedCuspTriangular s 0 0) h)) /
+      (ringComplex traceLambda ^ 4 * ringComplex (3 * c))) = fixedCuspInversePhase s c (Quotient.out b) h := by
+    simpa only [fixedCuspInversePhase, map_mul, b] using fixedCuspInversePhase_residue N c (d * U) hc hN s h
+  have hk : nativeCuspStratumKernel p hp hg s c d U κ σ ε j V X =
+      (fixedCuspReflectionScalar s (c * ∏ i, p i) * star κ * β) *
+        ∑' h : O, a h * ∏ i, finiteReflectionBracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+          (Ideal.Quotient.mk (Ideal.span {p i}) h) := by
+    calc
+      _ = fixedCuspReflectionScalar s (c * ∏ i, p i) * ((star κ * β) *
+          ∑' h : O, a h * ∏ i, finiteReflectionBracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+            (Ideal.Quotient.mk (Ideal.span {p i}) h)) := by
+        unfold nativeCuspStratumKernel
+        congr 1
+        rw [← tsum_mul_left]
+        apply tsum_congr
+        intro h
+        rw [he, hphase, fixedCuspReflectionScale_prime_product]
+        dsimp only [a, R, fixedCuspPeriodicArray]
+        ring
+      _ = _ := by ring
+  rw [hk, tsum_finiteReflectionBracket_divisor_blocks _ j a ha]
+  unfold fixedCuspDivisorSeries
+  congr 1
+  apply Finset.sum_congr rfl
+  intro t ht
+  dsimp only [a, b, R]
+  simp only [mul_assoc]
+  rw [fixedCuspPeriodicArray_tsum_full_index]
+  simp only [thetaFullFrequency_radialLength]
+
+
+
+/-- Squared Gauss normalization at an active prime. -/
+def reflectedActiveMass (q : ℝ) (j : ℕ) : ℝ :=
+  if j = 0 ∨ j = 4 then q⁻¹ else 1
+
+/-- Density of the zero Fourier frequency at an inactive prime. -/
+def reflectedInactiveMass (q : ℝ) (j : ℕ) : ℝ :=
+  if j = 0 then 1 - q⁻¹ else 0
+
+lemma reflectedActiveMass_nonneg (q : ℝ) (hq : 0 ≤ q) (j : ℕ) :
+    0 ≤ reflectedActiveMass q j := by
+  unfold reflectedActiveMass
+  split_ifs <;> positivity
+
+lemma reflectedInactiveMass_nonneg (q : ℝ) (hq : 1 ≤ q) (j : ℕ) :
+    0 ≤ reflectedInactiveMass q j := by
+  unfold reflectedInactiveMass
+  split_ifs
+  · exact sub_nonneg.mpr (inv_le_one_of_one_le₀ hq)
+  · exact le_rfl
+
+/-- Summing every active-prime stratum preserves total mass; only the fourth-power primes cost density. -/
+theorem reflected_branch_mass {ι : Type*} [Fintype ι] (q : ι → ℝ) (j : ι → ℕ) :
+    (∑ s : Finset ι, (∏ i ∈ s, reflectedActiveMass (q i) (j i)) *
+      ∏ i ∈ sᶜ, reflectedInactiveMass (q i) (j i)) =
+      ∏ i, if j i = 4 then (q i)⁻¹ else 1 := by
+  classical
+  rw [← Fintype.prod_add]
+  apply Finset.prod_congr rfl
+  intro i hi
+  by_cases h0 : j i = 0
+  · simp only [reflectedActiveMass, reflectedInactiveMass, h0, reduceIte]
+    ring
+  · by_cases h4 : j i = 4
+    · simp [reflectedActiveMass, reflectedInactiveMass, h0, h4] <;> ring
+    · simp [reflectedActiveMass, reflectedInactiveMass, h0, h4] <;> ring
+
+lemma finiteAdditiveFourier_sextic_zero_real (P : Ideal O) [P.IsMaximal]
+    (hg : lambda ∉ P) (hchar : ringChar (O ⧸ P) ≠ 2)
+    (ψ : AddChar (O ⧸ P) ℂ) (j : ℕ) (hj : j < 6) :
+    finiteAdditiveFourierCoeff ψ (complexSexticChar P hg ^ j : MulChar (O ⧸ P) ℂ) 0 =
+      (reflectedInactiveMass (Fintype.card (O ⧸ P)) j : ℂ) := by
+  rw [finiteAdditiveFourier_sextic_zero P hg hchar ψ j hj]
+  unfold reflectedInactiveMass
+  by_cases h0 : j = 0
+  · rw [if_pos h0, if_pos h0]
+    push_cast
+    have hq : (Fintype.card (O ⧸ P) : ℂ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+    field_simp
+  · simp only [if_neg h0, Complex.ofReal_zero]
+
+lemma finiteAdditiveFourier_inactive_sextic_density {ι : Type*} [Fintype ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hg : ∀ i, lambda ∉ P i)
+    (hchar : ∀ i, ringChar (O ⧸ P i) ≠ 2) (ψ : ∀ i, AddChar (O ⧸ P i) ℂ)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) (s : Finset ι) :
+    (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (ψ i.val)
+      (complexSexticChar (P i.val) (hg i.val) ^ j i.val : MulChar (O ⧸ P i.val) ℂ) 0) =
+      ((∏ i ∈ sᶜ, reflectedInactiveMass (Fintype.card (O ⧸ P i)) (j i) : ℝ) : ℂ) := by
+  classical
+  rw [Finset.prod_subtype (F := inferInstanceAs (Fintype {i // i ∉ s})) sᶜ (fun _ => Finset.mem_compl)]
+  push_cast
+  exact Finset.prod_congr rfl (fun i _ => finiteAdditiveFourier_sextic_zero_real
+    (P i.val) (hg i.val) (hchar i.val) (ψ i.val) (j i.val) (hj i.val))
+
+
+/-- Weighted Cauchy–Schwarz keeps inactive-prime densities in both energies. -/
+theorem finite_density_energy_bound {ι : Type*} [Fintype ι]
+    (D A : ι → ℝ) (ω F : ι → ℂ) (C : ℝ) (hC : 0 ≤ C)
+    (hD : ∀ i, 0 ≤ D i) (hA : ∀ i, 0 ≤ A i) (hω : ∀ i, ‖ω i‖ ^ 2 ≤ C * A i) :
+    ‖∑ i, (D i : ℂ) * ω i * F i‖ ^ 2 ≤
+      C * (∑ i, D i * A i) * ∑ i, D i * ‖F i‖ ^ 2 := by
+  classical
+  have hn : ‖∑ i, (D i : ℂ) * ω i * F i‖ ≤ ∑ i, D i * ‖ω i‖ * ‖F i‖ := by
+    apply (norm_sum_le _ _).trans_eq
+    apply Finset.sum_congr rfl
+    intro i hi
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hD i)]
+  have hpoint (i) : (D i * ‖ω i‖ * ‖F i‖) ^ 2 ≤
+      (D i * A i) * (C * D i * ‖F i‖ ^ 2) := by
+    calc
+      _ = (D i ^ 2 * ‖F i‖ ^ 2) * ‖ω i‖ ^ 2 := by ring
+      _ ≤ (D i ^ 2 * ‖F i‖ ^ 2) * (C * A i) :=
+        mul_le_mul_of_nonneg_left (hω i) (mul_nonneg (sq_nonneg _) (sq_nonneg _))
+      _ = _ := by ring
+  have hcs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul Finset.univ
+    (fun i _ => mul_nonneg (hD i) (hA i))
+    (fun i _ => mul_nonneg (mul_nonneg hC (hD i)) (sq_nonneg _)) (fun i _ => hpoint i)
+  apply ((pow_le_pow_left₀ (norm_nonneg _) hn 2).trans hcs).trans_eq
+  rw [show (∑ i, C * D i * ‖F i‖ ^ 2) = C * ∑ i, D i * ‖F i‖ ^ 2 by
+    simp only [Finset.mul_sum, mul_assoc]]
+  ring
+
+/-- Active-stratum reflection costs only the exceptional fourth-power density in the first energy. -/
+theorem reflected_stratum_energy_bound {ι : Type*} [Fintype ι]
+    (q : ι → ℝ) (hq : ∀ i, 1 ≤ q i) (j : ι → ℕ)
+    (ω F : Finset ι → ℂ) (C : ℝ) (hC : 0 ≤ C)
+    (hω : ∀ s : Finset ι, ‖ω s‖ ^ 2 ≤ C * ∏ i ∈ s, reflectedActiveMass (q i) (j i)) :
+    ‖∑ s : Finset ι, ((∏ i ∈ sᶜ, reflectedInactiveMass (q i) (j i) : ℝ) : ℂ) * ω s * F s‖ ^ 2 ≤
+      C * (∏ i, if j i = 4 then (q i)⁻¹ else 1) *
+        ∑ s : Finset ι, (∏ i ∈ sᶜ, reflectedInactiveMass (q i) (j i)) * ‖F s‖ ^ 2 := by
+  classical
+  have he := finite_density_energy_bound
+    (fun s : Finset ι => ∏ i ∈ sᶜ, reflectedInactiveMass (q i) (j i))
+    (fun s : Finset ι => ∏ i ∈ s, reflectedActiveMass (q i) (j i)) ω F C hC
+    (fun s => Finset.prod_nonneg (fun i _ => reflectedInactiveMass_nonneg _ (hq i) _))
+    (fun s => Finset.prod_nonneg (fun i _ => reflectedActiveMass_nonneg _ (zero_le_one.trans (hq i)) _)) hω
+  have hm : (∑ s : Finset ι, (∏ i ∈ sᶜ, reflectedInactiveMass (q i) (j i)) *
+      ∏ i ∈ s, reflectedActiveMass (q i) (j i)) = ∏ i, if j i = 4 then (q i)⁻¹ else 1 := by
+    simpa only [mul_comm] using reflected_branch_mass q j
+  rwa [hm] at he
+
+
+/-- Completed Gauss rows are finite sums of canonical divisor series with uniformly bounded cusp multipliers. -/
+theorem completedT_canonical_divisor_reflection {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal] (hp0 : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hp : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (hchar : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (N c : O) (hc : c ≠ 0) (hN : (243 : O) * c ∣ N) (hNp : ∀ i, IsCoprime N (p i))
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) :
+    ∃ (c₀ : (O ⧸ Ideal.span {9 * c}) → O)
+      (sector : (O ⧸ Ideal.span {9 * c}) → Finset ι → FixedCuspSector)
+      (b : (O ⧸ Ideal.span {9 * c}) → Finset ι → (O ⧸ Ideal.span {N}))
+      (ω : (O ⧸ Ideal.span {9 * c}) → Finset ι → ℂ),
+      (∀ k, c₀ k ≠ 0 ∧ c₀ k ∣ 9 * c) ∧
+      (∀ k s, ‖ω k s‖ ^ 2 ≤ 81 * ∏ i : s,
+        if j i.val = 0 ∨ j i.val = 4 then (Fintype.card (O ⧸ Ideal.span {p i.val}) : ℝ)⁻¹ else 1) ∧
+      ∀ (W : ℝ → ℂ) (A B : ℝ), 0 < A → Function.support W ⊆ Set.Icc A B →
+        ContDiff ℝ ∞ W → ∀ X : ℝ, 0 < X →
+        completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom *
+          primeCuspRowCharacter p (fun i => complexSexticChar (Ideal.span {p i}) (hg i) ^ j i)) W X =
+        thetaDerivativeScalar⁻¹ * ∑ k : O ⧸ Ideal.span {9 * c},
+          finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+            (finiteThetaTwist c Ψ) k *
+          ∑ s : Finset ι,
+            (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp0 i.val))
+              (complexSexticChar (Ideal.span {p i.val}) (hg i.val) ^ j i.val : MulChar (O ⧸ Ideal.span {p i.val}) ℂ) 0) *
+            ω k s * fixedCuspDivisorSeries (fun i : s => p i.val) (fun i => hg i.val)
+              N (c₀ k) (sector k s) (b k s) (fun i => j i.val) (Vstar W) X := by
+  classical
+  obtain ⟨c₀, sector, d, U, κ, σ, ε, hc₀, hκ, hrow⟩ :=
+    completedT_constructed_active_reflection p hp0 hg hp hpair N c hc hN hNp Ψ j
+  have hNc₀ (k) : (27 : O) * c₀ k ∣ N := by
+    apply dvd_trans _ hN
+    obtain ⟨t, ht⟩ := (hc₀ k).2
+    refine ⟨t, ?_⟩
+    linear_combination 27 * ht
+  have hbranch (k : O ⧸ Ideal.span {9 * c}) (s : Finset ι) :=
+    nativeCuspStratumKernel_canonical (fun i : s => p i.val) (fun i => hp0 i.val)
+      (fun i => hg i.val) (fun i => hchar i.val) N (c₀ k) (d k s) (U k s)
+      (hc₀ k).1 (hNc₀ k) (fun i => hNp i.val) (sector k s) (κ k s) (σ k s) (ε k s)
+      (fun i => j i.val) (fun i => hj i.val)
+  choose β hβnorm hβ using hbranch
+  let b := fun k s => Ideal.Quotient.mk (Ideal.span {N}) (d k s * U k s)
+  let ω := fun k (s : Finset ι) =>
+    fixedCuspReflectionScalar (sector k s) (c₀ k * ∏ i : s, p i.val) * star (κ k s) * β k s
+  refine ⟨c₀, sector, b, ω, hc₀, ?_, ?_⟩
+  · intro k s
+    dsimp only [ω]
+    rw [norm_mul, norm_mul, norm_star, hκ, mul_one, mul_pow, hβnorm]
+    apply mul_le_mul_of_nonneg_right
+      (fixedCuspReflectionScalar_norm_sq_le _ _
+        (mul_ne_zero (hc₀ k).1 (Finset.prod_ne_zero_iff.mpr (fun i _ => hp0 i.val))))
+    apply Finset.prod_nonneg
+    intro i hi
+    split_ifs <;> positivity
+  · intro W A B hA hs hW X hX
+    rw [hrow W A B hA hs hW X hX]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro k hk
+    congr 1
+    apply Finset.sum_congr rfl
+    intro s hs'
+    rw [hβ k s (Vstar W) A B hA (Vstar_support W A B hs) (Vstar_contDiff W A B hA hs hW) X hX]
+    dsimp only [b, ω]
+    ring
 
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

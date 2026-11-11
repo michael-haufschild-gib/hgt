@@ -4,11 +4,11 @@ import GaloisForLFunctions.FamilyContinuationTheory.ThePoissonCoefficientIsMulti
 # The theta coefficient cancels the pair phases
 
 The cubic-theta probe attaches to an index `A = cn³` (`c` squarefree) the theta coefficient
-`γ₂(c) G(A)`, with `γ₂(c) = |c|⁻¹ Σ_{v mod c} χ_c(v)² ψ_c(v)` (`thetaGauss`) and
-`G(A) = χ_A(4) Γ(A)` (`thetaPhase`), and to the pair `(s, A)` the fixed bicharacter `R(A, s)`.
-The corrected coefficient
+`γ₂(c) \overline{G(A)}`, with `γ₂(c) = |c|⁻¹ Σ_{v mod c} χ_c(v)² ψ_c(v)` (`thetaGauss`) and
+`G(A) = \overline{χ_A(4)} Γ(A)` (`thetaPhase`, of modulus one, so `\overline{G} = G⁻¹`), and to the pair
+`(s, A)` the fixed bicharacter `R(A, s)`. The corrected coefficient
 
-`K(s, c, n; H) = R(cn³, s) γ₂(c) G(cn³) F(s, cn³; H)`   (`correctedCoeff`)
+`K(s, c, n; H) = R(cn³, s) γ₂(c) G(cn³)⁻¹ F(s, cn³; H)`   (`correctedCoeff`)
 
 is multiplicative (`correctedCoeff_mul`): for primary data prime to `2` with
 `(s₁c₁n₁, s₂c₂n₂) = 1`,
@@ -58,8 +58,8 @@ theorem sexticSymbol_pow_six {x a : O} (ha : lambda ^ 2 ∣ a - 1) (ha2 : IsCopr
 /-- `γ₂(c) = |c|⁻¹ Σ_{v mod c} χ_c(v)² ψ_c(v)`. -/
 def thetaGauss (c : O) [NeZero c] : ℂ := sexticGaussPow 2 c 1 / (‖ringComplex c‖ : ℂ)
 
-/-- `G(c) = χ_c(4) Γ(c)`. -/
-def thetaPhase (c : O) : ℂ := sexticSymbol 4 c * fixedDualAverage c
+/-- `G(c) = \overline{χ_c(4)} Γ(c)`. -/
+def thetaPhase (c : O) : ℂ := starRingEnd ℂ (sexticSymbol 4 c) * fixedDualAverage c
 
 /-- **CRT for `γ₂`.** For coprime `c₁, c₂`: `γ₂(c₁c₂) = (χ_{c₁}(c₂) χ_{c₂}(c₁))² γ₂(c₁) γ₂(c₂)`. -/
 theorem thetaGauss_mul (c₁ c₂ : O) [NeZero c₁] [NeZero c₂] (h : IsCoprime c₁ c₂) :
@@ -79,7 +79,7 @@ theorem thetaGauss_mul (c₁ c₂ : O) [NeZero c₁] [NeZero c₂] (h : IsCoprim
 theorem thetaPhase_mul {v w : O} (hv : v ∉ Ideal.span {(2 : O)}) (hw : w ∉ Ideal.span {(2 : O)}) :
     thetaPhase (v * w) = thetaPhase v * thetaPhase w * quadraticPhase v w := by
   unfold thetaPhase quadraticPhase
-  rw [sexticSymbol_mul_denominator]
+  rw [sexticSymbol_mul_denominator, map_mul]
   have h1 := gamma_ne_zero hv
   have h2 := gamma_ne_zero hw
   field_simp
@@ -137,9 +137,9 @@ theorem pairPhase_eq_one {c₁ n₁ c₂ n₂ : O} (hc₁ : lambda ^ 2 ∣ c₁ 
 
 /-! ### The corrected coefficient -/
 
-/-- The corrected coefficient `K(s, c, n; H) = R(A, s) γ₂(c) G(A) F(s, A; H)`, `A = cn³`. -/
+/-- The corrected coefficient `K(s, c, n; H) = R(A, s) γ₂(c) G(A)⁻¹ F(s, A; H)`, `A = cn³`. -/
 def correctedCoeff (s c n : O) [NeZero s] [NeZero c] [NeZero n] (H : O) : ℂ :=
-  quadraticPhase (c * n ^ 3) s * (thetaGauss c * thetaPhase (c * n ^ 3)) *
+  quadraticPhase (c * n ^ 3) s * (thetaGauss c * (thetaPhase (c * n ^ 3))⁻¹) *
     poissonCoeff s (c * n ^ 3) H
 
 theorem poissonCoeff_congr_index (s : O) [NeZero s] {A A' : O} [NeZero A] [NeZero A'] (h : A = A')
@@ -195,11 +195,75 @@ theorem correctedCoeff_mul {s₁ s₂ c₁ c₂ n₁ n₂ : O} [NeZero s₁] [Ne
   have hP := pairPhase_eq_one hc₁ hn₁ hc₂ hn₂ hc₁2 hn₁2 hc₂2 hn₂2 hcn
   have h12 := quadraticPhase_sq (hodd hA₁2) (hodd hs₂2)
   have h21 := quadraticPhase_sq (hodd hA₂2) (hodd hs₁2)
-  set RHS := quadraticPhase (c₁ * n₁ ^ 3) s₁ * (thetaGauss c₁ * thetaPhase (c₁ * n₁ ^ 3)) *
+  have hAA := quadraticPhase_sq (hodd hA₁2) (hodd hA₂2)
+  have hinv : (quadraticPhase (c₁ * n₁ ^ 3) (c₂ * n₂ ^ 3))⁻¹ =
+      quadraticPhase (c₁ * n₁ ^ 3) (c₂ * n₂ ^ 3) :=
+    inv_eq_of_mul_eq_one_right (by rw [← sq, hAA])
+  rw [mul_inv, mul_inv, hinv]
+  set RHS := quadraticPhase (c₁ * n₁ ^ 3) s₁ * (thetaGauss c₁ * (thetaPhase (c₁ * n₁ ^ 3))⁻¹) *
     poissonCoeff s₁ (c₁ * n₁ ^ 3) H * (quadraticPhase (c₂ * n₂ ^ 3) s₂ *
-      (thetaGauss c₂ * thetaPhase (c₂ * n₂ ^ 3)) * poissonCoeff s₂ (c₂ * n₂ ^ 3) H)
+      (thetaGauss c₂ * (thetaPhase (c₂ * n₂ ^ 3))⁻¹) * poissonCoeff s₂ (c₂ * n₂ ^ 3) H)
   linear_combination RHS * quadraticPhase (c₁ * n₁ ^ 3) s₂ ^ 2 *
       quadraticPhase (c₂ * n₂ ^ 3) s₁ ^ 2 * hP +
     RHS * quadraticPhase (c₁ * n₁ ^ 3) s₂ ^ 2 * h21 + RHS * h12
+
+/-! ### The frequency -/
+
+/-- **The frequency twist.** For `w` prime to `sA`: `χ_s(w) F(s, A; H) = χ_A(w) F(s, A; wH)`. -/
+theorem sexticSymbol_mul_poissonCoeff (s A : O) [NeZero s] [NeZero A] {w : O}
+    (hw : IsCoprime w (s * A)) (H : O) :
+    sexticSymbol w s * poissonCoeff s A H = sexticSymbol w A * poissonCoeff s A (w * H) := by
+  have hu := isUnit_mk_of_isCoprime hw
+  have hws : IsCoprime w s := hw.of_isCoprime_of_dvd_right (dvd_mul_right s A)
+  unfold poissonCoeff residueFourier
+  rw [Finset.mul_sum, Finset.mul_sum, ← Equiv.sum_comp (Units.mulLeft hu.unit) (fun m =>
+    sexticSymbol w s * (sexticSymbol (qrep m) A * sexticGauss s (-qrep m) *
+      principalTraceChar (s * A) (mul_ne_zero (NeZero.ne s) (NeZero.ne A))
+        (Ideal.Quotient.mk _ H * m)))]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective m
+  simp only [Units.mulLeft_apply, IsUnit.unit_spec]
+  -- representatives of `w x` and of `x`
+  have hq1 : s * A ∣ qrep (Ideal.Quotient.mk (Ideal.span {s * A}) w *
+      Ideal.Quotient.mk _ x) - w * x := by
+    rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq, mk_qrep, map_mul]
+  have hq2 : s * A ∣ qrep (Ideal.Quotient.mk (Ideal.span {s * A}) x) - x := by
+    rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq, mk_qrep]
+  rw [sexticSymbol_congr ((dvd_mul_left A s).trans hq1),
+    sexticSymbol_congr ((dvd_mul_left A s).trans hq2),
+    sexticGauss_congr s (show s ∣ -qrep (Ideal.Quotient.mk (Ideal.span {s * A}) w *
+      Ideal.Quotient.mk _ x) - -(w * x) by
+        rw [neg_sub_neg]; exact dvd_sub_comm.mp ((dvd_mul_right s A).trans hq1)),
+    sexticGauss_congr s (show s ∣ -qrep (Ideal.Quotient.mk (Ideal.span {s * A}) x) - -x by
+        rw [neg_sub_neg]; exact dvd_sub_comm.mp ((dvd_mul_right s A).trans hq2)),
+    sexticSymbol_mul_numerator, ← sexticSymbol_mul_sexticGauss s hws (-x),
+    show w * -x = -(w * x) by ring]
+  have hph : Ideal.Quotient.mk (Ideal.span {s * A}) H *
+      (Ideal.Quotient.mk _ w * Ideal.Quotient.mk _ x) =
+      Ideal.Quotient.mk _ (w * H) * Ideal.Quotient.mk _ x := by
+    rw [← map_mul, ← map_mul, ← map_mul]
+    congr 1
+    ring
+  rw [hph]
+  ring
+
+/-- A sixth power of a unit modulo `sA` does not change the Poisson coefficient. -/
+theorem poissonCoeff_sixth_power {s A : O} [NeZero s] [NeZero A] (hs : lambda ^ 2 ∣ s - 1)
+    (hA : lambda ^ 2 ∣ A - 1) (hs2 : IsCoprime s 2) (hA2 : IsCoprime A 2) {v : O}
+    (hv : IsCoprime v (s * A)) (H : O) : poissonCoeff s A (v ^ 6 * H) = poissonCoeff s A H := by
+  have hv6 : IsCoprime (v ^ 6) (s * A) := hv.pow_left
+  have h := sexticSymbol_mul_poissonCoeff s A hv6 H
+  have hvs : IsCoprime v s := hv.of_isCoprime_of_dvd_right (dvd_mul_right s A)
+  have hvA : IsCoprime v A := hv.of_isCoprime_of_dvd_right (dvd_mul_left A s)
+  have e1 : sexticSymbol (v ^ 6) s = 1 := by
+    rw [show v ^ 6 = v ^ 3 * v ^ 3 by ring, sexticSymbol_mul_numerator, sexticSymbol_cube_numerator,
+      ← pow_add]
+    exact sexticSymbol_pow_six hs hs2 hvs
+  have e2 : sexticSymbol (v ^ 6) A = 1 := by
+    rw [show v ^ 6 = v ^ 3 * v ^ 3 by ring, sexticSymbol_mul_numerator, sexticSymbol_cube_numerator,
+      ← pow_add]
+    exact sexticSymbol_pow_six hA hA2 hvA
+  rw [e1, e2, one_mul, one_mul] at h
+  exact h.symm
 
 end GaloisForLFunctions.FamilyContinuationTheory

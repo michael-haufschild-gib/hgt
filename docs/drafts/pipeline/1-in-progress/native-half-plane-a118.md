@@ -58,6 +58,18 @@ good primary. For coprime splits `s = s₁s₂`, `A = A₁A₂`, `(s₁A₁, s�
 So `K = R(A,s)γ₂(c)α(A)G(A)η(A)·F(s,A;H)` is multiplicative in `(s, A)`; the dependence on the unit part
 of `H` at each prime is the local twist of `localPoisson`.
 
+## Local factor at `u = 1` (paper proof, native definitions)
+Source conventions (read the PDF, the text extraction drops overlines): `G(c) = conj(χ_c(4))Γ(c)`,
+`γ₁γ₂ = conj(χ(4))γ₃γ₂³` (= MMD `gauss_sextic_relation`); probe coefficient
+`γ₂(c)·conj(α(A)G(A))·η(A)Ξ(A)⁻¹R(A,s)`, `a_p = conj(α(p))³η(p)³`, `D = η(p)·conj(χ_p(u))Q^{−x}`.
+Native local coefficient at a good prime `π` (`H = π^{6m}`, weights `Q^{−(x+½)e₀−(1+3x)l−(1+w)k−6zm}`,
+`t = e₀+3l`): `conj(α)^tη^t·r(π,π)^{tk}·γ₂(π)^{e₀}·G(π^t)⁻¹·F(π^k,π^t;π^{6m})`, `F = Q^k C_p`.
+Rows: `(0,0)`: `1/(1−V) + W/(1−W)`; `(0,2r+2,k=0)`: `R^{r+1}(1−q)V^{m−r−1}` (`G(π^{6r+6}) = 1`);
+`(0,2r+2,k=1,m=r+1)`: `WR^{r+1}` (`G₁G₋₁ = ωQ`, `r(π,π)^{even} = 1`);
+`(1,2r,k=0,m=r)`: `−ηQ^{−x}R^r` (`G(π^{6r+1}) = G(π)`, `γ₁γ₂ = −αG(π)`);
+`(1,2r,k=1,m≥r+1)`: `−η(Q−1)Q^{−x−w}R^rV^{m−r}` (`r(π,π) = χ(−1)`); odd `l` rows vanish at `j = 0`.
+Sum = source (7.11) at `j = 0`; with `(1−V)(1−W)/(1−D)` it is `principalLocalFactor` at `w = 1, z = 1/6`.
+
 ## Log
 - 2026-11-11 — created; frame defect found; closed form of the principal local factor checked
   against the source (Lemma 7.1 at `u = 1`) and the external `continuedCorrection`.

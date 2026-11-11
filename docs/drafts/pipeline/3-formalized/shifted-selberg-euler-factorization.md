@@ -73,7 +73,10 @@ below passed direct Lean checks and have umbrella imports.
   `TheShiftedSelbergFormKeepsItsFirstTwoDerivatives`.
 - Uniform parameter control and arbitrary reindexing: `TheCorrectedJetsAreUniformlyLipschitz`,
   `TheCorrectedJetLimitsAllowArbitraryHeights`.
-- Original gcd and linear-weight identities: `TheActualGcdSumsAreShiftedProfileForms`.
+- Original gcd identities and frozen jets: `TheActualGcdSumsAreShiftedProfileForms`,
+  `TheFrozenGcdJetsHaveTheirProfileLimits`.
+
+The exact jet statements appear in `shifted-selberg-euler-correction.md`.
 
 Pole/chi main-term assembly and the Levinson gate remain obligations on
 the parent card.

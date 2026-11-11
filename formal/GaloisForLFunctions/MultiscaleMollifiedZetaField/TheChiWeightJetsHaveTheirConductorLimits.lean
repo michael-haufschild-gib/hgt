@@ -68,7 +68,7 @@ theorem iteratedDeriv_scaled_holomorphicChiPair_eq (L : ℝ) {t : ℝ} (ht : 0 <
     exact scaled_holomorphicChiPair_eq L ht z
   rw [he]
   change iteratedDeriv j (g + (fun z => scaledChiConductorError L t z * g z)) C = _
-  rw [iteratedDeriv_add hg (hf.mul hg), iteratedDeriv_mul hf hg]
+  rw [iteratedDeriv_add hg (hf.mul hg), iteratedDeriv_fun_mul hf hg]
   simp only [g, iteratedDeriv_cexp_const_mul, Pi.mul_apply, Pi.add_apply]
 
 /-- Every actual displacement jet has the conductor-exponential limit. -/
@@ -144,14 +144,29 @@ private theorem scaled_displacement_re_pos {L : ℝ} (hL : 0 < L)
 theorem analyticAt_scaled_holomorphicChiPair_pos {L : ℝ} (hL : 0 < L)
     {z : ℂ} (hz : 0 < z.re) (t : ℝ) :
     AnalyticAt ℂ (fun w => holomorphicChiPair (w / (L : ℂ)) t) z := by
-  have hre := (scaled_displacement_re_pos hL hz).le
-  have hp := (zetaChi_analyticAt (chi_shift_Gamma_ne_zero hre t)).comp
-    (f := fun w : ℂ => (1 / 2 : ℂ) - w / (L : ℂ) + (t : ℂ) * I) (by fun_prop)
-  have hm := (zetaChi_analyticAt (chi_shift_Gamma_ne_zero hre (-t))).comp
-    (f := fun w : ℂ => (1 / 2 : ℂ) - w / (L : ℂ) + ((-t : ℝ) : ℂ) * I) (by fun_prop)
-  convert hp.mul hm using 1
-  funext w
-  exact holomorphicChiPair_opposite_heights (w / (L : ℂ)) t
+  let U : Set ℂ := {w | 0 < w.re}
+  have hU : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  have hf : DifferentiableOn ℂ (fun w => holomorphicChiPair (w / (L : ℂ)) t) U := by
+    intro w hw
+    have hre : 0 ≤ (w / (L : ℂ)).re := (scaled_displacement_re_pos hL hw).le
+    have hχ (s : ℝ) : DifferentiableAt ℂ zetaChi
+        ((1 / 2 : ℂ) - w / (L : ℂ) + (s : ℂ) * I) :=
+      (zetaChi_analyticAt (chi_shift_Gamma_ne_zero (z := w / (L : ℂ)) hre s)).differentiableAt
+    have hp : DifferentiableAt ℂ
+        (fun v : ℂ => zetaChi ((1 / 2 : ℂ) - v / (L : ℂ) + (t : ℂ) * I)) w :=
+      by simpa only [Function.comp_def] using (hχ t).comp w
+          (show DifferentiableAt ℂ (fun v : ℂ => (1 / 2 : ℂ) - v / (L : ℂ) + (t : ℂ) * I) w by fun_prop)
+    have hm : DifferentiableAt ℂ
+        (fun v : ℂ => zetaChi ((1 / 2 : ℂ) - v / (L : ℂ) + ((-t : ℝ) : ℂ) * I)) w :=
+      by simpa only [Function.comp_def] using (hχ (-t)).comp w
+          (show DifferentiableAt ℂ (fun v : ℂ => (1 / 2 : ℂ) - v / (L : ℂ) + ((-t : ℝ) : ℂ) * I) w by fun_prop)
+    have he : (fun v => holomorphicChiPair (v / (L : ℂ)) t) =
+        (fun v : ℂ => zetaChi ((1 / 2 : ℂ) - v / (L : ℂ) + (t : ℂ) * I) *
+          zetaChi ((1 / 2 : ℂ) - v / (L : ℂ) + ((-t : ℝ) : ℂ) * I)) :=
+      funext (fun v => holomorphicChiPair_opposite_heights (v / (L : ℂ)) t)
+    rw [he]
+    exact (hp.mul hm).differentiableWithinAt
+  exact hf.analyticOnNhd hU z hz
 
 private theorem continuous_scaled_holomorphicChiPair_height {L : ℝ} (hL : 0 < L)
     {z : ℂ} (hz : 0 < z.re) : Continuous (fun t => holomorphicChiPair (z / (L : ℂ)) t) := by

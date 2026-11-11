@@ -32,11 +32,13 @@ distinct floor-bin rows:
   `R ≤ (3 + ℓ)/(2(1 + 3ℓ)) − δ`, satisfied by `R = (1 − δ)/2` down to `(n − 2)/(n − 1)` for all
   `2 ≤ n ≤ 6`.
 * **Global two-phase signed-Gram bifurcation** (`endpointExponentOrder_signedGram_pos_of_lt`,
-  `endpointExponentOrder_signedGram_broken_pos_of_lt`). Under floor-bin exponent `R₀ ∈ [½, 1]`,
-  the global minimum of `probeThetaGen` transitions at `R_crit(n) = ½ + 1/n` from the symmetric
-  balanced curve `((6 R₀ − 1)n − 8)/((6 R₀ − 1)(n − 1))` (`R₀ ∈ [½ + 1/n, 1]`, hitting
-  `(n − 2)/(n − 1)` at `R₀ = 5/6`) to the `lx = 0` boundary curve `signedGramBrokenTheta n R₀`
-  (`R₀ ∈ [½, ½ + 1/n]`, `n ≥ 3`).
+  `endpointExponentOrder_signedGram_broken_pos_of_lt`,
+  `endpointExponentOrder_signedGram_broken_reflection_range`). Under floor-bin exponent
+  `R₀ ∈ [½, 1]`, the minimum of `probeThetaGen` transitions at `R_crit(n) = ½ + 1/n` from the
+  symmetric balanced curve `((6 R₀ − 1)n − 8)/((6 R₀ − 1)(n − 1))` (`R₀ ∈ [½ + 1/n, 1]`, all
+  `n ≥ 2`, hitting `(n − 2)/(n − 1)` at `R₀ = 5/6`) to the `lx = 0` boundary curve
+  `signedGramBrokenTheta n R₀` (`R₀ ∈ [½, ½ + 1/n]`, globally over `0 ≤ lx` for `n ≥ 5` and across
+  the reflection range `lx + ly + ℓ ≤ 1` for all `n ≥ 2`).
 -/
 
 namespace GaloisForLFunctions.FamilyContinuationTheory.Budget
@@ -84,7 +86,6 @@ theorem bilinearFloorSum_eq_column_sum {B₀ M : Type*} [Fintype B₀] [Fintype 
   simp_rw [Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun u _ => by ring
 
 /-- **Complex signed Gram expansion.** Expanding the dual column `ℓ²` norm of `∑ u, α(u) Φ(u, m)`
@@ -163,7 +164,9 @@ theorem exists_matched_phase_saturation {B₀ M : Type*} [Fintype B₀] [Fintype
   · rw [norm_mul, Complex.norm_of_nonneg hA₀, RCLike.norm_conj, hunit u, mul_one]
   · have hsingle : ‖∑ u : B₀, ((A₀ : ℂ) * conj (Φ u m₀)) * Φ u m₀‖ ^ 2 ≤
         ∑ m : M, ‖∑ u : B₀, ((A₀ : ℂ) * conj (Φ u m₀)) * Φ u m‖ ^ 2 :=
-      Finset.single_le_sum (fun m _ => sq_nonneg _) (Finset.mem_univ m₀)
+      Finset.single_le_sum
+        (f := fun m => ‖∑ u : B₀, ((A₀ : ℂ) * conj (Φ u m₀)) * Φ u m‖ ^ 2)
+        (fun m _ => sq_nonneg _) (Finset.mem_univ m₀)
     have heval : ∑ u : B₀, ((A₀ : ℂ) * conj (Φ u m₀)) * Φ u m₀ =
         (Fintype.card B₀ : ℂ) * (A₀ : ℂ) := by
       have hterm : ∀ u : B₀, ((A₀ : ℂ) * conj (Φ u m₀)) * Φ u m₀ = (A₀ : ℂ) := by
@@ -192,7 +195,9 @@ theorem sum_addChar_subset_norm_sq_le {G : Type*} [AddCommGroup G] [Fintype G] [
       intro ψ
       have hn : ψ y ^ Fintype.card G = 1 := by
         rw [← AddChar.map_nsmul_eq_pow, card_nsmul_eq_zero, AddChar.map_zero_eq_one]
-      have hnorm : ‖ψ y‖ = 1 := norm_eq_one_of_pow_eq_one hn Fintype.card_ne_zero
+      have hpow : ‖ψ y‖ ^ Fintype.card G = 1 := by rw [← norm_pow, hn, norm_one]
+      have hnorm : ‖ψ y‖ = 1 :=
+        (pow_eq_one_iff_of_nonneg (norm_nonneg _) Fintype.card_ne_zero).mp hpow
       have hsq : Complex.normSq (ψ y) = 1 := by rw [Complex.normSq_eq_norm_sq, hnorm, one_pow]
       rw [sub_eq_add_neg, AddChar.map_add_eq_mul, AddChar.map_neg_eq_inv, Complex.inv_def, hsq]
       simp
@@ -231,7 +236,7 @@ theorem sum_addChar_subset_norm_sq_le {G : Type*} [AddCommGroup G] [Fintype G] [
 
 theorem norm_sq_bilinearFloorSum_addChar_le {G : Type*} [AddCommGroup G] [Fintype G]
     [DecidableEq G] (B₀ : Finset (AddChar G ℂ)) (α : AddChar G ℂ → ℂ) (b : G → ℂ)
-    {A₀ : ℝ} (hA₀ : 0 ≤ A₀) (hα : ∀ ψ ∈ B₀, ‖α ψ‖ ≤ A₀) :
+    {A₀ : ℝ} (_hA₀ : 0 ≤ A₀) (hα : ∀ ψ ∈ B₀, ‖α ψ‖ ≤ A₀) :
     ‖∑ ψ ∈ B₀, α ψ * ∑ x : G, b x * ψ x‖ ^ 2 ≤
       (B₀.card : ℝ) * (Fintype.card G : ℝ) * A₀ ^ 2 * ∑ x : G, ‖b x‖ ^ 2 := by
   have htri : ‖∑ ψ ∈ B₀, α ψ * ∑ x : G, b x * ψ x‖ ≤
@@ -376,8 +381,7 @@ theorem endpointExponentOrder_sqrt_cancellation_nonpos {n δ q : ℝ} (hn0 : n �
 def signedGramSymmetricTheta (n R₀ : ℝ) : ℝ :=
   ((6 * R₀ - 1) * n - 8) / ((6 * R₀ - 1) * (n - 1))
 
-/-- Symmetry-broken minimum twist exponent on `0 ≤ lx`, `0 ≤ ly`, governing
-`½ ≤ R₀ ≤ ½ + 1/n` for `n ≥ 3`. -/
+/-- Symmetry-broken minimum twist exponent on `0 ≤ lx`, governing `½ ≤ R₀ ≤ ½ + 1/n`. -/
 def signedGramBrokenTheta (n R₀ : ℝ) : ℝ :=
   ((2 * n * R₀ + 1) * (n - 1) - 3 * (2 * n * (1 - R₀) + 1)) / ((2 * n * R₀ + 1) * (n - 1))
 
@@ -393,11 +397,15 @@ theorem signedGramSymmetricTheta_landmarks {n : ℝ} (hn : 1 < n) :
   have hn0 : n ≠ 0 := by linarith
   have hsub : n - 1 ≠ 0 := by linarith
   have hn3 : n + 3 ≠ 0 := by linarith
+  have hcoef : 6 * (1 / 2 + 1 / n) - 1 = 2 * (n + 3) / n := by field_simp; ring
   refine ⟨?_, ?_, ?_, ?_⟩
   · unfold signedGramSymmetricTheta; field_simp; ring
   · unfold signedGramSymmetricTheta; field_simp; ring
   · unfold signedGramSymmetricTheta; field_simp; ring
-  · unfold signedGramSymmetricTheta; field_simp; ring
+  · unfold signedGramSymmetricTheta
+    rw [hcoef]
+    field_simp
+    ring
 
 /-- The symmetric and broken curves meet continuously at `R₀ = ½ + 1/n` and reconverge at
 `R₀ = ½` to `(n − 4)/(n − 1)`. -/
@@ -409,9 +417,20 @@ theorem signedGram_phase_endpoints {n : ℝ} (hn : 1 < n) :
   have hsub : n - 1 ≠ 0 := by linarith
   have hn1 : n + 1 ≠ 0 := by linarith
   have hn3 : n + 3 ≠ 0 := by linarith
+  have hsym := (signedGramSymmetricTheta_landmarks hn).2.2.2
+  have hd_crit : 2 * n * (1 / 2 + 1 / n) + 1 = n + 3 := by field_simp; ring
+  have hnum_crit : 2 * n * (1 - (1 / 2 + 1 / n)) + 1 = n - 1 := by field_simp; ring
+  have hd_half : 2 * n * (1 / 2 : ℝ) + 1 = n + 1 := by ring
   refine ⟨?_, ?_, ?_⟩
-  · unfold signedGramBrokenTheta signedGramSymmetricTheta; field_simp; ring
-  · unfold signedGramBrokenTheta; field_simp; ring
+  · rw [hsym]
+    unfold signedGramBrokenTheta
+    rw [hd_crit, hnum_crit]
+    field_simp
+    ring
+  · unfold signedGramBrokenTheta
+    rw [hd_half]
+    field_simp
+    ring
   · unfold signedGramSymmetricTheta; field_simp; ring
 
 /-- **Global symmetric-phase floor theorem.** For every order `n ≥ 2`, every floor-bin exponent
@@ -428,10 +447,11 @@ theorem endpointExponentOrder_signedGram_pos_of_lt {n lx ly ℓ R₀ : ℝ}
   set c : ℝ := 6 * R₀ - 1
   have hcpos : 2 < c := by simp only [c]; linarith
   have hcne : c ≠ 0 := by linarith
+  have hc_def : 6 * R₀ - 1 = c := rfl
   have hlow_target : positiveFormTheta n (1 - 4 / (c * n)) = signedGramSymmetricTheta n R₀ := by
     have hsub : n - 1 ≠ 0 := by linarith
     unfold positiveFormTheta signedGramSymmetricTheta
-    simp only [c]
+    rw [hc_def]
     field_simp
     ring
   have hσ : lowBoundaryGenOrder n lx ly ℓ < 1 - 4 / (c * n) := by
@@ -457,15 +477,14 @@ theorem endpointExponentOrder_signedGram_pos_of_lt {n lx ly ℓ R₀ : ℝ}
     field_simp
     ring
   have hAn : 0 < A / n - μ / 2 := by linarith
-  have hApos : 0 < A := by
-    have hAn0 : 0 < A / n := by linarith
-    exact (div_pos_iff_of_pos_right hn0).mp hAn0
+  have hApos : 0 < A := (div_pos_iff_of_pos_right hn0).mp (by linarith : 0 < A / n)
   have hR_coef : 0 ≤ R₀ - 1 / 6 - 5 / (3 * n) := by
     have hdiff : (1 / 2 + 1 / n) - (1 / 6 + 5 / (3 * n)) = (n - 2) / (3 * n) := by
       field_simp
       ring
     have hnn : 0 ≤ (n - 2) / (3 * n) := div_nonneg (by linarith) (by linarith)
     linarith
+  have hR₀_eq : R₀ = (c + 1) / 6 := by simp only [c]; ring
   have hE_rew : endpointExponentOrder n lx ly ℓ (lowBoundaryGenOrder n lx ly ℓ) 0 0 R₀ =
       (R₀ - 1 / 6 - 5 / (3 * n)) * A + 5 / 3 * (A / n - μ / 2) +
         1 / 3 * B + 1 / 6 * C + 1 / 2 * (R₀ - (1 / 2 + 1 / n)) * ν := by
@@ -474,7 +493,8 @@ theorem endpointExponentOrder_signedGram_pos_of_lt {n lx ly ℓ R₀ : ℝ}
         (1 - lx + ℓ) * (R₀ + 0 / 2 - 1 / n) =
       (R₀ - 1 / 6 - 5 / (3 * n)) * A + 5 / 3 * (A / n - μ / 2) +
         1 / 3 * B + 1 / 6 * C + 1 / 2 * (R₀ - (1 / 2 + 1 / n)) * ν
-    simp only [A, B, C, c]
+    simp only [A, B, C]
+    rw [hR₀_eq]
     field_simp
     ring
   rw [hE_rew]
@@ -495,37 +515,71 @@ theorem signedGramSymmetricTheta_attained {n R₀ : ℝ} (hn0 : n ≠ 0) (hn1 : 
   dsimp only
   set c : ℝ := 6 * R₀ - 1
   have hc : c ≠ 0 := by simp only [c]; linarith
+  have hc_def : 6 * R₀ - 1 = c := rfl
+  have hR₀_eq : R₀ = (c + 1) / 6 := by simp only [c]; ring
   have hsub : n - 1 ≠ 0 := sub_ne_zero.mpr hn1
   have hsum : (4 * R₀ - 2) / c + (4 * R₀ - 2) / c + (3 - 2 * R₀) / c - 1 = 0 := by
-    simp only [c]; field_simp; ring
+    rw [hR₀_eq]; field_simp; ring
   refine ⟨?_, ?_⟩
   · unfold probeThetaGen signedGramSymmetricTheta
-    rw [sub_self, max_self, hsum, max_self]
-    simp only [c]; field_simp; ring
+    rw [sub_self, max_self, hsum, max_self, hc_def, hR₀_eq]
+    field_simp
+    ring
   · unfold endpointExponentOrder lowBoundaryGenOrder
-    rw [sub_self, max_self, hsum, max_self]
-    simp only [c]; field_simp; ring
+    rw [sub_self, max_self, hsum, max_self, hR₀_eq]
+    field_simp
+    ring
 
-/-- **Global symmetry-broken floor theorem (`½ ≤ R₀ ≤ ½ + 1/n`).** For every order `n ≥ 3`,
-`R₀ ∈ [½, ½ + 1/n]`, and physical scales `0 ≤ lx`, `0 ≤ ly`, `ℓ ∈ ℝ`,
+/-- Exact five-variable linear decomposition of the symmetry-broken floor-bin exponent. -/
+private theorem signedGramBroken_decomposition {n lx ly ℓ R₀ : ℝ} (hn0 : n ≠ 0)
+    (hdne : 2 * n * R₀ + 1 ≠ 0) :
+    let d := 2 * n * R₀ + 1
+    let ℓs := (2 * n * (1 - R₀) + 1) / d
+    let ν := max 0 (ly - lx)
+    let μ := max 0 (lx + ly + ℓ - 1)
+    let A' := (1 - 3 * ℓs) / 2 - lx - ν / 2 + ℓ
+    let B := μ - (lx + ly + ℓ - 1)
+    let C := ν - (ly - lx)
+    endpointExponentOrder n lx ly ℓ (lowBoundaryGenOrder n lx ly ℓ) 0 0 R₀ =
+      d / 3 * (A' / n - μ / 2) +
+        (1 / 2 + 1 / n - R₀) * lx +
+        1 / 3 * (R₀ - 1 / n) * C +
+        (1 / 2 + 1 / (3 * n) - R₀ / 3) * B +
+        (2 * n * (n + 1) * R₀ - 5 * n - 2) / (6 * n) * μ := by
+  dsimp only
+  set d : ℝ := 2 * n * R₀ + 1
+  have hd_eq : 2 * n * R₀ + 1 = d := rfl
+  have hR₀_eq : R₀ = (d - 1) / (2 * n) := by simp only [d]; field_simp; ring
+  set ν : ℝ := max 0 (ly - lx)
+  set μ : ℝ := max 0 (lx + ly + ℓ - 1)
+  unfold endpointExponentOrder lowBoundaryGenOrder
+  change (1 + 0) * (1 - ly) / 2 - (1 - (1 - lx - ν / 2 + ℓ) / n + μ / 2) - ℓ / 2 + 0 * ℓ +
+      (1 - lx + ℓ) * (R₀ + 0 / 2 - 1 / n) = _
+  rw [hR₀_eq]
+  field_simp
+  ring
+
+/-- **Symmetry-broken floor theorem in the reflection range (`n ≥ 2`, `lx + ly + ℓ ≤ 1`).** For
+every order `n ≥ 2`, `R₀ ∈ [½, ½ + 1/n]`, and `0 ≤ lx` with `lx + ly + ℓ ≤ 1`,
 `probeThetaGen n lx ly ℓ < signedGramBrokenTheta n R₀` forces strictly positive floor-bin high
 exponent at `R₀`. -/
-theorem endpointExponentOrder_signedGram_broken_pos_of_lt {n lx ly ℓ R₀ : ℝ}
-    (hn : 3 ≤ n) (hR0 : 1 / 2 ≤ R₀) (hR1 : R₀ ≤ 1 / 2 + 1 / n)
-    (hlx : 0 ≤ lx) (hly : 0 ≤ ly)
+theorem endpointExponentOrder_signedGram_broken_reflection_range {n lx ly ℓ R₀ : ℝ}
+    (hn : 2 ≤ n) (hR0 : 1 / 2 ≤ R₀) (hR1 : R₀ ≤ 1 / 2 + 1 / n)
+    (hlx : 0 ≤ lx) (href : lx + ly + ℓ ≤ 1)
     (hθ : probeThetaGen n lx ly ℓ < signedGramBrokenTheta n R₀) :
     0 < endpointExponentOrder n lx ly ℓ (lowBoundaryGenOrder n lx ly ℓ) 0 0 R₀ := by
   have hn0 : (0 : ℝ) < n := by linarith
   have hn1 : (1 : ℝ) < n := by linarith
   set d : ℝ := 2 * n * R₀ + 1
   have hdpos : 0 < d := by simp only [d]; nlinarith
-  have hdne : d ≠ 0 := hdpos.ne'
+  have hd_def : 2 * n * R₀ + 1 = d := rfl
   set ℓs : ℝ := (2 * n * (1 - R₀) + 1) / d
   have hlow_target : positiveFormTheta n (1 - (1 + 3 * ℓs) / (2 * n)) =
       signedGramBrokenTheta n R₀ := by
     have hsub : n - 1 ≠ 0 := by linarith
     unfold positiveFormTheta signedGramBrokenTheta
-    simp only [ℓs, d]
+    simp only [ℓs]
+    rw [hd_def]
     field_simp
     ring
   have hσ : lowBoundaryGenOrder n lx ly ℓ < 1 - (1 + 3 * ℓs) / (2 * n) := by
@@ -535,14 +589,10 @@ theorem endpointExponentOrder_signedGram_broken_pos_of_lt {n lx ly ℓ R₀ : �
     exact hmon
   set ν : ℝ := max 0 (ly - lx)
   set μ : ℝ := max 0 (lx + ly + ℓ - 1)
-  have hν1 : ly - lx ≤ ν := le_max_right _ _
-  have hμ0 : 0 ≤ μ := le_max_left _ _
-  have hμ1 : lx + ly + ℓ - 1 ≤ μ := le_max_right _ _
+  have hμ_zero : μ = 0 := max_eq_left (by linarith)
+  have hB : 0 ≤ μ - (lx + ly + ℓ - 1) := sub_nonneg.mpr (le_max_right _ _)
+  have hC : 0 ≤ ν - (ly - lx) := sub_nonneg.mpr (le_max_right _ _)
   set A' : ℝ := (1 - 3 * ℓs) / 2 - lx - ν / 2 + ℓ
-  set B : ℝ := μ - (lx + ly + ℓ - 1)
-  set C : ℝ := ν - (ly - lx)
-  have hB : 0 ≤ B := sub_nonneg.mpr hμ1
-  have hC : 0 ≤ C := sub_nonneg.mpr hν1
   have hσ_rew : 1 - (1 + 3 * ℓs) / (2 * n) - lowBoundaryGenOrder n lx ly ℓ = A' / n - μ / 2 := by
     unfold lowBoundaryGenOrder
     change 1 - (1 + 3 * ℓs) / (2 * n) - (1 - (1 - lx - ν / 2 + ℓ) / n + μ / 2) = A' / n - μ / 2
@@ -550,44 +600,90 @@ theorem endpointExponentOrder_signedGram_broken_pos_of_lt {n lx ly ℓ R₀ : �
     field_simp
     ring
   have hAn : 0 < A' / n - μ / 2 := by linarith
-  have hApos : 0 < A' := (div_pos_iff_of_pos_right hn0).mp (by linarith : 0 < A' / n)
-  have hE_rew : endpointExponentOrder n lx ly ℓ (lowBoundaryGenOrder n lx ly ℓ) 0 0 R₀ =
-      ((2 * R₀ * n * (n + 1) + n ^ 2 - 6 * n - 2) / (3 * n ^ 2)) * A' +
-        (2 - 2 * R₀ / 3 + 2 / (3 * n)) * (A' / n - μ / 2) +
-        (1 / 2 + 1 / n - R₀) * lx +
-        1 / 3 * (3 / 2 + 1 / n - R₀) * B +
-        1 / 3 * (R₀ - 1 / n) * C := by
-    unfold endpointExponentOrder lowBoundaryGenOrder
-    change (1 + 0) * (1 - ly) / 2 - (1 - (1 - lx - ν / 2 + ℓ) / n + μ / 2) - ℓ / 2 + 0 * ℓ +
-        (1 - lx + ℓ) * (R₀ + 0 / 2 - 1 / n) =
-      ((2 * R₀ * n * (n + 1) + n ^ 2 - 6 * n - 2) / (3 * n ^ 2)) * A' +
-        (2 - 2 * R₀ / 3 + 2 / (3 * n)) * (A' / n - μ / 2) +
-        (1 / 2 + 1 / n - R₀) * lx +
-        1 / 3 * (3 / 2 + 1 / n - R₀) * B +
-        1 / 3 * (R₀ - 1 / n) * C
-    simp only [A', B, C, ℓs, d]
-    field_simp
-    ring
-  rw [hE_rew]
-  have h1n_le : 1 / n ≤ 1 / 3 := by
+  have h1n_le : 1 / n ≤ 1 / 2 := by
     rw [div_le_div_iff₀ hn0 (by norm_num)]
     linarith
-  have hnum_pos : 0 < 2 * R₀ * n * (n + 1) + n ^ 2 - 6 * n - 2 := by
-    have hmul : n * (n + 1) ≤ 2 * R₀ * n * (n + 1) := by
+  rw [signedGramBroken_decomposition hn0.ne' hdpos.ne']
+  change 0 < d / 3 * (A' / n - μ / 2) + (1 / 2 + 1 / n - R₀) * lx +
+    1 / 3 * (R₀ - 1 / n) * (ν - (ly - lx)) +
+    (1 / 2 + 1 / (3 * n) - R₀ / 3) * (μ - (lx + ly + ℓ - 1)) +
+    (2 * n * (n + 1) * R₀ - 5 * n - 2) / (6 * n) * μ
+  have hcoef4 : 0 ≤ 1 / 2 + 1 / (3 * n) - R₀ / 3 := by
+    rw [show 1 / (3 * n) = (1 / n) / 3 by ring]
+    linarith
+  have ht1 : 0 < d / 3 * (A' / n - μ / 2) := mul_pos (by linarith) hAn
+  have ht2 : 0 ≤ (1 / 2 + 1 / n - R₀) * lx := mul_nonneg (by linarith) hlx
+  have ht3 : 0 ≤ 1 / 3 * (R₀ - 1 / n) * (ν - (ly - lx)) := mul_nonneg (by linarith) hC
+  have ht4 : 0 ≤ (1 / 2 + 1 / (3 * n) - R₀ / 3) * (μ - (lx + ly + ℓ - 1)) := mul_nonneg hcoef4 hB
+  have ht5 : (2 * n * (n + 1) * R₀ - 5 * n - 2) / (6 * n) * μ = 0 := by rw [hμ_zero, mul_zero]
+  linarith
+
+/-- **Global symmetry-broken floor theorem (`n ≥ 5`, including `n = 6`, across all `ly, ℓ ∈ ℝ`).**
+For every order `n ≥ 5`, `R₀ ∈ [½, ½ + 1/n]`, and `0 ≤ lx` (in both Gram and dual-excess regimes),
+`probeThetaGen n lx ly ℓ < signedGramBrokenTheta n R₀` forces strictly positive floor-bin high
+exponent at `R₀`. -/
+theorem endpointExponentOrder_signedGram_broken_pos_of_lt {n lx ly ℓ R₀ : ℝ}
+    (hn : 5 ≤ n) (hR0 : 1 / 2 ≤ R₀) (hR1 : R₀ ≤ 1 / 2 + 1 / n) (hlx : 0 ≤ lx)
+    (hθ : probeThetaGen n lx ly ℓ < signedGramBrokenTheta n R₀) :
+    0 < endpointExponentOrder n lx ly ℓ (lowBoundaryGenOrder n lx ly ℓ) 0 0 R₀ := by
+  have hn0 : (0 : ℝ) < n := by linarith
+  have hn1 : (1 : ℝ) < n := by linarith
+  set d : ℝ := 2 * n * R₀ + 1
+  have hdpos : 0 < d := by simp only [d]; nlinarith
+  have hd_def : 2 * n * R₀ + 1 = d := rfl
+  set ℓs : ℝ := (2 * n * (1 - R₀) + 1) / d
+  have hlow_target : positiveFormTheta n (1 - (1 + 3 * ℓs) / (2 * n)) =
+      signedGramBrokenTheta n R₀ := by
+    have hsub : n - 1 ≠ 0 := by linarith
+    unfold positiveFormTheta signedGramBrokenTheta
+    simp only [ℓs]
+    rw [hd_def]
+    field_simp
+    ring
+  have hσ : lowBoundaryGenOrder n lx ly ℓ < 1 - (1 + 3 * ℓs) / (2 * n) := by
+    have hmon := positiveFormBoundary_strictMono hn1 hθ
+    rw [positiveFormBoundary_probeThetaGen hn0.ne' hn1.ne', ← hlow_target,
+      positiveFormBoundary_positiveFormTheta hn0.ne' hn1.ne'] at hmon
+    exact hmon
+  set ν : ℝ := max 0 (ly - lx)
+  set μ : ℝ := max 0 (lx + ly + ℓ - 1)
+  have hμ0 : 0 ≤ μ := le_max_left _ _
+  have hB : 0 ≤ μ - (lx + ly + ℓ - 1) := sub_nonneg.mpr (le_max_right _ _)
+  have hC : 0 ≤ ν - (ly - lx) := sub_nonneg.mpr (le_max_right _ _)
+  set A' : ℝ := (1 - 3 * ℓs) / 2 - lx - ν / 2 + ℓ
+  have hσ_rew : 1 - (1 + 3 * ℓs) / (2 * n) - lowBoundaryGenOrder n lx ly ℓ = A' / n - μ / 2 := by
+    unfold lowBoundaryGenOrder
+    change 1 - (1 + 3 * ℓs) / (2 * n) - (1 - (1 - lx - ν / 2 + ℓ) / n + μ / 2) = A' / n - μ / 2
+    simp only [A']
+    field_simp
+    ring
+  have hAn : 0 < A' / n - μ / 2 := by linarith
+  have h1n_le : 1 / n ≤ 1 / 5 := by
+    rw [div_le_div_iff₀ hn0 (by norm_num)]
+    linarith
+  have hμ_coef : 0 ≤ (2 * n * (n + 1) * R₀ - 5 * n - 2) / (6 * n) := by
+    refine div_nonneg ?_ (by linarith)
+    have hmul : n * (n + 1) ≤ 2 * n * (n + 1) * R₀ := by
       have hnn : 0 ≤ n * (n + 1) := by positivity
       nlinarith
-    have hquad : 0 < n * (n + 1) + n ^ 2 - 6 * n - 2 := by
-      have hid : n * (n + 1) + n ^ 2 - 6 * n - 2 = 2 * (n - 3) ^ 2 + 7 * (n - 3) + 1 := by ring
+    have hquad : 0 ≤ n * (n + 1) - 5 * n - 2 := by
+      have hid : n * (n + 1) - 5 * n - 2 = (n - 5) ^ 2 + 6 * (n - 5) + 3 := by ring
       rw [hid]
-      nlinarith [sq_nonneg (n - 3)]
+      nlinarith [sq_nonneg (n - 5)]
     linarith
-  have ht1 : 0 < ((2 * R₀ * n * (n + 1) + n ^ 2 - 6 * n - 2) / (3 * n ^ 2)) * A' :=
-    mul_pos (div_pos hnum_pos (by positivity)) hApos
-  have ht2 : 0 < (2 - 2 * R₀ / 3 + 2 / (3 * n)) * (A' / n - μ / 2) :=
-    mul_pos (by linarith) hAn
-  have ht3 : 0 ≤ (1 / 2 + 1 / n - R₀) * lx := mul_nonneg (by linarith) hlx
-  have ht4 : 0 ≤ 1 / 3 * (3 / 2 + 1 / n - R₀) * B := mul_nonneg (by linarith) hB
-  have ht5 : 0 ≤ 1 / 3 * (R₀ - 1 / n) * C := mul_nonneg (by linarith) hC
+  rw [signedGramBroken_decomposition hn0.ne' hdpos.ne']
+  change 0 < d / 3 * (A' / n - μ / 2) + (1 / 2 + 1 / n - R₀) * lx +
+    1 / 3 * (R₀ - 1 / n) * (ν - (ly - lx)) +
+    (1 / 2 + 1 / (3 * n) - R₀ / 3) * (μ - (lx + ly + ℓ - 1)) +
+    (2 * n * (n + 1) * R₀ - 5 * n - 2) / (6 * n) * μ
+  have hcoef4 : 0 ≤ 1 / 2 + 1 / (3 * n) - R₀ / 3 := by
+    rw [show 1 / (3 * n) = (1 / n) / 3 by ring]
+    linarith
+  have ht1 : 0 < d / 3 * (A' / n - μ / 2) := mul_pos (by linarith) hAn
+  have ht2 : 0 ≤ (1 / 2 + 1 / n - R₀) * lx := mul_nonneg (by linarith) hlx
+  have ht3 : 0 ≤ 1 / 3 * (R₀ - 1 / n) * (ν - (ly - lx)) := mul_nonneg (by linarith) hC
+  have ht4 : 0 ≤ (1 / 2 + 1 / (3 * n) - R₀ / 3) * (μ - (lx + ly + ℓ - 1)) := mul_nonneg hcoef4 hB
+  have ht5 : 0 ≤ (2 * n * (n + 1) * R₀ - 5 * n - 2) / (6 * n) * μ := mul_nonneg hμ_coef hμ0
   linarith
 
 /-- Attainment of `signedGramBrokenTheta n R₀` on the `lx = 0` boundary and strict improvement
@@ -607,26 +703,34 @@ theorem signedGramBrokenTheta_attained_and_lt {n R₀ : ℝ} (hn : 2 ≤ n)
   set d : ℝ := 2 * n * R₀ + 1
   have hdpos : 0 < d := by simp only [d]; nlinarith
   have hdne : d ≠ 0 := hdpos.ne'
+  have hd_def : 2 * n * R₀ + 1 = d := rfl
+  have hR₀_d : R₀ = (d - 1) / (2 * n) := by simp only [d]; field_simp; ring
   set c : ℝ := 6 * R₀ - 1
   have hcpos : 0 < c := by simp only [c]; linarith
   have hcne : c ≠ 0 := hcpos.ne'
+  have hc_def : 6 * R₀ - 1 = c := rfl
   have hly_pos : 0 < 2 * (2 * R₀ - 1) * n / d := div_pos (by nlinarith) hdpos
   have hsum : 0 + 2 * (2 * R₀ - 1) * n / d + (2 * n * (1 - R₀) + 1) / d - 1 = 0 := by
-    simp only [d]; field_simp; ring
+    rw [hR₀_d]; field_simp; ring
   refine ⟨hly_pos, ?_, ?_, ?_⟩
   · unfold probeThetaGen signedGramBrokenTheta
-    rw [sub_zero, max_eq_right hly_pos.le, hsum, max_self]
-    simp only [d]; field_simp; ring
+    simp only [sub_zero, max_eq_right hly_pos.le, hsum, max_self]
+    rw [hd_def, hR₀_d]
+    field_simp
+    ring
   · unfold endpointExponentOrder lowBoundaryGenOrder
-    rw [sub_zero, max_eq_right hly_pos.le, hsum, max_self]
-    simp only [d]; field_simp; ring
+    simp only [sub_zero, max_eq_right hly_pos.le, hsum, max_self]
+    rw [hR₀_d]
+    field_simp
+    ring
   · have hdiff : signedGramSymmetricTheta n R₀ - signedGramBrokenTheta n R₀ =
-        6 * (2 * R₀ - 1) * (n * (1 / 2 + 1 / n - R₀)) / (c * d * (n - 1)) := by
+        12 * (2 * R₀ - 1) * (n * (1 / 2 + 1 / n - R₀)) / (c * d * (n - 1)) := by
       unfold signedGramSymmetricTheta signedGramBrokenTheta
-      simp only [c, d]
+      rw [hc_def, hd_def, hR₀_d]
       field_simp
+      simp only [c, d]
       ring
-    have hpos_num : 0 < 6 * (2 * R₀ - 1) * (n * (1 / 2 + 1 / n - R₀)) :=
+    have hpos_num : 0 < 12 * (2 * R₀ - 1) * (n * (1 / 2 + 1 / n - R₀)) :=
       mul_pos (by linarith) (mul_pos hn0 (by linarith))
     have hpos_diff : 0 < signedGramSymmetricTheta n R₀ - signedGramBrokenTheta n R₀ := by
       rw [hdiff]

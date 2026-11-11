@@ -21,6 +21,38 @@ def normalizedChiTaperJet (L p q η u : ℝ) (j : ℕ) : ℂ :=
   iteratedDeriv j (fun z => ∫ t, blockWindowC p q η t * holomorphicChiPair (z / (L : ℂ)) t)
     (u : ℂ)
 
+/-- The normalized reflected integral is holomorphic near a positive real centre. -/
+theorem analyticAt_normalizedChiTaperIntegral {L p q η u : ℝ}
+    (hL : 0 < L) (hu : 0 < u) (hη : 0 < η) (hp : 4 ≤ p - η)
+    (hu20 : u / L ≤ 1 / 20) :
+    AnalyticAt ℂ (fun z => ∫ t, blockWindowC p q η t * holomorphicChiPair (z / (L : ℂ)) t)
+      (u : ℂ) := by
+  have hd := div_pos hu hL
+  have ha := (differentiableOn_chi_integral hη hp hd hu20).analyticOnNhd
+    isOpen_ball ((u / L : ℝ) : ℂ) (mem_ball_self hd)
+  have hh := ha.comp (f := fun z : ℂ => z / (L : ℂ)) (by fun_prop)
+  simpa only [Function.comp_def, Complex.ofReal_div] using hh
+
+/-- Real restrictions of the literal normalized reflected integral jets. -/
+def realNormalizedChiTaperJet (L p q η : ℝ) (j : ℕ) (u : ℝ) : ℝ :=
+  (normalizedChiTaperJet L p q η u j).re
+
+/-- Adjacent real reflected-integral jets are literal successive derivatives. -/
+theorem hasDerivAt_realNormalizedChiTaperJet {L p q η u : ℝ}
+    (hL : 0 < L) (hu : 0 < u) (hη : 0 < η) (hp : 4 ≤ p - η)
+    (hu20 : u / L ≤ 1 / 20) (j : ℕ) :
+    HasDerivAt (realNormalizedChiTaperJet L p q η j)
+      (realNormalizedChiTaperJet L p q η (j + 1) u) u := by
+  let f : ℂ → ℂ := fun z => ∫ t, blockWindowC p q η t * holomorphicChiPair (z / (L : ℂ)) t
+  have ha (k : ℕ) : AnalyticAt ℂ (iteratedDeriv k f) (u : ℂ) := by
+    induction k with
+    | zero => exact analyticAt_normalizedChiTaperIntegral hL hu hη hp hu20
+    | succ k hk => simpa only [iteratedDeriv_succ] using hk.deriv
+  change HasDerivAt (fun x : ℝ => (iteratedDeriv j f (x : ℂ)).re)
+    (iteratedDeriv (j + 1) f (u : ℂ)).re u
+  rw [iteratedDeriv_succ]
+  exact (ha j).differentiableAt.hasDerivAt.real_of_complex
+
 private theorem iteratedDeriv_dilation (f : ℂ → ℂ) (c : ℂ) (n : ℕ) :
     iteratedDeriv n (fun w => f (c * w)) = fun w => c ^ n * iteratedDeriv n f (c * w) := by
   induction n with
