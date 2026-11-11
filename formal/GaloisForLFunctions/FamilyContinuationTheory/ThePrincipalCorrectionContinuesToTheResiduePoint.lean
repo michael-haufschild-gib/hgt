@@ -376,7 +376,7 @@ theorem exists_probeCorrection_cutoff {σ : ℝ} (hσ : 7 / 8 ≤ σ) :
   have hS160 : ∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ 160 → v ∈ S := fun v h =>
     hS v (h.trans (le_max_right _ _))
   obtain ⟨hd, hne, hb⟩ := hcut S hS0 𝔪 η (fun v => primeKappaAt 𝔪 η v ^ 6)
-    (fun v => pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v))
+    (fun v => by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v))
   refine ⟨hd.congr fun s hs => probeCorrection_eq 𝔪 η S hS160 (by
       have : σ < s.re := hs
       linarith), fun s hs => ?_, fun s hs => ?_⟩
@@ -403,10 +403,10 @@ theorem exists_cutoff_zetaZeroAbscissa_le_of_probe_estimates {σ₀ : ℝ} (hσ�
               ∃ (J : ℝ → ℂ) (C Z₀ : ℝ), 1 ≤ Z₀ ∧
                 (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ C * Z ^ a₁) ∧
                 (∀ Z : ℝ, Z₀ ≤ Z →
-                  ‖J Z - signal (fun s : ℂ => cexp ((s - c) ^ 2) *
+                  ‖J Z - signal (fun s : ℂ => Complex.exp ((s - c) ^ 2) *
                     probeCorrection η.1 η.2 S s / heckeLFunction η.1 η.2 s) 2 Z‖ ≤
                       C * Z ^ a₂)) →
-        zetaZeroAbscissa ≤ σ₀ := by
+        _root_.RHTower.zetaZeroAbscissa ≤ σ₀ := by
   obtain ⟨N₀, hN₀⟩ := exists_cutoff_zetaZeroAbscissa_le_of_two_estimates (K := K) hσ₀
     (by linarith)
   refine ⟨max N₀ 160, fun S hS c hstep => ?_⟩
@@ -414,16 +414,17 @@ theorem exists_cutoff_zetaZeroAbscissa_le_of_probe_estimates {σ₀ : ℝ} (hσ�
     hS v (h.trans (le_max_right _ _))
   refine hN₀ S (fun v h => hS v (h.trans (le_max_left _ _))) c
     (fun η v => primeKappaAt η.1 η.2 v ^ 6)
-    (fun η v => pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le η.1 η.2 v)) ?_
+    (fun η v => by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le η.1 η.2 v))
+    ?_
   intro β hβ hβ1 hzero
   obtain ⟨a₁, a₂, ha₁, ha₂, hη⟩ := hstep β hβ hβ1 hzero
   refine ⟨a₁, a₂, ha₁, ha₂, fun η => ?_⟩
   obtain ⟨J, C, Z₀, hZ₀, h1, h2⟩ := hη η
   refine ⟨J, C, Z₀, hZ₀, h1, fun Z hZ => ?_⟩
-  have hsig : signal (fun s : ℂ => cexp ((s - c) ^ 2) *
+  have hsig : signal (fun s : ℂ => Complex.exp ((s - c) ^ 2) *
       fullPrincipalCorrection η.1 η.2 (fun v => primeKappaAt η.1 η.2 v ^ 6) S s /
         heckeLFunction η.1 η.2 s) 2 =
-      signal (fun s : ℂ => cexp ((s - c) ^ 2) * probeCorrection η.1 η.2 S s /
+      signal (fun s : ℂ => Complex.exp ((s - c) ^ 2) * probeCorrection η.1 η.2 S s /
         heckeLFunction η.1 η.2 s) 2 :=
     signal_congr_line fun s hs => by
       rw [probeCorrection_eq η.1 η.2 S hS160 (by rw [hs]; norm_num)]

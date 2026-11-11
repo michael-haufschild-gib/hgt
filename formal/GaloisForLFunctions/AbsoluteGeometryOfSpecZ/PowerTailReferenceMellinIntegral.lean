@@ -137,7 +137,7 @@ theorem mul_referencePowerMellinIntegral_eq {a : ℝ} (ha : 0 < a) (ha2 : a < 1 
     (show a < 1 by linarith only [ha2]) (show 0 < 1 - 2 * a by linarith only [ha2])
   have hzC := Complex.continuous_ofReal.continuousAt.tendsto.comp hz
   have hf := tendsto_powerTailPrefix_finitePart hb hb1
-  simp only [show 1 - (1 - a) = a by ring, Complex.ofReal_sub, Complex.ofReal_one] at hf
+  simp only [show 1 - (1 - a) = a by ring] at hf
   have hr := (hf.sub hzC).add_const
     (((1 - 2 * a) / (a * (1 - a)) : ℝ) : ℂ)
   simp only [Complex.ofReal_zero, sub_zero] at hr

@@ -14,7 +14,7 @@ limit in the convergent range by the Mellin pairing of the two powers.
 The primary theorem must be unconditional; no zero-free or analytic input
 may be assumed without proving the corresponding implication.
 
-Stronger target: for actual width `w=zetaZeroWidth`, every `0<a` with
+For actual width `w=zetaZeroWidth`, every `0<a` with
 `a+w<1/2` converges to the same zero pairing. The corpus proves
 `XiZeroHalfPlaneBound w`; the prime-error abscissa theorem then gives
 cancellation exponent `1/2+w`. The weighted profile is integrable because
@@ -78,7 +78,7 @@ The zero-side identification remains to be checked.
 For unscaled coefficients `c_n=n^(-a)`, the contact sum is
 `2 Σ_{n≤N} n^(-2a) Σ_{d|n} Λ(d)d^a`. Subtract
 `2ζ(1+a) Σ_{n≤N} n^(-a)`. The difference from the full comb form
-should be `O(N^(1-2a) log N)` for `0<a<1/2`: the pole-product tail
+is `O(N^(1-2a) log N)` for `0<a<1/2`: the pole-product tail
 costs `O(N^(1-2a))`, while absolute jet and counterterm bounds cost one
 logarithm. This reduces the lower analytic obstruction to the summatory
 Dirichlet coefficient
@@ -101,11 +101,10 @@ normalized form becomes its archimedean part minus twice the meshes of
 `t^-2a Σn≤1/t g_a(n)` and `t^-2a E_a(1/t)`, plus
 `2N^(2a-1)T_a(N)E_a(N)`.
 The last term vanishes because `E_a` and `T_a` are bounded.
-Under RH, the first mesh has an envelope `t^-(2a+β)` for some
-`1/2-a<β<1-2a`; the second has envelope `t^-2a/(1-a)`.
+When `a+w<1/2`, the first mesh has an envelope `t^-(2a+β)` for some
+`1/2+w-a<β<1-2a`; the second has envelope `t^-2a/(1-a)`.
 Both profiles have finitely many jumps above every positive cutoff.
-These reductions and the resulting convergence criterion are written;
-Lean verification remains unfinished.
+These reductions and the resulting convergence criterion are formalized.
 
 ## Mellin identification
 
@@ -113,8 +112,8 @@ For `θ=1-2a` and `s=1-a`, the proposed integral evaluations are
 `θ I_prime=-ζ′/ζ(s)-ζ(s)`,
 `θ I_reference=ζ(s)+θ/(a(1-a))`, and
 `archRow=ψ(s/2)-log π`.
-The first follows from RH prime-error bounds and the existing energy-based
-continuation theorem; the second from centered Euler power sums.
+The first is formalized from actual-width prime-error bounds and the
+existing energy-based continuation theorem. The second uses centered Euler power sums.
 The archimedean profile splits as
 `2(t^-a-1)/(1-t²)+1/(1+t)`, whose geometric-series integrals give a
 Gauss digamma difference. Together they yield
