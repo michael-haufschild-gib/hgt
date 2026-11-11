@@ -46,6 +46,7 @@ theorem one_mem_detSupport {X y : ℕ} (hX : 1 ≤ X) (hy : 1 ≤ y) : 1 ∈ det
   rw [Finset.mem_image]
   exact ⟨(1, 1), by simp [hX, hy], by simp⟩
 
+omit [NeZero q] in
 /-- **The mollified product.**  `L_X(s) M_y(s) = 1 + Σ_k χ(k) e_k k^{−s}`. -/
 theorem partialChi_mul_mollChi {X y : ℕ} (hX : 1 ≤ X) (hy : 1 ≤ y) (s : ℂ) :
     partialChi χ X s * mollChi χ y s = 1 + detPolyChi χ X y s := by

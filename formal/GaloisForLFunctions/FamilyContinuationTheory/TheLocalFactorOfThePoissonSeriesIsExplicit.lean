@@ -333,6 +333,118 @@ theorem localTerm_family (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) 
         ring
       · rw [if_neg hrm, if_neg (by omega), mul_zero]
 
+/-! ### The Gauss sums through `G₁`, `Γ`, `c₄` -/
+
+omit hP in
+theorem ringComplex_ne_zero : ringComplex π ≠ 0 := fun h =>
+  NeZero.ne π (ringComplex_injective (by rw [h, map_zero]))
+
+include h2 in
+theorem fixedDualAverage_prime_ne_zero : fixedDualAverage π ≠ 0 :=
+  gamma_ne_zero (prime_odd π h2)
+
+include h2 in
+theorem sexticChar_four_ne_zero :
+    complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) ≠ 0 := by
+  intro h0
+  have h := sexticChar_four_pow_three π hlam h2
+  rw [h0] at h
+  norm_num at h
+
+include h2 in
+/-- `c̄₄ = c₄⁻¹`. -/
+theorem conj_sexticChar_four :
+    conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)) =
+      (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))⁻¹ := by
+  set c := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)
+  have h3 := sexticChar_four_pow_three π hlam h2
+  have hn : ‖c‖ = 1 := by
+    have := congrArg norm h3
+    rw [norm_pow, norm_one] at this
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg c) (by norm_num)).mp this
+  have hc0 : c ≠ 0 := sexticChar_four_ne_zero π hlam h2
+  refine eq_inv_of_mul_eq_one_left ?_
+  rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, hn]
+  norm_num
+
+include hlam hprim in
+/-- `Q = N²`. -/
+theorem primeQ_eq : primeQ π = primeNorm π ^ 2 := (norm_sq_eq_absNorm π hlam hprim).symm
+
+/-- `κ π = N η_π`. -/
+theorem primeKappa_mul (ηp : ℂ) : primeKappa π ηp * ringComplex π = primeNorm π * ηp := by
+  unfold primeKappa primeNorm
+  rw [mul_right_comm, conj_alpha_mul]
+
+include h2 in
+theorem gauss_one_ne_zero :
+    gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π)) ≠ 0 := by
+  intro h0
+  have h := gauss_mul_gauss_compl π hlam h2 1 (by norm_num) (by norm_num)
+  rw [pow_one, h0, zero_mul] at h
+  have hε : complexSexticChar (Ideal.span {π}) hlam (-1) ≠ 0 := by
+    intro h1
+    have := mulChar_neg_one_sq (complexSexticChar (Ideal.span {π}) hlam)
+    rw [h1] at this
+    norm_num at this
+  exact mul_ne_zero (pow_ne_zero 1 hε) (primeQ_ne_zero π) h.symm
+
+include h2 hprim in
+/-- `G₅ = ε N² / G₁`. -/
+theorem gauss_five_eq :
+    gaussSum (complexSexticChar (Ideal.span {π}) hlam ^ 5) (principalTraceChar π (NeZero.ne π)) =
+      complexSexticChar (Ideal.span {π}) hlam (-1) * primeNorm π ^ 2 /
+        gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π)) := by
+  have h := gauss_mul_gauss_compl π hlam h2 1 (by norm_num) (by norm_num)
+  rw [pow_one, pow_one, show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
+    primeQ_eq π hlam hprim] at h
+  rw [eq_div_iff (gauss_one_ne_zero π hlam h2), mul_comm]
+  exact h
+
+include h2 hprim in
+/-- `G₂ = −π N Γ / (c₄ G₁)`. -/
+theorem gauss_two_eq :
+    gaussSum (complexSexticChar (Ideal.span {π}) hlam ^ 2) (principalTraceChar π (NeZero.ne π)) =
+      -ringComplex π * primeNorm π * fixedDualAverage π /
+        (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
+          gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π))) := by
+  have h := sextic_gauss_product π hlam h2 hprim
+  rw [gauss_three_eq π hlam h2] at h
+  rw [eq_div_iff (mul_ne_zero (sexticChar_four_ne_zero π hlam h2) (gauss_one_ne_zero π hlam h2))]
+  rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl,
+    ← map_ofNat (Ideal.Quotient.mk (Ideal.span {π})) 4] at h
+  linear_combination h
+
+include h2 hprim in
+/-- `G₄ = −N c₄ G₁ / (π Γ)`. -/
+theorem gauss_four_eq :
+    gaussSum (complexSexticChar (Ideal.span {π}) hlam ^ 4) (principalTraceChar π (NeZero.ne π)) =
+      -(primeNorm π * complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
+        gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π))) /
+          (ringComplex π * fixedDualAverage π) := by
+  have h := gauss_mul_gauss_compl π hlam h2 2 (by norm_num) (by norm_num)
+  rw [mulChar_neg_one_sq, one_mul, show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
+    primeQ_eq π hlam hprim, gauss_two_eq π hlam h2 hprim] at h
+  have hπ := ringComplex_ne_zero π
+  have hΓ := fixedDualAverage_prime_ne_zero π h2
+  have hc := sexticChar_four_ne_zero π hlam h2
+  have hg := gauss_one_ne_zero π hlam h2
+  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  rw [eq_div_iff (mul_ne_zero hπ hΓ)]
+  field_simp at h
+  linear_combination -h
+
+include h2 hprim in
+/-- `γ₂(π) = −π Γ / (c₄ G₁)`. -/
+theorem thetaGauss_prime_eq :
+    thetaGauss (π ^ 1) = -ringComplex π * fixedDualAverage π /
+      (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4) *
+        gaussSum (complexSexticChar (Ideal.span {π}) hlam) (principalTraceChar π (NeZero.ne π))) := by
+  rw [thetaGauss_congr (pow_one π), thetaGauss_prime π hlam h2 hprim, gauss_two_eq π hlam h2 hprim]
+  have hN : primeNorm π ≠ 0 := norm_ringComplex_ne_zero π
+  rw [show (‖ringComplex π‖ : ℂ) = primeNorm π from rfl]
+  field_simp
+
 end Prime
 
 end GaloisForLFunctions.FamilyContinuationTheory
