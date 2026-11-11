@@ -85,6 +85,7 @@ theorem hermNegIndex_shiftedPacketGram_le {n Q : ℕ} (E : ℝ) (f : Fin n → �
       ((realWeilForm (F k i) (F k j) - E * packetMassPair (F k i).1 (F k j).1 : ℝ) : ℂ)
     rw [realWeilForm_eq_zeroSum_polarization]
     unfold packetMassPair
+    simp only [Submodule.coe_add, Submodule.coe_sub]
     congr 1
     ring
   let c := (l + r) / 2

@@ -72,13 +72,19 @@ theorem packetMassPair_eq_integral {f g : ℝ → ℝ}
     (hfg : Integrable (fun u => f u * g u)) :
     packetMassPair f g = ∫ u, f u * g u := by
   have hplus : Integrable (fun u => (f u + g u) * (f u + g u)) := by
-    convert hff.add ((hfg.const_mul 2).add hgg) using 1
-    ext u
-    ring
+    have he : (fun u => (f u + g u) * (f u + g u)) =
+        fun u => f u * f u + (2 * (f u * g u) + g u * g u) := by
+      funext u
+      ring
+    rw [he]
+    exact hff.add ((hfg.const_mul 2).add hgg)
   have hminus : Integrable (fun u => (f u - g u) * (f u - g u)) := by
-    convert (hff.sub (hfg.const_mul 2)).add hgg using 1
-    ext u
-    ring
+    have he : (fun u => (f u - g u) * (f u - g u)) =
+        fun u => (f u * f u - 2 * (f u * g u)) + g u * g u := by
+      funext u
+      ring
+    rw [he]
+    exact (hff.sub (hfg.const_mul 2)).add hgg
   have he : (fun u => (f u + g u) * (f u + g u) -
       (f u - g u) * (f u - g u)) = fun u => 4 * (f u * g u) := by
     funext u
@@ -159,10 +165,14 @@ theorem hermNegIndex_shiftedPacketGram_nested_le {n Q x₀ X : ℕ}
   apply hermNegIndex_shiftedPacketGram_le E (fun i => flatPacket x₀ (x i))
     (fun i => measurable_flatPacket _ _) (fun i u => abs_flatPacket_le _ _ _) hs hQ
   · intro i j
-    simpa only [one_mul, Pi.add_apply] using
+    change IntegrableOn (levyJump (fun u => flatPacket (x₀ : ℝ) (x i) u +
+      flatPacket (x₀ : ℝ) (x j) u)) (Set.Ioi 0)
+    simpa only [one_mul, Pi.add_def] using
       integrableOn_levyJump_flatPacket_pair hx₀ (hx i).1 (hx j).1 1 1
   · intro i j
-    simpa only [one_mul, neg_one_mul, ← sub_eq_add_neg, Pi.sub_apply] using
+    change IntegrableOn (levyJump (fun u => flatPacket (x₀ : ℝ) (x i) u -
+      flatPacket (x₀ : ℝ) (x j) u)) (Set.Ioi 0)
+    simpa only [one_mul, neg_one_mul, ← sub_eq_add_neg, Pi.sub_def] using
       integrableOn_levyJump_flatPacket_pair hx₀ (hx i).1 (hx j).1 1 (-1)
   · exact hA
 

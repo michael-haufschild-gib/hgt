@@ -336,8 +336,18 @@ parametrize every additive character of `O/(3)`, so each ramified cusp row has
 one intrinsic Fourier support class (`ramifiedScaledRow_fourier_support`, checked).
 For `r=uλⁿ` and primary `a`, the additive phase in `(r/(a+3x))` determines
 the support condition `3k=h₁+phase(r)a`; its contribution cancels modulo `a`,
-leaving the Gauss frequency `3r²h₁`. The affine Gauss reduction and its
-finite-index cusp unfolding are being formalized.
+leaving the Gauss frequency `3r²h₁`. Finite-index unfolding gives the exact
+unit-cusp Fourier coefficient (`diagonal_unit_eisenstein_fourier`, checked).
+Once-ramified rows split into three primary associates. Their indexing,
+character-weighted cancellation, and scaled Fourier formulas are checked
+(`onceRamifiedDataEquiv`, `scaled_unit_eisenstein_fourier`,
+`scaled_once_eisenstein_fourier`).
+Scaling cusp coordinates by three replaces the affine denominator `q` by
+`3q` and contributes `3^s`. The period congruence then holds automatically;
+finite-character cancellation selects `q ∣ h` and
+`3 ∣ h/q + phase(r)`, without choosing an orientation of the complex embedding.
+The projected source has six Gauss branches. Its finite Fourier decomposition
+and the bounded compact pullback for arbitrary cusp translates are being formalized.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

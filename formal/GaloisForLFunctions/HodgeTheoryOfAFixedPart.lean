@@ -53,3 +53,5 @@ Positivity and index theorems for the pairing of the degree points of the arithm
 
 See `HodgeTheoryOfAFixedPart/README.md`.
 -/
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TightBlockTransferSpendsOnlyMeanMass
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart.UnshiftedCombIndexFitsEveryWiderAperture

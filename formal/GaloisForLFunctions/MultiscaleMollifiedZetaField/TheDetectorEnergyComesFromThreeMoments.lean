@@ -12,6 +12,8 @@ displacement derivative and two explicit taper terms.
 open Complex MeasureTheory Set
 open GaloisForLFunctions.HTGeometry
 
+open scoped ComplexConjugate
+
 noncomputable section
 
 namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
@@ -27,8 +29,10 @@ private theorem taper_ibp {W W₁ u u₁ : ℝ → ℝ}
     have he : W₁ = deriv W := funext fun t => (hW t).deriv.symm
     rw [he]
     exact hWc.deriv
-  have hi₁ := (hW₁.mul hu0).integrable_of_hasCompactSupport hW₁c.mul_right
-  have hi₂ := (hW0.mul hu₁).integrable_of_hasCompactSupport hWc.mul_right
+  have hi₁ := (hW₁.mul hu0).integrable_of_hasCompactSupport (μ := volume) hW₁c.mul_right
+  have hi₂ := (hW0.mul hu₁).integrable_of_hasCompactSupport (μ := volume) hWc.mul_right
+  change Integrable (fun t => W₁ t * u t) volume at hi₁
+  change Integrable (fun t => W t * u₁ t) volume at hi₂
   have he := integral_deriv_eq_zero_of_hasCompactSupport
     (fun t => (hW t).mul (hu t)) ((hW₁.mul hu0).add (hW0.mul hu₁)) hWc.mul_right
   rw [integral_add hi₁ hi₂] at he
@@ -63,8 +67,10 @@ private theorem hasDerivAt_im_mul_conj {f g f₁ g₁ : ℝ → ℂ} {t : ℝ}
       ((f₁ t * conj (g t) - f t * conj (g₁ t)).re) t := by
   have hc := Complex.conjCLE.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt t hg
   have hh := Complex.imCLM.hasFDerivAt.comp_hasDerivAt t (hf.mul hc)
+  change HasDerivAt (fun x => (f x * conj (g x)).im)
+    ((I * f₁ t * conj (g t) + f t * conj (I * g₁ t)).im) t at hh
   apply hh.congr_deriv
-  simp only [Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im,
+  simp only [Complex.add_re, Complex.add_im, Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im,
     Complex.I_re, Complex.I_im, Complex.sub_re]
   ring
 
@@ -73,13 +79,15 @@ private theorem hasDerivAt_norm_square {f f₁ : ℝ → ℂ} {t : ℝ}
     HasDerivAt (fun x => ‖f x‖ ^ 2) (-2 * (f₁ t * conj (f t)).im) t := by
   have hc := Complex.conjCLE.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt t hf
   have hh := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t (hf.mul hc)
+  change HasDerivAt (fun x => (f x * conj (f x)).re)
+    ((I * f₁ t * conj (f t) + f t * conj (I * f₁ t)).re) t at hh
   have he : (fun x => (f x * conj (f x)).re) = fun x => ‖f x‖ ^ 2 := by
     funext x
     rw [Complex.mul_conj]
     simp only [Complex.ofReal_re, Complex.normSq_eq_norm_sq]
   rw [he] at hh
   apply hh.congr_deriv
-  simp only [Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im,
+  simp only [Complex.add_re, Complex.add_im, Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im,
     Complex.I_re, Complex.I_im]
   ring
 
@@ -149,11 +157,11 @@ theorem integral_detectorEnergy_three_moments
       (fun t => hasDerivAt_norm_square (hf t))
       (fun t => hasDerivAt_norm_square_first (hf t) (hf₁ t)) hv
   have hH : Integrable (fun t => W t * ‖f t - g t‖ ^ 2) volume :=
-    (hW0.mul ((hf0.sub hg0).norm.pow 2)).integrable_of_hasCompactSupport hWc.mul_right
-  have hA := (hW0.mul ha).integrable_of_hasCompactSupport hWc.mul_right
-  have hB := (hW0.mul hb).integrable_of_hasCompactSupport hWc.mul_right
-  have hC := (hW0.mul hc).integrable_of_hasCompactSupport hWc.mul_right
-  have hV := (hW0.mul hv).integrable_of_hasCompactSupport hWc.mul_right
+    (hW0.mul ((hf0.sub hg0).norm.pow 2)).integrable_of_hasCompactSupport (μ := volume) hWc.mul_right
+  have hA := (hW0.mul ha).integrable_of_hasCompactSupport (μ := volume) hWc.mul_right
+  have hB := (hW0.mul hb).integrable_of_hasCompactSupport (μ := volume) hWc.mul_right
+  have hC := (hW0.mul hc).integrable_of_hasCompactSupport (μ := volume) hWc.mul_right
+  have hV := (hW0.mul hv).integrable_of_hasCompactSupport (μ := volume) hWc.mul_right
   have he : (∫ t, W t * ‖f t + (lam : ℂ) * f₁ t - g t‖ ^ 2) =
       (∫ t, W t * ‖f t - g t‖ ^ 2) - lam / 2 * (∫ t, W t * a t) +
         lam ^ 2 / 4 * (∫ t, W t * b t) - lam * (∫ t, W t * c t) +
@@ -168,14 +176,24 @@ theorem integral_detectorEnergy_three_moments
         dsimp only [a, b, c, v]
         ring
       _ = _ := by
-        rw [integral_add (((hH.sub (hA.const_mul _)).add (hB.const_mul _)).sub
-            (hC.const_mul _)) (hV.const_mul _),
-          integral_sub ((hH.sub (hA.const_mul _)).add (hB.const_mul _)) (hC.const_mul _),
-          integral_add (hH.sub (hA.const_mul _)) (hB.const_mul _),
-          integral_sub hH (hA.const_mul _)]
+        rw [integral_add
+          (f := fun t => W t * ‖f t - g t‖ ^ 2 - lam / 2 * (W t * a t) +
+            lam ^ 2 / 4 * (W t * b t) - lam * (W t * c t))
+          (g := fun t => lam ^ 2 / 4 * (W t * v t))
+          (((hH.sub (hA.const_mul _)).add (hB.const_mul _)).sub (hC.const_mul _))
+          (hV.const_mul _),
+          integral_sub
+            (f := fun t => W t * ‖f t - g t‖ ^ 2 - lam / 2 * (W t * a t) +
+              lam ^ 2 / 4 * (W t * b t)) (g := fun t => lam * (W t * c t))
+            ((hH.sub (hA.const_mul _)).add (hB.const_mul _)) (hC.const_mul _),
+          integral_add
+            (f := fun t => W t * ‖f t - g t‖ ^ 2 - lam / 2 * (W t * a t))
+            (g := fun t => lam ^ 2 / 4 * (W t * b t))
+            (hH.sub (hA.const_mul _)) (hB.const_mul _),
+          integral_sub hH (show Integrable (fun t => lam / 2 * (W t * a t)) volume from
+            hA.const_mul _)]
         simp only [integral_const_mul]
   rw [he, hfirst, hsecond]
-  change _ = _
-  simp only [mul_neg, sub_neg_eq_add]
+  simp only [a, b, mul_neg, sub_neg_eq_add]
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

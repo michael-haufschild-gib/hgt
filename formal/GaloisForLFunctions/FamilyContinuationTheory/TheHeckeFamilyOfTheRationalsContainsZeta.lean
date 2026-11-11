@@ -1,5 +1,6 @@
 import GaloisForLFunctions.FamilyContinuationTheory.TheContinuationFrameCoversEveryRayClassCharacter
 import GaloisForLFunctions.HeckeLFunctions.TheTrivialCharacterRemovesTheModulusEulerFactors
+import GaloisForLFunctions.RHTower.ZetaZeroAbscissa
 
 /-!
 # The Hecke family of the rationals contains `ζ`
@@ -16,7 +17,9 @@ Over `ℚ` the trivial character of the unit modulus is `ζ`:
   modulus of `ℚ` is `ζ` away from `1`;
 * `xiZeroHalfPlaneBound_of_heckeHalfPlane_rat`: `HeckeHalfPlane ℚ σ₀` puts the zeros of `ξ` in
   `Re ρ ≤ σ₀`, and `HeckeHalfPlane ℚ ½` is the Riemann hypothesis for `ζ`
-  (`riemannHypothesis_of_heckeHalfPlane_rat`).
+  (`riemannHypothesis_of_heckeHalfPlane_rat`);
+* `zetaZeroAbscissa_le_of_zeroFree`: a zero-free half-plane `Re s > σ₀` off the pole bounds the
+  zero abscissa of `ζ` by `σ₀`, the form in which the consequences of a half-plane are stated.
 -/
 
 noncomputable section
@@ -122,11 +125,27 @@ theorem heckeLFunction_rat_trivial {s : ℂ} (hs : s ≠ 1) :
       dedekindZeta_rat hz]
   exact hf.eqOn_of_preconnected_of_eventuallyEq hg hconn h2 hev hs
 
+/-- A zero-free half-plane for `ζ` off the pole bounds the zero abscissa. -/
+theorem zetaZeroAbscissa_le_of_zeroFree {σ₀ : ℝ}
+    (h : ∀ ρ : ℂ, σ₀ < ρ.re → ρ ≠ 1 → riemannZeta ρ ≠ 0) : zetaZeroAbscissa ≤ σ₀ := by
+  by_contra hcon
+  obtain ⟨ρ, hzero, hρ⟩ := exists_zetaZero_lt_re (not_le.mp hcon)
+  have hρ1 : ρ ≠ 1 := by
+    rintro rfl
+    exact riemannZeta_one_ne_zero hzero
+  exact h ρ hρ hρ1 hzero
+
 /-- A Hecke half-plane over `ℚ` is a half-plane for `ζ`. -/
 theorem riemannZeta_ne_zero_of_heckeHalfPlane_rat {σ₀ : ℝ} (h : HeckeHalfPlane ℚ σ₀) {ρ : ℂ}
     (hρ : σ₀ < ρ.re) (hρ1 : ρ ≠ 1) : riemannZeta ρ ≠ 0 := by
   rw [← heckeLFunction_rat_trivial hρ1]
   exact h (trivialModulus ℚ) 1 ρ hρ hρ1
+
+/-- A Hecke half-plane over `ℚ` bounds the zero abscissa of `ζ`. -/
+theorem zetaZeroAbscissa_le_of_heckeHalfPlane_rat {σ₀ : ℝ} (h : HeckeHalfPlane ℚ σ₀) :
+    zetaZeroAbscissa ≤ σ₀ :=
+  zetaZeroAbscissa_le_of_zeroFree fun _ hρ hρ1 =>
+    riemannZeta_ne_zero_of_heckeHalfPlane_rat h hρ hρ1
 
 /-- **A Hecke half-plane over `ℚ` bounds the zeros of `ξ`.** -/
 theorem xiZeroHalfPlaneBound_of_heckeHalfPlane_rat {σ₀ : ℝ} (hσ₀ : (1 : ℝ) / 2 ≤ σ₀)

@@ -15,7 +15,8 @@ Both sides continue off `1` and `L(s, χ₋₃)` is entire, so a zero of `ζ` is
 `L`-function of the trivial character of the unit modulus of `K`
 (`heckeLFunction_thirdCyclotomic_trivial`). A zero-free half-plane for the Hecke family of `K` is
 therefore a half-plane for `ζ` and for `L(s, χ₋₃)`
-(`xiZeroHalfPlaneBound_of_heckeHalfPlane_thirdCyclotomic`).
+(`xiZeroHalfPlaneBound_of_heckeHalfPlane_thirdCyclotomic`), and it bounds the zero abscissa of `ζ`
+(`zetaZeroAbscissa_le_of_heckeHalfPlane_thirdCyclotomic`).
 -/
 
 noncomputable section
@@ -288,6 +289,12 @@ theorem LFunction_chi3D_ne_zero_of_heckeHalfPlane_thirdCyclotomic {σ₀ : ℝ}
   intro h0
   apply h (trivialModulus K) 1 ρ hρ hρ1
   rw [heckeLFunction_thirdCyclotomic_trivial K hρ1, h0, mul_zero]
+
+/-- **A Hecke half-plane over the third cyclotomic field bounds the zero abscissa of `ζ`.** -/
+theorem zetaZeroAbscissa_le_of_heckeHalfPlane_thirdCyclotomic {σ₀ : ℝ}
+    (h : HeckeHalfPlane K σ₀) : zetaZeroAbscissa ≤ σ₀ :=
+  zetaZeroAbscissa_le_of_zeroFree fun _ hρ hρ1 =>
+    riemannZeta_ne_zero_of_heckeHalfPlane_thirdCyclotomic h hρ hρ1
 
 /-- **A Hecke half-plane over the third cyclotomic field bounds the zeros of `ξ`.** -/
 theorem xiZeroHalfPlaneBound_of_heckeHalfPlane_thirdCyclotomic {σ₀ : ℝ}

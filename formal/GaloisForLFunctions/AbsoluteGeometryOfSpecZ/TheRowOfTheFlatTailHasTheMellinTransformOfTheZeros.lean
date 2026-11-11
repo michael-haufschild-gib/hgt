@@ -322,7 +322,8 @@ theorem ofReal_integral_rpow_mul_neg_log {ε : ℝ} (hε : 0 < ε) :
       exact h
     rw [Complex.ofRealCLM_apply]
     push_cast
-    field_simp
+    rw [div_sub_div _ _ hm hz', mul_one_div,
+      div_eq_div_iff (mul_ne_zero hm hz') (mul_ne_zero hm hd)]
     ring
   rw [e] at h1
   exact h2.unique h1
@@ -342,7 +343,7 @@ theorem mellin_rowProfile {ε : ℝ} (hε : 0 < ε) :
     have hψint : IntegrableOn (fun t : ℝ => t ^ ε * Chebyshev.psi (1 / t)) (Set.Ioc 0 1) := by
       have h := (integrableOn_rpow_mul_inv hε).sub
         (integrableOn_rpow_mul hε.le integrableOn_primeRemainder measurable_primeRemainder)
-      refine h.congr_fun (fun t _ => ?_) measurableSet_Ioc
+      refine IntegrableOn.congr_fun h (fun t _ => ?_) measurableSet_Ioc
       simp only [Pi.sub_apply, primeRemainder]
       ring
     have hsplit : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * primeRemainder t =
@@ -361,7 +362,7 @@ theorem mellin_rowProfile {ε : ℝ} (hε : 0 < ε) :
       have h0 : IntegrableOn (fun t : ℝ => -Real.log (1 - t ^ 2)) (Set.Ioc 0 1) := by
         have h := (integrableOn_archRow.add
           (integrableOn_const (C := Real.log (2 * Real.pi)) (by simp))).const_mul 2
-        refine h.congr_fun (fun t _ => ?_) measurableSet_Ioc
+        refine IntegrableOn.congr_fun h (fun t _ => ?_) measurableSet_Ioc
         simp only [Pi.add_apply, archRow]
         ring
       exact integrableOn_rpow_mul hε.le h0

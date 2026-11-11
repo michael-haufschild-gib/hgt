@@ -115,7 +115,8 @@ the reflection symmetry as above; positivity of the prime measure, for every fin
 and linear counting, for every finite datum at every depth below `½`: the density of the datum
 is discretized at its quantiles and the discrete primes are rounded up to integers, which
 changes the zeta function by a factor holomorphic and without zeros right of the critical line
-(the construction of the one-offs of `ArithmeticPositiveDuality`, for an arbitrary density).
+(the construction of the one-offs of `ArithmeticPositiveDuality`, for an arbitrary density);
+for distinct positive ordinates the zeros have exactly the prescribed orders.
 Rounding to the next rational prime instead gives an Euler product over the rational primes
 with natural exponents, the Dirichlet series of a nonnegative multiplicative function on the
 integers, with any finite layer at `17/30 < Θ < 1`: the prime gaps cost the strip up to `17/30`.
@@ -150,7 +151,12 @@ of an operator symmetric for a form with `κ` negative squares, there are at mos
 none for `κ = 1`. Of the regulators of the horizon, the scattering tower has the right zeros of
 `ζ` at every height, and the clock lies below Weil's form at every cutoff: its negative
 directions contain those of the limit, so a sign, a floor or an index bound before the limit is
-at least as strong as the same statement in the limit.
+at least as strong as the same statement in the limit. The de Bruijn–Newman heat flow is the
+regulator that approaches `Ξ` from the good side: it has only real zeros from the time `1/8`
+on, its number of nonreal zeros does not increase with the time, and a count of at most one on
+times tending to zero gives RH; but when `Ξ` has finitely many nonreal zeros the flow has
+exactly that number at every small time (`RHTower.DeBruijn`). No regulator of the corpus has a
+unit gap before its limit.
 
 **Amplification (kind d).** In world I the `2k`-th moment of the trace on a window of fixed
 length lies between `η(c e^{bT})^{2k}` and `L(B e^{b(T+L)})^{2k}` with `c, η, B` independent of
@@ -220,10 +226,10 @@ hypothesis. *Kill*: a source excluded for a whole kind.
 | **Non-attainment ⇒ AAL**, for the trace, for `ψ(x) − x`, at the primes, in the mean of one order, and for every tempered symmetric configuration | `asymptoticAbscissaLaw_of_windowNonAttainment`, `asymptoticAbscissaLaw_of_psi_window_nonAttainment`, `asymptoticAbscissaLaw_of_moment_window_nonAttainment`, `abscissaLaw_of_windowNonAttainment_config` | receivers (a) |
 | **The tangent datum.** Trace `o(e^{bu})` ⇔ empty top line; the trace determines the layer; attained or tending to zero | `tendsto_normTrace_zero_iff`, `topCoeff_eq_of_tendsto_normTrace_sub`, `tendsto_normTrace_zero_or_attained` | structure |
 | **Integrality.** The multiplicity is a mean of the trace; a mean below the quantum excludes the zero; `μ` and `λ` have poles of order the multiplicity | `evenCoeff_zeta_eq`, `not_mem_zetaZeroConfig_of_mean_lt_quantum`, `meromorphicOrderAt_liouville` | receiver (b) |
-| **The datum is free.** Every finite datum is the top layer of a finite symmetric configuration, of a positive prime density with a simple pole, and of an Euler product over natural norms with natural coefficients and linear counting | `exists_config_with_top_layer`, `exists_nonneg_density_with_layer`, `exists_integer_norm_euler_product_with_layer` | kill: identities, symmetries, positivity, multiplicativity, integer norms |
+| **The datum is free.** Every finite datum is the top layer of a finite symmetric configuration, of a positive prime density with a simple pole, and of an Euler product over natural norms with natural coefficients and linear counting | `exists_config_with_top_layer`, `exists_nonneg_density_with_layer`, `exists_integer_norm_euler_product_with_divisor` | kill: identities, symmetries, positivity, multiplicativity, integer norms |
 | **Replication.** Translates at a finite layer blow up along every phase return; bounded normalizations tend to zero; every limit is zero | `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized` | kill: normal families |
 | **Unit gaps.** AAL ⇔ at most one or infinitely many zeros right of every line; bounded counts pass to locally uniform limits; a realization of index `κ` has at most `κ` right zeros | `asymptoticAbscissaLaw_iff_encard_rightOf_le_one`, `riemannHypothesis_of_unit_gap_limit`, `riemannHypothesis_of_indexOne_realization` | receivers (b) |
-| **Regulators.** The scattering tower keeps the count at every height; the clock lies below Weil's form at every cutoff | `towerQuotient_unit_gap_iff`, `greenWeilEnergy_le_form`, `riemannHypothesis_of_greenWeilEnergy_floor` | kill; receiver |
+| **Regulators.** The scattering tower keeps the count at every height; the clock lies below Weil's form at every cutoff; the heat flow has at least two nonreal zeros at every small time unless RH holds | `towerQuotient_unit_gap_iff`, `greenWeilEnergy_le_form`, `riemannHypothesis_of_greenWeilEnergy_floor`, `riemannHypothesis_of_frequently_nonrealZeroCount_le_one` | kill; receiver |
 | **Certificates.** Feasibility at an aperture = positive definite spectral kernels on intervals = tapered kernels that are transforms of positive measures; null vectors annihilate; certificates converge to `Λ`; the pencil is not a Dirichlet series | `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `exists_measure_charFun_eq_taperedKernel`, `spectralKernel_eq_zero_of_null`, `tendsto_weight_of_aperturePositive_seq`, `not_exists_lSeries_pencil` | structure; kill (c) |
 | **Amplification.** Window moments of a finite layer have rate `2k·b`; a bound of order `2k` with exponent `A` gives the law beyond the depth `A/2k`; one exponent for all orders ⇒ AAL; moment bounds of all orders are sup bounds | `finite_top_moment_lower_bound`, `abscissaLawAt_of_window_moment`, `asymptoticAbscissaLaw_of_window_moments`, `windowMomentsBounded_iff_windowSupPowersBounded` | receiver (d); kill |
 | **Symmetrization.** Second-order law of projection; no convergent linear statistic is monotone; heat statistics are monotone below a height; additive functionals of the depths are mixtures of inner masses | `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `sum_profile_sub_eq_innerMass` | kill |
@@ -312,7 +318,7 @@ constant terms, symmetric completions of zero-free Dirichlet polynomials.
 |---|---|---|
 | Q1 | Which mechanisms have floor zero? | receivers of the four kinds are in Lean; every estimate of the census has a positive floor |
 | Q2 | Non-attainment for `ζ` (B170): is `ψ(x) − x` of smaller order than its own rate on some late windows? | open; equivalent to excluding world I; the top layer alone does not decide it (integer-norm one-offs, isolated pairs) |
-| Q3 | A source of a unit gap (B117, B171): functions with at most one right zero and limit `ζ`; a form with one negative square in which the zeros are a symmetric spectrum | open; neither the tower (`towerQuotient_unit_gap_iff`) nor the clock (`greenWeilEnergy_le_form`) supplies it |
+| Q3 | A source of a unit gap (B117, B171): functions with at most one right zero and limit `ζ`; a form with one negative square in which the zeros are a symmetric spectrum | open; neither the tower (`towerQuotient_unit_gap_iff`), nor the clock (`greenWeilEnergy_le_form`), nor the heat flow (`eventually_two_le_nonrealZeroCount`) supplies it |
 | Q4 | A functional that decreases under projection and has an arithmetic evaluation (B172) | no linear statistic; additive functionals of the depths are mixtures of inner masses; what is open is a minimality principle for `ζ`, the equality case of Jensen's formula (kind c) |
 | Q5 | A bound for all moment orders with one exponent (B173) | on windows it is equivalent to a sub-exponential two-sided bound of the trace on those windows (`windowMomentsBounded_iff_windowSupPowersBounded`): open, and of the strength of the Riemann hypothesis on some late windows |
 | Q6 | A certificate at every aperture that is not `Λ` | open at finite aperture (the feasible sets have nonempty interior where windows have margin); in the limit every family of certificates is `Λ` |
@@ -334,7 +340,7 @@ multiplicative functions; regulators that approach Weil's form from above.
 | A bound uniform in the moment order is weaker than a pointwise bound | On windows the two are equivalent: the trace is Lipschitz at the rate `e^{u/2}` |
 | The explicit formula can exclude a top layer | It holds on every tempered configuration; floor `½`; every finite datum is realized |
 | Projection to the line lowers natural statistics | No convergent linear statistic is monotone; heat statistics only below a height |
-| A regulator at finite cutoff has fewer right zeros | The tower has exactly those of `ζ` at every height; the clock has at least the negative directions of Weil's form |
+| A regulator at finite cutoff has fewer right zeros | The tower has exactly those of `ζ` at every height; the clock has at least the negative directions of Weil's form; the heat flow has the nonreal zeros of `Ξ` at every small time |
 | A suitable normalization makes the translates a normal family at a top zero | Only normalizations tending to zero are bounded; every limit is identically zero |
 | A new monotone functional of the zeros is a new input | Additive functionals of the depths are mixtures of inner masses |
 | Certificates may be non-arithmetic | Only at finite aperture: they converge to `Λ` in every coordinate |

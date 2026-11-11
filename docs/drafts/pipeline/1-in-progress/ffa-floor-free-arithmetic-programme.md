@@ -42,7 +42,7 @@ kill or its survivor, and record what a producer must be.
 | 1 | mechanism (i) replication | bounded phase return ⇒ replication is `ArithmeticAuxiliaryDynamics.TheMissingInputOfTransport`; here: along every phase return the sup of the translates over a domain joining a zero of a finite layer to `Re s > 1` tends to infinity, a bounded normalization has `c_j → 0`, every locally uniform limit of normalized translates is `0` | Lean (kill) |
 | 2 | A128 | feasibility at an aperture ⇔ spectral kernels positive definite on intervals; tapered kernels `K_f·(φ⋆φ̃)` are positive definite on the line, hence characteristic functions of finite positive measures (corpus Bochner), and one such measure with `φ ≠ 0` gives the sign on `f`: the feasible set as positive measures, without Krein's extension theorem; a null vector makes its spectral kernel vanish on the whole interval (boundary systems); rigidity: every family of certificates converges to `Λ` | Lean |
 | 2 | A129 | pencil at shift one: `ξ(s−1)/ξ(s+1) = 2π(s−2)/(s(s+1))·ζ(s−1)/ζ(s+1)`, `σ·ratio → 2π`, so `(ξ(s+1)+ξ(s−1))/ξ(s+1)` is the L-series of no sequence (prime side not carried by `log ℕ`). General shifts, cleared Eisenstein constant term, symmetric completions: paper remark only | Lean (shift one); open (other objects) |
-| 3 | A126 | Hurwitz transfer of bounded counts; tower `Λ(s)/Λ(s+N)` keeps the count (kill); index-`κ` realization bounds right zeros by `κ`; clock: `E_r ≤ E_s ≤ W`, negative directions of `W` are negative at every cutoff, sign or floor at one cutoff per aperture ⇒ RH (kill: no unit gap before the limit) | Lean |
+| 3 | A126 | Hurwitz transfer of bounded counts; tower `Λ(s)/Λ(s+N)` keeps the count (kill); index-`κ` realization bounds right zeros by `κ`; clock: `E_r ≤ E_s ≤ W`, negative directions of `W` are negative at every cutoff, sign or floor at one cutoff per aperture ⇒ RH (kill: no unit gap before the limit); heat flow (regulator from the good side, unitary for `t ≥ 1/8`): `N(t) ≤ 1` on times tending to `0` ⇒ RH, and `¬RH ⇒ N(t) ≥ 2` for all small `t` (with the corpus: `N(t)` = count of `Ξ` at small times) | Lean |
 | 4 | A130 | prime side of a projected pair; second-order law and converse; no convergent linear statistic is monotone (kill); heat statistic monotone exactly below `(2t)^{−1/2}`; additive functionals of the depths = mixtures of counts / inner masses (kill of the additive class) | Lean |
 | 5 | A131 | moment law on fixed windows; a `2k`-th moment bound `Ce^{AT}` on a window gives `\|2Re S\|^{2k+1} ≤ 2^{2k+1}GCe^{(A+1)T}` there (Lipschitz rate `e^{R/2}` of the trace); moments of all orders with one exponent ⇔ sup powers with one exponent ⇐ two-sided `C_ε e^{εT}` (kill: amplification on windows = RH-quality bound on some late windows; one order = a half-plane). The trivial bound has slope 1 in the order | Lean |
 | 6 | A123, A124 | floor calculus; floors: tempered class `½`, exponent-`σ` floors exactly `σ`, count laws `½`, one-length window floors admit finite strata; A124 = MPG, A123 = `RHTower.fixed_slot_boundary` | Lean + citation |
@@ -100,6 +100,7 @@ kill or its survivor, and record what a producer must be.
 | `FiniteLayersInDiscreteEulerProducts` | `layerNumer`, `layerCut`, `layerLogDensity`, `layerPrimeDensity`, `integral_cexp_mul_layerLogDensity`, `frullaniUnit`, `layerRegular`, `layerRegular_eq_zero_iff`, `cexp_layer_eq`, `exists_discrete_euler_product_with_layer` |
 | `FiniteLayersInIntegerNormEulerProducts` | `PrimeDensity.primeNorm`, `roundedAtom`, `roundedCorrection`, `differentiableOn_roundedCorrection`, `genEulerLog_primeNorm_eq`, `exists_integer_norm_euler_product_with_layer` |
 | `FiniteLayersInEulerProductsOverTheRationalPrimes` | `PrimeDensity.rationalPrime`, `primeAtom`, `eventually_primeAtom_sub_le`, `summable_displacement`, `primeRoundedCorrection`, `tsum_neg_log_primeAtom_eq`, `exists_rational_prime_euler_product_with_layer` |
+| `FiniteLayersAreRealizedWithTheirMultiplicities` | `layerCofactor`, `layerRegular_eq_pow_mul_cofactor`, `analyticOrderAt_layerRegular`, `analyticOrderAt_layerRegular_conj`, `exists_integer_norm_euler_product_with_divisor` (orders `m_j` at `Θ ± iγ_j` for distinct positive ordinates) |
 | `PositivityAdmitsEveryFiniteDatum` | `dominationLength`, `layerDensity`, `layerCorrection`, `layerDensity_nonneg`, `laplace_layerDensity`, `exists_nonneg_density_with_layer` |
 | `TheTangentOrdersOfMobiusAndLiouville` | `analyticAt_zeta_two_mul`, `meromorphicOrderAt_mobius`, `meromorphicOrderAt_liouville`, `meromorphicOrderAt_zeta_two_mul_pow_div_pow` |
 | `EveryFiniteDatumIsATopLayer` | `layerConfig`, `mem_positiveTopSupport_layerConfig`, `exists_config_with_top_layer`, `not_abscissaLaw_layerConfig`, `hasModelAt_of_forall_tempered_symmetric` |
@@ -119,6 +120,7 @@ kill or its survivor, and record what a producer must be.
 | `CertificatesConvergeToThePrimes` | `exists_bound_of_aperturePositive`, `exists_re_weilFullFunctional_eq_finite`, `tendsto_weight_of_aperturePositive_seq`, `exists_aperture_forall_abs_weight_sub_le` |
 | `TranslatesAtAFiniteLayerHaveOnlyTheZeroLimit` | `isPhaseReturn_comp`, `translatesBoundedOn_of_eventually`, `NormalizedTranslatesBoundedOn`, `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized`, `asymptoticAbscissaLaw_of_boundedNormalizedReturns` |
 | `AdditiveFunctionalsOfTheDepthsAreMixturesOfInnerMasses` | `layerCount`, `layerInnerMass`, `sum_profile_sub_eq_integral_count`, `sum_profile_sub_nonneg`, `sum_profile_sub_eq_innerMass`, `sum_profile_sub_eq_of_innerMass_eq`, `rightZeros_profile_drop_eq_integral_count` |
+| `TheHeatFlowHasTheCountOfItsLimit` | `eventually_two_le_nonrealZeroCount`, `riemannHypothesis_of_frequently_nonrealZeroCount_le_one` |
 | `TheClockRegulatorLiesBelowWeilsForm` | `greenWeilEnergy_mono`, `greenWeilEnergy_le_form`, `greenWeilEnergy_neg_of_form_neg`, `riemannHypothesis_of_greenWeilEnergy_floor`, `riemannHypothesis_of_greenWeilEnergy_nonneg` |
 | `LinearStatisticsAreNotMonotoneUnderProjection` | `splitIncrement`, second-order law and converse, `concaveOn_re_of_splitIncrement_nonneg`, `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `splitIncrement_fourierSymbol` |
 
@@ -135,8 +137,10 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
 ## Not done
 - The extreme points of a feasible set as discrete objects (A128, second half): only the
   annihilation by a null vector is in Lean.
-- A regulator that approaches Weil's form from above (B117); on paper the clock at a fixed cutoff
-  is negative on wide packets between zeros once the aperture is large, also under RH.
+- B117: a regulator unitary at every cutoff with limit `ξ`. The heat flow is unitary from
+  `t = 1/8` on and approaches from the good side, but unitarity at every `t > 0` is RH
+  (`Λ ≤ 0`). On paper the clock at a fixed cutoff is negative on wide packets between zeros once
+  the aperture is large, also under RH.
 - Prime side of pencils at a general shift, of the cleared Eisenstein constant term and of
   symmetric completions (rest of A129).
 - Top traces of `μ`, `λ` and twisted multiplicative functions in world I (explicit formula for
@@ -148,4 +152,4 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
 
 ## Log
 - 2026-11-10 — created; corpus survey done.
-- 2026-11-11 — 29 modules clean; README written; no producer.
+- 2026-11-11 — 31 modules clean; README written; no producer.

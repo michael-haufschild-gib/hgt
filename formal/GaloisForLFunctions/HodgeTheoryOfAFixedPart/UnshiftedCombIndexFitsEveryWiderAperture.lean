@@ -57,7 +57,7 @@ theorem eventually_unshiftedCombIndex_le_wider_shifted_rank
       robustCombIndex (Ioc N (Q * N)) 0 ≤ (negativeRank A E : ℕ∞) := by
   have hQpos : (0 : ℝ) < Q := by exact_mod_cast hQ
   have hgap : 0 < Real.exp (2 * A.1) - Q := by
-    have h := Real.strictMono_exp hA
+    have h := Real.exp_lt_exp.mpr hA
     rw [Real.exp_log hQpos] at h
     exact sub_pos.mpr h
   obtain ⟨R₀, hR₀⟩ := exists_nat_gt (1 / (Real.exp (2 * A.1) - Q))

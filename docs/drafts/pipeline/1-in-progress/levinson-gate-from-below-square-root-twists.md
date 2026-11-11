@@ -59,12 +59,19 @@ those of zeta and the mollifier are complex derivatives.
 1. Identify moment jets with their kernel integrals and formalize the exact
    three-moment identity. `CauchyJetsOfTheTwistedMoment.lean` now proves
    exact differentiation under the moment integral at every order; Lean
-   check passed and umbrella import added. The weighted identity and
-   actual detector specialization are still drafts.
+   check passed and umbrella import added.
+   `TheDetectorEnergyComesFromThreeMoments.lean` proves the weighted
+   holomorphic-field identity, with both taper terms; Lean check passed
+   and umbrella import added. The literal zeta-detector specialization
+   `TheMollifiedDetectorHasTheThreeMomentIdentity.lean` also passed
+   its Lean check and is imported by the umbrella.
 2. Bound taper terms. The existing thin-strip Weyl theorem gives
    `|ζ|≪t^(3/16)` near the critical line. The normalized linear mollifier
    has norm `≤2 sqrt(N)`, so squared-product envelopes are `O(T^(7/8))`
-   for `N≤sqrt(T)`. Edge-supported taper derivative integrals then suffice.
+   for `N≤sqrt(T)`. `TheDetectorTaperTermsAreSmall.lean` proves exact
+   edge-supported derivative bounds and their actual mollified-field
+   specialization; its direct Lean check passed. The linear-mollifier
+   coefficient specialization is drafted in `TheLinearDetectorHasSmallTaperError.lean`.
 3. Prove the differentiated gcd main-term limits for the chosen mollifier,
    and feed the resulting actual detector bound into the gate.
    Existing short coefficient energies omit the full analytic contribution.

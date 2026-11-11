@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.FiniteSmoothWeilGramsAndRestrictedIndex
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.NullModesForceApertureIndexGrowth
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.WhatTheFailureOfTheHodgeIndexMeasures
 
 /-!
 # The complete aperture index creates no extra right zeros
@@ -28,7 +29,7 @@ theorem hermNegIndex_transpose_eq {n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ}
     simpa only [S, Matrix.isUnit_transpose, Matrix.isUnit_conjTranspose] using hU
   have hdiag : Sᴴ * Hᵀ * S = diagonal (fun i => (hH.eigenvalues i : ℂ)) := by
     have he := congrArg Matrix.transpose (conjTranspose_mul_mul_eigenvectorUnitary hH)
-    simp only [Matrix.transpose_mul, Matrix.transpose_diagonal] at he
+    simp only [Matrix.transpose_mul, Matrix.diagonal_transpose] at he
     dsimp only [S, U]
     rw [Matrix.conjTranspose_transpose_eq_transpose_conjTranspose,
       Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]

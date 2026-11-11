@@ -124,3 +124,5 @@ index; and the form on the comb in the increments of the divisor. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedSmoothPacketGrams
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedBoundedPacketIndexFitsTheAperture
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PacketMassGrams

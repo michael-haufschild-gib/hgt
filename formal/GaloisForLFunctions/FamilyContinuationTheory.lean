@@ -13,6 +13,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheHeckeFamilyOfTheRationals
 import GaloisForLFunctions.FamilyContinuationTheory.TheHeckeFamilyOfTheThirdCyclotomicFieldContainsZeta
 import GaloisForLFunctions.FamilyContinuationTheory.TheHeightIsChosenAfterTheTarget
 import GaloisForLFunctions.FamilyContinuationTheory.TheZeroFreeBinsAreBuffered
+import GaloisForLFunctions.FamilyContinuationTheory.TheContinuationFrameAdmitsAHolomorphicCorrection
 import GaloisForLFunctions.FamilyContinuationTheory.TheOddPowerOfAGaussSumCarriesTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.TwoGaussSumsWithAQuadraticProductCarryTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.ThePlanarLargeSieve
@@ -45,6 +46,9 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   with comparisons of this form. Among the largest real parts of the zeros of a row in `I`
   nested height windows, two consecutive ones differ by at most `e` when `(I − 1) e` exceeds the
   width of the strip; rounding to a grid gives the bin of the row with its buffer.
+  The family step also holds with signals `exp((s − c)²) H(s)/((s − 1) L(s, ψ))`, `H` holomorphic
+  and nonvanishing right of the boundary and bounded on `Re s ≥ 2`: the local factors that an
+  identity leaves over.
 * **The signal of `ζ`.** The kernel `exp((s − c)²)/((s − 1)ζ(s))` is a signal kernel; a bound
   `O(Z^b)`, `b < 1`, for its signal gives the half-plane `Re s > b` and positivity of the dressed
   lag aggregate on large primes at every level above `b + ½`; bounds with every exponent above

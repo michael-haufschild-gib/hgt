@@ -17,12 +17,14 @@ import GaloisForLFunctions.FloorFreeArithmetic.AnIndexOneRealizationIsAUnitGap
 import GaloisForLFunctions.FloorFreeArithmetic.TranslatesAtAFiniteLayerHaveOnlyTheZeroLimit
 import GaloisForLFunctions.FloorFreeArithmetic.AdditiveFunctionalsOfTheDepthsAreMixturesOfInnerMasses
 import GaloisForLFunctions.FloorFreeArithmetic.TheClockRegulatorLiesBelowWeilsForm
+import GaloisForLFunctions.FloorFreeArithmetic.TheHeatFlowHasTheCountOfItsLimit
 import GaloisForLFunctions.FloorFreeArithmetic.EveryFiniteDatumIsATopLayer
 import GaloisForLFunctions.FloorFreeArithmetic.PositivityAdmitsEveryFiniteDatum
 import GaloisForLFunctions.FloorFreeArithmetic.QuantileDiscretizationOfAPrimeDensity
 import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInDiscreteEulerProducts
 import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInIntegerNormEulerProducts
 import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInEulerProductsOverTheRationalPrimes
+import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersAreRealizedWithTheirMultiplicities
 import GaloisForLFunctions.FloorFreeArithmetic.MomentBoundsOfAllOrdersAreSupBounds
 import GaloisForLFunctions.FloorFreeArithmetic.TheOrderOfAMomentIsTheDepthItReaches
 import GaloisForLFunctions.FloorFreeArithmetic.ThePencilAtShiftOneIsNotADirichletSeries
@@ -40,8 +42,8 @@ certificates to the von Mangoldt weights; the behaviour of linear statistics und
 zeros to the critical line. It also contains the theorems that exclude a source for each kind:
 every finite datum is a top layer of a symmetric configuration, of a positive prime density and
 of an Euler product with natural norms;
-normalized translates at a finite layer have only the zero limit; the scattering tower keeps
-the count and the clock lies below Weil's form; additive functionals of the depths are mixtures
+normalized translates at a finite layer have only the zero limit; the scattering tower and the
+heat flow keep the count and the clock lies below Weil's form; additive functionals of the depths are mixtures
 of inner masses; moment bounds of all orders are sup bounds; the pencil is not a Dirichlet
 series. See `FloorFreeArithmetic/README.md`.
 -/

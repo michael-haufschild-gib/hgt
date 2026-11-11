@@ -79,6 +79,8 @@ theorem exists_twistedMoment_derivative_error_bounds {θ : ℝ}
       ∀ (d q h k : ℝ) (N : ℕ) (w : ℕ → ℝ),
         T ≤ q → q ≤ 2 * T → 0 < d → 0 < h → 0 < k → d + h + k ≤ 1 / 20 →
         (N : ℝ) ≤ T ^ θ → (∀ n ∈ Finset.Icc 1 N, |w n| ≤ 1) →
+        |twistedMomentErrorJet T q (T ^ a) N w 0 d| ≤
+            (q - T + 2 * T ^ a) * C * T ^ (-B) ∧
         |twistedMomentErrorJet T q (T ^ a) N w 1 d| ≤
             2 * ((q - T + 2 * T ^ a) * C * T ^ (-B)) / k +
               twistedErrorJetBound D T q (T ^ a) d N 2 * k / 2 ∧
@@ -111,7 +113,7 @@ theorem exists_twistedMoment_derivative_error_bounds {θ : ℝ}
     hjet T q (T ^ a) d y N w n hη hq hp hw hd hy.1 (hparts hy).2
   have hsub : Icc d (d + k) ⊆ Icc d (d + h + k) :=
     Icc_subset_Icc_right (by linarith only [hh])
-  constructor
+  refine ⟨hval d ⟨le_rfl, by linarith only [hh, hk]⟩, ?_, ?_⟩
   · exact abs_deriv_le_of_short_interval hk
       (fun y hy => hder 0 y (hsub hy)) (fun y hy => hder 1 y (hsub hy))
       ((hc 2).mono hsub) (fun y hy => hval y (hsub hy)) (fun y hy => hb 2 y (hsub hy))
@@ -220,14 +222,15 @@ private theorem twistedErrorJetBound_polynomial {C T q η d : ℝ} {N : ℕ}
     hthree.trans (hfinish 3072 48 (by norm_num) (by norm_num)
       (by linarith only [hC]) 9 hT9)⟩
 
-/-- The first two displacement derivatives retain arbitrary power saving,
-uniformly down to displacement `1/T` and for every length below square root. -/
-theorem exists_twistedMoment_first_two_derivative_power_saving {θ : ℝ}
+/-- The remainder and its first two derivatives retain arbitrary power saving
+with one common taper, uniformly down to displacement `1/T`. -/
+theorem exists_twistedMoment_first_three_jet_power_saving {θ : ℝ}
     (hθ0 : 0 ≤ θ) (hθ : θ < 1 / 2) (B : ℝ) (hB : 0 ≤ B) :
     ∃ a C : ℝ, 0 < a ∧ a < 1 ∧ 0 ≤ C ∧ ∀ᶠ T : ℝ in atTop,
       ∀ (d q : ℝ) (N : ℕ) (w : ℕ → ℝ),
         T ≤ q → q ≤ 2 * T → 1 / T ≤ d → d ≤ 1 / 40 → (N : ℝ) ≤ T ^ θ →
         (∀ n ∈ Finset.Icc 1 N, |w n| ≤ 1) →
+        |twistedMomentErrorJet T q (T ^ a) N w 0 d| ≤ C * T ^ (-B) ∧
         |twistedMomentErrorJet T q (T ^ a) N w 1 d| ≤ C * T ^ (-B) ∧
         |twistedMomentErrorJet T q (T ^ a) N w 2 d| ≤ C * T ^ (-B) := by
   obtain ⟨a, C, D, ha, ha1, hC, hD, herr⟩ :=
@@ -263,7 +266,7 @@ theorem exists_twistedMoment_first_two_derivative_power_saving {θ : ℝ}
   have hhsmall : h ≤ 1 / 80 := hsmall _ (by linarith only [hB])
   have hksmall : k ≤ 1 / 80 := hsmall _ (by linarith only [hB])
   have hsum : d + h + k ≤ 1 / 20 := by linarith only [hd40, hhsmall, hksmall]
-  obtain ⟨he₁, he₂⟩ := he d q h k N w hq hq2 hd hh hk hsum hN hw
+  obtain ⟨he₀, he₁, he₂⟩ := he d q h k N w hq hq2 hd hh hk hsum hN hw
   have hlen : q - T + 2 * T ^ a ≤ 3 * T := by linarith only [hq2, hηle]
   have hE₁ : T * T ^ (-(4 * B + 40)) / k = T ^ (-2 * B - 15) := by
     calc
@@ -338,7 +341,16 @@ theorem exists_twistedMoment_first_two_derivative_power_saving {θ : ℝ}
       _ = K / 2 * T ^ (-B - 2) := by rw [hP₃]
       _ ≤ _ := mul_le_mul_of_nonneg_left hp₄ (by positivity)
   have hr0 : 0 ≤ T ^ (-B) := Real.rpow_nonneg hT0.le _
-  constructor
+  refine ⟨?_, ?_, ?_⟩
+  · refine he₀.trans ?_
+    calc
+      _ ≤ (3 * T) * C * T ^ (-(4 * B + 40)) := by gcongr
+      _ = 3 * C * T ^ (1 - (4 * B + 40)) := by
+        rw [Real.rpow_sub hT0, Real.rpow_one, Real.rpow_neg hT0.le]
+        ring
+      _ ≤ 3 * C * T ^ (-B) := mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow_of_exponent_le hT1 (by linarith only [hB])) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_right (by linarith only [hC, hK]) hr0
   · refine (he₁.trans (add_le_add hvalue₁ hcurvature₁)).trans ?_
     calc
       _ = (6 * C + K / 2) * T ^ (-B) := by ring
@@ -347,5 +359,21 @@ theorem exists_twistedMoment_first_two_derivative_power_saving {θ : ℝ}
     calc
       _ = (12 * C + 3 * K / 2) * T ^ (-B) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_right (by linarith only [hK]) hr0
+
+/-- The first two displacement derivatives retain arbitrary power saving. -/
+theorem exists_twistedMoment_first_two_derivative_power_saving {θ : ℝ}
+    (hθ0 : 0 ≤ θ) (hθ : θ < 1 / 2) (B : ℝ) (hB : 0 ≤ B) :
+    ∃ a C : ℝ, 0 < a ∧ a < 1 ∧ 0 ≤ C ∧ ∀ᶠ T : ℝ in atTop,
+      ∀ (d q : ℝ) (N : ℕ) (w : ℕ → ℝ),
+        T ≤ q → q ≤ 2 * T → 1 / T ≤ d → d ≤ 1 / 40 → (N : ℝ) ≤ T ^ θ →
+        (∀ n ∈ Finset.Icc 1 N, |w n| ≤ 1) →
+        |twistedMomentErrorJet T q (T ^ a) N w 1 d| ≤ C * T ^ (-B) ∧
+        |twistedMomentErrorJet T q (T ^ a) N w 2 d| ≤ C * T ^ (-B) := by
+  obtain ⟨a, C, ha, ha1, hC, he⟩ :=
+    exists_twistedMoment_first_three_jet_power_saving hθ0 hθ B hB
+  refine ⟨a, C, ha, ha1, hC, ?_⟩
+  filter_upwards [he] with T hT
+  intro d q N w hq hq2 hd hd40 hN hw
+  exact (hT d q N w hq hq2 hd hd40 hN hw).2
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField
