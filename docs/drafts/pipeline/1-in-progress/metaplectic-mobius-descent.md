@@ -432,8 +432,10 @@ bounds of arbitrary polynomial order in the radial parameter
 congruence-preserving completions with a fixed unit character factor. CRT
 splits their inverse phases into local trace characters, giving the exact
 unit-frequency reflection, including exceptional zero outputs
-(`exists_native_cusp_reflection`, checked). Arithmetic row regrouping and
-the mean-square transfer remain open.
+(`exists_native_cusp_reflection`, checked). The completed Gauss row now
+reflects exactly over active prime sets; omitted primes retain their
+coprimality densities (`completedT_active_primeCusp_reflection`, checked).
+Divisor regrouping and the mean-square transfer remain open.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

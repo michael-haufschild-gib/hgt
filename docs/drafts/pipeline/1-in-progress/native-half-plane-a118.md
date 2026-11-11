@@ -41,7 +41,7 @@ zero-free premise on `L` off `1`, and the family step with `E ≠ 0` required on
 6. composite sextic symbols, composite reciprocity `χ_b(a) = r(a,b)χ_a(b)` — done (`TheCompositeSexticSymbolsAreReciprocal`: `quadSymbol`, `sexticSymbol`, `quadSymbol_reciprocity`, `sexticSymbol_reciprocity`); binary Poisson CRT — done (`ThePoissonCoefficientSplitsOverCoprimeModuli`);
 7. composite `γ_j(c)` (squarefree) and CRT `γ_j(ab) = χ_a(b)^jχ_b(a)^jγ_j(a)γ_j(b)`; sextic Gauss sums `g_c` (any `c`): CRT and unit twist — done (`TheSexticGaussSumsAreTwistedMultiplicative`);
 8. prime identities `γ₂³ = −α`, `γ₁γ₂ = χ(4)γ₃γ₂³` (MMD Hasse–Davenport), (4.7);
-9. `G(c) = χ_c(4)Γ(c)`: `G(vw) = G(v)G(w)r(v,w)`, `G(p³) = γ₃(p)`;
+9. `G(c) = χ_c(4)Γ(c)`: `G(vw) = G(v)G(w)r(v,w)` — done; `γ₂` CRT — done; pair phases cancel (`pairPhase_eq_one`: cube indices drop out, `χ⁶ = 1`) and `correctedCoeff_mul` (`K = R(A,s)γ₂(c)G(A)F(s,A;H)` multiplicative) — done (`TheThetaCoefficientCancelsThePairPhases`); open: `G(p³) = γ₃(p)`, prime identities (8) for the local values;
 10. CRT of the Fourier transform of `m ↦ χ_A(m)g_s(−m)`: `poissonCoeff_mul_reciprocity` — done (`ThePoissonCoefficientIsMultiplicativeUpToReciprocity`); open: `ξ`, `b*` at `S`, unit factors at each prime (7.9);
 11. local series (table 7.16) = closed form (7.11); global `F_{η,u} = ζ^S(6z)L^S(w)/L^S(x)·H_{η,u}`.
 Analytic after: Poisson on `O` with annular weight, contour moves, principal row = signal (Lemma 10.5).

@@ -65,7 +65,7 @@ theorem scaledZetaPoleValue_derivatives {L : ℝ} (hL : L ≠ 0) {κ u : ℝ}
       filter_upwards [isOpen_ne.mem_nhds hu] with x hx
       exact (hasDerivAt_scaledZetaPoleValue hL hκ hx).deriv
     have hh := ((hasDerivAt_scaledZetaPoleFirstJet L hκ hu).congr_of_eventuallyEq he).deriv
-    simpa only [show (2 : ℕ) = 1 + 1 by rfl, iteratedDeriv_succ, iteratedDeriv_one] using hh
+    simpa only [show (2 : ℕ) = 1 + 1 by rfl, iteratedDeriv_succ, iteratedDeriv_one, iteratedDeriv_zero] using hh
 
 /-- The normalized zeta value tends to its simple-pole model. -/
 theorem tendsto_scaledZetaPoleValue {κ : ℝ} (hκ : κ ≠ 0)
@@ -93,10 +93,10 @@ theorem tendsto_scaledZetaPoleValue_derivatives {κ : ℝ} (hκ : κ ≠ 0)
   have hn2 := mul_ne_zero hκ (pow_ne_zero 2 hu₀)
   have hn3 := mul_ne_zero hκ (pow_ne_zero 3 hu₀)
   have hf : Tendsto (fun N => scaledZetaPoleFirstJet (L N) κ (u N)) l (𝓝 (-1 / (κ * u₀ ^ 2))) := by
-    simpa only [scaledZetaPoleFirstJet, zero_div, zero_sub, neg_div] using
+    simpa only [scaledZetaPoleFirstJet, Pi.div_apply, Nat.reduceAdd, zero_div, zero_sub, neg_div] using
       (h1.div hd hn).sub (h0.div hd2 hn2)
   have hs : Tendsto (fun N => scaledZetaPoleSecondJet (L N) κ (u N)) l (𝓝 (2 / (κ * u₀ ^ 3))) := by
-    simpa only [scaledZetaPoleSecondJet, mul_zero, zero_div, sub_zero, zero_add, mul_one] using
+    simpa only [scaledZetaPoleSecondJet, Pi.div_apply, Nat.reduceAdd, mul_zero, zero_div, sub_zero, zero_add, mul_one] using
       ((h2.div hd hn).sub ((h1.const_mul 2).div hd2 hn2)).add ((h0.const_mul 2).div hd3 hn3)
   constructor
   · apply hf.congr'
