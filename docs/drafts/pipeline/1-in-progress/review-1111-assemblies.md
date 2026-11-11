@@ -17,5 +17,5 @@
 | A133 | Formalized: `3-formalized/artin-degree-two-character-of-the-cube-roots-of-two.md`. |
 | A135 | Formalized: `3-formalized/step-packet-matrices-explicit-block-error.md` (explicit error; no sign certified). |
 | A137 | Formalized: `3-formalized/tangent-data-of-mobius-and-liouville-in-world-one.md`. |
-| A132 | Double exponential formalized: RH through `exp(exp(C a^{4/3}))` ⇒ window positivity (`exists_doubleExp_windowPositive`, local sampling from separated verified zeros). Open: `O(a)` in place of `a^{4/3}` (minorant form `σ²W(g) − W(g')`). `verification-height-order.md`. |
+| A132 | Formalized: RH through `exp(exp(C a))` ⇒ window positivity, `log log H = O(a)` (`exists_doubleExp_windowPositive`; derivative minorant `σ²W(g) − W(g')` + local sampling from separated verified zeros). `3-formalized/verification-height-order.md`. |
 | A89 | Prescribed radius `R(T) ≤ (C/256) log log T` formalized: `3-formalized/double-logarithmic-windows-miss-the-minimal-face.md`. Open for `log log T ≪ R = o(log T)` (`prescribed-sublogarithmic-window-radius.md`). |

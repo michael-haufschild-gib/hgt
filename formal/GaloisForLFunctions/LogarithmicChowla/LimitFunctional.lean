@@ -115,6 +115,16 @@ theorem limAvg_eq_of_sub (hU : (U : Filter ℝ) ≤ atTop) {f g : ℕ → ℝ} (
   simp only [add_sub_cancel, add_zero] at h1
   exact limAvg_eq_of_tendsto hU hf h1
 
+/-- `L_U` only sees `n ≥ 1`. -/
+theorem limAvg_congr_pos {f g : ℕ → ℝ} (h : ∀ n, n ≠ 0 → f n = g n) :
+    limAvg U f = limAvg U g := by
+  have : logAvg f = logAvg g := by
+    funext x
+    simp only [logAvg, logSum]
+    congr 1
+    exact sum_congr rfl fun n _ => by rw [h (n + 1) n.succ_ne_zero]
+  rw [limAvg, limAvg, this]
+
 theorem limAvg_add (hU : (U : Filter ℝ) ≤ atTop) {f g : ℕ → ℝ} (hf : Bdd f) (hg : Bdd g) :
     limAvg U (fun n => f n + g n) = limAvg U f + limAvg U g := by
   refine limAvg_eq_of_tendsto hU (hf.add hg) ?_

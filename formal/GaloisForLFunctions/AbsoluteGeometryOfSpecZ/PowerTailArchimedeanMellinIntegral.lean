@@ -39,8 +39,10 @@ private theorem hasSum_jetMellinCoefficient {a : ℝ} (ha1 : a < 1) :
       RHTower.digamma_eq_neg_euler_add_tsum_gauss hb]
     ring
   rw [hval] at hsum
-  convert hsum using 1
-  funext n
+  apply hsum.congr
+  intro S
+  apply sum_congr rfl
+  intro n _
   simp only [jetMellinCoefficient, RHTower.gaussDigammaSeriesTerm]
   push_cast
   ring
@@ -70,16 +72,19 @@ private theorem integral_jetMellinTerm {a : ℝ} (ha1 : a < 1) (n : ℕ) :
     (intervalIntegral.intervalIntegrable_rpow' hleft)
   have hi2 := (intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one).mp
     (intervalIntegral.intervalIntegrable_rpow' hright)
-  rw [← integral_Ioc_eq_integral_Ioo]
-  simp only [jetMellinTerm]
-  rw [integral_const_mul, integral_sub hi1 hi2, integral_Ioc_rpow hleft zero_le_one,
-    integral_Ioc_rpow hright zero_le_one, Real.one_rpow, Real.one_rpow]
-  dsimp only [jetMellinCoefficient]
-  have hd1 : (n : ℝ) + (1 - a) / 2 ≠ 0 := by linarith only [ha1, hn]
-  have hd2 : (n : ℝ) + 1 / 2 ≠ 0 := by positivity
   have hd3 : 2 * (n : ℝ) - a + 1 ≠ 0 := by linarith only [ha1, hn]
   have hd4 : 2 * (n : ℝ) + 1 ≠ 0 := by positivity
-  field_simp [hd1, hd2, hd3, hd4]
+  rw [← integral_Ioc_eq_integral_Ioo]
+  simp only [jetMellinTerm]
+  rw [integral_const_mul, integral_sub hi1 hi2,
+    ← intervalIntegral.integral_of_le zero_le_one,
+    ← intervalIntegral.integral_of_le zero_le_one,
+    integral_rpow (Or.inl hleft), integral_rpow (Or.inl hright)]
+  simp only [Real.one_rpow, Real.zero_rpow hd3, Real.zero_rpow hd4, sub_zero]
+  dsimp only [jetMellinCoefficient]
+  rw [show 2 * (n : ℝ) - a + 1 = 2 * ((n : ℝ) + (1 - a) / 2) by ring,
+    show 2 * (n : ℝ) + 1 = 2 * ((n : ℝ) + 1 / 2) by ring]
+  simp only [one_div, mul_inv_rev]
   ring
 
 private theorem hasSum_jetMellinTerm {a t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) 1) :
@@ -88,17 +93,21 @@ private theorem hasSum_jetMellinTerm {a t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) 1
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg t)]
     nlinarith only [ht.1, ht.2]
   have hgeom := (hasSum_geometric_of_norm_lt_one hsmall).mul_left (2 * (t ^ (-a) - 1))
-  convert hgeom using 1
-  · funext n
-    have he : t ^ (2 * (n : ℝ) - a) = t ^ (-a) * (t ^ 2) ^ n := by
-      rw [show 2 * (n : ℝ) - a = -a + ((2 * n : ℕ) : ℝ) by push_cast; ring,
-        Real.rpow_add ht.1, Real.rpow_natCast, pow_mul]
-    have he' : t ^ (2 * (n : ℝ)) = (t ^ 2) ^ n := by
-      rw [show 2 * (n : ℝ) = ((2 * n : ℕ) : ℝ) by push_cast; ring,
-        Real.rpow_natCast, pow_mul]
-    rw [jetMellinTerm, he, he']
-    ring
-  · rw [div_eq_mul_inv]
+  rw [div_eq_mul_inv]
+  apply hgeom.congr
+  intro S
+  apply sum_congr rfl
+  intro n _
+  have he : t ^ (2 * (n : ℝ) - a) = t ^ (-a) * (t ^ 2) ^ n := by
+    rw [show 2 * (n : ℝ) - a = -a + ((2 * n : ℕ) : ℝ) by push_cast; ring,
+      Real.rpow_add ht.1, Real.rpow_natCast, pow_mul]
+  have he' : t ^ (2 * (n : ℝ)) = (t ^ 2) ^ n := by
+    rw [show 2 * (n : ℝ) = ((2 * n : ℕ) : ℝ) by push_cast; ring,
+      Real.rpow_natCast, pow_mul]
+  change 2 * (t ^ (-a) - 1) * (t ^ 2) ^ n =
+    2 * (t ^ (2 * (n : ℝ) - a) - t ^ (2 * (n : ℝ)))
+  rw [he, he']
+  ring
 
 private theorem integral_jetMellinSeries {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
     ((∫ t in Set.Ioo (0 : ℝ) 1, 2 * (t ^ (-a) - 1) / (1 - t ^ 2) : ℝ) : ℂ) =
@@ -154,6 +163,7 @@ theorem ofReal_integral_powerTailJetProfile {a : ℝ} (ha : 0 < a) (ha1 : a < 1)
   rw [← hdiff] at hclosed
   push_cast at hclosed
   rw [SeamSplit.digamma_half, ← Complex.ofReal_ofNat, ← Complex.ofReal_log (by norm_num)] at hclosed
+  norm_num only [Complex.ofReal_ofNat] at hclosed
   linear_combination hclosed
 
 /-- The archimedean row equals twice the logarithmic derivative of `GammaR`. -/

@@ -30,6 +30,7 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half
   have ha1 : a < 1 := by linarith only [ha2]
   have hθ : 1 - 2 * (a : ℂ) ≠ 0 := by
     exact_mod_cast (show (1 : ℝ) - 2 * a ≠ 0 by linarith only [ha2])
+  have hθ' : 1 - (a : ℂ) * 2 ≠ 0 := by simpa only [mul_comm] using hθ
   have ha0 : (a : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ha.ne'
   have hs0 : 1 - (a : ℂ) ≠ 0 := by
     exact_mod_cast (show (1 : ℝ) - a ≠ 0 by linarith only [ha1])
@@ -65,8 +66,7 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half
           ((∫ t in Set.Ioc (0 : ℝ) 1, powerTailReferenceProfile a t : ℝ) : ℂ)) := by
     rw [powerTailCombMellinIntegral]
     push_cast
-    field_simp [hθ]
-    ring
+    field_simp [hθ, hθ']
   rw [hprime, href, harch] at hsplit
   have hmain : (1 - 2 * (a : ℂ)) * (powerTailCombMellinIntegral a : ℂ) =
       2 * logDeriv _root_.RHTower.xi (1 - (a : ℂ)) := by
@@ -76,7 +76,7 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half
     ring
   apply (mul_left_cancel₀ hθ)
   rw [powerTailZeroPairing_eq_logDeriv ha2, hmain]
-  field_simp [hθ]
+  field_simp [hθ, hθ']
 
 /-- The literal power comb converges to its zero pairing throughout the
 strict range determined by the actual zero width. -/
@@ -85,8 +85,8 @@ theorem tendsto_powerCombTail_zeroPairing_of_add_width_lt_half
     Tendsto (fun N => (powerCombTail a N : ℂ)) atTop (𝓝 (powerTailZeroPairing a)) := by
   have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
     (tendsto_powerCombTail_of_add_width_lt_half ha haw)
-  simpa only [Function.comp_apply,
-    powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half ha haw] using h
+  rw [powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half ha haw] at h
+  exact h.congr fun N => rfl
 
 /-- Under RH the arithmetic Mellin value equals the zero pairing for every
 positive subcritical power. -/
@@ -117,7 +117,7 @@ theorem riemannHypothesis_iff_powerCombTails_tendsto_zeroPairings :
     apply riemannHypothesis_of_all_powerCombTails_converge
     intro a ha ha2
     refine ⟨(powerTailZeroPairing a).re, ?_⟩
-    simpa only [Function.comp_apply, Complex.ofReal_re] using
-      Complex.continuous_re.continuousAt.tendsto.comp (h a ha ha2)
+    have hr := Complex.continuous_re.continuousAt.tendsto.comp (h a ha ha2)
+    exact hr.congr fun N => by simp only [Function.comp_apply, Complex.ofReal_re]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

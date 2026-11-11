@@ -53028,7 +53028,7 @@ lemma primeRowTraceGauss_ne_zero
   have hn := (prime_row_trace_poisson p hp hinj χ hχ).1
   intro hz
   rw [hz,norm_zero,zero_pow (by decide)] at hn
-  exact (pow_pos (norm_pos_iff.mpr hc) 2).ne' hn
+  exact (pow_pos (norm_pos_iff.mpr hc) 2).ne' hn.symm
 
 /-- The quadratic trace Gauss factor is the explicit phase modulo four. -/
 theorem primeRowTraceGauss_quadratic
@@ -53040,6 +53040,9 @@ theorem primeRowTraceGauss_quadratic
   letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
   letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
   rw [primeRowTraceGauss_eq_crt p hp hinj]
+  change (∑ x : O ⧸ Ideal.span {c},
+    (∏ i, ((quadraticChar (O ⧸ Ideal.span {p i})).ringHomComp (Int.castRingHom ℂ))
+      (primeProductCRT p hinj x i))*residueTraceQuotientChar 1 c hc x) = _
   rw [QuadraticPhase.ProductGauss.quadratic_factorization_equiv
     (fun i => O ⧸ Ideal.span {p i}) (primeProductCRT p hinj)
     (residueTraceQuotientChar 1 c hc) (residueTraceQuotientChar_primitive c hc) hodd]
@@ -53085,9 +53088,10 @@ theorem primeRowTraceGauss_sextic_product
     ProductGauss.factorization_equiv F (primeProductCRT p hinj),
     ProductGauss.factorization_equiv F (primeProductCRT p hinj)]
   rw [←Finset.prod_mul_distrib,←Finset.prod_mul_distrib]
-  change (∏ i, _)=_
-  simp_rw [hl]
-  rw [Finset.prod_mul_distrib,Finset.prod_neg,Finset.card_univ,map_prod]
+  trans ∏ i, -ringComplex (p i)*gaussSum (complexQuadraticChar (Ideal.span {p i}))
+    (ProductGauss.localChar F η i)
+  · exact Finset.prod_congr rfl (fun i _ => hl i)
+  · rw [Finset.prod_mul_distrib,Finset.prod_neg,Finset.card_univ,map_prod]
 
 end SchwartzPlanePoisson
 
@@ -53128,9 +53132,11 @@ theorem primeRowTraceGauss_cubic :
     intro x hx
     have hn : ∀ i, e x i ≠ 0 := by
       intro i hi
-      apply (mul_ne_zero.mp hx).1
-      apply Finset.prod_eq_zero (Finset.mem_univ i)
-      rw [hi,MulChar.map_zero]
+      have hz : (∏ j, χ j (e x j)) = 0 :=
+        Finset.prod_eq_zero (Finset.mem_univ i) (by rw [hi,MulChar.map_zero])
+      apply hx
+      change (∏ j, χ j (e x j))*residueTraceQuotientChar 1 c hc x = 0
+      rw [hz,zero_mul]
     have hu : IsUnit (e x) := ⟨
       { val := e x
         inv := fun i => (e x i)⁻¹
@@ -53141,14 +53147,22 @@ theorem primeRowTraceGauss_cubic :
     rwa [e.symm_apply_apply] at hu'
   rw [primeRowTraceGauss_eq_crt p hp hinj]
   change (∑ x, A x) = _
-  rw [←tsum_fintype,←tsum_subtype_eq_of_support_subset hs,cubicUnitGaussSum]
+  trans ∑' x : O ⧸ Ideal.span {c}, A x
+  · exact (tsum_fintype A).symm
+  rw [←tsum_subtype_eq_of_support_subset hs,cubicUnitGaussSum]
   apply tsum_congr
   intro x
   have hx := principalResidueRep_spec c x.val
+  have hr (z : O) : (∏ i, χ i (e (Ideal.Quotient.mk (Ideal.span {c}) z) i)) =
+      ringComplex (symbol z c) := by
+    change (∏ i, complexCubicChar (Ideal.span {p i}) (hg i)
+      (primeProductCRT p hinj (Ideal.Quotient.mk (Ideal.span {∏ i, p i}) z) i)) =
+        ringComplex (symbol z (∏ i, p i))
+    simp only [primeProductCRT_mk]
+    exact primeCubicRow_symbol p hg z
   change (∏ i, χ i (e x.val i))*residueTraceQuotientChar 1 c hc x.val = _
   conv_lhs => rw [←hx]
-  simp only [e,primeProductCRT_mk,residueTraceQuotientChar_mk,χ]
-  rw [primeCubicRow_symbol p hg]
+  rw [hr,residueTraceQuotientChar_mk]
 
 end SchwartzPlanePoisson
 
@@ -53193,6 +53207,7 @@ theorem primeRowTraceGauss_mobius_conversion (hp : ∀ i, p i ≠ 0)
     (fun i => complexSexticChar_ne_one _ (hg i))).1
   have hmass : G₁*star G₁ = n ^ 2 := by
     rw [←starRingEnd_apply,Complex.mul_conj']
+    dsimp only [n,G₁,c]
     exact_mod_cast hnorm
   have hconverted : (-1 : ℂ) ^ Fintype.card ι*star G₁ =
       (Z*n ^ 2/(ringComplex c*G₃))*G₂ := by
@@ -53210,22 +53225,2744 @@ theorem primeRowTraceGauss_mobius_conversion (hp : ∀ i, p i ≠ 0)
     rw [hquad,hz,mul_zero]
   have hcstar : ringComplex c*star (ringComplex c) = n ^ 2 := by
     rw [←starRingEnd_apply,Complex.mul_conj']
-    simp only [n,Complex.ofReal_pow]
   have hangle : star (ringComplex c/n) = n/ringComplex c := by
     have hnstar : star n = n := Complex.conj_ofReal _
     apply (eq_div_iff hcC).mpr
-    rw [star_div,hnstar]
+    change (starRingEnd ℂ) (ringComplex c/n)*ringComplex c = n
+    change (starRingEnd ℂ) n = n at hnstar
+    rw [map_div₀,hnstar]
     field_simp [hn]
-    simpa only [pow_two,mul_comm] using hcstar
+    simpa only [pow_two,mul_comm,starRingEnd_apply] using hcstar
   change ((-1 : ℂ) ^ Fintype.card ι*star G₁)/n = _
-  rw [hconverted,hquad,primeRowTraceGauss_cubic p hp hinj hg]
+  have hcubic : G₂ = cubicUnitGaussSum 1 c := primeRowTraceGauss_cubic p hp hinj hg
+  rw [hconverted,hquad,hcubic]
   change (Z*n ^ 2/(ringComplex c*(n*QuadraticPhase.Eisenstein.fixedDualAverage c)))*
       cubicUnitGaussSum 1 c/n =
     (Z/QuadraticPhase.Eisenstein.fixedDualAverage c)*
       (star (ringComplex c/n)*(cubicUnitGaussSum 1 c/n))
   rw [hangle]
-  field_simp
+  field_simp [hn,hcC,hphase]
 
 end SecondPassArithmetic
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+open scoped Classical
+
+/-- Gauss sum of an integral multiplicative row, using the fixed trace character. -/
+def residueRowGauss (c : O) (hc : c ≠ 0) (A : O → ℂ) : ℂ :=
+  ∑' x : O ⧸ Ideal.span {c}, A (qrep x)*residueTraceQuotientChar 1 c hc x
+
+lemma periodicRow_qrep_mk (c : O) (A : O → ℂ)
+    (hA : ∀ x y, c ∣ x-y → A x = A y) (z : O) :
+    A (qrep (Ideal.Quotient.mk (Ideal.span {c}) z)) = A z := by
+  apply hA
+  exact Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp (mk_qrep _))
+
+lemma primeCuspRowCharacter_congr {ι : Type*} [Fintype ι] (p : ι → O)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (x y : O)
+    (h : (∏ i, p i) ∣ x-y) : primeCuspRowCharacter p χ x = primeCuspRowCharacter p χ y := by
+  change (∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) x)) =
+    ∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) y)
+  apply Finset.prod_congr rfl
+  intro i _
+  congr 1
+  exact Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr
+    ((Finset.dvd_prod_of_mem p (Finset.mem_univ i)).trans h))
+
+lemma primeRowTraceGauss_eq_residueRowGauss {ι : Type*} [Fintype ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) :
+    primeRowTraceGauss p hp χ = residueRowGauss (∏ i, p i)
+      (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)) (primeCuspRowCharacter p χ) := by
+  have hc : (∏ i, p i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  letI : Finite (O ⧸ Ideal.span {∏ i, p i}) := finite_quotient_span hc
+  letI : Fintype (O ⧸ Ideal.span {∏ i, p i}) := Fintype.ofFinite _
+  rw [primeRowTraceGauss,residueRowGauss,tsum_fintype]
+  apply Finset.sum_congr rfl
+  intro x _
+  congr 1
+
+/-- The linear CRT parametrization splits the trace phase without inverse coefficients. -/
+lemma residueTraceChar_crt_linear (c d : O) (hc : c ≠ 0) (hd : d ≠ 0) (x y : O) :
+    residueTraceQuotientChar 1 (c*d) (mul_ne_zero hc hd)
+      (Ideal.Quotient.mk (Ideal.span {c*d}) (d*x+c*y)) =
+    residueTraceQuotientChar 1 c hc (Ideal.Quotient.mk (Ideal.span {c}) x)*
+      residueTraceQuotientChar 1 d hd (Ideal.Quotient.mk (Ideal.span {d}) y) := by
+  rw [residueTraceQuotientChar_phase,residueTraceQuotientChar_phase,
+    residueTraceQuotientChar_phase,←AddChar.map_add_eq_mul]
+  congr 1
+  simp only [one_mul,map_mul,map_add]
+  field_simp [ringComplex_ne_zero hc,ringComplex_ne_zero hd,
+    ringComplex_ne_zero traceLambda_ne_zero]
+
+/-- Coprime periodic multiplicative rows split with their reciprocal cross values. -/
+theorem residueRowGauss_mul (c d : O) (hc : c ≠ 0) (hd : d ≠ 0)
+    (hcd : IsCoprime c d) (A B : O →* ℂ)
+    (hA : ∀ x y, c ∣ x-y → A x = A y)
+    (hB : ∀ x y, d ∣ x-y → B x = B y) :
+    residueRowGauss (c*d) (mul_ne_zero hc hd) (A*B) =
+      A d*B c*residueRowGauss c hc A*residueRowGauss d hd B := by
+  letI : NeZero c := ⟨hc⟩
+  letI : NeZero d := ⟨hd⟩
+  letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  letI : Finite (O ⧸ Ideal.span {d}) := finite_quotient_span hd
+  letI : Finite (O ⧸ Ideal.span {c*d}) := finite_quotient_span (mul_ne_zero hc hd)
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  letI : Fintype (O ⧸ Ideal.span {d}) := Fintype.ofFinite _
+  letI : Fintype (O ⧸ Ideal.span {c*d}) := Fintype.ofFinite _
+  have hAB (x y : O) (h : c*d ∣ x-y) : (A*B) x = (A*B) y := by
+    rw [MonoidHom.mul_apply,MonoidHom.mul_apply,
+      hA x y ((dvd_mul_right c d).trans h),hB x y ((dvd_mul_left d c).trans h)]
+  have hleft (x y : O) : A (d*x+c*y) = A d*A x := by
+    rw [hA (d*x+c*y) (d*x) (by convert dvd_mul_right c y using 1 <;> ring),map_mul]
+  have hright (x y : O) : B (d*x+c*y) = B c*B y := by
+    rw [hB (d*x+c*y) (c*y) (by convert dvd_mul_right d x using 1 <;> ring),map_mul]
+  simp only [residueRowGauss,tsum_fintype]
+  rw [←Fintype.sum_bijective _ (crtParam_bijective c d hcd)
+    (fun z => (A*B) (qrep (crtParam c d z))*
+      residueTraceQuotientChar 1 (c*d) (mul_ne_zero hc hd) (crtParam c d z)) _
+    (fun _ => rfl),Fintype.sum_prod_type]
+  simp only [Finset.mul_sum,Finset.sum_mul]
+  conv_rhs => rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro x _
+  apply Finset.sum_congr rfl
+  intro y _
+  dsimp only [crtParam]
+  rw [periodicRow_qrep_mk (c*d) ((A*B : O →* ℂ) : O → ℂ) hAB,MonoidHom.mul_apply,
+    hleft,hright,residueTraceChar_crt_linear c d hc hd,mk_qrep,mk_qrep]
+  ring
+
+end SchwartzPlanePoisson
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson CubicJacobi
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+
+lemma subsetRow_mul_star_of_coprime
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) (z : O)
+    (hz : IsCoprime (∏ i ∈ S, p i) z) :
+    primeSubsetRow p χ S z*star (primeSubsetRow p χ S z) = 1 := by
+  rw [mul_comm,primeSubsetRow_diagonal,primeCoprimeMask_indicator]
+  apply if_pos
+  intro i hi hdiv
+  have hu := hz.isUnit_of_dvd' (Finset.dvd_prod_of_mem p hi) hdiv
+  exact (inferInstance : (Ideal.span {p i}).IsMaximal).ne_top
+    (Ideal.span_singleton_eq_top.mpr hu)
+
+variable (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+lemma sexticRow_cube (S : Finset ι) (z : O) :
+    primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S z ^ 3 =
+      primeSubsetRow p (fun i => complexQuadraticChar (Ideal.span {p i})) S z := by
+  simp only [primeSubsetRow,←Finset.prod_pow]
+  apply Finset.prod_congr rfl
+  intro i _
+  rw [←MulChar.pow_apply' _ (by decide : (3 : ℕ) ≠ 0),
+    (complexSexticChar_powers _ _).2.1]
+
+/-- Cubic reciprocity leaves only the quadratic cross phase in a mixed sextic product. -/
+theorem sexticRow_cross_phase (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1) (S T : Finset ι) (hd : Disjoint S T) :
+    primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S (∏ i ∈ T, p i)*
+      star (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) T (∏ i ∈ S, p i)) =
+    rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i))
+      (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ T, p i)) := by
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  let a := primeSubsetRow p χ S (∏ i ∈ T, p i)
+  let b := primeSubsetRow p χ T (∏ i ∈ S, p i)
+  have hcop := prime_subsets_coprime p hinj S T hd
+  have hb : b*star b = 1 := subsetRow_mul_star_of_coprime p χ T _ hcop.symm
+  have hsquare : a ^ 2 = b ^ 2 := by
+    change primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S
+      (∏ i ∈ T, p i) ^ 2 =
+        primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) T (∏ i ∈ S, p i) ^ 2
+    rw [sexticRow_square_symbol p hg,sexticRow_square_symbol p hg]
+    rw [symbol_reciprocity _ _
+      (primary_finset_product T p (fun i _ => hpr i))
+      (primary_finset_product S p (fun i _ => hpr i))]
+  have ha3 : a ^ 3 = quadraticSubsetSymbol p S T := sexticRow_cube p hg S _
+  have hb3 : b ^ 3 = quadraticSubsetSymbol p T S := sexticRow_cube p hg T _
+  have hq : quadraticSubsetSymbol p T S ^ 2 = 1 := quadraticSubsetRow_sq p T _ hcop.symm
+  change a*star b = _
+  calc
+    _ = (a*star b)*(b*star b) ^ 2 := by rw [hb,one_pow,mul_one]
+    _ = a ^ 3*star b ^ 3 := by rw [mul_pow,←hsquare]; ring
+    _ = quadraticSubsetSymbol p S T*quadraticSubsetSymbol p T S := by
+      rw [ha3,←star_pow,hb3,quadraticSubsetSymbol_star]
+    _ = _ := by
+      rw [quadraticSubsetSymbol_reciprocity p hp hinj hodd S T,mul_assoc,
+        ←pow_two,hq,mul_one,rayQuadraticPair_mk]
+
+end SecondPassArithmetic
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+open scoped Classical
+
+lemma finiteGauss_inverse_character {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) :
+    gaussSum χ⁻¹ ψ = χ (-1)*star (gaussSum χ ψ) := by
+  have hψ : ψ⁻¹ = ψ.mulShift (-1) := by
+    ext x
+    simp only [AddChar.inv_apply,AddChar.mulShift_apply,neg_one_mul]
+  have hstar : star (gaussSum χ ψ) = χ (-1)*gaussSum χ⁻¹ ψ := by
+    rw [star_gaussSum_eq,hψ]
+    simpa only [Units.val_neg,Units.val_one,inv_inv] using
+      gaussSum_mulShift_eq χ⁻¹ ψ (-1 : Fˣ)
+  have hs : χ (-1)*χ (-1) = 1 := by rw [←map_mul,neg_mul_neg,one_mul,map_one]
+  rw [hstar,←mul_assoc,hs,one_mul]
+
+/-- Inverting all prime characters conjugates the exact trace Gauss factor. -/
+theorem primeRowTraceGauss_inverse {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) :
+    primeRowTraceGauss p hp (fun i => (χ i)⁻¹) =
+      primeCuspRowCharacter p χ (-1)*star (primeRowTraceGauss p hp χ) := by
+  let c := ∏ i, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  rw [primeRowTraceGauss_eq_crt p hp hinj,primeRowTraceGauss_eq_crt p hp hinj]
+  rw [ProductGauss.factorization_equiv (fun i => O ⧸ Ideal.span {p i}) (primeProductCRT p hinj),
+    ProductGauss.factorization_equiv (fun i => O ⧸ Ideal.span {p i}) (primeProductCRT p hinj)]
+  simp_rw [finiteGauss_inverse_character]
+  rw [Finset.prod_mul_distrib,←star_prod]
+  congr 1
+
+end SchwartzPlanePoisson
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+/-- Möbius conversion contributes a factor of modulus one. -/
+theorem secondTraceRayFactor_norm_one {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2) :
+    ‖secondTraceRayFactor p hg‖ = 1 := by
+  have hv (i : ι) : ‖complexSexticChar (Ideal.span {p i}) (hg i) (4 : O ⧸ Ideal.span {p i})‖ = 1 := by
+    have htwo : (2 : O ⧸ Ideal.span {p i}) ≠ 0 := Ring.two_ne_zero (hodd i)
+    have hfour : (4 : O ⧸ Ideal.span {p i}) ≠ 0 := by
+      convert pow_ne_zero 2 htwo using 1
+      norm_num
+    apply Complex.norm_eq_one_of_pow_eq_one (n := 6) _ (by decide)
+    rw [←MulChar.pow_apply' _ (by decide : (6 : ℕ) ≠ 0),
+      (complexSexticChar_powers _ _).2.2]
+    exact MulChar.one_apply (isUnit_iff_ne_zero.mpr hfour)
+  rw [secondTraceRayFactor,norm_div,norm_prod,prime_quadratic_phase_norm p hp hinj hodd]
+  simp only [hv,Finset.prod_const_one,div_one]
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+
+def subsetTraceGauss (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) : ℂ :=
+  primeRowTraceGauss (fun i : S => p i.val) (fun i => hp i.val) (fun i => χ i.val)
+
+def subsetTraceRayFactor (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) : ℂ :=
+  secondTraceRayFactor (fun i : S => p i.val) (fun i => hg i.val)
+
+theorem subsetTraceGauss_eq_residueRowGauss
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) :
+    subsetTraceGauss p hp χ S = residueRowGauss (∏ i ∈ S, p i)
+      (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)) (primeSubsetRow p χ S) := by
+  have hf : (primeCuspRowCharacter (fun i : S => p i.val) (fun i => χ i.val) : O → ℂ) =
+      primeSubsetRow p χ S := funext (primeCuspRowCharacter_restrict p χ S)
+  have h := primeRowTraceGauss_eq_residueRowGauss (fun i : S => p i.val)
+    (fun i => hp i.val) (fun i => χ i.val)
+  rw [hf] at h
+  simpa only [subsetTraceGauss,Finset.prod_coe_sort] using h
+
+theorem subsetTraceGauss_inverse
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) :
+    subsetTraceGauss p hp (fun i => (χ i)⁻¹) S =
+      primeSubsetRow p χ S (-1)*star (subsetTraceGauss p hp χ S) := by
+  simpa only [subsetTraceGauss,primeCuspRowCharacter_restrict] using
+    primeRowTraceGauss_inverse (fun i : S => p i.val) (fun i => hp i.val)
+      (hinj.comp Subtype.val_injective) (fun i => χ i.val)
+
+theorem subsetTraceGauss_mobius_conversion
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1) (S : Finset ι) :
+    supportMobius S*star (subsetTraceGauss p hp
+      (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S)/
+        (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ) =
+      subsetTraceRayFactor p hg S*secondColumnCoefficient p S := by
+  simpa only [supportMobius,subsetTraceGauss,subsetTraceRayFactor,
+    secondColumnCoefficient,Finset.prod_coe_sort,Fintype.card_coe] using
+    primeRowTraceGauss_mobius_conversion (fun i : S => p i.val) (fun i => hg i.val)
+      (fun i => hp i.val) (hinj.comp Subtype.val_injective) (fun i => hodd i.val)
+      (fun i => hpr i.val)
+
+include hp in
+theorem subsetTraceRayFactor_norm_one
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2) (S : Finset ι) :
+    ‖subsetTraceRayFactor p hg S‖ = 1 :=
+  secondTraceRayFactor_norm_one (fun i : S => p i.val) (fun i => hp i.val)
+    (hinj.comp Subtype.val_injective) (fun i => hg i.val) (fun i => hodd i.val)
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hinj : Function.Injective (fun i => Ideal.span {p i}))
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+
+lemma primeSubsetRow_congr (S : Finset ι) (x y : O)
+    (h : (∏ i ∈ S, p i) ∣ x-y) : primeSubsetRow p χ S x = primeSubsetRow p χ S y := by
+  have h' := primeCuspRowCharacter_congr (fun i : S => p i.val)
+    (fun i => χ i.val) x y (by simpa only [Finset.prod_coe_sort] using h)
+  simpa only [primeCuspRowCharacter_restrict] using h'
+
+include hinj in
+/-- CRT splits a mixed row into its two exact Gauss factors and reciprocal row values. -/
+theorem mixed_subset_traceGauss_split (S T : Finset ι) (hd : Disjoint S T) :
+    residueRowGauss ((∏ i ∈ S, p i)*(∏ i ∈ T, p i))
+      (mul_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+        (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)))
+      (fun z => primeSubsetRow p χ S z*star (primeSubsetRow p χ T z)) =
+    primeSubsetRow p χ S (∏ i ∈ T, p i)*star (primeSubsetRow p χ T (∏ i ∈ S, p i))*
+      subsetTraceGauss p hp χ S*
+      (primeSubsetRow p χ T (-1)*star (subsetTraceGauss p hp χ T)) := by
+  let c := ∏ i ∈ S, p i
+  let d := ∏ i ∈ T, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hd0 : d ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  let A := primeCuspRowCharacter (fun i : S => p i.val) (fun i => χ i.val)
+  let B := (starRingEnd ℂ).toMonoidHom.comp
+    (primeCuspRowCharacter (fun i : T => p i.val) (fun i => χ i.val))
+  have hA (z : O) : A z = primeSubsetRow p χ S z := primeCuspRowCharacter_restrict p χ S z
+  have hB (z : O) : B z = star (primeSubsetRow p χ T z) := by
+    change star (primeCuspRowCharacter (fun i : T => p i.val) (fun i => χ i.val) z) = _
+    rw [primeCuspRowCharacter_restrict]
+  have hBi (z : O) : B z = primeSubsetRow p (fun i => (χ i)⁻¹) T z := by
+    rw [hB]
+    simp only [primeSubsetRow,star_prod,MulChar.star_apply']
+  have hAc (x y : O) (h : c ∣ x-y) : A x = A y := by
+    rw [hA,hA]
+    exact primeSubsetRow_congr p χ S x y h
+  have hBd (x y : O) (h : d ∣ x-y) : B x = B y := by
+    rw [hB,hB,primeSubsetRow_congr p χ T x y h]
+  have ha : residueRowGauss c hc A = subsetTraceGauss p hp χ S := by
+    rw [show (A : O → ℂ) = primeSubsetRow p χ S from funext hA]
+    exact (subsetTraceGauss_eq_residueRowGauss p hp χ S).symm
+  have hb : residueRowGauss d hd0 B = subsetTraceGauss p hp (fun i => (χ i)⁻¹) T := by
+    rw [show (B : O → ℂ) = primeSubsetRow p (fun i => (χ i)⁻¹) T from funext hBi]
+    exact (subsetTraceGauss_eq_residueRowGauss p hp (fun i => (χ i)⁻¹) T).symm
+  have hAB : ((A : O → ℂ)*B) = fun z => primeSubsetRow p χ S z*star (primeSubsetRow p χ T z) := by
+    funext z
+    change A z*B z = _
+    rw [hA,hB]
+  have h := residueRowGauss_mul c d hc hd0 (prime_subsets_coprime p hinj S T hd) A B hAc hBd
+  rw [hAB,ha,hb,subsetTraceGauss_inverse p hp hinj χ T,hA,hB] at h
+  exact h
+
+/-- The active prime character used by Poisson is the same mixed CRT row. -/
+theorem active_traceGauss_eq_mixed (S T : Finset ι) (hd : Disjoint S T) :
+    primeRowTraceGauss (fun i : ↥((T \ S) ∪ (S \ T)) => p i.val)
+      (fun i => hp i.val) (activePrimeRowCharacter p χ T S) =
+    residueRowGauss ((∏ i ∈ S, p i)*(∏ i ∈ T, p i))
+      (mul_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+        (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)))
+      (fun z => primeSubsetRow p χ S z*star (primeSubsetRow p χ T z)) := by
+  have hn : (∏ i : ↥((T \ S) ∪ (S \ T)), p i.val) =
+      (∏ i ∈ S, p i)*(∏ i ∈ T, p i) := by
+    rw [Finset.prod_coe_sort,Finset.sdiff_eq_self_of_disjoint hd.symm,
+      Finset.sdiff_eq_self_of_disjoint hd,Finset.prod_union hd.symm,mul_comm]
+  have hr : (primeCuspRowCharacter (fun i : ↥((T \ S) ∪ (S \ T)) => p i.val)
+      (activePrimeRowCharacter p χ T S) : O → ℂ) =
+      fun z => primeSubsetRow p χ S z*star (primeSubsetRow p χ T z) := by
+    funext z
+    have h := primeSubsetRow_pair_active p χ T S z
+    rw [Finset.disjoint_iff_inter_eq_empty.mp hd.symm] at h
+    simp only [primeCoprimeMask,Finset.prod_empty,one_mul] at h
+    exact h.symm.trans (mul_comm _ _)
+  rw [primeRowTraceGauss_eq_residueRowGauss,hr]
+  congr 1
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hinj : Function.Injective (fun i => Ideal.span {p i}))
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+  (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+  (hpr : ∀ i, lambda ^ 2 ∣ p i-1)
+
+include hinj hodd hpr in
+/-- The two Möbius signs restore cubic columns; only a finite quadratic cross phase remains. -/
+theorem mixed_traceGauss_restoration (S T : Finset ι) (hd : Disjoint S T) :
+    let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+    supportMobius S*supportMobius T*
+      primeRowTraceGauss (fun i : ↥((T \ S) ∪ (S \ T)) => p i.val)
+        (fun i => hp i.val) (activePrimeRowCharacter p χ T S)/
+      ((‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)*(‖ringComplex (∏ i ∈ T, p i)‖ : ℂ)) =
+    rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i))
+      (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ T, p i))*
+      star (subsetTraceRayFactor p hg S*secondColumnCoefficient p S)*
+      (subsetTraceRayFactor p hg T*secondColumnCoefficient p T)*primeSubsetRow p χ T (-1) := by
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  dsimp only
+  have hs := subsetTraceGauss_mobius_conversion p hp hinj hg hodd hpr S
+  have ht := subsetTraceGauss_mobius_conversion p hp hinj hg hodd hpr T
+  have hsstar : supportMobius S*subsetTraceGauss p hp χ S/
+      (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ) =
+      star (subsetTraceRayFactor p hg S*secondColumnCoefficient p S) := by
+    have h := congrArg (starRingEnd ℂ) hs
+    rw [map_div₀,map_mul,Complex.conj_ofReal] at h
+    simpa only [starRingEnd_apply,star_supportMobius,star_star] using h
+  rw [active_traceGauss_eq_mixed p hp χ S T hd,
+    mixed_subset_traceGauss_split p hp hinj χ S T hd,
+    sexticRow_cross_phase p hg hp hinj hodd hpr S T hd]
+  calc
+    _ = rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i))
+        (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ T, p i))*
+      (supportMobius S*subsetTraceGauss p hp χ S/(‖ringComplex (∏ i ∈ S, p i)‖ : ℂ))*
+      (supportMobius T*star (subsetTraceGauss p hp χ T)/(‖ringComplex (∏ i ∈ T, p i)‖ : ℂ))*
+      primeSubsetRow p χ T (-1) := by ring
+    _ = _ := by rw [hsstar,ht]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+/-- The exact normalized mixed Gauss factor with its divisor and dual-row arguments. -/
+def secondNormalizedGaussTerm (S T : Finset ι) (e k : O) : ℂ :=
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  let ap : ↥((T \ S) ∪ (S \ T)) → O := fun i => p i.val
+  let ac := activePrimeRowCharacter p χ T S
+  primeRowTraceGauss ap (fun i => hp i.val) ac/
+      ((‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)*(‖ringComplex (∏ i ∈ T, p i)‖ : ℂ))*
+    primeCuspRowCharacter ap ac e*primeCuspRowCharacter ap (fun i => (ac i)⁻¹) k
+
+theorem secondGaussTerm_restoration
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1)
+    (Ψ₁ Ψ₂ : O →* ℂ) (m c d e k : O) (H₁ H₂ : Finset ι → ℂ)
+    (S T : Finset ι) (hd : Disjoint S T) :
+    let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+    star (supportMobius S*secondInputCoefficient p χ Ψ₁ m c d H₁ S)*
+      (supportMobius T*secondInputCoefficient p χ Ψ₂ m c d H₂ T)*
+      secondNormalizedGaussTerm p hp hg S T e k =
+    rayQuadraticPair (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i))
+      (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ T, p i))*
+      star (secondPreColumn p hg Ψ₁ m c d e k
+        (fun U => subsetTraceRayFactor p hg U*H₁ U) S)*
+      secondPreColumn p hg Ψ₂ m c d e (-k)
+        (fun U => subsetTraceRayFactor p hg U*H₂ U) T := by
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  let ap : ↥((T \ S) ∪ (S \ T)) → O := fun i => p i.val
+  let ac := activePrimeRowCharacter p χ T S
+  have hr (z : O) : primeCuspRowCharacter ap ac z =
+      star (primeSubsetRow p χ T z)*primeSubsetRow p χ S z := by
+    have h := primeSubsetRow_pair_active p χ T S z
+    rw [Finset.disjoint_iff_inter_eq_empty.mp hd.symm] at h
+    simpa only [primeCoprimeMask,Finset.prod_empty,one_mul] using h.symm
+  have hi (z : O) : primeCuspRowCharacter ap (fun i => (ac i)⁻¹) z =
+      star (primeCuspRowCharacter ap ac z) := by
+    change (∏ i, (ac i)⁻¹ (Ideal.Quotient.mk (Ideal.span {ap i}) z)) =
+      star (∏ i, ac i (Ideal.Quotient.mk (Ideal.span {ap i}) z))
+    simp only [star_prod,MulChar.star_apply']
+  have hk : primeSubsetRow p χ T (-k) =
+      primeSubsetRow p χ T (-1)*primeSubsetRow p χ T k := by
+    simpa only [neg_one_mul] using subsetRow_mul p χ T (-1) k
+  have hrestore := mixed_traceGauss_restoration p hp hinj hg hodd hpr S T hd
+  dsimp only at hrestore ⊢
+  let C₁ := secondInputCoefficient p χ Ψ₁ m c d H₁ S
+  let C₂ := secondInputCoefficient p χ Ψ₂ m c d H₂ T
+  calc
+    _ = (supportMobius S*supportMobius T*primeRowTraceGauss ap (fun i => hp i.val) ac/
+        ((‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)*(‖ringComplex (∏ i ∈ T, p i)‖ : ℂ)))*
+      star C₁*C₂*primeCuspRowCharacter ap ac e*
+        primeCuspRowCharacter ap (fun i => (ac i)⁻¹) k := by
+      simp only [secondNormalizedGaussTerm,star_mul,star_supportMobius]
+      dsimp only [C₁,C₂,ap,ac,χ]
+      ring
+    _ = _ := by
+      rw [hrestore,hi,hr,hr]
+      simp only [secondPreColumn,secondInputCoefficient,C₁,C₂,star_mul,star_star]
+      dsimp only [χ] at hk ⊢
+      rw [hk]
+      ring
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+/-- A residue mask absorbs the remaining unit phase into the freely weighted column. -/
+def secondRayMask (r : QuadraticRayRing) (H : Finset ι → ℂ) (S : Finset ι) : ℂ :=
+  if Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i) = r
+  then subsetTraceRayFactor p hg S*H S else 0
+
+theorem secondRayMask_norm_le (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (r : QuadraticRayRing) (H : Finset ι → ℂ) (S : Finset ι) :
+    ‖secondRayMask p hg r H S‖ ≤ ‖H S‖ := by
+  unfold secondRayMask
+  split_ifs
+  · rw [norm_mul,subsetTraceRayFactor_norm_one p hp hinj hg hodd S,one_mul]
+  · rw [norm_zero]
+    exact norm_nonneg _
+
+lemma secondPreColumn_rayMask (r : QuadraticRayRing) (Ψ : O →* ℂ)
+    (m c d e k : O) (H : Finset ι → ℂ) (S : Finset ι) :
+    secondPreColumn p hg Ψ m c d e k (secondRayMask p hg r H) S =
+      if Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i) = r then
+        secondPreColumn p hg Ψ m c d e k (fun U => subsetTraceRayFactor p hg U*H U) S
+      else 0 := by
+  by_cases h : Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i) = r
+  · simp only [secondPreColumn,secondRayMask,if_pos h]
+  · simp only [secondPreColumn,secondRayMask,if_neg h,mul_zero]
+
+/-- Two fixed residue classes separate the entire mixed Gauss coefficient. -/
+theorem secondGaussTerm_residue_separation (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1)
+    (Ψ₁ Ψ₂ : O →* ℂ) (m c d e k : O) (H₁ H₂ : Finset ι → ℂ)
+    (S T : Finset ι) (hd : Disjoint S T) :
+    let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+    star (supportMobius S*secondInputCoefficient p χ Ψ₁ m c d H₁ S)*
+      (supportMobius T*secondInputCoefficient p χ Ψ₂ m c d H₂ T)*
+      secondNormalizedGaussTerm p hp hg S T e k =
+    ∑ z : QuadraticRayRing × QuadraticRayRing, rayQuadraticPair z.1 z.2*
+      star (secondPreColumn p hg Ψ₁ m c d e k (secondRayMask p hg z.1 H₁) S)*
+      secondPreColumn p hg Ψ₂ m c d e (-k) (secondRayMask p hg z.2 H₂) T := by
+  dsimp only
+  rw [secondGaussTerm_restoration p hp hg hinj hodd hpr Ψ₁ Ψ₂ m c d e k H₁ H₂ S T hd]
+  simp only [Fintype.sum_prod_type,secondPreColumn_rayMask]
+  have hstar (P : Prop) [Decidable P] (a : ℂ) :
+      star (if P then a else 0) = if P then star a else 0 := by
+    split_ifs <;> simp only [star_zero]
+  simp only [hstar,mul_ite,ite_mul,mul_zero,zero_mul]
+  simp
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+/-- The normalized arithmetic pair appearing in the second Poisson reflection. -/
+def secondActualPair (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) : ℂ :=
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  ∑ S ∈ F.powerset, ∑ T ∈ F.powerset, if Disjoint S T then
+    star (supportMobius S*secondInputCoefficient p χ Ψ₁ (m*(e*r)) c d H₁ S)*
+      (supportMobius T*secondInputCoefficient p χ Ψ₂ (m*(e*r)) c d H₂ T)*
+      secondNormalizedGaussTerm p hp hg S T e k else 0
+
+theorem secondActualPair_eq_separated
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O) (H₁ H₂ : Finset ι → ℂ) :
+    secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k H₁ H₂ =
+      ∑ z : QuadraticRayRing × QuadraticRayRing, rayQuadraticPair z.1 z.2*
+        secondSeparatedPair p hg F Ψ₁ Ψ₂ m r c d e k (-k)
+          (secondRayMask p hg z.1 H₁) (secondRayMask p hg z.2 H₂) := by
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  have hh (S T : Finset ι) :
+      (if Disjoint S T then
+        star (supportMobius S*secondInputCoefficient p χ Ψ₁ (m*(e*r)) c d H₁ S)*
+          (supportMobius T*secondInputCoefficient p χ Ψ₂ (m*(e*r)) c d H₂ T)*
+          secondNormalizedGaussTerm p hp hg S T e k else 0) =
+      ∑ z : QuadraticRayRing × QuadraticRayRing, rayQuadraticPair z.1 z.2*
+        (if Disjoint S T then
+          star (secondPreColumn p hg Ψ₁ (m*(e*r)) c d e k (secondRayMask p hg z.1 H₁) S)*
+            secondPreColumn p hg Ψ₂ (m*(e*r)) c d e (-k) (secondRayMask p hg z.2 H₂) T else 0) := by
+    by_cases hd : Disjoint S T
+    · simpa only [if_pos hd,mul_assoc] using
+        secondGaussTerm_residue_separation p hg hp hinj hodd hpr Ψ₁ Ψ₂
+          (m*(e*r)) c d e k H₁ H₂ S T hd
+    · simp only [if_neg hd,mul_zero,Finset.sum_const_zero]
+  dsimp only [χ] at hh
+  unfold secondActualPair
+  simp_rw [hh]
+  calc
+    _ = ∑ S ∈ F.powerset, ∑ z : QuadraticRayRing × QuadraticRayRing, ∑ T ∈ F.powerset,
+        rayQuadraticPair z.1 z.2*(if Disjoint S T then
+          star (secondPreColumn p hg Ψ₁ (m*(e*r)) c d e k (secondRayMask p hg z.1 H₁) S)*
+            secondPreColumn p hg Ψ₂ (m*(e*r)) c d e (-k) (secondRayMask p hg z.2 H₂) T else 0) := by
+      apply Finset.sum_congr rfl
+      intro S _
+      exact Finset.sum_comm
+    _ = _ := by
+      rw [Finset.sum_comm]
+      simp only [secondSeparatedPair,Finset.mul_sum]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+def secondTotalWeight (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (z : (QuadraticRayRing × QuadraticRayRing) × Finset ι) : ℂ :=
+  rayQuadraticPair z.1.1 z.1.2*secondCommonWeight p hg Ψ₁ Ψ₂ m r c d e k (-k) z.2
+
+def secondTotalEnergy (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H : Finset ι → ℂ) (negative : Bool) : ℝ :=
+  ∑ z : QuadraticRayRing × QuadraticRayRing, ∑ V ∈ F.powerset,
+    ‖secondTotalWeight p hg Ψ₁ Ψ₂ m r c d e k (z,V)‖*
+      ‖secondChildSum p hg F V (if negative then Ψ₁ else Ψ₂) m r c d e (if negative then k else -k)
+        (secondRayMask p hg (if negative then z.1 else z.2) H)‖ ^ 2
+
+theorem secondActualPair_eq_children (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O) (H₁ H₂ : Finset ι → ℂ) :
+    secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k H₁ H₂ =
+      ∑ z : QuadraticRayRing × QuadraticRayRing, ∑ V ∈ F.powerset,
+        secondTotalWeight p hg Ψ₁ Ψ₂ m r c d e k (z,V)*
+          star (secondChildSum p hg F V Ψ₁ m r c d e k (secondRayMask p hg z.1 H₁))*
+          secondChildSum p hg F V Ψ₂ m r c d e (-k) (secondRayMask p hg z.2 H₂) := by
+  have hcop : Pairwise (Function.onFun IsCoprime p) := by
+    intro i j hij
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp
+      (Ideal.isCoprime_of_isMaximal (hinj.ne hij))
+  rw [secondActualPair_eq_separated p hp hg hinj hodd hpr]
+  simp only [secondSeparatedPair_eq_children p hg hp hcop hpr,
+    Finset.mul_sum,secondTotalWeight,mul_assoc]
+
+/-- Actual second-pass arithmetic is bounded by the two descendant energies. -/
+theorem secondActualPair_norm_le (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i-1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O) (H₁ H₂ : Finset ι → ℂ) :
+    ‖secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k H₁ H₂‖ ≤
+      Real.sqrt (secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k H₁ true)*
+        Real.sqrt (secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k H₂ false) := by
+  rw [secondActualPair_eq_children p hg hp hinj hodd hpr]
+  have h := DescentWeightedCauchy.weighted_cauchy
+    ((Finset.univ : Finset (QuadraticRayRing × QuadraticRayRing)) ×ˢ F.powerset)
+    (secondTotalWeight p hg Ψ₁ Ψ₂ m r c d e k)
+    (fun z => secondChildSum p hg F z.2 Ψ₂ m r c d e (-k) (secondRayMask p hg z.1.2 H₂))
+    (fun z => secondChildSum p hg F z.2 Ψ₁ m r c d e k (secondRayMask p hg z.1.1 H₁))
+  simp only [Finset.sum_product,secondTotalEnergy,ite_true,Bool.false_eq_true,ite_false] at h ⊢
+  convert h using 1
+  · congr 2
+    funext z
+    congr 1
+    funext V
+    ring
+  · ring
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+lemma secondRayMask_continuous (r : QuadraticRayRing) (H : ℝ → Finset ι → ℂ)
+    (hc : ∀ S, Continuous (fun t => H t S)) (S : Finset ι) :
+    Continuous (fun t => secondRayMask p hg r (H t) S) := by
+  unfold secondRayMask
+  split_ifs
+  · exact continuous_const.mul (hc S)
+  · exact continuous_const
+
+lemma secondRayMask_norm_time (r : QuadraticRayRing) (H : ℝ → Finset ι → ℂ)
+    (hn : ∀ t S, ‖H t S‖ = ‖H 0 S‖) (t : ℝ) (S : Finset ι) :
+    ‖secondRayMask p hg r (H t) S‖ = ‖secondRayMask p hg r (H 0) S‖ := by
+  unfold secondRayMask
+  split_ifs
+  · simp only [norm_mul,hn]
+  · rfl
+
+theorem secondChildSum_continuous (F V : Finset ι) (Ψ : O →* ℂ) (m r c d e k : O)
+    (H : ℝ → Finset ι → ℂ) (hc : ∀ S, Continuous (fun t => H t S)) :
+    Continuous (fun t : ℝ => secondChildSum p hg F V Ψ m r c d e k (H t)) := by
+  unfold secondChildSum
+  apply continuous_finsetSum
+  intro N _
+  have hh := hc (V ∪ N)
+  unfold secondChildColumn
+  fun_prop
+
+theorem secondChildSum_uniform_bound (F V : Finset ι) (Ψ : O →* ℂ) (m r c d e k : O)
+    (H : ℝ → Finset ι → ℂ) (hn : ∀ t S, ‖H t S‖ = ‖H 0 S‖) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ t, ‖secondChildSum p hg F V Ψ m r c d e k (H t)‖ ≤ M := by
+  refine ⟨∑ N ∈ (F \ V).powerset,
+    ‖secondChildColumn p hg Ψ (m*r) (c*e*∏ i ∈ V, p i) (d*e*k)
+      (fun U => H 0 (V ∪ U)) N‖,by positivity,?_⟩
+  intro t
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro N _
+  simp only [secondChildColumn,norm_mul,hn]
+  exact le_rfl
+
+theorem secondTotalEnergy_nonneg (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H : Finset ι → ℂ) (negative : Bool) :
+    0 ≤ secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k H negative := by
+  unfold secondTotalEnergy
+  positivity
+
+theorem secondTotalEnergy_continuous (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H : ℝ → Finset ι → ℂ) (hc : ∀ S, Continuous (fun t => H t S)) (negative : Bool) :
+    Continuous (fun t => secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H t) negative) := by
+  unfold secondTotalEnergy
+  apply continuous_finsetSum
+  intro z _
+  apply continuous_finsetSum
+  intro V _
+  exact continuous_const.mul ((secondChildSum_continuous p hg F V
+    (if negative then Ψ₁ else Ψ₂) m r c d e (if negative then k else -k)
+    (fun t => secondRayMask p hg (if negative then z.1 else z.2) (H t))
+    (secondRayMask_continuous p hg _ H hc)).norm.pow 2)
+
+theorem secondTotalEnergy_uniform_bound (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H : ℝ → Finset ι → ℂ) (hn : ∀ t S, ‖H t S‖ = ‖H 0 S‖) (negative : Bool) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ t, secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H t) negative ≤ M := by
+  choose M hM hbound using fun (z : QuadraticRayRing × QuadraticRayRing) (V : Finset ι) =>
+    secondChildSum_uniform_bound p hg F V (if negative then Ψ₁ else Ψ₂)
+      m r c d e (if negative then k else -k)
+      (fun t => secondRayMask p hg (if negative then z.1 else z.2) (H t))
+      (secondRayMask_norm_time p hg _ H hn)
+  refine ⟨∑ z : QuadraticRayRing × QuadraticRayRing, ∑ V ∈ F.powerset,
+    ‖secondTotalWeight p hg Ψ₁ Ψ₂ m r c d e k (z,V)‖*(M z V) ^ 2,by positivity,?_⟩
+  intro t
+  apply Finset.sum_le_sum
+  intro z _
+  apply Finset.sum_le_sum
+  intro V _
+  exact mul_le_mul_of_nonneg_left
+    (pow_le_pow_left₀ (norm_nonneg _) (hbound z V t) 2) (norm_nonneg _)
+
+theorem secondTotalEnergy_integrable (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H : ℝ → Finset ι → ℂ) (hc : ∀ S, Continuous (fun t => H t S))
+    (hn : ∀ t S, ‖H t S‖ = ‖H 0 S‖) (negative : Bool) (b : 𝓢(ℝ, ℂ)) :
+    Integrable (fun t => ‖b t‖*secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H t) negative) volume := by
+  obtain ⟨M,hM,hb⟩ := secondTotalEnergy_uniform_bound p hg F Ψ₁ Ψ₂ m r c d e k H hn negative
+  apply b.integrable.norm.mul_bdd (c := M)
+  · exact (secondTotalEnergy_continuous p hg F Ψ₁ Ψ₂ m r c d e k H hc negative).aestronglyMeasurable
+  · exact Filter.Eventually.of_forall (fun t => by
+      rw [Real.norm_of_nonneg (secondTotalEnergy_nonneg p hg F Ψ₁ Ψ₂ m r c d e k (H t) negative)]
+      exact hb t)
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+theorem second_integral_norm_le_energy
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : ℝ → Finset ι → ℂ)
+    (hc₁ : ∀ S, Continuous (fun t => H₁ t S))
+    (hc₂ : ∀ S, Continuous (fun t => H₂ t S))
+    (hn₁ : ∀ t S, ‖H₁ t S‖ = ‖H₁ 0 S‖)
+    (hn₂ : ∀ t S, ‖H₂ t S‖ = ‖H₂ 0 S‖) (b : 𝓢(ℝ, ℂ)) :
+    ‖∫ t : ℝ, b t * secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k (H₁ t) (H₂ t)‖ ≤
+      Real.sqrt (∫ t : ℝ, ‖b t‖ * secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H₁ t) true) *
+      Real.sqrt (∫ t : ℝ, ‖b t‖ * secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H₂ t) false) := by
+  let E₁ := fun t => secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H₁ t) true
+  let E₂ := fun t => secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k (H₂ t) false
+  let w := fun t : ℝ => ‖b t‖
+  have hE₁ : ∀ t, 0 ≤ E₁ t := fun t => secondTotalEnergy_nonneg p hg F Ψ₁ Ψ₂ m r c d e k (H₁ t) true
+  have hE₂ : ∀ t, 0 ≤ E₂ t := fun t => secondTotalEnergy_nonneg p hg F Ψ₁ Ψ₂ m r c d e k (H₂ t) false
+  have hw : ∀ t, 0 ≤ w t := fun t => norm_nonneg _
+  have i₁ : Integrable (fun t => w t * E₁ t) volume :=
+    secondTotalEnergy_integrable p hg F Ψ₁ Ψ₂ m r c d e k H₁ hc₁ hn₁ true b
+  have i₂ : Integrable (fun t => w t * E₂ t) volume :=
+    secondTotalEnergy_integrable p hg F Ψ₁ Ψ₂ m r c d e k H₂ hc₂ hn₂ false b
+  let f := fun t => Real.sqrt (w t * E₁ t)
+  let g := fun t => Real.sqrt (w t * E₂ t)
+  have hf : Continuous f := Real.continuous_sqrt.comp (b.continuous.norm.mul
+    (secondTotalEnergy_continuous p hg F Ψ₁ Ψ₂ m r c d e k H₁ hc₁ true))
+  have hg' : Continuous g := Real.continuous_sqrt.comp (b.continuous.norm.mul
+    (secondTotalEnergy_continuous p hg F Ψ₁ Ψ₂ m r c d e k H₂ hc₂ false))
+  have hfsq (t : ℝ) : f t ^ 2 = w t * E₁ t := Real.sq_sqrt (mul_nonneg (hw t) (hE₁ t))
+  have hgsq (t : ℝ) : g t ^ 2 = w t * E₂ t := Real.sq_sqrt (mul_nonneg (hw t) (hE₂ t))
+  have mf : MemLp f 2 volume := (memLp_two_iff_integrable_sq hf.aestronglyMeasurable).mpr
+    (by simpa only [hfsq] using i₁)
+  have mg : MemLp g 2 volume := (memLp_two_iff_integrable_sq hg'.aestronglyMeasurable).mpr
+    (by simpa only [hgsq] using i₂)
+  have hfg (t : ℝ) : f t * g t = w t * (Real.sqrt (E₁ t) * Real.sqrt (E₂ t)) := by
+    dsimp only [f, g]
+    rw [Real.sqrt_mul (hw t), Real.sqrt_mul (hw t)]
+    calc
+      _ = (Real.sqrt (w t))^2 * (Real.sqrt (E₁ t) * Real.sqrt (E₂ t)) := by ring
+      _ = _ := by rw [Real.sq_sqrt (hw t)]
+  have hnorm : ‖∫ t : ℝ, b t * secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k (H₁ t) (H₂ t)‖ ≤
+      ∫ t : ℝ, f t * g t := by
+    apply norm_integral_le_of_norm_le (mf.integrable_mul mg)
+    exact Filter.Eventually.of_forall (fun t => by
+      simp only [Pi.mul_apply]
+      rw [hfg, norm_mul]
+      exact mul_le_mul_of_nonneg_left
+        (secondActualPair_norm_le p hg hp hinj hc hpr F Ψ₁ Ψ₂ m r c d e k (H₁ t) (H₂ t)) (hw t))
+  have hh := integral_mul_le_Lp_mul_Lq_of_nonneg Real.HolderConjugate.two_two
+    (Filter.Eventually.of_forall (fun t => Real.sqrt_nonneg (w t * E₁ t)))
+    (Filter.Eventually.of_forall (fun t => Real.sqrt_nonneg (w t * E₂ t)))
+    (show MemLp f (ENNReal.ofReal (2 : ℝ)) volume by simpa using mf)
+    (show MemLp g (ENNReal.ofReal (2 : ℝ)) volume by simpa using mg)
+  have hfinal : (∫ t : ℝ, f t * g t) ≤
+      Real.sqrt (∫ t : ℝ, w t * E₁ t) * Real.sqrt (∫ t : ℝ, w t * E₂ t) := by
+    simp only [Real.rpow_two, ← Real.sqrt_eq_rpow] at hh
+    change (∫ t : ℝ, f t * g t) ≤
+      Real.sqrt (∫ t : ℝ, f t ^ 2) * Real.sqrt (∫ t : ℝ, g t ^ 2) at hh
+    simpa only [hfsq, hgsq] using hh
+  exact hnorm.trans hfinal
+
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped Classical SchwartzMap
+
+def primeProductNorm {ι : Type*} (p : ι → O) (S : Finset ι) : ℝ :=
+  ‖ringComplex (∏ i ∈ S, p i)‖ ^ 2
+
+theorem primeProductNorm_pos {ι : Type*} (p : ι → O) (hp : ∀ i, p i ≠ 0) (S : Finset ι) :
+    0 < primeProductNorm p S :=
+  pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)))) 2
+
+theorem primeProductNorm_union {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (S T : Finset ι) (hd : Disjoint S T) :
+    primeProductNorm p (S ∪ T) = primeProductNorm p S * primeProductNorm p T := by
+  simp only [primeProductNorm, Finset.prod_union hd, map_mul, norm_mul, mul_pow]
+
+def columnLog {ι : Type*} (p : ι → O) (X : ℝ) (S : Finset ι) : ℝ :=
+  Real.log (primeProductNorm p S / X)
+
+def firstDualScale {ι : Type*} (p : ι → O) (C : Finset ι)
+    (lengthScale X₁ X₂ : ℝ) (d h : O) : ℝ :=
+  lengthScale * ‖ringComplex h‖ ^ 2 /
+    (‖ringComplex d‖ ^ 2 * primeProductNorm p C * X₁ * X₂)
+
+theorem actual_radial_argument {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) (N P C : Finset ι)
+    (hNP : Disjoint N P) (hNC : Disjoint N C) (hPC : Disjoint P C)
+    (lengthScale X₁ X₂ : ℝ) (hX₁ : 0 < X₁) (hX₂ : 0 < X₂) (d h : O) :
+    firstDualScale p C lengthScale X₁ X₂ d h * Real.exp (-(columnLog p X₁ N) - columnLog p X₂ P) =
+      lengthScale * ‖ringComplex h‖ ^ 2 /
+        (‖ringComplex d‖ ^ 2 * primeProductNorm p ((N ∪ P) ∪ C)) := by
+  rw [primeProductNorm_union p (N ∪ P) C (Finset.disjoint_union_left.mpr ⟨hNC, hPC⟩),
+    primeProductNorm_union p N P hNP]
+  simp only [columnLog, sub_eq_add_neg, Real.exp_add, Real.exp_neg]
+  rw [Real.exp_log (div_pos (primeProductNorm_pos p hp N) hX₁),
+    Real.exp_log (div_pos (primeProductNorm_pos p hp P) hX₂)]
+  simp only [firstDualScale, div_eq_mul_inv, mul_inv_rev, inv_inv]
+  field_simp [ne_of_gt hX₁, ne_of_gt hX₂]
+
+def normalizedColumn {ι : Type*} (p : ι → O) (C : Finset ι → ℂ) (S : Finset ι) : ℂ :=
+  C S / (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)
+
+theorem integrable_log_pair (b : 𝓢(ℝ, ℂ)) (x y : ℝ) (c : ℂ) :
+    Integrable (fun t : ℝ => b t * (kernelLogPhase t x * kernelLogPhase t y * c)) volume := by
+  apply b.integrable.mul_bdd (c := ‖c‖)
+  · exact (((kernelLogPhase_continuous_left x).mul (kernelLogPhase_continuous_left y)).mul_const c).aestronglyMeasurable
+  · exact Filter.Eventually.of_forall (fun t => by simp only [norm_mul, kernelLogPhase_norm, one_mul, le_refl])
+
+def firstLogDensity (J : ℕ) (t : ℝ) : ℝ := ((1 + ‖t‖) ^ (J + 2))⁻¹
+
+theorem firstLogDensity_nonneg (J : ℕ) (t : ℝ) : 0 ≤ firstLogDensity J t := by
+  unfold firstLogDensity
+  positivity
+
+theorem firstLogDensity_integrable (J : ℕ) : Integrable (firstLogDensity J) volume := by
+  have h := integrable_one_add_norm (E := ℝ) («μ» := (volume : Measure ℝ))
+    (r := (J + 2 : ℕ)) (by norm_num; linarith [Nat.cast_nonneg (α := ℝ) J])
+  convert h using 1
+  funext t
+  rw [Real.rpow_neg (by positivity), Real.rpow_natCast]
+  rfl
+
+theorem firstLogDensity_moment_integrable (J : ℕ) :
+    Integrable (fun t : ℝ => (1 + ‖t‖) ^ J * firstLogDensity J t) volume := by
+  convert firstLogDensity_integrable 0 using 1
+  funext t
+  have ht : 1 + ‖t‖ ≠ 0 := ne_of_gt (by positivity)
+  simp only [firstLogDensity, zero_add, pow_add, mul_inv_rev]
+  field_simp
+
+theorem two_variable_radial_envelope (W : 𝓢(ℝ, ℂ)) (V₁ V₂ : ℝ → ℂ)
+    (M₁ M₂ : ℝ) (hM₁ : 0 ≤ M₁) (hM₂ : 0 ≤ M₂)
+    (hV₁ : ∀ x, V₁ x ≠ 0 → |x| ≤ M₁) (hV₂ : ∀ y, V₂ y ≠ 0 → |y| ≤ M₂)
+    (A J : ℕ) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ x y : ℝ, V₁ x * V₂ y * paperRadialFourier W (R * Real.exp (-x-y)) =
+        ∫ t : ℝ, (V₁ x * kernelLogPhase t (-x)) * (V₂ y * kernelLogPhase t (-y)) * b t) ∧
+      (∀ t : ℝ, (1 + R) ^ A * ‖b t‖ ≤ K * firstLogDensity J t) := by
+  let V : Bool → ℝ → ℂ := fun j => if j then V₂ else V₁
+  let M : Bool → ℝ := fun j => if j then M₂ else M₁
+  have hM : ∀ j, 0 ≤ M j := by intro j; cases j <;> assumption
+  have hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j := by
+    intro j; cases j
+    · exact hV₁
+    · exact hV₂
+  obtain ⟨K, hK, hsep⟩ := paperRadialFourier_log_separation_envelope
+    V (fun _ => -1) M hM hV W A (J + 2)
+  refine ⟨K, hK.le, ?_⟩
+  intro R hR
+  obtain ⟨b, hb, _, _, hpoint⟩ := hsep R hR
+  refine ⟨b, ?_, ?_⟩
+  · intro x y
+    have hs := hb (fun j => if j then y else x)
+    simpa only [V, Fintype.prod_bool, Fintype.sum_bool, Bool.false_eq_true, ↓reduceIte,
+      neg_one_mul, mul_neg_one, sub_eq_add_neg, add_comm, mul_comm, mul_left_comm, mul_assoc] using hs
+  · intro t
+    rw [firstLogDensity, ← div_eq_mul_inv]
+    apply (le_div_iff₀ (pow_pos (by positivity : 0 < 1 + ‖t‖) (J + 2))).mpr
+    simpa only [Real.norm_eq_abs, mul_assoc, mul_left_comm, mul_comm] using hpoint t
+
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+def secondGaussTerm
+    (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O) (H₁ H₂ : Finset ι → ℂ)
+    (S T : Finset ι) : ℂ :=
+  star (supportMobius S *
+    secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) Ψ₁ (m * (e * r)) c d H₁ S) *
+  (supportMobius T *
+    secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) Ψ₂ (m * (e * r)) c d H₂ T) *
+    secondNormalizedGaussTerm p hp hg S T e k
+
+def actualSecondKernel
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (W : 𝓢(ℝ, ℂ)) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ Y : ℝ) : ℂ :=
+  ∑ S ∈ F.powerset, ∑ T ∈ F.powerset, if Disjoint S T then
+    (star (V₁ (columnLog p X₁ S)) * V₂ (columnLog p X₂ T)) *
+    ((Y : ℂ) / (‖ringComplex (∏ i ∈ S ∪ T, p i)‖ : ℂ)) *
+    paperRadialFourier W (Y * ‖ringComplex k‖ ^ 2 /
+      (‖ringComplex e‖ ^ 2 * primeProductNorm p (S ∪ T))) *
+    secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k (fun _ => 1) (fun _ => 1) S T
+    else 0
+
+def secondLogTest (V : ℝ → ℂ) (X t : ℝ) (negative : Bool) (S : Finset ι) : ℂ :=
+  (V (columnLog p X S) *
+    (if negative then star (kernelLogPhase t (-(columnLog p X S))) else kernelLogPhase t (-(columnLog p X S)))) /
+      (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)
+
+theorem secondGaussTerm_log_twist
+    (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ t : ℝ) (S T : Finset ι) :
+    secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k
+      (secondLogTest p V₁ X₁ t true) (secondLogTest p V₂ X₂ t false) S T =
+    (kernelLogPhase t (-(columnLog p X₁ S)) * kernelLogPhase t (-(columnLog p X₂ T))) *
+      (star (V₁ (columnLog p X₁ S)) * V₂ (columnLog p X₂ T) *
+        secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k
+          (normalizedColumn p (fun _ => 1)) (normalizedColumn p (fun _ => 1)) S T) := by
+  simp only [secondGaussTerm, secondInputCoefficient, secondLogTest, normalizedColumn,
+    ite_true, Bool.false_eq_true, ite_false, star_mul, star_div₀, star_star,
+    one_div, star_inv₀]
+  ring
+
+theorem actualSecondKernel_eq_integral
+   
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (W : 𝓢(ℝ, ℂ)) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ Y : ℝ)
+    (hX₁ : 0 < X₁) (hX₂ : 0 < X₂) (b : 𝓢(ℝ, ℂ))
+    (hsep : ∀ x y : ℝ, star (V₁ x) * V₂ y *
+      paperRadialFourier W (firstDualScale p ∅ Y X₁ X₂ e k * Real.exp (-x-y)) =
+      ∫ t : ℝ, (star (V₁ x) * kernelLogPhase t (-x)) * (V₂ y * kernelLogPhase t (-y)) * b t) :
+    Integrable (fun t : ℝ => b t * secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k
+      (secondLogTest p V₁ X₁ t true) (secondLogTest p V₂ X₂ t false)) volume ∧
+    actualSecondKernel p hp hg F Ψ₁ Ψ₂ m r c d e k W V₁ V₂ X₁ X₂ Y =
+      (Y : ℂ) * ∫ t : ℝ, b t * secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k
+        (secondLogTest p V₁ X₁ t true) (secondLogTest p V₂ X₂ t false) := by
+  let G := fun (t : ℝ) (S T : Finset ι) => if Disjoint S T then b t *
+    secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k
+      (secondLogTest p V₁ X₁ t true) (secondLogTest p V₂ X₂ t false) S T else 0
+  have hGi (S T : Finset ι) : Integrable (fun t => G t S T) volume := by
+    by_cases hd : Disjoint S T
+    · simp only [G, if_pos hd, secondGaussTerm_log_twist]
+      convert integrable_log_pair b (-(columnLog p X₁ S)) (-(columnLog p X₂ T))
+        (star (V₁ (columnLog p X₁ S)) * V₂ (columnLog p X₂ T) *
+          secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k
+            (normalizedColumn p (fun _ => 1)) (normalizedColumn p (fun _ => 1)) S T) using 1
+    · simp only [G, if_neg hd]
+      exact integrable_zero _ _ _
+  have hGs (t : ℝ) : (∑ S ∈ F.powerset, ∑ T ∈ F.powerset, G t S T) =
+      b t * secondActualPair p hp hg F Ψ₁ Ψ₂ m r c d e k
+        (secondLogTest p V₁ X₁ t true) (secondLogTest p V₂ X₂ t false) := by
+    simp only [G, secondActualPair, secondGaussTerm, Finset.mul_sum, mul_ite, mul_zero]
+  have hI : Integrable (fun t => ∑ S ∈ F.powerset, ∑ T ∈ F.powerset, G t S T) volume :=
+    integrable_finsetSum _ (fun S _ => integrable_finsetSum _ (fun T _ => hGi S T))
+  constructor
+  · simpa only [hGs] using hI
+  · rw [← integral_congr_ae (Filter.Eventually.of_forall hGs)]
+    rw [integral_finsetSum _ (fun S _ => integrable_finsetSum _ (fun T _ => hGi S T)), Finset.mul_sum]
+    unfold actualSecondKernel
+    apply Finset.sum_congr rfl
+    intro S hS
+    rw [integral_finsetSum _ (fun T _ => hGi S T), Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro T hT
+    by_cases hd : Disjoint S T
+    · simp only [G, if_pos hd, secondGaussTerm_log_twist]
+      have harg := actual_radial_argument p hp S T ∅ hd
+        (Finset.disjoint_empty_right _) (Finset.disjoint_empty_right _) Y X₁ X₂ hX₁ hX₂ e k
+      simp only [Finset.union_empty] at harg
+      rw [← harg]
+      have hn : secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k
+          (normalizedColumn p (fun _ => 1)) (normalizedColumn p (fun _ => 1)) S T =
+        ((‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)⁻¹ * (‖ringComplex (∏ i ∈ T, p i)‖ : ℂ)⁻¹) *
+          secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k (fun _ => 1) (fun _ => 1) S T := by
+        simp only [secondGaussTerm, secondInputCoefficient, normalizedColumn, one_div,
+          mul_one, star_mul, map_inv₀, Complex.star_def, Complex.conj_ofReal]
+        ring
+      rw [hn]
+      rw [Finset.prod_union hd]
+      simp only [map_mul, norm_mul, Complex.ofReal_mul, div_eq_mul_inv, mul_inv_rev]
+      have hh := congrArg (fun z : ℂ => (Y : ℂ) * z *
+        ((‖ringComplex (∏ i ∈ S, p i)‖ : ℂ)⁻¹ * (‖ringComplex (∏ i ∈ T, p i)‖ : ℂ)⁻¹) *
+          secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k (fun _ => 1) (fun _ => 1) S T)
+        (hsep (columnLog p X₁ S) (columnLog p X₂ T))
+      rw [← integral_const_mul, ← integral_mul_const, ← integral_mul_const] at hh
+      convert hh using 1
+      · ring
+      · rw [← integral_const_mul]
+        apply integral_congr_ae
+        filter_upwards [] with t
+        ring
+    · simp [hd, G]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem secondLogTest_continuous (V : ℝ → ℂ) (X : ℝ) (negative : Bool) (S : Finset ι) :
+    Continuous (fun t : ℝ => secondLogTest p V X t negative S) := by
+  have h := kernelLogPhase_continuous_left (-(columnLog p X S))
+  cases negative <;> simp only [secondLogTest, Bool.false_eq_true, ite_false, ite_true] <;> fun_prop
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem secondLogTest_norm (V : ℝ → ℂ) (X t : ℝ) (negative : Bool) (S : Finset ι) :
+    ‖secondLogTest p V X t negative S‖ = ‖secondLogTest p V X 0 negative S‖ := by
+  cases negative <;> simp only [secondLogTest, Bool.false_eq_true, ite_false, ite_true,
+    norm_div, norm_mul, norm_star, kernelLogPhase_norm]
+
+def secondKernelEnergy (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (V : ℝ → ℂ) (X : ℝ) (negative : Bool) (b : 𝓢(ℝ, ℂ)) : ℝ :=
+  ∫ t : ℝ, ‖b t‖ * secondTotalEnergy p hg F Ψ₁ Ψ₂ m r c d e k
+    (secondLogTest p V X t negative) negative
+
+theorem actual_second_kernel_uniform_energy_envelope
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : Finset ι) (W : 𝓢(ℝ, ℂ)) (V₁ V₂ : ℝ → ℂ)
+    (X₁ X₂ : ℝ) (hX₁ : 0 < X₁) (hX₂ : 0 < X₂)
+    (M₁ M₂ : ℝ) (hM₁ : 0 ≤ M₁) (hM₂ : 0 ≤ M₂)
+    (hV₁ : ∀ x, V₁ x ≠ 0 → |x| ≤ M₁) (hV₂ : ∀ x, V₂ x ≠ 0 → |x| ≤ M₂)
+    (A J : ℕ) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ Y : ℝ, 0 < Y → ∀ e k : O, e ≠ 0 → k ≠ 0 →
+      ∃ b : 𝓢(ℝ, ℂ),
+        (∀ t : ℝ, (1 + firstDualScale p ∅ Y X₁ X₂ e k) ^ A * ‖b t‖ ≤ K * firstLogDensity J t) ∧
+        ∀ (Ψ₁ Ψ₂ : O →* ℂ) (m r c d : O),
+          ‖actualSecondKernel p hp hg F Ψ₁ Ψ₂ m r c d e k W V₁ V₂ X₁ X₂ Y‖ ≤
+            Y * Real.sqrt (secondKernelEnergy p hg F Ψ₁ Ψ₂ m r c d e k V₁ X₁ true b) *
+              Real.sqrt (secondKernelEnergy p hg F Ψ₁ Ψ₂ m r c d e k V₂ X₂ false b) := by
+  have hV₁' : ∀ x, star (V₁ x) ≠ 0 → |x| ≤ M₁ := by
+    intro x hx
+    exact hV₁ x (by intro h; simp [h] at hx)
+  obtain ⟨K, hK, hs⟩ := two_variable_radial_envelope W (fun x => star (V₁ x)) V₂
+    M₁ M₂ hM₁ hM₂ hV₁' hV₂ A J
+  refine ⟨K, hK, ?_⟩
+  intro Y hY e k he hk
+  have hR : 0 < firstDualScale p ∅ Y X₁ X₂ e k := by
+    unfold firstDualScale
+    exact div_pos (mul_pos hY (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero hk)) 2))
+      (mul_pos (mul_pos (mul_pos (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero he)) 2)
+        (primeProductNorm_pos p hp _)) hX₁) hX₂)
+  obtain ⟨b, hsep, hb⟩ := hs _ hR
+  refine ⟨b, hb, ?_⟩
+  intro Ψ₁ Ψ₂ m r c d
+  rw [(actualSecondKernel_eq_integral p hp hg F Ψ₁ Ψ₂ m r c d e k W V₁ V₂ X₁ X₂ Y
+    hX₁ hX₂ b hsep).2, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hY]
+  have hi := second_integral_norm_le_energy p hp hg hinj hc hpr F Ψ₁ Ψ₂ m r c d e k
+    (fun t => secondLogTest p V₁ X₁ t true) (fun t => secondLogTest p V₂ X₂ t false)
+    (secondLogTest_continuous p V₁ X₁ true) (secondLogTest_continuous p V₂ X₂ false)
+    (fun t S => secondLogTest_norm p V₁ X₁ t true S)
+    (fun t S => secondLogTest_norm p V₂ X₂ t false S) b
+  change Y * _ ≤ Y * Real.sqrt _ * Real.sqrt _
+  rw [mul_assoc]
+  exact mul_le_mul_of_nonneg_left hi hY.le
+
+end SecondPassArithmetic
+
+
+
+namespace DescentWeightedCauchy
+open scoped Classical
+
+theorem weighted_energy_pushforward {ι κ : Type*} [DecidableEq κ]
+    (s : Finset ι) (t : Finset κ) (f : ι → κ) (w : ι → ℂ)
+    (P : κ → ℂ) (B : κ → ℝ)
+    (hmap : ∀ i ∈ s, f i ∈ t)
+    (hfib : ∀ y ∈ t, (∑ i ∈ s with f i = y, ‖w i‖) ≤ B y) :
+    (∑ i ∈ s, ‖w i‖ * ‖P (f i)‖ ^ 2) ≤
+      ∑ y ∈ t, B y * ‖P y‖ ^ 2 := by
+  calc
+    _ = ∑ y ∈ t, ∑ i ∈ s with f i = y, ‖w i‖ * ‖P (f i)‖ ^ 2 := by
+      symm
+      exact Finset.sum_fiberwise_of_maps_to hmap _
+    _ = ∑ y ∈ t, (∑ i ∈ s with f i = y, ‖w i‖) * ‖P y‖ ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro y hy
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [(Finset.mem_filter.mp hi).2]
+    _ ≤ _ := Finset.sum_le_sum (fun y hy =>
+      mul_le_mul_of_nonneg_right (hfib y hy) (sq_nonneg _))
+
+theorem bounded_energy_pushforward {ι κ : Type*} [DecidableEq κ]
+    (s : Finset ι) (t : Finset κ) (f : ι → κ) (w : ι → ℂ)
+    (P : κ → ℂ) (C : ℝ)
+    (hmap : ∀ i ∈ s, f i ∈ t) (hw : ∀ i ∈ s, ‖w i‖ ≤ C) :
+    (∑ i ∈ s, ‖w i‖ * ‖P (f i)‖ ^ 2) ≤
+      ∑ y ∈ t, C * (s.filter (fun i => f i = y)).card * ‖P y‖ ^ 2 := by
+  apply weighted_energy_pushforward s t f w P _ hmap
+  intro y hy
+  calc
+    _ ≤ ∑ i ∈ s with f i = y, C := Finset.sum_le_sum
+      (fun i hi => hw i (Finset.mem_filter.mp hi).1)
+    _ = _ := by simp [mul_comm]
+
+
+end DescentWeightedCauchy
+
+
+
+namespace SecondPassFiber
+open Eisenstein
+open scoped Classical
+
+@[ext] structure OldTuple where
+  core : Fin 8 → Ideal O
+  v : Ideal O
+  j2 : Ideal O
+  b2 : Ideal O
+  row : O
+
+structure Valid (x : OldTuple) (F b0 : Ideal O) (y : O) : Prop where
+  label : x.core 0 * x.core 1 * x.core 2 * x.v = F
+  j_split : x.core 3 * x.j2 = x.core 0
+  b_split : x.core 4 * x.b2 = b0 ^ 2 * x.j2 ^ 2 * x.core 3
+  a1 : x.core 5 ∣ x.core 4 * x.b2
+  a2 : x.core 6 ∣ x.core 4 * x.b2
+  d : x.core 7 ∣ F * b0
+  row_eq : cubicIdealGenerator (x.core 7) * cubicIdealGenerator (x.core 2) * x.row = y
+
+def divisorTarget (F b0 : Ideal O) : Ideal O := (F * b0) ^ 2
+
+theorem core_dvd_target (x : OldTuple) (F b0 : Ideal O) (y : O)
+    (h : Valid x F b0 y) (i : Fin 8) : x.core i ∣ divisorTarget F b0 := by
+  have hJ : x.core 0 ∣ F := by
+    rw [← h.label]
+    exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_left (dvd_mul_right _ _) _) _
+  have hC : x.core 1 ∣ F := by
+    rw [← h.label]
+    exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_left (dvd_mul_left _ _) _) _
+  have he : x.core 2 ∣ F := by
+    rw [← h.label]
+    exact dvd_mul_of_dvd_left (dvd_mul_left _ _) _
+  have hs : x.core 3 ∣ F := by
+    apply dvd_trans _ hJ
+    rw [← h.j_split]
+    exact dvd_mul_right _ _
+  have hFT : F ∣ divisorTarget F b0 := by
+    dsimp [divisorTarget]
+    exact (dvd_mul_right F b0).trans (dvd_pow_self _ (by decide))
+  have hbprod : x.core 4 * x.b2 ∣ divisorTarget F b0 := by
+    apply dvd_trans (b := b0 ^ 2 * x.core 0 ^ 2)
+    · refine ⟨x.core 3, ?_⟩
+      rw [h.b_split, ← h.j_split]
+      ring
+    · dsimp [divisorTarget]
+      rw [mul_pow, mul_comm (F ^ 2)]
+      exact mul_dvd_mul_left _ (pow_dvd_pow_of_dvd hJ 2)
+  fin_cases i
+  · exact hJ.trans hFT
+  · exact hC.trans hFT
+  · exact he.trans hFT
+  · exact hs.trans hFT
+  · exact (dvd_mul_right _ _).trans hbprod
+  · exact h.a1.trans hbprod
+  · exact h.a2.trans hbprod
+  · exact h.d.trans (dvd_pow_self _ (by decide))
+
+theorem target_ne_zero (F b0 : Ideal O) (hF : F ≠ ⊥) (hb0 : b0 ≠ ⊥) :
+    divisorTarget F b0 ≠ 0 := pow_ne_zero _ (mul_ne_zero hF hb0)
+
+theorem core_ne_zero (x : OldTuple) (F b0 : Ideal O) (y : O)
+    (hF : F ≠ ⊥) (hb0 : b0 ≠ ⊥) (h : Valid x F b0 y) (i : Fin 8) :
+    x.core i ≠ 0 := by
+  intro he
+  have hd := core_dvd_target x F b0 y h i
+  rw [he, zero_dvd_iff] at hd
+  exact target_ne_zero F b0 hF hb0 hd
+
+theorem valid_core_injective (F b0 : Ideal O) (y : O)
+    (hF : F ≠ ⊥) (hb0 : b0 ≠ ⊥) {x z : OldTuple}
+    (hx : Valid x F b0 y) (hz : Valid z F b0 y) (hcore : x.core = z.core) : x = z := by
+  have hc (i : Fin 8) : x.core i = z.core i := congrFun hcore i
+  have hv : x.v = z.v := by
+    apply mul_left_cancel₀
+      (mul_ne_zero (mul_ne_zero (core_ne_zero x F b0 y hF hb0 hx 0)
+        (core_ne_zero x F b0 y hF hb0 hx 1)) (core_ne_zero x F b0 y hF hb0 hx 2))
+    calc
+      _ = F := hx.label
+      _ = _ := by simpa only [hc] using hz.label.symm
+  have hj : x.j2 = z.j2 := by
+    apply mul_left_cancel₀ (core_ne_zero x F b0 y hF hb0 hx 3)
+    calc
+      _ = x.core 0 := hx.j_split
+      _ = _ := by simpa only [hc] using hz.j_split.symm
+  have hb : x.b2 = z.b2 := by
+    apply mul_left_cancel₀ (core_ne_zero x F b0 y hF hb0 hx 4)
+    calc
+      _ = b0 ^ 2 * x.j2 ^ 2 * x.core 3 := hx.b_split
+      _ = _ := by simpa only [hc, hj] using hz.b_split.symm
+  have hgen (i : Fin 8) : cubicIdealGenerator (x.core i) ≠ 0 := by
+    intro he
+    apply core_ne_zero x F b0 y hF hb0 hx i
+    rw [← span_cubicIdealGenerator (x.core i), he]
+    simp
+  have hr : x.row = z.row := by
+    apply mul_left_cancel₀ (mul_ne_zero (hgen 7) (hgen 2))
+    calc
+      _ = y := hx.row_eq
+      _ = _ := by simpa only [hc] using hz.row_eq.symm
+  exact OldTuple.ext hcore hv hj hb hr
+
+theorem valid_tuple_card_le (s : Finset OldTuple) (F b0 : Ideal O) (y : O)
+    (hF : F ≠ ⊥) (hb0 : b0 ≠ ⊥) (hs : ∀ x ∈ s, Valid x F b0 y) :
+    s.card ≤ (idealDivisors (divisorTarget F b0)).card ^ 8 := by
+  let D := idealDivisors (divisorTarget F b0)
+  let encode (x : s) : Fin 8 → D := fun i => ⟨x.val.core i, by
+    apply (mem_idealDivisors (target_ne_zero F b0 hF hb0)).mpr
+    exact core_dvd_target x.val F b0 y (hs x.val x.property) i⟩
+  have hinj : Function.Injective encode := by
+    intro x z he
+    apply Subtype.ext
+    apply valid_core_injective F b0 y hF hb0 (hs x.val x.property) (hs z.val z.property)
+    funext i
+    exact congrArg Subtype.val (congrFun he i)
+  have hc := Fintype.card_le_of_injective encode hinj
+  simpa [D] using hc
+
+theorem valid_tuple_small_power (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (s : Finset OldTuple) (F b0 : Ideal O) (y : O),
+      F ≠ ⊥ → b0 ≠ ⊥ → (∀ x ∈ s, Valid x F b0 y) →
+      (s.card : ℝ) ≤ C * ((Ideal.absNorm F : ℝ) * Ideal.absNorm b0) ^ ε := by
+  obtain ⟨C, hC, h⟩ := IdealDivisorBound.ideal_divisor_small_power (ε / 16) (by positivity)
+  refine ⟨C ^ 8, by positivity, ?_⟩
+  intro s F b0 y hF hb0 hs
+  have hc : (s.card : ℝ) ≤ ((idealDivisors (divisorTarget F b0)).card : ℝ) ^ 8 := by
+    exact_mod_cast valid_tuple_card_le s F b0 y hF hb0 hs
+  have hd := pow_le_pow_left₀ (by positivity)
+    (h (divisorTarget F b0) (target_ne_zero F b0 hF hb0)) 8
+  apply hc.trans (hd.trans_eq ?_)
+  rw [mul_pow]
+  congr 1
+  simp only [divisorTarget, map_pow, map_mul, Nat.cast_pow, Nat.cast_mul]
+  rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity),
+    ← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]
+  congr 1
+  ring
+
+def newLabel (x : OldTuple) : Ideal O := x.core 0 * x.core 1 * x.core 2 * x.v
+def newRow (x : OldTuple) : O :=
+  cubicIdealGenerator (x.core 7) * cubicIdealGenerator (x.core 2) * x.row
+
+theorem second_energy_pushforward (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (s : Finset OldTuple) (t : Finset (Ideal O × O))
+      (b0 : Ideal O) (w : OldTuple → ℂ) (P : Ideal O × O → ℂ) (B H : ℝ),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ H →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ t) →
+      (∀ z ∈ t, z.1 ≠ ⊥) →
+      (∀ z ∈ t, (Ideal.absNorm z.1 : ℝ) ≤ H) →
+      (∀ x ∈ s, ‖w x‖ ≤ B) →
+      (∑ x ∈ s, ‖w x‖ * ‖P (newLabel x, newRow x)‖ ^ 2) ≤
+        B * C * (H * Ideal.absNorm b0) ^ ε * ∑ z ∈ t, ‖P z‖ ^ 2 := by
+  obtain ⟨C, hC, hc⟩ := valid_tuple_small_power ε hε
+  refine ⟨C, hC, ?_⟩
+  intro s t b0 w P B H hb0 hB hH hvalid hmap ht hnorm hw
+  have hpush := DescentWeightedCauchy.bounded_energy_pushforward
+    s t (fun x => (newLabel x, newRow x)) w P B hmap hw
+  apply hpush.trans
+  rw [Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro z hz
+  have hval : ∀ x ∈ s.filter (fun x => (newLabel x, newRow x) = z), Valid x z.1 b0 z.2 := by
+    intro x hx
+    have he := (Finset.mem_filter.mp hx).2
+    have hv := hvalid x (Finset.mem_filter.mp hx).1
+    have h1 : newLabel x = z.1 := congrArg Prod.fst he
+    have h2 : newRow x = z.2 := congrArg Prod.snd he
+    simpa only [h1, h2] using hv
+  have hfiber := hc (s.filter (fun x => (newLabel x, newRow x) = z)) z.1 b0 z.2
+    (ht z hz) hb0 hval
+  have hgrowth : (Ideal.absNorm z.1 : ℝ) * Ideal.absNorm b0 ≤ H * Ideal.absNorm b0 :=
+    mul_le_mul_of_nonneg_right (hnorm z hz) (by positivity)
+  have hcard := hfiber.trans (mul_le_mul_of_nonneg_left
+    (Real.rpow_le_rpow (by positivity) hgrowth hε.le) hC.le)
+  have hterm := mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left hcard hB) (sq_nonneg ‖P z‖)
+  simpa only [mul_assoc] using hterm
+
+
+end SecondPassFiber
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SecondPassFiber
+open scoped Classical
+
+theorem second_energy_selected_family {κ : Type*} [Fintype κ] (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (s : Finset OldTuple) (t : Finset (Ideal O × O))
+      (b0 : Ideal O) (w : OldTuple → ℂ) (B lengthScale : ℝ)
+      (P : κ → Ideal O × O → ℂ) (sel : OldTuple → κ),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ t) →
+      (∀ z ∈ t, z.1 ≠ ⊥) →
+      (∀ z ∈ t, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+      (∀ x ∈ s, ‖w x‖ ≤ B) →
+      (∑ x ∈ s, ‖w x‖ * ‖P (sel x) (newLabel x, newRow x)‖ ^ 2) ≤
+      B * C * (lengthScale * Ideal.absNorm b0) ^ ε *
+        ∑ u : κ, ∑ z ∈ t, ‖P u z‖ ^ 2 := by
+  obtain ⟨C, hC, hb⟩ := SecondPassFiber.second_energy_pushforward ε hε
+  refine ⟨C, hC, ?_⟩
+  intro s t b0 w B lengthScale P sel hb0 hB hL hvalid hmap ht hnorm hw
+  calc
+    _ ≤ ∑ x ∈ s, ‖w x‖ * ∑ u : κ, ‖P u (newLabel x, newRow x)‖ ^ 2 := by
+      apply Finset.sum_le_sum
+      intro x hx
+      apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+      exact Finset.single_le_sum
+        (s := Finset.univ) (a := sel x)
+        (f := fun u : κ => ‖P u (newLabel x, newRow x)‖ ^ 2)
+        (fun u _ => sq_nonneg _) (Finset.mem_univ (sel x))
+    _ = ∑ u : κ, ∑ x ∈ s, ‖w x‖ * ‖P u (newLabel x, newRow x)‖ ^ 2 := by
+      simp only [Finset.mul_sum]
+      exact Finset.sum_comm
+    _ ≤ ∑ u : κ, B * C * (lengthScale * Ideal.absNorm b0) ^ ε * ∑ z ∈ t, ‖P u z‖ ^ 2 := by
+      exact Finset.sum_le_sum (fun u _ => hb s t b0 w (P u) B lengthScale hb0 hB hL hvalid hmap ht hnorm hw)
+    _ = _ := by rw [Finset.mul_sum]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SecondPassFiber
+open scoped Classical
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+def tupleLabelElement (x : OldTuple) : O :=
+  cubicIdealGenerator (x.core 0) * cubicIdealGenerator (x.core 1) * cubicIdealGenerator (x.core 2) * cubicIdealGenerator x.v
+
+theorem tupleLabelElement_span (x : OldTuple) :
+    Ideal.span {tupleLabelElement x} = newLabel x := by
+  simp only [tupleLabelElement, newLabel, ← Ideal.span_singleton_mul_span_singleton, span_cubicIdealGenerator]
+
+theorem exists_label_unit (f : O) (I : Ideal O) (hf : Ideal.span {f} = I) :
+    ∃ u : Oˣ, f = (u : O) * cubicIdealGenerator I := by
+  have hs : Ideal.span {cubicIdealGenerator I} = Ideal.span {f} := (span_cubicIdealGenerator I).trans hf.symm
+  obtain ⟨u, hu⟩ := Ideal.span_singleton_eq_span_singleton.mp hs
+  exact ⟨u, by simpa only [mul_comm] using hu.symm⟩
+
+def tupleLabelUnit (x : OldTuple) : Oˣ :=
+  Classical.choose (exists_label_unit (tupleLabelElement x) (newLabel x) (tupleLabelElement_span x))
+
+theorem tupleLabelUnit_spec (x : OldTuple) :
+    tupleLabelElement x = (tupleLabelUnit x : O) * cubicIdealGenerator (newLabel x) :=
+  Classical.choose_spec (exists_label_unit (tupleLabelElement x) (newLabel x) (tupleLabelElement_span x))
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+def fixedChildRow (F : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (H : Finset ι → ℂ) (f y : O) : ℂ :=
+  ∑ N ∈ F.powerset, secondChildColumn p hg Ψ m f y H N
+
+def idealChildRow (F : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (H : Finset ι → ℂ) (negative : Bool) (u : Oˣ) (z : Ideal O × O) : ℂ :=
+  fixedChildRow p hg F Ψ m H ((u : O) * cubicIdealGenerator z.1)
+    (if negative then -z.2 else z.2)
+
+theorem tuple_child_eq_unit_sector (F : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (H : Finset ι → ℂ) (negative : Bool) (x : OldTuple) :
+    fixedChildRow p hg F Ψ m H (tupleLabelElement x)
+      (if negative then -newRow x else newRow x) =
+    idealChildRow p hg F Ψ m H negative (tupleLabelUnit x) (newLabel x, newRow x) := by
+  rw [tupleLabelUnit_spec]
+  rfl
+
+theorem fixed_child_second_energy_pushforward (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (s : Finset OldTuple) (t : Finset (Ideal O × O))
+      (b0 : Ideal O) (w : OldTuple → ℂ) (B lengthScale : ℝ)
+      (F : Finset ι) (Ψ : O →* ℂ) (m : O) (H : Finset ι → ℂ) (negative : Bool),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ t) →
+      (∀ z ∈ t, z.1 ≠ ⊥) →
+      (∀ z ∈ t, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+      (∀ x ∈ s, ‖w x‖ ≤ B) →
+      (∑ x ∈ s, ‖w x‖ *
+        ‖fixedChildRow p hg F Ψ m H (tupleLabelElement x)
+          (if negative then -newRow x else newRow x)‖ ^ 2) ≤
+      B * C * (lengthScale * Ideal.absNorm b0) ^ ε *
+        ∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ m H negative u z‖ ^ 2 := by
+  obtain ⟨C, hC, hb⟩ := second_energy_selected_family (κ := Oˣ) ε hε
+  refine ⟨C, hC, ?_⟩
+  intro s t b0 w B lengthScale F Ψ m H negative hb0 hB hL hvalid hmap ht hnorm hw
+  have hh := hb s t b0 w B lengthScale (idealChildRow p hg F Ψ m H negative)
+    tupleLabelUnit hb0 hB hL hvalid hmap ht hnorm hw
+  convert hh using 1
+  apply Finset.sum_congr rfl
+  intro x hx
+  rw [tuple_child_eq_unit_sector]
+
+/-- The finite unit sectors contribute only their fixed cardinality. -/
+theorem idealChildRow_unit_energy_le (F : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (H : Finset ι → ℂ) (negative : Bool) (t : Finset (Ideal O × O)) (E : ℝ)
+    (hE : ∀ u : Oˣ, (∑ z ∈ t, ‖idealChildRow p hg F Ψ m H negative u z‖ ^ 2) ≤ E) :
+    (∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ m H negative u z‖ ^ 2) ≤
+      (Fintype.card Oˣ : ℝ) * E := by
+  calc
+    _ ≤ ∑ u : Oˣ, E := Finset.sum_le_sum (fun u _ => hE u)
+    _ = _ := by simp
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SecondPassFiber
+open scoped Classical
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+section
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+def fixedSecondMode (s : Finset OldTuple) (w : OldTuple → ℂ) (label : OldTuple → O)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (H₁ H₂ : Finset ι → ℂ) : ℂ :=
+  ∑ x ∈ s, w x *
+    star (fixedChildRow p hg F Ψ₁ m H₁ (label x) (newRow x)) *
+      fixedChildRow p hg F Ψ₂ m H₂ (label x) (-newRow x)
+
+
+end
+
+theorem full_uniform_labeled_child_second_energy_pushforward (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i}), ∀ (s : Finset OldTuple) (t : Finset (Ideal O × O))
+      (b0 : Ideal O) (w : OldTuple → ℂ) (B lengthScale : ℝ) (label : OldTuple → O)
+      (F : Finset ι) (Ψ : O →* ℂ) (m : O) (H : Finset ι → ℂ) (negative : Bool),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ t) →
+      (∀ z ∈ t, z.1 ≠ ⊥) →
+      (∀ z ∈ t, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+      (∀ x ∈ s, ‖w x‖ ≤ B) →
+      (∀ x ∈ s, Ideal.span {label x} = newLabel x) →
+      (∑ x ∈ s, ‖w x‖ *
+        ‖fixedChildRow p hg F Ψ m H (label x)
+          (if negative then -newRow x else newRow x)‖ ^ 2) ≤
+      B * C * (lengthScale * Ideal.absNorm b0) ^ ε *
+        ∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ m H negative u z‖ ^ 2 := by
+  obtain ⟨C, hC, hb⟩ := second_energy_selected_family (κ := Oˣ) ε hε
+  refine ⟨C, hC, ?_⟩
+  intro ι _ p _ hg
+    s t b0 w B lengthScale label F Ψ m H negative hb0 hB hL hvalid hmap ht hnorm hw hlabel
+  let sel : OldTuple → Oˣ := fun x => if hx : x ∈ s then
+    Classical.choose (exists_label_unit (label x) (newLabel x) (hlabel x hx)) else 1
+  have hsel (x : OldTuple) (hx : x ∈ s) : label x = (sel x : O) * cubicIdealGenerator (newLabel x) := by
+    simp only [sel, dif_pos hx]
+    exact Classical.choose_spec (exists_label_unit (label x) (newLabel x) (hlabel x hx))
+  have hh := hb s t b0 w B lengthScale (idealChildRow p hg F Ψ m H negative)
+    sel hb0 hB hL hvalid hmap ht hnorm hw
+  convert hh using 1
+  apply Finset.sum_congr rfl
+  intro x hx
+  rw [hsel x hx]
+  rfl
+
+theorem full_uniform_fixed_second_mode_transfer (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i}), ∀ (s : Finset OldTuple) (t : Finset (Ideal O × O))
+      (b0 : Ideal O) (w : OldTuple → ℂ) (B lengthScale : ℝ) (label : OldTuple → O)
+      (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (H₁ H₂ : Finset ι → ℂ),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ t) →
+      (∀ z ∈ t, z.1 ≠ ⊥) →
+      (∀ z ∈ t, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+      (∀ x ∈ s, ‖w x‖ ≤ B) →
+      (∀ x ∈ s, Ideal.span {label x} = newLabel x) →
+      ‖fixedSecondMode p hg s w label F Ψ₁ Ψ₂ m H₁ H₂‖ ≤
+        (B * C * (lengthScale * Ideal.absNorm b0)^ε) *
+        Real.sqrt (∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ₁ m H₁ false u z‖ ^ 2) *
+        Real.sqrt (∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ₂ m H₂ true u z‖ ^ 2) := by
+  obtain ⟨C, hC, hpush⟩ := full_uniform_labeled_child_second_energy_pushforward ε hε
+  refine ⟨C, hC, ?_⟩
+  intro ι _ p _ hg
+  have hpush := hpush p hg
+  intro s t b0 w B lengthScale label F Ψ₁ Ψ₂ m H₁ H₂ hb0 hB hL hv hm ht hn hw hl
+  let P₁ := fun x => fixedChildRow p hg F Ψ₁ m H₁ (label x) (newRow x)
+  let P₂ := fun x => fixedChildRow p hg F Ψ₂ m H₂ (label x) (-newRow x)
+  have h₁ := hpush s t b0 w B lengthScale label F Ψ₁ m H₁ false hb0 hB hL hv hm ht hn hw hl
+  have h₂ := hpush s t b0 w B lengthScale label F Ψ₂ m H₂ true hb0 hB hL hv hm ht hn hw hl
+  simp only [Bool.false_eq_true, ite_false, ite_true] at h₁ h₂
+  let D : ℝ := B * C * (lengthScale * Ideal.absNorm b0)^ε
+  have hD : 0 ≤ D := by dsimp [D]; positivity
+  have hCau := DescentWeightedCauchy.weighted_cauchy s w P₂ P₁
+  have hmode : fixedSecondMode p hg s w label F Ψ₁ Ψ₂ m H₁ H₂ =
+      ∑ x ∈ s, w x * P₂ x * star (P₁ x) := by
+    unfold fixedSecondMode
+    apply Finset.sum_congr rfl
+    intro x hx
+    dsimp [P₁, P₂]
+    ring
+  rw [hmode]
+  apply hCau.trans
+  calc
+    _ ≤ Real.sqrt (D * (∑ u : Oˣ, ∑ z ∈ t,
+        ‖idealChildRow p hg F Ψ₂ m H₂ true u z‖ ^ 2)) *
+      Real.sqrt (D * (∑ u : Oˣ, ∑ z ∈ t,
+        ‖idealChildRow p hg F Ψ₁ m H₁ false u z‖ ^ 2)) := by
+      gcongr
+    _ = _ := by
+      rw [Real.sqrt_mul hD, Real.sqrt_mul hD]
+      calc
+        _ = (Real.sqrt D)^2 *
+          Real.sqrt (∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ₁ m H₁ false u z‖ ^ 2) *
+          Real.sqrt (∑ u : Oˣ, ∑ z ∈ t, ‖idealChildRow p hg F Ψ₂ m H₂ true u z‖ ^ 2) := by ring
+        _ = _ := by rw [Real.sq_sqrt hD]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+lemma subsetTraceRayFactor_eq_row (S : Finset ι) :
+    subsetTraceRayFactor p hg S =
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S 4 /
+        rayQuadraticPhase (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i)) := by
+  simp only [subsetTraceRayFactor,secondTraceRayFactor,Finset.prod_coe_sort,
+    primeSubsetRow,map_ofNat,rayQuadraticPhase_mk]
+  congr 1
+  exact Finset.prod_coe_sort S (fun i => complexSexticChar (Ideal.span {p i}) (hg i) 4)
+
+/-- A fixed residue sector with its multiplicative value at four. -/
+def secondRayColumn (r : QuadraticRayRing) (H : Finset ι → ℂ) (S : Finset ι) : ℂ :=
+  primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S 4 *
+    (if Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ S, p i) = r then H S else 0)
+
+lemma secondRayColumn_norm_le (r : QuadraticRayRing) (H : Finset ι → ℂ) (S : Finset ι) :
+    ‖secondRayColumn p hg r H S‖ ≤ ‖H S‖ := by
+  unfold secondRayColumn
+  split_ifs
+  · rw [norm_mul]
+    exact mul_le_of_le_one_left (norm_nonneg _) (primeSubsetRow_norm_le_one p _ S 4)
+  · simp only [mul_zero,norm_zero]
+    exact norm_nonneg _
+
+def secondRayTransition (V : Finset ι) (r s : QuadraticRayRing) : ℂ :=
+  (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) V 4 /
+    rayQuadraticPhase r) *
+    (if Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ V, p i)*s = r then 1 else 0)
+
+lemma secondRayTransition_norm_le (V : Finset ι) (r s : QuadraticRayRing) :
+    ‖secondRayTransition p hg V r s‖ ≤ 1 := by
+  unfold secondRayTransition
+  split_ifs
+  · rw [mul_one,div_eq_mul_inv,norm_mul]
+    exact (mul_le_mul (primeSubsetRow_norm_le_one p _ V 4)
+      (fixedDualAverage_bounds
+        (QuadraticPhase.Eisenstein.GaussianShiftedPartition.representative 4 r)).2
+      (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+  · simp only [mul_zero,norm_zero,zero_le_one]
+
+/-- Removing common primes leaves sixteen fixed column masks and bounded outer factors. -/
+theorem secondRayMask_union (V N : Finset ι) (hd : Disjoint V N)
+    (r : QuadraticRayRing) (H : Finset ι → ℂ) :
+    secondRayMask p hg r H (V ∪ N) =
+      ∑ s : QuadraticRayRing, secondRayTransition p hg V r s *
+        secondRayColumn p hg s (fun U => H (V ∪ U)) N := by
+  have hs : secondRayMask p hg r H (V ∪ N) =
+      (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) V 4 *
+        primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) N 4 /
+        rayQuadraticPhase r) *
+      (if Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ V, p i) *
+        Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ N, p i) = r then H (V ∪ N) else 0) := by
+    unfold secondRayMask
+    rw [subsetTraceRayFactor_eq_row,Finset.prod_union hd,map_mul,
+      primeSubsetRow_union p _ V N hd]
+    split_ifs with h
+    · rw [h]
+    · simp only [mul_zero]
+  rw [hs]
+  symm
+  rw [Finset.sum_eq_single (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (∏ i ∈ N, p i))]
+  · simp only [secondRayTransition,secondRayColumn,if_pos rfl]
+    split_ifs <;> ring
+  · intro s _ hs
+    simp only [secondRayColumn,if_neg hs.symm,mul_zero]
+  · intro h
+    exact (h (Finset.mem_univ _)).elim
+
+end SecondPassArithmetic
+
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform ContDiff
+
+theorem fourier_seminorm_from_derivative_integrals
+    (g : 𝓢(ℝ, ℂ)) (k : ℕ) :
+    (SchwartzMap.seminorm ℝ k 0) (𝓕 g) ≤
+      (2 : ℝ) ^ k *
+        ∑ p ∈ Finset.range 1 ×ˢ Finset.range (k + 1),
+          ∫ v : ℝ, ‖v‖ ^ p.1 * ‖iteratedFDeriv ℝ p.2 g v‖ := by
+  have hpoint (w : ℝ) :=
+    Real.pow_mul_norm_iteratedFDeriv_fourier_le
+      (K := ⊤) (N := ⊤) (f := (g : ℝ → ℂ)) (g.smooth ⊤)
+      (by intro a b ha hb; exact g.integrable_pow_mul_iteratedFDeriv volume a b)
+      (k := 0) (n := k) (by simp) (by simp) w
+  have hpoint' (w : ℝ) :
+      ‖w‖ ^ k * ‖(𝓕 g) w‖ ≤
+        (2 : ℝ) ^ k *
+          ∑ p ∈ Finset.range 1 ×ˢ Finset.range (k + 1),
+            ∫ v : ℝ, ‖v‖ ^ p.1 * ‖iteratedFDeriv ℝ p.2 g v‖ := by
+    simpa [SchwartzMap.fourier_coe] using hpoint w
+  apply SchwartzMap.seminorm_le_bound ℝ k 0 (𝓕 g)
+    (mul_nonneg (pow_nonneg (by norm_num) _) (Finset.sum_nonneg
+      (fun p _ => integral_nonneg (fun v => mul_nonneg (pow_nonneg (norm_nonneg _) _) (norm_nonneg _)))))
+  intro w
+  simpa using hpoint' w
+
+theorem uniform_fourier_seminorm_transfer
+    (g : 𝓢(ℝ, ℂ)) (k : ℕ) (S C : ℝ)
+    (hS : 0 ≤ S) (_hC : 0 ≤ C)
+    (hsource : ∀ i ≤ k,
+      S * ((SchwartzMap.seminorm ℝ 0 i) g +
+        (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g) ≤ C) :
+    S * (SchwartzMap.seminorm ℝ k 0) (𝓕 g) ≤
+      (2 : ℝ) ^ k * (k + 1) *
+        (2 ^ (volume : Measure ℝ).integrablePower *
+          ∫ t : ℝ, (1 + ‖t‖) ^ (-(volume : Measure ℝ).integrablePower : ℝ)) * C := by
+  let V : ℝ := 2 ^ (volume : Measure ℝ).integrablePower *
+    ∫ t : ℝ, (1 + ‖t‖) ^ (-(volume : Measure ℝ).integrablePower : ℝ)
+  have hV : 0 ≤ V := by dsimp [V]; positivity
+  have hI (i : ℕ) (hi : i ≤ k) :
+      S * (∫ t : ℝ, ‖iteratedFDeriv ℝ i g t‖) ≤ V * C := by
+    have hbase := SchwartzMap.integral_pow_mul_iteratedFDeriv_le ℝ volume g 0 i
+    have hbase' :
+        (∫ t : ℝ, ‖iteratedFDeriv ℝ i g t‖) ≤
+          V * ((SchwartzMap.seminorm ℝ 0 i) g +
+            (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g) := by
+      simpa [V] using hbase
+    calc
+      S * (∫ t : ℝ, ‖iteratedFDeriv ℝ i g t‖) ≤
+          S * (V * ((SchwartzMap.seminorm ℝ 0 i) g +
+            (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g)) :=
+        mul_le_mul_of_nonneg_left hbase' hS
+      _ = V * (S * ((SchwartzMap.seminorm ℝ 0 i) g +
+            (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g)) := by ring
+      _ ≤ V * C := mul_le_mul_of_nonneg_left (hsource i hi) hV
+  have hFourier := fourier_seminorm_from_derivative_integrals g k
+  calc
+    S * (SchwartzMap.seminorm ℝ k 0) (𝓕 g) ≤
+      S * ((2 : ℝ) ^ k *
+        ∑ p ∈ Finset.range 1 ×ˢ Finset.range (k + 1),
+          ∫ t : ℝ, ‖t‖ ^ p.1 * ‖iteratedFDeriv ℝ p.2 g t‖) :=
+      mul_le_mul_of_nonneg_left hFourier hS
+    _ = (2 : ℝ) ^ k *
+      ∑ p ∈ Finset.range 1 ×ˢ Finset.range (k + 1),
+        S * (∫ t : ℝ, ‖t‖ ^ p.1 * ‖iteratedFDeriv ℝ p.2 g t‖) := by
+      simp only [Finset.mul_sum]
+      ring_nf
+    _ ≤ (2 : ℝ) ^ k *
+      ∑ _p ∈ Finset.range 1 ×ˢ Finset.range (k + 1), V * C := by
+      apply mul_le_mul_of_nonneg_left _ (by positivity)
+      apply Finset.sum_le_sum
+      intro p hp
+      have hp0 : p.1 = 0 := by
+        have hlt := Finset.mem_range.mp (Finset.mem_product.mp hp).1
+        omega
+      have hp2 : p.2 ≤ k := Nat.lt_succ_iff.mp
+        (Finset.mem_range.mp (Finset.mem_product.mp hp).2)
+      simpa [hp0] using hI p.2 hp2
+    _ = (2 : ℝ) ^ k * (k + 1) * V * C := by
+      simp []
+      ring
+    _ = (2 : ℝ) ^ k * (k + 1) *
+        (2 ^ (volume : Measure ℝ).integrablePower *
+          ∫ t : ℝ, (1 + ‖t‖) ^ (-(volume : Measure ℝ).integrablePower : ℝ)) * C := rfl
+
+def fourierSeminormBound (k : ℕ) (C : ℝ) : ℝ :=
+  (2 : ℝ) ^ k * (k + 1) *
+    (2 ^ (volume : Measure ℝ).integrablePower *
+      ∫ t : ℝ, (1 + ‖t‖) ^ (-(volume : Measure ℝ).integrablePower : ℝ)) * C
+
+def fourierPointBound (k : ℕ) (C : ℝ) : ℝ :=
+  2 ^ k * (fourierSeminormBound 0 C + fourierSeminormBound k C)
+
+theorem fourierPointBound_nonneg (k : ℕ) (C : ℝ) (hC : 0 ≤ C) :
+    0 ≤ fourierPointBound k C := by unfold fourierPointBound fourierSeminormBound; positivity
+
+theorem uniform_fourier_pointwise (g : 𝓢(ℝ, ℂ)) (k : ℕ) (S C : ℝ)
+    (hS : 0 ≤ S) (hC : 0 ≤ C)
+    (hsource : ∀ i ≤ k,
+      S * ((SchwartzMap.seminorm ℝ 0 i) g +
+        (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g) ≤ C)
+    (t : ℝ) :
+    S * (1 + ‖t‖) ^ k * ‖(𝓕 g) t‖ ≤ fourierPointBound k C := by
+  have h0 : S * (SchwartzMap.seminorm ℝ 0 0) (𝓕 g) ≤ fourierSeminormBound 0 C :=
+    uniform_fourier_seminorm_transfer g 0 S C hS hC
+      (fun i hi => hsource i (hi.trans (Nat.zero_le k)))
+  have hk : S * (SchwartzMap.seminorm ℝ k 0) (𝓕 g) ≤ fourierSeminormBound k C :=
+    uniform_fourier_seminorm_transfer g k S C hS hC hsource
+  have hpow : (1 + ‖t‖) ^ k ≤ (2 : ℝ) ^ k * (1 + ‖t‖ ^ k) := by
+    have h := add_pow_le (show (0 : ℝ) ≤ 1 by norm_num) (norm_nonneg t) k
+    have he : (2 : ℝ) ^ (k - 1) ≤ (2 : ℝ) ^ k :=
+      pow_le_pow_right₀ (by norm_num) (Nat.sub_le k 1)
+    simp only [one_pow] at h
+    exact h.trans (mul_le_mul_of_nonneg_right he (by positivity))
+  have hn0 := SchwartzMap.norm_le_seminorm ℝ (𝓕 g) t
+  have hnk := SchwartzMap.norm_pow_mul_le_seminorm ℝ (𝓕 g) k t
+  calc
+    _ ≤ S * ((2 : ℝ) ^ k * (1 + ‖t‖ ^ k)) * ‖(𝓕 g) t‖ := by gcongr
+    _ = (2 : ℝ) ^ k * (S * ‖(𝓕 g) t‖ + S * (‖t‖ ^ k * ‖(𝓕 g) t‖)) := by ring
+    _ ≤ (2 : ℝ) ^ k * (S * (SchwartzMap.seminorm ℝ 0 0) (𝓕 g) +
+          S * (SchwartzMap.seminorm ℝ k 0) (𝓕 g)) := by gcongr
+    _ ≤ fourierPointBound k C := by
+      exact mul_le_mul_of_nonneg_left (add_le_add h0 hk) (by positivity)
+def profileSourceBound (g : 𝓢(ℝ, ℂ)) (J : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range (J + 1),
+    ((SchwartzMap.seminorm ℝ 0 i) g +
+      (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g)
+
+lemma profileSourceBound_nonneg (g : 𝓢(ℝ, ℂ)) (J : ℕ) :
+    0 ≤ profileSourceBound g J := by
+  unfold profileSourceBound
+  positivity
+
+lemma source_le_profileSourceBound (g : 𝓢(ℝ, ℂ)) (J i : ℕ) (hi : i ≤ J) :
+    (SchwartzMap.seminorm ℝ 0 i) g +
+      (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower i) g ≤
+      profileSourceBound g J := by
+  unfold profileSourceBound
+  apply Finset.single_le_sum (s := Finset.range (J + 1)) (a := i)
+    (f := fun k : ℕ => (SchwartzMap.seminorm ℝ 0 k) g +
+      (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower k) g)
+  · intro j hj
+    positivity
+  · exact Finset.mem_range.mpr (by omega)
+
+lemma profile_fourier_envelope (g : 𝓢(ℝ, ℂ)) (J : ℕ) (t : ℝ) :
+    ‖(𝓕 g) t‖ ≤ fourierPointBound (J + 2) (profileSourceBound g (J + 2)) *
+      firstLogDensity J t := by
+  have h := uniform_fourier_pointwise g (J + 2) 1 (profileSourceBound g (J + 2))
+    (by norm_num) (profileSourceBound_nonneg g _)
+    (fun i hi => by simpa using source_le_profileSourceBound g (J + 2) i hi) t
+  rw [firstLogDensity, ← div_eq_mul_inv]
+  apply (le_div_iff₀ (pow_pos (by positivity : 0 < 1 + ‖t‖) (J + 2))).mpr
+  simpa only [one_mul, mul_comm] using h
+
+
+end JointLogSeparation
+
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform ContDiff
+
+/-- Fourier inversion in the logarithmic phase convention. -/
+lemma schwartz_phase_inversion (g : 𝓢(ℝ, ℂ)) (x : ℝ) :
+    g x = ∫ t : ℝ, kernelLogPhase t x * (𝓕 g) t := by
+  have he : g x = 𝓕⁻ (𝓕 (g : ℝ → ℂ)) x :=
+    (g.integrable.fourierInv_fourier_eq (𝓕 g).integrable g.continuous.continuousAt).symm
+  rw [he,Real.fourierInv_eq']
+  apply integral_congr_ae
+  filter_upwards [] with t
+  simp only [smul_eq_mul,kernelLogPhase]
+  congr 1
+  congr 1
+  simp only [RCLike.inner_apply,conj_trivial]
+  push_cast
+  ring
+
+lemma product_three_integrals (f g h : ℝ → ℂ) :
+    (∫ t, f t) * (∫ t, g t) * (∫ t, h t) =
+      ∫ t₁, ∫ t₂, ∫ t₃, f t₁ * g t₂ * h t₃ := by
+  simp_rw [integral_const_mul, integral_mul_const]
+  simp_rw [integral_const_mul, integral_mul_const]
+
+theorem joint_separation_identity
+    (A₁ A₂ : 𝓢(ℝ, ℂ)) (b : 𝓢(ℝ, ℂ)) (P F : ℂ) (s₁ s₂ s₃ : ℝ)
+    (hr : P * F = ∫ t : ℝ, P * kernelLogPhase t s₃ * b t) :
+    P * A₁ s₁ * A₂ s₂ * F =
+      ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+        P * kernelLogPhase t₁ s₁ * kernelLogPhase t₂ s₂ * kernelLogPhase t₃ s₃ *
+          ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃) := by
+  calc
+    _ = A₁ s₁ * A₂ s₂ * (P * F) := by ring
+    _ = (∫ t : ℝ, kernelLogPhase t s₁ * (𝓕 A₁) t) *
+        (∫ t : ℝ, kernelLogPhase t s₂ * (𝓕 A₂) t) *
+        (∫ t : ℝ, P * kernelLogPhase t s₃ * b t) := by
+      rw [← schwartz_phase_inversion, ← schwartz_phase_inversion, ← hr]
+    _ = ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+        (kernelLogPhase t₁ s₁ * (𝓕 A₁) t₁) * (kernelLogPhase t₂ s₂ * (𝓕 A₂) t₂) *
+          (P * kernelLogPhase t₃ s₃ * b t₃) := by
+      exact product_three_integrals
+        (fun t : ℝ => kernelLogPhase t s₁ * (𝓕 A₁) t)
+        (fun t : ℝ => kernelLogPhase t s₂ * (𝓕 A₂) t)
+        (fun t : ℝ => P * kernelLogPhase t s₃ * b t)
+    _ = _ := by
+      apply integral_congr_ae
+      filter_upwards [] with t₁
+      apply integral_congr_ae
+      filter_upwards [] with t₂
+      apply integral_congr_ae
+      filter_upwards [] with t₃
+      ring
+
+theorem joint_separation_envelope {ι : Type*} [Fintype ι]
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : ι → ℝ → ℂ) (a₁ a₂ a₃ M : ι → ℝ)
+    (hM : ∀ j, 0 ≤ M j) (hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j) (A J : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ y : ι → ℝ,
+        (∏ j, V j (y j)) * A₁ (∑ j, a₁ j * y j) * A₂ (∑ j, a₂ j * y j) *
+          paperRadialFourier W (R * Real.exp (∑ j, a₃ j * y j)) =
+        ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+          (∏ j, V j (y j)) * kernelLogPhase t₁ (∑ j, a₁ j * y j) *
+            kernelLogPhase t₂ (∑ j, a₂ j * y j) * kernelLogPhase t₃ (∑ j, a₃ j * y j) *
+            ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃)) ∧
+      (∀ t₁ t₂ t₃ : ℝ, (1 + R) ^ A * ‖(𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃‖ ≤
+        C * firstLogDensity J t₁ * firstLogDensity J t₂ * firstLogDensity J t₃) ∧
+      Integrable (fun t : ℝ => (1 + ‖t‖) ^ J * ‖b t‖) := by
+  classical
+  obtain ⟨C₃, hC₃, hsep⟩ := paperRadialFourier_log_separation_envelope
+    V a₃ M hM hV W A (J + 2)
+  let C₁ := fourierPointBound (J + 2) (profileSourceBound A₁ (J + 2))
+  let C₂ := fourierPointBound (J + 2) (profileSourceBound A₂ (J + 2))
+  have hC₁ : 0 ≤ C₁ := fourierPointBound_nonneg _ _ (profileSourceBound_nonneg _ _)
+  have hC₂ : 0 ≤ C₂ := fourierPointBound_nonneg _ _ (profileSourceBound_nonneg _ _)
+  refine ⟨C₁ * C₂ * C₃, by positivity, ?_⟩
+  intro R hR
+  obtain ⟨b, hb, hweighted, _, hpoint⟩ := hsep R hR
+  refine ⟨b, ?_, ?_, ?_⟩
+  · intro y
+    let P : ℂ := ∏ j, V j (y j)
+    let s₁ : ℝ := ∑ j, a₁ j * y j
+    let s₂ : ℝ := ∑ j, a₂ j * y j
+    let s₃ : ℝ := ∑ j, a₃ j * y j
+    have hr : P * paperRadialFourier W (R * Real.exp s₃) =
+        ∫ t, P * kernelLogPhase t s₃ * b t := by
+      have hh := hb y
+      simpa only [Finset.prod_mul_distrib, ← kernelLogPhase_sum, P, s₃] using hh
+    exact joint_separation_identity A₁ A₂ b P
+      (paperRadialFourier W (R * Real.exp s₃)) s₁ s₂ s₃ hr
+  · intro t₁ t₂ t₃
+    have hb₃ : (1 + R) ^ A * ‖b t₃‖ ≤ C₃ * firstLogDensity J t₃ := by
+      rw [firstLogDensity, ← div_eq_mul_inv]
+      apply (le_div_iff₀ (pow_pos (by positivity : 0 < 1 + ‖t₃‖) (J + 2))).mpr
+      simpa only [Real.norm_eq_abs, mul_comm, mul_left_comm, mul_assoc] using hpoint t₃
+    have h₁ := profile_fourier_envelope A₁ J t₁
+    have h₂ := profile_fourier_envelope A₂ J t₂
+    simp only [norm_mul]
+    calc
+      _ = ‖(𝓕 A₁) t₁‖ * ‖(𝓕 A₂) t₂‖ * ((1 + R)^A * ‖b t₃‖) := by ring
+      _ ≤ (C₁ * firstLogDensity J t₁) * (C₂ * firstLogDensity J t₂) * (C₃ * firstLogDensity J t₃) := by
+        exact mul_le_mul (mul_le_mul h₁ h₂ (norm_nonneg _) (mul_nonneg hC₁ (firstLogDensity_nonneg _ _))) hb₃ (by positivity)
+          (mul_nonneg (mul_nonneg hC₁ (firstLogDensity_nonneg _ _))
+            (mul_nonneg hC₂ (firstLogDensity_nonneg _ _)))
+      _ = _ := by ring
+  · apply hweighted.mono'
+    · exact (by fun_prop : Continuous (fun t : ℝ => (1 + ‖t‖) ^ J * ‖b t‖)).aestronglyMeasurable
+    · filter_upwards [] with t
+      rw [Real.norm_of_nonneg (by positivity)]
+      rw [←Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_right
+        (pow_le_pow_right₀ (by linarith [norm_nonneg t]) (Nat.le_add_right J 2)) (norm_nonneg _)
+
+lemma seven_phase_factor (z ud ue uv kap x₁ x₂ t₁ t₂ t₃ : ℝ) :
+    kernelLogPhase t₁ (z + x₁) * kernelLogPhase t₂ (z + x₂) *
+      kernelLogPhase t₃ (kap - ud - 2 * ue - 2 * uv - x₁ - x₂) =
+    kernelLogPhase (t₁ + t₂) z * kernelLogPhase t₃ (kap - ud - 2 * ue - 2 * uv) *
+      kernelLogPhase (t₁ - t₃) x₁ * kernelLogPhase (t₂ - t₃) x₂ := by
+  unfold kernelLogPhase
+  simp only [← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+def outerWindow (V : Fin 7 → ℝ → ℂ) (z ud ue uv kap : ℝ) : ℂ :=
+  V 0 z * V 1 ud * V 2 ue * V 3 uv * V 4 kap
+
+def fixedColumnTest (V : ℝ → ℂ) (t : ℝ) (x : ℝ) : ℂ := V x * kernelLogPhase t x
+
+theorem seven_kernel_separation (A₁ A₂ W : 𝓢(ℝ, ℂ))
+    (V : Fin 7 → ℝ → ℂ) (M : Fin 7 → ℝ) (hM : ∀ j, 0 ≤ M j)
+    (hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j) (A J : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ z ud ue uv kap x₁ x₂ : ℝ,
+        outerWindow V z ud ue uv kap * V 5 x₁ * V 6 x₂ * A₁ (z + x₁) * A₂ (z + x₂) *
+          paperRadialFourier W
+            (R * Real.exp (kap - ud - 2 * ue - 2 * uv - x₁ - x₂)) =
+        ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+          outerWindow V z ud ue uv kap * kernelLogPhase (t₁ + t₂) z *
+            kernelLogPhase t₃ (kap - ud - 2 * ue - 2 * uv) *
+            fixedColumnTest (V 5) (t₁ - t₃) x₁ * fixedColumnTest (V 6) (t₂ - t₃) x₂ *
+            ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃)) ∧
+      (∀ t₁ t₂ t₃ : ℝ, (1 + R) ^ A * ‖(𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃‖ ≤
+        C * firstLogDensity J t₁ * firstLogDensity J t₂ * firstLogDensity J t₃) ∧
+      Integrable (fun t : ℝ => (1 + ‖t‖) ^ J * ‖b t‖) := by
+  let a₁ : Fin 7 → ℝ := ![1, 0, 0, 0, 0, 1, 0]
+  let a₂ : Fin 7 → ℝ := ![1, 0, 0, 0, 0, 0, 1]
+  let a₃ : Fin 7 → ℝ := ![0, -1, -2, -2, 1, -1, -1]
+  obtain ⟨C, hC, hsep⟩ := joint_separation_envelope A₁ A₂ W V a₁ a₂ a₃ M hM hV A J
+  refine ⟨C, hC, ?_⟩
+  intro R hR
+  obtain ⟨b, hb, hpoint, hint⟩ := hsep R hR
+  refine ⟨b, ?_, hpoint, hint⟩
+  intro z ud ue uv kap x₁ x₂
+  let y : Fin 7 → ℝ := ![z, ud, ue, uv, kap, x₁, x₂]
+  have h₁ : (∑ j, a₁ j * y j) = z + x₁ := by
+    simp [a₁, y, Fin.sum_univ_succ]
+  have h₂ : (∑ j, a₂ j * y j) = z + x₂ := by
+    simp [a₂, y, Fin.sum_univ_succ]
+  have h₃ : (∑ j, a₃ j * y j) = kap - ud - 2 * ue - 2 * uv - x₁ - x₂ := by
+    simp [a₃, y, Fin.sum_univ_succ]
+    ring
+  have hp : (∏ j, V j (y j)) = outerWindow V z ud ue uv kap * V 5 x₁ * V 6 x₂ := by
+    simp [outerWindow, y, Fin.prod_univ_succ, mul_assoc]
+  have h := hb y
+  rw [h₁, h₂, h₃, hp] at h
+  rw [h]
+  apply integral_congr_ae
+  filter_upwards [] with t₁
+  apply integral_congr_ae
+  filter_upwards [] with t₂
+  apply integral_congr_ae
+  filter_upwards [] with t₃
+  have heq := seven_phase_factor z ud ue uv kap x₁ x₂ t₁ t₂ t₃
+  unfold fixedColumnTest
+  calc
+    _ = (outerWindow V z ud ue uv kap * V 5 x₁ * V 6 x₂) *
+      (kernelLogPhase t₁ (z + x₁) * kernelLogPhase t₂ (z + x₂) *
+      kernelLogPhase t₃ (kap - ud - 2 * ue - 2 * uv - x₁ - x₂)) *
+      ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃) := by ring
+    _ = _ := by rw [heq]; ring
+
+end JointLogSeparation
+
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform ContDiff
+
+def phaseDerivative (t : ℝ) : ℂ := ((2 * Real.pi * t : ℝ) : ℂ) * Complex.I
+
+lemma kernelLogPhase_hasDerivAt (t x : ℝ) :
+    HasDerivAt (kernelLogPhase t) (phaseDerivative t * kernelLogPhase t x) x := by
+  have h := ((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (phaseDerivative t)).cexp
+  simp only [Complex.ofRealCLM_apply, Complex.ofReal_one, mul_one] at h
+  have he (y : ℝ) : Complex.exp (phaseDerivative t * (y : ℂ)) = kernelLogPhase t y := by
+    unfold phaseDerivative kernelLogPhase
+    congr 1
+    push_cast
+    ring
+  simp_rw [he] at h
+  simpa only [mul_comm] using h
+
+lemma kernelLogPhase_iteratedDeriv (t : ℝ) (n : ℕ) :
+    iteratedDeriv n (kernelLogPhase t) = fun x => phaseDerivative t ^ n * kernelLogPhase t x := by
+  induction n with
+  | zero => funext x; simp
+  | succ n ih =>
+    rw [iteratedDeriv_succ, ih]
+    funext x
+    rw [show deriv (fun y => phaseDerivative t ^ n * kernelLogPhase t y) x =
+        phaseDerivative t ^ n * (phaseDerivative t * kernelLogPhase t x) from
+      ((kernelLogPhase_hasDerivAt t x).const_mul _).deriv]
+    simp only [pow_succ]
+    ring
+
+lemma phaseDerivative_norm (t : ℝ) : ‖phaseDerivative t‖ = 2 * Real.pi * ‖t‖ := by
+  simp only [phaseDerivative, norm_mul, Complex.norm_real, Complex.norm_I, mul_one]
+  rw [Real.norm_of_nonneg (by norm_num : (0 : ℝ) ≤ 2), Real.norm_of_nonneg Real.pi_pos.le]
+
+lemma kernelLogPhase_iteratedFDeriv_norm (t x : ℝ) (n : ℕ) :
+    ‖iteratedFDeriv ℝ n (kernelLogPhase t) x‖ = (2 * Real.pi * ‖t‖) ^ n := by
+  rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, kernelLogPhase_iteratedDeriv]
+  simp only [norm_mul, norm_pow, phaseDerivative_norm, kernelLogPhase_norm, mul_one]
+
+lemma kernelLogPhase_temperate (t : ℝ) : (kernelLogPhase t).HasTemperateGrowth := by
+  constructor
+  · unfold kernelLogPhase
+    fun_prop
+  · intro n
+    refine ⟨0,(2 * Real.pi * ‖t‖) ^ n,?_⟩
+    intro x
+    rw [kernelLogPhase_iteratedFDeriv_norm,pow_zero,mul_one]
+
+def frequencyTwist (g : 𝓢(ℝ, ℂ)) (t : ℝ) : 𝓢(ℝ, ℂ) :=
+  SchwartzMap.smulLeftCLM ℂ (kernelLogPhase t) g
+
+@[simp] lemma frequencyTwist_apply (g : 𝓢(ℝ, ℂ)) (t x : ℝ) :
+    frequencyTwist g t x = kernelLogPhase t x * g x := by
+  exact SchwartzMap.smulLeftCLM_apply_apply (kernelLogPhase_temperate t) g x
+
+lemma kernelLogPhase_add_frequency (t s x : ℝ) :
+    kernelLogPhase (t + s) x = kernelLogPhase t x * kernelLogPhase s x := by
+  unfold kernelLogPhase
+  rw [← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+@[simp] lemma frequencyTwist_twice (g : 𝓢(ℝ, ℂ)) (t s : ℝ) :
+    frequencyTwist (frequencyTwist g t) s = frequencyTwist g (t + s) := by
+  ext x
+  simp only [frequencyTwist_apply, kernelLogPhase_add_frequency]
+  ring
+
+@[simp] lemma frequencyTwist_norm (g : 𝓢(ℝ, ℂ)) (t x : ℝ) :
+    ‖frequencyTwist g t x‖ = ‖g x‖ := by simp [kernelLogPhase_norm]
+
+lemma frequencyTwist_tsupport (g : 𝓢(ℝ, ℂ)) (t : ℝ) :
+    tsupport (frequencyTwist g t) = tsupport g := by
+  apply congrArg (fun s : Set ℝ => closure s)
+  ext x
+  have hp : kernelLogPhase t x ≠ 0 := by
+    intro hz
+    have hn := kernelLogPhase_norm t x
+    rw [hz, norm_zero] at hn
+    norm_num at hn
+  simp only [Function.mem_support, frequencyTwist_apply, ne_eq, mul_eq_zero, hp, false_or]
+
+def derivativeSeminormSum (g : 𝓢(ℝ, ℂ)) (k n : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range (n + 1), (SchwartzMap.seminorm ℝ k i) g
+
+lemma derivativeSeminormSum_nonneg (g : 𝓢(ℝ, ℂ)) (k n : ℕ) :
+    0 ≤ derivativeSeminormSum g k n := by unfold derivativeSeminormSum; positivity
+
+lemma seminorm_le_derivativeSeminormSum (g : 𝓢(ℝ, ℂ)) (k n i : ℕ) (hi : i ≤ n) :
+    (SchwartzMap.seminorm ℝ k i) g ≤ derivativeSeminormSum g k n := by
+  apply Finset.single_le_sum (s := Finset.range (n + 1))
+    (f := fun j => (SchwartzMap.seminorm ℝ k j) g) (a := i)
+  · intro j hj; positivity
+  · exact Finset.mem_range.mpr (by omega)
+
+theorem frequencyTwist_seminorm_bound (g : 𝓢(ℝ, ℂ)) (t : ℝ) (k n : ℕ) :
+    (SchwartzMap.seminorm ℝ k n) (frequencyTwist g t) ≤
+      (2 : ℝ)^n * (1 + 2 * Real.pi * ‖t‖)^n * derivativeSeminormSum g k n := by
+  apply SchwartzMap.seminorm_le_bound ℝ k n _
+    (mul_nonneg (mul_nonneg (by positivity) (by positivity)) (derivativeSeminormSum_nonneg _ _ _))
+  intro x
+  have hh := norm_iteratedFDeriv_mul_le (kernelLogPhase_temperate t).1 (g.smooth ⊤) x
+    (n := n) (by exact_mod_cast le_top)
+  have hfun : (frequencyTwist g t : ℝ → ℂ) = fun x => kernelLogPhase t x * g x := by
+    funext x; exact frequencyTwist_apply g t x
+  rw [hfun]
+  calc
+    _ ≤ ‖x‖^k * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+        ‖iteratedFDeriv ℝ i (kernelLogPhase t) x‖ * ‖iteratedFDeriv ℝ (n-i) g x‖ := by gcongr
+    _ = ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+        (2 * Real.pi * ‖t‖)^i * (‖x‖^k * ‖iteratedFDeriv ℝ (n-i) g x‖) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [kernelLogPhase_iteratedFDeriv_norm]
+      ring
+    _ ≤ ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+        (1 + 2 * Real.pi * ‖t‖)^n * derivativeSeminormSum g k n := by
+      apply Finset.sum_le_sum
+      intro i hi
+      have hin : i ≤ n := Finset.mem_range_succ_iff.mp hi
+      have hp : (2 * Real.pi * ‖t‖)^i ≤ (1 + 2 * Real.pi * ‖t‖)^n := by
+        calc
+          _ ≤ (1 + 2 * Real.pi * ‖t‖)^i := by gcongr; linarith
+          _ ≤ _ := pow_le_pow_right₀ (by
+            have hc : 0 ≤ 2 * Real.pi * ‖t‖ := by positivity
+            linarith) hin
+      have hs := (SchwartzMap.le_seminorm ℝ k (n-i) g x).trans
+        (seminorm_le_derivativeSeminormSum g k n (n-i) (Nat.sub_le n i))
+      exact mul_le_mul (mul_le_mul_of_nonneg_left hp (by positivity)) hs (by positivity)
+        (by positivity)
+    _ = _ := by
+      rw [← Finset.sum_mul, ← Finset.sum_mul, ← Nat.cast_sum, Nat.sum_range_choose]
+      norm_cast
+
+theorem frequencyTwist_seminorm_polynomial (g : 𝓢(ℝ, ℂ)) (t : ℝ) (k n : ℕ) :
+    (SchwartzMap.seminorm ℝ k n) (frequencyTwist g t) ≤
+      ((2 : ℝ)^n * (1 + 2 * Real.pi)^n * derivativeSeminormSum g k n) * (1 + ‖t‖)^n := by
+  have hsum := derivativeSeminormSum_nonneg g k n
+  have hp : 1 + 2 * Real.pi * ‖t‖ ≤ (1 + 2 * Real.pi) * (1 + ‖t‖) := by
+    nlinarith [Real.pi_pos, norm_nonneg t]
+  calc
+    _ ≤ (2 : ℝ)^n * (1 + 2 * Real.pi * ‖t‖)^n * derivativeSeminormSum g k n :=
+      frequencyTwist_seminorm_bound g t k n
+    _ ≤ (2 : ℝ)^n * ((1 + 2 * Real.pi) * (1 + ‖t‖))^n * derivativeSeminormSum g k n := by
+      gcongr
+    _ = _ := by rw [mul_pow]; ring
+
+def twistSourceBound (g : 𝓢(ℝ, ℂ)) (K : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range (K + 1),
+    ((2 : ℝ)^i * (1 + 2 * Real.pi)^i *
+      (derivativeSeminormSum g 0 i + derivativeSeminormSum g (volume : Measure ℝ).integrablePower i))
+
+lemma twistSourceBound_nonneg (g : 𝓢(ℝ, ℂ)) (K : ℕ) : 0 ≤ twistSourceBound g K := by
+  apply Finset.sum_nonneg
+  intro i hi
+  exact mul_nonneg (mul_nonneg (by positivity) (by positivity))
+    (add_nonneg (derivativeSeminormSum_nonneg _ _ _) (derivativeSeminormSum_nonneg _ _ _))
+
+theorem profileSourceBound_frequencyTwist (g : 𝓢(ℝ, ℂ)) (t : ℝ) (K : ℕ) :
+    profileSourceBound (frequencyTwist g t) K ≤ twistSourceBound g K * (1 + ‖t‖)^K := by
+  unfold profileSourceBound twistSourceBound
+  rw [Finset.sum_mul]
+  apply Finset.sum_le_sum
+  intro i hi
+  have hin : i ≤ K := Finset.mem_range_succ_iff.mp hi
+  have hb := add_le_add (frequencyTwist_seminorm_polynomial g t 0 i)
+    (frequencyTwist_seminorm_polynomial g t (volume : Measure ℝ).integrablePower i)
+  have hn : 0 ≤ (2 : ℝ)^i * (1 + 2 * Real.pi)^i *
+      (derivativeSeminormSum g 0 i + derivativeSeminormSum g (volume : Measure ℝ).integrablePower i) :=
+    mul_nonneg (mul_nonneg (by positivity) (by positivity))
+      (add_nonneg (derivativeSeminormSum_nonneg _ _ _) (derivativeSeminormSum_nonneg _ _ _))
+  calc
+    _ ≤ ((2 : ℝ)^i * (1 + 2 * Real.pi)^i *
+        (derivativeSeminormSum g 0 i + derivativeSeminormSum g (volume : Measure ℝ).integrablePower i)) *
+          (1 + ‖t‖)^i := by
+            simpa only [←add_mul,←mul_add,mul_assoc] using hb
+    _ ≤ _ := mul_le_mul_of_nonneg_left (pow_le_pow_right₀ (by linarith [norm_nonneg t]) hin) hn
+
+lemma fourierPointBound_mono (K : ℕ) {C D : ℝ} (hCD : C ≤ D) :
+    fourierPointBound K C ≤ fourierPointBound K D := by
+  unfold fourierPointBound fourierSeminormBound
+  gcongr
+
+lemma fourierPointBound_mul (K : ℕ) (C D : ℝ) :
+    fourierPointBound K (C * D) = fourierPointBound K C * D := by
+  unfold fourierPointBound fourierSeminormBound
+  ring
+
+theorem twisted_profile_fourier_envelope (g : 𝓢(ℝ, ℂ)) (t s : ℝ) (J : ℕ) :
+    ‖(𝓕 (frequencyTwist g t)) s‖ ≤
+      fourierPointBound (J + 2) (twistSourceBound g (J + 2)) *
+        (1 + ‖t‖)^(J + 2) * firstLogDensity J s := by
+  calc
+    _ ≤ fourierPointBound (J + 2) (profileSourceBound (frequencyTwist g t) (J + 2)) *
+        firstLogDensity J s := profile_fourier_envelope _ _ _
+    _ ≤ fourierPointBound (J + 2) (twistSourceBound g (J + 2) * (1 + ‖t‖)^(J + 2)) *
+        firstLogDensity J s :=
+      mul_le_mul_of_nonneg_right (fourierPointBound_mono _ (profileSourceBound_frequencyTwist _ _ _))
+        (firstLogDensity_nonneg _ _)
+    _ = _ := by rw [fourierPointBound_mul]
+
+end JointLogSeparation
+
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform ContDiff
+
+lemma integrable_phase_schwartz (b : 𝓢(ℝ, ℂ)) (x : ℝ) :
+    Integrable (fun t : ℝ => kernelLogPhase t x * b t) := by
+  have h := integrable_log_pair b x 0 1
+  convert h using 1
+  funext t
+  simp [kernelLogPhase, mul_comm]
+
+theorem finite_triple_phase_integral {α : Type*} (s : Finset α)
+    (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)) (x y z : α → ℝ) (c : α → ℂ) :
+    (∑ i ∈ s, ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      (kernelLogPhase t₁ (x i) * b₁ t₁) * ((kernelLogPhase t₂ (y i) * b₂ t₂) *
+        ((kernelLogPhase t₃ (z i) * b₃ t₃) * c i))) =
+    ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ, ∑ i ∈ s,
+      (kernelLogPhase t₁ (x i) * b₁ t₁) * ((kernelLogPhase t₂ (y i) * b₂ t₂) *
+        ((kernelLogPhase t₃ (z i) * b₃ t₃) * c i)) := by
+  let f := fun i (t₁ t₂ t₃ : ℝ) =>
+    (kernelLogPhase t₁ (x i) * b₁ t₁) * ((kernelLogPhase t₂ (y i) * b₂ t₂) *
+        ((kernelLogPhase t₃ (z i) * b₃ t₃) * c i))
+  have hi₃ (i : α) (t₁ t₂ : ℝ) : Integrable (f i t₁ t₂) :=
+    (((integrable_phase_schwartz b₃ (z i)).mul_const (c i)).const_mul _).const_mul _
+  have hi₂ (i : α) (t₁ : ℝ) : Integrable (fun t₂ => ∫ t₃ : ℝ, f i t₁ t₂ t₃) := by
+    simp only [f, integral_const_mul, integral_mul_const]
+    exact ((integrable_phase_schwartz b₂ (y i)).mul_const _).const_mul _
+  have hi₁ (i : α) : Integrable (fun t₁ => ∫ t₂ : ℝ, ∫ t₃ : ℝ, f i t₁ t₂ t₃) := by
+    simp only [f, integral_const_mul, integral_mul_const]
+    exact (integrable_phase_schwartz b₁ (x i)).mul_const _
+  change (∑ i ∈ s, ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ, f i t₁ t₂ t₃) = _
+  rw [← integral_finsetSum _ (fun i _ => hi₁ i)]
+  apply integral_congr_ae
+  filter_upwards [] with t₁
+  rw [← integral_finsetSum _ (fun i _ => hi₂ i t₁)]
+  apply integral_congr_ae
+  filter_upwards [] with t₂
+  exact (integral_finsetSum _ (fun i _ => hi₃ i t₁ t₂)).symm
+
+end JointLogSeparation
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+  (H₁ H₂ : Finset ι → ℂ)
+
+def postCommonSmoothPair (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m f y₁ y₂ : O)
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ)
+    (z ud ue uv kap X₁ X₂ R : ℝ) : ℂ :=
+  ∑ N ∈ F.powerset, ∑ M ∈ F.powerset,
+    star (secondChildColumn p hg Ψ₁ m f y₁ H₁ N) *
+      secondChildColumn p hg Ψ₂ m f y₂ H₂ M *
+      (outerWindow V z ud ue uv kap * V 5 (columnLog p X₁ N) * V 6 (columnLog p X₂ M) *
+        A₁ (z + columnLog p X₁ N) * A₂ (z + columnLog p X₂ M) *
+        paperRadialFourier W
+          (R * Real.exp (kap - ud - 2 * ue - 2 * uv - columnLog p X₁ N - columnLog p X₂ M)))
+
+def fixedSecondTest (V : ℝ → ℂ) (X t s : ℝ) (negative : Bool) (N : Finset ι) : ℂ :=
+  if negative then star (fixedColumnTest V (t-s) (columnLog p X N))
+  else fixedColumnTest V (t-s) (columnLog p X N)
+
+/-- Fixed arithmetic coefficients are retained under logarithmic twisting. -/
+def weightedSecondTest (H : Finset ι → ℂ) (V : ℝ → ℂ)
+    (X t s : ℝ) (negative : Bool) (N : Finset ι) : ℂ :=
+  H N * fixedSecondTest p V X t s negative N
+
+theorem postCommonSmoothPair_fixed_tests
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m f y₁ y₂ : O)
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ)
+    (z ud ue uv kap X₁ X₂ R : ℝ) (b : 𝓢(ℝ, ℂ))
+    (hsep : ∀ a a' : ℝ,
+      outerWindow V z ud ue uv kap * V 5 a * V 6 a' * A₁ (z+a) * A₂ (z+a') *
+        paperRadialFourier W (R * Real.exp (kap-ud-2*ue-2*uv-a-a')) =
+      ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+        outerWindow V z ud ue uv kap * kernelLogPhase (t₁+t₂) z *
+          kernelLogPhase t₃ (kap-ud-2*ue-2*uv) *
+          fixedColumnTest (V 5) (t₁-t₃) a * fixedColumnTest (V 6) (t₂-t₃) a' *
+          ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃)) :
+    postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ W V z ud ue uv kap X₁ X₂ R =
+    ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      (outerWindow V z ud ue uv kap * kernelLogPhase (t₁+t₂) z *
+        kernelLogPhase t₃ (kap-ud-2*ue-2*uv) * ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃)) *
+      star (fixedChildRow p hg F Ψ₁ m
+        (weightedSecondTest p H₁ (V 5) X₁ t₁ t₃ true) f y₁) *
+      fixedChildRow p hg F Ψ₂ m
+        (weightedSecondTest p H₂ (V 6) X₂ t₂ t₃ false) f y₂ := by
+  let B₁ := fun N => secondChildColumn p hg Ψ₁ m f y₁ H₁ N
+  let B₂ := fun M => secondChildColumn p hg Ψ₂ m f y₂ H₂ M
+  let q := fun (i : Finset ι × Finset ι) =>
+    outerWindow V z ud ue uv kap * V 5 (columnLog p X₁ i.1) * V 6 (columnLog p X₂ i.2) *
+      star (B₁ i.1) * B₂ i.2
+  let K := fun (i : Finset ι × Finset ι) (t₁ t₂ t₃ : ℝ) =>
+    (kernelLogPhase t₁ (z + columnLog p X₁ i.1) * (𝓕 A₁) t₁) *
+      ((kernelLogPhase t₂ (z + columnLog p X₂ i.2) * (𝓕 A₂) t₂) *
+        ((kernelLogPhase t₃ (kap-ud-2*ue-2*uv-columnLog p X₁ i.1-columnLog p X₂ i.2) * b t₃) * q i))
+  have hterm (N M : Finset ι) : star (B₁ N) * B₂ M *
+      (outerWindow V z ud ue uv kap * V 5 (columnLog p X₁ N) * V 6 (columnLog p X₂ M) *
+        A₁ (z+columnLog p X₁ N) * A₂ (z+columnLog p X₂ M) *
+        paperRadialFourier W
+          (R * Real.exp (kap-ud-2*ue-2*uv-columnLog p X₁ N-columnLog p X₂ M))) =
+      ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ, K (N,M) t₁ t₂ t₃ := by
+    rw [hsep]
+    simp_rw [← integral_const_mul]
+    apply integral_congr_ae
+    filter_upwards [] with t₁
+    apply integral_congr_ae
+    filter_upwards [] with t₂
+    apply integral_congr_ae
+    filter_upwards [] with t₃
+    have hphase := JointLogSeparation.seven_phase_factor z ud ue uv kap
+      (columnLog p X₁ N) (columnLog p X₂ M) t₁ t₂ t₃
+    dsimp only [K, q]
+    unfold fixedColumnTest
+    calc
+      _ = (outerWindow V z ud ue uv kap * V 5 (columnLog p X₁ N) * V 6 (columnLog p X₂ M) *
+        star (B₁ N) * B₂ M) *
+        (kernelLogPhase (t₁+t₂) z * kernelLogPhase t₃ (kap-ud-2*ue-2*uv) *
+          kernelLogPhase (t₁-t₃) (columnLog p X₁ N) * kernelLogPhase (t₂-t₃) (columnLog p X₂ M)) *
+        ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃) := by ring
+      _ = _ := by rw [← hphase]; ring
+  calc
+    _ = ∑ i ∈ F.powerset ×ˢ F.powerset, ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ, K i t₁ t₂ t₃ := by
+      simp only [postCommonSmoothPair, Finset.sum_product]
+      exact Finset.sum_congr rfl (fun N _ => Finset.sum_congr rfl (fun M _ => hterm N M))
+    _ = ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ, ∑ i ∈ F.powerset ×ˢ F.powerset, K i t₁ t₂ t₃ :=
+      JointLogSeparation.finite_triple_phase_integral _ (𝓕 A₁) (𝓕 A₂) b _ _ _ q
+    _ = _ := by
+      apply integral_congr_ae
+      filter_upwards [] with t₁
+      apply integral_congr_ae
+      filter_upwards [] with t₂
+      apply integral_congr_ae
+      filter_upwards [] with t₃
+      simp only [Finset.sum_product]
+      have hcols : (∑ N ∈ F.powerset, ∑ M ∈ F.powerset, K (N,M) t₁ t₂ t₃) =
+          (outerWindow V z ud ue uv kap * kernelLogPhase (t₁+t₂) z *
+            kernelLogPhase t₃ (kap-ud-2*ue-2*uv) * ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃)) *
+          (∑ N ∈ F.powerset, star (B₁ N) * fixedColumnTest (V 5) (t₁-t₃) (columnLog p X₁ N)) *
+          (∑ M ∈ F.powerset, B₂ M * fixedColumnTest (V 6) (t₂-t₃) (columnLog p X₂ M)) := by
+        simp only [Finset.mul_sum, Finset.sum_mul]
+        conv_rhs => rw [Finset.sum_comm]
+        apply Finset.sum_congr rfl
+        intro N hN
+        apply Finset.sum_congr rfl
+        intro M hM
+        have hphase := JointLogSeparation.seven_phase_factor z ud ue uv kap
+          (columnLog p X₁ N) (columnLog p X₂ M) t₁ t₂ t₃
+        dsimp only [K, q]
+        unfold fixedColumnTest
+        calc
+          _ = (outerWindow V z ud ue uv kap * V 5 (columnLog p X₁ N) * V 6 (columnLog p X₂ M) *
+            star (B₁ N) * B₂ M) *
+            (kernelLogPhase t₁ (z+columnLog p X₁ N) * kernelLogPhase t₂ (z+columnLog p X₂ M) *
+              kernelLogPhase t₃ (kap-ud-2*ue-2*uv-columnLog p X₁ N-columnLog p X₂ M)) *
+            ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃) := by ring
+          _ = _ := by rw [hphase]; ring
+      rw [hcols]
+      have hleft : (∑ N ∈ F.powerset, star (B₁ N) *
+          fixedColumnTest (V 5) (t₁-t₃) (columnLog p X₁ N)) =
+          star (fixedChildRow p hg F Ψ₁ m
+            (weightedSecondTest p H₁ (V 5) X₁ t₁ t₃ true) f y₁) := by
+        simp only [fixedChildRow, star_sum]
+        apply Finset.sum_congr rfl
+        intro N hN
+        simp only [secondChildColumn, weightedSecondTest, fixedSecondTest, ite_true, B₁,
+          star_mul, star_star, mul_one]
+        ring
+      have hright : (∑ N ∈ F.powerset, B₂ N *
+          fixedColumnTest (V 6) (t₂-t₃) (columnLog p X₂ N)) =
+          fixedChildRow p hg F Ψ₂ m
+            (weightedSecondTest p H₂ (V 6) X₂ t₂ t₃ false) f y₂ := by
+        apply Finset.sum_congr rfl
+        intro N hN
+        simp only [secondChildColumn, weightedSecondTest, fixedSecondTest, Bool.false_eq_true, ite_false, B₂, mul_one]
+        ring
+      rw [hleft, hright]
+
+def separatedPostCommon (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m f y₁ y₂ : O)
+    (A₁ A₂ b : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ)
+    (z ud ue uv kap X₁ X₂ : ℝ) : ℂ :=
+  ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+    (outerWindow V z ud ue uv kap * kernelLogPhase (t₁+t₂) z *
+      kernelLogPhase t₃ (kap-ud-2*ue-2*uv) * ((𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃)) *
+    star (fixedChildRow p hg F Ψ₁ m
+      (weightedSecondTest p H₁ (V 5) X₁ t₁ t₃ true) f y₁) *
+    fixedChildRow p hg F Ψ₂ m
+      (weightedSecondTest p H₂ (V 6) X₂ t₂ t₃ false) f y₂
+
+theorem postCommonSmoothPair_uniform_fixed_tests
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ) (M : Fin 7 → ℝ)
+    (hM : ∀ j, 0 ≤ M j) (hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j) (A J : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ t₁ t₂ t₃ : ℝ, (1+R)^A * ‖(𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃‖ ≤
+        C * firstLogDensity J t₁ * firstLogDensity J t₂ * firstLogDensity J t₃) ∧
+      ∀ (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m f y₁ y₂ : O)
+        (z ud ue uv kap X₁ X₂ : ℝ),
+        postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ W V
+          z ud ue uv kap X₁ X₂ R =
+        separatedPostCommon p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ b V
+          z ud ue uv kap X₁ X₂ := by
+  obtain ⟨C, hC, hsep⟩ := JointLogSeparation.seven_kernel_separation A₁ A₂ W V M hM hV A J
+  refine ⟨C, hC, ?_⟩
+  intro R hR
+  obtain ⟨b, hb, hpoint, hint⟩ := hsep R hR
+  refine ⟨b, hpoint, ?_⟩
+  intro F Ψ₁ Ψ₂ m f y₁ y₂ z ud ue uv kap X₁ X₂
+  exact postCommonSmoothPair_fixed_tests p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ W V
+    z ud ue uv kap X₁ X₂ R b (hb z ud ue uv kap)
+
+end SecondPassArithmetic
+
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+
+abbrev Frequency := ℝ × ℝ × ℝ
+
+def tripleCoefficient (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)) (t : Frequency) : ℂ :=
+  b₁ t.1 * (b₂ t.2.1 * b₃ t.2.2)
+
+lemma tripleCoefficient_integrable (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)) :
+    Integrable (tripleCoefficient b₁ b₂ b₃) :=
+  b₁.integrable.mul_prod (b₂.integrable.mul_prod b₃.integrable)
+
+lemma tripleCoefficient_bounded_integrable (b₁ b₂ b₃ : 𝓢(ℝ, ℂ))
+    (F : Frequency → ℂ) (hF : Continuous F) (M : ℝ) (hM : ∀ t, ‖F t‖ ≤ M) :
+    Integrable (fun t => tripleCoefficient b₁ b₂ b₃ t * F t) :=
+  (tripleCoefficient_integrable b₁ b₂ b₃).mul_bdd hF.aestronglyMeasurable
+    (Filter.Eventually.of_forall hM)
+
+lemma tripleCoefficient_norm_bounded_integrable (b₁ b₂ b₃ : 𝓢(ℝ, ℂ))
+    (G : Frequency → ℝ) (hG : Continuous G) (M : ℝ) (hM : ∀ t, ‖G t‖ ≤ M) :
+    Integrable (fun t => ‖tripleCoefficient b₁ b₂ b₃ t‖ * G t) :=
+  (tripleCoefficient_integrable b₁ b₂ b₃).norm.mul_bdd hG.aestronglyMeasurable
+    (Filter.Eventually.of_forall hM)
+
+lemma tripleCoefficient_slice_integrable (b₁ b₂ b₃ : 𝓢(ℝ, ℂ))
+    (F : Frequency → ℂ) (hF : Continuous F) (M : ℝ) (hM : ∀ t, ‖F t‖ ≤ M) (x : ℝ) :
+    Integrable (fun t : ℝ × ℝ => tripleCoefficient b₁ b₂ b₃ (x,t) * F (x,t)) := by
+  have hc : Integrable (fun t : ℝ × ℝ => b₁ x * (b₂ t.1 * b₃ t.2)) :=
+    (b₂.integrable.mul_prod b₃.integrable).const_mul (b₁ x)
+  apply hc.mul_bdd
+  · exact (hF.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
+  · exact Filter.Eventually.of_forall (fun t => hM (x,t))
+
+lemma tripleCoefficient_norm_slice_integrable (b₁ b₂ b₃ : 𝓢(ℝ, ℂ))
+    (G : Frequency → ℝ) (hG : Continuous G) (M : ℝ) (hM : ∀ t, ‖G t‖ ≤ M) (x : ℝ) :
+    Integrable (fun t : ℝ × ℝ => ‖tripleCoefficient b₁ b₂ b₃ (x,t)‖ * G (x,t)) := by
+  have hc : Integrable (fun t : ℝ × ℝ => ‖b₁ x * (b₂ t.1 * b₃ t.2)‖) :=
+    ((b₂.integrable.mul_prod b₃.integrable).const_mul (b₁ x)).norm
+  apply hc.mul_bdd
+  · exact (hG.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
+  · exact Filter.Eventually.of_forall (fun t => hM (x,t))
+
+lemma nested_eq_integral {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (f : Frequency → E) (hf : Integrable f)
+    (hslice : ∀ x : ℝ, Integrable (fun yz : ℝ × ℝ => f (x,yz))) :
+    (∫ x : ℝ, ∫ y : ℝ, ∫ z : ℝ, f (x,y,z)) = ∫ t : Frequency, f t := by
+  rw [Measure.volume_eq_prod ℝ (ℝ × ℝ), integral_prod _ hf]
+  apply integral_congr_ae
+  filter_upwards [] with x
+  simpa only [Measure.volume_eq_prod] using (integral_prod _ (hslice x)).symm
+
+theorem triple_integral_bound (b₁ b₂ b₃ : 𝓢(ℝ, ℂ))
+    (F : Frequency → ℂ) (G : Frequency → ℝ)
+    (hF : Continuous F) (hG : Continuous G) (hG0 : ∀ t, 0 ≤ G t)
+    (D M : ℝ) (hD : 0 ≤ D) (hM : ∀ t, G t ≤ M)
+    (hpoint : ∀ t, ‖F t‖ ≤ D * G t) :
+    ‖∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃) * F (t₁,t₂,t₃)‖ ≤
+    D * (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      ‖tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃)‖ * G (t₁,t₂,t₃)) := by
+  have hFb : ∀ t, ‖F t‖ ≤ D * M := fun t => (hpoint t).trans (mul_le_mul_of_nonneg_left (hM t) hD)
+  have hGb : ∀ t, ‖G t‖ ≤ M := fun t => by simpa [Real.norm_of_nonneg (hG0 t)] using hM t
+  have hfi := tripleCoefficient_bounded_integrable b₁ b₂ b₃ F hF (D*M) hFb
+  have hgi := tripleCoefficient_norm_bounded_integrable b₁ b₂ b₃ G hG M hGb
+  rw [nested_eq_integral _ hfi (tripleCoefficient_slice_integrable b₁ b₂ b₃ F hF (D*M) hFb),
+    nested_eq_integral _ hgi (tripleCoefficient_norm_slice_integrable b₁ b₂ b₃ G hG M hGb)]
+  calc
+    _ ≤ ∫ t : Frequency, ‖tripleCoefficient b₁ b₂ b₃ t * F t‖ := norm_integral_le_integral_norm _
+    _ ≤ ∫ t : Frequency, D * (‖tripleCoefficient b₁ b₂ b₃ t‖ * G t) := by
+      apply integral_mono hfi.norm (hgi.const_mul D)
+      intro t
+      simp only [norm_mul]
+      calc
+        _ ≤ ‖tripleCoefficient b₁ b₂ b₃ t‖ * (D * G t) :=
+          mul_le_mul_of_nonneg_left (hpoint t) (norm_nonneg _)
+        _ = _ := by ring
+    _ = _ := integral_const_mul _ _
+
+end JointLogSeparation
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic SecondPassFiber JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+  (H₀ : Finset ι → ℂ)
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma fixedTest_continuous (V : ℝ → ℂ) (X : ℝ) (negative : Bool) (N : Finset ι)
+    (τ σ : Frequency → ℝ) (hτ : Continuous τ) (hσ : Continuous σ) :
+    Continuous (fun t => weightedSecondTest p H₀ V X (τ t) (σ t) negative N) := by
+  have hh := (kernelLogPhase_continuous_left (columnLog p X N)).comp (hτ.sub hσ)
+  cases negative <;> simp only [weightedSecondTest, fixedSecondTest, Bool.false_eq_true, ite_false, ite_true,
+    fixedColumnTest] <;> fun_prop
+
+lemma fixedColumn_norm_frequency (Ψ : O →* ℂ) (m f y : O) (V : ℝ → ℂ) (X a b : ℝ)
+    (negative : Bool) (N : Finset ι) :
+    ‖secondChildColumn p hg Ψ m f y (weightedSecondTest p H₀ V X a b negative) N‖ =
+    ‖secondChildColumn p hg Ψ m f y (weightedSecondTest p H₀ V X 0 0 negative) N‖ := by
+  cases negative <;> simp only [secondChildColumn, weightedSecondTest, fixedSecondTest, Bool.false_eq_true, ite_false,
+    ite_true, fixedColumnTest, norm_mul, norm_star, kernelLogPhase_norm]
+
+lemma fixedRow_continuous (F : Finset ι) (Ψ : O →* ℂ) (m f y : O) (V : ℝ → ℂ) (X : ℝ)
+    (negative : Bool) (τ σ : Frequency → ℝ) (hτ : Continuous τ) (hσ : Continuous σ) :
+    Continuous (fun t => fixedChildRow p hg F Ψ m
+      (weightedSecondTest p H₀ V X (τ t) (σ t) negative) f y) := by
+  unfold fixedChildRow
+  apply continuous_finsetSum
+  intro N hN
+  have hh := fixedTest_continuous p H₀ V X negative N τ σ hτ hσ
+  unfold secondChildColumn
+  fun_prop
+
+def rowMagnitude (F : Finset ι) (Ψ : O →* ℂ) (m f y : O) (V : ℝ → ℂ) (X : ℝ)
+    (negative : Bool) : ℝ :=
+  ∑ N ∈ F.powerset,
+    ‖secondChildColumn p hg Ψ m f y (weightedSecondTest p H₀ V X 0 0 negative) N‖
+
+lemma rowMagnitude_nonneg (F : Finset ι) (Ψ : O →* ℂ) (m f y : O) (V : ℝ → ℂ) (X : ℝ)
+    (negative : Bool) : 0 ≤ rowMagnitude p hg H₀ F Ψ m f y V X negative := by
+  unfold rowMagnitude
+  positivity
+
+lemma fixedRow_norm_le (F : Finset ι) (Ψ : O →* ℂ) (m f y : O) (V : ℝ → ℂ) (X a b : ℝ)
+    (negative : Bool) :
+    ‖fixedChildRow p hg F Ψ m (weightedSecondTest p H₀ V X a b negative) f y‖ ≤
+      rowMagnitude p hg H₀ F Ψ m f y V X negative := by
+  unfold fixedChildRow rowMagnitude
+  apply (norm_sum_le _ _).trans_eq
+  exact Finset.sum_congr rfl (fun N hN => fixedColumn_norm_frequency p hg H₀ Ψ m f y V X a b negative N)
+
+def childEnergy (F : Finset ι) (Ψ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V : ℝ → ℂ) (X : ℝ) (testNegative rowNegative : Bool) (a b : ℝ) : ℝ :=
+  ∑ u : Oˣ, ∑ z ∈ T,
+    ‖idealChildRow p hg F Ψ m (weightedSecondTest p H₀ V X a b testNegative) rowNegative u z‖ ^ 2
+
+def energyMagnitude (F : Finset ι) (Ψ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V : ℝ → ℂ) (X : ℝ) (testNegative rowNegative : Bool) : ℝ :=
+  ∑ u : Oˣ, ∑ z ∈ T,
+    (rowMagnitude p hg H₀ F Ψ m ((u : O) * cubicIdealGenerator z.1)
+      (if rowNegative then -z.2 else z.2) V X testNegative) ^ 2
+
+lemma childEnergy_nonneg (F : Finset ι) (Ψ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V : ℝ → ℂ) (X : ℝ) (testNegative rowNegative : Bool) (a b : ℝ) :
+    0 ≤ childEnergy p hg H₀ F Ψ m T V X testNegative rowNegative a b := by
+  unfold childEnergy
+  positivity
+
+lemma childEnergy_le (F : Finset ι) (Ψ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V : ℝ → ℂ) (X : ℝ) (testNegative rowNegative : Bool) (a b : ℝ) :
+    childEnergy p hg H₀ F Ψ m T V X testNegative rowNegative a b ≤
+      energyMagnitude p hg H₀ F Ψ m T V X testNegative rowNegative := by
+  unfold childEnergy energyMagnitude idealChildRow
+  apply Finset.sum_le_sum
+  intro u hu
+  apply Finset.sum_le_sum
+  intro z hz
+  exact pow_le_pow_left₀ (norm_nonneg _) (fixedRow_norm_le p hg H₀ F Ψ m _ _ V X a b testNegative) 2
+
+lemma childEnergy_continuous (F : Finset ι) (Ψ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V : ℝ → ℂ) (X : ℝ) (testNegative rowNegative : Bool)
+    (τ σ : Frequency → ℝ) (hτ : Continuous τ) (hσ : Continuous σ) :
+    Continuous (fun t => childEnergy p hg H₀ F Ψ m T V X testNegative rowNegative (τ t) (σ t)) := by
+  unfold childEnergy
+  apply continuous_finsetSum
+  intro u hu
+  apply continuous_finsetSum
+  intro z hz
+  unfold idealChildRow
+  exact (fixedRow_continuous p hg H₀ F Ψ m _ _ V X testNegative τ σ hτ hσ).norm.pow 2
+variable (H₁ H₂ : Finset ι → ℂ)
+
+def integratedSecondMode (b₁ b₂ b₃ : 𝓢(ℝ, ℂ))
+    (s : Finset OldTuple) (w : Frequency → OldTuple → ℂ) (label : OldTuple → O)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ : ℝ) : ℂ :=
+  ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ, tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃) *
+    fixedSecondMode p hg s (w (t₁,t₂,t₃)) label F Ψ₁ Ψ₂ m
+      (weightedSecondTest p H₁ V₁ X₁ t₁ t₃ true) (weightedSecondTest p H₂ V₂ X₂ t₂ t₃ false)
+
+def childGeometricMean (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ : ℝ) (q : Frequency) : ℝ :=
+  Real.sqrt (childEnergy p hg H₁ F Ψ₁ m T V₁ X₁ true false q.1 q.2.2) *
+    Real.sqrt (childEnergy p hg H₂ F Ψ₂ m T V₂ X₂ false true q.2.1 q.2.2)
+
+
+end SecondPassIntegration
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+open SecondPassFiber
+
+theorem full_uniform_integrated_fixed_second_mode_transfer (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i}), ∀ (H₁ H₂ : Finset ι → ℂ) (s : Finset OldTuple) (T : Finset (Ideal O × O))
+      (b0 : Ideal O) (w : Frequency → OldTuple → ℂ) (B lengthScale : ℝ) (label : OldTuple → O)
+      (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ : ℝ)
+      (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ T) →
+      (∀ z ∈ T, z.1 ≠ ⊥) → (∀ z ∈ T, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+      (∀ q, ∀ x ∈ s, ‖w q x‖ ≤ B) → (∀ x ∈ s, Continuous (fun q => w q x)) →
+      (∀ x ∈ s, Ideal.span {label x} = newLabel x) →
+      ‖integratedSecondMode p hg H₁ H₂ b₁ b₂ b₃ s w label F Ψ₁ Ψ₂ m V₁ V₂ X₁ X₂‖ ≤
+        (B * C * (lengthScale * Ideal.absNorm b0)^ε) *
+        (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+          ‖tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃)‖ *
+            childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂ (t₁,t₂,t₃)) := by
+  obtain ⟨C, hC, hb⟩ := full_uniform_fixed_second_mode_transfer ε hε
+  refine ⟨C, hC, ?_⟩
+  intro ι _ p _ hg
+  have hb := hb p hg
+  intro H₁ H₂ s T b0 w B lengthScale label F Ψ₁ Ψ₂ m V₁ V₂ X₁ X₂ b₁ b₂ b₃ hb0 hB hL hv hm ht hn hw hwc hl
+  let f : Frequency → ℂ := fun q => fixedSecondMode p hg s (w q) label F Ψ₁ Ψ₂ m
+    (weightedSecondTest p H₁ V₁ X₁ q.1 q.2.2 true) (weightedSecondTest p H₂ V₂ X₂ q.2.1 q.2.2 false)
+  let G := childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂
+  have hc₁ := childEnergy_continuous p hg H₁ F Ψ₁ m T V₁ X₁ true false
+    (fun q : Frequency => q.1) (fun q : Frequency => q.2.2) continuous_fst continuous_snd.snd
+  have hc₂ := childEnergy_continuous p hg H₂ F Ψ₂ m T V₂ X₂ false true
+    (fun q : Frequency => q.2.1) (fun q : Frequency => q.2.2) continuous_snd.fst continuous_snd.snd
+  have hG : Continuous G := (Real.continuous_sqrt.comp hc₁).mul (Real.continuous_sqrt.comp hc₂)
+  have hG0 : ∀ q, 0 ≤ G q := fun q => mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  let M := Real.sqrt (energyMagnitude p hg H₁ F Ψ₁ m T V₁ X₁ true false) *
+    Real.sqrt (energyMagnitude p hg H₂ F Ψ₂ m T V₂ X₂ false true)
+  have hM : ∀ q, G q ≤ M := by
+    intro q
+    dsimp [G, childGeometricMean, M]
+    gcongr
+    · exact childEnergy_le p hg H₁ F Ψ₁ m T V₁ X₁ true false q.1 q.2.2
+    · exact childEnergy_le p hg H₂ F Ψ₂ m T V₂ X₂ false true q.2.1 q.2.2
+  have hf : Continuous f := by
+    unfold f fixedSecondMode
+    apply continuous_finsetSum
+    intro x hx
+    have hwx := hwc x hx
+    have hc₁ := fixedRow_continuous p hg H₁ F Ψ₁ m (label x) (newRow x) V₁ X₁ true
+      (fun q : Frequency => q.1) (fun q : Frequency => q.2.2) continuous_fst continuous_snd.snd
+    have hc₂ := fixedRow_continuous p hg H₂ F Ψ₂ m (label x) (-newRow x) V₂ X₂ false
+      (fun q : Frequency => q.2.1) (fun q : Frequency => q.2.2) continuous_snd.fst continuous_snd.snd
+    exact (hwx.mul hc₁.star).mul hc₂
+  have hpoint : ∀ q, ‖f q‖ ≤ (B * C * (lengthScale * Ideal.absNorm b0)^ε) * G q := by
+    intro q
+    have hh := hb s T b0 (w q) B lengthScale label F Ψ₁ Ψ₂ m
+      (weightedSecondTest p H₁ V₁ X₁ q.1 q.2.2 true) (weightedSecondTest p H₂ V₂ X₂ q.2.1 q.2.2 false)
+      hb0 hB hL hv hm ht hn (hw q) hl
+    simpa only [f, G, childGeometricMean, childEnergy, mul_assoc] using hh
+  exact triple_integral_bound b₁ b₂ b₃ f G hf hG hG0
+    (B * C * (lengthScale * Ideal.absNorm b0)^ε) M (by positivity) hM hpoint
+
+end SecondPassIntegration
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

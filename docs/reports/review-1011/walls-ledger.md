@@ -190,6 +190,7 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 |---|---|
 | One inequality per prime: Weil test = Stepanov count = count on a prime ray = sign-free trace = upper side, on logarithmic windows off power-thin exceptions | SOSZ [L*] |
 | One matrix on the integers: Weil's form on packets = comb form → zero sum; exact index = number of right zeros; the same for abelian rings with Riemann–Hurwitz | AGZ, HFP [L*] |
+| Positive power combs have convergence radius `1/2-zetaZeroWidth`; below the boundary their limit is the reflected zero pairing; convergence of every subcritical tail is equivalent to RH | [AGZ power tails](../../drafts/pipeline/3-formalized/power-comb-tails-detect-the-zero-width.md) [L*] |
 | One ladder: mass, aperture, rung; saving `γ` ⇔ rung `1/(2γ)` ⇔ depth `δ=1/(2κ)` ⇔ mollifier exponent `θ` | SA, CDG [L*]/[L] |
 | A height is a conductor of the twisted contacts; a floor is a conductor | SA [L*] |
 | The rung above one in the height aspect = no partial alignment of short prime sums = the dark range | SA, TAPO [D] |

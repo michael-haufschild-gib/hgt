@@ -42,7 +42,9 @@ private theorem powerTail_pair_fraction {a : ℝ}
     exact_mod_cast (show (1 : ℝ) - 2 * a ≠ 0 by linarith only [ha2])
   rw [show (1 - (a : ℂ)) - (q.1 : ℂ) = 1 - (q.1 : ℂ) - a by ring,
     show (1 - (a : ℂ)) - 1 + (q.1 : ℂ) = (q.1 : ℂ) - a by ring]
-  field_simp [hleft, hright, hden]
+  apply (mul_left_cancel₀ hden)
+  rw [← mul_assoc, mul_inv_cancel₀ hden, one_mul]
+  field_simp [hleft, hright]
   ring
 
 private theorem xi_ne_zero_at_powerTail (a : ℝ) : xi (1 - (a : ℂ)) ≠ 0 := by

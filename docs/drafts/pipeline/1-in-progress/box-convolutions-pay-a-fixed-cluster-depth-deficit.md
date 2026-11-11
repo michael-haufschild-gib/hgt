@@ -36,6 +36,10 @@ grow as positive multiples of `log T`. Thus a fixed positive depth deficit
 can replace the existing `E/log T` deficit. The deep ordinate gap remains;
 this conjecture does not establish it for arbitrary clusters.
 
+The primary exterior-unconditional formulation should be: every such
+sector cluster is visible at that level, or has another zero outside it
+with depth at least `b-d` and ordinate distance less than `g`.
+
 ## Corpus connections
 
 - `RHTower/BoxConvolutionPlateau`: actual smooth profiles, support,
