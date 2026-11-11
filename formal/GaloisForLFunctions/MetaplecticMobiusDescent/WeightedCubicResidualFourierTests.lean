@@ -23676,4 +23676,922 @@ lemma SourceCuspDatum.smoothingMultiplier_norm_le (d : SourceCuspDatum) :
   rcases d with ⟨G, j, hj⟩
   fin_cases j <;> norm_num [sourceCuspScale]
 
+/-- The square-root weight converting the radial derivative into the completed Gauss sum. -/
+def Vstar (W : ℝ → ℂ) (y : ℝ) : ℂ := (Real.sqrt y : ℂ) * W y
+
+lemma Vstar_support (W : ℝ → ℂ) (a b : ℝ)
+    (hW : Function.support W ⊆ Set.Icc a b) : Function.support (Vstar W) ⊆ Set.Icc a b := by
+  intro x hx
+  apply hW
+  intro hz
+  exact hx (by simp only [Vstar, hz, mul_zero])
+
+lemma Vstar_contDiff (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W) :
+    ContDiff ℝ ∞ (Vstar W) := by
+  rw [contDiff_iff_contDiffAt]
+  intro x
+  by_cases hx : x = 0
+  · subst x
+    have hz : Vstar W =ᶠ[𝓝 (0 : ℝ)] (fun _ => (0 : ℂ)) := by
+      filter_upwards [isOpen_Iio.mem_nhds ha] with y hy
+      have hw : W y = 0 := by
+        by_contra hn
+        exact (not_le_of_gt hy) (hs hn).1
+      simp only [Vstar, hw, mul_zero]
+    exact contDiffAt_const.congr_of_eventuallyEq hz
+  · exact (Complex.ofRealCLM.contDiff.contDiffAt.comp x
+      (Real.contDiffAt_sqrt hx)).mul hW.contDiffAt
+
+def thetaRadialDerivativeScalar : ℂ := (-2 * Real.pi * Complex.I) * star thetaFrequencyScale
+
+def thetaDerivativeScalar : ℂ := thetaRadialDerivativeScalar * rationalSourceThetaScalar
+
+lemma thetaRadialDerivativeScalar_ne_zero : thetaRadialDerivativeScalar ≠ 0 := by
+  unfold thetaRadialDerivativeScalar
+  exact mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num)
+    (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)) Complex.I_ne_zero)
+    (star_ne_zero.mpr (norm_pos_iff.mp thetaBesselScale_pos))
+
+lemma thetaDerivativeScalar_ne_zero : thetaDerivativeScalar ≠ 0 :=
+  mul_ne_zero thetaRadialDerivativeScalar_ne_zero rationalSourceThetaScalar_ne_zero
+
+lemma sourceBarRadialWeight_eq_div (h : O) (hh : h ≠ 0) :
+    (-2 * Real.pi * Complex.I * star (cuspFrequency h)) / (sourceCuspRadialLength h : ℂ) =
+      thetaRadialDerivativeScalar / ringComplex h := by
+  have hq := ringComplex_ne_zero hh
+  have hn : ((‖ringComplex h‖ ^ 2 : ℝ) : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (pow_ne_zero 2 (norm_ne_zero_iff.mpr hq))
+  have hnorm : star (ringComplex h) * ringComplex h = ((‖ringComplex h‖ ^ 2 : ℝ) : ℂ) := by
+    simpa only [Complex.star_def, Complex.ofReal_pow] using Complex.conj_mul' (ringComplex h)
+  rw [sourceCuspRadialLength, if_neg hh, cuspFrequency_eq_thetaFrequencyScale, star_mul]
+  apply (div_eq_div_iff hn hq).mpr
+  calc
+    _ = thetaRadialDerivativeScalar * (star (ringComplex h) * ringComplex h) := by
+      unfold thetaRadialDerivativeScalar
+      ring
+    _ = _ := by rw [hnorm]
+
+/-- The squarefree and cube coefficients, with the angular factor retained. -/
+def completedMellinCoefficient (Ψ : O →* ℂ) (p : ThetaPrimaryCubePair) : ℂ :=
+  ((‖ringComplex (primaryIdealGenerator p.2.val)‖ : ℂ) *
+    normalizedCubicUnitGauss (primaryIdealGenerator p.1.val) *
+    Ψ (primaryIdealGenerator p.1.val) * Ψ (primaryIdealGenerator p.2.val) ^ 3) /
+      ringComplex (primaryIdealGenerator p.1.val * primaryIdealGenerator p.2.val ^ 3)
+
+def completedMellinLength (p : ThetaPrimaryCubePair) : ℝ :=
+  sourceCuspRadialLength (primaryIdealGenerator p.1.val * primaryIdealGenerator p.2.val ^ 3)
+
+def completedT (Ψ : O →* ℂ) (W : ℝ → ℂ) (X : ℝ) : ℂ :=
+  ∑' p : ThetaPrimaryCubePair, completedMellinCoefficient Ψ p * Vstar W (completedMellinLength p / X)
+
+lemma thetaSmoothedGaussSum_eq_completedT (Ψ : O →* ℂ) (W : ℝ → ℂ) (X : ℝ) :
+    thetaSmoothedGaussSum Ψ (Vstar W) X = thetaRadialDerivativeScalar * completedT Ψ W X := by
+  rw [thetaSmoothedGaussSum, completedT, ← tsum_mul_left]
+  apply tsum_congr
+  intro p
+  dsimp only [thetaSmoothedGaussSum, completedMellinCoefficient, completedMellinLength]
+  rw [sourceBarRadialWeight_eq_div _ (mul_ne_zero p.1.property.2 (pow_ne_zero 3 p.2.property))]
+  ring
+
+/-- Exact cubic reflection of the completed squarefree–cube sum at a finite character. -/
+theorem completedT_finite_smoothed_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (X : ℝ) (hX : 0 < X) :
+    completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) W X =
+      thetaDerivativeScalar⁻¹ *
+        ∑ i, finiteAdditiveFourierCoeff
+          (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc)) (finiteThetaTwist c Ψ) i *
+          ((finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingMultiplier *
+            ∑' h : O, sourceCuspRadialCoefficient
+              (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).index
+              (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).dualPoint h *
+              paperKernel (Vstar W)
+                ((finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingScale X *
+                  sourceCuspRadialLength h)) := by
+  have he := thetaSmoothedGaussSum_finite_reflection c hc Ψ (Vstar W) a b ha
+    (Vstar_support W a b hs) (Vstar_contDiff W a b ha hs hW) X hX
+  rw [thetaSmoothedGaussSum_eq_completedT] at he
+  apply (mul_left_cancel₀ thetaRadialDerivativeScalar_ne_zero)
+  rw [he, thetaDerivativeScalar, mul_inv_rev]
+  field_simp [thetaRadialDerivativeScalar_ne_zero]
+
+/-- Moving the Mellin contour gives arbitrarily high polynomial decay. -/
+theorem paperKernel_power_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (N : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ x : ℝ, 0 < x → ‖paperKernel V x‖ ≤ C * x ^ (-(N : ℝ)) := by
+  obtain ⟨C, hC, hb⟩ := mellinInv_euler_line_bound V a b ha hs hV N 0
+  refine ⟨C * paperScale ^ (-(N : ℝ)), mul_pos hC (Real.rpow_pos_of_pos paperScale_pos _), ?_⟩
+  intro x hx
+  have hN : (N : ℝ) ∈ Set.Icc (-(1 / 4 : ℝ)) (N : ℝ) :=
+    ⟨by linarith [Nat.cast_nonneg (α := ℝ) N], le_rfl⟩
+  have he := mellinInv_euler_shift V a b ha hs hV N 0 (N : ℝ) hN
+    (paperScale * x) (mul_pos paperScale_pos hx)
+  have hl : mellinInv 0 (mellinEulerData V 0) (paperScale * x) = paperKernel V x := by
+    have hf : mellinEulerData V 0 = (fun s : ℂ => mellin V (-s) * cubicReflectionGamma s) := by
+      funext s
+      simp only [mellinEulerData, pow_zero, one_mul, mellinData]
+    rw [hf]
+    rfl
+  rw [hl] at he
+  rw [he]
+  simpa only [Real.mul_rpow paperScale_pos.le hx.le, mul_assoc] using
+    hb (N : ℝ) hN (paperScale * x) (mul_pos paperScale_pos hx)
+
+/-- Absolute radial mass is independent of the horizontal cusp coordinate. -/
+def sourceCuspRadialMass (j : Fin 3) : ℝ :=
+  ∑' h : O, ‖sourceCuspRadialCoefficient j 0 h‖ * sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))
+
+lemma sourceCuspRadialMass_nonneg (j : Fin 3) : 0 ≤ sourceCuspRadialMass j :=
+  tsum_nonneg (fun h => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (sourceCuspRadialLength_pos h).le _))
+
+theorem sourceCuspRadialMass_sum (j : Fin 3) (z : ℂ) :
+    (∑' h : O, ‖sourceCuspRadialCoefficient j z h‖ * sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) =
+      sourceCuspRadialMass j := by
+  unfold sourceCuspRadialMass
+  simp only [sourceCuspRadialCoefficient_norm]
+
+/-- All three reflected series have the same polynomial bound in their radial scale. -/
+theorem sourceCusp_kernel_uniform_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (N : ℕ) (hN : 2 ≤ N) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (j : Fin 3) (z : ℂ) (c : ℝ), 0 < c →
+      ‖∑' h : O, sourceCuspRadialCoefficient j z h * paperKernel V (c * sourceCuspRadialLength h)‖ ≤
+        C * c ^ (-(N : ℝ)) := by
+  obtain ⟨B, hB, hb⟩ := paperKernel_power_bound V a b ha hs hV N
+  let S : ℝ := ∑ j : Fin 3, sourceCuspRadialMass j
+  have hS : 0 ≤ S := Finset.sum_nonneg (fun j _ => sourceCuspRadialMass_nonneg j)
+  refine ⟨B * (S + 1), mul_pos hB (by linarith), ?_⟩
+  intro j z c hc
+  have hm : Summable (fun h : O => ‖sourceCuspRadialCoefficient j z h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [neg_div] using sourceCuspRadialCoefficient_weighted_summable j z
+  have hi := paperKernel_weighted_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceCuspRadialCoefficient j z) hm V a b ha hs hV c hc
+  have hp : ∀ h : O, sourceCuspRadialLength h ^ (-(N : ℝ)) ≤
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ)) := by
+    intro h
+    apply Real.rpow_le_rpow_of_exponent_le (sourceCuspRadialLength_one_le h)
+    have hn : (2 : ℝ) ≤ N := by exact_mod_cast hN
+    linarith
+  calc
+    _ ≤ ∑' h : O, ‖sourceCuspRadialCoefficient j z h * paperKernel V (c * sourceCuspRadialLength h)‖ :=
+      norm_tsum_le_tsum_norm hi
+    _ ≤ ∑' h : O, (B * c ^ (-(N : ℝ))) *
+        (‖sourceCuspRadialCoefficient j z h‖ * sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+      apply Summable.tsum_le_tsum _ hi (hm.mul_left _)
+      intro h
+      rw [norm_mul]
+      calc
+        _ ≤ ‖sourceCuspRadialCoefficient j z h‖ * (B * (c * sourceCuspRadialLength h) ^ (-(N : ℝ))) :=
+          mul_le_mul_of_nonneg_left (hb _ (mul_pos hc (sourceCuspRadialLength_pos h))) (norm_nonneg _)
+        _ = (B * c ^ (-(N : ℝ))) *
+            (‖sourceCuspRadialCoefficient j z h‖ * sourceCuspRadialLength h ^ (-(N : ℝ))) := by
+          rw [Real.mul_rpow hc.le (sourceCuspRadialLength_pos h).le]
+          ring
+        _ ≤ _ := mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left (hp h) (norm_nonneg _)) (by positivity)
+    _ = (B * c ^ (-(N : ℝ))) * sourceCuspRadialMass j := by
+      rw [tsum_mul_left, sourceCuspRadialMass_sum]
+    _ ≤ (B * c ^ (-(N : ℝ))) * (S + 1) := by
+      apply mul_le_mul_of_nonneg_left _ (by positivity)
+      have hj : sourceCuspRadialMass j ≤ S :=
+        Finset.single_le_sum (fun k _ => sourceCuspRadialMass_nonneg k) (Finset.mem_univ j)
+      linarith
+    _ = _ := by ring
+
+theorem sourceBar_smoothed_uniform_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (N : ℕ) (hN : 2 ≤ N) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (d : SourceCuspDatum) (X : ℝ), 0 < X →
+      ‖∑' h : O, sourceBarRadialCoefficient d.point h * V (sourceCuspRadialLength h / X)‖ ≤
+        C * d.smoothingScale X ^ (-(N : ℝ)) := by
+  obtain ⟨C, hC, hb⟩ := sourceCusp_kernel_uniform_bound V a b ha hs hV N hN
+  refine ⟨9 * C, by positivity, ?_⟩
+  intro d X hX
+  rw [d.smoothed_reflection V a b ha hs hV X hX, norm_mul]
+  calc
+    _ ≤ 9 * (C * d.smoothingScale X ^ (-(N : ℝ))) :=
+      mul_le_mul d.smoothingMultiplier_norm_le
+        (hb d.index d.dualPoint (d.smoothingScale X) (d.smoothingScale_pos X hX))
+        (norm_nonneg _) (by norm_num)
+    _ = _ := by ring
+
+/-- An integral primitive cusp column divides every denominator representing its point. -/
+lemma SourceCuspDatum.heightScale_le_of_point (d : SourceCuspDatum) (a c : O) (hc : c ≠ 0)
+    (hp : d.point = ringComplex a / ringComplex c) : d.heightScale ≤ ‖ringComplex c‖ ^ 2 := by
+  let M : SL(2, O) := (d.gamma : SL(2, O)) * cuspRepresentative d.index
+  have hM : integralComplexMatrix M = d.matrix := by
+    dsimp only [M, SourceCuspDatum.matrix]
+    exact map_mul integralComplexMatrix _ _
+  have he (i j : Fin 2) : ringComplex (M i j) = d.matrix i j := by
+    exact congrArg (fun A : SL(2, ℂ) => A i j) hM
+  have hp' : M 0 0 * c = a * M 1 0 := by
+    apply ringComplex_injective
+    have hpC : d.matrix 0 0 * ringComplex c = ringComplex a * d.matrix 1 0 :=
+      (div_eq_div_iff (show d.matrix 1 0 ≠ 0 from d.lower_ne_zero)
+        (ringComplex_ne_zero hc)).mp hp
+    simpa only [map_mul, he] using hpC
+  have hd : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using M.property
+  let k : O := a * M 1 1 - M 0 1 * c
+  have hk : M 1 0 * k = c := by
+    calc
+      _ = (a * M 1 0) * M 1 1 - M 0 1 * M 1 0 * c := by dsimp [k]; ring
+      _ = (M 0 0 * M 1 1 - M 0 1 * M 1 0) * c := by rw [← hp']; ring
+      _ = c := by rw [hd, one_mul]
+  have hk0 : k ≠ 0 := by
+    intro hz
+    rw [hz, mul_zero] at hk
+    exact hc hk.symm
+  have hk1 : 1 ≤ ‖ringComplex k‖ ^ 2 := by
+    simpa only [Complex.normSq_eq_norm_sq] using one_le_normSq_embedding k hk0
+  have hn : ‖ringComplex c‖ ^ 2 = ‖d.matrix 1 0‖ ^ 2 * ‖ringComplex k‖ ^ 2 := by
+    rw [← hk, map_mul, norm_mul, mul_pow, he]
+  change ‖d.matrix 1 0‖ ^ 2 ≤ _
+  rw [hn]
+  exact le_mul_of_one_le_right (sq_nonneg _) hk1
+
+lemma finiteTwistCusp_heightScale_le (c : O) (hc : c ≠ 0) (h : O ⧸ Ideal.span {c}) :
+    (finiteTwistCusp c hc h).heightScale ≤ ‖ringComplex c‖ ^ 2 := by
+  apply SourceCuspDatum.heightScale_le_of_point _ (-3 * Quotient.out h) c hc
+  exact rationalSourceCusp_point _ _ hc
+
+lemma finiteThetaTwist_norm_le_one (c : O) (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (hΨ : ∀ x, ‖Ψ x‖ ≤ 1) (x : O ⧸ Ideal.span {9 * c}) : ‖finiteThetaTwist c Ψ x‖ ≤ 1 := by
+  rw [finiteThetaTwist, fixedThetaTwist_norm]
+  split_ifs
+  · exact hΨ _
+  · norm_num
+
+lemma finiteAdditiveFourierCoeff_norm_le_one {R : Type*} [CommRing R] [Fintype R]
+    (ψ : AddChar R ℂ) (φ : R → ℂ) (hφ : ∀ x, ‖φ x‖ ≤ 1) (h : R) :
+    ‖finiteAdditiveFourierCoeff ψ φ h‖ ≤ 1 := by
+  apply (finiteAdditiveFourierCoeff_norm_le ψ φ h).trans
+  have hcard : (0 : ℝ) < Fintype.card R := by exact_mod_cast Fintype.card_pos
+  apply (div_le_iff₀ hcard).mpr
+  simpa only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one, one_mul] using
+    Finset.sum_le_sum (fun x (_ : x ∈ Finset.univ) => hφ x)
+
+/-- Uniform finite-character reflection bound, with every cusp scale explicit. -/
+theorem completedT_finite_reflection_bound (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (N : ℕ) (hN : 2 ≤ N) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (c : O) (hc : c ≠ 0)
+      [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ),
+      (∀ x, ‖Ψ x‖ ≤ 1) → ∀ X : ℝ, 0 < X →
+      ‖completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) W X‖ ≤
+        C * ∑ i : O ⧸ Ideal.span {9 * c},
+          (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingScale X ^ (-(N : ℝ)) := by
+  obtain ⟨B, hB, hb⟩ := sourceCusp_kernel_uniform_bound (Vstar W) a b ha
+    (Vstar_support W a b hs) (Vstar_contDiff W a b ha hs hW) N hN
+  refine ⟨‖thetaDerivativeScalar⁻¹‖ * (9 * B),
+    mul_pos (norm_pos_iff.mpr (inv_ne_zero thetaDerivativeScalar_ne_zero)) (by positivity), ?_⟩
+  intro c hc _ Ψ hΨ X hX
+  rw [completedT_finite_smoothed_reflection c hc Ψ W a b ha hs hW X hX, norm_mul]
+  calc
+    _ ≤ ‖thetaDerivativeScalar⁻¹‖ * ∑ i, ‖finiteAdditiveFourierCoeff
+        (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc)) (finiteThetaTwist c Ψ) i *
+        ((finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingMultiplier *
+          ∑' h : O, sourceCuspRadialCoefficient
+            (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).index
+            (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).dualPoint h *
+            paperKernel (Vstar W)
+              ((finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingScale X *
+                sourceCuspRadialLength h))‖ :=
+      mul_le_mul_of_nonneg_left (norm_sum_le _ _) (norm_nonneg _)
+    _ ≤ ‖thetaDerivativeScalar⁻¹‖ * ∑ i : O ⧸ Ideal.span {9 * c},
+        (9 * B) * (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingScale X ^ (-(N : ℝ)) := by
+      apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+      apply Finset.sum_le_sum
+      intro i hi
+      let d := finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i
+      rw [norm_mul, norm_mul]
+      have hf := finiteAdditiveFourierCoeff_norm_le_one
+        (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+        (finiteThetaTwist c Ψ) (finiteThetaTwist_norm_le_one c Ψ hΨ) i
+      calc
+        _ ≤ 1 * (9 * (B * d.smoothingScale X ^ (-(N : ℝ)))) :=
+          mul_le_mul hf (mul_le_mul d.smoothingMultiplier_norm_le
+            (hb d.index d.dualPoint (d.smoothingScale X) (d.smoothingScale_pos X hX))
+            (norm_nonneg _) (by norm_num)) (by positivity) (by norm_num)
+        _ = _ := by ring
+    _ = _ := by rw [← Finset.mul_sum]; ring
+
+/-- The smallest of the three cusp scales, before division by the cusp denominator. -/
+def sourceReflectionScale : ℝ := 3 * thetaBesselScale ^ 4
+
+lemma sourceReflectionScale_pos : 0 < sourceReflectionScale :=
+  mul_pos (by norm_num) (pow_pos thetaBesselScale_pos 4)
+
+lemma SourceCuspDatum.smoothingScale_lower (d : SourceCuspDatum) (a c : O) (hc : c ≠ 0)
+    (hp : d.point = ringComplex a / ringComplex c) (X : ℝ) (hX : 0 < X) :
+    sourceReflectionScale * X / ‖ringComplex c‖ ^ 4 ≤ d.smoothingScale X := by
+  have hQ := d.heightScale_le_of_point a c hc hp
+  have hQ2 : d.heightScale ^ 2 ≤ ‖ringComplex c‖ ^ 4 := by
+    have hp := mul_nonneg (sub_nonneg.mpr hQ)
+      (add_nonneg (sq_nonneg ‖ringComplex c‖) d.heightScale_pos.le)
+    nlinarith only [hp]
+  have hj : sourceReflectionScale ≤
+      27 * sourceCuspRadialScale 0 ^ 2 * sourceCuspRadialScale d.index ^ 2 := by
+    rcases d with ⟨G, j, hj⟩
+    fin_cases j <;> dsimp [sourceReflectionScale, sourceCuspRadialScale, sourceCuspScale] <;>
+      nlinarith only [sq_nonneg (thetaBesselScale ^ 2)]
+  apply (div_le_iff₀ (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero hc)) 4)).mpr
+  calc
+    _ ≤ (27 * sourceCuspRadialScale 0 ^ 2 * sourceCuspRadialScale d.index ^ 2) * X :=
+      mul_le_mul_of_nonneg_right hj hX.le
+    _ = d.smoothingScale X * d.heightScale ^ 2 := by
+      rw [SourceCuspDatum.smoothingScale, div_mul_cancel₀ _ (pow_ne_zero 2 d.heightScale_pos.ne')]
+    _ ≤ _ := mul_le_mul_of_nonneg_left hQ2 (d.smoothingScale_pos X hX).le
+
+/-- The reflected Gauss sum decays uniformly once the smoothing scale exceeds the fourth power of the conductor. -/
+theorem completedT_conductor_bound (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (N : ℕ) (hN : 2 ≤ N) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (c : O) (hc : c ≠ 0)
+      [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ),
+      (∀ x, ‖Ψ x‖ ≤ 1) → ∀ X : ℝ, 0 < X →
+      ‖completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) W X‖ ≤
+        C * (Fintype.card (O ⧸ Ideal.span {9 * c}) : ℝ) *
+          (sourceReflectionScale * X / ‖ringComplex (9 * c)‖ ^ 4) ^ (-(N : ℝ)) := by
+  obtain ⟨C, hC, hb⟩ := completedT_finite_reflection_bound W a b ha hs hW N hN
+  refine ⟨C, hC, ?_⟩
+  intro c hc _ Ψ hΨ X hX
+  apply (hb c hc Ψ hΨ X hX).trans
+  rw [mul_assoc]
+  apply mul_le_mul_of_nonneg_left _ hC.le
+  calc
+    _ ≤ ∑ i : O ⧸ Ideal.span {9 * c},
+        (sourceReflectionScale * X / ‖ringComplex (9 * c)‖ ^ 4) ^ (-(N : ℝ)) := by
+      apply Finset.sum_le_sum
+      intro i hi
+      have hc9 : 9 * c ≠ 0 := mul_ne_zero (by norm_num) hc
+      apply Real.rpow_le_rpow_of_nonpos
+        (div_pos (mul_pos sourceReflectionScale_pos hX)
+          (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero hc9)) 4))
+      · exact (finiteTwistCusp (9 * c) hc9 i).smoothingScale_lower
+          (-3 * Quotient.out i) (9 * c) hc9 (rationalSourceCusp_point _ _ hc9) X hX
+      · exact neg_nonpos.mpr (Nat.cast_nonneg N)
+    _ = _ := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+
+lemma unramifiedResidualCoefficient_prime_normalized (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    unramifiedResidualCoefficient (h * p) = ringComplex (symbol h p) *
+      star (normalizedCubicUnitGauss p) * unramifiedResidualCoefficient h := by
+  have hp1 : ¬ p ∣ (1 : O) := fun hd => hp.2.1 (isUnit_of_dvd_one hd)
+  rw [unramifiedResidualCoefficient_prime_factor p hp hprimary h hph,
+    primeCubicGauss_two_twist p hp hprimary h hph, primeCubicGauss_two_eq_star p hp hprimary 1 hp1,
+    normalizedCubicUnitGauss, star_div₀, Complex.star_def, Complex.conj_ofReal]
+  ring
+
+/-- The normalized unramified coefficient retains the cubic symbol of its base frequency. -/
+theorem unramifiedResidualCoefficient_prime_product {ι : Type*}
+    (s : Finset ι) (p : ι → O) (hp : ∀ i ∈ s, Prime (p i))
+    (hprimary : ∀ i ∈ s, lambda ^ 2 ∣ p i - 1)
+    (hpair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → IsCoprime (p i) (p j))
+    (h : O) (hph : ∀ i ∈ s, ¬ p i ∣ h) :
+    unramifiedResidualCoefficient (h * (∏ i ∈ s, p i)) =
+      ringComplex (symbol h (∏ i ∈ s, p i)) * star (normalizedCubicUnitGauss (∏ i ∈ s, p i)) *
+        unramifiedResidualCoefficient h := by
+  induction s using Finset.induction_on with
+  | empty => simp only [Finset.prod_empty, mul_one, symbol_one, map_one, normalizedCubicUnitGauss_one, star_one, one_mul]
+  | @insert i s hi ih =>
+    have hpi := hp i (Finset.mem_insert_self _ _)
+    have hpri := hprimary i (Finset.mem_insert_self _ _)
+    have hps : ∀ j ∈ s, Prime (p j) := fun j hj => hp j (Finset.mem_insert_of_mem hj)
+    have hprs : ∀ j ∈ s, lambda ^ 2 ∣ p j - 1 := fun j hj => hprimary j (Finset.mem_insert_of_mem hj)
+    have hcpi : IsCoprime (p i) (∏ j ∈ s, p j) := IsCoprime.prod_right (fun j hj =>
+      hpair i (Finset.mem_insert_self _ _) j (Finset.mem_insert_of_mem hj) (by intro he; subst j; exact hi hj))
+    have hbs : (∏ j ∈ s, p j) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun j hj => (hps j hj).ne_zero)
+    have hpb : ¬ p i ∣ h * (∏ j ∈ s, p j) := by
+      intro hd
+      rcases hpi.dvd_mul.mp hd with hd | hd
+      · exact hph i (Finset.mem_insert_self _ _) hd
+      · exact hpi.2.1 (hcpi.isUnit_of_dvd hd)
+    have hih := ih hps hprs
+      (fun j hj k hk hjk => hpair j (Finset.mem_insert_of_mem hj) k (Finset.mem_insert_of_mem hk) hjk)
+      (fun j hj => hph j (Finset.mem_insert_of_mem hj))
+    rw [Finset.prod_insert hi, show h * (p i * (∏ j ∈ s, p j)) = (h * (∏ j ∈ s, p j)) * p i by ring,
+      unramifiedResidualCoefficient_prime_normalized (p i) hpi hpri _ hpb, hih]
+    rw [mul_comm (p i) (∏ j ∈ s, p j), normalizedCubicUnitGauss_coprime_product _ _ hbs hpi.ne_zero
+      (primary_finset_product s p hprs) hpri hcpi.symm, symbol_mul_denominator, map_mul,
+      symbol_mul_numerator, map_mul]
+    ring
+
+lemma ramified_primaryPrime_not_dvd (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0)
+    (u : Oˣ) (m : ℕ) (P : Ideal O) (hP : P ∈ primeSupport I) :
+    ¬ primaryIdealPrime P ∣ (u : O) * lambda ^ m := by
+  have hp := primaryIdealPrime_isPrime_of_mem I P hI hP
+  have hpp := (primaryIdealPrime_spec P
+    (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2
+  intro hd
+  exact hp.2.1 ((ramified_primary_coprime u m _ hpp).of_mul_left_right.symm.isUnit_of_dvd hd)
+
+/-- Exact squarefree–cube factorization, including the ramified cubic-symbol phase. -/
+theorem rationalSourceResidualFourierCoefficient_full_squarefree_cube (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I)
+    (u : Oˣ) (m : ℕ) :
+    rationalSourceResidualFourierCoefficient
+      (((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3) =
+      (‖ringComplex (primaryIdealGenerator J)‖ : ℂ) *
+        ringComplex (symbol (9 * ((u : O) * lambda ^ m)) (primaryIdealGenerator I)) *
+        star (normalizedCubicUnitGauss (primaryIdealGenerator I)) *
+        rationalSourceResidualFourierCoefficient ((u : O) * lambda ^ m) := by
+  have he := rationalSourceResidualFourierCoefficient_prime_product (primeSupport I) primaryIdealPrime
+    (fun P hP => primaryIdealPrime_isPrime_of_mem I P hI hP)
+    (fun P hP => (primaryIdealPrime_spec P
+      (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2)
+    (primaryIdealPrime_support_coprime I hI) ((u : O) * lambda ^ m)
+    (ramified_primaryPrime_not_dvd I hI u m)
+  rw [← primaryIdealGenerator_squarefree_support I hI hsq] at he
+  rw [rationalSourceResidualFourierCoefficient_primary_cube _ hJ (primaryIdealGenerator_spec J hJ).2 _
+    (mul_ne_zero (ramifiedElement_ne_zero u m) hI), he]
+  ring
+
+/-- Exact unramified-residue factorization with the base-frequency symbol. -/
+theorem unramifiedResidualCoefficient_full_squarefree_cube (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I)
+    (u : Oˣ) (m : ℕ) :
+    unramifiedResidualCoefficient
+      (((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3) =
+      (‖ringComplex (primaryIdealGenerator J)‖ : ℂ) *
+        ringComplex (symbol ((u : O) * lambda ^ m) (primaryIdealGenerator I)) *
+        star (normalizedCubicUnitGauss (primaryIdealGenerator I)) *
+        unramifiedResidualCoefficient ((u : O) * lambda ^ m) := by
+  have he := unramifiedResidualCoefficient_prime_product (primeSupport I) primaryIdealPrime
+    (fun P hP => primaryIdealPrime_isPrime_of_mem I P hI hP)
+    (fun P hP => (primaryIdealPrime_spec P
+      (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2)
+    (primaryIdealPrime_support_coprime I hI) ((u : O) * lambda ^ m)
+    (ramified_primaryPrime_not_dvd I hI u m)
+  rw [← primaryIdealGenerator_squarefree_support I hI hsq] at he
+  rw [unramifiedResidualCoefficient_primary_cube _ hJ (primaryIdealGenerator_spec J hJ).2, he]
+  ring
+
+/-- Bessel normalization removes the ramified frequency multiplier before squarefree–cube factorization. -/
+theorem normalizedRamifiedGaussTerm_full_squarefree_cube (v : Oˣ) (n : ℕ)
+    (I J : Ideal O) (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0)
+    (hsq : Squarefree I) (u : Oˣ) (m : ℕ) :
+    sourceBesselNormalizer (((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3) *
+      unramifiedGaussResidue (((v : O) * lambda ^ n) *
+        (((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3)) =
+      ((‖ringComplex (primaryIdealGenerator J)‖ : ℂ) *
+        ringComplex (symbol (((v * u : Oˣ) : O) * lambda ^ (n + m)) (primaryIdealGenerator I)) *
+        star (normalizedCubicUnitGauss (primaryIdealGenerator I)) *
+        unramifiedResidualCoefficient (((v * u : Oˣ) : O) * lambda ^ (n + m))) /
+          (‖ringComplex ((v : O) * lambda ^ n)‖ : ℂ) ^ (1 / 3 : ℂ) := by
+  let a : O := (v : O) * lambda ^ n
+  let h : O := ((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3
+  have ha : a ≠ 0 := ramifiedElement_ne_zero v n
+  have ha0 : (‖ringComplex a‖ : ℂ) ^ (1 / 3 : ℂ) ≠ 0 :=
+    Complex.cpow_ne_zero_iff.mpr (Or.inl (Complex.ofReal_ne_zero.mpr
+      (norm_ne_zero_iff.mpr (ringComplex_ne_zero ha))))
+  have he : a * h = (((v * u : Oˣ) : O) * lambda ^ (n + m)) *
+      primaryIdealGenerator I * primaryIdealGenerator J ^ 3 := by
+    simp only [a, h, Units.val_mul, pow_add]
+    ring
+  have hn : sourceBesselNormalizer h * unramifiedGaussResidue (a * h) *
+      (‖ringComplex a‖ : ℂ) ^ (1 / 3 : ℂ) = unramifiedResidualCoefficient (a * h) := by
+    rw [unramifiedResidualCoefficient, mul_comm a h, sourceBesselNormalizer_mul h a]
+    ring
+  apply (eq_div_iff ha0).mpr
+  change sourceBesselNormalizer h * unramifiedGaussResidue (a * h) *
+    (‖ringComplex a‖ : ℂ) ^ (1 / 3 : ℂ) = _
+  rw [hn, he, unramifiedResidualCoefficient_full_squarefree_cube I J hI hJ hsq]
+/-- Each ramified cusp is a finite sum of explicit squarefree Gauss branches. -/
+theorem ramifiedResidualFourierCoefficient_full_squarefree_cube (v t : Oˣ)
+    (I J : Ideal O) (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0)
+    (hsq : Squarefree I) (u : Oˣ) (m : ℕ) :
+    let h := ((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3
+    ramifiedResidualFourierCoefficient v t h =
+      ((3 : ℂ) ^ (4 / 3 : ℂ) / ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)) *
+        ∑ i : RamifiedSixBranch, ramifiedSixWeight v t h i (4 / 3) *
+          (((‖ringComplex (primaryIdealGenerator J)‖ : ℂ) *
+            ringComplex (symbol (((ramifiedSixUnit v t i * u : Oˣ) : O) *
+              lambda ^ (ramifiedSixPower i + m)) (primaryIdealGenerator I)) *
+            star (normalizedCubicUnitGauss (primaryIdealGenerator I)) *
+            unramifiedResidualCoefficient (((ramifiedSixUnit v t i * u : Oˣ) : O) *
+              lambda ^ (ramifiedSixPower i + m))) /
+                (‖ringComplex ((ramifiedSixUnit v t i : O) * lambda ^ ramifiedSixPower i)‖ : ℂ) ^ (1 / 3 : ℂ)) := by
+  dsimp only
+  let h := ((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3
+  have he : ramifiedResidualFourierCoefficient v t h =
+      ((3 : ℂ) ^ (4 / 3 : ℂ) / ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)) *
+        (sourceBesselNormalizer h * ramifiedArithmeticResidue v t h) := by
+    unfold ramifiedResidualFourierCoefficient sourceBesselNormalizer
+    ring
+  change ramifiedResidualFourierCoefficient v t h = _
+  rw [he]
+  congr 1
+  rw [ramifiedArithmeticResidue, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  by_cases hw : ramifiedSixWeight v t h i (4 / 3) = 0
+  · rw [hw, zero_mul, mul_zero, zero_mul]
+  rw [ramifiedSixIndex_multiplier v t h i hw]
+  calc
+    _ = ramifiedSixWeight v t h i (4 / 3) *
+        (sourceBesselNormalizer h * unramifiedGaussResidue
+          (((ramifiedSixUnit v t i : O) * lambda ^ ramifiedSixPower i) * h)) := by ring
+    _ = _ := by
+      rw [normalizedRamifiedGaussTerm_full_squarefree_cube (ramifiedSixUnit v t i)
+        (ramifiedSixPower i) I J hI hJ hsq u m]
+
+lemma sourceCuspCoefficient_full_squarefree_cube_support (j : Fin 3) (h : O)
+    (hh : h ≠ 0) (hc : sourceCuspCoefficient j h ≠ 0) :
+    ∃ p : ThetaFullIndex, thetaFullFrequency p = h := by
+  have hs : ∃ (u : Oˣ) (m : ℕ) (I J : Ideal O), Squarefree I ∧
+      primaryIdealGenerator I ≠ 0 ∧ primaryIdealGenerator J ≠ 0 ∧
+      h = ((u : O) * lambda ^ m) * primaryIdealGenerator I * primaryIdealGenerator J ^ 3 := by
+    fin_cases j
+    · exact rationalSourceResidualFourierCoefficient_full_squarefree_cube_support h hh hc
+    · exact ramifiedBesselCoefficient_full_squarefree_cube_support false h hh hc
+    · exact ramifiedBesselCoefficient_full_squarefree_cube_support true h hh hc
+  obtain ⟨u, m, I, J, hs, hI, hJ, he⟩ := hs
+  exact ⟨(u, m, (⟨I, hs, hI⟩, ⟨J, hJ⟩)), he.symm⟩
+
+/-- Every reflected radial series is indexed exactly by unit, ramified, squarefree, and cube factors. -/
+theorem sourceCuspRadial_tsum_full_index (j : Fin 3) (z : ℂ) (W : O → ℂ) :
+    (∑' h : O, sourceCuspRadialCoefficient j z h * W h) =
+      ∑' p : ThetaFullIndex, sourceCuspRadialCoefficient j z (thetaFullFrequency p) * W (thetaFullFrequency p) := by
+  let f : O → ℂ := fun h => sourceCuspRadialCoefficient j z h * W h
+  change (∑' h : O, f h) = ∑' p : ThetaFullIndex, f (thetaFullFrequency p)
+  apply tsum_eq_tsum_of_ne_zero_bij
+    (fun p : Function.support (fun p : ThetaFullIndex => f (thetaFullFrequency p)) => thetaFullFrequency p.val)
+  · exact thetaFullFrequency_injective.comp Subtype.val_injective
+  · intro h hh
+    have hh0 : h ≠ 0 := by
+      intro hz
+      exact hh (by simp only [f, hz, sourceCuspRadialCoefficient_zero, zero_mul])
+    have hf : sourceCuspCoefficient j h ≠ 0 := by
+      intro hz
+      exact hh (by simp only [f, sourceCuspRadialCoefficient, sourceCuspRadialBaseCoefficient,
+        hz, star_zero, mul_zero, zero_div, zero_mul])
+    obtain ⟨p, hp⟩ := sourceCuspCoefficient_full_squarefree_cube_support j h hh0 hf
+    exact ⟨⟨p, by change f (thetaFullFrequency p) ≠ 0; rwa [hp]⟩, hp⟩
+  · intro p
+    rfl
+
+lemma thetaFullFrequency_radialLength (p : ThetaFullIndex) :
+    sourceCuspRadialLength (thetaFullFrequency p) =
+      ‖ringComplex lambda‖ ^ (2 * p.2.1) * completedMellinLength p.2.2 := by
+  have hp : primaryIdealGenerator p.2.2.1.val * primaryIdealGenerator p.2.2.2.val ^ 3 ≠ 0 :=
+    mul_ne_zero p.2.2.1.property.2 (pow_ne_zero 3 p.2.2.2.property)
+  rw [sourceCuspRadialLength, if_neg (thetaFullFrequency_ne_zero p), completedMellinLength,
+    sourceCuspRadialLength, if_neg hp]
+  simp only [thetaFullFrequency, map_mul, map_pow, norm_mul, norm_pow, norm_ringComplex_unit, one_mul]
+  rw [mul_pow, mul_pow, ← pow_mul, Nat.mul_comm p.2.1 2]
+  ring
+
+/-- Full-frequency reflection keeps the arithmetic squarefree–cube indexing on every cusp. -/
+theorem SourceCuspDatum.smoothed_reflection_full_index (d : SourceCuspDatum)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0 < X) :
+    (∑' h : O, sourceBarRadialCoefficient d.point h * V (sourceCuspRadialLength h / X)) =
+      d.smoothingMultiplier * ∑' p : ThetaFullIndex,
+        sourceCuspRadialCoefficient d.index d.dualPoint (thetaFullFrequency p) *
+          paperKernel V (d.smoothingScale X *
+            (‖ringComplex lambda‖ ^ (2 * p.2.1) * completedMellinLength p.2.2)) := by
+  rw [d.smoothed_reflection V a b ha hs hV X hX,
+    sourceCuspRadial_tsum_full_index d.index d.dualPoint
+      (fun h => paperKernel V (d.smoothingScale X * sourceCuspRadialLength h))]
+  simp only [thetaFullFrequency_radialLength]
+
+/-- The affine local Gauss weight depends only on the frequency modulo `9q`. -/
+lemma scaledAffineGaussWeight_congr (q : O) (hq : q ≠ 0) (u : Oˣ) (n : ℕ)
+    (h k : O) (hmod : 9 * q ∣ h - k) (s : ℂ) :
+    scaledAffineGaussWeight q u n h s = scaledAffineGaussWeight q u n k s := by
+  obtain ⟨r, hr⟩ := hmod
+  have hdiff : h = k + q * (9 * r) := by linear_combination hr
+  have hdq : q ∣ h - k := ⟨9 * r, by linear_combination hr⟩
+  have hdiv : q ∣ h ↔ q ∣ k := by
+    constructor
+    · intro hh
+      convert dvd_sub hh hdq using 1 <;> ring
+    · intro hk
+      convert dvd_add hk hdq using 1 <;> ring
+  by_cases hh : q ∣ h
+  · have hk := hdiv.mp hh
+    have he : Classical.choose hh = Classical.choose hk + 9 * r := by
+      apply mul_left_cancel₀ hq
+      rw [← Classical.choose_spec hh, mul_add, ← Classical.choose_spec hk]
+      exact hdiff
+    have heq : (3 : O) ∣ Classical.choose hh + ramifiedArithmeticPhase u n ↔
+        (3 : O) ∣ Classical.choose hk + ramifiedArithmeticPhase u n := by
+      rw [he]
+      have hd : (3 : O) ∣ 9 * r := ⟨3 * r, by ring⟩
+      constructor
+      · intro ht
+        convert dvd_sub ht hd using 1 <;> ring
+      · intro ht
+        convert dvd_add ht hd using 1 <;> ring
+    have hphase : tracePhase (cuspFrequency h / ringComplex (3 * q)) =
+        tracePhase (cuspFrequency k / ringComplex (3 * q)) := by
+      have he' : cuspFrequency h / ringComplex (3 * q) =
+          cuspFrequency k / ringComplex (3 * q) + cuspFrequency r * 3 := by
+        rw [hdiff]
+        simp only [cuspFrequency, map_add, map_mul, map_ofNat]
+        field_simp [ringComplex_ne_zero hq, ringComplex_ne_zero traceLambda_ne_zero]
+        ring
+      rw [he', AddChar.map_add_eq_mul]
+      have hp : tracePhase (cuspFrequency r * 3) = 1 := by
+        simpa only [map_one, mul_one] using cuspFrequency_period r 1
+      rw [hp, mul_one]
+    rw [scaledAffineGaussWeight, dif_pos hh, scaledAffineGaussWeight, dif_pos hk]
+    by_cases ht : (3 : O) ∣ Classical.choose hh + ramifiedArithmeticPhase u n
+    · rw [if_pos ht, if_pos (heq.mp ht), hphase]
+    · rw [if_neg ht, if_neg (fun hk => ht (heq.mpr hk))]
+  · rw [scaledAffineGaussWeight, dif_neg hh, scaledAffineGaussWeight,
+      dif_neg (fun hk => hh (hdiv.mpr hk))]
+
+lemma cuspFrequency_div_three_phase_congr (a h k : O) (hmod : (9 : O) ∣ h - k) :
+    tracePhase (cuspFrequency h * (ringComplex a / 3)) =
+      tracePhase (cuspFrequency k * (ringComplex a / 3)) := by
+  obtain ⟨r, hr⟩ := hmod
+  have he : h = k + 9 * r := by linear_combination hr
+  have he' : cuspFrequency h * (ringComplex a / 3) =
+      cuspFrequency k * (ringComplex a / 3) + cuspFrequency r * (3 * ringComplex a) := by
+    rw [he]
+    simp only [cuspFrequency, map_add, map_mul, map_ofNat]
+    ring
+  rw [he', AddChar.map_add_eq_mul, cuspFrequency_period, mul_one]
+
+lemma onceCuspScale_mul_root_dvd_three (t : Oˣ) (j : ℕ) : onceCuspScale t * omega ^ j ∣ (3 : O) := by
+  let v : Oˣ := t * cuspOmegaUnit ^ j
+  have hv : onceCuspScale t * omega ^ j = (v : O) * traceLambda := by
+    simp only [v, onceCuspScale, Units.val_mul, Units.val_pow_eq_pow_val, cuspOmegaUnit_val]
+    ring
+  have htrace : traceLambda ^ 2 = (-3 : O) := by
+    unfold traceLambda
+    linear_combination 4 * cusp_omega_relation
+  rw [hv]
+  refine ⟨(v⁻¹ : Oˣ) * (-traceLambda), ?_⟩
+  calc
+    (3 : O) = -traceLambda ^ 2 := by rw [htrace]; ring
+    _ = ((v : O) * (v⁻¹ : Oˣ)) * (-traceLambda ^ 2) := by rw [Units.mul_inv]; ring
+    _ = _ := by ring
+
+/-- The six ramified weights have one fixed period, independent of the prime factors. -/
+lemma ramifiedSixWeight_congr_mod_twentySeven (u t : Oˣ) (h k : O)
+    (hmod : (27 : O) ∣ h - k) (i : RamifiedSixBranch) (s : ℂ) :
+    ramifiedSixWeight u t h i s = ramifiedSixWeight u t k i s := by
+  have hphase := cuspFrequency_div_three_phase_congr (u⁻¹ : Oˣ) h k
+    ((show (9 : O) ∣ 27 from ⟨3, by norm_num⟩).trans hmod)
+  have hq (q : O) (hq : q ≠ 0) (hq3 : q ∣ 3) (v : Oˣ) (n : ℕ) :
+      scaledAffineGaussWeight q v n h s = scaledAffineGaussWeight q v n k s := by
+    apply scaledAffineGaussWeight_congr q hq v n h k _ s
+    exact (show 9 * q ∣ (27 : O) from by
+      convert mul_dvd_mul_left (9 : O) hq3 using 1 <;> norm_num).trans hmod
+  rcases i with i | i
+  · simp only [ramifiedSixWeight]
+    rw [hq (u : O) u.ne_zero (show (u : O) ∣ 3 from u.isUnit.dvd) u 0]
+  rcases i with i | i
+  · simp only [ramifiedSixWeight]
+    rw [hphase, hq (-(u : O)) (neg_ne_zero.mpr u.ne_zero) (show -(u : O) ∣ 3 from (-u).isUnit.dvd)]
+  rcases i with i | j
+  · simp only [ramifiedSixWeight]
+    rw [hphase, hq 1 one_ne_zero (one_dvd _)]
+  · simp only [ramifiedSixWeight]
+    rw [hphase, hq (onceCuspScale t * omega ^ j.val)
+      (mul_ne_zero (onceCusp_scale_ne_zero t) (pow_ne_zero _
+        (omega_primitive.isUnit (by decide)).ne_zero)) (onceCuspScale_mul_root_dvd_three t j.val)]
+
+lemma ramified_symbol_primary_congr_mod_nine (u : Oˣ) (m : ℕ) (a b : O)
+    (ha : lambda ^ 2 ∣ a - 1) (hb : lambda ^ 2 ∣ b - 1) (hab : (9 : O) ∣ a - b) :
+    symbol ((u : O) * lambda ^ m) a = symbol ((u : O) * lambda ^ m) b := by
+  rw [symbol_mul_numerator, symbol_mul_numerator,
+    symbol_pow_numerator _ a ha, symbol_pow_numerator _ b hb,
+    symbol_unit_congr_mod_nine u.val a b u.isUnit ha hb hab,
+    symbol_lambda_congr_mod_nine a b ha hb hab]
+
+lemma ramified_symbol_primary_exponent_mod_three (u : Oˣ) (m : ℕ) (a : O)
+    (ha : lambda ^ 2 ∣ a - 1) :
+    symbol ((u : O) * lambda ^ m) a = symbol ((u : O) * lambda ^ (m % 3)) a := by
+  have hc : IsCoprime lambda a := coprime_of_dvd_sub_one lambda a
+    ((dvd_pow_self lambda (by decide : (2 : ℕ) ≠ 0)).trans ha)
+  have hz := symbol_cube_of_isCoprime lambda a ha hc
+  rw [symbol_mul_numerator, symbol_mul_numerator,
+    symbol_pow_numerator _ a ha, symbol_pow_numerator _ a ha]
+  congr 1
+  calc
+    _ = symbol lambda a ^ (m % 3 + 3 * (m / 3)) := by rw [Nat.mod_add_div]
+    _ = _ := by rw [pow_add, pow_mul, hz, one_pow, mul_one]
+
+/-- Reduction modulo three labels the finitely many integral cusp configurations. -/
+def fixedCuspReduction : SL(2, O) →* SL(2, O ⧸ Ideal.span {(3 : O)}) :=
+  Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {(3 : O)}))
+
+abbrev FixedCuspSector := fixedCuspReduction.range
+
+instance : Finite FixedCuspSector := by
+  letI : Finite (O ⧸ Ideal.span {(3 : O)}) :=
+    (Ideal.span {(3 : O)}).finiteQuotientOfFreeOfNeBot
+      (Ideal.span_singleton_eq_bot.not.mpr (by norm_num))
+  infer_instance
+
+def fixedCuspSector (M : SL(2, O)) : FixedCuspSector := ⟨fixedCuspReduction M, ⟨M, rfl⟩⟩
+
+def fixedCuspRepresentative (s : FixedCuspSector) : SL(2, O) := s.property.choose
+
+lemma fixedCuspRepresentative_reduction (s : FixedCuspSector) :
+    fixedCuspReduction (fixedCuspRepresentative s) = s.val := s.property.choose_spec
+
+lemma fixedCusp_difference_levelThree (M : SL(2, O)) :
+    M * (fixedCuspRepresentative (fixedCuspSector M))⁻¹ ∈ levelThree := by
+  change fixedCuspReduction (M * (fixedCuspRepresentative (fixedCuspSector M))⁻¹) = 1
+  rw [map_mul, map_inv, fixedCuspRepresentative_reduction]
+  change fixedCuspReduction M * (fixedCuspReduction M)⁻¹ = 1
+  exact mul_inv_cancel _
+
+/-- The triangular cusp coordinate change depends only on the residue of the matrix modulo three. -/
+theorem exists_fixed_cusp_decomposition :
+    ∃ (j : FixedCuspSector → Fin 3) (T : FixedCuspSector → SL(2, O))
+      (G : SL(2, O) → rationalExtension),
+      (∀ s, T s 1 0 = 0 ∧ IsUnit (T s 0 0) ∧ IsUnit (T s 1 1)) ∧
+      ∀ M : SL(2, O), M = (G M : SL(2, O)) * cuspRepresentative (j (fixedCuspSector M)) *
+        T (fixedCuspSector M) := by
+  have h (s : FixedCuspSector) := three_cusp_decomposition (fixedCuspRepresentative s)
+  choose G₀ j T hT hT0 hT1 he using h
+  let D : SL(2, O) → rationalExtension := fun M =>
+    ⟨M * (fixedCuspRepresentative (fixedCuspSector M))⁻¹,
+      levelThree_le_rationalExtension (fixedCusp_difference_levelThree M)⟩
+  refine ⟨j, T, fun M => D M * G₀ (fixedCuspSector M), fun s => ⟨hT s, hT0 s, hT1 s⟩, ?_⟩
+  intro M
+  change M = (M * (fixedCuspRepresentative (fixedCuspSector M))⁻¹) *
+    (G₀ (fixedCuspSector M) : SL(2, O)) * cuspRepresentative (j (fixedCuspSector M)) * T (fixedCuspSector M)
+  rw [he (fixedCuspSector M)]
+  group
+
+/-- The cubic Gamma quotient is unitary on the imaginary axis. -/
+lemma cubicReflectionGamma_axis_norm (t : ℝ) : ‖cubicReflectionGamma (t * Complex.I)‖ = 1 := by
+  have h₁ := Gamma_vertical_conj (7 / 6) t
+  have h₂ := Gamma_vertical_conj (5 / 6) t
+  norm_num only [Complex.ofReal_div, Complex.ofReal_ofNat] at h₁ h₂
+  have hn₁ : Complex.Gamma ((7 / 6 : ℂ) + t * Complex.I) ≠ 0 :=
+    Complex.Gamma_ne_zero_of_re_pos (by norm_num)
+  have hn₂ : Complex.Gamma ((5 / 6 : ℂ) + t * Complex.I) ≠ 0 :=
+    Complex.Gamma_ne_zero_of_re_pos (by norm_num)
+  rw [cubicReflectionGamma, h₁, h₂, norm_div, norm_mul, norm_mul, norm_star, norm_star,
+    div_self (mul_ne_zero (norm_ne_zero_iff.mpr hn₁) (norm_ne_zero_iff.mpr hn₂))]
+
+def cubicKernelAxisMultiplier (u : ℝ) : ℂ :=
+  cubicReflectionGamma (((2 * Real.pi * u : ℝ) : ℂ) * Complex.I)
+
+lemma cubicKernelAxisMultiplier_continuous : Continuous cubicKernelAxisMultiplier := by
+  have hl : Continuous (fun u : ℝ => ((2 * Real.pi * u : ℝ) : ℂ) * Complex.I) := by fun_prop
+  apply continuous_iff_continuousAt.mpr
+  intro u
+  exact (cubicReflectionGamma_differentiableAt _ (by norm_num)).continuousAt.comp hl.continuousAt
+
+/-- The reflected logarithmic spectrum is a unitary multiplier of the source Fourier transform. -/
+def kernelSpectralProfile (f : SchwartzMap ℝ ℂ) (u : ℝ) : ℂ :=
+  cubicKernelAxisMultiplier u * (𝓕 f) u
+
+lemma kernelSpectralProfile_norm (f : SchwartzMap ℝ ℂ) (u : ℝ) :
+    ‖kernelSpectralProfile f u‖ = ‖(𝓕 f) u‖ := by
+  rw [kernelSpectralProfile, norm_mul, cubicKernelAxisMultiplier, cubicReflectionGamma_axis_norm, one_mul]
+
+lemma kernelSpectralProfile_continuous (f : SchwartzMap ℝ ℂ) : Continuous (kernelSpectralProfile f) :=
+  cubicKernelAxisMultiplier_continuous.mul (𝓕 f).continuous
+
+lemma kernelSpectralProfile_moment_integrable (f : SchwartzMap ℝ ℂ) (j : ℕ) :
+    Integrable (fun u : ℝ => ‖u‖ ^ j * ‖kernelSpectralProfile f u‖) := by
+  simpa only [kernelSpectralProfile_norm] using (𝓕 f).integrable_pow_mul volume j
+
+lemma kernelSpectralProfile_pow_integrable (f : SchwartzMap ℝ ℂ) (j : ℕ) :
+    Integrable (fun u : ℝ => u ^ j • kernelSpectralProfile f u) := by
+  have hn (u : ℝ) : ‖(u ^ j : ℝ) • kernelSpectralProfile f u‖ =
+      ‖u‖ ^ j * ‖kernelSpectralProfile f u‖ := by rw [norm_smul, norm_pow]
+  apply (kernelSpectralProfile_moment_integrable f j).mono'
+    ((continuous_id.pow j).smul (kernelSpectralProfile_continuous f)).aestronglyMeasurable
+  exact Eventually.of_forall (fun u => (hn u).le)
+
+def reflectedKernelLogProfile (f : SchwartzMap ℝ ℂ) : ℝ → ℂ := 𝓕 (kernelSpectralProfile f)
+
+lemma reflectedKernelLogProfile_smooth (f : SchwartzMap ℝ ℂ) :
+    ContDiff ℝ ∞ (reflectedKernelLogProfile f) :=
+  Real.contDiff_fourier (fun j _ => kernelSpectralProfile_moment_integrable f j)
+
+lemma reflectedKernelLogProfile_deriv (f : SchwartzMap ℝ ℂ) (j : ℕ) :
+    iteratedDeriv j (reflectedKernelLogProfile f) =
+      𝓕 (fun u : ℝ => (-2 * Real.pi * Complex.I * u) ^ j * kernelSpectralProfile f u) := by
+  simpa only [reflectedKernelLogProfile, smul_eq_mul] using
+    Real.iteratedDeriv_fourier (N := (⊤ : ℕ∞))
+      (fun n _ => kernelSpectralProfile_pow_integrable f n) (by simp : (j : ℕ∞) ≤ ⊤)
+
+lemma kernelLogSource_compact (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) : HasCompactSupport (fun u : ℝ => V (Real.exp u)) := by
+  apply HasCompactSupport.of_support_subset_isCompact (K := Set.Icc (Real.log a) (Real.log b)) isCompact_Icc
+  intro u hu
+  have hm := hs (show V (Real.exp u) ≠ 0 from hu)
+  constructor
+  · simpa only [Real.log_exp] using Real.log_le_log ha hm.1
+  · simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos u) hm.2
+
+def kernelLogSource (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) : SchwartzMap ℝ ℂ :=
+  (kernelLogSource_compact V a b ha hs).toSchwartzMap (hV.comp Real.contDiff_exp)
+
+lemma mellin_imaginary_eq_logFourier (V : ℝ → ℂ) (f : SchwartzMap ℝ ℂ)
+    (hf : ∀ u, f u = V (Real.exp u)) (u : ℝ) :
+    mellin V (-(((2 * Real.pi * u : ℝ) : ℂ) * Complex.I)) = (𝓕 f) u := by
+  rw [mellin_eq_fourier]
+  have hfreq : (-(((2 * Real.pi * u : ℝ) : ℂ) * Complex.I)).im / (2 * Real.pi) = -u := by
+    simp only [Complex.neg_im, Complex.mul_im, Complex.ofReal_re, Complex.I_im,
+      Complex.ofReal_im, Complex.I_re, mul_one, mul_zero, add_zero]
+    field_simp
+  rw [hfreq]
+  have hfun : (fun v : ℝ => Real.exp
+      (-(-(((2 * Real.pi * u : ℝ) : ℂ) * Complex.I)).re * v) • V (Real.exp (-v))) =
+      (f : ℝ → ℂ) ∘ LinearIsometryEquiv.neg ℝ := by
+    funext v
+    simp [hf]
+  rw [hfun, Real.fourier_comp_linearIsometry]
+  simp
+  rfl
+
+lemma paperKernel_eq_logFourier (V : ℝ → ℂ) (f : SchwartzMap ℝ ℂ)
+    (hf : ∀ u, f u = V (Real.exp u)) (x : ℝ) (hx : 0 < x) :
+    paperKernel V x = reflectedKernelLogProfile f (Real.log (paperScale * x)) := by
+  unfold paperKernel
+  rw [mellinInv_eq_fourierInv 0 _ (mul_pos paperScale_pos hx)]
+  simp only [Complex.ofReal_zero, neg_zero, Complex.cpow_zero, one_smul]
+  rw [Real.fourierInv_eq_fourier_neg, neg_neg]
+  have hfun : (fun y : ℝ => mellin V (-(0 + 2 * Real.pi * y * Complex.I)) *
+      cubicReflectionGamma (0 + 2 * Real.pi * y * Complex.I)) = kernelSpectralProfile f := by
+    funext y
+    have hy : (0 + 2 * Real.pi * y * Complex.I : ℂ) =
+        ((2 * Real.pi * y : ℝ) : ℂ) * Complex.I := by push_cast; ring
+    rw [hy, mellin_imaginary_eq_logFourier V f hf]
+    exact mul_comm _ _
+  rw [hfun]
+  rfl
+/-- Compact smooth source functions produce smooth reflected kernels on the positive axis. -/
+theorem paperKernel_compact_source_smooth (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) :
+    ContDiffOn ℝ ∞ (paperKernel V) (Set.Ioi 0) := by
+  let f := kernelLogSource V a b ha hs hV
+  have hf : ∀ u, f u = V (Real.exp u) := fun u => rfl
+  have hg : ContDiffOn ℝ ∞
+      (fun x => reflectedKernelLogProfile f (Real.log (paperScale * x))) (Set.Ioi 0) := by
+    intro x hx
+    apply (reflectedKernelLogProfile_smooth f).contDiffAt.comp_contDiffWithinAt x
+    exact ((contDiffAt_const.mul contDiffAt_id).log
+      (ne_of_gt (mul_pos paperScale_pos hx))).contDiffWithinAt
+  apply hg.congr
+  intro x hx
+  exact paperKernel_eq_logFourier V f hf x hx
+
+/-- Inverse Mellin representations of logarithmic derivatives of the reflected kernel. -/
+def paperKernelLogDerivative (V : ℝ → ℂ) (j : ℕ) (x : ℝ) : ℂ :=
+  mellinInv 0 (mellinEulerData V j) (paperScale * x)
+
+lemma paperKernelLogDerivative_zero (V : ℝ → ℂ) (x : ℝ) :
+    paperKernelLogDerivative V 0 x = paperKernel V x := by
+  have he : mellinEulerData V 0 = fun s : ℂ => mellin V (-s) * cubicReflectionGamma s := by
+    funext s
+    simp only [mellinEulerData, pow_zero, one_mul, mellinData]
+  rw [paperKernelLogDerivative, he]
+  rfl
+
+lemma paperKernelLogDerivative_eq (V : ℝ → ℂ) (f : SchwartzMap ℝ ℂ)
+    (hf : ∀ u, f u = V (Real.exp u)) (j : ℕ) (x : ℝ) (hx : 0 < x) :
+    paperKernelLogDerivative V j x =
+      iteratedDeriv j (reflectedKernelLogProfile f) (Real.log (paperScale * x)) := by
+  rw [paperKernelLogDerivative, mellinInv_eq_fourierInv 0 _ (mul_pos paperScale_pos hx)]
+  simp only [Complex.ofReal_zero, neg_zero, Complex.cpow_zero, one_smul]
+  rw [Real.fourierInv_eq_fourier_neg, neg_neg, reflectedKernelLogProfile_deriv]
+  have he : (fun y : ℝ => mellinEulerData V j (0 + 2 * Real.pi * y * Complex.I)) =
+      fun u : ℝ => (-2 * Real.pi * Complex.I * u) ^ j * kernelSpectralProfile f u := by
+    funext u
+    have hu : (0 + 2 * Real.pi * u * Complex.I : ℂ) =
+        ((2 * Real.pi * u : ℝ) : ℂ) * Complex.I := by push_cast; ring
+    rw [hu, mellinEulerData, mellinData, mellin_imaginary_eq_logFourier V f hf]
+    have hp : -(((2 * Real.pi * u : ℝ) : ℂ) * Complex.I) = -2 * Real.pi * Complex.I * u := by
+      push_cast
+      ring
+    rw [hp]
+    dsimp only [kernelSpectralProfile, cubicKernelAxisMultiplier]
+    ring
+  rw [he]
+
+/-- Every logarithmic derivative has arbitrary polynomial decay at infinity. -/
+theorem paperKernelLogDerivative_power_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (N j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ x : ℝ, 0 < x →
+      ‖paperKernelLogDerivative V j x‖ ≤ C * x ^ (-(N : ℝ)) := by
+  obtain ⟨C, hC, hb⟩ := mellinInv_euler_line_bound V a b ha hs hV N j
+  refine ⟨C * paperScale ^ (-(N : ℝ)), mul_pos hC (Real.rpow_pos_of_pos paperScale_pos _), ?_⟩
+  intro x hx
+  have hN : (N : ℝ) ∈ Set.Icc (-(1 / 4 : ℝ)) (N : ℝ) :=
+    ⟨by linarith [Nat.cast_nonneg (α := ℝ) N], le_rfl⟩
+  rw [paperKernelLogDerivative, mellinInv_euler_shift V a b ha hs hV N j (N : ℝ) hN
+    (paperScale * x) (mul_pos paperScale_pos hx)]
+  simpa only [Real.mul_rpow paperScale_pos.le hx.le, mul_assoc] using
+    hb (N : ℝ) hN (paperScale * x) (mul_pos paperScale_pos hx)
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

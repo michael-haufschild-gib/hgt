@@ -8,25 +8,27 @@ the corrected harmonic model. At the coupled shift the diagonal powers
 cancel, so the full arithmetic form tends to the integral of `(P′−vP)²`.
 -/
 
-open Filter MeasureTheory Set Topology
+open Filter MeasureTheory Set Topology Polynomial
 open RHTower.Sieve
 
 noncomputable section
 
 namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 
-/-- The normalized shifted Möbius–gcd form at the coupled exponent. -/
-def coupledShiftedSelbergForm (P : ℝ → ℝ) (N : ℕ) (v : ℝ) : ℝ :=
+/-- The normalized Möbius–gcd form with independent gcd and coefficient shifts. -/
+def shiftedSelbergProfileForm (P : ℝ → ℝ) (N : ℕ) (c v : ℝ) : ℝ :=
   Real.log N * (∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N,
-    shiftedSelbergOriginal (-2 * v / Real.log N) m n *
+    shiftedSelbergOriginal (c / Real.log N) m n *
       (shiftedProfileWeight P N v m * shiftedProfileWeight P N v n))
 
-/-- The literal arithmetic form is exactly the corrected coupled harmonic model. -/
-theorem coupledShiftedSelbergForm_eq_corrected (P : ℝ → ℝ) (N : ℕ) (v : ℝ) :
-    coupledShiftedSelbergForm P N v = correctedCoupledProfileSum P P N v 0 := by
-  unfold coupledShiftedSelbergForm
+/-- The literal arithmetic form equals its corrected harmonic model at every shift. -/
+theorem shiftedSelbergProfileForm_eq_corrected (P : ℝ → ℝ) (N : ℕ) (c v : ℝ) :
+    shiftedSelbergProfileForm P N c v =
+      ∑ a ∈ Finset.Icc 1 N, ∑ b ∈ Finset.Icc 1 N,
+        shiftedSelbergCorrectionCoeff (c / Real.log N) a b *
+          shiftedProfileHarmonicRow P P N a b c v 0 := by
+  unfold shiftedSelbergProfileForm
   rw [shiftedSelbergOriginal_weighted_eq_correction_harmonic_model]
-  unfold correctedCoupledProfileSum
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro a ha
@@ -45,8 +47,17 @@ theorem coupledShiftedSelbergForm_eq_corrected (P : ℝ → ℝ) (N : ℕ) (v : 
   intro d hd
   have hdR : (0 : ℝ) < d := by exact_mod_cast (Finset.mem_Icc.mp hd).1
   rw [Real.rpow_def_of_pos hdR]
-  have he : Real.log (d : ℝ) * (-2 * v / Real.log N) = -2 * v * (Real.log d / Real.log N) := by ring
+  have he : Real.log (d : ℝ) * (c / Real.log N) = c * (Real.log d / Real.log N) := by ring
   rw [he]
+
+/-- The normalized shifted Möbius–gcd form at the coupled exponent. -/
+def coupledShiftedSelbergForm (P : ℝ → ℝ) (N : ℕ) (v : ℝ) : ℝ :=
+  shiftedSelbergProfileForm P N (-2 * v) v
+
+/-- The coupled arithmetic form is exactly the corrected coupled harmonic model. -/
+theorem coupledShiftedSelbergForm_eq_corrected (P : ℝ → ℝ) (N : ℕ) (v : ℝ) :
+    coupledShiftedSelbergForm P N v = correctedCoupledProfileSum P P N v 0 := by
+  exact shiftedSelbergProfileForm_eq_corrected P N (-2 * v) v
 
 /-- The full shifted Selberg polynomial form has the expected coupled limit,
 including every convergent sequence of normalized shifts. -/

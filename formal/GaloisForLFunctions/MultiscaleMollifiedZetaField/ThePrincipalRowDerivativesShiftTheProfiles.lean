@@ -77,6 +77,7 @@ theorem hasDerivAt_shiftedProfileHarmonicRow_direction
         (hasDerivAt_selbergMoebiusWeightedSum_shiftedProfile Q N (b * d) (v + ν * z)).comp z
           (((hasDerivAt_id z).const_mul ν).const_add v)
     apply (((he.const_mul ((Real.log d / Real.log N) ^ k)).mul (hP.mul hQ)).div_const (d : ℝ)).congr_deriv
+    simp only [Pi.mul_apply]
     rw [pow_succ]
     ring
   have hh := (HasDerivAt.fun_sum (u := Finset.Icc 1 (N / max a b)) (fun d _ => hterm d)).const_mul (Real.log N)

@@ -6,100 +6,66 @@
 
 ## Target
 
-For `L=log N` and a smooth profile `P` with `P(0)=0`, prove
+For `L=log N`, a polynomial `P` with `P(0)=0`, and `v_N→v`, prove the
+coupled arithmetic limit
 
-`L Σ_{h,k≤N} μ(h)μ(k)(hk)^(v/L) gcd(h,k)^(1+c/L)/(hk)`
-`·P(log(N/h)/L)P(log(N/k)/L)`
-`→ ∫₀¹ exp((c+2v)t)[P′(1−t)−vP(1−t)]² dt`.
+`L Σ_{h,k≤N} μ(h)μ(k)(hk)^(v_N/L) gcd(h,k)^(1−2v_N/L)/(hk)`
+`·P(1−log h/L)P(1−log k/L) → ∫₀¹ [P′(1−t)−vP(1−t)]² dt`.
 
-The detector requires the first two displacement derivatives with its
-coefficient weights held fixed, for polynomial profiles of degree at most two.
+Also prove its first two directional derivatives in the independent
+parameters `(c,v)`, evaluated at `c=−2v`. The direct detector uses direction
+`(κ,ν)=(−2,2)` and the reflected detector uses `(2,0)`.
 
-## Proved arithmetic reduction
+## Established inputs
 
-`3-formalized/shifted-selberg-euler-factorization.md` proves the exact
-parameterized Euler convolution, arbitrary-weight harmonic collapse,
-common summable correction majorant, and limiting unit mass.
-The extra coefficient twist costs at most `exp(2|v|)` on the finite cutoff.
+The exact Euler convolution writes the finite gcd form as corrected
+harmonic rows. Absolute correction fibres push forward to a summable
+pair majorant; their unshifted total mass is one.
+See `3-formalized/shifted-selberg-euler-factorization.md`.
 
-## Uniform Möbius replacement
+For the normalized Möbius transform `K_P(L,u,v)`, the kernel error is
+controlled by `|F(Lu)−1|` and `∫₀¹|F(Lx)−1| dx`, where `F(y)→1` is bounded.
+Thus `K_P→P′−vP` uniformly for `δ≤u≤1` and compact shift intervals, with a
+common bound on the full cutoff. The harmonic endpoint mass is at most
+`2/(k+1)` in the limit, using the majorant `2t^k` near `t=1`.
 
-For a fixed `C²` test `f` with `f(0)=0`, twice integration gives the error
-`f′(0)(F(Lu)−1)+∫₀ᵘ f″(u−x)(F(Lx)−1) dx`, where `F` is the bounded
-first logarithmic Möbius kernel. Dominated convergence implies
-`∫₀¹|F(Lx)−1| dx→0`; convergence is therefore uniform for `δ≤u≤1`.
-`TheMobiusKernelConvergesInMean` formalizes this proof; direct Lean check passed.
+The endpoint estimate, mean absolute profile replacement, product
+replacement, and fixed-dilation polynomial row limits are formalized.
+`TheCoupledPolynomialRowsConverge` allows every fixed logarithmic power
+and every convergent normalized-shift sequence.
 
-## Remaining detector values and derivatives
+Complex continuation and Cauchy's estimate bound the normalized
+correction jet of order `j` by `j! exp(4(|C|+1))` times its absolute fibre.
+Positive-order jets vanish along every bounded moving-centre sequence.
+These fibre statements are formalized in
+`TheCorrectionJetsKeepTheSummableEnvelope`.
 
-At the actual detector evaluation point `c+2v=0`. Its first two
-frozen-coefficient displacement derivatives contribute only polynomial
-powers of the harmonic logarithm. Existing harmonic logarithmic moments
-therefore suffice; an exponential harmonic limit is unnecessary.
+## Derivative mechanism
 
-For fixed `v`, derivatives of the shifted Möbius transform reduce to finite
-linear combinations of the same smooth tests `x^j exp(−vx)`. The limiting
-transform is `P′(u)−vP(u)`; its first `v` derivative is `−P(u)` and its second
-is zero. Uniform convergence away from `u=0` follows from the mean-kernel
-estimate. The endpoint strip must be bounded in harmonic mass.
+Write `RP(x)=(1−x)P(x)`. A directional derivative of a harmonic row
+inserts `κt` or replaces either profile by `νRP`. Differentiating the
+Euler correction gives a fourth term. Its positive-order normalized
+jets vanish under the common summable majorant.
 
-Prove the first two normalized correction derivatives have the same
-summable fibre envelope and tend to zero on each fixed fibre. Combine
-these facts with the existing harmonic moments, retaining frozen detector
-coefficients throughout the displacement differentiation.
+With `A_P=P′−vP`, `A_Q=Q′−vQ`, and `β=κ+2ν`, the limiting first and
+second derivative integrands are
 
-A complex continuation gives a common majorant for the correction jets.
-For `n>0`, extend the amplitude by
-`n⁻¹∏_{p|n}(1−p exp(z log p))`.
-The bound `|exp(w)−1|≤exp(|w|)−1` gives
-`|1−p exp(z log p)|≤(p−1)exp(2|z|log p)`.
-Thus the normalized correction on `|z−C|≤1` is bounded by
-`exp(4(|C|+1))|W_0|`. Cauchy's estimate bounds its `j`-th derivative by
-`j! exp(4(|C|+1))|W_0|`. On each fixed fibre the normalized continuation
-converges locally uniformly to a constant, so every positive-order jet
-converges to zero. This avoids separate primewise Leibniz estimates.
+`βt A_P A_Q − ν(P A_Q + A_P Q)`,
 
-`TheShiftedAmplitudeIsHolomorphic` formalizes the entire continuation,
-real-axis identity, and complex majorant. Direct Lean check passed.
-`TheCorrectionJetsKeepTheSummableEnvelope` contains the Cauchy estimates
-and vanishing positive-order fibre sums; direct Lean check passed.
-`TheShiftedMobiusProfilesConvergeUniformly` contains the full-cutoff bound
-and uniform `P′−vP` profile limit on compact shift intervals; Lean check passed.
+`β²t² A_P A_Q − 2νβt(P A_Q + A_P Q) + 2ν² P Q`.
 
-The actual shift `R log N/log T` varies with height. Profile limits must be
-uniform on compact shift intervals. The proved profile theorem has this
-scope. The correction-jet theorem also now allows any bounded moving
-centres: the source argument is bounded by `(R+1)/log N`.
-`tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres`
-passed Lean.
+All profiles are evaluated at `1−t`. For `P=Q`, the direct integrands
+are `A²`, `2tA²−4PA`, and `4t²A²−16tPA+8P²`; the reflected ones are
+`A²`, `2tA²`, and `4t²A²`, with their respective normalized shifts.
 
-At the detector base point, write `A=P′−vP`. After division by the
-appropriate power of `log N`, the direct arithmetic jets have integrands
-`A²`, `2tA²−4PA`, and `4t²A²−16tPA+8P²`.
-The reflected jets have integrands `A²`, `2tA²`, and `4t²A²` with the
-reflected value of `v`. Here the profiles are evaluated at `1−t`.
-Correction jets and derivatives of fixed outer dilation factors vanish
-in the fixed-fibre limit. Existing polynomial harmonic moments evaluate
-all six remaining integrals.
+## Formalization boundary
 
-The harmonic endpoint strip can be removed using the already proved
-moments, without a new floor-sum asymptotic. For `t≥1−δ`, choose `δ` so
-`(1−δ)^k≥1/2`; then its indicator is bounded by `2t^k`.
-The normalized harmonic mass of this strip has limsup at most `2/(k+1)`.
-Taking `k` large transfers every bounded profile array that converges
-uniformly away from `t=1` to its limiting harmonic polynomial.
+Full Lean proof drafts cover summation over all correction pairs,
+coefficient-jet majorants, the exact directional derivative identities,
+and both literal gcd-form derivative limits. Compilation is incomplete;
+these assembled statements are not yet claimed as formalized.
 
-`TheHarmonicEndpointHasVanishingMass` now proves the endpoint bound and
-`tendsto_normalizedHarmonicArray_zero`: uniformly bounded errors converging
-uniformly off the endpoint vanish in normalized harmonic mean. Lean check
-passed; umbrella import added. `TheMobiusProfilesCanBeReplacedInHarmonicMean`
-also passed Lean: the mean absolute profile error tends to zero for fixed
-dilations and every convergent normalized-shift sequence. `TheHarmonicProfileProductsHaveTheirExpectedLimits` also passed Lean:
-products may be replaced under every fixed normalized logarithmic power.
-
-The normalized directional derivative `(c,v)↦(c+κz,v+νz)` has an exact
-finite-row description: differentiating the diagonal inserts `κt`, while
-differentiating a coefficient replaces `P(x)` by `ν(1−x)P(x)`. Repeating
-this identity gives the second derivative. These polynomial profiles still
-vanish at zero, so the proved polynomial-product limits suffice; separate
-Möbius-profile jet convergence is unnecessary.
+The parent gate additionally needs varying detector-profile coefficients,
+the zeta-pole and chi-weight main-term jets, fixed-mollifier coefficient
+perturbation, and uniform dyadic block assembly. The pole residue and
+its first two scaled zeta derivatives have separate Lean proof drafts.

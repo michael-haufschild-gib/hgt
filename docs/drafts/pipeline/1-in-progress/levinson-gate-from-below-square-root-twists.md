@@ -58,8 +58,9 @@ frozen-coefficient displacement jets are needed. At the detector point,
 Existing polynomial harmonic moments suffice. The linear-profile
 constants are predicted to be `1−u+u²/3` and `1+u+u²/3`.
 
-Remaining obligations: harmonic replacement including endpoint control;
-correction summation with the actual moving shifts; exact arithmetic jet
+Harmonic endpoint control, profile-product replacement, and fixed-row
+polynomial limits are formalized, including convergent moving shifts.
+Remaining obligations: summation over all correction pairs; exact arithmetic jet
 identities; analytic main-term asymptotics; insertion into
 `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw` and the proved
 count receiver. Details: `shifted-selberg-euler-correction.md`.
@@ -72,8 +73,9 @@ Take length exponent `θ=13/50` and split exponent `α=53/100`:
 `θ/α=26/53<1/2`, while `θ+(11/8)α=791/800<1`.
 A thin-strip Weyl bound for the detector then makes the initial segment
 `O(U^(791/800))`; larger blocks admit the proved short twisted moment.
-The derivative version of that Weyl bound and the block assembly remain
-required.
+The detector Weyl bound and the resulting bound `C B² N A^(11/8)` for
+coefficients satisfying `|b_n|≤B n^(σ−1/2)` have Lean proof drafts.
+Their checks and the block assembly remain required.
 
 For `R=13/10`, exact integration of Young's linear scalar predicts
 `c(13/50)<18/5<exp(13/10)`, hence a positive proportion.

@@ -10,7 +10,7 @@ all its Cauchy jets. Positive-order normalized jets vanish along every
 bounded sequence of centres.
 -/
 
-open Filter Set Topology
+open Filter Metric Set Topology
 open RHTower.Sieve
 
 noncomputable section
@@ -100,8 +100,10 @@ theorem hasDerivAt_realNormalizedCorrectionCoeffJet (N m n j : ℕ) (C : ℝ) :
     induction k with
     | zero => exact hf.differentiableOn.analyticOnNhd isOpen_univ _ (mem_univ _)
     | succ k hk => simpa only [iteratedDeriv_succ] using hk.deriv
-  simpa only [realNormalizedCorrectionCoeffJet, iteratedDeriv_succ, f] using
-    (ha j).differentiableAt.hasDerivAt.real_of_complex
+  change HasDerivAt (fun x : ℝ => (iteratedDeriv j f (x : ℂ)).re)
+    (iteratedDeriv (j + 1) f (C : ℂ)).re C
+  rw [iteratedDeriv_succ]
+  exact (ha j).differentiableAt.hasDerivAt.real_of_complex
 
 /-- Real jets inherit the absolute pair majorant. -/
 theorem abs_realNormalizedCorrectionCoeffJet_le {N m n : ℕ} (hN : 1 < N)

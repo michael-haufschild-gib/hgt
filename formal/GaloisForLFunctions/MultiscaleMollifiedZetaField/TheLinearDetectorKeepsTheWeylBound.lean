@@ -32,15 +32,17 @@ theorem exists_norm_zeta_and_deriv_thin_strip_le :
   refine ⟨r / 2, by positivity, by linarith only [hrhalf], C + D, by positivity, ?_⟩
   intro s hs
   have hstrip {z : ℂ} (hz : ‖z - s‖ ≤ r / 2) : |z.re - 1 / 2| ≤ r := by
-    have hre : |z.re - s.re| ≤ r / 2 :=
-      (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z - s)).trans hz
+    have hre0 : |z.re - s.re| ≤ ‖z - s‖ := by
+      simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z - s)
+    have hre : |z.re - s.re| ≤ r / 2 := hre0.trans hz
     have he : z.re - 1 / 2 = (z.re - s.re) + (s.re - 1 / 2) := by ring
     rw [he]
     have hh := (abs_add_le (z.re - s.re) (s.re - 1 / 2)).trans (add_le_add hre hs)
     linarith only [hh]
   have hf : DifferentiableOn ℂ riemannZeta (ball s (r / 2)) := by
     intro z hz
-    have hz' : ‖z - s‖ ≤ r / 2 := by simpa only [mem_ball, dist_eq_norm] using hz.le
+    have hz0 : ‖z - s‖ < r / 2 := by simpa only [mem_ball, dist_eq_norm] using hz
+    have hz' : ‖z - s‖ ≤ r / 2 := hz0.le
     apply (differentiableAt_riemannZeta ?_).differentiableWithinAt
     intro he
     have hh := hstrip hz'

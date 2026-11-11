@@ -413,6 +413,17 @@ Mellin transform (`sourceCuspZFamily_eq_radialBesselProfile`,
 Reciprocal Gamma reflection bounds and Gaussian regularization justify
 contour shifts under exponential strip growth and integrable boundary values
 (`VerticalContourShift.integral_eq_of_exponential_strip_growth`, checked).
+Compact Mellin inversion and cusp reflection give the exact finite-character
+dual formula for the completed squarefree–cube Gauss sum
+(`SourceCuspDatum.smoothed_reflection`, `completedT_finite_smoothed_reflection`, checked).
+The dual kernel decays to every polynomial order, uniformly across the three
+cusps. Primitive cusp denominators divide the original conductor, giving an
+explicit uniform finite-character bound (`completedT_conductor_bound`, checked).
+All cusp coefficients now have exact squarefree–cube Gauss factorizations,
+including the six ramified branches. Ramified weights are periodic modulo
+27; cubic-symbol phases are periodic modulo nine. The triangular cusp change
+depends only on the matrix modulo three (`ramifiedResidualFourierCoefficient_full_squarefree_cube`,
+`ramifiedSixWeight_congr_mod_twentySeven`, `exists_fixed_cusp_decomposition`, checked).
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

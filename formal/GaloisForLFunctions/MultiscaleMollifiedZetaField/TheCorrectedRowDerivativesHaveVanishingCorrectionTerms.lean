@@ -11,7 +11,7 @@ Every term with a positive-order correction jet vanishes in the coupled
 limit, by the common pair majorant and the uniform principal-row bound.
 -/
 
-open Filter Set Topology
+open Filter Set Topology Polynomial
 open RHTower.Sieve
 
 noncomputable section
@@ -68,14 +68,14 @@ private theorem tsum_correctionJetRowPair (P Q : ℝ → ℝ) (N : ℕ) (v : ℝ
     (∑' x : ℕ × ℕ, correctionJetRowPair P Q N v k j x) = correctedProfileJetSum P Q N (-2 * v) v k j := by
   classical
   rw [tsum_eq_sum (s := (Finset.Icc 1 N).product (Finset.Icc 1 N))]
-  · rw [Finset.sum_product]
+  · rw [Finset.product_eq_sprod, Finset.sum_product]
     apply Finset.sum_congr rfl
     intro a ha
     apply Finset.sum_congr rfl
     intro b hb
-    simp only [correctionJetRowPair, if_pos ⟨ha, hb⟩, correctedProfileJetSum]
+    simp only [correctionJetRowPair, if_pos (And.intro ha hb)]
   · intro x hx
-    exact if_neg (by simpa only [Finset.mem_product] using hx)
+    exact if_neg (by simpa only [Finset.product_eq_sprod, Finset.mem_product] using hx)
 
 /-- Every positive correction-jet term vanishes after summing all retained polynomial rows. -/
 theorem tendsto_correctedProfileJetSum_succ_coupled (P Q : ℝ[X])
@@ -137,7 +137,9 @@ theorem tendsto_correctedProfileJetSum_succ_coupled (P Q : ℝ[X])
         apply Real.exp_le_exp.mpr
         linarith only [hcentre]
       rw [correctionJetRowPair, if_pos hx, Real.norm_eq_abs, abs_mul]
-      have hh := mul_le_mul hc' (hrow _ _ k hx1.1 hx2.1 hx1.2 hx2.2) (abs_nonneg _) (by positivity)
+      have hh := mul_le_mul hc' (hrow _ _ k hx1.1 hx2.1 hx1.2 hx2.2) (abs_nonneg _)
+        (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Real.exp_nonneg _))
+          (absoluteSelbergCorrectionCoeff_nonneg _ _))
       exact hh.trans_eq (by dsimp only [K]; ring)
     · rw [correctionJetRowPair, if_neg hx, norm_zero]
       exact mul_nonneg hK (absoluteSelbergCorrectionCoeff_nonneg _ _)

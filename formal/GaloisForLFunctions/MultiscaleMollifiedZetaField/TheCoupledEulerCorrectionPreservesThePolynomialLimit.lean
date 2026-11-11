@@ -10,7 +10,7 @@ convergence then multiplies the common row limit by the correction's
 unit mass, also for a varying normalized shift.
 -/
 
-open Filter Set Topology
+open Filter Set Topology Polynomial
 open RHTower.Sieve
 
 noncomputable section
@@ -63,7 +63,15 @@ private theorem harmonicProduct_abs_le (k : ℕ) {P Q : ℝ → ℝ} {N a b : �
       exact (mul_le_mul_of_nonneg_right (pow_le_one₀ ht.1 ht.2) (abs_nonneg _)).trans
         (by simpa only [one_mul] using hprod)
     _ = B * D * normalizedHarmonicLogMoment 0 (max a b) N := by
-      simp only [normalizedHarmonicLogMoment, pow_zero, mul_one_div, Finset.mul_sum, mul_div_assoc]
+      simp only [normalizedHarmonicLogMoment, pow_zero]
+      have hs : (∑ d ∈ Finset.Icc 1 (N / max a b), (B * D) / (d : ℝ)) =
+          B * D * (∑ d ∈ Finset.Icc 1 (N / max a b), 1 / (d : ℝ)) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro d _
+        ring
+      rw [hs]
+      ring
     _ ≤ _ := mul_le_mul_of_nonneg_left (harmonicMass_le_full hN) (mul_nonneg hB hD)
 
 /-- The coupled row is bounded uniformly over every retained dilation pair. -/
@@ -120,8 +128,8 @@ theorem exists_eventually_coupledPolynomialRow_bound (P Q : ℝ[X])
   intro a b k ha hb haN hbN
   have hrow := abs_shiftedProfileHarmonicRow_coupled_le k (by omega : 1 < N)
     ha hb haN hbN hV hvN hB hD
-    (fun u hu => hPB _ (Real.log_pos (by exact_mod_cast hN)) u hu _ hvN)
-    (fun u hu => hQD _ (Real.log_pos (by exact_mod_cast hN)) u hu _ hvN)
+    (fun u hu => hPB _ (Real.log_pos (by exact_mod_cast (by omega : 1 < N))) u hu _ hvN)
+    (fun u hu => hQD _ (Real.log_pos (by exact_mod_cast (by omega : 1 < N))) u hu _ hvN)
   exact hrow.trans (mul_le_mul_of_nonneg_left
     (mul_le_mul_of_nonneg_left hm (mul_nonneg hB hD)) (Real.exp_nonneg _))
 
@@ -140,14 +148,14 @@ private theorem tsum_correctedProfilePair (P Q : ℝ → ℝ) (N : ℕ) (v : ℝ
     (∑' x : ℕ × ℕ, correctedProfilePair P Q N v k x) = correctedCoupledProfileSum P Q N v k := by
   classical
   rw [tsum_eq_sum (s := (Finset.Icc 1 N).product (Finset.Icc 1 N))]
-  · rw [Finset.sum_product]
+  · rw [Finset.product_eq_sprod, Finset.sum_product]
     apply Finset.sum_congr rfl
     intro a ha
     apply Finset.sum_congr rfl
     intro b hb
-    simp only [correctedProfilePair, if_pos ⟨ha, hb⟩, correctedCoupledProfileSum]
+    simp only [correctedProfilePair, if_pos (And.intro ha hb)]
   · intro x hx
-    exact if_neg (by simpa only [Finset.mem_product] using hx)
+    exact if_neg (by simpa only [Finset.product_eq_sprod, Finset.mem_product] using hx)
 
 /-- The full Euler-corrected coupled polynomial row has the same integral as one principal row. -/
 theorem tendsto_correctedCoupledProfileSum (P Q : ℝ[X])
@@ -215,7 +223,8 @@ theorem tendsto_correctedCoupledProfileSum (P Q : ℝ[X])
         linarith only [hCN]
       have hrow' := hrowN x.1 x.2 k hx1.1 hx2.1 hx1.2 hx2.2
       rw [correctedProfilePair, if_pos hx, Real.norm_eq_abs, abs_mul]
-      have hh := mul_le_mul hcoeff' hrow' (abs_nonneg _) (by positivity)
+      have hh := mul_le_mul hcoeff' hrow' (abs_nonneg _)
+        (mul_nonneg (Real.exp_nonneg _) (absoluteSelbergCorrectionCoeff_nonneg _ _))
       exact hh.trans_eq (by dsimp only [K]; ring)
     · simp only [correctedProfilePair, if_neg hx, norm_zero]
       exact mul_nonneg hK (absoluteSelbergCorrectionCoeff_nonneg _ _)
