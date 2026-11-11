@@ -48,7 +48,10 @@ The finite contact reduction is formalized in
 `partialSumPowerBound_centeredContact_iff_zeroHalfPlane` classifies the
 centered contact exponent `1-2a+σ` by `Re ρ≤1-a+σ`.
 Reference and archimedean bounds are formalized; the literal-comb growth
-theorem awaits compilation. Convergence and its Mellin limit remain open;
+theorem `powerCombTailGrowth_iff_zeroHalfPlane` is formalized.
+`riemannHypothesis_iff_all_powerCombTails_subpolynomial` gives the exact
+RH criterion for subpolynomial growth of all positive subcritical tails.
+Convergence and its Mellin limit remain open;
 a growth-only intermediate result does not finish the target.
 
 ## Arithmetic reduction

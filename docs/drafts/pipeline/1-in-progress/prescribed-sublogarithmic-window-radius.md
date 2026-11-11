@@ -61,3 +61,10 @@ levels need `T ≳ exp(c(ΓR)^α)/R`; with `Γ ≥ e^{R/(πC)}` (Landau density)
 a construction must avoid phase alignment at the centre altogether. The dual (detection) side
 fails for every `R = o(log T)`: annihilating the frequencies below `T/R` is impossible at density
 `C log T > R/π`. Neither direction is proved between `log log T` and `log T`.
+
+## Candidate beyond fixed-weight phase splitting
+
+[Self-consistent interpolation weights](self-calibrated-exponential-window-blocks.md)
+move the nodes and weights together, imposing `exp(T z_j)=c_j(z)` exactly.
+The proposed contraction involves logarithmic derivatives of the weights.
+Its construction and the full configuration remain unproved.

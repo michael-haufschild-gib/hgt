@@ -130,7 +130,7 @@ theorem isIntegerNormFakeAt_keptPrimeSystem_of_deletionData {α Θ β C : ℝ} {
       simpa using tendsto_const_nhds.add (h0.const_mul C')
     have hev : ∀ᶠ X : ℝ in atTop, A + C' * X ^ (β - 1) < 0 :=
       hlim.eventually (Iio_mem_nhds hneg)
-    obtain ⟨X, hX1, hlt⟩ := (hev.and (eventually_ge_atTop (1 : ℝ))).exists
+    obtain ⟨X, hlt, hX1⟩ := (hev.and (eventually_ge_atTop (1 : ℝ))).exists
     have hX0 : 0 < X := by linarith
     have hprod_lt : (A + C' * X ^ (β - 1)) * X < 0 :=
       mul_neg_of_neg_of_pos hlt hX0
@@ -284,7 +284,7 @@ private theorem exists_mobS_bounds_of_zeroFree {α a₀ σ₀ τ ε θ_M c_eq : 
     D.mobS D.mobS_zero D.norm_mobS_le (a := a₀) (σ₀ := σ₀) haσ hσ₀0 hσ₀1 hH
     (fun s hs => by
       rw [hdiv s (fun h => by rw [h] at hs; simp at hs), D.LSeries_mobS_eq hα0 hα hs])
-    (K := K_st) (T₀ := 1) (κ₁ := 2 * τ) (by positivity)
+    (K := K_st) (T₀ := 1) (κ₁ := 2 * τ) (by linarith)
     (fun s h1 h2 h3 => by
       have hs1 : s ≠ 1 := fun h => by rw [h] at h3; norm_num at h3
       rw [hdiv s hs1]; exact hK_st s h1 h2 h3)
@@ -343,7 +343,7 @@ private theorem exists_mobS_bounds_of_zeroFree {α a₀ σ₀ τ ε θ_M c_eq : 
   -- (3) Telescoping `D.mainSum M - D.mobSum`.
   obtain ⟨L₃, hL₃⟩ : ∃ L₃ : ℝ, L₃ = DeletionData.lineMass bumpDivC σ₀ ε := ⟨_, rfl⟩
   have hL₃0 : 0 ≤ L₃ := hL₃ ▸ MeasureTheory.integral_nonneg fun _ => by positivity
-  set r : ℝ := (2 : ℝ) ^ (σ₀ - 1)
+  set r : ℝ := (2 : ℝ) ^ (σ₀ - 1) with hr
   have hr0 : 0 < r := by positivity
   have hr1 : r < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
   set CA : ℝ := K₁ * L₃ / (1 - r)
@@ -365,9 +365,8 @@ private theorem exists_mobS_bounds_of_zeroFree {α a₀ σ₀ τ ε θ_M c_eq : 
         _ = K₁ * L₃ * (2 ^ j * M) ^ (σ₀ - 1) := by
             rw [Real.rpow_sub hMj, Real.rpow_one]; field_simp
         _ = K₁ * L₃ * M ^ (σ₀ - 1) * r ^ j := by
-            rw [Real.mul_rpow (by positivity) hM0.le, ← Real.rpow_natCast,
+            rw [Real.mul_rpow (by positivity) hM0.le, hr, ← Real.rpow_natCast,
               ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num), ← Real.rpow_mul (by norm_num)]
-            dsimp [r]; rw [← Real.rpow_mul (by norm_num)]
             ring_nf
     have hpartial : ∀ J : ℕ, ‖D.mainSum M - D.mainSum (2 ^ J * M)‖ ≤
         K₁ * L₃ * M ^ (σ₀ - 1) / (1 - r) := by
@@ -412,26 +411,29 @@ private theorem exists_norm_riemannZeta_shift_le_subconvex {c : ℝ} (hc0 : 0 < 
   rcases le_or_gt w.re (1 + c / 8) with hw_hi | hw_gt
   · have hexp_le : (1 / 6 + c / 8) * (1 + c / 8 - w.re) / (1 / 2 + c / 8) ≤ 7 * c / 16 := by
       rw [div_le_iff₀ (by linarith)]
-      have h1 : 1 / 6 + c / 8 ≤ 129 / 768 := by linarith
+      have h1 : 1 / 6 + c / 8 ≤ 131 / 768 := by linarith
       have h2 : 1 + c / 8 - w.re ≤ 5 * c / 4 := by linarith
       calc (1 / 6 + c / 8) * (1 + c / 8 - w.re)
-          ≤ (129 / 768) * (5 * c / 4) := mul_le_mul h1 h2 (by linarith) (by norm_num)
+          ≤ (131 / 768) * (5 * c / 4) := mul_le_mul h1 h2 (by linarith) (by norm_num)
         _ ≤ 7 * c / 16 * (1 / 2) := by linarith
         _ ≤ 7 * c / 16 * (1 / 2 + c / 8) :=
             mul_le_mul_of_nonneg_left (by linarith) (by positivity)
     have hnorm_w : ‖riemannZeta w‖ ≤
         C_sub * |s.im| ^ ((1 / 6 + c / 8) * (1 + c / 8 - w.re) / (1 / 2 + c / 8)) := by
       rcases le_or_gt 0 s.im with him0 | him_neg
-      · have hw_eq : w = (w.re : ℂ) + (s.im : ℂ) * I := by
+      · have hw_eq : ‖riemannZeta w‖ = ‖riemannZeta ((w.re : ℂ) + (s.im : ℂ) * I)‖ := by
+          congr 2
           conv_lhs => rw [← Complex.re_add_im w]
           rw [hw_im]
         rw [abs_of_nonneg him0] at hs_im ⊢
         rw [hw_eq]
         exact hsub w.re s.im hw_half hw_hi hs_im
-      · have hw_conj : w = starRingEnd ℂ ((w.re : ℂ) + ((-s.im : ℝ) : ℂ) * I) := by
-          apply Complex.ext <;> simp [hw_im]
+      · have hw_eq : ‖riemannZeta w‖ = ‖riemannZeta ((w.re : ℂ) + ((-s.im : ℝ) : ℂ) * I)‖ := by
+          have hw_conj : w = starRingEnd ℂ ((w.re : ℂ) + ((-s.im : ℝ) : ℂ) * I) := by
+            apply Complex.ext <;> simp [hw_im]
+          conv_lhs => rw [hw_conj, riemannZeta_conj, Complex.norm_conj]
         rw [abs_of_neg him_neg] at hs_im ⊢
-        rw [hw_conj, riemannZeta_conj, Complex.norm_conj]
+        rw [hw_eq]
         exact hsub w.re (-s.im) hw_half hw_hi hs_im
     have hs1 : 1 ≤ |s.im| := by linarith
     calc ‖riemannZeta w‖
@@ -459,12 +461,12 @@ private theorem exists_norm_tsum_lamS_sub_le_subconvex {c : ℝ} (hc0 : 0 < c) (
     ∃ K₂ : ℝ, 0 ≤ K₂ ∧
       ∀ (g : ℝ → ℂ) (a b : ℝ), IsTest g a b → ∀ M : ℝ, 0 < M →
         ‖∑' n, D.lamS n * g (n / M) -
-            D.lamNum (1 / 2 + c / 8) * mellin g ((1 / 2 + c / 8 : ℝ) : ℂ) *
+            D.lamNum ((1 / 2 + c / 8 : ℝ) : ℂ) * mellin g ((1 / 2 + c / 8 : ℝ) : ℂ) *
               (M : ℂ) ^ ((1 / 2 + c / 8 : ℝ) : ℂ)‖ ≤
           K₂ * M ^ (1 / 2 - c) * DeletionData.lineMass g (1 / 2 - c) (c / 2) := by
-  set α : ℝ := 1 / 2 + c / 8
-  set σ₀ : ℝ := 1 / 2 - c
-  set ε : ℝ := c / 2
+  let α : ℝ := 1 / 2 + c / 8
+  let σ₀ : ℝ := 1 / 2 - c
+  let ε : ℝ := c / 2
   have hα0 : 0 < α := by dsimp [α]; linarith
   have hα : α < 1 := by dsimp [α]; linarith
   have hα2_σ₀ : α / 2 < σ₀ := by dsimp [α, σ₀]; linarith
@@ -480,7 +482,7 @@ private theorem exists_norm_tsum_lamS_sub_le_subconvex {c : ℝ} (hc0 : 0 < c) (
     rw [D.residue_add_dslope_eq hsα, D.lamNum_div_eq hsα, norm_mul]
     have hE' : ‖Complex.exp (D.corr s + D.rem₁ s - DeletionData.rem₂ α s)‖ ≤
         c_exp * (|s.im| + 3) ^ (c / 16) := by
-      refine (hE s (by linarith)).trans ?_
+      refine (hE s (by dsimp only [σ₀, α] at hs1 ⊢; linarith)).trans ?_
       exact mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow (by positivity) (by linarith) (by positivity)) hc_exp.le
     calc ‖riemannZeta (s + ((1 - α : ℝ) : ℂ))‖ *
@@ -525,7 +527,7 @@ private theorem exists_norm_tsum_lamS_sub_le_subconvex {c : ℝ} (hc0 : 0 < c) (
     (fun s h1 h2 h3 => hK_st s h1 h2 h3) (K₀ := K₀) hK₀ hM
   calc _ ≤ _ := h
     _ = K₀ / (2 * π) * M ^ σ₀ * DeletionData.lineMass g σ₀ ε := by
-        unfold DeletionData.lineMass; ring
+        dsimp [σ₀, ε]; unfold DeletionData.lineMass; ring
 
 private theorem exists_norm_block_le_of_smooth {α σ₀ ε K₁ K₂ : ℝ} (D : DeletionData α)
     (hσ₀0 : 0 ≤ σ₀) (hσα : σ₀ ≤ α) (hε : 0 < ε) (hε4 : ε < 1 / 4)
@@ -536,7 +538,8 @@ private theorem exists_norm_block_le_of_smooth {α σ₀ ε K₁ K₂ : ℝ} (D 
       ‖∑' n, D.lamS n * g (n / M) - D.lamNum α * mellin g (α : ℂ) * (M : ℂ) ^ (α : ℂ)‖ ≤
         K₂ * M ^ σ₀ * DeletionData.lineMass g σ₀ ε) :
     ∃ KB : ℝ, 0 ≤ KB ∧ ∀ M x Δ : ℝ, 1 ≤ M → M ≤ x → 0 < Δ → Δ ≤ 1 →
-      ‖∑ m ∈ Finset.Icc 1 ⌊4 * M⌋₊, D.mobS m * bumpC (m / M) * (saw (x / m) : ℂ)‖ ≤
+      ‖∑ m ∈ Finset.Icc 1 ⌊4 * M⌋₊,
+          D.mobS m * BeurlingDeletion.bumpC (m / M) * (saw (x / m) : ℂ)‖ ≤
         KB * (M ^ σ₀ * (x / M) ^ (1 / 2 + ε) * Δ ^ (-(1 / 2 + 2 * ε)) +
           Δ ^ (1 - ε) * M ^ α) := by
   obtain ⟨CF, hCF0, hCF⟩ := exists_integral_twist_le isTest_bumpC (σ := σ₀) (κ := ε)
@@ -557,26 +560,28 @@ private theorem exists_norm_block_le_of_smooth {α σ₀ ε K₁ K₂ : ℝ} (D 
   have hx0 : 0 ≤ x := by linarith
   have hy1 : 1 ≤ x / M := by rw [le_div_iff₀ hM0]; linarith
   obtain ⟨a, k, haS, hkS, ha, hk, hmain⟩ := hdec Δ hΔ
-  have hβ : ∀ m, ‖D.mobS m * bumpC (m / M)‖ ≤ D.lamR m * bump (m / M) := fun m => by
-    rw [norm_mul, bumpC, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (bump_nonneg _)]
+  have hβ : ∀ m, ‖D.mobS m * BeurlingDeletion.bumpC (m / M)‖ ≤ D.lamR m * bump (m / M) := fun m => by
+    rw [norm_mul, BeurlingDeletion.bumpC, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (bump_nonneg _)]
     exact mul_le_mul_of_nonneg_right (D.norm_mobS_le_lamR m) (bump_nonneg _)
   have key := hmain (Finset.Icc 1 ⌊4 * M⌋₊) (fun m : ℕ => x / m)
-    (fun m => D.mobS m * bumpC (m / M)) (fun m => D.lamR m * bump (m / M)) hβ
-  have hlamc : ∀ m : ℕ, ((D.lamR m * bump (m / M) : ℝ) : ℂ) = D.lamS m * bumpC (m / M) := by
-    intro m; simp [DeletionData.lamS, bumpC]
+    (fun m => D.mobS m * BeurlingDeletion.bumpC (m / M)) (fun m => D.lamR m * bump (m / M)) hβ
+  have hlamc : ∀ m : ℕ,
+      ((D.lamR m * bump (m / M) : ℝ) : ℂ) = D.lamS m * BeurlingDeletion.bumpC (m / M) := by
+    intro m; simp [DeletionData.lamS, BeurlingDeletion.bumpC]
   set X₁ : ℝ := M ^ σ₀ * (x / M) ^ (1 / 2 + ε) * Δ ^ (-(1 / 2 + 2 * ε))
   set X₂ : ℝ := Δ ^ (1 - ε) * M ^ α
   set G₀ : ℝ := A0 * Δ * (L * Cr * M ^ α + K₂ * M ^ σ₀ * CF)
   set B₁ : ℝ := A0 * K₁ * CF * 2 ^ (1 / 2 + ε) * X₁
   set B₂ : ℝ := A0 * L * Cr * M ^ α * Δ ^ (1 - ε) + A0 * K₂ * CF * 2 ^ (1 / 2 + ε) * X₁
   have hT1 : ∀ h : ℤ, ‖a h‖ * ‖∑ i ∈ Finset.Icc 1 ⌊4 * M⌋₊,
-      (fun m => D.mobS m * bumpC (m / M)) i *
+      (fun m => D.mobS m * BeurlingDeletion.bumpC (m / M)) i *
         fourier h (((fun m : ℕ => x / m) i : ℝ) : UnitAddCircle)‖ ≤
       B₁ * |(h : ℝ)| ^ (-(1 + ε)) := by
     intro h
-    rw [sum_mul_fourier_eq_tsum _ D.mobS_zero M x hM0 h]
-    refine (smooth_term_le hA0 hK₁0 hCF0 hΔ hy1 (by positivity) hε hε4 (ha h) (norm_nonneg _)
-      (D.norm_tsum_mobS_twist_le hK₁0 hK₁ hCF hM0 hx0 h)).trans (le_of_eq ?_)
+    rw [DeletionData.sum_mul_fourier_eq_tsum _ D.mobS_zero M x hM0 h]
+    refine (DeletionData.smooth_term_le hA0 hK₁0 hCF0 hΔ hy1 (by positivity) hε hε4 (ha h)
+      (norm_nonneg _) (D.norm_tsum_mobS_twist_le hK₁0 hK₁ hCF hM0 hx0 h)).trans (le_of_eq ?_)
     dsimp [B₁, X₁]; ring
   have hT2 : ∀ h : ℤ, ‖k h‖ * ‖∑ i ∈ Finset.Icc 1 ⌊4 * M⌋₊,
       (((fun m => D.lamR m * bump (m / M)) i : ℝ) : ℂ) *
@@ -585,16 +590,16 @@ private theorem exists_norm_block_le_of_smooth {α σ₀ ε K₁ K₂ : ℝ} (D 
     intro h
     have e : ∑ i ∈ Finset.Icc 1 ⌊4 * M⌋₊, (((fun m => D.lamR m * bump (m / M)) i : ℝ) : ℂ) *
         fourier h (((fun m : ℕ => x / m) i : ℝ) : UnitAddCircle) =
-        ∑' n, D.lamS n * twist bumpC (h * x / M) (n / M) := by
-      rw [← sum_mul_fourier_eq_tsum _ D.lamS_zero M x hM0 h]
+        ∑' n, D.lamS n * twist BeurlingDeletion.bumpC (h * x / M) (n / M) := by
+      rw [← DeletionData.sum_mul_fourier_eq_tsum _ D.lamS_zero M x hM0 h]
       exact Finset.sum_congr rfl fun m _ => by simp only [hlamc]
     rw [e]
-    refine (majorant_term_le hA0 hL0 hCr0 hK₂0 hCF0 hΔ hy1 (by positivity) (by positivity) hε hε4
-      (hk h) (norm_nonneg _) (D.norm_tsum_lamS_twist_le hK₂0 hK₂ hCF hCr hM0 hx0 h)).trans
-      (le_of_eq ?_)
+    refine (DeletionData.majorant_term_le hA0 hL0 hCr0 hK₂0 hCF0 hΔ hy1 (by positivity)
+      (by positivity) hε hε4 (hk h) (norm_nonneg _)
+      (D.norm_tsum_lamS_twist_le hK₂0 hK₂ hCF hCr hM0 hx0 h)).trans (le_of_eq ?_)
     dsimp [B₂, X₁, G₀, L]; ring
   have hS1 := summable_mul_norm_sum (Finset.Icc 1 ⌊4 * M⌋₊)
-    (fun m => D.mobS m * bumpC (m / M)) (fun m : ℕ => x / m) haS
+    (fun m => D.mobS m * BeurlingDeletion.bumpC (m / M)) (fun m : ℕ => x / m) haS
   have hS2 := summable_mul_norm_sum (Finset.Icc 1 ⌊4 * M⌋₊)
     (fun m => ((D.lamR m * bump (m / M) : ℝ) : ℂ)) (fun m : ℕ => x / m) hkS
   have hfin : Summable fun h : ℤ => (if h = 0 then G₀ else 0) :=
@@ -646,8 +651,8 @@ private theorem dyadic_scale_sub_half {c X : ℝ} (hc0 : 0 < c) (hc_le : c ≤ 1
   set K_hi := X ^ (1 - c / 4)
   have hM₁0 : 0 < M₁ := Real.rpow_pos_of_pos hX0 _
   set ρ := K_hi / M₁
-  have hρeq : ρ = X ^ (1 - c / 4 - 15 / 16) := by
-    dsimp [ρ, K_hi, M₁]; rw [Real.rpow_sub hX0]
+  have hρeq : ρ = X ^ (1 - c / 4 - 15 / 16) :=
+    (Real.rpow_sub hX0 (1 - c / 4) (15 / 16)).symm
   have hρ1 : 1 ≤ ρ := by rw [hρeq]; exact Real.one_le_rpow hX (by linarith)
   have hρX : ρ ≤ X := by
     rw [hρeq]
@@ -673,6 +678,7 @@ private theorem dyadic_scale_sub_half {c X : ℝ} (hc0 : 0 < c) (hc_le : c ≤ 1
   · calc (2 : ℝ) ^ J * M₁ ≤ 2 * ρ * M₁ := mul_le_mul_of_nonneg_right hJup hM₁0.le
       _ = 2 * K_hi := by dsimp [ρ]; field_simp
   · have hbX : b ≤ Real.log X / Real.log 2 := by
+      dsimp only [b]
       rw [Real.logb, div_le_div_iff_of_pos_right (Real.log_pos (by norm_num))]
       exact Real.log_le_log hρ0 hρX
     linarith
@@ -685,7 +691,8 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
     (hCM : ∀ Y : ℝ, 1 ≤ Y → ‖∑ n ∈ Finset.Iic ⌊Y⌋₊, D.mobS n‖ ≤ CM * Y ^ (1 / 2 - 3 * c / 4))
     (hCA : ∀ M : ℝ, 1 ≤ M → ‖D.mainSum M - D.mobSum‖ ≤ CA * M ^ ((1 / 2 - c) - 1))
     (hKB : ∀ M x Δ : ℝ, 1 ≤ M → M ≤ x → 0 < Δ → Δ ≤ 1 →
-      ‖∑ m ∈ Finset.Icc 1 ⌊4 * M⌋₊, D.mobS m * bumpC (m / M) * (saw (x / m) : ℂ)‖ ≤
+      ‖∑ m ∈ Finset.Icc 1 ⌊4 * M⌋₊,
+          D.mobS m * BeurlingDeletion.bumpC (m / M) * (saw (x / m) : ℂ)‖ ≤
         KB * (M ^ (1 / 2 - c) * (x / M) ^ (1 / 2 + c / 2) * Δ ^ (-(1 / 2 + 2 * (c / 2))) +
           Δ ^ (1 - c / 2) * M ^ (1 / 2 + c / 8)))
     {X : ℝ} (hX : (8 : ℝ) ^ (4 / c) ≤ X) :
@@ -697,159 +704,194 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
   have hX1 : 1 ≤ X := le_trans h8_ge1 hX
   have hX0 : 0 < X := by linarith
   have hc_sq : c * c ≤ (1 / 32) * c := mul_le_mul_of_nonneg_right hc_le hc0.le
-  set α : ℝ := 1 / 2 + c / 8
-  set σ₀ : ℝ := 1 / 2 - c
-  set ε : ℝ := c / 2
-  set θ_M : ℝ := 1 / 2 - 3 * c / 4
-  set β : ℝ := 1 / 2 - c / 8
-  have hα0 : 0 < α := by dsimp [α]; linarith
-  have hα : α < 1 := by dsimp [α]; linarith
-  set M₁ : ℝ := X ^ (15 / 16 : ℝ)
-  set K_hi : ℝ := X ^ (1 - c / 4)
-  have hM₁1 : 1 ≤ M₁ := Real.one_le_rpow hX1 (by norm_num)
-  have hK1 : 1 ≤ K_hi := Real.one_le_rpow hX1 (by linarith)
-  obtain ⟨hlo, hhi, hJ_log⟩ := dyadic_scale_sub_half hc0 hc_le hX1
-  set J : ℕ := ⌈Real.logb 2 (K_hi / M₁)⌉₊
-  set M₂ : ℝ := 2 ^ J * M₁
+  have hα0 : 0 < 1 / 2 + c / 8 := by linarith
+  have hα : 1 / 2 + c / 8 < 1 := by linarith
+  obtain ⟨M₁, hM₁⟩ : ∃ M₁ : ℝ, M₁ = X ^ (15 / 16 : ℝ) := ⟨_, rfl⟩
+  obtain ⟨K_hi, hK_hi⟩ : ∃ K_hi : ℝ, K_hi = X ^ (1 - c / 4) := ⟨_, rfl⟩
+  have hM₁1 : 1 ≤ M₁ := hM₁ ▸ Real.one_le_rpow hX1 (by norm_num)
+  have hM₁0 : 0 < M₁ := by linarith
+  have hK1 : 1 ≤ K_hi := hK_hi ▸ Real.one_le_rpow hX1 (by linarith)
+  have hK0 : 0 < K_hi := by linarith
+  obtain ⟨hlo_raw, hhi_raw, hJ_log_raw⟩ := dyadic_scale_sub_half hc0 hc_le hX1
+  obtain ⟨J, hJ⟩ : ∃ J : ℕ, J = ⌈Real.logb 2 (K_hi / M₁)⌉₊ := ⟨_, rfl⟩
+  obtain ⟨M₂, hM₂⟩ : ∃ M₂ : ℝ, M₂ = 2 ^ J * M₁ := ⟨_, rfl⟩
+  have hJ_raw : J = ⌈Real.logb 2 (X ^ (1 - c / 4) / X ^ (15 / 16 : ℝ))⌉₊ := by
+    rw [hJ, hK_hi, hM₁]
+  have hlo : K_hi ≤ M₂ := by rw [hK_hi, hM₂, hJ_raw, hM₁]; exact hlo_raw
+  have hhi : M₂ ≤ 2 * K_hi := by rw [hK_hi, hM₂, hJ_raw, hM₁]; exact hhi_raw
+  have hJ_log : (J : ℝ) ≤ Real.log X / Real.log 2 + 1 := by rw [hJ_raw]; exact hJ_log_raw
   have hM₂1 : 1 ≤ M₂ := le_trans hK1 hlo
+  have hM₂0 : 0 < M₂ := by linarith
   have h8_K : 8 * K_hi ≤ X := by
     have hpow8 : (8 : ℝ) ≤ X ^ (c / 4) := by
       calc (8 : ℝ) = ((8 : ℝ) ^ (4 / c)) ^ (c / 4) := by
             rw [← Real.rpow_mul (by norm_num),
               show 4 / c * (c / 4) = 1 by field_simp, Real.rpow_one]
         _ ≤ X ^ (c / 4) := Real.rpow_le_rpow (by positivity) hX (by positivity)
-    calc 8 * K_hi ≤ X ^ (c / 4) * X ^ (1 - c / 4) :=
+    calc 8 * K_hi = 8 * X ^ (1 - c / 4) := by rw [hK_hi]
+      _ ≤ X ^ (c / 4) * X ^ (1 - c / 4) :=
           mul_le_mul_of_nonneg_right hpow8 (by positivity)
       _ = X := by rw [← Real.rpow_add hX0, show c / 4 + (1 - c / 4) = 1 by ring, Real.rpow_one]
-  have hN : 2 * M₂ ≤ (⌊X⌋₊ : ℝ) := by
+  have hN : 2 * (2 ^ J * M₁) ≤ (⌊X⌋₊ : ℝ) := by
+    rw [← hM₂]
     have hfl := Nat.lt_floor_add_one X
     linarith
-  rw [D.count_decomposition hα0 hα hX0.le (by linarith : 0 < M₁) J hN]
-  set S₂ := ∑ m ∈ Finset.Ioc 0 ⌊X⌋₊, D.mobS m * (cut (m / M₂) : ℂ)
-  set Sm := ∑ m ∈ Finset.Ioc 0 ⌊X⌋₊, D.mobS m * (cut (m / M₁) : ℂ) * (saw (X / m) : ℂ)
-  set Bl := ∑ j ∈ Finset.range J, ∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
-    D.mobS m * bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)
-  set Hy := ∑ j ∈ Finset.Icc 1 ⌊X⌋₊, ∑ m ∈ Finset.Ioc 0 (⌊X⌋₊ / j),
-    D.mobS m * (((1 - cut (m / M₂)) : ℝ) : ℂ)
+  rw [D.count_decomposition hα0 hα hX0.le hM₁0 J hN, ← hM₂]
+  obtain ⟨S₂, hS₂⟩ : ∃ S₂ : ℂ, S₂ = ∑ m ∈ Finset.Ioc 0 ⌊X⌋₊, D.mobS m * (cut (m / M₂) : ℂ) :=
+    ⟨_, rfl⟩
+  obtain ⟨Sm, hSm⟩ : ∃ Sm : ℂ,
+      Sm = ∑ m ∈ Finset.Ioc 0 ⌊X⌋₊, D.mobS m * (cut (m / M₁) : ℂ) * (saw (X / m) : ℂ) :=
+    ⟨_, rfl⟩
+  obtain ⟨Bl, hBl⟩ : ∃ Bl : ℂ, Bl = ∑ j ∈ Finset.range J, ∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+      D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ) :=
+    ⟨_, rfl⟩
+  obtain ⟨Hy, hHy⟩ : ∃ Hy : ℂ, Hy = ∑ j ∈ Finset.Icc 1 ⌊X⌋₊, ∑ m ∈ Finset.Ioc 0 (⌊X⌋₊ / j),
+      D.mobS m * (((1 - cut (m / M₂)) : ℝ) : ℂ) :=
+    ⟨_, rfl⟩
+  rw [← hS₂, ← hSm, ← hBl, ← hHy]
   have e : (X : ℂ) * D.mainSum M₂ - 1 / 2 * S₂ - Sm - Bl + Hy - D.mobSum * X =
       (X : ℂ) * (D.mainSum M₂ - D.mobSum) - 1 / 2 * S₂ - Sm - Bl + Hy := by ring
   rw [e]
   -- (a) Main term remainder.
-  have ha : ‖(X : ℂ) * (D.mainSum M₂ - D.mobSum)‖ ≤ CA * X ^ β := by
+  have ha : ‖(X : ℂ) * (D.mainSum M₂ - D.mobSum)‖ ≤ CA * X ^ (1 / 2 - c / 8) := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hX0]
-    have hM₂_pow : X * M₂ ^ (σ₀ - 1) ≤ X ^ β := by
-      have hK0 : 0 < K_hi := by positivity
-      calc X * M₂ ^ (σ₀ - 1)
-          ≤ X * K_hi ^ (σ₀ - 1) :=
+    have hM₂_pow : X * M₂ ^ ((1 / 2 - c) - 1) ≤ X ^ (1 / 2 - c / 8) := by
+      calc X * M₂ ^ ((1 / 2 - c) - 1)
+          ≤ X * K_hi ^ ((1 / 2 - c) - 1) :=
             mul_le_mul_of_nonneg_left
-              (Real.rpow_le_rpow_of_nonpos hK0 hlo (by dsimp [σ₀]; linarith)) hX0.le
-        _ = X ^ (1 + (1 - c / 4) * (σ₀ - 1)) := by
-            dsimp [K_hi]
-            rw [← Real.rpow_mul hX0.le, Real.rpow_add hX0, Real.rpow_one]
-        _ ≤ X ^ β := by
+              (Real.rpow_le_rpow_of_nonpos hK0 hlo (by linarith)) hX0.le
+        _ = X ^ (1 + (1 - c / 4) * ((1 / 2 - c) - 1)) := by
+            rw [hK_hi, ← Real.rpow_mul hX0.le, Real.rpow_add hX0, Real.rpow_one]
+        _ ≤ X ^ (1 / 2 - c / 8) := by
             refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
-            dsimp [σ₀, β]; nlinarith
+            have hexp : 1 + (1 - c / 4) * ((1 / 2 - c) - 1) =
+                1 / 2 - 7 * c / 8 + (1 / 4) * (c * c) := by ring
+            rw [hexp]; linarith [hc_sq]
     calc X * ‖D.mainSum M₂ - D.mobSum‖
-        ≤ X * (CA * M₂ ^ (σ₀ - 1)) := mul_le_mul_of_nonneg_left (hCA M₂ hM₂1) hX0.le
-      _ = CA * (X * M₂ ^ (σ₀ - 1)) := by ring
-      _ ≤ CA * X ^ β := mul_le_mul_of_nonneg_left hM₂_pow hCA0
+        ≤ X * (CA * M₂ ^ ((1 / 2 - c) - 1)) := mul_le_mul_of_nonneg_left (hCA M₂ hM₂1) hX0.le
+      _ = CA * (X * M₂ ^ ((1 / 2 - c) - 1)) := by ring
+      _ ≤ CA * X ^ (1 / 2 - c / 8) := mul_le_mul_of_nonneg_left hM₂_pow hCA0
   -- (b) Smoothly cut Möbius sum.
-  have hb : ‖1 / 2 * S₂‖ ≤ 2 * CM * X ^ β := by
+  have hb : ‖1 / 2 * S₂‖ ≤ 2 * CM * X ^ (1 / 2 - c / 8) := by
     rw [norm_mul, show ‖(1 / 2 : ℂ)‖ = 1 / 2 by norm_num]
-    have h := D.norm_sum_mobS_cut_le hCM0 (by dsimp [θ_M]; linarith) hCM hX1 (by linarith)
-    have hθ_le : X ^ θ_M ≤ X ^ β := Real.rpow_le_rpow_of_exponent_le hX1 (by dsimp [θ_M, β]; linarith)
-    calc 1 / 2 * ‖S₂‖ ≤ 1 / 2 * (3 * CM * X ^ θ_M) := by gcongr
-      _ ≤ 1 / 2 * (3 * CM * X ^ β) := by gcongr
-      _ ≤ 2 * CM * X ^ β := by nlinarith [Real.rpow_pos_of_pos hX0 β]
+    have h := D.norm_sum_mobS_cut_le (θ := 1 / 2 - 3 * c / 4) (M₂ := M₂) hCM0 (by linarith)
+      hCM hX1 hM₂0
+    rw [← hS₂] at h
+    have hθ_le : X ^ (1 / 2 - 3 * c / 4) ≤ X ^ (1 / 2 - c / 8) :=
+      Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)
+    have hCM_X : 0 ≤ CM * X ^ (1 / 2 - c / 8) := by positivity
+    calc 1 / 2 * ‖S₂‖ ≤ 1 / 2 * (3 * CM * X ^ (1 / 2 - 3 * c / 4)) := by gcongr
+      _ ≤ 1 / 2 * (3 * CM * X ^ (1 / 2 - c / 8)) := by gcongr
+      _ ≤ 2 * CM * X ^ (1 / 2 - c / 8) := by linarith
   -- (c) Small range via Rankin.
-  have hc_piece : ‖Sm‖ ≤ E_sm * X ^ β := by
-    have h := D.norm_small_le hα0 hα (σ := 1 / 2 + c / 4) (by dsimp [α]; linarith)
+  have hc_piece : ‖Sm‖ ≤ E_sm * X ^ (1 / 2 - c / 8) := by
+    have h := D.norm_small_le hα0 hα (σ := 1 / 2 + c / 4) (by linarith)
       (X := X) (M₁ := M₁) (by linarith)
-    rw [← hE_sm] at h
-    have h2M₁ : (2 * M₁) ^ (1 / 2 + c / 4) ≤ 2 * X ^ β := by
-      rw [Real.mul_rpow (by norm_num) (by positivity)]
+    rw [← hSm, ← hE_sm] at h
+    have h2M₁ : (2 * M₁) ^ (1 / 2 + c / 4) ≤ 2 * X ^ (1 / 2 - c / 8) := by
+      rw [Real.mul_rpow (by norm_num) hM₁0.le]
       have h2_le : (2 : ℝ) ^ (1 / 2 + c / 4) ≤ 2 := by
         calc (2 : ℝ) ^ (1 / 2 + c / 4) ≤ (2 : ℝ) ^ (1 : ℝ) :=
               Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
           _ = 2 := Real.rpow_one 2
-      have hM_le : M₁ ^ (1 / 2 + c / 4) ≤ X ^ β := by
-        dsimp [M₁]
-        rw [← Real.rpow_mul hX0.le]
-        exact Real.rpow_le_rpow_of_exponent_le hX1 (by dsimp [β]; linarith)
+      have hM_le : M₁ ^ (1 / 2 + c / 4) ≤ X ^ (1 / 2 - c / 8) := by
+        rw [hM₁, ← Real.rpow_mul hX0.le]
+        exact Real.rpow_le_rpow_of_exponent_le hX1 (by linarith)
       exact mul_le_mul h2_le hM_le (by positivity) (by norm_num)
     calc ‖Sm‖ ≤ 1 / 2 * ((2 * M₁) ^ (1 / 2 + c / 4) * E_sm) := h
-      _ ≤ 1 / 2 * ((2 * X ^ β) * E_sm) := by gcongr
-      _ = E_sm * X ^ β := by ring
+      _ ≤ 1 / 2 * ((2 * X ^ (1 / 2 - c / 8)) * E_sm) := by gcongr
+      _ = E_sm * X ^ (1 / 2 - c / 8) := by ring
   -- (d) Dyadic sawtooth blocks.
-  have hd : ‖Bl‖ ≤ 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ β := by
-    set Δ : ℝ := X ^ (-3 * c / 5)
-    have hΔ0 : 0 < Δ := Real.rpow_pos_of_pos hX0 _
-    have hΔ1 : Δ ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hX1 (by linarith)
+  have hd : ‖Bl‖ ≤ 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) := by
+    obtain ⟨Δ, hΔ⟩ : ∃ Δ : ℝ, Δ = X ^ (-3 * c / 5) := ⟨_, rfl⟩
+    have hΔ0 : 0 < Δ := hΔ ▸ Real.rpow_pos_of_pos hX0 _
+    have hΔ1 : Δ ≤ 1 := hΔ ▸ Real.rpow_le_one_of_one_le_of_nonpos hX1 (by linarith)
     have hblock : ∀ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
-        D.mobS m * bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ ≤
+        D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ ≤
         KB * (3 * X ^ (1 / 2 - c / 4)) := by
       intro j hj
       have hjJ : j + 1 ≤ J := Finset.mem_range.mp hj
-      set u : ℝ := 2 ^ j * M₁
-      have hu_lo : M₁ ≤ u := le_mul_of_one_le_left (by positivity) (one_le_pow₀ (by norm_num))
+      obtain ⟨u, hu⟩ : ∃ u : ℝ, u = 2 ^ j * M₁ := ⟨_, rfl⟩
+      have hu_lo : M₁ ≤ u := hu ▸ le_mul_of_one_le_left hM₁0.le (one_le_pow₀ (by norm_num))
       have hu_hi : u ≤ 2 * K_hi := by
-        have hu_M₂ : u ≤ M₂ := mul_le_mul_of_nonneg_right
-          (pow_le_pow_right₀ (by norm_num) (by omega)) (by positivity)
+        have hu_M₂ : u ≤ M₂ := by
+          rw [hu, hM₂]
+          exact mul_le_mul_of_nonneg_right
+            (pow_le_pow_right₀ (by norm_num) (by omega)) hM₁0.le
         exact le_trans hu_M₂ hhi
       have hu1 : 1 ≤ u := le_trans hM₁1 hu_lo
       have hu0 : 0 < u := by linarith
       have huX : u ≤ X := by linarith
-      have hT1_le : u ^ σ₀ * (X / u) ^ (1 / 2 + ε) * Δ ^ (-(1 / 2 + 2 * ε)) ≤
+      have hT1_le : u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) * Δ ^ (-(1 / 2 + 2 * (c / 2))) ≤
           X ^ (1 / 2 - c / 4) := by
-        have hrew : u ^ σ₀ * (X / u) ^ (1 / 2 + ε) = u ^ (-3 * c / 2) * X ^ (1 / 2 + ε) := by
+        have hrew : u ^ (1 / 2 - c) * (X / u) ^ (1 / 2 + c / 2) =
+            u ^ (-3 * c / 2) * X ^ (1 / 2 + c / 2) := by
           rw [Real.div_rpow hX0.le hu0.le, div_eq_mul_inv, ← Real.rpow_neg hu0.le,
-            mul_comm (X ^ (1 / 2 + ε)), ← mul_assoc, ← Real.rpow_add hu0]
-          congr 2; dsimp [σ₀, ε]; ring
+            mul_comm (X ^ (1 / 2 + c / 2)), ← mul_assoc, ← Real.rpow_add hu0]
+          congr 2; ring
         have hu_pow : u ^ (-3 * c / 2) ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) := by
           calc u ^ (-3 * c / 2) ≤ M₁ ^ (-3 * c / 2) :=
-                Real.rpow_le_rpow_of_nonpos (by positivity) hu_lo (by linarith)
+                Real.rpow_le_rpow_of_nonpos hM₁0 hu_lo (by linarith)
             _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) := by
-                dsimp [M₁]; rw [← Real.rpow_mul hX0.le]
-        have hΔ_pow : Δ ^ (-(1 / 2 + 2 * ε)) = X ^ ((-3 * c / 5) * -(1 / 2 + 2 * ε)) := by
-          dsimp [Δ]; rw [← Real.rpow_mul hX0.le]
+                rw [hM₁, ← Real.rpow_mul hX0.le]
+        have hΔ_pow : Δ ^ (-(1 / 2 + 2 * (c / 2))) =
+            X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by
+          rw [hΔ, ← Real.rpow_mul hX0.le]
         rw [hrew, hΔ_pow]
-        calc u ^ (-3 * c / 2) * X ^ (1 / 2 + ε) * X ^ ((-3 * c / 5) * -(1 / 2 + 2 * ε))
-            ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) * X ^ (1 / 2 + ε) *
-                X ^ ((-3 * c / 5) * -(1 / 2 + 2 * ε)) := by gcongr
-          _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + ε) +
-                (-3 * c / 5) * -(1 / 2 + 2 * ε)) := by
+        calc u ^ (-3 * c / 2) * X ^ (1 / 2 + c / 2) *
+              X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2)))
+            ≤ X ^ ((15 / 16 : ℝ) * (-3 * c / 2)) * X ^ (1 / 2 + c / 2) *
+                X ^ ((-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by gcongr
+          _ = X ^ ((15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + c / 2) +
+                (-3 * c / 5) * -(1 / 2 + 2 * (c / 2))) := by
               rw [← Real.rpow_add hX0, ← Real.rpow_add hX0]
           _ ≤ X ^ (1 / 2 - c / 4) := by
               refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
-              dsimp [ε]; nlinarith
-      have hT2_le : Δ ^ (1 - ε) * u ^ α ≤ 2 * X ^ (1 / 2 - c / 4) := by
-        have h2α : (2 : ℝ) ^ α ≤ 2 := by
-          calc (2 : ℝ) ^ α ≤ (2 : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hα.le
+              have hexp : (15 / 16 : ℝ) * (-3 * c / 2) + (1 / 2 + c / 2) +
+                  (-3 * c / 5) * -(1 / 2 + 2 * (c / 2)) =
+                  1 / 2 - 97 * c / 160 + (3 / 5) * (c * c) := by ring
+              rw [hexp]; linarith [hc_sq]
+      have hT2_le : Δ ^ (1 - c / 2) * u ^ (1 / 2 + c / 8) ≤ 2 * X ^ (1 / 2 - c / 4) := by
+        have h2α : (2 : ℝ) ^ (1 / 2 + c / 8) ≤ 2 := by
+          calc (2 : ℝ) ^ (1 / 2 + c / 8) ≤ (2 : ℝ) ^ (1 : ℝ) :=
+                Real.rpow_le_rpow_of_exponent_le (by norm_num) hα.le
             _ = 2 := Real.rpow_one 2
-        have hu_α : u ^ α ≤ 2 * X ^ ((1 - c / 4) * α) := by
-          calc u ^ α ≤ (2 * K_hi) ^ α := Real.rpow_le_rpow hu0.le hu_hi hα0.le
-            _ = (2 : ℝ) ^ α * K_hi ^ α := Real.mul_rpow (by norm_num) (by positivity)
-            _ ≤ 2 * K_hi ^ α := mul_le_mul_of_nonneg_right h2α (by positivity)
-            _ = 2 * X ^ ((1 - c / 4) * α) := by dsimp [K_hi]; rw [← Real.rpow_mul hX0.le]
-        have hΔ_pow : Δ ^ (1 - ε) = X ^ ((-3 * c / 5) * (1 - ε)) := by
-          dsimp [Δ]; rw [← Real.rpow_mul hX0.le]
+        have hu_α : u ^ (1 / 2 + c / 8) ≤ 2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8)) := by
+          calc u ^ (1 / 2 + c / 8) ≤ (2 * K_hi) ^ (1 / 2 + c / 8) :=
+                Real.rpow_le_rpow hu0.le hu_hi hα0.le
+            _ = (2 : ℝ) ^ (1 / 2 + c / 8) * K_hi ^ (1 / 2 + c / 8) :=
+                Real.mul_rpow (by norm_num) hK0.le
+            _ ≤ 2 * K_hi ^ (1 / 2 + c / 8) := mul_le_mul_of_nonneg_right h2α (by positivity)
+            _ = 2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8)) := by
+                rw [hK_hi, ← Real.rpow_mul hX0.le]
+        have hΔ_pow : Δ ^ (1 - c / 2) = X ^ ((-3 * c / 5) * (1 - c / 2)) := by
+          rw [hΔ, ← Real.rpow_mul hX0.le]
         rw [hΔ_pow]
-        calc X ^ ((-3 * c / 5) * (1 - ε)) * u ^ α
-            ≤ X ^ ((-3 * c / 5) * (1 - ε)) * (2 * X ^ ((1 - c / 4) * α)) :=
+        calc X ^ ((-3 * c / 5) * (1 - c / 2)) * u ^ (1 / 2 + c / 8)
+            ≤ X ^ ((-3 * c / 5) * (1 - c / 2)) *
+                (2 * X ^ ((1 - c / 4) * (1 / 2 + c / 8))) :=
               mul_le_mul_of_nonneg_left hu_α (by positivity)
-          _ = 2 * (X ^ ((-3 * c / 5) * (1 - ε)) * X ^ ((1 - c / 4) * α)) := by ring
-          _ = 2 * X ^ ((-3 * c / 5) * (1 - ε) + (1 - c / 4) * α) := by
+          _ = 2 * (X ^ ((-3 * c / 5) * (1 - c / 2)) *
+                X ^ ((1 - c / 4) * (1 / 2 + c / 8))) := by ring
+          _ = 2 * X ^ ((-3 * c / 5) * (1 - c / 2) + (1 - c / 4) * (1 / 2 + c / 8)) := by
               rw [← Real.rpow_add hX0]
           _ ≤ 2 * X ^ (1 / 2 - c / 4) := by
               refine mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX1 ?_) (by norm_num)
-              dsimp [ε, α]; nlinarith
+              have hexp : (-3 * c / 5) * (1 - c / 2) + (1 - c / 4) * (1 / 2 + c / 8) =
+                  1 / 2 - 3 * c / 5 + (43 / 160) * (c * c) := by ring
+              rw [hexp]; linarith [hc_sq]
+      rw [← hu]
       exact (hKB u X Δ hu1 huX hΔ0 hΔ1).trans
         (mul_le_mul_of_nonneg_left (by linarith) hKB0)
     have hJb := nat_le_rpow_of_le_log hX1 (ε := c / 16) (by positivity) hJ_log
-    have hx_add : X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16)) = X ^ β := by
-      rw [← Real.rpow_add hX0]; congr 1; dsimp [β]; ring
-    calc ‖Bl‖ ≤ ∑ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
-          D.mobS m * bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ := norm_sum_le _ _
+    have hx_add : X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16)) = X ^ (1 / 2 - c / 8) := by
+      rw [← Real.rpow_add hX0]; congr 1; ring
+    rw [hBl]
+    calc ‖∑ j ∈ Finset.range J, ∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+            D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖
+        ≤ ∑ j ∈ Finset.range J, ‖∑ m ∈ Finset.Icc 1 ⌊4 * (2 ^ j * M₁)⌋₊,
+            D.mobS m * BeurlingDeletion.bumpC (m / (2 ^ j * M₁)) * (saw (X / m) : ℂ)‖ :=
+              norm_sum_le _ _
       _ ≤ ∑ _j ∈ Finset.range J, KB * (3 * X ^ (1 / 2 - c / 4)) := Finset.sum_le_sum hblock
       _ = (J : ℝ) * (KB * (3 * X ^ (1 / 2 - c / 4))) := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -858,28 +900,31 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
           mul_le_mul_of_nonneg_right hJb (by positivity)
       _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) *
             (X ^ (1 / 2 - c / 4) * X ^ (2 * (c / 16))) := by ring
-      _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ β := by rw [hx_add]
+      _ = 3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) := by rw [hx_add]
   -- (e) Hyperbola remainder.
-  have he : ‖Hy‖ ≤ 2 * CM / (1 - θ_M) * X ^ β := by
-    have hθ0 : 0 < θ_M := by dsimp [θ_M]; linarith
-    have hθ1 : θ_M < 1 := by dsimp [θ_M]; linarith
-    have h := D.norm_hyperbola_le hCM0 hθ0 hθ1 hCM hX1 hM₂1
-    have hM₂0 : 0 < M₂ := by linarith
-    have hK0 : 0 < K_hi := by positivity
-    have hprod_le : X ^ θ_M * (X / M₂) ^ (1 - θ_M) ≤ X ^ β := by
-      calc X ^ θ_M * (X / M₂) ^ (1 - θ_M)
-          ≤ X ^ θ_M * (X / K_hi) ^ (1 - θ_M) := by gcongr
-        _ = X ^ (θ_M + (1 - (1 - c / 4)) * (1 - θ_M)) := by
-            dsimp [K_hi]
-            rw [show X / X ^ (1 - c / 4) = X ^ (1 - (1 - c / 4)) by
-              rw [Real.rpow_sub hX0, Real.rpow_one],
-              ← Real.rpow_mul hX0.le, ← Real.rpow_add hX0]
-        _ ≤ X ^ β := by
+  have he : ‖Hy‖ ≤ 2 * CM / (1 - (1 / 2 - 3 * c / 4)) * X ^ (1 / 2 - c / 8) := by
+    have h := D.norm_hyperbola_le (θ := 1 / 2 - 3 * c / 4) (M₂ := M₂) hCM0 (by linarith)
+      (by linarith) hCM hX1 hM₂1
+    rw [← hHy] at h
+    have hprod_le : X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4)) ≤
+        X ^ (1 / 2 - c / 8) := by
+      have hdiv_eq : X / K_hi = X ^ (c / 4) := by
+        rw [hK_hi, ← Real.rpow_one_sub' hX0.le (by linarith)]
+        congr 1; ring
+      calc X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4))
+          ≤ X ^ (1 / 2 - 3 * c / 4) * (X / K_hi) ^ (1 - (1 / 2 - 3 * c / 4)) := by gcongr
+        _ = X ^ ((1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4))) := by
+            rw [hdiv_eq, ← Real.rpow_mul hX0.le, ← Real.rpow_add hX0]
+        _ ≤ X ^ (1 / 2 - c / 8) := by
             refine Real.rpow_le_rpow_of_exponent_le hX1 ?_
-            dsimp [θ_M, β]; nlinarith
-    calc ‖Hy‖ ≤ 2 * CM / (1 - θ_M) * X ^ θ_M * (X / M₂) ^ (1 - θ_M) := h
-      _ = 2 * CM / (1 - θ_M) * (X ^ θ_M * (X / M₂) ^ (1 - θ_M)) := by ring
-      _ ≤ 2 * CM / (1 - θ_M) * X ^ β :=
+            have hexp : (1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4)) =
+                1 / 2 - 5 * c / 8 + (3 / 16) * (c * c) := by ring
+            rw [hexp]; linarith [hc_sq]
+    calc ‖Hy‖ ≤ 2 * CM / (1 - (1 / 2 - 3 * c / 4)) *
+            X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4)) := h
+      _ = 2 * CM / (1 - (1 / 2 - 3 * c / 4)) *
+            (X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4))) := by ring
+      _ ≤ 2 * CM / (1 - (1 / 2 - 3 * c / 4)) * X ^ (1 / 2 - c / 8) :=
           mul_le_mul_of_nonneg_left hprod_le (div_nonneg (by positivity) (by linarith))
   calc ‖(X : ℂ) * (D.mainSum M₂ - D.mobSum) - 1 / 2 * S₂ - Sm - Bl + Hy‖
       ≤ ‖(X : ℂ) * (D.mainSum M₂ - D.mobSum)‖ + ‖1 / 2 * S₂‖ + ‖Sm‖ + ‖Bl‖ + ‖Hy‖ := by
@@ -887,10 +932,11 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
         refine (norm_sub_le _ _).trans (add_le_add_left ?_ _)
         refine (norm_sub_le _ _).trans (add_le_add_left ?_ _)
         exact norm_sub_le _ _
-    _ ≤ CA * X ^ β + 2 * CM * X ^ β + E_sm * X ^ β +
-        3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ β +
-        2 * CM / (1 - θ_M) * X ^ β := by gcongr
-    _ = _ := by dsimp [θ_M]; ring
+    _ ≤ CA * X ^ (1 / 2 - c / 8) + 2 * CM * X ^ (1 / 2 - c / 8) +
+        E_sm * X ^ (1 / 2 - c / 8) +
+        3 * KB * (1 / (2 * (c / 16) * Real.log 2) + 1) * X ^ (1 / 2 - c / 8) +
+        2 * CM / (1 - (1 / 2 - 3 * c / 4)) * X ^ (1 / 2 - c / 8) := by gcongr
+    _ = _ := by ring
 
 /-- **Sub-`1/2` integer-norm Beurling fake from any zero-free half-plane `Re z > Θ` (`Θ < 1`).**
 If `1/2 ≤ Θ < 1` and `ζ` has no zeros with `Re z > Θ`, then there exists a prime set `S` such that
@@ -927,17 +973,18 @@ theorem exists_integerNormFakeAt_lt_half_of_zeroFree {Θ : ℝ} (hΘ : 1 / 2 ≤
     (by linarith : 1 / 2 ≤ Θ') hΘ'_lt1.le hzf' (δ := c) hc0 (by linarith)
     (σ₀ := σ₀) (by dsimp [α, σ₀]; linarith) (by rw [hΘ'_eq]; dsimp [σ₀, α]; linarith)
     (τ := τ) (by dsimp [τ]; positivity)
+  have hσ₀_pos : 0 < σ₀ := by dsimp [σ₀]; linarith
+  have hτ_pos : 0 < τ := by dsimp [τ]; positivity
   have hθ_exp : (2 * τ + σ₀) / (1 + 2 * τ) + τ ≤ θ_M := by
     have hdiv_le : (2 * τ + σ₀) / (1 + 2 * τ) ≤ 2 * τ + σ₀ := by
-      rw [div_le_iff₀ (by dsimp [τ]; linarith)]
-      have hpos : 0 ≤ 2 * τ * (2 * τ + σ₀) := by dsimp [τ, σ₀]; positivity
+      rw [div_le_iff₀ (by linarith)]
+      have hpos : 0 ≤ 2 * τ * (2 * τ + σ₀) := by positivity
       linarith
     dsimp [τ, σ₀, θ_M] at hdiv_le ⊢
     linarith
   obtain ⟨CM, K₁, CA, hCM0, hK₁0, hCA0, hCM, hK₁, hCA⟩ :=
-    exists_mobS_bounds_of_zeroFree D hα0 hα (by dsimp [a₀, σ₀]; linarith)
-      (by dsimp [σ₀]; linarith) (by dsimp [σ₀]; linarith)
-      (by dsimp [τ]; positivity) (by dsimp [τ]; linarith)
+    exists_mobS_bounds_of_zeroFree (ε := ε) (θ_M := θ_M) D hα0 hα (by dsimp [a₀, σ₀]; linarith)
+      hσ₀_pos (by dsimp [σ₀]; linarith) hτ_pos (by dsimp [τ]; linarith)
       (by dsimp [τ, ε]; linarith) (by dsimp [ε]; linarith) hθ_exp hDiff hEQ
   obtain ⟨K₂, hK₂0, hK₂⟩ := exists_norm_tsum_lamS_sub_le_subconvex hc0 hc_le D
   obtain ⟨KB, hKB0, hKB⟩ := exists_norm_block_le_of_smooth D
@@ -1021,7 +1068,8 @@ theorem exists_integerNormFakeAt_of_riemannHypothesis (hRH : RiemannHypothesis)
   have hsaw_lt : 3 * α / (α + 4) < β' := by
     rw [div_lt_iff₀ (by linarith)]
     have hα_sub : α - 1 / 2 ≤ δ / 2 := by
-      dsimp [α]; exact min_le_left _ _
+      simp only [α, add_sub_cancel_left]
+      exact min_le_left (δ / 2) (1 / 8)
     have hlin : 3 * α < (1 / 3 + δ) * (α + 4) := by
       have h9 : 8 * (α - 1 / 2) ≤ 4 * δ := by linarith
       have h27 : 9 / 2 < α + 4 := by linarith
@@ -1089,7 +1137,7 @@ theorem zetaZeroAbscissa_lt_one_iff_zetaAsymptoticAbscissa_lt_one :
       obtain ⟨q₀, _, hq₀_eq⟩ := Finset.mem_image.mp hM_mem
       have hM_lt1 : M < 1 := by
         rw [← hq₀_eq]
-        exact (DeBruijn.xi_divisor_support_re_mem_open_unit q₀.1).2
+        exact (_root_.RHTower.xi_divisor_support_re_mem_open_unit q₀.1).2
       have hle : zetaZeroAbscissa ≤ max σ M := by
         refine zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le
           (le_trans hσ_half (le_max_left _ _)) fun q => ?_
@@ -1097,7 +1145,7 @@ theorem zetaZeroAbscissa_lt_one_iff_zetaAsymptoticAbscissa_lt_one :
         · exact le_trans hq_le (le_max_left _ _)
         · have hqF : q ∈ F := (Set.Finite.mem_toFinset hfin).mpr hq_gt
           have hqM : (q.1 : ℂ).re ≤ M :=
-            Finset.le_max' _ _ (Finset.mem_image_of_mem _ hqF)
+            Finset.le_max' _ _ (Finset.mem_image_of_mem (fun q : XiZeroCopy => (q.1 : ℂ).re) hqF)
           exact le_trans hqM (le_max_right _ _)
       exact lt_of_le_of_lt hle (max_lt hσ_lt1 hM_lt1)
     · rw [Finset.not_nonempty_iff_eq_empty] at hF
@@ -1195,8 +1243,10 @@ theorem integerNormFake_complete_solution :
     fun _ hβ => exists_keptPrimeSystem_fake_above_half hβ,
     fun _ ⟨_, hf⟩ => nonneg_of_integerNormFakeAt hf,
     csInf_integerNormFakeExponents_mem_Icc,
-    fun B β hβ hf => ⟨pos_density_of_integerNormFakeAt_le_half hβ hf,
-      infinite_missing_primes_of_integerNormFakeAt (by linarith) hf⟩,
+    fun B β hβ hf =>
+      let ⟨_, _, _, ⟨A, C, _, hC⟩, _⟩ := hf
+      ⟨⟨A, C, pos_density_of_integerNormFakeAt_le_half hf hβ hC, hC⟩,
+        infinite_missing_primes_of_integerNormFakeAt (by linarith) hf⟩,
     fun hRH => ⟨fun _ hβ => let ⟨S, hf⟩ := exists_integerNormFakeAt_of_riemannHypothesis hRH hβ
       ⟨keptPrimeSystem S, hf⟩,
       csInf_integerNormFakeExponents_le_one_third_of_riemannHypothesis hRH⟩,

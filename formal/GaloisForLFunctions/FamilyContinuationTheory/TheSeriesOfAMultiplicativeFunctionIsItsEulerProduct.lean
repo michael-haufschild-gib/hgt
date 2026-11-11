@@ -32,10 +32,10 @@ namespace GaloisForLFunctions.FamilyContinuationTheory
 
 section FinitePi
 
-variable {R : Type*} [NormedCommRing R] [NormOneClass R] [CompleteSpace R] {W : Type*}
+variable {W : Type*}
 
 private theorem hasSum_pi_prod_fin :
-    ∀ (n : ℕ) (φ : Fin n → W → R) (s : Fin n → R), (∀ k, HasSum (φ k) (s k)) →
+    ∀ (n : ℕ) (φ : Fin n → W → ℂ) (s : Fin n → ℂ), (∀ k, HasSum (φ k) (s k)) →
       (∀ k, Summable fun w => ‖φ k w‖) →
       HasSum (fun h : Fin n → W => ∏ k, φ k (h k)) (∏ k, s k) ∧
         Summable (fun h : Fin n → W => ‖∏ k, φ k (h k)‖) := by
@@ -49,13 +49,18 @@ private theorem hasSum_pi_prod_fin :
       ⟨1, hasSum_single default fun b hb => absurd (Subsingleton.elim b default) hb⟩⟩
   | succ n ih =>
     intro φ s hs hn
-    obtain ⟨ihs, ihn⟩ := ih (fun k => φ k.succ) (fun k => s k.succ) (fun k => hs k.succ)
+    obtain ⟨ihs0, ihn0⟩ := ih (fun k => φ k.succ) (fun k => s k.succ) (fun k => hs k.succ)
       (fun k => hn k.succ)
+    have ihs : HasSum (fun h : Fin n → W => ∏ k : Fin n, φ k.succ (h k)) (∏ k : Fin n, s k.succ) :=
+      ihs0
+    have ihn : Summable (fun h : Fin n → W => ‖∏ k : Fin n, φ k.succ (h k)‖) := ihn0
+    have h0 : Summable fun w : W => ‖φ 0 w‖ := hn 0
+    have hs0 : HasSum (fun w : W => φ 0 w) (s 0) := hs 0
     have hpair : Summable (fun x : W × (Fin n → W) => φ 0 x.1 * ∏ k : Fin n, φ k.succ (x.2 k)) :=
-      summable_mul_of_summable_norm (f := φ 0) (g := fun h : Fin n → W => ∏ k, φ k.succ (h k))
-        (hn 0) ihn
-    have hmul := HasSum.mul (f := φ 0) (g := fun h : Fin n → W => ∏ k, φ k.succ (h k)) (hs 0)
-      ihs hpair
+      summable_mul_of_summable_norm (R := ℂ) (f := fun w : W => φ 0 w)
+        (g := fun h : Fin n → W => ∏ k : Fin n, φ k.succ (h k)) h0 ihn
+    have hmul := HasSum.mul (f := fun w : W => φ 0 w)
+      (g := fun h : Fin n → W => ∏ k : Fin n, φ k.succ (h k)) hs0 ihs hpair
     have hsplit : ∀ h : Fin (n + 1) → W, ∏ k, φ k (h k) = φ 0 (h 0) * ∏ k : Fin n, φ k.succ (h k.succ) :=
       fun h => Fin.prod_univ_succ _
     constructor
@@ -70,7 +75,7 @@ private theorem hasSum_pi_prod_fin :
 
 /-- **A finite product of absolutely convergent series** is the absolutely convergent series of
 the products over all choices of terms. -/
-theorem hasSum_pi_prod {κ : Type*} [Fintype κ] (φ : κ → W → R) (s : κ → R)
+theorem hasSum_pi_prod {κ : Type*} [Fintype κ] (φ : κ → W → ℂ) (s : κ → ℂ)
     (hs : ∀ k, HasSum (φ k) (s k)) (hn : ∀ k, Summable fun w => ‖φ k w‖) :
     HasSum (fun h : κ → W => ∏ k, φ k (h k)) (∏ k, s k) ∧
       Summable (fun h : κ → W => ‖∏ k, φ k (h k)‖) := by
@@ -104,7 +109,7 @@ def supportedEmbedding (S : Finset ι) (h : S → V) : ι →₀ V :=
   Finsupp.embDomain (Function.Embedding.subtype (· ∈ S)) (Finsupp.equivFunOnFinite.symm h)
 
 theorem supportedEmbedding_injective (S : Finset ι) :
-    Function.Injective (supportedEmbedding (V := V) S) := fun h₁ h₂ hh =>
+    Function.Injective (supportedEmbedding (V := V) S) := fun _ _ hh =>
   Finsupp.equivFunOnFinite.symm.injective (Finsupp.embDomain_injective _ hh)
 
 theorem support_supportedEmbedding_subset (S : Finset ι) (h : S → V) :
@@ -174,9 +179,13 @@ theorem summable_norm_eulerTerm (f : ι → V → ℂ) (hf0 : ∀ i, f i 0 = 1)
   -- the norms of the supported terms are the products of the local norms
   have hnorm : HasSum (Set.indicator {g : ι →₀ V | g.support ⊆ S} fun g => ‖eulerTerm f g‖)
       (∏ i ∈ S, ∑' v, ‖f i v‖) := by
-    have hpi := (hasSum_pi_prod (R := ℝ) (fun a : S => fun v => ‖f a v‖)
-      (fun a : S => ∑' v, ‖f a v‖) (fun a => (hs a).hasSum)
+    have hpiC := (hasSum_pi_prod (fun a : S => fun v => ((‖f a v‖ : ℝ) : ℂ))
+      (fun a : S => ((∑' v, ‖f a v‖ : ℝ) : ℂ)) (fun a => Complex.hasSum_ofReal.mpr (hs a).hasSum)
       (fun a => by simpa using hs a)).1
+    have hpi : HasSum (fun h : S → V => ∏ a : S, ‖f a (h a)‖) (∏ a : S, ∑' v, ‖f a v‖) := by
+      rw [← Complex.hasSum_ofReal]
+      simp only [Complex.ofReal_prod]
+      exact hpiC
     have hval : ∏ a : S, ∑' v, ‖f a v‖ = ∏ i ∈ S, ∑' v, ‖f i v‖ :=
       (Finset.prod_subtype S (fun _ => Iff.rfl) (fun i => ∑' v, ‖f i v‖)).symm
     rw [hval] at hpi

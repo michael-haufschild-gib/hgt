@@ -36690,4 +36690,590 @@ lemma finite_ideal_card_bound (S : Finset (Ideal O)) (N : ℝ) (hN : 1 ≤ N)
 
 end SchwartzPlanePoisson
 
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- Dividing by the exact common ideal makes the remaining conductors coprime. -/
+lemma quadraticIdealQuotient_coprime_iff (D I J : Ideal O) (hD : D ≠ 0)
+    (hI : D ∣ I) (hJ : D ∣ J) :
+    quadraticIdealQuotient D I ⊔ quadraticIdealQuotient D J = ⊤ ↔ I ⊔ J = D := by
+  have he : D * (quadraticIdealQuotient D I ⊔ quadraticIdealQuotient D J) = I ⊔ J := by
+    rw [← Ideal.add_eq_sup, mul_add, quadraticIdeal_mul_quotient hI,
+      quadraticIdeal_mul_quotient hJ, Ideal.add_eq_sup]
+  constructor
+  · intro h
+    rw [h, ← Ideal.one_eq_top, mul_one] at he
+    exact he.symm
+  · intro h
+    apply mul_left_cancel₀ hD
+    rw [he, h, ← Ideal.one_eq_top, mul_one]
+
+namespace CanonicalQuadraticSieve
+
+/-- Common ideals partition all pairs of conductor columns. -/
+def commonFactorPool {n : Type*} [Fintype n] (cols : n → QuadraticIdeal) : Finset (Ideal O) :=
+  Finset.univ.image (fun p : n × n => (cols p.1).val ⊔ (cols p.2).val)
+
+lemma mem_commonFactorPool {n : Type*} [Fintype n] (cols : n → QuadraticIdeal) (j k : n) :
+    (cols j).val ⊔ (cols k).val ∈ commonFactorPool cols :=
+  Finset.mem_image.mpr ⟨(j, k), Finset.mem_univ _, rfl⟩
+
+lemma commonFactorPool_admissible {n : Type*} [Fintype n]
+    (cols : n → QuadraticIdeal) (D : Ideal O) (hD : D ∈ commonFactorPool cols) :
+    quadraticIdealAdmissible D := by
+  obtain ⟨⟨j, k⟩, _, rfl⟩ := Finset.mem_image.mp hD
+  exact quadraticIdealAdmissible_of_dvd (cols j).property (Ideal.dvd_iff_le.mpr le_sup_left)
+
+/-- Gram entries with a prescribed common conductor ideal. -/
+def commonFactorBlock {m n : Type*} [Fintype m] [Fintype n]
+    (D : Ideal O) (rows : m → O) (cols : n → QuadraticIdeal) (a : n → ℂ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, if (cols j).val ⊔ (cols k).val = D then
+    star (canonicalQuadraticRow (cols j) (rows i) * a j) *
+      (canonicalQuadraticRow (cols k) (rows i) * a k) else 0
+
+end CanonicalQuadraticSieve
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+lemma energy_eq_commonFactorBlocks {m n : Type*} [Fintype m] [Fintype n]
+    (rows : m → O) (cols : n → QuadraticIdeal) (a : n → ℂ) :
+    ((∑ i, ‖∑ j, canonicalQuadraticRow (cols j) (rows i) * a j‖ ^ 2 : ℝ) : ℂ) =
+      ∑ D ∈ commonFactorPool cols, commonFactorBlock D rows cols a := by
+  classical
+  have hp (i : m) (j k : n) :
+      (∑ D ∈ commonFactorPool cols, if (cols j).val ⊔ (cols k).val = D then
+        star (canonicalQuadraticRow (cols j) (rows i) * a j) *
+          (canonicalQuadraticRow (cols k) (rows i) * a k) else 0) =
+        star (canonicalQuadraticRow (cols j) (rows i) * a j) *
+          (canonicalQuadraticRow (cols k) (rows i) * a k) := by
+    rw [Finset.sum_eq_single ((cols j).val ⊔ (cols k).val)]
+    · exact if_pos rfl
+    · intro D _ hD
+      exact if_neg (Ne.symm hD)
+    · exact fun h => (h (mem_commonFactorPool cols j k)).elim
+  have hi (i : m) :
+      (∑ D ∈ commonFactorPool cols, ∑ j, ∑ k, if (cols j).val ⊔ (cols k).val = D then
+        star (canonicalQuadraticRow (cols j) (rows i) * a j) *
+          (canonicalQuadraticRow (cols k) (rows i) * a k) else 0) =
+      ∑ j, ∑ k, star (canonicalQuadraticRow (cols j) (rows i) * a j) *
+        (canonicalQuadraticRow (cols k) (rows i) * a k) := by
+    rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl (fun k _ => hp i j k)
+  simp only [commonFactorBlock]
+  rw [Finset.sum_comm]
+  simp_rw [hi]
+  rw [Complex.ofReal_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [← Finset.sum_mul_sum, ← star_sum]
+  simpa only [Complex.star_def, Complex.ofReal_pow] using
+    (Complex.conj_mul' (∑ j, canonicalQuadraticRow (cols j) (rows i) * a j)).symm
+
+lemma energy_le_commonFactorBlocks {m n : Type*} [Fintype m] [Fintype n]
+    (rows : m → O) (cols : n → QuadraticIdeal) (a : n → ℂ) :
+    (∑ i, ‖∑ j, canonicalQuadraticRow (cols j) (rows i) * a j‖ ^ 2) ≤
+      ∑ D ∈ commonFactorPool cols, ‖commonFactorBlock D rows cols a‖ := by
+  have he := congrArg norm (energy_eq_commonFactorBlocks rows cols a)
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)] at he
+  rw [he]
+  exact norm_sum_le _ _
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein DivisorBlockCauchy IdealCoprimeBilinearSieve
+
+/-- A fixed common ideal reduces the column norm by its exact norm. -/
+theorem highKernel_commonFactorBlock_bound {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (ε : ℝ) (hε : 0 < ε) (D : QuadraticIdeal)
+    (rows : m → QuadraticSupportedIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (M N K : ℝ) (hN : 1 ≤ N)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N)
+    (hK : ∀ i, K < (Ideal.absNorm (quadraticSquarefreePart (rows i).val) : ℝ)) (a : n → ℂ) :
+    ‖commonFactorBlock D.val (fun i => primaryIdealGenerator (rows i).val) cols a‖ ≤
+      highKernelNorm M (N / Ideal.absNorm D.val) K * (divisorConstant ε hε * N ^ ε) *
+        ∑ j, ‖if D.val ∣ (cols j).val then a j else 0‖ ^ 2 := by
+  classical
+  have hD0 := primaryIdealGenerator_ne_zero_ideal D.val D.property.1
+  have hDN : (1 : ℝ) ≤ Ideal.absNorm D.val := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hD0)
+  have hN0 : 0 ≤ N := zero_le_one.trans hN
+  have hdiv : N / Ideal.absNorm D.val ≤ N := by
+    exact div_le_self hN0 hDN
+  let S : Finset n := Finset.univ.filter (fun j => D.val ∣ (cols j).val)
+  have hS (j : S) : D.val ∣ (cols j.val).val := (Finset.mem_filter.mp j.property).2
+  let q : S → QuadraticIdeal := fun j => ⟨quadraticIdealQuotient D.val (cols j.val).val,
+    quadraticIdealQuotient_admissible (cols j.val).property (hS j)⟩
+  have hq : Function.Injective q := by
+    intro i j he
+    apply Subtype.ext
+    apply hc
+    apply Subtype.ext
+    apply quadraticIdealQuotient_injective D.val (hS i) (hS j)
+    exact congrArg (fun I : QuadraticIdeal => I.val) he
+  have hqn (j : S) : (Ideal.absNorm (q j).val : ℝ) ≤ N / Ideal.absNorm D.val := by
+    change (Ideal.absNorm (quadraticIdealQuotient D.val (cols j.val).val) : ℝ) ≤ _
+    rw [quadraticIdealQuotient_norm hD0 (hS j)]
+    exact div_le_div_of_nonneg_right (hcols j.val) (Nat.cast_nonneg _)
+  let A : Matrix m S ℂ := fun i j => canonicalQuadraticRow (q j) (primaryIdealGenerator (rows i).val)
+  let v (i : m) : ℂ := canonicalQuadraticRow D (primaryIdealGenerator (rows i).val)
+  let T (i : m) (j k : n) : ℂ := if (cols j).val ⊔ (cols k).val = D.val then
+    star (canonicalQuadraticRow (cols j) (primaryIdealGenerator (rows i).val) * a j) *
+      (canonicalQuadraticRow (cols k) (primaryIdealGenerator (rows i).val) * a k) else 0
+  have hzero_left (i : m) (j k : n) (hj : j ∉ S) : T i j k = 0 := by
+    apply if_neg
+    intro he
+    apply hj
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _,
+      Ideal.dvd_iff_le.mpr (he ▸ (le_sup_left : (cols j).val ≤ (cols j).val ⊔ (cols k).val))⟩
+  have hzero_right (i : m) (j k : n) (hk : k ∉ S) : T i j k = 0 := by
+    apply if_neg
+    intro he
+    apply hk
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _,
+      Ideal.dvd_iff_le.mpr (he ▸ (le_sup_right : (cols k).val ≤ (cols j).val ⊔ (cols k).val))⟩
+  have heq (i : m) : (∑ j, ∑ k, T i j k) =
+      star (v i) * v i *
+        (∑ j : S, ∑ k : S, if (q j).val ⊔ (q k).val = ⊤ then
+          star (A i j * a j.val) * (A i k * a k.val) else 0) := by
+    calc
+      _ = ∑ j ∈ S, ∑ k ∈ S, T i j k := by
+        have hj : (∑ j, ∑ k, T i j k) = ∑ j ∈ S, ∑ k, T i j k := by
+          symm
+          apply Finset.sum_subset (Finset.subset_univ S)
+          intro j _ hj
+          exact Finset.sum_eq_zero (fun k _ => hzero_left i j k hj)
+        rw [hj]
+        apply Finset.sum_congr rfl
+        intro j _
+        symm
+        exact Finset.sum_subset (Finset.subset_univ S) (fun k _ hk => hzero_right i j k hk)
+      _ = ∑ j : S, ∑ k : S, T i j.val k.val := by
+        rw [Finset.sum_coe_sort (s := S) (f := fun j => ∑ k : S, T i j k.val)]
+        exact Finset.sum_congr rfl (fun j _ =>
+          (Finset.sum_coe_sort (s := S) (f := fun k => T i j k)).symm)
+      _ = _ := by
+        simp only [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro j _
+        apply Finset.sum_congr rfl
+        intro k _
+        have hiff := quadraticIdealQuotient_coprime_iff D.val (cols j.val).val (cols k.val).val
+          hD0 (hS j) (hS k)
+        change (if (cols j.val).val ⊔ (cols k.val).val = D.val then _ else 0) = _
+        by_cases h : (q j).val ⊔ (q k).val = ⊤
+        · rw [if_pos (hiff.mp h), if_pos h]
+          rw [canonicalQuadraticRow_divisor_factor (cols j.val) D.val (hS j),
+            canonicalQuadraticRow_divisor_factor (cols k.val) D.val (hS k), star_mul, star_mul]
+          change (star (a j.val) * (star (A i j) * star (v i))) * (v i * A i k * a k.val) = _
+          simp only [star_mul]
+          ring
+        · rw [if_neg (fun hc => h (hiff.mpr hc)), if_neg h, mul_zero]
+  have hn : ‖commonFactorBlock D.val (fun i => primaryIdealGenerator (rows i).val) cols a‖ ≤
+      ∑ i, ‖∑ j : S, ∑ k : S, if (q j).val ⊔ (q k).val = ⊤ then
+        star (A i j * a j.val) * (A i k * a k.val) else 0‖ := by
+    change ‖∑ i, ∑ j, ∑ k, T i j k‖ ≤ _
+    simp_rw [heq]
+    apply (norm_sum_le _ _).trans
+    apply Finset.sum_le_sum
+    intro i _
+    rw [norm_mul, norm_mul, norm_star]
+    apply mul_le_of_le_one_left (norm_nonneg _)
+    exact (mul_le_mul (canonicalQuadraticRow_norm_le_one D _)
+      (canonicalQuadraticRow_norm_le_one D _) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+  have hb := ideal_coprime_bilinear_operator_bound ε hε
+    (fun j : S => (q j).val) (fun j : S => (q j).val)
+    (fun j => primaryIdealGenerator_ne_zero_ideal _ (q j).property.1)
+    (fun j => primaryIdealGenerator_ne_zero_ideal _ (q j).property.1)
+    N N (fun j => (hqn j).trans hdiv) (fun j => (hqn j).trans hdiv)
+    A A (fun j : S => a j.val) (fun j : S => a j.val)
+  have hL : 0 ≤ divisorConstant ε hε * N ^ ε :=
+    mul_nonneg (divisorConstant_pos ε hε).le (Real.rpow_nonneg hN0 _)
+  have hop := highKernel_family_squared_norm_le rows q hr hq M (N / Ideal.absNorm D.val) K hrows hqn hK
+  have hs : (∑ j : S, ‖a j.val‖ ^ 2) = ∑ j, ‖if D.val ∣ (cols j).val then a j else 0‖ ^ 2 := by
+    rw [Finset.sum_coe_sort (s := S) (f := fun j : n => ‖a j‖ ^ 2)]
+    simp only [S, Finset.sum_filter]
+    apply Finset.sum_congr rfl
+    intro j _
+    split_ifs <;> simp
+  have hb' := (sq_le_sq₀ (Finset.sum_nonneg (fun _ _ => norm_nonneg _))
+    (mul_nonneg (mul_nonneg (sq_nonneg _) hL) (by positivity))).mp
+      (show (∑ i, ‖∑ j : S, ∑ k : S, if (q j).val ⊔ (q k).val = ⊤ then
+        star (A i j * a j.val) * (A i k * a k.val) else 0‖) ^ 2 ≤
+        (‖FiniteSieveOperator.operator A‖ ^ 2 * (divisorConstant ε hε * N ^ ε) * ∑ j : S, ‖a j.val‖ ^ 2) ^ 2 by
+          simpa only [pow_two] using hb)
+  apply hn.trans (hb'.trans _)
+  rw [← hs]
+  exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hop hL) (by positivity)
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein DivisorBlockCauchy
+
+/-- Large common conductors are absorbed into a shorter high-kernel column range. -/
+theorem highKernel_large_commonFactorBlocks {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (ε : ℝ) (hε : 0 < ε)
+    (rows : m → QuadraticSupportedIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (S : Finset (Ideal O)) (hS : S ⊆ commonFactorPool cols) (G : ℝ) (hG : 0 < G)
+    (hSG : ∀ D ∈ S, G ≤ (Ideal.absNorm D : ℝ))
+    (M N K : ℝ) (hN : 1 ≤ N)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N)
+    (hK : ∀ i, K < (Ideal.absNorm (quadraticSquarefreePart (rows i).val) : ℝ)) (a : n → ℂ) :
+    (∑ D ∈ S, ‖commonFactorBlock D (fun i => primaryIdealGenerator (rows i).val) cols a‖) ≤
+      highKernelNorm M (N / G) K * (divisorConstant ε hε * N ^ ε) ^ 2 * ∑ j, ‖a j‖ ^ 2 := by
+  have hL : 0 ≤ divisorConstant ε hε * N ^ ε :=
+    mul_nonneg (divisorConstant_pos ε hε).le (Real.rpow_nonneg (zero_le_one.trans hN) _)
+  have hb (D : Ideal O) (hD : D ∈ S) :
+      ‖commonFactorBlock D (fun i => primaryIdealGenerator (rows i).val) cols a‖ ≤
+      highKernelNorm M (N / G) K * (divisorConstant ε hε * N ^ ε) *
+        ∑ j, ‖if D ∣ (cols j).val then a j else 0‖ ^ 2 := by
+    have hh := highKernel_commonFactorBlock_bound ε hε
+      ⟨D, commonFactorPool_admissible cols D (hS hD)⟩ rows cols hr hc M N K hN hrows hcols hK a
+    have hm := highKernelNorm_mono (M := M) (M' := M) (K := K) (K' := K) le_rfl
+      (div_le_div_of_nonneg_left (zero_le_one.trans hN) hG (hSG D hD)) le_rfl
+    exact hh.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hm hL) (by positivity))
+  calc
+    _ ≤ ∑ D ∈ S, highKernelNorm M (N / G) K * (divisorConstant ε hε * N ^ ε) *
+        ∑ j, ‖if D ∣ (cols j).val then a j else 0‖ ^ 2 := Finset.sum_le_sum hb
+    _ = highKernelNorm M (N / G) K * (divisorConstant ε hε * N ^ ε) *
+        (∑ D ∈ S, ∑ j, ‖if D ∣ (cols j).val then a j else 0‖ ^ 2) := (Finset.mul_sum ..).symm
+    _ ≤ highKernelNorm M (N / G) K * (divisorConstant ε hε * N ^ ε) *
+        ((divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2) :=
+      mul_le_mul_of_nonneg_left (divisor_mask_energy_small_power ε hε S
+        (fun j => (cols j).val) (fun j => primaryIdealGenerator_ne_zero_ideal _ (cols j).property.1)
+        N hcols a) (mul_nonneg (highKernelNorm_nonneg _ _ _) hL)
+    _ = _ := by ring
+
+/-- Splitting common conductors separates the Poisson terms from a shorter recursive remainder. -/
+theorem highKernel_energy_commonFactor_reduction {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n] (ε : ℝ) (hε : 0 < ε)
+    (rows : m → QuadraticSupportedIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (G : ℝ) (hG : 0 < G) (M N K : ℝ) (hN : 1 ≤ N)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N)
+    (hK : ∀ i, K < (Ideal.absNorm (quadraticSquarefreePart (rows i).val) : ℝ)) (a : n → ℂ) :
+    (∑ i, ‖∑ j, canonicalQuadraticRow (cols j) (primaryIdealGenerator (rows i).val) * a j‖ ^ 2) ≤
+      (∑ D ∈ (commonFactorPool cols).filter (fun D => (Ideal.absNorm D : ℝ) ≤ G),
+        ‖commonFactorBlock D (fun i => primaryIdealGenerator (rows i).val) cols a‖) +
+      highKernelNorm M (N / G) K * (divisorConstant ε hε * N ^ ε) ^ 2 * ∑ j, ‖a j‖ ^ 2 := by
+  have he := energy_le_commonFactorBlocks (fun i => primaryIdealGenerator (rows i).val) cols a
+  rw [← Finset.sum_filter_add_sum_filter_not (commonFactorPool cols)
+    (fun D => (Ideal.absNorm D : ℝ) ≤ G)] at he
+  exact he.trans (add_le_add le_rfl (highKernel_large_commonFactorBlocks ε hε rows cols hr hc _
+    (Finset.filter_subset _ _) G hG (fun D hD => (lt_of_not_ge (Finset.mem_filter.mp hD).2).le)
+    M N K hN hrows hcols hK a))
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+lemma norm_fullIdealWeight_two (I : Ideal O) :
+    ‖fullIdealWeight 2 I‖ = 1 / (Ideal.absNorm I : ℝ) ^ 2 := by
+  by_cases hI : I = 0
+  · subst I
+    simp [fullIdealWeight]
+  · rw [fullIdealWeight, if_neg hI, Complex.cpow_neg, Complex.cpow_ofNat,
+      norm_inv, norm_pow, Complex.norm_natCast, one_div]
+
+/-- Absolute convergence at two uniformly bounds all finite inverse-norm-square sums. -/
+lemma finite_inverse_norm_square_bound :
+    ∃ C : ℝ, 0 < C ∧ ∀ S : Finset (Ideal O),
+      (∑ I ∈ S, 1 / (Ideal.absNorm I : ℝ) ^ 2) ≤ C := by
+  let C : ℝ := 1 + ∑' I : Ideal O, ‖fullIdealWeight 2 I‖
+  have hc : 0 ≤ ∑' I : Ideal O, ‖fullIdealWeight 2 I‖ := tsum_nonneg (fun _ => norm_nonneg _)
+  refine ⟨C, by dsimp [C]; positivity, ?_⟩
+  intro S
+  have hs := fullIdealWeight_summable_norm (2 : ℂ) (by norm_num)
+  calc
+    _ = ∑ I ∈ S, ‖fullIdealWeight 2 I‖ := Finset.sum_congr rfl (fun I _ => (norm_fullIdealWeight_two I).symm)
+    _ ≤ ∑' I : Ideal O, ‖fullIdealWeight 2 I‖ := hs.sum_le_tsum S (fun _ _ => norm_nonneg _)
+    _ ≤ C := by dsimp [C]; linarith
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+/-- Square factors occurring among rows above the squarefree-part threshold. -/
+def highSquareParts (M K : ℝ) : Finset (Ideal O) :=
+  (Finset.univ.filter (fun I : QuadraticSupportedRange M =>
+    K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ))).image
+      (fun I => quadraticSquarePart I.val.val)
+
+lemma mem_highSquareParts {M K : ℝ} (I : QuadraticSupportedRange M)
+    (hI : K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ)) :
+    quadraticSquarePart I.val.val ∈ highSquareParts M K :=
+  Finset.mem_image.mpr ⟨I, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hI⟩, rfl⟩
+
+/-- A high squarefree factor forces its complementary square factor below the reciprocal scale. -/
+lemma highSquareParts_bounds (M K : ℝ) (hK : 0 < K) (B : Ideal O)
+    (hB : B ∈ highSquareParts M K) :
+    quadraticSupported B ∧ (1 : ℝ) ≤ Ideal.absNorm B ∧
+      (Ideal.absNorm B : ℝ) ≤ Real.sqrt (M / K) ∧
+      1 ≤ M / (Ideal.absNorm B : ℝ) ^ 2 := by
+  obtain ⟨I, hI, rfl⟩ := Finset.mem_image.mp hB
+  have hiK := (Finset.mem_filter.mp hI).2
+  have hI0 := primaryIdealGenerator_ne_zero_ideal I.val.val I.val.property.1
+  have hp := (quadraticSupported_parts I.val.val hI0).mp I.val.property
+  have hA0 := primaryIdealGenerator_ne_zero_ideal _ hp.1.1
+  have hB0 := primaryIdealGenerator_ne_zero_ideal _ hp.2.1
+  have hA : (1 : ℝ) ≤ Ideal.absNorm (quadraticSquarefreePart I.val.val) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hA0)
+  have hB : (1 : ℝ) ≤ Ideal.absNorm (quadraticSquarePart I.val.val) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hB0)
+  have hn := congrArg (fun J : Ideal O => (Ideal.absNorm J : ℝ))
+    (quadraticParts_mul_square I.val.val hI0)
+  simp only [map_mul, map_pow, Nat.cast_mul, Nat.cast_pow] at hn
+  have hM0 : 0 ≤ M := (Nat.cast_nonneg _).trans I.property
+  have hBsq : 0 < (Ideal.absNorm (quadraticSquarePart I.val.val) : ℝ) ^ 2 := by positivity
+  refine ⟨hp.2, hB, ?_, ?_⟩
+  · apply (sq_le_sq₀ (Nat.cast_nonneg _) (Real.sqrt_nonneg _)).mp
+    rw [Real.sq_sqrt (div_nonneg hM0 hK.le)]
+    apply (le_div_iff₀ hK).mpr
+    have hmul := mul_le_mul_of_nonneg_right hiK.le hBsq.le
+    nlinarith only [hmul, hn, I.property]
+  · apply (le_div_iff₀ hBsq).mpr
+    have hmul := mul_le_mul_of_nonneg_right hA hBsq.le
+    nlinarith only [hmul, hn, I.property]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+/-- Squarefree-square decomposition reduces the high kernel to ordinary quadratic sieve norms. -/
+theorem highKernelNorm_le_squarePart_sum (M N K : ℝ) :
+    highKernelNorm M N K ≤
+      ∑ B ∈ highSquareParts M K, sieveNorm (M / (Ideal.absNorm B : ℝ) ^ 2) N := by
+  classical
+  apply FiniteSieveOperator.squared_norm_le_of_energy _ _
+    (Finset.sum_nonneg (fun _ _ => sieveNorm_nonneg _ _))
+  intro a
+  let R (B : Ideal O) : Finset (QuadraticSupportedRange M) := Finset.univ.filter
+    (fun I => K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ) ∧
+      quadraticSquarePart I.val.val = B)
+  let E (I : QuadraticSupportedRange M) : ℝ := ‖∑ J, highMatrix M N K I J * a J‖ ^ 2
+  have hR (B : Ideal O) (I : R B) :
+      K < (Ideal.absNorm (quadraticSquarefreePart I.val.val.val) : ℝ) ∧
+      quadraticSquarePart I.val.val.val = B := (Finset.mem_filter.mp I.property).2
+  have hpartition (I : QuadraticSupportedRange M) :
+      E I = ∑ B ∈ highSquareParts M K, if I ∈ R B then E I else 0 := by
+    by_cases hI : K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ)
+    · rw [Finset.sum_eq_single (quadraticSquarePart I.val.val)]
+      · rw [if_pos (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hI, rfl⟩)]
+      · intro B _ hB
+        exact if_neg (fun h => hB ((Finset.mem_filter.mp h).2.2).symm)
+      · exact fun h => (h (mem_highSquareParts I hI)).elim
+    · have hz : E I = 0 := by simp only [E, highMatrix, if_neg hI, zero_mul,
+          Finset.sum_const_zero, norm_zero, zero_pow (by decide : 2 ≠ 0)]
+      simp only [hz, ite_self, Finset.sum_const_zero]
+  have hsum : (∑ I, E I) = ∑ B ∈ highSquareParts M K, ∑ I ∈ R B, E I := by
+    calc
+      _ = ∑ I, ∑ B ∈ highSquareParts M K, if I ∈ R B then E I else 0 :=
+        Finset.sum_congr rfl (fun I _ => hpartition I)
+      _ = ∑ B ∈ highSquareParts M K, ∑ I, if I ∈ R B then E I else 0 := Finset.sum_comm
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro B _
+        simp only [R, Finset.mem_filter, Finset.mem_univ, true_and, Finset.sum_filter]
+  have hblock (B : Ideal O) (_hB : B ∈ highSquareParts M K) :
+      (∑ I ∈ R B, E I) ≤ sieveNorm (M / (Ideal.absNorm B : ℝ) ^ 2) N * ∑ J, ‖a J‖ ^ 2 := by
+    let r : R B → QuadraticIdeal := fun I => ⟨quadraticSquarefreePart I.val.val.val,
+      ((quadraticSupported_parts I.val.val.val
+        (primaryIdealGenerator_ne_zero_ideal _ I.val.val.property.1)).mp I.val.val.property).1⟩
+    have hr : Function.Injective r := by
+      intro I J he
+      have hf := congrArg (fun A : QuadraticIdeal => A.val) he
+      apply Subtype.ext
+      apply Subtype.ext
+      apply Subtype.ext
+      rw [← quadraticParts_mul_square I.val.val.val
+        (primaryIdealGenerator_ne_zero_ideal _ I.val.val.property.1),
+        ← quadraticParts_mul_square J.val.val.val
+        (primaryIdealGenerator_ne_zero_ideal _ J.val.val.property.1),
+        (hR B I).2, (hR B J).2]
+      exact congrArg (fun A : Ideal O => A * B ^ 2) hf
+    have hrn (I : R B) : (Ideal.absNorm (r I).val : ℝ) ≤ M / (Ideal.absNorm B : ℝ) ^ 2 := by
+      have hI0 := primaryIdealGenerator_ne_zero_ideal _ I.val.val.property.1
+      have hp := (quadraticSupported_parts I.val.val.val hI0).mp I.val.val.property
+      have hB0 : B ≠ 0 := (hR B I).2 ▸ primaryIdealGenerator_ne_zero_ideal _ hp.2.1
+      have hb : 0 < (Ideal.absNorm B : ℝ) := by
+        exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB0)
+      apply (le_div_iff₀ (sq_pos_of_pos hb)).mpr
+      have hn := congrArg (fun A : Ideal O => (Ideal.absNorm A : ℝ))
+        (quadraticParts_mul_square I.val.val.val hI0)
+      simp only [map_mul, map_pow, Nat.cast_mul, Nat.cast_pow, (hR B I).2] at hn
+      exact hn.trans_le I.val.property
+    let b : QuadraticIdealRange N → ℂ := fun J => a J * quadraticIdealMask J.val (primaryIdealGenerator B)
+    have hb (J : QuadraticIdealRange N) : ‖b J‖ ≤ ‖a J‖ := by
+      have hm := canonicalQuadraticRow_norm_le_one J.val ((primaryIdealGenerator B) ^ 2)
+      rw [canonicalQuadraticRow_square] at hm
+      exact (norm_mul _ _).le.trans (mul_le_of_le_one_right (norm_nonneg _) hm)
+    have he (I : R B) : (∑ J, highMatrix M N K I.val J * a J) =
+        ∑ J, canonicalQuadraticRow J.val (primaryIdealGenerator (r I).val) * b J := by
+      apply Finset.sum_congr rfl
+      intro J _
+      rw [highMatrix, if_pos (hR B I).1,
+        ← quadraticParts_mul_square I.val.val.val
+          (primaryIdealGenerator_ne_zero_ideal _ I.val.val.property.1), (hR B I).2,
+        canonicalQuadraticRow_squarefree_argument]
+      change (canonicalQuadraticRow J.val (primaryIdealGenerator (r I).val) *
+        quadraticIdealMask J.val (primaryIdealGenerator B)) * a J = _
+      dsimp only [b]
+      ring
+    have hop := family_squared_norm_le r (fun J : QuadraticIdealRange N => J.val)
+      hr Subtype.val_injective (M / (Ideal.absNorm B : ℝ) ^ 2) N hrn (fun J => J.property)
+    have hen := FiniteSieveOperator.energy_bound
+      (fun I J => canonicalQuadraticRow J.val (primaryIdealGenerator (r I).val)) b
+    rw [← Finset.sum_coe_sort (s := R B) (f := E)]
+    change (∑ I : R B, ‖∑ J, highMatrix M N K I.val J * a J‖ ^ 2) ≤ _
+    simp_rw [he]
+    exact hen.trans ((mul_le_mul_of_nonneg_right hop (by positivity)).trans
+      (mul_le_mul_of_nonneg_left (Finset.sum_le_sum (fun J _ =>
+        pow_le_pow_left₀ (norm_nonneg _) (hb J) 2)) (sieveNorm_nonneg _ _)))
+  change (∑ I, E I) ≤ _
+  rw [hsum, Finset.sum_mul]
+  exact Finset.sum_le_sum hblock
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+
+lemma highSquareParts_card_bound (M K : ℝ) (hK : 0 < K) :
+    ((highSquareParts M K).card : ℝ) ≤ diagonalControl sieveCutoff * Real.sqrt (M / K) := by
+  have hD := diagonalControl_nonneg sieveCutoff
+  by_cases he : highSquareParts M K = ∅
+  · simp only [he, Finset.card_empty, Nat.cast_zero]
+    positivity
+  · obtain ⟨B, hB⟩ := Finset.nonempty_iff_ne_empty.mpr he
+    have hb := highSquareParts_bounds M K hK B hB
+    exact finite_ideal_card_bound _ _ (hb.2.1.trans hb.2.2.1)
+      (fun A hA => (highSquareParts_bounds M K hK A hA).2.2.1)
+
+/-- A sieve power bound controls the full high kernel with only the square-factor counting cost. -/
+theorem HasSieveExponent.high_kernel {α : ℝ} (h : HasSieveExponent α) :
+    ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 < C ∧ ∀ M N K : ℝ,
+      1 ≤ M → 1 ≤ N → 1 ≤ K →
+      highKernelNorm M N K ≤ C * (M * N) ^ ε * (M + Real.sqrt (M / K) * N ^ α) := by
+  intro ε hε
+  obtain ⟨C, hC, hbound⟩ := h ε hε
+  obtain ⟨A, hA, hsum⟩ := finite_inverse_norm_square_bound
+  let D := diagonalControl sieveCutoff
+  have hD : 0 ≤ D := diagonalControl_nonneg sieveCutoff
+  refine ⟨(A + D + 1) * C, by positivity, ?_⟩
+  intro M N K hM hN hK
+  have hM0 := zero_le_one.trans hM
+  have hN0 := zero_le_one.trans hN
+  have hK0 := zero_lt_one.trans_le hK
+  have hrow (B : Ideal O) (hB : B ∈ highSquareParts M K) :
+      sieveNorm (M / (Ideal.absNorm B : ℝ) ^ 2) N ≤
+        C * (M * N) ^ ε * (M / (Ideal.absNorm B : ℝ) ^ 2 + N ^ α) := by
+    have hb := highSquareParts_bounds M K hK0 B hB
+    have hquot : M / (Ideal.absNorm B : ℝ) ^ 2 ≤ M := div_le_self hM0 (one_le_pow₀ hb.2.1)
+    apply (hbound _ N hb.2.2.2 hN).trans
+    have hpow := Real.rpow_le_rpow
+      (mul_nonneg (div_nonneg hM0 (sq_nonneg _)) hN0)
+      (mul_le_mul_of_nonneg_right hquot hN0) hε.le
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpow hC.le)
+      (add_nonneg (div_nonneg hM0 (sq_nonneg _)) (Real.rpow_nonneg hN0 _))
+  have hcard := highSquareParts_card_bound M K hK0
+  have hcoeff : 0 ≤ C * (M * N) ^ ε := by positivity
+  have hr : 0 ≤ Real.sqrt (M / K) * N ^ α :=
+    mul_nonneg (Real.sqrt_nonneg _) (Real.rpow_nonneg hN0 _)
+  calc
+    _ ≤ ∑ B ∈ highSquareParts M K, sieveNorm (M / (Ideal.absNorm B : ℝ) ^ 2) N :=
+      highKernelNorm_le_squarePart_sum M N K
+    _ ≤ ∑ B ∈ highSquareParts M K,
+        C * (M * N) ^ ε * (M / (Ideal.absNorm B : ℝ) ^ 2 + N ^ α) := Finset.sum_le_sum hrow
+    _ = C * (M * N) ^ ε *
+        (M * (∑ B ∈ highSquareParts M K, 1 / (Ideal.absNorm B : ℝ) ^ 2) +
+          ((highSquareParts M K).card : ℝ) * N ^ α) := by
+      simp only [← Finset.mul_sum, Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul]
+      congr 1
+      rw [Finset.mul_sum]
+      congr 1
+      exact Finset.sum_congr rfl (fun _ _ => by ring)
+    _ ≤ C * (M * N) ^ ε * (M * A + (D * Real.sqrt (M / K)) * N ^ α) := by
+      gcongr
+      exact hsum _
+    _ ≤ C * (M * N) ^ ε * ((A + D + 1) * (M + Real.sqrt (M / K) * N ^ α)) := by
+      apply mul_le_mul_of_nonneg_left _ hcoeff
+      calc
+        M * A + (D * Real.sqrt (M / K)) * N ^ α = A * M + D * (Real.sqrt (M / K) * N ^ α) := by ring
+        _ ≤ (A + D + 1) * M + (A + D + 1) * (Real.sqrt (M / K) * N ^ α) :=
+          add_le_add (mul_le_mul_of_nonneg_right (by linarith) hM0)
+            (mul_le_mul_of_nonneg_right (by linarith) hr)
+        _ = _ := by ring
+    _ = ((A + D + 1) * C) * (M * N) ^ ε * (M + Real.sqrt (M / K) * N ^ α) := by ring
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+namespace FiniteSieveRestriction
+
+/-- Restrict coefficients to one finite ray or size class. -/
+def sectorCoefficient {n r : Type*} [DecidableEq r] (σ : n → r) (c : r) (a : n → ℂ) (j : n) : ℂ :=
+  if σ j = c then a j else 0
+
+lemma sectorCoefficient_energy {n r : Type*} [Fintype n] [Fintype r] [DecidableEq r]
+    (σ : n → r) (a : n → ℂ) :
+    (∑ c, ∑ j, ‖sectorCoefficient σ c a j‖ ^ 2) = ∑ j, ‖a j‖ ^ 2 := by
+  classical
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Finset.sum_eq_single (σ j)]
+  · simp [sectorCoefficient]
+  · intro c _ hc
+    simp only [sectorCoefficient, if_neg (Ne.symm hc), norm_zero, zero_pow (by decide : 2 ≠ 0)]
+  · simp
+
+lemma matrix_sector_decomposition {m n r : Type*} [Fintype n] [Fintype r] [DecidableEq r]
+    (σ : n → r) (A : Matrix m n ℂ) (a : n → ℂ) (i : m) :
+    (∑ j, A i j * a j) = ∑ c, ∑ j, A i j * sectorCoefficient σ c a j := by
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [← Finset.mul_sum]
+  simp [sectorCoefficient]
+
+/-- Splitting columns into finitely many sectors costs only the number of sectors. -/
+lemma weighted_energy_sector_bound {m n r : Type*} [Fintype m] [Fintype n] [Fintype r]
+    [DecidableEq r] (σ : n → r) (A : Matrix m n ℂ) (a : n → ℂ)
+    (v : m → ℝ) (hv : ∀ i, 0 ≤ v i) :
+    (∑ i, v i * ‖∑ j, A i j * a j‖ ^ 2) ≤
+      (Fintype.card r : ℝ) * ∑ c, ∑ i, v i * ‖∑ j, A i j * sectorCoefficient σ c a j‖ ^ 2 := by
+  have hb (i : m) : ‖∑ j, A i j * a j‖ ^ 2 ≤
+      (Fintype.card r : ℝ) * ∑ c, ‖∑ j, A i j * sectorCoefficient σ c a j‖ ^ 2 := by
+    rw [matrix_sector_decomposition σ A a i]
+    have hn := norm_sum_le (Finset.univ : Finset r) (fun c => ∑ j, A i j * sectorCoefficient σ c a j)
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset r)
+      (fun _ => (1 : ℝ)) (fun c => ‖∑ j, A i j * sectorCoefficient σ c a j‖)
+    simp only [one_mul, one_pow, Finset.sum_const, nsmul_eq_mul, mul_one, Finset.card_univ] at hcs
+    exact (pow_le_pow_left₀ (norm_nonneg _) hn 2).trans hcs
+  calc
+    _ ≤ ∑ i, v i * ((Fintype.card r : ℝ) * ∑ c, ‖∑ j, A i j * sectorCoefficient σ c a j‖ ^ 2) :=
+      Finset.sum_le_sum (fun i _ => mul_le_mul_of_nonneg_left (hb i) (hv i))
+    _ = _ := by
+      simp only [Finset.mul_sum]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro c _
+      exact Finset.sum_congr rfl (fun i _ => by ring)
+
+end FiniteSieveRestriction
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

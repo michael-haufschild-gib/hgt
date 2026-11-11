@@ -16,7 +16,7 @@ open Finset
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
-open HTGeometry HodgeTheoryOfAFixedPart
+open _root_.HTGeometry HodgeTheoryOfAFixedPart
 
 /-- Strict growth threshold of the normalized finite power comb. -/
 def PowerCombTailGrowth (a σ : ℝ) : Prop :=
@@ -173,8 +173,10 @@ theorem powerCombTailGrowth_iff_unscaledGrowth (a σ : ℝ) :
   have h := strictNaturalPowerGrowth_rpow_mul_iff
     (fun N => HodgeTheoryOfAFixedPart.combForm (Icc 1 N) (powerTailWeight a))
     (1 - 2 * a + σ) (2 * a - 1)
-  simpa only [show 1 - 2 * a + σ + (2 * a - 1) = σ by ring,
-    PowerCombTailGrowth, powerCombTail] using h
+  change StrictNaturalPowerGrowth
+    (fun N => (N : ℝ) ^ (2 * a - 1) *
+      HodgeTheoryOfAFixedPart.combForm (Icc 1 N) (powerTailWeight a)) σ ↔ _
+  simpa only [show 1 - 2 * a + σ + (2 * a - 1) = σ by ring] using h
 
 /-- The actual power-comb growth threshold is exactly the rightmost zero
 half-plane: exponent `σ` corresponds to `Re ρ ≤ 1-a+σ`. -/

@@ -29,7 +29,7 @@
 | A89 | Prescribed sub-logarithmic radius | Existing `3-formalized/double-logarithmic-windows-miss-the-minimal-face.md` covers every prescribed `R(T)≤(C/256)log log T` with one configuration; general `R(T)=o(log T)` remains open |
 | A86 | Near-diagonal cofactors and growing filters | Complete: `3-formalized/growing-cofactor-filters-and-near-diagonal-pairs.md`; row bound `1+4W/(t sqrt(r))`, actual filtered transfer to `W≤3t^71`, error `≤2h^d exp(−at/8)` |
 | A47 | One-quartet constants | Complete: `3-formalized/one-quartet-current-constant.md`; explicit normalized-current lower bound |
-| A111 | Critical-zero proportion from twisted moments and Levinson gate | Actual three-moment remainder, shifted arithmetic jets, chi-taper jet limits and exact scalar `c(13/50)<18/5<exp(13/10)` proved. Uniform block assembly and gate insertion remain open |
+| A111 | Critical-zero proportion from twisted moments and Levinson gate | Actual three-moment remainder, shifted arithmetic jets, chi-taper jet limits and exact scalar `c(13/50)<18/5<exp(13/10)` proved. Actual matched interval bounds proved: `Ca` on large blocks and `(18/5)(v−a)+εa` on high blocks. Uniform fixed-family assembly and gate insertion remain open |
 | A116 | Ideal degree points, Hecke characters, non-abelian character index | Hecke explicit formula, ideal-degree pairing, Dedekind and class-character indices: `3-formalized/agz-hecke-explicit-formula-and-ideal-squares.md`. Non-abelian degree-two Artin character, including ramified contacts and its exact index law: existing `3-formalized/artin-degree-two-character-of-the-cube-roots-of-two.md` |
 | A119 | Linear depth-sum bound with explicit moment constant | Already proved: `RHTower.eventually_offLineMoment_le_montgomeryTaylor`, constant `66/1000` |
 

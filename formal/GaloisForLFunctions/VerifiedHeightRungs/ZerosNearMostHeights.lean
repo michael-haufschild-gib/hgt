@@ -25,7 +25,7 @@ open scoped ComplexConjugate
 
 namespace GaloisForLFunctions.VerifiedHeightRungs
 
-open _root_.RHTower Zeta23 GaloisForLFunctions.SquareRootThreshold
+open _root_.RHTower _root_.RHTower.WeilRegular Zeta23 GaloisForLFunctions.SquareRootThreshold
 
 noncomputable section
 
@@ -208,13 +208,12 @@ theorem volume_window_prime_ge_le {Y r : ℝ} (hY : 0 < Y) (hr : 0 < r)
     integral_mono ((integrable_indicator_iff hBm).mpr (integrableOn_const hBfin.ne)) hGi hind
   rw [integral_indicator_const _ hBm, smul_eq_mul, hGint] at hint
   have hvol : (volume B).toReal ≤ r * gapEnergy * primeVariance f N / A₀ ^ 2 / c := by
-    rw [le_div_iff₀ hc0, mul_comm]
+    rw [le_div_iff₀ hc0]
     simpa [Measure.real] using hint
   have heq : r * gapEnergy * primeVariance f N / A₀ ^ 2 / c =
       4 * gapEnergy * primeVariance f N / (3 * r * gapMass ^ 2 * A₀ ^ 2) := by
     rw [hc]
     field_simp
-    ring
   rw [heq] at hvol
   calc volume B = ENNReal.ofReal (volume B).toReal := (ENNReal.ofReal_toReal hBfin.ne).symm
     _ ≤ _ := ENNReal.ofReal_le_ofReal hvol

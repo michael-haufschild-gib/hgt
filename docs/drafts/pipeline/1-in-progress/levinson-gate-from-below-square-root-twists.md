@@ -66,6 +66,11 @@ have these scalar limits in `TheFrozenMainJetsHaveTheirScalarLimits`,
 for arbitrary diverging cutoffs and convergent normalized displacement
 and endpoint conductor ratios.
 
+Actual interval energy is dominated by its taper. Along every admissible
+large-block family it is bounded by `C a`; above `δ U/log U` it is bounded
+by `(18/5)(v−a)+εa`. These estimates are formalized in
+`TheMatchedDetectorHasItsBlockBounds`.
+
 The dyadic law, fixed-coefficient transfer and count insertion have complete
 Lean proof drafts, pending dependency checks. The capstone is
 `TheTwistedMomentGivesAPositiveCriticalProportion`: its target fraction is

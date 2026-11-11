@@ -89,7 +89,9 @@ theorem exists_integral_linearDetector_head_bound :
     have hs : ∀ n ∈ Finset.Icc 1 N, 1 ≤ n := fun n hn => (Finset.mem_Icc.mp hn).1
     have hf := (analyticAt_levinsonMollifiedDetector (lam : ℂ) b hs hz).continuousAt
     have hmap : ContinuousAt (fun t : ℝ => (σ : ℂ) + (t : ℂ) * I) t := by fun_prop
-    exact ((hf.comp hmap).norm.pow 2).continuousWithinAt
+    simpa only [Function.comp_def, Pi.pow_apply] using
+      ((continuous_pow 2).continuousAt.comp (hf.comp hmap).norm).continuousWithinAt
+        (s := uIcc a v)
   have hp : ((1 + A) ^ (3 / 16 : ℝ)) ^ 2 ≤ (2 : ℝ) ^ (3 / 8 : ℝ) * A ^ (3 / 8 : ℝ) := by
     calc
       _ = (1 + A) ^ (3 / 8 : ℝ) := by

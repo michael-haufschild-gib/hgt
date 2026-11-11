@@ -45,7 +45,9 @@ theorem matchedDetectorBlockEnergy_le_taper {p q η : ℝ}
   have hs : ∀ n ∈ Finset.Icc 1 N, 1 ≤ n := fun n hn => (Finset.mem_Icc.mp hn).1
   have hf := (analyticAt_levinsonMollifiedDetector (lam : ℂ)
     (fun n => (linearDetectorWeights N d n : ℂ)) hs hz).continuousAt
-  have hc := ((hf.comp (RHTower.continuous_displacedLinePt d).continuousAt).norm.pow 2).continuousWithinAt
-  simpa only [levinsonMollifiedDetector, levinsonG, Function.comp_def] using hc
+  have hg := (hf.comp (RHTower.continuous_displacedLinePt d).continuousAt).norm
+  have hc := ((continuous_pow 2).continuousAt.comp hg).continuousWithinAt
+    (s := Icc (p - η) (q + η))
+  simpa only [levinsonMollifiedDetector, levinsonG, Function.comp_def, Pi.pow_apply] using hc
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

@@ -89,8 +89,8 @@ theorem summable_norm_point_and (i₀ : ℕ) (P : Prop) [Decidable P] (a : ℂ) 
 
 /-- **A geometric block.** If `φ` has sum `Φ` with summable norms and `‖R‖ < 1`, the double
 series `Σ_{r ≤ m} R^r φ(m − r)` has sum `(1 − R)⁻¹ Φ`. -/
-theorem hasSum_block {φ : ℕ → ℂ} {Φ R : ℂ} (hφ : HasSum φ Φ) (hφn : Summable fun i => ‖φ i‖)
-    (hR : ‖R‖ < 1) :
+theorem hasSum_block {𝕜 : Type*} [NormedField 𝕜] [CompleteSpace 𝕜] {φ : ℕ → 𝕜} {Φ R : 𝕜}
+    (hφ : HasSum φ Φ) (hφn : Summable fun i => ‖φ i‖) (hR : ‖R‖ < 1) :
     HasSum (fun p : ℕ × ℕ => if p.1 ≤ p.2 then R ^ p.1 * φ (p.2 - p.1) else 0)
       ((1 - R)⁻¹ * Φ) := by
   let g : ℕ × ℕ → ℕ × ℕ := fun q => (q.1, q.1 + q.2)
@@ -105,9 +105,12 @@ theorem hasSum_block {φ : ℕ → ℂ} {Φ R : ℂ} (hφ : HasSum φ Φ) (hφn 
     intro hrm
     exact hp ⟨(r, m - r), by simp only [g]; ext <;> simp; omega⟩
   refine (hg.hasSum_iff hvan).mp ?_
-  have hprod := (hasSum_geometric_of_norm_lt_one hR).mul hφ
-    (summable_mul_of_summable_norm (by simpa using summable_geometric_of_lt_one (norm_nonneg _) hR)
-      hφn)
+  have hgeo : HasSum (fun r : ℕ => R ^ r) (1 - R)⁻¹ := hasSum_geometric_of_norm_lt_one hR
+  have hgeon : Summable fun r : ℕ => ‖R ^ r‖ := by
+    simpa using summable_geometric_of_lt_one (norm_nonneg _) hR
+  have hsum : Summable (fun x : ℕ × ℕ => R ^ x.1 * φ x.2) :=
+    summable_mul_of_summable_norm (R := 𝕜) (f := fun r : ℕ => R ^ r) (g := φ) hgeon hφn
+  have hprod := HasSum.mul (f := fun r : ℕ => R ^ r) (g := φ) hgeo hφ hsum
   have hcomp : (fun p : ℕ × ℕ => if p.1 ≤ p.2 then R ^ p.1 * φ (p.2 - p.1) else 0) ∘ g =
       fun x : ℕ × ℕ => R ^ x.1 * φ x.2 := by
     funext q
@@ -115,6 +118,53 @@ theorem hasSum_block {φ : ℕ → ℂ} {Φ R : ℂ} (hφ : HasSum φ Φ) (hφn 
   rw [hcomp]
   exact hprod
 
+/-- **The block `t = 0`.** `Σ_{k,m} ([k = 0] V^m + [k ≠ 0, m = 0, c] W^k) =
+(1 − V)⁻¹ + [c] W (1 − W)⁻¹`. -/
+theorem hasSum_zeroBlock {𝕜 : Type*} [NormedField 𝕜] [CompleteSpace 𝕜] {V W : 𝕜}
+    (hV : ‖V‖ < 1) (hW : ‖W‖ < 1) (c : Prop) [Decidable c] :
+    HasSum (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else if q.2 = 0 ∧ c then W ^ q.1 else 0)
+      ((1 - V)⁻¹ + if c then W * (1 - W)⁻¹ else 0) := by
+  have hfun : (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else if q.2 = 0 ∧ c then W ^ q.1 else 0) =
+      (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else 0) +
+        (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ c then W ^ q.1 else 0) := by
+    funext q
+    by_cases h0 : q.1 = 0 <;> simp [h0]
+  rw [hfun]
+  refine HasSum.add ?_ ?_
+  · have hg : Function.Injective fun m : ℕ => ((0, m) : ℕ × ℕ) := fun a b h => by
+      simpa using h
+    refine (hg.hasSum_iff ?_).mp ?_
+    · rintro ⟨k, m⟩ hq
+      rw [if_neg]
+      rintro rfl
+      exact hq ⟨m, rfl⟩
+    · have hc : (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else 0) ∘
+          (fun m : ℕ => ((0, m) : ℕ × ℕ)) = fun m : ℕ => V ^ m := by
+        funext m
+        simp
+      rw [hc]
+      exact hasSum_geometric_of_norm_lt_one hV
+  · by_cases hc0 : c
+    · rw [if_pos hc0]
+      have hg : Function.Injective fun k : ℕ => ((k + 1, 0) : ℕ × ℕ) := fun a b h => by
+        simpa using h
+      refine (hg.hasSum_iff ?_).mp ?_
+      · rintro ⟨k, m⟩ hq
+        rw [if_neg]
+        rintro ⟨hk, rfl, -⟩
+        exact hq ⟨k - 1, by simp; omega⟩
+      · have hc : (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ c then W ^ q.1 else 0) ∘
+            (fun k : ℕ => ((k + 1, 0) : ℕ × ℕ)) = fun k : ℕ => W * W ^ k := by
+          funext k
+          simp [hc0, pow_succ']
+        rw [hc]
+        exact (hasSum_geometric_of_norm_lt_one hW).mul_left W
+    · rw [if_neg hc0]
+      have hc : (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ c then W ^ q.1 else 0) = fun _ => 0 := by
+        funext q
+        simp [hc0]
+      rw [hc]
+      exact hasSum_zero
 
 /-! ### The blocks of exponents -/
 
@@ -175,6 +225,39 @@ theorem exists_blockMap (v : Fin 2 × ℕ × ℕ × ℕ) (hv : ((v.1 : ℕ) = 0 
       omega
     · simp only []
       omega
+
+/-- **Assembly over the blocks.** A function on the exponents that vanishes for `e + 3l ≥ 1`,
+`k ≥ 2`, and has a sum on every block, has the sum of the block sums. -/
+theorem hasSum_of_blockMap {α : Type*} [AddCommMonoid α] [TopologicalSpace α] [ContinuousAdd α]
+    (T : Fin 2 × ℕ × ℕ × ℕ → α) (a : Option (Fin 2 × Fin 2 × Fin 2) → α)
+    (hb : ∀ b, HasSum (T ∘ blockMap b) (a b))
+    (hvan : ∀ (e : Fin 2) (l k m : ℕ), 1 ≤ (e : ℕ) + 3 * l → 2 ≤ k → T (e, l, k, m) = 0) :
+    HasSum T (∑ b, a b) := by
+  have hsub : ∀ b, HasSum (T ∘ (↑) : Set.range (blockMap b) → α) (a b) := by
+    intro b
+    refine (Equiv.ofInjective (blockMap b) (blockMap_injective b)).hasSum_iff.mp ?_
+    have hcomp : (T ∘ (↑) : Set.range (blockMap b) → α) ∘
+        (Equiv.ofInjective (blockMap b) (blockMap_injective b)) = T ∘ blockMap b := by
+      funext q
+      simp [Equiv.ofInjective_apply]
+    rw [hcomp]
+    exact hb b
+  have hU := hasSum_sum_disjoint (f := T) Finset.univ
+    (fun b _ b' _ hne => blockMap_disjoint hne) (fun b _ => hsub b)
+  have hsupp : Function.support T ⊆
+      ⋃ b ∈ (Finset.univ : Finset (Option (Fin 2 × Fin 2 × Fin 2))), Set.range (blockMap b) := by
+    intro v hv
+    obtain ⟨e, l, k, m⟩ := v
+    have hcase : ((e : ℕ) = 0 ∧ l = 0) ∨ k ≤ 1 := by
+      by_contra hc
+      push Not at hc
+      exact hv (hvan e l k m
+        (by rcases Nat.eq_zero_or_pos l with hl | hl
+            · have := hc.1; omega
+            · omega) hc.2)
+    obtain ⟨b, q, hq⟩ := exists_blockMap (e, l, k, m) hcase
+    exact Set.mem_iUnion₂.mpr ⟨b, Finset.mem_univ _, q, hq⟩
+  exact (hasSum_subtype_iff_of_support_subset hsupp).mp hU
 
 section Prime
 
@@ -1051,54 +1134,13 @@ theorem hasSum_blockMap_none (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {�
     HasSum (localTerm π ηp X Y V u j ∘ blockMap none)
       ((1 - V)⁻¹ + if j = 0 then complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) *
         Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0) := by
-  set W := complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y
-  have hfun : localTerm π ηp X Y V u j ∘ blockMap none =
-      (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else 0) +
-        (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ j = 0 then W ^ q.1 else 0) := by
+  have hfun : localTerm π ηp X Y V u j ∘ blockMap none = fun q : ℕ × ℕ =>
+      if q.1 = 0 then V ^ q.2 else if q.2 = 0 ∧ j = 0 then
+        (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y) ^ q.1 else 0 := by
     funext q
-    simp only [Function.comp, blockMap, Pi.add_apply]
-    rw [localTerm_T0 π hlam h2 hprim ηp X Y V hu j q.1 q.2]
-    by_cases h0 : q.1 = 0
-    · simp [h0]
-    · simp only [h0, ↓reduceIte, ne_eq, not_false_eq_true, true_and, zero_add]
-      rfl
+    exact localTerm_T0 π hlam h2 hprim ηp X Y V hu j q.1 q.2
   rw [hfun]
-  refine HasSum.add ?_ ?_
-  · have hg : Function.Injective fun m : ℕ => ((0, m) : ℕ × ℕ) := fun a b h => by
-      simpa using h
-    refine (hg.hasSum_iff ?_).mp ?_
-    · rintro ⟨k, m⟩ hq
-      rw [if_neg]
-      rintro rfl
-      exact hq ⟨m, rfl⟩
-    · have hc : (fun q : ℕ × ℕ => if q.1 = 0 then V ^ q.2 else 0) ∘
-          (fun m : ℕ => ((0, m) : ℕ × ℕ)) = fun m : ℕ => V ^ m := by
-        funext m
-        simp
-      rw [hc]
-      exact hasSum_geometric_of_norm_lt_one hV
-  · by_cases hj0 : j = 0
-    · rw [if_pos hj0]
-      have hg : Function.Injective fun k : ℕ => ((k + 1, 0) : ℕ × ℕ) := fun a b h => by
-        simpa using h
-      refine (hg.hasSum_iff ?_).mp ?_
-      · rintro ⟨k, m⟩ hq
-        rw [if_neg]
-        rintro ⟨hk, rfl, -⟩
-        exact hq ⟨k - 1, by simp; omega⟩
-      · have hc : (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ j = 0 then W ^ q.1 else 0) ∘
-            (fun k : ℕ => ((k + 1, 0) : ℕ × ℕ)) = fun k : ℕ => W * W ^ k := by
-          funext k
-          simp [hj0, pow_succ']
-        rw [hc]
-        exact (hasSum_geometric_of_norm_lt_one hW).mul_left W
-    · rw [if_neg hj0]
-      have hc : (fun q : ℕ × ℕ => if q.1 ≠ 0 ∧ q.2 = 0 ∧ j = 0 then W ^ q.1 else 0) =
-          fun _ => 0 := by
-        funext q
-        simp [hj0]
-      rw [hc]
-      exact hasSum_zero
+  exact hasSum_zeroBlock hV hW (j = 0)
 
 include h2 hprim in
 /-- **The complete local identity.** For `j < 6`, `π ∤ u`, `‖V‖, ‖ρY‖, ‖R‖ < 1`, the local series
@@ -1113,40 +1155,18 @@ theorem hasSum_localTerm (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) 
         Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0) +
         (1 - primeR π ηp X V)⁻¹ *
           ∑ e : Fin 2, ∑ p : Fin 2, ∑ k : Fin 2, baseSum π hlam ηp X Y V u j e p k) := by
-  let a : Option (Fin 2 × Fin 2 × Fin 2) → ℂ := fun b => b.elim
-    ((1 - V)⁻¹ + if j = 0 then complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) *
-      Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0)
-    fun b => (1 - primeR π ηp X V)⁻¹ * baseSum π hlam ηp X Y V u j b.1 b.2.1 b.2.2
-  have hsub : ∀ b, HasSum (localTerm π ηp X Y V u j ∘ (↑) : Set.range (blockMap b) → ℂ) (a b) := by
-    intro b
-    refine (Equiv.ofInjective (blockMap b) (blockMap_injective b)).hasSum_iff.mp ?_
-    have hcomp : (localTerm π ηp X Y V u j ∘ (↑) : Set.range (blockMap b) → ℂ) ∘
-        (Equiv.ofInjective (blockMap b) (blockMap_injective b)) =
-          localTerm π ηp X Y V u j ∘ blockMap b := by
-      funext q
-      simp [Equiv.ofInjective_apply]
-    rw [hcomp]
-    rcases b with _ | ⟨e, p, k⟩
-    · exact hasSum_blockMap_none π hlam h2 hprim ηp X Y V hu j hV hW
-    · exact hasSum_blockMap_some π hlam h2 hprim ηp X Y V hu hj hV hR e p k
-  have hU := hasSum_sum_disjoint (f := localTerm π ηp X Y V u j) Finset.univ
-    (fun b _ b' _ hne => blockMap_disjoint hne) (fun b _ => hsub b)
-  have hsupp : Function.support (localTerm π ηp X Y V u j) ⊆
-      ⋃ b ∈ (Finset.univ : Finset (Option (Fin 2 × Fin 2 × Fin 2))), Set.range (blockMap b) := by
-    intro v hv
-    obtain ⟨e, l, k, m⟩ := v
-    have hcase : ((e : ℕ) = 0 ∧ l = 0) ∨ k ≤ 1 := by
-      by_contra hc
-      push Not at hc
-      exact hv (localTerm_eq_zero_of_two_le π hlam h2 hprim ηp X Y V hu j e l k m
-        (by rcases Nat.eq_zero_or_pos l with hl | hl
-            · have := hc.1; omega
-            · omega) hc.2)
-    obtain ⟨b, q, hq⟩ := exists_blockMap (e, l, k, m) hcase
-    exact Set.mem_iUnion₂.mpr ⟨b, Finset.mem_univ _, q, hq⟩
-  rw [← hasSum_subtype_iff_of_support_subset hsupp]
-  convert hU using 1
-  simp only [Fintype.sum_option, Fintype.sum_prod_type, a, Option.elim, Finset.mul_sum]
+  have h := hasSum_of_blockMap (localTerm π ηp X Y V u j)
+    (fun b => b.elim
+      ((1 - V)⁻¹ + if j = 0 then complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) *
+        Y * (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹ else 0)
+      fun b => (1 - primeR π ηp X V)⁻¹ * baseSum π hlam ηp X Y V u j b.1 b.2.1 b.2.2)
+    (fun b => by
+      rcases b with _ | ⟨e, p, k⟩
+      · exact hasSum_blockMap_none π hlam h2 hprim ηp X Y V hu j hV hW
+      · exact hasSum_blockMap_some π hlam h2 hprim ηp X Y V hu hj hV hR e p k)
+    (fun e l k m ht hk => localTerm_eq_zero_of_two_le π hlam h2 hprim ηp X Y V hu j e l k m ht hk)
+  convert h using 1
+  simp only [Fintype.sum_option, Fintype.sum_prod_type, Option.elim, Finset.mul_sum]
 
 end Prime
 
