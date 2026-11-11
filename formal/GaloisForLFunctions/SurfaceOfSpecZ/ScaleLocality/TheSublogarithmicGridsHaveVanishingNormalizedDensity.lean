@@ -73,7 +73,7 @@ theorem eventually_exists_sublogarithmic_calibrated_grid {R : ℝ → ℝ}
       ∃ z : Fin (k + 1) → ℂ,
         Function.Injective z ∧
         (∀ i, |(z i).re| ≤ η ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-        (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ ‖z i - z j‖) ∧
+        (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
         ∀ v : ℝ, |v| ≤ R T + 8 →
           (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re := by
   filter_upwards [eventually_sublogarithmic_grid_parameters hR hη] with T hT
@@ -103,5 +103,37 @@ theorem tendsto_sublogarithmic_grid_quadratic_mass {R : ℝ → ℝ}
       change 18433 * calibratedGridFrequency T * Real.log T / calibratedGridFrequency T ^ 2 =
         18433 * ((calibratedGridFrequency T)⁻¹ * Real.log T ^ 1)
       field_simp [hΓ.ne'] <;> ring
+
+/-- The grid uses a vanishing fraction of the allowed logarithmic local density. -/
+theorem tendsto_sublogarithmic_grid_logarithmic_density {R : ℝ → ℝ}
+    (hR0 : ∀ T, 0 ≤ R T)
+    (hR : Tendsto (fun T => R T / Real.log T) atTop (𝓝 0)) :
+    Tendsto (fun T => (calibratedGridDegree (calibratedGridFrequency T) (R T) : ℝ) /
+      (calibratedGridFrequency T * Real.log (calibratedGridFrequency T))) atTop (𝓝 0) := by
+  have hinv : Tendsto (fun T : ℝ => (Real.log T)⁻¹) atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp Real.tendsto_log_atTop
+  have hmajor : Tendsto (fun T => 8192 * (R T / Real.log T) +
+      65540 * (Real.log T)⁻¹) atTop (𝓝 0) := by
+    simpa only [mul_zero, add_zero] using (hR.const_mul 8192).add (hinv.const_mul 65540)
+  apply squeeze_zero_norm' _ hmajor
+  filter_upwards [eventually_sublogarithmic_grid_parameters hR (by norm_num : (0 : ℝ) < 1)]
+    with T hT
+  let Γ := calibratedGridFrequency T
+  have hΓ : 0 < Γ := gridFrequency_pos hT.1
+  have hΓ1 : 1 ≤ Γ := by linarith only [hT.2.1, hT.2.2.2.1]
+  have hL : 0 < Real.log T := zero_lt_one.trans_le hT.2.1
+  have hlog : Real.log Γ = Real.log T / 4 := hT.2.2.2.2.1
+  have hlog0 : 0 < Real.log Γ := by rw [hlog]; positivity
+  have hc : (calibratedGridDegree Γ (R T) : ℝ) < 2048 * Γ * (R T + 8) + 1 :=
+    Nat.ceil_lt_add_one (by positivity)
+  have hb : (calibratedGridDegree Γ (R T) : ℝ) ≤ Γ * (2048 * R T + 16385) := by
+    nlinarith only [hc, hΓ1]
+  rw [Real.norm_of_nonneg (by positivity)]
+  calc
+    _ ≤ (Γ * (2048 * R T + 16385)) / (Γ * Real.log Γ) :=
+      div_le_div_of_nonneg_right hb (by positivity)
+    _ = 8192 * (R T / Real.log T) + 65540 * (Real.log T)⁻¹ := by
+      rw [hlog]
+      field_simp [hΓ.ne', hL.ne'] <;> ring
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

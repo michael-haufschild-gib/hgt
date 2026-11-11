@@ -118,6 +118,40 @@ theorem calibrated_grid_geometry {Γ r : ℝ} (hΓ : 0 < Γ) {k : ℕ} (hk : 0 <
     rw [imaginaryInterpolationGrid_separation hΓ hk] at htri
     nlinarith only [htri, hmult, hsmall, hr]
 
+/-- Calibration preserves index separation of the ordinates themselves. -/
+theorem calibrated_grid_ordinate_separation {Γ r : ℝ} (hΓ : 0 < Γ) {k : ℕ} (hk : 0 < k)
+    (hr : 0 ≤ r) (hsmall : 8 * r ≤ Γ / k) {z : Fin (k + 1) → ℂ}
+    (hz : ∀ i, ‖z i - imaginaryInterpolationGrid Γ k i‖ ≤ r) (i j : Fin (k + 1)) :
+    |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im| := by
+  by_cases hij : i = j
+  · subst j
+    simp
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
+  have hidx := one_le_abs_fin_index_sub hij
+  have hs0 : 0 ≤ Γ / k := by positivity
+  have hmult := mul_le_mul_of_nonneg_right hidx hs0
+  have hi := (Complex.abs_im_le_norm (z i - imaginaryInterpolationGrid Γ k i)).trans (hz i)
+  have hj := (Complex.abs_im_le_norm (z j - imaginaryInterpolationGrid Γ k j)).trans (hz j)
+  simp only [Complex.sub_im] at hi hj
+  have htri : |(imaginaryInterpolationGrid Γ k i).im - (imaginaryInterpolationGrid Γ k j).im| ≤
+      2 * r + |(z i).im - (z j).im| := by
+    calc
+      _ = |((imaginaryInterpolationGrid Γ k i).im - (z i).im) +
+          ((z i).im - (z j).im) + ((z j).im - (imaginaryInterpolationGrid Γ k j).im)| := by
+        congr 1
+        ring
+      _ ≤ |(imaginaryInterpolationGrid Γ k i).im - (z i).im| +
+          |(z i).im - (z j).im| + |(z j).im - (imaginaryInterpolationGrid Γ k j).im| :=
+        (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+      _ ≤ _ := by rw [abs_sub_comm (imaginaryInterpolationGrid Γ k i).im]; linarith only [hi, hj]
+  have he : (imaginaryInterpolationGrid Γ k i).im - (imaginaryInterpolationGrid Γ k j).im =
+      (2 * Γ / k) * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) := by
+    simp only [imaginaryInterpolationGrid, Complex.mul_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.I_im, Complex.I_re, mul_one, mul_zero, add_zero]
+    ring
+  rw [he, abs_mul, abs_of_pos (by positivity : 0 < 2 * Γ / k)] at htri
+  nlinarith only [htri, hmult, hsmall, hr]
+
 /-- An explicit imaginary grid admits a positive literal exponential block after calibration. -/
 theorem exists_positive_calibrated_grid {Γ r T R : ℝ} (hΓ : 0 < Γ)
     {k : ℕ} (hk : 0 < k) (hr : 0 < r) (hT : 0 < T) (hR : 0 ≤ R)
@@ -129,7 +163,7 @@ theorem exists_positive_calibrated_grid {Γ r T R : ℝ} (hΓ : 0 < Γ)
     ∃ z : Fin (k + 1) → ℂ,
       (∀ i, ‖z i - imaginaryInterpolationGrid Γ k i‖ ≤ r) ∧ Function.Injective z ∧
       (∀ i, |(z i).re| ≤ r ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-      (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ ‖z i - z j‖) ∧
+      (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
       ∀ v : ℝ, |v| ≤ R → (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re := by
   have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
@@ -153,7 +187,7 @@ theorem exists_positive_calibrated_grid {Γ r T R : ℝ} (hΓ : 0 < Γ)
   obtain ⟨z, hz, hzi, hzne, hcal⟩ := exists_self_consistent_nodes_near_imaginary_grid hs hr hT
     (by positivity : 0 < 3 * Γ) hsmall hb hbu hbi hbsep (by simpa using hcontract) hsize'
   obtain ⟨hgeom, hsep⟩ := calibrated_grid_geometry hΓ hk hr.le hsmall hz
-  refine ⟨z, hz, hzi, hgeom, hsep, ?_⟩
+  refine ⟨z, hz, hzi, hgeom, calibrated_grid_ordinate_separation hΓ hk hr.le hsmall hz, ?_⟩
   intro v hv
   apply calibrated_exponential_block_re_ge_three_quarters hk hzi hs
     (by positivity : 0 ≤ 4 * Γ) hR (fun i => (hgeom i).2.2.2) hsep hcal _ _ hv

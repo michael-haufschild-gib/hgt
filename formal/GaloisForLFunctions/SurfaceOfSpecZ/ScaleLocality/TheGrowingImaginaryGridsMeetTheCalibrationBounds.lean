@@ -122,7 +122,7 @@ theorem exists_positive_growing_calibrated_grid {Γ L R η T : ℝ}
     ∃ z : Fin (k + 1) → ℂ,
       Function.Injective z ∧
       (∀ i, |(z i).re| ≤ η ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-      (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ ‖z i - z j‖) ∧
+      (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
       ∀ v : ℝ, |v| ≤ R + 8 →
         (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re := by
   dsimp only

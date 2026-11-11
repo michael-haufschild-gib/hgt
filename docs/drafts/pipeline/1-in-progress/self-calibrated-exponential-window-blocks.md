@@ -44,7 +44,7 @@ blocks have an exponential deficit; later blocks have summable spline tails.
 
 ## Lean status and gaps
 
-Seven full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
+Eight full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -55,4 +55,6 @@ Seven full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheGrowingImaginaryGridsMeetTheCalibrationBounds`: explicit grid size, contraction and window bounds when `20000 log T≤T^(1/4)`.
 
-Growing-grid limits, spline transfer and the full configuration remain unproved.
+- `TheSublogarithmicGridsHaveVanishingNormalizedDensity`: eventual blocks, vanishing quadratic mass and logarithmic local density.
+
+Spline transfer and the full configuration remain unproved.
