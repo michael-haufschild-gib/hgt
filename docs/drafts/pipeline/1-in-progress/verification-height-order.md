@@ -85,4 +85,18 @@ maximum `68e^{Y}` and the poles by `sinh Y` at every height. Local version:
    `|h(τ)|² ≤ K Σ_{γ∈S}|h(γ)|² + R`, `K = exp(O(n))`.
 4. The rest of `re_W_nonneg_of_rhVerifiedThrough` is unchanged: `log log windowHeight = O(Y) = O(a^{4/3})`.
 
-Lean status: not started.
+Lean status: formalized with `Y = κ a^{4/3}`: `exists_doubleExp_windowPositive`
+(`VerifiedHeightRungs/TheVerificationHeightIsDoubleExponential`): there is `C` with RH verified through
+`exp(exp(C a^{4/3}))` ⇒ Weil positivity on `[−a, a]`, `a ≥ 1`. Chain: `SpreadNodesControlTheTransform`
+(modulated Taylor–Lagrange), `ZerosNearMostHeights` (windowed Chebyshev), `SeparatedZerosInEveryLongWindow`
+(slots: `4(m+1)` separated zeros in windows of length `10(m+1)σ ≥ 2e^{2Y}` above `t_* = e^{O(Y)}`),
+`LocalSamplingFromVerifiedZeros` (`spreadHeight`, window positivity).
+
+## Open: `O(a)` (not started)
+
+The exponent `4/3` is the gap test: a `C²` profile pays a cluster of `C log t` zeros at distance `σ` by
+`(Yσ)^{−4}/Y²`, so `Y³ ≳ σ^{−4}`; any fixed-test gap theorem with only the unit count needs `Yσ → ∞`.
+Candidate: the minorant form `D = σ²W(g, g) − W(g', g')`. Since `ĝ'(x) = −ixĝ(x)`, an on-line zero at
+distance `x` contributes `m(σ² − x²)|ĝ(x)|² ≤ 0` for `|x| ≥ σ`, so clusters only lower `D`; the symbol side
+is `(σ²‖g‖² − ‖g'‖²) log t + O(σ² + Y^{−2})` (`|μ'|` bounded), positive for `Y ≍ 1/σ`. With a smooth
+bump profile this gives `Y = O(a)`, hence `log log H = O(a)`. Paper proof not yet written.

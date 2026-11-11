@@ -309,7 +309,7 @@ theorem growing_calibrated_grid_bounds {Γ L R η T : ℝ}
   have hlog6Γ0 : 0 ≤ Real.log (6 * Γ) := Real.log_nonneg (by linarith only [hΓ1])
   have hH : |Real.log s| + |Real.log (6 * Γ)| ≤ 2 * L := by
     rw [abs_of_nonneg hlog6Γ0, hlog6Γ]
-    linarith only [habss, hlog6]
+    linarith only [habss, hlog6, hL0]
   have hMH := mul_le_mul hM hH (by positivity : 0 ≤ |Real.log s| + |Real.log (6 * Γ)|)
     (by positivity : 0 ≤ 2 * Γ ^ 2)
   have hΓsqL : 1 ≤ Γ ^ 2 * L := by
@@ -406,10 +406,11 @@ theorem eventually_sublogarithmic_grid_parameters {R : ℝ → ℝ}
   have hL0 : 0 < Real.log T := zero_lt_one.trans_le hL
   have he : T ^ (-(1 / 4 : ℝ)) = (calibratedGridFrequency T)⁻¹ :=
     Real.rpow_neg hT.le _
+  rw [he] at hp hd
   have hp' : 20000 * Real.log T / calibratedGridFrequency T ≤ 1 := by
-    simpa only [he, pow_one, div_eq_mul_inv, mul_left_comm, mul_comm, mul_assoc] using hp
+    simpa only [pow_one, div_eq_mul_inv, mul_left_comm, mul_comm, mul_assoc] using hp
   have hd' : 1 / (8 * calibratedGridFrequency T) ≤ η := by
-    simpa only [he, one_div, mul_inv_rev, mul_comm] using hd
+    simpa only [one_div, mul_inv_rev, mul_comm] using hd
   exact ⟨hT, hL, hL6, (div_le_one hΓ).mp hp', log_gridFrequency hT,
     gridFrequency_fourth hT, (div_le_one hL0).mp hratio, hd'⟩
 
@@ -475,6 +476,7 @@ theorem tendsto_sublogarithmic_grid_logarithmic_density {R : ℝ → ℝ}
   have hL : 0 < Real.log T := zero_lt_one.trans_le hT.2.1
   have hlog : Real.log Γ = Real.log T / 4 := hT.2.2.2.2.1
   have hlog0 : 0 < Real.log Γ := by rw [hlog]; positivity
+  have hRT : 0 ≤ R T := hR0 T
   have hc : (calibratedGridDegree Γ (R T) : ℝ) < 2048 * Γ * (R T + 8) + 1 :=
     Nat.ceil_lt_add_one (by positivity)
   have hb : (calibratedGridDegree Γ (R T) : ℝ) ≤ Γ * (2048 * R T + 16385) := by

@@ -44678,9 +44678,13 @@ theorem lowPrincipal_symmetric_error_bound (m : ℕ) :
     (quadraticSquareProfile W) X₀ X T hX₀ hlo hhi hT
   change ‖lowPrincipalError I J W X (X₀/T) (T*X₀) (T^4)‖ ≤ _ at hh
   apply hh.trans
-  rw [mul_assoc (divisorConstant ε hε), ← Real.mul_rpow (Nat.cast_nonneg _) (by positivity : 0 ≤ N*N)]
   have hd := (divisorConstant_pos ε hε).le
-  gcongr
+  have hp := Real.rpow_le_rpow (Nat.cast_nonneg _) hn hε.le
+  rw [Real.mul_rpow (Nat.cast_nonneg _) (by positivity : 0 ≤ N*N)] at hp
+  have hc : divisorConstant ε hε * (Ideal.absNorm (quadraticMaskIdeal (I.val * J.val)) : ℝ)^ε ≤
+      divisorConstant ε hε * (Ideal.absNorm (quadraticMaskIdeal 1) : ℝ)^ε * (N*N)^ε := by
+    simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hp hd
+  exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hc (by positivity)) (by positivity)
 
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
 
@@ -44702,6 +44706,7 @@ def lowPrincipalErrorSum (rows : m → QuadraticIdeal) (cols : n → QuadraticId
 
 theorem lowPrincipal_actual_error_sum_bound (l : ℕ) :
     ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {m n : Type*} [Fintype m] [Fintype n],
       ∀ (ε : ℝ) (hε : 0 < ε) (B N M T : ℝ),
         1 ≤ B → 1 ≤ N → 0 < M → 4 ≤ T →
         ∀ (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal),
@@ -44716,7 +44721,7 @@ theorem lowPrincipal_actual_error_sum_bound (l : ℕ) :
               ∑ j, ‖a j‖ ^ 2 := by
   obtain ⟨s, C, hC, hb⟩ := lowPrincipal_symmetric_error_bound l
   refine ⟨s, C, hC, ?_⟩
-  intro ε hε B N M T hB hN hM hT rows cols hr hc hrows hcols a W
+  intro m n _ _ ε hε B N M T hB hN hM hT rows cols hr hc hrows hcols a W
   let E := (divisorConstant ε hε * (Ideal.absNorm (quadraticMaskIdeal 1) : ℝ) ^ ε * (N * N) ^ ε) *
     (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) (quadraticSquareProfile W)) / T ^ l
   let error : m → n → n → ℂ := fun i j k =>
@@ -44818,9 +44823,9 @@ def unrestrictedDualPrincipalErrorSum (rows : m → Ideal O) (cols : n → Quadr
         ((N * Real.sqrt (F / (M * (Ideal.absNorm (rows i) : ℝ)))) / T)
         (T * (N * Real.sqrt (F / (M * (Ideal.absNorm (rows i) : ℝ))))) (T ^ 4))
 
-omit [DecidableEq m] [DecidableEq n] in
 theorem unrestrictedDualPrincipal_actual_error_sum_bound (l : ℕ) :
     ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {m n : Type} [Fintype m] [Fintype n],
       ∀ (ε : ℝ) (hε : 0 < ε) (B N M F T : ℝ),
         1 ≤ B → 1 ≤ N → 0 < M → 0 < F → 4 ≤ T →
         ∀ (rows : m → Ideal O) (cols : n → QuadraticIdeal),
@@ -44835,7 +44840,7 @@ theorem unrestrictedDualPrincipal_actual_error_sum_bound (l : ℕ) :
               ∑ j, ‖a j‖ ^ 2 := by
   obtain ⟨s, C, hC, hb⟩ := primeSupport_truncation_error_bound l
   refine ⟨s, C, hC, ?_⟩
-  intro ε hε B N M F T hB hN hM hF hT rows cols hr hc hrows hcols a W
+  intro m n _ _ ε hε B N M F T hB hN hM hF hT rows cols hr hc hrows hcols a W
   let E₀ := (divisorConstant ε hε * (N * N) ^ ε) *
     (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / T ^ l
   let error : m → n → n → ℂ := fun i j k =>
@@ -44881,6 +44886,12 @@ end SchwartzPlanePoisson.CanonicalQuadraticSieve
 namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
 open Eisenstein MeasureTheory TruncatedPrincipalPoisson
 open scoped SchwartzMap
+
+theorem sum_two_finite_subtypes {α β A : Type*} [AddCommMonoid A]
+    (S : Finset α) (T : Finset β) (f : α → β → A) :
+    (∑ a : S, ∑ b : T, f a.val b.val) = ∑ a ∈ S, ∑ b ∈ T, f a b := by
+  rw [Finset.sum_coe_sort S (fun a => ∑ b : T, f a b.val)]
+  exact Finset.sum_congr rfl (fun a _ => Finset.sum_coe_sort T (f a))
 
 theorem finite_middle_triangle
     {m n p H D : Type*} [Fintype m] [Fintype n] [Fintype p] [Fintype H] [Fintype D]
@@ -45076,7 +45087,7 @@ theorem original_truncated_pair_expansion
             originalTerm rows left right a b 1 1 i j k * originalPrincipalKernel W rows M h.val d.val i
           else 0 else 0) := by
   classical
-  rw [sum_two_subtype_pools (rowNormDisk ⌊lengthScale⌋₊) K (fun h d =>
+  rw [sum_two_finite_subtypes (rowNormDisk ⌊lengthScale⌋₊) K (fun h d =>
     (UniqueFactorizationMonoid.moebius d : ℂ) *
       (if Y i < (Ideal.absNorm d : ℝ) ∧ (Ideal.absNorm d : ℝ) ≤ Z i then
         if d ∣ (left j).val * (right k).val then
@@ -45267,7 +45278,7 @@ theorem dual_truncated_pair_expansion
               dualPrincipalKernel W rows left right M F h.val d.val i j k
           else 0 else 0) := by
   classical
-  rw [sum_two_subtype_pools (rowNormDisk ⌊lengthScale⌋₊) K (fun h d =>
+  rw [sum_two_finite_subtypes (rowNormDisk ⌊lengthScale⌋₊) K (fun h d =>
     (UniqueFactorizationMonoid.moebius d : ℂ) *
       (if Y i < (Ideal.absNorm d : ℝ) ∧ (Ideal.absNorm d : ℝ) ≤ Z i then
         if d ∣ (left j).val * (right k).val then
@@ -45781,6 +45792,768 @@ theorem HasSieveExponent.original_masked_truncated_middle {α : ℝ} (hexp : Has
       exact (mul_le_of_le_one_left (norm_nonneg _)
         (norm_ideal_moebius_le_one q)).trans (hqbound q hq)
     _ = _ := by simp only [Finset.sum_const, nsmul_eq_mul, V]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace TruncatedPrincipalPoisson
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped SchwartzMap
+
+/-- Removing the zero lattice point gives principal truncation for every conductor pair. -/
+theorem quadraticDualPrincipalIdeal_truncated_all_conductors (I J : QuadraticIdeal)
+    (W : 𝓢(ℝ, ℂ)) (X Y Z L : ℝ) (hX : 0 < X) :
+    (Nat.card Oˣ : ℂ) * quadraticDualPrincipalIdeal I J W X =
+      principalTruncation (fun P : primeSupport (I.val * J.val) => P.val) Finset.univ W X Z +
+      middleTruncation (fun P : primeSupport (I.val * J.val) => P.val) Finset.univ W X Y Z L +
+      truncationError (fun P : primeSupport (I.val * J.val) => P.val) Finset.univ W X Y Z L := by
+  let P := fun P : primeSupport (I.val * J.val) => P.val
+  let f : O → ℂ := fun z => rowCoprimeMask P Finset.univ z *
+    (if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X))
+  have hm (z : O) : rowCoprimeMask P Finset.univ z =
+      primeCoprimeMask cubicIdealGenerator (primeSupport (I.val * J.val)) z := by
+    simp only [rowCoprimeMask, primeCoprimeMask, P]
+    exact Finset.prod_coe_sort (s := primeSupport (I.val * J.val))
+      (f := fun Q : Ideal O => (1 : ℂ) - if cubicIdealGenerator Q ∣ z then 1 else 0)
+  have hf : Summable f := by
+    apply Summable.of_norm
+    apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun z => ?_)
+      (actual_eisenstein_summable_norm (scaledRadialTest W X hX))
+    rw [scaledRadialTest_apply]
+    dsimp only [f]
+    by_cases hz : z = 0
+    · simp only [hz, ite_true, mul_zero, norm_zero]
+      exact norm_nonneg _
+    · rw [if_neg hz, norm_mul, hm]
+      exact mul_le_of_le_one_left (norm_nonneg _) (primeCoprimeMask_norm_le_one _ _ _)
+  have h0 : f 0 = 0 := by simp only [f, ite_true, mul_zero]
+  have hu (u : Oˣ) (z : O) : f ((u : O) * z) = f z := by
+    dsimp only [f]
+    rw [hm, hm, primeCoprimeMask_unit_mul, map_mul, norm_mul, norm_ringComplex_unit, one_mul]
+    simp only [mul_eq_zero, u.ne_zero, false_or]
+  have he := tsum_unit_invariant_ideals f hf h0 hu
+  have hd : (∑' A : NonzeroIdeal, f (cubicIdealGenerator A.val)) = quadraticDualPrincipalIdeal I J W X := by
+    unfold quadraticDualPrincipalIdeal
+    apply tsum_congr
+    intro A
+    simp only [f, hm, quadraticPair_prime_mask,
+      if_neg (cubicIdealGenerator_ne_zero A.val A.property),
+      ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator]
+  rw [hd] at he
+  have hs : principalTruncation P Finset.univ W X Z +
+      middleTruncation P Finset.univ W X Y Z L +
+      truncationError P Finset.univ W X Y Z L = ∑' z : O, f z := by
+    unfold truncationError
+    dsimp only [f]
+    ring
+  exact he.symm.trans hs.symm
+
+end TruncatedPrincipalPoisson
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson DivisorBlockCauchy
+open scoped SchwartzMap
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def unrestrictedPrincipalDensity
+    (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (R : ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, unrestrictedPairTerm rows left right a b i j k *
+    ((Real.sqrt (R/(Ideal.absNorm (rows i):ℝ)):ℝ):ℂ)*primeSupportDensity ((left j).val*(right k).val)
+
+def unrestrictedDualPrincipalTruncation (W : ℝ → ℂ)
+    (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (Z : m → ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, unrestrictedPairTerm rows left right a b i j k *
+    (((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ) *
+      principalTruncation (fun P : primeSupport ((left j).val*(right k).val) => P.val) Finset.univ W
+        (Real.sqrt (F*(Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ)/
+          (M*(Ideal.absNorm (rows i):ℝ)))) (Z i))
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem unrestrictedDualPrincipalTruncation_eq
+    (W : ℝ → ℂ) (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (Z : m → ℝ) (hM : 0 < M) (hF : 0 < F)
+    (hrows : ∀ i, rows i ≠ 0)   :
+    unrestrictedDualPrincipalTruncation W rows left right a b M F Z =
+      paperRadialFourier W 0*unrestrictedPrincipalDensity rows left right a b (M/F) -
+      paperRadialFourier W 0*unrestrictedLargePrincipalSum rows left right a b M F Z -
+      W 0*unrestrictedSmallPrincipalSum rows left right a b M F (fun d i => (Ideal.absNorm d:ℝ) ≤ Z i) := by
+  classical
+  have hpos (I : Ideal O) (hI : I ≠ 0) : 0 < (Ideal.absNorm I:ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (fun h => hI (Ideal.absNorm_eq_zero_iff.mp h))
+  have ht (i : m) (j : n) (k : p) :
+      unrestrictedPairTerm rows left right a b i j k *
+        (((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ) *
+          principalTruncation (fun P : primeSupport ((left j).val*(right k).val) => P.val) Finset.univ W
+            (Real.sqrt (F*(Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ)/
+              (M*(Ideal.absNorm (rows i):ℝ)))) (Z i)) =
+      paperRadialFourier W 0 * (unrestrictedPairTerm rows left right a b i j k *
+        ((Real.sqrt ((M/F)/(Ideal.absNorm (rows i):ℝ)):ℝ):ℂ)*primeSupportDensity ((left j).val*(right k).val)) -
+      paperRadialFourier W 0 * (unrestrictedPairTerm rows left right a b i j k *
+        ∑ d ∈ idealDivisors ((left j).val*(right k).val), if Z i < (Ideal.absNorm d:ℝ) then
+          (UniqueFactorizationMonoid.moebius d:ℂ)*
+            ((Real.sqrt ((M/F)/(Ideal.absNorm (rows i):ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0) -
+      W 0 * (unrestrictedPairTerm rows left right a b i j k *
+        ∑ d ∈ idealDivisors ((left j).val*(right k).val), if (Ideal.absNorm d:ℝ) ≤ Z i then
+          (UniqueFactorizationMonoid.moebius d:ℂ)*
+            ((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ) else 0) := by
+    by_cases hc : (left j).val ⊔ (right k).val = ⊤
+    · have hsq : Squarefree ((left j).val*(right k).val) :=
+        squarefree_mul_iff.mpr ⟨(Ideal.isCoprime_iff_sup_eq.mpr hc).isRelPrime,(left j).property.2.1,(right k).property.2.1⟩
+      rw [principalTruncation_scaled _ hsq,dual_principal_prefactor_identity M F (Ideal.absNorm (rows i))
+        (Ideal.absNorm (left j).val) (Ideal.absNorm (right k).val) hM hF
+        (hpos _ (hrows i)) (hpos _ (primaryIdealGenerator_ne_zero_ideal _ (left j).property.1)) (hpos _ (primaryIdealGenerator_ne_zero_ideal _ (right k).property.1))]
+      ring
+    · have hz : unrestrictedPairTerm rows left right a b i j k = 0 := by
+        simp only [unrestrictedPairTerm,hc,ite_false]
+      simp only [hz,zero_mul,mul_zero,sub_zero]
+  unfold unrestrictedDualPrincipalTruncation
+  simp_rw [ht]
+  simp only [unrestrictedPrincipalDensity,unrestrictedLargePrincipalSum,unrestrictedSmallPrincipalSum,
+    Finset.sum_sub_distrib,Finset.mul_sum]
+
+def retainedDualPrincipalSum (W : 𝓢(ℝ,ℂ))
+    (rows : m → Ideal O) (cols : n → QuadraticIdeal) (a : n → ℂ) (M F : ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, unrestrictedPairTerm rows cols cols a a i j k *
+    (((M/(Real.sqrt ((Ideal.absNorm (cols j).val:ℝ)*(Ideal.absNorm (cols k).val:ℝ))*F):ℝ):ℂ) *
+      quadraticDualPrincipalIdeal (cols j) (cols k) W
+        (Real.sqrt (F*(Ideal.absNorm (cols j).val:ℝ)*(Ideal.absNorm (cols k).val:ℝ)/
+          (M*(Ideal.absNorm (rows i):ℝ)))))
+
+omit [DecidableEq m] [DecidableEq n] in
+theorem retainedDualPrincipalSum_symmetric_truncation
+    (W : 𝓢(ℝ,ℂ)) (rows : m → Ideal O) (cols : n → QuadraticIdeal) (a : n → ℂ)
+    (M F N T : ℝ) (hM : 0<M) (hF : 0<F)
+    (hrows : ∀ i, rows i ≠ 0)  :
+    (Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W rows cols a M F =
+      unrestrictedDualPrincipalTruncation W rows cols cols a a M F
+        (fun i => T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i):ℝ))))) +
+      unrestrictedDualTruncatedMiddle W rows cols cols a a M F
+        (fun i => (N*Real.sqrt (F/(M*(Ideal.absNorm (rows i):ℝ))))/T)
+        (fun i => T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i):ℝ))))) (T^4) +
+      unrestrictedDualPrincipalErrorSum rows cols a W M F N T := by
+  have hpos (I : Ideal O) (hI : I ≠ 0) : 0 < (Ideal.absNorm I:ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (fun h => hI (Ideal.absNorm_eq_zero_iff.mp h))
+  unfold retainedDualPrincipalSum unrestrictedDualPrincipalTruncation
+    unrestrictedDualTruncatedMiddle unrestrictedDualPrincipalErrorSum
+  simp only [Finset.mul_sum,←Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro k _
+  have hi := hpos _ (hrows i)
+  have hj := hpos _ (primaryIdealGenerator_ne_zero_ideal _ (cols j).property.1)
+  have hk := hpos _ (primaryIdealGenerator_ne_zero_ideal _ (cols k).property.1)
+  have hX : 0 < Real.sqrt
+      (F*(Ideal.absNorm (cols j).val:ℝ)*(Ideal.absNorm (cols k).val:ℝ)/(M*(Ideal.absNorm (rows i):ℝ))) :=
+    Real.sqrt_pos.mpr (by positivity)
+  have htr := quadraticDualPrincipalIdeal_truncated_all_conductors (cols j) (cols k) W
+    (Real.sqrt (F*(Ideal.absNorm (cols j).val:ℝ)*(Ideal.absNorm (cols k).val:ℝ)/
+      (M*(Ideal.absNorm (rows i):ℝ))))
+    ((N*Real.sqrt (F/(M*(Ideal.absNorm (rows i):ℝ))))/T)
+    (T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i):ℝ))))) (T^4) hX
+  calc
+      _ = unrestrictedPairTerm rows cols cols a a i j k *
+          (((M/(Real.sqrt ((Ideal.absNorm (cols j).val:ℝ)*(Ideal.absNorm (cols k).val:ℝ))*F):ℝ):ℂ) *
+            ((Nat.card Oˣ : ℂ) * quadraticDualPrincipalIdeal (cols j) (cols k) W
+              (Real.sqrt (F*(Ideal.absNorm (cols j).val:ℝ)*(Ideal.absNorm (cols k).val:ℝ)/
+                (M*(Ideal.absNorm (rows i):ℝ)))))) := by ring
+      _ = _ := by rw [htr]; ring
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson DivisorBlockCauchy
+open scoped SchwartzMap
+
+lemma norm_four_correction_terms (A B C D : ℂ) :
+    ‖-A-B+C+D‖ ≤ ‖A‖+‖B‖+‖C‖+‖D‖ := by
+  have hab := norm_sub_le (-A) B
+  have habc := norm_add_le (-A-B) C
+  have habcd := norm_add_le (-A-B+C) D
+  simp only [norm_neg] at hab
+  linarith
+
+theorem retained_dual_principal_difference (l : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ), 0<C ∧
+      ∀ {m n : Type} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+        {α : ℝ} (hexp : HasSieveExponent α), 1/2 ≤ α →
+      ∀ (deltaLoss : ℝ) (hδ : 0<deltaLoss) (ε : ℝ) (hε : 0<ε) (B N M F T : ℝ),
+        1≤B → 1≤N → 0<M → 0<F → 4≤T →
+      ∀ (rows : m → {I : Ideal O // Squarefree I}) (cols : n → QuadraticIdeal),
+        Function.Injective rows → Function.Injective cols →
+        (∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B) →
+        (∀ j, N/2 ≤ (Ideal.absNorm (cols j).val:ℝ) ∧ (Ideal.absNorm (cols j).val:ℝ) ≤ N) →
+        (∀ j k, quadraticColumnRay (cols j)=quadraticColumnRay (cols k)) →
+      ∀ (a : n → ℂ) (W : 𝓢(ℝ,ℂ)),
+        ‖(Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun i => (rows i).val) cols a M F -
+          paperRadialFourier W 0*unrestrictedPrincipalDensity (fun i => (rows i).val) cols cols a a (M/F)‖ ≤
+        ‖paperRadialFourier W 0‖*(((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F (1/2) a a) +
+        ‖W 0‖*(((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F T a a) +
+        ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*dualMiddleMajorant hexp deltaLoss hδ ε hε B N M F T a a W +
+        (diagonalControl sieveCutoff)^2*B*N*((2*M/(F*N))*((divisorConstant ε hε*(N*N)^ε)*
+          (C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/T^l))*∑ j, ‖a j‖^2 := by
+  obtain ⟨s,C,hC,herr⟩ := unrestrictedDualPrincipal_actual_error_sum_bound l
+  refine ⟨s,C,hC,?_⟩
+  intro m n _ _ _ _ α hexp hα deltaLoss hδ ε hε B N M F T hB hN hM hF hT rows cols hr hc hrows hcols hray a W
+  let Z := fun i => T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val:ℝ))))
+  let Y := fun i => (N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val:ℝ))))/T
+  have hT0 : 0≤T := by linarith
+  have hmain := unrestrictedDualPrincipalTruncation_eq W (fun i => (rows i).val) cols cols a a M F Z hM hF
+    (fun i => (rows i).property.ne_zero)
+  have hsplit := retainedDualPrincipalSum_symmetric_truncation W (fun i => (rows i).val) cols a M F N T hM hF
+    (fun i => (rows i).property.ne_zero)
+  change (Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun i => (rows i).val) cols a M F =
+    unrestrictedDualPrincipalTruncation W (fun i => (rows i).val) cols cols a a M F Z +
+    unrestrictedDualTruncatedMiddle W (fun i => (rows i).val) cols cols a a M F Y Z (T^4) +
+    unrestrictedDualPrincipalErrorSum (fun i => (rows i).val) cols a W M F N T at hsplit
+  have heq : (Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun i => (rows i).val) cols a M F -
+      paperRadialFourier W 0*unrestrictedPrincipalDensity (fun i => (rows i).val) cols cols a a (M/F) =
+      -(paperRadialFourier W 0*unrestrictedLargePrincipalSum (fun i => (rows i).val) cols cols a a M F Z) -
+      (W 0*unrestrictedSmallPrincipalSum (fun i => (rows i).val) cols cols a a M F (fun d i => (Ideal.absNorm d:ℝ)≤Z i)) +
+      unrestrictedDualTruncatedMiddle W (fun i => (rows i).val) cols cols a a M F Y Z (T^4) +
+      unrestrictedDualPrincipalErrorSum (fun i => (rows i).val) cols a W M F N T := by
+    rw [hsplit,hmain]
+    ring
+  have hl := hexp.unrestricted_large_principal_sum hα deltaLoss hδ ε hε B N M F T hB hN hM hF hT
+    rows cols cols hr hc hc hrows (fun j => (hcols j).2)
+    (fun k => (hcols k).2) hray a a Z (fun _ => le_rfl)
+  have hs := hexp.unrestricted_small_principal_sum hα deltaLoss hδ ε hε B N M F T hB hN hM hF hT0
+    rows cols cols hr hc hc hrows hcols hcols hray a a (fun d i => (Ideal.absNorm d:ℝ)≤Z i)
+    (fun _ _ h => h)
+  have hm := hexp.unrestricted_dual_truncated_middle hα deltaLoss hδ ε hε B N M F T hB hN hM hF hT0
+    rows cols cols hr hc hc hrows a a W Y Z (T^4) hcols hcols hray (fun _ => le_rfl)
+  have he := herr ε hε B N M F T hB hN hM hF hT (fun i => (rows i).val) cols (Subtype.val_injective.comp hr) hc
+    (fun i => ⟨(rows i).property.ne_zero,(hrows i).2⟩) hcols a W
+  rw [heq]
+  apply (norm_four_correction_terms _ _ _ _).trans
+  rw [norm_mul,norm_mul]
+  exact add_le_add (add_le_add (add_le_add
+    (mul_le_mul_of_nonneg_left hl (norm_nonneg _))
+    (mul_le_mul_of_nonneg_left hs (norm_nonneg _))) hm) he
+
+lemma sum_ideal_subtype_dyadic {A : Type*} [AddCommMonoid A]
+    (S : Finset (Ideal O)) (K : ℝ) (f : Ideal O → A) :
+    (∑ I : S, f I.val) = ∑ j : Fin (columnDyadicLength K+1),
+      ∑ I : divisorDyadicBin S K j, f I.val := by
+  classical
+  rw [Finset.sum_coe_sort S f,sum_divisorDyadicBins S K f]
+  exact Finset.sum_congr rfl (fun j _ => (Finset.sum_coe_sort (divisorDyadicBin S K j) f).symm)
+
+def retainedDualMajorant {n : Type} [Fintype n]
+    (s : Finset (ℕ×ℕ)) (C : ℝ) (l : ℕ)
+    {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0<deltaLoss)
+    (ε : ℝ) (hε : 0<ε) (B N M F T : ℝ) (a : n → ℂ) (W : 𝓢(ℝ,ℂ)) : ℝ :=
+  ‖paperRadialFourier W 0‖*(((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F (1/2) a a) +
+  ‖W 0‖*(((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F T a a) +
+  ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*dualMiddleMajorant hexp deltaLoss hδ ε hε B N M F T a a W +
+  (diagonalControl sieveCutoff)^2*B*N*((2*M/(F*N))*((divisorConstant ε hε*(N*N)^ε)*
+    (C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/T^l))*∑ j, ‖a j‖^2
+
+lemma retainedDualMajorant_nonneg {n : Type} [Fintype n]
+    (s : Finset (ℕ×ℕ)) (C : ℝ) (hC : 0≤C) (l : ℕ)
+    {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0<deltaLoss)
+    (ε : ℝ) (hε : 0<ε) (B N M F T : ℝ) (a : n → ℂ) (W : 𝓢(ℝ,ℂ))
+    (hB : 0≤B) (hN : 0≤N) (hM : 0≤M) (hF : 0≤F) (hT : 0≤T) :
+    0≤retainedDualMajorant s C l hexp deltaLoss hδ ε hε B N M F T a W := by
+  have hs0 := smallPrincipalMajorant_nonneg hexp deltaLoss hδ ε hε B N M F (1/2) a a hB hN hM hF (by norm_num)
+  have hs1 := smallPrincipalMajorant_nonneg hexp deltaLoss hδ ε hε B N M F T a a hB hN hM hF hT
+  have hm := dualMiddleMajorant_nonneg hexp deltaLoss hδ ε hε B N M F T a a W hB hN hM hF hT
+  have hc := (divisorConstant_pos ε hε).le
+  unfold retainedDualMajorant
+  positivity
+
+lemma retainedDualMajorant_mono {n : Type} [Fintype n]
+    (s : Finset (ℕ×ℕ)) (C : ℝ) (hC : 0≤C) (l : ℕ)
+    {α : ℝ} (hexp : HasSieveExponent α) (hα : 1/2≤α) (deltaLoss : ℝ) (hδ : 0<deltaLoss)
+    (ε : ℝ) (hε : 0<ε) (B' B N M F T : ℝ) (a : n → ℂ) (W : 𝓢(ℝ,ℂ))
+    (hB' : 0≤B') (hB : B'≤B) (hN : 0≤N) (hM : 0≤M) (hF : 0≤F) (hT : 0≤T) :
+    retainedDualMajorant s C l hexp deltaLoss hδ ε hε B' N M F T a W ≤
+      retainedDualMajorant s C l hexp deltaLoss hδ ε hε B N M F T a W := by
+  have hB0 := hB'.trans hB
+  have hα0 : 0≤α-1/2 := by linarith
+  have he := divisorEnergyFactor_nonneg ε hε N a a
+  have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  have hs := (divisorConstant_pos ε hε).le
+  have hlat := nonzeroLatticeEnvelopeConstant_nonneg
+  have hW := dualMiddleDecayConstant_nonneg W
+  unfold retainedDualMajorant smallPrincipalMajorant dualMiddleMajorant
+  gcongr
+
+lemma retainedDualPrincipalDifference_dyadic {n : Type} [Fintype n] [DecidableEq n]
+    (W : 𝓢(ℝ,ℂ)) (S : Finset (Ideal O)) (K : ℝ) (cols : n → QuadraticIdeal) (a : n → ℂ) (M F : ℝ) :
+    (Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun I : S => I.val) cols a M F -
+      paperRadialFourier W 0*unrestrictedPrincipalDensity (fun I : S => I.val) cols cols a a (M/F) =
+    ∑ j : Fin (columnDyadicLength K+1),
+      ((Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun I : divisorDyadicBin S K j => I.val) cols a M F -
+        paperRadialFourier W 0*unrestrictedPrincipalDensity
+          (fun I : divisorDyadicBin S K j => I.val) cols cols a a (M/F)) := by
+  classical
+  have h := sum_ideal_subtype_dyadic (A := ℂ) S K (fun I =>
+    (Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun _ : Unit => I) cols a M F -
+      paperRadialFourier W 0*unrestrictedPrincipalDensity (fun _ : Unit => I) cols cols a a (M/F))
+  simpa only [retainedDualPrincipalSum,unrestrictedPrincipalDensity,unrestrictedPairTerm,
+    Finset.mul_sum,←Finset.sum_sub_distrib,Fintype.sum_unique] using h
+
+theorem retained_dual_principal_global (l : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ), 0<C ∧
+      ∀ {n : Type} [Fintype n] [DecidableEq n] {α : ℝ} (hexp : HasSieveExponent α), 1/2≤α →
+      ∀ (deltaLoss : ℝ) (hδ : 0<deltaLoss) (ε : ℝ) (hε : 0<ε) (K N M F T : ℝ),
+        1≤K → 1≤N → 0<M → 0<F → 4≤T →
+      ∀ (cols : n → QuadraticIdeal), Function.Injective cols →
+        (∀ j, N/2≤(Ideal.absNorm (cols j).val:ℝ) ∧ (Ideal.absNorm (cols j).val:ℝ)≤N) →
+        (∀ j k, quadraticColumnRay (cols j)=quadraticColumnRay (cols k)) →
+      ∀ (a : n → ℂ) (W : 𝓢(ℝ,ℂ)),
+        ‖(Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun I : squarefreeIdealBall K => I.val) cols a M F -
+          paperRadialFourier W 0*unrestrictedPrincipalDensity
+            (fun I : squarefreeIdealBall K => I.val) cols cols a a (M/F)‖ ≤
+        (columnDyadicLength K+1:ℕ)*retainedDualMajorant s C l hexp deltaLoss hδ ε hε (2*K) N M F T a W := by
+  obtain ⟨s,C,hC,hbound⟩ := retained_dual_principal_difference l
+  refine ⟨s,C,hC,?_⟩
+  intro n _ _ α hexp hα deltaLoss hδ ε hε K N M F T hK hN hM hF hT cols hc hcols hray a W
+  classical
+  let S := squarefreeIdealBall K
+  let R := retainedDualMajorant s C l hexp deltaLoss hδ ε hε (2*K) N M F T a W
+  have hS (I : Ideal O) (hI : I∈S) : 1≤(Ideal.absNorm I:ℝ) ∧ (Ideal.absNorm I:ℝ)≤K := by
+    have hi := mem_squarefreeIdealBall.mp hI
+    refine ⟨?_,hi.2⟩
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun h => hi.1.ne_zero (Ideal.absNorm_eq_zero_iff.mp h))
+  have hR : 0≤R := retainedDualMajorant_nonneg s C hC.le l hexp deltaLoss hδ ε hε (2*K) N M F T a W
+    (by linarith) (by linarith) hM.le hF.le (by linarith)
+  have hb (j : Fin (columnDyadicLength K+1)) :
+      ‖(Nat.card Oˣ : ℂ)*retainedDualPrincipalSum W (fun I : divisorDyadicBin S K j => I.val) cols a M F -
+        paperRadialFourier W 0*unrestrictedPrincipalDensity
+          (fun I : divisorDyadicBin S K j => I.val) cols cols a a (M/F)‖ ≤ R := by
+    by_cases hj : (divisorDyadicBin S K j).Nonempty
+    · let B := 2*divisorDyadicScale j.val
+      have hB : 1≤B := by dsimp only [B]; linarith [divisorDyadicScale_ge_one j.val]
+      have hBK : B≤2*K := by
+        dsimp only [B]
+        exact mul_le_mul_of_nonneg_left (divisorDyadicBin_scale_le S K hS j hj) (by norm_num)
+      have hrows (I : divisorDyadicBin S K j) : Squarefree I.val ∧
+          B/2≤(Ideal.absNorm I.val:ℝ) ∧ (Ideal.absNorm I.val:ℝ)≤B := by
+        have hi := divisorDyadicBin_bounds S K hS j I.val I.property
+        refine ⟨(mem_squarefreeIdealBall.mp (Finset.mem_filter.mp I.property).1).1,?_,hi.2⟩
+        dsimp only [B]
+        linarith
+      have hh := hbound hexp hα deltaLoss hδ ε hε B N M F T hB hN hM hF hT
+        (fun I : divisorDyadicBin S K j => (⟨I.val,(hrows I).1⟩ : {I : Ideal O // Squarefree I}))
+        cols (fun I J h => Subtype.ext (congrArg Subtype.val h)) hc (fun I => (hrows I).2) hcols hray a W
+      apply hh.trans
+      exact retainedDualMajorant_mono s C hC.le l hexp hα deltaLoss hδ ε hε B (2*K) N M F T a W
+        (by linarith) hBK (by linarith) hM.le hF.le (by linarith)
+    · have he := Finset.not_nonempty_iff_eq_empty.mp hj
+      have : IsEmpty (divisorDyadicBin S K j) := by
+        refine ⟨fun I => ?_⟩
+        have hi := I.property
+        simp only [he,Finset.notMem_empty] at hi
+      simpa only [retainedDualPrincipalSum,unrestrictedPrincipalDensity,Finset.univ_eq_empty,
+        Finset.sum_empty,mul_zero,sub_zero,norm_zero] using hR
+  rw [retainedDualPrincipalDifference_dyadic W (squarefreeIdealBall K) K cols a M F]
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _j : Fin (columnDyadicLength K+1), R := Finset.sum_le_sum (fun j _ => hb j)
+    _ = _ := by simp only [Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul,R]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson DivisorBlockCauchy
+open scoped SchwartzMap
+
+def sourcePrincipalScale (M : ℝ) (I : Ideal O) : ℝ := Real.sqrt (M/(Ideal.absNorm I:ℝ))
+
+variable {m n : Type} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+
+def maskedSourceDensity (G : Ideal O) (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal)
+    (a : n → ℂ) (M : ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, originalTerm rows cols cols a a 1 1 i j k *
+    ((sourcePrincipalScale M (rows i).val:ℝ):ℂ)*primeSupportDensity (G*((cols j).val*(cols k).val))
+
+def maskedPrincipalSourceSum (G : Ideal O) (W : 𝓢(ℝ,ℂ))
+    (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal) (a : n → ℂ) (M : ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, originalTerm rows cols cols a a 1 1 i j k *
+    ∑' z : O, rowCoprimeMask (fun P : primeSupport (G*((cols j).val*(cols k).val)) => P.val) Finset.univ z *
+      (if z=0 then 0 else W (‖ringComplex z‖^2/sourcePrincipalScale M (rows i).val))
+
+def maskedSourcePrincipalTruncation (G : Ideal O) (W : 𝓢(ℝ,ℂ))
+    (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal) (a : n → ℂ) (M : ℝ) (Z : m → ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, originalTerm rows cols cols a a 1 1 i j k *
+    principalTruncation (fun P : primeSupport (G*((cols j).val*(cols k).val)) => P.val) Finset.univ W
+      (sourcePrincipalScale M (rows i).val) (Z i)
+
+def maskedSourceErrorSum (G : Ideal O) (W : 𝓢(ℝ,ℂ))
+    (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal) (a : n → ℂ) (M T : ℝ) : ℂ :=
+  ∑ i, ∑ j, ∑ k, originalTerm rows cols cols a a 1 1 i j k *
+    truncationError (fun P : primeSupport (G*((cols j).val*(cols k).val)) => P.val) Finset.univ W
+      (sourcePrincipalScale M (rows i).val)
+      (sourcePrincipalScale M (rows i).val/T)
+      (T*sourcePrincipalScale M (rows i).val) (T^4)
+
+omit [DecidableEq m] [DecidableEq n] in
+theorem maskedSourcePrincipalTruncation_eq (G : Ideal O) (hG : Squarefree G)
+    (W : 𝓢(ℝ,ℂ)) (hW : W 0=0) (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal)
+    (a : n → ℂ) (M : ℝ) (Z : m → ℝ)
+     (hGc : ∀ j, IsCoprime G (cols j).val) :
+    maskedSourcePrincipalTruncation G W rows cols a M Z =
+      paperRadialFourier W 0*maskedSourceDensity G rows cols a M -
+      paperRadialFourier W 0*maskedPrincipalDivisorCorrection G rows cols cols a a M Z := by
+  classical
+  have ht (i : m) (j k : n) :
+      originalTerm rows cols cols a a 1 1 i j k *
+        principalTruncation (fun P : primeSupport (G*((cols j).val*(cols k).val)) => P.val) Finset.univ W
+          (sourcePrincipalScale M (rows i).val) (Z i) =
+      paperRadialFourier W 0*(originalTerm rows cols cols a a 1 1 i j k *
+        ((sourcePrincipalScale M (rows i).val:ℝ):ℂ)*primeSupportDensity (G*((cols j).val*(cols k).val))) -
+      paperRadialFourier W 0*(originalTerm rows cols cols a a 1 1 i j k *
+        ∑ d ∈ idealDivisors (G*((cols j).val*(cols k).val)), if Z i < (Ideal.absNorm d:ℝ) then
+          (UniqueFactorizationMonoid.moebius d:ℂ)*
+            ((sourcePrincipalScale M (rows i).val/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0) := by
+    by_cases hc : (cols j).val ⊔ (cols k).val = ⊤
+    · have hC : Squarefree ((cols j).val*(cols k).val) := squarefree_mul_iff.mpr
+        ⟨(Ideal.isCoprime_iff_sup_eq.mpr hc).isRelPrime,(cols j).property.2.1,(cols k).property.2.1⟩
+      have hprod : Squarefree (G*((cols j).val*(cols k).val)) := squarefree_mul_iff.mpr
+        ⟨((hGc j).mul_right (hGc k)).isRelPrime,hG,hC⟩
+      have hp := principalTruncation_scaled (G*((cols j).val*(cols k).val)) hprod W 1
+        (sourcePrincipalScale M (rows i).val) (Z i)
+      simp only [Complex.ofReal_one,one_mul,hW,zero_mul,sub_zero] at hp
+      rw [hp]
+      ring
+    · have hz : originalTerm rows cols cols a a 1 1 i j k=0 := by simp only [originalTerm,hc,ite_false]
+      simp only [hz,zero_mul,mul_zero,sub_zero]
+  unfold maskedSourcePrincipalTruncation
+  simp_rw [ht]
+  simp only [maskedSourceDensity,maskedPrincipalDivisorCorrection,sourcePrincipalScale,Finset.sum_sub_distrib,Finset.mul_sum]
+
+omit [DecidableEq m] [DecidableEq n] in
+theorem maskedPrincipalSourceSum_eq (G : Ideal O) (hG : Squarefree G)
+    (W : 𝓢(ℝ,ℂ)) (hW : W 0=0) (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal)
+    (a : n → ℂ) (M T : ℝ)
+     (hGc : ∀ j, IsCoprime G (cols j).val) :
+    maskedPrincipalSourceSum G W rows cols a M =
+      paperRadialFourier W 0*maskedSourceDensity G rows cols a M -
+      paperRadialFourier W 0*maskedPrincipalDivisorCorrection G rows cols cols a a M
+        (fun i => T*sourcePrincipalScale M (rows i).val) +
+      originalMaskedTruncatedMiddle G W rows cols cols a a M
+        (fun i => sourcePrincipalScale M (rows i).val/T)
+        (fun i => T*sourcePrincipalScale M (rows i).val) (T^4) +
+      maskedSourceErrorSum G W rows cols a M T := by
+  rw [←maskedSourcePrincipalTruncation_eq G hG W hW rows cols a M _ hGc]
+  unfold maskedPrincipalSourceSum maskedSourcePrincipalTruncation originalMaskedTruncatedMiddle maskedSourceErrorSum
+  simp only [←Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro k _
+  unfold truncationError sourcePrincipalScale
+  ring
+
+
+
+theorem maskedSource_error_uniform (l : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ), 0<C ∧
+      ∀ {m n : Type} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+        (ε : ℝ) (hε : 0<ε) (G : Ideal O), G≠0 →
+      ∀ (B N M T : ℝ), 1≤B → 1≤N → 0<M → 4≤T →
+      ∀ (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal),
+        Function.Injective rows → Function.Injective cols →
+        (∀ i, (Ideal.absNorm (rows i).val:ℝ)≤B) →
+        (∀ j, (Ideal.absNorm (cols j).val:ℝ)≤N) →
+      ∀ (a : n → ℂ) (W : 𝓢(ℝ,ℂ)),
+        ‖maskedSourceErrorSum G W rows cols a M T‖ ≤
+          (diagonalControl sieveCutoff)^2*B*N*((divisorConstant ε hε*((Ideal.absNorm G:ℝ)*(N*N))^ε)*
+            (C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/T^l)*∑ j, ‖a j‖^2 := by
+  obtain ⟨s,C,hC,hbound⟩ := primeSupport_truncation_error_bound l
+  refine ⟨s,C,hC,?_⟩
+  intro m n _ _ _ _ ε hε G hG B N M T hB hN hM hT rows cols hr hc hrows hcols a W
+  let E := (divisorConstant ε hε*((Ideal.absNorm G:ℝ)*(N*N))^ε)*
+    (C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/T^l
+  let error := fun i j k =>
+    truncationError (fun P : primeSupport (G*((cols j).val*(cols k).val)) => P.val) Finset.univ W
+      (sourcePrincipalScale M (rows i).val) (sourcePrincipalScale M (rows i).val/T)
+      (T*sourcePrincipalScale M (rows i).val) (T^4)
+  have hs := (divisorConstant_pos ε hε).le
+  have hE : 0≤E := by dsimp only [E]; positivity
+  have herr (i : m) (j k : n) : ‖error i j k‖≤E := by
+    have hi : 0<(Ideal.absNorm (rows i).val:ℝ) := by
+      exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr (primaryIdealGenerator_ne_zero_ideal _ (rows i).property.1))
+    have hX : 0<sourcePrincipalScale M (rows i).val := Real.sqrt_pos.mpr (div_pos hM hi)
+    have h := hbound ε hε (G*((cols j).val*(cols k).val))
+      (mul_ne_zero hG (mul_ne_zero (primaryIdealGenerator_ne_zero_ideal _ (cols j).property.1) (primaryIdealGenerator_ne_zero_ideal _ (cols k).property.1))) W
+      (sourcePrincipalScale M (rows i).val) (sourcePrincipalScale M (rows i).val) T hX
+      (by linarith) (by linarith) hT
+    simp only [map_mul,Nat.cast_mul] at h
+    apply h.trans
+    dsimp only [E]
+    gcongr
+    · exact hcols j
+    · exact hcols k
+  exact original_pair_error_ideal_bound rows cols hr hc B N hB hN hrows hcols a E hE error herr
+
+
+def sourcePrincipalMajorant {n : Type} [Fintype n]
+    (s : Finset (ℕ×ℕ)) (C : ℝ) (l : ℕ)
+    {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0<deltaLoss)
+    (ε : ℝ) (hε : 0<ε) (G : Ideal O) (B N M T : ℝ) (a : n → ℂ) (W : 𝓢(ℝ,ℂ)) : ℝ :=
+  ‖paperRadialFourier W 0‖*((idealDivisors G).card *
+    (((columnDyadicLength N+1:ℕ):ℝ)^2 *
+      (2*divisorEnergyFactor ε hε N a a*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+        (4*N/T+Real.sqrt M*B^(α-1/2))))) +
+  (idealDivisors G).card * (((columnDyadicLength N+1:ℕ):ℝ)^2 *
+    ((2*nonzeroLatticeEnvelopeConstant*originalMiddleDecayConstant W)*
+      divisorEnergyFactor ε hε N a a*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+        (N+(2*T)*Real.sqrt M*B^(α-1/2)))) +
+  (diagonalControl sieveCutoff)^2*B*N*((divisorConstant ε hε*((Ideal.absNorm G:ℝ)*(N*N))^ε)*
+    (C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/T^l)*∑ j, ‖a j‖^2
+
+theorem masked_source_principal_difference (l : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ), 0<C ∧
+      ∀ {m n : Type} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+        {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0<deltaLoss) (ε : ℝ) (hε : 0<ε)
+        (G : Ideal O), Squarefree G →
+      ∀ (B N M T : ℝ), 1≤B → 1≤N → 0<M → 4≤T →
+      ∀ (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal),
+        Function.Injective rows → Function.Injective cols →
+        (∀ i, B/2≤(Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ)≤B) →
+        (∀ j, (Ideal.absNorm (cols j).val:ℝ)≤N) →
+        (∀ j, IsCoprime G (cols j).val) →
+      ∀ (a : n → ℂ) (W : 𝓢(ℝ,ℂ)), W 0=0 →
+        ‖maskedPrincipalSourceSum G W rows cols a M -
+          paperRadialFourier W 0*maskedSourceDensity G rows cols a M‖ ≤
+        sourcePrincipalMajorant s C l hexp deltaLoss hδ ε hε G B N M T a W := by
+  obtain ⟨s,C,hC,herr⟩ := maskedSource_error_uniform l
+  refine ⟨s,C,hC,?_⟩
+  intro m n _ _ _ _ α hexp deltaLoss hδ ε hε G hG B N M T hB hN hM hT rows cols hr hc hrows hcols hGc a W hW
+  let Z := fun i => T*sourcePrincipalScale M (rows i).val
+  let Y := fun i => sourcePrincipalScale M (rows i).val/T
+  have hT0 : 0≤T := by linarith
+  have hsplit := maskedPrincipalSourceSum_eq G hG W hW rows cols a M T hGc
+  change maskedPrincipalSourceSum G W rows cols a M =
+    paperRadialFourier W 0*maskedSourceDensity G rows cols a M -
+    paperRadialFourier W 0*maskedPrincipalDivisorCorrection G rows cols cols a a M Z +
+    originalMaskedTruncatedMiddle G W rows cols cols a a M Y Z (T^4) +
+    maskedSourceErrorSum G W rows cols a M T at hsplit
+  have heq : maskedPrincipalSourceSum G W rows cols a M -
+      paperRadialFourier W 0*maskedSourceDensity G rows cols a M =
+      -(paperRadialFourier W 0*maskedPrincipalDivisorCorrection G rows cols cols a a M Z) +
+      originalMaskedTruncatedMiddle G W rows cols cols a a M Y Z (T^4) +
+      maskedSourceErrorSum G W rows cols a M T := by rw [hsplit]; ring
+  have hl := hexp.masked_source_large_principal_sum deltaLoss hδ ε hε G hG.ne_zero B N M T hB hN hM (by linarith)
+    rows cols cols hr hc hc hrows hcols hcols hGc hGc a a Z (fun _ => le_rfl)
+  have hm := hexp.original_masked_truncated_middle deltaLoss hδ ε hε G hG B N M T hB hN hM hT0
+    rows cols cols hr hc hc hrows a a W Y Z (T^4) hcols hcols hGc hGc (fun _ => le_rfl)
+  have he := herr ε hε G hG.ne_zero B N M T hB hN hM hT rows cols hr hc
+    (fun i => (hrows i).2) hcols a W
+  have hn := norm_four_correction_terms
+    (paperRadialFourier W 0*maskedPrincipalDivisorCorrection G rows cols cols a a M Z) 0
+    (originalMaskedTruncatedMiddle G W rows cols cols a a M Y Z (T^4))
+    (maskedSourceErrorSum G W rows cols a M T)
+  simp only [sub_zero,norm_zero,add_zero] at hn
+  rw [heq]
+  apply hn.trans
+  rw [norm_mul]
+  exact add_le_add (add_le_add (mul_le_mul_of_nonneg_left hl (norm_nonneg _)) hm) he
+
+lemma sourcePrincipalMajorant_nonneg {n : Type} [Fintype n]
+    (s : Finset (ℕ×ℕ)) (C : ℝ) (hC : 0≤C) (l : ℕ)
+    {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0<deltaLoss)
+    (ε : ℝ) (hε : 0<ε) (G : Ideal O) (B N M T : ℝ) (a : n → ℂ) (W : 𝓢(ℝ,ℂ))
+    (hB : 0≤B) (hN : 0≤N) (_hM : 0≤M) (hT : 0≤T) :
+    0≤sourcePrincipalMajorant s C l hexp deltaLoss hδ ε hε G B N M T a W := by
+  have he := divisorEnergyFactor_nonneg ε hε N a a
+  have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  have hs := (divisorConstant_pos ε hε).le
+  have hlat := nonzeroLatticeEnvelopeConstant_nonneg
+  have hW := originalMiddleDecayConstant_nonneg W
+  unfold sourcePrincipalMajorant
+  positivity
+
+lemma sourcePrincipalMajorant_mono {n : Type} [Fintype n]
+    (s : Finset (ℕ×ℕ)) (C : ℝ) (hC : 0≤C) (l : ℕ)
+    {α : ℝ} (hexp : HasSieveExponent α) (hα : 1/2≤α) (deltaLoss : ℝ) (hδ : 0<deltaLoss)
+    (ε : ℝ) (hε : 0<ε) (G : Ideal O) (B' B N M T : ℝ) (a : n → ℂ) (W : 𝓢(ℝ,ℂ))
+    (hB' : 0≤B') (hB : B'≤B) (hN : 0≤N) (_hM : 0≤M) (hT : 0≤T) :
+    sourcePrincipalMajorant s C l hexp deltaLoss hδ ε hε G B' N M T a W ≤
+      sourcePrincipalMajorant s C l hexp deltaLoss hδ ε hε G B N M T a W := by
+  have hB0 := hB'.trans hB
+  have hα0 : 0≤α-1/2 := by linarith
+  have he := divisorEnergyFactor_nonneg ε hε N a a
+  have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  have hs := (divisorConstant_pos ε hε).le
+  have hlat := nonzeroLatticeEnvelopeConstant_nonneg
+  have hW := originalMiddleDecayConstant_nonneg W
+  unfold sourcePrincipalMajorant
+  gcongr
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson DivisorBlockCauchy
+open scoped SchwartzMap
+
+lemma maskedPrincipalSourceDifference_dyadic {n : Type} [Fintype n] [DecidableEq n]
+    (G : Ideal O) (W : 𝓢(ℝ,ℂ)) (S : Finset (Ideal O)) (hS : ∀ I ∈ S, quadraticIdealAdmissible I) (K : ℝ)
+    (cols : n → QuadraticIdeal) (a : n → ℂ) (M : ℝ) :
+    maskedPrincipalSourceSum G W (fun I : S => (⟨I.val, hS I.val I.property⟩ : QuadraticIdeal)) cols a M -
+      paperRadialFourier W 0*maskedSourceDensity G (fun I : S => (⟨I.val, hS I.val I.property⟩ : QuadraticIdeal)) cols a M =
+    ∑ j : Fin (columnDyadicLength K+1),
+      (maskedPrincipalSourceSum G W (fun I : divisorDyadicBin S K j => (⟨I.val, hS I.val (Finset.mem_filter.mp I.property).1⟩ : QuadraticIdeal)) cols a M -
+        paperRadialFourier W 0*maskedSourceDensity G (fun I : divisorDyadicBin S K j => (⟨I.val, hS I.val (Finset.mem_filter.mp I.property).1⟩ : QuadraticIdeal)) cols a M) := by
+  classical
+  let term (I : Ideal O) (j k : n) : ℂ :=
+    if (cols j).val ⊔ (cols k).val = ⊤ then
+      star (canonicalQuadraticRow (cols j) (primaryIdealGenerator I) * a j) *
+        (canonicalQuadraticRow (cols k) (primaryIdealGenerator I) * a k) else 0
+  have h := sum_ideal_subtype_dyadic (A := ℂ) S K (fun I =>
+    (∑ j, ∑ k, term I j k * ∑' z : O,
+      rowCoprimeMask (fun P : primeSupport (G*((cols j).val*(cols k).val)) => P.val) Finset.univ z *
+        (if z=0 then 0 else W (‖ringComplex z‖^2/sourcePrincipalScale M I))) -
+    paperRadialFourier W 0 * ∑ j, ∑ k, term I j k *
+      ((sourcePrincipalScale M I : ℝ) : ℂ) * primeSupportDensity (G*((cols j).val*(cols k).val)))
+  simpa only [maskedPrincipalSourceSum, maskedSourceDensity, originalTerm, term,
+    one_dvd, ite_true, Finset.mul_sum, ← Finset.sum_sub_distrib] using h
+
+theorem masked_source_principal_global (l : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ), 0<C ∧
+      ∀ {n : Type} [Fintype n] [DecidableEq n] {α : ℝ} (hexp : HasSieveExponent α), 1/2≤α →
+      ∀ (deltaLoss : ℝ) (hδ : 0<deltaLoss) (ε : ℝ) (hε : 0<ε) (G : Ideal O), Squarefree G →
+      ∀ (K N M T : ℝ), 1≤K → 1≤N → 0<M → 4≤T →
+      ∀ (S : Finset (Ideal O)) (hS : ∀ I∈S, quadraticIdealAdmissible I ∧ (Ideal.absNorm I:ℝ)≤K),
+      ∀ (cols : n → QuadraticIdeal), Function.Injective cols →
+        (∀ j, (Ideal.absNorm (cols j).val:ℝ)≤N) →
+        (∀ j, IsCoprime G (cols j).val) →
+      ∀ (a : n → ℂ) (W : 𝓢(ℝ,ℂ)), W 0=0 →
+        ‖maskedPrincipalSourceSum G W (fun I : S => (⟨I.val, (hS I.val I.property).1⟩ : QuadraticIdeal)) cols a M -
+          paperRadialFourier W 0*maskedSourceDensity G (fun I : S => (⟨I.val, (hS I.val I.property).1⟩ : QuadraticIdeal)) cols a M‖ ≤
+        (columnDyadicLength K+1:ℕ)*sourcePrincipalMajorant s C l hexp deltaLoss hδ ε hε G (2*K) N M T a W := by
+  obtain ⟨s,C,hC,hbound⟩ := masked_source_principal_difference l
+  refine ⟨s,C,hC,?_⟩
+  intro n _ _ α hexp hα deltaLoss hδ ε hε G hG K N M T hK hN hM hT S hS cols hc hcols hGc a W hW
+  classical
+  let R := sourcePrincipalMajorant s C l hexp deltaLoss hδ ε hε G (2*K) N M T a W
+  have hSnorm (I : Ideal O) (hI : I∈S) : 1≤(Ideal.absNorm I:ℝ) ∧ (Ideal.absNorm I:ℝ)≤K := by
+    have hi := hS I hI
+    refine ⟨?_,hi.2⟩
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr (primaryIdealGenerator_ne_zero_ideal _ hi.1.1))
+  have hR : 0≤R := sourcePrincipalMajorant_nonneg s C hC.le l hexp deltaLoss hδ ε hε G (2*K) N M T a W
+    (by linarith) (by linarith) hM.le (by linarith)
+  have hb (j : Fin (columnDyadicLength K+1)) :
+      ‖maskedPrincipalSourceSum G W (fun I : divisorDyadicBin S K j => (⟨I.val, (hS I.val (Finset.mem_filter.mp I.property).1).1⟩ : QuadraticIdeal)) cols a M -
+        paperRadialFourier W 0*maskedSourceDensity G (fun I : divisorDyadicBin S K j => (⟨I.val, (hS I.val (Finset.mem_filter.mp I.property).1).1⟩ : QuadraticIdeal)) cols a M‖ ≤ R := by
+    by_cases hj : (divisorDyadicBin S K j).Nonempty
+    · let B := 2*divisorDyadicScale j.val
+      have hB : 1≤B := by dsimp only [B]; linarith [divisorDyadicScale_ge_one j.val]
+      have hBK : B≤2*K := by
+        dsimp only [B]
+        exact mul_le_mul_of_nonneg_left (divisorDyadicBin_scale_le S K hSnorm j hj) (by norm_num)
+      have hrows (I : divisorDyadicBin S K j) : quadraticIdealAdmissible I.val ∧
+          B/2≤(Ideal.absNorm I.val:ℝ) ∧ (Ideal.absNorm I.val:ℝ)≤B := by
+        have hi := divisorDyadicBin_bounds S K hSnorm j I.val I.property
+        refine ⟨(hS I.val (Finset.mem_filter.mp I.property).1).1,?_,hi.2⟩
+        dsimp only [B]
+        linarith
+      have hh := hbound hexp deltaLoss hδ ε hε G hG B N M T hB hN hM hT
+        (fun I : divisorDyadicBin S K j => (⟨I.val, (hS I.val (Finset.mem_filter.mp I.property).1).1⟩ : QuadraticIdeal)) cols (fun I J h => Subtype.ext (congrArg Subtype.val h)) hc (fun I => (hrows I).2) hcols hGc a W hW
+      apply hh.trans
+      exact sourcePrincipalMajorant_mono s C hC.le l hexp hα deltaLoss hδ ε hε G B (2*K) N M T a W
+        (by linarith) hBK (by linarith) hM.le (by linarith)
+    · have he := Finset.not_nonempty_iff_eq_empty.mp hj
+      have : IsEmpty (divisorDyadicBin S K j) := by
+        refine ⟨fun I => ?_⟩
+        have hi := I.property
+        simp only [he,Finset.notMem_empty] at hi
+      simpa only [maskedPrincipalSourceSum,maskedSourceDensity,Finset.univ_eq_empty,
+        Finset.sum_empty,mul_zero,sub_zero,norm_zero] using hR
+  rw [maskedPrincipalSourceDifference_dyadic G W S (fun I hI => (hS I hI).1) K cols a M]
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _j : Fin (columnDyadicLength K+1), R := Finset.sum_le_sum (fun j _ => hb j)
+    _ = _ := by simp only [Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul,R]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson UniqueFactorizationMonoid
+open scoped SchwartzMap
+
+theorem primeSupportDensity_eq_support (G : Ideal O) :
+    primeSupportDensity G = ∏ P ∈ primeSupport G, (1-(1:ℂ)/(Ideal.absNorm P:ℂ)) :=
+  Finset.prod_coe_sort (s := primeSupport G)
+    (f := fun P : Ideal O => (1-(1:ℂ)/(Ideal.absNorm P:ℂ)))
+
+lemma primeSupportDensity_factor_norm (P : Ideal O) (hP : P ≠ 0) :
+    ‖(1 : ℂ) - 1 / (Ideal.absNorm P : ℂ)‖ ≤ 1 := by
+  have hn : (1 : ℝ) ≤ Ideal.absNorm P := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hP)
+  have hp : (0 : ℝ) < Ideal.absNorm P := lt_of_lt_of_le zero_lt_one hn
+  have hi : (1 : ℝ) / Ideal.absNorm P ≤ 1 := (div_le_one hp).mpr hn
+  have he : (1 : ℂ) - 1 / (Ideal.absNorm P : ℂ) =
+      ((1 - 1 / (Ideal.absNorm P : ℝ) : ℝ) : ℂ) := by push_cast; rfl
+  rw [he, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hi)]
+  exact sub_le_self _ (by positivity)
+
+/-- Every Euler density is a contraction on column coefficients. -/
+theorem primeSupportDensity_norm_le_one (G : Ideal O) : ‖primeSupportDensity G‖ ≤ 1 := by
+  rw [primeSupportDensity_eq_support, norm_prod]
+  exact Finset.prod_le_one (fun P _ => norm_nonneg _)
+    (fun P hP => primeSupportDensity_factor_norm P (support_prime hP).ne_zero)
+
+theorem primeSupportDensity_star (G : Ideal O) : star (primeSupportDensity G) = primeSupportDensity G := by
+  simp [primeSupportDensity]
+
+theorem primeSupportDensity_mul (G H : Ideal O) (hG : G ≠ 0) (hH : H ≠ 0)
+    (hcop : IsCoprime G H) : primeSupportDensity (G*H) = primeSupportDensity G*primeSupportDensity H := by
+  simp only [primeSupportDensity_eq_support,primeSupport]
+  rw [normalizedFactors_mul hG hH,Multiset.toFinset_add,Finset.prod_union]
+  apply Finset.disjoint_left.mpr
+  intro P hPG hPH
+  exact (Multiset.disjoint_left.mp (disjoint_normalizedFactors hcop.isRelPrime))
+    (Multiset.mem_toFinset.mp hPG) (Multiset.mem_toFinset.mp hPH)
+
+lemma quadraticIdealMask_generator_eq_one (I : QuadraticIdeal) (G : Ideal O)
+    (hcop : IsCoprime I.val G) : quadraticIdealMask I (cubicIdealGenerator G) = 1 := by
+  rw [quadraticIdealMask_indicator, span_cubicIdealGenerator, if_pos hcop.symm]
+
+theorem quadraticPairDensity_eq_primeSupportDensity (I J : QuadraticIdeal) (G : Ideal O)
+    (hI : IsCoprime I.val G) (hJ : IsCoprime J.val G) :
+    quadraticPairDensity I J G = primeSupportDensity G := by
+  rw [quadraticPairDensity,primeSupportDensity_eq_support]
+  apply Finset.prod_congr rfl
+  intro P hP
+  have hPG : P ∣ G := dvd_of_mem_normalizedFactors (Multiset.mem_toFinset.mp hP)
+  rw [quadraticIdealMask_generator_eq_one I P (hI.of_isCoprime_of_dvd_right hPG),
+    quadraticIdealMask_generator_eq_one J P (hJ.of_isCoprime_of_dvd_right hPG),one_mul]
+
+def densityColumn {n : Type*} (cols : n → QuadraticIdeal) (a : n → ℂ) : n → ℂ :=
+  fun j => primeSupportDensity (cols j).val * a j
+
+theorem densityColumn_norm_le {n : Type*} (cols : n → QuadraticIdeal) (a : n → ℂ)
+    (j : n) : ‖densityColumn cols a j‖ ≤ ‖a j‖ := by
+  rw [densityColumn,norm_mul]
+  exact (mul_le_mul_of_nonneg_right (primeSupportDensity_norm_le_one _) (norm_nonneg _)).trans_eq (one_mul _)
+
+theorem densityColumn_energy_le {n : Type*} [Fintype n]
+    (cols : n → QuadraticIdeal) (a : n → ℂ) :
+    (∑ j, ‖densityColumn cols a j‖^2) ≤ ∑ j, ‖a j‖^2 :=
+  Finset.sum_le_sum (fun j _ => pow_le_pow_left₀ (norm_nonneg _) (densityColumn_norm_le cols a j) 2)
 
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
 

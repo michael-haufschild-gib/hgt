@@ -218,7 +218,7 @@ theorem exists_norm_widthCenteredZeroField_add_poly_le
     (paperFT (depthCenteredCamera v zetaZeroWidth δ y) (I / 2 - t) +
       paperFT (depthCenteredCamera v zetaZeroWidth δ y) (-I / 2 - t))
     (∫ r : ℝ, paperFT (depthCenteredCamera v zetaZeroWidth δ y) r * (mu (r + t) : ℂ))).trans
-      (add_le_add_right (norm_add_le _ _) _)
+      (add_le_add (norm_add_le _ _) le_rfl)
   have hP : 0 ≤ Real.log (2 + t) / δ :=
     div_nonneg (Real.log_nonneg (by linarith only [ht])) (one_pos.le.trans hδ)
   have hgain : 0 ≤ profileMass v * Real.exp (-(zetaZeroWidth * (y - δ))) :=

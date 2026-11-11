@@ -72,7 +72,7 @@ theorem sum_widthCenteredCamera_deep_exterior_le_inv_log
     _ ≤ profileMass v * ((1 + g ^ 2) / ((c * Real.log T) ^ 2 * g ^ 2) +
         4 / ((d * a) * Real.log T) ^ 2) *
         (8 * (xiLineTwoLogDerivConstant + 2) * Real.log T) :=
-      mul_le_mul (mul_le_mul_of_nonneg_left (add_le_add_left hdecay _)
+      mul_le_mul (mul_le_mul_of_nonneg_left (add_le_add le_rfl hdecay)
         (profileMass_nonneg v)) hunit hmass0
         (mul_nonneg (profileMass_nonneg v) (by positivity))
     _ = _ := by field_simp [hc.ne', ha.ne', hd.ne', hg.ne', hL0.ne'] <;> ring
@@ -171,5 +171,33 @@ theorem eventually_exists_nu_widthCenteredZeroField_ge
   refine ⟨ν, hν1, hνN, ?_⟩
   dsimp only [B] at herr
   linarith only [hsignal, herr, htri]
+
+/-- With no exterior assumption, a bounded near-top cluster is either
+visible or has another comparably deep zero within the prescribed gap.
+Shallow zeros alone cannot hide it. -/
+theorem eventually_widthCentered_cluster_visible_or_has_deep_companion
+    {v : ℝ → ℝ} (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v u ≠ 0 → |u| ≤ 1)
+    (hv0 : ∀ u, 0 ≤ v u) (hI : 0 < ∫ u, v u)
+    {M N : ℕ} (hN : 1 ≤ N) {c A d g E : ℝ}
+    (hc : 0 < c) (hA : 0 < A) (hd : 0 < d) (hg : 0 < g) (hE : 0 ≤ E)
+    (hlag : c < ((M : ℝ) + 1) * A) :
+    ∀ᶠ T : ℝ in atTop, ∀ t : ℝ, t ∈ Ioc T (2 * T) →
+      ∀ s : Finset zetaZeroConfig.carrier, s.card ≤ N →
+      (∀ ρ ∈ s, |(ρ : ℂ).im - t| * (c * Real.log T) ≤ 1 / 10) →
+      ∀ ρ ∈ s, zetaZeroWidth - E / Real.log T ≤ (ρ : ℂ).re - 1 / 2 →
+      (∃ ν : ℕ, M + 1 ≤ ν ∧ ν ≤ M + N ∧
+        1 / 4 * (∫ u, v u) * turanConstant N M *
+          Real.exp (-(E * (((M : ℝ) + N) * A + c))) ≤
+        ‖widthCenteredZeroField v (c * Real.log T) ((ν : ℝ) * (A * Real.log T)) t‖) ∨
+      ∃ q : zetaZeroConfig.carrier, q ∉ s ∧
+        zetaZeroWidth - d ≤ (q : ℂ).re - 1 / 2 ∧ |(q : ℂ).im - t| < g := by
+  classical
+  filter_upwards [eventually_exists_nu_widthCenteredZeroField_ge hv hsupp hv0 hI
+    hN hc hA hd hg hE hlag] with T hT t ht s hcard hsec ρ hρ hnear
+  by_cases hgap : ∀ q : zetaZeroConfig.carrier, q ∉ s →
+      zetaZeroWidth - d ≤ (q : ℂ).re - 1 / 2 → g ≤ |(q : ℂ).im - t|
+  · exact Or.inl (hT t ht s hcard hsec hgap ρ hρ hnear)
+  · push_neg at hgap
+    exact Or.inr hgap
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

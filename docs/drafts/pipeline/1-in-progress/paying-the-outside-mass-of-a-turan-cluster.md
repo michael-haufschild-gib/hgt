@@ -46,9 +46,26 @@ Centering has a controlled prime cost: the mean square acquires
 The exterior-mass module is checked in Lean. The near-top Turán receiver,
 prime cost, and explicit-formula remainder are written, not yet checked.
 
+## Quantitative receiver
+
+For `δ=c log T`, `y-δ≥a log T`, and fixed positive `a,c,d,g`,
+the proposed explicit bound is `C/log T`, where
+
+`C=8 profileMass(v)(Cξ+2)[(1+g²)/(c²g²)+4/(da)²]`.
+
+It uses `exp(-x)≤4/x²`. With `h=A log T`, `c<(M+1)A`, and
+`η=E/log T`, the cluster signal stays above
+`(∫v)/4 κ(N,M) exp(-E((M+N)A+c))` for all sufficiently large T.
+`TheCenteredCameraPaysTheTuranLoss` contains the uncompiled proof.
+
+The centered explicit-formula remainder is bounded by
+`C_v exp(-b(y-δ))(1+log(2+t)/δ)` under the usual positive-support and
+polynomial-length conditions. `TheCenteredCameraRemainder` contains the
+uncompiled proof, with constants depending only on the original profile.
+
 ## Remaining
 
-Track the centered explicit-formula remainder for a density consequence.
+Check the receiver, prime cost, and remainder.
 The exterior estimate removes an analytic mass premise, but does not yet
 prove the required sector-cluster and deep-gap geometry for actual ζ.
 It therefore does not close A78 in full.

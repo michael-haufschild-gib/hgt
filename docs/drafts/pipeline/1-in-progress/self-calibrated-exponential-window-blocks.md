@@ -47,7 +47,7 @@ to zero supplies both tempering and the required future-tail weights.
 
 ## Lean status
 
-Eight modules in `SurfaceOfSpecZ/ScaleLocality/`; the first five passed Lean.
+Eight modules in `SurfaceOfSpecZ/ScaleLocality/`; the first six passed Lean.
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -58,4 +58,4 @@ Eight modules in `SurfaceOfSpecZ/ScaleLocality/`; the first five passed Lean.
 - `TheReflectedCalibratedBlocksHavePositiveWindows`: positive spline smoothing, coefficient bounds, local ordinate counts, cofinal depth bands and reflected block bounds.
 - `EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace`: sparse tower, simple tempered configuration, logarithmic counts, exact spline trace and full prescribed-radius theorem.
 
-The complete proof is drafted; the last three modules remain under verification.
+The complete proof is drafted; the last two modules remain under verification.

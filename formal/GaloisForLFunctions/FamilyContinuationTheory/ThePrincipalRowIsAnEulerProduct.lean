@@ -420,7 +420,7 @@ theorem multipliable_one_sub_inv {ι : Type*} {a : ι → ℂ} (ha : Summable fu
           rw [inv_le_comm₀ (by linarith) (by norm_num)]
           linarith
       _ = 2 * ‖a i‖ := by ring
-  simp_rw [hval]
+  rw [show (fun i => (1 - a i)⁻¹) = fun i => 1 + a i * (1 - a i)⁻¹ from funext hval]
   exact Complex.multipliable_one_add_of_summable
     ((ha.mul_left 2).of_nonneg_of_le (fun i => norm_nonneg _) hbd).of_norm
 

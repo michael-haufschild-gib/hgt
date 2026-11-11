@@ -65,7 +65,8 @@ theorem exists_nu_widthCentered_cluster_signal
     linarith only [hnear, hm]
   have hnorm (q : zetaZeroConfig.carrier) :
       ‖z q‖ = Real.exp (((q : ℂ).re - 1 / 2 - zetaZeroWidth) * h) := by
-    rw [z, norm_node_eq]
+    dsimp only [z]
+    rw [norm_node_eq]
     simp only [r, Complex.sub_re, Complex.ofReal_re]
     congr 1
     ring
@@ -129,7 +130,8 @@ theorem exists_nu_widthCentered_cluster_signal
     exact (mul_le_mul_of_nonneg_left hle (by positivity)).trans hν
   have hamp : Real.exp (-(η * (((M : ℝ) + N) * h + δ))) ≤
       Real.exp (-(η * δ)) * Z ^ ν := by
-    rw [Z, ← Real.exp_nat_mul, ← Real.exp_add]
+    dsimp only [Z]
+    rw [← Real.exp_nat_mul, ← Real.exp_add]
     apply Real.exp_le_exp.mpr
     have hn0 : 0 ≤ (ν : ℝ) * h := by positivity
     have hnN : (ν : ℝ) * h ≤ ((M : ℝ) + N) * h := by
@@ -235,7 +237,7 @@ theorem exists_nu_widthCenteredZeroField_ge_of_deep_gap
     apply h.trans
     apply mul_le_mul_of_nonneg_right _ hmass0
     apply mul_le_mul_of_nonneg_left _ (profileMass_nonneg v)
-    apply add_le_add_left
+    apply add_le_add le_rfl
     apply Real.exp_le_exp.mpr
     nlinarith only [hlow, hd])
   refine ⟨ν, hν1, hνN, ?_⟩
