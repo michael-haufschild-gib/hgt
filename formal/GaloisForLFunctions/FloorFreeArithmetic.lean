@@ -28,7 +28,9 @@ import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersAreRealizedWithTheirM
 import GaloisForLFunctions.FloorFreeArithmetic.MomentBoundsOfAllOrdersAreSupBounds
 import GaloisForLFunctions.FloorFreeArithmetic.TheOrderOfAMomentIsTheDepthItReaches
 import GaloisForLFunctions.FloorFreeArithmetic.ThePencilAtShiftOneIsNotADirichletSeries
+import GaloisForLFunctions.FloorFreeArithmetic.ReflectedHalvesAreNotDirichletSeries
 import GaloisForLFunctions.FloorFreeArithmetic.TheTangentOrdersOfMobiusAndLiouville
+import GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa
 
 /-!
 # Floor-Free Arithmetic
@@ -43,7 +45,8 @@ zeros to the critical line. It also contains the theorems that exclude a source 
 every finite datum is a top layer of a symmetric configuration, of a positive prime density and
 of an Euler product with natural norms;
 normalized translates at a finite layer have only the zero limit; the scattering tower and the
-heat flow keep the count and the clock lies below Weil's form; additive functionals of the depths are mixtures
-of inner masses; moment bounds of all orders are sup bounds; the pencil is not a Dirichlet
-series. See `FloorFreeArithmetic/README.md`.
+heat flow keep the count and the clock lies below Weil's form; additive functionals of the
+depths are mixtures of inner masses; moment bounds of all orders are sup bounds; pencils and
+the cleared Eisenstein constant term over their dominant halves are not Dirichlet series.
+See `FloorFreeArithmetic/README.md`.
 -/

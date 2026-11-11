@@ -41,13 +41,13 @@ kill or its survivor, and record what a producer must be.
 | 1 | mechanisms (ii), (iii) | positivity: for every `Θ < 1` and every finite datum a nonnegative density with Laplace transform `1/(s−1) − Σ m_j(1/(s−ρ_j)+1/(s−ρ̄_j)) + entire` (continuous primes, simple pole); Euler products: for every `½ < Θ < 1` and every finite datum natural norms `q_k ≥ 2` with `∏(1−q_k^{−s})^{−1} = Σ a_n n^{−s} = G(s)/(s−1)`, `a_n ∈ ℕ`, `G` holomorphic on `Re s > ½` vanishing exactly on the datum, linear counting; integrality gives the quantum of a multiplicity and no a priori bound below it | Lean (kill) |
 | 1 | mechanism (i) replication | bounded phase return ⇒ replication is `ArithmeticAuxiliaryDynamics.TheMissingInputOfTransport`; here: along every phase return the sup of the translates over a domain joining a zero of a finite layer to `Re s > 1` tends to infinity, a bounded normalization has `c_j → 0`, every locally uniform limit of normalized translates is `0` | Lean (kill) |
 | 2 | A128 | feasibility at an aperture ⇔ spectral kernels positive definite on intervals; tapered kernels `K_f·(φ⋆φ̃)` are positive definite on the line, hence characteristic functions of finite positive measures (corpus Bochner), and one such measure with `φ ≠ 0` gives the sign on `f`: the feasible set as positive measures, without Krein's extension theorem; a null vector makes its spectral kernel vanish on the whole interval (boundary systems); rigidity: every family of certificates converges to `Λ` | Lean |
-| 2 | A129 | pencil at shift one: `ξ(s−1)/ξ(s+1) = 2π(s−2)/(s(s+1))·ζ(s−1)/ζ(s+1)`, `σ·ratio → 2π`, so `(ξ(s+1)+ξ(s−1))/ξ(s+1)` is the L-series of no sequence (prime side not carried by `log ℕ`). General shifts, cleared Eisenstein constant term, symmetric completions: paper remark only | Lean (shift one); open (other objects) |
+| 2 | A129 | first coefficient test: `c + R` with `‖R(σ)‖ = B^{−σ}g(σ)`, `g → 0` more slowly than every exponential, is the L-series of no sequence. Pencil at every shift `h > 0`: amplitude `≍ σ^{−h}` (log-convexity of `Γ`), exact `2π(s−2)/(s(s+1))·ζ(s−1)/ζ(s+1)` at `h = 1`; cleared Eisenstein constant term at every height `Y > 0`: `B = Y²`, amplitude `≍ σ^{−1/2}`. Neither is a Dirichlet series over its dominant half. Symmetric completions; the statement on a window: not done | Lean (kill) |
 | 3 | A126 | Hurwitz transfer of bounded counts; tower `Λ(s)/Λ(s+N)` keeps the count (kill); index-`κ` realization bounds right zeros by `κ`; clock: `E_r ≤ E_s ≤ W`, negative directions of `W` are negative at every cutoff, sign or floor at one cutoff per aperture ⇒ RH (kill: no unit gap before the limit); heat flow (regulator from the good side, unitary for `t ≥ 1/8`): `N(t) ≤ 1` on times tending to `0` ⇒ RH, and `¬RH ⇒ N(t) ≥ 2` for all small `t` (with the corpus: `N(t)` = count of `Ξ` at small times) | Lean |
 | 4 | A130 | prime side of a projected pair; second-order law and converse; no convergent linear statistic is monotone (kill); heat statistic monotone exactly below `(2t)^{−1/2}`; additive functionals of the depths = mixtures of counts / inner masses (kill of the additive class) | Lean |
 | 5 | A131 | moment law on fixed windows; a `2k`-th moment bound `Ce^{AT}` on a window gives `\|2Re S\|^{2k+1} ≤ 2^{2k+1}GCe^{(A+1)T}` there (Lipschitz rate `e^{R/2}` of the trace); moments of all orders with one exponent ⇔ sup powers with one exponent ⇐ two-sided `C_ε e^{εT}` (kill: amplification on windows = RH-quality bound on some late windows; one order = a half-plane). The trivial bound has slope 1 in the order | Lean |
 | 6 | A123, A124 | floor calculus; floors: tempered class `½`, exponent-`σ` floors exactly `σ`, count laws `½`, one-length window floors admit finite strata; A124 = MPG, A123 = `RHTower.fixed_slot_boundary` | Lean + citation |
 | — | B170 | N1 for `ζ`: open, of AAL strength. Excluded as sources: identities of the explicit formula, both symmetries, positivity below `Re s = 1`, Euler products with natural norms or over the rational primes, normal families of translates | open |
-| — | B171, B117 | a form of index one with the zeros as symmetric spectrum; approximants with at most one right zero: open, of RH strength. The tower and the clock do not supply them | open |
+| — | B171, B117 | a form of index one with the zeros as symmetric spectrum; approximants with at most one right zero: open, of RH strength. The form of B171 is in the corpus: archimedean minus primes has a negative vector unconditionally and no negative plane exactly under RH (`RHTower.riemannHypothesis_iff_not_exists_negDef_markovPlane`). The tower, the clock and the heat flow do not supply the count | open |
 | — | B172 | no linear statistic; every additive functional of the depths is a mixture of inner masses. What remains is a minimality principle for `ζ` (equality case of Jensen: kind c) | answered in the additive class; remainder open |
 | — | B173 | on windows: equivalent to a two-sided bound `C_ε e^{εT}` on arbitrarily late windows; one order reaches the depth `A/2k` only | identified; open |
 | — | producer | none found | open |
@@ -115,6 +115,7 @@ kill or its survivor, and record what a producer must be.
 | `UnitGapsPassToTheLimit` | `eventually_exists_zero_near`, `card_zeros_le_of_tendstoLocallyUniformlyOn`, `riemannHypothesis_of_unit_gap_limit`, `forall_re_le_of_unit_gap_limit`, `card_rightZeros_le_of_bounded_index_limit`, `towerQuotient_unit_gap_iff` |
 | `AnIndexOneRealizationIsAUnitGap` | `card_rightZeros_le_of_realization`, `encard_rightZeros_le_of_realization`, `riemannHypothesis_of_indexOne_realization` |
 | `FeasibleSystemsArePositiveDefiniteOnIntervals` | `PositiveDefiniteOnNodes`, `sum_spectralKernel_eq_weilFullFunctional`, `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `eq_zero_of_positiveDefiniteOnNodes_of_zero`, `spectralKernel_eq_zero_of_null` |
+| `ReflectedHalvesAreNotDirichletSeries` | `not_lSeries_of_slow_amplitude`, `rpow_mul_gamma_le`, `gamma_le_rpow_mul_gamma`, `tendsto_gamma_quotient_zero`, `tendsto_exp_mul_gamma_quotient`, `norm_xi_shift_quotient`, `tendsto_shiftCoefficient`, `not_exists_lSeries_pencil_shift`, `norm_constantTerm_quotient`, `not_exists_lSeries_constantTerm` |
 | `ThePencilAtShiftOneIsNotADirichletSeries` | `xi_eq_zeta_mul_gammaR`, `xi_ne_zero_of_one_lt_re`, `xi_sub_one_div_xi_add_one`, `tendsto_mul_xi_sub_one_div_xi_add_one`, `not_exists_lSeries_pencil` |
 | `TaperedKernelsOfAFeasibleSystemAreTransformsOfPositiveMeasures` | `weilTest_self_zero`, `positiveDefiniteOnReal_mul_weilTest`, `exists_measure_charFun_eq_taperedKernel`, `re_weilFullFunctional_nonneg_of_charFun_taperedKernel` |
 | `CertificatesConvergeToThePrimes` | `exists_bound_of_aperturePositive`, `exists_re_weilFullFunctional_eq_finite`, `tendsto_weight_of_aperturePositive_seq`, `exists_aperture_forall_abs_weight_sub_le` |
@@ -130,7 +131,7 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
 `TheTopTraceDeterminesTheTopLayer`, `NonAttainmentIsALawOfConfigurations`,
 `PositivityAdmitsEveryFiniteDatum`, `QuantileDiscretizationOfAPrimeDensity`,
 `FiniteLayersInDiscreteEulerProducts`, `FiniteLayersInIntegerNormEulerProducts`,
-`FeasibleSystemsArePositiveDefiniteOnIntervals`) and for three missing dependencies
+`FeasibleSystemsArePositiveDefiniteOnIntervals`, `ThePencilAtShiftOneIsNotADirichletSeries`) and for three missing dependencies
 (`SurfaceOfSpecZ/ScaleLocality/{FiniteTopLayersNeedNoSeparation,LengthDependentFloorsGiveTheAbscissaLaw}`,
 `SelectiveArithmetic/TheFirstSelectiveWindowOfZeta`).
 
@@ -141,10 +142,15 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
   `t = 1/8` on and approaches from the good side, but unitarity at every `t > 0` is RH
   (`Λ ≤ 0`). On paper the clock at a fixed cutoff is negative on wide packets between zeros once
   the aperture is large, also under RH.
-- Prime side of pencils at a general shift, of the cleared Eisenstein constant term and of
-  symmetric completions (rest of A129).
-- Top traces of `μ`, `λ` and twisted multiplicative functions in world I (explicit formula for
-  `M(x)`); only the orders of their Dirichlet series at a zero are in Lean.
+- Prime side of symmetric completions of zero-free Dirichlet polynomials; the prime side of a
+  reflected half on a window (the first coefficient test is a statement on the whole axis).
+- Top traces of `μ`, `λ` and twisted multiplicative functions in world I on windows. In Lean:
+  the orders of their Dirichlet series; in the corpus: `M(x) ≠ o(x^Θ (log x)^{m−1})` at a zero
+  of order `m` on an attained frontier (`RHTower.not_mertens_littleO_zetaZeroAbscissa_of_le_order`)
+  — do not redo.
+- One-sided modifications of the primes are rigid in the corpus
+  (`RHTower.landau_relative_rigidity`: a new zero of `ζ·E`, `E` a positive perturbation, costs a
+  real singularity at or beyond it) — do not redo.
 - A model with an Euler product and a functional equation and a finite non-real top layer: none
   exists among discrete prime systems with the completed functional equation (corpus rigidity:
   such a system is the rational primes).
@@ -152,4 +158,4 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
 
 ## Log
 - 2026-11-10 — created; corpus survey done.
-- 2026-11-11 — 31 modules clean; README written; no producer.
+- 2026-11-11 — 32 modules clean; README written; no producer.

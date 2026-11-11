@@ -1,8 +1,8 @@
 # The Li ladder as comb forms of the Laguerre tails themselves
 
 - **ID:** agz-raw-laguerre-tails (task A82 of `docs/reports/review-1011/obstacles-summary.md`, question 5 of §2.14)
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** obstacles-summary §2.14 question 5; §2.1 A82
 - **Statement:** for every `n`, with `P_n(x) = Σ_{k<n} C(n,k+1)(−x)^k/k!` and the tail
   `c_m = P_n(log(N/m))`, `1 ≤ m ≤ N`: `𝔚_{[1,N]}(c)/N → Re 2λ_n` (`xiLiPaired n`). No damping, no
@@ -15,7 +15,7 @@
 - [x] T3 base case, archimedean part
 - [x] T4 the moments of the row are sums over the zeros (Mellin transform, Hadamard)
 - [x] T5 assembly
-- [ ] Lean
+- [x] Lean: `tendsto_combForm_laguerreTail_div`; axioms `propext`, `Classical.choice`, `Quot.sound`
 
 ## Paper proof
 
@@ -93,12 +93,28 @@ With `a_k = C(n, k+1)(−1)^k/k!`: `Σ_{k<n} a_k k! z^{−k−1} = 1 − (1 − 
 `𝔚_{[1,N]}(P_n(ℓ_N))/N = Σ_{k,l<n} a_k a_l b_N(k,l)/N → Re Σ_ρ (1 − w^n)(1 − w^{−n}) = Re Σ_ρ (2 − w^n − w^{−n}) = Re 2λ_n`.
 
 ## Lean
-Not started.
+
+Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
+
+| Step | Module | Declarations |
+|---|---|---|
+| T1 | `TheFormOfLogarithmicTailsIsDeterminedByTheRowsOfTheFlatTail` | `logTail`, `logTailForm`, `scaleStep`, `formBilin_of_subset`, `logTailForm_succ`, `tendsto_div_natCast_of_tendsto_succ_sub`, `tendsto_logTailForm_div`, `polyLogTail`, `tendsto_combForm_polyLogTail_div`, `logTailForm_zero_left` |
+| tool | `SumsOverTheDegreePointsOfATailAreRiemannSums` | `tailRiemannSum`, `RiemannOn`, `riemannOn_of_continuousOn_of_bounded`, `tailRiemannSum_le_integral`, `riemannOn_of_antitoneOn`, `riemannOn_indicator_Iic` |
+| T2 | `TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail` | `exists_abs_sub_psi_mul_log_pow_le`, `primeRemainder`, `logMajorant`, `integrableOn_logMajorant`, `sum_inv_mul_one_add_log_sq_le`, `psi_one_div_eq_sum`, `riemannOn_cut_primeProfile`, `tendsto_sum_logTail_mul_primeRemainder` |
+| T3 | `TheJetsOfTheFlatTailHaveLogarithmicMoments` | `jetRow`, `tailRow_eq`, `archRow`, `harm_sub_log_mem`, `continuousOn_logSqProfile`, `riemannOn_logPow_mul_archRow`, `abs_jetRow_sub_archRow_le`, `tendsto_sum_logTail_mul_jetRow` |
+| T4 | `TheRowOfTheFlatTailHasTheMellinTransformOfTheZeros` | `rowProfile`, `rowMoment`, `hasSum_integral_rpow_mul_psi`, `hasSum_integral_rpow_mul_neg_log`, `ofReal_integral_rpow_mul_neg_log`, `mellin_rowProfile` |
+| T4 | `TheLogarithmicMomentsOfTheRowOfTheFlatTailAreSumsOverTheZeros` | `expRem`, `abs_expRem_le`, `tailZeroSum`, `tailZeroSum_sub`, `tendsto_remIntegral_div`, `remIntegral_eq_and_rowMoment`, `rowMoment_eq_tsum` |
+| T5 | `TheLaguerreTailsOfTheCombTendToTheLiCoefficients` | `zeroMoment`, `zeroMoment_succ_succ`, `zeroMoment_comm`, `tendsto_logTailForm_div_zeroMoment`, `laguerreTail`, `sum_laguerre_zeroMoment`, `tendsto_combForm_laguerreTail_div` |
+
+Each module: `lake --old env lean`, exit 0, no output. Inputs from the corpus:
+`chebyshevPsi_sub_id_isBigO`, `logDeriv_xi_sub_eq`, `logDeriv_xi_zero`, `logDeriv_xi_eq_add`,
+`logDeriv_Gammaℝ_eq`, `hasSum_digammaSeries`, `summable_inv_sq_xiCopyOrdinate`,
+`xiZeroCopyReflectEquiv`, `tsum_inv_zero_mul_one_sub_zero_re`, `hasSum_liTerm_xiZeroCopy`;
+from the continuation: `formBilin_flatTail`, `tendsto_combForm_flatTail_div`.
 
 ## Open
-- The same limit for `m^ε`-damped tails with `Re ε < 0` is equivalent to a zero-free strip; the
-  statement at `ε = 0` is of the strength of the prime number theorem with a error term beating
-  every power of the logarithm.
+- Tails `(m/N)^{−a}`, `a > 0`: not proved. The degree point `1` has the weight `N^a` and the row
+  `N − ψ(N) + O(1)`; the majorant of T2 would need a power saving in the prime number theorem.
 
 ## Log
-- 2026-11-11 — paper proof.
+- 2026-11-11 — paper proof; formalized.

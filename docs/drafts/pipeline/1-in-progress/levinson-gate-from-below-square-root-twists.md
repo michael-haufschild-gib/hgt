@@ -30,10 +30,10 @@ Four modules in `MultiscaleMollifiedZetaField` now close derivative transfer:
   `≤ C N²(q−p+2η)(1+e²(q+η+2)²)/d` on `|z−d|≤d/2`.
   Cauchy's estimate controls every main-term jet.
 - `TheTwistedMomentErrorKeepsItsDerivatives`:
-  `exists_twistedMoment_first_two_derivative_power_saving` proves, for each
+  `exists_twistedMoment_first_three_jet_power_saving` proves, for each
   `B≥0`, some `0<a<1` and `C≥0`, eventually uniformly in
   `q∈[T,2T]`, `1/T≤d≤1/40`, `N≤T^θ`, and `|w_n|≤1`,
-  `|∂d^j(moment−Re main)|≤C T^(−B)` for `j=1,2`, with taper `η=T^a`.
+  `|∂d^j(moment−Re main)|≤C T^(−B)` for `j=0,1,2`, with one common taper `η=T^a`.
   The jets are literal real derivatives. Curvature and third derivatives
   are `O(T^10)`; steps `h=T^(−B−12)`, `k=T^(−2B−24)` transfer the
   undifferentiated error of order `T^(−4B−40)`.
@@ -71,22 +71,44 @@ those of zeta and the mollifier are complex derivatives.
    for `N≤sqrt(T)`. `TheDetectorTaperTermsAreSmall.lean` proves exact
    edge-supported derivative bounds and their actual mollified-field
    specialization; its direct Lean check passed. The linear-mollifier
-   coefficient specialization is drafted in `TheLinearDetectorHasSmallTaperError.lean`.
+   coefficient specialization `TheLinearDetectorHasSmallTaperError.lean`
+   passed its Lean check: both literal edge terms together are `O(T^(7/8))`.
+   `TheDetectorMomentErrorsAreSmall.lean` passed its direct check.
+   `exists_linearDetector_main_remainder_bound` proves that the literal
+   detector integral differs from `detectorThreeMomentMain` by at most
+   `C T^(7/8)`, uniformly for `q∈[T,2T]`, `1/T≤d≤min(r,1/40)`,
+   `1<N≤T^θ`, `0≤λ≤1`, and `λ log N≤1`, with one taper `T^a`.
+   Quadratic homogeneity supplies the residual coefficient bound two.
 3. Prove the differentiated gcd main-term limits for the chosen mollifier,
    and feed the resulting actual detector bound into the gate.
    Existing short coefficient energies omit the full analytic contribution.
 
 ## Shifted arithmetic limits
 
-Fixed log-monomial limits do not by themselves justify exponential profiles.
-A sufficient uniform estimate is `Q_N(P) ≪ ‖P‖²_{C²}/log N` for `P(0)=0`,
-where `Q_N` is the positive gcd form with coefficients
-`μ(n)P(log(N/n)/log N)`. The linear-cutoff energy has the unconditional
-bound `Q_linear(exp u) ≤ C(1+u)`; its Lean proof is drafted in
-`TheLinearSelbergEnergyIsUniformlyBounded.lean`.
+For `L=log N`, the required polynomial-profile limit is
 
-The exact representation
-`P(x)=P′(0)x+∫₀ˣ(x−v)P″(v)dv` reduces the uniform estimate to linear
-cutoffs and the positive totient diagonalization. This transfer and the
-mixed higher gcd-log moment limits remain to be formalized. Main-term
-jets must differentiate displacement with the mollifier coefficients fixed.
+`L Σ μ(h)μ(k) (hk)^(v/L) gcd(h,k)^(1+c/L)/(hk)`
+`  ·P(log(N/h)/L)P(log(N/k)/L)`
+`→ ∫₀¹ exp((c+2v)t)[P′(1−t)−vP(1−t)]² dt`.
+
+This limit and its first two parameter derivatives remain unproved here.
+For the linear detector, `P` has degree at most two. At the evaluation
+point, direct and reflected terms have `(v,c)=(u,−2u)` and `(−u,2u)`,
+where `u=dL`; both diagonal exponentials cancel. The linear-profile
+constants predicted by the limit are `1−u+u²/3` and `1+u+u²/3`.
+Main-term jets must hold mollifier coefficients fixed while differentiating.
+
+A direct route uses the bounded smoothed Möbius kernel
+`F(y)=Σ_{n≤exp y} μ(n)(y−log n)/n`, which tends to one.
+Twice-integrated finite-sum identities transfer this to power shifts
+`n^(v/L)`. The remaining arithmetic input is uniform summability of the
+shifted Euler correction: its local factor, with
+`a=p^(−1+v/L)` and `b=p^(−1+(c+2v)/L)`, is
+`1−xy(a−bx)(a−by)/((1−ax)(1−ay))`.
+
+The direct kernel step is drafted in `TheSmoothedMobiusKernelTestsDerivatives.lean`:
+for each twice continuously differentiable `f` with `f(0)=0` and fixed `u>0`,
+`L Σ_{n≤exp(Lu)} μ(n) f(u−log(n)/L)/n → f′(u)`.
+The finite identity uses `f′(0)F(Lu)+∫₀ᵘ f″(u−x)F(Lx)dx`.
+Taking `f(x)=x exp(−vx)` gives the power-shifted linear limit `1−vu`.
+Its first Lean check is pending.

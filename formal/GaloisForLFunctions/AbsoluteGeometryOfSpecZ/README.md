@@ -262,6 +262,13 @@ Each clause is a reading of theorems of §6.
     equation folds the two lines into one, and on it `E'/E` is poles, Gamma factors and a
     Dirichlet series. A conjugation makes the zeros a configuration closed under `ρ ↦ 1 − ρ̄`.
     Nothing else of the function is used, so every Hecke `L`-function is covered at once.
+23. **Raising the scale differentiates a tail.** On `[1, N]`, `log((N+1)/m) = log(N/m) + η_N`
+    with `η_N = log(1 + 1/N)`, and `log^k((N+1)/m)` vanishes at `m = N + 1` for `k ≥ 1`. So the
+    form of two logarithmic tails at scale `N + 1` is a binomial combination of the forms at
+    scale `N`, exactly; since `N η_N → 1`, its increment tends to
+    `k β(k−1, l) + l β(k, l−1)` and Cesàro gives the limit per degree point. On the zeros the
+    same recursion is `ρ + (1 − ρ) = 1`. Only the flat tail needs analysis, and it pairs through
+    its row: von Mangoldt's formula for `ψ` at the ratio `N/n`.
 
 ## 6. Pillar theorems
 
@@ -288,6 +295,10 @@ Each clause is a reading of theorems of §6.
 | | RH ⇔ Weil's form is nonnegative on the step packets of `3KR` blocks, all `K, R` | `riemannHypothesis_iff_forall_packetForm_stepPacket_nonneg` |
 | | RH ⇔ at every large scale `2 d₁ d₂ − D·D ≥ −η Σ c_n²` on all real divisors of a window | `riemannHypothesis_iff_eventually_combForm_ge` |
 | | on `[1, N]` the form is a quadratic form in the increments of the divisor, with the rows of the flat tails (the remainders of the prime number theorem) as coefficients | `combForm_Icc_eq_sum_increments` |
+| Tails | Weil's form of two logarithmic tails per degree point: `𝔚_{[1,N]}(log^k(N/·), log^l(N/·))/N → k! l! Re Σ_ρ ρ^{−k−1}(1−ρ)^{−l−1}` | `tendsto_logTailForm_div_zeroMoment` |
+| | the Li ladder: the form of the Laguerre tail `P_n(log(N/m))` per degree point tends to `Re 2λ_n`, without damping or smoothing | `tendsto_combForm_laguerreTail_div` |
+| | the row of the flat tail is `1/t − ψ(1/t) − ½ log(1−t²) − log 2π` in the coordinate `t = n/N`; its Mellin transform is `Σ_ρ 1/(ρ(s−ρ))` and its logarithmic moments are `j! Σ_ρ 1/(ρ(1−ρ)^{j+1})` | `mellin_rowProfile`, `rowMoment_eq_tsum` |
+| | the scaling recursion: the forms of all logarithmic tails are determined by their pairings with the flat tail | `logTailForm_succ`, `tendsto_logTailForm_div` |
 | Forced data | weights, constant, scale, tree lengths, exchange law | §2.4 |
 | | a reversed contact at `2` fails | `exists_packet_degreePairing_gt_of_flippedContact` |
 | The tree of `2` | on packets of length `≤ log 4` the generator is `≥ (1 − 1/√2)∫f²`; Bézout is monotone in the length, holds for long trees, and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two` |
@@ -379,13 +390,13 @@ A construction is read against twelve criteria; the pairing of the degree points
 |---|---|---|
 | 1 | Bézout from a property of the object; a height or a path | RH. Known end points of a path: long trees of `2` at length `≤ log 4`; short windows; a large conductor mass (test bench); curves. Known rigidity: weights, constant, scale and the lengths of the odd trees admit no deformation |
 | 2 | the block-constant form at every `K, R`; its limit matrices; the converse | Answered. The limit matrices are Weil's form on step packets, with elementary entries; RH ⇔ they are nonnegative for all `K, R`; RH ⇔ the inequality at every large scale up to `η Σ c_n²`. Open: the sign of any one matrix beyond the certified lengths |
-| 3 | Hecke characters, ideals as degree points, one ring that is not abelian | Answered for every number field. A primitive ray class character has Weil's explicit formula, a tempered zero configuration and the exact index; the ideals counted by norms pair with the contacts `Re Λ_ψ`; the trivial character gives the square of the ring and its Dedekind zeta function. Open: the index of each Artin character of a ring that is not abelian |
+| 3 | Hecke characters, ideals as degree points, one ring that is not abelian | Answered for every number field. A primitive ray class character has Weil's explicit formula, a tempered zero configuration and the exact index; the ideals counted by norms pair with the contacts `Re Λ_ψ`; the trivial character gives the square of the ring and its Dedekind zeta function. The ring that is not abelian: the splitting field of `X³ − 2`, with Galois group `S₃` (`exists_not_commute_cubeRootsOfTwo`, `exists_le_negIndex_cubeRootsOfTwo_iff`). Open: the index of each Artin character; it needs the `L`-function of the character of degree two with its functional equation, that is, class field theory, which the corpus does not have |
 | 4 | a count with the pairing as its limit | Closed on the object. RH iff a count with values in `ℕ` has the integer probes as Tate limit (corpus). On the object the count of residues is the split norm and the count of sections in a box is the volume over the gluing index, on any number of graphs: no quadratic term, and the contact with the sign of a condition. Open: a count on an object of dimension two |
-| 5 | the Li ladder as comb forms of tails | Answered in the continuation in damped form: every `2λ_n` is a limit of comb forms of damped, smoothly cut Laguerre tails (`exists_liCombTail_sequence`); the flat tail is the first rung. At finite scale the form of every tail is a quadratic form in its increments with the remainders of the prime number theorem as coefficients (`combForm_Icc_eq_sum_increments`). Open: the limit for the Laguerre tails themselves |
+| 5 | the Li ladder as comb forms of tails | Answered. The form of the Laguerre tail `P_n(log(N/m))`, `m ≤ N`, per degree point tends to `Re 2λ_n` for every `n` (`tendsto_combForm_laguerreTail_div`); the flat tail is the first rung. The form of any two logarithmic tails tends to the sum over the zeros of the product of their Mellin transforms at `ρ` and `1 − ρ`. The damped, smoothly cut form is in the continuation. Not proved: tails `(m/N)^{−a}`, `a > 0` |
 | 6 | a path at an odd prime, or its impossibility | Answered. The path of the price exists at every prime; the path of the tree length, with the counterterm of the product formula, exists at `2` only |
 
-**Order of work.** The limit of the Laguerre tails themselves (question 5); a count on an
-object of dimension two (question 4); the index of an Artin character (question 3).
+**Order of work.** A count on an object of dimension two (question 4); the index of an Artin
+character (question 3).
 
 **The decisive test.** A construction whose Bézout holds for an integer-norm system with an
 off-line pair, for the Liouville twist at the first rung of the conductor ladder, or for a
@@ -423,12 +434,14 @@ with a larger counterterm pass, under RH, from the supremum of their symbol on.
 | A count with quadratic growth gives the pairing | the count on two graphs is `\|x_m x_n\|`, the same for every contact, and not a quadratic form |
 | A number ring needs its own comb | counted by norms its ideals sit on the comb of the integers; the discriminant is a density, the ramification term of the genus |
 | A ring that is not abelian needs its Artin `L`-functions before it has a square | counted by norms its ideals pair with the zeros of its Dedekind zeta function; signature, discriminant and the prime ideals are all that enter |
-| A ring can satisfy the inequality while `ℤ` does not | negative squares of the square of `ℤ` are negative squares of every ring over it |
+| A ring can satisfy the inequality while `ℤ` does not | negative squares of the square of `ℤ` are negative squares of every abelian ring over it (its zeta function is `ζ` times Dirichlet `L`-functions); for a ring that is not abelian this is Dedekind's conjecture `ζ ∣ ζ_K` |
 | A tower of covers replaces the extension of constants | per degree the form of `ζ` has the weight `1/[K:ℚ]` |
 | The index of a ring is the sum of the indices of its characters | it is the number of distinct zeros; a shared zero is one negative square |
 | An integer-norm system passes on its own comb when its zeros lie on a line | the system of the squares fails: the comb gives its density, and the jets are those of the norms |
 | The sizes of the contacts can pass the trivial aperture | the systems `Λ`, `−Λ` and the Liouville twist with a conductor fail beyond it (test bench) |
 | The carries can be removed by another choice of digits | the carry is a cocycle that is not a coboundary |
+| The Li ladder is read off an analytic family in the exponent of a power tail | the Mellin transform of the row is proved on `s > 1`; `s = 1` is a boundary point, reached by the prime number theorem with error; left of it nothing is proved |
+| A tail with a jump needs an explicit formula for test functions with a jump | the scaling recursion reduces every logarithmic tail to the flat tail, whose row is explicit at finite scale |
 
 ## 11. Open problems and research topics
 
@@ -477,13 +490,18 @@ corpus a count with the integer probes as Tate limit exists iff RH.
 
 **The Li ladder (question 5).** The `n`-th tail has the Laguerre polynomial of `log(N/m)` as
 its coordinates, and its transform at a zero is `1 − (1 − 1/ρ)^n`. *Proved:* the form of the
-flat tail per degree point tends to `2 + γ − log 4π = 2λ₁`; every `2λ_n` is a limit of comb
-forms of damped, smoothly cut Laguerre tails (continuation); a divisor on `[1, N]` is a
-combination of flat tails, and its form is
-`Σ_M (c_M − c_{M+1}) Σ_{n ≤ M} (2c_n − c_M − c_{M+1}) R_M(n)` with the rows
-`R_M(n) = M/n − ψ(M/n) + …` of the flat tails. *Open:* the limit per degree point of the form of
-the Laguerre tail itself; it needs the remainder of the prime number theorem summed against
-`log^j(M/n)/(M/n)`, that is, an error term.
+Laguerre tail per degree point tends to `Re 2λ_n`, for every `n`. Three steps. (i) Raising the
+scale by one shifts `log(N/m)` by `log(1 + 1/N)` and a tail of positive degree vanishes at its
+own scale: an exact recursion in `N`, which with Cesàro summation reduces every pair of
+logarithmic tails to the pairings with the flat tail. (ii) The flat tail pairs through its row,
+the remainder of the prime number theorem at `N/n` plus the jets; against `log^j(N/n)` the row
+has a limit by the hyperbola method and the prime number theorem with error `x e^{−c√log x}`.
+(iii) The Mellin transform of the row is `Σ_ρ 1/(ρ(s − ρ))` for `s > 1`; its moments at `s = 1`,
+a boundary point, are read off with exact remainders on both sides. No explicit formula for a
+test function with a jump enters. *Not proved:* the tails `(m/N)^{−a}`, `a > 0`. There the
+degree point `1` has the weight `N^a` and the row `N − ψ(N) + O(1)`, so the method needs a power
+saving in the prime number theorem; the Mellin transform of the row is proved for `s > 1` and
+its moments at `s = 1` only.
 
 **Combs.** *Open:* the comb of the `a`-th powers for real `a > 0`; combs with a regularly
 varying density; combs without a density (the integers prime to `3`); a system with a repeated

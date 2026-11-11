@@ -178,12 +178,16 @@ theorem exists_linearDetector_main_remainder_bound {θ : ℝ}
   change |e 0 g| ≤ E ∧ |e 1 g| ≤ E ∧ |e 2 g| ≤ E at eG
   change |e 0 v| ≤ E ∧ |e 1 v| ≤ E ∧ |e 2 v| ≤ E at eH
   have hcomb : |e 1 w - e 1 g + e 1 v| ≤ 3 * E := by
-    exact ((abs_add_le _ _).trans (add_le_add_right (abs_sub _ _) _)).trans
-      (by change _ ≤ _; linarith only [eF.2.1, eG.2.1, eH.2.1])
+    exact ((abs_add_le (e 1 w - e 1 g) (e 1 v)).trans
+      (add_le_add (abs_sub (e 1 w) (e 1 g)) (le_refl |e 1 v|))).trans
+      (by linarith only [eF.2.1, eG.2.1, eH.2.1])
   have hlam2 : lam ^ 2 ≤ 1 := by nlinarith only [hlam, hlam1]
   have herrors : |e 0 v - lam / 2 * (e 1 w - e 1 g + e 1 v) + lam ^ 2 / 4 * e 2 w| ≤
       11 * E / 4 := by
-    refine ((abs_add_le _ _).trans (add_le_add_right (abs_sub _ _) _)).trans ?_
+    refine ((abs_add_le (e 0 v - lam / 2 * (e 1 w - e 1 g + e 1 v))
+      (lam ^ 2 / 4 * e 2 w)).trans
+      (add_le_add (abs_sub (e 0 v) (lam / 2 * (e 1 w - e 1 g + e 1 v)))
+        (le_refl |lam ^ 2 / 4 * e 2 w|))).trans ?_
     rw [abs_mul, abs_of_nonneg (by positivity : 0 ≤ lam / 2),
       abs_mul, abs_of_nonneg (by positivity : 0 ≤ lam ^ 2 / 4)]
     calc

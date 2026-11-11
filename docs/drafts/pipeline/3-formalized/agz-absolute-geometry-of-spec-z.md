@@ -897,6 +897,14 @@ the form of a tail is a quadratic form in its increments whose coefficients are 
 the remainders of the prime number theorem at the ratios `M/n`. The Laguerre tails of the Li
 ladder are of this kind; for the flat tail one increment remains.
 
+**G17 (the Li ladder as forms of the Laguerre tails; logarithmic tails).** For
+`ℓ_N^k(m) = log^k(N/m)` on `[1, N]`:
+`𝔚_{[1,N]}(ℓ^k, ℓ^l)/N → k! l! Re Σ_ρ ρ^{−k−1}(1−ρ)^{−l−1}`, and for
+`P_n(x) = Σ_{k<n} C(n,k+1)(−x)^k/k!`, `𝔚_{[1,N]}(P_n(ℓ_N))/N → Re 2λ_n`. Paper proof and Lean
+table: `agz-raw-laguerre-tails-li-ladder.md` (scaling recursion and Cesàro; the row of the flat
+tail by the hyperbola method and the prime number theorem with error; the Mellin transform of
+the row and its moments at the boundary point `s = 1`).
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -1054,6 +1062,12 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G14 | `AtEveryPrimeAContactPaidAtItsPriceIsAMonotonePath` |
 | G15 | `TheCountOfSectionsInABoxIsItsVolumeOverTheGluingIndex` (`card_filter_mem_alignedBox_mul_index`, `card_pairRing_box`, `mem_sectionLattice_iff`, `index_sectionLattice`, `card_sections_alignedBox`, `log_card_sections_alignedBox`) |
 | G16 | `WeilsFormOnTheCombIsAQuadraticFormInTheIncrementsOfTheDivisor` (`combForm_add_const`, `combForm_Icc_succ`, `combForm_Icc_eq_sum_increments`, `combForm_Icc_eq_sum_increments_cut`) |
+| G17 | `TheFormOfLogarithmicTailsIsDeterminedByTheRowsOfTheFlatTail`, `SumsOverTheDegreePointsOfATailAreRiemannSums`, `TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail`, `TheJetsOfTheFlatTailHaveLogarithmicMoments`, `TheRowOfTheFlatTailHasTheMellinTransformOfTheZeros`, `TheLogarithmicMomentsOfTheRowOfTheFlatTailAreSumsOverTheZeros`, `TheLaguerreTailsOfTheCombTendToTheLiCoefficients` (`tendsto_logTailForm_div_zeroMoment`, `tendsto_combForm_laguerreTail_div`) |
+
+Umbrella `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ.lean`: one import per module of the
+folder (100 modules, 100 imports, none twice), all before the module docstring; the umbrella is not
+compiled. Audit of a module: `lake --old env lean <module>`, exit 0, no output; axioms of
+`tendsto_combForm_laguerreTail_div`: `propext`, `Classical.choice`, `Quot.sound`.
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,

@@ -87,6 +87,17 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.StepPacketMassAndGroundEnergy
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsTheSignOfWeilsFormOnStepPackets
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilsFormOnTheCombIsAQuadraticFormInTheIncrementsOfTheDivisor
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.AtEveryPrimeAContactPaidAtItsPriceIsAMonotonePath
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedSmoothPacketGrams
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedBoundedPacketIndexFitsTheAperture
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PacketMassGrams
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheFormOfLogarithmicTailsIsDeterminedByTheRowsOfTheFlatTail
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.SumsOverTheDegreePointsOfATailAreRiemannSums
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheJetsOfTheFlatTailHaveLogarithmicMoments
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRowOfTheFlatTailHasTheMellinTransformOfTheZeros
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheLogarithmicMomentsOfTheRowOfTheFlatTailAreSumsOverTheZeros
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheLaguerreTailsOfTheCombTendToTheLiCoefficients
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRingOfTheCubeRootsOfTwoIsNotAbelianAndHasItsHodgeIndex
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -120,9 +131,8 @@ path of a contact paid at its price, monotone at every prime; the Hecke `L`-func
 number field with their explicit formula, the tempered configuration of their zeros and their
 Hodge index, the ideals of a number ring as degree points, and the inequality below the first
 contact for a large discriminant; the count of sections in a box as the volume over the gluing
-index; and the form on the comb in the increments of the divisor. See
-`AbsoluteGeometryOfSpecZ/README.md`.
+index; the form on the comb in the increments of the divisor; and the Li ladder as the forms
+of the Laguerre tails themselves, with the form of every pair of logarithmic tails as a sum
+over the zeros; and a ring that is not abelian, the ring of the cube roots of two, with its
+degree points and its Hodge index. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedSmoothPacketGrams
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedBoundedPacketIndexFitsTheAperture
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PacketMassGrams

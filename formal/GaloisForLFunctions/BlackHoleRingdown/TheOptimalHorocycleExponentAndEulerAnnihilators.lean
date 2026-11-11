@@ -77,7 +77,8 @@ theorem inv_zeta_poly_bound_of_zetaZeroAbscissa :
     (δ := min δ (1 / 2)) (lt_min hδ (by norm_num))
     (by linarith [min_le_right δ (1 / 2)]) one_pos d
   refine ⟨2 * Kb, 1, by positivity, fun z hz1 hz2 hzt => ?_⟩
-  have hmem : z ∈ verticalStrip (zetaZeroAbscissa + min δ (1 / 2)) d :=
+  have hmem : z ∈ GaloisForLFunctions.HTGeometry.verticalStrip
+      (zetaZeroAbscissa + min δ (1 / 2)) d :=
     ⟨by linarith [min_le_left δ (1 / 2)], hz2⟩
   have hz1' : z ≠ 1 := fun h => by rw [h] at hzt; simp at hzt; linarith
   have h := hbd z hmem
@@ -203,7 +204,9 @@ theorem ofReal_eulerIterR {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) :
       (contDiff_infty_iff_deriv.mp hsm).1 u
     have heq : eulerIter k (fun t => (φ t : ℂ)) = fun t => ((eulerIterR k φ t : ℝ) : ℂ) :=
       funext (fun t => (ofReal_eulerIterR hφ k t).symm)
-    rw [eulerIterR, eulerIter, heq, Complex.ofReal_mul, hd.hasDerivAt.ofReal_comp.deriv]
+    rw [eulerIterR, eulerIter, heq, Complex.ofReal_mul]
+    dsimp only
+    rw [hd.hasDerivAt.ofReal_comp.deriv]
 
 theorem ofReal_eulerPolyR (P : Polynomial ℝ) {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (u : ℝ) :
     ((eulerPolyR P φ u : ℝ) : ℂ) =
@@ -267,7 +270,7 @@ theorem mellin_eulerPolyR (P : Polynomial ℝ) {φ : ℝ → ℝ} (hφ : ContDif
     refine intervalIntegral.integral_congr fun u _ => ?_
     rw [ofReal_eulerPolyR P hφ u, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => by ring
-  rw [hcongr, intervalIntegral.integral_finset_sum hint]
+  rw [hcongr, intervalIntegral.integral_finsetSum hint]
   have hsum : (∑ k ∈ Finset.range (P.natDegree + 1),
         ∫ u in a..b, (P.coeff k : ℂ) * ((u : ℂ) ^ (w - 1) * eulerIter k (fun t => (φ t : ℂ)) u)) =
       (∑ k ∈ Finset.range (P.natDegree + 1), (P.coeff k : ℂ) * (-w) ^ k) *
@@ -326,7 +329,7 @@ theorem re_le_or_eval_eq_zero_of_eulerPoly_horocycle_rate {P : Polynomial ℝ} {
     rcases lt_trichotomy ρ.im 0 with hi | hi | hi
     · refine ⟨conj ρ, by rw [_root_.riemannZeta_conj, hρ, map_zero], by simp,
         by simp; linarith, ?_⟩
-      have hdiv : conj ρ / 2 = conj (ρ / 2) := by apply Complex.ext <;> simp
+      have hdiv : conj ρ / 2 = conj (ρ / 2) := by rw [map_div₀, map_ofNat]
       rw [hdiv, eval_map_real_conj]
       exact fun h0 => hPne (by simpa using congrArg conj h0)
     · exfalso
@@ -392,7 +395,8 @@ private theorem exists_root_im_bound (P : Polynomial ℝ) (hP : P ≠ 0) :
     Finset.single_le_sum (f := fun w : ℂ => |w.im|) (fun _ _ => abs_nonneg _) hmem
   have him : |(z / 2).im| = |z.im| / 2 := by
     have : (z / 2).im = z.im / 2 := by simp
-    rw [this, abs_div, abs_of_pos two_pos]
+    rw [this, abs_div]
+    norm_num
   linarith
 
 /-- **Hardy barrier (`3/4`):** no nonzero real Euler polynomial can accelerate horocycle
@@ -488,12 +492,25 @@ theorem eval_map_realPairQuad (s₀ z : ℂ) :
   simp only [Polynomial.map_add, Polynomial.map_pow, Polynomial.map_sub, Polynomial.map_X,
     Polynomial.map_C, Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_sub,
     Polynomial.eval_X, Polynomial.eval_C]
-  have hs : s₀ = (s₀.re : ℂ) + (s₀.im : ℂ) * Complex.I := (Complex.re_add_im s₀).symm
-  have hc : conj s₀ = (s₀.re : ℂ) - (s₀.im : ℂ) * Complex.I := by
-    conv_lhs => rw [hs]
-    simp [sub_eq_add_neg]
-  rw [hs, hc]
-  linear_combination -(s₀.im : ℂ) ^ 2 * Complex.I_sq
+  apply Complex.ext <;> simp [pow_two] <;> ring
+
+private theorem analyticAt_eval_poly (P : Polynomial ℝ) (z : ℂ) :
+    AnalyticAt ℂ (fun s => (P.map (algebraMap ℝ ℂ)).eval s) z := by
+  have heq : (fun s : ℂ => (P.map (algebraMap ℝ ℂ)).eval s) =
+      ∑ k ∈ Finset.range (P.natDegree + 1), fun s : ℂ => (P.coeff k : ℂ) * s ^ k := by
+    funext s
+    rw [Polynomial.eval_map, Polynomial.eval₂_eq_sum_range, Finset.sum_apply]
+    rfl
+  rw [heq]
+  exact Finset.sum_induction _ (fun g => AnalyticAt ℂ g z) (fun _ _ hf hg => hf.add hg)
+    analyticAt_const fun k _ => analyticAt_const.mul (analyticAt_id.pow k)
+
+private theorem eval_finset_prod_poly {ι : Type*} (S : Finset ι) (f : ι → Polynomial ℂ) (z : ℂ) :
+    (∏ i ∈ S, f i).eval z = ∏ i ∈ S, (f i).eval z := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => simp
+  | insert a S ha ih => rw [Finset.prod_insert ha, Polynomial.eval_mul, ih, Finset.prod_insert ha]
 
 /-- Monic real Euler polynomial annihilating every `s₀ ∈ F` to order at least `xiHalfMult s₀`. -/
 def halfZeroAnnihilator (F : Finset ℂ) : Polynomial ℝ :=
@@ -517,17 +534,13 @@ theorem exists_analytic_factor_halfZeroAnnihilator {F : Finset ℂ} {s : ℂ} (h
         (((realPairQuad s₀).map (algebraMap ℝ ℂ)).eval w) ^ xiHalfMult s₀ := by
       funext w; simp
     rw [hfn]
-    refine Finset.prod_induction _ (fun g => AnalyticAt ℂ g z)
-      (fun _ _ hf hg => hf.mul hg) analyticAt_const fun s₀ _ => ?_
-    have hev : (fun w : ℂ => ((realPairQuad s₀).map (algebraMap ℝ ℂ)).eval w) =
-        fun w : ℂ => (w - s₀) * (w - conj s₀) := funext (eval_map_realPairQuad s₀)
-    rw [hev]
-    exact (((analyticAt_id.sub analyticAt_const).mul
-      (analyticAt_id.sub analyticAt_const)).pow _)
+    exact Finset.prod_induction _ (fun g => AnalyticAt ℂ g z)
+      (fun _ _ hf hg => hf.mul hg) analyticAt_const
+      fun s₀ _ => (analyticAt_eval_poly (realPairQuad s₀) z).pow _
   · unfold halfZeroAnnihilator H
     rw [← Finset.mul_prod_erase F _ hs, Polynomial.map_mul, Polynomial.map_pow,
       Polynomial.map_prod, Polynomial.eval_mul, Polynomial.eval_pow, eval_map_realPairQuad,
-      mul_pow, Polynomial.eval_finset_prod]
+      mul_pow, eval_finset_prod_poly]
     simp only [Polynomial.map_pow, Polynomial.eval_pow]
     ring
 
@@ -535,17 +548,6 @@ theorem exists_analytic_factor_halfZeroAnnihilator {F : Finset ℂ} {s : ℂ} (h
 cancels the poles of `Q(s) = s ξ(2s − 1) / ξ(2s)`. -/
 def scatterQPoly (P : Polynomial ℝ) : ℂ → ℂ :=
   toMeromorphicNFOn (fun s => scatterQ s * (P.map (algebraMap ℝ ℂ)).eval s) univ
-
-private theorem analyticAt_eval_poly (P : Polynomial ℝ) (z : ℂ) :
-    AnalyticAt ℂ (fun s => (P.map (algebraMap ℝ ℂ)).eval s) z := by
-  have heq : (fun s : ℂ => (P.map (algebraMap ℝ ℂ)).eval s) =
-      ∑ k ∈ Finset.range (P.natDegree + 1), fun s : ℂ => (P.coeff k : ℂ) * s ^ k := by
-    funext s
-    rw [Polynomial.eval_map, Polynomial.eval₂_eq_sum_range, Finset.sum_apply]
-    rfl
-  rw [heq]
-  exact Finset.sum_induction _ (fun g => AnalyticAt ℂ g z) (fun _ _ hf hg => hf.add hg)
-    analyticAt_const fun k _ => analyticAt_const.mul (analyticAt_id.pow k)
 
 private theorem scatterQRaw_eq_div (P : Polynomial ℝ) :
     (fun s => scatterQ s * (P.map (algebraMap ℝ ℂ)).eval s) =
@@ -575,8 +577,9 @@ theorem scatterQPoly_eq_of_xi_ne_zero (P : Polynomial ℝ) {s : ℂ} (hx : xi (2
   have hana : AnalyticAt ℂ (fun z => scatterQ z * (P.map (algebraMap ℝ ℂ)).eval z) s := by
     rw [scatterQRaw_eq_div]
     exact (analyticAt_scatterQPoly_num P s).div (analyticAt_xiHalf s) hx
-  simp [scatterQPoly, toMeromorphicNFOn, hmero,
-    ← (toMeromorphicNFAt_eq_self.2 hana.meromorphicNFAt).symm]
+  unfold scatterQPoly toMeromorphicNFOn
+  rw [if_pos hmero]
+  exact congrFun (toMeromorphicNFAt_eq_self.2 hana.meromorphicNFAt) s
 
 /-- If `F` contains all zeros of `ξ(2s)` in `Re s > θ₀/2`, then `scatterQPoly (halfZeroAnnihilator F)`
 is analytic (hence differentiable) at every `s` with `Re s > θ₀/2`. -/
@@ -597,7 +600,8 @@ theorem analyticAt_scatterQPoly_halfZeroAnnihilator {F : Finset ℂ} {θ₀ : �
     have hnum_eq : (fun z => z * xi (2 * z - 1) * (P.map (algebraMap ℝ ℂ)).eval z) =
         (fun z : ℂ => (z - s) ^ xiHalfMult s) * (fun z : ℂ => z * xi (2 * z - 1) * H z) := by
       funext z
-      simp only [Pi.mul_apply, hfac z]
+      dsimp only [Pi.mul_apply, P]
+      rw [hfac z]
       ring
     have hGana : AnalyticAt ℂ (fun z : ℂ => z * xi (2 * z - 1) * H z) s := by
       have hx1 : AnalyticOnNhd ℂ (fun z : ℂ => xi (2 * z - 1)) univ :=
@@ -651,9 +655,7 @@ private theorem exists_norm_eval_poly_le (P : Polynomial ℝ) (σ₀ σ₁ : ℝ
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_pow]
       calc |P.coeff k| * ‖s‖ ^ k ≤ |P.coeff k| * (M * |s.im|) ^ k := by gcongr
         _ = |P.coeff k| * M ^ k * |s.im| ^ k := by rw [mul_pow]; ring
-        _ ≤ |P.coeff k| * M ^ k * |s.im| ^ P.natDegree := by
-          gcongr
-          exact pow_le_pow_right₀ ht hkle
+        _ ≤ |P.coeff k| * M ^ k * |s.im| ^ P.natDegree := by gcongr
     _ = C * |s.im| ^ P.natDegree := by rw [← Finset.sum_mul]
 
 private theorem exists_norm_scatterQ_le_above {σ₀ σ₁ T₁ K₀ : ℝ} {N₀ : ℕ}
@@ -663,7 +665,8 @@ private theorem exists_norm_scatterQ_le_above {σ₀ σ₁ T₁ K₀ : ℝ} {N�
     ∃ C : ℝ, ∃ N : ℕ, 0 ≤ C ∧ ∀ s : ℂ, σ₀ ≤ s.re → s.re ≤ σ₁ → T₁ ≤ |s.im| →
       ‖scatterQ s‖ ≤ C * |s.im| ^ N := by
   obtain ⟨C₁, N₁, hC₁, hΓ₁⟩ := exists_sharp_bound_norm_Gamma_strip (σ₀ - 1 / 2) (σ₁ - 1 / 2)
-  obtain ⟨C₂, N₂, hC₂, hΓ₂⟩ := exists_bound_norm_inv_Gamma_strip σ₀ σ₁
+  obtain ⟨C₂, N₂, hC₂, hΓ₂⟩ :=
+    GaloisForLFunctions.HTGeometry.exists_bound_norm_inv_Gamma_strip σ₀ σ₁
   obtain ⟨C₃, N₃, hC₃, hζ⟩ := exists_bound_norm_riemannZeta_strip (|2 * σ₀ - 1| + |2 * σ₁ - 1|)
   set L := |σ₀ - 1| + |σ₁ - 1| + 1
   refine ⟨L * (Real.pi ^ (1 / 2 : ℝ) * (C₁ * C₂)) * (C₃ * 2 ^ N₃) * K₀,
@@ -913,7 +916,10 @@ theorem mellinRegularStrip_regularPartPoly {F : Finset ℂ} {θ₀ T₀ : ℝ}
             mul_le_mul hQP hP2 (norm_nonneg _) (by positivity)
         _ ≤ ((CQ * CP) * (1 + w.im ^ 2) ^ (NQ + NP)) *
               (C₂ / (1 + w.im ^ 2) ^ (K + (NQ + NP))) := by gcongr
-        _ = (CQ * CP) * C₂ / (1 + w.im ^ 2) ^ K := by rw [pow_add]; field_simp
+        _ = (CQ * CP) * C₂ / (1 + w.im ^ 2) ^ K := by
+          have hppos : (1 + w.im ^ 2) ^ (NQ + NP) ≠ 0 := by positivity
+          rw [pow_add (1 + w.im ^ 2) K (NQ + NP)]
+          field_simp [hppos]
     have hN : ‖poleNumeratorPoly P φ s‖ ≤
         (2 * (CQ * CP) * C₂ + ‖cP‖ * (CΓ * CE)) / (1 + w.im ^ 2) ^ K := by
       unfold poleNumeratorPoly
@@ -932,8 +938,9 @@ theorem mellinRegularStrip_regularPartPoly {F : Finset ℂ} {θ₀ T₀ : ℝ}
       _ ≤ 2 * (C₁ / (1 + w.im ^ 2) ^ K) +
             (2 * (CQ * CP) * C₂ + ‖cP‖ * (CΓ * CE)) / (1 + w.im ^ 2) ^ K := by gcongr
       _ = (2 * C₁ + 2 * (CQ * CP) * C₂ + ‖cP‖ * (CΓ * CE)) / (1 + w.im ^ 2) ^ K := by ring
-      _ ≤ _ := div_le_div_of_nonneg_right
-          (by have : 0 ≤ max B 0 * (1 + T₁ ^ 2) ^ K := by positivity; linarith) hpos.le
+      _ ≤ _ := by
+          have hB0 : 0 ≤ max B 0 * (1 + T₁ ^ 2) ^ K := by positivity
+          exact div_le_div_of_nonneg_right (by linarith [hB0]) hpos.le
 
 /-- **Achievability below `1 − Θ_∞/2`:** for every `α < 1 − Θ_∞/2`, there exists a nonzero real
 polynomial `P` such that `eulerPolyR P φ` equidistributes at rate `O(y^α)` across all admissible
@@ -950,7 +957,7 @@ theorem exists_eulerPoly_horocycle_rate_of_lt_one_sub_half_zetaAsymptoticAbsciss
     have hε : 0 < ε := lt_min (by linarith) (by norm_num)
     have hε1 : ε < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
     obtain ⟨C, hC, h⟩ := horocycle_rate hφ hc hs hε hε1
-    refine ⟨_, C, fun y hy hy1 => ?_⟩
+    refine ⟨6 / Real.pi * mellin (fun t => (φ t : ℂ)) (-1), C, fun y hy hy1 => ?_⟩
     rw [heq]
     refine (h y hy hy1).trans (mul_le_mul_of_nonneg_left ?_ hC)
     exact Real.rpow_le_rpow_of_exponent_ge hy hy1
@@ -1018,6 +1025,7 @@ theorem exists_eulerPoly_horocycle_rate_of_lt_one_sub_half_zetaAsymptoticAbsciss
       norm_num at h1
       refine (h1.sub h2).congr_fun (fun t _ => ?_) measurableSet_Ioi
       simp only [Pi.sub_apply, hg, smul_eq_mul]
+      ring
     have hline : ∀ t : ℝ, mellin g ((1 : ℝ) + t * Complex.I) =
         regularPartPoly P φ ((1 : ℝ) + t * Complex.I) := by
       intro t

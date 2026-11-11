@@ -16,7 +16,6 @@ namespace GaloisForLFunctions.HodgeTheoryOfAFixedPart
 
 open _root_.RHTower _root_.RHTower.PaperRestrictedWeil HTGeometry
 open ArithmeticCastelnuovoSeveri ArithmeticIndexDescent ArithmeticContinuationAndCriticalEnergy
-open SquareRootThreshold
 open Filter Topology Matrix Zeta23
 open scoped InnerProduct
 
@@ -56,8 +55,9 @@ theorem negativeRank_zero_le_rightZeros (a : SuzukiPositiveAperture) :
   obtain ⟨f, hf⟩ := exists_smoothShiftedWeilGram_index_eq a 0
   rw [← hf, smoothShiftedWeilGram_zero_eq_transpose_zeroGram,
     hermNegIndex_transpose_eq (zeroGram_isHermitian _ _)]
-  exact negIndex_zeroGram_le_of_tempered zetaZeroConfig temperedConfig_zetaZeroConfig
-    (fun i => (f i : ℝ → ℂ)) (fun i => (f i).smooth.of_le (by simp))
+  exact negIndex_zeroGram_le_of_tempered zetaZeroConfig SquareRootThreshold.temperedConfig_zetaZeroConfig
+    (fun i => (f i : ℝ → ℂ))
+    (fun i => (f i).smooth.of_le (WithTop.coe_le_coe.mpr le_top))
     (fun i => (f i).hasCompactSupport)
 
 /-- Once an aperture attains the finite global index, it has no null mode. -/

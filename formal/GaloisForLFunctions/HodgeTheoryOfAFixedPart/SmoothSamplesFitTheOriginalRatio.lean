@@ -114,10 +114,11 @@ theorem tendsto_combGram_originalRatio_sample {Q n : ℕ} (hQ : 1 ≤ Q)
       tsupport (f j).1 ∪ tsupport (f i).1 from ?_) (Set.union_subset (hs j) (hs i))
     apply closure_minimal _ (isClosed_closure.union isClosed_closure)
     intro u hu
+    change (f j).1 u - (f i).1 u ≠ 0 at hu
     by_cases hzero : (f i).1 u = 0
     · exact Or.inl (subset_closure (by
         change (f j).1 u ≠ 0
-        simpa only [sub_apply, hzero, sub_zero] using hu))
+        simpa only [hzero, sub_zero] using hu))
     · exact Or.inr (subset_closure hzero)
   have hd := tendsto_combForm_originalRatio_sample hQ (f j - f i).2.1
     (f j - f i).2.2 hsub

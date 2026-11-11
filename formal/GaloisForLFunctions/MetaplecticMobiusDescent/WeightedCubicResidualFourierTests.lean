@@ -16895,6 +16895,11 @@ def coprimeElementShift (a k : O) : CoprimeElement a ≃ CoprimeElement a where
 def oppositeDataShift (k : O) : OppositeData ≃ OppositeData :=
   Equiv.sigmaCongrRight (fun I => coprimeElementShift (primaryIdealGenerator I.1) k)
 
+lemma oppositeDataShift_fst (k : O) (p : OppositeData) : (oppositeDataShift k p).1 = p.1 := rfl
+
+lemma oppositeDataShift_snd (k : O) (p : OppositeData) :
+    (oppositeDataShift k p).2.1 = p.2.1 + primaryIdealGenerator p.1.1 * k := rfl
+
 lemma affineLowerTerm_scaled_period (q : O) (u : Oˣ) (n : ℕ) (a x m : O)
     (hap : lambda ^ 2 ∣ a - 1) (z : ℂ) (v : ℝ) (s : ℂ) :
     affineLowerTerm (3 * q) ((u : O) * lambda ^ n) (z + 3 * ringComplex m) v s a (a + 3 * x) =
@@ -17026,7 +17031,8 @@ lemma scaled_once_eisenstein_period (u t : Oˣ) (z : ℂ) (v : ℝ) (hv : 0 < v)
   rw [← (onceRamifiedDataShift t m).tsum_eq F]
   apply tsum_congr
   intro p
-  dsimp only [F, onceRamifiedDataShift]
+  dsimp only [F, onceRamifiedDataShift, Equiv.coe_fn_mk]
+  simp only [oppositeDataShift_fst, oppositeDataShift_snd]
   have he := affineLowerTerm_scaled_period (onceCuspScale t * omega ^ p.1.val)
     (onceCuspArithmeticUnit u t p.1) 1 _ p.2.2.1 m (primaryIdealGenerator_spec p.2.1.1 p.2.1.2).2 z v s
   simpa only [pow_one, onceCuspArithmeticUnit_spec] using he
@@ -17313,7 +17319,7 @@ def rationalFourCuspRep : RationalFourCusp → SL(2, ℤ)
 lemma fourCuspAverage_eq_sum (f : HyperbolicSpace → ℂ) (M : SL(2, ℂ)) (w : HyperbolicSpace) :
     fourCuspAverage f (M • w) =
       (4 : ℂ)⁻¹ * ∑ i : RationalFourCusp, f ((rationalComplex (rationalFourCuspRep i) * M) • w) := by
-  simp only [Fintype.sum_sum_type, Fintype.sum_unique, rationalFourCuspRep, map_one, one_mul,
+  simp only [Fintype.sum_sum_type, Fintype.sum_unique, rationalFourCuspRep, map_one, one_mul, one_smul,
     mul_smul, fourCuspAverage]
   ring
 
@@ -17371,7 +17377,7 @@ lemma sourceArbitraryHeightFamily_initial (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 <
     sourceArbitraryHeightFamily M a b ha ρ h s = ∫ w in cuspPeriodStrip a b,
       rationalSourceEisenstein s (M • w) * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
   simp_rw [rationalSourceEisenstein_four_cusps s (by linarith)]
-  rw [fourCuspAverage_weighted_integral _ (hyperbolicEisenstein_continuous s (by linarith))]
+  rw [fourCuspAverage_weighted_integral _ (hyperbolicEisenstein_continuous s (by linarith)) M a b ha ρ h]
   unfold sourceArbitraryHeightFamily
   congr 1
   apply Finset.sum_congr rfl
@@ -17383,7 +17389,7 @@ lemma sourceArbitraryHeightFourier_residual_integral (M : SL(2, ℂ)) (a b : ℝ
     sourceArbitraryHeightFourier M a b ha ρ h cubicEisensteinResidue = ∫ w in cuspPeriodStrip a b,
       cubicSourceResidualFunction (M • w) * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
   simp_rw [cubicSourceResidualFunction_four_cusps]
-  rw [fourCuspAverage_weighted_integral _ cubicResidualFunction_continuous]
+  rw [fourCuspAverage_weighted_integral _ cubicResidualFunction_continuous M a b ha ρ h]
   simp only [sourceArbitraryHeightFourier, _root_.smul_apply, _root_.sum_apply, smul_eq_mul,
     arbitraryCuspHeightFourier_residual_integral]
 
@@ -17401,7 +17407,7 @@ theorem finite_unramified_residue {ι : Type*} [Fintype ι] [DecidableEq ι]
     (by norm_num) (by norm_num) s
   let D : ℂ → ℂ := fun s => ∏ i, H i s
   let E : ι → ℂ → ℂ := fun i s => ∏ j ∈ Finset.univ.erase i, H j s
-  let T : ℂ → ℂ := fun s => ∑ i, coefficient i s * G i s * E i s
+  let Bsum : ℂ → ℂ := fun s => ∑ i, coefficient i s * G i s * E i s
   let R1 : ℂ := ∑ i, coefficient i (4 / 3) *
     rationalCuspFourier (3 * index i) oppositeSource cubicEisensteinResidue * E i (4 / 3)
   have hH (i : ι) (s : ℂ) (hs : 1 < s.re) : AnalyticAt ℂ (H i) s :=
@@ -17412,24 +17418,26 @@ theorem finite_unramified_residue {ι : Type*} [Fintype ι] [DecidableEq ι]
     Finset.analyticAt_fun_prod _ (fun j _ => hH j s hs)
   have hprod (i : ι) (s : ℂ) : H i s * E i s = D s :=
     Finset.mul_prod_erase Finset.univ (fun j => H j s) (Finset.mem_univ i)
-  have hT : AnalyticOnNhd ℂ T {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
+  have hT : AnalyticOnNhd ℂ Bsum {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
     intro s hs
     apply Finset.analyticAt_fun_sum
     intro i hi
     exact ((hc i s hs.1).mul (rationalCuspFamily_analyticAt_nonreal (3 * index i)
       oppositeSource 2 3 (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')).mul (hE i s hs.1)
-  have hTR : Tendsto (fun s : ℂ => (s - 4 / 3) * T s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 R1) := by
+  have hTR : Tendsto (fun s : ℂ => (s - 4 / 3) * Bsum s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 R1) := by
     have hi (i : ι) := (((hc i (4 / 3) (by norm_num)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds).mul
       (rationalCuspFamily_residue_limit (3 * index i) oppositeSource 2 3 (by norm_num) (by norm_num))).mul
         ((hE i (4 / 3) (by norm_num)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds)
     convert tendsto_finsetSum Finset.univ (fun i _ => hi i) using 1
-    funext s
-    rw [T, Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro i hi'
-    dsimp only [G]
-    ring
-  have he := cuspScalarResidue_cross f T (fun _ => 1) D R R1
+    · funext s
+      dsimp only [Bsum]
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i hi'
+      dsimp only [G]
+      ring
+    · rfl
+  have he := cuspScalarResidue_cross f Bsum (fun _ => 1) D R R1
     (fun s hs => hf s hs.1 hs.2) hT (fun _ _ => analyticAt_const)
     (fun s hs => hD s hs.1) continuousAt_const (hD (4 / 3) (by norm_num)).continuousAt hlim hTR (by
       intro s hs hi
@@ -17466,7 +17474,8 @@ lemma scaledAffineGaussSeries_factor (q : O) (u : Oˣ) (n : ℕ) (h : O) (s : �
     scaledAffineGaussSeries q u n h s =
       scaledAffineGaussWeight q u n h s * unramifiedCubicGaussSeries s (scaledAffineGaussIndex q u n h) := by
   unfold scaledAffineGaussSeries scaledAffineGaussWeight scaledAffineGaussIndex
-  split_ifs <;> simp
+  dsimp only
+  split_ifs <;> simp_all only [zero_mul]
 
 lemma scaledAffineGaussWeight_analyticAt (q : O) (hq : q ≠ 0) (u : Oˣ) (n : ℕ) (h : O) (s : ℂ) :
     AnalyticAt ℂ (scaledAffineGaussWeight q u n h) s := by
@@ -17515,10 +17524,883 @@ lemma ramifiedCuspGaussSeries_eq_six (u t : Oˣ) (h : O) (s : ℂ) :
     ramifiedCuspGaussSeries u t h s =
       ∑ i : RamifiedSixBranch, ramifiedSixWeight u t h i s * unramifiedCubicGaussSeries s (ramifiedSixIndex u t h i) := by
   simp only [Fintype.sum_sum_type, Fintype.sum_unique, ramifiedSixWeight, ramifiedSixIndex,
-    ramifiedCuspGaussSeries, scaledAffineGaussSeries_factor, Finset.mul_sum]
+    ramifiedCuspGaussSeries, scaledAffineGaussSeries_factor, Fin.sum_univ_three]
   ring
 
 def ramifiedArithmeticResidue (u t : Oˣ) (h : O) : ℂ :=
   ∑ i : RamifiedSixBranch, ramifiedSixWeight u t h i (4 / 3) * unramifiedGaussResidue (ramifiedSixIndex u t h i)
+
+def cuspTripleDilation : SL(2, ℂ) :=
+  complexDiagonal (Real.sqrt 3 : ℂ) (Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (by norm_num)).ne')
+
+lemma cuspTripleDilation_action (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspTripleDilation • upperPoint z v hv = upperPoint (3 * z) (3 * v) (by positivity) := by
+  rw [cuspTripleDilation, complexDiagonal_action]
+  have hp : (Real.sqrt 3 : ℂ) ^ 2 = 3 := by
+    norm_cast
+    norm_num
+  have hn : Complex.normSq (Real.sqrt 3 : ℂ) = 3 := by
+    simp [Complex.normSq_apply, Real.sq_sqrt]
+  simp only [hp, hn]
+
+def scaledRamifiedCuspMatrix (u : Oˣ) : SL(2, ℂ) :=
+  integralComplexMatrix (lowerCuspMatrix (u : O)) * cuspTripleDilation
+
+lemma scaledRamifiedCuspMatrix_action (u : Oˣ) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    scaledRamifiedCuspMatrix u • upperPoint z v hv =
+      integralComplexMatrix (lowerCuspMatrix (u : O)) • upperPoint (3 * z) (3 * v) (by positivity) := by
+  rw [scaledRamifiedCuspMatrix, mul_smul, cuspTripleDilation_action]
+
+lemma ramifiedSource_height_fourier_average (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) (hs : 2 < s.re) (h : O) :
+    (∫ w in cuspPeriodStrip a b, rationalSourceEisenstein s (scaledRamifiedCuspMatrix u • w) *
+      cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+      (3 : ℂ) ^ s * ramifiedCuspGaussSeries u t h s * cuspIntervalWhittakerFactor a b ρ s h := by
+  let g : HyperbolicSpace → ℂ := fun w => rationalSourceEisenstein s (scaledRamifiedCuspMatrix u • w) *
+    cuspWeightedFourierPhase ρ h w
+  have hg : Continuous g := ((rationalSourceProjection_continuous _
+    (hyperbolicEisenstein_continuous s hs)).comp (continuous_hyperbolic_action _)).mul
+      (cuspWeightedFourierPhase_continuous ρ h)
+  rw [cuspInterval_integral_coordinates a b ha g hg.aestronglyMeasurable
+    (cuspInterval_continuous_integrable a b ha g hg)]
+  have hinner (v : ℝ) (hv : 0 < v) : (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) =
+      ρ v * ((3 : ℂ) ^ s * ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (cuspFrequency h * v)) *
+        ramifiedCuspGaussSeries u t h s) := by
+    simp_rw [g, cuspCoordinateLift_positive v _ hv, scaledRamifiedCuspMatrix_action,
+      cuspWeightedFourierPhase, hyperbolicHeight_upperPoint, cuspFourierPhase, hyperbolicHorizontal_upperPoint]
+    rw [← ramifiedSourceEisenstein_scaled_fourier u t hu ht v hv s hs h, ← integral_const_mul]
+    exact integral_congr_ae (Eventually.of_forall (fun z => by ring))
+  rw [cuspIntervalWhittakerFactor, ← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Icc
+  intro v hv
+  have hv0 := Complex.ofReal_ne_zero.mpr (ha.trans_le hv.1).ne'
+  dsimp only
+  rw [hinner v (ha.trans_le hv.1)]
+  have hp : (v : ℂ) ^ (-s - 1) = (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+    rw [show -s - 1 = (2 - s) - 3 by ring, Complex.cpow_sub _ _ hv0]
+    congr 1
+    exact Complex.cpow_natCast _ 3
+  rw [hp]
+  ring
+
+/-- The six arithmetic residues determine every compact height test of the actual ramified source. -/
+theorem ramifiedSource_height_residue (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    sourceArbitraryHeightFourier (scaledRamifiedCuspMatrix u) a b ha ρ h cubicEisensteinResidue =
+      (3 : ℂ) ^ (4 / 3 : ℂ) * ramifiedArithmeticResidue u t h * cuspIntervalWhittakerFactor a b ρ (4 / 3) h := by
+  let coeff : RamifiedSixBranch → ℂ → ℂ := fun i s =>
+    (3 : ℂ) ^ s * ramifiedSixWeight u t h i s * cuspIntervalWhittakerFactor a b ρ s h
+  have h3 (s : ℂ) : AnalyticAt ℂ (fun z : ℂ => (3 : ℂ) ^ z) s := by
+    apply Complex.analyticAt_iff_eventually_differentiableAt.mpr
+    exact Eventually.of_forall (fun z => differentiableAt_id.const_cpow (Or.inl (by norm_num)))
+  have hc (i : RamifiedSixBranch) (s : ℂ) (hs : 1 < s.re) : AnalyticAt ℂ (coeff i) s :=
+    ((h3 s).mul (ramifiedSixWeight_analyticAt u t h i s)).mul
+      (cuspIntervalWhittakerFactor_analyticAt a b ha ρ h s hs)
+  have he := finite_unramified_residue (ramifiedSixIndex u t h) coeff hc
+    (sourceArbitraryHeightFamily (scaledRamifiedCuspMatrix u) a b ha ρ h)
+    (sourceArbitraryHeightFourier (scaledRamifiedCuspMatrix u) a b ha ρ h cubicEisensteinResidue)
+    (sourceArbitraryHeightFamily_analyticAt _ a b ha ρ h)
+    (sourceArbitraryHeightFamily_residue_limit _ a b ha ρ h) (by
+      intro s hs hi
+      rw [sourceArbitraryHeightFamily_initial _ a b ha ρ h s hs hi,
+        ramifiedSource_height_fourier_average u t hu ht a b ha ρ s (by linarith) h,
+        ramifiedCuspGaussSeries_eq_six, Finset.mul_sum, Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi'
+      dsimp only [coeff]
+      ring)
+  refine he.trans ?_
+  rw [ramifiedArithmeticResidue, Finset.mul_sum, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro i hi
+  dsimp only [coeff]
+  ring
+
+theorem ramifiedSource_height_residue_integral (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    (∫ w in cuspPeriodStrip a b, cubicSourceResidualFunction (scaledRamifiedCuspMatrix u • w) *
+      cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+      (3 : ℂ) ^ (4 / 3 : ℂ) * ramifiedArithmeticResidue u t h * cuspIntervalWhittakerFactor a b ρ (4 / 3) h := by
+  rw [← sourceArbitraryHeightFourier_residual_integral]
+  exact ramifiedSource_height_residue u t hu ht a b ha ρ h
+
+def ramifiedResidualFourierCoefficient (u t : Oˣ) (h : O) : ℂ :=
+  ((3 : ℂ) ^ (4 / 3 : ℂ) * ramifiedArithmeticResidue u t h / ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)) *
+    ((2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) * (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ))
+
+theorem ramifiedSource_height_bessel (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (hh : h ≠ 0) :
+    (∫ w in cuspPeriodStrip a b, cubicSourceResidualFunction (scaledRamifiedCuspMatrix u • w) *
+      cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * ramifiedResidualFourierCoefficient u t h *
+        ∫ v in Set.Icc a b, ρ v *
+          (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2) := by
+  rw [ramifiedSource_height_residue_integral u t hu ht a b ha ρ h,
+    cuspIntervalWhittakerFactor_center_bessel a b ha ρ h hh, ramifiedResidualFourierCoefficient]
+  field_simp [cusp_volume_ne_zero]
+
+lemma ramifiedResidualFourierCoefficient_interval_bound (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (a b : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖ramifiedResidualFourierCoefficient u t h‖ * ‖∫ v in Set.Icc a b,
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ ≤ C := by
+  let f : HyperbolicSpace → ℂ := fun w => cubicSourceResidualFunction (scaledRamifiedCuspMatrix u • w)
+  let B : ℝ := ∫ w in cuspPeriodStrip a b, ‖f w‖ ∂hyperbolicVolume
+  have hB : 0 ≤ B := integral_nonneg (fun w => norm_nonneg (f w))
+  let area : ℂ := ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)
+  have harea : 0 < ‖area‖ := norm_pos_iff.mpr cusp_volume_ne_zero
+  refine ⟨B / ‖area‖, div_nonneg hB harea.le, ?_⟩
+  intro h hh
+  have hb := norm_integral_le_integral_norm (μ := hyperbolicVolume.restrict (cuspPeriodStrip a b)) (fun w => f w *
+    cuspWeightedFourierPhase (BoundedContinuousFunction.const ℝ 1) h w)
+  change ‖∫ w in cuspPeriodStrip a b, f w * cuspWeightedFourierPhase _ h w ∂hyperbolicVolume‖ ≤ _ at hb
+  rw [ramifiedSource_height_bessel u t hu ht a b ha _ h hh] at hb
+  simp only [BoundedContinuousFunction.const_apply, one_mul, norm_mul, cuspWeightedFourierPhase,
+    cuspFourierPhase, tracePhase_norm, norm_one, mul_one] at hb
+  apply (le_div_iff₀ harea).mpr
+  calc
+    _ = ‖area‖ * ‖ramifiedResidualFourierCoefficient u t h‖ * ‖∫ v in Set.Icc a b,
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ := by ring
+    _ ≤ _ := hb
+
+/-- Arbitrarily low compact strips force subexponential growth at the ramified cusps. -/
+theorem ramifiedResidualFourierCoefficient_subexponential (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖ramifiedResidualFourierCoefficient u t h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) :=
+  cubicBesselCoefficient_subexponential (ramifiedResidualFourierCoefficient u t)
+    (ramifiedResidualFourierCoefficient_interval_bound u t hu ht) ε hε
+
+theorem ramifiedSource_fourier_all_heights (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (v : ℝ) (hv : 0 < v) (h : O) :
+    (∫ z in periodDomain, cubicSourceResidualFunction (scaledRamifiedCuspMatrix u • upperPoint z v hv) *
+      tracePhase (-cuspFrequency h * z)) =
+      ((3 : ℂ) ^ (4 / 3 : ℂ) * ramifiedArithmeticResidue u t h) *
+        ((v : ℂ) ^ (2 / 3 : ℂ) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) := by
+  let f : HyperbolicSpace → ℂ := fun w => cubicSourceResidualFunction (scaledRamifiedCuspMatrix u • w)
+  have hf : Continuous f := cubicSourceResidualFunction_continuous.comp (continuous_hyperbolic_action _)
+  let R := (3 : ℂ) ^ (4 / 3 : ℂ) * ramifiedArithmeticResidue u t h
+  let D : ℝ → ℂ := fun v => R *
+    ((v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * sourceFourierKernel (4 / 3) (cuspFrequency h * v))
+  have hD : ContinuousOn D (Set.Ioi 0) := by
+    intro v hv
+    exact (continuousAt_const.mul
+      ((Complex.continuousAt_ofReal_cpow_const v _ (Or.inr hv.ne')).mul
+        (((sourceFourierKernel_continuous_freq (4 / 3) (by norm_num)).comp
+          (Complex.continuous_ofReal.const_mul (cuspFrequency h))).continuousAt))).continuousWithinAt
+  have he := continuousCuspSlice_eq_of_interval_tests f hf h D hD (by
+    intro a b ha ρ
+    rw [ramifiedSource_height_residue_integral u t hu ht a b ha ρ h,
+      cuspIntervalWhittakerFactor, ← integral_const_mul]
+    apply integral_congr_ae
+    exact Eventually.of_forall (fun v => by dsimp only [D, R]; ring)) v hv
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hpow : (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * (v : ℂ) ^ 3 = (v : ℂ) ^ (2 / 3 : ℂ) := by
+    rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hv0]
+    congr 1
+    norm_num
+  dsimp only [continuousCuspSlice, f, D] at he
+  simp_rw [cuspCoordinateLift_positive v _ hv] at he
+  rw [div_eq_iff (pow_ne_zero 3 hv0)] at he
+  rw [he]
+  linear_combination R * sourceFourierKernel (4 / 3) (cuspFrequency h * v) * hpow
+
+theorem ramifiedSource_fourier_bessel (u t : Oˣ)
+    (hu : (u : O) ^ 2 + (u : O) + 1 = 0) (ht : -(u : O) * (1 + 2 * (u : O)) = onceCuspScale t)
+    (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    (∫ z in periodDomain, cubicSourceResidualFunction (scaledRamifiedCuspMatrix u • upperPoint z v hv) *
+      tracePhase (-cuspFrequency h * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * ramifiedResidualFourierCoefficient u t h * (v : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  rw [ramifiedSource_fourier_all_heights u t hu ht]
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hp : (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * (v : ℂ) ^ 3 = (v : ℂ) ^ (2 / 3 : ℂ) := by
+    rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hv0]
+    congr 1
+    norm_num
+  rw [← hp]
+  calc
+    _ = ((3 : ℂ) ^ (4 / 3 : ℂ) * ramifiedArithmeticResidue u t h) *
+        (((v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) * (v : ℂ) ^ 3) := by ring
+    _ = _ := by
+      rw [sourceFourierKernel_residual_height h hh v hv, ramifiedResidualFourierCoefficient]
+      field_simp [hv0, cusp_volume_ne_zero]
+
+/-- The two primitive cubic cusps and their once-ramified scale units. -/
+def ramifiedCuspRoot : Bool → Oˣ
+  | false => cuspOmegaUnit
+  | true => cuspOmegaUnit ^ 2
+
+def ramifiedCuspScaleUnit : Bool → Oˣ
+  | false => -cuspOmegaUnit
+  | true => cuspOmegaUnit ^ 2
+
+lemma ramifiedCuspRoot_relation (side : Bool) :
+    (ramifiedCuspRoot side : O) ^ 2 + (ramifiedCuspRoot side : O) + 1 = 0 := by
+  cases side
+  · exact cusp_omega_relation
+  · simp only [ramifiedCuspRoot, Units.val_pow_eq_pow_val, cuspOmegaUnit_val]
+    linear_combination (omega ^ 2 - omega + 1) * cusp_omega_relation
+
+lemma ramifiedCuspScaleUnit_spec (side : Bool) :
+    -(ramifiedCuspRoot side : O) * (1 + 2 * (ramifiedCuspRoot side : O)) =
+      onceCuspScale (ramifiedCuspScaleUnit side) := by
+  cases side
+  · simp only [ramifiedCuspRoot, ramifiedCuspScaleUnit, onceCuspScale,
+      Units.val_neg, cuspOmegaUnit_val, traceLambda]
+  · simp only [ramifiedCuspRoot, ramifiedCuspScaleUnit, onceCuspScale,
+      Units.val_pow_eq_pow_val, cuspOmegaUnit_val, traceLambda]
+    linear_combination -2 * omega ^ 2 * cusp_omega_relation
+
+def ramifiedBesselCoefficient (side : Bool) : O → ℂ :=
+  ramifiedResidualFourierCoefficient (ramifiedCuspRoot side) (ramifiedCuspScaleUnit side)
+
+theorem ramifiedBesselCoefficient_subexponential (side : Bool) (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖ramifiedBesselCoefficient side h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) :=
+  ramifiedResidualFourierCoefficient_subexponential _ _
+    (ramifiedCuspRoot_relation side) (ramifiedCuspScaleUnit_spec side) ε hε
+
+lemma ramifiedScaledRow_continuous (t : O) (v : ℝ) (hv : 0 < v) :
+    Continuous (ramifiedScaledRow t v) := by
+  have hp : 0 < 3 * v := by positivity
+  have he : ramifiedScaledRow t v = fun z => ramifiedSourceFunction t (upperPoint (3 * z) (3 * v) hp) := by
+    funext z
+    rw [ramifiedScaledRow, cuspCoordinateLift_positive _ _ hp]
+  rw [he]
+  exact (ramifiedSourceFunction_continuous t).comp
+    (upperCoordinatesHomeomorph.continuous.comp
+      (show Continuous (fun z : ℂ => (⟨(3 * z, 3 * v), hp⟩ : UpperCoordinates)) by fun_prop))
+
+lemma ramifiedScaledRow_zero (side : Bool) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, ramifiedScaledRow (ramifiedCuspRoot side : O) v z) = 0 := by
+  have hp : 0 < 3 * v := by positivity
+  simp only [ramifiedScaledRow, cuspCoordinateLift_positive _ _ hp]
+  cases side
+  · exact ramifiedSourceFunction_omega_constant_zero (3 * v) hp
+  · exact ramifiedSourceFunction_omega_sq_constant_zero (3 * v) hp
+
+theorem ramifiedScaledRow_fourier (side : Bool) (v : ℝ) (hv : 0 < v) (h : O) :
+    (∫ z in periodDomain, ramifiedScaledRow (ramifiedCuspRoot side : O) v z *
+      tracePhase (-cuspFrequency h * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cubicBesselAmplitude (ramifiedBesselCoefficient side) v h := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [cuspFrequency, map_zero, zero_div, neg_zero, zero_mul,
+      AddChar.map_zero_eq_one, mul_one, cubicBesselAmplitude, if_true]
+    rw [ramifiedScaledRow_zero side v hv, mul_zero]
+  have he := ramifiedSource_fourier_bessel _ _ (ramifiedCuspRoot_relation side)
+    (ramifiedCuspScaleUnit_spec side) v hv h hh
+  simp_rw [scaledRamifiedCuspMatrix_action] at he
+  simpa only [ramifiedScaledRow, cuspCoordinateLift_positive _ _ (show 0 < 3 * v by positivity),
+    ramifiedSourceFunction, cubicBesselAmplitude, if_neg hh, ramifiedBesselCoefficient, mul_assoc] using he
+
+lemma cubicBesselAmplitude_summable (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (v : ℝ) (hv : 0 < v) :
+    Summable (fun h => ‖cubicBesselAmplitude c v h‖) := by
+  simpa only [cubicBesselTerm, norm_mul, tracePhase_norm, mul_one] using
+    cubicBesselTerm_summable_norm c hsub (v, 0) hv
+
+/-- The primitive ramified cusps have no constant mode and equal their Bessel series pointwise. -/
+theorem ramifiedScaledRow_eq_bessel (side : Bool) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    ramifiedScaledRow (ramifiedCuspRoot side : O) v z =
+      cuspCharacterSeries (cubicBesselAmplitude (ramifiedBesselCoefficient side) v) z := by
+  have hs := cubicBesselAmplitude_summable _ (ramifiedBesselCoefficient_subexponential side) v hv
+  exact congrFun (periodDomain_continuous_ext _ _ (ramifiedScaledRow_continuous _ v hv)
+    (cuspCharacterSeries_continuous _ hs) (ramifiedScaledRow_period _ v hv)
+    (fun n z => cuspCharacterSeries_period _ z n) (fun h => by
+      rw [ramifiedScaledRow_fourier side v hv h, cuspCharacterSeries_fourier _ hs h])) z
+
+theorem ramifiedSource_bessel (side : Bool) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    ramifiedSourceFunction (ramifiedCuspRoot side : O) (upperPoint z v hv) =
+      ∑' h : O, cubicBesselTerm (ramifiedBesselCoefficient side) h (v / 3, z / 3) := by
+  have he := ramifiedScaledRow_eq_bessel side (v / 3) (by positivity) (z / 3)
+  simpa only [ramifiedScaledRow, mul_div_cancel₀ _ (by norm_num : (3 : ℝ) ≠ 0),
+    show (3 : ℂ) * (z / 3) = z by ring, show 3 * (v / 3) = v by ring,
+    cuspCoordinateLift_positive v z hv, cuspCharacterSeries, cubicBesselTerm] using he
+
+theorem ramifiedSource_bessel_normal (side : Bool) (a b : ℝ) (ha : 0 < a) (hab : a ≤ b) :
+    ∃ g : O → ℝ, Summable g ∧ ∀ h : O, ∀ v : ℝ, v ∈ Set.Icc a b → ∀ z : ℂ,
+      ‖cubicBesselTerm (ramifiedBesselCoefficient side) h (v / 3, z / 3)‖ ≤ g h := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselTerm_strip_bound _ (ramifiedBesselCoefficient_subexponential side)
+    (a / 3) (b / 3) (by positivity) (by linarith only [hab])
+  refine ⟨fun h => C * Real.exp (-(Real.pi * (a / 3)) * ‖cuspFrequency h‖),
+    (summable_exp_neg_cuspFrequency_norm _ (by positivity)).mul_left C, ?_⟩
+  intro h v hv z
+  exact hb h (v / 3, z / 3) ⟨by dsimp only; linarith only [hv.1], by dsimp only; linarith only [hv.2]⟩
+
+def residualBesselDecayRate : ℝ := Real.pi * ‖(3 : ℂ) * ringComplex traceLambda‖⁻¹ / 2
+
+lemma residualBesselDecayRate_pos : 0 < residualBesselDecayRate := by
+  have hd := norm_pos_iff.mpr (mul_ne_zero (by norm_num : (3 : ℂ) ≠ 0)
+    (ringComplex_ne_zero traceLambda_ne_zero))
+  unfold residualBesselDecayRate
+  positivity
+
+/-- The frequency gap leaves exponential decay in height after summing all horizontal modes. -/
+theorem cubicBesselAmplitude_exponential_bound (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, ∀ v : ℝ, a ≤ v →
+      ‖cubicBesselAmplitude c v h‖ ≤ C * Real.exp (-(Real.pi * a / 2) * ‖cuspFrequency h‖) *
+        Real.exp (-residualBesselDecayRate * v) := by
+  let d : ℝ := ‖(3 : ℂ) * ringComplex traceLambda‖⁻¹
+  have hd : 0 < d := inv_pos.mpr (norm_pos_iff.mpr
+    (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero)))
+  obtain ⟨B, hB, hb⟩ := schlafliBesselK_one_third_exp_upper (4 * Real.pi * d * a) (by positivity)
+  obtain ⟨A, hA, hc⟩ := hsub (Real.pi * a / 2) (by positivity)
+  refine ⟨A * B * (2 / (Real.pi * d)), by positivity, ?_⟩
+  intro h v hv
+  by_cases hh : h = 0
+  · simp only [cubicBesselAmplitude, if_pos hh, norm_zero]
+    positivity
+  have hvp := ha.trans_le hv
+  have hgap : d ≤ ‖cuspFrequency h‖ := cuspFrequency_norm_lower h hh
+  have hrv := mul_le_mul_of_nonneg_left hv (norm_nonneg (cuspFrequency h))
+  have hdv := mul_le_mul_of_nonneg_right hgap hvp.le
+  have hx : 4 * Real.pi * d * a ≤ 4 * Real.pi * ‖cuspFrequency h‖ * v := by
+    have hm := mul_le_mul hgap hv ha.le (norm_nonneg (cuspFrequency h))
+    nlinarith only [mul_le_mul_of_nonneg_left hm (by positivity : 0 ≤ 4 * Real.pi)]
+  have hexp : (Real.pi * a / 2) * ‖cuspFrequency h‖ -
+      (4 * Real.pi * ‖cuspFrequency h‖ * v) / 2 ≤
+      -(Real.pi * a / 2) * ‖cuspFrequency h‖ + -(Real.pi * d) * v := by
+    nlinarith only [mul_le_mul_of_nonneg_left (add_le_add hrv hdv) Real.pi_pos.le]
+  rw [cubicBesselAmplitude, if_neg hh, norm_mul, norm_mul, Complex.norm_of_nonneg hvp.le]
+  calc
+    _ ≤ (A * Real.exp ((Real.pi * a / 2) * ‖cuspFrequency h‖)) * v *
+        (B * Real.exp (-(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2)) :=
+      mul_le_mul (mul_le_mul_of_nonneg_right (hc h hh) hvp.le) (hb _ hx) (norm_nonneg _) (by positivity)
+    _ = (A * B * v) * Real.exp ((Real.pi * a / 2) * ‖cuspFrequency h‖ -
+        (4 * Real.pi * ‖cuspFrequency h‖ * v) / 2) := by
+      rw [show -(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2 =
+        -((4 * Real.pi * ‖cuspFrequency h‖ * v) / 2) by ring, Real.exp_neg, Real.exp_sub]
+      ring
+    _ ≤ (A * B * v) * Real.exp (-(Real.pi * a / 2) * ‖cuspFrequency h‖ + -(Real.pi * d) * v) :=
+      mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp) (by positivity)
+    _ = (A * B * Real.exp (-(Real.pi * a / 2) * ‖cuspFrequency h‖)) *
+        (v * Real.exp (-(Real.pi * d) * v)) := by rw [Real.exp_add]; ring
+    _ ≤ (A * B * Real.exp (-(Real.pi * a / 2) * ‖cuspFrequency h‖)) *
+        ((2 / (Real.pi * d)) * Real.exp (-(Real.pi * d / 2) * v)) :=
+      mul_le_mul_of_nonneg_left (frequency_exp_absorption (Real.pi * d) v (by positivity)) (by positivity)
+    _ = _ := by dsimp only [residualBesselDecayRate, d]; ring
+
+theorem cubicBesselSeries_exponential_decay (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, a ≤ v → ∀ z : ℂ,
+      ‖∑' h : O, cubicBesselTerm c h (v, z)‖ ≤ C * Real.exp (-residualBesselDecayRate * v) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselAmplitude_exponential_bound c hsub a ha
+  let w : O → ℝ := fun h => Real.exp (-(Real.pi * a / 2) * ‖cuspFrequency h‖)
+  have hw : Summable w := summable_exp_neg_cuspFrequency_norm _ (by positivity)
+  refine ⟨C * ∑' h, w h, mul_nonneg hC (tsum_nonneg (fun h => (Real.exp_pos _).le)), ?_⟩
+  intro v hv z
+  have hs := cubicBesselTerm_summable_norm c hsub (v, z) (ha.trans_le hv)
+  have hm (h : O) : ‖cubicBesselTerm c h (v, z)‖ ≤
+      C * w h * Real.exp (-residualBesselDecayRate * v) := by
+    simpa only [cubicBesselTerm, norm_mul, tracePhase_norm, mul_one] using hb h v hv
+  have he := (norm_tsum_le_tsum_norm hs).trans
+    (Summable.tsum_le_tsum hm hs ((hw.mul_left C).mul_right _))
+  simpa only [tsum_mul_right, tsum_mul_left] using he
+
+theorem ramifiedSource_exponential_decay (side : Bool) (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, ∀ hv : 0 < v, a ≤ v → ∀ z : ℂ,
+      ‖ramifiedSourceFunction (ramifiedCuspRoot side : O) (upperPoint z v hv)‖ ≤
+        C * Real.exp (-(residualBesselDecayRate / 3) * v) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselSeries_exponential_decay _ (ramifiedBesselCoefficient_subexponential side)
+    (a / 3) (by positivity)
+  refine ⟨C, hC, ?_⟩
+  intro v hv hav z
+  rw [ramifiedSource_bessel side v hv z]
+  convert hb (v / 3) (by linarith only [hav]) (z / 3) using 1 <;> ring
+
+lemma cubicBesselAmplitude_firstMoment_summable (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (v : ℝ) (hv : 0 < v) :
+    Summable (fun h => ‖cuspFrequency h‖ * ‖cubicBesselAmplitude c v h‖) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselTerm_strip_bound c hsub v v hv le_rfl
+  apply Summable.of_nonneg_of_le (fun _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    (fun h => ?_) ((cuspFrequency_firstMoment_exp_summable (Real.pi * v) (by positivity)).mul_left C)
+  have he := mul_le_mul_of_nonneg_left (hb h (v, 0) ⟨le_rfl, le_rfl⟩) (norm_nonneg (cuspFrequency h))
+  simpa only [cubicBesselTerm, norm_mul, tracePhase_norm, mul_one, mul_left_comm] using he
+
+lemma ninthCuspFrequency_eq_third (h : O) : ninthCuspFrequency h = cuspFrequency h / 3 := by
+  unfold ninthCuspFrequency cuspFrequency
+  ring
+
+theorem ramifiedSource_wirtingerBar (side : Bool) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    horizontalWirtingerBar (fun w => ramifiedSourceFunction (ramifiedCuspRoot side : O)
+      (upperPoint w v hv)) z =
+      ∑' h : O, (2 * Real.pi * Complex.I * star (ninthCuspFrequency h)) *
+        cubicBesselTerm (ramifiedBesselCoefficient side) h (v / 3, z / 3) := by
+  have hp : 0 < v / 3 := by positivity
+  have hs := cubicBesselAmplitude_summable _ (ramifiedBesselCoefficient_subexponential side) (v / 3) hp
+  have hfirst := cubicBesselAmplitude_firstMoment_summable _
+    (ramifiedBesselCoefficient_subexponential side) (v / 3) hp
+  have hn : Summable (fun h => ‖ninthCuspFrequency h‖ *
+      ‖cubicBesselAmplitude (ramifiedBesselCoefficient side) (v / 3) h‖) := by
+    simpa only [ninthCuspFrequency_eq_third, norm_div,
+      show ‖(3 : ℂ)‖ = (3 : ℝ) by norm_num, div_mul_eq_mul_div] using hfirst.div_const 3
+  have hphase (h : O) (w : ℂ) : cuspFrequency h * (w / 3) = ninthCuspFrequency h * w := by
+    rw [ninthCuspFrequency_eq_third]
+    ring
+  have he : (fun w => ramifiedSourceFunction (ramifiedCuspRoot side : O) (upperPoint w v hv)) =
+      fun w => ∑' h : O, cubicBesselAmplitude (ramifiedBesselCoefficient side) (v / 3) h *
+        tracePhase (ninthCuspFrequency h * w) := by
+    funext w
+    rw [ramifiedSource_bessel side v hv w]
+    simp only [cubicBesselTerm, hphase]
+  rw [he, traceFourierSeries_wirtingerBar _ _ hs hn]
+  simp only [cubicBesselTerm, hphase]
+
+/-- Multiplying subexponential Fourier coefficients by a linear frequency weight preserves growth. -/
+lemma cubicBesselCoefficient_linearWeight_subexponential (c m : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖))
+    (L : ℝ) (hL : 0 ≤ L) (hm : ∀ h : O, h ≠ 0 → ‖m h‖ ≤ L * ‖cuspFrequency h‖)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖m h * c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  obtain ⟨C, hC, hc⟩ := hsub (ε / 2) (by positivity)
+  refine ⟨L * C * (2 / ε), by positivity, ?_⟩
+  intro h hh
+  have hr : ‖cuspFrequency h‖ ≤ (2 / ε) * Real.exp ((ε / 2) * ‖cuspFrequency h‖) := by
+    rw [div_mul_eq_mul_div]
+    apply (le_div_iff₀ hε).mpr
+    nlinarith only [Real.add_one_le_exp ((ε / 2) * ‖cuspFrequency h‖)]
+  rw [norm_mul]
+  calc
+    _ ≤ (L * ‖cuspFrequency h‖) * (C * Real.exp ((ε / 2) * ‖cuspFrequency h‖)) :=
+      mul_le_mul (hm h hh) (hc h hh) (norm_nonneg _) (mul_nonneg hL (norm_nonneg _))
+    _ ≤ (L * ((2 / ε) * Real.exp ((ε / 2) * ‖cuspFrequency h‖))) *
+        (C * Real.exp ((ε / 2) * ‖cuspFrequency h‖)) :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hr hL) (by positivity)
+    _ = _ := by
+      rw [show ε * ‖cuspFrequency h‖ = (ε / 2) * ‖cuspFrequency h‖ +
+        (ε / 2) * ‖cuspFrequency h‖ by ring, Real.exp_add]
+      ring
+
+lemma cubicBesselTerm_weight (c m : O → ℂ) (h : O) (p : ℝ × ℂ) :
+    cubicBesselTerm (fun k => m k * c k) h p = m h * cubicBesselTerm c h p := by
+  by_cases hh : h = 0 <;> simp only [cubicBesselTerm, cubicBesselAmplitude, hh,
+    if_true, if_false, zero_mul, mul_zero, mul_assoc]
+
+def ramifiedBarBesselCoefficient (side : Bool) (h : O) : ℂ :=
+  (2 * Real.pi * Complex.I * star (ninthCuspFrequency h)) * ramifiedBesselCoefficient side h
+
+lemma ramifiedBarBesselCoefficient_subexponential (side : Bool) (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖ramifiedBarBesselCoefficient side h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  apply cubicBesselCoefficient_linearWeight_subexponential _ _
+    (ramifiedBesselCoefficient_subexponential side) (2 * Real.pi / 3) (by positivity) _ ε hε
+  intro h hh
+  simp only [norm_mul, norm_star, Complex.norm_I, mul_one, ninthCuspFrequency_eq_third,
+    norm_div, show ‖(3 : ℂ)‖ = (3 : ℝ) by norm_num,
+    show ‖(2 : ℂ)‖ = (2 : ℝ) by norm_num,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
+  exact le_of_eq (by ring)
+
+theorem ramifiedSource_wirtingerBar_bessel (side : Bool) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    horizontalWirtingerBar (fun w => ramifiedSourceFunction (ramifiedCuspRoot side : O)
+      (upperPoint w v hv)) z =
+      ∑' h : O, cubicBesselTerm (ramifiedBarBesselCoefficient side) h (v / 3, z / 3) := by
+  rw [ramifiedSource_wirtingerBar side v hv z]
+  exact tsum_congr (fun h => (cubicBesselTerm_weight (ramifiedBesselCoefficient side)
+    (fun k => 2 * Real.pi * Complex.I * star (ninthCuspFrequency k)) h (v / 3, z / 3)).symm)
+
+/-- The differentiated ramified cusp row has the same exponential height rate. -/
+theorem ramifiedSource_wirtingerBar_exponential_decay (side : Bool) (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, ∀ hv : 0 < v, a ≤ v → ∀ z : ℂ,
+      ‖horizontalWirtingerBar (fun w => ramifiedSourceFunction (ramifiedCuspRoot side : O)
+        (upperPoint w v hv)) z‖ ≤ C * Real.exp (-(residualBesselDecayRate / 3) * v) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselSeries_exponential_decay _
+    (ramifiedBarBesselCoefficient_subexponential side) (a / 3) (by positivity)
+  refine ⟨C, hC, ?_⟩
+  intro v hv hav z
+  rw [ramifiedSource_wirtingerBar_bessel side v hv z]
+  convert hb (v / 3) (by linarith only [hav]) (z / 3) using 1 <;> ring
+
+def cuspBarProfile (f : HyperbolicSpace → ℂ) (z : ℂ) (v : ℝ) : ℂ :=
+  horizontalWirtingerBar (fun w => f (cuspCoordinateLift (v, w))) z
+
+def cuspZProfile (f : HyperbolicSpace → ℂ) (z : ℂ) (v : ℝ) : ℂ :=
+  horizontalWirtingerZ (fun w => f (cuspCoordinateLift (v, w))) z
+
+lemma cuspBarProfile_positive (f : HyperbolicSpace → ℂ) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile f z v = horizontalWirtingerBar (fun w => f (upperPoint w v hv)) z := by
+  simp only [cuspBarProfile, cuspCoordinateLift_positive v _ hv]
+
+lemma cuspZProfile_positive (f : HyperbolicSpace → ℂ) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspZProfile f z v = horizontalWirtingerZ (fun w => f (upperPoint w v hv)) z := by
+  simp only [cuspZProfile, cuspCoordinateLift_positive v _ hv]
+
+theorem ramifiedSource_barProfile_continuousOn (side : Bool) (z : ℂ) :
+    ContinuousOn (cuspBarProfile (ramifiedSourceFunction (ramifiedCuspRoot side : O)) z) (Set.Ioi 0) := by
+  intro v hv
+  change 0 < v at hv
+  have hs := (cubicBesselSeries_hasFDerivAt _ (ramifiedBarBesselCoefficient_subexponential side)
+    (v / 3, z / 3) (by positivity)).differentiableAt
+  have hp : DifferentiableAt ℝ (fun y : ℝ => (y / 3, z / 3)) v := by fun_prop
+  apply ContinuousAt.continuousWithinAt
+  apply (hs.comp v hp).continuousAt.congr_of_eventuallyEq
+  filter_upwards [Ioi_mem_nhds hv] with y hy
+  rw [cuspBarProfile_positive _ _ _ hy, ramifiedSource_wirtingerBar_bessel side y hy z]
+  rfl
+
+def reflectedCuspProfile (A : ℂ) (Q : ℝ) (f : ℝ → ℂ) (v : ℝ) : ℂ :=
+  A * ((v : ℂ) ^ (-2 : ℂ) * f ((Q * v)⁻¹))
+
+/-- Inverting a finite cusp reflects its horizontal derivative profile with weight two. -/
+theorem cubicSource_barProfile_reflection (g : SL(2, ℂ)) (hc : g 1 0 ≠ 0) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile cubicSourceResidualFunction (g 0 0 / g 1 0) v =
+      reflectedCuspProfile (-1 / (g 1 0) ^ 2) (‖g 1 0‖ ^ 2)
+        (cuspZProfile (fun w => cubicSourceResidualFunction (g • w)) (-g 1 1 / g 1 0)) v := by
+  have hd : 0 < (‖g 1 0‖ ^ 2 * v)⁻¹ := by positivity
+  rw [cuspBarProfile_positive _ _ _ hv, reflectedCuspProfile, cuspZProfile_positive _ _ _ hd,
+    cubicSourceResidualFunction_cusp_derivative g hc v hv]
+  have hp : (v : ℂ) ^ (-2 : ℂ) = ((v : ℂ) ^ 2)⁻¹ := by
+    rw [Complex.cpow_neg, Complex.cpow_ofNat]
+  rw [hp]
+  simp only [one_div]
+  ring
+
+theorem conjugateSource_barProfile_reflection (g : SL(2, ℂ)) (hc : g 1 0 ≠ 0) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0) v =
+      reflectedCuspProfile (-1 / (g 1 0) ^ 2) (‖g 1 0‖ ^ 2)
+        (cuspZProfile (fun w => star (cubicSourceResidualFunction (g • w))) (-g 1 1 / g 1 0)) v := by
+  have hd : 0 < (‖g 1 0‖ ^ 2 * v)⁻¹ := by positivity
+  rw [cuspBarProfile_positive _ _ _ hv, reflectedCuspProfile, cuspZProfile_positive _ _ _ hd,
+    conjugate_cubicSourceResidualFunction_cusp_derivative g hc v hv]
+  have hp : (v : ℂ) ^ (-2 : ℂ) = ((v : ℂ) ^ 2)⁻¹ := by
+    rw [Complex.cpow_neg, Complex.cpow_ofNat]
+  rw [hp]
+  simp only [one_div]
+  ring
+
+/-- Complex conjugation exchanges the two real-coordinate Wirtinger derivatives. -/
+lemma horizontalWirtingerZ_conjugate (f : ℂ → ℂ) (z : ℂ) (hf : DifferentiableAt ℝ f z) :
+    horizontalWirtingerZ (fun w => star (f w)) z = star (horizontalWirtingerBar f z) := by
+  have hline (direction : ℂ) : DifferentiableAt ℝ
+      (fun t : ℝ => f (z + (t : ℂ) * direction)) 0 := by
+    have hp : DifferentiableAt ℝ (fun t : ℝ => z + (t : ℂ) * direction) 0 := by fun_prop
+    have hf' : DifferentiableAt ℝ f (z + (0 : ℂ) * direction) := by simpa only [zero_mul, add_zero] using hf
+    exact hf'.comp 0 hp
+  have hstar (direction : ℂ) :
+      deriv (fun t : ℝ => star (f (z + (t : ℂ) * direction))) 0 =
+        star (deriv (fun t : ℝ => f (z + (t : ℂ) * direction)) 0) :=
+    (Complex.conjCLE.hasFDerivAt.comp_hasDerivAt 0 (hline direction).hasDerivAt).deriv
+  have h1 := hstar 1
+  simp only [mul_one] at h1
+  rw [horizontalWirtingerZ, horizontalWirtingerBar, h1, hstar Complex.I]
+  have hhalf : star (1 / 2 : ℂ) = (1 / 2 : ℂ) := by norm_num
+  have hI : star Complex.I = -Complex.I := Complex.conj_I
+  rw [star_mul, star_add, star_mul, hhalf, hI]
+  ring
+
+lemma ramifiedSource_horizontal_differentiableAt (t : O) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    DifferentiableAt ℝ (fun w => ramifiedSourceFunction t (upperPoint w v hv)) z := by
+  have hf := cubicSourceResidualFunction_translate_coordinate_differentiableAt
+    (integralComplexMatrix (lowerCuspMatrix t)) (v, z) hv
+  have hp : DifferentiableAt ℝ (fun w : ℂ => (v, w)) z := by fun_prop
+  simpa only [Function.comp_def, ramifiedSourceFunction, cuspCoordinateLift_positive v _ hv] using hf.comp z hp
+
+lemma conjugateRamifiedSource_zProfile (side : Bool) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspZProfile (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) z v =
+      star (cuspBarProfile (ramifiedSourceFunction (ramifiedCuspRoot side : O)) z v) := by
+  rw [cuspZProfile_positive _ _ _ hv, cuspBarProfile_positive _ _ _ hv]
+  exact horizontalWirtingerZ_conjugate _ z (ramifiedSource_horizontal_differentiableAt _ v hv z)
+
+theorem conjugateRamifiedSource_zProfile_continuousOn (side : Bool) (z : ℂ) :
+    ContinuousOn (cuspZProfile (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) z)
+      (Set.Ioi 0) := by
+  apply (ramifiedSource_barProfile_continuousOn side z).star.congr
+  intro v hv
+  exact conjugateRamifiedSource_zProfile side z v hv
+
+theorem conjugateRamifiedSource_zProfile_exponential_decay (side : Bool) (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, a ≤ v → ∀ z : ℂ,
+      ‖cuspZProfile (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) z v‖ ≤
+        C * Real.exp (-(residualBesselDecayRate / 3) * v) := by
+  obtain ⟨C, hC, hb⟩ := ramifiedSource_wirtingerBar_exponential_decay side a ha
+  refine ⟨C, hC, ?_⟩
+  intro v hv z
+  rw [conjugateRamifiedSource_zProfile side z v (ha.trans_le hv), norm_star,
+    cuspBarProfile_positive _ _ _ (ha.trans_le hv)]
+  exact hb v (ha.trans_le hv) hv z
+
+open Asymptotics
+
+lemma reflectedCuspProfile_mellin (f : ℝ → ℂ) (A s : ℂ) (Q : ℝ) (hQ : 0 < Q) :
+    mellin (reflectedCuspProfile A Q f) s = A * (Q : ℂ) ^ (2 - s) * mellin f (2 - s) := by
+  change mellin (fun v => A • ((v : ℂ) ^ (-2 : ℂ) • f ((Q * v)⁻¹))) s = _
+  rw [mellin_const_smul, mellin_cpow_smul,
+    mellin_comp_mul_left (fun v => f v⁻¹) _ hQ, mellin_comp_inv]
+  simp only [smul_eq_mul, show -(s + (-2 : ℂ)) = 2 - s by ring]
+  ring
+
+lemma reflectedCuspProfile_mellinConvergent (f : ℝ → ℂ) (A s : ℂ) (Q : ℝ)
+    (hQ : 0 < Q) (hf : MellinConvergent f (2 - s)) :
+    MellinConvergent (reflectedCuspProfile A Q f) s := by
+  have hinv : MellinConvergent (fun v : ℝ => f v⁻¹) (s - 2) := by
+    have he := (MellinConvergent.comp_rpow (f := f) (s := s - 2) (a := -1) (by norm_num)).mpr
+      (show MellinConvergent f ((s - 2) / (-1 : ℝ)) by
+        simpa only [show ((s - 2) / (-1 : ℝ) : ℂ) = 2 - s by push_cast; ring] using hf)
+    simpa only [Real.rpow_neg_one] using he
+  have hscale := (MellinConvergent.comp_mul_left (f := fun v : ℝ => f v⁻¹) (s := s - 2) hQ).mpr hinv
+  have hpow := (MellinConvergent.cpow_smul (f := fun v : ℝ => f (Q * v)⁻¹) (s := s) (a := -2)).mpr
+    (by simpa only [sub_eq_add_neg] using hscale)
+  unfold reflectedCuspProfile
+  convert! hpow.const_smul A using 1
+
+def truncatedCuspProfile (a : ℝ) (f : ℝ → ℂ) (v : ℝ) : ℂ := if a < v then f v else 0
+
+lemma truncatedCuspProfile_eventually_top (a : ℝ) (f : ℝ → ℂ) :
+    truncatedCuspProfile a f =ᶠ[atTop] f := by
+  filter_upwards [eventually_gt_atTop a] with v hv
+  exact if_pos hv
+
+lemma truncatedCuspProfile_eventually_zero (a : ℝ) (ha : 0 < a) (f : ℝ → ℂ) :
+    truncatedCuspProfile a f =ᶠ[𝓝[>] 0] 0 := by
+  filter_upwards [(eventually_lt_nhds ha).filter_mono nhdsWithin_le_nhds] with v hv
+  exact if_neg (not_lt_of_ge hv.le)
+
+lemma truncatedCuspProfile_locallyIntegrable (a : ℝ) (ha : 0 < a) (f : ℝ → ℂ)
+    (hf : ContinuousOn f (Set.Ioi 0)) : LocallyIntegrable (truncatedCuspProfile a f) volume := by
+  have hc : Continuous (fun v : ℝ => f (max a v)) := hf.comp_continuous
+    (continuous_const.max continuous_id) (fun v => ha.trans_le (le_max_left a v))
+  have he : truncatedCuspProfile a f = (Set.Ioi a).indicator (fun v : ℝ => f (max a v)) := by
+    funext v
+    by_cases hv : a < v
+    · simp [truncatedCuspProfile, Set.indicator, hv, max_eq_right hv.le]
+    · simp [truncatedCuspProfile, Set.indicator, hv]
+  rw [he]
+  exact hc.locallyIntegrable.indicator measurableSet_Ioi
+
+lemma truncatedCuspProfile_mellin_entire (a decay : ℝ) (ha : 0 < a) (hd : 0 < decay)
+    (f : ℝ → ℂ) (hf : ContinuousOn f (Set.Ioi 0))
+    (hbound : f =O[atTop] (fun v : ℝ => Real.exp (-decay * v))) :
+    (∀ s : ℂ, MellinConvergent (truncatedCuspProfile a f) s) ∧
+      Differentiable ℂ (mellin (truncatedCuspProfile a f)) := by
+  have hlocal := (truncatedCuspProfile_locallyIntegrable a ha f hf).locallyIntegrableOn (Set.Ioi 0)
+  have htop : truncatedCuspProfile a f =O[atTop] (fun v : ℝ => Real.exp (-decay * v)) :=
+    hbound.congr' (truncatedCuspProfile_eventually_top a f).symm EventuallyEq.rfl
+  have hzero (b : ℝ) : truncatedCuspProfile a f =O[𝓝[>] 0] (fun v : ℝ => v ^ (-b)) :=
+    (Asymptotics.isBigO_zero (fun v : ℝ => v ^ (-b)) (𝓝[>] 0)).congr'
+      (truncatedCuspProfile_eventually_zero a ha f).symm EventuallyEq.rfl
+  exact ⟨fun s => mellinConvergent_of_isBigO_rpow_exp hd hlocal htop (hzero (s.re - 1)) (by linarith),
+    fun s => mellin_differentiableAt_of_isBigO_rpow_exp hd hlocal htop (hzero (s.re - 1)) (by linarith)⟩
+
+/-- A cusp and its reflected cusp split into two exponentially decaying tails. -/
+lemma cusp_truncation_reflection_ae (f g : ℝ → ℂ) (A : ℂ) (Q : ℝ) (hQ : 0 < Q)
+    (hfg : ∀ v : ℝ, 0 < v → f v = reflectedCuspProfile A Q g v) :
+    f =ᵐ[volume.restrict (Set.Ioi 0)] (fun v => truncatedCuspProfile 1 f v +
+      reflectedCuspProfile A Q (truncatedCuspProfile (1 / Q) g) v) := by
+  have hn : ∀ᵐ v : ℝ ∂volume.restrict (Set.Ioi 0), v ≠ 1 := ae_restrict_of_ae (Measure.ae_ne volume 1)
+  filter_upwards [ae_restrict_mem measurableSet_Ioi, hn] with v hv hv1
+  have hrel : 1 / Q < (Q * v)⁻¹ ↔ v < 1 := by
+    rw [inv_eq_one_div, div_lt_div_iff₀ hQ (mul_pos hQ hv)]
+    simp only [one_mul]
+    constructor
+    · intro he
+      by_contra hn
+      have hm := mul_le_mul_of_nonneg_left (le_of_not_gt hn) hQ.le
+      linarith only [he, hm]
+    · intro he
+      simpa only [mul_one] using mul_lt_mul_of_pos_left he hQ
+  by_cases hhi : 1 < v
+  · have hlo : ¬ 1 / Q < (Q * v)⁻¹ := fun hh => not_lt_of_ge hhi.le (hrel.mp hh)
+    simp only [truncatedCuspProfile, if_pos hhi, reflectedCuspProfile, if_neg hlo, mul_zero, add_zero]
+  · have hlo : 1 / Q < (Q * v)⁻¹ := hrel.mpr (lt_of_le_of_ne (le_of_not_gt hhi) hv1)
+    simp only [truncatedCuspProfile, if_neg hhi, reflectedCuspProfile, if_pos hlo, zero_add]
+    exact hfg v hv
+
+/-- Exponential decay at both reflected cusps gives an entire Mellin transform. -/
+theorem cusp_mellin_entire (f g : ℝ → ℂ) (A : ℂ) (Q decayF decayG : ℝ)
+    (hQ : 0 < Q) (hF : 0 < decayF) (hG : 0 < decayG)
+    (hf : ContinuousOn f (Set.Ioi 0)) (hg : ContinuousOn g (Set.Ioi 0))
+    (hfbound : f =O[atTop] (fun v : ℝ => Real.exp (-decayF * v)))
+    (hgbound : g =O[atTop] (fun v : ℝ => Real.exp (-decayG * v)))
+    (hfg : ∀ v : ℝ, 0 < v → f v = reflectedCuspProfile A Q g v) :
+    (∀ s : ℂ, MellinConvergent f s) ∧ Differentiable ℂ (mellin f) := by
+  obtain ⟨hfc, hfd⟩ := truncatedCuspProfile_mellin_entire 1 decayF (by norm_num) hF f hf hfbound
+  obtain ⟨hgc, hgd⟩ := truncatedCuspProfile_mellin_entire (1 / Q) decayG (by positivity) hG g hg hgbound
+  have hae := cusp_truncation_reflection_ae f g A Q hQ hfg
+  have hm (s : ℂ) : HasMellin f s
+      (mellin (truncatedCuspProfile 1 f) s +
+        A * (Q : ℂ) ^ (2 - s) * mellin (truncatedCuspProfile (1 / Q) g) (2 - s)) := by
+    have hr := reflectedCuspProfile_mellinConvergent (truncatedCuspProfile (1 / Q) g) A s Q hQ (hgc (2 - s))
+    have hsum := hasMellin_add (hfc s) hr
+    constructor
+    · apply hsum.1.congr
+      filter_upwards [hae] with v hv
+      exact congrArg (fun z : ℂ => (v : ℂ) ^ (s - 1) • z) hv.symm
+    · have he : mellin f s = mellin (fun v => truncatedCuspProfile 1 f v +
+          reflectedCuspProfile A Q (truncatedCuspProfile (1 / Q) g) v) s := by
+        unfold mellin
+        apply integral_congr_ae
+        filter_upwards [hae] with v hv
+        rw [hv]
+      rw [he, hsum.2, reflectedCuspProfile_mellin _ _ _ _ hQ]
+  refine ⟨fun s => (hm s).1, ?_⟩
+  have he : mellin f = fun s : ℂ => mellin (truncatedCuspProfile 1 f) s +
+      A * (Q : ℂ) ^ (2 - s) * mellin (truncatedCuspProfile (1 / Q) g) (2 - s) :=
+    funext (fun s => (hm s).2)
+  rw [he]
+  letI : NeZero (Q : ℂ) := ⟨Complex.ofReal_ne_zero.mpr hQ.ne'⟩
+  have hp := (differentiable_const_cpow_of_neZero (Q : ℂ)).comp
+    ((differentiable_const (2 : ℂ)).sub differentiable_id)
+  exact hfd.add (((differentiable_const A).mul hp).mul
+    (hgd.comp ((differentiable_const (2 : ℂ)).sub differentiable_id)))
+
+lemma horizontalPhaseMultiplier_wirtingerZ (freq : ℂ) :
+    (1 / 2 : ℂ) * (horizontalPhaseMultiplier freq 1 -
+      Complex.I * horizontalPhaseMultiplier freq Complex.I) = 2 * Real.pi * Complex.I * freq := by
+  simp only [horizontalPhaseMultiplier, mul_one, star_mul, Complex.star_def, Complex.conj_I]
+  ring_nf
+  norm_num [Complex.I_sq, Complex.I_pow_three]
+  ring
+
+theorem traceFourierSeries_wirtingerZ {ι : Type*} (freq a : ι → ℂ)
+    (ha : Summable (fun i => ‖a i‖)) (hfa : Summable (fun i => ‖freq i‖ * ‖a i‖)) (z : ℂ) :
+    horizontalWirtingerZ (fun w => ∑' i, a i * tracePhase (freq i * w)) z =
+      ∑' i, (2 * Real.pi * Complex.I * freq i) * (a i * tracePhase (freq i * z)) := by
+  have h1 := (traceFourierSeries_hasDerivAt freq a ha hfa z 1 0).deriv
+  have hI := (traceFourierSeries_hasDerivAt freq a ha hfa z Complex.I 0).deriv
+  simp only [mul_one, Complex.ofReal_zero, zero_mul, add_zero] at h1 hI
+  rw [horizontalWirtingerZ, h1, hI]
+  have hs1 := traceFourierSeries_directional_summable freq a hfa z 1
+  have hsI := (traceFourierSeries_directional_summable freq a hfa z Complex.I).mul_left Complex.I
+  rw [← tsum_mul_left, ← hs1.tsum_sub hsI, ← tsum_mul_left]
+  apply tsum_congr
+  intro i
+  linear_combination (a i * tracePhase (freq i * z)) * horizontalPhaseMultiplier_wirtingerZ (freq i)
+
+lemma horizontalWirtingerBar_conjugate (f : ℂ → ℂ) (z : ℂ) (hf : DifferentiableAt ℝ f z) :
+    horizontalWirtingerBar (fun w => star (f w)) z = star (horizontalWirtingerZ f z) := by
+  have he := congrArg star (horizontalWirtingerZ_conjugate (fun w => star (f w)) z
+    (Complex.conjCLE.differentiableAt.comp z hf))
+  simpa only [star_star] using he.symm
+
+def sourceZBesselCoefficient (h : O) : ℂ :=
+  (2 * Real.pi * Complex.I * cuspFrequency h) * rationalSourceResidualFourierCoefficient h
+
+lemma sourceZBesselCoefficient_subexponential (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖sourceZBesselCoefficient h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  apply cubicBesselCoefficient_linearWeight_subexponential _ _
+    rationalSourceResidualFourierCoefficient_subexponential (2 * Real.pi) (by positivity) _ ε hε
+  intro h hh
+  exact le_of_eq (by norm_num [norm_mul, abs_of_pos Real.pi_pos])
+
+theorem cubicSource_wirtingerZ_bessel (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    horizontalWirtingerZ (fun w => cubicSourceResidualFunction (upperPoint w v hv)) z =
+      ∑' h : O, cubicBesselTerm sourceZBesselCoefficient h (v, z) := by
+  have he : (fun w => cubicSourceResidualFunction (upperPoint w v hv)) =
+      fun w => ∑' h : O, rationalSourceModeAmplitude v h * tracePhase (cuspFrequency h * w) :=
+    funext (cubicSourceResidualFunction_fourier_expansion v hv)
+  rw [he, traceFourierSeries_wirtingerZ _ _ (rationalSourceModeAmplitude_summable v hv)
+    (rationalSourceModeAmplitude_frequency_summable v hv)]
+  apply tsum_congr
+  intro h
+  by_cases hh : h = 0
+  · subst h
+    simp only [cuspFrequency, map_zero, zero_div, mul_zero, zero_mul,
+      cubicBesselTerm, cubicBesselAmplitude, if_true]
+  · rw [rationalSourceModeAmplitude_bessel v hv h hh]
+    simp only [cubicBesselTerm, cubicBesselAmplitude, if_neg hh, sourceZBesselCoefficient, mul_assoc]
+
+lemma cubicSource_horizontal_differentiableAt (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    DifferentiableAt ℝ (fun w => cubicSourceResidualFunction (upperPoint w v hv)) z := by
+  have hf := cubicSourceResidualFunction_coordinate_differentiableAt (v, z) hv
+  have hp : DifferentiableAt ℝ (fun w : ℂ => (v, w)) z := by fun_prop
+  simpa only [Function.comp_def, cuspCoordinateLift_positive v _ hv] using hf.comp z hp
+
+theorem cubicSource_zProfile_continuousOn (z : ℂ) :
+    ContinuousOn (cuspZProfile cubicSourceResidualFunction z) (Set.Ioi 0) := by
+  intro v hv
+  change 0 < v at hv
+  have hs := (cubicBesselSeries_hasFDerivAt sourceZBesselCoefficient
+    sourceZBesselCoefficient_subexponential (v, z) hv).differentiableAt
+  have hp : DifferentiableAt ℝ (fun y : ℝ => (y, z)) v := by fun_prop
+  apply ContinuousAt.continuousWithinAt
+  apply (hs.comp v hp).continuousAt.congr_of_eventuallyEq
+  filter_upwards [Ioi_mem_nhds hv] with y hy
+  rw [cuspZProfile_positive _ _ _ hy, cubicSource_wirtingerZ_bessel y hy z]
+  rfl
+
+theorem cubicSource_zProfile_exponential_decay (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, a ≤ v → ∀ z : ℂ,
+      ‖cuspZProfile cubicSourceResidualFunction z v‖ ≤ C * Real.exp (-residualBesselDecayRate * v) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselSeries_exponential_decay sourceZBesselCoefficient
+    sourceZBesselCoefficient_subexponential a ha
+  refine ⟨C, hC, ?_⟩
+  intro v hv z
+  rw [cuspZProfile_positive _ _ _ (ha.trans_le hv), cubicSource_wirtingerZ_bessel v (ha.trans_le hv) z]
+  exact hb v hv z
+
+lemma conjugateSource_barProfile (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z v =
+      star (cuspZProfile cubicSourceResidualFunction z v) := by
+  rw [cuspBarProfile_positive _ _ _ hv, cuspZProfile_positive _ _ _ hv]
+  exact horizontalWirtingerBar_conjugate _ z (cubicSource_horizontal_differentiableAt v hv z)
+
+theorem conjugateSource_barProfile_continuousOn (z : ℂ) :
+    ContinuousOn (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z) (Set.Ioi 0) := by
+  apply (cubicSource_zProfile_continuousOn z).star.congr
+  intro v hv
+  exact conjugateSource_barProfile z v hv
+
+theorem conjugateSource_barProfile_exponential_decay (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, a ≤ v → ∀ z : ℂ,
+      ‖cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z v‖ ≤
+        C * Real.exp (-residualBesselDecayRate * v) := by
+  obtain ⟨C, hC, hb⟩ := cubicSource_zProfile_exponential_decay a ha
+  refine ⟨C, hC, ?_⟩
+  intro v hv z
+  rw [conjugateSource_barProfile z v (ha.trans_le hv), norm_star]
+  exact hb v hv z
+
+theorem conjugateSource_barProfile_isBigO (z : ℂ) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z =O[atTop]
+      (fun v : ℝ => Real.exp (-residualBesselDecayRate * v)) := by
+  obtain ⟨C, hC, hb⟩ := conjugateSource_barProfile_exponential_decay 1 (by norm_num)
+  apply Asymptotics.IsBigO.of_bound C
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with v hv
+  simpa only [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)] using hb v hv z
+
+theorem conjugateRamifiedSource_zProfile_isBigO (side : Bool) (z : ℂ) :
+    cuspZProfile (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) z =O[atTop]
+      (fun v : ℝ => Real.exp (-(residualBesselDecayRate / 3) * v)) := by
+  obtain ⟨C, hC, hb⟩ := conjugateRamifiedSource_zProfile_exponential_decay side 1 (by norm_num)
+  apply Asymptotics.IsBigO.of_bound C
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with v hv
+  simpa only [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)] using hb v hv z
+
+/-- The two primitive ramified cusp derivative profiles have entire Mellin transforms. -/
+theorem conjugateSource_primitive_cusp_mellin_entire (side : Bool) :
+    (∀ s : ℂ, MellinConvergent (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+      (ringComplex (ramifiedCuspRoot side : O))⁻¹) s) ∧
+    Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+      (ringComplex (ramifiedCuspRoot side : O))⁻¹)) := by
+  let g := integralComplexMatrix (lowerCuspMatrix (ramifiedCuspRoot side : O))
+  have hg0 : g 0 0 = 1 := by change ringComplex 1 = 1; exact map_one _
+  have hgc : g 1 0 = ringComplex (ramifiedCuspRoot side : O) := rfl
+  have hc : g 1 0 ≠ 0 := by rw [hgc]; exact ringComplex_ne_zero (Units.ne_zero _)
+  have he := cusp_mellin_entire
+    (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0))
+    (cuspZProfile (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) (-g 1 1 / g 1 0))
+    (-1 / (g 1 0) ^ 2) (‖g 1 0‖ ^ 2) residualBesselDecayRate (residualBesselDecayRate / 3)
+    (sq_pos_of_pos (norm_pos_iff.mpr hc)) residualBesselDecayRate_pos (by positivity)
+    (conjugateSource_barProfile_continuousOn _) (conjugateRamifiedSource_zProfile_continuousOn side _)
+    (conjugateSource_barProfile_isBigO _) (conjugateRamifiedSource_zProfile_isBigO side _)
+    (fun v hv => conjugateSource_barProfile_reflection g hc v hv)
+  simpa only [hg0, hgc, one_div] using he
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

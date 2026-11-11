@@ -346,8 +346,16 @@ Scaling cusp coordinates by three replaces the affine denominator `q` by
 `3q` and contributes `3^s`. The period congruence then holds automatically;
 finite-character cancellation selects `q ∣ h` and
 `3 ∣ h/q + phase(r)`, without choosing an orientation of the complex embedding.
-The projected source has six Gauss branches. Its finite Fourier decomposition
-and the bounded compact pullback for arbitrary cusp translates are being formalized.
+The projected source has six Gauss branches
+(`ramifiedSourceEisenstein_scaled_fourier`, checked). Compact multiplicity bounds
+give a bounded pullback for every cusp matrix (`arbitraryCuspPullback`, checked).
+Native scalar continuation passes finite Gauss identities to residues
+(`finite_unramified_residue`, checked). This identifies every Fourier coefficient
+at the two primitive ramified cusps. Their constant modes vanish; the remaining
+coefficients are subexponential. Fourier uniqueness gives a normally convergent
+Bessel expansion and exponential height decay
+(`ramifiedScaledRow_eq_bessel`, `ramifiedSource_bessel_normal`,
+`ramifiedSource_exponential_decay`, checked).
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

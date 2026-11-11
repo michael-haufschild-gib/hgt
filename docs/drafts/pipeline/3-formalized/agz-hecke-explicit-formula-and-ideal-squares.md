@@ -33,6 +33,8 @@ analytic tools below.
       square of a number ring of large discriminant
 - [x] P7 the class characters together: contacts on the principal prime powers, the pairing and
       the index of the sum
+- [x] P9 one ring that is not abelian, in Lean: the splitting field of `X³ − 2` (group `S₃`),
+      with its degree points and its Hodge index
 - [ ] P8 the index of an Artin character (needs class field theory)
 
 ## Lean (folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`)
@@ -50,6 +52,7 @@ analytic tools below.
 | P5 | `TheSquareOfANumberRingThroughItsIdealsHasTheIndexOfItsDedekindZetaFunction` | `heckeFiniteConductor_trivialModulus`, `dedekindZeros`, `idealContact`, `ringForm`, `tendsto_ringForm_add_idealContact`, `tendsto_ringForm_add_classContact`, `exists_le_negIndex_dedekindGram_iff`, `forall_negIndex_dedekindGram_eq_zero_iff` |
 | P6 | `BelowTheFirstContactALargeDiscriminantGivesTheInequalityOnANumberRing` | `packetAutocorr_log_eq_zero_of_short`, `archForm_add_log_mul_mass_nonneg`, `archForm_add_conjugateForm_add_log_mul_mass_nonneg`, `heckeZeroSum_ge_of_no_contact`, `heckeZeroSum_nonneg_of_no_contact`, `dedekindZeroSum_ge_zeroSum_of_no_contact`, `tendsto_ringForm_le_degrees_of_short` |
 | P7 | `TheClassCharactersTogetherCarryTheContactsOfTheIdealsOfTrivialClass` | `sum_monoidHom_apply_eq_zero`, `sum_heckeValue_trivialModulus`, `classTrivialContact`, `sum_heckeMangoldt_trivialModulus`, `toClassGroup_trivialModulus_injective`, `forall_heckeValue_eq_one_iff_isPrincipal`, `classTrivialContact_eq`, `tendsto_ringForm_add_classTrivialContact`, `exists_le_negIndex_classGram_iff` |
+| P9 | `TheRingOfTheCubeRootsOfTwoIsNotAbelianAndHasItsHodgeIndex` | `cube_ne_two`, `irreducible_cubeMinusTwo`, `card_rootSet_real_cubeMinusTwo`, `galActionHom_cubeMinusTwo_bijective`, `CubeRootsOfTwo`, `exists_not_commute_cubeRootsOfTwo`, `tendsto_ringForm_cubeRootsOfTwo`, `exists_le_negIndex_cubeRootsOfTwo_iff`, `forall_negIndex_cubeRootsOfTwo_eq_zero_iff` |
 
 Each module: `lake --old env lean`, exit 0, no output. The statements hold for every number
 field and every primitive ray class character; the trivial character is the Dedekind zeta
@@ -110,6 +113,13 @@ The contacts are linear in the weight and only `ψ = 1` has a pole plane, so the
 Q3 is: `h(jets + counterterm) + 2h(contacts of trivial class) → 2d₁d₂ − Σ_ψ Z_ψ(f)`. The index of
 a sum of forms of tempered configurations is the number of distinct zeros to the right of the
 line in their union (corpus).
+
+**P9 (paper).** `X³ − 2` is irreducible over `ℚ`: a rational root of a monic integer polynomial
+is an integer, and `n³ = 2` has no integer solution (`n ≤ 1` gives `n³ ≤ 1`, `n ≥ 2` gives
+`n³ ≥ 8`). It has one real root (the cube is strictly increasing) and three complex roots, so
+its Galois group, a transitive subgroup of `S₃` containing the transposition complex conjugation,
+is `S₃`; two transpositions do not commute. P5 holds for every number field, hence for the
+splitting field.
 
 ## Open after P5
 - The index law per Artin character of a ring that is not abelian: it needs each Artin

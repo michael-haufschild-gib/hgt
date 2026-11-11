@@ -1,7 +1,7 @@
 # Unshifted comb index at its own aperture
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; full Lean draft, final check pending.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean).
 - **Target:** A94; Σ154/Σ165.
 
 ## Statement
@@ -32,7 +32,7 @@ premise. B152's independent arithmetic sign producer remains open.
 
 ## Lean
 
-Capstone draft:
+Capstone:
 `HodgeTheoryOfAFixedPart/TheUnshiftedCombIndexAtItsOwnAperture`:
 `eventually_unshiftedCombIndex_between`,
 `eventually_unshiftedCombIndex_eq_of_nullity_zero`.
@@ -40,8 +40,10 @@ Capstone draft:
 Passed bridges: exact aperture jump and positive-energy stability;
 finite operator Grams; smooth form-core index capture; smooth and bounded
 mass-shifted packet Grams; exact nested-packet physical mass; tight block
-transfer; unconditional aperture upper bound.
+transfer; unconditional aperture upper bound; Hermitian zero-Gram
+identification; support-preserving realification; original-ratio scalar
+and finite Gram sampling.
 
-Remaining checks: smooth zero-Gram identification, support-preserving
-realification, original-ratio sampling, and capstone.
+Capstone passed `lake --old env lean` without diagnostics. Supporting
+modules passed and required oleans exist. Umbrellas are wired.
 Support modules are one contribution with this theorem.

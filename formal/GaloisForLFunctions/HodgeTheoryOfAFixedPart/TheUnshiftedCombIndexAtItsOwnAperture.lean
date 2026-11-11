@@ -18,7 +18,7 @@ open Finset Filter Topology Matrix Zeta23
 
 namespace GaloisForLFunctions.HodgeTheoryOfAFixedPart
 
-open HTGeometry AbsoluteGeometryOfSpecZ ArithmeticCastelnuovoSeveri
+open HTGeometry AbsoluteGeometryOfSpecZ ArithmeticCastelnuovoSeveri ArithmeticIndexDescent
 open ArithmeticContinuationAndCriticalEnergy
 open _root_.RHTower _root_.RHTower.PaperRestrictedWeil
 
@@ -30,7 +30,8 @@ theorem eventually_negativeRank_le_originalRatio_combIndex
     ∀ᶠ N : ℕ in atTop,
       (negativeRank A 0 : ℕ∞) ≤ robustCombIndex (Ioc N (Q * N)) 0 := by
   obtain ⟨m, g, hg, hgc, hgs, hindex⟩ := exists_real_smooth_packets_capture_negativeRank A
-  let f : Fin m → realTests := fun i => ⟨g i, (hg i).of_le (by simp), hgc i⟩
+  let f : Fin m → realTests := fun i =>
+    ⟨g i, (hg i).of_le (WithTop.coe_le_coe.mpr le_top), hgc i⟩
   let c := Real.log 3 + A.1
   let F : Fin m → realTests := fun i => translatedPacketTest c (f i)
   have hQpos : (0 : ℝ) < Q := by exact_mod_cast hQ

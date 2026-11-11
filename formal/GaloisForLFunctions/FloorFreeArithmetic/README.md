@@ -105,6 +105,9 @@ gap at every candidate point, for which no a priori bound is known. The Dirichle
 Möbius and the Liouville function, `1/ζ(s)` and `ζ(2s)/ζ(s)`, have at a zero right of the line
 a pole of order the multiplicity, with leading coefficients that differ by the unit `ζ(2ρ)`:
 the three top layers have the same support, and only that of `Λ` has integral coefficients.
+The summatory function of `μ` attains its rate at an attained frontier with the logarithmic power
+of the multiplicity: `M(x) ≠ o(x^Θ (log x)^{m−1})` at a zero of order `m` on `Re s = Θ` (corpus,
+`RHTower.not_mertens_littleO_zetaZeroAbscissa_of_le_order`).
 Linear
 identities impose nothing on the datum: every depth `0 < b ≤ ½`, every finite set of positive
 ordinates and every choice of multiplicities is the top layer of a finite configuration with the
@@ -121,7 +124,15 @@ Rounding to the next rational prime instead gives an Euler product over the rati
 with natural exponents, the Dirichlet series of a nonnegative multiplicative function on the
 integers, with any finite layer at `17/30 < Θ < 1`: the prime gaps cost the strip up to `17/30`.
 Multiplicativity, positivity and integrality of the coefficients therefore impose nothing on a
-finite top layer; only the functional equation is missing from these models. With it there is no
+finite top layer; only the functional equation is missing from these models. Two refinements of
+the models are constrained in the corpus. A system that only adds generalized primes to the
+rational primes pays for a new zero with a real singularity of its logarithmic Euler factor at
+or beyond the zero (`RHTower.landau_relative_rigidity`); the models above have none, so they
+change the primes in both directions. And the models control the count of their integers to
+first order only. For continuous systems a regular count does not constrain the zeros
+(`RHTower.BeurlingRegularIntegers.regular_integers_do_not_constrain_zeros`); for the integers
+free of a set of primes it quantizes the expansion of the deleted primes
+(`RHTower.PrimeDeletion.residue_quantization_complex`). With the functional equation there is no
 class left to build a model in: a discrete system of primes whose zeta function has the
 completed functional equation is the system of the rational primes
 (`ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation`). A finite
@@ -148,7 +159,11 @@ limit `ζ` give RH; right of `Re s = σ` they give the zero-free half-plane; wit
 zeros they leave `ζ` at most `k` zeros right of the line. The same count comes
 from a form: if the zeros right of the line are eigenvalues, at their spectral points `i(ρ − ½)`,
 of an operator symmetric for a form with `κ` negative squares, there are at most `κ` of them, and
-none for `κ = 1`. Of the regulators of the horizon, the scattering tower has the right zeros of
+none for `κ = 1`. The form with one negative square by construction exists in the corpus: Weil's
+form without the pole term, archimedean minus primes, has a negative vector unconditionally, and
+RH holds exactly when it is negative definite on no plane of tests
+(`RHTower.exists_markovEnergy_neg`, `RHTower.riemannHypothesis_iff_not_exists_negDef_markovPlane`).
+What is missing is a proof that its index is one, not the form. Of the regulators of the horizon, the scattering tower has the right zeros of
 `ζ` at every height, and the clock lies below Weil's form at every cutoff: its negative
 directions contain those of the limit, so a sign, a floor or an index bound before the limit is
 at least as strong as the same statement in the limit. The de Bruijn–Newman heat flow is the
@@ -208,11 +223,15 @@ The existence quantifier has no freedom in the limit: feasible systems are bound
 visible coordinate, a test reads finitely many coordinates, and the Weil cone has one point; so
 every family of certificates at apertures tending to infinity converges to `Λ` in every
 coordinate, and for each `n` and `ε` there is an aperture beyond which every feasible system has
-`|λ(n) − Λ(n)| ≤ ε`. The pure objects made from `ξ` do not supply certificates: for the pencil
-`ξ(s+1) + ξ(s−1)` the quotient of the two halves is
-`2π (s−2)/(s(s+1)) · ζ(s−1)/ζ(s+1)`, of size `2π/σ` on the real axis, so the pencil over its
-dominant half is not a Dirichlet series: its prime side has a density starting at `u = 0` and
-is not carried by `log ℕ`.
+`|λ(n) − Λ(n)| ≤ ε`. The pure objects made from `ξ` do not supply certificates. Each is a
+dominant half with an Euler product plus its reflection, and the quotient of the halves is a
+quotient of Gamma factors times a Dirichlet series: for the pencil `ξ(s+h) + ξ(s−h)` it has
+size `≍ σ^{−h}` on the real axis (`2π (s−2)/(s(s+1)) · ζ(s−1)/ζ(s+1)` at `h = 1`), for the
+cleared Eisenstein constant term at height `Y` it has size `≍ Y^{1−2σ} σ^{−1/2}`. A Dirichlet
+series has an exponential scale at its first nonzero coefficient, `n^σ L(σ) → a_n`; an
+amplitude that tends to zero more slowly than every exponential has none (the first coefficient
+test). So no pencil and no constant term, divided by its dominant half, is a Dirichlet series:
+the prime side has a density that starts at first contact and is not carried by `log ℕ`.
 
 ## 5. Pillar theorems
 
@@ -230,7 +249,7 @@ hypothesis. *Kill*: a source excluded for a whole kind.
 | **Replication.** Translates at a finite layer blow up along every phase return; bounded normalizations tend to zero; every limit is zero | `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized` | kill: normal families |
 | **Unit gaps.** AAL ⇔ at most one or infinitely many zeros right of every line; bounded counts pass to locally uniform limits; a realization of index `κ` has at most `κ` right zeros | `asymptoticAbscissaLaw_iff_encard_rightOf_le_one`, `riemannHypothesis_of_unit_gap_limit`, `riemannHypothesis_of_indexOne_realization` | receivers (b) |
 | **Regulators.** The scattering tower keeps the count at every height; the clock lies below Weil's form at every cutoff; the heat flow has at least two nonreal zeros at every small time unless RH holds | `towerQuotient_unit_gap_iff`, `greenWeilEnergy_le_form`, `riemannHypothesis_of_greenWeilEnergy_floor`, `riemannHypothesis_of_frequently_nonrealZeroCount_le_one` | kill; receiver |
-| **Certificates.** Feasibility at an aperture = positive definite spectral kernels on intervals = tapered kernels that are transforms of positive measures; null vectors annihilate; certificates converge to `Λ`; the pencil is not a Dirichlet series | `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `exists_measure_charFun_eq_taperedKernel`, `spectralKernel_eq_zero_of_null`, `tendsto_weight_of_aperturePositive_seq`, `not_exists_lSeries_pencil` | structure; kill (c) |
+| **Certificates.** Feasibility at an aperture = positive definite spectral kernels on intervals = tapered kernels that are transforms of positive measures; null vectors annihilate; certificates converge to `Λ`; reflected halves (pencils at every shift, the cleared Eisenstein constant term) are not Dirichlet series | `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `exists_measure_charFun_eq_taperedKernel`, `spectralKernel_eq_zero_of_null`, `tendsto_weight_of_aperturePositive_seq`, `not_lSeries_of_slow_amplitude`, `not_exists_lSeries_pencil_shift`, `not_exists_lSeries_constantTerm` | structure; kill (c) |
 | **Amplification.** Window moments of a finite layer have rate `2k·b`; a bound of order `2k` with exponent `A` gives the law beyond the depth `A/2k`; one exponent for all orders ⇒ AAL; moment bounds of all orders are sup bounds | `finite_top_moment_lower_bound`, `abscissaLawAt_of_window_moment`, `asymptoticAbscissaLaw_of_window_moments`, `windowMomentsBounded_iff_windowSupPowersBounded` | receiver (d); kill |
 | **Symmetrization.** Second-order law of projection; no convergent linear statistic is monotone; heat statistics are monotone below a height; additive functionals of the depths are mixtures of inner masses | `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `sum_profile_sub_eq_innerMass` | kill |
 
@@ -303,14 +322,17 @@ discrete primes is the zeta function of the density times a factor without zeros
 critical line. Parity of right zeros at every depth. Hurwitz
 transfer of a unit gap. Second-derivative tests for pair sums on vertical lines; concave functions
 on the line; Fourier and heat symbols. The taper argument that turns positive definiteness on
-an interval into positive definiteness on the line.
+an interval into positive definiteness on the line. The first coefficient test for Dirichlet
+series, with the two-sided bound `(z−1)^h Γ(z) ≤ Γ(z+h) ≤ (z+h)^h Γ(z)` for the amplitude of a
+reflected half.
 
-**To build.** The top traces of `μ`, `λ` and twisted multiplicative functions in world I (an
-explicit formula for their summatory functions), beyond the orders of their Dirichlet series.
+**To build.** The top traces of `μ`, `λ` and twisted multiplicative functions in world I on
+windows (an explicit formula for their summatory functions), beyond the orders of their
+Dirichlet series and the Ω-law of `M` at an attained frontier.
 The boundary points of a feasible set as discrete pure objects (the measures of a system with a
 null vector). A regulator of the horizon that approaches Weil's form from above. The prime side of
-the remaining pure objects with the Gamma factor of `ζ`: pencils at a general shift, cleared
-constant terms, symmetric completions of zero-free Dirichlet polynomials.
+a reflected half on a window (the first coefficient test is global), and of symmetric
+completions of zero-free Dirichlet polynomials.
 
 ## 9. Questions and open research topics
 
@@ -318,7 +340,7 @@ constant terms, symmetric completions of zero-free Dirichlet polynomials.
 |---|---|---|
 | Q1 | Which mechanisms have floor zero? | receivers of the four kinds are in Lean; every estimate of the census has a positive floor |
 | Q2 | Non-attainment for `ζ` (B170): is `ψ(x) − x` of smaller order than its own rate on some late windows? | open; equivalent to excluding world I; the top layer alone does not decide it (integer-norm one-offs, isolated pairs) |
-| Q3 | A source of a unit gap (B117, B171): functions with at most one right zero and limit `ζ`; a form with one negative square in which the zeros are a symmetric spectrum | open; neither the tower (`towerQuotient_unit_gap_iff`), nor the clock (`greenWeilEnergy_le_form`), nor the heat flow (`eventually_two_le_nonrealZeroCount`) supplies it |
+| Q3 | A source of a unit gap (B117, B171): functions with at most one right zero and limit `ζ`; a form with one negative square in which the zeros are a symmetric spectrum | open; the form is Weil's form without the pole term, and its index is one exactly under RH (`RHTower.riemannHypothesis_iff_not_exists_negDef_markovPlane`); neither the tower (`towerQuotient_unit_gap_iff`), nor the clock (`greenWeilEnergy_le_form`), nor the heat flow (`eventually_two_le_nonrealZeroCount`) supplies it |
 | Q4 | A functional that decreases under projection and has an arithmetic evaluation (B172) | no linear statistic; additive functionals of the depths are mixtures of inner masses; what is open is a minimality principle for `ζ`, the equality case of Jensen's formula (kind c) |
 | Q5 | A bound for all moment orders with one exponent (B173) | on windows it is equivalent to a sub-exponential two-sided bound of the trace on those windows (`windowMomentsBounded_iff_windowSupPowersBounded`): open, and of the strength of the Riemann hypothesis on some late windows |
 | Q6 | A certificate at every aperture that is not `Λ` | open at finite aperture (the feasible sets have nonempty interior where windows have margin); in the limit every family of certificates is `Λ` |
@@ -326,7 +348,10 @@ constant terms, symmetric completions of zero-free Dirichlet polynomials.
 
 Open topics: joint use of the two structures on the tangent datum; a bound for `ζ` along one
 phase return on a domain reaching a top zero; nonlinear relations between the tangent data of
-multiplicative functions; regulators that approach Weil's form from above.
+multiplicative functions; regulators that approach Weil's form from above; a discrete system of
+generalized primes whose integers are counted with an error below the square root and whose
+zeta function has a non-real zero right of the line (the integers have this regularity, no model
+of the programme is known to; that no such system exists would contain RH).
 
 ## 10. Traps
 

@@ -1,9 +1,20 @@
 # Four-Sector Classification of the Normalized Spline Trace at the Zero Abscissa and Strict Separation of the Top-Line Laws
 
 - **ID:** ffa-spline-trace-classification-at-zero-abscissa
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-1011/fable.md §5.3 `[D]`
+- **Lean Module:** `GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa`
+- **Lean Declarations:**
+  - `GaloisForLFunctions.FloorFreeArithmetic.IsRealTrigPoly`
+  - `GaloisForLFunctions.FloorFreeArithmetic.tendsto_normTrace_sub_trigPoly_iff`
+  - `GaloisForLFunctions.FloorFreeArithmetic.tendsto_normTrace_sub_nonzero_trigPoly_iff`
+  - `GaloisForLFunctions.FloorFreeArithmetic.zetaNormTrace_quadrichotomy`
+  - `GaloisForLFunctions.FloorFreeArithmetic.zeta_offLine_tendsto_zero_iff`
+  - `GaloisForLFunctions.FloorFreeArithmetic.zeta_offLine_no_nonzero_trigPoly_iff`
+  - `GaloisForLFunctions.FloorFreeArithmetic.zeta_abscissaLaw_of_no_nonzero_trigPoly_limit`
+  - `GaloisForLFunctions.FloorFreeArithmetic.exists_tempered_abscissaLaw_infinite_top`
+  - `GaloisForLFunctions.FloorFreeArithmetic.exists_tempered_abscissaLaw_nonzero_trigPoly_limit`
 - **Statement:** For the normalized cubic-spline trace $G(u) = \operatorname{normTrace}(\mathcal{Z}_\zeta, \Theta - \frac{1}{2}, u)$ at the zeta zero abscissa $\Theta = \operatorname{zetaZeroAbscissa}$, $G(u)$ splits unconditionally into four mutually exclusive regimes (`RH`, unattained off-line top $G \to 0$, finite nonempty off-line top $G - T \to 0$ with $T \not\equiv 0$ trigonometric polynomial, infinite off-line top where $G - T \not\to 0$ for every finite trigonometric polynomial $T$), and the three laws (`StrongOffLineTopNonAttainment` $\implies$ `NoFiniteOffLineTopLine` $\implies$ `AsymptoticAbscissaLaw`) are strictly separated on tempered conjugation-symmetric nonreal zero configurations.
 
 ## Goal
@@ -12,7 +23,7 @@ Resolve the exact relation between `RHTower.AsymptoticAbscissaLaw`, the trigonom
 ## Gates
 - [x] 0 → 1  in-progress: exact Bohr-spectrum formulation of real trigonometric polynomials and canonical depth $b_* = \Theta - \frac{1}{2}$
 - [x] 1 → 2  fully-proven: complete dependency-closed paper proof `[PROVED HERE]`
-- [ ] 2 → 3  formalized: Lean module `GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa`, `lake --old env lean` green, `#print axioms` clean
+- [x] 2 → 3  formalized: Lean module `GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa`, `lake --old env lean` green, `#print axioms` `[propext, Classical.choice, Quot.sound]`
 
 ## Paper Proof `[PROVED HERE]`
 
@@ -57,9 +68,9 @@ Consequently, for $\zeta(s)$:
 - $(\Theta > \frac{1}{2} \implies G(u) \to 0) \implies (\Theta > \frac{1}{2} \implies \forall T \not\equiv 0 \text{ trig.\ poly.}, \, G - T \not\to 0) \implies \operatorname{AsymptoticAbscissaLaw}$ (since `¬ AsymptoticAbscissaLaw` yields a spectral gap $h < \Theta - \frac{1}{2}$ with `rightOf zetaZeroConfig h` finite and containing $\mathcal{L}_{\mathrm{top}}(\zeta) \ne \emptyset$).
 
 ### 4. Strict separation of the three laws on tempered configurations
-Fix any $b \in (0, \frac{1}{2}]$.
-1. **Infinite top line (`AbscissaLaw` and `NoFiniteTopLine` hold, `normTrace → 0` fails):** Let $Z_{\mathrm{col}}$ be the disjoint superposition of `column one_pos 1 hb hb' 1 le_rfl` and `column one_pos (-1) hb hb' 1 le_rfl`, whose carrier consists of $\frac{1}{2} \pm b + i(6j \pm 1)(2\pi)$ for $j \in \mathbb{Z}$. Since $6j \pm 1 \ne 0$ for all $j \in \mathbb{Z}$, $Z_{\mathrm{col}}$ has no real zeros; since $-(6j + 1) = 6(-j) - 1$, $Z_{\mathrm{col}}$ is conjugation-symmetric; by `temperedConfig_superpose` and `temperedConfig_column`, $Z_{\mathrm{col}}$ is tempered of exact top depth $b$. It has infinitely many points on $\operatorname{Re} \rho = \frac{1}{2} + b$, so `AbscissaLaw Z_col` holds, no finite trigonometric polynomial approximates $\operatorname{normTrace}(Z_{\mathrm{col}}, b)$ at $+\infty$, and $\operatorname{normTrace}(Z_{\mathrm{col}}, b) \not\to 0$.
-2. **Sub-top accumulation (`AbscissaLaw` holds, yet `normTrace` tends to a nonzero finite trigonometric polynomial — refuting the converse in `[D]`):** Define `subTopConfig hb hb'` with carrier $\{\rho \in \mathbb{C} \mid \exists k \in \mathbb{N},\; |\operatorname{Re}\rho - \frac{1}{2}| = b(1 - \frac{1}{k+2}) \wedge |\operatorname{Im}\rho| = k + 2\}$ and multiplicity $1$. Since $|\operatorname{Im}\rho| = k + 2$ uniquely determines $k$ and grows linearly, `subTopConfig` is locally finite, reflection- and conjugation-symmetric, free of real zeros, and tempered (`∑ (1 + (k+2)^2)⁻¹ < ∞`). Let $Z_{\mathrm{mix}} = \operatorname{superpose}(\operatorname{layerConfig}\; hb'\; \{1\}\; 1,\; \operatorname{subTopConfig}\; hb\; hb')$. The two carriers are disjoint (ordinates $1$ vs.\ $k + 2 \ge 2$, and depths $b$ vs.\ $b(1 - \frac{1}{k+2}) < b$). Because $b(1 - \frac{1}{k+2}) \to b$ as $k \to \infty$ along distinct ordinates $k + 2$, `rightOf Z_mix h` is infinite for every $h < b$ and empty for every $h \ge b$, proving `AbscissaLaw Z_mix`. Yet `{ρ ∈ Z_mix.carrier | Re ρ = 1/2 + b} = {1/2 + b ± i}` is finite and nonempty, so $\operatorname{normTrace}(Z_{\mathrm{mix}}, b, u)$ converges as $u \to +\infty$ to a nonzero finite trigonometric polynomial.
+For any sequence $d : \mathbb{N} \to [0, \frac{1}{2}]$, define `orbitConfig d` with carrier $\{\rho \in \mathbb{C} \mid \exists k \in \mathbb{N},\; |\operatorname{Re}\rho - \frac{1}{2}| = d(k) \wedge |\operatorname{Im}\rho| = k + 1\}$ and multiplicity $1$. Since $|\operatorname{Im}\rho| = k + 1 \ge 1$ uniquely determines $k$ and has at most $4$ points per shell, `orbitConfig d` is locally finite, reflection- and conjugation-symmetric, free of real zeros, and tempered ($\sum_k 4(1 + (k + 1)^2)^{-1} < \infty$). Fix $b \in (0, \frac{1}{2}]$:
+1. **Infinite top line (`exists_tempered_abscissaLaw_infinite_top`):** Setting $d(k) = b$ for all $k \in \mathbb{N}$ gives `TopDepth Z b`, `AbscissaLaw Z`, and an infinite top line $\{\frac{1}{2} + b \pm i(k + 1) \mid k \in \mathbb{N}\}$, so no finite trigonometric polynomial approximates $\operatorname{normTrace}(Z, b)$ at $+\infty$ and $\operatorname{normTrace}(Z, b) \not\to 0$.
+2. **Sub-top accumulation (`exists_tempered_abscissaLaw_nonzero_trigPoly_limit` — refuting the converse in `[D]`):** Setting $d(0) = b$ and $d(k + 1) = b(1 - \frac{1}{k + 2}) < b$ gives `TopDepth Z b` and `AbscissaLaw Z` (since $d(k + 1) \to b$ along distinct ordinates $k + 2$), while $\{\rho \in Z \mid \operatorname{Re}\rho = \frac{1}{2} + b\} = \{\frac{1}{2} + b \pm i\}$ is finite and nonempty, so $\operatorname{normTrace}(Z, b, u)$ converges as $u \to +\infty$ to a nonzero finite trigonometric polynomial.
 
 ## Log
-- 2026-11-11 — created and proved in `2-fully-proven`
+- 2026-11-11 — created, proved, and formalized in `GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa`

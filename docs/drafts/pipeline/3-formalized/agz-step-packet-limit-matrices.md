@@ -108,9 +108,8 @@ Each module: `lake --old env lean`, exit 0, no output. Continuation inputs
 - The index at finite scale as the index of the limit (A94).
 - A proof of nonnegativity of one of the matrices beyond the certified lengths: each is a
   statement of the strength of the inequality on a window.
-- The Li ladder as comb forms of tails (A82): the limit for the Laguerre tails themselves; the
-  damped form is on `li-ladder-as-damped-comb-tails.md`, the expansion of a tail in its
-  increments on the programme card (G16).
+- The Li ladder as comb forms of tails (A82) is proved for the Laguerre tails themselves:
+  `agz-raw-laguerre-tails-li-ladder.md`.
 
 ## Log
 - 2026-11-11 — formalized.

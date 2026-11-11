@@ -26,7 +26,7 @@ theorem coe_linearDetectorWeights (N : ℕ) (d : ℝ) (n : ℕ) :
     (linearDetectorWeights N d n : ℂ) =
       levinsonShiftedLinearMollifierCoeff N (1 / 2 - d) n := by
   unfold linearDetectorWeights levinsonShiftedLinearMollifierCoeff Sieve.levinsonLinearMollifierCoeff
-  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero,
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_mul, sub_zero,
     Complex.ofReal_mul]
 
 /-- Critical-line normalization cancels precisely the real displacement. -/
@@ -41,7 +41,9 @@ theorem abs_linearDetectorWeights_le {N : ℕ} (hN : 1 < N) (d : ℝ) {n : ℕ}
       mul_le_mul_of_nonneg_left (Sieve.norm_levinsonLinearMollifierCoeff_le hN)
         (Real.rpow_nonneg hn0.le _)
     _ = _ := by
-      rw [Real.sqrt_eq_rpow, one_div, ← Real.rpow_neg hn0.le, ← Real.rpow_add hn0]
+      rw [Real.sqrt_eq_rpow]
+      simp only [one_div]
+      rw [← Real.rpow_neg hn0.le, ← Real.rpow_add hn0]
       congr 1
       ring
 

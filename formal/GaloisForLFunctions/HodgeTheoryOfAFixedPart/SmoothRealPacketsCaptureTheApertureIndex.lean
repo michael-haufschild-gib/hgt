@@ -53,14 +53,14 @@ theorem exists_real_smooth_packets_negIndex_ge {n : ℕ} (f : Fin n → ℝ → 
     split_ifs <;> rfl
   let t : Fin n × Fin 2 → testSpace := fun j =>
     ⟨fun u => (g j u : ℂ),
-      contDiff_ofReal_packet ((hg j).of_le (by simp)),
+      contDiff_ofReal_packet ((hg j).of_le (WithTop.coe_le_coe.mpr le_top)),
       hasCompactSupport_ofReal_packet (hgc j)⟩
   let C : Matrix (Fin n) (Fin n × Fin 2) ℂ := fun i j =>
-    if j.1 = i then if j.2 = 0 then 1 else I else 0
+    if j.1 = i then if j.2 = 0 then 1 else Complex.I else 0
   have hcomb : (fun i => ((∑ j, C i j • t j : testSpace) : ℝ → ℂ)) = f := by
     funext i u
     simp [C, t, g, Fintype.sum_prod_type, Fin.sum_univ_two]
-    rw [mul_comm I, Complex.re_add_im]
+    rw [mul_comm Complex.I, Complex.re_add_im]
   have hmat := zeroGram_comb zetaZeroConfig temperedConfig_zetaZeroConfig t C
   rw [hcomb] at hmat
   have hle : hermNegIndex (zeroGram zetaZeroConfig f) ≤

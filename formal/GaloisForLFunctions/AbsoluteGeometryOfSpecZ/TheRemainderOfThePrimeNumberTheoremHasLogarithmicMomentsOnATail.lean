@@ -11,7 +11,9 @@ prime number theorem at the ratio `N/n`. In the coordinate `t = n/N` of the tail
 
 `(1/N) Σ_{n ≤ N} log^j(N/n) (N/n − ψ(N/n)) → κ_j = ∫_0^1 log^j(1/t) (1/t − ψ(1/t)) dt`
 
-(`tendsto_sum_logTail_mul_primeRemainder`).
+(`tendsto_sum_logTail_mul_primeRemainder`), and the same for every profile `w` of a tail in
+place of `log^j(1/t)` (`TailWeight`, `TailWeight.tendsto_tailRiemannSum_primeProfile`): `w` is
+continuous on `(0, 1]`, at most `c log^j(1/t)`, and has convergent Riemann sums after every cut.
 
 * **The majorant** (`exists_abs_logPow_mul_primeRemainder_le`). The prime number theorem with the
   error `x e^{−c√log x}` and Chebyshev's bound give
@@ -19,10 +21,9 @@ prime number theorem at the ratio `N/n`. In the coordinate `t = n/N` of the tail
 * **The points below `N/K`** (`sum_inv_mul_one_add_log_sq_le`). Their terms are at most
   `C_j/(n (1 + log(N/n))²)`; with `φ(n) = 1/(1 + log(N/n))` each is at most `2(φ(n+1) − φ(n))`,
   and the sum telescopes to at most `2/(1 + log(K/2))`.
-* **The points above `N/K`** (`riemannOn_cut_logPow_mul_primeRemainder`). There
+* **The points above `N/K`** (`TailWeight.riemannOn_cut_primeProfile`). There
   `ψ(N/n) = Σ_{k ≤ K} Λ(k) 1[n ≤ N/k]`: the hyperbola method. The profile is a finite combination
-  of a bounded continuous profile and of cuts of the antitone profile `log^j(1/t)`, so its
-  Riemann sums converge.
+  of a bounded continuous profile and of cuts of the profile, so its Riemann sums converge.
 -/
 
 open Finset Filter Topology MeasureTheory
@@ -399,10 +400,31 @@ theorem sum_inv_mul_one_add_log_sq_le {N K : ℕ} (hK : 2 ≤ K) (hN : K ≤ N) 
   refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
   linarith
 
-/-! ### The degree points above `N/K`: the hyperbola method -/
+/-! ### Profiles of tails -/
 
-/-- The prime part of the row against the logarithmic profile of degree `j`. -/
-def primeProfile (j : ℕ) (t : ℝ) : ℝ := logPow j t * primeRemainder t
+/-- A profile of a tail that the row of the flat tail can be summed against: measurable,
+continuous on `(0, 1]`, dominated by `c log^j(1/t)`, and with convergent Riemann sums after
+every cut. -/
+structure TailWeight (w : ℝ → ℝ) (j : ℕ) (c : ℝ) : Prop where
+  measurable : Measurable w
+  continuousOn : ContinuousOn w (Set.Ioc 0 1)
+  abs_le : ∀ t ∈ Set.Ioc (0 : ℝ) 1, |w t| ≤ c * logPow j t
+  cut : ∀ θ : ℝ, RiemannOn ((Set.Iic θ).indicator w)
+
+theorem continuousOn_logPow (j : ℕ) : ContinuousOn (logPow j) (Set.Ioc 0 1) := fun t ht =>
+  (((Real.continuousAt_log (one_div_pos.mpr ht.1).ne').comp
+    (continuousAt_const.div continuousAt_id ht.1.ne')).pow j).continuousWithinAt
+
+/-- The logarithmic profiles are profiles of tails. -/
+theorem tailWeight_logPow (j : ℕ) : TailWeight (logPow j) j 1 where
+  measurable := measurable_logPow j
+  continuousOn := continuousOn_logPow j
+  abs_le := fun t ht => by rw [abs_of_nonneg (logPow_nonneg j ht), one_mul]
+  cut := fun θ => riemannOn_indicator_Iic (antitoneOn_logPow j) (fun t ht => logPow_nonneg j ht)
+    (integrableOn_logPow j) θ
+
+/-- The prime part of the row against a profile. -/
+def primeProfile (w : ℝ → ℝ) (t : ℝ) : ℝ := w t * primeRemainder t
 
 theorem psi_natCast_div (N n : ℕ) : Chebyshev.psi ((N : ℝ) / n) = chebyshev (N / n) := by
   rw [Chebyshev.psi_eq_sum_Icc, Nat.floor_div_eq_div, chebyshev]
@@ -436,64 +458,116 @@ theorem psi_one_div_eq_sum {K : ℕ} (hK : 1 ≤ K) {t : ℝ} (ht0 : 0 < t) (htK
   have h0 : k = 0 := by omega
   rw [h0, ArithmeticFunction.map_zero]
 
-/-- **Above `1/K` the prime part of the row has convergent Riemann sums.** It is the capped
-profile `log^j(1/t)/t` minus the cuts `Λ(k) log^j(1/t) 1[t ≤ 1/k]`, `k ≤ K`. -/
-theorem riemannOn_cut_primeProfile (j : ℕ) {K : ℕ} (hK : 1 ≤ K) :
-    RiemannOn ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j)) := by
+/-- The prime part of the pairing of the flat tail with the tail of a profile is the Riemann
+sum of the prime part of the row against the profile. -/
+theorem tailRiemannSum_primeProfile_eq (w : ℝ → ℝ) (N : ℕ) :
+    tailRiemannSum (primeProfile w) N =
+      (∑ n ∈ Finset.Icc 1 N, w ((n : ℝ) / N) * ((N : ℝ) / n - chebyshev (N / n))) / N := by
+  rw [tailRiemannSum]
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [primeProfile, primeRemainder, one_div_div, psi_natCast_div]
+
+namespace TailWeight
+
+variable {w : ℝ → ℝ} {j : ℕ} {c : ℝ}
+
+theorem const_nonneg (hw : TailWeight w j c) : 0 ≤ c := by
+  have hmem : (1 / 2 : ℝ) ∈ Set.Ioc (0 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
+  have h := (abs_nonneg _).trans (hw.abs_le _ hmem)
+  have hpos : 0 < logPow j (1 / 2) := by
+    rw [logPow, one_div_one_div]
+    exact pow_pos (Real.log_pos (by norm_num)) j
+  exact nonneg_of_mul_nonneg_left h hpos
+
+theorem measurable_primeProfile (hw : TailWeight w j c) : Measurable (primeProfile w) :=
+  hw.measurable.mul measurable_primeRemainder
+
+/-- The majorant of the prime part of the row against a profile. -/
+theorem abs_primeProfile_le (hw : TailWeight w j c) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Set.Ioc (0 : ℝ) 1, |primeProfile w t| ≤ C * logMajorant t := by
+  obtain ⟨C, hC0, hC⟩ := exists_abs_logPow_mul_primeRemainder_le j
+  refine ⟨c * C, mul_nonneg hw.const_nonneg hC0, fun t ht => ?_⟩
+  have h1 := hw.abs_le t ht
+  have h2 := hC t ht
+  rw [abs_mul, abs_of_nonneg (logPow_nonneg j ht)] at h2
+  rw [primeProfile, abs_mul]
+  calc |w t| * |primeRemainder t| ≤ c * logPow j t * |primeRemainder t| :=
+        mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
+    _ = c * (logPow j t * |primeRemainder t|) := by ring
+    _ ≤ c * (C * logMajorant t) := mul_le_mul_of_nonneg_left h2 hw.const_nonneg
+    _ = c * C * logMajorant t := by ring
+
+theorem integrableOn_primeProfile (hw : TailWeight w j c) :
+    IntegrableOn (primeProfile w) (Set.Ioc 0 1) := by
+  obtain ⟨C, -, h⟩ := hw.abs_primeProfile_le
+  refine Integrable.mono' (integrableOn_logMajorant.const_mul C)
+    hw.measurable_primeProfile.aestronglyMeasurable ?_
+  exact (ae_restrict_mem measurableSet_Ioc).mono fun t ht => by
+    rw [Real.norm_eq_abs]
+    exact h t ht
+
+/-! ### The degree points above `N/K`: the hyperbola method -/
+
+/-- **Above `1/K` the prime part of the row against a profile has convergent Riemann sums.** It
+is the capped profile `w(t)/t` minus the cuts `Λ(k) w(t) 1[t ≤ 1/k]`, `k ≤ K`. -/
+theorem riemannOn_cut_primeProfile (hw : TailWeight w j c) {K : ℕ} (hK : 1 ≤ K) :
+    RiemannOn ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w)) := by
   have hK0 : (0 : ℝ) < K := by exact_mod_cast hK
   have hc : (0 : ℝ) < 1 / (K : ℝ) := by positivity
   have hc1 : 1 / (K : ℝ) ≤ 1 := by
     rw [div_le_one hK0]
     exact_mod_cast hK
+  have hc0 := hw.const_nonneg
   -- the capped smooth part
-  have hA : RiemannOn (fun t : ℝ => logPow j (max t (1 / (K : ℝ))) / max t (1 / (K : ℝ))) := by
+  have hA : RiemannOn (fun t : ℝ => w (max t (1 / (K : ℝ))) / max t (1 / (K : ℝ))) := by
     have hpos : ∀ t : ℝ, 0 < max t (1 / (K : ℝ)) := fun t => lt_max_of_lt_right hc
     have hmax : Continuous fun t : ℝ => max t (1 / (K : ℝ)) := continuous_id.max continuous_const
-    have hcont : Continuous fun t : ℝ =>
-        logPow j (max t (1 / (K : ℝ))) / max t (1 / (K : ℝ)) := by
-      refine Continuous.div ?_ hmax fun t => (hpos t).ne'
-      show Continuous fun t : ℝ => Real.log (1 / max t (1 / (K : ℝ))) ^ j
-      exact ((continuous_const.div hmax fun t => (hpos t).ne').log
-        fun t => (one_div_pos.mpr (hpos t)).ne').pow j
-    refine riemannOn_of_continuousOn_of_bounded (B := Real.log K ^ j * K) hcont.continuousOn
+    have hmaps : Set.MapsTo (fun t : ℝ => max t (1 / (K : ℝ))) (Set.Ioc 0 1) (Set.Ioc 0 1) :=
+      fun t ht => ⟨hpos t, max_le ht.2 hc1⟩
+    have hcont : ContinuousOn (fun t : ℝ => w (max t (1 / (K : ℝ))) / max t (1 / (K : ℝ)))
+        (Set.Ioc 0 1) :=
+      (hw.continuousOn.comp hmax.continuousOn hmaps).div hmax.continuousOn
+        fun t _ => (hpos t).ne'
+    refine riemannOn_of_continuousOn_of_bounded (B := c * Real.log K ^ j * K) hcont
       fun t ht => ?_
-    have hmem : max t (1 / (K : ℝ)) ∈ Set.Ioc (0 : ℝ) 1 := ⟨hpos t, max_le ht.2 hc1⟩
+    have hmem := hmaps ht
     have hinv : 1 / max t (1 / (K : ℝ)) ≤ K := by
       rw [div_le_iff₀ (hpos t)]
       calc (1 : ℝ) = K * (1 / K) := by field_simp
         _ ≤ K * max t (1 / (K : ℝ)) := mul_le_mul_of_nonneg_left (le_max_right _ _) hK0.le
     have hlog : Real.log (1 / max t (1 / (K : ℝ))) ≤ Real.log K :=
       Real.log_le_log (one_div_pos.mpr (hpos t)) hinv
-    rw [abs_of_nonneg (div_nonneg (logPow_nonneg j hmem) (hpos t).le), div_eq_mul_one_div]
-    exact mul_le_mul (pow_le_pow_left₀ (log_one_div_nonneg hmem) hlog j) hinv
-      (one_div_nonneg.mpr (hpos t).le) (pow_nonneg (Real.log_nonneg (by exact_mod_cast hK)) j)
+    have hpowle : logPow j (max t (1 / (K : ℝ))) ≤ Real.log K ^ j :=
+      pow_le_pow_left₀ (log_one_div_nonneg hmem) hlog j
+    rw [abs_div, abs_of_pos (hpos t), div_eq_mul_one_div]
+    exact mul_le_mul ((hw.abs_le _ hmem).trans (mul_le_mul_of_nonneg_left hpowle hc0)) hinv
+      (one_div_nonneg.mpr (hpos t).le)
+      (mul_nonneg hc0 (pow_nonneg (Real.log_nonneg (by exact_mod_cast hK)) j))
   -- the cuts
   have hone : RiemannOn ((Set.Iic (1 / (K : ℝ))).indicator fun _ : ℝ => (1 : ℝ)) :=
     riemannOn_indicator_Iic antitoneOn_const (fun _ _ => zero_le_one)
       (integrableOn_const (C := (1 : ℝ)) (by simp)) _
-  have hV : ∀ k : ℕ, RiemannOn ((Set.Iic (1 / (k : ℝ))).indicator (logPow j)) := fun k =>
-    riemannOn_indicator_Iic (antitoneOn_logPow j) (fun t ht => logPow_nonneg j ht)
-      (integrableOn_logPow j) _
-  have hcomb := (hA.sub (hone.const_mul (logPow j (1 / (K : ℝ)) / (1 / (K : ℝ))))).sub
+  have hcomb := (hA.sub (hone.const_mul (w (1 / (K : ℝ)) / (1 / (K : ℝ))))).sub
     (riemannOn_sum (Finset.Icc 1 K)
-      (fun k t => (Λ k : ℝ) * ((Set.Iic (1 / (k : ℝ))).indicator (logPow j) t -
-        (Set.Iic (1 / (K : ℝ))).indicator (logPow j) t))
-      fun k _ => ((hV k).sub (hV K)).const_mul _)
+      (fun k t => (Λ k : ℝ) * ((Set.Iic (1 / (k : ℝ))).indicator w t -
+        (Set.Iic (1 / (K : ℝ))).indicator w t))
+      fun k _ => ((hw.cut _).sub (hw.cut _)).const_mul _)
   refine hcomb.congr fun t ht => ?_
-  show logPow j (max t (1 / (K : ℝ))) / max t (1 / (K : ℝ)) -
-      logPow j (1 / (K : ℝ)) / (1 / (K : ℝ)) *
+  show w (max t (1 / (K : ℝ))) / max t (1 / (K : ℝ)) -
+      w (1 / (K : ℝ)) / (1 / (K : ℝ)) *
         (Set.Iic (1 / (K : ℝ))).indicator (fun _ : ℝ => (1 : ℝ)) t -
-      ∑ k ∈ Finset.Icc 1 K, (Λ k : ℝ) * ((Set.Iic (1 / (k : ℝ))).indicator (logPow j) t -
-        (Set.Iic (1 / (K : ℝ))).indicator (logPow j) t) =
-    (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j) t
+      ∑ k ∈ Finset.Icc 1 K, (Λ k : ℝ) * ((Set.Iic (1 / (k : ℝ))).indicator w t -
+        (Set.Iic (1 / (K : ℝ))).indicator w t) =
+    (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w) t
   by_cases htK : t ≤ 1 / (K : ℝ)
   · -- below the cut everything cancels
     have hk : ∀ k ∈ Finset.Icc 1 K, t ≤ 1 / (k : ℝ) := fun k hk => by
       obtain ⟨hk1, hk2⟩ := Finset.mem_Icc.mp hk
       exact htK.trans (one_div_le_one_div_of_le (by exact_mod_cast hk1) (by exact_mod_cast hk2))
     have hsum0 : ∑ k ∈ Finset.Icc 1 K, (Λ k : ℝ) *
-        ((Set.Iic (1 / (k : ℝ))).indicator (logPow j) t -
-          (Set.Iic (1 / (K : ℝ))).indicator (logPow j) t) = 0 :=
+        ((Set.Iic (1 / (k : ℝ))).indicator w t -
+          (Set.Iic (1 / (K : ℝ))).indicator w t) = 0 :=
       Finset.sum_eq_zero fun k hk' => by
         rw [Set.indicator_of_mem (Set.mem_Iic.mpr (hk k hk')),
           Set.indicator_of_mem (Set.mem_Iic.mpr htK), sub_self, mul_zero]
@@ -504,9 +578,9 @@ theorem riemannOn_cut_primeProfile (j : ℕ) {K : ℕ} (hK : 1 ≤ K) :
     have htK' : 1 / (K : ℝ) < t := not_le.mp htK
     have hnot : t ∉ Set.Iic (1 / (K : ℝ)) := by simpa using htK'
     have hsum : ∑ k ∈ Finset.Icc 1 K, (Λ k : ℝ) *
-        ((Set.Iic (1 / (k : ℝ))).indicator (logPow j) t -
-          (Set.Iic (1 / (K : ℝ))).indicator (logPow j) t) =
-        ∑ k ∈ Finset.Icc 1 K, logPow j t * (if t ≤ 1 / (k : ℝ) then (Λ k : ℝ) else 0) := by
+        ((Set.Iic (1 / (k : ℝ))).indicator w t -
+          (Set.Iic (1 / (K : ℝ))).indicator w t) =
+        ∑ k ∈ Finset.Icc 1 K, w t * (if t ≤ 1 / (k : ℝ) then (Λ k : ℝ) else 0) := by
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [Set.indicator_of_notMem hnot, sub_zero, Set.indicator_apply]
       simp only [Set.mem_Iic]
@@ -516,16 +590,14 @@ theorem riemannOn_cut_primeProfile (j : ℕ) {K : ℕ} (hK : 1 ≤ K) :
       psi_one_div_eq_sum hK ht.1 htK', mul_sub, Finset.mul_sum]
     ring
 
-/-- The integrals over `(1/K, 1]` exhaust the moment. -/
-theorem tendsto_integral_cut_primeProfile (j : ℕ) :
+/-- The integrals over `(1/K, 1]` exhaust the integral. -/
+theorem tendsto_integral_cut_primeProfile (hw : TailWeight w j c) :
     Tendsto (fun K : ℕ => ∫ t in Set.Ioc 0 1,
-      (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j) t) atTop (𝓝 (primeMoment j)) := by
-  have hint : IntegrableOn (primeProfile j) (Set.Ioc 0 1) :=
-    integrableOn_logPow_mul_primeRemainder j
-  have hmeas : Measurable (primeProfile j) := (measurable_logPow j).mul measurable_primeRemainder
-  refine tendsto_integral_of_dominated_convergence (fun t => |primeProfile j t|)
-    (fun K => (hmeas.indicator measurableSet_Ioi).aestronglyMeasurable) hint.abs
-    (fun K => Eventually.of_forall fun t => ?_) ?_
+      (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w) t) atTop
+      (𝓝 (∫ t in Set.Ioc 0 1, primeProfile w t)) := by
+  refine tendsto_integral_of_dominated_convergence (fun t => |primeProfile w t|)
+    (fun K => (hw.measurable_primeProfile.indicator measurableSet_Ioi).aestronglyMeasurable)
+    hw.integrableOn_primeProfile.abs (fun K => Eventually.of_forall fun t => ?_) ?_
   · rw [Real.norm_eq_abs, Set.indicator_apply]
     split_ifs
     · exact le_rfl
@@ -536,40 +608,28 @@ theorem tendsto_integral_cut_primeProfile (j : ℕ) :
     have h := (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ)).eventually (gt_mem_nhds ht.1)
     filter_upwards [h] with K hK
     rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hK)]
-    rfl
 
 /-! ### The limit -/
 
-/-- The prime part of the pairing of the flat tail with a logarithmic tail is the Riemann sum of
-its profile. -/
-theorem sum_logTail_mul_primeRemainder_eq (j N : ℕ) :
-    (∑ n ∈ Finset.Icc 1 N, logTail j N n * ((N : ℝ) / n - chebyshev (N / n))) / N =
-      tailRiemannSum (primeProfile j) N := by
-  rw [tailRiemannSum]
-  congr 1
-  refine Finset.sum_congr rfl fun n _ => ?_
-  rw [primeProfile, logPow, primeRemainder, one_div_div, psi_natCast_div, logTail]
-
-/-- **The prime part of the row has logarithmic moments**:
-`(1/N) Σ_{n ≤ N} log^j(N/n) (N/n − ψ(N/n)) → κ_j`. -/
-theorem tendsto_sum_logTail_mul_primeRemainder (j : ℕ) :
-    Tendsto (fun N : ℕ =>
-      (∑ n ∈ Finset.Icc 1 N, logTail j N n * ((N : ℝ) / n - chebyshev (N / n))) / N) atTop
-      (𝓝 (primeMoment j)) := by
-  obtain ⟨C, hC0, hC⟩ := exists_abs_logPow_mul_primeRemainder_le j
+/-- **The prime part of the row integrates every profile of a tail**: the Riemann sums of
+`w(t)(1/t − ψ(1/t))` at the degree points tend to its integral. -/
+theorem tendsto_tailRiemannSum_primeProfile (hw : TailWeight w j c) :
+    Tendsto (fun N : ℕ => tailRiemannSum (primeProfile w) N) atTop
+      (𝓝 (∫ t in Set.Ioc 0 1, primeProfile w t)) := by
+  obtain ⟨C, hC0, hC⟩ := hw.abs_primeProfile_le
   -- the points below `N/K`
   have hsmall : ∀ K N : ℕ, 2 ≤ K → K ≤ N →
-      |tailRiemannSum (primeProfile j) N -
-        tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j)) N| ≤
+      |tailRiemannSum (primeProfile w) N -
+        tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w)) N| ≤
         C * (2 / (1 + Real.log ((K : ℝ) / 2))) := by
     intro K N hK hN
     have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
     have hK0 : (0 : ℝ) < K := by exact_mod_cast (by omega : 0 < K)
     have hsub : Finset.Icc 1 (N / K) ⊆ Finset.Icc 1 N :=
       Finset.Icc_subset_Icc_right (Nat.div_le_self N K)
-    have hdiff : tailRiemannSum (primeProfile j) N -
-        tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j)) N =
-        (∑ n ∈ Finset.Icc 1 (N / K), primeProfile j ((n : ℝ) / N)) / N := by
+    have hdiff : tailRiemannSum (primeProfile w) N -
+        tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w)) N =
+        (∑ n ∈ Finset.Icc 1 (N / K), primeProfile w ((n : ℝ) / N)) / N := by
       rw [tailRiemannSum, tailRiemannSum, ← sub_div, ← Finset.sum_sub_distrib]
       congr 1
       rw [← Finset.sum_subset hsub]
@@ -590,7 +650,7 @@ theorem tendsto_sum_logTail_mul_primeRemainder (j : ℕ) :
           rw [div_lt_div_iff₀ hK0 hN0, one_mul]
           exact_mod_cast hnK
         rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hlt), sub_self]
-    have hterm : ∀ n ∈ Finset.Icc 1 (N / K), |primeProfile j ((n : ℝ) / N)| ≤
+    have hterm : ∀ n ∈ Finset.Icc 1 (N / K), |primeProfile w ((n : ℝ) / N)| ≤
         C * N * (1 / ((n : ℝ) * (1 + Real.log ((N : ℝ) / n)) ^ 2)) := by
       intro n hn
       have hmem : (n : ℝ) / N ∈ Set.Ioc (0 : ℝ) 1 := natCast_div_mem_Ioc (hsub hn)
@@ -610,7 +670,7 @@ theorem tendsto_sum_logTail_mul_primeRemainder (j : ℕ) :
           mul_le_mul_of_nonneg_left (sum_inv_mul_one_add_log_sq_le hK hN) (by positivity)
       _ = C * (2 / (1 + Real.log ((K : ℝ) / 2))) * N := by ring
   -- the choice of `K`
-  have hK1 := tendsto_integral_cut_primeProfile j
+  have hK1 := hw.tendsto_integral_cut_primeProfile
   have hK2 : Tendsto (fun K : ℕ => C * (2 / (1 + Real.log ((K : ℝ) / 2)))) atTop (𝓝 0) := by
     have h1 : Tendsto (fun K : ℕ => 1 + Real.log ((K : ℝ) / 2)) atTop atTop :=
       tendsto_atTop_add_const_left _ 1 (Real.tendsto_log_atTop.comp
@@ -626,22 +686,36 @@ theorem tendsto_sum_logTail_mul_primeRemainder (j : ℕ) :
   have hKb := hK1' K (hKdef ▸ (le_max_left K1 K2).trans (le_max_right _ _))
   have hKc := hK2' K (hKdef ▸ (le_max_right K1 K2).trans (le_max_right _ _))
   obtain ⟨N₀, hN₀⟩ := (Metric.tendsto_atTop.mp
-    (riemannOn_cut_primeProfile j (by omega : 1 ≤ K)).2) (ε / 3) (by positivity)
+    (hw.riemannOn_cut_primeProfile (by omega : 1 ≤ K)).2) (ε / 3) (by positivity)
   refine ⟨max N₀ K, fun N hN => ?_⟩
   have h1 := hN₀ N (le_of_max_le_left hN)
   have h2 := hsmall K N hKa (le_of_max_le_right hN)
   rw [Real.dist_eq] at h1 hKb hKc
   rw [sub_zero] at hKc
   have h3 : C * (2 / (1 + Real.log ((K : ℝ) / 2))) < ε / 3 := lt_of_le_of_lt (le_abs_self _) hKc
-  rw [sum_logTail_mul_primeRemainder_eq, Real.dist_eq]
-  have hsplit : tailRiemannSum (primeProfile j) N - primeMoment j =
-      (tailRiemannSum (primeProfile j) N -
-        tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j)) N) +
-      (tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j)) N -
-        ∫ t in Set.Ioc 0 1, (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j) t) +
-      ((∫ t in Set.Ioc 0 1, (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile j) t) -
-        primeMoment j) := by ring
+  rw [Real.dist_eq]
+  have hsplit : tailRiemannSum (primeProfile w) N - ∫ t in Set.Ioc 0 1, primeProfile w t =
+      (tailRiemannSum (primeProfile w) N -
+        tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w)) N) +
+      (tailRiemannSum ((Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w)) N -
+        ∫ t in Set.Ioc 0 1, (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w) t) +
+      ((∫ t in Set.Ioc 0 1, (Set.Ioi (1 / (K : ℝ))).indicator (primeProfile w) t) -
+        ∫ t in Set.Ioc 0 1, primeProfile w t) := by ring
   rw [hsplit]
   exact (abs_add_three _ _ _).trans_lt (by linarith)
+
+end TailWeight
+
+/-- **The prime part of the row has logarithmic moments**:
+`(1/N) Σ_{n ≤ N} log^j(N/n) (N/n − ψ(N/n)) → κ_j`. -/
+theorem tendsto_sum_logTail_mul_primeRemainder (j : ℕ) :
+    Tendsto (fun N : ℕ =>
+      (∑ n ∈ Finset.Icc 1 N, logTail j N n * ((N : ℝ) / n - chebyshev (N / n))) / N) atTop
+      (𝓝 (primeMoment j)) := by
+  refine (tailWeight_logPow j).tendsto_tailRiemannSum_primeProfile.congr fun N => ?_
+  rw [tailRiemannSum_primeProfile_eq]
+  congr 1
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [logPow, one_div_div, logTail]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

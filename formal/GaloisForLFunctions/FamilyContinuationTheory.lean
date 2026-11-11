@@ -14,6 +14,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheHeckeFamilyOfTheThirdCycl
 import GaloisForLFunctions.FamilyContinuationTheory.TheHeightIsChosenAfterTheTarget
 import GaloisForLFunctions.FamilyContinuationTheory.TheZeroFreeBinsAreBuffered
 import GaloisForLFunctions.FamilyContinuationTheory.TheContinuationFrameAdmitsAHolomorphicCorrection
+import GaloisForLFunctions.FamilyContinuationTheory.TheTwoEstimatesBoundTheZeroAbscissa
+import GaloisForLFunctions.FamilyContinuationTheory.TheTargetOccursAmongItsTwists
 import GaloisForLFunctions.FamilyContinuationTheory.TheOddPowerOfAGaussSumCarriesTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.TwoGaussSumsWithAQuadraticProductCarryTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.ThePlanarLargeSieve
@@ -49,6 +51,8 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   The family step also holds with signals `exp((s − c)²) H(s)/((s − 1) L(s, ψ))`, `H` holomorphic
   and nonvanishing right of the boundary and bounded on `Re s ≥ 2`: the local factors that an
   identity leaves over.
+  For the third cyclotomic field the two estimates for every ray class character give
+  `zetaZeroAbscissa ≤ σ₀`: the half-plane route as one implication.
 * **The signal of `ζ`.** The kernel `exp((s − c)²)/((s − 1)ζ(s))` is a signal kernel; a bound
   `O(Z^b)`, `b < 1`, for its signal gives the half-plane `Re s > b` and positivity of the dressed
   lag aggregate on large primes at every level above `b + ½`; bounds with every exponent above
@@ -81,6 +85,11 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   of integers has the basis `1, η`, norm form `a² − ab + b²`, six units and `Σ_{d ∣ n} χ₋₃(d)`
   ideals of norm `n`; `ζ_K = ζ · L(·, χ₋₃)`, and `HeckeHalfPlane K σ₀` puts the zeros of `ξ` in
   `Re ρ ≤ σ₀`.
+* **The positive form.** A row occurs again at every index `u aⁿ` of a family of twists by an
+  `n`-th power residue symbol; a mean square `T` of the long family bounds the rows of
+  multiplicity `m` by `T/m`. A generic mean square over the twists of norm up to `Z^θ` gives the
+  half-plane `½ + (1 − 1/n) θ/2`: for the sextic symbol `11/12`, `7/8`, `13/15`, `5/6` at
+  `θ = 1`, `9/10`, `22/25`, `4/5`.
 * **The budget of the compensated probe.** Low boundary `5/6 + M/12 − ℓ/6 + (M + ℓ − 1)₊/2` in the
   row length `M` and slot length `ℓ`; the face of zero retained length is paid by the tuple
   factor; the high exponent of the top rows is at most `−49/440640` at the published geometry and

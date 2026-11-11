@@ -621,11 +621,12 @@ def orbitCarrier (d : ℕ → ℝ) : Set ℂ :=
 
 private theorem orbitPt_abs_im (d : ℕ → ℝ) (p : ℕ × Bool × Bool) :
     |(orbitPt d p).im| = (p.1 : ℝ) + 1 := by
-  have hk : (0 : ℝ) < (p.1 : ℝ) + 1 := by positivity
-  cases p.2.2
-  · change |-((p.1 : ℝ) + 1)| = (p.1 : ℝ) + 1
+  rcases p with ⟨k, b₁, (_ | _)⟩
+  · have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+    change |-((k : ℝ) + 1)| = (k : ℝ) + 1
     rw [abs_neg, abs_of_pos hk]
-  · change |(p.1 : ℝ) + 1| = (p.1 : ℝ) + 1
+  · have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+    change |(k : ℝ) + 1| = (k : ℝ) + 1
     exact abs_of_pos hk
 
 private theorem range_orbitPt_eq (d : ℕ → ℝ) (hd0 : ∀ k, 0 ≤ d k) :
@@ -825,8 +826,8 @@ theorem exists_tempered_abscissaLaw_nonzero_trigPoly_limit {b : ℝ} (hb : 0 < b
     cases k with
     | zero => exact hb.le
     | succ m =>
-      have h1 : (1 : ℝ) / ((m : ℝ) + 2) ≤ 1 := div_le_one_of_le₀ (by linarith [Nat.cast_nonneg m])
-        (by positivity)
+      have h1 : (1 : ℝ) / ((m : ℝ) + 2) ≤ 1 :=
+        div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ) m]) (by positivity)
       exact mul_nonneg hb.le (by linarith only [h1])
   have hdb : ∀ k, subTopDepth b k ≤ b := by
     intro k
@@ -858,16 +859,14 @@ theorem exists_tempered_abscissaLaw_nonzero_trigPoly_limit {b : ℝ} (hb : 0 < b
       have hmem_f : ∀ n : ℕ,
           subTopPt b ⌈b / (b - h)⌉₊ n ∈ rightOf (orbitConfig (subTopDepth b) hd0 hd1) h := fun n => by
         refine ⟨⟨⌈b / (b - h)⌉₊ + n + 1, ?_, ?_⟩, ?_⟩
-        · show |1 / 2 + subTopDepth b (⌈b / (b - h)⌉₊ + n + 1) - 1 / 2| =
-              subTopDepth b (⌈b / (b - h)⌉₊ + n + 1)
-          rw [add_sub_cancel_left, abs_of_nonneg (hd0 _)]
-        · show |(((⌈b / (b - h)⌉₊ + n + 1 : ℕ) : ℝ) + 1)| = ((⌈b / (b - h)⌉₊ + n + 1 : ℕ) : ℝ) + 1
+        · simp only [subTopPt, add_sub_cancel_left, abs_of_nonneg (hd0 _)]
+        · simp only [subTopPt]
           exact abs_of_pos (by positivity)
-        · show 1 / 2 + h < 1 / 2 + b * (1 - 1 / (((⌈b / (b - h)⌉₊ + n : ℕ) : ℝ) + 2))
+        · simp only [subTopPt, subTopDepth]
           have hbh : 0 < b - h := sub_pos.mpr hlt
           have hN : b / (b - h) ≤ (⌈b / (b - h)⌉₊ : ℝ) := Nat.le_ceil _
           have hden : (⌈b / (b - h)⌉₊ : ℝ) + 2 ≤ ((⌈b / (b - h)⌉₊ + n : ℕ) : ℝ) + 2 := by
-            push_cast; linarith [Nat.cast_nonneg n]
+            push_cast; linarith [Nat.cast_nonneg (α := ℝ) n]
           have hgt : b / (b - h) < ((⌈b / (b - h)⌉₊ + n : ℕ) : ℝ) + 2 := by
             linarith only [hN, hden]
           have hposD : (0 : ℝ) < ((⌈b / (b - h)⌉₊ + n : ℕ) : ℝ) + 2 := by positivity
@@ -910,12 +909,5 @@ theorem exists_tempered_abscissaLaw_nonzero_trigPoly_limit {b : ℝ} (hb : 0 < b
       activeTopLayer_nonempty_iff_of_conj_symm hconj hb]
     exact ⟨htop_fin, htop_ne⟩
   exact ⟨orbitConfig (subTopDepth b) hd0 hd1, hZ, hconj, hnonreal, htop, habs, htrig⟩
-
-#print axioms zetaNormTrace_quadrichotomy
-#print axioms zeta_offLine_tendsto_zero_iff
-#print axioms zeta_offLine_no_nonzero_trigPoly_iff
-#print axioms zeta_abscissaLaw_of_no_nonzero_trigPoly_limit
-#print axioms exists_tempered_abscissaLaw_infinite_top
-#print axioms exists_tempered_abscissaLaw_nonzero_trigPoly_limit
 
 end GaloisForLFunctions.FloorFreeArithmetic
