@@ -39780,6 +39780,7 @@ lemma quadraticDual_low_add_tail (I J : QuadraticIdeal) (W : 𝓢(ℝ, ℂ))
   have hs : Summable f := canonicalQuadraticPairIdeal_fourier_summable I J W t ht
   have hl := hs.indicator {H | (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) ≤ K}
   have hh := hs.indicator {H | K < (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ)}
+  simp only [Set.indicator, Set.mem_setOf_eq] at hl hh
   change (∑' H, f H) =
     (∑' H, if (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) ≤ K then f H else 0) +
     (∑' H, if K < (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) then f H else 0)
@@ -39865,7 +39866,9 @@ theorem quadraticDualSquarefreeLow_principal_finite (I J : QuadraticIdeal)
           field_simp
         simp only [F, if_pos hK, quadraticTransformedSquareProfile_apply, harg, mul_assoc]
       · simp only [F, if_neg hK, tsum_zero]
-    _ = _ := tsum_squarefree_norm_cutoff K _
+    _ = _ := tsum_squarefree_norm_cutoff K (fun B =>
+      canonicalQuadraticPairIdeal I J B * quadraticDualPrincipalIdeal I J
+        (quadraticTransformedSquareProfile W) (Real.sqrt (1 / (t * (Ideal.absNorm B : ℝ)))))
 
 lemma quadraticPair_prime_mask (I J : QuadraticIdeal) (z : O) :
     primeCoprimeMask cubicIdealGenerator (primeSupport (I.val * J.val)) z =
@@ -39898,6 +39901,7 @@ theorem quadraticDualPrincipalIdeal_lattice (I J : QuadraticIdeal)
     apply Summable.of_norm
     apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun z => ?_)
       (actual_eisenstein_summable_norm (scaledRadialTest W X hX))
+    rw [scaledRadialTest_apply]
     change ‖primeCoprimeMask cubicIdealGenerator (primeSupport (I.val * J.val)) z *
       W (‖ringComplex z‖ ^ 2 / X)‖ ≤ ‖W (‖ringComplex z‖ ^ 2 / X)‖
     rw [norm_mul]
@@ -39931,7 +39935,9 @@ theorem quadraticDualPrincipalIdeal_truncated (I J : QuadraticIdeal)
   unfold truncationError
   have he (z : O) : rowCoprimeMask (fun P : primeSupport (I.val * J.val) => P.val) Finset.univ z =
       primeCoprimeMask cubicIdealGenerator (primeSupport (I.val * J.val)) z := by
-    simp only [rowCoprimeMask, primeCoprimeMask, Finset.prod_coe_sort]
+    simp only [rowCoprimeMask, primeCoprimeMask]
+    exact Finset.prod_coe_sort (s := primeSupport (I.val * J.val))
+      (f := fun P : Ideal O => (1 : ℂ) - if cubicIdealGenerator P ∣ z then 1 else 0)
   simp_rw [he]
   have hz : ∀ z : O,
       primeCoprimeMask cubicIdealGenerator (primeSupport (I.val * J.val)) z *
@@ -40037,7 +40043,8 @@ theorem quadraticDualSquarefreeTail_bound (A : ℕ) :
         ‖paperRadialFourier W (t * ‖ringComplex z.val‖ ^ 2)‖ := by
     apply (hs.subtype S).tsum_le_tsum_of_inj e hi (fun _ _ => norm_nonneg _) (fun H => ?_)
       ((paperRadialFourier_lattice_summable_norm W t ht).subtype _)
-    simp only [e, ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator, le_refl]
+    simp only [e, Function.comp_def, ringComplex_norm_sq_eq_absNorm_span,
+      span_cubicIdealGenerator, le_refl]
   rw [he]
   apply (norm_tsum_le_tsum_norm
     ((canonicalQuadraticPairIdeal_fourier_summable I J W t ht).norm.subtype S)).trans
@@ -40050,5 +40057,146 @@ theorem quadraticDualSquarefreeTail_bound (A : ℕ) :
   exact mul_le_of_le_one_left (norm_nonneg _) (canonicalQuadraticPairIdeal_norm_le_one I J H.val.val)
 
 end SchwartzPlanePoisson
+
+
+
+namespace TruncatedPrincipalPoisson
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+open scoped SchwartzMap
+
+theorem sum_subtype_powerset_products (S : Finset (Ideal O)) (f : Ideal O → ℂ) :
+    (∑ E ∈ (Finset.univ : Finset S).powerset, f (∏ P ∈ E, P.val)) =
+      ∑ E ∈ S.powerset, f (∏ P ∈ E, P) := by
+  classical
+  have hS : (Finset.univ : Finset S).image Subtype.val = S := by
+    ext P
+    simp only [Finset.mem_image, Finset.mem_univ, true_and, Subtype.exists, exists_prop,
+      exists_eq_right]
+  conv_rhs => rw [← hS, Finset.powerset_image]
+  rw [Finset.sum_image]
+  · apply Finset.sum_congr rfl
+    intro E hE
+    congr 1
+    rw [Finset.prod_image]
+    exact fun _ _ _ _ h => Subtype.val_injective h
+  · exact fun _ _ _ _ h => Finset.image_injective Subtype.val_injective h
+
+theorem primeSupport_subset_sum_eq_divisors (G : Ideal O) (hG : Squarefree G) (f : Ideal O → ℂ) :
+    (∑ E ∈ (Finset.univ : Finset (primeSupport G)).powerset,
+      f (∏ P ∈ E, P.val)) = ∑ d ∈ idealDivisors G, f d := by
+  rw [sum_subtype_powerset_products]
+  exact (squarefree_ideal_divisor_sum G hG f).symm
+
+theorem middleTruncation_eq_ideal_divisors (G : Ideal O) (hG : Squarefree G)
+    (W : ℝ → ℂ) (X Y Z lengthScale : ℝ) :
+    middleTruncation (fun P : primeSupport G => P.val) Finset.univ W X Y Z lengthScale =
+      (X : ℂ) * ∑ d ∈ idealDivisors G,
+        if Y < (Ideal.absNorm d : ℝ) ∧ (Ideal.absNorm d : ℝ) ≤ Z then
+          (UniqueFactorizationMonoid.moebius d : ℂ) / (Ideal.absNorm d : ℂ) *
+            ∑ h ∈ rowNormDisk ⌊lengthScale⌋₊,
+              paperRadialFourier W ((X / (Ideal.absNorm d : ℝ)) * ‖ringComplex h‖ ^ 2)
+        else 0 := by
+  classical
+  let f : Ideal O → ℂ := fun d =>
+    if Y < (Ideal.absNorm d : ℝ) ∧ (Ideal.absNorm d : ℝ) ≤ Z then
+      (UniqueFactorizationMonoid.moebius d : ℂ) / (Ideal.absNorm d : ℂ) *
+        ∑ h ∈ rowNormDisk ⌊lengthScale⌋₊,
+          paperRadialFourier W ((X / (Ideal.absNorm d : ℝ)) * ‖ringComplex h‖ ^ 2)
+    else 0
+  change middleTruncation _ _ W X Y Z lengthScale = (X : ℂ) * ∑ d ∈ idealDivisors G, f d
+  rw [← primeSupport_subset_sum_eq_divisors G hG f]
+  unfold middleTruncation middleDivisors smallDivisors
+  simp only [Finset.sum_filter]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro E hE
+  dsimp only [f, subsetNorm, subsetMobius]
+  push_cast
+  by_cases hY : Y < (Ideal.absNorm (∏ P ∈ E, P.val) : ℝ) <;>
+    by_cases hZ : (Ideal.absNorm (∏ P ∈ E, P.val) : ℝ) ≤ Z <;> simp only [hY, hZ, and_self,
+      false_and, and_false, ite_true, ite_false]
+
+theorem middleTruncation_eq_ideal_frequencies (G : Ideal O) (hG : Squarefree G)
+    (W : ℝ → ℂ) (X Y Z lengthScale : ℝ) :
+    middleTruncation (fun P : primeSupport G => P.val) Finset.univ W X Y Z lengthScale =
+      ∑ h ∈ rowNormDisk ⌊lengthScale⌋₊, ∑ d ∈ idealDivisors G,
+        if Y < (Ideal.absNorm d : ℝ) ∧ (Ideal.absNorm d : ℝ) ≤ Z then
+          (UniqueFactorizationMonoid.moebius d : ℂ) *
+            (((X / (Ideal.absNorm d : ℝ) : ℝ) : ℂ) *
+              paperRadialFourier W (X * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm d : ℝ)))
+        else 0 := by
+  classical
+  rw [middleTruncation_eq_ideal_divisors G hG, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro d hd
+  by_cases hc : Y < (Ideal.absNorm d : ℝ) ∧ (Ideal.absNorm d : ℝ) ≤ Z
+  · simp only [hc, and_self, ite_true, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro h hh
+    have harg : (X / (Ideal.absNorm d : ℝ)) * ‖ringComplex h‖ ^ 2 =
+        X * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm d : ℝ) := by ring
+    rw [harg]
+    push_cast
+    ring
+  · simp only [hc, ite_false, mul_zero, Finset.sum_const_zero]
+
+theorem principalTruncation_eq_ideal_divisors (G : Ideal O) (hG : Squarefree G)
+    (W : ℝ → ℂ) (X Z : ℝ) :
+    principalTruncation (fun P : primeSupport G => P.val) Finset.univ W X Z =
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∏ P : primeSupport G, (1 - (1 : ℂ) / Ideal.absNorm P.val)) -
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∑ d ∈ idealDivisors G, if Z < (Ideal.absNorm d : ℝ) then
+          (UniqueFactorizationMonoid.moebius d : ℂ) / (Ideal.absNorm d : ℂ) else 0) -
+      W 0 * (∑ d ∈ idealDivisors G, if (Ideal.absNorm d : ℝ) ≤ Z then
+        (UniqueFactorizationMonoid.moebius d : ℂ) else 0) := by
+  classical
+  rw [← primeSupport_subset_sum_eq_divisors G hG
+    (fun d => if Z < (Ideal.absNorm d : ℝ) then
+      (UniqueFactorizationMonoid.moebius d : ℂ) / (Ideal.absNorm d : ℂ) else 0),
+    ← primeSupport_subset_sum_eq_divisors G hG
+    (fun d => if (Ideal.absNorm d : ℝ) ≤ Z then (UniqueFactorizationMonoid.moebius d : ℂ) else 0)]
+  unfold principalTruncation largeDivisors smallDivisors
+  simp only [Finset.sum_filter, subsetNorm, subsetMobius, Complex.ofReal_natCast]
+
+
+def primeSupportDensity (G : Ideal O) : ℂ :=
+  ∏ P : primeSupport G, (1-(1:ℂ)/(Ideal.absNorm P.val:ℂ))
+
+theorem principalTruncation_scaled (G : Ideal O) (hG : Squarefree G)
+    (W : ℝ → ℂ) (c X Z : ℝ) :
+    (c:ℂ)*principalTruncation (fun P : primeSupport G => P.val) Finset.univ W X Z =
+      ((c*X:ℝ):ℂ)*paperRadialFourier W 0*primeSupportDensity G -
+      paperRadialFourier W 0 * (∑ d ∈ idealDivisors G, if Z < (Ideal.absNorm d:ℝ) then
+        (UniqueFactorizationMonoid.moebius d:ℂ)*(((c*X)/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0) -
+      W 0 * (∑ d ∈ idealDivisors G, if (Ideal.absNorm d:ℝ) ≤ Z then
+        (UniqueFactorizationMonoid.moebius d:ℂ)*(c:ℂ) else 0) := by
+  classical
+  have hl : (∑ d ∈ idealDivisors G, if Z < (Ideal.absNorm d:ℝ) then
+        (UniqueFactorizationMonoid.moebius d:ℂ)*(((c*X)/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0) =
+      ((c*X:ℝ):ℂ)*(∑ d ∈ idealDivisors G, if Z < (Ideal.absNorm d:ℝ) then
+        (UniqueFactorizationMonoid.moebius d:ℂ)/(Ideal.absNorm d:ℂ) else 0) := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro d _
+    by_cases hd : Z < (Ideal.absNorm d:ℝ)
+    · simp only [hd,ite_true,Complex.ofReal_div,Complex.ofReal_natCast]
+      ring
+    · simp only [hd,ite_false,mul_zero]
+  have hs : (∑ d ∈ idealDivisors G, if (Ideal.absNorm d:ℝ) ≤ Z then
+        (UniqueFactorizationMonoid.moebius d:ℂ)*(c:ℂ) else 0) =
+      (c:ℂ)*(∑ d ∈ idealDivisors G, if (Ideal.absNorm d:ℝ) ≤ Z then
+        (UniqueFactorizationMonoid.moebius d:ℂ) else 0) := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro d _
+    by_cases hd : (Ideal.absNorm d:ℝ) ≤ Z <;> simp only [hd,ite_true,ite_false,mul_zero] ; ring
+  rw [principalTruncation_eq_ideal_divisors G hG,hl,hs]
+  unfold primeSupportDensity
+  push_cast
+  ring
+
+end TruncatedPrincipalPoisson
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -1,13 +1,19 @@
 # Levinson's gate from the two-main-term twisted moment
 
 - **ID:** A111
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 
-## Target
+## Result
 
-Produce an unconditional positive critical-zero proportion through the
-Levinson detector using mollifier length `T^θ`, `θ<1/2`.
+One mollifier of length `floor(U^(13/50))` supplies the literal dyadic
+Levinson law at `R=13/10`, `c=18/5`. Consequently, eventually
+
+`((1−log(18/5)/(13/10))/4) · xiPosZeroCount(U) ≤ xiOddFiberCount(U)`.
+
+The coefficient is strictly positive. The proof uses the below-square-root
+two-main-term twisted moment and fixes coefficients before every gate
+abscissa and every dyadic block.
 
 ## Proved analytic reduction
 
@@ -44,7 +50,7 @@ It is uniformly bounded on the full cutoff interval. This compact uniform
 statement passed Lean in `TheShiftedMobiusProfilesConvergeUniformly`.
 See `3-formalized/smoothed-mobius-tests-and-power-shifts.md`.
 
-## Arithmetic jets and remaining gate assembly
+## Arithmetic jets and gate assembly
 
 The full corrected polynomial-profile limit and both actual
 frozen-coefficient directional derivatives are formalized. They apply
@@ -73,10 +79,14 @@ by `(18/5)(v−a)+εa`. These estimates are formalized in
 `TheMatchedDetectorBoundsAreUniform` supplies a common constant and
 threshold for all admissible blocks and all gate displacements.
 
-The dyadic law, fixed-coefficient transfer and count insertion have complete
-Lean proof drafts, pending dependency checks. The capstone is
-`TheTwistedMomentGivesAPositiveCriticalProportion`: its target fraction is
-`(1−log(18/5)/(13/10))/4`. No detector gate from these inputs is yet claimed.
+The fixed-coefficient transfer is formalized in
+`TheFixedDetectorKeepsTheMatchedBlockBounds`. The capstone
+`TheTwistedMomentGivesAPositiveCriticalProportion` proves
+`shortLevinson_dyadicDetectorMeanSquareLaw`,
+`shortLevinson_reciprocalLogMeanSquareGate`, and
+`eventually_critical_odd_fiber_proportion_from_short_twisted_moment`.
+All new modules passed direct Lean checks and are wired into
+`MultiscaleMollifiedZetaField.lean`.
 
 ## Low-height split and scalar choice
 
@@ -86,8 +96,8 @@ Take length exponent `θ=13/50` and split exponent `α=53/100`:
 A thin-strip Weyl bound for the detector then makes the initial segment
 `O(U^(791/800))`; larger blocks admit the proved short twisted moment.
 The detector Weyl bound and the resulting bound `C B² N A^(11/8)` for
-coefficients satisfying `|b_n|≤B n^(σ−1/2)` have Lean proof drafts.
-Their checks and the block assembly remain required.
+coefficients satisfying `|b_n|≤B n^(σ−1/2)` are formalized in
+`TheLinearDetectorKeepsTheWeylBound` and `TheLowDetectorBlocksHaveASublinearHead`.
 
 For `R=13/10`, exact integration of the linear scalar proves
 `c(13/50)<18/5<exp(13/10)`, giving a strictly positive gate margin.
@@ -104,8 +114,9 @@ Using coefficients at `d_U=R/log U` instead of the gate displacement `d`
 changes the normalized exponent by at most `R/(U−1)`.
 `TheFixedLinearMollifierChangesLittleAcrossTheGate` proves the full
 gate-strip exponent bound `R/(U−1)` and discrepancy envelope
-`D exp D · n⁻ᵈ`. The Young energy estimate and its dyadic assembly remain
-under verification.
+`D exp D · n⁻ᵈ`. The Young energy estimate is formalized in
+`TheDetectorEnergyIsStableUnderCoefficientChanges`; both negligible-error
+estimates are formalized in `TheShortMollifierMakesTheHeadAndGateErrorNegligible`.
 
 The block argument uses the Weyl head below `U^(53/100)`, a uniform linear
 energy bound up to `δ U/log U`, and the sharp scalar above that threshold.

@@ -208,6 +208,23 @@ Sources: [collision amplification](NormCollisionAmplification.lean),
 [power rate](PositiveNearCountPowerRate.lean),
 [Euler continuation](PositiveNearCountEuler.lean).
 
+For integer-norm Beurling fakes — discrete positive-generator integer-norm
+systems other than the rational primes whose cleared zeta continuation across
+`Re s>1/2` vanishes at a point `ρ₀≠1` where `ζ(ρ₀)≠0` — every remainder exponent
+`β>1/2` in `N_B(x)=Ax+O(x^β)` is realized unconditionally by prime deletions
+built from Moreau's necklace identity and short prime intervals. Every fake
+exponent satisfies `β≥0`, so the infimum lies unconditionally in `[0,1/2]`;
+every fake at `β≤1` omits infinitely many rational primes; every fake at
+`β≤1/2` has `A>0`; and every positive-density prime-deletion fake at `β<1` has
+a real fake zero `σ_c∈(1/2,1)` dominating the real part of all its fake zeros.
+Any zero-free half-plane `Re z>Θ` (`Θ<1`) for `ζ` yields a prime-deletion fake
+with `β<1/2` (reaching every `β>1/3` under `RiemannHypothesis`), giving an
+unconditional dichotomy between `zetaZeroAbscissa=1` (`AsymptoticAbscissaLaw`)
+and sub-`1/2` integer-norm fakes.
+Sources: [fake obstructions](IntegerNormFakeObstructions.lean),
+[fakes above one-half](IntegerNormFakesAboveOneHalf.lean),
+[fakes below one-half](IntegerNormFakesBelowOneHalf.lean).
+
 ## 6. Transfer to broader RH research
 
 The arithmetic counts also feed

@@ -79,9 +79,13 @@ theorem tendsto_normalized_powerTailPrefix {a : ℝ} (ha : 0 < a) (ha1 : a < 1) 
   have hmain : (N : ℝ) ^ (a - 1) * ((N : ℝ) ^ (1 - a) / (1 - a)) = 1 / (1 - a) := by
     rw [← mul_div_assoc, ← Real.rpow_add hNp, show a - 1 + (1 - a) = 0 by ring,
       Real.rpow_zero]
-  rw [Real.norm_eq_abs, ← hmain, ← mul_sub, abs_mul,
-    abs_of_nonneg (Real.rpow_nonneg hNp.le _)]
-  exact mul_le_mul_of_nonneg_left habs (Real.rpow_nonneg hNp.le _)
+  rw [Real.norm_eq_abs]
+  calc
+    _ = (N : ℝ) ^ (a - 1) *
+        |powerTailPrefix a N - (N : ℝ) ^ (1 - a) / (1 - a)| := by
+      conv_lhs => rw [← hmain, ← mul_sub, abs_mul,
+        abs_of_nonneg (Real.rpow_nonneg hNp.le _)]
+    _ ≤ _ := mul_le_mul_of_nonneg_left habs (Real.rpow_nonneg hNp.le _)
 
 theorem tendsto_powerTailPrefix_atTop {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
     Tendsto (fun N : ℕ => powerTailPrefix a N) atTop atTop := by

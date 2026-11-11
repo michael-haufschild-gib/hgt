@@ -75,7 +75,6 @@ section Prime
 variable (π : O) [NeZero π] [hP : (Ideal.span {π}).IsMaximal] (hlam : lambda ∉ Ideal.span {π})
   (h2 : (2 : O) ∉ Ideal.span {π}) (hprim : lambda ^ 2 ∣ π - 1)
 
-omit [NeZero π] in
 theorem one_not_mem_span_prime : (1 : O) ∉ Ideal.span {π} := fun h =>
   (prime_of_isMaximal_span π).not_unit (isUnit_of_dvd_one (Ideal.mem_span_singleton.mp h))
 
@@ -84,7 +83,7 @@ theorem sexticChar_mk_one :
     complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 1) = 1 := by
   rw [map_one, MulChar.map_one]
 
-include h2 hprim in
+include hlam h2 hprim in
 /-- **The local sum of the principal row.** -/
 theorem hasSum_localTerm_one (ηp X Y V : ℂ) (hV : ‖V‖ < 1) (hY : ‖Y‖ < 1)
     (hR : ‖primeR π ηp X V‖ < 1) :
@@ -93,11 +92,11 @@ theorem hasSum_localTerm_one (ηp X Y V : ℂ) (hV : ‖V‖ < 1) (hY : ‖Y‖ 
   have h := hasSum_localTerm π hlam h2 hprim ηp X Y V (one_not_mem_span_prime π) (j := 0)
     (by norm_num) hV (by rwa [hρ, one_mul]) hR
   convert h using 1
-  simp [Fin.sum_univ_two, baseSum, hρ]
+  simp [Fin.sum_univ_two, baseSum]
   unfold principalSum primeR
   ring
 
-include h2 hprim in
+include hlam h2 hprim in
 /-- **The excess mass of the principal local series.** If `‖V‖, ‖Y‖, ‖X‖, ‖R‖` and
 `‖Q − 1‖ ‖X‖ ‖Y‖` are at most `δ ≤ 1/4`, the norm series exceeds `1` by at most `8δ`. -/
 theorem tsum_norm_localTerm_one_sub_one_le (ηp X Y V : ℂ) {δ : ℝ} (hδ : δ ≤ 1 / 4)

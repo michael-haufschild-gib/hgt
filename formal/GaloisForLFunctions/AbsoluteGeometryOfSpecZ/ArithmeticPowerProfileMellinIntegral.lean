@@ -71,7 +71,8 @@ theorem integral_cut_arithmeticPowerProfile {p : ℝ} (hp : 0 ≤ p) (hp1 : p < 
   rw [setIntegral_congr_fun measurableSet_Ioc
     (fun t ht => arithmeticPowerProfile_cut_eq_sum p f hN ht)]
   rw [integral_finset_sum _ (fun n hn => (hi n hn).const_mul (f n))]
-  rw [sum_congr rfl (fun n hn => by rw [integral_const_mul, hval n hn])]
+  simp_rw [integral_const_mul]
+  rw [sum_congr rfl (fun n hn => congrArg (fun x : ℝ => f n * x) (hval n hn))]
   simp only [← mul_div_assoc]
   rw [← sum_div]
   congr 1

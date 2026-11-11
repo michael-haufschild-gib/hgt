@@ -35,8 +35,7 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
   have hβ : 0 < β := by dsimp only [β]; positivity
   have hδ : 0 < δ := by dsimp only [δ]; positivity
   have hαc : (1 + α) * (18 / 5 : ℝ) ≤ 18 / 5 + ε := by
-    dsimp only [α]
-    nlinarith only [hε]
+    norm_num [α] <;> nlinarith only [hε]
   have hβeq : (1 + α) * β = ε / 2 := by
     dsimp only [β]
     field_simp [show 1 + α ≠ 0 by positivity] <;> ring
@@ -57,7 +56,8 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
       (18 / 5 + ε) * (v - a) + ε * (a + U / Real.log U) := by
     have h0 := mul_nonneg (show 0 ≤ 18 / 5 + ε by positivity) (sub_nonneg.mpr hav)
     have h1 := mul_nonneg hε.le ha0
-    linarith only [h0, h1]
+    simp only [div_eq_mul_inv] at h0 h1 ⊢
+    nlinarith only [h0, h1]
   by_cases hlow : a ≤ U ^ (53 / 100 : ℝ)
   · exact (hli a v d ha hav hv2 hlow hg0 hg1).trans hslack
   have hlarge : U ^ (53 / 100 : ℝ) ≤ a := (lt_of_not_ge hlow).le
@@ -70,6 +70,7 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
     have hba := congrArg (fun x : ℝ => x * a) hβeq
     have hsa := mul_nonneg hε.le ha0
     have hsU := mul_nonneg hε.le hUL
+    simp only [div_eq_mul_inv] at he hc hba hsa hsU ⊢
     nlinarith only [he, hc, hba, hsa, hsU]
   · have hcoarse := hmi a v d hlarge hav hv2 hvU hg0 hg1
     have hsmall : ((1 + α) * C) * a ≤ (ε / 2) * (U / Real.log U) := by
@@ -82,6 +83,7 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
     have he := hstable.trans (add_le_add
       (mul_le_mul_of_nonneg_left hcoarse (by positivity : 0 ≤ 1 + α)) le_rfl)
     apply le_trans _ hslack
+    simp only [div_eq_mul_inv] at he hsmall ⊢
     nlinarith only [he, hsmall]
 
 /-- The two-main-term twisted moment proves the literal dyadic detector law with one fixed mollifier. -/
