@@ -249,7 +249,6 @@ theorem principalRow_eq_continued (S : Finset (HeightOneSpectrum O))
   have hlam : lambda ∉ v.1.asIdeal := fun h => v.2 (hS _ (Or.inl h))
   have hn2 : 2 ≤ v.1.asIdeal.absNorm := ArtinMertens.two_le_absNorm_of_isPrime v.1.isPrime v.1.ne_bot
   have hn1 : 1 ≤ v.1.asIdeal.absNorm := by omega
-  have hn4 : (4 : ℝ) ≤ v.1.asIdeal.absNorm ∨ v.1.asIdeal.absNorm < 4 := le_or_gt _ _
   set n := v.1.asIdeal.absNorm
   have hhalf : ∀ {a : ℝ}, 1 ≤ a → (n : ℝ) ^ (-a) ≤ 1 / 2 := fun ha => by
     have h2 : (2 : ℝ) ≤ n := by exact_mod_cast hn2
@@ -279,6 +278,7 @@ theorem principalRow_eq_continued (S : Finset (HeightOneSpectrum O))
       _ = (n : ℝ) ^ ((4 : ℝ) + (-(3 : ℝ)) * 6 + (-(12 : ℝ))) := by
           rw [one_mul, Real.rpow_add hn0, Real.rpow_add hn0, Real.rpow_mul hn0.le]
           norm_cast
+      _ = (n : ℝ) ^ (-(26 : ℝ)) := by norm_num
       _ ≤ 1 / 2 := hhalf (by norm_num)
   · rw [norm_mul]
     exact (mul_le_of_le_one_left (norm_nonneg _) hη).trans (hX.trans (hhalf (by norm_num)))

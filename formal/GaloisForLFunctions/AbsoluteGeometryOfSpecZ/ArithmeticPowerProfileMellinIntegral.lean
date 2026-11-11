@@ -61,16 +61,18 @@ theorem integral_cut_arithmeticPowerProfile {p : ℝ} (hp : 0 ≤ p) (hp1 : p < 
       apply Set.inter_eq_right.mpr
       intro t ht
       exact ⟨hδ.trans ht.1, ht.2.trans hn1⟩
-    change (∫ t in Set.Ioc (0 : ℝ) 1,
-      (Set.Ioc (1 / (N : ℝ)) (1 / (n : ℝ))).indicator (fun t => t ^ (-p)) t) = _
-    rw [setIntegral_indicator measurableSet_Ioc, hset,
+    have hF : F n =
+        (Set.Ioc (1 / (N : ℝ)) (1 / (n : ℝ))).indicator (fun t => t ^ (-p)) := by
+      funext t
+      simp only [F, Set.indicator_apply, Set.mem_Ioc]
+    rw [hF, setIntegral_indicator measurableSet_Ioc, hset,
       ← intervalIntegral.integral_of_le (hδn n hn),
       integral_rpow (Or.inl (by linarith only [hp1])), show -p + 1 = 1 - p by ring]
     simp only [one_div, Real.inv_rpow hn0.le, Real.inv_rpow hNp.le,
       ← Real.rpow_neg hn0.le, ← Real.rpow_neg hNp.le]
   rw [setIntegral_congr_fun measurableSet_Ioc
     (fun t ht => arithmeticPowerProfile_cut_eq_sum p f hN ht)]
-  rw [integral_finset_sum _ (fun n hn => (hi n hn).const_mul (f n))]
+  rw [integral_finsetSum _ (fun n hn => (hi n hn).const_mul (f n))]
   simp_rw [integral_const_mul]
   rw [sum_congr rfl (fun n hn => congrArg (fun x : ℝ => f n * x) (hval n hn))]
   simp only [← mul_div_assoc]

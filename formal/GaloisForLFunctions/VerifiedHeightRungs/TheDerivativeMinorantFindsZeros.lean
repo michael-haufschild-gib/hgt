@@ -118,7 +118,6 @@ theorem minorantTails_le {Y : ℝ} (hY : 1 ≤ Y) :
   have hd1 : minorantTestD Y = fun u => (Y⁻¹ : ℂ) * minorantProfileD (Y⁻¹ * u) := minorantTestD_eq Y
   have hd2 : deriv (minorantTestD Y) = fun u => (Y : ℂ)⁻¹ * (Y : ℂ)⁻¹ * deriv minorantProfileD (Y⁻¹ * u) := by
     rw [hd1, deriv_const_mul_comp]
-    push_cast
   have hd3 : deriv (deriv (minorantTestD Y)) =
       fun u => (Y : ℂ)⁻¹ * (Y : ℂ)⁻¹ * (Y : ℂ)⁻¹ * deriv (deriv minorantProfileD) (Y⁻¹ * u) := by
     rw [hd2, deriv_const_mul_comp]

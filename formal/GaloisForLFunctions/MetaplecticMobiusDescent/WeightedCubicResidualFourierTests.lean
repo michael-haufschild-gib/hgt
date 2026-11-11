@@ -50178,7 +50178,8 @@ theorem coefficientAtScale_row_sum (N X : ℝ) (a : QuadraticIdealRange N → �
     (fun J : coefficientScaleSupport N X => a J.val)
     (fun (_ : Unit) (J : QuadraticIdealRange X) => canonicalQuadraticRow J.val z) ()]
   change _ = ∑ J : coefficientScaleSupport N X, canonicalQuadraticRow J.val.val z*a J.val
-  rw [Finset.sum_coe_sort]
+  rw [Finset.sum_coe_sort (coefficientScaleSupport N X)
+    (fun J : QuadraticIdealRange N => canonicalQuadraticRow J.val z*a J)]
   symm
   apply Finset.sum_subset (Finset.subset_univ _)
   intro J _ hJ
@@ -50192,7 +50193,7 @@ theorem coefficientAtScale_energy (N X : ℝ) (a : QuadraticIdealRange N → ℂ
     (∑ J, ‖coefficientAtScale N X a J‖ ^ 2) = ∑ J, ‖a J‖ ^ 2 := by
   rw [coefficientAtScale,extendByZero_energy _ _ _ (coefficientScaleColumn_injective N X).injOn]
   change (∑ J : coefficientScaleSupport N X, ‖a J.val‖ ^ 2) = _
-  rw [Finset.sum_coe_sort]
+  rw [Finset.sum_coe_sort (coefficientScaleSupport N X) (fun J : QuadraticIdealRange N => ‖a J‖ ^ 2)]
   apply Finset.sum_subset (Finset.subset_univ _)
   intro J _ hJ
   have hz : a J = 0 := by
@@ -51123,7 +51124,7 @@ theorem finite_inverse_norm_sum (S : Finset (Ideal O)) (H : ℝ)
       _ ≤ ∑ _I ∈ divisorDyadicBin S H j, 2/(2 : ℝ) ^ j.val := Finset.sum_le_sum hterm
       _ = ((divisorDyadicBin S H j).card : ℝ)*(2/(2 : ℝ) ^ j.val) := by simp
       _ ≤ (diagonalControl sieveCutoff*(2 : ℝ) ^ j.val)*(2/(2 : ℝ) ^ j.val) := by gcongr
-      _ = _ := by field_simp; ring
+      _ = _ := by field_simp
   rw [sum_divisorDyadicBins S H]
   calc
     _ ≤ ∑ j : Fin (columnDyadicLength H+1), 2*diagonalControl sieveCutoff :=
@@ -51162,6 +51163,7 @@ def columnSquareFiber (S : Finset (Ideal O)) (A : Ideal O) : Finset (Ideal O) :=
 lemma columnSquareFiber_injective (S : Finset (Ideal O)) (hS : ∀ I ∈ S, I ≠ 0) (A : Ideal O) :
     Function.Injective (fun I : columnSquareFiber S A => quadraticSquarefreePart I.val) := by
   intro I J he
+  change quadraticSquarefreePart I.val = quadraticSquarefreePart J.val at he
   apply Subtype.ext
   have hi := Finset.mem_filter.mp I.property
   have hj := Finset.mem_filter.mp J.property
@@ -51393,5 +51395,818 @@ theorem bounded_supported_quadratic_norm :
 
 
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+open scoped Classical
+
+/-- Group pairs by their product before applying the quadratic sieve. -/
+def productColumnCoefficient (S T : Finset (Ideal O)) (β : Ideal O → Ideal O → ℂ) (I : Ideal O) : ℂ :=
+  ∑p∈(S×ˢT).filter (fun p => p.1*p.2=I),β p.1 p.2
+
+theorem product_fiber_card (P : Finset (Ideal O×Ideal O)) (I : Ideal O) (hI : I≠0) :
+    (P.filter (fun p => p.1*p.2=I)).card ≤ (idealDivisors I).card := by
+  apply Finset.card_le_card_of_injOn Prod.fst
+  · intro p hp
+    apply (mem_idealDivisors hI).mpr
+    rw [←(Finset.mem_filter.mp hp).2]
+    exact dvd_mul_right _ _
+  · intro p hp q hq he
+    have hp' := (Finset.mem_filter.mp hp).2
+    have hq' := (Finset.mem_filter.mp hq).2
+    have hz : p.1≠0 := by intro hz; simp only [hz,zero_mul] at hp'; exact hI hp'.symm
+    apply Prod.ext he
+    apply mul_left_cancel₀ hz
+    rw [hp',he,hq']
+
+theorem productColumnCoefficient_norm (S T : Finset (Ideal O)) (β : Ideal O → Ideal O → ℂ)
+    (hβ : ∀n∈S,∀b∈T,‖β n b‖ ≤ 1) (I : Ideal O) (hI : I≠0) :
+    ‖productColumnCoefficient S T β I‖ ≤ (idealDivisors I).card := by
+  unfold productColumnCoefficient
+  apply (norm_sum_le _ _).trans
+  calc
+    _  ≤  ∑p∈(S×ˢT).filter (fun p => p.1*p.2=I),(1:ℝ) := by
+      apply Finset.sum_le_sum
+      intro p hp
+      have hh := Finset.mem_product.mp (Finset.mem_filter.mp hp).1
+      exact hβ p.1 hh.1 p.2 hh.2
+    _ = ((S×ˢT).filter (fun p => p.1*p.2=I)).card := by simp
+    _  ≤  _ := by exact_mod_cast product_fiber_card (S×ˢT) I hI
+
+theorem productColumnCoefficient_row_sum (S T : Finset (Ideal O))
+    (β : Ideal O → Ideal O → ℂ) (k : QuadraticIdeal) :
+    (∑n∈S,∑b∈T,canonicalQuadraticRow k (primaryIdealGenerator (n*b))*β n b)=
+    ∑I∈(S×ˢT).image (fun p => p.1*p.2),canonicalQuadraticRow k (primaryIdealGenerator I)*productColumnCoefficient S T β I := by
+  rw [←Finset.sum_product (f := fun p : Ideal O×Ideal O => canonicalQuadraticRow k (primaryIdealGenerator (p.1*p.2))*β p.1 p.2)]
+  rw [←Finset.sum_fiberwise_of_maps_to
+    (fun p (hp : p∈S×ˢT) => Finset.mem_image_of_mem (fun p : Ideal O×Ideal O => p.1*p.2) hp)]
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [productColumnCoefficient,Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro p hp
+  rw [(Finset.mem_filter.mp hp).2]
+
+theorem product_quadratic_norm :
+    ∀ε : ℝ, 0 < ε → ∃C : ℝ, 0 < C ∧ ∀K U B : ℝ,
+      1 ≤ K → 1 ≤ U → 1 ≤ B → ∀S T : Finset (Ideal O),
+      (∀I∈S,quadraticSupported I ∧ (Ideal.absNorm I:ℝ) ≤ U) →
+      (∀I∈T,quadraticSupported I ∧ (Ideal.absNorm I:ℝ) ≤ B) →
+      ∀β : Ideal O → Ideal O → ℂ, (∀n∈S,∀b∈T,‖β n b‖ ≤ 1) →
+      (∑k : QuadraticIdealRange K,‖∑n∈S,∑b∈T,canonicalQuadraticRow k.val (primaryIdealGenerator (n*b))*β n b‖ ^ 2) ≤ 
+        C*(K*(U*B)) ^ ε*(K+U*B)*(U*B) := by
+  intro ε hε
+  have hh : 0 < ε/2 := by positivity
+  have hq : 0 < ε/4 := by positivity
+  obtain ⟨C,hC,hbound⟩ := bounded_supported_quadratic_norm (ε/2) hh
+  obtain ⟨D,hD,hdiv⟩ := IdealDivisorBound.ideal_divisor_small_power (ε/4) hq
+  refine ⟨C*D ^ 2,by positivity,?_⟩
+  intro K U B hK hU hB S T hS hT β hβ
+  let X := U*B
+  let P := (S×ˢT).image (fun p => p.1*p.2)
+  have hX : 1 ≤ X := by dsimp [X]; nlinarith
+  have hX0 : 0 < X := by linarith
+  have hK0 : 0 < K := by linarith
+  have hp (I : Ideal O) (hI : I∈P) : quadraticSupported I ∧ (Ideal.absNorm I:ℝ) ≤ X := by
+    obtain ⟨⟨n,b⟩,hnb,rfl⟩ := Finset.mem_image.mp hI
+    have hm := Finset.mem_product.mp hnb
+    refine ⟨(quadraticSupported_mul n b).mpr ⟨(hS n hm.1).1,(hT b hm.2).1⟩,?_⟩
+    rw [map_mul,Nat.cast_mul]
+    exact mul_le_mul (hS n hm.1).2 (hT b hm.2).2 (Nat.cast_nonneg _) (by linarith)
+  have hcoeff (I : Ideal O) (hI : I∈P) : ‖productColumnCoefficient S T β I‖ ≤ D*X ^ (ε/4) := by
+    apply (productColumnCoefficient_norm S T β hβ I (primaryIdealGenerator_ne_zero_ideal I (hp I hI).1.1)).trans
+    apply (hdiv I (primaryIdealGenerator_ne_zero_ideal I (hp I hI).1.1)).trans
+    exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) (hp I hI).2 hq.le) hD.le
+  have hb := hbound K X (D*X ^ (ε/4)) hK hX (by positivity) P hp (productColumnCoefficient S T β) hcoeff
+  simp_rw [productColumnCoefficient_row_sum]
+  apply hb.trans
+  have hpow : (K*X) ^ (ε/2)*(X ^ (ε/4)) ^ 2 ≤ (K*X) ^ ε := by
+    have hXP : X ≤ K*X := by nlinarith
+    calc
+      _  ≤  (K*X) ^ (ε/2)*((K*X) ^ (ε/4)) ^ 2 := by gcongr
+      _ = _ := by
+        rw [pow_two,←mul_assoc,←Real.rpow_add (by positivity : 0 < K*X),←Real.rpow_add (by positivity : 0 < K*X)]
+        congr 1
+        ring
+  calc
+    _ = (C*D ^ 2)*((K*X) ^ (ε/2)*(X ^ (ε/4)) ^ 2)*(K+X)*X := by ring
+    _  ≤  _ := by change _ ≤ (C*D ^ 2)*(K*X) ^ ε*(K+X)*X; gcongr
+
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+open scoped Classical
+
+/-- Excluded prime factors cost only the number of divisors of the fixed mask. -/
+theorem squarefree_all_column_energy {n : Type*} [Fintype n]
+    (cols : n → {I : Ideal O // Squarefree I}) (hinj : Function.Injective cols) (X K : ℝ)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ X) (a : n → ℂ) :
+    (∑ k : QuadraticIdealRange K, ‖∑ j,
+      canonicalQuadraticRow k.val (primaryIdealGenerator (cols j).val)*a j‖ ^ 2) ≤
+      ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*sieveNorm X K*∑ j, ‖a j‖ ^ 2 := by
+  let sector (D : idealDivisors (quadraticMaskIdeal 1)) := {j : n // quadraticBadSector (cols j) = D}
+  have hsector (D : idealDivisors (quadraticMaskIdeal 1)) :
+      (∑ k : QuadraticIdealRange K, ‖∑ j : sector D,
+        canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val‖ ^ 2) ≤
+        sieveNorm X K*∑ j : sector D, ‖a j.val‖ ^ 2 := by
+    let good : sector D → QuadraticIdeal := fun j => quadraticGoodRow (cols j.val)
+    have hg : Function.Injective good := by
+      intro i j hij
+      apply Subtype.ext
+      apply hinj
+      exact quadraticGoodRow_injective_on_sector (cols i.val) (cols j.val)
+        (i.property.trans j.property.symm) hij
+    let B : Matrix (sector D) (QuadraticIdealRange K) ℂ := fun j k =>
+      canonicalQuadraticRow k.val (primaryIdealGenerator (good j).val)
+    have hB : ‖FiniteSieveOperator.operator B‖ ^ 2 ≤ sieveNorm X K :=
+      family_squared_norm_le good (fun k : QuadraticIdealRange K => k.val) hg Subtype.val_injective X K
+        (fun j => (quadraticGoodRow_norm_le (cols j.val)).trans (hcols j.val)) (fun k => k.property)
+    have hBT : B.conjTranspose =
+        (fun k j => canonicalQuadraticRow k.val (primaryIdealGenerator (good j).val)) := by
+      ext k j
+      exact canonicalQuadraticRow_star _ _
+    have he := FiniteSieveOperator.energy_bound B.conjTranspose (fun j : sector D => a j.val)
+    rw [FiniteSieveOperator.operator_conjTranspose_norm,hBT] at he
+    have hrow (k : QuadraticIdealRange K) :
+        (∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val) =
+          canonicalQuadraticRow k.val (primaryIdealGenerator D.val)*
+          ∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (good j).val)*a j.val := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j _
+      have hj : (cols j.val).val = D.val*(good j).val := by
+        rw [←quadraticBadSector_good_product (cols j.val),j.property]
+        rfl
+      rw [hj,primaryIdealGenerator_mul,canonicalQuadraticRow_mul]
+      ring
+    have hpoint (k : QuadraticIdealRange K) :
+        ‖∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val‖ ^ 2 ≤
+          ‖∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (good j).val)*a j.val‖ ^ 2 := by
+      rw [hrow,norm_mul]
+      apply pow_le_pow_left₀ (by positivity)
+      exact mul_le_of_le_one_left (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _)
+    exact (Finset.sum_le_sum (fun k _ => hpoint k)).trans
+      (he.trans (mul_le_mul_of_nonneg_right hB (by positivity)))
+  have hpoint (k : QuadraticIdealRange K) :
+      ‖∑ j, canonicalQuadraticRow k.val (primaryIdealGenerator (cols j).val)*a j‖ ^ 2 ≤
+        ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*
+        ∑ D : idealDivisors (quadraticMaskIdeal 1), ‖∑ j : sector D,
+          canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val‖ ^ 2 := by
+    rw [←Fintype.sum_fiberwise (fun j => quadraticBadSector (cols j))]
+    have hn := pow_le_pow_left₀ (norm_nonneg _)
+      (norm_sum_le Finset.univ (fun D : idealDivisors (quadraticMaskIdeal 1) =>
+        ∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val)) 2
+    have hc := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ
+      (fun _ : idealDivisors (quadraticMaskIdeal 1) => (1 : ℝ))
+      (fun D : idealDivisors (quadraticMaskIdeal 1) =>
+        ‖∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val‖)
+    apply hn.trans
+    simpa only [one_mul,one_pow,Finset.sum_const,Finset.card_univ,Fintype.card_coe,
+      nsmul_eq_mul,mul_one] using hc
+  calc
+    _ ≤ ∑ k : QuadraticIdealRange K, ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*
+        ∑ D : idealDivisors (quadraticMaskIdeal 1), ‖∑ j : sector D,
+          canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val‖ ^ 2 :=
+      Finset.sum_le_sum (fun k _ => hpoint k)
+    _ = ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*
+        ∑ D : idealDivisors (quadraticMaskIdeal 1), ∑ k : QuadraticIdealRange K,
+          ‖∑ j : sector D, canonicalQuadraticRow k.val (primaryIdealGenerator (cols j.val).val)*a j.val‖ ^ 2 := by
+      rw [←Finset.mul_sum,Finset.sum_comm]
+    _ ≤ ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*
+        ∑ D : idealDivisors (quadraticMaskIdeal 1), sieveNorm X K*∑ j : sector D, ‖a j.val‖ ^ 2 := by
+      gcongr with D
+      exact hsector D
+    _ = _ := by
+      have he : (∑ D : idealDivisors (quadraticMaskIdeal 1), ∑ j : sector D, ‖a j.val‖ ^ 2) =
+          ∑ j, ‖a j‖ ^ 2 :=
+        Fintype.sum_fiberwise (fun j => quadraticBadSector (cols j)) (fun j => ‖a j‖ ^ 2)
+      rw [←Finset.mul_sum,he]
+      ring
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+open scoped Classical
+
+lemma columnSquareFiber_nonzero_bounds (S : Finset (Ideal O)) (X : ℝ)
+    (hS : ∀ I ∈ S, I ≠ 0 ∧ (Ideal.absNorm I : ℝ) ≤ X) (A : Ideal O)
+    (I : columnSquareFiber S A) :
+    Squarefree (quadraticSquarefreePart I.val) ∧
+      (Ideal.absNorm (quadraticSquarefreePart I.val) : ℝ) ≤ X/(Ideal.absNorm A : ℝ) ^ 2 := by
+  have hi := hS I.val (Finset.mem_filter.mp I.property).1
+  have hI0 := hi.1
+  have ha := (Finset.mem_filter.mp I.property).2
+  have hAz : A ≠ 0 := by rw [← ha]; exact quadraticSquarePart_ne_zero I.val
+  have hAn : 0 < (Ideal.absNorm A : ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero (fun hz => hAz (Ideal.absNorm_eq_zero_iff.mp hz))
+  refine ⟨quadraticSquarefreePart_squarefree I.val,(le_div_iff₀ (sq_pos_of_pos hAn)).mpr ?_⟩
+  have hn := quadraticSquarePart_norm_decomposition I.val hI0
+  rw [ha] at hn
+  nlinarith only [hn,hi.2]
+
+lemma columnSquareFiber_nonzero_card (S : Finset (Ideal O)) (X : ℝ)
+    (hS : ∀ I ∈ S, I ≠ 0 ∧ (Ideal.absNorm I : ℝ) ≤ X) (A : Ideal O)
+    (hscale : 1 ≤ X/(Ideal.absNorm A : ℝ) ^ 2) :
+    ((columnSquareFiber S A).card : ℝ) ≤ diagonalControl sieveCutoff*(X/(Ideal.absNorm A : ℝ) ^ 2) := by
+  let T := (columnSquareFiber S A).image quadraticSquarefreePart
+  have hcard : T.card = (columnSquareFiber S A).card := Finset.card_image_iff.mpr (by
+    intro I hI J hJ he
+    have hh : (⟨I,hI⟩ : columnSquareFiber S A) = (⟨J,hJ⟩ : columnSquareFiber S A) :=
+      columnSquareFiber_injective S (fun I hI => (hS I hI).1) A he
+    exact congrArg Subtype.val hh)
+  rw [← hcard]
+  apply finite_ideal_card_bound T _ hscale
+  intro I hI
+  obtain ⟨J,hJ,rfl⟩ := Finset.mem_image.mp hI
+  exact (columnSquareFiber_nonzero_bounds S X hS A ⟨J,hJ⟩).2
+
+
+theorem columnSquareFiber_all_energy (S : Finset (Ideal O)) (X K : ℝ)
+    (hS : ∀ I ∈ S, I ≠ 0 ∧ (Ideal.absNorm I : ℝ) ≤ X)
+    (A : Ideal O) (a : Ideal O → ℂ) :
+    (∑ k : QuadraticIdealRange K, ‖∑ I ∈ columnSquareFiber S A,
+      canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2) ≤
+      ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ)*sieveNorm (X/(Ideal.absNorm A : ℝ) ^ 2) K * ∑ I ∈ columnSquareFiber S A, ‖a I‖ ^ 2 := by
+  let T := columnSquareFiber S A
+  let cols : T → {I : Ideal O // Squarefree I} := fun I =>
+    ⟨quadraticSquarefreePart I.val,quadraticSquarefreePart_squarefree I.val⟩
+  have hinj : Function.Injective cols := by
+    intro I J he
+    exact columnSquareFiber_injective S (fun I hI => (hS I hI).1) A
+      (congrArg Subtype.val he)
+  have he := squarefree_all_column_energy cols hinj (X/(Ideal.absNorm A : ℝ) ^ 2) K
+    (fun I => (columnSquareFiber_nonzero_bounds S X hS A I).2) (fun I : T => a I.val)
+  have hm (k : QuadraticIdealRange K) :
+      ‖∑ I : T, canonicalQuadraticRow k.val (primaryIdealGenerator I.val)*a I.val‖ ^ 2 ≤
+        ‖∑ I : T, canonicalQuadraticRow k.val (primaryIdealGenerator (quadraticSquarefreePart I.val))*a I.val‖ ^ 2 := by
+    have hrow : (∑ I : T, canonicalQuadraticRow k.val (primaryIdealGenerator I.val)*a I.val) =
+        quadraticIdealMask k.val (primaryIdealGenerator A)*
+        ∑ I : T, canonicalQuadraticRow k.val (primaryIdealGenerator (quadraticSquarefreePart I.val))*a I.val := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro I _
+      have hi := Finset.mem_filter.mp I.property
+      have hq := canonicalQuadraticRow_squarefree_argument k.val (quadraticSquarefreePart I.val) (quadraticSquarePart I.val)
+      rw [quadraticParts_mul_square I.val (hS I.val hi.1).1,hi.2] at hq
+      rw [hq]
+      ring
+    rw [hrow,norm_mul,mul_pow]
+    have hmask : ‖quadraticIdealMask k.val (primaryIdealGenerator A)‖ ^ 2 ≤ 1 := by
+      rw [quadraticIdealMask_indicator]
+      split_ifs <;> norm_num
+    exact mul_le_of_le_one_left (sq_nonneg _) hmask
+  have hsum (k : QuadraticIdealRange K) :
+      (∑ I ∈ columnSquareFiber S A, canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I) =
+      ∑ I : T, canonicalQuadraticRow k.val (primaryIdealGenerator I.val)*a I.val :=
+    (Finset.sum_coe_sort T _).symm
+  simp_rw [hsum]
+  rw [← Finset.sum_coe_sort T (fun I => ‖a I‖ ^ 2)]
+  exact (Finset.sum_le_sum (fun k _ => hm k)).trans
+    he
+
+lemma columnSquareParts_nonzero_bounds (S : Finset (Ideal O)) (X : ℝ)
+    (hS : ∀ I ∈ S, I ≠ 0 ∧ (Ideal.absNorm I : ℝ) ≤ X) (A : Ideal O)
+    (hA : A ∈ S.image quadraticSquarePart) :
+    A ≠ 0 ∧ 1 ≤ (Ideal.absNorm A : ℝ) ∧ (Ideal.absNorm A : ℝ) ≤ X ∧ 1 ≤ X/(Ideal.absNorm A : ℝ) ^ 2 := by
+  obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hA
+  have hi := hS I hI
+  have hI0 := hi.1
+  have hAz := quadraticSquarePart_ne_zero I
+  have hDz := (quadraticSquarefreePart_squarefree I).ne_zero
+  have ha : 1 ≤ (Ideal.absNorm (quadraticSquarePart I) : ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun hz => hAz (Ideal.absNorm_eq_zero_iff.mp hz))
+  have hd : 1 ≤ (Ideal.absNorm (quadraticSquarefreePart I) : ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun hz => hDz (Ideal.absNorm_eq_zero_iff.mp hz))
+  have hn := quadraticSquarePart_norm_decomposition I hI0
+  refine ⟨hAz,ha,by nlinarith only [ha,hd,hn,hi.2],?_⟩
+  apply (le_div_iff₀ (by positivity : 0 < (Ideal.absNorm (quadraticSquarePart I) : ℝ) ^ 2)).mpr
+  nlinarith only [ha,hd,hn,hi.2]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped Classical
+
+/-- Square-part fibers and fixed exceptional sectors control every nonzero column. -/
+theorem bounded_nonzero_quadratic_norm :
+    ∀ε : ℝ, 0 < ε → ∃C : ℝ, 0 < C ∧ ∀K X lengthScale : ℝ,
+      1 ≤ K → 1 ≤ X → 0 ≤ lengthScale → ∀S : Finset (Ideal O),
+      (∀I∈S,I ≠ 0 ∧ (Ideal.absNorm I:ℝ) ≤ X) →
+      ∀a : Ideal O → ℂ, (∀I∈S,‖a I‖ ≤ lengthScale) →
+      (∑k : QuadraticIdealRange K,‖∑I∈S,canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2) ≤ 
+        C*(K*X) ^ ε*(K+X)*X*lengthScale ^ 2 := by
+  intro ε hε
+  have hdiag := diagonalControl_nonneg sieveCutoff
+  let B : ℝ := (idealDivisors (quadraticMaskIdeal 1)).card+1
+  have hB : 0 < B := by dsimp [B]; positivity
+  let deltaLoss := ε/3
+  have hδ : 0 < deltaLoss := by dsimp [deltaLoss]; positivity
+  obtain ⟨C,hC,hsharp⟩ := sieveNorm_sharp deltaLoss hδ
+  let D : ℝ := (2*(diagonalControl sieveCutoff+1))*(2+1/(deltaLoss*Real.log 2))
+  have hD : 0 < D := by have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num); dsimp [D]; positivity
+  refine ⟨B*(diagonalControl sieveCutoff+1)*C*D ^ 2,by positivity,?_⟩
+  intro K X lengthScale hK hX hL S hS a ha
+  let T := S.image quadraticSquarePart
+  let R : ℝ := ∑A∈T,1/(Ideal.absNorm A:ℝ)
+  have hK0 : 0 < K := by linarith
+  have hX0 : 0 < X := by linarith
+  have hP0 : 0 < K*X := by positivity
+  have hprop (A : Ideal O) (hA : A∈T) := columnSquareParts_nonzero_bounds S X hS A hA
+  have hT0 : ∀A∈T,A≠0 := fun A hA => (hprop A hA).1
+  have hR : 0 ≤ R := by dsimp [R]; positivity
+  have hRL : R ≤ D*X ^ deltaLoss := by
+    apply (finite_inverse_norm_sum T X hT0 (fun A hA => (hprop A hA).2.2.1)).trans
+    have hh := columnDyadicLength_small_power deltaLoss hδ X hX
+    dsimp [D]
+    have hp := Real.rpow_nonneg hX0.le deltaLoss
+    have hlog : 0  <  Real.log 2 := Real.log_pos (by norm_num)
+    have hc : 0  ≤  2+1/(deltaLoss*Real.log 2) := by positivity
+    nlinarith only [hh,hdiag,hp,mul_nonneg hc hp]
+  let F : ℝ := B*(diagonalControl sieveCutoff+1)*C*(K*X) ^ deltaLoss*(K+X)*X*lengthScale ^ 2
+  have hF : 0 ≤ F := by dsimp [F]; positivity
+  have hf (A : Ideal O) (hA : A∈T) :
+      (Ideal.absNorm A:ℝ)*(∑k : QuadraticIdealRange K,‖∑I∈columnSquareFiber S A,
+        canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2) ≤ F/(Ideal.absNorm A:ℝ) := by
+    have hp := hprop A hA
+    have hn : 0 < (Ideal.absNorm A:ℝ) := by linarith [hp.2.1]
+    let Y := X/(Ideal.absNorm A:ℝ) ^ 2
+    have hY : 1 ≤ Y := hp.2.2.2
+    have hYX : Y ≤ X := div_le_self hX0.le (one_le_pow₀ hp.2.1)
+    have hb : sieveNorm Y K ≤ C*(K*X) ^ deltaLoss*(K+X) := by
+      apply (hsharp Y K hY hK).trans
+      have hprod : Y*K ≤ K*X := by nlinarith
+      have hpw := Real.rpow_le_rpow (by positivity : 0 ≤ Y*K) hprod hδ.le
+      exact mul_le_mul (mul_le_mul_of_nonneg_left hpw hC.le) (by linarith)
+        (by positivity) (by positivity)
+    have hea : (∑I∈columnSquareFiber S A,‖a I‖ ^ 2) ≤ (diagonalControl sieveCutoff+1)*Y*lengthScale ^ 2 := by
+      calc
+        _  ≤  ∑_I∈columnSquareFiber S A,lengthScale ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I hI
+          exact pow_le_pow_left₀ (norm_nonneg _) (ha I (Finset.mem_filter.mp hI).1) 2
+        _ = ((columnSquareFiber S A).card:ℝ)*lengthScale ^ 2 := by simp
+        _  ≤  diagonalControl sieveCutoff*Y*lengthScale  ^  2 :=
+          mul_le_mul_of_nonneg_right (columnSquareFiber_nonzero_card S X hS A hY) (sq_nonneg _)
+        _  ≤  _ := by gcongr; linarith
+    have he := columnSquareFiber_all_energy S X K hS A a
+    calc
+      _  ≤  (Ideal.absNorm A:ℝ)*(B*sieveNorm Y K*(∑I∈columnSquareFiber S A,‖a I‖ ^ 2)) := by
+        apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+        apply he.trans
+        gcongr
+        dsimp [B]
+        linarith
+      _  ≤  (Ideal.absNorm A:ℝ)*((B*(C*(K*X) ^ deltaLoss*(K+X)))*((diagonalControl sieveCutoff+1)*Y*lengthScale ^ 2)) := by
+        gcongr
+      _ = F/(Ideal.absNorm A:ℝ) := by dsimp [F,Y]; field_simp [hn.ne']
+  have hsplit (k : QuadraticIdealRange K) :
+      (∑I∈S,canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I)=
+      ∑A∈T,∑I∈columnSquareFiber S A,canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I := by
+    exact (Finset.sum_fiberwise_of_maps_to (fun I hI => Finset.mem_image_of_mem quadraticSquarePart hI) _).symm
+  have hcauchy (k : QuadraticIdealRange K) :
+      ‖∑I∈S,canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2 ≤ 
+      R*∑A∈T,(Ideal.absNorm A:ℝ)*‖∑I∈columnSquareFiber S A,canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2 := by
+    rw [hsplit]
+    exact ideal_reciprocal_cauchy T hT0 _
+  have htotal : (∑k : QuadraticIdealRange K,‖∑I∈S,canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2) ≤ F*R ^ 2 := by
+    calc
+      _  ≤  ∑k : QuadraticIdealRange K,R*∑A∈T,(Ideal.absNorm A:ℝ)*‖∑I∈columnSquareFiber S A,
+          canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2 := Finset.sum_le_sum (fun k _ => hcauchy k)
+      _ = R*∑A∈T,(Ideal.absNorm A:ℝ)*∑k : QuadraticIdealRange K,‖∑I∈columnSquareFiber S A,
+          canonicalQuadraticRow k.val (primaryIdealGenerator I)*a I‖ ^ 2 := by
+        rw [←Finset.mul_sum,Finset.sum_comm]
+        congr 1
+        apply Finset.sum_congr rfl
+        intro A hA
+        rw [←Finset.mul_sum]
+      _  ≤  R*∑A∈T,F/(Ideal.absNorm A:ℝ) := by gcongr with A hA; exact hf A hA
+      _ = F*R ^ 2 := by
+        simp_rw [div_eq_mul_inv]
+        rw [←Finset.mul_sum]
+        dsimp [R]
+        simp only [one_div]
+        ring
+  have hpower : (K*X) ^ deltaLoss*(X ^ deltaLoss) ^ 2 ≤ (K*X) ^ ε := by
+    have hXP : X ≤ K*X := by nlinarith
+    calc
+      _  ≤  (K*X) ^ deltaLoss*((K*X) ^ deltaLoss) ^ 2 := by gcongr
+      _ = (K*X) ^ ε := by
+        rw [pow_two,←mul_assoc,←Real.rpow_add hP0,←Real.rpow_add hP0]
+        congr 1
+        dsimp [deltaLoss]
+        ring
+  apply htotal.trans
+  calc
+    _  ≤  F*(D*X ^ deltaLoss) ^ 2 := by gcongr
+    _ = (B*(diagonalControl sieveCutoff+1)*C*D ^ 2)*((K*X) ^ deltaLoss*(X ^ deltaLoss) ^ 2)*(K+X)*X*lengthScale ^ 2 := by dsimp [F]; ring
+    _  ≤  _ := by gcongr
+
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+open scoped Classical
+
+/-- Grouping repeated columns costs their largest fiber cardinality. -/
+theorem column_fiber_sieve {K X Y : Type*} [DecidableEq X] [DecidableEq Y]
+    (rows : Finset K) (source : Finset X) (target : Finset Y)
+    (φ : X → Y) (q : K → Y → ℂ) (a : X → ℂ) (Q D : ℝ) (hQ : 0 ≤ Q)
+    (hφ : ∀ x ∈ source, φ x ∈ target)
+    (hfiber : ∀ y ∈ target, ((source.filter (fun x => φ x = y)).card : ℝ) ≤ D)
+    (hsieve : ∀ f : Y → ℂ,
+      (∑ k ∈ rows, ‖∑ y ∈ target, q k y*f y‖ ^ 2) ≤ Q*∑ y ∈ target, ‖f y‖ ^ 2) :
+    (∑ k ∈ rows, ‖∑ x ∈ source, q k (φ x)*a x‖ ^ 2) ≤ Q*D*∑ x ∈ source, ‖a x‖ ^ 2 := by
+  let f : Y → ℂ := fun y => ∑ x ∈ source with φ x = y, a x
+  have he (k : K) : (∑ x ∈ source, q k (φ x)*a x) = ∑ y ∈ target, q k y*f y := by
+    rw [←Finset.sum_fiberwise_of_maps_to hφ]
+    apply Finset.sum_congr rfl
+    intro y _
+    dsimp only [f]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro x hx
+    rw [(Finset.mem_filter.mp hx).2]
+  have hb (y : Y) (hy : y ∈ target) : ‖f y‖ ^ 2 ≤ D*∑ x ∈ source with φ x = y, ‖a x‖ ^ 2 := by
+    let S := source.filter (fun x => φ x = y)
+    have hn := pow_le_pow_left₀ (norm_nonneg _) (norm_sum_le S a) 2
+    have hc := Finset.sum_mul_sq_le_sq_mul_sq S (fun _ => (1 : ℝ)) (fun x => ‖a x‖)
+    simp only [one_mul,one_pow,Finset.sum_const,nsmul_eq_mul,mul_one] at hc
+    exact (hn.trans hc).trans (mul_le_mul_of_nonneg_right (hfiber y hy) (by positivity))
+  have hf : (∑ y ∈ target, ‖f y‖ ^ 2) ≤ D*∑ x ∈ source, ‖a x‖ ^ 2 := by
+    calc
+      _ ≤ ∑ y ∈ target, D*∑ x ∈ source with φ x = y, ‖a x‖ ^ 2 := Finset.sum_le_sum hb
+      _ = _ := by rw [←Finset.mul_sum,Finset.sum_fiberwise_of_maps_to hφ]
+  simp_rw [he]
+  exact (hsieve f).trans (by simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hf hQ)
+
+/-- Restrict a nonnegative row energy from the complete norm ball. -/
+lemma quadratic_range_energy_restrict (K : ℝ) (rows : Finset QuadraticIdeal)
+    (hrows : ∀ k ∈ rows, (Ideal.absNorm k.val : ℝ) ≤ K)
+    (E : QuadraticIdeal → ℝ) (hE : ∀ k, 0 ≤ E k) :
+    (∑ k ∈ rows, E k) ≤ ∑ k : QuadraticIdealRange K, E k.val := by
+  let f : rows → QuadraticIdealRange K := fun k => ⟨k.val,hrows k.val k.property⟩
+  have hf : Function.Injective f := fun i j h => Subtype.ext (congrArg Subtype.val h)
+  rw [←Finset.sum_coe_sort rows E]
+  change (∑ k : rows, E (f k).val) ≤ _
+  rw [←Finset.sum_image (f := fun k : QuadraticIdealRange K => E k.val) (g := f)
+    (fun _ _ _ _ h => hf h)]
+  exact Finset.sum_le_univ_sum_of_nonneg (fun k => hE k.val)
+
+/-- The sharp quadratic sieve allows squarefree columns containing excluded primes. -/
+theorem finite_squarefree_quadratic_energy (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ K X : ℝ, 1 ≤ K → 1 ≤ X →
+    ∀ (rows : Finset QuadraticIdeal) (cols : Finset (Ideal O)),
+      (∀ k ∈ rows, (Ideal.absNorm k.val : ℝ) ≤ K) →
+      (∀ J ∈ cols, Squarefree J ∧ (Ideal.absNorm J : ℝ) ≤ X) →
+    ∀ a : Ideal O → ℂ,
+      (∑ k ∈ rows, ‖∑ J ∈ cols, canonicalQuadraticRow k (primaryIdealGenerator J)*a J‖ ^ 2) ≤
+        C*(K*X) ^ ε*(K+X)*∑ J ∈ cols, ‖a J‖ ^ 2 := by
+  obtain ⟨C,hC,hsharp⟩ := sieveNorm_sharp ε hε
+  let B : ℝ := (idealDivisors (quadraticMaskIdeal 1)).card+1
+  have hB : 0 < B := by dsimp [B]; positivity
+  refine ⟨B*C,mul_pos hB hC,?_⟩
+  intro K X hK hX rows cols hrows hcols a
+  let f : cols → {I : Ideal O // Squarefree I} := fun J => ⟨J.val,(hcols J.val J.property).1⟩
+  have hf : Function.Injective f := fun I J h => Subtype.ext (congrArg Subtype.val h)
+  have hb := squarefree_all_column_energy f hf X K
+    (fun J => (hcols J.val J.property).2) (fun J => a J.val)
+  have hi (k : QuadraticIdealRange K) :
+      (∑ J : cols, canonicalQuadraticRow k.val (primaryIdealGenerator (f J).val)*a J.val) =
+        ∑ J ∈ cols, canonicalQuadraticRow k.val (primaryIdealGenerator J)*a J :=
+    Finset.sum_coe_sort cols _
+  simp_rw [hi] at hb
+  rw [Finset.sum_coe_sort cols (fun J => ‖a J‖ ^ 2)] at hb
+  apply (quadratic_range_energy_restrict K rows hrows
+    (fun k => ‖∑ J ∈ cols, canonicalQuadraticRow k (primaryIdealGenerator J)*a J‖ ^ 2)
+    (fun _ => sq_nonneg _)).trans
+  apply hb.trans
+  calc
+    _ ≤ B*(C*(X*K) ^ ε*(X+K))*∑ J ∈ cols, ‖a J‖ ^ 2 := by
+      gcongr
+      · dsimp [B]; linarith
+      · exact hsharp X K hX hK
+    _ = _ := by rw [mul_comm X K,add_comm X K]; ring
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein
+open scoped Classical
+
+/-- Product collisions cost a divisor bound, absorbed into the arbitrary small power. -/
+theorem quadratic_squarefree_product_column_energy (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ K X : ℝ, 1 ≤ K → 1 ≤ X →
+    ∀ (rows : Finset QuadraticIdeal) (pairs : Finset (Ideal O × Ideal O)),
+      (∀ k ∈ rows, (Ideal.absNorm k.val : ℝ) ≤ K) →
+      (∀ p ∈ pairs, Squarefree (p.1 * p.2) ∧ (Ideal.absNorm (p.1 * p.2) : ℝ) ≤ X) →
+    ∀ a : Ideal O × Ideal O → ℂ,
+      (∑ k ∈ rows, ‖∑ p ∈ pairs,
+        canonicalQuadraticRow k (primaryIdealGenerator (p.1 * p.2)) * a p‖ ^ 2) ≤
+      C * (K * X) ^ ε * (K + X) * ∑ p ∈ pairs, ‖a p‖ ^ 2 := by
+  have hhalf : 0 < ε / 2 := by positivity
+  obtain ⟨Cq, hCq, hquad⟩ := finite_squarefree_quadratic_energy (ε / 2) hhalf
+  obtain ⟨Cd, hCd, hdiv⟩ := IdealDivisorBound.ideal_divisor_small_power (ε / 2) hhalf
+  refine ⟨Cq * Cd, mul_pos hCq hCd, ?_⟩
+  intro K X hK hX rows pairs hrows hpairs a
+  let target := pairs.image (fun p => p.1 * p.2)
+  have ht (J : Ideal O) (hJ : J ∈ target) :
+      Squarefree J ∧ (Ideal.absNorm J : ℝ) ≤ X := by
+    obtain ⟨p, hp, rfl⟩ := Finset.mem_image.mp hJ
+    exact hpairs p hp
+  have hfiber (J : Ideal O) (hJ : J ∈ target) :
+      ((pairs.filter (fun p => p.1 * p.2 = J)).card : ℝ) ≤ Cd * X ^ (ε / 2) := by
+    apply (Nat.cast_le.mpr (product_fiber_card pairs J (ht J hJ).1.ne_zero)).trans
+    exact (hdiv J (ht J hJ).1.ne_zero).trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (Nat.cast_nonneg _) (ht J hJ).2 hhalf.le) hCd.le)
+  have he := column_fiber_sieve rows pairs target (fun p => p.1 * p.2)
+    (fun k J => canonicalQuadraticRow k (primaryIdealGenerator J)) a
+    (Cq * (K * X) ^ (ε / 2) * (K + X)) (Cd * X ^ (ε / 2)) (by positivity)
+    (fun p hp => Finset.mem_image_of_mem _ hp) hfiber
+    (hquad K X hK hX rows target hrows ht)
+  apply he.trans
+  have hKX : 0 < K * X := mul_pos (by linarith) (by linarith)
+  have hpow : (K * X) ^ (ε / 2) * X ^ (ε / 2) ≤ (K * X) ^ ε := by
+    calc
+      _ ≤ (K * X) ^ (ε / 2) * (K * X) ^ (ε / 2) := by
+        apply mul_le_mul_of_nonneg_left _ (Real.rpow_nonneg hKX.le _)
+        exact Real.rpow_le_rpow (by linarith) (le_mul_of_one_le_left (by linarith) hK) hhalf.le
+      _ = _ := by rw [← Real.rpow_add hKX]; congr 1 ; ring
+  calc
+    _ = (Cq * Cd) * ((K * X) ^ (ε / 2) * X ^ (ε / 2)) * (K + X) *
+        ∑ p ∈ pairs, ‖a p‖ ^ 2 := by ring
+    _ ≤ _ := by gcongr
+
+theorem quadratic_fixed_factor_energy
+    (rows : Finset QuadraticIdeal) (pairs : Finset (Ideal O × Ideal O))
+    (B : Ideal O)
+    (a : Ideal O × Ideal O → ℂ) :
+    (∑ k ∈ rows, ‖∑ p ∈ pairs,
+      canonicalQuadraticRow k (primaryIdealGenerator (B * (p.1 * p.2))) * a p‖ ^ 2) ≤
+    ∑ k ∈ rows, ‖∑ p ∈ pairs,
+      canonicalQuadraticRow k (primaryIdealGenerator (p.1 * p.2)) * a p‖ ^ 2 := by
+  apply Finset.sum_le_sum
+  intro k hk
+  have he : (∑ p ∈ pairs,
+      canonicalQuadraticRow k (primaryIdealGenerator (B * (p.1 * p.2))) * a p) =
+      canonicalQuadraticRow k (primaryIdealGenerator B) * ∑ p ∈ pairs,
+        canonicalQuadraticRow k (primaryIdealGenerator (p.1 * p.2)) * a p := by
+    simp only [primaryIdealGenerator_mul,
+      canonicalQuadraticRow_mul k, Finset.mul_sum, mul_assoc]
+  rw [he]
+  apply pow_le_pow_left₀ (norm_nonneg _)
+  rw [norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (canonicalQuadraticRow_norm_le_one k _)
+
+theorem quadratic_squarefree_product_energy_fixed_factor (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ K X : ℝ, 1 ≤ K → 1 ≤ X →
+    ∀ (rows : Finset QuadraticIdeal) (pairs : Finset (Ideal O × Ideal O)),
+      (∀ k ∈ rows, (Ideal.absNorm k.val : ℝ) ≤ K) →
+      (∀ p ∈ pairs, Squarefree (p.1 * p.2) ∧ (Ideal.absNorm (p.1 * p.2) : ℝ) ≤ X) →
+    ∀ (B : Ideal O) (a : Ideal O × Ideal O → ℂ),
+      (∑ k ∈ rows, ‖∑ p ∈ pairs,
+        canonicalQuadraticRow k (primaryIdealGenerator (B * (p.1 * p.2))) * a p‖ ^ 2) ≤
+      C * (K * X) ^ ε * (K + X) * ∑ p ∈ pairs, ‖a p‖ ^ 2 := by
+  obtain ⟨C, hC, hb⟩ := quadratic_squarefree_product_column_energy ε hε
+  refine ⟨C, hC, ?_⟩
+  intro K X hK hX rows pairs hrows hpairs B a
+  exact (quadratic_fixed_factor_energy rows pairs B a).trans
+    (hb K X hK hX rows pairs hrows hpairs a)
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace FiniteOverlapDecomposition
+open scoped Classical
+variable {ι : Type*} [DecidableEq ι]
+
+/-- Common support and two disjoint residual supports. -/
+abbrev Triple (ι : Type*) := Σ _ : Finset ι, Finset ι × Finset ι
+
+def triples (F : Finset ι) : Finset (Triple ι) :=
+  F.powerset.sigma fun G => ((F \ G).powerset ×ˢ (F \ G).powerset).filter fun UV => Disjoint UV.1 UV.2
+
+def split (ST : Finset ι × Finset ι) : Triple ι :=
+  ⟨ST.1 ∩ ST.2, ST.1 \ ST.2, ST.2 \ ST.1⟩
+
+def join (GUV : Triple ι) : Finset ι × Finset ι :=
+  (GUV.1 ∪ GUV.2.1, GUV.1 ∪ GUV.2.2)
+
+lemma join_split (ST : Finset ι × Finset ι) : join (split ST) = ST := by
+  apply Prod.ext
+  · ext i
+    simp only [join, split, Finset.mem_union, Finset.mem_inter, Finset.mem_sdiff]
+    tauto
+  · ext i
+    simp only [join, split, Finset.mem_union, Finset.mem_inter, Finset.mem_sdiff]
+    tauto
+
+lemma split_mem {F : Finset ι} {ST : Finset ι × Finset ι}
+    (hST : ST ∈ F.powerset ×ˢ F.powerset) : split ST ∈ triples F := by
+  rcases Finset.mem_product.mp hST with ⟨hS, hT⟩
+  have hSF := Finset.mem_powerset.mp hS
+  have hTF := Finset.mem_powerset.mp hT
+  simp only [triples, split, Finset.mem_sigma, Finset.mem_filter, Finset.mem_product, Finset.mem_powerset]
+  refine ⟨Finset.inter_subset_left.trans hSF, ⟨?_, ?_⟩, ?_⟩
+  · intro i hi
+    simp only [Finset.mem_sdiff, Finset.mem_inter] at hi ⊢
+    exact ⟨hSF hi.1, by tauto⟩
+  · intro i hi
+    simp only [Finset.mem_sdiff, Finset.mem_inter] at hi ⊢
+    exact ⟨hTF hi.1, by tauto⟩
+  · apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_sdiff.mp hj).1
+
+lemma join_mem {F : Finset ι} {GUV : Triple ι} (h : GUV ∈ triples F) :
+    join GUV ∈ F.powerset ×ˢ F.powerset := by
+  rcases (by simpa only [triples, Finset.mem_sigma, Finset.mem_filter,
+    Finset.mem_product, Finset.mem_powerset] using h) with ⟨hG, ⟨hU, hV⟩, _⟩
+  apply Finset.mem_product.mpr
+  constructor <;> apply Finset.mem_powerset.mpr
+  · exact Finset.union_subset hG (hU.trans Finset.sdiff_subset)
+  · exact Finset.union_subset hG (hV.trans Finset.sdiff_subset)
+
+lemma split_join {F : Finset ι} {GUV : Triple ι} (h : GUV ∈ triples F) :
+    split (join GUV) = GUV := by
+  rcases GUV with ⟨G, U, V⟩
+  have hh : G ⊆ F ∧ (U ⊆ F \ G ∧ V ⊆ F \ G) ∧ Disjoint U V := by
+    simpa only [triples, Finset.mem_sigma, Finset.mem_filter,
+      Finset.mem_product, Finset.mem_powerset] using h
+  rcases hh with ⟨_, ⟨hU, hV⟩, hd⟩
+  have hUG : Disjoint U G := Finset.disjoint_left.mpr (fun i hi hg => (Finset.mem_sdiff.mp (hU hi)).2 hg)
+  have hVG : Disjoint V G := Finset.disjoint_left.mpr (fun i hi hg => (Finset.mem_sdiff.mp (hV hi)).2 hg)
+  have h₀ : (G ∪ U) ∩ (G ∪ V) = G := by
+    ext i
+    have hi : i ∈ U → i ∈ V → False := fun hi hj => Finset.disjoint_left.mp hd hi hj
+    simp only [Finset.mem_union, Finset.mem_inter]
+    tauto
+  have h₁ : (G ∪ U) \ (G ∪ V) = U := by
+    ext i
+    have hi : i ∈ U → i ∈ V → False := fun hi hj => Finset.disjoint_left.mp hd hi hj
+    have hj : i ∈ U → i ∈ G → False := fun hi hj => Finset.disjoint_left.mp hUG hi hj
+    simp only [Finset.mem_union, Finset.mem_sdiff]
+    tauto
+  have h₂ : (G ∪ V) \ (G ∪ U) = V := by
+    ext i
+    have hi : i ∈ V → i ∈ U → False := fun hi hj => Finset.disjoint_left.mp hd.symm hi hj
+    have hj : i ∈ V → i ∈ G → False := fun hi hj => Finset.disjoint_left.mp hVG hi hj
+    simp only [Finset.mem_union, Finset.mem_sdiff]
+    tauto
+  simp only [split, join, h₀, h₁, h₂]
+
+theorem sum_pair_eq_overlap {β : Type*} [AddCommMonoid β]
+    (F : Finset ι) (C : Finset ι → Finset ι → β) :
+    (∑ S ∈ F.powerset, ∑ T ∈ F.powerset, C S T) =
+      ∑ G ∈ F.powerset, ∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset,
+        if Disjoint U V then C (G ∪ U) (G ∪ V) else 0 := by
+  classical
+  have hs : (∑ ST ∈ F.powerset ×ˢ F.powerset, C ST.1 ST.2) =
+      ∑ GUV ∈ triples F, C (join GUV).1 (join GUV).2 := by
+    apply Finset.sum_bij (fun ST _ => split ST)
+    · intro ST hST
+      exact split_mem hST
+    · intro ST hST SU hSU heq
+      have hh := congrArg join heq
+      simpa only [join_split] using hh
+    · intro GUV hGUV
+      exact ⟨join GUV, join_mem hGUV, split_join hGUV⟩
+    · intro ST hST
+      rw [join_split]
+  simpa only [triples, Finset.sum_sigma, Finset.sum_filter, Finset.sum_product, join] using hs
+
+end FiniteOverlapDecomposition
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+
+/-- The Möbius sign on a finite squarefree prime support. -/
+def supportMobius (S : Finset ι) : ℂ := (-1) ^ S.card
+
+lemma supportMobius_union (S T : Finset ι) (h : Disjoint S T) :
+    supportMobius (S ∪ T) = supportMobius S*supportMobius T := by
+  rw [supportMobius,Finset.card_union_of_disjoint h,pow_add]
+  rfl
+
+lemma star_supportMobius (S : Finset ι) : star (supportMobius S) = supportMobius S := by
+  simp only [supportMobius,star_pow,star_neg,star_one]
+
+lemma supportMobius_sq (S : Finset ι) : supportMobius S*supportMobius S = 1 := by
+  change (-1 : ℂ) ^ S.card*(-1) ^ S.card = 1
+  rw [←mul_pow]
+  norm_num
+
+variable (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+
+/-- The puncture mask and both fixed character arguments remain in each column. -/
+def secondInputCoefficient (Ψ : O →* ℂ) (m c d : O)
+    (H : Finset ι → ℂ) (S : Finset ι) : ℂ :=
+  Ψ (∏ i ∈ S, p i)*primeCoprimeMask p S m*
+    primeSubsetRow p χ S c ^ 4*primeSubsetRow p χ S d*H S
+
+lemma secondInputCoefficient_union (Ψ : O →* ℂ) (m c d : O)
+    (H : Finset ι → ℂ) (G U : Finset ι) (hd : Disjoint G U) :
+    secondInputCoefficient p χ Ψ m c d H (G ∪ U) =
+      secondInputCoefficient p χ Ψ m c d (fun _ => 1) G*
+        secondInputCoefficient p χ Ψ m c d (fun V => H (G ∪ V)) U := by
+  simp only [secondInputCoefficient,Finset.prod_union hd,map_mul,
+    primeCoprimeMask,Finset.prod_union hd,primeSubsetRow_union p χ G U hd,mul_pow,mul_one]
+  ring
+
+def supportConjugateSum (F : Finset ι) (a : Finset ι → ℂ) (z : O) : ℂ :=
+  ∑ S ∈ F.powerset, supportMobius S*a S*star (primeSubsetRow p χ S z)
+
+def inputConjugateRow (F : Finset ι) (Ψ : O →* ℂ) (m c d : O)
+    (H : Finset ι → ℂ) (z : O) : ℂ :=
+  supportConjugateSum p χ F (secondInputCoefficient p χ Ψ m c d H) z
+
+/-- Common support produces its coprimality mask before Poisson reflection. -/
+theorem inputConjugateRow_sq_overlap
+    (F : Finset ι) (Ψ : O →* ℂ) (m c d : O) (H : Finset ι → ℂ) (z : O) :
+    (↑(‖inputConjugateRow p χ F Ψ m c d H z‖ ^ 2) : ℂ) =
+      ∑ G ∈ F.powerset, ∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset,
+        if Disjoint U V then
+          (↑(‖secondInputCoefficient p χ Ψ m c d (fun _ => 1) G‖ ^ 2) : ℂ) *
+          primeCoprimeMask p G z *
+          (star (supportMobius U *
+            secondInputCoefficient p χ Ψ m c d (fun S => H (G ∪ S)) U) *
+            (supportMobius V *
+              secondInputCoefficient p χ Ψ m c d (fun S => H (G ∪ S)) V) *
+            (primeSubsetRow p χ U z *
+              star (primeSubsetRow p χ V z))) else 0 := by
+  have hnorm (a : ℂ) : (↑(‖a‖ ^ 2) : ℂ) = star a * a := by
+    rw [Complex.sq_norm, Complex.normSq_eq_conj_mul_self]
+    rfl
+  rw [hnorm]
+  unfold inputConjugateRow supportConjugateSum
+  rw [star_sum, Finset.sum_mul]
+  simp only [Finset.mul_sum]
+  rw [FiniteOverlapDecomposition.sum_pair_eq_overlap]
+  apply Finset.sum_congr rfl
+  intro G hG
+  apply Finset.sum_congr rfl
+  intro U hU
+  apply Finset.sum_congr rfl
+  intro V hV
+  by_cases hd : Disjoint U V
+  · rw [ite_eq_left hd, ite_eq_left hd]
+    have hGU : Disjoint G U := Finset.disjoint_left.mpr (fun i hi hu =>
+      (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hU) hu)).2 hi)
+    have hGV : Disjoint G V := Finset.disjoint_left.mpr (fun i hi hv =>
+      (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hV) hv)).2 hi)
+    rw [supportMobius_union G U hGU, supportMobius_union G V hGV,
+      secondInputCoefficient_union p χ Ψ m c d H G U hGU,
+      secondInputCoefficient_union p χ Ψ m c d H G V hGV,
+      primeSubsetRow_union p χ G U hGU,
+      primeSubsetRow_union p χ G V hGV]
+    simp only [star_mul, star_star, star_supportMobius]
+    have hmu := supportMobius_sq G
+    have hrow := primeSubsetRow_diagonal p χ G z
+    rw [hnorm]
+    calc
+      _ = (supportMobius G * supportMobius G) *
+        (star (secondInputCoefficient p χ Ψ m c d (fun _ => 1) G) *
+          secondInputCoefficient p χ Ψ m c d (fun _ => 1) G) *
+        (star (primeSubsetRow p χ G z) *
+          primeSubsetRow p χ G z) *
+        (star (supportMobius U *
+            secondInputCoefficient p χ Ψ m c d (fun S => H (G ∪ S)) U) *
+          (supportMobius V *
+            secondInputCoefficient p χ Ψ m c d (fun S => H (G ∪ S)) V) *
+          (primeSubsetRow p χ U z *
+            star (primeSubsetRow p χ V z))) := by
+          simp only [star_mul, star_supportMobius]
+          ring
+      _ = _ := by
+        rw [hmu, hrow]
+        simp only [star_mul, star_supportMobius]
+        ring
+  · simp [hd]
+
+
+end SecondPassArithmetic
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
