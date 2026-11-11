@@ -122,8 +122,16 @@ theorem sexticSymbol_mul_sexticGauss (c : O) [NeZero c] {u : O} (huc : IsCoprime
   refine Finset.sum_congr rfl fun d _ => ?_
   obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective d
   simp only [Units.mulLeft_apply, IsUnit.unit_spec]
-  rw [← map_mul, ← map_mul, ← map_mul, ← map_mul, sexticResidue_mk, sexticResidue_mk,
-    sexticSymbol_mul_numerator, show h * (u * x) = u * h * x by ring]
+  have e1 : sexticResidue c (Ideal.Quotient.mk (Ideal.span {c}) u * Ideal.Quotient.mk _ x) =
+      sexticSymbol u c * sexticSymbol x c := by
+    rw [← map_mul, sexticResidue_mk, sexticSymbol_mul_numerator]
+  have e2 : Ideal.Quotient.mk (Ideal.span {c}) h *
+      (Ideal.Quotient.mk _ u * Ideal.Quotient.mk _ x) =
+      Ideal.Quotient.mk _ (u * h) * Ideal.Quotient.mk _ x := by
+    rw [← map_mul, ← map_mul, ← map_mul]
+    congr 1
+    ring
+  rw [sexticResidue_mk, e1, e2]
   ring
 
 end GaloisForLFunctions.FamilyContinuationTheory
