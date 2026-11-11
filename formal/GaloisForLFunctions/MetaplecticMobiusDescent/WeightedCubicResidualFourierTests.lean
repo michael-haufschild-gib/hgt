@@ -35195,7 +35195,7 @@ theorem extendByZero_apply_image (S : Finset n) (f : n → p) (u : n → ℂ)
   rw [Finset.sum_eq_single j]
   · simp
   · intro k hk hkj
-    simp only [ite_eq_right (fun h => hkj (hf hk hj h))]
+    simp only [if_neg (fun h => hkj (hf hk hj h))]
   · exact fun h => (h hj).elim
 
 omit [Fintype n] [Fintype p] [DecidableEq n] in
@@ -35203,7 +35203,7 @@ theorem extendByZero_zero (S : Finset n) (f : n → p) (u : n → ℂ)
     (k : p) (hk : k ∉ S.image f) : extendByZero S f u k = 0 := by
   apply Finset.sum_eq_zero
   intro j hj
-  exact ite_eq_right (fun h => hk (Finset.mem_image.mpr ⟨j, hj, h⟩))
+  exact if_neg (fun h => hk (Finset.mem_image.mpr ⟨j, hj, h⟩))
 
 omit [Fintype n] [DecidableEq n] in
 theorem extendByZero_energy (S : Finset n) (f : n → p) (u : n → ℂ)
@@ -35328,7 +35328,7 @@ def quadraticIdealPrimeIndex (I : QuadraticIdeal) (P : primeSupport I.val) : Qua
 
 def quadraticIdealSupport (I : QuadraticIdeal) : Finset QuadraticPrime :=
   (primeSupport I.val).attach.map
-    ⟨quadraticIdealPrimeIndex I, fun _ _ h => Subtype.ext (congrArg Subtype.val h)⟩
+    ⟨quadraticIdealPrimeIndex I, fun _ _ h => Subtype.ext (congrArg (fun P : QuadraticPrime => P.val) h)⟩
 
 lemma quadraticIdealSupport_product (I : QuadraticIdeal) :
     (∏ P ∈ quadraticIdealSupport I, quadraticPrimeGenerator P) = primaryIdealGenerator I.val := by
@@ -35340,6 +35340,7 @@ lemma quadraticIdealSupport_product (I : QuadraticIdeal) :
 lemma quadraticIdealGenerator_injective :
     Function.Injective (fun I : QuadraticIdeal => primaryIdealGenerator I.val) := by
   intro I J h
+  change primaryIdealGenerator I.val = primaryIdealGenerator J.val at h
   apply Subtype.ext
   rw [← (primaryIdealGenerator_spec I.val I.property.1).1,
     ← (primaryIdealGenerator_spec J.val J.property.1).1, h]
@@ -35347,6 +35348,7 @@ lemma quadraticIdealGenerator_injective :
 lemma quadraticIdealSupport_injective : Function.Injective quadraticIdealSupport := by
   intro I J h
   apply quadraticIdealGenerator_injective
+  change primaryIdealGenerator I.val = primaryIdealGenerator J.val
   rw [← quadraticIdealSupport_product I, ← quadraticIdealSupport_product J, h]
 
 lemma quadraticIdealSupport_norm (I : QuadraticIdeal) :
@@ -35372,7 +35374,7 @@ noncomputable instance quadraticIdealRangeFintype (N : ℝ) : Fintype (Quadratic
   let f : QuadraticIdealRange N → S := fun I => ⟨I.val.val, by
     have h : (Ideal.absNorm I.val.val : ℝ) ≤ (⌈N⌉₊ : ℝ) := I.property.trans (Nat.le_ceil N)
     exact_mod_cast h⟩
-  have hf : Function.Injective f := fun I J h => Subtype.ext (Subtype.ext (congrArg Subtype.val h))
+  have hf : Function.Injective f := fun I J h => Subtype.ext (Subtype.ext (congrArg (fun J : S => J.val) h))
   letI : Finite (QuadraticIdealRange N) := Finite.of_injective f hf
   exact Fintype.ofFinite _
 
@@ -35412,7 +35414,7 @@ theorem sieveNorm_reverse (M N : ℝ) : sieveNorm M N ≤ 262144 * sieveNorm N M
     (fun J : QuadraticIdealRange N => quadraticIdealSupport J.val)
   simp only [← canonicalQuadraticRow_eq_symbol] at h
   have hsq := pow_le_pow_left₀ (norm_nonneg _) h 2
-  simpa only [mul_pow, show (512 : ℝ) ^ 2 = 262144 by norm_num] using hsq
+  simpa only [sieveNorm, matrix, mul_pow, show (512 : ℝ) ^ 2 = 262144 by norm_num] using hsq
 
 /-- Uniform power bounds for the actual quadratic residue matrix. -/
 def HasSieveExponent (α : ℝ) : Prop :=
@@ -35444,7 +35446,7 @@ def rangeInclusion {X Y : ℝ} (h : X ≤ Y) (I : QuadraticIdealRange X) : Quadr
 
 lemma rangeInclusion_injective {X Y : ℝ} (h : X ≤ Y) : Function.Injective (rangeInclusion h) := by
   intro I J he
-  exact Subtype.ext (congrArg Subtype.val he)
+  exact Subtype.ext (congrArg (fun J : QuadraticIdealRange Y => J.val) he)
 
 lemma sieveNorm_mono {M N M' N' : ℝ} (hM : M ≤ M') (hN : N ≤ N') :
     sieveNorm M N ≤ sieveNorm M' N' := by
@@ -35464,8 +35466,8 @@ lemma family_squared_norm_le {m n : Type*} [Fintype m] [Fintype n]
       sieveNorm M N := by
   let r : m → QuadraticIdealRange M := fun i => ⟨rows i, hM i⟩
   let c : n → QuadraticIdealRange N := fun j => ⟨cols j, hN j⟩
-  have hr : Function.Injective r := fun i j h => hrows (congrArg Subtype.val h)
-  have hc : Function.Injective c := fun i j h => hcols (congrArg Subtype.val h)
+  have hr : Function.Injective r := fun i j h => hrows (congrArg (fun J : QuadraticIdealRange M => J.val) h)
+  have hc : Function.Injective c := fun i j h => hcols (congrArg (fun J : QuadraticIdealRange N => J.val) h)
   classical
   exact pow_le_pow_left₀ (norm_nonneg _)
     (FiniteSieveRestriction.submatrix_norm_le r hr c hc (matrix M N)) 2
@@ -35529,7 +35531,7 @@ theorem support_norm_two_le {I P : Ideal O} (hP : P ∈ primeSupport I) :
   have h1 : Ideal.absNorm P ≠ 1 := by
     intro h
     have ht := Ideal.absNorm_eq_one_iff.mp h
-    apply hp.not_isUnit
+    apply hp.2.1
     rw [ht]
     simpa only [Ideal.one_eq_top] using (show IsUnit (1 : Ideal O) from isUnit_one)
   omega
@@ -35570,14 +35572,14 @@ theorem ideal_divisor_small_power (ε : ℝ) (hε : 0 < ε) :
     have hbase : b ≤ (Ideal.absNorm P : ℝ) ^ ε :=
       Real.rpow_le_rpow (by norm_num) hnorm hε.le
     by_cases hp : P ∈ small
-    · rw [ite_eq_left hp]
+    · rw [if_pos hp]
       have hlin := linear_le_geometric b hb (e P)
       have hl : ((e P + 1 : ℕ) : ℝ) ≤ c * b ^ e P := by
         simpa only [Nat.cast_add, Nat.cast_one, c] using hlin
       apply hl.trans
       exact mul_le_mul_of_nonneg_left
         (pow_le_pow_left₀ (by positivity) hbase _) (by positivity)
-    · rw [ite_eq_right hp, one_mul]
+    · rw [if_neg hp, one_mul]
       have hn : N ≤ Ideal.absNorm P := by
         have : ¬ Ideal.absNorm P ≤ N := fun h => hp (by simpa [small] using h)
         omega

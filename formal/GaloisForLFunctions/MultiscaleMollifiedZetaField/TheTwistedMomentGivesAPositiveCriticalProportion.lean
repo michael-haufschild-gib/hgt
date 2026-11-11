@@ -39,8 +39,7 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
     nlinarith only [hε]
   have hβeq : (1 + α) * β = ε / 2 := by
     dsimp only [β]
-    field_simp [show 1 + α ≠ 0 by positivity]
-    ring
+    field_simp [show 1 + α ≠ 0 by positivity] <;> ring
   have hδle : ((1 + α) * C) * δ ≤ ε / 2 := by
     have he : (2 * ((1 + α) * C + 1)) * δ = ε := by
       dsimp only [δ]

@@ -84,8 +84,7 @@ theorem tendsto_log_height_div_log_of_logarithmic_band
   rw [Real.log_mul hC.ne' hUi0.ne'] at hright
   have heleft : (Real.log c + Real.log (U i) - Real.log (Real.log (U i))) / Real.log (U i) =
       1 + Real.log c / Real.log (U i) - Real.log (Real.log (U i)) / Real.log (U i) := by
-    field_simp [hLi.ne']
-    ring
+    field_simp [hLi.ne'] <;> ring
   have heright : (Real.log C + Real.log (U i)) / Real.log (U i) =
       1 + Real.log C / Real.log (U i) := by field_simp [hLi.ne'] <;> ring
   rw [heleft] at hleft
@@ -112,8 +111,7 @@ theorem tendsto_log_conductor_div_short_length
   apply hh.congr'
   filter_upwards [ht, hU.eventually_gt_atTop 1] with i hti hUi
   rw [Real.log_div hti.ne' (by positivity : (2 * Real.pi) ≠ 0)]
-  field_simp [(Real.log_pos hUi).ne']
-  ring
+  field_simp [(Real.log_pos hUi).ne'] <;> ring
 
 /-- Both ends of a high block's taper have the selected normalized conductor. -/
 theorem tendsto_tapered_block_conductor_endpoints

@@ -296,17 +296,17 @@ theorem detection_parameters {q : ℕ} (hq : 1 ≤ q) {T : ℝ} (hT : 2050 * (q 
       ((truncLength q T * molLength T : ℕ) : ℝ) ≤ T ^ 6 := by
   have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hq
   have hT2 : 2050 ≤ T := by nlinarith
-  set y := molLength T with hy
-  set X := truncLength q T with hX
+  unfold truncLength molLength
+  set y := ⌈T⌉₊ with hy
   have hyT : T ≤ (y : ℝ) := Nat.le_ceil T
   have hyT2 : (y : ℝ) ≤ 2 * T := by
-    have := Nat.ceil_lt_add_one (show 0 ≤ T by linarith)
-    rw [← hy] at this
+    have h : (y : ℝ) < T + 1 := Nat.ceil_lt_add_one (show 0 ≤ T by linarith)
     linarith
   have hy1 : 1 ≤ y := by
     have : (1 : ℝ) ≤ y := by linarith
     exact_mod_cast this
   set A : ℝ := 4 * q * (2 * T + 3) * (y : ℝ) with hA
+  set X := ⌈A ^ 2⌉₊ with hX
   have hA1 : (y : ℝ) ≤ A ^ 2 := by
     have h1 : (y : ℝ) ≤ A := by
       rw [hA]
@@ -315,13 +315,12 @@ theorem detection_parameters {q : ℕ} (hq : 1 ≤ q) {T : ℝ} (hT : 2050 * (q 
     nlinarith
   have hXA : A ^ 2 ≤ (X : ℝ) := Nat.le_ceil _
   have hXA' : (X : ℝ) ≤ A ^ 2 + 1 := by
-    have := Nat.ceil_lt_add_one (sq_nonneg A)
-    rw [← hX] at this
+    have h : (X : ℝ) < A ^ 2 + 1 := Nat.ceil_lt_add_one (sq_nonneg A)
     linarith
   have hyX : y ≤ X := by
     have : (y : ℝ) ≤ X := hA1.trans hXA
     exact_mod_cast this
-  refine ⟨hy1, hyT, le_trans hy1 hyX, hyX, by linarith, ?_, ?_⟩
+  refine ⟨hy1, hyT, le_trans hy1 hyX, hyX, by show A ^ 2 ≤ (X : ℝ) + 1; linarith, ?_, ?_⟩
   · have hX2 : (2 : ℝ) ≤ X := by
       have : (2 : ℝ) ≤ A ^ 2 := by
         have : (2 : ℝ) ≤ A := by rw [hA]; nlinarith

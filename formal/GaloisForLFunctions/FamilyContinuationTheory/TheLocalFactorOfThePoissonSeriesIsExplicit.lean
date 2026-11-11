@@ -32,6 +32,128 @@ theorem gaussSum_mul_gaussSum_inv_char {F : Type*} [Field F] [Fintype F] {φ : M
   rw [← mul_gaussSum_inv_eq_gaussSum φ⁻¹, mul_left_comm, gaussSum_mul_gaussSum_eq_card hφ hψ,
     MulChar.inv_apply', inv_neg_one]
 
+
+/-! ### Geometric sums -/
+
+/-- A point mass. -/
+theorem hasSum_point (i₀ : ℕ) (a : ℂ) : HasSum (fun i : ℕ => if i = i₀ then a else 0) a :=
+  hasSum_ite_eq i₀ a
+
+theorem summable_norm_point (i₀ : ℕ) (a : ℂ) :
+    Summable (fun i : ℕ => ‖if i = i₀ then a else 0‖) := by
+  refine summable_of_ne_finset_zero (s := {i₀}) fun i hi => ?_
+  rw [if_neg (by simpa using hi), norm_zero]
+
+/-- A geometric tail after an arbitrary first term: `a, c, cV, cV², …`. -/
+theorem hasSum_shift_geom (a c V : ℂ) (hV : ‖V‖ < 1) :
+    HasSum (fun i : ℕ => if i = 0 then a else c * V ^ (i - 1)) (a + c * (1 - V)⁻¹) := by
+  refine (hasSum_nat_add_iff' 1).mp ?_
+  simp only [Nat.add_sub_cancel, Finset.range_one, Finset.sum_singleton, ↓reduceIte,
+    Nat.add_one_ne_zero, add_sub_cancel_left]
+  exact (hasSum_geometric_of_norm_lt_one hV).mul_left c
+
+theorem summable_norm_shift_geom (a c V : ℂ) (hV : ‖V‖ < 1) :
+    Summable (fun i : ℕ => ‖if i = 0 then a else c * V ^ (i - 1)‖) := by
+  refine (summable_nat_add_iff 1).mp ?_
+  simp only [Nat.add_sub_cancel, Nat.add_one_ne_zero, if_false, norm_mul, norm_pow]
+  exact (summable_geometric_of_lt_one (norm_nonneg _) hV).mul_left _
+
+/-- A geometric sequence after an arbitrary first term: `a, cV, cV², …`. -/
+theorem hasSum_geom_from (a c V : ℂ) (hV : ‖V‖ < 1) :
+    HasSum (fun i : ℕ => if i = 0 then a else c * V ^ i) (a + c * V * (1 - V)⁻¹) := by
+  have h := hasSum_shift_geom a (c * V) V hV
+  convert h using 2 with i
+  split_ifs with hi
+  · rfl
+  · rw [mul_assoc, ← pow_succ', Nat.sub_add_cancel (Nat.pos_of_ne_zero hi)]
+
+theorem summable_norm_geom_from (a c V : ℂ) (hV : ‖V‖ < 1) :
+    Summable (fun i : ℕ => ‖if i = 0 then a else c * V ^ i‖) := by
+  refine (summable_nat_add_iff 1).mp ?_
+  simp only [Nat.add_one_ne_zero, if_false, norm_mul, norm_pow]
+  exact ((summable_geometric_of_lt_one (norm_nonneg _) hV).comp_injective
+    (add_left_injective 1)).mul_left _
+
+/-- **A geometric block.** If `φ` has sum `Φ` with summable norms and `‖R‖ < 1`, the double
+series `Σ_{r ≤ m} R^r φ(m − r)` has sum `(1 − R)⁻¹ Φ`. -/
+theorem hasSum_block {φ : ℕ → ℂ} {Φ R : ℂ} (hφ : HasSum φ Φ) (hφn : Summable fun i => ‖φ i‖)
+    (hR : ‖R‖ < 1) :
+    HasSum (fun p : ℕ × ℕ => if p.1 ≤ p.2 then R ^ p.1 * φ (p.2 - p.1) else 0)
+      ((1 - R)⁻¹ * Φ) := by
+  let g : ℕ × ℕ → ℕ × ℕ := fun q => (q.1, q.1 + q.2)
+  have hg : Function.Injective g := by
+    rintro ⟨a, b⟩ ⟨c, d⟩ h
+    simp only [g, Prod.mk.injEq] at h
+    ext <;> omega
+  have hvan : ∀ p : ℕ × ℕ, p ∉ Set.range g →
+      (if p.1 ≤ p.2 then R ^ p.1 * φ (p.2 - p.1) else 0) = 0 := by
+    rintro ⟨r, m⟩ hp
+    rw [if_neg]
+    intro hrm
+    exact hp ⟨(r, m - r), by simp only [g]; ext <;> simp; omega⟩
+  refine (hg.hasSum_iff hvan).mp ?_
+  have hprod := (hasSum_geometric_of_norm_lt_one hR).mul hφ
+    (summable_mul_of_summable_norm (by simpa using summable_geometric_of_lt_one (norm_nonneg _) hR)
+      hφn)
+  have hcomp : (fun p : ℕ × ℕ => if p.1 ≤ p.2 then R ^ p.1 * φ (p.2 - p.1) else 0) ∘ g =
+      fun x : ℕ × ℕ => R ^ x.1 * φ x.2 := by
+    funext q
+    simp only [Function.comp, g, Nat.le_add_right, if_true, Nat.add_sub_cancel_left]
+  rw [hcomp]
+  exact hprod
+
+
+/-! ### The blocks of exponents -/
+
+/-- The least cube exponent of the family `(e, l mod 2)` with `e + 3l ≥ 1`. -/
+def blockBase (e p : Fin 2) : ℕ := if e = 0 ∧ p = 0 then 2 else (p : ℕ)
+
+/-- The exponents of a block: `none` is the row `t = 0` (`(k, m) ↦ (0, 0, k, m)`); `some (e, p, k)`
+is the family `(r, m) ↦ (e, l₀ + 2r, k, m)`, `l₀ = blockBase e p`. -/
+def blockMap : Option (Fin 2 × Fin 2 × Fin 2) → ℕ × ℕ → Fin 2 × ℕ × ℕ × ℕ
+  | none => fun q => (0, 0, q.1, q.2)
+  | some b => fun q => (b.1, blockBase b.1 b.2.1 + 2 * q.1, (b.2.2 : ℕ), q.2)
+
+theorem blockMap_injective (b : Option (Fin 2 × Fin 2 × Fin 2)) :
+    Function.Injective (blockMap b) := by
+  rcases b with _ | b
+  · rintro ⟨a, c⟩ ⟨a', c'⟩ h
+    simp only [blockMap, Prod.mk.injEq, true_and] at h
+    rw [h.1, h.2]
+  · rintro ⟨a, c⟩ ⟨a', c'⟩ h
+    simp only [blockMap, Prod.mk.injEq, true_and, add_right_inj] at h
+    ext
+    · omega
+    · exact h.2.2
+
+theorem blockMap_disjoint {b b' : Option (Fin 2 × Fin 2 × Fin 2)} (hne : b ≠ b') :
+    Disjoint (Set.range (blockMap b)) (Set.range (blockMap b')) := by
+  rw [Set.disjoint_left]
+  rintro _ ⟨q, rfl⟩ ⟨q', h⟩
+  rcases b with _ | ⟨e, p, k⟩ <;> rcases b' with _ | ⟨e', p', k'⟩
+  · exact hne rfl
+  · fin_cases e' <;> fin_cases p' <;> fin_cases k' <;>
+      simp [blockMap, blockBase, Prod.ext_iff] at h <;> omega
+  · fin_cases e <;> fin_cases p <;> fin_cases k <;>
+      simp [blockMap, blockBase, Prod.ext_iff] at h <;> omega
+  · fin_cases e <;> fin_cases p <;> fin_cases k <;> fin_cases e' <;> fin_cases p' <;>
+      fin_cases k' <;> simp [blockMap, blockBase, Prod.ext_iff] at h hne <;> omega
+
+/-- Every exponent with `e + 3l = 0` or `k ≤ 1` lies in a block. -/
+theorem exists_blockMap (v : Fin 2 × ℕ × ℕ × ℕ) (hv : ((v.1 : ℕ) = 0 ∧ v.2.1 = 0) ∨ v.2.2.1 ≤ 1) :
+    ∃ b q, blockMap b q = v := by
+  obtain ⟨e, l, k, m⟩ := v
+  by_cases h0 : (e : ℕ) = 0 ∧ l = 0
+  · refine ⟨none, (k, m), ?_⟩
+    have he : e = 0 := Fin.ext h0.1
+    simp [blockMap, he, h0.2]
+  · have hk : k ≤ 1 := hv.resolve_left h0
+    refine ⟨some (e, ⟨l % 2, Nat.mod_lt _ (by norm_num)⟩, ⟨k, by omega⟩),
+      ((l - blockBase e ⟨l % 2, Nat.mod_lt _ (by norm_num)⟩) / 2, m), ?_⟩
+    simp only [blockMap, Prod.mk.injEq, true_and, and_true]
+    unfold blockBase
+    fin_cases e <;> simp at h0 ⊢ <;> split_ifs with h <;> simp at h ⊢ <;> omega
+
 section Prime
 
 variable (π : O) [NeZero π] [hP : (Ideal.span {π}).IsMaximal] (hlam : lambda ∉ Ideal.span {π})

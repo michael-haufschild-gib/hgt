@@ -447,10 +447,16 @@ prime-character reflection, with a unit Gauss phase and signed coprimality
 divisor terms (`prime_row_radial_poisson`, `prime_row_masked_radial_poisson`).
 Uniform Fourier decay gives Pólya–Vinogradov at every positive radial scale
 (`prime_row_polya_vinogradov`). Distinct squarefree prime-character rows satisfy
-the finite-ball bound `C (M + N · #columns) Σ|a|²`
-(`primeSubsetRow_initial_finite_bound`, checked), where each column conductor
-has norm at most `N`. The sharp quadratic sieve bootstrap and the complete
-second-pass mean-square transfer remain open.
+`C (M + N²) Σ|a|²` on the lattice norm ball (`primeSubsetRow_initial_sieve`, checked).
+The normalized quadratic trace Gauss sum is the explicit modulo-four average
+`(1 + i^(-b) + i^a + i^(b-a))/2` for conductor `a+bω`.
+Composite quadratic reciprocity has precisely the quotient of these phases
+(`quadraticSubsetSymbol_reciprocity`, checked). Finite quadratic matrices satisfy
+`‖A(M,N)‖ ≤ 512 ‖A(N,M)‖` (`quadratic_subset_matrix_reverse`, checked).
+Quadratic Poisson reflection retains this explicit phase and the signed
+common-prime divisor sum (`quadraticSubsetRow_gram_poisson`, checked).
+The sharp quadratic sieve bootstrap and complete second-pass mean-square
+transfer remain open.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

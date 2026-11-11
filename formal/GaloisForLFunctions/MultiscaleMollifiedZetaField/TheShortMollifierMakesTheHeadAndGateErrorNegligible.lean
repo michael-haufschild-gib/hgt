@@ -85,8 +85,7 @@ theorem eventually_short_detector_coefficient_error_le {C ε : ℝ} (hC : 0 ≤ 
         gcongr
       _ = K * (U ^ (13 / 50 : ℝ) * U ^ (11 / 8 : ℝ) / U ^ 2) := by
         dsimp only [K]
-        field_simp [hU0.ne']
-        ring
+        field_simp [hU0.ne'] <;> ring
       _ = _ := by rw [hp]
   have hlogU : Real.log U ≤ U := by
     have hh := Real.log_le_sub_one_of_pos hU0

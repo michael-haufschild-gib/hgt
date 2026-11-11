@@ -54,7 +54,11 @@ theorem eventually_gate_block_conductor_bounded
   have htU : t ≤ 3 * U i := by linarith only [ht.2, hgi.2.2.1, hi.2.1, hi.2.2.2]
   have hratioU : t / (2 * Real.pi) ≤ U i := by
     apply (div_le_iff₀ (by positivity : (0 : ℝ) < 2 * Real.pi)).mpr
-    nlinarith only [htU, Real.pi_gt_three, hUi0]
+    calc
+      t ≤ 3 * U i := htU
+      _ ≤ (2 * Real.pi) * U i := mul_le_mul_of_nonneg_right
+        (by linarith only [Real.pi_gt_three]) hUi0.le
+      _ = _ := mul_comm _ _
   have hlog0 : 0 ≤ Real.log (t / (2 * Real.pi)) :=
     Real.log_nonneg ((one_le_div (by positivity)).mpr htpi)
   have hlogU := Real.log_le_log (by positivity : 0 < t / (2 * Real.pi)) hratioU

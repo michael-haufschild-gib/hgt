@@ -90,12 +90,15 @@ using rational estimates for `exp(13/20)`.
 by integrating the polynomial arithmetic jets.
 
 The receiver fixes coefficients before choosing its nearby abscissa.
+`TheShortMollifierKeepsItsLogarithmicScale` proves the integer cutoff's
+logarithmic limit and all coefficient admissibility conditions, including
+the weighted fourth-moment mass bound.
 Using coefficients at `d_U=R/log U` instead of `d=R/log T₂` changes each
 coefficient by relative size `O((d−d_U)log N)=O(1/(U log U))`.
-Proof drafts now bound the full gate-strip exponent change by `R/(U−1)`,
-the coefficient discrepancy by `D exp D · n⁻ᵈ`, and the resulting energy
-via Young's inequality and the Weyl bound. These checks and their dyadic
-assembly remain required.
+`TheFixedLinearMollifierChangesLittleAcrossTheGate` proves the full
+gate-strip exponent bound `R/(U−1)` and discrepancy envelope
+`D exp D · n⁻ᵈ`. The Young energy estimate and its dyadic assembly remain
+under verification.
 
 The block argument uses the Weyl head below `U^(53/100)`, a uniform linear
 energy bound up to `δ U/log U`, and the sharp scalar above that threshold.
