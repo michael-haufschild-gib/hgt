@@ -573,13 +573,13 @@ private theorem meromorphicOn_scatterQRaw (P : Polynomial ℝ) :
 /-- Wherever `ξ(2s) ≠ 0`, `scatterQPoly P` agrees pointwise with `scatterQ s * P_ℂ(s)`. -/
 theorem scatterQPoly_eq_of_xi_ne_zero (P : Polynomial ℝ) {s : ℂ} (hx : xi (2 * s) ≠ 0) :
     scatterQPoly P s = scatterQ s * (P.map (algebraMap ℝ ℂ)).eval s := by
-  have hmero := meromorphicOn_scatterQRaw P
+  have hNF : MeromorphicNFAt (scatterQPoly P) s :=
+    meromorphicNFOn_toMeromorphicNFOn _ _ (mem_univ s)
   have hana : AnalyticAt ℂ (fun z => scatterQ z * (P.map (algebraMap ℝ ℂ)).eval z) s := by
     rw [scatterQRaw_eq_div]
     exact (analyticAt_scatterQPoly_num P s).div (analyticAt_xiHalf s) hx
-  unfold scatterQPoly toMeromorphicNFOn
-  rw [if_pos hmero]
-  exact congrFun (toMeromorphicNFAt_eq_self.2 hana.meromorphicNFAt) s
+  exact ((hNF.eventuallyEq_nhdsNE_iff_eventuallyEq_nhds hana.meromorphicNFAt).mp
+    ((meromorphicOn_scatterQRaw P).toMeromorphicNFOn_eq_self_on_nhdsNE (mem_univ s))).eq_of_nhds
 
 /-- If `F` contains all zeros of `ξ(2s)` in `Re s > θ₀/2`, then `scatterQPoly (halfZeroAnnihilator F)`
 is analytic (hence differentiable) at every `s` with `Re s > θ₀/2`. -/
@@ -789,7 +789,7 @@ theorem differentiableAt_regularPartPoly {F : Finset ℂ} {θ₀ : ℝ} (hθ0 : 
     (hdw.comp w (differentiableAt_id.add_const 1))
 
 theorem mellinRegularStrip_regularPartPoly {F : Finset ℂ} {θ₀ T₀ : ℝ}
-    (hθhalf : 1 / 2 ≤ θ₀) (hθ1 : θ₀ ≤ 1) (hT₀ : 0 < T₀)
+    (hθhalf : 1 / 2 ≤ θ₀) (hθ1 : θ₀ ≤ 1) (_ : 0 < T₀)
     (hF : ∀ s : ℂ, θ₀ / 2 < s.re → xi (2 * s) = 0 → s ∈ F)
     (hzf : ∀ z : ℂ, θ₀ < z.re → T₀ ≤ |z.im| → riemannZeta z ≠ 0)
     {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) {a b : ℝ} (hψ : IsTest (fun t => (φ t : ℂ)) a b) :

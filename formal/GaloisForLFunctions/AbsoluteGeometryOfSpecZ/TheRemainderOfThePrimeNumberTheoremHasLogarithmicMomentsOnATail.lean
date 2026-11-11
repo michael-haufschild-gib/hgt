@@ -411,7 +411,7 @@ structure TailWeight (w : ℝ → ℝ) (j : ℕ) (c : ℝ) : Prop where
   abs_le : ∀ t ∈ Set.Ioc (0 : ℝ) 1, |w t| ≤ c * logPow j t
   cut : ∀ θ : ℝ, RiemannOn ((Set.Iic θ).indicator w)
 
-theorem continuousOn_logPow (j : ℕ) : ContinuousOn (logPow j) (Set.Ioc 0 1) := fun t ht =>
+theorem continuousOn_logPow (j : ℕ) : ContinuousOn (logPow j) (Set.Ioc 0 1) := fun _ ht =>
   (((Real.continuousAt_log (one_div_pos.mpr ht.1).ne').comp
     (continuousAt_const.div continuousAt_id ht.1.ne')).pow j).continuousWithinAt
 

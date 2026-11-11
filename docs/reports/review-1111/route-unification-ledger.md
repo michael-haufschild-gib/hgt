@@ -10,11 +10,11 @@ Transversal to the three cores:
 - **Two worlds.** A failure of RH is world I (¬AAL: a finite isolated top layer) or world II (AAL ∧ ¬ZAL: a tail). RH has three atoms, ZAL ∧ B13 ∧ Landing [F]; `Θ<1⇔Θ∞<1` [L*] (S13).
 - **Off the scale.** Four kinds of statement carry no exponent: a homogeneous floor, a unit gap, a certificate, an amplification over all orders. AAL is of the second kind: at most one or infinitely many zeros right of every line [L*] (FFA5).
 
-Three structural gaps lie under all three cores: the **dark range** (prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height); **Bézout from a property of the object** (every structure of the square found so far returns an identity, and every one-parameter family through ζ has the count of its limit) [L*]; and the **joint input**: an inequality that uses the Euler product, the functional equation and the unit multiplicity of the integers together and is pointwise in the zeros. Each two of the three have a model with zeros off the line [L*]/[KR] ([obstacles-summary.md](obstacles-summary.md) §1.3). Natively no such inequality exists; `[X]` states one for the half-plane `Re s>7/8`.
+Three structural gaps lie under all three cores: the **dark range** (prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height); **Bézout from a property of the object** (every structure of the square in the corpus returns an identity, and every one-parameter family through ζ has the count of its limit) [L*]; and the **joint input**: an inequality that uses the Euler product, the functional equation and the unit multiplicity of the integers together and is pointwise in the zeros. Each two of the three have a model with zeros off the line [L*]/[KR] ([obstacles-summary.md](obstacles-summary.md) §1.3). Natively no such inequality exists; `[X]` states one for the half-plane `Re s>7/8`.
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides. A localized zero side (U-Π) lets a crude bound decide and leaves the prime side at square-root precision. U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ and the position of its zeros in height. The scale is the one-parameter family between the two extremes.
 
-Corpus checkpoint: commit `f31c63def1` with its working tree (2026-11-11); fact log `logs/review-1111-status-quo-facts.md` (identifiers in parentheses refer to log §3). Evidence: `[L*]` Lean statement read for this ledger; `[N]` declaration located by the corpus search, docstring read; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` module graded unfinished by the frontier map; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the external half-plane theorem, cached, unchecked, outside the native import graph. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact log `logs/review-1111-status-quo-facts.md` (identifiers in parentheses refer to log §3). Evidence: `[L*]` Lean statement read for this ledger; `[N]` declaration located by the corpus search, docstring read; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` module graded unfinished by the frontier map; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the external half-plane theorem, cached, unchecked, outside the native import graph. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport moves an estimate between routes. Section 3 separates the two.
 
@@ -28,12 +28,12 @@ Corpus checkpoint: commit `f31c63def1` with its working tree (2026-11-11); fact 
 - **One index in the aperture [F]/[L*].** The negative index is nondecreasing in the aperture, jumps by the nullity at resonant apertures, and its supremum is the number of right zeros; RH ⇔ no aperture carries a null mode [D].
 - **Two worlds, three atoms [F]/[L*].** `Θ<1⇔Θ∞<1`; RH ⇔ ZAL ∧ B13 ∧ Landing; B13 ⇔ the packet index is `0` or `∞`.
 - **One shape of world I [L*].** AAL ⇔ the normalized trace has no nonzero trigonometric-polynomial limit at any depth ⇔ non-attainment on windows ⇔ a unit gap ⇔ no finite Euler filter accelerates the horocycle rate (the last [S]).
-- **One freedom [L*].** Every tangent datum is realized by a symmetric tempered configuration, by a positive prime density, by an Euler product over natural norms with linear counting, and right of `17/30` by rational primes with repetition.
+- **One freedom [L*].** Every tangent datum is realized by a symmetric tempered configuration, by a positive prime density, by an Euler product over natural norms with linear counting, and right of `17/30` by rational primes with repetition; above the frontier of ζ a one-off pair occurs in a meromorphic Euler product over the rational primes with bounded coefficients (M1). The Euler product read through the zero configuration has floor `½` (M2).
 - **One rigidity [L*]/[KR].** Countable systems with an `L²` functional-equation defect are the rational primes; count `n+o(log n)` forces them; continuous prime measures keep every zero; no bounded or Wiener constituent has a zero; certificates converge to `Λ`.
 - **One count for every regulator [L*].** The clock lies below Weil's form; the scattering tower and the heat flow have the count of their limit; price paths and tree lengths are RH at every parameter.
 - **One critical curve [L*].** `R_polar=R_halfline≤W`; a three-way classification.
 - **One horizon [N]/[L*].** Ringdown, horocycle, cavity energy and reflection Krein index read the same resonances; the horocycle exponent is `1−Θ/2`, filtered `1−Θ∞/2`; at every fixed scattering height the energy floor is RH.
-- **One source [L*]; [X].** The Möbius sign is one Jacobi sum; the half-plane route is two estimates for one completed sum; its budget has the room `[13/15,7/8]`.
+- **One source [L*]; [X].** The Möbius sign is one Jacobi sum; the half-plane route is two estimates for one completed sum; its boundary is `½+(1−1/n)θ/2` in the exponent `θ` of the shortest twist family with a generic mean square, and its budget has the room `[13/15,7/8]`.
 - **Law and point [D].** Past the Vinogradov–Korobov region every native unconditional theorem about the zeros of ξ is in law; the pointwise theorems act on constituents, finite layers, fakes and regulators.
 
 ## 1. Faces of the one object
@@ -96,7 +96,7 @@ Corpus checkpoint: commit `f31c63def1` with its working tree (2026-11-11); fact 
 | Level | Conductor aspect | Height aspect | Mean values | Level / signal | Anchor |
 |---|---|---|---|---|---|
 | rung `κ<1` | every dominated system positive with margin | the same on bounded shapes | `θ<½`: twisted moments with main terms | — | SA, MZF [L*] |
-| rung `1+o(1)` | the Liouville twist, `−Λ`, `Λ` without pole plane fail; the sign forces primes with both character signs below `e^{2η}log²q` | a dominated system fails at `log log t+log(π/2)+η` | the square root | level `3/2` on large primes [F] | SA [L*] |
+| rung `1+o(1)` | the Liouville twist, `−Λ`, `Λ` without pole plane fail; the sign forces primes with both character signs below `e^{2η}log²q` | a dominated system fails at `log log t+log(π/2)+η` | the square root | every level above `3/2` on large primes [D] (SA4 with `b=1`) | SA [L*] |
 | one rung `κ>1` | a saving `γ<1/(2κ)` of the contacts | no partial alignment of the primes `≤(log t)^{2κ}` [D]; the sign fails on a set of heights of measure `≤T^{1−1/(2κ)+ε}` | one bounded dyadic moment at `θ=κ` | level `σ=½+b`, signal `O(Z^b)`, `b=½+1/(2κ)` | SA, CDG, FCT [L*] |
 | `κ=4/3`, `b=7/8` | `[X]` | `[X]` | — | `[X]` | [X] with SA4 |
 | every `κ` | GRH for the character | RH | the cofinal Möbius moment | level one; `b>½` arbitrary | SA, CDG, RHTower [L*]/[N] |
@@ -189,7 +189,7 @@ Corpus checkpoint: commit `f31c63def1` with its working tree (2026-11-11); fact 
 | Dark-range inputs | B46, B57, B97, B121, B137, B145, B159 | prime sums below the Vinogradov length; polynomials longer than the height |
 | World-I inputs | B13, B138, B141, B145, B128, B170 | an inequality that fails on every one-structure model |
 | Producers of RH strength | B87, B146, B149, B169, B114, B117, B171, B160, B152 | a positive, index-one or level-one statement built without the zeros |
-| Producers of a half-plane | B161, B174, B175; `[X]` | two estimates for one completed sum |
+| Producers of a half-plane | B161, B174, B175, B181; B178; `[X]` | two estimates for one completed sum; a resonance-free strip |
 
 ### 3.3 Classes
 
@@ -370,7 +370,7 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 | A uniformity source | tensor criterion; window moments [N]/[L*] | none by averaging; all orders are sup bounds |
 | A Frobenius substitute | Frobenius at one prime; Stepanov at one prime [F] | none at a lower price than the count |
 | A surface | the square, forced data, exact index for every Hecke character, step packets [L*] | one property that is an inequality (B149, B169) |
-| A deformation | price paths, tree lengths, mass, regulators [L*] | a family with a sign, a gap or an index bound before the limit (B117) |
+| A deformation | price paths, tree lengths, mass, regulators [L*] | a family with a sign, a gap or an index bound before the limit (B117); a homotopy invariant equal to the index (B179) |
 | A producer | natively none; `[X]` externally | a source above rung `4/3`, or natively above rung one (B159) |
 | Uniformity in length | each window from verified height; classification at the critical curve [L*] | every height; B104 |
 | Reflection | sharp cavity receivers; horocycle exponents; the fixed-height floor [L*] | a rate, a reflection sign or the floor |

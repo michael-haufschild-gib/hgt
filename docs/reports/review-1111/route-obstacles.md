@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** commit `f31c63def1` with its working tree (2026-11-11). Fact log: `logs/review-1111-status-quo-facts.md` (cited as "log §n"). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** commit `65731ede04` with its working tree (2026-11-11). Fact log: `logs/review-1111-status-quo-facts.md` (cited as "log §n"). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. Formulations are not independent mechanisms: HJ is PA; the BSY criterion of FEL belongs to CTF; PCS, DR, PW-B are retired labels. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
@@ -30,6 +30,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | AAL ⇔ for every line `Re s=½+h` the number of zeros to its right is at most one or infinite | [L*] (FFA5) | AAL is a unit gap |
 | A one-sided floor on late windows of one fixed length `L` has a finite-stratum model (an isolated pair at ordinate `2π/(3L)`); two-sided smallness of the normalized trace on windows of one length leaves the top line of ζ empty or infinite | [L*] (FFA8, FFA16) | the two forms of non-attainment differ |
 | Every tangent datum is the top layer of a finite tempered symmetric configuration; of a nonnegative density with a simple pole (any `Θ<1`); of an Euler product over natural norms with natural coefficients, linear counting and continuation to `Re s>½`, with the prescribed multiplicities; of an Euler product over rational primes with repetition for `17/30<Θ<1` | [L*] (FFA12–FFA15, N3) | the explicit formula, positivity, Euler products over integer norms and counting put no condition on a finite top layer |
+| AAL, or `Θ<1` and for every `β∈(Θ,1)` a meromorphic function with an Euler product over the rational primes, multiplicative coefficients `0≤a(n)≤C_εn^ε`, polynomial bounds for itself and its inverse, exactly one pair of zeros right of `Θ`, and a pole in the left strip. The property "the right zeros are the divisor of an Euler product over natural norms" has floor `½` | [L*] (M1, M2) | the Euler product with bounded coefficients, without the functional equation, does not give the abscissa law; a producer has to use the Euler product on the function, not on its zeros |
 | `Θ<1 ⇔ Θ∞<1`; failure of quasi-RH is `Θ=Θ∞=1` with AAL; RH ⇔ ZAL ∧ B13 ∧ Landing; B13 ⇔ the supremal negative index on real packets is `0` or `∞` | [L*] (S13, S16); [F] | a failure of RH is world I or world II; three atoms |
 | An entire function with the Riemann functional equation, Gamma factor, residue one, order `≤1` and the zero count of ξ within one has all zeros simple, off the line, approaching it; two-scale Euler products over natural norms realize `(Θ,Θ₂,Θ∞)=(β,θ₂,θ)`, `½<θ≤θ₂<β<2/3`, and refute every graded repulsion bound | [L*] (C6, S15) | Landing and DH follow from neither structure alone |
 | For `η>0` and large `q`: every dominated system has the floor `½(1−e^{−η/2})log q∫\|F\|²` at `a≤log log q−η`; at `a≥log log q+η` the Liouville twist and `−Λ` fail on the odd polar packet and `Λ` without pole plane on the even one; the trivial aperture is `log log q+o(1)` | [L*] (L1–L3) | sizes prove the sign to rung `1−o(1)` in the conductor aspect and nothing beyond |
@@ -39,7 +40,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | For every `a>0`, `0<δ≤½`: a tempered configuration with `N_Z=N_ζ+O(T)`, logarithmic local counts, positive on `[−a,a]`, with zeros of depth `δ` at unbounded heights | [L*] (SA5) | the sign at a fixed aperture is not a strip at the level of configurations |
 | RH ⇔ `JasDressedPSD 1` ⇔ positivity at level one on all large primes; a level `σ≥1` on large primes gives `\|Re ρ−½\|≤σ−1`; for `½≤b<1`: `Θ≤b` ⇔ the signal of the zeta kernel is `O(Z^{b′})` for every `b′>b`; the signal is `Σμ(n)·signal(poleKernel)(Z/n)` | [L*] (J1, FCT2, F1) | levels, half-planes and the exponent of one smoothed Möbius sum are one scale |
 | Over `ℚ(ζ₃)`: if zero-freeness of the Hecke family in `Re s>β` gives every ray class character a sum with a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with its corrected signal, `a₁,a₂<β` common, for every `β>σ₀`, then `Θ≤σ₀` | [L*] (N5) | the half-plane route is one implication whose premises are two estimates |
-| Exponent budget of the published probe: boundary in `(7/8−1/4000,7/8]` with its row count; RH-quality bounds for every nonprincipal row summed trivially do not go below `13/15`; at twist order `n` the balanced floor is `1−4/(5n)`, the conductor corner `8/9`, `25/28`, `49/54` for `(2,6)`, `(3,4)`, `(4,3)`; two or more row variables give `≥1`; evaluating the reflected rows through the same twists returns the zero | [L*] (FCT11–FCT17) | the room inside the Gauss-sum probe is `[13/15,7/8]`; no design of the class approaches `½` |
+| Exponent budget of the published probe: boundary in `(7/8−1/4000,7/8]` with its row count; RH-quality bounds for every nonprincipal row summed trivially do not go below `13/15`; at twist order `n` the balanced floor is `1−4/(5n)`, the conductor corner `8/9`, `25/28`, `49/54` for `(2,6)`, `(3,4)`, `(4,3)`; two or more row variables give `≥1`; evaluating the reflected rows through the same twists returns the zero | [L*] (FCT11–FCT17) | the room inside the Gauss-sum probe is `[13/15,7/8]`; in positive form the boundary is `½+(1−1/n)θ/2`, `θ` the exponent of the shortest twist family with a generic mean square [L*] (M3) |
 | `CombBezoutShift c ⇔ c≤0 ∧ RH`; one contact changed by `t` at `n₀`: Bézout ⇔ RH ∧ `2\|t\|/√n₀≤c`; tree of `p` at length `ℓ`: Bézout ⇔ RH ∧ `ℓ=log p`; along the price path of any `n₀` Bézout on all packets is RH at every parameter | [L*] (G1–G3, AGZ3) | constant, contacts and tree lengths are forced; a path transports no sign |
 | RH ⇔ exactly one positive square of the intersection Gram on packets; the negative index counts the distinct right zeros for ζ with Dirichlet characters, for every primitive ray class character of every number field, for a Dedekind zeta function, and for the class characters together | [L*] (G4, G5, AGZ6–AGZ8) | the Hodge index is the exact count of the right zeros |
 | RH ⇔ `𝔚_{3K+1}≥0` on step packets of `3KR` blocks for all `K,R` (finite matrices with elementary entries) ⇔ eventual exact nonnegativity of the comb form on every fixed ratio window ⇔ a positive coefficient-mass floor `γ(Q)` on each ratio window; `r≤#`right zeros ⇔ eventually `r≤` the robust comb index | [L*] (AGZ1, AGZ2, HFP1–HFP3) | the inequality at finite scale is an equivalence in four forms |
@@ -122,6 +123,8 @@ Established:
 | A117 | end points of the feasible interval of `w(2)` on the first selective window | — |
 | B1, B2, B4, B5 | sign on every window; bounded oscillation of `Ψ` to contact; outer predictors; kick admission | RH |
 | B3, B16, B17 | variation of `r` free of `1/μ`; decay law of the margin; signed ground states past `log ρ` | sub / method |
+| B176 | whether RH through `exp(C·e^{2a})` gives the sign on `[−a,a]`: a lower bound for the margin of the verified part | sub / method |
+| B179 | a symplectic structure in which the index in the aperture is a Maslov index | producer |
 
 ### S3. Prime-degree sampling and scale locality
 Routes: ACS, SRT, WL, HF, ZCG, PM (count door), HAT-C. Programmes: SOSZ, CDGeo, FFA.
@@ -215,6 +218,7 @@ Established:
 | B87 | a count with Tate limit `Q`, defined without `Q` | RH |
 | B147 | Shimura nonvanishing at `ρ/4+¼` for one eigenform | indep. |
 | B114, B117, B171 | a realization of the partner involution outside the excluded classes; a regulator with a unit gap before the limit; a form of signature `(1,∞)` in which the right zeros are a symmetric spectrum | producer |
+| B178 | a relaxation lower bound for a horizon with a cusp: a resonance-free strip from a principle that fails under deformation of the group | ≥qRH (producer) |
 
 ### S8. The exceptional coordinate: two worlds and three atoms
 Routes: BAG, ZCG, JAS (shell), SC (undamped), WL (thick runs), ACS (sampling branch), LA (finite support), RW (polar ground energy). Programmes: ZCG AbscissaLaws, ELT, EFT, IWT, IRW, IRP, APD, AAD, TAPO, FFA.
@@ -271,7 +275,7 @@ Established ([L*] with log identifiers):
 | | Obstacle | Strength |
 |---|---|---|
 | A28, A41, A48 | reciprocal-quadric traces; count law for plane quartics [C]; Hasse–Weil tests at verified scales | — |
-| A133 | Artin characters of non-abelian extensions: the index law per character (unverified) | — |
+| A133 | Artin characters of non-abelian extensions: the index law per character; the Dedekind index of the non-abelian ring of the cube roots of two is a theorem [L*] (M4) (unverified) | — |
 | A135 | the step-packet matrices at window ratios 4 and 7 as certified finite statements (unverified) | — |
 | B87 | a count on the rays `Γ_1+Γ_p`, defined without `Q` | RH |
 | B88 | the sign of the comb finite part | RH |
@@ -302,7 +306,7 @@ Established ([L*] with log identifiers):
 - Given `Θ≤b`: the rung `(2b−1)κ<1` for the centred contacts, positivity on large primes above the level `b+½`, return-free windows (SA4).
 - Level and signal (J1, L13, FCT1–FCT3, F1); family frame for all ray class characters, with holomorphic corrections, over `ℚ` and `ℚ(ζ₃)` (FCT5, FCT6, N5).
 - Source: the cube identity (W5); the sign law at odd and even order (F3); one Jacobi sum carries the sign (FCT9); no cancellation over the exceptional frequencies of a coprime column pair (F4).
-- Budget (J10, FCT11–FCT17).
+- Budget (J10, FCT11–FCT17); positive form: the target occurs among its twists, boundary `½+(1−1/n)θ/2` (M3).
 
 | | Obstacle | Strength |
 |---|---|---|
@@ -313,12 +317,15 @@ Established ([L*] with log identifiers):
 | B161 | the signal bound `O(Z^b)`, `b<1`, natively | ≥qRH |
 | B174 | the density of sextic twists with a zero near real part `0.69`: the room `[13/15,7/8]` of the probe | sub (given `[X]`) |
 | B175 | a bound for the reflected rows that does not pass through the twists; cancellation across nonprincipal rows | producer (below `13/15`) |
+| B177 | the least exponent `θ` of a twist family with a generic mean square of the Möbius sums: boundary `½+(1−1/n)θ/2` | producer (in law) |
+| B180 | the reflection of the completed theta row without Eisenstein series | method |
+| B181 | the comparison estimate at `7/8`: removal of the cube indices, the corrections, uniformity in the character | producer lemma |
 
 ### S13. Floor-free receivers and their kills
 Routes: every route (as a filter on proposed estimates). Programme: FFA.
 
 Established ([L*] with log identifiers):
-- Floors: what holds for every tempered symmetric configuration has floor `½`; a floor of exponent `σ` has floor exactly `σ`; a mechanism that reads only ordinate counts has floor `½` (FFA1–FFA3).
+- Floors: what holds for every tempered symmetric configuration has floor `½`; a floor of exponent `σ` has floor exactly `σ`; a mechanism that reads only ordinate counts has floor `½` (FFA1–FFA3); so has everything a zero configuration can carry at once, the Euler product over natural norms included (M2).
 - Homogeneous kind: a floor of the clock regulator at one cutoff per aperture gives RH; the regulator lies below its limit (FFA24).
 - Unit-gap kind: AAL ⇔ at most one or infinitely many zeros right of every line (FFA5); the quantum of a multiplicity (FFA17); unit gaps pass to limits; the tower and the heat flow have the count of their limit (FFA25, FFA26); an index-one realization gives RH (FFA20).
 - Certificate kind: feasible systems converge to `Λ` (FFA21); feasibility is positive definiteness on intervals and tapered kernels are transforms of positive measures (FFA22, FFA23); the pure objects with ζ's Gamma factor are no Dirichlet series over their dominant half (FFA27, N4).

@@ -356,6 +356,17 @@ coefficients are subexponential. Fourier uniqueness gives a normally convergent
 Bessel expansion and exponential height decay
 (`ramifiedScaledRow_eq_bessel`, `ramifiedSource_bessel_normal`,
 `ramifiedSource_exponential_decay`, checked).
+Linear frequency weights preserve subexponential coefficient growth, so the
+horizontal derivative also has a normally convergent Bessel expansion and
+exponential decay. Cusp inversion reflects its Mellin parameter by `s ↦ 2−s`;
+splitting at height one gives two exponentially decaying Mellin tails.
+
+For a primitive column `a=A+Bω`, `c=C+Dω`, the determinant `AD−BC` modulo three
+distinguishes the three cusp classes. Nonzero determinant gives the classes
+of `(1,ω)` and `(1,ω²)` directly. At determinant zero, `(B,D)` is proportional
+to the nonzero vector `(A+B,C+D)`; multiplication by a power of `ω` makes
+the column rational modulo three. This algebraic classification and its
+integral lift remain to be formalized.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

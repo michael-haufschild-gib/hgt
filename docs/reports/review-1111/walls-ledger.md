@@ -1,6 +1,6 @@
 # Walls ledger — status quo
 
-**Corpus checkpoint:** commit `f31c63def1` with its working tree (2026-11-11). Fact log: `logs/review-1111-status-quo-facts.md` (identifiers in parentheses refer to log §3). Companions: [route-obstacles.md](route-obstacles.md), [route-unification-ledger.md](route-unification-ledger.md), [obstacles-summary.md](obstacles-summary.md).
+**Corpus checkpoint:** commit `65731ede04` with its working tree (2026-11-11). Fact log: `logs/review-1111-status-quo-facts.md` (identifiers in parentheses refer to log §3). Companions: [route-obstacles.md](route-obstacles.md), [route-unification-ledger.md](route-unification-ledger.md), [obstacles-summary.md](obstacles-summary.md).
 
 Three wall families carry the frontier. **Σ** is the critical sign of the window form, **Π** the precision and production of the prime count, **Γ** the selection of ζ, the reflection of its zeros and their position in height. They meet in one minimal face, in one lattice and on one scale.
 
@@ -55,9 +55,9 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 | Σ163 Depth on the ladder; clusters | Settled (configurations); Open (ζ) | method | for every `a>0`, `0<δ≤½` a tempered configuration at ζ's density is positive on `[−a,a]` with zeros of depth `δ` at unbounded heights [L*] (SA5); for ζ and primitive characters the sign on a rung forces a companion of a deep zero [L*] (L9); arithmetic cluster exclusion is B156 |
 | Σ164 Level-one dressed positivity | Solved (identity) | RH | RH ⇔ `JasDressedPSD 1` ⇔ level one on all large primes ⇔ positivity at infinity above every level `σ>1`; a level `σ≥1` gives the half-plane `σ−½` [L*] (J1); level one gives AAL, B56 and `Θ=½` [L*] (L13) |
 | Σ167 Index in the aperture | Solved (identity) | identity | immediately right of an aperture the index is negative index plus nullity; resonant apertures finite below every bound [F]; `r≤#`right zeros ⇔ eventually `r≤` robust comb index [L*] (HFP3); the unshifted comb index lies between the aperture index and index plus nullity [L*,S] (HFP4) |
-| Σ168 Null modes | Sharpened | RH | RH ⇔ no aperture carries a null mode of the restricted form; in world I-a finitely many resonant apertures carry the whole index [D] |
+| Σ168 Null modes | Sharpened | RH | RH ⇔ no aperture carries a null mode of the restricted form; with finitely many off-line zeros finitely many resonant apertures carry the whole index [D]; a topological computation of the index is B179 |
 | Σ169 Paths | Settled (no transport) | method | price path at every `n₀≥2`: zero sum plus a square, monotone, threshold on packets of length `L`; on all packets Bézout along the path is RH at every parameter; the tree-length path exists at `2` only [L*] (AGZ3–AGZ5) |
-| Σ171 Order of the verification height | Open | sub | `log log log windowHeight(a)=c·a^{4/3}+log 138+o(1)` for the construction [F]; the symbol is nonnegative above `exp(C+2ψ₁(e^{2a}))` for every test [D]; margin ceiling `exp(11a/2−πe^{2(a−2)})` [KR]; a lower bound for the margin of the verified part is missing (A132) |
+| Σ171 Order of the verification height | Open | sub | `log log log windowHeight(a)=c·a^{4/3}+log 138+o(1)` for the construction [F]; the symbol is nonnegative above `exp(C+2ψ₁(e^{2a}))` for every test [D]; margin ceiling `exp(11a/2−πe^{2(a−2)})` [KR]; a lower bound for the margin of the verified part is missing (A132, B176) |
 
 ## Π — precision and production
 
@@ -76,7 +76,7 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 | Π66, Π125, Π126, Π146, Π153 Integrality; Stepanov degrees; one prime | Solved (price) | RH (degree bound) | `\|Σ_{n≤p}e(an^p/p²)\|≤5p^{11/12}` [F] |
 | Π93 Möbius as a cubic Gauss coefficient | Solved (identity); descent open | past VK | cube identity [L*] (W5); the cubic residue with normalized Gauss coefficients on squarefree-times-cube support; Gauss-series formulas for `Re s>2` [F]; open: removal of the cube sum (A118) |
 | Π94, Π128–Π130, Π137 Returns of the prime orbit | Partially solved | sub; ≥qRH in a strip | near-total returns need `log t>(log y)^{3/2−ε}` [F]; under `Θ≤b` heavy returns need `log t≥c·y^{1−b}` [L*] (SA4); resonator means [L*] (W8)/[F] |
-| Π102, Γ221 One-structure worlds | Solved (countermodels) | — | every tangent datum occurs in a finite symmetric configuration, a nonnegative density with a simple pole, an Euler product over natural norms with linear counting and the prescribed multiplicities, and for `Θ>17/30` over rational primes with repetition [L*] (FFA12–FFA15, N3); a continuous Beurling system with integer count `N(x)−ρx−C→0` has a one-off pair [N] |
+| Π102, Γ221 One-structure worlds | Solved (countermodels) | — | every tangent datum occurs in a finite symmetric configuration, a nonnegative density with a simple pole, an Euler product over natural norms with linear counting and the prescribed multiplicities, and for `Θ>17/30` over rational primes with repetition [L*] (FFA12–FFA15, N3); a continuous Beurling system with integer count `N(x)−ρx−C→0` has a one-off pair [N]; given `Θ<1`, a meromorphic Euler product over the rational primes with bounded nonnegative multiplicative coefficients and polynomial growth of itself and its inverse has exactly one pair right of `Θ` and a pole in the left strip; the Euler product read through the zero configuration has floor `½` [L*] (M1, M2) |
 | Π105, Π127 Farey, nerve, orientation cover | Solved (identity) | RH (weight `½`) | centred cover count `=M(x)` [L*] (C12) |
 | Π112–Π114 Exceptional rank; thick crude count | Sharpened | AAL; RH with attainment | RH ⇔ attained top ∧ thick `O(√X)` deviation [N] |
 | Π141, Π142, Π145 Gauge family; the fixed part | Classified; No-go | method | fixed-part laws [N]; in a cyclotomic tower the base has weight `1/d`, among the class characters `1/h` [L*] (G10, AGZ8) |
@@ -85,7 +85,7 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 | Π154 The carry class | Classified | — | [KR] |
 | Π158 Reciprocity sources | Classified (local); Settled (designs) | producer | `g(χ)^n=−card F+z(μ−1)²` for odd order `n>2`, `χ(−1)card F+…` for even order [L*] (F3); `g(χ)g(φ)=(−1+z(μ−1)²)g(χφ)` [L*] (FCT9); the one-variable cubic/sextic design is the best of the tested designs (Π163) |
 | Π159, Π162 Family continuation | Reduced | ≥qRH | frame for all ray class characters with holomorphic corrections [L*] (FCT5); `Θ≤b` ⇔ signal `O(Z^{b′})` for every `b′>b` [L*] (FCT2); over `ℚ(ζ₃)` the two estimates with common exponents below every `β>σ₀` give `Θ≤σ₀` [L*] (N5); `[X]`: `σ₀=7/8`; natively open (B161) |
-| Π160, Π163 The budget of the probe | Settled | method | boundary `7/8` at every redistribution of the two scales [L*] (J10); the published geometry is a vertex: boundary in `(7/8−1/4000,7/8]` with its row count; floor bin `13/15`; order floor `1−4/(5n)`; conductor corners `8/9`, `25/28`, `49/54`; two or more row variables `≥1`; reflected rows through the same twists return the zero; without the dual-length term `≥5/6`, at order `n` `≥1−1/n` [L*] (FCT11–FCT17); no cancellation over the exceptional frequencies of a coprime column pair [L*] (F4) |
+| Π160, Π163 The budget of the probe | Settled | method | boundary `7/8` at every redistribution of the two scales [L*] (J10); the published geometry is a vertex: boundary in `(7/8−1/4000,7/8]` with its row count; floor bin `13/15`; order floor `1−4/(5n)`; conductor corners `8/9`, `25/28`, `49/54`; two or more row variables `≥1`; reflected rows through the same twists return the zero; without the dual-length term `≥5/6`, at order `n` `≥1−1/n` [L*] (FCT11–FCT17); no cancellation over the exceptional frequencies of a coprime column pair [L*] (F4); positive form: boundary `½+(1−1/n)θ/2` for a generic mean square over twists of norm up to `Z^θ` [L*] (M3) |
 | Π164 The half-plane map | Solved (receivers) | — (given a half-plane) | `Θ≤b` gives the rung `(2b−1)κ<1` for the centred contacts, large-prime positivity above the level `b+½`, return-free windows [L*] (SA4) |
 | Π165 Levinson detector below the square root | Partially solved | sub | the detector is three moments plus jets and two taper terms; linear mollifier: explicit main expression plus `O(T^{7/8})` [F] ([S] for the remainder); open: the main expression (A134) |
 
@@ -133,7 +133,7 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 | Linear statistics and additive depth functionals as monotone quantities under projection | Γ223. Survivor: nonlinear functionals (B172) |
 | Replication of a zero through a normal family of translates | Γ228. Survivor: prime transport, signed currents (B89, B145) |
 | Amplification over the order of a window moment | all orders with one exponent are sup bounds; one order reaches depth `A/2k` (Γ220) |
-| The Gauss-sum probe below `13/15`; other twist orders, more row variables, other conductors; reflected rows through the same twists | Π163. Survivor: cancellation across nonprincipal rows or a row bound that does not pass through the twists (B175) |
+| The Gauss-sum probe below `13/15`; other twist orders, more row variables, other conductors; reflected rows through the same twists | Π163. Survivor: a generic mean square over a shorter twist family by a bound that does not pass through the twists (B175, B177) |
 | Bounded and Wiener constituents with a zero | none (Γ224). Survivor: exact finite-height matching with growing length |
 | Sections of the square, of the tower, of the planar square; section counts in boxes | identities; no quadratic term (Π155, Γ227). Survivor: counts on prime rays with the plane defect as limit, equivalent to RH |
 | A free weight, constant, scale or tree length; an own comb; a per-degree tower limit; a path | forced, failing, or RH at every parameter (Σ155, Σ169, Γ217) |
@@ -173,4 +173,4 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 - **≥B56:** Π40.
 - **AAL:** Π114, Σ147 (the floors), Γ220 (non-attainment), Π149 (the weighted current).
 - **sub:** Σ27, Σ82, Σ116, Σ117, Σ171, Π7, Π22, Π51, Π53, Π54, Π65, Π80, Π94, Π161 (past the square root), Π165, Γ68, Γ182 (landing as an atom), Γ184 (DH for ζ), B13, B174.
-- **method / producer / indep.:** Σ135 and Σ139 (B104), Σ163 (B156), Π158 and Π163 (B175), Γ219 (B157), Γ222 (B171), Γ223 (B172).
+- **method / producer / indep.:** Σ135 and Σ139 (B104), Σ163 (B156), Σ168 (B179), Σ171 (B176), Π158 and Π163 (B175, B177, B180), Π162 (B181), Γ219 (B157), Γ222 (B171), Γ223 (B172), Γ226 (B178).

@@ -106,9 +106,9 @@ shifted Euler correction: its local factor, with
 `a=p^(−1+v/L)` and `b=p^(−1+(c+2v)/L)`, is
 `1−xy(a−bx)(a−by)/((1−ax)(1−ay))`.
 
-The direct kernel step is drafted in `TheSmoothedMobiusKernelTestsDerivatives.lean`:
+The direct kernel step is proved in `TheSmoothedMobiusKernelTestsDerivatives.lean`:
 for each twice continuously differentiable `f` with `f(0)=0` and fixed `u>0`,
 `L Σ_{n≤exp(Lu)} μ(n) f(u−log(n)/L)/n → f′(u)`.
 The finite identity uses `f′(0)F(Lu)+∫₀ᵘ f″(u−x)F(Lx)dx`.
 Taking `f(x)=x exp(−vx)` gives the power-shifted linear limit `1−vu`.
-Its first Lean check is pending.
+The module passed its direct Lean check and is imported by the umbrella.

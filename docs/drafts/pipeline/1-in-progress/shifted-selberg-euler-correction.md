@@ -35,3 +35,12 @@ Formalize the parameterized amplitude, exact convolution, and fibre majorant.
 Combine the smoothed Möbius test-function limit with harmonic scaling.
 Transfer the first two frozen-coefficient displacement jets; their proof
 must retain uniformity of the shifted correction, not merely pointwise limits.
+
+## Lean drafts
+
+- `TheShiftedSelbergAmplitudeHasTheSameMajorant`: multiplicative convolution,
+  prime-power formula, coefficient continuity, and the amplitude majorant.
+  Direct Lean check passed; umbrella import added.
+- `TheShiftedSelbergCorrectionKeepsItsSummableEnvelope`: localized fibres,
+  their continuity, the common summable envelope, and limiting unit mass
+  of the actual finite-cutoff fibre sum. Direct check pending.

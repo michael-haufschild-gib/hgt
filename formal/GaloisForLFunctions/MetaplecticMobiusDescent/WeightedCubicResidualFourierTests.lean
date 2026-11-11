@@ -18397,10 +18397,321 @@ theorem conjugateSource_primitive_cusp_mellin_entire (side : Bool) :
     (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (g 0 0 / g 1 0))
     (cuspZProfile (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) (-g 1 1 / g 1 0))
     (-1 / (g 1 0) ^ 2) (‖g 1 0‖ ^ 2) residualBesselDecayRate (residualBesselDecayRate / 3)
-    (sq_pos_of_pos (norm_pos_iff.mpr hc)) residualBesselDecayRate_pos (by positivity)
+    (sq_pos_of_pos (norm_pos_iff.mpr hc)) residualBesselDecayRate_pos
+    (div_pos residualBesselDecayRate_pos (by norm_num))
     (conjugateSource_barProfile_continuousOn _) (conjugateRamifiedSource_zProfile_continuousOn side _)
     (conjugateSource_barProfile_isBigO _) (conjugateRamifiedSource_zProfile_isBigO side _)
     (fun v hv => conjugateSource_barProfile_reflection g hc v hv)
   simpa only [hg0, hgc, one_div] using he
+
+/-- Coordinates modulo three retain the nilpotent direction of the ramified residue ring. -/
+def cuspResidue (x : O) : ZMod 3 × ZMod 3 :=
+  ((Coordinates.coords x).1, (Coordinates.coords x).2)
+
+def cuspResidueMul (x y : ZMod 3 × ZMod 3) : ZMod 3 × ZMod 3 :=
+  (x.1 * y.1 - x.2 * y.2, x.1 * y.2 + x.2 * y.1 - x.2 * y.2)
+
+lemma cuspResidue_eval (a b : ℤ) : cuspResidue (Coordinates.eval a b) = ((a : ZMod 3), (b : ZMod 3)) := by
+  simp only [cuspResidue, Coordinates.coords_eval]
+
+lemma cuspResidue_intCast (a : ℤ) : cuspResidue (a : O) = ((a : ZMod 3), 0) := by
+  simpa only [Coordinates.eval, Int.cast_zero, zero_mul, add_zero] using cuspResidue_eval a 0
+
+lemma cuspResidue_zero : cuspResidue (0 : O) = (0, 0) := by simpa only [Int.cast_zero] using cuspResidue_intCast 0
+lemma cuspResidue_one : cuspResidue (1 : O) = (1, 0) := by simpa only [Int.cast_one] using cuspResidue_intCast 1
+
+lemma cuspResidue_add (x y : O) : cuspResidue (x + y) =
+    ((cuspResidue x).1 + (cuspResidue y).1, (cuspResidue x).2 + (cuspResidue y).2) := by
+  have he : x + y = Coordinates.eval ((Coordinates.coords x).1 + (Coordinates.coords y).1)
+      ((Coordinates.coords x).2 + (Coordinates.coords y).2) := by
+    nth_rw 1 [← Coordinates.eval_coords x, ← Coordinates.eval_coords y]
+    simp only [Coordinates.eval, Int.cast_add]
+    ring
+  rw [he, cuspResidue_eval]
+  simp only [cuspResidue, Int.cast_add]
+
+lemma cuspResidue_neg (x : O) : cuspResidue (-x) = (-(cuspResidue x).1, -(cuspResidue x).2) := by
+  have he : -x = Coordinates.eval (-(Coordinates.coords x).1) (-(Coordinates.coords x).2) := by
+    nth_rw 1 [← Coordinates.eval_coords x]
+    simp only [Coordinates.eval, Int.cast_neg]
+    ring
+  rw [he, cuspResidue_eval]
+  simp only [cuspResidue, Int.cast_neg]
+
+lemma cuspResidue_mul (x y : O) : cuspResidue (x * y) = cuspResidueMul (cuspResidue x) (cuspResidue y) := by
+  calc
+    _ = cuspResidue (Coordinates.eval (Coordinates.coords x).1 (Coordinates.coords x).2 *
+        Coordinates.eval (Coordinates.coords y).1 (Coordinates.coords y).2) := by rw [Coordinates.eval_coords, Coordinates.eval_coords]
+    _ = _ := by
+      rw [Coordinates.eval_mul, cuspResidue_eval]
+      simp only [cuspResidue, cuspResidueMul, Int.cast_add, Int.cast_sub, Int.cast_mul]
+
+def cuspResidueAugmentation (x : O) : ZMod 3 := (cuspResidue x).1 + (cuspResidue x).2
+
+lemma cuspResidueAugmentation_add (x y : O) :
+    cuspResidueAugmentation (x + y) = cuspResidueAugmentation x + cuspResidueAugmentation y := by
+  simp only [cuspResidueAugmentation, cuspResidue_add]
+  ring
+
+lemma cuspResidueAugmentation_neg (x : O) : cuspResidueAugmentation (-x) = -cuspResidueAugmentation x := by
+  simp only [cuspResidueAugmentation, cuspResidue_neg]
+  ring
+
+lemma cuspResidueAugmentation_mul (x y : O) :
+    cuspResidueAugmentation (x * y) = cuspResidueAugmentation x * cuspResidueAugmentation y := by
+  simp only [cuspResidueAugmentation, cuspResidue_mul, cuspResidueMul]
+  have h3 : (3 : ZMod 3) = 0 := by norm_num
+  linear_combination -(cuspResidue x).2 * (cuspResidue y).2 * h3
+
+lemma cuspResidueAugmentation_one : cuspResidueAugmentation (1 : O) = 1 := by
+  simp only [cuspResidueAugmentation, cuspResidue_one, add_zero]
+
+/-- A determinant-one column stays nonzero after reduction modulo the ramified prime. -/
+lemma cuspResidue_first_column_primitive (M : SL(2, O)) :
+    ¬ (cuspResidueAugmentation (M 0 0) = 0 ∧ cuspResidueAugmentation (M 1 0) = 0) := by
+  rintro ⟨ha, hc⟩
+  have hd : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by simpa only [Matrix.det_fin_two] using M.property
+  have he := congrArg cuspResidueAugmentation hd
+  simp only [sub_eq_add_neg, cuspResidueAugmentation_add, cuspResidueAugmentation_neg,
+    cuspResidueAugmentation_mul, cuspResidueAugmentation_one, ha, hc, zero_mul, mul_zero, neg_zero, add_zero] at he
+  exact zero_ne_one he
+
+lemma cuspResidue_omega : cuspResidue omega = (0, 1) := by
+  simpa only [Coordinates.eval, Int.cast_zero, Int.cast_one, zero_add, one_mul] using cuspResidue_eval 0 1
+
+lemma cuspResidue_omega_sq : cuspResidue (omega ^ 2) = (-1, -1) := by
+  rw [pow_two, cuspResidue_mul, cuspResidue_omega]
+  norm_num [cuspResidueMul]
+
+lemma cuspResidue_eq_three_dvd {x y : O} (h : cuspResidue x = cuspResidue y) : (3 : O) ∣ x - y := by
+  have ha : (3 : ℤ) ∣ (Coordinates.coords x).1 - (Coordinates.coords y).1 :=
+    (ZMod.intCast_eq_intCast_iff_dvd_sub (Coordinates.coords y).1 (Coordinates.coords x).1 3).mp
+      (congrArg Prod.fst h).symm
+  have hb : (3 : ℤ) ∣ (Coordinates.coords x).2 - (Coordinates.coords y).2 :=
+    (ZMod.intCast_eq_intCast_iff_dvd_sub (Coordinates.coords y).2 (Coordinates.coords x).2 3).mp
+      (congrArg Prod.snd h).symm
+  obtain ⟨a, ha⟩ := ha
+  obtain ⟨b, hb⟩ := hb
+  refine ⟨Coordinates.eval a b, ?_⟩
+  nth_rw 1 [← Coordinates.eval_coords x, ← Coordinates.eval_coords y]
+  have hx : (Coordinates.coords x).1 = (Coordinates.coords y).1 + 3 * a := by omega
+  have hy : (Coordinates.coords x).2 = (Coordinates.coords y).2 + 3 * b := by omega
+  simp only [Coordinates.eval, hx, hy]
+  push_cast
+  ring
+
+lemma cuspResidue_intCast_mul (n : ℤ) (x : O) : cuspResidue ((n : O) * x) =
+    ((n : ZMod 3) * (cuspResidue x).1, (n : ZMod 3) * (cuspResidue x).2) := by
+  rw [cuspResidue_mul, cuspResidue_intCast]
+  simp only [cuspResidueMul, zero_mul, sub_zero, add_zero]
+
+def cuspParameter (j : Fin 3) : O := if j = 0 then 0 else if j = 1 then omega else omega ^ 2
+def cuspRepresentative (j : Fin 3) : SL(2, O) := lowerCuspMatrix (cuspParameter j)
+def cuspResidueParameter (j : Fin 3) : ZMod 3 × ZMod 3 :=
+  if j = 0 then (0, 0) else if j = 1 then (0, 1) else (-1, -1)
+
+lemma cuspParameter_residue (j : Fin 3) : cuspResidue (cuspParameter j) = cuspResidueParameter j := by
+  fin_cases j <;> simp [cuspParameter, cuspResidueParameter, cuspResidue_zero, cuspResidue_omega, cuspResidue_omega_sq]
+
+def cuspNilpotentUnit (q : ZMod 3) : Oˣ := cuspOmegaUnit ^ q.val
+
+lemma cuspNilpotentUnit_residue (q : ZMod 3) :
+    cuspResidue (cuspNilpotentUnit q : O) = (1 - q, q) := by
+  fin_cases q
+  · simp [cuspNilpotentUnit, cuspResidue_one]
+  · simp [cuspNilpotentUnit, cuspOmegaUnit_val, cuspResidue_omega]
+  · change cuspResidue (omega ^ 2) = _
+    rw [cuspResidue_omega_sq]
+    rfl
+
+def cuspResidueColumn (g : SL(2, ZMod 3)) (j : Fin 3) (q : ZMod 3) (i : Fin 2) : ZMod 3 × ZMod 3 :=
+  cuspResidueMul (g i 0 + g i 1 * (cuspResidueParameter j).1, g i 1 * (cuspResidueParameter j).2) (1 - q, q)
+
+lemma cuspModThree_nonzero (x : ZMod 3) (hx : x ≠ 0) : x = 1 ∨ x = -1 := by
+  fin_cases x
+  · exact (hx rfl).elim
+  · exact Or.inl rfl
+  · exact Or.inr rfl
+
+/-- The coordinate determinant gives three orbits of primitive columns modulo three. -/
+theorem cuspResidue_column_classify (a c : ZMod 3 × ZMod 3)
+    (hp : ¬ (a.1 + a.2 = 0 ∧ c.1 + c.2 = 0)) :
+    ∃ g : SL(2, ZMod 3), ∃ j : Fin 3, ∃ q : ZMod 3,
+      cuspResidueColumn g j q 0 = a ∧ cuspResidueColumn g j q 1 = c := by
+  by_cases hd : a.1 * c.2 - a.2 * c.1 = 0
+  · have hxy : a.1 + a.2 ≠ 0 ∨ c.1 + c.2 ≠ 0 := by
+      by_cases hx : a.1 + a.2 = 0
+      · exact Or.inr (fun hy => hp ⟨hx, hy⟩)
+      · exact Or.inl hx
+    have hcop : IsCoprime (a.1 + a.2) (c.1 + c.2) := by
+      rcases hxy with hx | hy
+      · exact ⟨(a.1 + a.2)⁻¹, 0, by rw [inv_mul_cancel₀ hx, zero_mul, add_zero]⟩
+      · exact ⟨0, (c.1 + c.2)⁻¹, by rw [zero_mul, inv_mul_cancel₀ hy, zero_add]⟩
+    obtain ⟨g, hg0, hg1, _⟩ := primitiveColumn_congruent_completion (1 : SL(2, ZMod 3))
+      (a.1 + a.2) (c.1 + c.2) 1 hcop (one_dvd _) (one_dvd _)
+    have hq : ∃ q : ZMod 3, (a.1 + a.2) * q = a.2 ∧ (c.1 + c.2) * q = c.2 := by
+      rcases hxy with hx | hy
+      · refine ⟨a.2 / (a.1 + a.2), ?_, ?_⟩
+        · field_simp
+        · field_simp
+          linear_combination -hd
+      · refine ⟨c.2 / (c.1 + c.2), ?_, ?_⟩
+        · field_simp
+          linear_combination hd
+        · field_simp
+    obtain ⟨q, hq0, hq1⟩ := hq
+    refine ⟨g, 0, q, ?_, ?_⟩
+    · simp only [cuspResidueColumn, cuspResidueParameter, if_true, hg0, mul_zero, add_zero,
+        cuspResidueMul, zero_mul, sub_zero]
+      apply Prod.ext
+      · change (a.1 + a.2) * (1 - q) = a.1
+        linear_combination -hq0
+      · exact hq0
+    · simp only [cuspResidueColumn, cuspResidueParameter, if_true, hg1, mul_zero, add_zero,
+        cuspResidueMul, zero_mul, sub_zero]
+      apply Prod.ext
+      · change (c.1 + c.2) * (1 - q) = c.1
+        linear_combination -hq1
+      · exact hq1
+  · rcases cuspModThree_nonzero _ hd with hdet | hdet
+    · let g : SL(2, ZMod 3) := ⟨!![a.1, a.2; c.1, c.2], by simpa only [Matrix.det_fin_two] using hdet⟩
+      refine ⟨g, 1, 0, ?_, ?_⟩ <;> apply Prod.ext <;>
+        simp [cuspResidueColumn, cuspResidueParameter, cuspResidueMul, g]
+    · let g : SL(2, ZMod 3) := ⟨!![a.1 - a.2, -a.2; c.1 - c.2, -c.2], by
+        rw [Matrix.det_fin_two]
+        change (a.1 - a.2) * -c.2 - -a.2 * (c.1 - c.2) = 1
+        linear_combination -hdet⟩
+      refine ⟨g, 2, 0, ?_, ?_⟩ <;> apply Prod.ext <;>
+        simp [cuspResidueColumn, cuspResidueParameter, cuspResidueMul, g] <;> ring
+
+lemma sameColumn_inverse_mul {R : Type*} [CommRing R] (M N : SL(2, R))
+    (h0 : N 0 0 = M 0 0) (h1 : N 1 0 = M 1 0) :
+    (N⁻¹ * M) 0 0 = 1 ∧ (N⁻¹ * M) 1 0 = 0 := by
+  have hd : N 0 0 * N 1 1 - N 0 1 * N 1 0 = 1 := by simpa only [Matrix.det_fin_two] using N.property
+  have hi00 : (N⁻¹) 0 0 = N 1 1 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have hi01 : (N⁻¹) 0 1 = -N 0 1 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have hi10 : (N⁻¹) 1 0 = -N 1 0 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have hi11 : (N⁻¹) 1 1 = N 0 0 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  constructor
+  · change (∑ k : Fin 2, (N⁻¹) 0 k * M k 0) = 1
+    rw [Fin.sum_univ_two, hi00, hi01, ← h0, ← h1]
+    linear_combination hd
+  · change (∑ k : Fin 2, (N⁻¹) 1 k * M k 0) = 0
+    rw [Fin.sum_univ_two, hi10, hi11, ← h0, ← h1]
+    ring
+
+def rationalReductionThree : SL(2, ℤ) →* SL(2, ZMod 3) :=
+  Matrix.SpecialLinearGroup.map (Int.castRingHom (ZMod 3))
+
+lemma rationalReductionThree_apply (r : SL(2, ℤ)) (i j : Fin 2) :
+    rationalReductionThree r i j = (r i j : ZMod 3) := rfl
+
+def rationalCuspTranslation (n : ℤ) : SL(2, ℤ) := ⟨!![1, n; 0, 1], by simp [Matrix.det_fin_two]⟩
+
+lemma cuspModThree_unit_lift (x : ZMod 3) (hx : x ≠ 0) :
+    ∃ n : ℤ, n ^ 2 = 1 ∧ (n : ZMod 3) = x := by
+  rcases cuspModThree_nonzero x hx with h | h
+  · exact ⟨1, by norm_num, by simpa only [Int.cast_one] using h.symm⟩
+  · exact ⟨-1, by norm_num, by simpa only [Int.cast_neg, Int.cast_one] using h.symm⟩
+
+/-- A signed lift of one nonzero entry lifts the first column; one translation lifts the matrix. -/
+theorem rationalReductionThree_surjective : Function.Surjective rationalReductionThree := by
+  intro g
+  have hcol : ∃ r : SL(2, ℤ), rationalReductionThree r 0 0 = g 0 0 ∧
+      rationalReductionThree r 1 0 = g 1 0 := by
+    by_cases ha : g 0 0 = 0
+    · have hc : g 1 0 ≠ 0 := by
+        intro hc
+        have hd := g.property
+        simp only [Matrix.det_fin_two, ha, hc, zero_mul, mul_zero, sub_zero] at hd
+        exact zero_ne_one hd
+      obtain ⟨n, hn, hnc⟩ := cuspModThree_unit_lift _ hc
+      let r : SL(2, ℤ) := ⟨!![0, -n; n, 0], by
+        rw [Matrix.det_fin_two]
+        change 0 * 0 - -n * n = 1
+        linear_combination hn⟩
+      refine ⟨r, ?_, hnc⟩
+      change ((0 : ℤ) : ZMod 3) = g 0 0
+      simpa only [Int.cast_zero] using ha.symm
+    · obtain ⟨n, hn, hnc⟩ := cuspModThree_unit_lift _ ha
+      let r : SL(2, ℤ) := ⟨!![n, 0; ((g 1 0).val : ℤ), n], by
+        rw [Matrix.det_fin_two]
+        change n * n - 0 * ((g 1 0).val : ℤ) = 1
+        linear_combination hn⟩
+      refine ⟨r, hnc, ?_⟩
+      change (((g 1 0).val : ℤ) : ZMod 3) = g 1 0
+      simpa only [Int.cast_natCast] using ZMod.natCast_zmod_val (g 1 0)
+  obtain ⟨r, hr0, hr1⟩ := hcol
+  let K : SL(2, ZMod 3) := (rationalReductionThree r)⁻¹ * g
+  obtain ⟨hK0, hK1⟩ := sameColumn_inverse_mul g (rationalReductionThree r) hr0 hr1
+  have hK11 : K 1 1 = 1 := by
+    simpa only [Matrix.det_fin_two, hK0, hK1, one_mul, mul_zero, sub_zero] using K.property
+  let T : SL(2, ℤ) := rationalCuspTranslation ((K 0 1).val : ℤ)
+  have hT : rationalReductionThree T = K := by
+    apply Matrix.SpecialLinearGroup.ext
+    intro i j
+    fin_cases i <;> fin_cases j
+    · exact hK0.symm
+    · change (((K 0 1).val : ℤ) : ZMod 3) = K 0 1
+      simpa only [Int.cast_natCast] using ZMod.natCast_zmod_val (K 0 1)
+    · exact hK1.symm
+    · exact hK11.symm
+  refine ⟨r * T, ?_⟩
+  rw [map_mul, hT]
+  dsimp only [K]
+  group
+
+def columnCuspRepresentative (r : SL(2, ℤ)) (j : Fin 3) (q : ZMod 3) : SL(2, O) :=
+  rationalEmbedding r * cuspRepresentative j * unitCuspDiagonal (cuspNilpotentUnit q)
+
+lemma columnCuspRepresentative_entry (r : SL(2, ℤ)) (j : Fin 3) (q : ZMod 3) (i : Fin 2) :
+    columnCuspRepresentative r j q i 0 =
+      ((r i 0 : O) + (r i 1 : O) * cuspParameter j) * (cuspNilpotentUnit q : O) := by
+  change (((r : Matrix (Fin 2) (Fin 2) ℤ).map (Int.castRingHom O) * !![1, 0; cuspParameter j, 1]) *
+    !![(cuspNilpotentUnit q : O), 0; 0, (↑(cuspNilpotentUnit q)⁻¹ : O)]) i 0 = _
+  simp [Matrix.mul_apply, Fin.sum_univ_two]
+
+lemma columnCuspRepresentative_residue (r : SL(2, ℤ)) (j : Fin 3) (q : ZMod 3) (i : Fin 2) :
+    cuspResidue (columnCuspRepresentative r j q i 0) = cuspResidueColumn (rationalReductionThree r) j q i := by
+  rw [columnCuspRepresentative_entry, cuspResidue_mul, cuspResidue_add, cuspResidue_intCast,
+    cuspResidue_intCast_mul, cuspParameter_residue, cuspNilpotentUnit_residue]
+  simp only [cuspResidueColumn, rationalReductionThree_apply, zero_add]
+
+/-- Every integral cusp belongs to the rational class or one of the two primitive ramified classes. -/
+theorem three_cusp_decomposition (M : SL(2, O)) :
+    ∃ G : rationalExtension, ∃ j : Fin 3, ∃ T : SL(2, O),
+      T 1 0 = 0 ∧ IsUnit (T 0 0) ∧ IsUnit (T 1 1) ∧
+        M = (G : SL(2, O)) * cuspRepresentative j * T := by
+  obtain ⟨g, j, q, hg0, hg1⟩ := cuspResidue_column_classify (cuspResidue (M 0 0))
+    (cuspResidue (M 1 0)) (cuspResidue_first_column_primitive M)
+  obtain ⟨r, hr⟩ := rationalReductionThree_surjective g
+  let B := columnCuspRepresentative r j q
+  have hB0 : cuspResidue (B 0 0) = cuspResidue (M 0 0) := by
+    rw [columnCuspRepresentative_residue, hr]
+    exact hg0
+  have hB1 : cuspResidue (B 1 0) = cuspResidue (M 1 0) := by
+    rw [columnCuspRepresentative_residue, hr]
+    exact hg1
+  have hcop : IsCoprime (M 0 0) (M 1 0) := by
+    refine ⟨M 1 1, -M 0 1, ?_⟩
+    have hd := M.property
+    rw [Matrix.det_fin_two] at hd
+    linear_combination hd
+  obtain ⟨N, hN0, hN1, hNB⟩ := exists_congruent_cusp_completion B (M 0 0) (M 1 0) hcop
+    (cuspResidue_eq_three_dvd hB0.symm) (cuspResidue_eq_three_dvd hB1.symm)
+  let G : rationalExtension := ⟨(N * B⁻¹) * rationalEmbedding r, ⟨⟨N * B⁻¹, hNB⟩, r, rfl⟩⟩
+  let T : SL(2, O) := unitCuspDiagonal (cuspNilpotentUnit q) * (N⁻¹ * M)
+  have hT : T 1 0 = 0 := by
+    have hz := (sameColumn_inverse_mul M N hN0 hN1).2
+    change (∑ k : Fin 2, unitCuspDiagonal (cuspNilpotentUnit q) 1 k * (N⁻¹ * M) k 0) = 0
+    rw [Fin.sum_univ_two]
+    change 0 * (N⁻¹ * M) 0 0 + (↑(cuspNilpotentUnit q)⁻¹ : O) * (N⁻¹ * M) 1 0 = 0
+    rw [hz, mul_zero, mul_zero, add_zero]
+  have hd : T 0 0 * T 1 1 = 1 := by
+    simpa only [Matrix.det_fin_two, hT, mul_zero, sub_zero] using T.property
+  refine ⟨G, j, T, hT, IsUnit.of_mul_eq_one _ hd,
+    IsUnit.of_mul_eq_one _ (show T 1 1 * T 0 0 = 1 by simpa only [mul_comm] using hd), ?_⟩
+  dsimp only [G, T, B, columnCuspRepresentative]
+  group
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

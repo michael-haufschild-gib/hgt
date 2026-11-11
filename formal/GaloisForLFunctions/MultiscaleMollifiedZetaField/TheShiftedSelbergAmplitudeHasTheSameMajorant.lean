@@ -65,6 +65,7 @@ theorem continuous_powerShiftedReciprocalAmplitude (n : ℕ) :
     apply hn
     rw [← hxprod, h, zero_mul]
   have hxR : (0 : ℝ) < x.1 := by exact_mod_cast Nat.pos_of_ne_zero hx0
+  have hxne : (x.1 : ℝ) ≠ 0 := hxR.ne'
   fun_prop
 
 /-- The full shifted prime-power coefficient has only two Möbius terms. -/
@@ -85,7 +86,8 @@ theorem powerShiftedReciprocalAmplitude_prime_pow (c : ℝ) {p : ℕ} (hp : p.Pr
     Nat.cast_one, Real.one_rpow, Int.cast_one, one_mul, Nat.div_one, pow_one,
     moebius_apply_prime hp, Int.cast_neg, neg_mul]
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-  rw [Nat.pow_div (by omega) hp.pos,
+  have hdiv : p ^ (k + 1) / p = p ^ k := by simp [pow_succ, hp.ne_zero]
+  rw [hdiv,
     reciprocalNatArithmetic_apply (pow_ne_zero _ hp.ne_zero),
     reciprocalNatArithmetic_apply (pow_ne_zero _ hp.ne_zero)]
   push_cast
@@ -154,8 +156,9 @@ theorem abs_powerShiftedReciprocalAmplitude_le (c : ℝ) (n : ℕ) :
       isMultiplicative_reciprocalMoebiusAmplitude hn.ne',
     ← rpowArith_apply_of_ne_zero (2 * |c|) hn.ne',
     IsMultiplicative.multiplicative_factorization (rpowArith (2 * |c|))
-      (isMultiplicative_rpowArith _) hn.ne', Finset.abs_prod, Finset.abs_prod,
-    ← Finset.prod_mul_distrib]
+      (isMultiplicative_rpowArith _) hn.ne']
+  simp only [Finsupp.prod]
+  rw [Finset.abs_prod, Finset.abs_prod, ← Finset.prod_mul_distrib]
   apply Finset.prod_le_prod
   · intro p hp
     exact abs_nonneg _
