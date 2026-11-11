@@ -26,6 +26,7 @@ The correction of the target in the two-estimate frame is the Euler product of t
 noncomputable section
 
 open Complex NumberField IsDedekindDomain
+open scoped Classical
 
 namespace GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies
 
@@ -364,10 +365,10 @@ theorem principalCorrection_eq_phaseLFunction_mul (S : Finset (HeightOneSpectrum
   exact hm1.tprod_mul hm2
 
 /-- **The frame premise below the wall is a zero-free half-plane of the phase `L`-function.**
-For `σ > ½` there is a norm `N₀` such that, whenever `S` contains every prime of norm `≤ N₀`: the
-correction has a holomorphic continuation to `Re s > σ` without zeros if and only if the phase
+For `½ < σ ≤ 2/3` there is a norm `N₀` such that, whenever `S` contains every prime of norm
+`≤ N₀`: the correction has a holomorphic continuation to `Re s > σ` without zeros if and only if the phase
 `L`-function has a holomorphic continuation to `Re w > 6σ − 3` without zeros. -/
-theorem framePremise_iff {σ : ℝ} (hσ : 1 / 2 < σ) :
+theorem framePremise_iff {σ : ℝ} (hσ : 1 / 2 < σ) (hσ' : σ ≤ 2 / 3) :
     ∃ N₀ : ℕ, 4 ≤ N₀ ∧ ∀ (S : Finset (HeightOneSpectrum (𝓞 K))),
       (∀ v : HeightOneSpectrum (𝓞 K), v.asIdeal.absNorm ≤ N₀ → v ∈ S) →
       ∀ A η : HeightOneSpectrum (𝓞 K) → ℂ, (∀ v, ‖A v‖ ≤ 1) → (∀ v, ‖η v‖ ≤ 1) →
@@ -408,8 +409,8 @@ theorem framePremise_iff {σ : ℝ} (hσ : 1 / 2 < σ) :
         hG.differentiableAt ((isOpen_lt continuous_const continuous_re).mem_nhds hw')
       have hEat : DifferentiableAt ℂ E ((w + 3) / 6) :=
         hEd.differentiableAt ((isOpen_lt continuous_const continuous_re).mem_nhds hw')
-      have h1 : DifferentiableAt ℂ (fun w : ℂ => G ((w + 3) / 6)) w := hGat.comp w hlin
-      have h2 : DifferentiableAt ℂ (fun w : ℂ => E ((w + 3) / 6)) w := hEat.comp w hlin
+      have h1 : DifferentiableAt ℂ (G ∘ fun w : ℂ => (w + 3) / 6) w := hGat.comp w hlin
+      have h2 : DifferentiableAt ℂ (E ∘ fun w : ℂ => (w + 3) / 6) w := hEat.comp w hlin
       exact (h1.div h2 (hE0 _ hw')).differentiableWithinAt
     · intro w hw
       have hs : 2 / 3 < ((w + 3) / 6).re := by rw [hre]; linarith

@@ -37,6 +37,10 @@ theorem norm_primeKernel_le (k : ℕ) (β : ℝ) : ‖primeKernel k β‖ ≤ 1 
         norm_sum_le _ _
     _ = (primesAt k).card := by simp [norm_ex]
 
+theorem re_primeKernel (k : ℕ) (β : ℝ) :
+    (primeKernel k β).re = (∑ p : primesAt k, (ex ((p : ℕ) * β)).re) / (primesAt k).card := by
+  rw [primeKernel, Complex.div_natCast_re, re_sum]
+
 /-- The Fejér density `F(r) = L(|S_n(r/R)|²)/M`. -/
 def fejer (U : Ultrafilter ℝ) (M R r : ℕ) : ℝ :=
   limAvg U (fun n => Complex.normSq (lamSum n M (r / R))) / M
@@ -59,10 +63,14 @@ theorem sum_pair_eq (n M R d : ℕ) (hR : 0 < R) (hMd : M + d ≤ R) :
   have hR' : (R : ℝ) ≠ 0 := by exact_mod_cast hR.ne'
   have hre := congrArg Complex.re h
   simp only [re_sum, ← lamSum_eq_sum] at hre
-  rw [eq_div_iff hR', ← hre]
-  simp only [re_ofReal_mul, Complex.mul_re, Complex.natCast_re, Complex.natCast_im, zero_mul,
-    sub_zero, re_sum]
-  rw [mul_comm, sum_mul]
+  rw [eq_div_iff hR']
+  have e1 : ∑ r ∈ range R, Complex.normSq (lamSum n M (r / R)) * (ex (d * r / R)).re
+      = ∑ r ∈ range R, ((Complex.normSq (lamSum n M (r / R)) : ℂ) * ex (d * r / R)).re :=
+    sum_congr rfl fun r _ => (re_ofReal_mul _ _).symm
+  rw [e1, hre]
+  simp only [Complex.mul_re, Complex.natCast_re, Complex.natCast_im, zero_mul, sub_zero, re_sum]
+  rw [mul_comm]
+  congr 1
   refine sum_congr rfl fun m _ => ?_
   split_ifs
   · simp only [Complex.conj_ofReal, ← Complex.ofReal_mul, Complex.ofReal_re]
@@ -80,7 +88,7 @@ theorem abs_avg_corr_sub_le (hU : (U : Filter ℝ) ≤ atTop) (h k M R : ℕ) (h
   have hRR : (0 : ℝ) < R := by exact_mod_cast hR0
   have hMR : (0 : ℝ) < M := by exact_mod_cast hM
   have hc : (0 : ℝ) < (primesAt k).card := by exact_mod_cast card_primesAt_pos k
-  set c : ℝ := (primesAt k).card with hcdef
+  set c : ℝ := ((primesAt k).card : ℝ) with hcdef
   -- the window form of each correlation
   set Φ : primesAt k → ℕ → ℝ := fun p n =>
     (∑ m ∈ range M, lam (n + m) * lam (n + m + (p : ℕ) * h)) / M with hΦ
@@ -119,14 +127,15 @@ theorem abs_avg_corr_sub_le (hU : (U : Filter ℝ) ≤ atTop) (h k M R : ℕ) (h
     exact mul_le_mul (normSq_le_sq_of_norm_le (norm_lamSum_le n M _))
       ((Complex.abs_re_le_norm _).trans (norm_primeKernel_le k _)) (abs_nonneg _) (by positivity)
   have hLΨ : limAvg U Ψ = (∑ r ∈ range R, fejer U M R r * (primeKernel k (h * r / R)).re) / R := by
-    simp only [hΨ, div_eq_inv_mul]
     have hb : ∀ r ∈ range R, Bdd fun n => Complex.normSq (lamSum n M (r / R))
         * (primeKernel k (h * r / R)).re := fun r _ =>
       (bdd_normSq_lamSum M _).mul (bdd_const _)
-    rw [limAvg_const_mul hU ((bdd_sum _ hb).const_mul _), limAvg_const_mul hU (bdd_sum _ hb),
-      limAvg_sum hU _ hb]
-    simp only [fejer, div_eq_inv_mul]
-    rw [mul_sum, mul_sum, mul_sum]
+    have hΨeq : Ψ = fun n => ((R : ℝ)⁻¹ * (M : ℝ)⁻¹) * ∑ r ∈ range R,
+        Complex.normSq (lamSum n M (r / R)) * (primeKernel k (h * r / R)).re := by
+      funext n
+      simp only [hΨ]
+      ring
+    rw [hΨeq, limAvg_const_mul hU (bdd_sum _ hb), limAvg_sum hU _ hb, sum_div, mul_sum]
     refine sum_congr rfl fun r _ => ?_
     have : limAvg U (fun n => Complex.normSq (lamSum n M (r / R)) * (primeKernel k (h * r / R)).re)
         = (primeKernel k (h * r / R)).re * limAvg U (fun n => Complex.normSq (lamSum n M (r / R))) := by
@@ -134,8 +143,8 @@ theorem abs_avg_corr_sub_le (hU : (U : Filter ℝ) ≤ atTop) (h k M R : ℕ) (h
       congr 1
       funext n
       ring
-    rw [this]
-    ring
+    rw [this, fejer]
+    field_simp
   -- pointwise comparison
   have hpt : ∀ n, |(∑ p : primesAt k, Φ p n) / c - Ψ n| ≤ 2 ^ (k + 1) * h / M := by
     intro n
@@ -147,22 +156,37 @@ theorem abs_avg_corr_sub_le (hU : (U : Filter ℝ) ≤ atTop) (h k M R : ℕ) (h
       refine sum_pair_eq n M R _ hR0 ?_
       have : (p : ℕ) * h ≤ 2 ^ (k + 1) * h := Nat.mul_le_mul_right h (le_of_mem_primesAt p.2)
       omega
-    have hΨ' : Ψ n = (∑ p : primesAt k, (∑ m ∈ range M,
-        (if m + (p : ℕ) * h < M then lam (n + m) * lam (n + (m + (p : ℕ) * h)) else 0)) / M) / c := by
-      simp only [hpair, hΨ, primeKernel]
-      rw [← sum_div, ← sum_div]
-      field_simp
-      rw [sum_comm]
-      refine sum_congr rfl fun r _ => ?_
-      rw [← mul_sum]
-      congr 1
-      rw [Complex.div_re, Complex.natCast_re, Complex.natCast_im, re_sum]
-      simp only [mul_zero, add_zero, Complex.normSq_natCast]
-      rw [sum_div]
+    have hK : ∀ r : ℕ, ∑ p : primesAt k, (ex (((p : ℕ) * h : ℕ) * r / R)).re
+        = c * (primeKernel k (h * r / R)).re := by
+      intro r
+      rw [re_primeKernel, hcdef, mul_div_cancel₀ _ hc.ne']
       refine sum_congr rfl fun p _ => ?_
       congr 2
       push_cast
       ring
+    have hΨ' : Ψ n = (∑ p : primesAt k, (∑ m ∈ range M,
+        (if m + (p : ℕ) * h < M then lam (n + m) * lam (n + (m + (p : ℕ) * h)) else 0)) / M) / c := by
+      simp only [hpair]
+      have hswap : ∑ p : primesAt k, (∑ r ∈ range R, Complex.normSq (lamSum n M (r / R))
+            * (ex (((p : ℕ) * h : ℕ) * r / R)).re) / R / M
+          = (∑ r ∈ range R, Complex.normSq (lamSum n M (r / R))
+              * ∑ p : primesAt k, (ex (((p : ℕ) * h : ℕ) * r / R)).re) / R / M := by
+        rw [← sum_div, ← sum_div, sum_comm]
+        congr 2
+        refine sum_congr rfl fun r _ => ?_
+        rw [mul_sum]
+      rw [hswap]
+      simp only [hK, hΨ]
+      have hfac : ∑ r ∈ range R, Complex.normSq (lamSum n M (r / R))
+            * (c * (primeKernel k (h * r / R)).re)
+          = c * ∑ r ∈ range R, Complex.normSq (lamSum n M (r / R))
+            * (primeKernel k (h * r / R)).re := by
+        rw [mul_sum]
+        exact sum_congr rfl fun r _ => by ring
+      rw [hfac]
+      field_simp
+      refine sum_congr rfl fun r _ => ?_
+      rw [mul_comm (r : ℝ) (h : ℝ)]
     rw [hΨ', ← sub_div, ← sum_sub_distrib, abs_div, abs_of_pos hc, div_le_iff₀ hc]
     calc |∑ p : primesAt k, (Φ p n - (∑ m ∈ range M, (if m + (p : ℕ) * h < M
             then lam (n + m) * lam (n + (m + (p : ℕ) * h)) else 0)) / M)|
@@ -205,8 +229,9 @@ theorem abs_avg_corr_sub_le (hU : (U : Filter ℝ) ≤ atTop) (h k M R : ℕ) (h
                     _ ≤ (p : ℕ) * h := by rw [Nat.card_Ico]; omega
                 exact_mod_cast this
             _ ≤ 2 ^ (k + 1) * h := hd
-      _ = c * (2 ^ (k + 1) * h / M) := by
-          rw [sum_const, card_univ, Fintype.card_coe, nsmul_eq_mul]
+      _ = 2 ^ (k + 1) * h / M * c := by
+          rw [sum_const, card_univ, Fintype.card_coe, nsmul_eq_mul, hcdef]
+          ring
   -- conclude through `L`
   have hdiff : (∑ p : primesAt k, corr U ((p : ℕ) * h)) / c
       - (∑ r ∈ range R, fejer U M R r * (primeKernel k (h * r / R)).re) / R

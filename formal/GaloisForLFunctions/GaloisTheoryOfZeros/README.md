@@ -71,8 +71,19 @@ of new theorems in this directory.
 | Carlitz–Goss digit calculus | Greedy carry-free compositions are uniquely optimal | Archimedean substitute for valuation separation |
 | Jensen approximation | Finite non-real counts detect off-line multiplicity in the limit | Arithmetic control uniform in degree |
 
-New pillar theorems will be named here only after their exact statements and
-transitive Lean dependencies have been checked.
+[FoldedDiscriminant.lean](FoldedDiscriminant.lean) proves the exact identities
+for every monic real polynomial `Q` of degree `n`:
+
+```
+disc(Q(X²))   = 4^n (−1)^n Q(0)   disc(Q)²,
+disc(XQ(X²))  = 4^n (−1)^n Q(0)³  disc(Q)².
+```
+
+The doubled equation is separable exactly when `Q` is separable and `Q(0)≠0`.
+Thus its discriminant retains branch-point information while squaring away
+the quotient discriminant sign. These identities include collisions and degree
+zero. Their specialization to the centered Jensen exhaustion remains in progress;
+the identities alone do not answer the shifted discriminant question.
 
 ## Research questions
 

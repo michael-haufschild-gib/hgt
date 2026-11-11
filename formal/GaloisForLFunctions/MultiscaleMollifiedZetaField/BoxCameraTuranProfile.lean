@@ -81,13 +81,12 @@ theorem integral_boxTuranProfile {A h r : ℝ}
     (hA : 0 ≤ A) (hh : 0 < h) (hr : 0 < r) (n : ℕ) :
     ∫ u, boxTuranProfile A h n r u = 2 * A := by
   have hδ := boxCameraRadius_pos hA hh hr n
-  have he : (fun u => (boxPlateau A h (n + 1) r (boxCameraRadius A h n r * u)).re) =
-      fun u => (boxPlateau A h (n + 1) r (u / (boxCameraRadius A h n r)⁻¹)).re := by
-    funext u
-    rw [div_inv_eq_mul, mul_comm]
   have hi := integral_re (integrable_boxPlateau (A := A) (h := h) hr (n + 1))
   simp only [RCLike.re_to_complex] at hi
-  rw [boxTuranProfile, integral_const_mul, he, Measure.integral_comp_div,
+  unfold boxTuranProfile
+  rw [integral_const_mul,
+    Measure.integral_comp_mul_left (fun u : ℝ => (boxPlateau A h (n + 1) r u).re)
+      (boxCameraRadius A h n r),
     abs_of_pos (inv_pos.mpr hδ), smul_eq_mul, hi, integral_boxPlateau hA hh hr,
     Complex.ofReal_re]
   field_simp [hδ.ne']
@@ -107,6 +106,7 @@ theorem depthCenteredCamera_boxTuranProfile {A h r b y : ℝ}
   rw [Complex.ofReal_exp]
   congr 2
   push_cast
+  rfl
 
 /-- A near-top sector cluster keeps its Turán signal for the box camera. -/
 theorem exists_nu_widthCenteredBox_cluster_signal

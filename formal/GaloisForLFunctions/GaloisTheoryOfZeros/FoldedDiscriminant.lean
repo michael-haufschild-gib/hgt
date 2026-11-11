@@ -39,7 +39,8 @@ private theorem squareEquation_natDegree (a : ℂ) :
 private theorem squareEquation_discr (a : ℂ) :
     (X ^ 2 - C a : ℂ[X]).discr = 4 * a := by
   rw [discr_of_degree_eq_two (by
-    rw [degree_eq_natDegree (squareEquation_monic a).ne_zero, squareEquation_natDegree])]
+    rw [degree_eq_natDegree (squareEquation_monic a).ne_zero, squareEquation_natDegree]
+    rfl)]
   simp
 
 private theorem squareEquation_resultant (a b : ℂ) :
@@ -47,7 +48,7 @@ private theorem squareEquation_resultant (a b : ℂ) :
   have h : (X ^ 2 - C b : ℂ[X]) = C (a - b) + (X ^ 2 - C a) * 1 := by
     rw [map_sub]
     ring
-  conv_lhs => arg 2; rw [h]
+  rw [h]
   rw [monic_resultant_add_mul (squareEquation_monic a), resultant_C_right,
     coeff_natDegree, (squareEquation_monic a).leadingCoeff,
     squareEquation_natDegree, one_pow, one_mul]
@@ -60,8 +61,9 @@ private theorem squareEquation_resultant_comp (a : ℂ) (s : List ℂ) :
     resultant (X ^ 2 - C a : ℂ[X]) ((rootEquation s).comp (X ^ 2)) =
       ((rootEquation s).eval a) ^ 2 := by
   induction s with
-  | nil => simp only [rootEquation_nil, one_comp, resultant_one_right,
-      natDegree_one, pow_zero, eval_one, one_pow]
+  | nil =>
+    rw [rootEquation_nil, Polynomial.one_comp, eval_one, one_pow,
+      resultant_one_right, natDegree_one, pow_zero]
   | cons b s ih =>
     rw [rootEquation_cons, mul_comp, sub_comp, X_comp, C_comp,
       monic_resultant_mul_right (squareEquation_monic a), squareEquation_resultant, ih,
@@ -72,15 +74,18 @@ private theorem discr_rootEquation_comp (s : List ℂ) :
       4 ^ s.length * s.prod * (rootEquation s).discr ^ 2 := by
   induction s with
   | nil =>
-    simp only [rootEquation_nil, one_comp, List.length_nil, pow_zero, List.prod_nil,
+    simp only [rootEquation_nil, Polynomial.one_comp, List.length_nil, pow_zero, List.prod_nil,
       one_mul]
     rw [show (1 : ℂ[X]).discr = 1 from Polynomial.discr_C 1, one_pow]
   | cons a s ih =>
+    have hr : resultant (X - C a) (rootEquation s) = (rootEquation s).eval a := by
+      simpa only [natDegree_X_sub_C] using
+        resultant_X_sub_C_left (rootEquation s) (rootEquation s).natDegree a le_rfl
     rw [rootEquation_cons, mul_comp, sub_comp, X_comp, C_comp,
       discr_mul_of_monic (squareEquation_monic a) (rootEquation_comp_monic s),
       squareEquation_discr, ih, squareEquation_resultant_comp,
       discr_mul_of_monic (monic_X_sub_C a) (rootEquation_monic s),
-      resultant_X_sub_C_left _ _ _ le_rfl,
+      hr,
       discr_of_degree_eq_one (degree_X_sub_C a),
       List.length_cons, List.prod_cons, pow_succ]
     ring
@@ -102,8 +107,9 @@ theorem discr_comp_square_complex {Q : ℂ[X]} (hQ : Q.Monic) :
   let s := Q.roots.toList
   have heq : rootEquation s = Q := by
     have h := (IsAlgClosed.splits Q).eq_prod_roots_of_monic hQ
-    simpa only [rootEquation, s, Multiset.prod_coe, Multiset.map_coe,
-      Multiset.coe_toList] using h.symm
+    change (Q.roots.toList.map fun a => X - C a).prod = Q
+    rw [← Multiset.prod_coe, ← Multiset.map_coe, Multiset.coe_toList]
+    exact h.symm
   have hlen : s.length = Q.natDegree := by
     rw [Multiset.length_toList, IsAlgClosed.card_roots_eq_natDegree]
   have hprod : s.prod = (-1) ^ Q.natDegree * Q.coeff 0 := by
@@ -131,7 +137,9 @@ theorem discr_X_mul_comp_square_real {Q : ℝ[X]} (hQ : Q.Monic) :
   have hr : resultant (X : ℝ[X]) (Q.comp (X ^ 2)) = Q.coeff 0 := by
     have h := resultant_X_sub_C_left (Q.comp (X ^ 2))
       (Q.comp (X ^ 2)).natDegree 0 le_rfl
-    simpa only [map_zero, sub_zero, eval_comp, eval_pow, eval_X, zero_pow (by decide),
+    rw [C_0, sub_zero] at h
+    simpa only [natDegree_X, eval_comp, eval_pow, eval_X,
+      zero_pow (by decide : 2 ≠ 0),
       ← coeff_zero_eq_eval_zero] using h
   rw [discr_mul_of_monic monic_X (hQ.comp (monic_X_pow 2) (by simp)), hx, one_mul, hr,
     discr_comp_square_real hQ]
@@ -147,7 +155,16 @@ theorem separable_comp_square_real_iff {Q : ℝ[X]} (hQ : Q.Monic) :
   have hsign : (-1 : ℝ) ^ Q.natDegree ≠ 0 := pow_ne_zero _ (by norm_num)
   simp only [mul_eq_zero, hfour, hsign, false_or, pow_eq_zero_iff (by decide : 2 ≠ 0),
     monic_discr_eq_zero_iff_not_separable hQ] at h
-  tauto
+  constructor
+  · intro hp
+    have hn : ¬ (Q.coeff 0 = 0 ∨ ¬ Q.Separable) := fun hh => h.mp hh hp
+    exact ⟨Classical.byContradiction (fun hs => hn (Or.inr hs)),
+      fun hzero => hn (Or.inl hzero)⟩
+  · rintro ⟨hs, hzero⟩
+    by_contra hp
+    rcases h.mpr hp with hz | hns
+    · exact hzero hz
+    · exact hns hs
 
 /-- Away from collisions the doubled discriminant sign reads only the value
 at the branch point; the quotient discriminant contributes a square. -/

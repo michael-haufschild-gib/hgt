@@ -4,8 +4,9 @@
 - **Type:** CONJECTURE
 - **Target:** Exterior mass in the Turán cluster receiver; M7/A78.
 - **Status:** Fourier estimates, exact mass, uniform Lorentzian envelope, full
-  deep/shallow exterior bound, and absolute summability checked. Turán
-  receiver, fixed-deficit rate, and uniform prime/remainder costs await checks.
+  deep/shallow exterior bound, absolute summability, and finite Turán
+  signal checked. Full-field receiver, fixed-deficit rate, and uniform
+  prime/remainder costs await checks.
 
 ## Proposed estimate
 
