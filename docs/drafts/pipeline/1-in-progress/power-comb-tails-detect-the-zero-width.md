@@ -108,15 +108,16 @@ These reductions and the resulting convergence criterion are formalized.
 
 ## Mellin identification
 
-For `θ=1-2a` and `s=1-a`, the proposed integral evaluations are
+For `θ=1-2a` and `s=1-a`, the integral evaluations are
 `θ I_prime=-ζ′/ζ(s)-ζ(s)`,
 `θ I_reference=ζ(s)+θ/(a(1-a))`, and
 `archRow=ψ(s/2)-log π`.
-The first is formalized from actual-width prime-error bounds and the
-existing energy-based continuation theorem. The second uses centered Euler power sums.
+The first two are formalized: the prime identity uses actual-width
+prime-error bounds and the existing energy-based continuation theorem;
+the reference identity uses centered Euler power sums.
 The archimedean profile splits as
 `2(t^-a-1)/(1-t²)+1/(1+t)`, whose geometric-series integrals give a
 Gauss digamma difference. Together they yield
 `lim P_a=2ξ′/ξ(1-a)/(1-2a)=Σρ 1/((ρ-a)(1-ρ-a))`.
-Lean proofs of this identification and the resulting equivalence are
-written in `PowerTailCombZeroLimit` and its dependencies; compilation pending.
+The archimedean identity, zero-pairing evaluation, and their assembly in
+`PowerTailCombZeroLimit` are written; their verification remains pending.

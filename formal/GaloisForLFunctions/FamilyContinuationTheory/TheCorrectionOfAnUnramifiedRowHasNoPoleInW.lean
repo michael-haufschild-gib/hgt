@@ -17,7 +17,10 @@ one has the pole-free form
 
 the factor `(1 − W)⁻¹` of the numerator `ζ`-function has cancelled. This is the expression that
 continues `H` to `Re w ≤ 0`. Its distance from `1` is bounded by the sizes of the products
-`DV, DW, VW, R` and `Q X Y V` (`norm_rowH_sub_one_le`).
+`DV, DW, VW, R` and `Q X Y V` (`norm_rowH_sub_one_le`): `‖H − 1‖ ≤ 80 Q^{−363/200}` near the
+principal residue point (`norm_rowH_sub_one_le_D2`) and `‖H − 1‖ ≤ 80 Q^{−1−ε₀}` on the region of
+the contour moves `Re x ≥ 51/100`, `Re w ≥ −1/100`, `Re(x + w) ≥ 1 + ε₀`, `Re z ≥ 17/50`
+(`norm_rowH_sub_one_le_D1`).
 -/
 
 noncomputable section
@@ -204,6 +207,120 @@ theorem norm_rowH_sub_one_le_D2 {Q : ℝ} (hQ : 7 ≤ Q) {ηp X Y V R W D : ℂ}
   have id : (1 - ‖D‖)⁻¹ ≤ 2 := by rw [inv_le_comm₀ (by linarith) (by norm_num)]; linarith
   rw [div_eq_mul_inv]
   calc _ ≤ 31 * T * 2 := mul_le_mul hnum id (inv_nonneg.mpr (by linarith)) (by positivity)
+    _ ≤ 80 * T := by linarith
+
+/-- **The correction on the region of the contour moves.** At a good prime of norm `Q ≥ 7`, on
+`Re x ≥ 51/100`, `Re w ≥ −1/100`, `Re(x + w) ≥ 1 + ε₀`, `Re z ≥ 17/50` (`‖X‖ ≤ Q^{−x_r}`,
+`‖Y‖, ‖W‖ ≤ Q^{−w_r}`, `‖V‖ ≤ Q^{−51/25}`), with `0 < ε₀ ≤ 2/25`:
+`‖H − 1‖ ≤ 80 Q^{−1−ε₀}`. The binding terms are `DW` and `(1 − W) R`; no factor `(1 − W)⁻¹`
+occurs, so `|W| > 1` is allowed. -/
+theorem norm_rowH_sub_one_le_D1 {Q ε₀ xr wr : ℝ} (hQ : 7 ≤ Q) (hε : 0 < ε₀)
+    (hε' : ε₀ ≤ 2 / 25) (hxr : 51 / 100 ≤ xr) (hwr : -(1 / 100) ≤ wr) (hxw : 1 + ε₀ ≤ xr + wr)
+    {ηp X Y V R W D : ℂ} (hX : ‖X‖ ≤ Q ^ (-xr)) (hY : ‖Y‖ ≤ Q ^ (-wr)) (hW : ‖W‖ ≤ Q ^ (-wr))
+    (hV : ‖V‖ ≤ Q ^ (-(51 / 25 : ℝ))) (hD : ‖D‖ ≤ ‖X‖) (hR : ‖R‖ ≤ Q ^ 4 * ‖X‖ ^ 6 * ‖V‖)
+    (hη : ‖ηp‖ ≤ 1) :
+    ‖rowH (Q : ℂ) ηp X Y V R W D - 1‖ ≤ 80 * Q ^ (-(1 + ε₀)) := by
+  have hQ0 : 0 < Q := by linarith
+  have hQ1 : 1 ≤ Q := by linarith
+  have hQ4 : 4 ≤ Q := by linarith
+  set T := Q ^ (-(1 + ε₀))
+  have hT0 : 0 ≤ T := Real.rpow_nonneg hQ0.le _
+  have hpow : ∀ a : ℝ, a ≤ -(1 + ε₀) → Q ^ a ≤ T := fun a ha =>
+    Real.rpow_le_rpow_of_exponent_le hQ1 ha
+  -- sizes
+  have hx2 : ‖X‖ ≤ 1 / 2 := hX.trans ((Real.rpow_le_rpow_of_exponent_le hQ1
+    (by linarith : -xr ≤ -(1 / 2))).trans (rpow_le_half_of_four_le hQ4 le_rfl))
+  have hv2 : ‖V‖ ≤ 1 / 2 := hV.trans (rpow_le_half_of_four_le hQ4 (by norm_num))
+  have hd2 : ‖D‖ ≤ 1 / 2 := hD.trans hx2
+  have hw1 : ‖W‖ ≤ Q ^ (1 / 100 : ℝ) :=
+    hW.trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hV1 : ‖V‖ ≤ 1 := by linarith
+  -- `R ≤ Q^{−11/10}`
+  have hRb : ‖R‖ ≤ Q ^ (-(11 / 10 : ℝ)) := by
+    refine hR.trans ?_
+    calc Q ^ 4 * ‖X‖ ^ 6 * ‖V‖ ≤ Q ^ 4 * (Q ^ (-xr)) ^ 6 * Q ^ (-(51 / 25 : ℝ)) := by gcongr
+      _ = Q ^ ((4 : ℝ) + (-xr) * 6 + (-(51 / 25 : ℝ))) := by
+          rw [Real.rpow_add hQ0, Real.rpow_add hQ0, Real.rpow_mul hQ0.le]
+          norm_cast
+      _ ≤ Q ^ (-(11 / 10 : ℝ)) := Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith)
+  have hr2 : ‖R‖ ≤ 1 / 2 := hRb.trans (rpow_le_half_of_four_le hQ4 (by norm_num))
+  have hrT : ‖R‖ ≤ T := hRb.trans (hpow _ (by linarith))
+  have hwr : ‖W‖ * ‖R‖ ≤ T := (mul_le_mul hw1 hRb (norm_nonneg _) (by positivity)).trans
+    ((rpow_mul_rpow_le_of_add_le hQ1 le_rfl).trans (hpow _ (by linarith)))
+  have hwwr : ‖W‖ * (‖W‖ * ‖R‖) ≤ T := by
+    calc ‖W‖ * (‖W‖ * ‖R‖) ≤ Q ^ (1 / 100 : ℝ) * (Q ^ (1 / 100 : ℝ) * Q ^ (-(11 / 10 : ℝ))) := by
+          gcongr
+      _ = Q ^ ((1 / 100 : ℝ) + ((1 / 100 : ℝ) + (-(11 / 10 : ℝ)))) := by
+          rw [Real.rpow_add hQ0, Real.rpow_add hQ0]
+      _ ≤ T := hpow _ (by linarith)
+  -- the products
+  have hdv : ‖D‖ * ‖V‖ ≤ T := (mul_le_mul (hD.trans hX) hV (norm_nonneg _)
+    (Real.rpow_nonneg hQ0.le _)).trans
+      ((rpow_mul_rpow_le_of_add_le hQ1 le_rfl).trans (hpow _ (by linarith)))
+  have hdw : ‖D‖ * ‖W‖ ≤ T := (mul_le_mul (hD.trans hX) hW (norm_nonneg _)
+    (Real.rpow_nonneg hQ0.le _)).trans
+      ((rpow_mul_rpow_le_of_add_le hQ1 le_rfl).trans (hpow _ (by linarith)))
+  have hvw : ‖V‖ * ‖W‖ ≤ T := (mul_le_mul hV hW (norm_nonneg _)
+    (Real.rpow_nonneg hQ0.le _)).trans
+      ((rpow_mul_rpow_le_of_add_le hQ1 le_rfl).trans (hpow _ (by linarith)))
+  have hdvw : ‖D‖ * ‖V‖ * ‖W‖ ≤ T := by
+    calc ‖D‖ * ‖V‖ * ‖W‖ = ‖D‖ * ‖W‖ * ‖V‖ := by ring
+      _ ≤ T * 1 := mul_le_mul hdw hV1 (norm_nonneg _) hT0
+      _ = T := mul_one T
+  have hQm1 : ‖(Q : ℂ) - 1‖ ≤ Q := by
+    rw [show (Q : ℂ) - 1 = ((Q - 1 : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+    linarith
+  have hPb : ‖ηp‖ * ‖(Q : ℂ) - 1‖ * ‖X‖ * ‖Y‖ * ‖V‖ ≤ Q ^ (-(51 / 25 : ℝ) - ε₀) := by
+    calc ‖ηp‖ * ‖(Q : ℂ) - 1‖ * ‖X‖ * ‖Y‖ * ‖V‖ ≤
+        1 * Q * Q ^ (-xr) * Q ^ (-wr) * Q ^ (-(51 / 25 : ℝ)) := by gcongr
+      _ = Q ^ ((1 : ℝ) + -xr + -wr + (-(51 / 25 : ℝ))) := by
+          rw [Real.rpow_add hQ0, Real.rpow_add hQ0, Real.rpow_add hQ0, Real.rpow_one, one_mul]
+      _ ≤ Q ^ (-(51 / 25 : ℝ) - ε₀) := Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith)
+  have hP : ‖ηp‖ * ‖(Q : ℂ) - 1‖ * ‖X‖ * ‖Y‖ * ‖V‖ ≤ T := hPb.trans (hpow _ (by linarith))
+  have hwP : ‖W‖ * (‖ηp‖ * ‖(Q : ℂ) - 1‖ * ‖X‖ * ‖Y‖ * ‖V‖) ≤ T :=
+    (mul_le_mul hw1 hPb (by positivity) (by positivity)).trans
+      ((rpow_mul_rpow_le_of_add_le hQ1 le_rfl).trans (hpow _ (by linarith)))
+  have hq : ‖1 - ((Q : ℂ))⁻¹‖ ≤ 1 := by
+    rw [show (1 : ℂ) - (Q : ℂ)⁻¹ = ((1 - Q⁻¹ : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
+      Real.norm_eq_abs, abs_le]
+    have : 0 < Q⁻¹ := inv_pos.mpr hQ0
+    have : Q⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hQ1
+    constructor <;> linarith
+  refine (norm_rowH_sub_one_le (Q : ℂ) ηp X Y V R W D (by linarith) (by linarith) (by linarith)
+    hq).trans ?_
+  have iv : (1 - ‖V‖)⁻¹ ≤ 2 := by rw [inv_le_comm₀ (by linarith) (by norm_num)]; linarith
+  have ir : (1 - ‖R‖)⁻¹ ≤ 2 := by rw [inv_le_comm₀ (by linarith) (by norm_num)]; linarith
+  have id : (1 - ‖D‖)⁻¹ ≤ 2 := by rw [inv_le_comm₀ (by linarith) (by norm_num)]; linarith
+  have iv0 : 0 ≤ (1 - ‖V‖)⁻¹ := inv_nonneg.mpr (by linarith)
+  have ir0 : 0 ≤ (1 - ‖R‖)⁻¹ := inv_nonneg.mpr (by linarith)
+  set P := ‖ηp‖ * ‖(Q : ℂ) - 1‖ * ‖X‖ * ‖Y‖ * ‖V‖
+  set e := (1 - ‖R‖)⁻¹ * (‖R‖ * (1 - ‖V‖)⁻¹ + ‖W‖ * ‖R‖ + ‖D‖ * ‖R‖ + P * (1 - ‖V‖)⁻¹)
+  have hP' : ‖ηp‖ * ‖(Q : ℂ) - 1‖ * ‖X‖ * ‖Y‖ * ‖V‖ * (1 - ‖V‖)⁻¹ = P * (1 - ‖V‖)⁻¹ := rfl
+  -- `(1 + ‖W‖) e ≤ 24 T`
+  have hdr : ‖D‖ * ‖R‖ ≤ ‖R‖ := mul_le_of_le_one_left (norm_nonneg _) (by linarith)
+  have hinner : ‖R‖ * (1 - ‖V‖)⁻¹ + ‖W‖ * ‖R‖ + ‖D‖ * ‖R‖ + P * (1 - ‖V‖)⁻¹ ≤
+      3 * ‖R‖ + ‖W‖ * ‖R‖ + 2 * P := by
+    have := mul_le_mul_of_nonneg_left iv (norm_nonneg R)
+    have := mul_le_mul_of_nonneg_left iv (show 0 ≤ P by positivity)
+    linarith
+  have he : e ≤ 2 * (3 * ‖R‖ + ‖W‖ * ‖R‖ + 2 * P) :=
+    mul_le_mul ir hinner (by positivity) (by norm_num)
+  have hwe : (1 + ‖W‖) * e ≤ 2 * (3 * T + T + 2 * T) + 2 * (3 * T + T + 2 * T) := by
+    have h1 : (1 + ‖W‖) * e ≤ (1 + ‖W‖) * (2 * (3 * ‖R‖ + ‖W‖ * ‖R‖ + 2 * P)) :=
+      mul_le_mul_of_nonneg_left he (by positivity)
+    have h2 : (1 + ‖W‖) * (2 * (3 * ‖R‖ + ‖W‖ * ‖R‖ + 2 * P)) =
+        2 * (3 * ‖R‖ + ‖W‖ * ‖R‖ + 2 * P) +
+          2 * (3 * (‖W‖ * ‖R‖) + ‖W‖ * (‖W‖ * ‖R‖) + 2 * (‖W‖ * P)) := by ring
+    linarith
+  have hnum : ‖D‖ * ‖V‖ + ‖D‖ * ‖W‖ + ‖D‖ * ‖V‖ * ‖W‖ + ‖V‖ * ‖W‖ + (1 + ‖V‖) * (1 + ‖W‖) * e ≤
+      40 * T := by
+    have h3 : (1 + ‖V‖) * (1 + ‖W‖) * e ≤ 3 / 2 * (24 * T) := by
+      rw [mul_assoc]
+      exact mul_le_mul (by linarith) (by linarith) (by positivity) (by norm_num)
+    linarith
+  rw [div_eq_mul_inv]
+  calc _ ≤ 40 * T * 2 := mul_le_mul hnum id (inv_nonneg.mpr (by linarith)) (by positivity)
     _ ≤ 80 * T := by linarith
 
 end GaloisForLFunctions.FamilyContinuationTheory

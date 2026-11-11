@@ -44,10 +44,12 @@ def kl (μ ν : α → ℝ) : ℝ := ∑ a, (μ a * log (μ a) - μ a * log (ν 
 theorem ent_eq (p : α → ℝ) : ent p = -∑ a, p a * log (p a) := by
   simp [ent, negMulLog, sum_neg_distrib]
 
+omit [Fintype β] in
 theorem push_nonneg [DecidableEq β] (F : α → β) {p : α → ℝ} (hp : ∀ a, 0 ≤ p a) (b : β) :
     0 ≤ push F p b :=
   sum_nonneg fun a _ => hp a
 
+omit [Fintype β] in
 theorem le_push [DecidableEq β] (F : α → β) {p : α → ℝ} (hp : ∀ a, 0 ≤ p a) (a : α) :
     p a ≤ push F p (F a) :=
   single_le_sum (f := p) (fun a _ => hp a) (mem_filter.mpr ⟨mem_univ a, rfl⟩)
@@ -63,6 +65,7 @@ theorem sum_mul_comp_eq [DecidableEq β] (F : α → β) (p : α → ℝ) (G : �
   refine sum_congr rfl fun b _ => sum_congr rfl fun a ha => ?_
   rw [(mem_filter.mp ha).2]
 
+omit [Fintype γ] in
 theorem push_push [DecidableEq β] [DecidableEq γ] (F : α → β) (G : β → γ) (p : α → ℝ) :
     push G (push F p) = push (fun a => G (F a)) p := by
   funext c
@@ -71,6 +74,7 @@ theorem push_push [DecidableEq β] [DecidableEq γ] (F : α → β) (G : β → 
   simp only [push, ← sum_filter] at h ⊢
   rw [← h]
 
+omit [Fintype β] in
 theorem push_equiv_apply [DecidableEq β] (e : α ≃ β) (p : α → ℝ) (b : β) :
     push e p b = p (e.symm b) := by
   have : univ.filter (fun a => e a = b) = {e.symm b} := by
@@ -89,7 +93,10 @@ theorem push_snd_apply [DecidableEq γ] (p : α × γ → ℝ) (c : γ) :
 theorem push_fst_apply [DecidableEq α] (p : α × γ → ℝ) (a : α) :
     push Prod.fst p a = ∑ c, p (a, c) := by
   rw [push, sum_filter, Fintype.sum_prod_type]
-  simp
+  calc ∑ x, ∑ y, (if (x, y).1 = a then p (x, y) else 0)
+      = ∑ x, (if x = a then ∑ y, p (x, y) else 0) :=
+        sum_congr rfl fun x _ => by split_ifs <;> simp
+    _ = ∑ c, p (a, c) := by simp
 
 /-- `−(x+y) log(x+y) ≤ −x log x − y log y` for `x, y ≥ 0`. -/
 theorem negMulLog_add_le {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
@@ -115,7 +122,7 @@ theorem negMulLog_sum_le {ι : Type*} (s : Finset ι) {p : ι → ℝ} (hp : ∀
     rw [sum_insert ha, sum_insert ha]
     have hs : 0 ≤ ∑ i ∈ s, p i := sum_nonneg fun i hi => hp i (mem_insert_of_mem hi)
     exact (negMulLog_add_le (hp a (mem_insert_self a s)) hs).trans
-      (add_le_add_left (ih fun i hi => hp i (mem_insert_of_mem hi)) _)
+      (add_le_add le_rfl (ih fun i hi => hp i (mem_insert_of_mem hi)))
 
 /-- Coarsening does not increase entropy. -/
 theorem ent_push_le [DecidableEq β] (F : α → β) {p : α → ℝ} (hp : ∀ a, 0 ≤ p a) :
@@ -238,9 +245,9 @@ theorem ent_add_ent_le {p : α × β × γ → ℝ} (hp : ∀ t, 0 ≤ p t) :
   have hsumlog : ∑ t, p t * log (q t)
       = ∑ u, pAC u * log (pAC u) + ∑ u, pBC u * log (pBC u) - ∑ c, pC c * log (pC c) := by
     simp only [hlog, sum_add_distrib, sum_sub_distrib]
-    rw [sum_mul_comp_eq (fun t : α × β × γ => (t.1, t.2.2)) p log,
-      sum_mul_comp_eq (fun t : α × β × γ => (t.2.1, t.2.2)) p log,
-      sum_mul_comp_eq (fun t : α × β × γ => t.2.2) p log]
+    rw [sum_mul_comp_eq (fun t : α × β × γ => (t.1, t.2.2)) p fun u => log (pAC u),
+      sum_mul_comp_eq (fun t : α × β × γ => (t.2.1, t.2.2)) p fun u => log (pBC u),
+      sum_mul_comp_eq (fun t : α × β × γ => t.2.2) p fun c => log (pC c)]
   have hg := sum_sub_sum_le_kl hp hqn hpq
   rw [hqsum, sub_self, kl, sum_sub_distrib, hsumlog] at hg
   rw [ent_eq, ent_eq, ent_eq, ent_eq]
@@ -268,7 +275,7 @@ theorem kl_push_le [DecidableEq β] (F : α → β) {μ ν : α → ℝ} (hμ : 
     simp
   · obtain ⟨a0, ha0s, ha0⟩ : ∃ a ∈ s, 0 < μ a := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       have : ∑ a ∈ s, μ a ≤ 0 := sum_nonpos hcon
       linarith [hm_def ▸ hm]
     set m := push F μ b with hmdef
@@ -280,8 +287,8 @@ theorem kl_push_le [DecidableEq β] (F : α → β) {μ ν : α → ℝ} (hμ : 
         (div_nonneg (mul_nonneg (hν a) hm.le) hn.le)
         (fun h => div_pos (mul_pos (hμν a h) hm) hn)
     have hqs : ∑ a ∈ s, ν a * m / n = m := by
-      rw [← sum_div, ← sum_mul, ← hn_def, mul_div_assoc, mul_div_cancel₀ _ hn.ne']
-      exact one_mul m |>.symm ▸ (by ring)
+      rw [← sum_div, ← sum_mul, ← hn_def]
+      field_simp
     have hsplit : ∀ a ∈ s, μ a * log (ν a * m / n)
         = μ a * log (ν a) + μ a * (log m - log n) := by
       intro a _
@@ -294,9 +301,12 @@ theorem kl_push_le [DecidableEq β] (F : α → β) {μ ν : α → ℝ} (hμ : 
     rw [sum_sub_distrib, hqs, ← hm_def, sub_self] at hg
     have hR : ∑ a ∈ s, (μ a * log (μ a) - μ a * log (ν a * m / n))
         = ∑ a ∈ s, (μ a * log (μ a) - μ a * log (ν a)) - m * (log m - log n) := by
-      rw [sum_congr rfl fun a ha => by rw [hsplit a ha], ← hm_def.symm ▸ (rfl : m = m)]
-      simp only [sub_add_eq_sub_sub, sum_sub_distrib, ← sum_mul]
-      rw [← hm_def]
+      have e1 : ∀ a ∈ s, μ a * log (μ a) - μ a * log (ν a * m / n)
+          = (μ a * log (μ a) - μ a * log (ν a)) - μ a * (log m - log n) := by
+        intro a ha
+        rw [hsplit a ha]
+        ring
+      rw [sum_congr rfl e1, sum_sub_distrib, ← sum_mul, ← hm_def]
     rw [hR] at hg
     linarith
 
@@ -349,7 +359,7 @@ theorem kl_prod_uniform [DecidableEq α] [Nonempty β] {μ : α × β → ℝ} (
       ring
   rw [kl, sum_sub_distrib]
   simp only [hterm, sum_sub_distrib]
-  rw [sum_mul_comp_eq Prod.fst μ log, ← sum_mul, ent_eq, ent_eq]
+  rw [sum_mul_comp_eq Prod.fst μ fun a => log (push Prod.fst μ a), ← sum_mul, ent_eq, ent_eq]
   ring
 
 /-- **Events of small sections.** If `μ` is a probability vector on `X × Y` and every section of `A`

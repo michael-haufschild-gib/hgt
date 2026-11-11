@@ -42,10 +42,14 @@ theorem sum_exp_mul_le {Y : Type*} [Fintype Y] (W : Y → ℝ) {B : ℝ} (hB : 0
       ≤ ∑ y, ((B - W y) / (2 * B) * exp (-(s * B)) + (B + W y) / (2 * B) * exp (s * B)) :=
         sum_le_sum fun y _ => hconv y
     _ = Fintype.card Y * ((exp (-(s * B)) + exp (s * B)) / 2) := by
-        simp only [sum_add_distrib, ← sum_mul, sum_div, sum_sub_distrib, sum_add_distrib, h0,
-          sum_const, card_univ, nsmul_eq_mul]
-        field_simp
-        ring
+        have hsplit : ∀ y, (B - W y) / (2 * B) * exp (-(s * B)) + (B + W y) / (2 * B) * exp (s * B)
+            = (exp (-(s * B)) + exp (s * B)) / 2
+              + W y * ((exp (s * B) - exp (-(s * B))) / (2 * B)) := by
+          intro y
+          field_simp
+          ring
+        simp only [hsplit, sum_add_distrib, ← sum_mul, h0, zero_mul, add_zero, sum_const,
+          card_univ, nsmul_eq_mul]
     _ = Fintype.card Y * cosh (s * B) := by rw [cosh_eq]; ring
     _ ≤ Fintype.card Y * exp (s ^ 2 * B ^ 2 / 2) := by
         refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
@@ -109,6 +113,7 @@ theorem card_abs_sum_ge_le (W : ∀ i, Y i → ℝ) {B : ℝ} (hB : 0 < B) (hW :
     (h0 : ∀ i, ∑ y, W i y = 0) {t : ℝ} (ht : 0 ≤ t) :
     ((univ.filter fun y : (∀ i, Y i) => t ≤ |∑ i, W i (y i)|).card : ℝ)
       ≤ 2 * exp (-(t ^ 2 / (2 * Fintype.card ι * B ^ 2))) * Fintype.card (∀ i, Y i) := by
+  classical
   have hup := card_sum_ge_le W hB hW h0 ht
   have hdown := card_sum_ge_le (fun i y => -W i y) hB (fun i y => by rw [abs_neg]; exact hW i y)
     (fun i => by rw [sum_neg_distrib, h0 i, neg_zero]) ht

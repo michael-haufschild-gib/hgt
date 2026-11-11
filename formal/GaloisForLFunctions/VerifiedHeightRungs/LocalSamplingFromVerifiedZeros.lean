@@ -214,6 +214,7 @@ theorem spreadFloor_variance {a : ℝ} (ha : 1 ≤ a) :
       have e : 2 * (minorantE₁ / Y) ^ 2 * (2 * Y * (2 * Y + spreadVarC)) =
           4 * minorantE₁ ^ 2 * ((2 * Y + spreadVarC) / Y) := by
         field_simp
+        ring
       rw [e]
       have h2 : (2 * Y + spreadVarC) / Y ≤ 2 + spreadVarC := by
         rw [div_le_iff₀ hY0]
@@ -343,7 +344,7 @@ theorem norm_sq_paperFT_le_of_verified_spread {a T : ℝ} (ha : 1 ≤ a)
   set L := 10 * ((m : ℝ) + 1) * σ with hL
   have hLdef : spreadL a = L := by rw [spreadL, ← hσdef]
   have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
-  have hs0 : 0 < tₛ := Real.exp_pos _
+  have hs0 : 0 < tₛ := by rw [htₛ, spreadFloor]; positivity
   have he2 : 0 < Real.exp (2 * spreadY a) := Real.exp_pos _
   have hsm : tₛ ≤ ((m : ℝ) + 1) * σ := by nlinarith only [hmσ, he2, hσ]
   have hLY : 2 * Real.exp (2 * spreadY a) ≤ L := by rw [hL]; nlinarith only [hmσ, hs0, hσ]
