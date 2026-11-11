@@ -15,7 +15,8 @@
 | A136 | Frontier map now grades the comb index, trace classification, Laguerre tails, horocycle and detector moment modules [L]. `ReflectedHalvesAreNotDirichletSeries` compiles cleanly. `TheShiftedSelbergFormIsAHarmonicModel`, `TheMobiusKernelConvergesInMean` are under active peer edits (MZF/Levinson card A111): not touched. |
 | A134 | Owned by the peer Levinson card `levinson-gate-from-below-square-root-twists.md` (A111): not duplicated. |
 | A133 | Formalized: `3-formalized/artin-degree-two-character-of-the-cube-roots-of-two.md`. |
-| A137, A135, A89, A132 | Queued. |
+| A135 | Formalized: `3-formalized/step-packet-matrices-explicit-block-error.md` (explicit error; no sign certified). |
+| A137, A89, A132 | Queued. |
 
 ## Queued notes
 

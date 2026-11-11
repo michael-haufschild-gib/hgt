@@ -92,9 +92,10 @@ theorem summable_rpow_neg_of_orderOneDensity {ι : Type*} {a : ι → ℂ}
           linarith
       _ = 2 * K * ((n : ℝ) + 2) * (E * Real.exp (-α * (n : ℝ))) := by ring
       _ = 2 * K * ((n : ℝ) + 2) * (Real.exp 1 * Real.exp (-(α - 1) * n)) := by rw [hsplit]
-      _ ≤ (4 * K * Real.exp 1) * (((n : ℝ) + 1) * Real.exp (-(α - 1) * n)) := by
-          have h0 : 0 ≤ Real.exp 1 * Real.exp (-(α - 1) * n) := by positivity
+      _ ≤ 4 * K * ((n : ℝ) + 1) * (Real.exp 1 * Real.exp (-(α - 1) * n)) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
           nlinarith [Nat.cast_nonneg (α := ℝ) n]
+      _ = (4 * K * Real.exp 1) * (((n : ℝ) + 1) * Real.exp (-(α - 1) * n)) := by ring
 
 variable {N : ℕ} [NeZero N]
 
@@ -117,6 +118,7 @@ theorem analyticOnNhd_shiftedL (hχ : χ ≠ 1) : AnalyticOnNhd ℂ (shiftedL χ
   ((DirichletCharacter.differentiable_completedLFunction hχ).comp
     (differentiable_id.add_const 2)).differentiableOn.analyticOnNhd isOpen_univ
 
+omit [NeZero N] in
 theorem gammaFactor_ne_zero {s : ℂ} (hs : 0 < s.re) : χ.gammaFactor s ≠ 0 := by
   rcases χ.even_or_odd with h | h
   · rw [h.gammaFactor_def]; exact Complex.Gammaℝ_ne_zero_of_re_pos hs
@@ -136,8 +138,10 @@ theorem completedLFunction_ne_zero_of_one_le_re (hχ : χ ≠ 1) {s : ℂ} (hs :
   exact mul_ne_zero (gammaFactor_ne_zero (by linarith))
     (DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ) hs)
 
+omit [NeZero N] in
 theorem inv_ne_one (hχ : χ ≠ 1) : χ⁻¹ ≠ 1 := fun h => hχ (inv_eq_one.mp h)
 
+omit [NeZero N] in
 theorem isPrimitive_inv (hprim : χ.IsPrimitive) : χ⁻¹.IsPrimitive := by
   rw [DirichletCharacter.isPrimitive_def, DirichletCharacter.conductor_inv]
   exact hprim
@@ -148,8 +152,8 @@ theorem rootNumber_ne_zero (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) : χ.rootNu
   intro h0
   have h1 := hprim.completedLFunction_one_sub (2 : ℂ)
   have h2 := (isPrimitive_inv hprim).completedLFunction_one_sub (-1 : ℂ)
-  rw [inv_inv, show (1 : ℂ) - (-1) = 2 by ring, show (1 : ℂ) - 2 = -1 by ring, h1, h0] at h2
-  simp only [mul_zero, zero_mul] at h2
+  rw [show (1 : ℂ) - 2 = -1 by ring, h0, mul_zero, zero_mul] at h1
+  rw [inv_inv, show (1 : ℂ) - (-1) = 2 by ring, h1, mul_zero] at h2
   exact completedLFunction_ne_zero_of_one_le_re (inv_ne_one hχ) (by norm_num) h2
 
 /-- `Λ(s, χ) ≠ 0` on `Re s ≤ 0`, by the functional equation. -/
@@ -160,8 +164,7 @@ theorem completedLFunction_ne_zero_of_re_nonpos (hχ : χ ≠ 1) (hprim : χ.IsP
   rw [h]
   refine mul_ne_zero (mul_ne_zero ?_ (rootNumber_ne_zero hχ hprim))
     (completedLFunction_ne_zero_of_one_le_re (inv_ne_one hχ) (by rw [sub_re, one_re]; linarith))
-  exact (cpow_ne_zero_iff (by exact_mod_cast NeZero.ne N)).mpr (Or.inl
-    (by exact_mod_cast NeZero.ne N))
+  exact cpow_ne_zero_iff.mpr (Or.inl (by exact_mod_cast NeZero.ne N))
 
 theorem shiftedL_zero_ne_zero (hχ : χ ≠ 1) : shiftedL χ 0 ≠ 0 := by
   rw [shiftedL, zero_add]
@@ -230,7 +233,7 @@ theorem summable_norm_rpow_neg (hχ : χ ≠ 1) {α : ℝ} (hα : 1 < α) :
   obtain ⟨C, hC, hbound⟩ := orderOneBound hχ
   exact summable_rpow_neg_of_orderOneDensity
     (locallyFinite_zeroCopyPoint (analyticOnNhd_shiftedL hχ))
-    (HTGeometry.orderOneDensityIdx_zeroCopyPoint hC (analyticOnNhd_shiftedL hχ)
+    (orderOneDensityIdx_zeroCopyPoint hC (analyticOnNhd_shiftedL hχ)
       (shiftedL_zero_ne_zero hχ) hbound) hα
 
 theorem zeroCopyPoint_ne_zero' (hχ : χ ≠ 1) (q : LZero χ) : zeroCopyPoint (shiftedL χ) q ≠ 0 :=
@@ -270,7 +273,8 @@ theorem logDeriv_completedLFunction_eq (hχ : χ ≠ 1) :
   have hlogS : logDeriv (shiftedL χ) z = a + logDeriv (hadamardProduct (shiftedL χ)) z := by
     have hfeq : shiftedL χ = fun w => Complex.exp (a * w + b) * hadamardProduct (shiftedL χ) w :=
       funext hfac
-    rw [hfeq, logDeriv_mul z (Complex.exp_ne_zero _) hP hdiffE hdiffP]
+    rw [hfeq, logDeriv_mul (f := fun w => Complex.exp (a * w + b)) z (Complex.exp_ne_zero _) hP
+      hdiffE hdiffP]
     congr 1
     rw [logDeriv_apply]
     have hd : deriv (fun w => Complex.exp (a * w + b)) z = Complex.exp (a * z + b) * a := by
@@ -279,10 +283,13 @@ theorem logDeriv_completedLFunction_eq (hχ : χ ≠ 1) :
     rw [hd, mul_div_cancel_left₀ _ (Complex.exp_ne_zero _)]
   have hlogP := RHTower.logDeriv_canonicalProductE1Indexed hane hsum hzq
   have hshift : logDeriv (DirichletCharacter.completedLFunction χ) s = logDeriv (shiftedL χ) z := by
-    rw [hcomp, logDeriv_comp (by
+    rw [hcomp, show (fun w => shiftedL χ (w - 2)) = (shiftedL χ) ∘ (fun w => w - 2) from rfl,
+      logDeriv_comp (by
         have := (analyticOnNhd_shiftedL hχ) z (mem_univ z)
         simpa [z] using this.differentiableAt) (by fun_prop)]
-    simp [z]
+    have hd : deriv (fun w : ℂ => w - 2) s = 1 := by
+      simp
+    rw [hd, mul_one]
   rw [hshift, hlogS, hadamardProduct, hlogP]
   congr 1
   refine tsum_congr fun q => ?_

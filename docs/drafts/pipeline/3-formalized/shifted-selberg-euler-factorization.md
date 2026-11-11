@@ -74,3 +74,16 @@ mass: `A(m,n)=Σ_{r|gcd(m,n)}|W_0(r,m/r,n/r)|`, with zero values on the axes.
 `|Corr_{C/log N}(m,n)|≤exp(4|C|)A(m,n)` for `m,n≤N`, `N>1`.
 It also proves coefficient continuity and the zero-shift identity.
 Lean check passed; umbrella import added.
+
+`TheCorrectionCoefficientJetsHaveASummableMajorant` transfers these
+estimates to the finite divisor coefficients: the normalized jet is
+bounded by `j! exp(4(|C|+1))A(m,n)`, its real restriction is the actual
+successive derivative, and every positive-order jet tends to zero along
+bounded moving centres. Lean check passed; umbrella import added.
+
+`TheCoupledEulerCorrectionPreservesThePolynomialLimit` proves that the
+full corrected polynomial row, weighted by `t^k`, tends to
+`∫₀¹ t^k (P′−vP)(Q′−vQ) dt`, with profiles evaluated at `1−t`.
+The shift may be any convergent sequence. One uniform bound over all
+retained dilation pairs permits summation against the absolute pair
+majorant. Lean check passed; umbrella import added.

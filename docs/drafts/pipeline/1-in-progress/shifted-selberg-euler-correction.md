@@ -60,10 +60,11 @@ are `A²`, `2tA²−4PA`, and `4t²A²−16tPA+8P²`; the reflected ones are
 
 ## Formalization boundary
 
-Full Lean proof drafts cover summation over all correction pairs,
-coefficient-jet majorants, the exact directional derivative identities,
-and both literal gcd-form derivative limits. Compilation is incomplete;
-these assembled statements are not yet claimed as formalized.
+`TheCoupledEulerCorrectionPreservesThePolynomialLimit` now formalizes
+summation over all correction pairs, with one bound for all retained
+dilations and logarithmic powers. The coefficient-jet pair majorants
+also passed Lean. Exact directional derivative identities and both
+literal gcd-form derivative limits remain proof drafts awaiting compilation.
 
 The parent gate additionally needs varying detector-profile coefficients,
 the zeta-pole and chi-weight main-term jets, fixed-mollifier coefficient

@@ -24594,4 +24594,77 @@ theorem paperKernelLogDerivative_power_bound (V : ℝ → ℂ) (a b : ℝ) (ha :
   simpa only [Real.mul_rpow paperScale_pos.le hx.le, mul_assoc] using
     hb (N : ℝ) hN (paperScale * x) (mul_pos paperScale_pos hx)
 
+/-- Polynomially weighted logarithmic derivatives remain bounded on the positive axis. -/
+theorem paperKernelLogDerivative_weighted_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (N j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ x : ℝ, 0 < x →
+      (1 + x) ^ N * ‖paperKernelLogDerivative V j x‖ ≤ C := by
+  obtain ⟨C₀, hC₀, hb₀⟩ := paperKernelLogDerivative_power_bound V a b ha hs hV 0 j
+  obtain ⟨Cₙ, hCₙ, hbₙ⟩ := paperKernelLogDerivative_power_bound V a b ha hs hV N j
+  refine ⟨2 ^ N * (C₀ + Cₙ), by positivity, ?_⟩
+  intro x hx
+  have hzero : ‖paperKernelLogDerivative V j x‖ ≤ C₀ := by
+    simpa only [Nat.cast_zero, neg_zero, Real.rpow_zero, mul_one] using hb₀ x hx
+  have hhigh : ‖paperKernelLogDerivative V j x‖ ≤ Cₙ / x ^ N := by
+    simpa only [Real.rpow_neg hx.le, Real.rpow_natCast, div_eq_mul_inv] using hbₙ x hx
+  by_cases hx1 : x ≤ 1
+  · have hp : (1 + x) ^ N ≤ (2 : ℝ) ^ N := by gcongr; linarith
+    calc
+      _ ≤ 2 ^ N * C₀ := mul_le_mul hp hzero (norm_nonneg _) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  · have hp : (1 + x) ^ N ≤ (2 : ℝ) ^ N * x ^ N := by
+      rw [← mul_pow]
+      gcongr
+      linarith
+    calc
+      _ ≤ (2 ^ N * x ^ N) * (Cₙ / x ^ N) :=
+        mul_le_mul hp hhigh (norm_nonneg _) (by positivity)
+      _ = 2 ^ N * Cₙ := by field_simp [hx.ne']
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+lemma iteratedDeriv_paperKernel_exp (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (R : ℝ) (hR : 0 < R) (j : ℕ) (u : ℝ) :
+    iteratedDeriv j (fun v : ℝ => paperKernel V (R * Real.exp v)) u =
+      paperKernelLogDerivative V j (R * Real.exp u) := by
+  let f := kernelLogSource V a b ha hs hV
+  have hf : ∀ v, f v = V (Real.exp v) := fun _ => rfl
+  have he (v : ℝ) : Real.log (paperScale * (R * Real.exp v)) = Real.log (paperScale * R) + v := by
+    rw [← mul_assoc, Real.log_mul (mul_pos paperScale_pos hR).ne' (Real.exp_pos v).ne', Real.log_exp]
+  have hfun : (fun v : ℝ => paperKernel V (R * Real.exp v)) =
+      fun v : ℝ => reflectedKernelLogProfile f (Real.log (paperScale * R) + v) := by
+    funext v
+    rw [paperKernel_eq_logFourier V f hf _ (mul_pos hR (Real.exp_pos v)), he]
+  rw [hfun, iteratedDeriv_comp_const_add,
+    paperKernelLogDerivative_eq V f hf j _ (mul_pos hR (Real.exp_pos u)), he]
+
+/-- On any fixed logarithmic interval, all kernel derivatives have uniform decay in the radial parameter. -/
+theorem paperKernel_exp_local_derivative_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (M : ℝ) (hM : 0 ≤ M) (N j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∀ u : ℝ, |u| ≤ M →
+      (1 + R) ^ N * ‖iteratedDeriv j (fun v : ℝ => paperKernel V (R * Real.exp v)) u‖ ≤ C := by
+  obtain ⟨C, hC, hb⟩ := paperKernelLogDerivative_weighted_bound V a b ha hs hV N j
+  refine ⟨Real.exp M ^ N * C, by positivity, ?_⟩
+  intro R hR u hu
+  have hMu : 0 ≤ M + u := by linarith [(abs_le.mp hu).1]
+  have hE : 1 ≤ Real.exp M := by simpa only [Real.exp_zero] using Real.exp_le_exp.mpr hM
+  have hEu : 1 ≤ Real.exp M * Real.exp u := by
+    rw [← Real.exp_add]
+    simpa only [Real.exp_zero] using Real.exp_le_exp.mpr hMu
+  have hbase : 1 + R ≤ Real.exp M * (1 + R * Real.exp u) := by
+    have hRu := mul_le_mul_of_nonneg_left hEu hR.le
+    nlinarith only [hE, hRu]
+  have hp : (1 + R) ^ N ≤ Real.exp M ^ N * (1 + R * Real.exp u) ^ N := by
+    rw [← mul_pow]
+    gcongr
+  rw [iteratedDeriv_paperKernel_exp V a b ha hs hV R hR j u]
+  calc
+    _ ≤ (Real.exp M ^ N * (1 + R * Real.exp u) ^ N) *
+        ‖paperKernelLogDerivative V j (R * Real.exp u)‖ :=
+      mul_le_mul_of_nonneg_right hp (norm_nonneg _)
+    _ = Real.exp M ^ N * ((1 + R * Real.exp u) ^ N *
+        ‖paperKernelLogDerivative V j (R * Real.exp u)‖) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hb _ (mul_pos hR (Real.exp_pos u))) (by positivity)
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

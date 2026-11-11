@@ -60,7 +60,9 @@ constants are predicted to be `1−u+u²/3` and `1+u+u²/3`.
 
 Harmonic endpoint control, profile-product replacement, and fixed-row
 polynomial limits are formalized, including convergent moving shifts.
-Remaining obligations: summation over all correction pairs; exact arithmetic jet
+Summation over all correction pairs is also formalized in
+`TheCoupledEulerCorrectionPreservesThePolynomialLimit`.
+Remaining obligations: exact arithmetic jet
 identities; analytic main-term asymptotics; insertion into
 `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw` and the proved
 count receiver. Details: `shifted-selberg-euler-correction.md`.

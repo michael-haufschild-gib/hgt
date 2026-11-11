@@ -1300,6 +1300,7 @@ theorem card_filter_dvd_Icc_le_div {k : ℕ} (hk : 0 < k) (N : ℕ) :
     ((Finset.Icc 1 N).filter (fun m => k ∣ m)).card ≤ N / k := by
   have hinj : Set.InjOn (fun m : ℕ => m / k) ↑((Finset.Icc 1 N).filter (fun m => k ∣ m)) := by
     intro x hx y hy hxy
+    dsimp only at hxy
     have hkx : k ∣ x := (Finset.mem_filter.mp hx).2
     have hky : k ∣ y := (Finset.mem_filter.mp hy).2
     rw [← Nat.mul_div_cancel' hkx, ← Nat.mul_div_cancel' hky, hxy]
@@ -1313,8 +1314,8 @@ theorem card_filter_dvd_Icc_le_div {k : ℕ} (hk : 0 < k) (N : ℕ) :
       rcases eq_or_ne q 0 with rfl | hq
       · simp at h1
       · omega
-    exact Finset.mem_Icc.mpr ⟨by rw [Nat.mul_div_cancel_left q hk]; exact hq_pos,
-      by rw [← Nat.mul_div_cancel_left q hk]; exact Nat.div_le_div_right hN⟩
+    exact Finset.mem_Icc.mpr ⟨by dsimp only; rw [Nat.mul_div_cancel_left q hk]; exact hq_pos,
+      by dsimp only; exact (Nat.mul_div_cancel_left q hk) ▸ Nat.div_le_div_right hN⟩
   calc ((Finset.Icc 1 N).filter (fun m => k ∣ m)).card
       ≤ (Finset.Icc 1 (N / k)).card := Finset.card_le_card_of_injOn _ hmaps hinj
     _ = N / k := by simp
@@ -1332,7 +1333,7 @@ theorem card_squarefree_window_avoiding_prime_ge {N p : ℕ} (hN : 36 ≤ N)
     have hm1 : 1 ≤ m := by omega
     rw [Squarefree, not_forall] at hnsq
     obtain ⟨d, hd⟩ := hnsq
-    rw [not_imp] at hd
+    rw [_root_.not_imp] at hd
     obtain ⟨hdd, hnu⟩ := hd
     have hd_ge2 : 2 ≤ d := by
       rcases d with _ | _ | d
@@ -1384,7 +1385,7 @@ theorem card_squarefree_window_avoiding_prime_ge {N p : ℕ} (hN : 36 ≤ N)
               push_cast; ring
           exact hind N (by omega)
         exact (Finset.sum_le_sum hle_t).trans (by rw [htel']; linarith [show (0 : ℝ) ≤ 1 / N by positivity])
-      norm_num
+      have h23 : (1 : ℝ) / ((2 : ℕ) : ℝ) ^ 2 + 1 / ((3 : ℕ) : ℝ) ^ 2 = 13 / 36 := by norm_num
       linarith
     calc (((Finset.Icc (N / 9 + 1) N).filter (fun m => ¬ Squarefree m)).card : ℝ)
         ≤ ((∑ d ∈ Finset.Icc 2 N, ((Finset.Icc 1 N).filter (fun m => d ^ 2 ∣ m)).card : ℕ) : ℝ) := by
@@ -1393,7 +1394,8 @@ theorem card_squarefree_window_avoiding_prime_ge {N p : ℕ} (hN : 36 ≤ N)
           push_cast; rfl
       _ ≤ ∑ d ∈ Finset.Icc 2 N, (N : ℝ) / (d : ℝ) ^ 2 := Finset.sum_le_sum h2
       _ = (N : ℝ) * ∑ d ∈ Finset.Icc 2 N, (1 : ℝ) / (d : ℝ) ^ 2 := by
-          simp_rw [div_eq_mul_one_div, ← Finset.mul_sum]
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun _ _ => by ring
       _ ≤ (N : ℝ) * (25 / 36) := mul_le_mul_of_nonneg_left hsum_inv (by positivity)
       _ = 25 / 36 * (N : ℝ) := by ring
   have hp_card : (((Finset.Icc (N / 9 + 1) N).filter (fun m => ¬ (p = 1 ∨ ¬ p ∣ m))).card : ℝ) ≤
@@ -1403,8 +1405,9 @@ theorem card_squarefree_window_avoiding_prime_ge {N p : ℕ} (hN : 36 ≤ N)
           (Finset.Icc 1 N).filter (fun m => p ∣ m) := by
         intro m hm
         obtain ⟨hIcc, hnot⟩ := Finset.mem_filter.mp hm
-        push_neg at hnot
-        exact Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨by omega, (Finset.mem_Icc.mp hIcc).2⟩, hnot.2⟩
+        obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hIcc
+        have hpm : p ∣ m := by tauto
+        exact Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨by omega, hm_hi⟩, hpm⟩
       calc (((Finset.Icc (N / 9 + 1) N).filter (fun m => ¬ (p = 1 ∨ ¬ p ∣ m))).card : ℝ)
           ≤ (((Finset.Icc 1 N).filter (fun m => p ∣ m)).card : ℝ) := by
             exact_mod_cast Finset.card_le_card hsub_p
@@ -1413,7 +1416,7 @@ theorem card_squarefree_window_avoiding_prime_ge {N p : ℕ} (hN : 36 ≤ N)
         _ ≤ (N : ℝ) / 19 := div_le_div_of_nonneg_left (by positivity) (by norm_num)
             (by exact_mod_cast hp19)
         _ ≤ 2 / 36 * (N : ℝ) := by linarith [show (0 : ℝ) ≤ N by positivity]
-    · simp
+    · simp only [true_or, not_true_eq_false, Finset.filter_False, Finset.card_empty, Nat.cast_zero]
       positivity
   set J := Finset.Icc (N / 9 + 1) N
   have hJ_card : (31 : ℝ) / 36 * N ≤ (J.card : ℝ) := by
@@ -1457,7 +1460,7 @@ theorem positiveSquarefreeTwistSum_ge_linear (c : ℝ) :
     positivity
   refine ⟨w_min / 24, by positivity, fun Z hZ p hp => ?_⟩
   set N : ℕ := ⌊Z⌋₊
-  have hN36 : 36 ≤ N := Nat.le_floor (by linarith)
+  have hN36 : 36 ≤ N := Nat.le_floor (by norm_num; linarith)
   have hZ_half : Z / 2 ≤ (N : ℝ) := by
     have := Nat.lt_floor_add_one Z
     linarith
@@ -1489,19 +1492,27 @@ theorem positiveSquarefreeTwistSum_ge_linear (c : ℝ) :
         have hne : ArithmeticFunction.moebius m ≠ 0 :=
           ArithmeticFunction.moebius_ne_zero_iff_squarefree.mpr hsq
         have habs : |ArithmeticFunction.moebius m| ≤ 1 := ArithmeticFunction.abs_moebius_le_one
+        obtain ⟨hlo, hhi⟩ := abs_le.mp habs
         have h1 : ArithmeticFunction.moebius m = 1 ∨ ArithmeticFunction.moebius m = -1 := by omega
         rcases h1 with h | h <;> simp [h]
       by_cases hdiv : ∀ q ∈ p.primeFactors, ¬ q ∣ m
-      · simp [f_real, hm0, hsq, hdiv, hμ_sq]
-      · simp [f_real, hm0, hsq, hdiv]
+      · rw [if_pos hdiv, hμ_sq, one_mul]
+        have hcond : m ≠ 0 ∧ Squarefree m ∧ ∀ q ∈ p.primeFactors, ¬ q ∣ m := ⟨hm0, hsq, hdiv⟩
+        simp only [f_real, if_pos hcond]
+      · rw [if_neg hdiv, zero_mul]
+        have hnot : ¬ (m ≠ 0 ∧ Squarefree m ∧ ∀ q ∈ p.primeFactors, ¬ q ∣ m) := fun h => hdiv h.2.2
+        simp only [f_real, if_neg hnot, Complex.ofReal_zero]
     · have hμ0 : ArithmeticFunction.moebius m = 0 :=
         ArithmeticFunction.moebius_eq_zero_of_not_squarefree hsq
-      simp [f_real, hsq, hμ0]
+      have hnot : ¬ (m ≠ 0 ∧ Squarefree m ∧ ∀ q ∈ p.primeFactors, ¬ q ∣ m) := fun h => hsq h.2.1
+      rw [hμ0]
+      simp only [Int.cast_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, ite_self,
+        zero_mul, f_real, if_neg hnot, Complex.ofReal_zero]
   have hf_summ : Summable f_real := by
     obtain ⟨C, _, hsig⟩ := exists_norm_signal_two_le (isSmoothCutoff_gaussianKernel c)
     refine Summable.of_nonneg_of_le hf_nn (fun m => ?_)
       ((Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left (C * Z ^ 2))
-    have h1 := congrArg Complex.norm (hf_eq m)
+    have h1 := congrArg (fun z : ℂ => ‖z‖) (hf_eq m)
     rw [Complex.norm_real, Real.norm_of_nonneg (hf_nn m)] at h1
     rw [← h1]
     rcases eq_or_ne m 0 with rfl | hm0
@@ -1529,6 +1540,7 @@ theorem positiveSquarefreeTwistSum_ge_linear (c : ℝ) :
     (hp.elim (fun h => Or.inl h.1) Or.inr)
   have hterm_win : ∀ m ∈ S_win, w_min ≤ f_real m := by
     intro m hm
+    dsimp only [S_win] at hm
     obtain ⟨hIcc, hsq, hp_div⟩ := Finset.mem_filter.mp hm
     obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hIcc
     have hm0 : m ≠ 0 := by omega
@@ -1537,7 +1549,8 @@ theorem positiveSquarefreeTwistSum_ge_linear (c : ℝ) :
       · rw [hp_prime.primeFactors]
         simp [hp_div.resolve_left (by omega)]
       · simp
-    simp only [f_real, if_pos ⟨hm0, hsq, hpf⟩]
+    have hcond : m ≠ 0 ∧ Squarefree m ∧ ∀ q ∈ p.primeFactors, ¬ q ∣ m := ⟨hm0, hsq, hpf⟩
+    simp only [f_real, if_pos hcond]
     have hm_pos : (0 : ℝ) < m := by positivity
     have hX_ge1 : 1 ≤ Z / m := (le_div_iff₀ hm_pos).mpr ((by exact_mod_cast hm_hi).trans hN_le_Z)
     have hX_le9 : Z / m ≤ 9 := by
@@ -1577,10 +1590,12 @@ theorem positiveSquarefreeTwistSum_ge_linear (c : ℝ) :
           _ ≤ ((Z / m) ^ (-c))⁻¹ := inv_anti₀ (Real.rpow_pos_of_pos (by positivity) _)
               (Real.rpow_le_rpow (by positivity) hX_le9 hneg)
           _ = (Z / m) ^ c := by rw [Real.rpow_neg (by positivity), inv_inv]
-    exact mul_le_mul (div_le_div_of_nonneg_right hrpow_ge (by positivity)) hexp_ge
-      (Real.exp_pos _).le (by positivity)
+    simp only [w_min]
+    exact mul_le_mul
+      (div_le_div_of_nonneg_right hrpow_ge (by positivity : 0 ≤ 2 * Real.sqrt Real.pi))
+      hexp_ge (Real.exp_pos _).le (by positivity)
   calc w_min / 24 * Z
-      ≤ w_min * ((N : ℝ) / 12) := by linarith
+      ≤ w_min * ((N : ℝ) / 12) := by nlinarith [hw_min, hZ_half]
     _ ≤ w_min * (S_win.card : ℝ) := mul_le_mul_of_nonneg_left hcard_S hw_min.le
     _ = ∑ _m ∈ S_win, w_min := by rw [Finset.sum_const, nsmul_eq_mul, mul_comm]
     _ ≤ ∑ m ∈ S_win, f_real m := Finset.sum_le_sum hterm_win
@@ -1613,7 +1628,9 @@ theorem not_isGenericMeanSquare_positiveSquarefreeTwist_of_lt (c : ℝ) {n : ℕ
       have hterm := hlin Z hZ72 1 (Or.inr rfl)
       have hsq : (γ * Z) ^ 2 ≤ ‖positiveSquarefreeTwistSum c (1 : ℕ).primeFactors Z‖ ^ 2 :=
         pow_le_pow_left₀ (by positivity) hterm 2
-      exact hsq.trans (Finset.single_le_sum (fun _ _ => sq_nonneg _) h1_mem)
+      exact hsq.trans (Finset.single_le_sum
+        (f := fun a : ℕ => ‖positiveSquarefreeTwistSum c a.primeFactors Z‖ ^ 2)
+        (fun _ _ => sq_nonneg _) h1_mem)
     have hup : positiveSquarefreeTwistMeanSquare c n 0 Z ≤ max K 0 * Z ^ ((3 : ℝ) / 2) := by
       calc positiveSquarefreeTwistMeanSquare c n 0 Z
           ≤ K * Z ^ ((0 : ℝ) + 1 + 1 / 2) := hK Z hZZ₀
@@ -1645,6 +1662,7 @@ theorem not_isGenericMeanSquare_positiveSquarefreeTwist_of_lt (c : ℝ) {n : ℕ
     have hQ1 : 1 ≤ Q := by omega
     have hQ_log : 1 ≤ Real.log Q - 2 * RHTower.Sieve.mertensFirstConst := by
       have hexp_le : Real.exp (2 * RHTower.Sieve.mertensFirstConst + 1) ≤ (Q : ℝ) := by
+        simp only [Q]
         push_cast
         linarith [Nat.le_ceil (Real.exp (2 * RHTower.Sieve.mertensFirstConst + 1))]
       have hlog := Real.log_le_log (Real.exp_pos _) hexp_le
@@ -1658,7 +1676,7 @@ theorem not_isGenericMeanSquare_positiveSquarefreeTwist_of_lt (c : ℝ) {n : ℕ
     have hlim1 : Tendsto (fun Z : ℝ => Z ^ α / R_sc) atTop atTop :=
       (tendsto_rpow_atTop hα_pos).atTop_div_const hR_pos
     have hlim2 : Tendsto (fun Z : ℝ => Real.log Z / Z ^ ε) atTop (𝓝 0) :=
-      (Real.isLittleO_log_rpow_atTop hε).tendsto_div_nhds_zero
+      (isLittleO_log_rpow_atTop hε).tendsto_div_nhds_zero
     have hlim3 : Tendsto (fun Z : ℝ => Z ^ ε) atTop atTop := tendsto_rpow_atTop hε
     obtain ⟨Z₁, hZ₁⟩ := eventually_atTop.mp
       ((hlim1.eventually_ge_atTop 20).and
@@ -1672,10 +1690,13 @@ theorem not_isGenericMeanSquare_positiveSquarefreeTwist_of_lt (c : ℝ) {n : ℕ
     have hZ1 : 1 ≤ Z := by linarith
     have hZ_pos : 0 < Z := by linarith
     set M : ℕ := ⌊Z ^ α / R_sc⌋₊
-    have hM19 : 19 ≤ M := by have := Nat.le_floor hM20; omega
+    have hM19 : 19 ≤ M := by
+      have h20 : 20 ≤ M := Nat.le_floor (by norm_num; linarith)
+      omega
     have hM_upper : (M : ℝ) ≤ Z ^ α / R_sc := Nat.floor_le (by positivity)
     have hM_lower : Z ^ α / (2 * R_sc) ≤ (M : ℝ) := by
-      have := Nat.lt_floor_add_one (Z ^ α / R_sc)
+      have hlt : Z ^ α / R_sc < (M : ℝ) + 1 := Nat.lt_floor_add_one (Z ^ α / R_sc)
+      have hdiv2 : Z ^ α / (2 * R_sc) = (Z ^ α / R_sc) / 2 := by ring
       linarith
     have hM_le_Z : (M : ℝ) ≤ Z := by
       have hR1 : 1 ≤ R_sc := by simp only [R_sc]; exact_mod_cast (by omega : 1 ≤ Q + 1)
@@ -1735,12 +1756,15 @@ theorem not_isGenericMeanSquare_positiveSquarefreeTwist_of_lt (c : ℝ) {n : ℕ
       (hK Z hZZ₀).trans (mul_le_mul_of_nonneg_right (le_max_left K 1) (by positivity))
     have hexp_split : 2 + α - ε = (θ + 1 + ε) + ε := by simp only [ε]; ring
     have hstrict : max K 1 * Z ^ (θ + 1 + ε) < γ ^ 2 / (2 * R_sc) * Z ^ (2 + α - ε) := by
-      rw [hexp_split, Real.rpow_add hZ_pos, ← mul_assoc, mul_comm (γ ^ 2 / (2 * R_sc)),
-        mul_assoc, mul_comm (Z ^ (θ + 1 + ε))]
       have hcoef : max K 1 < γ ^ 2 / (2 * R_sc) * Z ^ ε := by
         rwa [div_lt_iff₀ (by positivity), mul_comm (Z ^ ε), ← mul_div_assoc',
           lt_div_iff₀ (by positivity)] at hZε_gt
-      exact mul_lt_mul_of_pos_right hcoef (by positivity)
+      calc max K 1 * Z ^ (θ + 1 + ε)
+          < (γ ^ 2 / (2 * R_sc) * Z ^ ε) * Z ^ (θ + 1 + ε) :=
+            mul_lt_mul_of_pos_right hcoef (by positivity)
+        _ = γ ^ 2 / (2 * R_sc) * (Z ^ (θ + 1 + ε) * Z ^ ε) := by ring
+        _ = γ ^ 2 / (2 * R_sc) * Z ^ (2 + α - ε) := by
+            rw [← Real.rpow_add hZ_pos, ← hexp_split]
     linarith
 
 /-- **Matching upper bound above `n / (n − 1)`.** For every `θ ≥ n / (n − 1)`, the positive-weight
@@ -1819,7 +1843,7 @@ theorem isGenericMeanSquare_positiveSquarefreeTwist_of_ge (c : ℝ) {n : ℕ} (h
   have hexp_le : θ / n + (2 + 2 * δ) ≤ θ + 1 + ε := by
     have h1 : (n : ℝ) ≤ θ * ((n : ℝ) - 1) := (div_le_iff₀ (by linarith)).mp hθ
     have h2 : θ / n + 2 ≤ θ + 1 := by
-      rw [div_add_iff hn_pos.ne']
+      rw [show θ / (n : ℝ) + 2 = (θ + 2 * n) / n by field_simp, div_le_iff₀ hn_pos]
       nlinarith
     simp only [δ]
     linarith
@@ -1833,7 +1857,8 @@ theorem isGenericMeanSquare_positiveSquarefreeTwist_of_ge (c : ℝ) {n : ℕ} (h
         push_cast; ring_nf
     _ ≤ Z ^ (θ / n) * (C_tot ^ 2 * Z ^ (2 + 2 * δ)) :=
         mul_le_mul_of_nonneg_right hcard (by positivity)
-    _ = C_tot ^ 2 * Z ^ (θ / n + (2 + 2 * δ)) := by rw [Real.rpow_add hZ_pos]; ring
+    _ = C_tot ^ 2 * Z ^ (θ / n + (2 + 2 * δ)) := by
+        rw [← mul_assoc, mul_comm (Z ^ (θ / n)) _, mul_assoc, ← Real.rpow_add hZ_pos]
     _ ≤ C_tot ^ 2 * Z ^ (θ + 1 + ε) :=
         mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hZ hexp_le) (by positivity)
 
@@ -1876,14 +1901,14 @@ def oddSquarefreeFamily (u₀ : ℕ) (hodd : Odd u₀) :
   prime i := ⟨i.1, Nat.prime_of_mem_primeFactors i.2, fun h2 => by
     have hdvd : 2 ∣ u₀ := h2 ▸ Nat.dvd_of_mem_primeFactors i.2
     exact (Nat.not_even_iff_odd.mpr hodd) (even_iff_two_dvd.mpr hdvd)⟩
-  pairwise_ne _ _ hij := Subtype.val_injective.ne hij
+  pairwise_ne _ _ hij := fun h => hij (Subtype.ext (congrArg Subtype.val h))
 
 theorem oddSquarefreeFamily_modulus {u₀ : ℕ} (hodd : Odd u₀) (hsq : Squarefree u₀) :
     (oddSquarefreeFamily u₀ hodd).modulus = u₀ := by
   have hu₀_ne : u₀ ≠ 0 := by rintro rfl; simp at hodd
   unfold RHTower.OddPrimeFamily.modulus oddSquarefreeFamily
   change (∏ i : {p // p ∈ u₀.primeFactors}, i.1) = u₀
-  rw [Finset.prod_coe_sort u₀.primeFactors id]
+  rw [Finset.prod_coe_sort u₀.primeFactors (fun x => x)]
   conv_rhs => rw [← Nat.factorization_prod_pow_eq_self hu₀_ne]
   rw [Finsupp.prod, Nat.support_factorization]
   refine Finset.prod_congr rfl fun p hp => ?_
@@ -1901,6 +1926,10 @@ def jacobiPrimChar (u₀ : ℕ) (hodd : Odd u₀) (hsq : Squarefree u₀) : Diri
 
 theorem jacobiPrimChar_isPrimitive {u₀ : ℕ} (hodd : Odd u₀) (hsq : Squarefree u₀) :
     (jacobiPrimChar u₀ hodd hsq).IsPrimitive := by
+  have hu₀_ne : u₀ ≠ 0 := by rintro rfl; simp at hodd
+  haveI : NeZero u₀ := ⟨hu₀_ne⟩
+  haveI : NeZero (oddSquarefreeFamily u₀ hodd).modulus :=
+    ⟨by rw [oddSquarefreeFamily_modulus hodd hsq]; exact hu₀_ne⟩
   unfold jacobiPrimChar
   rw [DirichletCharacter.isPrimitive_def, DirichletCharacter.conductor_changeLevel]
   exact (RHTower.OddPrimeFamily.quadraticDirichletCharacter_isPrimitive
@@ -1955,8 +1984,10 @@ theorem jacobiTwistSum_mul_sq_eq (c : ℝ) {u₀ a : ℕ} (hu₀ : Odd u₀) (ha
       exact hdiv p hp_mem (hp_dvd_g.trans (Nat.gcd_dvd_left m a))
     have hgcd_int : (m : ℤ).gcd a = 1 := by simpa [Int.gcd_natCast_natCast] using hcop
     rw [jacobiSym.sq_one hgcd_int, mul_one, primeAvoidCoeff, if_pos hdiv]
-  · push_neg at hdiv
-    obtain ⟨p, hp_mem, hpm⟩ := hdiv
+  · rw [not_forall] at hdiv
+    obtain ⟨p, hp⟩ := hdiv
+    rw [_root_.not_imp, not_not] at hp
+    obtain ⟨hp_mem, hpm⟩ := hp
     have hp_pr : p.Prime := Nat.prime_of_mem_primeFactors hp_mem
     have hpa : p ∣ a := Nat.dvd_of_mem_primeFactors hp_mem
     have hgcd_ne : (m : ℤ).gcd a ≠ 1 := by
@@ -1964,7 +1995,7 @@ theorem jacobiTwistSum_mul_sq_eq (c : ℝ) {u₀ a : ℕ} (hu₀ : Odd u₀) (ha
       intro hg1
       exact hp_pr.not_dvd_one (hg1 ▸ Nat.dvd_gcd hpm hpa)
     have hj0 : jacobiSym (m : ℤ) a = 0 := jacobiSym.eq_zero_iff.mpr ⟨ha_ne, hgcd_ne⟩
-    have hnot : ¬ ∀ q ∈ a.primeFactors, ¬ q ∣ m := by push_neg; exact ⟨p, hp_mem, hpm⟩
+    have hnot : ¬ ∀ q ∈ a.primeFactors, ¬ q ∣ m := fun h => h p hp_mem hpm
     simp [hj0, primeAvoidCoeff, if_neg hnot]
 
 /-- **Zero-free half-plane theorem for the full Jacobi twist family (`n = 2`).** If
@@ -1980,7 +2011,7 @@ theorem zetaZeroAbscissa_and_jacobiPrimChar_le_of_jacobiTwistGeneric (c : ℝ) {
   · -- Principal square subfamily `u = p²` (`u₀ = 1`).
     have hmean_ζ : ∀ ε : ℝ, 0 < ε → ∃ K Z₀ : ℝ, 1 ≤ Z₀ ∧ ∀ Z : ℝ, Z₀ ≤ Z →
         ∀ M Q : ℕ, 1 + 3 ≤ M → 1 ≤ Q →
-          (1 : ℝ) * ((Q * M : ℕ) : ℝ) ^ (2 : ℕ) ≤ Z ^ θ →
+          ((1 : ℕ) : ℝ) * ((Q * M : ℕ) : ℝ) ^ (2 : ℕ) ≤ Z ^ θ →
             (∑ p ∈ RHTower.Sieve.bigPrimeSet M (Q * M),
               ‖twistedMoebiusSum (gaussianKernel c) (fun _ => 1) {p} Z‖ ^ 2) ≤
               K * Z ^ (θ + 1 + ε) := by
@@ -2000,13 +2031,16 @@ theorem zetaZeroAbscissa_and_jacobiPrimChar_le_of_jacobiTwistGeneric (c : ℝ) {
           refine Nat.le_floor ?_
           have h1 : ((p ^ 2 : ℕ) : ℝ) ≤ ((Q * M : ℕ) : ℝ) ^ (2 : ℕ) := by
             push_cast; exact pow_le_pow_left₀ (by positivity) (by exact_mod_cast hhi) 2
+          push_cast at hQM
           linarith
-        exact Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨by positivity, hp2_le⟩, hp_odd.pow⟩
+        exact Finset.mem_filter.mpr
+          ⟨Finset.mem_Icc.mpr ⟨Nat.succ_le_of_lt (by positivity), hp2_le⟩, hp_odd.pow⟩
       have hterm_eq : ∀ p ∈ P,
           ‖twistedMoebiusSum (gaussianKernel c) (fun _ => 1) {p} Z‖ ^ 2 =
             ‖jacobiTwistSum c (p ^ 2) Z‖ ^ 2 := by
         intro p hp
         obtain ⟨hIcc, hp_pr⟩ := Finset.mem_filter.mp hp
+        obtain ⟨hlo, _⟩ := Finset.mem_Icc.mp hIcc
         have hp_odd : Odd p := hp_pr.odd_of_ne_two (by omega)
         have h1 := jacobiTwistSum_mul_sq_eq c odd_one hp_odd Z
         simp only [one_mul, jacobiSym.one_right, Int.cast_one, hp_pr.primeFactors] at h1
@@ -2014,12 +2048,14 @@ theorem zetaZeroAbscissa_and_jacobiPrimChar_le_of_jacobiTwistGeneric (c : ℝ) {
       calc ∑ p ∈ P, ‖twistedMoebiusSum (gaussianKernel c) (fun _ => 1) {p} Z‖ ^ 2
           = ∑ p ∈ P, ‖jacobiTwistSum c (p ^ 2) Z‖ ^ 2 := Finset.sum_congr rfl hterm_eq
         _ = ∑ u ∈ P.image (fun p => p ^ 2), ‖jacobiTwistSum c u Z‖ ^ 2 :=
-            (Finset.sum_image fun x hx y hy hxy => hinj hx hy hxy).symm
+            (Finset.sum_image (f := fun u : ℕ => ‖jacobiTwistSum c u Z‖ ^ 2)
+              fun x hx y hy hxy => hinj hx hy hxy).symm
         _ ≤ jacobiTwistMeanSquare c θ Z :=
             Finset.sum_le_sum_of_subset_of_nonneg
               (Finset.image_subset_iff.mpr fun p hp => hmaps hp) (fun _ _ _ => sq_nonneg _)
         _ ≤ K * Z ^ (θ + 1 + ε) := hK Z hZ
     exact abscissa_le_positiveFormBoundary_of_primeWindow_meanSquare
+      (χ := fun _ => 1)
       (isSmoothCutoff_gaussianKernel c) (fun _ => by simp) (fun _ _ _ _ => by simp)
       (by norm_num) le_rfl RHTower.half_le_zetaZeroAbscissa RHTower.zetaZeroAbscissa_le_one
       (fun β h1 h2 h3 => by
@@ -2073,12 +2109,13 @@ theorem zetaZeroAbscissa_and_jacobiPrimChar_le_of_jacobiTwistGeneric (c : ℝ) {
               (pow_le_pow_left₀ (by positivity) (by exact_mod_cast hhi) 2) (by positivity)
           linarith
         exact Finset.mem_filter.mpr
-          ⟨Finset.mem_Icc.mpr ⟨by positivity, hu_le⟩, hodd.mul hp_odd.pow⟩
+          ⟨Finset.mem_Icc.mpr ⟨Nat.succ_le_of_lt (by positivity), hu_le⟩, hodd.mul hp_odd.pow⟩
       have hterm_eq : ∀ p ∈ P,
           ‖twistedMoebiusSum (gaussianKernel c) (fun m => χ₀ m) {p} Z‖ ^ 2 =
             ‖jacobiTwistSum c (u₀ * p ^ 2) Z‖ ^ 2 := by
         intro p hp
         obtain ⟨hIcc, hp_pr⟩ := Finset.mem_filter.mp hp
+        obtain ⟨hlo, _⟩ := Finset.mem_Icc.mp hIcc
         have hp_odd : Odd p := hp_pr.odd_of_ne_two (by omega)
         have h1 := jacobiTwistSum_mul_sq_eq c hodd hp_odd Z
         rw [hχ_eq, hp_pr.primeFactors] at h1
@@ -2086,15 +2123,17 @@ theorem zetaZeroAbscissa_and_jacobiPrimChar_le_of_jacobiTwistGeneric (c : ℝ) {
       calc ∑ p ∈ P, ‖twistedMoebiusSum (gaussianKernel c) (fun m => χ₀ m) {p} Z‖ ^ 2
           = ∑ p ∈ P, ‖jacobiTwistSum c (u₀ * p ^ 2) Z‖ ^ 2 := Finset.sum_congr rfl hterm_eq
         _ = ∑ u ∈ P.image (fun p => u₀ * p ^ 2), ‖jacobiTwistSum c u Z‖ ^ 2 :=
-            (Finset.sum_image fun x hx y hy hxy => hinj hx hy hxy).symm
+            (Finset.sum_image (f := fun u : ℕ => ‖jacobiTwistSum c u Z‖ ^ 2)
+              fun x hx y hy hxy => hinj hx hy hxy).symm
         _ ≤ jacobiTwistMeanSquare c θ Z :=
             Finset.sum_le_sum_of_subset_of_nonneg
               (Finset.image_subset_iff.mpr fun p hp => hmaps hp) (fun _ _ _ => sq_nonneg _)
         _ ≤ K * Z ^ (θ + 1 + ε) := hK Z hZ
     exact abscissa_le_positiveFormBoundary_of_primeWindow_meanSquare
+      (χ := fun m => χ₀ m)
       (isSmoothCutoff_gaussianKernel c)
       (fun m => RHTower.norm_dirichletCharacter_le_one χ₀ m)
-      (fun p _ k _ => by push_cast; exact map_mul χ₀ p k)
+      (fun p _ k _ => by push_cast; exact map_mul χ₀ (p : ZMod u₀) (k : ZMod u₀))
       (by norm_num) (by omega)
       (RHTower.half_le_zeroAbscissa hne1 hprim) (RHTower.zeroAbscissa_le_one hne1 hprim)
       (fun β h1 h2 h3 => by
@@ -2130,7 +2169,7 @@ theorem isGenericMeanSquare_jacobiTwist_of_quadraticGRH (c : ℝ)
   set η : ℝ := ε / (8 * (θ + 1))
   have hη_pos : 0 < η := div_pos hε (by positivity)
   set b : ℝ := 1 / 2 + δ
-  have hb_le2 : b ≤ 2 := by simp [b]; linarith [min_le_left (1 / 2) (ε / 6)]
+  have hb_le2 : b ≤ 2 := by simp [b]; linarith [min_le_left ((1 : ℝ) / 2) (ε / 6)]
   have hΘ_ζ : RHTower.zetaZeroAbscissa = 1 / 2 :=
     riemannHypothesis_iff_zetaZeroAbscissa_eq_half.mp hRH
   obtain ⟨C_ζ, hC_ζ, hbd_ζ⟩ := exists_signal_zetaGaussianKernel_le_of_zeroFree
@@ -2150,8 +2189,7 @@ theorem isGenericMeanSquare_jacobiTwist_of_quadraticGRH (c : ℝ)
     obtain ⟨hIcc, hu_odd⟩ := Finset.mem_filter.mp hu
     obtain ⟨hu1, hu_hi⟩ := Finset.mem_Icc.mp hIcc
     obtain ⟨u₀, a, hu₀_pos, ha_pos, ha2_mul, hu₀_sq⟩ :=
-      (Nat.sq_mul_squarefree_of_pos (by omega : 0 < u)).elim fun u₀ h1 =>
-        h1.elim fun a h2 => ⟨u₀, a, h2.1, h2.2.1, h2.2.2.1, h2.2.2.2⟩
+      Nat.sq_mul_squarefree_of_pos (by omega : 0 < u)
     have hu_eq : u = u₀ * a ^ 2 := by rw [← ha2_mul, mul_comm]
     have hu₀_odd : Odd u₀ := hu_odd.of_dvd_nat ⟨a ^ 2, hu_eq⟩
     have ha_odd : Odd a := by
@@ -2246,7 +2284,8 @@ theorem isGenericMeanSquare_jacobiTwist_of_quadraticGRH (c : ℝ)
           (C_all ^ 2 * Z ^ (2 * b + 4 * θ * η)) := by rw [Finset.sum_const, nsmul_eq_mul]
     _ ≤ Z ^ θ * (C_all ^ 2 * Z ^ (2 * b + 4 * θ * η)) :=
         mul_le_mul_of_nonneg_right hcard (by positivity)
-    _ = C_all ^ 2 * Z ^ (θ + (2 * b + 4 * θ * η)) := by rw [Real.rpow_add hZ_pos]; ring
+    _ = C_all ^ 2 * Z ^ (θ + (2 * b + 4 * θ * η)) := by
+        rw [← mul_assoc, mul_comm (Z ^ θ) _, mul_assoc, ← Real.rpow_add hZ_pos]
     _ ≤ C_all ^ 2 * Z ^ (θ + 1 + ε) :=
         mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hZ hexp_total) (by positivity)
 
