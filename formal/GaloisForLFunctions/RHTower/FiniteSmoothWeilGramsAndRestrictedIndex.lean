@@ -61,7 +61,7 @@ private theorem exists_index_realizing_family_of_denseRange
     obtain ⟨w, hw, hlim⟩ := mem_closure_iff_seq_limit.mp (hF (v i))
     choose s hs using hw
     refine ⟨s, ?_⟩
-    simpa only [Function.comp_apply, hs] using hlim
+    simpa only [Function.comp_def, hs] using hlim
   choose s hs using hseq
   let G : ℕ → Matrix (Fin (PaperNegativePart.negativeRank Q))
       (Fin (PaperNegativePart.negativeRank Q)) ℂ :=

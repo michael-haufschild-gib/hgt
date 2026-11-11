@@ -76,7 +76,7 @@ theorem eventually_unshiftedCombIndex_le_wider_shifted_rank
       _ = Q * R + 1 := by rw [Nat.sub_add_cancel hQ]
   have hratio : ((R + J : ℕ) : ℝ) / R = (Q : ℝ) + 1 / R := by
     rw [hRJ, Nat.cast_add, Nat.cast_mul, Nat.cast_one]
-    field_simp
+    field_simp [hR'.ne'] <;> ring
   have hwidth : Real.log ((R + J : ℕ) : ℝ) - Real.log R =
       Real.log ((Q : ℝ) + 1 / R) := by
     rw [← Real.log_div (by positivity : ((R + J : ℕ) : ℝ) ≠ 0) hR'.ne', hratio]

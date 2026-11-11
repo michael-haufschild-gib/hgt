@@ -20,7 +20,8 @@ positive measure, not unique in general. The extension theorem itself is not use
 * `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`: the description of the feasible
   set of an aperture.
 * `eq_zero_of_positiveDefiniteOnNodes_of_zero`, `spectralKernel_eq_zero_of_null`: a kernel
-  positive definite on an interval that vanishes at `0` vanishes on the interval. So a feasible
+  positive definite on an interval that vanishes at `0` vanishes on the whole interval of
+  differences. So a feasible
   system is strictly positive on a test, unless the Weil functional vanishes on every translate
   of its autocorrelation that the aperture admits: a null vector annihilates the system on an
   interval.
@@ -112,23 +113,28 @@ theorem aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes (A : ℝ) (l
 
 /-! ### Null vectors -/
 
-/-- **A positive definite kernel on an interval that vanishes at `0` vanishes on the
-interval.** The Gram form on the two nodes `0, y` is `K(y) c + K(−y) c̄` for the vector
-`(1, c)`; it is nonnegative for `c = ±1, ±i`. -/
+/-- **A positive definite kernel on an interval that vanishes at `0` vanishes on the interval
+of differences.** The Gram form on the two nodes `−y/2, y/2` is `K(y) c + K(−y) c̄` for the
+vector `(1, c)`; it is nonnegative for `c = ±1, ±i`. -/
 theorem eq_zero_of_positiveDefiniteOnNodes_of_zero {K : ℝ → ℂ} {r : ℝ}
-    (hK : PositiveDefiniteOnNodes K r) (hr : 0 ≤ r) (h0 : K 0 = 0) {y : ℝ} (hy : |y| ≤ r) :
+    (hK : PositiveDefiniteOnNodes K r) (h0 : K 0 = 0) {y : ℝ} (hy : |y| ≤ 2 * r) :
     K y = 0 := by
-  have hnodes : ∀ j : Fin 2, |(![0, y] : Fin 2 → ℝ) j| ≤ r := by
+  have hhalf : |y / 2| ≤ r := by
+    rw [abs_div, abs_two]
+    linarith only [hy]
+  have hnodes : ∀ j : Fin 2, |(![-(y / 2), y / 2] : Fin 2 → ℝ) j| ≤ r := by
     intro j
     fin_cases j
-    · simpa using hr
-    · simpa using hy
-  -- the Gram form of `(1, c)` on the nodes `0, y`
+    · simpa using hhalf
+    · simpa using hhalf
+  have e1 : y / 2 - -(y / 2) = y := by ring
+  have e2 : -(y / 2) - y / 2 = -y := by ring
+  -- the Gram form of `(1, c)` on the nodes `−y/2, y/2`
   have hform : ∀ c : ℂ, ∃ ρ : ℝ, 0 ≤ ρ ∧ K y * c + star c * K (-y) = (ρ : ℂ) := by
     intro c
-    obtain ⟨ρ, hρ, hsum⟩ := hK 2 ![0, y] ![1, c] hnodes
+    obtain ⟨ρ, hρ, hsum⟩ := hK 2 ![-(y / 2), y / 2] ![1, c] hnodes
     refine ⟨ρ, hρ, ?_⟩
-    simpa [Fin.sum_univ_two, h0] using hsum
+    simpa [Fin.sum_univ_two, h0, e1, e2] using hsum
   obtain ⟨ρ₁, h1, e1⟩ := hform 1
   obtain ⟨ρ₂, h2, e2⟩ := hform (-1)
   obtain ⟨ρ₃, h3, e3⟩ := hform I
@@ -162,11 +168,11 @@ theorem eq_zero_of_positiveDefiniteOnNodes_of_zero {K : ℝ → ℂ} {r : ℝ}
 
 /-- **A null vector annihilates a feasible system on an interval.** If the Weil form of a
 system feasible at the aperture `A` vanishes on a test supported in `[−A', A']`, then its
-spectral kernel vanishes on `[−(A − A'), A − A']`. -/
+spectral kernel vanishes on `[−2(A − A'), 2(A − A')]`, the whole interval of differences. -/
 theorem spectralKernel_eq_zero_of_null {A A' : ℝ} {lam : ℕ → ℝ} (hpos : AperturePositive A lam)
     (hA : A' ≤ A) {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-A') A')
-    (hnull : (weilFullFunctional lam (EF.weilTest f f)).re = 0) {y : ℝ} (hy : |y| ≤ A - A') :
-    spectralKernel lam f y = 0 := by
+    (hnull : (weilFullFunctional lam (EF.weilTest f f)).re = 0) {y : ℝ}
+    (hy : |y| ≤ 2 * (A - A')) : spectralKernel lam f y = 0 := by
   have hK := (aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes A lam).mp hpos A' hA
     f hf hfs
   have h0 : spectralKernel lam f 0 = 0 := by
@@ -177,6 +183,6 @@ theorem spectralKernel_eq_zero_of_null {A A' : ℝ} {lam : ℕ → ℝ} (hpos : 
       simp [transl]
     rw [e]
     exact Complex.ext hnull (by simpa using im_weilFullFunctional_weilTest_self lam f)
-  exact eq_zero_of_positiveDefiniteOnNodes_of_zero hK (sub_nonneg.mpr hA) h0 hy
+  exact eq_zero_of_positiveDefiniteOnNodes_of_zero hK h0 hy
 
 end GaloisForLFunctions.FloorFreeArithmetic

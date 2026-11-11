@@ -56,14 +56,16 @@ rows of conductor `q_m^κ` and principal frequencies of order `n`, the corner of
 and the floor bin without slots is `8/9` for `(κ, n) = (2, 6)`, `25/28` for `(3, 4)` and `49/54`
 for `(4, 3)`: a lower order of the frequencies is paid by the conductor.
 
-**The reflected mean square through the twists** (`dualExcess_nonpos_of_density`,
-`budget_half_density`). The dual-length term of the low boundary belongs to the unconditional
-bound for the reflected rows. Expressed through the Möbius sums of the twists of norm up to
-`Z^{2 − M}`, the mean square of the rows has the excess `dualExcess` in a bin; with the count
-`U^{1 − δ}` it is `(1 − M)(1 − δ)` at full prime amplitude, so rows at least as long as the
-completed index are generic. Without the dual-length term the low boundary is at least `5/6` for
-rescaled row length `lx + ly − 2ℓ ≥ 0` (`five_sixths_le_lowBoundaryFree`), and the budget closes
-at `5/6` at `lx = ly = ℓ = 1/2`.
+**The reflected mean square through the twists** (`lowBoundaryFree_add_half_principalExcess`).
+Poisson summation in the row index expresses the mean square of the rows through the Möbius sums
+of the twists of norm up to `Z^{2 + 2ℓ − M}`. A bin of nonprincipal twists has the excess
+`dualExcess`, which with the count `U^{1 − δ}` is `(1 + ℓ − M)(1 − δ)`. The principal twists are
+the target with multiplicity and full prime amplitude; their excess `principalExcess` at a zero
+`β` turns the low boundary into `β` identically. A bound for the rows through the twists is
+therefore no low estimate, and the dual-length term can be replaced only by a bound that does
+not pass through the twists. Without that term the low boundary is at least `5/6` for rescaled
+row length `lx + ly − 2ℓ ≥ 0` (`five_sixths_le_lowBoundaryFree`), and `1 − 1/n` at principal
+frequencies of order `n` (`one_sub_inv_le_lowBoundaryOrderFree`).
 -/
 
 namespace GaloisForLFunctions.FamilyContinuationTheory.Budget
@@ -723,25 +725,30 @@ theorem corner_four_three (M : ℝ) :
 
 /-! ### The reflected mean square through the twists
 
-Poisson summation in the row index turns the mean square of the rows of length `Z^M`, with
-completed index of length `Z`, into the mean square of the Möbius sums of the twists of norm up
-to `Z^{2 − M}`. A bin of twists with count exponent `R`, zeros at real part `(1 + δ)/2` and prime
-amplitude `q` then contributes `Z^{dualExcess}` times the generic value, the Möbius sums having
-length `Z^{1 − ℓ}`. Where every bin has `dualExcess ≤ 0`, the reflected mean square is generic and
-the low boundary has no dual-length term. -/
+Poisson summation in the row index turns the mean square of the marked rows of length `Z^M`
+(cofactor of the completed index of length `Z`, slots of total length `Z^ℓ`) into the mean square
+of the Möbius sums of the twists of norm up to `Z^{2 + 2ℓ − M}`, each with its prime factor. A bin
+of nonprincipal twists with count exponent `R`, zeros at real part `(1 + δ)/2` and prime amplitude
+`q` contributes `Z^{dualExcess}` times the generic value. The principal twists are the target
+itself, with multiplicity the sixth root of the number of twists and full prime amplitude; a zero
+of the target at `β` gives them the excess `principalExcess`. With that term the low boundary
+is `β` identically (`lowBoundaryFree_add_half_principalExcess`): evaluated through the twists, the
+mean square of the rows contains the signal, and only a bound for the rows that does not pass
+through the twists gives a low estimate. -/
 
-/-- Exponent of a bin of twists in the mean square of the marked rows of length `M`, relative to
-its generic value. -/
-def dualExcess (M ℓ δ q R : ℝ) : ℝ := (2 - M) * R + 2 * q * ℓ + δ * (1 - ℓ) - 1
+/-- Exponent of a bin of nonprincipal twists in the mean square of the marked rows of length `M`,
+relative to its generic value. -/
+def dualExcess (M ℓ δ q R : ℝ) : ℝ := (2 + 2 * ℓ - M) * R + 2 * q * ℓ + δ - 1 - ℓ
 
-/-- With the count `U^{1 − δ}` and full prime amplitude the excess is `(1 − M)(1 − δ)`. -/
+/-- With the count `U^{1 − δ}` and full prime amplitude the excess is `(1 + ℓ − M)(1 − δ)`. -/
 theorem dualExcess_density (M ℓ δ : ℝ) :
-    dualExcess M ℓ δ (δ / 2) (1 - δ) = (1 - M) * (1 - δ) := by
+    dualExcess M ℓ δ (δ / 2) (1 - δ) = (1 + ℓ - M) * (1 - δ) := by
   unfold dualExcess
   ring
 
-/-- **Rows at least as long as the completed index are generic under the count `U^{1 − δ}`.** -/
-theorem dualExcess_nonpos_of_density {M ℓ δ q : ℝ} (hM : 1 ≤ M) (hδ : δ ≤ 1) (hℓ : 0 ≤ ℓ)
+/-- Under the count `U^{1 − δ}` the nonprincipal bins have no excess for rows at least as long
+as the marked index. -/
+theorem dualExcess_nonpos_of_density {M ℓ δ q : ℝ} (hM : 1 + ℓ ≤ M) (hδ : δ ≤ 1) (hℓ : 0 ≤ ℓ)
     (hq : q ≤ δ / 2) : dualExcess M ℓ δ q (1 - δ) ≤ 0 := by
   have h1 : dualExcess M ℓ δ q (1 - δ) ≤ dualExcess M ℓ δ (δ / 2) (1 - δ) := by
     unfold dualExcess
@@ -749,13 +756,17 @@ theorem dualExcess_nonpos_of_density {M ℓ δ q : ℝ} (hM : 1 ≤ M) (hδ : δ
   rw [dualExcess_density] at h1
   nlinarith [mul_nonneg (sub_nonneg.2 hM) (sub_nonneg.2 hδ)]
 
-/-- Between the dual length `1 − ℓ` and the length `1` of the completed index the excess of the
-floor bin is `1 − M`: it meets the unconditional excess `M + ℓ − 1` at `M = 1 − ℓ/2`. -/
-theorem dualExcess_floor_bin (M ℓ : ℝ) : dualExcess M ℓ 0 0 1 = 1 - M := by
+/-- The floor bin has the excess `1 + ℓ − M`; it meets the unconditional excess `M + ℓ − 1` of
+the reflected rows at `M = 1`. -/
+theorem dualExcess_floor_bin (M ℓ : ℝ) : dualExcess M ℓ 0 0 1 = 1 + ℓ - M := by
   unfold dualExcess
   ring
 
-/-- The low boundary with a generic reflected mean square. -/
+/-- Exponent of the principal twists in the mean square of the marked rows, relative to its
+generic value, when the target has a zero at real part `β`. -/
+def principalExcess (M ℓ β : ℝ) : ℝ := (2 + 2 * ℓ - M) / 6 + 2 * β - 2
+
+/-- The low boundary without the dual-length term. -/
 def lowBoundaryFree (lx ly ℓ : ℝ) : ℝ := 5 / 6 + lx / 6 + max 0 (ly - lx) / 12 - ℓ / 6
 
 theorem lowBoundaryFree_le_lowBoundaryGen (lx ly ℓ : ℝ) :
@@ -763,8 +774,31 @@ theorem lowBoundaryFree_le_lowBoundaryGen (lx ly ℓ : ℝ) :
   unfold lowBoundaryFree lowBoundaryGen
   linarith [le_max_left (0 : ℝ) (lx + ly + ℓ - 1)]
 
-/-- **The barrier.** With rescaled row length `lx + ly − 2ℓ ≥ 0` the low boundary is at least
-`5/6`, whatever the reflected mean square. -/
+/-- **The mean square through the twists returns the zero.** With half the excess of the
+principal twists in the place of the dual-length term, the low boundary is `β`, for every
+geometry with `lx ≤ ly`. -/
+theorem lowBoundaryFree_add_half_principalExcess {lx ly : ℝ} (ℓ β : ℝ) (h : lx ≤ ly) :
+    lowBoundaryFree lx ly ℓ + principalExcess (lx + ly) ℓ β / 2 = β := by
+  unfold lowBoundaryFree principalExcess
+  rw [max_eq_right (by linarith : (0 : ℝ) ≤ ly - lx)]
+  ring
+
+/-- In both regimes of the Gram bound the low boundary with the excess of the principal twists
+is at least `β`: no geometry gives a low estimate below the zero. -/
+theorem le_lowBoundaryFree_add_half_principalExcess (lx ly ℓ β : ℝ) :
+    β ≤ lowBoundaryFree lx ly ℓ + max 0 (principalExcess (lx + ly) ℓ β) / 2 := by
+  have h1 : principalExcess (lx + ly) ℓ β ≤ max 0 (principalExcess (lx + ly) ℓ β) :=
+    le_max_right _ _
+  have h2 : ly - lx ≤ max 0 (ly - lx) := le_max_right _ _
+  have h3 : (0 : ℝ) ≤ max 0 (ly - lx) := le_max_left _ _
+  unfold lowBoundaryFree
+  generalize max 0 (principalExcess (lx + ly) ℓ β) = m at h1 ⊢
+  generalize max 0 (ly - lx) = ν at h2 h3 ⊢
+  unfold principalExcess at h1
+  linarith
+
+/-- **The barrier of the low side.** With rescaled row length `lx + ly − 2ℓ ≥ 0` the low
+boundary is at least `5/6`, whatever the bound for the reflected rows. -/
 theorem five_sixths_le_lowBoundaryFree {lx ly ℓ : ℝ} (h : 2 * ℓ ≤ lx + ly) :
     5 / 6 ≤ lowBoundaryFree lx ly ℓ := by
   unfold lowBoundaryFree
@@ -773,25 +807,34 @@ theorem five_sixths_le_lowBoundaryFree {lx ly ℓ : ℝ} (h : 2 * ℓ ≤ lx + l
   generalize max 0 (ly - lx) = ν at h0 h1 ⊢
   linarith
 
-theorem lowBoundaryFree_half : lowBoundaryFree (1 / 2) (1 / 2) (1 / 2) = 5 / 6 := by
-  norm_num [lowBoundaryFree]
+/-- **Rows as long as the marked index.** At `lx + ly = 1 + ℓ` the low boundary without the
+dual-length term is `11/12 − ℓ/12`: a generic mean square of the marked rows there would give
+`11/12` without slots, `5/6` at `ℓ = 1`, and the line at `ℓ = 5`. -/
+theorem lowBoundaryFree_marked_length {lx ly ℓ : ℝ} (h : lx ≤ ly) (hM : lx + ly = 1 + ℓ) :
+    lowBoundaryFree lx ly ℓ = 11 / 12 - ℓ / 12 := by
+  unfold lowBoundaryFree
+  rw [max_eq_right (by linarith : (0 : ℝ) ≤ ly - lx)]
+  linarith
 
-/-- At `lx = ly = ℓ = 1/2` and `σ₀ = 5/6`, with the count `U^{1 − δ}`, the high exponent of a
-bin is `q/2 − δ/4`. -/
-theorem endpointExponent_half_density (δ q : ℝ) :
-    endpointExponent (1 / 2) (1 / 2) (1 / 2) (5 / 6) δ q (1 - δ) = q / 2 - δ / 4 := by
-  unfold endpointExponent
-  ring
+/-- At the published geometry the excess of the principal twists vanishes at `β = 7/8`. -/
+theorem principalExcess_published : principalExcess (17 / 48 + 23 / 48) (1 / 6) (7 / 8) = 0 := by
+  norm_num [principalExcess]
 
-/-- **With generic reflected rows and the count `U^{1 − δ}` the budget closes at `5/6`.** The
-geometry `lx = ly = ℓ = 1/2` has free low boundary `5/6`, rows of the length of the completed
-index, no excess in any bin, and a nonpositive high exponent in every bin. -/
-theorem budget_half_density {δ q : ℝ} (hδ : δ ≤ 1) (hq : q ≤ δ / 2) :
-    lowBoundaryFree (1 / 2) (1 / 2) (1 / 2) = 5 / 6 ∧
-      dualExcess (1 / 2 + 1 / 2) (1 / 2) δ q (1 - δ) ≤ 0 ∧
-      endpointExponent (1 / 2) (1 / 2) (1 / 2) (5 / 6) δ q (1 - δ) ≤ 0 := by
-  refine ⟨lowBoundaryFree_half, dualExcess_nonpos_of_density (by norm_num) hδ (by norm_num) hq, ?_⟩
-  rw [endpointExponent_half_density]
+/-- The balanced low boundary at principal frequencies of order `n` without the dual-length
+term. -/
+def lowBoundaryOrderFree (n M ℓ : ℝ) : ℝ := 1 - (1 - M / 2 + ℓ) / n
+
+theorem lowBoundaryOrderFree_le (n M ℓ : ℝ) :
+    lowBoundaryOrderFree n M ℓ ≤ lowBoundaryOrder n M ℓ := by
+  unfold lowBoundaryOrderFree lowBoundaryOrder
+  linarith [le_max_left (0 : ℝ) (M + ℓ - 1)]
+
+/-- **The barrier at order `n`.** With rescaled row length `M − 2ℓ ≥ 0` the low boundary is at
+least `1 − 1/n`: `5/6` for sixth powers, `3/4` for fourth powers, `2/3` for cubes. -/
+theorem one_sub_inv_le_lowBoundaryOrderFree {n M ℓ : ℝ} (hn : 0 < n) (h : 2 * ℓ ≤ M) :
+    1 - 1 / n ≤ lowBoundaryOrderFree n M ℓ := by
+  unfold lowBoundaryOrderFree
+  have h1 : (1 - M / 2 + ℓ) / n ≤ 1 / n := div_le_div_of_nonneg_right (by linarith) hn.le
   linarith
 
 end

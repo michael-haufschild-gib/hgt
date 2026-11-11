@@ -116,6 +116,9 @@ and linear counting, for every finite datum at every depth below `½`: the densi
 is discretized at its quantiles and the discrete primes are rounded up to integers, which
 changes the zeta function by a factor holomorphic and without zeros right of the critical line
 (the construction of the one-offs of `ArithmeticPositiveDuality`, for an arbitrary density).
+Rounding to the next rational prime instead gives an Euler product over the rational primes
+with natural exponents, the Dirichlet series of a nonnegative multiplicative function on the
+integers, with any finite layer at `17/30 < Θ < 1`: the prime gaps cost the strip up to `17/30`.
 Multiplicativity, positivity and integrality of the coefficients therefore impose nothing on a
 finite top layer; only the functional equation is missing from these models. With it there is no
 class left to build a model in: a discrete system of primes whose zeta function has the
@@ -184,9 +187,14 @@ is nonnegative on positive-definite functions vanishing on `log ℕ`
 `RHTower.riemannHypothesis_iff_primeBlindPositive_unconditional`). The feasible sets are convex
 bodies around `Λ` (`SelectiveArithmetic`); a producer of this kind exhibits a point of each.
 A system is feasible at an aperture `A` exactly when, for every test supported in `[−A', A']`,
-the kernel `y ↦ W_λ(τ_y(f ⋆ f̃))` is positive definite on the nodes of `[−(A − A'), A − A']`:
-the hypothesis of Krein's extension theorem, by which each kernel is the Fourier transform on
-its interval of a positive measure. A positive definite kernel on an interval that vanishes at
+the kernel `y ↦ W_λ(τ_y(f ⋆ f̃))` is positive definite on the nodes of `[−(A − A'), A − A']`.
+Such a kernel need not be positive definite on the line, but its product with the
+autocorrelation `φ ⋆ φ̃` of a taper supported in the same interval is: the Gram form of the
+product is the integral over `x` of Gram forms whose nodes lie within the interval about `x`.
+By Bochner's theorem every tapered kernel of a feasible system is the Fourier transform of a
+finite positive measure, and a measure for one nonzero taper gives back the sign on the test: a
+feasible system is a family of positive measures, with no extension theorem needed. A positive
+definite kernel on an interval that vanishes at
 `0` vanishes on the interval; so a feasible system is strictly positive on a test unless its
 Weil functional vanishes on every admitted translate of the autocorrelation of the test. The
 systems on the boundary of a feasible set are those annihilated in this way by a null vector.
@@ -216,7 +224,7 @@ hypothesis. *Kill*: a source excluded for a whole kind.
 | **Replication.** Translates at a finite layer blow up along every phase return; bounded normalizations tend to zero; every limit is zero | `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized` | kill: normal families |
 | **Unit gaps.** AAL ⇔ at most one or infinitely many zeros right of every line; bounded counts pass to locally uniform limits; a realization of index `κ` has at most `κ` right zeros | `asymptoticAbscissaLaw_iff_encard_rightOf_le_one`, `riemannHypothesis_of_unit_gap_limit`, `riemannHypothesis_of_indexOne_realization` | receivers (b) |
 | **Regulators.** The scattering tower keeps the count at every height; the clock lies below Weil's form at every cutoff | `towerQuotient_unit_gap_iff`, `greenWeilEnergy_le_form`, `riemannHypothesis_of_greenWeilEnergy_floor` | kill; receiver |
-| **Certificates.** Feasibility at an aperture = positive definite spectral kernels on intervals; null vectors annihilate; certificates converge to `Λ`; the pencil is not a Dirichlet series | `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `spectralKernel_eq_zero_of_null`, `tendsto_weight_of_aperturePositive_seq`, `not_exists_lSeries_pencil` | structure; kill (c) |
+| **Certificates.** Feasibility at an aperture = positive definite spectral kernels on intervals = tapered kernels that are transforms of positive measures; null vectors annihilate; certificates converge to `Λ`; the pencil is not a Dirichlet series | `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `exists_measure_charFun_eq_taperedKernel`, `spectralKernel_eq_zero_of_null`, `tendsto_weight_of_aperturePositive_seq`, `not_exists_lSeries_pencil` | structure; kill (c) |
 | **Amplification.** Window moments of a finite layer have rate `2k·b`; a bound of order `2k` with exponent `A` gives the law beyond the depth `A/2k`; one exponent for all orders ⇒ AAL; moment bounds of all orders are sup bounds | `finite_top_moment_lower_bound`, `abscissaLawAt_of_window_moment`, `asymptoticAbscissaLaw_of_window_moments`, `windowMomentsBounded_iff_windowSupPowersBounded` | receiver (d); kill |
 | **Symmetrization.** Second-order law of projection; no convergent linear statistic is monotone; heat statistics are monotone below a height; additive functionals of the depths are mixtures of inner masses | `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `sum_profile_sub_eq_innerMass` | kill |
 
@@ -232,6 +240,7 @@ Floors of the mechanisms that exclude zeros, with the theorem that fixes each.
 | Sizes of the contacts (dominated box) | `½`: the trivial aperture | `SelectiveArithmetic.exists_trivialAperture_margin`, `exists_not_feasible` |
 | Positivity of Euler coefficients | `½`: purchase ratio `≤ 2`, interior zeros invisible; every finite layer below `Re s = 1` has a positive prime density | `MultiplicativePositivityGeometry.multiFrequency_purchase_le_two`, `interior_zero_invisible`; `exists_nonneg_density_with_layer` |
 | Euler product, natural norms, natural coefficients, simple pole, linear counting | `½`: every finite layer at every depth below `½` is realized | `exists_integer_norm_euler_product_with_layer`; pairs with further structure in `ArithmeticPositiveDuality…exists_two_scale_integer_norm_euler_product` |
+| Euler product over the rational primes with natural exponents | every finite layer at depth beyond `1/15` is realized | `exists_rational_prime_euler_product_with_layer` |
 | Mean square over a family, then Cauchy–Schwarz | `3/8` | `RHTower.fixed_slot_boundary`, `retunedBoundary_sharp_minimum` |
 | One-sided floors on windows of one fixed length | finite strata: the isolated pair at the ordinate `2π/(3L)`; every length together is floor-free | `hasFiniteStratumModel_windowFloor`; `SurfaceOfSpecZ…asymptoticAbscissaLaw_of_lengthDependent_floors` |
 | Linear statistics under projection | no sign at any depth | `exists_splitIncrement_neg_and_pos` |
@@ -287,12 +296,13 @@ general prime density and rounding to natural norms (`PrimeDensity`): the Euler 
 discrete primes is the zeta function of the density times a factor without zeros right of the
 critical line. Parity of right zeros at every depth. Hurwitz
 transfer of a unit gap. Second-derivative tests for pair sums on vertical lines; concave functions
-on the line; Fourier and heat symbols.
+on the line; Fourier and heat symbols. The taper argument that turns positive definiteness on
+an interval into positive definiteness on the line.
 
 **To build.** The top traces of `μ`, `λ` and twisted multiplicative functions in world I (an
-explicit formula for their summatory functions), beyond the orders of their Dirichlet series. Krein's extension theorem, to pass from positive definite kernels on
-intervals to positive measures, and the boundary points of a feasible set as discrete pure
-objects. A regulator of the horizon that approaches Weil's form from above. The prime side of
+explicit formula for their summatory functions), beyond the orders of their Dirichlet series.
+The boundary points of a feasible set as discrete pure objects (the measures of a system with a
+null vector). A regulator of the horizon that approaches Weil's form from above. The prime side of
 the remaining pure objects with the Gamma factor of `ζ`: pencils at a general shift, cleared
 constant terms, symmetric completions of zero-free Dirichlet polynomials.
 

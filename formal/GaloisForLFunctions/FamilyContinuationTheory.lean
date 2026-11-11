@@ -12,6 +12,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheSignalOfTheGaussianKernel
 import GaloisForLFunctions.FamilyContinuationTheory.TheHeckeFamilyOfTheRationalsContainsZeta
 import GaloisForLFunctions.FamilyContinuationTheory.TheHeckeFamilyOfTheThirdCyclotomicFieldContainsZeta
 import GaloisForLFunctions.FamilyContinuationTheory.TheHeightIsChosenAfterTheTarget
+import GaloisForLFunctions.FamilyContinuationTheory.TheZeroFreeBinsAreBuffered
 import GaloisForLFunctions.FamilyContinuationTheory.TheOddPowerOfAGaussSumCarriesTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.TwoGaussSumsWithAQuadraticProductCarryTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.ThePlanarLargeSieve
@@ -41,7 +42,9 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   modulus is `ζ`: `HeckeHalfPlane ℚ σ₀` puts the zeros of `ξ` in `Re ρ ≤ σ₀`. A comparison with
   an auxiliary height `Z^τ`, with losses `(1 + Z^τ)^A` and `Z^B (Z^τ)^{−N}` for every small `τ`
   and every `N`, keeps half of its saving, whatever the orders `A`, `B`; the family step holds
-  with comparisons of this form.
+  with comparisons of this form. Among the largest real parts of the zeros of a row in `I`
+  nested height windows, two consecutive ones differ by at most `e` when `(I − 1) e` exceeds the
+  width of the strip; rounding to a grid gives the bin of the row with its buffer.
 * **The signal of `ζ`.** The kernel `exp((s − c)²)/((s − 1)ζ(s))` is a signal kernel; a bound
   `O(Z^b)`, `b < 1`, for its signal gives the half-plane `Re s > b` and positivity of the dressed
   lag aggregate on large primes at every level above `b + ½`; bounds with every exponent above
@@ -80,8 +83,13 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   `−7/30672` in the bin `δ = 79/204`; every geometry with low boundary at most `7/8 − 1/4000` has
   a positive high exponent in that bin. In the bin of rows without zeros right of the line, summed
   trivially, every geometry with low boundary below `13/15` has a positive high exponent: the
-  room inside the probe is `[13/15, 7/8]`. Designs with more row variables, or with frequencies
-  of lower order and rows of larger conductor, have larger boundaries in the same model.
+  room inside the probe is `[13/15, 7/8]`. Expressed through the Möbius sums of the twists, the
+  mean square of the rows contains the target with multiplicity and full prime amplitude; with
+  the excess `(2 + 2ℓ − M)/6 + 2β − 2` of these principal twists at a zero `β`, the low boundary
+  is `β` identically, so a bound for the rows through the twists is no low estimate. Without the
+  dual-length term the low boundary is at least `5/6`. Designs with more row variables, or with
+  frequencies of lower order and rows of larger conductor, have larger boundaries in the same
+  model.
 * **From a half-plane to the line.** The transfer from return-free intervals of the prime orbit to
   bounded prime traces follows from the Riemann hypothesis, and under a zero-free strip it is
   equivalent to it.

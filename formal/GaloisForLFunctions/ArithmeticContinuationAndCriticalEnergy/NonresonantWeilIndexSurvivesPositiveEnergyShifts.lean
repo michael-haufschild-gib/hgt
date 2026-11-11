@@ -96,7 +96,7 @@ theorem exists_wider_aperture_positive_shift_nonpositive_index
       a.1 < b.1 ∧ 0 < δ ∧
         negativeRank b (E + δ) = negativeRank a E + weilNullity a E := by
   obtain ⟨b, hab, heq⟩ := exists_right_interval_negativeRank_eq a E
-  let c : SuzukiPositiveAperture := ⟨(a.1 + b.1) / 2, by positivity⟩
+  let c : SuzukiPositiveAperture := ⟨(a.1 + b.1) / 2, by linarith only [a.2, b.2]⟩
   have hac : a.1 < c.1 := by dsimp only [c]; linarith only [hab]
   have hcb : c.1 < b.1 := by dsimp only [c]; linarith only [hab]
   have hcindex := heq c hac hcb.le

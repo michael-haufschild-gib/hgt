@@ -324,7 +324,10 @@ exponential Bessel decay makes the first frequency moment summable
 (`finiteThetaTwist_source_wirtingerBar`, checked). The Schläfli derivative
 is dominated, uniformly for `x ≥ δ > 0`, by
 `(4/δ) exp(−x/2) t^(−2/3) exp(−t/2)`. Joint source differentiability is
-being formalized from this bound.
+being formalized from this bound. At a cusp `a/c`, inverse coordinates
+have horizontal differential `h ↦ −conj(h)/(c²v²)` and zero vertical
+differential. Consequently cusp inversion swaps the two Wirtinger
+derivatives with factor `−1/(c²v²)`; Lean verification is pending.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

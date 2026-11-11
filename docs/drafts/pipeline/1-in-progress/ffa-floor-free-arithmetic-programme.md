@@ -40,13 +40,17 @@ kill or its survivor, and record what a producer must be.
 | 1 | A127 tautology | every finite datum (depth in `(0, ½]`, positive ordinates, multiplicities) is the top layer of a finite configuration with both symmetries; mechanisms true on all tempered symmetric configurations have models at every depth | Lean (kill) |
 | 1 | mechanisms (ii), (iii) | positivity: for every `Θ < 1` and every finite datum a nonnegative density with Laplace transform `1/(s−1) − Σ m_j(1/(s−ρ_j)+1/(s−ρ̄_j)) + entire` (continuous primes, simple pole); Euler products: for every `½ < Θ < 1` and every finite datum natural norms `q_k ≥ 2` with `∏(1−q_k^{−s})^{−1} = Σ a_n n^{−s} = G(s)/(s−1)`, `a_n ∈ ℕ`, `G` holomorphic on `Re s > ½` vanishing exactly on the datum, linear counting; integrality gives the quantum of a multiplicity and no a priori bound below it | Lean (kill) |
 | 1 | mechanism (i) replication | bounded phase return ⇒ replication is `ArithmeticAuxiliaryDynamics.TheMissingInputOfTransport`; here: along every phase return the sup of the translates over a domain joining a zero of a finite layer to `Re s > 1` tends to infinity, a bounded normalization has `c_j → 0`, every locally uniform limit of normalized translates is `0` | Lean (kill) |
-| 2 | A128 | feasibility at an aperture ⇔ spectral kernels positive definite on intervals (Krein-ready form); a null vector makes its spectral kernel vanish on the whole interval (boundary systems); rigidity: every family of certificates converges to `Λ`. Krein's extension theorem itself (kernels ⇒ positive measures) not formalized | Lean; open (Krein extension) |
+| 2 | A128 | feasibility at an aperture ⇔ spectral kernels positive definite on intervals; tapered kernels `K_f·(φ⋆φ̃)` are positive definite on the line, hence characteristic functions of finite positive measures (corpus Bochner), and one such measure with `φ ≠ 0` gives the sign on `f`: the feasible set as positive measures, without Krein's extension theorem; a null vector makes its spectral kernel vanish on the whole interval (boundary systems); rigidity: every family of certificates converges to `Λ` | Lean |
 | 2 | A129 | pencil at shift one: `ξ(s−1)/ξ(s+1) = 2π(s−2)/(s(s+1))·ζ(s−1)/ζ(s+1)`, `σ·ratio → 2π`, so `(ξ(s+1)+ξ(s−1))/ξ(s+1)` is the L-series of no sequence (prime side not carried by `log ℕ`). General shifts, cleared Eisenstein constant term, symmetric completions: paper remark only | Lean (shift one); open (other objects) |
 | 3 | A126 | Hurwitz transfer of bounded counts; tower `Λ(s)/Λ(s+N)` keeps the count (kill); index-`κ` realization bounds right zeros by `κ`; clock: `E_r ≤ E_s ≤ W`, negative directions of `W` are negative at every cutoff, sign or floor at one cutoff per aperture ⇒ RH (kill: no unit gap before the limit) | Lean |
 | 4 | A130 | prime side of a projected pair; second-order law and converse; no convergent linear statistic is monotone (kill); heat statistic monotone exactly below `(2t)^{−1/2}`; additive functionals of the depths = mixtures of counts / inner masses (kill of the additive class) | Lean |
 | 5 | A131 | moment law on fixed windows; a `2k`-th moment bound `Ce^{AT}` on a window gives `\|2Re S\|^{2k+1} ≤ 2^{2k+1}GCe^{(A+1)T}` there (Lipschitz rate `e^{R/2}` of the trace); moments of all orders with one exponent ⇔ sup powers with one exponent ⇐ two-sided `C_ε e^{εT}` (kill: amplification on windows = RH-quality bound on some late windows; one order = a half-plane). The trivial bound has slope 1 in the order | Lean |
 | 6 | A123, A124 | floor calculus; floors: tempered class `½`, exponent-`σ` floors exactly `σ`, count laws `½`, one-length window floors admit finite strata; A124 = MPG, A123 = `RHTower.fixed_slot_boundary` | Lean + citation |
-| — | B170, B171, B172, B173 | no producer found. B170/B171/B173 are of AAL/RH strength; B172 is excluded for linear statistics | open |
+| — | B170 | N1 for `ζ`: open, of AAL strength. Excluded as sources: identities of the explicit formula, both symmetries, positivity below `Re s = 1`, Euler products with natural norms or over the rational primes, normal families of translates | open |
+| — | B171, B117 | a form of index one with the zeros as symmetric spectrum; approximants with at most one right zero: open, of RH strength. The tower and the clock do not supply them | open |
+| — | B172 | no linear statistic; every additive functional of the depths is a mixture of inner masses. What remains is a minimality principle for `ζ` (equality case of Jensen: kind c) | answered in the additive class; remainder open |
+| — | B173 | on windows: equivalent to a two-sided bound `C_ε e^{εT}` on arbitrarily late windows; one order reaches the depth `A/2k` only | identified; open |
+| — | producer | none found | open |
 
 ## Mathematics fixed so far (paper)
 1. **Uniform badness (N1).** Top trace of a finite layer: `P(u)=Re Σ_{z∈S} 2e_z e^{iγ_z u}` =
@@ -81,7 +85,9 @@ kill or its survivor, and record what a producer must be.
    `∏(F_A(s−ρ_j)F_A(s−ρ̄_j))^{m_j}/F_A(s−1)`, `F_A` entire with the single zero `0`. Quantiles
    `W(t_k) = k+1` (`|N − W| ≤ 1`), rounding `q_k = ⌈e^{t_k}⌉`: Euler logarithm
    `= ∫e^{−su}w + sΛ(s) + primeCorrection + R(s)`, the last three holomorphic on `Re s > ½`.
-   Rounding to rational primes would cost the prime-gap exponent (not done).
+   Rounding to the next rational prime: displacement `≤ p^{−(1−α)}` for `α > 17/30` (corpus
+   prime-gap theorem), prime correction holomorphic on `Re s > 17/30`: Euler product over the
+   rational primes with natural exponents and any finite layer at `17/30 < Θ < 1` (in Lean).
 
 ## Modules (folder `FloorFreeArithmetic/`) — all checked with `lake --old env lean`, clean
 | Module | Content |
@@ -93,6 +99,7 @@ kill or its survivor, and record what a producer must be.
 | `QuantileDiscretizationOfAPrimeDensity` | `PrimeDensity` (density, cut, floor), `W`, `atom`, `atomCount_eq`, `abs_discrepancy_le`, `summable_exp_atom`, `discreteZeta_eq_tprod`, `correction`, `differentiableOn_correction`, `eulerLog_eq`, `discreteZeta_eq` |
 | `FiniteLayersInDiscreteEulerProducts` | `layerNumer`, `layerCut`, `layerLogDensity`, `layerPrimeDensity`, `integral_cexp_mul_layerLogDensity`, `frullaniUnit`, `layerRegular`, `layerRegular_eq_zero_iff`, `cexp_layer_eq`, `exists_discrete_euler_product_with_layer` |
 | `FiniteLayersInIntegerNormEulerProducts` | `PrimeDensity.primeNorm`, `roundedAtom`, `roundedCorrection`, `differentiableOn_roundedCorrection`, `genEulerLog_primeNorm_eq`, `exists_integer_norm_euler_product_with_layer` |
+| `FiniteLayersInEulerProductsOverTheRationalPrimes` | `PrimeDensity.rationalPrime`, `primeAtom`, `eventually_primeAtom_sub_le`, `summable_displacement`, `primeRoundedCorrection`, `tsum_neg_log_primeAtom_eq`, `exists_rational_prime_euler_product_with_layer` |
 | `PositivityAdmitsEveryFiniteDatum` | `dominationLength`, `layerDensity`, `layerCorrection`, `layerDensity_nonneg`, `laplace_layerDensity`, `exists_nonneg_density_with_layer` |
 | `TheTangentOrdersOfMobiusAndLiouville` | `analyticAt_zeta_two_mul`, `meromorphicOrderAt_mobius`, `meromorphicOrderAt_liouville`, `meromorphicOrderAt_zeta_two_mul_pow_div_pow` |
 | `EveryFiniteDatumIsATopLayer` | `layerConfig`, `mem_positiveTopSupport_layerConfig`, `exists_config_with_top_layer`, `not_abscissaLaw_layerConfig`, `hasModelAt_of_forall_tempered_symmetric` |
@@ -108,6 +115,7 @@ kill or its survivor, and record what a producer must be.
 | `AnIndexOneRealizationIsAUnitGap` | `card_rightZeros_le_of_realization`, `encard_rightZeros_le_of_realization`, `riemannHypothesis_of_indexOne_realization` |
 | `FeasibleSystemsArePositiveDefiniteOnIntervals` | `PositiveDefiniteOnNodes`, `sum_spectralKernel_eq_weilFullFunctional`, `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `eq_zero_of_positiveDefiniteOnNodes_of_zero`, `spectralKernel_eq_zero_of_null` |
 | `ThePencilAtShiftOneIsNotADirichletSeries` | `xi_eq_zeta_mul_gammaR`, `xi_ne_zero_of_one_lt_re`, `xi_sub_one_div_xi_add_one`, `tendsto_mul_xi_sub_one_div_xi_add_one`, `not_exists_lSeries_pencil` |
+| `TaperedKernelsOfAFeasibleSystemAreTransformsOfPositiveMeasures` | `weilTest_self_zero`, `positiveDefiniteOnReal_mul_weilTest`, `exists_measure_charFun_eq_taperedKernel`, `re_weilFullFunctional_nonneg_of_charFun_taperedKernel` |
 | `CertificatesConvergeToThePrimes` | `exists_bound_of_aperturePositive`, `exists_re_weilFullFunctional_eq_finite`, `tendsto_weight_of_aperturePositive_seq`, `exists_aperture_forall_abs_weight_sub_le` |
 | `TranslatesAtAFiniteLayerHaveOnlyTheZeroLimit` | `isPhaseReturn_comp`, `translatesBoundedOn_of_eventually`, `NormalizedTranslatesBoundedOn`, `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized`, `asymptoticAbscissaLaw_of_boundedNormalizedReturns` |
 | `AdditiveFunctionalsOfTheDepthsAreMixturesOfInnerMasses` | `layerCount`, `layerInnerMass`, `sum_profile_sub_eq_integral_count`, `sum_profile_sub_nonneg`, `sum_profile_sub_eq_innerMass`, `sum_profile_sub_eq_of_innerMass_eq`, `rightZeros_profile_drop_eq_integral_count` |
@@ -119,13 +127,14 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
 `FiniteTopLayersAreSeenOnEveryWindow`, `MomentsOnWindowsAmplifyTheDepth`,
 `TheTopTraceDeterminesTheTopLayer`, `NonAttainmentIsALawOfConfigurations`,
 `PositivityAdmitsEveryFiniteDatum`, `QuantileDiscretizationOfAPrimeDensity`,
-`FiniteLayersInDiscreteEulerProducts`) and for three missing dependencies
+`FiniteLayersInDiscreteEulerProducts`, `FiniteLayersInIntegerNormEulerProducts`,
+`FeasibleSystemsArePositiveDefiniteOnIntervals`) and for three missing dependencies
 (`SurfaceOfSpecZ/ScaleLocality/{FiniteTopLayersNeedNoSeparation,LengthDependentFloorsGiveTheAbscissaLaw}`,
 `SelectiveArithmetic/TheFirstSelectiveWindowOfZeta`).
 
 ## Not done
-- Krein's extension theorem for the kernels of a feasible system, and the extreme points of a
-  feasible set (rest of A128).
+- The extreme points of a feasible set as discrete objects (A128, second half): only the
+  annihilation by a null vector is in Lean.
 - A regulator that approaches Weil's form from above (B117); on paper the clock at a fixed cutoff
   is negative on wide packets between zeros once the aperture is large, also under RH.
 - Prime side of pencils at a general shift, of the cleared Eisenstein constant term and of
@@ -133,9 +142,10 @@ Oleans built for own modules imported by other own modules (`TheFloorOfAMechanis
 - Top traces of `μ`, `λ` and twisted multiplicative functions in world I (explicit formula for
   `M(x)`); only the orders of their Dirichlet series at a zero are in Lean.
 - A model with an Euler product and a functional equation and a finite non-real top layer: none
-  is known (R3); rounding the discrete primes of a layer to rational primes.
+  exists among discrete prime systems with the completed functional equation (corpus rigidity:
+  such a system is the rational primes).
 - A producer: none found; B170, B171, B173 are of AAL/RH strength.
 
 ## Log
 - 2026-11-10 — created; corpus survey done.
-- 2026-11-11 — 27 modules clean; README written; no producer.
+- 2026-11-11 — 29 modules clean; README written; no producer.

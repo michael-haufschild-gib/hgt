@@ -14513,10 +14513,8 @@ lemma cubicSchlafliDensity_hasDerivAt (x t : ℝ) :
   have he := ((((hasDerivAt_id x).pow 2).div_const (4 * t)).const_sub (-t)).exp.const_mul (t ^ (-(2 : ℝ) / 3))
   simp only [Pi.pow_apply, id_eq, Nat.cast_ofNat, mul_one] at he
   convert! he using 1
-  · funext y
-    rfl
-  · unfold cubicSchlafliDensityDeriv cubicSchlafliDensity
-    ring
+  unfold cubicSchlafliDensityDeriv cubicSchlafliDensity
+  ring
 
 lemma cubicSchlafliDensityDeriv_bound (δ x t : ℝ) (hδ : 0 < δ) (hx : δ ≤ x) (ht : 0 < t) :
     ‖cubicSchlafliDensityDeriv x t‖ ≤ (4 / δ) * Real.exp (-x / 2) * cubicSchlafliMajorant t := by
@@ -14880,8 +14878,12 @@ lemma cubicBesselTermFDeriv_strip_bound (c : O → ℂ)
   refine ⟨A + D, add_nonneg hA hD, ?_⟩
   intro h p hp
   by_cases hh : h = 0
-  · simp only [cubicBesselTermFDeriv, cubicBesselAmplitudeDeriv, cubicBesselTerm,
-      cubicBesselAmplitude, if_pos hh, zero_mul, zero_smul, add_zero, norm_zero]
+  · have hz : cubicBesselTermFDeriv c h p = 0 := by
+      subst h
+      apply ContinuousLinearMap.ext
+      intro direction
+      simp [cubicBesselTermFDeriv, cubicBesselAmplitudeDeriv, cubicBesselTerm, cubicBesselAmplitude]
+    rw [hz, norm_zero]
     positivity
   have hv := ha.trans_le hp.1
   obtain ⟨hKu, hKd⟩ := hweighted h hh p.1 hp.1
@@ -14928,5 +14930,757 @@ theorem cubicBesselSeries_hasFDerivAt (c : O → ℂ)
     (fun h q hq => cubicBesselTerm_hasFDerivAt c h q (ha.trans hq.1.1))
     (fun h q hq => hb h q ⟨hq.1.1.le, hq.1.2.le⟩) hmem
     (cubicBesselTerm_summable_norm c hsub p hp).of_norm hmem
+
+
+lemma positiveHeight_cpow_hasDerivAt (s : ℂ) (x : ℝ) (hx : 0 < x) :
+    HasDerivAt (fun y : ℝ => (y : ℂ) ^ s) (s * (x : ℂ) ^ (s - 1)) x := by
+  have he := (hasDerivAt_id' (x := (x : ℂ))).cpow_const (c := s)
+    (Complex.ofReal_mem_slitPlane.mpr hx)
+  simpa using he.comp_ofReal
+
+
+/-- In positive cusp coordinates the actual residual source is its constant mode plus the Bessel series. -/
+theorem cubicSourceResidualFunction_bessel_coordinates (p : ℝ × ℂ) (hp : 0 < p.1) :
+    cubicSourceResidualFunction (cuspCoordinateLift p) =
+      (3 * (Real.pi : ℂ) * constantArithmeticResidue) * (p.1 : ℂ) ^ (2 / 3 : ℂ) +
+        ∑' h : O, cubicBesselTerm rationalSourceResidualFourierCoefficient h p := by
+  have hs := (cubicBesselTerm_summable_norm rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_subexponential p hp).of_norm
+  have hz : Summable (fun h : O => if h = 0 then rationalSourceModeAmplitude p.1 0 else 0) :=
+    (hasSum_ite_eq 0 _).summable
+  have hsplit (h : O) : rationalSourceModeAmplitude p.1 h * tracePhase (cuspFrequency h * p.2) =
+      (if h = 0 then rationalSourceModeAmplitude p.1 0 else 0) +
+        cubicBesselTerm rationalSourceResidualFourierCoefficient h p := by
+    by_cases hh : h = 0
+    · subst h
+      simp only [cubicBesselTerm, cubicBesselAmplitude, if_true, zero_mul, add_zero,
+        cuspFrequency, map_zero, zero_div, AddChar.map_zero_eq_one, mul_one]
+    · rw [rationalSourceModeAmplitude_bessel p.1 hp h hh]
+      simp only [cubicBesselTerm, cubicBesselAmplitude, if_neg hh, zero_add]
+  rw [show cuspCoordinateLift p = upperPoint p.2 p.1 hp from cuspCoordinateLift_positive _ _ hp,
+    cubicSourceResidualFunction_fourier_expansion, cuspCharacterSeries]
+  simp_rw [hsplit]
+  rw [hz.tsum_add hs, tsum_ite_eq, rationalSourceModeAmplitude_zero]
+
+/-- The actual residual source is jointly differentiable in height and horizontal position. -/
+theorem cubicSourceResidualFunction_coordinate_differentiableAt (p : ℝ × ℂ) (hp : 0 < p.1) :
+    DifferentiableAt ℝ (fun q : ℝ × ℂ => cubicSourceResidualFunction (cuspCoordinateLift q)) p := by
+  have hs := (cubicBesselSeries_hasFDerivAt rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_subexponential p hp).differentiableAt
+  have hc : DifferentiableAt ℝ (fun q : ℝ × ℂ =>
+      (3 * (Real.pi : ℂ) * constantArithmeticResidue) * (q.1 : ℂ) ^ (2 / 3 : ℂ)) p := by
+    exact ((positiveHeight_cpow_hasDerivAt (2 / 3) p.1 hp).differentiableAt.comp p
+      differentiableAt_fst).const_mul _
+  apply (hc.add hs).congr_of_eventuallyEq
+  filter_upwards [continuousAt_fst.tendsto.eventually (Ioi_mem_nhds hp)] with q hq
+  exact cubicSourceResidualFunction_bessel_coordinates q hq
+
+/-- The positive denominator of the hyperbolic Möbius action in cusp coordinates. -/
+def mobiusCoordinateDenominator (g : SL(2, ℂ)) (p : ℝ × ℂ) : ℝ :=
+  Complex.normSq (g 1 0 * p.2 + g 1 1) + Complex.normSq (g 1 0) * p.1 ^ 2
+
+lemma mobiusCoordinateDenominator_pos (g : SL(2, ℂ)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    0 < mobiusCoordinateDenominator g p := by
+  simpa only [mobiusCoordinateDenominator, Complex.normSq_eq_norm_sq] using
+    mobius_denominator_pos g p.2 p.1 hp
+
+/-- Height and horizontal position under the hyperbolic Möbius action. -/
+def mobiusCoordinates (g : SL(2, ℂ)) (p : ℝ × ℂ) : ℝ × ℂ :=
+  (p.1 / mobiusCoordinateDenominator g p,
+    ((g 0 0 * p.2 + g 0 1) * star (g 1 0 * p.2 + g 1 1) +
+      g 0 0 * star (g 1 0) * (p.1 : ℂ) ^ 2) / (mobiusCoordinateDenominator g p : ℂ))
+
+lemma mobiusCoordinates_height_pos (g : SL(2, ℂ)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    0 < (mobiusCoordinates g p).1 := div_pos hp (mobiusCoordinateDenominator_pos g p hp)
+
+lemma mobiusCoordinates_differentiableAt (g : SL(2, ℂ)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    DifferentiableAt ℝ (mobiusCoordinates g) p := by
+  have hd := (mobiusCoordinateDenominator_pos g p hp).ne'
+  have hden : DifferentiableAt ℝ (mobiusCoordinateDenominator g) p := by
+    unfold mobiusCoordinateDenominator
+    simp only [Complex.normSq_apply]
+    fun_prop
+  have hinv := (hasDerivAt_inv hd).differentiableAt.comp p hden
+  have hheight : DifferentiableAt ℝ (fun q : ℝ × ℂ => q.1 / mobiusCoordinateDenominator g q) p := by
+    convert! (differentiableAt_fst (𝕜 := ℝ)).mul hinv using 1 <;>
+      simp only [div_eq_mul_inv, Pi.mul_apply, Function.comp_def]
+  have hnum : DifferentiableAt ℝ (fun q : ℝ × ℂ =>
+    (g 0 0 * q.2 + g 0 1) * star (g 1 0 * q.2 + g 1 1) +
+      g 0 0 * star (g 1 0) * (q.1 : ℂ) ^ 2) p := by fun_prop
+  apply hheight.prodMk
+  convert! hnum.mul (Complex.ofRealCLM.differentiableAt.comp p hinv) using 1 <;>
+    simp only [Complex.ofReal_inv, div_eq_mul_inv, Pi.mul_apply, Function.comp_def,
+      Complex.ofRealCLM_apply] <;> rfl
+
+lemma mobiusCoordinates_lift (g : SL(2, ℂ)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    cuspCoordinateLift (mobiusCoordinates g p) = g • cuspCoordinateLift p := by
+  rw [show cuspCoordinateLift p = upperPoint p.2 p.1 hp from cuspCoordinateLift_positive _ _ hp,
+    show cuspCoordinateLift (mobiusCoordinates g p) =
+      upperPoint (mobiusCoordinates g p).2 (mobiusCoordinates g p).1
+        (mobiusCoordinates_height_pos g p hp) from cuspCoordinateLift_positive _ _ _,
+    mobius_upperPoint]
+  apply upperPoint_congr
+  · simp only [mobiusCoordinates, mobiusCoordinateDenominator, Complex.normSq_eq_norm_sq]
+  · simp only [mobiusCoordinates, mobiusCoordinateDenominator, Complex.normSq_eq_norm_sq]
+
+/-- Every fixed cusp translate of the actual source is jointly differentiable. -/
+theorem cubicSourceResidualFunction_translate_coordinate_differentiableAt
+    (g : SL(2, ℂ)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    DifferentiableAt ℝ (fun q : ℝ × ℂ => cubicSourceResidualFunction (g • cuspCoordinateLift q)) p := by
+  have hd := (cubicSourceResidualFunction_coordinate_differentiableAt (mobiusCoordinates g p)
+    (mobiusCoordinates_height_pos g p hp)).comp p (mobiusCoordinates_differentiableAt g p hp)
+  apply hd.congr_of_eventuallyEq
+  filter_upwards [continuousAt_fst.tendsto.eventually (Ioi_mem_nhds hp)] with q hq
+  exact congrArg cubicSourceResidualFunction (mobiusCoordinates_lift g q hq).symm
+
+/-- Inverse cusp coordinates centered at the image of infinity. -/
+def inverseCuspCoordinates (c d : ℂ) (v : ℝ) (z : ℂ) : ℝ × ℂ :=
+  (v / (‖c‖ ^ 2 * (v ^ 2 + ‖z‖ ^ 2)),
+    -d / c - star z / (c ^ 2 * ((v ^ 2 + ‖z‖ ^ 2 : ℝ) : ℂ)))
+
+lemma inverseCuspCoordinates_height_pos (c d : ℂ) (v : ℝ) (z : ℂ)
+    (hc : c ≠ 0) (hv : 0 < v) : 0 < (inverseCuspCoordinates c d v z).1 := by
+  dsimp [inverseCuspCoordinates]
+  positivity
+
+def inverseCuspPath (c d : ℂ) (v : ℝ) (direction : ℂ) (t : ℝ) : ℝ × ℂ :=
+  (v / (‖c‖ ^ 2 * (v ^ 2 + t ^ 2 * ‖direction‖ ^ 2)),
+    -d / c - (t : ℂ) * star direction / (c ^ 2 * ((v ^ 2 + t ^ 2 * ‖direction‖ ^ 2 : ℝ) : ℂ)))
+
+lemma inverseCuspCoordinates_line (c d : ℂ) (v : ℝ) (direction : ℂ) (t : ℝ) :
+    inverseCuspCoordinates c d v ((t : ℂ) * direction) = inverseCuspPath c d v direction t := by
+  simp only [inverseCuspCoordinates, inverseCuspPath, star_mul, Complex.star_def,
+    Complex.conj_ofReal, norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs, mul_comm]
+
+lemma inverseCuspPath_zero (c d : ℂ) (v : ℝ) (direction : ℂ) (hc : c ≠ 0) (hv : 0 < v) :
+    inverseCuspPath c d v direction 0 = (1 / (‖c‖ ^ 2 * v), -d / c) := by
+  unfold inverseCuspPath
+  simp only [Complex.ofReal_zero, zero_pow (by decide : (2 : ℕ) ≠ 0), zero_mul, add_zero, zero_div, sub_zero]
+  congr 1
+  field_simp [norm_ne_zero_iff.mpr hc, hv.ne']
+
+/-- At the cusp center the vertical derivative vanishes and the horizontal derivative is conjugate-linear. -/
+lemma inverseCuspPath_hasDerivAt (c d : ℂ) (v : ℝ) (direction : ℂ) (hc : c ≠ 0) (hv : 0 < v) :
+    HasDerivAt (inverseCuspPath c d v direction) (0, -(star direction) / (c ^ 2 * (v : ℂ) ^ 2)) 0 := by
+  have hn : ‖c‖ ≠ 0 := norm_ne_zero_iff.mpr hc
+  have hvc : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hden : HasDerivAt (fun t : ℝ => v ^ 2 + t ^ 2 * ‖direction‖ ^ 2) 0 0 := by
+    convert! (((hasDerivAt_id (0 : ℝ)).pow 2).mul_const (‖direction‖ ^ 2)).const_add (v ^ 2) using 1 <;> norm_num
+  have hnum : HasDerivAt (fun t : ℝ => (t : ℂ) * star direction) (star direction) 0 := by
+    simpa using (hasDerivAt_id (0 : ℝ)).ofReal_comp.mul_const (star direction)
+  have hdenC := hden.ofReal_comp.const_mul (c ^ 2)
+  have hdenR := hden.const_mul (‖c‖ ^ 2)
+  have hcz : c ^ 2 * ((v ^ 2 + (0 : ℝ) ^ 2 * ‖direction‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
+    simpa using mul_ne_zero (pow_ne_zero 2 hc) (pow_ne_zero 2 hvc)
+  have hrz : ‖c‖ ^ 2 * (v ^ 2 + (0 : ℝ) ^ 2 * ‖direction‖ ^ 2) ≠ 0 := by positivity
+  have hz : HasDerivAt (fun t : ℝ => -d / c - (t : ℂ) * star direction /
+      (c ^ 2 * ((v ^ 2 + t ^ 2 * ‖direction‖ ^ 2 : ℝ) : ℂ)))
+      (-(star direction) / (c ^ 2 * (v : ℂ) ^ 2)) 0 := by
+    convert! (hnum.div hdenC hcz).const_sub (-d / c) using 1
+    simp only [zero_pow (by decide : (2 : ℕ) ≠ 0), zero_mul, add_zero, Complex.ofReal_pow,
+      Complex.ofReal_zero, mul_zero, sub_zero]
+    field_simp
+  have hy : HasDerivAt (fun t : ℝ => v / (‖c‖ ^ 2 * (v ^ 2 + t ^ 2 * ‖direction‖ ^ 2))) 0 0 := by
+    convert! (hasDerivAt_const (0 : ℝ) v).div hdenR hrz using 1 <;> simp
+  exact hy.prodMk hz
+
+lemma inverseCuspPath_comp_hasDerivAt (c d : ℂ) (v : ℝ) (direction : ℂ) (hc : c ≠ 0) (hv : 0 < v)
+    (F : ℝ × ℂ → ℂ) (A : (ℝ × ℂ) →L[ℝ] ℂ)
+    (hF : HasFDerivAt F A (1 / (‖c‖ ^ 2 * v), -d / c)) :
+    HasDerivAt (fun t => F (inverseCuspPath c d v direction t))
+      (A (0, -(star direction) / (c ^ 2 * (v : ℂ) ^ 2))) 0 := by
+  have hf : HasFDerivAt F A (inverseCuspPath c d v direction 0) := by
+    rwa [inverseCuspPath_zero c d v direction hc hv]
+  exact hf.comp_hasDerivAt 0 (inverseCuspPath_hasDerivAt c d v direction hc hv)
+
+/-- The inverse hyperbolic action has the centered cusp-coordinate formula. -/
+theorem inverse_cusp_action (g : SL(2, ℂ)) (hc : g 1 0 ≠ 0) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    g⁻¹ • upperPoint (z + g 0 0 / g 1 0) v hv =
+      upperPoint (inverseCuspCoordinates (g 1 0) (g 1 1) v z).2
+        (inverseCuspCoordinates (g 1 0) (g 1 1) v z).1
+        (inverseCuspCoordinates_height_pos _ _ _ _ hc hv) := by
+  have hdet : g 0 0 * g 1 1 - g 0 1 * g 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using g.property
+  have h00 : (g⁻¹) 0 0 = g 1 1 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have h01 : (g⁻¹) 0 1 = -g 0 1 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have h10 : (g⁻¹) 1 0 = -g 1 0 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have h11 : (g⁻¹) 1 1 = g 0 0 := by simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  have hl : (-g 1 0) * (z + g 0 0 / g 1 0) + g 0 0 = -(g 1 0 * z) := by field_simp; ring
+  have ht : g 1 1 * (z + g 0 0 / g 1 0) + (-g 0 1) = g 1 1 * z + 1 / g 1 0 := by
+    field_simp
+    linear_combination hdet
+  have hden : ‖-(g 1 0 * z)‖ ^ 2 + ‖-g 1 0‖ ^ 2 * v ^ 2 =
+      ‖g 1 0‖ ^ 2 * (v ^ 2 + ‖z‖ ^ 2) := by rw [norm_neg, norm_neg, norm_mul, mul_pow]; ring
+  have hnormc : ((‖g 1 0‖ ^ 2 : ℝ) : ℂ) = g 1 0 * star (g 1 0) := by
+    simpa only [Complex.normSq_eq_norm_sq, Complex.star_def] using (Complex.mul_conj (g 1 0)).symm
+  have hnormz : ((‖z‖ ^ 2 : ℝ) : ℂ) = z * star z := by
+    simpa only [Complex.normSq_eq_norm_sq, Complex.star_def] using (Complex.mul_conj z).symm
+  have hT : v ^ 2 + ‖z‖ ^ 2 ≠ 0 := by positivity
+  have hTc : ((v ^ 2 + ‖z‖ ^ 2 : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hT
+  have hcc : star (g 1 0) ≠ 0 := star_ne_zero.mpr hc
+  rw [mobius_upperPoint]
+  apply upperPoint_congr
+  · rw [h00, h01, h10, h11, hl, ht, hden]
+    dsimp [inverseCuspCoordinates]
+    rw [Complex.ofReal_mul, hnormc]
+    simp only [Complex.star_def, map_neg, map_mul]
+    simp only [Complex.star_def] at hcc
+    field_simp [hc, hcc, hTc]
+    rw [Complex.ofReal_add, Complex.ofReal_pow, hnormz]
+    simp only [Complex.star_def]
+    ring
+  · rw [h10, h11, hl, hden]
+    rfl
+
+def horizontalWirtingerZ (f : ℂ → ℂ) (z : ℂ) : ℂ :=
+  (1 / 2 : ℂ) * (deriv (fun t : ℝ => f (z + (t : ℂ))) 0 -
+    Complex.I * deriv (fun t : ℝ => f (z + (t : ℂ) * Complex.I)) 0)
+
+lemma real_linear_horizontal_decompose (A : (ℝ × ℂ) →L[ℝ] ℂ) (z : ℂ) :
+    A (0, z) = (z.re : ℂ) * A (0, 1) + (z.im : ℂ) * A (0, Complex.I) := by
+  have hz : ((0, z) : ℝ × ℂ) = z.re • (0, 1) + z.im • (0, Complex.I) := by
+    apply Prod.ext
+    · simp
+    · simpa only [Prod.snd_add, Prod.smul_snd, Complex.real_smul, mul_one] using z.re_add_im.symm
+  rw [hz, map_add, map_smul, map_smul]
+  simp only [Complex.real_smul]
+
+lemma real_linear_wirtinger_swap (A : (ℝ × ℂ) →L[ℝ] ℂ) (k : ℂ) :
+    (1 / 2 : ℂ) * (A (0, k) + Complex.I * A (0, -Complex.I * k)) =
+      k * ((1 / 2 : ℂ) * (A (0, 1) - Complex.I * A (0, Complex.I))) := by
+  rw [real_linear_horizontal_decompose A k, real_linear_horizontal_decompose A (-Complex.I * k)]
+  simp only [Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
+    Complex.I_re, Complex.I_im, zero_mul, neg_mul, one_mul, zero_add, zero_sub, Complex.ofReal_neg]
+  conv_rhs => lhs; rw [← k.re_add_im]
+  ring_nf
+  simp only [Complex.I_sq]
+  ring
+
+lemma horizontalWirtingerZ_eq_fderiv (F : ℝ × ℂ → ℂ) (A : (ℝ × ℂ) →L[ℝ] ℂ)
+    (z : ℂ) (v : ℝ) (hF : HasFDerivAt F A (v, z)) :
+    horizontalWirtingerZ (fun w => F (v, w)) z =
+      (1 / 2 : ℂ) * (A (0, 1) - Complex.I * A (0, Complex.I)) := by
+  have hline (direction : ℂ) :
+      HasDerivAt (fun t : ℝ => F (v, z + (t : ℂ) * direction)) (A (0, direction)) 0 := by
+    have hz : HasDerivAt (fun t : ℝ => z + (t : ℂ) * direction) direction 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).ofReal_comp.mul_const direction).const_add z
+    have hp := (hasDerivAt_const (0 : ℝ) v).prodMk hz
+    have hf : HasFDerivAt F A (v, z + (0 : ℂ) * direction) := by simpa only [zero_mul, add_zero] using hF
+    exact hf.comp_hasDerivAt 0 hp
+  have h1 := (hline 1).deriv
+  have hI := (hline Complex.I).deriv
+  simp only [mul_one] at h1
+  rw [horizontalWirtingerZ, h1, hI]
+
+/-- Inverse cusp coordinates exchange the two horizontal Wirtinger derivatives. -/
+theorem inverse_cusp_wirtinger_rule (c d : ℂ) (v : ℝ) (hc : c ≠ 0) (hv : 0 < v)
+    (F : ℝ × ℂ → ℂ) (A : (ℝ × ℂ) →L[ℝ] ℂ)
+    (hF : HasFDerivAt F A (1 / (‖c‖ ^ 2 * v), -d / c)) :
+    horizontalWirtingerBar (fun z => F (inverseCuspCoordinates c d v z)) 0 =
+      (-1 / (c ^ 2 * (v : ℂ) ^ 2)) *
+        horizontalWirtingerZ (fun z => F (1 / (‖c‖ ^ 2 * v), z)) (-d / c) := by
+  rw [horizontalWirtingerZ_eq_fderiv F A _ _ hF]
+  have h1 := (inverseCuspPath_comp_hasDerivAt c d v 1 hc hv F A hF).deriv
+  have hI := (inverseCuspPath_comp_hasDerivAt c d v Complex.I hc hv F A hF).deriv
+  have he1 : (fun t : ℝ => F (inverseCuspCoordinates c d v (t : ℂ))) =
+      (fun t : ℝ => F (inverseCuspPath c d v 1 t)) := by
+    funext t
+    rw [← inverseCuspCoordinates_line, mul_one]
+  have heI : (fun t : ℝ => F (inverseCuspCoordinates c d v ((t : ℂ) * Complex.I))) =
+      (fun t : ℝ => F (inverseCuspPath c d v Complex.I t)) := by
+    funext t
+    rw [inverseCuspCoordinates_line]
+  rw [horizontalWirtingerBar]
+  simp only [zero_add]
+  rw [he1, heI, h1, hI]
+  simp only [star_one, Complex.star_def, Complex.conj_I, neg_neg]
+  convert real_linear_wirtinger_swap A (-1 / (c ^ 2 * (v : ℂ) ^ 2)) using 1 <;> congr 2 <;> ring
+
+lemma horizontalWirtingerBar_translate (f : ℂ → ℂ) (a : ℂ) :
+    horizontalWirtingerBar (fun z => f (z + a)) 0 = horizontalWirtingerBar f a := by
+  unfold horizontalWirtingerBar
+  simp only [zero_add, add_zero, add_comm]
+
+/-- The coordinate chain rule at a finite cusp interchanges the two Wirtinger derivatives. -/
+lemma coordinate_cusp_wirtinger_rule (f : HyperbolicSpace → ℂ)
+    (g : SL(2, ℂ)) (hc : g 1 0 ≠ 0) (v : ℝ) (hv : 0 < v)
+    (hf : DifferentiableAt ℝ (fun q : ℝ × ℂ => f (g • cuspCoordinateLift q))
+      (1 / (‖g 1 0‖ ^ 2 * v), -g 1 1 / g 1 0)) :
+    horizontalWirtingerBar (fun z => f (upperPoint z v hv)) (g 0 0 / g 1 0) =
+      (-1 / ((g 1 0) ^ 2 * (v : ℂ) ^ 2)) * horizontalWirtingerZ
+        (fun z => f (g • upperPoint z (1 / (‖g 1 0‖ ^ 2 * v)) (by positivity)))
+        (-g 1 1 / g 1 0) := by
+  let F : ℝ × ℂ → ℂ := fun q => f (g • cuspCoordinateLift q)
+  have hp : 0 < 1 / (‖g 1 0‖ ^ 2 * v) := by positivity
+  have he (z : ℂ) : F (inverseCuspCoordinates (g 1 0) (g 1 1) v z) =
+      f (upperPoint (z + g 0 0 / g 1 0) v hv) := by
+    unfold F
+    rw [show cuspCoordinateLift (inverseCuspCoordinates (g 1 0) (g 1 1) v z) =
+      upperPoint (inverseCuspCoordinates (g 1 0) (g 1 1) v z).2
+        (inverseCuspCoordinates (g 1 0) (g 1 1) v z).1
+        (inverseCuspCoordinates_height_pos _ _ _ _ hc hv) from cuspCoordinateLift_positive _ _ _,
+      ← inverse_cusp_action g hc v hv z, smul_inv_smul]
+  have hr := inverse_cusp_wirtinger_rule (g 1 0) (g 1 1) v hc hv F _ hf.hasFDerivAt
+  rw [funext he] at hr
+  have hr' := (horizontalWirtingerBar_translate
+    (fun z => f (upperPoint z v hv)) (g 0 0 / g 1 0)).symm.trans hr
+  simpa only [F, cuspCoordinateLift_positive _ _ hp] using hr'
+
+/-- Cusp inversion acts on the actual residual source derivative with its exact weight. -/
+theorem cubicSourceResidualFunction_cusp_derivative (g : SL(2, ℂ)) (hc : g 1 0 ≠ 0)
+    (v : ℝ) (hv : 0 < v) :
+    horizontalWirtingerBar (fun z => cubicSourceResidualFunction (upperPoint z v hv)) (g 0 0 / g 1 0) =
+      (-1 / ((g 1 0) ^ 2 * (v : ℂ) ^ 2)) * horizontalWirtingerZ
+        (fun z => cubicSourceResidualFunction (g • upperPoint z (1 / (‖g 1 0‖ ^ 2 * v)) (by positivity)))
+        (-g 1 1 / g 1 0) :=
+  coordinate_cusp_wirtinger_rule cubicSourceResidualFunction g hc v hv
+    (cubicSourceResidualFunction_translate_coordinate_differentiableAt g _ (by positivity))
+
+/-- The same exact cusp weight applies to the conjugate source used in the Gauss twists. -/
+theorem conjugate_cubicSourceResidualFunction_cusp_derivative (g : SL(2, ℂ)) (hc : g 1 0 ≠ 0)
+    (v : ℝ) (hv : 0 < v) :
+    horizontalWirtingerBar (fun z => star (cubicSourceResidualFunction (upperPoint z v hv)))
+        (g 0 0 / g 1 0) =
+      (-1 / ((g 1 0) ^ 2 * (v : ℂ) ^ 2)) * horizontalWirtingerZ
+        (fun z => star (cubicSourceResidualFunction
+          (g • upperPoint z (1 / (‖g 1 0‖ ^ 2 * v)) (by positivity)))) (-g 1 1 / g 1 0) := by
+  apply coordinate_cusp_wirtinger_rule (fun w => star (cubicSourceResidualFunction w)) g hc v hv
+  exact Complex.conjCLE.differentiableAt.comp _
+    (cubicSourceResidualFunction_translate_coordinate_differentiableAt g _ (by positivity))
+
+/-- A character has one nonzero Fourier coefficient, at its dual residue class. -/
+lemma finiteAdditiveFourierCoeff_character {R : Type*} [CommRing R] [Fintype R]
+    (ψ χ : AddChar R ℂ) (h : R) :
+    finiteAdditiveFourierCoeff ψ χ h = if χ = ψ.mulShift h then 1 else 0 := by
+  classical
+  by_cases he : χ = ψ.mulShift h
+  · simp only [if_pos he, he, finiteAdditiveFourierCoeff, AddChar.mulShift_apply]
+    have hp (x : R) : ψ (h * x) * ψ (-h * x) = 1 := by
+      rw [← AddChar.map_add_eq_mul]
+      simp
+    simp only [hp, Finset.sum_const, nsmul_eq_mul, mul_one]
+    exact div_self (by exact_mod_cast Fintype.card_ne_zero)
+  · rw [if_neg he, finiteAdditiveFourierCoeff]
+    have hn : χ * ψ.mulShift (-h) ≠ 1 := by
+      intro hh
+      apply he
+      ext x
+      have hv : χ x * ψ (-h * x) = 1 := congrArg (fun φ : AddChar R ℂ => φ x) hh
+      have hp : ψ (-h * x) * ψ (h * x) = 1 := by
+        rw [← AddChar.map_add_eq_mul]
+        simp
+      change χ x = ψ (h * x)
+      calc
+        _ = χ x * (ψ (-h * x) * ψ (h * x)) := by rw [hp, mul_one]
+        _ = _ := by rw [← mul_assoc, hv, one_mul]
+    have hs := AddChar.sum_eq_zero_of_ne_one hn
+    change (∑ x, χ x * ψ (-h * x)) = 0 at hs
+    rw [hs, zero_div]
+
+/-- A primitive trace character parametrizes every character of a finite ring. -/
+theorem finiteAdditiveCharacter_exists_unique {R : Type*} [CommRing R] [Fintype R]
+    (ψ : AddChar R ℂ) (hψ : ψ.IsPrimitive) (χ : AddChar R ℂ) :
+    ∃! h : R, χ = ψ.mulShift h := by
+  classical
+  have hex : ∃ h : R, χ = ψ.mulShift h := by
+    by_contra hn
+    push_neg at hn
+    have hi := finiteAdditiveFourier_inversion ψ hψ χ 0
+    simp only [finiteAdditiveFourierCoeff_character, if_neg (hn _), zero_mul,
+      Finset.sum_const_zero, AddChar.map_zero_eq_one] at hi
+    exact zero_ne_one hi
+  obtain ⟨h, hh⟩ := hex
+  refine ⟨h, hh, ?_⟩
+  intro k hk
+  exact AddChar.to_mulShift_inj_of_isPrimitive hψ (hk.symm.trans hh)
+
+/-- Distinct primitive Fourier frequencies cannot carry the same translation character. -/
+lemma period_fourier_zero_of_character (f : ℂ → ℂ)
+    (hper : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z)
+    (h : O) (b χ : ℂ) (hχ : χ ≠ tracePhase (cuspFrequency h * b))
+    (htranslate : ∀ z, f (z + b) = χ * f z) :
+    ∫ z in periodDomain, f z * tracePhase (-cuspFrequency h * z) = 0 := by
+  have he := period_fourier_translation f hper h b
+  simp only [htranslate, mul_assoc] at he
+  rw [integral_const_mul] at he
+  apply (mul_eq_zero.mp (show (χ - tracePhase (cuspFrequency h * b)) *
+      (∫ z in periodDomain, f z * tracePhase (-cuspFrequency h * z)) = 0 by
+    linear_combination he)).resolve_left (sub_ne_zero.mpr hχ)
+
+/-- The scaled ramified row has the original cusp lattice as its period lattice. -/
+def ramifiedScaledRow (t : O) (v : ℝ) (z : ℂ) : ℂ :=
+  ramifiedSourceFunction t (cuspCoordinateLift (3 * v, 3 * z))
+
+lemma ramifiedScaledRow_period (t : O) (v : ℝ) (hv : 0 < v) (n : O) (z : ℂ) :
+    ramifiedScaledRow t v (z + 3 * ringComplex n) = ramifiedScaledRow t v z := by
+  simp only [ramifiedScaledRow, cuspCoordinateLift_positive _ _ (show 0 < 3 * v by positivity)]
+  exact ramifiedSourceFunction_scaled_period t (3 * v) (by positivity) n z
+
+lemma ramifiedScaledRow_character (t x : O) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    ramifiedScaledRow t v (z + ringComplex x) =
+      complexCharacter (ramifiedParabolic t x) * ramifiedScaledRow t v z := by
+  simp only [ramifiedScaledRow, cuspCoordinateLift_positive _ _ (show 0 < 3 * v by positivity)]
+  rw [mul_add, ramifiedSourceFunction_period, ramifiedParabolic_character]
+
+/-- Nonzero ramified Fourier coefficients must match every cusp translation phase. -/
+theorem ramifiedScaledRow_fourier_character (t h : O) (v : ℝ) (hv : 0 < v)
+    (hh : (∫ z in periodDomain, ramifiedScaledRow t v z * tracePhase (-cuspFrequency h * z)) ≠ 0)
+    (x : O) :
+    tracePhase (cuspFrequency h * ringComplex x) = complexCharacter (ramifiedParabolic t x) := by
+  by_contra hn
+  exact hh (period_fourier_zero_of_character _ (ramifiedScaledRow_period t v hv) h
+    (ringComplex x) (complexCharacter (ramifiedParabolic t x)) (Ne.symm hn)
+    (ramifiedScaledRow_character t x v hv))
+
+lemma ramifiedParabolic_zero (t : O) : ramifiedParabolic t 0 = 1 := by
+  apply Subtype.ext
+  apply Subtype.ext
+  funext i j
+  fin_cases i <;> fin_cases j <;> simp [ramifiedParabolic]
+
+lemma ramifiedParabolic_add (t x y : O) :
+    ramifiedParabolic t (x + y) = ramifiedParabolic t x * ramifiedParabolic t y := by
+  apply Subtype.ext
+  apply Subtype.ext
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [ramifiedParabolic, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+/-- The stabilizer character at a lower cusp, expressed without choosing an embedding orientation. -/
+def ramifiedCuspLinearChar (t : O) : AddChar O ℂ where
+  toFun x := complexCharacter (ramifiedParabolic t x)
+  map_zero_eq_one' := by rw [ramifiedParabolic_zero, map_one]
+  map_add_eq_mul' x y := by rw [ramifiedParabolic_add, map_mul]
+
+lemma ramifiedCuspLinearChar_period (t x : O) (hx : x ∈ Ideal.span {(3 : O)}) :
+    ramifiedCuspLinearChar t x = 1 := by
+  obtain ⟨y, rfl⟩ := Ideal.mem_span_singleton.mp hx
+  change complexCharacter (ramifiedParabolic t (3 * y)) = 1
+  rw [ramifiedParabolic_three, map_pow, complexCharacter_cube]
+
+def ramifiedCuspQuotientChar (t : O) : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ :=
+  principalQuotientAddChar 3 (ramifiedCuspLinearChar t) (ramifiedCuspLinearChar_period t)
+
+lemma ramifiedCuspQuotientChar_mk (t x : O) :
+    ramifiedCuspQuotientChar t (Ideal.Quotient.mk (Ideal.span {(3 : O)}) x) =
+      complexCharacter (ramifiedParabolic t x) :=
+  principalQuotientAddChar_mk 3 _ _ x
+
+section
+local instance : Finite (O ⧸ Ideal.span {(3 : O)}) :=
+  (Ideal.span {(3 : O)}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (by norm_num))
+local instance : Fintype (O ⧸ Ideal.span {(3 : O)}) := Fintype.ofFinite _
+
+/-- The unique residue class carrying the ramified cusp character. -/
+def ramifiedCuspFrequencyClass (t : O) : O ⧸ Ideal.span {(3 : O)} :=
+  Classical.choose (finiteAdditiveCharacter_exists_unique
+    (residueTraceQuotientChar 1 3 (by norm_num))
+    (residueTraceQuotientChar_primitive 3 (by norm_num)) (ramifiedCuspQuotientChar t))
+
+lemma ramifiedCuspFrequencyClass_spec (t : O) :
+    ramifiedCuspQuotientChar t =
+      (residueTraceQuotientChar 1 3 (by norm_num)).mulShift (ramifiedCuspFrequencyClass t) :=
+  (Classical.choose_spec (finiteAdditiveCharacter_exists_unique
+    (residueTraceQuotientChar 1 3 (by norm_num))
+    (residueTraceQuotientChar_primitive 3 (by norm_num)) (ramifiedCuspQuotientChar t))).1
+
+end
+
+lemma residueTraceQuotientChar_three_phase (h x : O) :
+    residueTraceQuotientChar h 3 (by norm_num) (Ideal.Quotient.mk _ x) =
+      tracePhase (cuspFrequency h * ringComplex x) := by
+  rw [residueTraceQuotientChar_mk]
+  unfold residueAdditive cuspFrequency
+  simp only [map_mul, map_ofNat]
+  congr 1
+  ring
+
+/-- Each ramified cusp row is supported on one intrinsic residue class modulo three. -/
+theorem ramifiedScaledRow_fourier_support (t h : O) (v : ℝ) (hv : 0 < v)
+    (hoff : Ideal.Quotient.mk (Ideal.span {(3 : O)}) h ≠ ramifiedCuspFrequencyClass t) :
+    ∫ z in periodDomain, ramifiedScaledRow t v z * tracePhase (-cuspFrequency h * z) = 0 := by
+  by_contra hn
+  have he : residueTraceQuotientChar h 3 (by norm_num) = ramifiedCuspQuotientChar t := by
+    ext r
+    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective r
+    rw [residueTraceQuotientChar_three_phase, ramifiedCuspQuotientChar_mk]
+    exact ramifiedScaledRow_fourier_character t h v hv hn x
+  rw [residueTraceQuotientChar_mulShift, ramifiedCuspFrequencyClass_spec] at he
+  exact hoff (AddChar.to_mulShift_inj_of_isPrimitive
+    (residueTraceQuotientChar_primitive 3 (by norm_num)) he)
+
+lemma ramifiedCuspFrequencyClass_ne_zero (t : O)
+    (ht : complexCharacter (ramifiedParabolic t 1) ≠ 1) : ramifiedCuspFrequencyClass t ≠ 0 := by
+  intro hz
+  have he := ramifiedCuspFrequencyClass_spec t
+  rw [hz, AddChar.mulShift_zero] at he
+  have hv := congrArg (fun χ : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ => χ (Ideal.Quotient.mk _ 1)) he
+  rw [ramifiedCuspQuotientChar_mk, AddChar.one_apply] at hv
+  exact ht hv
+
+
+section
+local instance : Finite (O ⧸ Ideal.span {(3 : O)}) :=
+  (Ideal.span {(3 : O)}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (by norm_num))
+local instance : Fintype (O ⧸ Ideal.span {(3 : O)}) := Fintype.ofFinite _
+
+/-- An integral representative of the dual phase of a ramified symbol. -/
+def ramifiedArithmeticPhase (u : Oˣ) (n : ℕ) : O :=
+  principalResidueRep 3 (Classical.choose (finiteAdditiveCharacter_exists_unique
+    (residueTraceQuotientChar 1 3 (by norm_num))
+    (residueTraceQuotientChar_primitive 3 (by norm_num)) (ramifiedQuotientChar u n)))
+
+lemma ramifiedArithmeticPhase_spec (u : Oˣ) (n : ℕ) (x : O) :
+    ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * x)) =
+      tracePhase (cuspFrequency (ramifiedArithmeticPhase u n) * ringComplex x) := by
+  have he := (Classical.choose_spec (finiteAdditiveCharacter_exists_unique
+    (residueTraceQuotientChar 1 3 (by norm_num))
+    (residueTraceQuotientChar_primitive 3 (by norm_num)) (ramifiedQuotientChar u n))).1
+  have hh : ramifiedQuotientChar u n =
+      residueTraceQuotientChar (ramifiedArithmeticPhase u n) 3 (by norm_num) := by
+    rw [residueTraceQuotientChar_mulShift]
+    simpa only [ramifiedArithmeticPhase, principalResidueRep_spec] using he
+  have hv := congrArg (fun χ : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ => χ (Ideal.Quotient.mk _ x)) hh
+  rw [residueTraceQuotientChar_three_phase] at hv
+  exact (principalQuotientAddChar_mk 3 _ _ x).symm.trans hv
+
+end
+
+/-- Ramified denominator variation on a primary affine line is its additive character. -/
+lemma ramified_symbol_primary_affine (u : Oˣ) (n : ℕ) (a x : O)
+    (ha : lambda ^ 2 ∣ a - 1) :
+    ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * x)) =
+      ringComplex (symbol ((u : O) * lambda ^ n) a) *
+        tracePhase (cuspFrequency (ramifiedArithmeticPhase u n) * ringComplex x) := by
+  obtain ⟨A, hA⟩ := three_dvd_lambda_sq.trans ha
+  have hd : (3 : O) ∣ a + 3 * x - 1 := ⟨A + x, by linear_combination hA⟩
+  have he : (3 : O) ∣ a * (1 + 3 * x) - 1 := ⟨A + a * x, by linear_combination hA⟩
+  have h9 : (9 : O) ∣ a + 3 * x - a * (1 + 3 * x) :=
+    ⟨-x * A, by linear_combination -3 * x * hA⟩
+  rw [ramified_symbol_congr_mod_nine u n _ _ hd he h9,
+    symbol_mul_denominator, map_mul, ramifiedArithmeticPhase_spec]
+
+/-- Frequency for a cusp with horizontal period nine. -/
+def ninthCuspFrequency (h : O) : ℂ := cuspFrequency h / 3
+
+lemma affineCusp_phase_identity (h h1 q a k r x : O) (ha : a ≠ 0) (hq : q ≠ 0)
+    (hh : h = q * h1) (hk : 3 * k = h1 + r * a) :
+    tracePhase (cuspFrequency r * ringComplex x) *
+      tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * x) / ringComplex (q * a)) =
+      tracePhase (ninthCuspFrequency h / ringComplex q) * residueAdditive (3 * k) a x := by
+  rw [← AddChar.map_add_eq_mul]
+  unfold residueAdditive
+  rw [← AddChar.map_add_eq_mul]
+  congr 1
+  have hk' := congrArg ringComplex hk
+  simp only [map_mul, map_add, map_ofNat] at hk'
+  simp only [ninthCuspFrequency, cuspFrequency, hh, map_mul, map_add, map_ofNat]
+  rw [show ringComplex h1 = 3 * ringComplex k - ringComplex r * ringComplex a by
+    linear_combination -hk']
+  field_simp [ringComplex_ne_zero ha, ringComplex_ne_zero hq,
+    ringComplex_ne_zero traceLambda_ne_zero] <;> ring
+
+/-- The affine ramified summand factors into its phase and an ordinary cubic Gauss summand. -/
+lemma affineCuspGaussTerm_factor (h h1 q a k x : O) (u : Oˣ) (n : ℕ)
+    (ha : a ≠ 0) (hap : lambda ^ 2 ∣ a - 1) (hq : q ≠ 0)
+    (hh : h = q * h1) (hk : 3 * k = h1 + ramifiedArithmeticPhase u n * a) :
+    (ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * x)) *
+      ringComplex (symbol (a + 3 * x) a)) *
+        tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * x) / ringComplex (q * a)) =
+      (tracePhase (ninthCuspFrequency h / ringComplex q) *
+        (ringComplex (symbol ((u : O) * lambda ^ n) a) * ringComplex (symbol 3 a))) *
+          (ringComplex (symbol x a) * residueAdditive (3 * k) a x) := by
+  have hs : symbol (a + 3 * x) a = symbol (3 * x) a := symbol_congr ⟨1, by ring⟩
+  rw [ramified_symbol_primary_affine u n a x hap, hs, symbol_mul_numerator, map_mul]
+  have he := affineCusp_phase_identity h h1 q a k (ramifiedArithmeticPhase u n) x ha hq hh hk
+  calc
+    _ = (ringComplex (symbol ((u : O) * lambda ^ n) a) * ringComplex (symbol 3 a) *
+        ringComplex (symbol x a)) *
+      (tracePhase (cuspFrequency (ramifiedArithmeticPhase u n) * ringComplex x) *
+        tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * x) / ringComplex (q * a))) := by ring
+    _ = _ := by rw [he]; ring
+
+/-- The two cubic symbols are absorbed into a quadratic ramified frequency factor. -/
+lemma cubicUnitGaussSum_ramified_single_twist (k r a : O) (ha : a ≠ 0)
+    (hap : lambda ^ 2 ∣ a - 1) (hr : IsCoprime (3 * r) a) :
+    ringComplex (symbol r a) * ringComplex (symbol 3 a) * cubicUnitGaussSum k a =
+      cubicUnitGaussSum (9 * r ^ 2 * k) a := by
+  have hcop : IsCoprime a (9 * r ^ 2) := by
+    rw [show (9 : O) = 3 * 3 by norm_num]
+    exact ((hr.of_mul_left_left.mul_left hr.of_mul_left_left).mul_left
+      hr.of_mul_left_right.pow_left).symm
+  have ht := cubicUnitGaussSum_frequency_twist k a (9 * r ^ 2) ha hcop
+  have hc : ringComplex (symbol r a) * ringComplex (symbol 3 a) *
+      ringComplex (symbol (9 * r ^ 2) a) = 1 := by
+    rw [← map_mul, ← map_mul, ← symbol_mul_numerator, ← symbol_mul_numerator]
+    rw [show r * 3 * (9 * r ^ 2) = (3 * r) ^ 3 by ring,
+      symbol_pow_numerator _ a hap, symbol_cube_of_isCoprime _ a hap hr, map_one]
+  calc
+    _ = (ringComplex (symbol r a) * ringComplex (symbol 3 a)) *
+        (ringComplex (symbol (9 * r ^ 2) a) * cubicUnitGaussSum (k * (9 * r ^ 2)) a) := by rw [ht]
+    _ = cubicUnitGaussSum (k * (9 * r ^ 2)) a := by rw [← mul_assoc, hc, one_mul]
+    _ = _ := by congr 1; ring
+
+/-- The finite affine Gauss sum at a ramified cusp branch. -/
+def ramifiedAffineGauss (h q a : O) (u : Oˣ) (n : ℕ) : ℂ :=
+  ∑' x : CubicUnitResidue a,
+    (ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * principalResidueRep a x.1)) *
+      ringComplex (symbol (a + 3 * principalResidueRep a x.1) a)) *
+        tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * principalResidueRep a x.1) /
+          ringComplex (q * a))
+
+/-- The intrinsic additive phase affects the support but cancels from the unramified Gauss frequency. -/
+theorem ramifiedAffineGauss_eq_unramified (h h1 q a k : O) (u : Oˣ) (n : ℕ)
+    (ha : a ≠ 0) (hap : lambda ^ 2 ∣ a - 1) (hq : q ≠ 0)
+    (hh : h = q * h1) (hk : 3 * k = h1 + ramifiedArithmeticPhase u n * a) :
+    ramifiedAffineGauss h q a u n = tracePhase (ninthCuspFrequency h / ringComplex q) *
+      cubicUnitGaussSum (3 * ((u : O) * lambda ^ n) ^ 2 * h1) a := by
+  have he : ramifiedAffineGauss h q a u n =
+      (tracePhase (ninthCuspFrequency h / ringComplex q) *
+        (ringComplex (symbol ((u : O) * lambda ^ n) a) * ringComplex (symbol 3 a))) *
+          cubicUnitGaussSum k a := by
+    rw [ramifiedAffineGauss, cubicUnitGaussSum, ← tsum_mul_left]
+    exact tsum_congr (fun x => affineCuspGaussTerm_factor h h1 q a k
+      (principalResidueRep a x.1) u n ha hap hq hh hk)
+  rw [he, mul_assoc, cubicUnitGaussSum_ramified_single_twist k _ a ha hap
+    (ramified_primary_coprime u n a hap)]
+  congr 1
+  apply cubicUnitGaussSum_frequency_congr _ _ a ha
+  refine ⟨3 * ((u : O) * lambda ^ n) ^ 2 * ramifiedArithmeticPhase u n, ?_⟩
+  linear_combination 3 * ((u : O) * lambda ^ n) ^ 2 * hk
+
+
+/-- A unit and an elementary row operation preserve the integral level-three rows. -/
+def unitLowerRowEquiv (u : Oˣ) : PrimitiveRow ≃ PrimitiveRow where
+  toFun r := ⟨![(u : O) * r.1 0, r.1 1 - r.1 0], by
+    change IsCoprime ((u : O) * r.1 0) (r.1 1 - r.1 0) ∧
+      (3 : O) ∣ (u : O) * r.1 0 ∧ (3 : O) ∣ r.1 1 - r.1 0 - 1
+    refine ⟨?_, r.2.2.1.mul_left _, ?_⟩
+    · obtain ⟨a, b, hab⟩ := r.2.1
+      refine ⟨(a + b) * (↑u⁻¹ : O), b, ?_⟩
+      calc
+        _ = (a + b) * (((↑u⁻¹ : O) * (u : O)) * r.1 0) + b * (r.1 1 - r.1 0) := by ring
+        _ = (a + b) * r.1 0 + b * (r.1 1 - r.1 0) := by simp
+        _ = 1 := by linear_combination hab
+    · convert dvd_sub r.2.2.2 r.2.2.1 using 1 <;> ring⟩
+  invFun r := ⟨![(↑u⁻¹ : O) * r.1 0, r.1 1 + (↑u⁻¹ : O) * r.1 0], by
+    change IsCoprime ((↑u⁻¹ : O) * r.1 0) (r.1 1 + (↑u⁻¹ : O) * r.1 0) ∧
+      (3 : O) ∣ (↑u⁻¹ : O) * r.1 0 ∧ (3 : O) ∣ r.1 1 + (↑u⁻¹ : O) * r.1 0 - 1
+    refine ⟨?_, r.2.2.1.mul_left _, ?_⟩
+    · obtain ⟨a, b, hab⟩ := r.2.1
+      refine ⟨a * (u : O) - b, b, ?_⟩
+      calc
+        _ = a * (((u : O) * (↑u⁻¹ : O)) * r.1 0) + b * r.1 1 := by ring
+        _ = 1 := by simpa using hab
+    · convert dvd_add r.2.2.2 (r.2.2.1.mul_left (↑u⁻¹ : O)) using 1 <;> ring⟩
+  left_inv r := by
+    apply Subtype.ext
+    funext i
+    fin_cases i <;> simp [← mul_assoc]
+  right_inv r := by
+    apply Subtype.ext
+    funext i
+    fin_cases i <;> simp [← mul_assoc]
+
+/-- Index a unit lower cusp by a primary ideal and one coprime affine coordinate. -/
+def unitLowerDataEquiv (u : Oˣ) : OppositeData ≃ PrimitiveRow :=
+  oppositeDataEquiv.trans (unitLowerRowEquiv u)
+
+lemma unitLowerDataEquiv_row (u : Oˣ) (p : OppositeData) :
+    (unitLowerDataEquiv u p).1 =
+      ![-3 * (u : O) * p.2.1, primaryIdealGenerator p.1.1 + 3 * p.2.1] := by
+  funext i
+  fin_cases i <;> simp [unitLowerDataEquiv, unitLowerRowEquiv, oppositeDataEquiv,
+    oppositeDataToPrimitive, Equiv.ofBijective_apply] <;> ring
+
+lemma unitLowerDenominator_primary (p : OppositeData) :
+    lambda ^ 2 ∣ primaryIdealGenerator p.1.1 + 3 * p.2.1 - 1 := by
+  convert dvd_add (primaryIdealGenerator_spec p.1.1 p.1.2).2
+    (lambda_sq_dvd_three.mul_right p.2.1) using 1 <;> ring
+
+lemma unitLower_row_phase (u : Oˣ) (p : OppositeData) :
+    (cosetCharacter (primitiveRowEquiv.symm (unitLowerDataEquiv u p)))⁻¹ =
+      ringComplex (symbol (u : O) (primaryIdealGenerator p.1.1 + 3 * p.2.1)) *
+        ringComplex (symbol (primaryIdealGenerator p.1.1 + 3 * p.2.1) (primaryIdealGenerator p.1.1)) := by
+  rw [inverse_cosetCharacter_eq_row_symbol, primitiveRowEquiv_symm_row, unitLowerDataEquiv_row]
+  change ringComplex (symbol (-3 * (u : O) * p.2.1) (primaryIdealGenerator p.1.1 + 3 * p.2.1)) = _
+  rw [symbol_congr (show primaryIdealGenerator p.1.1 + 3 * p.2.1 ∣
+    -3 * (u : O) * p.2.1 - (u : O) * primaryIdealGenerator p.1.1 from ⟨-(u : O), by ring⟩),
+    symbol_mul_numerator, map_mul,
+    symbol_reciprocity _ _ (primaryIdealGenerator_spec p.1.1 p.1.2).2 (unitLowerDenominator_primary p)]
+
+lemma rowOperator_lowerCusp (t : O) (r : Fin 2 → ℂ) :
+    rowOperator (integralComplexMatrix (lowerCuspMatrix t)) r = ![r 0 + ringComplex t * r 1, r 1] := by
+  rw [rowOperator_apply]
+  funext i
+  fin_cases i <;> simp [integralComplexMatrix, lowerCuspMatrix, Matrix.vecMul,
+    dotProduct, Fin.sum_univ_two, mul_comm]
+
+/-- A primary affine branch of a lower-cusp Eisenstein series. -/
+def affineLowerTerm (q r : O) (z : ℂ) (v : ℝ) (s : ℂ) (a d : O) : ℂ :=
+  (ringComplex (symbol r d) * ringComplex (symbol d a)) *
+    ((v / (‖ringComplex (q * a) * z + ringComplex d‖ ^ 2 +
+      ‖ringComplex (q * a)‖ ^ 2 * v ^ 2) : ℝ) : ℂ) ^ s
+
+lemma unitLower_summand (u : Oˣ) (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ) (p : OppositeData) :
+    summand (integralComplexMatrix (lowerCuspMatrix (u : O)) * upperSection z v hv) s
+      (primitiveRowEquiv.symm (unitLowerDataEquiv u p)) =
+      affineLowerTerm (u : O) (u : O) z v s (primaryIdealGenerator p.1.1)
+        (primaryIdealGenerator p.1.1 + 3 * p.2.1) := by
+  let r : Fin 2 → ℂ := ![ringComplex ((u : O) * primaryIdealGenerator p.1.1),
+    ringComplex (primaryIdealGenerator p.1.1 + 3 * p.2.1)]
+  have hr : rowOperator (integralComplexMatrix (lowerCuspMatrix (u : O)))
+      (embeddedRow (primitiveRowEquiv.symm (unitLowerDataEquiv u p))) = r := by
+    rw [embeddedRow, primitiveRowEquiv_symm_row, unitLowerDataEquiv_row, rowOperator_lowerCusp]
+    funext i
+    fin_cases i <;> simp [r, map_mul, map_add] <;> ring
+  have hr0 : r ≠ 0 := by
+    intro hh
+    exact ringComplex_ne_zero (mul_ne_zero u.ne_zero p.1.2) (congrFun hh 0)
+  have hp := heightDenominator_pos z v hv r hr0
+  rw [summand, ← rowOperator_mul, hr, rowEnergy_upperSection, unitLower_row_phase]
+  change _ = _ * ((v / heightDenominator z v r : ℝ) : ℂ) ^ s
+  rw [show ((v / heightDenominator z v r : ℝ) : ℂ) =
+    (((heightDenominator z v r / v : ℝ) : ℂ))⁻¹ by simp only [Complex.ofReal_div, inv_div],
+    inv_cpow_ofReal_nonneg (div_nonneg hp.le hv.le), Complex.cpow_neg]
+
+/-- The unit cusp series is a sum of the native affine branches. -/
+theorem unitLowerEisenstein_eq_rows (u : Oˣ) (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ) :
+    eisenstein (integralComplexMatrix (lowerCuspMatrix (u : O)) * upperSection z v hv) s =
+      ∑' p : OppositeData, affineLowerTerm (u : O) (u : O) z v s (primaryIdealGenerator p.1.1)
+        (primaryIdealGenerator p.1.1 + 3 * p.2.1) := by
+  let e := (unitLowerDataEquiv u).trans primitiveRowEquiv.symm
+  change (∑' x : CuspCosets, summand _ s x) = _
+  rw [← e.tsum_eq (fun x => summand _ s x)]
+  exact tsum_congr (unitLower_summand u z v hv s)
+
+lemma affineLowerTerm_eq_shifted (q r : O) (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ)
+    (a d : O) (ha : a ≠ 0) (hq : q ≠ 0) :
+    affineLowerTerm q r z v s a d =
+      (ringComplex (symbol r d) * ringComplex (symbol d a) *
+        ((‖ringComplex (q * a)‖ ^ 2 : ℝ) : ℂ) ^ (-s)) *
+          shiftedHeightKernel v s (ringComplex d / ringComplex (q * a)) z := by
+  rw [affineLowerTerm, rowHeight_eq_shiftedHeightKernel z v hv s (q * a) d (mul_ne_zero hq ha)]
+  ring
+
+lemma affineLowerTerm_integrable (q r : O) (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 1 < s.re)
+    (a d : O) (ha : a ≠ 0) (hq : q ≠ 0) :
+    Integrable (fun z => affineLowerTerm q r z v s a d) := by
+  simp_rw [affineLowerTerm_eq_shifted q r _ v hv s a d ha hq]
+  exact (shiftedHeightKernel_integrable v hv s _ hs).const_mul _
+
+lemma affineLowerTerm_fourier_integral (q r : O) (v : ℝ) (hv : 0 < v) (s freq : ℂ)
+    (a d : O) (ha : a ≠ 0) (hq : q ≠ 0) :
+    (∫ z : ℂ, affineLowerTerm q r z v s a d * tracePhase (-freq * z)) =
+      ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (freq * v)) *
+        ((‖ringComplex (q * a)‖ ^ 2 : ℝ) : ℂ) ^ (-s) *
+          ((ringComplex (symbol r d) * ringComplex (symbol d a)) *
+            tracePhase (freq * ringComplex d / ringComplex (q * a))) := by
+  simp_rw [affineLowerTerm_eq_shifted q r _ v hv s a d ha hq, mul_assoc]
+  rw [integral_const_mul, integral_const_mul, integral_const_mul,
+    traceIntegral_shiftedHeightKernel v hv s (ringComplex d / ringComplex (q * a)) freq]
+  ring
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

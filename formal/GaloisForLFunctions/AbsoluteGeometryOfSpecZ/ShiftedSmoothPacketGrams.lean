@@ -16,7 +16,7 @@ open MeasureTheory Matrix Zeta23
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
-open HTGeometry ArithmeticIndexDescent ArithmeticCastelnuovoSeveri
+open HTGeometry ArithmeticIndexDescent ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis
 open _root_.RHTower _root_.RHTower.PaperRestrictedWeil
 
 /-- Polarization of the packet's squared physical mass. -/
@@ -83,7 +83,8 @@ def smoothRealSource {a : SuzukiPositiveAperture} (f : realTests)
   tsupport_subset := by
     have he : Function.support (cx f.1) = Function.support f.1 := by
       ext x
-      simp only [Function.mem_support, cx, Complex.ofReal_eq_zero]
+      change ((f.1 x : ℂ) ≠ 0) ↔ f.1 x ≠ 0
+      exact not_congr Complex.ofReal_eq_zero
     change closure (Function.support (cx f.1)) ⊆ _
     rw [he]
     exact hs

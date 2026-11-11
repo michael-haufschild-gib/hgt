@@ -51,15 +51,21 @@ Passed Lean:
 - `ArithmeticContinuationAndCriticalEnergy/NonpositiveRightApertureLimits`:
   strong physical limits retain support in the limiting aperture.
 
-Written, uncompiled:
-
 - `ArithmeticContinuationAndCriticalEnergy/TheRightApertureIndexIncludesExactlyTheNullModes`:
   exact right-hand index jump and constancy at nonresonant apertures.
+
 - `ArithmeticContinuationAndCriticalEnergy/NonresonantWeilIndexSurvivesPositiveEnergyShifts`:
-  a positive mass shift preserves index when nullity is zero.
-- `HTGeometry/FiniteGramsOfAnOperator` and
-  `RHTower/FiniteSmoothWeilGramsAndRestrictedIndex`: operator Gram upper
-  bound and full index capture by a finite smooth family, using form-core density.
+  simultaneous aperture enlargement and positive mass shift capture exactly
+  the original rank plus nullity.
+
+- `HTGeometry/FiniteGramsOfAnOperator`: finite Gram index is bounded by
+  operator index, and a negative-space basis attains equality.
+
+- `RHTower/FiniteSmoothWeilGramsAndRestrictedIndex`: full index capture
+  by a finite smooth family, using form-core density.
+
+Written, uncompiled:
+
 - `HodgeTheoryOfAFixedPart/TightBlockTransferSpendsOnlyMeanMass`:
   arbitrarily fine fixed block scales and padding with ratio loss `1/R`.
 - `AbsoluteGeometryOfSpecZ/ShiftedSmoothPacketGrams`: real polarization

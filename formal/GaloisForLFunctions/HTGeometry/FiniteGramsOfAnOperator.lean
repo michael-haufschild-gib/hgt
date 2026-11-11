@@ -37,6 +37,7 @@ theorem hermQuad_finiteGram (Q : E →L[ℂ] E) (v : ι → E) (c : ι → ℂ) 
   simp only [map_sum, map_smul, sum_inner, inner_sum, inner_smul_left,
     inner_smul_right, Finset.mul_sum]
   congr 1
+  conv_rhs => rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
   intro i _
   apply Finset.sum_congr rfl
@@ -64,7 +65,9 @@ theorem hermNegIndex_le_negativeRank_of_realization
       lt_self_iff_false] using h
   have hneg : ∀ x ∈ LinearMap.range T, x ≠ 0 → (inner ℂ (Q x) x).re < 0 := by
     rintro _ ⟨c, rfl⟩ hc0
-    have hc : (c : ι → ℂ) ≠ 0 := fun hz => hc0 (by change L _ = 0; rw [hz, map_zero])
+    have hc : (c : ι → ℂ) ≠ 0 := fun hz => hc0 (by
+      change L (c : ι → ℂ) = 0
+      rw [hz, map_zero])
     have h := hW c c.property hc
     rw [hermQuad_neg, hL] at h
     exact neg_pos.mp h
@@ -86,14 +89,17 @@ one finite Gram. -/
 theorem exists_finiteGram_index_eq (Q : E →L[ℂ] E) (hQ : IsSelfAdjoint Q)
     [FiniteDimensional ℂ (negativeSpace Q)] :
     ∃ v : Fin (negativeRank Q) → E, hermNegIndex (finiteGram Q v) = negativeRank Q := by
-  let b := FiniteDimensional.finBasis ℂ (negativeSpace Q)
-  let v : Fin (negativeRank Q) → E := fun i => (b i : E)
-  have hcomb (c : Fin (negativeRank Q) → ℂ) :
+  change ∃ v : Fin (Module.finrank ℂ (negativeSpace Q)) → E,
+    hermNegIndex (finiteGram Q v) = Module.finrank ℂ (negativeSpace Q)
+  let b := Module.finBasis ℂ (negativeSpace Q)
+  let v : Fin (Module.finrank ℂ (negativeSpace Q)) → E := fun i => (b i : E)
+  have hcomb (c : Fin (Module.finrank ℂ (negativeSpace Q)) → ℂ) :
       finiteCombination v c = (b.equivFun.symm c : E) := by
     change (∑ i, c i • (b i : E)) = (b.equivFun.symm c : E)
     rw [Module.Basis.equivFun_symm_apply]
     simp only [Submodule.coe_sum, Submodule.coe_smul]
-  have hp : IsPosDefOn (-(finiteGram Q v)) (⊤ : Submodule ℂ (Fin (negativeRank Q) → ℂ)) := by
+  have hp : IsPosDefOn (-(finiteGram Q v))
+      (⊤ : Submodule ℂ (Fin (Module.finrank ℂ (negativeSpace Q)) → ℂ)) := by
     intro c _ hc
     rw [hermQuad_neg, hermQuad_finiteGram, hcomb]
     apply neg_pos.mpr
@@ -103,9 +109,9 @@ theorem exists_finiteGram_index_eq (Q : E →L[ℂ] E) (hQ : IsSelfAdjoint Q)
     apply b.equivFun.symm.injective
     rw [map_zero]
     exact Subtype.ext hz
-  have hlo : negativeRank Q ≤ hermNegIndex (finiteGram Q v) := by
+  have hlo : Module.finrank ℂ (negativeSpace Q) ≤ hermNegIndex (finiteGram Q v) := by
     have h := finrank_le_posIndex hp
-    simpa only [finrank_top, Module.finrank_fintype_fun_eq_card,
+    simpa only [hermNegIndex, finrank_top, Module.finrank_fintype_fun_eq_card,
       Fintype.card_fin] using h
   exact ⟨v, le_antisymm (hermNegIndex_finiteGram_le Q hQ v) hlo⟩
 
