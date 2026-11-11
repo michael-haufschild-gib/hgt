@@ -116,7 +116,7 @@ theorem norm_interpolationLogCorrection_sub_le {b z w : ι → ℂ} {s r D : ℝ
           (Complex.log (z k / b k) - Complex.log (w k / b k)) -
           (Complex.log ((z j - z k) / (b j - b k)) -
             Complex.log ((w j - w k) / (b j - b k))) by ring]
-      exact (norm_sub_le _ _).trans (by linarith only [hn, hd])
+      exact (norm_sub_le _ _).trans ((add_le_add hn hd).trans_eq (by ring))
     _ ≤ _ := by
       rw [Finset.sum_const, nsmul_eq_mul]
       apply mul_le_mul_of_nonneg_right _ (by positivity)

@@ -81,7 +81,7 @@ theorem tendsto_residueClass_window {a : ZMod q} (ha : IsUnit a) :
   have hh0 : 0 < x ^ θ := Real.rpow_pos_of_pos hx _
   have hxy : x ≤ x + x ^ θ := by linarith
   have hunit : (1 : DirichletCharacter ℂ q) a⁻¹ = 1 :=
-    MulChar.one_apply (isUnit_of_mul_eq_one _ _ (ZMod.inv_mul_of_unit a ha))
+    MulChar.one_apply (isUnit_iff_exists_inv.mpr ⟨a, ZMod.inv_mul_of_unit a ha⟩)
   have hsum := residueClass_window_eq ha hxy
   rw [← Finset.add_sum_erase _ _ (Finset.mem_univ 1), hunit, one_mul] at hsum
   have hhC : ((x ^ θ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hh0.ne'
@@ -89,7 +89,7 @@ theorem tendsto_residueClass_window {a : ZMod q} (ha : IsUnit a) :
       ((x ^ θ : ℝ) : ℂ) := by
     rw [hsum, hF]
     simp only
-    rw [Finset.sum_div, mul_div_assoc, add_div]
+    rw [mul_div_assoc, add_div, Finset.sum_div]
     congr 2
     refine Finset.sum_congr rfl fun χ _ => ?_
     ring
@@ -134,9 +134,9 @@ theorem eventually_exists_prime_short_interval_mod {a : ZMod q} (ha : IsUnit a) 
     (isLittleO_log_rpow_atTop (by linarith)).tendsto_div_nhds_zero
   have hpp : ∀ᶠ x : ℝ in atTop, Real.log x / x ^ (θ - 1 / 2) < 1 / (16 * q.totient) :=
     hsmall.eventually (gt_mem_nhds (by positivity))
-  filter_upwards [hlow, hpp.comp_tendsto (tendsto_id.const_mul_atTop' (by norm_num : (0 : ℝ) < 2)),
+  filter_upwards [hlow, (tendsto_id.const_mul_atTop' (by norm_num : (0 : ℝ) < 2)).eventually hpp,
     eventually_ge_atTop 2] with x hx hpx hx2
-  simp only [Function.comp, id] at hpx
+  simp only [id] at hpx
   have hx0 : 0 < x := by linarith
   have hh0 : 0 < x ^ θ := Real.rpow_pos_of_pos hx0 _
   have hhx : x ^ θ ≤ x := by
@@ -178,7 +178,7 @@ theorem eventually_exists_prime_short_interval_mod {a : ZMod q} (ha : IsUnit a) 
   have hlog0 : 0 ≤ Real.log (x + x ^ θ) := Real.log_nonneg (by linarith)
   have hsplitθ : x ^ θ = x ^ (1 / 2 : ℝ) * x ^ (θ - 1 / 2) := by
     rw [← Real.rpow_add hx0]; ring_nf
-  have hB : Real.log (2 * x) < x ^ (θ - 1 / 2) / (16 * q.totient) := by
+  have hB : Real.log (2 * x) < x ^ (θ - 1 / 2) / (8 * q.totient) := by
     have h2x : (2 * x) ^ (θ - 1 / 2) ≤ 2 * x ^ (θ - 1 / 2) := by
       rw [Real.mul_rpow (by norm_num) hx0.le]
       refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hx0.le _)
@@ -187,27 +187,24 @@ theorem eventually_exists_prime_short_interval_mod {a : ZMod q} (ha : IsUnit a) 
         _ = 2 := Real.rpow_one 2
     have hpos : 0 < (2 * x) ^ (θ - 1 / 2) := by positivity
     rw [div_lt_iff₀ hpos] at hpx
-    have : 1 / (16 * (q.totient : ℝ)) * (2 * x) ^ (θ - 1 / 2) ≤
+    have h1 : 1 / (16 * (q.totient : ℝ)) * (2 * x) ^ (θ - 1 / 2) ≤
         1 / (16 * q.totient) * (2 * x ^ (θ - 1 / 2)) :=
       mul_le_mul_of_nonneg_left h2x (by positivity)
     have h16 : 1 / (16 * (q.totient : ℝ)) * (2 * x ^ (θ - 1 / 2)) =
-        x ^ (θ - 1 / 2) / (16 * q.totient) * 2 := by ring
-    nlinarith [Real.rpow_pos_of_pos hx0 (θ - 1 / 2)]
-  rw [div_lt_iff₀ hh0, ← hsplit] at hx
+        x ^ (θ - 1 / 2) / (8 * q.totient) := by field_simp; ring
+    linarith
+  rw [lt_div_iff₀ hh0, ← hsplit] at hx
   have hx12 : 0 < x ^ (1 / 2 : ℝ) := Real.rpow_pos_of_pos hx0 _
   have hfinal : 2 * Real.sqrt (x + x ^ θ) * Real.log (x + x ^ θ) <
       1 / (2 * q.totient) * x ^ θ := by
     calc 2 * Real.sqrt (x + x ^ θ) * Real.log (x + x ^ θ)
         ≤ 2 * (2 * x ^ (1 / 2 : ℝ)) * Real.log (2 * x) := by
           gcongr
-      _ < 2 * (2 * x ^ (1 / 2 : ℝ)) * (x ^ (θ - 1 / 2) / (16 * q.totient)) := by
+      _ < 2 * (2 * x ^ (1 / 2 : ℝ)) * (x ^ (θ - 1 / 2) / (8 * q.totient)) := by
           gcongr
-      _ = 1 / (4 * q.totient) * (x ^ (1 / 2 : ℝ) * x ^ (θ - 1 / 2)) := by
+      _ = 1 / (2 * q.totient) * (x ^ (1 / 2 : ℝ) * x ^ (θ - 1 / 2)) := by
           field_simp; ring
-      _ ≤ 1 / (2 * q.totient) * x ^ θ := by
-          rw [← hsplitθ]
-          gcongr
-          linarith
+      _ = 1 / (2 * q.totient) * x ^ θ := by rw [← hsplitθ]
   linarith
 
 end

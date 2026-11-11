@@ -39778,9 +39778,10 @@ lemma quadraticDual_low_add_tail (I J : QuadraticIdeal) (W : 𝓢(ℝ, ℂ))
   let f : NonzeroIdeal → ℂ := fun H => canonicalQuadraticPairIdeal I J H.val *
     paperRadialFourier W (t * (Ideal.absNorm H.val : ℝ))
   have hs : Summable f := canonicalQuadraticPairIdeal_fourier_summable I J W t ht
-  have hl := hs.indicator {H | (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) ≤ K}
-  have hh := hs.indicator {H | K < (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ)}
-  simp only [Set.indicator, Set.mem_setOf_eq] at hl hh
+  have hl : Summable (fun H : NonzeroIdeal =>
+      if (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) ≤ K then f H else 0) := hs.indicator _
+  have hh : Summable (fun H : NonzeroIdeal =>
+      if K < (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) then f H else 0) := hs.indicator _
   change (∑' H, f H) =
     (∑' H, if (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) ≤ K then f H else 0) +
     (∑' H, if K < (Ideal.absNorm (quadraticSquarefreePart H.val) : ℝ) then f H else 0)
@@ -40198,5 +40199,1374 @@ theorem principalTruncation_scaled (G : Ideal O) (hG : Squarefree G)
   ring
 
 end TruncatedPrincipalPoisson
+
+
+
+namespace LocalLogFourier
+open MeasureTheory
+open scoped SchwartzMap FourierTransform
+
+/-- Euler derivatives are ordinary derivatives along multiplicative flow. -/
+noncomputable def eulerDeriv (F : ℝ → ℂ) (j : ℕ) (x : ℝ) : ℂ :=
+  iteratedDeriv j (fun t : ℝ => F (x * Real.exp t)) 0
+
+theorem iteratedDeriv_log_eq_euler (F : ℝ → ℂ) (R s : ℝ) (j : ℕ) :
+    iteratedDeriv j (fun z : ℝ => F (R * Real.exp z)) s =
+      eulerDeriv F j (R * Real.exp s) := by
+  let G : ℝ → ℂ := fun z => F (R * Real.exp z)
+  have hshift : (fun t : ℝ => F ((R * Real.exp s) * Real.exp t)) =
+      (fun t : ℝ => G (s + t)) := by
+    funext t
+    simp only [G, Real.exp_add, mul_assoc]
+  unfold eulerDeriv
+  rw [hshift]
+  simpa [G] using (congrArg (fun h : ℝ → ℂ => h 0)
+    (iteratedDeriv_comp_const_add j G s)).symm
+
+
+end LocalLogFourier
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap FourierTransform
+
+/-- Half the Euler operator governs a Schwartz profile composed with square root. -/
+def halfEulerCLM : 𝓢(ℝ, ℂ) →L[ℂ] 𝓢(ℝ, ℂ) :=
+  (SchwartzMap.smulLeftCLM ℂ (fun x : ℝ => ((x / 2 : ℝ) : ℂ))).comp
+    (SchwartzMap.derivCLM ℂ ℂ)
+
+@[simp] theorem halfEulerCLM_apply (g : 𝓢(ℝ, ℂ)) (s : ℝ) :
+    halfEulerCLM g s = (s / 2 : ℝ) • deriv g s := by
+  have hg : (fun x : ℝ => ((x / 2 : ℝ) : ℂ)).HasTemperateGrowth := by
+    simp only [div_eq_mul_inv]
+    fun_prop
+  simp only [halfEulerCLM, ContinuousLinearMap.comp_apply,
+    SchwartzMap.smulLeftCLM_apply_apply hg, SchwartzMap.derivCLM_apply]
+  rfl
+
+theorem hasDerivAt_halfFlow (g : 𝓢(ℝ, ℂ)) (a t : ℝ) :
+    HasDerivAt (fun y : ℝ => g (a * Real.exp (y / 2)))
+      (halfEulerCLM g (a * Real.exp (t / 2))) t := by
+  have hf : HasDerivAt (fun y : ℝ => a * Real.exp (y / 2))
+      ((a * Real.exp (t / 2)) / 2) t := by
+    convert (((hasDerivAt_id t).div_const 2).exp.const_mul a) using 1 <;> simp only [id_eq] ; ring
+  simpa only [halfEulerCLM_apply, Function.comp_def] using
+    (g.hasDerivAt (a * Real.exp (t / 2))).scomp t hf
+
+theorem iteratedDeriv_halfFlow (g : 𝓢(ℝ, ℂ)) (a : ℝ) (j : ℕ) (t : ℝ) :
+    iteratedDeriv j (fun y : ℝ => g (a * Real.exp (y / 2))) t =
+      ((halfEulerCLM : 𝓢(ℝ, ℂ) → 𝓢(ℝ, ℂ))^[j] g) (a * Real.exp (t / 2)) := by
+  induction j generalizing g with
+  | zero => simp
+  | succ j ih =>
+    rw [iteratedDeriv_succ']
+    have hd : deriv (fun y : ℝ => g (a * Real.exp (y / 2))) =
+        fun y : ℝ => halfEulerCLM g (a * Real.exp (y / 2)) :=
+      funext (fun y => (hasDerivAt_halfFlow g a y).deriv)
+    rw [hd, ih (halfEulerCLM g),
+      Function.iterate_succ_apply]
+
+ theorem sqrt_exp_half (t : ℝ) : Real.sqrt (Real.exp t) = Real.exp (t / 2) := by
+  rw [Real.sqrt_eq_iff_eq_sq (le_of_lt (Real.exp_pos _)) (le_of_lt (Real.exp_pos _))]
+  rw [← Real.exp_nat_mul]
+  congr 1
+  ring
+
+ theorem eulerDeriv_sqrt_profile (g : 𝓢(ℝ, ℂ)) (j : ℕ) (x : ℝ) (hx : 0 ≤ x) :
+    LocalLogFourier.eulerDeriv (fun s => g (Real.sqrt s)) j x =
+      ((halfEulerCLM : 𝓢(ℝ, ℂ) → 𝓢(ℝ, ℂ))^[j] g) (Real.sqrt x) := by
+  unfold LocalLogFourier.eulerDeriv
+  have hflow : (fun t : ℝ => g (Real.sqrt (x * Real.exp t))) =
+      fun t : ℝ => g (Real.sqrt x * Real.exp (t / 2)) := by
+    funext t
+    rw [Real.sqrt_mul hx, sqrt_exp_half]
+  rw [hflow, iteratedDeriv_halfFlow]
+  simp
+
+theorem contDiffOn_sqrt_profile (g : 𝓢(ℝ, ℂ)) :
+    ContDiffOn ℝ ∞ (fun x : ℝ => g (Real.sqrt x)) (Set.Ioi 0) := by
+  intro x hx
+  exact ((g.smooth ⊤).contDiffAt.comp x
+    (Real.contDiffAt_sqrt (ne_of_gt hx))).contDiffWithinAt
+
+theorem contDiff_sqrt_profile_log (g : 𝓢(ℝ, ℂ)) (x : ℝ) (hx : 0 ≤ x) :
+    ContDiff ℝ ∞ (fun t : ℝ => g (Real.sqrt (x * Real.exp t))) := by
+  have heq : (fun t : ℝ => g (Real.sqrt (x * Real.exp t))) =
+      fun t : ℝ => g (Real.sqrt x * Real.exp (t / 2)) := by
+    funext t
+    rw [Real.sqrt_mul hx, sqrt_exp_half]
+  rw [heq]
+  exact (g.smooth ⊤).comp (by fun_prop)
+
+theorem sqrt_profile_rapid_bound (g : 𝓢(ℝ, ℂ)) (A : ℕ) (x : ℝ) (hx : 0 ≤ x) :
+    (1 + x) ^ A * ‖g (Real.sqrt x)‖ ≤
+      2 ^ A * (SchwartzMap.seminorm ℝ 0 0 g +
+        SchwartzMap.seminorm ℝ (2 * A) 0 g) := by
+  have hsmall := SchwartzMap.norm_le_seminorm ℝ g (Real.sqrt x)
+  have hlarge := SchwartzMap.norm_pow_mul_le_seminorm ℝ g (2 * A) (Real.sqrt x)
+  have hsqrt : ‖Real.sqrt x‖ ^ (2 * A) = x ^ A := by
+    rw [Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg x),
+      pow_mul, Real.sq_sqrt hx]
+  rw [hsqrt] at hlarge
+  have hs0 : 0 ≤ SchwartzMap.seminorm ℝ 0 0 g := by positivity
+  have hsA : 0 ≤ SchwartzMap.seminorm ℝ (2 * A) 0 g := by positivity
+  by_cases hx1 : x ≤ 1
+  · have hp : (1 + x) ^ A ≤ (2 : ℝ) ^ A := by gcongr; linarith
+    calc
+      _ ≤ 2 ^ A * ‖g (Real.sqrt x)‖ := mul_le_mul_of_nonneg_right hp (norm_nonneg _)
+      _ ≤ 2 ^ A * SchwartzMap.seminorm ℝ 0 0 g := by gcongr
+      _ ≤ _ := by gcongr; linarith
+  · have hp : (1 + x) ^ A ≤ (2 * x) ^ A := by gcongr; linarith
+    calc
+      _ ≤ (2 * x) ^ A * ‖g (Real.sqrt x)‖ := mul_le_mul_of_nonneg_right hp (norm_nonneg _)
+      _ = 2 ^ A * (x ^ A * ‖g (Real.sqrt x)‖) := by rw [mul_pow]; ring
+      _ ≤ 2 ^ A * SchwartzMap.seminorm ℝ (2 * A) 0 g := by gcongr
+      _ ≤ _ := by gcongr; linarith
+
+theorem eulerDeriv_sqrt_profile_rapid_bound (g : 𝓢(ℝ, ℂ)) (A j : ℕ)
+    (x : ℝ) (hx : 0 ≤ x) :
+    (1 + x) ^ A * ‖LocalLogFourier.eulerDeriv (fun s => g (Real.sqrt s)) j x‖ ≤
+      2 ^ A * (SchwartzMap.seminorm ℝ 0 0
+          ((halfEulerCLM : 𝓢(ℝ, ℂ) → 𝓢(ℝ, ℂ))^[j] g) +
+        SchwartzMap.seminorm ℝ (2 * A) 0
+          ((halfEulerCLM : 𝓢(ℝ, ℂ) → 𝓢(ℝ, ℂ))^[j] g)) := by
+  rw [eulerDeriv_sqrt_profile g j x hx]
+  exact sqrt_profile_rapid_bound _ A x hx
+
+def halfEulerIterateCLM : ℕ → 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ)
+  | 0 => ContinuousLinearMap.id ℝ _
+  | j + 1 => (halfEulerCLM.restrictScalars ℝ).comp (halfEulerIterateCLM j)
+
+@[simp] theorem halfEulerIterateCLM_apply (j : ℕ) (g : 𝓢(ℝ, ℂ)) :
+    halfEulerIterateCLM j g = (halfEulerCLM : 𝓢(ℝ, ℂ) → 𝓢(ℝ, ℂ))^[j] g := by
+  induction j with
+  | zero => rfl
+  | succ j ih =>
+    simp only [halfEulerIterateCLM, ContinuousLinearMap.comp_apply,
+      ih, Function.iterate_succ_apply']
+    rfl
+
+def paperFourierRayCLM : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ) := quadraticTransformedSquareCLM
+
+@[simp] theorem paperFourierRayCLM_apply (W : 𝓢(ℝ, ℂ)) (s : ℝ) :
+    paperFourierRayCLM W s =
+      (2 / Real.sqrt 3 : ℝ) • radialFourierCLM W (paperFrequency (s : ℂ)) := by
+  change (2 / Real.sqrt 3 : ℝ) •
+    radialFourierCLM W (complexPoint 0 (((ringComplex omega).im)⁻¹ * s)) = _
+  rw [paperFrequency_coordinates]
+  simp only [Complex.ofReal_im, Complex.ofReal_re, zero_div, div_eq_mul_inv, mul_comm]
+
+theorem paperRadialFourier_eq_ray (W : 𝓢(ℝ, ℂ)) :
+    paperRadialFourier W = fun x : ℝ => paperFourierRayCLM W (Real.sqrt x) := by
+  funext x
+  rw [paperRadialFourier_eq_plane, paperFourierRayCLM_apply]
+
+def paperEulerCLM (j : ℕ) : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ) :=
+  (halfEulerIterateCLM j).comp paperFourierRayCLM
+
+theorem paperRadialFourier_eulerDeriv (W : 𝓢(ℝ, ℂ)) (j : ℕ)
+    (x : ℝ) (hx : 0 ≤ x) :
+    LocalLogFourier.eulerDeriv (paperRadialFourier W) j x =
+      paperEulerCLM j W (Real.sqrt x) := by
+  rw [paperRadialFourier_eq_ray, eulerDeriv_sqrt_profile _ j x hx]
+  simp only [paperEulerCLM, ContinuousLinearMap.comp_apply, halfEulerIterateCLM_apply]
+
+theorem paperRadialFourier_contDiffOn (W : 𝓢(ℝ, ℂ)) :
+    ContDiffOn ℝ ∞ (paperRadialFourier W) (Set.Ioi 0) := by
+  rw [paperRadialFourier_eq_ray]
+  exact contDiffOn_sqrt_profile _
+
+theorem paperRadialFourier_log_contDiff (W : 𝓢(ℝ, ℂ)) (x : ℝ) (hx : 0 ≤ x) :
+    ContDiff ℝ ∞ (fun t : ℝ => paperRadialFourier W (x * Real.exp t)) := by
+  rw [paperRadialFourier_eq_ray]
+  exact contDiff_sqrt_profile_log _ x hx
+
+theorem paperRadialFourier_euler_weighted_bound (W : 𝓢(ℝ, ℂ)) (A j : ℕ)
+    (x : ℝ) (hx : 0 ≤ x) :
+    (1 + x) ^ A * ‖LocalLogFourier.eulerDeriv (paperRadialFourier W) j x‖ ≤
+      2 ^ A * (SchwartzMap.seminorm ℝ 0 0 (paperEulerCLM j W) +
+        SchwartzMap.seminorm ℝ (2 * A) 0 (paperEulerCLM j W)) := by
+  rw [paperRadialFourier_eulerDeriv W j x hx]
+  exact sqrt_profile_rapid_bound _ A x hx
+
+theorem schwartzCLM_family_finite_seminorm_control
+    (T : ℕ → 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ)) (A K : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (j : ℕ), j ≤ K →
+        SchwartzMap.seminorm ℝ 0 0 (T j W) +
+          SchwartzMap.seminorm ℝ (2 * A) 0 (T j W) ≤
+          C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W := by
+  let qj : ℕ → Seminorm ℝ 𝓢(ℝ, ℂ) := fun j =>
+    (SchwartzMap.seminorm ℝ 0 0 + SchwartzMap.seminorm ℝ (2 * A) 0).comp
+      (T j).toLinearMap
+  let q : Seminorm ℝ 𝓢(ℝ, ℂ) := ∑ j ∈ Finset.range (K + 1), qj j
+  have hqfun : (q : 𝓢(ℝ, ℂ) → ℝ) = fun W => ∑ j ∈ Finset.range (K + 1),
+      (SchwartzMap.seminorm ℝ 0 0 (T j W) +
+        SchwartzMap.seminorm ℝ (2 * A) 0 (T j W)) := by
+    funext W
+    simp [q, qj]
+  have hq : Continuous q := by
+    rw [hqfun]
+    apply continuous_finsetSum
+    intro j hj
+    exact (((schwartz_withSeminorms ℝ ℝ ℂ).continuous_seminorm (0, 0)).comp
+        (T j).continuous).add
+      (((schwartz_withSeminorms ℝ ℝ ℂ).continuous_seminorm (2 * A, 0)).comp
+        (T j).continuous)
+  obtain ⟨s, C, hC, hbound⟩ :=
+    Seminorm.bound_of_continuous (schwartz_withSeminorms ℝ ℝ ℂ) q hq
+  refine ⟨s, C, ?_, ?_⟩
+  · exact_mod_cast (pos_iff_ne_zero.mpr hC : 0 < C)
+  · intro W j hj
+    apply le_trans ?_ (Seminorm.le_def.mp hbound W)
+    rw [hqfun]
+    exact Finset.single_le_sum (f := fun i =>
+      SchwartzMap.seminorm ℝ 0 0 (T i W) +
+        SchwartzMap.seminorm ℝ (2 * A) 0 (T i W))
+      (by intro i hi; positivity) (Finset.mem_range.mpr (Nat.lt_succ_of_le hj))
+
+theorem paperRadialFourier_euler_source_weighted_bound (A K : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (j : ℕ), j ≤ K → ∀ (x : ℝ), 0 ≤ x →
+        (1 + x) ^ A * ‖LocalLogFourier.eulerDeriv (paperRadialFourier W) j x‖ ≤
+          C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W := by
+  obtain ⟨s, C, hC, hbound⟩ :=
+    schwartzCLM_family_finite_seminorm_control paperEulerCLM A K
+  refine ⟨s, 2 ^ A * C, by positivity, ?_⟩
+  intro W j hj x hx
+  apply (paperRadialFourier_euler_weighted_bound W A j x hx).trans
+  simpa only [mul_assoc] using
+    mul_le_mul_of_nonneg_left (hbound W j hj) (show 0 ≤ (2 : ℝ) ^ A by positivity)
+
+theorem paperRadialFourier_euler_source_decay (A K : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (j : ℕ), j ≤ K → ∀ (x : ℝ), 0 ≤ x →
+        ‖LocalLogFourier.eulerDeriv (paperRadialFourier W) j x‖ ≤
+          (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / (1 + x) ^ A := by
+  obtain ⟨s, C, hC, hbound⟩ := paperRadialFourier_euler_source_weighted_bound A K
+  refine ⟨s, C, hC, ?_⟩
+  intro W j hj x hx
+  apply (le_div_iff₀ (by positivity : 0 < (1 + x) ^ A)).mpr
+  simpa only [mul_comm] using hbound W j hj x hx
+
+theorem paperRadialFourier_euler_bound (W : 𝓢(ℝ, ℂ)) (A K : ℕ) :
+    ∃ CF : ℝ, 0 ≤ CF ∧ ∀ j ≤ K, ∀ x : ℝ, 0 < x →
+      (1 + x) ^ A * ‖LocalLogFourier.eulerDeriv (paperRadialFourier W) j x‖ ≤ CF := by
+  obtain ⟨s, C, hC, hbound⟩ := paperRadialFourier_euler_source_weighted_bound A K
+  refine ⟨C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W, by positivity, ?_⟩
+  intro j hj x hx
+  exact hbound W j hj x hx.le
+
+theorem compact_paperRadialFourier_regular
+    (W : ℝ → ℂ) (hWc : HasCompactSupport W) (hWs : ContDiff ℝ ∞ W)
+    (A K : ℕ) :
+    ContDiffOn ℝ ∞ (paperRadialFourier W) (Set.Ioi 0) ∧
+      ∃ CF : ℝ, 0 ≤ CF ∧ ∀ j ≤ K, ∀ x : ℝ, 0 < x →
+        (1 + x) ^ A * ‖LocalLogFourier.eulerDeriv (paperRadialFourier W) j x‖ ≤ CF := by
+  exact ⟨paperRadialFourier_contDiffOn (hWc.toSchwartzMap hWs),
+    paperRadialFourier_euler_bound (hWc.toSchwartzMap hWs) A K⟩
+
+
+end SchwartzPlanePoisson
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap FourierTransform
+
+/-- Bounded logarithmic shifts preserve uniform decay of every radial Fourier derivative. -/
+theorem paperRadialFourier_exp_local_derivative_bound (V : 𝓢(ℝ, ℂ))
+    (M : ℝ) (hM : 0 ≤ M) (N j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∀ u : ℝ, |u| ≤ M →
+      (1 + R) ^ N * ‖iteratedDeriv j (fun v : ℝ => paperRadialFourier V (R * Real.exp v)) u‖ ≤ C := by
+  obtain ⟨s, C₀, hC₀, hb₀⟩ := paperRadialFourier_euler_source_weighted_bound N j
+  let C := C₀ * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) V + 1
+  have hC : 0 < C := by dsimp [C]; positivity
+  have hb (x : ℝ) (hx : 0 < x) :
+      (1 + x) ^ N * ‖LocalLogFourier.eulerDeriv (paperRadialFourier V) j x‖ ≤ C :=
+    (hb₀ V j le_rfl x hx.le).trans (by dsimp [C]; linarith)
+  refine ⟨Real.exp M ^ N * C, by positivity, ?_⟩
+  intro R hR u hu
+  have hMu : 0 ≤ M + u := by linarith [(abs_le.mp hu).1]
+  have hE : 1 ≤ Real.exp M := by simpa only [Real.exp_zero] using Real.exp_le_exp.mpr hM
+  have hEu : 1 ≤ Real.exp M * Real.exp u := by
+    rw [← Real.exp_add]
+    simpa only [Real.exp_zero] using Real.exp_le_exp.mpr hMu
+  have hbase : 1 + R ≤ Real.exp M * (1 + R * Real.exp u) := by
+    have hRu := mul_le_mul_of_nonneg_left hEu hR.le
+    nlinarith only [hE, hRu]
+  have hp : (1 + R) ^ N ≤ Real.exp M ^ N * (1 + R * Real.exp u) ^ N := by
+    rw [← mul_pow]
+    gcongr
+  rw [LocalLogFourier.iteratedDeriv_log_eq_euler]
+  calc
+    _ ≤ (Real.exp M ^ N * (1 + R * Real.exp u) ^ N) *
+        ‖LocalLogFourier.eulerDeriv (paperRadialFourier V) j (R * Real.exp u)‖ :=
+      mul_le_mul_of_nonneg_right hp (norm_nonneg _)
+    _ = Real.exp M ^ N * ((1 + R * Real.exp u) ^ N *
+        ‖LocalLogFourier.eulerDeriv (paperRadialFourier V) j (R * Real.exp u)‖) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hb _ (mul_pos hR (Real.exp_pos u))) (by positivity)
+
+
+/-- Localization in a fixed logarithmic interval preserves uniform radial decay of every derivative. -/
+theorem localized_paperRadialFourier_derivative_bound
+    (V : 𝓢(ℝ, ℂ))
+    (χ : ℝ → ℂ) (hχ : ContDiff ℝ ∞ χ) (M : ℝ) (hM : 0 ≤ M)
+    (hχs : Function.support χ ⊆ Set.Icc (-M) M) (N j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∀ u : ℝ,
+      (1 + R) ^ N * ‖iteratedDeriv j (fun v : ℝ => χ v * paperRadialFourier V (R * Real.exp v)) u‖ ≤ C := by
+  have hχb (i : ℕ) : ∃ D : ℝ, 0 < D ∧ ∀ u ∈ Set.Icc (-M) M, ‖iteratedDeriv i χ u‖ ≤ D := by
+    obtain ⟨D, hD⟩ := isCompact_Icc.bddAbove_image
+      (hχ.continuous_iteratedDeriv i (by exact_mod_cast (le_top : (i : ℕ∞) ≤ ⊤))).norm.continuousOn
+    exact ⟨|D| + 1, by positivity, fun u hu =>
+      (hD (Set.mem_image_of_mem _ hu)).trans (by linarith [le_abs_self D])⟩
+  choose D hD hDb using hχb
+  have hkb (i : ℕ) := paperRadialFourier_exp_local_derivative_bound V M hM N i
+  choose C hC hCb using hkb
+  let B := ∑ i ∈ Finset.range (j + 1), ‖(j.choose i : ℂ)‖ * D i * C (j - i)
+  have hB : 0 ≤ B := Finset.sum_nonneg (fun i _ =>
+    mul_nonneg (mul_nonneg (norm_nonneg _) (hD i).le) (hC (j - i)).le)
+  refine ⟨B + 1, by positivity, ?_⟩
+  intro R hR u
+  by_cases hu : u ∈ Set.Icc (-M) M
+  · have hprod := iteratedDeriv_mul (n := j) (x := u)
+      (hχ.of_le (by exact_mod_cast (le_top : (j : ℕ∞) ≤ ⊤))).contDiffAt
+      ((paperRadialFourier_log_contDiff V R hR.le).of_le
+        (by exact_mod_cast (le_top : (j : ℕ∞) ≤ ⊤))).contDiffAt
+    change (1 + R) ^ N * ‖iteratedDeriv j (χ * (fun v : ℝ => paperRadialFourier V (R * Real.exp v))) u‖ ≤ _
+    rw [hprod]
+    calc
+      _ ≤ (1 + R) ^ N * ∑ i ∈ Finset.range (j + 1),
+          ‖(j.choose i : ℂ) * iteratedDeriv i χ u *
+            iteratedDeriv (j - i) (fun v : ℝ => paperRadialFourier V (R * Real.exp v)) u‖ :=
+        mul_le_mul_of_nonneg_left (norm_sum_le _ _) (by positivity)
+      _ ≤ B := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_le_sum
+        intro i hi
+        have hDi := (hD i).le
+        have hCi := (hC (j - i)).le
+        rw [norm_mul, norm_mul]
+        calc
+          _ = (‖(j.choose i : ℂ)‖ * ‖iteratedDeriv i χ u‖) *
+              ((1 + R) ^ N * ‖iteratedDeriv (j - i) (fun v : ℝ => paperRadialFourier V (R * Real.exp v)) u‖) := by ring
+          _ ≤ (‖(j.choose i : ℂ)‖ * D i) * C (j - i) :=
+            mul_le_mul (mul_le_mul_of_nonneg_left (hDb i u hu) (norm_nonneg _))
+              (hCb (j - i) R hR u (abs_le.mpr hu)) (by positivity) (by positivity)
+      _ ≤ B + 1 := by linarith
+  · have hsprod : Function.support (fun v : ℝ => χ v * paperRadialFourier V (R * Real.exp v)) ⊆ Set.Icc (-M) M := by
+      intro v hv
+      apply hχs
+      intro hz
+      exact hv (by simp only [hz, zero_mul])
+    have hsd := (subset_tsupport (iteratedDeriv j (fun v : ℝ => χ v * paperRadialFourier V (R * Real.exp v)))).trans
+      ((tsupport_iteratedDeriv_subset _ j).trans (closure_minimal hsprod isClosed_Icc))
+    have hz : iteratedDeriv j (fun v : ℝ => χ v * paperRadialFourier V (R * Real.exp v)) u = 0 := by
+      by_contra hn
+      exact hu (hsd hn)
+    rw [hz, norm_zero, mul_zero]
+    positivity
+
+/-- The Fourier transform of a localized radial transform decays uniformly in both parameters. -/
+theorem localized_paperRadialFourier_fourier_bound
+    (V : 𝓢(ℝ, ℂ))
+    (χ : ℝ → ℂ) (hχ : ContDiff ℝ ∞ χ) (M : ℝ) (hM : 0 ≤ M)
+    (hχs : Function.support χ ⊆ Set.Icc (-M) M) (N J : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∀ t : ℝ,
+      (1 + R) ^ N * (1 + |t|) ^ J *
+        ‖𝓕 (fun u : ℝ => χ u * paperRadialFourier V (R * Real.exp u)) t‖ ≤ C := by
+  let F := fun R u : ℝ => χ u * paperRadialFourier V (R * Real.exp u)
+  have hFs (R : ℝ) (_ : 0 < R) : Function.support (F R) ⊆ Set.Icc (-M) M := by
+    intro u hu
+    apply hχs
+    intro hz
+    exact hu (by simp only [F, hz, zero_mul])
+  have hbase (j : ℕ) := compact_weighted_family_fourier_power_bound F (fun R => (1 + R) ^ N)
+    (fun R hR => by positivity) (fun R hR => hχ.mul (paperRadialFourier_log_contDiff V R hR.le))
+    (Set.Icc (-M) M) isCompact_Icc hFs
+    (localized_paperRadialFourier_derivative_bound V χ hχ M hM hχs N) j
+  obtain ⟨C₀, hC₀, hb₀⟩ := hbase 0
+  obtain ⟨Cj, hCj, hbj⟩ := hbase J
+  refine ⟨2 ^ J * (C₀ + Cj), by positivity, ?_⟩
+  intro R hR t
+  have hzero : (1 + R) ^ N * ‖𝓕 (F R) t‖ ≤ C₀ := by simpa only [pow_zero, one_mul] using hb₀ R hR t
+  change (1 + R) ^ N * (1 + |t|) ^ J * ‖𝓕 (F R) t‖ ≤ _
+  by_cases ht : |t| ≤ 1
+  · have hp : (1 + |t|) ^ J ≤ (2 : ℝ) ^ J := by gcongr; linarith
+    calc
+      _ ≤ (1 + R) ^ N * 2 ^ J * ‖𝓕 (F R) t‖ := by gcongr
+      _ = 2 ^ J * ((1 + R) ^ N * ‖𝓕 (F R) t‖) := by ring
+      _ ≤ 2 ^ J * C₀ := mul_le_mul_of_nonneg_left hzero (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  · have hp : (1 + |t|) ^ J ≤ (2 * |t|) ^ J := by gcongr; linarith
+    calc
+      _ ≤ (1 + R) ^ N * (2 * |t|) ^ J * ‖𝓕 (F R) t‖ := by gcongr
+      _ = 2 ^ J * ((1 + R) ^ N * (|t| ^ J * ‖𝓕 (F R) t‖)) := by rw [mul_pow]; ring
+      _ ≤ 2 ^ J * Cj := mul_le_mul_of_nonneg_left (hbj R hR t) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+/-- A fixed smooth cutoff turns the radial transform into a uniformly rapidly decaying Fourier coefficient. -/
+theorem localized_paperRadialFourier_fourier_envelope
+    (V : 𝓢(ℝ, ℂ))
+    (χ : ℝ → ℂ) (hχ : ContDiff ℝ ∞ χ) (M : ℝ) (hM : 0 ≤ M)
+    (hχs : Function.support χ ⊆ Set.Icc (-M) M) (N J : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∃ B : SchwartzMap ℝ ℂ,
+      (∀ u : ℝ, χ u * paperRadialFourier V (R * Real.exp u) = 𝓕⁻ (B : ℝ → ℂ) u) ∧
+      Integrable (fun t : ℝ => (1 + |t|) ^ J * ‖B t‖) ∧
+      (1 + R) ^ N * (∫ t : ℝ, (1 + |t|) ^ J * ‖B t‖) ≤ C ∧
+      ∀ t : ℝ, (1 + R) ^ N * (1 + |t|) ^ J * ‖B t‖ ≤ C := by
+  obtain ⟨C₁, hC₁, hb₁⟩ := localized_paperRadialFourier_fourier_bound V χ hχ M hM hχs N J
+  obtain ⟨C₂, hC₂, hb₂⟩ := localized_paperRadialFourier_fourier_bound V χ hχ M hM hχs N (J + 2)
+  let I : ℝ := ∫ t : ℝ, ((1 + |t|) ^ (2 : ℕ))⁻¹
+  have hI : 0 ≤ I := integral_nonneg (fun _ => by positivity)
+  refine ⟨C₁ + C₂ * (I + 1), by positivity, ?_⟩
+  intro R hR
+  have hc : HasCompactSupport (fun u : ℝ => χ u * paperRadialFourier V (R * Real.exp u)) := by
+    apply HasCompactSupport.of_support_subset_isCompact (K := Set.Icc (-M) M) isCompact_Icc
+    intro u hu
+    apply hχs
+    intro hz
+    exact hu (by simp only [hz, zero_mul])
+  let S : SchwartzMap ℝ ℂ := hc.toSchwartzMap (hχ.mul (paperRadialFourier_log_contDiff V R hR.le))
+  refine ⟨𝓕 S, ?_⟩
+  have he (u : ℝ) : χ u * paperRadialFourier V (R * Real.exp u) = 𝓕⁻ (𝓕 (S : ℝ → ℂ)) u :=
+    (S.integrable.fourierInv_fourier_eq (𝓕 S).integrable S.continuous.continuousAt).symm
+  have hbound := weighted_fourier_L1_bound (𝓕 (S : ℝ → ℂ)) (𝓕 S).continuous ((1 + R) ^ N) C₂
+    (by positivity) hC₂.le J (hb₂ R hR)
+  refine ⟨he, hbound.1, ?_, ?_⟩
+  · exact hbound.2.trans (by change C₂ * I ≤ _; nlinarith only [hC₁, hC₂, hI])
+  · intro t
+    exact (hb₁ R hR t).trans (by nlinarith only [hC₂, hI])
+
+/-- Coupled logarithmic factors separate into unitary characters with a uniform integrable Fourier envelope. -/
+theorem paperRadialFourier_log_separation_envelope
+    {ι : Type*} [Fintype ι] (W : ι → ℝ → ℂ) (slope M : ι → ℝ)
+    (hM : ∀ i, 0 ≤ M i) (hW : ∀ i u, W i u ≠ 0 → |u| ≤ M i)
+    (V : 𝓢(ℝ, ℂ)) (N J : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∃ B : SchwartzMap ℝ ℂ,
+      (∀ y : ι → ℝ, (∏ i, W i (y i)) * paperRadialFourier V (R * Real.exp (∑ i, slope i * y i)) =
+        ∫ t : ℝ, (∏ i, W i (y i) * kernelLogPhase t (slope i * y i)) * B t) ∧
+      Integrable (fun t : ℝ => (1 + |t|) ^ J * ‖B t‖) ∧
+      (1 + R) ^ N * (∫ t : ℝ, (1 + |t|) ^ J * ‖B t‖) ≤ C ∧
+      ∀ t : ℝ, (1 + R) ^ N * (1 + |t|) ^ J * ‖B t‖ ≤ C := by
+  classical
+  let L : ℝ := ∑ i, |slope i| * M i
+  have hL : 0 ≤ L := Finset.sum_nonneg (fun i _ => mul_nonneg (abs_nonneg _) (hM i))
+  let χ₀ : ContDiffBump (0 : ℝ) :=
+    ⟨L + 1, L + 2, by linarith, by linarith⟩
+  let χ : ℝ → ℂ := fun u => (χ₀ u : ℂ)
+  have hχ : ContDiff ℝ ∞ χ := Complex.ofRealCLM.contDiff.comp χ₀.contDiff
+  have hχs : Function.support χ ⊆ Set.Icc (-(L + 2)) (L + 2) := by
+    intro u hu
+    have hu₀ : u ∈ Function.support χ₀ := by
+      change χ₀ u ≠ 0
+      intro hz
+      exact hu (by simp only [χ, hz, Complex.ofReal_zero])
+    rw [χ₀.support_eq] at hu₀
+    have habs : |u| < L + 2 := by simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using hu₀
+    exact abs_le.mp habs.le
+  have hχone (u : ℝ) (hu : |u| ≤ L) : χ u = 1 := by
+    have hu₀ : u ∈ Metric.closedBall (0 : ℝ) χ₀.rIn := by
+      change dist u 0 ≤ L + 1
+      rw [Real.dist_eq, sub_zero]
+      linarith
+    simp only [χ, χ₀.one_of_mem_closedBall hu₀, Complex.ofReal_one]
+  obtain ⟨C, hC, hb⟩ := localized_paperRadialFourier_fourier_envelope V
+    χ hχ (L + 2) (by linarith) hχs N J
+  refine ⟨C, hC, ?_⟩
+  intro R hR
+  obtain ⟨B, hsep, hi, hI, hpt⟩ := hb R hR
+  refine ⟨B, ?_, hi, hI, hpt⟩
+  intro y
+  have hprod (t : ℝ) : (∏ i, W i (y i) * kernelLogPhase t (slope i * y i)) =
+      (∏ i, W i (y i)) * kernelLogPhase t (∑ i, slope i * y i) := by
+    rw [Finset.prod_mul_distrib, kernelLogPhase_sum]
+  simp_rw [hprod, mul_assoc]
+  rw [integral_const_mul]
+  by_cases hz : (∏ i, W i (y i)) = 0
+  · simp only [hz, zero_mul]
+  · congr 1
+    have hwy (i : ι) : W i (y i) ≠ 0 := by
+      exact (Finset.prod_ne_zero_iff.mp hz) i (Finset.mem_univ i)
+    have hys : |∑ i, slope i * y i| ≤ L := by
+      calc
+        _ ≤ ∑ i, |slope i * y i| := by
+          simpa only [Real.norm_eq_abs] using norm_sum_le (s := Finset.univ) (f := fun i => slope i * y i)
+        _ ≤ L := Finset.sum_le_sum (fun i _ => by rw [abs_mul]; exact mul_le_mul_of_nonneg_left (hW i (y i) (hwy i)) (abs_nonneg _))
+    have he := hsep (∑ i, slope i * y i)
+    rw [hχone _ hys, one_mul, Real.fourierInv_eq'] at he
+    simp only [smul_eq_mul] at he
+    convert he using 1
+    apply integral_congr_ae
+    filter_upwards [] with t
+    congr 1
+    unfold kernelLogPhase
+    congr 1
+    simp only [RCLike.inner_apply, conj_trivial]
+    push_cast
+    ring
+
+
+
+end SchwartzPlanePoisson
+
+
+
+lemma kernelLogPhase_add (t x y : ℝ) :
+    kernelLogPhase t (x + y) = kernelLogPhase t x * kernelLogPhase t y := by
+  unfold kernelLogPhase
+  rw [← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+lemma kernelLogPhase_continuous_left (x : ℝ) : Continuous (fun t => kernelLogPhase t x) := by
+  unfold kernelLogPhase
+  fun_prop
+
+namespace QuadraticKernelTransfer
+open SchwartzPlanePoisson MeasureTheory
+open scoped SchwartzMap
+
+theorem sum_norm_integral_bound {ι : Type*} [Fintype ι]
+    (b : ℝ → ℂ) (φ : ι → ℝ → ℂ) (H : ℝ)
+    (hint : ∀ i, Integrable (fun t => b t * φ i t))
+    (hb : Integrable (fun t => ‖b t‖))
+    (hφ : ∀ t, (∑ i, ‖φ i t‖) ≤ H) :
+    (∑ i, ‖∫ t, b t * φ i t‖) ≤ H * ∫ t, ‖b t‖ := by
+  calc
+    _ ≤ ∑ i, ∫ t, ‖b t * φ i t‖ := Finset.sum_le_sum (fun i _ => norm_integral_le_integral_norm _)
+    _ = ∫ t, ∑ i, ‖b t * φ i t‖ := (integral_finsetSum _ (fun i _ => (hint i).norm)).symm
+    _ ≤ ∫ t, H * ‖b t‖ := by
+      apply integral_mono_of_nonneg (Filter.Eventually.of_forall (fun t => by positivity)) (hb.const_mul H)
+      filter_upwards [] with t
+      simp only [norm_mul, ← Finset.mul_sum]
+      calc
+        _ ≤ ‖b t‖ * H := mul_le_mul_of_nonneg_left (hφ t) (norm_nonneg _)
+        _ = _ := mul_comm _ _
+    _ = _ := integral_const_mul _ _
+
+theorem radial_two_variable_window (W : 𝓢(ℝ, ℂ))
+    (L₁ L₂ : ℝ) (hL₁ : 0 ≤ L₁) (hL₂ : 0 ≤ L₂) (A : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ x y : ℝ, |x| ≤ L₁ → |y| ≤ L₂ →
+        paperRadialFourier W (R * Real.exp (x+y)) =
+          ∫ t, kernelLogPhase t x * kernelLogPhase t y * b t) ∧
+      (1 + R) ^ A * (∫ t, ‖b t‖) ≤ C := by
+  let V₁ : ℝ → ℂ := fun x => if |x| ≤ L₁ then 1 else 0
+  let V₂ : ℝ → ℂ := fun x => if |x| ≤ L₂ then 1 else 0
+  let V : Bool → ℝ → ℂ := fun j => if j then V₂ else V₁
+  let lengthScale : Bool → ℝ := fun j => if j then L₂ else L₁
+  have hL : ∀ j, 0 ≤ lengthScale j := by intro j; cases j <;> assumption
+  have hV : ∀ j x, V j x ≠ 0 → |x| ≤ lengthScale j := by
+    intro j x h
+    cases j
+    · change |x| ≤ L₁
+      change (if |x| ≤ L₁ then (1 : ℂ) else 0) ≠ 0 at h
+      by_contra hx
+      exact h (by simp [hx])
+    · change |x| ≤ L₂
+      change (if |x| ≤ L₂ then (1 : ℂ) else 0) ≠ 0 at h
+      by_contra hx
+      exact h (by simp [hx])
+  obtain ⟨C, hC, hs⟩ := paperRadialFourier_log_separation_envelope V (fun _ => 1) lengthScale hL hV W A 0
+  refine ⟨C, hC.le, ?_⟩
+  intro R hR
+  obtain ⟨b, hb, _, hmass, _⟩ := hs R hR
+  refine ⟨b, ?_, ?_⟩
+  · intro x y hx hy
+    have h := hb (fun j => if j then y else x)
+    simpa only [V, V₁, V₂, lengthScale, Fintype.prod_bool, Fintype.sum_bool,
+      Bool.false_eq_true, ↓reduceIte, if_pos hx, if_pos hy, one_mul, mul_one,
+      add_comm, mul_comm, mul_left_comm, mul_assoc] using h
+  · simpa only [pow_zero, one_mul] using hmass
+
+theorem radial_phase_integrable (b : 𝓢(ℝ, ℂ)) (c : ℂ) (x y : ℝ) :
+    Integrable (fun t => b t * (kernelLogPhase t x * (c * kernelLogPhase t y))) := by
+  apply (b.integrable.norm.mul_const ‖c‖).mono'
+  · have hx := kernelLogPhase_continuous_left x
+    have hy := kernelLogPhase_continuous_left y
+    exact (by fun_prop : Continuous (fun t => b t * (kernelLogPhase t x * (c * kernelLogPhase t y)))).aestronglyMeasurable
+  · filter_upwards [] with t
+    simp only [norm_mul, kernelLogPhase_norm, one_mul, mul_one]
+    exact le_rfl
+
+theorem radial_matrix_kernel_transfer (W : 𝓢(ℝ, ℂ))
+    (L₁ L₂ : ℝ) (hL₁ : 0 ≤ L₁) (hL₂ : 0 ≤ L₂) (A : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R →
+      ∀ {m n : Type*} [Fintype m] [Fintype n]
+        (c : m → n → ℂ) (x : m → ℝ) (y : n → ℝ) (H : ℝ),
+        0 ≤ H → (∀ i, |x i| ≤ L₁) → (∀ j, |y j| ≤ L₂) →
+        (∀ t, (∑ i, ‖∑ j, c i j * kernelLogPhase t (y j)‖) ≤ H) →
+        (1 + R) ^ A * (∑ i, ‖∑ j, c i j *
+          paperRadialFourier W (R * Real.exp (x i + y j))‖) ≤ C * H := by
+  obtain ⟨C, hC, hs⟩ := radial_two_variable_window W L₁ L₂ hL₁ hL₂ A
+  refine ⟨C, hC, ?_⟩
+  intro R hR m n _ _ c x y H hH hx hy hphase
+  obtain ⟨b, hb, hmass⟩ := hs R hR
+  let φ : m → ℝ → ℂ := fun i t => kernelLogPhase t (x i) * ∑ j, c i j * kernelLogPhase t (y j)
+  have hint (i : m) : Integrable (fun t => b t * φ i t) := by
+    have h := integrable_finsetSum (Finset.univ : Finset n)
+      (fun j _ => radial_phase_integrable b (c i j) (x i) (y j))
+    simpa only [φ, Finset.mul_sum] using h
+  have hid (i : m) : (∑ j, c i j * paperRadialFourier W (R * Real.exp (x i + y j))) =
+      ∫ t, b t * φ i t := by
+    rw [show (fun t => b t * φ i t) = fun t =>
+      ∑ j, b t * (kernelLogPhase t (x i) * (c i j * kernelLogPhase t (y j))) by
+        funext t; simp only [φ, Finset.mul_sum]]
+    rw [integral_finsetSum _ (fun j _ => radial_phase_integrable b (c i j) (x i) (y j))]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [hb _ _ (hx i) (hy j), ← integral_const_mul]
+    congr 1
+    funext t
+    ring
+  have hp (t : ℝ) : (∑ i, ‖φ i t‖) ≤ H := by
+    simpa only [φ, norm_mul, kernelLogPhase_norm, one_mul] using hphase t
+  have hi := sum_norm_integral_bound b φ H hint b.integrable.norm hp
+  simp only [← hid] at hi
+  calc
+    _ ≤ (1 + R) ^ A * (H * ∫ t, ‖b t‖) := mul_le_mul_of_nonneg_left hi (by positivity)
+    _ = H * ((1 + R) ^ A * ∫ t, ‖b t‖) := by ring
+    _ ≤ H * C := mul_le_mul_of_nonneg_left hmass hH
+    _ = _ := mul_comm _ _
+
+
+end QuadraticKernelTransfer
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory QuadraticKernelTransfer DivisorBlockCauchy
+open scoped SchwartzMap
+
+section
+variable {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+/-- Divisor block cost before estimating the two finite divisor families. -/
+def divisorBlockCost (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ M N : ℝ) (a : n → ℂ) (b : p → ℂ) : ℝ :=
+  (S.card : ℝ) * T.card * sieveNorm M (N / D₁) * sieveNorm M (N / D₂) *
+    (divisorConstant ε hε * N ^ ε) ^ 4 * (∑ j, ‖a j‖ ^ 2) * (∑ k, ‖b k‖ ^ 2)
+
+def originalTerm (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) (i : m) (j : n) (k : p) : ℂ :=
+  if (left j).val ⊔ (right k).val = ⊤ then
+    star (canonicalQuadraticRow (left j) (primaryIdealGenerator (rows i).val) * (if D ∣ (left j).val then a j else 0)) *
+      (canonicalQuadraticRow (right k) (primaryIdealGenerator (rows i).val) * (if E ∣ (right k).val then b k else 0)) else 0
+
+omit [Fintype m] [Fintype n] [Fintype p] [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalTerm_phase (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (D E : Ideal O) (i : m) (j : n) (k : p)
+    (y : n → ℝ) (z : p → ℝ) (t : ℝ) :
+    originalTerm rows left right (fun j => a j * star (kernelLogPhase t (y j)))
+      (fun k => b k * kernelLogPhase t (z k)) D E i j k =
+    originalTerm rows left right a b D E i j k * kernelLogPhase t (y j + z k) := by
+  unfold originalTerm
+  rw [kernelLogPhase_add]
+  by_cases hc : (left j).val ⊔ (right k).val = ⊤ <;>
+    by_cases hD : D ∣ (left j).val <;> by_cases hE : E ∣ (right k).val <;>
+      simp only [hc, hD, hE, ↓reduceIte, mul_zero, zero_mul, star_zero, star_mul, star_star] ; ring
+
+theorem canonical_original_divisor_block_phase_bound
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ M N : ℝ) (hD₁ : 0 < D₁) (hD₂ : 0 < D₂) (hN : 0 ≤ N)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ))
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (y : n → ℝ) (z : p → ℝ) (t : ℝ) :
+    (∑ D ∈ S, ∑ E ∈ T, ∑ i,
+      ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * kernelLogPhase t (y j + z k)‖) ≤
+      Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ M N a b) := by
+  have hb := original_divisor_block_bound ε hε S T D₁ D₂ M N hD₁ hD₂ hN hS hT
+    rows left right hr hl hri hrows hleft hright
+    (fun j => a j * star (kernelLogPhase t (y j))) (fun k => b k * kernelLogPhase t (z k))
+  simp only [norm_mul, norm_star, kernelLogPhase_norm, mul_one] at hb
+  change (∑ D ∈ S, ∑ E ∈ T, ∑ i, ‖∑ j, ∑ k,
+    originalTerm rows left right (fun j => a j * star (kernelLogPhase t (y j)))
+      (fun k => b k * kernelLogPhase t (z k)) D E i j k‖) ^ 2 ≤
+    divisorBlockCost ε hε S T D₁ D₂ M N a b at hb
+  simp only [originalTerm_phase] at hb
+  have hcost : 0 ≤ divisorBlockCost ε hε S T D₁ D₂ M N a b := (sq_nonneg _).trans hb
+  have hs := Real.sq_sqrt hcost
+  have hp := Real.sqrt_nonneg (divisorBlockCost ε hε S T D₁ D₂ M N a b)
+  have hsum : 0 ≤ ∑ D ∈ S, ∑ E ∈ T, ∑ i,
+      ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * kernelLogPhase t (y j + z k)‖ := by positivity
+  nlinarith only [hb, hs, hp, hsum]
+end
+
+theorem canonical_original_radial_divisor_block_bound
+    (W : 𝓢(ℝ, ℂ)) (L₁ L₂ L₃ : ℝ) (hL₁ : 0 ≤ L₁) (hL₂ : 0 ≤ L₂) (hL₃ : 0 ≤ L₃) (A : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R →
+      ∀ {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+        [DecidableEq m] [DecidableEq n] [DecidableEq p]
+        (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+        (D₁ D₂ M N : ℝ) (_hD₁ : 0 < D₁) (_hD₂ : 0 < D₂) (_hN : 0 ≤ N)
+        (_hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ))
+        (_hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ))
+        (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+        (_hr : Function.Injective rows) (_hl : Function.Injective left) (_hri : Function.Injective right)
+        (_hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ M)
+        (_hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+        (_hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+        (a : n → ℂ) (b : p → ℂ) (x : S → T → m → ℝ) (y : n → ℝ) (z : p → ℝ),
+        (∀ D E i, |x D E i| ≤ L₁) → (∀ j, |y j| ≤ L₂) → (∀ k, |z k| ≤ L₃) →
+        (1 + R) ^ A * (∑ D : S, ∑ E : T, ∑ i, ‖∑ j, ∑ k,
+          originalTerm rows left right a b D.val E.val i j k *
+            paperRadialFourier W (R * Real.exp (x D E i + (y j + z k)))‖) ≤
+          C * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ M N a b) := by
+  obtain ⟨C, hC, hker⟩ := radial_matrix_kernel_transfer W L₁ (L₂ + L₃) hL₁ (add_nonneg hL₂ hL₃) A
+  refine ⟨C, hC, ?_⟩
+  intro R hR m n p _ _ _ _ _ _ ε hε S T D₁ D₂ M N hD₁ hD₂ hN hS hT
+    rows left right hr hl hri hrows hleft hright a b x y z hx hy hz
+  let c : (S × T × m) → (n × p) → ℂ := fun i j =>
+    originalTerm rows left right a b i.1.val i.2.1.val i.2.2 j.1 j.2
+  have hp (t : ℝ) : (∑ i : S × T × m, ‖∑ j : n × p, c i j * kernelLogPhase t (y j.1 + z j.2)‖) ≤
+      Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ M N a b) := by
+    have hb := canonical_original_divisor_block_phase_bound ε hε S T D₁ D₂ M N hD₁ hD₂ hN hS hT
+      rows left right hr hl hri hrows hleft hright a b y z t
+    simp only [c, Fintype.sum_prod_type]
+    let v : Ideal O → Ideal O → ℝ := fun D E => ∑ i,
+      ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * kernelLogPhase t (y j + z k)‖
+    change (∑ D : S, ∑ E : T, v D.val E.val) ≤ _
+    rw [Finset.sum_coe_sort S (fun D => ∑ E : T, v D E.val)]
+    have he (D : Ideal O) := Finset.sum_coe_sort T (v D)
+    simp_rw [he]
+    exact hb
+  have hb := hker R hR c (fun i => x i.1 i.2.1 i.2.2) (fun j => y j.1 + z j.2)
+    (Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ M N a b)) (Real.sqrt_nonneg _)
+    (fun i => hx i.1 i.2.1 i.2.2)
+    (fun j => (abs_add_le _ _).trans (add_le_add (hy j.1) (hz j.2))) hp
+  simpa only [c, Fintype.sum_prod_type] using hb
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+def middleRatio (B b D₁ d D₂ e : ℝ) : ℝ := Real.sqrt (B / b) * (D₁ / d) * (D₂ / e)
+
+theorem middleRatio_bounds (B b D₁ d D₂ e : ℝ)
+    (hB : 0 < B) (hb : B / 2 ≤ b ∧ b ≤ B)
+    (hD₁ : 0 < D₁) (hd : D₁ ≤ d ∧ d ≤ 2 * D₁)
+    (hD₂ : 0 < D₂) (he : D₂ ≤ e ∧ e ≤ 2 * D₂) :
+    1 / 4 ≤ middleRatio B b D₁ d D₂ e ∧ middleRatio B b D₁ d D₂ e ≤ 2 := by
+  have hb0 : 0 < b := by linarith
+  have hd0 : 0 < d := hD₁.trans_le hd.1
+  have he0 : 0 < e := hD₂.trans_le he.1
+  have hu1 : 1 ≤ Real.sqrt (B / b) := by
+    have hq : 1 ≤ B / b := (le_div_iff₀ hb0).mpr (by simpa using hb.2)
+    simpa only [Real.sqrt_one] using Real.sqrt_le_sqrt hq
+  have hu2 : Real.sqrt (B / b) ≤ 2 := by
+    apply Real.sqrt_le_iff.mpr
+    refine ⟨by norm_num, ?_⟩
+    apply (div_le_iff₀ hb0).mpr
+    nlinarith
+  have hv : (1 / 2 : ℝ) ≤ D₁ / d ∧ D₁ / d ≤ 1 :=
+    ⟨(le_div_iff₀ hd0).mpr (by linarith), (div_le_one hd0).mpr hd.1⟩
+  have hw : (1 / 2 : ℝ) ≤ D₂ / e ∧ D₂ / e ≤ 1 :=
+    ⟨(le_div_iff₀ he0).mpr (by linarith), (div_le_one he0).mpr he.1⟩
+  have hv0 : 0 ≤ D₁ / d := (by norm_num : (0 : ℝ) ≤ 1 / 2).trans hv.1
+  have hw0 : 0 ≤ D₂ / e := (by norm_num : (0 : ℝ) ≤ 1 / 2).trans hw.1
+  have hvw1 : (1 / 4 : ℝ) ≤ (D₁ / d) * (D₂ / e) := by
+    nlinarith [mul_le_mul hv.1 hw.1 (by norm_num : (0 : ℝ) ≤ 1 / 2) hv0]
+  have hvw2 : (D₁ / d) * (D₂ / e) ≤ 1 := by
+    nlinarith [mul_le_mul hv.2 hw.2 hw0 (by norm_num : (0 : ℝ) ≤ 1)]
+  unfold middleRatio
+  constructor
+  · nlinarith [mul_le_mul hu1 hvw1 (by norm_num : (0 : ℝ) ≤ 1 / 4) (Real.sqrt_nonneg (B / b))]
+  · nlinarith [mul_le_mul hu2 hvw2 (mul_nonneg hv0 hw0) (by norm_num : (0 : ℝ) ≤ 2)]
+
+theorem middleRatio_log_bound (r : ℝ) (hr : (1 / 4 : ℝ) ≤ r ∧ r ≤ 2) : |Real.log r| ≤ 4 := by
+  have hr0 : 0 < r := by linarith
+  have hi : r⁻¹ ≤ 4 := by
+    have h : (1 : ℝ) / r ≤ 4 := (div_le_iff₀ hr0).mpr (by linarith)
+    simpa only [one_div] using h
+  have h₁ := Real.log_le_sub_one_of_pos hr0
+  have h₂ := Real.log_le_sub_one_of_pos (inv_pos.mpr hr0)
+  rw [Real.log_inv] at h₂
+  exact abs_le.mpr ⟨by linarith, by linarith⟩
+
+theorem middleRatio_argument (M B b D₁ d D₂ e q : ℝ)
+    (hM : 0 < M) (hB : 0 < B) (hb : B / 2 ≤ b ∧ b ≤ B)
+    (hD₁ : 0 < D₁) (hd : D₁ ≤ d ∧ d ≤ 2 * D₁)
+    (hD₂ : 0 < D₂) (he : D₂ ≤ e ∧ e ≤ 2 * D₂) :
+    (Real.sqrt (M / B) * q / (D₁ * D₂)) * Real.exp (Real.log (middleRatio B b D₁ d D₂ e)) =
+      Real.sqrt (M / b) * q / (d * e) := by
+  have hb0 : 0 < b := by linarith
+  have hd0 : 0 < d := hD₁.trans_le hd.1
+  have he0 : 0 < e := hD₂.trans_le he.1
+  have hr : 0 < middleRatio B b D₁ d D₂ e := by
+    have hh := middleRatio_bounds B b D₁ d D₂ e hB hb hD₁ hd hD₂ he
+    linarith
+  rw [Real.exp_log hr]
+  have hs : Real.sqrt (M / B) * Real.sqrt (B / b) = Real.sqrt (M / b) := by
+    rw [← Real.sqrt_mul (div_nonneg hM.le hB.le)]
+    congr 1
+    field_simp
+  unfold middleRatio
+  calc
+    _ = (Real.sqrt (M / B) * Real.sqrt (B / b)) * q / (d * e) := by
+      field_simp
+
+    _ = _ := by rw [hs]
+
+theorem actual_middle_radial_block_bound (W : 𝓢(ℝ, ℂ)) (A : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+        [DecidableEq m] [DecidableEq n] [DecidableEq p]
+        (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+        (D₁ D₂ B N M : ℝ) (_hD₁ : 1 ≤ D₁) (_hD₂ : 1 ≤ D₂) (_hB : 1 ≤ B) (_hN : 1 ≤ N) (_hM : 0 < M)
+        (_hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+        (_hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+        (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+        (_hr : Function.Injective rows) (_hl : Function.Injective left) (_hri : Function.Injective right)
+        (_hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+        (_hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+        (_hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+        (a : n → ℂ) (b : p → ℂ) (h : O), h ≠ 0 →
+        (1 + Real.sqrt (M / B) * ‖ringComplex h‖ ^ 2 / (D₁ * D₂)) ^ A *
+          (∑ D : S, ∑ E : T, ∑ i, ‖∑ j, ∑ k,
+            originalTerm rows left right a b D.val E.val i j k *
+              paperRadialFourier W
+                (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+                  ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖) ≤
+          C * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) := by
+  obtain ⟨C, hC, hb⟩ := canonical_original_radial_divisor_block_bound W 4 0 0 (by norm_num) (by norm_num) (by norm_num) A
+  refine ⟨C, hC, ?_⟩
+  intro m n p _ _ _ _ _ _ ε hε S T D₁ D₂ B N M hD₁ hD₂ hB hN hM hS hT rows left right hr hl hri hrows hleft hright a b h hh
+  have hD₁0 : 0 < D₁ := by linarith
+  have hD₂0 : 0 < D₂ := by linarith
+  have hB0 : 0 < B := by linarith
+  let R := Real.sqrt (M / B) * ‖ringComplex h‖ ^ 2 / (D₁ * D₂)
+  have hR : 0 < R := div_pos (mul_pos (Real.sqrt_pos.mpr (div_pos hM hB0))
+    (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hh)))) (mul_pos hD₁0 hD₂0)
+  let x : S → T → m → ℝ := fun D E i => Real.log
+    (middleRatio B (Ideal.absNorm (rows i).val) D₁ (Ideal.absNorm D.val) D₂ (Ideal.absNorm E.val))
+  have hx (D : S) (E : T) (i : m) : |x D E i| ≤ 4 :=
+    middleRatio_log_bound _ (middleRatio_bounds _ _ _ _ _ _ hB0 (hrows i) hD₁0
+      (hS D.val D.property) hD₂0 (hT E.val E.property))
+  have he := hb R hR ε hε S T D₁ D₂ B N hD₁0 hD₂0 (zero_le_one.trans hN)
+    (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1) rows left right hr hl hri
+    (fun i => (hrows i).2) hleft hright a b x (fun _ => 0) (fun _ => 0) hx
+    (fun _ => by simp) (fun _ => by simp)
+  have harg (D : S) (E : T) (i : m) : R * Real.exp (x D E i + (0 + 0)) =
+      Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+        ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)) := by
+    simp only [add_zero]
+    exact middleRatio_argument _ _ _ _ _ _ _ _ hM hB0 (hrows i) hD₁0
+      (hS D.val D.property) hD₂0 (hT E.val E.property)
+  simpa only [harg, R] using he
+
+theorem column_sqrt_ratio_bounds (N n : ℝ) (hN : 0 < N) (hn : N / 2 ≤ n ∧ n ≤ N) :
+    1 / 4 ≤ Real.sqrt (n / N) ∧ Real.sqrt (n / N) ≤ 2 := by
+  have hq0 : 0 ≤ n / N := div_nonneg (by linarith) hN.le
+  have hq1 : (1 / 2 : ℝ) ≤ n / N := (le_div_iff₀ hN).mpr (by linarith)
+  have hq2 : n / N ≤ 1 := (div_le_one hN).mpr hn.2
+  have hs := Real.sq_sqrt hq0
+  have hp := Real.sqrt_nonneg (n / N)
+  constructor <;> nlinarith
+
+theorem dual_middle_sqrt_identity (M B b N i j F : ℝ)
+    (hM : 0 < M) (hB : 0 < B) (hb : 0 < b) (hN : 0 < N)
+    (hi : 0 < i) (hj : 0 < j) (hF : 0 < F) :
+    N * Real.sqrt (F / (M * B)) * Real.sqrt (B / b) * Real.sqrt (i / N) * Real.sqrt (j / N) =
+      Real.sqrt (F * i * j / (M * b)) := by
+  apply (sq_eq_sq₀ (by positivity) (Real.sqrt_nonneg _)).mp
+  simp only [mul_pow, Real.sq_sqrt (show 0 ≤ F / (M * B) by positivity),
+    Real.sq_sqrt (show 0 ≤ B / b by positivity), Real.sq_sqrt (show 0 ≤ i / N by positivity),
+    Real.sq_sqrt (show 0 ≤ j / N by positivity), Real.sq_sqrt (show 0 ≤ F * i * j / (M * b) by positivity)]
+  field_simp
+
+theorem dual_middle_argument (M B b N i j F D₁ d D₂ e q : ℝ)
+    (hM : 0 < M) (hB : 0 < B) (hb : B / 2 ≤ b ∧ b ≤ B) (hN : 0 < N)
+    (hi : N / 2 ≤ i ∧ i ≤ N) (hj : N / 2 ≤ j ∧ j ≤ N) (hF : 0 < F)
+    (hD₁ : 0 < D₁) (hd : D₁ ≤ d ∧ d ≤ 2 * D₁)
+    (hD₂ : 0 < D₂) (he : D₂ ≤ e ∧ e ≤ 2 * D₂) :
+    (N * Real.sqrt (F / (M * B)) * q / (D₁ * D₂)) *
+      Real.exp (Real.log (middleRatio B b D₁ d D₂ e) +
+        (Real.log (Real.sqrt (i / N)) + Real.log (Real.sqrt (j / N)))) =
+      Real.sqrt (F * i * j / (M * b)) * q / (d * e) := by
+  have hb0 : 0 < b := by linarith
+  have hi0 : 0 < i := by linarith
+  have hj0 : 0 < j := by linarith
+  have hd0 : 0 < d := hD₁.trans_le hd.1
+  have he0 : 0 < e := hD₂.trans_le he.1
+  have hr : 0 < middleRatio B b D₁ d D₂ e := by
+    have hh := middleRatio_bounds B b D₁ d D₂ e hB hb hD₁ hd hD₂ he
+    linarith
+  rw [Real.exp_add, Real.exp_add, Real.exp_log hr,
+    Real.exp_log (Real.sqrt_pos.mpr (div_pos hi0 hN)),
+    Real.exp_log (Real.sqrt_pos.mpr (div_pos hj0 hN))]
+  unfold middleRatio
+  calc
+    _ = (N * Real.sqrt (F / (M * B)) * Real.sqrt (B / b) * Real.sqrt (i / N) * Real.sqrt (j / N)) * q / (d * e) := by
+      field_simp
+
+    _ = _ := by rw [dual_middle_sqrt_identity M B b N i j F hM hB hb0 hN hi0 hj0 hF]
+
+theorem actual_dual_middle_radial_block_bound (W : 𝓢(ℝ, ℂ)) (A : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+        [DecidableEq m] [DecidableEq n] [DecidableEq p]
+        (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+        (D₁ D₂ B N M F : ℝ) (_hD₁ : 1 ≤ D₁) (_hD₂ : 1 ≤ D₂) (_hB : 1 ≤ B) (_hN : 1 ≤ N)
+        (_hM : 0 < M) (_hF : 0 < F)
+        (_hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+        (_hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+        (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+        (_hr : Function.Injective rows) (_hl : Function.Injective left) (_hri : Function.Injective right)
+        (_hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+        (_hleft : ∀ j, N / 2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+        (_hright : ∀ k, N / 2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+        (a : n → ℂ) (b : p → ℂ) (h : O), h ≠ 0 →
+        (1 + N * Real.sqrt (F / (M * B)) * ‖ringComplex h‖ ^ 2 / (D₁ * D₂)) ^ A *
+          (∑ D : S, ∑ E : T, ∑ i, ‖∑ j, ∑ k,
+            originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+              (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) /
+                (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+                  ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖) ≤
+          C * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) := by
+  obtain ⟨C, hC, hb⟩ := canonical_original_radial_divisor_block_bound W 4 4 4 (by norm_num) (by norm_num) (by norm_num) A
+  refine ⟨C, hC, ?_⟩
+  intro m n p _ _ _ _ _ _ ε hε S T D₁ D₂ B N M F hD₁ hD₂ hB hN hM hF hS hT rows left right hr hl hri hrows hleft hright a b h hh
+  have hD₁0 : 0 < D₁ := by linarith
+  have hD₂0 : 0 < D₂ := by linarith
+  have hB0 : 0 < B := by linarith
+  have hN0 : 0 < N := by linarith
+  let R := N * Real.sqrt (F / (M * B)) * ‖ringComplex h‖ ^ 2 / (D₁ * D₂)
+  have hR : 0 < R := div_pos (mul_pos (mul_pos hN0 (Real.sqrt_pos.mpr (by positivity)))
+    (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hh)))) (mul_pos hD₁0 hD₂0)
+  let x : S → T → m → ℝ := fun D E i => Real.log
+    (middleRatio B (Ideal.absNorm (rows i).val) D₁ (Ideal.absNorm D.val) D₂ (Ideal.absNorm E.val))
+  let y : n → ℝ := fun j => Real.log (Real.sqrt ((Ideal.absNorm (left j).val : ℝ) / N))
+  let z : p → ℝ := fun k => Real.log (Real.sqrt ((Ideal.absNorm (right k).val : ℝ) / N))
+  have hx (D : S) (E : T) (i : m) : |x D E i| ≤ 4 :=
+    middleRatio_log_bound _ (middleRatio_bounds _ _ _ _ _ _ hB0 (hrows i) hD₁0
+      (hS D.val D.property) hD₂0 (hT E.val E.property))
+  have hy (j : n) : |y j| ≤ 4 := middleRatio_log_bound _ (column_sqrt_ratio_bounds N _ hN0 (hleft j))
+  have hz (k : p) : |z k| ≤ 4 := middleRatio_log_bound _ (column_sqrt_ratio_bounds N _ hN0 (hright k))
+  have he := hb R hR ε hε S T D₁ D₂ B N hD₁0 hD₂0 (zero_le_one.trans hN)
+    (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1) rows left right hr hl hri
+    (fun i => (hrows i).2) (fun j => (hleft j).2)
+    (fun k => (hright k).2) a b x y z hx hy hz
+  have harg (D : S) (E : T) (i : m) (j : n) (k : p) : R * Real.exp (x D E i + (y j + z k)) =
+      Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) /
+        (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+          ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)) :=
+    dual_middle_argument _ _ _ _ _ _ _ _ _ _ _ _ hM hB0 (hrows i) hN0 (hleft j) (hright k) hF
+      hD₁0 (hS D.val D.property) hD₂0 (hT E.val E.property)
+  simpa only [harg, R] using he
+
+
+theorem principal_middle_prefactor_bound (M B b D₁ d D₂ e : ℝ)
+    (hM : 0 < M) (hB : 0 < B) (hb : B / 2 ≤ b)
+    (hD₁ : 0 < D₁) (hd : D₁ ≤ d) (hD₂ : 0 < D₂) (he : D₂ ≤ e) :
+    Real.sqrt (M / b) / (d * e) ≤ 2 * Real.sqrt (M / B) / (D₁ * D₂) := by
+  have hb0 : 0 < b := by linarith
+  have hd0 : 0 < d := hD₁.trans_le hd
+  have he0 : 0 < e := hD₂.trans_le he
+  have hq : M / b ≤ 4 * (M / B) := by
+    calc
+      _ ≤ (4 * M) / B := (div_le_div_iff₀ hb0 hB).mpr (by nlinarith [mul_nonneg hM.le (show 0 ≤ 4 * b - B by linarith)])
+      _ = _ := by ring
+  have hs : Real.sqrt (M / b) ≤ 2 * Real.sqrt (M / B) := by
+    have hh := Real.sqrt_le_sqrt hq
+    rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 4)] at hh
+    have hs4 : Real.sqrt (4 : ℝ) = 2 := by
+      simpa only [show (2 : ℝ) ^ 2 = 4 by norm_num] using Real.sqrt_sq (show (0 : ℝ) ≤ 2 by norm_num)
+    rw [hs4] at hh
+    exact hh
+  calc
+    _ ≤ (2 * Real.sqrt (M / B)) / (d * e) := div_le_div_of_nonneg_right hs (mul_pos hd0 he0).le
+    _ ≤ _ := div_le_div_of_nonneg_left (by positivity) (mul_pos hD₁ hD₂)
+      (mul_le_mul hd he hD₂.le hd0.le)
+
+theorem principal_middle_prefactor_sum {m : Type*} [Fintype m]
+    (S T : Finset (Ideal O)) (rows : m → Ideal O) (f : S → T → m → ℝ)
+    (hf : ∀ D E i, 0 ≤ f D E i) (M B D₁ D₂ : ℝ)
+    (hM : 0 < M) (hB : 0 < B) (hD₁ : 0 < D₁) (hD₂ : 0 < D₂)
+    (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i) : ℝ))
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ)) (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ)) :
+    (∑ D : S, ∑ E : T, ∑ i,
+      (Real.sqrt (M / (Ideal.absNorm (rows i) : ℝ)) /
+        ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) * f D E i) ≤
+      (2 * Real.sqrt (M / B) / (D₁ * D₂)) * ∑ D : S, ∑ E : T, ∑ i, f D E i := by
+  simp only [Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro D _
+  apply Finset.sum_le_sum
+  intro E _
+  apply Finset.sum_le_sum
+  intro i _
+  apply mul_le_mul_of_nonneg_right _ (hf D E i)
+  exact principal_middle_prefactor_bound M B _ D₁ _ D₂ _ hM hB (hrows i) hD₁
+    (hS D.val D.property) hD₂ (hT E.val E.property)
+
+
+theorem dual_principal_prefactor_identity (M F b i j : ℝ)
+    (hM : 0 < M) (hF : 0 < F) (hb : 0 < b) (hi : 0 < i) (hj : 0 < j) :
+    (M / (Real.sqrt (i * j) * F)) * Real.sqrt (F * i * j / (M * b)) =
+      Real.sqrt ((M / F) / b) := by
+  apply (sq_eq_sq₀ (by positivity) (Real.sqrt_nonneg _)).mp
+  simp only [mul_pow, div_pow, Real.sq_sqrt (show 0 ≤ i * j by positivity),
+    Real.sq_sqrt (show 0 ≤ F * i * j / (M * b) by positivity),
+    Real.sq_sqrt (show 0 ≤ (M / F) / b by positivity)]
+  field_simp
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+def originalMiddleConstant (W : 𝓢(ℝ, ℂ)) : ℝ := (actual_middle_radial_block_bound.{0, 0, 0} W 0).choose
+
+def dualMiddleConstant (W : 𝓢(ℝ, ℂ)) : ℝ := (actual_dual_middle_radial_block_bound.{0, 0, 0} W 0).choose
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+variable (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+  (D₁ D₂ B N M : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M)
+  (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+  (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+  (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+  (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+  (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+  (a : n → ℂ) (b : p → ℂ) (h : O) (hh : h ≠ 0)
+
+include hD₁ hD₂ hB hN hM hS hT hr hl hri hrows hh
+
+theorem actual_original_middle_weighted_bound
+    (W : 𝓢(ℝ, ℂ))
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N) :
+    (∑ D : S, ∑ E : T, ∑ i,
+      (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+        ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+      ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+        (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+          ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖) ≤
+    (2 * Real.sqrt (M / B) / (D₁ * D₂)) * originalMiddleConstant W *
+      Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) := by
+  have hk := (actual_middle_radial_block_bound.{0, 0, 0} W 0).choose_spec.2 ε hε S T D₁ D₂ B N M
+    hD₁ hD₂ hB hN hM hS hT rows left right hr hl hri hrows hleft hright a b h hh
+  change _ ≤ originalMiddleConstant W * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) at hk
+  simp only [pow_zero, one_mul] at hk
+  apply (principal_middle_prefactor_sum S T (fun i => (rows i).val) _ (fun _ _ _ => norm_nonneg _) M B D₁ D₂ hM
+    (by linarith) (by linarith) (by linarith) (fun i => (hrows i).1)
+    (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)).trans
+  simpa only [mul_assoc] using
+    mul_le_mul_of_nonneg_left hk (show 0 ≤ 2 * Real.sqrt (M / B) / (D₁ * D₂) by positivity)
+
+theorem actual_dual_middle_weighted_bound
+    (W : 𝓢(ℝ, ℂ)) (F : ℝ) (hF : 0 < F)
+    (hleft : ∀ j, N / 2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N / 2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N) :
+    (∑ D : S, ∑ E : T, ∑ i,
+      (Real.sqrt ((M / F) / (Ideal.absNorm (rows i).val : ℝ)) /
+        ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+      ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+        (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) /
+          (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+            ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖) ≤
+    (2 * Real.sqrt ((M / F) / B) / (D₁ * D₂)) * dualMiddleConstant W *
+      Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) := by
+  have hk := (actual_dual_middle_radial_block_bound.{0, 0, 0} W 0).choose_spec.2 ε hε S T D₁ D₂ B N M F
+    hD₁ hD₂ hB hN hM hF hS hT rows left right hr hl hri hrows hleft hright a b h hh
+  change _ ≤ dualMiddleConstant W * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) at hk
+  simp only [pow_zero, one_mul] at hk
+  apply (principal_middle_prefactor_sum S T (fun i => (rows i).val) _ (fun _ _ _ => norm_nonneg _) (M / F) B D₁ D₂ (div_pos hM hF)
+    (by linarith) (by linarith) (by linarith) (fun i => (hrows i).1)
+    (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)).trans
+  simpa only [mul_assoc] using
+    mul_le_mul_of_nonneg_left hk (show 0 ≤ 2 * Real.sqrt ((M / F) / B) / (D₁ * D₂) by positivity)
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+def nonzeroLatticeEnvelopeConstant : ℝ :=
+  4 * (1 + Real.pi) ^ 2 + 4 * eisensteinCauchyMass
+
+theorem nonzeroLatticeEnvelopeConstant_nonneg :
+    0 ≤ nonzeroLatticeEnvelopeConstant := by
+  have := eisensteinCauchyMass_nonneg
+  unfold nonzeroLatticeEnvelopeConstant
+  positivity
+
+theorem scaled_cauchy_nonzero_mass (t : ℝ) (ht : 0 < t) :
+    t * (∑' h : {h : O // h ≠ 0},
+      ((1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) ≤
+        nonzeroLatticeEnvelopeConstant := by
+  let F : ℝ → ℂ := fun x => (((1 + x) ^ 2)⁻¹ : ℝ)
+  have hF (x : ℝ) (hx : 0 ≤ x) : (1 + x) ^ 2 * ‖F x‖ ≤ 1 := by
+    dsimp only [F]
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    rw [mul_inv_cancel₀ (by positivity : (1 + x) ^ 2 ≠ 0)]
+  have hh := lattice_profile_nonzero_scaled_bound F 1 (by norm_num) hF t ht
+  change t * (∑' h : {h : O // h ≠ 0}, ‖F (t * ‖ringComplex h.val‖ ^ 2)‖) ≤
+    nonzeroLatticeEnvelopeConstant * 1 at hh
+  simpa only [F, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (show 0 ≤ ((1 + t * ‖ringComplex _‖ ^ 2) ^ 2)⁻¹ by positivity),
+    mul_one] using hh
+
+theorem nonzero_lattice_envelope_sum
+    (t C : ℝ) (ht : 0 < t) (hC : 0 ≤ C)
+    (f : {h : O // h ≠ 0} → ℝ) (hf : ∀ h, 0 ≤ f h)
+    (hbound : ∀ h, (1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 * f h ≤ C) :
+    Summable f ∧ t * (∑' h, f h) ≤ nonzeroLatticeEnvelopeConstant * C := by
+  have hp (h : {h : O // h ≠ 0}) :
+      f h ≤ C * ((1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ := by
+    rw [← div_eq_mul_inv]
+    apply (le_div_iff₀ (by positivity)).mpr
+    simpa only [mul_comm] using hbound h
+  have hs := (scaled_eisenstein_cauchy_summable t ht).subtype (fun h : O => h ≠ 0)
+  have hfs : Summable f := Summable.of_nonneg_of_le hf hp (hs.mul_left C)
+  refine ⟨hfs, ?_⟩
+  have hh := hfs.tsum_le_tsum hp (hs.mul_left C)
+  rw [tsum_mul_left] at hh
+  calc
+    _ ≤ t * (C * ∑' h : {h : O // h ≠ 0},
+        ((1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) := mul_le_mul_of_nonneg_left hh ht.le
+    _ = C * (t * ∑' h : {h : O // h ≠ 0},
+        ((1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹) := by ring
+    _ ≤ C * nonzeroLatticeEnvelopeConstant :=
+      mul_le_mul_of_nonneg_left (scaled_cauchy_nonzero_mass t ht) hC
+    _ = _ := mul_comm _ _
+
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+section
+open Eisenstein MeasureTheory
+
+def originalMiddleDecayConstant (W : 𝓢(ℝ, ℂ)) : ℝ :=
+  (actual_middle_radial_block_bound.{0, 0, 0} W 2).choose
+
+def dualMiddleDecayConstant (W : 𝓢(ℝ, ℂ)) : ℝ :=
+  (actual_dual_middle_radial_block_bound.{0, 0, 0} W 2).choose
+
+theorem originalMiddleDecayConstant_nonneg (W : 𝓢(ℝ, ℂ)) :
+    0 ≤ originalMiddleDecayConstant W :=
+  (actual_middle_radial_block_bound.{0, 0, 0} W 2).choose_spec.1
+
+theorem dualMiddleDecayConstant_nonneg (W : 𝓢(ℝ, ℂ)) :
+    0 ≤ dualMiddleDecayConstant W :=
+  (actual_dual_middle_radial_block_bound.{0, 0, 0} W 2).choose_spec.1
+
+theorem divisorBlockCost_mono_coefficients
+    {n p : Type*} [Fintype n] [Fintype p]
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O)) (D₁ D₂ B N : ℝ) (hD₁ : 0 ≤ D₁) (hD₂ : 0 ≤ D₂)
+    (a a₀ : n → ℂ) (b b₀ : p → ℂ)
+    (ha : ∀ j, ‖a j‖ ≤ ‖a₀ j‖) (hb : ∀ k, ‖b k‖ ≤ ‖b₀ k‖) :
+    divisorBlockCost ε hε S T D₁ D₂ B N a b ≤ divisorBlockCost ε hε S T D₁ D₂ B N a₀ b₀ := by
+  have hA := sieveNorm_nonneg B (N / D₁)
+  have hB := sieveNorm_nonneg B (N / D₂)
+  unfold divisorBlockCost
+  gcongr
+  · exact ha _
+  · exact hb _
+
+section
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def originalMiddleAt (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (h : O) : ℝ :=
+  ∑ D : S, ∑ E : T, ∑ i,
+    (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+      (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+        ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖
+
+def dualMiddleAt (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (h : O) : ℝ :=
+  ∑ D : S, ∑ E : T, ∑ i,
+    (Real.sqrt ((M / F) / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+      (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) /
+        (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+          ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalMiddleAt_nonneg (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (h : O) :
+    0 ≤ originalMiddleAt W S T rows left right a b M h := by
+  unfold originalMiddleAt
+  positivity
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem dualMiddleAt_nonneg (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (h : O) :
+    0 ≤ dualMiddleAt W S T rows left right a b M F h := by
+  unfold dualMiddleAt
+  positivity
+
+variable (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+  (D₁ D₂ B N M : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M)
+  (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+  (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+  (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+  (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+  (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+  (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+  (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+
+include hD₁ hD₂ hB hN hM hS hT hr hl hri hrows ha hb
+
+theorem actual_original_middle_all_frequencies
+    (W : 𝓢(ℝ, ℂ))
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      originalMiddleAt W S T rows left right (a h.val) (b h.val) M h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      originalMiddleAt W S T rows left right (a h.val) (b h.val) M h.val) ≤
+        2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W *
+          Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a₀ b₀) := by
+  let t := Real.sqrt (M / B) / (D₁ * D₂)
+  have ht : 0 < t := by dsimp only [t]; positivity
+  let C := originalMiddleDecayConstant W * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a₀ b₀)
+  have hC : 0 ≤ C := mul_nonneg (originalMiddleDecayConstant_nonneg W) (Real.sqrt_nonneg _)
+  have hpoint (h : {h : O // h ≠ 0}) :
+      (1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 *
+        originalMiddleAt W S T rows left right (a h.val) (b h.val) M h.val ≤ 2 * t * C := by
+    have hk := (actual_middle_radial_block_bound.{0, 0, 0} W 2).choose_spec.2 ε hε S T D₁ D₂ B N M
+      hD₁ hD₂ hB hN hM hS hT rows left right hr hl hri hrows hleft hright (a h.val) (b h.val) h.val h.property
+    change _ ≤ originalMiddleDecayConstant W *
+      Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N (a h.val) (b h.val)) at hk
+    have hcost := divisorBlockCost_mono_coefficients ε hε S T D₁ D₂ B N
+      (by linarith) (by linarith) (a h.val) a₀ (b h.val) b₀ (ha h.val) (hb h.val)
+    have hk' := hk.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hcost)
+      (originalMiddleDecayConstant_nonneg W))
+    have hp := principal_middle_prefactor_sum S T (fun i => (rows i).val)
+      (fun D E i => ‖∑ j, ∑ k, originalTerm rows left right (a h.val) (b h.val) D.val E.val i j k *
+        paperRadialFourier W (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h.val‖ ^ 2 /
+          ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖)
+      (fun _ _ _ => norm_nonneg _) M B D₁ D₂ hM (by linarith) (by linarith) (by linarith)
+      (fun i => (hrows i).1) (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)
+    have harg : Real.sqrt (M / B) * ‖ringComplex h.val‖ ^ 2 / (D₁ * D₂) =
+        t * ‖ringComplex h.val‖ ^ 2 := by dsimp only [t]; ring
+    rw [harg] at hk'
+    have hpre : 2 * Real.sqrt (M / B) / (D₁ * D₂) = 2 * t := by dsimp only [t]; ring
+    rw [hpre] at hp
+    change originalMiddleAt W S T rows left right (a h.val) (b h.val) M h.val ≤ _ at hp
+    calc
+      _ ≤ (1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 * (2 * t * _) :=
+        mul_le_mul_of_nonneg_left hp (sq_nonneg _)
+      _ = 2 * t * ((1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 * _) := by ring
+      _ ≤ 2 * t * C := mul_le_mul_of_nonneg_left hk' (by positivity)
+  obtain ⟨hs, hv⟩ := nonzero_lattice_envelope_sum t (2 * t * C) ht (by positivity)
+    _ (fun h => originalMiddleAt_nonneg W S T rows left right (a h.val) (b h.val) M h.val) hpoint
+  refine ⟨hs, (mul_le_mul_iff_right₀ ht).mp ?_⟩
+  calc
+    _ ≤ nonzeroLatticeEnvelopeConstant * (2 * t * C) := hv
+    _ = _ := by dsimp only [C]; ring
+
+end
+
+theorem dual_middle_scale_identity (M F B N : ℝ)
+    (hM : 0 < M) (hF : 0 < F) (hB : 0 < B) (hN : 0 < N) :
+    Real.sqrt ((M / F) / B) = (M / (F * N)) * (N * Real.sqrt (F / (M * B))) := by
+  apply (sq_eq_sq₀ (Real.sqrt_nonneg _) (by positivity)).mp
+  simp only [mul_pow, div_pow, Real.sq_sqrt (show 0 ≤ (M / F) / B by positivity),
+    Real.sq_sqrt (show 0 ≤ F / (M * B) by positivity)]
+  field_simp
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+theorem actual_dual_middle_all_frequencies
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ B N M F : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N)
+    (hM : 0 < M) (hF : 0 < F)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+    (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+    (W : 𝓢(ℝ, ℂ))
+    (hleft : ∀ j, N / 2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N / 2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      dualMiddleAt W S T rows left right (a h.val) (b h.val) M F h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      dualMiddleAt W S T rows left right (a h.val) (b h.val) M F h.val) ≤
+        (2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) * (M / (F * N)) *
+          Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a₀ b₀) := by
+  let t := (N * Real.sqrt (F / (M * B))) / (D₁ * D₂)
+  let r := M / (F * N)
+  have ht : 0 < t := by dsimp only [t]; positivity
+  have hr0 : 0 < r := by dsimp only [r]; positivity
+  let C := dualMiddleDecayConstant W * Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a₀ b₀)
+  have hC : 0 ≤ C := mul_nonneg (dualMiddleDecayConstant_nonneg W) (Real.sqrt_nonneg _)
+  have hpoint (h : {h : O // h ≠ 0}) :
+      (1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 *
+        dualMiddleAt W S T rows left right (a h.val) (b h.val) M F h.val ≤ (2 * t * r) * C := by
+    have hk := (actual_dual_middle_radial_block_bound.{0, 0, 0} W 2).choose_spec.2 ε hε S T D₁ D₂ B N M F
+      hD₁ hD₂ hB hN hM hF hS hT rows left right hr hl hri hrows hleft hright (a h.val) (b h.val) h.val h.property
+    change _ ≤ dualMiddleDecayConstant W *
+      Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N (a h.val) (b h.val)) at hk
+    have hcost := divisorBlockCost_mono_coefficients ε hε S T D₁ D₂ B N
+      (by linarith) (by linarith) (a h.val) a₀ (b h.val) b₀ (ha h.val) (hb h.val)
+    have hk' := hk.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hcost)
+      (dualMiddleDecayConstant_nonneg W))
+    have hp := principal_middle_prefactor_sum S T (fun i => (rows i).val)
+      (fun D E i => ‖∑ j, ∑ k, originalTerm rows left right (a h.val) (b h.val) D.val E.val i j k *
+        paperRadialFourier W (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) /
+          (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h.val‖ ^ 2 /
+            ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖)
+      (fun _ _ _ => norm_nonneg _) (M / F) B D₁ D₂ (div_pos hM hF) (by linarith) (by linarith) (by linarith)
+      (fun i => (hrows i).1) (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)
+    have harg : N * Real.sqrt (F / (M * B)) * ‖ringComplex h.val‖ ^ 2 / (D₁ * D₂) =
+        t * ‖ringComplex h.val‖ ^ 2 := by dsimp only [t]; ring
+    rw [harg] at hk'
+    have hpre : 2 * Real.sqrt ((M / F) / B) / (D₁ * D₂) = 2 * t * r := by
+      rw [dual_middle_scale_identity M F B N hM hF (by linarith) (by linarith)]
+      dsimp only [t, r]
+      ring
+    rw [hpre] at hp
+    change dualMiddleAt W S T rows left right (a h.val) (b h.val) M F h.val ≤ _ at hp
+    calc
+      _ ≤ (1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 * ((2 * t * r) * _) :=
+        mul_le_mul_of_nonneg_left hp (sq_nonneg _)
+      _ = (2 * t * r) * ((1 + t * ‖ringComplex h.val‖ ^ 2) ^ 2 * _) := by ring
+      _ ≤ (2 * t * r) * C := mul_le_mul_of_nonneg_left hk' (by positivity)
+  obtain ⟨hs, hv⟩ := nonzero_lattice_envelope_sum t ((2 * t * r) * C) ht (by positivity)
+    _ (fun h => dualMiddleAt_nonneg W S T rows left right (a h.val) (b h.val) M F h.val) hpoint
+  refine ⟨hs, (mul_le_mul_iff_right₀ ht).mp ?_⟩
+  calc
+    _ ≤ nonzeroLatticeEnvelopeConstant * ((2 * t * r) * C) := hv
+    _ = _ := by dsimp only [C, r]; ring
+
+end
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -86,5 +86,19 @@ Under RH, the first mesh has an envelope `t^-(2a+β)` for some
 `1/2-a<β<1-2a`; the second has envelope `t^-2a/(1-a)`.
 Both profiles have finitely many jumps above every positive cutoff.
 These reductions and the resulting convergence criterion are written;
-Lean verification and identification with the zero-side Mellin pairing
-remain unfinished.
+Lean verification remains unfinished.
+
+## Mellin identification
+
+For `θ=1-2a` and `s=1-a`, the proposed integral evaluations are
+`θ I_prime=-ζ′/ζ(s)-ζ(s)`,
+`θ I_reference=ζ(s)+θ/(a(1-a))`, and
+`archRow=ψ(s/2)-log π`.
+The first follows from RH prime-error bounds and the existing energy-based
+continuation theorem; the second from centered Euler power sums.
+The archimedean profile splits as
+`2(t^-a-1)/(1-t²)+1/(1+t)`, whose geometric-series integrals give a
+Gauss digamma difference. Together they yield
+`lim P_a=2ξ′/ξ(1-a)/(1-2a)=Σρ 1/((ρ-a)(1-ρ-a))`.
+Lean proofs of this identification and the resulting equivalence are
+written in `PowerTailCombZeroLimit` and its dependencies; compilation pending.
