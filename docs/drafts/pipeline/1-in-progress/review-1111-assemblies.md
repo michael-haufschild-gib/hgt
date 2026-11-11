@@ -16,10 +16,5 @@
 | A134 | Owned by the peer Levinson card `levinson-gate-from-below-square-root-twists.md` (A111): not duplicated. |
 | A133 | Formalized: `3-formalized/artin-degree-two-character-of-the-cube-roots-of-two.md`. |
 | A135 | Formalized: `3-formalized/step-packet-matrices-explicit-block-error.md` (explicit error; no sign certified). |
-| A137, A89, A132 | Queued. |
-
-## Queued notes
-
-- A137: an asymptotic of `x^{−Θ}M_φ(x)` needs control of `Σ 1/ζ′(ρ)` near the top line; the
-  explicit formula for `Λ` uses integral multiplicities and has no such input. Decide the
-  strongest unconditional statement before formalizing.
+| A137 | Formalized: `3-formalized/tangent-data-of-mobius-and-liouville-in-world-one.md`. |
+| A89, A132 | Queued. |

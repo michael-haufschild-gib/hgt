@@ -183,4 +183,48 @@ theorem poissonCoeff_mul (s₁ s₂ A₁ A₂ : O) [NeZero s₁] [NeZero s₂] [
     sexticSymbol (s₂ * A₂) A₁ * residueFourier (s₁ * A₁)
         (fun x => sexticSymbol x A₁ * sexticGauss s₁ (-x)) H * e₂)
 
+/-- A sextic symbol at a coprime numerator does not vanish. -/
+theorem sexticSymbol_ne_zero {x a : O} (ha : lambda ^ 2 ∣ a - 1) (ha2 : IsCoprime a 2)
+    (hxa : IsCoprime x a) : sexticSymbol x a ≠ 0 := by
+  unfold sexticSymbol
+  refine mul_ne_zero (pow_ne_zero 2 fun h => CubicJacobi.symbol_ne_zero_of_isCoprime x a ha hxa
+    (ringComplex_injective (by rw [h, map_zero]))) fun h => ?_
+  have hsq := quadSymbol_sq (primary_ne_zero a ha) ha2 hxa
+  rw [h, zero_pow two_ne_zero] at hsq
+  exact zero_ne_one hsq
+
+/-- **The Poisson coefficient after reciprocity.** For primary indices prime to `2` and a coprime
+splitting `(s₁A₁, s₂A₂) = 1`:
+`F(s₁s₂, A₁A₂; H) = r(A₁, s₂) r(A₂, s₁) χ_{A₁}(A₂) χ_{A₂}(A₁) F(s₁, A₁; H) F(s₂, A₂; H)`. -/
+theorem poissonCoeff_mul_reciprocity {s₁ s₂ A₁ A₂ : O} [NeZero s₁] [NeZero s₂] [NeZero A₁]
+    [NeZero A₂] (hs₁ : lambda ^ 2 ∣ s₁ - 1) (hs₂ : lambda ^ 2 ∣ s₂ - 1)
+    (hA₁ : lambda ^ 2 ∣ A₁ - 1) (hA₂ : lambda ^ 2 ∣ A₂ - 1) (hs₁2 : IsCoprime s₁ 2)
+    (hs₂2 : IsCoprime s₂ 2) (hA₁2 : IsCoprime A₁ 2) (hA₂2 : IsCoprime A₂ 2)
+    (h12 : IsCoprime (s₁ * A₁) (s₂ * A₂)) (H : O) :
+    poissonCoeff (s₁ * s₂) (A₁ * A₂) H =
+      quadraticPhase A₁ s₂ * quadraticPhase A₂ s₁ * sexticSymbol A₂ A₁ * sexticSymbol A₁ A₂ *
+        poissonCoeff s₁ A₁ H * poissonCoeff s₂ A₂ H := by
+  have hl := h12.of_isCoprime_of_dvd_left (dvd_mul_right s₁ A₁)
+  have hl' := h12.of_isCoprime_of_dvd_left (dvd_mul_left A₁ s₁)
+  have hs12 : IsCoprime s₁ s₂ := hl.of_isCoprime_of_dvd_right (dvd_mul_right s₂ A₂)
+  have hs1A2 : IsCoprime s₁ A₂ := hl.of_isCoprime_of_dvd_right (dvd_mul_left A₂ s₂)
+  have hA1s2 : IsCoprime A₁ s₂ := hl'.of_isCoprime_of_dvd_right (dvd_mul_right s₂ A₂)
+  have hA1A2 : IsCoprime A₁ A₂ := hl'.of_isCoprime_of_dvd_right (dvd_mul_left A₂ s₂)
+  have h := poissonCoeff_mul s₁ s₂ A₁ A₂ h12 H
+  simp only [sexticSymbol_mul_numerator] at h
+  -- reciprocity between a twist and an index
+  rw [sexticSymbol_reciprocity hA₂ hs₁ hA₂2 hs₁2 hs1A2.symm,
+    sexticSymbol_reciprocity hA₁ hs₂ hA₁2 hs₂2 hA1s2] at h
+  have hc : sexticSymbol s₂ s₁ * sexticSymbol s₁ s₂ * sexticSymbol s₁ A₂ * sexticSymbol s₂ A₁ ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (mul_ne_zero (sexticSymbol_ne_zero hs₁ hs₁2 hs12.symm)
+      (sexticSymbol_ne_zero hs₂ hs₂2 hs12)) (sexticSymbol_ne_zero hA₂ hA₂2 hs1A2))
+      (sexticSymbol_ne_zero hA₁ hA₁2 hA1s2.symm)
+  have hr₁ := quadraticPhase_sq (not_mem_two_of_isCoprime hA₁2) (not_mem_two_of_isCoprime hs₂2)
+  have hr₂ := quadraticPhase_sq (not_mem_two_of_isCoprime hA₂2) (not_mem_two_of_isCoprime hs₁2)
+  apply mul_left_cancel₀ hc
+  linear_combination (quadraticPhase A₁ s₂ * quadraticPhase A₂ s₁) * h -
+    (sexticSymbol s₂ s₁ * sexticSymbol s₁ s₂ * sexticSymbol s₁ A₂ * sexticSymbol s₂ A₁ *
+      poissonCoeff (s₁ * s₂) (A₁ * A₂) H) *
+        (hr₁ + quadraticPhase A₁ s₂ ^ 2 * hr₂)
+
 end GaloisForLFunctions.FamilyContinuationTheory

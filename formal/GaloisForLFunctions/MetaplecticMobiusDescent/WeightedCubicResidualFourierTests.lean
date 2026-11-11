@@ -26780,9 +26780,15 @@ theorem primeCuspRow_phase_decomposition {ι : Type*} [Fintype ι]
     intro v hv
     rw [Finset.prod_mul_distrib]
     ring
-  simp_rw [hsum]
-  rw [← Finset.sum_mul, thetaFourierTranslation_inversion, finiteThetaTwist_mk, fixedThetaTwist_mul]
-  rfl
+  calc
+    _ = ∑ k : O ⧸ Ideal.span {9 * c},
+        (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+          (finiteThetaTwist c Ψ) k * tracePhase (-cuspFrequency h * thetaFourierTranslation (9 * c) k)) *
+        ∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) h) :=
+      Finset.sum_congr rfl (fun k _ => hsum k)
+    _ = _ := by
+      rw [← Finset.sum_mul, thetaFourierTranslation_inversion, finiteThetaTwist_mk, fixedThetaTwist_mul]
+      rfl
 
 /-- Any finite additive decomposition acts diagonally on the absolutely convergent smoothed source. -/
 lemma sourceBar_smoothed_phase_translation {ι : Type*} [Fintype ι] (z weight : ι → ℂ)

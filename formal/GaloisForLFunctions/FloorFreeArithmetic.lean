@@ -35,6 +35,7 @@ import GaloisForLFunctions.FloorFreeArithmetic.ThePencilAtShiftOneIsNotADirichle
 import GaloisForLFunctions.FloorFreeArithmetic.ReflectedHalvesAreNotDirichletSeries
 import GaloisForLFunctions.FloorFreeArithmetic.TheTangentOrdersOfMobiusAndLiouville
 import GaloisForLFunctions.FloorFreeArithmetic.TheSplineTraceClassificationAtTheZeroAbscissa
+import GaloisForLFunctions.FloorFreeArithmetic.TheTangentDataOfMobiusAndLiouvilleInWorldOne
 
 /-!
 # Floor-Free Arithmetic

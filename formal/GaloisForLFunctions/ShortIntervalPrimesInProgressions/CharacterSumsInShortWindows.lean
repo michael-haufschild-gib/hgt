@@ -338,16 +338,105 @@ theorem norm_window_sub_zeroSum_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
       field_simp
     rw [hgoal]
     calc ‖Θ b / b - Θ a / a‖ ≤ ‖Θ b / b‖ + ‖Θ a / a‖ := norm_sub_le _ _
-      _ ≤ 2 * D / a ^ 2 := by linarith
+      _ ≤ 2 * D / a ^ 2 := by
+          have : 2 * D / a ^ 2 = D / a ^ 2 + D / a ^ 2 := by ring
+          linarith
       _ ≤ 4 * D / (a * b) := by
           rw [div_le_div_iff₀ (by positivity) (by positivity)]
-          nlinarith
+          nlinarith [mul_nonneg (mul_nonneg hD ha0.le) (by linarith : (0 : ℝ) ≤ 2 * a - b)]
   calc ‖γ' * ((Complex.log b / b - Complex.log a / a) / ((1 / a - 1 / b : ℝ) : ℂ)) +
         (Θ b / b - Θ a / a) / ((1 / a - 1 / b : ℝ) : ℂ)‖
       ≤ ‖γ'‖ * ‖(Complex.log b / b - Complex.log a / a) / ((1 / a - 1 / b : ℝ) : ℂ)‖ +
         ‖(Θ b / b - Θ a / a) / ((1 / a - 1 / b : ℝ) : ℂ)‖ := by
           rw [← norm_mul]; exact norm_add_le _ _
     _ ≤ ‖γ'‖ * (1 + Real.log a) + 4 * D / (b - a) := by gcongr
+
+/-- **Short windows of a primitive character sum.** For `2 ≤ x`, `0 < h'`, `2h' ≤ h ≤ x`,
+`|ψ(x+h, χ) − ψ(x, χ)|` is at most the untwisted masses of the two windows, plus
+`2h Σ_ρ x^{β−1} min(1, 8x²/(hh'|ρ||1−ρ|))`, plus `C(1 + log 2x) + C/h'`. -/
+theorem norm_psiChi_window_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x h h' : ℝ, 2 ≤ x → 0 < h' → 2 * h' ≤ h → h ≤ x →
+      ‖psiChi χ (x + h) - psiChi χ x‖ ≤
+        (Chebyshev.psi (x + h') - Chebyshev.psi x) +
+          2 * (Chebyshev.psi (x + h) - Chebyshev.psi (x + h - h')) +
+          2 * h * ∑' q : LZero χ, RHTower.zeroShortWeight x (8 * x ^ 2 / (h * h')) q.point +
+          C * (1 + Real.log (2 * x)) + C / h' := by
+  obtain ⟨β, γ', D, hD, hwin⟩ := norm_window_sub_zeroSum_le hχ hprim
+  refine ⟨2 * ‖γ'‖ + 8 * D, by positivity, fun x h h' hx hh' hh'h hhx => ?_⟩
+  have hx0 : 0 < x := by linarith
+  have hh : 0 < h := by linarith
+  set a₁ := x
+  set b₁ := x + h'
+  set a₂ := x + h - h'
+  set b₂ := x + h
+  have h₁ := hwin a₁ b₁ (by linarith) (by linarith) (by linarith)
+  have h₂ := hwin a₂ b₂ (by linarith) (by linarith) (by linarith)
+  have hs₁ := norm_psiChi_sub_window_le (χ := χ) (a := a₁) (b := b₁) (by linarith) (by linarith)
+  have hs₂ := norm_psiChi_sub_window_le (χ := χ) (a := a₂) (b := b₂) (by linarith) (by linarith)
+  have hm := norm_psiChi_sub_le (χ := χ) (a := a₂) (b := b₂) (by linarith) (by linarith)
+  set A₁ := (windowStat χ b₁ - windowStat χ a₁) / ((1 / a₁ - 1 / b₁ : ℝ) : ℂ)
+  set A₂ := (windowStat χ b₂ - windowStat χ a₂) / ((1 / a₂ - 1 / b₂ : ℝ) : ℂ)
+  -- the zero sums
+  set Y := 8 * x ^ 2 / (h * h')
+  have hY : 0 ≤ Y := by positivity
+  have hsumW := summable_zeroShortWeight hχ hprim (x := x) (by linarith) hY
+  have hdiff : ‖∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ -
+      ∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁‖ ≤
+      2 * h * ∑' q : LZero χ, RHTower.zeroShortWeight x Y q.point := by
+    rw [← h₂.1.tsum_sub h₁.1, ← tsum_mul_left]
+    have hpt : ∀ q : LZero χ, ‖RHTower.lagWindowZeroTerm q.point a₂ b₂ -
+        RHTower.lagWindowZeroTerm q.point a₁ b₁‖ ≤
+          2 * h * RHTower.zeroShortWeight x Y q.point := fun q =>
+      norm_window_diff_le_zeroShortWeight' hx hh' hh'h hhx (zero_re_mem hχ hprim q).1
+        (zero_re_mem hχ hprim q).2
+    refine (norm_tsum_le_tsum_norm ?_).trans ((Summable.tsum_le_tsum hpt ?_ (hsumW.mul_left _)))
+    · exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hpt (hsumW.mul_left _)
+    · exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hpt (hsumW.mul_left _)
+  have hlog : Real.log a₂ ≤ Real.log (2 * x) := Real.log_le_log (by linarith) (by linarith)
+  have hlog1 : Real.log a₁ ≤ Real.log (2 * x) := Real.log_le_log (by linarith) (by linarith)
+  have hba₁ : b₁ - a₁ = h' := by ring
+  have hba₂ : b₂ - a₂ = h' := by ring
+  rw [hba₁] at h₁
+  rw [hba₂] at h₂
+  have hγ : 0 ≤ ‖γ'‖ := norm_nonneg _
+  have hdecomp : psiChi χ (x + h) - psiChi χ x =
+      (psiChi χ b₂ - psiChi χ a₂) - (A₂ - psiChi χ a₂) +
+        ((A₂ - (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ - β)) -
+          (A₁ - (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁ - β)) +
+          (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ -
+            ∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁)) +
+        (A₁ - psiChi χ a₁) := by ring
+  rw [hdecomp]
+  have hA₁ : ‖A₁ - psiChi χ a₁‖ ≤ Chebyshev.psi (x + h') - Chebyshev.psi x := hs₁
+  have hA₂ : ‖A₂ - psiChi χ a₂‖ ≤ Chebyshev.psi (x + h) - Chebyshev.psi (x + h - h') := hs₂
+  have hlog' : ‖γ'‖ * (1 + Real.log a₂) + 4 * D / h' + (‖γ'‖ * (1 + Real.log a₁) + 4 * D / h') ≤
+      (2 * ‖γ'‖ + 8 * D) * (1 + Real.log (2 * x)) + (2 * ‖γ'‖ + 8 * D) / h' := by
+    have hl0 : 0 ≤ Real.log (2 * x) := Real.log_nonneg (by linarith)
+    have h1 : ‖γ'‖ * (1 + Real.log a₂) ≤ ‖γ'‖ * (1 + Real.log (2 * x)) := by gcongr
+    have h2 : ‖γ'‖ * (1 + Real.log a₁) ≤ ‖γ'‖ * (1 + Real.log (2 * x)) := by gcongr
+    have h3 : 8 * D * (1 + Real.log (2 * x)) ≥ 0 := by positivity
+    have h4 : 4 * D / h' + 4 * D / h' ≤ (2 * ‖γ'‖ + 8 * D) / h' := by
+      rw [← add_div]; exact div_le_div_of_nonneg_right (by linarith) hh'.le
+    nlinarith
+  calc ‖(psiChi χ b₂ - psiChi χ a₂) - (A₂ - psiChi χ a₂) +
+        ((A₂ - (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ - β)) -
+          (A₁ - (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁ - β)) +
+          (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ -
+            ∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁)) +
+        (A₁ - psiChi χ a₁)‖
+      ≤ ‖psiChi χ b₂ - psiChi χ a₂‖ + ‖A₂ - psiChi χ a₂‖ +
+        (‖A₂ - (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ - β)‖ +
+          ‖A₁ - (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁ - β)‖ +
+          ‖∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₂ b₂ -
+            ∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a₁ b₁‖) +
+        ‖A₁ - psiChi χ a₁‖ := by
+        refine (norm_add_le _ _).trans (add_le_add ((norm_add_le _ _).trans (add_le_add
+          (norm_sub_le _ _) ((norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl))))
+          le_rfl)
+    _ ≤ _ := by
+        have := h₂.2
+        have := h₁.2
+        linarith
 
 end
 

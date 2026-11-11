@@ -11,7 +11,9 @@ Gauss sum is
 `g_c(h) = Σ_{d mod c} χ_c(d) ψ_c(hd)`   (`sexticGauss`).
 
 * `sexticGauss_mul`: for coprime `c, d`, `g_{cd}(h) = χ_c(d) χ_d(c) g_c(h) g_d(h)`;
-* `sexticSymbol_mul_sexticGauss`: for `u` prime to `c`, `χ_c(u) g_c(uh) = g_c(h)`.
+* `sexticSymbol_mul_sexticGauss`: for `u` prime to `c`, `χ_c(u) g_c(uh) = g_c(h)`;
+* the same for the Gauss sums `g_c^{(j)}` of the powers `χ_c^j` (`sexticGaussPow_mul`,
+  `sexticSymbol_pow_mul_sexticGaussPow`).
 
 These are the multiplicative rules of the row Gauss sums `g_s(−m)` of the cubic-theta probe:
 with sextic reciprocity the cross factor `χ_c(d) χ_d(c)` is `r(d, c) χ_d(c)²`.
@@ -67,38 +69,51 @@ theorem sexticResidue_mk (c x : O) : sexticResidue c (Ideal.Quotient.mk _ x) = s
   apply sexticSymbol_congr
   rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq, mk_qrep]
 
-/-- The sextic Gauss sum `g_c(h) = Σ_{d mod c} χ_c(d) ψ_c(hd)`. -/
-def sexticGauss (c : O) [NeZero c] (h : O) : ℂ :=
-  ∑ d : O ⧸ Ideal.span {c}, sexticResidue c d *
+/-- The Gauss sum of the `j`-th power, `g_c^{(j)}(h) = Σ_{d mod c} χ_c(d)^j ψ_c(hd)`. -/
+def sexticGaussPow (j : ℕ) (c : O) [NeZero c] (h : O) : ℂ :=
+  ∑ d : O ⧸ Ideal.span {c}, sexticResidue c d ^ j *
     principalTraceChar c (NeZero.ne c) (Ideal.Quotient.mk _ h * d)
 
-/-- **Gauss CRT.** For coprime `c, d`: `g_{cd}(h) = χ_c(d) χ_d(c) g_c(h) g_d(h)`. -/
+/-- The sextic Gauss sum `g_c(h) = Σ_{d mod c} χ_c(d) ψ_c(hd)`. -/
+abbrev sexticGauss (c : O) [NeZero c] (h : O) : ℂ := sexticGaussPow 1 c h
+
+/-- **Gauss CRT.** For coprime `c, d`: `g_{cd}^{(j)}(h) = (χ_c(d) χ_d(c))^j g_c^{(j)}(h) g_d^{(j)}(h)`. -/
+theorem sexticGaussPow_mul (j : ℕ) (c d : O) [NeZero c] [NeZero d] (hcd : IsCoprime c d) (h : O) :
+    haveI : NeZero (c * d) := ⟨mul_ne_zero (NeZero.ne c) (NeZero.ne d)⟩
+    sexticGaussPow j (c * d) h =
+      (sexticSymbol d c * sexticSymbol c d) ^ j * sexticGaussPow j c h * sexticGaussPow j d h := by
+  haveI : NeZero (c * d) := ⟨mul_ne_zero (NeZero.ne c) (NeZero.ne d)⟩
+  have hsplit : ∀ m : O ⧸ Ideal.span {c * d}, sexticResidue (c * d) m ^ j =
+      sexticResidue c (reduceLeft c d m) ^ j * sexticResidue d (reduceRight c d m) ^ j := by
+    intro m
+    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective m
+    simp only [reduceLeft, reduceRight, Ideal.Quotient.factor_mk, sexticResidue_mk,
+      sexticSymbol_mul_denominator, mul_pow]
+  unfold sexticGaussPow
+  simp only [hsplit]
+  rw [sum_crt_mul_traceChar c d hcd (fun x => sexticResidue c x ^ j)
+    (fun y => sexticResidue d y ^ j)]
+  have hx : ∀ x : O ⧸ Ideal.span {c},
+      sexticResidue c (Ideal.Quotient.mk _ d * x) ^ j =
+        sexticSymbol d c ^ j * sexticResidue c x ^ j := by
+    intro x
+    obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
+    rw [← map_mul, sexticResidue_mk, sexticResidue_mk, sexticSymbol_mul_numerator, mul_pow]
+  have hy : ∀ y : O ⧸ Ideal.span {d},
+      sexticResidue d (Ideal.Quotient.mk _ c * y) ^ j =
+        sexticSymbol c d ^ j * sexticResidue d y ^ j := by
+    intro y
+    obtain ⟨z, rfl⟩ := Ideal.Quotient.mk_surjective y
+    rw [← map_mul, sexticResidue_mk, sexticResidue_mk, sexticSymbol_mul_numerator, mul_pow]
+  simp only [hx, hy, mul_assoc, ← Finset.mul_sum]
+  ring
+
+/-- **Gauss CRT** for the first power. -/
 theorem sexticGauss_mul (c d : O) [NeZero c] [NeZero d] (hcd : IsCoprime c d) (h : O) :
     haveI : NeZero (c * d) := ⟨mul_ne_zero (NeZero.ne c) (NeZero.ne d)⟩
     sexticGauss (c * d) h =
       sexticSymbol d c * sexticSymbol c d * sexticGauss c h * sexticGauss d h := by
-  haveI : NeZero (c * d) := ⟨mul_ne_zero (NeZero.ne c) (NeZero.ne d)⟩
-  have hsplit : ∀ m : O ⧸ Ideal.span {c * d}, sexticResidue (c * d) m =
-      sexticResidue c (reduceLeft c d m) * sexticResidue d (reduceRight c d m) := by
-    intro m
-    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective m
-    simp only [reduceLeft, reduceRight, Ideal.Quotient.factor_mk, sexticResidue_mk,
-      sexticSymbol_mul_denominator]
-  unfold sexticGauss
-  simp only [hsplit]
-  rw [sum_crt_mul_traceChar c d hcd]
-  have hx : ∀ x : O ⧸ Ideal.span {c},
-      sexticResidue c (Ideal.Quotient.mk _ d * x) = sexticSymbol d c * sexticResidue c x := by
-    intro x
-    obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
-    rw [← map_mul, sexticResidue_mk, sexticResidue_mk, sexticSymbol_mul_numerator]
-  have hy : ∀ y : O ⧸ Ideal.span {d},
-      sexticResidue d (Ideal.Quotient.mk _ c * y) = sexticSymbol c d * sexticResidue d y := by
-    intro y
-    obtain ⟨z, rfl⟩ := Ideal.Quotient.mk_surjective y
-    rw [← map_mul, sexticResidue_mk, sexticResidue_mk, sexticSymbol_mul_numerator]
-  simp only [hx, hy, mul_assoc, ← Finset.mul_sum]
-  ring
+  rw [sexticGauss, sexticGaussPow_mul 1 c d hcd h, pow_one]
 
 /-- An element prime to `c` is a unit modulo `c`. -/
 theorem isUnit_mk_of_isCoprime {u c : O} (huc : IsCoprime u c) :
@@ -112,12 +127,13 @@ theorem isUnit_mk_of_isCoprime {u c : O} (huc : IsCoprime u c) :
         rw [map_add, map_mul, map_mul, hc0, mul_zero, add_zero, mul_comm]
     _ = 1 := by rw [hab, map_one]
 
-/-- **The unit twist.** For `u` prime to `c`: `χ_c(u) g_c(uh) = g_c(h)`. -/
-theorem sexticSymbol_mul_sexticGauss (c : O) [NeZero c] {u : O} (huc : IsCoprime u c) (h : O) :
-    sexticSymbol u c * sexticGauss c (u * h) = sexticGauss c h := by
+/-- **The unit twist.** For `u` prime to `c`: `χ_c(u)^j g_c^{(j)}(uh) = g_c^{(j)}(h)`. -/
+theorem sexticSymbol_pow_mul_sexticGaussPow (j : ℕ) (c : O) [NeZero c] {u : O}
+    (huc : IsCoprime u c) (h : O) :
+    sexticSymbol u c ^ j * sexticGaussPow j c (u * h) = sexticGaussPow j c h := by
   have hu := isUnit_mk_of_isCoprime huc
-  unfold sexticGauss
-  rw [Finset.mul_sum, ← Equiv.sum_comp (Units.mulLeft hu.unit) (fun d => sexticResidue c d *
+  unfold sexticGaussPow
+  rw [Finset.mul_sum, ← Equiv.sum_comp (Units.mulLeft hu.unit) (fun d => sexticResidue c d ^ j *
     principalTraceChar c (NeZero.ne c) (Ideal.Quotient.mk _ h * d))]
   refine Finset.sum_congr rfl fun d _ => ?_
   obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective d
@@ -133,5 +149,10 @@ theorem sexticSymbol_mul_sexticGauss (c : O) [NeZero c] {u : O} (huc : IsCoprime
     ring
   rw [sexticResidue_mk, e1, e2]
   ring
+
+/-- **The unit twist** for the first power: `χ_c(u) g_c(uh) = g_c(h)`. -/
+theorem sexticSymbol_mul_sexticGauss (c : O) [NeZero c] {u : O} (huc : IsCoprime u c) (h : O) :
+    sexticSymbol u c * sexticGauss c (u * h) = sexticGauss c h := by
+  simpa using sexticSymbol_pow_mul_sexticGaussPow 1 c huc h
 
 end GaloisForLFunctions.FamilyContinuationTheory

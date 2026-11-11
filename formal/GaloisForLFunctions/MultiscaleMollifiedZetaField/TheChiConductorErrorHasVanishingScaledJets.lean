@@ -103,7 +103,7 @@ theorem tendsto_scaledChiConductorError_jet {ι : Type*} {l : Filter ι}
   have hδ : Tendsto (fun N : ι => (j.factorial : ℝ) *
       (Real.exp (((R + 1) / L N) *
         (20 * ((R + 1) / L N) / t N + 52 / (t N) ^ 2)) - 1)) l (𝓝 0) := by
-    have hh := (((ha.mul (h1.add h2)).exp).sub tendsto_const_nhds).const_mul (j.factorial : ℝ)
+    have hh := (((ha.mul (h1.add h2)).exp).sub_const 1).const_mul (j.factorial : ℝ)
     simpa only [mul_zero, zero_add, Real.exp_zero, sub_self] using hh
   apply Metric.tendsto_nhds.2
   intro ε hε

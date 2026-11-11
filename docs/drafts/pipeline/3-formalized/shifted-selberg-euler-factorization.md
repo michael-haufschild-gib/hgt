@@ -44,7 +44,9 @@ both literal directional derivative limits.
 Compact uniform profile bounds give one bound for all retained dilation
 pairs and logarithmic powers. The derivative recurrence and real mean
 value inequality give a Lipschitz constant in `v`, uniform in sufficiently
-large `N`, for every corrected jet on each compact interval.
+large `N`, for every corrected jet on each compact interval. Comparing a
+moving shift with its limit proves all three literal form-jet limits for
+arbitrary cutoffs tending to infinity along any filter.
 
 ## Actual twisted-moment coordinates
 
@@ -69,8 +71,9 @@ below passed direct Lean checks and have umbrella imports.
 - Literal derivatives: `ThePrincipalRowDerivativesShiftTheProfiles`,
   `TheCorrectedRowDerivativesHaveVanishingCorrectionTerms`, `TheCorrectedPolynomialJetsConverge`,
   `TheShiftedSelbergFormKeepsItsFirstTwoDerivatives`.
-- Uniform parameter control: `TheCorrectedJetsAreUniformlyLipschitz`.
+- Uniform parameter control and arbitrary reindexing: `TheCorrectedJetsAreUniformlyLipschitz`,
+  `TheCorrectedJetLimitsAllowArbitraryHeights`.
 - Original gcd and linear-weight identities: `TheActualGcdSumsAreShiftedProfileForms`.
 
-Arbitrary real-height reindexing, pole/chi main-term assembly, and the
-Levinson gate remain obligations on the parent card.
+Pole/chi main-term assembly and the Levinson gate remain obligations on
+the parent card.

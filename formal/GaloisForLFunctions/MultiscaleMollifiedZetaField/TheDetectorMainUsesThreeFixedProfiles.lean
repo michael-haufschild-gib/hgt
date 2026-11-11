@@ -175,7 +175,7 @@ theorem moebiusProfileWeights_add (P Q : ℝ[X]) (N : ℕ) (v : ℝ) :
   rw [Polynomial.eval_add]
   ring
 
-/-- The actual linear mollifier and its two fixed companion profiles have identical main jets. -/
+/-- The actual linear mollifier has the same main jets as the polynomial profile `X`. -/
 theorem linearDetector_mainJet_eq_profile {N : ℕ} (hN : 1 < N)
     (p q η d : ℝ) (j : ℕ) :
     realTwistedMomentMainJet p q η N (linearDetectorWeights N d) j d =

@@ -68,8 +68,10 @@ also passed Lean. `TheCorrectedRowDerivativesHaveVanishingCorrectionTerms`
 formalizes the exact summed derivative recurrence and vanishing summed
 positive-order correction jets. `TheCorrectedPolynomialJetsConverge` and
 `TheShiftedSelbergFormKeepsItsFirstTwoDerivatives` prove both literal
-gcd-form derivative limits. Joint convergence for arbitrary real-height
-cutoffs and the frozen original gcd-sum formulation await compilation.
+gcd-form derivative limits. `TheCorrectedJetsAreUniformlyLipschitz` and
+`TheCorrectedJetLimitsAllowArbitraryHeights` prove joint convergence for
+arbitrary cutoffs tending to infinity and convergent shifts. The frozen
+original gcd-sum formulation awaits compilation.
 
 The parent gate additionally needs varying detector-profile coefficients,
 the zeta-pole and chi-weight main-term jets, fixed-mollifier coefficient
