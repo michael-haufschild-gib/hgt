@@ -99,6 +99,8 @@ theorem laplace_poleDensity {Θ : ℝ} (hΘ : Θ < 1) (A : ℝ) (γ : ι → ℝ
   rw [setIntegral_congr_fun measurableSet_Ioi (fun u _ => hsplit u), integral_add hint1 hint,
     integral_const_mul, integral_exp_mul_complex_Ioi ha, hval, hcorr, Complex.ofReal_zero,
     mul_zero, Complex.exp_zero]
+  generalize (∑ j, (m j : ℂ) *
+    (1 / (s - ((Θ : ℂ) + γ j * I)) + 1 / (s - ((Θ : ℂ) - γ j * I)))) = Z
   field_simp
   ring
 

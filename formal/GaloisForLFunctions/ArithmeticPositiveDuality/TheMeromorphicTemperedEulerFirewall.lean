@@ -88,11 +88,20 @@ theorem two_mul_posCutoff_rpow_le_one {β : ℝ} (hβ1 : β < 1) :
 
 /-- Finite set of rational primes `p ≤ P₀` as a `Finset Nat.Primes`. -/
 def smallPrimes (P₀ : ℕ) : Finset Nat.Primes :=
-  (Finset.range (P₀ + 1)).subtype Nat.Prime
+  ((Finset.range (P₀ + 1)).filter Nat.Prime).attach.map
+    ⟨fun x => (⟨x.1, (Finset.mem_filter.mp x.2).2⟩ : Nat.Primes),
+     fun _ _ h => Subtype.ext (Subtype.ext_iff.mp h)⟩
 
 @[simp] theorem mem_smallPrimes {P₀ : ℕ} {q : Nat.Primes} :
     q ∈ smallPrimes P₀ ↔ (q : ℕ) ≤ P₀ := by
-  simp [smallPrimes, Finset.mem_subtype, Finset.mem_range, Nat.lt_succ_iff]
+  constructor
+  · intro hq
+    rcases Finset.mem_map.mp hq with ⟨⟨p, hp⟩, _, rfl⟩
+    exact Nat.lt_succ_iff.mp (Finset.mem_range.mp (Finset.mem_filter.mp hp).1)
+  · intro hle
+    exact Finset.mem_map.mpr
+      ⟨⟨q.1, Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hle), q.2⟩⟩,
+       Finset.mem_attach _ _, rfl⟩
 
 /-- Finite prime-cutoff factor clearing the shifted `1/ζ` Euler factors at primes `p ≤ P₀`. -/
 def posFiniteFactor (P₀ : ℕ) (ρ₀ s : ℂ) : ℂ :=
@@ -140,7 +149,7 @@ def posTruncatedVonMangoldt (P₀ : ℕ) (β γ₀ : ℝ) : ArithmeticFunction �
 theorem isMultiplicative_posTruncatedCoeff (P₀ : ℕ) (β γ₀ : ℝ) :
     (posTruncatedCoeff P₀ β γ₀).IsMultiplicative :=
   DampedMobius.isMultiplicative_of_prod (posLocalCoeff P₀ β γ₀) (posTruncatedCoeff P₀ β γ₀)
-    fun n hn => dif_neg hn
+    fun _ hn => dif_neg hn
 
 theorem posTruncatedCoeff_one (P₀ : ℕ) (β γ₀ : ℝ) :
     posTruncatedCoeff P₀ β γ₀ 1 = 1 :=
@@ -247,7 +256,7 @@ theorem exists_posTruncatedCoeff_le_rpow (P₀ : ℕ) {β : ℝ} (γ₀ : ℝ) (
           Real.rpow_one] at hr
         exact hr
       have hp_le_pk : (p : ℝ) ≤ ((p ^ n.factorization p : ℕ) : ℝ) := by
-        exact_mod_cast Nat.le_self_pow hfk.ne' p
+        exact_mod_cast Nat.le_self_pow (by omega : n.factorization p ≠ 0) p
       exact hle4.trans (h4le.trans (Real.rpow_le_rpow (Nat.cast_nonneg p) hp_le_pk hε.le))
   have hprod_le :
       ∏ p ∈ n.primeFactors, posLocalCoeff P₀ β γ₀ p (n.factorization p) ≤
@@ -269,7 +278,7 @@ theorem exists_posTruncatedCoeff_le_rpow (P₀ : ℕ) {β : ℝ} (γ₀ : ℝ) (
           Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _), ih]
     rw [hcast]
     have hself : (∏ p ∈ n.primeFactors, p ^ n.factorization p) = n :=
-      Nat.factorization_prod_pow_eq_self hn0
+      Nat.prod_factorization_pow_eq_self hn0
     rw [hself]
   have hprod_M :
       (∏ p ∈ n.primeFactors, if p ≤ M then (4 : ℝ) else 1) ≤ (4 : ℝ) ^ (M + 1) := by
@@ -292,7 +301,7 @@ private def posWeightedArith (P₀ : ℕ) (β γ₀ : ℝ) (s : ℂ) : Arithmeti
 private theorem isMultiplicative_posWeightedArith (P₀ : ℕ) (β γ₀ : ℝ) (s : ℂ) :
     (posWeightedArith P₀ β γ₀ s).IsMultiplicative := by
   refine ⟨?_, fun {m n} hmn => ?_⟩
-  · change (posTruncatedCoeff P₀ β γ₀ 1 : ℂ) * (1 : ℂ) ^ (-s) = 1
+  · show (posTruncatedCoeff P₀ β γ₀ 1 : ℂ) * ((1 : ℕ) : ℂ) ^ (-s) = 1
     simp [posTruncatedCoeff_one]
   · rcases eq_or_ne m 0 with rfl | hm
     · simp
@@ -407,14 +416,16 @@ private theorem tsum_posWeightedArith_prime_pow {P₀ : ℕ} {β : ℝ} (γ₀ :
   simp_rw [hterm]
   unfold posEulerFactor
   split_ifs with hpP
-  · have hc1 : ∀ k : ℕ, (posLocalCoeff P₀ β γ₀ p k : ℂ) * x ^ k = x ^ k := by
+  · have hpP' : p ≤ P₀ := hpP
+    have hc1 : ∀ k : ℕ, (posLocalCoeff P₀ β γ₀ p k : ℂ) * x ^ k = x ^ k := by
       intro k
       rcases eq_or_ne k 0 with rfl | hk0
       · simp [posLocalCoeff]
-      · simp [posLocalCoeff, hk0, hpP]
+      · simp [posLocalCoeff, hk0, hpP']
     simp_rw [hc1]
     exact tsum_geometric_of_norm_lt_one hx_norm
-  · set ρ₀ : ℂ := (β : ℂ) + (γ₀ : ℂ) * I
+  · have hpP' : ¬ p ≤ P₀ := hpP
+    set ρ₀ : ℂ := (β : ℂ) + (γ₀ : ℂ) * I
     set α : ℂ := (p : ℂ) ^ (ρ₀ - 1)
     set α' : ℂ := (p : ℂ) ^ (conj ρ₀ - 1)
     have hsum_loc : Summable (fun k : ℕ => (posLocalCoeff P₀ β γ₀ p k : ℂ) * x ^ k) := by
@@ -424,17 +435,19 @@ private theorem tsum_posWeightedArith_prime_pow {P₀ : ℕ} {β : ℝ} (γ₀ :
       have habs : |posLocalCoeff P₀ β γ₀ p k| ≤ 4 := by
         rw [abs_le]
         refine ⟨?_, posLocalCoeff_le_four P₀ γ₀ hβ1 hp k⟩
-        unfold posLocalCoeff
-        split_ifs with hk0 _ hk1
-        · norm_num
-        · norm_num
-        · have hr1 : (p : ℝ) ^ (β - 1) ≤ 1 := by
-            have h := rpow_neg_mono_antitone zero_lt_one hpR.le (by linarith : β - 1 < 0)
-            simpa using h
-          have hr0 : 0 ≤ (p : ℝ) ^ (β - 1) := Real.rpow_nonneg (by positivity) _
-          have hc : Real.cos (γ₀ * Real.log p) ≤ 1 := Real.cos_le_one _
-          nlinarith
-        · linarith [sq_nonneg ‖1 - (p : ℂ) ^ (((β : ℂ) + (γ₀ : ℂ) * I) - 1)‖]
+        rcases eq_or_ne k 0 with rfl | hk0
+        · simp [posLocalCoeff]
+        · rw [posLocalCoeff, if_neg hk0, if_neg hpP']
+          rcases eq_or_ne k 1 with rfl | hk1
+          · rw [if_pos rfl]
+            have hr1 : (p : ℝ) ^ (β - 1) ≤ 1 := by
+              have h := rpow_neg_mono_antitone zero_lt_one hpR.le (by linarith : β - 1 < 0)
+              simpa using h
+            have hr0 : 0 ≤ (p : ℝ) ^ (β - 1) := Real.rpow_nonneg (by positivity) _
+            have hc : Real.cos (γ₀ * Real.log p) ≤ 1 := Real.cos_le_one _
+            nlinarith
+          · rw [if_neg hk1]
+            linarith [sq_nonneg ‖1 - (p : ℂ) ^ (((β : ℂ) + (γ₀ : ℂ) * I) - 1)‖]
       exact mul_le_mul_of_nonneg_right habs (pow_nonneg (norm_nonneg x) k)
     have hsum_shift : Summable (fun k : ℕ => (posLocalCoeff P₀ β γ₀ p (k + 1) : ℂ) * x ^ (k + 1)) :=
       (summable_nat_add_iff 1).mpr hsum_loc
@@ -443,14 +456,14 @@ private theorem tsum_posWeightedArith_prime_pow {P₀ : ℕ} {β : ℝ} (γ₀ :
     have hc1 : (posLocalCoeff P₀ β γ₀ p 1 : ℂ) * x ^ 1 = (1 - (α + α')) * x := by
       have hloc : posLocalCoeff P₀ β γ₀ p 1 =
           1 - 2 * (p : ℝ) ^ (β - 1) * Real.cos (γ₀ * Real.log p) := by
-        simp [posLocalCoeff, hpP]
+        simp [posLocalCoeff, hpP']
       rw [hloc, pow_one, ofReal_sub, ofReal_one, ← prime_cpow_add_conj p hp.pos β γ₀]
     have hc2 : ∀ k : ℕ,
         (posLocalCoeff P₀ β γ₀ p (k + 2) : ℂ) * x ^ (k + 2) =
           (1 - α) * (1 - α') * x ^ 2 * x ^ k := by
       intro k
       have hloc : posLocalCoeff P₀ β γ₀ p (k + 2) = ‖1 - α‖ ^ 2 := by
-        simp [posLocalCoeff, hpP, α, ρ₀]
+        simp [posLocalCoeff, hpP', α, ρ₀]
       have hconj : 1 - α' = conj (1 - α) := by
         dsimp [α, α']
         rw [map_sub, map_one, ← prime_cpow_conj_eq p hp.pos (ρ₀ - 1), map_sub, map_one]
@@ -463,10 +476,12 @@ private theorem tsum_posWeightedArith_prime_pow {P₀ : ℕ} {β : ℝ} (γ₀ :
     have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
     have hax : α * x = (p : ℂ) ^ (ρ₀ - 1 - s) := by
       dsimp [α, x]
-      rw [← cpow_add _ _ hp0, sub_eq_add_neg]
+      rw [← cpow_add _ _ hp0]
+      congr 1; ring
     have ha'x : α' * x = (p : ℂ) ^ (conj ρ₀ - 1 - s) := by
       dsimp [α', x]
-      rw [← cpow_add _ _ hp0, sub_eq_add_neg]
+      rw [← cpow_add _ _ hp0]
+      congr 1; ring
     rw [← hax, ← ha'x]
     apply mul_right_cancel₀ hx1
     calc (1 + ((1 - (α + α')) * x + (1 - α) * (1 - α') * x ^ 2 * (1 - x)⁻¹)) * (1 - x)

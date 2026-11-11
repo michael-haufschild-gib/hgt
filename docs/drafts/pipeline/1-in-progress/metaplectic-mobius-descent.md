@@ -365,8 +365,10 @@ For a primitive column `a=A+Bω`, `c=C+Dω`, the determinant `AD−BC` modulo th
 distinguishes the three cusp classes. Nonzero determinant gives the classes
 of `(1,ω)` and `(1,ω²)` directly. At determinant zero, `(B,D)` is proportional
 to the nonzero vector `(A+B,C+D)`; multiplication by a power of `ω` makes
-the column rational modulo three. This algebraic classification and its
-integral lift remain to be formalized.
+the column rational modulo three. A signed lift of one nonzero first-column
+entry, followed by one translation, lifts every matrix in `SL₂(F₃)` to
+`SL₂(ℤ)`. Congruence-preserving completion then gives the integral three-cusp
+decomposition (`three_cusp_decomposition`, checked).
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

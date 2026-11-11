@@ -201,7 +201,7 @@ theorem shiftedSelbergLocalDiagonal_convolution_denominator (s : ℝ)
   · rcases j with _ | j
     · have he : p ^ (i + 1) ≠ (1 : ℕ) := ne_of_gt (Nat.one_lt_pow (by omega) hp.one_lt)
       simp [shiftedSelbergLocalDiagonal, shiftedSelbergDiagonal, selbergDiagonalReciprocalCoeff,
-        additiveBivariateDiagonalShift, additiveBivariateOne, he]
+        additiveBivariateDiagonalShift, additiveBivariateOne, he, hp.ne_one]
     · by_cases hij : i = j
       · subst j
         simp only [shiftedSelbergLocalDiagonal, shiftedSelbergDiagonal, selbergDiagonalReciprocalCoeff,
@@ -291,7 +291,7 @@ theorem shiftedSelbergLocalNumerator_identity (s : ℝ) {p : ℕ} (hp : p.Prime)
             selbergMoebiusReciprocalCoeff_prime hp,
             selbergMoebiusReciprocalCoeff_prime_pow_two_add hp,
             powerShiftedMoebius_apply, moebius_real_prime_pow hp]
-          field_simp [hpR0] <;> ring
+          by_cases hj : j = 0 <;> simp [hj] <;> ring
     · rcases j with _ | j
       · simp [selbergLocalMoebiusReciprocalPair, shiftedSelbergLocalMoebiusPair,
           additiveBivariateDiagonalShift, shiftedSelbergLocalOriginalPolynomial,
@@ -303,7 +303,7 @@ theorem shiftedSelbergLocalNumerator_identity (s : ℝ) {p : ℕ} (hp : p.Prime)
             selbergMoebiusReciprocalCoeff_prime hp,
             selbergMoebiusReciprocalCoeff_prime_pow_two_add hp,
             powerShiftedMoebius_apply, moebius_real_prime_pow hp]
-          field_simp [hpR0] <;> ring
+          by_cases hi : i = 0 <;> simp [hi] <;> ring
         · simp [selbergLocalMoebiusReciprocalPair, shiftedSelbergLocalMoebiusPair,
             additiveBivariateDiagonalShift, shiftedSelbergLocalOriginalPolynomial,
             selbergMoebiusReciprocalCoeff_prime_pow_two_add hp,

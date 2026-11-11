@@ -19082,4 +19082,113 @@ theorem traceTwistedBarProfile_mellin_entire (c : O) (hc : c ≠ 0) [Fintype (O 
   · intro h
     exact (conjugateSource_finite_twist_cusp_mellin_entire (Quotient.out h) c hc).2
 
+lemma horizontalWirtingerBar_finiteCombination {ι : Type*} [Fintype ι]
+    (weight : ι → ℂ) (f : ι → ℂ → ℂ) (z : ℂ)
+    (hf : ∀ i, DifferentiableAt ℝ (f i) z) :
+    horizontalWirtingerBar (fun w => ∑ i, weight i * f i w) z =
+      ∑ i, weight i * horizontalWirtingerBar (f i) z := by
+  have hline (i : ι) (direction : ℂ) :
+      DifferentiableAt ℝ (fun t : ℝ => f i (z + (t : ℂ) * direction)) 0 := by
+    have hp : DifferentiableAt ℝ (fun t : ℝ => z + (t : ℂ) * direction) 0 := by fun_prop
+    have hi : DifferentiableAt ℝ (f i) (z + (0 : ℂ) * direction) := by
+      simpa only [zero_mul, add_zero] using hf i
+    exact hi.comp 0 hp
+  have h1 := (HasDerivAt.fun_sum (u := Finset.univ)
+    (fun i _ => ((hline i 1).hasDerivAt.const_mul (weight i)))).deriv
+  have hI := (HasDerivAt.fun_sum (u := Finset.univ)
+    (fun i _ => ((hline i Complex.I).hasDerivAt.const_mul (weight i)))).deriv
+  simp only [mul_one] at h1
+  rw [horizontalWirtingerBar, h1, hI]
+  simp only [Finset.mul_sum, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i hi
+  unfold horizontalWirtingerBar
+  ring
+
+theorem traceTwistedBarProfile_positive (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (v : ℝ) (hv : 0 < v) :
+    traceTwistedBarProfile c hc φ v =
+      horizontalWirtingerBar (traceTwistedConjugateSource c hc φ v hv) 0 := by
+  have hd (h : O ⧸ Ideal.span {c}) : DifferentiableAt ℝ
+      (fun z => star (cubicSourceResidualFunction (upperPoint (z + thetaFourierTranslation c h) v hv))) 0 := by
+    have hf := conjugateSource_translate_horizontal_differentiableAt 1 v hv (thetaFourierTranslation c h)
+    simp only [one_smul] at hf
+    have hp : DifferentiableAt ℝ (fun z : ℂ => z + thetaFourierTranslation c h) 0 := by fun_prop
+    exact (by simpa only [zero_add] using hf).comp 0 hp
+  rw [traceTwistedConjugateSource, horizontalWirtingerBar_finiteCombination _ _ _ hd]
+  unfold traceTwistedBarProfile
+  apply Finset.sum_congr rfl
+  intro h hh
+  rw [horizontalWirtingerBar_translate, cuspBarProfile_positive _ _ _ hv]
+
+/-- The normalized theta derivative is an entire Mellin profile. -/
+def finiteThetaBarProfile (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ) (v : ℝ) : ℂ :=
+  rationalSourceThetaScalar⁻¹ *
+    traceTwistedBarProfile (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ) v
+
+theorem finiteThetaBarProfile_mellin_entire (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ) :
+    (∀ s : ℂ, MellinConvergent (finiteThetaBarProfile c hc Ψ) s) ∧
+      Differentiable ℂ (mellin (finiteThetaBarProfile c hc Ψ)) := by
+  have hf := traceTwistedBarProfile_mellin_entire (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ)
+  constructor
+  · intro s
+    simpa only [finiteThetaBarProfile, smul_eq_mul] using (hf.1 s).const_smul rationalSourceThetaScalar⁻¹
+  · have he : mellin (finiteThetaBarProfile c hc Ψ) =
+        fun s => rationalSourceThetaScalar⁻¹ * mellin
+          (traceTwistedBarProfile (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ)) s := by
+      funext s
+      exact mellin_const_smul _ s _
+    rw [he]
+    exact hf.2.const_mul _
+
+/-- The squarefree-times-cube Gauss series with its horizontal frequency weight. -/
+def thetaDerivativeBesselProfile (Ψ : O →* ℂ) (v : ℝ) : ℂ :=
+  ∑' p : ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+    {J : Ideal O // primaryIdealGenerator J ≠ 0}),
+    ((‖ringComplex (primaryIdealGenerator p.2.val)‖ : ℂ) *
+      normalizedCubicUnitGauss (primaryIdealGenerator p.1.val) *
+      Ψ (primaryIdealGenerator p.1.val) * (Ψ (primaryIdealGenerator p.2.val)) ^ 3) *
+      ((-2 * Real.pi * Complex.I * star (cuspFrequency (primaryIdealGenerator p.1.val *
+        (primaryIdealGenerator p.2.val) ^ 3))) * (v : ℂ) * schlafliBesselK (1 / 3)
+        (4 * Real.pi * ‖cuspFrequency (primaryIdealGenerator p.1.val *
+          (primaryIdealGenerator p.2.val) ^ 3)‖ * v))
+
+theorem finiteThetaBarProfile_eq_bessel (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (v : ℝ) (hv : 0 < v) :
+    finiteThetaBarProfile c hc Ψ v =
+      thetaDerivativeBesselProfile (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) v := by
+  rw [finiteThetaBarProfile, traceTwistedBarProfile_positive _ _ _ _ hv]
+  exact finiteThetaTwist_source_wirtingerBar c hc Ψ v hv
+
+lemma mellin_entire_of_positive_eq (f g : ℝ → ℂ) (he : ∀ v, 0 < v → f v = g v)
+    (hf : (∀ s : ℂ, MellinConvergent f s) ∧ Differentiable ℂ (mellin f)) :
+    (∀ s : ℂ, MellinConvergent g s) ∧ Differentiable ℂ (mellin g) := by
+  have hae : f =ᵐ[volume.restrict (Set.Ioi 0)] g := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
+    exact he v hv
+  have hm : mellin f = mellin g := by
+    funext s
+    apply integral_congr_ae
+    filter_upwards [hae] with v hv
+    rw [hv]
+  refine ⟨?_, hm ▸ hf.2⟩
+  intro s
+  apply (hf.1 s).congr
+  filter_upwards [hae] with v hv
+  rw [hv]
+
+/-- Finite arithmetic twists of the theta Gauss series have entire Mellin transforms. -/
+theorem thetaDerivativeBesselProfile_mellin_entire (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ) :
+    (∀ s : ℂ, MellinConvergent
+      (thetaDerivativeBesselProfile (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom)) s) ∧
+      Differentiable ℂ (mellin
+        (thetaDerivativeBesselProfile (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom))) :=
+  mellin_entire_of_positive_eq _ _ (finiteThetaBarProfile_eq_bessel c hc Ψ)
+    (finiteThetaBarProfile_mellin_entire c hc Ψ)
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

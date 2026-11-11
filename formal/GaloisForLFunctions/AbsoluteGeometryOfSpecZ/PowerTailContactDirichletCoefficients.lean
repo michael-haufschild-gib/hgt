@@ -127,7 +127,8 @@ theorem combForm_powerTailWeight_eq (a : ℝ) (N : ℕ) :
     HodgeTheoryOfAFixedPart.combForm (Icc 1 N) (powerTailWeight a) =
       2 * (degOne (Icc 1 N) (powerTailWeight a) * degTwo (Icc 1 N) (powerTailWeight a)) +
         powerTailArchimedean a N - 2 * ∑ n ∈ Icc 1 N, powerTailContactCoefficient a n := by
-  simp only [HodgeTheoryOfAFixedPart.combForm, combPairing, pairKernel,
+  simp only [HodgeTheoryOfAFixedPart.combForm, HodgeTheoryOfAFixedPart.combPairing,
+    HodgeTheoryOfAFixedPart.pairKernel,
     mul_add, Finset.sum_add_distrib]
   rw [sum_powerTail_contacts]
   unfold powerTailArchimedean
