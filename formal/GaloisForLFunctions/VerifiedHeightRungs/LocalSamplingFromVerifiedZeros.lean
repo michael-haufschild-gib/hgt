@@ -1,4 +1,4 @@
-import GaloisForLFunctions.VerifiedHeightRungs.SeparatedZerosInEveryLongWindow
+import GaloisForLFunctions.VerifiedHeightRungs.TheDerivativeMinorantFindsZeros
 import GaloisForLFunctions.VerifiedHeightRungs.SpreadNodesControlTheTransform
 import GaloisForLFunctions.VerifiedHeightRungs.WindowEntries
 
@@ -11,13 +11,13 @@ nonnegative on every `C²` test supported in `[−a, a]`, `a ≥ 1`.
 `WindowEntries` samples `h_f` on `|τ| ≤ T₁ ≈ exp(68e^{a+2})` with one Lagrange polynomial through nodes above the gap
 height, so the degree `n`, and the exponent of the constant `48^{2n}`, are of order `T₁`. Here every `τ` is sampled
 locally: next to `τ` lies a window of length `L = 10(m + 1)σ ≥ 2e^{2Y}` above the floor `t_*`, whose `4(m + 1)` separated
-verified zeros (`exists_spread_zeros_in_window`) lie within `12(m + 1)σ` of `τ`; the modulated Taylor–Lagrange bound
+verified zeros (`exists_spread_zeros_minorant`) lie within `12(m + 1)σ` of `τ`; the modulated Taylor–Lagrange bound
 (`norm_sq_paperFT_le_of_spread_nodes`) then gives `|h_f(τ)|² ≤ K Σ_{|γ| ≤ R} |h_f(γ)|² + 2(‖f‖₁ 48^{−2n})²`. The
 degree only has to beat `e^{2Y}/σ`, `t_*/σ` and `log T₁`. The rest is the argument of `WindowEntries`.
 
-Sizes: `Y = κ a^{4/3}` pays a `σ/4`-gap (`spreadY_cube`), `t_* = exp(C Y)` pays the tails and the prime variance.
+Sizes: the derivative minorant at resolution `σ/4` needs only `Y = 4κ/σ = 36·48⁴ κ a`; the floor `t_* = 4e^{CY}` pays
+the poles and the variances of the two prime polynomials.
 -/
-
 open Complex MeasureTheory Real Set Filter Topology Finset
 open scoped ComplexConjugate
 
@@ -27,216 +27,232 @@ open _root_.RHTower Zeta23 GaloisForLFunctions.SquareRootThreshold
 
 noncomputable section
 
-/-! ### The size of the tail term of the gap test -/
-
-/-- The profile `w` of the gap test. -/
-def gapProfile (u : ℝ) : ℂ := ((sinhTestWeight 1 u : ℝ) : ℂ)
-
-theorem gapTestC_eq_profile (Y : ℝ) : gapTestC Y = fun u => gapProfile (Y⁻¹ * u) := by
-  funext u
-  simp only [gapTestC, gapTest, gapProfile, div_eq_inv_mul]
-
-/-- The tail constant `16 (‖w‖₁ + ‖w''‖₁)²`. -/
-def spreadTailC : ℝ := 16 * ((∫ u, ‖gapProfile u‖) + ∫ u, ‖deriv (deriv gapProfile) u‖) ^ 2
-
-theorem spreadTailC_nonneg : 0 ≤ spreadTailC := by unfold spreadTailC; positivity
-
-/-- **The tail term grows like `Y²`.** The test of width `Y` has `‖g‖₁ = Y ‖w‖₁` and `‖g''‖₁ = ‖w''‖₁ / Y`. -/
-theorem gapTail_le {Y : ℝ} (hY : 1 ≤ Y) : gapTail Y ≤ spreadTailC * Y ^ 2 := by
-  have hY0 : 0 < Y := by linarith only [hY]
-  have hd1 : deriv (gapTestC Y) = fun u => (Y⁻¹ : ℂ) * deriv gapProfile (Y⁻¹ * u) := by
-    rw [gapTestC_eq_profile]
-    funext u
-    rw [deriv_comp_mul_left, Complex.real_smul]
-    push_cast
-    ring
-  have hd2 : deriv (deriv (gapTestC Y)) =
-      fun u => (Y⁻¹ : ℂ) * ((Y⁻¹ : ℂ) * deriv (deriv gapProfile) (Y⁻¹ * u)) := by
-    rw [hd1, deriv_const_mul_field']
-    funext u
-    rw [deriv_comp_mul_left, Complex.real_smul]
-    push_cast
-    ring
-  have hI1 : ∫ u, ‖gapTestC Y u‖ = Y * ∫ u, ‖gapProfile u‖ := by
-    rw [gapTestC_eq_profile]
-    have h := Measure.integral_comp_mul_left (fun v => ‖gapProfile v‖) Y⁻¹
-    rw [h, inv_inv, abs_of_pos hY0, smul_eq_mul]
-  have hI2 : ∫ u, ‖deriv (deriv (gapTestC Y)) u‖ = Y⁻¹ * ∫ u, ‖deriv (deriv gapProfile) u‖ := by
-    rw [hd2]
-    have hn : ∀ u, ‖(Y⁻¹ : ℂ) * ((Y⁻¹ : ℂ) * deriv (deriv gapProfile) (Y⁻¹ * u))‖ =
-        Y⁻¹ ^ 2 * ‖deriv (deriv gapProfile) (Y⁻¹ * u)‖ := fun u => by
-      rw [norm_mul, norm_mul, ← Complex.ofReal_inv, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_pos (inv_pos.2 hY0)]
-      ring
-    simp only [hn]
-    rw [integral_const_mul]
-    have h := Measure.integral_comp_mul_left (fun v => ‖deriv (deriv gapProfile) v‖) Y⁻¹
-    rw [h, inv_inv, abs_of_pos hY0, smul_eq_mul]
-    field_simp
-  have hw1 : 0 ≤ ∫ u, ‖gapProfile u‖ := integral_nonneg fun _ => norm_nonneg _
-  have hw2 : 0 ≤ ∫ u, ‖deriv (deriv gapProfile) u‖ := integral_nonneg fun _ => norm_nonneg _
-  have hYi : Y⁻¹ ≤ Y := (inv_le_one_of_one_le₀ hY).trans hY
-  have hle : (∫ u, ‖gapTestC Y u‖) + ∫ u, ‖deriv (deriv (gapTestC Y)) u‖ ≤
-      Y * ((∫ u, ‖gapProfile u‖) + ∫ u, ‖deriv (deriv gapProfile) u‖) := by
-    rw [hI1, hI2]
-    nlinarith only [mul_le_mul_of_nonneg_right hYi hw2]
-  have h0 : 0 ≤ (∫ u, ‖gapTestC Y u‖) + ∫ u, ‖deriv (deriv (gapTestC Y)) u‖ :=
-    add_nonneg (integral_nonneg fun _ => norm_nonneg _) (integral_nonneg fun _ => norm_nonneg _)
-  unfold gapTail spreadTailC
-  have := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ 4 * ((∫ u, ‖gapTestC Y u‖) +
-    ∫ u, ‖deriv (deriv (gapTestC Y)) u‖)) (mul_le_mul_of_nonneg_left hle (by norm_num : (0 : ℝ) ≤ 4)) 2
-  calc _ ≤ (4 * (Y * ((∫ u, ‖gapProfile u‖) + ∫ u, ‖deriv (deriv gapProfile) u‖))) ^ 2 := this
-    _ = _ := by ring
-
 /-! ### The width and the floor -/
 
-/-- `κ³` pays a gap of `nodeStep a / 4` at the width `κ a^{4/3}`. -/
-def spreadKappa : ℝ :=
-  (32 * (400 * gapMass) ^ 2 * 5760 * (36 * 48 ^ 4) ^ 4 / gapEnergy) ^ ((1 : ℝ) / 3) + 1
+/-- `κ ≥ 1` with `κ² ≥ 2E₁` and `κ³ ≥ 2949120 B²`. -/
+def spreadKappa : ℝ := 1 + 2 * minorantE₁ + 2949120 * minorantB ^ 2
 
-/-- The width of the gap test, `Y = κ a^{4/3}`. -/
-def spreadY (a : ℝ) : ℝ := spreadKappa * a ^ ((4 : ℝ) / 3)
+/-- The width of the minorant test, `Y = 4κ/σ = 36·48⁴ κ a`: the resolution `σ/4` times `Y` is `κ`. -/
+def spreadY (a : ℝ) : ℝ := 4 * spreadKappa / nodeStep a
 
 theorem one_le_spreadKappa : 1 ≤ spreadKappa := by
   unfold spreadKappa
-  have := Real.rpow_nonneg (by have := gapMass_pos; have := gapEnergy_pos; positivity :
-    (0 : ℝ) ≤ 32 * (400 * gapMass) ^ 2 * 5760 * (36 * 48 ^ 4) ^ 4 / gapEnergy) ((1 : ℝ) / 3)
-  linarith only [this]
+  have := minorantE₁_nonneg
+  have := sq_nonneg minorantB
+  linarith
+
+theorem spreadY_eq {a : ℝ} (ha : 0 < a) : spreadY a = 36 * 48 ^ 4 * spreadKappa * a := by
+  unfold spreadY nodeStep
+  field_simp
+  ring
+
+theorem nodeStep_div_four_mul_spreadY {a : ℝ} (ha : 0 < a) : nodeStep a / 4 * spreadY a = spreadKappa := by
+  have := nodeStep_pos ha
+  unfold spreadY
+  field_simp
 
 theorem one_le_spreadY {a : ℝ} (ha : 1 ≤ a) : 1 ≤ spreadY a := by
-  unfold spreadY
-  have h1 : 1 ≤ a ^ ((4 : ℝ) / 3) := Real.one_le_rpow ha (by norm_num)
-  nlinarith only [h1, one_le_spreadKappa]
+  rw [spreadY_eq (by linarith only [ha])]
+  have := one_le_spreadKappa
+  nlinarith only [this, ha]
 
-theorem spreadY_cube {a : ℝ} (ha : 0 < a) :
-    32 * (400 * gapMass) ^ 2 * 5760 / ((nodeStep a / 4) ^ 4 * gapEnergy) ≤ spreadY a ^ 3 := by
-  have hm := gapMass_pos
-  have hE := gapEnergy_pos
-  obtain ⟨B, hB⟩ : ∃ B, B = 32 * (400 * gapMass) ^ 2 * 5760 * (36 * 48 ^ 4) ^ 4 / gapEnergy := ⟨_, rfl⟩
-  have hB0 : 0 ≤ B := by rw [hB]; positivity
-  have hκ : B ≤ spreadKappa ^ 3 := by
-    have h1 : B ^ ((1 : ℝ) / 3) ≤ spreadKappa := by
-      unfold spreadKappa
-      rw [← hB]
-      linarith only
-    have h2 := pow_le_pow_left₀ (Real.rpow_nonneg hB0 _) h1 3
-    rwa [← Real.rpow_natCast, ← Real.rpow_mul hB0, show ((1 : ℝ) / 3 * ((3 : ℕ) : ℝ)) = 1 by norm_num,
-      Real.rpow_one] at h2
-  have ha4 : (a ^ ((4 : ℝ) / 3)) ^ 3 = a ^ 4 := by
-    rw [← Real.rpow_natCast, ← Real.rpow_mul ha.le, show ((4 : ℝ) / 3 * ((3 : ℕ) : ℝ)) = ((4 : ℕ) : ℝ) by norm_num,
-      Real.rpow_natCast]
-  have hlhs : 32 * (400 * gapMass) ^ 2 * 5760 / ((nodeStep a / 4) ^ 4 * gapEnergy) = B * a ^ 4 := by
-    rw [hB, nodeStep]
-    field_simp
-    ring
-  rw [hlhs, spreadY, mul_pow, ha4]
-  exact mul_le_mul_of_nonneg_right hκ (by positivity)
+/-- The three conditions of the gap theorem at resolution `nodeStep a / 4`. -/
+theorem spread_minorant_conditions {a : ℝ} (ha : 1 ≤ a) :
+    1 ≤ nodeStep a / 4 * spreadY a ∧ 2 * minorantE₁ ≤ (nodeStep a / 4 * spreadY a) ^ 2 ∧
+      2949120 * minorantB ^ 2 ≤ (nodeStep a / 4) ^ 2 * spreadY a ^ 3 := by
+  have ha0 : 0 < a := by linarith only [ha]
+  have hκ := one_le_spreadKappa
+  have hE := minorantE₁_nonneg
+  have hB := sq_nonneg minorantB
+  have hκ2 : spreadKappa ≤ spreadKappa ^ 2 := by nlinarith only [hκ]
+  rw [nodeStep_div_four_mul_spreadY ha0]
+  refine ⟨hκ, ?_, ?_⟩
+  · unfold spreadKappa at hκ2 ⊢
+    nlinarith only [hκ2, hE, hB]
+  · have hY := one_le_spreadY ha
+    have e : (nodeStep a / 4) ^ 2 * spreadY a ^ 3 = (nodeStep a / 4 * spreadY a) ^ 2 * spreadY a := by ring
+    rw [e, nodeStep_div_four_mul_spreadY ha0]
+    have h1 : spreadKappa ^ 2 ≤ spreadKappa ^ 2 * spreadY a := le_mul_of_one_le_right (sq_nonneg _) hY
+    have h2 : 2949120 * minorantB ^ 2 ≤ spreadKappa := by unfold spreadKappa; linarith only [hE]
+    linarith only [h1, h2, hκ2]
 
 /-- The constant of the variance law of the prime polynomial. -/
 def spreadVarC : ℝ := Classical.choose exists_primeVariance_le
 
 theorem spreadVarC_nonneg : 0 ≤ spreadVarC := (Classical.choose_spec exists_primeVariance_le).1
 
+/-- The square root in the floor exponent. -/
+def spreadFloorS : ℝ :=
+  Real.sqrt (2621440 * π * gapEnergy * (1 + minorantE₁ ^ 2) * (2 + spreadVarC) / (3 * gapMass ^ 2))
+
 /-- The exponent of the floor. -/
-def spreadFloorC : ℝ :=
-  32 + 4 * spreadTailC / gapEnergy + Real.sqrt (20480 * π * gapEnergy * (2 + spreadVarC) / (3 * gapMass ^ 2))
+def spreadFloorC : ℝ := 44 + 32 * π * muLip * minorantB ^ 2 + 1024 * minorantN ^ 2 + spreadFloorS
 
-/-- **The floor** `t_* = exp(C Y)`. -/
-def spreadFloor (a : ℝ) : ℝ := Real.exp (spreadFloorC * spreadY a)
+/-- **The floor** `t_* = 4 exp(C Y)`. -/
+def spreadFloor (a : ℝ) : ℝ := 4 * Real.exp (spreadFloorC * spreadY a)
 
-theorem exp_thirty_le_spreadFloor {a : ℝ} (ha : 1 ≤ a) : Real.exp 30 ≤ spreadFloor a := by
-  unfold spreadFloor
-  have hY := one_le_spreadY ha
-  have h1 : 0 ≤ 4 * spreadTailC / gapEnergy := by have := gapEnergy_pos; have := spreadTailC_nonneg; positivity
-  have h2 := Real.sqrt_nonneg (20480 * π * gapEnergy * (2 + spreadVarC) / (3 * gapMass ^ 2))
-  refine Real.exp_le_exp.2 ?_
+theorem spreadFloorC_ge : 44 + 32 * π * muLip * minorantB ^ 2 + 1024 * minorantN ^ 2 ≤ spreadFloorC ∧
+    spreadFloorS ≤ spreadFloorC ∧ 0 ≤ spreadFloorS := by
+  have hS : 0 ≤ spreadFloorS := Real.sqrt_nonneg _
+  have h1 : 0 ≤ 32 * π * muLip * minorantB ^ 2 :=
+    mul_nonneg (mul_nonneg (by positivity) muLip_nonneg) (sq_nonneg _)
+  have h2 : 0 ≤ 1024 * minorantN ^ 2 := by positivity
   unfold spreadFloorC
-  nlinarith only [h1, h2, hY]
+  exact ⟨by linarith only [hS], by linarith only [h1, h2], hS⟩
 
-theorem tail_le_spreadFloor {a : ℝ} (ha : 1 ≤ a) :
-    4 * Real.exp (spreadY a) * gapTail (spreadY a) / (spreadY a * gapEnergy) ≤ spreadFloor a := by
-  have hE := gapEnergy_pos
+/-- `log(1 + t_*/4) ≥ C Y`. -/
+theorem spreadFloorC_mul_le_log {a : ℝ} : spreadFloorC * spreadY a ≤ Real.log (1 + spreadFloor a / 4) := by
+  rw [Real.le_log_iff_exp_le (by unfold spreadFloor; positivity), spreadFloor]
+  linarith only
+
+theorem spreadFloor_conditions {a : ℝ} (ha : 1 ≤ a) :
+    40 + 32 * π * muLip * minorantB ^ 2 ≤ Real.log (1 + spreadFloor a / 4) ∧
+      1024 * Real.exp (spreadY a) * spreadY a ^ 3 * minorantN ^ 2 ≤ spreadFloor a := by
   have hY := one_le_spreadY ha
   have hY0 : 0 < spreadY a := by linarith only [hY]
-  set Y := spreadY a with hYdef
-  obtain ⟨x, hx⟩ : ∃ x, x = 4 * spreadTailC / gapEnergy := ⟨_, rfl⟩
-  have hx0 : 0 ≤ x := by rw [hx]; have := spreadTailC_nonneg; positivity
-  have h1 : 4 * Real.exp Y * gapTail Y / (Y * gapEnergy) ≤ Real.exp Y * (x * Y) := by
-    rw [div_le_iff₀ (by positivity), hx]
-    have := gapTail_le hY
-    have e : Real.exp Y * (4 * spreadTailC / gapEnergy * Y) * (Y * gapEnergy) =
-        4 * Real.exp Y * (spreadTailC * Y ^ 2) := by field_simp
-    rw [e]
-    exact mul_le_mul_of_nonneg_left this (by positivity)
-  have h2 : x * Y ≤ Real.exp (x * Y) := by
-    have := Real.add_one_le_exp (x * Y)
-    linarith only [this]
-  have h3 : Real.exp Y * Real.exp (x * Y) ≤ spreadFloor a := by
-    rw [← Real.exp_add, spreadFloor, ← hYdef]
-    refine Real.exp_le_exp.2 ?_
-    have h4 := Real.sqrt_nonneg (20480 * π * gapEnergy * (2 + spreadVarC) / (3 * gapMass ^ 2))
-    unfold spreadFloorC
-    rw [← hx]
-    nlinarith only [h4, hY, hx0]
-  calc _ ≤ Real.exp Y * (x * Y) := h1
-    _ ≤ Real.exp Y * Real.exp (x * Y) := mul_le_mul_of_nonneg_left h2 (Real.exp_pos _).le
-    _ ≤ _ := h3
+  obtain ⟨hC1, -, hS⟩ := spreadFloorC_ge
+  have hlog := spreadFloorC_mul_le_log (a := a)
+  have hD : 0 ≤ 32 * π * muLip * minorantB ^ 2 :=
+    mul_nonneg (mul_nonneg (by positivity) muLip_nonneg) (sq_nonneg _)
+  have hN : 0 ≤ 1024 * minorantN ^ 2 := by positivity
+  have hCY : spreadFloorC ≤ spreadFloorC * spreadY a := le_mul_of_one_le_right (by linarith only [hC1, hD, hN]) hY
+  constructor
+  · linarith only [hlog, hCY, hC1, hN]
+  · -- `1024 N² Y³ e^Y ≤ e^{1024 N² Y} e^{3Y} e^Y ≤ e^{C Y}`.
+    set Y := spreadY a with hYdef
+    have h1 : 1024 * minorantN ^ 2 ≤ Real.exp (1024 * minorantN ^ 2 * Y) := by
+      have := Real.add_one_le_exp (1024 * minorantN ^ 2 * Y)
+      have : 1024 * minorantN ^ 2 ≤ 1024 * minorantN ^ 2 * Y := le_mul_of_one_le_right hN hY
+      linarith
+    have h2 : Y ^ 3 ≤ Real.exp (3 * Y) := by
+      have h3 : Y ≤ Real.exp Y := by have := Real.add_one_le_exp Y; linarith only [this]
+      calc Y ^ 3 ≤ Real.exp Y ^ 3 := pow_le_pow_left₀ hY0.le h3 3
+        _ = Real.exp (3 * Y) := by rw [← Real.exp_nat_mul]; norm_num
+    have h4 : 1024 * Real.exp Y * Y ^ 3 * minorantN ^ 2 ≤
+        Real.exp (1024 * minorantN ^ 2 * Y) * Real.exp (3 * Y) * Real.exp Y := by
+      have e : 1024 * Real.exp Y * Y ^ 3 * minorantN ^ 2 = (1024 * minorantN ^ 2) * Y ^ 3 * Real.exp Y := by ring
+      rw [e]
+      gcongr
+    have h5 : Real.exp (1024 * minorantN ^ 2 * Y) * Real.exp (3 * Y) * Real.exp Y ≤ spreadFloor a := by
+      rw [← Real.exp_add, ← Real.exp_add, spreadFloor, ← hYdef]
+      have h6 : Real.exp (1024 * minorantN ^ 2 * Y + 3 * Y + Y) ≤ Real.exp (spreadFloorC * Y) :=
+        Real.exp_le_exp.2 (by nlinarith only [hC1, hD, hY0])
+      linarith only [h6, Real.exp_pos (spreadFloorC * Y)]
+    exact h4.trans h5
 
-theorem var_le_spreadFloor {a : ℝ} (ha : 1 ≤ a) :
-    320 * π * gapEnergy * primeVariance (gapTestC (spreadY a)) ⌊Real.exp (2 * spreadY a)⌋₊ ≤
-      3 * gapMass ^ 2 * (spreadY a * gapEnergy * Real.log (spreadFloor a + 3) / 4) ^ 2 := by
+theorem spreadFloor_variance {a : ℝ} (ha : 1 ≤ a) :
+    640 * π * gapEnergy * primeVariance (minorantTest (spreadY a)) ⌊Real.exp (2 * spreadY a)⌋₊ ≤
+        3 * gapMass ^ 2 * (spreadY a * minorantE₀ * Real.log (1 + spreadFloor a / 4) / 32) ^ 2 ∧
+      640 * π * gapEnergy * primeVariance (minorantTestD (spreadY a)) ⌊Real.exp (2 * spreadY a)⌋₊ ≤
+        3 * gapMass ^ 2 * ((nodeStep a / 4) ^ 2 * spreadY a * minorantE₀ * Real.log (1 + spreadFloor a / 4) / 32) ^ 2 := by
   have hπ := Real.pi_pos
   have hm := gapMass_pos
-  have hE := gapEnergy_pos
+  have hEn := gapEnergy_pos
+  have hE₀ := one_le_minorantE₀
+  have hE₁ := minorantE₁_nonneg
+  have hC0 := spreadVarC_nonneg
   have hY := one_le_spreadY ha
   have hY0 : 0 < spreadY a := by linarith only [hY]
+  have ha0 : 0 < a := by linarith only [ha]
   set Y := spreadY a with hYdef
-  have hC0 := spreadVarC_nonneg
-  have hV := (Classical.choose_spec exists_primeVariance_le).2 Y hY0.le (gapTestC Y)
-    (gapTestC_contDiff Y).continuous (hasCompactSupport_of_tsupport_subset_Icc (tsupport_gapTestC hY0))
-  rw [integral_gapTestC_sq hY0] at hV
-  change _ ≤ 2 * (Y * gapEnergy) ^ 2 * (2 * Y * (2 * Y + spreadVarC)) at hV
-  -- `log(t_* + 3) ≥ s Y`, `s² = 20480 π m₂ (2 + C₀)/(3 m₁²)`.
-  obtain ⟨s, hs⟩ : ∃ s, s = Real.sqrt (20480 * π * gapEnergy * (2 + spreadVarC) / (3 * gapMass ^ 2)) := ⟨_, rfl⟩
-  have hs0 : 0 ≤ s := by rw [hs]; exact Real.sqrt_nonneg _
-  have hs2 : s ^ 2 = 20480 * π * gapEnergy * (2 + spreadVarC) / (3 * gapMass ^ 2) := by
-    rw [hs, Real.sq_sqrt (by positivity)]
-  have hlog : s * Y ≤ Real.log (spreadFloor a + 3) := by
-    have h1 : Real.log (spreadFloor a) ≤ Real.log (spreadFloor a + 3) :=
-      Real.log_le_log (Real.exp_pos _) (by linarith only)
-    rw [spreadFloor, Real.log_exp] at h1
-    refine le_trans ?_ h1
-    unfold spreadFloorC
-    rw [← hYdef, ← hs]
-    have : 0 ≤ 4 * spreadTailC / gapEnergy := by have := spreadTailC_nonneg; positivity
-    nlinarith only [this, hY0]
-  have hlog2 : s ^ 2 * Y ^ 2 ≤ Real.log (spreadFloor a + 3) ^ 2 := by
+  set L := Real.log (1 + spreadFloor a / 4) with hL
+  obtain ⟨hC1, hSC, hS⟩ := spreadFloorC_ge
+  have hlog : spreadFloorS * Y ≤ L := by
+    have := spreadFloorC_mul_le_log (a := a)
+    have h2 := mul_le_mul_of_nonneg_right hSC hY0.le
+    linarith only [this, h2]
+  have hS2 : spreadFloorS ^ 2 = 2621440 * π * gapEnergy * (1 + minorantE₁ ^ 2) * (2 + spreadVarC) /
+      (3 * gapMass ^ 2) := by
+    unfold spreadFloorS
+    rw [Real.sq_sqrt (by positivity)]
+  have hL2 : spreadFloorS ^ 2 * Y ^ 2 ≤ L ^ 2 := by
     rw [← mul_pow]
     exact pow_le_pow_left₀ (by positivity) hlog 2
-  -- `2Y + C₀ ≤ (2 + C₀) Y`.
+  have hvar := (Classical.choose_spec exists_primeVariance_le).2 Y hY0.le
+  have hgc := hasCompactSupport_of_tsupport_subset_Icc (tsupport_minorantTest hY0)
+  have hgc' := hasCompactSupport_of_tsupport_subset_Icc (tsupport_minorantTestD hY0)
+  have hV1 := hvar (minorantTest Y) (minorantTest_contDiff Y (n := 0)).continuous hgc
+  have hV2 := hvar (minorantTestD Y) (minorantTestD_contDiff Y (n := 0)).continuous hgc'
+  rw [integral_norm_sq_minorantTest hY0] at hV1
+  rw [integral_norm_sq_minorantTestD hY0] at hV2
+  change _ ≤ 2 * (Y * minorantE₀) ^ 2 * (2 * Y * (2 * Y + spreadVarC)) at hV1
+  change _ ≤ 2 * (minorantE₁ / Y) ^ 2 * (2 * Y * (2 * Y + spreadVarC)) at hV2
   have hlin : 2 * Y + spreadVarC ≤ (2 + spreadVarC) * Y := by nlinarith only [hY, hC0]
-  have hVle : primeVariance (gapTestC Y) ⌊Real.exp (2 * Y)⌋₊ ≤ 4 * gapEnergy ^ 2 * (2 + spreadVarC) * Y ^ 4 := by
-    refine hV.trans ?_
-    have : 0 ≤ 2 * (Y * gapEnergy) ^ 2 * (2 * Y) := by positivity
-    calc 2 * (Y * gapEnergy) ^ 2 * (2 * Y * (2 * Y + spreadVarC))
-        = 2 * (Y * gapEnergy) ^ 2 * (2 * Y) * (2 * Y + spreadVarC) := by ring
-      _ ≤ 2 * (Y * gapEnergy) ^ 2 * (2 * Y) * ((2 + spreadVarC) * Y) := mul_le_mul_of_nonneg_left hlin this
-      _ = _ := by ring
-  have hR : 3 * gapMass ^ 2 * (Y * gapEnergy) ^ 2 / 16 * (s ^ 2 * Y ^ 2) ≤
-      3 * gapMass ^ 2 * (Y * gapEnergy * Real.log (spreadFloor a + 3) / 4) ^ 2 := by
-    have := mul_le_mul_of_nonneg_left hlog2 (by positivity : (0 : ℝ) ≤ 3 * gapMass ^ 2 * (Y * gapEnergy) ^ 2 / 16)
-    refine this.trans (le_of_eq ?_)
-    ring
-  have hL : 320 * π * gapEnergy * (4 * gapEnergy ^ 2 * (2 + spreadVarC) * Y ^ 4) =
-      3 * gapMass ^ 2 * (Y * gapEnergy) ^ 2 / 16 * (s ^ 2 * Y ^ 2) := by
-    rw [hs2]
-    field_simp
-    ring
-  calc 320 * π * gapEnergy * primeVariance (gapTestC Y) ⌊Real.exp (2 * Y)⌋₊
-      ≤ 320 * π * gapEnergy * (4 * gapEnergy ^ 2 * (2 + spreadVarC) * Y ^ 4) :=
-        mul_le_mul_of_nonneg_left hVle (by positivity)
-    _ = _ := hL
-    _ ≤ _ := hR
+  have hK : 0 < 3 * gapMass ^ 2 := by positivity
+  constructor
+  · -- `V_g ≤ 4 Y⁴ E₀² (2 + C₀)`.
+    have hV : primeVariance (minorantTest Y) ⌊Real.exp (2 * Y)⌋₊ ≤ 4 * Y ^ 4 * minorantE₀ ^ 2 * (2 + spreadVarC) := by
+      refine hV1.trans ?_
+      have h0 : 0 ≤ 2 * (Y * minorantE₀) ^ 2 * (2 * Y) := by positivity
+      calc 2 * (Y * minorantE₀) ^ 2 * (2 * Y * (2 * Y + spreadVarC))
+          = 2 * (Y * minorantE₀) ^ 2 * (2 * Y) * (2 * Y + spreadVarC) := by ring
+        _ ≤ 2 * (Y * minorantE₀) ^ 2 * (2 * Y) * ((2 + spreadVarC) * Y) := mul_le_mul_of_nonneg_left hlin h0
+        _ = _ := by ring
+    have hR : 3 * gapMass ^ 2 * (Y * minorantE₀ * (spreadFloorS * Y) / 32) ^ 2 ≤
+        3 * gapMass ^ 2 * (Y * minorantE₀ * L / 32) ^ 2 := by
+      gcongr
+    have hval : 3 * gapMass ^ 2 * (Y * minorantE₀ * (spreadFloorS * Y) / 32) ^ 2 =
+        2560 * π * gapEnergy * (1 + minorantE₁ ^ 2) * (2 + spreadVarC) * (Y ^ 4 * minorantE₀ ^ 2) := by
+      have e : (Y * minorantE₀ * (spreadFloorS * Y) / 32) ^ 2 = spreadFloorS ^ 2 * (Y ^ 4 * minorantE₀ ^ 2) / 1024 := by
+        ring
+      rw [e, hS2]
+      field_simp
+      ring
+    have h1 : 640 * π * gapEnergy * (4 * Y ^ 4 * minorantE₀ ^ 2 * (2 + spreadVarC)) ≤
+        2560 * π * gapEnergy * (1 + minorantE₁ ^ 2) * (2 + spreadVarC) * (Y ^ 4 * minorantE₀ ^ 2) := by
+      have : 0 ≤ 2560 * π * gapEnergy * (2 + spreadVarC) * (Y ^ 4 * minorantE₀ ^ 2) := by positivity
+      nlinarith only [this, sq_nonneg minorantE₁]
+    calc 640 * π * gapEnergy * primeVariance (minorantTest Y) ⌊Real.exp (2 * Y)⌋₊
+        ≤ 640 * π * gapEnergy * (4 * Y ^ 4 * minorantE₀ ^ 2 * (2 + spreadVarC)) :=
+          mul_le_mul_of_nonneg_left hV (by positivity)
+      _ ≤ _ := h1
+      _ = _ := hval.symm
+      _ ≤ _ := hR
+  · -- `V_{g'} ≤ 4 E₁² (2 + C₀)` and `(σ/4)² Y L ≥ κ² s ≥ s`.
+    have hV : primeVariance (minorantTestD Y) ⌊Real.exp (2 * Y)⌋₊ ≤ 4 * minorantE₁ ^ 2 * (2 + spreadVarC) := by
+      refine hV2.trans ?_
+      have e : 2 * (minorantE₁ / Y) ^ 2 * (2 * Y * (2 * Y + spreadVarC)) =
+          4 * minorantE₁ ^ 2 * ((2 * Y + spreadVarC) / Y) := by
+        field_simp
+      rw [e]
+      have h2 : (2 * Y + spreadVarC) / Y ≤ 2 + spreadVarC := by
+        rw [div_le_iff₀ hY0]
+        linarith only [hlin]
+      exact mul_le_mul_of_nonneg_left h2 (by positivity)
+    have hσY := nodeStep_div_four_mul_spreadY ha0
+    rw [← hYdef] at hσY
+    have hκ := one_le_spreadKappa
+    have hscale : spreadFloorS ≤ (nodeStep a / 4) ^ 2 * Y * L := by
+      have e : (nodeStep a / 4) ^ 2 * Y * L = (nodeStep a / 4 * Y) ^ 2 * (L / Y) := by
+        field_simp
+      rw [e, hσY]
+      have h1 : spreadFloorS ≤ L / Y := by rw [le_div_iff₀ hY0]; exact hlog
+      have h2 : L / Y ≤ spreadKappa ^ 2 * (L / Y) :=
+        le_mul_of_one_le_left (le_trans hS h1) (by nlinarith only [hκ])
+      linarith only [h1, h2]
+    have hR : 3 * gapMass ^ 2 * (spreadFloorS / 32) ^ 2 ≤
+        3 * gapMass ^ 2 * ((nodeStep a / 4) ^ 2 * Y * minorantE₀ * L / 32) ^ 2 := by
+      have h1 : spreadFloorS ≤ (nodeStep a / 4) ^ 2 * Y * minorantE₀ * L := by
+        have h2 : (nodeStep a / 4) ^ 2 * Y * L ≤ (nodeStep a / 4) ^ 2 * Y * minorantE₀ * L := by
+          have : 0 ≤ (nodeStep a / 4) ^ 2 * Y * L := le_trans hS hscale
+          nlinarith only [this, hE₀]
+        linarith only [hscale, h2]
+      gcongr
+    have hval : 3 * gapMass ^ 2 * (spreadFloorS / 32) ^ 2 =
+        2560 * π * gapEnergy * (1 + minorantE₁ ^ 2) * (2 + spreadVarC) := by
+      rw [div_pow, hS2]
+      field_simp
+      ring
+    have h1 : 640 * π * gapEnergy * (4 * minorantE₁ ^ 2 * (2 + spreadVarC)) ≤
+        2560 * π * gapEnergy * (1 + minorantE₁ ^ 2) * (2 + spreadVarC) := by
+      have : 0 ≤ 2560 * π * gapEnergy * (2 + spreadVarC) := by positivity
+      nlinarith only [this]
+    calc 640 * π * gapEnergy * primeVariance (minorantTestD Y) ⌊Real.exp (2 * Y)⌋₊
+        ≤ 640 * π * gapEnergy * (4 * minorantE₁ ^ 2 * (2 + spreadVarC)) :=
+          mul_le_mul_of_nonneg_left hV (by positivity)
+      _ ≤ _ := h1
+      _ = _ := hval.symm
+      _ ≤ _ := hR
 
 /-! ### The number of nodes and the height -/
 
@@ -366,11 +382,12 @@ theorem norm_sq_paperFT_le_of_verified_spread {a T : ℝ} (ha : 1 ≤ a)
           constructor <;> linarith only [h1, h2, h, h']
         nlinarith only [this, hsm, hσ, hm0]
   -- The zeros of the window.
-  have hY3 := spreadY_cube ha0
-  rw [← hσdef] at hY3
-  obtain ⟨node, hnode, hsep⟩ := exists_spread_zeros_in_window (c := c) (m := m) (T := T) hσ hσ1 hY0 hY3
-    (exp_thirty_le_spreadFloor ha) (tail_le_spreadFloor ha) (var_le_spreadFloor ha) hLY
-    (fun t ht => (hc1 t ht).1) (fun t ht => by linarith only [(hc1 t ht).2, hT]) hRH
+  obtain ⟨hc1', hc2', hc3'⟩ := spread_minorant_conditions ha
+  obtain ⟨hf1, hf2⟩ := spreadFloor_conditions ha
+  obtain ⟨hv1, hv2⟩ := spreadFloor_variance ha
+  rw [← hσdef] at hc1' hc2' hc3' hv2
+  obtain ⟨node, hnode, hsep⟩ := exists_spread_zeros_minorant (c := c) (m := m) (T := T) hσ hσ1 hY1 hc1' hc2'
+    hc3' hf1 hf2 hv1 hv2 hLY (fun t ht => (hc1 t ht).1) (fun t ht => by linarith only [(hc1 t ht).2, hT]) hRH
   have hNm : spreadN a = 4 * m + 3 := rfl
   set v : ℕ → ℝ := fun j => ((node j : ℂ)).im with hv
   have hsep' : ∀ i ∈ range (spreadN a + 1), ∀ j ∈ range (spreadN a + 1),

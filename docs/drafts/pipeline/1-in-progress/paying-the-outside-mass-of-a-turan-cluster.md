@@ -60,6 +60,11 @@ multiplicities nor surrounding annuli. It does not imply an empty annulus.
 The required near-top sector geometry and deep gap have not been proved
 for arbitrary ζ clusters. The old `ClusterAt` and full A78 remain open.
 
+`eventually_volume_rightDepthMass_gt_le` already controls depth mass outside
+a set of window centres of measure `o(T)`. This does not control the selected
+cluster centres: every centre containing a zero of fixed positive depth has
+a fixed positive depth-mass contribution and may belong to that exceptional set.
+
 Separately, `TheStripPaysTheVeryDeepCameraNoise` removes the hyperbolic
 camera's very-deep mass premise when `3c log T≤(1-3c)α`; its Blaschke-product
 condition remains.

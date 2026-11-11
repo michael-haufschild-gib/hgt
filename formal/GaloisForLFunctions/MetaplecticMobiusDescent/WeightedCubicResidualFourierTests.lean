@@ -51542,7 +51542,6 @@ theorem squarefree_all_column_energy {n : Type*} [Fintype n]
       intro j _
       have hj : (cols j.val).val = D.val*(good j).val := by
         rw [←quadraticBadSector_good_product (cols j.val),j.property]
-        rfl
       rw [hj,primaryIdealGenerator_mul,canonicalQuadraticRow_mul]
       ring
     have hpoint (k : QuadraticIdealRange K) :
@@ -51766,7 +51765,6 @@ theorem bounded_nonzero_quadratic_norm :
         apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
         apply he.trans
         gcongr
-        dsimp [B]
         linarith
       _  ≤  (Ideal.absNorm A:ℝ)*((B*(C*(K*X) ^ deltaLoss*(K+X)))*((diagonalControl sieveCutoff+1)*Y*lengthScale ^ 2)) := by
         gcongr
@@ -51860,7 +51858,7 @@ lemma quadratic_range_energy_restrict (K : ℝ) (rows : Finset QuadraticIdeal)
     (E : QuadraticIdeal → ℝ) (hE : ∀ k, 0 ≤ E k) :
     (∑ k ∈ rows, E k) ≤ ∑ k : QuadraticIdealRange K, E k.val := by
   let f : rows → QuadraticIdealRange K := fun k => ⟨k.val,hrows k.val k.property⟩
-  have hf : Function.Injective f := fun i j h => Subtype.ext (congrArg Subtype.val h)
+  have hf : Function.Injective f := fun i j h => Subtype.ext (congrArg (fun k : QuadraticIdealRange K => k.val) h)
   rw [←Finset.sum_coe_sort rows E]
   change (∑ k : rows, E (f k).val) ≤ _
   rw [←Finset.sum_image (f := fun k : QuadraticIdealRange K => E k.val) (g := f)
@@ -51882,13 +51880,13 @@ theorem finite_squarefree_quadratic_energy (ε : ℝ) (hε : 0 < ε) :
   refine ⟨B*C,mul_pos hB hC,?_⟩
   intro K X hK hX rows cols hrows hcols a
   let f : cols → {I : Ideal O // Squarefree I} := fun J => ⟨J.val,(hcols J.val J.property).1⟩
-  have hf : Function.Injective f := fun I J h => Subtype.ext (congrArg Subtype.val h)
+  have hf : Function.Injective f := fun I J h => Subtype.ext (congrArg (fun J : {I : Ideal O // Squarefree I} => J.val) h)
   have hb := squarefree_all_column_energy f hf X K
     (fun J => (hcols J.val J.property).2) (fun J => a J.val)
   have hi (k : QuadraticIdealRange K) :
       (∑ J : cols, canonicalQuadraticRow k.val (primaryIdealGenerator (f J).val)*a J.val) =
         ∑ J ∈ cols, canonicalQuadraticRow k.val (primaryIdealGenerator J)*a J :=
-    Finset.sum_coe_sort cols _
+    Finset.sum_coe_sort cols (fun J => canonicalQuadraticRow k.val (primaryIdealGenerator J)*a J)
   simp_rw [hi] at hb
   rw [Finset.sum_coe_sort cols (fun J => ‖a J‖ ^ 2)] at hb
   apply (quadratic_range_energy_restrict K rows hrows
@@ -52172,7 +52170,7 @@ theorem inputConjugateRow_sq_overlap
   apply Finset.sum_congr rfl
   intro V hV
   by_cases hd : Disjoint U V
-  · rw [ite_eq_left hd, ite_eq_left hd]
+  · rw [if_pos hd, if_pos hd]
     have hGU : Disjoint G U := Finset.disjoint_left.mpr (fun i hi hu =>
       (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hU) hu)).2 hi)
     have hGV : Disjoint G V := Finset.disjoint_left.mpr (fun i hi hv =>
@@ -52206,6 +52204,378 @@ theorem inputConjugateRow_sq_overlap
         ring
   · simp [hd]
 
+
+end SecondPassArithmetic
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+open scoped Classical SchwartzMap
+
+/-- The exact trace Gauss sum of a product of prime characters. -/
+def primeRowTraceGauss {ι : Type*} [Fintype ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) : ℂ :=
+  let c := ∏ i, p i
+  let hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  ∑ x : O ⧸ Ideal.span {c},
+    primeCuspRowCharacter p χ (GaussianShiftedPartition.representative c x)*residueTraceQuotientChar 1 c hc x
+
+/-- Poisson reflection retains the actual Gauss factor, needed for signed cancellation. -/
+theorem prime_row_trace_poisson {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1) :
+    ‖primeRowTraceGauss p hp χ‖ ^ 2 = ‖ringComplex (∏ i, p i)‖ ^ 2 ∧
+    ∀ (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+      (∑' z : O, primeCuspRowCharacter p χ z*W (‖ringComplex z‖ ^ 2/Y)) =
+        ((Y : ℂ)*primeRowTraceGauss p hp χ/(‖ringComplex (∏ i, p i)‖ ^ 2 : ℝ))*
+          ∑' h : O, primeCuspRowCharacter p (fun i => (χ i)⁻¹) h*
+            paperRadialFourier W (Y*‖ringComplex h‖ ^ 2/‖ringComplex (∏ i, p i)‖ ^ 2) := by
+  let P : ι → Ideal O := fun i => Ideal.span {p i}
+  let c := ∏ i, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  have hspan : Ideal.span {c} = ∏ i, P i := span_finset_prime_product p Finset.univ
+  let e : (O ⧸ Ideal.span {c}) ≃+* ∀ i, O ⧸ P i :=
+    (Ideal.quotEquivOfEq hspan).trans (Eisenstein.primeCRT P hinj)
+  have he (z : O) (i : ι) :
+      e (Ideal.Quotient.mk (Ideal.span {c}) z) i = Ideal.Quotient.mk (P i) z := by
+    simp only [e,RingEquiv.trans_apply,Ideal.quotEquivOfEq_mk,Eisenstein.primeCRT]
+    rfl
+  let ψ := residueTraceQuotientChar 1 c hc
+  let A : O ⧸ Ideal.span {c} → ℂ := fun x => ∏ i, χ i (e x i)
+  have ha (z : O) : A (Ideal.Quotient.mk (Ideal.span {c}) z) = primeCuspRowCharacter p χ z := by
+    simp only [A,he,primeCuspRowCharacter]
+  have hG : primeRowTraceGauss p hp χ = ∑ x, A x*ψ x := by
+    unfold primeRowTraceGauss
+    apply Finset.sum_congr rfl
+    intro x _
+    have hx := ha (GaussianShiftedPartition.representative c x)
+    rw [GaussianShiftedPartition.representative_spec c x] at hx
+    rw [←hx]
+  constructor
+  · rw [hG,finite_crt_gauss_norm_sq (fun i => O ⧸ P i) e χ hχ ψ
+      (residueTraceQuotientChar_primitive c hc)]
+    simpa only [Ideal.absNorm_apply,Submodule.cardQuot_apply,Nat.card_eq_fintype_card]
+      using (ringComplex_norm_sq_eq_absNorm_span c).symm
+  · intro W Y hY
+    have hf := actual_radial_poisson_trace W Y hY c hc A
+    simp_rw [ha] at hf
+    rw [hf]
+    change ((Y/‖ringComplex c‖ ^ 2 : ℝ) : ℂ)*
+      (∑' h : O, (∑ x, A x*ψ (Ideal.Quotient.mk (Ideal.span {c}) h*x))*
+        paperRadialFourier W (Y*‖ringComplex h‖ ^ 2/‖ringComplex c‖ ^ 2)) = _
+    have ht (h : O) : (∑ x, A x*ψ (Ideal.Quotient.mk (Ideal.span {c}) h*x)) =
+        primeCuspRowCharacter p (fun i => (χ i)⁻¹) h*primeRowTraceGauss p hp χ := by
+      rw [hG]
+      simpa only [A,he,primeCuspRowCharacter] using
+        finite_crt_gauss_transform (fun i => O ⧸ P i) e χ hχ ψ (Ideal.Quotient.mk (Ideal.span {c}) h)
+    simp_rw [ht]
+    have hs : (∑' h : O, (primeCuspRowCharacter p (fun i => (χ i)⁻¹) h*primeRowTraceGauss p hp χ)*
+        paperRadialFourier W (Y*‖ringComplex h‖ ^ 2/‖ringComplex c‖ ^ 2)) =
+        primeRowTraceGauss p hp χ*∑' h : O, primeCuspRowCharacter p (fun i => (χ i)⁻¹) h*
+          paperRadialFourier W (Y*‖ringComplex h‖ ^ 2/‖ringComplex c‖ ^ 2) := by
+      rw [←tsum_mul_left]
+      apply tsum_congr
+      intro h
+      ring
+    rw [hs]
+    push_cast
+    ring
+
+end SchwartzPlanePoisson
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+open scoped Classical SchwartzMap
+
+theorem prime_row_trace_masked_poisson {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1) :
+    ∀ {κ : Type*} (q : κ → O) (hq : ∀ i, q i ≠ 0)
+      (hcop : Pairwise (Function.onFun IsCoprime q)) (S : Finset κ)
+      (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+      (∑' z : O, primeCoprimeMask q S z * primeCuspRowCharacter p χ z *
+        W (‖ringComplex z‖ ^ 2 / Y)) =
+        ((Y : ℂ)*primeRowTraceGauss p hp χ/(‖ringComplex (∏ i, p i)‖ ^ 2 : ℝ)) *
+          ∑ E ∈ S.powerset,
+            ((-1 : ℂ) ^ E.card * primeCuspRowCharacter p χ (∏ i ∈ E, q i) /
+              (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 : ℝ)) *
+              ∑' h : O, primeCuspRowCharacter p (fun i => (χ i)⁻¹) h *
+                paperRadialFourier W
+                  (Y * ‖ringComplex h‖ ^ 2 /
+                    (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 * ‖ringComplex (∏ i, p i)‖ ^ 2)) := by
+  classical
+  have hP := (prime_row_trace_poisson p hp hinj χ hχ).2
+  intro κ q hq hcop S W Y hY
+  rw [prime_row_masked_dilations p χ q hq hcop S W Y hY, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro E hE
+  have hd : (∏ i ∈ E, q i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hq i)
+  have hn : 0 < ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 :=
+    sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hd))
+  rw [hP W _ (div_pos hY hn)]
+  have harg (h : O) :
+      Y / ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 * ‖ringComplex h‖ ^ 2 /
+          ‖ringComplex (∏ i, p i)‖ ^ 2 =
+        Y * ‖ringComplex h‖ ^ 2 /
+          (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 * ‖ringComplex (∏ i, p i)‖ ^ 2) := by ring
+  simp_rw [harg]
+  push_cast
+  ring
+
+
+end SchwartzPlanePoisson
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+
+def overlapPairWeight (Ψ : O →* ℂ) (m c d : O) (H : Finset ι → ℂ)
+    (G U V : Finset ι) : ℂ :=
+  (‖secondInputCoefficient p χ Ψ m c d (fun _ => 1) G‖ ^ 2 : ℝ)*
+    (star (supportMobius U*secondInputCoefficient p χ Ψ m c d (fun S => H (G ∪ S)) U)*
+      (supportMobius V*secondInputCoefficient p χ Ψ m c d (fun S => H (G ∪ S)) V))
+
+def maskedSecondSource (G U V : Finset ι) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) : ℂ :=
+  ∑' z : O, primeCoprimeMask p G z*
+    (star (primeSubsetRow p χ V z)*primeSubsetRow p χ U z)*W (‖ringComplex z‖ ^ 2/Y)
+
+lemma maskedSecondSource_summable (G U V : Finset ι) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    Summable (fun z : O => primeCoprimeMask p G z*
+      (star (primeSubsetRow p χ V z)*primeSubsetRow p χ U z)*W (‖ringComplex z‖ ^ 2/Y)) := by
+  have hs : Summable (fun z : O => ‖W (‖ringComplex z‖ ^ 2/Y)‖) := by
+    simpa only [scaledRadialTest_apply] using actual_eisenstein_summable_norm (scaledRadialTest W Y hY)
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) _ hs
+  intro z
+  rw [norm_mul,norm_mul,norm_mul,norm_star]
+  have hrow : ‖primeSubsetRow p χ V z‖*‖primeSubsetRow p χ U z‖ ≤ 1 :=
+    (mul_le_mul (primeSubsetRow_norm_le_one p χ V z) (primeSubsetRow_norm_le_one p χ U z)
+      (norm_nonneg _) (by norm_num)).trans_eq (one_mul 1)
+  have hm : ‖primeCoprimeMask p G z‖*(‖primeSubsetRow p χ V z‖*‖primeSubsetRow p χ U z‖) ≤ 1 :=
+    (mul_le_mul (primeCoprimeMask_norm_le_one p G z) hrow (by positivity) (by norm_num)).trans_eq (one_mul 1)
+  exact mul_le_of_le_one_left (norm_nonneg _) hm
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+
+theorem inputConjugateRow_smoothed_overlap
+    (F : Finset ι) (Ψ : O →* ℂ) (m c d : O) (H : Finset ι → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, W (‖ringComplex z‖ ^ 2 / Y) *
+      (↑(‖inputConjugateRow p χ F Ψ m c d H z‖ ^ 2) : ℂ)) =
+      ∑ G ∈ F.powerset, ∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset,
+        if Disjoint U V then overlapPairWeight p χ Ψ m c d H G U V *
+          maskedSecondSource p χ G U V W Y else 0 := by
+  let f := fun (G U V : Finset ι) (z : O) => if Disjoint U V then
+    overlapPairWeight p χ Ψ m c d H G U V *
+      (primeCoprimeMask p G z *
+        (star (primeSubsetRow p χ V z) *
+          primeSubsetRow p χ U z) * W (‖ringComplex z‖ ^ 2 / Y))
+    else 0
+  have hf (G U V : Finset ι) : Summable (f G U V) := by
+    by_cases hd : Disjoint U V
+    · simpa only [f, if_pos hd] using
+        (maskedSecondSource_summable p χ G U V W Y hY).mul_left (overlapPairWeight p χ Ψ m c d H G U V)
+    · simp only [f, if_neg hd]
+      exact summable_zero
+  have he (z : O) : W (‖ringComplex z‖ ^ 2 / Y) *
+      (↑(‖inputConjugateRow p χ F Ψ m c d H z‖ ^ 2) : ℂ) =
+      ∑ G ∈ F.powerset, ∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset, f G U V z := by
+    rw [inputConjugateRow_sq_overlap p χ]
+    simp only [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro G hG
+    apply Finset.sum_congr rfl
+    intro U hU
+    apply Finset.sum_congr rfl
+    intro V hV
+    by_cases hd : Disjoint U V
+    · simp only [f, if_pos hd, overlapPairWeight]
+      ring
+    · simp [f, hd]
+  rw [tsum_congr he]
+  rw [Summable.tsum_finsetSum (fun G _ => summable_sum (fun U _ => summable_sum (fun V _ => hf G U V)))]
+  apply Finset.sum_congr rfl
+  intro G hG
+  rw [Summable.tsum_finsetSum (fun U _ => summable_sum (fun V _ => hf G U V))]
+  apply Finset.sum_congr rfl
+  intro U hU
+  rw [Summable.tsum_finsetSum (fun V _ => hf G U V)]
+  apply Finset.sum_congr rfl
+  intro V hV
+  by_cases hd : Disjoint U V
+  · simp only [f, if_pos hd, maskedSecondSource]
+    exact tsum_mul_left
+  · simp [f, hd]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+
+/-- The dual row keeps its exact trace Gauss factor and signed divisor expansion. -/
+def maskedSecondDual (hp : ∀ i, p i ≠ 0)
+    (G U V : Finset ι) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) : ℂ :=
+  let ap : ↥((V \ U) ∪ (U \ V)) → O := fun i => p i.val
+  let ac := activePrimeRowCharacter p χ V U
+  let n := ∏ i, ap i
+  ((Y : ℂ)*primeRowTraceGauss ap (fun i => hp i.val) ac/(‖ringComplex n‖ ^ 2 : ℝ))*
+    ∑ E ∈ G.powerset,
+      ((-1 : ℂ) ^ E.card*primeCuspRowCharacter ap ac (∏ i ∈ E, p i)/
+        (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ))*
+        ∑' k : O, primeCuspRowCharacter ap (fun i => (ac i)⁻¹) k*
+          paperRadialFourier W (Y*‖ringComplex k‖ ^ 2/
+            (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2*‖ringComplex n‖ ^ 2))
+
+theorem masked_pair_second_poisson (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i})) (hχ : ∀ i, χ i ≠ 1)
+    (G U V : Finset ι) (hd : Disjoint U V)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    maskedSecondSource p χ G U V W Y = maskedSecondDual p χ hp G U V W Y := by
+  have hcop : Pairwise (Function.onFun IsCoprime p) := by
+    intro i j hij
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp
+      (Ideal.isCoprime_of_isMaximal (hinj.ne hij))
+  have hpair (z : O) : star (primeSubsetRow p χ V z)*primeSubsetRow p χ U z =
+      primeCuspRowCharacter (fun i : ↥((V \ U) ∪ (U \ V)) => p i.val)
+        (activePrimeRowCharacter p χ V U) z := by
+    rw [primeSubsetRow_pair_active,Finset.inter_eq_empty.mpr hd.symm]
+    simp only [primeCoprimeMask,Finset.prod_empty,one_mul]
+  unfold maskedSecondSource
+  simp_rw [hpair]
+  exact prime_row_trace_masked_poisson (fun i : ↥((V \ U) ∪ (U \ V)) => p i.val)
+    (fun i => hp i.val) (hinj.comp Subtype.val_injective) (activePrimeRowCharacter p χ V U)
+    (activePrimeRowCharacter_ne_one p χ hχ V U) p hp hcop G W Y hY
+
+/-- Exact second reflection after common-prime terms have been regrouped. -/
+theorem inputConjugateRow_smoothed_second_poisson (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i})) (hχ : ∀ i, χ i ≠ 1)
+    (F : Finset ι) (Ψ : O →* ℂ) (m c d : O) (H : Finset ι → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, W (‖ringComplex z‖ ^ 2/Y)*
+      (‖inputConjugateRow p χ F Ψ m c d H z‖ ^ 2 : ℝ)) =
+      ∑ G ∈ F.powerset, ∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset,
+        if Disjoint U V then overlapPairWeight p χ Ψ m c d H G U V*
+          maskedSecondDual p χ hp G U V W Y else 0 := by
+  rw [inputConjugateRow_smoothed_overlap p χ F Ψ m c d H W Y hY]
+  apply Finset.sum_congr rfl
+  intro G _
+  apply Finset.sum_congr rfl
+  intro U _
+  apply Finset.sum_congr rfl
+  intro V _
+  by_cases hd : Disjoint U V
+  · rw [if_pos hd,if_pos hd,masked_pair_second_poisson p χ hp hinj hχ G U V hd W Y hY]
+  · simp only [if_neg hd]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson CubicJacobi
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι]
+
+/-- Squaring the sextic row gives the actual cubic symbol of its prime product. -/
+lemma sexticRow_square_symbol (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (x : O) :
+    primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S x ^ 2 =
+      ringComplex (symbol x (∏ i ∈ S, p i)) := by
+  induction S using Finset.induction_on with
+  | empty => simp only [primeSubsetRow,Finset.prod_empty,one_pow,symbol_one,map_one]
+  | @insert i S hi ih =>
+    have hprime : complexSexticChar (Ideal.span {p i}) (hg i) (Ideal.Quotient.mk (Ideal.span {p i}) x) ^ 2 =
+        ringComplex (symbol x (p i)) := by
+      rw [←MulChar.pow_apply,(complexSexticChar_powers (Ideal.span {p i}) (hg i)).1]
+      rw [symbol,idealSymbol_prime _ (hg i)]
+      rfl
+    simpa only [primeSubsetRow,Finset.prod_insert hi,mul_pow,symbol_mul_denominator,map_mul,hprime]
+      using congrArg (fun z : ℂ => ringComplex (symbol x (p i))*z) ih
+
+lemma sexticRow_star_square (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (S : Finset ι) (x : O) :
+    star (primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S x ^ 2) =
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S x ^ 4 := by
+  simp only [primeSubsetRow,←Finset.prod_pow,star_prod]
+  apply Finset.prod_congr rfl
+  intro i _
+  let χ := complexSexticChar (Ideal.span {p i}) (hg i)
+  have he : (χ ^ 2)⁻¹ = χ ^ 4 := by
+    calc
+      _ = χ ^ 4*(χ ^ 6)⁻¹ := by group
+      _ = _ := by rw [(complexSexticChar_powers (Ideal.span {p i}) (hg i)).2.2,inv_one,mul_one]
+  rw [←MulChar.pow_apply,MulChar.star_apply',he,MulChar.pow_apply]
+
+/-- Normalized cubic Gauss coefficient with the inverse angular factor. -/
+def secondColumnCoefficient (p : ι → O) (S : Finset ι) : ℂ :=
+  star (ringComplex (∏ i ∈ S, p i)/(‖ringComplex (∏ i ∈ S, p i)‖ : ℂ))*
+    normalizedCubicUnitGauss (∏ i ∈ S, p i)
+
+lemma secondColumnCoefficient_norm_one (p : ι → O) (hp : ∀ i, Prime (p i))
+    (hprimary : ∀ i, lambda ^ 2 ∣ p i-1) (hcop : Pairwise (Function.onFun IsCoprime p))
+    (S : Finset ι) : ‖secondColumnCoefficient p S‖ = 1 := by
+  have hn : ‖ringComplex (∏ i ∈ S, p i)‖ ≠ 0 := norm_ne_zero_iff.mpr
+    (ringComplex_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => (hp i).ne_zero)))
+  rw [secondColumnCoefficient,norm_mul,norm_star,norm_div,Complex.norm_real,
+    Real.norm_of_nonneg (norm_nonneg _),div_self hn,
+    normalizedCubicUnitGauss_prime_product_norm S p (fun i _ => hp i) (fun i _ => hprimary i)
+      (fun i _ j _ hij => hcop hij),one_mul]
+
+/-- Cubic reciprocity makes the cross coefficient the fourth power of a sextic row. -/
+lemma secondColumnCoefficient_union (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hprimary : ∀ i, lambda ^ 2 ∣ p i-1) (hcop : Pairwise (Function.onFun IsCoprime p))
+    (S T : Finset ι) (hd : Disjoint S T) :
+    secondColumnCoefficient p (S ∪ T) = secondColumnCoefficient p S*secondColumnCoefficient p T*
+      primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) T (∏ i ∈ S, p i) ^ 4 := by
+  have ha : (∏ i ∈ S, p i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hb : (∏ i ∈ T, p i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hab : IsCoprime (∏ i ∈ S, p i) (∏ i ∈ T, p i) :=
+    IsCoprime.prod_left (fun i hi => IsCoprime.prod_right (fun j hj => hcop
+      (fun he => Finset.disjoint_left.mp hd hi (by simpa only [he] using hj))))
+  have hG := congrArg star (normalizedCubicUnitGauss_coprime_product _ _ ha hb
+    (primary_finset_product S p (fun i _ => hprimary i))
+    (primary_finset_product T p (fun i _ => hprimary i)) hab)
+  simp only [star_star,star_mul] at hG
+  rw [←sexticRow_square_symbol p hg T (∏ i ∈ S, p i),sexticRow_star_square p hg] at hG
+  simp only [secondColumnCoefficient,Finset.prod_union hd,map_mul,norm_mul,
+    Complex.ofReal_mul,div_eq_mul_inv,mul_inv_rev,star_mul]
+  rw [hG]
+  ring
 
 end SecondPassArithmetic
 

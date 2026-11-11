@@ -13,8 +13,13 @@ norm `n` the pole-free local factor `principalFactor` (the `rowH` form with `W =
   `‖H_v − 1‖ ≤ 80 n^{−363/200}`;
 * `differentiableOn_principalCorrectionC`: if `S` contains the primes of norm `≤ 160`, the
   product is holomorphic in each variable on the open region;
-* `principalFactor_residue`: at `w = 1`, `z = 1/6` the factor is the local factor
-  `h(x) = principalLocalFactor n (κ⁶) η(v) x` of the target correction.
+* `principalFactor_residue`, `principalCorrectionC_residue`: at `w = 1`, `z = 1/6` the factor is
+  the local factor `h(x) = principalLocalFactor n (κ⁶) η(v) x` of the target correction, so the
+  correction of the probe (`probeCorrection`) is the full principal correction with the phases
+  `A_v = κ_v⁶`;
+* `exists_probeCorrection_cutoff`, `exists_cutoff_zetaZeroAbscissa_le_of_probe_estimates`: the
+  probe's correction is holomorphic and nonvanishing on `Re s > σ ≥ 7/8` and bounded on
+  `Re s ≥ 2`, and the native endpoint holds with it.
 -/
 
 noncomputable section
@@ -318,5 +323,111 @@ theorem principalCorrectionC_residue (S : Finset (HeightOneSpectrum O))
     field_simp
 
 end Global
+
+/-! ### The correction of the probe: the properties of the continuation step -/
+
+/-- The signal reads its kernel only on its line. -/
+theorem signal_congr_line {G G' : ℂ → ℂ} {c : ℝ} (h : ∀ s : ℂ, s.re = c → G s = G' s) :
+    signal G c = signal G' c := by
+  unfold signal mellinInv
+  funext Z
+  congr 1
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  simp only
+  rw [h]
+  simp
+
+section Probe
+
+variable (𝔪 : Modulus K) (η : HeckeCharacter 𝔪)
+
+/-- **The correction of the probe target**: the continued principal correction at the double
+residue, times the deleted Euler factors of `S`. -/
+def probeCorrection (S : Finset (HeightOneSpectrum O)) (s : ℂ) : ℂ :=
+  principalCorrectionC 𝔪 η S s 1 (1 / 6) * deletedEulerFactors 𝔪 η S s
+
+/-- On `Re s ≥ 7/8` the probe correction is the full principal correction with the phases
+`A_v = κ_v⁶`. -/
+theorem probeCorrection_eq (S : Finset (HeightOneSpectrum O))
+    (hS : ∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ 160 → v ∈ S) {s : ℂ}
+    (hs : 7 / 8 ≤ s.re) :
+    probeCorrection 𝔪 η S s =
+      fullPrincipalCorrection 𝔪 η (fun v => primeKappaAt 𝔪 η v ^ 6) S s := by
+  unfold probeCorrection fullPrincipalCorrection
+  rw [principalCorrectionC_residue 𝔪 η S hS hs]
+
+end Probe
+
+/-- **A118b for the probe.** For `7/8 ≤ σ` there is `N₀ ≥ 160` such that, for every `S` containing
+the primes of norm `≤ N₀` and every ray class character `η` of `ℚ(ζ₃)`, the correction of the
+probe is holomorphic and nonvanishing on `Re s > σ` and bounded by `3/2 (4/3)^{|S|}` on
+`Re s ≥ 2`. -/
+theorem exists_probeCorrection_cutoff {σ : ℝ} (hσ : 7 / 8 ≤ σ) :
+    ∃ N₀ : ℕ, 160 ≤ N₀ ∧ ∀ S : Finset (HeightOneSpectrum O),
+      (∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ N₀ → v ∈ S) →
+      ∀ (𝔪 : Modulus K) (η : HeckeCharacter 𝔪),
+        DifferentiableOn ℂ (probeCorrection 𝔪 η S) {s : ℂ | σ < s.re} ∧
+          (∀ s : ℂ, σ < s.re → probeCorrection 𝔪 η S s ≠ 0) ∧
+          ∀ s : ℂ, 2 ≤ s.re → ‖probeCorrection 𝔪 η S s‖ ≤ 3 / 2 * (4 / 3) ^ S.card := by
+  obtain ⟨N₀, -, hcut⟩ := exists_fullPrincipalCorrection_cutoff (K := K) (by linarith : 2 / 3 < σ)
+  refine ⟨max N₀ 160, le_max_right _ _, fun S hS 𝔪 η => ?_⟩
+  have hS0 : ∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ N₀ → v ∈ S := fun v h =>
+    hS v (h.trans (le_max_left _ _))
+  have hS160 : ∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ 160 → v ∈ S := fun v h =>
+    hS v (h.trans (le_max_right _ _))
+  obtain ⟨hd, hne, hb⟩ := hcut S hS0 𝔪 η (fun v => primeKappaAt 𝔪 η v ^ 6)
+    (fun v => pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v))
+  refine ⟨hd.congr fun s hs => probeCorrection_eq 𝔪 η S hS160 (by
+      have : σ < s.re := hs
+      linarith), fun s hs => ?_, fun s hs => ?_⟩
+  · rw [probeCorrection_eq 𝔪 η S hS160 (by linarith)]
+    exact hne s hs
+  · rw [probeCorrection_eq 𝔪 η S hS160 (by linarith)]
+    exact hb s hs
+
+/-- **The native endpoint with the probe's own correction.** For `7/8 ≤ σ₀ < 1` there is `N₀` such
+that, for every `S` containing the primes of norm `≤ N₀`: if, whenever all Hecke `L`-functions of
+`ℚ(ζ₃)` are zero-free in `Re s > β`, every ray class character `η` has a sum with a direct bound
+`Z^{a₁}` and a comparison `Z^{a₂}` with the signal of `exp((s − c)²) H_η(s)/L(s, η)`, `H_η` the
+correction of the probe, `a₁, a₂ < β`, then `zetaZeroAbscissa ≤ σ₀`. -/
+theorem exists_cutoff_zetaZeroAbscissa_le_of_probe_estimates {σ₀ : ℝ} (hσ₀ : σ₀ < 1)
+    (h78 : 7 / 8 ≤ σ₀) :
+    ∃ N₀ : ℕ, ∀ S : Finset (HeightOneSpectrum O),
+      (∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ N₀ → v ∈ S) →
+      ∀ c : ℝ,
+        (∀ β : ℝ, σ₀ < β → β ≤ 1 →
+          (∀ (η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) (ρ : ℂ), β < ρ.re → ρ ≠ 1 →
+            heckeLFunction η.1 η.2 ρ ≠ 0) →
+          ∃ a₁ a₂ : ℝ, a₁ < β ∧ a₂ < β ∧
+            ∀ η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫,
+              ∃ (J : ℝ → ℂ) (C Z₀ : ℝ), 1 ≤ Z₀ ∧
+                (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ C * Z ^ a₁) ∧
+                (∀ Z : ℝ, Z₀ ≤ Z →
+                  ‖J Z - signal (fun s : ℂ => cexp ((s - c) ^ 2) *
+                    probeCorrection η.1 η.2 S s / heckeLFunction η.1 η.2 s) 2 Z‖ ≤
+                      C * Z ^ a₂)) →
+        zetaZeroAbscissa ≤ σ₀ := by
+  obtain ⟨N₀, hN₀⟩ := exists_cutoff_zetaZeroAbscissa_le_of_two_estimates (K := K) hσ₀
+    (by linarith)
+  refine ⟨max N₀ 160, fun S hS c hstep => ?_⟩
+  have hS160 : ∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ 160 → v ∈ S := fun v h =>
+    hS v (h.trans (le_max_right _ _))
+  refine hN₀ S (fun v h => hS v (h.trans (le_max_left _ _))) c
+    (fun η v => primeKappaAt η.1 η.2 v ^ 6)
+    (fun η v => pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le η.1 η.2 v)) ?_
+  intro β hβ hβ1 hzero
+  obtain ⟨a₁, a₂, ha₁, ha₂, hη⟩ := hstep β hβ hβ1 hzero
+  refine ⟨a₁, a₂, ha₁, ha₂, fun η => ?_⟩
+  obtain ⟨J, C, Z₀, hZ₀, h1, h2⟩ := hη η
+  refine ⟨J, C, Z₀, hZ₀, h1, fun Z hZ => ?_⟩
+  have hsig : signal (fun s : ℂ => cexp ((s - c) ^ 2) *
+      fullPrincipalCorrection η.1 η.2 (fun v => primeKappaAt η.1 η.2 v ^ 6) S s /
+        heckeLFunction η.1 η.2 s) 2 =
+      signal (fun s : ℂ => cexp ((s - c) ^ 2) * probeCorrection η.1 η.2 S s /
+        heckeLFunction η.1 η.2 s) 2 :=
+    signal_congr_line fun s hs => by
+      rw [probeCorrection_eq η.1 η.2 S hS160 (by rw [hs]; norm_num)]
+  rw [hsig]
+  exact h2 Z hZ
 
 end GaloisForLFunctions.FamilyContinuationTheory

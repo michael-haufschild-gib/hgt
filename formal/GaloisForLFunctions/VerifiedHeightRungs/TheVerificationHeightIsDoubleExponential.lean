@@ -4,9 +4,9 @@ import GaloisForLFunctions.VerifiedHeightRungs.LocalSamplingFromVerifiedZeros
 # The verification height is double exponential
 
 **Theorem** (`exists_doubleExp_windowPositive`). There is `C` such that for every `a ≥ 1`, RH verified through
-`exp(exp(C a^{4/3}))` makes the Weil form of `ζ` nonnegative on every `C²` test supported in `[−a, a]`.
+`exp(exp(C a))` makes the Weil form of `ζ` nonnegative on every `C²` test supported in `[−a, a]`.
 
-With `u = a^{4/3}` and `Λ = exp(C₃ u)`: the width is `Y = κu`, the floor `t_* = e^{O(u)}`, and `log T₁, log D₀ = O(e^a)`
+With `Λ = exp(C₃ a)`: the width is `Y = 36·48⁴ κ a`, the floor `t_* = e^{O(a)}`, and `log T₁, log D₀ = O(e^a)`
 (`T₁ = 4 exp(10 + 68e^{a+2} + 2π)`), so the number of nodes is `m ≤ Λ`, the Lagrange constant `K ≤ e^{72Λ}`, the
 radius `R ≤ e^{612Λ}`, `1/b ≤ e^{1985Λ}`, and `spreadHeight a = max(R + e^Y + 1, C_a b^{−8}) ≤ e^{e^{10}Λ}`.
 -/
@@ -115,25 +115,23 @@ theorem log_term_le {a : ℝ} (ha : 1 ≤ a) :
 
 /-- **The size of the height of local sampling.** -/
 theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
-    spreadHeight a ≤ Real.exp (Real.exp (C * a ^ ((4 : ℝ) / 3))) := by
-  have hκ1 := one_le_spreadKappa
-  have hCf : 0 ≤ spreadFloorC := by
-    unfold spreadFloorC
-    have := spreadTailC_nonneg
-    have := gapEnergy_pos
-    have := Real.sqrt_nonneg (20480 * π * gapEnergy * (2 + spreadVarC) / (3 * gapMass ^ 2))
-    positivity
-  obtain ⟨C₁, hC₁⟩ : ∃ C₁, C₁ = spreadFloorC * spreadKappa + 2 * spreadKappa := ⟨_, rfl⟩
-  have hC₁0 : 2 ≤ C₁ := by rw [hC₁]; nlinarith only [hCf, hκ1]
+    spreadHeight a ≤ Real.exp (Real.exp (C * a)) := by
+  obtain ⟨κY, hκY⟩ : ∃ κY : ℝ, κY = 36 * 48 ^ 4 * spreadKappa := ⟨_, rfl⟩
+  have hκ1 : 1 ≤ κY := by rw [hκY]; nlinarith only [one_le_spreadKappa]
+  have hCf : 0 ≤ spreadFloorC := le_trans spreadFloorC_ge.2.2 spreadFloorC_ge.2.1
+  obtain ⟨C₁, hC₁⟩ : ∃ C₁, C₁ = spreadFloorC * κY + 2 * κY + 2 := ⟨_, rfl⟩
+  have hCκ : 0 ≤ spreadFloorC * κY := mul_nonneg hCf (zero_le_one.trans hκ1)
+  have hC₁0 : 2 ≤ C₁ := by rw [hC₁]; linarith only [hCκ, hκ1]
   refine ⟨C₁ + 31, fun a ha => ?_⟩
   have ha0 : 0 < a := by linarith only [ha]
-  obtain ⟨u, hu⟩ : ∃ u, u = a ^ ((4 : ℝ) / 3) := ⟨_, rfl⟩
-  have hau : a ≤ u := by
-    rw [hu]
-    calc a = a ^ (1 : ℝ) := (Real.rpow_one a).symm
-      _ ≤ a ^ ((4 : ℝ) / 3) := Real.rpow_le_rpow_of_exponent_le ha (by norm_num)
+  obtain ⟨u, hu⟩ : ∃ u, u = a := ⟨_, rfl⟩
+  have hau : a ≤ u := hu.ge
   have hu1 : 1 ≤ u := ha.trans hau
-  have hY : spreadY a = spreadKappa * u := by rw [spreadY, hu]
+  have hY : spreadY a = κY * u := by rw [spreadY_eq ha0, hκY, hu]
+  have h4e : (4 : ℝ) ≤ Real.exp 2 := by
+    have h := rpow27_le_exp 2
+    norm_num at h ⊢
+    linarith only [h]
   obtain ⟨Λ, hΛ⟩ : ∃ Λ, Λ = Real.exp ((C₁ + 21) * u) := ⟨_, rfl⟩
   have hΛ1 : 1 ≤ Λ := by rw [hΛ]; exact Real.one_le_exp (by nlinarith only [hC₁0, hu1])
   have hΛ0 : 0 < Λ := by linarith only [hΛ1]
@@ -148,15 +146,21 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     have hfl : spreadFloor a + Real.exp (2 * spreadY a) ≤ 2 * Real.exp (C₁ * u) := by
       unfold spreadFloor
       rw [hY]
-      have h1 : Real.exp (spreadFloorC * (spreadKappa * u)) ≤ Real.exp (C₁ * u) :=
-        Real.exp_le_exp.2 (by rw [hC₁]; nlinarith only [hκ1, hu1])
-      have h2 : Real.exp (2 * (spreadKappa * u)) ≤ Real.exp (C₁ * u) := by
-        have h3 : 2 * spreadKappa ≤ C₁ := by
-          rw [hC₁]
-          have := mul_nonneg hCf (zero_le_one.trans hκ1)
-          linarith only [this]
-        have h4 := mul_le_mul_of_nonneg_right h3 (zero_le_one.trans hu1)
-        exact Real.exp_le_exp.2 (by linarith only [h4])
+      have hCu : spreadFloorC * (κY * u) + 2 ≤ C₁ * u := by
+        have e : C₁ * u = spreadFloorC * (κY * u) + 2 * κY * u + 2 * u := by rw [hC₁]; ring
+        rw [e]
+        nlinarith only [hκ1, hu1]
+      have h1 : 4 * Real.exp (spreadFloorC * (κY * u)) ≤ Real.exp (C₁ * u) := by
+        calc 4 * Real.exp (spreadFloorC * (κY * u)) ≤ Real.exp 2 * Real.exp (spreadFloorC * (κY * u)) :=
+              mul_le_mul_of_nonneg_right h4e (Real.exp_pos _).le
+          _ = Real.exp (spreadFloorC * (κY * u) + 2) := by rw [← Real.exp_add]; ring_nf
+          _ ≤ _ := Real.exp_le_exp.2 hCu
+      have h2 : Real.exp (2 * (κY * u)) ≤ Real.exp (C₁ * u) := by
+        refine Real.exp_le_exp.2 ?_
+        have e : C₁ * u = spreadFloorC * (κY * u) + 2 * (κY * u) + 2 * u := by rw [hC₁]; ring
+        rw [e]
+        have := mul_nonneg hCf (mul_nonneg (zero_le_one.trans hκ1) (zero_le_one.trans hu1))
+        linarith only [this, hu1]
       linarith only [h1, h2]
     have hc : (9 : ℝ) * 48 ^ 4 * 2 ≤ Real.exp 19 := by
       have h := rpow27_le_exp 19
@@ -245,10 +249,15 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
   have hfloor : spreadFloor a ≤ Real.exp Λ := by
     unfold spreadFloor
     rw [hY]
-    refine Real.exp_le_exp.2 ?_
-    have h1 : spreadFloorC * (spreadKappa * u) ≤ (C₁ + 21) * u := by rw [hC₁]; nlinarith only [hκ1, hu1, hCf]
+    have h1 : spreadFloorC * (κY * u) + 2 ≤ (C₁ + 21) * u := by
+      have e : (C₁ + 21) * u = spreadFloorC * (κY * u) + 2 * κY * u + 23 * u := by rw [hC₁]; ring
+      rw [e]
+      nlinarith only [hκ1, hu1]
     have h2 : (C₁ + 21) * u ≤ Λ := by rw [hΛ]; have := Real.add_one_le_exp ((C₁ + 21) * u); linarith only [this]
-    linarith only [h1, h2]
+    calc 4 * Real.exp (spreadFloorC * (κY * u)) ≤ Real.exp 2 * Real.exp (spreadFloorC * (κY * u)) :=
+          mul_le_mul_of_nonneg_right h4e (Real.exp_pos _).le
+      _ = Real.exp (spreadFloorC * (κY * u) + 2) := by rw [← Real.exp_add]; ring_nf
+      _ ≤ _ := Real.exp_le_exp.2 (by linarith only [h1, h2])
   have hT₁ : winT₁ a ≤ Real.exp (610 * Λ) :=
     (winT₁_le ha).trans (Real.exp_le_exp.2 (by nlinarith only [heaΛ]))
   have hD₀ : winD₀ a ≤ Real.exp (1300 * Λ) :=
@@ -334,11 +343,10 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     have h1 : Real.exp (spreadY a) ≤ Real.exp (612 * Λ) := by
       refine Real.exp_le_exp.2 ?_
       rw [hY]
-      have h2 : spreadKappa * u ≤ (C₁ + 21) * u := by
-        have h4 : spreadKappa ≤ C₁ + 21 := by
+      have h2 : κY * u ≤ (C₁ + 21) * u := by
+        have h4 : κY ≤ C₁ + 21 := by
           rw [hC₁]
-          have := mul_nonneg hCf (zero_le_one.trans hκ1)
-          linarith only [this, hκ1]
+          linarith only [hCκ, hκ1]
         exact mul_le_mul_of_nonneg_right h4 (zero_le_one.trans hu1)
       have h3 : (C₁ + 21) * u ≤ Λ := by
         rw [hΛ]; have := Real.add_one_le_exp ((C₁ + 21) * u); linarith only [this]
@@ -361,16 +369,17 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     linarith only [h]
   calc 15913 * Λ ≤ Real.exp 10 * Λ := mul_le_mul_of_nonneg_right h1 hΛ0.le
     _ = Real.exp (10 + (C₁ + 21) * u) := by rw [hΛ, Real.exp_add]
-    _ ≤ Real.exp ((C₁ + 31) * a ^ ((4 : ℝ) / 3)) := Real.exp_le_exp.2 (by rw [← hu]; nlinarith only [hu1])
+    _ ≤ Real.exp ((C₁ + 31) * a) := Real.exp_le_exp.2 (by rw [← hu]; nlinarith only [hu1])
 
 /-- RH verified through a height is verified through every lower height. -/
 theorem rhVerifiedThrough_mono {T T' : ℝ} (h : RHVerifiedThrough T') (hT : T ≤ T') : RHVerifiedThrough T :=
   fun _ hxi h0 h1 hpos hle => h hxi h0 h1 hpos (hle.trans hT)
 
 /-- **A double-exponential verification height.** There is `C` such that RH verified through
-`exp(exp(C a^{4/3}))` makes the Weil form of `ζ` nonnegative on every `C²` test supported in `[−a, a]`, `a ≥ 1`. -/
+`exp(exp(C a))` makes the Weil form of `ζ` nonnegative on every `C²` test supported in `[−a, a]`, `a ≥ 1`:
+`log log H(a) = O(a)`. -/
 theorem exists_doubleExp_windowPositive : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
-    RHVerifiedThrough (Real.exp (Real.exp (C * a ^ ((4 : ℝ) / 3)))) →
+    RHVerifiedThrough (Real.exp (Real.exp (C * a))) →
       WindowVisibilityLaw.WindowPositiveAt zetaZeroConfig a := by
   obtain ⟨C, hC⟩ := spreadHeight_le
   exact ⟨C, fun a ha hRH f hf hfs => re_W_nonneg_of_rhVerifiedThrough_spread ha le_rfl

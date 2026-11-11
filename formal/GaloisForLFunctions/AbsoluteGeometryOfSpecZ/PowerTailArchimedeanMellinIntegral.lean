@@ -79,7 +79,7 @@ private theorem integral_jetMellinTerm {a : ℝ} (ha1 : a < 1) (n : ℕ) :
   have hd2 : (n : ℝ) + 1 / 2 ≠ 0 := by positivity
   have hd3 : 2 * (n : ℝ) - a + 1 ≠ 0 := by linarith only [ha1, hn]
   have hd4 : 2 * (n : ℝ) + 1 ≠ 0 := by positivity
-  field_simp
+  field_simp [hd1, hd2, hd3, hd4]
   ring
 
 private theorem hasSum_jetMellinTerm {a t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) 1) :
@@ -142,7 +142,7 @@ theorem ofReal_integral_powerTailJetProfile {a : ℝ} (ha : 0 < a) (ha1 : a < 1)
     have h1 : 1 - t ≠ 0 := by linarith only [ht.2]
     have h2 : 1 + t ≠ 0 := by linarith only [ht.1]
     have h3 : 1 - t ^ 2 ≠ 0 := by nlinarith only [ht.1, ht.2]
-    field_simp
+    field_simp [h1, h2, h3]
     ring
   have hdiff : (∫ t in (0 : ℝ)..1, powerTailJetProfile a t) - Real.log 2 =
       ∫ t in Set.Ioo (0 : ℝ) 1, 2 * (t ^ (-a) - 1) / (1 - t ^ 2) := by

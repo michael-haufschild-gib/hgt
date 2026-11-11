@@ -65,18 +65,18 @@ theorem powerTailCombMellinIntegral_eq_zeroPairing_of_add_width_lt_half
           ((∫ t in Set.Ioc (0 : ℝ) 1, powerTailReferenceProfile a t : ℝ) : ℂ)) := by
     rw [powerTailCombMellinIntegral]
     push_cast
-    field_simp
+    field_simp [hθ]
     ring
   rw [hprime, href, harch] at hsplit
   have hmain : (1 - 2 * (a : ℂ)) * (powerTailCombMellinIntegral a : ℂ) =
       2 * logDeriv _root_.RHTower.xi (1 - (a : ℂ)) := by
     rw [hsplit, hxi]
     have hsub : 1 - (a : ℂ) - 1 ≠ 0 := sub_ne_zero.mpr hs1
-    field_simp
+    field_simp [ha0, hs0, hsub, hζ]
     ring
   apply (mul_left_cancel₀ hθ)
   rw [powerTailZeroPairing_eq_logDeriv ha2, hmain]
-  field_simp
+  field_simp [hθ]
 
 /-- The literal power comb converges to its zero pairing throughout the
 strict range determined by the actual zero width. -/
