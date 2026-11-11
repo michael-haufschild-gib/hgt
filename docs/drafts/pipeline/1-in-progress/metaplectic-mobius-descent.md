@@ -3,20 +3,22 @@
 - **ID:** metaplectic-mobius-descent
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
-- **Statement:** Sextic Poisson transformation converts ideal Möbius coefficients over the Eisenstein integers into cubic theta coefficients; a second transformation may close a contracting mean-square descent.
+- **Statement:** Prove zeta nonvanishing for `Re s > 7/8` and the reflected zero strip, through the actual Eisenstein character families and both stages of the OpenAI argument.
 
 ## Target
 
-Prove an unconditional source estimate beyond absolute convergence. The candidate external estimate is
+Prove `riemannZeta s ≠ 0` for `7/8 < s.re`, then reflect to place
+nontrivial zeros in `1/8 ≤ Re s ≤ 7/8`.
+
+The shared analytic core requires the uniform mean-square bound
 `Σ_{0<N(u)≤D^(1+θ)} |Σ_n μ_K(n)(u/n)_6 W(N(n)/D)|² ≪ D^(2+θ+ε)`
-for every fixed `θ, ε > 0` and smooth compactly supported `W`, with columns
-indexed by primary generators outside a fixed finite set of exceptional
-prime ideals. Sixth-power
-rows retain `gcd(n,b)=1`; averaging over `b` produces the totient-weighted
-coefficient `μ_K(n)φ(n)/N(n)` and the `11/12` exponent. The external final
-bridge uses its corrected Euler product and Mellin continuation to exclude
-zeta zeros. It does not identify ideal Möbius sums with rational-integer
-Möbius sums. Neither the estimate nor this full bridge is established locally.
+for fixed `θ, ε > 0`, retaining exceptional-prime coprimality masks.
+The balanced first stage reaches `11/12`. The `7/8` stage additionally requires
+prime compensation, asymmetric scales, marked inverse moments, centered plain
+moments, and the resulting zero-detector row counts. Its normalized Mellin
+signal uses `s − 11/16`, whereas the first stage uses `s − 2/3`.
+Neither the shared mean-square estimate nor the second-stage moment bounds
+are established locally.
 
 ## Arithmetic mechanism to audit
 
@@ -28,7 +30,7 @@ Möbius sums. Neither the estimate nor this full bridge is established locally.
 
 ## Status and sources
 
-The global mean-square estimate has no local dependency-closed proof. Corpus searches found no matching source estimate. External endpoints and their transitive analytic dependencies require audit before reuse.
+The global mean-square estimate has no local dependency-closed proof. Corpus searches found no matching source estimate. The OpenAI endpoint is `OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re`, assembled through `SevenEighths.ProbeFinalAssemblyUnconditional.zeta_nonzero` and the two moment inductions.
 
 The [frontier review](../../../reports/review-0711/route-obstacles.md)
 separates classical cubic spectral theory (A33) from the cancellation
@@ -463,6 +465,7 @@ open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`
 component allowed by the prime recurrences alone.
 The arithmetic conversion alone proves no mean-square cancellation estimate.
 
-- [OpenAI, The Quasi-Riemann Hypothesis, §§4–7 and Appendix A](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/paper2.pdf).
+- [OpenAI, The Quasi-Riemann Hypothesis: Re s > 7/8](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-September-30-2026/paper.pdf): balanced first stage, then compensated second stage.
+- [OpenAI Lean endpoint](https://github.com/openai/math/blob/main/lean/OAI/NumberTheory/DirichletL/Nonvanishing.lean).
 - [Kontorovich development](https://github.com/AlexKontorovich/quasi-rh/tree/d26d846d6f3129017f06b6fd3f78dd72d361d60b): `ElevenTwelfths.Unconditional.riemannZeta_ne_zero_of_re_gt_elevenTwelfths` is an advertised unconditional endpoint; not locally checked.
 - [Rubinstein's guide](https://www.math.uwaterloo.ca/~mrubinst/quasi_rh_notes/zeta_11_12_guide.pdf), §8, explicitly separates transfer estimates from the final induction.

@@ -74,6 +74,19 @@ theorem summable_norm_geom_from (a c V : ℂ) (hV : ‖V‖ < 1) :
   exact ((summable_geometric_of_lt_one (norm_nonneg _) hV).comp_injective
     (add_left_injective 1)).mul_left _
 
+
+/-- A point mass under a side condition. -/
+theorem hasSum_point_and (i₀ : ℕ) (P : Prop) [Decidable P] (a : ℂ) :
+    HasSum (fun i : ℕ => if i = i₀ ∧ P then a else 0) (if P then a else 0) := by
+  convert hasSum_point i₀ (if P then a else 0) using 1
+  funext i
+  by_cases hi : i = i₀ <;> by_cases hP : P <;> simp [hi, hP]
+
+theorem summable_norm_point_and (i₀ : ℕ) (P : Prop) [Decidable P] (a : ℂ) :
+    Summable (fun i : ℕ => ‖if i = i₀ ∧ P then a else 0‖) := by
+  refine summable_of_ne_finset_zero (s := {i₀}) fun i hi => ?_
+  rw [if_neg (fun h => by simp [h.1] at hi), norm_zero]
+
 /-- **A geometric block.** If `φ` has sum `Φ` with summable norms and `‖R‖ < 1`, the double
 series `Σ_{r ≤ m} R^r φ(m − r)` has sum `(1 − R)⁻¹ Φ`. -/
 theorem hasSum_block {φ : ℕ → ℂ} {Φ R : ℂ} (hφ : HasSum φ Φ) (hφn : Summable fun i => ‖φ i‖)
@@ -122,9 +135,7 @@ theorem blockMap_injective (b : Option (Fin 2 × Fin 2 × Fin 2)) :
     rw [h.1, h.2]
   · rintro ⟨a, c⟩ ⟨a', c'⟩ h
     simp only [blockMap, Prod.mk.injEq, true_and, add_right_inj] at h
-    ext
-    · omega
-    · exact h.2.2
+    ext <;> omega
 
 theorem blockMap_disjoint {b b' : Option (Fin 2 × Fin 2 × Fin 2)} (hne : b ≠ b') :
     Disjoint (Set.range (blockMap b)) (Set.range (blockMap b')) := by
@@ -133,7 +144,7 @@ theorem blockMap_disjoint {b b' : Option (Fin 2 × Fin 2 × Fin 2)} (hne : b ≠
   rcases b with _ | ⟨e, p, k⟩ <;> rcases b' with _ | ⟨e', p', k'⟩
   · exact hne rfl
   · fin_cases e' <;> fin_cases p' <;> fin_cases k' <;>
-      simp [blockMap, blockBase, Prod.ext_iff] at h <;> omega
+      simp [blockMap, blockBase, Prod.ext_iff] at h
   · fin_cases e <;> fin_cases p <;> fin_cases k <;>
       simp [blockMap, blockBase, Prod.ext_iff] at h <;> omega
   · fin_cases e <;> fin_cases p <;> fin_cases k <;> fin_cases e' <;> fin_cases p' <;>
@@ -152,7 +163,12 @@ theorem exists_blockMap (v : Fin 2 × ℕ × ℕ × ℕ) (hv : ((v.1 : ℕ) = 0 
       ((l - blockBase e ⟨l % 2, Nat.mod_lt _ (by norm_num)⟩) / 2, m), ?_⟩
     simp only [blockMap, Prod.mk.injEq, true_and, and_true]
     unfold blockBase
-    fin_cases e <;> simp at h0 ⊢ <;> split_ifs with h <;> simp at h ⊢ <;> omega
+    split_ifs with h
+    · have h1 : l % 2 = 0 := by simpa [Fin.ext_iff] using h.2
+      have h2 : l ≠ 0 := fun hl => h0 ⟨by rw [h.1]; rfl, hl⟩
+      omega
+    · simp only [Fin.val_mk]
+      omega
 
 section Prime
 
@@ -881,6 +897,106 @@ theorem localTerm_D1 (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j i
       (-(κ ^ 4 * X ^ 4 * Y * c ^ 3 * (ε ^ 4 + ε ^ 2 + 1))) * hε + (-(κ ^ 4 * X ^ 4 * Y)) * hc3
   · rw [if_neg (by omega), if_neg hcnd]
     simp
+
+/-! ### The local identity -/
+
+/-- The sums of the base terms of the eight families `(e, l mod 2, k)`. -/
+def baseSum (ηp X Y V : ℂ) (u : O) (j : ℕ) (e p k : Fin 2) : ℂ :=
+  if e = 0 then
+    if p = 0 then
+      (if k = 0 then
+        (if j = 5 then -(primeKappa π ηp ^ 6 * primeQ π ^ 3 * X ^ 6) else 0) +
+          primeR π ηp X V * (1 - (primeQ π)⁻¹) * (1 - V)⁻¹
+      else if j = 0 then
+        complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y * primeR π ηp X V
+      else 0)
+    else
+      (if k = 0 then
+        (if j = 2 then primeKappa π ηp ^ 3 *
+          (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
+            primeNorm π ^ 3 * X ^ 3 else 0)
+      else if j = 3 then -(ηp * (primeKappa π ηp ^ 2 *
+        conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) *
+          (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 2)⁻¹ *
+            primeQ π ^ 2 * X ^ 3 * Y) else 0)
+  else
+    if p = 0 then
+      (if k = 0 then
+        (if j = 0 then
+          -(ηp * (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u))⁻¹ * X) else 0)
+      else if 2 ≤ j then -(ηp * (primeQ π - 1) * X * Y) * (1 - V)⁻¹
+      else (if j = 1 then ηp * X * Y else 0) + -(ηp * (primeQ π - 1) * X * Y) * V * (1 - V)⁻¹)
+    else
+      (if k = 0 then
+        (if j = 3 then (primeKappa π ηp ^ 2 *
+          conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4))) ^ 2 *
+            (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 4)⁻¹ *
+              primeQ π ^ 2 * X ^ 4 else 0)
+      else if j = 4 then -(ηp * primeKappa π ηp ^ 3 *
+        (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ 3)⁻¹ *
+          primeNorm π ^ 5 * X ^ 4 * Y) else 0)
+
+include h2 hprim in
+/-- The base series of each family has its sum, with summable norms. -/
+theorem hasSum_base (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : ℕ} (hj : j < 6)
+    (hV : ‖V‖ < 1) (e p k : Fin 2) :
+    HasSum (fun i => localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i))
+        (baseSum π hlam ηp X Y V u j e p k) ∧
+      Summable (fun i => ‖localTerm π ηp X Y V u j (e, blockBase e p, (k : ℕ), i)‖) := by
+  fin_cases e <;> fin_cases p <;> fin_cases k
+  · simp only [blockBase, baseSum]
+    simp only [Fin.zero_eta, Fin.isValue, and_self, ↓reduceIte, Fin.val_zero]
+    simp only [localTerm_A0 π hlam h2 hprim ηp X Y V hu hj]
+    exact ⟨hasSum_shift_geom _ _ V hV, summable_norm_shift_geom _ _ V hV⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.zero_eta, Fin.isValue, and_self, ↓reduceIte, Fin.mk_one, Fin.val_one,
+      one_ne_zero]
+    simp only [localTerm_A1 π hlam h2 hprim ηp X Y V hu hj]
+    exact ⟨hasSum_point_and 1 _ _, summable_norm_point_and 1 _ _⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.val_one, one_ne_zero, and_false,
+      ↓reduceIte, Fin.val_zero]
+    simp only [localTerm_C0 π hlam h2 hprim ηp X Y V hu]
+    exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, Fin.val_one, one_ne_zero, and_false,
+      ↓reduceIte]
+    simp only [localTerm_C1 π hlam h2 hprim ηp X Y V hu]
+    exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte,
+      Fin.val_zero]
+    simp only [localTerm_B0 π hlam h2 hprim ηp X Y V hu]
+    exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte,
+      Fin.val_zero, Fin.val_one]
+    simp only [localTerm_B1 π hlam h2 hprim ηp X Y V hu]
+    by_cases h2j : 2 ≤ j
+    · simp only [h2j, or_true, ↓reduceIte]
+      refine ⟨(hasSum_geometric_of_norm_lt_one hV).mul_left _, ?_⟩
+      simp only [norm_mul, norm_pow]
+      exact (summable_geometric_of_lt_one (norm_nonneg _) hV).mul_left _
+    · simp only [h2j, or_false, ↓reduceIte]
+      have hfun : (fun i : ℕ => if 1 ≤ i then -(ηp * (primeQ π - 1) * X * Y * V ^ i)
+          else if j = 1 then ηp * X * Y else 0) = fun i : ℕ => if i = 0 then
+            (if j = 1 then ηp * X * Y else 0) else -(ηp * (primeQ π - 1) * X * Y) * V ^ i := by
+        funext i
+        rcases Nat.eq_zero_or_pos i with rfl | hi
+        · simp
+        · rw [if_pos hi, if_neg (by omega)]
+          ring
+      rw [hfun]
+      exact ⟨hasSum_geom_from _ _ V hV, summable_norm_geom_from _ _ V hV⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte, Fin.val_one,
+      Fin.val_zero]
+    simp only [localTerm_D0 π hlam h2 hprim ηp X Y V hu]
+    exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
+  · simp only [blockBase, baseSum]
+    simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte, Fin.val_one]
+    simp only [localTerm_D1 π hlam h2 hprim ηp X Y V hu]
+    exact ⟨hasSum_point_and 0 _ _, summable_norm_point_and 0 _ _⟩
 
 end Prime
 

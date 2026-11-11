@@ -20,7 +20,7 @@ starts above `y = ⌈T⌉`, and the support ends at `Xy ≤ T⁶`; the two terms
 are then `T^{2(1−σ)}` and `T^{12(1−σ)}`.
 -/
 
-open Complex Finset RHTower.Sieve
+open Complex Finset RHTower RHTower.Sieve
 
 namespace GaloisForLFunctions.ShortIntervalPrimesInProgressions
 
@@ -323,7 +323,11 @@ theorem detection_parameters {q : ℕ} (hq : 1 ≤ q) {T : ℝ} (hT : 2050 * (q 
   refine ⟨hy1, hyT, le_trans hy1 hyX, hyX, by show A ^ 2 ≤ (X : ℝ) + 1; linarith, ?_, ?_⟩
   · have hX2 : (2 : ℝ) ≤ X := by
       have : (2 : ℝ) ≤ A ^ 2 := by
-        have : (2 : ℝ) ≤ A := by rw [hA]; nlinarith
+        have : (2 : ℝ) ≤ A := by
+          have h1 : (2 : ℝ) ≤ 4 * q * (2 * T + 3) := by nlinarith
+          have hy1' : (1 : ℝ) ≤ y := by exact_mod_cast hy1
+          rw [hA]
+          nlinarith [mul_le_mul h1 hy1' zero_le_one (by linarith)]
         nlinarith
       linarith
     have : (2 : ℝ) ≤ ((X * y : ℕ) : ℝ) := by
@@ -363,6 +367,199 @@ theorem natLog_two_le_two_mul_log {n : ℕ} (hn : 1 ≤ n) :
   have h4 : (1 / 2 : ℝ) ≤ Real.log 2 := by
     have := Real.log_two_gt_d9; linarith
   nlinarith [Nat.cast_nonneg (α := ℝ) (Nat.log 2 n)]
+
+/-! ### Zeros, classes and the count -/
+
+variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
+
+/-- Zeros of `Λ(s, χ)` right of the imaginary axis are zeros of `L(s, χ)`. -/
+theorem LFunction_point_eq_zero (hχ : χ ≠ 1) (r : LZero χ) (hr : 0 < r.point.re) :
+    DirichletCharacter.LFunction χ r.point = 0 := by
+  have h := completedLFunction_point hχ r
+  rw [completedLFunction_eq_mul hr] at h
+  exact (mul_eq_zero.mp h).resolve_left (gammaFactor_ne_zero hr)
+
+/-- **Every zero has a class.** -/
+theorem exists_class_of_zero (hχ : χ ≠ 1) {T σ : ℝ} (hT : 2050 * (q : ℝ) ^ 2 ≤ T)
+    (hσ : 1 / 2 ≤ σ) (r : LZero χ) (hr : σ ≤ r.point.re ∧ |r.point.im| ≤ T) :
+    ∃ i < ⌊Real.log ((truncLength q T * molLength T : ℕ) : ℝ)⌋₊ + 1,
+      σ + i / Real.log ((truncLength q T * molLength T : ℕ) : ℝ) ≤ r.point.re ∧
+      ∃ j < detBlockCount (truncLength q T) (molLength T),
+        ∃ m < detBlockCount (truncLength q T) (molLength T) + 8,
+          1 / (12 * detBlockCount (truncLength q T) (molLength T)) ≤
+            ‖abscissaTaylorPoly (detDyadicBlock (truncLength q T) (molLength T) j)
+              (detCoeffChi χ (truncLength q T) (molLength T))
+              (Real.log ((truncLength q T * molLength T : ℕ) : ℝ)) m
+              (σ + i / Real.log ((truncLength q T * molLength T : ℕ) : ℝ)) r.point.im‖ := by
+  have hq : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
+  obtain ⟨hy1, hyT, hX1, _, hXbig, hXy2, _⟩ := detection_parameters hq hT
+  have hT0 : 0 ≤ T := by
+    have : (0 : ℝ) ≤ 2050 * (q : ℝ) ^ 2 := by positivity
+    linarith
+  have hβ1 : r.point.re ≤ 1 := (point_re_lt_one hχ r).le
+  have hz := LFunction_point_eq_zero hχ r (by linarith)
+  have hρT : ‖r.point‖ ≤ T + 1 := by
+    have h := Complex.norm_le_abs_re_add_abs_im r.point
+    have h1 : |r.point.re| ≤ 1 := by rw [abs_le]; constructor <;> linarith
+    linarith [hr.2]
+  have hdet := half_le_norm_detPolyChi hχ hX1 hy1 hT0 hXbig (by linarith) hρT hz
+  rw [← Complex.re_add_im r.point] at hdet
+  exact exists_class_of_detected χ hXy2 (by linarith) hr.1 hβ1 hdet
+
+/-- **The local count inside a set of zeros.** -/
+theorem card_filter_window_le {Cl : ℝ} (hCl : 0 ≤ Cl)
+    (hloc : ∀ t : ℝ,
+      {r : LZero χ | 1 / 2 ≤ r.point.re ∧ |r.point.im - t| ≤ 1}.Finite ∧
+      ({r : LZero χ | 1 / 2 ≤ r.point.re ∧ |r.point.im - t| ≤ 1}.ncard : ℝ) ≤
+        Cl * Real.log (|t| + 3))
+    {T : ℝ} (hT : 0 ≤ T) {Zc : Finset (LZero χ)}
+    (hZc : ∀ r ∈ Zc, 1 / 2 ≤ r.point.re ∧ |r.point.im| ≤ T) (t : ℝ) :
+    ((Zc.filter (fun r => |r.point.im - t| ≤ 1)).card : ℝ) ≤ Cl * Real.log (T + 4) := by
+  classical
+  have hK0 : 0 ≤ Cl * Real.log (T + 4) := mul_nonneg hCl (Real.log_nonneg (by linarith))
+  by_cases ht : |t| ≤ T + 1
+  · obtain ⟨hfin, hcount⟩ := hloc t
+    have hsub : ((Zc.filter (fun r => |r.point.im - t| ≤ 1) : Finset (LZero χ)) : Set (LZero χ))
+        ⊆ {r : LZero χ | 1 / 2 ≤ r.point.re ∧ |r.point.im - t| ≤ 1} := by
+      intro r hr
+      rw [Finset.coe_filter] at hr
+      exact ⟨(hZc r hr.1).1, hr.2⟩
+    have h1 := Set.ncard_le_ncard hsub hfin
+    rw [Set.ncard_coe_finset] at h1
+    have h2 : Real.log (|t| + 3) ≤ Real.log (T + 4) :=
+      Real.log_le_log (by positivity) (by linarith)
+    calc ((Zc.filter (fun r => |r.point.im - t| ≤ 1)).card : ℝ)
+        ≤ ({r : LZero χ | 1 / 2 ≤ r.point.re ∧ |r.point.im - t| ≤ 1}.ncard : ℝ) := by
+          exact_mod_cast h1
+      _ ≤ Cl * Real.log (|t| + 3) := hcount
+      _ ≤ Cl * Real.log (T + 4) := mul_le_mul_of_nonneg_left h2 hCl
+  · have hempty : Zc.filter (fun r => |r.point.im - t| ≤ 1) = ∅ := by
+      refine Finset.filter_eq_empty_iff.mpr fun r hr hrt => ht ?_
+      have h1 := (hZc r hr).2
+      have h2 := abs_sub_abs_le_abs_sub t r.point.im
+      rw [abs_sub_comm] at hrt
+      linarith
+    rw [hempty, Finset.card_empty, Nat.cast_zero]
+    exact hK0
+
+/-- **The count of one class.**  A nonempty set of zeros sharing a class `(i, j, m)` has at most
+`K · 144 J² · 1075200 (1 + log T)⁵ T^{12(1 − σ)}` elements, `K` the local count. -/
+theorem card_class_le (hχ : χ ≠ 1) {T σ K : ℝ} (hT : 2050 * (q : ℝ) ^ 2 ≤ T) (hσ : 1 / 2 ≤ σ)
+    {i j m : ℕ} {Zc : Finset (LZero χ)} (hne : Zc.Nonempty)
+    (hprop : ∀ r ∈ Zc, |r.point.im| ≤ T ∧
+      σ + i / Real.log ((truncLength q T * molLength T : ℕ) : ℝ) ≤ r.point.re ∧
+      1 / (12 * detBlockCount (truncLength q T) (molLength T)) ≤
+        ‖abscissaTaylorPoly (detDyadicBlock (truncLength q T) (molLength T) j)
+          (detCoeffChi χ (truncLength q T) (molLength T))
+          (Real.log ((truncLength q T * molLength T : ℕ) : ℝ)) m
+          (σ + i / Real.log ((truncLength q T * molLength T : ℕ) : ℝ)) r.point.im‖)
+    (hK : ∀ t : ℝ, ((Zc.filter (fun r => |r.point.im - t| ≤ 1)).card : ℝ) ≤ K) :
+    (Zc.card : ℝ) ≤ K * (144 * (detBlockCount (truncLength q T) (molLength T) : ℝ) ^ 2) *
+      (1075200 * (1 + Real.log T) ^ 5 * T ^ (12 * (1 - σ))) := by
+  classical
+  have hq : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
+  obtain ⟨hy1, hyT, hX1, hyX, _, hXy2, hXy6⟩ := detection_parameters hq hT
+  set X := truncLength q T with hX
+  set y := molLength T with hy
+  set Λ := Real.log ((X * y : ℕ) : ℝ) with hΛ
+  set J := detBlockCount X y with hJ
+  set σ₀ := σ + i / Λ with hσ₀
+  have hT2 : 2 ≤ T := by
+    have : (1 : ℝ) ≤ q := by exact_mod_cast hq
+    nlinarith
+  have hΛ0 : 0 < Λ := Real.log_pos (by exact_mod_cast (show 1 < X * y by omega))
+  have hJ1 : (1 : ℝ) ≤ J := by
+    have : 1 ≤ J := by rw [hJ, detBlockCount]; omega
+    exact_mod_cast this
+  -- the block at a member of the class
+  obtain ⟨r₀, hr₀⟩ := hne
+  obtain ⟨_, hσ₀r, hbig⟩ := hprop r₀ hr₀
+  have hσσ₀ : σ ≤ σ₀ := by rw [hσ₀]; have : 0 ≤ (i : ℝ) / Λ := by positivity
+                                         linarith
+  have hσ₀1 : σ₀ ≤ 1 := hσ₀r.trans (point_re_lt_one hχ r₀).le
+  have hσ₀0 : 0 ≤ σ₀ := by linarith
+  have hblock : T / 2 < (2 : ℝ) ^ j ∧ (2 : ℝ) ^ j ≤ T ^ 6 := by
+    have hpos : 0 < ‖abscissaTaylorPoly (detDyadicBlock X y j) (detCoeffChi χ X y) Λ m σ₀
+        r₀.point.im‖ := lt_of_lt_of_le (by positivity) hbig
+    obtain ⟨k, hk, hck⟩ : ∃ k ∈ detDyadicBlock X y j, detCoeffChi χ X y k ≠ 0 := by
+      by_contra hcon
+      push Not at hcon
+      apply hpos.ne'
+      unfold abscissaTaylorPoly
+      rw [Finset.sum_eq_zero fun k hk => by rw [hcon k hk]; ring, norm_zero]
+    have hkb := mem_detDyadicBlock_bounds hk
+    have hks := mem_detSupport_le (Finset.mem_filter.mp hk).1
+    have hky : y < k := by
+      by_contra hle
+      push Not at hle
+      apply hck
+      unfold detCoeffChi
+      rw [detCoeff_eq_zero_of_le hks.1 (hle.trans hyX) hle]
+      simp
+    have h1 : (T : ℝ) < 2 ^ (j + 1) := by
+      have : (y : ℝ) < (2 ^ (j + 1) : ℕ) := by exact_mod_cast hky.trans hkb.2
+      push_cast at this
+      linarith
+    have h2 : ((2 ^ j : ℕ) : ℝ) ≤ ((X * y : ℕ) : ℝ) := by exact_mod_cast hkb.1.trans hks.2
+    push_cast at h2
+    refine ⟨?_, ?_⟩
+    · rw [pow_succ] at h1; linarith
+    · push_cast at hXy6; linarith
+  -- a maximal separated subset
+  obtain ⟨S, hSZ, hsep, hZS⟩ := RHTower.exists_separated_subset_card_le Zc
+    (fun r => r.point.im) hK
+  set S' := S.image (fun r => r.point.im) with hS'
+  have hinj : Set.InjOn (fun r : LZero χ => r.point.im) S := by
+    intro a ha b hb hab
+    by_contra hne
+    have := hsep a ha b hb hne
+    simp only at hab
+    rw [hab, sub_self, abs_zero] at this
+    linarith
+  have hcard : S'.card = S.card := Finset.card_image_of_injOn hinj
+  have hsep' : ∀ x ∈ S', ∀ x' ∈ S', x ≠ x' → 1 ≤ |x - x'| := by
+    intro x hx x' hx' hxx'
+    obtain ⟨a, ha, rfl⟩ := Finset.mem_image.mp hx
+    obtain ⟨b, hb, rfl⟩ := Finset.mem_image.mp hx'
+    exact hsep a ha b hb (fun h => hxx' (by rw [h]))
+  have hST : ∀ x ∈ S', |x| ≤ T := by
+    intro x hx
+    obtain ⟨a, ha, rfl⟩ := Finset.mem_image.mp hx
+    exact (hprop a (hSZ ha)).1
+  have hV : ∀ x ∈ S', 1 / (12 * (J : ℝ)) ≤
+      ‖abscissaTaylorPoly (detDyadicBlock X y j) (detCoeffChi χ X y) Λ m σ₀ x‖ := by
+    intro x hx
+    obtain ⟨a, ha, rfl⟩ := Finset.mem_image.mp hx
+    exact (hprop a (hSZ ha)).2.2
+  have hc : ∀ k ∈ detDyadicBlock X y j, ‖detCoeffChi χ X y k‖ ≤ (k.divisors.card : ℝ) := by
+    intro k hk
+    have hks := mem_detSupport_le (Finset.mem_filter.mp hk).1
+    unfold detCoeffChi
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    calc ‖χ k‖ * |detCoeff X y k| ≤ 1 * (k.divisors.card : ℝ) :=
+          mul_le_mul (DirichletCharacter.norm_le_one χ k)
+            (abs_detCoeff_le_divisors hX1 hy1 hks.1) (abs_nonneg _) zero_le_one
+      _ = _ := one_mul _
+  have hΛk : ∀ k ∈ detDyadicBlock X y j, Real.log k ≤ Λ := by
+    intro k hk
+    have hks := mem_detSupport_le (Finset.mem_filter.mp hk).1
+    exact Real.log_le_log (by exact_mod_cast (show 0 < k by omega)) (by exact_mod_cast hks.2)
+  have hLV := card_mul_sq_le_of_taylor_large (fun k hk => mem_detDyadicBlock_bounds hk) hc hΛk
+    hσ₀0 (by linarith) hsep' hST hV (by positivity)
+  have hM := class_bound_le hT2 hblock.1 hblock.2 hσ hσσ₀ hσ₀1
+  have hSbound : (S.card : ℝ) ≤ 144 * (J : ℝ) ^ 2 *
+      (1075200 * (1 + Real.log T) ^ 5 * T ^ (12 * (1 - σ))) := by
+    rw [hcard] at hLV
+    have h1 := hLV.trans hM
+    have hV2 : (1 / (12 * (J : ℝ))) ^ 2 = 1 / (144 * (J : ℝ) ^ 2) := by ring
+    rw [hV2, mul_one_div, div_le_iff₀ (by positivity)] at h1
+    linarith
+  have hKS := hZS
+  have hK0 : 0 ≤ K := le_trans (Nat.cast_nonneg _) (hK 0)
+  calc (Zc.card : ℝ) ≤ K * S.card := hKS
+    _ ≤ K * (144 * (J : ℝ) ^ 2 * (1075200 * (1 + Real.log T) ^ 5 * T ^ (12 * (1 - σ)))) :=
+        mul_le_mul_of_nonneg_left hSbound hK0
+    _ = _ := by ring
 
 end
 

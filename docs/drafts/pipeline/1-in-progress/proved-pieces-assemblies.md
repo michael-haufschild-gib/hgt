@@ -26,7 +26,7 @@
 | A82 | Li ladder as comb forms of tails | Complete: `3-formalized/li-ladder-as-damped-comb-tails.md`; explicit damped, smoothly truncated Laguerre tails with divergent horizons and sampling scales |
 | A79, A81, A93 | Aperture–height constants and order of windowHeight | Complete: `3-formalized/window-height-triple-exponential-order.md`; `log log log(windowHeight(a))−C a^(4/3)→log 138`, explicit `C` |
 | A78 | Cluster window theorem | Already proved: `SurfaceOfSpecZ.ScaleLocality.finite_top_negative_in_every_window`; no frequency separation, length greater than `card(S)π/Γ` |
-| A89 | Prescribed sub-logarithmic radius | Open |
+| A89 | Prescribed sub-logarithmic radius | Existing `3-formalized/double-logarithmic-windows-miss-the-minimal-face.md` covers every prescribed `R(T)≤(C/256)log log T` with one configuration; general `R(T)=o(log T)` remains open |
 | A86 | Near-diagonal cofactors and growing filters | Complete: `3-formalized/growing-cofactor-filters-and-near-diagonal-pairs.md`; row bound `1+4W/(t sqrt(r))`, actual filtered transfer to `W≤3t^71`, error `≤2h^d exp(−at/8)` |
 | A47 | One-quartet constants | Complete: `3-formalized/one-quartet-current-constant.md`; explicit normalized-current lower bound |
 | A111 | Critical-zero proportion from twisted moments and Levinson gate | Actual three-moment remainder, shifted arithmetic jets, chi-taper jet limits and exact scalar `c(13/50)<18/5<exp(13/10)` proved. Uniform block assembly and gate insertion remain open |

@@ -20,7 +20,7 @@ theorem tendsto_gate_normalized_displacement {ι : Type*} {l : Filter ι}
     {U d : ι → ℝ} (hU : Tendsto U l atTop) {R : ℝ} (hR : 0 ≤ R)
     (hgate : ∀ᶠ i in l, R ≤ d i * Real.log (U i) ∧ d i * Real.log (U i - 1) ≤ R) :
     Tendsto (fun i => d i * Real.log (shortLevinsonCutoff (U i))) l (𝓝 (R * (13 / 50 : ℝ))) := by
-  have hn := tendsto_shortLevinsonCutoff.comp hU
+  have hn : Tendsto (fun i => shortLevinsonCutoff (U i)) l atTop := tendsto_shortLevinsonCutoff.comp hU
   have hUm : Tendsto (fun i => U i - 1) l atTop := by
     apply Filter.tendsto_atTop.2
     intro A
@@ -62,7 +62,7 @@ theorem tendsto_gate_displacement_zero {ι : Type*} {l : Filter ι}
     {U d : ι → ℝ} (hU : Tendsto U l atTop) {R : ℝ} (hR : 0 ≤ R)
     (hgate : ∀ᶠ i in l, R ≤ d i * Real.log (U i) ∧ d i * Real.log (U i - 1) ≤ R) :
     Tendsto d l (𝓝 0) := by
-  have hn := tendsto_shortLevinsonCutoff.comp hU
+  have hn : Tendsto (fun i => shortLevinsonCutoff (U i)) l atTop := tendsto_shortLevinsonCutoff.comp hU
   have hL : Tendsto (fun i => Real.log (shortLevinsonCutoff (U i) : ℝ)) l atTop :=
     Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp hn)
   apply ((tendsto_gate_normalized_displacement hU hR hgate).div_atTop hL).congr'

@@ -94,6 +94,7 @@ theorem eventually_gate_block_moment_hypotheses
     hd.eventually (Iio_mem_nhds (lt_min hr (by norm_num))), hratio,
     (tendsto_shortLevinsonCutoff.comp hU).eventually_ge_atTop 2]
     with i hai hgi hsi hUi hLi hdi hri hni
+  change 2 ≤ shortLevinsonCutoff (U i) at hni
   have hUi0 : 0 < U i := zero_lt_one.trans hUi
   have hLU : 0 < Real.log (U i) := Real.log_pos hUi
   have hp : 0 < U i ^ (53 / 100 : ℝ) := Real.rpow_pos_of_pos hUi0 _

@@ -93,8 +93,8 @@ The receiver fixes coefficients before choosing its nearby abscissa.
 `TheShortMollifierKeepsItsLogarithmicScale` proves the integer cutoff's
 logarithmic limit and all coefficient admissibility conditions, including
 the weighted fourth-moment mass bound.
-Using coefficients at `d_U=R/log U` instead of `d=R/log T₂` changes each
-coefficient by relative size `O((d−d_U)log N)=O(1/(U log U))`.
+Using coefficients at `d_U=R/log U` instead of the gate displacement `d`
+changes the normalized exponent by at most `R/(U−1)`.
 `TheFixedLinearMollifierChangesLittleAcrossTheGate` proves the full
 gate-strip exponent bound `R/(U−1)` and discrepancy envelope
 `D exp D · n⁻ᵈ`. The Young energy estimate and its dyadic assembly remain

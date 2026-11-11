@@ -51,7 +51,7 @@ theorem wordShift_zero {m a : ℕ} (w : ZMod m → Fin a) : wordShift 0 w = w :=
 
 theorem wordShift_add {m a : ℕ} (c₁ c₂ : ZMod m) (w : ZMod m → Fin a) :
     wordShift (c₁ + c₂) w = wordShift c₂ (wordShift c₁ w) := by
-  funext i; simp [wordShift, add_assoc]
+  funext i; simp only [wordShift, add_assoc, add_comm c₁ c₂]
 
 theorem wordShift_comm {m a : ℕ} (c₁ c₂ : ZMod m) (w : ZMod m → Fin a) :
     wordShift c₁ (wordShift c₂ w) = wordShift c₂ (wordShift c₁ w) := by
@@ -165,7 +165,7 @@ theorem exists_pullWord_of_shift_eq {d m a : ℕ} [NeZero d] [NeZero m] (hdvd : 
   rw [hcast, ZMod.val_natCast]
   have hdiv : i.val = d * (i.val / d) + i.val % d := (Nat.div_add_mod i.val d).symm
   have hi : w i = wordShift ((i.val : ℕ) : ZMod m) w 0 := by
-    simp [wordShift, ZMod.natCast_zmod_val]
+    simp [wordShift]
   rw [hi, hdiv, Nat.cast_add, wordShift_add, wordShift_nat_mul_eq hw]
   simp [wordShift]
 
@@ -174,7 +174,7 @@ def primWords (d a : ℕ) [NeZero d] : Finset (ZMod d → Fin a) :=
   open Classical in Finset.univ.filter fun v => minWordPeriod v = d
 
 /-- Cyclic shift orbit of `v : ZMod d → Fin a`. -/
-def wordOrbit {d a : ℕ} (v : ZMod d → Fin a) : Finset (ZMod d → Fin a) :=
+def wordOrbit {d a : ℕ} [NeZero d] (v : ZMod d → Fin a) : Finset (ZMod d → Fin a) :=
   open Classical in Finset.univ.image fun c : ZMod d => wordShift c v
 
 theorem wordShift_injective_of_minWordPeriod {d a : ℕ} [NeZero d] {v : ZMod d → Fin a}
@@ -190,7 +190,8 @@ theorem wordShift_injective_of_minWordPeriod {d a : ℕ} [NeZero d] {v : ZMod d 
     rw [← e1, hi, e2]
   have hc_nat : wordShift (c.val : ZMod d) v = v := by
     rwa [ZMod.natCast_zmod_val]
-  have hdvd : d ∣ c.val := hv ▸ minWordPeriod_dvd_of_shift_eq hc_nat
+  have hdvd0 : minWordPeriod v ∣ c.val := minWordPeriod_dvd_of_shift_eq hc_nat
+  have hdvd : d ∣ c.val := by rwa [hv] at hdvd0
   have hval0 : c.val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd c.val_lt
   have hc0 : c = 0 := by rw [← ZMod.natCast_zmod_val c, hval0, Nat.cast_zero]
   exact sub_eq_zero.mp hc0
@@ -202,13 +203,14 @@ theorem card_wordOrbit_of_minWordPeriod {d a : ℕ} [NeZero d] {v : ZMod d → F
   rw [Finset.card_image_of_injective _ (wordShift_injective_of_minWordPeriod hv),
     Finset.card_univ, ZMod.card]
 
-theorem wordOrbit_eq_of_mem {d a : ℕ} {u v : ZMod d → Fin a} (hu : u ∈ wordOrbit v) :
+theorem wordOrbit_eq_of_mem {d a : ℕ} [NeZero d] {u v : ZMod d → Fin a} (hu : u ∈ wordOrbit v) :
     wordOrbit u = wordOrbit v := by
   classical
-  simp only [wordOrbit, Finset.mem_image, Finset.mem_univ, true_and] at hu
+  unfold wordOrbit at hu ⊢
+  simp only [Finset.mem_image, Finset.mem_univ, true_and] at hu
   obtain ⟨c₀, rfl⟩ := hu
   ext w
-  simp only [wordOrbit, Finset.mem_image, Finset.mem_univ, true_and]
+  simp only [Finset.mem_image, Finset.mem_univ, true_and]
   constructor
   · rintro ⟨c, rfl⟩
     exact ⟨c₀ + c, by rw [wordShift_add]⟩
@@ -235,14 +237,18 @@ theorem mul_necklaceCount_eq_card_primWords (a d : ℕ) [NeZero d] :
     constructor
     · rintro ⟨v, hv, hu⟩
       simp only [primWords, Finset.mem_filter, Finset.mem_univ, true_and] at hv ⊢
-      simp only [wordOrbit, Finset.mem_image, Finset.mem_univ, true_and] at hu
+      unfold wordOrbit at hu
+      simp only [Finset.mem_image, Finset.mem_univ, true_and] at hu
       obtain ⟨c, rfl⟩ := hu
       rw [minWordPeriod_wordShift, hv]
     · intro hu
       refine ⟨u, hu, ?_⟩
-      simp only [wordOrbit, Finset.mem_image, Finset.mem_univ, true_and]
+      unfold wordOrbit
+      simp only [Finset.mem_image, Finset.mem_univ, true_and]
       exact ⟨0, wordShift_zero u⟩
-  have hdisj : Set.PairwiseDisjoint ↑((primWords d a).image wordOrbit) id := by
+  have hdisj :
+      (((primWords d a).image wordOrbit : Finset _) :
+        Set (Finset (ZMod d → Fin a))).PairwiseDisjoint id := by
     intro O₁ hO₁ O₂ hO₂ hne
     rw [Finset.disjoint_left]
     intro u hu₁ hu₂
@@ -305,24 +311,23 @@ theorem sum_divisors_mul_necklaceCount (a : ℕ) {m : ℕ} (hm : 1 ≤ m) :
   rw [← huniv, Finset.card_eq_sum_card_fiberwise
     (f := minWordPeriod) (t := m.divisors)
     (fun w _ => Nat.mem_divisors.mpr ⟨minWordPeriod_dvd w, by omega⟩)]
-  symm
   refine Finset.sum_congr rfl fun d hd => ?_
   obtain ⟨hdvd, _⟩ := Nat.mem_divisors.mp hd
   have hd1 : 1 ≤ d := Nat.pos_of_dvd_of_pos hdvd hm
   haveI : NeZero d := ⟨by omega⟩
-  rw [← mul_necklaceCount_eq_card_primWords a d]
+  rw [mul_necklaceCount_eq_card_primWords a d]
   refine Finset.card_nbij (pullWord hdvd) ?_ ?_ ?_
+  · intro v hv
+    simp only [Set.mem_coe, primWords, Finset.mem_filter, Finset.mem_univ, true_and] at hv ⊢
+    rw [minWordPeriod_pullWord, hv]
+  · intro v₁ _ v₂ _ h
+    exact pullWord_injective hdvd h
   · intro w hw
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hw
+    simp only [Set.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hw
     obtain ⟨v, rfl⟩ := exists_pullWord_of_shift_eq hdvd (hw ▸ (minWordPeriod_spec w).2.2)
     refine ⟨v, ?_, rfl⟩
     simp only [Set.mem_coe, primWords, Finset.mem_filter, Finset.mem_univ, true_and]
     rwa [minWordPeriod_pullWord] at hw
-  · intro v₁ _ v₂ _ h
-    exact pullWord_injective hdvd h
-  · intro v hv
-    simp only [primWords, Finset.mem_filter, Finset.mem_univ, true_and] at hv ⊢
-    rw [minWordPeriod_pullWord, hv]
 
 /-! ## 2. Power-series and Dirichlet Euler identity for Moreau necklaces -/
 
@@ -368,7 +373,7 @@ theorem tsum_necklaceCount_mul_neg_log_eq {a : ℕ} (ha : 2 ≤ a) {z : ℂ}
         ≤ (a : ℝ) ^ (k + 1) * ‖z‖ ^ ((k + 1) * (q + 1)) :=
           mul_le_mul hnc hdiv_le (by positivity) (by positivity)
       _ = ((a : ℝ) * ‖z‖) ^ (k + 1) * ‖z‖ ^ ((k + 1) * q) := by
-          rw [hexp, pow_add, mul_pow]
+          rw [hexp, pow_add, ← mul_assoc, ← mul_pow]
       _ ≤ ((a : ℝ) * ‖z‖) ^ (k + 1) * (1 / 2 : ℝ) ^ q :=
           mul_le_mul_of_nonneg_left hpow_le (by positivity)
   -- Row evaluation: Taylor series of `-log(1 - z^{k+1})`.
@@ -380,7 +385,8 @@ theorem tsum_necklaceCount_mul_neg_log_eq {a : ℕ} (ha : 2 ≤ a) {z : ℂ}
       exact pow_lt_one₀ (norm_nonneg z) hz1 (by omega)
     have htay := (hasSum_nat_add_iff' 1).mpr (Complex.hasSum_taylorSeries_neg_log hzk)
     simp only [Finset.sum_range_one, Nat.cast_zero, div_zero, sub_zero] at htay
-    simp only [F, ← tsum_mul_left, htay.tsum_eq]
+    dsimp only [F]
+    rw [tsum_mul_left, htay.tsum_eq]
   -- Group `ℕ × ℕ` by `m - 1 = (k + 1) * (q + 1) - 1`.
   set g : ℕ × ℕ → ℕ := fun p => (p.1 + 1) * (p.2 + 1) - 1
   set e := Equiv.sigmaFiberEquiv g
@@ -388,7 +394,7 @@ theorem tsum_necklaceCount_mul_neg_log_eq {a : ℕ} (ha : 2 ≤ a) {z : ℂ}
   have htotal : (∑' k : ℕ, ∑' q : ℕ, F (k, q)) = ∑' n : ℕ, ((a : ℂ) * z) ^ (n + 1) / ((n + 1 : ℕ) : ℂ) := by
     rw [← hF_sum.tsum_prod' (fun k => hF_sum.prod_factor k), ← e.tsum_eq F]
     change (∑' x, (F ∘ e) x) = _
-    rw [hsigma.tsum_sigma' (fun n => hsigma.comp_injective ( Sigma.mk_injective ))]
+    rw [hsigma.tsum_sigma]
     refine tsum_congr fun n => ?_
     set m := n + 1
     have hm1 : 1 ≤ m := Nat.succ_le_succ (Nat.zero_le n)
@@ -445,6 +451,10 @@ theorem tsum_necklaceCount_mul_neg_log_eq {a : ℕ} (ha : 2 ≤ a) {z : ℂ}
   simp only [Finset.sum_range_one, Nat.cast_zero, div_zero, sub_zero] at htay_az
   rw [← tsum_congr hrow, htotal, htay_az.tsum_eq]
 
+private theorem norm_natCast_cpow_neg_eq (n : ℕ) (hn : 0 < n) (s : ℂ) :
+    ‖(n : ℂ) ^ (-s)‖ = (n : ℝ) ^ (-s.re) := by
+  rw [Complex.norm_natCast_cpow_of_pos hn, Complex.neg_re]
+
 private theorem natCast_pow_cpow_neg (M k : ℕ) (hM : 1 ≤ M) (s : ℂ) :
     ((M : ℂ) ^ (-s)) ^ k = ((M ^ k : ℕ) : ℂ) ^ (-s) := by
   have hM0 : (0 : ℝ) < M := by exact_mod_cast hM
@@ -453,7 +463,7 @@ private theorem natCast_pow_cpow_neg (M k : ℕ) (hM : 1 ≤ M) (s : ℂ) :
     Complex.cpow_def_of_ne_zero (by exact_mod_cast hMk0.ne')]
   congr 1
   rw [← Complex.ofReal_natCast M, ← Complex.ofReal_log hM0.le,
-    ← Complex.ofReal_natCast (M ^ k), Nat.cast_pow, ← Complex.ofReal_log hMk0.le, Real.log_pow]
+    ← Complex.ofReal_natCast (M ^ k), ← Complex.ofReal_log hMk0.le, Nat.cast_pow, Real.log_pow]
   push_cast; ring
 
 theorem exp_tsum_necklaceCount_log_cpow_eq {a M : ℕ} (ha : 2 ≤ a) (hM : 2 ≤ M) {s : ℂ}
@@ -463,7 +473,7 @@ theorem exp_tsum_necklaceCount_log_cpow_eq {a M : ℕ} (ha : 2 ≤ a) (hM : 2 �
       1 - (a : ℂ) * (M : ℂ) ^ (-s) := by
   have hM1 : 1 ≤ M := by omega
   have hnorm : (a : ℝ) * ‖(M : ℂ) ^ (-s)‖ < 1 := by
-    rwa [norm_natCast_cpow_neg M (by omega)]
+    rwa [norm_natCast_cpow_neg_eq M (by omega)]
   have htsum := tsum_necklaceCount_mul_neg_log_eq ha hnorm
   have hcongr : (∑' k : ℕ, (necklaceCount a (k + 1) : ℂ) *
       Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) =
@@ -485,17 +495,17 @@ theorem exp_tsum_necklaceCount_log_cpow_eq {a M : ℕ} (ha : 2 ≤ a) (hM : 2 �
 /-! ## 3. Disjoint short-interval prime subsets via Guth–Maynard -/
 
 private theorem exists_disjoint_subsets_of_sum_card_le {α : Type*} [DecidableEq α]
-    {W : Finset α} (f : ℕ → ℕ) :
-    ∀ n : ℕ, ∑ j ∈ Finset.range n, f j ≤ W.card →
-      ∃ T : ℕ → Finset α,
-        (∀ j < n, T j ⊆ W ∧ (T j).card = f j) ∧
-        (∀ j₁ < n, ∀ j₂ < n, j₁ ≠ j₂ → Disjoint (T j₁) (T j₂))
-  | 0, _ => ⟨fun _ => ∅, fun _ hj => absurd hj (Nat.not_lt_zero _),
+    {W : Finset α} (f : ℕ → ℕ) (n : ℕ) (hsum : ∑ j ∈ Finset.range n, f j ≤ W.card) :
+    ∃ T : ℕ → Finset α,
+      (∀ j < n, T j ⊆ W ∧ (T j).card = f j) ∧
+      (∀ j₁ < n, ∀ j₂ < n, j₁ ≠ j₂ → Disjoint (T j₁) (T j₂)) := by
+  induction n with
+  | zero =>
+    exact ⟨fun _ => ∅, fun _ hj => absurd hj (Nat.not_lt_zero _),
       fun _ hj => absurd hj (Nat.not_lt_zero _)⟩
-  | n + 1, hsum => by
+  | succ n ih =>
     rw [Finset.sum_range_succ] at hsum
-    obtain ⟨T, hT_mem, hT_disj⟩ :=
-      exists_disjoint_subsets_of_sum_card_le f n (le_trans (Nat.le_add_right _ _) hsum)
+    obtain ⟨T, hT_mem, hT_disj⟩ := ih (le_trans (Nat.le_add_right _ _) hsum)
     set U := (Finset.range n).biUnion T
     have hUW : U ⊆ W := Finset.biUnion_subset.mpr fun j hj => (hT_mem j (Finset.mem_range.mp hj)).1
     have hU_card : U.card = ∑ j ∈ Finset.range n, f j := by
@@ -503,7 +513,7 @@ private theorem exists_disjoint_subsets_of_sum_card_le {α : Type*} [DecidableEq
         hT_disj j₁ (Finset.mem_range.mp hj₁) j₂ (Finset.mem_range.mp hj₂) hne)]
       exact Finset.sum_congr rfl fun j hj => (hT_mem j (Finset.mem_range.mp hj)).2
     have hrem : f n ≤ (W \ U).card := by
-      rw [Finset.card_sdiff hUW, hU_card]
+      rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hUW, hU_card]
       omega
     obtain ⟨A, hAW, hA_card⟩ := Finset.exists_subset_card_eq hrem
     refine ⟨fun j => if j = n then A else T j, ?_, ?_⟩
@@ -532,14 +542,14 @@ private theorem exists_disjoint_subsets_of_sum_card_le {α : Type*} [DecidableEq
 
 private theorem windowPrimes_disjoint_of_sixteen_le {M : ℕ} (hM : 16 ≤ M)
     {k₁ k₂ : ℕ} (hk₁ : 1 ≤ k₁) (hk₂ : 1 ≤ k₂) (hne : k₁ ≠ k₂) :
-    Disjoint (windowPrimes ((M : ℝ) ^ k₁) ((M : ℝ) ^ k₁ + ((M : ℝ) ^ k₁) ^ (3 / 5 : ℝ)))
-      (windowPrimes ((M : ℝ) ^ k₂) ((M : ℝ) ^ k₂ + ((M : ℝ) ^ k₂) ^ (3 / 5 : ℝ))) := by
+    Disjoint (Sieve.windowPrimes ((M : ℝ) ^ k₁) ((M : ℝ) ^ k₁ + ((M : ℝ) ^ k₁) ^ (3 / 5 : ℝ)))
+      (Sieve.windowPrimes ((M : ℝ) ^ k₂) ((M : ℝ) ^ k₂ + ((M : ℝ) ^ k₂) ^ (3 / 5 : ℝ))) := by
   wlog hlt : k₁ < k₂ generalizing k₁ k₂
   · exact (this hk₂ hk₁ hne.symm (by omega)).symm
   rw [Finset.disjoint_left]
   intro p hp₁ hp₂
-  obtain ⟨hI₁, _⟩ := mem_windowPrimes.mp hp₁
-  obtain ⟨hI₂, _⟩ := mem_windowPrimes.mp hp₂
+  obtain ⟨hI₁, _⟩ := Sieve.mem_windowPrimes.mp hp₁
+  obtain ⟨hI₂, _⟩ := Sieve.mem_windowPrimes.mp hp₂
   have hy₁ : (16 : ℝ) ≤ (M : ℝ) ^ k₁ := by
     calc (16 : ℝ) = (16 : ℝ) ^ 1 := (pow_one _).symm
       _ ≤ (M : ℝ) ^ 1 := by gcongr; exact_mod_cast hM
@@ -568,9 +578,10 @@ private theorem card_windowPrimes_lower {X₀ : ℝ}
     (hθ : ∀ y L : ℝ, X₀ ≤ y → 0 ≤ L →
       (L - (y + L) ^ (29 / 50 : ℝ)) / 2 ≤ Chebyshev.theta (y + L) - Chebyshev.theta y)
     {y : ℝ} (hyX : X₀ ≤ y) (hy16 : 16 ≤ y) (hy50 : 4 ≤ y ^ (1 / 50 : ℝ)) :
-    y ^ (29 / 50 : ℝ) / 400 ≤ (windowPrimes y (y + y ^ (3 / 5 : ℝ))).card := by
+    y ^ (29 / 50 : ℝ) / 400 ≤ (Sieve.windowPrimes y (y + y ^ (3 / 5 : ℝ))).card := by
   set L := y ^ (3 / 5 : ℝ)
   have hy0 : 0 < y := by linarith
+  have hL0 : 0 ≤ L := by dsimp [L]; positivity
   have hL_le : L ≤ y := by
     calc L ≤ y ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num)
       _ = y := Real.rpow_one y
@@ -579,24 +590,25 @@ private theorem card_windowPrimes_lower {X₀ : ℝ}
         ≤ (2 * y) ^ (29 / 50 : ℝ) :=
           Real.rpow_le_rpow (by positivity) (by linarith) (by norm_num)
       _ = (2 : ℝ) ^ (29 / 50 : ℝ) * y ^ (29 / 50 : ℝ) :=
-          Real.mul_rpow (by norm_num) hy0.le _
+          Real.mul_rpow (by norm_num) hy0.le
       _ ≤ (2 : ℝ) ^ (1 : ℝ) * y ^ (29 / 50 : ℝ) :=
           mul_le_mul_of_nonneg_right
             (Real.rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)) (by positivity)
       _ = 2 * y ^ (29 / 50 : ℝ) := by rw [Real.rpow_one]
   have hL_split : L = y ^ (29 / 50 : ℝ) * y ^ (1 / 50 : ℝ) := by
+    dsimp [L]
     rw [← Real.rpow_add hy0]
     norm_num
   have htheta_lo : L / 4 ≤ Chebyshev.theta (y + L) - Chebyshev.theta y := by
-    have h1 := hθ y L hyX (by positivity)
+    have h1 := hθ y L hyX hL0
     have h4 : 4 * y ^ (29 / 50 : ℝ) ≤ L := by
       rw [hL_split]
       nlinarith [Real.rpow_pos_of_pos hy0 (29 / 50 : ℝ)]
     linarith
-  rw [theta_sub_eq_sum_Ioc (by linarith : y ≤ y + L)] at htheta_lo
-  have hlog_ub : ∀ p ∈ windowPrimes y (y + L), Real.log p ≤ 100 * y ^ (1 / 50 : ℝ) := by
+  rw [Sieve.theta_sub_eq_sum_Ioc (by linarith : y ≤ y + L)] at htheta_lo
+  have hlog_ub : ∀ p ∈ Sieve.windowPrimes y (y + L), Real.log p ≤ 100 * y ^ (1 / 50 : ℝ) := by
     intro p hp
-    obtain ⟨hIp, hpP⟩ := mem_windowPrimes.mp hp
+    obtain ⟨hIp, hpP⟩ := Sieve.mem_windowPrimes.mp hp
     have hp0 : (0 : ℝ) < p := by exact_mod_cast hpP.pos
     have hp_le : (p : ℝ) ≤ y ^ (2 : ℝ) := by
       have h1 : (p : ℝ) ≤ y + L := (Nat.le_floor_iff (by positivity)).mp (Finset.mem_Ioc.mp hIp).2
@@ -613,14 +625,14 @@ private theorem card_windowPrimes_lower {X₀ : ℝ}
         _ = y ^ (1 / 50 : ℝ) := by rw [← Real.rpow_mul hy0.le]; norm_num
     linarith
   have hsum_ub : (∑ p ∈ Finset.Ioc ⌊y⌋₊ ⌊y + L⌋₊ with Nat.Prime p, Real.log p) ≤
-      (windowPrimes y (y + L)).card * (100 * y ^ (1 / 50 : ℝ)) := by
-    change (∑ p ∈ windowPrimes y (y + L), Real.log p) ≤ _
-    calc (∑ p ∈ windowPrimes y (y + L), Real.log p)
-        ≤ ∑ _p ∈ windowPrimes y (y + L), (100 * y ^ (1 / 50 : ℝ)) := Finset.sum_le_sum hlog_ub
-      _ = (windowPrimes y (y + L)).card * (100 * y ^ (1 / 50 : ℝ)) := by
+      (Sieve.windowPrimes y (y + L)).card * (100 * y ^ (1 / 50 : ℝ)) := by
+    change (∑ p ∈ Sieve.windowPrimes y (y + L), Real.log p) ≤ _
+    calc (∑ p ∈ Sieve.windowPrimes y (y + L), Real.log p)
+        ≤ ∑ _p ∈ Sieve.windowPrimes y (y + L), (100 * y ^ (1 / 50 : ℝ)) := Finset.sum_le_sum hlog_ub
+      _ = (Sieve.windowPrimes y (y + L)).card * (100 * y ^ (1 / 50 : ℝ)) := by
           rw [Finset.sum_const, nsmul_eq_mul]
   have hcomb : y ^ (29 / 50 : ℝ) * y ^ (1 / 50 : ℝ) / 4 ≤
-      (windowPrimes y (y + L)).card * (100 * y ^ (1 / 50 : ℝ)) := by
+      (Sieve.windowPrimes y (y + L)).card * (100 * y ^ (1 / 50 : ℝ)) := by
     rw [← hL_split]
     exact htheta_lo.trans hsum_ub
   have hy50_pos : 0 < y ^ (1 / 50 : ℝ) := Real.rpow_pos_of_pos hy0 _
@@ -649,8 +661,9 @@ theorem exists_shortInterval_necklace_primes {a M : ℕ} {β₀ : ℝ}
     (max (50 * Real.log 4 / Real.log (M : ℝ)) (Real.log 800 / (η * Real.log (M : ℝ))))
   set k₁ : ℕ := ⌊max B₁ 1⌋₊ + 1
   have hk₁1 : 1 ≤ k₁ := by omega
-  have hk₁_gt : B₁ < (k₁ : ℝ) :=
-    lt_of_le_of_lt (le_max_left B₁ 1) (Nat.lt_floor_add_one _)
+  have hk₁_gt : B₁ < (k₁ : ℝ) := by
+    dsimp [k₁]; push_cast
+    exact lt_of_le_of_lt (le_max_left B₁ 1) (Nat.lt_floor_add_one _)
   have hy_props : ∀ k : ℕ, k₁ ≤ k →
       X₀ ≤ (M : ℝ) ^ k ∧ 16 ≤ (M : ℝ) ^ k ∧
       4 ≤ ((M : ℝ) ^ k) ^ (1 / 50 : ℝ) ∧ 800 ≤ ((M : ℝ) ^ k) ^ η := by
@@ -698,7 +711,7 @@ theorem exists_shortInterval_necklace_primes {a M : ℕ} {β₀ : ℝ}
       omega
   have hcard_lo : ∀ k : ℕ, k₁ ≤ k →
       2 * a ^ k ≤
-        (windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))).card := by
+        (Sieve.windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))).card := by
     intro k hk
     obtain ⟨hyX, hy16, hy50, hy800⟩ := hy_props k hk
     have hlo := card_windowPrimes_lower hθ hyX hy16 hy50
@@ -710,13 +723,13 @@ theorem exists_shortInterval_necklace_primes {a M : ℕ} {β₀ : ℝ}
       rw [← Real.rpow_natCast (M : ℝ) k, ← Real.rpow_mul (by positivity), mul_comm,
         Real.rpow_mul (by positivity), hMβ, Real.rpow_natCast, Nat.cast_pow]
     have hreal : (2 * a ^ k : ℝ) ≤
-        ((windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))).card : ℝ) := by
+        ((Sieve.windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))).card : ℝ) := by
       rw [hsplit, hyβ] at hlo
       have hak0 : (0 : ℝ) ≤ ((a ^ k : ℕ) : ℝ) := Nat.cast_nonneg _
       nlinarith
     exact_mod_cast hreal
   set W : ℕ → Finset ℕ := fun k =>
-    windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))
+    Sieve.windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))
   set f_lo : ℕ → ℕ := fun j => if j = 0 then 0 else necklaceCount a j
   have hf_lo_sum : ∑ j ∈ Finset.range (k₁ + 1), f_lo j ≤ (W k₁).card := by
     refine le_trans ?_ (hcard_lo k₁ le_rfl)
@@ -756,7 +769,7 @@ theorem exists_shortInterval_necklace_primes {a M : ℕ} {β₀ : ℝ}
     rcases eq_or_ne k 0 with rfl | hk0
     · rw [hS0] at hp; exact absurd hp (Finset.notMem_empty p)
     · have hmemW := (hS_sub k (by omega)).1 hp
-      obtain ⟨hIoc, hpP⟩ := mem_windowPrimes.mp hmemW
+      obtain ⟨hIoc, hpP⟩ := Sieve.mem_windowPrimes.mp hmemW
       have hm1 : 1 ≤ max k k₁ := le_trans hk₁1 (le_max_right k k₁)
       have hy16 : (16 : ℝ) ≤ (M : ℝ) ^ (max k k₁) := by
         calc (16 : ℝ) = (16 : ℝ) ^ 1 := (pow_one _).symm
@@ -795,7 +808,7 @@ theorem exists_shortInterval_necklace_primes {a M : ℕ} {β₀ : ℝ}
     have hmemW : p ∈ W k := by
       have hsub := (hS_sub k (le_trans hk₁1 hk)).1 hp
       rwa [max_eq_left hk] at hsub
-    obtain ⟨hIoc, _⟩ := mem_windowPrimes.mp hmemW
+    obtain ⟨hIoc, _⟩ := Sieve.mem_windowPrimes.mp hmemW
     obtain ⟨hgt, hle⟩ := Finset.mem_Ioc.mp hIoc
     have hnat : ((M : ℝ) ^ k) = ((M ^ k : ℕ) : ℝ) := (Nat.cast_pow M k).symm
     rw [hnat, Nat.floor_natCast] at hgt
@@ -811,7 +824,7 @@ private theorem one_sub_mem_slitPlane_of_norm_lt_one {z : ℂ} (hz : ‖z‖ < 1
 
 private theorem norm_natCast_cpow_neg_le_half_of_sixteen_le {n : ℕ} (hn : 16 ≤ n)
     {s : ℂ} (hs : 1 / 4 ≤ s.re) : ‖(n : ℂ) ^ (-s)‖ ≤ 1 / 2 := by
-  rw [norm_natCast_cpow_neg n (by omega)]
+  rw [norm_natCast_cpow_neg_eq n (by omega)]
   have hn16 : (16 : ℝ) ≤ n := by exact_mod_cast hn
   calc (n : ℝ) ^ (-s.re)
       ≤ (16 : ℝ) ^ (-s.re) :=
@@ -832,8 +845,8 @@ private theorem norm_log_one_sub_sub_le {w₁ w₂ : ℂ}
     have hzn : ‖z‖ ≤ 1 / 2 := by simpa [B, Metric.mem_closedBall] using hz
     have hslit : 1 - z ∈ Complex.slitPlane :=
       one_sub_mem_slitPlane_of_norm_lt_one (lt_of_le_of_lt hzn (by norm_num))
-    have hd : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) z := by
-      simpa using (hasDerivAt_const z (1 : ℂ)).sub (hasDerivAt_id z)
+    have hd : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) z :=
+      (hasDerivAt_id z).const_sub (1 : ℂ)
     exact (hd.clog hslit).hasDerivWithinAt
   have hbound : ∀ z ∈ B, ‖(-1 : ℂ) / (1 - z)‖ ≤ 2 := by
     intro z hz
@@ -871,8 +884,9 @@ private theorem norm_cpow_neg_sub_le {y : ℝ} {p : ℕ} {s : ℂ}
   have hy_mem : (y : ℂ) ∈ seg := ⟨y, ⟨le_rfl, hyp⟩, rfl⟩
   have hp_mem : ((p : ℝ) : ℂ) ∈ seg := ⟨p, ⟨hyp, le_rfl⟩, rfl⟩
   have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound hconv hy_mem hp_mem
-  have hdist : ‖((p : ℝ) : ℂ) - (y : ℂ)‖ = (p : ℝ) - y := by
-    rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
+  have hdist : ‖(p : ℂ) - (y : ℂ)‖ = (p : ℝ) - y := by
+    rw [← Complex.ofReal_natCast, ← Complex.ofReal_sub, Complex.norm_real,
+      Real.norm_of_nonneg (by linarith)]
   rw [Complex.ofReal_natCast, hdist] at hmvt
   exact hmvt
 
@@ -962,7 +976,8 @@ theorem differentiableOn_tsum_neckPertTerm {a M k₀ : ℕ} {β₀ : ℝ} {S_seq
                     ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-w))‖ := norm_sub_le _ _
               _ ≤ 3 / 2 * ‖(p : ℂ) ^ (-w)‖ +
                     3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-w)‖ :=
-                  add_le_add (norm_log_one_sub_le hnorm_p) (norm_log_one_sub_le hnorm_M)
+                  add_le_add (DeletionData.norm_log_one_sub_le hnorm_p)
+                    (DeletionData.norm_log_one_sub_le hnorm_M)
               _ ≤ 3 := by linarith
         _ = 3 * (necklaceCount a (k + 1) : ℝ) := by
             rw [Finset.sum_const, hcard (k + 1) (by omega), nsmul_eq_mul, mul_comm]
@@ -1036,7 +1051,7 @@ theorem differentiableOn_tsum_neckPertTerm {a M k₀ : ℕ} {β₀ : ℝ} {S_seq
       calc 16 = 16 ^ 1 := (pow_one 16).symm
         _ ≤ M ^ 1 := Nat.pow_le_pow_left hM 1
         _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
-    refine DifferentiableWithinAt.sum fun p hp => ?_
+    refine DifferentiableWithinAt.fun_sum fun p hp => ?_
     exact ((differentiableAt_log_one_sub_natCast_cpow (hprime (k + 1) p hp).2.le hw_re).sub
       (differentiableAt_log_one_sub_natCast_cpow hMk16 hw_re)).differentiableWithinAt
   exact (hdB.differentiableAt (hB_open.mem_nhds (Metric.mem_ball_self hr0))).differentiableWithinAt
@@ -1072,8 +1087,8 @@ private theorem LSeries_sFreeR_eq_zeta_mul_exp (S : Set ℕ)
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [sFreeSummandHom, sFreeR, SFree, Real.zero_rpow (show -s.re ≠ 0 by linarith)]
     · simp only [sFreeSummandHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, norm_mul,
-        norm_natCast_cpow_neg n hn, Complex.norm_real, Real.norm_eq_abs]
-      exact mul_le_of_le_one_left (by positivity) (abs_sFreeR_le S n)
+        norm_natCast_cpow_neg_eq n hn, Complex.norm_real, Real.norm_eq_abs]
+      exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg n) _) (abs_sFreeR_le S n)
   have hLS : LSeries (fun n => (sFreeR S n : ℂ)) s = ∑' n : ℕ, sFreeSummandHom S s n := by
     unfold LSeries
     refine tsum_congr fun n => ?_
@@ -1083,9 +1098,9 @@ private theorem LSeries_sFreeR_eq_zeta_mul_exp (S : Set ℕ)
   set A : Nat.Primes → ℂ := fun p => -Complex.log (1 - ((p : ℕ) : ℂ) ^ (-s))
   set B : Nat.Primes → ℂ :=
     fun p => S.indicator (fun m : ℕ => -Complex.log (1 - (m : ℂ) ^ (-s))) (p : ℕ)
-  have hAs : Summable A := (summable_neg_log s hs).of_norm
+  have hAs : Summable A := (DeletionData.summable_neg_log s hs).of_norm
   have hBs : Summable B := by
-    refine Summable.of_norm_bounded (summable_neg_log s hs) fun p => ?_
+    refine Summable.of_norm_bounded (DeletionData.summable_neg_log s hs) fun p => ?_
     dsimp [B]
     rw [Set.indicator_apply]
     split_ifs <;> simp
@@ -1137,14 +1152,15 @@ private theorem tsum_indicator_union_eq_tsum_sum {S_seq : ℕ → Finset ℕ}
       obtain ⟨hpP, hp16⟩ := hprime (k + 1) n hpk
       have hnorm : ‖(n : ℂ) ^ (-s)‖ ≤ 1 / 2 :=
         norm_natCast_cpow_neg_le_half_of_sixteen_le hp16.le (by linarith)
-      refine (norm_log_one_sub_le hnorm).trans ?_
-      rw [norm_natCast_cpow_neg n hpP.pos]
+      have hlog_le := DeletionData.norm_log_one_sub_le hnorm
+      rwa [norm_natCast_cpow_neg_eq n hpP.pos] at hlog_le
     · rcases eq_or_ne n 0 with rfl | hn0
-      · rw [Real.zero_rpow (by linarith), mul_zero]
+      · push_cast; rw [Real.zero_rpow (by linarith), mul_zero]
       · positivity
   set H : ℕ × ℕ → ℂ := fun kp => if kp.2 ∈ S_seq (kp.1 + 1) then g kp.2 else 0
   have hH_norm : Summable (fun kp : ℕ × ℕ => ‖H kp‖) := by
-    refine summable_of_sum_le (fun _ => norm_nonneg _) (fun F => ?_)
+    refine summable_of_sum_le (c := ∑' n : ℕ, S.indicator (fun m => ‖g m‖) n)
+      (fun _ => norm_nonneg _) (fun F => ?_)
     set F' := F.filter fun kp : ℕ × ℕ => kp.2 ∈ S_seq (kp.1 + 1)
     have heq : ∑ kp ∈ F, ‖H kp‖ = ∑ kp ∈ F', ‖g kp.2‖ := by
       rw [Finset.sum_filter]
@@ -1173,8 +1189,9 @@ private theorem tsum_indicator_union_eq_tsum_sum {S_seq : ℕ → Finset ℕ}
   have hcol : ∀ n : ℕ, (∑' k : ℕ, H (k, n)) = S.indicator g n := by
     intro n
     by_cases hnS : n ∈ S
-    · obtain ⟨k₀, hk₀⟩ := hnS
-      rw [Set.indicator_of_mem hnS, tsum_eq_single k₀]
+    · rw [Set.indicator_of_mem hnS]
+      obtain ⟨k₀, hk₀⟩ := hnS
+      rw [tsum_eq_single k₀]
       · simp [H, hk₀]
       · intro k hk
         have hnot : n ∉ S_seq (k + 1) :=
@@ -1189,8 +1206,14 @@ private theorem tsum_indicator_union_eq_tsum_sum {S_seq : ℕ → Finset ℕ}
     intro k
     rw [tsum_eq_sum (s := S_seq (k + 1)) (fun n hn => by simp [H, hn])]
     exact Finset.sum_congr rfl fun p hp => by simp [H, hp]
-  rw [← tsum_congr hcol, ← hH.tsum_prod' (fun n => hH.prod_symm.prod_factor n),
-    hH.tsum_comm, tsum_congr hrow]
+  set Hswap : ℕ × ℕ → ℂ := fun nk => H (nk.2, nk.1)
+  have hHswap : Summable Hswap := hH.comp_injective (Equiv.prodComm ℕ ℕ).injective
+  calc (∑' n : ℕ, S.indicator g n)
+      = ∑' n : ℕ, ∑' k : ℕ, Hswap (n, k) := (tsum_congr hcol).symm
+    _ = ∑' nk : ℕ × ℕ, Hswap nk := (hHswap.tsum_prod' fun n => hHswap.prod_factor n).symm
+    _ = ∑' kp : ℕ × ℕ, H kp := (Equiv.prodComm ℕ ℕ).tsum_eq H
+    _ = ∑' k : ℕ, ∑' n : ℕ, H (k, n) := hH.tsum_prod' fun k => hH.prod_factor k
+    _ = ∑' k : ℕ, ∑ p ∈ S_seq (k + 1), g p := tsum_congr hrow
 
 /-! ## 5. Unconditional integer-norm Beurling fakes for every `β > 1/2` -/
 
@@ -1226,13 +1249,13 @@ private theorem exists_base_params_of_half_lt {β : ℝ} (hβ : 1 / 2 < β) :
       Real.exp_log (by positivity)]
   have hβ₀_gt : 1 / 2 < β₀ := by
     dsimp [β₀]
-    rw [hlogM, lt_div_iff₀ hlogM_pos]
+    rw [lt_div_iff₀ hlogM_pos, hlogM]
     have hlt : Real.log (b : ℝ) < Real.log (a : ℝ) :=
       Real.log_lt_log (by positivity) (by dsimp [a]; push_cast; linarith)
     linarith
   have hβ₀_lt : β₀ < β₁ := by
     dsimp [β₀]
-    rw [hlogM, div_lt_iff₀ hlogM_pos]
+    rw [div_lt_iff₀ hlogM_pos, hlogM]
     have hb0 : (0 : ℝ) < b := by positivity
     have hdiff : Real.log (a : ℝ) - Real.log (b : ℝ) ≤ 1 / (b : ℝ) := by
       rw [← Real.log_div (by positivity) hb0.ne']
@@ -1330,8 +1353,8 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
               rw [← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
                 ← Real.rpow_natCast _ (k + 1), ← Real.rpow_mul (by positivity)]
               congr 1; ring
-    refine summable_of_sum_le (fun n => Set.indicator_nonneg (fun _ _ => by positivity) n)
-      (fun F => ?_)
+    refine summable_of_sum_le (c := ∑' k : ℕ, rowMaj k)
+      (fun n => Set.indicator_nonneg (fun _ _ => by positivity) n) (fun F => ?_)
     classical
     set FS := F.filter (· ∈ S)
     have hFS_eq : ∑ p ∈ F, S.indicator (fun n : ℕ => (n : ℝ) ^ (-β')) p =
@@ -1371,7 +1394,7 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
       Complex.exp (∑' k : ℕ, ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s)
   have hGd_quarter : DifferentiableOn ℂ G {s : ℂ | 1 / 4 < s.re} := by
     have hd1 : DifferentiableOn ℂ zetaResidueUnit {s : ℂ | 1 / 4 < s.re} :=
-      fun s _ => differentiableAt_zetaResidueUnit.differentiableWithinAt
+      fun s _ => (analyticAt_zetaResidueUnit s).differentiableAt.differentiableWithinAt
     have hd2 : DifferentiableOn ℂ (fun s : ℂ => 1 - (a : ℂ) * (M : ℂ) ^ (-s))
         {s : ℂ | 1 / 4 < s.re} := by
       have hM0 : (M : ℂ) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
@@ -1385,8 +1408,9 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
   -- Match `G(s) = (s - 1) * (keptPrimeSystem S).zetaSeriesC s` on `{Re s > 1}`.
   have hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (keptPrimeSystem S).zetaSeriesC s := by
     intro s hs
+    have hs_ne1 : s ≠ 1 := by intro h1; subst h1; simp at hs
     rw [zetaSeriesC_keptPrimeSystem S hs, LSeries_sFreeR_eq_zeta_mul_exp S hS_prime hs,
-      ← mul_assoc, ← zetaResidueUnit_eq (by intro h1; subst h1; simp at hs : s ≠ 1),
+      ← mul_assoc, ← DeletionData.zetaResidueUnit_of_ne hs_ne1,
       tsum_indicator_union_eq_tsum_sum hprime hdisj hs]
     have haM_lt : (a : ℝ) * (M : ℝ) ^ (-s.re) < 1 := by
       rw [← hMβ, ← Real.rpow_add (by positivity : 0 < (M : ℝ))]
@@ -1408,10 +1432,11 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
       rw [norm_mul, Complex.norm_natCast]
       calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
           ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
-            refine mul_le_mul ?_ (norm_log_one_sub_le hnorm) (norm_nonneg _) (by positivity)
+            refine mul_le_mul ?_ (DeletionData.norm_log_one_sub_le hnorm) (norm_nonneg _)
+              (by positivity)
             exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
         _ = 3 / 2 * ((a : ℝ) * (M : ℝ) ^ (-s.re)) ^ (k + 1) := by
-            rw [norm_natCast_cpow_neg _ (Nat.pow_pos (by omega)), Nat.cast_pow,
+            rw [norm_natCast_cpow_neg_eq _ (Nat.pow_pos (by omega)), Nat.cast_pow,
               ← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
               mul_comm ((k + 1 : ℕ) : ℝ) (-s.re), Real.rpow_mul (by positivity),
               Real.rpow_natCast, mul_pow]
@@ -1519,37 +1544,51 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
     linarith [Real.pi_lt_four]
   set ρ₁ : ℂ := (β₀ : ℂ) + (t₁ : ℂ) * Complex.I
   have haM_ρ₀ : (a : ℂ) * (M : ℂ) ^ (-ρ₀) = 1 := by
-    dsimp [ρ₀]
-    rw [show (-(β₀ : ℂ)) = ((-β₀ : ℝ) : ℂ) by push_cast; ring,
-      ← Complex.ofReal_natCast M, Complex.ofReal_cpow (by positivity),
-      Real.rpow_neg (by positivity), hMβ, ← Complex.ofReal_natCast a, ← Complex.ofReal_mul,
-      mul_inv_cancel₀ (by positivity), Complex.ofReal_one]
+    have hM0 : (0 : ℝ) < M := by positivity
+    have ha0 : (0 : ℝ) < a := by positivity
+    have hreal : (a : ℝ) * (M : ℝ) ^ (-β₀) = 1 := by
+      rw [Real.rpow_neg hM0.le, hMβ, mul_inv_cancel₀ ha0.ne']
+    calc (a : ℂ) * (M : ℂ) ^ (-ρ₀)
+        = ((a : ℝ) : ℂ) * (((M : ℝ) : ℂ) ^ ((-β₀ : ℝ) : ℂ)) := by
+            dsimp [ρ₀]; push_cast; rfl
+      _ = (((a : ℝ) * (M : ℝ) ^ (-β₀) : ℝ) : ℂ) := by
+            rw [← Complex.ofReal_cpow hM0.le, Complex.ofReal_mul]
+      _ = 1 := by rw [hreal, Complex.ofReal_one]
   have haM_ρ₁ : (a : ℂ) * (M : ℂ) ^ (-ρ₁) = 1 := by
     have hM0 : (0 : ℝ) < M := by positivity
+    have hlog0 : (Real.log (M : ℝ) : ℂ) ≠ 0 := by
+      exact_mod_cast (by linarith : Real.log (M : ℝ) ≠ 0)
+    have ht₁_mul : (Real.log (M : ℝ) : ℂ) * (t₁ : ℂ) = 2 * Real.pi := by
+      dsimp [t₁]; push_cast; exact mul_div_cancel₀ _ hlog0
+    have hexp_per : (Real.log (M : ℝ) : ℂ) * (-ρ₁) =
+        (Real.log (M : ℝ) : ℂ) * (-ρ₀) - 2 * Real.pi * Complex.I := by
+      dsimp [ρ₁, ρ₀]
+      calc (Real.log (M : ℝ) : ℂ) * -((β₀ : ℂ) + (t₁ : ℂ) * Complex.I)
+          = (Real.log (M : ℝ) : ℂ) * -(β₀ : ℂ) -
+              ((Real.log (M : ℝ) : ℂ) * (t₁ : ℂ)) * Complex.I := by ring
+        _ = (Real.log (M : ℝ) : ℂ) * -(β₀ : ℂ) - 2 * Real.pi * Complex.I := by rw [ht₁_mul]
     have hcpow : (M : ℂ) ^ (-ρ₁) = (M : ℂ) ^ (-ρ₀) := by
       rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hM0.ne'),
         Complex.cpow_def_of_ne_zero (by exact_mod_cast hM0.ne'),
-        ← Complex.ofReal_natCast M, ← Complex.ofReal_log hM0.le]
-      have hexp_per : (-ρ₁) * (Real.log (M : ℝ) : ℂ) =
-          (-ρ₀) * (Real.log (M : ℝ) : ℂ) - (2 * Real.pi * Complex.I) := by
-        dsimp [ρ₁, ρ₀, t₁]
-        have hlog0 : (Real.log (M : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by linarith : Real.log (M : ℝ) ≠ 0)
-        field_simp [hlog0]
-        ring
-      rw [hexp_per, Complex.exp_sub, Complex.exp_two_pi_mul_I, div_one]
+        ← Complex.ofReal_natCast M, ← Complex.ofReal_log hM0.le,
+        hexp_per, Complex.exp_sub, Complex.exp_two_pi_mul_I, div_one]
     rw [hcpow, haM_ρ₀]
   have hG_ρ₀ : G ρ₀ = 0 := by dsimp [G]; rw [haM_ρ₀, sub_self, mul_zero, zero_mul]
   have hG_ρ₁ : G ρ₁ = 0 := by dsimp [G]; rw [haM_ρ₁, sub_self, mul_zero, zero_mul]
   have hρ₀_re : 1 / 2 < ρ₀.re := by simpa [ρ₀] using hβ₀_half
+  have hρ₀_re_lt1 : ρ₀.re < 1 := by simp only [ρ₀, Complex.ofReal_re]; linarith
   have hρ₀_im : ρ₀.im = 0 := by simp [ρ₀]
   have hρ₀_ne1 : ρ₀ ≠ 1 := by
     intro h1
     have hre := congrArg Complex.re h1
-    simp only [ρ₀, Complex.ofReal_re, Complex.one_re] at hre
+    rw [Complex.one_re] at hre
     linarith
   have hζ_ρ₀ : riemannZeta ρ₀ ≠ 0 :=
-    riemannZeta_ne_zero_of_abs_im_lt_four (by simp [ρ₀]) hρ₀_ne1
+    riemannZeta_ne_zero_of_abs_im_lt_four (by linarith) hρ₀_re_lt1 (by rw [hρ₀_im, abs_zero]; norm_num)
   have hρ₁_re : 1 / 2 < ρ₁.re := by simpa [ρ₁] using hβ₀_half
+  have hρ₁_re_lt1 : ρ₁.re < 1 := by
+    have hre_eq : ρ₁.re = β₀ := by simp [ρ₁]
+    linarith
   have hρ₁_im_eq : ρ₁.im = t₁ := by simp [ρ₁]
   have hρ₁_ne1 : ρ₁ ≠ 1 := by
     intro h1
@@ -1557,8 +1596,8 @@ theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
     rw [hρ₁_im_eq, Complex.one_im] at him
     linarith
   have hζ_ρ₁ : riemannZeta ρ₁ ≠ 0 :=
-    riemannZeta_ne_zero_of_abs_im_lt_four (by rw [hρ₁_im_eq, abs_of_pos ht₁_pos]; exact ht₁_lt_four)
-      hρ₁_ne1
+    riemannZeta_ne_zero_of_abs_im_lt_four (by linarith) hρ₁_re_lt1
+      (by rw [hρ₁_im_eq, abs_of_pos ht₁_pos]; exact ht₁_lt_four)
   have hfake' : IsIntegerNormFakeAt (keptPrimeSystem S) β' :=
     ⟨hasIntegerNorms_keptPrimeSystem S, isDiscrete_keptPrimeSystem S, hNotP,
       ⟨A, _, hA0, hcnt'⟩, G, hGd, hGeq, ρ₀, hρ₀_re, hρ₀_ne1, hG_ρ₀, hζ_ρ₀⟩

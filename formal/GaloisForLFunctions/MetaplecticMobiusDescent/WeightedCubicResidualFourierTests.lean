@@ -35661,4 +35661,344 @@ theorem quadraticSubsetRow_gram_poisson {ι : Type*} [DecidableEq ι]
 
 end SchwartzPlanePoisson
 
+
+namespace DivisorBlockCauchy
+open Eisenstein
+open scoped BigOperators Classical
+
+theorem divisor_mask_energy {n : Type*} [Fintype n]
+    (S : Finset (Ideal O)) (column : n → Ideal O) (hcol : ∀ j, column j ≠ 0)
+    (a : n → ℂ) :
+    (∑ D ∈ S, ∑ j, ‖if D ∣ column j then a j else 0‖ ^ 2) ≤
+      ∑ j, ((idealDivisors (column j)).card : ℝ) * ‖a j‖ ^ 2 := by
+  rw [Finset.sum_comm]
+  apply Finset.sum_le_sum
+  intro j _
+  have hsub : S.filter (fun D => D ∣ column j) ⊆ idealDivisors (column j) := by
+    intro D hD
+    exact (mem_idealDivisors (hcol j)).mpr (Finset.mem_filter.mp hD).2
+  have hite (D : Ideal O) : ‖if D ∣ column j then a j else 0‖ ^ 2 =
+      if D ∣ column j then ‖a j‖ ^ 2 else 0 := by split_ifs <;> simp
+  simp_rw [hite]
+  rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+  exact mul_le_mul_of_nonneg_right (by exact_mod_cast Finset.card_le_card hsub) (sq_nonneg _)
+
+def divisorConstant (ε : ℝ) (hε : 0 < ε) : ℝ :=
+  (IdealDivisorBound.ideal_divisor_small_power ε hε).choose
+
+theorem divisorConstant_pos (ε : ℝ) (hε : 0 < ε) : 0 < divisorConstant ε hε :=
+  (IdealDivisorBound.ideal_divisor_small_power ε hε).choose_spec.1
+
+theorem divisor_mask_energy_small_power {n : Type*} [Fintype n]
+    (ε : ℝ) (hε : 0 < ε) (S : Finset (Ideal O))
+    (column : n → Ideal O) (hcol : ∀ j, column j ≠ 0)
+    (N : ℝ) (hnorm : ∀ j, (Ideal.absNorm (column j) : ℝ) ≤ N) (a : n → ℂ) :
+    (∑ D ∈ S, ∑ j, ‖if D ∣ column j then a j else 0‖ ^ 2) ≤
+      (divisorConstant ε hε * N ^ ε) * ∑ j, ‖a j‖ ^ 2 := by
+  apply (divisor_mask_energy S column hcol a).trans
+  rw [Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro j _
+  apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
+  apply ((IdealDivisorBound.ideal_divisor_small_power ε hε).choose_spec.2
+    (column j) (hcol j)).trans
+  exact mul_le_mul_of_nonneg_left
+    (Real.rpow_le_rpow (Nat.cast_nonneg _) (hnorm j) hε.le) (divisorConstant_pos ε hε).le
+
+theorem rectangular_cauchy {α β : Type*} (S : Finset α) (T : Finset β)
+    (H : α → β → ℝ) (E : α → ℝ) (F : β → ℝ) (C : ℝ)
+    (_hC : 0 ≤ C) (hH : ∀ d ∈ S, ∀ e ∈ T, (H d e) ^ 2 ≤ C * E d * F e) :
+    (∑ d ∈ S, ∑ e ∈ T, H d e) ^ 2 ≤
+      (S.card : ℝ) * T.card * C * (∑ d ∈ S, E d) * (∑ e ∈ T, F e) := by
+  classical
+  have hCS := Finset.sum_mul_sq_le_sq_mul_sq (S ×ˢ T)
+    (fun _ => (1 : ℝ)) (fun x => H x.1 x.2)
+  simp only [one_mul, one_pow, Finset.sum_const, nsmul_eq_mul, mul_one,
+    Finset.card_product, Nat.cast_mul, Finset.sum_product] at hCS
+  have hsum : (∑ d ∈ S, ∑ e ∈ T, (H d e) ^ 2) ≤
+      C * (∑ d ∈ S, E d) * (∑ e ∈ T, F e) := by
+    calc
+      _ ≤ ∑ d ∈ S, ∑ e ∈ T, C * E d * F e := by
+        apply Finset.sum_le_sum
+        intro d hd
+        exact Finset.sum_le_sum (fun e he => hH d hd e he)
+      _ = _ := by simp only [← Finset.mul_sum, ← Finset.sum_mul]
+  apply hCS.trans
+  simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hsum
+    (show (0 : ℝ) ≤ (S.card : ℝ) * T.card by positivity)
+
+end DivisorBlockCauchy
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+/-- The odd-valuation part of an ideal. -/
+def quadraticSquarefreePart (I : Ideal O) : Ideal O :=
+  ∏ P ∈ (primeSupport I).filter (fun P => (normalizedFactors I).count P % 2 = 1), P
+
+/-- The square root of the maximal square ideal factor. -/
+def quadraticSquarePart (I : Ideal O) : Ideal O :=
+  ∏ P ∈ primeSupport I, P ^ ((normalizedFactors I).count P / 2)
+
+lemma quadraticSquarefreePart_squarefree (I : Ideal O) : Squarefree (quadraticSquarefreePart I) :=
+  squarefree_support_product (Finset.filter_subset _ _)
+
+lemma quadraticParts_mul_square (I : Ideal O) (hI : I ≠ 0) :
+    quadraticSquarefreePart I * quadraticSquarePart I ^ 2 = I := by
+  rw [quadraticSquarefreePart, Finset.prod_filter, quadraticSquarePart,
+    ← Finset.prod_pow, ← Finset.prod_mul_distrib]
+  calc
+    _ = ∏ P ∈ primeSupport I, P ^ ((normalizedFactors I).count P) := by
+      apply Finset.prod_congr rfl
+      intro P hP
+      have hm : (normalizedFactors I).count P % 2 = 0 ∨ (normalizedFactors I).count P % 2 = 1 := by omega
+      rcases hm with hm | hm
+      · rw [if_neg (by omega), one_mul, ← pow_mul]
+        congr 1
+        omega
+      · rw [if_pos hm, ← pow_mul, ← pow_succ']
+        congr 1
+        omega
+    _ = (normalizedFactors I).prod := (Finset.prod_multiset_count (normalizedFactors I)).symm
+    _ = I := Ideal.prod_normalizedFactors_eq_self hI
+
+/-- Prime valuations recover both square factors uniquely. -/
+theorem squarefree_square_decomposition_unique {A B C D : Ideal O}
+    (hB : B ≠ 0) (hD : D ≠ 0) (hA : Squarefree A) (hC : Squarefree C)
+    (he : A * B ^ 2 = C * D ^ 2) : A = C ∧ B = D := by
+  have hf := congrArg normalizedFactors he
+  rw [normalizedFactors_mul hA.ne_zero (pow_ne_zero _ hB),
+    normalizedFactors_mul hC.ne_zero (pow_ne_zero _ hD),
+    normalizedFactors_pow, normalizedFactors_pow] at hf
+  have ha := (squarefree_iff_nodup_normalizedFactors hA.ne_zero).mp hA
+  have hc := (squarefree_iff_nodup_normalizedFactors hC.ne_zero).mp hC
+  have hcount (P : Ideal O) :
+      (normalizedFactors A).count P = (normalizedFactors C).count P ∧
+      (normalizedFactors B).count P = (normalizedFactors D).count P := by
+    have hp := congrArg (Multiset.count P) hf
+    simp only [Multiset.count_add, Multiset.count_nsmul] at hp
+    have ha1 := Multiset.nodup_iff_count_le_one.mp ha P
+    have hc1 := Multiset.nodup_iff_count_le_one.mp hc P
+    omega
+  constructor
+  · calc
+      A = (normalizedFactors A).prod := (Ideal.prod_normalizedFactors_eq_self hA.ne_zero).symm
+      _ = (normalizedFactors C).prod := congrArg Multiset.prod (Multiset.ext.mpr (fun P => (hcount P).1))
+      _ = C := Ideal.prod_normalizedFactors_eq_self hC.ne_zero
+  · calc
+      B = (normalizedFactors B).prod := (Ideal.prod_normalizedFactors_eq_self hB).symm
+      _ = (normalizedFactors D).prod := congrArg Multiset.prod (Multiset.ext.mpr (fun P => (hcount P).2))
+      _ = D := Ideal.prod_normalizedFactors_eq_self hD
+
+lemma quadraticSquarePart_ne_zero (I : Ideal O) : quadraticSquarePart I ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr (fun P hP => pow_ne_zero _ (support_prime hP).ne_zero)
+
+lemma quadraticParts_of_squarefree (A B : Ideal O) (hA : Squarefree A) (hB : B ≠ 0) :
+    quadraticSquarefreePart (A * B ^ 2) = A ∧ quadraticSquarePart (A * B ^ 2) = B :=
+  squarefree_square_decomposition_unique (quadraticSquarePart_ne_zero _) hB
+    (quadraticSquarefreePart_squarefree _) hA
+    (quadraticParts_mul_square _ (mul_ne_zero hA.ne_zero (pow_ne_zero _ hB)))
+
+/-- Ideals supported away from two and three, with arbitrary prime multiplicities. -/
+def quadraticSupported (I : Ideal O) : Prop :=
+  primaryIdealGenerator I ≠ 0 ∧ ∀ P ∈ primeSupport I, ringChar (O ⧸ P) ≠ 2
+
+lemma quadraticSupported_mul (A B : Ideal O) :
+    quadraticSupported (A * B) ↔ quadraticSupported A ∧ quadraticSupported B := by
+  constructor
+  · intro h
+    have hg : primaryIdealGenerator A * primaryIdealGenerator B ≠ 0 := by
+      simpa only [primaryIdealGenerator_mul] using h.1
+    have hA := left_ne_zero_of_mul hg
+    have hB := right_ne_zero_of_mul hg
+    have hAn := primaryIdealGenerator_ne_zero_ideal A hA
+    have hBn := primaryIdealGenerator_ne_zero_ideal B hB
+    refine ⟨⟨hA, ?_⟩, ⟨hB, ?_⟩⟩
+    · intro P hP
+      apply h.2 P
+      simpa only [primeSupport, normalizedFactors_mul hAn hBn, Multiset.toFinset_add,
+        Finset.mem_union] using Or.inl hP
+    · intro P hP
+      apply h.2 P
+      simpa only [primeSupport, normalizedFactors_mul hAn hBn, Multiset.toFinset_add,
+        Finset.mem_union] using Or.inr hP
+  · rintro ⟨hA, hB⟩
+    refine ⟨by rw [primaryIdealGenerator_mul]; exact mul_ne_zero hA.1 hB.1, ?_⟩
+    intro P hP
+    have hAn := primaryIdealGenerator_ne_zero_ideal A hA.1
+    have hBn := primaryIdealGenerator_ne_zero_ideal B hB.1
+    simp only [primeSupport, normalizedFactors_mul hAn hBn, Multiset.toFinset_add,
+      Finset.mem_union] at hP
+    exact hP.elim (hA.2 P) (hB.2 P)
+
+lemma quadraticSupported_sq (A : Ideal O) : quadraticSupported (A ^ 2) ↔ quadraticSupported A := by
+  rw [pow_two, quadraticSupported_mul, and_self]
+
+lemma quadraticSupported_parts (I : Ideal O) (hI : I ≠ 0) :
+    quadraticSupported I ↔ quadraticIdealAdmissible (quadraticSquarefreePart I) ∧
+      quadraticSupported (quadraticSquarePart I) := by
+  have he := quadraticSupported_mul (quadraticSquarefreePart I) (quadraticSquarePart I ^ 2)
+  rw [quadraticParts_mul_square I hI, quadraticSupported_sq] at he
+  constructor
+  · intro h
+    obtain ⟨hA, hB⟩ := he.mp h
+    exact ⟨⟨hA.1, quadraticSquarefreePart_squarefree I, hA.2⟩, hB⟩
+  · rintro ⟨hA, hB⟩
+    exact he.mpr ⟨⟨hA.1, hA.2.2⟩, hB⟩
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+lemma canonicalQuadraticRow_mul (I : QuadraticIdeal) (a b : O) :
+    canonicalQuadraticRow I (a * b) = canonicalQuadraticRow I a * canonicalQuadraticRow I b := by
+  simp only [canonicalQuadraticRow, primeSubsetRow, map_mul, Finset.prod_mul_distrib]
+
+lemma canonicalQuadraticRow_star (I : QuadraticIdeal) (z : O) :
+    star (canonicalQuadraticRow I z) = canonicalQuadraticRow I z := by
+  simp only [canonicalQuadraticRow, primeSubsetRow, star_prod, MulChar.star_apply', complexQuadraticChar_inv]
+
+def quadraticIdealMask (I : QuadraticIdeal) (z : O) : ℂ :=
+  primeCoprimeMask quadraticPrimeGenerator (quadraticIdealSupport I) z
+
+lemma canonicalQuadraticRow_square (I : QuadraticIdeal) (z : O) :
+    canonicalQuadraticRow I (z ^ 2) = quadraticIdealMask I z := by
+  rw [pow_two, canonicalQuadraticRow_mul]
+  nth_rw 1 [← canonicalQuadraticRow_star I z]
+  exact primeSubsetRow_diagonal quadraticPrimeGenerator
+    (fun P => complexQuadraticChar (Ideal.span {quadraticPrimeGenerator P})) (quadraticIdealSupport I) z
+
+/-- Square arguments leave only the coprimality density in a quadratic row. -/
+lemma canonicalQuadraticRow_squarefree_argument (I : QuadraticIdeal) (A B : Ideal O) :
+    canonicalQuadraticRow I (primaryIdealGenerator (A * B ^ 2)) =
+      canonicalQuadraticRow I (primaryIdealGenerator A) * quadraticIdealMask I (primaryIdealGenerator B) := by
+  have hp : primaryIdealGenerator (B ^ 2) = primaryIdealGenerator B ^ 2 :=
+    map_pow primaryIdealGeneratorHom B 2
+  rw [primaryIdealGenerator_mul, hp, canonicalQuadraticRow_mul, canonicalQuadraticRow_square]
+
+abbrev QuadraticSupportedIdeal := {I : Ideal O // quadraticSupported I}
+
+/-- Unique squarefree-square decomposition with the arithmetic support retained. -/
+def quadraticSupportedPartsEquiv : QuadraticSupportedIdeal ≃ QuadraticIdeal × QuadraticSupportedIdeal where
+  toFun I :=
+    let h := (quadraticSupported_parts I.val (primaryIdealGenerator_ne_zero_ideal I.val I.property.1)).mp I.property
+    (⟨quadraticSquarefreePart I.val, h.1⟩, ⟨quadraticSquarePart I.val, h.2⟩)
+  invFun p := ⟨p.1.val * p.2.val ^ 2,
+    quadraticSupported_mul _ _ |>.mpr ⟨⟨p.1.property.1, p.1.property.2.2⟩,
+      (quadraticSupported_sq _).mpr p.2.property⟩⟩
+  left_inv I := Subtype.ext (quadraticParts_mul_square I.val
+    (primaryIdealGenerator_ne_zero_ideal I.val I.property.1))
+  right_inv p := by
+    have h := quadraticParts_of_squarefree p.1.val p.2.val p.1.property.2.1
+      (primaryIdealGenerator_ne_zero_ideal p.2.val p.2.property.1)
+    exact Prod.ext (Subtype.ext h.1) (Subtype.ext h.2)
+
+lemma quadraticSupported_tsum_parts (f : Ideal O → ℂ) :
+    (∑' I : QuadraticSupportedIdeal, f I.val) =
+      ∑' p : QuadraticIdeal × QuadraticSupportedIdeal, f (p.1.val * p.2.val ^ 2) :=
+  (quadraticSupportedPartsEquiv.symm.tsum_eq (fun I => f I.val)).symm
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+lemma canonicalQuadraticRow_norm_le_one (I : QuadraticIdeal) (z : O) :
+    ‖canonicalQuadraticRow I z‖ ≤ 1 := by
+  rw [canonicalQuadraticRow, ← primeCuspRowCharacter_restrict]
+  exact primeCuspRowCharacter_norm_le_one _ _ z
+
+abbrev QuadraticSupportedRange (M : ℝ) :=
+  {I : QuadraticSupportedIdeal // (Ideal.absNorm I.val : ℝ) ≤ M}
+
+noncomputable instance quadraticSupportedRangeFintype (M : ℝ) : Fintype (QuadraticSupportedRange M) := by
+  classical
+  let S := {I : Ideal O | Ideal.absNorm I ≤ ⌈M⌉₊}
+  letI : Finite S := (Ideal.finite_setOf_absNorm_le (S := O) ⌈M⌉₊).to_subtype
+  let f : QuadraticSupportedRange M → S := fun I => ⟨I.val.val, by
+    have h : (Ideal.absNorm I.val.val : ℝ) ≤ (⌈M⌉₊ : ℝ) := I.property.trans (Nat.le_ceil M)
+    exact_mod_cast h⟩
+  have hf : Function.Injective f := fun I J h => Subtype.ext (Subtype.ext (congrArg (fun J : S => J.val) h))
+  letI : Finite (QuadraticSupportedRange M) := Finite.of_injective f hf
+  exact Fintype.ofFinite _
+
+namespace CanonicalQuadraticSieve
+
+/-- The high squarefree-part kernel over the full ideal norm ball. -/
+def highMatrix (M N K : ℝ) : Matrix (QuadraticSupportedRange M) (QuadraticIdealRange N) ℂ :=
+  fun I J => if K < (Ideal.absNorm (quadraticSquarefreePart I.val.val) : ℝ) then
+    canonicalQuadraticRow J.val (primaryIdealGenerator I.val.val) else 0
+
+def highKernelNorm (M N K : ℝ) : ℝ := ‖FiniteSieveOperator.operator (highMatrix M N K)‖ ^ 2
+
+lemma highKernelNorm_nonneg (M N K : ℝ) : 0 ≤ highKernelNorm M N K := sq_nonneg _
+
+lemma highKernel_energy_bound (M N K : ℝ) (a : QuadraticIdealRange N → ℂ) :
+    (∑ I, ‖∑ J, highMatrix M N K I J * a J‖ ^ 2) ≤
+      highKernelNorm M N K * ∑ J, ‖a J‖ ^ 2 := by
+  classical
+  exact FiniteSieveOperator.energy_bound _ _
+
+end CanonicalQuadraticSieve
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap FourierTransform
+
+/-- Squaring the real argument preserves Schwartz decay. -/
+def quadraticSquareCLM : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ) :=
+  SchwartzMap.compCLM ℝ (Function.hasTemperateGrowth_norm_sq ℝ)
+    ⟨1, 1, fun x => by
+      simp only [pow_one, one_mul, norm_pow, Real.norm_of_nonneg (norm_nonneg x)]
+      nlinarith only [sq_nonneg (‖x‖ - 1)]⟩
+
+def quadraticSquareProfile (W : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) := quadraticSquareCLM W
+
+@[simp] lemma quadraticSquareProfile_apply (W : 𝓢(ℝ, ℂ)) (t : ℝ) :
+    quadraticSquareProfile W t = W (t ^ 2) := by
+  change W (‖t‖ ^ 2) = _
+  rw [Real.norm_eq_abs, sq_abs]
+
+/-- Restricting the plane Fourier transform to its scaled imaginary axis. -/
+def quadraticTransformedSquareCLM : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ) :=
+  (2 / Real.sqrt 3 : ℝ) •
+    (SchwartzMap.compCLMOfContinuousLinearEquiv ℝ
+      (ContinuousLinearEquiv.smulLeft (R₁ := ℝ) (M₁ := ℝ)
+        (Units.mk0 ((ringComplex omega).im)⁻¹ (inv_ne_zero complex_omega_im_ne_zero)))).comp
+      ((SchwartzMap.compCLMOfAntilipschitz ℝ (vertical_temperate 0)
+        (vertical_isometry 0).antilipschitz).comp radialFourierCLM)
+
+def quadraticTransformedSquareProfile (W : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) :=
+  quadraticTransformedSquareCLM W
+
+@[simp] lemma quadraticTransformedSquareProfile_apply (W : 𝓢(ℝ, ℂ)) (t : ℝ) :
+    quadraticTransformedSquareProfile W t = paperRadialFourier W (t ^ 2) := by
+  have ht : ‖(t : ℂ)‖ ^ 2 = t ^ 2 := by
+    rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  rw [← ht, ← paperFourier_radial W (t : ℂ), paperFourier_eq_standard]
+  change (2 / Real.sqrt 3 : ℝ) •
+    radialFourierCLM W (complexPoint 0 (((ringComplex omega).im)⁻¹ * t)) =
+      (2 / Real.sqrt 3 : ℝ) • (𝓕 (radialTest W)) (paperFrequency (t : ℂ))
+  rw [radialFourierCLM_apply, paperFrequency_coordinates]
+  simp only [Complex.ofReal_im, Complex.ofReal_re, zero_div, div_eq_mul_inv, mul_comm]
+
+lemma quadraticSquareProfile_seminorm_control (S : Finset (ℕ × ℕ)) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧ ∀ W : 𝓢(ℝ, ℂ),
+      S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (quadraticSquareProfile W) ≤
+        C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W :=
+  schwartzCLM_finite_seminorm_control quadraticSquareCLM S
+
+lemma quadraticTransformedSquareProfile_seminorm_control (S : Finset (ℕ × ℕ)) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧ ∀ W : 𝓢(ℝ, ℂ),
+      S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (quadraticTransformedSquareProfile W) ≤
+        C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W :=
+  schwartzCLM_finite_seminorm_control quadraticTransformedSquareCLM S
+
+end SchwartzPlanePoisson
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
