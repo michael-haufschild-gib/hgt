@@ -194,7 +194,7 @@ theorem parabolic_linear_invariant_iff {κ : ℝ} (hκ : κ ≠ 0) (a b : ℝ) :
     have hmul : -(4 / κ) * a - 2 * b = 0 := by linarith
     have hmul2 := congrArg (fun x => κ * x) hmul
     simp only [mul_zero] at hmul2
-    have hrew : κ * (-(4 / κ) * a - 2 * b) = -4 * a - 2 * κ * b := by field_simp; ring
+    have hrew : κ * (-(4 / κ) * a - 2 * b) = -4 * a - 2 * κ * b := by field_simp
     rw [hrew] at hmul2
     linarith
   · intro ha r l
