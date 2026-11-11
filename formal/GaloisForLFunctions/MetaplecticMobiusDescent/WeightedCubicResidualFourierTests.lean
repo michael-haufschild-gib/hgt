@@ -34319,7 +34319,8 @@ theorem prime_quadratic_radial_poisson {ι : Type*} [Fintype ι] [DecidableEq ι
   let A : O ⧸ Ideal.span {c} → ℂ := fun x => ∏ i, χ i (e x i)
   let G := ∑ x : O ⧸ Ideal.span {c}, A x * ψ x
   have hG : G = quadraticTraceGauss c hc := by
-    change (∑ x : O ⧸ Ideal.span {c}, (∏ i, χ i (e x i)) * ψ x) = _
+    change (∑ x : O ⧸ Ideal.span {c},
+      (∏ i, ((quadraticChar (O ⧸ P i)).ringHomComp (Int.castRingHom ℂ)) (e x i)) * ψ x) = _
     rw [QuadraticPhase.ProductGauss.quadratic_factorization_equiv (fun i => O ⧸ P i) e ψ
       (residueTraceQuotientChar_primitive c hc) hodd]
     simp only [ψ, residueTraceQuotientChar_eq_principal, quadraticTraceGauss]
@@ -34345,7 +34346,12 @@ theorem prime_quadratic_radial_poisson {ι : Type*} [Fintype ι] [DecidableEq ι
     rfl
   simp only [hA, χ, complexQuadraticChar_inv, he] at hPoisson
   rw [hPoisson]
-  change ((Y / ‖ringComplex c‖ ^ 2 : ℝ) : ℂ) * (G * _) = _
+  change ((Y / ‖ringComplex c‖ ^ 2 : ℝ) : ℂ) *
+      (G * ∑' h : O, (∏ i, complexQuadraticChar (P i) (Ideal.Quotient.mk (P i) h)) *
+        paperRadialFourier W (Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex c‖ ^ 2)) =
+    ((Y : ℂ) * fixedDualAverage c / (‖ringComplex c‖ : ℂ)) *
+      ∑' h : O, (∏ i, complexQuadraticChar (P i) (Ideal.Quotient.mk (P i) h)) *
+        paperRadialFourier W (Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex c‖ ^ 2)
   rw [← hphase]
   push_cast
   ring

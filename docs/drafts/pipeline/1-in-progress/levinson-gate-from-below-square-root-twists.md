@@ -61,7 +61,10 @@ the taper and its integrated jet limits are formalized; only bounded
 relative support length is required. Exact first and second product
 formulas for the actual normalized main term are formalized. The exact
 three-profile scalar equals the Levinson constant at `θ=13/50, R=13/10`.
-The common scalar limits remain under formalization.
+The actual first three main jets and their three-profile detector combination
+have these scalar limits in `TheFrozenMainJetsHaveTheirScalarLimits`,
+for arbitrary diverging cutoffs and convergent normalized displacement
+and endpoint conductor ratios.
 
 The final obligations are the dyadic law for one fixed mollifier and its
 insertion into `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw`

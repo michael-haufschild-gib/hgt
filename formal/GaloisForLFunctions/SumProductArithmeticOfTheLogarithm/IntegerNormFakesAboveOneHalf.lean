@@ -686,33 +686,945 @@ theorem exists_shortInterval_necklace_primes {a M : ℕ} {β₀ : ℝ}
         Real.rpow_def_of_pos (by positivity : 0 < (M : ℝ) ^ k)]
       exact Real.exp_le_exp.mpr (by linarith)
     exact ⟨(le_max_left _ _).trans hmax_le, (le_max_right _ _).trans hmax_le, h50, h800⟩
-  -- Extra capacity at `k₀ ≥ k₁` to absorb the finite prefix `1 ≤ j < k₀`.
-  set U₁ : ℕ := ∑ j ∈ Finset.Ico 1 k₁, necklaceCount a j
-  -- Wait: if `k₀ > k₁`, we want `(W_{k₀}).card ≥ ∑_{1 ≤ j ≤ k₀} necklaceCount a j`!
-  -- Check: for ANY `k₀ ≥ k₁`, `∑_{k₁ ≤ j ≤ k₀}`? Even simpler: pick `k₀` so `(M^{k₀})^{29/50} / 800 ≥ ∑_{1 ≤ j < k₁}` AND ONLY put `1 ≤ j < k₁` in `W_{k₁}`, while `k₁ ≤ k` ALREADY goes in `W_k`!
-  -- YES!! `k₀ := k₁` ALREADY HAS `1 ≤ j < k₁` FIXED (`U₁` DOES NOT DEPEND ON `k₀` if we use a separate threshold `k₀ ≥ k₁` ONLY for `U_prefix`? NO: put `1 ≤ j < k₀` in `W_{k₀}`? Why not put `1 ≤ j < k₁` in `W_{k₀}` and `j ≥ k₁` (except `k₀`) in `W_j`? Even simpler: `∑_{1 ≤ j < k₀} a^j ≤ a^{k₀}`! Since `a^j` is geometric with `a ≥ 2`, `∑_{1 ≤ j ≤ k₀} u(a, j) ≤ ∑_{1 ≤ j ≤ k₀} a^j ≤ 2 * a^{k₀} = 2 * (M^{k₀})^{β₀}`, which `(M^{k₀})^{29/50} / 400 ≥ 2 * (M^{k₀})^{β₀}` ALREADY BEATS AT `k₀ = k₁` WITH ZERO SECOND THRESHOLD!!)!
-  have hgeom_sum : ∑ j ∈ Finset.range (k₁ + 1), (if j = 0 then 0 else necklaceCount a j) ≤
-      2 * a ^ k₁ := by
-    have hle : ∑ j ∈ Finset.range (k₁ + 1), (if j = 0 then 0 else necklaceCount a j) ≤
-        ∑ j ∈ Finset.range (k₁ + 1), a ^ j := by
-      refine Finset.sum_le_sum fun j _ => ?_
-      split_ifs with hj0
-      · exact Nat.zero_le _
-      · exact necklaceCount_le_pow a j (by omega)
-    have hgeom : (a - 1) * ∑ j ∈ Finset.range (k₁ + 1), a ^ j ≤ a ^ (k₁ + 1) := by
-      have h := Nat.geomSum_mul_add a (k₁ + 1)
-      -- Wait: prove `(a - 1) * ∑_{j < n} a^j + 1 = a^n` by direct 3-line induction!
-      clear * - ha
-      induction k₁ + 1 with
-      | zero => simp
-      | succ n ih =>
-        rw [Finset.sum_range_succ, Nat.mul_add, pow_succ]
-        have ha1 : 1 + (a - 1) = a := by omega
-        nlinarith
-    have ha2 : 1 ≤ a - 1 := by omega
-    have hsum_pow : ∑ j ∈ Finset.range (k₁ + 1), a ^ j ≤ a * a ^ k₁ := by
-      -- Even simpler: prove `∑ j ∈ range (k₁ + 1), (if j = 0 then 0 else a ^ j) ≤ 2 * a ^ k₁` directly by induction on `k₁`!
-      clear * - ha
+  -- Geometric bound `∑_{1 ≤ j ≤ k₁} u(a, j) ≤ 2 a^{k₁} ≤ W_{k₁}.card`.
+  have hpow_sum : ∀ k : ℕ,
+      ∑ j ∈ Finset.range (k + 1), (if j = 0 then 0 else a ^ j) ≤ 2 * a ^ k := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [Finset.sum_range_succ, if_neg (Nat.succ_ne_zero k), pow_succ]
+      have ha_mul : 2 * a ^ k ≤ a ^ k * a := by nlinarith [Nat.one_le_pow k a (by omega)]
       omega
-    omega
-  sorry
+  have hcard_lo : ∀ k : ℕ, k₁ ≤ k →
+      2 * a ^ k ≤
+        (windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))).card := by
+    intro k hk
+    obtain ⟨hyX, hy16, hy50, hy800⟩ := hy_props k hk
+    have hlo := card_windowPrimes_lower hθ hyX hy16 hy50
+    have hy0 : 0 < (M : ℝ) ^ k := by positivity
+    have hsplit : ((M : ℝ) ^ k) ^ (29 / 50 : ℝ) = ((M : ℝ) ^ k) ^ η * ((M : ℝ) ^ k) ^ β₀ := by
+      rw [← Real.rpow_add hy0]
+      congr 1; dsimp [η]; ring
+    have hyβ : ((M : ℝ) ^ k) ^ β₀ = ((a ^ k : ℕ) : ℝ) := by
+      rw [← Real.rpow_natCast (M : ℝ) k, ← Real.rpow_mul (by positivity), mul_comm,
+        Real.rpow_mul (by positivity), hMβ, Real.rpow_natCast, Nat.cast_pow]
+    have hreal : (2 * a ^ k : ℝ) ≤
+        ((windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))).card : ℝ) := by
+      rw [hsplit, hyβ] at hlo
+      have hak0 : (0 : ℝ) ≤ ((a ^ k : ℕ) : ℝ) := Nat.cast_nonneg _
+      nlinarith
+    exact_mod_cast hreal
+  set W : ℕ → Finset ℕ := fun k =>
+    windowPrimes ((M : ℝ) ^ k) ((M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ))
+  set f_lo : ℕ → ℕ := fun j => if j = 0 then 0 else necklaceCount a j
+  have hf_lo_sum : ∑ j ∈ Finset.range (k₁ + 1), f_lo j ≤ (W k₁).card := by
+    refine le_trans ?_ (hcard_lo k₁ le_rfl)
+    refine le_trans (Finset.sum_le_sum fun j _ => ?_) (hpow_sum k₁)
+    dsimp [f_lo]
+    split_ifs with hj0
+    · exact Nat.zero_le _
+    · exact necklaceCount_le_pow a j (by omega)
+  obtain ⟨T_lo, hT_mem, hT_disj⟩ := exists_disjoint_subsets_of_sum_card_le f_lo (k₁ + 1) hf_lo_sum
+  have hhi_card : ∀ k : ℕ, k₁ < k → necklaceCount a k ≤ (W k).card := by
+    intro k hk
+    exact le_trans (necklaceCount_le_pow a k (by omega))
+      (le_trans (by omega : a ^ k ≤ 2 * a ^ k) (hcard_lo k hk.le))
+  set S_seq : ℕ → Finset ℕ := fun k =>
+    if hk : k ≤ k₁ then T_lo k
+    else Classical.choose (Finset.exists_subset_card_eq (hhi_card k (by omega)))
+  have hS_sub : ∀ k : ℕ, 1 ≤ k →
+      S_seq k ⊆ W (max k k₁) ∧ (S_seq k).card = necklaceCount a k := by
+    intro k hk1
+    dsimp only [S_seq]
+    split_ifs with hk
+    · obtain ⟨hsub, hcard⟩ := hT_mem k (by omega)
+      rw [max_eq_right hk]
+      simp only [f_lo, if_neg (by omega : k ≠ 0)] at hcard
+      exact ⟨hsub, hcard⟩
+    · have hkgt : k₁ < k := by omega
+      have hspec := Classical.choose_spec (Finset.exists_subset_card_eq (hhi_card k hkgt))
+      rwa [max_eq_left hkgt.le]
+  have hS0 : S_seq 0 = ∅ := by
+    dsimp only [S_seq]
+    rw [dif_pos (Nat.zero_le k₁)]
+    have hc := (hT_mem 0 (by omega)).2
+    simp only [f_lo, ↓reduceIte] at hc
+    exact Finset.card_eq_zero.mp hc
+  refine ⟨k₁, S_seq, hk₁1, hS0, (fun k hk => (hS_sub k hk).2), ?_, ?_, ?_⟩
+  · intro k p hp
+    rcases eq_or_ne k 0 with rfl | hk0
+    · rw [hS0] at hp; exact absurd hp (Finset.notMem_empty p)
+    · have hmemW := (hS_sub k (by omega)).1 hp
+      obtain ⟨hIoc, hpP⟩ := mem_windowPrimes.mp hmemW
+      have hm1 : 1 ≤ max k k₁ := le_trans hk₁1 (le_max_right k k₁)
+      have hy16 : (16 : ℝ) ≤ (M : ℝ) ^ (max k k₁) := by
+        calc (16 : ℝ) = (16 : ℝ) ^ 1 := (pow_one _).symm
+          _ ≤ (M : ℝ) ^ 1 := by gcongr; exact_mod_cast hM
+          _ ≤ (M : ℝ) ^ (max k k₁) := pow_le_pow_right₀ (by norm_num) hm1
+      have hp_gt : (M : ℝ) ^ (max k k₁) < (p : ℝ) := by
+        have hfl := (Finset.mem_Ioc.mp hIoc).1
+        have hnat : ((M : ℝ) ^ (max k k₁)) = ((M ^ (max k k₁) : ℕ) : ℝ) :=
+          (Nat.cast_pow M _).symm
+        rw [hnat, Nat.floor_natCast] at hfl
+        exact_mod_cast hfl
+      have hp16 : (16 : ℝ) < (p : ℝ) := lt_of_le_of_lt hy16 hp_gt
+      exact ⟨hpP, by exact_mod_cast hp16⟩
+  · intro k₁' k₂' hne
+    rcases eq_or_ne k₁' 0 with rfl | h10
+    · rw [hS0]; exact Finset.disjoint_empty_left _
+    rcases eq_or_ne k₂' 0 with rfl | h20
+    · rw [hS0]; exact Finset.disjoint_empty_right _
+    by_cases hc₁ : k₁' ≤ k₁ <;> by_cases hc₂ : k₂' ≤ k₁
+    · dsimp only [S_seq]
+      rw [dif_pos hc₁, dif_pos hc₂]
+      exact hT_disj k₁' (by omega) k₂' (by omega) hne
+    · have hmax : max k₁' k₁ ≠ max k₂' k₁ := by omega
+      exact Disjoint.mono (hS_sub k₁' (by omega)).1 (hS_sub k₂' (by omega)).1
+        (windowPrimes_disjoint_of_sixteen_le hM
+          (le_trans hk₁1 (le_max_right _ _)) (le_trans hk₁1 (le_max_right _ _)) hmax)
+    · have hmax : max k₁' k₁ ≠ max k₂' k₁ := by omega
+      exact Disjoint.mono (hS_sub k₁' (by omega)).1 (hS_sub k₂' (by omega)).1
+        (windowPrimes_disjoint_of_sixteen_le hM
+          (le_trans hk₁1 (le_max_right _ _)) (le_trans hk₁1 (le_max_right _ _)) hmax)
+    · have hmax : max k₁' k₁ ≠ max k₂' k₁ := by omega
+      exact Disjoint.mono (hS_sub k₁' (by omega)).1 (hS_sub k₂' (by omega)).1
+        (windowPrimes_disjoint_of_sixteen_le hM
+          (le_trans hk₁1 (le_max_right _ _)) (le_trans hk₁1 (le_max_right _ _)) hmax)
+  · intro k hk p hp
+    have hmemW : p ∈ W k := by
+      have hsub := (hS_sub k (le_trans hk₁1 hk)).1 hp
+      rwa [max_eq_left hk] at hsub
+    obtain ⟨hIoc, _⟩ := mem_windowPrimes.mp hmemW
+    obtain ⟨hgt, hle⟩ := Finset.mem_Ioc.mp hIoc
+    have hnat : ((M : ℝ) ^ k) = ((M ^ k : ℕ) : ℝ) := (Nat.cast_pow M k).symm
+    rw [hnat, Nat.floor_natCast] at hgt
+    exact ⟨hgt, (Nat.le_floor_iff (by positivity)).mp hle⟩
+
+/-! ## 4. Analytic continuation of the perturbed necklace Euler product -/
+
+private theorem one_sub_mem_slitPlane_of_norm_lt_one {z : ℂ} (hz : ‖z‖ < 1) :
+    1 - z ∈ Complex.slitPlane :=
+  Complex.mem_slitPlane_iff.mpr (Or.inl (by
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith [Complex.re_le_norm z]))
+
+private theorem norm_natCast_cpow_neg_le_half_of_sixteen_le {n : ℕ} (hn : 16 ≤ n)
+    {s : ℂ} (hs : 1 / 4 ≤ s.re) : ‖(n : ℂ) ^ (-s)‖ ≤ 1 / 2 := by
+  rw [norm_natCast_cpow_neg n (by omega)]
+  have hn16 : (16 : ℝ) ≤ n := by exact_mod_cast hn
+  calc (n : ℝ) ^ (-s.re)
+      ≤ (16 : ℝ) ^ (-s.re) :=
+        Real.rpow_le_rpow_of_nonpos (by norm_num) hn16 (by linarith)
+    _ ≤ (16 : ℝ) ^ (-(1 / 4 : ℝ)) :=
+        Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+    _ = ((2 : ℝ) ^ (4 : ℝ)) ^ (-(1 / 4 : ℝ)) := by norm_num
+    _ = (2 : ℝ) ^ (-(1 : ℝ)) := by rw [← Real.rpow_mul (by norm_num)]; norm_num
+    _ = 1 / 2 := by rw [Real.rpow_neg_one]; norm_num
+
+private theorem norm_log_one_sub_sub_le {w₁ w₂ : ℂ}
+    (hw₁ : ‖w₁‖ ≤ 1 / 2) (hw₂ : ‖w₂‖ ≤ 1 / 2) :
+    ‖Complex.log (1 - w₁) - Complex.log (1 - w₂)‖ ≤ 2 * ‖w₁ - w₂‖ := by
+  set B : Set ℂ := Metric.closedBall (0 : ℂ) (1 / 2)
+  have hderiv : ∀ z ∈ B,
+      HasDerivWithinAt (fun z : ℂ => Complex.log (1 - z)) ((-1 : ℂ) / (1 - z)) B z := by
+    intro z hz
+    have hzn : ‖z‖ ≤ 1 / 2 := by simpa [B, Metric.mem_closedBall] using hz
+    have hslit : 1 - z ∈ Complex.slitPlane :=
+      one_sub_mem_slitPlane_of_norm_lt_one (lt_of_le_of_lt hzn (by norm_num))
+    have hd : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) z := by
+      simpa using (hasDerivAt_const z (1 : ℂ)).sub (hasDerivAt_id z)
+    exact (hd.clog hslit).hasDerivWithinAt
+  have hbound : ∀ z ∈ B, ‖(-1 : ℂ) / (1 - z)‖ ≤ 2 := by
+    intro z hz
+    have hzn : ‖z‖ ≤ 1 / 2 := by simpa [B, Metric.mem_closedBall] using hz
+    have hre : 1 / 2 ≤ (1 - z).re := by
+      simp only [Complex.sub_re, Complex.one_re]
+      linarith [Complex.re_le_norm z]
+    have hnorm_ge : 1 / 2 ≤ ‖1 - z‖ := hre.trans (Complex.re_le_norm (1 - z))
+    rw [norm_div, norm_neg, norm_one]
+    exact (div_le_iff₀ (by linarith)).mpr (by linarith)
+  have hm₁ : w₁ ∈ B := by simpa [B, Metric.mem_closedBall] using hw₁
+  have hm₂ : w₂ ∈ B := by simpa [B, Metric.mem_closedBall] using hw₂
+  exact Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound
+    (convex_closedBall (0 : ℂ) (1 / 2)) hm₂ hm₁
+
+private theorem norm_cpow_neg_sub_le {y : ℝ} {p : ℕ} {s : ℂ}
+    (hy0 : 0 < y) (hyp : y ≤ (p : ℝ)) (hs : 0 < s.re) :
+    ‖(p : ℂ) ^ (-s) - (y : ℂ) ^ (-s)‖ ≤ ‖s‖ * y ^ (-s.re - 1) * ((p : ℝ) - y) := by
+  set seg : Set ℂ := (fun t : ℝ => (t : ℂ)) '' Set.Icc y (p : ℝ)
+  have hconv : Convex ℝ seg := (convex_Icc y (p : ℝ)).linear_image Complex.ofRealCLM.toLinearMap
+  have hderiv : ∀ z ∈ seg,
+      HasDerivWithinAt (fun z : ℂ => z ^ (-s)) ((-s) * z ^ (-s - 1)) seg z := by
+    rintro _ ⟨t, ht, rfl⟩
+    have ht0 : 0 < t := lt_of_lt_of_le hy0 ht.1
+    have hslit : (t : ℂ) ∈ Complex.slitPlane :=
+      Complex.mem_slitPlane_iff.mpr (Or.inl (by simpa using ht0))
+    exact (Complex.hasStrictDerivAt_cpow_const hslit).hasDerivAt.hasDerivWithinAt
+  have hbound : ∀ z ∈ seg, ‖(-s) * z ^ (-s - 1)‖ ≤ ‖s‖ * y ^ (-s.re - 1) := by
+    rintro _ ⟨t, ht, rfl⟩
+    have ht0 : 0 < t := lt_of_lt_of_le hy0 ht.1
+    rw [norm_mul, norm_neg, Complex.norm_cpow_eq_rpow_re_of_pos ht0]
+    simp only [Complex.sub_re, Complex.neg_re, Complex.one_re]
+    exact mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_nonpos hy0 ht.1 (by linarith)) (norm_nonneg s)
+  have hy_mem : (y : ℂ) ∈ seg := ⟨y, ⟨le_rfl, hyp⟩, rfl⟩
+  have hp_mem : ((p : ℝ) : ℂ) ∈ seg := ⟨p, ⟨hyp, le_rfl⟩, rfl⟩
+  have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound hconv hy_mem hp_mem
+  have hdist : ‖((p : ℝ) : ℂ) - (y : ℂ)‖ = (p : ℝ) - y := by
+    rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
+  rw [Complex.ofReal_natCast, hdist] at hmvt
+  exact hmvt
+
+/-- Log-ratio perturbation summand comparing `1 − p^{−s}` against `1 − (M^k)^{−s}`. -/
+def neckPertTerm (M k p : ℕ) (s : ℂ) : ℂ :=
+  Complex.log (1 - (p : ℂ) ^ (-s)) - Complex.log (1 - ((M ^ k : ℕ) : ℂ) ^ (-s))
+
+private theorem differentiableAt_log_one_sub_natCast_cpow {n : ℕ} (hn : 16 ≤ n)
+    {s : ℂ} (hs : 1 / 4 < s.re) :
+    DifferentiableAt ℂ (fun w : ℂ => Complex.log (1 - (n : ℂ) ^ (-w))) s := by
+  have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hcpow : DifferentiableAt ℂ (fun w : ℂ => (n : ℂ) ^ (-w)) s :=
+    differentiableAt_id.neg.const_cpow (Or.inl hn0)
+  have hsub : DifferentiableAt ℂ (fun w : ℂ => 1 - (n : ℂ) ^ (-w)) s :=
+    (differentiableAt_const 1).sub hcpow
+  have hnorm : ‖(n : ℂ) ^ (-s)‖ ≤ 1 / 2 :=
+    norm_natCast_cpow_neg_le_half_of_sixteen_le hn hs.le
+  exact hsub.clog (one_sub_mem_slitPlane_of_norm_lt_one (lt_of_le_of_lt hnorm (by norm_num)))
+
+theorem differentiableOn_tsum_neckPertTerm {a M k₀ : ℕ} {β₀ : ℝ} {S_seq : ℕ → Finset ℕ}
+    (hM : 16 ≤ M) (hMβ : (M : ℝ) ^ β₀ = (a : ℝ)) (hβ₀ : β₀ < 29 / 50)
+    (hcard : ∀ k : ℕ, 1 ≤ k → (S_seq k).card = necklaceCount a k)
+    (hprime : ∀ k : ℕ, ∀ p ∈ S_seq k, p.Prime ∧ 16 < p)
+    (hwin : ∀ k : ℕ, k₀ ≤ k → ∀ p ∈ S_seq k,
+      M ^ k < p ∧ (p : ℝ) ≤ (M : ℝ) ^ k + ((M : ℝ) ^ k) ^ (3 / 5 : ℝ)) :
+    DifferentiableOn ℂ
+      (fun s : ℂ => ∑' k : ℕ, ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s)
+      {s : ℂ | 1 / 4 < s.re} := by
+  intro s₀ hs₀
+  have hs₀' : 1 / 4 < s₀.re := hs₀
+  set r : ℝ := min 1 ((s₀.re - 1 / 4) / 2)
+  have hr0 : 0 < r := lt_min zero_lt_one (by linarith)
+  set σ₁ : ℝ := 1 / 4 + r
+  have hσ₁_gt : 1 / 4 < σ₁ := by dsimp [σ₁]; linarith
+  set B : Set ℂ := Metric.ball s₀ r
+  have hB_open : IsOpen B := Metric.isOpen_ball
+  have hB_re : ∀ w ∈ B, σ₁ < w.re ∧ ‖w‖ ≤ ‖s₀‖ + 1 := by
+    intro w hw
+    have hdist : ‖w - s₀‖ < r := by simpa [B, Metric.mem_ball, dist_eq_norm] using hw
+    have hre : |w.re - s₀.re| < r :=
+      lt_of_le_of_lt (by simpa [Complex.sub_re] using Complex.abs_re_le_norm (w - s₀)) hdist
+    have h1 : r ≤ (s₀.re - 1 / 4) / 2 := min_le_right _ _
+    have h2 : r ≤ 1 := min_le_left _ _
+    have hw_norm : ‖w‖ ≤ ‖s₀‖ + 1 := by
+      calc ‖w‖ = ‖s₀ + (w - s₀)‖ := by ring_nf
+        _ ≤ ‖s₀‖ + ‖w - s₀‖ := norm_add_le _ _
+        _ ≤ ‖s₀‖ + 1 := by linarith
+    exact ⟨by dsimp [σ₁]; linarith [(abs_lt.mp hre).1], hw_norm⟩
+  -- Summable majorant on `B`.
+  set q : ℝ := (M : ℝ) ^ (β₀ - σ₁ - 2 / 5)
+  have hq0 : 0 ≤ q := by positivity
+  have hq1 : q < 1 := by
+    refine Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < M)) ?_
+    linarith
+  set maj : ℕ → ℝ := fun k =>
+    if k + 1 < k₀ then 3 * (necklaceCount a (k + 1) : ℝ)
+    else 2 * (‖s₀‖ + 1) * q ^ (k + 1)
+  have hmaj_sum : Summable maj := by
+    rw [← summable_nat_add_iff k₀]
+    have hgeom : Summable (fun j : ℕ => 2 * (‖s₀‖ + 1) * q ^ (j + k₀ + 1)) := by
+      have hg := (summable_nat_add_iff (k₀ + 1)).mpr (summable_geometric_of_lt_one hq0 hq1)
+      simpa [add_assoc] using hg.mul_left (2 * (‖s₀‖ + 1))
+    refine hgeom.congr fun j => ?_
+    dsimp [maj]
+    rw [if_neg (by omega)]
+  have hterm_bound : ∀ (k : ℕ) (w : ℂ), w ∈ B →
+      ‖∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p w‖ ≤ maj k := by
+    intro k w hw
+    obtain ⟨hw_re, hw_norm⟩ := hB_re w hw
+    have hMk16 : 16 ≤ M ^ (k + 1) := by
+      calc 16 = 16 ^ 1 := (pow_one 16).symm
+        _ ≤ M ^ 1 := Nat.pow_le_pow_left hM 1
+        _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+    have hnorm_M : ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-w)‖ ≤ 1 / 2 :=
+      norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+    dsimp [maj]
+    split_ifs with hk₀
+    · calc ‖∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p w‖
+          ≤ ∑ p ∈ S_seq (k + 1), ‖neckPertTerm M (k + 1) p w‖ := norm_sum_le _ _
+        _ ≤ ∑ _p ∈ S_seq (k + 1), (3 : ℝ) := by
+            refine Finset.sum_le_sum fun p hp => ?_
+            have hp16 : 16 ≤ p := (hprime (k + 1) p hp).2.le
+            have hnorm_p : ‖(p : ℂ) ^ (-w)‖ ≤ 1 / 2 :=
+              norm_natCast_cpow_neg_le_half_of_sixteen_le hp16 (by linarith)
+            calc ‖neckPertTerm M (k + 1) p w‖
+                ≤ ‖Complex.log (1 - (p : ℂ) ^ (-w))‖ +
+                    ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-w))‖ := norm_sub_le _ _
+              _ ≤ 3 / 2 * ‖(p : ℂ) ^ (-w)‖ +
+                    3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-w)‖ :=
+                  add_le_add (norm_log_one_sub_le hnorm_p) (norm_log_one_sub_le hnorm_M)
+              _ ≤ 3 := by linarith
+        _ = 3 * (necklaceCount a (k + 1) : ℝ) := by
+            rw [Finset.sum_const, hcard (k + 1) (by omega), nsmul_eq_mul, mul_comm]
+    · have hkge : k₀ ≤ k + 1 := by omega
+      set y : ℝ := (M : ℝ) ^ (k + 1)
+      have hy0 : 0 < y := by positivity
+      have hy_cast : (((M ^ (k + 1) : ℕ) : ℂ)) = (y : ℂ) := by simp [y]
+      have hsingle : ∀ p ∈ S_seq (k + 1),
+          ‖neckPertTerm M (k + 1) p w‖ ≤ 2 * (‖s₀‖ + 1) * y ^ (-σ₁ - 2 / 5) := by
+        intro p hp
+        obtain ⟨hgt, hle⟩ := hwin (k + 1) hkge p hp
+        have hp16 : 16 ≤ p := (hprime (k + 1) p hp).2.le
+        have hnorm_p : ‖(p : ℂ) ^ (-w)‖ ≤ 1 / 2 :=
+          norm_natCast_cpow_neg_le_half_of_sixteen_le hp16 (by linarith)
+        have hyp : y ≤ (p : ℝ) := by
+          have : ((M ^ (k + 1) : ℕ) : ℝ) ≤ (p : ℝ) := by exact_mod_cast hgt.le
+          simpa [y] using this
+        have hdiff_p : (p : ℝ) - y ≤ y ^ (3 / 5 : ℝ) := by linarith
+        have h1 := norm_log_one_sub_sub_le hnorm_p hnorm_M
+        have h2 := norm_cpow_neg_sub_le hy0 hyp (by linarith : 0 < w.re)
+        rw [← hy_cast] at h2
+        have hy1 : 1 ≤ y := by
+          have : (1 : ℝ) ≤ M := by exact_mod_cast (by omega : 1 ≤ M)
+          exact one_le_pow₀ this
+        have hexp_le : y ^ (-w.re - 1) * ((p : ℝ) - y) ≤ y ^ (-σ₁ - 2 / 5) := by
+          calc y ^ (-w.re - 1) * ((p : ℝ) - y)
+              ≤ y ^ (-σ₁ - 1) * y ^ (3 / 5 : ℝ) :=
+                mul_le_mul (Real.rpow_le_rpow_of_exponent_le hy1 (by linarith))
+                  hdiff_p (by linarith) (by positivity)
+            _ = y ^ (-σ₁ - 2 / 5) := by
+                rw [← Real.rpow_add hy0]
+                congr 1; ring
+        calc ‖neckPertTerm M (k + 1) p w‖
+            ≤ 2 * ‖(p : ℂ) ^ (-w) - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-w)‖ := h1
+          _ ≤ 2 * (‖w‖ * (y ^ (-w.re - 1) * ((p : ℝ) - y))) := by
+              nlinarith
+          _ ≤ 2 * ((‖s₀‖ + 1) * y ^ (-σ₁ - 2 / 5)) := by
+              gcongr
+          _ = 2 * (‖s₀‖ + 1) * y ^ (-σ₁ - 2 / 5) := by ring
+      have hcard_le : ((S_seq (k + 1)).card : ℝ) ≤ y ^ β₀ := by
+        rw [hcard (k + 1) (by omega)]
+        have hnc : (necklaceCount a (k + 1) : ℝ) ≤ ((a ^ (k + 1) : ℕ) : ℝ) := by
+          exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
+        have hyβ : y ^ β₀ = ((a ^ (k + 1) : ℕ) : ℝ) := by
+          dsimp [y]
+          rw [← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+            mul_comm, Real.rpow_mul (by positivity), hMβ, Real.rpow_natCast, Nat.cast_pow]
+        rwa [hyβ]
+      have hyq : y ^ β₀ * y ^ (-σ₁ - 2 / 5) = q ^ (k + 1) := by
+        rw [← Real.rpow_add hy0]
+        dsimp [y, q]
+        rw [← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+          ← Real.rpow_natCast q (k + 1),
+          ← Real.rpow_mul (by positivity)]
+        congr 1; ring
+      calc ‖∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p w‖
+          ≤ ∑ p ∈ S_seq (k + 1), ‖neckPertTerm M (k + 1) p w‖ := norm_sum_le _ _
+        _ ≤ ∑ _p ∈ S_seq (k + 1), (2 * (‖s₀‖ + 1) * y ^ (-σ₁ - 2 / 5)) :=
+            Finset.sum_le_sum hsingle
+        _ = ((S_seq (k + 1)).card : ℝ) * (2 * (‖s₀‖ + 1) * y ^ (-σ₁ - 2 / 5)) := by
+            rw [Finset.sum_const, nsmul_eq_mul]
+        _ ≤ y ^ β₀ * (2 * (‖s₀‖ + 1) * y ^ (-σ₁ - 2 / 5)) :=
+            mul_le_mul_of_nonneg_right hcard_le (by positivity)
+        _ = 2 * (‖s₀‖ + 1) * (y ^ β₀ * y ^ (-σ₁ - 2 / 5)) := by ring
+        _ = 2 * (‖s₀‖ + 1) * q ^ (k + 1) := by rw [hyq]
+  have hdB : DifferentiableOn ℂ
+      (fun w : ℂ => ∑' k : ℕ, ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p w) B := by
+    refine differentiableOn_tsum_of_summable_norm hmaj_sum (fun k w hw => ?_) hB_open hterm_bound
+    have hw_re : 1 / 4 < w.re := lt_trans hσ₁_gt (hB_re w hw).1
+    have hMk16 : 16 ≤ M ^ (k + 1) := by
+      calc 16 = 16 ^ 1 := (pow_one 16).symm
+        _ ≤ M ^ 1 := Nat.pow_le_pow_left hM 1
+        _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+    refine DifferentiableWithinAt.sum fun p hp => ?_
+    exact ((differentiableAt_log_one_sub_natCast_cpow (hprime (k + 1) p hp).2.le hw_re).sub
+      (differentiableAt_log_one_sub_natCast_cpow hMk16 hw_re)).differentiableWithinAt
+  exact (hdB.differentiableAt (hB_open.mem_nhds (Metric.mem_ball_self hr0))).differentiableWithinAt
+
+/-- Completely multiplicative Euler summand for `sFreeR S`. -/
+private def sFreeSummandHom (S : Set ℕ) (s : ℂ) : ℕ →*₀ ℂ where
+  toFun n := (sFreeR S n : ℂ) * (n : ℂ) ^ (-s)
+  map_zero' := by simp [sFreeR, SFree]
+  map_one' := by simp [sFreeR, SFree]
+  map_mul' m n := by
+    classical
+    by_cases hm : m = 0
+    · simp [hm, sFreeR, SFree]
+    by_cases hn : n = 0
+    · simp [hn, sFreeR, SFree]
+    have hmul : SFree S (m * n) ↔ SFree S m ∧ SFree S n := by
+      simp only [SFree, mul_ne_zero hm hn, hm, hn, ne_eq, not_false_eq_true, true_and,
+        Nat.primeFactors_mul hm hn, Finset.mem_union]
+      exact ⟨fun h => ⟨fun p hp => h p (Or.inl hp), fun p hp => h p (Or.inr hp)⟩,
+        fun ⟨h1, h2⟩ p hp => hp.elim (h1 p) (h2 p)⟩
+    simp only [sFreeR, hmul, Nat.cast_mul, Complex.natCast_mul_natCast_cpow]
+    by_cases h1 : SFree S m <;> by_cases h2 : SFree S n <;> simp [h1, h2]
+
+private theorem LSeries_sFreeR_eq_zeta_mul_exp (S : Set ℕ)
+    (hS : ∀ p ∈ S, p.Prime) {s : ℂ} (hs : 1 < s.re) :
+    LSeries (fun n => (sFreeR S n : ℂ)) s =
+      riemannZeta s *
+        Complex.exp (∑' n : ℕ, S.indicator (fun m : ℕ => Complex.log (1 - (m : ℂ) ^ (-s))) n) := by
+  classical
+  have hnorm_sum : Summable (fun n : ℕ => ‖sFreeSummandHom S s n‖) := by
+    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun n => ?_)
+      (Real.summable_nat_rpow.mpr (show -s.re < -1 by linarith))
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [sFreeSummandHom, sFreeR, SFree, Real.zero_rpow (show -s.re ≠ 0 by linarith)]
+    · simp only [sFreeSummandHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, norm_mul,
+        norm_natCast_cpow_neg n hn, Complex.norm_real, Real.norm_eq_abs]
+      exact mul_le_of_le_one_left (by positivity) (abs_sFreeR_le S n)
+  have hLS : LSeries (fun n => (sFreeR S n : ℂ)) s = ∑' n : ℕ, sFreeSummandHom S s n := by
+    unfold LSeries
+    refine tsum_congr fun n => ?_
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [sFreeSummandHom, sFreeR, SFree]
+    · simp [sFreeSummandHom, LSeries.term_of_ne_zero hn.ne', div_eq_mul_inv, Complex.cpow_neg]
+  set A : Nat.Primes → ℂ := fun p => -Complex.log (1 - ((p : ℕ) : ℂ) ^ (-s))
+  set B : Nat.Primes → ℂ :=
+    fun p => S.indicator (fun m : ℕ => -Complex.log (1 - (m : ℂ) ^ (-s))) (p : ℕ)
+  have hAs : Summable A := (summable_neg_log s hs).of_norm
+  have hBs : Summable B := by
+    refine Summable.of_norm_bounded (summable_neg_log s hs) fun p => ?_
+    dsimp [B]
+    rw [Set.indicator_apply]
+    split_ifs <;> simp
+  have h1 : LSeries (fun n => (sFreeR S n : ℂ)) s =
+      Complex.exp (∑' p : Nat.Primes, (A p - B p)) := by
+    rw [hLS, ← EulerProduct.exp_tsum_primes_log_eq_tsum hnorm_sum]
+    congr 1
+    refine tsum_congr fun p => ?_
+    have hsf_p : SFree S (p : ℕ) ↔ (p : ℕ) ∉ S := by
+      simp [SFree, p.2.ne_zero, p.2.primeFactors]
+    simp only [sFreeSummandHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, sFreeR, hsf_p, A, B,
+      Set.indicator_apply]
+    by_cases hpS : (p : ℕ) ∈ S <;> simp [hpS]
+  rw [hAs.tsum_sub hBs, Complex.exp_sub, riemannZeta_eulerProduct_exp_log hs, div_eq_mul_inv,
+    ← Complex.exp_neg] at h1
+  rw [h1]
+  congr 2
+  rw [← tsum_neg]
+  have hsupp : Function.support
+      (fun n : ℕ => S.indicator (fun m : ℕ => Complex.log (1 - (m : ℂ) ^ (-s))) n) ⊆
+      {n : ℕ | n.Prime} := by
+    intro n hn
+    by_contra hnp
+    have hnS : n ∉ S := fun hm => hnp (hS n hm)
+    exact hn (by simp [hnS])
+  rw [← tsum_subtype_eq_of_support_subset hsupp]
+  refine tsum_congr fun p => ?_
+  dsimp [B]
+  rw [Set.indicator_apply, Set.indicator_apply]
+  split_ifs <;> simp
+
+private theorem tsum_indicator_union_eq_tsum_sum {S_seq : ℕ → Finset ℕ}
+    (hprime : ∀ k : ℕ, ∀ p ∈ S_seq k, p.Prime ∧ 16 < p)
+    (hdisj : ∀ k₁ k₂ : ℕ, k₁ ≠ k₂ → Disjoint (S_seq k₁) (S_seq k₂))
+    {s : ℂ} (hs : 1 < s.re) :
+    let S : Set ℕ := {p : ℕ | ∃ k : ℕ, p ∈ S_seq (k + 1)}
+    (∑' n : ℕ, S.indicator (fun m : ℕ => Complex.log (1 - (m : ℂ) ^ (-s))) n) =
+      ∑' k : ℕ, ∑ p ∈ S_seq (k + 1), Complex.log (1 - (p : ℂ) ^ (-s)) := by
+  classical
+  intro S
+  set g : ℕ → ℂ := fun m => Complex.log (1 - (m : ℂ) ^ (-s))
+  have hg_norm_sum : Summable (fun n : ℕ => S.indicator (fun m => ‖g m‖) n) := by
+    refine Summable.of_nonneg_of_le (fun n => Set.indicator_nonneg (fun _ _ => norm_nonneg _) n)
+      (fun n => ?_)
+      ((Real.summable_nat_rpow.mpr (show -s.re < -1 by linarith)).mul_left (3 / 2))
+    rw [Set.indicator_apply]
+    split_ifs with hnS
+    · obtain ⟨k, hpk⟩ := hnS
+      obtain ⟨hpP, hp16⟩ := hprime (k + 1) n hpk
+      have hnorm : ‖(n : ℂ) ^ (-s)‖ ≤ 1 / 2 :=
+        norm_natCast_cpow_neg_le_half_of_sixteen_le hp16.le (by linarith)
+      refine (norm_log_one_sub_le hnorm).trans ?_
+      rw [norm_natCast_cpow_neg n hpP.pos]
+    · rcases eq_or_ne n 0 with rfl | hn0
+      · rw [Real.zero_rpow (by linarith), mul_zero]
+      · positivity
+  set H : ℕ × ℕ → ℂ := fun kp => if kp.2 ∈ S_seq (kp.1 + 1) then g kp.2 else 0
+  have hH_norm : Summable (fun kp : ℕ × ℕ => ‖H kp‖) := by
+    refine summable_of_sum_le (fun _ => norm_nonneg _) (fun F => ?_)
+    set F' := F.filter fun kp : ℕ × ℕ => kp.2 ∈ S_seq (kp.1 + 1)
+    have heq : ∑ kp ∈ F, ‖H kp‖ = ∑ kp ∈ F', ‖g kp.2‖ := by
+      rw [Finset.sum_filter]
+      refine Finset.sum_congr rfl fun kp _ => ?_
+      dsimp [H]; split_ifs <;> simp
+    have hinj : Set.InjOn Prod.snd (F' : Set (ℕ × ℕ)) := by
+      intro kp₁ h₁ kp₂ h₂ hp_eq
+      have hm₁ : kp₁.2 ∈ S_seq (kp₁.1 + 1) := (Finset.mem_filter.mp h₁).2
+      have hm₂ : kp₂.2 ∈ S_seq (kp₂.1 + 1) := (Finset.mem_filter.mp h₂).2
+      dsimp only at hp_eq
+      rw [hp_eq] at hm₁
+      by_contra hne
+      have hk_ne : kp₁.1 + 1 ≠ kp₂.1 + 1 := fun hk => hne (Prod.ext (by omega) hp_eq)
+      exact Finset.disjoint_left.mp (hdisj _ _ hk_ne) hm₁ hm₂
+    calc ∑ kp ∈ F, ‖H kp‖
+        = ∑ kp ∈ F', ‖g kp.2‖ := heq
+      _ = ∑ n ∈ F'.image Prod.snd, ‖g n‖ := (Finset.sum_image hinj).symm
+      _ = ∑ n ∈ F'.image Prod.snd, S.indicator (fun m => ‖g m‖) n := by
+          refine Finset.sum_congr rfl fun n hn => ?_
+          obtain ⟨kp, hkp, rfl⟩ := Finset.mem_image.mp hn
+          have hnS : kp.2 ∈ S := ⟨kp.1, (Finset.mem_filter.mp hkp).2⟩
+          rw [Set.indicator_of_mem hnS]
+      _ ≤ ∑' n : ℕ, S.indicator (fun m => ‖g m‖) n :=
+          hg_norm_sum.sum_le_tsum _ fun n _ => Set.indicator_nonneg (fun _ _ => norm_nonneg _) n
+  have hH : Summable H := hH_norm.of_norm
+  have hcol : ∀ n : ℕ, (∑' k : ℕ, H (k, n)) = S.indicator g n := by
+    intro n
+    by_cases hnS : n ∈ S
+    · obtain ⟨k₀, hk₀⟩ := hnS
+      rw [Set.indicator_of_mem hnS, tsum_eq_single k₀]
+      · simp [H, hk₀]
+      · intro k hk
+        have hnot : n ∉ S_seq (k + 1) :=
+          Finset.disjoint_left.mp (hdisj (k₀ + 1) (k + 1) (by omega)) hk₀
+        simp [H, hnot]
+    · rw [Set.indicator_of_notMem hnS]
+      have h0 : ∀ k : ℕ, H (k, n) = 0 := fun k => by
+        have hnot : n ∉ S_seq (k + 1) := fun hm => hnS ⟨k, hm⟩
+        simp [H, hnot]
+      simp [h0]
+  have hrow : ∀ k : ℕ, (∑' n : ℕ, H (k, n)) = ∑ p ∈ S_seq (k + 1), g p := by
+    intro k
+    rw [tsum_eq_sum (s := S_seq (k + 1)) (fun n hn => by simp [H, hn])]
+    exact Finset.sum_congr rfl fun p hp => by simp [H, hp]
+  rw [← tsum_congr hcol, ← hH.tsum_prod' (fun n => hH.prod_symm.prod_factor n),
+    hH.tsum_comm, tsum_congr hrow]
+
+/-! ## 5. Unconditional integer-norm Beurling fakes for every `β > 1/2` -/
+
+private theorem exists_base_params_of_half_lt {β : ℝ} (hβ : 1 / 2 < β) :
+    ∃ (a M : ℕ) (β₀ : ℝ),
+      2 ≤ a ∧ 16 ≤ M ∧
+      (M : ℝ) ^ β₀ = (a : ℝ) ∧
+      1 / 2 < β₀ ∧ β₀ < β ∧ β₀ < 29 / 50 := by
+  set β₁ : ℝ := min β (29 / 50)
+  have hβ₁ : 1 / 2 < β₁ := lt_min hβ (by norm_num)
+  set δ : ℝ := 2 * β₁ - 1
+  have hδ : 0 < δ := by dsimp [δ]; linarith
+  set b : ℕ := max 4 (⌊1 / δ⌋₊ + 1)
+  have hb4 : 4 ≤ b := le_max_left _ _
+  have hb_gt : 1 / δ < (b : ℝ) := by
+    have h1 : ⌊1 / δ⌋₊ + 1 ≤ b := le_max_right _ _
+    exact lt_of_lt_of_le (Nat.lt_floor_add_one _) (by exact_mod_cast h1)
+  have hlogb_gt_one : 1 < Real.log (b : ℝ) := by
+    have hexp4 : Real.exp 1 < (b : ℝ) :=
+      lt_of_lt_of_le (lt_trans Real.exp_one_lt_d9 (by norm_num : (2.7182818286 : ℝ) < 4))
+        (by exact_mod_cast hb4)
+    simpa using Real.log_lt_log (Real.exp_pos 1) hexp4
+  set M : ℕ := b ^ 2
+  set a : ℕ := b + 1
+  have hM16 : 16 ≤ M := by dsimp [M]; nlinarith
+  have ha2 : 2 ≤ a := by omega
+  have hlogM : Real.log (M : ℝ) = 2 * Real.log (b : ℝ) := by
+    dsimp [M]; rw [Nat.cast_pow, Real.log_pow]; ring
+  have hlogM_pos : 0 < Real.log (M : ℝ) := by linarith
+  set β₀ : ℝ := Real.log (a : ℝ) / Real.log (M : ℝ)
+  have hMβ : (M : ℝ) ^ β₀ = (a : ℝ) := by
+    rw [Real.rpow_def_of_pos (by positivity), mul_div_cancel₀ _ hlogM_pos.ne',
+      Real.exp_log (by positivity)]
+  have hβ₀_gt : 1 / 2 < β₀ := by
+    dsimp [β₀]
+    rw [hlogM, lt_div_iff₀ hlogM_pos]
+    have hlt : Real.log (b : ℝ) < Real.log (a : ℝ) :=
+      Real.log_lt_log (by positivity) (by dsimp [a]; push_cast; linarith)
+    linarith
+  have hβ₀_lt : β₀ < β₁ := by
+    dsimp [β₀]
+    rw [hlogM, div_lt_iff₀ hlogM_pos]
+    have hb0 : (0 : ℝ) < b := by positivity
+    have hdiff : Real.log (a : ℝ) - Real.log (b : ℝ) ≤ 1 / (b : ℝ) := by
+      rw [← Real.log_div (by positivity) hb0.ne']
+      have heq : (a : ℝ) / (b : ℝ) = 1 + 1 / (b : ℝ) := by
+        dsimp [a]; push_cast; field_simp
+      rw [heq]
+      linarith [Real.log_le_sub_one_of_pos (by positivity : 0 < 1 + 1 / (b : ℝ))]
+    have h1b : 1 / (b : ℝ) < δ := (div_lt_iff₀ hb0).mpr ((div_lt_iff₀ hδ).mp hb_gt)
+    have hδlog : δ < δ * Real.log (b : ℝ) := lt_mul_of_one_lt_right hδ hlogb_gt_one
+    have h2β : β₁ * (2 * Real.log (b : ℝ)) = Real.log (b : ℝ) + δ * Real.log (b : ℝ) := by
+      dsimp [δ]; ring
+    linarith
+  exact ⟨a, M, β₀, ha2, hM16, hMβ, hβ₀_gt, lt_of_lt_of_le hβ₀_lt (min_le_left _ _),
+    lt_of_lt_of_le hβ₀_lt (min_le_right _ _)⟩
+
+/-- **Unconditional existence of integer-norm Beurling fakes above `1/2` (with both real and
+off-real zeros).**  For every `β > 1/2`, there exist a subset `S` of the rational primes and a
+holomorphic continuation `G` of `(s − 1) ζ_{ℙ \ S}(s)` to `{Re s > 1/2}` such that
+`keptPrimeSystem S` is an integer-norm Beurling fake at remainder exponent `β`, and `G` vanishes
+both at a real point `ρ₀ ∈ (1/2, 1)` and at an off-real point `ρ₁` in `{Re s > 1/2}` (`ρ₁.im ≠ 0`)
+where `ζ` is nonzero. -/
+theorem exists_keptPrimeSystem_fake_above_half {β : ℝ} (hβ : 1 / 2 < β) :
+    ∃ (S : Set ℕ) (G : ℂ → ℂ) (ρ₀ ρ₁ : ℂ),
+      IsIntegerNormFakeAt (keptPrimeSystem S) β ∧
+      DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re} ∧
+      (∀ s : ℂ, 1 < s.re → G s = (s - 1) * (keptPrimeSystem S).zetaSeriesC s) ∧
+      1 / 2 < ρ₀.re ∧ ρ₀.im = 0 ∧ ρ₀ ≠ 1 ∧ G ρ₀ = 0 ∧ riemannZeta ρ₀ ≠ 0 ∧
+      1 / 2 < ρ₁.re ∧ ρ₁.im ≠ 0 ∧ G ρ₁ = 0 ∧ riemannZeta ρ₁ ≠ 0 := by
+  set β' : ℝ := min β (3 / 4)
+  have hβ' : 1 / 2 < β' := lt_min hβ (by norm_num)
+  have hβ'1 : β' < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+  obtain ⟨a, M, β₀, ha2, hM16, hMβ, hβ₀_half, hβ₀_lt, hβ₀_29⟩ :=
+    exists_base_params_of_half_lt hβ'
+  obtain ⟨k₀, S_seq, hk₀1, _, hcard, hprime, hdisj, hwin⟩ :=
+    exists_shortInterval_necklace_primes ha2 hM16 hMβ hβ₀_29
+  set S : Set ℕ := {p : ℕ | ∃ k : ℕ, p ∈ S_seq (k + 1)}
+  have hS_prime : ∀ p ∈ S, p.Prime := fun _ ⟨k, hp⟩ => (hprime (k + 1) _ hp).1
+  -- Nonemptiness of `S` yields `NotNormEquivPrimes (keptPrimeSystem S)`.
+  have hcard1 : 1 ≤ (S_seq 1).card := by
+    rw [hcard 1 le_rfl]
+    exact necklaceCount_pos ha2 le_rfl
+  obtain ⟨p₀, hp₀_mem⟩ := Finset.card_pos.mp hcard1
+  have hNotP : NotNormEquivPrimes (keptPrimeSystem S) :=
+    notNormEquivPrimes_keptPrimeSystem (hprime 1 p₀ hp₀_mem).1 ⟨0, hp₀_mem⟩
+  -- Summability of `∑_{p ∈ S} p^{-β'}` gives the Rankin remainder `O(x^{β'})`.
+  have hS_sum : Summable (fun p : ℕ => S.indicator (fun n : ℕ => (n : ℝ) ^ (-β')) p) := by
+    set qR : ℝ := (M : ℝ) ^ (β₀ - β')
+    have hqR0 : 0 ≤ qR := by positivity
+    have hqR1 : qR < 1 :=
+      Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < M)) (by linarith)
+    set rowMaj : ℕ → ℝ := fun k =>
+      if k + 1 < k₀ then (necklaceCount a (k + 1) : ℝ)
+      else qR ^ (k + 1)
+    have hrowMaj_sum : Summable rowMaj := by
+      rw [← summable_nat_add_iff k₀]
+      have hg := (summable_nat_add_iff (k₀ + 1)).mpr (summable_geometric_of_lt_one hqR0 hqR1)
+      refine (by simpa [add_assoc] using hg : Summable fun j => qR ^ (j + k₀ + 1)).congr fun j => ?_
+      dsimp [rowMaj]; rw [if_neg (by omega)]
+    have hrow_le : ∀ k : ℕ, (∑ p ∈ S_seq (k + 1), (p : ℝ) ^ (-β')) ≤ rowMaj k := by
+      intro k
+      dsimp [rowMaj]
+      split_ifs with hk₀
+      · calc (∑ p ∈ S_seq (k + 1), (p : ℝ) ^ (-β'))
+            ≤ ∑ _p ∈ S_seq (k + 1), (1 : ℝ) := by
+              refine Finset.sum_le_sum fun p hp => ?_
+              have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast (hprime (k + 1) p hp).1.pos
+              exact Real.rpow_le_one_of_one_le_of_nonpos hp1 (by linarith)
+          _ = (necklaceCount a (k + 1) : ℝ) := by
+              rw [Finset.sum_const, hcard (k + 1) (by omega), nsmul_eq_mul, mul_one]
+      · have hkge : k₀ ≤ k + 1 := by omega
+        set y : ℝ := (M : ℝ) ^ (k + 1)
+        have hy0 : 0 < y := by positivity
+        calc (∑ p ∈ S_seq (k + 1), (p : ℝ) ^ (-β'))
+            ≤ ∑ _p ∈ S_seq (k + 1), y ^ (-β') := by
+              refine Finset.sum_le_sum fun p hp => ?_
+              have hyp : y ≤ (p : ℝ) := by
+                have hgt := (hwin (k + 1) hkge p hp).1
+                have : ((M ^ (k + 1) : ℕ) : ℝ) ≤ (p : ℝ) := by exact_mod_cast hgt.le
+                simpa [y] using this
+              exact Real.rpow_le_rpow_of_nonpos hy0 hyp (by linarith)
+          _ = ((S_seq (k + 1)).card : ℝ) * y ^ (-β') := by
+              rw [Finset.sum_const, nsmul_eq_mul]
+          _ ≤ y ^ β₀ * y ^ (-β') := by
+              rw [hcard (k + 1) (by omega)]
+              have hnc : (necklaceCount a (k + 1) : ℝ) ≤ ((a ^ (k + 1) : ℕ) : ℝ) := by
+                exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
+              have hyβ : y ^ β₀ = ((a ^ (k + 1) : ℕ) : ℝ) := by
+                dsimp [y]
+                rw [← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+                  mul_comm, Real.rpow_mul (by positivity), hMβ, Real.rpow_natCast, Nat.cast_pow]
+              exact mul_le_mul_of_nonneg_right (hyβ ▸ hnc) (by positivity)
+          _ = qR ^ (k + 1) := by
+              rw [← Real.rpow_add hy0]
+              dsimp [y, qR]
+              rw [← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+                ← Real.rpow_natCast _ (k + 1), ← Real.rpow_mul (by positivity)]
+              congr 1; ring
+    refine summable_of_sum_le (fun n => Set.indicator_nonneg (fun _ _ => by positivity) n)
+      (fun F => ?_)
+    classical
+    set FS := F.filter (· ∈ S)
+    have hFS_eq : ∑ p ∈ F, S.indicator (fun n : ℕ => (n : ℝ) ^ (-β')) p =
+        ∑ p ∈ FS, (p : ℝ) ^ (-β') := by
+      rw [Finset.sum_filter]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      rw [Set.indicator_apply]
+    set idx : ℕ → ℕ := fun p =>
+      if h : p ∈ S then Classical.choose h else 0
+    have hidx_mem : ∀ p ∈ FS, p ∈ S_seq (idx p + 1) := by
+      intro p hp
+      have hpS : p ∈ S := (Finset.mem_filter.mp hp).2
+      dsimp [idx]
+      rw [dif_pos hpS]
+      exact Classical.choose_spec hpS
+    set K := FS.image idx
+    have hpart : ∑ p ∈ FS, (p : ℝ) ^ (-β') ≤ ∑ k ∈ K, ∑ p ∈ S_seq (k + 1), (p : ℝ) ^ (-β') := by
+      have hbi : FS ⊆ K.biUnion (fun k => S_seq (k + 1)) := by
+        intro p hp
+        exact Finset.mem_biUnion.mpr ⟨idx p, Finset.mem_image_of_mem idx hp, hidx_mem p hp⟩
+      calc ∑ p ∈ FS, (p : ℝ) ^ (-β')
+          ≤ ∑ p ∈ K.biUnion (fun k => S_seq (k + 1)), (p : ℝ) ^ (-β') :=
+            Finset.sum_le_sum_of_subset_of_nonneg hbi (fun _ _ _ => by positivity)
+        _ = ∑ k ∈ K, ∑ p ∈ S_seq (k + 1), (p : ℝ) ^ (-β') :=
+            Finset.sum_biUnion (fun k₁ _ k₂ _ hne => hdisj _ _ (by omega))
+    calc ∑ p ∈ F, S.indicator (fun n : ℕ => (n : ℝ) ^ (-β')) p
+        = ∑ p ∈ FS, (p : ℝ) ^ (-β') := hFS_eq
+      _ ≤ ∑ k ∈ K, ∑ p ∈ S_seq (k + 1), (p : ℝ) ^ (-β') := hpart
+      _ ≤ ∑ k ∈ K, rowMaj k := Finset.sum_le_sum fun k _ => hrow_le k
+      _ ≤ ∑' k : ℕ, rowMaj k := hrowMaj_sum.sum_le_tsum K fun k _ => by
+          dsimp [rowMaj]; split_ifs <;> positivity
+  obtain ⟨A, hA0, hcnt'⟩ :=
+    keptPrimeSystem_count_sub_le_of_summable (by linarith : 0 ≤ β') hβ'1 hS_sum
+  -- Define the holomorphic continuation `G(s)` on `{Re s > 1/2}` (in fact `{Re s > 1/4}`).
+  set G : ℂ → ℂ := fun s =>
+    zetaResidueUnit s * (1 - (a : ℂ) * (M : ℂ) ^ (-s)) *
+      Complex.exp (∑' k : ℕ, ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s)
+  have hGd_quarter : DifferentiableOn ℂ G {s : ℂ | 1 / 4 < s.re} := by
+    have hd1 : DifferentiableOn ℂ zetaResidueUnit {s : ℂ | 1 / 4 < s.re} :=
+      fun s _ => differentiableAt_zetaResidueUnit.differentiableWithinAt
+    have hd2 : DifferentiableOn ℂ (fun s : ℂ => 1 - (a : ℂ) * (M : ℂ) ^ (-s))
+        {s : ℂ | 1 / 4 < s.re} := by
+      have hM0 : (M : ℂ) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+      exact (differentiableOn_const 1).sub
+        ((differentiableOn_const (a : ℂ)).mul
+          (differentiableOn_id.neg.const_cpow (Or.inl hM0)))
+    have hd3 := differentiableOn_tsum_neckPertTerm hM16 hMβ hβ₀_29 hcard hprime hwin
+    exact (hd1.mul hd2).mul hd3.cexp
+  have hGd : DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re} :=
+    hGd_quarter.mono fun s (hs : 1 / 2 < s.re) => show 1 / 4 < s.re by linarith
+  -- Match `G(s) = (s - 1) * (keptPrimeSystem S).zetaSeriesC s` on `{Re s > 1}`.
+  have hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (keptPrimeSystem S).zetaSeriesC s := by
+    intro s hs
+    rw [zetaSeriesC_keptPrimeSystem S hs, LSeries_sFreeR_eq_zeta_mul_exp S hS_prime hs,
+      ← mul_assoc, ← zetaResidueUnit_eq (by intro h1; subst h1; simp at hs : s ≠ 1),
+      tsum_indicator_union_eq_tsum_sum hprime hdisj hs]
+    have haM_lt : (a : ℝ) * (M : ℝ) ^ (-s.re) < 1 := by
+      rw [← hMβ, ← Real.rpow_add (by positivity : 0 < (M : ℝ))]
+      exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < M)) (by linarith)
+    have hMod := exp_tsum_necklaceCount_log_cpow_eq ha2 (by omega) haM_lt
+    -- Both row series converge absolutely on `{Re s > 1}`.
+    have hsum_L : Summable (fun k : ℕ =>
+        ∑ p ∈ S_seq (k + 1), Complex.log (1 - (p : ℂ) ^ (-s))) := by
+      have hmod : Summable (fun k : ℕ =>
+          (necklaceCount a (k + 1) : ℂ) *
+            Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) := by
+        refine Summable.of_norm_bounded
+          (((summable_nat_add_iff 1).mpr
+            (summable_geometric_of_lt_one (by positivity) haM_lt)).mul_left (3 / 2))
+          fun k => ?_
+        have hMk16 : 16 ≤ M ^ (k + 1) := by
+          calc 16 = 16 ^ 1 := (pow_one 16).symm
+            _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
+            _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+        have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+        rw [norm_mul, Complex.norm_natCast]
+        calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
+            ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
+              refine mul_le_mul ?_ (norm_log_one_sub_le hnorm) (norm_nonneg _) (by positivity)
+              exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
+          _ = 3 / 2 * ((a : ℝ) * (M : ℝ) ^ (-s.re)) ^ (k + 1) := by
+              rw [norm_natCast_cpow_neg _ (Nat.pow_pos (by omega)), Nat.cast_pow,
+                ← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+                mul_comm ((k + 1 : ℕ) : ℝ) (-s.re), Real.rpow_mul (by positivity),
+                Real.rpow_natCast, mul_pow]
+              ring
+      have hpert : Summable (fun k : ℕ =>
+          ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s) := by
+        -- Rewrite `L_k = pert_k + mod_k`, or establish `hpert` directly from geometric bound!
+        set q₁ : ℝ := (M : ℝ) ^ (β₀ - 1 - 2 / 5)
+        have hq₁1 : q₁ < 1 :=
+          Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < M)) (by linarith)
+        rw [← summable_nat_add_iff k₀]
+        refine Summable.of_norm_bounded
+          (((summable_nat_add_iff (k₀ + 1)).mpr
+            (summable_geometric_of_lt_one (by positivity) hq₁1)).mul_left (2 * (‖s‖ + 1)))
+          fun j => ?_
+        set k := j + k₀
+        have hkge : k₀ ≤ k + 1 := by omega
+        set y : ℝ := (M : ℝ) ^ (k + 1)
+        have hy0 : 0 < y := by positivity
+        have hMk16 : 16 ≤ M ^ (k + 1) := by
+          calc 16 = 16 ^ 1 := (pow_one 16).symm
+            _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
+            _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+        have hnorm_M := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+        have hy_cast : (((M ^ (k + 1) : ℕ) : ℂ)) = (y : ℂ) := by simp [y]
+        have hy1 : 1 ≤ y := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ M))
+        calc ‖∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s‖
+            ≤ ∑ p ∈ S_seq (k + 1), ‖neckPertTerm M (k + 1) p s‖ := norm_sum_le _ _
+          _ ≤ ∑ _p ∈ S_seq (k + 1), (2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ)) := by
+              refine Finset.sum_le_sum fun p hp => ?_
+              obtain ⟨hgt, hle⟩ := hwin (k + 1) hkge p hp
+              have hp16 : 16 ≤ p := (hprime (k + 1) p hp).2.le
+              have hnorm_p := norm_natCast_cpow_neg_le_half_of_sixteen_le hp16 (by linarith)
+              have hyp : y ≤ (p : ℝ) := by
+                have : ((M ^ (k + 1) : ℕ) : ℝ) ≤ (p : ℝ) := by exact_mod_cast hgt.le
+                simpa [y] using this
+              have h1 := norm_log_one_sub_sub_le hnorm_p hnorm_M
+              have h2 := norm_cpow_neg_sub_le hy0 hyp (by linarith : 0 < s.re)
+              rw [← hy_cast] at h2
+              have hexp : y ^ (-s.re - 1) * ((p : ℝ) - y) ≤ y ^ (-1 - 2 / 5 : ℝ) := by
+                calc y ^ (-s.re - 1) * ((p : ℝ) - y)
+                    ≤ y ^ (-1 - 1 : ℝ) * y ^ (3 / 5 : ℝ) :=
+                      mul_le_mul (Real.rpow_le_rpow_of_exponent_le hy1 (by linarith))
+                        (by linarith) (by linarith) (by positivity)
+                  _ = y ^ (-1 - 2 / 5 : ℝ) := by rw [← Real.rpow_add hy0]; congr 1; ring
+              have hs_le : ‖s‖ ≤ ‖s‖ + 1 := by linarith
+              calc ‖neckPertTerm M (k + 1) p s‖
+                  ≤ 2 * (‖s‖ * (y ^ (-s.re - 1) * ((p : ℝ) - y))) := by linarith
+                _ ≤ 2 * ((‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ)) := by gcongr
+                _ = 2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ) := by ring
+          _ = ((S_seq (k + 1)).card : ℝ) * (2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ)) := by
+              rw [Finset.sum_const, nsmul_eq_mul]
+          _ ≤ y ^ β₀ * (2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ)) := by
+              rw [hcard (k + 1) (by omega)]
+              have hnc : (necklaceCount a (k + 1) : ℝ) ≤ ((a ^ (k + 1) : ℕ) : ℝ) := by
+                exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
+              have hyβ : y ^ β₀ = ((a ^ (k + 1) : ℕ) : ℝ) := by
+                dsimp [y]
+                rw [← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+                  mul_comm, Real.rpow_mul (by positivity), hMβ, Real.rpow_natCast, Nat.cast_pow]
+              exact mul_le_mul_of_nonneg_right (hyβ ▸ hnc) (by positivity)
+          _ = 2 * (‖s‖ + 1) * q₁ ^ (j + (k₀ + 1)) := by
+              have hexp_eq : y ^ β₀ * y ^ (-1 - 2 / 5 : ℝ) = q₁ ^ (j + (k₀ + 1)) := by
+                rw [← Real.rpow_add hy0]
+                dsimp [y, q₁, k]
+                rw [← Real.rpow_natCast (M : ℝ) (j + k₀ + 1), ← Real.rpow_mul (by positivity),
+                  ← Real.rpow_natCast _ (j + (k₀ + 1)), ← Real.rpow_mul (by positivity)]
+                congr 1; push_cast; ring
+              calc y ^ β₀ * (2 * (‖s‖ + 1) * y ^ (-1 - 2 / 5 : ℝ))
+                  = 2 * (‖s‖ + 1) * (y ^ β₀ * y ^ (-1 - 2 / 5 : ℝ)) := by ring
+                _ = 2 * (‖s‖ + 1) * q₁ ^ (j + (k₀ + 1)) := by rw [hexp_eq]
+      refine (hpert.add hmod).congr fun k => ?_
+      simp only [neckPertTerm, Finset.sum_sub_distrib, Finset.sum_const,
+        hcard (k + 1) (by omega), nsmul_eq_mul, sub_add_cancel]
+    have hsum_M : Summable (fun k : ℕ =>
+        (necklaceCount a (k + 1) : ℂ) *
+          Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) := by
+      refine Summable.of_norm_bounded
+        (((summable_nat_add_iff 1).mpr
+          (summable_geometric_of_lt_one (by positivity) haM_lt)).mul_left (3 / 2))
+        fun k => ?_
+      have hMk16 : 16 ≤ M ^ (k + 1) := by
+        calc 16 = 16 ^ 1 := (pow_one 16).symm
+          _ ≤ M ^ 1 := Nat.pow_le_pow_left hM16 1
+          _ ≤ M ^ (k + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+      have hnorm := norm_natCast_cpow_neg_le_half_of_sixteen_le hMk16 (by linarith)
+      rw [norm_mul, Complex.norm_natCast]
+      calc (necklaceCount a (k + 1) : ℝ) * ‖Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))‖
+          ≤ (a : ℝ) ^ (k + 1) * (3 / 2 * ‖((M ^ (k + 1) : ℕ) : ℂ) ^ (-s)‖) := by
+            refine mul_le_mul ?_ (norm_log_one_sub_le hnorm) (norm_nonneg _) (by positivity)
+            exact_mod_cast necklaceCount_le_pow a (k + 1) (by omega)
+        _ = 3 / 2 * ((a : ℝ) * (M : ℝ) ^ (-s.re)) ^ (k + 1) := by
+            rw [norm_natCast_cpow_neg _ (Nat.pow_pos (by omega)), Nat.cast_pow,
+              ← Real.rpow_natCast (M : ℝ) (k + 1), ← Real.rpow_mul (by positivity),
+              mul_comm ((k + 1 : ℕ) : ℝ) (-s.re), Real.rpow_mul (by positivity),
+              Real.rpow_natCast, mul_pow]
+            ring
+    have hsplit : (∑' k : ℕ, ∑ p ∈ S_seq (k + 1), neckPertTerm M (k + 1) p s) =
+        (∑' k : ℕ, ∑ p ∈ S_seq (k + 1), Complex.log (1 - (p : ℂ) ^ (-s))) -
+          (∑' k : ℕ, (necklaceCount a (k + 1) : ℂ) *
+            Complex.log (1 - ((M ^ (k + 1) : ℕ) : ℂ) ^ (-s))) := by
+      rw [← hsum_L.tsum_sub hsum_M]
+      refine tsum_congr fun k => ?_
+      simp [neckPertTerm, Finset.sum_sub_distrib, hcard (k + 1) (by omega)]
+    dsimp [G]
+    rw [hsplit, Complex.exp_sub, hMod]
+    have hmod_ne : 1 - (a : ℂ) * (M : ℂ) ^ (-s) ≠ 0 := by
+      rw [← hMod]
+      exact Complex.exp_ne_zero _
+    field_simp [hmod_ne]
+  -- Construct both the real fake zero `ρ₀` and the off-real fake zero `ρ₁`.
+  set ρ₀ : ℂ := (β₀ : ℂ)
+  have hlogM_gt_two : 2 < Real.log (M : ℝ) := by
+    have hexp2 : Real.exp 2 < (M : ℝ) := by
+      have he1 : Real.exp 1 < 4 := lt_trans Real.exp_one_lt_d9 (by norm_num)
+      calc Real.exp 2 = Real.exp (1 + 1) := by norm_num
+        _ = Real.exp 1 * Real.exp 1 := Real.exp_add 1 1
+        _ < 4 * 4 := mul_lt_mul'' he1 he1 (Real.exp_pos 1).le (Real.exp_pos 1).le
+        _ = 16 := by norm_num
+        _ ≤ (M : ℝ) := by exact_mod_cast hM16
+    simpa using Real.log_lt_log (Real.exp_pos 2) hexp2
+  set t₁ : ℝ := 2 * Real.pi / Real.log (M : ℝ)
+  have ht₁_pos : 0 < t₁ := div_pos (by positivity) (by linarith)
+  have ht₁_lt_four : t₁ < 4 := by
+    dsimp [t₁]
+    rw [div_lt_iff₀ (by linarith : 0 < Real.log (M : ℝ))]
+    linarith [Real.pi_lt_four]
+  set ρ₁ : ℂ := (β₀ : ℂ) + (t₁ : ℂ) * Complex.I
+  have haM_ρ₀ : (a : ℂ) * (M : ℂ) ^ (-ρ₀) = 1 := by
+    dsimp [ρ₀]
+    rw [show (-(β₀ : ℂ)) = ((-β₀ : ℝ) : ℂ) by push_cast; ring,
+      ← Complex.ofReal_natCast M, Complex.ofReal_cpow (by positivity),
+      Real.rpow_neg (by positivity), hMβ, ← Complex.ofReal_natCast a, ← Complex.ofReal_mul,
+      mul_inv_cancel₀ (by positivity), Complex.ofReal_one]
+  have haM_ρ₁ : (a : ℂ) * (M : ℂ) ^ (-ρ₁) = 1 := by
+    have hM0 : (0 : ℝ) < M := by positivity
+    have hcpow : (M : ℂ) ^ (-ρ₁) = (M : ℂ) ^ (-ρ₀) := by
+      rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hM0.ne'),
+        Complex.cpow_def_of_ne_zero (by exact_mod_cast hM0.ne'),
+        ← Complex.ofReal_natCast M, ← Complex.ofReal_log hM0.le]
+      have hexp_per : (-ρ₁) * (Real.log (M : ℝ) : ℂ) =
+          (-ρ₀) * (Real.log (M : ℝ) : ℂ) - (2 * Real.pi * Complex.I) := by
+        dsimp [ρ₁, ρ₀, t₁]
+        have hlog0 : (Real.log (M : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by linarith : Real.log (M : ℝ) ≠ 0)
+        field_simp [hlog0]
+        ring
+      rw [hexp_per, Complex.exp_sub, Complex.exp_two_pi_mul_I, div_one]
+    rw [hcpow, haM_ρ₀]
+  have hG_ρ₀ : G ρ₀ = 0 := by dsimp [G]; rw [haM_ρ₀, sub_self, mul_zero, zero_mul]
+  have hG_ρ₁ : G ρ₁ = 0 := by dsimp [G]; rw [haM_ρ₁, sub_self, mul_zero, zero_mul]
+  have hρ₀_re : 1 / 2 < ρ₀.re := by simpa [ρ₀] using hβ₀_half
+  have hρ₀_im : ρ₀.im = 0 := by simp [ρ₀]
+  have hρ₀_ne1 : ρ₀ ≠ 1 := by
+    intro h1
+    have hre := congrArg Complex.re h1
+    simp only [ρ₀, Complex.ofReal_re, Complex.one_re] at hre
+    linarith
+  have hζ_ρ₀ : riemannZeta ρ₀ ≠ 0 :=
+    riemannZeta_ne_zero_of_abs_im_lt_four (by simp [ρ₀]) hρ₀_ne1
+  have hρ₁_re : 1 / 2 < ρ₁.re := by simpa [ρ₁] using hβ₀_half
+  have hρ₁_im_eq : ρ₁.im = t₁ := by simp [ρ₁]
+  have hρ₁_ne1 : ρ₁ ≠ 1 := by
+    intro h1
+    have him := congrArg Complex.im h1
+    rw [hρ₁_im_eq, Complex.one_im] at him
+    linarith
+  have hζ_ρ₁ : riemannZeta ρ₁ ≠ 0 :=
+    riemannZeta_ne_zero_of_abs_im_lt_four (by rw [hρ₁_im_eq, abs_of_pos ht₁_pos]; exact ht₁_lt_four)
+      hρ₁_ne1
+  have hfake' : IsIntegerNormFakeAt (keptPrimeSystem S) β' :=
+    ⟨hasIntegerNorms_keptPrimeSystem S, isDiscrete_keptPrimeSystem S, hNotP,
+      ⟨A, _, hA0, hcnt'⟩, G, hGd, hGeq, ρ₀, hρ₀_re, hρ₀_ne1, hG_ρ₀, hζ_ρ₀⟩
+  exact ⟨S, G, ρ₀, ρ₁, hfake'.mono (min_le_left β (3 / 4)), hGd, hGeq,
+    hρ₀_re, hρ₀_im, hρ₀_ne1, hG_ρ₀, hζ_ρ₀,
+    hρ₁_re, by rw [hρ₁_im_eq]; exact ht₁_pos.ne', hG_ρ₁, hζ_ρ₁⟩
+
+/-- **Existence of an integer-norm Beurling fake at every remainder exponent `β > 1/2`.** -/
+theorem exists_integerNormFakeAt_of_half_lt {β : ℝ} (hβ : 1 / 2 < β) :
+    ∃ B : BeurlingSystem, IsIntegerNormFakeAt B β := by
+  obtain ⟨S, _, _, _, hf, _⟩ := exists_keptPrimeSystem_fake_above_half hβ
+  exact ⟨keptPrimeSystem S, hf⟩
+
+/-- Every exponent strictly above `1/2` belongs to `integerNormFakeExponents`. -/
+theorem Ioi_half_subset_integerNormFakeExponents :
+    Set.Ioi (1 / 2 : ℝ) ⊆ integerNormFakeExponents :=
+  fun _ hβ => exists_integerNormFakeAt_of_half_lt hβ
+
+theorem nonempty_integerNormFakeExponents : integerNormFakeExponents.Nonempty :=
+  ⟨3 / 4, exists_integerNormFakeAt_of_half_lt (by norm_num)⟩
+
+/-- **Unconditional critical-threshold localization.**  The infimum of all integer-norm fake
+remainder exponents lies in `[0, 1/2]`. -/
+theorem csInf_integerNormFakeExponents_mem_Icc :
+    sInf integerNormFakeExponents ∈ Set.Icc (0 : ℝ) (1 / 2) := by
+  refine ⟨le_csInf nonempty_integerNormFakeExponents fun _ ⟨_, hf⟩ =>
+    nonneg_of_integerNormFakeAt hf, ?_⟩
+  by_contra hgt
+  push Not at hgt
+  set mid : ℝ := (1 / 2 + min (sInf integerNormFakeExponents) 1) / 2
+  have hmid_gt : 1 / 2 < mid := by
+    dsimp [mid]
+    have : 1 / 2 < min (sInf integerNormFakeExponents) 1 := lt_min hgt (by norm_num)
+    linarith
+  have hmid_lt : mid < sInf integerNormFakeExponents := by
+    dsimp [mid]
+    have h1 : min (sInf integerNormFakeExponents) 1 ≤ sInf integerNormFakeExponents :=
+      min_le_left _ _
+    have h2 : 1 / 2 < min (sInf integerNormFakeExponents) 1 := lt_min hgt (by norm_num)
+    linarith
+  exact not_le_of_gt hmid_lt (csInf_le bddBelow_integerNormFakeExponents
+    (Ioi_half_subset_integerNormFakeExponents hmid_gt))
+
+end GaloisForLFunctions.SumProductArithmeticOfTheLogarithm
+
