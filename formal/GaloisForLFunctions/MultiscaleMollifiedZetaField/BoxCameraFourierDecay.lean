@@ -18,7 +18,7 @@ open RHTower Zeta23
 namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 
 /-- The support radius of an interval convolved with `n+1` boxes and a smooth bump. -/
-def boxCameraRadius (A h : ℝ) (n : ℕ) (r : ℝ) : ℝ := A + (n + 1) * h + r
+def boxCameraRadius (A h : ℝ) (n : ℕ) (r : ℝ) : ℝ := A + ((n + 1 : ℕ) : ℝ) * h + r
 
 /-- A translated box-convolution camera, exponentially centered at depth `b`. -/
 def boxCenteredCamera (A h : ℝ) (n : ℕ) (r b y : ℝ) : ℝ → ℂ :=
@@ -40,6 +40,7 @@ theorem paperFT_boxCenteredCamera (A h : ℝ) (n : ℕ) (r b y : ℝ) (z : ℂ) 
 theorem contDiff_boxCenteredCamera {A h r b y : ℝ} (hr : 0 < r) (n : ℕ) :
     ContDiff ℝ 2 (boxCenteredCamera A h n r b y) := by
   unfold boxCenteredCamera
+  have hc : ContDiff ℝ 2 (fun u : ℝ => (u : ℂ)) := Complex.ofRealCLM.contDiff
   exact ((contDiff_boxPlateau (A := A) (h := h) hr (n + 1)).comp
     (contDiff_id.sub contDiff_const)).mul (by fun_prop)
 
@@ -76,11 +77,9 @@ theorem norm_damped_boxPlateau_le {A h r y : ℝ}
     _ = (2 / h) * (1 / (h * ‖z‖)) ^ n / ‖z‖ ^ 2 *
         (Real.exp (-(z.im * y)) * Real.exp (A * z.im) *
           Real.exp (((n + 1 : ℕ) : ℝ) * (h * z.im)) * Real.exp (r * z.im)) := by
-      rw [abs_of_nonneg hzi]
-      simp only [div_pow, one_pow]
+      simp only [abs_of_nonneg hzi, div_pow, one_pow]
       rw [← Real.exp_nat_mul, pow_succ]
       field_simp [hh.ne', hz0.ne']
-      ring
     _ = _ := by rw [hexp]
 
 /-- A separated frequency pays the unit Lorentzian envelope. -/

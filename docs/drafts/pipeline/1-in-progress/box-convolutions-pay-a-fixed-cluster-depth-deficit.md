@@ -3,8 +3,8 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Target:** Exterior mass in the Turán cluster receiver; M7/A78.
-- **Status:** Existing box-transform bounds supply the proposed mechanism;
-  the complete camera and receiver statements are not formalized.
+- **Status:** Camera Fourier bound checked. Mass, uniform Lorentzian envelope,
+  full deep/shallow exterior bound, and Turán receiver written; checks pending.
 
 ## Proposed estimate
 
@@ -50,10 +50,19 @@ with depth at least `b-d` and ordinate distance less than `g`.
 - `EveryCompactProfileHasSubexponentialConductorFloors`: a fixed profile
   cannot provide the required exponential tail; the profile must vary.
 
-For prime/remainder costs, differentiate the final fixed smoothing bump:
-unit-mass box convolution preserves the `L¹` upper bound, giving
-`‖Bₙ⁽ʲ⁾‖₁≤2A‖βᵣ⁽ʲ⁾‖₁` for `j≤2`. Rescaling to unit support then costs
-only `δʲ`, polynomial in `log T`.
+The uniform Lorentzian envelope also pays the gamma remainder directly,
+using the existing `exists_norm_gamma_lorentz_le` at unit scale. This costs
+`O(log t)` with a constant independent of convolution order. The pole
+terms use the same bound and `exp(y+δ)≤t`. No derivative estimates are
+needed for this receiver. The profile has supremum at most `δ` after
+rescaling, so the existing prime mean-square bound costs `O(T(log T)²)`
+when `δ=c log T`, retaining the depth-centering exponential gain.
 
-Remaining formalization: full norm estimate, positivity/mass and sector
-lower bound, Turán receiver, and those uniform prime/remainder costs.
+Written capstone: `BoxCamerasPayFixedDepthDeficits` selects a fixed positive
+`η` and lags `ν(h+2)(n+1)`, `1≤ν≤N`. For logarithmic heights bounded by
+`L(n+1)`, every eligible cluster has at least half its Turán signal in the
+full field, or a deep exterior companion within `g`. The relative exterior
+ratios are `exp(ηb)/(hg)` and `exp(ηb-da)`, both strictly below one.
+
+Remaining formalization: verify the written envelope/receiver/rate chain
+and the uniform prime/remainder bounds.

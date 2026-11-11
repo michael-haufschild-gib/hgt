@@ -102,7 +102,8 @@ theorem limAvg_devAvg (hU : (U : Filter ℝ) ≤ atTop) (h k : ℕ) :
     simp only [fun j => limAvg_sub hU (hbF p j) (hbG p j), hLF, hLG, sum_const, card_range,
       nsmul_eq_mul]
     field_simp
-  simp only [hstep, sum_sub_distrib, sum_const, card_univ, Fintype.card_coe, nsmul_eq_mul]
+  simp only [hstep]
+  simp only [sum_sub_distrib, sum_const, card_univ, Fintype.card_coe, nsmul_eq_mul]
   field_simp
 
 /-! ## The event bound -/
@@ -207,7 +208,7 @@ theorem abs_corr_sub_le_of_good (hU : (U : Filter ℝ) ≤ atTop) (h k : ℕ) {�
     have hpos : 0 < ε ^ 2 * c / 25 := by positivity
     rw [← le_div_iff₀ hpos] at h2
     calc m ≤ 2 * ε ^ 3 * c / 25 / (ε ^ 2 * c / 25) := h2
-      _ = 2 * ε := by field_simp; ring
+      _ = 2 * ε := by field_simp
   have := abs_corr_sub_le hU h k hε.le
   rw [← hm] at this
   linarith

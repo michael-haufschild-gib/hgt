@@ -55320,7 +55320,9 @@ lemma kernelLogPhase_iteratedFDeriv_norm (t x : ℝ) (n : ℕ) :
 lemma kernelLogPhase_temperate (t : ℝ) : (kernelLogPhase t).HasTemperateGrowth := by
   constructor
   · unfold kernelLogPhase
-    fun_prop
+    have h : ContDiff ℝ ∞ (fun u : ℝ => (2 * Real.pi * t : ℝ) * u) :=
+      contDiff_const.mul contDiff_id
+    exact ((Complex.ofRealCLM.contDiff.comp h).mul contDiff_const).cexp
   · intro n
     refine ⟨0,(2 * Real.pi * ‖t‖) ^ n,?_⟩
     intro x
@@ -55964,5 +55966,2484 @@ theorem full_uniform_integrated_fixed_second_mode_transfer (ε : ℝ) (hε : 0 <
     (B * C * (lengthScale * Ideal.absNorm b0)^ε) M (by positivity) hM hpoint
 
 end SecondPassIntegration
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+
+theorem finite_triple_bounded_integral {α : Type*} (s : Finset α)
+    (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)) (F : α → Frequency → ℂ)
+    (hF : ∀ i ∈ s, Continuous (F i)) (M : α → ℝ)
+    (hM : ∀ i ∈ s, ∀ q, ‖F i q‖ ≤ M i) :
+    (∑ i ∈ s, ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃) * F i (t₁,t₂,t₃)) =
+    ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃) * (∑ i ∈ s, F i (t₁,t₂,t₃)) := by
+  have hc : Continuous (fun q => ∑ i ∈ s, F i q) := continuous_finsetSum _ hF
+  have hb (q : Frequency) : ‖∑ i ∈ s, F i q‖ ≤ ∑ i ∈ s, M i :=
+    (norm_sum_le _ _).trans (Finset.sum_le_sum (fun i hi => hM i hi q))
+  have hi (i : α) (hi : i ∈ s) := tripleCoefficient_bounded_integrable b₁ b₂ b₃ (F i) (hF i hi) (M i) (hM i hi)
+  have hs := tripleCoefficient_bounded_integrable b₁ b₂ b₃ (fun q => ∑ i ∈ s, F i q) hc _ hb
+  calc
+    _ = ∑ i ∈ s, ∫ q : Frequency, tripleCoefficient b₁ b₂ b₃ q * F i q := by
+      apply Finset.sum_congr rfl
+      intro i hmem
+      exact nested_eq_integral _ (hi i hmem)
+        (tripleCoefficient_slice_integrable b₁ b₂ b₃ (F i) (hF i hmem) (M i) (hM i hmem))
+    _ = ∫ q : Frequency, ∑ i ∈ s, tripleCoefficient b₁ b₂ b₃ q * F i q :=
+      (integral_finsetSum s hi).symm
+    _ = ∫ q : Frequency, tripleCoefficient b₁ b₂ b₃ q * (∑ i ∈ s, F i q) := by
+      simp only [Finset.mul_sum]
+    _ = _ := (nested_eq_integral _ hs
+      (tripleCoefficient_slice_integrable b₁ b₂ b₃ (fun q => ∑ i ∈ s, F i q) hc _ hb)).symm
+
+end JointLogSeparation
+
+namespace SecondPassIntegration
+
+section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+open SecondPassFiber (OldTuple newLabel newRow Valid)
+
+def tupleOuterWeight (V : Fin 7 → ℝ → ℂ) (w : OldTuple → ℂ)
+    (z ud ue uv kap : OldTuple → ℝ) (q : Frequency) (x : OldTuple) : ℂ :=
+  w x * outerWindow V (z x) (ud x) (ue x) (uv x) (kap x) *
+    kernelLogPhase (q.1 + q.2.1) (z x) * kernelLogPhase q.2.2 (kap x - ud x - 2 * ue x - 2 * uv x)
+
+lemma tupleOuterWeight_continuous (V : Fin 7 → ℝ → ℂ) (w : OldTuple → ℂ)
+    (z ud ue uv kap : OldTuple → ℝ) (x : OldTuple) :
+    Continuous (fun q => tupleOuterWeight V w z ud ue uv kap q x) := by
+  have h₁ : Continuous (fun q : Frequency => kernelLogPhase (q.1 + q.2.1) (z x)) :=
+    (kernelLogPhase_continuous_left (z x)).comp
+    (continuous_fst.add continuous_snd.fst)
+  have h₂ : Continuous (fun q : Frequency => kernelLogPhase q.2.2 (kap x - ud x - 2 * ue x - 2 * uv x)) :=
+    (kernelLogPhase_continuous_left (kap x - ud x - 2 * ue x - 2 * uv x)).comp
+    continuous_snd.snd
+  unfold tupleOuterWeight
+  fun_prop
+
+lemma tupleOuterWeight_norm (V : Fin 7 → ℝ → ℂ) (w : OldTuple → ℂ)
+    (z ud ue uv kap : OldTuple → ℝ) (q : Frequency) (x : OldTuple) :
+    ‖tupleOuterWeight V w z ud ue uv kap q x‖ =
+      ‖w x‖ * ‖outerWindow V (z x) (ud x) (ue x) (uv x) (kap x)‖ := by
+  simp only [tupleOuterWeight, norm_mul, kernelLogPhase_norm, mul_one]
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+  (H₁ H₂ : Finset ι → ℂ)
+
+def tupleSourceSum (s : Finset OldTuple) (w : OldTuple → ℂ) (label : OldTuple → O)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (A₁ A₂ W : 𝓢(ℝ, ℂ))
+    (V : Fin 7 → ℝ → ℂ) (z ud ue uv kap : OldTuple → ℝ) (X₁ X₂ R : ℝ) : ℂ :=
+  ∑ x ∈ s, w x * postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ m (label x)
+    (newRow x) (-newRow x) A₁ A₂ W V (z x) (ud x) (ue x) (uv x) (kap x) X₁ X₂ R
+
+theorem tupleSource_eq_integratedSecondMode
+    (s : Finset OldTuple) (w : OldTuple → ℂ) (label : OldTuple → O)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (A₁ A₂ W b : 𝓢(ℝ, ℂ))
+    (V : Fin 7 → ℝ → ℂ) (z ud ue uv kap : OldTuple → ℝ) (X₁ X₂ R : ℝ)
+    (hsep : ∀ x ∈ s,
+      postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ m (label x) (newRow x) (-newRow x)
+        A₁ A₂ W V (z x) (ud x) (ue x) (uv x) (kap x) X₁ X₂ R =
+      separatedPostCommon p hg H₁ H₂ F Ψ₁ Ψ₂ m (label x) (newRow x) (-newRow x)
+        A₁ A₂ b V (z x) (ud x) (ue x) (uv x) (kap x) X₁ X₂) :
+    tupleSourceSum p hg H₁ H₂ s w label F Ψ₁ Ψ₂ m A₁ A₂ W V z ud ue uv kap X₁ X₂ R =
+      integratedSecondMode p hg H₁ H₂ (𝓕 A₁) (𝓕 A₂) b s
+        (tupleOuterWeight V w z ud ue uv kap) label F Ψ₁ Ψ₂ m (V 5) (V 6) X₁ X₂ := by
+  let Q : OldTuple → Frequency → ℂ := fun x q =>
+    tupleOuterWeight V w z ud ue uv kap q x *
+      star (fixedChildRow p hg F Ψ₁ m
+        (weightedSecondTest p H₁ (V 5) X₁ q.1 q.2.2 true) (label x) (newRow x)) *
+      fixedChildRow p hg F Ψ₂ m
+        (weightedSecondTest p H₂ (V 6) X₂ q.2.1 q.2.2 false) (label x) (-newRow x)
+  let M : OldTuple → ℝ := fun x =>
+    (‖w x‖ * ‖outerWindow V (z x) (ud x) (ue x) (uv x) (kap x)‖) *
+      rowMagnitude p hg H₁ F Ψ₁ m (label x) (newRow x) (V 5) X₁ true *
+      rowMagnitude p hg H₂ F Ψ₂ m (label x) (-newRow x) (V 6) X₂ false
+  have hc (x : OldTuple) : Continuous (Q x) := by
+    have hw := tupleOuterWeight_continuous V w z ud ue uv kap x
+    have h₁ := fixedRow_continuous p hg H₁ F Ψ₁ m (label x) (newRow x) (V 5) X₁ true
+      (fun q : Frequency => q.1) (fun q : Frequency => q.2.2) continuous_fst continuous_snd.snd
+    have h₂ := fixedRow_continuous p hg H₂ F Ψ₂ m (label x) (-newRow x) (V 6) X₂ false
+      (fun q : Frequency => q.2.1) (fun q : Frequency => q.2.2) continuous_snd.fst continuous_snd.snd
+    exact (hw.mul h₁.star).mul h₂
+  have hbound (x : OldTuple) (q : Frequency) : ‖Q x q‖ ≤ M x := by
+    dsimp only [Q, M]
+    rw [norm_mul, norm_mul, norm_star, tupleOuterWeight_norm]
+    have h₁ := fixedRow_norm_le p hg H₁ F Ψ₁ m (label x) (newRow x) (V 5) X₁ q.1 q.2.2 true
+    have h₂ := fixedRow_norm_le p hg H₂ F Ψ₂ m (label x) (-newRow x) (V 6) X₂ q.2.1 q.2.2 false
+    have hn₁ := rowMagnitude_nonneg p hg H₁ F Ψ₁ m (label x) (newRow x) (V 5) X₁ true
+    have hn₂ := rowMagnitude_nonneg p hg H₂ F Ψ₂ m (label x) (-newRow x) (V 6) X₂ false
+    gcongr
+  calc
+    _ = ∑ x ∈ s, ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+        tripleCoefficient (𝓕 A₁) (𝓕 A₂) b (t₁,t₂,t₃) * Q x (t₁,t₂,t₃) := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      rw [hsep x hx]
+      unfold separatedPostCommon
+      simp_rw [← integral_const_mul]
+      apply integral_congr_ae
+      filter_upwards [] with t₁
+      apply integral_congr_ae
+      filter_upwards [] with t₂
+      apply integral_congr_ae
+      filter_upwards [] with t₃
+      dsimp [tripleCoefficient, Q, tupleOuterWeight]
+      ring
+    _ = ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+        tripleCoefficient (𝓕 A₁) (𝓕 A₂) b (t₁,t₂,t₃) * (∑ x ∈ s, Q x (t₁,t₂,t₃)) :=
+      finite_triple_bounded_integral s (𝓕 A₁) (𝓕 A₂) b Q (fun x _ => hc x) M (fun x _ => hbound x)
+    _ = _ := rfl
+
+end
+
+end SecondPassIntegration
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+
+theorem full_uniform_postCommonSmoothPair_fixed_tests
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ) (M : Fin 7 → ℝ)
+    (hM : ∀ j, 0 ≤ M j) (hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j) (A J : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ t₁ t₂ t₃ : ℝ, (1+R)^A * ‖(𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃‖ ≤
+        C * firstLogDensity J t₁ * firstLogDensity J t₂ * firstLogDensity J t₃) ∧
+      ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i}), ∀ (H₁ H₂ : Finset ι → ℂ) (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m f y₁ y₂ : O)
+        (z ud ue uv kap X₁ X₂ : ℝ),
+        postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ W V
+          z ud ue uv kap X₁ X₂ R =
+        separatedPostCommon p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ b V
+          z ud ue uv kap X₁ X₂ := by
+  obtain ⟨C, hC, hsep⟩ := JointLogSeparation.seven_kernel_separation A₁ A₂ W V M hM hV A J
+  refine ⟨C, hC, ?_⟩
+  intro R hR
+  obtain ⟨b, hb, hpoint, hint⟩ := hsep R hR
+  refine ⟨b, hpoint, ?_⟩
+  intro ι _ p _ hg H₁ H₂
+    F Ψ₁ Ψ₂ m f y₁ y₂ z ud ue uv kap X₁ X₂
+  exact postCommonSmoothPair_fixed_tests p hg H₁ H₂ F Ψ₁ Ψ₂ m f y₁ y₂ A₁ A₂ W V
+    z ud ue uv kap X₁ X₂ R b (hb z ud ue uv kap)
+
+end SecondPassArithmetic
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+open SecondPassFiber (OldTuple newLabel newRow Valid)
+
+theorem full_uniform_tupleSource_transfer (ε : ℝ) (hε : 0 < ε)
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ) (M : Fin 7 → ℝ)
+    (hM : ∀ j, 0 ≤ M j) (hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j) (A J : ℕ) :
+    ∃ Cₐ : ℝ, 0 < Cₐ ∧ ∃ Cₛ : ℝ, 0 ≤ Cₛ ∧ ∀ R : ℝ, 0 < R → ∃ b : 𝓢(ℝ, ℂ),
+      (∀ t₁ t₂ t₃ : ℝ, (1 + R)^A * ‖(𝓕 A₁) t₁ * (𝓕 A₂) t₂ * b t₃‖ ≤
+        Cₛ * firstLogDensity J t₁ *
+          firstLogDensity J t₂ * firstLogDensity J t₃) ∧
+      ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i}), ∀ (H₁ H₂ : Finset ι → ℂ) (s : Finset OldTuple) (T : Finset (Ideal O × O)) (b0 : Ideal O)
+        (w : OldTuple → ℂ) (B lengthScale : ℝ) (label : OldTuple → O)
+        (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O)
+        (z ud ue uv kap : OldTuple → ℝ) (X₁ X₂ : ℝ),
+        b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+        (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+        (∀ x ∈ s, (newLabel x, newRow x) ∈ T) →
+        (∀ z ∈ T, z.1 ≠ ⊥) → (∀ z ∈ T, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+        (∀ x ∈ s, ‖w x‖ * ‖outerWindow V (z x) (ud x) (ue x) (uv x) (kap x)‖ ≤ B) →
+        (∀ x ∈ s, Ideal.span {label x} = newLabel x) →
+        ‖tupleSourceSum p hg H₁ H₂ s w label F Ψ₁ Ψ₂ m A₁ A₂ W V z ud ue uv kap X₁ X₂ R‖ ≤
+          (B * Cₐ * (lengthScale * Ideal.absNorm b0)^ε) *
+          (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+            ‖tripleCoefficient (𝓕 A₁) (𝓕 A₂) b (t₁,t₂,t₃)‖ *
+              childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T (V 5) (V 6) X₁ X₂ (t₁,t₂,t₃)) := by
+  obtain ⟨Cₐ, hCₐ, htrans⟩ := full_uniform_integrated_fixed_second_mode_transfer ε hε
+  obtain ⟨Cₛ, hCₛ, hsep⟩ := full_uniform_postCommonSmoothPair_fixed_tests A₁ A₂ W V M hM hV A J
+  refine ⟨Cₐ, hCₐ, Cₛ, hCₛ, ?_⟩
+  intro R hR
+  obtain ⟨b, hpoint, hid⟩ := hsep R hR
+  refine ⟨b, hpoint, ?_⟩
+  intro ι _ p _ hg H₁ H₂
+  have htrans := htrans p hg H₁ H₂
+  have hid := hid p hg H₁ H₂
+  intro s T b0 w B lengthScale label F Ψ₁ Ψ₂ m z ud ue uv kap X₁ X₂ hb0 hB hL hv hm ht hn hw hl
+  have hsource := tupleSource_eq_integratedSecondMode p hg H₁ H₂ s w label F Ψ₁ Ψ₂ m A₁ A₂ W b
+    V z ud ue uv kap X₁ X₂ R (fun x hx => hid F Ψ₁ Ψ₂ m (label x) (newRow x) (-newRow x)
+      (z x) (ud x) (ue x) (uv x) (kap x) X₁ X₂)
+  rw [hsource]
+  apply htrans s T b0 (tupleOuterWeight V w z ud ue uv kap) B lengthScale label F Ψ₁ Ψ₂ m
+    (V 5) (V 6) X₁ X₂ (𝓕 A₁) (𝓕 A₂) b hb0 hB hL hv hm ht hn
+  · intro q x hx
+    rw [tupleOuterWeight_norm]
+    exact hw x hx
+  · intro x hx
+    exact tupleOuterWeight_continuous V w z ud ue uv kap x
+  · exact hl
+
+end SecondPassIntegration
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+/-- The arithmetic pair with an arbitrary kernel in its two conductors. -/
+def secondPreKernelPair (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ)
+    (m r c d e k₁ k₂ : O) (H₁ H₂ : Finset ι → ℂ)
+    (K : Finset ι → Finset ι → ℂ) : ℂ :=
+  ∑ S ∈ F.powerset, ∑ T ∈ F.powerset, if Disjoint S T then
+    star (secondPreColumn p hg Ψ₁ (m * (e * r)) c d e k₁ H₁ S) *
+      secondPreColumn p hg Ψ₂ (m * (e * r)) c d e k₂ H₂ T * K S T else 0
+
+def secondChildKernelPair (F V : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ)
+    (m r c d e k₁ k₂ : O) (H₁ H₂ : Finset ι → ℂ)
+    (K : Finset ι → Finset ι → ℂ) : ℂ :=
+  ∑ N ∈ (F \ V).powerset, ∑ M ∈ (F \ V).powerset,
+    star (secondChildColumn p hg Ψ₁ (m * r) (c * e * ∏ i ∈ V, p i)
+      (d * e * k₁) (fun U => H₁ (V ∪ U)) N) *
+    secondChildColumn p hg Ψ₂ (m * r) (c * e * ∏ i ∈ V, p i)
+      (d * e * k₂) (fun U => H₂ (V ∪ U)) M * K (V ∪ N) (V ∪ M)
+
+theorem secondPreKernelPair_eq_children (hp : ∀ i, p i ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime p))
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k₁ k₂ : O)
+    (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) :
+    secondPreKernelPair p hg F Ψ₁ Ψ₂ m r c d e k₁ k₂ H₁ H₂ K =
+      ∑ V ∈ F.powerset, secondCommonWeight p hg Ψ₁ Ψ₂ m r c d e k₁ k₂ V *
+        secondChildKernelPair p hg F V Ψ₁ Ψ₂ m r c d e k₁ k₂ H₁ H₂ K := by
+  unfold secondPreKernelPair
+  rw [CoprimeMobiusExtension.double_sum_disjoint_reindexed]
+  apply Finset.sum_congr rfl
+  intro V hV
+  rw [secondCommonWeight, supportMobius]
+  simp only [secondChildKernelPair, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro N hN
+  apply Finset.sum_congr rfl
+  intro M hM
+  have hdN : Disjoint V N := Finset.disjoint_of_subset_right
+    (Finset.mem_powerset.mp hN) disjoint_sdiff_self_right
+  have hdM : Disjoint V M := Finset.disjoint_of_subset_right
+    (Finset.mem_powerset.mp hM) disjoint_sdiff_self_right
+  rw [secondPreColumn_union p hg hp hcop hpr Ψ₁ m r c d e k₁ H₁ V N hdN,
+    secondPreColumn_union p hg hp hcop hpr Ψ₂ m r c d e k₂ H₂ V M hdM, star_mul]
+  ring
+
+def secondKernelPair (hp : ∀ i, p i ≠ 0)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) : ℂ :=
+  ∑ S ∈ F.powerset, ∑ T ∈ F.powerset, if Disjoint S T then
+    secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k H₁ H₂ S T * K S T else 0
+
+theorem secondKernelPair_eq_pre (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) :
+    secondKernelPair p hg hp F Ψ₁ Ψ₂ m r c d e k H₁ H₂ K =
+      ∑ z : QuadraticRayRing × QuadraticRayRing, rayQuadraticPair z.1 z.2 *
+        secondPreKernelPair p hg F Ψ₁ Ψ₂ m r c d e k (-k)
+          (secondRayMask p hg z.1 H₁) (secondRayMask p hg z.2 H₂) K := by
+  have hterm (S T : Finset ι) :
+      (if Disjoint S T then secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k H₁ H₂ S T * K S T else 0) =
+      ∑ z : QuadraticRayRing × QuadraticRayRing, rayQuadraticPair z.1 z.2 *
+        (if Disjoint S T then
+          star (secondPreColumn p hg Ψ₁ (m * (e * r)) c d e k (secondRayMask p hg z.1 H₁) S) *
+          secondPreColumn p hg Ψ₂ (m * (e * r)) c d e (-k) (secondRayMask p hg z.2 H₂) T * K S T
+        else 0) := by
+    by_cases hd : Disjoint S T
+    · simp only [if_pos hd, secondGaussTerm]
+      have h := congrArg (fun a : ℂ => a * K S T)
+        (secondGaussTerm_residue_separation p hg hp hinj hodd hpr Ψ₁ Ψ₂
+          (m * (e * r)) c d e k H₁ H₂ S T hd)
+      simpa only [Finset.sum_mul, mul_assoc] using h
+    · simp only [if_neg hd, mul_zero, Finset.sum_const_zero]
+  unfold secondKernelPair
+  simp_rw [hterm]
+  calc
+    _ = ∑ S ∈ F.powerset, ∑ z : QuadraticRayRing × QuadraticRayRing, ∑ T ∈ F.powerset,
+        rayQuadraticPair z.1 z.2 * (if Disjoint S T then
+          star (secondPreColumn p hg Ψ₁ (m * (e * r)) c d e k (secondRayMask p hg z.1 H₁) S) *
+          secondPreColumn p hg Ψ₂ (m * (e * r)) c d e (-k) (secondRayMask p hg z.2 H₂) T * K S T
+        else 0) := by
+      apply Finset.sum_congr rfl
+      intro S hS
+      exact Finset.sum_comm
+    _ = _ := by
+      rw [Finset.sum_comm]
+      simp only [secondPreKernelPair, Finset.mul_sum]
+
+/-- Common-prime extraction commutes with every conductor kernel. -/
+theorem secondKernelPair_eq_children (hp : ∀ i, p i ≠ 0)
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) :
+    secondKernelPair p hg hp F Ψ₁ Ψ₂ m r c d e k H₁ H₂ K =
+      ∑ z : QuadraticRayRing × QuadraticRayRing, ∑ V ∈ F.powerset,
+        secondTotalWeight p hg Ψ₁ Ψ₂ m r c d e k (z,V) *
+          secondChildKernelPair p hg F V Ψ₁ Ψ₂ m r c d e k (-k)
+            (secondRayMask p hg z.1 H₁) (secondRayMask p hg z.2 H₂) K := by
+  have hcop : Pairwise (Function.onFun IsCoprime p) := by
+    intro i j hij
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp
+      (Ideal.isCoprime_of_isMaximal (hinj.ne hij))
+  rw [secondKernelPair_eq_pre p hg hp hinj hodd hpr]
+  simp only [secondPreKernelPair_eq_children p hg hp hcop hpr,
+    secondTotalWeight, Finset.mul_sum, mul_assoc]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+lemma secondChildColumn_rayMask_union (Ψ : O →* ℂ) (m f y : O)
+    (V N : Finset ι) (hd : Disjoint V N) (r : QuadraticRayRing) (H : Finset ι → ℂ) :
+    secondChildColumn p hg Ψ m f y (fun U => secondRayMask p hg r H (V ∪ U)) N =
+      ∑ s : QuadraticRayRing, secondRayTransition p hg V r s *
+        secondChildColumn p hg Ψ m f y (secondRayColumn p hg s (fun U => H (V ∪ U))) N := by
+  rw [secondChildColumn, secondRayMask_union p hg V N hd]
+  simp only [secondChildColumn, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro s hs
+  ring
+
+def fixedChildKernelPair (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ)
+    (m f y₁ y₂ : O) (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) : ℂ :=
+  ∑ N ∈ F.powerset, ∑ M ∈ F.powerset,
+    star (secondChildColumn p hg Ψ₁ m f y₁ H₁ N) *
+      secondChildColumn p hg Ψ₂ m f y₂ H₂ M * K N M
+
+/-- Residues of common prime factors affect only bounded outer coefficients. -/
+theorem secondChildKernelPair_ray_separation
+    (F V : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k₁ k₂ : O)
+    (r₁ r₂ : QuadraticRayRing) (K : Finset ι → Finset ι → ℂ) :
+    secondChildKernelPair p hg F V Ψ₁ Ψ₂ m r c d e k₁ k₂
+      (secondRayMask p hg r₁ (fun _ => 1)) (secondRayMask p hg r₂ (fun _ => 1)) K =
+      ∑ s : QuadraticRayRing × QuadraticRayRing,
+        (star (secondRayTransition p hg V r₁ s.1) * secondRayTransition p hg V r₂ s.2) *
+          fixedChildKernelPair p hg (F \ V) Ψ₁ Ψ₂ (m * r)
+            (c * e * ∏ i ∈ V, p i) (d * e * k₁) (d * e * k₂)
+            (secondRayColumn p hg s.1 (fun _ => 1))
+            (secondRayColumn p hg s.2 (fun _ => 1))
+            (fun N M => K (V ∪ N) (V ∪ M)) := by
+  let Q := fun (N M : Finset ι) (s : QuadraticRayRing × QuadraticRayRing) =>
+    (star (secondRayTransition p hg V r₁ s.1) * secondRayTransition p hg V r₂ s.2) *
+      (star (secondChildColumn p hg Ψ₁ (m * r) (c * e * ∏ i ∈ V, p i)
+          (d * e * k₁) (secondRayColumn p hg s.1 (fun _ => 1)) N) *
+        secondChildColumn p hg Ψ₂ (m * r) (c * e * ∏ i ∈ V, p i)
+          (d * e * k₂) (secondRayColumn p hg s.2 (fun _ => 1)) M * K (V ∪ N) (V ∪ M))
+  calc
+    _ = ∑ N ∈ (F \ V).powerset, ∑ M ∈ (F \ V).powerset,
+        ∑ s : QuadraticRayRing × QuadraticRayRing, Q N M s := by
+      apply Finset.sum_congr rfl
+      intro N hN
+      apply Finset.sum_congr rfl
+      intro M hM
+      have hdN : Disjoint V N := Finset.disjoint_of_subset_right
+        (Finset.mem_powerset.mp hN) disjoint_sdiff_self_right
+      have hdM : Disjoint V M := Finset.disjoint_of_subset_right
+        (Finset.mem_powerset.mp hM) disjoint_sdiff_self_right
+      rw [secondChildColumn_rayMask_union p hg Ψ₁ _ _ _ V N hdN,
+        secondChildColumn_rayMask_union p hg Ψ₂ _ _ _ V M hdM]
+      simp only [star_sum, star_mul, Finset.sum_mul, Finset.mul_sum, Fintype.sum_prod_type, Q]
+      conv_lhs => rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro s hs
+      apply Finset.sum_congr rfl
+      intro t ht
+      ring
+    _ = ∑ N ∈ (F \ V).powerset, ∑ s : QuadraticRayRing × QuadraticRayRing,
+        ∑ M ∈ (F \ V).powerset, Q N M s := by
+      apply Finset.sum_congr rfl
+      intro N hN
+      exact Finset.sum_comm
+    _ = _ := by
+      rw [Finset.sum_comm]
+      simp only [Q, fixedChildKernelPair, Finset.mul_sum]
+
+lemma secondRayTransition_pair_norm_le (V : Finset ι)
+    (r₁ r₂ s₁ s₂ : QuadraticRayRing) :
+    ‖star (secondRayTransition p hg V r₁ s₁) * secondRayTransition p hg V r₂ s₂‖ ≤ 1 := by
+  rw [norm_mul, norm_star]
+  exact (mul_le_mul (secondRayTransition_norm_le p hg V r₁ s₁)
+    (secondRayTransition_norm_le p hg V r₂ s₂) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hp : ∀ i, p i ≠ 0)
+
+/-- One dual lattice mode, with the trace Gauss factor kept at its exact normalization. -/
+def secondPairRadialMode (S T : Finset ι) (e k : O) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) : ℂ :=
+  let ap : ↥((T \ S) ∪ (S \ T)) → O := fun i => p i.val
+  let ac := activePrimeRowCharacter p χ T S
+  let n := ∏ i, ap i
+  ((Y : ℂ) * primeRowTraceGauss ap (fun i => hp i.val) ac /
+    (‖ringComplex n‖ ^ 2 : ℝ)) * primeCuspRowCharacter ap ac e *
+    primeCuspRowCharacter ap (fun i => (ac i)⁻¹) k *
+    paperRadialFourier W (Y * ‖ringComplex k‖ ^ 2 /
+      (‖ringComplex e‖ ^ 2 * ‖ringComplex n‖ ^ 2))
+
+theorem secondPairRadialMode_summable (S T : Finset ι) (e : O) (he : e ≠ 0)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    Summable (fun k : O => secondPairRadialMode p χ hp S T e k W Y) := by
+  let ap : ↥((T \ S) ∪ (S \ T)) → O := fun i => p i.val
+  let ac := activePrimeRowCharacter p χ T S
+  let n := ∏ i, ap i
+  let A := ((Y : ℂ) * primeRowTraceGauss ap (fun i => hp i.val) ac /
+    (‖ringComplex n‖ ^ 2 : ℝ)) * primeCuspRowCharacter ap ac e
+  have hn : n ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i hi => hp i.val)
+  have hK : 0 < Y / (‖ringComplex e‖ ^ 2 * ‖ringComplex n‖ ^ 2) :=
+    div_pos hY (mul_pos (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero he)))
+      (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hn))))
+  have hs := paperRadialFourier_lattice_summable_norm W _ hK
+  have hr (k : O) : ‖primeCuspRowCharacter ap (fun i => (ac i)⁻¹) k‖ ≤ 1 :=
+    primeCuspRowCharacter_norm_le_one ap (fun i => (ac i)⁻¹) k
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) _ (hs.mul_left ‖A‖)
+  intro k
+  change ‖A * primeCuspRowCharacter ap (fun i => (ac i)⁻¹) k *
+    paperRadialFourier W (Y * ‖ringComplex k‖ ^ 2 /
+      (‖ringComplex e‖ ^ 2 * ‖ringComplex n‖ ^ 2))‖ ≤ _
+  rw [norm_mul, norm_mul, show Y * ‖ringComplex k‖ ^ 2 /
+      (‖ringComplex e‖ ^ 2 * ‖ringComplex n‖ ^ 2) =
+      Y / (‖ringComplex e‖ ^ 2 * ‖ringComplex n‖ ^ 2) * ‖ringComplex k‖ ^ 2 by ring]
+  exact mul_le_mul_of_nonneg_right
+    (mul_le_of_le_one_right (norm_nonneg _) (hr k)) (norm_nonneg _)
+
+theorem maskedSecondDual_eq_modes (G S T : Finset ι) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) :
+    maskedSecondDual p χ hp G S T W Y =
+      ∑ E ∈ G.powerset,
+        (supportMobius E / (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)) *
+          ∑' k : O, secondPairRadialMode p χ hp S T (∏ i ∈ E, p i) k W Y := by
+  simp only [maskedSecondDual, secondPairRadialMode, supportMobius,
+    mul_assoc, tsum_mul_left, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro E hE
+  ring
+
+def residualSecondMode (F G : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m c d : O)
+    (H₁ H₂ : Finset ι → ℂ) (e k : O) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) : ℂ :=
+  ∑ S ∈ (F \ G).powerset, ∑ T ∈ (F \ G).powerset,
+    if Disjoint S T then
+      star (supportMobius S * secondInputCoefficient p χ Ψ₁ m c d H₁ S) *
+        (supportMobius T * secondInputCoefficient p χ Ψ₂ m c d H₂ T) *
+        secondPairRadialMode p χ hp S T e k W Y else 0
+
+theorem residualSecondMode_summable (F G : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m c d : O)
+    (H₁ H₂ : Finset ι → ℂ) (e : O) (he : e ≠ 0) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    Summable (fun k : O => residualSecondMode p χ hp F G Ψ₁ Ψ₂ m c d H₁ H₂ e k W Y) := by
+  apply summable_sum
+  intro S hS
+  apply summable_sum
+  intro T hT
+  by_cases hd : Disjoint S T
+  · simp only [if_pos hd]
+    exact (secondPairRadialMode_summable p χ hp S T e he W Y hY).mul_left _
+  · simp only [if_neg hd]
+    exact summable_zero
+
+theorem residualSecondMode_tsum (F G : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m c d : O)
+    (H₁ H₂ : Finset ι → ℂ) (e : O) (he : e ≠ 0) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' k : O, residualSecondMode p χ hp F G Ψ₁ Ψ₂ m c d H₁ H₂ e k W Y) =
+      ∑ S ∈ (F \ G).powerset, ∑ T ∈ (F \ G).powerset,
+        ∑' k : O, if Disjoint S T then
+          star (supportMobius S * secondInputCoefficient p χ Ψ₁ m c d H₁ S) *
+            (supportMobius T * secondInputCoefficient p χ Ψ₂ m c d H₂ T) *
+            secondPairRadialMode p χ hp S T e k W Y else 0 := by
+  have hs (S T : Finset ι) : Summable (fun k : O => if Disjoint S T then
+      star (supportMobius S * secondInputCoefficient p χ Ψ₁ m c d H₁ S) *
+        (supportMobius T * secondInputCoefficient p χ Ψ₂ m c d H₂ T) *
+        secondPairRadialMode p χ hp S T e k W Y else 0) := by
+    by_cases hd : Disjoint S T
+    · simp only [if_pos hd]
+      exact (secondPairRadialMode_summable p χ hp S T e he W Y hY).mul_left _
+    · simp only [if_neg hd]
+      exact summable_zero
+  unfold residualSecondMode
+  rw [Summable.tsum_finsetSum (fun S _ => summable_sum (fun T _ => hs S T))]
+  apply Finset.sum_congr rfl
+  intro S hS
+  exact Summable.tsum_finsetSum (fun T _ => hs S T)
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+  (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hp : ∀ i, p i ≠ 0)
+
+def secondOverlapBlock (F G : Finset ι) (Ψ : O →* ℂ) (m c d : O)
+    (H : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) : ℂ :=
+  ∑ S ∈ (F \ G).powerset, ∑ T ∈ (F \ G).powerset, if Disjoint S T then
+    overlapPairWeight p χ Ψ m c d H G S T * maskedSecondDual p χ hp G S T W Y
+  else 0
+
+theorem secondOverlapBlock_eq_modes (F G : Finset ι) (Ψ : O →* ℂ) (m c d : O)
+    (H : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    secondOverlapBlock p χ hp F G Ψ m c d H W Y =
+      (↑(‖secondInputCoefficient p χ Ψ m c d (fun _ => 1) G‖ ^ 2) : ℂ) *
+        ∑ E ∈ G.powerset,
+          ((supportMobius E : ℂ) /
+            (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)) *
+          ∑' k : O, residualSecondMode p χ hp F G Ψ Ψ m c d
+            (fun U => H (G ∪ U)) (fun U => H (G ∪ U))
+            (∏ i ∈ E, p i) k W Y := by
+  let a := (↑(‖secondInputCoefficient p χ Ψ m c d (fun _ => 1) G‖ ^ 2) : ℂ)
+  let w := fun E : Finset ι =>
+    (supportMobius E : ℂ) /
+      (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)
+  let f := fun (E S T : Finset ι) (k : O) => if Disjoint S T then
+    star (supportMobius S *
+      secondInputCoefficient p χ Ψ m c d (fun U => H (G ∪ U)) S) *
+    (supportMobius T *
+      secondInputCoefficient p χ Ψ m c d (fun U => H (G ∪ U)) T) *
+    secondPairRadialMode p χ hp S T (∏ i ∈ E, p i) k W Y
+    else 0
+  have hterm (S T : Finset ι) :
+      (if Disjoint S T then overlapPairWeight p χ Ψ m c d H G S T *
+        maskedSecondDual p χ hp G S T W Y else 0) =
+      a * ∑ E ∈ G.powerset, w E * ∑' k : O, f E S T k := by
+    by_cases hd : Disjoint S T
+    · simp only [if_pos hd, maskedSecondDual_eq_modes p χ hp,
+        overlapPairWeight, f, Finset.mul_sum, tsum_mul_left]
+      apply Finset.sum_congr rfl
+      intro E hE
+      dsimp only [a, w]
+      ring
+    · simp [hd, f]
+  calc
+    _ = a * ∑ S ∈ (F \ G).powerset, ∑ T ∈ (F \ G).powerset,
+        ∑ E ∈ G.powerset, w E * ∑' k : O, f E S T k := by
+      simp only [secondOverlapBlock, hterm, Finset.mul_sum]
+    _ = a * ∑ S ∈ (F \ G).powerset, ∑ E ∈ G.powerset,
+        ∑ T ∈ (F \ G).powerset, w E * ∑' k : O, f E S T k := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro S hS
+      rw [Finset.sum_comm]
+    _ = a * ∑ E ∈ G.powerset, ∑ S ∈ (F \ G).powerset,
+        ∑ T ∈ (F \ G).powerset, w E * ∑' k : O, f E S T k := by
+      congr 1
+      rw [Finset.sum_comm]
+    _ = _ := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro E hE
+      rw [residualSecondMode_tsum p χ hp F G Ψ Ψ m c d
+        (fun U => H (G ∪ U)) (fun U => H (G ∪ U))
+        (∏ i ∈ E, p i)
+        (Finset.prod_ne_zero_iff.mpr (fun i hi => hp i)) W Y hY]
+      simp only [Finset.mul_sum]
+      rfl
+
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+theorem secondPairRadialMode_normalized (S T : Finset ι) (hd : Disjoint S T)
+    (e k : O) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) :
+    secondPairRadialMode p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) hp S T e k W Y =
+      ((Y : ℂ) / (‖ringComplex (∏ i ∈ S ∪ T, p i)‖ : ℂ)) *
+        paperRadialFourier W (Y * ‖ringComplex k‖ ^ 2 /
+          (‖ringComplex e‖ ^ 2 * primeProductNorm p (S ∪ T))) *
+        secondNormalizedGaussTerm p hp hg S T e k := by
+  have hn : (∏ i : ↥((T \ S) ∪ (S \ T)), p i.val) = ∏ i ∈ S ∪ T, p i := by
+    rw [Finset.prod_coe_sort]
+    simp only [Finset.sdiff_eq_self_of_disjoint hd,
+      Finset.sdiff_eq_self_of_disjoint hd.symm, Finset.union_comm T S]
+  have hnorm : (‖ringComplex (∏ i ∈ S ∪ T, p i)‖ : ℂ) =
+      (‖ringComplex (∏ i ∈ S, p i)‖ : ℂ) * (‖ringComplex (∏ i ∈ T, p i)‖ : ℂ) := by
+    rw [Finset.prod_union hd, map_mul, norm_mul, Complex.ofReal_mul]
+  simp only [secondPairRadialMode, secondNormalizedGaussTerm, hn, primeProductNorm,
+    Complex.ofReal_pow, Complex.ofReal_mul, hnorm, div_eq_mul_inv, mul_inv_rev, inv_pow, pow_two]
+  ring
+
+def secondFrequencyKernel (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) : ℂ :=
+  secondKernelPair p hg hp F Ψ₁ Ψ₂ m r c d e k H₁ H₂ (fun S T =>
+    ((Y : ℂ) / (‖ringComplex (∏ i ∈ S ∪ T, p i)‖ : ℂ)) *
+      paperRadialFourier W (Y * ‖ringComplex k‖ ^ 2 /
+        (‖ringComplex e‖ ^ 2 * primeProductNorm p (S ∪ T))))
+
+theorem secondGaussTerm_test_factors (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) (S T : Finset ι) :
+    secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k H₁ H₂ S T =
+      star (H₁ S) * H₂ T *
+        secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k (fun _ => 1) (fun _ => 1) S T := by
+  simp only [secondGaussTerm, secondInputCoefficient, star_mul, mul_one]
+  ring
+
+theorem secondFrequencyKernel_log_tests (F : Finset ι)
+    (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ Y : ℝ) (W : 𝓢(ℝ, ℂ)) :
+    secondFrequencyKernel p hp hg F Ψ₁ Ψ₂ m r c d e k
+      (fun S => V₁ (columnLog p X₁ S)) (fun T => V₂ (columnLog p X₂ T)) W Y =
+      actualSecondKernel p hp hg F Ψ₁ Ψ₂ m r c d e k W V₁ V₂ X₁ X₂ Y := by
+  unfold secondFrequencyKernel secondKernelPair actualSecondKernel
+  apply Finset.sum_congr rfl
+  intro S hS
+  apply Finset.sum_congr rfl
+  intro T hT
+  by_cases hd : Disjoint S T
+  · simp only [if_pos hd]
+    rw [secondGaussTerm_test_factors]
+    ring
+  · simp only [if_neg hd]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+
+theorem commonProduct_mask
+    (hinj : Function.Injective (fun i => Ideal.span {p i})) (U G : Finset ι) :
+    primeCoprimeMask p U (∏ i ∈ G, p i) = if Disjoint U G then 1 else 0 := by
+  by_cases hd : Disjoint U G
+  · rw [primeCoprimeMask_indicator, if_pos hd]
+    apply if_pos
+    intro i hi hdiv
+    have hc : IsCoprime (p i) (∏ j ∈ G, p j) := by
+      apply IsCoprime.prod_right
+      intro j hj
+      have hij : i ≠ j := fun h => Finset.disjoint_left.mp hd hi (h.symm ▸ hj)
+      exact (Ideal.isCoprime_span_singleton_iff _ _).mp
+        (Ideal.isCoprime_of_isMaximal (hinj.ne hij))
+    obtain ⟨a, b, hab⟩ := hc
+    have hi0 : Ideal.Quotient.mk (Ideal.span {p i}) (p i) = 0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr (dvd_refl _))
+    have hg0 : Ideal.Quotient.mk (Ideal.span {p i}) (∏ j ∈ G, p j) = 0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr hdiv)
+    have h01 : (0 : O ⧸ Ideal.span {p i}) = 1 := by
+      simpa only [map_add, map_mul, map_one, hi0, hg0, mul_zero, zero_add] using
+        congrArg (Ideal.Quotient.mk (Ideal.span {p i})) hab
+    exact zero_ne_one h01
+  · obtain ⟨i, hiU, hiG⟩ := Finset.not_disjoint_iff.mp hd
+    rw [primeCoprimeMask_indicator, if_neg hd]
+    exact if_neg (fun h => h i hiU (Finset.dvd_prod_of_mem p hiG))
+
+theorem sum_remove_common_pool
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (F G : Finset ι) (A : Finset ι → ℂ) :
+    (∑ U ∈ (F \ G).powerset, A U) =
+      ∑ U ∈ F.powerset, primeCoprimeMask p U (∏ i ∈ G, p i) * A U := by
+  have hsub : (F \ G).powerset ⊆ F.powerset := Finset.powerset_mono.mpr Finset.sdiff_subset
+  calc
+    _ = ∑ U ∈ (F \ G).powerset, primeCoprimeMask p U (∏ i ∈ G, p i) * A U := by
+      apply Finset.sum_congr rfl
+      intro U hU
+      have hd : Disjoint U G := Finset.disjoint_left.mpr (fun i hi hG =>
+        (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hU) hi)).2 hG)
+      rw [commonProduct_mask p hinj U G, if_pos hd, one_mul]
+    _ = _ := by
+      apply Finset.sum_subset hsub
+      intro U hUF hUG
+      have hd : ¬ Disjoint U G := by
+        intro hd
+        apply hUG
+        apply Finset.mem_powerset.mpr
+        intro i hi
+        exact Finset.mem_sdiff.mpr ⟨(Finset.mem_powerset.mp hUF) hi,
+          fun hG => Finset.disjoint_left.mp hd hi hG⟩
+      rw [commonProduct_mask p hinj U G, if_neg hd, zero_mul]
+
+theorem sum_pair_remove_common_pool
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (F G : Finset ι) (A : Finset ι → Finset ι → ℂ) :
+    (∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset, A U V) =
+      ∑ U ∈ F.powerset, ∑ V ∈ F.powerset,
+        primeCoprimeMask p U (∏ i ∈ G, p i) *
+        primeCoprimeMask p V (∏ i ∈ G, p i) * A U V := by
+  rw [sum_remove_common_pool p hinj F G]
+  apply Finset.sum_congr rfl
+  intro U hU
+  rw [sum_remove_common_pool p hinj F G, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro V hV
+  ring
+
+lemma star_primeCoprimeMask (S : Finset ι) (a : O) :
+    star (primeCoprimeMask p S a) = primeCoprimeMask p S a := by
+  rw [primeCoprimeMask_indicator]
+  split_ifs <;> simp only [star_one, star_zero]
+
+variable (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+
+theorem secondInputCoefficient_fixed_mask (Ψ : O →* ℂ) (m g c d : O)
+    (H : Finset ι → ℂ) (U : Finset ι) :
+    secondInputCoefficient p χ Ψ (m * g) c d H U =
+      primeCoprimeMask p U g * secondInputCoefficient p χ Ψ m c d H U := by
+  rw [secondInputCoefficient, subsetMask_mul p χ U m g]
+  unfold secondInputCoefficient
+  ring
+
+theorem input_pair_fixed_pool
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (F G : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m c d : O)
+    (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) :
+    (∑ U ∈ (F \ G).powerset, ∑ V ∈ (F \ G).powerset,
+      if Disjoint U V then
+        star (supportMobius U * secondInputCoefficient p χ Ψ₁ m c d H₁ U) *
+        (supportMobius V * secondInputCoefficient p χ Ψ₂ m c d H₂ V) * K U V else 0) =
+      ∑ U ∈ F.powerset, ∑ V ∈ F.powerset,
+        if Disjoint U V then
+          star (supportMobius U * secondInputCoefficient p χ Ψ₁ (m * ∏ i ∈ G, p i) c d H₁ U) *
+          (supportMobius V * secondInputCoefficient p χ Ψ₂ (m * ∏ i ∈ G, p i) c d H₂ V) * K U V
+        else 0 := by
+  rw [sum_pair_remove_common_pool p hinj F G]
+  apply Finset.sum_congr rfl
+  intro U hU
+  apply Finset.sum_congr rfl
+  intro V hV
+  by_cases hd : Disjoint U V
+  · rw [if_pos hd, if_pos hd, secondInputCoefficient_fixed_mask, secondInputCoefficient_fixed_mask]
+    simp only [star_mul, star_primeCoprimeMask]
+    ring
+  · simp only [if_neg hd, mul_zero]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+/-- Divisor modes use a fixed prime pool after absorbing the removed primes into its mask. -/
+theorem residualSecondMode_eq_frequencyKernel
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (F G E : Finset ι) (hEG : E ⊆ G)
+    (Ψ₁ Ψ₂ : O →* ℂ) (m c d : O) (H₁ H₂ : Finset ι → ℂ)
+    (k : O) (W : 𝓢(ℝ, ℂ)) (Y : ℝ) :
+    residualSecondMode p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) hp
+      F G Ψ₁ Ψ₂ m c d H₁ H₂ (∏ i ∈ E, p i) k W Y =
+      secondFrequencyKernel p hp hg F Ψ₁ Ψ₂ m (∏ i ∈ G \ E, p i) c d
+        (∏ i ∈ E, p i) k H₁ H₂ W Y := by
+  have hprod : (∏ i ∈ G, p i) = (∏ i ∈ E, p i) * ∏ i ∈ G \ E, p i := by
+    rw [← Finset.prod_union (show Disjoint E (G \ E) from disjoint_sdiff_self_right),
+      Finset.union_sdiff_of_subset hEG]
+  unfold residualSecondMode
+  rw [input_pair_fixed_pool p _ hinj F G Ψ₁ Ψ₂ m c d H₁ H₂]
+  unfold secondFrequencyKernel secondKernelPair
+  apply Finset.sum_congr rfl
+  intro S hS
+  apply Finset.sum_congr rfl
+  intro T hT
+  by_cases hd : Disjoint S T
+  · rw [if_pos hd, if_pos hd, secondPairRadialMode_normalized p hp hg S T hd, hprod]
+    unfold secondGaussTerm
+    ring
+  · simp only [if_neg hd]
+
+theorem secondOverlapBlock_eq_frequencyKernel
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (F G : Finset ι) (Ψ : O →* ℂ) (m c d : O) (H : Finset ι → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    secondOverlapBlock p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) hp
+      F G Ψ m c d H W Y =
+      (‖secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i))
+        Ψ m c d (fun _ => 1) G‖ ^ 2 : ℝ) *
+      ∑ E ∈ G.powerset, (supportMobius E / (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)) *
+        ∑' k : O, secondFrequencyKernel p hp hg F Ψ Ψ m (∏ i ∈ G \ E, p i) c d
+          (∏ i ∈ E, p i) k (fun U => H (G ∪ U)) (fun U => H (G ∪ U)) W Y := by
+  rw [secondOverlapBlock_eq_modes p _ hp F G Ψ m c d H W Y hY]
+  apply congrArg (fun x : ℂ =>
+    (‖secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i))
+      Ψ m c d (fun _ => 1) G‖ ^ 2 : ℝ) * x)
+  apply Finset.sum_congr rfl
+  intro E hE
+  apply congrArg (fun x : ℂ => (supportMobius E / (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)) * x)
+  exact tsum_congr (fun k => residualSecondMode_eq_frequencyKernel p hp hg hinj F G E
+    (Finset.mem_powerset.mp hE) Ψ Ψ m c d (fun U => H (G ∪ U)) (fun U => H (G ∪ U)) k W Y)
+
+/-- The complete second reflection is a divisor sum of fixed-pool frequency kernels. -/
+theorem inputConjugateRow_second_frequency_expansion
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (F : Finset ι) (Ψ : O →* ℂ) (m c d : O) (H : Finset ι → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, W (‖ringComplex z‖ ^ 2 / Y) *
+      (‖inputConjugateRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) F Ψ m c d H z‖ ^ 2 : ℝ)) =
+      ∑ G ∈ F.powerset,
+        (‖secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i))
+          Ψ m c d (fun _ => 1) G‖ ^ 2 : ℝ) *
+        ∑ E ∈ G.powerset, (supportMobius E / (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)) *
+          ∑' k : O, secondFrequencyKernel p hp hg F Ψ Ψ m (∏ i ∈ G \ E, p i) c d
+            (∏ i ∈ E, p i) k (fun U => H (G ∪ U)) (fun U => H (G ∪ U)) W Y := by
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  have hχ : ∀ i, χ i ≠ 1 := fun i => complexSexticChar_ne_one (Ideal.span {p i}) (hg i)
+  calc
+    _ = ∑ G ∈ F.powerset, secondOverlapBlock p χ hp F G Ψ m c d H W Y :=
+      inputConjugateRow_smoothed_second_poisson p χ hp hinj hχ F Ψ m c d H W Y hY
+    _ = _ := Finset.sum_congr rfl (fun G hG =>
+      secondOverlapBlock_eq_frequencyKernel p hp hg hinj F G Ψ m c d H W Y hY)
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+theorem secondChildColumn_zero_of_overlap
+    (Ψ : O →* ℂ) (m c e y : O) (H : Finset ι → ℂ)
+    (V N : Finset ι) (hd : ¬ Disjoint V N) :
+    secondChildColumn p hg Ψ m (c * e * ∏ i ∈ V, p i) y H N = 0 := by
+  obtain ⟨i, hiV, hiN⟩ := Finset.not_disjoint_iff.mp hd
+  have hdiv : p i ∣ c * e * ∏ j ∈ V, p j :=
+    dvd_mul_of_dvd_right (Finset.dvd_prod_of_mem p hiV) (c * e)
+  have hz : primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) N
+      (c * e * ∏ j ∈ V, p j) = 0 := by
+    apply Finset.prod_eq_zero hiN
+    rw [Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr hdiv), MulChar.map_zero]
+  simp only [secondChildColumn, hz, zero_pow (by decide : (4 : ℕ) ≠ 0), mul_zero, zero_mul]
+
+/-- The label annihilates every column meeting its common prime support. -/
+theorem fixedChildKernelPair_fixed_pool (F V : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ)
+    (m c e y₁ y₂ : O) (H₁ H₂ : Finset ι → ℂ) (K : Finset ι → Finset ι → ℂ) :
+    fixedChildKernelPair p hg (F \ V) Ψ₁ Ψ₂ m (c * e * ∏ i ∈ V, p i) y₁ y₂ H₁ H₂ K =
+      fixedChildKernelPair p hg F Ψ₁ Ψ₂ m (c * e * ∏ i ∈ V, p i) y₁ y₂ H₁ H₂ K := by
+  have hzero (N : Finset ι) (hNF : N ∈ F.powerset)
+      (hNV : N ∉ (F \ V).powerset) : ¬ Disjoint V N := by
+    intro hd
+    apply hNV
+    apply Finset.mem_powerset.mpr
+    intro i hi
+    exact Finset.mem_sdiff.mpr ⟨(Finset.mem_powerset.mp hNF) hi,
+      fun hiv => Finset.disjoint_left.mp hd hiv hi⟩
+  unfold fixedChildKernelPair
+  calc
+    _ = ∑ N ∈ (F \ V).powerset, ∑ M ∈ F.powerset,
+        star (secondChildColumn p hg Ψ₁ m (c * e * ∏ i ∈ V, p i) y₁ H₁ N) *
+          secondChildColumn p hg Ψ₂ m (c * e * ∏ i ∈ V, p i) y₂ H₂ M * K N M := by
+      apply Finset.sum_congr rfl
+      intro N hN
+      apply Finset.sum_subset (Finset.powerset_mono.mpr Finset.sdiff_subset)
+      intro M hMF hMV
+      rw [secondChildColumn_zero_of_overlap p hg Ψ₂ m c e y₂ H₂ V M (hzero M hMF hMV),
+        mul_zero, zero_mul]
+    _ = _ := by
+      apply Finset.sum_subset (Finset.powerset_mono.mpr Finset.sdiff_subset)
+      intro N hNF hNV
+      rw [secondChildColumn_zero_of_overlap p hg Ψ₁ m c e y₁ H₁ V N (hzero N hNF hNV), star_zero]
+      simp only [zero_mul, Finset.sum_const_zero]
+
+theorem secondChildKernelPair_ray_fixed_pool
+    (F V : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k₁ k₂ : O)
+    (r₁ r₂ : QuadraticRayRing) (K : Finset ι → Finset ι → ℂ) :
+    secondChildKernelPair p hg F V Ψ₁ Ψ₂ m r c d e k₁ k₂
+      (secondRayMask p hg r₁ (fun _ => 1)) (secondRayMask p hg r₂ (fun _ => 1)) K =
+      ∑ s : QuadraticRayRing × QuadraticRayRing,
+        (star (secondRayTransition p hg V r₁ s.1) * secondRayTransition p hg V r₂ s.2) *
+          fixedChildKernelPair p hg F Ψ₁ Ψ₂ (m * r)
+            (c * e * ∏ i ∈ V, p i) (d * e * k₁) (d * e * k₂)
+            (secondRayColumn p hg s.1 (fun _ => 1))
+            (secondRayColumn p hg s.2 (fun _ => 1))
+            (fun N M => K (V ∪ N) (V ∪ M)) := by
+  rw [secondChildKernelPair_ray_separation]
+  simp only [fixedChildKernelPair_fixed_pool]
+
+end SecondPassArithmetic
+
+
+
+open scoped Classical SchwartzMap FourierTransform ContDiff
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+
+def halfNormalizationMultiplier (U : ℝ → ℂ) (s : ℝ) : ℂ :=
+  U s * (Real.exp (-s / 2) : ℂ)
+
+lemma halfNormalization_temperate (U : ℝ → ℂ) (hUc : HasCompactSupport U)
+    (hUs : ContDiff ℝ ∞ U) : (halfNormalizationMultiplier U).HasTemperateGrowth := by
+  apply (hUc.mul_right : HasCompactSupport (halfNormalizationMultiplier U)).hasTemperateGrowth
+  change ContDiff ℝ ∞ (fun s : ℝ => U s * (Real.exp (-s / 2) : ℂ))
+  have he : ContDiff ℝ ∞ (fun s : ℝ => Real.exp (-s / 2)) := by fun_prop
+  exact hUs.mul (Complex.ofRealCLM.contDiff.comp he)
+
+def halfNormalizationCLM (U : ℝ → ℂ) : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ) :=
+  (SchwartzMap.smulLeftCLM ℂ (halfNormalizationMultiplier U)).restrictScalars ℝ
+
+lemma halfNormalizationCLM_apply (U : ℝ → ℂ) (hUc : HasCompactSupport U)
+    (hUs : ContDiff ℝ ∞ U) (g : 𝓢(ℝ, ℂ)) (s : ℝ) :
+    halfNormalizationCLM U g s = U s * (Real.exp (-s / 2) : ℂ) * g s := by
+  exact SchwartzMap.smulLeftCLM_apply_apply (halfNormalization_temperate U hUc hUs) g s
+
+lemma sqrt_exp_half (s : ℝ) : Real.sqrt (Real.exp s) = Real.exp (s / 2) := by
+  apply (Real.sqrt_eq_iff_mul_self_eq (Real.exp_pos s).le (Real.exp_pos (s / 2)).le).mpr
+  rw [← Real.exp_add]
+  congr 1
+  ring
+
+theorem halfNormalization_exact (U : ℝ → ℂ) (hUc : HasCompactSupport U)
+    (hUs : ContDiff ℝ ∞ U) (g : 𝓢(ℝ, ℂ)) (hU : ∀ s, g s ≠ 0 → U s = 1) (s : ℝ) :
+    halfNormalizationCLM U g s = g s / (Real.sqrt (Real.exp s) : ℂ) := by
+  rw [halfNormalizationCLM_apply U hUc hUs]
+  by_cases hg : g s = 0
+  · simp [hg]
+  rw [hU s hg, one_mul, sqrt_exp_half]
+  have he : (Real.exp (-s / 2) : ℂ) = ((Real.exp (s / 2) : ℂ))⁻¹ := by
+    rw [← Complex.ofReal_inv, ← Real.exp_neg]
+    congr 2
+    ring
+  rw [he]
+  exact (div_eq_inv_mul (g s) (Real.exp (s / 2) : ℂ)).symm
+
+lemma halfNormalization_twist (U : ℝ → ℂ) (hUc : HasCompactSupport U)
+    (hUs : ContDiff ℝ ∞ U) (g : 𝓢(ℝ, ℂ)) (t : ℝ) :
+    halfNormalizationCLM U (frequencyTwist g t) = frequencyTwist (halfNormalizationCLM U g) t := by
+  ext s
+  simp only [halfNormalizationCLM_apply U hUc hUs, frequencyTwist_apply]
+  ring
+
+theorem halfNormalization_source_control (U : ℝ → ℂ) (S : Finset (ℕ × ℕ)) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧ ∀ g : 𝓢(ℝ, ℂ),
+      S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (halfNormalizationCLM U g) ≤
+        C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) g :=
+  SchwartzPlanePoisson.schwartzCLM_finite_seminorm_control (halfNormalizationCLM U) S
+
+end JointLogSeparation
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson JointLogSeparation SecondPassArithmetic
+
+lemma sqrtProductNorm {ι : Type*} (p : ι → O) (S : Finset ι) :
+    Real.sqrt (primeProductNorm p S) = ‖ringComplex (∏ i ∈ S, p i)‖ := by
+  simp only [primeProductNorm, Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg _)]
+
+theorem columnLog_union_scale {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) (V N : Finset ι) (hVN : Disjoint V N)
+    (X X₀ : ℝ) (hX : 0 < X) (hX₀ : 0 < X₀) :
+    columnLog p X (V ∪ N) =
+      Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ N := by
+  have hV := primeProductNorm_pos p hp V
+  have hN := primeProductNorm_pos p hp N
+  unfold columnLog
+  rw [primeProductNorm_union p V N hVN, ← Real.log_mul
+    (ne_of_gt (div_pos (mul_pos hV hX₀) hX)) (ne_of_gt (div_pos hN hX₀))]
+  congr 1
+  field_simp
+
+lemma halfNormalization_at_ratio (U : ℝ → ℂ) (hUc : HasCompactSupport U)
+    (hUs : ContDiff ℝ ∞ U) (g : 𝓢(ℝ, ℂ)) (hU : ∀ s, g s ≠ 0 → U s = 1)
+    (N X : ℝ) (hN : 0 < N) (hX : 0 < X) :
+    halfNormalizationCLM U g (Real.log (N / X)) / (Real.sqrt X : ℂ) =
+      g (Real.log (N / X)) / (Real.sqrt N : ℂ) := by
+  rw [halfNormalization_exact U hUc hUs g hU, Real.exp_log (div_pos hN hX), div_div]
+  congr 1
+  rw [← Complex.ofReal_mul, ← Real.sqrt_mul (div_pos hN hX).le]
+  congr 2
+  field_simp
+
+theorem normalizedColumn_union_test {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) (V N : Finset ι) (hVN : Disjoint V N)
+    (X X₀ : ℝ) (hX : 0 < X) (hX₀ : 0 < X₀)
+    (U : ℝ → ℂ) (hUc : HasCompactSupport U) (hUs : ContDiff ℝ ∞ U)
+    (g : 𝓢(ℝ, ℂ)) (hU : ∀ s, g s ≠ 0 → U s = 1) :
+    normalizedColumn p (fun S => g (columnLog p X S)) (V ∪ N) =
+      halfNormalizationCLM U g
+        (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ N) / (Real.sqrt X : ℂ) := by
+  rw [← columnLog_union_scale p hp V N hVN X X₀ hX hX₀]
+  change g (Real.log (primeProductNorm p (V ∪ N) / X)) /
+    (‖ringComplex (∏ i ∈ V ∪ N, p i)‖ : ℂ) = _
+  rw [← sqrtProductNorm]
+  exact (halfNormalization_at_ratio U hUc hUs g hU (primeProductNorm p (V ∪ N)) X
+    (primeProductNorm_pos p hp _) hX).symm
+
+end SecondPassIntegration
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson JointLogSeparation SecondPassArithmetic
+open scoped Classical SchwartzMap FourierTransform ContDiff
+
+def elementNorm (a : O) : ℝ := ‖ringComplex a‖ ^ 2
+
+lemma elementNorm_pos (a : O) (ha : a ≠ 0) : 0 < elementNorm a := by
+  exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero ha))
+
+lemma elementNorm_mul (a b : O) : elementNorm (a*b) = elementNorm a * elementNorm b := by
+  simp only [elementNorm, map_mul, norm_mul, mul_pow]
+
+theorem seven_radial_ratio (d e v n₁ n₂ k D E V X K Y : ℝ)
+    (hd : 0 < d) (he : 0 < e) (hv : 0 < v) (hn₁ : 0 < n₁) (hn₂ : 0 < n₂)
+    (hk : 0 < k) (hD : 0 < D) (hE : 0 < E) (hV : 0 < V) (hX : 0 < X) (hK : 0 < K) :
+    Y * k / (e * v ^ 2 * n₁ * n₂) =
+      (Y * K / (D * E ^ 2 * V ^ 2 * X ^ 2)) * Real.exp
+        (Real.log (d*e*k/K) - Real.log (d/D) - 2*Real.log (e/E) -
+          2*Real.log (v/V) - Real.log (n₁/X) - Real.log (n₂/X)) := by
+  rw [show 2 * Real.log (e/E) = Real.log (e/E) + Real.log (e/E) by ring,
+    show 2 * Real.log (v/V) = Real.log (v/V) + Real.log (v/V) by ring]
+  simp only [Real.exp_sub, Real.exp_add, Real.exp_log (div_pos hd hD),
+    Real.exp_log (div_pos he hE), Real.exp_log (div_pos hv hV),
+    Real.exp_log (div_pos hn₁ hX), Real.exp_log (div_pos hn₂ hX),
+    Real.exp_log (div_pos (mul_pos (mul_pos hd he) hk) hK)]
+  field_simp
+
+theorem second_radial_dyadic_argument {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) (V N M : Finset ι)
+    (hVN : Disjoint V N) (hVM : Disjoint V M)
+    (d e k : O) (hd : d ≠ 0) (he : e ≠ 0) (hk : k ≠ 0)
+    (D E V₀ X₀ K Y : ℝ) (hD : 0 < D) (hE : 0 < E)
+    (hV₀ : 0 < V₀) (hX₀ : 0 < X₀) (hK : 0 < K) :
+    Y * ‖ringComplex k‖ ^ 2 /
+      (‖ringComplex e‖ ^ 2 * primeProductNorm p (V∪N) * primeProductNorm p (V∪M)) =
+      (Y * K / (D * E ^ 2 * V₀ ^ 2 * X₀ ^ 2)) * Real.exp
+        (Real.log (elementNorm (d*e*k) / K) - Real.log (elementNorm d / D) -
+          2*Real.log (elementNorm e / E) - 2*Real.log (primeProductNorm p V / V₀) -
+          columnLog p X₀ N - columnLog p X₀ M) := by
+  rw [primeProductNorm_union p V N hVN, primeProductNorm_union p V M hVM]
+  simp only [elementNorm_mul, columnLog]
+  have h := seven_radial_ratio (elementNorm d) (elementNorm e) (primeProductNorm p V)
+    (primeProductNorm p N) (primeProductNorm p M) (elementNorm k) D E V₀ X₀ K Y
+    (elementNorm_pos d hd) (elementNorm_pos e he) (primeProductNorm_pos p hp V)
+    (primeProductNorm_pos p hp N) (primeProductNorm_pos p hp M) (elementNorm_pos k hk)
+    hD hE hV₀ hX₀ hK
+  convert h using 1 ; unfold elementNorm ; ring
+
+def conjugateProfile (g : 𝓢(ℝ, ℂ)) : 𝓢(ℝ, ℂ) :=
+  SchwartzMap.postcompCLM Complex.conjCLE.toContinuousLinearMap g
+
+@[simp] lemma conjugateProfile_apply (g : 𝓢(ℝ, ℂ)) (s : ℝ) :
+    conjugateProfile g s = star (g s) := rfl
+
+theorem normalizedColumn_pair_union {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) (V N M : Finset ι)
+    (hVN : Disjoint V N) (hVM : Disjoint V M)
+    (X X₀ : ℝ) (hX : 0 < X) (hX₀ : 0 < X₀)
+    (U : ℝ → ℂ) (hUc : HasCompactSupport U) (hUs : ContDiff ℝ ∞ U)
+    (g₁ g₂ : 𝓢(ℝ, ℂ)) (hU₁ : ∀ s, g₁ s ≠ 0 → U s = 1)
+    (hU₂ : ∀ s, g₂ s ≠ 0 → U s = 1) :
+    star (normalizedColumn p (fun S => g₁ (columnLog p X S)) (V∪N)) *
+      normalizedColumn p (fun S => g₂ (columnLog p X S)) (V∪M) =
+    (X : ℂ)⁻¹ *
+      conjugateProfile (halfNormalizationCLM U g₁)
+        (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ N) *
+      halfNormalizationCLM U g₂
+        (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ M) := by
+  rw [normalizedColumn_union_test p hp V N hVN X X₀ hX hX₀ U hUc hUs g₁ hU₁,
+    normalizedColumn_union_test p hp V M hVM X X₀ hX hX₀ U hUc hUs g₂ hU₂]
+  simp only [conjugateProfile_apply, star_div₀, Complex.star_def, Complex.conj_ofReal]
+  have hs : (Real.sqrt X : ℂ) * (Real.sqrt X : ℂ) = (X : ℂ) := by
+    rw [← Complex.ofReal_mul, Real.mul_self_sqrt hX.le]
+  simp only [div_eq_mul_inv]
+  calc
+    _ = ((Real.sqrt X : ℂ) * (Real.sqrt X : ℂ))⁻¹ *
+        star (halfNormalizationCLM U g₁
+          (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ N)) *
+        halfNormalizationCLM U g₂
+          (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ M) := by
+      rw [mul_inv_rev]
+      simp only [Complex.star_def, div_eq_mul_inv]
+      ring
+    _ = _ := by rw [hs]; simp only [Complex.star_def, div_eq_mul_inv]
+
+end SecondPassIntegration
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+def radialPairKernel (e k : O) (W : 𝓢(ℝ, ℂ))
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ Y : ℝ) (S T : Finset ι) : ℂ :=
+  star (normalizedColumn p (fun U => V₁ (columnLog p X₁ U)) S) *
+    normalizedColumn p (fun U => V₂ (columnLog p X₂ U)) T *
+    paperRadialFourier W (Y * ‖ringComplex k‖ ^ 2 /
+      (‖ringComplex e‖ ^ 2 * primeProductNorm p S * primeProductNorm p T))
+
+theorem actualSecondKernel_eq_coupled
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (W : 𝓢(ℝ, ℂ)) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ Y : ℝ) :
+    actualSecondKernel p hp hg F Ψ₁ Ψ₂ m r c d e k W V₁ V₂ X₁ X₂ Y =
+      (Y : ℂ) * secondKernelPair p hg hp F Ψ₁ Ψ₂ m r c d e k
+        (fun _ => 1) (fun _ => 1) (radialPairKernel p e k W V₁ V₂ X₁ X₂ Y) := by
+  simp only [actualSecondKernel, secondKernelPair, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro S hS
+  apply Finset.sum_congr rfl
+  intro T hT
+  by_cases hd : Disjoint S T
+  · simp only [if_pos hd, radialPairKernel, normalizedColumn,
+      primeProductNorm_union p S T hd, Finset.prod_union hd,
+      map_mul, norm_mul, Complex.ofReal_mul, Complex.star_def,
+      Complex.conj_ofReal, div_eq_mul_inv, mul_inv_rev, map_inv₀]
+    ring
+  · simp only [if_neg hd, mul_zero]
+
+/-- The smooth kernel decomposes into fixed residue sectors on a single prime pool. -/
+theorem actualSecondKernel_eq_fixed_children
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (W : 𝓢(ℝ, ℂ)) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ Y : ℝ) :
+    actualSecondKernel p hp hg F Ψ₁ Ψ₂ m r c d e k W V₁ V₂ X₁ X₂ Y =
+      (Y : ℂ) * ∑ z : QuadraticRayRing × QuadraticRayRing, ∑ V ∈ F.powerset,
+        ∑ s : QuadraticRayRing × QuadraticRayRing,
+          secondTotalWeight p hg Ψ₁ Ψ₂ m r c d e k (z,V) *
+            (star (secondRayTransition p hg V z.1 s.1) * secondRayTransition p hg V z.2 s.2) *
+            fixedChildKernelPair p hg F Ψ₁ Ψ₂ (m * r)
+              (c * e * ∏ i ∈ V, p i) (d * e * k) (d * e * (-k))
+              (secondRayColumn p hg s.1 (fun _ => 1))
+              (secondRayColumn p hg s.2 (fun _ => 1))
+              (fun N M => radialPairKernel p e k W V₁ V₂ X₁ X₂ Y (V ∪ N) (V ∪ M)) := by
+  rw [actualSecondKernel_eq_coupled, secondKernelPair_eq_children p hg hp hinj hodd hpr]
+  simp only [secondChildKernelPair_ray_fixed_pool, Finset.mul_sum, mul_assoc]
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson JointLogSeparation SecondPassArithmetic
+open scoped Classical SchwartzMap ContDiff
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+
+include hp in
+theorem radialPairKernel_dyadic_normalization
+    (V N M : Finset ι) (hVN : Disjoint V N) (hVM : Disjoint V M)
+    (d e k : O) (hd : d ≠ 0) (he : e ≠ 0) (hk : k ≠ 0)
+    (D E V₀ X X₀ K Y : ℝ) (hD : 0 < D) (hE : 0 < E)
+    (hV₀ : 0 < V₀) (hX : 0 < X) (hX₀ : 0 < X₀) (hK : 0 < K)
+    (U : ℝ → ℂ) (hUc : HasCompactSupport U) (hUs : ContDiff ℝ ∞ U)
+    (g₁ g₂ W : 𝓢(ℝ, ℂ)) (hU₁ : ∀ s, g₁ s ≠ 0 → U s = 1)
+    (hU₂ : ∀ s, g₂ s ≠ 0 → U s = 1) :
+    radialPairKernel p e k W g₁ g₂ X X Y (V∪N) (V∪M) =
+      (X : ℂ)⁻¹ *
+      (conjugateProfile (halfNormalizationCLM U g₁)
+        (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ N) *
+      halfNormalizationCLM U g₂
+        (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ M) *
+      paperRadialFourier W
+        ((Y * K / (D * E ^ 2 * V₀ ^ 2 * X₀ ^ 2)) * Real.exp
+          (Real.log (elementNorm (d*e*k) / K) - Real.log (elementNorm d / D) -
+            2*Real.log (elementNorm e / E) - 2*Real.log (primeProductNorm p V / V₀) -
+            columnLog p X₀ N - columnLog p X₀ M))) := by
+  unfold radialPairKernel
+  rw [normalizedColumn_pair_union p hp V N M hVN hVM X X₀ hX hX₀ U hUc hUs g₁ g₂ hU₁ hU₂,
+    second_radial_dyadic_argument p hp V N M hVN hVM d e k hd he hk D E V₀ X₀ K Y hD hE hV₀ hX₀ hK]
+  ring
+
+variable [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+include hp in
+theorem fixedChildKernelPair_eq_postCommon
+    (F V : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ)
+    (hd : d ≠ 0) (he : e ≠ 0) (hk : k ≠ 0)
+    (D E V₀ X X₀ K Y : ℝ) (hD : 0 < D) (hE : 0 < E)
+    (hV₀ : 0 < V₀) (hX : 0 < X) (hX₀ : 0 < X₀) (hK : 0 < K)
+    (U : ℝ → ℂ) (hUc : HasCompactSupport U) (hUs : ContDiff ℝ ∞ U)
+    (g₁ g₂ W : 𝓢(ℝ, ℂ)) (hU₁ : ∀ s, g₁ s ≠ 0 → U s = 1)
+    (hU₂ : ∀ s, g₂ s ≠ 0 → U s = 1) (windows : Fin 7 → ℝ → ℂ) :
+    let A₁ := conjugateProfile (halfNormalizationCLM U g₁)
+    let A₂ := halfNormalizationCLM U g₂
+    let z := Real.log (primeProductNorm p V * X₀ / X)
+    let ud := Real.log (elementNorm d / D)
+    let ue := Real.log (elementNorm e / E)
+    let uv := Real.log (primeProductNorm p V / V₀)
+    let kap := Real.log (elementNorm (d*e*k) / K)
+    outerWindow windows z ud ue uv kap = 1 →
+    (∀ a : ℝ, A₁ (z+a) ≠ 0 → windows 5 a = 1) →
+    (∀ a : ℝ, A₂ (z+a) ≠ 0 → windows 6 a = 1) →
+    fixedChildKernelPair p hg F Ψ₁ Ψ₂ (m*r) (c*e*∏ i ∈ V, p i)
+      (d*e*k) (d*e*(-k)) H₁ H₂
+      (fun N M => radialPairKernel p e k W g₁ g₂ X X Y (V∪N) (V∪M)) =
+      (X : ℂ)⁻¹ * postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ (m*r)
+        (c*e*∏ i ∈ V, p i) (d*e*k) (d*e*(-k)) A₁ A₂ W windows
+        z ud ue uv kap X₀ X₀ (Y*K/(D*E^2*V₀^2*X₀^2)) := by
+  dsimp only
+  intro houter hcut₁ hcut₂
+  simp only [fixedChildKernelPair, postCommonSmoothPair, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro N hN
+  apply Finset.sum_congr rfl
+  intro M hM
+  by_cases hVN : Disjoint V N
+  · by_cases hVM : Disjoint V M
+    · rw [radialPairKernel_dyadic_normalization p hp V N M hVN hVM d e k hd he hk
+        D E V₀ X X₀ K Y hD hE hV₀ hX hX₀ hK U hUc hUs g₁ g₂ W hU₁ hU₂, houter]
+      by_cases h₁ : conjugateProfile (halfNormalizationCLM U g₁)
+          (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ N) = 0
+      · rw [h₁]; ring
+      · by_cases h₂ : halfNormalizationCLM U g₂
+            (Real.log (primeProductNorm p V * X₀ / X) + columnLog p X₀ M) = 0
+        · rw [h₂]; ring
+        · rw [hcut₁ _ h₁, hcut₂ _ h₂]; ring
+    · rw [secondChildColumn_zero_of_overlap p hg Ψ₂ (m*r) c e
+        (d*e*(-k)) H₂ V M hVM]
+      ring
+  · rw [secondChildColumn_zero_of_overlap p hg Ψ₁ (m*r) c e
+      (d*e*k) H₁ V N hVN, star_zero]
+    ring
+
+end SecondPassIntegration
+
+
+
+namespace JointLogSeparation
+open Eisenstein SchwartzPlanePoisson
+open scoped ContDiff
+
+theorem exists_complex_smooth_cutoff (A : ℝ) (hA : 0 ≤ A) :
+    ∃ U : ℝ → ℂ, HasCompactSupport U ∧ ContDiff ℝ ∞ U ∧
+      (∀ s, |s| ≤ A → U s = 1) ∧
+      tsupport U ⊆ Set.Icc (-(A + 1)) (A + 1) ∧
+      (∀ s, A + 1 ≤ |s| → U s = 0) := by
+  let b : ContDiffBump (0 : ℝ) := ⟨A + 1 / 2, A + 1, by linarith, by linarith⟩
+  let U : ℝ → ℂ := fun s => (b s : ℂ)
+  have hs (s : ℝ) (h : U s ≠ 0) : |s| < A + 1 := by
+    have hb : s ∈ Function.support b := by
+      intro hz
+      exact h (by simp only [U, hz, Complex.ofReal_zero])
+    rw [b.support_eq] at hb
+    simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using hb
+  have hsupport : Function.support U ⊆ Set.Icc (-(A + 1)) (A + 1) :=
+    fun s hsU => abs_le.mp (hs s hsU).le
+  refine ⟨U, HasCompactSupport.of_support_subset_isCompact isCompact_Icc hsupport,
+    Complex.ofRealCLM.contDiff.comp b.contDiff, ?_, closure_minimal hsupport isClosed_Icc, ?_⟩
+  · intro s hsA
+    have hb : s ∈ Metric.closedBall (0 : ℝ) b.rIn := by
+      change dist s 0 ≤ A + 1 / 2
+      rw [Real.dist_eq, sub_zero]
+      linarith
+    simp only [U, b.one_of_mem_closedBall hb, Complex.ofReal_one]
+  · intro s hsA
+    by_contra h
+    exact (not_lt_of_ge hsA) (hs s h)
+
+end JointLogSeparation
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson JointLogSeparation SecondPassArithmetic
+open scoped Classical SchwartzMap ContDiff
+section
+
+theorem halfNormalization_support_bound (U : ℝ → ℂ) (hUc : HasCompactSupport U)
+    (hUs : ContDiff ℝ ∞ U) (g : 𝓢(ℝ, ℂ)) (A : ℝ)
+    (hg : ∀ s, g s ≠ 0 → |s| ≤ A) :
+    ∀ s, halfNormalizationCLM U g s ≠ 0 → |s| ≤ A := by
+  intro s hs
+  apply hg s
+  intro hzero
+  apply hs
+  rw [halfNormalizationCLM_apply U hUc hUs, hzero, mul_zero]
+
+lemma translated_support_bound (g : ℝ → ℂ) (A B z x : ℝ)
+    (hg : ∀ s, g s ≠ 0 → |s| ≤ A) (hz : |z| ≤ B) (hx : g (z+x) ≠ 0) :
+    |x| ≤ A+B := by
+  have ht := hg (z+x) hx
+  have ha : |x| ≤ |z+x| + |z| := by
+    calc
+      |x| = |(z+x)-z| := by congr 1; ring
+      _ ≤ |z+x| + |z| := abs_sub _ _
+  linarith
+
+theorem exists_fixed_sector_windows (A B : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B) :
+    ∃ windows : Fin 7 → ℝ → ℂ,
+      (∀ j, HasCompactSupport (windows j)) ∧
+      (∀ j, ContDiff ℝ ∞ (windows j)) ∧
+      (∀ j s, windows j s ≠ 0 → |s| ≤ A+B+1) ∧
+      (∀ z ud ue uv kap : ℝ,
+        |z| ≤ B → |ud| ≤ B → |ue| ≤ B → |uv| ≤ B → |kap| ≤ B →
+        outerWindow windows z ud ue uv kap = 1) ∧
+      (∀ (g : ℝ → ℂ) (z : ℝ), (∀ s, g s ≠ 0 → |s| ≤ A) → |z| ≤ B →
+        ∀ j x, g (z+x) ≠ 0 → windows j x = 1) := by
+  obtain ⟨w, hwc, hws, hweq, hwsupp, hwzero⟩ :=
+    JointLogSeparation.exists_complex_smooth_cutoff (A+B) (add_nonneg hA hB)
+  refine ⟨fun _ => w, fun _ => hwc, fun _ => hws, ?_, ?_, ?_⟩
+  · intro j s hs
+    have hh := hwsupp (subset_closure hs)
+    exact abs_le.mpr hh
+  · intro z ud ue uv kap hz hd he hv hk
+    have heq (s : ℝ) (hs : |s| ≤ B) : w s = 1 := hweq s (by linarith)
+    simp only [outerWindow, heq z hz, heq ud hd, heq ue he, heq uv hv, heq kap hk,
+      one_mul]
+  · intro g z hg hz j x hx
+    exact hweq x (translated_support_bound g A B z x hg hz hx)
+
+end
+
+open Eisenstein SchwartzPlanePoisson JointLogSeparation SecondPassArithmetic
+
+theorem exists_fixed_normalized_child_tests {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (g₁ g₂ W : 𝓢(ℝ, ℂ)) (A B : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (hg₁ : ∀ s, g₁ s ≠ 0 → |s| ≤ A) (hg₂ : ∀ s, g₂ s ≠ 0 → |s| ≤ A) :
+    ∃ (A₁ A₂ : 𝓢(ℝ, ℂ)) (windows : Fin 7 → ℝ → ℂ),
+      (∀ j, HasCompactSupport (windows j)) ∧
+      (∀ j, ContDiff ℝ ∞ (windows j)) ∧
+      (∀ j s, windows j s ≠ 0 → |s| ≤ A+B+1) ∧
+      ∀ (D E V₀ X X₀ K Y : ℝ), 0 < D → 0 < E → 0 < V₀ → 0 < X → 0 < X₀ → 0 < K →
+      ∀ (F V : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O) (H₁ H₂ : Finset ι → ℂ),
+        d ≠ 0 → e ≠ 0 → k ≠ 0 →
+        |Real.log (primeProductNorm p V * X₀ / X)| ≤ B →
+        |Real.log (elementNorm d / D)| ≤ B →
+        |Real.log (elementNorm e / E)| ≤ B →
+        |Real.log (primeProductNorm p V / V₀)| ≤ B →
+        |Real.log (elementNorm (d*e*k) / K)| ≤ B →
+        fixedChildKernelPair p hg F Ψ₁ Ψ₂ (m*r) (c*e*∏ i ∈ V, p i)
+          (d*e*k) (d*e*(-k)) H₁ H₂
+          (fun N M => radialPairKernel p e k W g₁ g₂ X X Y (V∪N) (V∪M)) =
+        (X : ℂ)⁻¹ * postCommonSmoothPair p hg H₁ H₂ F Ψ₁ Ψ₂ (m*r)
+          (c*e*∏ i ∈ V, p i) (d*e*k) (d*e*(-k)) A₁ A₂ W windows
+          (Real.log (primeProductNorm p V * X₀ / X)) (Real.log (elementNorm d / D))
+          (Real.log (elementNorm e / E)) (Real.log (primeProductNorm p V / V₀))
+          (Real.log (elementNorm (d*e*k) / K)) X₀ X₀ (Y*K/(D*E^2*V₀^2*X₀^2)) := by
+  obtain ⟨U, hUc, hUs, hUone, hUsupp, hUzero⟩ :=
+    JointLogSeparation.exists_complex_smooth_cutoff A hA
+  have hU₁ : ∀ s, g₁ s ≠ 0 → U s = 1 := fun s hs => hUone s (hg₁ s hs)
+  have hU₂ : ∀ s, g₂ s ≠ 0 → U s = 1 := fun s hs => hUone s (hg₂ s hs)
+  let A₁ := conjugateProfile (halfNormalizationCLM U g₁)
+  let A₂ := halfNormalizationCLM U g₂
+  have hA₁ : ∀ s, A₁ s ≠ 0 → |s| ≤ A := by
+    intro s hs
+    apply halfNormalization_support_bound U hUc hUs g₁ A hg₁ s
+    intro hz
+    exact hs (by simp [A₁, hz])
+  have hA₂ : ∀ s, A₂ s ≠ 0 → |s| ≤ A :=
+    halfNormalization_support_bound U hUc hUs g₂ A hg₂
+  obtain ⟨windows, hwc, hws, hwb, hwo, hwt⟩ := exists_fixed_sector_windows A B hA hB
+  refine ⟨A₁, A₂, windows, hwc, hws, hwb, ?_⟩
+  intro D E V₀ X X₀ K Y hD hE hV₀ hX hX₀ hK F V Ψ₁ Ψ₂ m r c d e k H₁ H₂ hd he hk hz hud hue huv hkap
+  apply fixedChildKernelPair_eq_postCommon p hp hg F V Ψ₁ Ψ₂ m r c d e k H₁ H₂ hd he hk
+    D E V₀ X X₀ K Y hD hE hV₀ hX hX₀ hK U hUc hUs g₁ g₂ W hU₁ hU₂ windows
+  · exact hwo _ _ _ _ _ hz hud hue huv hkap
+  · exact fun a ha => hwt A₁ _ hA₁ hz 5 a ha
+  · exact fun a ha => hwt A₂ _ hA₂ hz 6 a ha
+
+end SecondPassIntegration
+
+
+namespace JointLogSeparation
+open SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+
+lemma density_weight_identity (J : ℕ) (t : ℝ) :
+    firstLogDensity J t * (1 + ‖t‖) ^ J = firstLogDensity 0 t := by
+  have ht : 1 + ‖t‖ ≠ 0 := ne_of_gt (by positivity)
+  simp only [firstLogDensity, zero_add, pow_add, mul_inv_rev]
+  field_simp
+
+def tripleLogDensity (J : ℕ) (t : Frequency) : ℝ :=
+  firstLogDensity J t.1 * (firstLogDensity J t.2.1 * firstLogDensity J t.2.2)
+
+lemma tripleLogDensity_integrable (J : ℕ) : Integrable (tripleLogDensity J) :=
+  (firstLogDensity_integrable J).mul_prod
+    ((firstLogDensity_integrable J).mul_prod (firstLogDensity_integrable J))
+
+lemma tripleLogDensity_nonneg (J : ℕ) (t : Frequency) : 0 ≤ tripleLogDensity J t :=
+  mul_nonneg (firstLogDensity_nonneg _ _) (mul_nonneg
+    (firstLogDensity_nonneg _ _) (firstLogDensity_nonneg _ _))
+
+lemma tripleLogDensity_bounded_integrable (J : ℕ) (G : Frequency → ℝ)
+    (hG : Continuous G) (M : ℝ) (hM : ∀ t, ‖G t‖ ≤ M) :
+    Integrable (fun t => tripleLogDensity J t * G t) :=
+  (tripleLogDensity_integrable J).mul_bdd hG.aestronglyMeasurable
+    (Filter.Eventually.of_forall hM)
+
+lemma tripleLogDensity_slice_integrable (J : ℕ) (G : Frequency → ℝ)
+    (hG : Continuous G) (M : ℝ) (hM : ∀ t, ‖G t‖ ≤ M) (x : ℝ) :
+    Integrable (fun yz : ℝ × ℝ => tripleLogDensity J (x,yz) * G (x,yz)) := by
+  have hc : Integrable (fun yz : ℝ × ℝ =>
+      firstLogDensity J x * (firstLogDensity J yz.1 * firstLogDensity J yz.2)) :=
+    ((firstLogDensity_integrable J).mul_prod (firstLogDensity_integrable J)).const_mul _
+  apply hc.mul_bdd
+  · exact (hG.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
+  · exact Filter.Eventually.of_forall (fun t => hM (x,t))
+
+theorem triple_coefficient_density_bound (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)) (J : ℕ)
+    (G : Frequency → ℝ) (hG : Continuous G) (hG0 : ∀ t, 0 ≤ G t)
+    (M : ℝ) (hM : ∀ t, G t ≤ M) (S C : ℝ)
+    (hpoint : ∀ t₁ t₂ t₃ : ℝ,
+      S * ‖b₁ t₁*b₂ t₂*b₃ t₃‖ ≤
+        C * firstLogDensity J t₁ * firstLogDensity J t₂ * firstLogDensity J t₃) :
+    S * (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      ‖tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃)‖ * G (t₁,t₂,t₃)) ≤
+    C * (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      tripleLogDensity J (t₁,t₂,t₃) * G (t₁,t₂,t₃)) := by
+  have hGb : ∀ t, ‖G t‖ ≤ M := fun t => by
+    simpa only [Real.norm_of_nonneg (hG0 t)] using hM t
+  have hc := tripleCoefficient_norm_bounded_integrable b₁ b₂ b₃ G hG M hGb
+  have hd := tripleLogDensity_bounded_integrable J G hG M hGb
+  rw [nested_eq_integral _ hc (tripleCoefficient_norm_slice_integrable b₁ b₂ b₃ G hG M hGb),
+    nested_eq_integral _ hd (tripleLogDensity_slice_integrable J G hG M hGb),
+    ← integral_const_mul, ← integral_const_mul]
+  apply integral_mono (hc.const_mul S) (hd.const_mul C)
+  intro t
+  have hh := mul_le_mul_of_nonneg_right (hpoint t.1 t.2.1 t.2.2) (hG0 t)
+  simpa only [tripleCoefficient, tripleLogDensity, mul_assoc] using hh
+
+end JointLogSeparation
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+def densityChildEnergy {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (H₁ H₂ : Finset ι → ℂ)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ : ℝ) (J : ℕ) : ℝ :=
+  ∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+    tripleLogDensity J (t₁,t₂,t₃) *
+      childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂ (t₁,t₂,t₃)
+
+theorem child_coefficient_density_bound {ι : Type*} [DecidableEq ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (H₁ H₂ : Finset ι → ℂ)
+    (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ : ℝ) (b₁ b₂ b₃ : 𝓢(ℝ, ℂ)) (J : ℕ) (S C : ℝ)
+    (hpoint : ∀ t₁ t₂ t₃ : ℝ, S * ‖b₁ t₁*b₂ t₂*b₃ t₃‖ ≤
+      C * firstLogDensity J t₁ *
+        firstLogDensity J t₂ * firstLogDensity J t₃) :
+    S * (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+      ‖tripleCoefficient b₁ b₂ b₃ (t₁,t₂,t₃)‖ *
+        childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂ (t₁,t₂,t₃)) ≤
+    C * densityChildEnergy p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂ J := by
+  let G := childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂
+  have hc₁ := childEnergy_continuous p hg H₁ F Ψ₁ m T V₁ X₁ true false
+    (fun q : Frequency => q.1) (fun q : Frequency => q.2.2) continuous_fst continuous_snd.snd
+  have hc₂ := childEnergy_continuous p hg H₂ F Ψ₂ m T V₂ X₂ false true
+    (fun q : Frequency => q.2.1) (fun q : Frequency => q.2.2) continuous_snd.fst continuous_snd.snd
+  have hG : Continuous G := (Real.continuous_sqrt.comp hc₁).mul (Real.continuous_sqrt.comp hc₂)
+  have hG0 : ∀ q, 0 ≤ G q := fun q => mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  let M := Real.sqrt (energyMagnitude p hg H₁ F Ψ₁ m T V₁ X₁ true false) *
+    Real.sqrt (energyMagnitude p hg H₂ F Ψ₂ m T V₂ X₂ false true)
+  have hM : ∀ q, G q ≤ M := by
+    intro q
+    dsimp [G, childGeometricMean, M]
+    gcongr
+    · exact childEnergy_le p hg H₁ F Ψ₁ m T V₁ X₁ true false q.1 q.2.2
+    · exact childEnergy_le p hg H₂ F Ψ₂ m T V₂ X₂ false true q.2.1 q.2.2
+  exact triple_coefficient_density_bound b₁ b₂ b₃ J G hG hG0 M hM S C hpoint
+
+end SecondPassIntegration
+
+namespace JointLogSeparation
+open SecondPassArithmetic MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+
+lemma one_add_norm_sub_le (x y : ℝ) :
+    1 + ‖x-y‖ ≤ (1+‖x‖)*(1+‖y‖) := by
+  have hn := norm_sub_le x y
+  have hprod := mul_nonneg (norm_nonneg x) (norm_nonneg y)
+  nlinarith
+
+theorem difference_height_weight_le (x y z : ℝ) (J : ℕ) :
+    (1+‖x-z‖)^J * (1+‖y-z‖)^J ≤
+      (1+‖x‖)^(2*J) * (1+‖y‖)^(2*J) * (1+‖z‖)^(2*J) := by
+  have hx := pow_le_pow_left₀ (by positivity : 0 ≤ 1+‖x-z‖) (one_add_norm_sub_le x z) J
+  have hy := pow_le_pow_left₀ (by positivity : 0 ≤ 1+‖y-z‖) (one_add_norm_sub_le y z) J
+  calc
+    _ ≤ ((1+‖x‖)*(1+‖z‖))^J * ((1+‖y‖)*(1+‖z‖))^J :=
+      mul_le_mul hx hy (by positivity) (by positivity)
+    _ = (1+‖x‖)^J * (1+‖y‖)^J * (1+‖z‖)^(2*J) := by
+      rw [mul_pow, mul_pow, two_mul, pow_add]
+      ring
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_right _ (by positivity)
+      exact mul_le_mul
+        (pow_le_pow_right₀ (by linarith [norm_nonneg x] : 1 ≤ 1+‖x‖) (by omega : J ≤ 2*J))
+        (pow_le_pow_right₀ (by linarith [norm_nonneg y] : 1 ≤ 1+‖y‖) (by omega : J ≤ 2*J))
+        (by positivity) (by positivity)
+
+theorem triple_density_polynomial_bound (G : Frequency → ℝ)
+    (hG : Continuous G) (hG0 : ∀ t, 0 ≤ G t) (M : ℝ) (hM : ∀ t, G t ≤ M)
+    (J : ℕ) (D : ℝ)
+    (hbound : ∀ t, G t ≤ D * (1+‖t.1‖)^J * (1+‖t.2.1‖)^J * (1+‖t.2.2‖)^J) :
+    (∫ x : ℝ, ∫ y : ℝ, ∫ z : ℝ, tripleLogDensity J (x,y,z) * G (x,y,z)) ≤
+      D * (∫ t : ℝ, firstLogDensity 0 t)^3 := by
+  have hGb : ∀ t, ‖G t‖ ≤ M := fun t => by
+    simpa only [Real.norm_of_nonneg (hG0 t)] using hM t
+  have hi := tripleLogDensity_bounded_integrable J G hG M hGb
+  rw [nested_eq_integral _ hi (tripleLogDensity_slice_integrable J G hG M hGb)]
+  have hh : ∀ t : Frequency, tripleLogDensity J t * G t ≤ D * tripleLogDensity 0 t := by
+    intro t
+    calc
+      _ ≤ tripleLogDensity J t *
+          (D * (1+‖t.1‖)^J * (1+‖t.2.1‖)^J * (1+‖t.2.2‖)^J) :=
+        mul_le_mul_of_nonneg_left (hbound t) (tripleLogDensity_nonneg J t)
+      _ = _ := by
+        dsimp only [tripleLogDensity]
+        rw [← density_weight_identity J t.1, ← density_weight_identity J t.2.1,
+          ← density_weight_identity J t.2.2]
+        ring
+  calc
+    _ ≤ ∫ t : Frequency, D * tripleLogDensity 0 t :=
+      integral_mono hi ((tripleLogDensity_integrable 0).const_mul D) hh
+    _ = D * (∫ t : Frequency, tripleLogDensity 0 t) := integral_const_mul _ _
+    _ = _ := by
+      have hslice (x : ℝ) : Integrable (fun yz : ℝ × ℝ => tripleLogDensity 0 (x,yz)) := by
+        simpa only [tripleLogDensity, Measure.volume_eq_prod] using
+          ((firstLogDensity_integrable 0).mul_prod (firstLogDensity_integrable 0)).const_mul
+            (firstLogDensity 0 x)
+      rw [← nested_eq_integral _ (tripleLogDensity_integrable 0) hslice]
+      simp only [tripleLogDensity, integral_const_mul, integral_mul_const]
+      ring
+
+end JointLogSeparation
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic SecondPassFiber JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+/-- Uniform radial decay survives the divisor-tuple transfer to fixed descendant energies. -/
+theorem full_uniform_tuple_density_transfer (ε : ℝ) (hε : 0 < ε)
+    (A₁ A₂ W : 𝓢(ℝ, ℂ)) (V : Fin 7 → ℝ → ℂ) (M : Fin 7 → ℝ)
+    (hM : ∀ j, 0 ≤ M j) (hV : ∀ j x, V j x ≠ 0 → |x| ≤ M j) (A J : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R →
+      ∀ {ι : Type*} [DecidableEq ι] (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i}) (H₁ H₂ : Finset ι → ℂ)
+      (s : Finset OldTuple) (T : Finset (Ideal O × O)) (b0 : Ideal O)
+      (w : OldTuple → ℂ) (B lengthScale : ℝ) (label : OldTuple → O)
+      (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O)
+      (z ud ue uv kap : OldTuple → ℝ) (X₁ X₂ : ℝ),
+      b0 ≠ ⊥ → 0 ≤ B → 0 ≤ lengthScale →
+      (∀ x ∈ s, Valid x (newLabel x) b0 (newRow x)) →
+      (∀ x ∈ s, (newLabel x, newRow x) ∈ T) →
+      (∀ z ∈ T, z.1 ≠ ⊥) → (∀ z ∈ T, (Ideal.absNorm z.1 : ℝ) ≤ lengthScale) →
+      (∀ x ∈ s, ‖w x‖ * ‖outerWindow V (z x) (ud x) (ue x) (uv x) (kap x)‖ ≤ B) →
+      (∀ x ∈ s, Ideal.span {label x} = newLabel x) →
+      (1 + R)^A * ‖tupleSourceSum p hg H₁ H₂ s w label F Ψ₁ Ψ₂ m
+        A₁ A₂ W V z ud ue uv kap X₁ X₂ R‖ ≤
+        B * C * (lengthScale * Ideal.absNorm b0)^ε *
+          densityChildEnergy p hg H₁ H₂ F Ψ₁ Ψ₂ m T (V 5) (V 6) X₁ X₂ J := by
+  obtain ⟨Cₐ, hCₐ, Cₛ, hCₛ, ht⟩ :=
+    full_uniform_tupleSource_transfer ε hε A₁ A₂ W V M hM hV A J
+  refine ⟨Cₐ * Cₛ, mul_nonneg hCₐ.le hCₛ, ?_⟩
+  intro R hR
+  obtain ⟨b, hpoint, htransfer⟩ := ht R hR
+  intro ι _ p _ hg H₁ H₂ s T b0 w B lengthScale label F Ψ₁ Ψ₂ m
+    z ud ue uv kap X₁ X₂ hb0 hB hL hv hm ht hn hw hl
+  have hsource := htransfer p hg H₁ H₂ s T b0 w B lengthScale label F Ψ₁ Ψ₂ m
+    z ud ue uv kap X₁ X₂ hb0 hB hL hv hm ht hn hw hl
+  have hdensity := child_coefficient_density_bound p hg H₁ H₂ F Ψ₁ Ψ₂ m T
+    (V 5) (V 6) X₁ X₂ (𝓕 A₁) (𝓕 A₂) b J ((1 + R)^A) Cₛ hpoint
+  calc
+    _ ≤ (1 + R)^A * ((B * Cₐ * (lengthScale * Ideal.absNorm b0)^ε) *
+        (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+          ‖tripleCoefficient (𝓕 A₁) (𝓕 A₂) b (t₁,t₂,t₃)‖ *
+            childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T (V 5) (V 6) X₁ X₂ (t₁,t₂,t₃))) :=
+      mul_le_mul_of_nonneg_left hsource (by positivity)
+    _ = (B * Cₐ * (lengthScale * Ideal.absNorm b0)^ε) * ((1 + R)^A *
+        (∫ t₁ : ℝ, ∫ t₂ : ℝ, ∫ t₃ : ℝ,
+          ‖tripleCoefficient (𝓕 A₁) (𝓕 A₂) b (t₁,t₂,t₃)‖ *
+            childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T (V 5) (V 6) X₁ X₂ (t₁,t₂,t₃))) := by ring
+    _ ≤ (B * Cₐ * (lengthScale * Ideal.absNorm b0)^ε) *
+        (Cₛ * densityChildEnergy p hg H₁ H₂ F Ψ₁ Ψ₂ m T (V 5) (V 6) X₁ X₂ J) :=
+      mul_le_mul_of_nonneg_left hdensity (by positivity)
+    _ = _ := by ring
+
+end SecondPassIntegration
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MulChar AddChar
+open scoped Classical
+
+lemma primeRowTraceGauss_empty {ι : Type*} [Fintype ι] [DecidableEq ι] [IsEmpty ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) : primeRowTraceGauss p hp χ = 1 := by
+  have hinj : Function.Injective (fun i => Ideal.span {p i}) := fun i => isEmptyElim i
+  let c := ∏ i, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  rw [primeRowTraceGauss_eq_crt p hp hinj,
+    ProductGauss.factorization_equiv (fun i => O ⧸ Ideal.span {p i}) (primeProductCRT p hinj)]
+  simp only [Fintype.prod_empty]
+
+end SchwartzPlanePoisson
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+lemma secondNormalizedGaussTerm_zero_of_ne (S T : Finset ι) (hne : S ≠ T) (e : O) :
+    secondNormalizedGaussTerm p hp hg S T e 0 = 0 := by
+  have hs : ((T \ S) ∪ (S \ T)).Nonempty := by
+    by_contra hn
+    have he := Finset.not_nonempty_iff_eq_empty.mp hn
+    simp only [Finset.union_eq_empty, Finset.sdiff_eq_empty_iff_subset] at he
+    exact hne (Finset.Subset.antisymm he.2 he.1)
+  letI : Nonempty ↥((T \ S) ∪ (S \ T)) := hs.to_subtype
+  simp only [secondNormalizedGaussTerm, primeCuspRowCharacter_zero, mul_zero]
+
+lemma secondNormalizedGaussTerm_empty (e k : O) :
+    secondNormalizedGaussTerm p hp hg ∅ ∅ e k = 1 := by
+  letI : IsEmpty ↥(((∅ : Finset ι) \ ∅) ∪ (∅ \ ∅)) := ⟨fun i => by simpa using i.property⟩
+  simp only [secondNormalizedGaussTerm, primeRowTraceGauss_empty, primeCuspRowCharacter,
+    Fintype.prod_empty, Finset.prod_empty, map_one, norm_one, Complex.ofReal_one, one_mul, div_one]
+
+theorem secondGaussTerm_empty (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e k : O)
+    (H₁ H₂ : Finset ι → ℂ) :
+    secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e k H₁ H₂ ∅ ∅ = star (H₁ ∅) * H₂ ∅ := by
+  simp only [secondGaussTerm, supportMobius, Finset.card_empty, pow_zero,
+    secondInputCoefficient, primeCoprimeMask, primeSubsetRow, Finset.prod_empty,
+    map_one, one_mul, one_pow, secondNormalizedGaussTerm_empty, mul_one]
+
+/-- Only the empty conductor contributes at zero dual frequency. -/
+theorem secondFrequencyKernel_zero (F : Finset ι)
+    (Ψ₁ Ψ₂ : O →* ℂ) (m r c d e : O) (H₁ H₂ : Finset ι → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) :
+    secondFrequencyKernel p hp hg F Ψ₁ Ψ₂ m r c d e 0 H₁ H₂ W Y =
+      (Y : ℂ) * paperRadialFourier W 0 * star (H₁ ∅) * H₂ ∅ := by
+  have hz (S T : Finset ι) (hne : S ≠ T) :
+      secondGaussTerm p hp hg Ψ₁ Ψ₂ m r c d e 0 H₁ H₂ S T = 0 := by
+    unfold secondGaussTerm
+    rw [secondNormalizedGaussTerm_zero_of_ne p hp hg S T hne e, mul_zero]
+  unfold secondFrequencyKernel secondKernelPair
+  rw [Finset.sum_eq_single ∅]
+  · rw [Finset.sum_eq_single ∅]
+    · simp [secondGaussTerm_empty, mul_comm, mul_left_comm, mul_assoc]
+    · intro T hT hne
+      rw [hz ∅ T (Ne.symm hne)]
+      simp only [zero_mul, ite_self]
+    · simp
+  · intro S hS hne
+    apply Finset.sum_eq_zero
+    intro T hT
+    by_cases hd : Disjoint S T
+    · have hneq : S ≠ T := by
+        intro heq
+        subst T
+        exact hne (by simpa using Finset.disjoint_iff_inter_eq_empty.mp hd)
+      rw [if_pos hd, hz S T hneq, zero_mul]
+    · simp only [if_neg hd]
+  · simp
+
+end SecondPassArithmetic
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap FourierTransform
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+variable {ι : Type*} [DecidableEq ι] (p : ι → O)
+  [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+lemma childEnergy_eq_difference (H : Finset ι → ℂ) (F : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (T : Finset (Ideal O × O)) (V : ℝ → ℂ) (X a b : ℝ)
+    (testNegative rowNegative : Bool) :
+    childEnergy p hg H F Ψ m T V X testNegative rowNegative a b =
+      childEnergy p hg H F Ψ m T V X testNegative rowNegative (a-b) 0 := by
+  have he : weightedSecondTest p H V X a b testNegative =
+      weightedSecondTest p H V X (a-b) 0 testNegative := by
+    funext N
+    simp only [weightedSecondTest, fixedSecondTest, sub_zero]
+  simp only [childEnergy, he]
+
+theorem densityChildEnergy_polynomial_bound (H₁ H₂ : Finset ι → ℂ) (F : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ)
+    (m : O) (T : Finset (Ideal O × O)) (V₁ V₂ : ℝ → ℂ) (X₁ X₂ : ℝ)
+    (J : ℕ) (B₁ B₂ : ℝ) (hB₁ : 0 ≤ B₁) (hB₂ : 0 ≤ B₂)
+    (h₁ : ∀ a : ℝ, childEnergy p hg H₁ F Ψ₁ m T V₁ X₁ true false a 0 ≤
+      B₁ * (1+‖a‖)^(2*J))
+    (h₂ : ∀ a : ℝ, childEnergy p hg H₂ F Ψ₂ m T V₂ X₂ false true a 0 ≤
+      B₂ * (1+‖a‖)^(2*J)) :
+    densityChildEnergy p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂ (2*J) ≤
+      (Real.sqrt B₁ * Real.sqrt B₂) *
+        (∫ t : ℝ, firstLogDensity 0 t)^3 := by
+  let G := childGeometricMean p hg H₁ H₂ F Ψ₁ Ψ₂ m T V₁ V₂ X₁ X₂
+  have hc₁ := childEnergy_continuous p hg H₁ F Ψ₁ m T V₁ X₁ true false
+    (fun q : Frequency => q.1) (fun q : Frequency => q.2.2) continuous_fst continuous_snd.snd
+  have hc₂ := childEnergy_continuous p hg H₂ F Ψ₂ m T V₂ X₂ false true
+    (fun q : Frequency => q.2.1) (fun q : Frequency => q.2.2) continuous_snd.fst continuous_snd.snd
+  have hG : Continuous G := (Real.continuous_sqrt.comp hc₁).mul (Real.continuous_sqrt.comp hc₂)
+  have hG0 : ∀ q, 0 ≤ G q := fun q => mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+  let M := Real.sqrt (energyMagnitude p hg H₁ F Ψ₁ m T V₁ X₁ true false) *
+    Real.sqrt (energyMagnitude p hg H₂ F Ψ₂ m T V₂ X₂ false true)
+  have hM : ∀ q, G q ≤ M := by
+    intro q
+    dsimp [G, childGeometricMean, M]
+    gcongr
+    · exact childEnergy_le p hg H₁ F Ψ₁ m T V₁ X₁ true false q.1 q.2.2
+    · exact childEnergy_le p hg H₂ F Ψ₂ m T V₂ X₂ false true q.2.1 q.2.2
+  have hsqrt (B a e : ℝ) (hB : 0 ≤ B) (he : e ≤ B*(1+‖a‖)^(2*J)) :
+      Real.sqrt e ≤ Real.sqrt B * (1+‖a‖)^J := by
+    calc
+      _ ≤ Real.sqrt (B*(1+‖a‖)^(2*J)) := Real.sqrt_le_sqrt he
+      _ = _ := by
+        rw [Real.sqrt_mul hB, mul_comm 2 J, pow_mul, Real.sqrt_sq (by positivity)]
+  have hbound (q : Frequency) : G q ≤
+      (Real.sqrt B₁ * Real.sqrt B₂) *
+        (1+‖q.1‖)^(2*J)*(1+‖q.2.1‖)^(2*J)*(1+‖q.2.2‖)^(2*J) := by
+    have hleft := h₁ (q.1-q.2.2)
+    have hright := h₂ (q.2.1-q.2.2)
+    rw [← childEnergy_eq_difference p hg H₁ F Ψ₁ m T V₁ X₁ q.1 q.2.2 true false] at hleft
+    rw [← childEnergy_eq_difference p hg H₂ F Ψ₂ m T V₂ X₂ q.2.1 q.2.2 false true] at hright
+    calc
+      _ ≤ (Real.sqrt B₁ * (1+‖q.1-q.2.2‖)^J) *
+          (Real.sqrt B₂ * (1+‖q.2.1-q.2.2‖)^J) :=
+        mul_le_mul (hsqrt B₁ _ _ hB₁ hleft) (hsqrt B₂ _ _ hB₂ hright)
+          (Real.sqrt_nonneg _) (by positivity)
+      _ = (Real.sqrt B₁ * Real.sqrt B₂) *
+          ((1+‖q.1-q.2.2‖)^J * (1+‖q.2.1-q.2.2‖)^J) := by ring
+      _ ≤ _ := by
+        have hh := mul_le_mul_of_nonneg_left (difference_height_weight_le q.1 q.2.1 q.2.2 J)
+          (mul_nonneg (Real.sqrt_nonneg B₁) (Real.sqrt_nonneg B₂))
+        simpa only [mul_assoc] using hh
+  exact triple_density_polynomial_bound G hG hG0 M hM (2*J)
+    (Real.sqrt B₁ * Real.sqrt B₂) hbound
+
+end SecondPassIntegration
+
+
+
+namespace JointLogSeparation
+lemma kernelLogPhase_conjugate (t x : ℝ) : star (kernelLogPhase t x) = kernelLogPhase (-t) x := by
+  unfold kernelLogPhase
+  simp only [Complex.star_def, ← Complex.exp_conj, map_mul, Complex.conj_ofReal, Complex.conj_I]
+  congr 1
+  push_cast
+  ring
+end JointLogSeparation
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+def normPhase (t : ℝ) : O →* ℂ where
+  toFun z := if z=0 then 0 else kernelLogPhase t (Real.log (‖ringComplex z‖^2))
+  map_one' := by simp [kernelLogPhase]
+  map_mul' a b := by
+    by_cases ha : a=0
+    · simp [ha]
+    by_cases hb : b=0
+    · simp [hb]
+    simp only [if_neg ha,if_neg hb,if_neg (mul_ne_zero ha hb),map_mul,norm_mul,mul_pow]
+    rw [Real.log_mul (pow_ne_zero _ (norm_ne_zero_iff.mpr (ringComplex_ne_zero ha)))
+      (pow_ne_zero _ (norm_ne_zero_iff.mpr (ringComplex_ne_zero hb))),kernelLogPhase_add]
+
+@[simp] theorem normPhase_zero (t : ℝ) : normPhase t 0=0 := by simp [normPhase]
+
+theorem normPhase_of_ne_zero (t : ℝ) (z : O) (hz : z≠0) :
+    normPhase t z=kernelLogPhase t (Real.log (‖ringComplex z‖^2)) := by simp [normPhase,hz]
+
+theorem normPhase_norm (t : ℝ) (z : O) (hz : z≠0) : ‖normPhase t z‖=1 := by
+  rw [normPhase_of_ne_zero t z hz,kernelLogPhase_norm]
+
+theorem normPhase_norm_le_one (t : ℝ) (z : O) : ‖normPhase t z‖≤1 := by
+  by_cases hz : z=0
+  · simp [hz]
+  · rw [normPhase_norm t z hz]
+
+theorem normPhase_add (s t : ℝ) : normPhase (s+t)=normPhase s*normPhase t := by
+  ext z
+  by_cases hz : z=0
+  · simp [hz]
+  · simp only [MonoidHom.mul_apply,normPhase_of_ne_zero _ z hz,JointLogSeparation.kernelLogPhase_add_frequency]
+
+theorem normPhase_star (t : ℝ) (z : O) : star (normPhase t z)=normPhase (-t) z := by
+  by_cases hz : z=0
+  · simp [hz]
+  · simp only [normPhase_of_ne_zero _ z hz,JointLogSeparation.kernelLogPhase_conjugate]
+
+def normHeightTwist (Ψ : O →* ℂ) (t : ℝ) : O →* ℂ := Ψ*normPhase t
+
+theorem normHeightTwist_norm_le (Ψ : O →* ℂ) (t : ℝ) (z : O) :
+    ‖normHeightTwist Ψ t z‖≤‖Ψ z‖ := by
+  simp only [normHeightTwist,MonoidHom.mul_apply,norm_mul]
+  exact mul_le_of_le_one_right (norm_nonneg _) (normPhase_norm_le_one t z)
+
+theorem normHeightTwist_twice (Ψ : O →* ℂ) (s t : ℝ) :
+    normHeightTwist (normHeightTwist Ψ s) t=normHeightTwist Ψ (s+t) := by
+  simp only [normHeightTwist,normPhase_add,mul_assoc]
+
+theorem normHeightTwist_mul (Ψ Ξ : O →* ℂ) (t : ℝ) :
+    normHeightTwist (Ψ*Ξ) t=normHeightTwist Ψ t*Ξ := by
+  unfold normHeightTwist
+  ac_rfl
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀i,p i≠0)
+
+include hp in
+omit [DecidableEq ι] in
+theorem kernelLogPhase_columnLog (X t : ℝ) (hX : 0<X) (S : Finset ι) :
+    kernelLogPhase t (columnLog p X S)=
+      kernelLogPhase t (-Real.log X)*normPhase t (∏i∈S,p i) := by
+  rw [normPhase_of_ne_zero t _ (Finset.prod_ne_zero_iff.mpr (fun i _=>hp i))]
+  rw [columnLog,Real.log_div (primeProductNorm_pos p hp S).ne' hX.ne']
+  rw [sub_eq_add_neg,kernelLogPhase_add]
+  exact mul_comm _ _
+
+
+end SecondPassArithmetic
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical SchwartzMap
+
+def secondSignedHeight (negative : Bool) (a b : ℝ) : ℝ :=
+  if negative then b-a else a-b
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀i,p i≠0)
+
+include hp in
+omit [DecidableEq ι] in
+theorem fixedSecondTest_normPhase (V : ℝ → ℂ) (X a b : ℝ) (hX : 0<X)
+    (negative : Bool) (S : Finset ι) :
+    fixedSecondTest p V X a b negative S=
+      kernelLogPhase (secondSignedHeight negative a b) (-Real.log X)*
+      normPhase (secondSignedHeight negative a b) (∏i∈S,p i)*
+      fixedSecondTest p V X 0 0 negative S := by
+  have hz (x : ℝ) : kernelLogPhase 0 x=1 := by simp [kernelLogPhase]
+  cases negative <;>
+    simp only [secondSignedHeight,fixedSecondTest,JointLogSeparation.fixedColumnTest,
+      Bool.false_eq_true,ite_false,ite_true,sub_self,hz,mul_one,star_mul,
+      JointLogSeparation.kernelLogPhase_conjugate,neg_sub] <;>
+    rw [kernelLogPhase_columnLog p hp X _ hX S] ; ring
+
+variable [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀i,lambda∉Ideal.span {p i})
+
+theorem fixedChildRow_secondTest_normPhase (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : O →* ℂ) (m f y : O)
+    (V : ℝ → ℂ) (X a b : ℝ) (hX : 0<X) (negative : Bool) :
+    fixedChildRow p hg pool Ψ m (weightedSecondTest p H V X a b negative) f y=
+      kernelLogPhase (secondSignedHeight negative a b) (-Real.log X)*
+      fixedChildRow p hg pool (normHeightTwist Ψ (secondSignedHeight negative a b)) m
+        (weightedSecondTest p H V X 0 0 negative) f y := by
+  unfold fixedChildRow
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro S hS
+  simp only [secondChildColumn,weightedSecondTest,fixedSecondTest_normPhase p hp V X a b hX negative S,
+    normHeightTwist,MonoidHom.mul_apply]
+  ring
+
+end SecondPassArithmetic
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀i,p i≠0)
+  [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀i,lambda∉Ideal.span {p i})
+
+theorem childEnergy_normHeight (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (T : Finset (Ideal O × O)) (V : ℝ → ℂ) (X a b : ℝ) (hX : 0<X)
+    (testNegative rowNegative : Bool) :
+    childEnergy p hg H pool Ψ m T V X testNegative rowNegative a b=
+      childEnergy p hg H pool (normHeightTwist Ψ (secondSignedHeight testNegative a b))
+        m T V X testNegative rowNegative 0 0 := by
+  unfold childEnergy idealChildRow
+  simp_rw [fixedChildRow_secondTest_normPhase p hp hg H pool Ψ m _ _ V X a b hX testNegative,
+    norm_mul,kernelLogPhase_norm,one_mul]
+
+theorem childEnergy_previousNormHeight (H : Finset ι → ℂ) (pool : Finset ι) (Ψ : O →* ℂ) (m : O)
+    (T : Finset (Ideal O × O)) (V : ℝ → ℂ) (X t a b : ℝ) (hX : 0<X)
+    (testNegative rowNegative : Bool) :
+    childEnergy p hg H pool (normHeightTwist Ψ t) m T V X testNegative rowNegative a b=
+      childEnergy p hg H pool (normHeightTwist Ψ (t+secondSignedHeight testNegative a b))
+        m T V X testNegative rowNegative 0 0 := by
+  rw [childEnergy_normHeight p hp hg H pool (normHeightTwist Ψ t) m T V X a b hX
+    testNegative rowNegative,normHeightTwist_twice]
+
+end SecondPassIntegration
+
+
+
+namespace SecondPassIntegration
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic JointLogSeparation MeasureTheory
+open scoped Classical SchwartzMap
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+private theorem sqrt_height_weight (B t : ℝ) (hB : 0≤B) (J : ℕ) :
+    Real.sqrt (B*(1+‖t‖)^(2*J))=Real.sqrt B*(1+‖t‖)^J := by
+  rw [show 2*J=J*2 from Nat.mul_comm _ _,pow_mul,Real.sqrt_mul hB,
+    Real.sqrt_sq (pow_nonneg (by positivity : 0≤1+‖t‖) J)]
+
+variable {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀i,p i≠0)
+  [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀i,lambda∉Ideal.span {p i})
+  (H₁ H₂ : Finset ι → ℂ)
+
+theorem densityChildEnergy_normHeight_polynomial
+    (pool : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ) (m : O) (T : Finset (Ideal O × O))
+    (V₁ V₂ : ℝ → ℂ) (X₁ X₂ t₁ t₂ B₁ B₂ : ℝ) (J : ℕ)
+    (hX₁ : 0<X₁) (hX₂ : 0<X₂) (hB₁ : 0≤B₁) (hB₂ : 0≤B₂)
+    (h₁ : ∀t,childEnergy p hg H₁ pool (normHeightTwist Ψ₁ t) m T V₁ X₁ true false 0 0≤
+      B₁*(1+‖t‖)^(2*J))
+    (h₂ : ∀t,childEnergy p hg H₂ pool (normHeightTwist Ψ₂ t) m T V₂ X₂ false true 0 0≤
+      B₂*(1+‖t‖)^(2*J)) :
+    densityChildEnergy p hg H₁ H₂ pool (normHeightTwist Ψ₁ t₁) (normHeightTwist Ψ₂ t₂)
+      m T V₁ V₂ X₁ X₂ (2*J)≤
+      Real.sqrt B₁*Real.sqrt B₂*(1+‖t₁‖)^J*(1+‖t₂‖)^J*
+        (∫t : ℝ,firstLogDensity 0 t)^3 := by
+  have ha₁ (a : ℝ) : childEnergy p hg H₁ pool (normHeightTwist Ψ₁ t₁) m T V₁ X₁ true false a 0≤
+      (B₁*(1+‖t₁‖)^(2*J))*(1+‖a‖)^(2*J) := by
+    rw [childEnergy_previousNormHeight p hp hg H₁ pool Ψ₁ m T V₁ X₁ t₁ a 0 hX₁ true false]
+    simp only [secondSignedHeight,ite_true,zero_sub,←sub_eq_add_neg]
+    calc
+      _ ≤ B₁*(1+‖t₁-a‖)^(2*J) := h₁ (t₁-a)
+      _ ≤ B₁*((1+‖t₁‖)*(1+‖a‖))^(2*J) :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity)
+          (JointLogSeparation.one_add_norm_sub_le t₁ a) _) hB₁
+      _ = _ := by rw [mul_pow]; ring
+  have ha₂ (a : ℝ) : childEnergy p hg H₂ pool (normHeightTwist Ψ₂ t₂) m T V₂ X₂ false true a 0≤
+      (B₂*(1+‖t₂‖)^(2*J))*(1+‖a‖)^(2*J) := by
+    rw [childEnergy_previousNormHeight p hp hg H₂ pool Ψ₂ m T V₂ X₂ t₂ a 0 hX₂ false true]
+    simp only [secondSignedHeight,Bool.false_eq_true,ite_false,sub_zero]
+    have hsum : 1+‖t₂+a‖≤(1+‖t₂‖)*(1+‖a‖) := by
+      simpa only [sub_neg_eq_add,norm_neg] using JointLogSeparation.one_add_norm_sub_le t₂ (-a)
+    calc
+      _ ≤ B₂*(1+‖t₂+a‖)^(2*J) := h₂ (t₂+a)
+      _ ≤ B₂*((1+‖t₂‖)*(1+‖a‖))^(2*J) :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hsum _) hB₂
+      _ = _ := by rw [mul_pow]; ring
+  have hd := densityChildEnergy_polynomial_bound p hg H₁ H₂ pool
+    (normHeightTwist Ψ₁ t₁) (normHeightTwist Ψ₂ t₂) m T V₁ V₂ X₁ X₂ J
+    (B₁*(1+‖t₁‖)^(2*J)) (B₂*(1+‖t₂‖)^(2*J))
+    (mul_nonneg hB₁ (by positivity)) (mul_nonneg hB₂ (by positivity)) ha₁ ha₂
+  rw [sqrt_height_weight B₁ t₁ hB₁ J,sqrt_height_weight B₂ t₂ hB₂ J] at hd
+  exact hd.trans_eq (by ring)
+
+end SecondPassIntegration
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+variable {κ : Type*}
+
+/- The retained fourth-power label and its complementary square factor. -/
+def bit (b : Bool) : ℕ := if b then 1 else 0
+
+def conductorExponent (parityBit ε₁ ε₂ : Bool) : ZMod 6 :=
+  (bit ε₁ : ZMod 6) - (bit ε₂ : ZMod 6) + 3 * (bit parityBit : ZMod 6)
+
+def crtExponent (side parityBit ε₁ ε₂ : Bool) : ℕ :=
+  if conductorExponent parityBit ε₁ ε₂ = 0 then 0 else
+    ((1 : ZMod 6) + if side then -conductorExponent parityBit ε₁ ε₂
+      else conductorExponent parityBit ε₁ ε₂).val
+
+def dilationExponent (parityBit ε₁ ε₂ : Bool) : ℕ :=
+  if parityBit then bit ε₁ + bit ε₂ else 0
+
+def retained (parityBit ε₁ ε₂ : Bool) : Bool := parityBit || (ε₁ && ε₂)
+
+theorem exponent_table (side parityBit ε₁ ε₂ : Bool) :
+    (4 * bit (if side then ε₂ else ε₁) + crtExponent side parityBit ε₁ ε₂ +
+      dilationExponent parityBit ε₁ ε₂) % 6 = if retained parityBit ε₁ ε₂ then 4 else 0 := by
+  cases side <;> cases parityBit <;> cases ε₁ <;> cases ε₂ <;> decide
+
+
+def parity (m : ℕ) : Bool := decide (m % 2 = 1)
+
+def evenDouble (m : ℕ) (ε₁ ε₂ : Bool) : Bool := !parity m && ε₁ && ε₂
+
+def b0Exponent (m : ℕ) (ε₁ ε₂ : Bool) : ℕ := m / 2 - bit (evenDouble m ε₁ ε₂)
+
+theorem multiplicity_decomposition (m : ℕ) (ε₁ ε₂ : Bool) (hm : 0 < m) :
+    2 * b0Exponent m ε₁ ε₂ + 2 * bit (evenDouble m ε₁ ε₂) + bit (parity m) = m := by
+  have hmod := Nat.mod_lt m (by decide : 0 < 2)
+  have hdiv := Nat.mod_add_div m 2
+  cases ε₁ <;> cases ε₂ <;> by_cases h : m % 2 = 1 <;>
+    simp [b0Exponent, evenDouble, parity, bit, h] <;> omega
+
+theorem b0Exponent_pos_of_not_retained (m : ℕ) (ε₁ ε₂ : Bool) (hm : 0 < m)
+    (hret : retained (parity m) ε₁ ε₂ = false) : 0 < b0Exponent m ε₁ ε₂ := by
+  have hmod := Nat.mod_lt m (by decide : 0 < 2)
+  have hdiv := Nat.mod_add_div m 2
+  cases ε₁ <;> cases ε₂ <;> by_cases h : m % 2 = 1 <;>
+    simp_all [b0Exponent, evenDouble, parity, retained, bit] <;> omega
+
+
+def primeProduct (p : κ → O) (B : Finset κ) (v : κ → ℕ) : O := ∏ j ∈ B, p j ^ v j
+
+def cubeRadical (p : κ → O) (B : Finset κ) : O := ∏ j ∈ B, p j
+
+def aLabel (p : κ → O) (B : Finset κ) (ε : κ → Bool) : O :=
+  primeProduct p B (fun j => bit (ε j))
+
+def crtLabel (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) (side : Bool) : O :=
+  primeProduct p B (fun j => crtExponent side (parity (v j)) (ε₁ j) (ε₂ j))
+
+def dilationLabel (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) : O :=
+  primeProduct p B (fun j => dilationExponent (parity (v j)) (ε₁ j) (ε₂ j))
+
+def jLabel (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) : O :=
+  primeProduct p B (fun j => bit (retained (parity (v j)) (ε₁ j) (ε₂ j)))
+
+def j2Label (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) : O :=
+  primeProduct p B (fun j => bit (evenDouble (v j) (ε₁ j) (ε₂ j)))
+
+def squarefreeLabel (p : κ → O) (B : Finset κ) (v : κ → ℕ) : O :=
+  primeProduct p B (fun j => bit (parity (v j)))
+
+def b0Label (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) : O :=
+  primeProduct p B (fun j => b0Exponent (v j) (ε₁ j) (ε₂ j))
+
+
+theorem cube_product_decomposition (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) (hv : ∀ j ∈ B, 0 < v j) :
+    primeProduct p B v = b0Label p B v ε₁ ε₂ ^ 2 * j2Label p B v ε₁ ε₂ ^ 2 *
+      squarefreeLabel p B v := by
+  simp only [b0Label, j2Label, squarefreeLabel, primeProduct, ← Finset.prod_pow,
+    ← Finset.prod_mul_distrib, ← pow_mul, ← pow_add]
+  apply Finset.prod_congr rfl
+  intro j hj
+  congr 1
+  have h := multiplicity_decomposition (v j) (ε₁ j) (ε₂ j) (hv j hj)
+  omega
+
+theorem jLabel_eq_squarefree_mul_j2 (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) :
+    jLabel p B v ε₁ ε₂ = squarefreeLabel p B v * j2Label p B v ε₁ ε₂ := by
+  simp only [jLabel, squarefreeLabel, j2Label, primeProduct, ← Finset.prod_mul_distrib,
+    ← pow_add]
+  apply Finset.prod_congr rfl
+  intro j hj
+  congr 1
+  cases hp : parity (v j) <;> cases ε₁ j <;> cases ε₂ j <;>
+    simp [bit, retained, evenDouble, hp]
+
+theorem cube_pair_product_decomposition
+    (p : κ → O) (B : Finset κ) (v₁ v₂ : κ → ℕ) (ε₁ ε₂ : κ → Bool)
+    (hv : ∀ j ∈ B, 0 < v₁ j + v₂ j) :
+    primeProduct p B v₁ * primeProduct p B v₂ =
+      b0Label p B (fun j => v₁ j + v₂ j) ε₁ ε₂ ^ 2 *
+      j2Label p B (fun j => v₁ j + v₂ j) ε₁ ε₂ ^ 2 *
+      squarefreeLabel p B (fun j => v₁ j + v₂ j) := by
+  rw [← cube_product_decomposition p B (fun j => v₁ j + v₂ j) ε₁ ε₂ hv]
+  simp only [primeProduct, pow_add, Finset.prod_mul_distrib]
+
+
+end FirstPassCubeLabels
+
+
+
+namespace FirstPassCubeLabels
+open Eisenstein SchwartzPlanePoisson
+open scoped Classical
+
+section Rows
+variable {ι : Type*} [DecidableEq ι] (q : ι → O) [∀ i, (Ideal.span {q i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {q i}) (S : Finset ι)
+
+theorem row_pow (a : O) (m : ℕ) :
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (a ^ m) = primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ m := by
+  simp only [primeSubsetRow, map_pow, Finset.prod_pow]
+
+theorem row_prod {κ : Type*} (B : Finset κ) (a : κ → O) :
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (∏ j ∈ B, a j) =
+      ∏ j ∈ B, primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (a j) := by
+  classical
+  induction B using Finset.induction_on with
+  | empty => simp [primeSubsetRow]
+  | @insert j B hj ih =>
+    simp only [Finset.prod_insert hj, SecondPassArithmetic.subsetRow_mul, ih]
+
+theorem row_sixth (a : O) :
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ 6 = primeCoprimeMask q S a := by
+  rw [← primeSubsetRow_diagonal q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a,
+    SecondPassArithmetic.sexticRow_star q hg S a]
+  ring
+
+include hg
+
+theorem mask_mul (a b : O) :
+    primeCoprimeMask q S (a * b) = primeCoprimeMask q S a * primeCoprimeMask q S b := by
+  simp only [← row_sixth q hg S, SecondPassArithmetic.subsetRow_mul, mul_pow]
+
+theorem mask_pow (a : O) (m : ℕ) :
+    primeCoprimeMask q S (a ^ m) = primeCoprimeMask q S a ^ m := by
+  rw [← row_sixth q hg S, row_pow, ← row_sixth q hg S]
+  simp only [← pow_mul, Nat.mul_comm]
+
+theorem mask_prod {κ : Type*} (B : Finset κ) (a : κ → O) :
+    primeCoprimeMask q S (∏ j ∈ B, a j) = ∏ j ∈ B, primeCoprimeMask q S (a j) := by
+  rw [← row_sixth q hg S, row_prod, ← Finset.prod_pow]
+  simp only [row_sixth]
+
+theorem row_zero_of_mask_zero (a : O) (h : primeCoprimeMask q S a = 0) :
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a = 0 := by
+  have hq := row_sixth q hg S a
+  rw [h] at hq
+  exact (pow_eq_zero_iff (by decide : (6 : ℕ) ≠ 0)).mp hq
+
+theorem row_power_mul_mask_power (a : O) (k m : ℕ) (hk : 0 < k) :
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ k * primeCoprimeMask q S a ^ m =
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ k := by
+  by_cases h : ∃ i ∈ S, q i ∣ a
+  · have hm : primeCoprimeMask q S a = 0 := by
+      rw [primeCoprimeMask_indicator]
+      exact if_neg (by intro hn; obtain ⟨i, hi, hd⟩ := h; exact hn i hi hd)
+    rw [row_zero_of_mask_zero q hg S a hm]
+    simp [Nat.ne_of_gt hk]
+  · have hm : primeCoprimeMask q S a = 1 := by
+      rw [primeCoprimeMask_indicator]
+      exact if_pos (fun i hi hd => h ⟨i, hi, hd⟩)
+    simp only [hm, one_pow, mul_one]
+
+def localFactor (side parityBit ε₁ ε₂ : Bool) (a : O) : ℂ :=
+  primeCoprimeMask q S a *
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ (4 * bit (if side then ε₂ else ε₁)) *
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ crtExponent side parityBit ε₁ ε₂ *
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ dilationExponent parityBit ε₁ ε₂
+
+theorem localFactor_eq (side parityBit ε₁ ε₂ : Bool) (a : O) :
+    localFactor q hg S side parityBit ε₁ ε₂ a =
+      if retained parityBit ε₁ ε₂ then primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ 4
+      else primeCoprimeMask q S a := by
+  by_cases h : ∃ i ∈ S, q i ∣ a
+  · have hm : primeCoprimeMask q S a = 0 := by
+      rw [primeCoprimeMask_indicator]
+      exact if_neg (by intro hn; obtain ⟨i, hi, hd⟩ := h; exact hn i hi hd)
+    have hz := row_zero_of_mask_zero q hg S a hm
+    simp [localFactor, hm, hz]
+  · have hm : primeCoprimeMask q S a = 1 := by
+      rw [primeCoprimeMask_indicator]
+      exact if_pos (fun i hi hd => h ⟨i, hi, hd⟩)
+    have h6 : primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S a ^ 6 = 1 := (row_sixth q hg S a).trans hm
+    simp only [localFactor, hm, one_mul, ← pow_add]
+    rw [pow_eq_pow_mod _ h6, exponent_table]
+    split <;> simp
+
+end Rows
+section
+variable {ι κ : Type*} [DecidableEq ι] (q : ι → O) [∀ i, (Ideal.span {q i}).IsMaximal]
+  (hg : ∀ i, lambda ∉ Ideal.span {q i}) (S : Finset ι)
+
+theorem localFactor_eq_b0 (side ε₁ ε₂ : Bool) (a : O) (m : ℕ) (hm : 0 < m) :
+    localFactor q hg S side (parity m) ε₁ ε₂ a =
+      (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (a ^ bit (retained (parity m) ε₁ ε₂))) ^ 4 *
+        primeCoprimeMask q S (a ^ b0Exponent m ε₁ ε₂) := by
+  rw [localFactor_eq, row_pow, mask_pow q hg S]
+  cases hr : retained (parity m) ε₁ ε₂
+  · have hpos := b0Exponent_pos_of_not_retained m ε₁ ε₂ hm hr
+    simp only [Bool.false_eq_true, ↓reduceIte, bit, Bool.false_eq_true, pow_zero, one_pow,
+      one_mul]
+    rw [primeCoprimeMask_indicator]
+    split <;> simp [Nat.ne_of_gt hpos]
+  · simp only [↓reduceIte, bit, pow_one]
+    exact (row_power_mul_mask_power q hg S a 4 _ (by decide)).symm
+
+theorem first_pass_label_identity (p : κ → O) (B : Finset κ) (v : κ → ℕ)
+    (ε₁ ε₂ : κ → Bool) (hv : ∀ j ∈ B, 0 < v j) (side : Bool) :
+    primeCoprimeMask q S (cubeRadical p B) *
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (aLabel p B (if side then ε₂ else ε₁)) ^ 4 *
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (crtLabel p B v ε₁ ε₂ side) *
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (dilationLabel p B v ε₁ ε₂) =
+    primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (jLabel p B v ε₁ ε₂) ^ 4 *
+      primeCoprimeMask q S (b0Label p B v ε₁ ε₂) := by
+  classical
+  simp only [cubeRadical, aLabel, crtLabel, dilationLabel, jLabel, b0Label,
+    primeProduct, mask_prod q hg S, row_prod, ← Finset.prod_pow, ← Finset.prod_mul_distrib]
+  apply Finset.prod_congr rfl
+  intro j hj
+  rw [row_pow, row_pow, row_pow]
+  convert localFactor_eq_b0 q hg S side (ε₁ j) (ε₂ j) (p j) (v j) (hv j hj) using 1
+  cases side <;> simp only [localFactor, Bool.false_eq_true, ↓reduceIte,
+    ← _root_.pow_mul, _root_.Nat.mul_comm]
+
+include hg in
+
+theorem radical_mask_absorbs (p : κ → O) (B : Finset κ) (v : κ → ℕ) :
+    primeCoprimeMask q S (cubeRadical p B) * primeCoprimeMask q S (primeProduct p B v) =
+      primeCoprimeMask q S (cubeRadical p B) := by
+  simp only [cubeRadical, primeProduct, mask_prod q hg S, mask_pow q hg S,
+    ← Finset.prod_mul_distrib]
+  apply Finset.prod_congr rfl
+  intro j hj
+  rw [primeCoprimeMask_indicator]
+  split <;> simp
+
+theorem masked_dual_dilation (p : κ → O) (B : Finset κ) (v : κ → ℕ) (z : O) (c : ℂ) :
+    primeCoprimeMask q S (cubeRadical p B) * c * star (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S z) =
+      (primeCoprimeMask q S (cubeRadical p B) * c *
+        primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (primeProduct p B v)) *
+      star (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (z * primeProduct p B v)) := by
+  rw [SecondPassArithmetic.subsetRow_mul, star_mul]
+  calc
+    _ = (primeCoprimeMask q S (cubeRadical p B) *
+        primeCoprimeMask q S (primeProduct p B v)) * c *
+        star (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S z) := by rw [radical_mask_absorbs q hg S]
+    _ = _ := by rw [← primeSubsetRow_diagonal q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (primeProduct p B v)]; ring
+
+theorem first_pass_after_dual_dilation
+    (p : κ → O) (B : Finset κ) (v : κ → ℕ) (ε₁ ε₂ : κ → Bool)
+    (hv : ∀ j ∈ B, 0 < v j) (side : Bool) (z : O) :
+    (primeCoprimeMask q S (cubeRadical p B) *
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (aLabel p B (if side then ε₂ else ε₁)) ^ 4 *
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (crtLabel p B v ε₁ ε₂ side)) *
+      star (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S z) =
+    (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (jLabel p B v ε₁ ε₂) ^ 4 *
+      primeCoprimeMask q S (b0Label p B v ε₁ ε₂)) *
+      star (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (z * dilationLabel p B v ε₁ ε₂)) := by
+  have hd := masked_dual_dilation q hg S p B
+    (fun j => dilationExponent (parity (v j)) (ε₁ j) (ε₂ j)) z
+    (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (aLabel p B (if side then ε₂ else ε₁)) ^ 4 *
+      primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (crtLabel p B v ε₁ ε₂ side))
+  change _ = (_ * primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (dilationLabel p B v ε₁ ε₂)) * _ at hd
+  simp only [← mul_assoc] at hd
+  rw [first_pass_label_identity q hg S p B v ε₁ ε₂ hv side] at hd
+  exact hd
+
+
+end
+
+theorem mobius_column_after_dual_dilation
+    {ι κ : Type*} [DecidableEq ι] (q : ι → O) [∀ i, (Ideal.span {q i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {q i}) (columns : Finset ι) (C : Finset ι → ℂ)
+    (p : κ → O) (B : Finset κ) (v : κ → ℕ) (ε₁ ε₂ : κ → Bool)
+    (hv : ∀ j ∈ B, 0 < v j) (side : Bool) (z : O) :
+    (∑ S ∈ columns.powerset, SecondPassArithmetic.supportMobius S * C S *
+      ((primeCoprimeMask q S (cubeRadical p B) *
+        primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (aLabel p B (if side then ε₂ else ε₁)) ^ 4 *
+        primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (crtLabel p B v ε₁ ε₂ side)) *
+        star (primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S z))) =
+    SecondPassArithmetic.supportConjugateSum q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) columns
+      (fun S => C S * primeSubsetRow q (fun i => complexSexticChar (Ideal.span {q i}) (hg i)) S (jLabel p B v ε₁ ε₂) ^ 4 *
+        primeCoprimeMask q S (b0Label p B v ε₁ ε₂))
+      (z * dilationLabel p B v ε₁ ε₂) := by
+  unfold SecondPassArithmetic.supportConjugateSum
+  apply Finset.sum_congr rfl
+  intro S hS
+  rw [first_pass_after_dual_dilation q hg S p B v ε₁ ε₂ hv side z]
+  ring
+
+end FirstPassCubeLabels
+
+
+
+namespace SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson FirstPassCubeLabels
+open scoped Classical
+
+/-- Units reconcile chosen ideal generators with the products used in Poisson summation. -/
+def subsetProductUnit {ι : Type*} (p : ι → O) (S : Finset ι) : Oˣ :=
+  Classical.choose (exists_label_unit (∏ i ∈ S, p i) (∏ i ∈ S, Ideal.span {p i})
+    (span_finset_prime_product p S))
+
+lemma subsetProductUnit_spec {ι : Type*} (p : ι → O) (S : Finset ι) :
+    (∏ i ∈ S, p i) = (subsetProductUnit p S : O) *
+      cubicIdealGenerator (∏ i ∈ S, Ideal.span {p i}) :=
+  Classical.choose_spec (exists_label_unit (∏ i ∈ S, p i) (∏ i ∈ S, Ideal.span {p i})
+    (span_finset_prime_product p S))
+
+lemma subsetProductUnit_row {ι : Type*} (p : ι → O) (D E : Finset ι) (k : O) :
+    cubicIdealGenerator (∏ i ∈ D, Ideal.span {p i}) *
+      cubicIdealGenerator (∏ i ∈ E, Ideal.span {p i}) *
+      ((subsetProductUnit p D : O) * (subsetProductUnit p E : O) * k) =
+      (∏ i ∈ D, p i) * (∏ i ∈ E, p i) * k := by
+  rw [subsetProductUnit_spec p D, subsetProductUnit_spec p E]
+  ring
+
+lemma span_dvd_of_element_dvd {a b : O} (h : a ∣ b) :
+    (Ideal.span {a} : Ideal O) ∣ Ideal.span {b} := by
+  obtain ⟨c, rfl⟩ := h
+  exact ⟨Ideal.span {c}, (Ideal.span_singleton_mul_span_singleton a c).symm⟩
+
+variable {ι : Type*} [DecidableEq ι]
+  (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma primeProduct_add (B : Finset ι) (u v : ι → ℕ) :
+    primeProduct p B (fun i => u i + v i) = primeProduct p B u * primeProduct p B v := by
+  simp only [primeProduct, pow_add, Finset.prod_mul_distrib]
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma aLabel_dvd_primeProduct (B : Finset ι) (v : ι → ℕ) (ε : ι → Bool)
+    (hv : ∀ i ∈ B, 0 < v i) : aLabel p B ε ∣ primeProduct p B v := by
+  unfold aLabel primeProduct
+  apply Finset.prod_dvd_prod_of_dvd
+  intro i hi
+  apply pow_dvd_pow
+  cases h : ε i <;> simp only [bit, h, Bool.false_eq_true, ite_false, ite_true]
+  · exact Nat.zero_le _
+  · exact hv i hi
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem cubeRadical_dvd_jLabel_b0 (B : Finset ι) (v : ι → ℕ) (ε₁ ε₂ : ι → Bool)
+    (hv : ∀ i ∈ B, 0 < v i) : cubeRadical p B ∣ jLabel p B v ε₁ ε₂ * b0Label p B v ε₁ ε₂ := by
+  have hle (i : ι) (hi : i ∈ B) :
+      1 ≤ bit (retained (parity (v i)) (ε₁ i) (ε₂ i)) + b0Exponent (v i) (ε₁ i) (ε₂ i) := by
+    cases h : retained (parity (v i)) (ε₁ i) (ε₂ i)
+    · have hp := FirstPassCubeLabels.b0Exponent_pos_of_not_retained (v i) (ε₁ i) (ε₂ i) (hv i hi) h
+      simp only [bit,  Bool.false_eq_true, ite_false, zero_add]
+      omega
+    · simp only [bit,  ite_true]
+      omega
+  have hd := Finset.prod_dvd_prod_of_dvd (s := B) (fun i => p i ^ 1)
+    (fun i => p i ^ (bit (retained (parity (v i)) (ε₁ i) (ε₂ i)) + b0Exponent (v i) (ε₁ i) (ε₂ i)))
+    (fun i hi => pow_dvd_pow (p i) (hle i hi))
+  simpa only [cubeRadical, jLabel, b0Label, primeProduct, pow_one, pow_add,
+    Finset.prod_mul_distrib] using hd
+
+def actualSecondTuple (B C D E V : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool)
+    (k : O) : SecondPassFiber.OldTuple where
+  core := ![Ideal.span {jLabel p B (fun i => v₁ i + v₂ i) ε₁ ε₂},
+    ∏ i ∈ C, Ideal.span {p i}, ∏ i ∈ E, Ideal.span {p i},
+    Ideal.span {squarefreeLabel p B (fun i => v₁ i + v₂ i)},
+    Ideal.span {primeProduct p B v₁}, Ideal.span {aLabel p B ε₁},
+    Ideal.span {aLabel p B ε₂}, ∏ i ∈ D, Ideal.span {p i}]
+  v := ∏ i ∈ V, Ideal.span {p i}
+  j2 := Ideal.span {j2Label p B (fun i => v₁ i + v₂ i) ε₁ ε₂}
+  b2 := Ideal.span {primeProduct p B v₂}
+  row := (subsetProductUnit p D : O) * (subsetProductUnit p E : O) * k
+
+def actualSecondLabel (B C E V : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool) : Ideal O :=
+  Ideal.span {jLabel p B (fun i => v₁ i + v₂ i) ε₁ ε₂} *
+    (∏ i ∈ C, Ideal.span {p i}) * (∏ i ∈ E, Ideal.span {p i}) * (∏ i ∈ V, Ideal.span {p i})
+
+def actualSecondRow (D E : Finset ι) (k : O) : O :=
+  (∏ i ∈ D, p i) *
+    (∏ i ∈ E, p i) * k
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem actualSecondTuple_valid
+    (B C D E V : Finset ι) (hCB : Disjoint C B) (hD : D ⊆ C ∪ B)
+    (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool) (hv : ∀ i ∈ B, 0 < v₁ i + v₂ i) (k : O) :
+    SecondPassFiber.Valid (actualSecondTuple p B C D E V v₁ v₂ ε₁ ε₂ k)
+      (actualSecondLabel p B C E V v₁ v₂ ε₁ ε₂)
+      (Ideal.span {b0Label p B (fun i => v₁ i + v₂ i) ε₁ ε₂})
+      (actualSecondRow p D E k) := by
+  have hJ := congrArg (fun a : O => (Ideal.span {a} : Ideal O))
+    (FirstPassCubeLabels.jLabel_eq_squarefree_mul_j2 p B (fun i => v₁ i + v₂ i) ε₁ ε₂)
+  have hb := congrArg (fun a : O => (Ideal.span {a} : Ideal O))
+    (FirstPassCubeLabels.cube_product_decomposition p B (fun i => v₁ i + v₂ i) ε₁ ε₂ hv)
+  rw [primeProduct_add] at hb
+  have hA₁ := span_dvd_of_element_dvd (aLabel_dvd_primeProduct p B (fun i => v₁ i + v₂ i) ε₁ hv)
+  have hA₂ := span_dvd_of_element_dvd (aLabel_dvd_primeProduct p B (fun i => v₁ i + v₂ i) ε₂ hv)
+  rw [primeProduct_add, ← Ideal.span_singleton_mul_span_singleton] at hA₁ hA₂
+  have hrad := span_dvd_of_element_dvd (cubeRadical_dvd_jLabel_b0 p B (fun i => v₁ i + v₂ i) ε₁ ε₂ hv)
+  rw [← Ideal.span_singleton_mul_span_singleton] at hrad
+  have hD' : (∏ i ∈ D, Ideal.span {p i}) ∣
+      (∏ i ∈ C, Ideal.span {p i}) * Ideal.span {cubeRadical p B} := by
+    have hh := Finset.prod_dvd_prod_of_subset D (C ∪ B) (fun i => (Ideal.span {p i} : Ideal O)) hD
+    rw [Finset.prod_union hCB] at hh
+    simpa only [cubeRadical, span_finset_prime_product] using hh
+  have hD'' := hD'.trans (mul_dvd_mul_left (∏ i ∈ C, (Ideal.span {p i} : Ideal O)) hrad)
+  constructor
+  · rfl
+  · change Ideal.span {squarefreeLabel p B (fun i => v₁ i + v₂ i)} *
+        Ideal.span {j2Label p B (fun i => v₁ i + v₂ i) ε₁ ε₂} =
+          Ideal.span {jLabel p B (fun i => v₁ i + v₂ i) ε₁ ε₂}
+    simpa only [← Ideal.span_singleton_mul_span_singleton] using hJ.symm
+  · change Ideal.span {primeProduct p B v₁} * Ideal.span {primeProduct p B v₂} =
+        Ideal.span {b0Label p B (fun i => v₁ i + v₂ i) ε₁ ε₂} ^ 2 *
+        Ideal.span {j2Label p B (fun i => v₁ i + v₂ i) ε₁ ε₂} ^ 2 *
+        Ideal.span {squarefreeLabel p B (fun i => v₁ i + v₂ i)}
+    simpa only [pow_two, ← Ideal.span_singleton_mul_span_singleton] using hb
+  · exact hA₁
+  · exact hA₂
+  · apply hD''.trans
+    refine ⟨(∏ i ∈ E, Ideal.span {p i}) * (∏ i ∈ V, Ideal.span {p i}), ?_⟩
+    simp only [actualSecondLabel]
+    ring
+  · exact subsetProductUnit_row p D E k
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem actualSecondTuple_newLabel
+    (B C D E V : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool) (k : O) :
+    SecondPassFiber.newLabel (actualSecondTuple p B C D E V v₁ v₂ ε₁ ε₂ k) =
+      actualSecondLabel p B C E V v₁ v₂ ε₁ ε₂ := rfl
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem actualSecondTuple_newRow
+    (B C D E V : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool) (k : O) :
+    SecondPassFiber.newRow (actualSecondTuple p B C D E V v₁ v₂ ε₁ ε₂ k) =
+      actualSecondRow p D E k := subsetProductUnit_row p D E k
+
+omit [DecidableEq ι] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem actualSecondLabel_span
+    (B C E V : Finset ι) (v₁ v₂ : ι → ℕ) (ε₁ ε₂ : ι → Bool) :
+    Ideal.span {(∏ i ∈ C, p i) *
+      jLabel p B (fun i => v₁ i + v₂ i) ε₁ ε₂ *
+      (∏ i ∈ E, p i) * (∏ i ∈ V, p i)} =
+      actualSecondLabel p B C E V v₁ v₂ ε₁ ε₂ := by
+  simp only [actualSecondLabel, ← Ideal.span_singleton_mul_span_singleton,
+    span_finset_prime_product]
+  ring
+
+end SecondPassArithmetic
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

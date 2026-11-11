@@ -2,14 +2,16 @@
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`.
 Specification: §2.14 of
-[the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md); background:
-§9 of [the review-1011 report](../../../docs/reports/review-1011/fable.md). Paper proofs:
+[the review-1111 summary](../../../docs/reports/review-1111/obstacles-summary.md). Paper proofs:
 `docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`.
 
 The programme is this folder together with
 [`HodgeTheoryOfAFixedPart`](../HodgeTheoryOfAFixedPart/README.md), which holds the pairing on
-real divisors at finite scale. [`SelectiveArithmetic`](../SelectiveArithmetic/README.md) is its
-test bench.
+real divisors at finite scale and the index of the finite comb. Its test benches are
+[`SelectiveArithmetic`](../SelectiveArithmetic/README.md) (weight systems with a conductor),
+[`FloorFreeArithmetic`](../FloorFreeArithmetic/README.md) (finite layers, certificates) and
+[`SumProductArithmeticOfTheLogarithm`](../SumProductArithmeticOfTheLogarithm/README.md)
+(counts of models, fakes).
 
 Every theorem named here is proved in Lean without hypothesis. "corpus" marks a theorem of
 another folder, **[C]** published mathematics that is not in the corpus, **open** a statement
@@ -128,14 +130,29 @@ Each clause is a reading of theorems of §6.
    point `n`, negative exactly at `n = 2, 3`.
 2. Its Frobenius is a monoid at the finite places and a flow at infinity. No map is a Frobenius
    at two primes: order `m` on a set `S` of primes costs `m·θ(S)`.
-3. Its square is of infinite type. The prime part of an intersection number is a contact
-   order, the archimedean part a jet (a Newtonian multipole on an axis of `ℝ³`), the diagonal
-   the density of a comb.
-4. Passing from `𝔽_p[T]` to `ℤ` is a deformation by the carry, a cocycle that is not a
-   coboundary: `𝔽₁` does not remove it.
-5. Extensions of the base are covers with ramification, not extensions of constants: the
-   conductors are the ramification term of the genus, and `ζ` is the fixed part of every
-   family of covers, of weight one over the degree.
+3. Its square is of infinite type and **rigid**. The prime part of an intersection number is a
+   contact order, the archimedean part a jet (a Newtonian multipole on an axis of `ℝ³`), the
+   diagonal the density of a comb. The square is not a member of a family: constant, contacts,
+   tree lengths and prices are forced, and every path through it is the Riemann hypothesis at
+   each parameter.
+4. Its Néron–Severi lattice is the same for every number ring up to the density of the comb.
+   The index is the number of distinct zeros to the right of the line, for each Hecke character
+   and for the Artin character of degree two of the cube roots of two.
+5. Its sections count like a curve, not like a surface: the volume over the gluing index, with
+   no quadratic term.
+6. Its index is a function of the aperture: it does not decrease, immediately right of an
+   aperture it is the index plus the number of null modes there, and below every aperture
+   only finitely many apertures carry a null mode (corpus).
+7. Its zero width is read on one sequence of tails: the power tail of exponent `a` grows at the
+   rate `σ` iff no zero has real part above `1 − a + σ`.
+8. Passing from `𝔽_p[T]` to `ℤ` is a deformation by the carry, a cocycle that is not a
+   coboundary; it keeps the lattice and loses the count. Extensions of the base are covers
+   with ramification, not extensions of constants, and `ζ` is the fixed part of every family
+   of covers, of weight one over the degree.
+9. What distinguishes `ℤ` from its imitations is the exact count and the functional equation,
+   not a count rate: a bounded count error identifies the rational primes, and at every
+   exponent above `½` there are systems with integer norms, a count with that power saving,
+   and a zero that `ζ` does not have (test bench).
 
 ## 3. Objects
 
@@ -295,10 +312,12 @@ Each clause is a reading of theorems of §6.
 | | RH ⇔ Weil's form is nonnegative on the step packets of `3KR` blocks, all `K, R` | `riemannHypothesis_iff_forall_packetForm_stepPacket_nonneg` |
 | | RH ⇔ at every large scale `2 d₁ d₂ − D·D ≥ −η Σ c_n²` on all real divisors of a window | `riemannHypothesis_iff_eventually_combForm_ge` |
 | | on `[1, N]` the form is a quadratic form in the increments of the divisor, with the rows of the flat tails (the remainders of the prime number theorem) as coefficients | `combForm_Icc_eq_sum_increments` |
+| | the explicit error: on `J` blocks of `B` points above `RB` the form per block point differs from `𝔚_Q` of the step packet by at most `6(J+1)·(2X + 16(1 + log 2XB) + 2ψ(Q))/B · Σσ_j²`, `X = R + J`; a margin of the matrix gives the sign of the comb at explicit block sizes, and conversely | `abs_combForm_blockFunction_div_sub_le`, `le_combForm_of_packetForm_ge`, `packetForm_ge_of_combForm_ge` |
 | Tails | Weil's form of two logarithmic tails per degree point: `𝔚_{[1,N]}(log^k(N/·), log^l(N/·))/N → k! l! Re Σ_ρ ρ^{−k−1}(1−ρ)^{−l−1}` | `tendsto_logTailForm_div_zeroMoment` |
 | | the Li ladder: the form of the Laguerre tail `P_n(log(N/m))` per degree point tends to `Re 2λ_n`, without damping or smoothing | `tendsto_combForm_laguerreTail_div` |
 | | the row of the flat tail is `1/t − ψ(1/t) − ½ log(1−t²) − log 2π` in the coordinate `t = n/N`; its Mellin transform is `Σ_ρ 1/(ρ(s−ρ))` and its logarithmic moments are `j! Σ_ρ 1/(ρ(1−ρ)^{j+1})` | `mellin_rowProfile`, `rowMoment_eq_tsum` |
 | | the scaling recursion: the forms of all logarithmic tails are determined by their pairings with the flat tail | `logTailForm_succ`, `tendsto_logTailForm_div` |
+| | power tails `F_a(N)`, the form of `(N/n)^a` on `[1, N]` per degree point, `0 < a < ½`: growth at every rate above `σ` iff no zero has real part above `1 − a + σ`; the tails converge exactly for `a < ½ − w`, `w` the width of the zeros; RH iff every tail converges | `powerCombTailGrowth_iff_zeroHalfPlane`, `powerCombConvergenceRadius_eq_half_sub_zeroWidth`, `riemannHypothesis_iff_all_powerCombTails_converge` |
 | Forced data | weights, constant, scale, tree lengths, exchange law | §2.4 |
 | | a reversed contact at `2` fails | `exists_packet_degreePairing_gt_of_flippedContact` |
 | The tree of `2` | on packets of length `≤ log 4` the generator is `≥ (1 − 1/√2)∫f²`; Bézout is monotone in the length, holds for long trees, and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two` |
@@ -319,16 +338,21 @@ Each clause is a reading of theorems of §6.
 | | for any number field, abelian or not: the square through its ideals tends to `2 d₁ d₂ − Z_K(f)` and has the index of its Dedekind zeta function; class characters are primitive | `tendsto_ringForm_add_idealContact`, `exists_le_negIndex_dedekindGram_iff`, `heckeFiniteConductor_trivialModulus` |
 | | below the first contact (packets shorter than `log 2`): `Z_ψ(f) ≥ m_ψ 2d₁d₂ + (log N − (d − c) log 128π − c log 4π)∫f²`; for `\|d_K\| ≥ (128π)^{r₁+r₂−1}(4π)^{r₂}` the inequality holds on the square of the ring with the margin `∫f²/5000` | `heckeZeroSum_ge_of_no_contact`, `heckeZeroSum_nonneg_of_no_contact`, `tendsto_ringForm_le_degrees_of_short` |
 | | summed over the `h` class characters the contacts keep the principal prime powers; `h` times the pairing of the ring with these contacts tends to `2d₁d₂ − Σ_ψ Z_ψ(f)`, and its index is the number of distinct zeros to the right of the line of all `L(s, ψ)` | `sum_heckeMangoldt_trivialModulus`, `classTrivialContact_eq`, `tendsto_ringForm_add_classTrivialContact`, `exists_le_negIndex_classGram_iff` |
+| An extension that is not abelian | the splitting field of `X³ − 2` has the group `S₃`; its character `ρ` of degree two has the contacts `(#{x ∈ 𝔽_{p^m} : x³ = 2} − 1) log p`, which are the von Mangoldt function of the cubic character of `2`, a ray class character modulo `6` of `ℚ(ω)`; Weil's explicit formula and the index law for `ρ` | `exists_not_commute_cubeRootsOfTwo`, `heckeMangoldt_cubicTwoHecke`, `W_artinZeros_eq`, `exists_le_negIndex_artinGram_iff` |
 | Order one | two vertical lines weigh the zeros of an entire function of order one; with a functional equation and a conjugation the zeros are a tempered configuration with Weil's explicit formula | `hasSum_zeros_two_lines`, `hasSum_zeros_explicit`, `zerosConfig`, `temperedConfig_zerosConfig` |
 | Twisted parts | nonpositive up to the trivial aperture, uniformly in the character | `exists_uniform_trivial_conductor_aperture` |
 | | a real zero is one square of explicit depth and repels the others | `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`, `exists_twistedComb_square_margin` |
 | Integer-norm systems | the square sees a system through its norms; on its own comb the system of the squares fails Bézout | `ghostLift_adams_X_eq_of_eq`, `exists_packet_squarePairing_gt` |
 
 In the continuation and the corpus: the normal form at finite scale, block averages, the comb
-`q^ℤ` of a curve as a Toeplitz form whose sign is purity (`HodgeTheoryOfAFixedPart`); the
-contacts of a prime as chain squares minus the diagonal and the jets as even Newtonian
-multipoles (`HodgeTheoryOfAFixedPart`); the cost `m·θ(S)` of order `m` at the primes of `S`
-(`SignFreePurityMechanisms`).
+`q^ℤ` of a curve as a Toeplitz form whose sign is purity, the contacts of a prime as chain
+squares minus the diagonal and the jets as even Newtonian multipoles; RH iff every ratio
+window has a positive mass floor `γ(Q) Σc²` at all large scales
+(`riemannHypothesis_iff_ratioWindow_positive_mass_floor`); the robust index of the finite comb
+counts the zeros to the right of the line (`nat_le_rightZeros_iff_eventual_robustCombIndex`)
+(all `HodgeTheoryOfAFixedPart`); the index of the restricted form in the aperture with its
+jump law (`ArithmeticContinuationAndCriticalEnergy`); the cost `m·θ(S)` of order `m` at the
+primes of `S` (`SignFreePurityMechanisms`).
 
 ## 7. Constructions
 
@@ -336,12 +360,15 @@ Each construction asks for a property that is an inequality and has a kill condi
 
 | | Deliverable | Kill condition | State |
 |---|---|---|---|
-| I | a Lefschetz operator or a path on the comb lattice: the inequality at a base point and a transport that is not RH | every candidate has transport equivalent to RH | dilation, overlap flow, coupling Laplacian: equivalent to RH (corpus). The length of the tree of `2` is a monotone path on packets shorter than `log 4`; odd trees fail. The path of the price is monotone at every prime, at every length |
+| I | a path on the comb lattice: the inequality at a base point and a transport that is not RH | every candidate has transport equivalent to RH | closed. Dilation, overlap flow, coupling Laplacian: equivalent to RH (corpus). The length of the tree of `2` is monotone on packets shorter than `log 4`; odd trees fail. The path of the price is monotone at every `n₀ ≥ 2` and is RH at every parameter |
 | II | the archimedean fibre glued to the trees so that the glued form is the comb form | every gluing is the pairing itself or fails | invariant gluings have a constant diagonal; along the comb every free parameter is forced (§2.4) |
 | III | Stepanov on the planar square: a small section vanishing on a window | the forced value is the product of the contact ideals and is attained | closed: `planarValues_eq_prod` |
-| IV | the index law for the squares of a tower | the form of `ζ` has weight `1/[K:ℚ]` in the limit | closed: `tendsto_ringZeroSum_div_degree_sub` |
+| IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters and the character of degree two of `X³ − 2`. Open: Artin characters in general |
 | V | Bézout for an integer-norm system on its own comb | the jets of the comb are not those of the system | closed for the squares: `exists_packet_squarePairing_gt` |
-| VI | natural numbers on the rays `Γ_1 + Γ_p` with a quadratic Tate limit | no definition without the form | closed on the object: the count of residues is the split norm, the count in a box is the volume over the gluing index; neither has the contact with the multiplicities |
+| VI | a count: natural numbers with a quadratic Tate limit | no definition without the form | the count on the object is linear (split norm; volume over the gluing index); counts on the surviving prime rays exist iff RH (corpus). Open: a definition without the form |
+| VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors. Open: the sign of a matrix `𝔚_Q` beyond the first contact |
+| VIII | the index as a topological invariant: index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | not started |
+| IX | the width on the tails | the growth of the tail is the zero-free half-plane | closed as an equivalence (`powerCombTailGrowth_iff_zeroHalfPlane`) |
 
 **The path at `2`.** A tree of `p` glued with the edge length `ℓ` has the contacts `ℓ` along
 the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)`. On packets of length at
@@ -367,42 +394,52 @@ the pillars of §6.
 
 ## 8. Criteria
 
-A construction is read against twelve criteria; the pairing of the degree points meets each.
+A construction is read against sixteen criteria; the pairing of the degree points meets each.
 
 | # | Criterion | Reading |
 |---|---|---|
 | C1 | reproduces Weil and Stepanov for curves | point counts are effective elements; on the comb `q^ℤ` the pairing is a Toeplitz form whose sign is purity |
-| C2 | counts alone are not enough | the golden datum is effective, has the functional equation, and is not pure |
-| C3 | uses the functional equation | every weight but `Λ` fails; the Liouville twist fails at the first rung |
-| C4 | uses the Euler product | a reversed contact fails |
+| C2 | counts alone are not enough, and a count rate is not enough | the golden datum is effective, has the functional equation, and is not pure; fakes have a count with a power saving and a zero that `ζ` lacks (test bench) |
+| C3 | uses the functional equation | every weight but `Λ` fails; integer-norm models with a finite layer fail; the Liouville twist fails at the first rung |
+| C4 | uses the Euler product on the function | a reversed contact fails |
 | C5 | sees the exact normalization | `Λ(k)/√k`, the constant `2π`, the scale, the conductor are forced |
 | C6 | infinite type | a finite fibre forces a contact that is not Weil's |
-| C7 | the diagonal is the density of a comb | every other counterterm leaves a term of the size of the mass |
-| C8 | positivity is derived, and not from a section count | on the tower and on the planar square the count is an identity |
+| C7 | the diagonal is the density of a comb, with discriminant and conductor | every other counterterm leaves a term of the size of the mass |
+| C8 | positivity is derived, and not from a section count | on the tower and on the planar square the count is an identity; in aligned boxes it is the volume over the gluing index |
 | C9 | selective only where a contact enters; no margin | below the first contact every weight passes; on packets of degree zero there is no gap |
-| C10 | on a number ring it gives the index of each character, or uses the pole plane | the twisted parts have no pole plane and separate exact indices |
+| C10 | on a number ring it gives the index of each character, additively | the twisted parts have no pole plane and separate exact indices |
 | C11 | below the trivial aperture it proves nothing that the dominated box does not have | up to `log log q − o(1)` every system with contacts bounded by `Λ` is positive |
-| C12 | at finite scale it is a statement on block-constant divisors | block averages decide (continuation); on block-constant divisors the form tends to Weil's form of the step packet, and the inequality at finite scale is RH in both directions |
+| C12 | at finite scale it is the sign on step packets | on block-constant divisors the form tends to Weil's form of the step packet with an explicit error, and the inequality at finite scale is RH in both directions |
+| C13 | it is a statement at the point: no deformation of the square transports it | every path through the square of `ℤ` is RH at each parameter |
+| C14 | its count is quadratic in the divisor | the counts on the object are linear |
+| C15 | it treats a null mode at a resonant aperture | the index jumps by the nullity (corpus) |
+| C16 | its tails grow at the rate of the width | `powerCombTailGrowth_iff_zeroHalfPlane` |
 
 ## 9. Questions, order of work, decisive test
 
 | # | Question | State |
 |---|---|---|
-| 1 | Bézout from a property of the object; a height or a path | RH. Known end points of a path: long trees of `2` at length `≤ log 4`; short windows; a large conductor mass (test bench); curves. Known rigidity: weights, constant, scale and the lengths of the odd trees admit no deformation |
-| 2 | the block-constant form at every `K, R`; its limit matrices; the converse | Answered. The limit matrices are Weil's form on step packets, with elementary entries; RH ⇔ they are nonnegative for all `K, R`; RH ⇔ the inequality at every large scale up to `η Σ c_n²`. Open: the sign of any one matrix beyond the certified lengths |
-| 3 | Hecke characters, ideals as degree points, one ring that is not abelian | Answered for every number field. A primitive ray class character has Weil's explicit formula, a tempered zero configuration and the exact index; the ideals counted by norms pair with the contacts `Re Λ_ψ`; the trivial character gives the square of the ring and its Dedekind zeta function. The ring that is not abelian: the splitting field of `X³ − 2`, with Galois group `S₃` (`exists_not_commute_cubeRootsOfTwo`, `exists_le_negIndex_cubeRootsOfTwo_iff`). Open: the index of each Artin character; it needs the `L`-function of the character of degree two with its functional equation, that is, class field theory, which the corpus does not have |
-| 4 | a count with the pairing as its limit | Closed on the object. RH iff a count with values in `ℕ` has the integer probes as Tate limit (corpus). On the object the count of residues is the split norm and the count of sections in a box is the volume over the gluing index, on any number of graphs: no quadratic term, and the contact with the sign of a condition. Open: a count on an object of dimension two |
-| 5 | the Li ladder as comb forms of tails | Answered. The form of the Laguerre tail `P_n(log(N/m))`, `m ≤ N`, per degree point tends to `Re 2λ_n` for every `n` (`tendsto_combForm_laguerreTail_div`); the flat tail is the first rung. The form of any two logarithmic tails tends to the sum over the zeros of the product of their Mellin transforms at `ρ` and `1 − ρ`. The damped, smoothly cut form is in the continuation. Not proved: tails `(m/N)^{−a}`, `a > 0` |
-| 6 | a path at an odd prime, or its impossibility | Answered. The path of the price exists at every prime; the path of the tree length, with the counterterm of the product formula, exists at `2` only |
+| 1 | a count quadratic in the divisor, with the pairing as its Tate limit | Open. On the object every count is linear: the split norm on two graphs, the volume over the gluing index in a box. A count with values in `ℕ` and the integer probes as Tate limit exists iff RH (corpus) |
+| 2 | Bézout from a property of the object | RH. Every structure found is an identity or a receiver; weights, constant, scale, tree lengths and prices admit no deformation |
+| 3 | the index as a homotopy invariant of the aperture path | Open. Known: the jump law and the finiteness of the resonant apertures below an aperture (corpus). No symplectic structure for the family |
+| 4 | Artin characters in general | Proved for one character that is not abelian, of degree two and monomial. Open: every monomial character; characters that are not monomial |
+| 5 | the step-packet matrices as intersection matrices of an object with an index theorem; first the sign of `𝔚_4` | The matrices are explicit and the transfer to the comb has an explicit error. Open: the sign of any `𝔚_Q` with a contact |
+| 6 | the polar charge of a null mode | Open |
 
-**Order of work.** A count on an object of dimension two (question 4); the index of an Artin
-character (question 3).
+Settled, and now part of §6: the limit matrices at finite scale and the converse; Hecke
+characters, ideals as degree points and a ring that is not abelian; the Li ladder on the
+Laguerre tails and the width on the power tails; a path at an odd prime (the price path).
 
-**The decisive test.** A construction whose Bézout holds for an integer-norm system with an
-off-line pair, for the Liouville twist at the first rung of the conductor ladder, or for a
-wrong constant, is wrong. The pairing of the degree points passes all three without
-hypothesis. The test for a wrong constant is meant with the contacts fixed: wrong contacts
-with a larger counterterm pass, under RH, from the supremum of their symbol on.
+**Order of work.** The sign of `𝔚_4` and `𝔚_7` with a margin; Artin characters; the
+Hamiltonian form of the family of restricted forms (first step of question 3); a quadratic
+count.
+
+**The decisive test.** A construction whose Bézout holds for an integer-norm system with a
+finite layer, for a fake, for the Liouville twist at the first rung of the conductor ladder,
+for a wrong constant, or along a path of squares, is wrong. The pairing of the degree points
+passes each without hypothesis. The test for a wrong constant is meant with the contacts
+fixed: wrong contacts with a larger counterterm pass, under RH, from the supremum of their
+symbol on.
 
 ## 10. Traps
 
@@ -440,20 +477,22 @@ with a larger counterterm pass, under RH, from the supremum of their symbol on.
 | An integer-norm system passes on its own comb when its zeros lie on a line | the system of the squares fails: the comb gives its density, and the jets are those of the norms |
 | The sizes of the contacts can pass the trivial aperture | the systems `Λ`, `−Λ` and the Liouville twist with a conductor fail beyond it (test bench) |
 | The carries can be removed by another choice of digits | the carry is a cocycle that is not a coboundary |
-| The Li ladder is read off an analytic family in the exponent of a power tail | the Mellin transform of the row is proved on `s > 1`; `s = 1` is a boundary point, reached by the prime number theorem with error; left of it nothing is proved |
+| A power tail of small exponent converges | it converges exactly for `a < ½ − w`: its growth is the width of the zeros |
+| A count rate identifies the integers | at every exponent above `½` a system with integer norms has that count rate and a zero that `ζ` lacks; a bounded count error identifies the rational primes (test bench) |
+| A path of squares transports the inequality | every path through the square of `ℤ` in the corpus is RH at each parameter |
 | A tail with a jump needs an explicit formula for test functions with a jump | the scaling recursion reduces every logarithmic tail to the flat tail, whose row is explicit at finite scale |
 
 ## 11. Open problems and research topics
 
-**The limit matrices (question 2).** RH holds iff for all `K, R` the matrix of Weil's form on
-the step packets of the `3KR` blocks of `(R, (3K+1)R]` is nonnegative. Its entries are
+**The step-packet matrices (question 5).** RH holds iff for all `K, R` the matrix of Weil's form
+on the step packets of the `3KR` blocks of `(R, (3K+1)R]` is nonnegative. Its entries are
 elementary: `2 log(b/a)(b − a)`, the closed form of the jets on flat packets, and the overlaps
-`(b/k − a)⁺` with the weights `Λ(k)`, `k ≤ 3K + 1`. *Open:* the sign of one of these matrices
-beyond the lengths with a certificate; the number of negative squares of the form at a finite
-scale against the index of the limit; whether the cone of step packets has a description in
-which the entries are positive term by term.
+`(b/k − a)⁺` with the weights `Λ(k)`, `k ≤ 3K + 1`. The comb at block size `B` is within an
+explicit error of the matrix. *Open:* the sign of one of these matrices with a contact; an
+object with an index theorem whose intersection matrices they are; whether the cone of step
+packets has a description in which the entries are positive term by term.
 
-**A path (question 1).** A one-parameter family of squares through that of `ℤ` which ends at
+**A property of the object (question 2).** A one-parameter family of squares through that of `ℤ` which ends at
 a square where the inequality is known and along which the inequality can be transported; or
 a group with a doubling on which the defect is a canonical height. *Proved:* two monotone
 paths with base points, the tree of `2` below the length `log 4` and the price of a contact at
@@ -463,7 +502,7 @@ threshold without a certificate, that is a lower bound for `inf Z(f)/E(f)` over 
 a length; the least constant that makes a contact a square at a given length (it is below the
 price and tends to it); a path that moves the archimedean fibre.
 
-**Number rings (question 3).** Two ideals of one norm are one point of the comb of norms, and
+**Number rings and Artin characters (question 4).** Two ideals of one norm are one point of the comb of norms, and
 the square of a number ring is seen through the contacts `Σ_{N𝔭^k = n} log N𝔭`. *Proved* for
 every number field and every primitive ray class character `ψ`: the explicit formula, the
 tempered configuration of the zeros, the exact index, and the pairing at finite scale. The jets
@@ -472,23 +511,25 @@ depend on the signature (`d` copies of the jets of `ℤ`, less `1/(m + n)` for e
 conductor, the contacts on the values of `ψ` at the prime ideals. Class group and units do not
 enter the square of the ring; summed over the class characters the contacts keep the principal
 prime powers, with one pole plane for `h` copies of the jets. Below the first contact a large
-discriminant gives the inequality. *Open:* the index of each Artin character of a ring that is
-not abelian (it needs the Artin `L`-function as an entire function; for a monomial character an
-identity of class field theory that the corpus lacks); the zeros of the completion as zeros of
-a continuation of `ζ_K` itself; small discriminants on short packets (below
+discriminant gives the inequality. For the splitting field of `X³ − 2` the character of degree two is induced
+from the cubic character of `2` over `ℚ(ω)`: its contacts are point counts of `x³ = 2`, and its
+index is the number of distinct zeros of its `L`-function to the right of the line. *Open:* the
+index of every monomial character (it needs the contacts of an induced character in general);
+characters that are not monomial, whose `L`-functions are quotients of Hecke `L`-functions; the
+zeros of the completion as zeros of a continuation of `ζ_K` itself; small discriminants on short packets (below
 `(128π)^{r₁+r₂−1}(4π)^{r₂}` the places do not pay for themselves); the units of a real
 quadratic ring.
 
-**A count (question 4).** Natural numbers on the rays of `Γ_1 + Γ_p`, defined without the form,
+**A count (question 1).** Natural numbers on the rays of `Γ_1 + Γ_p`, defined without the form,
 whose Tate limit is the pairing. *Proved:* the count of residues on two graphs is the split
 norm; the count of sections in a box, on two graphs and on the first `N`, is the volume over
 the gluing index, an identity on boxes aligned with the index; on the tower and on the planar
 square the counts are exact and give identities. So on the object the logarithm of every count
 is affine in the multiplicities, and the contacts enter it once with the sign of a condition.
-*Open:* an object of dimension two whose count of sections has a second-order term; by the
-corpus a count with the integer probes as Tate limit exists iff RH.
+*Open:* a count quadratic in the divisor, defined without the form; by the corpus a count with
+the integer probes as Tate limit exists iff RH.
 
-**The Li ladder (question 5).** The `n`-th tail has the Laguerre polynomial of `log(N/m)` as
+**Tails.** The `n`-th tail has the Laguerre polynomial of `log(N/m)` as
 its coordinates, and its transform at a zero is `1 − (1 − 1/ρ)^n`. *Proved:* the form of the
 Laguerre tail per degree point tends to `Re 2λ_n`, for every `n`. Three steps. (i) Raising the
 scale by one shifts `log(N/m)` by `log(1 + 1/N)` and a tail of positive degree vanishes at its
@@ -498,10 +539,10 @@ the remainder of the prime number theorem at `N/n` plus the jets; against `log^j
 has a limit by the hyperbola method and the prime number theorem with error `x e^{−c√log x}`.
 (iii) The Mellin transform of the row is `Σ_ρ 1/(ρ(s − ρ))` for `s > 1`; its moments at `s = 1`,
 a boundary point, are read off with exact remainders on both sides. No explicit formula for a
-test function with a jump enters. *Not proved:* the tails `(m/N)^{−a}`, `a > 0`. There the
-degree point `1` has the weight `N^a` and the row `N − ψ(N) + O(1)`, so the method needs a power
-saving in the prime number theorem; the Mellin transform of the row is proved for `s > 1` and
-its moments at `s = 1` only.
+test function with a jump enters. The power tails `(N/n)^a`, `0 < a < ½`, read the width: the
+degree point `1` has the weight `N^a`, and the tail grows at the rate `σ` iff no zero has real
+part above `1 − a + σ`; it converges exactly for `a < ½ − w`. *Open:* the boundary `a = ½ − w`;
+a tail whose growth is bounded without a zero-free half-plane.
 
 **Combs.** *Open:* the comb of the `a`-th powers for real `a > 0`; combs with a regularly
 varying density; combs without a density (the integers prime to `3`); a system with a repeated
@@ -525,6 +566,9 @@ claims to.
 |---|---|
 | HodgeTheoryOfAFixedPart | second half of the programme: the normal form on real divisors, block averages, short windows, the comb of a curve, chain squares, Newtonian multipoles |
 | SelectiveArithmetic | test bench: weight systems with a conductor, the dominated box, the trivial aperture, the Liouville twist |
+| FloorFreeArithmetic | test bench: finite layers and their models; a feasible weight system at every aperture is RH, and feasible systems converge to `Λ` |
+| SumProductArithmeticOfTheLogarithm | test bench: a bounded count error identifies the rational primes; fakes at every exponent above `½` |
+| ArithmeticContinuationAndCriticalEnergy | the restricted form in the aperture: its index, its null modes, the jump law |
 | RHTower | the explicit formula, Weil's functional and its symbol form, the uniqueness of `Λ` in the Weil cone, radical tests, the zero count |
 | ArithmeticCastelnuovoSeveri | the inequality on the scaling surface; the exact index law of a tempered configuration; the golden datum |
 | CriticalHardyTheoryOfTheWindowCone | the window cone of weights positive at an aperture |

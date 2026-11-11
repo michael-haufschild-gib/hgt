@@ -81,7 +81,11 @@ Arc mass: for `T = ⌊1/(2w)⌋`, `|D_T(θ)| ≥ 2T/π` on `|θ| ≤ 1/(2T)` and
 
 **(MR)** For every fixed `b/s`: `limsup_x A_x(|T^{-1}Σ_{u<T} λ(n+u)e(ub/s)|²) → 0` as `T → ∞`.
 
-§4 and §5 at a good `k` give `|c(h)| ≤ 4ε + 2η`.
+§4 and §5 at a good `k` give `|c(h)| ≤ 6ε + 2η`.
+
+Lean form of §2–§4: weights `w_k = (|𝐏_k| − C)₊/H_k` replace `1/k`; `Σ_k w_k = ∞` follows from
+`Σ_p 1/p = ∞`, so no prime counting is needed. A good scale has `|𝐏_k| > C = 25 log 2/ε³` and
+`I_k ≤ (ε³/25)|𝐏_k|`, hence `μ(A) ≤ 2ε` and `|c(h) − avg c(ph)| ≤ 6ε`.
 
 ### §6 (PRIME)
 
@@ -111,9 +115,8 @@ for `μχ`. Its non-generic input is a Vinogradov–Korobov-type zero-free regio
 
 | Input | Content | Corpus | Status |
 |---|---|---|---|
-| §0–§4 | limit functionals, entropy, decrement, Hoeffding, event inequality | `HTGeometry.DiscreteMutualInformation` (chain rule, tsum form), Mathlib Hoeffding (`HasSubgaussianMGF.measure_sum_ge_le_of_iIndepFun`) | Lean: in progress |
+| §0–§4 | limit functionals, entropy, decrement, Hoeffding, event inequality | — | **Lean** (`exists_scale_corr_close`) |
 | §5 | circle method, arc mass | — | open |
-| `|𝐏_k| ≥ c₀2^k/k` | prime number theorem or Chebyshev on dyadic intervals | to locate | open |
 | §6 minor arcs | Vaughan bound for general `β` | Vaughan at prime roots of unity (`BezoutValuationIncidence.TheCentredPrimeRowIsMinorArcBelowTheDiagonal`), Type II (`Sieve.VaughanTypeIIEstimate`) | open |
 | §6 intermediate arcs | uniform zero-free region, Landau exception, explicit formula uniform in `q` | fixed-`q` versions: `ShortIntervalPrimesInProgressions/` | open |
 | §7 | MR for `μχ`, fixed `χ` | MR for `μ`: fibre form all `h → ∞` (`Sieve.MoebiusAveragedMeanSquareAllLengths`), integer start `ℓ ≥ log N` (`TwinPrime.eventually_dyadicMeanSquare_moebius_le_integerWindowRate`); VK for `ζ` (`Sieve.VinogradovKorobovZeroFree`) | open |
@@ -124,6 +127,13 @@ Folder `formal/GaloisForLFunctions/LogarithmicChowla/`, umbrella `LogarithmicCho
 
 | Module | Content | Status |
 |---|---|---|
+| `LogarithmicAverages` | `A_x(f)`; shift `3B`, dilation `dB`, `A_x(1) → 1` | compiled |
+| `LimitFunctional` | `L_U`, (L1)–(L4), laws of finite-valued sequences | compiled |
+| `FiniteEntropy` | entropy, pushforward, submodularity, data processing, event inequality | compiled |
+| `ResidueHoeffding` | Hoeffding on a finite product | compiled |
+| `EntropyDecrement` | `H(X_{2H}|R) ≤ 2H(X_H|R)`, refinement by CRT, `Σ I_k/H_k ≤ log 2`, good scales | compiled |
+| `ShiftDeviation` | `W_p`, `|W_p| ≤ 5/2`, mean zero, concentration of `Z` | compiled |
+| `PrimeShiftReduction` | `L(Z) = c(h) − avg c(ph)`, event bound, `exists_scale_corr_close` | compiled |
 
 ## Log
 - 2026-11-11 — created; paper architecture §0–§7.

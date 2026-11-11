@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** commit `080dddb181` with its working tree (2026-11-11). Fact log: `logs/review-1111-rev2-facts.md` (cited as "log §n"; identifiers such as `MF1`, `FS2` are entries of log §4 and §6, `D1–D9` of log §7). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** commit `b23b54cd36` with its working tree (2026-11-11). Fact log: `logs/review-1111-rev2-facts.md` (cited as "log §n"; identifiers such as `MF1`, `FS2` are entries of log §4, §6, §8 and §9, `D1–D9` of log §7). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. Formulations are not independent mechanisms: HJ is PA; the BSY criterion of FEL belongs to CTF; PCS, DR, PW-B are retired labels. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
@@ -40,7 +40,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | For `0<a<½`, `σ≥0`: the power tail `F_a` is `O(N^{σ+ε})` iff every zero has `Re ρ≤1−a+σ`; the tails converge for `a+w<½` and diverge for `a+w>½`; RH ⇔ every tail converges | [L*] (PT1–PT3) | the comb reads the zero width on one explicit sequence |
 | Over `ℚ(ζ₃)`: if zero-freeness of every `L(s,η)` in `Re s>β` off `1` gives every ray class character a sum with a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with the signal of `exp((s−c)²)H_η(s)/L(s,η)`, `a₁,a₂<β` common, for every `β>σ₀`, then `Θ≤σ₀`. The pole-cleared form of the step has a false premise for a nonprincipal character. With the probe's own correction the implication is a theorem for `7/8≤σ₀<1`, with the principal corrections for `2/3<σ₀<1` | [L*] (FS1–FS3, FS6) | in Lean the half-plane is one implication whose only premises are two estimates; at `σ₀=7/8` the two estimates are theorems [X] |
 | The correction is `H_η=L^S(6s−3,ψ₆η⁶)·E_η`, `ψ₆(π)=(π̄/\|π\|)⁶`, `E_η` absolutely convergent on `Re s>½`: its Euler product converges absolutely exactly on `Re s>2/3`, and it has infinitely many zeros in `½<Re s<2/3` | [D] (D3) from [L*] (PC2, PC3); [C] | the frame of the probe is unconditional right of `2/3`; below it the probe reads the zeros of `L(s,η)` modulo the zeros of a second family |
-| Exponent budget of the probe: boundary `7/8` at the published geometry `(17/48,23/48,1/6)`; no geometry reaches `7/8−1/2500` with a row count `≥21766/32589−10⁻⁴` in the bin `δ=79/204`; the floor bin summed trivially stops at `1−4/(5n)` (`13/15` at `n=6`); rows of nonnegative rescaled length stop at `1−1/n` (`5/6`), with the hybrid slot retained for every geometry; reflected rows through the same twists return the zero; a boundary `5/6−s` needs a bilinear row–column saving `s` taken before Cauchy–Schwarz (`¾`: `1/12`; `½`: `1/3`); order six has the least corner among the covers of odd order | [L*] (TB, LP, FG, MV, FC3) | the room inside the Gauss-sum probe is `[13/15,7/8]`; below `5/6` the class needs a signed estimate |
+| Exponent budget of the probe: boundary `7/8` at the published geometry `(17/48,23/48,1/6)`; no geometry reaches `7/8−1/2500` with a row count `≥21766/32589−10⁻⁴` in the bin `δ=79/204`; the floor bin summed trivially stops at `1−4/(5n)` (`13/15` at `n=6`); rows of nonnegative rescaled length stop at `1−1/n` (`5/6`), with the hybrid slot retained for every geometry; reflected rows through the same twists return the zero; a boundary `5/6−s` needs a bilinear row–column saving `s` taken before Cauchy–Schwarz (`¾`: `1/12`; `½`: `1/3`); among the orders `n≥6` the order six has the least corner of the designs without slots | [L*] (TB, LP, FG, MV, FC3) | the room inside the Gauss-sum probe is `[13/15,7/8]`; below `5/6` the class needs a signed estimate |
 | A generic mean square of the smoothed Möbius sums over the principal `n`-th-power twists of norm up to `Z^θ` holds exactly for `θ≥(n/(n−1))(2Θ−1)`; the minimum is zero iff RH; with `μ²` the range is `θ≥n/(n−1)`; the full Jacobi family is generic at every `θ` iff RH and GRH for the odd squarefree quadratic twists | [L*] (TF1–TF4) | a mean square over a family that contains its principal twists is a receiver of the strength of its half-plane |
 | `CombBezoutShift c ⇔ c≤0 ∧ RH`; one contact changed by `t` at `n₀`: Bézout ⇔ RH ∧ `2\|t\|/√n₀≤c`; tree of `p` at length `ℓ`: Bézout ⇔ RH ∧ `ℓ=log p`; along the price path of any `n₀≥2` Bézout on all packets is RH at every parameter | [L*] (AG1, AG2) | constant, contacts and tree lengths are forced; a path transports no sign |
 | RH ⇔ exactly one positive square of the intersection Gram on packets; the negative index counts the distinct right zeros for ζ with Dirichlet characters, for a Dedekind zeta function, for the class characters together, and for the degree-two Artin character of the splitting field of `X³−2`; the pairing of a primitive ray class character of a number field tends to its pole plane minus its zero sum | [L*] (AG3, AR1–AR3) | the Hodge index is the exact count of the right zeros, also for a character of a non-abelian extension |
@@ -49,7 +49,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | The clock regulator lies below Weil's form at every cutoff; `Λ(s)/Λ(s+N)` has at most one right zero ⇔ RH; the heat flow has at least two nonreal zeros at every small time unless RH; a form with one negative square in which the right zeros are a symmetric spectrum gives RH | [L*] (FF9, FF11) | no regulator of the corpus supplies a unit gap before the limit |
 | A bounded holomorphic Dirichlet series on `Re s>x` whose zeros are zeros of ξ has no zero; a Wiener expansion on a strip with an interior zero has nonsummable residues and admits no `ℓ^p` transport of its zeros to zeros of ζ | [L*] (CT1) | ξ has no bounded or Wiener constituent with a zero |
 | RH, or `R_polar<W`, or `R_polar=W` finite with every critical half-line ground state orthogonal to the polar source | [L*] (AH1) | the critical curve has one undecided case (B104) |
-| RH through height 67; RH through `windowHeight(a)` gives the sign on `[−a,a]`; there is `C` with: RH through `exp(exp(C·a))` gives the sign on `[−a,a]` for every `a≥1`; the constant of the proof exceeds `10⁸` | [L*] (VR1, VH1); [S] for the chain; [D] (D5) | each window is a finite-height statement at double-exponential cost; height 67 gives no window through this theorem |
+| RH through height 67; RH through `windowHeight(a)` gives the sign on `[−a,a]`; there is `C` with: RH through `exp(exp(C·a))` gives the sign on `[−a,a]` for every `a≥1`; the constant of the proof exceeds `10⁸` | [L*] (VR1, VH1); [D] (D5) | each window is a finite-height statement at double-exponential cost; height 67 gives no window through this theorem |
 | Displaced twisted second moment of `ζ·`(real polynomial of length `T^θ`), `θ<½`, bounded by its main terms plus a power saving; from these moments at `θ=13/50`: eventually `N_odd(U)≥κN_ζ(U)`, `κ=(1−log(18/5)/(13/10))/4≈0.0037`; simple critical zeros `≥(0.67250071−ε)N(T)` in the objects of the imported `Zeta23`; positivity cost of a pair-correlation certificate `≥1+3/π²` | [L*] (TM1, LV1, CN1, PC1) | the mean-value ladder is proved below the square root and gives a positive proportion natively; positivity alone does not certify 70% |
 | Universal horocycle exponent `sup=1−Θ/2`; with a nonzero Euler polynomial filter `sup=1−Θ∞/2`, never above `3/4`; ZAL ⇔ filtered rates approach `3/4`; AAL ⇔ no filter accelerates; zeros `Re ρ≤1−2δ` ⇔ every compact pulse decays like `e^{−(δ−ε)τ}` | [L*] (module summary, log §4.8; RD1) | on the horizon the scale is a relaxation rate; `δ=1/16` and the exponent `9/16` hold [X] |
 | The Goss zeta function of `𝔽_q[T]` at `z∈ℤ_p∖ℕ` has exactly the zeros `ρ_d∈𝔽_p((1/T))`, simple, of strictly decreasing norms: strict log-concavity of the coefficient norms and an ultrametric Newton polygon | [L*] (CG1) | one Riemann hypothesis in the corpus is proved with no sign; no corresponding norm is identified for ξ [F] |
@@ -112,7 +112,7 @@ Routes: RW, EWU, OWU, ACT, CHMD, TT (odd), SZ, RN, LI, HF, ACS, SRT. Programmes:
 
 Established:
 - RH ⇔ `W≥0` on every window [F]; RH ⇔ `Ψ` and `L=artanh r` bounded on every bounded precontact interval [L*] (PS1).
-- `RHVerifiedThrough(windowHeight a)` ⇒ the sign on `[−a,a]`; RH through height 67 [L*] (VR1); `∃C`: RH through `exp(exp(Ca))` ⇒ the sign on `[−a,a]`, `a≥1` [L*] (VH1), with `C>10⁸` [D] and the chain graded [S] by the frontier map.
+- `RHVerifiedThrough(windowHeight a)` ⇒ the sign on `[−a,a]`; RH through height 67 [L*] (VR1); `∃C`: RH through `exp(exp(Ca))` ⇒ the sign on `[−a,a]`, `a≥1` [L*] (VH1), with `C>10⁸` [D].
 - RH ⇔ every aperture admits a real weight system with nonnegative Weil form; ¬RH ⇔ some aperture admits none [L*] (FW1). For `2a<log 2` feasibility does not depend on the weights; `\|w(n)\|≤√n(log(1+1/r)+C)` with the pole plane; every `w(2)` with `√2\|w(2)−log 2\|≤1/5000` is feasible up to `a=181/500` [L*] (SA-j).
 - Certificates: for every `n≥2`, `ε>0` there is an aperture beyond which every feasible system has `\|λ(n)−Λ(n)\|≤ε` [L*] (FF10). Margins: best margin of a window `≤K exp(11A/2−πe^{2(A−2)})`; floors `(1/20000)/2^k` through `a_k`, `a_∞<0.3621` [KR]. The absolute edge cost of the primes reaches one at `c_*∈(½log 5,½log 6]`; below `2c<log 5` the kicks of `{2,3,4}` cost less than `991/1000` of the Lévy energy [F]/[KR].
 - Index in the aperture: immediately right of an aperture the index is the negative index plus the nullity [L*] (IA1); resonant apertures are locally finite [F].
@@ -122,7 +122,7 @@ Established:
 | | Obstacle | Strength |
 |---|---|---|
 | A1–A3, A6 | certified verification past 67, numeric heights, first-window membership, cone widths | — |
-| A142 | the constant of the verification rate and the integration of its chain | — |
+| A142 | a constant of ordinary size in the verification rate | — |
 | A140 | the sign on windows of half-width below `½log 5`, where the absolute cost of the primes is below one (unverified) | — |
 | A117 | end points of the feasible interval of `w(2)` on the first selective window | — |
 | B1, B2, B4, B5 | sign on every window; bounded oscillation of `Ψ` to contact; outer predictors; kick admission | RH |
@@ -133,7 +133,7 @@ Established:
 Routes: ACS, SRT, WL, HF, ZCG, PM (count door), HAT-C. Programmes: SOSZ, CDGeo, FFA, ShortIntervalPrimesInProgressions.
 
 Established:
-- The forms of the minimal face on logarithmic windows [L*] (MF1–MF5); width `≤σ` ⇔ the same with `Kp^σ` [L*] (MF1, MF2); two fixed primes on windows of radius `r√T` [L*] (MF6).
+- The forms of the minimal face on logarithmic windows, the absolute value among them [L*] (MF1–MF5, MF9); width `≤σ` ⇔ the same with `Kp^σ` [L*] (MF1, MF2); two fixed primes on windows of radius `r√T` [L*] (MF6).
 - Floors at every length give AAL [L*] (MF7); counter-configurations at every prescribed sub-logarithmic radius, also density-matched and at prime samples [L*] (SL2, MF8); one-sided floors on windows of one length have finite-stratum models [L*] (FF5).
 - Every interval `(x,x+x^θ]`, `θ=1−1/(16(14·10⁷+12))`, with `x` large contains a prime `p≡a (q)`, for every modulus and reduced class [L*] (SI1).
 - A global floor `−K` bounds the weighted absolute mass with sharp coefficient two [KR].
@@ -170,11 +170,11 @@ Established:
 - For `0≤θ<½`: the displaced twisted second moment with its main terms and an arbitrary power saving [L*] (TM1). With one mollifier of length `⌊U^{13/50}⌋` the dyadic detector law holds with the constant `18/5`, and eventually `N_odd(U)≥κN_ζ(U)`, `κ=(1−log(18/5)/(13/10))/4>0` [L*] (LV1).
 - Census: simple critical zeros `≥0.67250071` in the objects of the imported `Zeta23` [L*] (CN1); five consecutive simple critical ordinates at `≥N(T)/5000` starts [F]; every continuous integrable `g≥0` with transform `≤0` outside the unit band has positivity cost `≥1+3/π²` [L*] (PC1).
 - Depth: `Σ_{\|γ−t\|≤T}m_ρ·depth≤CT` [L*] (DS1). Finite symmetric relocation of zeros is invisible to quadratic tests of length `o(T²)` on fixed lines right of `½` [KR].
-- Cameras: a cluster of at most `N` zeros in an ordinate window `1/(10c log T)`, one of them within `E/log T` of the top, is visible at a lag `ν·A log T` with a signal bounded below, or a zero within depth `d` of the top lies within distance `g`; the exterior mass is `O(1/log T)` [L*] (CM1–CM4).
+- Cameras: a cluster of at most `N` zeros in an ordinate window `1/(10c log T)`, one of them within `E/log T` of the top, is visible at a lag `ν·A log T` with a signal bounded below, or a zero within depth `d` of the top lies within distance `g`; the exterior mass is `O(1/log T)` [L*] (CM1–CM4). Box-convolution cameras of order `n` pay a finite gapped exterior at `O((hg)^{−n})` times the Lorentzian mass [L*,S] (BC1, BC2); the camera branch has no pointwise control of the prime side at the selected centres [F].
 
 | | Obstacle | Strength |
 |---|---|---|
-| A18, A21 | twisted moments past the square root; logarithmic two-point Chowla (entropy decrement in Lean, no Chowla statement) [C] | — |
+| A18, A21 | twisted moments past the square root; logarithmic two-point Chowla [C]: in Lean the entropy decrement and, at infinitely many scales, `\|c(h)−avg_{p∈𝐏_k}c(ph)\|≤6ε` for the logarithmic correlations `c` of `λ` [L*,S] (LC3); the mean over the prime dilates is not bounded | — |
 | B57 | depth density `o(T)` | sub |
 | B58–B61 | `D_win`; cluster wall; Green moments at deep zeros; a detector past the last scale | sub |
 | B62, B66 | cofinal long moment; near-unit holomorphic budgets | RH |
@@ -251,7 +251,7 @@ Routes: BAG, TH, SRT, every route at all heights. Candidate: S3. Programmes: PTT
 
 Established:
 - Near-total `p^{−1/2}`-mass returns of the primes `≤y` need `log t>(log y)^{3/2−ε}` [F]; under `Θ≤b` heavy returns need `log t≥c·y^{1−b}` [L*] (SA-d), so `y^{1/8}` [X].
-- Under `Θ<1` the return transfer is equivalent to RH; RH gives it [L*] (FC2). Since `Θ≤7/8` [X], the transfer is equivalent to RH.
+- Under `Θ<1` the return transfer is equivalent to RH; RH gives it [L*] (FC2). With `Θ≤7/8` [X] the transfer is equivalent to RH.
 - For `½<σ<1` and a finite resonator the dyadic mean of `\|Rζ\|²` is the convolution diagonal [L*] (RM1); uniformly for resonators of length `T^κ`, `κ<2σ−1` [F].
 
 | | Obstacle | Strength |
@@ -270,7 +270,7 @@ Established:
 - Index: one positive square ⇔ RH; exact count of right zeros for ζ with Dirichlet characters, for a Dedekind zeta function through the ideals, for the class characters together with pole-plane weight `1/h`, and for the degree-two Artin character of `Gal(ℚ(∛2,ω)/ℚ)`, whose contacts are `(#{x∈𝔽_{p^m}:x³=2}−1)log p` [L*] (AG3, AR1–AR3). Below the first contact a discriminant above `(128π)^{r₁+r₂−1}(4π)^{r₂}` gives the inequality with margin `∫f²/5000` [L*] (AG4).
 - Sections and counts: planar restriction is an equality of ideals; the count on two graphs is the split norm and fails the parallelogram law; the system of the squares fails on its own comb; in a tower the base has weight `1/d` [KR]; the sections of the first `N` graphs in aligned boxes number the volume over `N!` [L*] (AG6).
 - Finite scale: RH ⇔ the sign of `𝔚_{3K+1}` on step packets ⇔ eventual floors `−ηΣc²` on every ratio window ⇔ a positive mass floor on each ratio window [L*] (AG5, HF1); the robust index counts the right zeros [L*] (HF2); the unshifted index lies between the aperture index and index plus nullity, with equality off resonances [L*] (HF3); the block error is explicit, with the ratios 4 and 7 written out, and no sign of `𝔚_4`, `𝔚_7` is proved [L*] (SP1–SP3).
-- Tails: the Laguerre tails per degree point tend to the paired Li coefficients [L*] (HF4); the power tails read the width (block S12) [L*] (PT1–PT3); the identification of their limit with `2ξ′/ξ(1−a)/(1−2a)` is graded [S] (PT4).
+- Tails: the Laguerre tails per degree point tend to the paired Li coefficients [L*] (HF4); the power tails read the width (block S12) [L*] (PT1–PT3); for `a+w<½` their limit is the zero pairing `2ξ′/ξ(1−a)/(1−2a)` [L*] (PT4).
 - Carrier: no adelic-invariant glued kernel has Weil's diagonal [KR].
 
 | | Obstacle | Strength |
@@ -312,7 +312,7 @@ Established ([L*] with log identifiers):
 
 | | Obstacle | Strength |
 |---|---|---|
-| A118 | the theorem [X] in the native graph: the full arithmetic Poisson series and its continuation; removal of the cube sum in the comparison; both savings uniformly in the character; reflection of the completed theta row; the sextic large sieve; the zero detector. A first target is the boundary `11/12` of the balanced design without slots | — (just work) |
+| A118 | the theorem [X] in the native graph: the full arithmetic Poisson series and its continuation; removal of the cube sum in the comparison; both savings uniformly in the character; reflection of the completed theta row; the sextic large sieve; the zero detector. In Lean on the direct side: the quadratic sieve (QS1) and the second Poisson reflection of a pair of rows, separated exactly over the residues modulo 4 and bounded by the geometric mean of two child-row energies with a loss `(H·N𝔟₀)^ε` [L*] (SR1). A first target is the boundary `11/12` of the balanced design without slots | — (just work) |
 | A138 | the corollaries of `Θ≤7/8` as unconditional statements (summary §2.1) | — (just work) |
 | A139 | the identity `H_η=L^S(6s−3,ψ₆η⁶)E_η` and the absolute convergence of `E_η` on `Re s>½` (unverified) | — |
 | B159 | a rung `κ≥4/3`: a power saving of the contacts on the integers between `m` and `m^{2κ}`, uniform in the height, that fails for the Liouville twist | a half-plane below `7/8` |
@@ -593,7 +593,7 @@ Each needs its source-to-receiver step first (B81). Dormant pending a source mec
 | SOSZ ScaleLocality | logarithmic and `√T` windows; exceptions; upper side; counts; local moments; finite top layers; counter-configurations at every sub-logarithmic radius [L*] | A58 | B130, B144 |
 | SA (selective arithmetic) | trivial aperture in both aspects; feasible sets; the cancellation and depth ladder; exceptional heights with power saving; first conductor rung; three rungs under a half-plane; deep zeros at ζ density with positivity at a fixed aperture [L*] | A117 | B159, B156 |
 | FCT (family continuation) | the family step with reciprocal kernels; principal and probe corrections; the principal row as an Euler product; arithmetic of the Poisson coefficients; signal as a Möbius sum; signal exponent = abscissa = level; the budget with vertex, floors, orders, corners, signed Gram and reflection invariants; the law of a twist family [L*] | A118, A139 | B161, B174, B175, B184 |
-| MMD | cubic Gauss arithmetic, the cube identity, the cubic residue with Gauss coefficients; the quadratic large sieve over `ℤ[ω]` [L*]/[F] | A33, A118 | — |
+| MMD | cubic Gauss arithmetic, the cube identity, the cubic residue with Gauss coefficients; the quadratic large sieve over `ℤ[ω]`; the second Poisson reflection of a pair of rows as a separated identity with a Cauchy–Schwarz transfer to child energies [L*]/[F] (QS1, SR1) | A33, A118 | — |
 | CTZ (constituents) | none with a zero in the bounded and the Wiener class; nonsummable residues; no `ℓ^p` transport; sizes on a circle [L*] | — | — |
 | HFP (Hodge theory of a fixed part) | mass floors on ratio windows; robust index; unshifted index; Li tails [L*] | A143 | B152, B149 |
 | AGZ | forced data; price paths; step packets with explicit block error; exact index for Hecke characters, Dedekind zeta functions, class characters and one Artin character; discriminant below first contact; sections in boxes; power tails [L*] | A141, A143 | B149, B169, B88, B87 |
@@ -611,8 +611,8 @@ Each needs its source-to-receiver step first (B81). Dormant pending a source mec
 | AHD / CACT | threshold identities, pole channel, ground states, classification; positivity below the eighth root [L*] | A9, A13 | B104, B123 |
 | MZF / CDG | twisted moments below the square root; the Levinson gate with a positive critical proportion; centred cameras; mollifier trap [L*]/[F] | A18 | B62, B57, B59 |
 | Census (IGP, TTPC) | `0.67250071`; positivity cost `≥1+3/π²` [L*] | — | B150, B57 |
-| VHR / TCS | verified-height rungs; height 67; the double-exponential window height [L*] ([S] for its chain); rank and degree entries [F] | A1–A5, A142 | — |
-| LogarithmicChowla | logarithmic averages, limit functionals, entropy decrement [L*] (module summaries) | A21 | — |
+| VHR / TCS | verified-height rungs; height 67; the double-exponential window height [L*]; rank and degree entries [F] | A1–A5, A142 | — |
+| LogarithmicChowla | logarithmic averages, limit functionals, entropy decrement; the correlation `c(h)` of `λ` is within `6ε` of its mean over the prime dilates `c(ph)` at infinitely many scales [L*,S] (LC3) | A21 | — |
 
 ## 6. Decisive wall per route
 
