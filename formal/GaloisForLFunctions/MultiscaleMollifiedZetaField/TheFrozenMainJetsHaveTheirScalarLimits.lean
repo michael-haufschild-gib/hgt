@@ -25,7 +25,9 @@ private theorem tendsto_zero_mul_bounded {ι : Type*} {l : Filter ι}
   let δ := ε / (B + 1)
   have hδ : 0 < δ := by dsimp only [δ]; positivity
   have hδB : δ * B < ε := by
-    have he : δ * (B + 1) = ε := by dsimp only [δ]; field_simp
+    have he : δ * (B + 1) = ε := by
+      dsimp only [δ]
+      field_simp [show B + 1 ≠ 0 by positivity]
     nlinarith only [he, hδ]
   filter_upwards [hf.eventually (Metric.ball_mem_nhds 0 hδ), hg] with i hi hgi
   have hfi : |f i| < δ := by simpa only [mem_ball, Real.dist_eq, sub_zero] using hi
@@ -118,7 +120,8 @@ theorem tendsto_normalizedFrozenMainJet_zero_error (P : ℝ[X]) (hP : P.eval 0 =
   field_simp [hu₀.ne', hgi.2.2.1.ne']
   ring
 
-private theorem tendsto_pole_explicit_jets {κ : ℝ} (hκ : κ ≠ 0)
+/-- The explicit first and second scaled pole jets converge along every diverging scale. -/
+theorem tendsto_pole_explicit_jets {κ : ℝ} (hκ : κ ≠ 0)
     {ι : Type*} {l : Filter ι} {L u : ι → ℝ} {u₀ : ℝ}
     (hL : Tendsto L l atTop) (hu : Tendsto u l (𝓝 u₀)) (hu₀ : u₀ ≠ 0) :
     Tendsto (fun i => scaledZetaPoleFirstJet (L i) κ (u i)) l (𝓝 (-1 / (κ * u₀ ^ 2))) ∧
@@ -200,7 +203,7 @@ theorem tendsto_normalizedFrozenMainJet_derivative_errors (P : ℝ[X]) (hP : P.e
     simp only [zero_add] at hsum
     apply hsum.congr'
     filter_upwards [hvalid, hgeom] with i hi hgi
-    rw [normalizedFrozenMainJet_one_eq hi.1 P (u i) hi.2.1 hi.2.2.1 hi.2.2.2.1 hi.2.2.2.2.le]
+    rw [normalizedFrozenMainJet_one_eq hi.1 P.eval (u i) hi.2.1 hi.2.2.1 hi.2.2.2.1 hi.2.2.2.2.le]
     dsimp only [frozenMainProductFirst, scalarTripleFirstJet, frozenMainScalarFirst]
     simp only [add_zero, mul_zero, pow_zero, pow_one, one_mul]
     field_simp [hu₀.ne', hgi.2.2.1.ne']
@@ -218,7 +221,7 @@ theorem tendsto_normalizedFrozenMainJet_derivative_errors (P : ℝ[X]) (hP : P.e
     simp only [mul_zero, zero_add] at hsum
     apply hsum.congr'
     filter_upwards [hvalid, hgeom] with i hi hgi
-    rw [normalizedFrozenMainJet_two_eq hi.1 P (u i) hi.2.1 hi.2.2.1 hi.2.2.2.1 hi.2.2.2.2]
+    rw [normalizedFrozenMainJet_two_eq hi.1 P.eval (u i) hi.2.1 hi.2.2.1 hi.2.2.2.1 hi.2.2.2.2]
     dsimp only [frozenMainProductSecond, scalarTripleSecondJet, frozenMainScalarSecond]
     simp only [add_zero, mul_zero, pow_zero, pow_one, one_mul]
     field_simp [hu₀.ne', hgi.2.2.1.ne']
@@ -280,5 +283,32 @@ theorem tendsto_normalizedThreeProfileMain_error
   funext i
   dsimp only [normalizedThreeProfileMain, threeProfileDetectorScalar]
   ring
+
+/-- The actual matched linear detector main term has the selected three-profile scalar limit. -/
+theorem tendsto_detectorThreeMomentMain_error
+    {ι : Type*} {l : Filter ι} {n : ι → ℕ} (hn : Tendsto n l atTop)
+    {p q η d lam M : ι → ℝ} (hp : Tendsto (fun i => p i - η i) l atTop)
+    {θ R B : ℝ} (hθ : 0 < θ) (hR : 0 < R)
+    (hu : Tendsto (fun i => d i * Real.log (n i)) l (𝓝 (R * θ)))
+    (hlam : Tendsto (fun i => lam i * Real.log (n i)) l (𝓝 θ)) (hB : 0 ≤ B)
+    (hτa : Tendsto (fun i => Real.log ((p i - η i) / (2 * Real.pi)) / Real.log (n i)) l (𝓝 (1 / θ)))
+    (hτb : Tendsto (fun i => Real.log ((q i + η i) / (2 * Real.pi)) / Real.log (n i)) l (𝓝 (1 / θ)))
+    (hgeom : ∀ᶠ i in l, 0 < η i ∧ p i ≤ q i ∧ 0 < M i ∧
+      (q i - p i + 2 * η i) / M i ≤ B) :
+    Tendsto (fun i => (detectorThreeMomentMain (p i) (q i) (η i) (n i)
+      (linearDetectorWeights (n i) (d i)) (d i) (lam i) -
+      (∫ t, blockWindow (p i) (q i) (η i) t) * threeProfileDetectorScalar θ R) / M i) l (𝓝 0) := by
+  have hL : Tendsto (fun i => Real.log (n i : ℝ)) l atTop :=
+    Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp hn)
+  have hd : Tendsto d l (𝓝 0) := by
+    apply (hu.div_atTop hL).congr'
+    filter_upwards [hL.eventually_gt_atTop 0] with i hi
+    exact mul_div_cancel_right₀ (d i) hi.ne'
+  apply (tendsto_normalizedThreeProfileMain_error hn hp hθ hR hu hlam hB hτa hτb hgeom).congr'
+  filter_upwards [hn.eventually_ge_atTop 2, hgeom, hp.eventually_ge_atTop 4,
+    hu.eventually (Ioi_mem_nhds (mul_pos hR hθ)), hL.eventually_gt_atTop 0,
+    hd.eventually (Iio_mem_nhds (by norm_num : (0 : ℝ) < 1 / 20))] with i hni hgi hpi hui hLi hdi
+  have hdp : 0 < d i := (mul_pos_iff_of_pos_right hLi).mp hui
+  rw [detectorThreeMomentMain_eq_normalizedProfiles hgi.1 hpi (by omega : 1 < n i) hdp hdi.le]
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

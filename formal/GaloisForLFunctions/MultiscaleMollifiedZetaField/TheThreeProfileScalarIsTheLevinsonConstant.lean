@@ -66,7 +66,7 @@ theorem threeProfileDetectorScalar_selected :
   simp (disch := (apply Continuous.intervalIntegrable; fun_prop)) only
     [intervalIntegral.integral_add, intervalIntegral.integral_sub,
       intervalIntegral.integral_const_mul, intervalIntegral.integral_mul_const,
-      intervalIntegral.integral_neg, intervalIntegral.integral_pow, intervalIntegral.integral_const]
+      intervalIntegral.integral_neg, intervalIntegral.integral_const]
   norm_num
   ring
 

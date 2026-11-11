@@ -440,8 +440,17 @@ cusp family (`completedT_canonical_divisor_reflection`). Its first-reflection
 energy preserves inactive-prime densities and the exact exceptional branch
 mass (`completedT_canonical_energy`, checked). The fixed cusp coefficients
 satisfy the sharp squarefree–cube bound
-`fixedCuspPeriodicArray_full_bound` (checked). The second-pass character-sum
-estimate and uniform mean-square transfer remain open.
+`fixedCuspPeriodicArray_full_bound` (checked).
+
+Schwartz Poisson summation on the actual Eisenstein lattice gives exact
+prime-character reflection, with a unit Gauss phase and signed coprimality
+divisor terms (`prime_row_radial_poisson`, `prime_row_masked_radial_poisson`).
+Uniform Fourier decay gives Pólya–Vinogradov at every positive radial scale
+(`prime_row_polya_vinogradov`). Distinct squarefree prime-character rows satisfy
+the finite-ball bound `C (M + N · #columns) Σ|a|²`
+(`primeSubsetRow_initial_finite_bound`, checked), where each column conductor
+has norm at most `N`. The sharp quadratic sieve bootstrap and the complete
+second-pass mean-square transfer remain open.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

@@ -85,16 +85,22 @@ theorem realTwistedMomentMainJet_affine {p q η : ℝ} (hη : 0 < η) (hp : 4 �
   have hf (v : ℕ → ℝ) : ContDiffAt ℂ j (holomorphicTwistedMomentMain p q η N v) (d : ℂ) :=
     ((differentiableOn_holomorphicTwistedMomentMain hη hp N v hd hd20).analyticOnNhd
       isOpen_ball (d : ℂ) (mem_ball_self hd)).contDiffAt
-  have h0 := (hf w).const_mul ((1 - α : ℝ) : ℂ)
-  have h1 := (hf s).const_mul ((α ^ 2 - α : ℝ) : ℂ)
-  have h2 := (hf (fun n => w n + s n)).const_mul (α : ℂ)
+  have h0 : ContDiffAt ℂ j (fun z => ((1 - α : ℝ) : ℂ) *
+      holomorphicTwistedMomentMain p q η N w z) (d : ℂ) := contDiffAt_const.mul (hf w)
+  have h1 : ContDiffAt ℂ j (fun z => ((α ^ 2 - α : ℝ) : ℂ) *
+      holomorphicTwistedMomentMain p q η N s z) (d : ℂ) := contDiffAt_const.mul (hf s)
+  have h2 : ContDiffAt ℂ j (fun z => (α : ℂ) *
+      holomorphicTwistedMomentMain p q η N (fun n => w n + s n) z) (d : ℂ) :=
+    contDiffAt_const.mul (hf (fun n => w n + s n))
   have he : holomorphicTwistedMomentMain p q η N (fun n => w n + α * s n) =
       (fun z => ((1 - α : ℝ) : ℂ) * holomorphicTwistedMomentMain p q η N w z) +
         (fun z => ((α ^ 2 - α : ℝ) : ℂ) * holomorphicTwistedMomentMain p q η N s z) +
         (fun z => (α : ℂ) * holomorphicTwistedMomentMain p q η N (fun n => w n + s n) z) :=
     funext (holomorphicTwistedMomentMain_affine p q η N w s α)
   unfold realTwistedMomentMainJet
-  rw [he, iteratedDeriv_add (h0.add h1) h2, iteratedDeriv_add h0 h1]
+  rw [he]
+  simp only [Pi.add_def]
+  rw [iteratedDeriv_fun_add (h0.add h1) h2, iteratedDeriv_fun_add h0 h1]
   simp only [iteratedDeriv_const_mul_field, Complex.add_re, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
 
@@ -173,7 +179,7 @@ theorem moebiusProfileWeights_add (P Q : ℝ[X]) (N : ℕ) (v : ℝ) :
       fun n => moebiusProfileWeights P.eval N v n + moebiusProfileWeights Q.eval N v n := by
   funext n
   unfold moebiusProfileWeights shiftedProfileWeight
-  rw [Polynomial.eval_add]
+  simp only [Polynomial.eval_add]
   ring
 
 /-- The actual linear mollifier has the same main jets as the polynomial profile `X`. -/

@@ -59,9 +59,9 @@ error jet vanishes. The actual chi jets converge uniformly across moving
 blocks whose endpoint conductor ratios converge. Differentiation under
 the taper and its integrated jet limits are formalized; only bounded
 relative support length is required. Exact first and second product
-formulas for the actual normalized main term are formalized. Their common
-scalar limits and the three-profile scalar identification remain under
-formalization.
+formulas for the actual normalized main term are formalized. The exact
+three-profile scalar equals the Levinson constant at `θ=13/50, R=13/10`.
+The common scalar limits remain under formalization.
 
 The final obligations are the dyadic law for one fixed mollifier and its
 insertion into `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw`
@@ -82,8 +82,9 @@ Their checks and the block assembly remain required.
 For `R=13/10`, exact integration of the linear scalar proves
 `c(13/50)<18/5<exp(13/10)`, giving a strictly positive gate margin.
 `TheShortLevinsonMollifierHasAPositiveScalarMargin` formalizes these bounds
-using rational estimates for `exp(13/20)`. Identification with the actual
-three-profile main scalar remains under formalization.
+using rational estimates for `exp(13/20)`.
+`TheThreeProfileScalarIsTheLevinsonConstant` proves the exact identification
+by integrating the polynomial arithmetic jets.
 
 The receiver fixes coefficients before choosing its nearby abscissa.
 Using coefficients at `d_U=R/log U` instead of `d=R/log T₂` changes each

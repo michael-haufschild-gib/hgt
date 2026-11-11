@@ -30441,4 +30441,4293 @@ theorem prime_row_masked_polya_vinogradov :
 
 end SchwartzPlanePoisson
 
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- A squarefree row indexed by its selected prime coordinates. -/
+def primeSubsetRow {ι : Type*} (p : ι → O)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) (z : O) : ℂ :=
+  ∏ i ∈ S, χ i (Ideal.Quotient.mk (Ideal.span {p i}) z)
+
+lemma primeSubsetRow_union {ι : Type*} [DecidableEq ι] (p : ι → O)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι)
+    (hST : Disjoint S T) (z : O) :
+    primeSubsetRow p χ (S ∪ T) z = primeSubsetRow p χ S z * primeSubsetRow p χ T z :=
+  Finset.prod_union hST
+
+lemma primeSubsetRow_diagonal {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) (z : O) :
+    star (primeSubsetRow p χ S z) * primeSubsetRow p χ S z = primeCoprimeMask p S z := by
+  classical
+  simp only [primeSubsetRow, star_prod, ← Finset.prod_mul_distrib, primeCoprimeMask]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [MulChar.star_apply', ← MulChar.mul_apply, inv_mul_cancel]
+  by_cases h : p i ∣ z
+  · rw [Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr h),
+      MulChar.map_zero, if_pos h]
+    ring
+  · have hn : Ideal.Quotient.mk (Ideal.span {p i}) z ≠ 0 := by
+      intro he
+      exact h (Ideal.mem_span_singleton.mp (Ideal.Quotient.eq_zero_iff_mem.mp he))
+    rw [MulChar.one_apply (isUnit_iff_ne_zero.mpr hn), if_neg h]
+    ring
+
+lemma primeSubsetRow_pair_kernel {ι : Type*} [DecidableEq ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι) (z : O) :
+    star (primeSubsetRow p χ S z) * primeSubsetRow p χ T z =
+      primeCoprimeMask p (S ∩ T) z *
+        (star (primeSubsetRow p χ (S \ T) z) * primeSubsetRow p χ (T \ S) z) := by
+  have hS : S = (S \ T) ∪ (S ∩ T) := by
+    ext i
+    simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_inter]
+    tauto
+  have hT : T = (T \ S) ∪ (S ∩ T) := by
+    ext i
+    simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_inter]
+    tauto
+  have hdS : Disjoint (S \ T) (S ∩ T) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_inter.mp hj).2
+  have hdT : Disjoint (T \ S) (S ∩ T) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_inter.mp hj).1
+  have hs := congrArg (fun A => primeSubsetRow p χ A z) hS
+  have ht := congrArg (fun A => primeSubsetRow p χ A z) hT
+  rw [primeSubsetRow_union p χ _ _ hdS] at hs
+  rw [primeSubsetRow_union p χ _ _ hdT] at ht
+  rw [hs, ht, star_mul, ← primeSubsetRow_diagonal p χ (S ∩ T) z]
+  ring
+
+def activePrimeRowCharacter {ι : Type*} [DecidableEq ι] (p : ι → O)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι)
+    (i : ↥((S \ T) ∪ (T \ S))) : MulChar (O ⧸ Ideal.span {p i.val}) ℂ :=
+  if i.val ∈ S then (χ i.val)⁻¹ else χ i.val
+
+lemma activePrimeRowCharacter_ne_one {ι : Type*} [DecidableEq ι] (p : ι → O)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+    (S T : Finset ι) (i : ↥((S \ T) ∪ (T \ S))) :
+    activePrimeRowCharacter p χ S T i ≠ 1 := by
+  dsimp only [activePrimeRowCharacter]
+  split_ifs
+  · intro h
+    apply hχ i.val
+    simpa only [inv_inv, inv_one] using congrArg Inv.inv h
+  · exact hχ i.val
+
+/-- Common primes become density masks; differing primes form one primitive character row. -/
+lemma primeSubsetRow_pair_active {ι : Type*} [DecidableEq ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι) (z : O) :
+    star (primeSubsetRow p χ S z) * primeSubsetRow p χ T z =
+      primeCoprimeMask p (S ∩ T) z *
+        primeCuspRowCharacter (fun i : ↥((S \ T) ∪ (T \ S)) => p i.val)
+          (activePrimeRowCharacter p χ S T) z := by
+  classical
+  rw [primeSubsetRow_pair_kernel]
+  congr 1
+  have hd : Disjoint (S \ T) (T \ S) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_sdiff.mp hj).1
+  change _ = ∏ i : ↥((S \ T) ∪ (T \ S)),
+    (if i.val ∈ S then (χ i.val)⁻¹ else χ i.val)
+      (Ideal.Quotient.mk (Ideal.span {p i.val}) z)
+  have he (i : ↥((S \ T) ∪ (T \ S))) :
+      (if i.val ∈ S then (χ i.val)⁻¹ else χ i.val)
+        (Ideal.Quotient.mk (Ideal.span {p i.val}) z) =
+      if i.val ∈ S then star (χ i.val (Ideal.Quotient.mk (Ideal.span {p i.val}) z))
+        else χ i.val (Ideal.Quotient.mk (Ideal.span {p i.val}) z) := by
+    split_ifs <;> simp only [MulChar.star_apply']
+  rw [Finset.prod_congr rfl (fun i _ => he i)]
+  have hc := Finset.prod_coe_sort (s := (S \ T) ∪ (T \ S))
+    (f := fun i : ι => if i ∈ S then star (χ i (Ideal.Quotient.mk (Ideal.span {p i}) z))
+      else χ i (Ideal.Quotient.mk (Ideal.span {p i}) z))
+  rw [hc, Finset.prod_union hd]
+  simp only [primeSubsetRow, star_prod]
+  congr 1
+  · apply Finset.prod_congr rfl
+    intro i hi
+    rw [if_pos (Finset.mem_sdiff.mp hi).1]
+  · apply Finset.prod_congr rfl
+    intro i hi
+    rw [if_neg (Finset.mem_sdiff.mp hi).2]
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- Norm of the squarefree conductor selected by a finite support. -/
+def primeSubsetNorm {ι : Type*} (p : ι → O) (S : Finset ι) : ℝ :=
+  ‖ringComplex (∏ i ∈ S, p i)‖ ^ 2
+
+lemma primeSubsetNorm_nonneg {ι : Type*} (p : ι → O) (S : Finset ι) :
+    0 ≤ primeSubsetNorm p S := sq_nonneg _
+
+lemma primeSubsetNorm_prod {ι : Type*} (p : ι → O) (S : Finset ι) :
+    primeSubsetNorm p S = ∏ i ∈ S, ‖ringComplex (p i)‖ ^ 2 := by
+  rw [primeSubsetNorm, map_prod, norm_prod, Finset.prod_pow]
+
+lemma primeSubsetNorm_union {ι : Type*} [DecidableEq ι] (p : ι → O)
+    (S T : Finset ι) (hST : Disjoint S T) :
+    primeSubsetNorm p (S ∪ T) = primeSubsetNorm p S * primeSubsetNorm p T := by
+  simp only [primeSubsetNorm_prod, Finset.prod_union hST]
+
+lemma primeSubsetNorm_pair {ι : Type*} [DecidableEq ι] (p : ι → O) (S T : Finset ι) :
+    primeSubsetNorm p ((S \ T) ∪ (T \ S)) * primeSubsetNorm p (S ∩ T) ^ 2 =
+      primeSubsetNorm p S * primeSubsetNorm p T := by
+  have hS : S = (S \ T) ∪ (S ∩ T) := by
+    ext i
+    simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_inter]
+    tauto
+  have hT : T = (T \ S) ∪ (S ∩ T) := by
+    ext i
+    simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_inter]
+    tauto
+  have hdS : Disjoint (S \ T) (S ∩ T) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_inter.mp hj).2
+  have hdT : Disjoint (T \ S) (S ∩ T) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_inter.mp hj).1
+  have hd : Disjoint (S \ T) (T \ S) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hj
+    exact (Finset.mem_sdiff.mp hi).2 (Finset.mem_sdiff.mp hj).1
+  have hs := congrArg (primeSubsetNorm p) hS
+  have ht := congrArg (primeSubsetNorm p) hT
+  rw [primeSubsetNorm_union p _ _ hdS] at hs
+  rw [primeSubsetNorm_union p _ _ hdT] at ht
+  rw [primeSubsetNorm_union p _ _ hd, hs, ht]
+  ring
+
+lemma two_pow_card_le_primeSubsetNorm {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (S : Finset ι) :
+    (2 : ℝ) ^ S.card ≤ primeSubsetNorm p S := by
+  have hn (i : ι) : (2 : ℝ) ≤ ‖ringComplex (p i)‖ ^ 2 := by
+    rw [ringComplex_norm_sq_eq_absNorm_span]
+    have h0 : Ideal.absNorm (Ideal.span {p i}) ≠ 0 := by
+      rw [ne_eq, Ideal.absNorm_eq_zero_iff]
+      exact NeZero.ne _
+    have h1 : Ideal.absNorm (Ideal.span {p i}) ≠ 1 := by
+      rw [ne_eq, Ideal.absNorm_eq_one_iff]
+      exact (inferInstance : (Ideal.span {p i}).IsMaximal).ne_top
+    exact_mod_cast (show 2 ≤ Ideal.absNorm (Ideal.span {p i}) by omega)
+  rw [primeSubsetNorm_prod]
+  calc
+    _ = ∏ _i ∈ S, (2 : ℝ) := by simp
+    _ ≤ _ := Finset.prod_le_prod (fun _ _ => by norm_num) (fun i _ => hn i)
+
+/-- Common-prime divisor cost is absorbed by the two original conductor norms. -/
+lemma prime_gram_divisor_conductor_bound {ι : Type*} [DecidableEq ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (S T : Finset ι)
+    (N : ℝ) (hN : 0 ≤ N) (hS : primeSubsetNorm p S ≤ N) (hT : primeSubsetNorm p T ≤ N) :
+    (2 : ℝ) ^ (S ∩ T).card *
+      ‖ringComplex (∏ i : ↥((S \ T) ∪ (T \ S)), p i.val)‖ ≤ N := by
+  rw [Finset.prod_coe_sort]
+  have hpair := primeSubsetNorm_pair p S T
+  have hnorm : 0 ≤ ‖ringComplex (∏ i ∈ (S \ T) ∪ (T \ S), p i)‖ := norm_nonneg _
+  have hcommon := primeSubsetNorm_nonneg p (S ∩ T)
+  apply (mul_le_mul_of_nonneg_right (two_pow_card_le_primeSubsetNorm p (S ∩ T)) hnorm).trans
+  apply (sq_le_sq₀ (mul_nonneg hcommon hnorm) hN).mp
+  calc
+    _ = primeSubsetNorm p S * primeSubsetNorm p T := by
+      rw [mul_pow]
+      change primeSubsetNorm p (S ∩ T) ^ 2 * primeSubsetNorm p ((S \ T) ∪ (T \ S)) = _
+      rw [mul_comm, hpair]
+    _ ≤ N * N := mul_le_mul hS hT (primeSubsetNorm_nonneg p T) hN
+    _ = N ^ 2 := by ring
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+open scoped SchwartzMap
+
+/-- Distinct squarefree rows have scale-uniform off-diagonal Gram bounds. -/
+theorem primeSubsetRow_gram_offdiagonal :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (S T : Finset ι), S ≠ T → ∀ (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+        ‖∑' z : O, (star (primeSubsetRow p χ S z) * primeSubsetRow p χ T z) *
+          W (‖ringComplex z‖ ^ 2 / Y)‖ ≤
+          (2 : ℝ) ^ (S ∩ T).card *
+            ((C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) *
+              ‖ringComplex (∏ i : ↥((S \ T) ∪ (T \ S)), p i.val)‖) := by
+  obtain ⟨s, C, hC, hPV⟩ := prime_row_masked_polya_vinogradov
+  refine ⟨s, C, hC, ?_⟩
+  intro ι _ p hp _ hinj χ hχ S T hST W Y hY
+  classical
+  have hnonempty : ((S \ T) ∪ (T \ S)).Nonempty := by
+    have hn : ¬ ∀ i, i ∈ S ↔ i ∈ T := fun h => hST (Finset.ext h)
+    obtain ⟨i, hi⟩ := not_forall.mp hn
+    refine ⟨i, ?_⟩
+    simp only [Finset.mem_union, Finset.mem_sdiff]
+    tauto
+  letI : Nonempty ↥((S \ T) ∪ (T \ S)) := hnonempty.to_subtype
+  have hcop : Pairwise (Function.onFun IsCoprime p) := by
+    intro i j hij
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp
+      (Ideal.isCoprime_of_isMaximal (hinj.ne hij))
+  simp_rw [primeSubsetRow_pair_active]
+  exact hPV (fun i : ↥((S \ T) ∪ (T \ S)) => p i.val) (fun i => hp i.val)
+    (hinj.comp Subtype.val_injective) (activePrimeRowCharacter p χ S T)
+    (activePrimeRowCharacter_ne_one p χ hχ S T) p hp hcop (S ∩ T) W Y hY
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+def diagonalControl (W : 𝓢(ℝ, ℂ)) : ℝ :=
+  16 * (1 + Real.pi) ^ 2 *
+    (Finset.Iic (2, 0)).sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+
+theorem diagonalControl_nonneg (W : 𝓢(ℝ, ℂ)) : 0 ≤ diagonalControl W := by
+  unfold diagonalControl
+  positivity
+
+theorem radial_weight_lattice_bound (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 1 ≤ M) :
+    (∑' z : O, ‖W (‖ringComplex z‖ ^ 2 / M)‖) ≤ diagonalControl W * M := by
+  have hMp : 0 < M := by linarith
+  let t := M⁻¹
+  have ht : 0 < t := inv_pos.mpr hMp
+  have ht1 : t ≤ 1 := (inv_le_one₀ hMp).mpr hM
+  let B := 4 * (Finset.Iic (2, 0)).sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have hp (z : O) : ‖W (‖ringComplex z‖ ^ 2 / M)‖ ≤
+      B * ((1 + t * ‖ringComplex z‖ ^ 2) ^ 2)⁻¹ := by
+    have hq : 0 ≤ ‖ringComplex z‖ ^ 2 / M := div_nonneg (sq_nonneg _) hMp.le
+    have hh := SchwartzMap.one_add_le_sup_seminorm_apply (𝕜 := ℝ)
+      (m := (2, 0)) (k := 2) (n := 0) le_rfl le_rfl W (‖ringComplex z‖ ^ 2 / M)
+    simp only [norm_iteratedFDeriv_zero, Real.norm_of_nonneg hq] at hh
+    have hsf : (fun m : ℕ × ℕ => SchwartzMap.seminorm ℝ m.1 m.2) =
+        schwartzSeminormFamily ℝ ℝ ℂ := by
+      funext m
+      rcases m with ⟨k, n⟩
+      rfl
+    rw [hsf] at hh
+    norm_num only [show (2 : ℝ) ^ 2 = 4 by norm_num] at hh
+    change (1 + ‖ringComplex z‖ ^ 2 / M) ^ 2 * ‖W (‖ringComplex z‖ ^ 2 / M)‖ ≤ B at hh
+    rw [← div_eq_mul_inv]
+    apply (le_div_iff₀ (by positivity)).mpr
+    simpa only [t, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hh
+  have hs : Summable (fun z : O => ‖W (‖ringComplex z‖ ^ 2 / M)‖) := by
+    simpa only [scaledRadialTest_apply] using
+      actual_eisenstein_summable_norm (scaledRadialTest W M hMp)
+  have hb := hs.tsum_le_tsum hp ((scaled_eisenstein_cauchy_summable t ht).mul_left B)
+  rw [tsum_mul_left] at hb
+  have hsmall := scaled_eisenstein_cauchy_small t ht ht1
+  have hmul := mul_le_mul_of_nonneg_left hb ht.le
+  have hcontrol := mul_le_mul_of_nonneg_left hsmall hB
+  have hfinal : t * (∑' z : O, ‖W (‖ringComplex z‖ ^ 2 / M)‖) ≤ diagonalControl W := by
+    unfold diagonalControl
+    dsimp [B] at hcontrol hmul
+    nlinarith
+  have hh := mul_le_mul_of_nonneg_left hfinal hMp.le
+  simpa only [t, ← mul_assoc, mul_inv_cancel₀ hMp.ne', one_mul, mul_comm] using hh
+
+lemma primeSubsetRow_norm_le_one {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι) (z : O) :
+    ‖primeSubsetRow p χ S z‖ ≤ 1 := by
+  rw [primeSubsetRow, norm_prod]
+  exact Finset.prod_le_one (fun _ _ => norm_nonneg _)
+    (fun i _ => finiteMulChar_norm_le_one (χ i) _)
+
+lemma primeSubsetRow_pair_summable {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S T : Finset ι)
+    (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
+    Summable (fun z : O => (star (primeSubsetRow p χ S z) * primeSubsetRow p χ T z) *
+      W (‖ringComplex z‖ ^ 2 / M)) := by
+  have hW : Summable (fun z : O => ‖W (‖ringComplex z‖ ^ 2 / M)‖) := by
+    simpa only [scaledRadialTest_apply] using
+      actual_eisenstein_summable_norm (scaledRadialTest W M hM)
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) _ hW
+  intro z
+  rw [norm_mul, norm_mul, norm_star]
+  exact mul_le_of_le_one_left (norm_nonneg _)
+    ((mul_le_mul (primeSubsetRow_norm_le_one p χ S z) (primeSubsetRow_norm_le_one p χ T z)
+      (norm_nonneg _) zero_le_one).trans_eq (one_mul 1))
+
+lemma primeSubsetRow_gram_diagonal {ι : Type*} (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (S : Finset ι)
+    (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 1 ≤ M) :
+    ‖∑' z : O, (star (primeSubsetRow p χ S z) * primeSubsetRow p χ S z) *
+      W (‖ringComplex z‖ ^ 2 / M)‖ ≤ diagonalControl W * M := by
+  have hMp : 0 < M := lt_of_lt_of_le zero_lt_one hM
+  have hs := (primeSubsetRow_pair_summable p χ S S W M hMp).norm
+  have hW : Summable (fun z : O => ‖W (‖ringComplex z‖ ^ 2 / M)‖) := by
+    simpa only [scaledRadialTest_apply] using
+      actual_eisenstein_summable_norm (scaledRadialTest W M hMp)
+  refine (norm_tsum_le_tsum_norm hs).trans ((hs.tsum_le_tsum ?_ hW).trans
+    (radial_weight_lattice_bound W M hM))
+  intro z
+  rw [norm_mul, norm_mul, norm_star]
+  exact mul_le_of_le_one_left (norm_nonneg _)
+    ((mul_le_mul (primeSubsetRow_norm_le_one p χ S z) (primeSubsetRow_norm_le_one p χ S z)
+      (norm_nonneg _) zero_le_one).trans_eq (one_mul 1))
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+private theorem norm_sq_finite_sum {β : Type*} (C : Finset β) (a r : β → ℂ) :
+    (↑(‖∑ n ∈ C, a n * r n‖ ^ 2) : ℂ) =
+      ∑ n ∈ C, ∑ m ∈ C, (star (a n) * a m) * (star (r n) * r m) := by
+  rw [Complex.sq_norm, Complex.normSq_eq_conj_mul_self]
+  simp only [map_sum, map_mul, starRingEnd_apply]
+  rw [Finset.sum_mul_sum]
+  apply Finset.sum_congr rfl
+  intro n hn
+  apply Finset.sum_congr rfl
+  intro m hm
+  ring
+
+theorem primeSubsetRow_mean_summable {α β : Type*}
+    (p : α → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (C : Finset β) (support : β → Finset α) (a : β → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
+    Summable (fun z : O => W (‖ringComplex z‖ ^ 2 / M) *
+      (↑(‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2) : ℂ)) := by
+  have hs := summable_sum (s := C) (fun n hn => summable_sum (s := C) (fun m hm =>
+    (primeSubsetRow_pair_summable p χ (support n) (support m) W M hM).mul_left (star (a n) * a m)))
+  apply hs.congr
+  intro z
+  rw [norm_sq_finite_sum]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro n hn
+  apply Finset.sum_congr rfl
+  intro m hm
+  ring
+
+theorem primeSubsetRow_mean_expand {α β : Type*}
+    (p : α → O) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (C : Finset β) (support : β → Finset α) (a : β → ℂ)
+    (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
+    (∑' z : O, W (‖ringComplex z‖ ^ 2 / M) *
+      (↑(‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2) : ℂ)) =
+      ∑ n ∈ C, ∑ m ∈ C, (star (a n) * a m) *
+        ∑' z : O, (star (primeSubsetRow p χ (support n) z) * primeSubsetRow p χ (support m) z) *
+          W (‖ringComplex z‖ ^ 2 / M) := by
+  let f : β → β → O → ℂ := fun n m z => (star (a n) * a m) *
+    ((star (primeSubsetRow p χ (support n) z) * primeSubsetRow p χ (support m) z) *
+      W (‖ringComplex z‖ ^ 2 / M))
+  have hf (n m : β) : Summable (f n m) :=
+    (primeSubsetRow_pair_summable p χ (support n) (support m) W M hM).mul_left _
+  have heq (z : O) : W (‖ringComplex z‖ ^ 2 / M) *
+      (↑(‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2) : ℂ) =
+        ∑ n ∈ C, ∑ m ∈ C, f n m z := by
+    rw [norm_sq_finite_sum]
+    simp only [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro n hn
+    apply Finset.sum_congr rfl
+    intro m hm
+    dsimp [f]
+    ring
+  rw [tsum_congr heq, Summable.tsum_finsetSum (fun n hn => summable_sum (fun m hm => hf n m))]
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [Summable.tsum_finsetSum (fun m hm => hf n m)]
+  apply Finset.sum_congr rfl
+  intro m hm
+  exact tsum_mul_left
+
+/-- Initial mean-square cancellation for actual prime characters, with uniform conductor control. -/
+theorem primeSubsetRow_initial_mean_bound :
+    ∃ (s : Finset (ℕ × ℕ)) (K₀ : ℝ), 0 < K₀ ∧
+      ∀ {α β : Type*} [DecidableEq α] [DecidableEq β]
+        (p : α → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (C : Finset β) (support : β → Finset α)
+        (hsupp : Set.InjOn support (↑C : Set β))
+        (N : ℝ), 0 ≤ N → (∀ n ∈ C, primeSubsetNorm p (support n) ≤ N) →
+        ∀ (a : β → ℂ) (W : 𝓢(ℝ, ℂ)) (M : ℝ), 1 ≤ M →
+        ‖∑' z : O, W (‖ringComplex z‖ ^ 2 / M) *
+          (↑(‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2) : ℂ)‖ ≤
+          (diagonalControl W * M +
+            (K₀ * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * N * C.card) *
+              ∑ n ∈ C, ‖a n‖ ^ 2 := by
+  obtain ⟨s, K₀, hK₀, hOff⟩ := primeSubsetRow_gram_offdiagonal
+  refine ⟨s, K₀, hK₀, ?_⟩
+  intro α β _ _ p hp _ hinj χ hχ C support hsupp N hN hNorm a W M hM
+  classical
+  have hcoef : 0 ≤ K₀ * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W := by positivity
+  have hMp : 0 < M := by linarith
+  let D := diagonalControl W * M
+  let B := (K₀ * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * N
+  have hB : 0 ≤ B := mul_nonneg hcoef hN
+  let K : β → β → ℂ := fun n m => ∑' z : O,
+    (star (primeSubsetRow p χ (support n) z) * primeSubsetRow p χ (support m) z) *
+      W (‖ringComplex z‖ ^ 2 / M)
+  have hK (n : β) (hn : n ∈ C) (m : β) (hm : m ∈ C) :
+      ‖K n m‖ ≤ (if n = m then D else 0) + B := by
+    by_cases hnm : n = m
+    · subst m
+      simp only [ite_true]
+      exact (primeSubsetRow_gram_diagonal p χ (support n) W M hM).trans (le_add_of_nonneg_right hB)
+    · simp only [hnm, ite_false, zero_add]
+      have hb := hOff p hp hinj χ hχ (support n) (support m)
+        (fun h => hnm (hsupp hn hm h)) W M hMp
+      have hc := prime_gram_divisor_conductor_bound p (support n) (support m)
+        N hN (hNorm n hn) (hNorm m hm)
+      apply hb.trans
+      calc
+        _ = (K₀ * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) *
+            ((2 : ℝ) ^ (support n ∩ support m).card *
+              ‖ringComplex (∏ i : ↥((support n \ support m) ∪ (support m \ support n)), p i.val)‖) := by ring
+        _ ≤ B := mul_le_mul_of_nonneg_left hc hcoef
+  have heq (n : β) (hn : n ∈ C) :
+      (∑ m ∈ C, ‖a n‖ * ‖a m‖ * ((if n = m then D else 0) + B)) =
+        D * ‖a n‖ ^ 2 + B * ‖a n‖ * ∑ m ∈ C, ‖a m‖ := by
+    simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero]
+    simp only [Finset.sum_ite_eq,  hn, ite_true]
+    rw [← Finset.sum_mul, ← Finset.mul_sum]
+    ring
+  have hcalc : (∑ n ∈ C, ∑ m ∈ C,
+      ‖a n‖ * ‖a m‖ * ((if n = m then D else 0) + B)) =
+      D * (∑ n ∈ C, ‖a n‖ ^ 2) + B * (∑ n ∈ C, ‖a n‖) ^ 2 := by
+    rw [Finset.sum_congr rfl heq]
+    simp only [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.sum_mul]
+    ring
+  rw [primeSubsetRow_mean_expand p χ C support a W M hMp]
+  calc
+    _ ≤ ∑ n ∈ C, ∑ m ∈ C, ‖(star (a n) * a m) * K n m‖ := by
+      exact (norm_sum_le _ _).trans (Finset.sum_le_sum (fun _ _ => norm_sum_le _ _))
+    _ ≤ ∑ n ∈ C, ∑ m ∈ C, ‖a n‖ * ‖a m‖ * ((if n = m then D else 0) + B) := by
+      apply Finset.sum_le_sum
+      intro n hn
+      apply Finset.sum_le_sum
+      intro m hm
+      simp only [norm_mul, norm_star]
+      exact mul_le_mul_of_nonneg_left (hK n hn m hm) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    _ = D * (∑ n ∈ C, ‖a n‖ ^ 2) + B * (∑ n ∈ C, ‖a n‖) ^ 2 := hcalc
+    _ ≤ D * (∑ n ∈ C, ‖a n‖ ^ 2) + B * ((C.card : ℝ) * ∑ n ∈ C, ‖a n‖ ^ 2) := by
+      apply add_le_add le_rfl
+      apply mul_le_mul_of_nonneg_left _ hB
+      simpa only [mul_one, one_pow, Finset.sum_const, nsmul_eq_mul, mul_one, mul_comm] using
+        Finset.sum_mul_sq_le_sq_mul_sq C (fun n => ‖a n‖) (fun _ => (1 : ℝ))
+    _ = _ := by dsimp [D, B]; ring
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap ContDiff
+
+def sieveBump : ContDiffBump (0 : ℝ) where
+  rIn := 1
+  rOut := 2
+  rIn_pos := by norm_num
+  rIn_lt_rOut := by norm_num
+
+def sieveCutoff : 𝓢(ℝ, ℂ) := by
+  have hc : HasCompactSupport (fun t : ℝ => (sieveBump t : ℂ)) :=
+    sieveBump.hasCompactSupport.comp_left Complex.ofReal_zero
+  have hs : ContDiff ℝ ∞ (fun t : ℝ => (sieveBump t : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp sieveBump.contDiff
+  exact hc.toSchwartzMap hs
+
+@[simp] theorem sieveCutoff_apply (t : ℝ) : sieveCutoff t = (sieveBump t : ℂ) := rfl
+
+theorem sieveBump_eq_one {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) : sieveBump t = 1 := by
+  apply sieveBump.one_of_mem_closedBall
+  change dist t 0 ≤ 1
+  simpa only [dist_zero_right, Real.norm_eq_abs, abs_of_nonneg ht0] using ht1
+
+/-- Finite-ball mean-square bound for distinct squarefree prime-character rows. -/
+theorem primeSubsetRow_initial_finite_bound :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ {α β : Type*} [DecidableEq α] [DecidableEq β]
+        (p : α → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (C : Finset β) (support : β → Finset α)
+        (hsupp : Set.InjOn support (↑C : Set β))
+        (N : ℝ), 0 ≤ N → (∀ n ∈ C, primeSubsetNorm p (support n) ≤ N) →
+        ∀ (a : β → ℂ) (M : ℝ), 1 ≤ M → ∀ R : Finset O,
+        (∀ z ∈ R, ‖ringComplex z‖ ^ 2 ≤ M) →
+        (∑ z ∈ R, ‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2) ≤
+          K * (M + N * C.card) * ∑ n ∈ C, ‖a n‖ ^ 2 := by
+  obtain ⟨s, K₀, hK₀, hb⟩ := primeSubsetRow_initial_mean_bound
+  let A := diagonalControl sieveCutoff
+  let B := K₀ * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) sieveCutoff
+  have hA : 0 ≤ A := diagonalControl_nonneg sieveCutoff
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  refine ⟨A + B + 1, by positivity, ?_⟩
+  intro α β _ _ p hp _ hinj χ hχ C support hsupp N hN hNorm a M hM R hR
+  have hMp : 0 < M := by linarith
+  let E : O → ℝ := fun z => ‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2
+  let F : O → ℝ := fun z => sieveBump (‖ringComplex z‖ ^ 2 / M) * E z
+  let H : O → ℂ := fun z => sieveCutoff (‖ringComplex z‖ ^ 2 / M) * (E z : ℂ)
+  have hF (z : O) : 0 ≤ F z := mul_nonneg sieveBump.nonneg (sq_nonneg _)
+  have hH (z : O) : H z = (F z : ℂ) := by
+    simp only [H, F, sieveCutoff_apply, Complex.ofReal_mul]
+  have hHs : Summable H := primeSubsetRow_mean_summable p χ C support a sieveCutoff M hMp
+  have hFs : Summable F := hHs.norm.congr (fun z => by
+    rw [hH, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hF z)])
+  have hsum : ‖∑' z : O, H z‖ = ∑' z : O, F z := by
+    rw [tsum_congr hH, ← Complex.ofReal_tsum, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (tsum_nonneg hF)]
+  calc
+    _ = ∑ z ∈ R, F z := by
+      apply Finset.sum_congr rfl
+      intro z hz
+      have ht0 : 0 ≤ ‖ringComplex z‖ ^ 2 / M := div_nonneg (sq_nonneg _) hMp.le
+      have ht1 : ‖ringComplex z‖ ^ 2 / M ≤ 1 := (div_le_one hMp).mpr (hR z hz)
+      simp only [F, sieveBump_eq_one ht0 ht1, one_mul, E]
+    _ ≤ ∑' z : O, F z := hFs.sum_le_tsum R (fun z _ => hF z)
+    _ = ‖∑' z : O, H z‖ := hsum.symm
+    _ ≤ (A * M + B * N * C.card) * ∑ n ∈ C, ‖a n‖ ^ 2 :=
+      hb p hp hinj χ hχ C support hsupp N hN hNorm a sieveCutoff M hM
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_right _ (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+      have hM0 : 0 ≤ M := le_trans zero_le_one hM
+      have hNC : 0 ≤ N * C.card := mul_nonneg hN (Nat.cast_nonneg _)
+      nlinarith only [mul_nonneg hA hNC, mul_nonneg hB hM0, hM0, hNC]
+
+
+end SchwartzPlanePoisson
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+/-- Distinct prime ideals give distinct squarefree products of their chosen generators. -/
+lemma primeSubset_product_injective {ι : Type*} (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i})) :
+    Function.Injective (fun S : Finset ι => ∏ i ∈ S, p i) := by
+  classical
+  have hprime (i : ι) : Prime (p i) := (Ideal.span_singleton_prime (hp i)).mp inferInstance
+  have hsub (S T : Finset ι) (h : (∏ i ∈ S, p i) = ∏ i ∈ T, p i) : S ⊆ T := by
+    intro i hi
+    have hd : p i ∣ ∏ j ∈ T, p j := h ▸ Finset.dvd_prod_of_mem p hi
+    obtain ⟨j, hj, hij⟩ := ((hprime i).dvd_finsetProd_iff p).mp hd
+    have he : i = j := hinj (Ideal.span_singleton_eq_span_singleton.mpr
+      ((hprime i).associated_of_dvd (hprime j) hij))
+    simpa only [he] using hj
+  intro S T h
+  exact Finset.Subset.antisymm (hsub S T h) (hsub T S h.symm)
+
+/-- The same positive Schwartz majorant controls the number of lattice points in a norm ball. -/
+lemma finite_norm_ball_card_bound (R : Finset O) (N : ℝ) (hN : 1 ≤ N)
+    (hR : ∀ z ∈ R, ‖ringComplex z‖ ^ 2 ≤ N) :
+    (R.card : ℝ) ≤ diagonalControl sieveCutoff * N := by
+  have hNp : 0 < N := lt_of_lt_of_le zero_lt_one hN
+  have hs : Summable (fun z : O => ‖sieveCutoff (‖ringComplex z‖ ^ 2 / N)‖) := by
+    simpa only [scaledRadialTest_apply] using
+      actual_eisenstein_summable_norm (scaledRadialTest sieveCutoff N hNp)
+  calc
+    (R.card : ℝ) = ∑ _z ∈ R, (1 : ℝ) := by simp
+    _ = ∑ z ∈ R, ‖sieveCutoff (‖ringComplex z‖ ^ 2 / N)‖ := by
+      apply Finset.sum_congr rfl
+      intro z hz
+      rw [sieveCutoff_apply, sieveBump_eq_one (div_nonneg (sq_nonneg _) hNp.le)
+        ((div_le_one hNp).mpr (hR z hz)), Complex.ofReal_one, norm_one]
+    _ ≤ ∑' z : O, ‖sieveCutoff (‖ringComplex z‖ ^ 2 / N)‖ :=
+      hs.sum_le_tsum R (fun _ _ => norm_nonneg _)
+    _ ≤ _ := radial_weight_lattice_bound sieveCutoff N hN
+
+lemma primeSubset_card_bound {α β : Type*} [DecidableEq β]
+    (p : α → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (C : Finset β) (support : β → Finset α) (hsupp : Set.InjOn support (↑C : Set β))
+    (N : ℝ) (hN : 1 ≤ N) (hNorm : ∀ n ∈ C, primeSubsetNorm p (support n) ≤ N) :
+    (C.card : ℝ) ≤ diagonalControl sieveCutoff * N := by
+  classical
+  let g : β → O := fun n => ∏ i ∈ support n, p i
+  have hg : Set.InjOn g (↑C : Set β) := fun n hn m hm h =>
+    hsupp hn hm (primeSubset_product_injective p hp hinj h)
+  have hc : (C.image g).card = C.card := Finset.card_image_iff.mpr hg
+  rw [← hc]
+  apply finite_norm_ball_card_bound _ N hN
+  intro z hz
+  obtain ⟨n, hn, rfl⟩ := Finset.mem_image.mp hz
+  exact hNorm n hn
+
+/-- Uniform initial large-sieve bound, valid for arbitrary nontrivial prime characters. -/
+theorem primeSubsetRow_initial_sieve :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ {α β : Type*} [DecidableEq α] [DecidableEq β]
+        (p : α → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (C : Finset β) (support : β → Finset α)
+        (hsupp : Set.InjOn support (↑C : Set β))
+        (N : ℝ), 1 ≤ N → (∀ n ∈ C, primeSubsetNorm p (support n) ≤ N) →
+        ∀ (a : β → ℂ) (M : ℝ), 1 ≤ M → ∀ R : Finset O,
+        (∀ z ∈ R, ‖ringComplex z‖ ^ 2 ≤ M) →
+        (∑ z ∈ R, ‖∑ n ∈ C, a n * primeSubsetRow p χ (support n) z‖ ^ 2) ≤
+          K * (M + N ^ 2) * ∑ n ∈ C, ‖a n‖ ^ 2 := by
+  obtain ⟨K, hK, hb⟩ := primeSubsetRow_initial_finite_bound
+  let D := diagonalControl sieveCutoff
+  have hD : 0 ≤ D := diagonalControl_nonneg sieveCutoff
+  refine ⟨K * (1 + D), mul_pos hK (by positivity), ?_⟩
+  intro α β _ _ p hp _ hinj χ hχ C support hsupp N hN hNorm a M hM R hR
+  have hN0 : 0 ≤ N := le_trans zero_le_one hN
+  have hM0 : 0 ≤ M := le_trans zero_le_one hM
+  have hc := primeSubset_card_bound p hp hinj C support hsupp N hN hNorm
+  apply (hb p hp hinj χ hχ C support hsupp N hN0 hNorm a M hM R hR).trans
+  apply mul_le_mul_of_nonneg_right _ (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+  calc
+    K * (M + N * C.card) ≤ K * ((1 + D) * (M + N ^ 2)) := by
+      apply mul_le_mul_of_nonneg_left _ hK.le
+      have hnc := mul_le_mul_of_nonneg_left hc hN0
+      nlinarith only [hnc, mul_nonneg hD hM0, sq_nonneg N]
+    _ = _ := by ring
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+/-- Exact second reflection of a Gram entry, retaining the signed common-prime divisor sum. -/
+theorem primeSubsetRow_gram_poisson {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+    (S T : Finset ι) :
+    let p' : ↥((S \ T) ∪ (T \ S)) → O := fun i => p i.val
+    let χ' := activePrimeRowCharacter p χ S T
+    ∃ β : ℂ, ‖β‖ = 1 ∧ ∀ (W : 𝓢(ℝ, ℂ)) (Y : ℝ), 0 < Y →
+      (∑' z : O, (star (primeSubsetRow p χ S z) * primeSubsetRow p χ T z) *
+        W (‖ringComplex z‖ ^ 2 / Y)) =
+        ((Y : ℂ) * β / (‖ringComplex (∏ i, p' i)‖ : ℂ)) *
+          ∑ E ∈ (S ∩ T).powerset,
+            ((-1 : ℂ) ^ E.card * primeCuspRowCharacter p' χ' (∏ i ∈ E, p i) /
+              (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 : ℝ)) *
+              ∑' h : O, primeCuspRowCharacter p' (fun i => (χ' i)⁻¹) h *
+                paperRadialFourier W
+                  (Y * ‖ringComplex h‖ ^ 2 /
+                    (‖ringComplex (∏ i ∈ E, p i)‖ ^ 2 * ‖ringComplex (∏ i, p' i)‖ ^ 2)) := by
+  classical
+  dsimp only
+  obtain ⟨β, hβ, hP⟩ := prime_row_masked_radial_poisson
+    (fun i : ↥((S \ T) ∪ (T \ S)) => p i.val) (fun i => hp i.val)
+    (hinj.comp Subtype.val_injective) (activePrimeRowCharacter p χ S T)
+    (activePrimeRowCharacter_ne_one p χ hχ S T)
+  refine ⟨β, hβ, ?_⟩
+  intro W Y hY
+  have hcop : Pairwise (Function.onFun IsCoprime p) := by
+    intro i j hij
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp
+      (Ideal.isCoprime_of_isMaximal (hinj.ne hij))
+  simp_rw [primeSubsetRow_pair_active]
+  exact hP p hp hcop (S ∩ T) W Y hY
+
+end SchwartzPlanePoisson
+
+
+/-! Quadratic trace phases from Gaussian regularization and rank-two Poisson summation. -/
+
+open scoped BigOperators Topology
+open Filter Asymptotics MeasureTheory
+namespace QuadraticPhase
+
+namespace RankTwoPoisson
+private theorem gauss_int_summable {a : ℂ} (ha : 0 < a.re) :
+    Summable (fun n : ℤ => Complex.exp (-((Real.pi : ℂ) * a) * (n : ℂ) ^ 2)) := by
+  have hpa : 0 < ((Real.pi : ℂ) * a).re := by
+    simpa using mul_pos Real.pi_pos ha
+  exact summable_of_isBigO (Real.summable_abs_int_rpow (show (1 : ℝ) < 2 by norm_num))
+    ((isLittleO_exp_neg_mul_sq_cocompact hpa (-2)).isBigO.comp_tendsto
+      Int.tendsto_coe_cofinite)
+
+theorem real_gauss_summable {t : ℝ} (ht : 0 < t) :
+    Summable (fun n : ℤ => Real.exp (-Real.pi * t * (n : ℝ) ^ 2)) := by
+  have htc : 0 < (t : ℂ).re := by simpa using ht
+  have h := (gauss_int_summable htc).norm
+  simpa [Complex.norm_exp, ← Complex.ofReal_intCast, ← Complex.ofReal_pow, mul_assoc] using h
+end RankTwoPoisson
+
+namespace RankTwoComplex
+
+open Real
+
+/-- Positive quadratic decay dominates a product of one-dimensional Gaussian series. -/
+theorem lattice_gaussian_summable_of_re_bound (F : ℤ × ℤ → ℂ)
+    {eps : ℝ} (heps : 0 < eps)
+    (hbound : ∀ z : ℤ × ℤ,
+      eps * ((z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2) ≤ (F z).re) :
+    Summable (fun z : ℤ × ℤ => Complex.exp (-(Real.pi : ℂ) * F z)) := by
+  have h1 := RankTwoPoisson.real_gauss_summable heps
+  have hmaj : Summable (fun z : ℤ × ℤ =>
+      Real.exp (-Real.pi * eps * (z.1 : ℝ) ^ 2) *
+      Real.exp (-Real.pi * eps * (z.2 : ℝ) ^ 2)) :=
+    h1.mul_of_nonneg h1 (fun _ => (Real.exp_pos _).le) (fun _ => (Real.exp_pos _).le)
+  refine hmaj.of_norm_bounded ?_
+  intro z
+  have hb := hbound z
+  have hpi : 0 ≤ Real.pi := Real.pi_pos.le
+  have hm := mul_le_mul_of_nonneg_left hb hpi
+  have hexp : (-(Real.pi : ℂ) * F z).re ≤
+      -Real.pi * eps * (z.1 : ℝ) ^ 2 +
+      -Real.pi * eps * (z.2 : ℝ) ^ 2 := by
+    simp [Complex.mul_re] at *
+    nlinarith [hm]
+  simpa only [Complex.norm_exp, Real.exp_add] using
+    (Real.exp_le_exp.mpr hexp)
+
+noncomputable def schur (a b d : ℂ) : ℂ := d - b ^ 2 / a
+
+noncomputable def binaryGaussian (a b d : ℂ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) *
+    (a * (z.1 : ℂ) ^ 2 + 2 * b * (z.1 : ℂ) * (z.2 : ℂ) + d * (z.2 : ℂ) ^ 2))
+
+noncomputable def firstGaussian (a b d : ℂ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) / a * (z.1 : ℂ) ^ 2) *
+    Complex.exp (-(Real.pi : ℂ) * schur a b d * (z.2 : ℂ) ^ 2 +
+      2 * (Real.pi : ℂ) * (Complex.I * b / a * (z.1 : ℂ)) * (z.2 : ℂ))
+
+noncomputable def dualGaussian (a b d : ℂ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) / a * (z.1 : ℂ) ^ 2) *
+    Complex.exp (-(Real.pi : ℂ) / (schur a b d) *
+      ((z.2 : ℂ) - b / a * (z.1 : ℂ)) ^ 2)
+
+private theorem binary_split (a b d : ℂ) (m n : ℤ) :
+    binaryGaussian a b d (m,n) =
+      Complex.exp (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2) *
+        Complex.exp (-(Real.pi : ℂ) * a * (m : ℂ) ^ 2 +
+          2 * (Real.pi : ℂ) * (-(b * (n : ℂ))) * (m : ℂ)) := by
+  dsimp [binaryGaussian]
+  rw [← Complex.exp_add]
+  congr 1
+  ring
+
+private theorem first_exponent_identity {a b d : ℂ} (ha : a ≠ 0) (k n : ℤ) :
+    (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2) +
+      (-(Real.pi : ℂ) / a * ((k : ℂ) + Complex.I * (-(b * (n : ℂ)))) ^ 2) =
+      (-(Real.pi : ℂ) / a * (k : ℂ) ^ 2) +
+        (-(Real.pi : ℂ) * schur a b d * (n : ℂ) ^ 2 +
+          2 * (Real.pi : ℂ) * (Complex.I * b / a * (k : ℂ)) * (n : ℂ)) := by
+  dsimp [schur]
+  field_simp [ha]
+  ring_nf
+  simp [Complex.I_sq]
+
+private theorem first_transform_term {a b d : ℂ} (ha : a ≠ 0) (k n : ℤ) :
+    Complex.exp (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2) *
+      Complex.exp (-(Real.pi : ℂ) / a *
+        ((k : ℂ) + Complex.I * (-(b * (n : ℂ)))) ^ 2) =
+      firstGaussian a b d (k,n) := by
+  rw [← Complex.exp_add, first_exponent_identity ha k n, Complex.exp_add]
+  rfl
+
+private theorem first_poisson_slice {a b d : ℂ} (ha : 0 < a.re) (n : ℤ) :
+    (∑' m : ℤ, binaryGaussian a b d (m,n)) =
+      (1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, firstGaussian a b d (k,n) := by
+  have ha0 : a ≠ 0 := by
+    intro h
+    simp [h] at ha
+  let C : ℂ := Complex.exp (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2)
+  let B : ℂ := -(b * (n : ℂ))
+  let F : ℤ → ℂ := fun m => Complex.exp
+    (-(Real.pi : ℂ) * a * (m : ℂ) ^ 2 + 2 * (Real.pi : ℂ) * B * (m : ℂ))
+  let H : ℤ → ℂ := fun k => Complex.exp
+    (-(Real.pi : ℂ) / a * ((k : ℂ) + Complex.I * B) ^ 2)
+  have hsplit : (∑' m : ℤ, binaryGaussian a b d (m,n)) = C * ∑' m : ℤ, F m := by
+    rw [← tsum_mul_left]
+    apply tsum_congr
+    intro m
+    exact binary_split a b d m n
+  have hpoisson : (∑' m : ℤ, F m) =
+      (1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, H k :=
+    Complex.tsum_exp_neg_quadratic ha B
+  calc
+    (∑' m : ℤ, binaryGaussian a b d (m,n)) = C * ∑' m : ℤ, F m := hsplit
+    _ = C * ((1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, H k) := by rw [hpoisson]
+    _ = (1 / a ^ (1 / 2 : ℂ)) * (C * ∑' k : ℤ, H k) := by ring
+    _ = (1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, firstGaussian a b d (k,n) := by
+      congr 1
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro k
+      exact first_transform_term ha0 k n
+
+private theorem second_poisson_slice {a b d : ℂ}
+    (hδ : 0 < (schur a b d).re) (k : ℤ) :
+    (∑' n : ℤ, firstGaussian a b d (k,n)) =
+      (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+        ∑' l : ℤ, dualGaussian a b d (k,l) := by
+  let A : ℂ := schur a b d
+  let B : ℂ := Complex.I * b / a * (k : ℂ)
+  let C : ℂ := Complex.exp (-(Real.pi : ℂ) / a * (k : ℂ) ^ 2)
+  let F : ℤ → ℂ := fun n => Complex.exp
+    (-(Real.pi : ℂ) * A * (n : ℂ) ^ 2 + 2 * (Real.pi : ℂ) * B * (n : ℂ))
+  let H : ℤ → ℂ := fun l => Complex.exp
+    (-(Real.pi : ℂ) / A * ((l : ℂ) + Complex.I * B) ^ 2)
+  have hsplit : (∑' n : ℤ, firstGaussian a b d (k,n)) = C * ∑' n : ℤ, F n := by
+    rw [← tsum_mul_left]
+    apply tsum_congr
+    intro n
+    rfl
+  have hpoisson : (∑' n : ℤ, F n) =
+      (1 / A ^ (1 / 2 : ℂ)) * ∑' l : ℤ, H l :=
+    Complex.tsum_exp_neg_quadratic hδ B
+  have hterm (l : ℤ) : C * H l = dualGaussian a b d (k,l) := by
+    have hb : Complex.I * B = -(b / a * (k : ℂ)) := by
+      dsimp [B]
+      field_simp
+      ring_nf
+      simp [Complex.I_sq]
+    dsimp [H, dualGaussian, C, A]
+    rw [hb]
+    ring_nf
+  calc
+    (∑' n : ℤ, firstGaussian a b d (k,n)) = C * ∑' n : ℤ, F n := hsplit
+    _ = C * ((1 / A ^ (1 / 2 : ℂ)) * ∑' l : ℤ, H l) := by rw [hpoisson]
+    _ = (1 / A ^ (1 / 2 : ℂ)) * (C * ∑' l : ℤ, H l) := by ring
+    _ = (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+          ∑' l : ℤ, dualGaussian a b d (k,l) := by
+      change (1 / A ^ (1 / 2 : ℂ)) * (C * ∑' l : ℤ, H l) =
+        (1 / A ^ (1 / 2 : ℂ)) * ∑' l : ℤ, dualGaussian a b d (k,l)
+      congr 1
+      rw [← tsum_mul_left]
+      exact tsum_congr hterm
+
+/-- Apply Poisson summation successively in the two integer coordinates. -/
+theorem binary_gaussian_poisson {a b d : ℂ}
+    (ha : 0 < a.re) (hδ : 0 < (schur a b d).re)
+    (hO : Summable (binaryGaussian a b d))
+    (hM : Summable (firstGaussian a b d))
+    (hD : Summable (dualGaussian a b d)) :
+    (∑' z : ℤ × ℤ, binaryGaussian a b d z) =
+      (1 / a ^ (1 / 2 : ℂ)) *
+        (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+        ∑' z : ℤ × ℤ, dualGaussian a b d z := by
+  have hOcomm :
+      (∑' n : ℤ, ∑' m : ℤ, binaryGaussian a b d (m,n)) =
+        ∑' m : ℤ, ∑' n : ℤ, binaryGaussian a b d (m,n) :=
+    (show Summable (Function.uncurry (fun m n : ℤ => binaryGaussian a b d (m,n)))
+      from hO).tsum_comm
+  have hMcomm :
+      (∑' n : ℤ, ∑' k : ℤ, firstGaussian a b d (k,n)) =
+        ∑' k : ℤ, ∑' n : ℤ, firstGaussian a b d (k,n) :=
+    (show Summable (Function.uncurry (fun k n : ℤ => firstGaussian a b d (k,n)))
+      from hM).tsum_comm
+  calc
+    (∑' z : ℤ × ℤ, binaryGaussian a b d z) =
+        ∑' m : ℤ, ∑' n : ℤ, binaryGaussian a b d (m,n) := hO.tsum_prod
+    _ = ∑' n : ℤ, ∑' m : ℤ, binaryGaussian a b d (m,n) := hOcomm.symm
+    _ = ∑' n : ℤ, (1 / a ^ (1 / 2 : ℂ)) *
+          ∑' k : ℤ, firstGaussian a b d (k,n) := by
+      apply tsum_congr
+      intro n
+      exact first_poisson_slice ha n
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (∑' n : ℤ, ∑' k : ℤ, firstGaussian a b d (k,n)) := tsum_mul_left
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (∑' k : ℤ, ∑' n : ℤ, firstGaussian a b d (k,n)) := by
+      rw [hMcomm]
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (∑' k : ℤ, (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+            ∑' l : ℤ, dualGaussian a b d (k,l)) := by
+      congr 1
+      apply tsum_congr
+      intro k
+      exact second_poisson_slice hδ k
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+          (∑' k : ℤ, ∑' l : ℤ, dualGaussian a b d (k,l)) := by
+      rw [tsum_mul_left]
+      ring
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+          ∑' z : ℤ × ℤ, dualGaussian a b d z := by
+      rw [hD.tsum_prod]
+
+end RankTwoComplex
+
+namespace SqrtBranch
+open Complex
+
+private theorem arg_ne_pi_of_re_pos {a : ℂ} (ha : 0 < a.re) : a.arg ≠ Real.pi := by
+  intro h
+  have := (Complex.arg_eq_pi_iff.mp h).1
+  linarith
+
+/-- The positive real determinant fixes the compatible principal square-root branches. -/
+theorem cpow_half_product {a : ℂ} {r : ℝ} (ha : 0 < a.re) (hr : 0 < r) :
+    a ^ (1 / 2 : ℂ) * (((r : ℂ) / a) ^ (1 / 2 : ℂ)) =
+      (r : ℂ) ^ (1 / 2 : ℂ) := by
+  have ha0 : a ≠ 0 := by
+    intro h
+    simp [h] at ha
+  have harg := arg_ne_pi_of_re_pos ha
+  have hlog : Complex.log ((r : ℂ) / a) = (Real.log r : ℂ) - Complex.log a := by
+    rw [div_eq_mul_inv, Complex.log_ofReal_mul hr (inv_ne_zero ha0),
+      Complex.log_inv a harg]
+    ring
+  have hr0 : (r : ℂ) ≠ 0 := by exact_mod_cast hr.ne'
+  have hdiv : (r : ℂ) / a ≠ 0 := div_ne_zero hr0 ha0
+  rw [Complex.cpow_def_of_ne_zero ha0,
+    Complex.cpow_def_of_ne_zero hdiv,
+    Complex.cpow_def_of_ne_zero hr0, hlog, ← Complex.exp_add]
+  congr 1
+  rw [Complex.ofReal_log hr.le]
+  ring
+
+theorem prefactor_product {a : ℂ} {r : ℝ} (ha : 0 < a.re) (hr : 0 < r) :
+    (1 / a ^ (1 / 2 : ℂ)) * (1 / (((r : ℂ) / a) ^ (1 / 2 : ℂ))) =
+      1 / ((r : ℂ) ^ (1 / 2 : ℂ)) := by
+  simpa [div_eq_mul_inv, mul_inv_rev, mul_comm] using
+    congrArg (fun z : ℂ => z⁻¹) (cpow_half_product ha hr)
+
+end SqrtBranch
+
+namespace OscSpecial
+
+private theorem real_quadratic_lower {u v w : ℝ}
+    (hu : 0 < u) (hv : 0 < v) (_hdet : 0 < u * v - w ^ 2)
+    (x y : ℝ) :
+    ((u * v - w ^ 2) / (u + v)) * (x ^ 2 + y ^ 2) ≤
+      u * x ^ 2 - 2 * w * x * y + v * y ^ 2 := by
+  have hsum : 0 < u + v := add_pos hu hv
+  have hid :
+      (u + v) * (u * x ^ 2 - 2 * w * x * y + v * y ^ 2) -
+        (u * v - w ^ 2) * (x ^ 2 + y ^ 2) =
+      (u * x - w * y) ^ 2 + (w * x - v * y) ^ 2 := by ring
+  have hsq := add_nonneg (sq_nonneg (u * x - w * y))
+    (sq_nonneg (w * x - v * y))
+  have hnum : (u * v - w ^ 2) * (x ^ 2 + y ^ 2) ≤
+      (u + v) * (u * x ^ 2 - 2 * w * x * y + v * y ^ 2) := by
+    linarith
+  have h : ((u * v - w ^ 2) * (x ^ 2 + y ^ 2)) / (u + v) ≤
+      u * x ^ 2 - 2 * w * x * y + v * y ^ 2 :=
+    (div_le_iff₀ hsum).2 (by simpa only [mul_comm] using hnum)
+  simpa only [div_mul_eq_mul_div] using h
+
+private theorem schur_eq_real_det_div {a b d : ℂ} {R : ℝ}
+    (ha : a ≠ 0) (hdet : a * d - b ^ 2 = (R : ℂ)) :
+    RankTwoComplex.schur a b d = (R : ℂ) / a := by
+  unfold RankTwoComplex.schur
+  rw [← hdet]
+  field_simp [ha]
+
+private theorem determinant_real_components {a b d : ℂ} {R : ℝ}
+    (hdet : a * d - b ^ 2 = (R : ℂ)) :
+    a.re * d.re - a.im * d.im - b.re ^ 2 + b.im ^ 2 = R ∧
+    a.re * d.im + a.im * d.re - 2 * b.re * b.im = 0 := by
+  constructor
+  · have h := congrArg Complex.re hdet
+    simp only [Complex.sub_re, Complex.mul_re, Complex.ofReal_re] at h
+    have hb : (b ^ 2).re = b.re ^ 2 - b.im ^ 2 := by
+      rw [pow_two, Complex.mul_re]
+      ring
+    rw [hb] at h
+    linarith
+  · have h := congrArg Complex.im hdet
+    simp only [Complex.sub_im, Complex.mul_im, Complex.ofReal_im] at h
+    have hb : (b ^ 2).im = 2 * b.re * b.im := by
+      rw [pow_two, Complex.mul_im]
+      ring
+    rw [hb] at h
+    linarith
+
+private theorem first_real_coefficients {a b d : ℂ} {R : ℝ}
+    (ha : a ≠ 0) (hdet : a * d - b ^ 2 = (R : ℂ)) :
+    (a⁻¹).re = a.re / Complex.normSq a ∧
+    (RankTwoComplex.schur a b d).re = R * a.re / Complex.normSq a ∧
+    (Complex.I * b / a).re =
+      (b.re * a.im - b.im * a.re) / Complex.normSq a := by
+  constructor
+  · exact Complex.inv_re a
+  constructor
+  · rw [schur_eq_real_det_div ha hdet]
+    simp [Complex.div_re]
+  · rw [Complex.div_re]
+    simp [Complex.mul_re, Complex.mul_im]
+    ring
+
+private theorem first_real_determinant {a b d : ℂ} {R : ℝ}
+    (ha : a ≠ 0) (hdet : a * d - b ^ 2 = (R : ℂ)) :
+    (a.re / Complex.normSq a) * (R * a.re / Complex.normSq a) -
+      ((b.re * a.im - b.im * a.re) / Complex.normSq a) ^ 2 =
+      (a.re * d.re - b.re ^ 2) / Complex.normSq a := by
+  have hN : Complex.normSq a ≠ 0 := (Complex.normSq_pos.mpr ha).ne'
+  obtain ⟨hr, hi⟩ := determinant_real_components hdet
+  have hid :
+      R * a.re ^ 2 - (b.re * a.im - b.im * a.re) ^ 2 =
+      (a.re ^ 2 + a.im ^ 2) * (a.re * d.re - b.re ^ 2) -
+        a.im * a.re * (a.re * d.im + a.im * d.re - 2 * b.re * b.im) := by
+    rw [← hr]
+    ring
+  rw [hi, mul_zero, sub_zero] at hid
+  simp only [Complex.normSq_apply] at hN ⊢
+  have hN' : a.re ^ 2 + a.im ^ 2 ≠ 0 := by simpa [pow_two] using hN
+  field_simp [hN']
+  nlinarith only [hid]
+
+private noncomputable def middleForm (a b d : ℂ) (z : ℤ × ℤ) : ℂ :=
+  a⁻¹ * (z.1 : ℂ) ^ 2 -
+    2 * (Complex.I * b / a) * (z.1 : ℂ) * (z.2 : ℂ) +
+    RankTwoComplex.schur a b d * (z.2 : ℂ) ^ 2
+
+private theorem middleForm_real (a b d : ℂ) (z : ℤ × ℤ) :
+    (middleForm a b d z).re =
+      (a⁻¹).re * (z.1 : ℝ) ^ 2 -
+      2 * (Complex.I * b / a).re * (z.1 : ℝ) * (z.2 : ℝ) +
+      (RankTwoComplex.schur a b d).re * (z.2 : ℝ) ^ 2 := by
+  simp [middleForm, Complex.add_re, Complex.sub_re, Complex.mul_re, pow_two]
+
+private theorem middleForm_exp (a b d : ℂ) (z : ℤ × ℤ) :
+    RankTwoComplex.firstGaussian a b d z =
+      Complex.exp (-(Real.pi : ℂ) * middleForm a b d z) := by
+  simp only [RankTwoComplex.firstGaussian, middleForm]
+  rw [← Complex.exp_add]
+  congr 1
+  simp [div_eq_mul_inv]
+  ring
+
+private theorem firstGaussian_summable {a b d : ℂ} {R : ℝ}
+    (ha : 0 < a.re) (hR : 0 < R)
+    (hdet : a * d - b ^ 2 = (R : ℂ))
+    (hpd : 0 < a.re * d.re - b.re ^ 2) :
+    Summable (RankTwoComplex.firstGaussian a b d) := by
+  have ha0 : a ≠ 0 := by
+    intro h
+    simp [h] at ha
+  have hN : 0 < Complex.normSq a := Complex.normSq_pos.mpr ha0
+  let u : ℝ := a.re / Complex.normSq a
+  let v : ℝ := R * a.re / Complex.normSq a
+  let w : ℝ := (b.re * a.im - b.im * a.re) / Complex.normSq a
+  have hu : 0 < u := div_pos ha hN
+  have hv : 0 < v := div_pos (mul_pos hR ha) hN
+  have hq : 0 < u * v - w ^ 2 := by
+    dsimp [u, v, w]
+    rw [first_real_determinant ha0 hdet]
+    exact div_pos hpd hN
+  let eps : ℝ := (u * v - w ^ 2) / (u + v)
+  have heps : 0 < eps := div_pos hq (add_pos hu hv)
+  have hcoeff := first_real_coefficients ha0 hdet
+  have hbound (z : ℤ × ℤ) :
+      eps * ((z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2) ≤
+      (middleForm a b d z).re := by
+    rw [middleForm_real, hcoeff.1, hcoeff.2.1, hcoeff.2.2]
+    exact real_quadratic_lower hu hv hq (z.1 : ℝ) (z.2 : ℝ)
+  exact (RankTwoComplex.lattice_gaussian_summable_of_re_bound
+    (middleForm a b d) heps hbound).congr (fun z => (middleForm_exp a b d z).symm)
+
+private noncomputable def originalForm (a b d : ℂ) (z : ℤ × ℤ) : ℂ :=
+  a * (z.1 : ℂ) ^ 2 + 2 * b * (z.1 : ℂ) * (z.2 : ℂ) + d * (z.2 : ℂ) ^ 2
+
+private theorem originalForm_real (a b d : ℂ) (z : ℤ × ℤ) :
+    (originalForm a b d z).re =
+      a.re * (z.1 : ℝ) ^ 2 + 2 * b.re * (z.1 : ℝ) * (z.2 : ℝ) +
+      d.re * (z.2 : ℝ) ^ 2 := by
+  simp [originalForm, Complex.add_re, Complex.mul_re, pow_two]
+
+private theorem originalGaussian_summable {a b d : ℂ}
+    (ha : 0 < a.re) (hpd : 0 < a.re * d.re - b.re ^ 2) :
+    Summable (RankTwoComplex.binaryGaussian a b d) := by
+  have hd : 0 < d.re := by
+    by_contra h
+    have h' : d.re ≤ 0 := le_of_not_gt h
+    have hm := mul_nonpos_of_nonneg_of_nonpos ha.le h'
+    nlinarith [sq_nonneg b.re]
+  let eps : ℝ := (a.re * d.re - b.re ^ 2) / (a.re + d.re)
+  have heps : 0 < eps := div_pos hpd (add_pos ha hd)
+  have hbound (z : ℤ × ℤ) :
+      eps * ((z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2) ≤
+      (originalForm a b d z).re := by
+    rw [originalForm_real]
+    dsimp [eps]
+    convert real_quadratic_lower (w := -b.re) ha hd (by simpa using hpd)
+      (z.1 : ℝ) (z.2 : ℝ) using 1 <;> ring
+  exact (RankTwoComplex.lattice_gaussian_summable_of_re_bound
+    (originalForm a b d) heps hbound).congr (fun z => by rfl)
+
+noncomputable def inverseForm (a b d : ℂ) (R : ℝ) (z : ℤ × ℤ) : ℂ :=
+  (d * (z.1 : ℂ) ^ 2 - 2 * b * (z.1 : ℂ) * (z.2 : ℂ) +
+    a * (z.2 : ℂ) ^ 2) / (R : ℂ)
+
+private theorem inverseForm_real (a b d : ℂ) {R : ℝ} (hR : R ≠ 0) (z : ℤ × ℤ) :
+    (inverseForm a b d R z).re =
+      (d.re * (z.1 : ℝ) ^ 2 - 2 * b.re * (z.1 : ℝ) * (z.2 : ℝ) +
+        a.re * (z.2 : ℝ) ^ 2) / R := by
+  simp [inverseForm, Complex.div_re, Complex.add_re, Complex.sub_re,
+    Complex.mul_re, Complex.normSq_apply, pow_two]
+  field_simp [hR]
+
+theorem dualGaussian_inverseForm {a b d : ℂ} {R : ℝ}
+    (ha : a ≠ 0) (hR : R ≠ 0)
+    (hdet : a * d - b ^ 2 = (R : ℂ)) (z : ℤ × ℤ) :
+    RankTwoComplex.dualGaussian a b d z =
+      Complex.exp (-(Real.pi : ℂ) * inverseForm a b d R z) := by
+  unfold RankTwoComplex.dualGaussian
+  rw [← Complex.exp_add]
+  congr 1
+  rw [schur_eq_real_det_div ha hdet]
+  dsimp [inverseForm]
+  have hdet0 : a * d - b ^ 2 ≠ 0 := by rw [hdet]; exact_mod_cast hR
+  rw [← hdet]
+  field_simp [ha, hdet0] ; ring
+
+private theorem dualGaussian_summable {a b d : ℂ} {R : ℝ}
+    (ha : 0 < a.re) (hR : 0 < R)
+    (hdet : a * d - b ^ 2 = (R : ℂ))
+    (hpd : 0 < a.re * d.re - b.re ^ 2) :
+    Summable (RankTwoComplex.dualGaussian a b d) := by
+  have hd : 0 < d.re := by
+    by_contra h
+    have h' : d.re ≤ 0 := le_of_not_gt h
+    have hm := mul_nonpos_of_nonneg_of_nonpos ha.le h'
+    nlinarith [sq_nonneg b.re]
+  let eps : ℝ := ((d.re * a.re - b.re ^ 2) / (d.re + a.re)) / R
+  have heps : 0 < eps := div_pos (div_pos (by nlinarith [hpd]) (add_pos hd ha)) hR
+  have hbound (z : ℤ × ℤ) :
+      eps * ((z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2) ≤
+      (inverseForm a b d R z).re := by
+    rw [inverseForm_real a b d hR.ne']
+    have hbase := real_quadratic_lower (u := d.re) (v := a.re) (w := b.re)
+      hd ha (by nlinarith [hpd]) (z.1 : ℝ) (z.2 : ℝ)
+    have hdivide := div_le_div_of_nonneg_right hbase hR.le
+    simpa [eps, div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hdivide
+  have ha0 : a ≠ 0 := by intro h; simp [h] at ha
+  exact (RankTwoComplex.lattice_gaussian_summable_of_re_bound
+    (inverseForm a b d R) heps hbound).congr
+      (fun z => (dualGaussian_inverseForm ha0 hR.ne' hdet z).symm)
+
+/-- A positive real determinant and positive definite real part give the complete transform. -/
+theorem binary_gaussian_poisson_real_det {a b d : ℂ} {R : ℝ}
+    (ha : 0 < a.re) (hR : 0 < R)
+    (hdet : a * d - b ^ 2 = (R : ℂ))
+    (hpd : 0 < a.re * d.re - b.re ^ 2) :
+    (∑' z : ℤ × ℤ, RankTwoComplex.binaryGaussian a b d z) =
+      (1 / ((R : ℂ) ^ (1 / 2 : ℂ))) *
+        ∑' z : ℤ × ℤ, RankTwoComplex.dualGaussian a b d z := by
+  have ha0 : a ≠ 0 := by intro h; simp [h] at ha
+  have hN : 0 < Complex.normSq a := Complex.normSq_pos.mpr ha0
+  have hδ : 0 < (RankTwoComplex.schur a b d).re := by
+    rw [schur_eq_real_det_div ha0 hdet]
+    simpa [Complex.div_re] using div_pos (mul_pos hR ha) hN
+  have hO := originalGaussian_summable ha hpd
+  have hM := firstGaussian_summable ha hR hdet hpd
+  have hD := dualGaussian_summable ha hR hdet hpd
+  calc
+    (∑' z : ℤ × ℤ, RankTwoComplex.binaryGaussian a b d z) =
+      (1 / a ^ (1 / 2 : ℂ)) *
+        (1 / (RankTwoComplex.schur a b d) ^ (1 / 2 : ℂ)) *
+        ∑' z : ℤ × ℤ, RankTwoComplex.dualGaussian a b d z :=
+      RankTwoComplex.binary_gaussian_poisson ha hδ hO hM hD
+    _ = (1 / ((R : ℂ) ^ (1 / 2 : ℂ))) *
+          ∑' z : ℤ × ℤ, RankTwoComplex.dualGaussian a b d z := by
+      rw [schur_eq_real_det_div ha0 hdet,
+        SqrtBranch.prefactor_product ha hR]
+
+noncomputable def q (a b : ℝ) : ℝ := a ^ 2 - a * b + b ^ 2
+noncomputable def A (η a b : ℝ) : ℂ :=
+  (η : ℂ) + 2 * Complex.I * (b : ℂ) / (q a b : ℂ)
+noncomputable def B (η a b : ℝ) : ℂ :=
+  -(η : ℂ) / 2 - 2 * Complex.I * (a : ℂ) / (q a b : ℂ)
+noncomputable def D (η a b : ℝ) : ℂ :=
+  (η : ℂ) + 2 * Complex.I * ((a-b : ℝ) : ℂ) / (q a b : ℂ)
+noncomputable def R (η a b : ℝ) : ℝ := 4 / q a b + 3 * η ^ 2 / 4
+
+theorem coefficient_re (η a b : ℝ) (_hq : q a b ≠ 0) :
+    (A η a b).re = η ∧ (B η a b).re = -η / 2 ∧ (D η a b).re = η := by
+  simp [A, B, D, Complex.div_re, Complex.normSq_apply]
+
+theorem oscillatory_determinant (η a b : ℝ) (hq : q a b ≠ 0) :
+    A η a b * D η a b - (B η a b) ^ 2 = (R η a b : ℂ) := by
+  have hqc : (q a b : ℂ) ≠ 0 := by exact_mod_cast hq
+  have hqexpr : (q a b : ℂ) = (a : ℂ) ^ 2 - (a : ℂ) * (b : ℂ) + (b : ℂ) ^ 2 := by
+    simp [q]
+  have hRcast : (R η a b : ℂ) = 4 / (q a b : ℂ) + 3 * (η : ℂ) ^ 2 / 4 := by
+    simp [R]
+  rw [hRcast]
+  dsimp [A, B, D]
+  field_simp [hqc]
+  rw [hqexpr]
+  ring_nf
+  simp [Complex.I_sq]
+  ring
+
+theorem real_positive_definite {η a b : ℝ} (hη : 0 < η) (hq : q a b ≠ 0) :
+    0 < (A η a b).re * (D η a b).re - (B η a b).re ^ 2 := by
+  obtain ⟨hA, hB, hD⟩ := coefficient_re η a b hq
+  rw [hA, hB, hD]
+  nlinarith [sq_pos_of_pos hη]
+
+
+/-- The damped quadratic trace form has an exact, absolutely convergent Poisson transform. -/
+theorem oscillatory_gaussian_poisson {η a b : ℝ}
+    (hη : 0 < η) (hq : 0 < q a b) :
+    (∑' z : ℤ × ℤ, RankTwoComplex.binaryGaussian (A η a b) (B η a b) (D η a b) z) =
+      (1 / ((R η a b : ℂ) ^ (1 / 2 : ℂ))) *
+        ∑' z : ℤ × ℤ,
+          RankTwoComplex.dualGaussian (A η a b) (B η a b) (D η a b) z := by
+  have hq0 : q a b ≠ 0 := hq.ne'
+  have ha : 0 < (A η a b).re := by
+    rw [(coefficient_re η a b hq0).1]
+    exact hη
+  have hR : 0 < R η a b := by
+    unfold R
+    positivity
+  exact binary_gaussian_poisson_real_det ha hR
+    (oscillatory_determinant η a b hq0)
+    (real_positive_definite hη hq0)
+
+noncomputable def r (η a b : ℝ) : ℝ := 1 + 3 * q a b * η ^ 2 / 16
+
+theorem r_pos {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b) :
+    0 < r η a b := by
+  unfold r
+  positivity
+
+private theorem inverseForm_explicit {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b)
+    (z : ℤ × ℤ) :
+    inverseForm (A η a b) (B η a b) (D η a b) (R η a b) z =
+      ((η : ℂ) * (q a b : ℂ) / (4 * (r η a b : ℂ))) *
+        ((z.1 : ℂ) ^ 2 + (z.1 : ℂ) * (z.2 : ℂ) + (z.2 : ℂ) ^ 2) +
+      Complex.I / (2 * (r η a b : ℂ)) *
+        (((a-b : ℝ) : ℂ) * (z.1 : ℂ) ^ 2 +
+          2 * (a : ℂ) * (z.1 : ℂ) * (z.2 : ℂ) +
+          (b : ℂ) * (z.2 : ℂ) ^ 2) := by
+  have hq0 : q a b ≠ 0 := hq.ne'
+  have hqc : (q a b : ℂ) ≠ 0 := by exact_mod_cast hq0
+  have hr0 : r η a b ≠ 0 := (r_pos hη hq).ne'
+  have hrc : (r η a b : ℂ) ≠ 0 := by exact_mod_cast hr0
+  have hR : 0 < R η a b := by unfold R; positivity
+  have hRexpr : (R η a b : ℂ) = 4 * (r η a b : ℂ) / (q a b : ℂ) := by
+    simp [R, r]
+    field_simp [hqc]
+    ring
+  have hqexpr : (q a b : ℂ) = (a : ℂ) ^ 2 - (a : ℂ) * (b : ℂ) + (b : ℂ) ^ 2 := by
+    simp [q]
+  have hrexpr : (r η a b : ℂ) = 1 + 3 * (q a b : ℂ) * (η : ℂ) ^ 2 / 16 := by
+    simp [r]
+  dsimp [inverseForm, A, B, D]
+  rw [hRexpr]
+  field_simp [hqc, hrc]
+  push_cast
+  ring
+
+/-- The inverse form separates a positive Gaussian scale from its quadratic phase. -/
+theorem dualGaussian_explicit {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b)
+    (z : ℤ × ℤ) :
+    RankTwoComplex.dualGaussian (A η a b) (B η a b) (D η a b) z =
+      Complex.exp (-(Real.pi : ℂ) *
+        (((η : ℂ) * (q a b : ℂ) / (4 * (r η a b : ℂ))) *
+          ((z.1 : ℂ) ^ 2 + (z.1 : ℂ) * (z.2 : ℂ) + (z.2 : ℂ) ^ 2) +
+         Complex.I / (2 * (r η a b : ℂ)) *
+          (((a-b : ℝ) : ℂ) * (z.1 : ℂ) ^ 2 +
+            2 * (a : ℂ) * (z.1 : ℂ) * (z.2 : ℂ) +
+            (b : ℂ) * (z.2 : ℂ) ^ 2))) := by
+  have hq0 : q a b ≠ 0 := hq.ne'
+  have hA0 : A η a b ≠ 0 := by
+    intro h
+    have hAr : (A η a b).re = η := (coefficient_re η a b hq0).1
+    simp [h] at hAr
+    linarith
+  have hR : 0 < R η a b := by unfold R; positivity
+  rw [dualGaussian_inverseForm hA0 hR.ne'
+    (oscillatory_determinant η a b hq0) z,
+    inverseForm_explicit hη hq z]
+
+end OscSpecial
+end QuadraticPhase
+
+
+open scoped BigOperators Topology
+open Filter Asymptotics MeasureTheory
+namespace QuadraticPhase
+
+namespace RankTwoPoisson
+noncomputable def cg (a : ℂ) (n : ℤ) : ℂ :=
+  Complex.exp (-((Real.pi : ℂ) * a) * (n : ℂ) ^ 2)
+
+noncomputable def eisQ (z : ℤ × ℤ) : ℝ :=
+  (z.1 : ℝ) ^ 2 - (z.1 : ℝ) * (z.2 : ℝ) + (z.2 : ℝ) ^ 2
+
+noncomputable def eisGauss (t : ℝ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp ((-Real.pi * t * eisQ z : ℝ) : ℂ)
+
+theorem eisQ_lower (z : ℤ × ℤ) :
+    ((z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2) / 2 ≤ eisQ z := by
+  dsimp [eisQ]
+  nlinarith [sq_nonneg ((z.1 : ℝ) - (z.2 : ℝ))]
+
+theorem eis_gauss_summable {t : ℝ} (ht : 0 < t) :
+    Summable (eisGauss t) := by
+  have ht2 : 0 < t / 2 := by positivity
+  have h1 := real_gauss_summable ht2
+  have hmaj : Summable (fun z : ℤ × ℤ =>
+      Real.exp (-Real.pi * (t / 2) * (z.1 : ℝ) ^ 2) *
+      Real.exp (-Real.pi * (t / 2) * (z.2 : ℝ) ^ 2)) :=
+    h1.mul_of_nonneg h1 (fun _ => (Real.exp_pos _).le) (fun _ => (Real.exp_pos _).le)
+  refine hmaj.of_norm_bounded ?_
+  intro z
+  have hq := eisQ_lower z
+  have hpi : 0 ≤ Real.pi * t := (mul_pos Real.pi_pos ht).le
+  have hmul := mul_le_mul_of_nonneg_left hq hpi
+  have hexp : -Real.pi * t * eisQ z ≤
+      -Real.pi * (t / 2) * (z.1 : ℝ) ^ 2 +
+      -Real.pi * (t / 2) * (z.2 : ℝ) ^ 2 := by
+    nlinarith [hmul]
+  simpa [eisGauss, Complex.norm_exp, Real.exp_add] using
+    (Real.exp_le_exp.mpr hexp)
+
+
+end RankTwoPoisson
+
+namespace RankTwoAffine
+
+open RankTwoComplex
+
+noncomputable def binaryGaussian (a b d u v : ℂ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) *
+    (a * (z.1 : ℂ) ^ 2 + 2 * b * (z.1 : ℂ) * (z.2 : ℂ) + d * (z.2 : ℂ) ^ 2) +
+    2 * (Real.pi : ℂ) * (u * (z.1 : ℂ) + v * (z.2 : ℂ)))
+
+noncomputable def firstGaussian (a b d u v : ℂ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) / a * ((z.1 : ℂ) + Complex.I * u) ^ 2) *
+    Complex.exp (-(Real.pi : ℂ) * schur a b d * (z.2 : ℂ) ^ 2 +
+      2 * (Real.pi : ℂ) *
+        (v + Complex.I * b / a * ((z.1 : ℂ) + Complex.I * u)) * (z.2 : ℂ))
+
+noncomputable def dualGaussian (a b d u v : ℂ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) / a * ((z.1 : ℂ) + Complex.I * u) ^ 2) *
+    Complex.exp (-(Real.pi : ℂ) / (schur a b d) *
+      ((z.2 : ℂ) + Complex.I *
+        (v + Complex.I * b / a * ((z.1 : ℂ) + Complex.I * u))) ^ 2)
+
+private theorem binary_split (a b d u v : ℂ) (m n : ℤ) :
+    binaryGaussian a b d u v (m,n) =
+      Complex.exp (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2 +
+        2 * (Real.pi : ℂ) * v * (n : ℂ)) *
+        Complex.exp (-(Real.pi : ℂ) * a * (m : ℂ) ^ 2 +
+          2 * (Real.pi : ℂ) * (u - b * (n : ℂ)) * (m : ℂ)) := by
+  dsimp [binaryGaussian]
+  rw [← Complex.exp_add]
+  congr 1
+  ring
+
+private theorem first_exponent_identity {a b d u v : ℂ} (ha : a ≠ 0) (k n : ℤ) :
+    (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2 +
+        2 * (Real.pi : ℂ) * v * (n : ℂ)) +
+      (-(Real.pi : ℂ) / a *
+        ((k : ℂ) + Complex.I * (u - b * (n : ℂ))) ^ 2) =
+      (-(Real.pi : ℂ) / a * ((k : ℂ) + Complex.I * u) ^ 2) +
+        (-(Real.pi : ℂ) * schur a b d * (n : ℂ) ^ 2 +
+          2 * (Real.pi : ℂ) *
+            (v + Complex.I * b / a * ((k : ℂ) + Complex.I * u)) * (n : ℂ)) := by
+  dsimp [schur]
+  field_simp [ha]
+  ring_nf
+  simp [Complex.I_sq]
+
+private theorem first_transform_term {a b d u v : ℂ} (ha : a ≠ 0) (k n : ℤ) :
+    Complex.exp (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2 +
+      2 * (Real.pi : ℂ) * v * (n : ℂ)) *
+      Complex.exp (-(Real.pi : ℂ) / a *
+        ((k : ℂ) + Complex.I * (u - b * (n : ℂ))) ^ 2) =
+      firstGaussian a b d u v (k,n) := by
+  rw [← Complex.exp_add, first_exponent_identity ha k n, Complex.exp_add]
+  rfl
+
+private theorem first_poisson_slice {a b d u v : ℂ} (ha : 0 < a.re) (n : ℤ) :
+    (∑' m : ℤ, binaryGaussian a b d u v (m,n)) =
+      (1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, firstGaussian a b d u v (k,n) := by
+  have ha0 : a ≠ 0 := by
+    intro h
+    simp [h] at ha
+  let C : ℂ := Complex.exp (-(Real.pi : ℂ) * d * (n : ℂ) ^ 2 +
+    2 * (Real.pi : ℂ) * v * (n : ℂ))
+  let B : ℂ := u - b * (n : ℂ)
+  let F : ℤ → ℂ := fun m => Complex.exp
+    (-(Real.pi : ℂ) * a * (m : ℂ) ^ 2 + 2 * (Real.pi : ℂ) * B * (m : ℂ))
+  let H : ℤ → ℂ := fun k => Complex.exp
+    (-(Real.pi : ℂ) / a * ((k : ℂ) + Complex.I * B) ^ 2)
+  have hsplit : (∑' m : ℤ, binaryGaussian a b d u v (m,n)) = C * ∑' m : ℤ, F m := by
+    rw [← tsum_mul_left]
+    apply tsum_congr
+    intro m
+    exact binary_split a b d u v m n
+  have hpoisson : (∑' m : ℤ, F m) =
+      (1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, H k :=
+    Complex.tsum_exp_neg_quadratic ha B
+  calc
+    (∑' m : ℤ, binaryGaussian a b d u v (m,n)) = C * ∑' m : ℤ, F m := hsplit
+    _ = C * ((1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, H k) := by rw [hpoisson]
+    _ = (1 / a ^ (1 / 2 : ℂ)) * (C * ∑' k : ℤ, H k) := by ring
+    _ = (1 / a ^ (1 / 2 : ℂ)) * ∑' k : ℤ, firstGaussian a b d u v (k,n) := by
+      congr 1
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro k
+      exact first_transform_term ha0 k n
+
+private theorem second_poisson_slice {a b d u v : ℂ}
+    (hδ : 0 < (schur a b d).re) (k : ℤ) :
+    (∑' n : ℤ, firstGaussian a b d u v (k,n)) =
+      (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+        ∑' l : ℤ, dualGaussian a b d u v (k,l) := by
+  let A : ℂ := schur a b d
+  let B : ℂ := v + Complex.I * b / a * ((k : ℂ) + Complex.I * u)
+  let C : ℂ := Complex.exp (-(Real.pi : ℂ) / a * ((k : ℂ) + Complex.I * u) ^ 2)
+  let F : ℤ → ℂ := fun n => Complex.exp
+    (-(Real.pi : ℂ) * A * (n : ℂ) ^ 2 + 2 * (Real.pi : ℂ) * B * (n : ℂ))
+  let H : ℤ → ℂ := fun l => Complex.exp
+    (-(Real.pi : ℂ) / A * ((l : ℂ) + Complex.I * B) ^ 2)
+  have hsplit : (∑' n : ℤ, firstGaussian a b d u v (k,n)) = C * ∑' n : ℤ, F n := by
+    rw [← tsum_mul_left]
+    apply tsum_congr
+    intro n
+    rfl
+  have hpoisson : (∑' n : ℤ, F n) =
+      (1 / A ^ (1 / 2 : ℂ)) * ∑' l : ℤ, H l :=
+    Complex.tsum_exp_neg_quadratic hδ B
+  calc
+    (∑' n : ℤ, firstGaussian a b d u v (k,n)) = C * ∑' n : ℤ, F n := hsplit
+    _ = C * ((1 / A ^ (1 / 2 : ℂ)) * ∑' l : ℤ, H l) := by rw [hpoisson]
+    _ = (1 / A ^ (1 / 2 : ℂ)) * (C * ∑' l : ℤ, H l) := by ring
+    _ = (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+          ∑' l : ℤ, dualGaussian a b d u v (k,l) := by
+      change (1 / A ^ (1 / 2 : ℂ)) * (C * ∑' l : ℤ, H l) =
+        (1 / A ^ (1 / 2 : ℂ)) * ∑' l : ℤ, dualGaussian a b d u v (k,l)
+      congr 1
+      rw [← tsum_mul_left]
+      rfl
+
+/-- Successive one-dimensional transforms include the affine linear terms. -/
+theorem affine_gaussian_poisson {a b d u v : ℂ}
+    (ha : 0 < a.re) (hδ : 0 < (schur a b d).re)
+    (hO : Summable (binaryGaussian a b d u v))
+    (hM : Summable (firstGaussian a b d u v))
+    (hD : Summable (dualGaussian a b d u v)) :
+    (∑' z : ℤ × ℤ, binaryGaussian a b d u v z) =
+      (1 / a ^ (1 / 2 : ℂ)) *
+        (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+        ∑' z : ℤ × ℤ, dualGaussian a b d u v z := by
+  have hOcomm :
+      (∑' n : ℤ, ∑' m : ℤ, binaryGaussian a b d u v (m,n)) =
+        ∑' m : ℤ, ∑' n : ℤ, binaryGaussian a b d u v (m,n) :=
+    (show Summable (Function.uncurry (fun m n : ℤ => binaryGaussian a b d u v (m,n)))
+      from hO).tsum_comm
+  have hMcomm :
+      (∑' n : ℤ, ∑' k : ℤ, firstGaussian a b d u v (k,n)) =
+        ∑' k : ℤ, ∑' n : ℤ, firstGaussian a b d u v (k,n) :=
+    (show Summable (Function.uncurry (fun k n : ℤ => firstGaussian a b d u v (k,n)))
+      from hM).tsum_comm
+  calc
+    (∑' z : ℤ × ℤ, binaryGaussian a b d u v z) =
+        ∑' m : ℤ, ∑' n : ℤ, binaryGaussian a b d u v (m,n) := hO.tsum_prod
+    _ = ∑' n : ℤ, ∑' m : ℤ, binaryGaussian a b d u v (m,n) := hOcomm.symm
+    _ = ∑' n : ℤ, (1 / a ^ (1 / 2 : ℂ)) *
+          ∑' k : ℤ, firstGaussian a b d u v (k,n) := by
+      apply tsum_congr
+      intro n
+      exact first_poisson_slice ha n
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (∑' n : ℤ, ∑' k : ℤ, firstGaussian a b d u v (k,n)) := tsum_mul_left
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (∑' k : ℤ, ∑' n : ℤ, firstGaussian a b d u v (k,n)) := by
+      rw [hMcomm]
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (∑' k : ℤ, (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+            ∑' l : ℤ, dualGaussian a b d u v (k,l)) := by
+      congr 1
+      apply tsum_congr
+      intro k
+      exact second_poisson_slice hδ k
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+          (∑' k : ℤ, ∑' l : ℤ, dualGaussian a b d u v (k,l)) := by
+      rw [tsum_mul_left]
+      ring
+    _ = (1 / a ^ (1 / 2 : ℂ)) *
+          (1 / (schur a b d) ^ (1 / 2 : ℂ)) *
+          ∑' z : ℤ × ℤ, dualGaussian a b d u v z := by
+      rw [hD.tsum_prod]
+
+end RankTwoAffine
+
+namespace RankTwoEisShift
+
+noncomputable def Q (x y : ℝ) : ℝ := x ^ 2 - x * y + y ^ 2
+
+noncomputable def shifted (t x y : ℝ) (z : ℤ × ℤ) : ℂ :=
+  Complex.exp (((-Real.pi * t * Q ((z.1 : ℝ) + x) ((z.2 : ℝ) + y) : ℝ) : ℂ))
+
+noncomputable def A (t : ℝ) : ℂ := (t : ℂ)
+noncomputable def B (t : ℝ) : ℂ := ((-t / 2 : ℝ) : ℂ)
+noncomputable def D (t : ℝ) : ℂ := (t : ℂ)
+noncomputable def U (t x y : ℝ) : ℂ := ((-t * (x - y / 2) : ℝ) : ℂ)
+noncomputable def V (t x y : ℝ) : ℂ := ((-t * (y - x / 2) : ℝ) : ℂ)
+noncomputable def C (t x y : ℝ) : ℂ :=
+  Complex.exp (((-Real.pi * t * Q x y : ℝ) : ℂ))
+
+private theorem shifted_eq_affine (t x y : ℝ) (m n : ℤ) :
+    shifted t x y (m,n) =
+      C t x y * RankTwoAffine.binaryGaussian (A t) (B t) (D t) (U t x y) (V t x y) (m,n) := by
+  dsimp [shifted, C, Q, RankTwoAffine.binaryGaussian, A, B, D, U, V]
+  rw [← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+private theorem schur_eis {t : ℝ} (ht : 0 < t) :
+    RankTwoComplex.schur (A t) (B t) (D t) = (((3 * t) / 4 : ℝ) : ℂ) := by
+  have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ht
+  dsimp [RankTwoComplex.schur, A, B, D]
+  push_cast
+  field_simp [ht0]
+  ring
+
+private theorem schur_eis_pos {t : ℝ} (ht : 0 < t) :
+    0 < (RankTwoComplex.schur (A t) (B t) (D t)).re := by
+  rw [schur_eis ht]
+  have h : 0 < 3 * t / 4 := by positivity
+  simpa using h
+
+noncomputable def dualPhase (k l : ℤ) (x y : ℝ) : ℂ :=
+  Complex.exp ((((2 * Real.pi * ((k : ℝ) * x + (l : ℝ) * y) : ℝ) : ℂ)) * Complex.I)
+
+private theorem shifted_dual_term {t : ℝ} (ht : 0 < t) (x y : ℝ) (k l : ℤ) :
+    C t x y *
+      RankTwoAffine.dualGaussian (A t) (B t) (D t) (U t x y) (V t x y) (k,l) =
+      RankTwoPoisson.eisGauss (4 / (3 * t)) (k,-l) * dualPhase k l x y := by
+  have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ht
+  dsimp [C, Q, RankTwoAffine.dualGaussian, RankTwoPoisson.eisGauss,
+    RankTwoPoisson.eisQ, dualPhase, A, B, D, U, V]
+  rw [show RankTwoComplex.schur (t : ℂ) ((-t / 2 : ℝ) : ℂ) (t : ℂ) =
+      (((3 * t) / 4 : ℝ) : ℂ) from schur_eis ht]
+  rw [← Complex.exp_add, ← Complex.exp_add, ← Complex.exp_add]
+  congr 1
+  push_cast
+  field_simp [ht0]
+  ring_nf
+  norm_num [Complex.I_pow_eq_pow_mod, Complex.I_sq]
+  ring_nf
+  simp only [Complex.I_sq, Complex.I_pow_three]
+  ring
+
+private theorem shifted_real_gauss_summable {t : ℝ} (ht : 0 < t) (y : ℝ) :
+    Summable (fun n : ℤ => Real.exp (-Real.pi * t * ((n : ℝ) + y) ^ 2)) := by
+  have ht2 : 0 < t / 2 := by positivity
+  have hbase := RankTwoPoisson.real_gauss_summable ht2
+  have hmaj : Summable (fun n : ℤ =>
+      Real.exp (Real.pi * t * y ^ 2) *
+        Real.exp (-Real.pi * (t / 2) * (n : ℝ) ^ 2)) :=
+    hbase.mul_left _
+  refine hmaj.of_norm_bounded ?_
+  intro n
+  have hs : (n : ℝ) ^ 2 / 2 - y ^ 2 ≤ ((n : ℝ) + y) ^ 2 := by
+    nlinarith [sq_nonneg ((n : ℝ) + 2 * y)]
+  have hm := mul_le_mul_of_nonneg_left hs (mul_pos Real.pi_pos ht).le
+  have he : -Real.pi * t * ((n : ℝ) + y) ^ 2 ≤
+      Real.pi * t * y ^ 2 + -Real.pi * (t / 2) * (n : ℝ) ^ 2 := by
+    nlinarith [hm]
+  simpa [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), Real.exp_add] using
+    (Real.exp_le_exp.mpr he)
+
+noncomputable def middlePhase (k n : ℤ) (x y : ℝ) : ℂ :=
+  Complex.exp ((((2 * Real.pi * (k : ℝ) * (x - ((n : ℝ) + y) / 2) : ℝ) : ℂ)) * Complex.I)
+
+private theorem middlePhase_norm (k n : ℤ) (x y : ℝ) :
+    ‖middlePhase k n x y‖ = 1 := by
+  simp [middlePhase, Complex.norm_exp, Complex.mul_re]
+
+private theorem shifted_middle_term {t : ℝ} (ht : 0 < t) (x y : ℝ) (k n : ℤ) :
+    C t x y *
+      RankTwoAffine.firstGaussian (A t) (B t) (D t) (U t x y) (V t x y) (k,n) =
+      RankTwoPoisson.cg ((t⁻¹ : ℝ) : ℂ) k *
+        Complex.exp (((-Real.pi * (3 * t / 4) * ((n : ℝ) + y) ^ 2 : ℝ) : ℂ)) *
+        middlePhase k n x y := by
+  have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ht
+  dsimp [C, Q, RankTwoAffine.firstGaussian, RankTwoPoisson.cg,
+    middlePhase, A, B, D, U, V]
+  rw [show RankTwoComplex.schur (t : ℂ) ((-t / 2 : ℝ) : ℂ) (t : ℂ) =
+      (((3 * t) / 4 : ℝ) : ℂ) from schur_eis ht]
+  rw [← Complex.exp_add, ← Complex.exp_add, ← Complex.exp_add, ← Complex.exp_add]
+  congr 1
+  push_cast
+  field_simp [ht0]
+  ring_nf
+  norm_num [Complex.I_pow_eq_pow_mod, Complex.I_sq]
+  ring_nf
+  simp only [Complex.I_sq]
+  ring
+
+private theorem middle_norm {t : ℝ} (ht : 0 < t) (x y : ℝ) (k n : ℤ) :
+    ‖C t x y *
+      RankTwoAffine.firstGaussian (A t) (B t) (D t) (U t x y) (V t x y) (k,n)‖ =
+      Real.exp (-Real.pi * t⁻¹ * (k : ℝ) ^ 2) *
+      Real.exp (-Real.pi * (3 * t / 4) * ((n : ℝ) + y) ^ 2) := by
+  rw [shifted_middle_term ht]
+  simp [ middlePhase_norm, RankTwoPoisson.cg, Complex.norm_exp,
+    ← Complex.ofReal_intCast, ← Complex.ofReal_pow, mul_assoc]
+
+private theorem affine_middle_summable {t : ℝ} (ht : 0 < t) (x y : ℝ) :
+    Summable (RankTwoAffine.firstGaussian (A t) (B t) (D t) (U t x y) (V t x y)) := by
+  have htinv : 0 < t⁻¹ := inv_pos.mpr ht
+  have ht3 : 0 < 3 * t / 4 := by positivity
+  have h1 := RankTwoPoisson.real_gauss_summable htinv
+  have h2 := shifted_real_gauss_summable ht3 y
+  have hmaj : Summable (fun z : ℤ × ℤ =>
+      Real.exp (-Real.pi * t⁻¹ * (z.1 : ℝ) ^ 2) *
+      Real.exp (-Real.pi * (3 * t / 4) * ((z.2 : ℝ) + y) ^ 2)) :=
+    h1.mul_of_nonneg h2 (fun _ => (Real.exp_pos _).le) (fun _ => (Real.exp_pos _).le)
+  have hCmid : Summable (fun z : ℤ × ℤ =>
+      C t x y * RankTwoAffine.firstGaussian (A t) (B t) (D t) (U t x y) (V t x y) z) := by
+    refine hmaj.of_norm_bounded ?_
+    intro z
+    rw [middle_norm ht]
+  have hC : C t x y ≠ 0 := Complex.exp_ne_zero _
+  have h := hCmid.mul_left (C t x y)⁻¹
+  simpa only [← mul_assoc, inv_mul_cancel₀ hC, one_mul] using h
+
+theorem dualPhase_norm (k l : ℤ) (x y : ℝ) :
+    ‖dualPhase k l x y‖ = 1 := by
+  simp [dualPhase, Complex.norm_exp, Complex.mul_re]
+
+private theorem affine_dual_summable {t : ℝ} (ht : 0 < t) (x y : ℝ) :
+    Summable (RankTwoAffine.dualGaussian (A t) (B t) (D t) (U t x y) (V t x y)) := by
+  have htd : 0 < 4 / (3 * t) := by positivity
+  let e : ℤ × ℤ ≃ ℤ × ℤ :=
+    Equiv.prodCongr (Equiv.refl ℤ) (Equiv.neg ℤ)
+  have hE : Summable (fun z : ℤ × ℤ =>
+      RankTwoPoisson.eisGauss (4 / (3 * t)) (z.1,-z.2)) :=
+    (e.summable_iff).2 (RankTwoPoisson.eis_gauss_summable htd)
+  have hCdual : Summable (fun z : ℤ × ℤ =>
+      C t x y * RankTwoAffine.dualGaussian (A t) (B t) (D t) (U t x y) (V t x y) z) := by
+    refine hE.norm.of_norm_bounded ?_
+    intro z
+    rw [shifted_dual_term ht]
+    simp [ dualPhase_norm]
+  have hC : C t x y ≠ 0 := Complex.exp_ne_zero _
+  have h := hCdual.mul_left (C t x y)⁻¹
+  simpa only [← mul_assoc, inv_mul_cancel₀ hC, one_mul] using h
+
+private theorem shifted_summable {t : ℝ} (ht : 0 < t) (x y : ℝ) :
+    Summable (shifted t x y) := by
+  have ht4 : 0 < t / 4 := by positivity
+  have h1 := RankTwoPoisson.real_gauss_summable ht4
+  have hbase : Summable (fun z : ℤ × ℤ =>
+      Real.exp (-Real.pi * (t / 4) * (z.1 : ℝ) ^ 2) *
+      Real.exp (-Real.pi * (t / 4) * (z.2 : ℝ) ^ 2)) :=
+    h1.mul_of_nonneg h1 (fun _ => (Real.exp_pos _).le) (fun _ => (Real.exp_pos _).le)
+  have hmaj : Summable (fun z : ℤ × ℤ =>
+      Real.exp (Real.pi * t * (x ^ 2 + y ^ 2) / 2) *
+        (Real.exp (-Real.pi * (t / 4) * (z.1 : ℝ) ^ 2) *
+         Real.exp (-Real.pi * (t / 4) * (z.2 : ℝ) ^ 2))) :=
+    hbase.mul_left _
+  refine hmaj.of_norm_bounded ?_
+  intro z
+  have hq : (((z.1 : ℝ) + x) ^ 2 + ((z.2 : ℝ) + y) ^ 2) / 2 ≤
+      Q ((z.1 : ℝ) + x) ((z.2 : ℝ) + y) := by
+    dsimp [Q]
+    nlinarith [sq_nonneg (((z.1 : ℝ) + x) - ((z.2 : ℝ) + y))]
+  have hm : (z.1 : ℝ) ^ 2 / 2 - x ^ 2 ≤ ((z.1 : ℝ) + x) ^ 2 := by
+    nlinarith [sq_nonneg ((z.1 : ℝ) + 2 * x)]
+  have hn : (z.2 : ℝ) ^ 2 / 2 - y ^ 2 ≤ ((z.2 : ℝ) + y) ^ 2 := by
+    nlinarith [sq_nonneg ((z.2 : ℝ) + 2 * y)]
+  have hl : ((z.1 : ℝ) ^ 2 + (z.2 : ℝ) ^ 2) / 4 -
+      (x ^ 2 + y ^ 2) / 2 ≤ Q ((z.1 : ℝ) + x) ((z.2 : ℝ) + y) := by
+    nlinarith [hq, hm, hn]
+  have hpt : 0 ≤ Real.pi * t := (mul_pos Real.pi_pos ht).le
+  have hmul := mul_le_mul_of_nonneg_left hl hpt
+  have he : -Real.pi * t * Q ((z.1 : ℝ) + x) ((z.2 : ℝ) + y) ≤
+      Real.pi * t * (x ^ 2 + y ^ 2) / 2 +
+        (-Real.pi * (t / 4) * (z.1 : ℝ) ^ 2 +
+         -Real.pi * (t / 4) * (z.2 : ℝ) ^ 2) := by
+    nlinarith [hmul]
+  simpa [shifted, Complex.norm_exp, Real.exp_add, mul_assoc] using
+    (Real.exp_le_exp.mpr he)
+
+private theorem affine_original_summable {t : ℝ} (ht : 0 < t) (x y : ℝ) :
+    Summable (RankTwoAffine.binaryGaussian (A t) (B t) (D t) (U t x y) (V t x y)) := by
+  have hS := shifted_summable ht x y
+  have hC : C t x y ≠ 0 := Complex.exp_ne_zero _
+  have hCA : Summable (fun z : ℤ × ℤ =>
+      C t x y * RankTwoAffine.binaryGaussian (A t) (B t) (D t) (U t x y) (V t x y) z) :=
+    hS.congr (fun z => shifted_eq_affine t x y z.1 z.2)
+  have h := hCA.mul_left (C t x y)⁻¹
+  simpa only [← mul_assoc, inv_mul_cancel₀ hC, one_mul] using h
+
+/-- Poisson summation for an arbitrary real shift of the Eisenstein norm form. -/
+theorem shifted_eisenstein_gaussian_poisson {t : ℝ} (ht : 0 < t) (x y : ℝ) :
+    (∑' z : ℤ × ℤ, shifted t x y z) =
+      (1 / (t : ℂ) ^ (1 / 2 : ℂ)) *
+        (1 / ((((3 * t) / 4 : ℝ) : ℂ)) ^ (1 / 2 : ℂ)) *
+        ∑' z : ℤ × ℤ,
+          RankTwoPoisson.eisGauss (4 / (3 * t)) (z.1,-z.2) *
+            dualPhase z.1 z.2 x y := by
+  have ha : 0 < (A t).re := by simpa [A] using ht
+  have hδ := schur_eis_pos ht
+  have hO := affine_original_summable ht x y
+  have hM := affine_middle_summable ht x y
+  have hD := affine_dual_summable ht x y
+  let pref : ℂ :=
+    (1 / (t : ℂ) ^ (1 / 2 : ℂ)) *
+      (1 / ((((3 * t) / 4 : ℝ) : ℂ)) ^ (1 / 2 : ℂ))
+  have haff :
+      (∑' z : ℤ × ℤ,
+        RankTwoAffine.binaryGaussian (A t) (B t) (D t) (U t x y) (V t x y) z) =
+      pref * (∑' z : ℤ × ℤ,
+        RankTwoAffine.dualGaussian (A t) (B t) (D t) (U t x y) (V t x y) z) := by
+    have h := RankTwoAffine.affine_gaussian_poisson ha hδ hO hM hD
+    rw [schur_eis ht] at h
+    exact h
+  calc
+    (∑' z : ℤ × ℤ, shifted t x y z) =
+        C t x y * (∑' z : ℤ × ℤ,
+          RankTwoAffine.binaryGaussian (A t) (B t) (D t) (U t x y) (V t x y) z) := by
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro z
+      exact shifted_eq_affine t x y z.1 z.2
+    _ = C t x y * (pref * (∑' z : ℤ × ℤ,
+          RankTwoAffine.dualGaussian (A t) (B t) (D t) (U t x y) (V t x y) z)) := by
+      rw [haff]
+    _ = pref * (∑' z : ℤ × ℤ,
+          C t x y * RankTwoAffine.dualGaussian (A t) (B t) (D t)
+            (U t x y) (V t x y) z) := by
+      rw [tsum_mul_left]
+      ring
+    _ = pref * (∑' z : ℤ × ℤ,
+          RankTwoPoisson.eisGauss (4 / (3 * t)) (z.1,-z.2) *
+            dualPhase z.1 z.2 x y) := by
+      congr 1
+      apply tsum_congr
+      intro z
+      exact shifted_dual_term ht x y z.1 z.2
+
+end RankTwoEisShift
+
+namespace RankTwoLimit
+
+section
+
+open scoped Topology
+
+open RankTwoPoisson RankTwoEisShift Filter
+
+private theorem eisQ_nonneg (z : ℤ × ℤ) : 0 ≤ RankTwoPoisson.eisQ z := by
+  have h := RankTwoPoisson.eisQ_lower z
+  nlinarith [sq_nonneg (z.1 : ℝ), sq_nonneg (z.2 : ℝ)]
+
+private theorem eisQ_pos {z : ℤ × ℤ} (hz : z ≠ (0,0)) :
+    0 < RankTwoPoisson.eisQ z := by
+  by_cases hm : z.1 = 0
+  · have hn : z.2 ≠ 0 := by
+      intro h0
+      exact hz (Prod.ext hm h0)
+    have hnR : (z.2 : ℝ) ≠ 0 := by exact_mod_cast hn
+    have h := RankTwoPoisson.eisQ_lower z
+    nlinarith [sq_pos_of_ne_zero hnR]
+  · have hmR : (z.1 : ℝ) ≠ 0 := by exact_mod_cast hm
+    have h := RankTwoPoisson.eisQ_lower z
+    nlinarith [sq_pos_of_ne_zero hmR, sq_nonneg (z.2 : ℝ)]
+
+private theorem eisGauss_norm (T : ℝ) (z : ℤ × ℤ) :
+    ‖RankTwoPoisson.eisGauss T z‖ =
+      Real.exp (-Real.pi * T * RankTwoPoisson.eisQ z) := by
+  simp [RankTwoPoisson.eisGauss, Complex.norm_exp]
+
+noncomputable def dualTerm (T : ℝ) (x y : ℝ) (z : ℤ × ℤ) : ℂ :=
+  RankTwoPoisson.eisGauss T (z.1,-z.2) * RankTwoEisShift.dualPhase z.1 z.2 x y
+
+noncomputable def limitTerm (z : ℤ × ℤ) : ℂ :=
+  if z = (0,0) then 1 else 0
+
+private theorem dualTerm_tendsto (x y : ℝ) (z : ℤ × ℤ) :
+    Tendsto (fun T : ℝ => dualTerm T x y z) atTop (𝓝 (limitTerm z)) := by
+  by_cases hz : z = (0,0)
+  · subst z
+    simp [dualTerm, limitTerm, RankTwoPoisson.eisGauss,
+      RankTwoPoisson.eisQ, RankTwoEisShift.dualPhase]
+  · have hz' : (z.1,-z.2) ≠ ((0,0) : ℤ × ℤ) := by
+      intro h
+      apply hz
+      have h1 : z.1 = 0 := by simpa using congrArg Prod.fst h
+      have h2 : z.2 = 0 := by simpa using congrArg Prod.snd h
+      exact Prod.ext h1 h2
+    have hq := eisQ_pos hz'
+    have hneg : -Real.pi * RankTwoPoisson.eisQ (z.1,-z.2) < 0 := by
+      nlinarith [mul_pos Real.pi_pos hq]
+    have harg : Tendsto
+        (fun T : ℝ => -Real.pi * T * RankTwoPoisson.eisQ (z.1,-z.2))
+        atTop atBot := by
+      convert tendsto_id.const_mul_atTop_of_neg hneg using 1
+      ext T
+      simp [mul_assoc, mul_comm]
+    have hexp : Tendsto
+        (fun T : ℝ => Real.exp (-Real.pi * T * RankTwoPoisson.eisQ (z.1,-z.2)))
+        atTop (𝓝 0) := Real.tendsto_exp_atBot.comp harg
+    have hc : Tendsto (fun T : ℝ => RankTwoPoisson.eisGauss T (z.1,-z.2))
+        atTop (𝓝 (0 : ℂ)) := by
+      have hh := Complex.continuous_ofReal.continuousAt.tendsto.comp hexp
+      have heq : (fun T : ℝ =>
+          ((Real.exp (-Real.pi * T * RankTwoPoisson.eisQ (z.1,-z.2)) : ℝ) : ℂ)) =
+          (fun T : ℝ => RankTwoPoisson.eisGauss T (z.1,-z.2)) := by
+        funext T
+        simp [RankTwoPoisson.eisGauss, Complex.ofReal_exp]
+      change Tendsto (fun T : ℝ =>
+        ((Real.exp (-Real.pi * T * RankTwoPoisson.eisQ (z.1,-z.2)) : ℝ) : ℂ))
+        atTop (𝓝 (0 : ℂ)) at hh
+      rw [heq] at hh
+      exact hh
+    simpa [dualTerm, limitTerm, hz] using
+      hc.mul_const (RankTwoEisShift.dualPhase z.1 z.2 x y)
+
+/-- A fixed Gaussian majorant permits passage to the zero-frequency limit. -/
+theorem dual_sum_tendsto_one (x y : ℝ) :
+    Tendsto (fun T : ℝ => ∑' z : ℤ × ℤ, dualTerm T x y z)
+      atTop (𝓝 (1 : ℂ)) := by
+  let e : ℤ × ℤ ≃ ℤ × ℤ :=
+    Equiv.prodCongr (Equiv.refl ℤ) (Equiv.neg ℤ)
+  have hE : Summable (fun z : ℤ × ℤ =>
+      RankTwoPoisson.eisGauss 1 (z.1,-z.2)) :=
+    (e.summable_iff).2 (RankTwoPoisson.eis_gauss_summable (by norm_num))
+  have hbound : ∀ᶠ T : ℝ in atTop, ∀ z : ℤ × ℤ,
+      ‖dualTerm T x y z‖ ≤ ‖RankTwoPoisson.eisGauss 1 (z.1,-z.2)‖ := by
+    filter_upwards [eventually_ge_atTop (1 : ℝ)] with T hT z
+    rw [dualTerm, norm_mul, RankTwoEisShift.dualPhase_norm, mul_one,
+      eisGauss_norm, eisGauss_norm]
+    have hq := eisQ_nonneg (z.1,-z.2)
+    have hpq : 0 ≤ Real.pi * RankTwoPoisson.eisQ (z.1,-z.2) :=
+      mul_nonneg Real.pi_pos.le hq
+    have hm := mul_le_mul_of_nonneg_right hT hpq
+    apply Real.exp_le_exp.mpr
+    nlinarith [hm]
+  have h := tendsto_tsum_of_dominated_convergence hE.norm
+    (dualTerm_tendsto x y) hbound
+  simpa [limitTerm] using h
+
+end
+
+open scoped Topology
+open Filter
+
+theorem dual_sum_tendsto_one_small_t (x y : ℝ) :
+    Tendsto (fun t : ℝ => ∑' z : ℤ × ℤ, dualTerm (4 / (3 * t)) x y z)
+      (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℂ)) := by
+  have hT : Tendsto (fun t : ℝ => (4 / 3 : ℝ) * t⁻¹) (𝓝[>] (0 : ℝ)) atTop :=
+    (tendsto_const_mul_atTop_of_pos (by norm_num : (0 : ℝ) < 4 / 3)).2
+      tendsto_inv_nhdsGT_zero
+  have h := (dual_sum_tendsto_one x y).comp hT
+  simpa [Function.comp_def, div_eq_mul_inv, mul_inv_rev, mul_assoc, mul_comm, mul_left_comm] using h
+
+end RankTwoLimit
+
+namespace EisensteinGaussianPrefactor
+
+theorem sqrt_product (t : ℝ) (ht : 0 ≤ t) :
+    Real.sqrt t * Real.sqrt (3*t/4) =
+      Real.sqrt 3 * t / 2 := by
+  have h3 : Real.sqrt (3/4 : ℝ) = Real.sqrt 3 / 2 := by
+    rw [Real.sqrt_div (by norm_num : (0:ℝ) ≤ 3)]
+    rw [show (4:ℝ) = 2^2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
+  have harg : 3*t/4 = (3/4:ℝ)*t := by ring
+  rw [harg, Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 3/4), h3]
+  calc
+    Real.sqrt t * (Real.sqrt 3 / 2 * Real.sqrt t) =
+        Real.sqrt 3 / 2 * (Real.sqrt t)^2 := by ring
+    _ = Real.sqrt 3 * t / 2 := by rw [Real.sq_sqrt ht]; ring
+
+theorem eta_times_prefactor (η q : ℝ) (hη : 0 < η) (hq : 0 < q) :
+    η * (1 / Real.sqrt (η*q)) *
+      (1 / Real.sqrt (3*(η*q)/4)) =
+      2 / (Real.sqrt 3 * q) := by
+  have ht : 0 < η*q := mul_pos hη hq
+  have hsqrt : Real.sqrt (η*q) * Real.sqrt (3*(η*q)/4) =
+      Real.sqrt 3 * (η*q) / 2 := sqrt_product (η*q) ht.le
+  have hne1 : Real.sqrt (η*q) ≠ 0 := ne_of_gt (Real.sqrt_pos.2 ht)
+  have hne2 : Real.sqrt (3*(η*q)/4) ≠ 0 := by
+    apply ne_of_gt
+    apply Real.sqrt_pos.2
+    positivity
+  have hne3 : Real.sqrt 3 ≠ 0 := ne_of_gt (Real.sqrt_pos.2 (by norm_num))
+  calc
+    η * (1 / Real.sqrt (η*q)) *
+        (1 / Real.sqrt (3*(η*q)/4)) =
+        η / (Real.sqrt (η*q) * Real.sqrt (3*(η*q)/4)) := by ring
+    _ = η / (Real.sqrt 3 * (η*q) / 2) := by rw [hsqrt]
+    _ = 2 / (Real.sqrt 3 * q) := by
+      field_simp
+
+end EisensteinGaussianPrefactor
+
+namespace EisensteinGaussianPrefactor
+
+theorem complex_eta_times_prefactor (η q : ℝ) (hη : 0 < η) (hq : 0 < q) :
+    (η : ℂ) *
+      (1 / ((η*q : ℝ) : ℂ) ^ (1/2 : ℂ)) *
+      (1 / (((3*(η*q)/4 : ℝ) : ℂ) ^ (1/2 : ℂ))) =
+      ((2 / (Real.sqrt 3 * q) : ℝ) : ℂ) := by
+  have ht : 0 ≤ η*q := (mul_pos hη hq).le
+  have hs : 0 ≤ 3*(η*q)/4 := by positivity
+  have hpow1 : ((η*q : ℝ) : ℂ) ^ (1/2 : ℂ) =
+      (Real.sqrt (η*q) : ℂ) := by
+    calc
+      ((η*q : ℝ) : ℂ) ^ (1/2 : ℂ) =
+          ((η*q : ℝ) : ℂ) ^ (((1/2 : ℝ) : ℂ)) := by norm_num
+      _ = (((η*q) ^ (1/2 : ℝ) : ℝ) : ℂ) :=
+        (Complex.ofReal_cpow ht (1/2 : ℝ)).symm
+      _ = (Real.sqrt (η*q) : ℂ) := by rw [← Real.sqrt_eq_rpow]
+  have hpow2 : (((3*(η*q)/4 : ℝ) : ℂ) ^ (1/2 : ℂ)) =
+      (Real.sqrt (3*(η*q)/4) : ℂ) := by
+    calc
+      (((3*(η*q)/4 : ℝ) : ℂ) ^ (1/2 : ℂ)) =
+          (((3*(η*q)/4 : ℝ) : ℂ) ^ (((1/2 : ℝ) : ℂ))) := by norm_num
+      _ = (((3*(η*q)/4) ^ (1/2 : ℝ) : ℝ) : ℂ) :=
+        (Complex.ofReal_cpow hs (1/2 : ℝ)).symm
+      _ = (Real.sqrt (3*(η*q)/4) : ℂ) := by rw [← Real.sqrt_eq_rpow]
+  rw [hpow1, hpow2]
+  exact_mod_cast eta_times_prefactor η q hη hq
+
+end EisensteinGaussianPrefactor
+
+namespace EisensteinAbelFiber
+
+open scoped Topology
+open Filter
+
+/-- Every real lattice shift has Abel mass equal to the reciprocal covolume. -/
+theorem shifted_gaussian_mass (x y : ℝ) :
+    Tendsto (fun t : ℝ => (t : ℂ) *
+      (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t x y z))
+      (𝓝[>] (0 : ℝ)) (𝓝 (((2 / Real.sqrt 3 : ℝ) : ℂ))) := by
+  have hpoint (t : ℝ) (ht : 0 < t) :
+      (t : ℂ) * (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t x y z) =
+        ((2 / Real.sqrt 3 : ℝ) : ℂ) *
+          (∑' z : ℤ × ℤ, RankTwoLimit.dualTerm (4 / (3 * t)) x y z) := by
+    rw [RankTwoEisShift.shifted_eisenstein_gaussian_poisson ht x y]
+    have hpre := EisensteinGaussianPrefactor.complex_eta_times_prefactor
+      t 1 ht (by norm_num)
+    simp only [mul_one] at hpre
+    change (t : ℂ) *
+        ((1 / (t : ℂ) ^ (1 / 2 : ℂ)) *
+          (1 / (((3 * t / 4 : ℝ) : ℂ) ^ (1 / 2 : ℂ))) *
+          (∑' z : ℤ × ℤ,
+            RankTwoLimit.dualTerm (4 / (3 * t)) x y z)) = _
+    calc
+      (t : ℂ) * ((1 / (t : ℂ) ^ (1 / 2 : ℂ)) *
+          (1 / (((3 * t / 4 : ℝ) : ℂ) ^ (1 / 2 : ℂ))) *
+          (∑' z : ℤ × ℤ,
+            RankTwoLimit.dualTerm (4 / (3 * t)) x y z)) =
+        (((t : ℂ) * (1 / (t : ℂ) ^ (1 / 2 : ℂ))) *
+          (1 / (((3 * t / 4 : ℝ) : ℂ) ^ (1 / 2 : ℂ)))) *
+          (∑' z : ℤ × ℤ,
+            RankTwoLimit.dualTerm (4 / (3 * t)) x y z) := by ring
+      _ = _ := by rw [hpre]
+  have hlim := (RankTwoLimit.dual_sum_tendsto_one_small_t x y).const_mul
+    (((2 / Real.sqrt 3 : ℝ) : ℂ))
+  have heq : (fun t : ℝ => (t : ℂ) *
+      (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t x y z)) =ᶠ[𝓝[>] (0 : ℝ)]
+      (fun t : ℝ => ((2 / Real.sqrt 3 : ℝ) : ℂ) *
+        (∑' z : ℤ × ℤ, RankTwoLimit.dualTerm (4 / (3 * t)) x y z)) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact hpoint t ht
+  simpa using hlim.congr' heq.symm
+
+theorem scaled_shifted_gaussian_mass (q : ℝ) (hq : 0 < q)
+    (x y : ℝ) :
+    Tendsto (fun η : ℝ => (η : ℂ) *
+      (∑' z : ℤ × ℤ, RankTwoEisShift.shifted (η*q) x y z))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (((2 / (Real.sqrt 3 * q) : ℝ) : ℂ))) := by
+  have hscale : Tendsto (fun η : ℝ => η*q)
+      (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    constructor
+    · have hid : Tendsto (fun η : ℝ => η)
+          (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) :=
+        tendsto_id.mono_right nhdsWithin_le_nhds
+      simpa using hid.mul_const q
+    · filter_upwards [self_mem_nhdsWithin] with η hη
+      exact mul_pos hη hq
+  have hlim := (shifted_gaussian_mass x y).comp hscale
+  have hqC : (q : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hq
+  have hlim' := hlim.const_mul (1 / (q : ℂ))
+  convert hlim' using 1
+  · funext η
+    dsimp
+    push_cast
+    field_simp [hqC]
+  · push_cast
+    field_simp [hqC]
+
+end EisensteinAbelFiber
+
+end QuadraticPhase
+
+
+open scoped BigOperators
+namespace QuadraticPhase.Eisenstein
+open Coordinates
+
+/-- Dividing by a principal modulus gives the alternating coordinate pairing over its norm. -/
+theorem trace_fraction_coordinates (a b x y : ℤ) (hc : eval a b ≠ 0) :
+    Algebra.trace ℚ K
+      (algebraMap O K (eval x y) /
+        (algebraMap O K traceLambda * algebraMap O K (eval a b))) =
+      ((a*y-b*x : ℤ) : ℚ) / ((a*a-a*b+b*b : ℤ) : ℚ) := by
+  have hcK : algebraMap O K (eval a b) ≠ 0 :=
+    fun h => hc (NumberField.RingOfIntegers.coe_injective h)
+  have hnorm : algebraMap O K (eval a b) * algebraMap O K (conjO (eval a b)) =
+      ((a*a-a*b+b*b : ℤ) : K) := by
+    have h := congrArg (algebraMap O K) (eval_mul_conj a b)
+    simpa only [map_mul, map_intCast, pow_two] using h
+  have hnum : algebraMap O K (eval x y) * algebraMap O K (conjO (eval a b)) =
+      ((x*(a-b)+y*b : ℤ) : K) + ((a*y-b*x : ℤ) : K) * algebraMap O K omega := by
+    rw [← map_mul, conj_eval, eval_mul]
+    simp only [eval, map_add, map_mul, map_intCast]
+    push_cast
+    ring
+  have hquot : algebraMap O K (eval x y) / algebraMap O K (eval a b) =
+      ((((x*(a-b)+y*b : ℤ) : ℚ) / ((a*a-a*b+b*b : ℤ) : ℚ)) : K) +
+      ((((a*y-b*x : ℤ) : ℚ) / ((a*a-a*b+b*b : ℤ) : ℚ)) : K) * algebraMap O K omega := by
+    calc
+      _ = (algebraMap O K (eval x y) * algebraMap O K (conjO (eval a b))) /
+          ((a*a-a*b+b*b : ℤ) : K) := by
+        rw [← hnorm]
+        have hconj : algebraMap O K (conjO (eval a b)) ≠ 0 := by
+          intro h
+          apply hc
+          apply conjO.injective
+          simpa only [map_zero] using NumberField.RingOfIntegers.coe_injective h
+        field_simp [hcK, hconj]
+      _ = _ := by rw [hnum]; push_cast; ring
+  have harg : algebraMap O K (eval x y) /
+      (algebraMap O K traceLambda * algebraMap O K (eval a b)) =
+      (algebraMap O K (eval x y) / algebraMap O K (eval a b)) /
+        algebraMap O K traceLambda := by
+    simp only [div_eq_mul_inv, mul_inv_rev]
+    ring
+  rw [harg, hquot]
+  convert trace_div_traceLambda
+    (((x*(a-b)+y*b : ℤ) : ℚ) / ((a*a-a*b+b*b : ℤ) : ℚ))
+    (((a*y-b*x : ℤ) : ℚ) / ((a*a-a*b+b*b : ℤ) : ℚ)) using 1
+  push_cast
+  rfl
+
+/-- The analytic trace character in integral coordinates. -/
+theorem principalTraceChar_eval (a b x y : ℤ) (hc : eval a b ≠ 0) :
+    principalTraceChar (eval a b) hc (Ideal.Quotient.mk (Ideal.span {eval a b}) (eval x y)) =
+      Complex.exp (2 * Real.pi * Complex.I *
+        (((a*y-b*x : ℤ) : ℂ) / ((a*a-a*b+b*b : ℤ) : ℂ))) := by
+  rw [principalTraceChar_apply, trace_fraction_coordinates a b x y hc]
+  congr 1
+  push_cast
+  ring
+
+/-- Squaring the residue argument gives the oscillatory binary phase. -/
+theorem principalTraceChar_square (a b x y : ℤ) (hc : eval a b ≠ 0) :
+    principalTraceChar (eval a b) hc
+      (Ideal.Quotient.mk (Ideal.span {eval a b}) (eval x y) ^ 2) =
+      Complex.exp (2 * Real.pi * Complex.I *
+        (((-b*x*x+2*a*x*y+(b-a)*y*y : ℤ) : ℂ) /
+          ((a*a-a*b+b*b : ℤ) : ℂ))) := by
+  rw [← map_pow, pow_two, eval_mul, principalTraceChar_eval]
+  congr 1
+  push_cast
+  ring
+
+/-- The quadratic trace sum on the actual principal quotient. -/
+def quadraticTraceGauss (c : O) (hc : c ≠ 0) : ℂ := by
+  letI : Finite (O ⧸ Ideal.span {c}) :=
+    (Ideal.span {c}).finiteQuotientOfFreeOfNeBot
+      (fun h => hc (Ideal.span_singleton_eq_bot.mp h))
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  exact ∑ x : O ⧸ Ideal.span {c}, principalTraceChar c hc (x ^ 2)
+
+/-- Divide the quadratic trace sum by the complex modulus of the generator. -/
+def normalizedQuadraticTraceGauss (c : O) (hc : c ≠ 0) : ℂ :=
+  quadraticTraceGauss c hc / (‖ringComplex c‖ : ℂ)
+
+/-- The fixed dual phase is an actual quadratic residue phase modulo four. -/
+def fixedDualPhase (c y : O) : ℂ :=
+  principalTraceChar 4 (by norm_num) (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (-(c*y^2)))
+
+/-- A shift by two changes the squared numerator by a multiple of four. -/
+theorem fixedDualPhase_period_two (c y w : O) :
+    fixedDualPhase c (y + 2*w) = fixedDualPhase c y := by
+  apply congrArg (principalTraceChar 4 (by norm_num))
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr
+  apply Ideal.mem_span_singleton.mpr
+  refine ⟨-(c * (y*w+w^2)), ?_⟩
+  ring
+
+theorem fixedDualPhase_eq_of_mod_two (c y z : O)
+    (h : Ideal.Quotient.mk (Ideal.span {(2 : O)}) y =
+      Ideal.Quotient.mk (Ideal.span {(2 : O)}) z) :
+    fixedDualPhase c y = fixedDualPhase c z := by
+  have hsub : y-z ∈ Ideal.span {(2 : O)} :=
+    (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp h
+  obtain ⟨w, hw⟩ := Ideal.mem_span_singleton.mp hsub
+  have hy : y = z + 2*w := by
+    calc
+      y = z+(y-z) := by ring
+      _ = z+2*w := by rw [hw]
+  rw [hy, fixedDualPhase_period_two]
+
+/-- At modulus four, the analytic character is the fourth root prescribed by the second coordinate. -/
+theorem principalTraceChar_four (x y : ℤ) :
+    principalTraceChar 4 (by norm_num)
+      (Ideal.Quotient.mk (Ideal.span {(4 : O)}) (eval x y)) = Complex.I ^ y := by
+  have h4 : eval 4 0 = 4 := by norm_num [eval]
+  have ht := trace_fraction_coordinates 4 0 x y (by rw [h4]; norm_num)
+  rw [h4] at ht
+  rw [principalTraceChar_apply, ht]
+  calc
+    _ = Complex.exp ((y : ℂ) * ((Real.pi : ℂ) / 2 * Complex.I)) := by
+      congr 1
+      push_cast
+      ring
+    _ = Complex.I ^ y := by
+      rw [Complex.exp_int_mul, Complex.exp_pi_div_two_mul_I]
+
+private theorem neg_eval (a b : ℤ) : -eval a b = eval (-a) (-b) := by
+  simp only [eval, Int.cast_neg]
+  ring
+
+/-- The fixed dual phase is a fourth root of unity with an explicit integral exponent. -/
+theorem fixedDualPhase_eval (a b x y : ℤ) :
+    fixedDualPhase (eval a b) (eval x y) =
+      Complex.I ^ (-(b*x*x + 2*(a-b)*x*y - a*y*y)) := by
+  unfold fixedDualPhase
+  rw [pow_two, eval_mul, eval_mul, neg_eval, principalTraceChar_four]
+  congr 1
+  ring
+
+/-- The fixed phase has unit modulus. -/
+theorem fixedDualPhase_norm (c y : O) : ‖fixedDualPhase c y‖ = 1 := by
+  obtain ⟨a,b,rfl⟩ := exists_coordinates c
+  obtain ⟨x,y,rfl⟩ := exists_coordinates y
+  change ‖fixedDualPhase (eval a b) (eval x y)‖ = 1
+  rw [fixedDualPhase_eval, norm_zpow, Complex.norm_I, one_zpow]
+
+/-- The four residue phases, with the normalization from the rank-two Gaussian transform. -/
+def fixedDualAverage (c : O) : ℂ := by
+  letI : Finite (O ⧸ Ideal.span {(2 : O)}) :=
+    (Ideal.span {(2 : O)}).finiteQuotientOfFreeOfNeBot
+      (fun h => (by norm_num : (2 : O) ≠ 0) (Ideal.span_singleton_eq_bot.mp h))
+  letI : Fintype (O ⧸ Ideal.span {(2 : O)}) := Fintype.ofFinite _
+  exact (∑ r : O ⧸ Ideal.span {(2 : O)},
+    fixedDualPhase c (Classical.choose (Ideal.Quotient.mk_surjective r))) / 2
+
+private theorem sum_zmod_two_square (f : ZMod 2 × ZMod 2 → ℂ) :
+    (∑ p : ZMod 2 × ZMod 2, f p) =
+      f (0,0) + f (0,1) + f (1,0) + f (1,1) := by
+  rw [Fintype.sum_prod_type]
+  have hu : (Finset.univ : Finset (ZMod 2)) = {0,1} := rfl
+  simp [hu]
+  ring
+
+/-- The dual residue average depends only on the modulus coordinates modulo four. -/
+theorem fixedDualAverage_formula (a b : ℤ) :
+    fixedDualAverage (eval a b) =
+      (1 + Complex.I ^ (-b) + Complex.I ^ a + Complex.I ^ (b-a)) / 2 := by
+  letI : Finite (O ⧸ Ideal.span {(2 : O)}) :=
+    (Ideal.span {(2 : O)}).finiteQuotientOfFreeOfNeBot
+      (fun h => (by norm_num : (2 : O) ≠ 0) (Ideal.span_singleton_eq_bot.mp h))
+  letI : Fintype (O ⧸ Ideal.span {(2 : O)}) := Fintype.ofFinite _
+  let e := rationalCoordEquiv 2 (by norm_num)
+  let P : O ⧸ Ideal.span {(2 : O)} → ℂ := fun r =>
+    fixedDualPhase (eval a b) (Classical.choose (Ideal.Quotient.mk_surjective r))
+  have hpoint (p : ZMod 2 × ZMod 2) : P (e p) =
+      fixedDualPhase (eval a b) (eval (ZMod.cast p.1) (ZMod.cast p.2)) := by
+    apply fixedDualPhase_eq_of_mod_two
+    exact (Classical.choose_spec (Ideal.Quotient.mk_surjective (e p))).trans (by rfl)
+  have hsum : (∑ r, P r) = ∑ p : ZMod 2 × ZMod 2,
+      fixedDualPhase (eval a b) (eval (ZMod.cast p.1) (ZMod.cast p.2)) := by
+    calc
+      _ = ∑ p, P (e p) := (e.sum_comp P).symm
+      _ = _ := Finset.sum_congr rfl (fun p _ => hpoint p)
+  change (∑ r, P r) / 2 = _
+  rw [hsum, sum_zmod_two_square]
+  have hcast1 : (ZMod.cast (1 : ZMod 2) : ℤ) = 1 := by decide
+  simp only [ZMod.cast_zero, hcast1, fixedDualPhase_eval,
+    mul_zero, mul_one, add_zero, sub_zero, neg_zero, zero_sub, zpow_zero, neg_neg]
+  rw [show -(b + 2 * (a-b) - a) = b-a by ring]
+  ring
+
+theorem fixedDualPhase_eq_of_mod_four (c d y : O)
+    (h : Ideal.Quotient.mk (Ideal.span {(4 : O)}) c =
+      Ideal.Quotient.mk (Ideal.span {(4 : O)}) d) :
+    fixedDualPhase c y = fixedDualPhase d y := by
+  simp only [fixedDualPhase, map_neg, map_mul, h]
+
+/-- The complete dual average factors through reduction of the modulus modulo four. -/
+theorem fixedDualAverage_eq_of_mod_four (c d : O)
+    (h : Ideal.Quotient.mk (Ideal.span {(4 : O)}) c =
+      Ideal.Quotient.mk (Ideal.span {(4 : O)}) d) :
+    fixedDualAverage c = fixedDualAverage d := by
+  unfold fixedDualAverage
+  congr 1
+  exact Finset.sum_congr rfl (fun r _ => fixedDualPhase_eq_of_mod_four c d _ h)
+
+theorem fixedDualAverage_one : fixedDualAverage 1 = 1 := by
+  have h := fixedDualAverage_formula 1 0
+  norm_num [eval] at h
+  exact h
+
+/-- The principal residue class modulo four has trivial dual Gauss phase. -/
+theorem fixedDualAverage_eq_one (c : O)
+    (h : Ideal.Quotient.mk (Ideal.span {(4 : O)}) c = 1) :
+    fixedDualAverage c = 1 := by
+  rw [fixedDualAverage_eq_of_mod_four c 1 (by simpa only [map_one] using h),
+    fixedDualAverage_one]
+
+end QuadraticPhase.Eisenstein
+
+
+open scoped BigOperators Topology
+open Filter Asymptotics MeasureTheory
+namespace QuadraticPhase
+
+namespace EisensteinFiberShift
+
+def Q (x y : ℝ) : ℝ := x*x-x*y+y*y
+def q (a b : ℝ) : ℝ := Q a b
+noncomputable def shiftX (a b x y : ℝ) : ℝ := ((a-b)*x+b*y)/q a b
+noncomputable def shiftY (a b x y : ℝ) : ℝ := (-b*x+a*y)/q a b
+
+theorem exact_shift (a b x y m n : ℝ) (hq : q a b ≠ 0) :
+    Q (x+a*m-b*n) (y+b*m+(a-b)*n) =
+      q a b * Q (m+shiftX a b x y) (n+shiftY a b x y) := by
+  dsimp [shiftX, shiftY, Q]
+  field_simp [hq]
+  dsimp [q, Q]
+  ring
+
+end EisensteinFiberShift
+
+namespace GaussianAbelPartition
+
+theorem tsum_by_finite_fibers {A B : Type*} [Fintype B]
+    (q : A → B) (f : A → ℂ) (hf : Summable f) :
+    (∑' a : A, f a) =
+      ∑ b : B, ∑' a : (q ⁻¹' {b}), f a.1 := by
+  have h := (hf.hasSum.tsum_fiberwise q).tsum_eq
+  simpa only [tsum_fintype] using h.symm
+
+theorem tsum_periodic_weighted_partition {A B : Type*} [Fintype B]
+    (q : A → B) (P : B → ℂ) (W : A → ℂ)
+    (hf : Summable (fun a => P (q a) * W a)) :
+    (∑' a : A, P (q a) * W a) =
+      ∑ b : B, P b * ∑' a : (q ⁻¹' {b}), W a.1 := by
+  rw [tsum_by_finite_fibers q _ hf]
+  apply Finset.sum_congr rfl
+  intro b hb
+  calc
+    (∑' a : (q ⁻¹' {b}), P (q a.1) * W a.1) =
+        ∑' a : (q ⁻¹' {b}), P b * W a.1 := by
+      apply tsum_congr
+      intro a
+      have ha : q a.1 = b := by
+        simpa only [Set.mem_preimage, Set.mem_singleton_iff] using a.property
+      rw [ha]
+    _ = P b * ∑' a : (q ⁻¹' {b}), W a.1 := tsum_mul_left
+
+end GaussianAbelPartition
+
+namespace Eisenstein
+
+private theorem finite_quotient_span {c : O} (hc : c ≠ 0) :
+    Finite (O ⧸ Ideal.span {c}) :=
+  (Ideal.span {c}).finiteQuotientOfFreeOfNeBot
+    (fun h => hc (Ideal.span_singleton_eq_bot.mp h))
+
+private theorem complex_norm_coordinates_sq (a b : ℤ) :
+    ‖ringComplex (Coordinates.eval a b)‖ ^ 2 = ((a*a-a*b+b*b : ℤ) : ℝ) := by
+  simpa only [Int.cast_add, Int.cast_sub, Int.cast_mul, pow_two] using
+    Coordinates.complex_norm_eval_sq a b
+
+private theorem coordinate_norm_pos_of_nonzero (a b : ℤ)
+    (hc : Coordinates.eval a b ≠ 0) : 0 < a*a-a*b+b*b := by
+  simpa only [pow_two] using Coordinates.coordinate_norm_pos a b hc
+
+theorem actual_quadratic_gaussian_partition (c : O) (hc : c ≠ 0)
+    (W : O → ℂ)
+    (hsum : Summable (fun z : O =>
+      (principalTraceChar c hc)
+        ((Ideal.Quotient.mk (Ideal.span {c}) z) ^ 2) * W z)) :
+    letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+    letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+    (∑' z : O,
+      (principalTraceChar c hc)
+        ((Ideal.Quotient.mk (Ideal.span {c}) z) ^ 2) * W z) =
+      ∑ r : O ⧸ Ideal.span {c},
+        (principalTraceChar c hc)
+          (r ^ 2) *
+          ∑' z : ((Ideal.Quotient.mk (Ideal.span {c})) ⁻¹' {r}), W z.1 := by
+  let : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  let : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  exact GaussianAbelPartition.tsum_periodic_weighted_partition
+    (Ideal.Quotient.mk (Ideal.span {c}))
+    (fun r => (principalTraceChar c hc)
+      (r ^ 2)) W hsum
+
+namespace GaussianFiberEquiv
+
+
+def fiberMap (c : O) (r : O ⧸ Ideal.span {c})
+    (r0 : O) (hr : Ideal.Quotient.mk (Ideal.span {c}) r0 = r)
+    (w : O) : ((Ideal.Quotient.mk (Ideal.span {c})) ⁻¹' {r}) := by
+  refine ⟨r0 + c*w, ?_⟩
+  change Ideal.Quotient.mk (Ideal.span {c}) (r0 + c*w) = r
+  rw [map_add, map_mul]
+  have hc0 : Ideal.Quotient.mk (Ideal.span {c}) c = 0 :=
+    (Ideal.Quotient.eq_zero_iff_mem).mpr (Ideal.subset_span (Set.mem_singleton c))
+  rw [hc0, zero_mul, add_zero, hr]
+
+private theorem fiberMap_injective (c : O) (hc : c ≠ 0)
+    (r : O ⧸ Ideal.span {c}) (r0 : O)
+    (hr : Ideal.Quotient.mk (Ideal.span {c}) r0 = r) :
+    Function.Injective (fiberMap c r r0 hr) := by
+  intro u v h
+  have hval := congrArg Subtype.val h
+  change r0 + c*u = r0 + c*v at hval
+  exact mul_left_cancel₀ hc (add_left_cancel hval)
+
+private theorem fiberMap_surjective (c : O)
+    (r : O ⧸ Ideal.span {c}) (r0 : O)
+    (hr : Ideal.Quotient.mk (Ideal.span {c}) r0 = r) :
+    Function.Surjective (fiberMap c r r0 hr) := by
+  rintro ⟨z, hz⟩
+  have hz' : Ideal.Quotient.mk (Ideal.span {c}) z = r := by
+    simpa only [Set.mem_preimage, Set.mem_singleton_iff] using hz
+  have hdiff : z-r0 ∈ Ideal.span {c} :=
+    (Ideal.Quotient.mk_eq_mk_iff_sub_mem z r0).mp (hz'.trans hr.symm)
+  obtain ⟨w, hw⟩ := (Ideal.mem_span_singleton).mp hdiff
+  refine ⟨w, ?_⟩
+  apply Subtype.ext
+  change r0 + c*w = z
+  rw [← hw]
+  ring
+
+noncomputable def fiberEquiv (c : O) (hc : c ≠ 0)
+    (r : O ⧸ Ideal.span {c}) (r0 : O)
+    (hr : Ideal.Quotient.mk (Ideal.span {c}) r0 = r) :
+    O ≃ ((Ideal.Quotient.mk (Ideal.span {c})) ⁻¹' {r}) :=
+  Equiv.ofBijective (fiberMap c r r0 hr)
+    ⟨fiberMap_injective c hc r r0 hr, fiberMap_surjective c r r0 hr⟩
+
+theorem fiber_tsum (c : O) (hc : c ≠ 0)
+    (r : O ⧸ Ideal.span {c}) (r0 : O)
+    (hr : Ideal.Quotient.mk (Ideal.span {c}) r0 = r)
+    (W : O → ℂ) :
+    (∑' z : ((Ideal.Quotient.mk (Ideal.span {c})) ⁻¹' {r}), W z.1) =
+      ∑' w : O, W (r0 + c*w) := by
+  have h := (fiberEquiv c hc r r0 hr).tsum_eq (fun z => W z.1)
+  have happ (w : O) : ((fiberEquiv c hc r r0 hr) w).1 = r0 + c*w := rfl
+  simpa only [happ] using h.symm
+
+end GaussianFiberEquiv
+
+namespace GaussianShiftedPartition
+
+
+noncomputable def representative (c : O) (r : O ⧸ Ideal.span {c}) : O :=
+  Classical.choose (Ideal.Quotient.mk_surjective r)
+
+theorem representative_spec (c : O) (r : O ⧸ Ideal.span {c}) :
+    Ideal.Quotient.mk (Ideal.span {c}) (representative c r) = r :=
+  Classical.choose_spec (Ideal.Quotient.mk_surjective r)
+
+theorem actual_quadratic_shifted_partition (c : O) (hc : c ≠ 0)
+    (W : O → ℂ)
+    (hsum : Summable (fun z : O =>
+      (principalTraceChar c hc)
+        ((Ideal.Quotient.mk (Ideal.span {c}) z) ^ 2) * W z)) :
+    letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+    letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+    (∑' z : O,
+      (principalTraceChar c hc)
+        ((Ideal.Quotient.mk (Ideal.span {c}) z) ^ 2) * W z) =
+      ∑ r : O ⧸ Ideal.span {c},
+        (principalTraceChar c hc)
+          (r ^ 2) *
+          ∑' w : O, W (representative c r + c*w) := by
+  let : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  let : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  rw [actual_quadratic_gaussian_partition c hc W hsum]
+  apply Finset.sum_congr rfl
+  intro r hr
+  congr 1
+  exact GaussianFiberEquiv.fiber_tsum c hc r
+    (representative c r) (representative_spec c r) W
+
+end GaussianShiftedPartition
+
+theorem fiber_coordinates (a b x y m n : ℤ) :
+    Coordinates.eval x y +
+      Coordinates.eval a b *
+        Coordinates.eval m n =
+    Coordinates.eval (x + a*m-b*n)
+      (y+b*m+(a-b)*n) := by
+  rw [Coordinates.eval_mul]
+  simp only [Coordinates.eval]
+  push_cast
+  ring
+
+theorem fiber_quadratic_expansion (a b x y m n : ℤ) :
+    let q := a*a-a*b+b*b
+    let X := x+a*m-b*n
+    let Y := y+b*m+(a-b)*n
+    X*X-X*Y+Y*Y =
+      q*(m*m-m*n+n*n) +
+      ((2*a-b)*x+(2*b-a)*y)*m +
+      (-(a+b)*x+(2*a-b)*y)*n +
+      (x*x-x*y+y*y) := by
+  dsimp
+  ring
+
+theorem ringComplex_fiber_norm_sq (a b x y m n : ℤ) :
+    ‖ringComplex
+      (Coordinates.eval x y +
+        Coordinates.eval a b *
+          Coordinates.eval m n)‖ ^ 2 =
+      ((a*a-a*b+b*b)*(m*m-m*n+n*n) +
+      ((2*a-b)*x+(2*b-a)*y)*m +
+      (-(a+b)*x+(2*a-b)*y)*n +
+      (x*x-x*y+y*y) : ℤ) := by
+  rw [fiber_coordinates, complex_norm_coordinates_sq]
+  exact_mod_cast fiber_quadratic_expansion a b x y m n
+
+theorem actual_fiber_gaussian_eq_shifted
+    (a b x y m n : ℤ)
+    (hc : Coordinates.eval a b ≠ 0) (η : ℝ) :
+    Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+      (‖ringComplex
+        (Coordinates.eval x y +
+          Coordinates.eval a b *
+            Coordinates.eval m n)‖ ^ 2 : ℂ)) =
+      RankTwoEisShift.shifted
+        (η * ((a*a-a*b+b*b : ℤ) : ℝ))
+        (EisensteinFiberShift.shiftX (a : ℝ) (b : ℝ) (x : ℝ) (y : ℝ))
+        (EisensteinFiberShift.shiftY (a : ℝ) (b : ℝ) (x : ℝ) (y : ℝ))
+        (m,n) := by
+  have hqZ : a*a-a*b+b*b ≠ 0 :=
+    ne_of_gt (coordinate_norm_pos_of_nonzero a b hc)
+  have hqR : EisensteinFiberShift.q (a : ℝ) (b : ℝ) ≠ 0 := by
+    dsimp [EisensteinFiberShift.q, EisensteinFiberShift.Q]
+    exact_mod_cast hqZ
+  have hshift := EisensteinFiberShift.exact_shift
+    (a : ℝ) (b : ℝ) (x : ℝ) (y : ℝ) (m : ℝ) (n : ℝ) hqR
+  have hnormC : ((‖ringComplex
+      (Coordinates.eval x y +
+        Coordinates.eval a b *
+          Coordinates.eval m n)‖ : ℂ)^2) =
+      (((a*a-a*b+b*b)*(m*m-m*n+n*n) +
+        ((2*a-b)*x+(2*b-a)*y)*m +
+        (-(a+b)*x+(2*a-b)*y)*n +
+        (x*x-x*y+y*y) : ℤ) : ℂ) := by
+    exact_mod_cast ringComplex_fiber_norm_sq a b x y m n
+  rw [hnormC]
+  dsimp [RankTwoEisShift.shifted, RankTwoEisShift.Q]
+  congr 1
+  dsimp [EisensteinFiberShift.Q, EisensteinFiberShift.q] at hshift
+  have hshiftC := congrArg (fun v : ℝ => (v : ℂ)) hshift
+  push_cast at hshiftC ⊢
+  linear_combination -(Real.pi : ℂ) * (η : ℂ) * hshiftC
+
+/-- Every principal residue class has the same Gaussian mass after Abel normalization. -/
+theorem actual_fiber_gaussian_mass (a b x y : ℤ)
+    (hc : Coordinates.eval a b ≠ 0) :
+    Tendsto (fun η : ℝ => (η : ℂ) *
+      (∑' z : ℤ × ℤ,
+        Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+          (‖ringComplex
+            (Coordinates.eval x y +
+              Coordinates.eval a b *
+                Coordinates.eval z.1 z.2)‖ ^ 2 : ℂ))))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (((2 / (Real.sqrt 3 *
+        (((a*a-a*b+b*b : ℤ) : ℝ))) : ℝ) : ℂ))) := by
+  have hq : 0 < (((a*a-a*b+b*b : ℤ) : ℝ)) := by
+    exact_mod_cast coordinate_norm_pos_of_nonzero a b hc
+  let u := EisensteinFiberShift.shiftX (a : ℝ) (b : ℝ) (x : ℝ) (y : ℝ)
+  let v := EisensteinFiberShift.shiftY (a : ℝ) (b : ℝ) (x : ℝ) (y : ℝ)
+  have h := EisensteinAbelFiber.scaled_shifted_gaussian_mass
+    (((a*a-a*b+b*b : ℤ) : ℝ)) hq u v
+  convert h using 1
+  funext η
+  congr 1
+  apply tsum_congr
+  intro z
+  exact actual_fiber_gaussian_eq_shifted a b x y z.1 z.2 hc η
+
+theorem eis_gaussian_summable {η : ℝ} (hη : 0 < η) :
+    Summable (fun z : O => Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+      (‖ringComplex z‖ ^ 2 : ℂ))) := by
+  have hbase := RankTwoPoisson.eis_gauss_summable hη
+  have hcomp : Summable (fun z : O =>
+      RankTwoPoisson.eisGauss η (Coordinates.coordinateEquiv z)) :=
+    (Coordinates.coordinateEquiv.summable_iff).2 hbase
+  convert hcomp using 1
+  funext z
+  let p := Coordinates.coords z
+  have hz : z = Coordinates.eval p.1 p.2 :=
+    (Coordinates.eval_coords z).symm
+  rw [hz]
+  have hnormC : ((‖ringComplex
+      (Coordinates.eval p.1 p.2)‖ : ℂ)^2) =
+      ((p.1*p.1-p.1*p.2+p.2*p.2 : ℤ) : ℂ) := by
+    exact_mod_cast complex_norm_coordinates_sq p.1 p.2
+  rw [hnormC]
+  change _ = RankTwoPoisson.eisGauss η
+    (Coordinates.coords
+      (Coordinates.eval p.1 p.2))
+  rw [Coordinates.coords_eval]
+  dsimp [RankTwoPoisson.eisGauss, RankTwoPoisson.eisQ]
+  congr 1
+  push_cast
+  ring
+
+theorem actual_oscillatory_kernel_summable (c : O) (hc : c ≠ 0)
+    {η : ℝ} (hη : 0 < η) :
+    Summable (fun z : O =>
+      (principalTraceChar c hc)
+          (Ideal.Quotient.mk (Ideal.span {c}) z ^ 2) *
+      Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+        (‖ringComplex z‖ ^ 2 : ℂ))) := by
+  let : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  have hbase := (eis_gaussian_summable hη).norm
+  apply hbase.of_norm_bounded
+  intro z
+  simp only [norm_mul]
+  rw [AddChar.norm_apply]
+  simp
+
+theorem actual_O_fiber_gaussian_mass (c r : O) (hc : c ≠ 0) :
+    let a := (Coordinates.coords c).1
+    let b := (Coordinates.coords c).2
+    Tendsto (fun η : ℝ => (η : ℂ) *
+      (∑' w : O, Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+        (‖ringComplex (r+c*w)‖ ^ 2 : ℂ))))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (((2 / (Real.sqrt 3 *
+        (((a*a-a*b+b*b : ℤ) : ℝ))) : ℝ) : ℂ))) := by
+  dsimp only
+  let a := (Coordinates.coords c).1
+  let b := (Coordinates.coords c).2
+  let x := (Coordinates.coords r).1
+  let y := (Coordinates.coords r).2
+  have hceq : c = Coordinates.eval a b :=
+    (Coordinates.eval_coords c).symm
+  have hreq : r = Coordinates.eval x y :=
+    (Coordinates.eval_coords r).symm
+  have hcE : Coordinates.eval a b ≠ 0 := by
+    rw [← hceq]
+    exact hc
+  have hmass := actual_fiber_gaussian_mass a b x y hcE
+  convert hmass using 1
+  funext η
+  congr 1
+  let W : O → ℂ := fun w => Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+    (‖ringComplex (r+c*w)‖ ^ 2 : ℂ))
+  have hsum := (Coordinates.coordinateEquiv.symm.tsum_eq W).symm
+  have happly (z : ℤ × ℤ) : Coordinates.coordinateEquiv.symm z =
+      Coordinates.eval z.1 z.2 := rfl
+  simpa only [W, hceq, hreq, happly] using hsum
+
+/-- The Abel limit of the damped quadratic phase is the finite trace Gauss sum times lattice density. -/
+theorem original_abel_gauss_limit (c : O) (hc : c ≠ 0) :
+    letI : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+    letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+    let a := (Coordinates.coords c).1
+    let b := (Coordinates.coords c).2
+    let K : ℂ := ((2 / (Real.sqrt 3 *
+      (((a*a-a*b+b*b : ℤ) : ℝ))) : ℝ) : ℂ)
+    Tendsto (fun η : ℝ => (η : ℂ) *
+      (∑' z : O,
+        (principalTraceChar c hc)
+          (Ideal.Quotient.mk (Ideal.span {c}) z ^ 2) *
+        Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+          (‖ringComplex z‖ ^ 2 : ℂ))))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (K * ∑ r : O ⧸ Ideal.span {c},
+        (principalTraceChar c hc) (r ^ 2))) := by
+  let : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  let : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  let a := (Coordinates.coords c).1
+  let b := (Coordinates.coords c).2
+  let K : ℂ := ((2 / (Real.sqrt 3 *
+    (((a*a-a*b+b*b : ℤ) : ℝ))) : ℝ) : ℂ)
+  let ψ := principalTraceChar c hc
+  let W (η : ℝ) (z : O) := Complex.exp (-(Real.pi : ℂ) * (η : ℂ) *
+    (‖ringComplex z‖ ^ 2 : ℂ))
+  have hfiber (r : O ⧸ Ideal.span {c}) :
+      Tendsto (fun η : ℝ => (η : ℂ) *
+        (∑' w : O, W η (GaussianShiftedPartition.representative c r + c*w)))
+        (𝓝[>] (0 : ℝ)) (𝓝 K) := by
+    simpa only [K, a, b, W] using
+      actual_O_fiber_gaussian_mass c
+        (GaussianShiftedPartition.representative c r) hc
+  have hsum : Tendsto (fun η : ℝ =>
+      ∑ r : O ⧸ Ideal.span {c}, ψ (r ^ 2) *
+        ((η : ℂ) * (∑' w : O, W η
+          (GaussianShiftedPartition.representative c r + c*w))))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (∑ r : O ⧸ Ideal.span {c}, ψ (r ^ 2) * K)) := by
+    apply tendsto_finsetSum Finset.univ
+    intro r hr
+    exact (hfiber r).const_mul (ψ (r ^ 2))
+  have hpoint (η : ℝ) (hη : 0 < η) :
+      (η : ℂ) * (∑' z : O, ψ
+        (Ideal.Quotient.mk (Ideal.span {c}) z ^ 2) * W η z) =
+      ∑ r : O ⧸ Ideal.span {c}, ψ (r ^ 2) *
+        ((η : ℂ) * (∑' w : O, W η
+          (GaussianShiftedPartition.representative c r + c*w))) := by
+    have hpart := GaussianShiftedPartition.actual_quadratic_shifted_partition
+      c hc (W η) (actual_oscillatory_kernel_summable c hc hη)
+    change (∑' z : O, ψ (Ideal.Quotient.mk (Ideal.span {c}) z ^ 2) * W η z) =
+      ∑ r : O ⧸ Ideal.span {c}, ψ (r ^ 2) *
+        ∑' w : O, W η (GaussianShiftedPartition.representative c r + c*w) at hpart
+    rw [hpart, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro r hr
+    ring
+  have heq : (fun η : ℝ => (η : ℂ) *
+      (∑' z : O, ψ (Ideal.Quotient.mk (Ideal.span {c}) z ^ 2) * W η z)) =ᶠ[
+        𝓝[>] (0 : ℝ)]
+      (fun η : ℝ => ∑ r : O ⧸ Ideal.span {c}, ψ (r ^ 2) *
+        ((η : ℂ) * (∑' w : O, W η
+          (GaussianShiftedPartition.representative c r + c*w)))) := by
+    filter_upwards [self_mem_nhdsWithin] with η hη
+    exact hpoint η hη
+  have hlim := hsum.congr' heq.symm
+  simpa only [K, ψ, W, Finset.mul_sum, mul_comm] using hlim
+
+end Eisenstein
+end QuadraticPhase
+
+
+open scoped BigOperators Topology
+open Filter Asymptotics MeasureTheory
+namespace QuadraticPhase
+
+namespace GaussianPhasePointwise
+
+theorem exp_imag_diff_le (u v : ℝ) :
+    ‖Complex.exp (Complex.I * (u : ℂ)) -
+      Complex.exp (Complex.I * (v : ℂ))‖ ≤ |u - v| := by
+  have heq :
+      Complex.exp (Complex.I * (u : ℂ)) -
+        Complex.exp (Complex.I * (v : ℂ)) =
+      (Complex.exp (Complex.I * ((u - v : ℝ) : ℂ)) - 1) *
+        Complex.exp (Complex.I * (v : ℂ)) := by
+    rw [sub_mul, one_mul, ← Complex.exp_add]
+    congr 1
+    push_cast
+    ring_nf
+  rw [heq, norm_mul, Complex.norm_exp_I_mul_ofReal, mul_one]
+  simpa only [Real.norm_eq_abs] using
+    (Real.norm_exp_I_mul_ofReal_sub_one_le (x := u - v))
+
+theorem exp_imag_denominator_error (θ A η : ℝ) (hA : 0 ≤ A) :
+    ‖Complex.exp (Complex.I * ((θ / (1 + A * η ^ 2) : ℝ) : ℂ)) -
+      Complex.exp (Complex.I * (θ : ℂ))‖ ≤
+      |θ| * (A * η ^ 2) := by
+  let r : ℝ := 1 + A * η ^ 2
+  have hAη : 0 ≤ A * η ^ 2 := mul_nonneg hA (sq_nonneg _)
+  have hr : 1 ≤ r := by dsimp [r]; linarith
+  have hrpos : 0 < r := lt_of_lt_of_le zero_lt_one hr
+  have hdiff : |θ / r - θ| = |θ| * ((r - 1) / r) := by
+    have heq : θ / r - θ = -θ * ((r - 1) / r) := by
+      field_simp
+      ring
+    rw [heq, abs_mul, abs_neg, abs_of_nonneg (div_nonneg (by linarith) hrpos.le)]
+  have hfrac : (r - 1) / r ≤ r - 1 := by
+    apply (div_le_iff₀ hrpos).mpr
+    nlinarith [mul_nonneg (sub_nonneg.mpr hr) (sub_nonneg.mpr hr)]
+  have hbound := exp_imag_diff_le (θ / r) θ
+  dsimp [r] at hbound ⊢
+  calc
+    ‖Complex.exp (Complex.I * ((θ / (1 + A * η ^ 2) : ℝ) : ℂ)) -
+      Complex.exp (Complex.I * (θ : ℂ))‖ ≤
+        |θ / (1 + A * η ^ 2) - θ| := hbound
+    _ = |θ| * (((1 + A * η ^ 2) - 1) / (1 + A * η ^ 2)) := hdiff
+    _ ≤ |θ| * (A * η ^ 2) := by
+      have hfrac' := hfrac
+      dsimp [r] at hfrac'
+      nlinarith [mul_nonneg (abs_nonneg θ) (sub_nonneg.mpr hfrac')]
+
+end GaussianPhasePointwise
+
+namespace GaussianMoment
+
+theorem x_exp_neg_le (x : ℝ) (_hx : 0 ≤ x) :
+    x * Real.exp (-x) ≤ 2 * Real.exp (-(x / 2)) := by
+  have hlin : x / 2 ≤ Real.exp (x / 2) := by
+    have h := Real.add_one_le_exp (x / 2)
+    linarith
+  have hmul := mul_le_mul_of_nonneg_right hlin (Real.exp_pos (-x)).le
+  calc
+    x * Real.exp (-x) = 2 * ((x / 2) * Real.exp (-x)) := by ring
+    _ ≤ 2 * (Real.exp (x / 2) * Real.exp (-x)) := by
+      gcongr
+    _ = 2 * Real.exp (-(x / 2)) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring_nf
+
+theorem gaussian_moment_term_bound (q t : ℝ) (hq : 0 ≤ q) (ht : 0 < t) :
+    q * Real.exp (-t * q) ≤
+      (2 / t) * Real.exp (-(t * q / 2)) := by
+  have h := x_exp_neg_le (t * q) (mul_nonneg ht.le hq)
+  have hpos : 0 ≤ t := ht.le
+  calc
+    q * Real.exp (-t * q) =
+        ((t * q) * Real.exp (-(t * q))) / t := by
+          field_simp
+    _ ≤ (2 * Real.exp (-(t * q / 2))) / t :=
+      div_le_div_of_nonneg_right h hpos
+    _ = (2 / t) * Real.exp (-(t * q / 2)) := by ring
+
+
+noncomputable def realGauss (t : ℝ) (z : ℤ × ℤ) : ℝ :=
+  Real.exp (-Real.pi * t * RankTwoPoisson.eisQ z)
+
+theorem realGauss_nonneg (t : ℝ) (z : ℤ × ℤ) :
+    0 ≤ realGauss t z := (Real.exp_pos _).le
+
+theorem realGauss_summable {t : ℝ} (ht : 0 < t) :
+    Summable (realGauss t) := by
+  have h := (RankTwoPoisson.eis_gauss_summable ht).norm
+  convert h using 1
+  funext z
+  dsimp [realGauss, RankTwoPoisson.eisGauss]
+  rw [Complex.norm_exp]
+  simp
+
+theorem realGauss_cast (t : ℝ) (z : ℤ × ℤ) :
+    (realGauss t z : ℂ) = RankTwoEisShift.shifted t 0 0 z := by
+  dsimp [realGauss, RankTwoPoisson.eisQ,
+    RankTwoEisShift.shifted, RankTwoEisShift.Q]
+  rw [← Complex.ofReal_exp]
+  congr 1
+  ring_nf
+
+theorem real_gaussian_mass :
+    Tendsto (fun t : ℝ => t * (∑' z : ℤ × ℤ, realGauss t z))
+      (𝓝[>] (0 : ℝ)) (𝓝 (2 / Real.sqrt 3)) := by
+  have hC := EisensteinAbelFiber.shifted_gaussian_mass 0 0
+  have hRe := (Complex.continuous_re.tendsto
+    (((2 / Real.sqrt 3 : ℝ) : ℂ))).comp hC
+  have hsum (t : ℝ) :
+      (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t 0 0 z) =
+        (((∑' z : ℤ × ℤ, realGauss t z) : ℝ) : ℂ) := by
+    calc
+      (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t 0 0 z) =
+          ∑' z : ℤ × ℤ, (realGauss t z : ℂ) := by
+            apply tsum_congr
+            intro z
+            exact (realGauss_cast t z).symm
+      _ = (((∑' z : ℤ × ℤ, realGauss t z) : ℝ) : ℂ) :=
+        (Complex.ofReal_tsum (realGauss t)).symm
+  have hfun (t : ℝ) :
+      t * (∑' z : ℤ × ℤ, realGauss t z) =
+        (((t : ℂ) * (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t 0 0 z)).re) := by
+    rw [hsum]
+    norm_cast
+  have hEq :
+      (fun t : ℝ => t * (∑' z : ℤ × ℤ, realGauss t z)) =
+        (Complex.re ∘
+          (fun t : ℝ => (t : ℂ) *
+            (∑' z : ℤ × ℤ, RankTwoEisShift.shifted t 0 0 z))) := by
+    funext t
+    exact hfun t
+  rw [← hEq] at hRe
+  simpa only [Complex.ofReal_re] using hRe
+
+
+private theorem eisQ_nonneg (z : ℤ × ℤ) : 0 ≤ RankTwoPoisson.eisQ z := by
+  have h := RankTwoPoisson.eisQ_lower z
+  nlinarith [sq_nonneg (z.1 : ℝ), sq_nonneg (z.2 : ℝ)]
+
+private theorem moment_term_bound {t : ℝ} (ht : 0 < t) (z : ℤ × ℤ) :
+    RankTwoPoisson.eisQ z * realGauss t z ≤
+      (2 / (Real.pi * t)) * realGauss (t / 2) z := by
+  have h := gaussian_moment_term_bound (RankTwoPoisson.eisQ z) (Real.pi * t)
+    (eisQ_nonneg z) (mul_pos Real.pi_pos ht)
+  convert h using 1 <;> dsimp [realGauss] <;> ring_nf
+
+private theorem moment_summable {t : ℝ} (ht : 0 < t) :
+    Summable (fun z : ℤ × ℤ => RankTwoPoisson.eisQ z * realGauss t z) := by
+  have hmajor : Summable (fun z : ℤ × ℤ =>
+      (2 / (Real.pi * t)) * realGauss (t / 2) z) :=
+    (realGauss_summable (t := t / 2) (half_pos ht)).mul_left _
+  exact hmajor.of_nonneg_of_le
+    (fun z => mul_nonneg (eisQ_nonneg z) (realGauss_nonneg t z))
+    (moment_term_bound ht)
+
+private theorem moment_tsum_bound {t : ℝ} (ht : 0 < t) :
+    (∑' z : ℤ × ℤ, RankTwoPoisson.eisQ z * realGauss t z) ≤
+      (2 / (Real.pi * t)) *
+        (∑' z : ℤ × ℤ, realGauss (t / 2) z) := by
+  have hmajor : Summable (fun z : ℤ × ℤ =>
+      (2 / (Real.pi * t)) * realGauss (t / 2) z) :=
+    (realGauss_summable (t := t / 2) (half_pos ht)).mul_left _
+  have h := Summable.tsum_le_tsum (moment_term_bound ht)
+    (moment_summable ht) hmajor
+  simpa only [tsum_mul_left] using h
+
+private theorem moment_tsum_nonneg (t : ℝ) :
+    0 ≤ (∑' z : ℤ × ℤ, RankTwoPoisson.eisQ z * realGauss t z) := by
+  exact tsum_nonneg fun z => mul_nonneg (eisQ_nonneg z) (realGauss_nonneg t z)
+
+private theorem half_tendsto_within :
+    Tendsto (fun t : ℝ => t / 2) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+  apply tendsto_nhdsWithin_iff.mpr
+  constructor
+  · have hc : ContinuousAt (fun t : ℝ => t / 2) 0 := by fun_prop
+    simpa using hc.tendsto.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    change 0 < t at ht
+    exact half_pos ht
+
+private theorem t_tendsto_zero :
+    Tendsto (fun t : ℝ => t) (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) :=
+  tendsto_id.mono_left nhdsWithin_le_nhds
+
+private theorem scaled_half_mass_tendsto :
+    Tendsto
+      (fun t : ℝ => (t / 2) *
+        (∑' z : ℤ × ℤ, realGauss (t / 2) z))
+      (𝓝[>] (0 : ℝ)) (𝓝 (2 / Real.sqrt 3)) := by
+  simpa only [Function.comp_def] using real_gaussian_mass.comp half_tendsto_within
+
+/-- The Gaussian moment costs two inverse powers of scale, leaving one vanishing power. -/
+theorem scaled_moment_vanishes :
+    Tendsto
+      (fun t : ℝ => t ^ 3 *
+        (∑' z : ℤ × ℤ, RankTwoPoisson.eisQ z * realGauss t z))
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+  have hright : Tendsto
+      (fun t : ℝ => (4 / Real.pi) * t *
+        ((t / 2) * (∑' z : ℤ × ℤ, realGauss (t / 2) z)))
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+    have h := (t_tendsto_zero.mul scaled_half_mass_tendsto).const_mul (4 / Real.pi)
+    simpa only [zero_mul, mul_zero, Function.comp_def, mul_assoc] using h
+  have hleft : Tendsto (fun _ : ℝ => (0 : ℝ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := tendsto_const_nhds
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hleft hright
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    change 0 < t at ht
+    exact mul_nonneg (pow_nonneg ht.le _) (moment_tsum_nonneg t)
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    change 0 < t at ht
+    have h := moment_tsum_bound ht
+    have ht3 : 0 ≤ t ^ 3 := pow_nonneg ht.le _
+    have hmul := mul_le_mul_of_nonneg_left h ht3
+    calc
+      t ^ 3 * (∑' z : ℤ × ℤ, RankTwoPoisson.eisQ z * realGauss t z) ≤
+          t ^ 3 * ((2 / (Real.pi * t)) *
+            (∑' z : ℤ × ℤ, realGauss (t / 2) z)) := hmul
+      _ = (4 / Real.pi) * t *
+          ((t / 2) * (∑' z : ℤ × ℤ, realGauss (t / 2) z)) := by
+        field_simp [ht.ne']
+        ring
+
+
+theorem scaled_moment_vanishes_const (K : ℝ) (hK : 0 < K) :
+    Tendsto
+      (fun η : ℝ => η ^ 3 *
+        (∑' z : ℤ × ℤ, RankTwoPoisson.eisQ z * realGauss (K * η) z))
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+  have hscale : Tendsto (fun η : ℝ => K * η)
+      (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    constructor
+    · have hc : ContinuousAt (fun η : ℝ => K * η) 0 := by fun_prop
+      simpa using hc.tendsto.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with η hη
+      change 0 < η at hη
+      exact mul_pos hK hη
+  have h := scaled_moment_vanishes.comp hscale
+  have h' := h.const_mul (1 / K ^ 3)
+  convert h' using 1
+  · funext η
+    dsimp [Function.comp_def]
+    field_simp [hK.ne']
+  · simp
+
+end GaussianMoment
+
+namespace OscSpecial
+
+noncomputable def phaseBoundConstant (a b : ℝ) : ℝ :=
+  2 * (|a - b| + |a| + |b|) + 1
+
+theorem phaseBoundConstant_pos (a b : ℝ) :
+    0 < phaseBoundConstant a b := by
+  unfold phaseBoundConstant
+  positivity
+
+theorem quadratic_phase_abs_le (a b k l : ℝ) :
+    |(a - b) * k ^ 2 + 2 * a * k * l + b * l ^ 2| ≤
+      phaseBoundConstant a b * (k ^ 2 + k * l + l ^ 2) := by
+  let Q : ℝ := k ^ 2 + k * l + l ^ 2
+  have hQ : 0 ≤ Q := by
+    dsimp [Q]
+    nlinarith only [sq_nonneg (k + l), sq_nonneg k, sq_nonneg l]
+  have hsum : k ^ 2 + l ^ 2 ≤ 2 * Q := by
+    dsimp [Q]
+    nlinarith only [sq_nonneg (k + l)]
+  have hcross : 2 * |k| * |l| ≤ k ^ 2 + l ^ 2 := by
+    nlinarith only [sq_nonneg (|k| - |l|), sq_abs k, sq_abs l]
+  have hk : k ^ 2 ≤ 2 * Q := by nlinarith only [hsum, sq_nonneg l]
+  have hl : l ^ 2 ≤ 2 * Q := by nlinarith only [hsum, sq_nonneg k]
+  have hkl : 2 * |k| * |l| ≤ 2 * Q := hcross.trans hsum
+  have h1 := mul_le_mul_of_nonneg_left hk (abs_nonneg (a - b))
+  have h2 := mul_le_mul_of_nonneg_left hkl (abs_nonneg a)
+  have h3 := mul_le_mul_of_nonneg_left hl (abs_nonneg b)
+  have htri :
+      |(a - b) * k ^ 2 + 2 * a * k * l + b * l ^ 2| ≤
+        |a - b| * k ^ 2 + 2 * |a| * |k| * |l| + |b| * l ^ 2 := by
+    calc
+      |(a - b) * k ^ 2 + 2 * a * k * l + b * l ^ 2| ≤
+          |(a - b) * k ^ 2| + |2 * a * k * l| + |b * l ^ 2| := by
+        calc
+          _ ≤ |(a - b) * k ^ 2 + 2 * a * k * l| + |b * l ^ 2| := abs_add_le _ _
+          _ ≤ _ := by
+            have hh := abs_add_le ((a - b) * k ^ 2) (2 * a * k * l)
+            linarith
+      _ = _ := by
+        simp [abs_mul,  abs_of_nonneg (sq_nonneg k),
+          abs_of_nonneg (sq_nonneg l)]
+  unfold phaseBoundConstant
+  nlinarith only [htri, h1, h2, h3, hQ]
+
+
+noncomputable def dualQ (z : ℤ × ℤ) : ℝ :=
+  (z.1 : ℝ) ^ 2 + (z.1 : ℝ) * (z.2 : ℝ) + (z.2 : ℝ) ^ 2
+
+noncomputable def dualTrace (a b : ℝ) (z : ℤ × ℤ) : ℝ :=
+  (a - b) * (z.1 : ℝ) ^ 2 + 2 * a * (z.1 : ℝ) * (z.2 : ℝ) +
+    b * (z.2 : ℝ) ^ 2
+
+noncomputable def phaseA (a b : ℝ) : ℝ := 3 * q a b / 16
+noncomputable def phaseAngle (a b : ℝ) (z : ℤ × ℤ) : ℝ :=
+  -(Real.pi / 2) * dualTrace a b z
+noncomputable def dualAmp (η a b : ℝ) (z : ℤ × ℤ) : ℝ :=
+  Real.exp (-Real.pi * (η * q a b / (4 * r η a b)) * dualQ z)
+noncomputable def dualVarTerm (η a b : ℝ) (z : ℤ × ℤ) : ℂ :=
+  (dualAmp η a b z : ℂ) *
+    Complex.exp (Complex.I * ((phaseAngle a b z / r η a b : ℝ) : ℂ))
+noncomputable def dualFixedTerm (η a b : ℝ) (z : ℤ × ℤ) : ℂ :=
+  (dualAmp η a b z : ℂ) *
+    Complex.exp (Complex.I * (phaseAngle a b z : ℂ))
+
+private theorem dualQ_nonneg (z : ℤ × ℤ) : 0 ≤ dualQ z := by
+  unfold dualQ
+  nlinarith [sq_nonneg ((z.1 : ℝ) + (z.2 : ℝ)), sq_nonneg (z.1 : ℝ),
+    sq_nonneg (z.2 : ℝ)]
+
+private theorem phaseAngle_bound (a b : ℝ) (z : ℤ × ℤ) :
+    |phaseAngle a b z| ≤
+      (Real.pi / 2) * phaseBoundConstant a b * dualQ z := by
+  have h := quadratic_phase_abs_le a b (z.1 : ℝ) (z.2 : ℝ)
+  dsimp [phaseAngle, dualTrace, dualQ]
+  rw [abs_mul, abs_neg, abs_of_pos (half_pos Real.pi_pos)]
+  simpa only [mul_assoc] using
+    mul_le_mul_of_nonneg_left h (half_pos Real.pi_pos).le
+
+private theorem r_eq_one_add_phaseA (η a b : ℝ) :
+    r η a b = 1 + phaseA a b * η ^ 2 := by
+  unfold r phaseA
+  ring
+
+private theorem phaseA_nonneg {a b : ℝ} (hq : 0 ≤ q a b) :
+    0 ≤ phaseA a b := by
+  unfold phaseA
+  positivity
+
+theorem dual_phase_term_error {η a b : ℝ} (_hη : 0 < η) (hq : 0 < q a b)
+    (z : ℤ × ℤ) :
+    ‖dualVarTerm η a b z - dualFixedTerm η a b z‖ ≤
+      dualAmp η a b z *
+        ((Real.pi / 2) * phaseBoundConstant a b * dualQ z) *
+        (phaseA a b * η ^ 2) := by
+  have hA : 0 ≤ phaseA a b := phaseA_nonneg hq.le
+  have hamp : 0 ≤ dualAmp η a b z := (Real.exp_pos _).le
+  have hphase := GaussianPhasePointwise.exp_imag_denominator_error
+    (phaseAngle a b z) (phaseA a b) η hA
+  rw [← r_eq_one_add_phaseA η a b] at hphase
+  have hangle := phaseAngle_bound a b z
+  have hangle' := mul_le_mul_of_nonneg_right hangle
+    (mul_nonneg hA (sq_nonneg η))
+  dsimp [dualVarTerm, dualFixedTerm]
+  rw [← mul_sub, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hamp]
+  nlinarith only [mul_le_mul_of_nonneg_left hphase hamp,
+    mul_le_mul_of_nonneg_left hangle' hamp]
+
+noncomputable def dualRealGauss (t : ℝ) (z : ℤ × ℤ) : ℝ :=
+  Real.exp (-Real.pi * t * dualQ z)
+
+private theorem dualRealGauss_summable {t : ℝ} (ht : 0 < t) :
+    Summable (dualRealGauss t) := by
+  let e : ℤ × ℤ ≃ ℤ × ℤ :=
+    Equiv.prodCongr (Equiv.refl ℤ) (Equiv.neg ℤ)
+  have hE : Summable (fun z : ℤ × ℤ =>
+      RankTwoPoisson.eisGauss t (z.1,-z.2)) :=
+    (e.summable_iff).2 (RankTwoPoisson.eis_gauss_summable ht)
+  convert hE.norm using 1
+  funext z
+  dsimp [dualRealGauss, RankTwoPoisson.eisGauss]
+  rw [Complex.norm_exp]
+  simp only [Complex.ofReal_re]
+  congr 1
+  dsimp [dualQ, RankTwoPoisson.eisQ]
+  push_cast
+  ring
+
+private theorem dualMoment_summable {t : ℝ} (ht : 0 < t) :
+    Summable (fun z : ℤ × ℤ => dualQ z * dualRealGauss t z) := by
+  have hmaj : Summable (fun z : ℤ × ℤ =>
+      (2 / (Real.pi * t)) * dualRealGauss (t / 2) z) :=
+    (dualRealGauss_summable (half_pos ht)).mul_left _
+  apply hmaj.of_nonneg_of_le
+  · intro z
+    exact mul_nonneg (dualQ_nonneg z) (Real.exp_pos _).le
+  · intro z
+    have h := GaussianMoment.gaussian_moment_term_bound
+      (dualQ z) (Real.pi * t) (dualQ_nonneg z) (mul_pos Real.pi_pos ht)
+    convert h using 1 <;> dsimp [dualRealGauss] <;> ring_nf
+
+private theorem dualAmp_eq_realGauss (η a b : ℝ) (z : ℤ × ℤ) :
+    dualAmp η a b z = dualRealGauss (η * q a b / (4 * r η a b)) z := rfl
+
+private theorem dualAmp_norm_var (η a b : ℝ) (z : ℤ × ℤ) :
+    ‖dualVarTerm η a b z‖ = dualAmp η a b z := by
+  dsimp [dualVarTerm]
+  rw [norm_mul, Complex.norm_exp_I_mul_ofReal, mul_one, Complex.norm_real]
+  exact abs_of_nonneg (Real.exp_pos _).le
+
+private theorem dualAmp_norm_fixed (η a b : ℝ) (z : ℤ × ℤ) :
+    ‖dualFixedTerm η a b z‖ = dualAmp η a b z := by
+  dsimp [dualFixedTerm]
+  rw [norm_mul, Complex.norm_exp_I_mul_ofReal, mul_one, Complex.norm_real]
+  exact abs_of_nonneg (Real.exp_pos _).le
+
+private theorem dualAmp_summable {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b) :
+    Summable (dualAmp η a b) := by
+  have hr : 0 < r η a b := r_pos hη hq
+  have ht : 0 < η * q a b / (4 * r η a b) := by positivity
+  convert dualRealGauss_summable ht using 1
+  funext z
+  exact dualAmp_eq_realGauss η a b z
+
+private theorem dualVar_summable {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b) :
+    Summable (dualVarTerm η a b) :=
+  (dualAmp_summable hη hq).of_norm_bounded
+    (fun z => le_of_eq (dualAmp_norm_var η a b z))
+
+private theorem dualFixed_summable {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b) :
+    Summable (dualFixedTerm η a b) :=
+  (dualAmp_summable hη hq).of_norm_bounded
+    (fun z => le_of_eq (dualAmp_norm_fixed η a b z))
+
+private theorem dualAmp_le_small {η a b : ℝ}
+    (hη : 0 < η) (hq : 0 < q a b) (hrle : r η a b ≤ 2)
+    (z : ℤ × ℤ) :
+    dualAmp η a b z ≤ dualRealGauss (η * q a b / 8) z := by
+  have hr : 0 < r η a b := r_pos hη hq
+  have hp : 0 < η * q a b := mul_pos hη hq
+  have ht : η * q a b / 8 ≤ η * q a b / (4 * r η a b) := by
+    apply (div_le_div_iff₀ (by norm_num : (0 : ℝ) < 8)
+      (by positivity : 0 < 4 * r η a b)).2
+    nlinarith [mul_le_mul_of_nonneg_left hrle hp.le]
+  dsimp [dualAmp, dualRealGauss]
+  apply Real.exp_le_exp.mpr
+  have hm := mul_le_mul_of_nonneg_right ht
+    (mul_nonneg Real.pi_pos.le (dualQ_nonneg z))
+  nlinarith [hm]
+
+noncomputable def phaseErrorConstant (a b : ℝ) : ℝ :=
+  (Real.pi / 2) * phaseBoundConstant a b * phaseA a b
+
+private theorem phaseErrorConstant_nonneg {a b : ℝ} (hq : 0 < q a b) :
+    0 ≤ phaseErrorConstant a b := by
+  unfold phaseErrorConstant
+  exact mul_nonneg (mul_nonneg (half_pos Real.pi_pos).le
+    (phaseBoundConstant_pos a b).le) (phaseA_nonneg hq.le)
+
+theorem normalized_dual_phase_sum_error {η a b : ℝ}
+    (hη : 0 < η) (hq : 0 < q a b) (hrle : r η a b ≤ 2) :
+    η * ‖(∑' z : ℤ × ℤ, dualVarTerm η a b z) -
+      (∑' z : ℤ × ℤ, dualFixedTerm η a b z)‖ ≤
+      phaseErrorConstant a b * η ^ 3 *
+        (∑' z : ℤ × ℤ,
+          dualQ z * dualRealGauss (η * q a b / 8) z) := by
+  let t : ℝ := η * q a b / 8
+  have ht : 0 < t := by dsimp [t]; positivity
+  have hK : 0 ≤ phaseErrorConstant a b := phaseErrorConstant_nonneg hq
+  have hpoint (z : ℤ × ℤ) :
+      ‖dualVarTerm η a b z - dualFixedTerm η a b z‖ ≤
+        (phaseErrorConstant a b * η ^ 2) *
+          (dualQ z * dualRealGauss t z) := by
+    have hbase := dual_phase_term_error hη hq z
+    have hamp := dualAmp_le_small hη hq hrle z
+    have hfac : 0 ≤
+        ((Real.pi / 2) * phaseBoundConstant a b * dualQ z) *
+          (phaseA a b * η ^ 2) := by
+      exact mul_nonneg
+        (mul_nonneg (mul_nonneg (half_pos Real.pi_pos).le
+          (phaseBoundConstant_pos a b).le) (dualQ_nonneg z))
+        (mul_nonneg (phaseA_nonneg hq.le) (sq_nonneg η))
+    have hmul := mul_le_mul_of_nonneg_right hamp hfac
+    dsimp [t, phaseErrorConstant]
+    calc
+      ‖dualVarTerm η a b z - dualFixedTerm η a b z‖ ≤
+        dualAmp η a b z *
+          ((Real.pi / 2) * phaseBoundConstant a b * dualQ z) *
+          (phaseA a b * η ^ 2) := hbase
+      _ ≤ dualRealGauss (η * q a b / 8) z *
+          ((Real.pi / 2) * phaseBoundConstant a b * dualQ z) *
+          (phaseA a b * η ^ 2) := by nlinarith only [hmul]
+      _ = ((Real.pi / 2 * phaseBoundConstant a b * phaseA a b) * η ^ 2) *
+          (dualQ z * dualRealGauss (η * q a b / 8) z) := by ring
+  have hmajor : Summable (fun z : ℤ × ℤ =>
+      (phaseErrorConstant a b * η ^ 2) *
+        (dualQ z * dualRealGauss t z)) :=
+    (dualMoment_summable ht).mul_left _
+  have hnorm : Summable (fun z : ℤ × ℤ =>
+      ‖dualVarTerm η a b z - dualFixedTerm η a b z‖) :=
+    hmajor.of_nonneg_of_le (fun z => norm_nonneg _) hpoint
+  have hsum := norm_tsum_le_tsum_norm hnorm
+  have htsum := Summable.tsum_le_tsum hpoint hnorm hmajor
+  have hvar := dualVar_summable hη hq
+  have hfixed := dualFixed_summable hη hq
+  calc
+    η * ‖(∑' z : ℤ × ℤ, dualVarTerm η a b z) -
+      (∑' z : ℤ × ℤ, dualFixedTerm η a b z)‖ =
+      η * ‖(∑' z : ℤ × ℤ, (dualVarTerm η a b z - dualFixedTerm η a b z))‖ := by
+        rw [hvar.tsum_sub hfixed]
+    _ ≤ η * (∑' z : ℤ × ℤ,
+          ‖dualVarTerm η a b z - dualFixedTerm η a b z‖) :=
+      mul_le_mul_of_nonneg_left hsum hη.le
+    _ ≤ η * (∑' z : ℤ × ℤ,
+          (phaseErrorConstant a b * η ^ 2) *
+            (dualQ z * dualRealGauss t z)) :=
+      mul_le_mul_of_nonneg_left htsum hη.le
+    _ = phaseErrorConstant a b * η ^ 3 *
+          (∑' z : ℤ × ℤ, dualQ z * dualRealGauss (η * q a b / 8) z) := by
+      rw [tsum_mul_left]
+      dsimp [t]
+      ring
+
+
+private theorem dual_moment_reindex (t : ℝ) :
+    (∑' z : ℤ × ℤ, dualQ z * dualRealGauss t z) =
+      ∑' z : ℤ × ℤ,
+        RankTwoPoisson.eisQ z * GaussianMoment.realGauss t z := by
+  let e : ℤ × ℤ ≃ ℤ × ℤ :=
+    Equiv.prodCongr (Equiv.refl ℤ) (Equiv.neg ℤ)
+  calc
+    (∑' z : ℤ × ℤ, dualQ z * dualRealGauss t z) =
+        ∑' z : ℤ × ℤ,
+          RankTwoPoisson.eisQ (e z) * GaussianMoment.realGauss t (e z) := by
+      apply tsum_congr
+      intro z
+      have hQ : RankTwoPoisson.eisQ (e z) = dualQ z := by
+        rcases z with ⟨k,l⟩
+        change (k : ℝ) ^ 2 - (k : ℝ) * ((-l : ℤ) : ℝ) +
+          ((-l : ℤ) : ℝ) ^ 2 =
+          (k : ℝ) ^ 2 + (k : ℝ) * (l : ℝ) + (l : ℝ) ^ 2
+        push_cast
+        ring
+      simp only [GaussianMoment.realGauss, dualRealGauss, hQ]
+    _ = ∑' z : ℤ × ℤ,
+          RankTwoPoisson.eisQ z * GaussianMoment.realGauss t z :=
+      e.tsum_eq (fun z : ℤ × ℤ =>
+        RankTwoPoisson.eisQ z * GaussianMoment.realGauss t z)
+
+/-- Freezing the dual phase preserves the normalized Abel limit. -/
+theorem normalized_dual_phase_sum_error_tendsto_zero {a b : ℝ}
+    (hq : 0 < q a b) :
+    Tendsto
+      (fun η : ℝ =>
+        η * ‖(∑' z : ℤ × ℤ, dualVarTerm η a b z) -
+          (∑' z : ℤ × ℤ, dualFixedTerm η a b z)‖)
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+  let K : ℝ := q a b / 8
+  have hK : 0 < K := by dsimp [K]; positivity
+  have hmoment :
+      Tendsto
+        (fun η : ℝ => η ^ 3 *
+          (∑' z : ℤ × ℤ,
+            dualQ z * dualRealGauss (η * q a b / 8) z))
+        (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+    convert GaussianMoment.scaled_moment_vanishes_const K hK using 1
+    funext η
+    dsimp [K]
+    rw [dual_moment_reindex]
+    ring_nf
+  have hright :
+      Tendsto
+        (fun η : ℝ => phaseErrorConstant a b * η ^ 3 *
+          (∑' z : ℤ × ℤ,
+            dualQ z * dualRealGauss (η * q a b / 8) z))
+        (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+    convert hmoment.const_mul (phaseErrorConstant a b) using 1
+    · funext η
+      ring
+    · simp
+  have hr_lim : Tendsto (fun η : ℝ => r η a b)
+      (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ)) := by
+    have hc : ContinuousAt (fun η : ℝ => r η a b) 0 := by
+      unfold r
+      fun_prop
+    simpa [r] using hc.tendsto.mono_left nhdsWithin_le_nhds
+  have hrle : ∀ᶠ η : ℝ in 𝓝[>] (0 : ℝ), r η a b ≤ 2 := by
+    have hevent : ∀ᶠ x : ℝ in 𝓝 (1 : ℝ), x ≤ 2 :=
+      eventually_le_nhds (by norm_num)
+    exact hr_lim.eventually hevent
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (tendsto_const_nhds (x := (0 : ℝ))) hright
+  · filter_upwards [self_mem_nhdsWithin] with η hη
+    exact mul_nonneg hη.le (norm_nonneg _)
+  · filter_upwards [self_mem_nhdsWithin, hrle] with η hη hbound
+    exact normalized_dual_phase_sum_error hη hq hbound
+
+theorem dualGaussian_eq_dualVarTerm {η a b : ℝ}
+    (hη : 0 < η) (hq : 0 < q a b) (z : ℤ × ℤ) :
+    RankTwoComplex.dualGaussian (A η a b) (B η a b) (D η a b) z =
+      dualVarTerm η a b z := by
+  rw [dualGaussian_explicit hη hq z]
+  have hQ :
+      ((z.1 : ℂ) ^ 2 + (z.1 : ℂ) * (z.2 : ℂ) + (z.2 : ℂ) ^ 2) =
+        (dualQ z : ℂ) := by
+    dsimp [dualQ]
+    push_cast
+    ring
+  have hT :
+      (((a-b : ℝ) : ℂ) * (z.1 : ℂ) ^ 2 +
+        2 * (a : ℂ) * (z.1 : ℂ) * (z.2 : ℂ) +
+        (b : ℂ) * (z.2 : ℂ) ^ 2) =
+        (dualTrace a b z : ℂ) := by
+    dsimp [dualTrace]
+    push_cast
+    ring
+  rw [hQ, hT]
+  have hrC : (r η a b : ℂ) ≠ 0 := by
+    exact_mod_cast (r_pos hη hq).ne'
+  have harg :
+      -(Real.pi : ℂ) *
+        ((η : ℂ) * (q a b : ℂ) / (4 * (r η a b : ℂ)) *
+          (dualQ z : ℂ) +
+          Complex.I / (2 * (r η a b : ℂ)) * (dualTrace a b z : ℂ)) =
+      (((-Real.pi * (η * q a b / (4 * r η a b)) * dualQ z : ℝ) : ℂ)) +
+        Complex.I * ((phaseAngle a b z / r η a b : ℝ) : ℂ) := by
+    dsimp [phaseAngle]
+    push_cast
+    field_simp [hrC]
+    ring
+  rw [harg, Complex.exp_add, ← Complex.ofReal_exp]
+  rfl
+
+
+
+noncomputable def dualScale (η a b : ℝ) : ℝ :=
+  η * q a b / (4 * r η a b)
+
+theorem dualScale_tendsto (a b : ℝ) (hq : 0 < q a b) :
+    Tendsto (fun η : ℝ => dualScale η a b)
+      (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+  have hnum : ContinuousAt (fun η : ℝ => η * q a b) 0 := by fun_prop
+  have hden : ContinuousAt (fun η : ℝ => 4 * r η a b) 0 := by
+    change ContinuousAt
+      (fun η : ℝ => 4 * (1 + 3 * q a b * η ^ 2 / 16)) 0
+    fun_prop
+  have hden0 : 4 * r 0 a b ≠ 0 := by simp [r]
+  have hcont : ContinuousAt (fun η : ℝ => dualScale η a b) 0 := by
+    exact hnum.div hden hden0
+  have hlim : Tendsto (fun η : ℝ => dualScale η a b)
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+    simpa [dualScale] using hcont.tendsto.mono_left nhdsWithin_le_nhds
+  apply tendsto_nhdsWithin_iff.mpr
+  constructor
+  · exact hlim
+  · filter_upwards [self_mem_nhdsWithin] with η hη
+    change 0 < η at hη
+    have hr : 0 < r η a b := by
+      unfold r
+      positivity
+    exact div_pos (mul_pos hη hq) (mul_pos (by norm_num) hr)
+
+/-- The dual damping rescales Abel mass by the limiting ratio of the two scales. -/
+theorem abel_mass_dual_scale (a b : ℝ) (hq : 0 < q a b)
+    (F : ℝ → ℂ) (L : ℂ)
+    (hF : Tendsto (fun t : ℝ => (t : ℂ) * F t)
+      (𝓝[>] (0 : ℝ)) (𝓝 L)) :
+    Tendsto (fun η : ℝ => (η : ℂ) * F (dualScale η a b))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (((4 / q a b : ℝ) : ℂ) * L)) := by
+  have hscale := dualScale_tendsto a b hq
+  have hF' := hF.comp hscale
+  have hrcont : ContinuousAt
+      (fun η : ℝ => ((4 * r η a b / q a b : ℝ) : ℂ)) 0 := by
+    change ContinuousAt
+      (fun η : ℝ => ((4 * (1 + 3 * q a b * η ^ 2 / 16) / q a b : ℝ) : ℂ)) 0
+    fun_prop
+  have hr : Tendsto (fun η : ℝ => ((4 * r η a b / q a b : ℝ) : ℂ))
+      (𝓝[>] (0 : ℝ)) (𝓝 ((4 / q a b : ℝ) : ℂ)) := by
+    simpa [r] using hrcont.tendsto.mono_left nhdsWithin_le_nhds
+  have hprod := hr.mul hF'
+  have heq : ∀ᶠ η : ℝ in 𝓝[>] (0 : ℝ),
+      (η : ℂ) * F (dualScale η a b) =
+        ((4 * r η a b / q a b : ℝ) : ℂ) *
+          (((dualScale η a b : ℝ) : ℂ) * F (dualScale η a b)) := by
+    filter_upwards [self_mem_nhdsWithin] with η hη
+    change 0 < η at hη
+    have hrpos : 0 < r η a b := by
+      unfold r
+      positivity
+    have hqC : (q a b : ℂ) ≠ 0 := by exact_mod_cast hq.ne'
+    have hrC : (r η a b : ℂ) ≠ 0 := by exact_mod_cast hrpos.ne'
+    dsimp [dualScale]
+    push_cast
+    field_simp [hqC, hrC]
+  exact hprod.congr' (heq.mono fun η h => h.symm)
+
+
+private theorem R_eq_four_r_div_q {η a b : ℝ} (hq : q a b ≠ 0) :
+    R η a b = 4 * r η a b / q a b := by
+  unfold R r
+  field_simp [hq]
+  ring
+
+private theorem sqrt_R_eq {η a b : ℝ} (_hη : 0 < η) (hq : 0 < q a b) :
+    Real.sqrt (R η a b) = 2 * Real.sqrt (r η a b) / Real.sqrt (q a b) := by
+  rw [R_eq_four_r_div_q hq.ne']
+  rw [Real.sqrt_div' (4 * r η a b) hq.le]
+  rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 4)]
+  have hs4 : Real.sqrt (4 : ℝ) = 2 := by
+    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)]
+  rw [hs4]
+
+theorem prefactor_eq_real_sqrt {η a b : ℝ} (hη : 0 < η) (hq : 0 < q a b) :
+    (1 / ((R η a b : ℂ) ^ (1 / 2 : ℂ))) =
+      ((Real.sqrt (q a b) / (2 * Real.sqrt (r η a b)) : ℝ) : ℂ) := by
+  have hR : 0 ≤ R η a b := by unfold R; positivity
+  have hqS : Real.sqrt (q a b) ≠ 0 := (Real.sqrt_pos.mpr hq).ne'
+  have hrS : Real.sqrt (r η a b) ≠ 0 :=
+    (Real.sqrt_pos.mpr (r_pos hη hq)).ne'
+  have hcpow : (R η a b : ℂ) ^ (1 / 2 : ℂ) =
+      ((R η a b) ^ (1 / 2 : ℝ) : ℝ) := by
+    simpa using (Complex.ofReal_cpow hR (1 / 2 : ℝ)).symm
+  rw [hcpow]
+  simp only [Complex.ofReal_div]
+  rw [← Real.sqrt_eq_rpow, sqrt_R_eq hη hq]
+  push_cast
+  field_simp [hqS, hrS]
+
+
+/-- The principal Poisson prefactor tends to half the square root of the norm form. -/
+theorem prefactor_tendsto {a b : ℝ} (hq : 0 < q a b) :
+    Tendsto (fun η : ℝ => 1 / ((R η a b : ℂ) ^ (1 / 2 : ℂ)))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (((Real.sqrt (q a b) / 2 : ℝ) : ℂ))) := by
+  have hrcont : Continuous (fun η : ℝ => r η a b) := by
+    unfold r
+    fun_prop
+  have hr : Tendsto (fun η : ℝ => r η a b) (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ)) := by
+    simpa [r] using (hrcont.tendsto 0).mono_left nhdsWithin_le_nhds
+  have hs : Tendsto (fun η : ℝ => Real.sqrt (r η a b))
+      (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ)) := by
+    simpa only [Function.comp_def, Real.sqrt_one] using
+      Real.continuous_sqrt.continuousAt.tendsto.comp hr
+  have hd : Tendsto (fun η : ℝ => Real.sqrt (q a b) /
+      (2 * Real.sqrt (r η a b))) (𝓝[>] (0 : ℝ))
+      (𝓝 (Real.sqrt (q a b) / 2)) := by
+    simpa only [Pi.div_def, mul_one] using
+      (tendsto_const_nhds (x := Real.sqrt (q a b))).div
+        ((tendsto_const_nhds (x := (2 : ℝ))).mul hs)
+        (by norm_num : (2 : ℝ) * 1 ≠ 0)
+  have hc : Tendsto (fun η : ℝ =>
+      ((Real.sqrt (q a b) / (2 * Real.sqrt (r η a b)) : ℝ) : ℂ))
+      (𝓝[>] (0 : ℝ)) (𝓝 (((Real.sqrt (q a b) / 2 : ℝ) : ℂ))) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.comp hd
+  have heq : (fun η : ℝ => 1 / ((R η a b : ℂ) ^ (1 / 2 : ℂ))) =ᶠ[𝓝[>] (0 : ℝ)]
+      (fun η : ℝ => ((Real.sqrt (q a b) / (2 * Real.sqrt (r η a b)) : ℝ) : ℂ)) := by
+    filter_upwards [self_mem_nhdsWithin] with η hη
+    exact prefactor_eq_real_sqrt hη hq
+  exact hc.congr' heq.symm
+
+end OscSpecial
+
+/-- A vanishing normalized phase error transfers an Abel limit through a convergent prefactor. -/
+theorem abel_transfer (P V W : ℝ → ℂ) (p w : ℂ)
+    (hP : Tendsto P (𝓝[>] (0 : ℝ)) (𝓝 p))
+    (hW : Tendsto (fun η : ℝ => (η : ℂ) * W η) (𝓝[>] (0 : ℝ)) (𝓝 w))
+    (hE : Tendsto (fun η => η * ‖V η - W η‖)
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ))) :
+    Tendsto (fun η : ℝ => (η : ℂ) * (P η * V η))
+      (𝓝[>] (0 : ℝ)) (𝓝 (p * w)) := by
+  have hdiff : Tendsto (fun η : ℝ => (η : ℂ) * (V η - W η))
+      (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℂ)) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have heq : (fun η : ℝ => ‖(η : ℂ) * (V η - W η)‖) =ᶠ[𝓝[>] (0 : ℝ)]
+        (fun η => η * ‖V η - W η‖) := by
+      filter_upwards [self_mem_nhdsWithin] with η hη
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hη]
+    exact hE.congr' heq.symm
+  have hV : Tendsto (fun η : ℝ => (η : ℂ) * V η)
+      (𝓝[>] (0 : ℝ)) (𝓝 w) := by
+    convert hW.add hdiff using 1
+    · funext η; ring
+    · simp
+  convert hP.mul hV using 1
+  · funext η; ring
+
+
+end QuadraticPhase
+
+
+open scoped BigOperators Topology
+open Filter
+namespace QuadraticPhase.Eisenstein
+open Coordinates
+
+/-- The dual frequency lattice in the integral Eisenstein basis. -/
+def dualFrequencyEquiv : ℤ × ℤ ≃ O :=
+  ({ toFun := fun z => (z.1+z.2,z.1)
+     invFun := fun z => (z.2,z.1-z.2)
+     left_inv := by rintro ⟨k,l⟩; simp
+     right_inv := by rintro ⟨k,l⟩; simp } : (ℤ × ℤ) ≃ (ℤ × ℤ)).trans
+    coordinateEquiv.symm
+
+theorem dualFrequencyEquiv_apply (z : ℤ × ℤ) :
+    dualFrequencyEquiv z = eval (z.1+z.2) z.1 := rfl
+
+theorem dualFrequency_norm_sq (z : ℤ × ℤ) :
+    ‖ringComplex (dualFrequencyEquiv z)‖ ^ 2 = OscSpecial.dualQ z := by
+  rw [dualFrequencyEquiv_apply, complex_norm_eval_sq]
+  dsimp [OscSpecial.dualQ]
+  push_cast
+  ring
+
+/-- The fixed phase of the inverse quadratic form is the trace phase modulo four. -/
+theorem dualFrequency_phase (a b : ℤ) (z : ℤ × ℤ) :
+    fixedDualPhase (eval a b) (dualFrequencyEquiv z) =
+      Complex.exp (Complex.I * (OscSpecial.phaseAngle (a : ℝ) (b : ℝ) z : ℂ)) := by
+  rw [dualFrequencyEquiv_apply, fixedDualPhase_eval]
+  conv_lhs => rw [← Complex.exp_pi_div_two_mul_I, ← Complex.exp_int_mul]
+  congr 1
+  dsimp [OscSpecial.phaseAngle, OscSpecial.dualTrace]
+  push_cast
+  ring
+
+/-- Reindexing the fixed dual Gaussian exposes its period-two residue classes. -/
+theorem fixed_dual_sum_eq (a b : ℤ) (η : ℝ) :
+    (∑' z : ℤ × ℤ, OscSpecial.dualFixedTerm η (a : ℝ) (b : ℝ) z) =
+      ∑' y : O, fixedDualPhase (eval a b) y *
+        Complex.exp (-(Real.pi : ℂ) * (OscSpecial.dualScale η (a : ℝ) (b : ℝ) : ℂ) *
+          (‖ringComplex y‖ ^ 2 : ℂ)) := by
+  rw [← dualFrequencyEquiv.tsum_eq (fun y : O => fixedDualPhase (eval a b) y *
+    Complex.exp (-(Real.pi : ℂ) * (OscSpecial.dualScale η (a : ℝ) (b : ℝ) : ℂ) *
+      (‖ringComplex y‖ ^ 2 : ℂ)))]
+  apply tsum_congr
+  intro z
+  have hnorm : (‖ringComplex (dualFrequencyEquiv z)‖ : ℂ) ^ 2 =
+      (OscSpecial.dualQ z : ℂ) := by exact_mod_cast dualFrequency_norm_sq z
+  rw [dualFrequency_phase, hnorm]
+  dsimp [OscSpecial.dualFixedTerm, OscSpecial.dualAmp, OscSpecial.dualScale]
+  rw [Complex.ofReal_exp]
+  push_cast
+  ring
+
+/-- The actual quadratic trace kernel is the oscillatory binary Gaussian. -/
+theorem original_kernel_eq_binary (a b x y : ℤ) (hc : eval a b ≠ 0) (η : ℝ) :
+    principalTraceChar (eval a b) hc
+        (Ideal.Quotient.mk (Ideal.span {eval a b}) (eval x y) ^ 2) *
+      Complex.exp (-(Real.pi : ℂ) * (η : ℂ) * (‖ringComplex (eval x y)‖ ^ 2 : ℂ)) =
+      RankTwoComplex.binaryGaussian
+        (OscSpecial.A η (a : ℝ) (b : ℝ)) (OscSpecial.B η (a : ℝ) (b : ℝ))
+        (OscSpecial.D η (a : ℝ) (b : ℝ)) (x,y) := by
+  have hnorm : (‖ringComplex (eval x y)‖ : ℂ) ^ 2 =
+      (x : ℂ) ^ 2 - (x : ℂ) * (y : ℂ) + (y : ℂ) ^ 2 := by
+    exact_mod_cast complex_norm_eval_sq x y
+  rw [principalTraceChar_square, hnorm, ← Complex.exp_add]
+  dsimp [RankTwoComplex.binaryGaussian, OscSpecial.A, OscSpecial.B, OscSpecial.D,
+    OscSpecial.q]
+  congr 1
+  push_cast
+  ring
+
+theorem original_sum_eq_binary (a b : ℤ) (hc : eval a b ≠ 0) (η : ℝ) :
+    (∑' z : O, principalTraceChar (eval a b) hc
+        (Ideal.Quotient.mk (Ideal.span {eval a b}) z ^ 2) *
+      Complex.exp (-(Real.pi : ℂ) * (η : ℂ) * (‖ringComplex z‖ ^ 2 : ℂ))) =
+      ∑' z : ℤ × ℤ, RankTwoComplex.binaryGaussian
+        (OscSpecial.A η (a : ℝ) (b : ℝ)) (OscSpecial.B η (a : ℝ) (b : ℝ))
+        (OscSpecial.D η (a : ℝ) (b : ℝ)) z := by
+  rw [← coordinateEquiv.symm.tsum_eq (fun z : O =>
+    principalTraceChar (eval a b) hc (Ideal.Quotient.mk (Ideal.span {eval a b}) z ^ 2) *
+      Complex.exp (-(Real.pi : ℂ) * (η : ℂ) * (‖ringComplex z‖ ^ 2 : ℂ)))]
+  exact tsum_congr fun z => original_kernel_eq_binary a b z.1 z.2 hc η
+
+private theorem finite_mod_two : Finite (O ⧸ Ideal.span {(2 : O)}) :=
+  (Ideal.span {(2 : O)}).finiteQuotientOfFreeOfNeBot
+    (fun h => (by norm_num : (2 : O) ≠ 0) (Ideal.span_singleton_eq_bot.mp h))
+
+/-- Equal Abel mass in the four classes leaves their fixed phase average. -/
+theorem fixed_phase_abel_limit (c : O) :
+    Tendsto (fun t : ℝ => (t : ℂ) *
+      (∑' y : O, fixedDualPhase c y *
+        Complex.exp (-(Real.pi : ℂ) * (t : ℂ) * (‖ringComplex y‖ ^ 2 : ℂ))))
+      (𝓝[>] (0 : ℝ)) (𝓝 ((1 / (Real.sqrt 3 : ℂ)) * fixedDualAverage c)) := by
+  letI : Finite (O ⧸ Ideal.span {(2 : O)}) := finite_mod_two
+  letI : Fintype (O ⧸ Ideal.span {(2 : O)}) := Fintype.ofFinite _
+  let rep := GaussianShiftedPartition.representative (2 : O)
+  let P : O ⧸ Ideal.span {(2 : O)} → ℂ := fun r => fixedDualPhase c (rep r)
+  let W (t : ℝ) (y : O) : ℂ :=
+    Complex.exp (-(Real.pi : ℂ) * (t : ℂ) * (‖ringComplex y‖ ^ 2 : ℂ))
+  have hP (y : O) : P (Ideal.Quotient.mk (Ideal.span {(2 : O)}) y) =
+      fixedDualPhase c y :=
+    fixedDualPhase_eq_of_mod_two c _ _
+      (GaussianShiftedPartition.representative_spec 2 _)
+  have hfiber (r : O ⧸ Ideal.span {(2 : O)}) :
+      Tendsto (fun t : ℝ => (t : ℂ) * (∑' y : O, W t (rep r + 2*y)))
+        (𝓝[>] (0 : ℝ)) (𝓝 (1 / (2 * (Real.sqrt 3 : ℂ)))) := by
+    have h := actual_O_fiber_gaussian_mass (2 : O) (rep r) (by norm_num)
+    have hcoords : coords (2 : O) = (2,0) := by
+      rw [← show eval 2 0 = (2 : O) by norm_num [eval], coords_eval]
+    simp only [hcoords] at h
+    convert h using 1
+    dsimp [W]
+    push_cast
+    ring
+  have hsum := tendsto_finsetSum Finset.univ (fun r _ => (hfiber r).const_mul (P r))
+  have hpoint (t : ℝ) (ht : 0 < t) :
+      (t : ℂ) * (∑' y : O, fixedDualPhase c y * W t y) =
+      ∑ r : O ⧸ Ideal.span {(2 : O)}, P r *
+        ((t : ℂ) * (∑' y : O, W t (rep r + 2*y))) := by
+    have hconv : Summable (fun y : O => P (Ideal.Quotient.mk (Ideal.span {(2 : O)}) y) * W t y) := by
+      apply (eis_gaussian_summable ht).norm.of_norm_bounded
+      intro y
+      simpa only [norm_mul, hP, fixedDualPhase_norm, one_mul] using (le_refl ‖W t y‖)
+    have hp := GaussianAbelPartition.tsum_periodic_weighted_partition
+      (Ideal.Quotient.mk (Ideal.span {(2 : O)})) P (W t) hconv
+    simp only [hP] at hp
+    rw [hp, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro r _
+    rw [GaussianFiberEquiv.fiber_tsum 2 (by norm_num) r (rep r)
+      (GaussianShiftedPartition.representative_spec 2 r) (W t)]
+    ring
+  have heq : (fun t : ℝ => (t : ℂ) * (∑' y : O, fixedDualPhase c y * W t y)) =ᶠ[𝓝[>] (0 : ℝ)]
+      (fun t : ℝ => ∑ r : O ⧸ Ideal.span {(2 : O)}, P r *
+        ((t : ℂ) * (∑' y : O, W t (rep r + 2*y)))) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact hpoint t ht
+  have hlim := hsum.congr' heq.symm
+  convert hlim using 1
+  congr 1
+  unfold fixedDualAverage
+  change (1 / (Real.sqrt 3 : ℂ)) * ((∑ r, P r) / 2) = _
+  rw [← Finset.sum_mul]
+  ring
+
+/-- The fixed dual sum has its residue average as its rescaled Abel limit. -/
+theorem fixed_dual_abel_limit (a b : ℤ) (hc : eval a b ≠ 0) :
+    Tendsto (fun η : ℝ => (η : ℂ) *
+      (∑' z : ℤ × ℤ, OscSpecial.dualFixedTerm η (a : ℝ) (b : ℝ) z))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (((4 / OscSpecial.q (a : ℝ) (b : ℝ) : ℝ) : ℂ) *
+        ((1 / (Real.sqrt 3 : ℂ)) * fixedDualAverage (eval a b)))) := by
+  have hq : 0 < OscSpecial.q (a : ℝ) (b : ℝ) := by
+    dsimp [OscSpecial.q]
+    exact_mod_cast coordinate_norm_pos a b hc
+  have h := OscSpecial.abel_mass_dual_scale (a : ℝ) (b : ℝ) hq
+    (fun t : ℝ => ∑' y : O, fixedDualPhase (eval a b) y *
+      Complex.exp (-(Real.pi : ℂ) * (t : ℂ) * (‖ringComplex y‖ ^ 2 : ℂ)))
+    _ (fixed_phase_abel_limit (eval a b))
+  simpa only [fixed_dual_sum_eq] using h
+
+/-- Poisson summation and the vanishing phase error give the dual limit of the original kernel. -/
+theorem original_dual_abel_limit (a b : ℤ) (hc : eval a b ≠ 0) :
+    Tendsto (fun η : ℝ => (η : ℂ) *
+      (∑' z : O, principalTraceChar (eval a b) hc
+        (Ideal.Quotient.mk (Ideal.span {eval a b}) z ^ 2) *
+        Complex.exp (-(Real.pi : ℂ) * (η : ℂ) * (‖ringComplex z‖ ^ 2 : ℂ))))
+      (𝓝[>] (0 : ℝ))
+      (𝓝 ((((Real.sqrt (OscSpecial.q (a : ℝ) (b : ℝ)) / 2 : ℝ) : ℂ)) *
+        (((4 / OscSpecial.q (a : ℝ) (b : ℝ) : ℝ) : ℂ) *
+          ((1 / (Real.sqrt 3 : ℂ)) * fixedDualAverage (eval a b))))) := by
+  have hq : 0 < OscSpecial.q (a : ℝ) (b : ℝ) := by
+    dsimp [OscSpecial.q]
+    exact_mod_cast coordinate_norm_pos a b hc
+  have h := abel_transfer
+    (fun η : ℝ => 1 / ((OscSpecial.R η (a : ℝ) (b : ℝ) : ℂ) ^ (1 / 2 : ℂ)))
+    (fun η : ℝ => ∑' z : ℤ × ℤ, OscSpecial.dualVarTerm η (a : ℝ) (b : ℝ) z)
+    (fun η : ℝ => ∑' z : ℤ × ℤ, OscSpecial.dualFixedTerm η (a : ℝ) (b : ℝ) z)
+    _ _ (OscSpecial.prefactor_tendsto hq) (fixed_dual_abel_limit a b hc)
+    (OscSpecial.normalized_dual_phase_sum_error_tendsto_zero hq)
+  apply h.congr'
+  filter_upwards [self_mem_nhdsWithin] with η hη
+  rw [original_sum_eq_binary, OscSpecial.oscillatory_gaussian_poisson hη hq]
+  congr 2
+  exact tsum_congr fun z => (OscSpecial.dualGaussian_eq_dualVarTerm hη hq z).symm
+
+/-- The normalized quadratic trace Gauss sum is the four-residue dual average. -/
+theorem normalizedQuadraticTraceGauss_eq_average (a b : ℤ) (hc : eval a b ≠ 0) :
+    normalizedQuadraticTraceGauss (eval a b) hc = fixedDualAverage (eval a b) := by
+  have ho := original_abel_gauss_limit (eval a b) hc
+  simp only [coords_eval] at ho
+  have hd := original_dual_abel_limit a b hc
+  have heq := tendsto_nhds_unique ho hd
+  let n := ‖ringComplex (eval a b)‖
+  have hn : 0 < n := norm_pos_iff.mpr
+    (fun h => hc (ringComplex_injective (by simpa using h)))
+  have hq : OscSpecial.q (a : ℝ) (b : ℝ) = n ^ 2 :=
+    (complex_norm_eval_sq a b).symm
+  have hsqrt : Real.sqrt (OscSpecial.q (a : ℝ) (b : ℝ)) = n := by
+    rw [hq, Real.sqrt_sq hn.le]
+  have hi : (((a*a-a*b+b*b : ℤ) : ℝ)) = n ^ 2 := by
+    simpa only [OscSpecial.q, Int.cast_add, Int.cast_sub, Int.cast_mul, pow_two] using hq
+  change ((2 / (Real.sqrt 3 * (((a*a-a*b+b*b : ℤ) : ℝ))) : ℝ) : ℂ) *
+      quadraticTraceGauss (eval a b) hc = _ at heq
+  rw [hi, hsqrt, hq] at heq
+  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
+  have hsC : (Real.sqrt 3 : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.sqrt_pos.mpr (by norm_num : (0 : ℝ) < 3)).ne'
+  change quadraticTraceGauss (eval a b) hc / (n : ℂ) = _
+  apply mul_left_cancel₀ (show (2 / ((Real.sqrt 3 : ℂ) * (n : ℂ))) ≠ 0 by
+    exact div_ne_zero (by norm_num) (mul_ne_zero hsC hnC))
+  convert heq using 1 <;> push_cast <;> field_simp [hnC, hsC]
+  all_goals ring
+
+/-- Every nonzero modulus has an explicit quadratic trace Gauss phase modulo four. -/
+theorem normalizedQuadraticTraceGauss_formula (a b : ℤ) (hc : eval a b ≠ 0) :
+    normalizedQuadraticTraceGauss (eval a b) hc =
+      (1 + Complex.I ^ (-b) + Complex.I ^ a + Complex.I ^ (b-a)) / 2 := by
+  rw [normalizedQuadraticTraceGauss_eq_average, fixedDualAverage_formula]
+
+/-- The intrinsic normalized sum is the dual average, independently of coordinate choices. -/
+theorem normalizedQuadraticTraceGauss_eq_fixedDualAverage (c : O) (hc : c ≠ 0) :
+    normalizedQuadraticTraceGauss c hc = fixedDualAverage c := by
+  obtain ⟨a,b,hab⟩ := exists_coordinates c
+  change c = eval a b at hab
+  subst c
+  exact normalizedQuadraticTraceGauss_eq_average a b hc
+
+/-- The normalized quadratic trace sum depends only on the modulus modulo four. -/
+theorem normalizedQuadraticTraceGauss_eq_of_mod_four (c d : O) (hc : c ≠ 0) (hd : d ≠ 0)
+    (h : Ideal.Quotient.mk (Ideal.span {(4 : O)}) c =
+      Ideal.Quotient.mk (Ideal.span {(4 : O)}) d) :
+    normalizedQuadraticTraceGauss c hc = normalizedQuadraticTraceGauss d hd := by
+  rw [normalizedQuadraticTraceGauss_eq_fixedDualAverage,
+    normalizedQuadraticTraceGauss_eq_fixedDualAverage,
+    fixedDualAverage_eq_of_mod_four c d h]
+
+/-- The quadratic trace Gauss sum is positive on the principal class modulo four. -/
+theorem quadraticTraceGauss_eq_norm (c : O) (hc : c ≠ 0)
+    (hfour : Ideal.Quotient.mk (Ideal.span {(4 : O)}) c = 1) :
+    quadraticTraceGauss c hc = (‖ringComplex c‖ : ℂ) := by
+  have h := normalizedQuadraticTraceGauss_eq_fixedDualAverage c hc
+  rw [fixedDualAverage_eq_one _ hfour] at h
+  have hn : (‖ringComplex c‖ : ℂ) ≠ 0 := by
+    exact_mod_cast norm_ne_zero_iff.mpr
+      (fun h => hc (ringComplex_injective (by simpa using h)))
+  exact (div_eq_one_iff_eq hn).mp h
+
+end QuadraticPhase.Eisenstein
+
+
+namespace QuadraticPhase.ProductGauss
+open _root_.GaloisForLFunctions.MetaplecticMobiusDescent.ProductGauss
+
+/-- Counting square roots identifies the quadratic-character Gauss sum with its square phase. -/
+theorem quadratic_eq_square_sum {F : Type*} [Field F] [Fintype F]
+    (ψ : AddChar F ℂ) (hchar : ringChar F ≠ 2) (hψ : ψ ≠ 1) :
+    gaussSum ((quadraticChar F).ringHomComp (Int.castRingHom ℂ)) ψ =
+      ∑ x : F, ψ (x ^ 2) := by
+  classical
+  have hfiber : (∑ x : F, ψ (x ^ 2)) =
+      ∑ y : F, (({x : F | x ^ 2 = y}.toFinset.card : ℕ) : ℂ) * ψ y := by
+    rw [← Finset.sum_fiberwise (s := Finset.univ)
+      (g := fun x : F => x ^ 2) (f := fun x : F => ψ (x ^ 2))]
+    apply Finset.sum_congr rfl
+    intro y _
+    rw [Finset.sum_congr rfl (fun x hx => by
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
+      rw [hx])]
+    simp
+  have hcount (y : F) : (({x : F | x ^ 2 = y}.toFinset.card : ℕ) : ℂ) =
+      (quadraticChar F y : ℂ) + 1 := by
+    exact_mod_cast quadraticChar_card_sqrts hchar y
+  rw [hfiber]
+  simp_rw [hcount, add_mul, one_mul]
+  rw [Finset.sum_add_distrib, AddChar.sum_eq_zero_of_ne_one hψ, add_zero]
+  rfl
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+variable (F : ι → Type*) [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+
+/-- The square phase factors over the actual coordinate decomposition. -/
+theorem square_sum_factorization (ψ : AddChar (∀ i, F i) ℂ) :
+    (∑ x : ∀ i, F i, ψ (x ^ 2)) =
+      ∏ i, ∑ y : F i, localChar F ψ i (y ^ 2) := by
+  simp_rw [character_eq_prod F ψ, Pi.pow_apply]
+  exact (Fintype.prod_sum (fun i y => localChar F ψ i (y ^ 2))).symm
+
+/-- A primitive character on a product of odd finite fields has the same quadratic Gauss sum and square sum. -/
+theorem quadratic_factorization_equiv {R : Type*} [CommRing R] [Fintype R]
+    (e : R ≃+* ∀ i, F i) (ψ : AddChar R ℂ) (hψ : ψ.IsPrimitive)
+    (hchar : ∀ i, ringChar (F i) ≠ 2) :
+    (∑ x : R, (∏ i, ((quadraticChar (F i)).ringHomComp (Int.castRingHom ℂ)) (e x i)) * ψ x) =
+      ∑ x : R, ψ (x ^ 2) := by
+  rw [factorization_equiv F e]
+  have hψ' := primitive_comp_ringEquiv e.symm ψ hψ
+  calc
+    _ = ∏ i, ∑ y : F i,
+        localChar F (ψ.compAddMonoidHom e.symm.toAddMonoidHom) i (y ^ 2) := by
+      apply Finset.prod_congr rfl
+      intro i _
+      apply quadratic_eq_square_sum _ (hchar i)
+      have hp := localChar_primitive F _ hψ' i
+      simpa only [AddChar.mulShift_one] using hp (a := 1) one_ne_zero
+    _ = ∑ x : ∀ i, F i, (ψ.compAddMonoidHom e.symm.toAddMonoidHom) (x ^ 2) :=
+      (square_sum_factorization F _).symm
+    _ = ∑ x : R, ψ (x ^ 2) := by
+      apply Fintype.sum_equiv e.symm.toEquiv
+      intro x
+      change ψ (e.symm (x ^ 2)) = ψ ((e.symm x) ^ 2)
+      rw [map_pow]
+
+end QuadraticPhase.ProductGauss
+
+namespace SchwartzPlanePoisson
+open Eisenstein Eisenstein.Coordinates QuadraticPhase.Eisenstein
+
+/-- The complex-plane trace and the intrinsic number-field trace define the same character. -/
+lemma principalTraceChar_eq_paperE (c : O) (hc : c ≠ 0) (x : O) :
+    principalTraceChar c hc (Ideal.Quotient.mk (Ideal.span {c}) x) =
+      paperE (ringComplex x / ringComplex c) := by
+  obtain ⟨a, b, ha⟩ := exists_coordinates c
+  obtain ⟨u, v, hx⟩ := exists_coordinates x
+  change c = eval a b at ha
+  change x = eval u v at hx
+  subst c
+  subst x
+  rw [principalTraceChar_eval]
+  have hcC := ringComplex_ne_zero hc
+  have hlC := ringComplex_ne_zero traceLambda_ne_zero
+  have hconj : starRingEnd ℂ (ringComplex (eval a b)) =
+      (((a : ℝ) - b : ℝ) : ℂ) + ((-(b : ℝ) : ℝ) : ℂ) * ringComplex omega := by
+    simp only [ringComplex_eval, map_add, map_mul, map_intCast, complex_omega_conjugate]
+    push_cast
+    ring
+  have harg : ringComplex (eval u v) / ringComplex (eval a b) / ringComplex traceLambda =
+      (ringComplex (eval u v) * starRingEnd ℂ (ringComplex (eval a b)) /
+        ringComplex traceLambda) / (‖ringComplex (eval a b)‖ ^ 2 : ℝ) := by
+    rw [Complex.sq_norm, Complex.normSq_eq_conj_mul_self]
+    have hs : starRingEnd ℂ (ringComplex (eval a b)) ≠ 0 := by
+      intro h
+      apply hcC
+      simpa only [map_zero, starRingEnd_self_apply] using congrArg (starRingEnd ℂ) h
+    field_simp
+  have hnum :
+      (ringComplex (eval u v) * starRingEnd ℂ (ringComplex (eval a b)) / ringComplex traceLambda) +
+        starRingEnd ℂ (ringComplex (eval u v) * starRingEnd ℂ (ringComplex (eval a b)) /
+          ringComplex traceLambda) = (((a * v - b * u : ℤ) : ℝ) : ℂ) := by
+    rw [hconj, ringComplex_eval]
+    convert complexTrace_real_basis_product u v ((a : ℝ) - b) (-(b : ℝ)) using 1 <;>
+      push_cast <;> ring
+  change _ = Complex.exp (2 * Real.pi * Complex.I * (_ + starRingEnd ℂ _))
+  rw [harg, map_div₀, Complex.conj_ofReal, ← add_div, hnum, complex_norm_eval_sq]
+  congr 1
+  push_cast
+  ring
+
+lemma residueTraceQuotientChar_eq_principal (c : O) (hc : c ≠ 0) :
+    residueTraceQuotientChar 1 c hc = principalTraceChar c hc := by
+  ext x
+  obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
+  rw [residueTraceQuotientChar_phase, principalTraceChar_eq_paperE, one_mul]
+  change tracePhase _ = tracePhase _
+  congr 1
+  ring
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MulChar AddChar QuadraticPhase.Eisenstein
+open scoped SchwartzMap
+
+lemma complexQuadraticChar_inv (P : Ideal O) [P.IsMaximal] :
+    (complexQuadraticChar P)⁻¹ = complexQuadraticChar P := by
+  ext x
+  rw [← MulChar.star_apply']
+  change starRingEnd ℂ ((quadraticChar (O ⧸ P) x : ℤ) : ℂ) =
+    ((quadraticChar (O ⧸ P) x : ℤ) : ℂ)
+  exact map_intCast (starRingEnd ℂ) _
+
+/-- Quadratic reflection has an explicit phase depending only on the conductor modulo four. -/
+theorem prime_quadratic_radial_poisson {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hodd : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, primeCuspRowCharacter p (fun i => complexQuadraticChar (Ideal.span {p i})) z *
+      W (‖ringComplex z‖ ^ 2 / Y)) =
+      ((Y : ℂ) * fixedDualAverage (∏ i, p i) / (‖ringComplex (∏ i, p i)‖ : ℂ)) *
+        ∑' h : O, primeCuspRowCharacter p (fun i => complexQuadraticChar (Ideal.span {p i})) h *
+          paperRadialFourier W (Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex (∏ i, p i)‖ ^ 2) := by
+  classical
+  let P : ι → Ideal O := fun i => Ideal.span {p i}
+  let c := ∏ i, p i
+  have hc : c ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  let : Finite (O ⧸ Ideal.span {c}) := finite_quotient_span hc
+  let : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  have hspan : Ideal.span {c} = ∏ i, P i := span_finset_prime_product p Finset.univ
+  let e : (O ⧸ Ideal.span {c}) ≃+* ∀ i, O ⧸ P i :=
+    (Ideal.quotEquivOfEq hspan).trans (Eisenstein.primeCRT P hinj)
+  have he (z : O) (i : ι) :
+      e (Ideal.Quotient.mk (Ideal.span {c}) z) i = Ideal.Quotient.mk (P i) z := by
+    simp only [e, RingEquiv.trans_apply, Ideal.quotEquivOfEq_mk, Eisenstein.primeCRT]
+    rfl
+  let χ : ∀ i, MulChar (O ⧸ P i) ℂ := fun i => complexQuadraticChar (P i)
+  have hχ (i : ι) : χ i ≠ 1 := complexQuadraticChar_ne_one (P i) (hodd i)
+  let ψ := residueTraceQuotientChar 1 c hc
+  let A : O ⧸ Ideal.span {c} → ℂ := fun x => ∏ i, χ i (e x i)
+  let G := ∑ x : O ⧸ Ideal.span {c}, A x * ψ x
+  have hG : G = quadraticTraceGauss c hc := by
+    change (∑ x : O ⧸ Ideal.span {c}, (∏ i, χ i (e x i)) * ψ x) = _
+    rw [QuadraticPhase.ProductGauss.quadratic_factorization_equiv (fun i => O ⧸ P i) e ψ
+      (residueTraceQuotientChar_primitive c hc) hodd]
+    simp only [ψ, residueTraceQuotientChar_eq_principal, quadraticTraceGauss]
+  have hphase : G / (‖ringComplex c‖ : ℂ) = fixedDualAverage c := by
+    rw [hG]
+    exact normalizedQuadraticTraceGauss_eq_fixedDualAverage c hc
+  have hPoisson :
+      (∑' z : O, A (Ideal.Quotient.mk (Ideal.span {c}) z) * W (‖ringComplex z‖ ^ 2 / Y)) =
+      (Y / ‖ringComplex c‖ ^ 2 : ℝ) • (G * ∑' h : O,
+        (∏ i, (χ i)⁻¹ (e (Ideal.Quotient.mk (Ideal.span {c}) h) i)) *
+          paperRadialFourier W (Y * ‖ringComplex h‖ ^ 2 / ‖ringComplex c‖ ^ 2)) := by
+    rw [actual_radial_poisson_trace W Y hY c hc A]
+    congr 1
+    rw [← tsum_mul_left]
+    apply tsum_congr
+    intro h
+    rw [finite_crt_gauss_transform (fun i => O ⧸ P i) e χ hχ ψ]
+    ring
+  have hA (z : O) : A (Ideal.Quotient.mk (Ideal.span {c}) z) =
+      primeCuspRowCharacter p (fun i => complexQuadraticChar (P i)) z := by
+    change (∏ i, χ i (e (Ideal.Quotient.mk (Ideal.span {c}) z) i)) = _
+    simp only [he]
+    rfl
+  simp only [hA, χ, complexQuadraticChar_inv, he] at hPoisson
+  rw [hPoisson]
+  change ((Y / ‖ringComplex c‖ ^ 2 : ℝ) : ℂ) * (G * _) = _
+  rw [← hphase]
+  push_cast
+  ring
+
+end SchwartzPlanePoisson
+
+namespace FiniteSieveOperator
+
+variable {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+
+def operator (A : Matrix m n ℂ) : EuclideanSpace ℂ n →L[ℂ] EuclideanSpace ℂ m :=
+  A.toEuclideanLin.toContinuousLinearMap
+
+omit [DecidableEq m] in
+@[simp] theorem operator_apply (A : Matrix m n ℂ) (x : EuclideanSpace ℂ n) (i : m) :
+    operator A x i = ∑ j, A i j * x j := rfl
+
+theorem operator_conjTranspose (A : Matrix m n ℂ) :
+    operator A.conjTranspose = (operator A).adjoint := by
+  unfold operator
+  rw [Matrix.toEuclideanLin_conjTranspose_eq_adjoint, LinearMap.adjoint_toContinuousLinearMap]
+
+theorem operator_conjTranspose_norm (A : Matrix m n ℂ) :
+    ‖operator A.conjTranspose‖ = ‖operator A‖ := by
+  rw [operator_conjTranspose]
+  exact ContinuousLinearMap.adjoint.norm_map _
+
+omit [DecidableEq m] in
+theorem operator_zero : operator (0 : Matrix m n ℂ) = 0 := by
+  ext x i
+  simp
+
+omit [DecidableEq m] in
+theorem operator_add (A B : Matrix m n ℂ) : operator (A + B) = operator A + operator B := by
+  ext x i
+  simp [add_mul, Finset.sum_add_distrib]
+
+omit [DecidableEq m] in
+theorem operator_smul (c : ℂ) (A : Matrix m n ℂ) : operator (c • A) = c • operator A := by
+  ext x i
+  simp [Finset.mul_sum, mul_assoc]
+
+omit [DecidableEq m] in
+theorem operator_sum {κ : Type*} (S : Finset κ) (A : κ → Matrix m n ℂ) :
+    operator (∑ k ∈ S, A k) = ∑ k ∈ S, operator (A k) := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => simp [operator_zero]
+  | @insert a S ha ih => simp only [Finset.sum_insert ha, operator_add, ih]
+
+omit [DecidableEq m] in
+theorem diagonal_twist_norm_le (A : Matrix m n ℂ) (l : m → ℂ) (r : n → ℂ)
+    (hl : ∀ i, ‖l i‖ ≤ 1) (hr : ∀ j, ‖r j‖ ≤ 1) :
+    ‖operator (fun i j => l i * A i j * r j)‖ ≤ ‖operator A‖ := by
+  apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _)
+  intro x
+  let y : EuclideanSpace ℂ n := WithLp.toLp 2 (fun j => r j * x j)
+  have hy : ‖y‖ ≤ ‖x‖ := by
+    apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq]
+    apply Finset.sum_le_sum
+    intro j _
+    change ‖r j * x j‖ ^ 2 ≤ ‖x j‖ ^ 2
+    apply pow_le_pow_left₀ (norm_nonneg _)
+    rw [norm_mul]
+    exact mul_le_of_le_one_left (norm_nonneg _) (hr j)
+  have heq (i : m) : operator (fun i j => l i * A i j * r j) x i = l i * operator A y i := by
+    simp only [operator_apply, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    change l i * A i j * r j * x j = l i * (A i j * (r j * x j))
+    ring
+  have hz : ‖operator (fun i j => l i * A i j * r j) x‖ ≤ ‖operator A y‖ := by
+    apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq]
+    apply Finset.sum_le_sum
+    intro i _
+    rw [heq, norm_mul]
+    apply pow_le_pow_left₀ (by positivity)
+    exact mul_le_of_le_one_left (norm_nonneg _) (hl i)
+  exact hz.trans ((operator A).le_opNorm y |>.trans
+    (mul_le_mul_of_nonneg_left hy (norm_nonneg _)))
+
+omit [DecidableEq m] in
+theorem separated_phase_norm_le {κ : Type*} [Fintype κ]
+    (A B : Matrix m n ℂ) (c : κ → ℂ) (l : κ → m → ℂ) (r : κ → n → ℂ)
+    (hl : ∀ k i, ‖l k i‖ ≤ 1) (hr : ∀ k j, ‖r k j‖ ≤ 1)
+    (heq : ∀ i j, A i j = ∑ k, c k * (l k i * B i j * r k j)) :
+    ‖operator A‖ ≤ (∑ k, ‖c k‖) * ‖operator B‖ := by
+  let T : κ → Matrix m n ℂ := fun k i j => l k i * B i j * r k j
+  have hA : A = ∑ k, c k • T k := by
+    ext i j
+    rw [Matrix.sum_apply]
+    exact heq i j
+  have hOp : operator A = ∑ k, c k • operator (T k) := by
+    calc
+      _ = operator (∑ k, c k • T k) := congrArg operator hA
+      _ = ∑ k, operator (c k • T k) := operator_sum _ _
+      _ = _ := Finset.sum_congr rfl (fun k _ => operator_smul (c k) (T k))
+  rw [hOp]
+  calc
+    _ ≤ ∑ k, ‖c k • operator (T k)‖ := norm_sum_le _ _
+    _ ≤ ∑ k, ‖c k‖ * ‖operator B‖ := by
+      apply Finset.sum_le_sum
+      intro k _
+      rw [norm_smul]
+      exact mul_le_mul_of_nonneg_left (diagonal_twist_norm_le B (l k) (r k) (hl k) (hr k))
+        (norm_nonneg _)
+    _ = _ := (Finset.sum_mul ..).symm
+
+omit [DecidableEq m] in
+theorem energy_bound (A : Matrix m n ℂ) (u : n → ℂ) :
+    (∑ i, ‖∑ j, A i j * u j‖ ^ 2) ≤ ‖operator A‖ ^ 2 * ∑ j, ‖u j‖ ^ 2 := by
+  let x : EuclideanSpace ℂ n := WithLp.toLp 2 u
+  have h := (operator A).le_opNorm x
+  have hs := pow_le_pow_left₀ (norm_nonneg _) h 2
+  simpa only [mul_pow, EuclideanSpace.norm_sq_eq, operator_apply, x, PiLp.toLp_apply] using hs
+
+theorem squared_norm_le_of_energy {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (A : Matrix m n ℂ) (C : ℝ) (hC : 0 ≤ C)
+    (h : ∀ a : n → ℂ, (∑ i, ‖∑ j, A i j * a j‖ ^ 2) ≤ C * ∑ j, ‖a j‖ ^ 2) :
+    ‖operator A‖ ^ 2 ≤ C := by
+  have hop : ‖operator A‖ ≤ Real.sqrt C := by
+    apply ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg C)
+    intro a
+    apply (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (Real.sqrt_nonneg C) (norm_nonneg a))).mp
+    simpa only [mul_pow, Real.sq_sqrt hC, EuclideanSpace.norm_sq_eq, operator_apply] using h a
+  simpa only [Real.sq_sqrt hC] using pow_le_pow_left₀ (norm_nonneg _) hop 2
+
+end FiniteSieveOperator
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+/-- The uniform finite-ball bound is the squared operator-norm bound for every prime-row matrix. -/
+theorem primeSubsetRow_initial_operator_bound :
+    ∃ K : ℝ, 0 < K ∧
+      ∀ {ι m n : Type*} [DecidableEq ι] [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+        (p : ι → O) (hp : ∀ i, p i ≠ 0)
+        [∀ i, (Ideal.span {p i}).IsMaximal]
+        (hinj : Function.Injective (fun i => Ideal.span {p i}))
+        (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) (hχ : ∀ i, χ i ≠ 1)
+        (rows : m → O) (hrows : Function.Injective rows)
+        (cols : n → Finset ι) (hcols : Function.Injective cols)
+        (M N : ℝ), 1 ≤ M → 1 ≤ N →
+        (∀ i, ‖ringComplex (rows i)‖ ^ 2 ≤ M) →
+        (∀ j, primeSubsetNorm p (cols j) ≤ N) →
+        ‖FiniteSieveOperator.operator (fun i j => primeSubsetRow p χ (cols j) (rows i))‖ ^ 2 ≤
+          K * (M + N ^ 2) := by
+  obtain ⟨K, hK, hb⟩ := primeSubsetRow_initial_sieve
+  refine ⟨K, hK, ?_⟩
+  intro ι m n _ _ _ _ _ p hp _ hinj χ hχ rows hrows cols hcols M N hM hN hRM hCN
+  classical
+  apply FiniteSieveOperator.squared_norm_le_of_energy _ _ (by positivity)
+  intro a
+  let R := Finset.univ.image rows
+  have hR (z : O) (hz : z ∈ R) : ‖ringComplex z‖ ^ 2 ≤ M := by
+    obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp hz
+    exact hRM i
+  have h := hb p hp hinj χ hχ Finset.univ cols hcols.injOn N hN
+    (fun j _ => hCN j) a M hM R hR
+  have he : (∑ i, ‖∑ j, primeSubsetRow p χ (cols j) (rows i) * a j‖ ^ 2) =
+      ∑ z ∈ R, ‖∑ j, a j * primeSubsetRow p χ (cols j) z‖ ^ 2 := by
+    dsimp only [R]
+    rw [Finset.sum_image]
+    · simp only [mul_comm]
+    · intro i _ j _ hij
+      exact hrows hij
+  rw [he]
+  exact h
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein QuadraticPhase.Eisenstein
+
+local instance quotientFinite (c : O) [NeZero c] : Finite (O ⧸ Ideal.span {c}) :=
+  finite_quotient_span (NeZero.ne c)
+
+local instance quotientFintype (c : O) [NeZero c] : Fintype (O ⧸ Ideal.span {c}) :=
+  Fintype.ofFinite _
+
+/-- The trace character is trivial on integers: `exp(2πi Tr(z/λ)) = 1` for `z ∈ O`. -/
+theorem traceChar_integral (z : O) :
+    Complex.exp ((Algebra.trace ℚ K
+      ((algebraMap O K z) / (algebraMap O K traceLambda * algebraMap O K 1)) : ℂ) *
+        (2 * Real.pi * Complex.I)) = 1 := by
+  rw [← principalTraceChar_apply 1 one_ne_zero z]
+  have h : Ideal.Quotient.mk (Ideal.span {(1 : O)}) z = 0 := by
+    rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.span_singleton_one]
+    trivial
+  rw [h, AddChar.map_zero_eq_one]
+
+/-- **The CRT phase.** For `x = dx₁ + cx₂`, `ψ_{cd}(x²) = ψ_c(dx₁²) ψ_d(cx₂²)`. -/
+theorem traceChar_crt_sq (c d : O) [NeZero c] [NeZero d] (x y : O) :
+    principalTraceChar (c * d) (mul_ne_zero (NeZero.ne c) (NeZero.ne d))
+        (Ideal.Quotient.mk _ ((d * x + c * y) ^ 2)) =
+      principalTraceChar c (NeZero.ne c) (Ideal.Quotient.mk _ (d * x ^ 2)) *
+        principalTraceChar d (NeZero.ne d) (Ideal.Quotient.mk _ (c * y ^ 2)) := by
+  rw [principalTraceChar_apply, principalTraceChar_apply, principalTraceChar_apply,
+    ← Complex.exp_add]
+  have hinj := FaithfulSMul.algebraMap_injective O K
+  have hc : algebraMap O K c ≠ 0 := fun h => NeZero.ne c (hinj (by rw [h, map_zero]))
+  have hd : algebraMap O K d ≠ 0 := fun h => NeZero.ne d (hinj (by rw [h, map_zero]))
+  have hl : algebraMap O K traceLambda ≠ 0 := fun h => traceLambda_ne_zero
+    (hinj (by rw [h, map_zero]))
+  have hsplit : (algebraMap O K ((d * x + c * y) ^ 2)) /
+      (algebraMap O K traceLambda * algebraMap O K (c * d)) =
+      (algebraMap O K (d * x ^ 2)) / (algebraMap O K traceLambda * algebraMap O K c) +
+        (algebraMap O K (c * y ^ 2)) / (algebraMap O K traceLambda * algebraMap O K d) +
+          (algebraMap O K (2 * x * y)) / (algebraMap O K traceLambda * algebraMap O K 1) := by
+    simp only [map_mul, map_pow, map_add, map_one, map_ofNat]
+    field_simp
+    ring
+  have h1 := traceChar_integral (2 * x * y)
+  rw [hsplit, map_add, map_add, Rat.cast_add, Rat.cast_add, add_mul, add_mul, Complex.exp_add, h1,
+    mul_one]
+
+/-- A representative of a residue class. -/
+def qrep {I : Ideal O} (x : O ⧸ I) : O := Classical.choose (Ideal.Quotient.mk_surjective x)
+
+theorem mk_qrep {I : Ideal O} (x : O ⧸ I) : Ideal.Quotient.mk I (qrep x) = x :=
+  Classical.choose_spec (Ideal.Quotient.mk_surjective x)
+
+/-- The CRT parametrization `(x₁, x₂) ↦ dx₁ + cx₂` of `O/(cd)`. -/
+def crtParam (c d : O) (p : (O ⧸ Ideal.span {c}) × (O ⧸ Ideal.span {d})) :
+    O ⧸ Ideal.span {c * d} :=
+  Ideal.Quotient.mk _ (d * qrep p.1 + c * qrep p.2)
+
+theorem crtParam_bijective (c d : O) [NeZero c] [NeZero d] (hcd : IsCoprime c d) :
+    Function.Bijective (crtParam c d) := by
+  haveI : NeZero (c * d) := ⟨mul_ne_zero (NeZero.ne c) (NeZero.ne d)⟩
+  refine (Fintype.bijective_iff_injective_and_card _).mpr ⟨?_, ?_⟩
+  · rintro ⟨x₁, x₂⟩ ⟨y₁, y₂⟩ h
+    simp only [crtParam, Ideal.Quotient.eq, Ideal.mem_span_singleton] at h
+    have e : d * qrep x₁ + c * qrep x₂ - (d * qrep y₁ + c * qrep y₂) =
+        d * (qrep x₁ - qrep y₁) + c * (qrep x₂ - qrep y₂) := by ring
+    rw [e] at h
+    have hc : c ∣ d * (qrep x₁ - qrep y₁) :=
+      (dvd_add_left (dvd_mul_right c _)).mp ((dvd_mul_right c d).trans h)
+    have hd : d ∣ c * (qrep x₂ - qrep y₂) :=
+      (dvd_add_right (dvd_mul_right d _)).mp ((dvd_mul_left d c).trans h)
+    have h1 : x₁ = y₁ := by
+      rw [← mk_qrep x₁, ← mk_qrep y₁, Ideal.Quotient.eq, Ideal.mem_span_singleton]
+      exact hcd.dvd_of_dvd_mul_left hc
+    have h2 : x₂ = y₂ := by
+      rw [← mk_qrep x₂, ← mk_qrep y₂, Ideal.Quotient.eq, Ideal.mem_span_singleton]
+      exact hcd.symm.dvd_of_dvd_mul_left hd
+    rw [h1, h2]
+  · have hcard : ∀ (e : O) [NeZero e], Fintype.card (O ⧸ Ideal.span {e}) =
+        Ideal.absNorm (Ideal.span {e}) := fun e _ => by
+      rw [Ideal.absNorm_apply, Submodule.cardQuot_apply, Nat.card_eq_fintype_card]
+    rw [Fintype.card_prod, hcard, hcard, hcard, ← Ideal.span_singleton_mul_span_singleton,
+      map_mul]
+
+/-- The quadratic trace sum, written with the instance of this file. -/
+theorem quadraticTraceGauss_eq_sum (c : O) [NeZero c] :
+    quadraticTraceGauss c (NeZero.ne c) =
+      ∑ x : O ⧸ Ideal.span {c}, principalTraceChar c (NeZero.ne c) (x ^ 2) := rfl
+
+/-- **The CRT splitting.** For coprime `c, d`,
+`Σ_{x mod cd} ψ_{cd}(x²) = Σ_{x₁ mod c} ψ_c(dx₁²) · Σ_{x₂ mod d} ψ_d(cx₂²)`. -/
+theorem quadraticTraceGauss_mul (c d : O) [NeZero c] [NeZero d] (hcd : IsCoprime c d) :
+    quadraticTraceGauss (c * d) (mul_ne_zero (NeZero.ne c) (NeZero.ne d)) =
+      (∑ x : O ⧸ Ideal.span {c}, principalTraceChar c (NeZero.ne c)
+          (Ideal.Quotient.mk _ d * x ^ 2)) *
+        ∑ y : O ⧸ Ideal.span {d}, principalTraceChar d (NeZero.ne d)
+          (Ideal.Quotient.mk _ c * y ^ 2) := by
+  haveI : NeZero (c * d) := ⟨mul_ne_zero (NeZero.ne c) (NeZero.ne d)⟩
+  rw [quadraticTraceGauss_eq_sum, ← (Fintype.sum_bijective _ (crtParam_bijective c d hcd)
+    (fun p => principalTraceChar (c * d) _ (crtParam c d p ^ 2)) _ fun _ => rfl),
+    Fintype.sum_prod_type, Finset.sum_mul_sum]
+  refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
+  have hx : Ideal.Quotient.mk (Ideal.span {c}) (d * qrep x ^ 2) =
+      Ideal.Quotient.mk _ d * x ^ 2 := by rw [map_mul, map_pow, mk_qrep]
+  have hy : Ideal.Quotient.mk (Ideal.span {d}) (c * qrep y ^ 2) =
+      Ideal.Quotient.mk _ c * y ^ 2 := by rw [map_mul, map_pow, mk_qrep]
+  show principalTraceChar (c * d) _ (Ideal.Quotient.mk _ (d * qrep x + c * qrep y) ^ 2) = _
+  rw [← map_pow, traceChar_crt_sq, hx, hy]
+
+/-! ### Odd primes -/
+
+section Prime
+
+variable (p : O) [NeZero p] [hP : (Ideal.span {p}).IsMaximal]
+
+omit [NeZero p] hP in
+/-- At an odd prime the residue ring has characteristic different from two. -/
+theorem ringChar_ne_two (h2 : (2 : O) ∉ Ideal.span {p}) : ringChar (O ⧸ Ideal.span {p}) ≠ 2 := by
+  intro h
+  apply h2
+  rw [← Ideal.Quotient.eq_zero_iff_mem, map_ofNat]
+  have := ringChar.spec (O ⧸ Ideal.span {p}) 2
+  exact_mod_cast this.mpr (by rw [h])
+
+/-- **Squares are counted by `1 + η`.** `Σ_{x mod p} ψ_p(ux²) = η_p(u) G(η_p)` for `p ∤ u`. -/
+theorem sum_traceChar_mul_sq (h2 : (2 : O) ∉ Ideal.span {p}) {u : O ⧸ Ideal.span {p}}
+    (hu : u ≠ 0) :
+    ∑ x : O ⧸ Ideal.span {p}, principalTraceChar p (NeZero.ne p) (u * x ^ 2) =
+      complexQuadraticChar (Ideal.span {p}) u *
+        gaussSum (complexQuadraticChar (Ideal.span {p})) (principalTraceChar p (NeZero.ne p)) := by
+  letI : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  set ψ := principalTraceChar p (NeZero.ne p)
+  set η := complexQuadraticChar (Ideal.span {p})
+  have hchar := ringChar_ne_two p h2
+  -- group the `x` by their square
+  have hfib : ∑ x : O ⧸ Ideal.span {p}, ψ (u * x ^ 2) =
+      ∑ y : O ⧸ Ideal.span {p}, ((Finset.univ.filter fun x => x ^ 2 = y).card : ℂ) * ψ (u * y) := by
+    rw [← Finset.sum_fiberwise Finset.univ (fun x => x ^ 2) (fun x => ψ (u * x ^ 2))]
+    refine Finset.sum_congr rfl fun y _ => ?_
+    rw [Finset.sum_congr rfl fun x hx => by rw [(Finset.mem_filter.mp hx).2], Finset.sum_const,
+      nsmul_eq_mul]
+  have hcount : ∀ y : O ⧸ Ideal.span {p},
+      ((Finset.univ.filter fun x => x ^ 2 = y).card : ℂ) = η y + 1 := by
+    intro y
+    have h := quadraticChar_card_sqrts hchar y
+    rw [Set.toFinset_setOf] at h
+    simp only [η, complexQuadraticChar, MulChar.ringHomComp_apply, eq_intCast]
+    exact_mod_cast h
+  rw [hfib]
+  simp only [hcount, add_mul, one_mul, Finset.sum_add_distrib]
+  have hzero : ∑ y : O ⧸ Ideal.span {p}, ψ (u * y) = 0 := by
+    have := AddChar.sum_mulShift u (principalTraceChar_primitive p (NeZero.ne p))
+    rw [if_neg hu, Nat.cast_zero] at this
+    rw [← this]
+    exact Finset.sum_congr rfl fun y _ => by rw [mul_comm]
+  rw [hzero, add_zero]
+  -- the Gauss sum at the unit multiplier `u`
+  have hunit : IsUnit u := isUnit_iff_ne_zero.mpr hu
+  have hg := gaussSum_mulShift η ψ hunit.unit
+  rw [IsUnit.unit_spec] at hg
+  have hsq : η u * η u = 1 := by
+    simp only [η, complexQuadraticChar, MulChar.ringHomComp_apply, eq_intCast]
+    rw [← Int.cast_mul, ← sq, quadraticChar_sq_one hu, Int.cast_one]
+  calc ∑ y, η y * ψ (u * y) = gaussSum η (AddChar.mulShift ψ u) := rfl
+    _ = η u * (η u * gaussSum η (AddChar.mulShift ψ u)) := by
+        rw [← mul_assoc, hsq, one_mul]
+    _ = η u * gaussSum η ψ := by rw [hg]
+
+end Prime
+
+/-- **Quadratic reciprocity over `ℤ[ω]`.** For coprime odd primes `p, q`,
+`η_p(q) η_q(p) Γ(p) Γ(q) = Γ(pq)`, where `Γ(c) = |c|⁻¹ Σ_{x mod c} ψ_c(x²)` depends only on
+`c mod 4`. -/
+theorem quadratic_reciprocity (p q : O) [NeZero p] [NeZero q] [(Ideal.span {p}).IsMaximal]
+    [(Ideal.span {q}).IsMaximal] (hp2 : (2 : O) ∉ Ideal.span {p}) (hq2 : (2 : O) ∉ Ideal.span {q})
+    (hpq : IsCoprime p q) :
+    complexQuadraticChar (Ideal.span {p}) (Ideal.Quotient.mk _ q) *
+        complexQuadraticChar (Ideal.span {q}) (Ideal.Quotient.mk _ p) *
+          normalizedQuadraticTraceGauss p (NeZero.ne p) *
+            normalizedQuadraticTraceGauss q (NeZero.ne q) =
+      normalizedQuadraticTraceGauss (p * q) (mul_ne_zero (NeZero.ne p) (NeZero.ne q)) := by
+  -- neither prime divides the other
+  have hnd : ∀ (a b : O) [(Ideal.span {a}).IsMaximal], IsCoprime a b →
+      Ideal.Quotient.mk (Ideal.span {a}) b ≠ 0 := by
+    intro a b ha hab h
+    rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton] at h
+    exact ha.ne_top (Ideal.span_singleton_eq_top.mpr (hab.isUnit_of_dvd' (dvd_refl a) h))
+  have hqp := hnd p q hpq
+  have hpq' := hnd q p hpq.symm
+  -- the three quadratic trace sums
+  have hone : ∀ (a : O) [NeZero a] [(Ideal.span {a}).IsMaximal], (2 : O) ∉ Ideal.span {a} →
+      quadraticTraceGauss a (NeZero.ne a) =
+        gaussSum (complexQuadraticChar (Ideal.span {a})) (principalTraceChar a (NeZero.ne a)) := by
+    intro a _ _ ha2
+    have h := sum_traceChar_mul_sq a ha2 (u := 1) one_ne_zero
+    simp only [one_mul, MulChar.map_one] at h
+    rw [quadraticTraceGauss_eq_sum, h]
+  have hprod := quadraticTraceGauss_mul p q hpq
+  rw [sum_traceChar_mul_sq p hp2 hqp, sum_traceChar_mul_sq q hq2 hpq'] at hprod
+  unfold normalizedQuadraticTraceGauss
+  rw [hprod, hone p hp2, hone q hq2, map_mul, norm_mul, Complex.ofReal_mul]
+  have hpn : (‖ringComplex p‖ : ℂ) ≠ 0 := by
+    exact_mod_cast norm_ne_zero_iff.mpr fun h => NeZero.ne p (ringComplex_injective
+      (by rw [h, map_zero]))
+  have hqn : (‖ringComplex q‖ : ℂ) ≠ 0 := by
+    exact_mod_cast norm_ne_zero_iff.mpr fun h => NeZero.ne q (ringComplex_injective
+      (by rw [h, map_zero]))
+  field_simp
+
+
+end SchwartzPlanePoisson
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

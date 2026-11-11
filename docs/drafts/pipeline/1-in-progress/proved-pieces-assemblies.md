@@ -29,7 +29,7 @@
 | A89 | Prescribed sub-logarithmic radius | Open |
 | A86 | Near-diagonal cofactors and growing filters | Complete: `3-formalized/growing-cofactor-filters-and-near-diagonal-pairs.md`; row bound `1+4W/(t sqrt(r))`, actual filtered transfer to `W≤3t^71`, error `≤2h^d exp(−at/8)` |
 | A47 | One-quartet constants | Complete: `3-formalized/one-quartet-current-constant.md`; explicit normalized-current lower bound |
-| A111 | Critical-zero proportion from twisted moments and Levinson gate | Actual linear detector equals its explicit three-moment gcd main term up to uniform `O(T^(7/8))`, with frozen-coefficient displacement jets. Shifted arithmetic limits and gate insertion remain open |
+| A111 | Critical-zero proportion from twisted moments and Levinson gate | Actual three-moment remainder, shifted arithmetic jets, chi-taper jet limits and exact scalar `c(13/50)<18/5<exp(13/10)` proved. Uniform block assembly and gate insertion remain open |
 | A116 | Ideal degree points, Hecke characters, non-abelian character index | Hecke explicit formula, ideal-degree pairing, Dedekind and class-character indices proved in `3-formalized/agz-hecke-explicit-formula-and-ideal-squares.md`; per-Artin-character analytic input remains open |
 | A119 | Linear depth-sum bound with explicit moment constant | Already proved: `RHTower.eventually_offLineMoment_le_montgomeryTaylor`, constant `66/1000` |
 

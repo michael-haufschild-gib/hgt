@@ -12,7 +12,7 @@
 |---|---|
 | A78 | Already a theorem: `SurfaceOfSpecZ.ScaleLocality.finite_top_negative_in_every_window` (any finite top layer, no separation, windows longer than `card(S)π/Γ`). |
 | A47 | Already formalized: `3-formalized/one-quartet-current-constant.md`. |
-| A136 | Frontier map now grades the comb index, trace classification, Laguerre tails, horocycle and detector moment modules [L]. `ReflectedHalvesAreNotDirichletSeries` compiles cleanly. `TheShiftedSelbergFormIsAHarmonicModel`, `TheMobiusKernelConvergesInMean` are under active peer edits (MZF/Levinson card A111): not touched. |
+| A136 | Integrated: all six modules are wired into their umbrellas and compile cleanly (`lake --old env lean`): `HodgeTheoryOfAFixedPart/TheUnshiftedCombIndexAtItsOwnAperture`, `FloorFreeArithmetic/TheSplineTraceClassificationAtTheZeroAbscissa`, `FloorFreeArithmetic/ReflectedHalvesAreNotDirichletSeries`, `AbsoluteGeometryOfSpecZ/TheLaguerreTailsOfTheCombTendToTheLiCoefficients`, `BlackHoleRingdown/TheOptimalHorocycleExponentAndEulerAnnihilators`, `MultiscaleMollifiedZetaField/TheDetectorMomentErrorsAreSmall`. |
 | A134 | Owned by the peer Levinson card `levinson-gate-from-below-square-root-twists.md` (A111): not duplicated. |
 | A133 | Formalized: `3-formalized/artin-degree-two-character-of-the-cube-roots-of-two.md`. |
 | A135 | Formalized: `3-formalized/step-packet-matrices-explicit-block-error.md` (explicit error; no sign certified). |

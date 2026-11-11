@@ -46,12 +46,20 @@ up to a fixed fraction of `∫|f|²`: `∫_{|τ|≤T₁}|h|² ≤ K Σ_γ q(γ)�
 target. The prolate bound (`2e^{2a}` missing degrees of freedom below `T* = 2πe^{2a}`) shows
 `K ≥ exp(c e^{2a}/a)`, so the order is right. Any single interpolation from nodes at height `G`
 costs `exp(caG)`; `K` must come from local sampling. Local sampling needs separated zeros at
-density `> a/π` in windows of bounded length: Riemann–von Mangoldt (`S = O(log t)`) gives only
-`O(1)` clusters per unit; a Selberg-type `S(t) ≪ log t/log log t` from local RH would give gaps
-`< π/a` above `exp(e^{O(a)})`. Between `T*` and that height the proved inputs give no local
-sampling inequality; the needed theorem is a sampling bound for `PW_a` on sets with local count
-deficit `≤ d` in every window, with constant `exp(O(a d))`. Neither it nor the local Selberg bound
-is in the corpus.
+density `> a/π` in windows of bounded length: Counting alone cannot supply it: clusters of size `K = C log t/log log t` at spacing
+`2πK/log t > π/a` are compatible with `S(t) ≪ log t/log log t`, and on such a lattice
+`sin(πu/s)φ(u)` (`φ` of type `a − π/s`) vanishes at every zero.
+
+The explicit formula excludes that adversary: for `h ∈ PW_a`,
+`Σ_γ |h(γ)|² = ∫|h|²S/2π + poles − tail`, `S = log-density − 2P`, `P` the prime sum of length
+`e^{2a}`. So at resolution `1/(2a)` the zero measure is the symbol, and a Beurling–Selberg
+minorant of type `2a` (integral `2δ − π/a`) puts a zero in every interval of length `π/a + ε` wherever
+the smoothed symbol is `≥ η log τ`: exactly Nyquist, so gap-based sampling stays borderline and
+the margin is the smallest eigenvalue of the symbol form `∫|h|²S/2π + poles` on `PW_a`. The margin is then governed by the near-zero set of the smoothed symbol
+in `[T*, T_a]`, i.e. by how closely `2P(τ)` can approach `log τ` there (simultaneous
+approximation of `τ log p`, `p ≤ e^{2a}`). Missing: a lower bound `exp(−e^{O(a)})` for that
+eigenvalue, i.e. quantitative Weil positivity at scale `a`; RH through `H` only gives `≥ −tail`.
+Not in the corpus.
 
 ## Possible survivor
 

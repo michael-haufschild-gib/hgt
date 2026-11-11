@@ -64,6 +64,7 @@ theorem norm_ringComplex_ne_zero : (‖ringComplex π‖ : ℂ) ≠ 0 := by
   exact_mod_cast norm_ne_zero_iff.mpr fun h => NeZero.ne π (ringComplex_injective
     (by rw [h, map_zero]))
 
+omit hP in
 /-- `ᾱ π = |π|` for `α = π/|π|`. -/
 theorem conj_alpha_mul :
     conj (ringComplex π / (‖ringComplex π‖ : ℂ)) * ringComplex π = (‖ringComplex π‖ : ℂ) := by
@@ -131,6 +132,206 @@ omit [NeZero π] in
 theorem sexticChar_ne_zero (x : O ⧸ Ideal.span {π}) (hx : IsUnit x) :
     complexSexticChar (Ideal.span {π}) hlam x ≠ 0 :=
   (hx.map _).ne_zero
+
+/-! ### The local term -/
+
+/-- `|π|` as a complex number. -/
+def primeNorm : ℂ := (‖ringComplex π‖ : ℂ)
+
+/-- `Q = N(π)` as a complex number. -/
+def primeQ : ℂ := (Ideal.absNorm (Ideal.span {π}) : ℂ)
+
+/-- `κ = ᾱ η_π`, `α = π/|π|`. -/
+def primeKappa (ηp : ℂ) : ℂ := conj (ringComplex π / primeNorm π) * ηp
+
+/-- `R = κ⁶ Q⁴ X⁶ V`. -/
+def primeR (ηp X V : ℂ) : ℂ := primeKappa π ηp ^ 6 * primeQ π ^ 4 * X ^ 6 * V
+
+/-- The local term of the Poisson series at the exponents `v = (e, l, k, m)`: squarefree part
+`π^e`, cube part `π^l`, row twist `π^k` and frequency `H = u π^{j+6m}`. -/
+def localTerm (ηp X Y V : ℂ) (u : O) (j : ℕ) (v : Fin 2 × ℕ × ℕ × ℕ) : ℂ :=
+  primeKappa π ηp ^ ((v.1 : ℕ) + 3 * v.2.1) *
+    correctedCoeff (π ^ v.2.2.1) (π ^ (v.1 : ℕ)) (π ^ v.2.1) (u * π ^ (j + 6 * v.2.2.2)) *
+      (X / primeNorm π) ^ (v.1 : ℕ) * (X ^ 3 / primeQ π) ^ v.2.1 * (Y / primeQ π) ^ v.2.2.1 *
+        V ^ v.2.2.2
+
+include h2 hprim in
+/-- **The local term through the Poisson coefficient.** With `t = e + 3l`, `ρ = χ(u)`:
+the coefficient is `ε^{tk} γ₂(π^e) (c̄₄^t Γ^{t mod 2})⁻¹ ρ^k ρ^{−t} F(π^k, π^t; π^{j+6m})`. -/
+theorem localTerm_eq (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j : ℕ) (e : Fin 2)
+    (l k m : ℕ) :
+    localTerm π ηp X Y V u j (e, l, k, m) =
+      primeKappa π ηp ^ ((e : ℕ) + 3 * l) *
+        (complexSexticChar (Ideal.span {π}) hlam (-1) ^ (((e : ℕ) + 3 * l) * k) *
+          thetaGauss (π ^ (e : ℕ)) *
+          (conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)) ^ ((e : ℕ) + 3 * l) *
+            fixedDualAverage π ^ (((e : ℕ) + 3 * l) % 2))⁻¹ *
+          (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ k *
+            (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ ((e : ℕ) + 3 * l))⁻¹ *
+              poissonCoeff (π ^ k) (π ^ ((e : ℕ) + 3 * l)) (π ^ (j + 6 * m)))) *
+        (X / primeNorm π) ^ (e : ℕ) * (X ^ 3 / primeQ π) ^ l * (Y / primeQ π) ^ k * V ^ m := by
+  unfold localTerm
+  dsimp only
+  rw [correctedCoeff_prime_pow π h2, quadraticPhase_self π hlam h2 hprim,
+    thetaPhase_prime_pow π hlam h2 hprim, poissonCoeff_unit_mul π hlam h2 hprim k _ hu]
+
+omit hP in
+theorem primeQ_ne_zero : primeQ π ≠ 0 := by
+  rw [primeQ, ← card_quot_span]
+  exact_mod_cast Fintype.card_ne_zero
+
+/-- A root of unity of order dividing `d` reduces its exponents modulo `d`. -/
+theorem pow_eq_pow_mod {z : ℂ} {d : ℕ} (hz : z ^ d = 1) (n : ℕ) : z ^ n = z ^ (n % d) := by
+  conv_lhs => rw [← Nat.div_add_mod n d, pow_add, pow_mul, hz, one_pow, one_mul]
+
+include h2 in
+/-- `c̄₄³ = 1`. -/
+theorem conj_sexticChar_four_pow_three :
+    conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)) ^ 3 = 1 := by
+  rw [← map_pow, sexticChar_four_pow_three π hlam h2, map_one]
+
+/-! ### The families of exponents -/
+
+/-! ### Periodicity of the local term -/
+
+/-- **The layer values are periodic**: `L_{r+6}(n+6, j+6) = Q⁶ L_r(n, j)`. -/
+theorem sexticLayer_shift (r : ℕ) {n : ℕ} (hn : 1 ≤ n) (j : ℕ) :
+    sexticLayer π hlam (r + 6) (n + 6) (j + 6) = primeQ π ^ 6 * sexticLayer π hlam r n j := by
+  have hχ : complexSexticChar (Ideal.span {π}) hlam ^ (r + 6) =
+      complexSexticChar (Ideal.span {π}) hlam ^ r := by
+    rw [pow_add, (complexSexticChar_powers (Ideal.span {π}) hlam).2.2, mul_one]
+  unfold sexticLayer
+  rw [hχ, show (Ideal.absNorm (Ideal.span {π}) : ℂ) = primeQ π from rfl,
+    show n + 6 - 1 = (n - 1) + 6 by omega]
+  by_cases h6 : 6 ∣ r
+  · rw [if_pos ((Nat.dvd_add_self_right).mpr h6), if_pos h6]
+    simp only [show n + 6 ≤ j + 6 ↔ n ≤ j by omega, show n - 1 + 6 ≤ j + 6 ↔ n - 1 ≤ j by omega]
+    split_ifs <;> ring
+  · rw [if_neg (fun h => h6 ((Nat.dvd_add_self_right).mp h)), if_neg h6]
+    simp only [show j + 6 = n - 1 + 6 ↔ j = n - 1 by omega]
+    split_ifs <;> ring
+
+include hlam h2 hprim in
+/-- **The Poisson values are periodic**: `F(π^k, π^{t+6}; π^{j+6}) = Q⁶ F(π^k, π^t; π^j)` for
+`t ≥ 1`. -/
+theorem poissonCoeff_shift {t : ℕ} (ht : 1 ≤ t) (k j : ℕ) :
+    poissonCoeff (π ^ k) (π ^ (t + 6)) (π ^ (j + 6)) =
+      primeQ π ^ 6 * poissonCoeff (π ^ k) (π ^ t) (π ^ j) := by
+  rcases Nat.lt_or_ge k 2 with hk | hk
+  · interval_cases k
+    · rw [poissonCoeff_pow_zero_left π hlam h2 hprim (by omega),
+        poissonCoeff_pow_zero_left π hlam h2 hprim ht, sexticLayer_shift π hlam _ ht]
+    · rw [poissonCoeff_pow_one_left π hlam h2 hprim (by omega),
+        poissonCoeff_pow_one_left π hlam h2 hprim ht, show t + 6 - 1 = (t - 1) + 6 by omega,
+        show t + 6 + 1 = (t + 1) + 6 by omega, sexticLayer_shift π hlam _ (by omega)]
+      ring
+  · rw [poissonCoeff_pow_eq_zero π hlam h2 hprim (by omega) hk,
+      poissonCoeff_pow_eq_zero π hlam h2 hprim ht hk, mul_zero]
+
+include hlam h2 hprim in
+/-- **Below the layer the Poisson value vanishes**: `F(π^k, π^t; π^j) = 0` for `j + 1 < t`. -/
+theorem poissonCoeff_eq_zero_below {t j : ℕ} (hjt : j + 1 < t) (k : ℕ) :
+    poissonCoeff (π ^ k) (π ^ t) (π ^ j) = 0 := by
+  rcases Nat.lt_or_ge k 2 with hk | hk
+  · interval_cases k
+    · rw [poissonCoeff_pow_zero_left π hlam h2 hprim (by omega)]
+      unfold sexticLayer
+      split_ifs <;> first | omega | simp
+    · rw [poissonCoeff_pow_one_left π hlam h2 hprim (by omega)]
+      unfold sexticLayer
+      split_ifs <;> first | omega | simp
+  · exact poissonCoeff_pow_eq_zero π hlam h2 hprim (by omega) hk _
+
+include hlam h2 hprim in
+/-- The local term vanishes below the layer: `j + 6m + 1 < e + 3l`. -/
+theorem localTerm_eq_zero_below (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j : ℕ)
+    (e : Fin 2) (l k m : ℕ) (h : j + 6 * m + 1 < (e : ℕ) + 3 * l) :
+    localTerm π ηp X Y V u j (e, l, k, m) = 0 := by
+  rw [localTerm_eq π hlam h2 hprim ηp X Y V hu j e l k m,
+    poissonCoeff_eq_zero_below π hlam h2 hprim h]
+  simp
+
+/-- The coefficient of the local term at `t = e + 3l` and the frequency `π^{j'}`:
+`ε^{tk} γ₂(π^e) (c̄₄^t Γ^{t mod 2})⁻¹ ρ^k ρ^{−t} F(π^k, π^t; π^{j'})`. -/
+def localCoef (u : O) (e t k j' : ℕ) : ℂ :=
+  complexSexticChar (Ideal.span {π}) hlam (-1) ^ (t * k) * thetaGauss (π ^ e) *
+    (conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)) ^ t *
+      fixedDualAverage π ^ (t % 2))⁻¹ *
+    (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ k *
+      (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ t)⁻¹ *
+        poissonCoeff (π ^ k) (π ^ t) (π ^ j'))
+
+include h2 hprim in
+theorem localTerm_eq_coef (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j : ℕ) (e : Fin 2)
+    (l k m : ℕ) :
+    localTerm π ηp X Y V u j (e, l, k, m) =
+      primeKappa π ηp ^ ((e : ℕ) + 3 * l) * localCoef π hlam u e ((e : ℕ) + 3 * l) k (j + 6 * m) *
+        (X / primeNorm π) ^ (e : ℕ) * (X ^ 3 / primeQ π) ^ l * (Y / primeQ π) ^ k * V ^ m :=
+  localTerm_eq π hlam h2 hprim ηp X Y V hu j e l k m
+
+include h2 hprim in
+/-- The coefficient is periodic: `C(e, t+6, k, j'+6) = Q⁶ C(e, t, k, j')` for `t ≥ 1`. -/
+theorem localCoef_shift {u : O} (hu : u ∉ Ideal.span {π}) (e : ℕ) {t : ℕ} (ht : 1 ≤ t)
+    (k j' : ℕ) :
+    localCoef π hlam u e (t + 6) k (j' + 6) = primeQ π ^ 6 * localCoef π hlam u e t k j' := by
+  have hρ := sexticChar_pow_six π hlam _ (unit_mk_of_not_mem π hu)
+  have hc := conj_sexticChar_four_pow_three π hlam h2
+  have hε := mulChar_neg_one_sq (complexSexticChar (Ideal.span {π}) hlam)
+  have e1 : complexSexticChar (Ideal.span {π}) hlam (-1) ^ ((t + 6) * k) =
+      complexSexticChar (Ideal.span {π}) hlam (-1) ^ (t * k) := by
+    rw [show (t + 6) * k = t * k + 2 * (3 * k) by ring, pow_add,
+      pow_mul (complexSexticChar (Ideal.span {π}) hlam (-1)) 2 (3 * k), hε, one_pow, mul_one]
+  have e2 : conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)) ^ (t + 6) =
+      conj (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ 4)) ^ t := by
+    rw [show t + 6 = t + 3 * 2 by rfl, pow_add, pow_mul, hc, one_pow, mul_one]
+  have e3 : complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ (t + 6) =
+      complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) ^ t := by
+    rw [pow_add, hρ, mul_one]
+  unfold localCoef
+  rw [e1, e2, e3, show (t + 6) % 2 = t % 2 by omega, poissonCoeff_shift π hlam h2 hprim ht]
+  ring
+
+include hlam h2 hprim in
+/-- **Periodicity of the local term.** For `e + 3l ≥ 1`, raising the cube exponent by two and
+the sixth-power exponent of the frequency by one multiplies the term by `R`. -/
+theorem localTerm_shift (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) (j : ℕ) (e : Fin 2)
+    (l k m : ℕ) (ht : 1 ≤ (e : ℕ) + 3 * l) :
+    localTerm π ηp X Y V u j (e, l + 2, k, m + 1) =
+      primeR π ηp X V * localTerm π ηp X Y V u j (e, l, k, m) := by
+  have hQ := primeQ_ne_zero π
+  rw [localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j e (l + 2) k (m + 1),
+    localTerm_eq_coef π hlam h2 hprim ηp X Y V hu j e l k m,
+    show (e : ℕ) + 3 * (l + 2) = ((e : ℕ) + 3 * l) + 6 by ring,
+    show j + 6 * (m + 1) = (j + 6 * m) + 6 by ring, localCoef_shift π hlam h2 hprim hu _ ht]
+  have key : primeQ π ^ 6 * (X ^ 3 / primeQ π) ^ 2 = primeQ π ^ 4 * X ^ 6 := by
+    field_simp
+  generalize localCoef π hlam u (e : ℕ) ((e : ℕ) + 3 * l) k (j + 6 * m) = C
+  generalize (X / primeNorm π) ^ (e : ℕ) = A
+  generalize (Y / primeQ π) ^ k = B
+  unfold primeR
+  rw [pow_add (primeKappa π ηp), pow_add (X ^ 3 / primeQ π), pow_succ V]
+  linear_combination (primeKappa π ηp ^ ((e : ℕ) + 3 * l) * primeKappa π ηp ^ 6 * C * A *
+    (X ^ 3 / primeQ π) ^ l * B * V ^ m * V) * key
+
+include hlam h2 hprim in
+/-- **A family of exponents is geometric in `R`.** For `e + 3l₀ ≥ 1` and `j < 6`, the term at
+`(e, l₀ + 2r, k, m)` is `R^r` times the base term at `(e, l₀, k, m − r)`, and zero for `m < r`. -/
+theorem localTerm_family (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : ℕ} (hj : j < 6)
+    (e : Fin 2) (l₀ k : ℕ) (ht : 1 ≤ (e : ℕ) + 3 * l₀) (r m : ℕ) :
+    localTerm π ηp X Y V u j (e, l₀ + 2 * r, k, m) =
+      if r ≤ m then primeR π ηp X V ^ r * localTerm π ηp X Y V u j (e, l₀, k, m - r) else 0 := by
+  induction r generalizing m with
+  | zero => simp
+  | succ r ih =>
+    rcases m with _ | m
+    · rw [if_neg (by omega)]
+      exact localTerm_eq_zero_below π hlam h2 hprim ηp X Y V hu j e _ k 0 (by omega)
+    · rw [show l₀ + 2 * (r + 1) = (l₀ + 2 * r) + 2 by ring,
+        localTerm_shift π hlam h2 hprim ηp X Y V hu j e _ k m (by omega), ih m]
+      by_cases hrm : r ≤ m
+      · rw [if_pos hrm, if_pos (by omega), show m + 1 - (r + 1) = m - r by omega, pow_succ]
+        ring
+      · rw [if_neg hrm, if_neg (by omega), mul_zero]
 
 end Prime
 
