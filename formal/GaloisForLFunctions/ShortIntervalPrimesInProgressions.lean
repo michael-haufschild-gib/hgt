@@ -1,16 +1,31 @@
 import GaloisForLFunctions.ShortIntervalPrimesInProgressions.TheZerosOfAPrimitiveLFunction
 import GaloisForLFunctions.ShortIntervalPrimesInProgressions.TheExplicitFormulaForACharacter
 import GaloisForLFunctions.ShortIntervalPrimesInProgressions.CharacterSumsInShortWindows
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.LocalZeroCount
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.CharacterPhaseBlocks
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.LittlewoodGrowth
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.LittlewoodZeroFreeRegion
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.ZeroDetectionForACharacter
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.ZeroDensityForACharacter
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.TheZeroSumVanishes
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.CharacterWindows
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.PrimesInShortProgressions
 
 /-!
 # Primes in short intervals of a residue class
 
-Hoheisel's theorem for a fixed modulus: primes `p ≡ a mod q` in every interval `(x, x + x^θ]`
-for some `θ < 1`.
+Hoheisel's theorem for a fixed modulus: for `θ = 1 − 1/(16(14·10⁷ + 12))`, every interval
+`(x, x + x^θ]` with `x` large contains a prime `p ≡ a (mod q)`, and the von Mangoldt mass of the
+class in the interval is `∼ x^θ/φ(q)` (`PrimesInShortProgressions`).
 
-* The zeros of a primitive `Λ(s, χ)` lie in the open critical strip, with the Hadamard partial
-  fraction of `Λ'/Λ` (`TheZerosOfAPrimitiveLFunction`).
-* The genus-kernel explicit formula for `ψ(X, χ)` (`TheExplicitFormulaForACharacter`).
-* `ψ(x + h, χ) − ψ(x, χ)` is bounded by window masses of `ψ` and a weighted sum over the zeros
-  (`CharacterSumsInShortWindows`).
+* Zeros of a primitive `Λ(s, χ)` and the Hadamard partial fraction (`TheZerosOfAPrimitiveLFunction`);
+  the explicit formula (`TheExplicitFormulaForACharacter`); the window bound by a weighted zero sum
+  (`CharacterSumsInShortWindows`); the local zero count (`LocalZeroCount`).
+* Littlewood's growth bound for `L(s, χ)` from the `k`-th derivative test on additive twists
+  (`CharacterPhaseBlocks`, `LittlewoodGrowth`), and Littlewood's zero-free region
+  (`LittlewoodZeroFreeRegion`).
+* The zero-density estimate `N(σ, T) ≪ (log T)^{11} T^{12(1−σ)}` by mollified detection and the
+  discrete mean value theorem (`ZeroDetectionForACharacter`, `ZeroDensityForACharacter`).
+* The weighted zero sum vanishes (`TheZeroSumVanishes`); windows of `ψ(·, χ)` for every character
+  (`CharacterWindows`).
 -/

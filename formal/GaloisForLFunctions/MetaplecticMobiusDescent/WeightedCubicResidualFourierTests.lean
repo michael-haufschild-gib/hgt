@@ -40249,7 +40249,8 @@ theorem hasDerivAt_halfFlow (g : 𝓢(ℝ, ℂ)) (a t : ℝ) :
       (halfEulerCLM g (a * Real.exp (t / 2))) t := by
   have hf : HasDerivAt (fun y : ℝ => a * Real.exp (y / 2))
       ((a * Real.exp (t / 2)) / 2) t := by
-    convert (((hasDerivAt_id t).div_const 2).exp.const_mul a) using 1 <;> ring
+    simpa only [id_eq, div_eq_mul_inv, mul_one, mul_assoc] using
+      (((hasDerivAt_id t).div_const 2).exp.const_mul a)
   simpa only [halfEulerCLM_apply, Function.comp_def] using
     (g.hasDerivAt (a * Real.exp (t / 2))).scomp t hf
 
@@ -40354,7 +40355,7 @@ def paperFourierRayCLM : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℝ, ℂ) := quadraticTra
   change (2 / Real.sqrt 3 : ℝ) •
     radialFourierCLM W (complexPoint 0 (((ringComplex omega).im)⁻¹ * s)) = _
   rw [paperFrequency_coordinates]
-  simp only [Complex.ofReal_im, Complex.ofReal_re, zero_div, div_eq_mul_inv, mul_comm]
+  simp only [Complex.ofReal_im, Complex.ofReal_re, zero_div, div_eq_mul_inv, zero_mul, mul_comm]
 
 theorem paperRadialFourier_eq_ray (W : 𝓢(ℝ, ℂ)) :
     paperRadialFourier W = fun x : ℝ => paperFourierRayCLM W (Real.sqrt x) := by
@@ -41701,6 +41702,1641 @@ theorem divisor_cost_with_constant {α : ℝ} (h : HasSieveExponent α) (δ : �
     ((h.divisor_pair δ hδ).choose_spec.2 B N D₁ D₂ hB hN hD₁ hD₂ hD₁N hD₂N)
     (divisorEnergyFactor_nonneg ε hε N a b)
 
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+theorem sqrt_div_mul_rpow (M B α : ℝ) (hM : 0 ≤ M) (hB : 0 < B) :
+    Real.sqrt (M / B) * B ^ α = Real.sqrt M * B ^ (α - 1 / 2) := by
+  rw [Real.rpow_sub hB, ← Real.sqrt_eq_rpow, Real.sqrt_div hM]
+  ring
+
+theorem original_middle_scale_shape (M B N D T α : ℝ)
+    (hM : 0 ≤ M) (hB : 0 < B) (hD : D ≤ T * Real.sqrt (M / B)) :
+    N + B ^ α * D ≤ N + T * Real.sqrt M * B ^ (α - 1 / 2) := by
+  calc
+    _ ≤ N + B ^ α * (T * Real.sqrt (M / B)) :=
+      add_le_add le_rfl (mul_le_mul_of_nonneg_left hD (Real.rpow_nonneg hB.le α))
+    _ = _ := by rw [mul_left_comm (B ^ α) T, mul_comm (B ^ α), sqrt_div_mul_rpow M B α hM hB]; ring
+
+theorem dual_middle_scale_shape (M F B N D T α : ℝ)
+    (hM : 0 < M) (hF : 0 < F) (hB : 0 < B) (hN : 0 < N)
+    (hD : D ≤ T * (N * Real.sqrt (F / (M * B)))) :
+    (M / (F * N)) * (N + B ^ α * D) ≤
+      M / F + T * Real.sqrt (M / F) * B ^ (α - 1 / 2) := by
+  have hratio : 0 ≤ M / (F * N) := by positivity
+  calc
+    _ ≤ (M / (F * N)) * (N + B ^ α * (T * (N * Real.sqrt (F / (M * B))))) := by gcongr
+    _ = M / F + T * (Real.sqrt ((M / F) / B) * B ^ α) := by
+      rw [dual_middle_scale_identity M F B N hM hF hB hN]
+      field_simp
+
+    _ = _ := by rw [sqrt_div_mul_rpow (M / F) B α (by positivity) hB]; ring
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+variable {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss)
+  (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+  (D₁ D₂ B N M U : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N)
+  (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N) (hM : 0 < M)
+  (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+  (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+  (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+  (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+  (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+  (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+  (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+
+include hD₁ hD₂ hB hN hD₁N hD₂N hM hS hT hr hl hri hrows ha hb
+
+theorem HasSieveExponent.original_middle_block
+    (W : 𝓢(ℝ, ℂ))
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hcut : D₁ * D₂ ≤ U * Real.sqrt (M / B)) :
+    (∑' h : {h : O // h ≠ 0},
+      originalMiddleAt W S T rows left right (a h.val) (b h.val) M h.val) ≤
+      (2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+        divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+          (N + U * Real.sqrt M * B ^ (α - 1 / 2)) := by
+  have hc := divisor_cost_with_constant hexp deltaLoss hδ ε hε S T B N D₁ D₂ hB hN hD₁ hD₂ hD₁N hD₂N
+    (fun D hD => (hS D hD).2) (fun E hE => (hT E hE).2) a₀ b₀
+  have hs := (actual_original_middle_all_frequencies ε hε S T D₁ D₂ B N M hD₁ hD₂ hB hN hM hS hT
+    rows left right hr hl hri hrows a₀ b₀ a b ha hb W hleft hright).2
+  have hk : 0 ≤ 2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W :=
+    mul_nonneg (mul_nonneg (by norm_num) nonzeroLatticeEnvelopeConstant_nonneg) (originalMiddleDecayConstant_nonneg W)
+  have hf := divisorEnergyFactor_nonneg ε hε N a₀ b₀
+  have hconst := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  calc
+    _ ≤ (2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+        (divisorEnergyFactor ε hε N a₀ b₀ *
+          (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss * (N + B ^ α * (D₁ * D₂)))) :=
+      hs.trans (mul_le_mul_of_nonneg_left hc hk)
+    _ = ((2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+        divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss)) *
+          (N + B ^ α * (D₁ * D₂)) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (original_middle_scale_shape M B N (D₁ * D₂) U α hM.le (by linarith) hcut) (by positivity)
+
+theorem HasSieveExponent.dual_middle_block
+    (W : 𝓢(ℝ, ℂ)) (F : ℝ) (hF : 0 < F)
+    (hleft : ∀ j, N / 2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N / 2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hcut : D₁ * D₂ ≤ U * (N * Real.sqrt (F / (M * B)))) :
+    (∑' h : {h : O // h ≠ 0},
+      dualMiddleAt W S T rows left right (a h.val) (b h.val) M F h.val) ≤
+      (2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) *
+        divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+          (M / F + U * Real.sqrt (M / F) * B ^ (α - 1 / 2)) := by
+  have hc := divisor_cost_with_constant hexp deltaLoss hδ ε hε S T B N D₁ D₂ hB hN hD₁ hD₂ hD₁N hD₂N
+    (fun D hD => (hS D hD).2) (fun E hE => (hT E hE).2) a₀ b₀
+  have hs := (actual_dual_middle_all_frequencies ε hε S T D₁ D₂ B N M F hD₁ hD₂ hB hN hM hF hS hT
+    rows left right hr hl hri hrows a₀ b₀ a b ha hb W hleft hright).2
+  have hk : 0 ≤ 2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W :=
+    mul_nonneg (mul_nonneg (by norm_num) nonzeroLatticeEnvelopeConstant_nonneg) (dualMiddleDecayConstant_nonneg W)
+  have hf := divisorEnergyFactor_nonneg ε hε N a₀ b₀
+  have hconst := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  calc
+    _ ≤ ((2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) * (M / (F * N))) *
+        (divisorEnergyFactor ε hε N a₀ b₀ *
+          (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss * (N + B ^ α * (D₁ * D₂)))) :=
+      hs.trans (mul_le_mul_of_nonneg_left hc (by positivity))
+    _ = ((2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) *
+        divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss)) *
+          ((M / (F * N)) * (N + B ^ α * (D₁ * D₂))) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (dual_middle_scale_shape M F B N (D₁ * D₂) U α hM hF (by linarith) (by linarith) hcut) (by positivity)
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+theorem sqrt_scale_shell_upper (M B b : ℝ) (hM : 0 < M) (hB : 0 < B)
+    (hb : B / 2 ≤ b) : Real.sqrt (M / b) ≤ 2 * Real.sqrt (M / B) := by
+  simpa only [one_mul, div_one] using principal_middle_prefactor_bound
+    M B b 1 1 1 1 hM hB hb (by norm_num) le_rfl (by norm_num) le_rfl
+
+theorem original_middle_rectangle_upper (M B b D₁ D₂ d e U : ℝ)
+    (hM : 0 < M) (hB : 0 < B) (hb : B / 2 ≤ b) (hU : 0 ≤ U)
+    (hD₁ : 0 ≤ D₁) (hD₂ : 0 ≤ D₂) (hd : D₁ ≤ d) (he : D₂ ≤ e)
+    (hcut : d * e ≤ U * Real.sqrt (M / b)) :
+    D₁ * D₂ ≤ (2 * U) * Real.sqrt (M / B) := by
+  calc
+    _ ≤ d * e := mul_le_mul hd he hD₂ (hD₁.trans hd)
+    _ ≤ U * Real.sqrt (M / b) := hcut
+    _ ≤ U * (2 * Real.sqrt (M / B)) :=
+      mul_le_mul_of_nonneg_left (sqrt_scale_shell_upper M B b hM hB hb) hU
+    _ = _ := by ring
+
+theorem dual_middle_rectangle_upper (M F B b N D₁ D₂ d e U : ℝ)
+    (hM : 0 < M) (hF : 0 < F) (hB : 0 < B) (hb : B / 2 ≤ b) (hN : 0 ≤ N) (hU : 0 ≤ U)
+    (hD₁ : 0 ≤ D₁) (hD₂ : 0 ≤ D₂) (hd : D₁ ≤ d) (he : D₂ ≤ e)
+    (hcut : d * e ≤ U * (N * Real.sqrt (F / (M * b)))) :
+    D₁ * D₂ ≤ (2 * U) * (N * Real.sqrt (F / (M * B))) := by
+  have harg (z : ℝ) : F / (M * z) = (F / M) / z := by ring
+  simp only [harg] at hcut ⊢
+  have hh := original_middle_rectangle_upper (F / M) B b D₁ D₂ d e (U * N)
+    (div_pos hF hM) hB hb (mul_nonneg hU hN) hD₁ hD₂ hd he
+    (by simpa only [mul_assoc] using hcut)
+  simpa only [mul_assoc] using hh
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def originalMiddleWindowAt (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O) : ℝ := by
+  classical
+  exact ∑ D : S, ∑ E : T, ∑ i, if P (D.val * E.val) i then
+    (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+      (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+        ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖ else 0
+
+def dualMiddleWindowAt (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop) (h : O) : ℝ := by
+  classical
+  exact ∑ D : S, ∑ E : T, ∑ i, if P (D.val * E.val) i then
+    (Real.sqrt ((M / F) / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k * paperRadialFourier W
+      (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) /
+        (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+          ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ)))‖ else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalMiddleWindowAt_bounds (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    0 ≤ originalMiddleWindowAt W S T rows left right a b M P h ∧
+    originalMiddleWindowAt W S T rows left right a b M P h ≤
+      originalMiddleAt W S T rows left right a b M h := by
+  classical
+  constructor
+  · unfold originalMiddleWindowAt
+    positivity
+  · unfold originalMiddleWindowAt originalMiddleAt
+    gcongr with D _ E _ i _
+    split_ifs <;> first | exact le_rfl | positivity
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem dualMiddleWindowAt_bounds (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    0 ≤ dualMiddleWindowAt W S T rows left right a b M F P h ∧
+    dualMiddleWindowAt W S T rows left right a b M F P h ≤
+      dualMiddleAt W S T rows left right a b M F h := by
+  classical
+  constructor
+  · unfold dualMiddleWindowAt
+    positivity
+  · unfold dualMiddleWindowAt dualMiddleAt
+    gcongr with D _ E _ i _
+    split_ifs <;> first | exact le_rfl | positivity
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalMiddleWindowAt_eq_zero (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O)
+    (hP : ∀ (D : S) (E : T) i, ¬ P (D.val * E.val) i) :
+    originalMiddleWindowAt W S T rows left right a b M P h = 0 := by
+  classical
+  simp only [originalMiddleWindowAt, hP, ite_false, Finset.sum_const_zero]
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem dualMiddleWindowAt_eq_zero (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop) (h : O)
+    (hP : ∀ (D : S) (E : T) i, ¬ P (D.val * E.val) i) :
+    dualMiddleWindowAt W S T rows left right a b M F P h = 0 := by
+  classical
+  simp only [dualMiddleWindowAt, hP, ite_false, Finset.sum_const_zero]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+def columnDyadicLength (N : ℝ) : ℕ := ⌈Real.log N / Real.log 2⌉₊
+
+theorem columnDyadicLength_cover (N : ℝ) : N ≤ (2 : ℝ) ^ columnDyadicLength N := by
+  apply Real.pow_le_of_le_log (by norm_num : (0 : ℝ) < 2)
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  exact (div_le_iff₀ hlog).mp (Nat.le_ceil (Real.log N / Real.log 2))
+
+theorem columnDyadicLength_small_power (ε : ℝ) (hε : 0 < ε) (N : ℝ) (hN : 1 ≤ N) :
+    (columnDyadicLength N + 1 : ℝ) ≤ (2 + 1 / (ε * Real.log 2)) * N ^ ε := by
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hq : 0 ≤ Real.log N / Real.log 2 := div_nonneg (Real.log_nonneg hN) hlog.le
+  have hceil := Nat.ceil_lt_add_one hq
+  have hL : (columnDyadicLength N + 1 : ℝ) ≤ 2 + Real.log N / Real.log 2 := by
+    dsimp only [columnDyadicLength]
+    linarith
+  have hr : 1 ≤ N ^ ε := Real.one_le_rpow hN hε.le
+  have hb : Real.log N / Real.log 2 ≤ (N ^ ε / ε) / Real.log 2 :=
+    div_le_div_of_nonneg_right (Real.log_le_rpow_div (by linarith) hε) hlog.le
+  calc
+    _ ≤ 2 + Real.log N / Real.log 2 := hL
+    _ ≤ 2 * N ^ ε + (N ^ ε / ε) / Real.log 2 := add_le_add (by linarith) hb
+    _ = _ := by field_simp
+
+theorem exists_dyadic_shell (n lengthScale : ℕ) (hn : 1 ≤ n) (hL : (n : ℝ) ≤ (2 : ℝ) ^ lengthScale) :
+    ∃ j ∈ Finset.range (lengthScale + 1), (2 : ℝ) ^ j / 2 < n ∧ (n : ℝ) ≤ (2 : ℝ) ^ j := by
+  have hex : ∃ j : ℕ, (n : ℝ) ≤ (2 : ℝ) ^ j := ⟨lengthScale, hL⟩
+  let j := Nat.find hex
+  have hj : (n : ℝ) ≤ (2 : ℝ) ^ j := Nat.find_spec hex
+  have hjL : j ≤ lengthScale := Nat.find_min' hex hL
+  refine ⟨j, Finset.mem_range.mpr (by omega), ?_, hj⟩
+  have hjfind : j = Nat.find hex := rfl
+  rcases j with _ | j
+  · have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    norm_num
+    linarith
+  · have hprev : ¬ (n : ℝ) ≤ (2 : ℝ) ^ j := Nat.find_min hex (by omega)
+    have hp := lt_of_not_ge hprev
+    simpa only [pow_succ, mul_div_cancel_right₀ _ (by norm_num : (2 : ℝ) ≠ 0)] using hp
+
+lemma positive_ideal_dyadic_exists (N : ℝ) (D : Ideal O)
+    (hD : 1 ≤ (Ideal.absNorm D : ℝ)) (hDN : (Ideal.absNorm D : ℝ) ≤ N) :
+    ∃ j ∈ Finset.range (columnDyadicLength N + 1),
+      (2 : ℝ)^j/2 < (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ (2 : ℝ)^j := by
+  have hp : 1 ≤ Ideal.absNorm D := by exact_mod_cast hD
+  exact exists_dyadic_shell (Ideal.absNorm D) (columnDyadicLength N) hp
+    (hDN.trans (columnDyadicLength_cover N))
+
+def divisorDyadicLabel (N : ℝ) (D : Ideal O) : Fin (columnDyadicLength N+1) :=
+  if h : 1 ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ N then
+    ⟨(positive_ideal_dyadic_exists N D h.1 h.2).choose,
+      Finset.mem_range.mp (positive_ideal_dyadic_exists N D h.1 h.2).choose_spec.1⟩
+  else ⟨0,by omega⟩
+
+def divisorDyadicBin (S : Finset (Ideal O)) (N : ℝ)
+    (j : Fin (columnDyadicLength N+1)) : Finset (Ideal O) :=
+  S.filter (fun D => divisorDyadicLabel N D = j)
+
+def divisorDyadicScale (j : ℕ) : ℝ := max 1 ((2 : ℝ)^j/2)
+
+lemma divisorDyadicLabel_bounds (N : ℝ) (D : Ideal O)
+    (hD : 1 ≤ (Ideal.absNorm D : ℝ)) (hDN : (Ideal.absNorm D : ℝ) ≤ N) :
+    (2 : ℝ)^(divisorDyadicLabel N D).val/2 < (Ideal.absNorm D : ℝ) ∧
+      (Ideal.absNorm D : ℝ) ≤ (2 : ℝ)^(divisorDyadicLabel N D).val := by
+  unfold divisorDyadicLabel
+  rw [dif_pos ⟨hD,hDN⟩]
+  exact (positive_ideal_dyadic_exists N D hD hDN).choose_spec.2
+
+lemma divisorDyadicScale_ge_one (j : ℕ) : 1 ≤ divisorDyadicScale j := le_max_left _ _
+
+theorem divisorDyadicBin_bounds (S : Finset (Ideal O)) (N : ℝ)
+    (hS : ∀ D ∈ S, 1 ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ N)
+    (j : Fin (columnDyadicLength N+1)) (D : Ideal O) (hD : D ∈ divisorDyadicBin S N j) :
+    divisorDyadicScale j.val ≤ (Ideal.absNorm D : ℝ) ∧
+      (Ideal.absNorm D : ℝ) ≤ 2 * divisorDyadicScale j.val := by
+  obtain ⟨hDS,hj⟩ := Finset.mem_filter.mp hD
+  have hd := hS D hDS
+  have hb := divisorDyadicLabel_bounds N D hd.1 hd.2
+  rw [hj] at hb
+  refine ⟨max_le hd.1 hb.1.le, ?_⟩
+  have hm : (2 : ℝ)^j.val/2 ≤ divisorDyadicScale j.val := le_max_right _ _
+  linarith [hb.2]
+
+theorem divisorDyadicBin_scale_le (S : Finset (Ideal O)) (N : ℝ)
+    (hS : ∀ D ∈ S, 1 ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ N)
+    (j : Fin (columnDyadicLength N+1)) (hj : (divisorDyadicBin S N j).Nonempty) :
+    divisorDyadicScale j.val ≤ N := by
+  obtain ⟨D,hD⟩ := hj
+  exact (divisorDyadicBin_bounds S N hS j D hD).1.trans (hS D (Finset.mem_filter.mp hD).1).2
+
+theorem sum_divisorDyadicBins {A : Type*} [AddCommMonoid A]
+    (S : Finset (Ideal O)) (N : ℝ) (f : Ideal O → A) :
+    (∑ D ∈ S, f D) = ∑ j : Fin (columnDyadicLength N+1), ∑ D ∈ divisorDyadicBin S N j, f D := by
+  simp only [divisorDyadicBin,Finset.sum_filter]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro D hD
+  simp
+
+theorem sum_divisorDyadicRectangles {A : Type*} [AddCommMonoid A]
+    (S T : Finset (Ideal O)) (N : ℝ) (f : Ideal O → Ideal O → A) :
+    (∑ D ∈ S, ∑ E ∈ T, f D E) =
+      ∑ j : Fin (columnDyadicLength N+1), ∑ k : Fin (columnDyadicLength N+1),
+        ∑ D ∈ divisorDyadicBin S N j, ∑ E ∈ divisorDyadicBin T N k, f D E := by
+  calc
+    _ = ∑ j : Fin (columnDyadicLength N+1), ∑ D ∈ divisorDyadicBin S N j,
+        ∑ E ∈ T, f D E := sum_divisorDyadicBins S N _
+    _ = ∑ j : Fin (columnDyadicLength N+1), ∑ D ∈ divisorDyadicBin S N j,
+        ∑ k : Fin (columnDyadicLength N+1), ∑ E ∈ divisorDyadicBin T N k, f D E := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      apply Finset.sum_congr rfl
+      intro D hD
+      exact sum_divisorDyadicBins T N (f D)
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      exact Finset.sum_comm
+
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+lemma kernelLogPhase_zero (t : ℝ) : kernelLogPhase t 0 = 1 := by
+  simp [kernelLogPhase]
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+
+section
+
+open scoped BigOperators Classical SchwartzMap
+
+section
+open Eisenstein MeasureTheory
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+variable {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss)
+  (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+  (D₁ D₂ B N M U : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N)
+  (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N) (hM : 0 < M)
+  (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+  (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+  (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+  (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+  (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+  (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+  (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+
+include hD₁ hD₂ hB hN hD₁N hD₂N hM hS hT hr hl hri hrows ha hb
+
+theorem HasSieveExponent.original_middle_window
+    (hU : 0 ≤ U) (W : 𝓢(ℝ, ℂ)) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hP : ∀ (D : S) (E : T) i, P (D.val * E.val) i →
+      (Ideal.absNorm (D.val * E.val) : ℝ) ≤ U * Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ))) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      originalMiddleWindowAt W S T rows left right (a h.val) (b h.val) M P h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      originalMiddleWindowAt W S T rows left right (a h.val) (b h.val) M P h.val) ≤
+      (2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+        divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+          (N + (2 * U) * Real.sqrt M * B ^ (α - 1 / 2)) := by
+  have hs0 := (actual_original_middle_all_frequencies ε hε S T D₁ D₂ B N M hD₁ hD₂ hB hN hM hS hT
+    rows left right hr hl hri hrows a₀ b₀ a b ha hb W hleft hright).1
+  have hbounds (h : {h : O // h ≠ 0}) :=
+    originalMiddleWindowAt_bounds W S T rows left right (a h.val) (b h.val) M P h.val
+  have hs := Summable.of_nonneg_of_le (fun h => (hbounds h).1) (fun h => (hbounds h).2) hs0
+  refine ⟨hs, ?_⟩
+  by_cases hcut : D₁ * D₂ ≤ (2 * U) * Real.sqrt (M / B)
+  · exact (hs.tsum_le_tsum (fun h => (hbounds h).2) hs0).trans
+      (hexp.original_middle_block deltaLoss hδ ε hε S T D₁ D₂ B N M (2 * U)
+        hD₁ hD₂ hB hN hD₁N hD₂N hM hS hT rows left right hr hl hri hrows a₀ b₀ a b ha hb W hleft hright hcut)
+  · have hp (D : S) (E : T) (i : m) : ¬ P (D.val * E.val) i := by
+      intro hh
+      apply hcut
+      apply original_middle_rectangle_upper M B (Ideal.absNorm (rows i).val) D₁ D₂
+        (Ideal.absNorm D.val) (Ideal.absNorm E.val) U hM (by linarith) (hrows i).1 hU
+        (by linarith) (by linarith) (hS D.val D.property).1 (hT E.val E.property).1
+      simpa only [map_mul, Nat.cast_mul] using hP D E i hh
+    have hz : (fun h : {h : O // h ≠ 0} =>
+        originalMiddleWindowAt W S T rows left right (a h.val) (b h.val) M P h.val) = fun _ => 0 :=
+      funext (fun h => originalMiddleWindowAt_eq_zero W S T rows left right (a h.val) (b h.val) M P h.val hp)
+    rw [hz, tsum_zero]
+    have h1 := nonzeroLatticeEnvelopeConstant_nonneg
+    have h2 := originalMiddleDecayConstant_nonneg W
+    have h3 := divisorEnergyFactor_nonneg ε hε N a₀ b₀
+    have h4 := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    positivity
+
+theorem HasSieveExponent.dual_middle_window
+    (hU : 0 ≤ U) (W : 𝓢(ℝ, ℂ)) (F : ℝ) (hF : 0 < F) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, N / 2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N / 2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hP : ∀ (D : S) (E : T) i, P (D.val * E.val) i →
+      (Ideal.absNorm (D.val * E.val) : ℝ) ≤ U *
+        (N * Real.sqrt (F / (M * (Ideal.absNorm (rows i).val : ℝ))))) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      dualMiddleWindowAt W S T rows left right (a h.val) (b h.val) M F P h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      dualMiddleWindowAt W S T rows left right (a h.val) (b h.val) M F P h.val) ≤
+      (2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) *
+        divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+          (M / F + (2 * U) * Real.sqrt (M / F) * B ^ (α - 1 / 2)) := by
+  have hs0 := (actual_dual_middle_all_frequencies ε hε S T D₁ D₂ B N M F hD₁ hD₂ hB hN hM hF hS hT
+    rows left right hr hl hri hrows a₀ b₀ a b ha hb W hleft hright).1
+  have hbounds (h : {h : O // h ≠ 0}) :=
+    dualMiddleWindowAt_bounds W S T rows left right (a h.val) (b h.val) M F P h.val
+  have hs := Summable.of_nonneg_of_le (fun h => (hbounds h).1) (fun h => (hbounds h).2) hs0
+  refine ⟨hs, ?_⟩
+  by_cases hcut : D₁ * D₂ ≤ (2 * U) * (N * Real.sqrt (F / (M * B)))
+  · exact (hs.tsum_le_tsum (fun h => (hbounds h).2) hs0).trans
+      (hexp.dual_middle_block deltaLoss hδ ε hε S T D₁ D₂ B N M (2 * U)
+        hD₁ hD₂ hB hN hD₁N hD₂N hM hS hT rows left right hr hl hri hrows a₀ b₀ a b ha hb W F hF hleft hright hcut)
+  · have hp (D : S) (E : T) (i : m) : ¬ P (D.val * E.val) i := by
+      intro hh
+      apply hcut
+      apply dual_middle_rectangle_upper M F B (Ideal.absNorm (rows i).val) N D₁ D₂
+        (Ideal.absNorm D.val) (Ideal.absNorm E.val) U hM hF (by linarith) (hrows i).1 (by linarith) hU
+        (by linarith) (by linarith) (hS D.val D.property).1 (hT E.val E.property).1
+      simpa only [map_mul, Nat.cast_mul] using hP D E i hh
+    have hz : (fun h : {h : O // h ≠ 0} =>
+        dualMiddleWindowAt W S T rows left right (a h.val) (b h.val) M F P h.val) = fun _ => 0 :=
+      funext (fun h => dualMiddleWindowAt_eq_zero W S T rows left right (a h.val) (b h.val) M F P h.val hp)
+    rw [hz, tsum_zero]
+    have h1 := nonzeroLatticeEnvelopeConstant_nonneg
+    have h2 := dualMiddleDecayConstant_nonneg W
+    have h3 := divisorEnergyFactor_nonneg ε hε N a₀ b₀
+    have h4 := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    positivity
+
+end
+
+section
+open Eisenstein MeasureTheory
+
+theorem large_principal_scale_shape (X N Q D V : ℝ) (hD : 0 < D)
+    (hcut : X * N ≤ V * D) :
+    (X / D) * (N + Q * D) ≤ V + X * Q := by
+  have hh : X * N / D ≤ V := (div_le_iff₀ hD).mpr hcut
+  calc
+    _ = X * N / D + X * Q := by field_simp
+    _ ≤ _ := add_le_add hh le_rfl
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def principalCorrectionAt (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) : ℝ :=
+  ∑ D : S, ∑ E : T, ∑ i,
+    (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D.val : ℝ) * (Ideal.absNorm E.val : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k‖
+
+variable (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+  (D₁ D₂ B N M : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M)
+  (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2 * D₁)
+  (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2 * D₂)
+  (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+  (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+  (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+  (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+  (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+  (a : n → ℂ) (b : p → ℂ)
+
+include hD₁ hD₂ hB hN hM hS hT hr hl hri hrows hleft hright
+
+theorem principalCorrectionAt_bound :
+    principalCorrectionAt S T rows left right a b M ≤
+      (2 * Real.sqrt (M / B) / (D₁ * D₂)) *
+        Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) := by
+  have hh := canonical_original_divisor_block_phase_bound ε hε S T D₁ D₂ B N (by linarith) (by linarith) (by linarith)
+    (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)
+    rows left right hr hl hri (fun i => (hrows i).2) hleft hright a b
+    (fun _ => 0) (fun _ => 0) 0
+  simp only [zero_add, kernelLogPhase_zero, mul_one] at hh
+  have heq : (∑ D : S, ∑ E : T, ∑ i, ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k‖) =
+      ∑ D ∈ S, ∑ E ∈ T, ∑ i, ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k‖ := by
+    rw [Finset.sum_coe_sort S (fun D => ∑ E : T, ∑ i, ‖∑ j, ∑ k, originalTerm rows left right a b D E.val i j k‖)]
+    apply Finset.sum_congr rfl
+    intro D hD
+    exact Finset.sum_coe_sort T (fun E => ∑ i, ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k‖)
+  have hp := principal_middle_prefactor_sum S T (fun i => (rows i).val)
+    (fun D E i => ‖∑ j, ∑ k, originalTerm rows left right a b D.val E.val i j k‖)
+    (fun _ _ _ => norm_nonneg _) M B D₁ D₂ hM (by linarith) (by linarith) (by linarith)
+    (fun i => (hrows i).1) (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)
+  change principalCorrectionAt S T rows left right a b M ≤ _ at hp
+  rw [heq] at hp
+  exact hp.trans (mul_le_mul_of_nonneg_left hh (by positivity))
+
+theorem HasSieveExponent.large_principal_correction {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N) (V : ℝ)
+    (hcut : Real.sqrt (M / B) * N ≤ V * (D₁ * D₂)) :
+    principalCorrectionAt S T rows left right a b M ≤
+      2 * divisorEnergyFactor ε hε N a b * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+        (V + Real.sqrt M * B ^ (α - 1 / 2)) := by
+  have hb := principalCorrectionAt_bound ε hε S T D₁ D₂ B N M hD₁ hD₂ hB hN hM hS hT
+    rows left right hr hl hri hrows hleft hright a b
+  have hc := divisor_cost_with_constant hexp deltaLoss hδ ε hε S T B N D₁ D₂ hB hN hD₁ hD₂ hD₁N hD₂N
+    (fun D hD => (hS D hD).2) (fun E hE => (hT E hE).2) a b
+  have hf := divisorEnergyFactor_nonneg ε hε N a b
+  have hconst := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  calc
+    _ ≤ (2 * Real.sqrt (M / B) / (D₁ * D₂)) *
+        (divisorEnergyFactor ε hε N a b *
+          (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss * (N + B ^ α * (D₁ * D₂)))) :=
+      hb.trans (mul_le_mul_of_nonneg_left hc (by positivity))
+    _ = (2 * divisorEnergyFactor ε hε N a b * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss)) *
+        ((Real.sqrt (M / B) / (D₁ * D₂)) * (N + B ^ α * (D₁ * D₂))) := by ring
+    _ ≤ (2 * divisorEnergyFactor ε hε N a b * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss)) *
+        (V + Real.sqrt (M / B) * B ^ α) := mul_le_mul_of_nonneg_left
+      (large_principal_scale_shape _ _ _ _ _ (by positivity) hcut) (by positivity)
+    _ = _ := by rw [sqrt_div_mul_rpow M B α hM.le (by linarith)]
+
+end
+
+section
+open Eisenstein MeasureTheory
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+theorem sum_two_subtype_pools {A : Type*} [AddCommMonoid A]
+    (S T : Finset (Ideal O)) (f : Ideal O → Ideal O → A) :
+    (∑ D : S, ∑ E : T, f D.val E.val) = ∑ D ∈ S, ∑ E ∈ T, f D E := by
+  rw [Finset.sum_coe_sort S (fun D => ∑ E : T, f D E.val)]
+  apply Finset.sum_congr rfl
+  intro D hD
+  exact Finset.sum_coe_sort T (f D)
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalMiddleWindowAt_eq_finset (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    originalMiddleWindowAt W S T rows left right a b M P h =
+      ∑ D ∈ S, ∑ E ∈ T, ∑ i, if P (D * E) i then
+        (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+          ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ))) *
+        ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * paperRadialFourier W
+          (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+            ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ)))‖ else 0 := by
+  classical
+  unfold originalMiddleWindowAt
+  exact sum_two_subtype_pools (A := ℝ) S T (fun D E => ∑ i, if P (D * E) i then
+    (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * paperRadialFourier W
+      (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) * ‖ringComplex h‖ ^ 2 /
+        ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ)))‖ else 0)
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalMiddleWindowAt_dyadic (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O)) (N : ℝ)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    originalMiddleWindowAt W S T rows left right a b M P h =
+      ∑ j : Fin (columnDyadicLength N + 1), ∑ k : Fin (columnDyadicLength N + 1),
+        originalMiddleWindowAt W (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+          rows left right a b M P h := by
+  classical
+  simp_rw [originalMiddleWindowAt_eq_finset]
+  exact sum_divisorDyadicRectangles (A := ℝ) S T N _
+
+theorem HasSieveExponent.original_middle_pool {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (S T : Finset (Ideal O)) (B N M U : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hU : 0 ≤ U)
+    (hS : ∀ D ∈ S, 1 ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ N)
+    (hT : ∀ E ∈ T, 1 ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ N)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+    (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+    (W : 𝓢(ℝ, ℂ)) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hP : ∀ (D : S) (E : T) i, P (D.val * E.val) i →
+      (Ideal.absNorm (D.val * E.val) : ℝ) ≤ U * Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ))) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      originalMiddleWindowAt W S T rows left right (a h.val) (b h.val) M P h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      originalMiddleWindowAt W S T rows left right (a h.val) (b h.val) M P h.val) ≤
+      ((columnDyadicLength N + 1 : ℕ) : ℝ) ^ 2 *
+        ((2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+          divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+            (N + (2 * U) * Real.sqrt M * B ^ (α - 1 / 2))) := by
+  classical
+  let V := (2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+          divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+            (N + (2 * U) * Real.sqrt M * B ^ (α - 1 / 2))
+  have hV : 0 ≤ V := by
+    have h1 := nonzeroLatticeEnvelopeConstant_nonneg
+    have h2 := originalMiddleDecayConstant_nonneg W
+    have h3 := divisorEnergyFactor_nonneg ε hε N a₀ b₀
+    have h4 := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    dsimp only [V]
+    positivity
+  let f := fun (j k : Fin (columnDyadicLength N + 1)) (h : {h : O // h ≠ 0}) =>
+    originalMiddleWindowAt W (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+      rows left right (a h.val) (b h.val) M P h.val
+  have hf (j k : Fin (columnDyadicLength N + 1)) : Summable (f j k) ∧ (∑' h, f j k h) ≤ V := by
+    by_cases hSj : (divisorDyadicBin S N j).Nonempty
+    · by_cases hTk : (divisorDyadicBin T N k).Nonempty
+      · exact hexp.original_middle_window deltaLoss hδ ε hε (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+          (divisorDyadicScale j.val) (divisorDyadicScale k.val) B N M U
+          (divisorDyadicScale_ge_one _) (divisorDyadicScale_ge_one _) hB hN
+          (divisorDyadicBin_scale_le S N hS j hSj) (divisorDyadicBin_scale_le T N hT k hTk)
+          hM (divisorDyadicBin_bounds S N hS j) (divisorDyadicBin_bounds T N hT k)
+          rows left right hr hl hri hrows a₀ b₀ a b ha hb hU W P hleft hright
+          (fun D E i hp => hP
+            ⟨D.val, (Finset.mem_filter.mp D.property).1⟩
+            ⟨E.val, (Finset.mem_filter.mp E.property).1⟩ i hp)
+      · have hz := Finset.not_nonempty_iff_eq_empty.mp hTk
+        have he : f j k = fun _ => 0 := by
+          funext h
+          apply originalMiddleWindowAt_eq_zero
+          intro D E i hp
+          have hh := E.property
+          simp only [hz, Finset.notMem_empty] at hh
+        rw [he]
+        simpa only [tsum_zero] using And.intro (summable_zero : Summable (fun _ : {h : O // h ≠ 0} => (0 : ℝ))) hV
+    · have hz := Finset.not_nonempty_iff_eq_empty.mp hSj
+      have he : f j k = fun _ => 0 := by
+        funext h
+        apply originalMiddleWindowAt_eq_zero
+        intro D E i hp
+        have hh := D.property
+        simp only [hz, Finset.notMem_empty] at hh
+      rw [he]
+      simpa only [tsum_zero] using And.intro (summable_zero : Summable (fun _ : {h : O // h ≠ 0} => (0 : ℝ))) hV
+  have he : (fun h : {h : O // h ≠ 0} =>
+      originalMiddleWindowAt W S T rows left right (a h.val) (b h.val) M P h.val) =
+      fun h => ∑ j, ∑ k, f j k h := by
+    funext h
+    exact originalMiddleWindowAt_dyadic W S T N rows left right (a h.val) (b h.val) M P h.val
+  rw [he]
+  refine ⟨summable_sum (fun j _ => summable_sum (fun k _ => (hf j k).1)), ?_⟩
+  rw [Summable.tsum_finsetSum (fun j _ => summable_sum (fun k _ => (hf j k).1))]
+  calc
+    _ = ∑ j, ∑ k, ∑' h, f j k h := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      exact Summable.tsum_finsetSum (fun k _ => (hf j k).1)
+    _ ≤ ∑ j : Fin (columnDyadicLength N + 1), ∑ k : Fin (columnDyadicLength N + 1), V :=
+      Finset.sum_le_sum (fun j _ => Finset.sum_le_sum (fun k _ => (hf j k).2))
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, V, pow_two]; ring
+
+end
+
+open Eisenstein MeasureTheory
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem dualMiddleWindowAt_eq_finset (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    dualMiddleWindowAt W S T rows left right a b M F P h =
+      ∑ D ∈ S, ∑ E ∈ T, ∑ i, if P (D * E) i then
+        (Real.sqrt ((M / F) / (Ideal.absNorm (rows i).val : ℝ)) /
+          ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ))) *
+        ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * paperRadialFourier W
+          (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) / (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+            ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ)))‖ else 0 := by
+  classical
+  unfold dualMiddleWindowAt
+  exact sum_two_subtype_pools (A := ℝ) S T (fun D E => ∑ i, if P (D * E) i then
+    (Real.sqrt ((M / F) / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ))) *
+    ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * paperRadialFourier W
+      (Real.sqrt (F * (Ideal.absNorm (left j).val : ℝ) * (Ideal.absNorm (right k).val : ℝ) / (M * (Ideal.absNorm (rows i).val : ℝ))) * ‖ringComplex h‖ ^ 2 /
+        ((Ideal.absNorm D : ℝ) * (Ideal.absNorm E : ℝ)))‖ else 0)
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem dualMiddleWindowAt_dyadic (W : 𝓢(ℝ, ℂ)) (S T : Finset (Ideal O)) (N : ℝ)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    dualMiddleWindowAt W S T rows left right a b M F P h =
+      ∑ j : Fin (columnDyadicLength N + 1), ∑ k : Fin (columnDyadicLength N + 1),
+        dualMiddleWindowAt W (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+          rows left right a b M F P h := by
+  classical
+  simp_rw [dualMiddleWindowAt_eq_finset]
+  exact sum_divisorDyadicRectangles (A := ℝ) S T N _
+
+theorem HasSieveExponent.dual_middle_pool {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (S T : Finset (Ideal O)) (B N M F U : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hU : 0 ≤ U)
+    (hS : ∀ D ∈ S, 1 ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ N)
+    (hT : ∀ E ∈ T, 1 ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ N)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+    (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+    (W : 𝓢(ℝ, ℂ)) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, N / 2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N / 2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hP : ∀ (D : S) (E : T) i, P (D.val * E.val) i →
+      (Ideal.absNorm (D.val * E.val) : ℝ) ≤ U * (N * Real.sqrt (F / (M * (Ideal.absNorm (rows i).val : ℝ))))) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      dualMiddleWindowAt W S T rows left right (a h.val) (b h.val) M F P h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      dualMiddleWindowAt W S T rows left right (a h.val) (b h.val) M F P h.val) ≤
+      ((columnDyadicLength N + 1 : ℕ) : ℝ) ^ 2 *
+        ((2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) *
+          divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+            (M / F + (2 * U) * Real.sqrt (M / F) * B ^ (α - 1 / 2))) := by
+  classical
+  let V := (2 * nonzeroLatticeEnvelopeConstant * dualMiddleDecayConstant W) *
+          divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+            (M / F + (2 * U) * Real.sqrt (M / F) * B ^ (α - 1 / 2))
+  have hV : 0 ≤ V := by
+    have h1 := nonzeroLatticeEnvelopeConstant_nonneg
+    have h2 := dualMiddleDecayConstant_nonneg W
+    have h3 := divisorEnergyFactor_nonneg ε hε N a₀ b₀
+    have h4 := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    dsimp only [V]
+    positivity
+  let f := fun (j k : Fin (columnDyadicLength N + 1)) (h : {h : O // h ≠ 0}) =>
+    dualMiddleWindowAt W (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+      rows left right (a h.val) (b h.val) M F P h.val
+  have hf (j k : Fin (columnDyadicLength N + 1)) : Summable (f j k) ∧ (∑' h, f j k h) ≤ V := by
+    by_cases hSj : (divisorDyadicBin S N j).Nonempty
+    · by_cases hTk : (divisorDyadicBin T N k).Nonempty
+      · exact hexp.dual_middle_window deltaLoss hδ ε hε (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+          (divisorDyadicScale j.val) (divisorDyadicScale k.val) B N M U
+          (divisorDyadicScale_ge_one _) (divisorDyadicScale_ge_one _) hB hN
+          (divisorDyadicBin_scale_le S N hS j hSj) (divisorDyadicBin_scale_le T N hT k hTk)
+          hM (divisorDyadicBin_bounds S N hS j) (divisorDyadicBin_bounds T N hT k)
+          rows left right hr hl hri hrows a₀ b₀ a b ha hb hU W F hF P hleft hright
+          (fun D E i hp => hP
+            ⟨D.val, (Finset.mem_filter.mp D.property).1⟩
+            ⟨E.val, (Finset.mem_filter.mp E.property).1⟩ i hp)
+      · have hz := Finset.not_nonempty_iff_eq_empty.mp hTk
+        have he : f j k = fun _ => 0 := by
+          funext h
+          apply dualMiddleWindowAt_eq_zero
+          intro D E i hp
+          have hh := E.property
+          simp only [hz, Finset.notMem_empty] at hh
+        rw [he]
+        simpa only [tsum_zero] using And.intro (summable_zero : Summable (fun _ : {h : O // h ≠ 0} => (0 : ℝ))) hV
+    · have hz := Finset.not_nonempty_iff_eq_empty.mp hSj
+      have he : f j k = fun _ => 0 := by
+        funext h
+        apply dualMiddleWindowAt_eq_zero
+        intro D E i hp
+        have hh := D.property
+        simp only [hz, Finset.notMem_empty] at hh
+      rw [he]
+      simpa only [tsum_zero] using And.intro (summable_zero : Summable (fun _ : {h : O // h ≠ 0} => (0 : ℝ))) hV
+  have he : (fun h : {h : O // h ≠ 0} =>
+      dualMiddleWindowAt W S T rows left right (a h.val) (b h.val) M F P h.val) =
+      fun h => ∑ j, ∑ k, f j k h := by
+    funext h
+    exact dualMiddleWindowAt_dyadic W S T N rows left right (a h.val) (b h.val) M F P h.val
+  rw [he]
+  refine ⟨summable_sum (fun j _ => summable_sum (fun k _ => (hf j k).1)), ?_⟩
+  rw [Summable.tsum_finsetSum (fun j _ => summable_sum (fun k _ => (hf j k).1))]
+  calc
+    _ = ∑ j, ∑ k, ∑' h, f j k h := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      exact Summable.tsum_finsetSum (fun k _ => (hf j k).1)
+    _ ≤ ∑ j : Fin (columnDyadicLength N + 1), ∑ k : Fin (columnDyadicLength N + 1), V :=
+      Finset.sum_le_sum (fun j _ => Finset.sum_le_sum (fun k _ => (hf j k).2))
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, V, pow_two]; ring
+
+end
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.QuadraticDivisorSplit
+open Eisenstein UniqueFactorizationMonoid
+
+theorem exists_unique_split (B C D : Ideal O) (hBC : IsCoprime B C)
+    (hD : D ∣ B * C) :
+    ∃! x : Ideal O × Ideal O, x.1 ∣ B ∧ x.2 ∣ C ∧ x.1 * x.2 = D := by
+  obtain ⟨D₁, D₂, h₁, h₂, hprod⟩ := exists_dvd_and_dvd_of_dvd_mul hD
+  refine ⟨(D₁, D₂), ⟨h₁, h₂, hprod.symm⟩, ?_⟩
+  intro y hy
+  apply Prod.ext
+  · apply associated_iff_eq.mp
+    apply associated_of_dvd_dvd
+    · apply (hBC.mono hy.1 h₂).dvd_of_dvd_mul_right
+      rw [← hprod, ← hy.2.2]
+      exact dvd_mul_right _ _
+    · apply (hBC.mono h₁ hy.2.1).dvd_of_dvd_mul_right
+      rw [hy.2.2, hprod]
+      exact dvd_mul_right _ _
+  · apply associated_iff_eq.mp
+    apply associated_of_dvd_dvd
+    · apply (hBC.symm.mono hy.2.1 h₁).dvd_of_dvd_mul_left
+      rw [← hprod, ← hy.2.2]
+      exact dvd_mul_left _ _
+    · apply (hBC.symm.mono h₂ hy.1).dvd_of_dvd_mul_left
+      rw [hy.2.2, hprod]
+      exact dvd_mul_left _ _
+
+theorem split_product_injective (B C : Ideal O) (hBC : IsCoprime B C) :
+    Function.Injective (fun x : {x : Ideal O × Ideal O // x.1 ∣ B ∧ x.2 ∣ C} =>
+      x.val.1 * x.val.2) := by
+  intro x y hxy
+  have hD : x.val.1 * x.val.2 ∣ B * C := mul_dvd_mul x.property.1 x.property.2
+  obtain ⟨z, hz, huniq⟩ := exists_unique_split B C (x.val.1 * x.val.2) hBC hD
+  apply Subtype.ext
+  exact (huniq x.val ⟨x.property.1, x.property.2, rfl⟩).trans
+    (huniq y.val ⟨y.property.1, y.property.2, hxy.symm⟩).symm
+
+
+
+theorem divisors_coprime_product (B C : Ideal O) (hB : B ≠ 0) (hC : C ≠ 0)
+    (hBC : IsCoprime B C) :
+    idealDivisors (B * C) =
+      ((idealDivisors B) ×ˢ (idealDivisors C)).image (fun x => x.1 * x.2) := by
+  ext D
+  rw [mem_idealDivisors (mul_ne_zero hB hC), Finset.mem_image]
+  constructor
+  · intro hD
+    obtain ⟨x, hx, _⟩ := exists_unique_split B C D hBC hD
+    exact ⟨x, Finset.mem_product.mpr
+      ⟨(mem_idealDivisors hB).mpr hx.1, (mem_idealDivisors hC).mpr hx.2.1⟩, hx.2.2⟩
+  · rintro ⟨x, hx, rfl⟩
+    exact mul_dvd_mul ((mem_idealDivisors hB).mp (Finset.mem_product.mp hx).1)
+      ((mem_idealDivisors hC).mp (Finset.mem_product.mp hx).2)
+
+theorem sum_divisors_coprime_product (B C : Ideal O) (hB : B ≠ 0) (hC : C ≠ 0)
+    (hBC : IsCoprime B C) (f : Ideal O → ℂ) :
+    (∑ D ∈ idealDivisors (B * C), f D) =
+      ∑ D₁ ∈ idealDivisors B, ∑ D₂ ∈ idealDivisors C, f (D₁ * D₂) := by
+  rw [divisors_coprime_product B C hB hC hBC, Finset.sum_image]
+  · exact Finset.sum_product _ _ _
+  · intro x hx y hy hxy
+    have hx' : x.1 ∣ B ∧ x.2 ∣ C :=
+      ⟨(mem_idealDivisors hB).mp (Finset.mem_product.mp hx).1,
+        (mem_idealDivisors hC).mp (Finset.mem_product.mp hx).2⟩
+    have hy' : y.1 ∣ B ∧ y.2 ∣ C :=
+      ⟨(mem_idealDivisors hB).mp (Finset.mem_product.mp hy).1,
+        (mem_idealDivisors hC).mp (Finset.mem_product.mp hy).2⟩
+    have he : (⟨x, hx'⟩ : {z : Ideal O × Ideal O // z.1 ∣ B ∧ z.2 ∣ C}) = ⟨y, hy'⟩ :=
+      split_product_injective B C hBC hxy
+    exact congrArg Subtype.val he
+
+
+end SchwartzPlanePoisson.QuadraticDivisorSplit
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+section
+lemma divisorPool_filter (S : Finset (Ideal O)) (B : Ideal O) (hB : B ≠ 0)
+    (hS : ∀ D, D ∣ B → D ∈ S) :
+    S.filter (fun D => D ∣ B) = idealDivisors B := by
+  ext D
+  simp only [Finset.mem_filter, mem_idealDivisors hB]
+  exact ⟨And.right, fun h => ⟨hS D h,h⟩⟩
+
+lemma divisor_product_delta (S T : Finset (Ideal O)) (B C d : Ideal O)
+    (hB : B ≠ 0) (hC : C ≠ 0) (hBC : IsCoprime B C)
+    (hS : ∀ D, D ∣ B → D ∈ S) (hT : ∀ E, E ∣ C → E ∈ T)
+    (f : Ideal O → ℂ) :
+    (∑ D ∈ S, if D ∣ B then
+      ∑ E ∈ T, if E ∣ C then (if D*E=d then f (D*E) else 0) else 0 else 0) =
+      if d ∣ B*C then f d else 0 := by
+  have hs := QuadraticDivisorSplit.sum_divisors_coprime_product B C hB hC hBC
+    (fun q => if q=d then f q else 0)
+  have hleft : (∑ q ∈ idealDivisors (B*C), if q=d then f q else 0) =
+      if d ∣ B*C then f d else 0 := by
+    simp [mem_idealDivisors (mul_ne_zero hB hC)]
+  rw [hleft] at hs
+  rw [← divisorPool_filter S B hB hS, ← divisorPool_filter T C hC hT] at hs
+  simpa only [Finset.sum_filter] using hs.symm
+
+private lemma four_sums_exchange {α β γ deltaLoss : Type*}
+    (S : Finset α) (T : Finset β) (U : Finset γ) (V : Finset deltaLoss)
+    (f : α → β → γ → deltaLoss → ℂ) :
+    (∑ a ∈ S, ∑ b ∈ T, ∑ c ∈ U, ∑ d ∈ V, f a b c d) =
+      ∑ c ∈ U, ∑ d ∈ V, ∑ a ∈ S, ∑ b ∈ T, f a b c d := by
+  have h : (∑ ab ∈ S ×ˢ T, ∑ cd ∈ U ×ˢ V, f ab.1 ab.2 cd.1 cd.2) =
+      ∑ cd ∈ U ×ˢ V, ∑ ab ∈ S ×ˢ T, f ab.1 ab.2 cd.1 cd.2 := Finset.sum_comm
+  simpa only [Finset.sum_product] using h
+
+private lemma three_sums_exchange {α β γ : Type*}
+    (S : Finset α) (T : Finset β) (U : Finset γ) (f : α → β → γ → ℝ) :
+    (∑ a ∈ S, ∑ b ∈ T, ∑ c ∈ U, f a b c) =
+      ∑ b ∈ T, ∑ c ∈ U, ∑ a ∈ S, f a b c := by
+  have h : (∑ a ∈ S, ∑ bc ∈ T ×ˢ U, f a bc.1 bc.2) =
+      ∑ bc ∈ T ×ˢ U, ∑ a ∈ S, f a bc.1 bc.2 := Finset.sum_comm
+  simpa only [Finset.sum_product] using h
+
+variable {m n p : Type*} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+omit [Fintype m] [Fintype n] [Fintype p] [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalTerm_product_divisor (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (d : Ideal O) (i : m) (j : n) (k : p)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hS : ∀ j D, D ∣ (left j).val → D ∈ S) (hT : ∀ k E, E ∣ (right k).val → E ∈ T)
+    (F : Ideal O → m → n → p → ℂ) :
+    (∑ D ∈ S, ∑ E ∈ T, if D*E=d then
+      originalTerm rows left right a b D E i j k * F (D*E) i j k else 0) =
+    (if d ∣ (left j).val*(right k).val then
+      originalTerm rows left right a b 1 1 i j k * F d i j k else 0) := by
+  by_cases hc : (left j).val ⊔ (right k).val = ⊤
+  · have hd := divisor_product_delta S T (left j).val (right k).val d (hleft j) (hright k) (Ideal.isCoprime_iff_sup_eq.mpr hc)
+      (hS j) (hT k) (fun q =>
+        star (canonicalQuadraticRow (left j) (primaryIdealGenerator (rows i).val) * a j) *
+          (canonicalQuadraticRow (right k) (primaryIdealGenerator (rows i).val) * b k) * F q i j k)
+    calc
+      _ = (∑ D ∈ S, if D ∣ (left j).val then ∑ E ∈ T, if E ∣ (right k).val then
+          (if D*E=d then
+            star (canonicalQuadraticRow (left j) (primaryIdealGenerator (rows i).val) * a j) *
+              (canonicalQuadraticRow (right k) (primaryIdealGenerator (rows i).val) * b k) * F (D*E) i j k
+          else 0) else 0 else 0) := by
+        apply Finset.sum_congr rfl
+        intro D hD
+        by_cases hd : D ∣ (left j).val
+        · simp only [if_pos hd]
+          apply Finset.sum_congr rfl
+          intro E hE
+          by_cases he : E ∣ (right k).val <;> by_cases hde : D*E=d <;>
+            simp [originalTerm,hc,hd,he,hde]
+        · simp [originalTerm,hc,hd]
+      _ = _ := by simpa [originalTerm,hc] using hd
+  · simp [originalTerm,hc]
+
+omit [Fintype m] [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalColumnSum_product_divisor (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (d : Ideal O) (i : m)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hS : ∀ j D, D ∣ (left j).val → D ∈ S) (hT : ∀ k E, E ∣ (right k).val → E ∈ T)
+    (F : Ideal O → m → n → p → ℂ) :
+    (∑ j, ∑ k, if d ∣ (left j).val*(right k).val then
+      originalTerm rows left right a b 1 1 i j k * F d i j k else 0) =
+    ∑ D ∈ S, ∑ E ∈ T, if D*E=d then
+      (∑ j, ∑ k, originalTerm rows left right a b D E i j k * F (D*E) i j k) else 0 := by
+  calc
+    _ = ∑ j, ∑ k, ∑ D ∈ S, ∑ E ∈ T, if D*E=d then
+        originalTerm rows left right a b D E i j k * F (D*E) i j k else 0 := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      apply Finset.sum_congr rfl
+      intro k hk
+      exact (originalTerm_product_divisor S T rows left right a b d i j k hleft hright hS hT F).symm
+    _ = ∑ D ∈ S, ∑ E ∈ T, ∑ j, ∑ k, if D*E=d then
+        originalTerm rows left right a b D E i j k * F (D*E) i j k else 0 :=
+      four_sums_exchange Finset.univ Finset.univ S T _
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro D hD
+      apply Finset.sum_congr rfl
+      intro E hE
+      by_cases h : D*E=d <;> simp [h]
+
+omit [Fintype m] [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalColumnSum_divisor_rectangles (K S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (i : m)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hS : ∀ j D, D ∣ (left j).val → D ∈ S) (hT : ∀ k E, E ∣ (right k).val → E ∈ T)
+    (P : Ideal O → m → Prop) [DecidablePred (fun d => P d i)]
+    (F : Ideal O → m → n → p → ℂ) :
+    (∑ d ∈ K, if P d i then ‖∑ j, ∑ k, if d ∣ (left j).val*(right k).val then
+      originalTerm rows left right a b 1 1 i j k * F d i j k else 0‖ else 0) ≤
+    ∑ D ∈ S, ∑ E ∈ T, if D*E ∈ K then if P (D*E) i then
+      ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * F (D*E) i j k‖ else 0 else 0 := by
+  let B := fun D E => ∑ j, ∑ k, originalTerm rows left right a b D E i j k * F (D*E) i j k
+  have hpoint (d : Ideal O) :
+      (if P d i then ‖∑ j, ∑ k, if d ∣ (left j).val*(right k).val then
+        originalTerm rows left right a b 1 1 i j k * F d i j k else 0‖ else 0) ≤
+      ∑ D ∈ S, ∑ E ∈ T, if D*E=d ∧ P d i then ‖B D E‖ else 0 := by
+    by_cases hp : P d i
+    · simp only [hp, and_true]
+      rw [originalColumnSum_product_divisor S T rows left right a b d i hleft hright hS hT F]
+      apply (norm_sum_le _ _).trans
+      apply Finset.sum_le_sum
+      intro D hD
+      apply (norm_sum_le _ _).trans
+      apply Finset.sum_le_sum
+      intro E hE
+      by_cases h : D*E=d <;> simp [h,B]
+    · simp [hp]
+  calc
+    _ ≤ ∑ d ∈ K, ∑ D ∈ S, ∑ E ∈ T, if D*E=d ∧ P d i then ‖B D E‖ else 0 :=
+      Finset.sum_le_sum (fun d hd => hpoint d)
+    _ = ∑ D ∈ S, ∑ E ∈ T, ∑ d ∈ K, if D*E=d ∧ P d i then ‖B D E‖ else 0 :=
+      three_sums_exchange K S T _
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro D hD
+      apply Finset.sum_congr rfl
+      intro E hE
+      have heq (d : Ideal O) : (if D*E=d ∧ P d i then ‖B D E‖ else 0) =
+          if d=D*E then (if P (D*E) i then ‖B D E‖ else 0) else 0 := by
+        by_cases h : d=D*E
+        · subst d
+          simp
+        · simp [h,Ne.symm h]
+      simp_rw [heq]
+      simp only [Finset.sum_ite_eq', B]
+
+end
+
+def columnDivisorPool {n : Type*} [Fintype n] (left : n → Ideal O) : Finset (Ideal O) :=
+  Finset.univ.biUnion (fun j => idealDivisors (left j))
+
+theorem mem_columnDivisorPool_of_dvd {n : Type*} [Fintype n]
+    (left : n → Ideal O) (hleft : ∀ j, left j ≠ 0) (j : n) (D : Ideal O)
+    (hD : D ∣ left j) : D ∈ columnDivisorPool left := by
+  apply Finset.mem_biUnion.mpr
+  exact ⟨j,Finset.mem_univ j,(mem_idealDivisors (hleft j)).mpr hD⟩
+
+theorem columnDivisorPool_norm_bounds {n : Type*} [Fintype n]
+    (left : n → Ideal O) (hleft : ∀ j, left j ≠ 0) (N : ℝ)
+    (hN : ∀ j, (Ideal.absNorm (left j) : ℝ) ≤ N)
+    (D : Ideal O) (hD : D ∈ columnDivisorPool left) :
+    1 ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ N := by
+  obtain ⟨j,hj,hDj⟩ := Finset.mem_biUnion.mp hD
+  have hd := (mem_idealDivisors (hleft j)).mp hDj
+  have hDz : D ≠ 0 := by
+    intro hz
+    rw [hz,zero_dvd_iff] at hd
+    exact hleft j hd
+  have hDN : Ideal.absNorm D ≤ Ideal.absNorm (left j) :=
+    Nat.le_of_dvd (Nat.pos_iff_ne_zero.mpr (fun h => hleft j (Ideal.absNorm_eq_zero_iff.mp h)))
+      (map_dvd Ideal.absNorm hd)
+  refine ⟨?_,(Nat.cast_le.mpr hDN).trans (hN j)⟩
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun h => hDz (Ideal.absNorm_eq_zero_iff.mp h))
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+theorem norm_double_sum_real_factor {n p : Type*} [Fintype n] [Fintype p]
+    (u : n → p → ℂ) (z : ℂ) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∑ j, ∑ k, u j k * ((c : ℂ) * z)‖ = c * ‖∑ j, ∑ k, u j k * z‖ := by
+  simp only [← Finset.sum_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hc]
+  ring
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def originalPrincipalKernel (W : 𝓢(ℝ, ℂ)) (rows : m → QuadraticIdeal) (M : ℝ) (h : O)
+    (d : Ideal O) (i : m) : ℂ :=
+  ((Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) / (Ideal.absNorm d : ℝ) : ℝ) : ℂ) *
+    paperRadialFourier W (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) *
+      ‖ringComplex h‖ ^ 2 / (Ideal.absNorm d : ℝ))
+
+def originalProductDivisorMiddleAt (W : 𝓢(ℝ, ℂ)) (K : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O) : ℝ := by
+  classical
+  exact ∑ i, ∑ d ∈ K, if P d i then
+    ‖∑ j, ∑ k, if d ∣ (left j).val * (right k).val then
+      originalTerm rows left right a b 1 1 i j k * originalPrincipalKernel W rows M h d i else 0‖ else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalProductDivisorMiddleAt_nonneg (W : 𝓢(ℝ, ℂ)) (K : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O) :
+    0 ≤ originalProductDivisorMiddleAt W K rows left right a b M P h := by
+  classical
+  unfold originalProductDivisorMiddleAt
+  positivity
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem originalProductDivisorMiddleAt_le_window
+    (W : 𝓢(ℝ, ℂ)) (K S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) (h : O)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hS : ∀ j D, D ∣ (left j).val → D ∈ S) (hT : ∀ k E, E ∣ (right k).val → E ∈ T) :
+    originalProductDivisorMiddleAt W K rows left right a b M P h ≤
+      originalMiddleWindowAt W S T rows left right a b M (fun d i => d ∈ K ∧ P d i) h := by
+  classical
+  have hp (i : m) := originalColumnSum_divisor_rectangles K S T rows left right a b i
+    hleft hright hS hT P (fun d i _ _ => originalPrincipalKernel W rows M h d i)
+  apply (Finset.sum_le_sum (fun i _ => hp i)).trans_eq
+  rw [originalMiddleWindowAt_eq_finset]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro D hD
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro E hE
+  apply Finset.sum_congr rfl
+  intro i hi
+  by_cases hd : D * E ∈ K
+  · by_cases hpi : P (D * E) i
+    · simp only [hd, hpi, and_self, ite_true]
+      unfold originalPrincipalKernel
+      simp only [map_mul, Nat.cast_mul]
+      exact norm_double_sum_real_factor _ _ _ (by positivity)
+    · simp only [hd, hpi, and_false, ite_false, ite_true]
+  · simp only [hd, false_and, ite_false]
+
+theorem HasSieveExponent.original_product_divisor_middle {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (K : Finset (Ideal O)) (B N M U : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hU : 0 ≤ U)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B / 2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (a₀ : n → ℂ) (b₀ : p → ℂ) (a : O → n → ℂ) (b : O → p → ℂ)
+    (ha : ∀ h j, ‖a h j‖ ≤ ‖a₀ j‖) (hb : ∀ h k, ‖b h k‖ ≤ ‖b₀ k‖)
+    (W : 𝓢(ℝ, ℂ)) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hP : ∀ d ∈ K, ∀ i, P d i →
+      (Ideal.absNorm d : ℝ) ≤ U * Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ))) :
+    Summable (fun h : {h : O // h ≠ 0} =>
+      originalProductDivisorMiddleAt W K rows left right (a h.val) (b h.val) M P h.val) ∧
+    (∑' h : {h : O // h ≠ 0},
+      originalProductDivisorMiddleAt W K rows left right (a h.val) (b h.val) M P h.val) ≤
+      ((columnDyadicLength N + 1 : ℕ) : ℝ) ^ 2 *
+        ((2 * nonzeroLatticeEnvelopeConstant * originalMiddleDecayConstant W) *
+          divisorEnergyFactor ε hε N a₀ b₀ * (divisorExponentConstant hexp deltaLoss hδ * (B * N) ^ deltaLoss) *
+            (N + (2 * U) * Real.sqrt M * B ^ (α - 1 / 2))) := by
+  let S := columnDivisorPool (fun j => (left j).val)
+  let T := columnDivisorPool (fun k => (right k).val)
+  have hl0 : ∀ j, (left j).val ≠ 0 := fun j => primaryIdealGenerator_ne_zero_ideal _ (left j).property.1
+  have hr0 : ∀ k, (right k).val ≠ 0 := fun k => primaryIdealGenerator_ne_zero_ideal _ (right k).property.1
+  have hs := hexp.original_middle_pool deltaLoss hδ ε hε S T B N M U hB hN hM hU
+    (columnDivisorPool_norm_bounds (fun j => (left j).val) hl0 N hleft)
+    (columnDivisorPool_norm_bounds (fun k => (right k).val) hr0 N hright)
+    rows left right hr hl hri hrows a₀ b₀ a b ha hb W (fun d i => d ∈ K ∧ P d i) hleft hright
+    (fun D E i hp => hP _ hp.1 i hp.2)
+  have hdom (h : {h : O // h ≠ 0}) := originalProductDivisorMiddleAt_le_window W K S T
+    rows left right (a h.val) (b h.val) M P h.val hl0 hr0
+    (mem_columnDivisorPool_of_dvd (fun j => (left j).val) hl0)
+    (mem_columnDivisorPool_of_dvd (fun k => (right k).val) hr0)
+  have ht := Summable.of_nonneg_of_le
+    (fun h : {h : O // h ≠ 0} => originalProductDivisorMiddleAt_nonneg W K rows left right
+      (a h.val) (b h.val) M P h.val) hdom hs.1
+  exact ⟨ht, (ht.tsum_le_tsum hdom hs.1).trans hs.2⟩
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+section
+def halfShellFactor (N q : ℝ) : ℝ := Real.sqrt (N/2) / Real.sqrt q
+
+lemma halfShellFactor_nonneg (N q : ℝ) : 0 ≤ halfShellFactor N q := by
+  unfold halfShellFactor
+  positivity
+
+lemma halfShellFactor_le_one (N q : ℝ) (hq : 0 < q) (h : N/2 ≤ q) :
+    halfShellFactor N q ≤ 1 := by
+  unfold halfShellFactor
+  exact (div_le_one (Real.sqrt_pos.mpr hq)).mpr (Real.sqrt_le_sqrt h)
+
+lemma halfShellFactor_pair (M F N i j : ℝ) (hN : 0 < N) (hi : 0 < i) (hj : 0 < j)
+    (hF : 0 < F) :
+    (2*M/(F*N))*halfShellFactor N i*halfShellFactor N j =
+      M/(Real.sqrt (i*j)*F) := by
+  unfold halfShellFactor
+  rw [Real.sqrt_mul hi.le]
+  have hs := Real.sq_sqrt (show 0 ≤ N/2 by positivity)
+  have hsi := (Real.sqrt_pos.mpr hi).ne'
+  have hsj := (Real.sqrt_pos.mpr hj).ne'
+  field_simp
+  rw [hs]
+  ring
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def smallPrincipalCorrection (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) : ℝ :=
+  ∑ D ∈ S, ∑ E ∈ T, ∑ i,
+    ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k *
+      ((M/(Real.sqrt ((Ideal.absNorm (left j).val : ℝ)*(Ideal.absNorm (right k).val : ℝ))*F) : ℝ) : ℂ)‖
+
+omit [Fintype m] [Fintype n] [Fintype p] [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+lemma originalTerm_real_scaling
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (u : n → ℝ) (v : p → ℝ)
+    (D E : Ideal O) (i : m) (j : n) (k : p) :
+    originalTerm rows left right (fun j => a j*(u j:ℂ)) (fun k => b k*(v k:ℂ)) D E i j k =
+      originalTerm rows left right a b D E i j k * (u j:ℂ) * (v k:ℂ) := by
+  unfold originalTerm
+  by_cases hc : (left j).val ⊔ (right k).val = ⊤ <;>
+    by_cases hd : D ∣ (left j).val <;> by_cases he : E ∣ (right k).val <;>
+    simp only [hc,hd,he,ite_true,ite_false,mul_zero,zero_mul,star_zero,star_mul,Complex.star_def,
+      Complex.conj_ofReal] ; ring
+
+theorem smallPrincipalCorrection_bound
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ B N M F : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hN : 1 ≤ N)
+    (hM : 0 < M) (hF : 0 < F)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2*D₁)
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2*D₂)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hleft : ∀ j, N/2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N/2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) :
+    smallPrincipalCorrection S T rows left right a b M F ≤
+      (2*M/(F*N))*Real.sqrt (divisorBlockCost ε hε S T D₁ D₂ B N a b) := by
+  have hN0 : 0 < N := by linarith
+  let u := fun j => halfShellFactor N (Ideal.absNorm (left j).val : ℝ)
+  let v := fun k => halfShellFactor N (Ideal.absNorm (right k).val : ℝ)
+  let a' := fun j => a j*(u j:ℂ)
+  let b' := fun k => b k*(v k:ℂ)
+  have hu (j) : 0 ≤ u j ∧ u j ≤ 1 :=
+    ⟨halfShellFactor_nonneg _ _,halfShellFactor_le_one _ _ (by linarith [(hleft j).1]) (hleft j).1⟩
+  have hv (k) : 0 ≤ v k ∧ v k ≤ 1 :=
+    ⟨halfShellFactor_nonneg _ _,halfShellFactor_le_one _ _ (by linarith [(hright k).1]) (hright k).1⟩
+  have ha (j) : ‖a' j‖ ≤ ‖a j‖ := by
+    simp only [a',norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (hu j).1]
+    exact mul_le_of_le_one_right (norm_nonneg _) (hu j).2
+  have hb (k) : ‖b' k‖ ≤ ‖b k‖ := by
+    simp only [b',norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (hv k).1]
+    exact mul_le_of_le_one_right (norm_nonneg _) (hv k).2
+  have ht (D E : Ideal O) (i j k) :
+      originalTerm rows left right a b D E i j k *
+        ((M/(Real.sqrt ((Ideal.absNorm (left j).val : ℝ)*(Ideal.absNorm (right k).val : ℝ))*F) : ℝ) : ℂ) =
+      ((2*M/(F*N):ℝ):ℂ)*originalTerm rows left right a' b' D E i j k := by
+    have hid := halfShellFactor_pair M F N (Ideal.absNorm (left j).val : ℝ) (Ideal.absNorm (right k).val : ℝ)
+      hN0 (by linarith [(hleft j).1]) (by linarith [(hright k).1]) hF
+    rw [←hid, show originalTerm rows left right a' b' D E i j k =
+      originalTerm rows left right a b D E i j k*(u j:ℂ)*(v k:ℂ) from
+      originalTerm_real_scaling rows left right a b u v D E i j k]
+    push_cast
+    dsimp only [u,v]
+    ring
+  have hblock := canonical_original_divisor_block_phase_bound ε hε S T D₁ D₂ B N (by linarith) (by linarith) (by linarith)
+    (fun D hD => (hS D hD).1) (fun E hE => (hT E hE).1)
+    rows left right hr hl hri hrows (fun j => (hleft j).2)
+      (fun k => (hright k).2) a' b' (fun _ => 0) (fun _ => 0) 0
+  simp only [zero_add,kernelLogPhase_zero,mul_one] at hblock
+  have hcost := divisorBlockCost_mono_coefficients ε hε S T D₁ D₂ B N (by linarith) (by linarith) a' a b' b ha hb
+  have heq : smallPrincipalCorrection S T rows left right a b M F =
+      (2*M/(F*N))*(∑ D ∈ S, ∑ E ∈ T, ∑ i, ‖∑ j, ∑ k, originalTerm rows left right a' b' D E i j k‖) := by
+    unfold smallPrincipalCorrection
+    simp_rw [ht,←Finset.mul_sum]
+    simp only [norm_mul,Complex.norm_of_nonneg (show 0 ≤ 2*M/(F*N) by positivity)]
+    simp_rw [←Finset.mul_sum]
+  rw [heq]
+  exact mul_le_mul_of_nonneg_left (hblock.trans (Real.sqrt_le_sqrt hcost)) (by positivity)
+
+end
+
+open Eisenstein
+
+theorem HasSieveExponent.small_principal_correction {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+    [DecidableEq m] [DecidableEq n] [DecidableEq p]
+    (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ B N M F U : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N)
+    (hM : 0 < M) (hF : 0 < F) (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2*D₁)
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2*D₂)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hleft : ∀ j, N/2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N/2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (hcut : D₁*D₂ ≤ U*(N*Real.sqrt (F/(M*B)))) :
+    smallPrincipalCorrection S T rows left right a b M F ≤
+      2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+        (M/F+U*Real.sqrt (M/F)*B^(α-1/2)) := by
+  have hb := smallPrincipalCorrection_bound ε hε S T D₁ D₂ B N M F hD₁ hD₂ hN hM hF hS hT
+    rows left right hr hl hri hrows hleft hright a b
+  have hc := divisor_cost_with_constant hexp deltaLoss hδ ε hε S T B N D₁ D₂ hB hN hD₁ hD₂ hD₁N hD₂N
+    (fun D hD => (hS D hD).2) (fun E hE => (hT E hE).2) a b
+  have he := divisorEnergyFactor_nonneg ε hε N a b
+  have hC := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  calc
+    _ ≤ (2*M/(F*N))*(divisorEnergyFactor ε hε N a b*
+        (divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss*(N+B^α*(D₁*D₂)))) :=
+      hb.trans (mul_le_mul_of_nonneg_left hc (by positivity))
+    _ = (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss))*
+        ((M/(F*N))*(N+B^α*(D₁*D₂))) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (dual_middle_scale_shape M F B N (D₁*D₂) U α hM hF (by linarith) (by linarith) hcut)
+      (by positivity)
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson
+open scoped SchwartzMap
+
+theorem symmetric_truncation_scales (X₀ X T : ℝ) (hX₀ : 0 < X₀)
+    (hlo : X₀/2 ≤ X) (hhi : X ≤ 2*X₀) (hT : 4 ≤ T) :
+    0 < X ∧ 0 < X₀/T ∧ X₀/T ≤ X ∧ X ≤ T*X₀ ∧ 0 ≤ T^4 := by
+  have hT0 : 0 < T := by linarith
+  have hX : 0 < X := by linarith
+  refine ⟨hX,div_pos hX₀ hT0,?_,?_,by positivity⟩
+  · apply (div_le_iff₀ hT0).mpr
+    nlinarith
+  · nlinarith
+
+theorem symmetric_truncation_scalar_bound (m : ℕ) (X₀ X T : ℝ) (hX₀ : 0 < X₀)
+    (hlo : X₀/2 ≤ X) (hhi : X ≤ 2*X₀) (hT : 4 ≤ T) :
+    ((X₀/T)/X)^(m+3) + 1/(1+(T*X₀)/X)^(m+3) +
+      (X/(X₀/T))/((min 1 (X/(T*X₀)))^2*(1+X*T^4/(T*X₀))^(m+3)) ≤
+      (2 : ℝ)^(m+10)/T^m := by
+  have hT0 : 0 < T := by linarith
+  have hT1 : 1 ≤ T := by linarith
+  have hX : 0 < X := by linarith
+  have hY : 0 < X₀/T := div_pos hX₀ hT0
+  have hratio : (X₀/T)/X ≤ 2/T := by
+    apply (div_le_iff₀ hX).mpr
+    calc
+      X₀/T ≤ (2*X)/T := div_le_div_of_nonneg_right (by linarith) hT0.le
+      _ = (2/T)*X := by ring
+  have hinv : 1/(1+(T*X₀)/X) ≤ 2/T := by
+    have hz : T/2 ≤ (T*X₀)/X := (le_div_iff₀ hX).mpr (by nlinarith)
+    calc
+      _ ≤ 1/(T/2) := div_le_div_of_nonneg_left (by norm_num) (by positivity) (by linarith)
+      _ = 2/T := by field_simp
+  have hpow : (2/T)^(m+3) ≤ (2 : ℝ)^(m+3)/T^m := by
+    rw [div_pow]
+    exact div_le_div_of_nonneg_left (by positivity) (pow_pos hT0 m)
+      (pow_le_pow_right₀ hT1 (by omega : m ≤ m+3))
+  have h₁ : ((X₀/T)/X)^(m+3) ≤ (2 : ℝ)^(m+3)/T^m :=
+    (pow_le_pow_left₀ (by positivity) hratio _).trans hpow
+  have h₂ : 1/(1+(T*X₀)/X)^(m+3) ≤ (2 : ℝ)^(m+3)/T^m := by
+    simpa only [div_pow,one_pow] using (pow_le_pow_left₀ (by positivity) hinv (m+3)).trans hpow
+  have hnum : X/(X₀/T) ≤ 2*T := by
+    apply (div_le_iff₀ hY).mpr
+    have he : 2*T*(X₀/T) = 2*X₀ := by field_simp
+    rw [he]
+    exact hhi
+  have hmin : 1/(2*T) ≤ min 1 (X/(T*X₀)) := by
+    apply le_min
+    · apply (div_le_iff₀ (by positivity : 0 < 2*T)).mpr
+      linarith
+    · apply (le_div_iff₀ (mul_pos hT0 hX₀)).mpr
+      have he : 1/(2*T)*(T*X₀)=X₀/2 := by field_simp
+      rwa [he]
+  have hfreq : T ≤ 1+X*T^4/(T*X₀) := by
+    have ht2 : 2 ≤ T^2 := by nlinarith
+    have ht4 : 2*T^2 ≤ T^4 := by nlinarith [sq_nonneg (T^2-2)]
+    have hprod : T*(T*X₀) ≤ X*T^4 := by nlinarith [mul_nonneg (sub_nonneg.mpr hlo) (sq_nonneg (T^2))]
+    have hh := (le_div_iff₀ (mul_pos hT0 hX₀)).mpr hprod
+    linarith
+  have hden : (1/(2*T))^2*T^(m+3) ≤
+      (min 1 (X/(T*X₀)))^2*(1+X*T^4/(T*X₀))^(m+3) := by
+    exact mul_le_mul (pow_le_pow_left₀ (by positivity) hmin 2)
+      (pow_le_pow_left₀ hT0.le hfreq (m+3)) (by positivity) (by positivity)
+  have h₃ : (X/(X₀/T))/((min 1 (X/(T*X₀)))^2*(1+X*T^4/(T*X₀))^(m+3)) ≤ 8/T^m := by
+    calc
+      _ ≤ (2*T)/((1/(2*T))^2*T^(m+3)) :=
+        div_le_div₀ (by positivity) hnum (by positivity) hden
+      _ = _ := by rw [pow_add]; field_simp; ring
+  have hc : 2*(2 : ℝ)^(m+3)+8 ≤ (2 : ℝ)^(m+10) := by
+    have hm : 1 ≤ (2 : ℝ)^m := one_le_pow₀ (by norm_num)
+    rw [pow_add,pow_add]
+    norm_num
+    nlinarith
+  calc
+    _ ≤ (2 : ℝ)^(m+3)/T^m + (2 : ℝ)^(m+3)/T^m + 8/T^m := add_le_add (add_le_add h₁ h₂) h₃
+    _ = (2*(2 : ℝ)^(m+3)+8)/T^m := by ring
+    _ ≤ _ := div_le_div_of_nonneg_right hc (by positivity)
+
+theorem truncationError_symmetric_bound (m : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+        (_hinj : Function.Injective P) (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X₀ X T : ℝ),
+        0 < X₀ → X₀ / 2 ≤ X → X ≤ 2 * X₀ → 4 ≤ T →
+        ‖truncationError P S W X (X₀ / T) (T * X₀) (T ^ 4)‖ ≤
+          (2 : ℝ) ^ S.card * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / T ^ m := by
+  obtain ⟨s, C, hC, hb⟩ := truncationError_bound (m + 3)
+  refine ⟨s, C * 2 ^ (m + 10), by positivity, ?_⟩
+  intro ι _ P _ hinj S W X₀ X T hX₀ hlo hhi hT
+  obtain ⟨hX, hY, hYX, hXZ, hL⟩ := symmetric_truncation_scales X₀ X T hX₀ hlo hhi hT
+  have hp := hb P hinj S W X (X₀ / T) (T * X₀) (T ^ 4) hX hY hYX hXZ hL
+  have hs := symmetric_truncation_scalar_bound m X₀ X T hX₀ hlo hhi hT
+  calc
+    _ ≤ (2 : ℝ) ^ S.card * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) *
+        (((X₀ / T) / X) ^ (m + 3) + 1 / (1 + (T * X₀) / X) ^ (m + 3) +
+          (X / (X₀ / T)) / ((min 1 (X / (T * X₀))) ^ 2 * (1 + X * T ^ 4 / (T * X₀)) ^ (m + 3))) := hp
+    _ ≤ (2 : ℝ) ^ S.card * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * (2 ^ (m + 10) / T ^ m) :=
+      mul_le_mul_of_nonneg_left hs (by positivity)
+    _ = _ := by ring
+
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+theorem finite_principal_triangle
+    {m n p D : Type*} [Fintype m] [Fintype n] [Fintype p] [Fintype D]
+    (muCoefficient : D → ℂ) (hμ : ∀ d, ‖muCoefficient d‖ ≤ 1) (A : m → n → p → D → ℂ) :
+    ‖∑ i, ∑ j, ∑ k, ∑ d, muCoefficient d * A i j k d‖ ≤
+      ∑ i, ∑ d, ‖∑ j, ∑ k, A i j k d‖ := by
+  classical
+  have he : (∑ i, ∑ j, ∑ k, ∑ d, muCoefficient d * A i j k d) =
+      ∑ i, ∑ d, muCoefficient d * (∑ j, ∑ k, A i j k d) := by
+    simp_rw [Finset.sum_comm (s := (Finset.univ : Finset p)) (t := (Finset.univ : Finset D)),
+      Finset.sum_comm (s := (Finset.univ : Finset n)) (t := (Finset.univ : Finset D))]
+    simp only [Finset.mul_sum]
+  rw [he]
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro i _
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro d _
+  rw [norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (hμ d)
+
+section
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def signedProductDivisorSum (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (H : Ideal O → m → n → p → ℂ) : ℂ := by
+  classical
+  exact ∑ i, ∑ j, ∑ k, originalTerm rows left right a b 1 1 i j k *
+    ∑ d ∈ idealDivisors ((left j).val*(right k).val), if P d i then
+      (UniqueFactorizationMonoid.moebius d : ℂ)*H d i j k else 0
+
+def correctionRectangleMajorant (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (H : Ideal O → m → n → p → ℂ) : ℝ := by
+  classical
+  exact ∑ D ∈ S, ∑ E ∈ T, ∑ i, if P (D*E) i then
+    ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k * H (D*E) i j k‖ else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem signedProductDivisorSum_le_rectangles (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (H : Ideal O → m → n → p → ℂ)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hS : ∀ j D, D ∣ (left j).val → D ∈ S) (hT : ∀ k E, E ∣ (right k).val → E ∈ T) :
+    ‖signedProductDivisorSum rows left right a b P H‖ ≤
+      correctionRectangleMajorant S T rows left right a b P H := by
+  classical
+  let pairCols : n × p → QuadraticIdeal := fun x => (left x.1).val*(right x.2).val
+  let K := columnDivisorPool pairCols
+  have hpair : ∀ x, pairCols x ≠ 0 := fun x => mul_ne_zero (hleft x.1) (hright x.2)
+  have hK : ∀ j k d, d ∣ (left j).val*(right k).val → d ∈ K :=
+    fun j k d hd => mem_columnDivisorPool_of_dvd pairCols hpair (j,k) d hd
+  let A : m → n → p → K → ℂ := fun i j k d => if P d.val i then
+    if d.val ∣ (left j).val*(right k).val then originalTerm rows left right a b 1 1 i j k * H d.val i j k else 0 else 0
+  have he : signedProductDivisorSum rows left right a b P H =
+      ∑ i, ∑ j, ∑ k, ∑ d : K, (UniqueFactorizationMonoid.moebius d.val:ℂ)*A i j k d := by
+    unfold signedProductDivisorSum
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [← divisorPool_filter K ((left j).val*(right k).val) (mul_ne_zero (hleft j) (hright k)) (hK j k),
+      Finset.sum_filter, Finset.mul_sum]
+    rw [Finset.sum_coe_sort K (fun d => (UniqueFactorizationMonoid.moebius d:ℂ)*
+      (if P d i then if d ∣ (left j).val*(right k).val then originalTerm rows left right a b 1 1 i j k * H d i j k else 0 else 0))]
+    apply Finset.sum_congr rfl
+    intro d _
+    by_cases hd : d ∣ (left j).val*(right k).val <;> by_cases hi : P d i <;>
+      simp only [hd, hi, ite_true, ite_false, mul_zero] ; ring
+  rw [he]
+  apply (finite_principal_triangle (fun d : K => (UniqueFactorizationMonoid.moebius d.val:ℂ))
+    (fun d => norm_ideal_moebius_le_one d.val) A).trans
+  have hp (i : m) := originalColumnSum_divisor_rectangles K S T rows left right a b i
+    hleft hright hS hT P H
+  have hi (i : m) : (∑ d : K, ‖∑ j, ∑ k, A i j k d‖) =
+      ∑ d ∈ K, if P d i then ‖∑ j, ∑ k, if d ∣ (left j).val*(right k).val then
+        originalTerm rows left right a b 1 1 i j k * H d i j k else 0‖ else 0 := by
+    rw [Finset.sum_coe_sort K (fun d => ‖∑ j, ∑ k, if P d i then if d ∣ (left j).val*(right k).val then
+      originalTerm rows left right a b 1 1 i j k * H d i j k else 0 else 0‖)]
+    apply Finset.sum_congr rfl
+    intro d _
+    by_cases hd : P d i <;> simp only [hd, ite_true, ite_false, Finset.sum_const_zero, norm_zero]
+  simp_rw [hi]
+  apply (Finset.sum_le_sum (fun i _ => hp i)).trans
+  unfold correctionRectangleMajorant
+  rw [Finset.sum_comm]
+  apply Finset.sum_le_sum
+  intro D _
+  rw [Finset.sum_comm]
+  apply Finset.sum_le_sum
+  intro E _
+  apply Finset.sum_le_sum
+  intro i _
+  by_cases hd : D*E ∈ K
+  · simp only [hd, ite_true]
+    exact le_rfl
+  · simp only [hd, ite_false]
+    positivity
+
+theorem HasSieveExponent.small_principal_window {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ B N M F U : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N)
+    (hM : 0 < M) (hF : 0 < F) (hU : 0 ≤ U) (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D:ℝ) ∧ (Ideal.absNorm D:ℝ) ≤ 2*D₁)
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E:ℝ) ∧ (Ideal.absNorm E:ℝ) ≤ 2*D₂)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, N/2 ≤ (Ideal.absNorm (left j).val:ℝ) ∧ (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, N/2 ≤ (Ideal.absNorm (right k).val:ℝ) ∧ (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ D ∈ S, ∀ E ∈ T, ∀ i, P (D*E) i → (Ideal.absNorm (D*E):ℝ) ≤
+      U*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val:ℝ))))) :
+    correctionRectangleMajorant S T rows left right a b P
+      (fun _ _ j k => ((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ)) ≤
+      2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+        (M/F+(2*U)*Real.sqrt (M/F)*B^(α-1/2)) := by
+  classical
+  by_cases hc : D₁*D₂ ≤ (2*U)*(N*Real.sqrt (F/(M*B)))
+  · apply le_trans (b := smallPrincipalCorrection S T rows left right a b M F)
+    · unfold correctionRectangleMajorant smallPrincipalCorrection
+      apply Finset.sum_le_sum
+      intro D _
+      apply Finset.sum_le_sum
+      intro E _
+      apply Finset.sum_le_sum
+      intro i _
+      split_ifs <;> first | exact le_rfl | positivity
+    · exact hexp.small_principal_correction deltaLoss hδ ε hε S T D₁ D₂ B N M F (2*U)
+        hD₁ hD₂ hB hN hM hF hD₁N hD₂N hS hT rows left right hr hl hri
+        (fun i => (hrows i).2) hleft hright a b hc
+  · have hz : correctionRectangleMajorant S T rows left right a b P
+        (fun _ _ j k => ((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ)) = 0 := by
+      unfold correctionRectangleMajorant
+      apply Finset.sum_eq_zero
+      intro D hD
+      apply Finset.sum_eq_zero
+      intro E hE
+      apply Finset.sum_eq_zero
+      intro i _
+      have hn : ¬P (D*E) i := by
+        intro hp
+        apply hc
+        apply dual_middle_rectangle_upper M F B (Ideal.absNorm (rows i).val) N D₁ D₂
+          (Ideal.absNorm D) (Ideal.absNorm E) U hM hF (by linarith) (hrows i).1
+          (by linarith) hU (by linarith) (by linarith) (hS D hD).1 (hT E hE).1
+        simpa only [map_mul,Nat.cast_mul] using hP D hD E hE i hp
+      simp only [hn,ite_false]
+    rw [hz]
+    have he := divisorEnergyFactor_nonneg ε hε N a b
+    have hd := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    positivity
+
+theorem HasSieveExponent.small_principal_divisor_sum {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M F U : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hU : 0 ≤ U)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, N/2 ≤ (Ideal.absNorm (left j).val:ℝ) ∧ (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, N/2 ≤ (Ideal.absNorm (right k).val:ℝ) ∧ (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ d i, P d i → (Ideal.absNorm d:ℝ) ≤ U*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val:ℝ))))) :
+    ‖signedProductDivisorSum rows left right a b P
+      (fun _ _ j k => ((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ))‖ ≤
+      ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+        (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+          (M/F+(2*U)*Real.sqrt (M/F)*B^(α-1/2))) := by
+  classical
+  let S := columnDivisorPool (fun j => (left j).val)
+  let T := columnDivisorPool (fun k => (right k).val)
+  have hl0 : ∀ j, (left j).val ≠ 0 := fun j => primaryIdealGenerator_ne_zero_ideal _ (left j).property.1
+  have hr0 : ∀ k, (right k).val ≠ 0 := fun k => primaryIdealGenerator_ne_zero_ideal _ (right k).property.1
+  have hS := columnDivisorPool_norm_bounds (fun j => (left j).val) hl0 N (fun j => (hleft j).2)
+  have hT := columnDivisorPool_norm_bounds (fun k => (right k).val) hr0 N (fun k => (hright k).2)
+  apply (signedProductDivisorSum_le_rectangles S T rows left right a b P _ hl0 hr0
+    (mem_columnDivisorPool_of_dvd (fun j => (left j).val) hl0) (mem_columnDivisorPool_of_dvd (fun k => (right k).val) hr0)).trans
+  apply divisor_dyadic_sum_le S T N _ _
+  · have he := divisorEnergyFactor_nonneg ε hε N a b
+    have hd := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    positivity
+  · intro j k hj hk
+    exact hexp.small_principal_window deltaLoss hδ ε hε (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+      (divisorDyadicScale j.val) (divisorDyadicScale k.val) B N M F U
+      (divisorDyadicScale_ge_one _) (divisorDyadicScale_ge_one _) hB hN hM hF hU
+      (divisorDyadicBin_scale_le S N hS j hj) (divisorDyadicBin_scale_le T N hT k hk)
+      (divisorDyadicBin_bounds S N hS j) (divisorDyadicBin_bounds T N hT k)
+      rows left right hr hl hri hrows hleft hright a b P (fun D _ E _ i hp => hP (D*E) i hp)
+
+end
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

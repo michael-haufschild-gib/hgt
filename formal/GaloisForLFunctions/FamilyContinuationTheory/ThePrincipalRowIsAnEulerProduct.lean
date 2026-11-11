@@ -173,4 +173,154 @@ theorem tsum_norm_localTerm_one_sub_one_le (ηp X Y V : ℂ) {δ : ℝ} (hδ : �
 
 end Prime
 
+/-! ### The good primes and their primary generators -/
+
+open IsDedekindDomain HeckeLFunctions
+
+/-- The primary generator of a prime not above `3` (and `1` above `3`). -/
+def primeGen (v : HeightOneSpectrum O) : O :=
+  if h : lambda ∉ v.asIdeal then primaryGenerator v.asIdeal h else 1
+
+theorem primeGen_spec (v : HeightOneSpectrum O) (h : lambda ∉ v.asIdeal) :
+    v.asIdeal = Ideal.span {primeGen v} ∧ lambda ^ 2 ∣ primeGen v - 1 := by
+  unfold primeGen
+  rw [dif_pos h]
+  exact primaryGenerator_spec v.asIdeal h
+
+instance (v : HeightOneSpectrum O) : NeZero (primeGen v) := by
+  refine ⟨fun h0 => ?_⟩
+  unfold primeGen at h0
+  by_cases h : lambda ∉ v.asIdeal
+  · rw [dif_pos h] at h0
+    have hs := (primaryGenerator_spec v.asIdeal h).1
+    rw [h0, Ideal.span_singleton_eq_bot.mpr rfl] at hs
+    exact v.ne_bot hs
+  · rw [dif_neg h] at h0
+    exact one_ne_zero h0
+
+theorem isMaximal_span_primeGen (v : HeightOneSpectrum O) (h : lambda ∉ v.asIdeal) :
+    (Ideal.span {primeGen v}).IsMaximal := by
+  rw [← (primeGen_spec v h).1]
+  exact v.isMaximal
+
+/-- `‖(n : ℂ)^{−x}‖ ≤ n^{−a}` for `n ≥ 1` and `Re x ≥ a`. -/
+theorem norm_natCast_cpow_neg_le {n : ℕ} (hn : 1 ≤ n) {x : ℂ} {a : ℝ} (hx : a ≤ x.re) :
+    ‖(n : ℂ) ^ (-x)‖ ≤ (n : ℝ) ^ (-a) := by
+  rw [Complex.norm_natCast_cpow_of_pos (by omega), Complex.neg_re]
+  exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn) (by linarith)
+
+section Global
+
+variable (𝔪 : Modulus K) (η : HeckeCharacter 𝔪)
+
+/-- The term of the principal row at a prime `v` and local exponents `d`. -/
+def principalRowTerm (x w z : ℂ) (v : HeightOneSpectrum O) (d : Fin 2 × ℕ × ℕ × ℕ) : ℂ :=
+  localTerm (primeGen v) (heckeValue 𝔪 η v.asIdeal) ((v.asIdeal.absNorm : ℂ) ^ (-x))
+    ((v.asIdeal.absNorm : ℂ) ^ (-w)) ((v.asIdeal.absNorm : ℂ) ^ (-(6 * z))) 1 0 d
+
+/-- **The principal row of the Poisson series**: the multiplicative series over the exponent
+vectors supported on the good primes. -/
+def principalRow (S : Finset (HeightOneSpectrum O)) (x w z : ℂ) : ℂ :=
+  ∑' g : {v : HeightOneSpectrum O // v ∉ S} →₀ (Fin 2 × ℕ × ℕ × ℕ),
+    eulerTerm (fun v d => principalRowTerm 𝔪 η x w z v.1 d) g
+
+/-- The local sum of the principal row at a good prime. -/
+def principalRowLocal (x w z : ℂ) (v : HeightOneSpectrum O) : ℂ :=
+  principalSum (primeQ (primeGen v)) (primeKappa (primeGen v) (heckeValue 𝔪 η v.asIdeal))
+    (heckeValue 𝔪 η v.asIdeal) ((v.asIdeal.absNorm : ℂ) ^ (-x)) ((v.asIdeal.absNorm : ℂ) ^ (-w))
+    ((v.asIdeal.absNorm : ℂ) ^ (-(6 * z)))
+
+theorem primeQ_primeGen (v : HeightOneSpectrum O) (h : lambda ∉ v.asIdeal) :
+    primeQ (primeGen v) = (v.asIdeal.absNorm : ℂ) := by
+  rw [primeQ, ← (primeGen_spec v h).1]
+
+theorem norm_primeKappa_le (π : O) [NeZero π] {ηp : ℂ} (hη : ‖ηp‖ ≤ 1) :
+    ‖primeKappa π ηp‖ ≤ 1 := by
+  have hN : (‖ringComplex π‖ : ℝ) ≠ 0 := norm_ne_zero_iff.mpr (ringComplex_ne_zero π)
+  rw [primeKappa, norm_mul, Complex.norm_conj, norm_div, primeAbs, Complex.norm_real, norm_norm,
+    div_self hN, one_mul]
+  exact hη
+
+/-- **The local facts at a good prime** in the region `Re x ≥ 3`, `Re w ≥ 3`, `Re z ≥ 2`: the local
+series of the principal row has sum `principalRowLocal`, and its excess mass is at most
+`8 N(v)^{−2}`. -/
+theorem principalRowTerm_facts {v : HeightOneSpectrum O} (hlam : lambda ∉ v.asIdeal)
+    (h2 : (2 : O) ∉ v.asIdeal) {x w z : ℂ} (hx : 3 ≤ x.re) (hw : 3 ≤ w.re) (hz : 2 ≤ z.re) :
+    HasSum (principalRowTerm 𝔪 η x w z v) (principalRowLocal 𝔪 η x w z v) ∧
+      Summable (fun d => ‖principalRowTerm 𝔪 η x w z v d‖) ∧
+        ∑' d, ‖principalRowTerm 𝔪 η x w z v d‖ - 1 ≤ 8 * (v.asIdeal.absNorm : ℝ) ^ (-(2 : ℝ)) := by
+  obtain ⟨hspan, hprim⟩ := primeGen_spec v hlam
+  haveI := isMaximal_span_primeGen v hlam
+  have hlam' : lambda ∉ Ideal.span {primeGen v} := hspan ▸ hlam
+  have h2' : (2 : O) ∉ Ideal.span {primeGen v} := hspan ▸ h2
+  set n := v.asIdeal.absNorm
+  have hn2 : 2 ≤ n := ArtinMertens.two_le_absNorm_of_isPrime v.isPrime v.ne_bot
+  have hn1 : 1 ≤ n := by omega
+  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn2
+  have hpos : (0 : ℝ) < n := by linarith
+  have hδ : (n : ℝ) ^ (-(2 : ℝ)) ≤ 1 / 4 := by
+    have : (n : ℝ) ^ (-(2 : ℝ)) = ((n : ℝ) ^ 2)⁻¹ := by
+      rw [Real.rpow_neg hpos.le]
+      norm_cast
+    rw [this, inv_le_comm₀ (by positivity) (by norm_num)]
+    nlinarith
+  set δ : ℝ := (n : ℝ) ^ (-(2 : ℝ))
+  have hpow : ∀ a : ℝ, 2 ≤ a → (n : ℝ) ^ (-a) ≤ δ := fun a ha =>
+    Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith)
+  set ηp := heckeValue 𝔪 η v.asIdeal
+  have hη : ‖ηp‖ ≤ 1 := norm_heckeValue_le_one 𝔪 η _
+  set X := (n : ℂ) ^ (-x)
+  set Y := (n : ℂ) ^ (-w)
+  set V := (n : ℂ) ^ (-(6 * z))
+  have hX3 : ‖X‖ ≤ (n : ℝ) ^ (-(3 : ℝ)) := norm_natCast_cpow_neg_le hn1 hx
+  have hY3 : ‖Y‖ ≤ (n : ℝ) ^ (-(3 : ℝ)) := norm_natCast_cpow_neg_le hn1 hw
+  have hV12 : ‖V‖ ≤ (n : ℝ) ^ (-(12 : ℝ)) :=
+    norm_natCast_cpow_neg_le hn1 (by simp [Complex.mul_re]; linarith)
+  have hX : ‖X‖ ≤ δ := hX3.trans (hpow 3 (by norm_num))
+  have hY : ‖Y‖ ≤ δ := hY3.trans (hpow 3 (by norm_num))
+  have hV : ‖V‖ ≤ δ := hV12.trans (hpow 12 (by norm_num))
+  have hQ : primeQ (primeGen v) = (n : ℂ) := primeQ_primeGen v hlam
+  have hκ : ‖primeKappa (primeGen v) ηp‖ ≤ 1 := norm_primeKappa_le _ hη
+  have hR : ‖primeR (primeGen v) ηp X V‖ ≤ δ := by
+    unfold primeR
+    rw [hQ, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow, norm_pow, Complex.norm_natCast]
+    calc ‖primeKappa (primeGen v) ηp‖ ^ 6 * (n : ℝ) ^ 4 * ‖X‖ ^ 6 * ‖V‖ ≤
+        1 * (n : ℝ) ^ 4 * ((n : ℝ) ^ (-(3 : ℝ))) ^ 6 * (n : ℝ) ^ (-(12 : ℝ)) := by
+          gcongr
+          exact pow_le_one₀ (norm_nonneg _) hκ
+      _ = (n : ℝ) ^ ((4 : ℝ) + (-(3 : ℝ)) * 6 + (-(12 : ℝ))) := by
+          rw [Real.rpow_add hpos, Real.rpow_add hpos, Real.rpow_mul hpos.le, one_mul]
+          norm_cast
+      _ = (n : ℝ) ^ (-(26 : ℝ)) := by norm_num
+      _ ≤ δ := hpow 26 (by norm_num)
+  have hQXY : ‖primeQ (primeGen v) - 1‖ * ‖X‖ * ‖Y‖ ≤ δ := by
+    rw [hQ]
+    have hn1' : ‖(n : ℂ) - 1‖ ≤ (n : ℝ) := by
+      rw [show (n : ℂ) - 1 = ((n - 1 : ℕ) : ℂ) by push_cast [Nat.cast_sub hn1]; ring,
+        Complex.norm_natCast]
+      exact_mod_cast Nat.sub_le n 1
+    calc ‖(n : ℂ) - 1‖ * ‖X‖ * ‖Y‖ ≤ (n : ℝ) * (n : ℝ) ^ (-(3 : ℝ)) * (n : ℝ) ^ (-(3 : ℝ)) := by
+          gcongr
+      _ = (n : ℝ) ^ ((1 : ℝ) + (-(3 : ℝ)) + (-(3 : ℝ))) := by
+          rw [Real.rpow_add hpos, Real.rpow_add hpos, Real.rpow_one]
+      _ = (n : ℝ) ^ (-(5 : ℝ)) := by norm_num
+      _ ≤ δ := hpow 5 (by norm_num)
+  have hq : ‖1 - (primeQ (primeGen v))⁻¹‖ ≤ 1 := by
+    rw [hQ, show (1 : ℂ) - (n : ℂ)⁻¹ = ((1 - (n : ℝ)⁻¹ : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_le]
+    have : 0 < (n : ℝ)⁻¹ := inv_pos.mpr (by linarith)
+    have : (n : ℝ)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by linarith)
+    constructor <;> linarith
+  have hV1 : ‖V‖ < 1 := by linarith
+  have hY1 : ‖Y‖ < 1 := by linarith
+  have hR1 : ‖primeR (primeGen v) ηp X V‖ < 1 := by linarith
+  refine ⟨hasSum_localTerm_one (primeGen v) hlam' h2' hprim ηp X Y V hV1 hY1 hR1, ?_, ?_⟩
+  · exact (hasSum_norm_localTerm (primeGen v) hlam' h2' hprim ηp X Y V
+      (one_not_mem_span_prime _) (j := 0) (by norm_num) hV1
+      (by rwa [sexticChar_mk_one _ hlam', one_mul]) hR1).summable
+  · exact tsum_norm_localTerm_one_sub_one_le (primeGen v) hlam' h2' hprim ηp X Y V hδ hV hY hX hR
+      hQXY hη hq
+
+end Global
+
 end GaloisForLFunctions.FamilyContinuationTheory

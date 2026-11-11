@@ -47,7 +47,7 @@ to zero supplies both tempering and the required future-tail weights.
 
 ## Lean status and gaps
 
-Eighteen proof modules in `SurfaceOfSpecZ/ScaleLocality/`. The logarithmic stability and fixed-point modules passed Lean; the remaining sixteen are unchecked:
+Eighteen proof modules in `SurfaceOfSpecZ/ScaleLocality/`. The first three calibration modules passed Lean; the remaining fifteen are unchecked:
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -79,4 +79,4 @@ Eighteen proof modules in `SurfaceOfSpecZ/ScaleLocality/`. The logarithmic stabi
 - `TheCalibratedTowerHasItsLiteralSplineTrace`: exact lag-series identity and actual coefficient masses.
 - `EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace`: full prescribed-radius theorem via tower domination.
 
-The complete proof is drafted; checks of modules three through eighteen remain.
+The complete proof is drafted; checks of modules four through eighteen remain.

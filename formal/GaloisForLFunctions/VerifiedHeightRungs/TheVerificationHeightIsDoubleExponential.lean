@@ -15,7 +15,7 @@ open Real
 
 namespace GaloisForLFunctions.VerifiedHeightRungs
 
-open _root_.RHTower
+open _root_.RHTower Zeta23
 
 noncomputable section
 
@@ -335,7 +335,11 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
       refine Real.exp_le_exp.2 ?_
       rw [hY]
       have h2 : spreadKappa * u ≤ (C₁ + 21) * u := by
-        rw [hC₁]; nlinarith only [hκ1, hu1, hCf]
+        have h4 : spreadKappa ≤ C₁ + 21 := by
+          rw [hC₁]
+          have := mul_nonneg hCf (zero_le_one.trans hκ1)
+          linarith only [this, hκ1]
+        exact mul_le_mul_of_nonneg_right h4 (zero_le_one.trans hu1)
       have h3 : (C₁ + 21) * u ≤ Λ := by
         rw [hΛ]; have := Real.add_one_le_exp ((C₁ + 21) * u); linarith only [this]
       linarith only [h2, h3, hΛ0]
