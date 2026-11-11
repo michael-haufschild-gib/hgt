@@ -81,7 +81,7 @@ theorem calibrated_grid_geometry {Γ r : ℝ} (hΓ : 0 < Γ) {k : ℕ} (hk : 0 <
     (hr : 0 ≤ r) (hsmall : 8 * r ≤ Γ / k) {z : Fin (k + 1) → ℂ}
     (hz : ∀ i, ‖z i - imaginaryInterpolationGrid Γ k i‖ ≤ r) :
     (∀ i, |(z i).re| ≤ r ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-      ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ ‖z i - z j‖ := by
+      ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ ‖z i - z j‖ := by
   have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have hsΓ : Γ / k ≤ Γ := (div_le_iff₀ hk0).mpr (by nlinarith only [hk1, hΓ])
@@ -164,7 +164,7 @@ theorem exists_positive_calibrated_grid {Γ r T R : ℝ} (hΓ : 0 < Γ)
     ∃ z : Fin (k + 1) → ℂ,
       (∀ i, ‖z i - imaginaryInterpolationGrid Γ k i‖ ≤ r) ∧ Function.Injective z ∧
       (∀ i, |(z i).re| ≤ r ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-      (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
+      (∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
       ∀ v : ℝ, |v| ≤ R → (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re := by
   have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk

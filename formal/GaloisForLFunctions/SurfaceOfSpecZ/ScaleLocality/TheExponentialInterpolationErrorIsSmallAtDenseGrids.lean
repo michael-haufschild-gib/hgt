@@ -70,7 +70,7 @@ theorem interpolation_factorial_error_le_quarter {k : ℕ} (hk : 0 < k)
 theorem calibrated_exponential_block_re_ge_three_quarters {k : ℕ} (hk : 0 < k)
     {z : Fin (k + 1) → ℂ} (hz : Function.Injective z) {T δ B R : ℝ}
     (hδ : 0 < δ) (hB : 0 ≤ B) (hR : 0 ≤ R) (hb : ∀ i, ‖z i‖ ≤ B)
-    (hsep : ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖)
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖)
     (hcal : ∀ i, Complex.exp ((T : ℂ) * z i) = zeroInterpolationWeight z i)
     (hweight : 2 * B / δ ≤ 8 * k) (hwindow : 512 * (R * B) ≤ k)
     {v : ℝ} (hv : |v| ≤ R) :

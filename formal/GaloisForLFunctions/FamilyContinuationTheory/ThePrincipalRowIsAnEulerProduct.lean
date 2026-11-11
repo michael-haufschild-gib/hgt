@@ -321,6 +321,43 @@ theorem principalRowTerm_facts {v : HeightOneSpectrum O} (hlam : lambda ∉ v.as
   · exact tsum_norm_localTerm_one_sub_one_le (primeGen v) hlam' h2' hprim ηp X Y V hδ hV hY hX hR
       hQXY hη hq
 
+/-- **The principal row is the product of its local sums** over the good primes, on
+`Re x ≥ 3`, `Re w ≥ 3`, `Re z ≥ 2`. -/
+theorem hasProd_principalRow (S : Finset (HeightOneSpectrum O))
+    (hS : ∀ v : HeightOneSpectrum O, (lambda ∈ v.asIdeal ∨ (2 : O) ∈ v.asIdeal) → v ∈ S)
+    {x w z : ℂ} (hx : 3 ≤ x.re) (hw : 3 ≤ w.re) (hz : 2 ≤ z.re) :
+    HasProd (fun v : {v : HeightOneSpectrum O // v ∉ S} => principalRowLocal 𝔪 η x w z v.1)
+      (principalRow 𝔪 η S x w z) := by
+  have good : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
+      lambda ∉ v.1.asIdeal ∧ (2 : O) ∉ v.1.asIdeal :=
+    fun v => ⟨fun h => v.2 (hS _ (Or.inl h)), fun h => v.2 (hS _ (Or.inr h))⟩
+  have facts := fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+    principalRowTerm_facts 𝔪 η (good v).1 (good v).2 hx hw hz
+  have hf0 : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
+      principalRowTerm 𝔪 η x w z v.1 0 = 1 := by
+    intro v
+    obtain ⟨hspan, hprim⟩ := primeGen_spec v.1 (good v).1
+    haveI := isMaximal_span_primeGen v.1 (good v).1
+    have hlam' : lambda ∉ Ideal.span {primeGen v.1} := hspan ▸ (good v).1
+    have h2' : (2 : O) ∉ Ideal.span {primeGen v.1} := hspan ▸ (good v).2
+    show localTerm _ _ _ _ _ 1 0 (0, 0, 0, 0) = 1
+    rw [localTerm_T0 (primeGen v.1) hlam' h2' hprim _ _ _ _ (one_not_mem_span_prime _) 0 0 0,
+      if_pos rfl, pow_zero]
+  have hb : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+      ∑' d, ‖principalRowTerm 𝔪 η x w z v.1 d‖ - 1 := by
+    refine Summable.of_nonneg_of_le (fun v => sub_nonneg.mpr ?_) (fun v => (facts v).2.2)
+      (((numberField_summable_finitePlace_absNorm_rpow (K := K) (σ := 2) (by norm_num)).subtype
+        _).mul_left 8)
+    exact one_le_tsum_norm (fun v d => principalRowTerm 𝔪 η x w z v.1 d) hf0
+      (fun v => (facts v).2.1) v
+  have h := hasProd_tsum_eulerTerm (fun v d => principalRowTerm 𝔪 η x w z v.1 d) hf0
+    (fun v => (facts v).2.1) hb
+  have hloc : (fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+      ∑' d, principalRowTerm 𝔪 η x w z v.1 d) =
+        fun v => principalRowLocal 𝔪 η x w z v.1 := funext fun v => (facts v).1.tsum_eq
+  rw [hloc] at h
+  exact h
+
 end Global
 
 end GaloisForLFunctions.FamilyContinuationTheory

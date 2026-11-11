@@ -95,7 +95,7 @@ theorem splineBlockWeight_le {ι : Type*} [Fintype ι] {Γ : ℝ} (hΓ : 0 < Γ)
 /-- Index-separated ordinates are distinct. -/
 theorem ordinate_injective_of_index_separated {k : ℕ} {δ : ℝ} (hδ : 0 < δ)
     {z : Fin (k + 1) → ℂ}
-    (hsep : ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ |(z i).im - (z j).im|) :
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ |(z i).im - (z j).im|) :
     Function.Injective (fun i => (z i).im) := by
   intro i j he
   by_contra hij
@@ -107,7 +107,7 @@ theorem ordinate_injective_of_index_separated {k : ℕ} {δ : ℝ} (hδ : 0 < δ
 /-- A unit window contains at most one plus the reciprocal spacing many ordinates. -/
 theorem card_calibrated_ordinate_window_le {k : ℕ} {δ : ℝ} (hδ : 0 < δ)
     (z : Fin (k + 1) → ℂ)
-    (hsep : ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ |(z i).im - (z j).im|)
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ |(z i).im - (z j).im|)
     (t : ℝ) :
     ((Finset.univ.filter (fun i => t < (z i).im ∧ (z i).im ≤ t + 1)).card : ℝ) ≤ 1 / δ + 1 := by
   classical

@@ -40249,7 +40249,7 @@ theorem hasDerivAt_halfFlow (g : 𝓢(ℝ, ℂ)) (a t : ℝ) :
       (halfEulerCLM g (a * Real.exp (t / 2))) t := by
   have hf : HasDerivAt (fun y : ℝ => a * Real.exp (y / 2))
       ((a * Real.exp (t / 2)) / 2) t := by
-    simpa only [id_eq, div_eq_mul_inv, mul_one, mul_assoc] using
+    simpa only [id_eq, div_eq_mul_inv, mul_one, one_mul, mul_assoc] using
       (((hasDerivAt_id t).div_const 2).exp.const_mul a)
   simpa only [halfEulerCLM_apply, Function.comp_def] using
     (g.hasDerivAt (a * Real.exp (t / 2))).scomp t hf
@@ -42049,6 +42049,26 @@ theorem sum_divisorDyadicRectangles {A : Type*} [AddCommMonoid A]
       exact Finset.sum_comm
 
 
+theorem divisor_dyadic_sum_le (S T : Finset (Ideal O)) (N : ℝ)
+    (f : Ideal O → Ideal O → ℝ) (C : ℝ) (hC : 0 ≤ C)
+    (hb : ∀ j k : Fin (columnDyadicLength N + 1),
+      (divisorDyadicBin S N j).Nonempty → (divisorDyadicBin T N k).Nonempty →
+      (∑ D ∈ divisorDyadicBin S N j, ∑ E ∈ divisorDyadicBin T N k, f D E) ≤ C) :
+    (∑ D ∈ S, ∑ E ∈ T, f D E) ≤ ((columnDyadicLength N + 1 : ℕ) : ℝ)^2 * C := by
+  rw [sum_divisorDyadicRectangles S T N f]
+  calc
+    _ ≤ ∑ j : Fin (columnDyadicLength N + 1), ∑ k : Fin (columnDyadicLength N + 1), C := by
+      apply Finset.sum_le_sum
+      intro j _
+      apply Finset.sum_le_sum
+      intro k _
+      by_cases hS : (divisorDyadicBin S N j).Nonempty
+      · by_cases hT : (divisorDyadicBin T N k).Nonempty
+        · exact hb j k hS hT
+        · simpa only [Finset.not_nonempty_iff_eq_empty.mp hT, Finset.sum_empty, Finset.sum_const_zero] using hC
+      · simpa only [Finset.not_nonempty_iff_eq_empty.mp hS, Finset.sum_empty] using hC
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, pow_two]; ring
+
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
 
 
@@ -43192,7 +43212,7 @@ theorem signedProductDivisorSum_le_rectangles (S T : Finset (Ideal O))
     ‖signedProductDivisorSum rows left right a b P H‖ ≤
       correctionRectangleMajorant S T rows left right a b P H := by
   classical
-  let pairCols : n × p → QuadraticIdeal := fun x => (left x.1).val*(right x.2).val
+  let pairCols : n × p → Ideal O := fun x => (left x.1).val*(right x.2).val
   let K := columnDivisorPool pairCols
   have hpair : ∀ x, pairCols x ≠ 0 := fun x => mul_ne_zero (hleft x.1) (hright x.2)
   have hK : ∀ j k d, d ∣ (left j).val*(right k).val → d ∈ K :=
@@ -43337,6 +43357,1220 @@ theorem HasSieveExponent.small_principal_divisor_sum {α : ℝ} (hexp : HasSieve
       rows left right hr hl hri hrows hleft hright a b P (fun D _ E _ i hp => hP (D*E) i hp)
 
 end
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+section
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def largePrincipalWindow (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) : ℝ := by
+  classical
+  exact ∑ D ∈ S, ∑ E ∈ T, ∑ i, if P (D*E) i then
+    (Real.sqrt (M / (Ideal.absNorm (rows i).val : ℝ)) /
+      ((Ideal.absNorm D : ℝ)*(Ideal.absNorm E : ℝ))) *
+      ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k‖ else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+lemma largePrincipalWindow_le (S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) :
+    largePrincipalWindow S T rows left right a b M P ≤
+      principalCorrectionAt S T rows left right a b M := by
+  classical
+  unfold principalCorrectionAt
+  rw [sum_two_subtype_pools S T (fun D E => ∑ i,
+    (Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/((Ideal.absNorm D:ℝ)*(Ideal.absNorm E:ℝ)))*
+      ‖∑ j, ∑ k, originalTerm rows left right a b D E i j k‖)]
+  unfold largePrincipalWindow
+  apply Finset.sum_le_sum
+  intro D _
+  apply Finset.sum_le_sum
+  intro E _
+  apply Finset.sum_le_sum
+  intro i _
+  split_ifs <;> first | exact le_rfl | positivity
+
+theorem HasSieveExponent.large_principal_window {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (D₁ D₂ B N M V : ℝ) (hD₁ : 1 ≤ D₁) (hD₂ : 1 ≤ D₂) (hB : 1 ≤ B) (hN : 1 ≤ N)
+    (hM : 0 < M) (hV : 0 ≤ V) (hD₁N : D₁ ≤ N) (hD₂N : D₂ ≤ N)
+    (hS : ∀ D ∈ S, D₁ ≤ (Ideal.absNorm D : ℝ) ∧ (Ideal.absNorm D : ℝ) ≤ 2*D₁)
+    (hT : ∀ E ∈ T, D₂ ≤ (Ideal.absNorm E : ℝ) ∧ (Ideal.absNorm E : ℝ) ≤ 2*D₂)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ D ∈ S, ∀ E ∈ T, ∀ i, P (D*E) i →
+      Real.sqrt (M/B)*N ≤ (V/4)*(Ideal.absNorm (D*E):ℝ)) :
+    largePrincipalWindow S T rows left right a b M P ≤
+      2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+        (V+Real.sqrt M*B^(α-1/2)) := by
+  classical
+  by_cases hc : Real.sqrt (M/B)*N ≤ V*(D₁*D₂)
+  · exact (largePrincipalWindow_le S T rows left right a b M P).trans
+      (HasSieveExponent.large_principal_correction ε hε S T D₁ D₂ B N M hD₁ hD₂ hB hN hM hS hT
+        rows left right hr hl hri hrows hleft hright a b hexp deltaLoss hδ hD₁N hD₂N V hc)
+  · have hz : largePrincipalWindow S T rows left right a b M P = 0 := by
+      unfold largePrincipalWindow
+      apply Finset.sum_eq_zero
+      intro D hD
+      apply Finset.sum_eq_zero
+      intro E hE
+      apply Finset.sum_eq_zero
+      intro i _
+      have hn : ¬P (D*E) i := by
+        intro hp
+        apply hc
+        have hlo := hP D hD E hE i hp
+        have hhi : (Ideal.absNorm (D*E):ℝ) ≤ 4*(D₁*D₂) := by
+          rw [map_mul, Nat.cast_mul]
+          calc
+            _ ≤ (2*D₁)*(2*D₂) := mul_le_mul (hS D hD).2 (hT E hE).2 (by positivity) (by linarith)
+            _ = _ := by ring
+        nlinarith
+      simp only [hn, ite_false]
+    rw [hz]
+    have he := divisorEnergyFactor_nonneg ε hε N a b
+    have hd := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    positivity
+
+theorem HasSieveExponent.large_principal_pool {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε) (S T : Finset (Ideal O))
+    (B N M V : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hV : 0 ≤ V)
+    (hS : ∀ D ∈ S, 1 ≤ (Ideal.absNorm D:ℝ) ∧ (Ideal.absNorm D:ℝ) ≤ N)
+    (hT : ∀ E ∈ T, 1 ≤ (Ideal.absNorm E:ℝ) ∧ (Ideal.absNorm E:ℝ) ≤ N)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ D ∈ S, ∀ E ∈ T, ∀ i, P (D*E) i →
+      Real.sqrt (M/B)*N ≤ (V/4)*(Ideal.absNorm (D*E):ℝ)) :
+    largePrincipalWindow S T rows left right a b M P ≤
+      ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+        (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+          (V+Real.sqrt M*B^(α-1/2))) := by
+  classical
+  apply divisor_dyadic_sum_le S T N _ _
+  · have he := divisorEnergyFactor_nonneg ε hε N a b
+    have hd := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    positivity
+  · intro j k hj hk
+    exact hexp.large_principal_window deltaLoss hδ ε hε (divisorDyadicBin S N j) (divisorDyadicBin T N k)
+      (divisorDyadicScale j.val) (divisorDyadicScale k.val) B N M V
+      (divisorDyadicScale_ge_one _) (divisorDyadicScale_ge_one _) hB hN hM hV
+      (divisorDyadicBin_scale_le S N hS j hj) (divisorDyadicBin_scale_le T N hT k hk)
+      (divisorDyadicBin_bounds S N hS j) (divisorDyadicBin_bounds T N hT k)
+      rows left right hr hl hri hrows hleft hright a b P
+      (fun D hD E hE i hp => hP D (Finset.mem_filter.mp hD).1 E (Finset.mem_filter.mp hE).1 i hp)
+
+end
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def principalDivisorCorrection (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) : ℂ := by
+  classical
+  exact ∑ i, ∑ j, ∑ k, originalTerm rows left right a b 1 1 i j k *
+    ∑ d ∈ idealDivisors ((left j).val*(right k).val), if P d i then
+      (UniqueFactorizationMonoid.moebius d : ℂ) *
+        ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0
+
+def largePrincipalProductAt (K : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop) : ℝ := by
+  classical
+  exact ∑ i, ∑ d ∈ K, if P d i then
+    ‖∑ j, ∑ k, if d ∣ (left j).val*(right k).val then originalTerm rows left right a b 1 1 i j k *
+      ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0‖ else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+lemma largePrincipalProductAt_le_window (K S T : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hS : ∀ j D, D ∣ (left j).val → D ∈ S) (hT : ∀ k E, E ∣ (right k).val → E ∈ T) :
+    largePrincipalProductAt K rows left right a b M P ≤
+      largePrincipalWindow S T rows left right a b M (fun d i => d ∈ K ∧ P d i) := by
+  classical
+  have hp (i : m) := originalColumnSum_divisor_rectangles K S T rows left right a b i
+    hleft hright hS hT P
+    (fun d i _ _ => ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ))
+  apply (Finset.sum_le_sum (fun i _ => hp i)).trans_eq
+  unfold largePrincipalWindow
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro D _
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro E _
+  apply Finset.sum_congr rfl
+  intro i _
+  by_cases hd : D*E ∈ K
+  · by_cases hi : P (D*E) i
+    · simp only [hd, hi, and_self, ite_true, map_mul, Nat.cast_mul]
+      simp only [←Finset.sum_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (show 0 ≤ Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/
+          ((Ideal.absNorm D:ℝ)*(Ideal.absNorm E:ℝ)) by positivity)]
+      ring
+    · simp only [hd, hi, and_false, ite_true, ite_false]
+  · simp only [hd, false_and, ite_false]
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+lemma principalDivisorCorrection_le_product (K : Finset (Ideal O))
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (P : Ideal O → m → Prop)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hK : ∀ j k d, d ∣ (left j).val*(right k).val → d ∈ K) :
+    ‖principalDivisorCorrection rows left right a b M P‖ ≤
+      largePrincipalProductAt K rows left right a b M P := by
+  classical
+  let A : m → n → p → K → ℂ := fun i j k d => if P d.val i then
+    if d.val ∣ (left j).val*(right k).val then originalTerm rows left right a b 1 1 i j k *
+      ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d.val:ℝ):ℝ):ℂ) else 0 else 0
+  have he : principalDivisorCorrection rows left right a b M P =
+      ∑ i, ∑ j, ∑ k, ∑ d : K, (UniqueFactorizationMonoid.moebius d.val : ℂ)*A i j k d := by
+    unfold principalDivisorCorrection
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [← divisorPool_filter K ((left j).val*(right k).val) (mul_ne_zero (hleft j) (hright k)) (hK j k),
+      Finset.sum_filter, Finset.mul_sum]
+    rw [Finset.sum_coe_sort K (fun d => (UniqueFactorizationMonoid.moebius d:ℂ)*
+      (if P d i then if d ∣ (left j).val*(right k).val then originalTerm rows left right a b 1 1 i j k *
+        ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0 else 0))]
+    apply Finset.sum_congr rfl
+    intro d _
+    by_cases hd : d ∣ (left j).val*(right k).val <;> by_cases hi : P d i <;>
+      simp only [hd, hi, ite_true, ite_false, mul_zero] ; ring
+  rw [he]
+  apply (finite_principal_triangle (fun d : K => (UniqueFactorizationMonoid.moebius d.val:ℂ))
+    (fun d => norm_ideal_moebius_le_one d.val) A).trans_eq
+  unfold largePrincipalProductAt
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [Finset.sum_coe_sort K (fun d => ‖∑ j, ∑ k, if P d i then
+    if d ∣ (left j).val*(right k).val then originalTerm rows left right a b 1 1 i j k *
+      ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0 else 0‖)]
+  apply Finset.sum_congr rfl
+  intro d _
+  by_cases hd : P d i <;> simp only [hd, ite_true, ite_false, Finset.sum_const_zero, norm_zero]
+
+theorem HasSieveExponent.principal_divisor_correction {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M V : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hV : 0 ≤ V)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ d i, P d i → Real.sqrt (M/B)*N ≤ (V/4)*(Ideal.absNorm d:ℝ)) :
+    ‖principalDivisorCorrection rows left right a b M P‖ ≤
+      ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+        (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+          (V+Real.sqrt M*B^(α-1/2))) := by
+  let S := columnDivisorPool (fun j => (left j).val)
+  let T := columnDivisorPool (fun k => (right k).val)
+  let pairCols : n × p → Ideal O := fun x => (left x.1).val*(right x.2).val
+  let K := columnDivisorPool pairCols
+  have hl0 : ∀ j, (left j).val ≠ 0 := fun j => primaryIdealGenerator_ne_zero_ideal _ (left j).property.1
+  have hr0 : ∀ k, (right k).val ≠ 0 := fun k => primaryIdealGenerator_ne_zero_ideal _ (right k).property.1
+  have hp0 : ∀ x, pairCols x ≠ 0 := fun x => mul_ne_zero (hl0 x.1) (hr0 x.2)
+  have hk : ∀ j k d, d ∣ (left j).val*(right k).val → d ∈ K :=
+    fun j k d hd => mem_columnDivisorPool_of_dvd pairCols hp0 (j,k) d hd
+  calc
+    _ ≤ largePrincipalProductAt K rows left right a b M P :=
+      principalDivisorCorrection_le_product K rows left right a b M P hl0 hr0 hk
+    _ ≤ largePrincipalWindow S T rows left right a b M (fun d i => d ∈ K ∧ P d i) :=
+      largePrincipalProductAt_le_window K S T rows left right a b M P hl0 hr0
+        (mem_columnDivisorPool_of_dvd (fun j => (left j).val) hl0) (mem_columnDivisorPool_of_dvd (fun k => (right k).val) hr0)
+    _ ≤ _ := hexp.large_principal_pool deltaLoss hδ ε hε S T B N M V hB hN hM hV
+      (columnDivisorPool_norm_bounds (fun j => (left j).val) hl0 N hleft)
+      (columnDivisorPool_norm_bounds (fun k => (right k).val) hr0 N hright)
+      rows left right hr hl hri hrows hleft hright a b _
+      (fun D _ E _ i hp => hP (D*E) i hp.2)
+
+lemma source_large_cut_lower (M B b N T d : ℝ)
+    (hM : 0 < M) (_hB : 0 < B) (hb : 0 < b) (hbB : b ≤ B) (hN : 0 ≤ N) (hT : 0 < T)
+    (hd : T*Real.sqrt (M/b) ≤ d) :
+    Real.sqrt (M/B)*N ≤ ((4*N/T)/4)*d := by
+  have hs : Real.sqrt (M/B) ≤ Real.sqrt (M/b) :=
+    Real.sqrt_le_sqrt (div_le_div_of_nonneg_left hM.le hb hbB)
+  have hsd : Real.sqrt (M/B) ≤ d/T := (le_div_iff₀ hT).mpr (by nlinarith)
+  calc
+    _ ≤ (d/T)*N := mul_le_mul_of_nonneg_right hsd hN
+    _ = _ := by ring
+
+lemma dual_large_cut_lower (M F B b N T d : ℝ)
+    (hM : 0 < M) (hF : 0 < F) (hB : 0 < B) (hb : 0 < b) (hbB : b ≤ B)
+    (hN : 0 < N) (hT : 0 < T) (hd : T*(N*Real.sqrt (F/(M*b))) ≤ d) :
+    Real.sqrt ((M/F)/B)*N ≤ ((4*M/(F*T))/4)*d := by
+  have hs : Real.sqrt (F/(M*B)) ≤ Real.sqrt (F/(M*b)) :=
+    Real.sqrt_le_sqrt (div_le_div_of_nonneg_left hF.le (by positivity) (mul_le_mul_of_nonneg_left hbB hM.le))
+  have hnd : N*Real.sqrt (F/(M*B)) ≤ d/T := by
+    apply (le_div_iff₀ hT).mpr
+    calc
+      _ = T*(N*Real.sqrt (F/(M*B))) := by ring
+      _ ≤ T*(N*Real.sqrt (F/(M*b))) := by gcongr
+      _ ≤ d := hd
+  rw [dual_middle_scale_identity M F B N hM hF hB hN]
+  calc
+    _ ≤ ((M/(F*N))*(d/T))*N := by gcongr
+    _ = _ := by field_simp
+
+
+theorem HasSieveExponent.source_large_principal_sum {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M T : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hT : 0 < T)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (Z : m → ℝ)
+    (hZ : ∀ i, T*Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ)) ≤ Z i) :
+    ‖principalDivisorCorrection rows left right a b M (fun d i => Z i < (Ideal.absNorm d:ℝ))‖ ≤
+      ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+        (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+          (4*N/T+Real.sqrt M*B^(α-1/2))) := by
+  apply hexp.principal_divisor_correction deltaLoss hδ ε hε B N M (4*N/T) hB hN hM (by positivity)
+    rows left right hr hl hri hrows hleft hright a b
+  intro d i hd
+  exact source_large_cut_lower M B (Ideal.absNorm (rows i).val) N T (Ideal.absNorm d) hM (by linarith)
+    (by linarith [(hrows i).1]) (hrows i).2 (by linarith) hT ((hZ i).trans hd.le)
+
+theorem HasSieveExponent.dual_large_principal_sum {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M F T : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hT : 0 < T)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (a : n → ℂ) (b : p → ℂ) (Z : m → ℝ)
+    (hZ : ∀ i, T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val:ℝ)))) ≤ Z i) :
+    ‖principalDivisorCorrection rows left right a b (M/F) (fun d i => Z i < (Ideal.absNorm d:ℝ))‖ ≤
+      ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+        (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+          (4*M/(F*T)+Real.sqrt (M/F)*B^(α-1/2))) := by
+  apply hexp.principal_divisor_correction deltaLoss hδ ε hε B N (M/F) (4*M/(F*T)) hB hN (by positivity) (by positivity)
+    rows left right hr hl hri hrows hleft hright a b
+  intro d i hd
+  exact dual_large_cut_lower M F B (Ideal.absNorm (rows i).val) N T (Ideal.absNorm d) hM hF (by linarith)
+    (by linarith [(hrows i).1]) (hrows i).2 (by linarith) hT ((hZ i).trans hd.le)
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem dual_large_principal_normalization
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop)
+    (hM : 0 < M) (hF : 0 < F)
+    (hrows : ∀ i, (rows i).val ≠ 0) (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0) :
+    (∑ i, ∑ j, ∑ k, originalTerm rows left right a b 1 1 i j k *
+      (((M/(Real.sqrt ((Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ))*F):ℝ):ℂ) *
+        ((Real.sqrt (F*(Ideal.absNorm (left j).val:ℝ)*(Ideal.absNorm (right k).val:ℝ)/
+          (M*(Ideal.absNorm (rows i).val:ℝ))):ℝ):ℂ) *
+        ∑ d ∈ idealDivisors ((left j).val*(right k).val), if P d i then
+          (UniqueFactorizationMonoid.moebius d:ℂ)/(Ideal.absNorm d:ℂ) else 0)) =
+      principalDivisorCorrection rows left right a b (M/F) P := by
+  classical
+  have hpos (I : Ideal O) (hI : I ≠ 0) : 0 < (Ideal.absNorm I:ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (fun h => hI (Ideal.absNorm_eq_zero_iff.mp h))
+  unfold principalDivisorCorrection
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [←Complex.ofReal_mul, dual_principal_prefactor_identity M F (Ideal.absNorm (rows i).val)
+    (Ideal.absNorm (left j).val) (Ideal.absNorm (right k).val) hM hF (hpos _ (hrows i))
+      (hpos _ (hleft j)) (hpos _ (hright k)), Finset.mul_sum]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro d _
+  by_cases hd : P d i
+  · simp only [hd,ite_true,Complex.ofReal_div,Complex.ofReal_natCast]
+    ring
+  · simp only [hd,ite_false,mul_zero]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+theorem sqrt_norm_divisor_scale (M B q : ℝ) (hM : 0 ≤ M) (_hB : 0 ≤ B) (hq : 0 < q) :
+    Real.sqrt (M / B) / q = Real.sqrt ((M / q ^ 2) / B) := by
+  rw [Real.sqrt_div hM, Real.sqrt_div (by positivity : 0 ≤ M / q ^ 2), Real.sqrt_div hM, Real.sqrt_sq hq.le]
+  ring
+
+
+theorem weightedDivisorCorrection_coprime_mask (G C : Ideal O)
+    (hG : G ≠ 0) (hC : C ≠ 0) (hGC : IsCoprime G C) (X Z : ℝ) :
+    (∑ d ∈ idealDivisors (G*C), if Z < (Ideal.absNorm d:ℝ) then
+      (UniqueFactorizationMonoid.moebius d:ℂ)*((X/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0) =
+    ∑ q ∈ idealDivisors G, (UniqueFactorizationMonoid.moebius q:ℂ)*
+      ∑ d ∈ idealDivisors C, if Z/(Ideal.absNorm q:ℝ) < (Ideal.absNorm d:ℝ) then
+        (UniqueFactorizationMonoid.moebius d:ℂ)*(((X/(Ideal.absNorm q:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0 := by
+  classical
+  rw [QuadraticDivisorSplit.sum_divisors_coprime_product G C hG hC hGC]
+  apply Finset.sum_congr rfl
+  intro q hq
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro d hd
+  have hqG := (mem_idealDivisors hG).mp hq
+  have hdC := (mem_idealDivisors hC).mp hd
+  have hq0 : q ≠ 0 := by intro he; rw [he,zero_dvd_iff] at hqG; exact hG hqG
+  have hNq : 0 < (Ideal.absNorm q:ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (fun he => hq0 (Ideal.absNorm_eq_zero_iff.mp he))
+  have hlow : Z < (Ideal.absNorm q:ℝ)*(Ideal.absNorm d:ℝ) ↔
+      Z/(Ideal.absNorm q:ℝ) < (Ideal.absNorm d:ℝ) := by
+    constructor
+    · intro hz
+      apply (div_lt_iff₀ hNq).mpr
+      simpa only [mul_comm] using hz
+    · intro hz
+      simpa only [mul_comm] using (div_lt_iff₀ hNq).mp hz
+  simp only [map_mul,Nat.cast_mul,hlow,(hGC.mono hqG hdC).isRelPrime.moebius_mul,Int.cast_mul]
+  by_cases hp : Z/(Ideal.absNorm q:ℝ) < (Ideal.absNorm d:ℝ)
+  · simp only [hp,ite_true]
+    push_cast
+    ring
+  · simp only [hp,ite_false,mul_zero]
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def maskedPrincipalDivisorCorrection (G : Ideal O)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (Z : m → ℝ) : ℂ := by
+  classical
+  exact ∑ i, ∑ j, ∑ k, originalTerm rows left right a b 1 1 i j k *
+    ∑ d ∈ idealDivisors (G*((left j).val*(right k).val)), if Z i < (Ideal.absNorm d:ℝ) then
+      (UniqueFactorizationMonoid.moebius d:ℂ)*
+        ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+theorem maskedPrincipalDivisorCorrection_eq
+    (G : Ideal O) (hG : G ≠ 0)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M : ℝ) (hM : 0 ≤ M) (Z : m → ℝ)
+    (hleft : ∀ j, (left j).val ≠ 0) (hright : ∀ k, (right k).val ≠ 0)
+    (hGl : ∀ j, IsCoprime G (left j).val) (hGr : ∀ k, IsCoprime G (right k).val) :
+    maskedPrincipalDivisorCorrection G rows left right a b M Z =
+      ∑ q ∈ idealDivisors G, (UniqueFactorizationMonoid.moebius q:ℂ)*
+        principalDivisorCorrection rows left right a b (M/(Ideal.absNorm q:ℝ)^2)
+          (fun d i => Z i/(Ideal.absNorm q:ℝ) < (Ideal.absNorm d:ℝ)) := by
+  classical
+  have ht (i : m) (j : n) (k : p) :
+      (∑ d ∈ idealDivisors (G*((left j).val*(right k).val)), if Z i < (Ideal.absNorm d:ℝ) then
+        (UniqueFactorizationMonoid.moebius d:ℂ)*
+          ((Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0) =
+      ∑ q ∈ idealDivisors G, (UniqueFactorizationMonoid.moebius q:ℂ)*
+        ∑ d ∈ idealDivisors ((left j).val*(right k).val), if Z i/(Ideal.absNorm q:ℝ) < (Ideal.absNorm d:ℝ) then
+          (UniqueFactorizationMonoid.moebius d:ℂ)*
+            ((Real.sqrt ((M/(Ideal.absNorm q:ℝ)^2)/(Ideal.absNorm (rows i).val:ℝ))/(Ideal.absNorm d:ℝ):ℝ):ℂ) else 0 := by
+    rw [weightedDivisorCorrection_coprime_mask G _ hG (mul_ne_zero (hleft j) (hright k))
+      ((hGl j).mul_right (hGr k))]
+    apply Finset.sum_congr rfl
+    intro q hq
+    have hqG := (mem_idealDivisors hG).mp hq
+    have hq0 : q ≠ 0 := by intro he; rw [he,zero_dvd_iff] at hqG; exact hG hqG
+    have hNq : 0 < (Ideal.absNorm q:ℝ) := by
+      exact_mod_cast Nat.pos_iff_ne_zero.mpr (fun he => hq0 (Ideal.absNorm_eq_zero_iff.mp he))
+    rw [sqrt_norm_divisor_scale M _ _ hM (Nat.cast_nonneg _) hNq]
+  unfold maskedPrincipalDivisorCorrection
+  simp_rw [ht,Finset.mul_sum]
+  simp_rw [Finset.sum_comm (s := (Finset.univ:Finset p)) (t := idealDivisors G),
+    Finset.sum_comm (s := (Finset.univ:Finset n)) (t := idealDivisors G),
+    Finset.sum_comm (s := (Finset.univ:Finset m)) (t := idealDivisors G)]
+  simp only [principalDivisorCorrection,Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro q _
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro k _
+  ring_nf
+
+theorem HasSieveExponent.masked_source_large_principal_sum {α : ℝ} (hexp : HasSieveExponent α)
+    (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε) (G : Ideal O) (hG : G ≠ 0)
+    (B N M T : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hT : 0 < T)
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val:ℝ) ∧ (Ideal.absNorm (rows i).val:ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val:ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val:ℝ) ≤ N)
+    (hGl : ∀ j, IsCoprime G (left j).val) (hGr : ∀ k, IsCoprime G (right k).val)
+    (a : n → ℂ) (b : p → ℂ) (Z : m → ℝ)
+    (hZ : ∀ i, T*Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ)) ≤ Z i) :
+    ‖maskedPrincipalDivisorCorrection G rows left right a b M Z‖ ≤
+      (idealDivisors G).card * (((columnDyadicLength N+1:ℕ):ℝ)^2 *
+        (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+          (4*N/T+Real.sqrt M*B^(α-1/2)))) := by
+  classical
+  let V := ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+    (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+      (4*N/T+Real.sqrt M*B^(α-1/2)))
+  have hqbound (q : Ideal O) (hq : q ∈ idealDivisors G) :
+      ‖principalDivisorCorrection rows left right a b (M/(Ideal.absNorm q:ℝ)^2)
+        (fun d i => Z i/(Ideal.absNorm q:ℝ) < (Ideal.absNorm d:ℝ))‖ ≤ V := by
+    have hqG := (mem_idealDivisors hG).mp hq
+    have hq0 : q ≠ 0 := by intro he; rw [he,zero_dvd_iff] at hqG; exact hG hqG
+    have hq1 : 1 ≤ (Ideal.absNorm q:ℝ) := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun he => hq0 (Ideal.absNorm_eq_zero_iff.mp he))
+    have hqpos : 0 < (Ideal.absNorm q:ℝ) := by linarith
+    have hZq (i : m) : T*Real.sqrt ((M/(Ideal.absNorm q:ℝ)^2)/(Ideal.absNorm (rows i).val:ℝ)) ≤
+        Z i/(Ideal.absNorm q:ℝ) := by
+      rw [←sqrt_norm_divisor_scale M _ _ hM.le (Nat.cast_nonneg _) hqpos]
+      calc
+        _ = (T*Real.sqrt (M/(Ideal.absNorm (rows i).val:ℝ)))/(Ideal.absNorm q:ℝ) := by ring
+        _ ≤ _ := div_le_div_of_nonneg_right (hZ i) hqpos.le
+    apply (hexp.source_large_principal_sum deltaLoss hδ ε hε B N (M/(Ideal.absNorm q:ℝ)^2) T
+      hB hN (by positivity) hT rows left right hr hl hri hrows hleft hright a b
+        (fun i => Z i/(Ideal.absNorm q:ℝ)) hZq).trans
+    have he := divisorEnergyFactor_nonneg ε hε N a b
+    have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+    dsimp only [V]
+    gcongr
+    exact div_le_self hM.le (one_le_pow₀ hq1)
+  rw [maskedPrincipalDivisorCorrection_eq G hG rows left right a b M hM.le Z
+    (fun j => primaryIdealGenerator_ne_zero_ideal _ (left j).property.1) (fun k => primaryIdealGenerator_ne_zero_ideal _ (right k).property.1) hGl hGr]
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ q ∈ idealDivisors G, V := by
+      apply Finset.sum_le_sum
+      intro q hq
+      rw [norm_mul]
+      exact (mul_le_of_le_one_left (norm_nonneg _) (norm_ideal_moebius_le_one q)).trans (hqbound q hq)
+    _ = _ := by simp only [Finset.sum_const,nsmul_eq_mul,V]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+/-- Squarefree ideals split into a divisor of the fixed mask and an admissible row. -/
+def quadraticBadSector (B : {I : Ideal O // Squarefree I}) :
+    idealDivisors (quadraticMaskIdeal 1) :=
+  (squarefreeIdealSplit (quadraticMaskIdeal 1) (quadraticMaskIdeal_squarefree 1) B).1
+
+def quadraticGoodRow (B : {I : Ideal O // Squarefree I}) : QuadraticIdeal :=
+  let H := (squarefreeIdealSplit (quadraticMaskIdeal 1) (quadraticMaskIdeal_squarefree 1) B).2
+  ⟨H.val, quadraticIdealAdmissible_of_mask_coprime 1 H.val H.property.1 H.property.2⟩
+
+lemma quadraticBadSector_good_product (B : {I : Ideal O // Squarefree I}) :
+    (quadraticBadSector B).val * (quadraticGoodRow B).val = B.val :=
+  quadraticIdeal_mul_quotient (Ideal.dvd_iff_le.mpr le_sup_left)
+
+lemma quadraticBadSector_ne_zero (D : idealDivisors (quadraticMaskIdeal 1)) : D.val ≠ 0 :=
+  ne_zero_of_dvd_ne_zero (quadraticMaskIdeal_squarefree 1).ne_zero
+    ((mem_idealDivisors (quadraticMaskIdeal_squarefree 1).ne_zero).mp D.property)
+
+lemma quadraticBadSector_norm_ge_one (D : idealDivisors (quadraticMaskIdeal 1)) :
+    (1 : ℝ) ≤ Ideal.absNorm D.val := by
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+    (Ideal.absNorm_eq_zero_iff.not.mpr (quadraticBadSector_ne_zero D))
+
+lemma quadraticGoodRow_injective_on_sector (B C : {I : Ideal O // Squarefree I})
+    (hD : quadraticBadSector B = quadraticBadSector C)
+    (hG : quadraticGoodRow B = quadraticGoodRow C) : B = C := by
+  apply Subtype.ext
+  rw [← quadraticBadSector_good_product B, ← quadraticBadSector_good_product C, hD, hG]
+
+lemma quadraticGoodRow_norm_le (B : {I : Ideal O // Squarefree I}) :
+    (Ideal.absNorm (quadraticGoodRow B).val : ℝ) ≤ Ideal.absNorm B.val := by
+  rw [← quadraticBadSector_good_product B, map_mul, Nat.cast_mul]
+  exact le_mul_of_one_le_left (Nat.cast_nonneg _) (quadraticBadSector_norm_ge_one _)
+
+namespace CanonicalQuadraticSieve
+
+/-- The ideal pair character allows the reflected row to contain either excluded prime. -/
+def unrestrictedPairTerm {m n p : Type*}
+    (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (i : m) (j : n) (k : p) : ℂ :=
+  if (left j).val ⊔ (right k).val = ⊤ then
+    star (a j) * b k * canonicalQuadraticPairIdeal (left j) (right k) (rows i) else 0
+
+/-- Within a fixed bad-prime sector, the pair character is a bounded coefficient twist. -/
+lemma unrestrictedPairTerm_sector {m n p : Type*}
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (D : idealDivisors (quadraticMaskIdeal 1)) (hD : ∀ i, quadraticBadSector (rows i) = D)
+    (i : m) (j : n) (k : p) :
+    unrestrictedPairTerm (fun i => (rows i).val) left right a b i j k =
+      originalTerm (fun i => quadraticGoodRow (rows i)) left right
+        (fun j => a j * canonicalQuadraticRow (left j) (cubicIdealGenerator D.val))
+        (fun k => b k * canonicalQuadraticRow (right k) (cubicIdealGenerator D.val)) 1 1 i j k := by
+  have hp : (rows i).val = D.val * (quadraticGoodRow (rows i)).val := by
+    rw [← quadraticBadSector_good_product (rows i), hD i]
+  unfold unrestrictedPairTerm originalTerm
+  by_cases hc : (left j).val ⊔ (right k).val = ⊤
+  · simp only [hc, ite_true, one_dvd]
+    rw [hp, canonicalQuadraticPairIdeal_mul (left j) (right k) (hray j k),
+      canonicalQuadraticPairIdeal_primary (left j) (right k) (hray j k)
+        (quadraticGoodRow (rows i)).val (quadraticGoodRow (rows i)).property.1]
+    simp only [canonicalQuadraticPairIdeal, star_mul, canonicalQuadraticRow_star]
+    ring
+  · simp only [hc, ite_false]
+
+end CanonicalQuadraticSieve
+end SchwartzPlanePoisson
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+lemma divisorEnergyFactor_mono_coefficients {n p : Type*} [Fintype n] [Fintype p]
+    (ε : ℝ) (hε : 0 < ε) (N : ℝ) (a a' : n → ℂ) (b b' : p → ℂ)
+    (ha : ∀ j, ‖a' j‖ ≤ ‖a j‖) (hb : ∀ k, ‖b' k‖ ≤ ‖b k‖) :
+    divisorEnergyFactor ε hε N a' b' ≤ divisorEnergyFactor ε hε N a b := by
+  have hA : (∑ j, ‖a' j‖ ^ 2) ≤ ∑ j, ‖a j‖ ^ 2 :=
+    Finset.sum_le_sum (fun j _ => pow_le_pow_left₀ (norm_nonneg _) (ha j) _)
+  have hB : (∑ k, ‖b' k‖ ^ 2) ≤ ∑ k, ‖b k‖ ^ 2 :=
+    Finset.sum_le_sum (fun k _ => pow_le_pow_left₀ (norm_nonneg _) (hb k) _)
+  have hd := diagonalControl_nonneg sieveCutoff
+  unfold divisorEnergyFactor
+  gcongr
+
+def smallPrincipalMajorant {n p : Type} [Fintype n] [Fintype p]
+    {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss)
+    (ε : ℝ) (hε : 0 < ε) (B N M F U : ℝ) (a : n → ℂ) (b : p → ℂ) : ℝ :=
+  ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+    (2*divisorEnergyFactor ε hε N a b*(divisorExponentConstant hexp deltaLoss hδ*(B*N)^deltaLoss)*
+      (M/F+(2*U)*Real.sqrt (M/F)*B^(α-1/2)))
+
+lemma smallPrincipalMajorant_nonneg {n p : Type} [Fintype n] [Fintype p]
+    {α : ℝ} (hexp : HasSieveExponent α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss)
+    (ε : ℝ) (hε : 0 < ε) (B N M F U : ℝ) (a : n → ℂ) (b : p → ℂ)
+    (hB : 0 ≤ B) (hN : 0 ≤ N) (hM : 0 ≤ M) (hF : 0 ≤ F) (hU : 0 ≤ U) :
+    0 ≤ smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b := by
+  have he := divisorEnergyFactor_nonneg ε hε N a b
+  have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  unfold smallPrincipalMajorant
+  positivity
+
+lemma smallPrincipalMajorant_mono {n p : Type} [Fintype n] [Fintype p]
+    {α : ℝ} (hexp : HasSieveExponent α) (hα : 1/2 ≤ α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss)
+    (ε : ℝ) (hε : 0 < ε) (B' B N M F U : ℝ) (a a' : n → ℂ) (b b' : p → ℂ)
+    (hB' : 0 ≤ B') (hB : B' ≤ B) (hN : 0 ≤ N) (hM : 0 ≤ M) (hF : 0 ≤ F) (hU : 0 ≤ U)
+    (ha : ∀ j, ‖a' j‖ ≤ ‖a j‖) (hb : ∀ k, ‖b' k‖ ≤ ‖b k‖) :
+    smallPrincipalMajorant hexp deltaLoss hδ ε hε B' N M F U a' b' ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b := by
+  have he := divisorEnergyFactor_mono_coefficients ε hε N a a' b b' ha hb
+  have he0 := divisorEnergyFactor_nonneg ε hε N a' b'
+  have he1 := divisorEnergyFactor_nonneg ε hε N a b
+  have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  have ha0 : 0 ≤ α-1/2 := by linarith
+  have hB0 : 0 ≤ B := hB'.trans hB
+  unfold smallPrincipalMajorant
+  gcongr
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def unrestrictedSmallPrincipalSum
+    (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop) : ℂ := by
+  classical
+  exact ∑ i, ∑ j, ∑ k, unrestrictedPairTerm rows left right a b i j k *
+    ∑ d ∈ idealDivisors ((left j).val * (right k).val), if P d i then
+      (UniqueFactorizationMonoid.moebius d : ℂ) *
+        ((M / (Real.sqrt ((Ideal.absNorm (left j).val : ℝ) *
+          (Ideal.absNorm (right k).val : ℝ)) * F) : ℝ) : ℂ) else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+lemma unrestrictedSmallPrincipalSum_sector
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (P : Ideal O → m → Prop)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (D : idealDivisors (quadraticMaskIdeal 1)) (hD : ∀ i, quadraticBadSector (rows i) = D) :
+    unrestrictedSmallPrincipalSum (fun i => (rows i).val) left right a b M F P =
+      signedProductDivisorSum (fun i => quadraticGoodRow (rows i)) left right
+        (fun j => a j * canonicalQuadraticRow (left j) (cubicIdealGenerator D.val))
+        (fun k => b k * canonicalQuadraticRow (right k) (cubicIdealGenerator D.val)) P
+        (fun _ _ j k => ((M / (Real.sqrt ((Ideal.absNorm (left j).val : ℝ) *
+          (Ideal.absNorm (right k).val : ℝ)) * F) : ℝ) : ℂ)) := by
+  unfold unrestrictedSmallPrincipalSum signedProductDivisorSum
+  simp_rw [unrestrictedPairTerm_sector rows left right a b hray D hD]
+
+theorem HasSieveExponent.small_principal_sector {α : ℝ} (hexp : HasSieveExponent α)
+    (hα : 1/2 ≤ α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M F U : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hU : 0 ≤ U)
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hleft : ∀ j, N/2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N/2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ d i, P d i → (Ideal.absNorm d : ℝ) ≤ U*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val : ℝ)))))
+    (D : idealDivisors (quadraticMaskIdeal 1)) (hD : ∀ i, quadraticBadSector (rows i) = D) :
+    ‖unrestrictedSmallPrincipalSum (fun i => (rows i).val) left right a b M F P‖ ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b := by
+  classical
+  cases isEmpty_or_nonempty m with
+  | inl hempty =>
+    let := hempty
+    simp only [unrestrictedSmallPrincipalSum, Finset.univ_eq_empty, Finset.sum_empty, norm_zero]
+    exact smallPrincipalMajorant_nonneg hexp deltaLoss hδ ε hε B N M F U a b
+      (by linarith) (by linarith) hM.le hF.le hU
+  | inr hnonempty =>
+    let := hnonempty
+    let i₀ : m := Classical.choice hnonempty
+    let Q : ℝ := Ideal.absNorm D.val
+    let good := fun i => quadraticGoodRow (rows i)
+    let a' := fun j => a j * canonicalQuadraticRow (left j) (cubicIdealGenerator D.val)
+    let b' := fun k => b k * canonicalQuadraticRow (right k) (cubicIdealGenerator D.val)
+    have hQ : 1 ≤ Q := quadraticBadSector_norm_ge_one D
+    have hQp : 0 < Q := by linarith
+    have hn (i : m) : (Ideal.absNorm (rows i).val : ℝ) = Q*(Ideal.absNorm (good i).val : ℝ) := by
+      have hi := congrArg (fun I : Ideal O => (Ideal.absNorm I : ℝ))
+        (quadraticBadSector_good_product (rows i))
+      rw [hD i] at hi
+      simpa only [map_mul, Nat.cast_mul] using hi.symm
+    have hgr : Function.Injective good := by
+      intro i k h
+      exact hr (quadraticGoodRow_injective_on_sector _ _ ((hD i).trans (hD k).symm) h)
+    have hg (i : m) : (B/Q)/2 ≤ (Ideal.absNorm (good i).val : ℝ) ∧
+        (Ideal.absNorm (good i).val : ℝ) ≤ B/Q := by
+      constructor
+      · rw [show B/Q/2 = (B/2)/Q by ring]
+        apply (div_le_iff₀ hQp).mpr
+        have hx := (hrows i).1
+        rw [hn i] at hx
+        nlinarith only [hx]
+      · exact (le_div_iff₀ hQp).mpr (by simpa only [mul_comm] using (hn i).symm.trans_le (hrows i).2)
+    have hgoodpos (i : m) : 0 < (Ideal.absNorm (good i).val : ℝ) := by
+      exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr
+        (primaryIdealGenerator_ne_zero_ideal _ (good i).property.1))
+    have hBQ : 1 ≤ B/Q := by
+      have hh : (1 : ℝ) ≤ Ideal.absNorm (good i₀).val := by
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr
+          (primaryIdealGenerator_ne_zero_ideal _ (good i₀).property.1))
+      exact hh.trans (hg i₀).2
+    have hPg (d : Ideal O) (i : m) (hp : P d i) : (Ideal.absNorm d : ℝ) ≤
+        U*(N*Real.sqrt (F/(M*(Ideal.absNorm (good i).val : ℝ)))) := by
+      apply (hP d i hp).trans
+      have hng := quadraticGoodRow_norm_le (rows i)
+      have hgpos := hgoodpos i
+      gcongr
+    rw [unrestrictedSmallPrincipalSum_sector rows left right a b M F P hray D hD]
+    have hbnd := hexp.small_principal_divisor_sum deltaLoss hδ ε hε (B/Q) N M F U hBQ hN hM hF hU
+      good left right hgr hl hri hg hleft hright a' b' P hPg
+    change ‖signedProductDivisorSum good left right a' b' P _‖ ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b
+    apply hbnd.trans
+    apply smallPrincipalMajorant_mono hexp hα deltaLoss hδ ε hε (B/Q) B N M F U a a' b b'
+      (by positivity) (div_le_self (by linarith) hQ) (by linarith) hM.le hF.le hU
+    · intro j
+      dsimp only [a']; rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _)
+    · intro k
+      dsimp only [b']; rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _)
+
+
+/-- Summing the finitely many fixed-prime sectors removes admissibility from reflected rows. -/
+theorem HasSieveExponent.unrestricted_small_principal_sum {α : ℝ} (hexp : HasSieveExponent α)
+    (hα : 1/2 ≤ α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M F U : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hU : 0 ≤ U)
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hleft : ∀ j, N/2 ≤ (Ideal.absNorm (left j).val : ℝ) ∧ (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, N/2 ≤ (Ideal.absNorm (right k).val : ℝ) ∧ (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (a : n → ℂ) (b : p → ℂ) (P : Ideal O → m → Prop)
+    (hP : ∀ d i, P d i → (Ideal.absNorm d : ℝ) ≤ U*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val : ℝ))))) :
+    ‖unrestrictedSmallPrincipalSum (fun i => (rows i).val) left right a b M F P‖ ≤
+      ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ) *
+        smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b := by
+  classical
+  let σ := fun i => quadraticBadSector (rows i)
+  have hs : unrestrictedSmallPrincipalSum (fun i => (rows i).val) left right a b M F P =
+      ∑ D : idealDivisors (quadraticMaskIdeal 1), unrestrictedSmallPrincipalSum
+        (fun i : {i // σ i = D} => (rows i.val).val) left right a b M F (fun d i => P d i.val) := by
+    unfold unrestrictedSmallPrincipalSum
+    exact (Fintype.sum_fiberwise σ _).symm
+  have hb (D : idealDivisors (quadraticMaskIdeal 1)) :
+      ‖unrestrictedSmallPrincipalSum (fun i : {i // σ i = D} => (rows i.val).val)
+        left right a b M F (fun d i => P d i.val)‖ ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b :=
+    hexp.small_principal_sector hα deltaLoss hδ ε hε B N M F U hB hN hM hF hU
+      (fun i : {i // σ i = D} => rows i.val) left right (fun i k h => Subtype.ext (hr h)) hl hri
+      (fun i => hrows i.val) hleft hright hray a b (fun d i => P d i.val) (fun d i => hP d i.val)
+      D (fun i => i.property)
+  rw [hs]
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _D : idealDivisors (quadraticMaskIdeal 1),
+        smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b :=
+      Finset.sum_le_sum (fun D _ => hb D)
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Fintype.card_coe]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+lemma dual_bad_sector_scale (M F B Q U α : ℝ)
+    (hM : 0 < M) (hF : 0 < F) (hB : 0 ≤ B) (hQ : 1 ≤ Q)
+    (hU : 0 ≤ U) (hα : 1 / 2 ≤ α) :
+    (1 / Q) * (M * Q / F + (2 * U) * Real.sqrt (M * Q / F) * (B / Q) ^ (α - 1 / 2)) ≤
+      M / F + (2 * U) * Real.sqrt (M / F) * B ^ (α - 1 / 2) := by
+  have hQp : 0 < Q := by linarith
+  have hpow : (B / Q) ^ (α - 1 / 2) ≤ B ^ (α - 1 / 2) :=
+    Real.rpow_le_rpow (by positivity) (div_le_self hB hQ) (by linarith)
+  have hsQ : Real.sqrt Q ≤ Q := Real.sqrt_le_self_iff.mpr (Or.inr hQ)
+  have hs : (1 / Q) * Real.sqrt (M * Q / F) ≤ Real.sqrt (M / F) := by
+    have he : M * Q / F = (M / F) * Q := by ring
+    rw [he, Real.sqrt_mul (by positivity)]
+    have ht : Real.sqrt Q / Q ≤ 1 := (div_le_one hQp).mpr hsQ
+    calc
+      _ = Real.sqrt (M / F) * (Real.sqrt Q / Q) := by ring
+      _ ≤ Real.sqrt (M / F) * 1 := mul_le_mul_of_nonneg_left ht (Real.sqrt_nonneg _)
+      _ = _ := mul_one _
+  calc
+    _ = M / F + (2 * U) * ((1 / Q) * Real.sqrt (M * Q / F)) * (B / Q) ^ (α - 1 / 2) := by
+      field_simp
+
+    _ ≤ _ := by gcongr
+
+lemma smallPrincipalMajorant_bad_scale {n p : Type} [Fintype n] [Fintype p]
+    {α : ℝ} (hexp : HasSieveExponent α) (hα : 1/2 ≤ α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss)
+    (ε : ℝ) (hε : 0 < ε) (B N M F U Q : ℝ) (a a' : n → ℂ) (b b' : p → ℂ)
+    (hB : 0 ≤ B) (hN : 0 ≤ N) (hM : 0 < M) (hF : 0 < F) (hU : 0 ≤ U) (hQ : 1 ≤ Q)
+    (ha : ∀ j, ‖a' j‖ ≤ ‖a j‖) (hb : ∀ k, ‖b' k‖ ≤ ‖b k‖) :
+    (1/Q)*smallPrincipalMajorant hexp deltaLoss hδ ε hε (B/Q) N (M*Q) F U a' b' ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F U a b := by
+  have hQp : 0 < Q := by linarith
+  have he := divisorEnergyFactor_mono_coefficients ε hε N a a' b b' ha hb
+  have hp : ((B/Q)*N)^deltaLoss ≤ (B*N)^deltaLoss := by
+    apply Real.rpow_le_rpow (by positivity) _ hδ.le
+    exact mul_le_mul_of_nonneg_right (div_le_self hB hQ) hN
+  have hs := dual_bad_sector_scale M F B Q U α hM hF hB hQ hU hα
+  have he0 := divisorEnergyFactor_nonneg ε hε N a' b'
+  have he1 := divisorEnergyFactor_nonneg ε hε N a b
+  have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+  unfold smallPrincipalMajorant
+  calc
+    _ = ((columnDyadicLength N+1:ℕ):ℝ)^2 *
+      (2*divisorEnergyFactor ε hε N a' b'*(divisorExponentConstant hexp deltaLoss hδ*((B/Q)*N)^deltaLoss)*
+        ((1/Q)*(M*Q/F+(2*U)*Real.sqrt (M*Q/F)*(B/Q)^(α-1/2)))) := by ring
+    _ ≤ _ := by gcongr
+
+lemma sqrt_sector_scale (M F Q b : ℝ) (hM : 0 < M) (hF : 0 < F) (hQ : 0 < Q) (hb : 0 < b) :
+    Real.sqrt ((M/F)/(Q*b)) = (1/Q)*Real.sqrt (((M*Q)/F)/b) := by
+  apply (sq_eq_sq₀ (Real.sqrt_nonneg _) (by positivity)).mp
+  rw [mul_pow,Real.sq_sqrt (show 0 ≤ (M/F)/(Q*b) by positivity),
+    Real.sq_sqrt (show 0 ≤ ((M*Q)/F)/b by positivity)]
+  field_simp
+
+variable {m n p : Type} [Fintype m] [Fintype n] [Fintype p]
+  [DecidableEq m] [DecidableEq n] [DecidableEq p]
+
+def unrestrictedLargePrincipalSum
+    (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (Z : m → ℝ) : ℂ := by
+  classical
+  exact ∑ i, ∑ j, ∑ k, unrestrictedPairTerm rows left right a b i j k *
+    ∑ d ∈ idealDivisors ((left j).val * (right k).val), if Z i < (Ideal.absNorm d : ℝ) then
+      (UniqueFactorizationMonoid.moebius d : ℂ) *
+        ((Real.sqrt ((M/F)/(Ideal.absNorm (rows i) : ℝ))/(Ideal.absNorm d : ℝ) : ℝ) : ℂ) else 0
+
+omit [DecidableEq m] [DecidableEq n] [DecidableEq p] in
+lemma unrestrictedLargePrincipalSum_sector
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (M F : ℝ) (Z : m → ℝ) (hM : 0 < M) (hF : 0 < F)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (D : idealDivisors (quadraticMaskIdeal 1)) (hD : ∀ i, quadraticBadSector (rows i) = D) :
+    unrestrictedLargePrincipalSum (fun i => (rows i).val) left right a b M F Z =
+      ((1/(Ideal.absNorm D.val : ℝ) : ℝ) : ℂ) *
+        principalDivisorCorrection (fun i => quadraticGoodRow (rows i)) left right
+          (fun j => a j * canonicalQuadraticRow (left j) (cubicIdealGenerator D.val))
+          (fun k => b k * canonicalQuadraticRow (right k) (cubicIdealGenerator D.val))
+          ((M*(Ideal.absNorm D.val : ℝ))/F) (fun d i => Z i < (Ideal.absNorm d : ℝ)) := by
+  classical
+  have hQp : 0 < (Ideal.absNorm D.val : ℝ) := lt_of_lt_of_le zero_lt_one (quadraticBadSector_norm_ge_one D)
+  unfold unrestrictedLargePrincipalSum principalDivisorCorrection
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [unrestrictedPairTerm_sector rows left right a b hray D hD i j k]
+  have hn : (Ideal.absNorm (rows i).val : ℝ) =
+      (Ideal.absNorm D.val : ℝ) * (Ideal.absNorm (quadraticGoodRow (rows i)).val : ℝ) := by
+    have hi := congrArg (fun I : Ideal O => (Ideal.absNorm I : ℝ))
+      (quadraticBadSector_good_product (rows i))
+    rw [hD i] at hi
+    simpa only [map_mul, Nat.cast_mul] using hi.symm
+  have hgpos : 0 < (Ideal.absNorm (quadraticGoodRow (rows i)).val : ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr
+      (primaryIdealGenerator_ne_zero_ideal _ (quadraticGoodRow (rows i)).property.1))
+  rw [hn, sqrt_sector_scale M F _ _ hM hF hQp hgpos]
+  apply Finset.sum_congr rfl
+  intro d _
+  by_cases hd : Z i < (Ideal.absNorm d : ℝ)
+  · simp only [hd, ite_true, Complex.ofReal_div, Complex.ofReal_mul]
+    ring
+  · simp only [hd, ite_false, mul_zero]
+
+theorem HasSieveExponent.large_principal_sector {α : ℝ} (hexp : HasSieveExponent α)
+    (hα : 1/2 ≤ α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M F T : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hT : 4 ≤ T)
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (a : n → ℂ) (b : p → ℂ) (Z : m → ℝ)
+    (hZ : ∀ i, T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val : ℝ)))) ≤ Z i)
+    (D : idealDivisors (quadraticMaskIdeal 1)) (hD : ∀ i, quadraticBadSector (rows i) = D) :
+    ‖unrestrictedLargePrincipalSum (fun i => (rows i).val) left right a b M F Z‖ ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F (1/2) a b := by
+  classical
+  cases isEmpty_or_nonempty m with
+  | inl hempty =>
+    let := hempty
+    simp only [unrestrictedLargePrincipalSum, Finset.univ_eq_empty, Finset.sum_empty, norm_zero]
+    exact smallPrincipalMajorant_nonneg hexp deltaLoss hδ ε hε B N M F (1/2) a b
+      (by linarith) (by linarith) hM.le hF.le (by norm_num)
+  | inr hnonempty =>
+    let := hnonempty
+    let i₀ : m := Classical.choice hnonempty
+    let Q : ℝ := Ideal.absNorm D.val
+    let good := fun i => quadraticGoodRow (rows i)
+    let a' := fun j => a j * canonicalQuadraticRow (left j) (cubicIdealGenerator D.val)
+    let b' := fun k => b k * canonicalQuadraticRow (right k) (cubicIdealGenerator D.val)
+    have hQ : 1 ≤ Q := quadraticBadSector_norm_ge_one D
+    have hQp : 0 < Q := by linarith
+    have hn (i : m) : (Ideal.absNorm (rows i).val : ℝ) = Q*(Ideal.absNorm (good i).val : ℝ) := by
+      have hi := congrArg (fun I : Ideal O => (Ideal.absNorm I : ℝ))
+        (quadraticBadSector_good_product (rows i))
+      rw [hD i] at hi
+      simpa only [map_mul, Nat.cast_mul] using hi.symm
+    have hgr : Function.Injective good := by
+      intro i k h
+      exact hr (quadraticGoodRow_injective_on_sector _ _ ((hD i).trans (hD k).symm) h)
+    have hg (i : m) : (B/Q)/2 ≤ (Ideal.absNorm (good i).val : ℝ) ∧
+        (Ideal.absNorm (good i).val : ℝ) ≤ B/Q := by
+      constructor
+      · rw [show B/Q/2 = (B/2)/Q by ring]
+        apply (div_le_iff₀ hQp).mpr
+        have hx := (hrows i).1
+        rw [hn i] at hx
+        nlinarith only [hx]
+      · exact (le_div_iff₀ hQp).mpr (by simpa only [mul_comm] using (hn i).symm.trans_le (hrows i).2)
+    have hgoodpos (i : m) : 0 < (Ideal.absNorm (good i).val : ℝ) := by
+      exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr
+        (primaryIdealGenerator_ne_zero_ideal _ (good i).property.1))
+    have hBQ : 1 ≤ B/Q := by
+      have hh : (1 : ℝ) ≤ Ideal.absNorm (good i₀).val := by
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr
+          (primaryIdealGenerator_ne_zero_ideal _ (good i₀).property.1))
+      exact hh.trans (hg i₀).2
+    have hZg (i : m) : T*(N*Real.sqrt (F/((M*Q)*(Ideal.absNorm (good i).val : ℝ)))) ≤ Z i := by
+      simpa only [hn i, mul_assoc] using hZ i
+    have hbnd := hexp.dual_large_principal_sum deltaLoss hδ ε hε (B/Q) N (M*Q) F T hBQ hN
+      (by positivity) hF (by linarith) good left right hgr hl hri hg hleft hright a' b' Z hZg
+    have hmajor : ‖principalDivisorCorrection good left right a' b' ((M*Q)/F)
+        (fun d i => Z i < (Ideal.absNorm d : ℝ))‖ ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε (B/Q) N (M*Q) F (1/2) a' b' := by
+      apply hbnd.trans
+      have ht : 4/T ≤ 1 := (div_le_one (by linarith : 0<T)).mpr hT
+      have hlead : 4*(M*Q)/(F*T) ≤ (M*Q)/F := by
+        calc
+          _ = ((M*Q)/F)*(4/T) := by ring
+          _ ≤ _ := mul_le_of_le_one_right (by positivity) ht
+      have he := divisorEnergyFactor_nonneg ε hε N a' b'
+      have hc := (divisorExponentConstant_pos hexp deltaLoss hδ).le
+      unfold smallPrincipalMajorant
+      norm_num only [show (2 : ℝ)*(1/2)=1 by norm_num, one_mul]
+      gcongr
+    have htr := unrestrictedLargePrincipalSum_sector rows left right a b M F Z hM hF hray D hD
+    change unrestrictedLargePrincipalSum (fun i => (rows i).val) left right a b M F Z =
+      ((1/Q : ℝ) : ℂ) * principalDivisorCorrection good left right a' b' ((M*Q)/F)
+        (fun d i => Z i < (Ideal.absNorm d : ℝ)) at htr
+    rw [htr, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity : 0 ≤ 1/Q)]
+    apply (mul_le_mul_of_nonneg_left hmajor (by positivity)).trans
+    apply smallPrincipalMajorant_bad_scale hexp hα deltaLoss hδ ε hε B N M F (1/2) Q a a' b b'
+      (by linarith) (by linarith) hM hF (by norm_num) hQ
+    · intro j
+      dsimp only [a']; rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _)
+    · intro k
+      dsimp only [b']; rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _)
+
+theorem HasSieveExponent.unrestricted_large_principal_sum {α : ℝ} (hexp : HasSieveExponent α)
+    (hα : 1/2 ≤ α) (deltaLoss : ℝ) (hδ : 0 < deltaLoss) (ε : ℝ) (hε : 0 < ε)
+    (B N M F T : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N) (hM : 0 < M) (hF : 0 < F) (hT : 4 ≤ T)
+    (rows : m → {I : Ideal O // Squarefree I})
+    (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (hr : Function.Injective rows) (hl : Function.Injective left) (hri : Function.Injective right)
+    (hrows : ∀ i, B/2 ≤ (Ideal.absNorm (rows i).val : ℝ) ∧ (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hleft : ∀ j, (Ideal.absNorm (left j).val : ℝ) ≤ N)
+    (hright : ∀ k, (Ideal.absNorm (right k).val : ℝ) ≤ N)
+    (hray : ∀ j k, quadraticColumnRay (left j) = quadraticColumnRay (right k))
+    (a : n → ℂ) (b : p → ℂ) (Z : m → ℝ)
+    (hZ : ∀ i, T*(N*Real.sqrt (F/(M*(Ideal.absNorm (rows i).val : ℝ)))) ≤ Z i) :
+    ‖unrestrictedLargePrincipalSum (fun i => (rows i).val) left right a b M F Z‖ ≤
+      ((idealDivisors (quadraticMaskIdeal 1)).card : ℝ) *
+        smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F (1/2) a b := by
+  classical
+  let σ := fun i => quadraticBadSector (rows i)
+  have hs : unrestrictedLargePrincipalSum (fun i => (rows i).val) left right a b M F Z =
+      ∑ D : idealDivisors (quadraticMaskIdeal 1), unrestrictedLargePrincipalSum
+        (fun i : {i // σ i = D} => (rows i.val).val) left right a b M F (fun i => Z i.val) := by
+    unfold unrestrictedLargePrincipalSum
+    exact (Fintype.sum_fiberwise σ _).symm
+  have hb (D : idealDivisors (quadraticMaskIdeal 1)) :
+      ‖unrestrictedLargePrincipalSum (fun i : {i // σ i = D} => (rows i.val).val)
+        left right a b M F (fun i => Z i.val)‖ ≤
+      smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F (1/2) a b :=
+    hexp.large_principal_sector hα deltaLoss hδ ε hε B N M F T hB hN hM hF hT
+      (fun i : {i // σ i = D} => rows i.val) left right (fun i k h => Subtype.ext (hr h)) hl hri
+      (fun i => hrows i.val) hleft hright hray a b (fun i => Z i.val) (fun i => hZ i.val)
+      D (fun i => i.property)
+  rw [hs]
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _D : idealDivisors (quadraticMaskIdeal 1),
+        smallPrincipalMajorant hexp deltaLoss hδ ε hε B N M F (1/2) a b :=
+      Finset.sum_le_sum (fun D _ => hb D)
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Fintype.card_coe]
+
+end SchwartzPlanePoisson.CanonicalQuadraticSieve
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein
+
+lemma finite_ideal_family_card_bound {m : Type*} [Fintype m]
+    (rows : m → Ideal O) (hr : Function.Injective rows) (B : ℝ) (hB : 1 ≤ B)
+    (hrows : ∀ i, (Ideal.absNorm (rows i) : ℝ) ≤ B) :
+    (Fintype.card m : ℝ) ≤ diagonalControl sieveCutoff * B := by
+  classical
+  have hb := finite_ideal_card_bound (Finset.univ.image rows) B hB (by
+    intro I hI
+    obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp hI
+    exact hrows i)
+  rw [Finset.card_image_iff.mpr hr.injOn, Finset.card_univ] at hb
+  exact hb
+
+namespace CanonicalQuadraticSieve
+
+lemma originalTerm_one_norm_le {m n p : Type*}
+    (rows : m → QuadraticIdeal) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (i : m) (j : n) (k : p) :
+    ‖originalTerm rows left right a b 1 1 i j k‖ ≤ ‖a j‖ * ‖b k‖ := by
+  classical
+  simp only [originalTerm, one_dvd, ite_true]
+  split_ifs with hc
+  · simp only [one_dvd, ite_true, norm_mul, norm_star]
+    exact mul_le_mul
+      (mul_le_of_le_one_left (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _))
+      (mul_le_of_le_one_left (norm_nonneg _) (canonicalQuadraticRow_norm_le_one _ _))
+      (by positivity) (norm_nonneg _)
+  · simp only [norm_zero]
+    positivity
+
+lemma unrestrictedPairTerm_norm_le {m n p : Type*}
+    (rows : m → Ideal O) (left : n → QuadraticIdeal) (right : p → QuadraticIdeal)
+    (a : n → ℂ) (b : p → ℂ) (i : m) (j : n) (k : p) :
+    ‖unrestrictedPairTerm rows left right a b i j k‖ ≤ ‖a j‖ * ‖b k‖ := by
+  classical
+  unfold unrestrictedPairTerm
+  split_ifs
+  · simp only [norm_mul, norm_star]
+    exact mul_le_of_le_one_right (by positivity) (canonicalQuadraticPairIdeal_norm_le_one _ _ _)
+  · simp only [norm_zero]
+    positivity
+
+/-- A uniform pairwise error costs one row count and one column count after Cauchy–Schwarz. -/
+theorem finite_pair_error_bound {m n : Type*} [Fintype m] [Fintype n]
+    (pair error : m → n → n → ℂ) (a : n → ℂ) (E : ℝ) (hE : 0 ≤ E)
+    (hp : ∀ i j k, ‖pair i j k‖ ≤ ‖a j‖ * ‖a k‖)
+    (he : ∀ i j k, ‖error i j k‖ ≤ E) :
+    ‖∑ i, ∑ j, ∑ k, pair i j k * error i j k‖ ≤
+      (Fintype.card m : ℝ) * Fintype.card n * E * ∑ j, ‖a j‖ ^ 2 := by
+  classical
+  have hcs : (∑ j, ‖a j‖) ^ 2 ≤ (Fintype.card n : ℝ) * ∑ j, ‖a j‖ ^ 2 := by
+    simpa only [mul_one, one_pow, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one, mul_comm] using
+      Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => ‖a j‖) (fun _ => (1 : ℝ))
+  calc
+    _ ≤ ∑ i, ∑ j, ∑ k, ‖pair i j k * error i j k‖ :=
+      (norm_sum_le _ _).trans (Finset.sum_le_sum (fun i _ =>
+        (norm_sum_le _ _).trans (Finset.sum_le_sum (fun j _ => norm_sum_le _ _))))
+    _ ≤ ∑ _i : m, ∑ j, ∑ k, (‖a j‖ * ‖a k‖) * E := by
+      apply Finset.sum_le_sum
+      intro i _
+      apply Finset.sum_le_sum
+      intro j _
+      apply Finset.sum_le_sum
+      intro k _
+      rw [norm_mul]
+      exact mul_le_mul (hp i j k) (he i j k) (norm_nonneg _) (by positivity)
+    _ = (Fintype.card m : ℝ) * E * (∑ j, ‖a j‖) ^ 2 := by
+      simp only [← Finset.sum_mul, ← Finset.mul_sum, Finset.sum_const,
+        Finset.card_univ, nsmul_eq_mul]
+      ring
+    _ ≤ (Fintype.card m : ℝ) * E * ((Fintype.card n : ℝ) * ∑ j, ‖a j‖ ^ 2) :=
+      mul_le_mul_of_nonneg_left hcs (by positivity)
+    _ = _ := by ring
+
+/-- Counting the two ideal families gives the uniform source error estimate. -/
+theorem original_pair_error_ideal_bound {m n : Type*} [Fintype m] [Fintype n]
+    (rows : m → QuadraticIdeal) (cols : n → QuadraticIdeal)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (B N : ℝ) (hB : 1 ≤ B) (hN : 1 ≤ N)
+    (hrows : ∀ i, (Ideal.absNorm (rows i).val : ℝ) ≤ B)
+    (hcols : ∀ j, (Ideal.absNorm (cols j).val : ℝ) ≤ N)
+    (a : n → ℂ) (E : ℝ) (hE : 0 ≤ E) (error : m → n → n → ℂ)
+    (he : ∀ i j k, ‖error i j k‖ ≤ E) :
+    ‖∑ i, ∑ j, ∑ k, originalTerm rows cols cols a a 1 1 i j k * error i j k‖ ≤
+      (diagonalControl sieveCutoff) ^ 2 * B * N * E * ∑ j, ‖a j‖ ^ 2 := by
+  have hcr := finite_ideal_family_card_bound (fun i => (rows i).val)
+    (Subtype.val_injective.comp hr) B hB hrows
+  have hcc := finite_ideal_family_card_bound (fun j => (cols j).val)
+    (Subtype.val_injective.comp hc) N hN hcols
+  have hd := diagonalControl_nonneg sieveCutoff
+  apply (finite_pair_error_bound (originalTerm rows cols cols a a 1 1) error a E hE
+    (originalTerm_one_norm_le rows cols cols a a) he).trans
+  calc
+    _ ≤ (diagonalControl sieveCutoff * B) * (diagonalControl sieveCutoff * N) * E * ∑ j, ‖a j‖ ^ 2 := by
+      gcongr
+    _ = _ := by ring
+
+end CanonicalQuadraticSieve
+end SchwartzPlanePoisson
+
+
+
+namespace SchwartzPlanePoisson
+open Eisenstein UniqueFactorizationMonoid
+
+lemma primeSupport_quadraticMaskIdeal (D : Ideal O) :
+    primeSupport (quadraticMaskIdeal D) = quadraticMaskPrimes D := by
+  have hf : normalizedFactors (quadraticMaskIdeal D) = (quadraticMaskPrimes D).val := by
+    have hp : ∀ P ∈ (quadraticMaskPrimes D).val, Prime P := fun P hP => quadraticMaskPrimes_prime D P hP
+    simpa only [quadraticMaskIdeal] using normalizedFactors_prod_of_prime hp
+  simp only [primeSupport, hf, Finset.val_toFinset]
+
+end SchwartzPlanePoisson
+
+namespace TruncatedPrincipalPoisson
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+open scoped SchwartzMap
+
+/-- The low squarefree source has the same exact principal, middle, and error decomposition. -/
+theorem quadraticLowPrincipalIdeal_truncated (I J : QuadraticIdeal) (W : 𝓢(ℝ, ℂ))
+    (X Y Z L : ℝ) (hX : 0 < X) :
+    (Nat.card Oˣ : ℂ) * quadraticLowPrincipalIdeal I J W X =
+      principalTruncation (fun P : primeSupport (quadraticMaskIdeal (I.val * J.val)) => P.val)
+        Finset.univ (quadraticSquareProfile W) X Z +
+      middleTruncation (fun P : primeSupport (quadraticMaskIdeal (I.val * J.val)) => P.val)
+        Finset.univ (quadraticSquareProfile W) X Y Z L +
+      truncationError (fun P : primeSupport (quadraticMaskIdeal (I.val * J.val)) => P.val)
+        Finset.univ (quadraticSquareProfile W) X Y Z L := by
+  rw [← quadraticLowPrincipalLattice_eq I J W X hX]
+  unfold truncationError quadraticLowPrincipalLattice
+  have he (z : O) :
+      rowCoprimeMask (fun P : primeSupport (quadraticMaskIdeal (I.val * J.val)) => P.val) Finset.univ z =
+      primeCoprimeMask cubicIdealGenerator (quadraticMaskPrimes (I.val * J.val)) z := by
+    simp only [rowCoprimeMask, primeCoprimeMask]
+    rw [Finset.prod_coe_sort (s := primeSupport (quadraticMaskIdeal (I.val * J.val)))
+      (f := fun P : Ideal O => (1 : ℂ) - if cubicIdealGenerator P ∣ z then 1 else 0),
+      primeSupport_quadraticMaskIdeal]
+  simp_rw [he]
+  have hz (z : O) :
+      primeCoprimeMask cubicIdealGenerator (quadraticMaskPrimes (I.val * J.val)) z *
+        (if z = 0 then 0 else quadraticSquareProfile W (‖ringComplex z‖ ^ 2 / X)) =
+      primeCoprimeMask cubicIdealGenerator (quadraticMaskPrimes (I.val * J.val)) z *
+        W ((‖ringComplex z‖ ^ 2 / X) ^ 2) := by
+    by_cases h : z = 0
+    · subst z
+      rw [primeCoprimeMask_zero _ _ ⟨ramifiedIdeal,
+        Finset.mem_union_left _ (Finset.mem_insert_self _ _)⟩]
+      simp only [zero_mul]
+    · rw [if_neg h, quadraticSquareProfile_apply]
+  simp_rw [hz]
+  ring
+
+end TruncatedPrincipalPoisson
+
+namespace SchwartzPlanePoisson.CanonicalQuadraticSieve
+open Eisenstein MeasureTheory TruncatedPrincipalPoisson DivisorBlockCauchy
+open scoped SchwartzMap
+
+lemma squarefree_primeSupport_card (G : Ideal O) (hG : Squarefree G) :
+    (2 : ℝ) ^ (primeSupport G).card = (idealDivisors G).card := by
+  have h := squarefree_ideal_divisor_sum G hG (fun _ => 1)
+  simp only [Finset.sum_const, nsmul_eq_mul, mul_one, Finset.card_powerset] at h
+  exact_mod_cast h.symm
+
+/-- Divisor estimates absorb the number of prime-mask terms in the truncation error. -/
+theorem squarefree_truncation_error_bound (m : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (ε : ℝ) (hε : 0 < ε) (G : Ideal O), Squarefree G →
+        ∀ (W : 𝓢(ℝ, ℂ)) (X₀ X T : ℝ),
+          0 < X₀ → X₀ / 2 ≤ X → X ≤ 2 * X₀ → 4 ≤ T →
+          ‖truncationError (fun P : primeSupport G => P.val) Finset.univ W
+            X (X₀ / T) (T * X₀) (T ^ 4)‖ ≤
+            (divisorConstant ε hε * (Ideal.absNorm G : ℝ) ^ ε) *
+              (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / T ^ m := by
+  obtain ⟨s, C, hC, hb⟩ := truncationError_symmetric_bound m
+  refine ⟨s, C, hC, ?_⟩
+  intro ε hε G hG W X₀ X T hX₀ hlo hhi hT
+  have hh := hb (fun P : primeSupport G => P.val) Subtype.val_injective Finset.univ W
+    X₀ X T hX₀ hlo hhi hT
+  simp only [Finset.card_univ, Fintype.card_coe, squarefree_primeSupport_card G hG] at hh
+  apply hh.trans
+  apply div_le_div_of_nonneg_right _ (by positivity)
+  apply mul_le_mul_of_nonneg_right _ (by positivity)
+  exact (IdealDivisorBound.ideal_divisor_small_power ε hε).choose_spec.2 G hG.ne_zero
+
 end SchwartzPlanePoisson.CanonicalQuadraticSieve
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

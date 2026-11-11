@@ -28,7 +28,7 @@ structure Block (γmin C Θ : ℝ) (R : ℝ → ℝ) (j : ℕ) where
   degree_pos : 0 < k
   geometry : ∀ i, |(z i).re| ≤ calibratedDepthTolerance Θ j ∧
     Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ
-  separation : ∀ i l, |((i : ℕ) : ℝ) - ((l : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z l).im|
+  separation : ∀ i l : Fin (k + 1), |((i : ℕ) : ℝ) - ((l : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z l).im|
   positive : ∀ v : ℝ, |v| ≤ R T + 8 →
     (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re
   local_count : 4 * (1 + (k : ℝ) / Γ) ≤ C * Real.log Γ

@@ -91,7 +91,7 @@ theorem norm_weighted_exponential_sum_sub_one_le {N : ℕ} (hN : 0 < N)
 /-- Index separation bounds one complex interpolation weight with the full factorial denominator. -/
 theorem norm_zeroInterpolationWeight_le_index_separation {k : ℕ} (z : Fin (k + 1) → ℂ)
     {δ B : ℝ} (hδ : 0 < δ) (hB : 0 ≤ B) (hb : ∀ i, ‖z i‖ ≤ B)
-    (hsep : ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖)
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖)
     (i : Fin (k + 1)) :
     ‖zeroInterpolationWeight z i‖ ≤
       (B / δ) ^ k * (∏ j ∈ univ.erase i, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)|)⁻¹ := by
@@ -118,21 +118,21 @@ theorem norm_zeroInterpolationWeight_le_index_separation {k : ℕ} (z : Fin (k +
 /-- The total complex interpolation weight has only exponential loss at a regular node spacing. -/
 theorem sum_norm_zeroInterpolationWeight_le {k : ℕ} (z : Fin (k + 1) → ℂ)
     {δ B : ℝ} (hδ : 0 < δ) (hB : 0 ≤ B) (hb : ∀ i, ‖z i‖ ≤ B)
-    (hsep : ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖) :
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖) :
     ∑ i, ‖zeroInterpolationWeight z i‖ ≤ (2 * B / δ) ^ k / (k.factorial : ℝ) := by
   calc
-    _ ≤ ∑ i, (B / δ) ^ k *
+    _ ≤ ∑ i : Fin (k + 1), (B / δ) ^ k *
         (∏ j ∈ univ.erase i, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)|)⁻¹ :=
       Finset.sum_le_sum (fun i _ => norm_zeroInterpolationWeight_le_index_separation z hδ hB hb hsep i)
     _ = (B / δ) ^ k * (2 ^ k / (k.factorial : ℝ)) := by
       rw [← Finset.mul_sum, HTGeometry.sum_inv_prod_erase_abs_sub_fin]
-    _ = _ := by rw [mul_div_assoc, ← mul_pow]; congr 1 <;> ring
+    _ = _ := by rw [← mul_div_assoc, ← mul_pow]; congr 1 <;> ring
 
 /-- Exact coefficient calibration turns the interpolation estimate into a literal exponential block. -/
 theorem norm_calibrated_exponential_block_sub_one_le {k : ℕ} {z : Fin (k + 1) → ℂ}
     (hz : Function.Injective z) {T δ B R : ℝ} (hδ : 0 < δ) (hB : 0 ≤ B) (hR : 0 ≤ R)
     (hb : ∀ i, ‖z i‖ ≤ B)
-    (hsep : ∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖)
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ ‖z i - z j‖)
     (hcal : ∀ i, Complex.exp ((T : ℂ) * z i) = zeroInterpolationWeight z i)
     {v : ℝ} (hv : |v| ≤ R) :
     ‖(∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)) - 1‖ ≤

@@ -97,7 +97,7 @@ theorem exists_sparse_calibrated_block {R : ℝ → ℝ} (hR0 : ∀ T, 0 ≤ R T
       M ≤ (3 / 2 : ℝ) * Real.exp (d * (T - R T) - 8 * x) ∧
       ∃ z : Fin (k + 1) → ℂ,
         (∀ i, |(z i).re| ≤ η ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-        (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
+        (∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
         ∀ v : ℝ, |v| ≤ R T + 8 →
           (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re := by
   have hΓtop : Tendsto calibratedGridFrequency atTop atTop :=
@@ -119,7 +119,7 @@ theorem exists_sparse_calibrated_block {R : ℝ → ℝ} (hR0 : ∀ T, 0 ≤ R T
        ∃ z : Fin (k + 1) → ℂ,
         Function.Injective z ∧
         (∀ i, |(z i).re| ≤ η ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-        (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
+        (∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
         ∀ v : ℝ, |v| ≤ R T + 8 →
           (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re) := by
     filter_upwards [hΓtop.eventually_ge_atTop H, hleft.eventually_ge_atTop P,

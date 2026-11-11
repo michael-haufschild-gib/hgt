@@ -73,7 +73,7 @@ theorem eventually_exists_sublogarithmic_calibrated_grid {R : ℝ → ℝ}
       ∃ z : Fin (k + 1) → ℂ,
         Function.Injective z ∧
         (∀ i, |(z i).re| ≤ η ∧ Γ / 2 ≤ (z i).im ∧ (z i).im ≤ 4 * Γ ∧ ‖z i‖ ≤ 4 * Γ) ∧
-        (∀ i j, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
+        (∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * (Γ / k) ≤ |(z i).im - (z j).im|) ∧
         ∀ v : ℝ, |v| ≤ R T + 8 →
           (3 / 4 : ℝ) ≤ (∑ i, Complex.exp (((T + v : ℝ) : ℂ) * z i)).re := by
   filter_upwards [eventually_sublogarithmic_grid_parameters hR hη] with T hT
