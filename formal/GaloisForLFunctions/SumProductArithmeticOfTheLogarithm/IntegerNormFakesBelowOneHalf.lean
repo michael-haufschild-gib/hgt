@@ -1337,6 +1337,7 @@ private lemma LSeries_sFreeR_mul_sSmoothR (S : Set ℕ) {s : ℂ} (hs : 1 < s.re
   rw [← LSeries_convolution' hf1 hf2, ← LSeries_one_eq_riemannZeta hs]
   refine LSeries_congr (fun {n} hn => ?_) s
   rw [LSeries.convolution_def, Pi.one_apply]
+  dsimp only
   obtain ⟨a₀, b₀, hab₀, ha₀, hb₀⟩ := exists_sFree_sOnly_mul S n hn
   rw [Finset.sum_eq_single (a₀, b₀)]
   · simp [sFreeR, sSmoothR, ha₀, hb₀]
@@ -1345,7 +1346,9 @@ private lemma LSeries_sFreeR_mul_sSmoothR (S : Set ℕ) {s : ℂ} (hs : 1 < s.re
     · obtain ⟨h1, h2⟩ := sFree_sOnly_mul_inj h.1 h.2 ha₀ hb₀
         ((Nat.mem_divisorsAntidiagonal.mp hx).1.trans hab₀.symm)
       exact absurd (Prod.ext h1 h2) hx_ne
-    · rcases not_and_or.mp h with h1 | h2 <;> simp [sFreeR, sSmoothR, h1, h2]
+    · rcases not_and_or.mp h with h1 | h2
+      · simp [sFreeR, h1]
+      · simp [sSmoothR, h2]
   · intro hnot
     exact absurd (Nat.mem_divisorsAntidiagonal.mpr ⟨hab₀, hn⟩) hnot
 
@@ -1416,9 +1419,14 @@ private lemma sum_sSmoothR_div_le_of_pos_density {S : Set ℕ} {A C β : ℝ}
         show Finset.Iic ⌊X / v⌋₊ = insert 0 (Finset.Icc 1 ⌊X / v⌋₊) by
           ext m; simp only [Finset.mem_Iic, Finset.mem_insert, Finset.mem_Icc]; omega,
         Finset.sum_insert (by simp), sFreeR_zero, zero_add]
-      dsimp only [U]
-      rw [Finset.sum_filter]
-      simp only [sFreeR, Finset.sum_const, nsmul_eq_mul, mul_one]
+      symm
+      calc ∑ x ∈ Finset.Icc 1 ⌊X / v⌋₊, sFreeR S x
+          = ∑ x ∈ U v, (1 : ℝ) := by
+            dsimp only [U]
+            rw [Finset.sum_filter]
+            refine Finset.sum_congr rfl fun m _ => ?_
+            unfold sFreeR; split_ifs <;> simp
+        _ = ((U v).card : ℝ) := by simp
     have herr := hC' (X / v) hXv1
     rw [← hU_eq] at herr
     have hrp : C' * (X / v) ^ β' ≤ C' * X ^ β' :=
@@ -1491,11 +1499,12 @@ private lemma eqOn_halfPlane_of_le_one {σ₀ : ℝ} (hσ₀ : σ₀ ≤ 1) {F�
       subst hb1; linarith
     · have h1 : a * σ₀ < a * x.re := mul_lt_mul_of_pos_left hx ha'
       have h2 : b * σ₀ ≤ b * y.re := mul_le_mul_of_nonneg_left hy.le hb
+      have habσ : a * σ₀ + b * σ₀ = σ₀ := by rw [← add_mul, hab, one_mul]
       linarith
   have hmem : (2 : ℂ) ∈ {s : ℂ | σ₀ < s.re} := by simp; linarith
   have hev : F₁ =ᶠ[𝓝 (2 : ℂ)] F₂ :=
     eventuallyEq_of_mem ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
-      (by simp; norm_num : 1 < (2 : ℂ).re)) fun s hs => heq s hs
+      (by simp : 1 < (2 : ℂ).re)) fun s hs => heq s hs
   exact (h₁.analyticOnNhd hU).eqOn_of_preconnected_of_eventuallyEq
     (h₂.analyticOnNhd hU) hconv.isPreconnected hmem hev
 
@@ -1709,7 +1718,7 @@ theorem exists_real_fake_zero_of_keptPrimeSystem {S : Set ℕ} {β A C : ℝ}
     hG1_ne (by simpa [heq1] using hG_σ_c)
   have hζ_σ_c : riemannZeta (σ_c : ℂ) ≠ 0 :=
     riemannZeta_ne_zero_of_abs_im_lt_four (by simpa using (by linarith : (0 : ℝ) < σ_c))
-      (by simpa using hσ_c_lt1) (by simp; norm_num)
+      (by simpa using hσ_c_lt1) (by simp)
   exact ⟨hG1_ne, σ_c, ⟨hσ_c_gt, hσ_c_lt1⟩, hG_σ_c, hζ_σ_c, hdom⟩
 
 /-- Unconditional specialization to `β ≤ 1/2`: every prime-deletion Beurling fake at exponent

@@ -165,6 +165,204 @@ theorem tendsto_window_primitive (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
   rw [hSx] at hw
   linarith
 
+/-! ### Characters sharing values on integers prime to `q` -/
+
+omit [NeZero q] in
+/-- **Prime powers in a window.**  A window `(x, x + h]` with `h ≤ x` contains at most one power
+of each prime, so its integers not prime to `q` carry von Mangoldt mass at most `Σ_{p ∣ q} log p`. -/
+theorem sum_window_not_coprime_le {x h : ℝ} (hx : 0 < x) (hhx : h ≤ x) (hq : q ≠ 0) :
+    ∑ n ∈ (Ioc ⌊x⌋₊ ⌊x + h⌋₊).filter (fun n => ¬ n.Coprime q), vonMangoldt n ≤
+      ∑ p ∈ q.primeFactors, Real.log p := by
+  classical
+  set W := (Ioc ⌊x⌋₊ ⌊x + h⌋₊).filter (fun n => ¬ n.Coprime q) with hW
+  have hwin : ∀ n ∈ W, x < n ∧ (n : ℝ) ≤ x + h := by
+    intro n hn
+    rw [hW, mem_filter, mem_Ioc] at hn
+    have hxh : 0 ≤ x + h ∨ x + h < 0 := le_or_gt 0 (x + h)
+    refine ⟨Nat.lt_of_floor_lt hn.1.1, ?_⟩
+    rcases hxh with h0 | h0
+    · exact (Nat.cast_le.mpr hn.1.2).trans (Nat.floor_le h0)
+    · rw [Nat.floor_of_nonpos h0.le] at hn; omega
+  rw [← Finset.sum_filter_of_ne (p := fun n => IsPrimePow n)
+    (fun n _ hn => vonMangoldt_ne_zero_iff.mp hn)]
+  set W' := W.filter (fun n => IsPrimePow n) with hW'
+  have hlog : ∀ n ∈ W', vonMangoldt n = Real.log (n.minFac) := by
+    intro n hn
+    rw [vonMangoldt_apply, if_pos (mem_filter.mp hn).2]
+  rw [Finset.sum_congr rfl hlog]
+  have hinj : Set.InjOn Nat.minFac W' := by
+    intro n hn m hm hnm
+    have hn' := mem_filter.mp hn
+    have hm' := mem_filter.mp hm
+    obtain ⟨hnx, hnh⟩ := hwin n hn'.1
+    obtain ⟨hmx, hmh⟩ := hwin m hm'.1
+    have en := hn'.2.minFac_pow_factorization_eq
+    have em := hm'.2.minFac_pow_factorization_eq
+    set p := n.minFac
+    have hp : p.Prime := Nat.minFac_prime hn'.2.ne_one
+    have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+    rw [← hnm] at em
+    set a := n.factorization p
+    set b := m.factorization p
+    have key : ∀ i j : ℕ, i < j → x < ((p ^ i : ℕ) : ℝ) → ((p ^ j : ℕ) : ℝ) ≤ x + h → False := by
+      intro i j hij hi hj
+      have h1 : ((p ^ (i + 1) : ℕ) : ℝ) ≤ ((p ^ j : ℕ) : ℝ) := by
+        exact_mod_cast Nat.pow_le_pow_right hp.pos hij
+      have h2 : ((p ^ (i + 1) : ℕ) : ℝ) = (p : ℝ) * ((p ^ i : ℕ) : ℝ) := by push_cast; ring
+      nlinarith
+    rcases lt_trichotomy a b with hab | hab | hab
+    · exact (key a b hab (by rw [en]; exact hnx) (by rw [em]; exact hmh)).elim
+    · rw [← en, ← em, hab]
+    · exact (key b a hab (by rw [em]; exact hmx) (by rw [en]; exact hnh)).elim
+  rw [← Finset.sum_image (f := fun p : ℕ => Real.log (p : ℝ)) (g := Nat.minFac) hinj]
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun p _ _ => Real.log_natCast_nonneg p
+  intro p hp
+  obtain ⟨n, hn, rfl⟩ := mem_image.mp hp
+  have hn' := mem_filter.mp hn
+  have hcop := (mem_filter.mp hn'.1).2
+  have hprime : n.minFac.Prime := Nat.minFac_prime hn'.2.ne_one
+  obtain ⟨r, hr, hrn, hrq⟩ := Nat.Prime.not_coprime_iff_dvd.mp hcop
+  have en := hn'.2.minFac_pow_factorization_eq
+  have hrp : r = n.minFac := by
+    rw [← en] at hrn
+    exact (Nat.prime_dvd_prime_iff_eq hr hprime).mp (hr.dvd_of_dvd_pow hrn)
+  rw [Nat.mem_primeFactors]
+  exact ⟨hprime, hrp ▸ hrq, hq⟩
+
+/-- **Comparison of windows.**  If `χ(n) = g(n)` for `n` prime to `q` and `|g| ≤ 1`, the windows of
+`Σ χ(n)Λ(n)` and `Σ g(n)Λ(n)` differ by at most `Σ_{p ∣ q} log p`. -/
+theorem norm_window_sub_le (χ : DirichletCharacter ℂ q) (g : ℕ → ℂ) (hg : ∀ n, ‖g n‖ ≤ 1)
+    (hcop : ∀ n : ℕ, n.Coprime q → χ n = g n) {x h : ℝ} (hx : 0 < x) (hh : 0 ≤ h)
+    (hhx : h ≤ x) :
+    ‖(psiChi χ (x + h) - psiChi χ x) -
+        ∑ n ∈ Ioc ⌊x⌋₊ ⌊x + h⌋₊, g n * ((vonMangoldt n : ℝ) : ℂ)‖ ≤
+      ∑ p ∈ q.primeFactors, Real.log p := by
+  classical
+  rw [psiChi_sub_eq_sum χ (by linarith), ← Finset.sum_sub_distrib]
+  unfold twistedVM
+  have hsplit := Finset.sum_filter_add_sum_filter_not (Ioc ⌊x⌋₊ ⌊x + h⌋₊)
+    (fun n => n.Coprime q)
+    (fun n => χ n * ((vonMangoldt n : ℝ) : ℂ) - g n * ((vonMangoldt n : ℝ) : ℂ))
+  have hzero : ∑ n ∈ (Ioc ⌊x⌋₊ ⌊x + h⌋₊).filter (fun n => n.Coprime q),
+      (χ n * ((vonMangoldt n : ℝ) : ℂ) - g n * ((vonMangoldt n : ℝ) : ℂ)) = 0 := by
+    refine Finset.sum_eq_zero fun n hn => ?_
+    rw [hcop n (mem_filter.mp hn).2, sub_self]
+  rw [← hsplit, hzero, zero_add]
+  refine (norm_sum_le _ _).trans ((Finset.sum_le_sum fun n hn => ?_).trans
+    (sum_window_not_coprime_le hx hhx (NeZero.ne q)))
+  have hnc := (mem_filter.mp hn).2
+  have hχn : χ n = 0 := MulChar.map_nonunit χ (by rwa [ZMod.isUnit_iff_coprime])
+  rw [hχn, zero_mul, zero_sub, norm_neg, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg vonMangoldt_nonneg]
+  calc ‖g n‖ * vonMangoldt n ≤ 1 * vonMangoldt n :=
+        mul_le_mul_of_nonneg_right (hg n) vonMangoldt_nonneg
+    _ = vonMangoldt n := one_mul _
+
+/-- **Nonprincipal characters.**  `‖ψ(x + x^θ, χ) − ψ(x, χ)‖ / x^θ → 0` for every `χ ≠ 1`. -/
+theorem tendsto_window_character (hχ : χ ≠ 1) :
+    Tendsto (fun x : ℝ => ‖psiChi χ (x + x ^ windowExponent) - psiChi χ x‖ / x ^ windowExponent)
+      atTop (𝓝 0) := by
+  haveI : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩
+  set χs := χ.primitiveCharacter with hχs
+  have hχs1 : χs ≠ 1 := by
+    intro h
+    apply hχ
+    rw [← DirichletCharacter.changeLevel_primitiveCharacter χ, ← hχs, h, map_one]
+  have hprim : χs.IsPrimitive := DirichletCharacter.primitiveCharacter_isPrimitive χ
+  have hP := tendsto_window_primitive hχs1 hprim
+  have hcop : ∀ n : ℕ, n.Coprime q → χ n = χs n := by
+    intro n hn
+    have h := DirichletCharacter.primitiveCharacter_apply_of_isCoprime χ (a := (n : ℤ))
+      (Nat.isCoprime_iff_coprime.mpr hn)
+    rw [hχs]
+    exact_mod_cast h.symm
+  set E := ∑ p ∈ q.primeFactors, Real.log p with hE
+  have hθ0 : 0 < windowExponent := by linarith [seven_twelfths_lt_windowExponent]
+  have hE0 : Tendsto (fun x : ℝ => E / x ^ windowExponent) atTop (𝓝 0) := by
+    have := (tendsto_rpow_neg_atTop hθ0).const_mul E
+    rw [mul_zero] at this
+    refine this.congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with x hx
+    rw [Real.rpow_neg hx.le, div_eq_mul_inv]
+  have hsum := hP.add hE0
+  rw [add_zero] at hsum
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hsum
+    (by filter_upwards [eventually_ge_atTop 0] with x hx; positivity) ?_
+  have hθ1 := windowExponent_lt_one
+  filter_upwards [eventually_ge_atTop 1] with x hx
+  have hx0 : 0 < x := by linarith
+  have hh0 : 0 < x ^ windowExponent := by positivity
+  have hhx : x ^ windowExponent ≤ x := by
+    calc x ^ windowExponent ≤ x ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hx hθ1.le
+      _ = x := Real.rpow_one x
+  have hcmp := norm_window_sub_le χ (fun n => χs n) (fun n => DirichletCharacter.norm_le_one χs n)
+    hcop hx0 hh0.le hhx
+  have hwin : psiChi χs (x + x ^ windowExponent) - psiChi χs x =
+      ∑ n ∈ Ioc ⌊x⌋₊ ⌊x + x ^ windowExponent⌋₊, χs n * ((vonMangoldt n : ℝ) : ℂ) := by
+    rw [psiChi_sub_eq_sum χs (by linarith)]
+    rfl
+  rw [← hwin] at hcmp
+  rw [← add_div, div_le_div_iff_of_pos_right hh0]
+  have := norm_le_norm_sub_add (psiChi χ (x + x ^ windowExponent) - psiChi χ x)
+    (psiChi χs (x + x ^ windowExponent) - psiChi χs x)
+  linarith
+
+/-- **The principal character.**  `(ψ(x + x^θ, χ₀) − ψ(x, χ₀)) / x^θ → 1`. -/
+theorem tendsto_window_principal :
+    Tendsto (fun x : ℝ => (psiChi (1 : DirichletCharacter ℂ q) (x + x ^ windowExponent) -
+        psiChi (1 : DirichletCharacter ℂ q) x) / (x ^ windowExponent : ℝ)) atTop (𝓝 1) := by
+  have hθ0 : 0 < windowExponent := by linarith [seven_twelfths_lt_windowExponent]
+  have hθ1 := windowExponent_lt_one
+  have hH := RHTower.tendsto_psi_short_window_div_seven_twelfths
+    seven_twelfths_lt_windowExponent hθ1
+  have hHC : Tendsto (fun x : ℝ => (((Chebyshev.psi (x + x ^ windowExponent) - Chebyshev.psi x) /
+      x ^ windowExponent : ℝ) : ℂ)) atTop (𝓝 1) := by
+    have := (Complex.continuous_ofReal.tendsto 1).comp hH
+    refine this.congr fun x => ?_
+    simp only [Function.comp]
+    push_cast
+  set E := ∑ p ∈ q.primeFactors, Real.log p with hE
+  have hE0 : Tendsto (fun x : ℝ => E / x ^ windowExponent) atTop (𝓝 0) := by
+    have := (tendsto_rpow_neg_atTop hθ0).const_mul E
+    rw [mul_zero] at this
+    refine this.congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with x hx
+    rw [Real.rpow_neg hx.le, div_eq_mul_inv]
+  rw [tendsto_iff_norm_sub_tendsto_zero] at hHC ⊢
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds (hHC.add hE0 |>.trans
+    (by rw [zero_add])) (Eventually.of_forall fun x => norm_nonneg _) ?_
+  filter_upwards [eventually_ge_atTop 1] with x hx
+  have hx0 : 0 < x := by linarith
+  have hh0 : 0 < x ^ windowExponent := by positivity
+  have hhx : x ^ windowExponent ≤ x := by
+    calc x ^ windowExponent ≤ x ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hx hθ1.le
+      _ = x := Real.rpow_one x
+  have hcop : ∀ n : ℕ, n.Coprime q → (1 : DirichletCharacter ℂ q) n = (fun _ => (1 : ℂ)) n := by
+    intro n hn
+    exact MulChar.one_apply ((ZMod.isUnit_iff_coprime n q).mpr hn)
+  have hcmp := norm_window_sub_le (1 : DirichletCharacter ℂ q) (fun _ => (1 : ℂ))
+    (fun _ => by simp) hcop hx0 hh0.le hhx
+  have hpsi : ∑ n ∈ Ioc ⌊x⌋₊ ⌊x + x ^ windowExponent⌋₊, (fun _ => (1 : ℂ)) n *
+      ((vonMangoldt n : ℝ) : ℂ)
+      = ((Chebyshev.psi (x + x ^ windowExponent) - Chebyshev.psi x : ℝ) : ℂ) := by
+    rw [← psi_mono_window (by linarith) hx0.le]
+    push_cast
+    simp
+  rw [hpsi] at hcmp
+  set A := psiChi (1 : DirichletCharacter ℂ q) (x + x ^ windowExponent) -
+    psiChi (1 : DirichletCharacter ℂ q) x
+  set B := Chebyshev.psi (x + x ^ windowExponent) - Chebyshev.psi x
+  have hhC : ((x ^ windowExponent : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hh0.ne'
+  have : A / ((x ^ windowExponent : ℝ) : ℂ) - 1
+      = ((B / x ^ windowExponent : ℝ) : ℂ) - 1 + (A - (B : ℂ)) / ((x ^ windowExponent : ℝ) : ℂ) := by
+    push_cast
+    field_simp
+    ring
+  rw [this]
+  refine (norm_add_le _ _).trans (add_le_add le_rfl ?_)
+  rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hh0]
+  exact div_le_div_of_nonneg_right hcmp hh0.le
+
 end
 
 end GaloisForLFunctions.ShortIntervalPrimesInProgressions

@@ -101,12 +101,14 @@ theorem powerTailArchimedean_increment_profile (a : ℝ) (N : ℕ) :
         (harm N + (∑ m ∈ Icc 1 N, powerTailJetProfile a ((m : ℝ) / (N + 1))) / (N + 1)) := by
     rw [sum_congr rfl (fun m hm => powerTail_jet_entry a (mem_Icc.mp hm).1
       (by have := (mem_Icc.mp hm).2; omega)), ← mul_sum, sum_add_distrib, sum_div]
+    simp only [Nat.cast_add, Nat.cast_one]
     congr 2
     have hset : Icc 1 N = Ico 1 (N + 1) := by
       ext m
       simp only [mem_Icc, mem_Ico]
       omega
-    rw [hset, sum_Ico_inv_sub, Nat.add_sub_cancel]
+    rw [hset]
+    simpa only [Nat.cast_add, Nat.cast_one, Nat.add_sub_cancel] using sum_Ico_inv_sub (N + 1)
   rw [hrow]
   ring
 
@@ -151,7 +153,7 @@ theorem powerTailJetProfile_eq_dslope (a t : ℝ) :
   · have hs := sub_smul_dslope (fun x : ℝ => x ^ (-a)) 1 t
     simp only [smul_eq_mul, Real.one_rpow] at hs
     have he : (t ^ (-a) - 1) / (1 - t) = -dslope (fun x : ℝ => x ^ (-a)) 1 t := by
-      apply (div_eq_iff (sub_ne_zero.mpr ht.symm)).mpr
+      apply (div_eq_iff (sub_ne_zero.mpr (Ne.symm ht))).mpr
       calc
         _ = (t - 1) * dslope (fun x : ℝ => x ^ (-a)) 1 t := hs.symm
         _ = _ := by ring
@@ -173,7 +175,7 @@ theorem continuousOn_powerTailJetProfile (a : ℝ) :
         (Real.hasDerivAt_rpow_const (x := 1) (p := -a) (Or.inl one_ne_zero)).differentiableAt
     · exact (continuousAt_dslope_of_ne ht1).mpr hp
   exact (hd.neg.add (hp.div (continuousAt_const.add continuousAt_id)
-    (by linarith only [ht.1]))).continuousWithinAt
+    (show (1 : ℝ) + t ≠ 0 by linarith only [ht.1]))).continuousWithinAt
 
 /-- The power envelope also holds at the removable endpoint. -/
 theorem abs_powerTailJetProfile_le {a t : ℝ} (ha : 0 < a) (ha1 : a < 1)

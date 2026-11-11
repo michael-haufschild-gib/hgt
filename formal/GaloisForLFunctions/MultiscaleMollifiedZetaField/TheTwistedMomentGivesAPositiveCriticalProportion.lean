@@ -64,8 +64,8 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
   have hstable := hsi a v d ha hav hvU hg0 hg1
   by_cases hhigh : δ * U / Real.log U ≤ a
   · have hsharp := hhi a v d hlarge hav hv2 hvU hg0 hg1 hhigh
-    have he := hstable.trans (add_le_add_right
-      (mul_le_mul_of_nonneg_left hsharp (by positivity : 0 ≤ 1 + α)) _)
+    have he := hstable.trans (add_le_add
+      (mul_le_mul_of_nonneg_left hsharp (by positivity : 0 ≤ 1 + α)) le_rfl)
     have hc := mul_le_mul_of_nonneg_right hαc (sub_nonneg.mpr hav)
     have hba := congrArg (fun x : ℝ => x * a) hβeq
     have hsa := mul_nonneg hε.le ha0
@@ -79,8 +79,8 @@ theorem eventually_shortFixedDetector_all_blocks {ε : ℝ} (hε : 0 < ε) :
           simpa only [mul_div_assoc] using (lt_of_not_ge hhigh).le
         _ = (((1 + α) * C) * δ) * (U / Real.log U) := by ring
         _ ≤ _ := mul_le_mul_of_nonneg_right hδle hUL
-    have he := hstable.trans (add_le_add_right
-      (mul_le_mul_of_nonneg_left hcoarse (by positivity : 0 ≤ 1 + α)) _)
+    have he := hstable.trans (add_le_add
+      (mul_le_mul_of_nonneg_left hcoarse (by positivity : 0 ≤ 1 + α)) le_rfl)
     apply le_trans _ hslack
     nlinarith only [he, hsmall]
 

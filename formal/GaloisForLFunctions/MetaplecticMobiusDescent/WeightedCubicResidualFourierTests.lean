@@ -38247,27 +38247,26 @@ theorem principalDifference_bound {n : Type*} [Fintype n] [DecidableEq n]
         ((1 / Real.sqrt K) * sieveNorm K N * (DivisorBlockCauchy.divisorConstant ε hε * N ^ ε) *
           ∑ j, ‖a j‖ ^ 2) := by
   classical
-  let G := quadraticMaskIdeal D
-  let S := coprimeSquarefreeIdealBall G K
-  let rows : S → QuadraticIdeal := fun H => ⟨H.val, coprimeSquarefreeIdealBall_admissible D K H⟩
-  let A : Matrix S n ℂ := fun H j => canonicalQuadraticRow (cols j) (primaryIdealGenerator H.val)
+  let rows : (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K) → QuadraticIdeal := fun H => ⟨H.val, coprimeSquarefreeIdealBall_admissible D K H⟩
+  let A : (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K) → n → ℂ := fun H j => canonicalQuadraticRow (cols j) (primaryIdealGenerator H.val)
   let r (E F : Ideal O) (j : n) := canonicalQuadraticRow (cols j) (cubicIdealGenerator E * cubicIdealGenerator F)
   have hpoint (j k : n) :
       (if IsCoprime (cols j).val (cols k).val then star (a j) * a k *
-        (quadraticPairPartial (cols j) (cols k) K * quadraticPairDivisors (cols j) (cols k) G -
-         quadraticPairCoprimePartial (cols j) (cols k) G K * quadraticPairDensity (cols j) (cols k) G) else 0) =
-        ∑ E ∈ idealDivisors G, ∑ F ∈ idealDivisors G, ∑ H : S,
+        (quadraticPairPartial (cols j) (cols k) K * quadraticPairDivisors (cols j) (cols k) (quadraticMaskIdeal D) -
+         quadraticPairCoprimePartial (cols j) (cols k) (quadraticMaskIdeal D) K * quadraticPairDensity (cols j) (cols k) (quadraticMaskIdeal D)) else 0) =
+        ∑ E ∈ idealDivisors (quadraticMaskIdeal D), ∑ F ∈ idealDivisors (quadraticMaskIdeal D), ∑ H : (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K),
           (moebius F : ℂ) * quadraticBoundaryWeight K H.val E F *
             (if IsCoprime (cols j).val (cols k).val then
               star (A H j * (a j * r E F j)) * (A H k * (a k * r E F k)) else 0) := by
     dsimp only [A, r]
     by_cases hc : IsCoprime (cols j).val (cols k).val
     · rw [if_pos hc, quadraticPair_main_difference (cols j) (cols k) (hray j k)
-        G (quadraticMaskIdeal_squarefree D) K]
+        (quadraticMaskIdeal D) (quadraticMaskIdeal_squarefree D) K]
       simp only [Finset.mul_sum]
-      simp_rw [Finset.sum_comm (s := (Finset.univ : Finset S)) (t := idealDivisors G)]
+      rw [Finset.sum_comm]
       apply Finset.sum_congr rfl
       intro E hE
+      rw [Finset.sum_comm]
       apply Finset.sum_congr rfl
       intro F hF
       apply Finset.sum_congr rfl
@@ -38277,22 +38276,22 @@ theorem principalDifference_bound {n : Type*} [Fintype n] [DecidableEq n]
         ⟨(rows H).property.1, (rows H).property.2.2⟩ K (a j) (a k)
     · simp only [hc, ite_false, mul_zero, Finset.sum_const_zero]
   have heq : principalDifference cols a D K =
-      ∑ E ∈ idealDivisors G, ∑ F ∈ idealDivisors G, (moebius F : ℂ) *
-        (∑ H : S, quadraticBoundaryWeight K H.val E F *
+      ∑ E ∈ idealDivisors (quadraticMaskIdeal D), ∑ F ∈ idealDivisors (quadraticMaskIdeal D), (moebius F : ℂ) *
+        (∑ H : (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K), quadraticBoundaryWeight K H.val E F *
           (∑ j, ∑ k, if (cols j).val ⊔ (cols k).val = ⊤ then
             star (A H j * (a j * r E F j)) * (A H k * (a k * r E F k)) else 0)) := by
     unfold principalDifference
     simp_rw [hpoint]
-    simp_rw [Finset.sum_comm (s := (Finset.univ : Finset n)) (t := idealDivisors G),
-      Finset.sum_comm (s := (Finset.univ : Finset n)) (t := (Finset.univ : Finset S))]
+    simp_rw [Finset.sum_comm (s := (Finset.univ : Finset n)) (t := idealDivisors (quadraticMaskIdeal D)),
+      Finset.sum_comm (s := (Finset.univ : Finset n)) (t := (Finset.univ : Finset (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K)))]
     simp only [Finset.mul_sum, mul_assoc, Ideal.isCoprime_iff_sup_eq]
   rw [heq]
-  have hb := quadratic_boundary_operator_bound ε hε K hK G (quadraticMaskIdeal_squarefree D).ne_zero
-    (fun H : S => H.val) (fun j => (cols j).val)
+  have hb := quadratic_boundary_operator_bound ε hε K hK (quadraticMaskIdeal D) (quadraticMaskIdeal_squarefree D).ne_zero
+    (fun H : (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K) => H.val) (fun j => (cols j).val)
     (fun j => primaryIdealGenerator_ne_zero_ideal (cols j).val (cols j).property.1)
     N hN hcols A a r (fun E F j => canonicalQuadraticRow_norm_le_one (cols j) _)
   have hri : Function.Injective rows := fun H J h => Subtype.ext (congrArg (fun I : QuadraticIdeal => I.val) h)
-  have hrows (H : S) : (Ideal.absNorm (rows H).val : ℝ) ≤ K :=
+  have hrows (H : (coprimeSquarefreeIdealBall (quadraticMaskIdeal D) K)) : (Ideal.absNorm (rows H).val : ℝ) ≤ K :=
     (mem_squarefreeIdealBall.mp (Finset.mem_filter.mp H.property).1).2
   have hA : ‖FiniteSieveOperator.operator A‖ ^ 2 ≤ sieveNorm K N :=
     family_squared_norm_le rows cols hri hinj K N hrows hcols
@@ -38314,7 +38313,7 @@ lemma radial_ideal_summable_norm (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
     Summable (fun H : Ideal O => ‖W ((Ideal.absNorm H : ℝ) / M)‖) := by
   have h := (actual_eisenstein_summable_norm (scaledRadialTest W M hM)).comp_injective
     cubicIdealGenerator_injective
-  simpa only [scaledRadialTest_apply, ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator] using h
+  simpa only [Function.comp_def, scaledRadialTest_apply, ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator] using h
 
 lemma quadraticSourcePair_summable (I J : QuadraticIdeal) (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
     Summable (fun H : QuadraticSupportedIdeal =>
@@ -38347,13 +38346,15 @@ theorem quadraticSourcePair_squarefree (I J : QuadraticIdeal) (W : 𝓢(ℝ, ℂ
     (canonicalQuadraticRow I (primaryIdealGenerator H.val) * canonicalQuadraticRow J (primaryIdealGenerator H.val)) *
       W ((Ideal.absNorm H.val : ℝ) / M)
   have hs := quadraticSupportedPartsEquiv.symm.summable_iff.mpr (quadraticSourcePair_summable I J W M hM)
+  change Summable (fun p : QuadraticIdeal × QuadraticSupportedIdeal => f (quadraticSupportedPartsEquiv.symm p)) at hs
   have he (p : QuadraticIdeal × QuadraticSupportedIdeal) :
       f (quadraticSupportedPartsEquiv.symm p) =
         (canonicalQuadraticRow I (primaryIdealGenerator p.1.val) * canonicalQuadraticRow J (primaryIdealGenerator p.1.val)) *
           (quadraticIdealMask I (primaryIdealGenerator p.2.val) * quadraticIdealMask J (primaryIdealGenerator p.2.val)) *
             W (((Ideal.absNorm p.1.val : ℝ) * (Ideal.absNorm p.2.val : ℝ) ^ 2) / M) := by
     change (canonicalQuadraticRow I (primaryIdealGenerator (p.1.val * p.2.val ^ 2)) *
-      canonicalQuadraticRow J (primaryIdealGenerator (p.1.val * p.2.val ^ 2))) * _ = _
+      canonicalQuadraticRow J (primaryIdealGenerator (p.1.val * p.2.val ^ 2))) *
+      W ((Ideal.absNorm (p.1.val * p.2.val ^ 2) : ℝ) / M) = _
     rw [canonicalQuadraticRow_squarefree_argument, canonicalQuadraticRow_squarefree_argument]
     simp only [map_mul, map_pow, Nat.cast_mul, Nat.cast_pow]
     ring
@@ -38631,5 +38632,1089 @@ theorem paperRadialFourier_lattice_tail (A : ℕ) :
 
 end SchwartzPlanePoisson
 
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory Set
+open scoped SchwartzMap FourierTransform
+
+/-- Integrating one Fourier coordinate restricts the original Schwartz function to the other axis. -/
+lemma fourier_real_axis_integral (f : 𝓢(ℂ, ℂ)) :
+    (∫ x : ℝ, 𝓕 (f : ℂ → ℂ) (x : ℂ)) = ∫ y : ℝ, f (Complex.I * (y : ℂ)) := by
+  let g := partialFourier f 0
+  have hF : 𝓕 g = fun x : ℝ => 𝓕 (f : ℂ → ℂ) (x : ℂ) := by
+    funext x
+    simpa only [g, complexPoint_eq, Complex.ofReal_zero, mul_zero, add_zero] using fourier_partialFourier f x 0
+  have hgi : Integrable (𝓕 g) := by
+    rw [hF]
+    have hs := (horizontalSlice (𝓕 f) 0).integrable (μ := volume)
+    change Integrable (fun x : ℝ => (𝓕 f) (complexPoint x 0)) at hs
+    simpa only [complexPoint_eq, mul_zero, add_zero,
+      Complex.ofReal_zero, SchwartzMap.fourier_coe] using hs
+  have hinv : 𝓕⁻ (𝓕 g) (0 : ℝ) = g 0 :=
+    (partialFourier_integrable f 0).fourierInv_fourier_eq hgi
+      (partialFourier_continuous f 0).continuousAt
+  calc
+    _ = ∫ x : ℝ, 𝓕 g x := by rw [hF]
+    _ = 𝓕⁻ (𝓕 g) 0 := by simp [Real.fourierInv_eq]
+    _ = g 0 := hinv
+    _ = _ := by simp [g, partialFourier_eq_integral, complexPoint_eq]
+
+lemma paperRadialFourier_square_real_axis (W : 𝓢(ℝ, ℂ)) (x : ℝ) :
+    paperRadialFourier W (x ^ 2) = (2 / Real.sqrt 3 : ℝ) •
+      𝓕 (radialTest W : ℂ → ℂ) (((x / (ringComplex omega).im : ℝ) : ℂ)) := by
+  have hn : ‖(x : ℂ) * Complex.I‖ ^ 2 = x ^ 2 := by
+    simp [Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  have hfreq : paperFrequency ((x : ℂ) * Complex.I) = (((x / (ringComplex omega).im : ℝ) : ℂ)) := by
+    rw [paperFrequency_coordinates]
+    simp [complexPoint_eq]
+  have h := paperFourier_radial W ((x : ℂ) * Complex.I)
+  rw [hn, paperFourier_eq_standard, hfreq] at h
+  exact h.symm
+
+/-- The trace-dual normalization preserves the integral of the squared radial profile. -/
+lemma paperRadialFourier_square_integral (W : 𝓢(ℝ, ℂ)) :
+    (∫ x : ℝ, paperRadialFourier W (x ^ 2)) = ∫ x : ℝ, W (x ^ 2) := by
+  have hscale : (2 / Real.sqrt 3 : ℝ) * (Real.sqrt 3 / 2) = 1 := by
+    have hs : Real.sqrt 3 ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr (by norm_num))
+    field_simp
+  calc
+    _ = (2 / Real.sqrt 3 : ℝ) •
+        ∫ x : ℝ, 𝓕 (radialTest W : ℂ → ℂ) ((((ringComplex omega).im)⁻¹ * x : ℝ) : ℂ) := by
+      simp only [paperRadialFourier_square_real_axis, div_eq_mul_inv, mul_comm, integral_smul]
+    _ = ∫ x : ℝ, 𝓕 (radialTest W : ℂ → ℂ) (x : ℂ) := by
+      rw [Measure.integral_comp_mul_left
+        (fun x : ℝ => 𝓕 (radialTest W : ℂ → ℂ) (x : ℂ)) ((ringComplex omega).im)⁻¹]
+      rw [inv_inv, complex_omega_im_abs, smul_smul, hscale, one_smul]
+    _ = ∫ y : ℝ, radialTest W (Complex.I * (y : ℂ)) := fourier_real_axis_integral _
+    _ = _ := by
+      apply integral_congr_ae
+      filter_upwards [] with y
+      simp [radialTest_apply, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+
+lemma integral_even_twice_halfline (F : ℝ → ℂ) (hF : Integrable F)
+    (heven : ∀ x, F (-x) = F x) :
+    (∫ x : ℝ, F x) = 2 * ∫ x : ℝ in Ioi 0, F x := by
+  have hn : (∫ x : ℝ in Iic 0, F x) = ∫ x : ℝ in Ioi 0, F x := by
+    calc
+      _ = ∫ x : ℝ in Ioi 0, F (-x) := by simp
+      _ = _ := setIntegral_congr_fun measurableSet_Ioi (fun x _ => heven x)
+  rw [← integral_add_compl (s := Ioi 0) measurableSet_Ioi hF, compl_Ioi, hn]
+  ring
+
+lemma paperRadialFourier_halfline_integral (W : 𝓢(ℝ, ℂ)) :
+    (∫ x : ℝ in Ioi 0, paperRadialFourier W (x ^ 2)) = ∫ x : ℝ in Ioi 0, W (x ^ 2) := by
+  have hd : Integrable (fun x : ℝ => paperRadialFourier W (x ^ 2)) := by
+    have h := (quadraticTransformedSquareProfile W).integrable (μ := volume)
+    change Integrable (fun x : ℝ => quadraticTransformedSquareProfile W x) at h
+    simpa only [quadraticTransformedSquareProfile_apply] using h
+  have hs : Integrable (fun x : ℝ => W (x ^ 2)) := by
+    have h := (quadraticSquareProfile W).integrable (μ := volume)
+    change Integrable (fun x : ℝ => quadraticSquareProfile W x) at h
+    simpa only [quadraticSquareProfile_apply] using h
+  have h := paperRadialFourier_square_integral W
+  rw [integral_even_twice_halfline _ hd (by intro x; simp),
+    integral_even_twice_halfline _ hs (by intro x; simp)] at h
+  exact mul_left_cancel₀ (by norm_num : (2 : ℂ) ≠ 0) h
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory Set
+open scoped SchwartzMap
+
+/-- Area measure for a squared radial variable is π times Lebesgue measure on the positive half-line. -/
+lemma complex_radial_norm_sq_integral (F : ℝ → ℂ) :
+    (∫ z : ℂ, F (‖z‖ ^ 2)) = (Real.pi : ℂ) * ∫ t : ℝ in Ioi 0, F t := by
+  have hv : volume.real (Metric.ball (0 : ℂ) 1) = Real.pi := by
+    rw [measureReal_def, Complex.volume_ball]
+    simp
+  have hs : (2 : ℝ) • (∫ r : ℝ in Ioi 0, r • F (r ^ 2)) = ∫ t : ℝ in Ioi 0, F t := by
+    have h := integral_comp_rpow_Ioi_of_pos (g := F) (by norm_num : (0 : ℝ) < 2)
+    simpa only [show (2 : ℝ) - 1 = 1 by norm_num, Real.rpow_one, Real.rpow_two,
+      mul_smul, integral_smul] using h
+  rw [integral_fun_norm_addHaar volume (fun r => F (r ^ 2)), Complex.finrank_real_complex, hv]
+  norm_num only [Nat.reduceSub, pow_one]
+  rw [← hs]
+  simp only [Complex.real_smul, nsmul_eq_mul, Complex.ofReal_ofNat]
+  ring
+
+lemma paperRadialFourier_zero_eq_halfline (F : ℝ → ℂ) :
+    paperRadialFourier F 0 = (2 * Real.pi / Real.sqrt 3 : ℂ) * ∫ t : ℝ in Ioi 0, F t := by
+  have he : paperE 0 = 1 := by simp [paperE]
+  simp only [paperRadialFourier, paperFourier, Real.sqrt_zero, Complex.ofReal_zero,
+    mul_zero, neg_zero, he, one_mul]
+  rw [complex_radial_norm_sq_integral]
+  simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_ofNat]
+  ring
+
+/-- The source and transformed square profiles have identical principal Poisson terms. -/
+theorem quadraticSquareProfile_principal_equal (W : 𝓢(ℝ, ℂ)) :
+    paperRadialFourier (quadraticTransformedSquareProfile W) 0 =
+      paperRadialFourier (quadraticSquareProfile W) 0 := by
+  rw [paperRadialFourier_zero_eq_halfline, paperRadialFourier_zero_eq_halfline]
+  congr 1
+  simpa only [quadraticTransformedSquareProfile_apply, quadraticSquareProfile_apply] using
+    paperRadialFourier_halfline_integral W
+
+end SchwartzPlanePoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+open scoped SchwartzMap
+
+lemma eisenstein_unit_card_ne_zero : (Nat.card Oˣ : ℂ) ≠ 0 := by
+  letI : Finite Oˣ := cubic_units_finite
+  letI : Fintype Oˣ := Fintype.ofFinite _
+  exact Nat.cast_ne_zero.mpr (by rw [Nat.card_eq_fintype_card]; exact Fintype.card_ne_zero)
+
+/-- A masked same-ray source pair descends to the unrestricted ideal sum. -/
+theorem canonicalQuadraticPair_source_ideal_reindex {κ : Type*}
+    (I J : QuadraticIdeal) (hray : quadraticColumnRay I = quadraticColumnRay J)
+    (hnt : I.val ≠ 1 ∨ J.val ≠ 1) (q : κ → O) (S : Finset κ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' z : O, primeCoprimeMask q S z * (canonicalQuadraticRow I z * canonicalQuadraticRow J z) *
+      W (‖ringComplex z‖ ^ 2 / Y)) =
+      (Nat.card Oˣ : ℂ) * ∑' D : NonzeroIdeal,
+        primeCoprimeMask q S (cubicIdealGenerator D.val) * canonicalQuadraticPairIdeal I J D.val *
+          W ((Ideal.absNorm D.val : ℝ) / Y) := by
+  let f : O → ℂ := fun z => primeCoprimeMask q S z *
+    (canonicalQuadraticRow I z * canonicalQuadraticRow J z) * W (‖ringComplex z‖ ^ 2 / Y)
+  have hs : Summable (fun z : O => ‖W (‖ringComplex z‖ ^ 2 / Y)‖) := by
+    simpa only [scaledRadialTest_apply] using actual_eisenstein_summable_norm (scaledRadialTest W Y hY)
+  have hf : Summable f := by
+    apply Summable.of_norm
+    apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun z => ?_) hs
+    dsimp only [f]
+    rw [norm_mul, norm_mul, norm_mul]
+    have hpair : ‖canonicalQuadraticRow I z‖ * ‖canonicalQuadraticRow J z‖ ≤ 1 :=
+      (mul_le_mul (canonicalQuadraticRow_norm_le_one I z) (canonicalQuadraticRow_norm_le_one J z)
+        (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+    have hm : ‖primeCoprimeMask q S z‖ * (‖canonicalQuadraticRow I z‖ * ‖canonicalQuadraticRow J z‖) ≤ 1 :=
+      (mul_le_mul (primeCoprimeMask_norm_le_one q S z) hpair (by positivity) zero_le_one).trans_eq (one_mul 1)
+    exact mul_le_of_le_one_left (norm_nonneg _) hm
+  have h0 : f 0 = 0 := by
+    dsimp only [f]
+    rw [canonicalQuadraticPair_zero I J hnt, mul_zero, zero_mul]
+  have hu (u : Oˣ) (z : O) : f ((u : O) * z) = f z := by
+    dsimp only [f]
+    rw [primeCoprimeMask_unit_mul, canonicalQuadraticPair_unit_invariant I J hray,
+      map_mul, norm_mul, norm_ringComplex_unit, one_mul]
+  simpa only [f, canonicalQuadraticPairIdeal, ringComplex_norm_sq_eq_absNorm_span,
+    span_cubicIdealGenerator] using tsum_unit_invariant_ideals f hf h0 hu
+
+/-- The unit multiplicity cancels between source and dual, leaving an exact ideal Poisson identity. -/
+theorem canonical_same_ray_pair_ideal_poisson {κ : Type*}
+    (I J : QuadraticIdeal) (hcop : IsCoprime I.val J.val)
+    (hray : quadraticColumnRay I = quadraticColumnRay J) (hnt : I.val ≠ 1 ∨ J.val ≠ 1)
+    (q : κ → O) (hq : ∀ i, q i ≠ 0) (hqc : Pairwise (Function.onFun IsCoprime q)) (S : Finset κ)
+    (W : 𝓢(ℝ, ℂ)) (Y : ℝ) (hY : 0 < Y) :
+    (∑' D : NonzeroIdeal,
+      primeCoprimeMask q S (cubicIdealGenerator D.val) * canonicalQuadraticPairIdeal I J D.val *
+        W ((Ideal.absNorm D.val : ℝ) / Y)) =
+      ((Y : ℂ) / (‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ : ℂ)) *
+        ∑ E ∈ S.powerset,
+          ((-1 : ℂ) ^ E.card * canonicalQuadraticPairIdeal I J (Ideal.span {∏ i ∈ E, q i}) /
+            (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 : ℝ)) *
+            ∑' D : NonzeroIdeal, canonicalQuadraticPairIdeal I J D.val *
+              paperRadialFourier W (Y * (Ideal.absNorm D.val : ℝ) /
+                (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 *
+                  ‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ ^ 2)) := by
+  classical
+  have hn : primaryIdealGenerator I.val * primaryIdealGenerator J.val ≠ 0 :=
+    mul_ne_zero I.property.1 J.property.1
+  have hd (E : Finset κ) :
+      (∑' z : O, (canonicalQuadraticRow I z * canonicalQuadraticRow J z) *
+        paperRadialFourier W (Y * ‖ringComplex z‖ ^ 2 /
+          (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 *
+            ‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ ^ 2))) =
+        (Nat.card Oˣ : ℂ) * ∑' D : NonzeroIdeal, canonicalQuadraticPairIdeal I J D.val *
+          paperRadialFourier W (Y * (Ideal.absNorm D.val : ℝ) /
+            (‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 *
+              ‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ ^ 2)) := by
+    have he : (∏ i ∈ E, q i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hq i)
+    have hden : 0 < ‖ringComplex (∏ i ∈ E, q i)‖ ^ 2 *
+        ‖ringComplex (primaryIdealGenerator I.val * primaryIdealGenerator J.val)‖ ^ 2 :=
+      mul_pos (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero he)))
+        (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hn)))
+    simpa only [div_mul_eq_mul_div] using canonicalQuadraticPair_fourier_ideal_reindex
+      I J hray hnt W _ (div_pos hY hden)
+  have hp := canonical_same_ray_pair_poisson I J hcop hray q hq hqc S W Y hY
+  rw [canonicalQuadraticPair_source_ideal_reindex I J hray hnt q S W Y hY] at hp
+  simp_rw [hd, ← canonicalQuadraticPairIdeal_span I J hray] at hp
+  apply mul_left_cancel₀ eisenstein_unit_card_ne_zero
+  rw [hp]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro E hE
+  ring
+
+end SchwartzPlanePoisson
+
+namespace TruncatedPrincipalPoisson
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+open scoped SchwartzMap FourierTransform
+
+def primeSubsetGenerator {ι : Type*} (P : ι → Ideal O) (E : Finset ι) : O :=
+  ∏ i ∈ E, cubicIdealGenerator (P i)
+
+lemma primeSubsetGenerator_span {ι : Type*} (P : ι → Ideal O) (E : Finset ι) :
+    Ideal.span {primeSubsetGenerator P E} = ∏ i ∈ E, P i := by
+  simp only [primeSubsetGenerator, span_finset_prime_product, span_cubicIdealGenerator]
+
+lemma primeSubsetGenerator_norm_sq {ι : Type*} (P : ι → Ideal O) (E : Finset ι) :
+    ‖ringComplex (primeSubsetGenerator P E)‖ ^ 2 = (Ideal.absNorm (∏ i ∈ E, P i) : ℝ) := by
+  rw [ringComplex_norm_sq_eq_absNorm_span, primeSubsetGenerator_span]
+
+lemma primeSubsetGenerator_ne_zero {ι : Type*} (P : ι → Ideal O)
+    [∀ i, (P i).IsMaximal] (E : Finset ι) : primeSubsetGenerator P E ≠ 0 := by
+  have hp : (∏ i ∈ E, P i) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => NeZero.ne (P i))
+  intro hz
+  have h := primeSubsetGenerator_span P E
+  rw [hz, Ideal.span_singleton_zero] at h
+  exact hp h.symm
+
+def rowCoprimeMask {ι : Type*} (P : ι → Ideal O) (S : Finset ι) (z : O) : ℂ :=
+  primeCoprimeMask (fun i => cubicIdealGenerator (P i)) S z
+
+lemma prime_product_moebius {ι : Type*} [DecidableEq ι] (P : ι → Ideal O)
+    [∀ i, (P i).IsMaximal] (_hprime : ∀ i, Prime (P i))
+    (hinj : Function.Injective P) (S : Finset ι) :
+    (moebius (∏ i ∈ S, P i) : ℂ) = (-1 : ℂ) ^ S.card := by
+  have hi : Function.Injective (fun i : S => P i.val) := fun i j h => Subtype.ext (hinj h)
+  simpa only [Fintype.card_coe, Finset.prod_coe_sort] using
+    Eisenstein.primeProduct_moebius (fun i : S => P i.val) hi
+
+lemma primeSubset_moebius_norm_sum {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+    (hprime : ∀ i, Prime (P i)) (hinj : Function.Injective P) (S : Finset ι) :
+    (∑ E ∈ S.powerset, (moebius (∏ i ∈ E, P i) : ℂ) /
+      (Ideal.absNorm (∏ i ∈ E, P i) : ℂ)) =
+      ∏ i ∈ S, (1 - (1 : ℂ) / Ideal.absNorm (P i)) := by
+  rw [Finset.prod_sub]
+  apply Finset.sum_congr rfl
+  intro E hE
+  rw [prime_product_moebius P hprime hinj E]
+  simp only [Finset.prod_const_one, mul_one, map_prod, Nat.cast_prod,
+    Finset.prod_inv_distrib, div_eq_mul_inv, one_mul]
+
+lemma generator_pairwise_coprime {ι : Type*} (P : ι → Ideal O)
+    [∀ i, (P i).IsMaximal] (hinj : Function.Injective P) :
+    Pairwise (Function.onFun IsCoprime (fun i => cubicIdealGenerator (P i))) := by
+  intro i j hij
+  have h := Ideal.isCoprime_of_isMaximal (hinj.ne hij)
+  rw [← span_cubicIdealGenerator (P i), ← span_cubicIdealGenerator (P j)] at h
+  exact (Ideal.isCoprime_span_singleton_iff _ _).mp h
+
+/-- Inclusion–exclusion leaves exact dilations by the selected prime generators. -/
+theorem tsum_rowCoprimeMask_dilations {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (f : O → ℂ) (hf : Summable f) :
+    (∑' z : O, rowCoprimeMask P S z * f z) =
+      ∑ E ∈ S.powerset, (moebius (∏ i ∈ E, P i) : ℂ) *
+        ∑' z : O, f (primeSubsetGenerator P E * z) := by
+  have hprime (i : ι) : Prime (P i) := Ideal.prime_of_isPrime (NeZero.ne (P i)) inferInstance
+  have ht (z : O) : rowCoprimeMask P S z * f z =
+      ∑ E ∈ S.powerset, (-1 : ℂ) ^ E.card *
+        (if primeSubsetGenerator P E ∣ z then f z else 0) := by
+    rw [rowCoprimeMask, primeCoprimeMask_divisor_expansion _ (generator_pairwise_coprime P hinj),
+      Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro E hE
+    by_cases h : primeSubsetGenerator P E ∣ z <;>
+      simp only [primeSubsetGenerator] at h ⊢ <;> simp [h]
+  have hs (E : Finset ι) : Summable (fun z : O => (-1 : ℂ) ^ E.card *
+      (if primeSubsetGenerator P E ∣ z then f z else 0)) :=
+    (hf.indicator {z | primeSubsetGenerator P E ∣ z}).mul_left _
+  simp_rw [ht]
+  rw [Summable.tsum_finsetSum (fun E _ => hs E)]
+  apply Finset.sum_congr rfl
+  intro E hE
+  rw [tsum_mul_left, prime_product_moebius P hprime hinj E,
+    tsum_divisibility_dilation _ (primeSubsetGenerator_ne_zero P E)]
+
+lemma radial_full_poisson (W : 𝓢(ℝ, ℂ)) (X : ℝ) (hX : 0 < X) :
+    (∑' z : O, W (‖ringComplex z‖ ^ 2 / X)) =
+      (X : ℂ) * ∑' z : O, paperRadialFourier W (X * ‖ringComplex z‖ ^ 2) := by
+  let p : Empty → O := Empty.elim
+  letI : ∀ i, (Ideal.span {p i}).IsMaximal := fun i => nomatch i
+  have hp := prime_quadratic_radial_poisson p (fun i => nomatch i)
+    (by intro i; cases i) (fun i => nomatch i) W X hX
+  simpa only [primeCuspRowCharacter, Finset.univ_eq_empty, Finset.prod_empty,
+    QuadraticPhase.Eisenstein.fixedDualAverage_one, map_one, norm_one, one_pow, Complex.ofReal_one,
+    one_mul, mul_one, div_one] using hp
+
+/-- The finite nonzero lattice disk used by the truncated dual sum. -/
+def rowNormDisk (N : ℕ) : Finset O :=
+  ((Eisenstein.finite_norm_sublevel (Real.sqrt (N : ℝ))).subset
+    (show {z : O | z ≠ 0 ∧ (Ideal.absNorm (Ideal.span {z}) : ℕ) ≤ N} ⊆
+      {z : O | ‖ringComplex z‖ ≤ Real.sqrt (N : ℝ)} from by
+      intro z hz
+      calc
+        _ = Real.sqrt (‖ringComplex z‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+        _ ≤ _ := Real.sqrt_le_sqrt (by
+          rw [ringComplex_norm_sq_eq_absNorm_span]
+          exact_mod_cast hz.2))).toFinset
+
+lemma mem_rowNormDisk (N : ℕ) (z : O) :
+    z ∈ rowNormDisk N ↔ 0 < Ideal.absNorm (Ideal.span {z}) ∧ Ideal.absNorm (Ideal.span {z}) ≤ N := by
+  have hz : 0 < Ideal.absNorm (Ideal.span {z}) ↔ z ≠ 0 := by
+    rw [Nat.pos_iff_ne_zero, ne_eq, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
+  simp only [rowNormDisk, Set.Finite.mem_toFinset, Set.mem_setOf_eq, hz]
+
+end TruncatedPrincipalPoisson
+
+open scoped BigOperators Classical SchwartzMap
+namespace TruncatedPrincipalPoisson
+
+section
+local notation "O" => Eisenstein.O
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+
+def radialSource (W : ℝ → ℂ) (X : ℝ) : ℂ :=
+  ∑' z : O, if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X)
+
+def radialDual (W : ℝ → ℂ) (X : ℝ) : ℂ :=
+  ∑' h : O, if h = 0 then 0 else paperRadialFourier W (X * ‖ringComplex h‖ ^ 2)
+
+theorem radialSource_summable (W : 𝓢(ℝ, ℂ)) (X : ℝ) (hX : 0 < X) :
+    Summable (fun z : O => if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X)) := by
+  have hs : Summable (fun z : O => W (‖ringComplex z‖ ^ 2 / X)) := by
+    simpa only [scaledRadialTest_apply] using
+      (actual_eisenstein_summable_norm (scaledRadialTest W X hX)).of_norm
+  convert hs.indicator {z : O | z ≠ 0} using 1
+  ext z
+  by_cases hz : z = 0 <;> simp [hz]
+
+/-- Removing zero from Poisson summation retains both principal corrections. -/
+theorem radialSource_poisson (W : 𝓢(ℝ, ℂ)) (X : ℝ) (hX : 0 < X) :
+    radialSource W X = (X : ℂ) * paperRadialFourier W 0 - W 0 +
+      (X : ℂ) * radialDual W X := by
+  have hp := radial_full_poisson W X hX
+  have hs : Summable (fun z : O => W (‖ringComplex z‖ ^ 2 / X)) := by
+    simpa only [scaledRadialTest_apply] using
+      (actual_eisenstein_summable_norm (scaledRadialTest W X hX)).of_norm
+  have hd := (paperRadialFourier_lattice_summable_norm W X hX).of_norm
+  have hz := hs.tsum_eq_add_tsum_ite 0
+  have hdz := hd.tsum_eq_add_tsum_ite 0
+  simp only [map_zero, norm_zero, zero_pow (by decide : 2 ≠ 0), zero_div, mul_zero] at hz hdz
+  change (∑' z : O, W (‖ringComplex z‖ ^ 2 / X)) = W 0 + radialSource W X at hz
+  change (∑' z : O, paperRadialFourier W (X * ‖ringComplex z‖ ^ 2)) =
+    paperRadialFourier W 0 + radialDual W X at hdz
+  rw [hz, hdz] at hp
+  linear_combination hp
+
+def subsetNorm {ι : Type*} (P : ι → Ideal O) (E : Finset ι) : ℝ :=
+  Ideal.absNorm (∏ i ∈ E, P i)
+
+def subsetMobius {ι : Type*} (P : ι → Ideal O) (E : Finset ι) : ℂ :=
+  UniqueFactorizationMonoid.moebius (∏ i ∈ E, P i)
+
+def smallDivisors {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) (S : Finset ι) (Z : ℝ) :=
+  S.powerset.filter (fun E => subsetNorm P E ≤ Z)
+
+def largeDivisors {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) (S : Finset ι) (Z : ℝ) :=
+  S.powerset.filter (fun E => Z < subsetNorm P E)
+
+theorem subsetNorm_pos {ι : Type*} (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (E : Finset ι) :
+    0 < subsetNorm P E := by
+  rw [subsetNorm, ← primeSubsetGenerator_norm_sq]
+  exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero (primeSubsetGenerator_ne_zero P E)))
+
+theorem sum_small_add_large {ι : Type*} [DecidableEq ι] (P : ι → Ideal O)
+    (S : Finset ι) (Z : ℝ) (f : Finset ι → ℂ) :
+    (∑ E ∈ smallDivisors P S Z, f E) + (∑ E ∈ largeDivisors P S Z, f E) =
+      ∑ E ∈ S.powerset, f E := by
+  simpa only [smallDivisors, largeDivisors, not_le] using
+    Finset.sum_filter_add_sum_filter_not S.powerset (fun E => subsetNorm P E ≤ Z) f
+
+theorem masked_radialSource_dilations {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X : ℝ) (hX : 0 < X) :
+    (∑' z : O, rowCoprimeMask P S z *
+      (if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X))) =
+      ∑ E ∈ S.powerset, subsetMobius P E * radialSource W (X / subsetNorm P E) := by
+  rw [tsum_rowCoprimeMask_dilations P hinj S _ (radialSource_summable W X hX)]
+  apply Finset.sum_congr rfl
+  intro E hE
+  change subsetMobius P E * _ = _
+  congr 1
+  apply tsum_congr
+  intro z
+  rw [mul_eq_zero, or_iff_right (primeSubsetGenerator_ne_zero P E)]
+  by_cases hz : z = 0
+  · simp [hz]
+  · rw [ite_eq_right hz, ite_eq_right hz, map_mul, norm_mul, mul_pow, primeSubsetGenerator_norm_sq]
+    congr 1
+    simp only [subsetNorm, div_div_eq_mul_div]
+    ring
+
+theorem masked_radialSource_truncated {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Z : ℝ) (hX : 0 < X) :
+    (∑' z : O, rowCoprimeMask P S z *
+      (if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X))) =
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∑ E ∈ smallDivisors P S Z, subsetMobius P E / (subsetNorm P E : ℂ)) -
+      W 0 * (∑ E ∈ smallDivisors P S Z, subsetMobius P E) +
+      (X : ℂ) * (∑ E ∈ smallDivisors P S Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)) +
+      (∑ E ∈ largeDivisors P S Z, subsetMobius P E * radialSource W (X / subsetNorm P E)) := by
+  rw [masked_radialSource_dilations P hinj S W X hX,
+    ← sum_small_add_large P S Z]
+  congr 1
+  simp only [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro E hE
+  rw [radialSource_poisson W _ (div_pos hX (subsetNorm_pos P E))]
+  push_cast
+  ring
+
+theorem masked_radialSource_truncated_euler {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Z : ℝ) (hX : 0 < X) :
+    (∑' z : O, rowCoprimeMask P S z *
+      (if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X))) =
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∏ i ∈ S, (1 - (1 : ℂ) / Ideal.absNorm (P i))) -
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∑ E ∈ largeDivisors P S Z, subsetMobius P E / (subsetNorm P E : ℂ)) -
+      W 0 * (∑ E ∈ smallDivisors P S Z, subsetMobius P E) +
+      (X : ℂ) * (∑ E ∈ smallDivisors P S Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)) +
+      (∑ E ∈ largeDivisors P S Z, subsetMobius P E * radialSource W (X / subsetNorm P E)) := by
+  rw [masked_radialSource_truncated P hinj S W X Z hX]
+  have hs := sum_small_add_large P S Z (fun E => subsetMobius P E / (subsetNorm P E : ℂ))
+  have hprime : ∀ i, Prime (P i) := fun i => Ideal.prime_of_isPrime (NeZero.ne (P i)) inferInstance
+  have he := primeSubset_moebius_norm_sum P hprime hinj S
+  change (∑ E ∈ S.powerset, subsetMobius P E / (subsetNorm P E : ℂ)) = _ at he
+  rw [he] at hs
+  linear_combination (X : ℂ) * paperRadialFourier W 0 * hs
+
+end
+
+local notation "O" => Eisenstein.O
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+
+def middleDivisors {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) (S : Finset ι) (Y Z : ℝ) :=
+  (smallDivisors P S Z).filter (fun E => Y < subsetNorm P E)
+
+def dualNear (W : ℝ → ℂ) (X lengthScale : ℝ) : ℂ :=
+  ∑' h : O, if ‖ringComplex h‖ ^ 2 ≤ lengthScale then
+    (if h = 0 then 0 else paperRadialFourier W (X * ‖ringComplex h‖ ^ 2)) else 0
+
+def dualFar (W : ℝ → ℂ) (X lengthScale : ℝ) : ℂ :=
+  ∑' h : O, if lengthScale < ‖ringComplex h‖ ^ 2 then
+    (if h = 0 then 0 else paperRadialFourier W (X * ‖ringComplex h‖ ^ 2)) else 0
+
+theorem radialDual_summable (W : 𝓢(ℝ, ℂ)) (X : ℝ) (hX : 0 < X) :
+    Summable (fun h : O => if h = 0 then 0 else paperRadialFourier W (X * ‖ringComplex h‖ ^ 2)) := by
+  have hs := (paperRadialFourier_lattice_summable_norm W X hX).of_norm
+  convert hs.indicator {z : O | z ≠ 0} using 1
+  ext z
+  by_cases hz : z = 0 <;> simp [hz]
+
+theorem radialDual_near_add_far (W : 𝓢(ℝ, ℂ)) (X lengthScale : ℝ) (hX : 0 < X) :
+    radialDual W X = dualNear W X lengthScale + dualFar W X lengthScale := by
+  have hs := radialDual_summable W X hX
+  have hn : Summable (fun h : O => if ‖ringComplex h‖ ^ 2 ≤ lengthScale then
+      (if h = 0 then 0 else paperRadialFourier W (X * ‖ringComplex h‖ ^ 2)) else 0) := by
+    exact hs.indicator {h : O | ‖ringComplex h‖ ^ 2 ≤ lengthScale}
+  have hf : Summable (fun h : O => if lengthScale < ‖ringComplex h‖ ^ 2 then
+      (if h = 0 then 0 else paperRadialFourier W (X * ‖ringComplex h‖ ^ 2)) else 0) := by
+    exact hs.indicator {h : O | lengthScale < ‖ringComplex h‖ ^ 2}
+  unfold radialDual dualNear dualFar
+  rw [← hn.tsum_add hf]
+  apply tsum_congr
+  intro h
+  by_cases hL : ‖ringComplex h‖ ^ 2 ≤ lengthScale <;> simp [hL, not_lt_of_ge, lt_of_not_ge]
+
+theorem sum_small_add_middle {ι : Type*} [DecidableEq ι] (P : ι → Ideal O)
+    (S : Finset ι) (Y Z : ℝ) (hYZ : Y ≤ Z) (f : Finset ι → ℂ) :
+    (∑ E ∈ smallDivisors P S Y, f E) + (∑ E ∈ middleDivisors P S Y Z, f E) =
+      ∑ E ∈ smallDivisors P S Z, f E := by
+  have hsmall : (smallDivisors P S Z).filter (fun E => subsetNorm P E ≤ Y) =
+      smallDivisors P S Y := by
+    ext E
+    simp only [Finset.mem_filter, smallDivisors]
+    constructor
+    · rintro ⟨⟨hE, hEZ⟩, hEY⟩
+      exact ⟨hE, hEY⟩
+    · rintro ⟨hE, hEY⟩
+      exact ⟨⟨hE, hEY.trans hYZ⟩, hEY⟩
+  have hs := Finset.sum_filter_add_sum_filter_not (smallDivisors P S Z)
+    (fun E => subsetNorm P E ≤ Y) f
+  rw [hsmall] at hs
+  simpa only [middleDivisors, not_le] using hs
+
+theorem masked_radialSource_five_pieces {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Y Z lengthScale : ℝ) (hX : 0 < X) (hYZ : Y ≤ Z) :
+    (∑' z : O, rowCoprimeMask P S z *
+      (if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X))) =
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∏ i ∈ S, (1 - (1 : ℂ) / Ideal.absNorm (P i))) -
+      (X : ℂ) * paperRadialFourier W 0 *
+        (∑ E ∈ largeDivisors P S Z, subsetMobius P E / (subsetNorm P E : ℂ)) -
+      W 0 * (∑ E ∈ smallDivisors P S Z, subsetMobius P E) +
+      (X : ℂ) * (∑ E ∈ middleDivisors P S Y Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * dualNear W (X / subsetNorm P E) lengthScale) +
+      (X : ℂ) * (∑ E ∈ smallDivisors P S Y,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)) +
+      (X : ℂ) * (∑ E ∈ middleDivisors P S Y Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * dualFar W (X / subsetNorm P E) lengthScale) +
+      (∑ E ∈ largeDivisors P S Z, subsetMobius P E * radialSource W (X / subsetNorm P E)) := by
+  rw [masked_radialSource_truncated_euler P hinj S W X Z hX]
+  have hs := sum_small_add_middle P S Y Z hYZ (fun E =>
+    (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E))
+  rw [← hs]
+  have hm : (∑ E ∈ middleDivisors P S Y Z,
+      (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)) =
+      (∑ E ∈ middleDivisors P S Y Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * dualNear W (X / subsetNorm P E) lengthScale) +
+      (∑ E ∈ middleDivisors P S Y Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * dualFar W (X / subsetNorm P E) lengthScale) := by
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro E hE
+    rw [radialDual_near_add_far W _ lengthScale (div_pos hX (subsetNorm_pos P E)), mul_add]
+  rw [hm]
+  ring
+
+end TruncatedPrincipalPoisson
+
+namespace SchwartzPlanePoisson
+open Eisenstein MeasureTheory
+
+theorem radial_source_nonzero_lattice_decay (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (K : ℝ), 1 ≤ K →
+        (∑' h : {h : O // h ≠ 0}, ‖W (K * ‖ringComplex h.val‖ ^ 2)‖) ≤
+          (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / (1 + K) ^ A := by
+  let s : Finset (ℕ × ℕ) := Finset.Iic (A + 2, 0)
+  let C : ℝ := 2 ^ (A + 2) * (eisensteinCauchyMass + 1)
+  have hC : 0 < C := by
+    have hm := eisensteinCauchyMass_nonneg
+    dsimp [C]
+    positivity
+  refine ⟨s, C, hC, ?_⟩
+  intro W K hK
+  have hK0 : 0 < K := lt_of_lt_of_le zero_lt_one hK
+  let B : ℝ := 2 ^ (A + 2) * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have hb (q : ℝ) (hq : 0 ≤ q) : (1 + q) ^ (A + 2) * ‖W q‖ ≤ B := by
+    have hh := SchwartzMap.one_add_le_sup_seminorm_apply (𝕜 := ℝ)
+      (m := (A + 2, 0)) (k := A + 2) (n := 0) le_rfl le_rfl W q
+    simp only [norm_iteratedFDeriv_zero, Real.norm_of_nonneg hq] at hh
+    change (1 + q) ^ (A + 2) * ‖W q‖ ≤ B at hh
+    exact hh
+  have hp (h : {h : O // h ≠ 0}) : ‖W (K * ‖ringComplex h.val‖ ^ 2)‖ ≤
+      (B / (1 + K) ^ A) * ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ := by
+    have hq : K ≤ K * ‖ringComplex h.val‖ ^ 2 := by
+      nlinarith [one_le_eisenstein_norm_sq h.val h.property]
+    have hh := polynomial_tail_majorant A K K (‖ringComplex h.val‖ ^ 2) B
+      ‖W (K * ‖ringComplex h.val‖ ^ 2)‖ hK0 hK0.le (sq_nonneg _) (norm_nonneg _) hq
+      (hb _ (by positivity))
+    simpa only [min_eq_left hK, one_pow, one_mul] using hh
+  have hmajor := (eisenstein_cauchy_summable.subtype (fun h => h ≠ 0)).mul_left
+    (B / (1 + K) ^ A)
+  have hs : Summable (fun h : {h : O // h ≠ 0} => ‖W (K * ‖ringComplex h.val‖ ^ 2)‖) :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hp hmajor
+  calc
+    _ ≤ ∑' h : {h : O // h ≠ 0},
+        (B / (1 + K) ^ A) * ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ :=
+      hs.tsum_le_tsum hp hmajor
+    _ = (B / (1 + K) ^ A) * ∑' h : {h : O // h ≠ 0},
+        ((1 + ‖ringComplex h.val‖ ^ 2) ^ 2)⁻¹ := tsum_mul_left
+    _ ≤ (B / (1 + K) ^ A) * eisensteinCauchyMass :=
+      mul_le_mul_of_nonneg_left (eisensteinCauchyMass_subtype {h : O | h ≠ 0}) (by positivity)
+    _ ≤ (B / (1 + K) ^ A) * (eisensteinCauchyMass + 1) := by
+      gcongr
+      linarith
+    _ = _ := by dsimp [B, C]; ring
+
+end SchwartzPlanePoisson
+
+open scoped BigOperators Classical SchwartzMap
+namespace TruncatedPrincipalPoisson
+local notation "O" => Eisenstein.O
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+
+private theorem zero_removed_tsum (f : O → ℂ) :
+    (∑' h : O, if h = 0 then 0 else f h) = ∑' h : {h : O // h ≠ 0}, f h.val := by
+  rw [← tsum_subtype_eq_of_support_subset (s := {h : O | h ≠ 0}) (by
+    intro h hh hz
+    subst h
+    exact hh (by simp))]
+  apply tsum_congr
+  intro h
+  simp only [ite_eq_right h.property]
+
+theorem radialSource_inverse_decay (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (K : ℝ), 1 ≤ K →
+        ‖radialSource W K⁻¹‖ ≤
+          (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / (1 + K) ^ A := by
+  obtain ⟨s, C, hC, hb⟩ := radial_source_nonzero_lattice_decay A
+  refine ⟨s, C, hC, ?_⟩
+  intro W K hK
+  have hK0 : 0 < K := lt_of_lt_of_le zero_lt_one hK
+  have hs : Summable (fun h : O => W (K * ‖ringComplex h‖ ^ 2)) := by
+    simpa only [scaledRadialTest_apply, div_inv_eq_mul, mul_comm] using
+      (actual_eisenstein_summable_norm (scaledRadialTest W K⁻¹ (inv_pos.mpr hK0))).of_norm
+  unfold radialSource
+  rw [zero_removed_tsum]
+  simp only [div_inv_eq_mul, mul_comm (‖ringComplex _‖ ^ 2) K]
+  exact (norm_tsum_le_tsum_norm (hs.norm.subtype _)).trans (hb W K hK)
+
+theorem radialDual_decay (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (K : ℝ), 1 ≤ K →
+        ‖radialDual W K‖ ≤
+          (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) / (1 + K) ^ A := by
+  obtain ⟨s, C, hC, hb⟩ := paperRadialFourier_lattice_tail A
+  refine ⟨s, C, hC, ?_⟩
+  intro W K hK
+  have hK0 : 0 < K := lt_of_lt_of_le zero_lt_one hK
+  have hs := paperRadialFourier_lattice_summable_norm W K hK0
+  let f : {h : O // h ≠ 0} → {h : O // K ≤ K * ‖ringComplex h‖ ^ 2} :=
+    fun h => ⟨h.val, by nlinarith [one_le_eisenstein_norm_sq h.val h.property]⟩
+  have hf : Function.Injective f := by
+    intro a b hab
+    exact Subtype.ext (congrArg (fun z : {h : O // K ≤ K * ‖ringComplex h‖ ^ 2} => z.val) hab)
+  have hi : (∑' h : {h : O // h ≠ 0}, ‖paperRadialFourier W (K * ‖ringComplex h.val‖ ^ 2)‖) ≤
+      ∑' h : {h : O // K ≤ K * ‖ringComplex h‖ ^ 2}, ‖paperRadialFourier W (K * ‖ringComplex h.val‖ ^ 2)‖ :=
+    (hs.subtype _).tsum_le_tsum_of_inj f hf (fun _ _ => norm_nonneg _) (fun _ => le_rfl) (hs.subtype _)
+  have ht := hb W K K hK0 hK0.le
+  simp only [min_eq_left hK, one_pow, one_mul] at ht
+  unfold radialDual
+  rw [zero_removed_tsum]
+  exact (norm_tsum_le_tsum_norm (hs.subtype _)).trans (hi.trans ht)
+
+theorem subsetMobius_norm_le_one {ι : Type*} (P : ι → Ideal O) (E : Finset ι) :
+    ‖subsetMobius P E‖ ≤ 1 := norm_ideal_moebius_le_one _
+
+private theorem scale_tail_bound (A : ℕ) (B x Y X : ℝ)
+    (hB : 0 ≤ B) (hx : 0 < x) (hxY : x ≤ Y) (hX : 0 < X) :
+    (X / x) * (B / (1 + X / x) ^ (A + 1)) ≤ B * (Y / X) ^ A := by
+  have hu : 0 < X / x := div_pos hX hx
+  calc
+    _ ≤ (X / x) * (B / (X / x) ^ (A + 1)) := by
+      apply mul_le_mul_of_nonneg_left _ hu.le
+      exact div_le_div_of_nonneg_left hB (pow_pos hu _) (pow_le_pow_left₀ hu.le (by linarith) _)
+    _ = B * (x / X) ^ A := by
+      simp only [div_pow, pow_succ]
+      field_simp
+
+    _ ≤ B * (Y / X) ^ A := by gcongr
+
+private theorem norm_sum_subsets_le {ι : Type*} [DecidableEq ι]
+    (S : Finset ι) (T : Finset (Finset ι)) (hT : T ⊆ S.powerset) (f : Finset ι → ℂ)
+    (B : ℝ) (hB : 0 ≤ B) (hf : ∀ E ∈ T, ‖f E‖ ≤ B) :
+    ‖∑ E ∈ T, f E‖ ≤ (2 : ℝ) ^ S.card * B := by
+  calc
+    _ ≤ ∑ E ∈ T, ‖f E‖ := norm_sum_le _ _
+    _ ≤ ∑ E ∈ T, B := Finset.sum_le_sum hf
+    _ = (T.card : ℝ) * B := by simp
+    _ ≤ (2 : ℝ) ^ S.card * B := by
+      apply mul_le_mul_of_nonneg_right _ hB
+      have hc := Finset.card_le_card hT
+      rw [Finset.card_powerset] at hc
+      exact_mod_cast hc
+
+theorem small_divisor_dual_tail (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+        (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Y : ℝ), 0 < X → 0 ≤ Y → Y ≤ X →
+        ‖(X : ℂ) * ∑ E ∈ smallDivisors P S Y,
+          (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)‖ ≤
+          (2 : ℝ) ^ S.card * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * (Y / X) ^ A := by
+  obtain ⟨s, C, hC, hb⟩ := radialDual_decay (A + 1)
+  refine ⟨s, C, hC, ?_⟩
+  intro ι _ P _ S W X Y hX hY hYX
+  let B := C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  rw [Finset.mul_sum]
+  have hf (E : Finset ι) (hE : E ∈ smallDivisors P S Y) :
+      ‖(X : ℂ) * ((subsetMobius P E / (subsetNorm P E : ℂ)) *
+        radialDual W (X / subsetNorm P E))‖ ≤ B * (Y / X) ^ A := by
+    have hn := subsetNorm_pos P E
+    have hEY : subsetNorm P E ≤ Y := (Finset.mem_filter.mp hE).2
+    have hscale : 1 ≤ X / subsetNorm P E := (le_div_iff₀ hn).mpr (by simpa using hEY.trans hYX)
+    calc
+      _ = (X / subsetNorm P E) * ‖subsetMobius P E‖ * ‖radialDual W (X / subsetNorm P E)‖ := by
+        simp only [norm_mul, norm_div, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_pos hX, abs_of_pos hn]
+        ring
+      _ ≤ (X / subsetNorm P E) * 1 * (B / (1 + X / subsetNorm P E) ^ (A + 1)) := by
+        gcongr
+        · exact subsetMobius_norm_le_one P E
+        · exact hb W _ hscale
+      _ ≤ B * (Y / X) ^ A := by
+        simpa only [mul_one] using scale_tail_bound A B (subsetNorm P E) Y X hB hn hEY hX
+  exact (norm_sum_subsets_le S _ (Finset.filter_subset _ _) _ _ (by positivity) hf).trans_eq (by ring)
+
+theorem large_divisor_source_tail (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+        (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Z : ℝ), 0 < X → X ≤ Z →
+        ‖∑ E ∈ largeDivisors P S Z,
+          subsetMobius P E * radialSource W (X / subsetNorm P E)‖ ≤
+          (2 : ℝ) ^ S.card * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) /
+            (1 + Z / X) ^ A := by
+  obtain ⟨s, C, hC, hb⟩ := radialSource_inverse_decay A
+  refine ⟨s, C, hC, ?_⟩
+  intro ι _ P _ S W X Z hX hXZ
+  let B := C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have hZ : 0 < Z := hX.trans_le hXZ
+  have hf (E : Finset ι) (hE : E ∈ largeDivisors P S Z) :
+      ‖subsetMobius P E * radialSource W (X / subsetNorm P E)‖ ≤ B / (1 + Z / X) ^ A := by
+    have hn := subsetNorm_pos P E
+    have hEZ : Z < subsetNorm P E := (Finset.mem_filter.mp hE).2
+    have hscale : 1 ≤ subsetNorm P E / X := (le_div_iff₀ hX).mpr (by simpa using hXZ.trans hEZ.le)
+    have hh := hb W (subsetNorm P E / X) hscale
+    rw [inv_div] at hh
+    calc
+      _ = ‖subsetMobius P E‖ * ‖radialSource W (X / subsetNorm P E)‖ := norm_mul _ _
+      _ ≤ 1 * (B / (1 + subsetNorm P E / X) ^ A) :=
+        mul_le_mul (subsetMobius_norm_le_one P E) hh (norm_nonneg _) (by norm_num)
+      _ ≤ B / (1 + Z / X) ^ A := by
+        simp only [one_mul]
+        apply div_le_div_of_nonneg_left hB (by positivity)
+        exact pow_le_pow_left₀ (by positivity) (by gcongr) A
+  exact (norm_sum_subsets_le S _ (Finset.filter_subset _ _) _ _ (by positivity) hf).trans_eq (by ring)
+
+end TruncatedPrincipalPoisson
+
+namespace TruncatedPrincipalPoisson
+
+section
+local notation "O" => Eisenstein.O
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+
+theorem mem_rowNormDisk_floor {lengthScale : ℝ} (hL : 0 ≤ lengthScale) (z : O) :
+    z ∈ rowNormDisk ⌊lengthScale⌋₊ ↔ z ≠ 0 ∧ ‖ringComplex z‖ ^ 2 ≤ lengthScale := by
+  rw [mem_rowNormDisk]
+  constructor
+  · rintro ⟨hp, hN⟩
+    refine ⟨?_, ?_⟩
+    · intro hz
+      subst z
+      simp at hp
+    · rw [ringComplex_norm_sq_eq_absNorm_span]
+      exact (Nat.cast_le.mpr hN).trans (Nat.floor_le hL)
+  · rintro ⟨hz, hN⟩
+    have hp := sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hz))
+    rw [ringComplex_norm_sq_eq_absNorm_span] at hp hN
+    exact ⟨by exact_mod_cast hp, Nat.le_floor hN⟩
+
+theorem dualNear_eq_finite (W : ℝ → ℂ) (X lengthScale : ℝ) (hL : 0 ≤ lengthScale) :
+    dualNear W X lengthScale =
+      ∑ h ∈ rowNormDisk ⌊lengthScale⌋₊, paperRadialFourier W (X * ‖ringComplex h‖ ^ 2) := by
+  unfold dualNear
+  rw [tsum_eq_sum (s := rowNormDisk ⌊lengthScale⌋₊) (fun h hh => ?_)]
+  · apply Finset.sum_congr rfl
+    intro h hh
+    have hd := (mem_rowNormDisk_floor hL h).mp hh
+    simp only [ite_eq_left hd.2, ite_eq_right hd.1]
+  · by_cases hz : h = 0
+    · simp [hz]
+    · have hn : ¬ ‖ringComplex h‖ ^ 2 ≤ lengthScale := fun hn => hh ((mem_rowNormDisk_floor hL h).mpr ⟨hz, hn⟩)
+      simp only [ite_eq_right hn]
+
+theorem dualFar_decay (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ (W : 𝓢(ℝ, ℂ)) (K lengthScale : ℝ), 0 < K → 0 ≤ lengthScale →
+        ‖dualFar W K lengthScale‖ ≤ (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) /
+          ((min 1 K) ^ 2 * (1 + K * lengthScale) ^ A) := by
+  obtain ⟨s, C, hC, hb⟩ := paperRadialFourier_lattice_tail A
+  refine ⟨s, C, hC, ?_⟩
+  intro W K lengthScale hK hL
+  have he : dualFar W K lengthScale =
+      ∑' h : {h : O // lengthScale < ‖ringComplex h‖ ^ 2}, paperRadialFourier W (K * ‖ringComplex h.val‖ ^ 2) := by
+    unfold dualFar
+    rw [← tsum_subtype_eq_of_support_subset (s := {h : O | lengthScale < ‖ringComplex h‖ ^ 2}) (by
+      intro h hh
+      by_contra hn
+      change ¬ lengthScale < ‖ringComplex h‖ ^ 2 at hn
+      exact hh (by simp only [ite_eq_right hn]))]
+    apply tsum_congr
+    intro h
+    have hqh : lengthScale < ‖ringComplex h.val‖ ^ 2 := h.property
+    have hz : h.val ≠ 0 := by
+      intro hz
+      have hp := hqh
+      simp only [hz, map_zero, norm_zero, zero_pow (by decide : 2 ≠ 0)] at hp
+      linarith
+    simp only [ite_eq_left hqh, ite_eq_right hz]
+  rw [he]
+  have hs := paperRadialFourier_lattice_summable_norm W K hK
+  let f : {h : O // lengthScale < ‖ringComplex h‖ ^ 2} →
+      {h : O // K * lengthScale ≤ K * ‖ringComplex h‖ ^ 2} :=
+    fun h => ⟨h.val, mul_le_mul_of_nonneg_left h.property.le hK.le⟩
+  have hf : Function.Injective f := by
+    intro a b hab
+    exact Subtype.ext (congrArg (fun z : {h : O // K * lengthScale ≤ K * ‖ringComplex h‖ ^ 2} => z.val) hab)
+  have hi : (∑' h : {h : O // lengthScale < ‖ringComplex h‖ ^ 2},
+      ‖paperRadialFourier W (K * ‖ringComplex h.val‖ ^ 2)‖) ≤
+      ∑' h : {h : O // K * lengthScale ≤ K * ‖ringComplex h‖ ^ 2},
+        ‖paperRadialFourier W (K * ‖ringComplex h.val‖ ^ 2)‖ :=
+    (hs.subtype _).tsum_le_tsum_of_inj f hf (fun _ _ => norm_nonneg _) (fun _ => le_rfl) (hs.subtype _)
+  exact (norm_tsum_le_tsum_norm (hs.subtype _)).trans (hi.trans (hb W K (K * lengthScale) hK (mul_nonneg hK.le hL)))
+
+end
+
+section
+local notation "O" => Eisenstein.O
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+
+theorem middle_divisor_frequency_tail (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+        (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Y Z lengthScale : ℝ),
+        0 < X → 0 < Y → Y ≤ Z → 0 ≤ lengthScale →
+        ‖(X : ℂ) * ∑ E ∈ middleDivisors P S Y Z,
+          (subsetMobius P E / (subsetNorm P E : ℂ)) * dualFar W (X / subsetNorm P E) lengthScale‖ ≤
+          (2 : ℝ) ^ S.card * (X / Y) * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) /
+            ((min 1 (X / Z)) ^ 2 * (1 + X * lengthScale / Z) ^ A) := by
+  obtain ⟨s, C, hC, hb⟩ := dualFar_decay A
+  refine ⟨s, C, hC, ?_⟩
+  intro ι _ P _ S W X Y Z lengthScale hX hY hYZ hL
+  let B := C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  let Q := (min 1 (X / Z)) ^ 2 * (1 + X * lengthScale / Z) ^ A
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have hZ : 0 < Z := hY.trans_le hYZ
+  have hQ : 0 < Q := by dsimp [Q]; positivity
+  rw [Finset.mul_sum]
+  have hf (E : Finset ι) (hE : E ∈ middleDivisors P S Y Z) :
+      ‖(X : ℂ) * ((subsetMobius P E / (subsetNorm P E : ℂ)) *
+        dualFar W (X / subsetNorm P E) lengthScale)‖ ≤ (X / Y) * (B / Q) := by
+    have hn := subsetNorm_pos P E
+    have hEY : Y < subsetNorm P E := (Finset.mem_filter.mp hE).2
+    have hEZ : subsetNorm P E ≤ Z := (Finset.mem_filter.mp (Finset.mem_filter.mp hE).1).2
+    have hk : X / Z ≤ X / subsetNorm P E := div_le_div_of_nonneg_left hX.le hn hEZ
+    have hden : Q ≤ (min 1 (X / subsetNorm P E)) ^ 2 *
+        (1 + (X / subsetNorm P E) * lengthScale) ^ A := by
+      dsimp [Q]
+      have hmul : X * lengthScale / Z ≤ (X / subsetNorm P E) * lengthScale := by
+        calc
+          _ = (X / Z) * lengthScale := by ring
+          _ ≤ _ := mul_le_mul_of_nonneg_right hk hL
+      apply mul_le_mul
+      · exact pow_le_pow_left₀ (by positivity) (min_le_min_left _ hk) 2
+      · exact pow_le_pow_left₀ (by positivity) (by linarith) A
+      · positivity
+      · positivity
+    have hh : ‖dualFar W (X / subsetNorm P E) lengthScale‖ ≤ B / Q :=
+      (hb W _ lengthScale (div_pos hX hn) hL).trans (div_le_div_of_nonneg_left hB hQ hden)
+    calc
+      _ = (X / subsetNorm P E) * ‖subsetMobius P E‖ * ‖dualFar W (X / subsetNorm P E) lengthScale‖ := by
+        simp only [norm_mul, norm_div, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_pos hX, abs_of_pos hn]
+        ring
+      _ ≤ (X / Y) * 1 * (B / Q) := by
+        apply mul_le_mul
+        · exact mul_le_mul (div_le_div_of_nonneg_left hX.le hY hEY.le)
+            (subsetMobius_norm_le_one P E) (norm_nonneg _) (by positivity)
+        · exact hh
+        · exact norm_nonneg _
+        · positivity
+      _ = _ := by ring
+  calc
+    _ ≤ ∑ E ∈ middleDivisors P S Y Z,
+        ‖(X : ℂ) * ((subsetMobius P E / (subsetNorm P E : ℂ)) * dualFar W (X / subsetNorm P E) lengthScale)‖ := norm_sum_le _ _
+    _ ≤ ∑ E ∈ middleDivisors P S Y Z, (X / Y) * (B / Q) := Finset.sum_le_sum hf
+    _ = ((middleDivisors P S Y Z).card : ℝ) * ((X / Y) * (B / Q)) := by simp
+    _ ≤ (2 : ℝ) ^ S.card * ((X / Y) * (B / Q)) := by
+      apply mul_le_mul_of_nonneg_right _ (by positivity)
+      have hsub : middleDivisors P S Y Z ⊆ S.powerset :=
+        (Finset.filter_subset _ _).trans (Finset.filter_subset _ _)
+      have hc := Finset.card_le_card hsub
+      rw [Finset.card_powerset] at hc
+      exact_mod_cast hc
+    _ = _ := by dsimp [B, Q]; ring
+
+end
+
+local notation "O" => Eisenstein.O
+open Eisenstein SchwartzPlanePoisson MeasureTheory
+
+def principalTruncation {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) (S : Finset ι) (W : ℝ → ℂ) (X Z : ℝ) : ℂ :=
+  (X : ℂ) * paperRadialFourier W 0 * (∏ i ∈ S, (1 - (1 : ℂ) / Ideal.absNorm (P i))) -
+  (X : ℂ) * paperRadialFourier W 0 *
+    (∑ E ∈ largeDivisors P S Z, subsetMobius P E / (subsetNorm P E : ℂ)) -
+  W 0 * (∑ E ∈ smallDivisors P S Z, subsetMobius P E)
+
+def middleTruncation {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) (S : Finset ι) (W : ℝ → ℂ) (X Y Z lengthScale : ℝ) : ℂ :=
+  (X : ℂ) * ∑ E ∈ middleDivisors P S Y Z,
+    (subsetMobius P E / (subsetNorm P E : ℂ)) *
+      ∑ h ∈ rowNormDisk ⌊lengthScale⌋₊, paperRadialFourier W ((X / subsetNorm P E) * ‖ringComplex h‖ ^ 2)
+
+def truncationError {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) (S : Finset ι) (W : ℝ → ℂ) (X Y Z lengthScale : ℝ) : ℂ :=
+  (∑' z : O, rowCoprimeMask P S z * (if z = 0 then 0 else W (‖ringComplex z‖ ^ 2 / X))) -
+    (principalTruncation P S W X Z + middleTruncation P S W X Y Z lengthScale)
+
+theorem truncationError_eq {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Y Z lengthScale : ℝ) (hX : 0 < X) (hYZ : Y ≤ Z) (hL : 0 ≤ lengthScale) :
+    truncationError P S W X Y Z lengthScale =
+      (X : ℂ) * (∑ E ∈ smallDivisors P S Y,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)) +
+      (X : ℂ) * (∑ E ∈ middleDivisors P S Y Z,
+        (subsetMobius P E / (subsetNorm P E : ℂ)) * dualFar W (X / subsetNorm P E) lengthScale) +
+      (∑ E ∈ largeDivisors P S Z, subsetMobius P E * radialSource W (X / subsetNorm P E)) := by
+  unfold truncationError principalTruncation middleTruncation
+  rw [masked_radialSource_five_pieces P hinj S W X Y Z lengthScale hX hYZ]
+  simp_rw [dualNear_eq_finite W _ lengthScale hL]
+  ring
+
+theorem truncationError_bound (A : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ {ι : Type*} [DecidableEq ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+        (_hinj : Function.Injective P) (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (X Y Z lengthScale : ℝ),
+        0 < X → 0 < Y → Y ≤ X → X ≤ Z → 0 ≤ lengthScale →
+        ‖truncationError P S W X Y Z lengthScale‖ ≤
+          (2 : ℝ) ^ S.card * (C * s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) *
+            ((Y / X) ^ A + (1 / (1 + Z / X) ^ A) +
+              (X / Y) / ((min 1 (X / Z)) ^ 2 * (1 + X * lengthScale / Z) ^ A)) := by
+  obtain ⟨s₀, C₀, hC₀, h₀⟩ := small_divisor_dual_tail A
+  obtain ⟨s₁, C₁, hC₁, h₁⟩ := large_divisor_source_tail A
+  obtain ⟨s₂, C₂, hC₂, h₂⟩ := middle_divisor_frequency_tail A
+  refine ⟨(s₀ ∪ s₁) ∪ s₂, C₀ + C₁ + C₂, by positivity, ?_⟩
+  intro ι _ P _ hinj S W X Y Z lengthScale hX hY hYX hXZ hL
+  let Q := ((s₀ ∪ s₁) ∪ s₂).sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  let C := C₀ + C₁ + C₂
+  have hQ : 0 ≤ Q := apply_nonneg _ _
+  have hc₀ : C₀ ≤ C := by dsimp [C]; linarith
+  have hc₁ : C₁ ≤ C := by dsimp [C]; linarith
+  have hc₂ : C₂ ≤ C := by dsimp [C]; linarith
+  have hq₀ : s₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W ≤ Q :=
+    Seminorm.le_def.mp (Finset.sup_mono (Finset.subset_union_left.trans Finset.subset_union_left)) W
+  have hq₁ : s₁.sup (schwartzSeminormFamily ℝ ℝ ℂ) W ≤ Q :=
+    Seminorm.le_def.mp (Finset.sup_mono (Finset.subset_union_right.trans Finset.subset_union_left)) W
+  have hq₂ : s₂.sup (schwartzSeminormFamily ℝ ℝ ℂ) W ≤ Q :=
+    Seminorm.le_def.mp (Finset.sup_mono Finset.subset_union_right) W
+  have hz : 0 < Z := hX.trans_le hXZ
+  let lo : ℂ := (X : ℂ) * ∑ E ∈ smallDivisors P S Y,
+    (subsetMobius P E / (subsetNorm P E : ℂ)) * radialDual W (X / subsetNorm P E)
+  let mid : ℂ := (X : ℂ) * ∑ E ∈ middleDivisors P S Y Z,
+    (subsetMobius P E / (subsetNorm P E : ℂ)) * dualFar W (X / subsetNorm P E) lengthScale
+  let hi : ℂ := ∑ E ∈ largeDivisors P S Z,
+    subsetMobius P E * radialSource W (X / subsetNorm P E)
+  have hlo : ‖lo‖ ≤ (2 : ℝ) ^ S.card * (C * Q) * (Y / X) ^ A := by
+    apply (h₀ P S W X Y hX hY.le hYX).trans
+    gcongr
+  have hhi : ‖hi‖ ≤ (2 : ℝ) ^ S.card * (C * Q) / (1 + Z / X) ^ A := by
+    apply (h₁ P S W X Z hX hXZ).trans
+    gcongr
+  have hmid : ‖mid‖ ≤ (2 : ℝ) ^ S.card * (X / Y) * (C * Q) /
+      ((min 1 (X / Z)) ^ 2 * (1 + X * lengthScale / Z) ^ A) := by
+    apply (h₂ P S W X Y Z lengthScale hX hY (hYX.trans hXZ) hL).trans
+    gcongr
+  rw [truncationError_eq P hinj S W X Y Z lengthScale hX (hYX.trans hXZ) hL]
+  change ‖lo + mid + hi‖ ≤ _
+  calc
+    _ ≤ ‖lo‖ + ‖mid‖ + ‖hi‖ := (norm_add_le _ _).trans (add_le_add (norm_add_le lo mid) le_rfl)
+    _ ≤ (2 : ℝ) ^ S.card * (C * Q) * (Y / X) ^ A +
+        (2 : ℝ) ^ S.card * (X / Y) * (C * Q) / ((min 1 (X / Z)) ^ 2 * (1 + X * lengthScale / Z) ^ A) +
+        (2 : ℝ) ^ S.card * (C * Q) / (1 + Z / X) ^ A := add_le_add (add_le_add hlo hmid) hhi
+    _ = _ := by change _ = (2 : ℝ) ^ S.card * (C * Q) * _; ring
+
+end TruncatedPrincipalPoisson
+
+namespace TruncatedPrincipalPoisson
+open Eisenstein SchwartzPlanePoisson MeasureTheory UniqueFactorizationMonoid
+open scoped SchwartzMap
+
+/-- Principal Poisson summation keeps the signed coprimality divisors. -/
+theorem masked_principal_radial_poisson {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (V : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
+    (∑' z : O, rowCoprimeMask P S z * V (‖ringComplex z‖ ^ 2 / M)) =
+      (M : ℂ) * ∑ E ∈ S.powerset,
+        ((moebius (∏ i ∈ E, P i) : ℂ) / (Ideal.absNorm (∏ i ∈ E, P i) : ℂ)) *
+        ∑' h : O, paperRadialFourier V
+          (M * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ)) := by
+  have hs : Summable (fun z : O => V (‖ringComplex z‖ ^ 2 / M)) := by
+    simpa only [scaledRadialTest_apply] using
+      (actual_eisenstein_summable_norm (scaledRadialTest V M hM)).of_norm
+  rw [tsum_rowCoprimeMask_dilations P hinj S _ hs, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro E hE
+  have hn := subsetNorm_pos P E
+  have ht : (∑' z : O, V (‖ringComplex (primeSubsetGenerator P E * z)‖ ^ 2 / M)) =
+      ((M / subsetNorm P E : ℝ) : ℂ) *
+        ∑' h : O, paperRadialFourier V (M * ‖ringComplex h‖ ^ 2 / subsetNorm P E) := by
+    have harg (z : O) : subsetNorm P E * ‖ringComplex z‖ ^ 2 / M =
+        ‖ringComplex z‖ ^ 2 / (M / subsetNorm P E) := by ring
+    simp only [map_mul, norm_mul, mul_pow, primeSubsetGenerator_norm_sq]
+    change (∑' z : O, V (subsetNorm P E * ‖ringComplex z‖ ^ 2 / M)) = _
+    simp_rw [harg]
+    rw [radial_full_poisson V _ (div_pos hM hn)]
+    simp only [div_mul_eq_mul_div]
+  rw [ht]
+  simp only [subsetNorm, Complex.ofReal_div, Complex.ofReal_natCast]
+  ring
+
+def maskedPrincipalRemainder {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) (S : Finset ι) (V : ℝ → ℂ) (M : ℝ) : ℂ :=
+  (M : ℂ) * ∑ E ∈ S.powerset,
+    ((UniqueFactorizationMonoid.moebius (∏ i ∈ E, P i) : ℂ) /
+      (Ideal.absNorm (∏ i ∈ E, P i) : ℂ)) *
+    ∑' h : O, if h = 0 then 0 else paperRadialFourier V
+      (M * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ))
+
+theorem masked_principal_radial_poisson_zero_split {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (V : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
+    (∑' z : O, rowCoprimeMask P S z * V (‖ringComplex z‖ ^ 2 / M)) =
+      (M : ℂ) * paperRadialFourier V 0 *
+        (∏ i ∈ S, (1 - (1 : ℂ) / Ideal.absNorm (P i))) +
+        maskedPrincipalRemainder P S V M := by
+  have hp (E : Finset ι) : 0 < (Ideal.absNorm (∏ i ∈ E, P i) : ℝ) := by
+    rw [← primeSubsetGenerator_norm_sq]
+    exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero (primeSubsetGenerator_ne_zero P E)))
+  have hs (E : Finset ι) :
+      (∑' h : O, paperRadialFourier V
+        (M * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ))) =
+      paperRadialFourier V 0 +
+        ∑' h : O, if h = 0 then 0 else paperRadialFourier V
+          (M * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ)) := by
+    have hsum := (paperRadialFourier_lattice_summable_norm V
+      (M / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ)) (div_pos hM (hp E))).of_norm
+    have heq (h : O) : M / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ) * ‖ringComplex h‖ ^ 2 =
+        M * ‖ringComplex h‖ ^ 2 / (Ideal.absNorm (∏ i ∈ E, P i) : ℝ) := by ring
+    simp_rw [heq] at hsum
+    simpa only [map_zero, norm_zero, zero_pow (by decide : 2 ≠ 0), mul_zero, zero_div]
+      using hsum.tsum_eq_add_tsum_ite 0
+  have hprime : ∀ i, Prime (P i) := fun i => Ideal.prime_of_isPrime (NeZero.ne (P i)) inferInstance
+  rw [masked_principal_radial_poisson P hinj S V M hM]
+  simp_rw [hs, mul_add]
+  rw [Finset.sum_add_distrib, ← Finset.sum_mul, mul_add]
+  rw [primeSubset_moebius_norm_sum P hprime hinj S]
+  unfold maskedPrincipalRemainder
+  ring
+
+theorem quadratic_square_poisson_main_cancel {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (W : 𝓢(ℝ, ℂ)) (M : ℝ) (hM : 0 < M) :
+    (∑' z : O, rowCoprimeMask P S z *
+      paperRadialFourier W ((‖ringComplex z‖ ^ 2 / M) ^ 2)) -
+    (∑' z : O, rowCoprimeMask P S z * W ((‖ringComplex z‖ ^ 2 / M) ^ 2)) =
+      maskedPrincipalRemainder P S (quadraticTransformedSquareProfile W) M -
+      maskedPrincipalRemainder P S (quadraticSquareProfile W) M := by
+  have h1 := masked_principal_radial_poisson_zero_split P hinj S
+    (quadraticTransformedSquareProfile W) M hM
+  have h2 := masked_principal_radial_poisson_zero_split P hinj S (quadraticSquareProfile W) M hM
+  simp only [quadraticTransformedSquareProfile_apply] at h1
+  simp only [quadraticSquareProfile_apply] at h2
+  rw [h1, h2, quadraticSquareProfile_principal_equal]
+  ring
+
+
+end TruncatedPrincipalPoisson
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -139,7 +139,7 @@ theorem eventually_shortFixedDetectorBlockEnergy_stability {ε η : ℝ}
     hε hb (by linarith only [ha]) hav hvU
   rw [matched_energy_eq] at he
   change shortFixedDetectorBlockEnergy U d a v ≤ _ at he
-  refine he.trans (add_le_add_left ?_ _)
+  refine he.trans (add_le_add le_rfl ?_)
   simpa only [mul_assoc] using hsi
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

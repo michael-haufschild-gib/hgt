@@ -41,10 +41,13 @@ terms are negligible. The nonnegative, unit-mass kernel `upow 1 7`,
 supported on `[-8,8]`, transfers positivity to the spline trace.
 Successive common depths increase strictly to the unattained top. Earlier
 blocks have an exponential deficit; later blocks have summable spline tails.
+Normalize each entire reflected block by its upper depth bound and apply
+`tsum_ge_of_top_window` with zero second component. Quadratic mass tending
+to zero supplies both tempering and the required future-tail weights.
 
 ## Lean status and gaps
 
-Eight full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
+Thirteen full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -57,4 +60,14 @@ Eight full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheSublogarithmicGridsHaveVanishingNormalizedDensity`: eventual blocks, vanishing quadratic mass and logarithmic local density.
 
-Spline transfer and the full configuration remain unproved.
+- `ThePositiveCalibratedBlocksSurviveSplineSmoothing`: positive-kernel transfer to the squared transform of `boxSpline 1 3`.
+
+- `TheCalibratedBlocksHaveSmallSplineWeights`: inverse-eighth coefficient bound and local ordinate count.
+
+- `TheCalibratedDepthBandsApproachTheTop`: separated positive depth bands with cofinal lower edges.
+
+- `TheReflectedCalibratedBlocksHavePositiveWindows`: reflected block decomposition, positive-window lower bound and normalized mass bound.
+
+- `TheSublogarithmicWindowsLeaveRoomForSparseBlocks`: arbitrary late blocks satisfying small mass, local count and depth-gap domination bounds.
+
+The full configuration remains unproved; all thirteen drafts still need Lean checks.

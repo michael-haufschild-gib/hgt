@@ -72,3 +72,19 @@ The convolution decomposition is
 Weighted Möbius inversion preserves strict growth exponents
 `θ≥1-2a`; thus the contact defect has the same growth class as
 `w_a(Λ-1)`. This avoids a separate complex pole argument for growth.
+
+## Convergence reduction
+
+Write `E_a(X)=Σn≤X n^-a-X^(1-a)/(1-a)`,
+`T_a(N)=Σn≤N n^(-1-a)`, and `g_a(n)=n^-a(Λ(n)-1)`.
+The finite polar term cancels the leading reference convolution. The
+normalized form becomes its archimedean part minus twice the meshes of
+`t^-2a Σn≤1/t g_a(n)` and `t^-2a E_a(1/t)`, plus
+`2N^(2a-1)T_a(N)E_a(N)`.
+The last term vanishes because `E_a` and `T_a` are bounded.
+Under RH, the first mesh has an envelope `t^-(2a+β)` for some
+`1/2-a<β<1-2a`; the second has envelope `t^-2a/(1-a)`.
+Both profiles have finitely many jumps above every positive cutoff.
+These reductions and the resulting convergence criterion are written;
+Lean verification and identification with the zero-side Mellin pairing
+remain unfinished.

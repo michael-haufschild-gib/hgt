@@ -18,7 +18,8 @@ namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 def imaginaryInterpolationGrid (Γ : ℝ) (k : ℕ) (j : Fin (k + 1)) : ℂ :=
   ((Γ + (2 * Γ / k) * (j : ℕ) : ℝ) : ℂ) * I
 
-private theorem one_le_abs_fin_index_sub {k : ℕ} {i j : Fin (k + 1)} (hij : i ≠ j) :
+/-- Distinct grid indices differ by at least one. -/
+theorem one_le_abs_fin_index_sub {k : ℕ} {i j : Fin (k + 1)} (hij : i ≠ j) :
     (1 : ℝ) ≤ |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| := by
   have hne : (i : ℕ) ≠ (j : ℕ) := fun h => hij (Fin.ext h)
   rcases lt_or_gt_of_ne hne with hlt | hgt

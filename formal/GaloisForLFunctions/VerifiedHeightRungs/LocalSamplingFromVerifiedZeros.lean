@@ -60,7 +60,6 @@ theorem gapTail_le {Y : ℝ} (hY : 1 ≤ Y) : gapTail Y ≤ spreadTailC * Y ^ 2 
   have hI1 : ∫ u, ‖gapTestC Y u‖ = Y * ∫ u, ‖gapProfile u‖ := by
     rw [gapTestC_eq_profile]
     have h := Measure.integral_comp_mul_left (fun v => ‖gapProfile v‖) Y⁻¹
-    simp only at h
     rw [h, inv_inv, abs_of_pos hY0, smul_eq_mul]
   have hI2 : ∫ u, ‖deriv (deriv (gapTestC Y)) u‖ = Y⁻¹ * ∫ u, ‖deriv (deriv gapProfile) u‖ := by
     rw [hd2]
@@ -72,7 +71,6 @@ theorem gapTail_le {Y : ℝ} (hY : 1 ≤ Y) : gapTail Y ≤ spreadTailC * Y ^ 2 
     simp only [hn]
     rw [integral_const_mul]
     have h := Measure.integral_comp_mul_left (fun v => ‖deriv (deriv gapProfile) v‖) Y⁻¹
-    simp only at h
     rw [h, inv_inv, abs_of_pos hY0, smul_eq_mul]
     field_simp
   have hw1 : 0 ≤ ∫ u, ‖gapProfile u‖ := integral_nonneg fun _ => norm_nonneg _

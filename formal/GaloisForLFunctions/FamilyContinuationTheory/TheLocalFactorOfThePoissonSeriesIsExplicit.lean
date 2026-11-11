@@ -36,7 +36,8 @@ theorem gaussSum_mul_gaussSum_inv_char {F : Type*} [Field F] [Fintype F] {φ : M
 /-! ### Geometric sums -/
 
 /-- A point mass. -/
-theorem hasSum_point (i₀ : ℕ) (a : ℂ) : HasSum (fun i : ℕ => if i = i₀ then a else 0) a :=
+theorem hasSum_point {𝕜 : Type*} [NormedField 𝕜] (i₀ : ℕ) (a : 𝕜) :
+    HasSum (fun i : ℕ => if i = i₀ then a else 0) a :=
   hasSum_ite_eq i₀ a
 
 theorem summable_norm_point (i₀ : ℕ) (a : ℂ) :
@@ -45,7 +46,8 @@ theorem summable_norm_point (i₀ : ℕ) (a : ℂ) :
   rw [if_neg (by simpa using hi), norm_zero]
 
 /-- A geometric tail after an arbitrary first term: `a, c, cV, cV², …`. -/
-theorem hasSum_shift_geom (a c V : ℂ) (hV : ‖V‖ < 1) :
+theorem hasSum_shift_geom {𝕜 : Type*} [NormedField 𝕜] [CompleteSpace 𝕜] (a c V : 𝕜)
+    (hV : ‖V‖ < 1) :
     HasSum (fun i : ℕ => if i = 0 then a else c * V ^ (i - 1)) (a + c * (1 - V)⁻¹) := by
   refine (hasSum_nat_add_iff' 1).mp ?_
   simp only [Nat.add_sub_cancel, Finset.range_one, Finset.sum_singleton, ↓reduceIte,
@@ -59,7 +61,8 @@ theorem summable_norm_shift_geom (a c V : ℂ) (hV : ‖V‖ < 1) :
   exact (summable_geometric_of_lt_one (norm_nonneg _) hV).mul_left _
 
 /-- A geometric sequence after an arbitrary first term: `a, cV, cV², …`. -/
-theorem hasSum_geom_from (a c V : ℂ) (hV : ‖V‖ < 1) :
+theorem hasSum_geom_from {𝕜 : Type*} [NormedField 𝕜] [CompleteSpace 𝕜] (a c V : 𝕜)
+    (hV : ‖V‖ < 1) :
     HasSum (fun i : ℕ => if i = 0 then a else c * V ^ i) (a + c * V * (1 - V)⁻¹) := by
   have h := hasSum_shift_geom a (c * V) V hV
   convert h using 2 with i
@@ -78,9 +81,12 @@ theorem summable_norm_geom_from (a c V : ℂ) (hV : ‖V‖ < 1) :
 /-- A point mass under a side condition. -/
 theorem hasSum_point_and (i₀ : ℕ) (P : Prop) [Decidable P] (a : ℂ) :
     HasSum (fun i : ℕ => if i = i₀ ∧ P then a else 0) (if P then a else 0) := by
-  convert hasSum_point i₀ (if P then a else 0) using 1
-  funext i
-  by_cases hi : i = i₀ <;> by_cases hP : P <;> simp [hi, hP]
+  have hfun : (fun i : ℕ => if i = i₀ ∧ P then a else 0) =
+      fun i : ℕ => if i = i₀ then (if P then a else 0) else 0 := by
+    funext i
+    by_cases hi : i = i₀ <;> by_cases hP : P <;> simp [hi, hP]
+  rw [hfun]
+  exact hasSum_point i₀ _
 
 theorem summable_norm_point_and (i₀ : ℕ) (P : Prop) [Decidable P] (a : ℂ) :
     Summable (fun i : ℕ => ‖if i = i₀ ∧ P then a else 0‖) := by
@@ -1247,7 +1253,8 @@ theorem sum_tsum_norm_base_zero (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span
   have eA1 : ∑' i, ‖localTerm π ηp X Y V u 0 (0, 2, 1, i)‖ =
       ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y * primeR π ηp X V‖ := by
     simp only [localTerm_A1 π hlam h2 hprim ηp X Y V hu hj, and_true]
-    rw [← (hasSum_point (𝕜 := ℝ) 1 _).tsum_eq]
+    rw [← (hasSum_point (𝕜 := ℝ) 1 ‖complexSexticChar (Ideal.span {π}) hlam
+      (Ideal.Quotient.mk _ u) * Y * primeR π ηp X V‖).tsum_eq]
     congr 1
     funext i
     split_ifs <;> simp
@@ -1255,7 +1262,8 @@ theorem sum_tsum_norm_base_zero (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span
   have eB0 : ∑' i, ‖localTerm π ηp X Y V u 0 (1, 0, 0, i)‖ =
       ‖ηp * (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u))⁻¹ * X‖ := by
     simp only [localTerm_B0 π hlam h2 hprim ηp X Y V hu, and_true]
-    rw [← (hasSum_point (𝕜 := ℝ) 0 _).tsum_eq]
+    rw [← (hasSum_point (𝕜 := ℝ) 0 ‖ηp * (complexSexticChar (Ideal.span {π}) hlam
+      (Ideal.Quotient.mk _ u))⁻¹ * X‖).tsum_eq]
     congr 1
     funext i
     split_ifs <;> simp
