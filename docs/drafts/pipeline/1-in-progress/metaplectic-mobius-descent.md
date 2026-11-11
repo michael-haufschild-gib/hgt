@@ -323,11 +323,21 @@ differentiation multiplies each mode by its conjugate frequency;
 exponential Bessel decay makes the first frequency moment summable
 (`finiteThetaTwist_source_wirtingerBar`, checked). The Schläfli derivative
 is dominated, uniformly for `x ≥ δ > 0`, by
-`(4/δ) exp(−x/2) t^(−2/3) exp(−t/2)`. Joint source differentiability is
-being formalized from this bound. At a cusp `a/c`, inverse coordinates
+`(4/δ) exp(−x/2) t^(−2/3) exp(−t/2)`. This proves joint differentiability
+of the actual source and every fixed cusp translate. At a cusp `a/c`, inverse coordinates
 have horizontal differential `h ↦ −conj(h)/(c²v²)` and zero vertical
 differential. Consequently cusp inversion swaps the two Wirtinger
-derivatives with factor `−1/(c²v²)`; Lean verification is pending.
+derivatives with factor `−1/(c²v²)`
+(`cubicSourceResidualFunction_cusp_derivative`,
+`conjugate_cubicSourceResidualFunction_cusp_derivative`, checked).
+
+The complex embedding has unspecified orientation. Primitive trace characters
+parametrize every additive character of `O/(3)`, so each ramified cusp row has
+one intrinsic Fourier support class (`ramifiedScaledRow_fourier_support`, checked).
+For `r=uλⁿ` and primary `a`, the additive phase in `(r/(a+3x))` determines
+the support condition `3k=h₁+phase(r)a`; its contribution cancels modulo `a`,
+leaving the Gauss frequency `3r²h₁`. The affine Gauss reduction and its
+finite-index cusp unfolding are being formalized.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

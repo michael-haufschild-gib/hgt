@@ -64,12 +64,13 @@ Passed Lean:
 - `RHTower/FiniteSmoothWeilGramsAndRestrictedIndex`: full index capture
   by a finite smooth family, using form-core density.
 
+- `AbsoluteGeometryOfSpecZ/ShiftedSmoothPacketGrams`: exact real mass
+  polarization and identification with the native shifted Weil Gram.
+
 Written, uncompiled:
 
 - `HodgeTheoryOfAFixedPart/TightBlockTransferSpendsOnlyMeanMass`:
   arbitrarily fine fixed block scales and padding with ratio loss `1/R`.
-- `AbsoluteGeometryOfSpecZ/ShiftedSmoothPacketGrams`: real polarization
-  of physical mass and identification with the shifted native Weil Gram.
 - `AbsoluteGeometryOfSpecZ/ShiftedBoundedPacketIndexFitsTheAperture`:
   simultaneous smoothing and centering bound every shifted bounded-packet
   Gram by the restricted index at any strictly wider aperture.

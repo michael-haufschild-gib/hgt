@@ -15493,7 +15493,8 @@ lemma affineCuspGaussTerm_factor (h h1 q a k x : O) (u : Oˣ) (n : ℕ)
         (ringComplex (symbol ((u : O) * lambda ^ n) a) * ringComplex (symbol 3 a))) *
           (ringComplex (symbol x a) * residueAdditive (3 * k) a x) := by
   have hs : symbol (a + 3 * x) a = symbol (3 * x) a := symbol_congr ⟨1, by ring⟩
-  rw [ramified_symbol_primary_affine u n a x hap, hs, symbol_mul_numerator, map_mul]
+  rw [ramified_symbol_primary_affine u n a x hap, hs, symbol_mul_numerator 3 x a,
+    map_mul ringComplex (symbol 3 a) (symbol x a)]
   have he := affineCusp_phase_identity h h1 q a k (ramifiedArithmeticPhase u n) x ha hq hh hk
   calc
     _ = (ringComplex (symbol ((u : O) * lambda ^ n) a) * ringComplex (symbol 3 a) *
@@ -15682,5 +15683,143 @@ lemma affineLowerTerm_fourier_integral (q r : O) (v : ℝ) (hv : 0 < v) (s freq 
   rw [integral_const_mul, integral_const_mul, integral_const_mul,
     traceIntegral_shiftedHeightKernel v hv s (ringComplex d / ringComplex (q * a)) freq]
   ring
+
+
+lemma finite_index_period_shift (q : O) (hq : q ≠ 0) (r : O ⧸ Ideal.span {q}) (n : O) (z : ℂ) :
+    z + 3 * ringComplex (principalResidueRep q r + q * n) / ringComplex q =
+      (z + 3 * ringComplex n) + 3 * ringComplex (principalResidueRep q r) / ringComplex q := by
+  simp only [map_add, map_mul]
+  field_simp [ringComplex_ne_zero hq] <;> ring
+
+/-- A lattice enlarged by a principal denominator covers the plane with multiplicity equal to its norm. -/
+lemma finite_index_period_lintegral (q : O) (hq : q ≠ 0) (f : ℂ → ℝ≥0∞) :
+    (∑' n : O, ∫⁻ z in periodDomain, f (z + 3 * ringComplex n / ringComplex q)) =
+      (Ideal.absNorm (Ideal.span {q}) : ℝ≥0∞) * (∫⁻ z : ℂ, f z) := by
+  letI : Finite (O ⧸ Ideal.span {q}) := (Ideal.span {q}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hq)
+  letI : Fintype (O ⧸ Ideal.span {q}) := Fintype.ofFinite _
+  let I : O → ℝ≥0∞ := fun n => ∫⁻ z in periodDomain, f (z + 3 * ringComplex n / ringComplex q)
+  have hinner (r : O ⧸ Ideal.span {q}) :
+      (∑' n : ((Ideal.Quotient.mk (Ideal.span {q})) ⁻¹' {r}), I n.1) = ∫⁻ z : ℂ, f z := by
+    rw [← (GaussianFiberEquiv.fiberEquiv q hq r (principalResidueRep q r)
+      (principalResidueRep_spec q r)).tsum_eq]
+    change (∑' n : O, ∫⁻ z in periodDomain,
+      f (z + 3 * ringComplex (principalResidueRep q r + q * n) / ringComplex q)) = _
+    simp_rw [finite_index_period_shift q hq]
+    rw [← lintegral_eq_period_lintegrals]
+    exact lintegral_add_right_eq_self f _
+  change (∑' n : O, I n) = _
+  rw [← ENNReal.tsum_fiberwise I (Ideal.Quotient.mk (Ideal.span {q}))]
+  simp only [hinner, tsum_fintype, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  congr 1
+  change (Fintype.card (O ⧸ Ideal.span {q}) : ℝ≥0∞) = (Nat.card (O ⧸ Ideal.span {q}) : ℝ≥0∞)
+  rw [Nat.card_eq_fintype_card]
+
+lemma finite_index_period_integrals_summable (q : O) (hq : q ≠ 0) (f : ℂ → ℂ) (hf : Integrable f) :
+    Summable (fun n : O => ∫ z in periodDomain, f (z + 3 * ringComplex n / ringComplex q)) := by
+  apply Summable.of_enorm
+  apply ne_of_lt
+  apply lt_of_le_of_lt (ENNReal.tsum_le_tsum (fun n => enorm_integral_le_lintegral_enorm _))
+  rw [finite_index_period_lintegral q hq (fun z => ‖f z‖ₑ)]
+  exact ENNReal.mul_lt_top (by simp) hf.hasFiniteIntegral
+
+/-- Unfold the finite-index lattice, retaining its exact covering multiplicity. -/
+theorem finite_index_period_unfold (q : O) (hq : q ≠ 0) (f : ℂ → ℂ) (hf : Integrable f) :
+    (∑' n : O, ∫ z in periodDomain, f (z + 3 * ringComplex n / ringComplex q)) =
+      (Ideal.absNorm (Ideal.span {q}) : ℂ) * (∫ z : ℂ, f z) := by
+  letI : Finite (O ⧸ Ideal.span {q}) := (Ideal.span {q}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hq)
+  letI : Fintype (O ⧸ Ideal.span {q}) := Fintype.ofFinite _
+  let I : O → ℂ := fun n => ∫ z in periodDomain, f (z + 3 * ringComplex n / ringComplex q)
+  have hinner (r : O ⧸ Ideal.span {q}) :
+      (∑' n : ((Ideal.Quotient.mk (Ideal.span {q})) ⁻¹' {r}), I n.1) = ∫ z : ℂ, f z := by
+    rw [GaussianFiberEquiv.fiber_tsum q hq r (principalResidueRep q r) (principalResidueRep_spec q r)]
+    change (∑' n : O, ∫ z in periodDomain,
+      f (z + 3 * ringComplex (principalResidueRep q r + q * n) / ringComplex q)) = _
+    simp_rw [finite_index_period_shift q hq]
+    rw [← integral_eq_period_integrals _ (hf.comp_add_right _)]
+    exact integral_add_right_eq_self f _
+  have hs := (finite_index_period_integrals_summable q hq f hf).hasSum.tsum_fiberwise
+    (Ideal.Quotient.mk (Ideal.span {q}))
+  change HasSum (fun r => ∑' n : ((Ideal.Quotient.mk (Ideal.span {q})) ⁻¹' {r}), I n.1) (∑' n, I n) at hs
+  change (∑' n : O, I n) = _
+  rw [← hs.tsum_eq]
+  simp only [hinner, tsum_fintype, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  congr 1
+  change (Fintype.card (O ⧸ Ideal.span {q}) : ℂ) = (Nat.card (O ⧸ Ideal.span {q}) : ℂ)
+  rw [Nat.card_eq_fintype_card]
+
+lemma affineCuspTwistedCoefficient_add (h h1 q a k x m : O) (u : Oˣ) (n : ℕ)
+    (ha : a ≠ 0) (hap : lambda ^ 2 ∣ a - 1) (hq : q ≠ 0)
+    (hh : h = q * h1) (hk : 3 * k = h1 + ramifiedArithmeticPhase u n * a) :
+    (ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * (x + a * m))) *
+      ringComplex (symbol (a + 3 * (x + a * m)) a)) *
+        tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * (x + a * m)) / ringComplex (q * a)) =
+    (ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * x)) * ringComplex (symbol (a + 3 * x) a)) *
+      tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * x) / ringComplex (q * a)) := by
+  rw [affineCuspGaussTerm_factor h h1 q a k (x + a * m) u n ha hap hq hh hk,
+    affineCuspGaussTerm_factor h h1 q a k x u n ha hap hq hh hk,
+    symbol_congr (show a ∣ x + a * m - x from ⟨m, by ring⟩),
+    residueAdditive_three_congr k a (x + a * m) x ha ⟨m, by ring⟩]
+
+lemma affineLowerTerm_weighted_translate (h h1 q a k x m : O) (u : Oˣ) (n : ℕ)
+    (ha : a ≠ 0) (hap : lambda ^ 2 ∣ a - 1) (hq : q ≠ 0)
+    (hh : h = q * h1) (hk : 3 * k = h1 + ramifiedArithmeticPhase u n * a)
+    (z : ℂ) (v : ℝ) (s : ℂ) :
+    affineLowerTerm q ((u : O) * lambda ^ n) z v s a (a + 3 * (x + a * m)) *
+        tracePhase (-ninthCuspFrequency h * z) =
+      affineLowerTerm q ((u : O) * lambda ^ n) (z + 3 * ringComplex m / ringComplex q) v s a (a + 3 * x) *
+        tracePhase (-ninthCuspFrequency h * (z + 3 * ringComplex m / ringComplex q)) := by
+  let c1 := ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * (x + a * m))) *
+    ringComplex (symbol (a + 3 * (x + a * m)) a)
+  let c0 := ringComplex (symbol ((u : O) * lambda ^ n) (a + 3 * x)) * ringComplex (symbol (a + 3 * x) a)
+  let B := ninthCuspFrequency h * ringComplex (a + 3 * x) / ringComplex (q * a)
+  let Q := ninthCuspFrequency h * (3 * ringComplex m / ringComplex q)
+  have harg : ninthCuspFrequency h * ringComplex (a + 3 * (x + a * m)) / ringComplex (q * a) = B + Q := by
+    dsimp [B, Q]
+    simp only [map_add, map_mul, map_ofNat]
+    field_simp [ringComplex_ne_zero hq, ringComplex_ne_zero ha] <;> ring
+  have he := affineCuspTwistedCoefficient_add h h1 q a k x m u n ha hap hq hh hk
+  change c1 * tracePhase (ninthCuspFrequency h * ringComplex (a + 3 * (x + a * m)) / ringComplex (q * a)) =
+    c0 * tracePhase B at he
+  rw [harg, AddChar.map_add_eq_mul] at he
+  have heB : tracePhase B ≠ 0 := Complex.exp_ne_zero _
+  have hmult : c1 * tracePhase Q = c0 := by
+    apply mul_right_cancel₀ heB
+    calc
+      _ = c1 * (tracePhase B * tracePhase Q) := by ring
+      _ = _ := he
+  have hsolve : c1 = c0 * tracePhase (-Q) := by
+    rw [← hmult, mul_assoc, ← AddChar.map_add_eq_mul, add_neg_cancel, AddChar.map_zero_eq_one, mul_one]
+  have hrow : ringComplex (q * a) * z + ringComplex (a + 3 * (x + a * m)) =
+      ringComplex (q * a) * (z + 3 * ringComplex m / ringComplex q) + ringComplex (a + 3 * x) := by
+    simp only [map_add, map_mul, map_ofNat]
+    field_simp [ringComplex_ne_zero hq] <;> ring
+  change c1 * ((v / (‖ringComplex (q * a) * z + ringComplex (a + 3 * (x + a * m))‖ ^ 2 +
+    ‖ringComplex (q * a)‖ ^ 2 * v ^ 2) : ℝ) : ℂ) ^ s * tracePhase (-ninthCuspFrequency h * z) = _
+  rw [hsolve, hrow]
+  unfold affineLowerTerm
+  rw [show -ninthCuspFrequency h * (z + 3 * ringComplex m / ringComplex q) =
+      -Q + (-ninthCuspFrequency h * z) by dsimp [Q]; ring, AddChar.map_add_eq_mul]
+  dsimp only [c0]
+  ring
+
+lemma affineLowerIntegral_sum_translate (h h1 q a k x : O) (u : Oˣ) (n : ℕ)
+    (ha : a ≠ 0) (hap : lambda ^ 2 ∣ a - 1) (hq : q ≠ 0)
+    (hh : h = q * h1) (hk : 3 * k = h1 + ramifiedArithmeticPhase u n * a)
+    (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 1 < s.re) :
+    (∑' m : O, ∫ z in periodDomain,
+      affineLowerTerm q ((u : O) * lambda ^ n) z v s a (a + 3 * (x + a * m)) *
+        tracePhase (-ninthCuspFrequency h * z)) =
+      (Ideal.absNorm (Ideal.span {q}) : ℂ) *
+        ∫ z : ℂ, affineLowerTerm q ((u : O) * lambda ^ n) z v s a (a + 3 * x) *
+          tracePhase (-ninthCuspFrequency h * z) := by
+  have hint := trace_mul_integrable (fun z => affineLowerTerm q ((u : O) * lambda ^ n) z v s a (a + 3 * x))
+    (affineLowerTerm_integrable q _ v hv s hs a (a + 3 * x) ha hq) (ninthCuspFrequency h)
+  rw [← finite_index_period_unfold q hq _ hint]
+  apply tsum_congr
+  intro m
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun z => affineLowerTerm_weighted_translate h h1 q a k x m u n ha hap hq hh hk z v s)
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

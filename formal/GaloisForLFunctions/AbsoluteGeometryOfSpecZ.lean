@@ -123,3 +123,4 @@ contact for a large discriminant; the count of sections in a box as the volume o
 index; and the form on the comb in the increments of the divisor. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ShiftedSmoothPacketGrams

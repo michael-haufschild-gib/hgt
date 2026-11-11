@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.XiWardInteriorTraceSplit
 import GaloisForLFunctions.HTGeometry.DigammaMittagLeffler
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import GaloisForLFunctions.RHTower.VonMangoldtLogMomentHankel
+import GaloisForLFunctions.RHTower.LagExplicitFormula
 
 /-!
 # The row of the flat tail has the Mellin transform of the zeros
@@ -215,5 +216,255 @@ theorem hasSum_integral_rpow_mul_psi {ε : ℝ} (hε : 0 < ε) :
       rw [Set.indicator_of_notMem (by simpa using hnle), mul_zero]
   rw [hval]
   exact hsum
+
+/-- The real von Mangoldt series is `−ζ′/ζ` on the real line. -/
+theorem ofReal_tsum_vonMangoldt_rpow {σ : ℝ} (hσ : 1 < σ) :
+    ((∑' k : ℕ, (Λ k : ℝ) * (k : ℝ) ^ (-σ) : ℝ) : ℂ) =
+      -deriv riemannZeta σ / riemannZeta σ := by
+  have hs : 1 < ((σ : ℂ)).re := by simpa using hσ
+  rw [← ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs, LSeries,
+    Complex.ofReal_tsum]
+  refine tsum_congr fun k => ?_
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · simp
+  · have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+    rw [LSeries.term_of_ne_zero hk.ne', Complex.ofReal_mul, Complex.ofReal_cpow hk0,
+      Complex.ofReal_neg, Complex.cpow_neg, Complex.ofReal_natCast, div_eq_mul_inv]
+
+/-! ### The series of the logarithm -/
+
+/-- **The Mellin transform of `−log(1 − t²)`** through the series of the logarithm. -/
+theorem hasSum_integral_rpow_mul_neg_log {ε : ℝ} (hε : 0 < ε) :
+    HasSum (fun m : ℕ => 1 / (((m : ℝ) + 1) * (ε + 2 * ((m : ℝ) + 1) + 1)))
+      (∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * -Real.log (1 - t ^ 2)) := by
+  have hGcont : ∀ m : ℕ, Continuous fun t : ℝ => t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1)) :=
+    fun m => (Real.continuous_rpow_const hε.le).mul (by fun_prop)
+  have hGint : ∀ m : ℕ, Integrable (fun t : ℝ => t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1)))
+      (volume.restrict (Set.Ioo 0 1)) := fun m =>
+    ((hGcont m).integrableOn_Ioc (a := 0) (b := 1)).mono_set Set.Ioo_subset_Ioc_self
+  have hGval : ∀ m : ℕ,
+      ∫ t in Set.Ioo (0 : ℝ) 1, t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1)) =
+        1 / (((m : ℝ) + 1) * (ε + 2 * ((m : ℝ) + 1) + 1)) := by
+    intro m
+    have hm : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+    have hd : (0 : ℝ) < ε + 2 * ((m : ℝ) + 1) + 1 := by positivity
+    have hr : (-1 : ℝ) < ε + ((2 * (m + 1) : ℕ) : ℝ) := by
+      have : (0 : ℝ) ≤ ((2 * (m + 1) : ℕ) : ℝ) := Nat.cast_nonneg _
+      linarith
+    have h := integral_Ioc_rpow hr zero_le_one
+    rw [Real.one_rpow] at h
+    have hcongr : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1)) =
+        ∫ t in Set.Ioc (0 : ℝ) 1, (1 / ((m : ℝ) + 1)) * t ^ (ε + ((2 * (m + 1) : ℕ) : ℝ)) :=
+      setIntegral_congr_fun measurableSet_Ioc fun t ht => by
+        show t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1)) =
+          (1 / ((m : ℝ) + 1)) * t ^ (ε + ((2 * (m + 1) : ℕ) : ℝ))
+        rw [Real.rpow_add ht.1, Real.rpow_natCast, ← pow_mul]
+        ring
+    rw [← integral_Ioc_eq_integral_Ioo, hcongr, integral_const_mul, h]
+    push_cast
+    field_simp
+  have hnorm : ∀ m : ℕ,
+      ∫ t in Set.Ioo (0 : ℝ) 1, ‖t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1))‖ =
+        1 / (((m : ℝ) + 1) * (ε + 2 * ((m : ℝ) + 1) + 1)) := by
+    intro m
+    rw [← hGval m]
+    refine setIntegral_congr_fun measurableSet_Ioo fun t ht => ?_
+    show ‖t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1))‖ = _
+    have ht0 : 0 ≤ t ^ ε := Real.rpow_nonneg ht.1.le ε
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  have hsummable : Summable fun m : ℕ => 1 / (((m : ℝ) + 1) * (ε + 2 * ((m : ℝ) + 1) + 1)) := by
+    have hbase : Summable fun m : ℕ => 1 / ((m : ℝ) + 1) ^ 2 := by
+      have h := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)
+      simpa using h
+    refine Summable.of_nonneg_of_le (fun m => by positivity) (fun m => ?_) hbase
+    have hm : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+    rw [div_le_div_iff₀ (by positivity) (by positivity), one_mul, one_mul, sq]
+    exact mul_le_mul_of_nonneg_left (by linarith) hm.le
+  have hsum := hasSum_integral_of_summable_integral_norm hGint
+    (by simp only [hnorm]; exact hsummable)
+  simp only [hGval] at hsum
+  have hval : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * -Real.log (1 - t ^ 2) =
+      ∫ t in Set.Ioo (0 : ℝ) 1,
+        ∑' m : ℕ, t ^ ε * ((t ^ 2) ^ (m + 1) / ((m : ℝ) + 1)) := by
+    rw [integral_Ioc_eq_integral_Ioo]
+    refine setIntegral_congr_fun measurableSet_Ioo fun t ht => ?_
+    have hlt : |t ^ 2| < 1 := by
+      rw [abs_of_nonneg (sq_nonneg t)]
+      nlinarith [ht.1, ht.2]
+    exact (((Real.hasSum_pow_div_log_of_abs_lt_one hlt).mul_left (t ^ ε)).tsum_eq).symm
+  rw [hval]
+  exact hsum
+
+/-- The Mellin transform of `−log(1 − t²)` is the digamma function. -/
+theorem ofReal_integral_rpow_mul_neg_log {ε : ℝ} (hε : 0 < ε) :
+    (1 + (ε : ℂ)) * ((∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * -Real.log (1 - t ^ 2) : ℝ) : ℂ) =
+      Complex.digamma ((1 + (ε : ℂ)) / 2 + 1) + Real.eulerMascheroniConstant := by
+  have hz : 0 < ((1 + (ε : ℂ)) / 2 + 1).re := by
+    simp
+    linarith
+  have h1 := RHTower.hasSum_digammaSeries hz
+  have h2 := (Complex.ofRealCLM.hasSum (hasSum_integral_rpow_mul_neg_log hε)).mul_left
+    (1 + (ε : ℂ))
+  have e : (fun m : ℕ => 1 / ((m : ℂ) + 1) - 1 / ((1 + (ε : ℂ)) / 2 + 1 + m)) =
+      fun m : ℕ => (1 + (ε : ℂ)) *
+        Complex.ofRealCLM (1 / (((m : ℝ) + 1) * (ε + 2 * ((m : ℝ) + 1) + 1))) := by
+    funext m
+    have hm : ((m : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero m
+    have hd : (ε : ℂ) + 2 * ((m : ℂ) + 1) + 1 ≠ 0 := by
+      have h : ((ε + 2 * ((m : ℝ) + 1) + 1 : ℝ) : ℂ) ≠ 0 :=
+        Complex.ofReal_ne_zero.mpr (by positivity)
+      push_cast at h
+      exact h
+    have hz' : (1 + (ε : ℂ)) / 2 + 1 + m ≠ 0 := by
+      have h : (((1 + ε) / 2 + 1 + m : ℝ) : ℂ) ≠ 0 :=
+        Complex.ofReal_ne_zero.mpr (by positivity)
+      push_cast at h
+      exact h
+    rw [Complex.ofRealCLM_apply]
+    push_cast
+    field_simp
+    ring
+  rw [e] at h1
+  exact h2.unique h1
+
+/-! ### The Mellin transform of the row -/
+
+/-- **The Mellin transform of the row of the flat tail is the sum over the zeros**:
+`∫_0^1 t^ε ϱ(t) dt = Σ_ρ 1/(ρ (1 + ε − ρ))` for `ε > 0`. -/
+theorem mellin_rowProfile {ε : ℝ} (hε : 0 < ε) :
+    ((∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * rowProfile t : ℝ) : ℂ) =
+      ∑' q : XiZeroCopy, 1 / ((q.1 : ℂ) * (1 + (ε : ℂ) - (q.1 : ℂ))) := by
+  obtain ⟨Lr, hLr⟩ : ∃ x : ℝ, x = ∑' k : ℕ, (Λ k : ℝ) * (k : ℝ) ^ (-(1 + ε)) := ⟨_, rfl⟩
+  obtain ⟨Ir, hIr⟩ : ∃ x : ℝ, x = ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * -Real.log (1 - t ^ 2) :=
+    ⟨_, rfl⟩
+  -- the prime part
+  have hpr : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * primeRemainder t = 1 / ε - Lr / (1 + ε) := by
+    have hψint : IntegrableOn (fun t : ℝ => t ^ ε * Chebyshev.psi (1 / t)) (Set.Ioc 0 1) := by
+      have h := (integrableOn_rpow_mul_inv hε).sub
+        (integrableOn_rpow_mul hε.le integrableOn_primeRemainder measurable_primeRemainder)
+      refine h.congr_fun (fun t _ => ?_) measurableSet_Ioc
+      simp only [Pi.sub_apply, primeRemainder]
+      ring
+    have hsplit : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * primeRemainder t =
+        (∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * (1 / t)) -
+          ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * Chebyshev.psi (1 / t) := by
+      rw [← integral_sub (integrableOn_rpow_mul_inv hε) hψint]
+      refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+      simp only [primeRemainder]
+      ring
+    rw [hsplit, integral_rpow_mul_inv hε, ← (hasSum_integral_rpow_mul_psi hε).tsum_eq,
+      tsum_div_const, hLr]
+  -- the archimedean part
+  have har : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * archRow t =
+      1 / 2 * Ir - Real.log (2 * Real.pi) / (1 + ε) := by
+    have hlogint : IntegrableOn (fun t : ℝ => t ^ ε * -Real.log (1 - t ^ 2)) (Set.Ioc 0 1) := by
+      have h0 : IntegrableOn (fun t : ℝ => -Real.log (1 - t ^ 2)) (Set.Ioc 0 1) := by
+        have h := (integrableOn_archRow.add
+          (integrableOn_const (C := Real.log (2 * Real.pi)) (by simp))).const_mul 2
+        refine h.congr_fun (fun t _ => ?_) measurableSet_Ioc
+        simp only [Pi.add_apply, archRow]
+        ring
+      exact integrableOn_rpow_mul hε.le h0
+        (Real.measurable_log.comp (measurable_const.sub (measurable_id.pow_const 2))).neg
+    have hpow : IntegrableOn (fun t : ℝ => t ^ ε) (Set.Ioc 0 1) :=
+      (Real.continuous_rpow_const hε.le).integrableOn_Ioc
+    have hval : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε = 1 / (1 + ε) := by
+      rw [integral_Ioc_rpow (by linarith) zero_le_one, Real.one_rpow, add_comm]
+    have hsplit : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * archRow t =
+        1 / 2 * (∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * -Real.log (1 - t ^ 2)) -
+          Real.log (2 * Real.pi) * ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε := by
+      rw [← integral_const_mul, ← integral_const_mul,
+        ← integral_sub (hlogint.const_mul _) (hpow.const_mul _)]
+      refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+      simp only [archRow]
+      ring
+    rw [hsplit, hval, hIr]
+    ring
+  have hreal : ∫ t in Set.Ioc (0 : ℝ) 1, t ^ ε * rowProfile t =
+      1 / ε - Lr / (1 + ε) + (1 / 2 * Ir - Real.log (2 * Real.pi) / (1 + ε)) := by
+    rw [← hpr, ← har, ← integral_add
+      (integrableOn_rpow_mul hε.le integrableOn_primeRemainder measurable_primeRemainder)
+      (integrableOn_rpow_mul hε.le integrableOn_archRow measurable_archRow)]
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    simp only [rowProfile]
+    ring
+  -- the point `s = 1 + ε`
+  have hsre : (1 + (ε : ℂ)).re = 1 + ε := by simp
+  have hs1 : 1 < (1 + (ε : ℂ)).re := by rw [hsre]; linarith
+  have hs0 : 0 < (1 + (ε : ℂ)).re := by rw [hsre]; linarith
+  have hεne : (ε : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hε.ne'
+  have hsne : (1 + (ε : ℂ)) ≠ 0 := fun h => by
+    rw [h] at hs0
+    simp at hs0
+  have hsne1 : (1 + (ε : ℂ)) ≠ 1 := fun h => hεne (by linear_combination h)
+  have hxi : xi (1 + (ε : ℂ)) ≠ 0 := RHTower.xi_ne_zero_of_one_lt_re hs1
+  have hζ : riemannZeta (1 + (ε : ℂ)) ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs1
+  -- Hadamard's partial fractions
+  have hH := RHTower.XiAtlasFinitePart.logDeriv_xi_sub_eq hxi
+  have hterm : ∀ q : XiZeroCopy, (RHTower.XiAtlasFinitePart.xiZero q)⁻¹ -
+      (RHTower.XiAtlasFinitePart.xiZero q - (1 + (ε : ℂ)))⁻¹ =
+      (1 + (ε : ℂ)) * (1 / ((q.1 : ℂ) * (1 + (ε : ℂ) - (q.1 : ℂ)))) := by
+    intro q
+    have hρ : (q.1 : ℂ) ≠ 0 := RHTower.xiZeroCopy_ne_zero q
+    have hsρ : (1 + (ε : ℂ)) - (q.1 : ℂ) ≠ 0 := by
+      intro h
+      have hq : (q.1 : ℂ) = 1 + (ε : ℂ) := (sub_eq_zero.mp h).symm
+      have hz := RHTower.xi_xiZeroCopy_eq_zero q
+      rw [hq] at hz
+      exact hxi hz
+    have hρs : (q.1 : ℂ) - (1 + (ε : ℂ)) ≠ 0 := fun h => hsρ (by linear_combination -h)
+    show ((q.1 : ℂ))⁻¹ - ((q.1 : ℂ) - (1 + (ε : ℂ)))⁻¹ = _
+    field_simp
+    ring
+  rw [tsum_congr hterm, tsum_mul_left] at hH
+  have hsum : ∑' q : XiZeroCopy, 1 / ((q.1 : ℂ) * (1 + (ε : ℂ) - (q.1 : ℂ))) =
+      (logDeriv xi (1 + (ε : ℂ)) - logDeriv xi 0) / (1 + (ε : ℂ)) := by
+    rw [hH]
+    field_simp
+  -- the logarithmic derivative of `ξ` at `s` and at `0`
+  have hadd := GaloisForLFunctions.ArithmeticCorrespondencePositivity.logDeriv_xi_eq_add
+    hs0 hsne1 hζ
+  have hΓ := RHTower.logDeriv_Gammaℝ_eq hs0
+  have hdig := Complex.digamma_apply_add_one ((1 + (ε : ℂ)) / 2) (fun m h => by
+    have h' := congrArg Complex.re h
+    simp at h'
+    have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+    linarith)
+  have hζ' : logDeriv riemannZeta (1 + (ε : ℂ)) =
+      deriv riemannZeta (1 + (ε : ℂ)) / riemannZeta (1 + (ε : ℂ)) := logDeriv_apply _ _
+  have h4 : Real.log (4 * Real.pi) = 2 * Real.log 2 + Real.log Real.pi := by
+    rw [Real.log_mul (by norm_num) Real.pi_ne_zero, show (4 : ℝ) = 2 ^ 2 by norm_num,
+      Real.log_pow]
+    push_cast
+    ring
+  have hlog4 : Complex.log (4 * (Real.pi : ℂ)) =
+      ((2 * Real.log 2 + Real.log Real.pi : ℝ) : ℂ) := by
+    rw [← h4, Complex.ofReal_log (by positivity)]
+    push_cast
+    ring
+  have h0 : logDeriv xi 0 =
+      -((Real.eulerMascheroniConstant - ((2 * Real.log 2 + Real.log Real.pi : ℝ) : ℂ)) / 2 + 1) := by
+    rw [RHTower.XiAtlasFinitePart.logDeriv_xi_zero, completedRiemannZeta₀_zero, hlog4]
+  have hlog2 : Real.log (2 * Real.pi) = Real.log 2 + Real.log Real.pi :=
+    Real.log_mul (by norm_num) Real.pi_ne_zero
+  -- the prime and gamma sides as complex numbers
+  have hcast : ((1 + ε : ℝ) : ℂ) = 1 + (ε : ℂ) := by
+    push_cast
+    ring
+  have hLc : (Lr : ℂ) = -deriv riemannZeta (1 + (ε : ℂ)) / riemannZeta (1 + (ε : ℂ)) := by
+    have h := ofReal_tsum_vonMangoldt_rpow (by linarith : 1 < 1 + ε)
+    rw [hcast, ← hLr] at h
+    exact h
+  have hIc : (Ir : ℂ) = (Complex.digamma ((1 + (ε : ℂ)) / 2) + ((1 + (ε : ℂ)) / 2)⁻¹ +
+      Real.eulerMascheroniConstant) / (1 + (ε : ℂ)) := by
+    have h := ofReal_integral_rpow_mul_neg_log hε
+    rw [← hIr, hdig] at h
+    rw [← h]
+    field_simp
+  rw [hreal, hsum, hadd, hΓ, hζ', h0, hlog2]
+  push_cast
+  rw [hIc, hLc]
+  field_simp
+  ring
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
