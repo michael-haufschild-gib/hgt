@@ -182,7 +182,7 @@ theorem abs_integral_sub_powerTailClip_le {g : ℝ → ℝ} {a C δ : ℝ}
     apply h.trans
     split_ifs
     · exact le_rfl
-    · positivity
+    · exact mul_nonneg (mul_nonneg (by norm_num) hC) (Real.rpow_nonneg ht.1.le _)
   apply hbound.trans_eq
   rw [intervalIntegral.integral_const_mul, integral_rpow (Or.inl (by linarith only [ha1])),
     show -a + 1 = 1 - a by ring, Real.zero_rpow (by linarith only [ha1]), sub_zero]

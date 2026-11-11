@@ -1,4 +1,5 @@
 import GaloisForLFunctions.VerifiedHeightRungs.ZerosNearMostHeights
+import GaloisForLFunctions.VerifiedHeightRungs.TheZeroSideOfTheWindowRung
 
 /-!
 # Separated zeros in every long window
@@ -63,9 +64,10 @@ theorem exists_zero_near_of_re_prime_le {σ Y t : ℝ} (hσ : 0 < σ) (hσ1 : σ
   have h8 : Real.log 8 ≤ 3 := by
     rw [Real.log_le_iff_le_exp (by norm_num)]
     have h1 := Real.exp_one_gt_d9
-    have e : Real.exp 3 = Real.exp 1 ^ 3 := by rw [← Real.exp_nat_mul]; norm_num
-    rw [e]
-    nlinarith only [h1]
+    have h2 : (2.7 : ℝ) ^ 3 ≤ Real.exp 1 ^ 3 := pow_le_pow_left₀ (by norm_num) (by linarith only [h1]) 3
+    rw [← Real.exp_nat_mul] at h2
+    norm_num at h2
+    linarith only [h2]
   have hℓ : L - 3 ≤ Real.log (1 + |t| / 8) := by
     have h1 : Real.log ((|t| + 3) / 8) ≤ Real.log (1 + |t| / 8) :=
       Real.log_le_log (by positivity) (by linarith only)
@@ -164,7 +166,7 @@ theorem volume_bad_heights_le {Y L A : ℝ} (hY : 0 < Y) (hL : 2 * Real.exp (2 *
   rw [hkabs]
   calc ENNReal.ofReal (2 * π) * volume S
       ≤ ENNReal.ofReal (2 * π) * ENNReal.ofReal (4 * gapEnergy * primeVariance (gapTestC Y)
-          ⌊Real.exp (2 * Y)⌋₊ / (3 * r * gapMass ^ 2 * A ^ 2)) := mul_le_mul_left' hB _
+          ⌊Real.exp (2 * Y)⌋₊ / (3 * r * gapMass ^ 2 * A ^ 2)) := by gcongr
     _ = _ := by
       rw [← ENNReal.ofReal_mul (by positivity)]
       congr 1
@@ -341,12 +343,9 @@ theorem exists_spread_zeros_in_window {σ Y tₛ T c : ℝ} {m : ℕ} (hσ : 0 <
   have hlog0 : 0 < Real.log (tₛ + 3) := Real.log_pos (by linarith only [hs0])
   have hA0 : 0 < A := by rw [hA]; positivity
   rw [← hA] at hsvar
-  obtain ⟨node, hnode, hsep⟩ := exists_separated_zeros_of_volume_lt (c := c) hσ (M := 5 * (m + 1))
-    (n := 4 * m + 3) (G := G) ?_ ?_
-  · refine ⟨node, fun j hj => ?_, hsep⟩
-    rw [← hM]
-    exact hnode j hj
-  · -- The bad heights.
+  -- The bad heights.
+  have hbad : volume (Icc c (c + 2 * (((5 * (m + 1) : ℕ) : ℝ)) * σ) \ G) <
+      ENNReal.ofReal (σ / 2 * ((((5 * (m + 1) : ℕ) : ℝ)) - ((4 * m + 3 : ℕ) : ℝ))) := by
     rw [hM, hMn]
     have hsub : Icc c (c + 10 * ((m : ℝ) + 1) * σ) \ G ⊆ Icc c (c + 10 * ((m : ℝ) + 1) * σ) ∩
         {t : ℝ | A ≤ ‖primePolynomial (gapTestC Y) N (-t / (2 * π))‖} := by
@@ -369,14 +368,14 @@ theorem exists_spread_zeros_in_window {σ Y tₛ T c : ℝ} {m : ℕ} (hσ : 0 <
       have h1 := mul_le_mul_of_nonneg_left hsvar (by positivity : (0 : ℝ) ≤ ((m : ℝ) + 1) * σ / 4)
       have e1 : ((m : ℝ) + 1) * σ / 4 * (320 * π * gapEnergy * primeVariance (gapTestC Y) N) =
           8 * π * gapEnergy * primeVariance (gapTestC Y) N * (10 * ((m : ℝ) + 1) * σ) := by ring
-      have e2 : ((m : ℝ) + 1) * σ / 4 * (3 * gapMass ^ 2 * A ^ 2) =
-          ((m : ℝ) + 1) * σ / 4 * (3 * gapMass ^ 2 * A ^ 2) := rfl
       rw [e1] at h1
       exact h1
     have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
     have : ((m : ℝ) + 1) * σ / 4 < σ / 2 * ((m : ℝ) + 2) := by nlinarith only [hσ, hm0]
     linarith only [hV, this]
-  · -- Good heights carry zeros.
+  -- Good heights carry zeros.
+  have hzero : ∀ t ∈ Icc c (c + 2 * (((5 * (m + 1) : ℕ) : ℝ)) * σ), t ∈ G →
+      ∃ ρ ∈ zetaZeroConfig.carrier, |ρ.im - t| < σ / 4 := by
     intro t ht htG
     rw [hM] at ht
     have hσ4 : 0 < σ / 4 := by positivity
@@ -388,6 +387,10 @@ theorem exists_spread_zeros_in_window {σ Y tₛ T c : ℝ} {m : ℕ} (hσ : 0 <
       have := abs_sub_abs_le_abs_sub ρ.im t
       linarith only [this]
     linarith only [h1, hρt, hT t ht]
+  obtain ⟨node, hnode, hsep⟩ := exists_separated_zeros_of_volume_lt (c := c) hσ hbad hzero
+  refine ⟨node, fun j hj => ?_, hsep⟩
+  rw [← hM]
+  exact hnode j hj
 
 end
 

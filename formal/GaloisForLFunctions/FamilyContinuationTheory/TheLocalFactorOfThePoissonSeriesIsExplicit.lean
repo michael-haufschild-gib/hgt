@@ -1218,6 +1218,73 @@ theorem hasSum_norm_localTerm (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {
   convert h using 1
   simp only [Fintype.sum_option, Fintype.sum_prod_type, Option.elim, Finset.mul_sum]
 
+include h2 hprim in
+/-- **The norm masses of the base terms at an unramified row (`j = 0`).** -/
+theorem sum_tsum_norm_base_zero (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π})
+    (hV : ‖V‖ < 1) :
+    ∑ e : Fin 2, ∑ p : Fin 2, ∑ k : Fin 2,
+        ∑' i, ‖localTerm π ηp X Y V u 0 (e, blockBase e p, (k : ℕ), i)‖ =
+      ‖primeR π ηp X V * (1 - (primeQ π)⁻¹)‖ * (1 - ‖V‖)⁻¹ +
+        ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y * primeR π ηp X V‖ +
+        ‖ηp * (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u))⁻¹ * X‖ +
+        ‖ηp * (primeQ π - 1) * X * Y‖ * ‖V‖ * (1 - ‖V‖)⁻¹ := by
+  have hj : (0 : ℕ) < 6 := by norm_num
+  have hV' : ‖‖V‖‖ < 1 := by rwa [norm_norm]
+  simp only [Fin.sum_univ_two, blockBase, Fin.isValue, Fin.val_zero, Fin.val_one, and_self,
+    ↓reduceIte, one_ne_zero, and_false, false_and]
+  -- (0, 2, 0): a geometric tail
+  have eA0 : ∑' i, ‖localTerm π ηp X Y V u 0 (0, 2, 0, i)‖ =
+      ‖primeR π ηp X V * (1 - (primeQ π)⁻¹)‖ * (1 - ‖V‖)⁻¹ := by
+    simp only [localTerm_A0 π hlam h2 hprim ηp X Y V hu hj, show (0 : ℕ) ≠ 5 by norm_num,
+      ↓reduceIte]
+    have h := hasSum_shift_geom (𝕜 := ℝ) 0 ‖primeR π ηp X V * (1 - (primeQ π)⁻¹)‖ ‖V‖ hV'
+    rw [zero_add] at h
+    rw [← h.tsum_eq]
+    congr 1
+    funext i
+    split_ifs <;> simp [norm_pow]
+  -- (0, 2, 1): a point mass
+  have eA1 : ∑' i, ‖localTerm π ηp X Y V u 0 (0, 2, 1, i)‖ =
+      ‖complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y * primeR π ηp X V‖ := by
+    simp only [localTerm_A1 π hlam h2 hprim ηp X Y V hu hj, and_true]
+    rw [← (hasSum_point (𝕜 := ℝ) 1 _).tsum_eq]
+    congr 1
+    funext i
+    split_ifs <;> simp
+  -- (1, 0, 0): a point mass
+  have eB0 : ∑' i, ‖localTerm π ηp X Y V u 0 (1, 0, 0, i)‖ =
+      ‖ηp * (complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u))⁻¹ * X‖ := by
+    simp only [localTerm_B0 π hlam h2 hprim ηp X Y V hu, and_true]
+    rw [← (hasSum_point (𝕜 := ℝ) 0 _).tsum_eq]
+    congr 1
+    funext i
+    split_ifs <;> simp
+  -- (1, 0, 1): a geometric sequence from `i = 1`
+  have eB1 : ∑' i, ‖localTerm π ηp X Y V u 0 (1, 0, 1, i)‖ =
+      ‖ηp * (primeQ π - 1) * X * Y‖ * ‖V‖ * (1 - ‖V‖)⁻¹ := by
+    simp only [localTerm_B1 π hlam h2 hprim ηp X Y V hu, show ¬ (2 ≤ 0) by norm_num, or_false,
+      show (0 : ℕ) ≠ 1 by norm_num, ↓reduceIte]
+    have h := hasSum_geom_from (𝕜 := ℝ) 0 ‖ηp * (primeQ π - 1) * X * Y‖ ‖V‖ hV'
+    rw [zero_add] at h
+    rw [← h.tsum_eq]
+    congr 1
+    funext i
+    rcases Nat.eq_zero_or_pos i with rfl | hi
+    · simp
+    · rw [if_pos (show 1 ≤ i by omega), if_neg (show i ≠ 0 by omega)]
+      simp [norm_pow]
+  -- the remaining four families do not meet `j = 0`
+  have eC0 : ∑' i, ‖localTerm π ηp X Y V u 0 (0, 1, 0, i)‖ = 0 := by
+    simp [localTerm_C0 π hlam h2 hprim ηp X Y V hu]
+  have eC1 : ∑' i, ‖localTerm π ηp X Y V u 0 (0, 1, 1, i)‖ = 0 := by
+    simp [localTerm_C1 π hlam h2 hprim ηp X Y V hu]
+  have eD0 : ∑' i, ‖localTerm π ηp X Y V u 0 (1, 1, 0, i)‖ = 0 := by
+    simp [localTerm_D0 π hlam h2 hprim ηp X Y V hu]
+  have eD1 : ∑' i, ‖localTerm π ηp X Y V u 0 (1, 1, 1, i)‖ = 0 := by
+    simp [localTerm_D1 π hlam h2 hprim ηp X Y V hu]
+  rw [eA0, eA1, eB0, eB1, eC0, eC1, eD0, eD1]
+  ring
+
 end Prime
 
 end GaloisForLFunctions.FamilyContinuationTheory

@@ -7,8 +7,8 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.AsymptoticAbscissaSpectralG
 /-!
 # Sub-`1/2` Integer-Norm Beurling Fakes, Quasi-RH Calibration, and Complete Synthesis
 
-This module completes the solution of the integer-norm Beurling fake remainder problem
-(Question B182) below the critical exponent `1/2` and synthesizes the unconditional theory:
+This module completes the theory of integer-count remainders of integer-norm Beurling fakes below
+the critical exponent `1/2` and synthesizes the unconditional theory:
 
 1. **Deletion-set bridge (`isIntegerNormFakeAt_keptPrimeSystem_of_deletionData`).**
    For any square-root discrepancy prime deletion datum `D : DeletionData α` with `1/2 < α < 1`,
@@ -31,10 +31,17 @@ This module completes the solution of the integer-norm Beurling fake remainder p
    Under `RiemannHypothesis`, integer-norm prime-deletion fakes exist at every remainder exponent
    `β > 1/3`, so `sInf integerNormFakeExponents ≤ 1/3`.
 
-4. **Unconditional ZFC frontier dichotomy and master synthesis (`integerNormFake_complete_solution`).**
-   Unconditionally, `zetaZeroAbscissa = 1 ↔ zetaAsymptoticAbscissa = 1`, and either
+4. **Unconditional ZFC frontier dichotomy (`zetaZeroAbscissa_eq_one_or_exists_integerNormFakeAt_lt_half`).**
+   Unconditionally, `zetaZeroAbscissa < 1 ↔ zetaAsymptoticAbscissa < 1`, and either
    `zetaZeroAbscissa = 1` (which forces `zetaAsymptoticAbscissa = 1` and `AsymptoticAbscissaLaw`),
    or `zetaZeroAbscissa < 1` and sub-`1/2` integer-norm Beurling fakes exist (`sInf < 1/2`).
+
+5. **Real fake zero law for prime deletions (`exists_real_fake_zero_of_keptPrimeSystem`,
+   `exists_real_fake_zero_of_keptPrimeSystem_le_half`) and master synthesis
+   (`integerNormFake_complete_solution`).**
+   Every positive-density prime-deletion fake at `β < 1` (and unconditionally every prime-deletion
+   fake at `β ≤ 1/2`) satisfies `G(1) ≠ 0` and has a real fake zero `σ_c ∈ (1/2, 1)` dominating
+   `Re ρ` for every fake zero `ρ`.
 -/
 
 open Complex Finset Filter Topology Real
@@ -837,13 +844,14 @@ private lemma rpow_pieces_sub_half {c X K_hi M₂ : ℝ}
           have hexp : 1 + (1 - c / 4) * ((1 / 2 - c) - 1) =
               1 / 2 - 7 * c / 8 + (1 / 4) * (c * c) := by ring
           rw [hexp]; linarith [hc_sq]
-  · have hdiv_eq : X / K_hi = X ^ (c / 4) := by
+  · have hM₂0 : 0 < M₂ := lt_of_lt_of_le hK0 hlo
+    have hdiv_eq : X / K_hi = X ^ (c / 4) := by
       rw [hK_hi, ← Real.rpow_one_sub' hX0.le (by linarith)]
       congr 1; ring
     calc X ^ (1 / 2 - 3 * c / 4) * (X / M₂) ^ (1 - (1 / 2 - 3 * c / 4))
         ≤ X ^ (1 / 2 - 3 * c / 4) * (X / K_hi) ^ (1 - (1 / 2 - 3 * c / 4)) :=
           mul_le_mul_of_nonneg_left
-            (Real.rpow_le_rpow (by positivity)
+            (Real.rpow_le_rpow (div_nonneg hX0.le hM₂0.le)
               (div_le_div_of_nonneg_left hX0.le hK0 hlo) (by linarith))
             (by positivity)
       _ = X ^ ((1 / 2 - 3 * c / 4) + (c / 4) * (1 - (1 / 2 - 3 * c / 4))) := by
@@ -878,7 +886,8 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
   have hα : 1 / 2 + c / 8 < 1 := by linarith
   obtain ⟨M₁, hM₁⟩ : ∃ M₁ : ℝ, M₁ = X ^ (15 / 16 : ℝ) := ⟨_, rfl⟩
   obtain ⟨K_hi, hK_hi⟩ : ∃ K_hi : ℝ, K_hi = X ^ (1 - c / 4) := ⟨_, rfl⟩
-  have hM₁0 : 0 < M₁ := hM₁ ▸ Real.rpow_pos_of_pos hX0 _
+  have hM₁1 : 1 ≤ M₁ := hM₁ ▸ Real.one_le_rpow hX1 (by norm_num)
+  have hM₁0 : 0 < M₁ := lt_of_lt_of_le zero_lt_one hM₁1
   have hK1 : 1 ≤ K_hi := hK_hi ▸ Real.one_le_rpow hX1 (by linarith)
   obtain ⟨hlo_raw, hhi_raw, hJ_log_raw⟩ := dyadic_scale_sub_half hc0 hc_le hX1
   obtain ⟨J, hJ⟩ : ∃ J : ℕ, J = ⌈Real.logb 2 (K_hi / M₁)⌉₊ := ⟨_, rfl⟩
@@ -980,10 +989,10 @@ private theorem norm_count_sub_mobSum_le_sub_half {c CM CA KB E_sm : ℝ}
     _ = _ := by ring
 
 /-- **Sub-`1/2` integer-norm Beurling fake from any zero-free half-plane `Re z > Θ` (`Θ < 1`).**
-If `1/2 ≤ Θ < 1` and `ζ` has no zeros with `Re z > Θ`, then there exists a prime set `S` such that
+If `Θ < 1` and `ζ` has no zeros with `Re z > Θ`, then there exists a prime set `S` such that
 `keptPrimeSystem S` is an integer-norm Beurling fake at the explicit sub-`1/2` remainder exponent
 `1/2 - (1 - max Θ (3/4)) / 64 < 1/2`. -/
-theorem exists_integerNormFakeAt_lt_half_of_zeroFree {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1)
+theorem exists_integerNormFakeAt_lt_half_of_zeroFree {Θ : ℝ} (hΘ1 : Θ < 1)
     (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0) :
     ∃ S : Set ℕ,
       IsIntegerNormFakeAt (keptPrimeSystem S) (1 / 2 - (1 - max Θ (3 / 4)) / 64) ∧
@@ -1076,12 +1085,11 @@ theorem exists_integerNormFakeAt_lt_half_of_zeroFree {Θ : ℝ} (hΘ : 1 / 2 ≤
   rw [hβ_eq] at hfake
   exact ⟨D.S, hfake, by rw [← hβ_eq]; dsimp [β]; linarith⟩
 
-theorem csInf_integerNormFakeExponents_lt_half_of_zeroFree {Θ : ℝ}
-    (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1)
+theorem csInf_integerNormFakeExponents_lt_half_of_zeroFree {Θ : ℝ} (hΘ1 : Θ < 1)
     (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0) :
     sInf integerNormFakeExponents ≤ 1 / 2 - (1 - max Θ (3 / 4)) / 64 ∧
       sInf integerNormFakeExponents < 1 / 2 := by
-  obtain ⟨S, hf, hlt⟩ := exists_integerNormFakeAt_lt_half_of_zeroFree hΘ hΘ1 hzf
+  obtain ⟨S, hf, hlt⟩ := exists_integerNormFakeAt_lt_half_of_zeroFree hΘ1 hzf
   have hle := csInf_le bddBelow_integerNormFakeExponents ⟨keptPrimeSystem S, hf⟩
   exact ⟨hle, lt_of_le_of_lt hle hlt⟩
 
@@ -1228,7 +1236,7 @@ theorem zetaZeroAbscissa_eq_one_or_exists_integerNormFakeAt_lt_half :
     have hAAL : RHTower.AsymptoticAbscissaLaw :=
       asymptoticAbscissaLaw_iff_zetaAsymptoticAbscissa_eq_zetaZeroAbscissa.mpr (ha1.trans h1.symm)
     exact Or.inl ⟨h1, ha1, hAAL⟩
-  · exact Or.inr ⟨hlt, exists_integerNormFakeAt_lt_half_of_zeroFree half_le_zetaZeroAbscissa hlt
+  · exact Or.inr ⟨hlt, exists_integerNormFakeAt_lt_half_of_zeroFree hlt
       (fun _ hz => riemannZeta_ne_zero_of_zetaZeroAbscissa_lt hz)⟩
 
 theorem asymptoticAbscissaLaw_or_exists_integerNormFakeAt_lt_half :
@@ -1246,8 +1254,482 @@ theorem exists_integerNormFakeAt_lt_half_of_not_asymptoticAbscissaLaw
   · exact absurd hAAL hnot
   · exact hex
 
-/-- **Complete unconditional solution to Question B182 (the integer-norm Beurling fake remainder
-spectrum).**
+/-! ## 5. Real fake zero law for prime-deletion fakes -/
+
+/-- Indicator of positive `S`-smooth integers (`n ≥ 1` with all prime factors in `S`). -/
+def sSmoothR (S : Set ℕ) (n : ℕ) : ℝ :=
+  open Classical in if sOnly S n then 1 else 0
+
+private lemma sSmoothR_nonneg (S : Set ℕ) (n : ℕ) : 0 ≤ sSmoothR S n := by
+  unfold sSmoothR; split_ifs <;> norm_num
+
+private lemma abs_sSmoothR_le (S : Set ℕ) (n : ℕ) : |sSmoothR S n| ≤ 1 := by
+  unfold sSmoothR; split_ifs <;> norm_num
+
+private lemma sFree_sOnly_mul_inj {S : Set ℕ} {a₁ b₁ a₂ b₂ : ℕ}
+    (ha₁ : SFree S a₁) (hb₁ : sOnly S b₁) (ha₂ : SFree S a₂) (hb₂ : sOnly S b₂)
+    (heq : a₁ * b₁ = a₂ * b₂) : a₁ = a₂ ∧ b₁ = b₂ := by
+  have ha_eq : a₁ = a₂ := by
+    refine Nat.eq_of_factorization_eq ha₁.1 ha₂.1 fun p => ?_
+    have hsum : a₁.factorization p + b₁.factorization p =
+        a₂.factorization p + b₂.factorization p := by
+      have := congrArg (fun k : ℕ => k.factorization p) heq
+      rwa [Nat.factorization_mul ha₁.1 hb₁.1, Nat.factorization_mul ha₂.1 hb₂.1,
+        Finsupp.add_apply, Finsupp.add_apply] at this
+    by_cases hpS : p ∈ S
+    · have h1 : a₁.factorization p = 0 := by
+        by_contra hne
+        exact ha₁.2 p (Nat.support_factorization a₁ ▸ Finsupp.mem_support_iff.mpr hne) hpS
+      have h2 : a₂.factorization p = 0 := by
+        by_contra hne
+        exact ha₂.2 p (Nat.support_factorization a₂ ▸ Finsupp.mem_support_iff.mpr hne) hpS
+      omega
+    · have h1 : b₁.factorization p = 0 := by
+        by_contra hne
+        exact hpS (hb₁.2 p (Nat.support_factorization b₁ ▸ Finsupp.mem_support_iff.mpr hne))
+      have h2 : b₂.factorization p = 0 := by
+        by_contra hne
+        exact hpS (hb₂.2 p (Nat.support_factorization b₂ ▸ Finsupp.mem_support_iff.mpr hne))
+      omega
+  exact ⟨ha_eq, mul_left_cancel₀ ha₁.1 (ha_eq ▸ heq)⟩
+
+private lemma exists_sFree_sOnly_mul (S : Set ℕ) :
+    ∀ n : ℕ, n ≠ 0 → ∃ a b : ℕ, a * b = n ∧ SFree S a ∧ sOnly S b := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    intro hn
+    rcases eq_or_ne n 1 with rfl | hn1
+    · exact ⟨1, 1, one_mul 1, ⟨one_ne_zero, by simp⟩, ⟨one_ne_zero, by simp⟩⟩
+    · set p := n.minFac
+      have hp : p.Prime := Nat.minFac_prime hn1
+      obtain ⟨m, hm_eq⟩ := Nat.minFac_dvd n
+      have hm0 : m ≠ 0 := right_ne_zero_of_mul (hm_eq ▸ hn)
+      have hm_lt : m < n := by
+        have hp2 : 2 ≤ p := hp.two_le
+        have hm1 : 1 ≤ m := Nat.pos_of_ne_zero hm0
+        nlinarith
+      obtain ⟨a, b, hab, ha, hb⟩ := ih m hm_lt hm0
+      by_cases hpS : p ∈ S
+      · refine ⟨a, p * b, ?_, ha, mul_ne_zero hp.ne_zero hb.1, fun q hq => ?_⟩
+        · calc a * (p * b) = p * (a * b) := by ring
+            _ = n := by rw [hab, ← hm_eq]
+        · rw [Nat.primeFactors_mul hp.ne_zero hb.1, Finset.mem_union, hp.primeFactors,
+            Finset.mem_singleton] at hq
+          exact hq.elim (fun h => h ▸ hpS) (hb.2 q)
+      · refine ⟨p * a, b, ?_, ⟨mul_ne_zero hp.ne_zero ha.1, fun q hq => ?_⟩, hb⟩
+        · calc p * a * b = p * (a * b) := by ring
+            _ = n := by rw [hab, ← hm_eq]
+        · rw [Nat.primeFactors_mul hp.ne_zero ha.1, Finset.mem_union, hp.primeFactors,
+            Finset.mem_singleton] at hq
+          exact hq.elim (fun h => h ▸ hpS) (ha.2 q)
+
+private lemma LSeries_sFreeR_mul_sSmoothR (S : Set ℕ) {s : ℂ} (hs : 1 < s.re) :
+    LSeries (fun n => (sFreeR S n : ℂ)) s * LSeries (fun n => (sSmoothR S n : ℂ)) s =
+      riemannZeta s := by
+  classical
+  have hf1 : LSeriesSummable (fun n => (sFreeR S n : ℂ)) s :=
+    LSeriesSummable_of_bounded_of_one_lt_re (m := 1)
+      (fun n _ => by rw [Complex.norm_real, Real.norm_eq_abs]; exact abs_sFreeR_le S n) hs
+  have hf2 : LSeriesSummable (fun n => (sSmoothR S n : ℂ)) s :=
+    LSeriesSummable_of_bounded_of_one_lt_re (m := 1)
+      (fun n _ => by rw [Complex.norm_real, Real.norm_eq_abs]; exact abs_sSmoothR_le S n) hs
+  rw [← LSeries_convolution' hf1 hf2, ← LSeries_one_eq_riemannZeta hs]
+  refine LSeries_congr (fun {n} hn => ?_) s
+  rw [LSeries.convolution_def, Pi.one_apply]
+  obtain ⟨a₀, b₀, hab₀, ha₀, hb₀⟩ := exists_sFree_sOnly_mul S n hn
+  rw [Finset.sum_eq_single (a₀, b₀)]
+  · simp [sFreeR, sSmoothR, ha₀, hb₀]
+  · intro x hx hx_ne
+    by_cases h : SFree S x.1 ∧ sOnly S x.2
+    · obtain ⟨h1, h2⟩ := sFree_sOnly_mul_inj h.1 h.2 ha₀ hb₀
+        ((Nat.mem_divisorsAntidiagonal.mp hx).1.trans hab₀.symm)
+      exact absurd (Prod.ext h1 h2) hx_ne
+    · rcases not_and_or.mp h with h1 | h2 <;> simp [sFreeR, sSmoothR, h1, h2]
+  · intro hnot
+    exact absurd (Nat.mem_divisorsAntidiagonal.mpr ⟨hab₀, hn⟩) hnot
+
+private lemma sum_sSmoothR_div_le_of_pos_density {S : Set ℕ} {A C β : ℝ}
+    (hA : 0 < A) (hβ : β < 1)
+    (hC : ∀ x : ℝ, 1 ≤ x → |((keptPrimeSystem S).countBall x : ℝ) - A * x| ≤ C * x ^ β)
+    (N : ℕ) :
+    ∑ n ∈ Finset.range N, (if n = 0 then (0 : ℝ) else sSmoothR S n / n) ≤ 2 / A := by
+  classical
+  rcases eq_or_ne N 0 with rfl | hN0
+  · simp; positivity
+  have hrange_le : ∑ n ∈ Finset.range N, (if n = 0 then (0 : ℝ) else sSmoothR S n / n) ≤
+      ∑ n ∈ Finset.Icc 1 N, sSmoothR S n / n := by
+    calc ∑ n ∈ Finset.range N, (if n = 0 then (0 : ℝ) else sSmoothR S n / n)
+        ≤ ∑ n ∈ Finset.range (N + 1), (if n = 0 then (0 : ℝ) else sSmoothR S n / n) :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (Nat.le_succ N))
+            fun n _ _ => by split_ifs <;> [exact le_rfl; exact div_nonneg (sSmoothR_nonneg S n) (Nat.cast_nonneg n)]
+      _ = ∑ n ∈ Finset.Icc 1 N, sSmoothR S n / n := by
+          rw [Finset.range_eq_Ico, Finset.sum_eq_sum_Ico_succ_bot (Nat.succ_pos N), if_pos rfl,
+            zero_add, Finset.Icc_eq_Ico]
+          exact Finset.sum_congr rfl fun n hn => if_neg (by have := (Finset.mem_Ico.mp hn).1; omega)
+  refine hrange_le.trans ?_
+  set β' : ℝ := max β 0
+  set C' : ℝ := max C 0
+  have hβ'0 : 0 ≤ β' := le_max_right _ _
+  have hβ'1 : β' < 1 := max_lt hβ zero_lt_one
+  have hC'0 : 0 ≤ C' := le_max_right _ _
+  have hC' : ∀ x : ℝ, 1 ≤ x →
+      |((keptPrimeSystem S).countBall x : ℝ) - A * x| ≤ C' * x ^ β' := by
+    intro x hx
+    calc |((keptPrimeSystem S).countBall x : ℝ) - A * x|
+        ≤ C * x ^ β := hC x hx
+      _ ≤ C' * x ^ β := mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg (by linarith) _)
+      _ ≤ C' * x ^ β' := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hx (le_max_left _ _)) hC'0
+  set X : ℝ := max (N : ℝ) (((N : ℝ) * C' + 1) ^ (1 / (1 - β')))
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast Nat.pos_of_ne_zero hN0
+  have hNX : (N : ℝ) ≤ X := le_max_left _ _
+  have hX1 : 1 ≤ X := le_trans hN1 hNX
+  have hX0 : 0 < X := lt_of_lt_of_le zero_lt_one hX1
+  have hNC_le : (N : ℝ) * (C' * X ^ β') ≤ X := by
+    have hpow_le : (N : ℝ) * C' + 1 ≤ X ^ (1 - β') := by
+      calc (N : ℝ) * C' + 1
+          = (((N : ℝ) * C' + 1) ^ (1 / (1 - β'))) ^ (1 - β') := by
+            rw [← Real.rpow_mul (by positivity), one_div_mul_cancel (by linarith), Real.rpow_one]
+        _ ≤ X ^ (1 - β') := Real.rpow_le_rpow (by positivity) (le_max_right _ _) (by linarith)
+    have h1 : ((N : ℝ) * C' + 1) * X ^ β' ≤ X := by
+      calc ((N : ℝ) * C' + 1) * X ^ β'
+          ≤ X ^ (1 - β') * X ^ β' := mul_le_mul_of_nonneg_right hpow_le (by positivity)
+        _ = X := by rw [← Real.rpow_add hX0, sub_add_cancel, Real.rpow_one]
+    have h2 : 0 ≤ X ^ β' := by positivity
+    linarith
+  set V : Finset ℕ := (Finset.Icc 1 N).filter (sOnly S)
+  have hV_card : (V.card : ℝ) ≤ N := by
+    have hc : V.card ≤ (Finset.Icc 1 N).card := Finset.card_filter_le _ _
+    rw [Nat.card_Icc, Nat.add_sub_cancel] at hc
+    exact_mod_cast hc
+  let U : ℕ → Finset ℕ := fun v => (Finset.Icc 1 ⌊X / v⌋₊).filter (SFree S)
+  have hU_lb : ∀ v ∈ V, A * (X / v) - C' * X ^ β' ≤ ((U v).card : ℝ) := by
+    intro v hv
+    obtain ⟨hv_icc, _⟩ := Finset.mem_filter.mp hv
+    obtain ⟨hv1, hvN⟩ := Finset.mem_Icc.mp hv_icc
+    have hvR1 : (1 : ℝ) ≤ v := by exact_mod_cast hv1
+    have hvR_le : (v : ℝ) ≤ X := le_trans (by exact_mod_cast hvN) hNX
+    have hXv1 : 1 ≤ X / v := (one_le_div (by positivity)).mpr hvR_le
+    have hXv_le : X / v ≤ X := div_le_self hX0.le hvR1
+    have hU_eq : ((U v).card : ℝ) = ((keptPrimeSystem S).countBall (X / v) : ℝ) := by
+      rw [countBall_keptPrimeSystem S (by positivity),
+        show Finset.Iic ⌊X / v⌋₊ = insert 0 (Finset.Icc 1 ⌊X / v⌋₊) by
+          ext m; simp only [Finset.mem_Iic, Finset.mem_insert, Finset.mem_Icc]; omega,
+        Finset.sum_insert (by simp), sFreeR_zero, zero_add]
+      dsimp only [U]
+      rw [Finset.sum_filter]
+      simp only [sFreeR, Finset.sum_const, nsmul_eq_mul, mul_one]
+    have herr := hC' (X / v) hXv1
+    rw [← hU_eq] at herr
+    have hrp : C' * (X / v) ^ β' ≤ C' * X ^ β' :=
+      mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (by positivity) hXv_le hβ'0) hC'0
+    linarith [(abs_le.mp herr).1]
+  set W : Finset (Σ _ : ℕ, ℕ) := V.sigma U
+  let mulPair : (Σ _ : ℕ, ℕ) → ℕ := fun p => p.2 * p.1
+  have hinj : Set.InjOn mulPair (W : Set (Σ _ : ℕ, ℕ)) := by
+    rintro ⟨v₁, u₁⟩ h₁ ⟨v₂, u₂⟩ h₂ heq
+    rw [Finset.mem_coe, Finset.mem_sigma] at h₁ h₂
+    obtain ⟨hu, hv⟩ := sFree_sOnly_mul_inj
+      (Finset.mem_filter.mp h₁.2).2 (Finset.mem_filter.mp h₁.1).2
+      (Finset.mem_filter.mp h₂.2).2 (Finset.mem_filter.mp h₂.1).2 heq
+    subst hu; subst hv; rfl
+  have hsub : W.image mulPair ⊆ Finset.Icc 1 ⌊X⌋₊ := by
+    intro m hm
+    obtain ⟨⟨v, u⟩, hp, rfl⟩ := Finset.mem_image.mp hm
+    rw [Finset.mem_sigma] at hp
+    obtain ⟨hv1, _⟩ := Finset.mem_Icc.mp (Finset.mem_filter.mp hp.1).1
+    obtain ⟨hu1, hu_fl⟩ := Finset.mem_Icc.mp (Finset.mem_filter.mp hp.2).1
+    have hv0 : (0 : ℝ) < v := by exact_mod_cast hv1
+    have hu_le : (u : ℝ) ≤ X / v :=
+      (Nat.floor_le (div_nonneg hX0.le hv0.le)).trans' (by exact_mod_cast hu_fl)
+    have huv_le : ((u * v : ℕ) : ℝ) ≤ X := by
+      rw [Nat.cast_mul]; exact (le_div_iff₀ hv0).mp hu_le
+    exact Finset.mem_Icc.mpr ⟨Nat.mul_pos hu1 hv1, Nat.le_floor huv_le⟩
+  have hcard_le : ∑ v ∈ V, ((U v).card : ℝ) ≤ X := by
+    have hnat : ∑ v ∈ V, (U v).card ≤ ⌊X⌋₊ := by
+      calc ∑ v ∈ V, (U v).card
+          = W.card := (Finset.card_sigma V U).symm
+        _ = (W.image mulPair).card := (Finset.card_image_of_injOn hinj).symm
+        _ ≤ (Finset.Icc 1 ⌊X⌋₊).card := Finset.card_le_card hsub
+        _ = ⌊X⌋₊ := by simp [Nat.card_Icc]
+    exact (by exact_mod_cast hnat : ∑ v ∈ V, ((U v).card : ℝ) ≤ (⌊X⌋₊ : ℝ)).trans
+      (Nat.floor_le hX0.le)
+  have hsum_lb : A * X * (∑ v ∈ V, (v : ℝ)⁻¹) - (V.card : ℝ) * (C' * X ^ β') ≤ X := by
+    have heq_sum : ∑ v ∈ V, (A * (X / v) - C' * X ^ β') =
+        A * X * (∑ v ∈ V, (v : ℝ)⁻¹) - (V.card : ℝ) * (C' * X ^ β') := by
+      rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul, Finset.mul_sum]
+      congr 1
+      exact Finset.sum_congr rfl fun v _ => by ring
+    linarith [(heq_sum ▸ Finset.sum_le_sum hU_lb).trans hcard_le]
+  have hVC_le : (V.card : ℝ) * (C' * X ^ β') ≤ X :=
+    (mul_le_mul_of_nonneg_right hV_card (by positivity)).trans hNC_le
+  have hAX_le : A * X * (∑ v ∈ V, (v : ℝ)⁻¹) ≤ 2 * X := by linarith
+  have hV_le : ∑ v ∈ V, (v : ℝ)⁻¹ ≤ 2 / A := by
+    rw [le_div_iff₀ hA]
+    have h1 : (∑ v ∈ V, (v : ℝ)⁻¹) * A * X ≤ 2 * X := by linarith
+    exact le_of_mul_le_mul_right h1 hX0
+  have hIcc_eq : ∑ n ∈ Finset.Icc 1 N, sSmoothR S n / n = ∑ v ∈ V, (v : ℝ)⁻¹ := by
+    dsimp only [V]
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    unfold sSmoothR
+    split_ifs <;> simp
+  rwa [hIcc_eq]
+
+private lemma eqOn_halfPlane_of_le_one {σ₀ : ℝ} (hσ₀ : σ₀ ≤ 1) {F₁ F₂ : ℂ → ℂ}
+    (h₁ : DifferentiableOn ℂ F₁ {s : ℂ | σ₀ < s.re})
+    (h₂ : DifferentiableOn ℂ F₂ {s : ℂ | σ₀ < s.re})
+    (heq : ∀ s : ℂ, 1 < s.re → F₁ s = F₂ s) :
+    Set.EqOn F₁ F₂ {s : ℂ | σ₀ < s.re} := by
+  have hU : IsOpen {s : ℂ | σ₀ < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hconv : Convex ℝ {s : ℂ | σ₀ < s.re} := by
+    intro x hx y hy a b ha hb hab
+    simp only [Set.mem_setOf_eq, Complex.add_re, Complex.real_smul, Complex.mul_re,
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at *
+    rcases eq_or_lt_of_le ha with rfl | ha'
+    · have hb1 : b = 1 := by linarith
+      subst hb1; linarith
+    · have h1 : a * σ₀ < a * x.re := mul_lt_mul_of_pos_left hx ha'
+      have h2 : b * σ₀ ≤ b * y.re := mul_le_mul_of_nonneg_left hy.le hb
+      linarith
+  have hmem : (2 : ℂ) ∈ {s : ℂ | σ₀ < s.re} := by simp; linarith
+  have hev : F₁ =ᶠ[𝓝 (2 : ℂ)] F₂ :=
+    eventuallyEq_of_mem ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+      (by simp; norm_num : 1 < (2 : ℂ).re)) fun s hs => heq s hs
+  exact (h₁.analyticOnNhd hU).eqOn_of_preconnected_of_eventuallyEq
+    (h₂.analyticOnNhd hU) hconv.isPreconnected hmem hev
+
+/-- **Real fake zero law for positive-density prime-deletion fakes ("a deletion pays with a real
+zero").**
+Let `keptPrimeSystem S` be an integer-norm Beurling fake at exponent `β < 1` with positive linear
+density `A > 0`, and let `G` be the holomorphic continuation of `(s − 1) ζ_{ℙ \ S}(s)` to
+`{Re s > 1/2}`.  Then `G(1) ≠ 0`, and there exists a **real** point `σ_c ∈ (1/2, 1)` such that
+`G(σ_c) = 0`, `ζ(σ_c) ≠ 0` (so `σ_c` is itself a real fake zero), and **every** fake zero `ρ` in
+`{Re s > 1/2}` satisfies `Re ρ ≤ σ_c`. -/
+theorem exists_real_fake_zero_of_keptPrimeSystem {S : Set ℕ} {β A C : ℝ}
+    (hf : IsIntegerNormFakeAt (keptPrimeSystem S) β) (hβ : β < 1) (hA : 0 < A)
+    (hC : ∀ x : ℝ, 1 ≤ x → |((keptPrimeSystem S).countBall x : ℝ) - A * x| ≤ C * x ^ β)
+    {G : ℂ → ℂ} (hGd : DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re})
+    (hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (keptPrimeSystem S).zetaSeriesC s) :
+    G 1 ≠ 0 ∧
+      ∃ σ_c ∈ Set.Ioo (1 / 2 : ℝ) 1,
+        G (σ_c : ℂ) = 0 ∧
+        riemannZeta (σ_c : ℂ) ≠ 0 ∧
+        ∀ ρ : ℂ, 1 / 2 < ρ.re → ρ ≠ 1 → G ρ = 0 → riemannZeta ρ ≠ 0 → ρ.re ≤ σ_c := by
+  have hterm_nn : ∀ n : ℕ, 0 ≤ (if n = 0 then (0 : ℝ) else sSmoothR S n / n) := fun n => by
+    split_ifs <;> [exact le_rfl; exact div_nonneg (sSmoothR_nonneg S n) (Nat.cast_nonneg n)]
+  have hsum_R : Summable fun n : ℕ => if n = 0 then (0 : ℝ) else sSmoothR S n / n :=
+    summable_of_sum_range_le hterm_nn (sum_sSmoothR_div_le_of_pos_density hA hβ hC)
+  have htsum_le : (∑' n : ℕ, if n = 0 then (0 : ℝ) else sSmoothR S n / n) ≤ 2 / A :=
+    Real.tsum_le_of_sum_range_le hterm_nn (sum_sSmoothR_div_le_of_pos_density hA hβ hC)
+  have hLS_one : LSeriesSummable (fun n => (sSmoothR S n : ℂ)) 1 := by
+    refine Summable.of_norm_bounded hsum_R fun n => ?_
+    rcases eq_or_ne n 0 with rfl | hn
+    · simp
+    · rw [if_neg hn, LSeries.term_of_ne_zero hn, Complex.cpow_one, norm_div, Complex.norm_real,
+        Real.norm_of_nonneg (sSmoothR_nonneg S n), Complex.norm_natCast]
+  have hL_norm_le : ∀ σ : ℝ, 1 ≤ σ →
+      ‖LSeries (fun n => (sSmoothR S n : ℂ)) (σ : ℂ)‖ ≤ 2 / A := by
+    intro σ hσ
+    have hbd : ∀ n : ℕ, ‖LSeries.term (fun m => (sSmoothR S m : ℂ)) (σ : ℂ) n‖ ≤
+        if n = 0 then (0 : ℝ) else sSmoothR S n / n := by
+      intro n
+      rcases eq_or_ne n 0 with rfl | hn
+      · simp
+      · rw [if_neg hn, LSeries.term_of_ne_zero hn, norm_div, Complex.norm_real,
+          Real.norm_of_nonneg (sSmoothR_nonneg S n),
+          Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hn), Complex.ofReal_re]
+        have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast Nat.pos_of_ne_zero hn
+        have hrp : (n : ℝ) ≤ (n : ℝ) ^ σ := by
+          calc (n : ℝ) = (n : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+            _ ≤ (n : ℝ) ^ σ := Real.rpow_le_rpow_of_exponent_le hn1 hσ
+        exact div_le_div_of_nonneg_left (sSmoothR_nonneg S n) (by positivity) hrp
+    have hLS_σ : LSeriesSummable (fun n => (sSmoothR S n : ℂ)) (σ : ℂ) :=
+      Summable.of_norm_bounded hsum_R hbd
+    exact (norm_tsum_le_tsum_norm hLS_σ.norm).trans ((hLS_σ.norm.tsum_le_tsum hbd hsum_R).trans htsum_le)
+  have hGL_one : ∀ s : ℂ, 1 < s.re →
+      G s * LSeries (fun n => (sSmoothR S n : ℂ)) s = zetaResidueUnit s := by
+    intro s hs
+    have hs1 : s ≠ 1 := fun h => by rw [h] at hs; norm_num at hs
+    have hzu : zetaResidueUnit s = (s - 1) * riemannZeta s := by
+      simp [zetaResidueUnit, Function.update_of_ne hs1]
+    rw [hGeq s hs, zetaSeriesC_keptPrimeSystem S hs, mul_assoc,
+      LSeries_sFreeR_mul_sSmoothR S hs, hzu]
+  have hU_half : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  -- Step 1: `G 1 ≠ 0` by comparing `G σ * LSeries σ = ζ_u σ` near `1⁺` against `‖LSeries σ‖ ≤ 2 / A`.
+  have hG1_ne : G 1 ≠ 0 := by
+    intro hG1
+    have hGd1 : DifferentiableAt ℂ G 1 :=
+      hGd.differentiableAt (hU_half.mem_nhds (by simp; norm_num))
+    obtain ⟨δ₁, hδ₁, hb₁⟩ := Metric.continuousAt_iff.mp hGd1.continuousAt (A / 8) (by positivity)
+    obtain ⟨δ₂, hδ₂, hb₂⟩ := Metric.continuousAt_iff.mp
+      (analyticAt_zetaResidueUnit 1).continuousAt (1 / 2) (by norm_num)
+    set σ : ℝ := 1 + min δ₁ δ₂ / 2
+    have hmin_pos : 0 < min δ₁ δ₂ := lt_min hδ₁ hδ₂
+    have hσ1 : 1 < σ := by dsimp [σ]; linarith
+    have hdist_σ : dist (σ : ℂ) 1 = min δ₁ δ₂ / 2 := by
+      rw [Complex.dist_eq,
+        show (σ : ℂ) - 1 = ((min δ₁ δ₂ / 2 : ℝ) : ℂ) by dsimp [σ]; push_cast; ring,
+        Complex.norm_real, Real.norm_of_nonneg (by positivity)]
+    have hG_small : ‖G (σ : ℂ)‖ < A / 8 := by
+      have h := hb₁ (by rw [hdist_σ]; linarith [min_le_left δ₁ δ₂])
+      rwa [Complex.dist_eq, hG1, sub_zero] at h
+    have hzu_big : 1 / 2 < ‖zetaResidueUnit (σ : ℂ)‖ := by
+      have h := hb₂ (by rw [hdist_σ]; linarith [min_le_right δ₁ δ₂])
+      rw [Complex.dist_eq, zetaResidueUnit_one] at h
+      have htri : (1 : ℝ) ≤ ‖zetaResidueUnit (σ : ℂ)‖ + ‖zetaResidueUnit (σ : ℂ) - 1‖ := by
+        calc (1 : ℝ) = ‖(1 : ℂ)‖ := norm_one.symm
+          _ = ‖zetaResidueUnit (σ : ℂ) - (zetaResidueUnit (σ : ℂ) - 1)‖ := by ring_nf
+          _ ≤ ‖zetaResidueUnit (σ : ℂ)‖ + ‖zetaResidueUnit (σ : ℂ) - 1‖ := norm_sub_le _ _
+      linarith
+    have hprod_norm : ‖zetaResidueUnit (σ : ℂ)‖ ≤ 1 / 4 := by
+      rw [← hGL_one (σ : ℂ) (by simpa using hσ1), norm_mul]
+      calc ‖G (σ : ℂ)‖ * ‖LSeries (fun n => (sSmoothR S n : ℂ)) (σ : ℂ)‖
+          ≤ (A / 8) * (2 / A) :=
+            mul_le_mul hG_small.le (hL_norm_le σ hσ1.le) (norm_nonneg _) (by positivity)
+        _ = 1 / 4 := by field_simp; ring
+    linarith
+  -- Step 2: Critical abscissa `σ_c` of `LSeries (sSmoothR S)` above `1/2`.
+  set T : Set ℝ := {σ : ℝ | 1 / 2 < σ ∧ LSeriesSummable (fun n => (sSmoothR S n : ℂ)) (σ : ℂ)}
+  have h1_mem : (1 : ℝ) ∈ T := ⟨by norm_num, by simpa using hLS_one⟩
+  have hT_ne : T.Nonempty := ⟨1, h1_mem⟩
+  have hT_bdd : BddBelow T := ⟨1 / 2, fun _ hσ => hσ.1.le⟩
+  set σ_c : ℝ := sInf T
+  have hσ_c_ge : 1 / 2 ≤ σ_c := le_csInf hT_ne fun _ hσ => hσ.1.le
+  have hσ_c_le1 : σ_c ≤ 1 := csInf_le hT_bdd h1_mem
+  have habs_le : LSeries.abscissaOfAbsConv (fun n => (sSmoothR S n : ℂ)) ≤ (σ_c : EReal) := by
+    refine LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable fun y hy => ?_
+    have hy' : σ_c < y := by exact_mod_cast hy
+    obtain ⟨σ₀, hσ₀, hlt⟩ := exists_lt_of_csInf_lt hT_ne hy'
+    exact hσ₀.2.of_re_le_re (by simpa using hlt.le)
+  have hL_diff : DifferentiableOn ℂ (LSeries (fun n => (sSmoothR S n : ℂ)))
+      {s : ℂ | σ_c < s.re} := by
+    intro s hs
+    exact (LSeries_hasDerivAt (lt_of_le_of_lt habs_le (by exact_mod_cast hs))).differentiableAt.differentiableWithinAt
+  have hG_diff_σ : DifferentiableOn ℂ G {s : ℂ | σ_c < s.re} :=
+    hGd.mono fun _ hs => lt_of_le_of_lt hσ_c_ge hs
+  have hGL_all : ∀ s : ℂ, σ_c < s.re →
+      G s * LSeries (fun n => (sSmoothR S n : ℂ)) s = zetaResidueUnit s :=
+    eqOn_halfPlane_of_le_one hσ_c_le1 (hG_diff_σ.mul hL_diff)
+      (fun s _ => (analyticAt_zetaResidueUnit s).differentiableAt.differentiableWithinAt) hGL_one
+  have hdom : ∀ ρ : ℂ, 1 / 2 < ρ.re → ρ ≠ 1 → G ρ = 0 → riemannZeta ρ ≠ 0 → ρ.re ≤ σ_c := by
+    intro ρ _ hρ1 hGρ hζρ
+    by_contra hgt
+    push Not at hgt
+    have hid := hGL_all ρ hgt
+    rw [hGρ, zero_mul] at hid
+    have hzu : zetaResidueUnit ρ = (ρ - 1) * riemannZeta ρ := by
+      simp [zetaResidueUnit, Function.update_of_ne hρ1]
+    exact mul_ne_zero (sub_ne_zero.mpr hρ1) hζρ (hzu ▸ hid.symm)
+  -- Extract one fake zero from `hf` (uniqueness of `G` transfers it to our `G`).
+  obtain ⟨G₀, hG₀d, hG₀eq, ρ₀, hρ₀re, hρ₀1, hG₀0, hζ₀⟩ := hf.2.2.2.2
+  have hGG₀ : G ρ₀ = 0 := by
+    rw [eqOn_halfPlane_of_eq_on_one hGd hG₀d
+      (fun s hs => (hGeq s hs).trans (hG₀eq s hs).symm) hρ₀re]
+    exact hG₀0
+  have hσ_c_gt : 1 / 2 < σ_c := lt_of_lt_of_le hρ₀re (hdom ρ₀ hρ₀re hρ₀1 hGG₀ hζ₀)
+  -- Step 3: `G (σ_c : ℂ) = 0` via `landau_local_summability_transfer`.
+  have hG_σ_c : G (σ_c : ℂ) = 0 := by
+    by_contra hGne
+    have hGd_c : DifferentiableAt ℂ G (σ_c : ℂ) :=
+      hGd.differentiableAt (hU_half.mem_nhds (by simpa using hσ_c_gt))
+    obtain ⟨r, hr0, hball⟩ := Metric.continuousAt_iff.mp hGd_c.continuousAt
+      (‖G (σ_c : ℂ)‖ / 2) (half_pos (norm_pos_iff.mpr hGne))
+    have hG_ball : ∀ z : ℂ, dist z (σ_c : ℂ) < r → G z ≠ 0 := by
+      intro z hz h0
+      have h := hball hz
+      rw [Complex.dist_eq, h0, zero_sub, norm_neg] at h
+      linarith [norm_nonneg (G (σ_c : ℂ))]
+    set δ : ℝ := min (r / 4) ((σ_c - 1 / 2) / 4)
+    have hδ0 : 0 < δ := lt_min (by positivity) (by linarith)
+    set σ₁ : ℝ := σ_c + δ / 2
+    set h : ℝ := δ / 2
+    set R : NNReal := (2 * δ).toNNReal
+    have hRval : (R : ℝ) = 2 * δ := Real.coe_toNNReal _ (by positivity)
+    have hLS_σ₁ : LSeriesSummable (fun n => (sSmoothR S n : ℂ)) (σ₁ : ℂ) :=
+      LSeriesSummable_of_abscissaOfAbsConv_lt_re
+        (lt_of_le_of_lt habs_le (by simp [σ₁]; exact_mod_cast (by linarith : σ_c < σ_c + δ / 2)))
+    let F_loc : ℂ → ℂ := fun z =>
+      open Classical in if σ_c < z.re then LSeries (fun n => (sSmoothR S n : ℂ)) z
+      else zetaResidueUnit z / G z
+    have hF_diff : DifferentiableOn ℂ F_loc
+        (Metric.closedBall ((σ₁ + h : ℝ) : ℂ) (R : ℝ)) := by
+      have hdiv_diff : DifferentiableOn ℂ (fun z => zetaResidueUnit z / G z)
+          (Metric.closedBall ((σ₁ + h : ℝ) : ℂ) (R : ℝ)) := by
+        intro z hz
+        have hdist_z : dist z (σ_c : ℂ) ≤ 3 * δ := by
+          calc dist z (σ_c : ℂ)
+              ≤ dist z ((σ₁ + h : ℝ) : ℂ) + dist ((σ₁ + h : ℝ) : ℂ) (σ_c : ℂ) :=
+                dist_triangle _ _ _
+            _ ≤ 2 * δ + δ := by
+                refine add_le_add (by rwa [← hRval, ← Metric.mem_closedBall]) ?_
+                rw [Complex.dist_eq,
+                  show ((σ₁ + h : ℝ) : ℂ) - (σ_c : ℂ) = ((δ : ℝ) : ℂ) by
+                    dsimp [σ₁, h]; push_cast; ring,
+                  Complex.norm_real, Real.norm_of_nonneg hδ0.le]
+            _ = 3 * δ := by ring
+        have hzr : dist z (σ_c : ℂ) < r := by linarith [min_le_left (r / 4) ((σ_c - 1 / 2) / 4)]
+        have hz_re : 1 / 2 < z.re := by
+          have h1 := (Complex.abs_re_le_norm (z - (σ_c : ℂ))).trans
+            (Complex.dist_eq z (σ_c : ℂ) ▸ hdist_z)
+          simp only [Complex.sub_re, Complex.ofReal_re] at h1
+          linarith [(abs_le.mp h1).1, min_le_right (r / 4) ((σ_c - 1 / 2) / 4)]
+        exact ((analyticAt_zetaResidueUnit z).differentiableAt.div
+          (hGd.differentiableAt (hU_half.mem_nhds hz_re)) (hG_ball z hzr)).differentiableWithinAt
+      refine hdiv_diff.congr fun z hz => ?_
+      have hdist_z : dist z (σ_c : ℂ) ≤ 3 * δ := by
+        calc dist z (σ_c : ℂ)
+            ≤ dist z ((σ₁ + h : ℝ) : ℂ) + dist ((σ₁ + h : ℝ) : ℂ) (σ_c : ℂ) :=
+              dist_triangle _ _ _
+          _ ≤ 2 * δ + δ := by
+              refine add_le_add (by rwa [← hRval, ← Metric.mem_closedBall]) ?_
+              rw [Complex.dist_eq,
+                show ((σ₁ + h : ℝ) : ℂ) - (σ_c : ℂ) = ((δ : ℝ) : ℂ) by
+                  dsimp [σ₁, h]; push_cast; ring,
+                Complex.norm_real, Real.norm_of_nonneg hδ0.le]
+          _ = 3 * δ := by ring
+      have hGnz : G z ≠ 0 :=
+        hG_ball z (by linarith [min_le_left (r / 4) ((σ_c - 1 / 2) / 4)])
+      dsimp only [F_loc]
+      split_ifs with hgt
+      · exact (eq_div_iff hGnz).mpr (by rw [mul_comm]; exact hGL_all z hgt)
+      · rfl
+    have hagree : ∀ s : ℂ, σ₁ < s.re →
+        F_loc s = LSeries (fun n => (sSmoothR S n : ℂ)) s := by
+      intro s hs
+      dsimp only [F_loc]
+      exact if_pos (by dsimp [σ₁] at hs; linarith)
+    have hLS_left : LSeriesSummable (fun n => (sSmoothR S n : ℂ)) ((σ_c - δ / 2 : ℝ) : ℂ) :=
+      landau_local_summability_transfer (sSmoothR_nonneg S) (by dsimp [h]; positivity)
+        hLS_σ₁ hF_diff hagree (by rw [hRval]; dsimp [σ₁, h]; linarith)
+    have hmem_left : σ_c - δ / 2 ∈ T :=
+      ⟨by linarith [min_le_right (r / 4) ((σ_c - 1 / 2) / 4)], hLS_left⟩
+    linarith [csInf_le hT_bdd hmem_left]
+  have hσ_c_lt1 : σ_c < 1 := lt_of_le_of_ne hσ_c_le1 fun heq1 =>
+    hG1_ne (by simpa [heq1] using hG_σ_c)
+  have hζ_σ_c : riemannZeta (σ_c : ℂ) ≠ 0 :=
+    riemannZeta_ne_zero_of_abs_im_lt_four (by simpa using (by linarith : (0 : ℝ) < σ_c))
+      (by simpa using hσ_c_lt1) (by simp; norm_num)
+  exact ⟨hG1_ne, σ_c, ⟨hσ_c_gt, hσ_c_lt1⟩, hG_σ_c, hζ_σ_c, hdom⟩
+
+/-- Unconditional specialization to `β ≤ 1/2`: every prime-deletion Beurling fake at exponent
+`β ≤ 1/2` automatically has positive density (`pos_density_of_integerNormFakeAt_le_half`), hence
+has a real fake zero `σ_c ∈ (1/2, 1)` dominating the real part of every fake zero. -/
+theorem exists_real_fake_zero_of_keptPrimeSystem_le_half {S : Set ℕ} {β : ℝ} (hβ : β ≤ 1 / 2)
+    (hf : IsIntegerNormFakeAt (keptPrimeSystem S) β)
+    {G : ℂ → ℂ} (hGd : DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re})
+    (hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (keptPrimeSystem S).zetaSeriesC s) :
+    G 1 ≠ 0 ∧
+      ∃ σ_c ∈ Set.Ioo (1 / 2 : ℝ) 1,
+        G (σ_c : ℂ) = 0 ∧
+        riemannZeta (σ_c : ℂ) ≠ 0 ∧
+        ∀ ρ : ℂ, 1 / 2 < ρ.re → ρ ≠ 1 → G ρ = 0 → riemannZeta ρ ≠ 0 → ρ.re ≤ σ_c := by
+  obtain ⟨A, C, _, hC⟩ := hf.2.2.2.1
+  exact exists_real_fake_zero_of_keptPrimeSystem hf (by linarith)
+    (pos_density_of_integerNormFakeAt_le_half hf hβ hC) hC hGd hGeq
+
+/-- **Complete unconditional characterization of the integer-norm Beurling fake remainder
+spectrum.**
 1. **Existence for `β < 1`:** Every exponent `β > 1/2` belongs unconditionally to
    `integerNormFakeExponents` (`Set.Ioi (1/2) ⊆ integerNormFakeExponents`), realized by
    prime-deletion systems `keptPrimeSystem S` whose analytic continuation vanishes at both a real
@@ -1255,13 +1737,15 @@ spectrum).**
 2. **Lower bound, critical-threshold localization, and structural obstructions:**
    Every `β ∈ integerNormFakeExponents` satisfies `0 ≤ β`, so unconditionally
    `sInf integerNormFakeExponents ∈ [0, 1/2]`; every fake at exponent `β ≤ 1/2` has strictly
-   positive density `A > 0` and omits infinitely many rational primes; and no unit-density
-   (`A = 1`) sub-logarithmic integer-norm fake exists (`|N_B(x) - x| = o(log x)` is impossible).
+   positive density `A > 0` and omits infinitely many rational primes; every prime-deletion fake
+   `keptPrimeSystem S` at `β ≤ 1/2` necessarily pays with a real fake zero `σ_c ∈ (1/2, 1)` on or
+   to the right of all its fake zeros; and no unit-density (`A = 1`) sub-logarithmic integer-norm
+   fake exists (`|N_B(x) - x| = o(log x)` is impossible).
 3. **Sub-`1/2` characterization and ZFC frontier dichotomy:**
-   Any zero-free half-plane `{Re z > Θ}` (`1/2 ≤ Θ < 1`) for `ζ` produces a sub-`1/2`
-   prime-deletion fake (`β < 1/2`), reaching every `β > 1/3` under `RiemannHypothesis`; and
-   unconditionally in ZFC, either `zetaZeroAbscissa = 1` (with `zetaAsymptoticAbscissa = 1` and
-   `AsymptoticAbscissaLaw`) or sub-`1/2` integer-norm Beurling fakes exist (`sInf < 1/2`). -/
+   Any zero-free half-plane `{Re z > Θ}` (`Θ < 1`) for `ζ` produces a sub-`1/2` prime-deletion fake
+   (`β < 1/2`), reaching every `β > 1/3` under `RiemannHypothesis`; and unconditionally in ZFC,
+   either `zetaZeroAbscissa = 1` (with `zetaAsymptoticAbscissa = 1` and `AsymptoticAbscissaLaw`) or
+   sub-`1/2` integer-norm Beurling fakes exist (`sInf < 1/2`). -/
 theorem integerNormFake_complete_solution :
     (Set.Ioi (1 / 2 : ℝ) ⊆ integerNormFakeExponents) ∧
     (∀ β > (1 / 2 : ℝ), ∃ (S : Set ℕ) (G : ℂ → ℂ) (ρ₀ ρ₁ : ℂ),
@@ -1275,6 +1759,12 @@ theorem integerNormFake_complete_solution :
     (∀ (B : BeurlingSystem) (β : ℝ), β ≤ 1 / 2 → IsIntegerNormFakeAt B β →
       (∃ A C : ℝ, 0 < A ∧ ∀ x : ℝ, 1 ≤ x → |(B.countBall x : ℝ) - A * x| ≤ C * x ^ β) ∧
       {p : ℕ | p.Prime ∧ ∀ l : B.Label, B.labelNorm l ≠ p}.Infinite) ∧
+    (∀ (S : Set ℕ) (β : ℝ) (G : ℂ → ℂ), β ≤ 1 / 2 →
+      IsIntegerNormFakeAt (keptPrimeSystem S) β →
+      DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re} →
+      (∀ s : ℂ, 1 < s.re → G s = (s - 1) * (keptPrimeSystem S).zetaSeriesC s) →
+      ∃ σ_c ∈ Set.Ioo (1 / 2 : ℝ) 1, G (σ_c : ℂ) = 0 ∧ riemannZeta (σ_c : ℂ) ≠ 0 ∧
+        ∀ ρ : ℂ, 1 / 2 < ρ.re → ρ ≠ 1 → G ρ = 0 → riemannZeta ρ ≠ 0 → ρ.re ≤ σ_c) ∧
     (RiemannHypothesis → Set.Ioi (1 / 3 : ℝ) ⊆ integerNormFakeExponents ∧
       sInf integerNormFakeExponents ≤ 1 / 3) ∧
     ((zetaZeroAbscissa = 1 ∧ zetaAsymptoticAbscissa = 1 ∧ RHTower.AsymptoticAbscissaLaw) ∨
@@ -1288,6 +1778,8 @@ theorem integerNormFake_complete_solution :
       let ⟨_, _, _, ⟨A, C, _, hC⟩, _⟩ := hf
       ⟨⟨A, C, pos_density_of_integerNormFakeAt_le_half hf hβ hC, hC⟩,
         infinite_missing_primes_of_integerNormFakeAt (by linarith) hf⟩,
+    fun _ _ _ hβ hf hGd hGeq =>
+      (exists_real_fake_zero_of_keptPrimeSystem_le_half hβ hf hGd hGeq).2,
     fun hRH => ⟨fun _ hβ => let ⟨S, hf⟩ := exists_integerNormFakeAt_of_riemannHypothesis hRH hβ
       ⟨keptPrimeSystem S, hf⟩,
       csInf_integerNormFakeExponents_le_one_third_of_riemannHypothesis hRH⟩,

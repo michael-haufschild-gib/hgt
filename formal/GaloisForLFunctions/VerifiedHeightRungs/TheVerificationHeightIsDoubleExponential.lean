@@ -19,6 +19,10 @@ open _root_.RHTower
 
 noncomputable section
 
+theorem rpow27_le_exp (k : ℕ) : (27 / 10 : ℝ) ^ k ≤ Real.exp k := by
+  rw [← Real.exp_one_pow]
+  exact pow_le_pow_left₀ (by norm_num) (by have := Real.exp_one_gt_d9; linarith only [this]) k
+
 theorem winE_le {a : ℝ} (ha : 1 ≤ a) : winE a ≤ 600 * Real.exp a := by
   have h1 : Real.sqrt (Real.exp (2 * (a + 2))) = Real.exp 2 * Real.exp a := by
     rw [show 2 * (a + 2) = (a + 2) + (a + 2) by ring, Real.exp_add, Real.sqrt_mul_self (Real.exp_pos _).le,
@@ -73,14 +77,9 @@ theorem winD₀_le {a : ℝ} (ha : 1 ≤ a) : winD₀ a ≤ Real.exp (1300 * Rea
   have h7 : 3 * winE a ≤ Real.exp (80 * Real.exp a) := by
     have h8 : 3 * winE a ≤ 1800 * Real.exp a := by linarith only [hE]
     have h9 : (1800 : ℝ) ≤ Real.exp 8 := by
-      have := Real.add_one_le_exp (1 : ℝ)
-      have e : Real.exp 8 = Real.exp 1 ^ 8 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [e]
-      have h10 : (2 : ℝ) ^ 8 ≤ Real.exp 1 ^ 8 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 8
-      have := Real.exp_one_gt_d9
-      have h11 : (2.7 : ℝ) ^ 8 ≤ Real.exp 1 ^ 8 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 8
-      norm_num at h11
-      linarith only [h11]
+      have h := rpow27_le_exp 8
+      norm_num at h ⊢
+      linarith only [h]
     have h10 : Real.exp a ≤ Real.exp (Real.exp a) := Real.exp_le_exp.2 (by
       have := Real.add_one_le_exp a
       linarith only [this])
@@ -99,12 +98,9 @@ theorem log_term_le {a : ℝ} (ha : 1 ≤ a) :
   have h3 : 1 ≤ Real.exp a := Real.one_le_exp (by linarith only [ha])
   have ha0 : 0 < a := by linarith only [ha]
   have h8000 : (8000 : ℝ) ≤ Real.exp 10 := by
-    have := Real.exp_one_gt_d9
-    have e : Real.exp 10 = Real.exp 1 ^ 10 := by rw [← Real.exp_nat_mul]; norm_num
-    rw [e]
-    have h11 : (2.7 : ℝ) ^ 10 ≤ Real.exp 1 ^ 10 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 10
-    norm_num at h11
-    linarith only [h11]
+    have h := rpow27_le_exp 10
+    norm_num at h ⊢
+    linarith only [h]
   have ha' : a ≤ Real.exp a := by have := Real.add_one_le_exp a; linarith only [this]
   have hT1 := one_le_winT₁ a
   calc 8000 * a * winT₁ a * winD₀ a ≤ Real.exp 10 * Real.exp a * Real.exp (610 * Real.exp a) *
@@ -157,12 +153,9 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
         Real.exp_le_exp.2 (by rw [hC₁]; nlinarith only [hCf, hκ1, hu1])
       linarith only [h1, h2]
     have hc : (9 : ℝ) * 48 ^ 4 * 2 ≤ Real.exp 19 := by
-      have := Real.exp_one_gt_d9
-      have e : Real.exp 19 = Real.exp 1 ^ 19 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [e]
-      have h11 : (2.7 : ℝ) ^ 19 ≤ Real.exp 1 ^ 19 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 19
-      norm_num at h11 ⊢
-      linarith only [h11]
+      have h := rpow27_le_exp 19
+      norm_num at h ⊢
+      linarith only [h]
     have h1 : (spreadFloor a + Real.exp (2 * spreadY a)) / nodeStep a ≤ Real.exp ((C₁ + 20) * u) := by
       rw [div_eq_mul_one_div, hσinv]
       have ha' : a ≤ Real.exp a := by have := Real.add_one_le_exp a; linarith only [this]
@@ -198,12 +191,9 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     have h3 : 2000 * Real.exp a + 1 ≤ Real.exp ((C₁ + 20) * u) := by
       have h4 : 2001 * Real.exp a ≤ Real.exp 8 * Real.exp a := by
         refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-        have := Real.exp_one_gt_d9
-        have e : Real.exp 8 = Real.exp 1 ^ 8 := by rw [← Real.exp_nat_mul]; norm_num
-        rw [e]
-        have h11 : (2.7 : ℝ) ^ 8 ≤ Real.exp 1 ^ 8 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 8
-        norm_num at h11
-        linarith only [h11]
+        have h := rpow27_le_exp 8
+        norm_num at h ⊢
+        linarith only [h]
       rw [← Real.exp_add] at h4
       have h5 : Real.exp (8 + a) ≤ Real.exp ((C₁ + 20) * u) := Real.exp_le_exp.2 (by nlinarith only [hau, hu1, hC₁0])
       linarith only [h4, h5, hea1]
@@ -220,12 +210,9 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
   have hn : (spreadN a : ℝ) = 4 * spreadM a + 3 := by rw [spreadN]; push_cast; ring
   have hK : spreadK a ≤ Real.exp (60 * Λ) := by
     have h48 : (48 : ℝ) ≤ Real.exp 4 := by
-      have := Real.exp_one_gt_d9
-      have e : Real.exp 4 = Real.exp 1 ^ 4 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [e]
-      have h11 : (2.7 : ℝ) ^ 4 ≤ Real.exp 1 ^ 4 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 4
-      norm_num at h11
-      linarith only [h11]
+      have h := rpow27_le_exp 4
+      norm_num at h ⊢
+      linarith only [h]
     have hp : ((48 : ℝ) ^ spreadN a) ^ 2 ≤ Real.exp (8 * spreadN a) := by
       rw [← pow_mul]
       calc (48 : ℝ) ^ (spreadN a * 2) ≤ Real.exp 4 ^ (spreadN a * 2) := pow_le_pow_left₀ (by norm_num) h48 _
@@ -295,10 +282,9 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
     have h2 : Real.exp (612 * Λ) ≤ Real.exp (1970 * Λ) := Real.exp_le_exp.2 (by linarith only [hΛ0])
     have h3 : (1 : ℝ) ≤ Real.exp (1970 * Λ) := Real.one_le_exp (by linarith only [hΛ0])
     have h4 : (11 : ℝ) ≤ Real.exp 3 := by
-      have := Real.exp_one_gt_d9
-      have e : Real.exp 3 = Real.exp 1 ^ 3 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [e]
-      nlinarith only [this]
+      have h := rpow27_le_exp 3
+      norm_num at h ⊢
+      linarith only [h]
     calc den ≤ 11 * Real.exp (1970 * Λ) := by rw [hden]; linarith only [h1, hR, h2, h3]
       _ ≤ Real.exp 3 * Real.exp (1970 * Λ) := mul_le_mul_of_nonneg_right h4 (Real.exp_pos _).le
       _ = Real.exp (3 + 1970 * Λ) := (Real.exp_add _ _).symm
@@ -311,12 +297,9 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
       linarith only [this]
     have he1 : Real.exp 1 ≤ 3 := by have := Real.exp_one_lt_d9; linarith only [this]
     have hc : (2 : ℝ) * (3 * 400 ^ 2) * (24 * 240 * 2) * 1000 ≤ Real.exp 31 := by
-      have := Real.exp_one_gt_d9
-      have e : Real.exp 31 = Real.exp 1 ^ 31 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [e]
-      have h11 : (2.7 : ℝ) ^ 31 ≤ Real.exp 1 ^ 31 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 31
-      norm_num at h11 ⊢
-      linarith only [h11]
+      have h := rpow27_le_exp 31
+      norm_num at h ⊢
+      linarith only [h]
     have ha' : a ≤ Real.exp a := by have := Real.add_one_le_exp a; linarith only [this]
     have hlog30 : 0 ≤ Real.log 3 := Real.log_nonneg (by norm_num)
     unfold winC
@@ -361,12 +344,9 @@ theorem spreadHeight_le : ∃ C : ℝ, ∀ a : ℝ, 1 ≤ a →
   refine hH.trans (Real.exp_le_exp.2 ?_)
   -- `15817 Λ ≤ e^{10} Λ = e^{10 + (C₁ + 21) u} ≤ e^{(C₁ + 31) u}`.
   have h1 : (15817 : ℝ) ≤ Real.exp 10 := by
-    have := Real.exp_one_gt_d9
-    have e : Real.exp 10 = Real.exp 1 ^ 10 := by rw [← Real.exp_nat_mul]; norm_num
-    rw [e]
-    have h11 : (2.7 : ℝ) ^ 10 ≤ Real.exp 1 ^ 10 := pow_le_pow_left₀ (by norm_num) (by linarith only [this]) 10
-    norm_num at h11
-    linarith only [h11]
+    have h := rpow27_le_exp 10
+    norm_num at h ⊢
+    linarith only [h]
   calc 15817 * Λ ≤ Real.exp 10 * Λ := mul_le_mul_of_nonneg_right h1 hΛ0.le
     _ = Real.exp (10 + (C₁ + 21) * u) := by rw [hΛ, Real.exp_add]
     _ ≤ Real.exp ((C₁ + 31) * a ^ ((4 : ℝ) / 3)) := Real.exp_le_exp.2 (by rw [← hu]; nlinarith only [hu1])

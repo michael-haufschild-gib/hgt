@@ -44,7 +44,7 @@ blocks have an exponential deficit; later blocks have summable spline tails.
 
 ## Lean status and gaps
 
-Six full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
+Seven full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
@@ -53,4 +53,6 @@ Six full proof drafts in `SurfaceOfSpecZ/ScaleLocality/`, all unchecked:
 - `TheExponentialInterpolationErrorIsSmallAtDenseGrids`: error `≤1/4`, real part `≥3/4`.
 - `TheCalibratedNodesStayOnASeparatedImaginaryGrid`: positive blocks from explicit grid inequalities.
 
-Growing-grid estimates, spline transfer and the full configuration remain unproved.
+- `TheGrowingImaginaryGridsMeetTheCalibrationBounds`: explicit grid size, contraction and window bounds when `20000 log T≤T^(1/4)`.
+
+Growing-grid limits, spline transfer and the full configuration remain unproved.

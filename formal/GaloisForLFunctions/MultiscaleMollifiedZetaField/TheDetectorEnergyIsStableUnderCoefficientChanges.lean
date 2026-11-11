@@ -51,7 +51,7 @@ private theorem norm_sq_young (z w : ℂ) {ε : ℝ} (hε : 0 < ε) :
     field_simp [hε.ne'] <;> ring
   have hp : 0 ≤ ε * ((1 + ε) * ‖w‖ ^ 2 + (1 + 1 / ε) * ‖z - w‖ ^ 2 -
       (‖w‖ + ‖z - w‖) ^ 2) := by rw [he]; exact sq_nonneg _
-  exact nonneg_of_mul_nonneg_left hp hε
+  exact nonneg_of_mul_nonneg_right hp hε
 
 private theorem detector_sub_coefficients (lam : ℂ) (b c : ℕ → ℂ) (N : ℕ) (s : ℂ) :
     levinsonMollifiedDetector lam b (Finset.Icc 1 N) s -
