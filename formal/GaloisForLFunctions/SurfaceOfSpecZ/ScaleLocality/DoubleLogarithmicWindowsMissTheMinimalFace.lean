@@ -878,7 +878,7 @@ theorem levelWeightBound_dl_le (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
   ring
 
 /-- If `Γ ≥ 8192 y 2^{j+1} exp(ΘU/7)` then `8192 y/Γ⁷ ≤ 2^{-(j+1)} exp(−ΘU)`. -/
-theorem weight_div_pow_seven_le {y U Γ : ℝ} {j : ℕ} (hy : 1 ≤ y) (hU : 0 ≤ U) (hΘ : 0 < Θ)
+theorem weight_div_pow_seven_le {y U Γ : ℝ} {j : ℕ} (hy : 1 ≤ y)
     (hw : 8192 * y * 2 ^ (j + 1) * Real.exp (Θ * U / 7) ≤ Γ) :
     8192 * y / Γ ^ 7 ≤ (1 / 2) ^ (j + 1) * Real.exp (-(Θ * U)) := by
   have hA : 1 ≤ 8192 * y * 2 ^ (j + 1) := by
@@ -976,10 +976,7 @@ def dlRadiusTower (hC : 0 < C) (hΘ : 0 < Θ) : RadiusTower γ_min C Θ where
     refine (levelWeightBound_dl_le hC hΘ (j + 1)).trans ?_
     have hy1 : 1 ≤ levelRadius (dlρ γ_min C Θ (j + 1)) := by
       unfold levelRadius; linarith [Nat.cast_nonneg (α := ℝ) (dlρ γ_min C Θ (j + 1))]
-    have hU : 0 ≤ (dlT γ_min C Θ j : ℝ) + levelRadius (dlρ γ_min C Θ j) := by
-      have := levelRadius_pos (dlρ γ_min C Θ j)
-      positivity
-    exact weight_div_pow_seven_le hy1 hU hΘ (exp_right_le_dlΓ_succ hC j)
+    exact weight_div_pow_seven_le hy1 (exp_right_le_dlΓ_succ hC j)
 
 /-! #### The centres are at most `exp(Γ_k²)` -/
 
@@ -1213,7 +1210,7 @@ theorem dlT_le_exp_sq (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
     rw [dlT_succ, Nat.cast_max, Nat.cast_max, Nat.cast_max]
     refine max_le (max_le ?_ (hstep (k + 1))) (max_le (herr (k + 1)) ?_)
     · -- the previous right end `U_k + 10`
-      have hw := exp_right_le_dlΓ_succ (γ_min := γ_min) hC k
+      have hw := exp_right_le_dlΓ_succ (γ_min := γ_min) (Θ := Θ) hC k
       set U := (dlT γ_min C Θ k : ℝ) + levelRadius (dlρ γ_min C Θ k)
       set Γ := (dlΓ γ_min C Θ (k + 1) : ℝ)
       have hy := levelRadius_pos (dlρ γ_min C Θ (k + 1))
@@ -1230,7 +1227,7 @@ theorem dlT_le_exp_sq (hC : 0 < C) (hΘ : 0 < Θ) (k : ℕ) :
       have hΓΘ := sixteen_div_le_dlΓ (γ_min := γ_min) hC (Θ := Θ) (k + 1)
       have hΘΓ : 16 ≤ Θ * Γ := by rw [div_le_iff₀ hΘ] at hΓΘ; linarith
       have hUΓ : 16 * U ≤ 7 * Γ ^ 2 := by nlinarith
-      have hΓ1 : 1 ≤ Γ := by
+      have hΓ1 : 14 ≤ Γ := by
         have := const_le_dlΓ (γ_min := γ_min) (Θ := Θ) hC (k + 1)
         have := Nat.cast_nonneg (α := ℝ) ⌈γ_min⌉₊
         have := Nat.cast_nonneg (α := ℝ) ⌈16 / Θ⌉₊

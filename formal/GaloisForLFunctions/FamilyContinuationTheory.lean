@@ -35,6 +35,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheQuadraticPhaseIsABicharac
 import GaloisForLFunctions.FamilyContinuationTheory.TheBudgetInTheTwistExponent
 import GaloisForLFunctions.FamilyContinuationTheory.UniformSubpolynomialBoundsForDirichletTwists
 import GaloisForLFunctions.FamilyContinuationTheory.TheShortestGenericTwistFamily
+import GaloisForLFunctions.FamilyContinuationTheory.TheFloorBinBilinearGramIdentity
+import GaloisForLFunctions.FamilyContinuationTheory.TheMetaplecticVoronoiExponentInvariants
 import GaloisForLFunctions.FamilyContinuationTheory.ThePoissonCoefficientSplitsOverCoprimeModuli
 import GaloisForLFunctions.FamilyContinuationTheory.TheCompositeSexticSymbolsAreReciprocal
 import GaloisForLFunctions.FamilyContinuationTheory.TheSexticGaussSumsAreTwistedMultiplicative
@@ -151,4 +153,25 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   multiplicative large sieve), `1` (additive planar sieve / dual diagonal), `9/10` (published
   binding bin), `(5n − 8)/(5(n − 1))` (`22/25` at `n = 6`, trivial floor bin across all `n ≥ 2`
   and both Gram regimes), and `(n − 2)/(n − 1)` (`4/5` at `n = 6`, free reflection-sieve floor).
+* **The floor-bin bilinear signed Gram identity.** Cauchy–Schwarz over the column shell `M` bounds
+  `‖∑_{u ∈ B₀} α(u) ∑_{m ∈ M} b(m) Φ(u, m)‖²` by `(∑_m ‖b(m)‖²)` times the diagonal plus the real
+  part of the signed off-diagonal row correlation `∑_{u₁ ≠ u₂} α(u₁) conj(α(u₂)) G_M(u₁, u₂)`,
+  preserving relative phases across floor-bin rows without zeros right of `½`. Unimodular matched
+  phases, character-group Parseval enlargement, and polynomial-approximant completion saturate at
+  `R₀ = 1`. On the balanced edge at `q = δ/2`, zero-density excess `R = 1 − δ + η` interpolates
+  `((5 + 6η)n − 8)/((5 + 6η)(n − 1))` across `[22/25, 9/10]`, while crossing `< 22/25` requires
+  uniform signed cancellation `R ≤ (3 + ℓ)/(2(1 + 3ℓ)) − δ` (met by `R = (1 − δ)/2` down to
+  `(n − 2)/(n − 1)` for `2 ≤ n ≤ 6`). Under floor-bin exponent `R₀ ∈ [½, 1]`, the minimum of
+  `probeThetaGen` transitions at `R_crit(n) = ½ + 1/n` from `((6 R₀ − 1)n − 8)/((6 R₀ − 1)(n − 1))`
+  to the `lx = 0` boundary curve `signedGramBrokenTheta n R₀`.
+* **Metaplectic Voronoi exponent invariants.** Generalized row reflections `(r, l) ↦ (r, κ r − l)`
+  and row-index summations `(r, l) ↦ (κ' l − r, l)` generate `SL₂(ℝ)` matrices of trace `κ κ' − 2`
+  preserving `κ r² − κ κ' r l + κ' l²` (elliptic for `κ κ' < 4`, parabolic with unique linear
+  invariant `(κ/2) r − l` at `κ κ' = 4`, hyperbolic without nonzero linear invariants and strictly
+  larger dual excess for `κ > 2, κ' = 2`). Unitary Plancherel `L²`-invariance, hybrid slot excess
+  `slotHybridExcess ≥ max(0, (2ℓ − M)/3)` (removing `2ℓ ≤ lx + ly` unconditionally across all
+  `(lx, ly, ℓ, v) ∈ ℝ⁴` for `n ≥ 3`), `k`-variable scaling `k(n − 2)/(n − 1)`, and Weyl-orbit twist
+  circularity lock every Cauchy–Schwarz `L²` Voronoi sieve at `θ ≥ (n − 2)/(n − 1)`, leaving
+  pre-Cauchy–Schwarz bilinear row-column cancellation `sBilin > 0` (`θ ≥ (n − 2)/(n − 1) −
+  (2n/(n − 1)) sBilin`) as the unique escape route below `(n − 2)/(n − 1)`.
 -/

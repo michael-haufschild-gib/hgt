@@ -55,8 +55,8 @@ theorem eventually_uniform_scaled_holomorphicChiPair_jet
   have hselection (t : ι → ℝ) (ht : ∀ᶠ i in l, t i ∈ Icc (a i) (b i)) :
       Tendsto (fun i => iteratedDeriv j (fun z => holomorphicChiPair (z / (L i : ℂ)) (t i)) (C i)) l
         (𝓝 ((2 * (τ : ℂ)) ^ j * Complex.exp (2 * (τ : ℂ) * C₀))) := by
-    have ht∞ : Tendsto t l atTop := by
-      apply tendsto_atTop.2
+    have ht_top : Tendsto t l atTop := by
+      apply Filter.tendsto_atTop.2
       intro M
       filter_upwards [ha.eventually_ge_atTop M, ht] with i hai hti
       exact hai.trans hti.1
@@ -83,7 +83,9 @@ theorem eventually_uniform_scaled_holomorphicChiPair_jet
       obtain ⟨hal, _⟩ := abs_lt.mp hai
       obtain ⟨_, hbu⟩ := abs_lt.mp hbi
       exact abs_lt.mpr ⟨by linarith only [hal, hleft], by linarith only [hbu, hright]⟩
-    exact tendsto_scaled_holomorphicChiPair_jet hL ht∞ hratio hC j
-  simpa only [dist_eq_norm] using eventually_uniform_of_selections hdefault hselection hε
+    exact tendsto_scaled_holomorphicChiPair_jet hL ht_top hratio hC j
+  simpa only [dist_eq_norm] using eventually_uniform_of_selections (β := ℂ)
+    (f := fun i t => iteratedDeriv j (fun z => holomorphicChiPair (z / (L i : ℂ)) t) (C i))
+    hdefault hselection hε
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

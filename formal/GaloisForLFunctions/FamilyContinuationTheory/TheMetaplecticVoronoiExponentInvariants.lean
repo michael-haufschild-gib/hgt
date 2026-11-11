@@ -252,7 +252,8 @@ theorem sum_norm_sq_mulVec_unitary {I : Type*} [Fintype I] [DecidableEq I]
         ∑ j : I, ∑ k : I, conj (A j) * (U.conjTranspose j i * U i k) * A k := by
       intro i
       rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, mul_comm _ (conj _)]
-      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.conjTranspose_apply]
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Matrix.conjTranspose_apply,
+        RCLike.star_def]
       rw [Finset.sum_mul_sum]
       refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => by ring
     simp_rw [hterm]
@@ -315,7 +316,7 @@ theorem reflectedExponent_eq_add_slotHybridExcess (M ℓ v : ℝ) :
   ring
 
 /-- **Universal lower bound on `slotHybridExcess`.** Across all `(M, ℓ, v) ∈ ℝ³`, the hybrid slot
-excess is at least `max 0 ((2ℓ − M)/3)`, and vanishes iff `0 ≤ ℓ ∧ 2ℓ ≤ v ∧ v ≤ M`. -/
+excess is at least `max 0 ((2ℓ − M)/3)`, and vanishes iff `ℓ ≤ v ∧ 2ℓ ≤ v ∧ v ≤ M`. -/
 theorem max_zero_sub_div_three_le_slotHybridExcess (M ℓ v : ℝ) :
     max 0 ((2 * ℓ - M) / 3) ≤ slotHybridExcess M ℓ v := by
   unfold slotHybridExcess hybridSaving
@@ -333,7 +334,7 @@ theorem max_zero_sub_div_three_le_slotHybridExcess (M ℓ v : ℝ) :
     linarith
 
 theorem slotHybridExcess_eq_zero_iff (M ℓ v : ℝ) :
-    slotHybridExcess M ℓ v = 0 ↔ 0 ≤ ℓ ∧ 2 * ℓ ≤ v ∧ v ≤ M := by
+    slotHybridExcess M ℓ v = 0 ↔ ℓ ≤ v ∧ 2 * ℓ ≤ v ∧ v ≤ M := by
   unfold slotHybridExcess hybridSaving
   constructor
   · intro h
@@ -342,15 +343,15 @@ theorem slotHybridExcess_eq_zero_iff (M ℓ v : ℝ) :
     have heq1 : max M v = M := by linarith
     have heq2 : min v (min ℓ ((v + ℓ) / 3)) = ℓ := by linarith
     have hvM : v ≤ M := max_eq_left_iff.mp heq1
-    have hℓv : ℓ ≤ v := by rw [← heq2]; exact min_le_left _ _
-    have hℓ3 : ℓ ≤ (v + ℓ) / 3 := by
-      rw [← heq2]
-      exact (min_le_right _ _).trans (min_le_right _ _)
-    exact ⟨by linarith, by linarith, hvM⟩
-  · rintro ⟨hℓ0, h2ℓv, hvM⟩
+    have hℓv : ℓ ≤ v := heq2 ▸ min_le_left v (min ℓ ((v + ℓ) / 3))
+    have hℓ3 : ℓ ≤ (v + ℓ) / 3 :=
+      calc ℓ = min v (min ℓ ((v + ℓ) / 3)) := heq2.symm
+        _ ≤ (v + ℓ) / 3 := (min_le_right _ _).trans (min_le_right _ _)
+    exact ⟨hℓv, by linarith, hvM⟩
+  · rintro ⟨hℓv, h2ℓv, hvM⟩
     rw [max_eq_left hvM]
     have hmin1 : min ℓ ((v + ℓ) / 3) = ℓ := min_eq_left (by linarith)
-    rw [hmin1, min_eq_right (by linarith)]
+    rw [hmin1, min_eq_right hℓv]
     ring
 
 /-- Effective twist exponent retaining the hybrid slot excess at arbitrary dual scale `v ∈ ℝ`. -/
@@ -443,8 +444,8 @@ theorem probeThetaHybridFree_eq_iff {n lx ly ℓ v : ℝ} (hn : 3 < n) :
           rw [hrew]
           exact div_pos (by linarith) (by linarith)
         linarith
-    rw [hM2ℓ] at hrew
-    have hsub0 : (2 * ℓ - 2 * ℓ + (max 0 (ly - lx) - (ly - lx))) / (2 * n) +
+    rw [hM2ℓ, sub_self, zero_add] at hrew
+    have hsub0 : (max 0 (ly - lx) - (ly - lx)) / (2 * n) +
         slotHybridExcess (lx + ly) ℓ v / 2 = 0 := by linarith
     have hc_nonneg : 0 ≤ (max 0 (ly - lx) - (ly - lx)) / (2 * n) :=
       div_nonneg (by linarith) (by linarith)
@@ -456,11 +457,11 @@ theorem probeThetaHybridFree_eq_iff {n lx ly ℓ v : ℝ} (hn : 3 < n) :
     have hlxly : lx ≤ ly := by
       have : 0 ≤ ly - lx := by rw [← hc0]; exact le_max_left _ _
       linarith
-    obtain ⟨hℓ0, h2ℓv, hvM⟩ := (slotHybridExcess_eq_zero_iff (lx + ly) ℓ v).mp hslot0
-    exact ⟨hlxly, hℓ0, hM2ℓ, by linarith⟩
+    obtain ⟨hℓv, h2ℓv, hvM⟩ := (slotHybridExcess_eq_zero_iff (lx + ly) ℓ v).mp hslot0
+    exact ⟨hlxly, by linarith, hM2ℓ, by linarith⟩
   · rintro ⟨hlxly, hℓ0, hM2ℓ, hv⟩
     have hslot0 : slotHybridExcess (lx + ly) ℓ v = 0 :=
-      (slotHybridExcess_eq_zero_iff (lx + ly) ℓ v).mpr ⟨hℓ0, by linarith, by linarith⟩
+      (slotHybridExcess_eq_zero_iff (lx + ly) ℓ v).mpr ⟨by linarith, by linarith, by linarith⟩
     rw [hslot0]
     unfold lowBoundaryFreeOrder
     rw [max_eq_right (by linarith : 0 ≤ ly - lx)]
@@ -626,9 +627,7 @@ theorem sBilin_thresholds {k n Lx Ly ℓ v sBilin : ℝ} (hk : 1 ≤ k) (hn : 3 
     rw [hlhs] at hineq
     exact le_of_mul_le_mul_left hineq (div_pos (by linarith) hsub)
   · have hineq : (n - 2) / (n - 1) ≤ 2 * n / (n - 1) * sBilin := by linarith
-    have hlhs : (n - 2) / (n - 1) = 2 * n / (n - 1) * (1 / 2 - 1 / n) := by
-      field_simp
-      ring
+    have hlhs : (n - 2) / (n - 1) = 2 * n / (n - 1) * (1 / 2 - 1 / n) := by field_simp
     rw [hlhs] at hineq
     exact le_of_mul_le_mul_left hineq (div_pos (by linarith) hsub)
 
