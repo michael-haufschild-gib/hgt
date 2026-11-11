@@ -218,11 +218,16 @@ def principalRowTerm (x w z : ℂ) (v : HeightOneSpectrum O) (d : Fin 2 × ℕ �
   localTerm (primeGen v) (heckeValue 𝔪 η v.asIdeal) ((v.asIdeal.absNorm : ℂ) ^ (-x))
     ((v.asIdeal.absNorm : ℂ) ^ (-w)) ((v.asIdeal.absNorm : ℂ) ^ (-(6 * z))) 1 0 d
 
+/-- The local terms of the principal row on the good primes. -/
+def principalRowFun (S : Finset (HeightOneSpectrum O)) (x w z : ℂ)
+    (v : {v : HeightOneSpectrum O // v ∉ S}) (d : Fin 2 × ℕ × ℕ × ℕ) : ℂ :=
+  principalRowTerm 𝔪 η x w z v.1 d
+
 /-- **The principal row of the Poisson series**: the multiplicative series over the exponent
 vectors supported on the good primes. -/
 def principalRow (S : Finset (HeightOneSpectrum O)) (x w z : ℂ) : ℂ :=
   ∑' g : {v : HeightOneSpectrum O // v ∉ S} →₀ (Fin 2 × ℕ × ℕ × ℕ),
-    eulerTerm (fun v d => principalRowTerm 𝔪 η x w z v.1 d) g
+    eulerTerm (principalRowFun 𝔪 η S x w z) g
 
 /-- The local sum of the principal row at a good prime. -/
 def principalRowLocal (x w z : ℂ) (v : HeightOneSpectrum O) : ℂ :=
@@ -333,8 +338,7 @@ theorem hasProd_principalRow (S : Finset (HeightOneSpectrum O))
     fun v => ⟨fun h => v.2 (hS _ (Or.inl h)), fun h => v.2 (hS _ (Or.inr h))⟩
   have facts := fun v : {v : HeightOneSpectrum O // v ∉ S} =>
     principalRowTerm_facts 𝔪 η (good v).1 (good v).2 hx hw hz
-  have hf0 : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
-      principalRowTerm 𝔪 η x w z v.1 0 = 1 := by
+  have hf0 : ∀ v : {v : HeightOneSpectrum O // v ∉ S}, principalRowFun 𝔪 η S x w z v 0 = 1 := by
     intro v
     obtain ⟨hspan, hprim⟩ := primeGen_spec v.1 (good v).1
     haveI := isMaximal_span_primeGen v.1 (good v).1
@@ -343,20 +347,155 @@ theorem hasProd_principalRow (S : Finset (HeightOneSpectrum O))
     show localTerm _ _ _ _ _ 1 0 (0, 0, 0, 0) = 1
     rw [localTerm_T0 (primeGen v.1) hlam' h2' hprim _ _ _ _ (one_not_mem_span_prime _) 0 0 0,
       if_pos rfl, pow_zero]
+  have hs : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
+      Summable fun d => ‖principalRowFun 𝔪 η S x w z v d‖ := fun v => (facts v).2.1
+  have hle : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
+      ∑' d, ‖principalRowFun 𝔪 η S x w z v d‖ - 1 ≤ 8 * (v.1.asIdeal.absNorm : ℝ) ^ (-(2 : ℝ)) :=
+    fun v => (facts v).2.2
+  have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+      8 * (v.1.asIdeal.absNorm : ℝ) ^ (-(2 : ℝ)) :=
+    ((numberField_summable_finitePlace_absNorm_rpow (K := K) (σ := 2) (by norm_num)).subtype
+      _).mul_left 8
   have hb : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
-      ∑' d, ‖principalRowTerm 𝔪 η x w z v.1 d‖ - 1 := by
-    refine Summable.of_nonneg_of_le (fun v => sub_nonneg.mpr ?_) (fun v => (facts v).2.2)
-      (((numberField_summable_finitePlace_absNorm_rpow (K := K) (σ := 2) (by norm_num)).subtype
-        _).mul_left 8)
-    exact one_le_tsum_norm (fun v d => principalRowTerm 𝔪 η x w z v.1 d) hf0
-      (fun v => (facts v).2.1) v
-  have h := hasProd_tsum_eulerTerm (fun v d => principalRowTerm 𝔪 η x w z v.1 d) hf0
-    (fun v => (facts v).2.1) hb
+      ∑' d, ‖principalRowFun 𝔪 η S x w z v d‖ - 1 :=
+    Summable.of_nonneg_of_le
+      (fun v => sub_nonneg.mpr (one_le_tsum_norm (principalRowFun 𝔪 η S x w z) hf0 hs v)) hle hmaj
+  have h := hasProd_tsum_eulerTerm (principalRowFun 𝔪 η S x w z) hf0 hs hb
   have hloc : (fun v : {v : HeightOneSpectrum O // v ∉ S} =>
-      ∑' d, principalRowTerm 𝔪 η x w z v.1 d) =
+      ∑' d, principalRowFun 𝔪 η S x w z v d) =
         fun v => principalRowLocal 𝔪 η x w z v.1 := funext fun v => (facts v).1.tsum_eq
   rw [hloc] at h
   exact h
+
+/-! ### The factorization of the principal row -/
+
+/-- The partial Dedekind zeta function `ζ^S(s) = ∏_{v ∉ S} (1 − N(v)^{−s})⁻¹`. -/
+def zetaS (S : Finset (HeightOneSpectrum O)) (s : ℂ) : ℂ :=
+  ∏' v : {v : HeightOneSpectrum O // v ∉ S}, (1 - (v.1.asIdeal.absNorm : ℂ) ^ (-s))⁻¹
+
+/-- The reciprocal of the partial Hecke `L`-function, `∏_{v ∉ S} (1 − η(v) N(v)^{−s})`. -/
+def heckeInvS (S : Finset (HeightOneSpectrum O)) (s : ℂ) : ℂ :=
+  ∏' v : {v : HeightOneSpectrum O // v ∉ S},
+    (1 - heckeValue 𝔪 η v.1.asIdeal * (v.1.asIdeal.absNorm : ℂ) ^ (-s))
+
+/-- The correction of the principal row, `∏_{v ∉ S} H_v(x, w, z)`. -/
+def principalRowCorrection (S : Finset (HeightOneSpectrum O)) (x w z : ℂ) : ℂ :=
+  ∏' v : {v : HeightOneSpectrum O // v ∉ S},
+    principalH (primeQ (primeGen v.1)) (primeKappa (primeGen v.1) (heckeValue 𝔪 η v.1.asIdeal))
+      (heckeValue 𝔪 η v.1.asIdeal) ((v.1.asIdeal.absNorm : ℂ) ^ (-x))
+      ((v.1.asIdeal.absNorm : ℂ) ^ (-w)) ((v.1.asIdeal.absNorm : ℂ) ^ (-(6 * z)))
+
+/-- The local sum is the product of the three scalar Euler factors and the correction. -/
+theorem principalSum_eq_mul (Q κ ηp X Y V : ℂ) (hV : 1 - V ≠ 0) (hY : 1 - Y ≠ 0)
+    (hD : 1 - ηp * X ≠ 0) :
+    principalSum Q κ ηp X Y V =
+      (1 - V)⁻¹ * (1 - Y)⁻¹ * (1 - ηp * X) * principalH Q κ ηp X Y V := by
+  unfold principalH
+  field_simp
+
+/-- A family `1 − a_v` with `Σ ‖a_v‖ < ∞` is multipliable, and so is its inverse when
+`‖a_v‖ ≤ 1/2`. -/
+theorem multipliable_one_sub {ι : Type*} {a : ι → ℂ} (ha : Summable fun i => ‖a i‖) :
+    Multipliable fun i => 1 - a i := by
+  simpa [sub_eq_add_neg] using Complex.multipliable_one_add_of_summable
+    (f := fun i => -a i) (by simpa using ha.of_norm.neg)
+
+theorem multipliable_one_sub_inv {ι : Type*} {a : ι → ℂ} (ha : Summable fun i => ‖a i‖)
+    (hhalf : ∀ i, ‖a i‖ ≤ 1 / 2) : Multipliable fun i => (1 - a i)⁻¹ := by
+  have hne : ∀ i, 1 - a i ≠ 0 := fun i h => by
+    have := hhalf i
+    rw [show a i = 1 by linear_combination -h, norm_one] at this
+    norm_num at this
+  have hval : ∀ i, (1 - a i)⁻¹ = 1 + a i * (1 - a i)⁻¹ := fun i => by
+    field_simp [hne i]
+    ring
+  have hbd : ∀ i, ‖a i * (1 - a i)⁻¹‖ ≤ 2 * ‖a i‖ := fun i => by
+    rw [norm_mul, norm_inv]
+    have hlow : 1 / 2 ≤ ‖1 - a i‖ := by
+      have := norm_sub_norm_le (1 : ℂ) (a i)
+      rw [norm_one] at this
+      linarith [hhalf i]
+    calc ‖a i‖ * ‖1 - a i‖⁻¹ ≤ ‖a i‖ * 2 := by
+          gcongr
+          rw [inv_le_comm₀ (by linarith) (by norm_num)]
+          linarith
+      _ = 2 * ‖a i‖ := by ring
+  simp_rw [hval]
+  exact Complex.multipliable_one_add_of_summable
+    ((ha.mul_left 2).of_nonneg_of_le (fun i => norm_nonneg _) hbd).of_norm
+
+/-- **The principal row factors** on `Re x ≥ 3`, `Re w ≥ 3`, `Re z ≥ 2`:
+`F₁ = ζ^S(6z) ζ^S(w) L^S(x, η)⁻¹ ∏_{v ∉ S} H_v`. -/
+theorem principalRow_eq (S : Finset (HeightOneSpectrum O))
+    (hS : ∀ v : HeightOneSpectrum O, (lambda ∈ v.asIdeal ∨ (2 : O) ∈ v.asIdeal) → v ∈ S)
+    {x w z : ℂ} (hx : 3 ≤ x.re) (hw : 3 ≤ w.re) (hz : 2 ≤ z.re) :
+    principalRow 𝔪 η S x w z =
+      zetaS S (6 * z) * zetaS S w * heckeInvS 𝔪 η S x * principalRowCorrection 𝔪 η S x w z := by
+  -- the three scalar families and their summable majorants
+  set n : {v : HeightOneSpectrum O // v ∉ S} → ℕ := fun v => v.1.asIdeal.absNorm
+  have hn2 : ∀ v, 2 ≤ n v := fun v => ArtinMertens.two_le_absNorm_of_isPrime v.1.isPrime v.1.ne_bot
+  have hmaj : ∀ {a : ℝ}, 1 < a → Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+      (n v : ℝ) ^ (-a) := fun ha =>
+    (numberField_summable_finitePlace_absNorm_rpow (K := K) ha).subtype _
+  have hsmall : ∀ (v : {v : HeightOneSpectrum O // v ∉ S}) {a : ℝ}, 1 ≤ a →
+      (n v : ℝ) ^ (-a) ≤ 1 / 2 := fun v a ha => by
+    have h2 : (2 : ℝ) ≤ n v := by exact_mod_cast hn2 v
+    calc (n v : ℝ) ^ (-a) ≤ (n v : ℝ) ^ (-(1 : ℝ)) :=
+          Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith)
+      _ = (n v : ℝ)⁻¹ := Real.rpow_neg_one _
+      _ ≤ 1 / 2 := by rw [inv_le_comm₀ (by linarith) (by norm_num)]; linarith
+  have hV : ∀ v, ‖(n v : ℂ) ^ (-(6 * z))‖ ≤ (n v : ℝ) ^ (-(12 : ℝ)) := fun v =>
+    norm_natCast_cpow_neg_le (by linarith [hn2 v]) (by simp [Complex.mul_re]; linarith)
+  have hY : ∀ v, ‖(n v : ℂ) ^ (-w)‖ ≤ (n v : ℝ) ^ (-(3 : ℝ)) := fun v =>
+    norm_natCast_cpow_neg_le (by linarith [hn2 v]) hw
+  have hD : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
+      ‖heckeValue 𝔪 η v.1.asIdeal * (n v : ℂ) ^ (-x)‖ ≤ (n v : ℝ) ^ (-(3 : ℝ)) := fun v => by
+    rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (norm_heckeValue_le_one 𝔪 η _)).trans
+      (norm_natCast_cpow_neg_le (by linarith [hn2 v]) hx)
+  have sV : Summable fun v => ‖(n v : ℂ) ^ (-(6 * z))‖ :=
+    (hmaj (by norm_num)).of_nonneg_of_le (fun _ => norm_nonneg _) hV
+  have sY : Summable fun v => ‖(n v : ℂ) ^ (-w)‖ :=
+    (hmaj (by norm_num)).of_nonneg_of_le (fun _ => norm_nonneg _) hY
+  have sD : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+      ‖heckeValue 𝔪 η v.1.asIdeal * (n v : ℂ) ^ (-x)‖ :=
+    (hmaj (by norm_num)).of_nonneg_of_le (fun _ => norm_nonneg _) hD
+  have mV := multipliable_one_sub_inv sV fun v => (hV v).trans (hsmall v (by norm_num))
+  have mY := multipliable_one_sub_inv sY fun v => (hY v).trans (hsmall v (by norm_num))
+  have mD := multipliable_one_sub sD
+  have mVi := multipliable_one_sub sV
+  have mYi := multipliable_one_sub sY
+  have mDi := multipliable_one_sub_inv sD fun v => (hD v).trans (hsmall v (by norm_num))
+  have hP := hasProd_principalRow 𝔪 η S hS hx hw hz
+  -- pointwise factorization
+  have hne : ∀ (v : {v : HeightOneSpectrum O // v ∉ S}) (a : ℂ), ‖a‖ ≤ 1 / 2 → 1 - a ≠ 0 :=
+    fun v a ha h => by
+      rw [show a = 1 by linear_combination -h, norm_one] at ha
+      norm_num at ha
+  have hpt : ∀ v : {v : HeightOneSpectrum O // v ∉ S}, principalRowLocal 𝔪 η x w z v.1 =
+      (1 - (n v : ℂ) ^ (-(6 * z)))⁻¹ * (1 - (n v : ℂ) ^ (-w))⁻¹ *
+        (1 - heckeValue 𝔪 η v.1.asIdeal * (n v : ℂ) ^ (-x)) *
+          principalH (primeQ (primeGen v.1)) (primeKappa (primeGen v.1)
+            (heckeValue 𝔪 η v.1.asIdeal)) (heckeValue 𝔪 η v.1.asIdeal) ((n v : ℂ) ^ (-x))
+            ((n v : ℂ) ^ (-w)) ((n v : ℂ) ^ (-(6 * z))) := fun v =>
+    principalSum_eq_mul _ _ _ _ _ _ (hne v _ ((hV v).trans (hsmall v (by norm_num))))
+      (hne v _ ((hY v).trans (hsmall v (by norm_num))))
+      (hne v _ ((hD v).trans (hsmall v (by norm_num))))
+  -- the correction is multipliable: it is the local sum times three multipliable families
+  have mH : Multipliable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+      principalH (primeQ (primeGen v.1)) (primeKappa (primeGen v.1)
+        (heckeValue 𝔪 η v.1.asIdeal)) (heckeValue 𝔪 η v.1.asIdeal) ((n v : ℂ) ^ (-x))
+        ((n v : ℂ) ^ (-w)) ((n v : ℂ) ^ (-(6 * z))) := by
+    have hm := ((hP.multipliable.mul mVi).mul mYi).mul mDi
+    refine hm.congr fun v => ?_
+    rw [hpt v]
+    have h1 := hne v _ ((hV v).trans (hsmall v (by norm_num)))
+    have h2 := hne v _ ((hY v).trans (hsmall v (by norm_num)))
+    have h3 := hne v _ ((hD v).trans (hsmall v (by norm_num)))
+    field_simp
+  rw [← hP.tprod_eq, tprod_congr hpt, Multipliable.tprod_mul ((mV.mul mY).mul mD) mH,
+    Multipliable.tprod_mul (mV.mul mY) mD, Multipliable.tprod_mul mV mY]
+  rfl
 
 end Global
 

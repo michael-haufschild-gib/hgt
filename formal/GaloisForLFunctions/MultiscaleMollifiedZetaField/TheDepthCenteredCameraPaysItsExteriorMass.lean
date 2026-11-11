@@ -146,7 +146,7 @@ theorem sum_widthCenteredCamera_exterior_le
     have hm := mul_le_mul_of_nonneg_left h (Nat.cast_nonneg (zetaZeroConfig.mult ρ))
     have he : ((ρ : ℂ).im - t) ^ 2 = (t - (ρ : ℂ).im) ^ 2 := by ring
     rw [he] at hm
-    convert hm using 1 <;> ring
+    simpa only [mul_assoc, mul_left_comm, mul_comm] using hm
   calc
     _ ≤ ∑ ρ ∈ F, (profileMass v * ((1 + g ^ 2) / (δ ^ 2 * g ^ 2))) *
         ((zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (t - (ρ : ℂ).im) ^ 2))) :=
@@ -187,7 +187,7 @@ theorem sum_widthCenteredCamera_exterior_le_deep_gap
           ((zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (t - (ρ : ℂ).im) ^ 2))) := by
       have hp : (ρ : ℂ).re - 1 / 2 ≤ zetaZeroWidth - d :=
         (not_le.mp (Finset.mem_filter.mp hρ).2).le
-      have hn := norm_paperFT_depthCenteredCamera_le_of_shallow hv hsupp hδ0 hy hd hp
+      have hn := norm_paperFT_depthCenteredCamera_le_of_shallow hv hsupp hδ0 hy hd hp (t := t)
       have hk : lorentzKernel δ ((ρ : ℂ).im - t) ≤ 1 / (1 + (t - (ρ : ℂ).im) ^ 2) := by
         unfold lorentzKernel
         apply one_div_le_one_div_of_le (by positivity)
@@ -198,7 +198,7 @@ theorem sum_widthCenteredCamera_exterior_le_deep_gap
         (hn.trans (mul_le_mul_of_nonneg_left hk
           (mul_nonneg (profileMass_nonneg v) (Real.exp_pos _).le)))
         (Nat.cast_nonneg (zetaZeroConfig.mult ρ))
-      convert h using 1 <;> ring
+      simpa only [mul_assoc, mul_left_comm, mul_comm] using h
     calc
       _ ≤ ∑ ρ ∈ G, (profileMass v * Real.exp (-(d * (y - δ)))) *
           ((zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (t - (ρ : ℂ).im) ^ 2))) :=
@@ -240,9 +240,9 @@ theorem summable_widthCenteredCamera
     (fun _ => norm_nonneg _) fun ρ => ?_
   rw [norm_mul, Complex.norm_natCast]
   have h := mul_le_mul_of_nonneg_left
-    (norm_paperFT_widthCenteredCamera_le hv hsupp (lt_of_lt_of_le one_pos hδ) hy ρ)
+    (norm_paperFT_widthCenteredCamera_le hv hsupp (lt_of_lt_of_le one_pos hδ) hy ρ (t := t))
     (Nat.cast_nonneg (zetaZeroConfig.mult ρ))
-  convert h using 1 <;> ring
+  simpa only [mul_assoc, mul_left_comm, mul_comm] using h
 
 /-- On a dyadic height interval the complete exterior mass is `O(1/log T)`
 when the camera width is `c log T`. -/
@@ -276,6 +276,6 @@ theorem sum_widthCenteredCamera_exterior_le_inv_log
         (8 * (xiLineTwoLogDerivConstant + 2) * Real.log T) :=
       mul_le_mul_of_nonneg_left hunit
         (mul_nonneg (profileMass_nonneg v) (by positivity))
-    _ = _ := by field_simp [hc.ne', hg.ne', hL0.ne']; ring
+    _ = _ := by field_simp [hc.ne', hg.ne', hL0.ne']
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

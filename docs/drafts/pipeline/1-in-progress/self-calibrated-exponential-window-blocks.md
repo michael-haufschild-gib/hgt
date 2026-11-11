@@ -45,38 +45,17 @@ Normalize each entire reflected block by its upper depth bound and apply
 `tsum_ge_of_top_window` with zero second component. Quadratic mass tending
 to zero supplies both tempering and the required future-tail weights.
 
-## Lean status and gaps
+## Lean status
 
-Eighteen proof modules in `SurfaceOfSpecZ/ScaleLocality/`. The first three calibration modules passed Lean; the remaining fifteen are unchecked:
+Eight modules in `SurfaceOfSpecZ/ScaleLocality/`; the first five passed Lean.
 
 - `TheLogarithmsOfInterpolationWeightsAreStable`: exact factor identity and `6M/s` bound.
 - `TheInterpolationWeightsCanBeExponentialCoefficients`: contraction with explicit bounds.
 - `TheInterpolationWeightsAdmitNearbyLogarithms`: logarithm data from geometric bounds.
 - `TheCalibratedExponentialBlockApproximatesAConstant`: factorial interpolation error.
 - `TheExponentialInterpolationErrorIsSmallAtDenseGrids`: error `≤1/4`, real part `≥3/4`.
-- `TheCalibratedNodesStayOnASeparatedImaginaryGrid`: positive blocks from explicit grid inequalities.
+- `TheSublogarithmicGridsHaveVanishingNormalizedDensity`: grid geometry, calibration inequalities, vanishing quadratic mass and logarithmic density.
+- `TheReflectedCalibratedBlocksHavePositiveWindows`: positive spline smoothing, coefficient bounds, local ordinate counts, cofinal depth bands and reflected block bounds.
+- `EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace`: sparse tower, simple tempered configuration, logarithmic counts, exact spline trace and full prescribed-radius theorem.
 
-- `TheGrowingImaginaryGridsMeetTheCalibrationBounds`: explicit grid size, contraction and window bounds when `20000 log T≤T^(1/4)`.
-
-- `TheSublogarithmicGridsHaveVanishingNormalizedDensity`: eventual blocks, vanishing quadratic mass and logarithmic local density.
-
-- `ThePositiveCalibratedBlocksSurviveSplineSmoothing`: positive-kernel transfer to the squared transform of `boxSpline 1 3`.
-
-- `TheCalibratedBlocksHaveSmallSplineWeights`: inverse-eighth coefficient bound and local ordinate count.
-
-- `TheCalibratedDepthBandsApproachTheTop`: separated positive depth bands with cofinal lower edges.
-
-- `TheReflectedCalibratedBlocksHavePositiveWindows`: reflected block decomposition, positive-window lower bound and normalized mass bound.
-
-- `TheSublogarithmicWindowsLeaveRoomForSparseBlocks`: arbitrary late blocks satisfying small mass, local count and depth-gap domination bounds.
-
-- `TheSparseCalibratedWindowTowerExists`: recursive tower with separated frequency bands, local counts, tempering and future-tail bounds.
-
-- `TheCalibratedTowerIsATemperedConfiguration`: simple reflected `ZeroConfig`, tempering and unattained top.
-
-- `TheCalibratedTowerHasLogarithmicLocalCounts`: unit-window counts and membership in `InClassZ`.
-
-- `TheCalibratedTowerHasItsLiteralSplineTrace`: exact lag-series identity and actual coefficient masses.
-- `EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace`: full prescribed-radius theorem via tower domination.
-
-The complete proof is drafted; checks of modules four through eighteen remain.
+The complete proof is drafted; the last three modules remain under verification.

@@ -43,7 +43,8 @@ A sector cluster of at most `N` zeros within `η` of the top retains signal
 
 Centering has a controlled prime cost: the mean square acquires
 `exp(-2b(y-δ))`; the constant is uniform in `b` and the centre.
-These proofs are written; the centered-camera chain is not yet checked.
+The exterior-mass module is checked in Lean. The near-top Turán receiver,
+prime cost, and explicit-formula remainder are written, not yet checked.
 
 ## Remaining
 
