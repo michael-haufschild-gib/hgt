@@ -21,6 +21,19 @@ namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 def scaledChiConductorError (L t : ℝ) (z : ℂ) : ℂ :=
   critConductorQuot t (z / (L : ℂ)) - 1
 
+/-- The normalized error is holomorphic wherever the shifted heights stay nonzero. -/
+theorem analyticAt_scaledChiConductorError {L t : ℝ} (ht : 0 < t) {z : ℂ}
+    (hz : 2 * |(z / (L : ℂ)).im| < t) :
+    AnalyticAt ℂ (scaledChiConductorError L t) z := by
+  let U : Set ℂ := {w | 2 * |(w / (L : ℂ)).im| < t}
+  have hU : IsOpen U := isOpen_lt (by fun_prop) continuous_const
+  have hf : DifferentiableOn ℂ (scaledChiConductorError L t) U := by
+    intro w hw
+    have hh : 2 * |(w / (L : ℂ)).im| < t := hw
+    exact (((hasDerivAt_critConductorQuot ht hh.le).differentiableAt.comp w
+      (differentiableAt_id.div_const (L : ℂ))).sub_const 1).differentiableWithinAt
+  exact hf.analyticOnNhd hU z hz
+
 /-- Quantitative Cauchy bound on every normalized conductor-error jet. -/
 theorem norm_scaledChiConductorError_jet_le {R L t : ℝ} (hR : 0 ≤ R)
     (hL : R + 2 ≤ L) (ht : 4 ≤ t) {C : ℂ} (hC : ‖C‖ ≤ R) (j : ℕ) :
@@ -75,27 +88,26 @@ theorem norm_scaledChiConductorError_jet_le {R L t : ℝ} (hR : 0 ≤ R)
   simpa only [one_pow, div_one] using hh
 
 /-- All normalized error jets vanish along bounded centres and arbitrarily growing heights. -/
-theorem tendsto_scaledChiConductorError_jet {t : ℕ → ℝ}
-    (ht : Tendsto t atTop atTop) {C : ℕ → ℂ} {R : ℝ} (hR : 0 ≤ R)
-    (hC : ∀ᶠ N : ℕ in atTop, ‖C N‖ ≤ R) (j : ℕ) :
-    Tendsto (fun N => iteratedDeriv j (scaledChiConductorError (Real.log N) (t N)) (C N))
-      atTop (𝓝 0) := by
-  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
-    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have ha : Tendsto (fun N : ℕ => (R + 1) / Real.log N) atTop (𝓝 0) :=
-    tendsto_const_nhds.div_atTop hlog
+theorem tendsto_scaledChiConductorError_jet {ι : Type*} {l : Filter ι}
+    {L t : ι → ℝ} (hL : Tendsto L l atTop)
+    (ht : Tendsto t l atTop) {C : ι → ℂ} {R : ℝ} (hR : 0 ≤ R)
+    (hC : ∀ᶠ N in l, ‖C N‖ ≤ R) (j : ℕ) :
+    Tendsto (fun N => iteratedDeriv j (scaledChiConductorError (L N) (t N)) (C N))
+      l (𝓝 0) := by
+  have ha : Tendsto (fun N : ι => (R + 1) / L N) l (𝓝 0) :=
+    tendsto_const_nhds.div_atTop hL
   have h1 := (ha.const_mul 20).div_atTop ht
-  have h2 : Tendsto (fun N => (52 : ℝ) / (t N) ^ 2) atTop (𝓝 0) := by
-    have hh := ((tendsto_const_nhds : Tendsto (fun _ : ℕ => (52 : ℝ)) atTop (𝓝 52)).div_atTop ht).div_atTop ht
+  have h2 : Tendsto (fun N => (52 : ℝ) / (t N) ^ 2) l (𝓝 0) := by
+    have hh := ((tendsto_const_nhds : Tendsto (fun _ : ι => (52 : ℝ)) l (𝓝 52)).div_atTop ht).div_atTop ht
     simpa only [div_div, pow_two] using hh
-  have hδ : Tendsto (fun N : ℕ => (j.factorial : ℝ) *
-      (Real.exp (((R + 1) / Real.log N) *
-        (20 * ((R + 1) / Real.log N) / t N + 52 / (t N) ^ 2)) - 1)) atTop (𝓝 0) := by
+  have hδ : Tendsto (fun N : ι => (j.factorial : ℝ) *
+      (Real.exp (((R + 1) / L N) *
+        (20 * ((R + 1) / L N) / t N + 52 / (t N) ^ 2)) - 1)) l (𝓝 0) := by
     have hh := (((ha.mul (h1.add h2)).exp).sub tendsto_const_nhds).const_mul (j.factorial : ℝ)
     simpa only [mul_zero, zero_add, Real.exp_zero, sub_self] using hh
   apply Metric.tendsto_nhds.2
   intro ε hε
-  filter_upwards [hlog.eventually_ge_atTop (R + 2), ht.eventually_ge_atTop 4,
+  filter_upwards [hL.eventually_ge_atTop (R + 2), ht.eventually_ge_atTop 4,
     hC, hδ.eventually_lt_const hε] with N hLN htN hCN hsmall
   rw [dist_zero_right]
   exact (norm_scaledChiConductorError_jet_le hR hLN htN hCN j).trans_lt hsmall

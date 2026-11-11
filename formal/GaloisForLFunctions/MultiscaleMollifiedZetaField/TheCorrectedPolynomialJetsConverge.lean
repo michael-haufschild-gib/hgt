@@ -27,8 +27,7 @@ theorem complementPolynomial_eval (P : ℝ[X]) :
 
 theorem complementPolynomial_eval_zero (P : ℝ[X]) (hP : P.eval 0 = 0) :
     (complementPolynomial P).eval 0 = 0 := by
-  rw [complementPolynomial_eval]
-  simp only [logComplementProfile, hP, mul_zero]
+  simp only [complementPolynomial, Polynomial.eval_mul, hP, mul_zero]
 
 /-- The exact first directional derivative of a corrected row. -/
 def correctedProfileFirstJet (P Q : ℝ → ℝ) (N : ℕ) (c v κ ν : ℝ) (k j : ℕ) : ℝ :=
@@ -48,10 +47,11 @@ theorem hasDerivAt_correctedProfileFirstJet_direction
     (P Q : ℝ → ℝ) (N k j : ℕ) (c v κ ν z : ℝ) :
     HasDerivAt (fun y => correctedProfileFirstJet P Q N (c + κ * y) (v + ν * y) κ ν k j)
       (correctedProfileSecondJet P Q N (c + κ * z) (v + ν * z) κ ν k j) z := by
-  exact (((hasDerivAt_correctedProfileJetSum_direction P Q N k (j + 1) c v κ ν z).const_mul κ).add
-    ((hasDerivAt_correctedProfileJetSum_direction P Q N (k + 1) j c v κ ν z).const_mul κ) |>.add
-    ((hasDerivAt_correctedProfileJetSum_direction (logComplementProfile P) Q N k j c v κ ν z).const_mul ν) |>.add
-    ((hasDerivAt_correctedProfileJetSum_direction P (logComplementProfile Q) N k j c v κ ν z).const_mul ν))
+  have h0 := (hasDerivAt_correctedProfileJetSum_direction P Q N k (j + 1) c v κ ν z).const_mul κ
+  have h1 := (hasDerivAt_correctedProfileJetSum_direction P Q N (k + 1) j c v κ ν z).const_mul κ
+  have h2 := (hasDerivAt_correctedProfileJetSum_direction (logComplementProfile P) Q N k j c v κ ν z).const_mul ν
+  have h3 := (hasDerivAt_correctedProfileJetSum_direction P (logComplementProfile Q) N k j c v κ ν z).const_mul ν
+  exact ((h0.add h1).add h2).add h3
 
 /-- First and second jets are the literal derivatives along the specified direction. -/
 theorem correctedProfile_derivatives (P Q : ℝ → ℝ) (N k j : ℕ) (c v κ ν : ℝ) :

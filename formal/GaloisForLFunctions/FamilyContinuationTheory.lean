@@ -31,6 +31,12 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheGaussSumOfAPrimePowerLive
 import GaloisForLFunctions.FamilyContinuationTheory.ThePoissonCoefficientOfAPrimePowerIsOneGaussSum
 import GaloisForLFunctions.FamilyContinuationTheory.TheQuadraticSymbolsOfTheEisensteinIntegersAreReciprocal
 import GaloisForLFunctions.FamilyContinuationTheory.TheSexticSymbolsAreReciprocalUpToTheQuadraticPhase
+import GaloisForLFunctions.FamilyContinuationTheory.TheQuadraticPhaseIsABicharacterModuloFour
+import GaloisForLFunctions.FamilyContinuationTheory.TheBudgetInTheTwistExponent
+import GaloisForLFunctions.FamilyContinuationTheory.UniformSubpolynomialBoundsForDirichletTwists
+import GaloisForLFunctions.FamilyContinuationTheory.TheShortestGenericTwistFamily
+import GaloisForLFunctions.FamilyContinuationTheory.ThePoissonCoefficientSplitsOverCoprimeModuli
+import GaloisForLFunctions.FamilyContinuationTheory.TheCompositeSexticSymbolsAreReciprocal
 
 /-!
 # Family continuation theory
@@ -127,4 +133,19 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
 * **From a half-plane to the line.** The transfer from return-free intervals of the prime orbit to
   bounded prime traces follows from the Riemann hypothesis, and under a zero-free strip it is
   equivalent to it.
+* **The shortest family with a generic mean square.** For smoothed Möbius sums of length `Z`
+  twisted by residue symbols of order `n ≥ 2` up to norm `Z^θ`, the principal `n`-th-power
+  subfamily has generic mean square `O_ε(Z^{θ + 1 + ε})` if and only if
+  `θ ≥ (n/(n − 1))(2 Θ_ζ − 1)`, an attained minimum that vanishes if and only if the Riemann
+  hypothesis holds. Replacing `μ(m)` by `μ(m)²` shifts the exact minimum unconditionally to
+  `n/(n − 1)`: every `θ < n/(n − 1)` requires Möbius sign cancellation across `m`. Over all odd
+  moduli `1 ≤ u ≤ Z^θ` weighted by the Jacobi symbol `(m / u)` (`n = 2`), generic mean square at
+  `θ > 0` puts `Θ_ζ` and `zeroAbscissa χ_{u₀}` for every odd squarefree `u₀ > 1` at most at
+  `min(1, ½ + θ/4)`, and by a conductor-uniform subpolynomial lower bound for primitive Dirichlet
+  `L`-functions, generic mean square holds down to `θ → 0⁺` (and for all `θ ≥ 0`) if and only if
+  GRH holds for `ζ` and all odd primitive real Dirichlet characters. Rewriting the reflection-and-sieve
+  producer class in `θ = (2n/(n − 1))(σ₀ − ½)` gives sharp floors `10/9` (optimal sextic
+  multiplicative large sieve), `1` (additive planar sieve / dual diagonal), `9/10` (published
+  binding bin), `(5n − 8)/(5(n − 1))` (`22/25` at `n = 6`, trivial floor bin across all `n ≥ 2`
+  and both Gram regimes), and `(n − 2)/(n − 1)` (`4/5` at `n = 6`, free reflection-sieve floor).
 -/

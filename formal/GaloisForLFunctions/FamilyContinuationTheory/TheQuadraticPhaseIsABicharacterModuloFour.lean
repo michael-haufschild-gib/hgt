@@ -103,4 +103,139 @@ theorem oddCoord_of_not_mem (a b : ℤ) (h2 : eval a b ∉ Ideal.span {(2 : O)})
   push_cast
   ring
 
+theorem mulFst_cast (a b c d : ℤ) :
+    mulFst (a : ZMod 4) (b : ZMod 4) (c : ZMod 4) (d : ZMod 4) = ((a * c - b * d : ℤ) : ZMod 4) := by
+  simp only [mulFst]; push_cast; ring
+
+theorem mulSnd_cast (a b c d : ℤ) :
+    mulSnd (a : ZMod 4) (b : ZMod 4) (c : ZMod 4) (d : ZMod 4) =
+      ((a * d + b * c - b * d : ℤ) : ZMod 4) := by
+  simp only [mulSnd]; push_cast; ring
+
+/-- `Γ(a + bω) = T(a mod 4, b mod 4)/2`, written with the dual average (no proof argument). -/
+theorem fixedDualAverage_eval (a b : ℤ) :
+    fixedDualAverage (eval a b) = GaussianInt.toComplex (twoGamma (a : ZMod 4) (b : ZMod 4)) / 2 := by
+  rw [fixedDualAverage_formula, twoGamma, map_add, map_add, map_add, map_one, I_zpow_eq_ipow,
+    I_zpow_eq_ipow, I_zpow_eq_ipow]
+  push_cast
+  ring
+
+/-- Every element has integer coordinates. -/
+theorem exists_eval (c : O) : ∃ a b : ℤ, c = eval a b := ⟨_, _, (eval_coords c).symm⟩
+
+/-- **The cocycle.** For odd `c, d, e`: `Γ(cde) Γ(c) Γ(d) Γ(e) = Γ(cd) Γ(ce) Γ(de)`. -/
+theorem gamma_cocycle {c d e : O} (hc : c ∉ Ideal.span {(2 : O)}) (hd : d ∉ Ideal.span {(2 : O)})
+    (he : e ∉ Ideal.span {(2 : O)}) :
+    fixedDualAverage (c * d * e) * fixedDualAverage c * fixedDualAverage d * fixedDualAverage e =
+      fixedDualAverage (c * d) * fixedDualAverage (c * e) * fixedDualAverage (d * e) := by
+  obtain ⟨a₁, b₁, rfl⟩ := exists_eval c
+  obtain ⟨a₂, b₂, rfl⟩ := exists_eval d
+  obtain ⟨a₃, b₃, rfl⟩ := exists_eval e
+  have h := congrArg GaussianInt.toComplex (twoGamma_cocycle (a₁ : ZMod 4) b₁ a₂ b₂ a₃ b₃
+    (oddCoord_of_not_mem _ _ hc) (oddCoord_of_not_mem _ _ hd) (oddCoord_of_not_mem _ _ he))
+  simp only [mulFst_cast, mulSnd_cast, map_mul, map_ofNat] at h
+  simp only [eval_mul, fixedDualAverage_eval]
+  linear_combination h / 16
+
+/-- **The sign.** For odd `c, d`: `Γ(cd)² = Γ(c)² Γ(d)²`. -/
+theorem gamma_mul_sq_eq {c d : O} (hc : c ∉ Ideal.span {(2 : O)}) (hd : d ∉ Ideal.span {(2 : O)}) :
+    fixedDualAverage (c * d) ^ 2 = fixedDualAverage c ^ 2 * fixedDualAverage d ^ 2 := by
+  obtain ⟨a₁, b₁, rfl⟩ := exists_eval c
+  obtain ⟨a₂, b₂, rfl⟩ := exists_eval d
+  have h := congrArg GaussianInt.toComplex (twoGamma_sq_mul (a₁ : ZMod 4) b₁ a₂ b₂
+    (oddCoord_of_not_mem _ _ hc) (oddCoord_of_not_mem _ _ hd))
+  simp only [mulFst_cast, mulSnd_cast, map_mul, map_pow, map_ofNat] at h
+  simp only [eval_mul, fixedDualAverage_eval]
+  linear_combination h / 16
+
+/-- **Nonvanishing** on the odd classes. -/
+theorem gamma_ne_zero {c : O} (hc : c ∉ Ideal.span {(2 : O)}) : fixedDualAverage c ≠ 0 := by
+  obtain ⟨a, b, rfl⟩ := exists_eval c
+  rw [fixedDualAverage_eval, div_ne_zero_iff]
+  refine ⟨fun h => twoGamma_ne_zero _ _ (oddCoord_of_not_mem _ _ hc) ?_, two_ne_zero⟩
+  exact GaussianInt.toComplex_injective (by rw [h, map_zero])
+
+/-- `Γ(c)⁴ = 1` on the odd classes. -/
+theorem gamma_pow_four {c : O} (hc : c ∉ Ideal.span {(2 : O)}) : fixedDualAverage c ^ 4 = 1 := by
+  obtain ⟨a, b, rfl⟩ := exists_eval c
+  have h := congrArg GaussianInt.toComplex (twoGamma_pow_four (a : ZMod 4) b
+    (oddCoord_of_not_mem _ _ hc))
+  simp only [map_pow, map_ofNat] at h
+  rw [fixedDualAverage_eval, div_pow, h]
+  norm_num
+
+/-- **Square classes.** For odd `c, d`: `Γ(cd²) = Γ(c)`. -/
+theorem gamma_mul_sq {c d : O} (hc : c ∉ Ideal.span {(2 : O)}) (hd : d ∉ Ideal.span {(2 : O)}) :
+    fixedDualAverage (c * d ^ 2) = fixedDualAverage c := by
+  obtain ⟨a₁, b₁, rfl⟩ := exists_eval c
+  obtain ⟨a₂, b₂, rfl⟩ := exists_eval d
+  have h := congrArg GaussianInt.toComplex (twoGamma_mul_sq (a₁ : ZMod 4) b₁ a₂ b₂
+    (oddCoord_of_not_mem _ _ hc) (oddCoord_of_not_mem _ _ hd))
+  simp only [mulFst_cast, mulSnd_cast] at h
+  rw [sq, eval_mul, eval_mul, fixedDualAverage_eval, fixedDualAverage_eval, h]
+
+/-! ### The bicharacter -/
+
+/-- The quadratic reciprocity phase `r(c, d) = Γ(cd)/(Γ(c)Γ(d))`. -/
+def quadraticPhase (c d : O) : ℂ :=
+  fixedDualAverage (c * d) / (fixedDualAverage c * fixedDualAverage d)
+
+theorem quadraticPhase_comm (c d : O) : quadraticPhase c d = quadraticPhase d c := by
+  rw [quadraticPhase, quadraticPhase, mul_comm c d, mul_comm (fixedDualAverage c)]
+
+theorem oddCoord_mul : ∀ a b c d : ZMod 4, oddCoord a b → oddCoord c d →
+    oddCoord (mulFst a b c d) (mulSnd a b c d) := by
+  decide
+
+/-- Odd coordinates give an element outside `(2)`. -/
+theorem not_mem_of_oddCoord (a b : ℤ) (h : oddCoord (a : ZMod 4) (b : ZMod 4)) :
+    eval a b ∉ Ideal.span {(2 : O)} := by
+  intro hmem
+  obtain ⟨z, hz⟩ := Ideal.mem_span_singleton'.mp hmem
+  obtain ⟨a', b', rfl⟩ := exists_eval z
+  have h2 : eval (2 * a') (2 * b') = eval a b := by
+    rw [← hz]
+    simp only [eval]
+    push_cast
+    ring
+  obtain ⟨ha, hb⟩ := unique_coordinates h2
+  apply h
+  constructor
+  · have := ZMod.val_intCast (n := 4) a
+    omega
+  · have := ZMod.val_intCast (n := 4) b
+    omega
+
+/-- A product of odd elements is odd. -/
+theorem odd_mul {c d : O} (hc : c ∉ Ideal.span {(2 : O)}) (hd : d ∉ Ideal.span {(2 : O)}) :
+    c * d ∉ Ideal.span {(2 : O)} := by
+  obtain ⟨a₁, b₁, rfl⟩ := exists_eval c
+  obtain ⟨a₂, b₂, rfl⟩ := exists_eval d
+  rw [eval_mul]
+  apply not_mem_of_oddCoord
+  have h := oddCoord_mul _ _ _ _ (oddCoord_of_not_mem _ _ hc) (oddCoord_of_not_mem _ _ hd)
+  rwa [mulFst_cast, mulSnd_cast] at h
+
+/-- `r` is multiplicative in its first argument on the odd classes. -/
+theorem quadraticPhase_mul_left {c d e : O} (hc : c ∉ Ideal.span {(2 : O)})
+    (hd : d ∉ Ideal.span {(2 : O)}) (he : e ∉ Ideal.span {(2 : O)}) :
+    quadraticPhase (c * d) e = quadraticPhase c e * quadraticPhase d e := by
+  have h := gamma_cocycle hc hd he
+  have h1 := gamma_ne_zero hc
+  have h2 := gamma_ne_zero hd
+  have h3 := gamma_ne_zero he
+  have h12 := gamma_ne_zero (odd_mul hc hd)
+  unfold quadraticPhase
+  rw [div_mul_div_comm, div_eq_div_iff (mul_ne_zero h12 h3)
+    (mul_ne_zero (mul_ne_zero h1 h3) (mul_ne_zero h2 h3))]
+  linear_combination fixedDualAverage e * h
+
+/-- `r` is a sign on the odd classes. -/
+theorem quadraticPhase_sq {c d : O} (hc : c ∉ Ideal.span {(2 : O)})
+    (hd : d ∉ Ideal.span {(2 : O)}) : quadraticPhase c d ^ 2 = 1 := by
+  have h1 := gamma_ne_zero hc
+  have h2 := gamma_ne_zero hd
+  rw [quadraticPhase, div_pow, gamma_mul_sq_eq hc hd, mul_pow, div_self
+    (mul_ne_zero (pow_ne_zero 2 h1) (pow_ne_zero 2 h2))]
+
 end GaloisForLFunctions.FamilyContinuationTheory

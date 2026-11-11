@@ -46,8 +46,7 @@ Namespace `GaloisForLFunctions.MultiscaleMollifiedZetaField`:
 - `TheShiftedSelbergEulerFactorsCancel.shiftedSelbergCorrection_convolution_principal`
 - `TheShiftedSelbergFormIsAHarmonicModel.shiftedSelbergOriginal_weighted_eq_correction_harmonic_model`
 
-Direct Lean checks passed; umbrella imports added. Shifted harmonic limits
-and frozen-coefficient displacement derivatives remain separate obligations.
+Direct Lean checks passed; umbrella imports added.
 
 ## Normalized correction derivatives
 
@@ -87,3 +86,21 @@ full corrected polynomial row, weighted by `t^k`, tends to
 The shift may be any convergent sequence. One uniform bound over all
 retained dilation pairs permits summation against the absolute pair
 majorant. Lean check passed; umbrella import added.
+
+`TheCoupledShiftedSelbergFormHasThePolynomialLimit` identifies the literal
+finite Möbius–gcd form with that model at arbitrary independent shifts.
+At the coupled shift its limit is `∫₀¹(P′−vP)² dt`, with profile argument
+`1−t`. Lean check passed; umbrella import added.
+
+`TheActualGcdSumsAreShiftedProfileForms` identifies the original twisted
+moment sums: the reflected shift is `(c,v)=(2d log N,v)`, while the direct
+shift is `(−2d log N,v+2d log N)`. It also identifies the actual linear
+mollifier weights with profile `P(x)=x` and parameter `−d log N`.
+Lean check passed; umbrella import added.
+
+`TheCorrectedPolynomialJetsConverge` and
+`TheShiftedSelbergFormKeepsItsFirstTwoDerivatives` prove the first two
+literal directional derivative limits. Writing `RP=(1−x)P`, the surviving
+operations are insertion of `κt` and replacement of either profile by
+`νRP`; positive-order Euler-correction derivatives vanish. Both modules
+passed Lean and are wired into the umbrella.

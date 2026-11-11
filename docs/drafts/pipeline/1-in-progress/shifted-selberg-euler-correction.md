@@ -62,9 +62,14 @@ are `A²`, `2tA²−4PA`, and `4t²A²−16tPA+8P²`; the reflected ones are
 
 `TheCoupledEulerCorrectionPreservesThePolynomialLimit` now formalizes
 summation over all correction pairs, with one bound for all retained
-dilations and logarithmic powers. The coefficient-jet pair majorants
-also passed Lean. Exact directional derivative identities and both
-literal gcd-form derivative limits remain proof drafts awaiting compilation.
+dilations and logarithmic powers. The coefficient-jet pair majorants,
+principal-row derivative recurrence, and literal coupled gcd-form limit
+also passed Lean. `TheCorrectedRowDerivativesHaveVanishingCorrectionTerms`
+formalizes the exact summed derivative recurrence and vanishing summed
+positive-order correction jets. `TheCorrectedPolynomialJetsConverge` and
+`TheShiftedSelbergFormKeepsItsFirstTwoDerivatives` prove both literal
+gcd-form derivative limits. Joint convergence for arbitrary real-height
+cutoffs and the frozen original gcd-sum formulation await compilation.
 
 The parent gate additionally needs varying detector-profile coefficients,
 the zeta-pole and chi-weight main-term jets, fixed-mollifier coefficient

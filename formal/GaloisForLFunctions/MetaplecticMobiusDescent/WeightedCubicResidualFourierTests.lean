@@ -24667,4 +24667,1401 @@ theorem paperKernel_exp_local_derivative_bound (V : ℝ → ℂ) (a b : ℝ) (ha
         ‖paperKernelLogDerivative V j (R * Real.exp u)‖) := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_left (hb _ (mul_pos hR (Real.exp_pos u))) (by positivity)
 
+
+lemma paperKernel_exp_smooth (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (R : ℝ) (hR : 0 < R) :
+    ContDiff ℝ ∞ (fun u : ℝ => paperKernel V (R * Real.exp u)) := by
+  let f := kernelLogSource V a b ha hs hV
+  have he : (fun u : ℝ => paperKernel V (R * Real.exp u)) =
+      fun u : ℝ => reflectedKernelLogProfile f (Real.log (paperScale * R) + u) := by
+    funext u
+    rw [paperKernel_eq_logFourier V f (fun _ => rfl) _ (mul_pos hR (Real.exp_pos u))]
+    rw [← mul_assoc, Real.log_mul (mul_pos paperScale_pos hR).ne' (Real.exp_pos u).ne', Real.log_exp]
+  rw [he]
+  exact (reflectedKernelLogProfile_smooth f).comp (contDiff_const.add contDiff_id)
+
+/-- Localization in a fixed logarithmic interval preserves uniform radial decay of every derivative. -/
+theorem localized_paperKernel_derivative_bound
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (χ : ℝ → ℂ) (hχ : ContDiff ℝ ∞ χ) (M : ℝ) (hM : 0 ≤ M)
+    (hχs : Function.support χ ⊆ Set.Icc (-M) M) (N j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∀ u : ℝ,
+      (1 + R) ^ N * ‖iteratedDeriv j (fun v : ℝ => χ v * paperKernel V (R * Real.exp v)) u‖ ≤ C := by
+  have hχb (i : ℕ) : ∃ D : ℝ, 0 < D ∧ ∀ u ∈ Set.Icc (-M) M, ‖iteratedDeriv i χ u‖ ≤ D := by
+    obtain ⟨D, hD⟩ := isCompact_Icc.bddAbove_image
+      (hχ.continuous_iteratedDeriv i (by exact_mod_cast (le_top : (i : ℕ∞) ≤ ⊤))).norm.continuousOn
+    exact ⟨|D| + 1, by positivity, fun u hu =>
+      (hD (Set.mem_image_of_mem _ hu)).trans (by linarith [le_abs_self D])⟩
+  choose D hD hDb using hχb
+  have hkb (i : ℕ) := paperKernel_exp_local_derivative_bound V a b ha hs hV M hM N i
+  choose C hC hCb using hkb
+  let B := ∑ i ∈ Finset.range (j + 1), ‖(j.choose i : ℂ)‖ * D i * C (j - i)
+  have hB : 0 ≤ B := Finset.sum_nonneg (fun i _ =>
+    mul_nonneg (mul_nonneg (norm_nonneg _) (hD i).le) (hC (j - i)).le)
+  refine ⟨B + 1, by positivity, ?_⟩
+  intro R hR u
+  by_cases hu : u ∈ Set.Icc (-M) M
+  · have hprod := iteratedDeriv_mul (n := j) (x := u)
+      (hχ.of_le (by exact_mod_cast (le_top : (j : ℕ∞) ≤ ⊤))).contDiffAt
+      ((paperKernel_exp_smooth V a b ha hs hV R hR).of_le
+        (by exact_mod_cast (le_top : (j : ℕ∞) ≤ ⊤))).contDiffAt
+    change (1 + R) ^ N * ‖iteratedDeriv j (χ * (fun v : ℝ => paperKernel V (R * Real.exp v))) u‖ ≤ _
+    rw [hprod]
+    calc
+      _ ≤ (1 + R) ^ N * ∑ i ∈ Finset.range (j + 1),
+          ‖(j.choose i : ℂ) * iteratedDeriv i χ u *
+            iteratedDeriv (j - i) (fun v : ℝ => paperKernel V (R * Real.exp v)) u‖ :=
+        mul_le_mul_of_nonneg_left (norm_sum_le _ _) (by positivity)
+      _ ≤ B := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_le_sum
+        intro i hi
+        have hDi := (hD i).le
+        have hCi := (hC (j - i)).le
+        rw [norm_mul, norm_mul]
+        calc
+          _ = (‖(j.choose i : ℂ)‖ * ‖iteratedDeriv i χ u‖) *
+              ((1 + R) ^ N * ‖iteratedDeriv (j - i) (fun v : ℝ => paperKernel V (R * Real.exp v)) u‖) := by ring
+          _ ≤ (‖(j.choose i : ℂ)‖ * D i) * C (j - i) :=
+            mul_le_mul (mul_le_mul_of_nonneg_left (hDb i u hu) (norm_nonneg _))
+              (hCb (j - i) R hR u (abs_le.mpr hu)) (by positivity) (by positivity)
+      _ ≤ B + 1 := by linarith
+  · have hsprod : Function.support (fun v : ℝ => χ v * paperKernel V (R * Real.exp v)) ⊆ Set.Icc (-M) M := by
+      intro v hv
+      apply hχs
+      intro hz
+      exact hv (by simp only [hz, zero_mul])
+    have hsd := (subset_tsupport (iteratedDeriv j (fun v : ℝ => χ v * paperKernel V (R * Real.exp v)))).trans
+      ((tsupport_iteratedDeriv_subset _ j).trans (closure_minimal hsprod isClosed_Icc))
+    have hz : iteratedDeriv j (fun v : ℝ => χ v * paperKernel V (R * Real.exp v)) u = 0 := by
+      by_contra hn
+      exact hu (hsd hn)
+    rw [hz, norm_zero, mul_zero]
+    positivity
+
+/-- Uniform bounds on compactly supported derivatives give uniform Fourier moments. -/
+theorem compact_weighted_family_fourier_power_bound
+    (F : ℝ → ℝ → ℂ) (P : ℝ → ℝ) (hP : ∀ R, 0 < R → 0 ≤ P R)
+    (hF : ∀ R, 0 < R → ContDiff ℝ ∞ (F R))
+    (K : Set ℝ) (hK : IsCompact K) (hs : ∀ R, 0 < R → Function.support (F R) ⊆ K)
+    (hb : ∀ j : ℕ, ∃ C : ℝ, 0 < C ∧ ∀ R, 0 < R → ∀ u,
+      P R * ‖iteratedDeriv j (F R) u‖ ≤ C) (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R, 0 < R → ∀ t : ℝ,
+      P R * (|t| ^ j * ‖𝓕 (F R) t‖) ≤ C := by
+  obtain ⟨C, hC, hCb⟩ := hb j
+  refine ⟨C * (volume.real K + 1) / (2 * Real.pi) ^ j, by positivity, ?_⟩
+  intro R hR t
+  have hPR := hP R hR
+  have hcompact (n : ℕ) : HasCompactSupport (iteratedDeriv n (F R)) := by
+    apply HasCompactSupport.of_support_subset_isCompact hK
+    exact (subset_tsupport _).trans ((tsupport_iteratedDeriv_subset _ n).trans
+      (closure_minimal (hs R hR) hK.isClosed))
+  have hi (n : ℕ) : Integrable (iteratedDeriv n (F R)) :=
+    ((hF R hR).continuous_iteratedDeriv n
+      (by exact_mod_cast (le_top : (n : ℕ∞) ≤ ⊤))).integrable_of_hasCompactSupport (hcompact n)
+  have hfour := Real.fourier_iteratedDeriv (N := (⊤ : ℕ∞)) (hF R hR)
+    (fun n _ => hi n) (by simp : (j : ℕ∞) ≤ ⊤)
+  have hid : (2 * Real.pi) ^ j * (|t| ^ j * ‖𝓕 (F R) t‖) =
+      ‖𝓕 (iteratedDeriv j (F R)) t‖ := by
+    rw [hfour]
+    simp only [norm_smul, norm_pow, norm_mul, Complex.norm_I, mul_one,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
+    norm_num
+    ring
+  have hsder : Function.support (iteratedDeriv j (F R)) ⊆ K :=
+    (subset_tsupport _).trans ((tsupport_iteratedDeriv_subset _ j).trans
+      (closure_minimal (hs R hR) hK.isClosed))
+  have hzero : ∀ u, u ∉ K → P R * ‖iteratedDeriv j (F R) u‖ = 0 := by
+    intro u hu
+    have hz : iteratedDeriv j (F R) u = 0 := by
+      by_contra hn
+      exact hu (hsder hn)
+    rw [hz, norm_zero, mul_zero]
+  have hI := norm_setIntegral_le_of_norm_le_const («μ» := volume)
+    (f := fun u => P R * ‖iteratedDeriv j (F R) u‖) hK.measure_lt_top
+    (C := C) (fun u _ => by rw [Real.norm_of_nonneg (by positivity)]; exact hCb R hR u)
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hzero,
+    Real.norm_of_nonneg (integral_nonneg (fun _ => by positivity)), integral_const_mul] at hI
+  have hFourier := mul_le_mul_of_nonneg_left
+    (VectorFourier.norm_fourierIntegral_le_integral_norm Real.fourierChar volume (innerₗ ℝ)
+      (iteratedDeriv j (F R)) t) (hP R hR)
+  apply (le_div_iff₀ (by positivity : 0 < (2 * Real.pi) ^ j)).mpr
+  calc
+    _ = P R * ((2 * Real.pi) ^ j * (|t| ^ j * ‖𝓕 (F R) t‖)) := by ring
+    _ = P R * ‖𝓕 (iteratedDeriv j (F R)) t‖ := by rw [hid]
+    _ ≤ C * volume.real K := hFourier.trans hI
+    _ ≤ C * (volume.real K + 1) := by nlinarith only [hC]
+
+/-- The Fourier transform of a localized reflected kernel decays uniformly in both parameters. -/
+theorem localized_paperKernel_fourier_bound
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (χ : ℝ → ℂ) (hχ : ContDiff ℝ ∞ χ) (M : ℝ) (hM : 0 ≤ M)
+    (hχs : Function.support χ ⊆ Set.Icc (-M) M) (N J : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∀ t : ℝ,
+      (1 + R) ^ N * (1 + |t|) ^ J *
+        ‖𝓕 (fun u : ℝ => χ u * paperKernel V (R * Real.exp u)) t‖ ≤ C := by
+  let F := fun R u : ℝ => χ u * paperKernel V (R * Real.exp u)
+  have hFs (R : ℝ) (_ : 0 < R) : Function.support (F R) ⊆ Set.Icc (-M) M := by
+    intro u hu
+    apply hχs
+    intro hz
+    exact hu (by simp only [F, hz, zero_mul])
+  have hbase (j : ℕ) := compact_weighted_family_fourier_power_bound F (fun R => (1 + R) ^ N)
+    (fun R hR => by positivity) (fun R hR => hχ.mul (paperKernel_exp_smooth V a b ha hs hV R hR))
+    (Set.Icc (-M) M) isCompact_Icc hFs
+    (localized_paperKernel_derivative_bound V a b ha hs hV χ hχ M hM hχs N) j
+  obtain ⟨C₀, hC₀, hb₀⟩ := hbase 0
+  obtain ⟨Cj, hCj, hbj⟩ := hbase J
+  refine ⟨2 ^ J * (C₀ + Cj), by positivity, ?_⟩
+  intro R hR t
+  have hzero : (1 + R) ^ N * ‖𝓕 (F R) t‖ ≤ C₀ := by simpa only [pow_zero, one_mul] using hb₀ R hR t
+  change (1 + R) ^ N * (1 + |t|) ^ J * ‖𝓕 (F R) t‖ ≤ _
+  by_cases ht : |t| ≤ 1
+  · have hp : (1 + |t|) ^ J ≤ (2 : ℝ) ^ J := by gcongr; linarith
+    calc
+      _ ≤ (1 + R) ^ N * 2 ^ J * ‖𝓕 (F R) t‖ := by gcongr
+      _ = 2 ^ J * ((1 + R) ^ N * ‖𝓕 (F R) t‖) := by ring
+      _ ≤ 2 ^ J * C₀ := mul_le_mul_of_nonneg_left hzero (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  · have hp : (1 + |t|) ^ J ≤ (2 * |t|) ^ J := by gcongr; linarith
+    calc
+      _ ≤ (1 + R) ^ N * (2 * |t|) ^ J * ‖𝓕 (F R) t‖ := by gcongr
+      _ = 2 ^ J * ((1 + R) ^ N * (|t| ^ J * ‖𝓕 (F R) t‖)) := by rw [mul_pow]; ring
+      _ ≤ 2 ^ J * Cj := mul_le_mul_of_nonneg_left (hbj R hR t) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+/-- The two extra Fourier powers furnish an integrable envelope. -/
+lemma weighted_fourier_L1_bound (B : ℝ → ℂ) (hB : Continuous B)
+    (P C : ℝ) (hP : 0 < P) (hC : 0 ≤ C) (J : ℕ)
+    (hb : ∀ t : ℝ, P * (1 + |t|) ^ (J + 2) * ‖B t‖ ≤ C) :
+    Integrable (fun t : ℝ => (1 + |t|) ^ J * ‖B t‖) ∧
+      P * (∫ t : ℝ, (1 + |t|) ^ J * ‖B t‖) ≤
+        C * ∫ t : ℝ, ((1 + |t|) ^ (2 : ℕ))⁻¹ := by
+  have hw : Integrable (fun t : ℝ => ((1 + |t|) ^ (2 : ℕ))⁻¹) := by
+    have h : Integrable (fun t : ℝ => (1 + ‖t‖) ^ (-(2 : ℝ))) :=
+      integrable_one_add_norm (by norm_num)
+    apply h.congr
+    exact Eventually.of_forall (fun t => by
+      dsimp only
+      rw [Real.norm_eq_abs, Real.rpow_neg (by positivity), Real.rpow_two])
+  have hdom (t : ℝ) : (1 + |t|) ^ J * ‖B t‖ ≤
+      (C / P) * ((1 + |t|) ^ (2 : ℕ))⁻¹ := by
+    rw [← div_eq_mul_inv]
+    apply (le_div_iff₀ (by positivity : 0 < (1 + |t|) ^ (2 : ℕ))).mpr
+    apply (le_div_iff₀ hP).mpr
+    calc
+      _ = P * (1 + |t|) ^ (J + 2) * ‖B t‖ := by rw [pow_add]; ring
+      _ ≤ C := hb t
+  have hi : Integrable (fun t : ℝ => (1 + |t|) ^ J * ‖B t‖) :=
+    (hw.const_mul (C / P)).mono'
+      (((continuous_const.add continuous_abs).pow J).mul hB.norm).aestronglyMeasurable
+      (Eventually.of_forall (fun t => by rw [Real.norm_of_nonneg (by positivity)]; exact hdom t))
+  refine ⟨hi, ?_⟩
+  have hI := integral_mono hi (hw.const_mul (C / P)) hdom
+  rw [integral_const_mul] at hI
+  calc
+    _ ≤ P * ((C / P) * ∫ t : ℝ, ((1 + |t|) ^ (2 : ℕ))⁻¹) :=
+      mul_le_mul_of_nonneg_left hI hP.le
+    _ = _ := by field_simp [hP.ne']
+
+/-- A fixed smooth cutoff turns the reflected kernel into a uniformly rapidly decaying Fourier coefficient. -/
+theorem localized_paperKernel_fourier_envelope
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (χ : ℝ → ℂ) (hχ : ContDiff ℝ ∞ χ) (M : ℝ) (hM : 0 ≤ M)
+    (hχs : Function.support χ ⊆ Set.Icc (-M) M) (N J : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∃ B : SchwartzMap ℝ ℂ,
+      (∀ u : ℝ, χ u * paperKernel V (R * Real.exp u) = 𝓕⁻ (B : ℝ → ℂ) u) ∧
+      Integrable (fun t : ℝ => (1 + |t|) ^ J * ‖B t‖) ∧
+      (1 + R) ^ N * (∫ t : ℝ, (1 + |t|) ^ J * ‖B t‖) ≤ C ∧
+      ∀ t : ℝ, (1 + R) ^ N * (1 + |t|) ^ J * ‖B t‖ ≤ C := by
+  obtain ⟨C₁, hC₁, hb₁⟩ := localized_paperKernel_fourier_bound V a b ha hs hV χ hχ M hM hχs N J
+  obtain ⟨C₂, hC₂, hb₂⟩ := localized_paperKernel_fourier_bound V a b ha hs hV χ hχ M hM hχs N (J + 2)
+  let I : ℝ := ∫ t : ℝ, ((1 + |t|) ^ (2 : ℕ))⁻¹
+  have hI : 0 ≤ I := integral_nonneg (fun _ => by positivity)
+  refine ⟨C₁ + C₂ * (I + 1), by positivity, ?_⟩
+  intro R hR
+  have hc : HasCompactSupport (fun u : ℝ => χ u * paperKernel V (R * Real.exp u)) := by
+    apply HasCompactSupport.of_support_subset_isCompact (K := Set.Icc (-M) M) isCompact_Icc
+    intro u hu
+    apply hχs
+    intro hz
+    exact hu (by simp only [hz, zero_mul])
+  let S : SchwartzMap ℝ ℂ := hc.toSchwartzMap (hχ.mul (paperKernel_exp_smooth V a b ha hs hV R hR))
+  refine ⟨𝓕 S, ?_⟩
+  have he (u : ℝ) : χ u * paperKernel V (R * Real.exp u) = 𝓕⁻ (𝓕 (S : ℝ → ℂ)) u :=
+    (S.integrable.fourierInv_fourier_eq (𝓕 S).integrable S.continuous.continuousAt).symm
+  have hbound := weighted_fourier_L1_bound (𝓕 (S : ℝ → ℂ)) (𝓕 S).continuous ((1 + R) ^ N) C₂
+    (by positivity) hC₂.le J (hb₂ R hR)
+  refine ⟨he, hbound.1, ?_, ?_⟩
+  · exact hbound.2.trans (by change C₂ * I ≤ _; nlinarith only [hC₁, hC₂, hI])
+  · intro t
+    exact (hb₁ R hR t).trans (by nlinarith only [hC₂, hI])
+
+/-- The unitary logarithmic Fourier character. -/
+def kernelLogPhase (t u : ℝ) : ℂ := Complex.exp (((2 * Real.pi * t * u : ℝ) : ℂ) * Complex.I)
+
+lemma kernelLogPhase_sum {ι : Type*} (s : Finset ι) (t : ℝ) (u : ι → ℝ) :
+    kernelLogPhase t (∑ i ∈ s, u i) = ∏ i ∈ s, kernelLogPhase t (u i) := by
+  unfold kernelLogPhase
+  rw [← Complex.exp_sum]
+  congr 1
+  simp only [Finset.mul_sum, Complex.ofReal_sum, Finset.sum_mul]
+
+lemma kernelLogPhase_norm (t u : ℝ) : ‖kernelLogPhase t u‖ = 1 := by
+  rw [kernelLogPhase, Complex.norm_exp]
+  simp
+
+/-- Coupled logarithmic factors separate into unitary characters with a uniform integrable Fourier envelope. -/
+theorem paperKernel_log_separation
+    {ι : Type*} [Fintype ι] (W : ι → ℝ → ℂ) (slope M : ι → ℝ)
+    (hM : ∀ i, 0 ≤ M i) (hW : ∀ i u, W i u ≠ 0 → |u| ≤ M i)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (N J : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 0 < R → ∃ B : SchwartzMap ℝ ℂ,
+      (∀ y : ι → ℝ, (∏ i, W i (y i)) * paperKernel V (R * Real.exp (∑ i, slope i * y i)) =
+        ∫ t : ℝ, (∏ i, W i (y i) * kernelLogPhase t (slope i * y i)) * B t) ∧
+      Integrable (fun t : ℝ => (1 + |t|) ^ J * ‖B t‖) ∧
+      (1 + R) ^ N * (∫ t : ℝ, (1 + |t|) ^ J * ‖B t‖) ≤ C ∧
+      ∀ t : ℝ, (1 + R) ^ N * (1 + |t|) ^ J * ‖B t‖ ≤ C := by
+  classical
+  let L : ℝ := ∑ i, |slope i| * M i
+  have hL : 0 ≤ L := Finset.sum_nonneg (fun i _ => mul_nonneg (abs_nonneg _) (hM i))
+  let χ₀ : ContDiffBump (0 : ℝ) :=
+    ⟨L + 1, L + 2, by linarith, by linarith⟩
+  let χ : ℝ → ℂ := fun u => (χ₀ u : ℂ)
+  have hχ : ContDiff ℝ ∞ χ := Complex.ofRealCLM.contDiff.comp χ₀.contDiff
+  have hχs : Function.support χ ⊆ Set.Icc (-(L + 2)) (L + 2) := by
+    intro u hu
+    have hu₀ : u ∈ Function.support χ₀ := by
+      change χ₀ u ≠ 0
+      intro hz
+      exact hu (by simp only [χ, hz, Complex.ofReal_zero])
+    rw [χ₀.support_eq] at hu₀
+    have habs : |u| < L + 2 := by simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using hu₀
+    exact abs_le.mp habs.le
+  have hχone (u : ℝ) (hu : |u| ≤ L) : χ u = 1 := by
+    have hu₀ : u ∈ Metric.closedBall (0 : ℝ) χ₀.rIn := by
+      change dist u 0 ≤ L + 1
+      rw [Real.dist_eq, sub_zero]
+      linarith
+    simp only [χ, χ₀.one_of_mem_closedBall hu₀, Complex.ofReal_one]
+  obtain ⟨C, hC, hb⟩ := localized_paperKernel_fourier_envelope V a b ha hs hV
+    χ hχ (L + 2) (by linarith) hχs N J
+  refine ⟨C, hC, ?_⟩
+  intro R hR
+  obtain ⟨B, hsep, hi, hI, hpt⟩ := hb R hR
+  refine ⟨B, ?_, hi, hI, hpt⟩
+  intro y
+  have hprod (t : ℝ) : (∏ i, W i (y i) * kernelLogPhase t (slope i * y i)) =
+      (∏ i, W i (y i)) * kernelLogPhase t (∑ i, slope i * y i) := by
+    rw [Finset.prod_mul_distrib, kernelLogPhase_sum]
+  simp_rw [hprod, mul_assoc]
+  rw [integral_const_mul]
+  by_cases hz : (∏ i, W i (y i)) = 0
+  · simp only [hz, zero_mul]
+  · congr 1
+    have hwy (i : ι) : W i (y i) ≠ 0 := by
+      exact (Finset.prod_ne_zero_iff.mp hz) i (Finset.mem_univ i)
+    have hys : |∑ i, slope i * y i| ≤ L := by
+      calc
+        _ ≤ ∑ i, |slope i * y i| := by
+          simpa only [Real.norm_eq_abs] using norm_sum_le (s := Finset.univ) (f := fun i => slope i * y i)
+        _ ≤ L := Finset.sum_le_sum (fun i _ => by rw [abs_mul]; exact mul_le_mul_of_nonneg_left (hW i (y i) (hwy i)) (abs_nonneg _))
+    have he := hsep (∑ i, slope i * y i)
+    rw [hχone _ hys, one_mul, Real.fourierInv_eq'] at he
+    simp only [smul_eq_mul] at he
+    convert he using 1
+    apply integral_congr_ae
+    filter_upwards [] with t
+    congr 1
+    unfold kernelLogPhase
+    congr 1
+    simp only [RCLike.inner_apply, conj_trivial]
+    push_cast
+    ring
+
+
+/-- Cusp representatives and triangular coordinate changes are chosen once modulo three. -/
+def fixedCuspIndex : FixedCuspSector → Fin 3 := exists_fixed_cusp_decomposition.choose
+
+def fixedCuspTriangular : FixedCuspSector → SL(2, O) :=
+  exists_fixed_cusp_decomposition.choose_spec.choose
+
+def fixedCuspGamma : SL(2, O) → rationalExtension :=
+  exists_fixed_cusp_decomposition.choose_spec.choose_spec.choose
+
+lemma fixedCuspTriangular_properties (s : FixedCuspSector) :
+    fixedCuspTriangular s 1 0 = 0 ∧ IsUnit (fixedCuspTriangular s 0 0) ∧
+      IsUnit (fixedCuspTriangular s 1 1) :=
+  exists_fixed_cusp_decomposition.choose_spec.choose_spec.choose_spec.1 s
+
+lemma fixedCusp_factorization (M : SL(2, O)) :
+    M = (fixedCuspGamma M : SL(2, O)) * cuspRepresentative (fixedCuspIndex (fixedCuspSector M)) *
+      fixedCuspTriangular (fixedCuspSector M) :=
+  exists_fixed_cusp_decomposition.choose_spec.choose_spec.choose_spec.2 M
+
+lemma fixedCusp_lower_ne_zero (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (integralComplexMatrix (fixedCuspGamma M : SL(2, O)) *
+      integralComplexMatrix (cuspRepresentative (fixedCuspIndex (fixedCuspSector M)))) 1 0 ≠ 0 := by
+  let g := integralComplexMatrix (fixedCuspGamma M : SL(2, O)) *
+    integralComplexMatrix (cuspRepresentative (fixedCuspIndex (fixedCuspSector M)))
+  let T := integralComplexMatrix (fixedCuspTriangular (fixedCuspSector M))
+  have he : integralComplexMatrix M = g * T := by
+    rw [fixedCusp_factorization M, map_mul, map_mul]
+  have ht : T 1 0 = 0 := by
+    change ringComplex (fixedCuspTriangular (fixedCuspSector M) 1 0) = 0
+    rw [(fixedCuspTriangular_properties _).1, map_zero]
+  exact (upperTriangular_right_cusp_ratio g T ht (by rw [← he]; exact ringComplex_ne_zero hc)).1
+
+def fixedMatrixCusp (M : SL(2, O)) (hc : M 1 0 ≠ 0) : SourceCuspDatum :=
+  ⟨fixedCuspGamma M, fixedCuspIndex (fixedCuspSector M), fixedCusp_lower_ne_zero M hc⟩
+
+lemma fixedMatrixCusp_factorization (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    integralComplexMatrix M = (fixedMatrixCusp M hc).matrix *
+      integralComplexMatrix (fixedCuspTriangular (fixedCuspSector M)) := by
+  change integralComplexMatrix M =
+    (integralComplexMatrix (fixedCuspGamma M : SL(2, O)) *
+      integralComplexMatrix (cuspRepresentative (fixedCuspIndex (fixedCuspSector M)))) * _
+  have he := congrArg integralComplexMatrix (fixedCusp_factorization M)
+  simpa only [map_mul] using he
+
+lemma fixedMatrixCusp_point (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (fixedMatrixCusp M hc).point = ringComplex (M 0 0) / ringComplex (M 1 0) := by
+  let T := integralComplexMatrix (fixedCuspTriangular (fixedCuspSector M))
+  have ht : T 1 0 = 0 := by
+    change ringComplex (fixedCuspTriangular (fixedCuspSector M) 1 0) = 0
+    rw [(fixedCuspTriangular_properties _).1, map_zero]
+  have he := fixedMatrixCusp_factorization M hc
+  exact (upperTriangular_right_cusp_ratio (fixedMatrixCusp M hc).matrix T ht
+    (by rw [← he]; exact ringComplex_ne_zero hc)).2.symm.trans (by rw [← he]; rfl)
+
+/-- Integral units leave the radial height unchanged under the fixed triangular coordinate change. -/
+lemma fixedMatrixCusp_heightScale (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (fixedMatrixCusp M hc).heightScale = ‖ringComplex (M 1 0)‖ ^ 2 := by
+  let T := fixedCuspTriangular (fixedCuspSector M)
+  have hT : T 1 0 = 0 := (fixedCuspTriangular_properties _).1
+  have hunit : IsUnit (T 0 0) := (fixedCuspTriangular_properties _).2.1
+  have hn : ‖ringComplex (T 0 0)‖ = 1 := by
+    rw [← hunit.unit_spec]
+    exact norm_ringComplex_unit hunit.unit
+  have he := congrArg (fun A : SL(2, ℂ) => A 1 0) (fixedMatrixCusp_factorization M hc)
+  have hcol : ringComplex (M 1 0) = (fixedMatrixCusp M hc).matrix 1 0 * ringComplex (T 0 0) := by
+    change ringComplex (M 1 0) = ∑ k : Fin 2,
+      (fixedMatrixCusp M hc).matrix 1 k * ringComplex (T k 0) at he
+    simpa only [Fin.sum_univ_two, hT, map_zero, mul_zero, add_zero] using he
+  rw [SourceCuspDatum.heightScale, hcol, norm_mul, hn, mul_one]
+
+lemma upperTriangular_right_dualPoint (g T : SL(2, ℂ)) (hT : T 1 0 = 0)
+    (hc : (g * T) 1 0 ≠ 0) :
+    -g 1 1 / g 1 0 = (T 0 0) ^ 2 * (-(g * T) 1 1 / (g * T) 1 0) + T 0 0 * T 0 1 := by
+  have hcol : (g * T) 1 0 = g 1 0 * T 0 0 := by
+    change (∑ k : Fin 2, g 1 k * T k 0) = _
+    rw [Fin.sum_univ_two, hT, mul_zero, add_zero]
+  have hrow : (g * T) 1 1 = g 1 0 * T 0 1 + g 1 1 * T 1 1 := by
+    change (∑ k : Fin 2, g 1 k * T k 1) = _
+    rw [Fin.sum_univ_two]
+  have ht0 : T 0 0 ≠ 0 := (mul_ne_zero_iff.mp (hcol ▸ hc)).2
+  have hdet : T 0 0 * T 1 1 = 1 := by
+    simpa only [Matrix.det_fin_two, hT, mul_zero, sub_zero] using T.property
+  have hg : (g * T) 1 0 / T 0 0 = g 1 0 := by rw [hcol, mul_div_cancel_right₀ _ ht0]
+  have hd : (g * T) 1 1 * T 0 0 - (g * T) 1 0 * T 0 1 = g 1 1 := by
+    rw [hrow, hcol]
+    calc
+      _ = g 1 1 * (T 0 0 * T 1 1) := by ring
+      _ = _ := by rw [hdet, mul_one]
+  calc
+    _ = -((g * T) 1 1 * T 0 0 - (g * T) 1 0 * T 0 1) /
+        ((g * T) 1 0 / T 0 0) := by rw [hg, hd]
+    _ = _ := by field_simp [hc, ht0]; ring
+
+/-- The dual coordinate varies by a unit rotation and a translation fixed by the matrix modulo three. -/
+lemma fixedMatrixCusp_dualPoint (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (fixedMatrixCusp M hc).dualPoint =
+      ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ^ 2 *
+        (-ringComplex (M 1 1) / ringComplex (M 1 0)) +
+      ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0 *
+        fixedCuspTriangular (fixedCuspSector M) 0 1) := by
+  let T := integralComplexMatrix (fixedCuspTriangular (fixedCuspSector M))
+  have ht : T 1 0 = 0 := by
+    change ringComplex (fixedCuspTriangular (fixedCuspSector M) 1 0) = 0
+    rw [(fixedCuspTriangular_properties _).1, map_zero]
+  have he := fixedMatrixCusp_factorization M hc
+  have hd := upperTriangular_right_dualPoint (fixedMatrixCusp M hc).matrix T ht
+    (by rw [← he]; exact ringComplex_ne_zero hc)
+  rw [← he] at hd
+  change (fixedMatrixCusp M hc).dualPoint =
+    ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ^ 2 *
+      (-ringComplex (M 1 1) / ringComplex (M 1 0)) +
+    ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) *
+      ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 1) at hd
+  rw [map_mul]
+  exact hd
+
+/-- Reflection is independent of the chosen coordinates at each finite cusp. -/
+theorem completedT_finite_cusp_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (d : (O ⧸ Ideal.span {9 * c}) → SourceCuspDatum)
+    (hd : ∀ i, (d i).point = thetaFourierTranslation (9 * c) i)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (X : ℝ) (hX : 0 < X) :
+    completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) W X =
+      thetaDerivativeScalar⁻¹ * ∑ i,
+        finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+          (finiteThetaTwist c Ψ) i *
+        ((d i).smoothingMultiplier * ∑' h : O, sourceCuspRadialCoefficient (d i).index (d i).dualPoint h *
+          paperKernel (Vstar W) ((d i).smoothingScale X * sourceCuspRadialLength h)) := by
+  rw [completedT_finite_smoothed_reflection c hc Ψ W a b ha hs hW X hX]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  congr 1
+  rw [← (d i).smoothed_reflection (Vstar W) a b ha (Vstar_support W a b hs)
+      (Vstar_contDiff W a b ha hs hW) X hX,
+    ← (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothed_reflection
+      (Vstar W) a b ha (Vstar_support W a b hs) (Vstar_contDiff W a b ha hs hW) X hX,
+    hd i, finiteTwistCusp_point]
+
+/-- Fixed cusp coordinates retain the exact unit, ramified, squarefree, and cube decomposition. -/
+theorem completedT_finite_cusp_full_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (d : (O ⧸ Ideal.span {9 * c}) → SourceCuspDatum)
+    (hd : ∀ i, (d i).point = thetaFourierTranslation (9 * c) i)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (X : ℝ) (hX : 0 < X) :
+    completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) W X =
+      thetaDerivativeScalar⁻¹ * ∑ i,
+        finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+          (finiteThetaTwist c Ψ) i *
+        ((d i).smoothingMultiplier * ∑' p : ThetaFullIndex,
+          sourceCuspRadialCoefficient (d i).index (d i).dualPoint (thetaFullFrequency p) *
+          paperKernel (Vstar W) ((d i).smoothingScale X *
+            (‖ringComplex lambda‖ ^ (2 * p.2.1) * completedMellinLength p.2.2))) := by
+  rw [completedT_finite_cusp_reflection c hc Ψ d hd W a b ha hs hW X hX]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [sourceCuspRadial_tsum_full_index]
+  simp only [thetaFullFrequency_radialLength]
+
+
+/-- The fixed cusp array includes the bounded translation phase. -/
+def fixedCuspRadialArray (s : FixedCuspSector) (h : O) : ℂ :=
+  sourceCuspRadialBaseCoefficient (fixedCuspIndex s) h *
+    tracePhase (-cuspFrequency h *
+      (ringComplex (fixedCuspTriangular s 0 0 * fixedCuspTriangular s 0 1) /
+        (sourceCuspScale (fixedCuspIndex s) : ℂ)))
+
+lemma fixedCuspRadialArray_norm (s : FixedCuspSector) (h : O) :
+    ‖fixedCuspRadialArray s h‖ = ‖sourceCuspRadialBaseCoefficient (fixedCuspIndex s) h‖ := by
+  rw [fixedCuspRadialArray, norm_mul, tracePhase_norm, mul_one]
+
+/-- The moving part of a cusp coefficient is an inverse-denominator additive phase. -/
+lemma fixedMatrixCusp_radialCoefficient (M : SL(2, O)) (hc : M 1 0 ≠ 0) (h : O) :
+    sourceCuspRadialCoefficient (fixedMatrixCusp M hc).index (fixedMatrixCusp M hc).dualPoint h =
+      fixedCuspRadialArray (fixedCuspSector M) h *
+        tracePhase (cuspFrequency h * ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ^ 2 *
+          ringComplex (M 1 1) / ((sourceCuspScale (fixedCuspIndex (fixedCuspSector M)) : ℂ) *
+            ringComplex (M 1 0))) := by
+  rw [sourceCuspRadialCoefficient, fixedMatrixCusp_dualPoint]
+  rw [show (fixedMatrixCusp M hc).index = fixedCuspIndex (fixedCuspSector M) from rfl]
+  have he : -cuspFrequency h *
+      ((ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ^ 2 *
+          (-ringComplex (M 1 1) / ringComplex (M 1 0)) +
+        ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0 *
+          fixedCuspTriangular (fixedCuspSector M) 0 1)) /
+        (sourceCuspScale (fixedCuspIndex (fixedCuspSector M)) : ℂ)) =
+      -cuspFrequency h *
+        (ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0 *
+          fixedCuspTriangular (fixedCuspSector M) 0 1) /
+          (sourceCuspScale (fixedCuspIndex (fixedCuspSector M)) : ℂ)) +
+      cuspFrequency h * ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ^ 2 *
+        ringComplex (M 1 1) / ((sourceCuspScale (fixedCuspIndex (fixedCuspSector M)) : ℂ) *
+          ringComplex (M 1 0)) := by ring
+  rw [he, AddChar.map_add_eq_mul]
+  simp only [fixedCuspRadialArray, mul_assoc]
+
+lemma fixedMatrixCusp_lower (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (fixedMatrixCusp M hc).matrix 1 0 = ringComplex (M 1 0) /
+      ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) := by
+  have hu := (fixedCuspTriangular_properties (fixedCuspSector M)).2.1
+  have ht0 : ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ≠ 0 :=
+    ringComplex_ne_zero hu.ne_zero
+  apply (eq_div_iff ht0).mpr
+  have he := congrArg (fun A : SL(2, ℂ) => A 1 0) (fixedMatrixCusp_factorization M hc)
+  change ringComplex (M 1 0) = ∑ k : Fin 2, (fixedMatrixCusp M hc).matrix 1 k *
+    ringComplex (fixedCuspTriangular (fixedCuspSector M) k 0) at he
+  simpa only [Fin.sum_univ_two, (fixedCuspTriangular_properties _).1, map_zero, mul_zero, add_zero] using he.symm
+
+/-- The radial reflection scale is determined by the denominator norm and a fixed cusp class. -/
+lemma fixedMatrixCusp_smoothingScale (M : SL(2, O)) (hc : M 1 0 ≠ 0) (X : ℝ) :
+    (fixedMatrixCusp M hc).smoothingScale X =
+      27 * (sourceCuspRadialScale 0) ^ 2 *
+        (sourceCuspRadialScale (fixedCuspIndex (fixedCuspSector M))) ^ 2 * X /
+        ‖ringComplex (M 1 0)‖ ^ 4 := by
+  rw [SourceCuspDatum.smoothingScale, fixedMatrixCusp_heightScale, ← pow_mul]
+  rfl
+
+/-- The reflected prefactor separates the cubic character and a unit-modulus denominator phase. -/
+lemma fixedMatrixCusp_smoothingMultiplier (M : SL(2, O)) (hc : M 1 0 ≠ 0) :
+    (fixedMatrixCusp M hc).smoothingMultiplier =
+      -star (extendedComplexCharacter (fixedCuspGamma M)) *
+        ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0) ^ 2 *
+        (star (ringComplex (M 1 0)) / ringComplex (M 1 0)) *
+        (sourceCuspScale (fixedCuspIndex (fixedCuspSector M)) : ℂ) ^ 2 := by
+  have hc0 := ringComplex_ne_zero hc
+  have ht0 := ringComplex_ne_zero (fixedCuspTriangular_properties (fixedCuspSector M)).2.1.ne_zero
+  have hn : star (ringComplex (M 1 0)) * ringComplex (M 1 0) =
+      (‖ringComplex (M 1 0)‖ : ℂ) ^ 2 := by
+    simpa only [Complex.star_def, Complex.ofReal_pow] using Complex.conj_mul' (ringComplex (M 1 0))
+  rw [SourceCuspDatum.smoothingMultiplier, SourceCuspDatum.multiplier,
+    fixedMatrixCusp_lower, fixedMatrixCusp_heightScale, sourceCuspRadialScale_ratio]
+  simp only [Complex.ofReal_mul, Complex.ofReal_pow]
+  rw [← hn]
+  change -star (extendedComplexCharacter (fixedCuspGamma M)) /
+      (ringComplex (M 1 0) / ringComplex (fixedCuspTriangular (fixedCuspSector M) 0 0)) ^ 2 *
+      ((star (ringComplex (M 1 0)) * ringComplex (M 1 0)) *
+        (sourceCuspScale (fixedCuspIndex (fixedCuspSector M)) : ℂ) ^ 2) = _
+  field_simp
+
+lemma sourceCusp_translation_phase_congr (j : Fin 3) (a h k : O) (hmod : (9 : O) ∣ h - k) :
+    tracePhase (-cuspFrequency h * (ringComplex a / (sourceCuspScale j : ℂ))) =
+      tracePhase (-cuspFrequency k * (ringComplex a / (sourceCuspScale j : ℂ))) := by
+  fin_cases j
+  · change tracePhase (-cuspFrequency h * (ringComplex a / (1 : ℂ))) =
+      tracePhase (-cuspFrequency k * (ringComplex a / (1 : ℂ)))
+    simp only [div_one]
+    have he (x : O) : -cuspFrequency x * ringComplex a =
+        cuspFrequency x * (ringComplex (-3 * a) / 3) := by
+      simp only [map_mul, map_neg, map_ofNat]
+      ring
+    rw [he h, he k]
+    exact cuspFrequency_div_three_phase_congr (-3 * a) h k hmod
+  · change tracePhase (-cuspFrequency h * (ringComplex a / 3)) =
+      tracePhase (-cuspFrequency k * (ringComplex a / 3))
+    simpa only [map_neg, neg_div, mul_neg, neg_mul] using cuspFrequency_div_three_phase_congr (-a) h k hmod
+  · change tracePhase (-cuspFrequency h * (ringComplex a / 3)) =
+      tracePhase (-cuspFrequency k * (ringComplex a / 3))
+    simpa only [map_neg, neg_div, mul_neg, neg_mul] using cuspFrequency_div_three_phase_congr (-a) h k hmod
+
+/-- The fixed translation phase requires only the frequency residue modulo nine. -/
+lemma fixedCusp_translation_phase_congr (s : FixedCuspSector) (h k : O) (hmod : (9 : O) ∣ h - k) :
+    tracePhase (-cuspFrequency h *
+      (ringComplex (fixedCuspTriangular s 0 0 * fixedCuspTriangular s 0 1) /
+        (sourceCuspScale (fixedCuspIndex s) : ℂ))) =
+    tracePhase (-cuspFrequency k *
+      (ringComplex (fixedCuspTriangular s 0 0 * fixedCuspTriangular s 0 1) /
+        (sourceCuspScale (fixedCuspIndex s) : ℂ))) :=
+  sourceCusp_translation_phase_congr _ _ h k hmod
+
+lemma sourceCusp_full_kernel_norm_summable (j : Fin 3) (z : ℂ)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (R : ℝ) (hR : 0 < R) :
+    Summable (fun p : ThetaFullIndex => ‖sourceCuspRadialCoefficient j z (thetaFullFrequency p) *
+      paperKernel V (R * sourceCuspRadialLength (thetaFullFrequency p))‖) := by
+  have hc : Summable (fun h : O => ‖sourceCuspRadialCoefficient j z h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [neg_div] using sourceCuspRadialCoefficient_weighted_summable j z
+  exact (paperKernel_weighted_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceCuspRadialCoefficient j z) hc V a b ha hs hV R hR).comp_injective thetaFullFrequency_injective
+
+/-- Fourier coefficients of a multiplicative character at unit frequencies are Gauss sums. -/
+lemma finiteAdditiveFourierCoeff_mulChar_unit {F : Type*} [Field F] [Fintype F]
+    (ψ : AddChar F ℂ) (χ : MulChar F ℂ) (h : Fˣ) :
+    finiteAdditiveFourierCoeff ψ χ (h : F) =
+      (Fintype.card F : ℂ)⁻¹ * χ⁻¹ h * gaussSum χ (ψ.mulShift (-1)) := by
+  have he : (∑ t : F, χ t * ψ (-(h * t))) = χ⁻¹ h * gaussSum χ (ψ.mulShift (-1)) := by
+    simpa only [gaussSum, AddChar.mulShift_apply, neg_one_mul, mul_neg] using
+      gaussSum_mulShift_eq χ (ψ.mulShift (-1)) h
+  rw [finiteAdditiveFourierCoeff]
+  simp only [neg_mul] at *
+  rw [he]
+  ring
+
+lemma finiteGauss_sum_units {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) :
+    gaussSum χ ψ = ∑ y : Fˣ, χ (y : F) * ψ (y : F) := by
+  classical
+  calc
+    gaussSum χ ψ = ∑ x ∈ (Finset.univ : Finset F).erase 0, χ x * ψ x := by
+      simpa only [gaussSum, MulChar.map_zero, zero_mul, add_zero] using
+        (Finset.sum_erase_add (Finset.univ : Finset F) (fun x => χ x * ψ x) (Finset.mem_univ (0 : F))).symm
+    _ = ∑ x : {x : F // x ≠ 0}, χ x * ψ x := by
+      apply Finset.sum_subtype
+      intro x
+      simp only [Finset.mem_erase, Finset.mem_univ, and_true]
+    _ = ∑ y : Fˣ, χ (y : F) * ψ (y : F) :=
+      (Fintype.sum_equiv unitsEquivNeZero _ _ (fun _ => rfl)).symm
+
+/-- The local reflected row retains the zero output and the cubic automorphy factor. -/
+def finiteReflectionGauss {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (j : ℕ) (x : F) : ℂ :=
+  ∑ h : Fˣ, finiteAdditiveFourierCoeff ψ (χ ^ j : MulChar F ℂ) (h : F) * ((χ⁻¹) ^ 2) h *
+    ψ (x * ((h⁻¹ : Fˣ) : F))
+
+/-- Local reflection is exactly a product of two Gauss sums, including exceptional powers. -/
+theorem finiteReflectionGauss_product {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (j : ℕ) (x : F) :
+    finiteReflectionGauss χ ψ j x = (Fintype.card F : ℂ)⁻¹ *
+      gaussSum (χ ^ j) (ψ.mulShift (-1)) * gaussSum (χ ^ (j + 2)) (ψ.mulShift x) := by
+  classical
+  have hinv : (∑ h : Fˣ, (((χ ^ j)⁻¹ * (χ⁻¹) ^ 2) h) * ψ (x * ((h⁻¹ : Fˣ) : F))) =
+      gaussSum (χ ^ (j + 2)) (ψ.mulShift x) := by
+    calc
+      _ = ∑ h : Fˣ, (((χ ^ j)⁻¹ * (χ⁻¹) ^ 2) (h⁻¹)) * ψ (x * (h : F)) := by
+        apply Fintype.sum_equiv (Equiv.inv Fˣ)
+        intro h
+        simp only [Equiv.inv_apply, Units.val_inv_eq_inv_val, inv_inv]
+      _ = ∑ h : Fˣ, (χ ^ (j + 2)) h * ψ (x * (h : F)) := by
+        apply Finset.sum_congr rfl
+        intro h hh
+        have he : (((χ ^ j)⁻¹ * (χ⁻¹) ^ 2)⁻¹) = χ ^ (j + 2) := by group
+        rw [← MulChar.inv_apply', he]
+      _ = _ := by rw [finiteGauss_sum_units]; rfl
+  rw [finiteReflectionGauss]
+  simp_rw [finiteAdditiveFourierCoeff_mulChar_unit]
+  calc
+    _ = ((Fintype.card F : ℂ)⁻¹ * gaussSum (χ ^ j) (ψ.mulShift (-1))) *
+        ∑ h : Fˣ, (((χ ^ j)⁻¹ * (χ⁻¹) ^ 2) h) * ψ (x * ((h⁻¹ : Fˣ) : F)) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro h hh
+      rw [MulChar.mul_apply]
+      ring
+    _ = _ := by rw [hinv]
+
+lemma finiteGauss_mulShift_all {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hχ : χ ≠ 1) (x : F) :
+    gaussSum χ (ψ.mulShift x) = χ⁻¹ x * gaussSum χ ψ := by
+  by_cases hx : x = 0
+  · subst x
+    have he : ψ.mulShift (0 : F) = 1 := by ext t; simp
+    rw [he, gaussSum_one_right hχ, MulChar.map_zero, zero_mul]
+  · simpa only [Units.val_mk0] using gaussSum_mulShift_eq χ ψ (Units.mk0 x hx)
+
+/-- A sextic row becomes its quadratic third power after the reflected cubic multiplier. -/
+theorem finiteReflectionGauss_sextic {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hχ : χ ^ 6 = 1) (hχ3 : χ ^ 3 ≠ 1) (x : F) :
+    finiteReflectionGauss χ ψ 1 x =
+      ((Fintype.card F : ℂ)⁻¹ * gaussSum χ (ψ.mulShift (-1)) * gaussSum (χ ^ 3) ψ) * (χ ^ 3) x := by
+  have hinv : (χ ^ 3)⁻¹ = χ ^ 3 := by
+    apply inv_eq_of_mul_eq_one_right
+    simpa only [← pow_add] using hχ
+  rw [finiteReflectionGauss_product, pow_one, show 1 + 2 = 3 from rfl,
+    finiteGauss_mulShift_all _ _ hχ3, hinv]
+  ring
+
+/-- The exceptional fourth-power row has a distinct zero-frequency contribution. -/
+theorem finiteReflectionGauss_fourth {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hχ : χ ^ 6 = 1) (hψ : ψ.IsPrimitive) (x : F) :
+    finiteReflectionGauss χ ψ 4 x =
+      ((Fintype.card F : ℂ)⁻¹ * gaussSum (χ ^ 4) (ψ.mulShift (-1))) *
+        (if x = 0 then (Nat.card Fˣ : ℂ) else -1) := by
+  rw [finiteReflectionGauss_product, show 4 + 2 = 6 from rfl, hχ]
+  by_cases hx : x = 0
+  · subst x
+    have he : ψ.mulShift (0 : F) = 1 := by ext t; simp
+    rw [he, gaussSum_one_one, if_pos rfl]
+  · rw [gaussSum_one_left (hψ hx), if_neg hx]
+
+lemma finiteReflectionGauss_phase_norm {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (j : ℕ)
+    (hj : χ ^ j ≠ 1) (hj2 : χ ^ (j + 2) ≠ 1) :
+    ‖(Fintype.card F : ℂ)⁻¹ * gaussSum (χ ^ j) (ψ.mulShift (-1)) * gaussSum (χ ^ (j + 2)) ψ‖ = 1 := by
+  have hneg : (ψ.mulShift (-1)).IsPrimitive := by
+    intro a ha
+    rw [AddChar.mulShift_mulShift]
+    exact hψ (mul_ne_zero (neg_ne_zero.mpr one_ne_zero) ha)
+  have hnorm (χ₀ : MulChar F ℂ) (ψ₀ : AddChar F ℂ) (hc : χ₀ ≠ 1) (hp : ψ₀.IsPrimitive) :
+      ‖gaussSum χ₀ ψ₀‖ ^ 2 = (Fintype.card F : ℝ) := by
+    rw [← Complex.normSq_eq_norm_sq, ArithmeticEffectivityTheory.normSq_gaussSum_eq_card hc hp]
+  have hq : (Fintype.card F : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  apply (sq_eq_sq₀ (norm_nonneg _) zero_le_one).mp
+  simp only [norm_mul, norm_inv, Complex.norm_natCast, mul_pow, one_pow,
+    hnorm _ _ hj hneg, hnorm _ _ hj2 hψ]
+  field_simp
+
+/-- The reflected sextic row is exactly a unit phase times the actual quadratic residue character. -/
+theorem finiteReflectionGauss_actual_quadratic
+    (P : Ideal O) [P.IsMaximal] (hg : lambda ∉ P)
+    (hchar : ringChar (O ⧸ P) ≠ 2) (ψ : AddChar (O ⧸ P) ℂ) (hψ : ψ.IsPrimitive) :
+    ∃ ε : ℂ, ‖ε‖ = 1 ∧ ∀ x : O ⧸ P,
+      finiteReflectionGauss (complexSexticChar P hg) ψ 1 x = ε * complexQuadraticChar P x := by
+  have hp := complexSexticChar_powers P hg
+  have hq : complexSexticChar P hg ^ 3 ≠ 1 := by
+    rw [hp.2.1]
+    exact complexQuadraticChar_ne_one P hchar
+  refine ⟨(Fintype.card (O ⧸ P) : ℂ)⁻¹ * gaussSum (complexSexticChar P hg) (ψ.mulShift (-1)) *
+    gaussSum (complexSexticChar P hg ^ 3) ψ, ?_, ?_⟩
+  · simpa only [pow_one, show 1 + 2 = 3 from rfl] using
+      finiteReflectionGauss_phase_norm (complexSexticChar P hg) ψ hψ 1
+        (by simpa only [pow_one] using complexSexticChar_ne_one P hg) hq
+  · intro x
+    rw [finiteReflectionGauss_sextic _ _ hp.2.2 hq, hp.2.1]
+
+/-- The exceptional row separates into a divisibility term and its exact constant correction. -/
+theorem finiteReflectionGauss_fourth_indicator {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hχ : χ ^ 6 = 1) (hψ : ψ.IsPrimitive) (x : F) :
+    finiteReflectionGauss χ ψ 4 x =
+      ((Fintype.card F : ℂ)⁻¹ * gaussSum (χ ^ 4) (ψ.mulShift (-1))) *
+        ((if x = 0 then (Fintype.card F : ℂ) else 0) - 1) := by
+  classical
+  have hcard : (Nat.card Fˣ : ℂ) = (Fintype.card F : ℂ) - 1 := by
+    rw [Nat.card_eq_fintype_card, Fintype.card_units,
+      Nat.cast_sub (Nat.succ_le_of_lt Fintype.card_pos), Nat.cast_one]
+  rw [finiteReflectionGauss_fourth χ ψ hχ hψ]
+  by_cases hx : x = 0
+  · simp only [if_pos hx, hcard]
+  · simp only [if_neg hx, zero_sub]
+
+/-- Independent local reflected rows factor without discarding their phases or exceptional terms. -/
+theorem finiteReflectionGauss_product_family
+    {ι : Type*} [Fintype ι] {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+    (χ : ∀ i, MulChar (F i) ℂ) (ψ : ∀ i, AddChar (F i) ℂ) (j : ι → ℕ) (x : ∀ i, F i) :
+    (∑ h : ∀ i, (F i)ˣ, ∏ i,
+      finiteAdditiveFourierCoeff (ψ i) (χ i ^ j i : MulChar (F i) ℂ) (h i : F i) * ((χ i)⁻¹ ^ 2) (h i) *
+        ψ i (x i * (((h i)⁻¹ : (F i)ˣ) : F i))) =
+      ∏ i, ((Fintype.card (F i) : ℂ)⁻¹ * gaussSum (χ i ^ j i) ((ψ i).mulShift (-1)) *
+        gaussSum (χ i ^ (j i + 2)) ((ψ i).mulShift (x i))) := by
+  classical
+  let f := fun (i : ι) (h : (F i)ˣ) =>
+    finiteAdditiveFourierCoeff (ψ i) (χ i ^ j i : MulChar (F i) ℂ) (h : F i) *
+      ((χ i)⁻¹ ^ 2) h * ψ i (x i * ((h⁻¹ : (F i)ˣ) : F i))
+  change (∑ h : ∀ i, (F i)ˣ, ∏ i, f i (h i)) = _
+  rw [← Fintype.prod_sum f]
+  apply Finset.prod_congr rfl
+  intro i hi
+  exact finiteReflectionGauss_product (χ i) (ψ i) (j i) (x i)
+
+/-- At good primes the full product reflection is a unit phase times the quadratic row. -/
+theorem finiteReflectionGauss_actual_quadratic_family
+    {ι : Type*} [Fintype ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (hchar : ∀ i, ringChar (O ⧸ P i) ≠ 2)
+    (ψ : ∀ i, AddChar (O ⧸ P i) ℂ) (hψ : ∀ i, (ψ i).IsPrimitive) :
+    ∃ ε : ℂ, ‖ε‖ = 1 ∧ ∀ x : ∀ i, O ⧸ P i,
+      (∑ h : ∀ i, (O ⧸ P i)ˣ, ∏ i,
+        finiteAdditiveFourierCoeff (ψ i) (complexSexticChar (P i) (hg i)) (h i : O ⧸ P i) *
+          ((complexSexticChar (P i) (hg i))⁻¹ ^ 2) (h i) *
+          ψ i (x i * (((h i)⁻¹ : (O ⧸ P i)ˣ) : O ⧸ P i))) =
+      ε * ∏ i, complexQuadraticChar (P i) (x i) := by
+  classical
+  choose ε hε he using fun i => finiteReflectionGauss_actual_quadratic (P i) (hg i) (hchar i) (ψ i) (hψ i)
+  refine ⟨∏ i, ε i, by simp only [norm_prod, hε, Finset.prod_const_one], ?_⟩
+  intro x
+  let f := fun (i : ι) (h : (O ⧸ P i)ˣ) =>
+    finiteAdditiveFourierCoeff (ψ i) (complexSexticChar (P i) (hg i)) (h : O ⧸ P i) *
+      ((complexSexticChar (P i) (hg i))⁻¹ ^ 2) h *
+      ψ i (x i * ((h⁻¹ : (O ⧸ P i)ˣ) : O ⧸ P i))
+  change (∑ h : ∀ i, (O ⧸ P i)ˣ, ∏ i, f i (h i)) = _
+  rw [← Fintype.prod_sum f, ← Finset.prod_mul_distrib]
+  apply Finset.prod_congr rfl
+  intro i hi
+  simpa only [finiteReflectionGauss, pow_one, f] using he i (x i)
+
+
+/-- Reciprocity separates a fixed denominator factor from a moving primary factor. -/
+lemma cuspSymbol_principal_factor (a c r : O)
+    (ha : lambda ^ 2 ∣ a - 1) (hr : lambda ^ 2 ∣ r - 1) :
+    symbol (c * r) a = symbol c a * symbol a r := by
+  rw [symbol_mul_numerator, symbol_reciprocity r a hr ha]
+
+/-- The determinant relation separates the ramified cusp multiplier without division by symbols. -/
+lemma cuspSymbol_ramified (a b c d u : O)
+    (hdet : a * d - b * (u * c) = 1)
+    (ha : lambda ^ 2 ∣ a - 1) (hA : lambda ^ 2 ∣ (a - u * b) - 1) :
+    symbol (u * c - u * d) (a - u * b) = symbol (-u) (a - u * b) * symbol c a := by
+  have h1 : symbol a (a - u * b) * symbol (u * c - u * d) (a - u * b) =
+      symbol (-u) (a - u * b) := by
+    rw [← symbol_mul_numerator]
+    apply symbol_congr
+    refine ⟨u * c, ?_⟩
+    linear_combination -u * hdet
+  have h2 : symbol (a - u * b) a * symbol c a = 1 := by
+    rw [← symbol_mul_numerator, ← symbol_one_numerator a ha]
+    apply symbol_congr
+    refine ⟨c - d, ?_⟩
+    linear_combination hdet
+  rw [symbol_reciprocity a (a - u * b) ha hA] at h1
+  calc
+    _ = (symbol (a - u * b) a * symbol c a) * symbol (u * c - u * d) (a - u * b) := by rw [h2, one_mul]
+    _ = (symbol (a - u * b) a * symbol (u * c - u * d) (a - u * b)) * symbol c a := by ring
+    _ = _ := by rw [h1]
+
+lemma cuspSymbol_ramified_factor (a b c r d u : O)
+    (hdet : a * d - b * (u * (c * r)) = 1)
+    (ha : lambda ^ 2 ∣ a - 1) (hA : lambda ^ 2 ∣ (a - u * b) - 1)
+    (hr : lambda ^ 2 ∣ r - 1) :
+    symbol (u * (c * r) - u * d) (a - u * b) =
+      (symbol (-u) (a - u * b) * symbol c a) * symbol a r := by
+  rw [cuspSymbol_ramified a b (c * r) d u hdet ha hA, cuspSymbol_principal_factor a c r ha hr]
+  ring
+
+/-- In the Weyl chart, denominator congruence supplies the exact global cubic factor. -/
+lemma cuspSymbol_weyl (a b c d : O) (hdet : a * d - b * c = 1)
+    (hb : lambda ^ 2 ∣ (-b) - 1) (hc : lambda ^ 2 ∣ c - 1) (h9 : (9 : O) ∣ a * d) :
+    symbol (-d) (-b) = symbol a c := by
+  have hp : lambda ^ 2 ∣ (-b) * c - 1 := primary_mul (-b) c hb hc
+  have hprod : symbol d (-b) * symbol d c = 1 := by
+    rw [← symbol_mul_denominator]
+    have hnine : (9 : O) ∣ (-b) * c - 1 := by
+      convert dvd_neg.mpr h9 using 1
+      linear_combination hdet
+    have hd : d ∣ (-b) * c - 1 := by
+      refine ⟨-a, ?_⟩
+      linear_combination hdet
+    rw [symbol_denominator_congr d ((-b) * c) 1 hp (by simp) hnine hd, symbol_one]
+  have hother : symbol a c * symbol d c = 1 := by
+    rw [← symbol_mul_numerator, ← symbol_one_numerator c hc]
+    apply symbol_congr
+    refine ⟨b, ?_⟩
+    linear_combination hdet
+  rw [symbol_neg_numerator _ _ hb]
+  calc
+    symbol d (-b) = symbol d (-b) * (symbol a c * symbol d c) := by rw [hother, mul_one]
+    _ = (symbol d (-b) * symbol d c) * symbol a c := by ring
+    _ = _ := by rw [hprod, one_mul]
+
+lemma cuspSymbol_weyl_factor (a b c r d : O) (hdet : a * d - b * (c * r) = 1)
+    (hb : lambda ^ 2 ∣ (-b) - 1) (hc : lambda ^ 2 ∣ c * r - 1) (h9 : (9 : O) ∣ a * d) :
+    symbol (-d) (-b) = symbol a c * symbol a r := by
+  rw [cuspSymbol_weyl a b (c * r) d hdet hb hc h9, symbol_mul_denominator]
+
+/-- The ramified fixed factor is constant on a fixed matrix residue class. -/
+lemma cuspSymbol_ramified_fixed_congr (N c u a a₀ b b₀ : O)
+    (h9 : (9 : O) ∣ N) (hc : c ∣ N) (hu : u ∣ N)
+    (ha : lambda ^ 2 ∣ a - 1) (ha₀ : lambda ^ 2 ∣ a₀ - 1)
+    (hA : lambda ^ 2 ∣ a - u * b - 1) (hA₀ : lambda ^ 2 ∣ a₀ - u * b₀ - 1)
+    (hNa : N ∣ a - a₀) (hNb : N ∣ b - b₀) :
+    symbol (-u) (a - u * b) * symbol c a =
+      symbol (-u) (a₀ - u * b₀) * symbol c a₀ := by
+  have hdiff : N ∣ (a - u * b) - (a₀ - u * b₀) := by
+    convert dvd_sub hNa (dvd_mul_of_dvd_right hNb u) using 1
+    ring
+  rw [symbol_denominator_congr (-u) (a - u * b) (a₀ - u * b₀) hA hA₀
+      (h9.trans hdiff) (neg_dvd.mpr (hu.trans hdiff)),
+    symbol_denominator_congr c a a₀ ha ha₀ (h9.trans hNa) (hc.trans hNa)]
+
+lemma cuspSymbol_weyl_fixed_congr (N c a a₀ : O) (hc : c ∣ N) (hNa : N ∣ a - a₀) :
+    symbol a c = symbol a₀ c := symbol_congr (hc.trans hNa)
+
+lemma norm_cuspSymbol_of_coprime (a c : O) (hc : lambda ^ 2 ∣ c - 1) (hcop : IsCoprime a c) :
+    ‖ringComplex (symbol a c)‖ = 1 := by
+  have hcube : ringComplex (symbol a c) ^ 3 = 1 := by
+    rw [← map_pow, symbol_cube_of_isCoprime a c hc hcop, map_one]
+  apply (pow_eq_one_iff_of_nonneg (norm_nonneg _) (by decide : (3 : ℕ) ≠ 0)).mp
+  simpa only [norm_pow, norm_one] using congrArg norm hcube
+
+lemma cuspSymbol_principal_fixed_norm (a b c r d : O)
+    (hdet : a * d - b * (c * r) = 1) (ha : lambda ^ 2 ∣ a - 1) :
+    ‖ringComplex (symbol c a)‖ = 1 := by
+  apply norm_cuspSymbol_of_coprime c a ha
+  refine ⟨-b * r, d, ?_⟩
+  linear_combination hdet
+
+lemma cuspSymbol_weyl_fixed_norm (a b c r d : O)
+    (hdet : a * d - b * (c * r) = 1) (hc : lambda ^ 2 ∣ c - 1) :
+    ‖ringComplex (symbol a c)‖ = 1 := by
+  apply norm_cuspSymbol_of_coprime a c hc
+  refine ⟨d, -b * r, ?_⟩
+  linear_combination hdet
+
+lemma cuspSymbol_ramified_fixed_norm (a b c r d u : O)
+    (hdet : a * d - b * (u * (c * r)) = 1)
+    (ha : lambda ^ 2 ∣ a - 1) (hA : lambda ^ 2 ∣ a - u * b - 1) :
+    ‖ringComplex (symbol (-u) (a - u * b) * symbol c a)‖ = 1 := by
+  have hfirst : ‖ringComplex (symbol (-u) (a - u * b))‖ = 1 := by
+    apply norm_cuspSymbol_of_coprime _ _ hA
+    refine ⟨b * (c * r - d), d, ?_⟩
+    linear_combination hdet
+  have hsecond : ‖ringComplex (symbol c a)‖ = 1 := by
+    apply norm_cuspSymbol_of_coprime _ _ ha
+    refine ⟨-b * u * r, d, ?_⟩
+    linear_combination hdet
+  rw [map_mul, norm_mul, hfirst, hsecond, one_mul]
+
+lemma fixedCuspSector_eq_of_relative (M N : SL(2, O)) (h : M * N⁻¹ ∈ levelThree) :
+    fixedCuspSector M = fixedCuspSector N := by
+  apply Subtype.ext
+  change fixedCuspReduction M = fixedCuspReduction N
+  have he : fixedCuspReduction (M * N⁻¹) = 1 := h
+  rw [map_mul, map_inv] at he
+  exact mul_inv_eq_one.mp he
+
+/-- Within one matrix residue class, all varying automorphy is carried by the relative cubic character. -/
+lemma fixedCuspGamma_character_relative (M N : SL(2, O)) (h : M * N⁻¹ ∈ levelThree) :
+    extendedComplexCharacter (fixedCuspGamma M) =
+      complexCharacter ⟨M * N⁻¹, h⟩ * extendedComplexCharacter (fixedCuspGamma N) := by
+  have hs := fixedCuspSector_eq_of_relative M N h
+  let D : levelThree := ⟨M * N⁻¹, h⟩
+  let E : rationalExtension := ⟨(D : SL(2, O)), levelThree_le_rationalExtension D.property⟩
+  have he : fixedCuspGamma M = E * fixedCuspGamma N := by
+    apply Subtype.ext
+    change (fixedCuspGamma M : SL(2, O)) = (M * N⁻¹) * (fixedCuspGamma N : SL(2, O))
+    have hm := fixedCusp_factorization M
+    rw [hs] at hm
+    have hn := fixedCusp_factorization N
+    let g : SL(2, O) := fixedCuspGamma M
+    let k : SL(2, O) := fixedCuspGamma N
+    let T : SL(2, O) := cuspRepresentative (fixedCuspIndex (fixedCuspSector N)) *
+      fixedCuspTriangular (fixedCuspSector N)
+    have hm' : M = g * T := by simpa only [mul_assoc] using hm
+    have hn' : N = k * T := by simpa only [mul_assoc] using hn
+    change g = (M * N⁻¹) * k
+    rw [hm', hn']
+    group
+  rw [he, map_mul, extendedComplexCharacter_restrict]
+
+/-- The Weyl cusp chart with integral horizontal coordinate. -/
+def weylCuspMatrix (u : O) : SL(2, O) := ⟨!![u, -1; 1, 0], by simp [Matrix.det_fin_two]⟩
+
+lemma lowerCusp_relative_matrix (M : SL(2, O)) (u : O) :
+    ((M * (lowerCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) =
+      !![M 0 0 - u * M 0 1, M 0 1; M 1 0 - u * M 1 1, M 1 1] := by
+  rw [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [lowerCuspMatrix, Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+lemma weylCusp_relative_matrix (M : SL(2, O)) (u : O) :
+    ((M * (weylCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) =
+      !![-M 0 1, M 0 0 + u * M 0 1; -M 1 1, M 1 0 + u * M 1 1] := by
+  rw [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [weylCuspMatrix, Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+lemma lowerCusp_relative_character (M : SL(2, O)) (u : O)
+    (h : M * (lowerCuspMatrix u)⁻¹ ∈ levelThree) :
+    complexCharacter ⟨M * (lowerCuspMatrix u)⁻¹, h⟩ =
+      ringComplex (symbol (M 1 0 - u * M 1 1) (M 0 0 - u * M 0 1)) := by
+  change ringComplex (symbol
+    (((M * (lowerCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 1 0)
+    (((M * (lowerCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 0 0)) = _
+  rw [lowerCusp_relative_matrix]
+  rfl
+
+lemma weylCusp_relative_character (M : SL(2, O)) (u : O)
+    (h : M * (weylCuspMatrix u)⁻¹ ∈ levelThree) :
+    complexCharacter ⟨M * (weylCuspMatrix u)⁻¹, h⟩ = ringComplex (symbol (-M 1 1) (-M 0 1)) := by
+  change ringComplex (symbol
+    (((M * (weylCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 1 0)
+    (((M * (weylCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 0 0)) = _
+  rw [weylCusp_relative_matrix]
+  rfl
+
+lemma lowerCusp_relative_primary (M : SL(2, O)) (u : O)
+    (h : M * (lowerCuspMatrix u)⁻¹ ∈ levelThree) :
+    lambda ^ 2 ∣ (M 0 0 - u * M 0 1) - 1 := by
+  have hp := levelThree_primary ⟨M * (lowerCuspMatrix u)⁻¹, h⟩
+  change lambda ^ 2 ∣ (((M * (lowerCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 0 0) - 1 at hp
+  rw [lowerCusp_relative_matrix] at hp
+  exact hp
+
+/-- The ramified cusp character is a fixed factor times the moving cubic row. -/
+theorem fixedCuspGamma_ramified_factor (M : SL(2, O)) (u c r : O)
+    (h : M * (lowerCuspMatrix u)⁻¹ ∈ levelThree)
+    (ha : lambda ^ 2 ∣ M 0 0 - 1) (hr : lambda ^ 2 ∣ r - 1)
+    (hC : M 1 0 = u * (c * r)) :
+    extendedComplexCharacter (fixedCuspGamma M) =
+      (ringComplex (symbol (-u) (M 0 0 - u * M 0 1) * symbol c (M 0 0)) *
+        extendedComplexCharacter (fixedCuspGamma (lowerCuspMatrix u))) *
+      ringComplex (symbol (M 0 0) r) := by
+  have hdet : M 0 0 * M 1 1 - M 0 1 * (u * (c * r)) = 1 := by
+    simpa only [Matrix.det_fin_two, hC] using M.property
+  rw [fixedCuspGamma_character_relative M (lowerCuspMatrix u) h, lowerCusp_relative_character, hC,
+    cuspSymbol_ramified_factor _ _ _ _ _ _ hdet ha (lowerCusp_relative_primary M u h) hr, map_mul]
+  ring
+
+/-- The Weyl cusp character is a fixed factor times the moving cubic row. -/
+theorem fixedCuspGamma_weyl_factor (M : SL(2, O)) (u c r : O)
+    (h : M * (weylCuspMatrix u)⁻¹ ∈ levelThree)
+    (hc : lambda ^ 2 ∣ M 1 0 - 1) (h9 : (9 : O) ∣ M 0 0 * M 1 1)
+    (hC : M 1 0 = c * r) :
+    extendedComplexCharacter (fixedCuspGamma M) =
+      (ringComplex (symbol (M 0 0) c) * extendedComplexCharacter (fixedCuspGamma (weylCuspMatrix u))) *
+        ringComplex (symbol (M 0 0) r) := by
+  have hb := levelThree_primary ⟨M * (weylCuspMatrix u)⁻¹, h⟩
+  change lambda ^ 2 ∣ (((M * (weylCuspMatrix u)⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 0 0) - 1 at hb
+  rw [weylCusp_relative_matrix] at hb
+  change lambda ^ 2 ∣ -M 0 1 - 1 at hb
+  have hdet : M 0 0 * M 1 1 - M 0 1 * (c * r) = 1 := by
+    simpa only [Matrix.det_fin_two, hC] using M.property
+  rw [hC] at hc
+  rw [fixedCuspGamma_character_relative M (weylCuspMatrix u) h, weylCusp_relative_character,
+    cuspSymbol_weyl_factor _ _ _ _ _ hdet hb hc h9, map_mul]
+  ring
+
+
+/-- A primary numerator admits a determinant-one completion whose upper-right entry is divisible by nine. -/
+lemma exists_primary_numerator_matrix (a c : O) (hac : IsCoprime a c)
+    (ha : lambda ^ 2 ∣ a - 1) :
+    ∃ M : SL(2, O), M 0 0 = a ∧ M 1 0 = c ∧ (9 : O) ∣ M 0 1 ∧ (3 : O) ∣ M 1 1 - 1 := by
+  have ha3 := primary_coprime_three a ha
+  have ha9 : IsCoprime a (9 : O) := by
+    simpa only [show (3 : O) * 3 = 9 from by norm_num] using ha3.mul_right ha3
+  obtain ⟨d, t, ht⟩ := ha9.mul_right hac
+  have hdet : a * d - (-9 * t) * c = 1 := by linear_combination ht
+  let M : SL(2, O) := ⟨!![a, -9 * t; c, d], by rw [Matrix.det_fin_two]; exact hdet⟩
+  refine ⟨M, rfl, rfl, ⟨-t, by change -9 * t = 9 * (-t); ring⟩, ?_⟩
+  have hb : (3 : O) ∣ -9 * t := ⟨-3 * t, by ring⟩
+  change (3 : O) ∣ d - 1
+  convert dvd_sub (dvd_mul_of_dvd_left hb c)
+    (dvd_mul_of_dvd_left (three_dvd_primary_sub_one a ha) d) using 1
+  linear_combination hdet
+
+/-- A primary denominator admits a determinant-one completion whose lower-right entry is divisible by nine. -/
+lemma exists_primary_denominator_matrix (a c : O) (hac : IsCoprime a c)
+    (hc : lambda ^ 2 ∣ c - 1) :
+    ∃ M : SL(2, O), M 0 0 = a ∧ M 1 0 = c ∧ (3 : O) ∣ M 0 1 + 1 ∧ (9 : O) ∣ M 1 1 := by
+  have hc3 := primary_coprime_three c hc
+  have hc9 : IsCoprime c (9 : O) := by
+    simpa only [show (3 : O) * 3 = 9 from by norm_num] using hc3.mul_right hc3
+  obtain ⟨y, x, ht⟩ := hc9.mul_right hac.symm
+  have hdet : a * (9 * x) - (-y) * c = 1 := by linear_combination ht
+  let M : SL(2, O) := ⟨!![a, -y; c, 9 * x], by rw [Matrix.det_fin_two]; exact hdet⟩
+  refine ⟨M, rfl, rfl, ?_, ⟨x, rfl⟩⟩
+  have hd : (3 : O) ∣ 9 * x := ⟨3 * x, by ring⟩
+  change (3 : O) ∣ -y + 1
+  convert dvd_sub (dvd_mul_of_dvd_right hd a)
+    (dvd_mul_of_dvd_right (three_dvd_primary_sub_one c hc) (-y)) using 1
+  linear_combination -hdet
+
+/-- Primitive columns congruent modulo a fixed modulus admit completions in one matrix residue class. -/
+lemma exists_fixed_matrix_family {ι : Type*} (i₀ : ι) (a : ι → O) (c N : O)
+    (hac : ∀ i, IsCoprime (a i) c) (ha : ∀ i, N ∣ a i - a i₀)
+    (M₀ : SL(2, O)) (hM₀a : M₀ 0 0 = a i₀) (hM₀c : M₀ 1 0 = c) :
+    ∃ M : ι → SL(2, O), (∀ i, M i 0 0 = a i) ∧ (∀ i, M i 1 0 = c) ∧
+      (∀ i r s, N ∣ M i r s - M₀ r s) ∧ ∀ i r s, N ∣ M i r s - M i₀ r s := by
+  have hex (i : ι) := primitiveColumn_congruent_completion M₀ (a i) c N (hac i)
+    (by simpa only [hM₀a] using ha i) (by simp only [hM₀c, sub_self, dvd_zero])
+  choose M hMa hMc hMM using hex
+  refine ⟨M, hMa, hMc, hMM, ?_⟩
+  intro i r s
+  convert dvd_sub (hMM i r s) (hMM i₀ r s) using 1
+  ring
+
+lemma primary_numerator_matrix_relative (M : SL(2, O)) (u : O)
+    (ha : lambda ^ 2 ∣ M 0 0 - 1) (hb : (9 : O) ∣ M 0 1)
+    (hc : (3 : O) ∣ M 1 0 - u) (hd : (3 : O) ∣ M 1 1 - 1) :
+    M * (lowerCuspMatrix u)⁻¹ ∈ levelThree := by
+  apply integralMatrix_congruent_levelThree
+  intro i j
+  fin_cases i <;> fin_cases j
+  · simpa [lowerCuspMatrix] using three_dvd_primary_sub_one (M 0 0) ha
+  · simpa [lowerCuspMatrix] using
+      (show (3 : O) ∣ 9 from ⟨3, by norm_num⟩).trans hb
+  · simpa [lowerCuspMatrix] using hc
+  · simpa [lowerCuspMatrix] using hd
+
+lemma primary_denominator_matrix_relative (M : SL(2, O)) (u : O)
+    (ha : (3 : O) ∣ M 0 0 - u) (hb : (3 : O) ∣ M 0 1 + 1)
+    (hc : lambda ^ 2 ∣ M 1 0 - 1) (hd : (9 : O) ∣ M 1 1) :
+    M * (weylCuspMatrix u)⁻¹ ∈ levelThree := by
+  apply integralMatrix_congruent_levelThree
+  intro i j
+  fin_cases i <;> fin_cases j
+  · simpa [weylCuspMatrix] using ha
+  · simpa [weylCuspMatrix] using hb
+  · simpa [weylCuspMatrix] using three_dvd_primary_sub_one (M 1 0) hc
+  · simpa [weylCuspMatrix] using
+      (show (3 : O) ∣ 9 from ⟨3, by norm_num⟩).trans hd
+
+/-- Unit frequencies on an active prime set, extended by zero elsewhere. -/
+def assembleUnitFrequencies {ι : Type*} {F : ι → Type*} [∀ i, Field (F i)]
+    (s : Finset ι) (u : ∀ i : s, (F i.val)ˣ) (i : ι) : F i := by
+  classical
+  exact if hi : i ∈ s then (u ⟨i, hi⟩ : F i) else 0
+
+lemma assembleUnitFrequencies_ne_zero_iff {ι : Type*} {F : ι → Type*} [∀ i, Field (F i)]
+    (s : Finset ι) (u : ∀ i : s, (F i.val)ˣ) (i : ι) :
+    assembleUnitFrequencies s u i ≠ 0 ↔ i ∈ s := by
+  classical
+  by_cases hi : i ∈ s
+  · simp only [assembleUnitFrequencies, hi, dite_true, iff_true]
+    exact (u ⟨i, hi⟩).ne_zero
+  · simp [assembleUnitFrequencies, hi]
+
+lemma assembleUnitFrequencies_bijective {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] :
+    Function.Bijective (fun v : Σ s : Finset ι, ∀ i : s, (F i.val)ˣ => assembleUnitFrequencies v.1 v.2) := by
+  classical
+  constructor
+  · rintro ⟨s, u⟩ ⟨t, v⟩ he
+    have hst : s = t := by
+      apply Finset.ext
+      intro i
+      rw [← assembleUnitFrequencies_ne_zero_iff s u i, ← assembleUnitFrequencies_ne_zero_iff t v i]
+      exact Iff.of_eq (congrArg (fun f : ∀ i, F i => f i ≠ 0) he)
+    subst t
+    have huv : u = v := by
+      funext i
+      apply Units.ext
+      have h := congrFun he i.val
+      simpa only [assembleUnitFrequencies, dif_pos i.property] using h
+    subst v
+    rfl
+  · intro f
+    let s : Finset ι := Finset.univ.filter (fun i => f i ≠ 0)
+    let u : ∀ i : s, (F i.val)ˣ := fun i => Units.mk0 (f i.val) (Finset.mem_filter.mp i.property).2
+    refine ⟨⟨s, u⟩, ?_⟩
+    funext i
+    by_cases hi : f i = 0
+    · simp [assembleUnitFrequencies, s, hi]
+    · have his : i ∈ s := Finset.mem_filter.mpr ⟨Finset.mem_univ i, hi⟩
+      simp only [assembleUnitFrequencies, dif_pos his, u, Units.val_mk0]
+
+/-- Every finite frequency sum splits exactly into active unit-frequency strata. -/
+theorem finite_frequency_sum_strata {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)] (A : (∀ i, F i) → ℂ) :
+    (∑ x : ∀ i, F i, A x) =
+      ∑ s : Finset ι, ∑ u : ∀ i : s, (F i.val)ˣ, A (assembleUnitFrequencies s u) := by
+  classical
+  let e : (Σ s : Finset ι, ∀ i : s, (F i.val)ˣ) ≃ (∀ i, F i) :=
+    Equiv.ofBijective _ assembleUnitFrequencies_bijective
+  have he := Fintype.sum_equiv e (fun v => A (assembleUnitFrequencies v.1 v.2)) A (fun _ => rfl)
+  rw [Fintype.sum_sigma] at he
+  exact he.symm
+
+/-- Inactive frequencies vanish for nontrivial multiplicative characters. -/
+lemma finiteAdditiveFourierCoeff_mulChar_zero {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) :
+    finiteAdditiveFourierCoeff ψ χ 0 =
+      if χ = 1 then (Nat.card Fˣ : ℂ) / (Fintype.card F : ℂ) else 0 := by
+  classical
+  have he : (∑ x : F, χ x * ψ (-(0 : F) * x)) = gaussSum χ (1 : AddChar F ℂ) := by
+    simp only [neg_zero, zero_mul, AddChar.map_zero_eq_one, mul_one, gaussSum, AddChar.one_apply]
+  rw [finiteAdditiveFourierCoeff, he]
+  by_cases hχ : χ = 1
+  · rw [if_pos hχ, hχ, gaussSum_one_one]
+  · rw [if_neg hχ, gaussSum_one_right hχ, zero_div]
+
+/-- A stratum vanishes if it omits a prime carrying a nontrivial row character. -/
+lemma finite_frequency_stratum_vanishes {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+    (χ : ∀ i, MulChar (F i) ℂ) (ψ : ∀ i, AddChar (F i) ℂ)
+    (s : Finset ι) (u : ∀ i : s, (F i.val)ˣ) (k : ι) (hk : k ∉ s) (hχ : χ k ≠ 1) :
+    (∏ i, finiteAdditiveFourierCoeff (ψ i) (χ i) (assembleUnitFrequencies s u i)) = 0 := by
+  classical
+  apply Finset.prod_eq_zero (Finset.mem_univ k)
+  rw [assembleUnitFrequencies, dif_neg hk, finiteAdditiveFourierCoeff_mulChar_zero, if_neg hχ]
+
+/-- A residue unit has a lift divisible by the square of any coprime fixed modulus. -/
+lemma exists_unit_frequency_lift (N p : O) (hNp : IsCoprime N p)
+    (v : (O ⧸ Ideal.span {p})ˣ) :
+    ∃ t : O, N ^ 2 ∣ t ∧ Ideal.Quotient.mk (Ideal.span {p}) t = (v : O ⧸ Ideal.span {p}) ∧
+      IsCoprime t p := by
+  have hN2 : IsCoprime (N ^ 2) p := by simpa only [pow_two] using hNp.mul_left hNp
+  obtain ⟨a, b, hab⟩ := hN2
+  let x : O := Quotient.out (v : O ⧸ Ideal.span {p})
+  let t : O := N ^ 2 * a * x
+  have hd : p ∣ t - x := by
+    refine ⟨-b * x, ?_⟩
+    dsimp only [t]
+    linear_combination x * hab
+  have he : Ideal.Quotient.mk (Ideal.span {p}) t = (v : O ⧸ Ideal.span {p}) :=
+    (Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr hd)).trans (Ideal.Quotient.mk_out _)
+  refine ⟨t, ⟨a * x, by dsimp only [t]; ring⟩, he, ?_⟩
+  apply IsCoprime.symm
+  apply (isUnit_quotient_span_iff p t).mp
+  rw [he]
+  exact v.isUnit
+
+lemma cusp_isCoprime_of_dvd_sub (m a b : O) (hab : m ∣ a - b) (hb : IsCoprime m b) :
+    IsCoprime m a := by
+  obtain ⟨r, hr⟩ := hab
+  obtain ⟨u, v, hv⟩ := hb
+  refine ⟨u - v * r, v, ?_⟩
+  linear_combination hv + v * hr
+
+/-- The complementary prime product in a finite conductor. -/
+def cuspPrimeCofactor {ι : Type*} [Fintype ι] (p : ι → O) (i : ι) : O := by
+  classical
+  exact ∏ k ∈ Finset.univ.erase i, p k
+
+lemma cuspPrime_mul_cofactor {ι : Type*} [Fintype ι] (p : ι → O) (i : ι) :
+    p i * cuspPrimeCofactor p i = ∏ k, p k := by
+  classical
+  exact Finset.mul_prod_erase Finset.univ p (Finset.mem_univ i)
+
+lemma cuspPrime_dvd_other_cofactor {ι : Type*} [Fintype ι] (p : ι → O) {i k : ι} (hik : i ≠ k) :
+    p i ∣ cuspPrimeCofactor p k := by
+  classical
+  exact Finset.dvd_prod_of_mem p (Finset.mem_erase.mpr ⟨hik, Finset.mem_univ i⟩)
+
+/-- A common denominator for the fixed cusp and its local additive frequencies. -/
+def cuspCrossNumerator {ι : Type*} [Fintype ι] (a c l : O) (p h : ι → O) : O :=
+  a * (∏ i, p i) + l ^ 2 * c * ∑ i, h i * cuspPrimeCofactor p i
+
+lemma cuspCrossNumerator_local {ι : Type*} [Fintype ι] (a c l : O) (p h : ι → O) (i : ι) :
+    Ideal.Quotient.mk (Ideal.span {p i}) (cuspCrossNumerator a c l p h) =
+      Ideal.Quotient.mk (Ideal.span {p i}) (l ^ 2 * c * cuspPrimeCofactor p i) *
+        Ideal.Quotient.mk (Ideal.span {p i}) (h i) := by
+  classical
+  let q := Ideal.Quotient.mk (Ideal.span {p i})
+  have hz : q (∏ k, p k) = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr
+    (Ideal.mem_span_singleton.mpr ⟨cuspPrimeCofactor p i, (cuspPrime_mul_cofactor p i).symm⟩)
+  have hs : (∑ k, q (h k) * q (cuspPrimeCofactor p k)) = q (h i) * q (cuspPrimeCofactor p i) := by
+    apply Finset.sum_eq_single i
+    · intro k hk hki
+      have hk0 : q (cuspPrimeCofactor p k) = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr
+        (Ideal.mem_span_singleton.mpr (cuspPrime_dvd_other_cofactor p hki.symm))
+      rw [hk0, mul_zero]
+    · intro hi
+      exact False.elim (hi (Finset.mem_univ i))
+  change q (cuspCrossNumerator a c l p h) = q (l ^ 2 * c * cuspPrimeCofactor p i) * q (h i)
+  simp only [cuspCrossNumerator, map_add, map_mul, map_sum, map_pow, hz, mul_zero, zero_add, hs]
+  ring
+
+lemma cuspCrossNumerator_fixed {ι : Type*} [Fintype ι] (N a c l : O) (p h : ι → O)
+    (hh : ∀ i, N ∣ h i) : N ∣ cuspCrossNumerator a c l p h - a * (∏ i, p i) := by
+  have hs : N ∣ ∑ i, h i * cuspPrimeCofactor p i :=
+    Finset.dvd_sum (fun i _ => dvd_mul_of_dvd_left (hh i) _)
+  convert dvd_mul_of_dvd_right hs (l ^ 2 * c) using 1
+  simp only [cuspCrossNumerator, add_sub_cancel_left]
+
+/-- Pairwise coprime local moduli and unit frequencies produce a primitive cusp column. -/
+lemma cuspCrossNumerator_coprime {ι : Type*} [Fintype ι] (a c l : O) (p h : ι → O)
+    (hbase : IsCoprime a c) (hpair : Pairwise (Function.onFun IsCoprime p))
+    (hc : ∀ i, IsCoprime c (p i)) (hl : ∀ i, IsCoprime l (p i))
+    (hh : ∀ i, IsCoprime (h i) (p i)) :
+    IsCoprime (cuspCrossNumerator a c l p h) (c * ∏ i, p i) := by
+  classical
+  have hmodc : c ∣ cuspCrossNumerator a c l p h - a * (∏ i, p i) := by
+    refine ⟨l ^ 2 * (∑ i, h i * cuspPrimeCofactor p i), ?_⟩
+    dsimp only [cuspCrossNumerator]
+    ring
+  have hcR : IsCoprime c (∏ i, p i) := IsCoprime.prod_right (fun i _ => hc i)
+  have hca := cusp_isCoprime_of_dvd_sub c _ _ hmodc (hbase.symm.mul_right hcR)
+  apply hca.symm.mul_right
+  apply IsCoprime.prod_right
+  intro i hi
+  have hcof : IsCoprime (p i) (cuspPrimeCofactor p i) :=
+    IsCoprime.prod_right (fun k hk => hpair (Ne.symm (Finset.mem_erase.mp hk).1))
+  have hl2 : IsCoprime (p i) (l ^ 2) := by
+    simpa only [pow_two] using (hl i).symm.mul_right (hl i).symm
+  have hterm : IsCoprime (p i) (l ^ 2 * c * cuspPrimeCofactor p i * h i) :=
+    ((hl2.mul_right (hc i).symm).mul_right hcof).mul_right (hh i).symm
+  have he := cuspCrossNumerator_local a c l p h i
+  rw [← map_mul] at he
+  have hd : p i ∣ cuspCrossNumerator a c l p h - l ^ 2 * c * cuspPrimeCofactor p i * h i :=
+    Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp he)
+  exact (cusp_isCoprime_of_dvd_sub (p i) _ _ hd hterm).symm
+
+
+/-- Local unit frequencies admit primitive cusp matrices in a single residue class. -/
+theorem exists_fixed_cusp_frequency_matrices {ι : Type*} [Fintype ι]
+    (p : ι → O) (N a c l : O)
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (hp : ∀ i, lambda ^ 2 ∣ p i - 1) (hNp : ∀ i, IsCoprime N (p i))
+    (h9N : (9 : O) ∣ N) (hcN : c ∣ N) (hlN : l ∣ N)
+    (hac : IsCoprime a c) (mode : Bool)
+    (hbase : if mode then lambda ^ 2 ∣ a - 1 else lambda ^ 2 ∣ c - 1) :
+    ∃ (lift : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → ι → O)
+      (M : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → SL(2, O)),
+      (∀ v i, N ^ 2 ∣ lift v i) ∧
+      (∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (lift v i) = (v i : O ⧸ Ideal.span {p i})) ∧
+      (∀ v, M v 0 0 = cuspCrossNumerator a c l p (lift v)) ∧
+      (∀ v, M v 1 0 = c * ∏ i, p i) ∧
+      (∀ v r s, N ∣ M v r s - M (fun _ => 1) r s) ∧
+      (∀ v, if mode then (9 : O) ∣ M v 0 1 ∧ (3 : O) ∣ M v 1 1 - 1
+        else (3 : O) ∣ M v 0 1 + 1 ∧ (9 : O) ∣ M v 1 1) := by
+  classical
+  have h3N : (3 : O) ∣ N := (show (3 : O) ∣ 9 from ⟨3, by norm_num⟩).trans h9N
+  have hprimaryN : lambda ^ 2 ∣ N := lambda_sq_dvd_three.trans h3N
+  have hr : lambda ^ 2 ∣ (∏ i, p i) - 1 :=
+    primary_finset_product Finset.univ p (fun i _ => hp i)
+  have hlf (v : ∀ i, (O ⧸ Ideal.span {p i})ˣ) (i : ι) :=
+    exists_unit_frequency_lift N (p i) (hNp i) (v i)
+  choose lift hperiod hres hcop using hlf
+  let A := fun v => cuspCrossNumerator a c l p (lift v)
+  have hA (v) : N ∣ A v - a * ∏ i, p i :=
+    cuspCrossNumerator_fixed N a c l p (lift v)
+      (fun i => (dvd_pow_self N (by decide : (2 : ℕ) ≠ 0)).trans (hperiod v i))
+  have hAA (v) : N ∣ A v - A (fun _ => 1) := by
+    convert dvd_sub (hA v) (hA (fun _ => 1)) using 1
+    ring
+  have hprimitive (v) : IsCoprime (A v) (c * ∏ i, p i) :=
+    cuspCrossNumerator_coprime a c l p (lift v) hac hpair
+      (fun i => (hNp i).of_isCoprime_of_dvd_left hcN)
+      (fun i => (hNp i).of_isCoprime_of_dvd_left hlN) (hcop v)
+  have hfirst : ∃ M₀ : SL(2, O), M₀ 0 0 = A (fun _ => 1) ∧ M₀ 1 0 = c * ∏ i, p i ∧
+      (if mode then (9 : O) ∣ M₀ 0 1 ∧ (3 : O) ∣ M₀ 1 1 - 1
+        else (3 : O) ∣ M₀ 0 1 + 1 ∧ (9 : O) ∣ M₀ 1 1) := by
+    cases mode
+    · exact exists_primary_denominator_matrix _ _ (hprimitive _) (primary_mul c _ hbase hr)
+    · apply exists_primary_numerator_matrix _ _ (hprimitive _)
+      convert dvd_add (hprimaryN.trans (hA (fun _ => 1))) (primary_mul a _ hbase hr) using 1
+      ring
+  obtain ⟨M₀, hM₀a, hM₀c, hM₀⟩ := hfirst
+  obtain ⟨M, hMa, hMc, hMM₀, hMM⟩ := exists_fixed_matrix_family
+    (fun _ => 1) A (c * ∏ i, p i) N hprimitive hAA M₀ hM₀a hM₀c
+  refine ⟨lift, M, hperiod, hres, hMa, hMc, hMM, ?_⟩
+  intro v
+  cases mode
+  · constructor
+    · convert dvd_add (h3N.trans (hMM₀ v 0 1)) hM₀.1 using 1
+      ring
+    · convert dvd_add (h9N.trans (hMM₀ v 1 1)) hM₀.2 using 1
+      ring
+  · constructor
+    · convert dvd_add (h9N.trans (hMM₀ v 0 1)) hM₀.1 using 1
+      ring
+    · convert dvd_add (h3N.trans (hMM₀ v 1 1)) hM₀.2 using 1
+      ring
+
+/-- A common-denominator cusp represents the sum of its local rational frequencies. -/
+lemma cuspCrossNumerator_fraction {ι : Type*} [Fintype ι] (a c l : O) (p h : ι → O)
+    (hc : c ≠ 0) (hp : ∀ i, p i ≠ 0) :
+    ringComplex (cuspCrossNumerator a c l p h) / ringComplex (c * ∏ i, p i) =
+      ringComplex a / ringComplex c + ringComplex l ^ 2 * ∑ i, ringComplex (h i) / ringComplex (p i) := by
+  classical
+  have hec : ringComplex c ≠ 0 := ringComplex_ne_zero hc
+  have hep (i) : ringComplex (p i) ≠ 0 := ringComplex_ne_zero (hp i)
+  have her : ringComplex (∏ i, p i) ≠ 0 :=
+    ringComplex_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+  have hterm (i) : ringComplex (h i * cuspPrimeCofactor p i) / ringComplex (∏ k, p k) =
+      ringComplex (h i) / ringComplex (p i) := by
+    rw [← cuspPrime_mul_cofactor p i, map_mul, map_mul]
+    have hecof : ringComplex (cuspPrimeCofactor p i) ≠ 0 := by
+      intro hz
+      apply her
+      rw [← cuspPrime_mul_cofactor p i, map_mul, hz, mul_zero]
+    field_simp
+  have hsum : (∑ i, ringComplex (h i) * ringComplex (cuspPrimeCofactor p i)) =
+      (∑ i, ringComplex (h i) / ringComplex (p i)) * ringComplex (∏ i, p i) := by
+    apply (div_eq_iff her).mp
+    rw [Finset.sum_div]
+    exact Finset.sum_congr rfl (fun i _ => by simpa only [map_mul] using hterm i)
+  simp only [cuspCrossNumerator, map_add, map_mul, map_pow, map_sum]
+  rw [hsum]
+  field_simp
+
+/-- The lower-right matrix entry reduces to the inverse of the local numerator. -/
+lemma cuspMatrix_inverse_local {ι : Type*} [Fintype ι] (p : ι → O) (c : O)
+    (M : SL(2, O)) (hM : M 1 0 = c * ∏ i, p i) (i : ι)
+    (s : (O ⧸ Ideal.span {p i})ˣ)
+    (hs : Ideal.Quotient.mk (Ideal.span {p i}) (M 0 0) = (s : O ⧸ Ideal.span {p i})) :
+    Ideal.Quotient.mk (Ideal.span {p i}) (M 1 1) = (↑s⁻¹ : O ⧸ Ideal.span {p i}) := by
+  let q := Ideal.Quotient.mk (Ideal.span {p i})
+  have hz : q (M 1 0) = 0 := by
+    rw [hM]
+    apply Ideal.Quotient.eq_zero_iff_mem.mpr
+    apply Ideal.mem_span_singleton.mpr
+    exact dvd_mul_of_dvd_right ⟨cuspPrimeCofactor p i, (cuspPrime_mul_cofactor p i).symm⟩ c
+  have hd : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using M.property
+  have he := congrArg q hd
+  simp only [map_sub, map_mul, map_one, hz, mul_zero, sub_zero] at he
+  have hs' : q (M 0 0) = (s : O ⧸ Ideal.span {p i}) := hs
+  rw [hs'] at he
+  calc
+    q (M 1 1) = (↑s⁻¹ : O ⧸ Ideal.span {p i}) * ((s : O ⧸ Ideal.span {p i}) * q (M 1 1)) := by
+      rw [← mul_assoc, Units.inv_mul, one_mul]
+    _ = _ := by rw [he, mul_one]
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

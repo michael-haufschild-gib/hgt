@@ -425,6 +425,12 @@ including the six ramified branches. Ramified weights are periodic modulo
 depends only on the matrix modulo three (`ramifiedResidualFourierCoefficient_full_squarefree_cube`,
 `ramifiedSixWeight_congr_mod_twentySeven`, `exists_fixed_cusp_decomposition`, checked).
 
+Logarithmic localization separates the reflected kernel into unitary Fourier
+characters. Its Fourier coefficient has uniform pointwise and weighted `L¹`
+bounds of arbitrary polynomial order in the radial parameter
+(`paperKernel_log_separation`, checked). This supplies weight separation;
+arithmetic row regrouping and the mean-square transfer remain open.
+
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`
 component allowed by the prime recurrences alone.

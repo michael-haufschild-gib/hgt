@@ -273,7 +273,10 @@ theorem logDeriv_completedLFunction_eq (hχ : χ ≠ 1) :
   have hlogS : logDeriv (shiftedL χ) z = a + logDeriv (hadamardProduct (shiftedL χ)) z := by
     have hfeq : shiftedL χ = fun w => Complex.exp (a * w + b) * hadamardProduct (shiftedL χ) w :=
       funext hfac
-    rw [hfeq, logDeriv_mul (f := fun w => Complex.exp (a * w + b)) z (Complex.exp_ne_zero _) hP
+    have h1 : logDeriv (shiftedL χ) z =
+        logDeriv (fun w => Complex.exp (a * w + b) * hadamardProduct (shiftedL χ) w) z :=
+      congrArg (fun F => logDeriv F z) hfeq
+    rw [h1, logDeriv_mul (f := fun w => Complex.exp (a * w + b)) z (Complex.exp_ne_zero _) hP
       hdiffE hdiffP]
     congr 1
     rw [logDeriv_apply]

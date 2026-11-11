@@ -91,9 +91,8 @@ theorem tendsto_correctedProfileJetSum_succ_coupled (P Q : ℝ[X])
     filter_upwards [hh] with N hN
     rw [Real.dist_eq] at hN
     have hnv : |v N| ≤ V := by
-      have he : v N = (v N - v₀) + v₀ := by ring
       calc
-        _ = |(v N - v₀) + v₀| := by rw [he]
+        _ = |(v N - v₀) + v₀| := by rw [sub_add_cancel]
         _ ≤ |v N - v₀| + |v₀| := abs_add_le _ _
         _ ≤ V := by dsimp only [V]; linarith only [hN]
     rw [abs_mul, show |(-2 : ℝ)| = 2 by norm_num]

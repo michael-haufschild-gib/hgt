@@ -36,15 +36,27 @@ zero-free premise on `L` off `1`, and the family step with `E ≠ 0` required on
 ## Arithmetic of A118a (source §4.2, §7.2), native order
 1. layer Gauss sums mod `π^t` — done; 2. local Poisson coefficient (7.8) — done;
 3. quadratic reciprocity `η_p(q)η_q(p)Γ(p)Γ(q) = Γ(pq)` — done (`TheQuadraticSymbolsOfTheEisensteinIntegersAreReciprocal`);
-4. sextic reciprocity at primes (`χ = cubic²·η`, MMD `cubic_reciprocity_primary`);
-5. `r(a,b) = Γ(ab)/(Γ(a)Γ(b))` a ±1 bicharacter on square classes mod 4, `r(p,p) = χ_p(−1)`;
-6. composite sextic symbols, composite reciprocity `χ_b(a) = r(a,b)χ_a(b)`;
+4. sextic reciprocity at primes `χ_q(p)Γ(p)Γ(q) = Γ(pq)χ_p(q)` — done (`TheSexticSymbolsAreReciprocalUpToTheQuadraticPhase`);
+5. `r(a,b) = Γ(ab)/(Γ(a)Γ(b))` a ±1 bicharacter on odd classes, `Γ(cd²) = Γ(c)`, `Γ⁴ = 1` — done (`TheQuadraticPhaseIsABicharacterModuloFour`, finite identities by kernel `decide` over coordinates mod 4); open: `r(p,p) = χ_p(−1)`;
+6. composite sextic symbols, composite reciprocity `χ_b(a) = r(a,b)χ_a(b)` — done (`TheCompositeSexticSymbolsAreReciprocal`: `quadSymbol`, `sexticSymbol`, `quadSymbol_reciprocity`, `sexticSymbol_reciprocity`); binary Poisson CRT — done (`ThePoissonCoefficientSplitsOverCoprimeModuli`);
 7. composite `γ_j(c)` (squarefree) and CRT `γ_j(ab) = χ_a(b)^jχ_b(a)^jγ_j(a)γ_j(b)`;
 8. prime identities `γ₂³ = −α`, `γ₁γ₂ = χ(4)γ₃γ₂³` (MMD Hasse–Davenport), (4.7);
 9. `G(c) = χ_c(4)Γ(c)`: `G(vw) = G(v)G(w)r(v,w)`, `G(p³) = γ₃(p)`;
 10. CRT of the Fourier transform of `m ↦ ξ(m)χ_A(m)g_{χ_s}(s,−m)` with unit factors (7.9);
 11. local series (table 7.16) = closed form (7.11); global `F_{η,u} = ζ^S(6z)L^S(w)/L^S(x)·H_{η,u}`.
 Analytic after: Poisson on `O` with annular weight, contour moves, principal row = signal (Lemma 10.5).
+
+## Multiplicativity of the Poisson coefficient (paper proof, native normalization)
+`F(s,A;H) = Σ_{m mod sA} χ_A(m) g_s(−m) ψ_{sA}(Hm)`, `g_s(h) = Σ_{d mod s} χ_s(d)ψ_s(hd)`, all indices
+good primary. For coprime splits `s = s₁s₂`, `A = A₁A₂`, `(s₁A₁, s₂A₂) = 1`, `Mᵢ = sᵢAᵢ`:
+- Gauss CRT (`d = s₂d₁ + s₁d₂`): `g_{s₁s₂} = χ_{s₁}(s₂)χ_{s₂}(s₁) g_{s₁} g_{s₂}`; twist `g_s(−ux) = χ̄_s(u) g_s(−x)`.
+- Poisson CRT (`ThePoissonCoefficientSplitsOverCoprimeModuli`):
+  `F(s,A;H) = R(A₁,s₂)R(A₂,s₁)·R(A₁,A₂)χ_{A₁}(A₂)²·F(s₁,A₁;H)F(s₂,A₂;H)` after sextic reciprocity
+  `χ_b(a) = R(a,b)χ_a(b)`; the `s`–`s` phases cancel exactly.
+- With the probe's `R(A,s)` (bicharacter): `R(A,s)F(s,A;H)` has only the `A`–`A` phase `R(A₁,A₂)χ_{c₁}(c₂)²`
+  (`A = cn³`). The theta factor `γ₂(c)G(A)` contributes `χ_{c₁}(c₂)⁴R(A₁,A₂)`; total `χ_{c₁}(c₂)⁶ = 1`.
+So `K = R(A,s)γ₂(c)α(A)G(A)η(A)·F(s,A;H)` is multiplicative in `(s, A)`; the dependence on the unit part
+of `H` at each prime is the local twist of `localPoisson`.
 
 ## Log
 - 2026-11-11 — created; frame defect found; closed form of the principal local factor checked
