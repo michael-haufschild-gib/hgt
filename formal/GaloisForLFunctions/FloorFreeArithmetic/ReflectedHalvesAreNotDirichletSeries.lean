@@ -276,9 +276,19 @@ theorem norm_xi_shift_quotient {σ h : ℝ} (hh : 0 < h) (hσ : 1 + h < σ) :
         (Real.Gamma ((σ - h) / 2) / Real.Gamma ((σ - h) / 2 + h)) := by
   have hG := norm_gammaR_quotient (x := σ - h) (by linarith) hh
   rw [show σ - h + 2 * h = σ + h by ring] at hG
+  have hZ : ‖riemannZeta ((σ + h : ℝ) : ℂ)‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr (riemannZeta_ne_zero_of_one_lt_re (by
+      rw [Complex.ofReal_re]
+      linarith))
+  have hΓ : ‖Gammaℝ ((σ + h : ℝ) : ℂ)‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr (Gammaℝ_ne_zero_of_re_pos (by
+      rw [Complex.ofReal_re]
+      linarith))
+  have h1 : σ + h ≠ 0 := (by linarith : (0 : ℝ) < σ + h).ne'
+  have h2 : σ + h - 1 ≠ 0 := (by linarith : (0 : ℝ) < σ + h - 1).ne'
   rw [norm_div, norm_xi_ofReal (by linarith), norm_xi_ofReal (by linarith),
     mul_assoc _ (π ^ h) _, ← hG]
-  ring
+  field_simp
 
 /-- The coefficient of the amplitude tends to `π^h`. -/
 theorem tendsto_shiftCoefficient {h : ℝ} :

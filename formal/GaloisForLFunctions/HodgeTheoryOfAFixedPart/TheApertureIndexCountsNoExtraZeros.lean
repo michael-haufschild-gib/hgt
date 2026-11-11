@@ -16,6 +16,7 @@ namespace GaloisForLFunctions.HodgeTheoryOfAFixedPart
 
 open _root_.RHTower _root_.RHTower.PaperRestrictedWeil HTGeometry
 open ArithmeticCastelnuovoSeveri ArithmeticIndexDescent ArithmeticContinuationAndCriticalEnergy
+open SquareRootThreshold
 open Filter Topology Matrix Zeta23
 open scoped InnerProduct
 

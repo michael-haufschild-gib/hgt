@@ -75,3 +75,18 @@ those of zeta and the mollifier are complex derivatives.
 3. Prove the differentiated gcd main-term limits for the chosen mollifier,
    and feed the resulting actual detector bound into the gate.
    Existing short coefficient energies omit the full analytic contribution.
+
+## Shifted arithmetic limits
+
+Fixed log-monomial limits do not by themselves justify exponential profiles.
+A sufficient uniform estimate is `Q_N(P) ≪ ‖P‖²_{C²}/log N` for `P(0)=0`,
+where `Q_N` is the positive gcd form with coefficients
+`μ(n)P(log(N/n)/log N)`. The linear-cutoff energy has the unconditional
+bound `Q_linear(exp u) ≤ C(1+u)`; its Lean proof is drafted in
+`TheLinearSelbergEnergyIsUniformlyBounded.lean`.
+
+The exact representation
+`P(x)=P′(0)x+∫₀ˣ(x−v)P″(v)dv` reduces the uniform estimate to linear
+cutoffs and the positive totient diagonalization. This transfer and the
+mixed higher gcd-log moment limits remain to be formalized. Main-term
+jets must differentiate displacement with the mollifier coefficients fixed.

@@ -106,7 +106,8 @@ theorem exists_twistedMoment_three_jet_error_bound_two {θ : ℝ}
     (hscale 1).trans_le (mul_le_mul_of_nonneg_left hh.2.1 (by norm_num)),
     (hscale 2).trans_le (mul_le_mul_of_nonneg_left hh.2.2 (by norm_num))⟩
 
-/-- The exact direct and reflected gcd expression selected by the detector. -/
+/-- The exact direct and reflected gcd expression selected by the detector.
+The coefficients remain fixed while taking each displacement derivative. -/
 def detectorThreeMomentMain (p q η : ℝ) (N : ℕ) (w : ℕ → ℝ) (d lam : ℝ) : ℝ :=
   realTwistedMomentMainJet p q η N (detectorResidualWeights lam w) 0 d - lam / 2 *
     (realTwistedMomentMainJet p q η N w 1 d -

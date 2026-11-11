@@ -17302,4 +17302,223 @@ lemma arbitraryCuspHeightFourier_residual_integral (M : SL(2, ℂ)) (a b : ℝ) 
   filter_upwards [ae_restrict_of_ae he] with w hw
   exact congrArg (fun z : ℂ => z * cuspWeightedFourierPhase ρ h w) hw
 
+abbrev RationalFourCusp := Unit ⊕ (Unit ⊕ (Unit ⊕ Unit))
+
+def rationalFourCuspRep : RationalFourCusp → SL(2, ℤ)
+  | .inl _ => 1
+  | .inr (.inl _) => ModularGroup.S
+  | .inr (.inr (.inl _)) => ModularGroup.S * ModularGroup.T
+  | .inr (.inr (.inr _)) => ModularGroup.S * ModularGroup.T ^ 2
+
+lemma fourCuspAverage_eq_sum (f : HyperbolicSpace → ℂ) (M : SL(2, ℂ)) (w : HyperbolicSpace) :
+    fourCuspAverage f (M • w) =
+      (4 : ℂ)⁻¹ * ∑ i : RationalFourCusp, f ((rationalComplex (rationalFourCuspRep i) * M) • w) := by
+  simp only [Fintype.sum_sum_type, Fintype.sum_unique, rationalFourCuspRep, map_one, one_mul,
+    mul_smul, fourCuspAverage]
+  ring
+
+lemma cuspStrip_integrable_continuous (a b : ℝ) (ha : 0 < a)
+    (f : HyperbolicSpace → ℂ) (hf : Continuous f) :
+    IntegrableOn f (cuspPeriodStrip a b) hyperbolicVolume :=
+  (hf.continuousOn.integrableOn_compact (cuspIntervalHull_isCompact a b ha)).mono_set
+    (cuspPeriodStrip_subset_intervalHull a b)
+
+lemma fourCuspAverage_weighted_integral (f : HyperbolicSpace → ℂ) (hf : Continuous f)
+    (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    (∫ w in cuspPeriodStrip a b, fourCuspAverage f (M • w) * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+      (4 : ℂ)⁻¹ * ∑ i : RationalFourCusp, ∫ w in cuspPeriodStrip a b,
+        f ((rationalComplex (rationalFourCuspRep i) * M) • w) * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  have hi (i : RationalFourCusp) : IntegrableOn
+      (fun w => f ((rationalComplex (rationalFourCuspRep i) * M) • w) * cuspWeightedFourierPhase ρ h w)
+      (cuspPeriodStrip a b) hyperbolicVolume :=
+    cuspStrip_integrable_continuous a b ha _ ((hf.comp (continuous_hyperbolic_action _)).mul
+      (cuspWeightedFourierPhase_continuous ρ h))
+  simp_rw [fourCuspAverage_eq_sum, mul_assoc, Finset.sum_mul]
+  rw [integral_const_mul, integral_finsetSum _ (fun i _ => hi i)]
+
+def sourceArbitraryHeightFamily (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (s : ℂ) : ℂ :=
+  (4 : ℂ)⁻¹ * ∑ i : RationalFourCusp,
+    arbitraryCuspHeightFamily (rationalComplex (rationalFourCuspRep i) * M) a b ha ρ h s
+
+def sourceArbitraryHeightFourier (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) : KernelQuotientL2 →L[ℂ] ℂ :=
+  (4 : ℂ)⁻¹ • ∑ i : RationalFourCusp,
+    arbitraryCuspHeightFourier (rationalComplex (rationalFourCuspRep i) * M) a b ha ρ h
+
+lemma sourceArbitraryHeightFamily_analyticAt (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (s : ℂ) (hs : 1 < s.re) (hi : 0 < s.im) :
+    AnalyticAt ℂ (sourceArbitraryHeightFamily M a b ha ρ h) s := by
+  apply analyticAt_const.mul
+  apply Finset.analyticAt_fun_sum
+  intro i hi'
+  exact arbitraryCuspHeightFamily_analyticAt _ a b ha ρ h s hs hi
+
+lemma sourceArbitraryHeightFamily_residue_limit (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    Tendsto (fun s : ℂ => (s - 4 / 3) * sourceArbitraryHeightFamily M a b ha ρ h s)
+      (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (sourceArbitraryHeightFourier M a b ha ρ h cubicEisensteinResidue)) := by
+  have he := (tendsto_finsetSum Finset.univ (fun i _ =>
+    arbitraryCuspHeightFamily_residue_limit (rationalComplex (rationalFourCuspRep i) * M) a b ha ρ h)).const_mul ((4 : ℂ)⁻¹)
+  convert he using 1
+  · funext s
+    rw [sourceArbitraryHeightFamily, ← Finset.mul_sum]
+    ring
+  · simp only [sourceArbitraryHeightFourier, _root_.smul_apply, _root_.sum_apply, smul_eq_mul]
+
+lemma sourceArbitraryHeightFamily_initial (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    sourceArbitraryHeightFamily M a b ha ρ h s = ∫ w in cuspPeriodStrip a b,
+      rationalSourceEisenstein s (M • w) * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  simp_rw [rationalSourceEisenstein_four_cusps s (by linarith)]
+  rw [fourCuspAverage_weighted_integral _ (hyperbolicEisenstein_continuous s (by linarith))]
+  unfold sourceArbitraryHeightFamily
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi'
+  exact arbitraryCuspHeightFamily_initial _ a b ha ρ h s hs hi
+
+lemma sourceArbitraryHeightFourier_residual_integral (M : SL(2, ℂ)) (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    sourceArbitraryHeightFourier M a b ha ρ h cubicEisensteinResidue = ∫ w in cuspPeriodStrip a b,
+      cubicSourceResidualFunction (M • w) * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  simp_rw [cubicSourceResidualFunction_four_cusps]
+  rw [fourCuspAverage_weighted_integral _ cubicResidualFunction_continuous]
+  simp only [sourceArbitraryHeightFourier, _root_.smul_apply, _root_.sum_apply, smul_eq_mul,
+    arbitraryCuspHeightFourier_residual_integral]
+
+/-- Finite Gauss-series identities pass to residues through the native scalar continuation theorem. -/
+theorem finite_unramified_residue {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (index : ι → O) (coefficient : ι → ℂ → ℂ)
+    (hc : ∀ i s, 1 < s.re → AnalyticAt ℂ (coefficient i) s)
+    (f : ℂ → ℂ) (R : ℂ) (hf : ∀ s, 1 < s.re → 0 < s.im → AnalyticAt ℂ f s)
+    (hlim : Tendsto (fun s : ℂ => (s - 4 / 3) * f s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 R))
+    (hinit : ∀ s : ℂ, 4 < s.re → 0 < s.im →
+      f s = ∑ i, coefficient i s * unramifiedCubicGaussSeries s (index i)) :
+    R = ∑ i, coefficient i (4 / 3) * unramifiedGaussResidue (index i) := by
+  let H : ι → ℂ → ℂ := fun i s => cuspWhittakerHeightFactor s (3 * index i)
+  let G : ι → ℂ → ℂ := fun i s => rationalCuspFamily (3 * index i) oppositeSource 2 3
+    (by norm_num) (by norm_num) s
+  let D : ℂ → ℂ := fun s => ∏ i, H i s
+  let E : ι → ℂ → ℂ := fun i s => ∏ j ∈ Finset.univ.erase i, H j s
+  let T : ℂ → ℂ := fun s => ∑ i, coefficient i s * G i s * E i s
+  let R1 : ℂ := ∑ i, coefficient i (4 / 3) *
+    rationalCuspFourier (3 * index i) oppositeSource cubicEisensteinResidue * E i (4 / 3)
+  have hH (i : ι) (s : ℂ) (hs : 1 < s.re) : AnalyticAt ℂ (H i) s :=
+    cuspWhittakerHeightFactor_analyticAt (3 * index i) s hs
+  have hD (s : ℂ) (hs : 1 < s.re) : AnalyticAt ℂ D s :=
+    Finset.analyticAt_fun_prod _ (fun i _ => hH i s hs)
+  have hE (i : ι) (s : ℂ) (hs : 1 < s.re) : AnalyticAt ℂ (E i) s :=
+    Finset.analyticAt_fun_prod _ (fun j _ => hH j s hs)
+  have hprod (i : ι) (s : ℂ) : H i s * E i s = D s :=
+    Finset.mul_prod_erase Finset.univ (fun j => H j s) (Finset.mem_univ i)
+  have hT : AnalyticOnNhd ℂ T {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
+    intro s hs
+    apply Finset.analyticAt_fun_sum
+    intro i hi
+    exact ((hc i s hs.1).mul (rationalCuspFamily_analyticAt_nonreal (3 * index i)
+      oppositeSource 2 3 (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')).mul (hE i s hs.1)
+  have hTR : Tendsto (fun s : ℂ => (s - 4 / 3) * T s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 R1) := by
+    have hi (i : ι) := (((hc i (4 / 3) (by norm_num)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds).mul
+      (rationalCuspFamily_residue_limit (3 * index i) oppositeSource 2 3 (by norm_num) (by norm_num))).mul
+        ((hE i (4 / 3) (by norm_num)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds)
+    convert tendsto_finsetSum Finset.univ (fun i _ => hi i) using 1
+    funext s
+    rw [T, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi'
+    dsimp only [G]
+    ring
+  have he := cuspScalarResidue_cross f T (fun _ => 1) D R R1
+    (fun s hs => hf s hs.1 hs.2) hT (fun _ _ => analyticAt_const)
+    (fun s hs => hD s hs.1) continuousAt_const (hD (4 / 3) (by norm_num)).continuousAt hlim hTR (by
+      intro s hs hi
+      rw [hinit s hs hi, Finset.sum_mul, mul_one]
+      apply Finset.sum_congr rfl
+      intro i hi'
+      dsimp only [G]
+      rw [rationalCuspFamily_opposite_initial (index i) s hs hi, ← hprod i s]
+      ring)
+  have hDn : D (4 / 3) ≠ 0 := Finset.prod_ne_zero_iff.mpr
+    (fun i _ => cuspWhittakerHeightFactor_center_ne_zero (3 * index i))
+  apply mul_right_cancel₀ hDn
+  rw [he, mul_one, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro i hi
+  change coefficient i (4 / 3) * rationalCuspFourier (3 * index i) oppositeSource cubicEisensteinResidue *
+    E i (4 / 3) = coefficient i (4 / 3) *
+      (rationalCuspFourier (3 * index i) oppositeSource cubicEisensteinResidue / H i (4 / 3)) * D (4 / 3)
+  rw [← hprod i (4 / 3)]
+  field_simp [show H i (4 / 3) ≠ 0 from cuspWhittakerHeightFactor_center_ne_zero (3 * index i)]
+
+def scaledAffineGaussIndex (q : O) (u : Oˣ) (n : ℕ) (h : O) : O :=
+  if hh : q ∣ h then 3 * ((u : O) * lambda ^ n) ^ 2 * Classical.choose hh else 0
+
+def scaledAffineGaussWeight (q : O) (u : Oˣ) (n : ℕ) (h : O) (s : ℂ) : ℂ :=
+  if hh : q ∣ h then
+    if (3 : O) ∣ Classical.choose hh + ramifiedArithmeticPhase u n then
+      (Ideal.absNorm (Ideal.span {3 * q}) : ℂ) * ((‖ringComplex (3 * q)‖ ^ 2 : ℝ) : ℂ) ^ (-s) *
+        tracePhase (cuspFrequency h / ringComplex (3 * q))
+    else 0
+  else 0
+
+lemma scaledAffineGaussSeries_factor (q : O) (u : Oˣ) (n : ℕ) (h : O) (s : ℂ) :
+    scaledAffineGaussSeries q u n h s =
+      scaledAffineGaussWeight q u n h s * unramifiedCubicGaussSeries s (scaledAffineGaussIndex q u n h) := by
+  unfold scaledAffineGaussSeries scaledAffineGaussWeight scaledAffineGaussIndex
+  split_ifs <;> simp
+
+lemma scaledAffineGaussWeight_analyticAt (q : O) (hq : q ≠ 0) (u : Oˣ) (n : ℕ) (h : O) (s : ℂ) :
+    AnalyticAt ℂ (scaledAffineGaussWeight q u n h) s := by
+  unfold scaledAffineGaussWeight
+  split_ifs
+  · apply AnalyticAt.mul _ analyticAt_const
+    apply analyticAt_const.mul
+    apply Complex.analyticAt_iff_eventually_differentiableAt.mpr
+    apply Eventually.of_forall
+    intro z
+    exact differentiableAt_id.neg.const_cpow (Or.inl (Complex.ofReal_ne_zero.mpr
+      (pow_ne_zero 2 (norm_ne_zero_iff.mpr (ringComplex_ne_zero (mul_ne_zero (by norm_num) hq))))))
+  · exact analyticAt_const
+  · exact analyticAt_const
+
+abbrev RamifiedSixBranch := Unit ⊕ (Unit ⊕ (Unit ⊕ Fin 3))
+
+def ramifiedSixIndex (u t : Oˣ) (h : O) : RamifiedSixBranch → O
+  | .inl _ => scaledAffineGaussIndex (u : O) u 0 h
+  | .inr (.inl _) => scaledAffineGaussIndex (-(u : O)) ((-u)⁻¹ ^ 2 * (-u)) 0 h
+  | .inr (.inr (.inl _)) => scaledAffineGaussIndex 1 ((-u)⁻¹ ^ 2) 0 h
+  | .inr (.inr (.inr j)) => scaledAffineGaussIndex (onceCuspScale t * omega ^ j.val)
+      (onceCuspArithmeticUnit (-u) t j) 1 h
+
+def ramifiedSixWeight (u t : Oˣ) (h : O) (i : RamifiedSixBranch) (s : ℂ) : ℂ :=
+  let phase := tracePhase (cuspFrequency h * (ringComplex (↑u⁻¹ : O) / 3))
+  match i with
+  | .inl _ => (4 : ℂ)⁻¹ * scaledAffineGaussWeight (u : O) u 0 h s
+  | .inr (.inl _) => (4 : ℂ)⁻¹ * phase * scaledAffineGaussWeight (-(u : O)) ((-u)⁻¹ ^ 2 * (-u)) 0 h s
+  | .inr (.inr (.inl _)) => (4 : ℂ)⁻¹ * phase * scaledAffineGaussWeight 1 ((-u)⁻¹ ^ 2) 0 h s
+  | .inr (.inr (.inr j)) => (4 : ℂ)⁻¹ * phase *
+      scaledAffineGaussWeight (onceCuspScale t * omega ^ j.val) (onceCuspArithmeticUnit (-u) t j) 1 h s
+
+lemma ramifiedSixWeight_analyticAt (u t : Oˣ) (h : O) (i : RamifiedSixBranch) (s : ℂ) :
+    AnalyticAt ℂ (ramifiedSixWeight u t h i) s := by
+  rcases i with i | i
+  · exact analyticAt_const.mul (scaledAffineGaussWeight_analyticAt _ u.ne_zero _ _ _ _)
+  rcases i with i | i
+  · exact analyticAt_const.mul (scaledAffineGaussWeight_analyticAt _ (neg_ne_zero.mpr u.ne_zero) _ _ _ _)
+  rcases i with i | j
+  · exact analyticAt_const.mul (scaledAffineGaussWeight_analyticAt _ one_ne_zero _ _ _ _)
+  · exact analyticAt_const.mul (scaledAffineGaussWeight_analyticAt _
+      (mul_ne_zero (onceCusp_scale_ne_zero t) (pow_ne_zero _ (omega_primitive.isUnit (by decide)).ne_zero)) _ _ _ _)
+
+lemma ramifiedCuspGaussSeries_eq_six (u t : Oˣ) (h : O) (s : ℂ) :
+    ramifiedCuspGaussSeries u t h s =
+      ∑ i : RamifiedSixBranch, ramifiedSixWeight u t h i s * unramifiedCubicGaussSeries s (ramifiedSixIndex u t h i) := by
+  simp only [Fintype.sum_sum_type, Fintype.sum_unique, ramifiedSixWeight, ramifiedSixIndex,
+    ramifiedCuspGaussSeries, scaledAffineGaussSeries_factor, Finset.mul_sum]
+  ring
+
+def ramifiedArithmeticResidue (u t : Oˣ) (h : O) : ℂ :=
+  ∑ i : RamifiedSixBranch, ramifiedSixWeight u t h i (4 / 3) * unramifiedGaussResidue (ramifiedSixIndex u t h i)
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

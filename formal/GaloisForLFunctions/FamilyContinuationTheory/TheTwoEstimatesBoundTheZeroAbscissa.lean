@@ -14,8 +14,7 @@ every ray class character `η` of `K` has a sum `J_η` with
 
 where `a₁, a₂ < β` are common to all characters and `H_η` is holomorphic and nonvanishing on
 `Re s > σ₀` and bounded on `Re s ≥ 2`. Then the zero abscissa of `ζ` is at most `σ₀`
-(`zetaZeroAbscissa_le_of_two_estimates`), and for `σ₀ = ½` this is the Riemann hypothesis
-(`riemannHypothesis_of_two_estimates`). The premise is the pair of estimates and nothing else:
+(`zetaZeroAbscissa_le_of_two_estimates`). The premise is the pair of estimates and nothing else:
 continuation of the Hecke `L`-functions, the factorization of the zeta function of `K`, and the
 supremum step are theorems.
 -/
@@ -49,25 +48,5 @@ theorem zetaZeroAbscissa_le_of_two_estimates {σ₀ : ℝ} (hσ₀ : σ₀ < 1) 
     zetaZeroAbscissa ≤ σ₀ :=
   zetaZeroAbscissa_le_of_heckeHalfPlane_thirdCyclotomic
     (heckeHalfPlane_of_family_corrected_signal K hσ₀ c H hH hH0 hHb hstep)
-
-/-- **At the boundary `½` the two estimates give the Riemann hypothesis.** -/
-theorem riemannHypothesis_of_two_estimates (c : ℝ)
-    (H : (Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) → ℂ → ℂ)
-    (hH : ∀ η, DifferentiableOn ℂ (H η) {s : ℂ | (1 / 2 : ℝ) < s.re})
-    (hH0 : ∀ η (s : ℂ), (1 / 2 : ℝ) < s.re → H η s ≠ 0)
-    (hHb : ∀ η, ∃ C : ℝ, ∀ s : ℂ, 2 ≤ s.re → ‖H η s‖ ≤ C)
-    (hstep : ∀ β : ℝ, (1 / 2 : ℝ) < β → β ≤ 1 →
-      (∀ (η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) (ρ : ℂ), β < ρ.re →
-        heckePoleCleared η.1 η.2 ρ ≠ 0) →
-      ∃ a₁ a₂ : ℝ, a₁ < β ∧ a₂ < β ∧
-        ∀ η : Σ 𝔫 : Modulus K, HeckeCharacter 𝔫,
-          ∃ (J : ℝ → ℂ) (C Z₀ : ℝ), 1 ≤ Z₀ ∧
-            (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ C * Z ^ a₁) ∧
-            (∀ Z : ℝ, Z₀ ≤ Z →
-              ‖J Z - signal (fun s : ℂ => cexp ((s - c) ^ 2) * H η s /
-                heckePoleCleared η.1 η.2 s) 2 Z‖ ≤ C * Z ^ a₂)) :
-    RiemannHypothesis :=
-  riemannHypothesis_of_heckeHalfPlane_thirdCyclotomic
-    (heckeHalfPlane_of_family_corrected_signal K (by norm_num) c H hH hH0 hHb hstep)
 
 end GaloisForLFunctions.FamilyContinuationTheory
