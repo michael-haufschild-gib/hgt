@@ -87,7 +87,8 @@ private theorem hasDerivAt_integral_disk_jet {F : ℂ → ℝ → ℂ} {c : ℂ}
         simpa only [iteratedDeriv_succ] using
           (analyticAt_disk_jet (hf t) n (hball hv)).differentiableAt.hasDerivAt)).2
 
-private theorem iteratedDeriv_integral_disk {F : ℂ → ℝ → ℂ} {c : ℂ} {R : ℝ}
+/-- Every jet of a diskwise holomorphic, dominated integral is its integral jet. -/
+theorem iteratedDeriv_integral_disk {F : ℂ → ℝ → ℂ} {c : ℂ} {R : ℝ}
     (hf : ∀ t, DifferentiableOn ℂ (fun z => F z t) (ball c R))
     (hm : ∀ z ∈ ball c R, AEStronglyMeasurable (F z) volume)
     {B : ℝ → ℝ} (hB : Integrable B volume)

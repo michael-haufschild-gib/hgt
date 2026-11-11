@@ -1,4 +1,6 @@
 import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheDetectorMomentErrorsAreSmall
+import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheActualGcdSumsAreShiftedProfileForms
+import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheCorrectedPolynomialJetsConverge
 
 /-!
 # Three fixed profiles suffice for the detector main term
@@ -9,7 +11,7 @@ weights are `−αS` and `w+αS`. Quadratic interpolation reduces the detector
 main term to the three fixed weight families `w`, `S`, and `w+S`.
 -/
 
-open Complex Metric Set
+open Complex Metric Polynomial Set
 
 noncomputable section
 
@@ -130,5 +132,57 @@ theorem detectorThreeMomentMain_three_weights {p q η : ℝ} (hη : 0 < η) (hp 
     realTwistedMomentMainJet_affine hη hp N w (detectorComplementWeights N w) _ hd hd20 0,
     realTwistedMomentMainJet_affine hη hp N w (detectorComplementWeights N w) _ hd hd20 1]
   ring
+
+
+/-- The finite main term depends only on coefficients inside its cutoff. -/
+theorem holomorphicGcdSum_congr (a b : ℂ) (N : ℕ) {w s : ℕ → ℝ}
+    (h : ∀ n ∈ Finset.Icc 1 N, w n = s n) :
+    holomorphicGcdSum a b N w = holomorphicGcdSum a b N s := by
+  unfold holomorphicGcdSum
+  apply Finset.sum_congr rfl
+  intro m hm
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [h m hm, h n hn]
+
+/-- Supportwise coefficient identities persist through every displacement derivative. -/
+theorem realTwistedMomentMainJet_congr (p q η : ℝ) (N : ℕ) {w s : ℕ → ℝ}
+    (h : ∀ n ∈ Finset.Icc 1 N, w n = s n) (j : ℕ) (d : ℝ) :
+    realTwistedMomentMainJet p q η N w j d = realTwistedMomentMainJet p q η N s j d := by
+  have he : holomorphicTwistedMomentMain p q η N w = holomorphicTwistedMomentMain p q η N s := by
+    funext z
+    unfold holomorphicTwistedMomentMain
+    rw [holomorphicGcdSum_congr _ _ N h, holomorphicGcdSum_congr _ _ N h]
+  unfold realTwistedMomentMainJet
+  rw [he]
+
+/-- The logarithmic complement of a polynomial weight is exactly the profile `(1−x)P`. -/
+theorem detectorComplementWeights_profile (P : ℝ[X]) (N : ℕ) (v : ℝ) :
+    detectorComplementWeights N (moebiusProfileWeights P.eval N v) =
+      moebiusProfileWeights (complementPolynomial P).eval N v := by
+  funext n
+  unfold detectorComplementWeights moebiusProfileWeights shiftedProfileWeight
+  simp only [complementPolynomial, Polynomial.eval_mul, Polynomial.eval_sub,
+    Polynomial.eval_one, Polynomial.eval_X]
+  ring
+
+/-- Adding profiles adds their arithmetic coefficient families. -/
+theorem moebiusProfileWeights_add (P Q : ℝ[X]) (N : ℕ) (v : ℝ) :
+    moebiusProfileWeights (P + Q).eval N v =
+      fun n => moebiusProfileWeights P.eval N v n + moebiusProfileWeights Q.eval N v n := by
+  funext n
+  unfold moebiusProfileWeights shiftedProfileWeight
+  rw [Polynomial.eval_add]
+  ring
+
+/-- The actual linear mollifier and its two fixed companion profiles have identical main jets. -/
+theorem linearDetector_mainJet_eq_profile {N : ℕ} (hN : 1 < N)
+    (p q η d : ℝ) (j : ℕ) :
+    realTwistedMomentMainJet p q η N (linearDetectorWeights N d) j d =
+      realTwistedMomentMainJet p q η N
+        (moebiusProfileWeights Polynomial.X.eval N (-d * Real.log N)) j d := by
+  apply realTwistedMomentMainJet_congr
+  intro n hn
+  simpa only [Polynomial.eval_X] using linearDetectorWeights_eq_moebiusProfileWeights hN hn d
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

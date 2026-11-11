@@ -1,3 +1,4 @@
+import GaloisForLFunctions.MultiscaleMollifiedZetaField.CauchyJetsOfTheTwistedMoment
 import GaloisForLFunctions.MultiscaleMollifiedZetaField.TwistedSecondMomentsBelowSquareRoot
 import GaloisForLFunctions.RHTower.ZetaResidueFactorDerivative
 import GaloisForLFunctions.HTGeometry.CauchyDominatedIntegralHolomorphy
@@ -315,6 +316,42 @@ private theorem differentiableOn_chi_integral {p q η : ℝ} (hη : 0 < η)
       (hparts hv).2.2.le t
   · exact ((contDiff_blockWindow p q η).continuous.integrable_of_hasCompactSupport
       (hasCompactSupport_blockWindow hη)).mul_const _
+
+
+/-- Every displacement derivative of the reflected main-term integral passes under its taper. -/
+theorem iteratedDeriv_integral_holomorphicChiPair {p q η : ℝ} (hη : 0 < η)
+    (hp : 4 ≤ p - η) {d : ℝ} (hd : 0 < d) (hd20 : d ≤ 1 / 20)
+    (n : ℕ) {z : ℂ} (hz : z ∈ ball (d : ℂ) d) :
+    iteratedDeriv n (fun v => ∫ t, blockWindowC p q η t * holomorphicChiPair v t) z =
+      ∫ t, blockWindowC p q η t * iteratedDeriv n (fun v => holomorphicChiPair v t) z := by
+  have hf (t : ℝ) : DifferentiableOn ℂ
+      (fun v => blockWindowC p q η t * holomorphicChiPair v t) (ball (d : ℂ) d) := by
+    intro v hv
+    have hre := (displacement_ball_parts hd hd20 hv).1.le
+    have hpv := analyticAt_chi_displacement hre t
+    have hmv := analyticAt_chi_displacement hre (-t)
+    have he : (fun u => blockWindowC p q η t * holomorphicChiPair u t) =
+        fun u : ℂ => blockWindowC p q η t *
+          (zetaChi ((1 / 2 : ℂ) - u + (t : ℂ) * I) *
+            zetaChi ((1 / 2 : ℂ) - u + ((-t : ℝ) : ℂ) * I)) := by
+      funext u
+      unfold holomorphicChiPair
+      congr 2 <;> push_cast <;> ring
+    rw [he]
+    exact ((hpv.mul hmv).differentiableAt.const_mul _).differentiableWithinAt
+  have hm (v : ℂ) (hv : v ∈ ball (d : ℂ) d) : AEStronglyMeasurable
+      (fun t => blockWindowC p q η t * holomorphicChiPair v t) volume :=
+    ((Complex.continuous_ofReal.comp (contDiff_blockWindow p q η).continuous).mul
+      (continuous_holomorphicChiPair_height (displacement_ball_parts hd hd20 hv).1.le)).aestronglyMeasurable
+  have hB : Integrable (fun t => blockWindow p q η t * (Real.exp 1 * (q + η + 2)) ^ 2) volume :=
+    ((contDiff_blockWindow p q η).continuous.integrable_of_hasCompactSupport
+      (hasCompactSupport_blockWindow hη)).mul_const _
+  have hb (t : ℝ) (v : ℂ) (hv : v ∈ ball (d : ℂ) d) :
+      ‖blockWindowC p q η t * holomorphicChiPair v t‖ ≤
+        blockWindow p q η t * (Real.exp 1 * (q + η + 2)) ^ 2 := by
+    have hparts := displacement_ball_parts hd hd20 hv
+    exact chi_kernel_bound hη hp hparts.1.le hparts.2.1.le hparts.2.2.le t
+  simpa only [iteratedDeriv_const_mul_field] using iteratedDeriv_integral_disk hf hm hB hb n hz
 
 /-- Both main terms are holomorphic on the disk avoiding the displacement pole. -/
 theorem differentiableOn_holomorphicTwistedMomentMain {p q η : ℝ} (hη : 0 < η)

@@ -26064,4 +26064,827 @@ lemma cuspMatrix_inverse_local {ι : Type*} [Fintype ι] (p : ι → O) (c : O)
       rw [← mul_assoc, Units.inv_mul, one_mul]
     _ = _ := by rw [he, mul_one]
 
+
+lemma tracePhase_finset_sum {ι : Type*} (s : Finset ι) (f : ι → ℂ) :
+    tracePhase (∑ i ∈ s, f i) = ∏ i ∈ s, tracePhase (f i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp only [Finset.sum_empty, Finset.prod_empty, AddChar.map_zero_eq_one]
+  | @insert i s hi ih => rw [Finset.sum_insert hi, Finset.prod_insert hi, AddChar.map_add_eq_mul, ih]
+
+/-- Complementary-prime inverses give the exact finite CRT factorization of the trace character. -/
+theorem residueTraceQuotientChar_finite_crt {ι : Type*} [Fintype ι]
+    (p t : ι → O) (hp : ∀ i, p i ≠ 0)
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (ht : ∀ i, p i ∣ cuspPrimeCofactor p i * t i - 1) (z : O) :
+    residueTraceQuotientChar 1 (∏ i, p i)
+      (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+      (Ideal.Quotient.mk (Ideal.span {∏ i, p i}) z) =
+    ∏ i, residueTraceQuotientChar 1 (p i) (hp i)
+      (Ideal.Quotient.mk (Ideal.span {p i}) (t i * z)) := by
+  classical
+  let S : O := ∑ i, t i * z * cuspPrimeCofactor p i
+  have hd : (∏ i, p i) ∣ z - S := by
+    apply Fintype.prod_dvd_of_isRelPrime (fun i k hik => (hpair hik).isRelPrime)
+    intro i
+    let q := Ideal.Quotient.mk (Ideal.span {p i})
+    apply Ideal.mem_span_singleton.mp
+    apply Ideal.Quotient.eq.mp
+    change q z = q S
+    have ht' : q (cuspPrimeCofactor p i) * q (t i) = 1 := by
+      have he := Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr (ht i))
+      simpa only [map_mul, map_one] using he
+    have hs : (∑ k, q (t k) * q z * q (cuspPrimeCofactor p k)) =
+        q (t i) * q z * q (cuspPrimeCofactor p i) := by
+      apply Finset.sum_eq_single i
+      · intro k hk hki
+        have he : q (cuspPrimeCofactor p k) = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr
+          (Ideal.mem_span_singleton.mpr (cuspPrime_dvd_other_cofactor p hki.symm))
+        rw [he, mul_zero]
+      · intro hi
+        exact False.elim (hi (Finset.mem_univ i))
+    simp only [S, map_sum, map_mul, hs]
+    calc
+      q z = (q (cuspPrimeCofactor p i) * q (t i)) * q z := by rw [ht', one_mul]
+      _ = _ := by ring
+  have he : Ideal.Quotient.mk (Ideal.span {∏ i, p i}) z =
+      Ideal.Quotient.mk (Ideal.span {∏ i, p i}) S :=
+    Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr hd)
+  rw [he, residueTraceQuotientChar_phase, one_mul]
+  simp_rw [residueTraceQuotientChar_phase, one_mul]
+  simp only [S, map_sum, map_mul, Finset.sum_div, tracePhase_finset_sum]
+  apply Finset.prod_congr rfl
+  intro i hi
+  congr 1
+  have hep := ringComplex_ne_zero (hp i)
+  have heR : ringComplex (∏ i, p i) ≠ 0 := ringComplex_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+  have hel := ringComplex_ne_zero traceLambda_ne_zero
+  have hprod := congrArg ringComplex (cuspPrime_mul_cofactor p i)
+  simp only [map_mul] at hprod
+  apply (div_eq_div_iff (mul_ne_zero heR hel) (mul_ne_zero hep hel)).mpr
+  linear_combination ringComplex (t i) * ringComplex z * ringComplex traceLambda * hprod
+
+/-- The fixed denominator and the prime conductor split by Bezout before local Fourier summation. -/
+lemma cuspInverse_phase_pair (c r d U w x : O) (hc : c ≠ 0) (hr : r ≠ 0)
+    (hbez : U * r + (traceLambda ^ 3 * w) * c = 1) :
+    tracePhase (-(ringComplex d * ringComplex x) / (ringComplex traceLambda ^ 4 * ringComplex c * ringComplex r)) =
+      tracePhase (-(ringComplex d * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c)) *
+      residueTraceQuotientChar 1 r hr (Ideal.Quotient.mk (Ideal.span {r}) (-d * w * x)) := by
+  rw [residueTraceQuotientChar_phase, one_mul, ← AddChar.map_add_eq_mul]
+  congr 1
+  have he := congrArg ringComplex hbez
+  simp only [map_add, map_mul, map_pow, map_one] at he
+  have hec := ringComplex_ne_zero hc
+  have her := ringComplex_ne_zero hr
+  have hel := ringComplex_ne_zero traceLambda_ne_zero
+  simp only [map_neg, map_mul]
+  field_simp
+  linear_combination (ringComplex d * ringComplex x) * he
+
+lemma cuspInverse_fixed_phase_congr (c d e U x : O) (hc : c ≠ 0)
+    (hde : traceLambda ^ 3 * c ∣ d - e) :
+    tracePhase (-(ringComplex d * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c)) =
+    tracePhase (-(ringComplex e * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c)) := by
+  have hmod : traceLambda ^ 3 * c ∣ (-d * U * x) - (-e * U * x) := by
+    convert dvd_mul_of_dvd_left hde (-U * x) using 1
+    ring
+  have hq := congrArg (residueTraceQuotientChar 1 (traceLambda ^ 3 * c)
+    (mul_ne_zero (pow_ne_zero _ traceLambda_ne_zero) hc))
+    (Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr hmod))
+  have hephase (y : O) :
+      tracePhase (-(ringComplex y * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c)) =
+      residueTraceQuotientChar 1 (traceLambda ^ 3 * c)
+        (mul_ne_zero (pow_ne_zero _ traceLambda_ne_zero) hc)
+        (Ideal.Quotient.mk (Ideal.span {traceLambda ^ 3 * c}) (-y * U * x)) := by
+    rw [residueTraceQuotientChar_phase, one_mul]
+    congr 1
+    simp only [map_neg, map_mul, map_pow]
+    ring
+  exact (hephase d).trans (hq.trans (hephase e).symm)
+
+lemma symbol_finset_denominator {ι : Type*} (s : Finset ι) (p : ι → O) (a : O) :
+    symbol a (∏ i ∈ s, p i) = ∏ i ∈ s, symbol a (p i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp only [Finset.prod_empty, symbol_one]
+  | @insert i s hi ih => rw [Finset.prod_insert hi, Finset.prod_insert hi, symbol_mul_denominator, ih]
+
+/-- The conjugate cubic symbol is the product of inverse-square sextic characters. -/
+lemma cuspSymbol_sextic_product {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hg : ∀ i, lambda ∉ Ideal.span {p i}) (a : O) :
+    star (ringComplex (symbol a (∏ i, p i))) =
+      ∏ i, ((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹ ^ 2)
+        (Ideal.Quotient.mk (Ideal.span {p i}) a) := by
+  classical
+  rw [symbol_finset_denominator, map_prod, star_prod]
+  apply Finset.prod_congr rfl
+  intro i hi
+  have he : ringComplex (symbol a (p i)) =
+      (complexSexticChar (Ideal.span {p i}) (hg i) ^ 2) (Ideal.Quotient.mk (Ideal.span {p i}) a) := by
+    rw [(complexSexticChar_powers (Ideal.span {p i}) (hg i)).1]
+    change ringComplex (idealSymbol (Ideal.span {p i}) a) = _
+    rw [idealSymbol_prime _ (hg i)]
+    rfl
+  rw [he, MulChar.star_apply', inv_pow]
+
+
+/-- The numerator scale and the inverse-cusp phase have unit local coefficients. -/
+lemma exists_cusp_local_units {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (c d l : O)
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (hc : ∀ i, IsCoprime c (p i)) (hd : ∀ i, IsCoprime d (p i))
+    (hl : ∀ i, IsCoprime l (p i)) :
+    ∃ σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ,
+      (∀ i, (σ i : O ⧸ Ideal.span {p i}) =
+        Ideal.Quotient.mk (Ideal.span {p i}) (l ^ 2 * c * cuspPrimeCofactor p i)) ∧
+      (∀ i, Ideal.Quotient.mk (Ideal.span {p i}) (l ^ 3 * d * cuspPrimeCofactor p i) *
+        (σ i : O ⧸ Ideal.span {p i}) * (ε i : O ⧸ Ideal.span {p i}) = -1) := by
+  classical
+  have hcof (i) : IsCoprime (p i) (cuspPrimeCofactor p i) :=
+    IsCoprime.prod_right (fun k hk => hpair (Ne.symm (Finset.mem_erase.mp hk).1))
+  have hpow2 (i) : IsCoprime (p i) (l ^ 2) := by
+    simpa only [pow_two] using (hl i).symm.mul_right (hl i).symm
+  have hpow3 (i) : IsCoprime (p i) (l ^ 3) := by
+    simpa only [show (3 : ℕ) = 2 + 1 from rfl, pow_succ] using (hpow2 i).mul_right (hl i).symm
+  have hσ (i) := (isUnit_quotient_span_iff (p i) (l ^ 2 * c * cuspPrimeCofactor p i)).mpr
+    (((hpow2 i).mul_right (hc i).symm).mul_right (hcof i))
+  have hδ (i) := (isUnit_quotient_span_iff (p i) (l ^ 3 * d * cuspPrimeCofactor p i)).mpr
+    (((hpow3 i).mul_right (hd i).symm).mul_right (hcof i))
+  choose σ hσ using hσ
+  choose δ hδ using hδ
+  refine ⟨σ, (fun i => -(δ i * σ i)⁻¹), hσ, ?_⟩
+  intro i
+  rw [← hδ i, ← Units.val_mul, Units.val_neg, mul_neg, Units.mul_inv]
+
+/-- CRT turns the inverse-cusp coordinate into independent inverse local frequencies. -/
+theorem cuspMatrix_inverse_phase_product {ι : Type*} [Fintype ι] (p t : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (ht : ∀ i, p i ∣ cuspPrimeCofactor p i * t i - 1)
+    (c U w x : O) (hc : c ≠ 0)
+    (hbez : U * (∏ i, p i) + (traceLambda ^ 3 * w) * c = 1)
+    (M : SL(2, O)) (hM : (∏ i, p i) ∣ M 1 0)
+    (σ ε v : ∀ i, (O ⧸ Ideal.span {p i})ˣ)
+    (hfreq : ∀ i, Ideal.Quotient.mk (Ideal.span {p i}) (M 0 0) =
+      (σ i : O ⧸ Ideal.span {p i}) * (v i : O ⧸ Ideal.span {p i}))
+    (hε : ∀ i, Ideal.Quotient.mk (Ideal.span {p i})
+      (traceLambda ^ 3 * c * cuspPrimeCofactor p i) *
+      (σ i : O ⧸ Ideal.span {p i}) * (ε i : O ⧸ Ideal.span {p i}) = -1) :
+    tracePhase (-(ringComplex (M 1 1) * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c * ringComplex (∏ i, p i))) =
+      tracePhase (-(ringComplex (M 1 1) * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c)) *
+      ∏ i, residueTraceQuotientChar 1 (p i) (hp i)
+        ((ε i : O ⧸ Ideal.span {p i}) * Ideal.Quotient.mk (Ideal.span {p i}) x *
+          (↑(v i)⁻¹ : O ⧸ Ideal.span {p i})) := by
+  classical
+  rw [cuspInverse_phase_pair c _ _ U w x hc
+    (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)) hbez,
+    residueTraceQuotientChar_finite_crt p t hp hpair ht]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  apply congrArg (residueTraceQuotientChar 1 (p i) (hp i))
+  let q := Ideal.Quotient.mk (Ideal.span {p i})
+  have hR : q (∏ k, p k) = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr
+    (Ideal.mem_span_singleton.mpr ⟨cuspPrimeCofactor p i, (cuspPrime_mul_cofactor p i).symm⟩)
+  have hw : q (traceLambda ^ 3 * c) * q w = 1 := by
+    have he := congrArg q hbez
+    simp only [map_add, map_mul, map_pow, map_one, hR, mul_zero, zero_add] at he
+    simpa only [map_mul, map_pow, mul_assoc, mul_comm, mul_left_comm] using he
+  have hti : q (cuspPrimeCofactor p i) * q (t i) = 1 := by
+    have he := Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr (ht i))
+    simpa only [map_mul, map_one] using he
+  have heps : (q (traceLambda ^ 3 * c) * q (cuspPrimeCofactor p i) *
+      (σ i : O ⧸ Ideal.span {p i})) * (ε i : O ⧸ Ideal.span {p i}) = -1 := by
+    have he := hε i
+    change q ((traceLambda ^ 3 * c) * cuspPrimeCofactor p i) *
+      (σ i : O ⧸ Ideal.span {p i}) * (ε i : O ⧸ Ideal.span {p i}) = -1 at he
+    rw [map_mul] at he
+    exact he
+  have hD : q (traceLambda ^ 3 * c) ≠ 0 := by
+    intro hz
+    rw [hz, zero_mul] at hw
+    exact zero_ne_one hw
+  have hRi : q (cuspPrimeCofactor p i) ≠ 0 := by
+    intro hz
+    rw [hz, zero_mul] at hti
+    exact zero_ne_one hti
+  obtain ⟨c₀, hc₀⟩ := hM
+  have hcol : M 1 0 = c₀ * ∏ k, p k := by rw [hc₀, mul_comm]
+  have hdinv := cuspMatrix_inverse_local p c₀ M hcol i (σ i * v i) (hfreq i)
+  change q (M 1 1) = (↑(σ i * v i)⁻¹ : O ⧸ Ideal.span {p i}) at hdinv
+  have hsy : (σ i : O ⧸ Ideal.span {p i}) * q (M 1 1) = (↑(v i)⁻¹ : O ⧸ Ideal.span {p i}) := by
+    rw [hdinv]
+    simp only [mul_inv_rev, Units.val_mul]
+    calc
+      _ = ((σ i : O ⧸ Ideal.span {p i}) * (↑(σ i)⁻¹ : O ⧸ Ideal.span {p i})) *
+          (↑(v i)⁻¹ : O ⧸ Ideal.span {p i}) := by ring
+      _ = _ := by rw [Units.mul_inv, one_mul]
+  change q (t i * (-M 1 1 * w * x)) = _
+  simp only [map_mul, map_neg]
+  apply mul_left_cancel₀ (mul_ne_zero (mul_ne_zero hD hRi) (σ i).ne_zero)
+  calc
+    _ = -((q (traceLambda ^ 3 * c) * q w) * (q (cuspPrimeCofactor p i) * q (t i)) *
+        ((σ i : O ⧸ Ideal.span {p i}) * q (M 1 1)) * q x) := by ring
+    _ = -((↑(v i)⁻¹ : O ⧸ Ideal.span {p i}) * q x) := by rw [hw, hti, hsy, one_mul, one_mul]
+    _ = (q (traceLambda ^ 3 * c) * q (cuspPrimeCofactor p i) *
+        (σ i : O ⧸ Ideal.span {p i})) *
+        ((ε i : O ⧸ Ideal.span {p i}) * q x * (↑(v i)⁻¹ : O ⧸ Ideal.span {p i})) := by
+      rw [← mul_assoc, ← mul_assoc, heps]
+      ring
+/-- Controlled completions have one fixed unit phase multiplying the moving cubic symbol. -/
+theorem fixedCuspGamma_family_character {ι : Type*} (i₀ : ι)
+    (N a c r : O) (h9N : (9 : O) ∣ N) (hcN : c ∣ N)
+    (hr : lambda ^ 2 ∣ r - 1) (mode : Bool)
+    (hbase : if mode then lambda ^ 2 ∣ a - 1 else lambda ^ 2 ∣ c - 1)
+    (M : ι → SL(2, O)) (hMa : ∀ i, N ∣ M i 0 0 - a * r)
+    (hMc : ∀ i, M i 1 0 = c * r) (hM : ∀ i j k, N ∣ M i j k - M i₀ j k)
+    (hcond : ∀ i, if mode then (9 : O) ∣ M i 0 1 ∧ (3 : O) ∣ M i 1 1 - 1
+      else (3 : O) ∣ M i 0 1 + 1 ∧ (9 : O) ∣ M i 1 1) :
+    ∃ κ : ℂ, ‖κ‖ = 1 ∧ ∀ i,
+      extendedComplexCharacter (fixedCuspGamma (M i)) = κ * ringComplex (symbol (M i 0 0) r) := by
+  have h3N : (3 : O) ∣ N := (show (3 : O) ∣ 9 from ⟨3, by norm_num⟩).trans h9N
+  have hprimaryN : lambda ^ 2 ∣ N := lambda_sq_dvd_three.trans h3N
+  have hdet (i) : M i 0 0 * M i 1 1 - M i 0 1 * (c * r) = 1 := by
+    simpa only [Matrix.det_fin_two, hMc] using (M i).property
+  cases mode
+  · have hprimary : lambda ^ 2 ∣ c * r - 1 := primary_mul c r hbase hr
+    have hrelative (i) : M i * (weylCuspMatrix a)⁻¹ ∈ levelThree := by
+      apply primary_denominator_matrix_relative (M i) a
+      · convert dvd_add (h3N.trans (hMa i))
+          (dvd_mul_of_dvd_right (three_dvd_primary_sub_one r hr) a) using 1
+        ring
+      · exact (hcond i).1
+      · rw [hMc]
+        exact hprimary
+      · exact (hcond i).2
+    refine ⟨ringComplex (symbol (M i₀ 0 0) c) *
+      extendedComplexCharacter (fixedCuspGamma (weylCuspMatrix a)), ?_, ?_⟩
+    · rw [norm_mul, norm_extendedComplexCharacter,
+        cuspSymbol_weyl_fixed_norm _ _ _ _ _ (hdet i₀) hbase, one_mul]
+    · intro i
+      rw [fixedCuspGamma_weyl_factor (M i) a c r (hrelative i)
+        (by rw [hMc]; exact hprimary) (dvd_mul_of_dvd_right (hcond i).2 _) (hMc i),
+        cuspSymbol_weyl_fixed_congr N c _ _ hcN (hM i 0 0)]
+  · have hprimary (i) : lambda ^ 2 ∣ M i 0 0 - 1 := by
+      convert dvd_add (hprimaryN.trans (hMa i)) (primary_mul a r hbase hr) using 1
+      ring
+    have hrelative (i) : M i * (lowerCuspMatrix c)⁻¹ ∈ levelThree := by
+      apply primary_numerator_matrix_relative (M i) c (hprimary i) (hcond i).1
+      · rw [hMc]
+        convert dvd_mul_of_dvd_right (three_dvd_primary_sub_one r hr) c using 1
+        ring
+      · exact (hcond i).2
+    let κ : ℂ := ringComplex
+      (symbol (-c) (M i₀ 0 0 - c * M i₀ 0 1) * symbol 1 (M i₀ 0 0)) *
+      extendedComplexCharacter (fixedCuspGamma (lowerCuspMatrix c))
+    refine ⟨κ, ?_, ?_⟩
+    · dsimp only [κ]
+      rw [norm_mul, norm_extendedComplexCharacter, mul_one]
+      apply cuspSymbol_ramified_fixed_norm _ _ 1 r _ c
+      · simpa only [one_mul] using hdet i₀
+      · exact hprimary i₀
+      · exact lowerCusp_relative_primary (M i₀) c (hrelative i₀)
+    · intro i
+      rw [fixedCuspGamma_ramified_factor (M i) c 1 r (hrelative i) (hprimary i) hr
+        (by simpa only [one_mul] using hMc i),
+        cuspSymbol_ramified_fixed_congr N 1 c (M i 0 0) (M i₀ 0 0) (M i 0 1) (M i₀ 0 1)
+          h9N (one_dvd N) hcN (hprimary i) (hprimary i₀)
+          (lowerCusp_relative_primary (M i) c (hrelative i))
+          (lowerCusp_relative_primary (M i₀) c (hrelative i₀)) (hM i 0 0) (hM i 0 1)]
+
+
+/-- The finite cusp sum is an exact product of local Gauss pairs, including exceptional characters. -/
+theorem cuspMatrix_frequency_sum {ι : Type*} [Fintype ι] (p t : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (ht : ∀ i, p i ∣ cuspPrimeCofactor p i * t i - 1)
+    (c U w x : O) (hc : c ≠ 0)
+    (hbez : U * (∏ i, p i) + (traceLambda ^ 3 * w) * c = 1)
+    (M : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → SL(2, O))
+    (hM : ∀ v, (∏ i, p i) ∣ M v 1 0)
+    (hfixed : ∀ v, traceLambda ^ 3 * c ∣ M v 1 1 - M (fun _ => 1) 1 1)
+    (σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ)
+    (hfreq : ∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (M v 0 0) =
+      (σ i : O ⧸ Ideal.span {p i}) * (v i : O ⧸ Ideal.span {p i}))
+    (hε : ∀ i, Ideal.Quotient.mk (Ideal.span {p i})
+      (traceLambda ^ 3 * c * cuspPrimeCofactor p i) *
+      (σ i : O ⧸ Ideal.span {p i}) * (ε i : O ⧸ Ideal.span {p i}) = -1)
+    (κ : ℂ) (hκ : ∀ v, extendedComplexCharacter (fixedCuspGamma (M v)) =
+      κ * ringComplex (symbol (M v 0 0) (∏ i, p i))) (j : ι → ℕ) :
+    (∑ v : ∀ i, (O ⧸ Ideal.span {p i})ˣ,
+      (∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i))
+        (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ)
+        (v i : O ⧸ Ideal.span {p i})) *
+      star (extendedComplexCharacter (fixedCuspGamma (M v))) *
+      tracePhase (-(ringComplex (M v 1 1) * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c * ringComplex (∏ i, p i)))) =
+    (star κ * tracePhase (-(ringComplex (M (fun _ => 1) 1 1) * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c))) *
+      ∏ i, ((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹ ^ 2) (σ i) *
+        ((Fintype.card (O ⧸ Ideal.span {p i}) : ℂ)⁻¹ *
+          gaussSum (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i)
+            ((residueTraceQuotientChar 1 (p i) (hp i)).mulShift (-1)) *
+          gaussSum (complexSexticChar (Ideal.span {p i}) (hg i) ^ (j i + 2))
+            ((residueTraceQuotientChar 1 (p i) (hp i)).mulShift
+              ((ε i : O ⧸ Ideal.span {p i}) * Ideal.Quotient.mk (Ideal.span {p i}) x))) := by
+  classical
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  let ψ := fun i => residueTraceQuotientChar 1 (p i) (hp i)
+  let C := star κ * tracePhase
+    (-(ringComplex (M (fun _ => 1) 1 1) * ringComplex U * ringComplex x) /
+      (ringComplex traceLambda ^ 4 * ringComplex c))
+  let f := fun (i : ι) (v : (O ⧸ Ideal.span {p i})ˣ) =>
+    finiteAdditiveFourierCoeff (ψ i) (χ i ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ) v *
+      ((χ i)⁻¹ ^ 2) v * ψ i ((ε i : O ⧸ Ideal.span {p i}) *
+        Ideal.Quotient.mk (Ideal.span {p i}) x * (↑v⁻¹ : O ⧸ Ideal.span {p i}))
+  have hpoint (v : ∀ i, (O ⧸ Ideal.span {p i})ˣ) :
+      (∏ i, finiteAdditiveFourierCoeff (ψ i) (χ i ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ) (v i)) *
+      star (extendedComplexCharacter (fixedCuspGamma (M v))) *
+      tracePhase (-(ringComplex (M v 1 1) * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c * ringComplex (∏ i, p i))) =
+      (C * ∏ i, ((χ i)⁻¹ ^ 2) (σ i)) * ∏ i, f i (v i) := by
+    rw [hκ v, star_mul, cuspSymbol_sextic_product p hg,
+      cuspMatrix_inverse_phase_product p t hp hpair ht c U w x hc hbez (M v) (hM v) σ ε v (hfreq v) hε,
+      cuspInverse_fixed_phase_congr c _ _ U x hc (hfixed v)]
+    simp_rw [hfreq v]
+    simp only [map_mul, Finset.prod_mul_distrib, C, f, χ, ψ]
+    ring
+  calc
+    _ = (C * ∏ i, ((χ i)⁻¹ ^ 2) (σ i)) * ∑ v : ∀ i, (O ⧸ Ideal.span {p i})ˣ, ∏ i, f i (v i) := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl (fun v _ => hpoint v)
+    _ = (C * ∏ i, ((χ i)⁻¹ ^ 2) (σ i)) * ∏ i, ∑ v : (O ⧸ Ideal.span {p i})ˣ, f i v := by
+      rw [← Fintype.prod_sum f]
+    _ = _ := by
+      have he (i) : (∑ v : (O ⧸ Ideal.span {p i})ˣ, f i v) =
+          (Fintype.card (O ⧸ Ideal.span {p i}) : ℂ)⁻¹ *
+          gaussSum (χ i ^ j i) ((ψ i).mulShift (-1)) *
+          gaussSum (χ i ^ (j i + 2)) ((ψ i).mulShift
+            ((ε i : O ⧸ Ideal.span {p i}) * Ideal.Quotient.mk (Ideal.span {p i}) x)) :=
+        finiteReflectionGauss_product (χ i) (ψ i) (j i) _
+      simp_rw [he]
+      dsimp only [C, χ, ψ]
+      simp only [Finset.prod_mul_distrib]
+      ring
+
+
+/-- An integral numerator for every cusp phase, with a common fixed denominator. -/
+def sourceCuspIntegralPhaseNumerator (j : Fin 3) (u h : O) : O :=
+  (if j = 0 then 3 else 1) * traceLambda * u ^ 2 * h
+
+lemma sourceCuspIntegralPhaseNumerator_embedding (j : Fin 3) (u h : O) :
+    ringComplex (sourceCuspIntegralPhaseNumerator j u h) =
+      -3 * ringComplex traceLambda ^ 4 * cuspFrequency h * ringComplex u ^ 2 /
+        (sourceCuspScale j : ℂ) := by
+  have hl := ringComplex_ne_zero traceLambda_ne_zero
+  have hs : ringComplex traceLambda ^ 2 = (-3 : ℂ) := by
+    simpa only [map_pow, map_neg, map_ofNat] using congrArg ringComplex traceLambda_square
+  have hfour : ringComplex traceLambda ^ 4 = (9 : ℂ) := by
+    rw [show ringComplex traceLambda ^ 4 = (ringComplex traceLambda ^ 2) ^ 2 by ring, hs]
+    norm_num
+  rw [hfour]
+  fin_cases j <;>
+    norm_num [sourceCuspIntegralPhaseNumerator, sourceCuspScale, cuspFrequency, map_mul, map_pow] <;>
+    field_simp <;> simp only [hs, map_ofNat] <;> ring
+
+/-- The common fixed denominator removes all divisibility requirements on cusp frequencies. -/
+lemma sourceCuspIntegralPhaseNumerator_phase (j : Fin 3) (u h c d : O) (hc : c ≠ 0) :
+    tracePhase (cuspFrequency h * ringComplex u ^ 2 * ringComplex d /
+      ((sourceCuspScale j : ℂ) * ringComplex c)) =
+    tracePhase (-(ringComplex d * ringComplex (sourceCuspIntegralPhaseNumerator j u h)) /
+      (ringComplex traceLambda ^ 4 * ringComplex (3 * c))) := by
+  rw [sourceCuspIntegralPhaseNumerator_embedding]
+  congr 1
+  have hl := ringComplex_ne_zero traceLambda_ne_zero
+  have hec := ringComplex_ne_zero hc
+  have hscale := Complex.ofReal_ne_zero.mpr (sourceCuspScale_pos j).ne'
+  simp only [map_mul, map_ofNat]
+  field_simp
+
+lemma traceLambda_pow_four : traceLambda ^ 4 = (9 : O) := by
+  rw [show traceLambda ^ 4 = (traceLambda ^ 2) ^ 2 by ring, traceLambda_square]
+  norm_num
+
+lemma cuspInverse_fixed_modulus_dvd (c : O) : traceLambda ^ 3 * (3 * c) ∣ (27 : O) * c := by
+  refine ⟨traceLambda, ?_⟩
+  calc
+    (27 : O) * c = 3 * traceLambda ^ 4 * c := by rw [traceLambda_pow_four]; ring
+    _ = _ := by ring
+
+/-- Actual local frequencies have controlled cusp completions and a fixed unit character factor. -/
+theorem exists_fixed_cusp_frequency_character {ι : Type*} [Fintype ι]
+    (p : ι → O) (N a c l : O)
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (hp : ∀ i, lambda ^ 2 ∣ p i - 1) (hNp : ∀ i, IsCoprime N (p i))
+    (h9N : (9 : O) ∣ N) (hcN : c ∣ N) (hlN : l ∣ N)
+    (hac : IsCoprime a c) (mode : Bool)
+    (hbase : if mode then lambda ^ 2 ∣ a - 1 else lambda ^ 2 ∣ c - 1) :
+    ∃ (lift : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → ι → O)
+      (M : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → SL(2, O)) (κ : ℂ),
+      (∀ v i, N ^ 2 ∣ lift v i) ∧
+      (∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (lift v i) = (v i : O ⧸ Ideal.span {p i})) ∧
+      (∀ v, M v 0 0 = cuspCrossNumerator a c l p (lift v)) ∧
+      (∀ v, M v 1 0 = c * ∏ i, p i) ∧
+      (∀ v r s, N ∣ M v r s - M (fun _ => 1) r s) ∧
+      ‖κ‖ = 1 ∧ ∀ v, extendedComplexCharacter (fixedCuspGamma (M v)) =
+        κ * ringComplex (symbol (M v 0 0) (∏ i, p i)) := by
+  obtain ⟨lift, M, hperiod, hres, hMa, hMc, hM, hcond⟩ :=
+    exists_fixed_cusp_frequency_matrices p N a c l hpair hp hNp h9N hcN hlN hac mode hbase
+  have hMaN (v) : N ∣ M v 0 0 - a * ∏ i, p i := by
+    rw [hMa]
+    exact cuspCrossNumerator_fixed N a c l p (lift v)
+      (fun i => (dvd_pow_self N (by decide : (2 : ℕ) ≠ 0)).trans (hperiod v i))
+  obtain ⟨κ, hκnorm, hκ⟩ := fixedCuspGamma_family_character (fun _ => 1) N a c (∏ i, p i)
+    h9N hcN (primary_finset_product Finset.univ p (fun i _ => hp i)) mode hbase
+    M hMaN hMc hM hcond
+  exact ⟨lift, M, κ, hperiod, hres, hMa, hMc, hM, hκnorm, hκ⟩
+
+lemma exists_cuspPrime_inverse {ι : Type*} [Fintype ι] (p : ι → O)
+    (hpair : Pairwise (Function.onFun IsCoprime p)) :
+    ∃ t : ι → O, ∀ i, p i ∣ cuspPrimeCofactor p i * t i - 1 := by
+  classical
+  have hex (i) : ∃ t : O, p i ∣ cuspPrimeCofactor p i * t - 1 := by
+    have hcof : IsCoprime (p i) (cuspPrimeCofactor p i) :=
+      IsCoprime.prod_right (fun k hk => hpair (Ne.symm (Finset.mem_erase.mp hk).1))
+    obtain ⟨u, v, h⟩ := hcof
+    refine ⟨v, -u, ?_⟩
+    linear_combination h
+  choose t ht using hex
+  exact ⟨t, ht⟩
+
+/-- The fixed modulus supplies the inverse coefficient needed for the reflected trace phase. -/
+lemma exists_cuspInverse_bezout {ι : Type*} [Fintype ι] (p : ι → O) (N c : O)
+    (hN : (27 : O) * c ∣ N) (hNp : ∀ i, IsCoprime N (p i)) :
+    ∃ U w : O, U * (∏ i, p i) + (traceLambda ^ 3 * w) * (3 * c) = 1 := by
+  have hNr : IsCoprime N (∏ i, p i) := IsCoprime.prod_right (fun i _ => hNp i)
+  have hD : traceLambda ^ 3 * (3 * c) ∣ N := (cuspInverse_fixed_modulus_dvd c).trans hN
+  obtain ⟨U, w, h⟩ := hNr.symm.of_isCoprime_of_dvd_right hD
+  refine ⟨U, w, ?_⟩
+  linear_combination h
+
+/-- The actual finite unit-frequency sum at a common cusp denominator. -/
+def cuspUnitFrequencySum {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : O)
+    (M : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → SL(2, O)) (j : ι → ℕ) (x : O) : ℂ :=
+  ∑ v : ∀ i, (O ⧸ Ideal.span {p i})ˣ,
+    (∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i))
+      (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ)
+      (v i : O ⧸ Ideal.span {p i})) *
+    star (extendedComplexCharacter (fixedCuspGamma (M v))) *
+    tracePhase (-(ringComplex (M v 1 1) * ringComplex x) /
+      (ringComplex traceLambda ^ 4 * ringComplex (3 * c) * ringComplex (∏ i, p i)))
+
+/-- The local factors retain both nontrivial Gauss sums and the exceptional zero output. -/
+def cuspLocalReflectedProduct {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ) (j : ι → ℕ) (x : O) : ℂ :=
+  ∏ i, ((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹ ^ 2) (σ i) *
+    finiteReflectionGauss (complexSexticChar (Ideal.span {p i}) (hg i))
+      (residueTraceQuotientChar 1 (p i) (hp i)) (j i)
+      ((ε i : O ⧸ Ideal.span {p i}) * Ideal.Quotient.mk (Ideal.span {p i}) x)
+
+/-- Every primitive fixed cusp has an exact unit-frequency reflection with all local data constructed. -/
+theorem exists_native_cusp_reflection {ι : Type*} [Fintype ι] (p : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp0 : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpair : Pairwise (Function.onFun IsCoprime p)) (hp : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (N a c : O) (hc : c ≠ 0) (hN : (27 : O) * c ∣ N)
+    (hNp : ∀ i, IsCoprime N (p i)) (hac : IsCoprime a c) (mode : Bool)
+    (hbase : if mode then lambda ^ 2 ∣ a - 1 else lambda ^ 2 ∣ c - 1) :
+    ∃ (lift : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → ι → O)
+      (M : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → SL(2, O))
+      (σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ) (U : O) (κ : ℂ),
+      (∀ v i, N ^ 2 ∣ lift v i) ∧
+      (∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (lift v i) = (v i : O ⧸ Ideal.span {p i})) ∧
+      (∀ v, M v 0 0 = cuspCrossNumerator a c traceLambda p (lift v)) ∧
+      (∀ v, M v 1 0 = c * ∏ i, p i) ∧
+      (∀ v r s, N ∣ M v r s - M (fun _ => 1) r s) ∧
+      ‖κ‖ = 1 ∧ ∀ (j : ι → ℕ) (x : O),
+        cuspUnitFrequencySum p hp0 hg c M j x =
+          (star κ * tracePhase (-(ringComplex (M (fun _ => 1) 1 1) * ringComplex U * ringComplex x) /
+            (ringComplex traceLambda ^ 4 * ringComplex (3 * c)))) *
+          cuspLocalReflectedProduct p hp0 hg σ ε j x := by
+  have h9N : (9 : O) ∣ N := (show (9 : O) ∣ 27 * c from ⟨3 * c, by ring⟩).trans hN
+  have hcN : c ∣ N := (show c ∣ 27 * c from ⟨27, by ring⟩).trans hN
+  have h3cN : 3 * c ∣ N := (show (3 : O) * c ∣ 27 * c from ⟨9, by ring⟩).trans hN
+  have hlN : traceLambda ∣ N := (show traceLambda ∣ (9 : O) from
+    ⟨traceLambda ^ 3, by rw [← traceLambda_pow_four]; ring⟩).trans h9N
+  obtain ⟨lift, M, κ, hperiod, hres, hMa, hMc, hfixed, hκnorm, hκ⟩ :=
+    exists_fixed_cusp_frequency_character p N a c traceLambda hpair hp hNp h9N hcN hlN hac mode hbase
+  obtain ⟨σ, ε, hσ, hε⟩ := exists_cusp_local_units p c (3 * c) traceLambda hpair
+    (fun i => (hNp i).of_isCoprime_of_dvd_left hcN)
+    (fun i => (hNp i).of_isCoprime_of_dvd_left h3cN)
+    (fun i => (hNp i).of_isCoprime_of_dvd_left hlN)
+  obtain ⟨U, w, hbez⟩ := exists_cuspInverse_bezout p N c hN hNp
+  obtain ⟨t, ht⟩ := exists_cuspPrime_inverse p hpair
+  have hfreq (v) (i) : Ideal.Quotient.mk (Ideal.span {p i}) (M v 0 0) =
+      (σ i : O ⧸ Ideal.span {p i}) * (v i : O ⧸ Ideal.span {p i}) := by
+    rw [hMa, cuspCrossNumerator_local, hres, hσ]
+  have hdenom (v) : (∏ i, p i) ∣ M v 1 0 := by
+    rw [hMc]
+    exact dvd_mul_left _ _
+  have hD (v) : traceLambda ^ 3 * (3 * c) ∣ M v 1 1 - M (fun _ => 1) 1 1 :=
+    ((cuspInverse_fixed_modulus_dvd c).trans hN).trans (hfixed v 1 1)
+  refine ⟨lift, M, σ, ε, U, κ, hperiod, hres, hMa, hMc, hfixed, hκnorm, ?_⟩
+  intro j x
+  simpa only [cuspUnitFrequencySum, cuspLocalReflectedProduct, finiteReflectionGauss_product] using
+    cuspMatrix_frequency_sum p t hp0 hg hpair ht (3 * c) U w x
+      (mul_ne_zero (by norm_num) hc) hbez M hdenom hD σ ε hfreq hε κ hκ j
+
+
+/-- The fixed cusp amplitude; the denominator contributes only an angular phase. -/
+def fixedCuspReflectionScalar (s : FixedCuspSector) (c : O) : ℂ :=
+  -ringComplex (fixedCuspTriangular s 0 0) ^ 2 *
+    (star (ringComplex c) / ringComplex c) * (sourceCuspScale (fixedCuspIndex s) : ℂ) ^ 2
+
+def fixedCuspReflectionScale (s : FixedCuspSector) (c : O) (X : ℝ) : ℝ :=
+  27 * (sourceCuspRadialScale 0) ^ 2 * (sourceCuspRadialScale (fixedCuspIndex s)) ^ 2 * X /
+    ‖ringComplex c‖ ^ 4
+
+lemma fixedCuspReflectionScale_pos (s : FixedCuspSector) (c : O) (hc : c ≠ 0)
+    (X : ℝ) (hX : 0 < X) : 0 < fixedCuspReflectionScale s c X := by
+  have hq₀ := sourceCuspRadialScale_pos 0
+  have hq := sourceCuspRadialScale_pos (fixedCuspIndex s)
+  have hcn := norm_pos_iff.mpr (ringComplex_ne_zero hc)
+  unfold fixedCuspReflectionScale
+  positivity
+
+/-- Integral inverse phase at a fixed cusp shape. -/
+def fixedCuspInversePhase (s : FixedCuspSector) (c d h : O) : ℂ :=
+  tracePhase (-(ringComplex d * ringComplex
+    (sourceCuspIntegralPhaseNumerator (fixedCuspIndex s) (fixedCuspTriangular s 0 0) h)) /
+    (ringComplex traceLambda ^ 4 * ringComplex (3 * c)))
+
+lemma fixedCuspInversePhase_norm (s : FixedCuspSector) (c d h : O) :
+    ‖fixedCuspInversePhase s c d h‖ = 1 := tracePhase_norm _
+
+lemma fixedMatrixCusp_reflected_term (M : SL(2, O)) (hc : M 1 0 ≠ 0) (h : O) :
+    (fixedMatrixCusp M hc).smoothingMultiplier *
+      sourceCuspRadialCoefficient (fixedMatrixCusp M hc).index (fixedMatrixCusp M hc).dualPoint h =
+    fixedCuspReflectionScalar (fixedCuspSector M) (M 1 0) *
+      fixedCuspRadialArray (fixedCuspSector M) h * star (extendedComplexCharacter (fixedCuspGamma M)) *
+      fixedCuspInversePhase (fixedCuspSector M) (M 1 0) (M 1 1) h := by
+  rw [fixedMatrixCusp_smoothingMultiplier, fixedMatrixCusp_radialCoefficient,
+    sourceCuspIntegralPhaseNumerator_phase _ _ _ _ _ hc]
+  unfold fixedCuspReflectionScalar fixedCuspInversePhase
+  ring
+
+lemma fixedCuspRadialArray_kernel_norm_summable (s : FixedCuspSector)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (R : ℝ) (hR : 0 < R) :
+    Summable (fun h : O => ‖fixedCuspRadialArray s h * paperKernel V (R * sourceCuspRadialLength h)‖) := by
+  have hcoeff : Summable (fun h : O => ‖fixedCuspRadialArray s h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [fixedCuspRadialArray_norm, sourceCuspRadialCoefficient_norm, neg_div] using
+      sourceCuspRadialCoefficient_weighted_summable (fixedCuspIndex s) 0
+  exact paperKernel_weighted_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (fixedCuspRadialArray s) hcoeff V a b ha hs hV R hR
+
+/-- Finite frequency summation commutes with the actual reflected source, retaining its cubic phase. -/
+theorem fixedCusp_finite_smoothed_reflection {ι : Type*} [Fintype ι]
+    (M : ι → SL(2, O)) (s : FixedCuspSector) (hsector : ∀ i, fixedCuspSector (M i) = s)
+    (c : O) (hc : c ≠ 0) (hMc : ∀ i, M i 1 0 = c) (weight : ι → ℂ)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (X : ℝ) (hX : 0 < X) :
+    (∑ i, weight i * ∑' h : O,
+      sourceBarRadialCoefficient (ringComplex (M i 0 0) / ringComplex c) h * V (sourceCuspRadialLength h / X)) =
+    fixedCuspReflectionScalar s c * ∑' h : O,
+      (fixedCuspRadialArray s h * paperKernel V (fixedCuspReflectionScale s c X * sourceCuspRadialLength h)) *
+      ∑ i, weight i * star (extendedComplexCharacter (fixedCuspGamma (M i))) *
+        fixedCuspInversePhase s c (M i 1 1) h := by
+  classical
+  have hcn (i) : M i 1 0 ≠ 0 := by rw [hMc]; exact hc
+  let A : O → ℂ := fun h => fixedCuspRadialArray s h *
+    paperKernel V (fixedCuspReflectionScale s c X * sourceCuspRadialLength h)
+  let f : ι → O → ℂ := fun i h => A h *
+    (weight i * star (extendedComplexCharacter (fixedCuspGamma (M i))) * fixedCuspInversePhase s c (M i 1 1) h)
+  have hA : Summable (fun h => ‖A h‖) := fixedCuspRadialArray_kernel_norm_summable s V a b ha hs hV _
+    (fixedCuspReflectionScale_pos s c hc X hX)
+  have hf (i) : Summable (f i) := by
+    apply Summable.of_norm
+    simpa only [f, norm_mul, norm_star, norm_extendedComplexCharacter,
+      fixedCuspInversePhase_norm, mul_one] using hA.mul_right ‖weight i‖
+  have he (i) : weight i * (∑' h : O,
+      sourceBarRadialCoefficient (ringComplex (M i 0 0) / ringComplex c) h * V (sourceCuspRadialLength h / X)) =
+      fixedCuspReflectionScalar s c * ∑' h : O, f i h := by
+    have hpoint : (fixedMatrixCusp (M i) (hcn i)).point = ringComplex (M i 0 0) / ringComplex c := by
+      rw [fixedMatrixCusp_point, hMc]
+    rw [← hpoint, (fixedMatrixCusp (M i) (hcn i)).smoothed_reflection V a b ha hs hV X hX]
+    simp only [← tsum_mul_left]
+    apply tsum_congr
+    intro h
+    rw [← mul_assoc (fixedMatrixCusp (M i) (hcn i)).smoothingMultiplier,
+      fixedMatrixCusp_reflected_term, fixedMatrixCusp_smoothingScale, hsector, hMc]
+    dsimp only [f, A, fixedCuspReflectionScale]
+    ring
+  rw [Finset.sum_congr rfl (fun i _ => he i), ← Finset.mul_sum,
+    ← Summable.tsum_finsetSum (fun i _ => hf i)]
+  congr 1
+  apply tsum_congr
+  intro h
+  simp only [f, A, Finset.mul_sum]
+
+/-- Prime residue characters form a genuine multiplicative row on Eisenstein integers. -/
+def primeCuspRowCharacter {ι : Type*} [Fintype ι] (p : ι → O)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ) : O →* ℂ where
+  toFun x := ∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) x)
+  map_one' := by simp only [map_one, Finset.prod_const_one]
+  map_mul' x y := by simp only [map_mul, Finset.prod_mul_distrib]
+
+lemma fixedThetaTwist_mul (Ψ Φ : O →* ℂ) (h : O) :
+    fixedThetaTwist (Ψ * Φ) h = fixedThetaTwist Ψ h * Φ h := by
+  by_cases hh : lambda ^ 2 ∣ h - 1
+  · simp only [fixedThetaTwist, if_pos hh, MonoidHom.mul_apply, mul_assoc]
+  · simp only [fixedThetaTwist, if_neg hh, zero_mul]
+
+/-- Tensor Fourier inversion keeps the local zero frequencies. -/
+lemma finiteAdditiveFourier_product_inversion {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, CommRing (F i)] [∀ i, Fintype (F i)]
+    (ψ : ∀ i, AddChar (F i) ℂ) (hψ : ∀ i, (ψ i).IsPrimitive)
+    (φ : ∀ i, F i → ℂ) (x : ∀ i, F i) :
+    (∑ h : ∀ i, F i, ∏ i, finiteAdditiveFourierCoeff (ψ i) (φ i) (h i) * ψ i (h i * x i)) =
+      ∏ i, φ i (x i) := by
+  classical
+  let f := fun (i : ι) (h : F i) => finiteAdditiveFourierCoeff (ψ i) (φ i) h * ψ i (h * x i)
+  change (∑ h : ∀ i, F i, ∏ i, f i (h i)) = _
+  rw [← Fintype.prod_sum f]
+  exact Finset.prod_congr rfl (fun i _ => finiteAdditiveFourier_inversion (ψ i) (hψ i) (φ i) (x i))
+
+lemma primeCuspTranslation_phase {ι : Type*} [Fintype ι] (p t : ι → O)
+    (hp : ∀ i, p i ≠ 0) (h : O) :
+    tracePhase (-cuspFrequency h * (ringComplex traceLambda ^ 2 * ∑ i, ringComplex (t i) / ringComplex (p i))) =
+      ∏ i, residueTraceQuotientChar 1 (p i) (hp i)
+        (Ideal.Quotient.mk (Ideal.span {p i}) (t i * h)) := by
+  classical
+  have he : -cuspFrequency h * (ringComplex traceLambda ^ 2 * ∑ i, ringComplex (t i) / ringComplex (p i)) =
+      ∑ i, -cuspFrequency h * ringComplex traceLambda ^ 2 * (ringComplex (t i) / ringComplex (p i)) := by
+    rw [← Finset.mul_sum]
+    ring
+  rw [he, tracePhase_finset_sum]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [residueTraceQuotientChar_phase, one_mul]
+  have hs : ringComplex traceLambda ^ 2 = (-3 : ℂ) := by
+    simpa only [map_pow, map_neg, map_ofNat] using congrArg ringComplex traceLambda_square
+  congr 1
+  rw [hs, cuspFrequency, map_mul]
+  have hl := ringComplex_ne_zero traceLambda_ne_zero
+  have hpi := ringComplex_ne_zero (hp i)
+  field_simp
+
+/-- The fixed arithmetic twist and all prime rows have one exact rational-cusp expansion. -/
+theorem primeCuspRow_phase_decomposition {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+    (lift : (∀ i, O ⧸ Ideal.span {p i}) → ι → O)
+    (hlift : ∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (lift v i) = v i)
+    (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {9 * c})]
+    (Ψ : (O ⧸ Ideal.span {c}) →* ℂ) (h : O) :
+    (∑ k : O ⧸ Ideal.span {9 * c}, ∑ v : ∀ i, O ⧸ Ideal.span {p i},
+      (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+          (finiteThetaTwist c Ψ) k *
+        ∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (χ i) (v i)) *
+      tracePhase (-cuspFrequency h * (thetaFourierTranslation (9 * c) k +
+        ringComplex traceLambda ^ 2 * ∑ i, ringComplex (lift v i) / ringComplex (p i)))) =
+    fixedThetaTwist
+      (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom * primeCuspRowCharacter p χ) h := by
+  classical
+  let ψ := fun i => residueTraceQuotientChar 1 (p i) (hp i)
+  have hlocal (v) : tracePhase
+      (-cuspFrequency h * (ringComplex traceLambda ^ 2 * ∑ i, ringComplex (lift v i) / ringComplex (p i))) =
+      ∏ i, ψ i (v i * Ideal.Quotient.mk (Ideal.span {p i}) h) := by
+    rw [primeCuspTranslation_phase p (lift v) hp h]
+    simp only [map_mul, hlift, ψ]
+  simp_rw [mul_add, AddChar.map_add_eq_mul, hlocal]
+  have hsum (k : O ⧸ Ideal.span {9 * c}) :
+      (∑ v : ∀ i, O ⧸ Ideal.span {p i},
+        (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+            (finiteThetaTwist c Ψ) k * ∏ i, finiteAdditiveFourierCoeff (ψ i) (χ i) (v i)) *
+        (tracePhase (-cuspFrequency h * thetaFourierTranslation (9 * c) k) *
+          ∏ i, ψ i (v i * Ideal.Quotient.mk (Ideal.span {p i}) h))) =
+      (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+          (finiteThetaTwist c Ψ) k * tracePhase (-cuspFrequency h * thetaFourierTranslation (9 * c) k)) *
+      ∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) h) := by
+    rw [← finiteAdditiveFourier_product_inversion ψ (fun i => residueTraceQuotientChar_primitive (p i) (hp i))
+      (fun i => χ i) (fun i => Ideal.Quotient.mk (Ideal.span {p i}) h), Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro v hv
+    rw [Finset.prod_mul_distrib]
+    ring
+  simp_rw [hsum]
+  rw [← Finset.sum_mul, thetaFourierTranslation_inversion, finiteThetaTwist_mk, fixedThetaTwist_mul]
+  rfl
+
+/-- Any finite additive decomposition acts diagonally on the absolutely convergent smoothed source. -/
+lemma sourceBar_smoothed_phase_translation {ι : Type*} [Fintype ι] (z weight : ι → ℂ)
+    (W : O → ℂ) (hW : Summable (fun h : O => ‖sourceBarRadialCoefficient 0 h * W h‖)) :
+    (∑ i, weight i * ∑' h : O, sourceBarRadialCoefficient (z i) h * W h) =
+      ∑' h : O, (∑ i, weight i * tracePhase (-cuspFrequency h * z i)) * sourceBarRadialCoefficient 0 h * W h := by
+  let coeff : O → ℂ := fun h => star (sourceBarRadialCoefficient 0 h * W h)
+  have hs : Summable (fun h => ‖coeff h‖) := by simpa only [coeff, norm_star] using hW
+  have he := conjugate_cuspCharacterSeries_finite_translation coeff hs z weight 0
+  simp only [zero_add, mul_zero, AddChar.map_zero_eq_one, mul_one, coeff, star_star] at he
+  calc
+    _ = ∑ i, weight i * star (cuspCharacterSeries coeff (z i)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      congr 1
+      rw [conjugate_cuspCharacterSeries]
+      apply tsum_congr
+      intro h
+      rw [sourceBarRadialCoefficient_phase]
+      simp only [coeff, star_star]
+      ring
+    _ = _ := by simpa only [mul_assoc] using he
+
+/-- The completed Gauss sum is the arithmetic twist of the smoothed source derivative. -/
+lemma completedT_source_identity (Ψ : O →* ℂ) (W : ℝ → ℂ) (X : ℝ) :
+    completedT Ψ W X = thetaDerivativeScalar⁻¹ *
+      ∑' h : O, fixedThetaTwist Ψ h * sourceBarRadialCoefficient 0 h * Vstar W (sourceCuspRadialLength h / X) := by
+  have he : thetaRadialDerivativeScalar * completedT Ψ W X = rationalSourceThetaScalar⁻¹ *
+      ∑' h : O, fixedThetaTwist Ψ h * sourceBarRadialCoefficient 0 h * Vstar W (sourceCuspRadialLength h / X) := by
+    rw [← thetaSmoothedGaussSum_eq_completedT]
+    calc
+      _ = ∑' h : O, (rationalSourceThetaScalar⁻¹ * star (rationalSourceResidualFourierCoefficient h) *
+          fixedThetaTwist Ψ h) *
+          (((-2 * Real.pi * Complex.I * star (cuspFrequency h)) / (sourceCuspRadialLength h : ℂ)) *
+            Vstar W (sourceCuspRadialLength h / X)) := (fixedThetaTwist_source_tsum Ψ _).symm
+      _ = _ := by
+        rw [← tsum_mul_left]
+        apply tsum_congr
+        intro h
+        rw [sourceBarRadialCoefficient_at_zero]
+        ring
+  apply mul_left_cancel₀ thetaRadialDerivativeScalar_ne_zero
+  rw [he, thetaDerivativeScalar, mul_inv_rev]
+  field_simp [thetaRadialDerivativeScalar_ne_zero]
+
+/-- An exact finite phase decomposition reflects the completed Gauss sum through its actual cusps. -/
+theorem completedT_finite_phase_reflection {ι : Type*} [Fintype ι]
+    (Ψ : O →* ℂ) (d : ι → SourceCuspDatum) (weight : ι → ℂ)
+    (hphase : ∀ h : O, (∑ i, weight i * tracePhase (-cuspFrequency h * (d i).point)) = fixedThetaTwist Ψ h)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    completedT Ψ W X = thetaDerivativeScalar⁻¹ * ∑ i, weight i *
+      ((d i).smoothingMultiplier * ∑' h : O, sourceCuspRadialCoefficient (d i).index (d i).dualPoint h *
+        paperKernel (Vstar W) ((d i).smoothingScale X * sourceCuspRadialLength h)) := by
+  have hcoeff : Summable (fun h : O => ‖sourceBarRadialCoefficient 0 h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [show (1 / 2 : ℝ) - 2 = -(3 / 2) by norm_num] using
+      sourceBarRadialCoefficient_summable 0 2 le_rfl
+  have hsum := weighted_compact_test_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceBarRadialCoefficient 0) (3 / 2) hcoeff (Vstar W) a b ha
+    (Vstar_support W a b hs) (Vstar_contDiff W a b ha hs hW) X hX
+  have he := sourceBar_smoothed_phase_translation (fun i => (d i).point) weight
+    (fun h => Vstar W (sourceCuspRadialLength h / X)) hsum
+  simp_rw [hphase] at he
+  rw [completedT_source_identity, ← he]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [(d i).smoothed_reflection (Vstar W) a b ha
+    (Vstar_support W a b hs) (Vstar_contDiff W a b ha hs hW) X hX]
+
+/-- Tensor Fourier inversion gives the exact completed reflection before active-prime regrouping. -/
+theorem completedT_primeCuspRow_reflection {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+    (lift : (∀ i, O ⧸ Ideal.span {p i}) → ι → O)
+    (hlift : ∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (lift v i) = v i)
+    (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {9 * c})]
+    (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (d : (O ⧸ Ideal.span {9 * c}) × (∀ i, O ⧸ Ideal.span {p i}) → SourceCuspDatum)
+    (hd : ∀ k v, (d (k, v)).point = thetaFourierTranslation (9 * c) k +
+      ringComplex traceLambda ^ 2 * ∑ i, ringComplex (lift v i) / ringComplex (p i))
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom * primeCuspRowCharacter p χ) W X =
+      thetaDerivativeScalar⁻¹ * ∑ k : O ⧸ Ideal.span {9 * c}, ∑ v : ∀ i, O ⧸ Ideal.span {p i},
+        (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+            (finiteThetaTwist c Ψ) k *
+          ∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (χ i) (v i)) *
+        ((d (k, v)).smoothingMultiplier * ∑' h : O,
+          sourceCuspRadialCoefficient (d (k, v)).index (d (k, v)).dualPoint h *
+          paperKernel (Vstar W) ((d (k, v)).smoothingScale X * sourceCuspRadialLength h)) := by
+  let weight := fun q : (O ⧸ Ideal.span {9 * c}) × (∀ i, O ⧸ Ideal.span {p i}) =>
+    finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+      (finiteThetaTwist c Ψ) q.1 *
+    ∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (χ i) (q.2 i)
+  have hphase (h : O) : (∑ q, weight q * tracePhase (-cuspFrequency h * (d q).point)) =
+      fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom * primeCuspRowCharacter p χ) h := by
+    rw [Fintype.sum_prod_type]
+    simp_rw [hd]
+    exact primeCuspRow_phase_decomposition p hp χ lift hlift c hc Ψ h
+  simpa only [weight, Fintype.sum_prod_type] using
+    completedT_finite_phase_reflection _ d weight hphase W a b ha hs hW X hX
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

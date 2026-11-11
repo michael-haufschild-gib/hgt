@@ -80,6 +80,17 @@ private theorem shortScalar_exact :
       fun_prop).intervalIntegrable 0 1
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun v _ => hasDerivAt_shortScalarPrimitive v) hi]
 
+/-- Closed form of the selected scalar constant, with its only exponential displayed. -/
+theorem levinsonShortScalar_formula :
+    levinsonLinearOptimizationConstantAt (13 / 50) =
+      (1 / 2 : ℝ) + (50 / 13) *
+        ((2 * Real.exp (13 / 5) - (13 / 5) ^ 2 - 2 * (13 / 5) - 2) / (13 / 5) ^ 3) +
+      (13 / 50) * ((Real.exp (13 / 5) - 1) / (12 * (13 / 10)) + (1 - 13 / 10) / 6) := by
+  rw [shortScalar_exact]
+  dsimp only [shortScalarPrimitive, shortScalarA, shortScalarB, shortScalarC]
+  norm_num
+  ring
+
 private theorem shortScalar_exponential_bounds :
     Real.exp (13 / 5 : ℝ) < 27 / 2 ∧ (18 / 5 : ℝ) < Real.exp (13 / 10) := by
   have hroot : (19 / 10 : ℝ) < Real.exp (13 / 20) ∧ Real.exp (13 / 20 : ℝ) < 19157 / 10000 := by

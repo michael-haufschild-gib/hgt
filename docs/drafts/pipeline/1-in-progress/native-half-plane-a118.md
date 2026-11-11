@@ -39,7 +39,7 @@ zero-free premise on `L` off `1`, and the family step with `E ≠ 0` required on
 4. sextic reciprocity at primes `χ_q(p)Γ(p)Γ(q) = Γ(pq)χ_p(q)` — done (`TheSexticSymbolsAreReciprocalUpToTheQuadraticPhase`);
 5. `r(a,b) = Γ(ab)/(Γ(a)Γ(b))` a ±1 bicharacter on odd classes, `Γ(cd²) = Γ(c)`, `Γ⁴ = 1` — done (`TheQuadraticPhaseIsABicharacterModuloFour`, finite identities by kernel `decide` over coordinates mod 4); open: `r(p,p) = χ_p(−1)`;
 6. composite sextic symbols, composite reciprocity `χ_b(a) = r(a,b)χ_a(b)` — done (`TheCompositeSexticSymbolsAreReciprocal`: `quadSymbol`, `sexticSymbol`, `quadSymbol_reciprocity`, `sexticSymbol_reciprocity`); binary Poisson CRT — done (`ThePoissonCoefficientSplitsOverCoprimeModuli`);
-7. composite `γ_j(c)` (squarefree) and CRT `γ_j(ab) = χ_a(b)^jχ_b(a)^jγ_j(a)γ_j(b)`;
+7. composite `γ_j(c)` (squarefree) and CRT `γ_j(ab) = χ_a(b)^jχ_b(a)^jγ_j(a)γ_j(b)`; sextic Gauss sums `g_c` (any `c`): CRT and unit twist — done (`TheSexticGaussSumsAreTwistedMultiplicative`);
 8. prime identities `γ₂³ = −α`, `γ₁γ₂ = χ(4)γ₃γ₂³` (MMD Hasse–Davenport), (4.7);
 9. `G(c) = χ_c(4)Γ(c)`: `G(vw) = G(v)G(w)r(v,w)`, `G(p³) = γ₃(p)`;
 10. CRT of the Fourier transform of `m ↦ ξ(m)χ_A(m)g_{χ_s}(s,−m)` with unit factors (7.9);

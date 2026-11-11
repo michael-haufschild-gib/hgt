@@ -428,8 +428,12 @@ depends only on the matrix modulo three (`ramifiedResidualFourierCoefficient_ful
 Logarithmic localization separates the reflected kernel into unitary Fourier
 characters. Its Fourier coefficient has uniform pointwise and weighted `L¹`
 bounds of arbitrary polynomial order in the radial parameter
-(`paperKernel_log_separation`, checked). This supplies weight separation;
-arithmetic row regrouping and the mean-square transfer remain open.
+(`paperKernel_log_separation`, checked). Primitive cusp columns admit
+congruence-preserving completions with a fixed unit character factor. CRT
+splits their inverse phases into local trace characters, giving the exact
+unit-frequency reflection, including exceptional zero outputs
+(`exists_native_cusp_reflection`, checked). Arithmetic row regrouping and
+the mean-square transfer remain open.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

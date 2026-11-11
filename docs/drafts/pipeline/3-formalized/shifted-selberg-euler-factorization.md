@@ -1,106 +1,76 @@
-# Exact shifted Selberg factorization and summable correction
+# Shifted Selberg factorization, profile limits, and derivative control
 
 - **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Parent:** A111, `levinson-gate-from-below-square-root-twists.md`.
 
-## Statement
+## Exact factorization
 
-For every real `s`, let `A_s=(μ(n)n^s)*(1/n)` under Dirichlet convolution.
-Restrict `A_s` to integers supported on the primes of `r`, writing `A_{s,r}`.
-The correction is the pushforward under `(r,u,v)↦(ru,rv)` of
-`W_s(r,u,v)=μ(r)A_{s,r}(u)A_{s,r}(v)/r²`.
-Let `P_s` be the bivariate convolution of the diagonal coefficient
-`d^(s−1)` with the two reciprocal Möbius rows. Then
-
-`W_s * P_s (m,n) = μ(m)μ(n) gcd(m,n)^(1+s)/(mn)` for positive `m,n`.
-
-For every finite weight, the principal factor collapses exactly to a
-single harmonic sum of its two Möbius transforms, weighted by `d^s`.
-
-For `N>1` and retained fibres `ru,rv≤N`,
-`|W_{C/log N}(r,u,v)| ≤ exp(4|C|)|W_0(r,u,v)|`.
-The majorant is summable over all three variables; the truncated shifted
-fibre sum converges to `1`.
-
-## Proof
+Let `A_s=(μ(n)n^s)*(1/n)` under Dirichlet convolution, and restrict
+`A_s` to integers supported on primes dividing `r`, writing `A_{s,r}`.
+Push `W_s(r,u,v)=μ(r)A_{s,r}(u)A_{s,r}(v)/r²` forward under
+`(r,u,v)↦(ru,rv)`. Its bivariate convolution with the diagonal coefficient
+`d^(s−1)` and two reciprocal Möbius rows is exactly
+`μ(m)μ(n) gcd(m,n)^(1+s)/(mn)` for positive `m,n`.
 
 At prime powers, `A_s(p^k)=(1−p^(1+s))/p^k` for `k≥1`.
-Dirichlet inversion gives `A_s*(μ/n)=μ(n)n^s`.
-Consequently the local correction times the principal factor is
-`1−x/p−y/p+p^(s−1)xy`. Pair-coprime multiplicativity gives the global identity.
-Finite divisor rearrangement and diagonal collapse give the weighted model.
+Dirichlet inversion and pair-coprime multiplicativity give the identity;
+finite divisor rearrangement collapses every weighted principal factor
+to a harmonic sum of two Möbius transforms.
 
-The bound `|1−p^(1+s)|≤(p−1)p^(2|s|)` gives
-`|A_s(n)|≤n^(2|s|)|A_0(n)|`. On retained fibres, `u,v≤N`.
-Each fixed fibre is continuous in `s`; dominated convergence against the
-existing absolute fibre sum preserves total mass `1`.
+For retained fibres `ru,rv≤N`, `N>1`,
+`|W_{C/log N}(r,u,v)|≤exp(4|C|)|W_0(r,u,v)|`.
+The absolute triple mass is summable and its unshifted signed mass is one.
+The corresponding summable pair majorant is
+`A(m,n)=Σ_{r|gcd(m,n)}|W_0(r,m/r,n/r)|`, with zero values on the axes.
+
+## Polynomial limits and derivatives
+
+For fixed polynomials `P,Q` vanishing at zero and any `v_N→v`, the full
+corrected harmonic row with logarithmic weight `t^k` tends to
+`∫₀¹ t^k (P′−vP)(Q′−vQ) dt`; profiles are evaluated at `1−t`.
+The literal finite Möbius–gcd form equals this model at independent shifts
+`(c,v)` and has this limit on `c=−2v`.
+
+Complex continuation and Cauchy's estimate bound correction jets of order
+`j` by `j! exp(4(|C|+1)) A(m,n)`. Every positive-order correction jet
+vanishes, including bounded moving centres and the summed finite form.
+
+Write `RP(x)=(1−x)P(x)`. A directional derivative `(κ,ν)` inserts `κt`,
+replaces either profile by `νRP`, or differentiates the correction.
+The last contribution vanishes. Applying this recurrence twice proves
+both literal directional derivative limits.
+
+Compact uniform profile bounds give one bound for all retained dilation
+pairs and logarithmic powers. The derivative recurrence and real mean
+value inequality give a Lipschitz constant in `v`, uniform in sufficiently
+large `N`, for every corrected jet on each compact interval.
+
+## Actual twisted-moment coordinates
+
+For coefficients `μ(n)n^(v/log N)P(1−log n/log N)`, the reflected gcd sum
+has shifts `(c,v)=(2d log N,v)`; the direct sum has shifts
+`(−2d log N,v+2d log N)`. Both identities include the normalization `log N`.
+The actual linear mollifier is `P(x)=x`, `v=−d log N`.
 
 ## Lean
 
-Namespace `GaloisForLFunctions.MultiscaleMollifiedZetaField`:
+Namespace `GaloisForLFunctions.MultiscaleMollifiedZetaField`; all modules
+below passed direct Lean checks and have umbrella imports.
 
-- `TheShiftedSelbergAmplitudeHasTheSameMajorant`
-- `TheShiftedSelbergCorrectionKeepsItsSummableEnvelope`
-- `TheShiftedSelbergCorrectionIsMultiplicative`
-- `TheShiftedSelbergEulerFactorsCancel.shiftedSelbergCorrection_convolution_principal`
-- `TheShiftedSelbergFormIsAHarmonicModel.shiftedSelbergOriginal_weighted_eq_correction_harmonic_model`
+- Exact Euler identities: `TheShiftedSelbergAmplitudeHasTheSameMajorant`,
+  `TheShiftedSelbergCorrectionIsMultiplicative`, `TheShiftedSelbergEulerFactorsCancel`,
+  `TheShiftedSelbergFormIsAHarmonicModel`.
+- Summable real/complex correction bounds: `TheShiftedSelbergCorrectionKeepsItsSummableEnvelope`,
+  `TheShiftedAmplitudeIsHolomorphic`, `TheCorrectionJetsKeepTheSummableEnvelope`,
+  `TheShiftedCorrectionHasASummablePairMajorant`, `TheCorrectionCoefficientJetsHaveASummableMajorant`.
+- Full polynomial limits: `TheCoupledEulerCorrectionPreservesThePolynomialLimit`,
+  `TheCoupledShiftedSelbergFormHasThePolynomialLimit`.
+- Literal derivatives: `ThePrincipalRowDerivativesShiftTheProfiles`,
+  `TheCorrectedRowDerivativesHaveVanishingCorrectionTerms`, `TheCorrectedPolynomialJetsConverge`,
+  `TheShiftedSelbergFormKeepsItsFirstTwoDerivatives`.
+- Uniform parameter control: `TheCorrectedJetsAreUniformlyLipschitz`.
+- Original gcd and linear-weight identities: `TheActualGcdSumsAreShiftedProfileForms`.
 
-Direct Lean checks passed; umbrella imports added.
-
-## Normalized correction derivatives
-
-`TheShiftedAmplitudeIsHolomorphic` extends the amplitude to an entire
-function and proves the same complex absolute majorant.
-`TheCorrectionJetsKeepTheSummableEnvelope.norm_normalizedCorrectionJet_le`
-bounds its normalized fibre jet of order `j` at `C` by
-`j! exp(4(|C|+1))|W_0|`.
-
-Every positive-order normalized jet tends to zero on each fixed fibre.
-Dominated convergence gives
-`tendsto_tsum_cutoffNormalizedCorrectionJet_succ`: the corresponding
-retained fibre sum tends to zero at every order. Direct Lean checks passed.
-
-The positive-order jet decay also holds for every bounded moving centre
-sequence. The declarations
-`tendsto_entire_normalized_jet_succ_of_bounded_centres` and
-`tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres`
-use the same Cauchy and summable-majorant arguments. Lean check passed.
-
-The summable pair majorant is the pushforward of absolute triple-fibre
-mass: `A(m,n)=Σ_{r|gcd(m,n)}|W_0(r,m/r,n/r)|`, with zero values on the axes.
-`TheShiftedCorrectionHasASummablePairMajorant` proves summability and
-`|Corr_{C/log N}(m,n)|≤exp(4|C|)A(m,n)` for `m,n≤N`, `N>1`.
-It also proves coefficient continuity and the zero-shift identity.
-Lean check passed; umbrella import added.
-
-`TheCorrectionCoefficientJetsHaveASummableMajorant` transfers these
-estimates to the finite divisor coefficients: the normalized jet is
-bounded by `j! exp(4(|C|+1))A(m,n)`, its real restriction is the actual
-successive derivative, and every positive-order jet tends to zero along
-bounded moving centres. Lean check passed; umbrella import added.
-
-`TheCoupledEulerCorrectionPreservesThePolynomialLimit` proves that the
-full corrected polynomial row, weighted by `t^k`, tends to
-`∫₀¹ t^k (P′−vP)(Q′−vQ) dt`, with profiles evaluated at `1−t`.
-The shift may be any convergent sequence. One uniform bound over all
-retained dilation pairs permits summation against the absolute pair
-majorant. Lean check passed; umbrella import added.
-
-`TheCoupledShiftedSelbergFormHasThePolynomialLimit` identifies the literal
-finite Möbius–gcd form with that model at arbitrary independent shifts.
-At the coupled shift its limit is `∫₀¹(P′−vP)² dt`, with profile argument
-`1−t`. Lean check passed; umbrella import added.
-
-`TheActualGcdSumsAreShiftedProfileForms` identifies the original twisted
-moment sums: the reflected shift is `(c,v)=(2d log N,v)`, while the direct
-shift is `(−2d log N,v+2d log N)`. It also identifies the actual linear
-mollifier weights with profile `P(x)=x` and parameter `−d log N`.
-Lean check passed; umbrella import added.
-
-`TheCorrectedPolynomialJetsConverge` and
-`TheShiftedSelbergFormKeepsItsFirstTwoDerivatives` prove the first two
-literal directional derivative limits. Writing `RP=(1−x)P`, the surviving
-operations are insertion of `κt` and replacement of either profile by
-`νRP`; positive-order Euler-correction derivatives vanish. Both modules
-passed Lean and are wired into the umbrella.
+Arbitrary real-height reindexing, pole/chi main-term assembly, and the
+Levinson gate remain obligations on the parent card.

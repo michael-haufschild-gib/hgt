@@ -8,21 +8,28 @@ import GaloisForLFunctions.RHTower.ZetaEulerRegionDiscSeamMargin
 /-!
 # The tangent data of Möbius and Liouville in world I
 
-Let `A` be analytic right of a level `σ` with linear growth, and
-`K(s) = e^{(s−c)²} A(s)/((s − 1) ζ(s))`. For `A(s) = s − 1` the signal of `K` is the Gaussian
-window sum of the Möbius function on logarithmic scales; for `A(s) = (s − 1) ζ(2s)` that of the
-Liouville function.
+For `A` analytic right of a level with linear growth let
+`K(s) = e^{(s−c)²} A(s)/((s − 1) ζ(s))` (`worldKernel`). For `A(s) = s − 1` this is
+`e^{(s−c)²}/ζ(s)`, and its signal at `Z` is the Gaussian window sum of the Möbius function
+`Σ_n μ(n) e^{c(log Z − log n) − (log Z − log n)²/4}/(2√π)` (`signal_mobius_eq_tsum`). For
+`A(s) = (s − 1) ζ(2s)` it is the Liouville kernel `e^{(s−c)²} ζ(2s)/ζ(s)`.
 
 * **The residue against a power** (`laurentCoeff_cexp_mul_of_eq_div_pow`). At a pole
   `f = H/(s − ρ)^m`, `H` analytic, the residue of `Z^s f(s)` is
   `Z^ρ Σ_{j<m} (log Z)^j/j! · H^{(m−1−j)}(ρ)/(m−1−j)!`: a polynomial in `log Z` of degree `m − 1`
-  with leading coefficient `H(ρ)/(m−1)!`.
+  with leading coefficient `H(ρ)/(m−1)!` (`laurentCoeff_worldKernel_eq`).
 * **The explicit formula above a level** (`signal_worldKernel_sub_eq_sum_residues`,
   `exists_norm_signal_worldKernel_le`). If the zeros of `ζ` right of `σ' < σ` are finitely many
   and none lies on `Re s = σ`, the signal of `K` is the sum of the residues of `Z^s K(s)` at the
-  zeros right of `σ` plus a term `O(Z^σ)`. The line `Re s = 2` moves to `Re s = σ` across these
-  finitely many poles: above the finite layer `ζ` has a subpolynomial lower bound, which the
-  Gaussian absorbs.
+  zeros right of `σ` plus `O(Z^σ)`: above the finite layer `ζ` has a subpolynomial lower bound,
+  which the Gaussian absorbs, and the line moves across finitely many poles.
+* **World I** (`exists_layer_of_worldOne`). `Θ∞ < Θ` gives such levels with `σ < Θ`.
+* **The tangent datum** (`tendsto_normalized_signal_sub_top`, `tangentDatum_mobius`,
+  `tangentDatum_liouville`). In world I, `e^{−Θu}` times the signal at `e^u` minus the residues at
+  the zeros of the top line `Re s = Θ` tends to zero. The datum of `μ` at a top zero `ρ` of
+  multiplicity `m` is `e^{ρu}` times a polynomial of degree `m − 1`; those of `λ` have the same
+  support and degrees, with leading numerators multiplied by the unit `ζ(2ρ)`
+  (`leading_liouville_eq_mobius`).
 -/
 
 noncomputable section
@@ -968,10 +975,13 @@ theorem signal_mobius_eq_tsum (c : ℝ) {Z : ℝ} (hZ : 0 < Z) :
       ring
     rw [hFn, integral_const_mul, integral_gaussian_line]
     have hπ : (0 : ℝ) < Real.sqrt Real.pi := Real.sqrt_pos.mpr Real.pi_pos
-    have hsq : Real.sqrt Real.pi ^ 2 = Real.pi := Real.sq_sqrt Real.pi_pos.le
-    push_cast
-    field_simp
-    rw [← hsq]
+    have key : ∀ E : ℝ, 1 / (2 * Real.pi) * (Real.sqrt Real.pi * E) =
+        E / (2 * Real.sqrt Real.pi) := by
+      intro E
+      rw [show 2 * Real.pi = 2 * (Real.sqrt Real.pi * Real.sqrt Real.pi) by
+        rw [Real.mul_self_sqrt Real.pi_pos.le]]
+      field_simp
+    rw [← key]
     push_cast
     ring
 

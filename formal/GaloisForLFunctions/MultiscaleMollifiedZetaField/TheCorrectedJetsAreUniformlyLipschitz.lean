@@ -99,9 +99,9 @@ private theorem abs_four_derivative_terms_le (a b c d : ℝ) :
     |(-2) * a + (-2) * b + c + d| ≤ 2 * |a| + 2 * |b| + |c| + |d| := by
   calc
     _ ≤ |(-2) * a + (-2) * b + c| + |d| := abs_add_le _ _
-    _ ≤ (|(-2) * a + (-2) * b| + |c|) + |d| := add_le_add_right (abs_add_le _ _) _
+    _ ≤ (|(-2) * a + (-2) * b| + |c|) + |d| := add_le_add (abs_add_le _ _) le_rfl
     _ ≤ ((|(-2) * a| + |(-2) * b|) + |c|) + |d| :=
-      add_le_add_right (add_le_add_right (abs_add_le _ _) _) _
+      add_le_add (add_le_add (abs_add_le _ _) le_rfl) le_rfl
     _ = _ := by norm_num [abs_mul]
 
 /-- Corrected jets are eventually Lipschitz in the coupled parameter on every compact interval. -/
@@ -141,7 +141,7 @@ theorem exists_uniform_correctedProfileJetSum_lipschitz (P Q : ℝ[X])
     linarith only [h0, h1, h2, h3]
   intro x hx y hy
   have hh := (convex_Icc (-V) V).norm_image_sub_le_of_norm_deriv_le
-    (fun v _ => (hdiff v).differentiableAt) hbound hx hy
+    (fun v _ => (hdiff v).differentiableAt) hbound hy hx
   simpa only [Real.norm_eq_abs] using hh
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField
