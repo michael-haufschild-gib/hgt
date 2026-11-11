@@ -134,7 +134,7 @@ theorem normalizedHarmonicArray_abs_le {c N : ℕ} (hN : 1 < N)
   have hp (d : ℕ) (hd : d ∈ Finset.Icc 1 (N / c)) :
       |e d / (d : ℝ)| ≤ η / (d : ℝ) +
         B * (if 1 - δ ≤ Real.log d / Real.log N then 1 / (d : ℝ) else 0) := by
-    rw [abs_div, abs_of_nonneg (Nat.cast_nonneg _)]
+    rw [abs_div, abs_of_nonneg (Nat.cast_nonneg d : (0 : ℝ) ≤ d)]
     by_cases ht : 1 - δ ≤ Real.log d / Real.log N
     · rw [if_pos ht]
       calc

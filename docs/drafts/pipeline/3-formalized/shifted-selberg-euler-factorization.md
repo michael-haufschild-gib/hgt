@@ -61,3 +61,9 @@ Every positive-order normalized jet tends to zero on each fixed fibre.
 Dominated convergence gives
 `tendsto_tsum_cutoffNormalizedCorrectionJet_succ`: the corresponding
 retained fibre sum tends to zero at every order. Direct Lean checks passed.
+
+The positive-order jet decay also holds for every bounded moving centre
+sequence. The declarations
+`tendsto_entire_normalized_jet_succ_of_bounded_centres` and
+`tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres`
+use the same Cauchy and summable-majorant arguments. Lean check passed.

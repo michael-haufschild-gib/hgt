@@ -395,6 +395,17 @@ unit–ramified Gauss family. Both normalized coefficient families satisfy
 `C |uλᵐ|^(1/3)` on ramified frequencies
 (`rationalSourceResidualFourierCoefficient_ramified_bound`,
 `unramifiedResidualCoefficient_ramified_bound`, checked).
+Every active ramified cusp branch multiplies frequency by a unit and a power
+of `λ`. This preserves squarefree–cube support; Bessel normalization cancels
+the multiplier's norm exactly. All three cusp coefficients satisfy sharp
+squarefree–cube bounds and hence `C |h|^(1/3)` growth
+(`ramifiedResidualFourierCoefficient_squarefree_cube_bound`,
+`rationalSourceResidualFourierCoefficient_polynomial_bound`,
+`ramifiedBesselCoefficient_polynomial_bound`, checked).
+The full frequency indexing is injective, and all three cusp coefficient
+families are summable with weight `|frequency|⁻⁴`
+(`thetaFullFrequency_injective`, `sourceCuspCoefficient_tsum_full_index`,
+`sourceCuspCoefficient_weighted_summable`, checked).
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

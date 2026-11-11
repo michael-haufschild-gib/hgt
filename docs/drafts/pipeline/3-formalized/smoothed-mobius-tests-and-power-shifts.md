@@ -49,3 +49,12 @@ Consequently `T_L f(u)→f′(u)` uniformly on every `[δ,1]`, `δ>0`.
 The declarations are `tendsto_smoothedMobiusKernelMeanError`,
 `exists_scaledMobiusLogTest_error_bound`, and
 `scaledMobiusLogTest_converges_uniformly`. Direct Lean check passed.
+
+## Compact power shifts
+
+`normalizedShiftedMobiusProfile_compact_uniform` in
+`TheShiftedMobiusProfilesConvergeUniformly` gives a common full-cutoff bound
+for `0≤u≤1`, `|v|≤V`, and uniform convergence to `P′(u)−vP(u)` on
+`δ≤u≤1`, `|v|≤V`. The second derivative of `P(x)exp(−vx)` is bounded on
+the compact `(v,x)` rectangle; the mean-kernel error bound is therefore
+uniform in both variables. Lean check passed; umbrella import added.

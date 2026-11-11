@@ -22,7 +22,7 @@
 | A105 | Density-matched rung-positive model with arbitrarily high deep zeros | Full-test version impossible: unbounded positive apertures force all zeros onto the line. Exact obstruction and fixed-aperture density-matched survivor formalized in `3-formalized/density-matched-positive-windows.md`; bounded-shape restriction is a separate conjecture |
 | A102 | Sharp additive constant in height aperture | Upper bound improved to `log(π/2)` and formalized in `3-formalized/absolute-cosine-height-aperture.md`; sharpness remains open |
 | A80 | Finite-scale converse | Already formalized: `riemannHypothesis_iff_eventually_combForm_ge`; `3-formalized/agz-step-packet-limit-matrices.md` |
-| A94 | Finite-scale index equality | Robust-margin index proved in `3-formalized/robust-finite-comb-index-counts-right-zeros.md`; raw fixed-window index remains open |
+| A94 | Finite-scale index equality | Complete: `3-formalized/unshifted-comb-index-at-nonresonant-ratios.md`; raw index lies between restricted rank and rank plus nullity, hence equals rank at nonresonant apertures |
 | A82 | Li ladder as comb forms of tails | Complete: `3-formalized/li-ladder-as-damped-comb-tails.md`; explicit damped, smoothly truncated Laguerre tails with divergent horizons and sampling scales |
 | A79, A81, A93 | Aperture–height constants and order of windowHeight | Complete: `3-formalized/window-height-triple-exponential-order.md`; `log log log(windowHeight(a))−C a^(4/3)→log 138`, explicit `C` |
 | A78 | Cluster window theorem | Already proved: `SurfaceOfSpecZ.ScaleLocality.finite_top_negative_in_every_window`; no frequency separation, length greater than `card(S)π/Γ` |

@@ -30,12 +30,12 @@ theorem hasDerivAt_shiftedMobiusProfileJet (P : ℝ → ℝ) (j : ℕ) (L u v : 
     HasDerivAt (shiftedMobiusProfileJet P j L u) (shiftedMobiusProfileJet P (j + 1) L u v) v := by
   unfold shiftedMobiusProfileJet
   apply HasDerivAt.const_mul
-  apply HasDerivAt.sum
+  apply HasDerivAt.fun_sum
   intro n hn
   have he : HasDerivAt (fun v => Real.exp (v * Real.log n / L))
       (Real.exp (v * Real.log n / L) * (Real.log n / L)) v := by
     convert ((Real.hasDerivAt_exp _).comp v
-      (((hasDerivAt_id v).mul_const (Real.log n)).div_const L)) using 1 <;> simp only [id_eq] <;> ring
+      (((hasDerivAt_id v).mul_const (Real.log n)).div_const L)) using 1 <;> ring
   apply (((he.const_mul (((moebius n : ℤ) : ℝ) / (n : ℝ))).mul_const
     ((Real.log n / L) ^ j)).mul_const (P (u - Real.log n / L))).congr_deriv
   rw [pow_succ]
@@ -124,12 +124,12 @@ theorem shiftedMobiusProfileJets_compact_uniform
     ring
   have hR (x : ℝ) : HasDerivAt R (R₁ x) x := by
     apply (((hasDerivAt_id x).pow 2).mul (hP x)).congr_deriv
-    dsimp only [R₁, id_eq]
+    dsimp only [R₁, Pi.pow_apply, id_eq]
     ring
   have hR₁ (x : ℝ) : HasDerivAt R₁ (R₂ x) x := by
     apply ((((hasDerivAt_id x).const_mul 2).mul (hP x)).add
       (((hasDerivAt_id x).pow 2).mul (hP₁ x))).congr_deriv
-    dsimp only [R₂, id_eq]
+    dsimp only [R₂, Pi.pow_apply, id_eq]
     ring
   have hcQ₂ : Continuous Q₂ := by dsimp only [Q₂]; fun_prop
   have hcR₂ : Continuous R₂ := by dsimp only [R₂]; fun_prop

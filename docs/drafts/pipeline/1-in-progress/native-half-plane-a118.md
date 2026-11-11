@@ -8,10 +8,9 @@
   comparison with cube indices (A118a), uniform saving (A118c), direct bound (A118d).
 
 ## Goal
-Each task closed by an unconditional Lean theorem in the native graph. External source `[X]`:
-text `logs/review-2410-current-audit/quasi-rh-seven-eighths.txt`; Lean
-`tmp/hgt-openai-math/quasirh-source/OAI` (Apache-2.0, adaptations go into the owning folder's
-NOTICE, as in `MetaplecticMobiusDescent/NOTICE`).
+Each task closed by an unconditional Lean theorem in the native graph, built from corpus blocks.
+The external source `[X]` (text `logs/review-2410-current-audit/quasi-rh-seven-eighths.txt`) is a
+mathematical guide only; no external code enters the corpus.
 
 ## Frame defect (found 2026-11-11)
 The family step of `FamilyContinuationTheory` runs on `heckePoleCleared = (s−1)L(s,η)`. For a

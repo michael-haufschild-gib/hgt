@@ -20998,7 +20998,7 @@ theorem sourceFourier_tsum_full_index (w : O → ℂ) :
     (∑' h : {h : O // h ≠ 0}, w h.val * star (rationalSourceResidualFourierCoefficient h.val)) =
       ∑' p : ThetaFullIndex, w (thetaFullFrequency p) *
         star (rationalSourceResidualFourierCoefficient (thetaFullFrequency p)) := by
-  apply thetaFullFrequency_tsum
+  apply thetaFullFrequency_tsum (fun h => star (rationalSourceResidualFourierCoefficient h)) w
   intro h hh hc
   have hn : rationalSourceResidualFourierCoefficient h ≠ 0 := by
     intro hz
@@ -21010,7 +21010,7 @@ theorem sourceFourier_tsum_full_index (w : O → ℂ) :
 theorem ramifiedFourier_tsum_full_index (side : Bool) (w : O → ℂ) :
     (∑' h : {h : O // h ≠ 0}, w h.val * star (ramifiedBesselCoefficient side h.val)) =
       ∑' p : ThetaFullIndex, w (thetaFullFrequency p) * star (ramifiedBesselCoefficient side (thetaFullFrequency p)) := by
-  apply thetaFullFrequency_tsum
+  apply thetaFullFrequency_tsum (fun h => star (ramifiedBesselCoefficient side h)) w
   intro h hh hc
   have hn : ramifiedBesselCoefficient side h ≠ 0 := by
     intro hz
@@ -21096,5 +21096,357 @@ theorem sourceCuspCoefficient_tsum_full_index (j : Fin 3) (w : O → ℂ) :
   · exact sourceFourier_tsum_full_index w
   · exact ramifiedFourier_tsum_full_index false w
   · exact ramifiedFourier_tsum_full_index true w
+
+def sourceCuspBarCoefficient (j : Fin 3) : O → ℂ :=
+  ![sourceBarBesselCoefficient, ramifiedBarBesselCoefficient false, ramifiedBarBesselCoefficient true] j
+
+lemma sourceCuspBarCoefficient_subexponential (j : Fin 3) (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖sourceCuspBarCoefficient j h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  fin_cases j
+  · exact sourceBarBesselCoefficient_subexponential ε hε
+  · exact ramifiedBarBesselCoefficient_subexponential false ε hε
+  · exact ramifiedBarBesselCoefficient_subexponential true ε hε
+
+def sourceCuspZTerm (j : Fin 3) (z : ℂ) (v : ℝ) (h : O) : ℂ :=
+  star (cubicBesselTerm (sourceCuspBarCoefficient j) h (v / sourceCuspScale j, z / (sourceCuspScale j : ℂ)))
+
+theorem sourceCuspZFamily_series (j : Fin 3) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    sourceCuspZFamily j z v = ∑' h : O, sourceCuspZTerm j z v h := by
+  have h0 : cuspZProfile (fun w => star (cubicSourceResidualFunction w)) z v =
+      ∑' h : O, star (cubicBesselTerm sourceBarBesselCoefficient h (v, z)) := by
+    rw [conjugateSource_zProfile z v hv, cuspBarProfile_positive _ _ _ hv,
+      cubicSource_wirtingerBar_bessel v hv z, tsum_star]
+  have hr (side : Bool) : cuspZProfile
+      (fun w => star (ramifiedSourceFunction (ramifiedCuspRoot side : O) w)) z v =
+      ∑' h : O, star (cubicBesselTerm (ramifiedBarBesselCoefficient side) h (v / 3, z / 3)) := by
+    rw [conjugateRamifiedSource_zProfile side z v hv, cuspBarProfile_positive _ _ _ hv,
+      ramifiedSource_wirtingerBar_bessel side v hv z, tsum_star]
+  fin_cases j
+  · simpa [sourceCuspZFamily, sourceCuspZTerm, sourceCuspBarCoefficient, sourceCuspScale,
+      cuspRepresentative, cuspParameter, lowerCuspMatrix_zero] using h0
+  · simpa [sourceCuspZFamily, sourceCuspZTerm, sourceCuspBarCoefficient, sourceCuspScale,
+      cuspRepresentative, cuspParameter, ramifiedSourceFunction, ramifiedCuspRoot, cuspOmegaUnit_val] using hr false
+  · simpa [sourceCuspZFamily, sourceCuspZTerm, sourceCuspBarCoefficient, sourceCuspScale,
+      cuspRepresentative, cuspParameter, ramifiedSourceFunction, ramifiedCuspRoot, cuspOmegaUnit_val] using hr true
+
+theorem sourceCuspZTerm_summable (j : Fin 3) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    Summable (sourceCuspZTerm j z v) := by
+  apply Summable.of_norm
+  simpa only [sourceCuspZTerm, norm_star] using
+    cubicBesselTerm_summable_norm (sourceCuspBarCoefficient j) (sourceCuspBarCoefficient_subexponential j)
+      (v / sourceCuspScale j, z / (sourceCuspScale j : ℂ)) (div_pos hv (sourceCuspScale_pos j))
+
+lemma sourceCuspZTerm_zero (j : Fin 3) (z : ℂ) (v : ℝ) : sourceCuspZTerm j z v 0 = 0 := by
+  simp only [sourceCuspZTerm, cubicBesselTerm, cubicBesselAmplitude, if_true, zero_mul, star_zero]
+
+lemma sourceCuspBarCoefficient_eq (j : Fin 3) (h : O) :
+    sourceCuspBarCoefficient j h =
+      (2 * Real.pi * Complex.I * star (cuspFrequency h) / (sourceCuspScale j : ℂ)) * sourceCuspCoefficient j h := by
+  fin_cases j
+  · simp [sourceCuspBarCoefficient, sourceCuspScale, sourceCuspCoefficient, sourceBarBesselCoefficient]
+  · simp [sourceCuspBarCoefficient, sourceCuspScale, sourceCuspCoefficient,
+      ramifiedBarBesselCoefficient, ninthCuspFrequency_eq_third, star_div₀, mul_div_assoc]
+  · simp [sourceCuspBarCoefficient, sourceCuspScale, sourceCuspCoefficient,
+      ramifiedBarBesselCoefficient, ninthCuspFrequency_eq_third, star_div₀, mul_div_assoc]
+
+lemma sourceCuspZTerm_bessel (j : Fin 3) (z : ℂ) (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    sourceCuspZTerm j z v h =
+      (-2 * Real.pi * Complex.I * cuspFrequency h / (sourceCuspScale j : ℂ)) *
+        star (sourceCuspCoefficient j h) * ((v / sourceCuspScale j : ℝ) : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * (v / sourceCuspScale j)) *
+          tracePhase (-cuspFrequency h * (z / (sourceCuspScale j : ℂ))) := by
+  rw [sourceCuspZTerm, cubicBesselTerm, cubicBesselAmplitude, if_neg hh, sourceCuspBarCoefficient_eq]
+  simp only [star_mul, star_div₀, star_star, Complex.star_def, map_ofNat,
+    Complex.conj_ofReal, Complex.conj_I]
+  rw [← Complex.star_def, star_schlafliBesselK_cubic _
+    (mul_pos (mul_pos (by positivity) (norm_pos_iff.mpr (cuspFrequency_ne_zero h hh)))
+      (div_pos hv (sourceCuspScale_pos j)))]
+  rw [star_tracePhase, star_star, neg_mul]
+  ring
+
+def thetaFrequencyScale : ℂ := 1 / ((3 : ℂ) * ringComplex traceLambda)
+def thetaBesselScale : ℝ := ‖thetaFrequencyScale‖
+
+lemma thetaBesselScale_pos : 0 < thetaBesselScale :=
+  norm_pos_iff.mpr (one_div_ne_zero (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero)))
+
+lemma cuspFrequency_eq_thetaFrequencyScale (h : O) : cuspFrequency h = thetaFrequencyScale * ringComplex h := by
+  unfold cuspFrequency thetaFrequencyScale
+  ring
+
+def sourceCuspRadialLength (h : O) : ℝ := if h = 0 then 1 else ‖ringComplex h‖ ^ 2
+def sourceCuspRadialScale (j : Fin 3) : ℝ := thetaBesselScale / sourceCuspScale j
+
+def sourceCuspRadialBaseCoefficient (j : Fin 3) (h : O) : ℂ :=
+  (-2 * Real.pi * Complex.I * cuspFrequency h) * star (sourceCuspCoefficient j h) /
+    ((sourceCuspScale j : ℂ) ^ 2 * (sourceCuspRadialLength h : ℂ))
+
+def sourceCuspRadialCoefficient (j : Fin 3) (z : ℂ) (h : O) : ℂ :=
+  sourceCuspRadialBaseCoefficient j h * tracePhase (-cuspFrequency h * (z / (sourceCuspScale j : ℂ)))
+
+lemma sourceCuspRadialLength_pos (h : O) : 0 < sourceCuspRadialLength h := by
+  by_cases hh : h = 0
+  · simp only [sourceCuspRadialLength, if_pos hh, zero_lt_one]
+  · rw [sourceCuspRadialLength, if_neg hh]
+    exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hh))
+
+lemma sourceCuspRadialScale_pos (j : Fin 3) : 0 < sourceCuspRadialScale j :=
+  div_pos thetaBesselScale_pos (sourceCuspScale_pos j)
+
+lemma sourceCuspRadialCoefficient_norm (j : Fin 3) (z : ℂ) (h : O) :
+    ‖sourceCuspRadialCoefficient j z h‖ = ‖sourceCuspRadialBaseCoefficient j h‖ := by
+  rw [sourceCuspRadialCoefficient, norm_mul, tracePhase_norm, mul_one]
+
+lemma sourceCuspRadialCoefficient_zero (j : Fin 3) (z : ℂ) : sourceCuspRadialCoefficient j z 0 = 0 := by
+  simp only [sourceCuspRadialCoefficient, sourceCuspRadialBaseCoefficient, cuspFrequency,
+    map_zero, zero_div, mul_zero, zero_mul]
+
+lemma sourceCuspRadialLength_frequency (h : O) (hh : h ≠ 0) :
+    ‖cuspFrequency h‖ = thetaBesselScale * Real.sqrt (sourceCuspRadialLength h) := by
+  rw [cuspFrequency_eq_thetaFrequencyScale, norm_mul, sourceCuspRadialLength, if_neg hh,
+    Real.sqrt_sq (norm_nonneg _)]
+  rfl
+
+/-- A radial coefficient is normalized so its Mellin series uses the squared frequency length. -/
+def radialBesselProfile {ι : Type*} (length : ι → ℝ) (coefficient : ι → ℂ) (scale : ℝ) (v : ℝ) : ℂ :=
+  ∑' h : ι, (coefficient h * (length h : ℂ)) * (v : ℂ) *
+    schlafliBesselK (1 / 3) (4 * Real.pi * scale * Real.sqrt (length h) * v)
+
+theorem sourceCuspZTerm_eq_radial (j : Fin 3) (z : ℂ) (v : ℝ) (hv : 0 < v) (h : O) :
+    sourceCuspZTerm j z v h =
+      (sourceCuspRadialCoefficient j z h * (sourceCuspRadialLength h : ℂ)) * (v : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * sourceCuspRadialScale j *
+          Real.sqrt (sourceCuspRadialLength h) * v) := by
+  by_cases hh : h = 0
+  · subst h
+    rw [sourceCuspZTerm_zero, sourceCuspRadialCoefficient_zero]
+    ring
+  rw [sourceCuspZTerm_bessel j z v hv h hh, sourceCuspRadialLength_frequency h hh]
+  rw [show 4 * Real.pi * (thetaBesselScale * Real.sqrt (sourceCuspRadialLength h)) * (v / sourceCuspScale j) =
+    4 * Real.pi * sourceCuspRadialScale j * Real.sqrt (sourceCuspRadialLength h) * v by
+      unfold sourceCuspRadialScale; ring]
+  have hs := Complex.ofReal_ne_zero.mpr (sourceCuspScale_pos j).ne'
+  have hl := Complex.ofReal_ne_zero.mpr (sourceCuspRadialLength_pos h).ne'
+  simp only [sourceCuspRadialCoefficient, sourceCuspRadialBaseCoefficient, Complex.ofReal_div]
+  field_simp [hs, hl]
+
+theorem sourceCuspZFamily_eq_radialBesselProfile (j : Fin 3) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    sourceCuspZFamily j z v =
+      radialBesselProfile sourceCuspRadialLength (sourceCuspRadialCoefficient j z) (sourceCuspRadialScale j) v := by
+  rw [sourceCuspZFamily_series j z v hv]
+  exact tsum_congr (sourceCuspZTerm_eq_radial j z v hv)
+
+theorem SourceCuspDatum.reflection_radial (d : SourceCuspDatum) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point v =
+      d.multiplier / (v : ℂ) ^ 2 *
+        radialBesselProfile sourceCuspRadialLength (sourceCuspRadialCoefficient d.index d.dualPoint)
+          (sourceCuspRadialScale d.index) ((d.heightScale * v)⁻¹) := by
+  rw [d.reflection v hv, sourceCuspZFamily_eq_radialBesselProfile _ _ _
+    (inv_pos.mpr (mul_pos d.heightScale_pos hv))]
+
+lemma derivative_coefficient_weighted_summable (F : O → ℂ) (A : ℂ)
+    (hF : Summable (fun h : O => if h = 0 then (0 : ℝ) else ‖F h‖ * ‖cuspFrequency h‖ ^ (-4 : ℝ))) :
+    Summable (fun h : O => if h = 0 then (0 : ℝ) else
+      ‖A * cuspFrequency h * star (F h)‖ * ‖cuspFrequency h‖ ^ (-5 : ℝ)) := by
+  apply (hF.mul_left ‖A‖).congr
+  intro h
+  split_ifs with hh
+  · rw [mul_zero]
+  · have hx := norm_pos_iff.mpr (cuspFrequency_ne_zero h hh)
+    have hp : ‖cuspFrequency h‖ * ‖cuspFrequency h‖ ^ (-5 : ℝ) = ‖cuspFrequency h‖ ^ (-4 : ℝ) := by
+      conv_lhs => lhs; rw [← Real.rpow_one ‖cuspFrequency h‖]
+      rw [← Real.rpow_add hx]
+      norm_num
+    rw [norm_mul, norm_mul, norm_star, ← hp]
+    ring
+
+lemma radial_inverse_weight (x : ℝ) (hx : 0 < x) : (x ^ 2) ^ (-3 / 2 : ℝ) / x ^ 2 = x ^ (-5 : ℝ) := by
+  calc
+    _ = (x ^ 2) ^ (-3 / 2 : ℝ) * (x ^ 2) ^ (-1 : ℝ) := by rw [Real.rpow_neg_one]; rfl
+    _ = (x ^ 2) ^ (-5 / 2 : ℝ) := by
+      rw [← Real.rpow_add (sq_pos_of_pos hx)]
+      congr 1
+      norm_num
+    _ = _ := by
+      rw [← Real.rpow_natCast_mul hx.le]
+      congr 1
+      norm_num
+
+lemma radialCoefficient_weighted_summable_of_fourth (F : O → ℂ) (A : ℂ)
+    (hF : Summable (fun h : O => if h = 0 then (0 : ℝ) else ‖F h‖ * ‖cuspFrequency h‖ ^ (-4 : ℝ))) :
+    Summable (fun h : O => if h = 0 then (0 : ℝ) else
+      ‖A * cuspFrequency h * star (F h) / ((‖ringComplex h‖ ^ 2 : ℝ) : ℂ)‖ *
+        (‖ringComplex h‖ ^ 2) ^ (-3 / 2 : ℝ)) := by
+  let D : ℝ := ‖(3 : ℂ) * ringComplex traceLambda‖
+  have hD : 0 < D := norm_pos_iff.mpr (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero))
+  have hp : D ^ (-5 : ℝ) ≠ 0 := (Real.rpow_pos_of_pos hD _).ne'
+  apply ((derivative_coefficient_weighted_summable F A hF).mul_left (D ^ (-5 : ℝ))).congr
+  intro h
+  split_ifs with hh
+  · rw [mul_zero]
+  · have hx := norm_pos_iff.mpr (ringComplex_ne_zero hh)
+    have hf : ‖cuspFrequency h‖ = ‖ringComplex h‖ / D := by rw [cuspFrequency, norm_div]
+    have hw : D ^ (-5 : ℝ) * (‖ringComplex h‖ / D) ^ (-5 : ℝ) = ‖ringComplex h‖ ^ (-5 : ℝ) := by
+      rw [Real.div_rpow hx.le hD.le]
+      field_simp [hp]
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    calc
+      _ = ‖A * cuspFrequency h * star (F h)‖ * (D ^ (-5 : ℝ) * (‖ringComplex h‖ / D) ^ (-5 : ℝ)) := by rw [hf]; ring
+      _ = ‖A * cuspFrequency h * star (F h)‖ * ‖ringComplex h‖ ^ (-5 : ℝ) := by rw [hw]
+      _ = _ := by rw [← radial_inverse_weight _ hx]; ring
+
+theorem sourceCuspRadialCoefficient_weighted_summable (j : Fin 3) (z : ℂ) :
+    Summable (fun h : O => ‖sourceCuspRadialCoefficient j z h‖ *
+      sourceCuspRadialLength h ^ (-3 / 2 : ℝ)) := by
+  let A : ℂ := (-2 * Real.pi * Complex.I) / (sourceCuspScale j : ℂ) ^ 2
+  have hs := radialCoefficient_weighted_summable_of_fourth (sourceCuspCoefficient j) A
+    (sourceCuspCoefficient_weighted_summable j)
+  apply hs.congr
+  intro h
+  by_cases hh : h = 0
+  · subst h
+    simp only [if_true, sourceCuspRadialCoefficient_zero, norm_zero, zero_mul]
+  · rw [if_neg hh, sourceCuspRadialCoefficient_norm, sourceCuspRadialBaseCoefficient,
+      sourceCuspRadialLength, if_neg hh]
+    congr 1
+    apply congrArg norm
+    dsimp only [A]
+    ring
+
+lemma cubic_bessel_mellin_norm_scale (s : ℂ) (r : ℝ) (hr : 0 < r) :
+    (∫ v : ℝ in Ioi 0, ‖(v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * r * v)‖) =
+      r ^ (-(2 * s.re + 1)) *
+        (∫ v : ℝ in Ioi 0, ‖(v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * v)‖) := by
+  let g : ℝ → ℝ := fun v => ‖(v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * v)‖
+  have he (v : ℝ) (hv : 0 < v) :
+      ‖(v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * r * v)‖ =
+        r ^ (-(2 * s.re)) * g (r * v) := by
+    dsimp only [g]
+    rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hv,
+      Complex.norm_cpow_eq_rpow_re_of_pos (mul_pos hr hv)]
+    simp only [show (2 * s).re = 2 * s.re by simp]
+    rw [Real.mul_rpow hr.le hv.le, show 4 * Real.pi * r * v = 4 * Real.pi * (r * v) by ring]
+    have hc : r ^ (-(2 * s.re)) * r ^ (2 * s.re) = 1 := by
+      rw [← Real.rpow_add hr]
+      simp only [neg_add_cancel, Real.rpow_zero]
+    calc
+      _ = (r ^ (-(2 * s.re)) * r ^ (2 * s.re)) *
+          (v ^ (2 * s.re) * ‖schlafliBesselK (1 / 3) (4 * Real.pi * (r * v))‖) := by rw [hc, one_mul]
+      _ = _ := by ring
+  calc
+    _ = ∫ v : ℝ in Ioi 0, r ^ (-(2 * s.re)) * g (r * v) := setIntegral_congr_fun measurableSet_Ioi he
+    _ = r ^ (-(2 * s.re)) * (r⁻¹ * ∫ v : ℝ in Ioi 0, g v) := by
+      rw [integral_const_mul, integral_comp_mul_left_Ioi g 0 hr]
+      simp only [mul_zero, smul_eq_mul]
+    _ = _ := by
+      rw [← mul_assoc, ← Real.rpow_neg_one, ← Real.rpow_add hr]
+      congr 2
+      ring
+
+lemma weighted_cubic_bessel_integral_norm (s freq a : ℂ) (hf : freq ≠ 0) :
+    (∫ v : ℝ in Ioi 0, ‖a * ((v : ℂ) ^ (2 * s) *
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖freq‖ * v))‖) =
+      (‖a‖ * ‖freq‖ ^ (-(2 * s.re + 1))) *
+        (∫ v : ℝ in Ioi 0, ‖(v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * v)‖) := by
+  simp only [norm_mul, integral_const_mul]
+  have he := cubic_bessel_mellin_norm_scale s ‖freq‖ (norm_pos_iff.mpr hf)
+  simp only [norm_mul] at he
+  rw [he]
+  ring
+
+/-- Absolute integral bounds justify Mellin transformation of the Bessel series term by term. -/
+theorem cubic_bessel_series_mellin {ι : Type*} [Countable ι]
+    (freq a : ι → ℂ) (hf : ∀ i, freq i ≠ 0) (s : ℂ) (hs : -(1 / 3) < s.re)
+    (ha : Summable (fun i => ‖a i‖ * ‖freq i‖ ^ (-(2 * s.re + 1)))) :
+    (∫ v : ℝ in Ioi 0, ∑' i, a i * ((v : ℂ) ^ (2 * s) *
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖freq i‖ * v))) =
+      ∑' i, a i * (((2 : ℂ) ^ (2 * s - 1) * Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3)) /
+        ((4 * Real.pi * ‖freq i‖ : ℝ) : ℂ) ^ (2 * s + 1)) := by
+  have hi (i : ι) := (source_cubic_bessel_mellin_integrable s (freq i) hs (hf i)).const_mul (a i)
+  have hsum : Summable (fun i => ∫ v : ℝ in Ioi 0,
+      ‖a i * ((v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖freq i‖ * v))‖) := by
+    simp only [weighted_cubic_bessel_integral_norm s _ _ (hf _)]
+    exact ha.mul_right _
+  rw [← integral_tsum_of_summable_integral_norm hi hsum]
+  apply tsum_congr
+  intro i
+  rw [integral_const_mul, source_cubic_bessel_mellin s (freq i) hs (hf i)]
+
+lemma positive_sqrt_cpow_twice (r : ℝ) (hr : 0 < r) (s : ℂ) :
+    (Real.sqrt r : ℂ) ^ (2 * s + 1) = (r : ℂ) ^ (s + 1 / 2) := by
+  have he : (r : ℂ) = (Real.sqrt r : ℂ) * (Real.sqrt r : ℂ) := by
+    rw [← pow_two, ← Complex.ofReal_pow, Real.sq_sqrt hr.le]
+  conv_rhs => rw [he, Complex.mul_cpow_ofReal_nonneg (Real.sqrt_nonneg r) (Real.sqrt_nonneg r),
+    ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr hr).ne')]
+  congr 1
+  ring
+
+lemma radial_bessel_coefficient_norm (r q σ : ℝ) (hr : 0 < r) (hq : 0 < q) (a : ℂ) :
+    ‖a * (r : ℂ)‖ * ‖((q * Real.sqrt r : ℝ) : ℂ)‖ ^ (-(2 * σ + 1)) =
+      q ^ (-(2 * σ + 1)) * (‖a‖ * r ^ (1 / 2 - σ)) := by
+  rw [norm_mul, Complex.norm_of_nonneg hr.le,
+    Complex.norm_of_nonneg (mul_pos hq (Real.sqrt_pos.mpr hr)).le,
+    Real.mul_rpow hq.le (Real.sqrt_nonneg r), Real.sqrt_eq_rpow, ← Real.rpow_mul hr.le]
+  have hp : r * r ^ ((1 / 2) * (-(2 * σ + 1))) = r ^ (1 / 2 - σ) := by
+    conv_lhs => lhs; rw [← Real.rpow_one r]
+    rw [← Real.rpow_add hr]
+    congr 1
+    ring
+  calc
+    _ = q ^ (-(2 * σ + 1)) * (‖a‖ * (r * r ^ ((1 / 2) * (-(2 * σ + 1))))) := by ring
+    _ = _ := by rw [hp]
+
+lemma radial_bessel_coefficient_identity (r q : ℝ) (hr : 0 < r) (hq : 0 < q) (a B s : ℂ) :
+    (a * (r : ℂ)) * (B / ((q * Real.sqrt r : ℝ) : ℂ) ^ (2 * s + 1)) =
+      (B / (q : ℂ) ^ (2 * s + 1)) * (a * (r : ℂ) ^ (1 / 2 - s)) := by
+  rw [Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg hq.le (Real.sqrt_nonneg r),
+    positive_sqrt_cpow_twice r hr s]
+  have hp : (r : ℂ) / (r : ℂ) ^ (s + 1 / 2) = (r : ℂ) ^ (1 / 2 - s) := by
+    have he := Complex.cpow_sub (1 : ℂ) (s + 1 / 2) (Complex.ofReal_ne_zero.mpr hr.ne')
+    rw [Complex.cpow_one] at he
+    simpa only [show (1 : ℂ) - (s + 1 / 2) = 1 / 2 - s by ring] using he.symm
+  calc
+    _ = (B / (q : ℂ) ^ (2 * s + 1)) * (a * ((r : ℂ) / (r : ℂ) ^ (s + 1 / 2))) := by ring
+    _ = _ := by rw [hp]
+
+theorem radialBesselProfile_mellin {ι : Type*} [Countable ι]
+    (r : ι → ℝ) (hr : ∀ i, 0 < r i) (a : ι → ℂ) (q : ℝ) (hq : 0 < q)
+    (s : ℂ) (hs : -(1 / 3) < s.re)
+    (ha : Summable (fun i => ‖a i‖ * (r i) ^ (1 / 2 - s.re))) :
+    mellin (radialBesselProfile r a q) (2 * s) =
+      (((2 : ℂ) ^ (2 * s - 1) * Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3)) /
+        ((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1)) * (∑' i, a i * (r i : ℂ) ^ (1 / 2 - s)) := by
+  let f : ι → ℂ := fun i => ((q * Real.sqrt (r i) : ℝ) : ℂ)
+  have hf (i : ι) : f i ≠ 0 := Complex.ofReal_ne_zero.mpr (mul_pos hq (Real.sqrt_pos.mpr (hr i))).ne'
+  have hn (i : ι) : ‖f i‖ = q * Real.sqrt (r i) :=
+    Complex.norm_of_nonneg (mul_pos hq (Real.sqrt_pos.mpr (hr i))).le
+  have has : Summable (fun i => ‖a i * (r i : ℂ)‖ * ‖f i‖ ^ (-(2 * s.re + 1))) := by
+    simp only [f, radial_bessel_coefficient_norm _ q s.re (hr _) hq]
+    exact ha.mul_left _
+  have hid := cubic_bessel_series_mellin f (fun i => a i * (r i : ℂ)) hf s hs has
+  calc
+    _ = ∫ v : ℝ in Ioi 0, ∑' i, (a i * (r i : ℂ)) * ((v : ℂ) ^ (2 * s) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖f i‖ * v)) := by
+      unfold mellin
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro v hv
+      dsimp only [radialBesselProfile]
+      simp only [smul_eq_mul]
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro i
+      have hp : (v : ℂ) ^ (2 * s - 1) * (v : ℂ) = (v : ℂ) ^ (2 * s) := by
+        conv_lhs => rhs; rw [← Complex.cpow_one (v : ℂ)]
+        rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hv.ne'), sub_add_cancel]
+      rw [hn i, show 4 * Real.pi * q * Real.sqrt (r i) * v = 4 * Real.pi * (q * Real.sqrt (r i)) * v by ring]
+      change (v : ℂ) ^ (2 * s - 1) * _ = _
+      linear_combination (a i * (r i : ℂ)) * schlafliBesselK (1 / 3) (4 * Real.pi * (q * Real.sqrt (r i)) * v) * hp
+    _ = _ := by
+      rw [hid, ← tsum_mul_left]
+      apply tsum_congr
+      intro i
+      rw [hn i, show 4 * Real.pi * (q * Real.sqrt (r i)) = (4 * Real.pi * q) * Real.sqrt (r i) by ring]
+      exact radial_bessel_coefficient_identity (r i) (4 * Real.pi * q) (hr i) (by positivity) (a i) _ s
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

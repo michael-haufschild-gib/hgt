@@ -64,13 +64,14 @@ real-axis identity, and complex majorant. Direct Lean check passed.
 `TheCorrectionJetsKeepTheSummableEnvelope` contains the Cauchy estimates
 and vanishing positive-order fibre sums; direct Lean check passed.
 `TheShiftedMobiusProfilesConvergeUniformly` contains the full-cutoff bound
-and uniform `P′−vP` profile limit on compact shift intervals; direct check pending.
+and uniform `P′−vP` profile limit on compact shift intervals; Lean check passed.
 
 The actual shift `R log N/log T` varies with height. Profile limits must be
-uniform on compact shift intervals; the current profile draft has this
-scope. For correction jets, the Cauchy continuity argument also works
-uniformly for bounded centres, since the source argument is bounded by
-`(R+1)/log N`. This moving-centre version remains to be extracted.
+uniform on compact shift intervals. The proved profile theorem has this
+scope. The correction-jet theorem also now allows any bounded moving
+centres: the source argument is bounded by `(R+1)/log N`.
+`tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres`
+passed Lean.
 
 At the detector base point, write `A=P′−vP`. After division by the
 appropriate power of `log N`, the direct arithmetic jets have integrands

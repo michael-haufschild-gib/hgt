@@ -109,9 +109,9 @@ theorem norm_normalizedCorrectionJet_le {N : ℕ} (hN : 1 < N)
       ‖complexSelbergCorrectionWeight r u v (z / (Real.log N : ℂ))‖ ≤
         Real.exp (4 * (‖C‖ + 1)) * |selbergCorrectionWeight r u v| := by
     intro z hz
-    have hz1 : ‖z - C N‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
-    have hzn : ‖z‖ ≤ R + 1 := by
-      have hh := norm_add_le (z - C N) (C N)
+    have hz1 : ‖z - C‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
+    have hzn : ‖z‖ ≤ ‖C‖ + 1 := by
+      have hh := norm_add_le (z - C) C
       rw [sub_add_cancel, hz1] at hh
       linarith only [hh]
     refine (norm_complexSelbergCorrectionWeight_log_shift_le hN z r hu hv).trans ?_
@@ -152,9 +152,9 @@ theorem tendsto_entire_normalized_jet_succ_of_bounded_centres {f : ℂ → ℂ}
     (hf.comp (differentiable_id.div_const _)).sub_const _
   have hb : ∀ z ∈ sphere (C N) 1, ‖f (z / (Real.log N : ℂ)) - f 0‖ ≤ η := by
     intro z hz
-    have hz1 : ‖z - C‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
-    have hzn : ‖z‖ ≤ ‖C‖ + 1 := by
-      have hh := norm_add_le (z - C) C
+    have hz1 : ‖z - C N‖ = 1 := by simpa only [mem_sphere, dist_eq_norm] using hz
+    have hzn : ‖z‖ ≤ R + 1 := by
+      have hh := norm_add_le (z - C N) (C N)
       rw [sub_add_cancel, hz1] at hh
       linarith only [hh, hCN]
     have hsmall : dist (z / (Real.log N : ℂ)) 0 < δ := by
