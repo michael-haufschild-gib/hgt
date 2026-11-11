@@ -4,17 +4,17 @@ The 38 live formulations and 12 candidates are faces of three core problems: **U
 
 - **One inequality per prime, on the primes of sparse logarithmic windows, off power-thin exceptions.** `P(p)≤A(p)+K`; equivalently the floor of the prime trace; the upper side alone; `ℕ`-counts on the ray `Γ_1+Γ_p` with the plane defect as quadratic limit; one growth exponent for all even local moments; and, with no sign, the absolute value [L*] (S1–S6).
 - **One matrix on the integers.** The comb pairing has the limit `2d₁d₂−Z(f)` on packets; RH ⇔ exactly one positive square; the negative index of the defect is the number of distinct right zeros, for ζ and for every Hecke `L`-function of every number field [L*] (G4, AGZ6–AGZ8). At finite scale it is the sign of explicit finite matrices on step packets [L*] (AGZ1).
-- **One scale.** Every graded receiver reads the same number: a saving `n^{½+γ}` of the contacts, the rung `κ=1/(2γ)`, the depth `δ=1/(2κ)`, the mollifier exponent `θ=κ`, the level `σ=½+b` of the dressed aggregate, the exponent `b` of the signal, the exponent of a floor, the ratio `A/2k` of a moment bound [L*] (SA1, J1, FCT2, FFA1, FFA10). U-Σ reads it as a sign, U-Π as a cancellation exponent, U-Γ as a depth.
+- **One scale.** Every graded receiver reads the same number: a saving `n^{½+γ}` of the contacts, the rung `κ=1/(2γ)`, the depth `δ=1/(2κ)`, the mollifier exponent `θ=κ`, the level `σ=½+b` of the dressed aggregate, the exponent `b` of the signal, the exponent of a floor, the ratio `A/2k` of a moment bound [L*] (SA1, J1, FCT2, FFA1, FFA10). U-Σ reads it as a sign, U-Π as a cancellation exponent, U-Γ as a depth. The level `b=7/8` is a theorem [X]; the open part of the scale is `½<b<7/8`.
 
 Transversal to the three cores:
 - **Two worlds.** A failure of RH is world I (¬AAL: a finite isolated top layer) or world II (AAL ∧ ¬ZAL: a tail). RH has three atoms, ZAL ∧ B13 ∧ Landing [F]; `Θ<1⇔Θ∞<1` [L*] (S13).
 - **Off the scale.** Four kinds of statement carry no exponent: a homogeneous floor, a unit gap, a certificate, an amplification over all orders. AAL is of the second kind: at most one or infinitely many zeros right of every line [L*] (FFA5).
 
-Three structural gaps lie under all three cores: the **dark range** (prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height); **Bézout from a property of the object** (every structure of the square in the corpus returns an identity, and every one-parameter family through ζ has the count of its limit) [L*]; and the **joint input**: an inequality that uses the Euler product, the functional equation and the unit multiplicity of the integers together and is pointwise in the zeros. Each two of the three have a model with zeros off the line [L*]/[KR] ([obstacles-summary.md](obstacles-summary.md) §1.3). Natively no such inequality exists; `[X]` states one for the half-plane `Re s>7/8`.
+Three structural gaps lie under all three cores: the **dark range** (prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height); **Bézout from a property of the object** (every structure of the square in the corpus returns an identity, and every one-parameter family through ζ has the count of its limit) [L*]; and the **joint input**: an inequality that uses the Euler product, the functional equation and the unit multiplicity of the integers together and is pointwise in the zeros. Each two of the three have a model with zeros off the line [L*]/[KR] ([obstacles-summary.md](obstacles-summary.md) §1.3). One such inequality is a theorem: the half-plane `Re s>7/8` [X]; it is not in the Lean graph. None is known below `7/8`.
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides. A localized zero side (U-Π) lets a crude bound decide and leaves the prime side at square-root precision. U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ and the position of its zeros in height. The scale is the one-parameter family between the two extremes.
 
-Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact log `logs/review-1111-status-quo-facts.md` (identifiers in parentheses refer to log §3). Evidence: `[L*]` Lean statement read for this ledger; `[N]` declaration located by the corpus search, docstring read; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` module graded unfinished by the frontier map; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the external half-plane theorem, cached, unchecked, outside the native import graph. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact log `logs/review-1111-status-quo-facts.md` (identifiers in parentheses refer to log §3). Evidence: `[L*]` Lean statement read for this ledger; `[N]` declaration located by the corpus search, docstring read; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` module graded unfinished by the frontier map; `[D]` deduction; `[C]` classical; `[A]` assessment; `[P]` proved on a pipeline card at stage 2 (paper proof, Lean formalization in progress), taken as correct here: `docs/drafts/pipeline/2-fully-proven/shortest-generic-twist-family.md` (log §3.21); `[X]` the theorem of the external source cached in the repository (OpenAI, 30 September 2026), taken as proved: no zero of ζ, of a Dirichlet `L`-function or of a finite-order Hecke `L`-function over `ℚ(√−3)` in `Re s>7/8`; its formalization in the Lean graph is incomplete (A118). **Natively** refers to the Lean graph. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport moves an estimate between routes. Section 3 separates the two.
 
@@ -29,12 +29,12 @@ Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact 
 - **Two worlds, three atoms [F]/[L*].** `Θ<1⇔Θ∞<1`; RH ⇔ ZAL ∧ B13 ∧ Landing; B13 ⇔ the packet index is `0` or `∞`.
 - **One shape of world I [L*].** AAL ⇔ the normalized trace has no nonzero trigonometric-polynomial limit at any depth ⇔ non-attainment on windows ⇔ a unit gap ⇔ no finite Euler filter accelerates the horocycle rate (the last [S]).
 - **One freedom [L*].** Every tangent datum is realized by a symmetric tempered configuration, by a positive prime density, by an Euler product over natural norms with linear counting, and right of `17/30` by rational primes with repetition; above the frontier of ζ a one-off pair occurs in a meromorphic Euler product over the rational primes with bounded coefficients (M1). The Euler product read through the zero configuration has floor `½` (M2).
-- **One rigidity [L*]/[KR].** Countable systems with an `L²` functional-equation defect are the rational primes; count `n+o(log n)` forces them; continuous prime measures keep every zero; no bounded or Wiener constituent has a zero; certificates converge to `Λ`.
+- **One rigidity [L*]/[KR].** Countable systems with an `L²` functional-equation defect are the rational primes; a discrete system with integer norms and count remainder `o(log n)` is the rational primes (LF1, LF2), while multiplicative sequences and continuous systems have fakes at bounded remainder (LF4, LF6); the least remainder of a fake among discrete systems with integer norms is open (B182); continuous prime measures keep every zero; no bounded or Wiener constituent has a zero; certificates converge to `Λ`.
 - **One count for every regulator [L*].** The clock lies below Weil's form; the scattering tower and the heat flow have the count of their limit; price paths and tree lengths are RH at every parameter.
 - **One critical curve [L*].** `R_polar=R_halfline≤W`; a three-way classification.
 - **One horizon [N]/[L*].** Ringdown, horocycle, cavity energy and reflection Krein index read the same resonances; the horocycle exponent is `1−Θ/2`, filtered `1−Θ∞/2`; at every fixed scattering height the energy floor is RH.
-- **One source [L*]; [X].** The Möbius sign is one Jacobi sum; the half-plane route is two estimates for one completed sum; its boundary is `½+(1−1/n)θ/2` in the exponent `θ` of the shortest twist family with a generic mean square, and its budget has the room `[13/15,7/8]`.
-- **Law and point [D].** Past the Vinogradov–Korobov region every native unconditional theorem about the zeros of ξ is in law; the pointwise theorems act on constituents, finite layers, fakes and regulators.
+- **One source [X]; [L*]; [P].** The Möbius sign is one Jacobi sum; two estimates for one completed sum give the half-plane `Re s>7/8`, a theorem [X]. A generic mean square over the principal `n`-th-power twists at the exponent `θ` is the half-plane `½+(1−1/n)θ/2`, and the least `θ` is `(n/(n−1))(2Θ−1)` [P]: the law of a twist family is a level of the scale. The budget has the room `[13/15,7/8]`; in the twist exponent the class of reflection, slots and large sieves has the floors `1`, `9/10`, `(5n−8)/(5(n−1))`, `(n−2)/(n−1)` [L*] (TB1–TB8).
+- **Law and point [D].** One pointwise theorem holds past the Vinogradov–Korobov region: no zero right of `7/8` [X]. Left of `7/8` every unconditional theorem about the zeros of ξ is in law; the pointwise theorems act on constituents, finite layers, fakes and regulators.
 
 ## 1. Faces of the one object
 
@@ -98,22 +98,23 @@ Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact 
 | rung `κ<1` | every dominated system positive with margin | the same on bounded shapes | `θ<½`: twisted moments with main terms | — | SA, MZF [L*] |
 | rung `1+o(1)` | the Liouville twist, `−Λ`, `Λ` without pole plane fail; the sign forces primes with both character signs below `e^{2η}log²q` | a dominated system fails at `log log t+log(π/2)+η` | the square root | every level above `3/2` on large primes [D] (SA4 with `b=1`) | SA [L*] |
 | one rung `κ>1` | a saving `γ<1/(2κ)` of the contacts | no partial alignment of the primes `≤(log t)^{2κ}` [D]; the sign fails on a set of heights of measure `≤T^{1−1/(2κ)+ε}` | one bounded dyadic moment at `θ=κ` | level `σ=½+b`, signal `O(Z^b)`, `b=½+1/(2κ)` | SA, CDG, FCT [L*] |
-| `κ=4/3`, `b=7/8` | `[X]` | `[X]` | — | `[X]` | [X] with SA4 |
+| `κ<4/3`, `b=7/8` | a theorem: the rung for the centred contacts | a theorem: no zero right of `7/8` | — | the level `11/8`; signal `O(Z^{b})` for `b>7/8` | [X] with SA4, FCT2 |
+| twist exponent `θ` of a family | — | — | a generic mean square over the principal `n`-th-power twists | `b=½+(1−1/n)θ/2`, and conversely | [P] (SG1) |
 | every `κ` | GRH for the character | RH | the cofinal Möbius moment | level one; `b>½` arbitrary | SA, CDG, RHTower [L*]/[N] |
 
 ### 2.4 The exceptional coordinate
 | Level | Statement | Status |
 |---|---|---|
-| quasi-RH | `Θ<1` ⇔ `Θ∞<1` ⇔ seven power savings ⇔ signal `O(Z^b)`, `b<1` | tail law [L*] (S13, SA1, FCT2); `[X]` |
+| quasi-RH | `Θ<1` ⇔ `Θ∞<1` ⇔ seven power savings ⇔ signal `O(Z^b)`, `b<1` | a theorem: `Θ≤7/8` [X]; the equivalences [L*] (S13, SA1, FCT2) |
 | ZAL | `Θ∞=½` ⇔ Euler-filtered horocycle rates approach `3/4` | ≥qRH, open; [L*,S] (N8) |
 | Landing | ZAL ⇒ finitely many off-line zeros | sub; open for ζ; not forced by the functional equation, Gamma factor and count [L*] (C6) |
 | B13 | finitely many off-line zeros ⇒ none ⇔ the packet index is `0` or `∞` [L*] (S16) | sub, open |
 | DH | ¬AAL ⇒ ZAL | sub, open; refuted for Euler products alone [L*] (S15) |
 | AAL | no isolated top ⇔ unit gap ⇔ no nonzero trigonometric-polynomial limit of the normalized trace ⇔ no accelerating Euler filter | sub, open; receivers [L*] (FFA4–FFA9, N1, N2, N8) |
-| B56 | `Θ<1⇒Θ=½` | open; the return transfer is RH under a strip [L*] (FCT4) |
+| B56 | `Θ<1⇒Θ=½` | RH, since `Θ≤7/8` [X]; the return transfer is equivalent to RH [L*] (FCT4) |
 | World I | finite top, free strip, Mertens saving, attainment on every window, quantized multiplicities, zero limits of normalized translates | instrumented [L*] |
 | World II | a tail; deep zeros of density zero | receivers only |
-| The edge world | `Θ=Θ∞=1` | excluded by any half-plane; `[X]` |
+| The edge world | `Θ=Θ∞=1` | excluded [X] |
 
 ### 2.5 Window axis and height
 | Coordinate | Value | Anchor |
@@ -136,7 +137,7 @@ Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact 
 | half-period deletion; Vandermonde on windows | finite layers on bounded windows [L*] | world I receivers |
 | a bounded-below naive height | Néron–Tate [C] | the count of sections in boxes has no quadratic term [L*] |
 | a family with monodromy | Deligne [C] | fixed part; weights `1/d`, `1/h` [L*] |
-| the rightmost zero of a family against a mean square over its twists | `[X]` | the frame and the budget are in Lean [L*]; room `[13/15,7/8]` |
+| the rightmost zero of a family against a mean square over its twists | the half-plane `Re s>7/8` [X] | a theorem at `7/8`; the frame and the budget are in Lean [L*]; room `[13/15,7/8]`; the mean square over the principal twists is the half-plane itself [P] |
 
 ### 2.7 The curve proof and its ℤ-counterparts
 | Ingredient on a curve over `𝔽_q` | ℤ-counterpart | Status over ℤ |
@@ -149,7 +150,7 @@ Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact 
 | Riemann–Roch and ampleness | product formula; planar ideals; sections in boxes | identities [L*] |
 | The count law (defect of an integral class is a natural number) | counts on prime rays | hyperelliptic curves [L*]; over ℤ equivalent to RH, no definition without the form |
 | Deformation to a known case | price paths, tree lengths, mass | RH at every parameter; floor only to the trivial aperture [L*] |
-| Weil's bound feeding parity statements | the cube identity with large sieves | `[X]` at `7/8`; budget room `[13/15,7/8]` [L*] |
+| Weil's bound feeding parity statements | the cube identity with large sieves | the half-plane `Re s>7/8` [X]; budget room `[13/15,7/8]` [L*] |
 
 ### 2.8 Off the scale
 | Kind | Receiver | Kill | Anchor |
@@ -189,7 +190,7 @@ Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact 
 | Dark-range inputs | B46, B57, B97, B121, B137, B145, B159 | prime sums below the Vinogradov length; polynomials longer than the height |
 | World-I inputs | B13, B138, B141, B145, B128, B170 | an inequality that fails on every one-structure model |
 | Producers of RH strength | B87, B146, B149, B169, B114, B117, B171, B160, B152 | a positive, index-one or level-one statement built without the zeros |
-| Producers of a half-plane | B161, B174, B175, B181; B178; `[X]` | two estimates for one completed sum; a resonance-free strip |
+| Producers of a half-plane | `[X]` at `7/8`; below it B161, B174, B175; B178 | two estimates for one completed sum; a resonance-free strip from the horizon |
 
 ### 3.3 Classes
 
@@ -220,7 +221,7 @@ Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11); fact 
 | C14 Exactness | Frobenius at one prime, planar square, sections in boxes, carry | ACS, BAG | priced; identities [L*] |
 | C15 Families | tensor powers, towers, class characters | ECP, ACS | fixed part [L*] |
 | C16 Topology of the prime complex | nerve, orientation cover | MC | weight `½` ⇔ RH |
-| C33 Sources | signal, completed sums, Jacobi sums, budgets | JAS, MC; S3 (premise) | two-estimate implication; budget room `[13/15,7/8]`; `[X]` [L*] |
+| C33 Sources | signal, completed sums, Jacobi sums, budgets | JAS, MC; S3 (premise) | the half-plane `Re s>7/8` [X]; two-estimate implication, budget room `[13/15,7/8]` and floors in the twist exponent [L*]; the family law as a level of the scale [P] |
 
 **Γ-classes.**
 | Class | Observable | Routes | Identity or scoped receiver |
@@ -277,13 +278,13 @@ Core problem: `W≥0` on every window. In flow form, `Ψ` locally bounded; in mi
 
 ## 5. U-Π — precision and production
 
-Core problem: square-root precision of one smoothed prime count. In minimal form the bound on logarithmic windows; in scale form a saving of the contacts on the integers between `m` and `m^{2κ}`; in signal form a power saving of one smoothed Möbius sum; in tower form an attained top with a thick deviation; in production form a stencil rate through `a↑½`. Every exact method has an exact price; every canonical family sees only its variable part; bilinear statements are parity-blind. The one producer class is a completed sum with two estimates.
+Core problem: square-root precision of one smoothed prime count. In minimal form the bound on logarithmic windows; in scale form a saving of the contacts on the integers between `m` and `m^{2κ}`; in signal form a power saving of one smoothed Möbius sum; in tower form an attained top with a thick deviation; in production form a stencil rate through `a↑½`. Every exact method has an exact price; every canonical family sees only its variable part; bilinear statements are parity-blind. The one producer class is a completed sum with two estimates; it has given the level `b=7/8` [X], and the open part is `½<b<7/8`.
 
 | Face | Routes / programmes | Reduction |
 |---|---|---|
 | Prime-degree crude bounds | ACS, SRT, WL; SOSZ, CDGeo | B130; VK saving |
 | Classical one-sided counts | WL, MC, SQF, PBM, RB, CTF | RH-level equivalences |
-| The signal and its sources | JAS, MC; FCT, MMD | B161; B174, B175; `[X]` |
+| The signal and its sources | JAS, MC; FCT, MMD | `b=7/8` proved [X]; below it B161, first B174, then B175 |
 | Producers and auxiliaries | WL, MC; AAD, ALST, RAC | rate = Mertens level |
 | Long moments and census | WD, CTF; CDG, APR, MZF, IGP | `θ<½` proved; `θ>1` needed |
 | Returns and the dark range | BAG, TH; S3; TTPO, CDGeo, PTT, TAPO, ELT | VK height; the transfer is RH under a strip |
@@ -292,12 +293,12 @@ Core problem: square-root precision of one smoothed prime count. In minimal form
 
 ## 6. U-Γ — selection, reflection, position
 
-Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of the zeros in height. In world form, the exclusion of world I (B13, Landing, DH; non-attainment), of world II (ZAL) and of the edge world (a half-plane); in count form, Bézout for the comb pairing; in horizon form, one rate or one reflection sign; in index form, an independent index-one family or realization; in constituent form, nothing bounded shares zeros with ξ.
+Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of the zeros in height. In world form, the exclusion of world I (B13, Landing, DH; non-attainment), of world II (ZAL); the edge world is excluded by the half-plane [X]; in count form, Bézout for the comb pairing; in horizon form, one rate or one reflection sign; in index form, an independent index-one family or realization; in constituent form, nothing bounded shares zeros with ξ.
 
 | Face | Routes / programmes | Status |
 |---|---|---|
 | Two worlds and atoms | ZCG, BAG, JAS, SC, WL, LA; ELT, IRW, SOSZ, FFA | receivers complete; every finite datum realized under one structure |
-| Rigidity and constituents | ZCG, BAG, W1C; EFT, AWT, CTZ, IRP, APD | ζ identified; bounded and Wiener classes closed |
+| Rigidity and constituents | ZCG, BAG, W1C; EFT, AWT, CTZ, IRP, APD | ζ identified; bounded and Wiener classes closed; the integer count of a fake is open in the discrete class (B182) |
 | Horizon and count | PM; BHR, ASH, AHMH, CTH | sharp receivers; exponents `1−Θ/2`, `1−Θ∞/2`; count door |
 | Square, diagonal, carrier, lattice | HF, ACS, HAT-C; AGZ, HFP, HAT | identities; exact index for every Hecke character |
 | Index, limits, flow | PTR, WL, W1C; IRP, FFA | unit gaps pass to limits; no gap before the limit |
@@ -334,7 +335,7 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 | HCF | Σ (Π) | both | C4, C8 | two grids |
 | LA | Σ | world II side; B13 and landing for finite support | C4, C8, C17 | outer roots; finite strata of shifts |
 | GTA, XN, TG | Σ (Π) | both | C4 | charge, discs, gate |
-| MC, SQF | Π (Γ) | both; edge world through the signal | C10, C11, C16, C33 | half-power cancellation; the signal |
+| MC, SQF | Π (Γ) | both; the signal carries the proved level `7/8` [X] | C10, C11, C16, C33 | half-power cancellation; the signal |
 | TT | Π (Σ) | both | C1, C10 | endpoint energy |
 | HF | Σ (Π, Γ) | both | C1, C3, C21, C22, C23, C28, C31, C34 | pole channel; index; step packets |
 | HAT-C | Σ (Γ) | both | C1, C7, C22 | fixed-height floor |
@@ -364,14 +365,14 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 |---|---|---|
 | A crude count | one inequality per prime on logarithmic windows, in five forms; VK saving [L*] | the bound itself (B130) |
 | The resolution of the count | logarithmic radius; bounded windows for finite layers [L*] | none |
-| A half-plane | one implication with two estimates as premises; signal exponent = abscissa; budget [L*]; `[X]` at `7/8` | natively the two estimates (A118, B161); below `13/15` another estimate (B175) |
-| A step to the line | level one ⇔ RH; the return transfer is RH under a strip [L*] | a statement that is not on the scale |
-| The two worlds | sector theorem; world I instrumented, with receivers off the scale; every finite datum realized under one structure [L*] | an inequality that fails on all those models (B170); a calibration with both structures (B157); ZAL for world II |
+| A half-plane | `Re s>7/8` [X]; in Lean one implication with two estimates as premises; signal exponent = abscissa; budget [L*] | in Lean the two estimates (A118); below `7/8` the row count of the binding bin (B174); below `13/15` cancellation across the rows (B175) |
+| A step to the line | level one ⇔ RH; the return transfer ⇔ RH [L*] with [X] | a statement that is not on the scale; the class of the producer has floors above the line (`5/6` for the sextic design) |
+| The two worlds | sector theorem; world I instrumented, with receivers off the scale; every finite datum realized under one structure [L*] | an inequality that fails on all those models (B170); a calibration with both structures (B157); the count of a fake (B182); ZAL for world II |
 | A uniformity source | tensor criterion; window moments [N]/[L*] | none by averaging; all orders are sup bounds |
 | A Frobenius substitute | Frobenius at one prime; Stepanov at one prime [F] | none at a lower price than the count |
 | A surface | the square, forced data, exact index for every Hecke character, step packets [L*] | one property that is an inequality (B149, B169) |
 | A deformation | price paths, tree lengths, mass, regulators [L*] | a family with a sign, a gap or an index bound before the limit (B117); a homotopy invariant equal to the index (B179) |
-| A producer | natively none; `[X]` externally | a source above rung `4/3`, or natively above rung one (B159) |
+| A producer | one: the family of twists, to the rung `4/3` [X]; none in the Lean graph | a source at a rung `κ≥4/3` (B159, B174, B175); a second source (B178) |
 | Uniformity in length | each window from verified height; classification at the critical curve [L*] | every height; B104 |
 | Reflection | sharp cavity receivers; horocycle exponents; the fixed-height floor [L*] | a rate, a reflection sign or the floor |
 | A limit of pure objects | index semicontinuity; unit gaps pass to limits [L*] | an approximant or realization with a gap (B146, B171) |

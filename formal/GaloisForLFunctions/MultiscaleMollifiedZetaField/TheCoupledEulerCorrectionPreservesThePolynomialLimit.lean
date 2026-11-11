@@ -92,6 +92,39 @@ theorem abs_shiftedProfileHarmonicRow_coupled_le (k : ℕ)
   exact (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr he) (abs_nonneg _)).trans
     (mul_le_mul_of_nonneg_left (harmonicProduct_abs_le k hN ha hb hB hD hP hQ) (Real.exp_nonneg _))
 
+/-- Polynomial rows have one eventual bound for all retained dilation pairs and logarithmic powers. -/
+theorem exists_eventually_coupledPolynomialRow_bound (P Q : ℝ[X])
+    (hP0 : P.eval 0 = 0) (hQ0 : Q.eval 0 = 0)
+    {v : ℕ → ℝ} {v₀ : ℝ} (hv : Tendsto v atTop (𝓝 v₀)) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ N : ℕ in atTop, ∀ a b k : ℕ,
+      0 < a → 0 < b → a ≤ N → b ≤ N →
+      |shiftedProfileHarmonicRow P.eval Q.eval N a b (-2 * v N) (v N) k| ≤ B := by
+  let V : ℝ := |v₀| + 1
+  have hV : 0 ≤ V := by dsimp only [V]; positivity
+  have hvbound : ∀ᶠ N : ℕ in atTop, v N ∈ Icc (-V) V := by
+    have hh := hv.eventually (Metric.ball_mem_nhds v₀ zero_lt_one)
+    filter_upwards [hh] with N hN
+    rw [Real.dist_eq] at hN
+    obtain ⟨hl, hu⟩ := abs_lt.mp hN
+    constructor <;> dsimp only [V] <;> linarith only [hl, hu, neg_abs_le v₀, le_abs_self v₀]
+  obtain ⟨B, hB, hPB⟩ := (normalizedShiftedMobiusProfile_compact_uniform P.hasDerivAt
+    P.derivative.hasDerivAt P.derivative.derivative.continuous hP0 hV).1
+  obtain ⟨D, hD, hQD⟩ := (normalizedShiftedMobiusProfile_compact_uniform Q.hasDerivAt
+    Q.derivative.hasDerivAt Q.derivative.derivative.continuous hQ0 hV).1
+  have hmass : ∀ᶠ N : ℕ in atTop, normalizedHarmonicLogMoment 0 1 N ≤ 2 := by
+    have hh := (tendsto_normalizedHarmonicLogMoment 0 (by omega : 0 < 1)).eventually_lt_const
+      (show (1 : ℝ) / ((0 : ℕ) + 1) < 2 by norm_num)
+    exact hh.mono (fun _ h => h.le)
+  refine ⟨Real.exp (2 * V) * (B * D * 2), by positivity, ?_⟩
+  filter_upwards [eventually_ge_atTop 2, hvbound, hmass] with N hN hvN hm
+  intro a b k ha hb haN hbN
+  have hrow := abs_shiftedProfileHarmonicRow_coupled_le k (by omega : 1 < N)
+    ha hb haN hbN hV hvN hB hD
+    (fun u hu => hPB _ (Real.log_pos (by exact_mod_cast hN)) u hu _ hvN)
+    (fun u hu => hQD _ (Real.log_pos (by exact_mod_cast hN)) u hu _ hvN)
+  exact hrow.trans (mul_le_mul_of_nonneg_left
+    (mul_le_mul_of_nonneg_left hm (mul_nonneg hB hD)) (Real.exp_nonneg _))
+
 /-- The finite corrected sum of coupled principal rows. -/
 def correctedCoupledProfileSum (P Q : ℝ → ℝ) (N : ℕ) (v : ℝ) (k : ℕ) : ℝ :=
   ∑ a ∈ Finset.Icc 1 N, ∑ b ∈ Finset.Icc 1 N,
@@ -135,11 +168,8 @@ theorem tendsto_correctedCoupledProfileSum (P Q : ℝ[X])
     rw [Real.dist_eq] at hN
     obtain ⟨hl, hu⟩ := abs_lt.mp hN
     constructor <;> dsimp only [V] <;> linarith only [hl, hu, neg_abs_le v₀, le_abs_self v₀]
-  obtain ⟨B, hB, hPB⟩ := (normalizedShiftedMobiusProfile_compact_uniform P.hasDerivAt
-    P.derivative.hasDerivAt P.derivative.derivative.continuous hP0 hV).1
-  obtain ⟨D, hD, hQD⟩ := (normalizedShiftedMobiusProfile_compact_uniform Q.hasDerivAt
-    Q.derivative.hasDerivAt Q.derivative.derivative.continuous hQ0 hV).1
-  let K : ℝ := Real.exp (8 * V) * (Real.exp (2 * V) * (B * D * 2))
+  obtain ⟨B, hB, hrows⟩ := exists_eventually_coupledPolynomialRow_bound P Q hP0 hQ0 hv
+  let K : ℝ := Real.exp (8 * V) * B
   have hK : 0 ≤ K := by dsimp only [K]; positivity
   have hs : Summable (fun x : ℕ × ℕ => K * absoluteSelbergCorrectionCoeff x.1 x.2) :=
     summable_absoluteSelbergCorrectionCoeff.mul_left K
@@ -167,13 +197,9 @@ theorem tendsto_correctedCoupledProfileSum (P Q : ℝ[X])
         ⟨Finset.mem_Icc.mpr ⟨ha, (le_max_left _ _).trans hN⟩,
           Finset.mem_Icc.mpr ⟨hb, (le_max_right _ _).trans hN⟩⟩
       simp only [Function.comp_def, correctedProfilePair, if_pos hx]
-  have hmass : ∀ᶠ N : ℕ in atTop, normalizedHarmonicLogMoment 0 1 N ≤ 2 := by
-    have hh := (tendsto_normalizedHarmonicLogMoment 0 (by omega : 0 < 1)).eventually_lt_const
-      (show (1 : ℝ) / ((0 : ℕ) + 1) < 2 by norm_num)
-    exact hh.mono (fun _ h => h.le)
   have hbound : ∀ᶠ N : ℕ in atTop, ∀ x : ℕ × ℕ,
       ‖correctedProfilePair P.eval Q.eval N (v N) k x‖ ≤ K * absoluteSelbergCorrectionCoeff x.1 x.2 := by
-    filter_upwards [eventually_ge_atTop 2, hvbound, hmass] with N hN hvN hm
+    filter_upwards [eventually_ge_atTop 2, hvbound, hrows] with N hN hvN hrowN
     intro x
     by_cases hx : x.1 ∈ Finset.Icc 1 N ∧ x.2 ∈ Finset.Icc 1 N
     · have hx1 := Finset.mem_Icc.mp hx.1
@@ -187,13 +213,7 @@ theorem tendsto_correctedCoupledProfileSum (P Q : ℝ[X])
         refine hcoeff.trans (mul_le_mul_of_nonneg_right ?_ (absoluteSelbergCorrectionCoeff_nonneg _ _))
         apply Real.exp_le_exp.mpr
         linarith only [hCN]
-      have hrow := abs_shiftedProfileHarmonicRow_coupled_le k (by omega : 1 < N)
-        hx1.1 hx2.1 hx1.2 hx2.2 hV hvN hB hD
-        (fun u hu => hPB _ (Real.log_pos (by exact_mod_cast hN)) u hu _ hvN)
-        (fun u hu => hQD _ (Real.log_pos (by exact_mod_cast hN)) u hu _ hvN)
-      have hrow' : |shiftedProfileHarmonicRow P.eval Q.eval N x.1 x.2 (-2 * v N) (v N) k| ≤
-          Real.exp (2 * V) * (B * D * 2) := hrow.trans
-        (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hm (mul_nonneg hB hD)) (Real.exp_nonneg _))
+      have hrow' := hrowN x.1 x.2 k hx1.1 hx2.1 hx1.2 hx2.2
       rw [correctedProfilePair, if_pos hx, Real.norm_eq_abs, abs_mul]
       have hh := mul_le_mul hcoeff' hrow' (abs_nonneg _) (by positivity)
       exact hh.trans_eq (by dsimp only [K]; ring)

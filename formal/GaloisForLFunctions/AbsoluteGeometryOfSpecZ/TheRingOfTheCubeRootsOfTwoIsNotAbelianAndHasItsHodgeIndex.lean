@@ -21,9 +21,9 @@ the splitting field `L` of `X³ − 2` over `ℚ` (`CubeRootsOfTwo`).
   the right of the critical line (`exists_le_negIndex_cubeRootsOfTwo_iff`,
   `forall_negIndex_cubeRootsOfTwo_eq_zero_iff`).
 
-The index of each Artin character of `L` is not stated: the irreducible character of degree two
-has no `L`-function with a functional equation in the corpus (it is the Hecke `L`-function of a
-cubic character over `ℚ(√−3)` by class field theory).
+The index law of the irreducible character of degree two, whose `L`-function is the Hecke
+`L`-function of the cubic character of `2` over `ℚ(√−3)`, is
+`TheDegreeTwoCharacterOfTheCubeRootsOfTwoHasItsHodgeIndex`.
 -/
 
 open Polynomial Filter Topology

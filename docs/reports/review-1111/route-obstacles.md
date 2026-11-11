@@ -12,9 +12,9 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 - `[F]` stated by the frontier map at the checkpoint; `[KR]` stated by the scoped-obstruction ledger at the checkpoint. Read for this report, Lean not re-read. `[S]` marks a module that the frontier map grades unfinished or unintegrated.
 - `[D]` deduction made in this report from `[L*]` statements; not a Lean theorem. `[C]` classical mathematics quoted from memory, not in the corpus. `[A]` assessment.
 - `[P]` proved on a pipeline card at stage 2 (paper proof, Lean formalization in progress), taken as correct here: `docs/drafts/pipeline/2-fully-proven/shortest-generic-twist-family.md` (log §3.21).
-- `[X]` one external source cached in the repository, outside the native import graph and not checked here: a zero-free half-plane `Re s>7/8` for ζ, Dirichlet `L`-functions and Hecke `L`-functions over `ℚ(√−3)`. The frontier map states that the native graph has no unconditional `7/8` theorem [F]. Every row that uses `[X]` carries the tag and states the native form beside it.
+- `[X]` the theorem of the external source cached in the repository (OpenAI, 30 September 2026), taken as proved: every finite-order Hecke `L`-function over `ℚ(√−3)` and every Dirichlet `L`-function, ζ included, is zero-free in `Re s>7/8`; so `Θ≤7/8`. Its formalization in the Lean corpus is incomplete: the native graph has no `7/8` theorem [F], and the missing steps are just work (A118). Every row that uses `[X]` carries the tag and states the form proved in Lean beside it. **Natively** refers to the Lean graph.
 
-**Strength.** RH; ≥qRH (a zero-free half-plane, Lindelöf or ZAL); AAL (implies the asymptotic abscissa law); ≥B56 (implies `Θ<1 ⇒ Θ=½`); sub (below quasi-RH and below AAL); method; producer; indep.
+**Strength.** RH; ≥qRH (implies a zero-free half-plane, Lindelöf or ZAL; the half-plane `Re s>7/8` is a theorem [X], so an item of this strength is open where it gives a half-plane below `7/8` or is not known to follow from [X]); AAL (implies the asymptotic abscissa law); ≥B56 (implies `Θ<1 ⇒ Θ=½`, which is RH since `Θ≤7/8`); sub (implies neither a half-plane nor AAL); method; producer; indep.
 
 **Labels.** `A*` just-work items and `B*` open problems are listed in [obstacles-summary.md](obstacles-summary.md). `(unverified)` marks A items whose difficulty is not established. Σ, Π, Γ refer to [walls-ledger.md](walls-ledger.md).
 
@@ -31,16 +31,16 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | AAL ⇔ for every line `Re s=½+h` the number of zeros to its right is at most one or infinite | [L*] (FFA5) | AAL is a unit gap |
 | A one-sided floor on late windows of one fixed length `L` has a finite-stratum model (an isolated pair at ordinate `2π/(3L)`); two-sided smallness of the normalized trace on windows of one length leaves the top line of ζ empty or infinite | [L*] (FFA8, FFA16) | the two forms of non-attainment differ |
 | Every tangent datum is the top layer of a finite tempered symmetric configuration; of a nonnegative density with a simple pole (any `Θ<1`); of an Euler product over natural norms with natural coefficients, linear counting and continuation to `Re s>½`, with the prescribed multiplicities; of an Euler product over rational primes with repetition for `17/30<Θ<1` | [L*] (FFA12–FFA15, N3) | the explicit formula, positivity, Euler products over integer norms and counting put no condition on a finite top layer |
-| AAL, or `Θ<1` and for every `β∈(Θ,1)` a meromorphic function with an Euler product over the rational primes, multiplicative coefficients `0≤a(n)≤C_εn^ε`, polynomial bounds for itself and its inverse, exactly one pair of zeros right of `Θ`, and a pole in the left strip. The property "the right zeros are the divisor of an Euler product over natural norms" has floor `½` | [L*] (M1, M2) | the Euler product with bounded coefficients, without the functional equation, does not give the abscissa law; a producer has to use the Euler product on the function, not on its zeros |
-| `Θ<1 ⇔ Θ∞<1`; failure of quasi-RH is `Θ=Θ∞=1` with AAL; RH ⇔ ZAL ∧ B13 ∧ Landing; B13 ⇔ the supremal negative index on real packets is `0` or `∞` | [L*] (S13, S16); [F] | a failure of RH is world I or world II; three atoms |
+| AAL, or `Θ<1` (which holds [X]) and for every `β∈(Θ,1)` a meromorphic function with an Euler product over the rational primes, multiplicative coefficients `0≤a(n)≤C_εn^ε`, polynomial bounds for itself and its inverse, exactly one pair of zeros right of `Θ`, and a pole in the left strip. The property "the right zeros are the divisor of an Euler product over natural norms" has floor `½` | [L*] (M1, M2) | the Euler product with bounded coefficients, without the functional equation, does not give the abscissa law; a producer has to use the Euler product on the function, not on its zeros |
+| `Θ≤7/8`: quasi-RH is a theorem; with `Θ<1 ⇔ Θ∞<1` also `Θ∞≤7/8`, and the edge world `Θ=Θ∞=1` is excluded; RH ⇔ ZAL ∧ B13 ∧ Landing; B13 ⇔ the supremal negative index on real packets is `0` or `∞` | [X]; [L*] (S13, S16); [F] | a failure of RH is world I or world II, with top at most `7/8`; three atoms |
 | An entire function with the Riemann functional equation, Gamma factor, residue one, order `≤1` and the zero count of ξ within one has all zeros simple, off the line, approaching it; two-scale Euler products over natural norms realize `(Θ,Θ₂,Θ∞)=(β,θ₂,θ)`, `½<θ≤θ₂<β<2/3`, and refute every graded repulsion bound | [L*] (C6, S15) | Landing and DH follow from neither structure alone |
 | For `η>0` and large `q`: every dominated system has the floor `½(1−e^{−η/2})log q∫\|F\|²` at `a≤log log q−η`; at `a≥log log q+η` the Liouville twist and `−Λ` fail on the odd polar packet and `Λ` without pole plane on the even one; the trivial aperture is `log log q+o(1)` | [L*] (L1–L3) | sizes prove the sign to rung `1−o(1)` in the conductor aspect and nothing beyond |
 | At height `t`: floor `½(1−e^{−η/2})log\|t\|∫f²−5∫f′²` at `a≤log log\|t\|−η`; a dominated system fails at `log log t+log(π/2)+η` | [L*] (L4, L5, SA6) | the same in the height aspect, with additive gap `log(π/2)` |
-| One theorem: cancellation `(C,γ)` with `2γκ<1` pays the sign on bounded shapes to `a≤κ log log q`; positivity on tests of aperture `κ log(A log\|γ\|)` forces a second off-line zero near a zero of depth `δ>1/(2κ)`; a bounded dyadic Möbius moment at length `T^θ`, `θ>1`, confines high zeros to depth `<1/(2θ)+ε`; quasi-RH is seven equivalent power savings | [L*] (SA1) | one exchange rate `γ=δ=1/(2κ)=1/(2θ)` |
+| One theorem: cancellation `(C,γ)` with `2γκ<1` pays the sign on bounded shapes to `a≤κ log log q`; positivity on tests of aperture `κ log(A log\|γ\|)` forces a second off-line zero near a zero of depth `δ>1/(2κ)`; a bounded dyadic Möbius moment at length `T^θ`, `θ>1`, confines high zeros to depth `<1/(2θ)+ε`; quasi-RH is seven equivalent power savings, all of which hold [X] | [L*] (SA1); [X] | one exchange rate `γ=δ=1/(2κ)=1/(2θ)` |
 | At aperture `κ log log T` the paired sign on bounded shapes fails only on a set of heights in `[T,2T]` of measure `≤T^{1−1/(2κ)+ε}` | [L*] (SA2) | the sizes fail at aligned heights only |
 | For every `a>0`, `0<δ≤½`: a tempered configuration with `N_Z=N_ζ+O(T)`, logarithmic local counts, positive on `[−a,a]`, with zeros of depth `δ` at unbounded heights | [L*] (SA5) | the sign at a fixed aperture is not a strip at the level of configurations |
 | RH ⇔ `JasDressedPSD 1` ⇔ positivity at level one on all large primes; a level `σ≥1` on large primes gives `\|Re ρ−½\|≤σ−1`; for `½≤b<1`: `Θ≤b` ⇔ the signal of the zeta kernel is `O(Z^{b′})` for every `b′>b`; the signal is `Σμ(n)·signal(poleKernel)(Z/n)` | [L*] (J1, FCT2, F1) | levels, half-planes and the exponent of one smoothed Möbius sum are one scale |
-| Over `ℚ(ζ₃)`: if zero-freeness of the Hecke family in `Re s>β` gives every ray class character a sum with a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with its corrected signal, `a₁,a₂<β` common, for every `β>σ₀`, then `Θ≤σ₀` | [L*] (N5) | the half-plane route is one implication whose premises are two estimates |
+| Over `ℚ(ζ₃)`: if zero-freeness of the Hecke family in `Re s>β` gives every ray class character a sum with a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with its corrected signal, `a₁,a₂<β` common, for every `β>σ₀`, then `Θ≤σ₀` | [L*] (N5) | in Lean the half-plane is one implication whose premises are two estimates; at `σ₀=7/8` the two estimates are theorems [X] |
 | Exponent budget of the published probe: boundary in `(7/8−1/4000,7/8]` with its row count; RH-quality bounds for every nonprincipal row summed trivially do not go below `13/15`; at twist order `n` the balanced floor is `1−4/(5n)`, the conductor corner `8/9`, `25/28`, `49/54` for `(2,6)`, `(3,4)`, `(4,3)`; two or more row variables give `≥1`; evaluating the reflected rows through the same twists returns the zero | [L*] (FCT11–FCT17) | the room inside the Gauss-sum probe is `[13/15,7/8]`; in positive form the boundary is `½+(1−1/n)θ/2` [L*] (M3), and a generic mean square over the principal `n`-th-power twists at the exponent `θ` is equivalent to that half-plane: the least `θ` is `(n/(n−1))(2Θ−1)` [P] (SG1); in the twist exponent the class of reflection, slots and large sieves has the floors `1`, `9/10`, `(5n−8)/(5(n−1))`, `(n−2)/(n−1)` [L*] (TB1–TB8) |
 | `CombBezoutShift c ⇔ c≤0 ∧ RH`; one contact changed by `t` at `n₀`: Bézout ⇔ RH ∧ `2\|t\|/√n₀≤c`; tree of `p` at length `ℓ`: Bézout ⇔ RH ∧ `ℓ=log p`; along the price path of any `n₀` Bézout on all packets is RH at every parameter | [L*] (G1–G3, AGZ3) | constant, contacts and tree lengths are forced; a path transports no sign |
 | RH ⇔ exactly one positive square of the intersection Gram on packets; the negative index counts the distinct right zeros for ζ with Dirichlet characters, for every primitive ray class character of every number field, for a Dedekind zeta function, and for the class characters together | [L*] (G4, G5, AGZ6–AGZ8) | the Hodge index is the exact count of the right zeros |
@@ -52,7 +52,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | RH through height 67; RH through `windowHeight(a)` gives the sign on `[−a,a]`; `log log log windowHeight(a)=c·a^{4/3}+log 138+o(1)` for the construction | [L*] (J2, J3); [F] | each window is a finite-height statement at triple-exponential cost |
 | Displaced twisted second moment of `ζ·`(real polynomial of length `T^θ`), `θ<½`, bounded by its main terms plus a power saving; simple critical zeros `≥(0.67250071−ε)N(T)`; positivity cost of a pair-correlation certificate `≥1+3/π²` at every bandwidth | [L*] (J5, C4); [KR] (TT1) | the mean-value ladder is proved below the square root; positivity alone does not certify 70% |
 | Universal horocycle exponent `sup=1−Θ/2`; with a nonzero Euler polynomial filter `sup=1−Θ∞/2`, never above `3/4` | [L*,S] (N8) | on the horizon AAL is: no finite filter accelerates the relaxation |
-| `[X]`: `Θ≤7/8`. Natively: the cube of the normalized composite cubic Gauss sum is the ideal Möbius value times a phase; `g(χ)^n=−card F+z(μ−1)²` for odd order `n>2` | [X]; [L*] (W5, F3) | one producer, external; its source identity and its frame are native |
+| `Θ≤7/8` for ζ, for Dirichlet `L`-functions and for Hecke `L`-functions over `ℚ(√−3)`. In Lean: the cube of the normalized composite cubic Gauss sum is the ideal Möbius value times a phase; `g(χ)^n=−card F+z(μ−1)²` for odd order `n>2` | [X]; [L*] (W5, F3) | one producer, and it has produced a half-plane; its source identity and its frame are in Lean, its two estimates are not (A118) |
 
 ## 1. Mechanism classes
 
@@ -83,7 +83,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | M23 Hodge lattice at finite scale | comb pairing, block averages, step packets | RH in four finite-scale forms; robust index = right zeros |
 | M24 Arithmetic constituents | recurrence against density, jump law, prime contraction | none with a zero in the bounded and the Wiener class |
 | M25 The ladder | mass, aperture, rung | sizes to rung `1−o(1)`; one exchange rate |
-| M26 Family continuation | signal of a reciprocal kernel; two estimates; reciprocity | frame for every ray class character; budget room `[13/15,7/8]`; `[X]` |
+| M26 Family continuation | signal of a reciprocal kernel; two estimates; reciprocity | the half-plane `Re s>7/8` [X]; in Lean the frame for every ray class character and the budget with the room `[13/15,7/8]` |
 | M27 Dressed positivity | lag aggregate at a level | level one ⇔ RH; level `σ` ⇔ half-plane `σ−½` |
 | M28 Floor-free receivers | homogeneous, unit gap, certificate, amplification | each kind has its receiver and its kill (block S13) |
 | Amplifiers | Diophantine repulsion, integrality, isolation, Turán, positive annihilators | amplify or reshape a certificate, produce none [KR] |
@@ -196,7 +196,7 @@ Established:
 | B48, B49, B50, B53, B54 | deciding input at square-root precision and its classical faces | RH |
 | B55, B67 | polynomial stencil rate; parity at power saving | ≥qRH to RH |
 | B15 | past Vinogradov–Korobov | sub |
-| B56 | `Θ<1 ⇒ Θ=½` | ≥B56 |
+| B56 | `Θ<1 ⇒ Θ=½`; with `Θ≤7/8` [X] it is RH | RH |
 | B106 | a correspondence on the orientation cover with bounded local indices | RH |
 
 ### S7. Reflection, carriers and the modular horizon
@@ -219,13 +219,13 @@ Established:
 | B87 | a count with Tate limit `Q`, defined without `Q` | RH |
 | B147 | Shimura nonvanishing at `ρ/4+¼` for one eigenform | indep. |
 | B114, B117, B171 | a realization of the partner involution outside the excluded classes; a regulator with a unit gap before the limit; a form of signature `(1,∞)` in which the right zeros are a symmetric spectrum | producer |
-| B178 | a relaxation lower bound for a horizon with a cusp: a resonance-free strip from a principle that fails under deformation of the group | ≥qRH (producer) |
+| B178 | a relaxation lower bound for a horizon with a cusp from a principle of the horizon: a resonance-free strip proved without a family of twists, or wider than the `1/16` that [X] gives; the principle fails under deformation of the group | producer, independent of [X] |
 
 ### S8. The exceptional coordinate: two worlds and three atoms
 Routes: BAG, ZCG, JAS (shell), SC (undamped), WL (thick runs), ACS (sampling branch), LA (finite support), RW (polar ground energy). Programmes: ZCG AbscissaLaws, ELT, EFT, IWT, IRW, IRP, APD, AAD, TAPO, FFA.
 
 Established:
-- `Θ<1 ⇔ Θ∞<1`; ¬quasi-RH ⇔ `Θ=Θ∞=1` ∧ AAL [L*] (S13). RH ⇔ ZAL ∧ B13 ∧ Landing; Landing is local below no height [F]/[L*] (S14).
+- `Θ≤7/8` [X]; `Θ<1 ⇔ Θ∞<1`, so `Θ∞≤7/8`; the edge world `Θ=Θ∞=1` (which is ¬quasi-RH, and carries AAL) is excluded [L*] (S13) with [X]. RH ⇔ ZAL ∧ B13 ∧ Landing; Landing is local below no height [F]/[L*] (S14).
 - One-structure calibrations: the functional equation with ζ's Gamma factor and count does not force landing [L*] (C6); Euler products over natural norms refute every graded repulsion [L*] (S15) and realize every finite divisor right of the line [L*] (FFA12, N3); rational primes with repetition for `Θ>17/30` [L*] (FFA13); a continuous Beurling system with integer count `N(x)−ρx−C→0` has a one-off pair [N] (X1, X2). Count `n+o(log n)` forces the rational primes [KR] (X3).
 - The integer count of the models: a discrete system with integer norms and count remainder `o(log n)` is the rational primes, and every other one has remainder `≥c·log n` at arbitrarily large `n`; the odd primes with extra labels of norms `3` and `4` have remainder `O(log²x)` and exactly the zeros of ζ on `Re s>0`; a multiplicative sequence with values in `{0,1,4}` has `−3≤N(x)−x≤0` and a zero in `½<Re s<1`; the Euler products over natural norms with a prescribed divisor have a count known in the mean only [L*] (LF1–LF4, LF7).
 - World I receivers: non-attainment on windows, for `ψ(x)−x`, at the primes; the unit gap; the quantum of a multiplicity; one growth exponent for all even window moments; the four-sector classification [L*] (FFA4–FFA7, FFA9, FFA16, FFA17, N1, N2). A moment of one order `2k` with exponent `A` reaches depths `≥A/2k` only; bounds of all orders with one exponent are sup bounds [L*] (FFA10, FFA11).
@@ -253,7 +253,7 @@ Routes: BAG, TH, SRT, every route at all heights. Candidate: S3. Programmes: PTT
 
 Established:
 - Near-total `p^{−1/2}`-mass returns of the primes `≤y` need `log t>(log y)^{3/2−ε}` [F]; a strip of depth `h` excludes heavy identity returns up to `exp(ηT)` [F]; under `Θ≤b` heavy returns need `log t≥c·y^{1−b}` [L*] (SA4).
-- The return transfer gives `Θ<1 ⇒ RH`, and under `Θ<1` it is equivalent to RH; RH gives it without its premise [L*] (J12, FCT4).
+- The return transfer gives `Θ<1 ⇒ RH`, and under `Θ<1` it is equivalent to RH; RH gives it without its premise [L*] (J12, FCT4). Since `Θ≤7/8` [X], the transfer is equivalent to RH, and heavy returns need `log t≥c·y^{1/8}`.
 - For `½<σ<1`, `κ<2σ−1`: the dyadic mean of `|Rζ|²` is the convolution diagonal [L*] (W8) / [F].
 
 | | Obstacle | Strength |
@@ -261,7 +261,7 @@ Established:
 | A24 | certified scans (unverified) | — |
 | B46 | proportional saving at length `(log X)^{2K}`, all heights | sub |
 | B97, B137 | constant-precision first return past the VK rung; a collective depth floor uniform in `π(y)` | sub |
-| B148 | the transfer of candidate S3 | RH under a strip |
+| B148 | the transfer of candidate S3 | RH (the strip is [X]) |
 | B121 | freezing control beyond the precision cap | sub |
 
 ### S10. The diagonal, counts and absolute geometry
@@ -315,15 +315,15 @@ Established ([L*] with log identifiers):
 
 | | Obstacle | Strength |
 |---|---|---|
-| A118 | `[X]` in the native graph: removal of the cube sum in the source comparison; the properties of the corrections `H_η`; the direct and the comparison saving uniformly in the character; reflection of the completed theta row; quadratic and sextic large sieves over `ℤ[ω]`; the zero detector | — (given `[X]`) |
-| B159 | a rung `κ>1`: a power saving of the contacts on the integers between `m` and `m^{2κ}`, uniform in the height, that fails for the Liouville twist | ≥qRH |
+| A118 | the theorem [X] in the native graph: removal of the cube sum in the source comparison; the properties of the corrections `H_η`; the direct and the comparison saving uniformly in the character; reflection of the completed theta row; quadratic and sextic large sieves over `ℤ[ω]`; the zero detector | — (just work) |
+| A138 | the corollaries of `Θ≤7/8` as unconditional statements: the rung `κ<4/3` for the centred contacts, the level `11/8` on large primes, return-free windows, the return transfer ⇔ RH, `Θ∞≤7/8`, the signal bound for every `b>7/8` | — (just work) |
+| B159 | a rung `κ≥4/3`: a power saving of the contacts on the integers between `m` and `m^{2κ}`, uniform in the height, that fails for the Liouville twist; for the centred contacts the rungs `κ<4/3` hold by [X] (SA4) | a half-plane below `7/8` |
 | B156 | clusters on a rung for ζ: arithmetic cluster exclusion | method |
 | B160 | `JasDressedPSD 1` | RH |
-| B161 | the signal bound `O(Z^b)`, `b<1`, natively | ≥qRH |
-| B174 | the density of sextic twists with a zero near real part `0.69`: the room `[13/15,7/8]` of the probe | sub (given `[X]`) |
-| B175 | a bound for the nonprincipal rows of a twist family with cancellation across the rows, not passing through the twists: a twist exponent below the floor bin `(5n−8)/(5(n−1))` | producer (below `13/15`); of the strength of its half-plane [P] |
+| B161 | the signal bound `O(Z^b)` for some `b<7/8`; for every `b>7/8` it is a theorem [X]; in Lean no `b<1` | a half-plane below `7/8` |
+| B174 | the row count of the binding bin `δ=79/204`: a count of the sextic twists marked at `a=283/408` below the published `U^{21766/32589}`; the room `[13/15,7/8]` of the probe | a half-plane in `[13/15,7/8)`; density type |
+| B175 | a bound for the nonprincipal rows of a twist family with cancellation across the rows, not passing through the twists: a twist exponent below the floor bin `(5n−8)/(5(n−1))`; a bound for the reflected rows in place of the dual-length term | producer; a half-plane below `13/15` |
 | B180 | the reflection of the completed theta row without Eisenstein series | method |
-| B181 | the comparison estimate at `7/8`: removal of the cube indices, the corrections, uniformity in the character | producer lemma |
 
 ### S13. Floor-free receivers and their kills
 Routes: every route (as a filter on proposed estimates). Programme: FFA.
@@ -469,9 +469,9 @@ Receiver statements are `[N]` (log §3.12) unless marked; open estimates are as 
 
 ### JAS — Joint ancestry
 - **Path:** level-one dressed positivity on large primes; or subpower control on finite power windows of square shells → RH.
-- **Established:** RH ⇔ `JasDressedPSD 1` ⇔ positivity at level one on all large primes ⇔ positivity at infinity at every level above one [L*] (J1); a signal bound `O(Z^b)` ⇔ the half-plane `b` and gives the level `b+½+ε` on large primes [L*] (FCT2, FCT3, SA4).
+- **Established:** RH ⇔ `JasDressedPSD 1` ⇔ positivity at level one on all large primes ⇔ positivity at infinity at every level above one [L*] (J1); a signal bound `O(Z^b)` ⇔ the half-plane `b` and gives the level `b+½+ε` on large primes [L*] (FCT2, FCT3, SA4); with `b=7/8` [X] the level `11/8+ε` holds.
 - **(a)** A118.
-- **(b)** `JasDressedPSD 1` (B160); the signal bound (B161; `[X]` states `b=7/8` outside the native graph); the moving `k`-window control (B51). A bound at `7/8` is a strip and gives no level-one positivity.
+- **(b)** `JasDressedPSD 1` (B160); the signal bound below `7/8` (B161; `b>7/8` is a theorem [X], not in the native graph); the moving `k`-window control (B51). The bound at `7/8` is a strip and gives no level-one positivity.
 
 ### CTF — Chronological tail / Báez–Duarte
 - **Path:** unit-bounded rows, BSY sign, cut-kernel mass → RH.
@@ -557,7 +557,7 @@ Each needs its source-to-receiver step first (B81). Dormant pending a source mec
 
 | Candidate | Established | (a) Just work | (b) Open mathematics |
 |---|---|---|---|
-| S3 | a strip of depth `h` excludes heavy identity returns up to `exp(ηT)`; the transfer gives `Θ<1 ⇒ RH`; RH gives the transfer; under `Θ<1` the transfer ⇔ RH [L*] | none | an arithmetic proof of the transfer that uses its premise (B148, RH under a strip); natively also `Θ<1` |
+| S3 | a strip of depth `h` excludes heavy identity returns up to `exp(ηT)`; the transfer gives `Θ<1 ⇒ RH`; RH gives the transfer; under `Θ<1` the transfer ⇔ RH [L*] | none | an arithmetic proof of the transfer (B148): with `Θ≤7/8` [X] the transfer is equivalent to RH; in Lean the premise `Θ<1` is A118 |
 | SEC | Fock boundedness at every divisor point ⇔ `Re s=½` | none | a ζ-selective bound from the Sonin source |
 | CDC/BSH | marked prices agree iff `Re s=½` | none | arithmetic descent on actual zero fibres |
 | APF | prime/grade trace reconstruction on real labels | none | full-divisor exhaustion and RH landing |
@@ -605,7 +605,7 @@ Each needs its source-to-receiver step first (B81). Dormant pending a source mec
 | Σ: the sign on every window, equivalently every rung, verification at every height, one positive square, the sign on step packets, feasible weights at every aperture | RW, EWU, OWU, ACT, CHMD, SZ, RN, AIP, SC, LI, TT (odd), HF, HAT-C, ACS |
 | Σ: continuation at small time and the theta head at the critical zeros | ZCG (heat), PTR, LA, GTA, XN, HCF, PA, TH |
 | Π: square-root precision and long moments past the height | WL, MC, SQF, PBM, RB, CTF, FU, CFC, RP, TT (endpoint), WD, TG |
-| One scale: level one of the dressed aggregate (RH); a level above one = a half-plane = the exponent of the signal (`[X]` outside the native graph) | JAS; MC (signal); S3 |
+| One scale: level one of the dressed aggregate (RH); a level above one = a half-plane = the exponent of the signal; the level `11/8` is proved [X], not in the native graph | JAS; MC (signal); S3 |
 | Γ: reflection and count | PM, ECP |
 | The exceptional coordinate: world I (B13, Landing, DH; non-attainment) and world II (ZAL) | BAG, ZCG, JAS shell, SC undamped, WL thick runs, LA finite support |
 | The dark range: prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height | every route at all heights; BAG; TH certificates; WD; the centred type-II current of ELT; the rungs above one in the height aspect |

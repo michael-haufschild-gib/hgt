@@ -21605,7 +21605,10 @@ theorem traceTwistedBarProfile_dirichlet_reflection (c : O) (hc : c ≠ 0)
           sourceCuspRadialDirichlet (finiteTwistCusp c hc h).index
             (finiteTwistCusp c hc h).dualPoint (1 - s)) := by
   unfold continuedBesselDirichlet traceTwistedBarProfile
-  rw [finiteMellin_linearCombination_eq _ _ (2 * s)
+  rw [finiteMellin_linearCombination_eq
+      (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ)
+      (fun h => cuspBarProfile (fun w => star (cubicSourceResidualFunction w))
+        (thetaFourierTranslation c h)) (2 * s)
       (fun h => (conjugateSource_finite_twist_cusp_mellin_entire (Quotient.out h) c hc).1 _),
     Finset.mul_sum]
   apply Finset.sum_congr rfl
@@ -22396,7 +22399,7 @@ theorem section_deriv_smooth (F : ℝ → ℝ → ℂ)
   have hFp : ContDiff ℝ ∞
       (Function.uncurry (fun p : ℝ × ℝ => F p.1)) :=
     hF.comp (contDiff_fst.fst.prodMk contDiff_snd)
-  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ ∞)
+  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ (∞ : ℕ∞ω))
   simpa only [deriv] using hd.clm_apply (contDiff_const (c := (1 : ℝ)))
 
 theorem section_iteratedDeriv_smooth (F : ℝ → ℝ → ℂ)
@@ -23325,5 +23328,313 @@ theorem sourceBarProfile_dirichlet (z s : ℂ) (hs : 2 ≤ s.re) :
   rw [continuedBesselDirichlet, sourceBarProfile_mellin z s hs, ← mul_assoc,
     inverseBesselMellinFactor_mul _ (sourceCuspRadialScale_pos 0) s (by linarith), one_mul]
 
+
+/-- The dual radial scale determined by a rational cusp. -/
+def SourceCuspDatum.smoothingScale (d : SourceCuspDatum) (X : ℝ) : ℝ :=
+  27 * (sourceCuspRadialScale 0) ^ 2 * (sourceCuspRadialScale d.index) ^ 2 * X / d.heightScale ^ 2
+
+def SourceCuspDatum.smoothingMultiplier (d : SourceCuspDatum) : ℂ :=
+  d.multiplier * ((d.heightScale * (sourceCuspRadialScale 0 / sourceCuspRadialScale d.index) ^ 2 : ℝ) : ℂ)
+
+lemma SourceCuspDatum.smoothingScale_pos (d : SourceCuspDatum) (X : ℝ) (hX : 0 < X) :
+    0 < d.smoothingScale X := by
+  unfold SourceCuspDatum.smoothingScale
+  exact div_pos (mul_pos (mul_pos (mul_pos (by norm_num)
+    (sq_pos_of_pos (sourceCuspRadialScale_pos 0)))
+    (sq_pos_of_pos (sourceCuspRadialScale_pos d.index))) hX) (sq_pos_of_pos d.heightScale_pos)
+
+lemma SourceCuspDatum.smoothing_reflected_line (d : SourceCuspDatum)
+    (V : ℝ → ℂ) (X : ℝ) (hX : 0 < X) (t : ℝ) :
+    besselSmoothingIntegrand
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+      (sourceCuspRadialScale 0) V X ((-1 : ℂ) + (-t) * Complex.I) =
+      d.smoothingMultiplier *
+        ((∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+          (sourceCuspRadialLength h : ℂ) ^ (-((3 / 2 : ℂ) + t * Complex.I))) *
+          (((paperScale * d.smoothingScale X : ℝ) : ℂ) ^ (-((3 / 2 : ℂ) + t * Complex.I)) *
+            mellinEulerData V 0 ((3 / 2 : ℂ) + t * Complex.I))) := by
+  let s : ℂ := (-1 : ℂ) + (-t) * Complex.I
+  let w : ℂ := (3 / 2 : ℂ) + t * Complex.I
+  have hw : 1 / 2 - s = w := by dsimp [s, w]; ring
+  have hsw : s - 1 / 2 = -w := by dsimp [s, w]; ring
+  have hws : 1 / 2 - w = s := by dsimp [s, w]; ring
+  have hp := bessel_reflection_scale (sourceCuspRadialScale 0) (sourceCuspRadialScale d.index)
+    d.heightScale X 1 (sourceCuspRadialScale_pos 0) (sourceCuspRadialScale_pos d.index)
+    d.heightScale_pos hX (by norm_num) w
+  simp only [hws, Complex.ofReal_one, Complex.one_cpow, mul_one] at hp
+  have hd : sourceCuspRadialDirichlet d.index d.dualPoint (1 - s) =
+      ∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+        (sourceCuspRadialLength h : ℂ) ^ (-w) := by
+    unfold sourceCuspRadialDirichlet
+    rw [show (1 / 2 : ℂ) - (1 - s) = -w by rw [← hsw]; ring]
+  change besselSmoothingIntegrand _ _ V X s = _
+  rw [besselSmoothingIntegrand, d.dirichlet_reflection _ s (by dsimp [s]; norm_num), hw, hsw, hd]
+  change _ = d.smoothingMultiplier *
+    ((∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+      (sourceCuspRadialLength h : ℂ) ^ (-w)) *
+      (((paperScale * d.smoothingScale X : ℝ) : ℂ) ^ (-w) * mellinEulerData V 0 w))
+  rw [mellinEulerData, pow_zero, one_mul, mellinData]
+  calc
+    _ = (d.multiplier * mellin V (-w) * cubicReflectionGamma w *
+          (∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+            (sourceCuspRadialLength h : ℂ) ^ (-w))) *
+        ((d.heightScale : ℂ) ^ (2 - 2 * s) *
+          besselReflectionFactor (sourceCuspRadialScale 0) (sourceCuspRadialScale d.index) s *
+          (X : ℂ) ^ (-w)) := by ring
+    _ = _ := by
+      rw [hp]
+      unfold SourceCuspDatum.smoothingMultiplier SourceCuspDatum.smoothingScale
+      ring
+
+lemma weighted_vertical_sum_mul_integrable {α : Type*}
+    (r : α → ℝ) (hr : ∀ i, 0 < r i) (a : α → ℂ) (σ : ℝ)
+    (ha : Summable (fun i => ‖a i‖ * (r i) ^ (-σ)))
+    (M : ℝ → ℂ) (hM : Integrable M) :
+    Integrable (fun t : ℝ => (∑' i, a i * (r i : ℂ) ^ (-((σ : ℂ) + t * Complex.I))) * M t) := by
+  have hD := weighted_vertical_series_continuous r hr a σ ha
+  have hDb := weighted_vertical_series_norm r hr a σ ha
+  simpa only [mul_comm] using hM.mul_bdd hD.aestronglyMeasurable (Eventually.of_forall hDb)
+
+lemma SourceCuspDatum.smoothing_left_integrable (d : SourceCuspDatum)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hVs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0 < X) :
+    Integrable (fun t : ℝ => besselSmoothingIntegrand
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+      (sourceCuspRadialScale 0) V X ((-1 : ℂ) + t * Complex.I)) := by
+  let M : ℝ → ℂ := fun t =>
+    (∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+      (sourceCuspRadialLength h : ℂ) ^ (-((3 / 2 : ℂ) + t * Complex.I))) *
+      (((paperScale * d.smoothingScale X : ℝ) : ℂ) ^ (-((3 / 2 : ℂ) + t * Complex.I)) *
+        mellinEulerData V 0 ((3 / 2 : ℂ) + t * Complex.I))
+  have hK := inverseMellinIntegrand_vertical_integrable V a b ha hVs hV 2 0 (3 / 2)
+    (by norm_num) (paperScale * d.smoothingScale X) (mul_pos paperScale_pos (d.smoothingScale_pos X hX))
+  have hi : Integrable M := by
+    simpa only [M, inverseMellinIntegrand, Complex.ofReal_div, Complex.ofReal_ofNat] using
+      weighted_vertical_sum_mul_integrable sourceCuspRadialLength sourceCuspRadialLength_pos
+        (sourceCuspRadialCoefficient d.index d.dualPoint) (3 / 2)
+        (sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint)
+        (fun t : ℝ => inverseMellinIntegrand V 0 (paperScale * d.smoothingScale X)
+          (((3 / 2 : ℝ) : ℂ) + t * Complex.I)) hK
+  apply ((hi.comp_neg).const_mul d.smoothingMultiplier).congr
+  filter_upwards with t
+  simpa only [neg_neg] using (d.smoothing_reflected_line V X hX (-t)).symm
+
+theorem SourceCuspDatum.smoothing_left_kernel (d : SourceCuspDatum)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hVs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0 < X) :
+    (1 / (2 * Real.pi) : ℂ) * (∫ t : ℝ, besselSmoothingIntegrand
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+      (sourceCuspRadialScale 0) V X ((-1 : ℂ) + t * Complex.I)) =
+      d.smoothingMultiplier * ∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+        paperKernel V (d.smoothingScale X * sourceCuspRadialLength h) := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  have hk := paperKernel_weighted_mellin sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceCuspRadialCoefficient d.index d.dualPoint)
+    (sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint) V a b ha hVs hV
+    (d.smoothingScale X) (d.smoothingScale_pos X hX)
+  rw [hk]
+  rw [← integral_neg_eq_self (fun t : ℝ => besselSmoothingIntegrand
+    (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+    (sourceCuspRadialScale 0) V X ((-1 : ℂ) + t * Complex.I)) volume]
+  simp only [d.smoothing_reflected_line V X hX]
+  rw [integral_const_mul]
+  ring
+
+lemma sourceBar_smoothing_initial_line (z : ℂ) (V : ℝ → ℂ) (X : ℝ) (t : ℝ) :
+    besselSmoothingIntegrand (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z)
+      (sourceCuspRadialScale 0) V X ((2 : ℂ) + t * Complex.I) =
+      mellin V ((3 / 2 : ℂ) + t * Complex.I) * (X : ℂ) ^ ((3 / 2 : ℂ) + t * Complex.I) *
+        (∑' h : O, sourceBarRadialCoefficient z h *
+          (sourceCuspRadialLength h : ℂ) ^ (-((3 / 2 : ℂ) + t * Complex.I))) := by
+  rw [besselSmoothingIntegrand, sourceBarProfile_dirichlet z _ (by norm_num), sourceBarRadialDirichlet]
+  rw [show (2 : ℂ) + t * Complex.I - 1 / 2 = 3 / 2 + t * Complex.I by ring,
+    show (1 / 2 : ℂ) - (2 + t * Complex.I) = -(3 / 2 + t * Complex.I) by ring]
+
+/-- Exact smoothed reflection of the actual cubic source at every rational cusp. -/
+theorem SourceCuspDatum.smoothed_reflection (d : SourceCuspDatum)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hVs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0 < X) :
+    (∑' h : O, sourceBarRadialCoefficient d.point h * V (sourceCuspRadialLength h / X)) =
+      d.smoothingMultiplier * ∑' h : O, sourceCuspRadialCoefficient d.index d.dualPoint h *
+        paperKernel V (d.smoothingScale X * sourceCuspRadialLength h) := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  have hc : Summable (fun h : O => ‖sourceBarRadialCoefficient d.point h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [show (1 / 2 : ℝ) - 2 = -(3 / 2) by norm_num] using
+      sourceBarRadialCoefficient_summable d.point 2 le_rfl
+  have hm := weightedMellin_inversion sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceBarRadialCoefficient d.point) (3 / 2) hc V a b ha hVs hV X hX
+  have hmi := compactMellin_vertical_integrable V a b ha hVs hV (3 / 2)
+  have hbase := vertical_power_mul_integrable _ hmi X (3 / 2) hX
+  have hi := weighted_vertical_sum_mul_integrable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceBarRadialCoefficient d.point) (3 / 2) hc
+    (fun t : ℝ => (X : ℂ) ^ (((3 / 2 : ℝ) : ℂ) + t * Complex.I) *
+      mellin V (((3 / 2 : ℝ) : ℂ) + t * Complex.I)) hbase
+  have hright : Integrable (fun t : ℝ => besselSmoothingIntegrand
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+      (sourceCuspRadialScale 0) V X ((2 : ℂ) + t * Complex.I)) := by
+    simp_rw [sourceBar_smoothing_initial_line]
+    apply hi.congr
+    filter_upwards with t
+    simp only [Complex.ofReal_div, Complex.ofReal_ofNat]
+    ring
+  have hshift := besselSmoothingIntegrand_contour_eq
+    (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+    (sourceCuspRadialScale 0) (sourceCuspRadialScale_pos 0)
+    d.mellin_entire.1.1 d.mellin_entire.1.2 V a b ha hVs hV X hX (-1) 2 (by norm_num)
+    (d.smoothing_left_integrable V a b ha hVs hV X hX) hright
+  have hm' : (∑' h : O, sourceBarRadialCoefficient d.point h * V (sourceCuspRadialLength h / X)) =
+      (1 / (2 * Real.pi) : ℂ) * (∫ t : ℝ, besselSmoothingIntegrand
+        (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point)
+        (sourceCuspRadialScale 0) V X ((2 : ℂ) + t * Complex.I)) := by
+    simpa only [sourceBar_smoothing_initial_line, Complex.ofReal_div, Complex.ofReal_ofNat] using hm
+  rw [hm', ← hshift]
+  exact d.smoothing_left_kernel V a b ha hVs hV X hX
+
+lemma compactMellin_power_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hVs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) (σ : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 0 < x → ‖V x‖ ≤ C * x ^ (-σ) := by
+  let C : ℝ := ‖(1 / (2 * Real.pi) : ℂ)‖ *
+    ∫ t : ℝ, ‖mellin V ((σ : ℂ) + t * Complex.I)‖
+  refine ⟨C, mul_nonneg (norm_nonneg _) (integral_nonneg (fun _ => norm_nonneg _)), ?_⟩
+  intro x hx
+  rw [compactMellin_inversion V a b ha hVs hV σ x hx, norm_mul]
+  calc
+    _ ≤ ‖(1 / (2 * Real.pi) : ℂ)‖ *
+        ∫ t : ℝ, ‖(x : ℂ) ^ (-((σ : ℂ) + t * Complex.I)) *
+          mellin V ((σ : ℂ) + t * Complex.I)‖ :=
+      mul_le_mul_of_nonneg_left (norm_integral_le_integral_norm _) (norm_nonneg _)
+    _ = C * x ^ (-σ) := by
+      simp only [norm_mul, positive_cpow_negative_vertical_norm x σ _ hx, integral_const_mul]
+      dsimp only [C]
+      ring
+
+lemma weighted_compact_test_norm_summable {α : Type*}
+    (r : α → ℝ) (hr : ∀ i, 0 < r i) (c : α → ℂ) (σ : ℝ)
+    (hc : Summable (fun i => ‖c i‖ * (r i) ^ (-σ)))
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hVs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0 < X) : Summable (fun i => ‖c i * V (r i / X)‖) := by
+  obtain ⟨C, hC, hb⟩ := compactMellin_power_bound V a b ha hVs hV σ
+  apply (hc.mul_left (C / X ^ (-σ))).of_nonneg_of_le (fun i => norm_nonneg _)
+  intro i
+  rw [norm_mul]
+  calc
+    _ ≤ ‖c i‖ * (C * (r i / X) ^ (-σ)) :=
+      mul_le_mul_of_nonneg_left (hb _ (div_pos (hr i) hX)) (norm_nonneg _)
+    _ = _ := by rw [Real.div_rpow (hr i).le hX.le]; ring
+
+lemma sourceBarRadialCoefficient_phase (z : ℂ) (h : O) :
+    sourceBarRadialCoefficient z h =
+      sourceBarRadialCoefficient 0 h * tracePhase (-cuspFrequency h * z) := by
+  simp only [sourceBarRadialCoefficient, sourceCuspRadialCoefficient, sourceCuspScale,
+    Matrix.cons_val_zero, Complex.ofReal_one, div_one, mul_zero, AddChar.map_zero_eq_one, mul_one]
+  ring
+
+lemma sourceBarRadialCoefficient_at_zero (h : O) :
+    sourceBarRadialCoefficient 0 h = star (rationalSourceResidualFourierCoefficient h) *
+      ((-2 * Real.pi * Complex.I * star (cuspFrequency h)) / (sourceCuspRadialLength h : ℂ)) := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [sourceBarRadialCoefficient, sourceCuspRadialCoefficient_zero, mul_zero,
+      cuspFrequency, map_zero, zero_div, star_zero, zero_mul]
+  · simp only [sourceBarRadialCoefficient, sourceCuspRadialCoefficient, sourceCuspRadialBaseCoefficient,
+      sourceCuspCoefficient, sourceCuspScale, Matrix.cons_val_zero, Complex.ofReal_one,
+      one_pow, one_mul, div_one, mul_zero, AddChar.map_zero_eq_one, mul_one]
+    field_simp [cuspFrequency_ne_zero h hh]
+    <;> ring
+
+lemma sourceBar_smoothed_finite_translation (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (W : O → ℂ) (hW : Summable (fun h : O => ‖sourceBarRadialCoefficient 0 h * W h‖)) :
+    (∑ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ i *
+      ∑' h : O, sourceBarRadialCoefficient (thetaFourierTranslation c i) h * W h) =
+      ∑' h : O, φ (Ideal.Quotient.mk _ h) * sourceBarRadialCoefficient 0 h * W h := by
+  let coeff : O → ℂ := fun h => star (sourceBarRadialCoefficient 0 h * W h)
+  have hs : Summable (fun h => ‖coeff h‖) := by simpa only [coeff, norm_star] using hW
+  have he := conjugate_cuspCharacterSeries_finite_translation coeff hs
+    (thetaFourierTranslation c) (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ) 0
+  simp only [zero_add, thetaFourierTranslation_inversion c hc, mul_zero,
+    AddChar.map_zero_eq_one, mul_one, coeff, star_star] at he
+  calc
+    _ = ∑ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ i *
+        star (cuspCharacterSeries coeff (thetaFourierTranslation c i)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      congr 1
+      rw [conjugate_cuspCharacterSeries]
+      apply tsum_congr
+      intro h
+      rw [sourceBarRadialCoefficient_phase]
+      simp only [coeff, star_star]
+      ring
+    _ = _ := by simpa only [mul_assoc] using he
+
+/-- The smoothed squarefree-times-cube cubic Gauss sum, with its horizontal derivative weight. -/
+def thetaSmoothedGaussSum (Ψ : O →* ℂ) (V : ℝ → ℂ) (X : ℝ) : ℂ :=
+  ∑' p : ThetaPrimaryCubePair,
+    ((‖ringComplex (primaryIdealGenerator p.2.val)‖ : ℂ) *
+      normalizedCubicUnitGauss (primaryIdealGenerator p.1.val) *
+      Ψ (primaryIdealGenerator p.1.val) * (Ψ (primaryIdealGenerator p.2.val)) ^ 3) *
+      (((-2 * Real.pi * Complex.I * star (cuspFrequency
+        (primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3))) /
+        (sourceCuspRadialLength (primaryIdealGenerator p.1.val *
+          (primaryIdealGenerator p.2.val) ^ 3) : ℂ)) *
+        V (sourceCuspRadialLength (primaryIdealGenerator p.1.val *
+          (primaryIdealGenerator p.2.val) ^ 3) / X))
+
+/-- Finite Fourier inversion and cusp reflection give an exact dual formula for the arithmetic Gauss sum. -/
+theorem thetaSmoothedGaussSum_finite_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hVs : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0 < X) :
+    thetaSmoothedGaussSum (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) V X =
+      rationalSourceThetaScalar⁻¹ *
+        ∑ i, finiteAdditiveFourierCoeff
+          (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc)) (finiteThetaTwist c Ψ) i *
+          ((finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingMultiplier *
+            ∑' h : O, sourceCuspRadialCoefficient
+              (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).index
+              (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).dualPoint h *
+              paperKernel V ((finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothingScale X *
+                sourceCuspRadialLength h)) := by
+  let χ := Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom
+  let W : O → ℂ := fun h => V (sourceCuspRadialLength h / X)
+  have hcoef : Summable (fun h : O => ‖sourceBarRadialCoefficient 0 h‖ *
+      sourceCuspRadialLength h ^ (-(3 / 2 : ℝ))) := by
+    simpa only [show (1 / 2 : ℝ) - 2 = -(3 / 2) by norm_num] using
+      sourceBarRadialCoefficient_summable 0 2 le_rfl
+  have hW : Summable (fun h : O => ‖sourceBarRadialCoefficient 0 h * W h‖) :=
+    weighted_compact_test_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+      (sourceBarRadialCoefficient 0) (3 / 2) hcoef V a b ha hVs hV X hX
+  have hf := sourceBar_smoothed_finite_translation (9 * c) (mul_ne_zero (by norm_num) hc)
+    (finiteThetaTwist c Ψ) W hW
+  calc
+    _ = ∑' h : O, (rationalSourceThetaScalar⁻¹ * star (rationalSourceResidualFourierCoefficient h) *
+        fixedThetaTwist χ h) *
+        (((-2 * Real.pi * Complex.I * star (cuspFrequency h)) /
+          (sourceCuspRadialLength h : ℂ)) * W h) := (fixedThetaTwist_source_tsum χ _).symm
+    _ = rationalSourceThetaScalar⁻¹ *
+        ∑' h : O, finiteThetaTwist c Ψ (Ideal.Quotient.mk _ h) * sourceBarRadialCoefficient 0 h * W h := by
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro h
+      rw [sourceBarRadialCoefficient_at_zero, finiteThetaTwist_mk]
+      ring
+    _ = rationalSourceThetaScalar⁻¹ *
+        ∑ i, finiteAdditiveFourierCoeff
+          (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc)) (finiteThetaTwist c Ψ) i *
+          ∑' h : O, sourceBarRadialCoefficient (thetaFourierTranslation (9 * c) i) h * W h := by rw [hf]
+    _ = _ := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro i hi
+      congr 1
+      rw [← finiteTwistCusp_point (9 * c) (mul_ne_zero (by norm_num) hc) i]
+      exact (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc) i).smoothed_reflection V a b ha hVs hV X hX
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -132,4 +132,84 @@ theorem rowGauss_one [(Ideal.span {π}).IsMaximal] {t : ℕ} (hn : 1 ≤ t + 1)
   rw [← hg, layerReduction_mk, ← map_neg, mul_comm]
   rfl
 
+/-- **`k = 1`.** `χ(−1) P(t, 1; h) = Q^t G(χ)` times the layer sum of the character `χ^{t−1}`. -/
+theorem localPoisson_one [(Ideal.span {π}).IsMaximal] {t : ℕ} (ht : 1 ≤ t) (hn : 1 ≤ t + 1)
+    (h : O) :
+    localPoisson π χ hn h * χ (-1) =
+      (Ideal.absNorm (Ideal.span {π}) : ℂ) ^ t *
+        gaussSum χ (principalTraceChar π (NeZero.ne _)) *
+          layerGauss π hn (fun e => (χ ^ (t - 1)) e) h := by
+  letI : Field (O ⧸ Ideal.span {π}) := Ideal.Quotient.field _
+  obtain ⟨j, rfl⟩ : ∃ j, t = j + 1 := ⟨t - 1, by omega⟩
+  unfold localPoisson layerGauss
+  rw [Finset.sum_mul, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  dsimp only
+  set r := layerReduction π hn m
+  by_cases hr : r = 0
+  · rw [hr, MulChar.map_zero, MulChar.map_zero, zero_pow (Nat.succ_ne_zero j)]
+    ring
+  · have hrow := rowGauss_one π χ hn m hr
+    have hneg : χ (-r) = χ (-1) * χ r := by rw [← map_mul, neg_one_mul]
+    have hpow : (χ ^ (j + 1 - 1)) r = χ r ^ j := by
+      rw [show j + 1 - 1 = j by omega]
+      exact MulChar.pow_apply_coe χ j (isUnit_iff_ne_zero.mpr hr).unit
+    rw [hneg] at hrow
+    rw [hpow]
+    linear_combination (χ r ^ j *
+      principalTraceChar (π ^ (j + 1 + 1)) (NeZero.ne _) (Ideal.Quotient.mk _ h * m)) * hrow
+
+/-- For `k ≥ 2` the row sum vanishes at every unit residue. -/
+theorem rowGauss_eq_zero {t k : ℕ} (hk : 2 ≤ k) (hn : 1 ≤ t + k)
+    (m : O ⧸ Ideal.span {π ^ (t + k)}) (hm : layerReduction π hn m ≠ 0) : rowGauss π χ hn m = 0 := by
+  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective m
+  unfold rowGauss
+  set ψ := principalTraceChar (π ^ (t + k)) (NeZero.ne _)
+  have hne : Ideal.Quotient.mk (Ideal.span {π ^ (t + k)}) (-(π ^ t * x * π)) ≠ 0 := by
+    intro h0
+    rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton, dvd_neg] at h0
+    apply hm
+    rw [layerReduction_mk, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
+    have h1 : π ^ t * π ^ (k - 1) * π ∣ π ^ t * x * π := by
+      rw [show π ^ t * π ^ (k - 1) * π = π ^ (t + k) by
+        rw [mul_assoc, ← pow_succ, ← pow_add, Nat.sub_add_cancel (by omega)]]
+      exact h0
+    have h2 : π ^ (k - 1) ∣ x := by
+      rw [mul_assoc, mul_assoc] at h1
+      exact (mul_dvd_mul_iff_left (pow_ne_zero _ (NeZero.ne π))).mp
+        ((mul_dvd_mul_iff_right (NeZero.ne π)).mp (by simpa only [mul_assoc] using h1))
+    exact (dvd_pow_self π (by omega)).trans h2
+  have hnt := principalTraceChar_primitive (π ^ (t + k)) (NeZero.ne _) hne
+  obtain ⟨y, hy⟩ : ∃ y, AddChar.mulShift ψ (Ideal.Quotient.mk _ (-(π ^ t * x * π))) y ≠ 1 := by
+    by_contra hcon
+    push Not at hcon
+    exact hnt (DFunLike.ext _ _ fun y => by rw [hcon y, AddChar.one_apply])
+  obtain ⟨z, rfl⟩ := Ideal.Quotient.mk_surjective y
+  have hphase : ∀ d : O ⧸ Ideal.span {π ^ (t + k)},
+      ψ (-(Ideal.Quotient.mk _ (π ^ t) * Ideal.Quotient.mk _ x * d)) =
+        AddChar.mulShift ψ (-(Ideal.Quotient.mk _ (π ^ t) * Ideal.Quotient.mk _ x)) d := by
+    intro d
+    rw [AddChar.mulShift_apply, neg_mul]
+  simp only [hphase]
+  refine sum_comp_mul_addChar_eq_zero (layerReduction π hn) _ (fun e => χ e ^ k)
+    (k := Ideal.Quotient.mk _ (π * z)) ?_ ?_
+  · rw [layerReduction_mk, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
+    exact dvd_mul_right π z
+  · intro h1
+    apply hy
+    rw [AddChar.mulShift_apply] at h1 ⊢
+    convert h1 using 2
+    simp only [← map_mul, ← map_neg]
+    congr 1
+    ring
+
+/-- **`k ≥ 2`.** `P(t, k; h) = 0` for `t ≥ 1`. -/
+theorem localPoisson_eq_zero [(Ideal.span {π}).IsMaximal] {t k : ℕ} (ht : 1 ≤ t) (hk : 2 ≤ k)
+    (hn : 1 ≤ t + k) (h : O) : localPoisson π χ hn h = 0 := by
+  unfold localPoisson
+  refine Finset.sum_eq_zero fun m _ => ?_
+  by_cases hr : layerReduction π hn m = 0
+  · rw [hr, MulChar.map_zero, zero_pow (by omega), zero_mul, zero_mul]
+  · rw [rowGauss_eq_zero π χ hk hn m hr, mul_zero]
+
 end GaloisForLFunctions.FamilyContinuationTheory

@@ -103,6 +103,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceRemainder
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailContactGrowthDetectsZeros
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRingOfTheCubeRootsOfTwoIsNotAbelianAndHasItsHodgeIndex
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCubicCharacterOfTwoIsARayClassCharacterModuloSix
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheDegreeTwoCharacterOfTheCubeRootsOfTwoHasItsHodgeIndex
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -139,5 +141,6 @@ contact for a large discriminant; the count of sections in a box as the volume o
 index; the form on the comb in the increments of the divisor; and the Li ladder as the forms
 of the Laguerre tails themselves, with the form of every pair of logarithmic tails as a sum
 over the zeros; and a ring that is not abelian, the ring of the cube roots of two, with its
-degree points and its Hodge index. See `AbsoluteGeometryOfSpecZ/README.md`.
+degree points and its Hodge index, and the index law of its Artin character of degree two
+through the cubic character of two. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

@@ -47,6 +47,7 @@ variable {s : ℕ} [NeZero s]
 
 /-! ### The norms of the coefficients -/
 
+omit [NeZero s] in
 theorem norm_coeffSeq (d : ℕ) (z : ℤ_[p]) (k : ℕ)
     (hne : gossPoly (ZMod p) (p ^ s) d (z.appr k) ≠ 0) :
     ‖coeffSeq s d z k‖ = ‖(varT p)⁻¹‖ ^
@@ -76,6 +77,7 @@ theorem exists_norm_gossCoeff {z : ℤ_[p]} (hz : z ∉ Set.range (Nat.cast : �
       (d * z.appr k - (gossPoly (ZMod p) (p ^ s) d (z.appr k)).natDegree) := by
     intro k hk
     obtain ⟨hne, hlt⟩ := hk₀ k hk
+    have hpk : 0 < p ^ k := pow_pos hp.out.pos k
     rw [← norm_coeffSeq d z k hne]
     have hclose : ‖gossCoeff s d z - coeffSeq s d z k‖ < ‖coeffSeq s d z k‖ := by
       rw [norm_coeffSeq d z k hne]
@@ -89,7 +91,7 @@ theorem exists_norm_gossCoeff {z : ℤ_[p]} (hz : z ∉ Set.range (Nat.cast : �
   have heq := (hnorm k₀ le_rfl).symm.trans (hnorm k hk)
   have hinj := (pow_right_injective₀ ht0 ht1.ne) heq
   have hle := natDegree_gossPoly_le (ZMod p) (p ^ s) d (z.appr k)
-  simp only at hinj
+  have hle₀ := natDegree_gossPoly_le (ZMod p) (p ^ s) d (z.appr k₀)
   omega
 
 /-- **The Goss coefficients form an entire series with simple slopes.** -/
@@ -116,13 +118,15 @@ theorem entireSimpleSlopes_gossCoeff {z : ℤ_[p]} (hz : z ∉ Set.range (Nat.ca
   have hκ0 : κ 0 = 0 := by
     have h := hκ 0
     rw [gossCoeff_zero, norm_one] at h
-    exact (pow_eq_one_iff_of_ne_one ht0.le ht1.ne).mp h.symm |>.resolve_right (by
-      intro h'; exact absurd h' (by norm_num)) |> fun h => by omega
+    exact pow_right_injective₀ ht0 ht1.ne (by simpa only [pow_zero] using h.symm)
   have hgrow : ∀ d, κ d + d ≤ κ (d + 1) := by
     intro d
     induction d with
     | zero => rw [hκ0]; exact Nat.zero_le _
-    | succ d ih => have := hconv d; omega
+    | succ d ih =>
+      have := hconv d
+      show κ (d + 1) + (d + 1) ≤ κ (d + 2)
+      omega
   refine ⟨fun d h0 => ?_, fun d => ?_, fun R => ?_⟩
   · have h := hκ d
     rw [h0, norm_zero] at h
@@ -136,15 +140,14 @@ theorem entireSimpleSlopes_gossCoeff {z : ℤ_[p]} (hz : z ∉ Set.range (Nat.ca
       intro d
       rw [div_le_iff₀ (hfpos d)]
       obtain ⟨j, hj⟩ := Nat.exists_eq_add_of_le (hgrow d)
-      simp only [f, hj, pow_add, pow_succ]
-      have : t ^ j ≤ t ^ d := pow_le_pow_of_le_one ht0.le ht1.le (by omega)
-      have hR : 0 ≤ |R| + 1 := by positivity
-      calc t ^ κ d * t ^ d * t ^ j * ((|R| + 1) ^ d * (|R| + 1))
-          ≤ t ^ κ d * t ^ d * t ^ d * ((|R| + 1) ^ d * (|R| + 1)) := by gcongr
-        _ = t ^ d * (|R| + 1) * (t ^ κ d * t ^ d * (|R| + 1) ^ d) := by ring
-        _ ≤ t ^ d * (|R| + 1) * (t ^ κ d * (|R| + 1) ^ d) := by
-          gcongr
-          exact mul_le_of_le_one_right (pow_nonneg ht0.le _) (pow_le_one₀ ht0.le ht1.le)
+      have hfd : f (d + 1) = t ^ d * t ^ j * (|R| + 1) * f d := by
+        simp only [f, hj, pow_add, pow_succ]
+        ring
+      have htj : t ^ j ≤ 1 := pow_le_one₀ ht0.le ht1.le
+      rw [hfd]
+      calc t ^ d * t ^ j * (|R| + 1) * f d ≤ t ^ d * 1 * (|R| + 1) * f d := by
+            gcongr
+        _ = t ^ d * (|R| + 1) * f d := by ring
     have hlim : Tendsto (fun d => ‖f (d + 1)‖ / ‖f d‖) atTop (𝓝 0) := by
       have hb : Tendsto (fun d => t ^ d * (|R| + 1)) atTop (𝓝 0) := by
         simpa only [zero_mul] using
@@ -155,7 +158,7 @@ theorem entireSimpleSlopes_gossCoeff {z : ℤ_[p]} (hz : z ∉ Set.range (Nat.ca
     have hsum := summable_of_ratio_test_tendsto_lt_one zero_lt_one
       (Eventually.of_forall fun d => (hfpos d).ne') hlim
     refine squeeze_zero_norm (fun d => ?_) hsum.tendsto_atTop_zero
-    rw [hκ, Real.norm_eq_abs, abs_mul, abs_pow, abs_of_pos (pow_pos ht0 _), abs_pow]
+    rw [hκ, norm_mul, norm_pow, norm_pow, Real.norm_of_nonneg ht0.le, Real.norm_eq_abs]
     exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (abs_nonneg _) (by linarith) _)
       (pow_nonneg ht0.le _)
 
@@ -221,7 +224,7 @@ variable {Fq : Type*} [Field Fq] [Fintype Fq] [DecidableEq Fq] [CharP Fq p]
 
 include hσ
 
-omit [CompleteSpace L] in
+omit [CharP Fq p] [IsUltrametricDist L] [CompleteSpace L] hσ in
 theorem norm_τ_le (c : Fq) : ‖τ c‖ ≤ 1 := by
   by_cases hc : c = 0
   · rw [hc, map_zero, norm_zero]; exact zero_le_one
@@ -231,35 +234,35 @@ theorem norm_τ_le (c : Fq) : ‖τ c‖ ≤ 1 := by
     have := Fintype.one_lt_card (α := Fq); omega
   exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hq).mp h).le
 
-omit [CompleteSpace L] in
+omit [CharP Fq p] [CompleteSpace L] in
 theorem norm_eval₂_le (Q : Fq[X]) : ‖eval₂ τ (σ (varT p)) Q‖ ≤ ‖varT p‖ ^ Q.natDegree := by
   have hT := one_lt_norm_varT p
   rw [eval₂_eq_sum_range]
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun i hi => ?_
   rw [norm_mul, norm_pow, hσ]
   calc ‖τ (Q.coeff i)‖ * ‖varT p‖ ^ i ≤ 1 * ‖varT p‖ ^ i :=
-        mul_le_mul_of_nonneg_right (norm_τ_le hσ τ _) (by positivity)
+        mul_le_mul_of_nonneg_right (norm_τ_le τ _) (by positivity)
     _ ≤ _ := by rw [one_mul]; exact pow_le_pow_right₀ hT.le (by have := mem_range.mp hi; omega)
 
-omit [CompleteSpace L] in
+omit [CharP Fq p] [CompleteSpace L] in
 /-- `⟨a⟩ = a / T^d` is a one-unit. -/
 theorem norm_sub_one_lt {d : ℕ} {a : Fq[X]} (ha : a ∈ monicDeg (F := Fq) d) :
     ‖eval₂ τ (σ (varT p)) a / σ (varT p) ^ d - 1‖ < 1 := by
   obtain ⟨hmon, hdeg⟩ := mem_monicDeg.mp ha
   have hT := one_lt_norm_varT p
   have hσT : σ (varT p) ≠ 0 := (map_ne_zero σ).mpr (varT_ne_zero p)
+  rcases Nat.eq_zero_or_pos d with rfl | hd
+  · rw [eq_one_of_monic_natDegree_zero hmon hdeg, eval₂_one, pow_zero, div_one, sub_self,
+      norm_zero]
+    exact zero_lt_one
   have heq : eval₂ τ (σ (varT p)) a / σ (varT p) ^ d - 1 =
       eval₂ τ (σ (varT p)) (a - X ^ d) / σ (varT p) ^ d := by
     rw [eval₂_sub, eval₂_X_pow, sub_div, div_self (pow_ne_zero _ hσT)]
   rw [heq, norm_div, norm_pow, hσ, div_lt_one (by positivity)]
-  refine (norm_eval₂_le hσ τ _).trans_lt ?_
-  rcases Nat.eq_zero_or_pos d with rfl | hd
-  · rw [pow_zero, eq_one_of_monic_natDegree_zero hmon hdeg, sub_self, natDegree_zero, pow_zero]
-    exact hT
-  · exact pow_lt_pow_right₀ hT (lt_of_le_of_lt (natDegree_monic_sub_X_pow_le hmon hdeg)
-      (by omega))
+  exact (norm_eval₂_le hσ τ _).trans_lt (pow_lt_pow_right₀ hT
+    (lt_of_le_of_lt (natDegree_monic_sub_X_pow_le hmon hdeg) (by omega)))
 
-omit [CompleteSpace L] in
+omit [NeZero s] [IsUltrametricDist L] [CompleteSpace L] hσ in
 /-- The finite sums `∑ ⟨a⟩ ^ N` are the images of `T^{−dN} S_d(N)`. -/
 theorem sum_pow_eq (hq : Fintype.card Fq = p ^ s) (d N : ℕ) :
     ∑ a ∈ monicDeg (F := Fq) d, (eval₂ τ (σ (varT p)) a / σ (varT p) ^ d) ^ N =
@@ -277,6 +280,7 @@ theorem sum_pow_eq (hq : Fintype.card Fq = p ^ s) (d N : ℕ) :
     inv_pow, mul_comm d N]
   rfl
 
+omit [IsUltrametricDist L] [CompleteSpace L] in
 theorem isometry_σ : Isometry σ :=
   AddMonoidHomClass.isometry_of_norm σ hσ
 
@@ -284,15 +288,17 @@ theorem isometry_σ : Isometry σ :=
 theorem sum_oneUnitPow_eq (hq : Fintype.card Fq = p ^ s) (d : ℕ) (z : ℤ_[p]) :
     ∑ a ∈ monicDeg (F := Fq) d, oneUnitPow p (eval₂ τ (σ (varT p)) a / σ (varT p) ^ d) z =
       σ (gossCoeff s d z) := by
+  haveI : CharP (LaurentSeries (ZMod p)) p :=
+    charP_of_injective_ringHom (algebraMap (ZMod p) (LaurentSeries (ZMod p))).injective p
   haveI : CharP L p := charP_of_injective_ringHom σ.injective p
   have h1 : Tendsto (fun k => ∑ a ∈ monicDeg (F := Fq) d,
       (eval₂ τ (σ (varT p)) a / σ (varT p) ^ d) ^ z.appr k) atTop
       (𝓝 (∑ a ∈ monicDeg (F := Fq) d, oneUnitPow p (eval₂ τ (σ (varT p)) a / σ (varT p) ^ d) z)) :=
-    tendsto_finset_sum _ fun a ha => tendsto_oneUnitPow (norm_sub_one_lt hσ τ ha) z
+    tendsto_finsetSum _ fun a ha => tendsto_oneUnitPow (norm_sub_one_lt hσ τ ha) z
   have h2 : Tendsto (fun k => σ (coeffSeq s d z k)) atTop (𝓝 (σ (gossCoeff s d z))) :=
     ((isometry_σ hσ).continuous.tendsto _).comp (tendsto_coeffSeq d z)
   refine tendsto_nhds_unique h1 (h2.congr fun k => ?_)
-  rw [coeffSeq, sum_pow_eq hσ τ hq]
+  rw [coeffSeq, sum_pow_eq τ hq]
 
 /-- The zeta function is the entire series of the images of the coefficients in `1/x`. -/
 theorem gossZeta_eq_eval (hq : Fintype.card Fq = p ^ s) (z : ℤ_[p]) (x : L) :
@@ -368,9 +374,11 @@ theorem gossZeta_riemannHypothesis {z : ℤ_[p]} (hz : z ∉ Set.range (Nat.cast
     have hdiff : x⁻¹ - σ (u d) = (σ (u d)⁻¹ - x) * (x⁻¹ * σ (u d)) := by
       rw [map_inv₀]
       field_simp
-    rw [hdiff, norm_mul, norm_mul, norm_inv, hx, norm_inv, (hu d).1, inv_inv, hσ, (hu d).1,
-      norm_sub_rev, map_inv₀]
-    simp only [γ, r]
+    have h1 : ‖σ (u d)‖ = r := by rw [hσ, (hu d).1]
+    beta_reduce
+    have h2 : ‖a (d + 1)‖ = ‖γ (d + 1)‖ := hσ _
+    rw [hdiff, norm_mul, norm_mul, norm_inv x, hx, norm_inv, (hu d).1, inv_inv, h1, map_inv₀,
+      norm_sub_rev (σ (u d))⁻¹ x, h2, show EntireSimpleSlopes.radius γ d = r from rfl]
     ring
 
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss

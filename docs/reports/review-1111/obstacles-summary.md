@@ -2,7 +2,7 @@
 
 Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `65731ede04` with its working tree (2026-11-11). Fact log: `logs/review-1111-status-quo-facts.md`; identifiers in parentheses refer to log §3, `D1–D8` to log §5.
 
-**Evidence.** `[L*]` Lean statement read at the declaration for this report; `[N]` declaration located through the corpus search index, docstring read; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint, Lean not re-read; `[S]` module graded unfinished or unintegrated by the frontier map; `[D]` deduction made here from `[L*]` statements; `[C]` classical mathematics quoted from memory, not in the corpus, to be checked before use; `[A]` assessment; `[P]` proved on a pipeline card at stage 2 (paper proof, Lean formalization in progress), taken as correct here: `docs/drafts/pipeline/2-fully-proven/shortest-generic-twist-family.md` (log §3.21); `[X]` one external source cached in the repository, outside the native import graph and not checked here: a zero-free half-plane `Re s>7/8` for ζ, Dirichlet `L`-functions and Hecke `L`-functions over `ℚ(√−3)`. The frontier map states that the native graph has no unconditional `7/8` theorem [F]. Sections 2.3–2.14, 3 and 4 are interpretation and ideation: every untagged statement there is a proposal, not a result.
+**Evidence.** `[L*]` Lean statement read at the declaration for this report; `[N]` declaration located through the corpus search index, docstring read; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint, Lean not re-read; `[S]` module graded unfinished or unintegrated by the frontier map; `[D]` deduction made here from `[L*]` statements; `[C]` classical mathematics quoted from memory, not in the corpus, to be checked before use; `[A]` assessment; `[P]` proved on a pipeline card at stage 2 (paper proof, Lean formalization in progress), taken as correct here: `docs/drafts/pipeline/2-fully-proven/shortest-generic-twist-family.md` (log §3.21); `[X]` the theorem of the external source cached in the repository (OpenAI, 30 September 2026), taken as proved: every finite-order Hecke `L`-function over `ℚ(√−3)` and every Dirichlet `L`-function, ζ included, is zero-free in `Re s>7/8`; so `Θ≤7/8` and every zero of ζ in the strip has `1/8≤Re ρ≤7/8`. Its formalization in the Lean corpus is incomplete: the native graph has no `7/8` theorem [F], and the missing steps are just work (A118a–d). **Natively** refers to the Lean graph. Sections 2.3–2.14, 3 and 4 are interpretation and ideation: every untagged statement there is a proposal, not a result.
 
 **38 live formulations; 12 candidates** (SEC, CDC/BSH, S3, APF, EGC, EWJ, FEL, IRK, MSC, RFHM, W1C, WBF). HJ is PA; PCS, DR, PW-B are retired labels.
 
@@ -29,7 +29,7 @@ Every graded receiver of the corpus is an equivalence at each level of one scale
 | window moment of order `2k` with exponent `A` | `A/2k` | the abscissa law at depths `≥A/2k` | [L*] (FFA10) |
 | horocycle exponent | `α` | `Θ≤2−2α`; with a finite Euler filter `Θ∞≤2−2α` | [L*,S] (N8) |
 
-Level one, rung `∞`, every `b>½`, exponent zero: each end of the scale is RH. Sizes prove the scale up to rung `1−o(1)`: every dominated system is positive with margin below the trivial aperture `log log(mass)` and the Liouville twist fails just above it, in the conductor aspect; in the height aspect the gap between floor and failure is `log(π/2)` [L*] (L1–L5, SA6). At the first conductor rung the sign for a real character forces primes with `χ(p)=1` and with `χ(p)=−1` below `e^{2η}log²q` [L*] (SA3). At a rung `κ` the sign on bounded shapes fails only on a set of heights of measure `≤T^{1−1/(2κ)+ε}` [L*] (SA2). Natively no rung above one is proved in any aspect; `[X]` states the level `b=7/8`.
+Level one, rung `∞`, every `b>½`, exponent zero: each end of the scale is RH. Sizes prove the scale up to rung `1−o(1)`: every dominated system is positive with margin below the trivial aperture `log log(mass)` and the Liouville twist fails just above it, in the conductor aspect; in the height aspect the gap between floor and failure is `log(π/2)` [L*] (L1–L5, SA6). At the first conductor rung the sign for a real character forces primes with `χ(p)=1` and with `χ(p)=−1` below `e^{2η}log²q` [L*] (SA3). At a rung `κ` the sign on bounded shapes fails only on a set of heights of measure `≤T^{1−1/(2κ)+ε}` [L*] (SA2). The level `b=7/8` is a theorem [X]: the rung `κ<4/3` for the centred contacts, positivity on large primes above the level `11/8`, return-free windows [L*] (SA4) with [X]. In Lean no rung above one is proved in any aspect. The open part of the scale is `½<b<7/8`.
 
 ### 1.3 Three structures; every two have a model
 ζ has an Euler product, the Riemann functional equation, and every integer with multiplicity one. The corpus has a model for each structure alone and for pairs [L*] unless marked:
@@ -40,7 +40,7 @@ Level one, rung `∞`, every `b>½`, exponent zero: each end of the scale is RH.
 | positivity of the prime measure, a simple pole | a nonnegative density with any finite layer at any `Θ<1` | AAL | FFA14 |
 | Euler product over natural norms, natural coefficients, linear counting | every finite divisor right of the line, with multiplicities, continuation to `Re s>½` | AAL, B13; graded repulsion (two-scale products) | FFA12, N3, S15 |
 | Euler product over the rational primes, with repetition | every finite layer at `17/30<Θ<1` | AAL | FFA13 |
-| Euler product over the rational primes, each once; multiplicative coefficients `0≤a(n)≤C_εn^ε`; `0≤Λ′≤2Λ`; meromorphy on ℂ; polynomial bounds for `F` and `1/F` right of `Θ` (given `Θ<1`) | `ζ(s)/(ζ(s+1−ρ₀)ζ(s+1−ρ̄₀))` with finitely many Euler factors removed: exactly the pair `ρ₀,ρ̄₀` right of `Θ`; a pole in the left strip | the abscissa law at the frontier of ζ | M1 |
+| Euler product over the rational primes, each once; multiplicative coefficients `0≤a(n)≤C_εn^ε`; `0≤Λ′≤2Λ`; meromorphy on ℂ; polynomial bounds for `F` and `1/F` right of `Θ` (with `Θ≤7/8` [X]) | `ζ(s)/(ζ(s+1−ρ₀)ζ(s+1−ρ̄₀))` with finitely many Euler factors removed: exactly the pair `ρ₀,ρ̄₀` right of `Θ`; a pole in the left strip | the abscissa law at the frontier of ζ | M1 |
 | nonnegative prime and integer densities, integer count `N(x)−ρx−C→0` (continuous system) | a rational zeta function with one off-line pair, tending to `1` on vertical lines | AAL; recurrence of a zero | [N] (X1, X2) |
 | the Riemann functional equation, Gamma factor, residue one, order `≤1`, count within one | all zeros simple, off the line, approaching it | Landing | C6 |
 | Euler product and a functional equation of degree two on the integers, unbounded coefficients | `ξ(s+a)ξ(s−a)`: every critical zero `ρ` gives zeros `ρ±a` off the line | ZAL; strip self-improvement | [L*] (log §3.18); [KR] |
@@ -51,7 +51,7 @@ Level one, rung `∞`, every `b>½`, exponent zero: each end of the scale is RH.
 Consequences [D] (D8). A mechanism that reads the Euler product through the zero configuration has floor `½`: the property "the right zeros are the divisor of an Euler product over natural norms" holds for every finite datum [L*] (M2); a producer has to use the Euler product on the function. What the models realize is analytic, positive, or multiplicative with integer norms or with the rational primes and bounded coefficients. What no model of the corpus realizes is the unit multiplicity of every integer and the exact functional equation, and each of the two alone identifies ζ. Both are statements about addition on ℤ. The atoms have no model among Dirichlet series over the integers with the Riemann functional equation; outside that class B13 fails in a classical family.
 
 ### 1.4 Two worlds, three atoms, one shape of world I
-`Θ<1 ⇔ Θ∞<1`; a failure of quasi-RH is `Θ=Θ∞=1` with AAL [L*] (S13). RH ⇔ ZAL ∧ B13 ∧ Landing [F]; B13 ⇔ the supremal negative index on real packets is `0` or `∞` [L*] (S16).
+Quasi-RH is a theorem: `Θ≤7/8` [X]; with `Θ<1 ⇔ Θ∞<1` [L*] (S13) also `Θ∞≤7/8`, and the edge world `Θ=Θ∞=1` is excluded. A failure of RH is a finite isolated top layer at some `β≤7/8` (world I) or a tail with `½<Θ=Θ∞≤7/8` (world II). RH ⇔ ZAL ∧ B13 ∧ Landing [F]; B13 ⇔ the supremal negative index on real packets is `0` or `∞` [L*] (S16).
 
 World I has one shape. At `b_*=Θ−½` the normalized trace is in exactly one of four sectors: RH; top line empty and trace `→0`; top line finite nonempty and trace asymptotic to a nonzero real trigonometric polynomial; top line infinite and no such limit [L*,S] (N1). AAL is the absence of the third sector, and it has four equivalent or sufficient forms [L*]:
 
@@ -74,8 +74,8 @@ The receivers hold for every tempered conjugation-symmetric configuration withou
 | symmetrization | a functional decreasing under projection to the line | an entire symbol monotone under splitting has zero real part on the line; additive functionals of the depths are functions of the inner masses | [L*] (FFA28, FFA29) |
 | replication | a bounded normalization of translates at every right zero gives AAL | under a finite right layer every locally uniform limit of normalized translates vanishes | [L*] (FFA19) |
 
-### 1.6 The half-plane route is two estimates
-Over `K=ℚ(ζ₃)`: if, whenever the pole-cleared Hecke `L`-functions of `K` are zero-free in `Re s>β`, every ray class character `η` has a sum `J_η` with `‖J_η(Z)‖≤CZ^{a₁}` and `‖J_η(Z)−f_η(Z)‖≤CZ^{a₂}`, `f_η` the signal of `exp((s−c)²)H_η(s)/((s−1)L(s,η))`, with `a₁,a₂<β` common to all characters and for every `β>σ₀`, then `Θ≤σ₀` [L*] (N5). Continuation, the factorization `ζ_K=ζ·L(χ₋₃)` and the supremum step are theorems [L*] (FCT5, FCT6). The source identity is in Lean: the cube of the normalized composite cubic Gauss sum is the ideal Möbius value times a phase; for characters of order dividing `n>2`, `g(χ)g(φ)=(−1+z(μ−1)²)g(χφ)`; for odd order `g(χ)^n=−card F+z(μ−1)²`, for even order the sign is `χ(−1)` [L*] (W5, FCT9, F3). The cubic residue with normalized Gauss coefficients on squarefree-times-cube support, and its Gauss-series formulas for `Re s>2`, are in Lean [F].
+### 1.6 The half-plane: a theorem at `7/8`, two estimates in Lean
+`Θ≤7/8` is a theorem, for ζ, for every Dirichlet `L`-function and for every finite-order Hecke `L`-function over `ℚ(√−3)` [X]. In Lean its route is one implication. Over `K=ℚ(ζ₃)`: if, whenever the pole-cleared Hecke `L`-functions of `K` are zero-free in `Re s>β`, every ray class character `η` has a sum `J_η` with `‖J_η(Z)‖≤CZ^{a₁}` and `‖J_η(Z)−f_η(Z)‖≤CZ^{a₂}`, `f_η` the signal of `exp((s−c)²)H_η(s)/((s−1)L(s,η))`, with `a₁,a₂<β` common to all characters and for every `β>σ₀`, then `Θ≤σ₀` [L*] (N5). Continuation, the factorization `ζ_K=ζ·L(χ₋₃)` and the supremum step are theorems [L*] (FCT5, FCT6). The source identity is in Lean: the cube of the normalized composite cubic Gauss sum is the ideal Möbius value times a phase; for characters of order dividing `n>2`, `g(χ)g(φ)=(−1+z(μ−1)²)g(χφ)`; for odd order `g(χ)^n=−card F+z(μ−1)²`, for even order the sign is `χ(−1)` [L*] (W5, FCT9, F3). The cubic residue with normalized Gauss coefficients on squarefree-times-cube support, and its Gauss-series formulas for `Re s>2`, are in Lean [F].
 
 The exponent budget of the published probe is in Lean as a calculus of exponents, not of sums [L*] (FCT11–FCT17):
 
@@ -104,7 +104,7 @@ In the single variable `θ=(2n/(n−1))(σ₀−½)` the class of reflection, sl
 | rows of nonnegative rescaled length, without the dual-length term | `(n−2)/(n−1)`: `4/5`, `½`, `0` at `n=6,3,2` | `5/6` |
 | reflected rows evaluated through the order-`n` twists | `(n/(n−1))(2β−1)`: the zero itself | circular |
 
-Deductions [D] (D4, log §3.21). The room inside the probe is `[13/15,7/8]`, in the twist exponent `[22/25,9/10]`. A generic mean square of a family that contains its principal twists is not an input below its half-plane: it is that half-plane. The floors name what a producer of this class lacks: a row count in the binding bin between `9/10` and `22/25` (B174), a bound of the floor bin below trivial summation between `22/25` and `4/5` (B175), and below `(n−2)/(n−1)` rows that reflection does not supply. The free floor is zero only at order two, where the power of a Gauss sum carries the parity of the character and not the Möbius sign [L*] (F3): the class reaches the line at no order with a power source. The conversion from law to point is the multiplicity with which the target occurs among its twists. Natively open: removal of the cube sum in the source comparison, the properties of the corrections `H_η`, and both savings uniformly in the character [F].
+Deductions [D] (D4, log §3.21). The room inside the probe is `[13/15,7/8]`, in the twist exponent `[22/25,9/10]`. A generic mean square of a family that contains its principal twists is not an input below its half-plane: it is that half-plane. The floors name what a producer of this class lacks: a row count in the binding bin between `9/10` and `22/25` (B174), a bound of the floor bin below trivial summation between `22/25` and `4/5` (B175), and below `(n−2)/(n−1)` rows that reflection does not supply. The free floor is positive at every frequency order `n≥3` and vanishes at `n=2` only; in the tested designs a lower frequency order is paid by the conductor of the rows, and the cube identity with two or more row variables gives nothing [L*] (TB7, FCT14, FCT15). The conversion from law to point is the multiplicity with which the target occurs among its twists. Not formalized in Lean: removal of the cube sum in the source comparison, the properties of the corrections `H_η`, and both savings uniformly in the character [F] (A118a–d).
 
 ### 1.7 Finite scale and the index in the aperture
 The negative index of the restricted Weil form is nondecreasing in the aperture; immediately right of an aperture it is the index plus the nullity; resonant apertures are finite below every bound [F] (ACCE1). `r≤#`right zeros ⇔ for some ratio and margin the robust index of the finite comb is eventually `≥r` [L*] (HFP3); the unshifted comb index at ratio `Q` lies eventually between the aperture index and index plus nullity [L*,S] (HFP4). So RH ⇔ no aperture carries a null mode, and in world I with finitely many off-line zeros finitely many resonant apertures carry the whole index [D] (D2).
@@ -119,7 +119,7 @@ No bounded holomorphic Dirichlet series on a half-plane, at any abscissa, and no
 RH is verified through 67; verification through `windowHeight(a)` gives the sign on `[−a,a]` [L*] (J2, J3); for this construction `log log log windowHeight(a)=c·a^{4/3}+log 138+o(1)` [F]. The form on tests supported in `[−a,a]` is diagonal in frequency: `(1/2π)∫|f̂|²·symbol_a` plus the pole terms, with `symbol_a(τ)≥log|τ|−C−2Σ_{n≤e^{2a}}Λ(n)/√n`; so the part of the integral above `T_a=exp(C+2ψ₁(e^{2a}))` is nonnegative for every test [D] (D3, from L8). The best margin of a window is at most `K exp(11a/2−πe^{2(a−2)})` [KR].
 
 ### 1.11 Law and point
-Past the Vinogradov–Korobov region every unconditional native theorem about the location of the zeros of ξ is in law: twisted moments below the square root, resonator means, the measure of exceptional heights on a rung, the depth sum `Σm_ρ·depth≤CT` [L*] (A119, log §3.17), `67.25%` simple critical zeros. Finite relocation of zeros is invisible to quadratic tests of length `o(T²)` [KR]. The pointwise theorems act on constituents, finite layers, models and regulators. `[X]` is pointwise right of `7/8`.
+One pointwise theorem holds past the Vinogradov–Korobov region: no zero right of `7/8` [X]. Left of `7/8` every unconditional theorem about the location of the zeros of ξ is in law: twisted moments below the square root, resonator means, the measure of exceptional heights on a rung, the depth sum `Σm_ρ·depth≤CT` [L*] (A119, log §3.17), `67.25%` simple critical zeros. Finite relocation of zeros is invisible to quadratic tests of length `o(T²)` [KR]. The other pointwise theorems act on constituents, finite layers, models and regulators.
 
 ### 1.12 Receivers are complete; the price of each producer mechanism
 | Mechanism | What the corpus proves | Evidence |
@@ -136,9 +136,9 @@ Past the Vinogradov–Korobov region every unconditional native theorem about th
 | Sizes of the contacts | the trivial aperture; nothing beyond | [L*] |
 | Mean values | below the square root; relocation-invariant below the height | [L*]/[KR] |
 | Power sums, half-period deletion, Vandermonde on windows | finite layers on bounded windows | [L*] |
-| Continuation of the reciprocals of a family with a reciprocity identity | one implication with two estimates; budget room `[13/15,7/8]`; the half-plane is `[X]` | [L*]; [X] |
+| Continuation of the reciprocals of a family with a reciprocity identity | the half-plane `Re s>7/8` [X]; in Lean one implication with two estimates; budget room `[13/15,7/8]`; floors of the class in the twist exponent | [X]; [L*] |
 
-Consequence [D]: natively every route is a receiver. The one producer is `[X]`, outside the native graph.
+Consequence [D]: one mechanism is a producer, and it has produced the half-plane `Re s>7/8` [X]. Every other route is a receiver. The step from the half-plane to the line is not among the producers: on every receiver it is RH itself (§2.3).
 
 ### 1.13 What is ruled out
 | Mechanism | Verdict | Evidence |
@@ -163,9 +163,12 @@ Consequence [D]: natively every route is a receiver. The one producer is `[X]`, 
 
 Difficulty is established only where a known argument exists; `(unverified)` marks the rest. None of these decides RH. Status by corpus search at the checkpoint (log §3.17, §4).
 
-### The native half-plane (given `[X]`)
+### The half-plane `Re s>7/8` in Lean
+The theorem is [X]. The four items are its steps that the Lean graph lacks; A138 collects its corollaries.
+
 | # | Task | Routes | Basis |
 |---|---|---|---|
+| A138 | The corollaries of `Θ≤7/8` as unconditional statements: the rung `κ<4/3` for the centred contacts, positivity on large primes above the level `11/8`, return-free windows; the return transfer ⇔ RH with no premise; every member of the seven-way equivalence with `Θ<1`; `Θ∞≤7/8`; the horocycle exponent `≥9/16` and a resonance-free strip of width `1/16` for `ξ(2s−1)/ξ(2s)`; the signal bound `O(Z^{b})` for every `b>7/8` | every route that reads the scale | `centred_prime_rung_of_halfPlane`, `large_prime_level_of_halfPlane`, `heavy_return_bound_of_halfPlane` (SA4); `homogeneousReturnWindowTransfer_iff_riemannHypothesis` (FCT4); `quasiRH_crossRoute_seven_way_tfae` (J9); `zetaZeroAbscissa_le_iff_forall_signal_le` (FCT2); `sSup_universalHorocycleExponents` (N8 [S]) |
 | A118a | removal of the cube sum in the comparison of the cubic-residue sum with the corrected signal | JAS, MC, S3 | `zetaZeroAbscissa_le_of_two_estimates` (N5); cubic residue formulas [F] |
 | A118b | the corrections `H_η`: holomorphic and nonvanishing right of the boundary, bounded on `Re s≥2` | — | `heckeHalfPlane_of_family_corrected_signal` |
 | A118c | the comparison saving uniformly in the ray class character | — | `exists_bound_of_height_estimates` (FCT8) |
@@ -211,11 +214,13 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 ## 2.2 Open mathematical obstacles
 
+**Strength** as in [route-obstacles.md](route-obstacles.md). `≥qRH` marks a statement that implies a zero-free half-plane, Lindelöf or ZAL. The half-plane `Re s>7/8` is a theorem [X]: an item of that strength is open where it gives a half-plane below `7/8`, or where it is not known to follow from [X]. `≥B56` is RH, since `Θ<1` holds.
+
 ### The common minimal face
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| B130 | `P(p)≤A(p)+K`, or the upper bound of the trace, on the primes of arbitrarily late logarithmic windows; any growth `Kp^σ`, `σ<½`, is a zero-free strip. Known natively: the VK saving | RH (≥qRH) | ACS, SRT, WL, HF, ZCG, HAT-C |
-| B159 | A rung above one: a power saving of ζ's contacts on the integers between `m` and `m^{2κ}`, uniform in the height, that fails for the Liouville twist | ≥qRH | every sign route; BAG |
+| B130 | `P(p)≤A(p)+K`, or the upper bound of the trace, on the primes of arbitrarily late logarithmic windows; any growth `Kp^σ`, `σ<½`, is a zero-free strip. Known in Lean: the VK saving | RH (≥qRH) | ACS, SRT, WL, HF, ZCG, HAT-C |
+| B159 | A rung `κ≥4/3`: a power saving of ζ's contacts on the integers between `m` and `m^{2κ}`, uniform in the height, that fails for the Liouville twist. For the centred contacts the rungs `κ<4/3` hold by [X] (SA4); in Lean no rung above one | a half-plane below `7/8` | every sign route; BAG |
 | B144 | Separation of the deep off-line ordinates of ζ | sub | SRT, ACS |
 
 ### Σ — critical sign
@@ -246,14 +251,13 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 ### Π — precision and production
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| B161 | The signal bound `O(Z^b)`, `b<1`, natively: equivalent to `Θ≤b`. `[X]`: `b=7/8` | ≥qRH | JAS, MC |
-| B174 | The density of sextic twists with a zero near real part `0.69`: the room `[13/15,7/8]` of the probe | sub (given `[X]`) | JAS, MC |
-| B175 | A bound for the nonprincipal rows of a twist family with cancellation across the rows, not passing through the twists: a twist exponent below the floor bin `(5n−8)/(5(n−1))`, a boundary below `13/15` for the sextic symbol (§2.5) | producer; of the strength of its half-plane [P] | JAS, MC |
+| B161 | The signal bound `O(Z^b)` for some `b<7/8`: equivalent to `Θ≤b`. For every `b>7/8` it is a theorem [X]; in Lean no `b<1` is proved | a half-plane below `7/8` | JAS, MC |
+| B174 | The row count of the binding bin: the number of sextic twists with a zero of real part at least `283/408≈0.69`, below the published count; the room `[13/15,7/8]` of the probe (§3) | a half-plane in `[13/15,7/8)`; density type | JAS, MC |
+| B175 | A bound for the nonprincipal rows of a twist family with cancellation across the rows, not passing through the twists: a twist exponent below the floor bin `(5n−8)/(5(n−1))`, a boundary below `13/15` for the sextic symbol; a bound for the reflected rows in place of the dual-length term (§2.5) | producer; a half-plane below `13/15` | JAS, MC |
 | B180 | The reflection of the completed theta row without Eisenstein series (§2.11) | method | JAS, MC |
-| B181 | The comparison estimate of the two-estimate implication at `7/8`: removal of the cube indices, the corrections `H_η`, uniformity in the character (§3) | producer lemma | JAS, MC, S3 |
 | B48–B54 | Deciding input at square-root precision; endpoint energy; trivial-gauge half power; moving power windows; rows and BSY; regularized partial sums; extremal inequality | RH | WL, MC, SQF, JAS, CTF, PBM, RB |
 | B55, B67 | Polynomial stencil rate; parity at power saving | ≥qRH to RH | WL, MC |
-| B56 | `Θ<1⇒Θ=½` | ≥B56 | whole programme |
+| B56 | `Θ<1⇒Θ=½`; with `Θ≤7/8` [X] it is RH | RH | whole programme |
 | B57 | Depth density `o(T)` | sub | WD, CTF, MC, RW, PM |
 | B58–B61 | `D_win`; cluster wall; Green moments at deep zeros; a detector past the last scale | sub | WD, MC |
 | B62, B63, B66 | Cofinal long moment; collision charge; near-unit holomorphic budgets | RH | WD, CTF, AIF |
@@ -262,7 +266,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 | B106 | A correspondence on the orientation cover with bounded local indices | RH | MC, HAT |
 | B110, B126, B127 | Thick crude count; a one-sided bound on a sampling set; positive-measure lag recurrence | AAL | WL, ZCG, ACS, IWT |
 | B145 | The signed, prime-weighted centred type-II current, with both continuum terms, at a growing isolated mode | AAL [D] | ZCG, BAG, ELT |
-| B148 | The return transfer | RH under a strip | S3, BAG |
+| B148 | The return transfer | RH: the equivalence holds under `Θ<1` [L*] (FCT4), which is [X] | S3, BAG |
 | B150 | Arithmetic upper control of the pair correlation beyond frequency one: a form factor bounded by `4` on `(1,10/9)` | sub | census |
 | B173 | A two-sided subexponential bound of the trace on late windows of one length | AAL | ZCG |
 
@@ -284,7 +288,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 | B88 | The sign of the comb finite part | RH | HF, ACS, HAT, AGZ |
 | B114, B117 | A realization of the partner involution outside the excluded classes; a regulator with a sign, a gap or an index bound before the limit | producer | PM |
 | B147 | Shimura nonvanishing at `ρ/4+¼` for one Hecke eigenform | indep. | PM |
-| B178 | A relaxation lower bound for a horizon with a cusp: a resonance-free strip of positive width for `ξ(2s−1)/ξ(2s)` from a principle that fails under deformation of the group (§2.7) | ≥qRH (producer) | PM |
+| B178 | A relaxation lower bound for a horizon with a cusp from a principle of the horizon: a resonance-free strip for `ξ(2s−1)/ξ(2s)` proved without a family of twists, or wider than the `1/16` that [X] gives; the principle fails under deformation of the group (§2.7) | producer, independent of [X] | PM |
 | B149, B169 | Bézout for the comb pairing from a property of the object; a group with a doubling on which the defect is a canonical height | RH (producer) | ACS, HF, AGZ |
 | B172 | A nonlinear functional of the zero configuration that decreases under projection to the line and is computed from the primes | producer | ZCG, HF |
 | — | ZAL | ≥qRH | whole programme |
@@ -296,7 +300,9 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 | B158 (budget form) | The boundary of the order-`n` probe; whether its infimum is `½` | room `[13/15,7/8]` for the cubic design; other orders, more row variables and other conductors are worse; the low side is `≥1−1/n`; reflected rows through the twists are circular | [L*] (FCT11–FCT17) |
 | B177 | The least exponent `θ` of a twist family with a generic mean square of the Möbius sums | on the principal `n`-th-power twists it is `(n/(n−1))(2Θ−1)`, attained, and zero iff RH: a level of the scale; for the Jacobi family the infimum is zero iff RH and GRH for the quadratic twists; positive weights are not generic below `n/(n−1)`; reflection, slots and large sieves have the floors `10/9`, `1`, `9/10`, `(5n−8)/(5(n−1))`, `(n−2)/(n−1)` | [P] (SG1–SG3); [L*] (TB1–TB8) |
 | B169 (path half) | A Lefschetz path at an odd prime | the tree-length path exists at `2` only; the price path exists at every `n₀≥2`, and on all packets it is RH at every parameter | [L*] (AGZ3–AGZ5) |
-| B148 (strength) | The return transfer | RH gives it; under `Θ<1` it is equivalent to RH | [L*] (FCT4) |
+| B148 (strength) | The return transfer | RH gives it; under `Θ<1` it is equivalent to RH, and `Θ<1` holds [X] | [L*] (FCT4); [X] |
+| B181 | The comparison estimate of the two-estimate implication at `7/8` | a theorem [X]; its steps in Lean are the tasks A118a–c | [X]; [F] |
+| quasi-RH; the edge world | Whether `Θ<1` | `Θ≤7/8`; `Θ∞≤7/8`; the world `Θ=Θ∞=1` is excluded | [X]; [L*] (S13) |
 | B156 (configurations) | Whether the sign at an aperture is a strip | no: deep zeros at ζ's density with positivity on `[−a,a]`, for every `a` | [L*] (SA5) |
 | B117 (the three regulators) | Whether the clock, the tower or the heat flow supplies a sign or a gap before the limit | no | [L*] (FFA24–FFA26) |
 | B172 (linear, additive) | A linear statistic or additive depth functional monotone under projection | none | [L*] (FFA28, FFA29) |
@@ -315,13 +321,13 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 ## 2.3 Frankenstein routes
 
-**No assembly closes RH in the native graph.** Every assembly has an open input of RH, AAL or ≥qRH strength, or returns an identity. With `[X]` no assembly reaches the line either: the corpus has no reduction from a half-plane to the line that is not RH itself [L*] (FCT4, J1).
+**No assembly closes RH.** One assembly is a theorem: the two estimates give `Θ≤7/8` [X]. Every other assembly has an open input of RH or AAL strength, an input that is a half-plane below `7/8`, or returns an identity. No assembly reaches the line from the half-plane: the corpus has no reduction from a half-plane to the line that is not RH itself [L*] (FCT4, J1).
 
 | # | Parts | What the assembly gives | Missing input | Gain |
 |---|---|---|---|---|
-| F29 | **One scale.** Level of the dressed aggregate; signal exponent; rungs; mollifier depth; window moments; floors | every graded receiver is one number [L*] | a level above the trivial one natively | a proposed estimate is placed on the scale before work starts |
-| F30 | **Two estimates.** Family frame over `ℚ(ζ₃)` with corrections; cube identity; cubic residue; budget | `Θ≤σ₀` from a direct and a comparison bound [L*] | A118a–d for `σ₀=7/8`; B174, B175 below | the half-plane route is a single Lean implication; its room is `[13/15,7/8]` |
-| F31 | **Half-plane, then line.** `[X]`; level and signal; return transfer; three rungs | under `Θ≤b`: rung `1/(2b−1)`, level `b+½`, return-free windows [L*] | a step from a strip to the line: the transfer is RH under a strip, level one is RH | none: no assembly crosses from `b` to `½` |
+| F29 | **One scale.** Level of the dressed aggregate; signal exponent; rungs; mollifier depth; window moments; floors | every graded receiver is one number [L*]; the level `b=7/8` is proved [X] | a level below `7/8`; in Lean a level above the trivial one | a proposed estimate is placed on the scale before work starts |
+| F30 | **Two estimates.** Family frame over `ℚ(ζ₃)` with corrections; cube identity; cubic residue; budget | `Θ≤7/8` [X]; in Lean `Θ≤σ₀` from a direct and a comparison bound [L*] | in Lean A118a–d; for `σ₀<7/8` the row count B174, then B175 | the half-plane is a single Lean implication away from the native graph; its room is `[13/15,7/8]` |
+| F31 | **Half-plane, then line.** `[X]`; level and signal; return transfer; three rungs | with `b=7/8`: rung `κ<4/3`, level `11/8`, return-free windows; the return transfer ⇔ RH [L*] with [X] | a step from the strip to the line: the transfer and level one are RH | none: no assembly crosses from `7/8` to `½` |
 | F32 | **Finite scale.** Step packets; ratio windows; robust index; index jumps | RH ⇔ sign of explicit finite matrices; the index is the sum of the nullities at resonant apertures [L*]/[D] | exclusion of a null mode at every aperture (B2, B152) | one exact object in finite rank at each scale |
 | F33 | **World I off the scale.** Non-attainment; unit gap; quantum; four sectors; filters; currents | AAL from any of four forms; a complete description of the tangent datum [L*] | B170; or B145 | every form fails on the one-structure models: a proof has to use addition on ℤ |
 | F34 | **Verification with sizes.** Verified height; symbol positivity above `T_a`; margin ceiling | a window sign from a height of double-exponential order, if the margin of the verified part has a matching lower bound [D] | A132 | the rung ladder from verification becomes usable beyond the first contact |
@@ -331,16 +337,16 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 | F11 | **Construct, then identify.** Index semicontinuity, unit gaps, rigidity | an approximant with a gap gives RH [L*] | B146, B171 | regulators of the corpus are excluded as approximants |
 | F6 | **Regulators.** Clock, scattering tower, heat flow | RH ⇔ the energy floor at one fixed height [L*] | B88, B117 | one fixed finite height suffices |
 
-**Closest to the open core: F30 (the only producer, external), F33 (the only target off the scale with a complete receiver), F32.**
+**Closest to the open core: F30 (the one producer; its exponent is the open part), F33 (the only target off the scale with a complete receiver), F32.**
 
 ### What a contradiction search may assume in world I
-`Θ<1`; attained isolated top `β`; `M(x)=O(x^{β′})`, `β′<1` [L*] (C7); `ψ(x)−x=x^βT(log x)+O(x^{β−η})` with `T` a nonzero real trigonometric polynomial, attained on every multiplicative window and at the primes of every late window [L*] (FFA6, FFA7 docstrings); every late window of length `(k+1)π/67` holds a point below every floor [L*] (S10); quantized multiplicities [L*] (FFA17); every locally uniform limit of normalized translates along a phase return vanishes [L*] (FFA19); a nonzero Euler filter of degree twice the number of top quartets accelerates the horocycle rate [D] from N8; with finitely many off-line zeros the packet index is finite and positive [L*] (S16); level-one dressed positivity fails [L*] (L13). No contradiction comes from exact identities alone, from positivity, Euler products over integer norms, integrality or counting alone, from the functional equation with ζ's Gamma factor and count, from a regulator, or from any statement in law [L*].
+`Θ≤7/8` [X]; attained isolated top `β≤7/8`; `M(x)=O(x^{β′})`, `β′<1` [L*] (C7); `ψ(x)−x=x^βT(log x)+O(x^{β−η})` with `T` a nonzero real trigonometric polynomial, attained on every multiplicative window and at the primes of every late window [L*] (FFA6, FFA7 docstrings); every late window of length `(k+1)π/67` holds a point below every floor [L*] (S10); quantized multiplicities [L*] (FFA17); every locally uniform limit of normalized translates along a phase return vanishes [L*] (FFA19); a nonzero Euler filter of degree twice the number of top quartets accelerates the horocycle rate [D] from N8; with finitely many off-line zeros the packet index is finite and positive [L*] (S16); level-one dressed positivity fails [L*] (L13). No contradiction comes from exact identities alone, from positivity, Euler products over integer norms, integrality or counting alone, from the functional equation with ζ's Gamma factor and count, from a regulator, or from any statement in law [L*].
 
 ## Validation tests for 2.4–2.8, 3 and 4
 
 | Test | Requirement |
 |---|---|
-| T1 | Implied by RH and not implying quasi-RH; for §3 also not implying AAL; or a method question implied by nothing about ζ's zeros |
+| T1 | Implied by RH, or by GRH for the family at hand, and implying neither RH nor AAL; or a method question implied by nothing about ζ's zeros. A half-plane below `7/8` satisfies T1 |
 | T2 | Answered by proving or refuting a stated inequality, identity or implication |
 | T3 | A named consequence for either answer |
 | T4 | Not decided by a finite rung |
@@ -349,9 +355,9 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 | T7 | Moves a wall; not a shape answered in Lean |
 | T8 | Not a named long-standing problem in disguise; a first step in corpus objects with one named obstacle |
 
-**No statement about the zeros of ζ below RH, quasi-RH and AAL passes all tests as a door.** Reason, in theorems: a graded statement is a level of the one scale (§1.2), and the first level above the sizes is a classical problem in each aspect; a statement off the scale is of one of four kinds, each with its kill (§1.5); the structural questions that had a first step are answered (§2.2, settled). The questions below are method and producer questions; each states its failed tests. Every one was checked against the corpus by sentence queries (log §3.18, §3.20).
+**No statement about the zeros of ζ below RH and AAL passes all tests as a door to the line.** Quasi-RH is a theorem [X]. What is open below RH and AAL on the scale is the exponent: a half-plane below `7/8`. Its first step, the row count of the binding bin (B174, §3), passes every test except T3: it is one-sided, a density estimate whose failure would contradict GRH for the twists. Below the room `[13/15,7/8]` the class of the producer has floors (§1.6), and the step from a half-plane to the line is RH on every receiver (§2.3). A statement off the scale is of one of four kinds, each with its kill (§1.5); the structural questions that had a first step are answered (§2.2, settled). The other questions below are method and producer questions; each states its failed tests. Every one was checked against the corpus by sentence queries (log §3.18, §3.20).
 
-## 2.4 Breakthrough question below RH and quasi-RH: is the cost of a window double exponential?
+## 2.4 Breakthrough question below RH: is the cost of a window double exponential?
 
 **Position.** Each window is a finite-height statement, and the corpus pays for it with a height whose triple logarithm is `c·a^{4/3}` [F]. The proved sign reaches the half-width `181/500`, just past the first contact [L*]. With this cost no verified height gives a window containing the contacts of `2` and `3`, and every rung of class C8 (windows, prime two-bumps, Li coefficients, theta ranks, Jensen degrees) inherits it.
 
@@ -373,26 +379,26 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 ## 2.5 Breakthrough question for the search for a producer: is there cancellation across the rows of a twist family?
 
-**Position.** The search has closed classes. Off the scale: homogeneous floors, unit gaps, certificates, amplification, symmetrization (linear and additive), replication by normal families, each with a kill (§1.5). On the scale: sizes (rung one), mean values (in law), regulators and paths (count of the limit, or RH at every parameter). A mechanism that reads the Euler product through the zeros has floor `½` [L*] (M2). One producer class is not closed: a completed sum with a direct bound and a comparison with its signal (§1.6). Its conversion from a law to a point is in Lean: the target occurs among its own twists, because the `n`-th power residue symbol of `a^n` is trivial, so a mean square over the family bounds the target [L*] (M3).
+**Position.** The search has closed classes. Off the scale: homogeneous floors, unit gaps, certificates, amplification, symmetrization (linear and additive), replication by normal families, each with a kill (§1.5). On the scale: sizes (rung one), mean values (in law), regulators and paths (count of the limit, or RH at every parameter). A mechanism that reads the Euler product through the zeros has floor `½` [L*] (M2). One class is a producer: a completed sum with a direct bound and a comparison with its signal (§1.6). It has given `Θ≤7/8` [X]. Its conversion from a law to a point is in Lean: the target occurs among its own twists, because the `n`-th power residue symbol of `a^n` is trivial, so a mean square over the family bounds the target [L*] (M3).
 
 **The law of a family is the scale (B177) [P].** The least exponent `θ` at which the mean square of the Möbius sums of length `Z` over the principal `n`-th-power twists of norm up to `Z^θ` is generic is `(n/(n−1))(2Θ−1)`: it is attained, and it is zero iff RH (SG1). For the full Jacobi family a generic mean square at `θ` bounds the abscissa of ζ and of every quadratic twist of odd squarefree modulus by `½+θ/4`, and the infimal exponent is zero iff RH and GRH for those twists hold (SG2). Genericity is cancellation: with positive squarefree weights no family is generic below `n/(n−1)` (SG3). A mean square over a family that contains its principal twists is therefore a receiver, of the strength of the half-plane `½+(1−1/n)θ/2`.
 
-**The class of the published design has floors [L*] (TB1–TB8, FCT11–FCT17).** In the twist exponent: `1` without slots (the dual diagonal), `10/9` with the optimal sextic multiplicative large sieve on the reflected rows, `n/(n−1)` with two or more row variables, `9/10` for the published geometry in its binding bin, `(5n−8)/(5(n−1))` for the floor bin summed trivially (`22/25` for the sextic symbol), `(n−2)/(n−1)` for rows of nonnegative rescaled length without the dual-length term (`4/5` for the sextic symbol). Reflected rows evaluated through the order-`n` twists return the zero. The sign needs an odd order above two (F3), and the free floor vanishes at order two only.
+**The class of the published design has floors [L*] (TB1–TB8, FCT11–FCT17).** In the twist exponent: `1` without slots (the dual diagonal), `10/9` with the optimal sextic multiplicative large sieve on the reflected rows, `n/(n−1)` with two or more row variables, `9/10` for the published geometry in its binding bin, `(5n−8)/(5(n−1))` for the floor bin summed trivially (`22/25` for the sextic symbol), `(n−2)/(n−1)` for rows of nonnegative rescaled length without the dual-length term (`4/5` for the sextic symbol). Reflected rows evaluated through the order-`n` twists return the zero. The three estimates that meet at the published point are the low bound, the row count of the bin `δ=79/204` and the dual length of the reflected rows [L*] (FCT11). The source is the cube identity of the cubic Gauss sum; its realizations with two or more row variables give nothing, and a lower frequency order is paid by the conductor of the rows (FCT14, FCT15).
 
-**Question (B175).** *Is there a bound for the nonprincipal rows of a twist family with cancellation across the rows: an estimate of the floor bin below trivial summation that does not pass through the twists and does not bound the principal rows?* Each saving lowers the twist exponent from `(5n−8)/(5(n−1))` toward `(n−2)/(n−1)`: for the sextic symbol the boundary moves from `13/15` toward `5/6`.
+**Question (B175).** *Is there a bound for the nonprincipal rows of a twist family with cancellation across the rows: an estimate of the floor bin below trivial summation, and a bound for the reflected rows in place of the dual-length term, neither passing through the twists nor bounding the principal rows?* A saving in the floor bin moves the boundary of the sextic design below `13/15`; without the dual-length term the class has the floor `5/6`.
 
 **What either answer gives.**
 | Answer | Effect |
 |---|---|
 | a saving across the rows of the floor bin | a boundary below `13/15`: the first estimate of a source programme beyond the published design; with the row count of B174 the room `[13/15,7/8]` is no floor of the route |
 | no saving: a family of rows on which trivial summation of the floor bin is sharp | half-planes through reflection, slots and large sieves end at `13/15` by a theorem about exponents and one model; RH needs a statement off the scale or a source outside the class |
-| below `(n−2)/(n−1)` in either case | not reached by the class at any order with a power source [D]: rows that reflection does not supply, or a source at order two, are separate inputs |
+| below `(n−2)/(n−1)` in either case | not reached by rows of nonnegative rescaled length at any frequency order `n≥3` [L*] (TB7): rows that reflection does not supply are a separate input |
 
 **First step and obstacle.** The floor bin of the geometry `(2/5,2/5,1/5)`, where with the row count `R=1−δ` every bin has the exponent `(q−δ/2)/5` in the prime amplitude `q` [L*] (TB6), written as one bilinear sum in the row index and the Möbius variable. Named obstacle: below `θ=1` a mean square over the family is outside the range of a large sieve (TB2); the corpus has the planar and the Eisenstein large sieve and no estimate with cancellation across a family, and by SG1 every such estimate that includes the principal twists is of the strength of its half-plane.
 
-**Tests.** T1: fails as a statement below quasi-RH: a producer, of the strength of the half-plane it gives [P]; it is implied by nothing about ζ's zeros only on the nonprincipal rows. T2–T4: pass. T5: calibrated on the published vertex (`θ=9/10`), on the floor geometry, and on positive weights, which are not generic below `n/(n−1)` [P]. T6: pass: the floors hold for trivial summation; cancellation across rows is not refuted in Lean. T7: moves Π163 below its floor bin. T8: cancellation in a family of twisted Möbius sums below the large-sieve range is a problem of classical type for the twist family [A].
+**Tests.** T1: passes as a half-plane below `13/15`, of the strength of the half-plane it gives [P]; it is not known to follow from GRH for the rows: RH-quality bounds for every nonprincipal row, summed trivially, stop at `13/15` [L*] (FCT12). T2–T4: pass. T5: calibrated on the published vertex (`θ=9/10`), on the floor geometry, and on positive weights, which are not generic below `n/(n−1)` [P]. T6: pass: the floors hold for trivial summation; cancellation across rows is not refuted in Lean. T7: moves Π163 below its floor bin. T8: cancellation in a family of twisted Möbius sums below the large-sieve range is a problem of classical type for the twist family [A].
 
-**The gate.** Whether the corpus has a producer at all is not this question but the native status of the two estimates at `7/8` (§3).
+**Limit.** The question concerns the exponent of the one producer. Inside the room `[13/15,7/8]` the open input is the row count of the binding bin (§3). No answer to either question reaches the line: the free floor of the class is `5/6` for the sextic design.
 
 ## 2.6 If positivity, Weil positivity and spectral methods are excluded
 
@@ -404,7 +410,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 - *Identities.* The Jacobi-sum sign law; Poisson summation in a row (one term) (FCT9, FCT10).
 - *Settled.* No bounded or Wiener constituent with a zero; the budget of the Gauss-sum probe; archimedean coefficient gaps do not separate the ordinates [KR].
 
-`[X]` under the constraint [A]: its large sieves are bounds and its identity is algebraic; the reflection of its completed theta row is a functional equation known through Eisenstein series on a cover [C]. The strict reading removes it.
+`[X]` under the constraint [A]: its large sieves are bounds and its identity is algebraic; the reflection of its completed theta row is a functional equation known through Eisenstein series on a cover [C]. Under the strict reading the half-plane `Re s>7/8` is not available: it is a theorem with one spectral input.
 
 **An observation that frees one tool [D].** `Σλ(n)Λ(n)n^{−s}=ζ′/ζ(s)−2ζ′/ζ(2s)` has in `Re s>½` the pole at `1` and poles exactly at the zeros of ζ. So the top layer of `Λ` and of its Liouville twist coincide, and AAL is invariant under the twist. The parity blindness of bilinear statements [L*] (W3) is therefore no obstruction to AAL, while it is one to every sign. What a bilinear proof of AAL has to use, and what every integer-norm model lacks, is Poisson summation in the cofactor variables with remainders of size `O(1)`.
 
@@ -421,23 +427,23 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 ## 2.7 If RH is a physical phenomenon in AdS with a modular horizon
 
-**What is proved [L*]/[N].** The resonances of the modular horizon are the zeros of `ξ(2s)`. RH ⇔ every pulse rings down at the quarter rate ⇔ positivity of the reflection Krein forms ⇔ one cavity energy decays at `y^{¾−ε}`. The supremum of the universal horocycle exponents is `1−Θ/2`; with a nonzero Euler polynomial filter `P(y d/dy)` it is `1−Θ∞/2`, and no filter passes `3/4`; ZAL ⇔ filtered rates approach `3/4`; AAL ⇔ no filter accelerates past the unfiltered optimum (N8 [S]). Every regulator of the corpus has the count of its limit (FFA24–FFA26). At every fixed scattering height the energy floor is RH (H1). The stratum of exceptional eigenvalues of congruence quotients is empty below `3/16` (J7).
+**What is proved [L*]/[N].** The resonances of the modular horizon are the zeros of `ξ(2s)`. RH ⇔ every pulse rings down at the quarter rate ⇔ positivity of the reflection Krein forms ⇔ one cavity energy decays at `y^{¾−ε}`. The supremum of the universal horocycle exponents is `1−Θ/2`; with a nonzero Euler polynomial filter `P(y d/dy)` it is `1−Θ∞/2`, and no filter passes `3/4`; ZAL ⇔ filtered rates approach `3/4`; AAL ⇔ no filter accelerates past the unfiltered optimum (N8 [S]). Every regulator of the corpus has the count of its limit (FFA24–FFA26). At every fixed scattering height the energy floor is RH (H1). The stratum of exceptional eigenvalues of congruence quotients is empty below `3/16` (J7). With `Θ≤7/8` [X] the horizon has a resonance-free strip of width `1/16` and every pulse relaxes at a universal horocycle exponent `≥9/16` [D]: the horizon rings down at a rate, proved through a family of twists and not through a principle of the horizon.
 
 **Readings [D] (D7).**
 - *World I is ordinary ringdown, and it is removable.* A finite top layer is a finite set of least-damped modes; a differential filter of degree twice their number removes them from every pulse. AAL says that no finite filter helps.
 - *World II is a tail.* Modes approach a rate above the symmetric one and no filter reaches `3/4`.
 - *RH is a saturated bound.* The symmetry of the resonances bounds the relaxation exponent by `3/4`; RH says the bound is attained. What physics has to supply is a lower bound for the damping of the slowest mode, with no margin.
 
-**Question (B178).** *Is there a relaxation lower bound for a horizon with a cusp: a principle that gives the scattering matrix `ξ(2s−1)/ξ(2s)` a resonance-free strip of positive width?* A strip of width `β` is the half-plane `Θ≤1−2β` [D]. For open hyperbolic systems with a fractal trapped set, strips beyond the pressure bound are theorems, proved by an uncertainty principle and not by positivity [C]. The modular horizon is not such a system: its trapped set is everything except the excursions into one cusp [C].
+**Question (B178).** *Is there a relaxation lower bound for a horizon with a cusp from a principle of the horizon: a proof of a resonance-free strip for the scattering matrix `ξ(2s−1)/ξ(2s)` that uses no family of twists, or a strip wider than `1/16`?* A strip of width `β` is the half-plane `Θ≤1−2β` [D]; the width `1/16` is [X]. For open hyperbolic systems with a fractal trapped set, strips beyond the pressure bound are theorems, proved by an uncertainty principle and not by positivity [C]. The modular horizon is not such a system: its trapped set is everything except the excursions into one cusp [C].
 
 **What the corpus says about the candidates.** A Hölder dynamical realization of ζ gives a zero-free strip, and the oscillation estimate fails on additive realizations of the prime lengths [N] (ArithmeticResonanceTheory). Graph horizons with commuting Hecke operators and slow resonances exist [KR]. Under deformation of the group, cusp forms are expected to dissolve into resonances near the unitary axis [C]: a principle that holds for every cusped surface of the same area is false. So the principle has to use the arithmetic of the group, and Hecke symmetry alone is not enough.
 
 | Answer | Effect |
 |---|---|
-| A gap of any width | the first native producer: a half-plane; the edge world is excluded |
-| A cusped model with the same local dynamics and resonances approaching the axis, in Lean | the gap is not a property of the horizon; the physical reading supplies receivers and no source |
+| A gap from a principle of the horizon, of any width | a second producer, independent of the twist family; its width against `1/16` compares the two mechanisms; a width above `1/16` is a half-plane below `7/8` |
+| A cusped model with the same local dynamics and resonances approaching the axis, in Lean | the gap of `1/16` is a property of the arithmetic and not of the horizon; the physical reading supplies receivers and no source |
 
-**Tests.** T1: fails; a producer of ≥qRH strength. T2: passes for the calibration; the principle is a research direction. T5: has to fail on non-arithmetic cusped surfaces and on graph horizons with slow resonances. T8: no first step beyond the two calibrations.
+**Tests.** T1: passes as a half-plane when the width exceeds `1/16`; below that width it is a second proof of a theorem. T2: passes for the calibration; the principle is a research direction. T5: has to fail on non-arithmetic cusped surfaces and on graph horizons with slow resonances. T8: no first step beyond the two calibrations.
 
 **Limit.** A gap is a half-plane; equal damping is the maximal gap and is not reached by a principle with a margin. The regulator question B117 stands in sharpened form: a regulator with a sign, a unit gap or an index bound before the limit; the clock, the tower and the heat flow have none.
 
@@ -470,7 +476,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 | Field | Programme | Where it ends |
 |---|---|---|
-| reciprocity sources | FCT, MMD | one implication with two estimates; budget room `[13/15,7/8]`; the law of a twist family is a level of the scale [P]; floors of reflection and large sieves in the twist exponent |
+| reciprocity sources | FCT, MMD | the half-plane `Re s>7/8` [X]; in Lean one implication with two estimates; budget room `[13/15,7/8]`; the law of a twist family is a level of the scale [P]; floors of reflection and large sieves in the twist exponent |
 | gap theory of finite strata | FFA, ELT | receivers off the scale; every finite datum realized under one structure; the weighted current open |
 | conversion theory | CTZ, IRP | bounded and Wiener classes closed |
 | relaxation theory of horizons | HAT, BHR, AHMH, FFA | regulators with the count of their limit; exponents `1−Θ/2`, `1−Θ∞/2` |
@@ -492,7 +498,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 **Main conjecture.** A multiplicative system over natural norms with unit multiplicity has no finite datum (AAL); in strong form, no zero off the line. **Milestones.** M1 the defect of the finite-layer models. M2 the tangent data of `μ`, `λ` and of additive twists (A137). M3 the weighted current for one quartet. M4 B145. M5 an inequality of unit-gap kind.
 
-**Status [A].** The field has rigidity theorems and models and no inequality. If its first inequality does not exist, the statement of §1.12 stands: natively every route is a receiver.
+**Status [A].** The field has rigidity theorems and models and no inequality. If its first inequality does not exist, the statement of §1.12 stands: every route but the family of twists is a receiver, and that producer has floors above the line.
 
 ## 2.10 New field for AAL: additive arithmetic of finite layers
 
@@ -540,7 +546,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 |---|---|
 | What it is about | Resonance-free strips for horizons of finite volume with a cusp, where the escape is through the cusp and the trapped set is not fractal; the role of the arithmetic of the group in such a strip |
 | What it is like | The theory of essential spectral gaps of open systems [C], transplanted to a setting in which its hypothesis fails and the gap, if any, is arithmetic |
-| Established | Exponents `1−Θ/2` and `1−Θ∞/2`; filters; regulators with the count of their limit; `3/16` for the bound states of congruence quotients; Hölder realizations give a strip and additive realizations have no oscillation estimate [L*]/[N] |
+| Established | A resonance-free strip of width `1/16` for the modular horizon, through a family of twists [X]; exponents `1−Θ/2` and `1−Θ∞/2`; filters; regulators with the count of their limit; `3/16` for the bound states of congruence quotients; Hölder realizations give a strip and additive realizations have no oscillation estimate [L*]/[N] |
 | Criteria | Built from the horizon and the places, never from the zeros. False for a non-arithmetic cusped surface of the same area and for graph horizons with slow resonances. Not a consequence of Hecke symmetry alone. A gap with a margin is a half-plane; the maximal gap needs an equality case |
 | Questions it must answer | B178. Which property of the cusp excursions of an arithmetic group fails under deformation of the group? Is there a horizon of this family with isolated least-damped modes, as a calibration of world I? What is the horizon meaning of the quantum of a multiplicity? |
 | Tools it develops | Transfer operators of the cusp excursions; uncertainty estimates for sets that are not fractal; Euler filters; the fixed-height floor |
@@ -548,7 +554,7 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 | Language | gap, slow mode, filter, excursion, saturation |
 | Mechanisms | Built on: the receivers and the filters. To discover: a principle that separates the modular group from its deformations |
 
-**Main conjecture.** An arithmetic cusped horizon has a resonance-free strip. **Milestones.** M1 the two calibrations in Lean. M2 a gap in a toy family where it is a theorem. M3 any gap for the modular horizon. M4 saturation.
+**Main conjecture.** An arithmetic cusped horizon has a resonance-free strip for a reason of the horizon. **Milestones.** M1 the two calibrations in Lean. M2 a gap in a toy family where it is a theorem. M3 a gap for the modular horizon proved from the horizon; a gap above `1/16`. M4 saturation.
 
 ## 2.13 New field for RH as topology or geometry: symplectic index theory of the aperture
 
@@ -614,41 +620,46 @@ A16 numerical `r,m,q`; A20 a Jensen rung toward the saddle scale; A24 certified 
 
 **Order of work [A].** A133; the Hamiltonian form of the canonical system (first step of B179); a quadratic count. **Decisive test.** A construction whose Bézout holds for an integer-norm system with a finite layer, for the Liouville twist at rung one, for a wrong constant, or along a path of squares, is wrong [L*].
 
-## 3. The one big question: are the two estimates theorems at `7/8`?
+## 3. The one big question: does the half-plane move below `7/8`?
 
-**Why not a question about ζ.** No statement about the zeros of ζ below AAL and quasi-RH passes the tests (verdict before §2.4). Natively every route is a receiver, every kind of statement off the scale has its kill, and every regulator has the count of its limit. The repository holds one producer, external and unchecked here. The frontier map states that the native graph has no unconditional `7/8` theorem [F].
+**Where the question sits.** Quasi-RH is a theorem: `Θ≤7/8` [X]. Its formalization in Lean is work (A118a–d). The step from the half-plane to the line is RH on every receiver of the corpus (§2.3), and no statement about the zeros below RH and AAL leads to the line (verdict before §2.4). What is open below RH and AAL on the scale is the exponent.
 
-**What is in Lean.** The route is one implication (`zetaZeroAbscissa_le_of_two_estimates`): over `ℚ(ζ₃)`, a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with the corrected signal, with `a₁,a₂<β` common to all ray class characters whenever the family is zero-free in `Re s>β`, for every `β>σ₀`, give `Θ≤σ₀` [L*] (N5). The source identity, the cubic residue with its Gauss coefficients, the large sieves over the plane and over the Eisenstein integers, the buffered bins and the exponent budget are in Lean [L*]/[F].
+**What is in Lean [L*].** The published point is a vertex of three estimates: the low bound, the row count of the bin `δ=79/204`, and the dual length of the reflected rows (FCT11). At the published geometry the exponent of a bin `δ` with prime amplitude `q` and row count `R` is `−1/48+2δ/3+q/6−(13/16)(1−R)`; in the binding bin with the published count `R=21766/32589` it is `−7/30672` (`endpointExponent_published`, `rowCount_binding`, `endpoint_binding_bin`). The published count is the density count `1−δ` plus a positive excess. As the top `β` of the zeros runs through `[13/15,7/8]` the count of that bin changes by less than `10⁻⁴` (`rowCountAt_binding_ge`): the count does not improve with the half-plane. For every count `R≥21766/32589−10⁻⁴` in that bin no geometry reaches `σ₀=7/8−1/2500` (TB5). With the count `1−δ` in every bin the geometry `(2/5,2/5,1/5)` has no positive bin and gives `13/15` (TB6).
 
-**Question (B181).** *Is the comparison estimate a theorem: does the completed sum built from the cubic residue, after removal of the cube indices, differ from the corrected signal of every ray class character of `ℚ(ζ₃)` by `Z^{β−m}`, with one `m>0` for the whole family and with corrections `H_η` that are holomorphic and nonvanishing right of `7/8` and bounded on `Re s≥2`?* The frontier map lists exactly these three items as open [F] (A118a–c). The direct estimate is the second half (A118d).
+**Question (B174).** *Is the row count of the binding bin smaller than the published one: is the number of nonprincipal sextic twists of norm up to `U` in the bin `δ=2a−1=79/204`, the twists that the zero detector marks at `a=283/408`, at most `U^{R}` with `R<21766/32589−10⁻⁴`?* It is a zero-density count for the family; the count of the density hypothesis is `R=1−δ=125/204`.
 
 **Why this question.**
-- It is the only place where a producer exists, and the corpus's own analysis of it found one circular step: the reflected rows evaluated through the same twists return the zero [L*] (FCT16). A check of the other steps is not routine.
-- It is below quasi-RH in kind: an identity between explicit sums with an error estimate, uniform in a family; no information on zeros enters except the hypothesis of the continuation step.
-- Its answer decides the premise of several routes at once.
+- It is the first open step of the scale below a theorem, and inside the class it is necessary: without a smaller count in the binding bin no geometry moves (TB5).
+- It is below RH and AAL: a zero-density estimate for one family, implied by GRH for the twists.
+- Every improvement of the count moves the proved half-plane, and with it every receiver of the scale: the rung, the level on large primes, the width of the resonance-free strip, the horocycle exponent (A138).
+- The count is insensitive to the half-plane already proved, so the motion has to come from a density input that the published proof does not use.
 
-**What either answer gives.**
+**What an answer gives.**
 | Answer | Effect |
 |---|---|
-| Yes, and the direct estimate holds | native `Θ≤7/8`: the edge world is excluded; `Θ∞<1`; the return transfer is exactly RH (FCT4); the three rungs hold with `b=7/8` (SA4): rung up to `4/3`, level `11/8` on large primes, return-free windows; family continuation is a live route with the room `[13/15,7/8]` as its frontier (B174) |
-| Yes for the comparison, the direct estimate fails | the failing estimate has a named exponent in the budget calculus; the boundary of what holds is a theorem |
-| No | the corpus is producer-free; §2.5 and §2.9 are the frame |
+| a count below the published one in the binding bin | `Θ≤σ₀` with `σ₀<7/8`: the first motion of the exponent; the vertex is a point of the estimates and not of the method |
+| the count `1−δ` in every bin | `Θ≤13/15`: the rung `κ<15/11`, the level `41/30` on large primes, a strip of width `1/15`, the horocycle exponent `≥17/30` [D] |
+| below `13/15` | not by a count: the floor bin summed trivially stops there for every count (B175, §2.5) |
 
-**First step and obstacle.** The Gauss-series formulas of the cubic residue for `Re s>2` are in Lean and its all-height Fourier/Bessel formulas are graded [S]; the first step is the removal of the cube indices on the unit cusp. Named obstacle: uniformity in the character of the height comparison, for which the receiver `heckeHalfPlane_of_family_height_estimates` fixes the form of the required bound.
+**First step and obstacle.** The row count of [X] is a sextic-sieve count of rows with their inverse witnesses. The first step is its statement in the binding bin as one inequality for the witnesses of that bin, beside the budget. Named obstacle: the optimal sextic multiplicative large sieve is `K+N+K^{5/6}N^{1/3}+K^{1/3}N^{5/6}` [P] (card §5); a count below the published one needs a density argument that is not a large sieve, or a sieve restricted to the witnesses of the bin.
 
-**Tests.** T1: a producer lemma, implied by nothing about ζ's zeros; alone it implies no half-plane. T2–T4: pass. T5: the comparison has to fail for sources of even order, where the sign is the parity of the character [L*] (F3). T6: pass. T7: moves Π93, Π159, Π162. T8: not a named problem; its inputs are those of the external source, unchecked here.
+**Tests.** T1: passes: implied by GRH for the sextic twists; it gives a half-plane in `[13/15,7/8)` and implies neither RH nor AAL. T2: pass. T3: fails: the question is one-sided; a negative answer would contradict GRH for the twists. T4: pass. T5: calibrated on the vertex, on its sensitivity `10⁻⁴`, and on the floor geometry. T6: pass. T7: moves Π163 inside its room. T8: a zero-density estimate for a family of Hecke `L`-functions, of classical type [A]; the first step is in the objects of [X] and of the budget.
 
-**Dependence.** The question rests on `[X]`. It asks for no step of `[X]` to be trusted.
+**Limit.** The question does not lead to the line. Its best outcome is `13/15`; the class of the producer ends at `5/6` for the sextic design (§1.6); from every half-plane the step to the line is RH.
+
+**Dependence.** On [X].
 
 ### Alternatives considered
 | Question | Effect | Verdict |
 |---|---|---|
 | The cost of a window (B176, §2.4) | the verification ladder leaves the first contact, or is retired | native; passes; produces no sign beyond verified heights |
 | Polar orthogonality (B104) | the critical curve becomes one inequality | native; open; produces no sign |
-| Cancellation across the rows of a twist family (B175, §2.5) | a boundary below the floor bin of the class | a producer of the strength of its half-plane [P]; fails T1 |
+| The steps of [X] that the Lean graph lacks (A118a–d; B181 is a theorem [X]) | the half-plane in the native graph | just work |
+| Cancellation across the rows of a twist family (B175, §2.5) | a boundary below the floor bin of the class | a producer question; a half-plane below `13/15`; not known to follow from GRH for the rows |
 | The least remainder of the integer count of a fake (B182, §4) | the count as a structure with or without a model | a method question on models; its negative side is of GRH type |
 | The weighted current (B145, §2.6) | AAL without positivity | AAL strength; fails T1 |
-| A relaxation lower bound (B178, §2.7); a Maslov index (B179, §2.8); a quadratic count (B87, B169); `JasDressedPSD 1` (B160); the sign on step packets (B152) | a half-plane or RH | producers; fail T1 |
+| A relaxation lower bound from the horizon (B178, §2.7) | a second producer of a half-plane | no first step beyond two calibrations |
+| A Maslov index (B179, §2.8); a quadratic count (B87, B169); `JasDressedPSD 1` (B160); the sign on step packets (B152) | RH | producers of RH strength; fail T1 |
 | What excludes a finite stratum with both structures (B157) | a calibration for the atoms | a method question; proves no atom |
 | Deuring–Heilbronn for ζ (B141); B13; Landing | atoms | no first step |
 | Depth density `o(T)` (B57); arithmetic control beyond frequency one (B150) | first near-line inputs past the diagonal | census problems |

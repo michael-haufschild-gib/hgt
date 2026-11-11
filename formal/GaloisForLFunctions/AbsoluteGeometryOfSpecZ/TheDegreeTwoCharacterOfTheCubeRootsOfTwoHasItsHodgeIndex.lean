@@ -651,7 +651,8 @@ theorem heckeMangoldt_cubicTwoHecke_split_eq {m : ℕ} (hm : 1 ≤ m) :
   congr 1
   split_ifs with hu
   · have hv : v = 1 := by rw [hu, one_mul] at huv; exact huv
-    rw [hu, hv]; norm_num
+    rw [hu, hv, show (1 : O) + 1 = 2 by norm_num, map_ofNat]
+    norm_num
   · have hv : v = u ^ 2 := by
       calc v = u ^ 3 * v := by rw [hu3, one_mul]
         _ = u ^ 2 * (u * v) := by ring
