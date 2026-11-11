@@ -43,8 +43,10 @@ at the same normalization.
 - `HodgeTheoryOfAFixedPart/TheNormalFormOfThePairingOfTheDegreePoints`:
   literal contacts, counterterm and pole degrees.
 
-No new Lean theorem yet. Algebraic and analytic claims above remain to be
-proved; a growth-only intermediate result does not finish the target.
+The finite contact reduction is formalized in
+`PowerTailContactDirichletCoefficients.combForm_powerTailWeight_eq`.
+Analytic growth and convergence remain open; a growth-only intermediate
+result does not finish the target.
 
 ## Arithmetic reduction
 
@@ -56,3 +58,11 @@ costs `O(N^(1-2a))`, while absolute jet and counterterm bounds cost one
 logarithm. This reduces the lower analytic obstruction to the summatory
 Dirichlet coefficient
 `n^(-2a)Σ_{d|n}Λ(d)d^a - ζ(1+a)n^(-a)`.
+
+The convolution decomposition is
+`C_a-ζ(1+a)w_a = w_(2a)*(w_a(Λ-1)) + H_a`, where
+`H_a=w_(2a)*w_a-ζ(1+a)w_a`. Integral comparison and the tail of the
+`(1+a)`-series give summatory `H_a=O(N^(1-2a))`.
+Weighted Möbius inversion preserves strict growth exponents
+`θ≥1-2a`; thus the contact defect has the same growth class as
+`w_a(Λ-1)`. This avoids a separate complex pole argument for growth.

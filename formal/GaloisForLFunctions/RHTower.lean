@@ -4669,6 +4669,7 @@ import GaloisForLFunctions.RHTower.DirichletRigidity
 import GaloisForLFunctions.RHTower.DirichletSecondDifference
 import GaloisForLFunctions.RHTower.DirichletShapeCharge
 import GaloisForLFunctions.RHTower.DirichletSummatorySwap
+import GaloisForLFunctions.RHTower.PowerGrowthUnderArithmeticConvolution
 import GaloisForLFunctions.RHTower.DirichletTermMean
 import GaloisForLFunctions.RHTower.DirichletUniformAbel
 import GaloisForLFunctions.RHTower.DirichletUniqueness

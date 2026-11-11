@@ -18826,6 +18826,7 @@ lemma conjugateSource_zProfile_transform (G : rationalExtension) (H : SL(2, ℂ)
       fun w => star (extendedComplexCharacter G) * star (cubicSourceResidualFunction (H • upperPoint w v hv)) := by
     funext w
     rw [mul_smul, cubicSourceResidualFunction_automorphy G, star_mul]
+    exact mul_comm _ _
   rw [he]
   exact horizontalWirtingerZ_const_mul (star (extendedComplexCharacter G))
     (fun w : ℂ => star (cubicSourceResidualFunction (H • upperPoint w v hv))) z
@@ -19045,7 +19046,9 @@ lemma finiteMellin_linearCombination_entire {ι : Type*} [Fintype ι]
       Differentiable ℂ (mellin (fun v => ∑ i, weight i * f i v)) := by
   have hi (i : ι) (s : ℂ) : Integrable (fun v : ℝ => (v : ℂ) ^ (s - 1) * (weight i * f i v))
       (volume.restrict (Set.Ioi 0)) := by
-    simpa only [MellinConvergent, smul_eq_mul] using (hc i s).const_smul (weight i)
+    have hh := (hc i s).const_smul (weight i)
+    simp only [MellinConvergent, smul_eq_mul, IntegrableOn] at hh
+    convert! hh using 1
   have hs (s : ℂ) : MellinConvergent (fun v => ∑ i, weight i * f i v) s := by
     unfold MellinConvergent
     simp only [smul_eq_mul, Finset.mul_sum]
@@ -19105,22 +19108,39 @@ lemma horizontalWirtingerBar_finiteCombination {ι : Type*} [Fintype ι]
   unfold horizontalWirtingerBar
   ring
 
+lemma conjugateSource_shift_horizontal_differentiableAt (a z : ℂ) (v : ℝ) (hv : 0 < v) :
+    DifferentiableAt ℝ (fun w => star (cubicSourceResidualFunction (upperPoint (w + a) v hv))) z := by
+  have hf := conjugateSource_translate_horizontal_differentiableAt (complexTranslation a) v hv z
+  have he : (fun w => star (cubicSourceResidualFunction (complexTranslation a • upperPoint w v hv))) =
+      fun w => star (cubicSourceResidualFunction (upperPoint (w + a) v hv)) := by
+    funext w
+    rw [complexTranslation_action, add_comm a w]
+  rw [he] at hf
+  exact hf
+
+lemma conjugateSource_shift_barProfile (a : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) a v =
+      horizontalWirtingerBar (fun w => star (cubicSourceResidualFunction (upperPoint (w + a) v hv))) 0 := by
+  rw [cuspBarProfile_positive _ _ _ hv]
+  exact (horizontalWirtingerBar_translate
+    (fun w => star (cubicSourceResidualFunction (upperPoint w v hv))) a).symm
+
 theorem traceTwistedBarProfile_positive (c : O) (hc : c ≠ 0)
     [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
     (v : ℝ) (hv : 0 < v) :
     traceTwistedBarProfile c hc φ v =
       horizontalWirtingerBar (traceTwistedConjugateSource c hc φ v hv) 0 := by
-  have hd (h : O ⧸ Ideal.span {c}) : DifferentiableAt ℝ
-      (fun z => star (cubicSourceResidualFunction (upperPoint (z + thetaFourierTranslation c h) v hv))) 0 := by
-    have hf := conjugateSource_translate_horizontal_differentiableAt 1 v hv (thetaFourierTranslation c h)
-    simp only [one_smul] at hf
-    have hp : DifferentiableAt ℝ (fun z : ℂ => z + thetaFourierTranslation c h) 0 := by fun_prop
-    exact (by simpa only [zero_add] using hf).comp 0 hp
-  rw [traceTwistedConjugateSource, horizontalWirtingerBar_finiteCombination _ _ _ hd]
-  unfold traceTwistedBarProfile
+  let weight := finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ
+  let f : (O ⧸ Ideal.span {c}) → ℂ → ℂ :=
+    fun h z => star (cubicSourceResidualFunction (upperPoint (z + thetaFourierTranslation c h) v hv))
+  have hd (h : O ⧸ Ideal.span {c}) : DifferentiableAt ℝ (f h) 0 :=
+    conjugateSource_shift_horizontal_differentiableAt (thetaFourierTranslation c h) 0 v hv
+  have he := horizontalWirtingerBar_finiteCombination weight f 0 hd
+  refine Eq.trans ?_ he.symm
   apply Finset.sum_congr rfl
   intro h hh
-  rw [horizontalWirtingerBar_translate, cuspBarProfile_positive _ _ _ hv]
+  exact congrArg (fun q : ℂ => weight h * q)
+    (conjugateSource_shift_barProfile (thetaFourierTranslation c h) v hv)
 
 /-- The normalized theta derivative is an entire Mellin profile. -/
 def finiteThetaBarProfile (c : O) (hc : c ≠ 0)
@@ -19135,12 +19155,20 @@ theorem finiteThetaBarProfile_mellin_entire (c : O) (hc : c ≠ 0)
   have hf := traceTwistedBarProfile_mellin_entire (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ)
   constructor
   · intro s
-    simpa only [finiteThetaBarProfile, smul_eq_mul] using (hf.1 s).const_smul rationalSourceThetaScalar⁻¹
+    unfold finiteThetaBarProfile
+    have hh := (hf.1 s).const_smul rationalSourceThetaScalar⁻¹
+    simp only [smul_eq_mul] at hh
+    convert! hh using 1
   · have he : mellin (finiteThetaBarProfile c hc Ψ) =
         fun s => rationalSourceThetaScalar⁻¹ * mellin
           (traceTwistedBarProfile (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ)) s := by
       funext s
-      exact mellin_const_smul _ s _
+      unfold finiteThetaBarProfile
+      have hh := mellin_const_smul
+        (traceTwistedBarProfile (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ)) s
+        rationalSourceThetaScalar⁻¹
+      simp only [smul_eq_mul] at hh
+      convert! hh using 1
     rw [he]
     exact hf.2.const_mul _
 
@@ -19190,5 +19218,676 @@ theorem thetaDerivativeBesselProfile_mellin_entire (c : O) (hc : c ≠ 0)
         (thetaDerivativeBesselProfile (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom))) :=
   mellin_entire_of_positive_eq _ _ (finiteThetaBarProfile_eq_bessel c hc Ψ)
     (finiteThetaBarProfile_mellin_entire c hc Ψ)
+
+/-- A finite cusp, its representative, and the matrix relating their coordinates. -/
+structure SourceCuspDatum where
+  gamma : rationalExtension
+  index : Fin 3
+  lower_ne_zero :
+    (integralComplexMatrix (gamma : SL(2, O)) * integralComplexMatrix (cuspRepresentative index)) 1 0 ≠ 0
+
+namespace SourceCuspDatum
+
+def matrix (d : SourceCuspDatum) : SL(2, ℂ) :=
+  integralComplexMatrix (d.gamma : SL(2, O)) * integralComplexMatrix (cuspRepresentative d.index)
+
+def point (d : SourceCuspDatum) : ℂ := d.matrix 0 0 / d.matrix 1 0
+def dualPoint (d : SourceCuspDatum) : ℂ := -d.matrix 1 1 / d.matrix 1 0
+def heightScale (d : SourceCuspDatum) : ℝ := ‖d.matrix 1 0‖ ^ 2
+def multiplier (d : SourceCuspDatum) : ℂ := -star (extendedComplexCharacter d.gamma) / (d.matrix 1 0) ^ 2
+
+lemma heightScale_pos (d : SourceCuspDatum) : 0 < d.heightScale :=
+  sq_pos_of_pos (norm_pos_iff.mpr d.lower_ne_zero)
+
+lemma multiplier_norm (d : SourceCuspDatum) : ‖d.multiplier‖ = d.heightScale⁻¹ := by
+  rw [multiplier, norm_div, norm_neg, norm_star, norm_extendedComplexCharacter, norm_pow, one_div]
+  rfl
+
+lemma multiplier_ne_zero (d : SourceCuspDatum) : d.multiplier ≠ 0 := by
+  apply norm_ne_zero_iff.mp
+  rw [d.multiplier_norm]
+  exact inv_ne_zero d.heightScale_pos.ne'
+
+end SourceCuspDatum
+
+lemma exists_sourceCuspDatum (a c : O) (hc : c ≠ 0) :
+    ∃ d : SourceCuspDatum, d.point = ringComplex a / ringComplex c := by
+  obtain ⟨M, hMc, hratio⟩ := exists_integral_matrix_cusp_ratio a c hc
+  obtain ⟨G, j, T, hT, _, _, hM⟩ := three_cusp_decomposition M
+  let g := integralComplexMatrix (G : SL(2, O)) * integralComplexMatrix (cuspRepresentative j)
+  have he : integralComplexMatrix M = g * integralComplexMatrix T := by rw [hM, map_mul, map_mul]
+  have ht : integralComplexMatrix T 1 0 = 0 := by
+    change ringComplex (T 1 0) = 0
+    rw [hT, map_zero]
+  have hmc : (g * integralComplexMatrix T) 1 0 ≠ 0 := by
+    rw [← he]
+    exact ringComplex_ne_zero hMc
+  obtain ⟨hg, hr⟩ := upperTriangular_right_cusp_ratio g (integralComplexMatrix T) ht hmc
+  refine ⟨⟨G, j, hg⟩, ?_⟩
+  change g 0 0 / g 1 0 = _
+  rw [← hr, ← he]
+  exact hratio
+
+def rationalSourceCusp (a c : O) (hc : c ≠ 0) : SourceCuspDatum :=
+  (exists_sourceCuspDatum a c hc).choose
+
+lemma rationalSourceCusp_point (a c : O) (hc : c ≠ 0) :
+    (rationalSourceCusp a c hc).point = ringComplex a / ringComplex c :=
+  (exists_sourceCuspDatum a c hc).choose_spec
+
+def sourceCuspZFamily (j : Fin 3) (z : ℂ) : ℝ → ℂ :=
+  cuspZProfile (fun w => star (cubicSourceResidualFunction
+    (integralComplexMatrix (cuspRepresentative j) • w))) z
+
+theorem SourceCuspDatum.reflection (d : SourceCuspDatum) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point v =
+      d.multiplier / (v : ℂ) ^ 2 * sourceCuspZFamily d.index d.dualPoint ((d.heightScale * v)⁻¹) := by
+  have he := conjugateSource_barProfile_reflection_rational d.gamma d.matrix
+    (integralComplexMatrix (cuspRepresentative d.index)) rfl d.lower_ne_zero v hv
+  rw [reflectedCuspProfile, Complex.cpow_neg, Complex.cpow_ofNat] at he
+  change _ = d.multiplier * (((v : ℂ) ^ 2)⁻¹ *
+    sourceCuspZFamily d.index d.dualPoint ((d.heightScale * v)⁻¹)) at he
+  exact he.trans (by ring)
+
+theorem SourceCuspDatum.mellin_entire (d : SourceCuspDatum) :
+    ((∀ s : ℂ, MellinConvergent
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point) s) ∧
+      Differentiable ℂ (mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point))) ∧
+    ((∀ s : ℂ, MellinConvergent (sourceCuspZFamily d.index d.dualPoint) s) ∧
+      Differentiable ℂ (mellin (sourceCuspZFamily d.index d.dualPoint))) :=
+  conjugateSource_three_cusp_mellin_entire_both d.gamma d.index d.matrix rfl d.lower_ne_zero
+
+theorem SourceCuspDatum.mellin_reflection (d : SourceCuspDatum) (s : ℂ) :
+    mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point) (2 * s) =
+      d.multiplier * (d.heightScale : ℂ) ^ (2 - 2 * s) *
+        mellin (sourceCuspZFamily d.index d.dualPoint) (2 - 2 * s) :=
+  conjugateSource_cusp_mellin_reflection d.gamma d.matrix
+    (integralComplexMatrix (cuspRepresentative d.index)) rfl d.lower_ne_zero s
+
+def finiteTwistCusp (c : O) (hc : c ≠ 0) (h : O ⧸ Ideal.span {c}) : SourceCuspDatum :=
+  rationalSourceCusp (-3 * Quotient.out h) c hc
+
+lemma finiteTwistCusp_point (c : O) (hc : c ≠ 0) (h : O ⧸ Ideal.span {c}) :
+    (finiteTwistCusp c hc h).point = thetaFourierTranslation c h := by
+  rw [finiteTwistCusp, rationalSourceCusp_point, thetaFourierTranslation]
+  simp only [map_mul, map_neg, map_ofNat]
+
+/-- Every finite twist reflects into the three actual cusp profiles with exact weights. -/
+theorem traceTwistedBarProfile_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (v : ℝ) (hv : 0 < v) :
+    traceTwistedBarProfile c hc φ v =
+      ∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+        ((finiteTwistCusp c hc h).multiplier / (v : ℂ) ^ 2 *
+          sourceCuspZFamily (finiteTwistCusp c hc h).index (finiteTwistCusp c hc h).dualPoint
+            (((finiteTwistCusp c hc h).heightScale * v)⁻¹)) := by
+  unfold traceTwistedBarProfile
+  apply Finset.sum_congr rfl
+  intro h hh
+  rw [← finiteTwistCusp_point c hc h, (finiteTwistCusp c hc h).reflection v hv]
+
+/-- Factoring the ramified prime leaves a unit times a primary ideal generator. -/
+lemma exists_unit_lambda_primary_factor (h : O) (hh : h ≠ 0) :
+    ∃ (u : Oˣ) (m : ℕ) (I : Ideal O), primaryIdealGenerator I ≠ 0 ∧
+      h = ((u : O) * lambda ^ m) * primaryIdealGenerator I := by
+  obtain ⟨⟨m, I⟩, he⟩ := lambdaFactorEquiv.surjective
+    (⟨Ideal.span {h}, Ideal.span_singleton_eq_bot.not.mpr hh⟩ : NonzeroIdeal)
+  have hs : Ideal.span {lambda ^ m * primaryIdealGenerator I.val} = Ideal.span {h} :=
+    (lambdaFactor_generator_span m I).trans (congrArg Subtype.val he)
+  obtain ⟨x, hx⟩ := Ideal.span_singleton_le_span_singleton.mp hs.ge
+  obtain ⟨y, hy⟩ := Ideal.span_singleton_le_span_singleton.mp hs.le
+  have hxy : y * x = (1 : O) := by
+    apply mul_left_cancel₀ hh
+    calc
+      h * (y * x) = (lambda ^ m * primaryIdealGenerator I.val) * x := by rw [hy]; ring
+      _ = h := hx.symm
+      _ = h * 1 := (mul_one h).symm
+  let u : Oˣ := ⟨x, y, by simpa only [mul_comm] using hxy, hxy⟩
+  refine ⟨u, m, I.val, I.property, ?_⟩
+  change h = (x * lambda ^ m) * primaryIdealGenerator I.val
+  rw [hx]
+  ring
+
+/-- Vanishing at prime exponents congruent to two forces squarefree-times-cube support. -/
+lemma ramifiedFunction_valuation_ne_two (F : O → ℂ)
+    (hzero : ∀ p : O, Prime p → lambda ^ 2 ∣ p - 1 →
+      ∀ h : O, ¬ p ∣ h → ∀ k : ℕ, k % 3 = 2 → F (h * p ^ k) = 0)
+    (I P : Ideal O) (hI : primaryIdealGenerator I ≠ 0) (hP : P ∈ normalizedFactors I)
+    (u : Oˣ) (m : ℕ) (hF : F (((u : O) * lambda ^ m) * primaryIdealGenerator I) ≠ 0) :
+    (normalizedFactors I).count P % 3 ≠ 2 := by
+  have hI0 := primaryIdealGenerator_ne_zero_ideal I hI
+  have hprime := prime_of_normalized_factor P hP
+  let p := primaryIdealPrime P
+  have hp0 : p ≠ 0 := primaryIdealPrime_factor_ne_zero I P hI hP
+  have hps := primaryIdealPrime_spec P hp0
+  have hp : Prime p := primaryIdealPrime_isPrime_of_mem I P hI (Multiset.mem_toFinset.mpr hP)
+  obtain ⟨J, hJ, hnot⟩ := (FiniteMultiplicity.of_prime_left hprime hI0).exists_eq_pow_mul_and_not_dvd
+  have hgen : primaryIdealGenerator I = p ^ (multiplicity P I) * primaryIdealGenerator J := by
+    calc
+      _ = primaryIdealGenerator (P ^ (multiplicity P I) * J) := congrArg primaryIdealGenerator hJ
+      _ = _ := by
+        rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow]
+        have he : primaryIdealGenerator P = p := by
+          rw [← hps.2.2.1, primaryIdealGenerator_span p hp0 hps.2.2.2]
+        rw [he]
+  have hpd : ¬ p ∣ primaryIdealGenerator J := by
+    intro hd
+    have hgJ : primaryIdealGenerator J ≠ 0 := by
+      intro hz
+      exact hI (by rw [hgen, hz, mul_zero])
+    apply hnot
+    rw [Ideal.dvd_iff_le, ← hps.2.2.1, ← (primaryIdealGenerator_spec J hgJ).1,
+      Ideal.span_singleton_le_span_singleton]
+    exact hd
+  have hbase : ¬ p ∣ ((u : O) * lambda ^ m) * primaryIdealGenerator J := by
+    intro hd
+    rcases hp.dvd_mul.mp hd with hd | hd
+    · exact hp.2.1 ((ramified_primary_coprime u m p hps.2.2.2).of_mul_left_right.symm.isUnit_of_dvd hd)
+    · exact hpd hd
+  have hcount := multiplicity_eq_count_normalizedFactors hprime.irreducible hI0
+  rw [normalize_normalized_factor P hP] at hcount
+  intro hc
+  have hm : (multiplicity P I) % 3 = 2 := by rwa [hcount]
+  apply hF
+  rw [hgen, show ((u : O) * lambda ^ m) * (p ^ (multiplicity P I) * primaryIdealGenerator J) =
+    (((u : O) * lambda ^ m) * primaryIdealGenerator J) * p ^ (multiplicity P I) by ring]
+  exact hzero p hp hps.2.2.2 _ hbase _ hm
+
+theorem ramifiedFunction_squarefree_cube_support (F : O → ℂ)
+    (hzero : ∀ p : O, Prime p → lambda ^ 2 ∣ p - 1 →
+      ∀ h : O, ¬ p ∣ h → ∀ k : ℕ, k % 3 = 2 → F (h * p ^ k) = 0)
+    (h : O) (hh : h ≠ 0) (hF : F h ≠ 0) :
+    ∃ (u : Oˣ) (m : ℕ) (I J : Ideal O), Squarefree I ∧
+      primaryIdealGenerator I ≠ 0 ∧ primaryIdealGenerator J ≠ 0 ∧
+      h = ((u : O) * lambda ^ m) * primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3 := by
+  obtain ⟨u, m, T, hT, he⟩ := exists_unit_lambda_primary_factor h hh
+  have hFT : F (((u : O) * lambda ^ m) * primaryIdealGenerator T) ≠ 0 := by rwa [← he]
+  have hv : ∀ P ∈ normalizedFactors T, (normalizedFactors T).count P % 3 ≠ 2 :=
+    fun P hP => ramifiedFunction_valuation_ne_two F hzero T P hT hP u m hFT
+  have hparts := thetaParts_mul_cube T (primaryIdealGenerator_ne_zero_ideal T hT) hv
+  have hgen : primaryIdealGenerator T = primaryIdealGenerator (thetaSquarefreePart T) *
+      (primaryIdealGenerator (thetaCubePart T)) ^ 3 := by
+    calc
+      _ = primaryIdealGenerator (thetaSquarefreePart T * thetaCubePart T ^ 3) :=
+        congrArg primaryIdealGenerator hparts.symm
+      _ = _ := by rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow]
+  have hA : primaryIdealGenerator (thetaSquarefreePart T) ≠ 0 := by
+    intro hz
+    exact hT (by rw [hgen, hz, zero_mul])
+  have hB : primaryIdealGenerator (thetaCubePart T) ≠ 0 := by
+    intro hz
+    exact hT (by rw [hgen, hz, zero_pow (by decide : (3 : ℕ) ≠ 0), mul_zero])
+  refine ⟨u, m, thetaSquarefreePart T, thetaCubePart T, thetaSquarefreePart_squarefree T, hA, hB, ?_⟩
+  rw [he, hgen]
+  ring
+
+lemma rationalSourceResidualFourierCoefficient_prime_power_vanish (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) (k : ℕ) (hk : k % 3 = 2) :
+    rationalSourceResidualFourierCoefficient (h * p ^ k) = 0 := by
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  rw [rationalSourceResidualFourierCoefficient_eq _ (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)),
+    rationalSourceScatteringResidue_prime_power_table p hp hprimary h hph k, hk]
+  norm_num
+
+/-- All nonzero source frequencies have a unit, ramified, squarefree, and cube factorization. -/
+theorem rationalSourceResidualFourierCoefficient_full_squarefree_cube_support
+    (h : O) (hh : h ≠ 0) (hF : rationalSourceResidualFourierCoefficient h ≠ 0) :
+    ∃ (u : Oˣ) (m : ℕ) (I J : Ideal O), Squarefree I ∧
+      primaryIdealGenerator I ≠ 0 ∧ primaryIdealGenerator J ≠ 0 ∧
+      h = ((u : O) * lambda ^ m) * primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3 :=
+  ramifiedFunction_squarefree_cube_support rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_prime_power_vanish h hh hF
+
+theorem unramifiedCubicGaussSeries_lambda_pow (s : ℂ) (h : O) (n : ℕ) :
+    unramifiedCubicGaussSeries s (h * lambda ^ n) =
+      unramifiedCubicGaussSeries s (h * lambda ^ (n % 3)) := by
+  apply tsum_congr
+  intro I
+  congr 1
+  have hp := (primaryIdealGenerator_spec I.val I.property).2
+  have hl : IsCoprime lambda (primaryIdealGenerator I.val) :=
+    coprime_of_dvd_sub_one lambda _ ((show lambda ∣ lambda ^ 2 from ⟨lambda, by ring⟩).trans hp)
+  have he : lambda ^ n = lambda ^ (n % 3) * (lambda ^ (n / 3)) ^ 3 := by
+    rw [← pow_mul, ← pow_add]
+    congr 1
+    omega
+  rw [he, ← mul_assoc]
+  exact cubicUnitGaussSum_cube_shift _ _ _ I.property hp hl.symm.pow_right
+
+/-- Ramified powers in the unramified Gauss residue depend only on their exponent modulo three. -/
+theorem unramifiedGaussResidue_lambda_pow (h : O) (n : ℕ) :
+    unramifiedGaussResidue (h * lambda ^ n) = unramifiedGaussResidue (h * lambda ^ (n % 3)) := by
+  have he := unramifiedGaussResidue_of_initial_relation (h * lambda ^ n) (h * lambda ^ (n % 3)) 0
+    (fun _ => 1) (fun _ => 0) (fun _ _ => analyticAt_const) (fun _ _ => analyticAt_const)
+    continuousAt_const continuousAt_const (fun s _ _ => by
+      simpa only [one_mul, zero_mul, add_zero] using unramifiedCubicGaussSeries_lambda_pow s h n)
+  simpa only [one_mul, zero_mul, add_zero] using he
+
+section
+local instance : Finite Oˣ := cubic_units_finite
+local instance : Fintype Oˣ := Fintype.ofFinite _
+
+/-- A finite norm bound for all unit twists and ramified powers of one frequency. -/
+def ramifiedResidueFamilyMass (h : O) : ℝ :=
+  ∑ a : Oˣ × Fin 3, ‖unramifiedGaussResidue (h * (a.1 : O) * lambda ^ a.2.val)‖
+
+lemma ramifiedResidueFamilyMass_nonneg (h : O) : 0 ≤ ramifiedResidueFamilyMass h :=
+  Finset.sum_nonneg (fun _ _ => norm_nonneg _)
+
+lemma unramifiedGaussResidue_family_norm_le (h : O) (u : Oˣ) (n : ℕ) :
+    ‖unramifiedGaussResidue (h * (u : O) * lambda ^ n)‖ ≤ ramifiedResidueFamilyMass h := by
+  rw [unramifiedGaussResidue_lambda_pow]
+  exact Finset.single_le_sum (a := (u, ⟨n % 3, Nat.mod_lt _ (by norm_num)⟩))
+    (s := Finset.univ) (f := fun a : Oˣ × Fin 3 =>
+      ‖unramifiedGaussResidue (h * (a.1 : O) * lambda ^ a.2.val)‖)
+    (fun _ _ => norm_nonneg _) (Finset.mem_univ _)
+
+lemma unramifiedGaussResidue_unit_lambda_norm_le (u : Oˣ) (n : ℕ) :
+    ‖unramifiedGaussResidue ((u : O) * lambda ^ n)‖ ≤ ramifiedResidueFamilyMass 1 := by
+  simpa only [one_mul] using unramifiedGaussResidue_family_norm_le 1 u n
+
+lemma ramifiedResidueFamilyMass_unit_lambda_le (u : Oˣ) (n : ℕ) :
+    ramifiedResidueFamilyMass ((u : O) * lambda ^ n) ≤
+      (Fintype.card (Oˣ × Fin 3) : ℝ) * ramifiedResidueFamilyMass 1 := by
+  calc
+    _ ≤ ∑ a : Oˣ × Fin 3, ramifiedResidueFamilyMass 1 := by
+      apply Finset.sum_le_sum
+      intro a ha
+      have he : ((u : O) * lambda ^ n) * (a.1 : O) * lambda ^ a.2.val =
+          ((u * a.1 : Oˣ) : O) * lambda ^ (n + a.2.val) := by
+        rw [Units.val_mul, pow_add]
+        ring
+      rw [he]
+      exact unramifiedGaussResidue_unit_lambda_norm_le _ _
+    _ = _ := by simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+
+end
+
+lemma ramifiedNine_eq : (9 : O) = omega * lambda ^ 4 := by
+  calc
+    (9 : O) = 9 * omega ^ 3 := by rw [omega_primitive.pow_eq_one]; ring
+    _ = omega * ((lambda ^ 2) ^ 2) := by rw [lambda_sq_eq]; ring
+    _ = omega * lambda ^ 4 := by ring
+
+lemma unramifiedGaussResidue_nine_norm_le (h : O) (u : Oˣ) (n : ℕ) :
+    ‖unramifiedGaussResidue (9 * h * ((u : O) * lambda ^ n))‖ ≤ ramifiedResidueFamilyMass h := by
+  have he : 9 * h * ((u : O) * lambda ^ n) = h * ((cuspOmegaUnit * u : Oˣ) : O) * lambda ^ (n + 4) := by
+    rw [ramifiedNine_eq, Units.val_mul, cuspOmegaUnit_val, pow_add]
+    ring
+  rw [he]
+  exact unramifiedGaussResidue_family_norm_le _ _ _
+
+lemma rationalSourceResidualFourierCoefficient_prime_norm (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    ‖rationalSourceResidualFourierCoefficient (h * p)‖ = ‖rationalSourceResidualFourierCoefficient h‖ := by
+  have hp9 := primary_prime_not_dvd_nine_frequency p hp hprimary h hph
+  rw [rationalSourceResidualFourierCoefficient_prime_factor p hp hprimary h hph,
+    norm_mul, norm_div, primeCubicGauss_two_eq_star p hp hprimary (9 * h) hp9, norm_star,
+    cubicUnitGaussSum_prime_norm p hp hprimary (9 * h) hp9, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _),
+    div_self (norm_ne_zero_iff.mpr (ringComplex_ne_zero hp.ne_zero)), one_mul]
+
+lemma primeProduct_norm_of {ι : Type*} (F : O → ℂ)
+    (hF : ∀ p : O, Prime p → lambda ^ 2 ∣ p - 1 → ∀ h : O, ¬ p ∣ h → ‖F (h * p)‖ = ‖F h‖)
+    (s : Finset ι) (p : ι → O) (hp : ∀ i ∈ s, Prime (p i))
+    (hprimary : ∀ i ∈ s, lambda ^ 2 ∣ p i - 1)
+    (hpair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → IsCoprime (p i) (p j))
+    (h : O) (hph : ∀ i ∈ s, ¬ p i ∣ h) :
+    ‖F (h * (∏ i ∈ s, p i))‖ = ‖F h‖ := by
+  induction s using Finset.induction_on with
+  | empty => simp only [Finset.prod_empty, mul_one]
+  | @insert i s hi ih =>
+    have hpi := hp i (Finset.mem_insert_self _ _)
+    have hpri := hprimary i (Finset.mem_insert_self _ _)
+    have hc : IsCoprime (p i) (∏ j ∈ s, p j) := IsCoprime.prod_right (fun j hj =>
+      hpair i (Finset.mem_insert_self _ _) j (Finset.mem_insert_of_mem hj) (by intro he; subst j; exact hi hj))
+    have hpb : ¬ p i ∣ h * (∏ j ∈ s, p j) := by
+      intro hd
+      rcases hpi.dvd_mul.mp hd with hd | hd
+      · exact hph i (Finset.mem_insert_self _ _) hd
+      · exact hpi.2.1 (hc.isUnit_of_dvd hd)
+    rw [Finset.prod_insert hi, show h * (p i * (∏ j ∈ s, p j)) =
+      (h * (∏ j ∈ s, p j)) * p i by ring, hF (p i) hpi hpri _ hpb]
+    exact ih (fun j hj => hp j (Finset.mem_insert_of_mem hj))
+      (fun j hj => hprimary j (Finset.mem_insert_of_mem hj))
+      (fun j hj k hk hjk => hpair j (Finset.mem_insert_of_mem hj) k (Finset.mem_insert_of_mem hk) hjk)
+      (fun j hj => hph j (Finset.mem_insert_of_mem hj))
+
+/-- Removing the unramified squarefree part preserves coefficient norm; cubes contribute their absolute value. -/
+theorem rationalSourceResidualFourierCoefficient_full_squarefree_cube_norm (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I)
+    (u : Oˣ) (m : ℕ) :
+    ‖rationalSourceResidualFourierCoefficient
+      (((u : O) * lambda ^ m) * primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3)‖ =
+      ‖ringComplex (primaryIdealGenerator J)‖ *
+        ‖rationalSourceResidualFourierCoefficient ((u : O) * lambda ^ m)‖ := by
+  rw [rationalSourceResidualFourierCoefficient_primary_cube _ hJ (primaryIdealGenerator_spec J hJ).2 _
+    (mul_ne_zero (ramifiedElement_ne_zero u m) hI), norm_mul,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+  congr 1
+  rw [primaryIdealGenerator_squarefree_support I hI hsq]
+  apply primeProduct_norm_of rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_prime_norm
+  · exact fun P hP => primaryIdealPrime_isPrime_of_mem I P hI hP
+  · exact fun P hP => (primaryIdealPrime_spec P
+      (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2
+  · exact primaryIdealPrime_support_coprime I hI
+  · intro P hP hd
+    have hp := primaryIdealPrime_isPrime_of_mem I P hI hP
+    have hpp := (primaryIdealPrime_spec P
+      (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2
+    exact hp.2.1 ((ramified_primary_coprime u m _ hpp).of_mul_left_right.symm.isUnit_of_dvd hd)
+
+lemma mellin_finiteLinearCombination {ι : Type*} [Fintype ι]
+    (weight : ι → ℂ) (f : ι → ℝ → ℂ) (s : ℂ) (hc : ∀ i, MellinConvergent (f i) s) :
+    mellin (fun v => ∑ i, weight i * f i v) s = ∑ i, weight i * mellin (f i) s := by
+  have hi (i : ι) : Integrable (fun v : ℝ => (v : ℂ) ^ (s - 1) * (weight i * f i v))
+      (volume.restrict (Set.Ioi 0)) := by
+    have hh := (hc i).const_smul (weight i)
+    simp only [MellinConvergent, smul_eq_mul, IntegrableOn] at hh
+    convert! hh using 1
+  unfold mellin
+  simp only [smul_eq_mul, Finset.mul_sum]
+  rw [integral_finsetSum _ (fun i _ => hi i)]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [← integral_const_mul]
+  exact integral_congr_ae (Eventually.of_forall (fun v => by ring))
+
+/-- Mellin reflection of a finite arithmetic twist, with all dual cusp transforms entire. -/
+theorem traceTwistedBarProfile_mellin_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ) (s : ℂ) :
+    mellin (traceTwistedBarProfile c hc φ) (2 * s) =
+      ∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+        ((finiteTwistCusp c hc h).multiplier * ((finiteTwistCusp c hc h).heightScale : ℂ) ^ (2 - 2 * s) *
+          mellin (sourceCuspZFamily (finiteTwistCusp c hc h).index (finiteTwistCusp c hc h).dualPoint) (2 - 2 * s)) := by
+  change mellin (fun v => ∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (thetaFourierTranslation c h) v) (2 * s) = _
+  rw [mellin_finiteLinearCombination
+    (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ)
+    (fun h => cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) (thetaFourierTranslation c h))
+    (2 * s) (fun h => (conjugateSource_finite_twist_cusp_mellin_entire (Quotient.out h) c hc).1 (2 * s))]
+  apply Finset.sum_congr rfl
+  intro h hh
+  rw [← finiteTwistCusp_point c hc h, (finiteTwistCusp c hc h).mellin_reflection s]
+
+lemma arithmeticResidueSum_ramified_norm_le (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) :
+    ‖arithmeticResidueSum h ((u : O) * lambda ^ n)‖ ≤ (3 : ℝ) ^ n := by
+  by_cases hz : arithmeticResidueSum h ((u : O) * lambda ^ n) = 0
+  · rw [hz, norm_zero]
+    positivity
+  obtain ⟨k, hk⟩ := ramified_arithmetic_support h u n hn hz
+  rw [ramified_arithmetic_character_test h k u n hn hk]
+  split_ifs
+  · rw [norm_mul, Complex.norm_natCast]
+    have he : ‖residueAdditive k 3 1‖ = 1 := tracePhase_norm _
+    rw [he, mul_one, Nat.cast_pow, Nat.cast_ofNat]
+  · rw [norm_zero]
+    positivity
+
+lemma arithmeticResidueSum_norm_mul_primary (h b : O) (hb : lambda ^ 2 ∣ b - 1)
+    (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) :
+    ‖arithmeticResidueSum (h * b) ((u : O) * lambda ^ n)‖ =
+      ‖arithmeticResidueSum h ((u : O) * lambda ^ n)‖ := by
+  have hc : IsCoprime ((u : O) * lambda ^ n) b := (ramified_primary_coprime u n b hb).of_mul_left_right
+  have he := congrArg norm (arithmeticResidueSum_frequency_twist h ((u : O) * lambda ^ n) b
+    (ramifiedElement_ne_zero u n) (ramifiedElement_level u n hn) ⟨hc, three_dvd_lambda_sq.trans hb⟩)
+  simpa only [norm_mul, symbol_norm_one _ b hb hc, one_mul] using he
+
+lemma ramifiedQuotientChar_mk (u : Oˣ) (n : ℕ) (x : O) :
+    ramifiedQuotientChar u n (Ideal.Quotient.mk (Ideal.span {(3 : O)}) x) =
+      ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * x)) :=
+  principalQuotientAddChar_mk 3 _ _ x
+
+lemma ramifiedQuotientChar_apply_cube (u : Oˣ) (n : ℕ) (x : O ⧸ Ideal.span {(3 : O)}) :
+    (ramifiedQuotientChar u n x) ^ 3 = 1 := by
+  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
+  rw [ramifiedQuotientChar_mk, ← map_pow,
+    symbol_cube_of_isCoprime _ _ (lambda_sq_dvd_three.trans ⟨x, by ring⟩)
+      (ramified_denominator_condition u n (1 + 3 * x) ⟨x, by ring⟩).1, map_one]
+
+/-- Both signs can survive the ramified Fourier test only when the symbol character is trivial. -/
+lemma ramifiedQuotientChar_eq_one_of_both_signs (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (ha : arithmeticResidueSum h ((u : O) * lambda ^ n) ≠ 0)
+    (hb : arithmeticResidueSum h (((-u : Oˣ) : O) * lambda ^ n) ≠ 0) :
+    ramifiedQuotientChar u n = 1 := by
+  obtain ⟨k, hk⟩ := ramified_arithmetic_support h u n hn ha
+  have hk' : 3 * h = (((-u : Oˣ) : O) * lambda ^ n) * (-k) := by
+    simp only [Units.val_neg, neg_mul, mul_neg, neg_neg]
+    exact hk
+  have hpos : ramifiedFrequencyChar k u n = 1 := by
+    by_contra hc
+    exact ha (by rw [ramified_arithmetic_character_test h k u n hn hk, if_neg hc])
+  have hneg : ramifiedFrequencyChar (-k) u n = 1 := by
+    by_contra hc
+    exact hb (by rw [ramified_arithmetic_character_test h (-k) (-u) n hn hk',
+      ramifiedFrequencyChar_neg_unit, if_neg hc])
+  ext x
+  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
+  have hp := congrArg (fun χ : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ => χ (Ideal.Quotient.mk _ x)) hpos
+  have hm := congrArg (fun χ : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ => χ (Ideal.Quotient.mk _ x)) hneg
+  change ramifiedQuotientChar u n (Ideal.Quotient.mk _ x) *
+    residueTraceQuotientChar k 3 (by norm_num) (Ideal.Quotient.mk _ x) = 1 at hp
+  change ramifiedQuotientChar u n (Ideal.Quotient.mk _ x) *
+    residueTraceQuotientChar (-k) 3 (by norm_num) (Ideal.Quotient.mk _ x) = 1 at hm
+  rw [residueTraceQuotientChar_three_phase] at hp hm
+  rw [cuspFrequency_neg, neg_mul] at hm
+  have ht : tracePhase (cuspFrequency k * ringComplex x) * tracePhase (-(cuspFrequency k * ringComplex x)) = 1 := by
+    rw [← AddChar.map_add_eq_mul, add_neg_cancel, AddChar.map_zero_eq_one]
+  let q := ramifiedQuotientChar u n (Ideal.Quotient.mk (Ideal.span {(3 : O)}) x)
+  have hq : q ^ 2 = 1 := by
+    calc
+      _ = q ^ 2 * (tracePhase (cuspFrequency k * ringComplex x) * tracePhase (-(cuspFrequency k * ringComplex x))) :=
+        by rw [ht, mul_one]
+      _ = (q * tracePhase (cuspFrequency k * ringComplex x)) *
+          (q * tracePhase (-(cuspFrequency k * ringComplex x))) := by ring
+      _ = 1 := by rw [hp, hm, one_mul]
+  change q = 1
+  calc
+    q = q ^ 2 * q := by rw [hq, one_mul]
+    _ = q ^ 3 := by ring
+    _ = 1 := ramifiedQuotientChar_apply_cube u n _
+
+lemma ramifiedQuotientChar_omegaUnit_one (j n : ℕ) :
+    ramifiedQuotientChar (cuspOmegaUnit ^ j) n (Ideal.Quotient.mk _ (1 : O)) =
+      ringComplex ((omega ^ 2) ^ j * omega ^ n) := by
+  have hp : lambda ^ 2 ∣ (1 + 3 * (1 : O)) - 1 := lambda_sq_dvd_three.trans ⟨1, by ring⟩
+  have harg : 1 + 3 * (1 : O) = primaryCoord 1 0 := by rw [primaryCoord_eq]; ring
+  have ho : symbol omega (1 + 3 * (1 : O)) = omega ^ 2 := by
+    rw [symbol_omega_eq_linearRay _ hp]
+    rw [harg, linearRay_primaryCoord]
+    norm_num [cubicExp]
+    rfl
+  have hl : symbol lambda (1 + 3 * (1 : O)) = omega := by
+    rw [symbol_lambda_eq_linearRay _ hp]
+    rw [harg, linearRay_primaryCoord]
+    norm_num [cubicExp]
+  rw [ramifiedQuotientChar_mk, Units.val_pow_eq_pow_val, cuspOmegaUnit_val,
+    symbol_mul_numerator, symbol_pow_numerator _ _ hp,
+    symbol_pow_numerator _ _ hp, ho, hl]
+
+lemma ramifiedQuotientChar_omegaUnit_omega (j n : ℕ) :
+    ramifiedQuotientChar (cuspOmegaUnit ^ j) n (Ideal.Quotient.mk _ omega) =
+      ringComplex ((omega ^ 2) ^ j) := by
+  have hp : lambda ^ 2 ∣ (1 + 3 * omega) - 1 := lambda_sq_dvd_three.trans ⟨omega, by ring⟩
+  have harg : 1 + 3 * omega = primaryCoord 0 1 := by rw [primaryCoord_eq]; ring
+  have ho : symbol omega (1 + 3 * omega) = omega ^ 2 := by
+    rw [symbol_omega_eq_linearRay _ hp]
+    rw [harg, linearRay_primaryCoord]
+    norm_num [cubicExp]
+    rfl
+  have hl : symbol lambda (1 + 3 * omega) = 1 := by
+    rw [symbol_lambda_eq_linearRay _ hp]
+    rw [harg, linearRay_primaryCoord]
+    norm_num [cubicExp]
+  rw [ramifiedQuotientChar_mk, Units.val_pow_eq_pow_val, cuspOmegaUnit_val,
+    symbol_mul_numerator, symbol_pow_numerator _ _ hp,
+    symbol_pow_numerator _ _ hp, ho, hl, one_pow, mul_one]
+
+/-- The ramified symbol character is trivial only for a real unit and an exponent divisible by three. -/
+lemma ramifiedQuotientChar_trivial_exponents (j : Fin 3) (n : ℕ)
+    (hchar : ramifiedQuotientChar (cuspOmegaUnit ^ j.val) n = 1) : j = 0 ∧ n % 3 = 0 := by
+  have he := congrArg (fun χ : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ => χ (Ideal.Quotient.mk _ omega)) hchar
+  rw [ramifiedQuotientChar_omegaUnit_omega, AddChar.one_apply] at he
+  have hpow : (omega ^ 2) ^ j.val = 1 := ringComplex_injective (by simpa only [map_one] using he)
+  have hj : j = 0 := by
+    fin_cases j
+    · rfl
+    · have hs : omega ^ 2 = 1 := by simpa only [pow_one] using hpow
+      have how : omega = 1 := by
+        calc
+          omega = omega ^ 2 * omega := by rw [hs, one_mul]
+          _ = omega ^ 3 := by ring
+          _ = 1 := omega_primitive.pow_eq_one
+      exact (omega_primitive.ne_one (by decide) how).elim
+    · have how : omega = 1 := by
+        rw [show (omega ^ 2) ^ 2 = omega ^ 3 * omega by ring,
+          omega_primitive.pow_eq_one, one_mul] at hpow
+        exact hpow
+      exact (omega_primitive.ne_one (by decide) how).elim
+  refine ⟨hj, ?_⟩
+  have he1 := congrArg (fun χ : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ => χ (Ideal.Quotient.mk _ (1 : O))) hchar
+  rw [ramifiedQuotientChar_omegaUnit_one, AddChar.one_apply, hj] at he1
+  simp only [Fin.val_zero, pow_zero, one_mul] at he1
+  have hn : omega ^ n = omega ^ 0 := ringComplex_injective (by simpa only [pow_zero, map_one] using he1)
+  have hm := ((omega_primitive.isOfFinOrder (by decide)).pow_inj_mod).mp hn
+  rw [← omega_primitive.eq_orderOf] at hm
+  simpa only [Nat.zero_mod] using hm
+
+lemma ramifiedQuotientChar_neg_unit (u : Oˣ) (n : ℕ) :
+    ramifiedQuotientChar (-u) n = ramifiedQuotientChar u n := by
+  ext x
+  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
+  rw [ramifiedQuotientChar_mk, ramifiedQuotientChar_mk, Units.val_neg, neg_mul,
+    symbol_neg_numerator _ _ (lambda_sq_dvd_three.trans ⟨x, by ring⟩)]
+
+lemma ramifiedQuotientChar_two_ne_one (u : Oˣ) : ramifiedQuotientChar u 2 ≠ 1 := by
+  obtain ⟨j, hj | hj⟩ := unit_eq_sign_omega u
+  · have hu : u = cuspOmegaUnit ^ j.val := Units.ext (by simpa only [Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using hj)
+    rw [hu]
+    intro hchar
+    have hm := (ramifiedQuotientChar_trivial_exponents j 2 hchar).2
+    norm_num at hm
+  · have hu : u = -(cuspOmegaUnit ^ j.val) := Units.ext (by
+      simpa only [Units.val_neg, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using hj)
+    rw [hu, ramifiedQuotientChar_neg_unit]
+    intro hchar
+    have hm := (ramifiedQuotientChar_trivial_exponents j 2 hchar).2
+    norm_num at hm
+
+lemma residueTraceQuotientChar_eq_one_of_three_dvd (k : O) (hk : (3 : O) ∣ k) :
+    residueTraceQuotientChar k 3 (by norm_num) = 1 := by
+  rw [residueTraceQuotientChar_mulShift]
+  have he : Ideal.Quotient.mk (Ideal.span {(3 : O)}) k = 0 :=
+    Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr hk)
+  rw [he, AddChar.mulShift_zero]
+
+/-- At frequencies divisible by three, the smallest ramified conductor contributes nothing. -/
+lemma arithmeticResidueSum_lambda_sq_zero (h : O) (hh : (3 : O) ∣ h) (u : Oˣ) :
+    arithmeticResidueSum h ((u : O) * lambda ^ 2) = 0 := by
+  by_contra ha
+  obtain ⟨k, hk⟩ := ramified_arithmetic_support h u 2 le_rfl ha
+  let t : Oˣ := -(u * cuspOmegaUnit)
+  have ht : (u : O) * lambda ^ 2 = 3 * (t : O) := by
+    simp only [t, lambda_sq_eq, Units.val_neg, Units.val_mul, cuspOmegaUnit_val]
+    ring
+  rw [ht, mul_assoc] at hk
+  have he : h = (t : O) * k := mul_left_cancel₀ (by norm_num : (3 : O) ≠ 0) hk
+  have hdk : (3 : O) ∣ k := by
+    have hd := dvd_mul_of_dvd_right hh (↑t⁻¹ : O)
+    simpa [he, ← mul_assoc] using hd
+  have hchar : ramifiedFrequencyChar k u 2 = 1 := by
+    by_contra hc
+    apply ha
+    rw [ramified_arithmetic_character_test h k u 2 le_rfl (by rw [ht, mul_assoc]; exact hk), if_neg hc]
+  rw [ramifiedFrequencyChar, residueTraceQuotientChar_eq_one_of_three_dvd k hdk, mul_one] at hchar
+  exact ramifiedQuotientChar_two_ne_one u hchar
+
+def lowRamifiedFrequency (a r : Fin 3) : O := omega ^ a.val * lambda ^ (r.val + 2)
+
+lemma lowRamifiedFrequency_ne_zero (a r : Fin 3) : lowRamifiedFrequency a r ≠ 0 := by
+  simpa only [lowRamifiedFrequency, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using
+    ramifiedElement_ne_zero (cuspOmegaUnit ^ a.val) (r.val + 2)
+
+lemma lowRamifiedFrequency_absNorm (a r : Fin 3) :
+    Ideal.absNorm (Ideal.span {lowRamifiedFrequency a r}) = 3 ^ (r.val + 2) := by
+  simpa only [lowRamifiedFrequency, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using
+    ramifiedElement_absNorm (cuspOmegaUnit ^ a.val) (r.val + 2)
+
+lemma lowRamifiedFrequency_three_dvd (a r : Fin 3) : (3 : O) ∣ lowRamifiedFrequency a r := by
+  simpa only [lowRamifiedFrequency, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using
+    ramifiedElement_level (cuspOmegaUnit ^ a.val) (r.val + 2) (by omega)
+
+lemma lowRamifiedFrequency_arithmetic_vanish (a r : Fin 3) (u : Oˣ) (k : ℕ) (hk : 5 ≤ k) :
+    arithmeticResidueSum (lowRamifiedFrequency a r) ((u : O) * lambda ^ (k + 2)) = 0 := by
+  by_contra hA
+  have hb := ramified_arithmetic_norm_bound _ (lowRamifiedFrequency_ne_zero a r) u (k + 2) (by omega) hA
+  rw [lowRamifiedFrequency_absNorm] at hb
+  have hlo : (3 : ℕ) ^ 7 ≤ 3 ^ (k + 2) := Nat.pow_le_pow_right (by norm_num) (by omega)
+  have hhi : (3 : ℕ) ^ (r.val + 2) ≤ 3 ^ 4 := Nat.pow_le_pow_right (by norm_num) (by omega)
+  norm_num at hlo hhi
+  omega
+
+lemma lowRamifiedFrequency_primary_vanish (a r : Fin 3) (b : O) (hb : lambda ^ 2 ∣ b - 1)
+    (u : Oˣ) (k : ℕ) (hk : 5 ≤ k) :
+    arithmeticResidueSum (lowRamifiedFrequency a r * b) ((u : O) * lambda ^ (k + 2)) = 0 := by
+  apply norm_eq_zero.mp
+  rw [arithmeticResidueSum_norm_mul_primary _ b hb u (k + 2) (by omega),
+    lowRamifiedFrequency_arithmetic_vanish a r u k hk, norm_zero]
+
+def signedOmegaUnit (p : Bool × Fin 3) : Oˣ :=
+  if p.1 then -(cuspOmegaUnit ^ p.2.val) else cuspOmegaUnit ^ p.2.val
+
+lemma omega_pow_fin_injective : Function.Injective (fun j : Fin 3 => omega ^ j.val) := by
+  intro j k he
+  have hm := ((omega_primitive.isOfFinOrder (by decide)).pow_inj_mod).mp he
+  rw [← omega_primitive.eq_orderOf, Nat.mod_eq_of_lt j.isLt, Nat.mod_eq_of_lt k.isLt] at hm
+  exact Fin.ext hm
+
+lemma signedOmegaUnit_injective : Function.Injective signedOmegaUnit := by
+  rintro ⟨s, j⟩ ⟨t, k⟩ he
+  have hv := congrArg (fun u : Oˣ => (u : O)) he
+  cases s <;> cases t
+  · simp only [signedOmegaUnit, Bool.false_eq_true, if_false, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] at hv
+    exact congrArg (fun i : Fin 3 => (false, i)) (omega_pow_fin_injective hv)
+  · simp only [signedOmegaUnit, Bool.false_eq_true, if_false, if_true, Units.val_neg,
+      Units.val_pow_eq_pow_val, cuspOmegaUnit_val] at hv
+    exact (halfPrimary_not_negative k.val (hv ▸ halfPrimary_omega_pow j.val)).elim
+  · simp only [signedOmegaUnit, Bool.false_eq_true, if_false, if_true, Units.val_neg,
+      Units.val_pow_eq_pow_val, cuspOmegaUnit_val] at hv
+    exact (halfPrimary_not_negative j.val (hv.symm ▸ halfPrimary_omega_pow k.val)).elim
+  · simp only [signedOmegaUnit, if_true, Units.val_neg, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] at hv
+    exact congrArg (fun i : Fin 3 => (true, i)) (omega_pow_fin_injective (neg_injective hv))
+
+lemma signedOmegaUnit_surjective : Function.Surjective signedOmegaUnit := by
+  intro u
+  obtain ⟨j, hj | hj⟩ := unit_eq_sign_omega u
+  · refine ⟨(false, j), Units.ext ?_⟩
+    simpa only [signedOmegaUnit, Bool.false_eq_true, if_false, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using hj.symm
+  · refine ⟨(true, j), Units.ext ?_⟩
+    simpa only [signedOmegaUnit, if_true, Units.val_neg, Units.val_pow_eq_pow_val, cuspOmegaUnit_val] using hj.symm
+
+def signedOmegaEquiv : Bool × Fin 3 ≃ Oˣ :=
+  Equiv.ofBijective signedOmegaUnit ⟨signedOmegaUnit_injective, signedOmegaUnit_surjective⟩
+
+lemma ramifiedQuotientChar_omegaUnit_ne_one (j : Fin 3) (n : ℕ) (hj : j ≠ 0) :
+    ramifiedQuotientChar (cuspOmegaUnit ^ j.val) n ≠ 1 :=
+  fun he => hj (ramifiedQuotientChar_trivial_exponents j n he).1
+
+lemma ramifiedQuotientChar_omegaUnit_ne_one_of_mod (j : Fin 3) (n : ℕ) (hn : n % 3 ≠ 0) :
+    ramifiedQuotientChar (cuspOmegaUnit ^ j.val) n ≠ 1 :=
+  fun he => hn (ramifiedQuotientChar_trivial_exponents j n he).2
+
+lemma arithmeticResidueSum_sign_pair_norm_le (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (hchar : ramifiedQuotientChar u n ≠ 1) :
+    ‖arithmeticResidueSum h ((u : O) * lambda ^ n)‖ +
+      ‖arithmeticResidueSum h (((-u : Oˣ) : O) * lambda ^ n)‖ ≤ (3 : ℝ) ^ n := by
+  by_cases ha : arithmeticResidueSum h ((u : O) * lambda ^ n) = 0
+  · rw [ha, norm_zero, zero_add]
+    exact arithmeticResidueSum_ramified_norm_le h (-u) n hn
+  by_cases hb : arithmeticResidueSum h (((-u : Oˣ) : O) * lambda ^ n) = 0
+  · rw [hb, norm_zero, add_zero]
+    exact arithmeticResidueSum_ramified_norm_le h u n hn
+  exact (hchar (ramifiedQuotientChar_eq_one_of_both_signs h u n hn ha hb)).elim
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -20,7 +20,7 @@ private theorem weightedDirichletTerm (g : ℕ → ℝ) (b σ : ℝ) (n : ℕ) :
     ((g n * ((n : ℝ) + 1) ^ b : ℝ) : ℂ) *
         (((n : ℝ) + 1 : ℝ) : ℂ) ^ (-(σ : ℂ)) =
       (g n : ℂ) * (((n : ℝ) + 1 : ℝ) : ℂ) ^ (-((σ - b : ℝ) : ℂ)) := by
-  have hn : ((n : ℝ) + 1 : ℂ) ≠ 0 := by
+  have hn : (((n : ℝ) + 1 : ℝ) : ℂ) ≠ 0 := by
     exact Complex.ofReal_ne_zero.mpr (by positivity : (n : ℝ) + 1 ≠ 0)
   rw [Complex.ofReal_mul, Complex.ofReal_cpow (by positivity), mul_assoc,
     ← Complex.cpow_add _ _ hn]

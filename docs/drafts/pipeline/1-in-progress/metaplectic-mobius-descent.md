@@ -369,6 +369,17 @@ the column rational modulo three. A signed lift of one nonzero first-column
 entry, followed by one translation, lifts every matrix in `SL₂(F₃)` to
 `SL₂(ℤ)`. Congruence-preserving completion then gives the integral three-cusp
 decomposition (`three_cusp_decomposition`, checked).
+Every Eisenstein rational cusp has an entire derivative Mellin transform, with
+exact reflected cusp weight (`conjugateSource_rational_cusp_mellin_entire`,
+`SourceCuspDatum.mellin_reflection`, checked).
+Every nonzero source coefficient has unit–ramified–squarefree–cube support;
+removing the squarefree part preserves its norm, while the cube contributes
+its absolute value (`rationalSourceResidualFourierCoefficient_full_squarefree_cube_support`,
+`rationalSourceResidualFourierCoefficient_full_squarefree_cube_norm`, checked).
+Unramified Gauss residues depend on the ramified exponent modulo three, giving
+a finite norm bound for each unit–ramified family. Transferring primary-cube
+invariance from the projected source to these residues still requires inversion
+of the finite ramified transform.
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

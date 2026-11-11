@@ -98,7 +98,11 @@ point `b + iλ`. So the normalized trace tends to zero exactly when the top line
 two configurations with asymptotically equal normalized traces have the same top layer. There
 is a dichotomy: the normalized trace tends to zero, or it is attained on every late window of
 some length; non-attainment on windows of one length already leaves the top line of `ζ` empty or
-infinite, also when other zeros accumulate at it. The datum is integral: the coefficient of a
+infinite, also when other zeros accumulate at it. At the zero abscissa itself the normalized
+trace is in exactly one of four sectors: RH, where it is almost periodic; an empty top line,
+where it tends to zero; a finite top line, where it approaches a nonzero trigonometric
+polynomial; an infinite top line, where it approaches none (`zetaNormTrace_quadrichotomy`).
+The datum is integral: the coefficient of a
 zero `½ + z` of `ζ` is `2m B̂(−iz)²` with `m` its multiplicity, and it is the Cesàro mean of the
 normalized trace against `e^{−iλu}`. A mean below the quantum `2|B̂|²` excludes the zero: a unit
 gap at every candidate point, for which no a priori bound is known. The Dirichlet series of the
@@ -125,17 +129,25 @@ with natural exponents, the Dirichlet series of a nonnegative multiplicative fun
 integers, with any finite layer at `17/30 < Θ < 1`: the prime gaps cost the strip up to `17/30`.
 Multiplicativity, positivity and integrality of the coefficients therefore impose nothing on a
 finite top layer; only the functional equation is missing from these models. Two refinements of
-the models are constrained in the corpus. A system that only adds generalized primes to the
-rational primes pays for a new zero with a real singularity of its logarithmic Euler factor at
-or beyond the zero (`RHTower.landau_relative_rigidity`); the models above have none, so they
-change the primes in both directions. And the models control the count of their integers to
+the models are constrained. A system that only adds generalized primes to another pays for a
+new zero with a real singularity of its logarithmic Euler factor at or beyond the zero (corpus,
+`RHTower.landau_relative_rigidity`); if the Euler factor itself is holomorphic at that real
+abscissa it vanishes there (`eulerFactor_abscissa_eq_zero`). A finite non-real layer with a
+factor that is regular and free of zeros on the real axis needs primes removed as well as
+added. And the models control the count of their integers to
 first order only. For continuous systems a regular count does not constrain the zeros
 (`RHTower.BeurlingRegularIntegers.regular_integers_do_not_constrain_zeros`); for the integers
 free of a set of primes it quantizes the expansion of the deleted primes
 (`RHTower.PrimeDeletion.residue_quantization_complex`). With the functional equation there is no
 class left to build a model in: a discrete system of primes whose zeta function has the
 completed functional equation is the system of the rational primes
-(`ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation`). A finite
+(`ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation`).
+In the floor calculus: the property of a configuration that it is tempered, has both symmetries
+and no real zero, and that its zeros right of the line, with their multiplicities, are the
+divisor of an Euler product with natural norms, a simple pole and linear counting
+(`EulerSymmetric`) holds for the zeros of `ζ` and has floor `½`. A mechanism that acts on the
+zero configuration through these structures excludes nothing; the Euler product of `ζ` has to
+be used on the function. A finite
 top layer is excluded, if at all, by a property of one function. What is known of a tangent
 datum of `ζ` at a depth `b > 0`: it consists of conjugate pairs, with integer multiplicities,
 at ordinates above the verified height
@@ -199,7 +211,11 @@ at least `a`, and equals `ψ'(0) I(0) + ∫ ψ''(a) I(a) da` with `I(a) = Σ m (
 mass at the level `a`. Every such functional is a mixture of inner masses; it is monotone when
 `ψ` increases, and its evaluation on `ζ` is Littlewood's formula for the inner mass. The track
 ends there: what is missing is not a monotone functional but a reason for `ζ` to minimize one,
-which is the equality case of Jensen's formula.
+which is the equality case of Jensen's formula. Combining linear statistics does not help:
+a differentiable function `φ` of finitely many of them changes under splitting, to first order,
+like the linear statistic with the symbol `Σ ∂_iφ · F_i`; if `φ` never decreases under splitting
+at small depth, the real part of this gradient symbol is concave on the line, and it vanishes
+there when the symbols decay.
 
 **Certificates (kind c).** RH holds exactly when every aperture admits some real weight system
 with nonnegative Weil form, and the dual statement is that the archimedean-plus-pole functional
@@ -245,13 +261,13 @@ hypothesis. *Kill*: a source excluded for a whole kind.
 | **Non-attainment ⇒ AAL**, for the trace, for `ψ(x) − x`, at the primes, in the mean of one order, and for every tempered symmetric configuration | `asymptoticAbscissaLaw_of_windowNonAttainment`, `asymptoticAbscissaLaw_of_psi_window_nonAttainment`, `asymptoticAbscissaLaw_of_moment_window_nonAttainment`, `abscissaLaw_of_windowNonAttainment_config` | receivers (a) |
 | **The tangent datum.** Trace `o(e^{bu})` ⇔ empty top line; the trace determines the layer; attained or tending to zero | `tendsto_normTrace_zero_iff`, `topCoeff_eq_of_tendsto_normTrace_sub`, `tendsto_normTrace_zero_or_attained` | structure |
 | **Integrality.** The multiplicity is a mean of the trace; a mean below the quantum excludes the zero; `μ` and `λ` have poles of order the multiplicity | `evenCoeff_zeta_eq`, `not_mem_zetaZeroConfig_of_mean_lt_quantum`, `meromorphicOrderAt_liouville` | receiver (b) |
-| **The datum is free.** Every finite datum is the top layer of a finite symmetric configuration, of a positive prime density with a simple pole, and of an Euler product over natural norms with natural coefficients and linear counting | `exists_config_with_top_layer`, `exists_nonneg_density_with_layer`, `exists_integer_norm_euler_product_with_divisor` | kill: identities, symmetries, positivity, multiplicativity, integer norms |
+| **The datum is free.** Every finite datum is the top layer of a finite symmetric configuration, of a positive prime density with a simple pole, and of an Euler product over natural norms with natural coefficients and linear counting | `exists_config_with_top_layer`, `exists_nonneg_density_with_layer`, `exists_integer_norm_euler_product_with_divisor`, `eulerSymmetric_zetaZeroConfig`, `floor_eulerSymmetric` | kill: identities, symmetries, positivity, multiplicativity, integer norms |
 | **Replication.** Translates at a finite layer blow up along every phase return; bounded normalizations tend to zero; every limit is zero | `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized` | kill: normal families |
 | **Unit gaps.** AAL ⇔ at most one or infinitely many zeros right of every line; bounded counts pass to locally uniform limits; a realization of index `κ` has at most `κ` right zeros | `asymptoticAbscissaLaw_iff_encard_rightOf_le_one`, `riemannHypothesis_of_unit_gap_limit`, `riemannHypothesis_of_indexOne_realization` | receivers (b) |
 | **Regulators.** The scattering tower keeps the count at every height; the clock lies below Weil's form at every cutoff; the heat flow has at least two nonreal zeros at every small time unless RH holds | `towerQuotient_unit_gap_iff`, `greenWeilEnergy_le_form`, `riemannHypothesis_of_greenWeilEnergy_floor`, `riemannHypothesis_of_frequently_nonrealZeroCount_le_one` | kill; receiver |
 | **Certificates.** Feasibility at an aperture = positive definite spectral kernels on intervals = tapered kernels that are transforms of positive measures; null vectors annihilate; certificates converge to `Λ`; reflected halves (pencils at every shift, the cleared Eisenstein constant term) are not Dirichlet series | `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `exists_measure_charFun_eq_taperedKernel`, `spectralKernel_eq_zero_of_null`, `tendsto_weight_of_aperturePositive_seq`, `not_lSeries_of_slow_amplitude`, `not_exists_lSeries_pencil_shift`, `not_exists_lSeries_constantTerm` | structure; kill (c) |
 | **Amplification.** Window moments of a finite layer have rate `2k·b`; a bound of order `2k` with exponent `A` gives the law beyond the depth `A/2k`; one exponent for all orders ⇒ AAL; moment bounds of all orders are sup bounds | `finite_top_moment_lower_bound`, `abscissaLawAt_of_window_moment`, `asymptoticAbscissaLaw_of_window_moments`, `windowMomentsBounded_iff_windowSupPowersBounded` | receiver (d); kill |
-| **Symmetrization.** Second-order law of projection; no convergent linear statistic is monotone; heat statistics are monotone below a height; additive functionals of the depths are mixtures of inner masses | `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `sum_profile_sub_eq_innerMass` | kill |
+| **Symmetrization.** Second-order law of projection; no convergent linear statistic is monotone; heat statistics are monotone below a height; additive functionals of the depths are mixtures of inner masses | `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `sum_profile_sub_eq_innerMass`, `re_gradientSymbol_eq_zero` | kill |
 
 ## 6. The floor census
 
@@ -280,7 +296,12 @@ for every `Θ < 1`, all ordinates and all multiplicities, the density
 `e^u − Σ 2m_j e^{Θu} cos(γ_j u) + 2M e^u 1_{u ≤ u₀}` is nonnegative on the half-line and its
 Laplace transform is `1/(s−1) − Σ m_j (1/(s−ρ_j) + 1/(s−ρ̄_j))` plus an entire function: a
 positive prime measure with a simple pole and the prescribed finite top layer
-(`exists_nonneg_density_with_layer`).
+(`exists_nonneg_density_with_layer`). With a pole of weight `A ≥ 2M` no compensator is needed
+and the transform is rational (`poleDensity_nonneg`, `laplace_poleDensity`). On the line of the
+pole, `Θ = 1`, nothing compensates: at the times where all phases `γ_j u` return to zero
+together the normalized density is close to `A − 2M`, so the density is eventually nonnegative
+exactly when `2M ≤ A`, and with a simple pole only for the empty layer
+(`eventually_nonneg_poleDensity_one_iff`, `eventually_nonneg_poleDensity_simple_iff`).
 
 ## 7. What a producer must be
 

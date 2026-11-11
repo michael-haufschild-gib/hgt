@@ -1,59 +1,60 @@
-# Uniform correction for reciprocal-logarithmic Selberg shifts
+# Shifted harmonic limits for the linear detector
 
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Parent:** A111, `levinson-gate-from-below-square-root-twists.md`.
 
-## Exact arithmetic target
+## Target
 
-Let `A_c = (μ(n)n^c) * (1/n)` under Dirichlet convolution. At prime powers,
+For `L=log N` and a smooth profile `P` with `P(0)=0`, prove
 
-`A_c(p^k) = (1−p^(1+c))/p^k`, `k≥1`.
+`L Σ_{h,k≤N} μ(h)μ(k)(hk)^(v/L) gcd(h,k)^(1+c/L)/(hk)`
+`·P(log(N/h)/L)P(log(N/k)/L)`
+`→ ∫₀¹ exp((c+2v)t)[P′(1−t)−vP(1−t)]² dt`.
 
-Local correction coefficients are obtained from
-`1−p^(−2)xy(1−p^c x)(1−p^c y)/((1−x/p)(1−y/p))`.
-Globally the correction is the pushforward under `(r,u,v)↦(ru,rv)` of
-`μ(r) A_{c,r}(u) A_{c,r}(v)/r²`, where the amplitudes have prime support in `r`.
-The principal factor has shifted Möbius factors and diagonal coefficient `d^(c−1)`.
+The detector requires the first two displacement derivatives with its
+coefficient weights held fixed, for polynomial profiles of degree at most two.
 
-## Uniform majorant
+## Proved arithmetic reduction
 
-For every real `c`,
-`|1−p^(1+c)| ≤ (p−1)p^(2|c|)` for `p≥2`.
-Multiplicative factorization therefore gives
-`|A_c(n)| ≤ n^(2|c|)|A_0(n)|`.
+`3-formalized/shifted-selberg-euler-factorization.md` proves the exact
+parameterized Euler convolution, arbitrary-weight harmonic collapse,
+common summable correction majorant, and limiting unit mass.
+The extra coefficient twist costs at most `exp(2|v|)` on the finite cutoff.
 
-At `c=C/log N`, each retained fibre has `u,v≤N`, so its absolute value is
-at most `exp(4|C|)` times the existing absolutely summable correction fibre.
-The extra coefficient twist `(ru·rv)^(V/log N)` costs at most `exp(2|V|)`
-on the truncated convolution. Fixed fibres converge to their unshifted values.
-Thus no new infinite power-weighted divisor majorant is needed.
+## Uniform Möbius replacement
 
-## Remaining proof obligations
+For a fixed `C²` test `f` with `f(0)=0`, twice integration gives the error
+`f′(0)(F(Lu)−1)+∫₀ᵘ f″(u−x)(F(Lx)−1) dx`, where `F` is the bounded
+first logarithmic Möbius kernel. Dominated convergence implies
+`∫₀¹|F(Lx)−1| dx→0`; convergence is therefore uniform for `δ≤u≤1`.
+`TheMobiusKernelConvergesInMean` formalizes this proof; direct Lean check passed.
 
-Prove the exact parameterized Euler convolution. The amplitude and fibre majorant are formalized.
-Combine the smoothed Möbius test-function limit with harmonic scaling.
-Transfer the first two frozen-coefficient displacement jets; their proof
-must retain uniformity of the shifted correction, not merely pointwise limits.
+## Remaining detector values and derivatives
 
-## Lean drafts
+At the actual detector evaluation point `c+2v=0`. Its first two
+frozen-coefficient displacement derivatives contribute only polynomial
+powers of the harmonic logarithm. Existing harmonic logarithmic moments
+therefore suffice; an exponential harmonic limit is unnecessary.
 
-- `TheShiftedSelbergAmplitudeHasTheSameMajorant`: multiplicative convolution,
-  prime-power formula, coefficient continuity, and the amplitude majorant.
-  Direct Lean check passed; umbrella import added.
-- `TheShiftedSelbergCorrectionKeepsItsSummableEnvelope`: localized fibres,
-  their continuity, the common summable envelope, and limiting unit mass
-  of the actual finite-cutoff fibre sum. Direct Lean check passed; umbrella import added.
+For fixed `v`, derivatives of the shifted Möbius transform reduce to finite
+linear combinations of the same smooth tests `x^j exp(−vx)`. The limiting
+transform is `P′(u)−vP(u)`; its first `v` derivative is `−P(u)` and its second
+is zero. Uniform convergence away from `u=0` follows from the mean-kernel
+estimate. The endpoint strip must be bounded in harmonic mass.
 
-The exact convolution reduces primewise to
-`(1−xy/p² A_c(x)A_c(y)) (1−x/p)(1−y/p)/(1−p^(c−1)xy)`
-`=1−x/p−y/p+p^(c−1)xy`.
-The shifted amplitude cancels the reciprocal Möbius factor by ordinary
-Dirichlet inversion. Pair-coprime multiplicativity transfers this identity
-to every positive integer pair.
+Prove the first two normalized correction derivatives have the same
+summable fibre envelope and tend to zero on each fixed fibre. Combine
+these facts with the existing harmonic moments, retaining frozen detector
+coefficients throughout the displacement differentiation.
 
-`TheShiftedSelbergCorrectionIsMultiplicative` proves pair-coprime
-multiplicativity and the exact prime-power fibre formula. Lean check passed.
-`TheShiftedSelbergEulerFactorsCancel` and
-`TheShiftedSelbergFormIsAHarmonicModel` contain the complete drafts of the
-parameterized convolution and its arbitrary-weight harmonic collapse.
+A complex continuation gives a common majorant for the correction jets.
+For `n>0`, extend the amplitude by
+`n⁻¹∏_{p|n}(1−p exp(z log p))`.
+The bound `|exp(w)−1|≤exp(|w|)−1` gives
+`|1−p exp(z log p)|≤(p−1)exp(2|z|log p)`.
+Thus the normalized correction on `|z−C|≤1` is bounded by
+`exp(4(|C|+1))|W_0|`. Cauchy's estimate bounds its `j`-th derivative by
+`j! exp(4(|C|+1))|W_0|`. On each fixed fibre the normalized continuation
+converges locally uniformly to a constant, so every positive-order jet
+converges to zero. This avoids separate primewise Leibniz estimates.

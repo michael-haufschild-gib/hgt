@@ -38,3 +38,14 @@ by `exp(vu)`.
 - `tendsto_powerShiftedMobiusKernel` — shifted linear limit.
 
 Direct Lean check passed; umbrella import added.
+
+## Uniform smooth tests
+
+`TheMobiusKernelConvergesInMean` proves
+`∫₀¹ |F(Lx)−1| dx→0` and the exact uniform error bound
+`|T_L f(u)−f′(u)|≤|f′(0)||F(Lu)−1|+M∫₀¹|F(Lx)−1| dx`,
+where `M` bounds `|f″|` on `[0,1]`.
+Consequently `T_L f(u)→f′(u)` uniformly on every `[δ,1]`, `δ>0`.
+The declarations are `tendsto_smoothedMobiusKernelMeanError`,
+`exists_scaledMobiusLogTest_error_bound`, and
+`scaledMobiusLogTest_converges_uniformly`. Direct Lean check passed.

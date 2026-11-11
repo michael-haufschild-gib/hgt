@@ -88,20 +88,12 @@ theorem two_mul_posCutoff_rpow_le_one {β : ℝ} (hβ1 : β < 1) :
 
 /-- Finite set of rational primes `p ≤ P₀` as a `Finset Nat.Primes`. -/
 def smallPrimes (P₀ : ℕ) : Finset Nat.Primes :=
-  ((Finset.range (P₀ + 1)).filter Nat.Prime).attach.map
-    ⟨fun x => (⟨x.1, (Finset.mem_filter.mp x.2).2⟩ : Nat.Primes),
-     fun _ _ h => Subtype.ext (Subtype.ext_iff.mp h)⟩
+  (Finset.range (P₀ + 1)).subtype Nat.Prime
 
 @[simp] theorem mem_smallPrimes {P₀ : ℕ} {q : Nat.Primes} :
-    q ∈ smallPrimes P₀ ↔ (q : ℕ) ≤ P₀ := by
-  constructor
-  · intro hq
-    rcases Finset.mem_map.mp hq with ⟨⟨p, hp⟩, _, rfl⟩
-    exact Nat.lt_succ_iff.mp (Finset.mem_range.mp (Finset.mem_filter.mp hp).1)
-  · intro hle
-    exact Finset.mem_map.mpr
-      ⟨⟨q.1, Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hle), q.2⟩⟩,
-       Finset.mem_attach _ _, rfl⟩
+    q ∈ smallPrimes P₀ ↔ (q : ℕ) ≤ P₀ :=
+  (Finset.mem_subtype (p := Nat.Prime) (s := Finset.range (P₀ + 1)) (a := q)).trans
+    (Finset.mem_range.trans Nat.lt_succ_iff)
 
 /-- Finite prime-cutoff factor clearing the shifted `1/ζ` Euler factors at primes `p ≤ P₀`. -/
 def posFiniteFactor (P₀ : ℕ) (ρ₀ s : ℂ) : ℂ :=
@@ -436,7 +428,7 @@ private theorem tsum_posWeightedArith_prime_pow {P₀ : ℕ} {β : ℝ} (γ₀ :
         rw [abs_le]
         refine ⟨?_, posLocalCoeff_le_four P₀ γ₀ hβ1 hp k⟩
         rcases eq_or_ne k 0 with rfl | hk0
-        · simp [posLocalCoeff]
+        · simp [posLocalCoeff]; norm_num
         · rw [posLocalCoeff, if_neg hk0, if_neg hpP']
           rcases eq_or_ne k 1 with rfl | hk1
           · rw [if_pos rfl]
@@ -477,11 +469,11 @@ private theorem tsum_posWeightedArith_prime_pow {P₀ : ℕ} {β : ℝ} (γ₀ :
     have hax : α * x = (p : ℂ) ^ (ρ₀ - 1 - s) := by
       dsimp [α, x]
       rw [← cpow_add _ _ hp0]
-      congr 1; ring
+      congr 1
     have ha'x : α' * x = (p : ℂ) ^ (conj ρ₀ - 1 - s) := by
       dsimp [α', x]
       rw [← cpow_add _ _ hp0]
-      congr 1; ring
+      congr 1
     rw [← hax, ← ha'x]
     apply mul_right_cancel₀ hx1
     calc (1 + ((1 - (α + α')) * x + (1 - α) * (1 - α') * x ^ 2 * (1 - x)⁻¹)) * (1 - x)
@@ -531,15 +523,15 @@ theorem hasProd_and_LSeries_posTruncatedZeta {P₀ : ℕ} {β : ℝ} (γ₀ : �
   have hZ0 := riemannZeta_eulerProduct_hasProd hs
   have hZ1 := riemannZeta_eulerProduct_hasProd hw1_re
   have hZ2 := riemannZeta_eulerProduct_hasProd hw2_re
-  set e : Nat.Primes → ℂ := fun q =>
+  let e : Nat.Primes → ℂ := fun q =>
     if q ∈ smallPrimes P₀ then
       (1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s))⁻¹ * (1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s))⁻¹
-    else 1 with he
+    else 1
   have hE : HasProd e (posFiniteFactor P₀ ρ₀ s) := by
-    have hp := hasProd_prod_of_ne_finset_one (f := e) (s := smallPrimes P₀) fun q hq => by
-      rw [he, if_neg hq]
+    have hp : HasProd e (∏ q ∈ smallPrimes P₀, e q) :=
+      hasProd_prod_of_ne_finset_one fun q hq => by dsimp only [e]; exact if_neg hq
     have hpeq : (∏ q ∈ smallPrimes P₀, e q) = posFiniteFactor P₀ ρ₀ s :=
-      Finset.prod_congr rfl fun q hq => by rw [he, if_pos hq]
+      Finset.prod_congr rfl fun q hq => by dsimp only [e]; exact if_pos hq
     rwa [hpeq] at hp
   have hprod_lhs := (hLprod.mul hZ1).mul hZ2
   have hprod_rhs := hZ0.mul hE
@@ -550,16 +542,23 @@ theorem hasProd_and_LSeries_posTruncatedZeta {P₀ : ℕ} {β : ℝ} (γ₀ : �
     funext q
     have he1 : -(s + 1 - ρ₀) = ρ₀ - 1 - s := by ring
     have he2 : -(s + 1 - conj ρ₀) = conj ρ₀ - 1 - s := by ring
-    rw [he1, he2, he, mem_smallPrimes]
-    unfold posEulerFactor
-    split_ifs with hq
-    · ring
-    · have hne1 : 1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s) ≠ 0 :=
+    dsimp only [e]
+    rw [he1, he2]
+    by_cases hq : (q : ℕ) ≤ P₀
+    · rw [if_pos (mem_smallPrimes.mpr hq), posEulerFactor, if_pos hq]
+      ring
+    · have hqm : q ∉ smallPrimes P₀ := fun hm => hq (mem_smallPrimes.mp hm)
+      rw [if_neg hqm, posEulerFactor, if_neg hq]
+      let u₀ : ℂ := (1 - ((q : ℕ) : ℂ) ^ (-s))⁻¹
+      let u₁ : ℂ := 1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s)
+      let u₂ : ℂ := 1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s)
+      have hne1 : u₁ ≠ 0 :=
         one_sub_prime_cpow_ne_zero (by rw [← he1, neg_re]; linarith) q
-      have hne2 : 1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s) ≠ 0 :=
+      have hne2 : u₂ ≠ 0 :=
         one_sub_prime_cpow_ne_zero (by rw [← he2, neg_re]; linarith) q
-      rw [mul_one, mul_assoc _ (1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s)),
-        mul_inv_cancel_right₀ hne2, mul_inv_cancel_right₀ hne1]
+      calc u₀ * u₁ * u₂ * u₁⁻¹ * u₂⁻¹
+          = u₀ * (u₁ * u₁⁻¹) * (u₂ * u₂⁻¹) := by ring
+        _ = u₀ * 1 := by rw [mul_inv_cancel₀ hne1, mul_inv_cancel₀ hne2, mul_one]
   rw [hfun] at hprod_lhs
   have heq_mul :
       LSeries (fun n => (posTruncatedCoeff P₀ β γ₀ n : ℂ)) s *
@@ -614,13 +613,14 @@ theorem posTruncatedVonMangoldt_bounds {P₀ : ℕ} {β : ℝ} (γ₀ : ℝ) (h�
       exact ⟨mul_nonneg hΛ0 hw0, by nlinarith⟩
 
 private def primePowVonMangoldt (q : Nat.Primes) (n : ℕ) : ℂ :=
+  open Classical in
   if ∃ k : ℕ, n = (q : ℕ) ^ (k + 1) then (Real.log (q : ℕ) : ℂ) else 0
 
 private theorem sum_smallPrimes_primePowVonMangoldt (P₀ n : ℕ) :
     (∑ q ∈ smallPrimes P₀, primePowVonMangoldt q n) =
       if n.minFac ≤ P₀ then (Λ n : ℂ) else 0 := by
   by_cases hpp : IsPrimePow n
-  · obtain ⟨p, k, hp, hk, rfl⟩ := isPrimePow_nat_iff.mp hpp
+  · obtain ⟨p, k, hp, hk, rfl⟩ := (isPrimePow_nat_iff n).mp hpp
     have hk' : k ≠ 0 := hk.ne'
     have hmin : (p ^ k).minFac = p := hp.pow_minFac hk'
     let q₀ : Nat.Primes := ⟨p, hp⟩
@@ -630,12 +630,14 @@ private theorem sum_smallPrimes_primePowVonMangoldt (P₀ n : ℕ) :
       rw [if_neg]
       rintro ⟨m, hm⟩
       apply hqne
-      ext
+      apply Subtype.ext
       have := congrArg Nat.minFac hm
-      rwa [hmin, q.prop.pow_minFac (Nat.succ_ne_zero m)] at this
+      rw [hmin, q.prop.pow_minFac (Nat.succ_ne_zero m)] at this
+      exact this.symm
     have hval : primePowVonMangoldt q₀ (p ^ k) = (Λ (p ^ k) : ℂ) := by
       unfold primePowVonMangoldt
-      rw [if_pos ⟨k - 1, by omega⟩, ArithmeticFunction.vonMangoldt_apply_pow hk',
+      rw [if_pos ⟨k - 1, by change p ^ k = p ^ (k - 1 + 1); rw [Nat.sub_add_cancel hk]⟩,
+        ArithmeticFunction.vonMangoldt_apply_pow hk',
         ArithmeticFunction.vonMangoldt_apply_prime hp]
     rw [hmin]
     by_cases hpP : p ≤ P₀
@@ -643,7 +645,7 @@ private theorem sum_smallPrimes_primePowVonMangoldt (P₀ n : ℕ) :
       rw [if_pos hpP, Finset.sum_eq_single q₀ hsingle (fun h => absurd hmem h), hval]
     · rw [if_neg hpP]
       refine Finset.sum_eq_zero fun q hq => hsingle q hq fun h => hpP ?_
-      rw [← h]
+      subst h
       exact mem_smallPrimes.mp hq
   · have hΛ0 : Λ n = 0 := ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hpp
     rw [hΛ0]
@@ -654,20 +656,26 @@ private theorem sum_smallPrimes_primePowVonMangoldt (P₀ n : ℕ) :
     rintro ⟨k, rfl⟩
     exact hpp (q.prop.prime.isPrimePow.pow (Nat.succ_ne_zero k))
 
+private theorem LSeriesSummable_of_norm_le_vonMangoldt {f : ℕ → ℂ} {w : ℂ}
+    (hle : ∀ n : ℕ, ‖f n‖ ≤ Λ n) (hw : 1 < w.re) : LSeriesSummable f w := by
+  refine Summable.of_norm_bounded (ArithmeticFunction.LSeriesSummable_vonMangoldt hw).norm fun n => ?_
+  rcases eq_or_ne n 0 with rfl | hn0
+  · simp
+  · simp only [LSeries.term_of_ne_zero hn0, norm_div]
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
+    exact div_le_div_of_nonneg_right (hle n) (norm_nonneg _)
+
 private theorem LSeriesSummable_primePowVonMangoldt (q : Nat.Primes) {w : ℂ} (hw : 1 < w.re) :
     LSeriesSummable (primePowVonMangoldt q) w := by
-  refine LSeriesSummable.of_nonneg_of_le (f := fun n => Λ n) ?_ ?_
-    (ArithmeticFunction.LSeriesSummable_vonMangoldt hw)
-  · intro n; positivity
-  · intro n
-    unfold primePowVonMangoldt
-    split_ifs with h
-    · obtain ⟨k, rfl⟩ := h
-      rw [Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg (Real.log_nonneg (by exact_mod_cast q.prop.one_lt.le)),
-        ArithmeticFunction.vonMangoldt_apply_pow (Nat.succ_ne_zero k),
-        ArithmeticFunction.vonMangoldt_apply_prime q.prop]
-    · simp [ArithmeticFunction.vonMangoldt_nonneg]
+  refine LSeriesSummable_of_norm_le_vonMangoldt (fun n => ?_) hw
+  unfold primePowVonMangoldt
+  split_ifs with h
+  · obtain ⟨k, rfl⟩ := h
+    rw [Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.log_nonneg (by exact_mod_cast q.prop.one_lt.le)),
+      ArithmeticFunction.vonMangoldt_apply_pow (Nat.succ_ne_zero k),
+      ArithmeticFunction.vonMangoldt_apply_prime q.prop]
+  · simp [ArithmeticFunction.vonMangoldt_nonneg]
 
 private theorem logDeriv_inv_one_sub_prime_cpow (q : Nat.Primes) {c s : ℂ}
     (hw : 1 < (s - c).re) :
@@ -689,10 +697,14 @@ private theorem logDeriv_inv_one_sub_prime_cpow (q : Nat.Primes) {c s : ℂ}
     rw [heq]
     have hd1 : HasDerivAt (fun z : ℂ => Complex.log (p : ℂ) * (c - z)) (-Complex.log (p : ℂ)) s := by
       simpa using ((hasDerivAt_const s c).sub (hasDerivAt_id s)).const_mul (Complex.log (p : ℂ))
-    have hd2 := HasDerivAt.const_sub 1 hd1.cexp
-    convert hd2 using 1
-    rw [← cpow_def_of_ne_zero hp0, ← natCast_log]
-    ring
+    have hd2 : HasDerivAt (fun x : ℂ => 1 - Complex.exp (Complex.log (p : ℂ) * (c - x)))
+        (-(Complex.exp (Complex.log (p : ℂ) * (c - s)) * -Complex.log (p : ℂ))) s :=
+      HasDerivAt.const_sub 1 hd1.cexp
+    have hderiv_eq : -(Complex.exp (Complex.log (p : ℂ) * (c - s)) * -Complex.log (p : ℂ)) =
+        (Real.log p : ℂ) * (p : ℂ) ^ (c - s) := by
+      rw [← cpow_def_of_ne_zero hp0, ← natCast_log]
+      ring
+    rwa [hderiv_eq] at hd2
   have hhas_inv : HasDerivAt (fun z : ℂ => (1 - (p : ℂ) ^ (c - z))⁻¹)
       (-((Real.log p : ℂ) * (p : ℂ) ^ (c - s)) / (1 - (p : ℂ) ^ (c - s)) ^ 2) s :=
     hhas_g.inv h1sub
@@ -719,7 +731,7 @@ private theorem logDeriv_inv_one_sub_prime_cpow (q : Nat.Primes) {c s : ℂ}
       apply hn
       have hpv : primePowVonMangoldt q n = 0 := by
         unfold primePowVonMangoldt
-        exact if_neg fun ⟨k, hk⟩ => hnot ⟨k, hk.symm⟩
+        exact if_neg fun h => let ⟨k, hk⟩ := h; hnot ⟨k, hk.symm⟩
       simp [hpv]
   have hL : LSeries (primePowVonMangoldt q) (s - c) =
       (Real.log p : ℂ) * x * (1 - x)⁻¹ := by
@@ -729,7 +741,7 @@ private theorem logDeriv_inv_one_sub_prime_cpow (q : Nat.Primes) {c s : ℂ}
         (Real.log p : ℂ) * x * x ^ k := by
       intro k
       have hpk0 : p ^ (k + 1) ≠ 0 := pow_ne_zero _ hp.ne_zero
-      rw [LSeries.term_of_ne_zero hpk0, ← cpow_neg,
+      rw [LSeries.term_of_ne_zero hpk0, div_eq_mul_inv, ← cpow_neg,
         show primePowVonMangoldt q (p ^ (k + 1)) = (Real.log p : ℂ) by
           unfold primePowVonMangoldt; exact if_pos ⟨k, rfl⟩,
         natCast_pow_cpow_neg p (k + 1) (s - c), pow_succ']
@@ -753,6 +765,12 @@ private theorem differentiableAt_inv_one_sub_prime_cpow (q : Nat.Primes) {c s : 
       ((differentiableAt_const _ |>.mul (differentiableAt_const _ |>.sub differentiableAt_id)).cexp)
   exact hd.inv (one_sub_prime_cpow_ne_zero hw q)
 
+private theorem logDeriv_fun_mul {f g : ℂ → ℂ} {s : ℂ}
+    (hfd : DifferentiableAt ℂ f s) (hgd : DifferentiableAt ℂ g s)
+    (hf0 : f s ≠ 0) (hg0 : g s ≠ 0) :
+    logDeriv (fun z => f z * g z) s = logDeriv f s + logDeriv g s :=
+  logDeriv_mul (f := f) (g := g) s hf0 hg0 hfd hgd
+
 private theorem logDeriv_finset_prod {ι : Type*} (S : Finset ι) (f : ι → ℂ → ℂ) (s : ℂ)
     (hne : ∀ i ∈ S, f i s ≠ 0) (hd : ∀ i ∈ S, DifferentiableAt ℂ (f i) s) :
     logDeriv (fun z => ∏ i ∈ S, f i z) s = ∑ i ∈ S, logDeriv (f i) s := by
@@ -772,8 +790,8 @@ private theorem logDeriv_finset_prod {ι : Type*} (S : Finset ι) (f : ι → �
         (fun _ _ hg₁ hg₂ => hg₁.mul hg₂) (differentiableAt_const 1)
         fun i hi => hd i (Finset.mem_insert_of_mem hi)
     rw [hfn, Finset.sum_insert ha,
-      logDeriv_mul s (hne a (Finset.mem_insert_self a S)) hprod_ne
-        (hd a (Finset.mem_insert_self a S)) hprod_d,
+      logDeriv_fun_mul (hd a (Finset.mem_insert_self a S)) hprod_d
+        (hne a (Finset.mem_insert_self a S)) hprod_ne,
       ih (fun i hi => hne i (Finset.mem_insert_of_mem hi))
         (fun i hi => hd i (Finset.mem_insert_of_mem hi))]
 
@@ -801,10 +819,10 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
   set c₁ : ℂ := ρ₀ - 1
   set c₂ : ℂ := conj ρ₀ - 1
   have hw₁ : 1 < (s - c₁).re := by
-    have : (s - c₁).re = s.re + 1 - β := by simp [c₁, ρ₀]
+    have : (s - c₁).re = s.re + 1 - β := by simp [c₁, ρ₀]; ring
     linarith
   have hw₂ : 1 < (s - c₂).re := by
-    have : (s - c₂).re = s.re + 1 - β := by simp [c₂, ρ₀]
+    have : (s - c₂).re = s.re + 1 - β := by simp [c₂, ρ₀]; ring
     linarith
   have hne1 : ∀ w : ℂ, 1 < w.re → w ≠ 1 := fun w hw h => by rw [h] at hw; simp at hw
   have hz_ne : ∀ w : ℂ, 1 < w.re → riemannZeta w ≠ 0 := fun w hw =>
@@ -842,20 +860,22 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
       DifferentiableAt ℂ (fun z => (riemannZeta (z - c))⁻¹) s ∧
         logDeriv (fun z => (riemannZeta (z - c))⁻¹) s = -logDeriv riemannZeta (s - c) := by
     intro c hwc
-    have hd_sub : DifferentiableAt ℂ (fun z : ℂ => z - c) s := differentiableAt_id.sub_const c
-    have hd_z : DifferentiableAt ℂ (fun z => riemannZeta (z - c)) s :=
-      (hz_d _ hwc).comp s hd_sub
-    refine ⟨hd_z.inv (hz_ne _ hwc), ?_⟩
-    rw [logDeriv_inv, show (fun z => riemannZeta (z - c)) = riemannZeta ∘ (fun z => z - c) from rfl,
-      logDeriv_comp (hz_d _ hwc) hd_sub, deriv_sub_const, deriv_id'', mul_one]
+    have hhas : HasDerivAt (fun z : ℂ => riemannZeta (z - c)) (deriv riemannZeta (s - c) * 1) s :=
+      (hz_d _ hwc).hasDerivAt.comp s ((hasDerivAt_id s).sub_const c)
+    have hhas_inv : HasDerivAt (fun z : ℂ => (riemannZeta (z - c))⁻¹)
+        (-(deriv riemannZeta (s - c) * 1) / riemannZeta (s - c) ^ 2) s :=
+      hhas.inv (hz_ne _ hwc)
+    refine ⟨hhas_inv.differentiableAt, ?_⟩
+    rw [logDeriv_apply, hhas_inv.deriv, logDeriv_apply]
+    field_simp [hz_ne _ hwc]
   have hfin_ne : posFiniteFactor P₀ ρ₀ s ≠ 0 := by
     unfold posFiniteFactor
     refine Finset.prod_ne_zero_iff.mpr fun q _ => mul_ne_zero
       (inv_ne_zero (one_sub_prime_cpow_ne_zero ?_ q))
       (inv_ne_zero (one_sub_prime_cpow_ne_zero ?_ q))
-    · have : (ρ₀ - 1 - s).re = -(s - c₁).re := by dsimp [c₁]; simp; ring
+    · have : (ρ₀ - 1 - s).re = -(s - c₁).re := by dsimp [c₁]; simp
       linarith
-    · have : (conj ρ₀ - 1 - s).re = -(s - c₂).re := by dsimp [c₂]; simp; ring
+    · have : (conj ρ₀ - 1 - s).re = -(s - c₂).re := by dsimp [c₂]; simp
       linarith
   have hfin_d_and_ld : DifferentiableAt ℂ (posFiniteFactor P₀ ρ₀) s ∧
       logDeriv (posFiniteFactor P₀ ρ₀) s =
@@ -905,10 +925,11 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
         have hc2_neg : (c₂ - s).re < 0 := by
           have : (c₂ - s).re = -(s - c₂).re := by simp
           linarith
-        rw [logDeriv_mul s (inv_ne_zero (one_sub_prime_cpow_ne_zero hc1_neg q))
-            (inv_ne_zero (one_sub_prime_cpow_ne_zero hc2_neg q))
+        rw [logDeriv_fun_mul
             (differentiableAt_inv_one_sub_prime_cpow q hc1_neg)
-            (differentiableAt_inv_one_sub_prime_cpow q hc2_neg),
+            (differentiableAt_inv_one_sub_prime_cpow q hc2_neg)
+            (inv_ne_zero (one_sub_prime_cpow_ne_zero hc1_neg q))
+            (inv_ne_zero (one_sub_prime_cpow_ne_zero hc2_neg q)),
           logDeriv_inv_one_sub_prime_cpow q hw₁, logDeriv_inv_one_sub_prime_cpow q hw₂]
         ring
       rw [Finset.sum_congr rfl hterm, Finset.sum_neg_distrib, Finset.sum_add_distrib,
@@ -919,11 +940,16 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
   have hz0_ne := hz_ne s hs
   have hz1_inv_ne : (riemannZeta (s - c₁))⁻¹ ≠ 0 := inv_ne_zero (hz_ne _ hw₁)
   have hz2_inv_ne : (riemannZeta (s - c₂))⁻¹ ≠ 0 := inv_ne_zero (hz_ne _ hw₂)
+  have hd01 : DifferentiableAt ℂ (fun z => riemannZeta z * (riemannZeta (z - c₁))⁻¹) s :=
+    (hz_d s hs).mul hd1.1
+  have hd012 : DifferentiableAt ℂ
+      (fun z => riemannZeta z * (riemannZeta (z - c₁))⁻¹ * (riemannZeta (z - c₂))⁻¹) s :=
+    hd01.mul hd2.1
   rw [hld_eq,
-    logDeriv_mul s (mul_ne_zero (mul_ne_zero hz0_ne hz1_inv_ne) hz2_inv_ne) hfin_ne
-      (((hz_d s hs).mul hd1.1).mul hd2.1) hfin_d_and_ld.1,
-    logDeriv_mul s (mul_ne_zero hz0_ne hz1_inv_ne) hz2_inv_ne ((hz_d s hs).mul hd1.1) hd2.1,
-    logDeriv_mul s hz0_ne hz1_inv_ne (hz_d s hs) hd1.1,
+    logDeriv_fun_mul hd012 hfin_d_and_ld.1
+      (mul_ne_zero (mul_ne_zero hz0_ne hz1_inv_ne) hz2_inv_ne) hfin_ne,
+    logDeriv_fun_mul hd01 hd2.1 (mul_ne_zero hz0_ne hz1_inv_ne) hz2_inv_ne,
+    logDeriv_fun_mul (hz_d s hs) hd1.1 hz0_ne hz1_inv_ne,
     hd1.2, hd2.2, hlogζ s hs, hlogζ _ hw₁, hlogζ _ hw₂, hfin_d_and_ld.2]
   have hS0 : LSeriesSummable (fun n => (Λ n : ℂ)) s :=
     ArithmeticFunction.LSeriesSummable_vonMangoldt hs
@@ -931,14 +957,14 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
     ArithmeticFunction.LSeriesSummable_vonMangoldt hw₁
   have hS2 : LSeriesSummable (fun n => (Λ n : ℂ)) (s - c₂) :=
     ArithmeticFunction.LSeriesSummable_vonMangoldt hw₂
-  have hSm1 : LSeriesSummable (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₁) := by
-    refine LSeriesSummable.of_nonneg_of_le (f := fun n => Λ n) (fun _ => by positivity) (fun n => ?_)
-      (ArithmeticFunction.LSeriesSummable_vonMangoldt hw₁)
-    split_ifs <;> simp [ArithmeticFunction.vonMangoldt_nonneg]
-  have hSm2 : LSeriesSummable (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₂) := by
-    refine LSeriesSummable.of_nonneg_of_le (f := fun n => Λ n) (fun _ => by positivity) (fun n => ?_)
-      (ArithmeticFunction.LSeriesSummable_vonMangoldt hw₂)
-    split_ifs <;> simp [ArithmeticFunction.vonMangoldt_nonneg]
+  have hSm1 : LSeriesSummable (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₁) :=
+    LSeriesSummable_of_norm_le_vonMangoldt
+      (fun n => by split_ifs <;> simp [abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg,
+        ArithmeticFunction.vonMangoldt_nonneg]) hw₁
+  have hSm2 : LSeriesSummable (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₂) :=
+    LSeriesSummable_of_norm_le_vonMangoldt
+      (fun n => by split_ifs <;> simp [abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg,
+        ArithmeticFunction.vonMangoldt_nonneg]) hw₂
   have hdiff1 : LSeries (fun n => (Λ n : ℂ)) (s - c₁) -
       LSeries (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₁) =
       ∑' n : ℕ, (LSeries.term (fun n => (Λ n : ℂ)) (s - c₁) n -
@@ -949,8 +975,8 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
       ∑' n : ℕ, (LSeries.term (fun n => (Λ n : ℂ)) (s - c₂) n -
         LSeries.term (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₂) n) :=
     (Summable.tsum_sub hS2 hSm2).symm
-  have halg : -(-LSeries (fun n => (Λ n : ℂ)) s + --LSeries (fun n => (Λ n : ℂ)) (s - c₁) +
-      --LSeries (fun n => (Λ n : ℂ)) (s - c₂) +
+  have halg : -(-LSeries (fun n => (Λ n : ℂ)) s + -(-LSeries (fun n => (Λ n : ℂ)) (s - c₁)) +
+      -(-LSeries (fun n => (Λ n : ℂ)) (s - c₂)) +
       -(LSeries (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₁) +
         LSeries (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₂))) =
       LSeries (fun n => (Λ n : ℂ)) s -
@@ -960,7 +986,13 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
           LSeries (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₂)) := by ring
   rw [halg, hdiff1, hdiff2]
   unfold LSeries
-  rw [← Summable.tsum_sub hS0 (hS1.sub hSm1), ← Summable.tsum_sub (hS0.sub (hS1.sub hSm1)) (hS2.sub hSm2)]
+  have hSub1 : Summable (fun n : ℕ => LSeries.term (fun n => (Λ n : ℂ)) (s - c₁) n -
+      LSeries.term (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₁) n) :=
+    Summable.sub hS1 hSm1
+  have hSub2 : Summable (fun n : ℕ => LSeries.term (fun n => (Λ n : ℂ)) (s - c₂) n -
+      LSeries.term (fun n => if n.minFac ≤ P₀ then (Λ n : ℂ) else 0) (s - c₂) n) :=
+    Summable.sub hS2 hSm2
+  rw [← Summable.tsum_sub hS0 hSub1, ← Summable.tsum_sub (Summable.sub hS0 hSub1) hSub2]
   refine tsum_congr fun n => ?_
   rcases eq_or_ne n 0 with rfl | hn0
   · simp
@@ -971,8 +1003,6 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
     · ring
     · have hn_pos : 0 < n := Nat.pos_of_ne_zero hn0
       have hnc0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn0
-      have hns0 : (n : ℂ) ^ s ≠ 0 := by
-        rw [cpow_def_of_ne_zero hnc0]; exact Complex.exp_ne_zero _
       have hsub1 : ((n : ℂ) ^ (s - c₁))⁻¹ = (n : ℂ) ^ c₁ / (n : ℂ) ^ s := by
         rw [sub_eq_add_neg, cpow_add _ _ hnc0, cpow_neg, mul_inv, inv_inv, mul_comm, div_eq_mul_inv]
       have hsub2 : ((n : ℂ) ^ (s - c₂))⁻¹ = (n : ℂ) ^ c₂ / (n : ℂ) ^ s := by
@@ -980,11 +1010,18 @@ theorem neg_logDeriv_posTruncatedZeta_eq_LSeries {P₀ : ℕ} {β : ℝ} (γ₀ 
       have hsum_c : (n : ℂ) ^ c₁ + (n : ℂ) ^ c₂ =
           ((2 * (n : ℝ) ^ (β - 1) * Real.cos (γ₀ * Real.log n) : ℝ) : ℂ) :=
         prime_cpow_add_conj n hn_pos β γ₀
-      rw [zero_div, sub_zero, sub_zero, div_eq_mul_inv (Λ n : ℂ) ((n : ℂ) ^ (s - c₁)),
-        div_eq_mul_inv (Λ n : ℂ) ((n : ℂ) ^ (s - c₂)), hsub1, hsub2, ofReal_mul, ofReal_sub,
-        ofReal_one, ← hsum_c]
-      field_simp [hns0]
-      ring
+      calc (Λ n : ℂ) / (n : ℂ) ^ s -
+            ((Λ n : ℂ) / (n : ℂ) ^ (s - c₁) - 0 / (n : ℂ) ^ (s - c₁)) -
+            ((Λ n : ℂ) / (n : ℂ) ^ (s - c₂) - 0 / (n : ℂ) ^ (s - c₂))
+          = (Λ n : ℂ) / (n : ℂ) ^ s -
+              (Λ n : ℂ) * (((n : ℂ) ^ (s - c₁))⁻¹ + ((n : ℂ) ^ (s - c₂))⁻¹) := by ring
+        _ = (Λ n : ℂ) / (n : ℂ) ^ s -
+              (Λ n : ℂ) * ((n : ℂ) ^ c₁ / (n : ℂ) ^ s + (n : ℂ) ^ c₂ / (n : ℂ) ^ s) := by
+              rw [hsub1, hsub2]
+        _ = (Λ n : ℂ) * (1 - ((n : ℂ) ^ c₁ + (n : ℂ) ^ c₂)) / (n : ℂ) ^ s := by ring
+        _ = ((Λ n * (1 - 2 * (n : ℝ) ^ (β - 1) * Real.cos (γ₀ * Real.log n)) : ℝ) : ℂ) /
+              (n : ℂ) ^ s := by
+              rw [hsum_c]; push_cast; ring
 
 /-! ## 5. Meromorphicity, holomorphy, simple pole at `s = 1`, zero set, and vertical bounds -/
 
@@ -1013,9 +1050,11 @@ theorem meromorphicOn_posTruncatedZeta (P₀ : ℕ) (ρ₀ : ℂ) :
         fun w => (w - w₀) * (zetaResidueUnit (w + 1 - w₀))⁻¹ := by
       funext w; unfold invZeta; congr 1; ring
     rw [hfn]
+    have hsub_an : AnalyticAt ℂ (fun w : ℂ => w + 1 - w₀) z :=
+      (analyticAt_id.add analyticAt_const).sub analyticAt_const
     have hcomp : AnalyticAt ℂ (fun w => zetaResidueUnit (w + 1 - w₀)) z :=
-      (analyticAt_zetaResidueUnit (z + 1 - w₀)).comp
-        ((analyticAt_id.add analyticAt_const).sub analyticAt_const)
+      AnalyticAt.comp (f := fun w : ℂ => w + 1 - w₀) (x := z)
+        (analyticAt_zetaResidueUnit (z + 1 - w₀)) hsub_an
     exact (analyticAt_id.sub analyticAt_const).meromorphicAt.mul hcomp.meromorphicAt.inv
   have hfin : MeromorphicAt (posFiniteFactor P₀ ρ₀) z := by
     have hpf : posFiniteFactor P₀ ρ₀ = ∏ q ∈ smallPrimes P₀, fun w =>
@@ -1064,7 +1103,8 @@ theorem differentiableAt_posCofactor_of_re_gt {Θ₀ β : ℝ} (γ₀ : ℝ)
   have hdf : DifferentiableAt ℂ (posFiniteFactor P₀ ρ₀) s := by
     have hpf : posFiniteFactor P₀ ρ₀ = ∏ q ∈ smallPrimes P₀, fun z =>
         (1 - ((q : ℕ) : ℂ) ^ ((ρ₀ - 1) - z))⁻¹ *
-          (1 - ((q : ℕ) : ℂ) ^ ((conj ρ₀ - 1) - z))⁻¹ := rfl
+          (1 - ((q : ℕ) : ℂ) ^ ((conj ρ₀ - 1) - z))⁻¹ := by
+      funext z; simp [posFiniteFactor]
     rw [hpf]
     refine Finset.prod_induction _ (fun g => DifferentiableAt ℂ g s)
       (fun _ _ hg₁ hg₂ => hg₁.mul hg₂) (differentiableAt_const 1) fun q _ => ?_
@@ -1118,8 +1158,9 @@ theorem exists_pos_residue_posTruncatedZeta_one (P₀ : ℕ) {β γ₀ : ℝ}
   have hcof1 : posCofactor P₀ ρ₀ 1 = (R : ℂ) := by
     unfold posCofactor posFiniteFactor
     have he1 : (1 : ℂ) + 1 - ρ₀ = w₀ := by dsimp [w₀]; ring
-    have he2 : (1 : ℂ) + 1 - conj ρ₀ = conj w₀ := by dsimp [w₀]; simp
-    have hw₀c_ne1 : conj w₀ ≠ 1 := by rwa [← he2]
+    have he2 : (1 : ℂ) + 1 - conj ρ₀ = conj w₀ := by dsimp [w₀]; rw [map_sub, map_ofNat]; ring
+    have he2' : (1 : ℂ) + 1 - conj ρ₀ = 2 - conj ρ₀ := by ring
+    have hw₀c_ne1 : conj w₀ ≠ 1 := by rw [← he2, he2']; exact hw₀'_ne1
     rw [he1, he2, invZeta_eq_inv hw₀_ne1, invZeta_eq_inv hw₀c_ne1, _root_.riemannZeta_conj,
       ← map_inv₀, Complex.mul_conj, Complex.normSq_eq_norm_sq]
     have hprod : (∏ q ∈ smallPrimes P₀,
@@ -1128,11 +1169,14 @@ theorem exists_pos_residue_posTruncatedZeta_one (P₀ : ℕ) {β γ₀ : ℝ}
       rw [ofReal_prod]
       refine Finset.prod_congr rfl fun q _ => ?_
       have hp1 : ρ₀ - 1 - 1 = ρ₀ - 2 := by ring
-      have hp2 : conj ρ₀ - 1 - 1 = conj (ρ₀ - 2) := by simp; ring
-      rw [hp1, hp2, prime_cpow_conj_eq (q : ℕ) q.prop.pos (ρ₀ - 2), ← map_one (conj),
-        ← map_sub, ← map_inv₀, Complex.mul_conj, Complex.normSq_eq_norm_sq, ofReal_inv,
-        ofReal_pow, norm_inv, inv_pow]
+      have hp2 : conj ρ₀ - 1 - 1 = conj (ρ₀ - 2) := by rw [map_sub, map_ofNat]; ring
+      have hconj_q : (1 - ((q : ℕ) : ℂ) ^ (conj (ρ₀ - 2)))⁻¹ =
+          conj ((1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 2))⁻¹) := by
+        symm
+        rw [map_inv₀, map_sub, map_one, prime_cpow_conj_eq (q : ℕ) q.prop.pos (ρ₀ - 2)]
+      rw [hp1, hp2, hconj_q, Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_inv, inv_pow]
     rw [hprod]
+    dsimp [R]
     push_cast
     rfl
   have hcont : ContinuousAt (posCofactor P₀ ρ₀) 1 := by
@@ -1171,7 +1215,7 @@ theorem zeroSet_posTruncatedZeta_eq_pair {Θ₀ β γ₀ : ℝ}
         linarith
     unfold posTruncatedZeta posCofactor at hF0
     have hinv_mul : invZeta (s + 1 - ρ₀) * invZeta (s + 1 - conj ρ₀) = 0 :=
-      ((mul_eq_zero.mp hF0).resolve_left hζ_ne).resolve_right hfin_ne
+      (mul_eq_zero.mp ((mul_eq_zero.mp hF0).resolve_left hζ_ne)).resolve_right hfin_ne
     have hw₁ : Θ₀ < (s + 1 - ρ₀).re := by
       have : (s + 1 - ρ₀).re = s.re + 1 - β := by simp [ρ₀]
       linarith
@@ -1311,7 +1355,7 @@ theorem exists_poly_bounds_posTruncatedZeta {Θ₀ β γ₀ : ℝ}
   have hb_w1 := hshift_bounds γ₀ rfl
   have hb_w2 : ‖invZeta (s + 1 - conj ρ₀)‖ ≤ (4 * K₁ + 1) * |s.im| ∧
       ‖(invZeta (s + 1 - conj ρ₀))⁻¹‖ ≤ (Cζ + 1) * 2 ^ Nζ * |s.im| ^ Nζ := by
-    have hconj_eq : conj ρ₀ = (β : ℂ) + ((-γ₀ : ℝ) : ℂ) * I := by simp [ρ₀, sub_eq_add_neg]
+    have hconj_eq : conj ρ₀ = (β : ℂ) + ((-γ₀ : ℝ) : ℂ) * I := by simp [ρ₀]
     rw [hconj_eq]
     exact hshift_bounds (-γ₀) (abs_neg γ₀)
   have hfin_bounds : ‖posFiniteFactor P₀ ρ₀ s‖ ≤ Bf ∧ ‖(posFiniteFactor P₀ ρ₀ s)⁻¹‖ ≤ Bg := by
@@ -1339,13 +1383,13 @@ theorem exists_poly_bounds_posTruncatedZeta {Θ₀ β γ₀ : ℝ}
         linarith
       exact ⟨hlo, hhi⟩
     unfold posFiniteFactor
-    rw [Finset.prod_inv_distrib]
+    rw [← Finset.prod_inv_distrib]
     constructor
     · calc ‖∏ q ∈ smallPrimes P₀,
             (1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s))⁻¹ * (1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s))⁻¹‖
-          ≤ ∏ q ∈ smallPrimes P₀,
+          = ∏ q ∈ smallPrimes P₀,
             ‖(1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s))⁻¹ * (1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s))⁻¹‖ :=
-            norm_prod_le _ _
+            norm_prod _ _
         _ ≤ ∏ _q ∈ smallPrimes P₀, (η₀⁻¹ * η₀⁻¹) := by
             refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun q hq => ?_
             rw [norm_mul, norm_inv, norm_inv]
@@ -1356,9 +1400,9 @@ theorem exists_poly_bounds_posTruncatedZeta {Θ₀ β γ₀ : ℝ}
         _ = Bf := Finset.prod_const _
     · calc ‖∏ q ∈ smallPrimes P₀,
             ((1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s))⁻¹ * (1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s))⁻¹)⁻¹‖
-          ≤ ∏ q ∈ smallPrimes P₀,
+          = ∏ q ∈ smallPrimes P₀,
             ‖((1 - ((q : ℕ) : ℂ) ^ (ρ₀ - 1 - s))⁻¹ * (1 - ((q : ℕ) : ℂ) ^ (conj ρ₀ - 1 - s))⁻¹)⁻¹‖ :=
-            norm_prod_le _ _
+            norm_prod _ _
         _ ≤ ∏ _q ∈ smallPrimes P₀, (4 : ℝ) := by
             refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun q hq => ?_
             rw [mul_inv, inv_inv, inv_inv, norm_mul]
@@ -1377,12 +1421,10 @@ theorem exists_poly_bounds_posTruncatedZeta {Θ₀ β γ₀ : ℝ}
       calc ‖riemannZeta s‖ * (‖invZeta (s + 1 - ρ₀)‖ * ‖invZeta (s + 1 - conj ρ₀)‖ *
               ‖posFiniteFactor P₀ ρ₀ s‖)
           ≤ ((Cζ + 1) * |s.im| ^ Nζ) * (((4 * K₁ + 1) * |s.im|) * ((4 * K₁ + 1) * |s.im|) * Bf) := by
-            gcongr
-            exact hζ_s
-            exact hb_w1.1
-            exact hb_w2.1
-            exact hfin_bounds.1
-        _ = C_up * |s.im| ^ (Nζ + 2) := by dsimp [C_up]; rw [pow_add, pow_two]; ring
+            refine mul_le_mul hζ_s (mul_le_mul
+              (mul_le_mul hb_w1.1 hb_w2.1 (norm_nonneg _) (by positivity))
+              hfin_bounds.1 (norm_nonneg _) (by positivity)) (by positivity) (by positivity)
+        _ = C_up * |s.im| ^ (Nζ + 2) := by dsimp [C_up]; rw [pow_add |s.im| Nζ 2, pow_two]; ring
     exact hmul.trans (mul_le_mul (by linarith [le_max_left C_up C_dn])
       (pow_le_pow_right₀ ht1 (le_max_left _ _)) (by positivity) (by positivity))
   · unfold posTruncatedZeta posCofactor
@@ -1394,13 +1436,13 @@ theorem exists_poly_bounds_posTruncatedZeta {Θ₀ β γ₀ : ℝ}
               ‖(invZeta (s + 1 - conj ρ₀))⁻¹‖ * ‖(posFiniteFactor P₀ ρ₀ s)⁻¹‖)
           ≤ ((2 * K₀ + 1) * |s.im|) * (((Cζ + 1) * 2 ^ Nζ * |s.im| ^ Nζ) *
               ((Cζ + 1) * 2 ^ Nζ * |s.im| ^ Nζ) * Bg) := by
-            gcongr
-            exact hinv_ζ_s
-            exact hb_w1.2
-            exact hb_w2.2
-            exact hfin_bounds.2
+            refine mul_le_mul hinv_ζ_s (mul_le_mul
+              (mul_le_mul hb_w1.2 hb_w2.2 (norm_nonneg _) (by positivity))
+              hfin_bounds.2 (norm_nonneg _) (by positivity)) (by positivity) (by positivity)
         _ = C_dn * |s.im| ^ (2 * Nζ + 1) := by
-            dsimp [C_dn]; rw [two_mul, pow_add, pow_add, pow_one]; ring
+            dsimp [C_dn]
+            rw [pow_add |s.im| (2 * Nζ) 1, two_mul Nζ, pow_add |s.im| Nζ Nζ, pow_one]
+            ring
     exact hmul.trans (mul_le_mul (by linarith [le_max_right C_up C_dn])
       (pow_le_pow_right₀ ht1 (le_max_right _ _)) (by positivity) (by positivity))
 
@@ -1450,7 +1492,7 @@ private theorem exists_eventually_lower_bound_norm_invZeta {w : ℂ} (hw1 : w �
       rw [invZeta_eq_inv hw1]
       exact norm_pos_iff.mpr (inv_ne_zero hne)
     refine ⟨‖invZeta w‖ / 2, by positivity, eventually_nhdsWithin_of_eventually_nhds ?_⟩
-    exact hc.eventually (ge_mem_nhds (by linarith))
+    exact hc.eventually (Ici_mem_nhds (half_lt_self hpos))
 
 private theorem tendsto_shift_nhdsNE (s₀ d : ℂ) :
     Tendsto (fun s : ℂ => s + d) (𝓝[≠] s₀) (𝓝[≠] (s₀ + d)) := by
@@ -1460,64 +1502,66 @@ private theorem tendsto_shift_nhdsNE (s₀ d : ℂ) :
     intro h
     exact hs (add_right_cancel h)
 
-/-- Core pole criterion: whenever `s_* ≠ 1`, `ζ(s_*) ≠ 0`, `(ρ₀ − 1 − s_*).re < 0`,
-`s_* + 1 − ρ₀ ≠ 1`, `s_* + 1 − conj ρ₀ ≠ 1`, and `ζ(s_* + 1 − ρ₀) = 0`, `posTruncatedZeta P₀ ρ₀`
-blows up in norm (`→ +∞`) on the punctured neighborhood `𝓝[≠] s_*` and is not analytic at `s_*`. -/
-theorem tendsto_norm_posTruncatedZeta_atTop_of_shifted_zero (P₀ : ℕ) {ρ₀ s_* : ℂ}
-    (hs1 : s_* ≠ 1) (hζ_ne : riemannZeta s_* ≠ 0)
-    (hfin_re : (ρ₀ - 1 - s_*).re < 0) (hfin_re_conj : (conj ρ₀ - 1 - s_*).re < 0)
-    (hw1_ne1 : s_* + 1 - ρ₀ ≠ 1) (hw2_ne1 : s_* + 1 - conj ρ₀ ≠ 1)
-    (hw1_zero : riemannZeta (s_* + 1 - ρ₀) = 0) :
-    Tendsto (fun s => ‖posTruncatedZeta P₀ ρ₀ s‖) (𝓝[≠] s_*) atTop ∧
-      ¬ AnalyticAt ℂ (posTruncatedZeta P₀ ρ₀) s_* := by
-  have hshift1 : Tendsto (fun s => s + (1 - ρ₀)) (𝓝[≠] s_*) (𝓝[≠] (s_* + (1 - ρ₀))) :=
-    tendsto_shift_nhdsNE s_* (1 - ρ₀)
-  have hshift2 : Tendsto (fun s => s + (1 - conj ρ₀)) (𝓝[≠] s_*) (𝓝[≠] (s_* + (1 - conj ρ₀))) :=
-    tendsto_shift_nhdsNE s_* (1 - conj ρ₀)
-  have htop1 : Tendsto (fun s => ‖invZeta (s + 1 - ρ₀)‖) (𝓝[≠] s_*) atTop := by
+/-- Core pole criterion: whenever `s₀ ≠ 1`, `ζ(s₀) ≠ 0`, `(ρ₀ − 1 − s₀).re < 0`,
+`s₀ + 1 − ρ₀ ≠ 1`, `s₀ + 1 − conj ρ₀ ≠ 1`, and `ζ(s₀ + 1 − ρ₀) = 0`, `posTruncatedZeta P₀ ρ₀`
+blows up in norm (`→ +∞`) on the punctured neighborhood `𝓝[≠] s₀` and is not analytic at `s₀`. -/
+theorem tendsto_norm_posTruncatedZeta_atTop_of_shifted_zero (P₀ : ℕ) {ρ₀ s₀ : ℂ}
+    (hs1 : s₀ ≠ 1) (hζ_ne : riemannZeta s₀ ≠ 0)
+    (hfin_re : (ρ₀ - 1 - s₀).re < 0) (hfin_re_conj : (conj ρ₀ - 1 - s₀).re < 0)
+    (hw1_ne1 : s₀ + 1 - ρ₀ ≠ 1) (hw2_ne1 : s₀ + 1 - conj ρ₀ ≠ 1)
+    (hw1_zero : riemannZeta (s₀ + 1 - ρ₀) = 0) :
+    Tendsto (fun s => ‖posTruncatedZeta P₀ ρ₀ s‖) (𝓝[≠] s₀) atTop ∧
+      ¬ AnalyticAt ℂ (posTruncatedZeta P₀ ρ₀) s₀ := by
+  have hshift1 : Tendsto (fun s => s + (1 - ρ₀)) (𝓝[≠] s₀) (𝓝[≠] (s₀ + (1 - ρ₀))) :=
+    tendsto_shift_nhdsNE s₀ (1 - ρ₀)
+  have hshift2 : Tendsto (fun s => s + (1 - conj ρ₀)) (𝓝[≠] s₀) (𝓝[≠] (s₀ + (1 - conj ρ₀))) :=
+    tendsto_shift_nhdsNE s₀ (1 - conj ρ₀)
+  have htop1 : Tendsto (fun s => ‖invZeta (s + 1 - ρ₀)‖) (𝓝[≠] s₀) atTop := by
     have ht := (tendsto_norm_invZeta_atTop_of_zeta_zero
       (by simpa [add_sub_assoc] using hw1_ne1)
       (by simpa [add_sub_assoc] using hw1_zero)).comp hshift1
     exact ht.congr fun s => by simp [add_sub_assoc]
   obtain ⟨c₂, hc₂_pos, hc₂_ev⟩ := exists_eventually_lower_bound_norm_invZeta
     (by simpa [add_sub_assoc] using hw2_ne1)
-  have hev2 : ∀ᶠ s in 𝓝[≠] s_*, c₂ ≤ ‖invZeta (s + 1 - conj ρ₀)‖ := by
+  have hev2 : ∀ᶠ s in 𝓝[≠] s₀, c₂ ≤ ‖invZeta (s + 1 - conj ρ₀)‖ := by
     filter_upwards [hshift2.eventually hc₂_ev] with s hs
     simpa [add_sub_assoc] using hs
-  have hζ_pos : 0 < ‖riemannZeta s_*‖ := norm_pos_iff.mpr hζ_ne
-  have hev_ζ : ∀ᶠ s in 𝓝[≠] s_*, ‖riemannZeta s_*‖ / 2 ≤ ‖riemannZeta s‖ :=
+  have hζ_pos : 0 < ‖riemannZeta s₀‖ := norm_pos_iff.mpr hζ_ne
+  have hev_ζ : ∀ᶠ s in 𝓝[≠] s₀, ‖riemannZeta s₀‖ / 2 ≤ ‖riemannZeta s‖ :=
     eventually_nhdsWithin_of_eventually_nhds
-      ((differentiableAt_riemannZeta hs1).continuousAt.norm.eventually (ge_mem_nhds (by linarith)))
-  have hfin_ne : posFiniteFactor P₀ ρ₀ s_* ≠ 0 := by
+      ((differentiableAt_riemannZeta hs1).continuousAt.norm.eventually
+        (Ici_mem_nhds (half_lt_self hζ_pos)))
+  have hfin_ne : posFiniteFactor P₀ ρ₀ s₀ ≠ 0 := by
     unfold posFiniteFactor
     exact Finset.prod_ne_zero_iff.mpr fun q _ => mul_ne_zero
       (inv_ne_zero (one_sub_prime_cpow_ne_zero hfin_re q))
       (inv_ne_zero (one_sub_prime_cpow_ne_zero hfin_re_conj q))
-  have hfin_cont : ContinuousAt (posFiniteFactor P₀ ρ₀) s_* := by
+  have hfin_cont : ContinuousAt (posFiniteFactor P₀ ρ₀) s₀ := by
     have hpf : posFiniteFactor P₀ ρ₀ = ∏ q ∈ smallPrimes P₀, fun z =>
         (1 - ((q : ℕ) : ℂ) ^ ((ρ₀ - 1) - z))⁻¹ *
-          (1 - ((q : ℕ) : ℂ) ^ ((conj ρ₀ - 1) - z))⁻¹ := rfl
+          (1 - ((q : ℕ) : ℂ) ^ ((conj ρ₀ - 1) - z))⁻¹ := by
+      funext z; simp [posFiniteFactor]
     rw [hpf]
-    exact (Finset.prod_induction _ (fun g => DifferentiableAt ℂ g s_*)
+    exact (Finset.prod_induction _ (fun g => DifferentiableAt ℂ g s₀)
       (fun _ _ hg₁ hg₂ => hg₁.mul hg₂) (differentiableAt_const 1) fun q _ =>
         (differentiableAt_inv_one_sub_prime_cpow q hfin_re).mul
           (differentiableAt_inv_one_sub_prime_cpow q hfin_re_conj)).continuousAt
-  have hfin_pos : 0 < ‖posFiniteFactor P₀ ρ₀ s_*‖ := norm_pos_iff.mpr hfin_ne
-  have hev_fin : ∀ᶠ s in 𝓝[≠] s_*, ‖posFiniteFactor P₀ ρ₀ s_*‖ / 2 ≤ ‖posFiniteFactor P₀ ρ₀ s‖ :=
+  have hfin_pos : 0 < ‖posFiniteFactor P₀ ρ₀ s₀‖ := norm_pos_iff.mpr hfin_ne
+  have hev_fin : ∀ᶠ s in 𝓝[≠] s₀, ‖posFiniteFactor P₀ ρ₀ s₀‖ / 2 ≤ ‖posFiniteFactor P₀ ρ₀ s‖ :=
     eventually_nhdsWithin_of_eventually_nhds
-      (hfin_cont.norm.eventually (ge_mem_nhds (by linarith)))
-  set κ : ℝ := (‖riemannZeta s_*‖ / 2) * c₂ * (‖posFiniteFactor P₀ ρ₀ s_*‖ / 2)
+      (hfin_cont.norm.eventually (Ici_mem_nhds (half_lt_self hfin_pos)))
+  set κ : ℝ := (‖riemannZeta s₀‖ / 2) * c₂ * (‖posFiniteFactor P₀ ρ₀ s₀‖ / 2)
   have hκ_pos : 0 < κ := by dsimp [κ]; positivity
-  have hκ_top : Tendsto (fun s => κ * ‖invZeta (s + 1 - ρ₀)‖) (𝓝[≠] s_*) atTop :=
+  have hκ_top : Tendsto (fun s => κ * ‖invZeta (s + 1 - ρ₀)‖) (𝓝[≠] s₀) atTop :=
     Filter.Tendsto.const_mul_atTop hκ_pos htop1
-  have htop : Tendsto (fun s => ‖posTruncatedZeta P₀ ρ₀ s‖) (𝓝[≠] s_*) atTop := by
+  have htop : Tendsto (fun s => ‖posTruncatedZeta P₀ ρ₀ s‖) (𝓝[≠] s₀) atTop := by
     refine tendsto_atTop_mono' _ ?_ hκ_top
     filter_upwards [hev_ζ, hev2, hev_fin] with s hsζ hs2 hsf
     unfold posTruncatedZeta posCofactor
     rw [norm_mul, norm_mul, norm_mul]
     calc κ * ‖invZeta (s + 1 - ρ₀)‖
-        = (‖riemannZeta s_*‖ / 2) * (‖invZeta (s + 1 - ρ₀)‖ * c₂ *
-            (‖posFiniteFactor P₀ ρ₀ s_*‖ / 2)) := by dsimp [κ]; ring
+        = (‖riemannZeta s₀‖ / 2) * (‖invZeta (s + 1 - ρ₀)‖ * c₂ *
+            (‖posFiniteFactor P₀ ρ₀ s₀‖ / 2)) := by dsimp [κ]; ring
       _ ≤ ‖riemannZeta s‖ * (‖invZeta (s + 1 - ρ₀)‖ * ‖invZeta (s + 1 - conj ρ₀)‖ *
             ‖posFiniteFactor P₀ ρ₀ s‖) := by
           refine mul_le_mul hsζ ?_ (by positivity) (norm_nonneg _)
@@ -1529,108 +1573,106 @@ theorem tendsto_norm_posTruncatedZeta_atTop_of_shifted_zero (P₀ : ℕ) {ρ₀ 
 /-- **Left-strip pole obstruction (`Θ < 1`):** when `Θ = zetaZeroAbscissa < 1`, for every
 `β ∈ (Θ, 1)` and `γ₀ ≠ 0`, `posTruncatedZeta P₀ (β + i γ₀)` has a genuine pole (`‖F(s)‖ → +∞`)
 strictly inside the left critical strip `0 < Re s < 1 − Θ ≤ 1/2`. -/
-theorem exists_left_strip_pole_posTruncatedZeta (hΘ1 : zetaZeroAbscissa < 1)
-    {β γ₀ : ℝ} (hΘβ : zetaZeroAbscissa < β) (hβ1 : β < 1) (hγ₀ : γ₀ ≠ 0) (P₀ : ℕ) :
-    ∃ s_* : ℂ, 0 < s_*.re ∧ s_*.re < 1 - zetaZeroAbscissa ∧
-      Tendsto (fun s => ‖posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I) s‖) (𝓝[≠] s_*) atTop ∧
-      ¬ AnalyticAt ℂ (posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I)) s_* := by
+theorem exists_left_strip_pole_posTruncatedZeta (_ : zetaZeroAbscissa < 1)
+    {β γ₀ : ℝ} (hΘβ : zetaZeroAbscissa < β) (hβ1 : β < 1) (_ : γ₀ ≠ 0) (P₀ : ℕ) :
+    ∃ s₀ : ℂ, 0 < s₀.re ∧ s₀.re < 1 - zetaZeroAbscissa ∧
+      Tendsto (fun s => ‖posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I) s‖) (𝓝[≠] s₀) atTop ∧
+      ¬ AnalyticAt ℂ (posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I)) s₀ := by
   have hΘ_half : 1 / 2 ≤ zetaZeroAbscissa := half_le_zetaZeroAbscissa
-  obtain ⟨ρ_*, hζ_ρ, hρ_lt1, hρ_gt⟩ :=
+  obtain ⟨ρ₁, hζ_ρ, hρ_lt1, hρ_gt⟩ :=
     exists_zetaZero_mem_openStrip_lt_re (b := zetaZeroAbscissa - (1 - β) / 2) (by linarith)
-  have hρ_pos : 0 < ρ_*.re := by linarith
-  have hρ_leΘ : ρ_*.re ≤ zetaZeroAbscissa := re_le_zetaZeroAbscissa hζ_ρ
+  have hρ_pos : 0 < ρ₁.re := by linarith
+  have hρ_leΘ : ρ₁.re ≤ zetaZeroAbscissa := re_le_zetaZeroAbscissa hζ_ρ
   set ρ₀ : ℂ := (β : ℂ) + (γ₀ : ℂ) * I
-  set w_* : ℂ := 1 - ρ_*
-  set s_* : ℂ := ρ₀ - ρ_*
-  have hs_re_eq : s_*.re = β - ρ_*.re := by simp [s_*, ρ₀]
-  have hs_pos : 0 < s_*.re := by linarith
-  have hs_lt_left : s_*.re < 1 - zetaZeroAbscissa := by linarith
-  have hs_lt1 : s_*.re < 1 := by linarith
-  have hs_ne1 : s_* ≠ 1 := fun h => by rw [h] at hs_lt1; simp at hs_lt1
-  have hζ_s_ne : riemannZeta s_* ≠ 0 := by
+  set s₀ : ℂ := ρ₀ - ρ₁
+  have hs_re_eq : s₀.re = β - ρ₁.re := by simp [s₀, ρ₀]
+  have hs_pos : 0 < s₀.re := by linarith
+  have hs_lt_left : s₀.re < 1 - zetaZeroAbscissa := by linarith
+  have hs_lt1 : s₀.re < 1 := by linarith
+  have hs_ne1 : s₀ ≠ 1 := fun h => by rw [h] at hs_lt1; simp at hs_lt1
+  have hζ_s_ne : riemannZeta s₀ ≠ 0 := by
     intro h0
     have hrefl := riemannZeta_one_sub_eq_zero_of_mem_openStrip h0 hs_pos hs_lt1
-    have hre1 : (1 - s_*).re > zetaZeroAbscissa := by simp; linarith
+    have hre1 : (1 - s₀).re > zetaZeroAbscissa := by simp; linarith
     exact riemannZeta_ne_zero_of_zetaZeroAbscissa_lt hre1 hrefl
-  have hfin1 : (ρ₀ - 1 - s_*).re < 0 := by
-    have : (ρ₀ - 1 - s_*).re = ρ_*.re - 1 := by dsimp [s_*]; simp; ring
+  have hfin1 : (ρ₀ - 1 - s₀).re < 0 := by
+    have : (ρ₀ - 1 - s₀).re = ρ₁.re - 1 := by dsimp [s₀]; simp
     linarith
-  have hfin2 : (conj ρ₀ - 1 - s_*).re < 0 := by
-    have : (conj ρ₀ - 1 - s_*).re = ρ_*.re - 1 := by dsimp [s_*, ρ₀]; simp; ring
+  have hfin2 : (conj ρ₀ - 1 - s₀).re < 0 := by
+    have : (conj ρ₀ - 1 - s₀).re = ρ₁.re - 1 := by dsimp [s₀, ρ₀]; simp
     linarith
-  have hw1_eq : s_* + 1 - ρ₀ = 1 - ρ_* := by dsimp [s_*]; ring
-  have hw1_ne1 : s_* + 1 - ρ₀ ≠ 1 := by
+  have hw1_eq : s₀ + 1 - ρ₀ = 1 - ρ₁ := by dsimp [s₀]; ring
+  have hw1_ne1 : s₀ + 1 - ρ₀ ≠ 1 := by
     rw [hw1_eq]
     intro h
     have := congrArg Complex.re h
     simp at this
     linarith
-  have hw2_ne1 : s_* + 1 - conj ρ₀ ≠ 1 := by
+  have hw2_ne1 : s₀ + 1 - conj ρ₀ ≠ 1 := by
     intro h
     have := congrArg Complex.re h
-    have hre : (s_* + 1 - conj ρ₀).re = 1 - ρ_*.re := by dsimp [s_*, ρ₀]; simp; ring
+    have hre : (s₀ + 1 - conj ρ₀).re = 1 - ρ₁.re := by dsimp [s₀, ρ₀]; simp; ring
     rw [hre] at this
     simp at this
     linarith
-  have hw1_zero : riemannZeta (s_* + 1 - ρ₀) = 0 := by
+  have hw1_zero : riemannZeta (s₀ + 1 - ρ₀) = 0 := by
     rw [hw1_eq]
     exact riemannZeta_one_sub_eq_zero_of_mem_openStrip hζ_ρ hρ_pos hρ_lt1
   obtain ⟨htop, hnot_an⟩ := tendsto_norm_posTruncatedZeta_atTop_of_shifted_zero P₀
     hs_ne1 hζ_s_ne hfin1 hfin2 hw1_ne1 hw2_ne1 hw1_zero
-  exact ⟨s_*, hs_pos, hs_lt_left, htop, hnot_an⟩
+  exact ⟨s₀, hs_pos, hs_lt_left, htop, hnot_an⟩
 
 /-- **Under `RiemannHypothesis`, infinitely many left-strip poles on `Re s = β − 1/2`:** for every
 height `T`, Hardy's critical-line zeros produce a genuine pole of `posTruncatedZeta` on
 `Re s = β − 1/2 ∈ (0, 1/2)` with `|Im s| > T`. -/
 theorem exists_left_strip_pole_above_of_riemannHypothesis (hRH : RiemannHypothesis)
     {β γ₀ : ℝ} (hβ_half : 1 / 2 < β) (hβ1 : β < 1) (P₀ : ℕ) (T : ℝ) :
-    ∃ s_* : ℂ, s_*.re = β - 1 / 2 ∧ T < |s_*.im| ∧
-      Tendsto (fun s => ‖posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I) s‖) (𝓝[≠] s_*) atTop ∧
-      ¬ AnalyticAt ℂ (posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I)) s_* := by
+    ∃ s₀ : ℂ, s₀.re = β - 1 / 2 ∧ T < |s₀.im| ∧
+      Tendsto (fun s => ‖posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I) s‖) (𝓝[≠] s₀) atTop ∧
+      ¬ AnalyticAt ℂ (posTruncatedZeta P₀ ((β : ℂ) + (γ₀ : ℂ) * I)) s₀ := by
   have hzf_half : ∀ z : ℂ, 1 / 2 < z.re → riemannZeta z ≠ 0 :=
     riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re.mp hRH
   obtain ⟨t, ht, hXi⟩ := exists_Xi_zero_gt (|T| + |γ₀| + 1)
   have ht_pos : 0 < t := lt_of_le_of_lt (by positivity) ht
-  set w_* : ℂ := 1 / 2 + (t : ℂ) * I
-  have hw_ne0 : w_* ≠ 0 := fun h => by
-    have := congrArg Complex.re h; simp [w_*] at this
-  have hΛ : completedRiemannZeta w_* = 0 := by
+  set w₀ : ℂ := 1 / 2 + (t : ℂ) * I
+  have hw_ne0 : w₀ ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp [w₀] at this
+  have hΛ : completedRiemannZeta w₀ = 0 := by
     rw [completedRiemannZeta_critical_eq_Xi t, hXi]; simp
-  have hζ_w : riemannZeta w_* = 0 := by
+  have hζ_w : riemannZeta w₀ = 0 := by
     rw [riemannZeta_def_of_ne_zero hw_ne0, hΛ, zero_div]
   set ρ₀ : ℂ := (β : ℂ) + (γ₀ : ℂ) * I
-  set s_* : ℂ := w_* - 1 + ρ₀
-  have hs_re : s_*.re = β - 1 / 2 := by simp [s_*, w_*, ρ₀]; ring
-  have hs_im : s_*.im = t + γ₀ := by simp [s_*, w_*, ρ₀]
-  have hs_im_gt : T < |s_*.im| := by
+  set s₀ : ℂ := w₀ - 1 + ρ₀
+  have hs_re : s₀.re = β - 1 / 2 := by simp [s₀, w₀, ρ₀]; ring
+  have hs_im : s₀.im = t + γ₀ := by simp [s₀, w₀, ρ₀]
+  have hs_im_gt : T < |s₀.im| := by
     have htri : t - |γ₀| ≤ |t + γ₀| := by
       have h := abs_sub_abs_le_abs_sub t (-γ₀)
       simpa [abs_of_pos ht_pos, sub_neg_eq_add] using h
     rw [hs_im]
     linarith [le_abs_self T]
-  have hs_pos : 0 < s_*.re := by linarith
-  have hs_lt_half : s_*.re < 1 / 2 := by linarith
-  have hs_lt1 : s_*.re < 1 := by linarith
-  have hs_ne1 : s_* ≠ 1 := fun h => by rw [h] at hs_lt1; simp at hs_lt1
-  have hζ_s_ne : riemannZeta s_* ≠ 0 := by
+  have hs_pos : 0 < s₀.re := by linarith
+  have hs_lt1 : s₀.re < 1 := by linarith
+  have hs_ne1 : s₀ ≠ 1 := fun h => by rw [h] at hs_lt1; simp at hs_lt1
+  have hζ_s_ne : riemannZeta s₀ ≠ 0 := by
     intro h0
     have hrefl := riemannZeta_one_sub_eq_zero_of_mem_openStrip h0 hs_pos hs_lt1
-    exact hzf_half (1 - s_*) (by simp; linarith) hrefl
-  have hfin1 : (ρ₀ - 1 - s_*).re < 0 := by
-    have : (ρ₀ - 1 - s_*).re = -1 / 2 := by dsimp [s_*, w_*, ρ₀]; simp; ring
+    exact hzf_half (1 - s₀) (by simp; linarith) hrefl
+  have hfin1 : (ρ₀ - 1 - s₀).re < 0 := by
+    have : (ρ₀ - 1 - s₀).re = -1 / 2 := by dsimp [s₀, w₀, ρ₀]; simp; ring
     linarith
-  have hfin2 : (conj ρ₀ - 1 - s_*).re < 0 := by
-    have : (conj ρ₀ - 1 - s_*).re = -1 / 2 := by dsimp [s_*, w_*, ρ₀]; simp; ring
+  have hfin2 : (conj ρ₀ - 1 - s₀).re < 0 := by
+    have : (conj ρ₀ - 1 - s₀).re = -1 / 2 := by dsimp [s₀, w₀, ρ₀]; simp; ring
     linarith
-  have hw1_eq : s_* + 1 - ρ₀ = w_* := by dsimp [s_*]; ring
-  have hw1_ne1 : s_* + 1 - ρ₀ ≠ 1 := by
-    rw [hw1_eq]; intro h; have := congrArg Complex.re h; simp [w_*] at this; norm_num at this
-  have hw2_ne1 : s_* + 1 - conj ρ₀ ≠ 1 := by
-    intro h; have := congrArg Complex.re h; simp [s_*, w_*, ρ₀] at this; norm_num at this
-  have hw1_zero : riemannZeta (s_* + 1 - ρ₀) = 0 := by rw [hw1_eq]; exact hζ_w
+  have hw1_eq : s₀ + 1 - ρ₀ = w₀ := by dsimp [s₀]; ring
+  have hw1_ne1 : s₀ + 1 - ρ₀ ≠ 1 := by
+    rw [hw1_eq]; intro h; have := congrArg Complex.re h; simp [w₀] at this
+  have hw2_ne1 : s₀ + 1 - conj ρ₀ ≠ 1 := by
+    intro h; have := congrArg Complex.re h; simp [s₀, w₀, ρ₀] at this; linarith
+  have hw1_zero : riemannZeta (s₀ + 1 - ρ₀) = 0 := by rw [hw1_eq]; exact hζ_w
   obtain ⟨htop, hnot_an⟩ := tendsto_norm_posTruncatedZeta_atTop_of_shifted_zero P₀
     hs_ne1 hζ_s_ne hfin1 hfin2 hw1_ne1 hw2_ne1 hw1_zero
-  exact ⟨s_*, hs_re, hs_im_gt, htop, hnot_an⟩
+  exact ⟨s₀, hs_re, hs_im_gt, htop, hnot_an⟩
 
 /-! ## 7. Unconditional meromorphic tempered Euler-product firewall dichotomy -/
 
@@ -1667,10 +1709,10 @@ theorem asymptoticAbscissaLaw_or_exists_meromorphic_tempered_euler_oneOff :
               ‖F s‖ ≤ C * |s.im| ^ N ∧ ‖(F s)⁻¹‖ ≤ C * |s.im| ^ N) ∧
           {s : ℂ | zetaZeroAbscissa < s.re ∧ s ≠ 1 ∧ F s = 0} = {ρ₀, conj ρ₀} ∧
           ¬ HalfPlaneAbscissaLaw F zetaZeroAbscissa ∧
-          (∃ s_* : ℂ, 0 < s_*.re ∧ s_*.re < 1 - zetaZeroAbscissa ∧
-            Tendsto (fun s => ‖F s‖) (𝓝[≠] s_*) atTop ∧ ¬ AnalyticAt ℂ F s_*)) := by
+          (∃ s₀ : ℂ, 0 < s₀.re ∧ s₀.re < 1 - zetaZeroAbscissa ∧
+            Tendsto (fun s => ‖F s‖) (𝓝[≠] s₀) atTop ∧ ¬ AnalyticAt ℂ F s₀)) := by
   rcases eq_or_lt_of_le zetaZeroAbscissa_le_one with hΘ_eq | hΘ_lt
-  · exact Or.inl (asymptoticAbscissaLaw_of_zetaZeroAbscissa_eq_one hΘ_eq.symm)
+  · exact Or.inl (asymptoticAbscissaLaw_of_zetaZeroAbscissa_eq_one hΘ_eq)
   · refine Or.inr ⟨hΘ_lt, fun β γ₀ hΘβ hβ1 hγ₀ => ?_⟩
     have hΘ_half : 1 / 2 ≤ zetaZeroAbscissa := half_le_zetaZeroAbscissa
     have hzf : ∀ z : ℂ, zetaZeroAbscissa < z.re → riemannZeta z ≠ 0 :=

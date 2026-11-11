@@ -5,6 +5,7 @@ import GaloisForLFunctions.FloorFreeArithmetic.NonAttainmentGivesTheAbscissaLaw
 import GaloisForLFunctions.FloorFreeArithmetic.NonAttainmentIsALawOfConfigurations
 import GaloisForLFunctions.FloorFreeArithmetic.ThePrimeNumberTheoremIsNotAttainedOnWindows
 import GaloisForLFunctions.FloorFreeArithmetic.LinearStatisticsAreNotMonotoneUnderProjection
+import GaloisForLFunctions.FloorFreeArithmetic.TheGradientLawOfProjection
 import GaloisForLFunctions.FloorFreeArithmetic.UnitGapsPassToTheLimit
 import GaloisForLFunctions.FloorFreeArithmetic.MomentsOnWindowsAmplifyTheDepth
 import GaloisForLFunctions.FloorFreeArithmetic.ThePrimesAttainTheTopRateOnEveryWindow
@@ -21,6 +22,8 @@ import GaloisForLFunctions.FloorFreeArithmetic.TheHeatFlowHasTheCountOfItsLimit
 import GaloisForLFunctions.FloorFreeArithmetic.EveryFiniteDatumIsATopLayer
 import GaloisForLFunctions.FloorFreeArithmetic.TheZeroConfigurationDoesNotSeeTheEulerProduct
 import GaloisForLFunctions.FloorFreeArithmetic.PositivityAdmitsEveryFiniteDatum
+import GaloisForLFunctions.FloorFreeArithmetic.PositivityOnTheLineOfThePole
+import GaloisForLFunctions.FloorFreeArithmetic.SystemsThatOnlyAddPrimesVanishAtTheirRealAbscissa
 import GaloisForLFunctions.FloorFreeArithmetic.QuantileDiscretizationOfAPrimeDensity
 import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInDiscreteEulerProducts
 import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInIntegerNormEulerProducts
@@ -44,7 +47,10 @@ gaps under locally uniform limits and from forms of finite index; the convergenc
 certificates to the von Mangoldt weights; the behaviour of linear statistics under projection of
 zeros to the critical line. It also contains the theorems that exclude a source for each kind:
 every finite datum is a top layer of a symmetric configuration, of a positive prime density and
-of an Euler product with natural norms;
+of an Euler product with natural norms, and the property of a configuration that combines
+these structures has floor `½`; positivity counts on the line of the pole only; a system that
+only adds primes vanishes at its real abscissa; functions of linear statistics are monotone
+only through their gradient;
 normalized translates at a finite layer have only the zero limit; the scattering tower and the
 heat flow keep the count and the clock lies below Weil's form; additive functionals of the
 depths are mixtures of inner masses; moment bounds of all orders are sup bounds; pencils and

@@ -48,8 +48,10 @@ theorem tendsto_smoothedMobiusKernelMeanError :
     intro hx
     rw [uIoc_of_le zero_le_one] at hx
     rw [Real.norm_eq_abs, abs_abs]
-    exact (abs_sub _ _).trans (by simpa only [abs_one] using
-      add_le_add (hb _ (mul_nonneg hL hx.1.le)) le_rfl)
+    have hh : |smoothedMobiusKernel (L * x)| + |(1 : ℝ)| ≤ D + 1 := by
+      simpa only [abs_one] using add_le_add (hb _ (mul_nonneg hL hx.1.le))
+        (le_refl (1 : ℝ))
+    exact (abs_sub _ _).trans hh
   have hpoint : ∀ᵐ x : ℝ, x ∈ uIoc (0 : ℝ) 1 →
       Tendsto (fun L : ℝ => |smoothedMobiusKernel (L * x) - 1|) atTop (𝓝 0) := by
     filter_upwards with x
@@ -60,7 +62,9 @@ theorem tendsto_smoothedMobiusKernelMeanError :
   have hi : IntervalIntegrable (fun _ : ℝ => D + 1) volume 0 1 := intervalIntegrable_const
   have hh := intervalIntegral.tendsto_integral_filter_of_dominated_convergence
     (fun _ => D + 1) hmeas hbound hi hpoint
-  simpa only [intervalIntegral.integral_zero, smoothedMobiusKernelMeanError] using hh
+  change Tendsto (fun L : ℝ => ∫ x in (0 : ℝ)..1,
+    |smoothedMobiusKernel (L * x) - 1|) atTop (𝓝 0)
+  simpa only [intervalIntegral.integral_zero] using hh
 
 
 /-- The logarithmically normalized Möbius transform of a smooth test. -/
@@ -75,11 +79,13 @@ theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
     ∃ M : ℝ, 0 ≤ M ∧ ∀ L : ℝ, 0 < L → ∀ u ∈ Icc (0 : ℝ) 1,
       |scaledMobiusLogTest f L u - f₁ u| ≤
         |f₁ 0| * |smoothedMobiusKernel (L * u) - 1| + M * smoothedMobiusKernelMeanError L := by
-  obtain ⟨M, hM⟩ := isCompact_Icc.exists_bound_of_continuousOn hc₂.continuousOn
+  obtain ⟨M, hM⟩ := (isCompact_Icc : IsCompact (Icc (0 : ℝ) 1)).exists_bound_of_continuousOn
+    hc₂.continuousOn
   have hM0 : 0 ≤ M := (norm_nonneg (f₂ 0)).trans (hM 0 ⟨le_rfl, zero_le_one⟩)
   refine ⟨M, hM0, ?_⟩
   intro L hL u hu
-  have hK := (continuousOn_dilatedSmoothedMobiusKernel hL.le).sub continuous_const.continuousOn
+  have hK : ContinuousOn (fun x => smoothedMobiusKernel (L * x) - 1) (Icc 0 1) :=
+    (continuousOn_dilatedSmoothedMobiusKernel hL.le).sub continuous_const.continuousOn
   have hsub : Icc (0 : ℝ) u ⊆ Icc (0 : ℝ) 1 := Icc_subset_Icc le_rfl hu.2
   have hKu : IntervalIntegrable (fun x => smoothedMobiusKernel (L * x) - 1) volume 0 u :=
     (hK.mono hsub).intervalIntegrable_of_Icc hu.1
@@ -89,7 +95,8 @@ theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
     (hF.continuousOn.mul (hK.mono hsub)).intervalIntegrable_of_Icc hu.1
   have hprimitive : (∫ x in (0 : ℝ)..u, f₂ (u - x)) = f₁ u - f₁ 0 := by
     have hd (x : ℝ) : HasDerivAt (fun x => -f₁ (u - x)) (f₂ (u - x)) x := by
-      convert (((hf₁ (u - x)).comp x ((hasDerivAt_id x).const_sub u)).neg) using 1 <;> ring
+      apply (((hf₁ (u - x)).comp x ((hasDerivAt_id x).const_sub u)).neg).congr_deriv
+      ring
     have hh := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hd x)
       (hF.intervalIntegrable 0 u)
     simpa only [sub_self, sub_zero, neg_sub_neg] using hh
@@ -108,7 +115,7 @@ theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
     have htail : IntervalIntegrable (fun x => |smoothedMobiusKernel (L * x) - 1|) volume u 1 :=
       (hK.abs.mono (Icc_subset_Icc hu.1 le_rfl)).intervalIntegrable_of_Icc hu.2
     have hs := intervalIntegral.integral_add_adjacent_intervals («μ» := volume) hKu.abs htail
-    have hn := intervalIntegral.integral_nonneg_of_forall hu.2
+    have hn := intervalIntegral.integral_nonneg_of_forall («μ» := volume) hu.2
       (fun x => abs_nonneg (smoothedMobiusKernel (L * x) - 1))
     change _ ≤ ∫ x in (0 : ℝ)..1, |smoothedMobiusKernel (L * x) - 1|
     linarith only [hs, hn]
@@ -133,5 +140,38 @@ theorem exists_scaledMobiusLogTest_error_bound {f f₁ f₂ : ℝ → ℝ}
   refine (abs_add_le _ _).trans ?_
   rw [abs_mul]
   exact add_le_add le_rfl hib
+
+/-- Smooth logarithmic Möbius tests converge uniformly away from the cutoff endpoint. -/
+theorem scaledMobiusLogTest_converges_uniformly {f f₁ f₂ : ℝ → ℝ}
+    (hf : ∀ x, HasDerivAt f (f₁ x) x) (hf₁ : ∀ x, HasDerivAt f₁ (f₂ x) x)
+    (hc₂ : Continuous f₂) (hf0 : f 0 = 0) {δ ε : ℝ} (hδ : 0 < δ) (hε : 0 < ε) :
+    ∀ᶠ L : ℝ in atTop, ∀ u ∈ Icc δ 1,
+      |scaledMobiusLogTest f L u - f₁ u| < ε := by
+  obtain ⟨M, hM, hb⟩ := exists_scaledMobiusLogTest_error_bound hf hf₁ hc₂ hf0
+  let η : ℝ := ε / (2 * (|f₁ 0| + 1))
+  have hη : 0 < η := by dsimp only [η]; positivity
+  have htail : ∀ᶠ y : ℝ in atTop, |smoothedMobiusKernel y - 1| < η := by
+    simpa only [Metric.mem_ball, Real.dist_eq] using
+      smoothedMobiusKernel_bounded_and_tendsto.2.eventually (Metric.ball_mem_nhds 1 hη)
+  obtain ⟨K, hK⟩ := eventually_atTop.mp htail
+  have hmean : ∀ᶠ L : ℝ in atTop, M * smoothedMobiusKernelMeanError L < ε / 2 := by
+    have hh := (tendsto_smoothedMobiusKernelMeanError.const_mul M).eventually_lt_const
+      (show M * 0 < ε / 2 by simpa using half_pos hε)
+    exact hh
+  filter_upwards [eventually_gt_atTop (0 : ℝ), eventually_ge_atTop (K / δ), hmean] with L hL hLK hLM
+  intro u hu
+  have hKu : K ≤ L * u := calc
+    K ≤ L * δ := (div_le_iff₀ hδ).mp hLK
+    _ ≤ L * u := mul_le_mul_of_nonneg_left hu.1 hL.le
+  have hfirst : |f₁ 0| * |smoothedMobiusKernel (L * u) - 1| ≤ ε / 2 := by
+    have hprod : |f₁ 0| * η ≤ ε / 2 := by
+      have hden : 0 < |f₁ 0| + 1 := by positivity
+      calc
+        _ ≤ (|f₁ 0| + 1) * η := mul_le_mul_of_nonneg_right
+          (le_add_of_nonneg_right zero_le_one) hη.le
+        _ = ε / 2 := by dsimp only [η]; field_simp [hden.ne'] <;> ring
+    exact (mul_le_mul_of_nonneg_left (hK (L * u) hKu).le (abs_nonneg _)).trans hprod
+  have he := hb L hL u ⟨hδ.le.trans hu.1, hu.2⟩
+  linarith only [he, hfirst, hLM]
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField
