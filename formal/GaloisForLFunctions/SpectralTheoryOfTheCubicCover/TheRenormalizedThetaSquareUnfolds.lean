@@ -158,24 +158,38 @@ theorem cpow_mul_rpow_div (s : ℂ) (a : ℝ) (v : ℝ) (hv : 0 < v) :
   rw [Complex.ofReal_cpow hv.le, Complex.cpow_sub _ _ hv0, Complex.cpow_add _ _ hv0]
   norm_cast
 
+theorem low_power_integrand_eq (s : ℂ) (v : ℝ) (hv : 0 < v) :
+    (v : ℂ) ^ s * (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3 =
+      (Set.Iio 2).indicator (fun v => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3)) v := by
+  by_cases h2 : v < 2
+  · rw [Set.indicator_of_mem h2, Set.indicator_of_mem h2, cpow_mul_rpow_div s _ v hv]
+  · rw [Set.indicator_of_notMem h2, Set.indicator_of_notMem h2, mul_zero, zero_div]
+
+theorem low_power_exponent_re (s : ℂ) (hs : 2 / 3 < s.re) : -1 < (s + ((4 : ℝ) / 3 : ℝ) - 3).re := by
+  simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.re_ofNat]
+  linarith
+
+theorem integrableOn_low_power (s : ℂ) (hs : 2 / 3 < s.re) :
+    IntegrableOn (fun v : ℝ => (v : ℂ) ^ s *
+      (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3) (Set.Ioi 0) := by
+  have hI : IntegrableOn (fun v : ℝ => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3)) (Set.Ioc 0 2) :=
+    (intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)).mp
+      (intervalIntegral.intervalIntegrable_cpow' (low_power_exponent_re s hs))
+  have h2 : IntegrableOn ((Set.Iio 2).indicator fun v : ℝ => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3))
+      (Set.Ioi 0) := by
+    rw [IntegrableOn, integrable_indicator_iff measurableSet_Iio, IntegrableOn,
+      Measure.restrict_restrict measurableSet_Iio, Set.Iio_inter_Ioi]
+    exact hI.mono_set Set.Ioo_subset_Ioc_self
+  exact h2.congr_fun (fun v (hv : 0 < v) => (low_power_integrand_eq s v hv).symm) measurableSet_Ioi
+
 /-- `∫_0^2 v^s v^{4/3} v^{−3} dv = 2^{s−2/3}/(s − 2/3)` for `Re s > 2/3`. -/
 theorem integral_low_power (s : ℂ) (hs : 2 / 3 < s.re) :
     ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
       (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3 =
         (2 : ℂ) ^ (s - 2 / 3) / (s - 2 / 3) := by
-  have hr : -1 < (s + ((4 : ℝ) / 3 : ℝ) - 3).re := by
-    simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.re_ofNat]
-    linarith
-  have hpt : ∀ v ∈ Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
-      (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3 =
-        (Set.Iio 2).indicator (fun v => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3)) v := by
-    intro v (hv : 0 < v)
-    by_cases h2 : v < 2
-    · rw [Set.indicator_of_mem h2, Set.indicator_of_mem h2, cpow_mul_rpow_div s _ v hv]
-    · rw [Set.indicator_of_notMem h2, Set.indicator_of_notMem h2, mul_zero, zero_div]
-  rw [setIntegral_congr_fun measurableSet_Ioi hpt, setIntegral_indicator measurableSet_Iio,
-    show Set.Ioi (0 : ℝ) ∩ Set.Iio 2 = Set.Ioo 0 2 from Set.Ioi_inter_Iio, ← integral_Ioc_eq_integral_Ioo,
-    ← intervalIntegral.integral_of_le (by norm_num), integral_cpow (Or.inl hr)]
+  rw [setIntegral_congr_fun measurableSet_Ioi fun v (hv : 0 < v) => low_power_integrand_eq s v hv,
+    setIntegral_indicator measurableSet_Iio, Set.Ioi_inter_Iio, ← integral_Ioc_eq_integral_Ioo,
+    ← intervalIntegral.integral_of_le (by norm_num), integral_cpow (Or.inl (low_power_exponent_re s hs))]
   have hne : s + ((4 : ℝ) / 3 : ℝ) - 3 + 1 ≠ 0 := by
     intro h
     have := congrArg Complex.re h
@@ -186,18 +200,85 @@ theorem integral_low_power (s : ℂ) (hs : 2 / 3 < s.re) :
   push_cast
   congr 1 <;> ring_nf
 
-theorem integrableOn_low_power (s : ℂ) (hs : 2 / 3 < s.re) :
-    IntegrableOn (fun v : ℝ => (v : ℂ) ^ s *
-      (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3) (Set.Ioi 0) := by
-  have hr : -1 < (s + ((4 : ℝ) / 3 : ℝ) - 3).re := by
+/-- `∫_2^∞ v^{4/3} v^{2−s} v^{−3} dv = 2^{4/3−s}/(s − 4/3)` for `Re s > 4/3`. -/
+theorem integral_growthProfile_full_eq (s : ℂ) (hs : 4 / 3 < s.re) :
+    ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
+      (2 : ℂ) ^ (4 / 3 - s) / (s - 4 / 3) := by
+  have hpt : ∀ v ∈ Set.Ioi (0 : ℝ), growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
+      (Set.Ici 2).indicator (fun v => (v : ℂ) ^ (((4 : ℝ) / 3 : ℝ) + (2 - s) - 3)) v := by
+    intro v (hv : 0 < v)
+    by_cases h2 : v ∈ Set.Ici (2 : ℝ)
+    · rw [growthProfile, Set.indicator_of_mem h2, Set.indicator_of_mem h2]
+      have := cpow_mul_rpow_div (2 - s) ((4 : ℝ) / 3) v hv
+      rw [← this]
+      ring
+    · rw [growthProfile, Set.indicator_of_notMem h2, Set.indicator_of_notMem h2, zero_mul, zero_div]
+  have ha : (((4 : ℝ) / 3 : ℝ) + (2 - s) - 3 : ℂ).re < -1 := by
     simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.re_ofNat]
     linarith
-  have hI : IntegrableOn (fun v : ℝ => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3)) (Set.Ioc 0 2) :=
-    (intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)).mp
-      (intervalIntegral.intervalIntegrable_cpow' hr)
-  refine (hI.of_forall_sdiff_eq_zero measurableSet_Ioi fun v hv => ?_).congr_fun (fun v hv => ?_)
-    measurableSet_Ioi
-  · sorry
-  · sorry
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, setIntegral_indicator measurableSet_Ici,
+    Set.Ioi_inter_Ici, show max (0 : ℝ) 2 = 2 by norm_num, integral_Ici_eq_integral_Ioi,
+    integral_Ioi_cpow_of_lt ha (by norm_num)]
+  have hne : s - 4 / 3 ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp only [Complex.sub_re, Complex.re_ofNat, Complex.zero_re] at this
+    norm_num at this
+    linarith
+  push_cast
+  rw [show (4 : ℂ) / 3 + (2 - s) - 3 + 1 = -(s - 4 / 3) by ring,
+    show (4 : ℂ) / 3 + (2 - s) - 3 + 1 = 4 / 3 - s by ring] at *
+  field_simp
+  ring_nf
+
+/-! ### The cleared scattering coefficient -/
+
+/-- `Φ₀(s) = (π/(s−1)) |P| (s − 4/3)φ(s) (3·3^{3s−3} − 1)/2`. -/
+def clearedScatterTotal (s : ℂ) : ℂ :=
+  (Real.pi : ℂ) / (s - 1) * cuspArea * clearedScattering s * (3 * (3 : ℂ) ^ (3 * s - 3) - 1) / 2
+
+/-- `(s − 4/3) Φ(s) = Φ₀(s)` for `Re s > 2`. -/
+theorem sub_mul_scatterTotal (s : ℂ) (hs : 2 < s.re) :
+    (s - 4 / 3) * scatterTotal s = clearedScatterTotal s := by
+  have hφ := sub_mul_scatteringCoefficient (s := s) (by linarith)
+  have hU := arithmeticDirichletSeries_zero_unramified s hs
+  have hd := three_cpow_ne_one (s := s) (by linarith)
+  have hP : cuspArea ≠ 0 := cuspArea_ne_zero
+  have hφdef : scatteringCoefficient s 0 = arithmeticDirichletSeries s 0 / cuspArea := rfl
+  have hU' : unramifiedCubicGaussSeries s 0 =
+      ((3 : ℂ) ^ (3 * s - 3) - 1) / 2 * (cuspArea * scatteringCoefficient s 0) := by
+    rw [hφdef, mul_div_cancel₀ _ hP, hU]
+    field_simp
+  rw [scatterTotal, clearedScatterTotal, hU', ← hφ]
+  change (s - 4 / 3) * (cuspArea * ((Real.pi : ℂ) / (s - 1) * scatteringCoefficient s 0) +
+    3 * ((Real.pi : ℂ) / (s - 1) * (((3 : ℂ) ^ (3 * s - 3) - 1) / 2 * (cuspArea * scatteringCoefficient s 0)))) = _
+  ring
+
+theorem clearedScatterTotal_differentiableAt (s : ℂ) (hs : 1 < s.re) :
+    DifferentiableAt ℂ clearedScatterTotal s := by
+  have hs1 : s - 1 ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp only [Complex.sub_re, Complex.one_re, Complex.zero_re] at this
+    linarith
+  have hcl : DifferentiableAt ℂ clearedScattering s :=
+    clearedScattering_differentiableOn.differentiableAt
+      ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs)
+  unfold clearedScatterTotal
+  have hpow : DifferentiableAt ℂ (fun s : ℂ => (3 : ℂ) ^ (3 * s - 3)) s :=
+    ((differentiableAt_id.const_mul 3).sub_const 3).const_cpow (Or.inl (by norm_num))
+  exact ((((differentiableAt_const _).div (differentiableAt_id.sub_const 1) hs1).mul
+    (differentiableAt_const _)).mul hcl |>.mul ((hpow.const_mul 3).sub_const 1)).div_const 2
+
+/-- `Φ₀(4/3) = 12π |P| r`. -/
+theorem clearedScatterTotal_four_thirds :
+    clearedScatterTotal (4 / 3) = 12 * (Real.pi : ℂ) * cuspArea * constantArithmeticResidue := by
+  rw [clearedScatterTotal, clearedScattering_four_thirds]
+  have h : (3 : ℂ) * (4 / 3) - 3 = 1 := by norm_num
+  rw [h, Complex.cpow_one]
+  have h3 : (4 : ℂ) / 3 - 1 = 1 / 3 := by norm_num
+  rw [h3]
+  field_simp
+  ring
 
 end GaloisForLFunctions.SpectralTheoryOfTheCubicCover

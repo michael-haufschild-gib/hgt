@@ -20,6 +20,7 @@ import GaloisForLFunctions.MatomakiRadziwill.LadderMoment
 import GaloisForLFunctions.MatomakiRadziwill.LadderScaleBounds
 import GaloisForLFunctions.MatomakiRadziwill.LadderExceptional
 import GaloisForLFunctions.MatomakiRadziwill.LadderHM
+import GaloisForLFunctions.MatomakiRadziwill.LadderRouteT
 
 /-!
 # Matomäki–Radziwiłł for twisted Liouville functions
@@ -38,7 +39,8 @@ Toward the mean square of short sums of `λχ`, `χ` a Dirichlet character of fi
   give `Σ_{n ≤ N} χ(n)Λ(n)n^{-iτ} ≤ N/(log X)^A` for `|τ| ≤ X`, `log N ≥ (log X)^θ`, `θ > 2/3`, and
   hence `Σ_{P < p ≤ 2P} χ(p)p^{-1-iτ} ≤ (log X)^{-A}`.
 * **Ladder** (`LadderMeanValue`, `RamareDecomposition`, `RamareBlocks`, `RamareBlockError`,
-  `RamareBlockMVT`, `LadderBlocks`, `LadderMoment`, `LadderScaleBounds`, `LadderExceptional`, `LadderHM`):
+  `RamareBlockMVT`, `LadderBlocks`, `LadderMoment`, `LadderScaleBounds`, `LadderExceptional`, `LadderHM`,
+  `LadderRouteT`):
   the moment computation for powers of prime blocks with arbitrary bounded
   coefficients; Ramaré's identity at one scale and its block decomposition
   `Σ_{n ∈ S} f(n)n^{-1-it} ≈ Σ_v Q_v R_v`, with mean-square error `≪ (W/X + 1)(1/H + 1/P)`; the
