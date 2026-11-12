@@ -39,7 +39,8 @@ primes. No finite height or bounded prime set defines the layer.
 
 ## Boundary
 
-The argument depends on the rational-orbit theorem currently being
-formalized. No Lean module for this layer exists yet. It does not assert
+The rational-orbit theorem is formalized in
+`TheRationalWeightsOfPrimeZeroOrbits.lean`. No Lean module for this layer
+exists yet. It does not assert
 that all real parts are rational, that the layer equals the full spectral
 field, or that conjugation is central on the remaining extension.

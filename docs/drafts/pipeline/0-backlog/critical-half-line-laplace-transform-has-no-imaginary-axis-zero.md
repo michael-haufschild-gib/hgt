@@ -41,6 +41,7 @@ a positive multiple of the sum of the two resolvent norms.
 - `RHTower.WeilHerglotz.continuous_gammaBracket`: local Gamma control near each cancelled Fourier pole.
 - `RHTower.integrable_expWeight_of_memLp_two`: reflected weighted L² data admit L¹ after removing part of the exponential weight.
 - `RHTower.WeilSpectral.abs_gammaBracket_le_sqrt`: linear Fourier decay makes the Gamma density integrable with a `(1+|r|)^(-3/2)` majorant; the domination proof occurs in `tendsto_archPoleEnergy_truncTest`.
+- `integral_causalExponential_reflection_energy` with zero rate shift: expanding its norm identity gives `Re ∫ conj(g) Kₓg = x ∫ |Kₓg|²`. Modulation and exponential weighting transfer this to the undamped weighted mixed term.
 
 The neutral moment proof can use actual resolvent L¹ admission: approach
 the imaginary axis through positive real parts and apply the verified
@@ -51,4 +52,7 @@ Gamma admission directly from the square-root Gamma bound.
 
 No proof or contribution is counted.
 
-Written, unchecked support: `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/GammaIntegrabilityFromLinearFourierDecay`.
+Written, unchecked support in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`:
+
+- `GammaIntegrabilityFromLinearFourierDecay`: Gamma admission from spectral decay.
+- `UndampedCausalResolventBasicDomain`: actual L¹∩L² admission at an imaginary-axis zero.

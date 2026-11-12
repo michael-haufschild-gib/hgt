@@ -813,9 +813,10 @@ a global field lift of functional reflection.
 In the chosen complex embedding, `H_ρ` is real exactly when `Re ρ=1/2`.
 In that case `H_ρ=F_ρ∩ℝ` and `F_ρ/H_ρ` is genuinely quadratic. Every
 arithmetic conjugate of `H_ρ` is real exactly when the whole arithmetic
-orbit of `ρ` lies on the critical line. These are exact place criteria;
-proving their universal realness, or arithmetic invariance of the critical
-line, remains open. The ground field is transcendental over `ℚ`, so these
+orbit of `ρ` lies on the critical line. Rational-weight rigidity below
+proves that critical-line membership is arithmetic invariant and that
+`H_ρ=B` at every critical zero. Universal realness remains open.
+The ground field is transcendental over `ℚ`, so these
 extensions are not asserted to be number fields.
 [Prime residue fields](ThePrimeResidueFieldsOfTheZeros.lean).
 
@@ -869,6 +870,52 @@ conjugation exactly under that same purity condition. A lift and purity
 are distinct arithmetic questions: the first concerns square-class parity,
 the second the conjugation action on the normal pair quotient.
 [Prime reflection Kummer theory](ThePrimeReflectionKernelOfTheZeros.lean).
+
+### Rational weights separate reflection orbits
+
+The arithmetic action on actual zeros extends faithfully to their complete
+integral relation group `Δ`. Each automorphism transports every prime
+character, fixes the unit weight, and therefore fixes `Δ∩ℚ` pointwise.
+Consequently all prime values of rational zero weights already lie in the
+mixed-trace ground field `B`. This is an internal action of `Gal(E/B)`;
+no extension of its elements to automorphisms of `ℂ` is needed.
+
+This action gives a complete orbit classification for rational real parts:
+
+`Gal(E/B)·ρ={ρ,conjugate(ρ)}` whenever `Re ρ∈ℚ`.
+
+In particular, critical-line membership is invariant under the full
+arithmetic action. This does not require conjugation to be central in
+the full group. For rational real parts it also gives
+
+`1−ρ ∈ Gal(E/B)·ρ  ⇔  Re ρ=1/2`.
+
+For the mechanism, `q=2 Re ρ` is a fixed rational weight. The inverse image
+`ζ=σ⁻¹ρ` has ordinate `±Im ρ`, so
+`conjugate(ζ)=ζ∓(2ρ−q)`. Applying `σ` shows that `σcσ⁻¹ρ` has horizontal
+displacement from `Re ρ` equal to `∓2(Re σρ−Re ρ)`. Thus the bounded set
+of absolute horizontal displacements in the complete orbit is closed
+under doubling. Its supremum forces every displacement to vanish.
+Absolute-height preservation leaves exactly the conjugate pair.
+
+The reflection-pair field equals the trace ground field exactly at critical
+zeros: `H_ρ=B ⇔ Re ρ=1/2`. Every arithmetic conjugate of a critical zero
+therefore remains critical. The global pair field equals `B` exactly when
+all actual zeros are critical. A rational-real-part zero off the line has
+`F_ρ=H_ρ`. Every prime
+reflection difference then belongs to its pair field; its discriminant
+is a square in the global reflection field. The difference is nonzero
+off the line, giving a singleton odd square relation that obstructs the
+uniform functional-reflection lift. Conversely, an off-line zero whose
+reflection belongs to its arithmetic orbit must have irrational real
+part. Its algebraic prime-monomial lattice has rank at most one and one
+relation support contains all others; two algebraic prime values are
+impossible there.
+
+This constrains actual arithmetic orbits and the existing infinite Kummer
+kernel. It does not assert rationality of zero real parts, existence of a
+global reflection lift, or purity.
+[Rational weights and arithmetic orbits](TheRationalWeightsOfPrimeZeroOrbits.lean).
 
 ### Functional-equation descent and coefficient weight
 

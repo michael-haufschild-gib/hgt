@@ -176619,4 +176619,620 @@ end InverseInitialHighFrequencyTail
 end
 
 
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment TruncatedPrincipalPoisson
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseInitialDyadicTailBound
+open Eisenstein  FirstPassCubeLabels SecondPassArithmetic
+open InverseInitialArithmetic InverseInitialPhysicalMeasure InverseInitialKernelBridge
+open InverseInitialEnergyCallerModes InverseInitialEnergyCallerSource
+open InverseInitialDyadicAssembly InverseInitialProfile
+local notation "O"=> Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+
+theorem pointSource_erase_mem (pool : Finset ι) (S : Finset (Source (ι:=ι) 0))
+    (x : Point ι) (hx : x∈pointSource pool S) : erasePoint x∈S := by
+  obtain ⟨y,hy,hx⟩ := Finset.mem_biUnion.mp hx
+  obtain ⟨⟨N,M⟩,hNM,rfl⟩ := Finset.mem_image.mp hx
+  simpa only [erase_sourcePoint] using hy
+
+theorem pointSource_supports (pool : Finset ι) (S : Finset (Source (ι:=ι) 0))
+    (hC : ∀x∈S,x.common⊆pool) (hV : ∀x∈S,x.overlap⊆pool)
+    (hdiv : ∀x∈S,x.divisor⊆x.common)
+    (x : Point ι) (hx : x∈pointSource pool S) :
+    ∀i,InverseInitialHighFrequencyTail.sourceKey x i⊆pool := by
+  obtain ⟨y,hy,hx⟩ := Finset.mem_biUnion.mp hx
+  obtain ⟨⟨N,M⟩,hNM,rfl⟩ := Finset.mem_image.mp hx
+  intro i
+  fin_cases i
+  · exact hC y hy
+  · exact (hdiv y hy).trans (hC y hy)
+  · exact hV y hy
+  · exact (Finset.mem_powerset.mp (Finset.mem_product.mp hNM).1).trans Finset.sdiff_subset
+  · exact (Finset.mem_powerset.mp (Finset.mem_product.mp hNM).2).trans Finset.sdiff_subset
+
+def idealIndex : Fin 5→Fin 6 := ![0,1,2,4,5]
+
+omit [DecidableEq ι] in
+theorem sourceKey_norm_coordinate (p : ι→O) (x : Point ι) (i : Fin 5) :
+    primeProductNorm p (InverseInitialHighFrequencyTail.sourceKey x i)=coordinates p x (idealIndex i) := by
+  have hn (A : Finset ι) : ((sourceIdeal p A).absNorm:ℝ)=primeProductNorm p A := by
+    rw [sourceIdeal,←ringComplex_norm_sq_eq_absNorm_span]
+    rfl
+  fin_cases i <;> simp [InverseInitialHighFrequencyTail.sourceKey,coordinates,physicalCoordinates,idealIndex,hn]
+
+omit [DecidableEq ι] in
+theorem sourceNorms_erase (p : ι→O) (x : Point ι) (i : Fin 4) :
+    sourceNorms p (erasePoint x) i=coordinates p x (InverseSecondChildWindows.outerIndex i) := by
+  have he : InverseInitialEnergyCallerModes.sourcePoint (erasePoint x) x.left x.right=x := by
+    cases x
+    rfl
+  simpa only [he] using sourceNorms_fresh p (erasePoint x) x.left x.right i
+
+omit [DecidableEq ι] in
+theorem live_mass_radial_gate
+    (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (a b : Fin 4→ℝ) (Z D m η τ bW : ℝ) (hZ : 1< Z) (hη : 0≤η)
+    (hbW : 0< bW) (hfixed : 64*bW^2≤ Z^η)
+    (x : Point ι) (hx : Valid x)
+    (hleft : coordinates p x 0*coordinates p x 2*coordinates p x 4≤ bW*Z^D)
+    (hright : coordinates p x 0*coordinates p x 2*coordinates p x 5≤ bW*Z^D)
+    (hmass : windowMass (tailWindows a b Z D m (4*η+τ)) (sourceNorms p (erasePoint x))≠0) :
+    Z^τ≤(Z^m/(primeProductNorm p x.divisor*(primeProductNorm p x.overlap)^2*
+      primeProductNorm p x.left*primeProductNorm p x.right))*‖ringComplex x.frequency‖^2 := by
+  obtain ⟨k,hk,hhigh,hbounds⟩ := tail_mass_live_bounds p a b Z D m (4*η+τ) hZ (erasePoint x) hmass
+  have hc := coordinates_pos p hp x hx
+  have h₀ := (hbounds 0).1.le
+  have h₁ := (hbounds 1).2.le
+  have h₃ := (hbounds 3).1.le
+  rw [sourceNorms_erase] at h₀ h₁ h₃
+  have hh := InverseInitialHighFrequencyTail.actual_annulus_high_gate Z D m
+    (exponent Z (k 0).val) (exponent Z (k 1).val) (exponent Z (k 3).val) η τ bW
+    (coordinates p x 0) (coordinates p x 1) (coordinates p x 2)
+    (coordinates p x 4) (coordinates p x 5) (coordinates p x 3)
+    hZ.le hη hbW (hc 1) (hc 2) (hc 4) (hc 5) h₀ h₁ h₃ hleft hright hfixed hhigh.le
+  have hn (A : Finset ι) : ((sourceIdeal p A).absNorm:ℝ)=primeProductNorm p A := by
+    rw [sourceIdeal,←ringComplex_norm_sq_eq_absNorm_span]
+    rfl
+  simpa [coordinates,physicalCoordinates,hn] using hh
+
+end InverseInitialDyadicTailBound
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment TruncatedPrincipalPoisson
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseInitialDyadicTailBound
+open Eisenstein  FirstPassCubeLabels SecondPassArithmetic
+open InverseMoment InverseInitialArithmetic InverseInitialPhysicalMeasure
+open InverseInitialEnergyCallerSource InverseInitialDyadicAssembly InverseInitialProfile
+open InverseInitialRetainedSupport InverseInitialHighFrequencyTail
+local notation "O"=> Eisenstein.O
+
+theorem actual_high_mass_tail (Lcap saving τ : ℝ) (hτ : 0<τ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ), 0< C ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=> Ideal.span {p i})))
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (_hinj : Function.Injective (fun i=> Ideal.span {p i}))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (_hpr : ∀i,lambda^2∣p i-1)
+      (Ψ : O→*ℂ), (∀n,‖Ψ n‖≤1) → ∀ (j : O)
+      (slots : Finset σ) (lists : σ→Finset ι) (weights : σ→ι→ℂ),
+    (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖weights i k‖≤1) →
+    ∀ (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (Z D m η bW Γ B₁ B₂ : ℝ),
+    1< Z → 0≤η → 0< bW → 64*bW^2≤ Z^η →
+    0≤ Lcap → bW*Z^D≤ Z^Lcap → -m≤ Lcap → m-D≤ Lcap →
+    0≤Γ → 0≤ B₁ → 0≤ B₂ → (∀x,‖W₁ x‖≤ B₁) → (∀x,‖W₂ x‖≤ B₂) →
+    Function.support W₁⊆Set.Iic bW → Function.support W₂⊆Set.Iic bW →
+    ∀ (pool : Finset ι) (S : Finset (Source (ι:=ι) 0)) (w : Source (ι:=ι) 0→ℂ),
+    (∀x∈S,x.common⊆pool) → (∀x∈S,x.overlap⊆pool) →
+    (∀x∈S,x.divisor⊆x.common) → (∀x∈S,x.frequency≠0) → (∀x∈S,‖w x‖≤Γ) →
+    ∀ (a b : Fin 4→ℝ), (∀i,0< a i) → (∀x∈S,∀i,sourceNorms p x i∈Set.Icc (a i) (b i)) →
+    ‖physicalBlock p hg (pointSource pool S)
+      ((fun x=> w x*(windowMass (tailWindows a b Z D m (4*η+τ)) (sourceNorms p x):ℂ))∘erasePoint)
+      Ψ j (primeMark slots lists weights) W₁ W₂ Φ Z D m‖≤
+      C*Γ*B₁*B₂*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) Φ*Z^(-saving) := by
+  obtain ⟨s,C,hC,hrapid⟩ := original_physical_tail_rapid Lcap saving τ hτ
+  refine ⟨s,C,hC,?_⟩
+  intro ι σ _ _ p hp _ hcop hg hinj hc hpr Ψ hΨ j slots lists weights hdis hwgt W₁ W₂ Φ
+    Z D m η bW Γ B₁ B₂ hZ hη hbW hfixed hcap hsize hm hmd hΓ hB₁ hB₂ hW₁ hW₂ hs₁ hs₂
+    pool S w hcommon hoverlap hdiv hfreq hw a b ha hrange
+  let wt : Point ι→ℂ := ((fun x=> w x*(windowMass (tailWindows a b Z D m (4*η+τ))
+    (sourceNorms p x):ℂ))∘erasePoint)
+  let live (x : Point ι) : Prop := ∃ρ : SecondRayIndex,
+    wt x*physicalTerm p hg Ψ j (primeMark slots lists weights) W₁ W₂ Φ Z D m x ρ≠0
+  let F := (pointSource pool S).filter live
+  have hmem (x) (hx : x∈F) : x∈pointSource pool S := (Finset.mem_filter.mp hx).1
+  have hvalid (x) (hx : x∈F) : Valid x := pointSource_valid pool S hdiv hfreq x (hmem x hx)
+  have hold (x) (hx : x∈F) : erasePoint x∈S := pointSource_erase_mem pool S x (hmem x hx)
+  have hgeometry (x) (hx : x∈F) :
+      (coordinates p x 0≤ bW*Z^D ∧ coordinates p x 1≤ bW*Z^D ∧
+       coordinates p x 2≤ bW*Z^D ∧ coordinates p x 4≤ bW*Z^D ∧ coordinates p x 5≤ bW*Z^D) ∧
+      (coordinates p x 0*coordinates p x 2*coordinates p x 4≤ bW*Z^D ∧
+       coordinates p x 0*coordinates p x 2*coordinates p x 5≤ bW*Z^D) ∧
+      windowMass (tailWindows a b Z D m (4*η+τ)) (sourceNorms p (erasePoint x))≠0 := by
+    obtain ⟨ρ,hρ⟩ := (Finset.mem_filter.mp hx).2
+    have hpterm := (mul_ne_zero_iff.mp hρ).2
+    refine ⟨live_ideal_caps p hp hcop hg hpr Ψ j _ W₁ W₂ Φ Z D m bW
+      (by linarith) hs₁ hs₂ x (hvalid x hx) ρ hpterm,
+      live_whole_columns p hp hcop hg hpr Ψ j _ W₁ W₂ Φ Z D m bW
+      (by linarith) hs₁ hs₂ x (hvalid x hx) ρ hpterm,?_⟩
+    intro hz
+    apply (mul_ne_zero_iff.mp hρ).1
+    simp only [wt,Function.comp_apply,hz,Complex.ofReal_zero,mul_zero]
+  have hn (x : Point ι) (i : Fin 5) := sourceKey_norm_coordinate p x i
+  have hwhole (x) (hx : x∈F) :
+      primeProductNorm p x.common*primeProductNorm p x.overlap*primeProductNorm p x.left≤ bW*Z^D ∧
+      primeProductNorm p x.common*primeProductNorm p x.overlap*primeProductNorm p x.right≤ bW*Z^D := by
+    have he := (hgeometry x hx).2.1
+    have hn0 := hn x 0
+    have hn2 := hn x 2
+    have hn3 := hn x 3
+    have hn4 := hn x 4
+    simp [sourceKey,idealIndex] at hn0 hn2 hn3 hn4
+    rw [←hn0,←hn2,←hn3,←hn4] at he
+    exact he
+  have hfilter := physicalBlock_filter_of_live p hp hcop hg (pointSource pool S) live wt Ψ j
+    (primeMark slots lists weights) W₁ W₂ Φ Z D m (fun x hx ρ hn=>⟨ρ,hn⟩)
+  change ‖physicalBlock p hg (pointSource pool S) wt Ψ j _ W₁ W₂ Φ Z D m‖≤ _
+  rw [hfilter]
+  have hr := hrapid p hp hcop hg hinj hc Ψ hΨ j slots lists weights hdis hwgt W₁ W₂ Φ
+    Z D m (max 1 (bW*Z^D)) Γ B₁ B₂ hZ.le (le_max_left _ _) hcap
+    (max_le (Real.one_le_rpow hZ.le hcap) hsize) hm hmd hΓ hB₁ hB₂ hW₁ hW₂ pool F wt hvalid
+  suffices hbound : ‖physicalBlock p hg F wt Ψ j (primeMark slots lists weights) W₁ W₂ Φ Z D m‖≤
+      C*Γ*B₁*B₂*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) Φ*Z^(-saving) by
+    have hset : @Finset.filter (Point ι) live (fun x=> Classical.propDecidable (live x))
+        (pointSource pool S)=F := by
+      ext x
+      simp only [Finset.mem_filter,F]
+    rw [hset]
+    exact hbound
+  refine hr ?_ ?_ ?_ ?_ ?_ ?_
+  · intro x hx
+    exact (mass_weight_bound p a b _ ha w (erasePoint x) (hrange _ (hold x hx))).trans (hw _ (hold x hx))
+  · intro x hx
+    exact pointSource_supports pool S hcommon hoverlap hdiv x (hmem x hx)
+  · intro x hx i
+    rw [sourceKey_norm_coordinate]
+    have he := (hgeometry x hx).1
+    apply le_trans _ (le_max_right 1 (bW*Z^D))
+    fin_cases i
+    · exact he.1
+    · exact he.2.1
+    · exact he.2.2.1
+    · exact he.2.2.2.1
+    · exact he.2.2.2.2
+  · intro x hx
+    exact (hwhole x hx).1.trans (le_max_right _ _)
+  · intro x hx
+    exact (hwhole x hx).2.trans (le_max_right _ _)
+  · intro x hx
+    exact live_mass_radial_gate p hp a b Z D m η τ bW hZ hη hbW hfixed x
+      (hvalid x hx) (hgeometry x hx).2.1.1 (hgeometry x hx).2.1.2 (hgeometry x hx).2.2
+
+end InverseInitialDyadicTailBound
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment TruncatedPrincipalPoisson
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseInitialRetainedSum
+open Eisenstein CompletedGauss  
+open CanonicalQuadraticSieve CanonicalRowCompletion CanonicalCoefficientClass
+open InverseMoment InverseInitialArithmetic InverseInitialPhysicalMeasure InverseInitialProfile
+open InverseInitialEnergyCallerSource InverseInitialEnergyCallerModes InverseInitialEnergyCallerWindows
+open InverseInitialQuotientGeometry InverseInitialClippedColumns InverseInitialEnergyCallerState
+open InverseInitialDyadicAssembly InverseSecondChildWindows Filter
+local notation "O"=> Eisenstein.O
+
+theorem retained_sum_bound
+    (W₁ W₂:ℝ→ℂ)(a₀ b₀ bcap:ℝ)(ha₀:0< a₀)(hbcap:1≤ bcap)
+    (hs₁:Function.support W₁⊆Set.Icc a₀ b₀)(hs₂:Function.support W₂⊆Set.Icc a₀ b₀)
+    (hW₁:ContDiff ℝ ∞ W₁)(hW₂:ContDiff ℝ ∞ W₂)(Φ:𝓢(ℝ,ℂ))
+    (cap gap eps π η τ loss:ℝ)(hcap:0≤ cap)(hgap:0< gap)(heps:0< eps)(hπ:0<π)
+    (hη:0<η)(hηone:η≤1)(hηsmall:η≤ gap/50)(hτ:0<τ)(hτsmall:τ≤ gap/50)(hloss:0< loss)(K:ℕ):
+    ∃degree:ℕ,∃Btree:ℝ,1≤ Btree ∧
+    ∀q:ℕ,q≠0→∃C Z₀:ℝ,0< C ∧ 1< Z₀ ∧
+    ∀Z:ℝ,Z₀≤ Z→∀Dpool:ℕ,Btree*Z^(cap+1)≤ Dpool→
+    let F:=CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q) Dpool;
+    let hF:=CanonicalRowCompletion.outsideSquarefree_admissible (reflectionExcludedPrimes q) Dpool (reflectionExcludedPrimes_bad q);
+    letI:∀i:primePool F,(Ideal.span {poolPrimary F i}).IsMaximal:=fun i=> by rw [poolPrimary_span F hF i];infer_instance;
+    let p:=poolPrimary F;
+    let hp:=poolPrimary_ne_zero F hF;
+    let hcop:=poolPrimary_coprime F hF;
+    let hg:=poolPrimary_good F hF;
+    ∀{σ:Type}[DecidableEq σ](all assigned:Finset σ),assigned⊆all→all.card≤ K→
+    ∀(lists:σ→Finset (primePool F))(Hslot:σ→ℝ)(coeff:σ→primePool F→ℂ),
+      (all:Set σ).PairwiseDisjoint lists→(∀i∈all\assigned,1≤ Hslot i)→
+      (∀i∈all\assigned,∀P∈lists i,(P.val.absNorm:ℝ)≤ Hslot i)→
+      (∀i∈all\assigned,∀P∈lists i,‖coeff i P‖≤1)→
+    ∀(qelem:σ→O)(z al bl:σ→ℝ)(primeW:σ→ℝ→ℂ),
+      (∀i∈all,0≤ z i)→(∀i∈assigned,qelem i≠0)→
+      (∀i∈assigned,Function.support (primeW i)⊆Set.Icc (al i) (bl i))→
+      (∀i∈assigned,primeW i ((Ideal.absNorm (Ideal.span {qelem i}):ℝ)/Z^(z i))≠0)→
+    ∀Ψ:O→*ℂ,(∀u,‖Ψ u‖≤1)→FactorsModulo (fixedBaseConductor q) Ψ→
+    ∀(S:Finset (Source (ι:=primePool F) 0)),
+      (∀x∈S,x.divisor⊆x.common)→(∀x∈S,x.frequency≠0)→
+    ∀(D m r T:ℝ),0≤ m→0< T→
+      (∏i∈assigned,bl i)≤ Z^η→
+      (∏i∈all\assigned,Hslot i)≤ Z^(assignedCenter (all\assigned) z+η)→
+      D=r+assignedCenter all z-2*assignedCenter assigned z→
+      r+2*assignedCenter all z≤ m-2*gap→
+      2*r+8*assignedCenter all z≤3*m-2*gap→
+      r+assignedCenter all z+7*η≤ cap→
+    ∀(c₁ c₂ θ₁ θ₂:ℝ),1≤ c₁→c₁≤ bcap→1≤ c₂→c₂≤ bcap→
+    ∀(w:Source (ι:=primePool F) 0→ℂ),(∀x∈S,‖w x‖≤1)→
+      ‖∑k∈retainedWindows (fun _=>1) (physicalCaps (max 1 b₀) Z D T) Z D m (4*η+τ),
+        windowBlock p hg Finset.univ
+          (cappedSource p S (fun _=>1) (physicalCaps (max 1 b₀) Z D T)) w Ψ
+          (assignedElement assigned qelem) (primeMark (all\assigned) lists coeff)
+          (clippedSource W₁ c₁ θ₁) (clippedSource W₂ c₂ θ₂) Φ Z D m (fun i=>(k i).val)‖≤
+        C*Z^(m+15*η+π+eps+loss)*
+          ((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*degree)*
+            (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*degree)) := by
+  have hb:0< max 1 b₀:=zero_lt_one.trans_le (le_max_left _ _)
+  obtain ⟨J,Btree,Tclip,hBtree,hTclip,hwindow⟩:=
+    InverseInitialRetainedWindow.retained_window_bound W₁ W₂ a₀ b₀ bcap ha₀ hbcap hs₁ hs₂ hW₁ hW₂ Φ
+      (fun _=>1/4) (fun _=>1) (by intros;norm_num) (by intros;norm_num)
+      cap gap eps (cap+3) π hcap hgap heps (by linarith) hπ K
+  obtain ⟨A,hA,hcount⟩:=retained_card_subpower (max 1 b₀) cap (4*η+τ) loss hb hcap (by positivity) hloss
+  have hpowers:∀ᶠZ:ℝ in atTop,(4:ℝ)≤ Z^η:=
+    (tendsto_rpow_atTop hη).eventually (eventually_ge_atTop 4)
+  have hlogs:∀ᶠZ:ℝ in atTop,Tclip≤3*η*Real.log Z:=by
+    filter_upwards [Real.tendsto_log_atTop.eventually (eventually_ge_atTop (Tclip/(3*η)))] with Z hZ
+    exact (div_le_iff₀ (by positivity : 0<3*η)).mp hZ |>.trans_eq (mul_comm _ _)
+  have hevent:=window_exponent_eventual_upper (max 1 b₀) 1 hb (by norm_num)
+  obtain ⟨Zaux,haux⟩:=eventually_atTop.mp (hcount.and (hpowers.and (hlogs.and hevent)))
+  refine ⟨J,Btree,hBtree,?_⟩
+  intro q hq
+  obtain ⟨C,Zq,hC,hZq,hw⟩:=hwindow q hq
+  refine ⟨A*C,max Zq Zaux,mul_pos hA hC,lt_max_of_lt_left hZq,?_⟩
+  intro Z hZ Dpool hD F hFa
+  let:∀i:primePool F,(Ideal.span {poolPrimary F i}).IsMaximal:=fun i=> by rw [poolPrimary_span F hFa i];infer_instance
+  intro p hp hcop hg σ dec all assigned hassigned hK lists Hslot coeff hdis hHs hPs hac
+    qelem z al bl primeW hz hqe hprimeW hprimeLive Ψ hΨ hperiod S hdiv hf D m r T hm hT
+    hprodj hprod hDeq hmargin₁ hmargin₂ hparent c₁ c₂ θ₁ θ₂ hc₁ hbc₁ hc₂ hbc₂ w hweight
+  have hZq':Zq≤ Z:=(le_max_left _ _).trans hZ
+  obtain ⟨hcZ,hpow,hlog,hexp⟩:=haux Z ((le_max_right _ _).trans hZ)
+  have hZp:1< Z:=hZq.trans_le hZq'
+  have hDcap:D≤ cap:=by
+    have hg:0≤ assignedCenter assigned z:=Finset.sum_nonneg (fun i hi=> hz i (hassigned hi))
+    rw [hDeq]
+    linarith
+  let Sc:=cappedSource p S (fun _=>1) (physicalCaps (max 1 b₀) Z D T)
+  have hdivc:∀x∈Sc,x.divisor⊆x.common:=fun x hx=> hdiv x (Finset.mem_filter.mp hx).1
+  have hfc:∀x∈Sc,x.frequency≠0:=fun x hx=> hf x (Finset.mem_filter.mp hx).1
+  have hlo:Z^(-η)≤(1/4:ℝ):=by
+    rw [Real.rpow_neg (zero_lt_one.trans hZp).le]
+    simpa only [one_div] using inv_anti₀ (by norm_num : (0:ℝ)<4) hpow
+  have hnorm (k:Windows (fun _=>1) (physicalCaps (max 1 b₀) Z D T))
+      (hk:k∈retainedWindows (fun _=>1) (physicalCaps (max 1 b₀) Z D T) Z D m (4*η+τ)):
+      ‖windowBlock p hg Finset.univ Sc w Ψ (assignedElement assigned qelem)
+        (primeMark (all\assigned) lists coeff) (clippedSource W₁ c₁ θ₁)
+        (clippedSource W₂ c₂ θ₂) Φ Z D m (fun i=>(k i).val)‖≤
+        C*Z^(m+15*η+π+eps)*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*J)*
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*J)):=by
+    have hsize:0< max 1 b₀*Z^D:=mul_pos hb (Real.rpow_pos_of_pos (zero_lt_one.trans hZp) D)
+    have h0:=hexp.2 (max 1 b₀*Z^D) D hsize le_rfl (k 0).val (k 0).property
+    have h1:=hexp.2 (max 1 b₀*Z^D) D hsize le_rfl (k 1).val (k 1).property
+    apply hw Z hZq' Dpool hD all assigned hassigned hK lists Hslot coeff hdis hHs hPs hac
+      qelem z al bl primeW hz hqe hprimeW hprimeLive Ψ hΨ hperiod Sc hdivc hfc cutoff
+      (fun i x hx=> Set.Ioo_subset_Icc_self (cutoff_support i hx))
+      D (exponent Z (k 0).val) (exponent Z (k 2).val) (exponent Z (k 1).val)
+      (exponent Z (k 3).val) m r η τ hη.le hηsmall hτsmall
+      (fun _=> by linarith) hlo hlog hprodj hprod hDeq hmargin₁ hmargin₂ hparent
+      (by linarith [h0.2,h1.1]) (Finset.mem_filter.mp hk).2 c₁ c₂ θ₁ θ₂ hc₁ hbc₁ hc₂ hbc₂
+      (fun x=> w x*outerCutoff cutoff (sourceRelative p x Z D (exponent Z (k 0).val)
+        (exponent Z (k 2).val) (exponent Z (k 1).val) (exponent Z (k 3).val))) ?_
+    intro x hx
+    rw [norm_mul]
+    have hmul {a b : ℝ} (ha : a ≤ 1) (hb₀ : 0 ≤ b) (hb : b ≤ 1) : a * b ≤ 1 :=
+      (mul_le_of_le_one_left hb₀ ha).trans hb
+    apply hmul (hweight x (Finset.mem_filter.mp hx).1) (by positivity)
+    unfold outerCutoff
+    simp only [norm_mul]
+    exact hmul (hmul (hmul (cutoff_norm_le _ _) (by positivity)
+      (cutoff_norm_le _ _)) (by positivity) (cutoff_norm_le _ _)) (by positivity) (cutoff_norm_le _ _)
+  apply (norm_sum_le _ _).trans
+  apply (Finset.sum_le_sum hnorm).trans
+  rw [Finset.sum_const, nsmul_eq_mul]
+  calc
+    _≤(A*Z^loss)*(C*Z^(m+15*η+π+eps)*
+        ((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*J)*
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*J))):=
+      mul_le_mul_of_nonneg_right (hcZ D m (4*η+τ) T hDcap hm le_rfl hT) (by positivity)
+    _=_:=by rw [Real.rpow_add (zero_lt_one.trans hZp) (m+15*η+π+eps) loss];ring
+
+end InverseInitialRetainedSum
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment TruncatedPrincipalPoisson
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseInitialFiniteEnergy
+open Eisenstein CompletedGauss  
+open CanonicalQuadraticSieve CanonicalRowCompletion CanonicalCoefficientClass
+open InverseMoment InverseInitialArithmetic InverseInitialPhysicalMeasure InverseInitialProfile
+open InverseInitialEnergyCallerSource InverseInitialEnergyCallerModes InverseInitialEnergyCallerWindows
+open InverseInitialQuotientGeometry InverseInitialClippedColumns InverseInitialEnergyCallerState
+open InverseInitialDyadicAssembly InverseInitialProfileBounds Filter
+local notation "O"=> Eisenstein.O
+
+theorem finite_physical_bound
+    (W₁ W₂:ℝ→ℂ)(a₀ b₀ bcap:ℝ)(ha₀:0< a₀)(hbcap:1≤ bcap)
+    (hs₁:Function.support W₁⊆Set.Icc a₀ b₀)(hs₂:Function.support W₂⊆Set.Icc a₀ b₀)
+    (hW₁:ContDiff ℝ ∞ W₁)(hW₂:ContDiff ℝ ∞ W₂)(Φ:𝓢(ℝ,ℂ))
+    (B₀:ℝ)(hB₀:0≤ B₀)(hb₁:∀x,‖W₁ x‖≤ B₀)(hb₂:∀x,‖W₂ x‖≤ B₀)
+    (cap gap eps π η τ loss:ℝ)(hcap:0≤ cap)(hgap:0< gap)(heps:0< eps)(hπ:0<π)
+    (hη:0<η)(hηone:η≤1)(hηsmall:η≤ gap/50)(hτ:0<τ)(hτsmall:τ≤ gap/50)(hloss:0< loss)(K:ℕ):
+    ∃degree:ℕ,∃Btree:ℝ,1≤ Btree ∧
+    ∀q:ℕ,q≠0→∃C Z₀:ℝ,0< C ∧ 1< Z₀ ∧
+    ∀Z:ℝ,Z₀≤ Z→∀Dpool:ℕ,Btree*Z^(cap+1)≤ Dpool→
+    let F:=CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q) Dpool;
+    let hF:=CanonicalRowCompletion.outsideSquarefree_admissible (reflectionExcludedPrimes q) Dpool (reflectionExcludedPrimes_bad q);
+    letI:∀i:primePool F,(Ideal.span {poolPrimary F i}).IsMaximal:=fun i=> by rw [poolPrimary_span F hF i];infer_instance;
+    let p:=poolPrimary F;
+    let hp:=poolPrimary_ne_zero F hF;
+    let hcop:=poolPrimary_coprime F hF;
+    let hg:=poolPrimary_good F hF;
+    ∀{σ:Type}[DecidableEq σ](all assigned:Finset σ),assigned⊆all→all.card≤ K→
+    ∀(lists:σ→Finset (primePool F))(Hslot:σ→ℝ)(coeff:σ→primePool F→ℂ),
+      (all:Set σ).PairwiseDisjoint lists→(∀i∈all\assigned,1≤ Hslot i)→
+      (∀i∈all\assigned,∀P∈lists i,(P.val.absNorm:ℝ)≤ Hslot i)→
+      (∀i∈all\assigned,∀P∈lists i,‖coeff i P‖≤1)→
+    ∀(qelem:σ→O)(z al bl:σ→ℝ)(primeW:σ→ℝ→ℂ),
+      (∀i∈all,0≤ z i)→(∀i∈assigned,qelem i≠0)→
+      (∀i∈assigned,Function.support (primeW i)⊆Set.Icc (al i) (bl i))→
+      (∀i∈assigned,primeW i ((Ideal.absNorm (Ideal.span {qelem i}):ℝ)/Z^(z i))≠0)→
+    ∀Ψ:O→*ℂ,(∀u,‖Ψ u‖≤1)→FactorsModulo (fixedBaseConductor q) Ψ→
+    ∀(S:Finset (Source (ι:=primePool F) 0)),
+      (∀x∈S,x.divisor⊆x.common)→(∀x∈S,x.frequency≠0)→
+      (∀x∈S,x.common⊆Finset.univ)→(∀x∈S,x.overlap⊆Finset.univ)→
+    ∀(D m r:ℝ),0≤ m→m≤ cap→-cap≤ D→
+      (∏i∈assigned,bl i)≤ Z^η→
+      (∏i∈all\assigned,Hslot i)≤ Z^(assignedCenter (all\assigned) z+η)→
+      D=r+assignedCenter all z-2*assignedCenter assigned z→
+      r+2*assignedCenter all z≤ m-2*gap→
+      2*r+8*assignedCenter all z≤3*m-2*gap→
+      r+assignedCenter all z+7*η≤ cap→
+    ∀(c₁ c₂ θ₁ θ₂:ℝ),1≤ c₁→c₁≤ bcap→1≤ c₂→c₂≤ bcap→
+    ∀(w:Source (ι:=primePool F) 0→ℂ),(∀x∈S,‖w x‖≤1)→
+      ‖physicalBlock p hg (pointSource Finset.univ S) (w∘erasePoint) Ψ
+        (assignedElement assigned qelem) (primeMark (all\assigned) lists coeff)
+        (clippedSource W₁ c₁ θ₁) (clippedSource W₂ c₂ θ₂) Φ Z D m‖≤
+        C*Z^(m+15*η+π+eps+loss)*
+          ((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*degree)*
+            (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*degree)) := by
+  obtain ⟨J,Btree,hBtree,hretained⟩:=InverseInitialRetainedSum.retained_sum_bound
+    W₁ W₂ a₀ b₀ bcap ha₀ hbcap hs₁ hs₂ hW₁ hW₂ Φ
+    cap gap eps π η τ loss hcap hgap heps hπ hη hηone hηsmall hτ hτsmall hloss K
+  obtain ⟨ss,Ct,hCt,htail⟩:=InverseInitialDyadicTailBound.actual_high_mass_tail (2*cap+2) 1 τ hτ
+  let tailC:=Ct*B₀*B₀*ss.sup (schwartzSeminormFamily ℝ ℝ ℂ) Φ
+  have htailC:0≤ tailC:=by dsimp [tailC];positivity
+  have hevent:∀ᶠZ:ℝ in atTop,max 1 b₀≤ Z ∧ 64*(max 1 b₀)^2≤ Z^η:=
+    (eventually_ge_atTop (max 1 b₀)).and
+      ((tendsto_rpow_atTop hη).eventually (eventually_ge_atTop (64*(max 1 b₀)^2)))
+  obtain ⟨Zaux,haux⟩:=eventually_atTop.mp hevent
+  refine ⟨J,Btree,hBtree,?_⟩
+  intro q hq
+  obtain ⟨Cr,Zr,hCr,hZr,hretained⟩:=hretained q hq
+  refine ⟨Cr+tailC,max Zr Zaux,by linarith,lt_max_of_lt_left hZr,?_⟩
+  intro Z hZ Dpool hD F hFa
+  let:∀i:primePool F,(Ideal.span {poolPrimary F i}).IsMaximal:=fun i=> by rw [poolPrimary_span F hFa i];infer_instance
+  intro p hp hcop hg σ dec all assigned hassigned hK lists Hslot coeff hdis hHs hPs hac
+    qelem z al bl primeW hz hqe hprimeW hprimeLive Ψ hΨ hperiod S hdiv hf hcommon hoverlap
+    D m r hm hmcap hDlo hprodj hprod hDeq hmargin₁ hmargin₂ hparent
+    c₁ c₂ θ₁ θ₂ hc₁ hbc₁ hc₂ hbc₂ w hw
+  have hZr':Zr≤ Z:=(le_max_left _ _).trans hZ
+  have hZp:1< Z:=hZr.trans_le hZr'
+  obtain ⟨hbZ,h64⟩:=haux Z ((le_max_right _ _).trans hZ)
+  have hDcap:D≤ cap:=by
+    have hg:0≤ assignedCenter assigned z:=Finset.sum_nonneg (fun i hi=> hz i (hassigned hi))
+    rw [hDeq];linarith
+  have hsize:max 1 b₀*Z^D≤ Z^(2*cap+2):=by
+    calc
+      _≤ Z*Z^D:=mul_le_mul_of_nonneg_right hbZ (Real.rpow_nonneg (by linarith) _)
+      _=Z^(D+1):=by rw [Real.rpow_add (by linarith : 0< Z),Real.rpow_one];ring
+      _≤ _:=Real.rpow_le_rpow_of_exponent_le hZp.le (by linarith)
+  have hs₁':Function.support (clippedSource W₁ c₁ θ₁)⊆Set.Iic (max 1 b₀):=
+    by
+      intro x hx
+      exact le_trans (clipped_support_upper W₁ a₀ b₀ c₁ θ₁ ha₀ hc₁ hs₁ hx) (le_max_right 1 b₀)
+  have hs₂':Function.support (clippedSource W₂ c₂ θ₂)⊆Set.Iic (max 1 b₀):=
+    by
+      intro x hx
+      exact le_trans (clipped_support_upper W₂ a₀ b₀ c₂ θ₂ ha₀ hc₂ hs₂ hx) (le_max_right 1 b₀)
+  obtain ⟨T,hT,hfreqcap⟩:=exists_source_frequency_cap p S
+  have hsplit:=actual_physical_retained_tail p hp hcop hg
+    (InverseInitialRayAttachment.poolPrimary_primary F hFa) Finset.univ S hdiv hf w Ψ
+    (assignedElement assigned qelem) (primeMark (all\assigned) lists coeff)
+    (clippedSource W₁ c₁ θ₁) (clippedSource W₂ c₂ θ₂) Φ
+    Z D m (max 1 b₀) T (4*η+τ) hZp hs₁' hs₂' hfreqcap
+  rw [hsplit]
+  apply (norm_add_le _ _).trans
+  have hret:=hretained Z hZr' Dpool hD all assigned hassigned hK lists Hslot coeff
+    hdis hHs hPs hac qelem z al bl primeW hz hqe hprimeW hprimeLive Ψ hΨ hperiod S hdiv hf
+    D m r T hm hT hprodj hprod hDeq hmargin₁ hmargin₂ hparent c₁ c₂ θ₁ θ₂ hc₁ hbc₁ hc₂ hbc₂ w hw
+  let Sc:=cappedSource p S (fun _=>1) (physicalCaps (max 1 b₀) Z D T)
+  have ht:=htail p hp hcop hg (InverseInitialRayAttachment.poolPrimary_injective F hFa)
+    (poolPrimary_odd F hFa) (InverseInitialRayAttachment.poolPrimary_primary F hFa) Ψ hΨ
+    (assignedElement assigned qelem) (all\assigned) lists coeff
+    (fun i hi j hj hij=> hdis (Finset.mem_sdiff.mp hi).1 (Finset.mem_sdiff.mp hj).1 hij) hac
+    (clippedSource W₁ c₁ θ₁) (clippedSource W₂ c₂ θ₂) Φ Z D m η (max 1 b₀) 1 B₀ B₀
+    hZp hη.le (by positivity) h64 (by linarith) hsize (by linarith) (by linarith)
+    (by norm_num) hB₀ hB₀ (clipped_bound W₁ B₀ hb₁ c₁ θ₁) (clipped_bound W₂ B₀ hb₂ c₂ θ₂)
+    hs₁' hs₂' Finset.univ Sc w
+    (fun x hx=> hcommon x (Finset.mem_filter.mp hx).1)
+    (fun x hx=> hoverlap x (Finset.mem_filter.mp hx).1)
+    (fun x hx=> hdiv x (Finset.mem_filter.mp hx).1)
+    (fun x hx=> hf x (Finset.mem_filter.mp hx).1)
+    (fun x hx=> hw x (Finset.mem_filter.mp hx).1)
+    (fun _=>1) (physicalCaps (max 1 b₀) Z D T) (by intros;norm_num)
+    (fun x hx=>(Finset.mem_filter.mp hx).2)
+  have hheight:1≤((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*J)*
+      (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*J)):=
+    one_le_mul_of_one_le_of_one_le (one_le_pow₀ (by linarith [norm_nonneg θ₁]))
+      (one_le_pow₀ (by linarith [norm_nonneg θ₂]))
+  have hpow:Z^(-1:ℝ)≤ Z^(m+15*η+π+eps+loss):=
+    Real.rpow_le_rpow_of_exponent_le hZp.le (by linarith)
+  apply (add_le_add hret ht).trans
+  change Cr*Z^(m+15*η+π+eps+loss)*_+(Ct*1*B₀*B₀*ss.sup (schwartzSeminormFamily ℝ ℝ ℂ) Φ*Z^(-1:ℝ))≤ _
+  have hh:tailC*Z^(-1:ℝ)≤ tailC*Z^(m+15*η+π+eps+loss)*
+      ((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*J)*
+        (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*J)):=by
+    calc
+      _≤ tailC*Z^(m+15*η+π+eps+loss):=mul_le_mul_of_nonneg_left hpow htailC
+      _≤ _:=le_mul_of_one_le_right (by positivity) hheight
+  convert add_le_add_left hh (Cr*Z^(m+15*η+π+eps+loss)*
+    ((1+‖θ₁‖)^InverseClippingProfiles.momentOrder (4*J)*
+      (1+‖θ₂‖)^InverseClippingProfiles.momentOrder (4*J))) using 1 <;> dsimp [tailC] <;> ring
+
+end InverseInitialFiniteEnergy
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment TruncatedPrincipalPoisson
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseInitialTotalEnergy
+open Eisenstein CompletedGauss  
+open CanonicalQuadraticSieve CanonicalRowCompletion CanonicalCoefficientClass
+open InverseMoment InverseInitialArithmetic InverseInitialPhysicalMeasure InverseInitialProfile
+open InverseInitialEnergyCallerSource InverseInitialEnergyCallerModes InverseInitialEnergyCallerWindows
+open InverseInitialQuotientGeometry InverseInitialClippedColumns InverseInitialEnergyCallerState
+open InverseInitialDyadicAssembly InverseInitialProfileBounds Filter
+local notation "O"=> Eisenstein.O
+
+open InverseInitialPhysicalLimit InverseInitialPhysicalReassembly SecondPassArithmetic InverseInitialRayAttachment
+theorem original_input_bound
+    (W:ℝ→ℂ)(a₀ b₀ bcap:ℝ)(ha₀:0< a₀)(hbcap:1≤ bcap)
+    (hs:Function.support W⊆Set.Icc a₀ b₀)
+    (hW:ContDiff ℝ ∞ W)(Φ:𝓢(ℝ,ℂ))
+    (B₀:ℝ)(hB₀:0≤ B₀)(hb:∀x,‖W x‖≤ B₀)
+    (cap gap eps π η τ loss:ℝ)(hcap:0≤ cap)(hgap:0< gap)(heps:0< eps)(hπ:0<π)
+    (hη:0<η)(hηone:η≤1)(hηsmall:η≤ gap/50)(hτ:0<τ)(hτsmall:τ≤ gap/50)(hloss:0< loss)(K:ℕ):
+    ∃degree:ℕ,∃Btree:ℝ,1≤ Btree ∧
+    ∀q:ℕ,q≠0→∃C Z₀:ℝ,0< C ∧ 1< Z₀ ∧
+    ∀Z:ℝ,Z₀≤ Z→∀Dpool:ℕ,Btree*Z^(cap+1)≤ Dpool→
+    let F:=CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q) Dpool;
+    let hF:=CanonicalRowCompletion.outsideSquarefree_admissible (reflectionExcludedPrimes q) Dpool (reflectionExcludedPrimes_bad q);
+    letI:∀i:primePool F,(Ideal.span {poolPrimary F i}).IsMaximal:=fun i=> by rw [poolPrimary_span F hF i];infer_instance;
+    let p:=poolPrimary F;
+    let _hp:=poolPrimary_ne_zero F hF;
+    let _hcop:=poolPrimary_coprime F hF;
+    let hg:=poolPrimary_good F hF;
+    ∀{σ:Type}[DecidableEq σ](all assigned:Finset σ),assigned⊆all→all.card≤ K→
+    ∀(lists:σ→Finset (primePool F))(Hslot:σ→ℝ)(coeff:σ→primePool F→ℂ),
+      (all:Set σ).PairwiseDisjoint lists→(∀i∈all\assigned,1≤ Hslot i)→
+      (∀i∈all\assigned,∀P∈lists i,(P.val.absNorm:ℝ)≤ Hslot i)→
+      (∀i∈all\assigned,∀P∈lists i,‖coeff i P‖≤1)→
+    ∀(qelem:σ→O)(z al bl:σ→ℝ)(primeW:σ→ℝ→ℂ),
+      (∀i∈all,0≤ z i)→(∀i∈assigned,qelem i≠0)→
+      (∀i∈assigned,Function.support (primeW i)⊆Set.Icc (al i) (bl i))→
+      (∀i∈assigned,primeW i ((Ideal.absNorm (Ideal.span {qelem i}):ℝ)/Z^(z i))≠0)→
+    ∀Ψ:O→*ℂ,(∀u,‖Ψ u‖≤1)→FactorsModulo (fixedBaseConductor q) Ψ→
+    ∀(D m r:ℝ),0≤ m→m≤ cap→-cap≤ D→
+      (∏i∈assigned,bl i)≤ Z^η→
+      (∏i∈all\assigned,Hslot i)≤ Z^(assignedCenter (all\assigned) z+η)→
+      D=r+assignedCenter all z-2*assignedCenter assigned z→
+      r+2*assignedCenter all z≤ m-2*gap→
+      2*r+8*assignedCenter all z≤3*m-2*gap→
+      r+assignedCenter all z+7*η≤ cap→
+    ∀(c θ:ℝ),1≤ c→c≤ bcap→
+      ‖∑'u:O,Φ (‖ringComplex u‖^2/Z^m)*
+        (‖((Z^(-D/2):ℝ):ℂ)*inputConjugateRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) Finset.univ Ψ
+          (assignedElement assigned qelem) 1 1
+          (initialTest p (primeMark (all\assigned) lists coeff)
+            (clippedSource W c θ) Z D) u‖^2:ℝ)‖≤
+        C*Z^(m+15*η+π+eps+loss)*(1+‖θ‖)^(2*InverseClippingProfiles.momentOrder (4*degree)) := by
+  have hsstar:Function.support (fun x=> star (W x))⊆Set.Icc a₀ b₀:=by
+    intro x hx
+    apply hs
+    simpa only [Function.mem_support,star_ne_zero] using hx
+  have hbStar:∀x,‖star (W x)‖≤ B₀:=by intro x;simpa only [norm_star] using hb x
+  obtain ⟨J,Btree,hBtree,hfinite⟩:=InverseInitialFiniteEnergy.finite_physical_bound
+    (fun x=> star (W x)) W a₀ b₀ bcap ha₀ hbcap hsstar hs
+    (Complex.conjCLE.contDiff.comp hW) hW Φ B₀ hB₀ hbStar hb
+    cap gap eps π η τ loss hcap hgap heps hπ hη hηone hηsmall hτ hτsmall hloss K
+  obtain ⟨Cz,hCz,hzero⟩:=InverseInitialZeroMode.physical_marked_zero_bound
+    loss cap (max 1 b₀) B₀ hloss hcap (by positivity) hB₀ Φ
+  refine ⟨J,Btree,hBtree,?_⟩
+  intro q hq
+  obtain ⟨Cf,Z₀,hCf,hZ₀,hfinite⟩:=hfinite q hq
+  refine ⟨Cf+Cz,Z₀,by linarith,hZ₀,?_⟩
+  intro Z hZ Dpool hD F hFa
+  let:∀i:primePool F,(Ideal.span {poolPrimary F i}).IsMaximal:=fun i=> by rw [poolPrimary_span F hFa i];infer_instance
+  intro p hp hcop hg σ dec all assigned hassigned hK lists Hslot coeff hdis hHs hPs hac
+    qelem z al bl primeW hz hqe hprimeW hprimeLive Ψ hΨ hperiod
+    D m r hm hmcap hDlo hprodj hprod hDeq hmargin₁ hmargin₂ hparent c θ hc hbc
+  have hZp:1< Z:=hZ₀.trans_le hZ
+  have hDcap:D≤ cap:=by
+    have hg:0≤ assignedCenter assigned z:=Finset.sum_nonneg (fun i hi=> hz i (hassigned hi))
+    rw [hDeq];linarith
+  have hconj:(fun x=> star (clippedSource W c θ x))=clippedSource (fun x=> star (W x)) c (-θ):=
+    funext (clippedSource_conjugate W c θ)
+  have hn:=nonzero_frequency_norm_le p hp hcop hg
+    (InverseInitialRayAttachment.poolPrimary_injective F hFa) (poolPrimary_odd F hFa)
+    (InverseInitialRayAttachment.poolPrimary_primary F hFa) Finset.univ Ψ
+    (assignedElement assigned qelem) (primeMark (all\assigned) lists coeff)
+    (clippedSource W c θ) Φ Z D m
+    (Cf*Z^(m+15*η+π+eps+loss)*(1+‖θ‖)^(2*InverseClippingProfiles.momentOrder (4*J)))
+    (by linarith : 0< Z) (by
+      intro freqT hzero
+      rw [hconj]
+      have h:=hfinite Z hZ Dpool hD all assigned hassigned hK lists Hslot coeff
+        hdis hHs hPs hac qelem z al bl primeW hz hqe hprimeW hprimeLive Ψ hΨ hperiod
+        (finiteSource Finset.univ freqT)
+        (finiteSource_divisor Finset.univ freqT) (finiteSource_nonzero Finset.univ freqT hzero)
+        (fun x hx=> Finset.subset_univ _) (fun x hx=> Finset.subset_univ _)
+        D m r hm hmcap hDlo hprodj hprod hDeq hmargin₁ hmargin₂ hparent
+        c c (-θ) θ hc hbc hc hbc (fun _=>1) (by intros;norm_num)
+      simpa only [Function.comp_def,norm_neg,pow_mul,pow_two,mul_pow] using h)
+  have hz0:=hzero p hp hcop hg (InverseInitialRayAttachment.poolPrimary_injective F hFa)
+    (poolPrimary_odd F hFa) (InverseInitialRayAttachment.poolPrimary_primary F hFa)
+    Finset.univ Ψ hΨ (assignedElement assigned qelem) (all\assigned) lists coeff
+    (fun i hi j hj hij=> hdis (Finset.mem_sdiff.mp hi).1 (Finset.mem_sdiff.mp hj).1 hij) hac
+    (clippedSource W c θ) (clipped_bound W B₀ hb c θ)
+    (fun x hx=> le_trans (clipped_support_upper W a₀ b₀ c θ ha₀ hc hs hx) (le_max_right 1 b₀))
+    Z D m hZp.le hDcap
+  rw [original_input_zero_nonzero p hp hcop hg
+    (InverseInitialRayAttachment.poolPrimary_injective F hFa) (poolPrimary_odd F hFa)
+    (InverseInitialRayAttachment.poolPrimary_primary F hFa) Finset.univ Ψ
+    (assignedElement assigned qelem) (primeMark (all\assigned) lists coeff)
+    (clippedSource W c θ) Φ Z D m (by linarith)]
+  apply (norm_add_le _ _).trans
+  have hh:1≤(1+‖θ‖)^(2*InverseClippingProfiles.momentOrder (4*J)):=one_le_pow₀ (by linarith [norm_nonneg θ])
+  have hz1:Cz*Z^(m+loss)≤ Cz*Z^(m+15*η+π+eps+loss)*(1+‖θ‖)^(2*InverseClippingProfiles.momentOrder (4*J)):=by
+    calc
+      _≤ Cz*Z^(m+15*η+π+eps+loss):=mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow_of_exponent_le hZp.le (by linarith)) hCz.le
+      _≤ _:=le_mul_of_one_le_right (by positivity) hh
+  change ‖physicalFrequency p hg Finset.univ Ψ (assignedElement assigned qelem)
+    (primeMark (all\assigned) lists coeff) (clippedSource W c θ) Φ Z D m 0‖ + _ ≤ _
+  exact (add_le_add (hz0.trans hz1) hn).trans_eq (by ring)
+
+end InverseInitialTotalEnergy
+
+end
+
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -49,10 +49,12 @@ theorem norm_fourier_realPairedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
     ‖𝓕 (cx (realPairedCausalReflection a b F)) ξ‖ = ‖𝓕 (cx F) ξ‖ := by
   have he : cx (realPairedCausalReflection a b F) =ᵐ[volume]
       pairedCausalReflection a b (cx F) := coe_realPairedCausalReflection_ae ha b hF
-  rw [Real.fourier_congr_ae he, pairedCausalReflection,
-    norm_fourier_modulatedCausalReflection ha (-b)
-      (integrable_modulatedCausalReflection ha b (hF.ofReal (𝕜 := ℂ))),
-    norm_fourier_modulatedCausalReflection ha b (hF.ofReal (𝕜 := ℂ))]
+  rw [Real.fourier_congr_ae he, pairedCausalReflection]
+  calc
+    _ = ‖𝓕 (modulatedCausalReflection a b (cx F)) ξ‖ :=
+      norm_fourier_modulatedCausalReflection ha (-b)
+        (integrable_modulatedCausalReflection ha b (hF.ofReal (𝕜 := ℂ))) ξ
+    _ = _ := norm_fourier_modulatedCausalReflection ha b (hF.ofReal (𝕜 := ℂ)) ξ
 
 /-- The paper Fourier normalization has the same preserved modulus. -/
 theorem norm_paperFT_realPairedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
@@ -91,20 +93,20 @@ theorem CriticalHalfLineEnergyDomain.realPairedCausalReflection {a : ℝ} (ha : 
     apply hi.congr
     refine Eventually.of_forall fun u => ?_
     change ‖causalLaplaceWeighted (4 / Real.pi)
-      (fun t => (realPairedCausalReflection a b F t : ℂ)) u‖ ^ 2 =
-      realPairedCausalReflection a b F u ^ 2 * Real.exp (-(8 * u))
+      (fun t => (HTGeometry.realPairedCausalReflection a b F t : ℂ)) u‖ ^ 2 =
+      HTGeometry.realPairedCausalReflection a b F u ^ 2 * Real.exp (-(8 * u))
     rw [norm_sq_causalLaplaceWeighted,
       show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp; norm_num]
     dsimp only
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   · intro u hu
-    rw [realPairedCausalReflection,
+    rw [HTGeometry.realPairedCausalReflection,
       pairedCausalReflection_support_of_nonreal_zero ha hb hF.integrable hF.support hz u hu,
       Complex.zero_re]
   · apply hF.gamma.congr
     refine Eventually.of_forall fun r => ?_
     change ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r =
-      ‖paperFT (cx (realPairedCausalReflection a b F)) r‖ ^ 2 * EF.gammaBracket r
+      ‖paperFT (cx (HTGeometry.realPairedCausalReflection a b F)) r‖ ^ 2 * EF.gammaBracket r
     rw [norm_paperFT_realPairedCausalReflection ha b hF.integrable]
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
