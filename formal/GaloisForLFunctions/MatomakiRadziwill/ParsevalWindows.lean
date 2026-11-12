@@ -50,7 +50,7 @@ theorem iUnion_freqShell {W : ℝ} (hW : 0 < W) : (⋃ k, freqShell W k) = {w : 
       refine ⟨k, ?_⟩
       have h1 : |w| < 2 ^ k * W := by rwa [div_lt_iff₀ hW] at hk
       have h2 : (2 : ℝ) ^ k ≤ 2 ^ (k + 1) := pow_le_pow_right₀ (by norm_num) (Nat.le_succ k)
-      nlinarith
+      linarith [mul_le_mul_of_nonneg_right h2 hW.le]
     refine ⟨Nat.find hex, ?_, Nat.find_spec hex⟩
     rcases Nat.eq_zero_or_pos (Nat.find hex) with h0 | hpos
     · rw [h0, pow_zero, one_mul]; exact hw
@@ -121,7 +121,7 @@ theorem setIntegral_freqShell_le (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : 
     setIntegral_mono_set hIcc (ae_of_all _ fun w => sq_nonneg _) hsub.eventuallyLE
   have hW' : 1 ≤ 2 ^ (k + 1) * W := by
     have : (1 : ℝ) ≤ 2 ^ (k + 1) := one_le_pow₀ (by norm_num)
-    nlinarith
+    exact one_le_mul_of_one_le_of_one_le this hW
   have h3 := integral_Icc_normSq_logPoly_le_energy a hs0 hsM hW'
   calc (∫ w in freqShell W k, ‖logWindowKernel δ w‖ ^ 2 * ‖logPoly a s w‖ ^ 2)
       ≤ c * ∫ w in freqShell W k, ‖logPoly a s w‖ ^ 2 := h1
@@ -174,12 +174,15 @@ theorem setIntegral_tail_le (a : ℕ → ℂ) {s : Finset ℕ} (hs0 : (0 : ℕ) 
     exact mul_le_mul_of_nonneg_right hπ (by positivity)
   have h2 : 4 / 3 * B ≤ M / W ^ 2 := by
     have hπ2 : 10 * Real.exp 1 / (3 * Real.pi ^ 2) ≤ 1 := by
-      rw [div_le_one (by positivity)]; nlinarith
+      rw [div_le_one (by positivity)]
+      have hp2 : (3.14 : ℝ) * 3.14 < Real.pi * Real.pi :=
+        mul_lt_mul'' hpi' hpi' (by norm_num) (by norm_num)
+      nlinarith
     have e1 : 4 / 3 * B = 10 * Real.exp 1 / (3 * Real.pi ^ 2) * (M / W ^ 2) := by
       rw [hB]; field_simp; ring
     rw [e1]
     have : 0 ≤ (M : ℝ) / W ^ 2 := by positivity
-    nlinarith
+    exact mul_le_of_le_one_left this hπ2
   linarith
 
 /-- **Window mean square against the Dirichlet-polynomial mean square.** -/
@@ -236,7 +239,7 @@ theorem normSq_logWindowSum_le_coefA {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ �
     have : 0 ≤ 2 * ((4 * X * (Real.exp δ - 1) + 1) * δ) ^ 2
         * (Icc (Real.log X - δ) (Real.log (4 * X))).indicator (fun _ => (1 : ℝ)) u :=
       mul_nonneg (by positivity) hi
-    nlinarith
+    linarith
   -- the window meets `(X, 4X]`, so `log X − δ ≤ u ≤ log 4X`
   have hmemF : ∀ n ∈ F, X < n ∧ n ≤ 4 * X ∧ Real.exp u < n ∧ (n : ℝ) ≤ Real.exp (u + δ) := by
     intro n hn
@@ -277,7 +280,7 @@ theorem normSq_logWindowSum_le_coefA {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ �
     have h5 : (F.card : ℝ) ≤ Real.exp u * (Real.exp δ - 1) + 1 := by
       have : (F.card : ℝ) ≤ ((Finset.Ioc ⌊Real.exp u⌋₊ ⌊Real.exp (u + δ)⌋₊).card : ℝ) := by
         exact_mod_cast Finset.card_le_card hsub
-      nlinarith
+      linarith
     have h6 : Real.exp u * (Real.exp δ - 1) ≤ 4 * X * (Real.exp δ - 1) :=
       mul_le_mul_of_nonneg_right heu (by linarith [Real.one_le_exp hδ])
     linarith
@@ -320,7 +323,10 @@ theorem normSq_logWindowSum_le_coefA {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ �
     exact mul_le_mul_of_nonneg_right heu (norm_nonneg _)
   have h0 : 0 ≤ ‖∑ n ∈ F, f n‖ := norm_nonneg _
   have hc0 : 0 ≤ ‖∑ n ∈ F, coefA f n‖ := norm_nonneg _
-  nlinarith [sq_nonneg (4 * X * ‖∑ n ∈ F, coefA f n‖ - (4 * X * (Real.exp δ - 1) + 1) * δ)]
+  have hsq : ‖∑ n ∈ F, f n‖ ^ 2
+      ≤ (4 * X * ‖∑ n ∈ F, coefA f n‖ + (4 * X * (Real.exp δ - 1) + 1) * δ) ^ 2 :=
+    pow_le_pow_left₀ h0 hmain 2
+  linarith [sq_nonneg (4 * X * ‖∑ n ∈ F, coefA f n‖ - (4 * X * (Real.exp δ - 1) + 1) * δ)]
 
 /-- **Raw windows against the `f(n)/n` windows, integrated.** -/
 theorem integral_normSq_logWindowSum_le_coefA {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {X : ℕ}

@@ -1,12 +1,12 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ModulatedCausalReflectionEnergy
 
 /-!
-# Positive mixed energy of a weighted causal resolvent
+# Exact mixed energy of a weighted causal resolvent
 
 Expanding the reflection norm identity identifies the real mixed term.
 Modulation preserves that term, while an exponential weight shifts the
-decay rate. In particular, an undamped resolvent has positive mixed energy
-after every positive exponential weight.
+decay rate. In particular, an undamped resolvent has a nonnegative mixed
+term under every positive exponential weight.
 -/
 
 noncomputable section
@@ -122,7 +122,7 @@ theorem causalLaplaceWeighted_modulatedCausalConvolution (a x b : ℝ) (f : ℝ 
     causalLaplaceWeighted_causalExponentialConvolution, causalLaplaceWeighted_causalModulation,
     modulatedCausalConvolution_eq_conjugate]
 
-/-- The weighted mixed term is positive even for an undamped resolvent. -/
+/-- The weighted mixed term is a positive multiple of resolvent energy, including undamped rates. -/
 theorem integral_weighted_modulatedCausalConvolution_mixed_energy {a x : ℝ}
     (hx : 0 < a + x) (b : ℝ) {f : ℝ → ℂ}
     (hf : MemLp (causalLaplaceWeighted x f) 2 volume) :

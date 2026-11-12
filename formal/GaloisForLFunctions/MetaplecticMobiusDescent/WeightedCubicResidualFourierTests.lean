@@ -183630,4 +183630,2731 @@ end
 
 end
 
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentFirstSecondLossParameters
+def depth (Mcap σ:ℝ):ℕ:=⌈2*Mcap/σ⌉₊+1
+
+lemma depth_covers (Mcap σ:ℝ)(hσ:0<σ):Mcap<(depth Mcap σ:ℝ)*σ/2 := by
+  have hh:=Nat.le_ceil (2*Mcap/σ)
+  have hn:2*Mcap≤(⌈2*Mcap/σ⌉₊:ℝ)*σ:=(div_le_iff₀ hσ).mp hh
+  simp only [depth,Nat.cast_add,Nat.cast_one]
+  nlinarith
+
+
+end CenteredMomentFirstSecondLossParameters
+end
+
+
+
+
+noncomputable section
+
+namespace CenteredMomentSuccessorPaidParameters
+open CenteredMomentFirstSecondLossParameters
+
+def edge (epsChild epsRemove delta epsilon delta1 delta2 theta kappa mesh : ℝ) : ℝ :=
+  epsChild+epsRemove+2*delta+epsilon+delta2+delta1/6+kappa*mesh+7*theta/3
+
+def exceptional (sigma deltafr epsilon delta B theta : ℝ) : ℝ :=
+  3*sigma+5*deltafr/6+2*epsilon+2*delta+2*(5*B+1)*theta
+
+def diagonal (sigma delta reserve epsilon A : ℝ) : ℝ :=
+  2*sigma+delta+reserve+epsilon*A
+
+lemma paid_normalization (Z shortening allowance paid : ℝ) (hZ : 0< Z) :
+    Z^(-shortening-allowance)*Z^(shortening+paid)=Z^(paid-allowance) := by
+  rw [←Real.rpow_add hZ]
+  congr 1
+  ring
+
+lemma paid_normalization_with_ratio (Z shortening allowance paid ratio : ℝ)
+    (hZ : 0< Z) :
+    Z^(-shortening-allowance)*(Z^(shortening+paid)*ratio^((1:ℝ)/6))=
+      Z^(paid-allowance)*ratio^((1:ℝ)/6) := by
+  rw [←mul_assoc,paid_normalization Z shortening allowance paid hZ]
+
+lemma declared_parent_deficit (actual declared loss : ℝ) (h : actual≤ declared) :
+    actual+(declared-actual)/6+loss≤ declared+loss := by linarith
+
+lemma paired_declared_parent (actual declared left right loss : ℝ)
+    (h : actual≤ declared)
+    (hl : left≤(declared-actual)/6+loss)
+    (hr : right≤(declared-actual)/6+loss) :
+    actual+(left+right)/2≤ declared+loss := by linarith
+
+lemma mesh_cost (kappa reserve : ℝ) (hk : 0≤ kappa) (hr : 0≤ reserve) :
+    kappa*(reserve/(kappa+1))≤ reserve := by
+  rw [←mul_div_assoc]
+  apply (div_le_iff₀ (by positivity : 0< kappa+1)).mpr
+  nlinarith
+
+theorem simultaneous_parameters (Mcap B kappa epsilonTarget : ℝ)
+    (hM : 0≤ Mcap) (hB : 0≤ B) (hk : 0≤ kappa) (he : 0< epsilonTarget) :
+    ∃ sigma reserve mesh : ℝ,
+      0< sigma ∧ sigma≤1 ∧ sigma≤ epsilonTarget/1000 ∧
+      0< reserve ∧ 0< mesh ∧ mesh≤ reserve ∧ kappa*mesh≤ reserve ∧
+      20*reserve≤ sigma/2 ∧
+      Mcap<(depth Mcap sigma:ℝ)*sigma/2 ∧
+      (∀ epsChild epsRemove delta epsilon delta1 delta2 theta,
+        epsChild≤ reserve → epsRemove≤ reserve → delta≤ reserve → epsilon≤ reserve →
+        delta1≤ reserve → delta2≤ reserve → theta≤ reserve →
+        (depth Mcap sigma:ℝ)*edge epsChild epsRemove delta epsilon delta1 delta2 theta kappa mesh
+          ≤ epsilonTarget/16) ∧
+      (∀ deltafr epsilon delta theta,
+        deltafr≤ reserve → epsilon≤ reserve → delta≤ reserve → theta≤ reserve →
+        exceptional sigma deltafr epsilon delta B theta≤ epsilonTarget/16) ∧
+      (∀ delta other epsilon A,
+        delta≤ reserve → other≤ reserve → 0≤ epsilon → epsilon≤ reserve → A≤ Mcap →
+        diagonal sigma delta other epsilon A≤ epsilonTarget/16) := by
+  let sigma : ℝ := min 1 (epsilonTarget/1000)
+  have hs : 0< sigma := lt_min (by norm_num) (by positivity)
+  have hs1 : sigma≤1 := min_le_left _ _
+  have hse : sigma≤ epsilonTarget/1000 := min_le_right _ _
+  let n := depth Mcap sigma
+  let L : ℝ := (n:ℝ)+Mcap+10*B+30
+  have hn : 0≤(n:ℝ) := Nat.cast_nonneg _
+  have hL : 0< L := by dsimp [L]; positivity
+  let reserve : ℝ := min (sigma/100) (epsilonTarget/(1000*L))
+  have hr : 0< reserve := lt_min (by positivity) (by positivity)
+  have hrs : reserve≤ sigma/100 := min_le_left _ _
+  have hre : reserve≤ epsilonTarget/(1000*L) := min_le_right _ _
+  have hbudget : reserve*(1000*L)≤ epsilonTarget := (le_div_iff₀ (by positivity)).mp hre
+  have hnres : (n:ℝ)*reserve≤ epsilonTarget/1000 := by
+    have hx : (n:ℝ)*reserve≤ L*reserve := mul_le_mul_of_nonneg_right (by dsimp [L]; linarith) hr.le
+    nlinarith
+  have hbRes : (10*B+20)*reserve≤ epsilonTarget/1000 := by
+    have hx : (10*B+20)*reserve≤ L*reserve := mul_le_mul_of_nonneg_right (by dsimp [L]; linarith) hr.le
+    nlinarith
+  have hmRes : (Mcap+2)*reserve≤ epsilonTarget/1000 := by
+    have hx : (Mcap+2)*reserve≤ L*reserve := mul_le_mul_of_nonneg_right (by dsimp [L]; linarith) hr.le
+    nlinarith
+  let mesh : ℝ := reserve/(kappa+1)
+  have hm : 0< mesh := by dsimp [mesh]; positivity
+  have hmr : mesh≤ reserve := by
+    dsimp [mesh]
+    apply (div_le_iff₀ (by positivity)).mpr
+    nlinarith
+  have hkm : kappa*mesh≤ reserve := mesh_cost kappa reserve hk hr.le
+  refine ⟨sigma,reserve,mesh,hs,hs1,hse,hr,hm,hmr,hkm,by linarith,
+    depth_covers Mcap sigma hs,?_,?_,?_⟩
+  · intro ec er d e d1 d2 t hec her hd he hd1 hd2 ht
+    have hedge : edge ec er d e d1 d2 t kappa mesh≤10*reserve := by
+      unfold edge
+      linarith
+    have hp := mul_le_mul_of_nonneg_left hedge hn
+    change (n:ℝ)*edge ec er d e d1 d2 t kappa mesh≤ epsilonTarget/16
+    nlinarith
+  · intro df e d t hdf he hd ht
+    have htheta : 2*(5*B+1)*t≤2*(5*B+1)*reserve :=
+      mul_le_mul_of_nonneg_left ht (by positivity)
+    unfold exceptional
+    nlinarith
+  · intro d other e A hd ho he0 he hA
+    have hmul : e*A≤ reserve*Mcap := (mul_le_mul_of_nonneg_left hA he0).trans
+      (mul_le_mul_of_nonneg_right he hM)
+    unfold diagonal
+    nlinarith
+
+end CenteredMomentSuccessorPaidParameters
+
+end
+
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace HeckeDetectorSlotSelection
+
+theorem whole_slots {α : Type*} (s : Finset α) (w g : α→ℝ) (G mesh : ℝ)
+    (hG : 0≤ G) (hmesh : 0≤ mesh)
+    (hw : ∀ i∈s, 0≤ w i) (hwm : ∀ i∈s, w i≤ mesh)
+    (hg : ∀ i∈s, 0≤ g i) (hgG : ∀ i∈s, g i≤ G)
+    (q z : ℝ) (hq : 0≤ q) (hqG : q≤ G) (hz : 0≤ z)
+    (hzs : z≤∑ i∈s, w i) (hmean : q*(∑ i∈s, w i)≤∑ i∈s, w i*g i) :
+    ∃ T : Finset α, T⊆s ∧ (∑ i∈T, w i)≤ z ∧ q*z-G*mesh≤∑ i∈T, w i*g i := by
+  classical
+  induction s using Finset.strongInductionOn generalizing q z with
+  | _ s ih =>
+    by_cases hs : s.Nonempty
+    · obtain ⟨a,ha,hmax⟩ := s.exists_max_image g hs
+      by_cases hza : z≤ w a
+      · refine ⟨∅,Finset.empty_subset _,by simpa using hz,?_⟩
+        have hzmesh : z≤ mesh := hza.trans (hwm a ha)
+        have hprod := mul_le_mul hqG hzmesh hz hG
+        simpa only [Finset.sum_empty] using (sub_nonpos.mpr hprod)
+      have haz : w a< z := lt_of_not_ge hza
+      let s' := s.erase a
+      have hss : s'⊂s := Finset.erase_ssubset ha
+      have hsub : s'⊆s := Finset.erase_subset a s
+      have hsum : ∑ i∈s, w i=w a+∑ i∈s', w i := by
+        simpa [s',add_comm] using (Finset.sum_erase_add s w ha).symm
+      have hgain : ∑ i∈s, w i*g i=w a*g a+∑ i∈s', w i*g i := by
+        simpa [s',add_comm] using (Finset.sum_erase_add s (fun i => w i*g i) ha).symm
+      let W := ∑ i∈s', w i
+      let A := ∑ i∈s', w i*g i
+      have hW : 0< W := by rw [hsum] at hzs; dsimp [W]; linarith
+      have hA : 0≤ A := Finset.sum_nonneg (fun i hi => mul_nonneg (hw i (hsub hi)) (hg i (hsub hi)))
+      have hAg : A≤ W*g a := by
+        calc
+          _ ≤ ∑ i∈s', w i*g a := Finset.sum_le_sum (fun i hi =>
+            mul_le_mul_of_nonneg_left (hmax i (hsub hi)) (hw i (hsub hi)))
+          _ = _ := by dsimp [W]; rw [Finset.sum_mul]
+      let q' := A/W
+      have hq' : 0≤ q' := div_nonneg hA hW.le
+      have hq'a : q'≤ g a := (div_le_iff₀ hW).mpr (by simpa [mul_comm] using hAg)
+      have hq'G : q'≤ G := hq'a.trans (hgG a ha)
+      have he : q'*W=A := div_mul_cancel₀ A hW.ne'
+      have hz' : 0≤ z-w a := sub_nonneg.mpr haz.le
+      have hzs' : z-w a≤∑ i∈s', w i := by rw [hsum] at hzs; linarith
+      obtain ⟨T,hTs,hTz,hTgain⟩ := ih s' hss
+        (fun i hi => hw i (hsub hi)) (fun i hi => hwm i (hsub hi))
+        (fun i hi => hg i (hsub hi)) (fun i hi => hgG i (hsub hi))
+        q' (z-w a) hq' hq'G hz' hzs' he.le
+      have haT : a∉T := fun h => (Finset.mem_erase.mp (hTs h)).1 rfl
+      refine ⟨insert a T,Finset.insert_subset_iff.mpr ⟨ha,hTs.trans hsub⟩,?_,?_⟩
+      · rw [Finset.sum_insert haT]
+        linarith
+      · rw [Finset.sum_insert haT]
+        have hprefix : q*z≤ w a*g a+q'*(z-w a) := by
+          rw [hsum,hgain] at hmean
+          change q*(w a+W)≤ w a*g a+A at hmean
+          rw [←he] at hmean
+          by_cases hqq : q≤ q'
+          · have h1 := mul_le_mul_of_nonneg_right hqq hz
+            have h2 := mul_le_mul_of_nonneg_left hq'a (hw a ha)
+            nlinarith
+          · have hqq' : 0≤ q-q' := by linarith
+            have h1 := mul_le_mul_of_nonneg_left hzs hqq'
+            rw [hsum] at h1
+            change (q-q')*z≤(q-q')*(w a+W) at h1
+            nlinarith
+        linarith
+    · have he : s=∅ := Finset.not_nonempty_iff_eq_empty.mp hs
+      subst s
+      have hz0 : z=0 := by simpa using le_antisymm hzs hz
+      refine ⟨∅,Finset.empty_subset _,by simpa using hz,?_⟩
+      simp only [Finset.sum_empty,hz0,mul_zero,zero_sub]
+      exact neg_nonpos.mpr (mul_nonneg hG hmesh)
+
+theorem whole_positive_slots {α : Type*} (s : Finset α) (w g : α→ℝ) (G mesh : ℝ)
+    (hG : 0≤ G) (hmesh : 0≤ mesh)
+    (hw : ∀ i∈s, 0≤ w i) (hwm : ∀ i∈s, w i≤ mesh)
+    (hgG : ∀ i∈s, g i≤ G)
+    (q z : ℝ) (hq : 0≤ q) (hqG : q≤ G) (hz : 0≤ z)
+    (hzs : z≤∑ i∈s, w i) (hmean : q*(∑ i∈s, w i)≤∑ i∈s, w i*max (g i) 0) :
+    ∃ T : Finset α, T⊆s ∧ (∀ i∈T, 0< g i) ∧
+      (∑ i∈T, w i)≤ z ∧ q*z-G*mesh≤∑ i∈T, w i*g i := by
+  classical
+  obtain ⟨T,hTs,hTz,hTgain⟩ := whole_slots s w (fun i => max (g i) 0) G mesh hG hmesh
+    hw hwm (fun i hi => le_max_right _ _) (fun i hi => max_le (hgG i hi) hG)
+    q z hq hqG hz hzs hmean
+  let P := T.filter (fun i => 0< g i)
+  have hPT : P⊆T := Finset.filter_subset _ _
+  refine ⟨P,hPT.trans hTs,fun i hi => (Finset.mem_filter.mp hi).2,?_,?_⟩
+  · exact (Finset.sum_le_sum_of_subset_of_nonneg hPT (fun i hi _ => hw i (hTs hi))).trans hTz
+  · have he : (∑ i∈T, w i*max (g i) 0)=∑ i∈P, w i*g i := by
+      calc
+        _ = ∑ i∈P, w i*max (g i) 0 := by
+          symm
+          apply Finset.sum_subset hPT
+          intro i hi hn
+          have hg : g i≤0 := le_of_not_gt (fun h => hn (Finset.mem_filter.mpr ⟨hi,h⟩))
+          rw [max_eq_right hg,mul_zero]
+        _ = _ := Finset.sum_congr rfl (fun i hi => by
+          rw [max_eq_left (Finset.mem_filter.mp hi).2.le])
+    rwa [he] at hTgain
+
+theorem selected_product_spike {α : Type*} (s : Finset α) (w g : α→ℝ)
+    (U δ mesh q z : ℝ) (hU : 1≤ U) (hδ : 0≤δ) (hmesh : 0≤ mesh)
+    (hw : ∀ i∈s, 0≤ w i) (hwm : ∀ i∈s, w i≤ mesh)
+    (hg : ∀ i∈s, g i≤δ/2) (hq : 0≤ q) (hqδ : q≤δ/2) (hz : 0≤ z)
+    (hzs : z≤∑ i∈s, w i) (hmean : q*(∑ i∈s, w i)≤∑ i∈s, w i*max (g i) 0)
+    : ∃ T : Finset α, T⊆s ∧ (∀ i∈T, 0< g i) ∧ (∑ i∈T, w i)≤ z ∧
+      ∀ Q : α→ℂ, (∀ i∈s, 0< g i → U^(2*w i*g i)≤‖Q i‖^2) →
+        U^(2*q*z-δ*mesh)≤‖∏ i∈T, Q i‖^2 := by
+  obtain ⟨T,hTs,hTpos,hTz,hgain⟩ := whole_positive_slots s w g (δ/2) mesh
+    (by positivity) hmesh hw hwm hg q z hq hqδ hz hzs hmean
+  refine ⟨T,hTs,hTpos,hTz,?_⟩
+  intro Q hQ
+  have hUp : 0< U := by linarith
+  calc
+    _ ≤ U^(∑ i∈T, 2*w i*g i) := Real.rpow_le_rpow_of_exponent_le hU (by
+      have he : (∑ i∈T, 2*w i*g i)=2*(∑ i∈T, w i*g i) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro i hi
+        ring
+      rw [he]
+      linarith)
+    _ = ∏ i∈T, U^(2*w i*g i) := Real.rpow_sum_of_pos hUp _ _
+    _ ≤ ∏ i∈T, ‖Q i‖^2 := Finset.prod_le_prod (fun i hi => Real.rpow_nonneg hUp.le _)
+      (fun i hi => hQ i (hTs hi) (hTpos i hi))
+    _ = _ := by rw [norm_prod,Finset.prod_pow]
+
+theorem selected_product_with_decrement {α : Type*} (s : Finset α) (w g : α→ℝ)
+    (U δ mesh q z ν : ℝ) (hU : 1≤ U) (hδ : 0≤δ) (hmesh : 0≤ mesh)
+    (hw : ∀ i∈s, 0≤ w i) (hwm : ∀ i∈s, w i≤ mesh)
+    (hg : ∀ i∈s, g i≤δ/2) (hq : 0≤ q) (hqδ : q≤δ/2) (hz : 0≤ z) (hν : 0≤ν)
+    (hzs : z≤∑ i∈s, w i) (hmean : q*(∑ i∈s, w i)≤∑ i∈s, w i*max (g i) 0) :
+    ∃ T : Finset α, T⊆s ∧ (∀ i∈T, 0< g i) ∧
+      (∑ i∈T, w i)≤ max 0 (z-ν) ∧
+      ∀ Q : α→ℂ, (∀ i∈s, 0< g i → U^(2*w i*g i)≤‖Q i‖^2) →
+        U^(2*q*z-2*q*ν-δ*mesh)≤‖∏ i∈T, Q i‖^2 := by
+  have hcap : max 0 (z-ν)≤ z := max_le hz (by linarith)
+  obtain ⟨T,hTs,hTp,hTw,hTb⟩ := selected_product_spike s w g U δ mesh q (max 0 (z-ν))
+    hU hδ hmesh hw hwm hg hq hqδ (le_max_left _ _) (hcap.trans hzs) hmean
+  refine ⟨T,hTs,hTp,hTw,?_⟩
+  intro Q hQ
+  apply le_trans _ (hTb Q hQ)
+  apply Real.rpow_le_rpow_of_exponent_le hU
+  have hh := mul_le_mul_of_nonneg_left (le_max_right 0 (z-ν)) (show 0≤2*q by positivity)
+  nlinarith
+
+end HeckeDetectorSlotSelection
+
+end
+
+
+
+
+noncomputable section
+open scoped BigOperators Classical
+namespace CenteredMomentSlotRemoval
+
+theorem whole_slot_removal {α : Type*} (s : Finset α) (length : α → ℝ)
+    (η κ F : ℝ) (hη : 0 ≤ η) (hκ : 0 < κ) (hF : 0 ≤ F)
+    (hL : ∀ i ∈ s, 0 ≤ length i) (hmesh : ∀ i ∈ s, length i ≤ η) :
+    ∃ R : Finset α, R ⊆ s ∧
+      (∑ i ∈ R, length i) ≤ min (∑ i ∈ s, length i) (F/(6*κ)+η) ∧
+      (R=s ∨ F ≤ 6*κ*(∑ i ∈ R, length i)) := by
+  have hthreshold : 0 ≤ F/(6*κ) := div_nonneg hF (by positivity)
+  by_cases htotal : (∑ i ∈ s, length i) ≤ F/(6*κ)
+  · refine ⟨s,Finset.Subset.refl _,le_min le_rfl ?_,Or.inl rfl⟩
+    linarith
+  · have htarget : 0 ≤ (∑ i ∈ s, length i)-F/(6*κ) := by linarith
+    obtain ⟨T,hTs,hTupper,hTlower⟩ := HeckeDetectorSlotSelection.whole_slots
+      s length (fun _ => 1) 1 η (by norm_num) hη hL hmesh
+      (by intros; norm_num) (by intros; norm_num) 1
+      ((∑ i ∈ s, length i)-F/(6*κ)) (by norm_num) (by norm_num)
+      htarget (by linarith) (by simp)
+    simp only [one_mul,mul_one] at hTlower
+    have hsum : (∑ i ∈ s, length i)=(∑ i ∈ s\T, length i)+(∑ i ∈ T, length i) :=
+      (Finset.sum_sdiff hTs).symm
+    have hTnonneg : 0 ≤ ∑ i ∈ T, length i := Finset.sum_nonneg (fun i hi => hL i (hTs hi))
+    refine ⟨s\T,Finset.sdiff_subset,le_min (by linarith) (by linarith),Or.inr ?_⟩
+    have hremove : F/(6*κ) ≤ ∑ i ∈ s\T, length i := by linarith
+    exact (div_le_iff₀ (by positivity : 0 < 6*κ)).mp hremove |>.trans_eq (mul_comm _ _)
+
+theorem removal_cost {α : Type*} (s : Finset α) (length : α → ℝ)
+    (η κ F : ℝ) (hη : 0 ≤ η) (hκ : 0 < κ) (hF : 0 ≤ F)
+    (hL : ∀ i ∈ s, 0 ≤ length i) (hmesh : ∀ i ∈ s, length i ≤ η) :
+    ∃ R : Finset α, R ⊆ s ∧
+      κ*(∑ i ∈ R, length i) ≤ F/6+κ*η ∧
+      (R=s ∨ F-6*κ*(∑ i ∈ R, length i) ≤ 0) := by
+  obtain ⟨R,hRs,hR,hpay⟩ := whole_slot_removal s length η κ F hη hκ hF hL hmesh
+  refine ⟨R,hRs,?_,hpay.imp_right sub_nonpos.mpr⟩
+  have hh := mul_le_mul_of_nonneg_left (hR.trans (min_le_right _ _)) hκ.le
+  have he : κ*(F/(6*κ)+η)=F/6+κ*η := by field_simp
+  rwa [he] at hh
+
+theorem actual_product_removal {α : Type*} (s : Finset α) (length : α → ℝ)
+    (η κ F : ℝ) (hη : 0 ≤ η) (hκ : 0 < κ) (hF : 0 ≤ F)
+    (hL : ∀ i ∈ s, 0 ≤ length i) (hmesh : ∀ i ∈ s, length i ≤ η) :
+    ∃ R : Finset α, R ⊆ s ∧ (R=s ∨ F-6*κ*(∑ i ∈ R, length i) ≤ 0) ∧
+      ∀ (Z : ℝ), 1 ≤ Z → ∀ (C : α → ℝ), (∀ i ∈ s, 0 ≤ C i) →
+      ∀ (Q : α → ℂ), (∀ i ∈ s, ‖Q i‖^2 ≤ C i*Z^(κ*length i)) →
+      ‖∏ i ∈ s, Q i‖^2 ≤
+        (∏ i ∈ R, C i)*Z^(F/6+κ*η)*‖∏ i ∈ s\R, Q i‖^2 := by
+  obtain ⟨R,hRs,hcost,hpay⟩ := removal_cost s length η κ F hη hκ hF hL hmesh
+  refine ⟨R,hRs,hpay,?_⟩
+  intro Z hZ C hC Q hQ
+  have hZpos : 0 < Z := lt_of_lt_of_le zero_lt_one hZ
+  have hremoved : ‖∏ i ∈ R, Q i‖^2 ≤ (∏ i ∈ R, C i)*Z^(F/6+κ*η) := by
+    rw [norm_prod,← Finset.prod_pow]
+    calc
+      _ ≤ ∏ i ∈ R, C i*Z^(κ*length i) :=
+        Finset.prod_le_prod (fun i hi => sq_nonneg _) (fun i hi => hQ i (hRs hi))
+      _ = (∏ i ∈ R, C i)*Z^(κ*(∑ i ∈ R, length i)) := by
+        rw [Finset.prod_mul_distrib,Finset.mul_sum,Real.rpow_sum_of_pos hZpos]
+      _ ≤ _ := mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow_of_exponent_le hZ hcost) (Finset.prod_nonneg (fun i hi => hC i (hRs hi)))
+  have he : (∏ i ∈ s, Q i)=(∏ i ∈ s\R, Q i)*(∏ i ∈ R, Q i) :=
+    (Finset.prod_sdiff hRs).symm
+  rw [he,norm_mul,mul_pow,mul_comm (‖∏ i ∈ s\R, Q i‖^2)]
+  exact mul_le_mul_of_nonneg_right hremoved (sq_nonneg _)
+
+end CenteredMomentSlotRemoval
+
+end
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentWholeSlotDeletion
+theorem whole_removal {α:Type*} (S:Finset α) (w:α→ℝ) (F κ mesh:ℝ)
+    (hF:0≤ F) (hκ:0<κ) (hm:0≤ mesh)
+    (hw:∀i∈S,0≤ w i) (hwm:∀i∈S,w i≤ mesh) :
+    ∃R:Finset α,R⊆S ∧
+      (∑i∈R,w i)≤ min (∑i∈S,w i) (F/(6*κ)+mesh) ∧
+      (R=S ∨ F≤6*κ*(∑i∈R,w i)) ∧
+      κ*(∑i∈R,w i)≤ F/6+κ*mesh := by
+  obtain ⟨R,hR,hbound,hpay⟩:=CenteredMomentSlotRemoval.whole_slot_removal S w mesh κ F hm hκ hF hw hwm
+  refine ⟨R,hR,hbound,hpay,?_⟩
+  have hh:=mul_le_mul_of_nonneg_left (hbound.trans (min_le_right _ _)) hκ.le
+  have he:κ*(F/(6*κ)+mesh)=F/6+κ*mesh:=by field_simp
+  rwa [he] at hh
+
+
+end CenteredMomentWholeSlotDeletion
+end
+
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentLiveCapacity
+
+ def excess {ι:Type*} (J:Finset ι) (w:ι→ℝ) (n₁ n₂ M κ:ℝ) : ℝ :=
+  max (n₁+n₂+6*κ*(∑i∈J,w i)-M) 0
+
+ theorem remaining_capacity {ι:Type*} [DecidableEq ι]
+    (J R:Finset ι) (hR:R⊆J) (w:ι→ℝ) (n₁ n₂ M κ:ℝ)
+    (hpay:R=J ∨ excess J w n₁ n₂ M κ≤6*κ*(∑i∈R,w i)) :
+    R=J ∨ n₁+n₂+6*κ*(∑i∈J\R,w i)≤ M := by
+  rcases hpay with h|h
+  · exact Or.inl h
+  · right
+    have hs:=Finset.sum_sdiff hR (f:=w)
+    have hm:=le_max_left (n₁+n₂+6*κ*(∑i∈J,w i)-M) (0:ℝ)
+    change max _ _≤ _ at h
+    have hh:=hm.trans h
+    rw [←hs] at hh
+    nlinarith
+
+ theorem removal_excess_cost {ι:Type*} [DecidableEq ι]
+    (J:Finset ι) (w:ι→ℝ) (n₁ n₂ M κ mesh:ℝ)
+    (hκ:0<κ) (hm:0≤ mesh) (hw:∀i∈J,0≤ w i) (hwm:∀i∈J,w i≤ mesh) :
+    ∃R:Finset ι,R⊆J ∧ (R=J ∨ n₁+n₂+6*κ*(∑i∈J\R,w i)≤ M) ∧
+      κ*(∑i∈R,w i)≤ excess J w n₁ n₂ M κ/6+κ*mesh := by
+  obtain ⟨R,hR,hbound,hpay,hcost⟩:=CenteredMomentWholeSlotDeletion.whole_removal
+    J w (excess J w n₁ n₂ M κ) κ mesh (le_max_right _ _) hκ hm hw hwm
+  exact ⟨R,hR,remaining_capacity J R hR w n₁ n₂ M κ hpay,hcost⟩
+
+end CenteredMomentLiveCapacity
+
+end
+
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentEnergyWidthSchedule
+open CenteredMomentSuccessorPaidParameters CenteredMomentFirstSecondLossParameters
+
+def amplification (ε:ℝ):ℝ := min 1 (ε/16000)
+def count (M ε:ℝ):ℕ := depth M (amplification ε)
+def scale (M B ε:ℝ):ℝ := (count M ε:ℝ)+M+10*B+30
+def reserve (M B ε:ℝ):ℝ :=
+  min (amplification ε/100) (ε/(1000000*scale M B ε))
+def mesh (M B κ ε:ℝ):ℝ := reserve M B ε/(κ+1)
+def width (M B ε:ℝ)(k:ℕ):ℝ := reserve M B ε/16+(k:ℝ)*amplification ε/2
+def loss (M B ε:ℝ)(k:ℕ):ℝ := reserve M B ε+64*(k:ℝ)*reserve M B ε
+
+theorem bounds (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε):
+    0< amplification ε ∧ amplification ε≤1 ∧ amplification ε≤ε/16000 ∧
+    0< reserve M B ε ∧ 0< mesh M B κ ε ∧ mesh M B κ ε≤ reserve M B ε ∧
+    κ*mesh M B κ ε≤ reserve M B ε ∧
+    20*reserve M B ε≤ amplification ε/2 ∧
+    M< width M B ε (count M ε) ∧
+    loss M B ε (count M ε)≤ε/1000 :=by
+  have hs:0< amplification ε:=lt_min (by norm_num) (by positivity)
+  have hs1:amplification ε≤1:=min_le_left _ _
+  have hse:amplification ε≤ε/16000:=min_le_right _ _
+  have hn:0≤(count M ε:ℝ):=Nat.cast_nonneg _
+  have hL:0< scale M B ε:=by unfold scale;positivity
+  have hr:0< reserve M B ε:=lt_min (by positivity) (by positivity)
+  have hrs:reserve M B ε≤ amplification ε/100:=min_le_left _ _
+  have hre:reserve M B ε≤ε/(1000000*scale M B ε):=min_le_right _ _
+  have hp:reserve M B ε*(1000000*scale M B ε)≤ε:=
+    (le_div_iff₀ (by positivity)).mp hre
+  have hnL:(count M ε:ℝ)≤ scale M B ε:=by unfold scale;linarith
+  have h1L:1≤ scale M B ε:=by unfold scale;linarith
+  have hnR:(count M ε:ℝ)*reserve M B ε≤ε/1000000:=by
+    have hh:=mul_le_mul_of_nonneg_right hnL hr.le
+    nlinarith
+  have hR:reserve M B ε≤ε/1000000:=by
+    have hh:=mul_le_mul_of_nonneg_right h1L hr.le
+    nlinarith
+  have hm:0< mesh M B κ ε:=by unfold mesh;positivity
+  have hmr:mesh M B κ ε≤ reserve M B ε:=by
+    unfold mesh
+    apply (div_le_iff₀ (by positivity)).mpr
+    nlinarith
+  have hkm:κ*mesh M B κ ε≤ reserve M B ε:=mesh_cost κ _ hκ hr.le
+  have hw:M< width M B ε (count M ε):=by
+    have hd:=depth_covers M (amplification ε) hs
+    change M<(count M ε:ℝ)*amplification ε/2 at hd
+    unfold width
+    linarith
+  refine ⟨hs,hs1,hse,hr,hm,hmr,hkm,by linarith,hw,?_⟩
+  unfold loss
+  linarith
+
+lemma reserve_cost (M B ε c:ℝ)(hM:0≤ M)(hB:0≤ B)(hε:0<ε)
+    (hc:c≤ scale M B ε):c*reserve M B ε≤ε/1000000:=by
+  have hL:0< scale M B ε:=by unfold scale;positivity
+  have hs:0< amplification ε:=lt_min (by norm_num) (by positivity)
+  have hr:0< reserve M B ε:=lt_min (by positivity) (by positivity)
+  have hre:reserve M B ε≤ε/(1000000*scale M B ε):=min_le_right _ _
+  have hp:reserve M B ε*(1000000*scale M B ε)≤ε:=
+    (le_div_iff₀ (by positivity)).mp hre
+  have hh:=mul_le_mul_of_nonneg_right hc hr.le
+  nlinarith
+
+theorem one_time_losses (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (df es d theta other A:ℝ)(hdf:df≤ reserve M B ε)(hes:es≤ reserve M B ε)
+    (hd:d≤ reserve M B ε)(ht:theta≤ reserve M B ε)(ho:other≤ reserve M B ε)
+    (he0:0≤ es)(hA:A≤ M):
+    exceptional (amplification ε) df es d B theta≤ε/1000 ∧
+      diagonal (amplification ε) d other es A≤ε/1000:=by
+  have hb:=bounds M B κ ε hM hB hκ hε
+  have hs:=hb.2.2.1
+  have hr:=hb.2.2.2.1
+  have hx:=reserve_cost M B ε (10*B+7) hM hB hε (by unfold scale;linarith [Nat.cast_nonneg (α:=ℝ) (count M ε)])
+  have hy:=reserve_cost M B ε (M+2) hM hB hε (by unfold scale;linarith [Nat.cast_nonneg (α:=ℝ) (count M ε)])
+  have htheta:=mul_le_mul_of_nonneg_left ht (show 0≤2*(5*B+1) by positivity)
+  have hmul:es*A≤ reserve M B ε*M:=
+    (mul_le_mul_of_nonneg_left hA he0).trans (mul_le_mul_of_nonneg_right hes hM)
+  constructor
+  · unfold exceptional
+    nlinarith
+  · unfold diagonal
+    nlinarith
+
+lemma mesh_lt_prime_width (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε):
+    mesh M B κ ε< amplification ε/6:=by
+  have h:=bounds M B κ ε hM hB hκ hε
+  have hp:=h.1
+  have hm:=h.2.2.2.2.2.1
+  have hr:=h.2.2.2.2.2.2.2.1
+  linarith
+
+lemma width_zero (M B ε:ℝ):width M B ε 0=reserve M B ε/16:=by simp [width]
+lemma loss_zero (M B ε:ℝ):loss M B ε 0=reserve M B ε:=by simp [loss]
+lemma width_succ (M B ε:ℝ)(k:ℕ):
+    width M B ε (k+1)-amplification ε/2=width M B ε k:=by
+  simp only [width,Nat.cast_add,Nat.cast_one]
+  ring
+lemma loss_succ (M B ε:ℝ)(k:ℕ):
+    loss M B ε (k+1)=loss M B ε k+64*reserve M B ε:=by
+  simp only [loss,Nat.cast_add,Nat.cast_one]
+  ring
+
+lemma child_band (M B ε parent child:ℝ)(k:ℕ)
+    (hp:parent≤ width M B ε (k+1))(hc:child≤ parent-amplification ε/2):
+    child≤ width M B ε k:=by
+  rw [←width_succ M B ε k]
+  linarith
+
+lemma loss_le_final (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (k:ℕ)(hk:k≤ count M ε):loss M B ε k≤ε/1000:=by
+  have hb:=bounds M B κ ε hM hB hκ hε
+  have hr:=hb.2.2.2.1
+  have hk':(k:ℝ)≤(count M ε:ℝ):=by exact_mod_cast hk
+  apply le_trans _ hb.2.2.2.2.2.2.2.2.2
+  unfold loss
+  gcongr
+
+lemma next_paid_loss (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (k:ℕ)(er d e d1 d2 theta other:ℝ)
+    (her:er≤ reserve M B ε)(hd:d≤ reserve M B ε)(he:e≤ reserve M B ε)
+    (hd1:d1≤ reserve M B ε)(hd2:d2≤ reserve M B ε)(ht:theta≤ reserve M B ε)
+    (ho:other≤50*reserve M B ε):
+    loss M B ε k+edge 0 er d e d1 d2 theta κ (mesh M B κ ε)+other≤
+      loss M B ε (k+1):=by
+  have hb:=bounds M B κ ε hM hB hκ hε
+  have hr:=hb.2.2.2.1
+  have hm:=hb.2.2.2.2.2.2.1
+  rw [loss_succ]
+  unfold edge
+  linarith
+
+theorem actual_removal_path {ι:Type*}[DecidableEq ι]
+    (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0<κ)(hε:0<ε)
+    (n:ℕ)(J:Fin n→Finset ι)(w:Fin n→ι→ℝ)(x y state:Fin n→ℝ)
+    (hw:∀k,∀i∈J k,0≤ w k i)(hm:∀k,∀i∈J k,w k i≤ mesh M B κ ε):
+    ∃R:Fin n→Finset ι,(∀k,R k⊆J k) ∧
+      (∀k,R k=J k ∨ x k+y k+6*κ*(∑i∈J k\R k,w k i)≤ state k) ∧
+      (∑k,κ*(∑i∈R k,w k i))≤
+        (∑k,CenteredMomentLiveCapacity.excess (J k) (w k) (x k) (y k) (state k) κ/6)+
+          (n:ℝ)*reserve M B ε:=by
+  have hb:=bounds M B κ ε hM hB hκ.le hε
+  have hmesh:=hb.2.2.2.2.1
+  have hcost:=hb.2.2.2.2.2.2.1
+  choose R hR hcap hpay using fun k=> CenteredMomentLiveCapacity.removal_excess_cost
+    (J k) (w k) (x k) (y k) (state k) κ (mesh M B κ ε) hκ hmesh.le (hw k) (hm k)
+  refine ⟨R,hR,hcap,?_⟩
+  calc
+    _≤∑k,(CenteredMomentLiveCapacity.excess (J k) (w k) (x k) (y k) (state k) κ/6+
+        reserve M B ε):=Finset.sum_le_sum (fun k _=>(hpay k).trans (by linarith))
+    _=_:=by rw [Finset.sum_add_distrib];simp
+
+end CenteredMomentEnergyWidthSchedule
+
+end
+
+
+noncomputable section
+namespace CenteredMomentEnergyProfiles
+def lower (a b:ℝ):ℕ→ℝ
+  | 0=> a
+  | n+1=> lower a b n/max 1 b
+
+lemma lower_pos (a b:ℝ)(ha:0< a)(n:ℕ):0< lower a b n:=by
+  induction n with
+  | zero=> exact ha
+  | succ n ih=> exact div_pos ih (lt_of_lt_of_le zero_lt_one (le_max_left _ _))
+
+lemma lower_antitone (a b:ℝ)(ha:0< a):Antitone (lower a b):=by
+  apply antitone_nat_of_succ_le
+  intro n
+  exact div_le_self (lower_pos a b ha n).le (le_max_left _ _)
+
+
+end CenteredMomentEnergyProfiles
+end
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentFirstSecondInputGates
+def exponent (A D P q ε ξ:ℝ):ℝ:=
+  max (A+ε) (max (2*A+D+ε+ξ/2) (max (A+P+ε) q))
+
+
+end CenteredMomentFirstSecondInputGates
+end
+
+
+
+
+noncomputable section
+
+namespace CenteredMomentEnergyWidthRanges
+open CenteredMomentEnergyProfiles CenteredMomentEnergyWidthSchedule
+
+def step (M B L:ℝ):ℝ:=4*(L+M+B+4)
+def range (M B L:ℝ):ℕ→ℝ
+  | 0=> max 1 L
+  | n+1=> step M B (range M B L n)
+def sourceCap (M B L:ℝ)(n:ℕ):ℝ:=10*(range M B L n+M+B+1)
+def finalSourceCap (M B L ε:ℝ):ℝ:=sourceCap M B L (count M ε)
+def fineMesh (M B L κ ε:ℝ):ℝ:=mesh M (finalSourceCap M B L ε) κ ε
+
+lemma range_nonneg (M B L:ℝ)(hM:0≤ M)(hB:0≤ B)(n:ℕ):0≤ range M B L n:=by
+  induction n with
+  | zero=> exact zero_le_one.trans (le_max_left _ _)
+  | succ n ih=> simp only [range,step];positivity
+
+lemma range_mono (M B L:ℝ)(hM:0≤ M)(hB:0≤ B):Monotone (range M B L):=by
+  apply monotone_nat_of_le_succ
+  intro n
+  have hh:=range_nonneg M B L hM hB n
+  simp only [range,step]
+  linarith
+
+lemma range_original (M B L:ℝ)(hM:0≤ M)(hB:0≤ B)(n:ℕ):L≤ range M B L n:=by
+  exact (le_max_right (1:ℝ) L).trans (range_mono M B L hM hB (Nat.zero_le n))
+
+lemma step_admits (M B L rho d e:ℝ)(hM:0≤ M)(hB:0≤ B)(hL:0≤ L)
+    (hrho:rho≤1)(hd:d≤1)(he:e≤1):
+    L≤ step M B L ∧ M+B+rho/100+1≤ step M B L ∧
+    max L (M+B+2*d)+1≤ step M B L ∧
+    2*L+e≤ step M B L ∧
+    2*(max L (M+B+2*d)+1)+e≤ step M B L:=by
+  have hmax:max L (M+B+2*d)≤ L+M+B+2:=by
+    apply max_le <;> linarith
+  unfold step
+  constructor
+  · linarith
+  constructor
+  · linarith
+  constructor
+  · linarith
+  constructor <;> linarith
+
+lemma range_envelope (M B L:ℝ)(hM:0≤ M)(hB:0≤ B)(n:ℕ):
+    range M B L n≤(8:ℝ)^n*(max 1 L+M+B+4):=by
+  induction n with
+  | zero=> simp only [range,pow_zero,one_mul];linarith
+  | succ n ih=>
+    have hp:1≤(8:ℝ)^n:=one_le_pow₀ (by norm_num)
+    have ha:0≤ max 1 L:=zero_le_one.trans (le_max_left _ _)
+    have hm:M+B+4≤(8:ℝ)^n*(max 1 L+M+B+4):=by
+      have hh:=mul_le_mul_of_nonneg_right hp (show 0≤ max 1 L+M+B+4 by positivity)
+      simp only [one_mul] at hh
+      linarith
+    simp only [range,step,pow_succ]
+    nlinarith
+
+lemma ready_exponent_le (M B L A D P q e xi:ℝ)(n:ℕ)
+    (hM:0≤ M)(hB:0≤ B)
+    (hA:A≤2*range M B L n+M+1)(hD:D≤1)(hP:P≤ B)
+    (hq:q≤4*range M B L n+3*M+4)(he:e≤1)(hxi:xi≤1):
+    CenteredMomentFirstSecondInputGates.exponent A D P q e xi≤ sourceCap M B L n:=by
+  have hr:=range_nonneg M B L hM hB n
+  unfold CenteredMomentFirstSecondInputGates.exponent sourceCap
+  apply max_le
+  · linarith
+  apply max_le
+  · linarith
+  apply max_le <;> linarith
+
+lemma sourceCap_nonneg (M B L:ℝ)(hM:0≤ M)(hB:0≤ B)(n:ℕ):0≤ sourceCap M B L n:=by
+  have hr:=range_nonneg M B L hM hB n
+  unfold sourceCap
+  positivity
+
+lemma fineMesh_pos (M B L κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε):
+    0< fineMesh M B L κ ε:=by
+  exact (bounds M (finalSourceCap M B L ε) κ ε hM
+    (sourceCap_nonneg M B L hM hB _) hκ hε).2.2.2.2.1
+
+lemma support_step (a b:ℝ)(ha:0< a)(n:ℕ):
+    0< lower a b (n+1) ∧ lower a b (n+1)=lower a b n/max 1 b:=
+  ⟨lower_pos a b ha _,rfl⟩
+
+end CenteredMomentEnergyWidthRanges
+
+end
+
+
+
+
+noncomputable section
+
+namespace CenteredMomentEnergyStageReserveSchedule
+open CenteredMomentEnergyWidthSchedule CenteredMomentSuccessorPaidParameters
+
+def stageLoss (M B ε:ℝ)(k:ℕ):ℝ:=ε/1000+loss M B ε k
+
+lemma stageLoss_pos (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)(k:ℕ):
+    0< stageLoss M B ε k:=by
+  have hr:0< reserve M B ε:=(bounds M B κ ε hM hB hκ hε).2.2.2.1
+  unfold stageLoss loss
+  positivity
+
+lemma stageLoss_final (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (k:ℕ)(hk:k≤ count M ε):stageLoss M B ε k≤ε/500:=by
+  have hh:=loss_le_final M B κ ε hM hB hκ hε k hk
+  unfold stageLoss
+  linarith
+
+lemma successor_with_references (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (k:ℕ)(er d e d1 d2 theta other highReflection zeroReflection:ℝ)
+    (her:er≤ reserve M B ε)(hd:d≤ reserve M B ε)(he:e≤ reserve M B ε)
+    (hd1:d1≤ reserve M B ε)(hd2:d2≤ reserve M B ε)(ht:theta≤ reserve M B ε)
+    (ho:other≤48*reserve M B ε)
+    (hhigh:highReflection≤ reserve M B ε)(hzero:zeroReflection≤ reserve M B ε):
+    stageLoss M B ε k+edge 0 er d e d1 d2 theta κ (mesh M B κ ε)+
+      other+highReflection+zeroReflection≤ stageLoss M B ε (k+1):=by
+  have hh:=next_paid_loss M B κ ε hM hB hκ hε k er d e d1 d2 theta
+    (other+highReflection+zeroReflection) her hd he hd1 hd2 ht (by linarith)
+  unfold stageLoss
+  linarith
+
+lemma one_time_with_new_cost (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (k:ℕ)(sourceLoss extra:ℝ)(hsource:sourceLoss≤ε/1000)
+    (hextra:extra≤50*reserve M B ε):
+    sourceLoss+extra≤ stageLoss M B ε (k+1):=by
+  have hr:0< reserve M B ε:=(bounds M B κ ε hM hB hκ hε).2.2.2.1
+  have hk:0≤(k:ℝ):=Nat.cast_nonneg _
+  simp only [stageLoss,loss,Nat.cast_add,Nat.cast_one]
+  nlinarith
+
+lemma actual_one_time_with_new_cost (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)
+    (k:ℕ)(df es d theta other A extra:ℝ)
+    (hdf:df≤ reserve M B ε)(hes:es≤ reserve M B ε)(hd:d≤ reserve M B ε)
+    (ht:theta≤ reserve M B ε)(ho:other≤ reserve M B ε)(he0:0≤ es)(hA:A≤ M)
+    (hextra:extra≤50*reserve M B ε):
+    CenteredMomentSuccessorPaidParameters.exceptional (amplification ε) df es d B theta+extra≤
+      stageLoss M B ε (k+1) ∧
+    CenteredMomentSuccessorPaidParameters.diagonal (amplification ε) d other es A+extra≤
+      stageLoss M B ε (k+1):=by
+  have hh:=one_time_losses M B κ ε hM hB hκ hε df es d theta other A hdf hes hd ht ho he0 hA
+  exact ⟨one_time_with_new_cost M B κ ε hM hB hκ hε k _ extra hh.1 hextra,
+    one_time_with_new_cost M B κ ε hM hB hκ hε k _ extra hh.2 hextra⟩
+
+end CenteredMomentEnergyStageReserveSchedule
+
+end
+
+
+
+
+noncomputable section
+
+namespace CenteredMomentEnergyStageMargins
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyStageReserveSchedule
+
+def physicalLoss (M B ε:ℝ)(k:ℕ):ℝ:=stageLoss M B ε (k+1)-2*reserve M B ε
+def reflectedLoss (M B ε:ℝ)(k:ℕ):ℝ:=physicalLoss M B ε k+reserve M B ε
+
+lemma physicalLoss_eq (M B ε:ℝ)(k:ℕ):
+    physicalLoss M B ε k=stageLoss M B ε k+62*reserve M B ε:=by
+  unfold physicalLoss stageLoss
+  rw [loss_succ]
+  ring
+lemma reflected_then_zero (M B ε:ℝ)(k:ℕ):
+    reflectedLoss M B ε k+reserve M B ε=stageLoss M B ε (k+1):=by
+  unfold reflectedLoss physicalLoss
+  ring
+lemma margins (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε)(k:ℕ):
+    0< physicalLoss M B ε k ∧
+    stageLoss M B ε k≤ physicalLoss M B ε k ∧
+    reserve M B ε/4≤ physicalLoss M B ε k ∧
+    physicalLoss M B ε k≤ reflectedLoss M B ε k ∧
+    reflectedLoss M B ε k≤ stageLoss M B ε (k+1):=by
+  have hr:0< reserve M B ε:=(bounds M B κ ε hM hB hκ hε).2.2.2.1
+  have he:=stageLoss_pos M B κ ε hM hB hκ hε k
+  have hp:=physicalLoss_eq M B ε k
+  have hf:=reflected_then_zero M B ε k
+  unfold reflectedLoss at *
+  constructor
+  · linarith
+  constructor
+  · linarith
+  constructor
+  · linarith
+  constructor <;> linarith
+
+end CenteredMomentEnergyStageMargins
+
+end
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentEnergyFirstLiveAdmission
+def readyBudget (A P : ℝ) : ℝ := 4*A + P + 10
+
+lemma readyBudget_nonneg (A P : ℝ) (hA : 0 ≤ A) (hP : 0 ≤ P) :
+    0 ≤ readyBudget A P := by unfold readyBudget; linarith
+
+
+end CenteredMomentEnergyFirstLiveAdmission
+end
+
+
+
+
+noncomputable section
+
+namespace CenteredMomentEnergySourceCapSchedule
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyWidthRanges
+open CenteredMomentEnergyFirstLiveAdmission
+
+lemma count_pos (M ε:ℝ):0< count M ε:=by
+  unfold count CenteredMomentFirstSecondLossParameters.depth
+  omega
+lemma final_range_large (M B L ε:ℝ)(hM:0≤ M)(hB:0≤ B):
+    20≤ range M B L (count M ε):=by
+  have hh:=range_mono M B L hM hB (show 1≤ count M ε from count_pos M ε)
+  have hm:1≤ max 1 L:=le_max_left _ _
+  simp only [range,step] at hh
+  linarith
+lemma readyBudget_le_schedule (M B L ε A P:ℝ)(hM:0≤ M)(hB:0≤ B)
+    (hA:A≤2*range M B L (count M ε)+M+1)(hP:P≤ B):
+    readyBudget A P≤ finalSourceCap M B L ε:=by
+  have hr:=final_range_large M B L ε hM hB
+  unfold readyBudget finalSourceCap sourceCap
+  linarith
+lemma declared_capacity_le_schedule (M B L ε A:ℝ)(hM:0≤ M)(hB:0≤ B)
+    (hA:A≤2*range M B L (count M ε)):
+    max M A≤ finalSourceCap M B L ε:=by
+  have hr:=final_range_large M B L ε hM hB
+  apply max_le
+  all_goals unfold finalSourceCap sourceCap;linarith
+
+end CenteredMomentEnergySourceCapSchedule
+
+end
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentEnergyWidthInduction
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyWidthRanges
+
+def remaining (M ε:ℝ)(k:ℕ):ℕ:=count M ε-k
+def lowerAt (a b M ε:ℝ)(k:ℕ):ℝ:=CenteredMomentEnergyProfiles.lower a b (remaining M ε k)
+def lengthAt (M B L ε:ℝ)(k:ℕ):ℝ:=range M B L (remaining M ε k)
+
+lemma lowerAt_pos (a b M ε:ℝ)(ha:0< a)(k:ℕ):0< lowerAt a b M ε k:=
+  CenteredMomentEnergyProfiles.lower_pos a b ha _
+
+lemma child_support (a b M ε:ℝ)(k:ℕ)(hk:k< count M ε):
+    lowerAt a b M ε k=lowerAt a b M ε (k+1)/max 1 b:=by
+  have he:remaining M ε k=remaining M ε (k+1)+1:=by unfold remaining;omega
+  simp only [lowerAt,he,CenteredMomentEnergyProfiles.lower]
+
+lemma child_length (M B L ε:ℝ)(k:ℕ)(hk:k< count M ε):
+    lengthAt M B L ε k=step M B (lengthAt M B L ε (k+1)):=by
+  have he:remaining M ε k=remaining M ε (k+1)+1:=by unfold remaining;omega
+  simp only [lengthAt,he,range]
+
+
+end CenteredMomentEnergyWidthInduction
+end
+
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace CenteredMomentEnergyCappedWidthInduction
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyStageReserveSchedule
+
+def bandWidth (M B ε:ℝ)(k:ℕ):ℝ:=min M (width M B ε k)
+lemma bandWidth_le (M B ε:ℝ)(k:ℕ):bandWidth M B ε k≤ M:=min_le_left _ _
+lemma bandWidth_le_schedule (M B ε:ℝ)(k:ℕ):bandWidth M B ε k≤ width M B ε k:=min_le_right _ _
+lemma bandWidth_nonneg (M B ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hε:0<ε)(k:ℕ):
+    0≤ bandWidth M B ε k:=by
+  have hr:0< reserve M B ε:=(bounds M B 0 ε hM hB (by norm_num) hε).2.2.2.1
+  have hs:0< amplification ε:=(bounds M B 0 ε hM hB (by norm_num) hε).1
+  unfold bandWidth width
+  positivity
+lemma bandWidth_terminal (M B ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hε:0<ε):
+    bandWidth M B ε (count M ε)=M:=by
+  have hh: M< width M B ε (count M ε):=
+    (bounds M B 0 ε hM hB (by norm_num) hε).2.2.2.2.2.2.2.2.1
+  exact min_eq_left hh.le
+lemma actual_child_band (M B ε parent child:ℝ)(hε:0<ε)(k:ℕ)
+    (hp:parent≤ bandWidth M B ε (k+1))(hc:child≤ parent-amplification ε/2):
+    child≤ bandWidth M B ε k:=by
+  have hs:0< amplification ε:=lt_min (by norm_num) (by positivity)
+  apply le_min
+  · have hh:=hp.trans (bandWidth_le M B ε (k+1));linarith
+  · exact child_band M B ε parent child k (hp.trans (bandWidth_le_schedule M B ε (k+1))) hc
+
+
+end CenteredMomentEnergyCappedWidthInduction
+end
+
+
+
+
+noncomputable section
+
+namespace CenteredMomentEnergyCappedRequests
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyWidthRanges
+open CenteredMomentEnergyWidthInduction CenteredMomentEnergyCappedWidthInduction
+open CenteredMomentEnergyFirstLiveAdmission CenteredMomentEnergySourceCapSchedule
+
+def requestLength (M B L:ℝ):ℝ:=max L (2*M+B+2)+1
+
+lemma request_bounds (M B L:ℝ)(hM:0≤ M)(hB:0≤ B)(_hL:0≤ L):
+    0≤ requestLength M B L ∧ L≤ requestLength M B L ∧ M≤ requestLength M B L:=by
+  have hh:=le_max_left L (2*M+B+2)
+  have hg:=le_max_right L (2*M+B+2)
+  unfold requestLength
+  constructor
+  · linarith
+  constructor <;> linarith
+
+lemma actual_contours (M B L parent rho d:ℝ)(hM:0≤ M)(_hB:0≤ B)
+    (hp:parent≤ M)(hr:rho≤ M)(hd:d≤1):
+    max (max L (parent+B+2*d)+1) (parent+B+rho/100)≤ requestLength M B L:=by
+  have hmax:max L (parent+B+2*d)≤ max L (2*M+B+2):=by
+    apply max_le_max_left
+    linarith
+  have hh:=le_max_right L (2*M+B+2)
+  unfold requestLength
+  apply max_le <;> linarith
+
+lemma doubled_request (M B L e:ℝ)(hM:0≤ M)(hB:0≤ B)(hL:0≤ L)(he:e≤1):
+    2*requestLength M B L+e≤ step M B L:=by
+  have hh:max L (2*M+B+2)≤ L+2*M+B+2:=by
+    apply max_le <;> linarith
+  unfold requestLength step
+  linarith
+
+lemma previous_admits (M B L ε parent e:ℝ)(hM:0≤ M)(hB:0≤ B)
+    (hp:parent≤ M)(he:e≤1)(k:ℕ)(hk:k< count M ε):
+    2*max (requestLength M B (lengthAt M B L ε (k+1))) parent+e≤ lengthAt M B L ε k:=by
+  have hL:=range_nonneg M B L hM hB (remaining M ε (k+1))
+  change 0≤ lengthAt M B L ε (k+1) at hL
+  have hreq:=request_bounds M B (lengthAt M B L ε (k+1)) hM hB hL
+  rw [max_eq_left (hp.trans hreq.2.2),child_length M B L ε k hk]
+  exact doubled_request M B _ e hM hB hL he
+
+lemma request_le_final (M B L ε:ℝ)(hM:0≤ M)(hB:0≤ B)(k:ℕ)(hk:k< count M ε):
+    requestLength M B (lengthAt M B L ε (k+1))≤ range M B L (count M ε):=by
+  have hh:=previous_admits M B L ε M 0 hM hB le_rfl (by norm_num) k hk
+  have hl:=range_nonneg M B L hM hB (remaining M ε (k+1))
+  have hr:0≤ requestLength M B (lengthAt M B L ε (k+1)):=
+    (request_bounds M B _ hM hB hl).1
+  have hprev:lengthAt M B L ε k≤ range M B L (count M ε):=
+    range_mono M B L hM hB (Nat.sub_le _ _)
+  have hmax:=le_max_left (requestLength M B (lengthAt M B L ε (k+1))) M
+  linarith
+
+lemma parent_drop (M B ε:ℝ)(hε:0<ε)(k:ℕ):
+    bandWidth M B ε (k+1)-amplification ε/2≤ bandWidth M B ε k:=
+  actual_child_band M B ε _ _ hε k le_rfl le_rfl
+
+lemma band_positive (M B ε:ℝ)(hM:0< M)(hB:0≤ B)(hε:0<ε)(k:ℕ):
+    0< bandWidth M B ε k:=by
+  have hh:=bounds M B 0 ε hM.le hB (by norm_num) hε
+  have hr:=hh.2.2.2.1
+  have hs:=hh.1
+  unfold bandWidth width
+  exact lt_min hM (by positivity)
+
+end CenteredMomentEnergyCappedRequests
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped BigOperators SchwartzMap
+
+namespace TraceCharacter
+
+abbrev O := Eisenstein.O
+
+open Eisenstein Eisenstein 
+open SchwartzPlanePoisson FiniteFourier
+
+def traceCharacter (c : O) (hc : c ≠ 0) : AddChar (O ⧸ Ideal.span {c}) ℂ :=
+  residueTraceQuotientChar 1 c hc
+
+theorem traceCharacter_mk (c : O) (hc : c ≠ 0) (x : O) :
+    traceCharacter c hc (Ideal.Quotient.mk (Ideal.span {c}) x) =
+      tracePhase (ringComplex x / (ringComplex c * (ringComplex traceLambda))) := by
+  simpa only [traceCharacter, residueTraceQuotientChar_phase, one_mul]
+
+theorem traceCharacter_eq_paperE (c : O) (hc : c ≠ 0) (x : O) :
+    traceCharacter c hc (Ideal.Quotient.mk (Ideal.span {c}) x) =
+      paperE (ringComplex x / ringComplex c) :=
+by
+  rw [traceCharacter_mk]
+  unfold paperE
+  congr 1
+  ring
+
+theorem traceCharacter_isPrimitive (c : O) (hc : c ≠ 0) :
+    (traceCharacter c hc).IsPrimitive :=
+  residueTraceQuotientChar_primitive c hc
+
+variable (c : O) [NeZero c]
+
+local instance residueFinite : Finite (O ⧸ Ideal.span {c}) := Ring.HasFiniteQuotients.finiteQuotient (Ideal.span_singleton_eq_bot.not.mpr (NeZero.ne c))
+local instance residueFintype : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+
+theorem residue_card :
+    Fintype.card (O ⧸ Ideal.span {c}) = Ideal.absNorm (Ideal.span {c}) := by
+  simp only [Ideal.absNorm_apply, Submodule.cardQuot_apply, Nat.card_eq_fintype_card]
+
+def gaussScalar (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) : ℂ :=
+  gaussSum χ (traceCharacter c (NeZero.ne c))
+
+theorem transform_nonunit (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) (a : O ⧸ Ideal.span {c}) (ha : ¬ IsUnit a) :
+    (∑ x : O ⧸ Ideal.span {c}, χ x * traceCharacter c (NeZero.ne c) (a * x)) = 0 := by
+  simpa only [gaussSum, AddChar.mulShift_apply] using
+    gaussSum_mulShift_nonunit_eq_zero χ hχ (traceCharacter c (NeZero.ne c)) ha
+
+theorem transform_eq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) (a : O ⧸ Ideal.span {c}) :
+    (∑ x : O ⧸ Ideal.span {c}, χ x * traceCharacter c (NeZero.ne c) (a * x)) =
+      χ⁻¹ a * gaussScalar c χ :=
+  transform_primitive_character χ hχ (traceCharacter c (NeZero.ne c)) a
+
+theorem paper_transform_eq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) (h : O) :
+    (∑ x : O ⧸ Ideal.span {c}, χ x *
+      paperE (ringComplex (GaussianShiftedPartition.representative c x) *
+        ringComplex h / ringComplex c)) =
+      χ⁻¹ (Ideal.Quotient.mk (Ideal.span {c}) h) * gaussScalar c χ := by
+  simpa only [traceCharacter, residueTraceQuotientChar_frequency] using
+    transform_eq c χ hχ (Ideal.Quotient.mk (Ideal.span {c}) h)
+
+theorem gaussScalar_norm_sq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) :
+    ‖gaussScalar c χ‖ ^ 2 = (Ideal.absNorm (Ideal.span {c}) : ℝ) := by
+  simpa only [gaussScalar, residue_card c] using
+    primitive_gaussSum_norm_sq χ hχ (traceCharacter c (NeZero.ne c))
+      (traceCharacter_isPrimitive c (NeZero.ne c))
+
+theorem gaussScalar_norm (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) :
+    ‖gaussScalar c χ‖ = Real.sqrt (Ideal.absNorm (Ideal.span {c}) : ℝ) := by
+  rw [← gaussScalar_norm_sq c χ hχ, Real.sqrt_sq (norm_nonneg _)]
+
+theorem gaussScalar_norm_embedding (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) :
+    ‖gaussScalar c χ‖ = ‖ringComplex c‖ := by
+  rw [gaussScalar_norm c χ hχ, ← ringComplex_norm_sq_eq_absNorm_span,
+    Real.sqrt_sq (norm_nonneg _)]
+
+theorem gaussScalar_ne_zero (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) : gaussScalar c χ ≠ 0 :=
+  primitive_gaussSum_ne_zero χ hχ (traceCharacter c (NeZero.ne c))
+    (traceCharacter_isPrimitive c (NeZero.ne c))
+
+def normalizedGauss (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) : ℂ :=
+  gaussScalar c χ / (‖ringComplex c‖ : ℂ)
+
+theorem normalizedGauss_norm (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) : ‖normalizedGauss c χ‖ = 1 := by
+  rw [normalizedGauss, norm_div, gaussScalar_norm_embedding c χ hχ,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _),
+    div_self (norm_ne_zero_iff.mpr (ringComplex_ne_zero (NeZero.ne c)))]
+
+theorem character_expansion (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : IsPrimitiveOnIdeals χ) (a : O ⧸ Ideal.span {c}) :
+    χ a = (∑ x : O ⧸ Ideal.span {c}, χ⁻¹ x * traceCharacter c (NeZero.ne c) (a * x)) /
+      gaussScalar c χ⁻¹ :=
+  primitive_character_expansion χ hχ (traceCharacter c (NeZero.ne c))
+    (traceCharacter_isPrimitive c (NeZero.ne c)) a
+
+
+end TraceCharacter
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped BigOperators Classical FourierTransform
+
+namespace GaussianTheta
+
+abbrev O := Eisenstein.O
+
+open Eisenstein SchwartzPlanePoisson QuadraticPhase
+
+def gaussian (a : ℝ) (z : ℂ) : ℂ :=
+  Complex.exp (-(Real.pi : ℂ) * (a : ℂ) * (‖z‖ : ℂ) ^ 2)
+
+def coordinate (x y : ℝ) : ℂ := (x : ℂ) + (y : ℂ) * (ringComplex omega)
+
+theorem omega3_re : (ringComplex omega).re = -(1 / 2 : ℝ) := by
+  simpa only [neg_div] using complex_omega_coordinates.1
+
+theorem coordinate_norm_sq (x y : ℝ) :
+    ‖coordinate x y‖ ^ 2 = RankTwoEisShift.Q x y := by
+  rw [Complex.sq_norm, Complex.normSq_apply]
+  simp only [coordinate, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im, omega3_re, zero_mul, zero_add, add_zero, sub_zero]
+  unfold RankTwoEisShift.Q
+  nlinarith only [congrArg (fun t : ℝ => y ^ 2 * t) complex_omega_coordinates.2]
+
+theorem exists_coordinate (w : ℂ) : ∃ x y : ℝ, w = coordinate x y := by
+  let v := (basisEquiv (ringComplex omega) complex_omega_im_ne_zero).symm w
+  refine ⟨v.re, v.im, ?_⟩
+  have h := (basisEquiv (ringComplex omega) complex_omega_im_ne_zero).apply_symm_apply w
+  simpa only [basisEquiv_apply, coordinate, mul_comm] using h.symm
+
+theorem coordinate_dual_phase (x y : ℝ) (p : ℤ × ℤ) :
+    paperE (coordinate x y * ringComplex (dualFrequencyEquiv p)) =
+      RankTwoEisShift.dualPhase p.1 p.2 x y := by
+  have he : ringComplex (dualFrequencyEquiv p) =
+      ((p.1 : ℝ) + p.2 : ℝ) + (p.1 : ℂ) * ringComplex omega := by
+    change ringComplex (Eisenstein.Coordinates.eval (p.1+p.2) p.1) = _
+    rw [ringComplex_eval]
+    push_cast
+    rfl
+  rw [he]
+  change Complex.exp (2 * Real.pi * Complex.I * _) = _
+  have ht := complexTrace_real_basis_product x y ((p.1 : ℝ) + p.2) (p.1 : ℝ)
+  simp only [Complex.ofReal_intCast] at ht
+  rw [coordinate, ht]
+  unfold RankTwoEisShift.dualPhase
+  congr 1
+  push_cast
+  ring
+
+theorem gaussian_coordinate_shift (a x y : ℝ) (p : ℤ × ℤ) :
+    gaussian a (ringComplex (Eisenstein.Coordinates.eval p.1 p.2) +
+      coordinate x y) = RankTwoEisShift.shifted a x y p := by
+  have he : ringComplex (Eisenstein.Coordinates.eval p.1 p.2) + coordinate x y =
+      coordinate ((p.1 : ℝ) + x) ((p.2 : ℝ) + y) := by
+    rw [ringComplex_eval]
+    simp only [coordinate, Complex.ofReal_add, Complex.ofReal_intCast]
+    ring
+  rw [he]
+  unfold gaussian RankTwoEisShift.shifted
+  rw [← Complex.ofReal_pow, coordinate_norm_sq]
+  congr 1
+  push_cast
+  ring
+
+theorem gaussian_dual_coordinate (a : ℝ) (p : ℤ × ℤ) :
+    gaussian a (ringComplex (dualFrequencyEquiv p)) =
+      Complex.exp (((-Real.pi * a * RankTwoPoisson.eisQ (p.1, -p.2) : ℝ) : ℂ)) := by
+  have hn : ‖ringComplex (dualFrequencyEquiv p)‖ ^ 2 =
+      RankTwoPoisson.eisQ (p.1, -p.2) := by
+    change ‖ringComplex (Eisenstein.Coordinates.eval (p.1+p.2) p.1)‖ ^ 2 = _
+    rw [Eisenstein.Coordinates.complex_norm_eval_sq]
+    unfold RankTwoPoisson.eisQ
+    push_cast
+    ring
+  unfold gaussian
+  rw [← Complex.ofReal_pow, hn]
+  congr 1
+  push_cast
+  ring
+
+theorem shifted_prefactor (a : ℝ) (ha : 0 < a) :
+    (1 / (a : ℂ) ^ (1 / 2 : ℂ)) *
+      (1 / (((3 * a / 4 : ℝ) : ℂ)) ^ (1 / 2 : ℂ)) =
+      ((2 / (Real.sqrt 3 * a) : ℝ) : ℂ) := by
+  have h := EisensteinGaussianPrefactor.complex_eta_times_prefactor a 1 ha (by norm_num)
+  simp only [mul_one] at h
+  have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
+  apply (mul_left_cancel₀ ha0)
+  rw [← mul_assoc, h]
+  push_cast
+  field_simp
+
+theorem shifted_lattice_poisson (a : ℝ) (ha : 0 < a) (w : ℂ) :
+    (∑' z : O, gaussian a (ringComplex z + w)) =
+      ((2 / (Real.sqrt 3 * a) : ℝ) : ℂ) *
+        ∑' h : O, paperE (w * ringComplex h) *
+          gaussian (4 / (3 * a)) (ringComplex h) := by
+  obtain ⟨x, y, rfl⟩ := exists_coordinate w
+  have hp := RankTwoEisShift.shifted_eisenstein_gaussian_poisson ha x y
+  rw [shifted_prefactor a ha] at hp
+  change (∑' p : ℤ × ℤ, RankTwoEisShift.shifted a x y p) =
+    ((2 / (Real.sqrt 3 * a) : ℝ) : ℂ) * ∑' p : ℤ × ℤ,
+      Complex.exp (((-Real.pi * (4 / (3 * a)) * RankTwoPoisson.eisQ (p.1, -p.2) : ℝ) : ℂ)) *
+        RankTwoEisShift.dualPhase p.1 p.2 x y at hp
+  calc
+    _ = ∑' p : ℤ × ℤ, gaussian a
+        (ringComplex (Eisenstein.Coordinates.eval p.1 p.2) + coordinate x y) :=
+      (Eisenstein.Coordinates.coordinateEquiv.symm.tsum_eq _).symm
+    _ = ∑' p : ℤ × ℤ, RankTwoEisShift.shifted a x y p := by
+      apply tsum_congr
+      exact gaussian_coordinate_shift a x y
+    _ = _ := by
+      rw [hp]
+      congr 1
+      rw [← dualFrequencyEquiv.tsum_eq]
+      apply tsum_congr
+      intro p
+      rw [coordinate_dual_phase, gaussian_dual_coordinate]
+      exact mul_comm _ _
+
+theorem gaussian_mul (a : ℝ) (z w : ℂ) :
+    gaussian a (z * w) = gaussian (a * ‖z‖ ^ 2) w := by
+  unfold gaussian
+  rw [norm_mul]
+  congr 1
+  push_cast
+  ring
+
+theorem gaussian_summable (a : ℝ) (ha : 0 < a) :
+    Summable (fun z : O => gaussian a (ringComplex z)) := by
+  simpa only [gaussian, Complex.ofReal_pow] using QuadraticPhase.Eisenstein.eis_gaussian_summable ha
+
+theorem paperE_norm (z : ℂ) : ‖paperE z‖ = 1 := tracePhase_norm _
+
+theorem weighted_gaussian_summable {R : Type*} [Fintype R]
+    (q : O → R) (P : R → ℂ) (a : ℝ) (ha : 0 < a) :
+    Summable (fun z : O => P (q z) * gaussian a (ringComplex z)) := by
+  let C : ℝ := ∑ r : R, ‖P r‖
+  have hP (r : R) : ‖P r‖ ≤ C :=
+    Finset.single_le_sum (fun r _ => norm_nonneg (P r)) (Finset.mem_univ r)
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun z => norm_nonneg _) _
+    ((gaussian_summable a ha).norm.mul_left C)
+  intro z
+  rw [norm_mul]
+  exact mul_le_mul_of_nonneg_right (hP _) (norm_nonneg _)
+
+theorem gaussian_coset_poisson (a : ℝ) (ha : 0 < a) (c : O) (hc : c ≠ 0) (r : O) :
+    (∑' z : O, gaussian a (ringComplex (r + c * z))) =
+      ((2 / (Real.sqrt 3 * (a * ‖ringComplex c‖ ^ 2)) : ℝ) : ℂ) *
+        ∑' h : O, paperE (ringComplex r * ringComplex h / ringComplex c) *
+          gaussian (4 / (3 * (a * ‖ringComplex c‖ ^ 2))) (ringComplex h) := by
+  have hc' := ringComplex_ne_zero hc
+  have hscale : 0 < a * ‖ringComplex c‖ ^ 2 :=
+    mul_pos ha (sq_pos_of_pos (norm_pos_iff.mpr hc'))
+  have he (z : O) : ringComplex (r + c * z) =
+      ringComplex c * (ringComplex z + ringComplex r / ringComplex c) := by
+    rw [map_add, map_mul]
+    field_simp
+    ring
+  simp_rw [he, gaussian_mul]
+  rw [shifted_lattice_poisson _ hscale]
+  congr 1
+  apply tsum_congr
+  intro h
+  congr 2
+  ring
+
+theorem finite_gaussian_phase_sum {R : Type*} [Fintype R]
+    (a : ℝ) (ha : 0 < a) (b : R → ℂ) (P : R → ℂ) (K : ℂ) :
+    (∑ r : R, P r * (K * ∑' h : O,
+      paperE (b r * ringComplex h) * gaussian a (ringComplex h))) =
+      K * ∑' h : O, (∑ r : R, P r * paperE (b r * ringComplex h)) *
+        gaussian a (ringComplex h) := by
+  have hs (r : R) : Summable (fun h : O =>
+      P r * (paperE (b r * ringComplex h) * gaussian a (ringComplex h))) := by
+    apply Summable.mul_left
+    apply Summable.of_norm
+    simpa only [norm_mul, paperE_norm, one_mul] using (gaussian_summable a ha).norm
+  simp_rw [mul_left_comm (P _) K, ← tsum_mul_left]
+  rw [← Summable.tsum_finsetSum (fun r _ => (hs r).mul_left K)]
+  apply tsum_congr
+  intro h
+  simp only [Finset.sum_mul, Finset.mul_sum, mul_assoc]
+
+variable (c : O) [NeZero c]
+
+local instance residueFinite : Finite (O ⧸ Ideal.span {c}) := Ring.HasFiniteQuotients.finiteQuotient (Ideal.span_singleton_eq_bot.not.mpr (NeZero.ne c))
+local instance residueFintype : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+
+theorem periodic_gaussian_poisson (P : O ⧸ Ideal.span {c} → ℂ)
+    (a : ℝ) (ha : 0 < a) :
+    (∑' z : O, P (Ideal.Quotient.mk (Ideal.span {c}) z) * gaussian a (ringComplex z)) =
+      ((2 / (Real.sqrt 3 * (a * ‖ringComplex c‖ ^ 2)) : ℝ) : ℂ) *
+        ∑' h : O, (∑ r : O ⧸ Ideal.span {c}, P r *
+          TraceCharacter.traceCharacter c (NeZero.ne c)
+            (Ideal.Quotient.mk (Ideal.span {c}) h * r)) *
+          gaussian (4 / (3 * (a * ‖ringComplex c‖ ^ 2))) (ringComplex h) := by
+  rw [SchwartzPlanePoisson.GaussianAbelPartition.tsum_periodic_weighted_partition
+    (Ideal.Quotient.mk (Ideal.span {c})) P (fun z => gaussian a (ringComplex z))
+    (weighted_gaussian_summable _ P a ha)]
+  have hfiber (r : O ⧸ Ideal.span {c}) :=
+    GaussianFiberEquiv.fiber_tsum c (NeZero.ne c) r
+      (GaussianShiftedPartition.representative c r)
+      (GaussianShiftedPartition.representative_spec c r)
+      (fun z => gaussian a (ringComplex z))
+  simp_rw [hfiber, gaussian_coset_poisson a ha c (NeZero.ne c)]
+  have hd : 0 < 4 / (3 * (a * ‖ringComplex c‖ ^ 2)) := by
+    exact div_pos (by norm_num) (mul_pos (by norm_num)
+      (mul_pos ha (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero (NeZero.ne c))))))
+  have h := finite_gaussian_phase_sum (4 / (3 * (a * ‖ringComplex c‖ ^ 2))) hd
+    (fun r => ringComplex (GaussianShiftedPartition.representative c r) / ringComplex c) P
+    (((2 / (Real.sqrt 3 * (a * ‖ringComplex c‖ ^ 2)) : ℝ) : ℂ))
+  simp_rw [TraceCharacter.traceCharacter, residueTraceQuotientChar_frequency]
+  convert h using 1 <;>
+    congr 1 <;> (try ext r) <;>
+    simp only [div_mul_eq_mul_div]
+
+theorem primitive_gaussian_poisson (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : FiniteFourier.IsPrimitiveOnIdeals χ) (a : ℝ) (ha : 0 < a) :
+    (∑' z : O, χ (Ideal.Quotient.mk (Ideal.span {c}) z) * gaussian a (ringComplex z)) =
+      ((2 / (Real.sqrt 3 * (a * ‖ringComplex c‖ ^ 2)) : ℝ) : ℂ) *
+        TraceCharacter.gaussScalar c χ *
+        ∑' h : O, χ⁻¹ (Ideal.Quotient.mk (Ideal.span {c}) h) *
+          gaussian (4 / (3 * (a * ‖ringComplex c‖ ^ 2))) (ringComplex h) := by
+  have hp := periodic_gaussian_poisson c χ a ha
+  simp_rw [TraceCharacter.transform_eq c χ hχ] at hp
+  rw [hp]
+  simp_rw [← tsum_mul_left]
+  apply tsum_congr
+  intro h
+  ring
+
+def parameter (t : ℝ) : ℝ := 2 * t / (Real.sqrt 3 * ‖ringComplex c‖)
+
+def theta (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) : ℂ :=
+  ∑' z : O, χ (Ideal.Quotient.mk (Ideal.span {c}) z) *
+    gaussian (parameter c t) (ringComplex z)
+
+theorem parameter_pos (t : ℝ) (ht : 0 < t) : 0 < parameter c t := by
+  unfold parameter
+  exact div_pos (mul_pos (by norm_num) ht)
+    (mul_pos (Real.sqrt_pos.mpr (by norm_num))
+      (norm_pos_iff.mpr (ringComplex_ne_zero (NeZero.ne c))))
+
+theorem theta_summable (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) (ht : 0 < t) :
+    Summable (fun z : O => χ (Ideal.Quotient.mk (Ideal.span {c}) z) *
+      gaussian (parameter c t) (ringComplex z)) :=
+  weighted_gaussian_summable _ χ _ (parameter_pos c t ht)
+
+theorem parameter_dual (t : ℝ) (ht : 0 < t) :
+    4 / (3 * (parameter c t * ‖ringComplex c‖ ^ 2)) = parameter c (1 / t) := by
+  have hn : ‖ringComplex c‖ ≠ 0 := norm_ne_zero_iff.mpr (ringComplex_ne_zero (NeZero.ne c))
+  have hs : Real.sqrt 3 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num : (0 : ℝ) < 3)).ne'
+  unfold parameter
+  field_simp
+  ring_nf
+  norm_num [Real.sq_sqrt]
+
+theorem parameter_prefactor (t : ℝ) (ht : 0 < t) :
+    2 / (Real.sqrt 3 * (parameter c t * ‖ringComplex c‖ ^ 2)) =
+      1 / (‖ringComplex c‖ * t) := by
+  have hn : ‖ringComplex c‖ ≠ 0 := norm_ne_zero_iff.mpr (ringComplex_ne_zero (NeZero.ne c))
+  have hs : Real.sqrt 3 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num : (0 : ℝ) < 3)).ne'
+  unfold parameter
+  field_simp
+
+theorem theta_functional_equation (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : FiniteFourier.IsPrimitiveOnIdeals χ) (t : ℝ) (ht : 0 < t) :
+    theta c χ t = (TraceCharacter.normalizedGauss c χ / (t : ℂ)) *
+      theta c χ⁻¹ (1 / t) := by
+  have hp := primitive_gaussian_poisson c χ hχ (parameter c t) (parameter_pos c t ht)
+  rw [parameter_dual c t ht, parameter_prefactor c t ht] at hp
+  change theta c χ t =
+    (((1 / (‖ringComplex c‖ * t) : ℝ) : ℂ) * TraceCharacter.gaussScalar c χ) *
+      theta c χ⁻¹ (1 / t) at hp
+  rw [hp]
+  congr 1
+  unfold TraceCharacter.normalizedGauss
+  push_cast
+  ring
+
+def constantTerm (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) : ℂ := χ 0
+
+omit [NeZero c] in
+theorem constantTerm_eq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) :
+    constantTerm c χ = if IsUnit c then 1 else 0 := by
+  unfold constantTerm
+  by_cases hu : IsUnit c
+  · rw [if_pos hu]
+    have h10 : (1 : O ⧸ Ideal.span {c}) = 0 := by
+      apply Ideal.Quotient.eq_zero_iff_mem.mpr
+      rw [Ideal.span_singleton_eq_top.mpr hu]
+      trivial
+    rw [← h10, map_one]
+  · rw [if_neg hu]
+    apply MulChar.map_nonunit
+    intro hz
+    have h10 := (isUnit_zero_iff.mp hz).symm
+    have h1 : (1 : O) ∈ Ideal.span {c} := Ideal.Quotient.eq_zero_iff_mem.mp h10
+    exact hu (Ideal.span_singleton_eq_top.mp ((Ideal.eq_top_iff_one _).mpr h1))
+
+omit [NeZero c] in
+theorem theta_zero_term (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) :
+    χ (Ideal.Quotient.mk (Ideal.span {c}) (0 : O)) *
+      gaussian (parameter c t) (ringComplex 0) = constantTerm c χ := by
+  simp [gaussian, constantTerm]
+
+theorem theta_inversion (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : FiniteFourier.IsPrimitiveOnIdeals χ) (t : ℝ) (ht : 0 < t) :
+    theta c χ (1 / t) = (TraceCharacter.normalizedGauss c χ * (t : ℂ)) * theta c χ⁻¹ t := by
+  have h := theta_functional_equation c χ hχ (1 / t) (one_div_pos.mpr ht)
+  simpa only [one_div, Complex.ofReal_inv, inv_inv, div_inv_eq_mul, one_mul] using h
+
+theorem theta_root_nonzero (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hχ : FiniteFourier.IsPrimitiveOnIdeals χ) : TraceCharacter.normalizedGauss c χ ≠ 0 := by
+  have h := TraceCharacter.normalizedGauss_norm c χ hχ
+  intro hz
+  rw [hz, norm_zero] at h
+  exact zero_ne_one h
+
+theorem embedding_unit_norm (u : Oˣ) : ‖ringComplex (u : O)‖ = 1 := by
+  have h := ringComplex_norm_sq_eq_absNorm_span (u : O)
+  rw [Ideal.span_singleton_eq_top.mpr u.isUnit, Ideal.absNorm_top, Nat.cast_one] at h
+  nlinarith [norm_nonneg (ringComplex (u : O))]
+
+omit [NeZero c] in
+
+theorem theta_mul_global_unit (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) (u : Oˣ) :
+    theta c χ t = χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) * theta c χ t := by
+  have h := u.mulLeft.tsum_eq (fun z : O =>
+    χ (Ideal.Quotient.mk (Ideal.span {c}) z) * gaussian (parameter c t) (ringComplex z))
+  calc
+    theta c χ t = ∑' z : O,
+        χ (Ideal.Quotient.mk (Ideal.span {c}) ((u : O) * z)) *
+          gaussian (parameter c t) (ringComplex ((u : O) * z)) := h.symm
+    _ = χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) * theta c χ t := by
+      rw [theta, ← tsum_mul_left]
+      apply tsum_congr
+      intro z
+      simp only [map_mul, gaussian, norm_mul, embedding_unit_norm, one_mul, mul_assoc]
+
+omit [NeZero c] in
+
+theorem theta_eq_zero_of_global_unit (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ)
+    (u : Oˣ) (hu : χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) ≠ 1) :
+    theta c χ t = 0 :=
+  eq_zero_of_mul_eq_self_left hu (theta_mul_global_unit c χ t u).symm
+
+omit [NeZero c] in
+theorem global_unit_invariant_of_theta_ne_zero
+    (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) (ht : theta c χ t ≠ 0) :
+    ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1 := by
+  intro u
+  by_contra hu
+  exact ht (theta_eq_zero_of_global_unit c χ t u hu)
+
+end GaussianTheta
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open Set Filter Asymptotics MeasureTheory
+open scoped Topology BigOperators
+namespace PeriodicThetaRegularity
+open ThetaProduct EisensteinTheta HeckeTheta
+
+theorem rectangularPair_f_continuous (a b : UnitAddCircle) (u v : ℝ)
+    (hu : 0 < u) (hv : 0 < v) :
+    ContinuousOn (rectangularPair a b u v hu hv).f (Ioi 0) :=
+  (scaledEvenPair_f_continuous a u hu).mul (scaledEvenPair_f_continuous b v hv)
+
+theorem pair_f_continuous {N : ℕ} [NeZero N] (w : Fin N × Fin N → ℂ) :
+    ContinuousOn (pair w).f (Ioi 0) := by
+  have h : ContinuousOn (fun t => ∑ p : (Fin N × Fin N) × Fin 2,
+      w p.1 * (parityPair p.1.1 p.1.2 N (Nat.cast_pos.mpr (NeZero.pos N)) p.2).f t)
+      (Ioi 0) := by
+    apply continuousOn_finsetSum
+    intro p _
+    exact continuousOn_const.mul
+      (rectangularPair_f_continuous (xShift p.1.1 p.1.2 N p.2)
+        (yShift p.1.2 N p.2) _ _ _ _)
+  apply h.congr
+  intro t _
+  simp only [pair, finitePair, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+
+theorem theta_continuous {N : ℕ} [NeZero N] (w : Fin N × Fin N → ℂ) :
+    ContinuousOn (theta w) (Ioi 0) :=
+  (pair_f_continuous w).congr (fun _t ht => theta_eq_pair w ht)
+
+theorem theta_locallyIntegrable {N : ℕ} [NeZero N] (w : Fin N × Fin N → ℂ) :
+    LocallyIntegrableOn (theta w) (Ioi 0) :=
+  (theta_continuous w).locallyIntegrableOn measurableSet_Ioi
+
+theorem theta_rapid {N : ℕ} [NeZero N] (w : Fin N × Fin N → ℂ) (r : ℝ) :
+    (fun t => theta w t - w (0,0)) =O[atTop] (fun t : ℝ => t ^ r) := by
+  apply ((pair w).hf_top r).congr' _ Filter.EventuallyEq.rfl
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+  rw [theta_eq_pair w ht, pair_f₀]
+
+theorem scaledTheta_continuous {N : ℕ} [NeZero N] (w : Fin N × Fin N → ℂ)
+    (A : ℝ) (hA : 0 < A) :
+    ContinuousOn (fun t => theta w (A * t)) (Ioi 0) :=
+  (theta_continuous w).comp (by fun_prop) (fun t ht => mul_pos hA ht)
+
+theorem scaledTheta_rapid {N : ℕ} [NeZero N] (w : Fin N × Fin N → ℂ)
+    (A : ℝ) (hA : 0 < A) (r : ℝ) :
+    (fun t => theta w (A * t) - w (0,0)) =O[atTop] (fun t : ℝ => t ^ r) :=
+  rapid_rescale (theta w) (w (0,0)) (theta_rapid w) hA r
+
+def primitivePair {N M : ℕ} [NeZero N] [NeZero M]
+    (w : Fin N × Fin N → ℂ) (v : Fin M × Fin M → ℂ)
+    (A : ℝ) (hA : 0 < A) (ε : ℂ) (hε : ε ≠ 0)
+    (hfeq : ∀ t : ℝ, 0 < t →
+      theta w (A / t) = ε * (t : ℂ) * theta v (A * t)) : WeakFEPair ℂ where
+  f := fun t => theta w (A * t)
+  g := fun t => theta v (A * t)
+  k := 1
+  ε := ε
+  f₀ := w (0,0)
+  g₀ := v (0,0)
+  hf_int := (scaledTheta_continuous w A hA).locallyIntegrableOn measurableSet_Ioi
+  hg_int := (scaledTheta_continuous v A hA).locallyIntegrableOn measurableSet_Ioi
+  hk := zero_lt_one
+  hε := hε
+  h_feq t ht := by
+    simpa only [mul_one_div, Real.rpow_one, smul_eq_mul] using hfeq t ht
+  hf_top := scaledTheta_rapid w A hA
+  hg_top := scaledTheta_rapid v A hA
+
+end PeriodicThetaRegularity
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped BigOperators Classical Topology
+open Filter Asymptotics
+
+namespace ThetaRegularity
+
+abbrev O := Eisenstein.O
+
+open Eisenstein  GaussianTheta
+
+theorem norm_gaussian (a : ℝ) (z : ℂ) :
+    ‖gaussian a z‖ = Real.exp (-Real.pi * a * ‖z‖ ^ 2) := by
+  simp [gaussian, Complex.norm_exp, pow_two, Complex.mul_re, Complex.mul_im]
+
+theorem lattice_gap (z : O) (hz : z ≠ 0) : 1 ≤ ‖ringComplex z‖ ^ 2 := by
+  rw [ringComplex_norm_sq_eq_absNorm_span]
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (show Ideal.absNorm (Ideal.span {z}) ≠ 0 by
+    rw [ne_eq, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
+    exact hz)
+
+theorem gaussian_le_inverse_square (a : ℝ) (ha : 0 ≤ a) (z : ℂ) :
+    ‖gaussian a z‖ ≤ ((1 + a * ‖z‖ ^ 2) ^ 2)⁻¹ := by
+  let x := a * ‖z‖ ^ 2
+  have hx : 0 ≤ x := mul_nonneg ha (sq_nonneg _)
+  have h1 : 1 + x ≤ Real.exp x := by simpa [add_comm] using Real.add_one_le_exp x
+  have hs : (1 + x) ^ 2 ≤ Real.exp (Real.pi * x) := calc
+    _ ≤ (Real.exp x) ^ 2 := by gcongr
+    _ = Real.exp (2 * x) := by rw [pow_two, ← Real.exp_add]; congr 1; ring
+    _ ≤ _ := Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right Real.two_le_pi hx)
+  rw [norm_gaussian]
+  have hexp : -Real.pi * a * ‖z‖ ^ 2 = -(Real.pi * x) := by dsimp [x]; ring
+  rw [hexp]
+  rw [Real.exp_neg]
+  exact (inv_le_inv₀ (Real.exp_pos _) (by positivity)).mpr hs
+
+variable (c : O) [NeZero c]
+
+local instance residueFinite : Finite (O ⧸ Ideal.span {c}) := Ring.HasFiniteQuotients.finiteQuotient (Ideal.span_singleton_eq_bot.not.mpr (NeZero.ne c))
+local instance residueFintype : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+
+def decayRate : ℝ := Real.pi * parameter c 1
+
+theorem decayRate_pos : 0 < decayRate c :=
+  mul_pos Real.pi_pos (parameter_pos c 1 one_pos)
+
+omit [NeZero c] in
+theorem parameter_eq (t : ℝ) : parameter c t = parameter c 1 * t := by
+  unfold parameter
+  ring
+
+omit [NeZero c] in
+theorem norm_gaussian_parameter (t : ℝ) (z : ℂ) :
+    ‖gaussian (parameter c t) z‖ = Real.exp (-decayRate c * t * ‖z‖ ^ 2) := by
+  rw [norm_gaussian, parameter_eq]
+  congr 1
+  unfold decayRate
+  ring
+
+theorem coefficient_norm_le_one (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (r : O ⧸ Ideal.span {c}) : ‖χ r‖ ≤ 1 := by
+  by_cases hr : IsUnit r
+  · obtain ⟨u, rfl⟩ := hr
+    have hu : ‖χ (u : O ⧸ Ideal.span {c})‖ = 1 := by
+      simpa only [MulChar.coe_equivToUnitHom] using
+        Complex.norm_eq_one_of_mem_rootsOfUnity (χ.apply_mem_rootsOfUnity u)
+    exact hu.le
+  · rw [MulChar.map_nonunit χ hr, norm_zero]
+    norm_num
+
+theorem term_norm_le (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) (z : O) :
+    ‖χ (Ideal.Quotient.mk (Ideal.span {c}) z) *
+      gaussian (parameter c t) (ringComplex z)‖ ≤
+        Real.exp (-decayRate c * t * ‖ringComplex z‖ ^ 2) := by
+  rw [norm_mul, norm_gaussian_parameter]
+  exact mul_le_of_le_one_left (Real.exp_nonneg _) (coefficient_norm_le_one c χ _)
+
+theorem continuousOn_theta_above (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (δ : ℝ) (hδ : 0 < δ) : ContinuousOn (theta c χ) (Set.Ioi δ) := by
+  apply continuousOn_tsum (u := fun z : O => ‖gaussian (parameter c δ) (ringComplex z)‖)
+  · intro z
+    unfold gaussian parameter
+    fun_prop
+  · exact (gaussian_summable _ (parameter_pos c δ hδ)).norm
+  · intro z t ht
+    apply (term_norm_le c χ t z).trans
+    rw [norm_gaussian_parameter]
+    apply Real.exp_le_exp.mpr
+    have hn : 0 ≤ decayRate c * ‖ringComplex z‖ ^ 2 :=
+      mul_nonneg (decayRate_pos c).le (sq_nonneg _)
+    have htd : δ < t := ht
+    nlinarith
+
+theorem continuousAt_theta (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (t : ℝ) (ht : 0 < t) : ContinuousAt (theta c χ) t := by
+  have h := continuousOn_theta_above c χ (t / 2) (half_pos ht)
+  exact h.continuousAt (isOpen_Ioi.mem_nhds (show t / 2 < t by linarith))
+
+theorem continuousOn_theta (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) :
+    ContinuousOn (theta c χ) (Set.Ioi 0) :=
+  fun t ht => (continuousAt_theta c χ t ht).continuousWithinAt
+
+theorem theta_locallyIntegrableOn (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) :
+    MeasureTheory.LocallyIntegrableOn (theta c χ) (Set.Ioi 0) :=
+  (continuousOn_theta c χ).locallyIntegrableOn measurableSet_Ioi
+
+def tailConstant : ℝ := ∑' z : O, ‖gaussian (parameter c (1 / 2)) (ringComplex z)‖
+
+omit [NeZero c] in
+theorem tailConstant_nonneg : 0 ≤ tailConstant c := tsum_nonneg (fun _z => norm_nonneg _)
+
+theorem tailConstant_le_cauchy :
+    tailConstant c ≤ 4 * (1 + Real.pi / Real.sqrt (parameter c (1 / 2))) ^ 2 := by
+  have ha := parameter_pos c (1 / 2) (by norm_num)
+  apply le_trans (Summable.tsum_le_tsum
+    (fun z : O => gaussian_le_inverse_square _ ha.le (ringComplex z))
+    (gaussian_summable _ ha).norm
+    (SchwartzPlanePoisson.scaled_eisenstein_cauchy_summable _ ha))
+  exact SchwartzPlanePoisson.scaled_eisenstein_cauchy_bound _ ha
+
+theorem tailConstant_le_linear :
+    tailConstant c ≤ 8 * (1 + Real.pi ^ 2 * Real.sqrt 3 * ‖ringComplex c‖) := by
+  have ha := parameter_pos c (1 / 2) (by norm_num)
+  have hs : (Real.pi / Real.sqrt (parameter c (1 / 2))) ^ 2 =
+      Real.pi ^ 2 * Real.sqrt 3 * ‖ringComplex c‖ := by
+    rw [div_pow, Real.sq_sqrt ha.le]
+    simp only [parameter]
+    norm_num
+    field_simp
+  have h := tailConstant_le_cauchy c
+  have hsq := sq_nonneg (1 - Real.pi / Real.sqrt (parameter c (1 / 2)))
+  nlinarith
+
+theorem tail_eq_tsum (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) (ht : 0 < t) :
+    theta c χ t - constantTerm c χ = ∑' z : O, if z = 0 then 0 else
+      χ (Ideal.Quotient.mk (Ideal.span {c}) z) * gaussian (parameter c t) (ringComplex z) := by
+  have h := (theta_summable c χ t ht).tsum_eq_add_tsum_ite (0 : O)
+  rw [theta_zero_term c χ t] at h
+  exact sub_eq_iff_eq_add.mpr (by simpa only [theta, add_comm] using h)
+
+theorem tail_term_bound (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (t : ℝ) (ht : 1 ≤ t) (z : O) :
+    ‖if z = 0 then (0 : ℂ) else
+      χ (Ideal.Quotient.mk (Ideal.span {c}) z) * gaussian (parameter c t) (ringComplex z)‖ ≤
+      Real.exp (-decayRate c * t / 2) *
+        ‖gaussian (parameter c (1 / 2)) (ringComplex z)‖ := by
+  by_cases hz : z = 0
+  · simp only [if_pos hz, norm_zero]
+    positivity
+  · rw [if_neg hz]
+    apply (term_norm_le c χ t z).trans
+    rw [norm_gaussian_parameter, ← Real.exp_add]
+    apply Real.exp_le_exp.mpr
+    have hn := lattice_gap z hz
+    have hβ := decayRate_pos c
+    have hprod : 0 ≤ (t - 1) * (‖ringComplex z‖ ^ 2 - 1) :=
+      mul_nonneg (sub_nonneg.mpr ht) (sub_nonneg.mpr hn)
+    have hineq : t / 2 + ‖ringComplex z‖ ^ 2 / 2 ≤ t * ‖ringComplex z‖ ^ 2 := by
+      nlinarith
+    nlinarith [mul_le_mul_of_nonneg_left hineq hβ.le]
+
+theorem theta_tail_bound (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (t : ℝ) (ht : 1 ≤ t) :
+    ‖theta c χ t - constantTerm c χ‖ ≤
+      tailConstant c * Real.exp (-decayRate c * t / 2) := by
+  have ht0 : 0 < t := lt_of_lt_of_le zero_lt_one ht
+  rw [tail_eq_tsum c χ t ht0]
+  have hsum := (gaussian_summable _ (parameter_pos c (1 / 2) (by norm_num))).norm
+  have hmajor := hsum.mul_left (Real.exp (-decayRate c * t / 2))
+  have hnorm := Summable.of_nonneg_of_le (fun z => norm_nonneg _)
+    (tail_term_bound c χ t ht) hmajor
+  apply (norm_tsum_le_tsum_norm hnorm).trans
+  have h := Summable.tsum_le_tsum (tail_term_bound c χ t ht) hnorm hmajor
+  simpa only [tsum_mul_left, tailConstant, mul_comm] using h
+
+theorem theta_tail_bound_conductor (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (t : ℝ) (ht : 1 ≤ t) :
+    ‖theta c χ t - constantTerm c χ‖ ≤
+      8 * (1 + Real.pi ^ 2 * Real.sqrt 3 * ‖ringComplex c‖) *
+        Real.exp (-decayRate c * t / 2) :=
+  (theta_tail_bound c χ t ht).trans
+    (mul_le_mul_of_nonneg_right (tailConstant_le_linear c) (Real.exp_nonneg _))
+
+theorem theta_tail_isBigO_exp (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) :
+    (fun t : ℝ => theta c χ t - constantTerm c χ) =O[atTop]
+      (fun t : ℝ => Real.exp (-(decayRate c / 2) * t)) := by
+  apply isBigO_iff.mpr
+  refine ⟨tailConstant c, ?_⟩
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
+  have he : -(decayRate c / 2) * t = -decayRate c * t / 2 := by ring
+  simpa only [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _), he] using theta_tail_bound c χ t ht
+
+theorem theta_tail_isBigO_rpow (χ : MulChar (O ⧸ Ideal.span {c}) ℂ) (r : ℝ) :
+    (fun t : ℝ => theta c χ t - constantTerm c χ) =O[atTop] (fun t : ℝ => t ^ r) :=
+  (theta_tail_isBigO_exp c χ).trans
+    (isLittleO_exp_neg_mul_rpow_atTop (half_pos (decayRate_pos c)) r).isBigO
+
+end ThetaRegularity
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators
+namespace HeckePrimitive
+open HeckeFamily
+
+variable (c : O) [NeZero c]
+
+private theorem span_ne_bot : Ideal.span ({c} : Set O) ≠ ⊥ := by
+  simpa only [ne_eq, Ideal.span_singleton_eq_bot] using NeZero.ne c
+
+private instance : Fintype (O ⧸ Ideal.span {c}) := by
+  letI : Finite (O ⧸ Ideal.span {c}) := Ring.HasFiniteQuotients.finiteQuotient (span_ne_bot c)
+  exact Fintype.ofFinite _
+
+def character (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1) : Character :=
+  Character.ofResidue (Ideal.span {c}) (span_ne_bot c) χ hu
+
+omit [NeZero c] in
+theorem inverse_unit_trivial (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1) :
+    ∀ u : Oˣ, χ⁻¹ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1 := by
+  intro u
+  rw [MulChar.inv_apply_eq_inv', hu, inv_one]
+
+def scale : ℝ := GaussianTheta.parameter c 1
+
+theorem scale_pos : 0 < scale c := GaussianTheta.parameter_pos c 1 zero_lt_one
+
+omit [NeZero c] in
+theorem parameter_eq_scale_mul (t : ℝ) : GaussianTheta.parameter c t = scale c * t := by
+  unfold scale GaussianTheta.parameter
+  ring
+
+theorem gaussianTheta_eq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1) (t : ℝ) :
+    GaussianTheta.theta c χ t = HeckeTheta.theta (coefficients (character c χ hu))
+      (scale c * t) := by
+  unfold GaussianTheta.theta HeckeTheta.theta
+  rw [← coordinateEquiv.tsum_eq]
+  apply tsum_congr
+  intro n
+  rw [periodicCoeff_eq_elementCoeff]
+  change χ (Ideal.Quotient.mk (Ideal.span {c}) (coordinateElement n.1 n.2)) *
+      GaussianTheta.gaussian (GaussianTheta.parameter c t)
+        (ringComplex (coordinateElement n.1 n.2)) = _
+  congr 1
+  unfold GaussianTheta.gaussian
+  rw [Complex.ofReal_exp]
+  congr 1
+  rw [← Complex.ofReal_pow, ringComplex_norm_sq_eq_absNorm_span,
+    ← normForm_eq_absNorm_span, parameter_eq_scale_mul]
+  push_cast
+  ring
+
+def pair (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) : WeakFEPair ℂ :=
+  PeriodicThetaRegularity.primitivePair
+    (coefficients (character c χ hu))
+    (coefficients (character c χ⁻¹ (inverse_unit_trivial c χ hu)))
+    (scale c) (scale_pos c) (TraceCharacter.normalizedGauss c χ)
+    (GaussianTheta.theta_root_nonzero c χ hp) (by
+      intro t ht
+      have h := GaussianTheta.theta_inversion c χ hp t ht
+      rw [gaussianTheta_eq c χ hu,
+        gaussianTheta_eq c χ⁻¹ (inverse_unit_trivial c χ hu)] at h
+      simpa only [mul_one_div] using h)
+
+@[simp] theorem pair_f (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (t : ℝ) :
+    (pair c χ hu hp).f t = GaussianTheta.theta c χ t :=
+  (gaussianTheta_eq c χ hu t).symm
+
+@[simp] theorem pair_g (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (t : ℝ) :
+    (pair c χ hu hp).g t = GaussianTheta.theta c χ⁻¹ t :=
+  (gaussianTheta_eq c χ⁻¹ (inverse_unit_trivial c χ hu) t).symm
+
+def completedL (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (s : ℂ) : ℂ :=
+  (pair c χ hu hp).Λ s / 6
+
+theorem pair_completed_eq_right (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ} (hs : 1 < s.re) :
+    (pair c χ hu hp).Λ s = (scale c : ℂ) ^ (-s) *
+      HeckeTheta.completed (coefficients (character c χ hu)) s := by
+  let w := coefficients (character c χ hu)
+  have h := (pair c χ hu hp).hasMellin hs
+  calc
+    (pair c χ hu hp).Λ s =
+        mellin (fun t => HeckeTheta.theta w (scale c * t) - w (0,0)) s := h.2.symm
+    _ = (scale c : ℂ) ^ (-s) * mellin (fun t => HeckeTheta.theta w t - w (0,0)) s :=
+      by simpa only [smul_eq_mul] using
+        mellin_comp_mul_left (fun t => HeckeTheta.theta w t - w (0,0)) s (scale_pos c)
+    _ = (scale c : ℂ) ^ (-s) * HeckeTheta.completed w s := by
+      congr 1
+      rw [← (HeckeTheta.pair_hasMellin w hs).2]
+      unfold mellin
+      apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
+      intro t ht
+      dsimp only
+      rw [HeckeTheta.theta_eq_pair w ht, HeckeTheta.pair_f₀]
+
+theorem pair_completed_eq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1) :
+    (pair c χ hu hp).Λ s = (scale c : ℂ) ^ (-s) *
+      HeckeTheta.completed (coefficients (character c χ hu)) s :=
+  HeckeMellinIdentity.scaled_eq (pair c χ hu hp)
+    (HeckeTheta.pair (coefficients (character c χ hu))) rfl (HeckeTheta.pair_k _)
+    (scale c) (scale_pos c) (fun _ hs => pair_completed_eq_right c χ hu hp hs) h0 h1
+
+theorem symm_completed_eq (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1) :
+    (pair c χ hu hp).symm.Λ s =
+      (pair c χ⁻¹ (inverse_unit_trivial c χ hu) hp.inv).Λ s := by
+  apply HeckeMellinIdentity.eq_of_f (pair c χ hu hp).symm
+    (pair c χ⁻¹ (inverse_unit_trivial c χ hu) hp.inv) rfl rfl _ rfl h0 h1
+  intro t _
+  change (pair c χ hu hp).g t = _
+  rw [pair_g, pair_f]
+
+theorem completedL_functional_equation (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1) :
+    completedL c χ hu hp (1-s) = TraceCharacter.normalizedGauss c χ *
+      completedL c χ⁻¹ (inverse_unit_trivial c χ hu) hp.inv s := by
+  have h := (pair c χ hu hp).functional_equation s
+  change (pair c χ hu hp).Λ (1-s) = TraceCharacter.normalizedGauss c χ *
+    (pair c χ hu hp).symm.Λ s at h
+  rw [symm_completed_eq c χ hu hp h0 h1] at h
+  unfold completedL
+  rw [h]
+  ring
+
+theorem completedL_eq_gamma_mul_LFunction (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ}
+    (h0 : s ≠ 0) (h1 : s ≠ 1) (hΓ : Complex.Gamma s ≠ 0) :
+    completedL c χ hu hp s = (scale c : ℂ)^(-s) * (Real.pi : ℂ)^(-s) *
+      Complex.Gamma s * LFunction (character c χ hu) s := by
+  unfold completedL
+  rw [pair_completed_eq c χ hu hp h0 h1]
+  unfold LFunction continuedLattice HeckeTheta.latticeL
+  simp only [Complex.cpow_neg]
+  have hπ : (Real.pi : ℂ)^s ≠ 0 := by
+    exact (Complex.cpow_eq_zero_iff _ _).not.mpr (by simp [Real.pi_ne_zero])
+  field_simp
+
+end HeckePrimitive
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace HeckePrimitiveSupremum
+open HeckeFamily HeckeZeroSupremum
+
+def primitiveZeroRealParts : Set ℝ :=
+  {x | ∃ (χ : Character) (s : ℂ), FiniteFourier.IsPrimitiveOnIdeals χ.residue ∧
+    (1 / 2 : ℝ) ≤ s.re ∧ s.re ≤ 1 ∧ (s ≠ 1 ∨ χ.residue ≠ 1) ∧
+    LFunction χ s = 0 ∧ s.re = x}
+
+def primitiveSetWithSentinel : Set ℝ := insert (1 / 2) primitiveZeroRealParts
+
+theorem primitiveSet_subset : primitiveSetWithSentinel ⊆ zeroSetWithSentinel := by
+  intro x hx
+  rcases Set.mem_insert_iff.mp hx with rfl | hx
+  · exact Set.mem_insert _ _
+  · obtain ⟨χ, s, _, hhalf, _, hpole, hz, rfl⟩ := hx
+    exact Set.mem_insert_of_mem _ ⟨χ, s, by linarith, hpole, hz, rfl⟩
+
+theorem primitiveSet_bddAbove : BddAbove primitiveSetWithSentinel :=
+  zeroSet_bddAbove.mono primitiveSet_subset
+
+theorem primitiveSet_nonempty : primitiveSetWithSentinel.Nonempty :=
+  Set.insert_nonempty _ _
+
+theorem beta_eq_primitive_supremum : beta = sSup primitiveSetWithSentinel := by
+  apply le_antisymm
+  · apply csSup_le zeroSet_nonempty
+    intro x hx
+    rcases Set.mem_insert_iff.mp hx with rfl | hx
+    · exact le_csSup primitiveSet_bddAbove (Set.mem_insert _ _)
+    · by_cases hhalf : (1 / 2 : ℝ) ≤ x
+      · obtain ⟨χ, s, hpos, hpole, hz, rfl⟩ := hx
+        obtain ⟨ψ, hp, hpoleψ, hzψ⟩ :=
+          HeckeFiniteDeletion.exists_primitive_zero χ hpos hpole hz
+        apply le_csSup primitiveSet_bddAbove
+        exact Set.mem_insert_of_mem _ ⟨ψ, s, hp, hhalf,
+          zeroRealParts_le_one ⟨χ, s, hpos, hpole, hz, rfl⟩, hpoleψ, hzψ, rfl⟩
+      · exact (le_of_not_ge hhalf).trans
+          (le_csSup primitiveSet_bddAbove (Set.mem_insert _ _))
+  · exact csSup_le_csSup zeroSet_bddAbove primitiveSet_nonempty primitiveSet_subset
+
+theorem exists_primitive_zero_near_beta {ε : ℝ} (hε : 0 < ε)
+    (hsmall : (1 / 2 : ℝ) ≤ beta - ε) :
+    ∃ (χ : Character) (s : ℂ), FiniteFourier.IsPrimitiveOnIdeals χ.residue ∧
+      (1 / 2 : ℝ) ≤ s.re ∧ s.re ≤ 1 ∧ (s ≠ 1 ∨ χ.residue ≠ 1) ∧
+      LFunction χ s = 0 ∧ beta - ε < s.re := by
+  rw [beta_eq_primitive_supremum] at hsmall ⊢
+  obtain ⟨x, hx, hlt⟩ := Supremum.exists_gt_supremum_sub_of_insert
+    primitiveSet_bddAbove hε hsmall
+  obtain ⟨χ, s, hp, hhalf, hone, hpole, hz, rfl⟩ := hx
+  exact ⟨χ, s, hp, hhalf, hone, hpole, hz, hlt⟩
+
+end HeckePrimitiveSupremum
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ComplexConjugate
+open Complex
+namespace HeckeFamily
+
+theorem idealCoeff_inverse_conj (χ : Character) (J : Ideal O) :
+    idealCoeff χ.inverse J=conj (idealCoeff χ J) := by
+  let : Finite (O ⧸ χ.modulus) := Ring.HasFiniteQuotients.finiteQuotient χ.modulus_ne_bot
+  by_cases hJ : J=0
+  · subst J
+    rw [map_zero,map_zero,map_zero]
+  have hg := cubicIdealGenerator_ne_zero J hJ
+  rw [←span_cubicIdealGenerator J,
+    idealCoeff_span χ.inverse hg,idealCoeff_span χ hg]
+  exact (MulChar.star_apply' χ.residue _).symm
+
+theorem idealTerm_inverse_conj (χ : Character) (s : ℂ) (J : Ideal O) :
+    idealTerm χ.inverse s J=conj (idealTerm χ (conj s) J) := by
+  by_cases hJ : J=0
+  · subst J
+    simp only [idealTerm,map_zero,zero_div]
+  have hN : (0 : ℝ)< J.absNorm := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hJ)
+  have hpow := Complex.cpow_conj ((J.absNorm : ℝ) : ℂ) (conj s)
+    (by rw [Complex.arg_ofReal_of_nonneg hN.le]; exact Real.pi_ne_zero.symm)
+  simp only [conj_ofReal, conj_conj] at hpow
+  unfold idealTerm
+  rw [idealCoeff_inverse_conj,map_div₀]
+  congr 1
+
+theorem LFunction_inverse_conj (χ : Character) (hχ : χ.residue≠1) (s : ℂ) :
+    LFunction χ.inverse s=conj (LFunction χ (conj s)) := by
+  have hi : χ.inverse.residue≠1 := by
+    change χ.residue⁻¹≠1
+    simpa only [ne_eq,inv_eq_one] using hχ
+  have hA := LFunction_entire_nonprincipal χ.inverse hi
+  have hB : Differentiable ℂ (fun z => conj (LFunction χ (conj z))) := by
+    intro z
+    simpa only [Function.comp_def,conj_conj] using
+      (LFunction_entire_nonprincipal χ hχ (conj z)).conj_conj
+  have he : LFunction χ.inverse=(fun z => conj (LFunction χ (conj z))) := by
+    apply (Complex.analyticOnNhd_univ_iff_differentiable.mpr hA).eq_of_eventuallyEq
+      (Complex.analyticOnNhd_univ_iff_differentiable.mpr hB) (z₀ := (2 : ℂ))
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num : (1 : ℝ)<(2 : ℂ).re)] with z hz
+    rw [LFunction_eq_ideal_tsum χ.inverse hz,LFunction_eq_ideal_tsum χ (by simpa using hz),conj_tsum]
+    exact tsum_congr (idealTerm_inverse_conj χ z)
+  exact congr_fun he s
+
+end HeckeFamily
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators
+namespace HeckeReciprocalBound
+open HeckeFamily
+
+def bound (σ : ℝ) : ℝ :=
+  ∑' I : Ideal O, ‖fullIdealWeight (σ : ℂ) I‖
+
+theorem normWeight_le_of_re_ge {σ : ℝ} {s : ℂ} (hs : σ ≤ s.re) (I : Ideal O) :
+    ‖fullIdealWeight s I‖ ≤
+      ‖fullIdealWeight (σ : ℂ) I‖ := by
+  by_cases hI : I = 0
+  · simp [hI, fullIdealWeight]
+  · have hN : (1 : ℝ) ≤ Ideal.absNorm I := by
+      have hpos : 0 < Ideal.absNorm I := Nat.pos_of_ne_zero ((Ideal.absNorm_ne_zero_iff I).mpr (Ring.HasFiniteQuotients.finiteQuotient hI))
+      exact_mod_cast hpos
+    simp only [fullIdealWeight, hI, ite_false]
+    have hn : (0 : ℝ) < Ideal.absNorm I := lt_of_lt_of_le zero_lt_one hN
+    rw [show (Ideal.absNorm I : ℂ) = ((Ideal.absNorm I : ℝ) : ℂ) by simp,
+      Complex.norm_cpow_eq_rpow_re_of_pos hn,
+      Complex.norm_cpow_eq_rpow_re_of_pos hn]
+    simp only [Complex.neg_re, Complex.ofReal_re]
+    exact Real.rpow_le_rpow_of_exponent_le hN (neg_le_neg hs)
+
+theorem reciprocal_norm_le (χ : Character) {σ : ℝ} (hσ : 1 < σ)
+    {s : ℂ} (hs : σ ≤ s.re) : ‖HeckeReciprocal.reciprocal χ s‖ ≤ bound σ := by
+  have hs1 : 1 < s.re := hσ.trans_le hs
+  have hs0 : s ≠ 0 := by intro h; norm_num [h] at hs1
+  have hsp : s ≠ 1 := by intro h; norm_num [h] at hs1
+  rw [HeckeReciprocal.reciprocal_eq_inv χ hs0 hsp, LFunction_eq_series χ hs1,
+    ← IdealEuler.inverseSeries_eq_inv _ (idealCoeff_norm_le_one χ) s hs1]
+  have hsum := IdealEuler.inverse_summable_norm (idealCoeff χ)
+    (idealCoeff_norm_le_one χ) s hs1
+  apply (norm_tsum_le_tsum_norm hsum).trans
+  apply Summable.tsum_le_tsum _ hsum
+    (fullIdealWeight_summable_norm (σ : ℂ) (by simpa using hσ))
+  intro I
+  change ‖(UniqueFactorizationMonoid.moebius I : ℂ) *
+    (idealCoeff χ I * fullIdealWeight s I)‖ ≤ _
+  rw [norm_mul, norm_mul]
+  calc
+    _ ≤ ‖fullIdealWeight s I‖ := by
+      apply (mul_le_of_le_one_left (by positivity)
+        (IdealCoprimeBilinearSieve.moebius_norm_le_one I)).trans
+      exact mul_le_of_le_one_left (norm_nonneg _) (idealCoeff_norm_le_one χ I)
+    _ ≤ _ := normWeight_le_of_re_ge hs I
+
+end HeckeReciprocalBound
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Filter Asymptotics Set MeasureTheory
+
+namespace HeckeStrip
+
+def gammaConstant : ℝ := Real.Gamma (11 / 10) / Real.Gamma (19 / 10)
+
+theorem gammaConstant_pos : 0 < gammaConstant :=
+  div_pos (Real.Gamma_pos_of_pos (by norm_num)) (Real.Gamma_pos_of_pos (by norm_num))
+
+theorem gamma_ratio_left_bound (t : ℝ) :
+    ‖Complex.Gamma (1 - ((-(1 / 10) : ℂ) + t * Complex.I)) /
+      Complex.Gamma ((-(1 / 10) : ℂ) + t * Complex.I)‖ ≤
+        gammaConstant * (3 + |t|) ^ 2 := by
+  let s : ℂ := -(1 / 10) + t * Complex.I
+  have hb := Gamma_shifted_pair_bound
+    (1 / 2) (3 / 5) (-t) 2 (by norm_num) (by norm_num)
+  simp only [Complex.ofReal_neg] at hb
+  have hnum : ((1 / 2 : ℝ) : ℂ) + ((3 / 5 : ℝ) + (-t) * Complex.I) = 1 - s := by
+    dsimp [s]; push_cast; ring
+  have hden : ((1 / 2 : ℝ) : ℂ) - ((3 / 5 : ℝ) + (-t) * Complex.I) + (2 : ℕ) = s + 2 := by
+    dsimp [s]; push_cast; ring
+  rw [hnum, hden] at hb
+  norm_num only [show (1 / 2 : ℝ) + 3 / 5 = 11 / 10 by norm_num,
+    show (1 / 2 : ℝ) - 3 / 5 + (2 : ℕ) = 19 / 10 by norm_num] at hb
+  have heq : Complex.Gamma (1 - s) / Complex.Gamma s =
+      (∏ k ∈ Finset.range 2, (s + k)) *
+        (Complex.Gamma (1 - s) / Complex.Gamma (s + 2)) := by
+    rw [div_eq_mul_inv, CubicGammaExponential.inverse_Gamma_shift s 2]
+    simp only [Nat.cast_ofNat, div_eq_mul_inv]
+    ring
+  have hs : ‖s‖ ≤ 1 / 10 + |t| := by
+    simpa [s, norm_mul] using norm_add_le (-(1 / 10) : ℂ) ((t : ℂ) * Complex.I)
+  have hf := norm_Gamma_shift_factor s 2
+  have hf' : ‖∏ k ∈ Finset.range 2, (s + k)‖ ≤ (3 + |t|) ^ 2 := by
+    have hs2 : ‖s‖ + (2 : ℝ) ≤ 3 + |t| := by linarith
+    exact hf.trans (pow_le_pow_left₀ (by positivity) hs2 2)
+  change ‖Complex.Gamma (1 - s) / Complex.Gamma s‖ ≤ _
+  rw [heq, norm_mul]
+  exact (mul_le_mul hf' hb (norm_nonneg _) (sq_nonneg _)).trans_eq (mul_comm _ _)
+
+theorem gamma_ratio_left_bound_of_re (z : ℂ) (hz : z.re = -(1 / 10)) :
+    ‖Complex.Gamma (1 - z) / Complex.Gamma z‖ ≤ gammaConstant * (3 + |z.im|) ^ 2 := by
+  have he : (-(1 / 10) : ℂ) + z.im * Complex.I = z := by
+    simpa only [hz, Complex.ofReal_neg, Complex.ofReal_div, Complex.ofReal_one,
+      Complex.ofReal_ofNat] using Complex.re_add_im z
+  simpa only [he] using gamma_ratio_left_bound z.im
+
+def completionScale (Q : ℝ) : ℝ := Real.sqrt (3 * Q) / (2 * Real.pi)
+
+theorem completionScale_pos (Q : ℝ) (hQ : 0 < Q) : 0 < completionScale Q := by
+  unfold completionScale
+  positivity
+
+theorem completionScale_left_power (Q : ℝ) (hQ : 0 < Q) :
+    completionScale Q ^ (6 / 5 : ℝ) =
+      (Real.sqrt 3 / (2 * Real.pi)) ^ (6 / 5 : ℝ) * Q ^ (3 / 5 : ℝ) := by
+  have he : completionScale Q = (Real.sqrt 3 / (2 * Real.pi)) * Real.sqrt Q := by
+    unfold completionScale
+    rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 3)]
+    ring
+  rw [he, Real.mul_rpow (by positivity) (Real.sqrt_nonneg _)]
+  congr 1
+  rw [Real.sqrt_eq_rpow Q, ← Real.rpow_mul hQ.le]
+  norm_num
+
+def leftConstant : ℝ :=
+  (Real.sqrt 3 / (2 * Real.pi)) ^ (6 / 5 : ℝ) * gammaConstant
+
+theorem leftConstant_pos : 0 < leftConstant :=
+  mul_pos (Real.rpow_pos_of_pos (by positivity) _) gammaConstant_pos
+
+theorem left_boundary_of_functional_equation (Q D : ℝ) (hQ : 0 < Q) (_hD : 0 ≤ D)
+    (L Ldual : ℂ → ℂ) (ε : ℂ) (hε : ‖ε‖ = 1)
+    (hfe : ∀ z : ℂ, z.re = -(1 / 10) → L z =
+      ε * (completionScale Q : ℂ) ^ (1 - 2 * z) *
+        (Complex.Gamma (1 - z) / Complex.Gamma z) * Ldual (1 - z))
+    (hdual : ∀ z : ℂ, z.re = 11 / 10 → ‖Ldual z‖ ≤ D)
+    (z : ℂ) (hz : z.re = -(1 / 10)) :
+    ‖L z‖ ≤ leftConstant * D * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2 := by
+  have hscale : ‖(completionScale Q : ℂ) ^ (1 - 2 * z)‖ =
+      (Real.sqrt 3 / (2 * Real.pi)) ^ (6 / 5 : ℝ) * Q ^ (3 / 5 : ℝ) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos (completionScale_pos Q hQ)]
+    have hre : (1 - 2 * z).re = 6 / 5 := by simp [hz]; norm_num
+    rw [hre, completionScale_left_power Q hQ]
+  have hd : ‖Ldual (1 - z)‖ ≤ D := hdual _ (by simp [hz]; norm_num)
+  rw [hfe z hz, norm_mul, norm_mul, norm_mul, hε, one_mul, hscale]
+  have hg := gamma_ratio_left_bound_of_re z hz
+  have hc := gammaConstant_pos
+  have hm := mul_le_mul
+    (mul_le_mul_of_nonneg_left hg (by positivity)) hd (norm_nonneg _)
+    (by positivity : 0 ≤ ((Real.sqrt 3 / (2 * Real.pi)) ^ (6 / 5 : ℝ) * Q ^ (3 / 5 : ℝ)) *
+      (gammaConstant * (3 + |z.im|) ^ 2))
+  calc
+    _ ≤ ((Real.sqrt 3 / (2 * Real.pi)) ^ (6 / 5 : ℝ) * Q ^ (3 / 5 : ℝ)) *
+        (gammaConstant * (3 + |z.im|) ^ 2) * D := hm
+    _ = _ := by unfold leftConstant; ring
+
+def strip : Set ℂ := Complex.re ⁻¹' Ioo (-(1 / 10)) (11 / 10)
+def closedStrip : Set ℂ := Complex.re ⁻¹' Icc (-(1 / 10)) (11 / 10)
+
+theorem vertical_strip_of_exp_bound (F : ℂ → ℂ) (C : ℝ)
+    (hF : DiffContOnCl ℂ F strip)
+    (hgrowth : ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ z ∈ strip, ‖F z‖ ≤ A * Real.exp (B * |z.im|))
+    (hleft : ∀ z : ℂ, z.re = -(1 / 10) → ‖F z‖ ≤ C)
+    (hright : ∀ z : ℂ, z.re = 11 / 10 → ‖F z‖ ≤ C)
+    (z : ℂ) (hz : z ∈ closedStrip) : ‖F z‖ ≤ C := by
+  obtain ⟨A, B, hA, hB, hgrowth⟩ := hgrowth
+  apply PhragmenLindelof.vertical_strip hF ?_ hleft hright hz.1 hz.2
+  refine ⟨1, ?_, B, ?_⟩
+  · apply (lt_div_iff₀ (by norm_num : (0 : ℝ) < 11 / 10 - -(1 / 10))).mpr
+    linarith [Real.two_le_pi]
+  · apply isBigO_iff.mpr
+    refine ⟨A, eventually_inf_principal.mpr (Eventually.of_forall fun z hz => ?_)⟩
+    rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    apply (hgrowth z hz).trans
+    apply mul_le_mul_of_nonneg_left _ hA
+    apply Real.exp_le_exp.mpr
+    simp only [one_mul]
+    exact mul_le_mul_of_nonneg_left (by linarith [Real.add_one_le_exp |z.im|]) hB
+
+theorem closure_strip_subset : closure strip ⊆ closedStrip :=
+  closure_minimal (fun _ hz => ⟨hz.1.le, hz.2.le⟩)
+    (isClosed_Icc.preimage Complex.continuous_re)
+
+theorem shift_norm_lower (z : ℂ) (hz : z ∈ closedStrip) : 1 ≤ ‖z + 2‖ := by
+  have h := Complex.re_le_norm (z + 2)
+  norm_num at h
+  linarith [hz.1]
+
+theorem shift_ne_zero (z : ℂ) (hz : z ∈ closedStrip) : z + 2 ≠ 0 := by
+  have h := shift_norm_lower z hz
+  intro hzero
+  rw [hzero, norm_zero] at h
+  norm_num at h
+
+theorem height_le_shift_norm (z : ℂ) (hz : z ∈ closedStrip) :
+    3 + |z.im| ≤ 3 * ‖z + 2‖ := by
+  have hr := Complex.re_le_norm (z + 2)
+  have hi := Complex.abs_im_le_norm (z + 2)
+  norm_num at hr hi
+  linarith [hz.1]
+
+theorem shift_norm_le_height (z : ℂ) (hz : z ∈ closedStrip) :
+    ‖z + 2‖ ≤ 2 * (3 + |z.im|) := by
+  have hr : 0 ≤ z.re + 2 := by linarith [hz.1]
+  have h := Complex.norm_le_abs_re_add_abs_im (z + 2)
+  norm_num [abs_of_nonneg hr] at h
+  linarith [hz.2, abs_nonneg z.im]
+
+def normalized (Q : ℝ) (L : ℂ → ℂ) (z : ℂ) : ℂ :=
+  L z / (((Q ^ (3 / 5 : ℝ) : ℝ) : ℂ) * (z + 2) ^ 2)
+
+theorem norm_normalized (Q : ℝ) (hQ : 0 < Q) (L : ℂ → ℂ) (z : ℂ) :
+    ‖normalized Q L z‖ = ‖L z‖ / (Q ^ (3 / 5 : ℝ) * ‖z + 2‖ ^ 2) := by
+  simp [normalized, norm_pow,
+    Real.norm_eq_abs, abs_of_pos (Real.rpow_pos_of_pos hQ _)]
+
+theorem normalized_diffContOnCl (Q : ℝ) (hQ : 0 < Q) (L : ℂ → ℂ)
+    (hL : DiffContOnCl ℂ L strip) : DiffContOnCl ℂ (normalized Q L) strip := by
+  have hqn : ((Q ^ (3 / 5 : ℝ) : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.rpow_pos_of_pos hQ (3 / 5 : ℝ)).ne'
+  have hd : Differentiable ℂ (fun z : ℂ => ((Q ^ (3 / 5 : ℝ) : ℝ) : ℂ) * (z + 2) ^ 2) := by
+    fun_prop
+  refine ⟨hL.differentiableOn.div hd.differentiableOn ?_, hL.continuousOn.div hd.continuous.continuousOn ?_⟩
+  · intro z hz
+    exact mul_ne_zero hqn (pow_ne_zero _ (shift_ne_zero z ⟨hz.1.le, hz.2.le⟩))
+  · intro z hz
+    exact mul_ne_zero hqn (pow_ne_zero _ (shift_ne_zero z (closure_strip_subset hz)))
+
+theorem normalized_exp_bound (Q : ℝ) (hQ : 0 < Q) (L : ℂ → ℂ)
+    (hgrowth : ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ z ∈ strip, ‖L z‖ ≤ A * Real.exp (B * |z.im|)) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ z ∈ strip, ‖normalized Q L z‖ ≤ A * Real.exp (B * |z.im|) := by
+  obtain ⟨A, B, hA, hB, hg⟩ := hgrowth
+  have hq := Real.rpow_pos_of_pos hQ (3 / 5 : ℝ)
+  refine ⟨A / Q ^ (3 / 5 : ℝ), B, div_nonneg hA hq.le, hB, ?_⟩
+  intro z hz
+  have hn := shift_norm_lower z ⟨hz.1.le, hz.2.le⟩
+  have hn2 : 1 ≤ ‖z + 2‖ ^ 2 := by nlinarith
+  rw [norm_normalized Q hQ]
+  calc
+    _ ≤ ‖L z‖ / Q ^ (3 / 5 : ℝ) :=
+      div_le_div_of_nonneg_left (norm_nonneg _) hq (by nlinarith)
+    _ ≤ (A * Real.exp (B * |z.im|)) / Q ^ (3 / 5 : ℝ) :=
+      div_le_div_of_nonneg_right (hg z hz) hq.le
+    _ = _ := by ring
+
+theorem normalized_boundary_bound (Q C : ℝ) (hQ : 0 < Q) (hC : 0 ≤ C)
+    (L : ℂ → ℂ) (z : ℂ) (hz : z ∈ closedStrip)
+    (hL : ‖L z‖ ≤ C * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2) :
+    ‖normalized Q L z‖ ≤ 9 * C := by
+  have hq := Real.rpow_pos_of_pos hQ (3 / 5 : ℝ)
+  have hn : 0 < ‖z + 2‖ := lt_of_lt_of_le zero_lt_one (shift_norm_lower z hz)
+  have hh := height_le_shift_norm z hz
+  have hh2 : (3 + |z.im|) ^ 2 ≤ 9 * ‖z + 2‖ ^ 2 := by
+    nlinarith [abs_nonneg z.im, norm_nonneg (z + 2)]
+  rw [norm_normalized Q hQ]
+  apply (div_le_iff₀ (mul_pos hq (sq_pos_of_pos hn))).mpr
+  apply hL.trans
+  have h := mul_le_mul_of_nonneg_left hh2 (mul_nonneg hC hq.le)
+  nlinarith
+
+theorem uniform_strip_bound_of_edges (Q C : ℝ) (hQ : 0 < Q) (hC : 0 ≤ C)
+    (L : ℂ → ℂ) (hL : DiffContOnCl ℂ L strip)
+    (hgrowth : ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ z ∈ strip, ‖L z‖ ≤ A * Real.exp (B * |z.im|))
+    (hleft : ∀ z : ℂ, z.re = -(1 / 10) →
+      ‖L z‖ ≤ C * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2)
+    (hright : ∀ z : ℂ, z.re = 11 / 10 →
+      ‖L z‖ ≤ C * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2)
+    (z : ℂ) (hz : z ∈ closedStrip) :
+    ‖L z‖ ≤ 36 * C * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2 := by
+  have hn : ‖normalized Q L z‖ ≤ 9 * C := by
+    apply vertical_strip_of_exp_bound _ _ (normalized_diffContOnCl Q hQ L hL)
+      (normalized_exp_bound Q hQ L hgrowth) ?_ ?_ z hz
+    · intro w hw
+      apply normalized_boundary_bound Q C hQ hC L w
+        (show w ∈ closedStrip from ⟨by rw [hw], by rw [hw]; norm_num⟩) (hleft w hw)
+    · intro w hw
+      apply normalized_boundary_bound Q C hQ hC L w
+        (show w ∈ closedStrip from ⟨by rw [hw]; norm_num, by rw [hw]⟩) (hright w hw)
+  have hq := Real.rpow_pos_of_pos hQ (3 / 5 : ℝ)
+  have hnz : 0 < ‖z + 2‖ := lt_of_lt_of_le zero_lt_one (shift_norm_lower z hz)
+  rw [norm_normalized Q hQ] at hn
+  have hb := (div_le_iff₀ (mul_pos hq (sq_pos_of_pos hnz))).mp hn
+  have hh := shift_norm_le_height z hz
+  have hh2 : ‖z + 2‖ ^ 2 ≤ 4 * (3 + |z.im|) ^ 2 := by
+    nlinarith [norm_nonneg (z + 2), abs_nonneg z.im]
+  have h := mul_le_mul_of_nonneg_left hh2 (mul_nonneg (by positivity : 0 ≤ 9 * C) hq.le)
+  nlinarith
+
+theorem uniform_strip_bound (Q C : ℝ) (hQ : 1 ≤ Q) (hC : 0 ≤ C)
+    (L : ℂ → ℂ) (hL : DiffContOnCl ℂ L strip)
+    (hgrowth : ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ z ∈ strip, ‖L z‖ ≤ A * Real.exp (B * |z.im|))
+    (hleft : ∀ z : ℂ, z.re = -(1 / 10) →
+      ‖L z‖ ≤ C * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2)
+    (hright : ∀ z : ℂ, z.re = 11 / 10 → ‖L z‖ ≤ C)
+    (z : ℂ) (hz : z ∈ closedStrip) :
+    ‖L z‖ ≤ 36 * C * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2 := by
+  apply uniform_strip_bound_of_edges Q C (lt_of_lt_of_le zero_lt_one hQ) hC L hL
+    hgrowth hleft ?_ z hz
+  intro w hw
+  apply (hright w hw).trans
+  have hq : 1 ≤ Q ^ (3 / 5 : ℝ) := Real.one_le_rpow hQ (by norm_num)
+  have hh : 1 ≤ (3 + |w.im|) ^ 2 := by nlinarith [abs_nonneg w.im]
+  calc
+    C ≤ C * Q ^ (3 / 5 : ℝ) := le_mul_of_one_le_right hC hq
+    _ ≤ _ := le_mul_of_one_le_right (mul_nonneg hC (le_trans zero_le_one hq)) hh
+
+theorem uniform_strip_bound_of_functional_equation
+    (Q D : ℝ) (hQ : 1 ≤ Q) (hD : 0 ≤ D) (L Ldual : ℂ → ℂ)
+    (ε : ℂ) (hε : ‖ε‖ = 1) (hL : DiffContOnCl ℂ L strip)
+    (hgrowth : ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ z ∈ strip, ‖L z‖ ≤ A * Real.exp (B * |z.im|))
+    (hfe : ∀ z : ℂ, z.re = -(1 / 10) → L z =
+      ε * (completionScale Q : ℂ) ^ (1 - 2 * z) *
+        (Complex.Gamma (1 - z) / Complex.Gamma z) * Ldual (1 - z))
+    (hright : ∀ z : ℂ, z.re = 11 / 10 → ‖L z‖ ≤ D)
+    (hdual : ∀ z : ℂ, z.re = 11 / 10 → ‖Ldual z‖ ≤ D)
+    (z : ℂ) (hz : z ∈ closedStrip) :
+    ‖L z‖ ≤ 36 * ((1 + leftConstant) * D) * Q ^ (3 / 5 : ℝ) * (3 + |z.im|) ^ 2 := by
+  have hQ0 := lt_of_lt_of_le zero_lt_one hQ
+  have hc := leftConstant_pos
+  apply uniform_strip_bound Q ((1 + leftConstant) * D) hQ (by positivity) L hL hgrowth ?_ ?_ z hz
+  · intro w hw
+    apply (left_boundary_of_functional_equation Q D hQ0 hD L Ldual ε hε hfe hdual w hw).trans
+    have hbase : leftConstant * D ≤ (1 + leftConstant) * D := by nlinarith
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hbase (Real.rpow_nonneg hQ0.le _)) (sq_nonneg _)
+  · intro w hw
+    apply (hright w hw).trans
+    nlinarith
+
+theorem uncompleted_exp_bound (a : ℝ) (ha : 0 < a) (F : ℂ → ℂ)
+    (hF : ∃ C : ℝ, 0 ≤ C ∧ ∀ z ∈ closedStrip, ‖F z‖ ≤ C) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧ ∀ z ∈ strip,
+      ‖(a : ℂ) ^ (-z) * (Complex.Gamma z)⁻¹ * F z‖ ≤
+        A * Real.exp (B * |z.im|) := by
+  obtain ⟨C, hC, hF⟩ := hF
+  obtain ⟨G, hG, hg⟩ := CubicGammaExponential.inverse_Gamma_strip_exp_bound_complex
+    (-(1 / 10)) (11 / 10)
+  let S : ℝ := a ^ (-(11 / 10) : ℝ) + a ^ (1 / 10 : ℝ)
+  have hS : 0 ≤ S := add_nonneg (Real.rpow_nonneg ha.le _) (Real.rpow_nonneg ha.le _)
+  refine ⟨S * G * C, Real.pi, by positivity, Real.pi_pos.le, ?_⟩
+  intro z hz
+  have hzc : z ∈ closedStrip := ⟨hz.1.le, hz.2.le⟩
+  have haBound : ‖(a : ℂ) ^ (-z)‖ ≤ S := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos ha, Complex.neg_re]
+    exact rpow_between_endpoints a (-(11 / 10)) (1 / 10) (-z.re)
+      ha (by linarith [hz.2]) (by linarith [hz.1])
+  rw [norm_mul, norm_mul]
+  have hgamma := hg z hzc
+  have hprod := mul_le_mul (mul_le_mul haBound hgamma (norm_nonneg _) hS)
+    (hF z hzc) (norm_nonneg _) (mul_nonneg hS (mul_nonneg hG.le (Real.exp_nonneg _)))
+  nlinarith
+
+theorem mellin_uncompleted_exp_bound (a : ℝ) (ha : 0 < a) (f : ℝ → ℂ)
+    (hleft : MellinConvergent f (-(1 / 10) : ℂ))
+    (hright : MellinConvergent f (11 / 10 : ℂ)) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧ ∀ z ∈ strip,
+      ‖(a : ℂ) ^ (-z) * (Complex.Gamma z)⁻¹ * mellin f z‖ ≤
+        A * Real.exp (B * |z.im|) := by
+  apply uncompleted_exp_bound a ha (mellin f)
+  obtain ⟨C, hC, hb⟩ := mellin_uniform_strip_bound f
+    (-(1 / 10)) (11 / 10) (by simpa using hleft) (by simpa using hright)
+  exact ⟨C, hC, fun z hz => hb z hz.1 hz.2⟩
+
+end HeckeStrip
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology BigOperators
+open Set MeasureTheory
+namespace HeckeStripActual
+open HeckeFamily HeckePrimitive
+
+variable (c : O) [NeZero c]
+
+private instance : Fintype (O ⧸ Ideal.span {c}) := by
+  letI : Finite (O ⧸ Ideal.span {c}) := Ring.HasFiniteQuotients.finiteQuotient
+    (by simpa only [ne_eq, Ideal.span_singleton_eq_bot] using NeZero.ne c)
+  exact Fintype.ofFinite _
+
+def conductor : ℝ := Ideal.absNorm (Ideal.span {c})
+
+theorem conductor_ge_one : 1 ≤ conductor c := by
+  unfold conductor
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (show Ideal.absNorm (Ideal.span {c}) ≠ 0 by
+    rw [ne_eq, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
+    exact NeZero.ne c)
+
+theorem completionScale_eq_inv :
+    HeckeStrip.completionScale (conductor c) = (Real.pi * scale c)⁻¹ := by
+  have hn : 0 < ‖ringComplex c‖ := by
+    have h := ThetaRegularity.lattice_gap c (NeZero.ne c)
+    nlinarith [norm_nonneg (ringComplex c)]
+  unfold HeckeStrip.completionScale conductor scale GaussianTheta.parameter
+  rw [← ringComplex_norm_sq_eq_absNorm_span,
+    Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 3), Real.sqrt_sq (norm_nonneg _)]
+  field_simp
+
+theorem completionScale_cpow (s : ℂ) :
+    (HeckeStrip.completionScale (conductor c) : ℂ)^s =
+      (scale c : ℂ)^(-s) * (Real.pi : ℂ)^(-s) := by
+  have ha : 0 < Real.pi * scale c := mul_pos Real.pi_pos (scale_pos c)
+  have hprod : ((Real.pi * scale c : ℝ) : ℂ)^s *
+      (((Real.pi * scale c)⁻¹ : ℝ) : ℂ)^s = 1 := by
+    rw [← Complex.mul_cpow_ofReal_nonneg ha.le (inv_pos.mpr ha).le,
+      ← Complex.ofReal_mul, mul_inv_cancel₀ ha.ne', Complex.ofReal_one, Complex.one_cpow]
+  have hinv : (((Real.pi * scale c)⁻¹ : ℝ) : ℂ)^s =
+      (((Real.pi * scale c : ℝ) : ℂ)^s)⁻¹ :=
+    eq_inv_of_mul_eq_one_left (by rw [mul_comm]; exact hprod)
+  rw [completionScale_eq_inv, hinv, Complex.ofReal_mul,
+    Complex.mul_cpow_ofReal_nonneg Real.pi_pos.le (scale_pos c).le, mul_inv_rev]
+  simp only [Complex.cpow_neg]
+
+theorem completedL_eq_standard (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ}
+    (h0 : s ≠ 0) (h1 : s ≠ 1) (hΓ : Complex.Gamma s ≠ 0) :
+    completedL c χ hu hp s =
+      (HeckeStrip.completionScale (conductor c) : ℂ)^s * Complex.Gamma s *
+        LFunction (character c χ hu) s := by
+  rw [completedL_eq_gamma_mul_LFunction c χ hu hp h0 h1 hΓ, completionScale_cpow]
+
+theorem LFunction_norm_le (η : Character) {σ : ℝ} (hσ : 1 < σ)
+    {s : ℂ} (hs : σ ≤ s.re) : ‖LFunction η s‖ ≤ HeckeReciprocalBound.bound σ := by
+  have hs1 := hσ.trans_le hs
+  rw [LFunction_eq_series η hs1, IdealEuler.series]
+  have hsum := IdealEuler.weighted_summable_norm (idealCoeff η) (idealCoeff_norm_le_one η) s hs1
+  apply (norm_tsum_le_tsum_norm hsum).trans
+  apply Summable.tsum_le_tsum _ hsum
+    (fullIdealWeight_summable_norm (σ : ℂ) (by simpa using hσ))
+  intro I
+  change ‖idealCoeff η I * fullIdealWeight s I‖ ≤ _
+  rw [norm_mul]
+  exact (mul_le_of_le_one_left (norm_nonneg _) (idealCoeff_norm_le_one η I)).trans
+    (HeckeReciprocalBound.normWeight_le_of_re_ge hs I)
+
+theorem pair_strong (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (hχ : χ ≠ 1) :
+    IsStrongFEPair (pair c χ hu hp) := by
+  constructor
+  · exact HeckeCharacterAnalytic.coefficients_zero_of_nonprincipal (character c χ hu) hχ
+  · apply HeckeCharacterAnalytic.coefficients_zero_of_nonprincipal
+      (character c χ⁻¹ (inverse_unit_trivial c χ hu))
+    change χ⁻¹ ≠ 1
+    simpa only [ne_eq, inv_eq_one] using hχ
+
+theorem LFunction_eq_uncompleted (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (hχ : χ ≠ 1) (s : ℂ) :
+    LFunction (character c χ hu) s =
+      (HeckeStrip.completionScale (conductor c) : ℂ)^(-s) * (Complex.Gamma s)⁻¹ *
+        completedL c χ hu hp s := by
+  let a := HeckeStrip.completionScale (conductor c)
+  have ha : 0 < a := HeckeStrip.completionScale_pos _ (lt_of_lt_of_le zero_lt_one (conductor_ge_one c))
+  have hL := LFunction_entire_nonprincipal (character c χ hu) hχ
+  have hΛ : Differentiable ℂ (completedL c χ hu hp) :=
+    (pair_strong c χ hu hp hχ).differentiable_Λ.div_const 6
+  have hR : Differentiable ℂ (fun z : ℂ => (a : ℂ)^(-z) * (Complex.Gamma z)⁻¹ *
+      completedL c χ hu hp z) :=
+    (((differentiable_id.neg).const_cpow (Or.inl (Complex.ofReal_ne_zero.mpr ha.ne'))).mul
+      Complex.differentiable_one_div_Gamma).mul hΛ
+  have he : LFunction (character c χ hu) = fun z : ℂ => (a : ℂ)^(-z) *
+      (Complex.Gamma z)⁻¹ * completedL c χ hu hp z := by
+    apply (Complex.analyticOnNhd_univ_iff_differentiable.mpr hL).eq_of_eventuallyEq
+      (Complex.analyticOnNhd_univ_iff_differentiable.mpr hR) (z₀ := (2 : ℂ))
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num : (1 : ℝ) < (2 : ℂ).re)] with z hz
+    have h0 : z ≠ 0 := by intro h; norm_num [h] at hz
+    have h1 : z ≠ 1 := by intro h; norm_num [h] at hz
+    have hΓ : Complex.Gamma z ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by linarith)
+    rw [completedL_eq_standard c χ hu hp h0 h1 hΓ]
+    have haz : (a : ℂ)^z ≠ 0 := (Complex.cpow_eq_zero_iff _ _).not.mpr (by simp [ha.ne'])
+    change LFunction (character c χ hu) z = (a : ℂ)^(-z) * (Complex.Gamma z)⁻¹ *
+      ((a : ℂ)^z * Complex.Gamma z * LFunction (character c χ hu) z)
+    rw [Complex.cpow_neg]
+    field_simp
+  exact congr_fun he s
+
+theorem functional_equation_left (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) {s : ℂ} (hs : s.re = -(1/10)) :
+    LFunction (character c χ hu) s = TraceCharacter.normalizedGauss c χ *
+      (HeckeStrip.completionScale (conductor c) : ℂ)^(1-2*s) *
+      (Complex.Gamma (1-s) / Complex.Gamma s) *
+        LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)) (1-s) := by
+  have h0 : s ≠ 0 := by intro h; simp [h] at hs
+  have h1 : s ≠ 1 := by intro h; norm_num [h] at hs
+  have hs0 : 1-s ≠ 0 := sub_ne_zero.mpr (Ne.symm h1)
+  have hs1 : 1-s ≠ 1 := by intro h; apply h0; linear_combination -h
+  have hΓdual : Complex.Gamma (1-s) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by simp [hs]; norm_num)
+  have hΓ : Complex.Gamma s ≠ 0 := by
+    have h := Complex.Gamma_ne_zero_of_re_pos (s := s+1) (by simp [hs]; norm_num)
+    rw [Complex.Gamma_add_one s h0] at h
+    exact (mul_ne_zero_iff.mp h).2
+  have he := completedL_functional_equation c χ hu hp hs0 hs1
+  rw [sub_sub_cancel] at he
+  rw [completedL_eq_standard c χ hu hp h0 h1 hΓ,
+    completedL_eq_standard c χ⁻¹ (inverse_unit_trivial c χ hu) hp.inv hs0 hs1 hΓdual] at he
+  let a := HeckeStrip.completionScale (conductor c)
+  have ha : (a : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr
+    (HeckeStrip.completionScale_pos _ (lt_of_lt_of_le zero_lt_one (conductor_ge_one c))).ne'
+  have haz : (a : ℂ)^s ≠ 0 := (Complex.cpow_eq_zero_iff _ _).not.mpr (by simp [ha])
+  have hpow : (a : ℂ)^(1-s) = (a : ℂ)^s * (a : ℂ)^(1-2*s) := by
+    rw [← Complex.cpow_add _ _ ha]
+    congr 1
+    ring
+  apply mul_left_cancel₀ (mul_ne_zero haz hΓ)
+  calc
+    _ = TraceCharacter.normalizedGauss c χ * ((a : ℂ)^(1-s) * Complex.Gamma (1-s) *
+        LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)) (1-s)) := he
+    _ = _ := by
+      change _ = ((a : ℂ)^s * Complex.Gamma s) *
+        (TraceCharacter.normalizedGauss c χ * (a : ℂ)^(1-2*s) *
+          (Complex.Gamma (1-s)/Complex.Gamma s) * _)
+      rw [hpow]
+      field_simp
+
+theorem LFunction_exp_growth (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (hχ : χ ≠ 1) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧ ∀ z ∈ HeckeStrip.strip,
+      ‖LFunction (character c χ hu) z‖ ≤ A * Real.exp (B * |z.im|) := by
+  let f : ℝ → ℂ := fun t => (pair c χ hu hp).f t / 6
+  have hP := pair_strong c χ hu hp hχ
+  have hconv (s : ℂ) : MellinConvergent f s := (hP.hasMellin s).1.div_const 6
+  have h := HeckeStrip.mellin_uncompleted_exp_bound
+    (HeckeStrip.completionScale (conductor c))
+    (HeckeStrip.completionScale_pos _ (lt_of_lt_of_le zero_lt_one (conductor_ge_one c))) f
+    (hconv _) (hconv _)
+  have heq (z : ℂ) :
+      (HeckeStrip.completionScale (conductor c) : ℂ)^(-z) * (Complex.Gamma z)⁻¹ * mellin f z =
+        LFunction (character c χ hu) z := by
+    rw [LFunction_eq_uncompleted c χ hu hp hχ]
+    congr 1
+    change mellin (fun t => (pair c χ hu hp).f t / 6) z = (pair c χ hu hp).Λ z / 6
+    rw [mellin_div_const, (hP.hasMellin z).2]
+  simpa only [heq] using h
+
+theorem uniform_strip_bound (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (hχ : χ ≠ 1)
+    (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖LFunction (character c χ hu) z‖ ≤
+      36 * ((1 + HeckeStrip.leftConstant) * HeckeReciprocalBound.bound (11/10)) *
+        conductor c ^ (3/5 : ℝ) * (3 + |z.im|)^2 := by
+  apply HeckeStrip.uniform_strip_bound_of_functional_equation
+    (conductor c) (HeckeReciprocalBound.bound (11/10)) (conductor_ge_one c)
+    (tsum_nonneg (fun _ => norm_nonneg _))
+    (LFunction (character c χ hu))
+    (LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)))
+    (TraceCharacter.normalizedGauss c χ) (TraceCharacter.normalizedGauss_norm c χ hp)
+    (LFunction_entire_nonprincipal (character c χ hu) hχ).diffContOnCl
+    (LFunction_exp_growth c χ hu hp hχ) (fun _ hs => functional_equation_left c χ hu hp hs)
+    _ _ z hz
+  · intro s hs
+    exact LFunction_norm_le _ (by norm_num : (1 : ℝ) < 11/10) hs.ge
+  · intro s hs
+    exact LFunction_norm_le _ (by norm_num : (1 : ℝ) < 11/10) hs.ge
+
+end HeckeStripActual
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+namespace HeckePresentation
+open HeckeFamily
+
+def generator (η : Character) : O := cubicIdealGenerator η.modulus
+
+instance (η : Character) : NeZero (generator η) :=
+  ⟨cubicIdealGenerator_ne_zero η.modulus η.modulus_ne_bot⟩
+
+theorem span_generator (η : Character) : Ideal.span {generator η} = η.modulus :=
+  span_cubicIdealGenerator η.modulus
+
+def quotientEquiv (η : Character) : (O ⧸ Ideal.span {generator η}) ≃+* (O ⧸ η.modulus) :=
+  Ideal.quotEquivOfEq (span_generator η)
+
+def principalResidue (η : Character) : MulChar (O ⧸ Ideal.span {generator η}) ℂ :=
+  CharacterTransport.pullback (quotientEquiv η) η.residue
+
+@[simp] theorem principalResidue_mk (η : Character) (z : O) :
+    principalResidue η (Ideal.Quotient.mk (Ideal.span {generator η}) z) =
+      elementCoeff η z := by
+  simp only [principalResidue, CharacterTransport.pullback_apply, quotientEquiv,
+    Ideal.quotEquivOfEq_mk, elementCoeff]
+
+theorem principalResidue_unit (η : Character) (u : Oˣ) :
+    principalResidue η (Ideal.Quotient.mk (Ideal.span {generator η}) (u : O)) = 1 := by
+  rw [principalResidue_mk]
+  exact η.unit_trivial u
+
+def principalCharacter (η : Character) : Character :=
+  HeckePrimitive.character (generator η) (principalResidue η) (principalResidue_unit η)
+
+@[simp] theorem principalCharacter_elementCoeff (η : Character) (z : O) :
+    elementCoeff (principalCharacter η) z = elementCoeff η z := principalResidue_mk η z
+
+theorem principalResidue_primitive (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue) :
+    FiniteFourier.IsPrimitiveOnIdeals (principalResidue η) :=
+  CharacterTransport.primitive_pullback (quotientEquiv η) η.residue hp
+
+private theorem pullback_one {R S : Type*} [CommRing R] [CommRing S] (e : R ≃+* S) :
+    CharacterTransport.pullback e (1 : MulChar S ℂ) = 1 := by
+  apply MulChar.ext'
+  intro x
+  rw [CharacterTransport.pullback_apply]
+  by_cases hx : IsUnit x
+  · have hxe : IsUnit (e x) := hx.map e.toMonoidHom
+    rw [MulChar.one_apply hxe, MulChar.one_apply hx]
+  · have he : ¬ IsUnit (e x) := by
+      intro h
+      apply hx
+      simpa using h.map e.symm.toMonoidHom
+    rw [MulChar.map_nonunit _ he, MulChar.map_nonunit _ hx]
+
+theorem principalResidue_ne_one (η : Character) (hη : η.residue ≠ 1) :
+    principalResidue η ≠ 1 := by
+  intro h
+  have he := congrArg (CharacterTransport.pullback (quotientEquiv η).symm) h
+  rw [principalResidue, CharacterTransport.pullback_symm, pullback_one] at he
+  exact hη he
+
+theorem LFunction_principalCharacter (η : Character) (hη : η.residue ≠ 1) (s : ℂ) :
+    LFunction (principalCharacter η) s = LFunction η s := by
+  have hp : (principalCharacter η).residue ≠ 1 := principalResidue_ne_one η hη
+  have ha := LFunction_entire_nonprincipal (principalCharacter η) hp
+  have hb := LFunction_entire_nonprincipal η hη
+  have he : LFunction (principalCharacter η) = LFunction η := by
+    apply (Complex.analyticOnNhd_univ_iff_differentiable.mpr ha).eq_of_eventuallyEq
+      (Complex.analyticOnNhd_univ_iff_differentiable.mpr hb) (z₀ := (2 : ℂ))
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num : (1 : ℝ) < (2 : ℂ).re)] with z hz
+    unfold LFunction
+    congr 1
+    apply continuedLattice_eq_of_elementCoeff_eq _ _ (principalCharacter_elementCoeff η)
+      (by linarith) (by intro h; norm_num [h] at hz)
+  exact congr_fun he s
+
+theorem uniform_strip_bound (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue) (hη : η.residue ≠ 1)
+    (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖LFunction η z‖ ≤
+      36 * ((1 + HeckeStrip.leftConstant) * HeckeReciprocalBound.bound (11/10)) *
+        (η.modulus.absNorm : ℝ) ^ (3/5 : ℝ) * (3 + |z.im|)^2 := by
+  have h := HeckeStripActual.uniform_strip_bound (generator η) (principalResidue η)
+    (principalResidue_unit η) (principalResidue_primitive η hp) (principalResidue_ne_one η hη) z hz
+  change ‖LFunction (principalCharacter η) z‖ ≤ _ at h
+  rw [LFunction_principalCharacter η hη z] at h
+  simpa only [HeckeStripActual.conductor, span_generator] using h
+
+end HeckePresentation
+
+end
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

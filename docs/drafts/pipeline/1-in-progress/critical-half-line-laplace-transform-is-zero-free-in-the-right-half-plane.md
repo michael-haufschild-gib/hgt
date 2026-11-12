@@ -43,10 +43,10 @@ Verified:
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionPreservesPoleProduct`: the paired quadratic Laplace factor and reciprocal opposite real moments.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesTheActualDomain`: all six actual-domain fields, including Gamma integrability.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesArithmeticEnergy`: all translated correlations, the prime sum and the real pole term.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionHasPositiveEnergyDefect`: the telescoped physical norm defect and exact full-form loss.
 
 Written, unchecked:
 
-- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionHasPositiveEnergyDefect`: the telescoped physical norm defect and exact full-form loss.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/TheCriticalHalfLineStateHasNoRightHalfPlaneLaplaceZero`: zero-energy vanishing, actual-state nonvanishing and the unconditional RH dichotomy.
 
 The remaining chain is written but unverified. No complex-state nonvanishing
