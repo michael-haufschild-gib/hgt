@@ -186357,4 +186357,4578 @@ end
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology
+open MeasureTheory Set
+namespace HeckeDyadic
+open HeckeFamily
+
+abbrev NonzeroIdeal := CubicEisenstein.NonzeroIdeal
+
+private instance : Countable O := Eisenstein.Coordinates.coordinateEquiv.injective.countable
+private instance : Countable (Ideal O) := cubicIdealGenerator_injective.countable
+
+def norm (I : NonzeroIdeal) : ℝ := I.val.absNorm
+
+theorem norm_pos (I : NonzeroIdeal) : 0 < norm I := by
+  unfold norm
+  exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr I.property)
+
+def coefficient (χ : Character) (inverse : Bool) (I : Ideal O) : ℂ :=
+  if inverse then (UniqueFactorizationMonoid.moebius I : ℂ)*idealCoeff χ I else idealCoeff χ I
+
+theorem coefficient_norm_le (χ : Character) (inverse : Bool) (I : Ideal O) :
+    ‖coefficient χ inverse I‖ ≤ 1 := by
+  cases inverse
+  · exact idealCoeff_norm_le_one χ I
+  · change ‖(UniqueFactorizationMonoid.moebius I : ℂ)*idealCoeff χ I‖ ≤ 1
+    rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (IdealCoprimeBilinearSieve.moebius_norm_le_one I)).trans
+      (idealCoeff_norm_le_one χ I)
+
+@[simp] theorem coefficient_zero (χ : Character) (inverse : Bool) : coefficient χ inverse 0 = 0 := by
+  cases inverse
+  · exact idealCoeff_zero χ
+  · change (UniqueFactorizationMonoid.moebius (0 : Ideal O) : ℂ)*idealCoeff χ 0 = 0
+    rw [idealCoeff_zero, mul_zero]
+
+def shift (σ «ω» : ℝ) : ℂ := (σ : ℂ)-(«ω» : ℂ)*Complex.I
+
+@[simp] theorem shift_re (σ «ω» : ℝ) : (shift σ «ω»).re = σ := by simp [shift]
+
+def summand (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D σ «ω» : ℝ) (I : NonzeroIdeal) : ℂ :=
+  coefficient χ inverse I.val * W (norm I/D) * ((norm I/D : ℝ) : ℂ)^(-shift σ «ω»)
+
+def polynomial (χ : Character) (inverse : Bool) (W : ℝ → ℂ) (D σ «ω» : ℝ) : ℂ :=
+  (D : ℂ)^(-(1/2 : ℂ)) * ∑' I : NonzeroIdeal, summand χ inverse W D σ «ω» I
+
+theorem summand_finite_support (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (a b D σ «ω» : ℝ) (hD : 0 < D) (hW : Function.support W ⊆ Icc a b) :
+    (Function.support (summand χ inverse W D σ «ω»)).Finite := by
+  have hfin := Ideal.finite_setOf_absNorm_le (S := O) ⌈D*b⌉₊
+  apply (Set.Finite.preimage (f := fun I : NonzeroIdeal => I.val) Subtype.val_injective.injOn hfin).subset
+  intro I hI
+  have hw : W (norm I/D) ≠ 0 := by
+    intro h
+    exact hI (by simp [summand, h])
+  have hupper := (hW hw).2
+  have hq : norm I ≤ D*b := by
+    have h := (div_le_iff₀ hD).mp hupper
+    linarith
+  have hr : norm I ≤ (⌈D*b⌉₊ : ℝ) := hq.trans (Nat.le_ceil _)
+  change I.val.absNorm ≤ ⌈D*b⌉₊
+  dsimp [norm] at hr
+  exact_mod_cast hr
+
+def series (χ : Character) (inverse : Bool) (s : ℂ) : ℂ :=
+  if inverse then HeckeReciprocal.reciprocal χ s else LFunction χ s
+
+theorem series_eq_tsum (χ : Character) (inverse : Bool) {s : ℂ} (hs : 1 < s.re) :
+    series χ inverse s =
+      ∑' I : NonzeroIdeal, coefficient χ inverse I.val * (norm I : ℂ)^(-s) := by
+  have he : (∑' I : NonzeroIdeal, coefficient χ inverse I.val *
+      fullIdealWeight s I.val) =
+      ∑' I : Ideal O, coefficient χ inverse I * fullIdealWeight s I := by
+    apply tsum_subtype_eq_of_support_subset
+      (s := {I : Ideal O | I ≠ 0})
+      (f := fun I : Ideal O => coefficient χ inverse I * fullIdealWeight s I)
+    intro I hI hi
+    subst I
+    exact hI (by
+      change coefficient χ inverse 0 * fullIdealWeight s 0 = 0
+      rw [coefficient_zero, zero_mul])
+  have hc : (∑' I : NonzeroIdeal, coefficient χ inverse I.val * (norm I : ℂ)^(-s)) =
+      ∑' I : Ideal O, coefficient χ inverse I * fullIdealWeight s I := by
+    rw [← he]
+    apply tsum_congr
+    intro I
+    have hI : I.val ≠ 0 := I.property
+    rw [fullIdealWeight, if_neg hI]
+    simp only [norm, Complex.ofReal_natCast]
+  rw [hc]
+  cases inverse
+  · exact LFunction_eq_series χ hs
+  · have h0 : s ≠ 0 := by intro h; norm_num [h] at hs
+    have h1 : s ≠ 1 := by intro h; norm_num [h] at hs
+    change HeckeReciprocal.reciprocal χ s = _
+    rw [HeckeReciprocal.reciprocal_eq_inv χ h0 h1, LFunction_eq_series χ hs,
+      ← IdealEuler.inverseSeries_eq_inv _ (idealCoeff_norm_le_one χ) s hs]
+    apply tsum_congr
+    intro I
+    simp only [coefficient,  ite_true, IdealEuler.weighted,
+      IdealEuler.normWeight, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk]
+    ring
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology ContDiff
+open MeasureTheory Set
+namespace HeckeDyadic
+open HeckeFamily
+
+private instance : Countable O := Eisenstein.Coordinates.coordinateEquiv.injective.countable
+private instance : Countable (Ideal O) := cubicIdealGenerator_injective.countable
+
+def twistedCoefficient (χ : Character) (inverse : Bool) (σ freq : ℝ) (I : NonzeroIdeal) : ℂ :=
+  coefficient χ inverse I.val * (norm I : ℂ)^(-shift σ freq)
+
+theorem twisted_coefficient_summable (χ : Character) (inverse : Bool) (c σ freq : ℝ)
+    (hc : 1 < c+σ) :
+    Summable (fun I : NonzeroIdeal => ‖twistedCoefficient χ inverse σ freq I‖*(norm I)^(-c)) := by
+  have hf := (fullIdealWeight_summable_norm ((c+σ : ℝ) : ℂ)
+    (by simpa using hc)).comp_injective (Subtype.val_injective : Function.Injective
+      (fun I : NonzeroIdeal => I.val))
+  apply hf.of_nonneg_of_le (fun I => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (norm_pos I).le _))
+  intro I
+  have hI : I.val ≠ 0 := I.property
+  change ‖twistedCoefficient χ inverse σ freq I‖*(norm I)^(-c) ≤
+    ‖fullIdealWeight ((c+σ : ℝ) : ℂ) I.val‖
+  rw [fullIdealWeight, if_neg hI]
+  change ‖twistedCoefficient χ inverse σ freq I‖*(norm I)^(-c) ≤
+    ‖(norm I : ℂ)^(-((c+σ : ℝ) : ℂ))‖
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos (norm_pos I)]
+  simp only [Complex.neg_re, Complex.ofReal_re]
+  unfold twistedCoefficient
+  rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (norm_pos I), Complex.neg_re, shift_re]
+  calc
+    _ = ‖coefficient χ inverse I.val‖ * (norm I)^(-(c+σ)) := by
+      rw [mul_assoc, ← Real.rpow_add (norm_pos I)]
+      congr 2
+      ring
+    _ ≤ _ := mul_le_of_le_one_left (Real.rpow_nonneg (norm_pos I).le _)
+      (coefficient_norm_le χ inverse I.val)
+
+theorem twisted_series_eq (χ : Character) (inverse : Bool) (σ freq : ℝ)
+    {s : ℂ} (hs : 1 < (s+shift σ freq).re) :
+    (∑' I : NonzeroIdeal, twistedCoefficient χ inverse σ freq I*(norm I : ℂ)^(-s)) =
+      series χ inverse (s+shift σ freq) := by
+  rw [series_eq_tsum χ inverse hs]
+  apply tsum_congr
+  intro I
+  unfold twistedCoefficient
+  rw [mul_assoc, ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr (norm_pos I).ne')]
+  congr 2
+  ring
+
+theorem polynomial_eq_weighted (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D σ freq : ℝ) (hD : 0 < D) :
+    polynomial χ inverse W D σ freq =
+      (D : ℂ)^(shift σ freq-(1/2 : ℂ)) *
+        ∑' I : NonzeroIdeal, twistedCoefficient χ inverse σ freq I * W (norm I/D) := by
+  have he (I : NonzeroIdeal) : summand χ inverse W D σ freq I =
+      (D : ℂ)^(shift σ freq) * (twistedCoefficient χ inverse σ freq I * W (norm I/D)) := by
+    unfold summand twistedCoefficient
+    rw [positive_quotient_cpow_neg _ _ (norm_pos I) hD]
+    ring
+  unfold polynomial
+  simp_rw [he]
+  rw [tsum_mul_left, ← mul_assoc, ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hD.ne')]
+  congr 2
+  ring
+
+theorem polynomial_mellin (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (a b : ℝ) (ha : 0 < a) (hWs : Function.support W ⊆ Icc a b)
+    (hW : ContDiff ℝ ∞ W) (D c σ freq : ℝ) (hD : 0 < D) (hc : 1 < c+σ) :
+    polynomial χ inverse W D σ freq = (1/(2*Real.pi) : ℂ)*∫ t : ℝ,
+      mellin W ((c : ℂ)+t*Complex.I) *
+        (D : ℂ)^(((c : ℂ)+t*Complex.I)+shift σ freq-(1/2 : ℂ)) *
+          series χ inverse (((c : ℂ)+t*Complex.I)+shift σ freq) := by
+  rw [polynomial_eq_weighted χ inverse W D σ freq hD]
+  rw [weightedMellin_inversion norm norm_pos
+    (twistedCoefficient χ inverse σ freq) c (twisted_coefficient_summable χ inverse c σ freq hc)
+    W a b ha hWs hW D hD]
+  rw [mul_left_comm, ← integral_const_mul]
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [] with t
+  rw [twisted_series_eq χ inverse σ freq (by simpa using hc)]
+  have he : (D : ℂ)^(shift σ freq-(1/2 : ℂ))*(D : ℂ)^((c : ℂ)+t*Complex.I) =
+      (D : ℂ)^(((c : ℂ)+t*Complex.I)+shift σ freq-(1/2 : ℂ)) := by
+    rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hD.ne')]
+    congr 1
+    ring
+  calc
+    _ = mellin W ((c : ℂ)+t*Complex.I) *
+        ((D : ℂ)^(shift σ freq-(1/2 : ℂ))*(D : ℂ)^((c : ℂ)+t*Complex.I)) *
+          series χ inverse (((c : ℂ)+t*Complex.I)+shift σ freq) := by ring
+    _ = _ := by rw [he]
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology ContDiff
+open MeasureTheory Set Complex
+namespace HeckeDyadic
+open HeckeFamily
+
+def integrand (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D σ freq : ℝ) (s : ℂ) : ℂ :=
+  mellin W s * (D : ℂ)^(s+shift σ freq-(1/2 : ℂ)) *
+    series χ inverse (s+shift σ freq)
+
+theorem series_norm_le (χ : Character) (inverse : Bool) {b : ℝ} (hb : 1< b)
+    {s : ℂ} (hs : b≤ s.re) :
+    ‖series χ inverse s‖ ≤ HeckeReciprocalBound.bound b := by
+  cases inverse
+  · exact HeckeStripActual.LFunction_norm_le χ hb hs
+  · exact HeckeReciprocalBound.reciprocal_norm_le χ hb hs
+
+theorem series_differentiableAt_right (χ : Character) (inverse : Bool) {s : ℂ}
+    (hs : 1< s.re) : DifferentiableAt ℂ (series χ inverse) s := by
+  cases inverse
+  · exact LFunction_differentiableAt χ
+      (by intro h; norm_num [h] at hs) (Or.inl (by intro h; norm_num [h] at hs))
+  · exact HeckeReciprocal.reciprocal_differentiableAt χ
+      (lt_of_le_of_lt HeckeZeroSupremum.beta_le_one hs)
+
+theorem series_differentiableAt_nonprincipal (χ : Character) (hχ : χ.residue≠1)
+    (inverse : Bool) {s : ℂ} (hz : inverse=true → LFunction χ s≠0) :
+    DifferentiableAt ℂ (series χ inverse) s := by
+  cases inverse
+  · exact LFunction_entire_nonprincipal χ hχ s
+  · have he : series χ true = fun z => (LFunction χ z)⁻¹ := by
+      funext z
+      simp [series, HeckeReciprocal.reciprocal, hχ]
+    rw [he]
+    exact (LFunction_entire_nonprincipal χ hχ s).inv (hz rfl)
+
+theorem integrand_differentiableAt (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (a b : ℝ) (ha : 0< a) (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq : ℝ) (hD : 0< D) {s : ℂ}
+    (hseries : DifferentiableAt ℂ (series χ inverse) (s+shift σ freq)) :
+    DifferentiableAt ℂ (integrand χ inverse W D σ freq) s := by
+  apply DifferentiableAt.mul
+  · apply DifferentiableAt.mul
+    · exact compact_source_mellin_differentiable W a b ha hWs hW s
+    · exact ((differentiableAt_id.add_const (shift σ freq)).sub_const (1/2)).const_cpow
+        (Or.inl (Complex.ofReal_ne_zero.mpr hD.ne'))
+  · exact hseries.comp s (differentiableAt_id.add_const (shift σ freq))
+
+theorem integrand_norm (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D σ freq : ℝ) (hD : 0< D) (s : ℂ) :
+    ‖integrand χ inverse W D σ freq s‖ =
+      ‖mellin W s‖*D^(s.re+σ-1/2)*‖series χ inverse (s+shift σ freq)‖ := by
+  unfold integrand
+  rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hD]
+  simp
+
+theorem integrand_vertical_integrable (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (a b : ℝ) (ha : 0< a) (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D c σ freq : ℝ) (hD : 0< D) (hc : 1< c+σ) :
+    Integrable (fun t : ℝ => integrand χ inverse W D σ freq ((c : ℂ)+t*I)) := by
+  have hcont : Continuous (fun t : ℝ => integrand χ inverse W D σ freq ((c : ℂ)+t*I)) := by
+    apply continuous_iff_continuousAt.mpr
+    intro t
+    apply (integrand_differentiableAt χ inverse W a b ha hWs hW D σ freq hD
+      (series_differentiableAt_right χ inverse (by simpa using hc))).continuousAt.comp
+    fun_prop
+  have hm := (compactMellin_vertical_integrable W a b ha hWs hW c).norm
+  apply (hm.mul_const (D^(c+σ-1/2)*HeckeReciprocalBound.bound (c+σ))).mono'
+    hcont.aestronglyMeasurable
+  apply ae_of_all
+  intro t
+  rw [integrand_norm χ inverse W D σ freq hD]
+  simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+    sub_self, add_zero]
+  rw [← mul_assoc]
+  apply mul_le_mul_of_nonneg_left
+    (series_norm_le χ inverse hc (by simp))
+  positivity
+
+theorem finite_rectangle (χ : Character) (hχ : χ.residue≠1) (inverse : Bool)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T : ℝ) (hD : 0< D)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), inverse=true →
+      LFunction χ (s+shift σ freq)≠0) :
+    (∫ t : ℝ in -T..T, integrand χ inverse W D σ freq ((r : ℂ)+t*I)) =
+      (∫ t : ℝ in -T..T, integrand χ inverse W D σ freq ((l : ℂ)+t*I)) +
+      I*((∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+(-T)*I)) -
+        (∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+T*I))) := by
+  have hhol : DifferentiableOn ℂ (integrand χ inverse W D σ freq)
+      (uIcc l r ×ℂ uIcc (-T) T) := by
+    intro s hs
+    exact (integrand_differentiableAt χ inverse W a b ha hWs hW D σ freq hD
+      (series_differentiableAt_nonprincipal χ hχ inverse (hz s hs))).differentiableWithinAt
+  have h := Complex.integral_boundary_rect_eq_zero_of_differentiableOn
+    (integrand χ inverse W D σ freq) ((l : ℂ)+(-T)*I) ((r : ℂ)+T*I)
+    (by simpa using hhol)
+  have hr :
+      (∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+(-T)*I)) -
+      (∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+T*I)) +
+      I*(∫ t : ℝ in -T..T, integrand χ inverse W D σ freq ((r : ℂ)+t*I)) -
+      I*(∫ t : ℝ in -T..T, integrand χ inverse W D σ freq ((l : ℂ)+t*I)) = 0 := by
+    simpa [smul_eq_mul] using h
+  have hh := congrArg (fun z : ℂ => -I*z) hr
+  ring_nf at hh ⊢
+  simp only [I_sq] at hh
+  linear_combination hh
+
+theorem polynomial_finite_shift (χ : Character) (hχ : χ.residue≠1) (inverse : Bool)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T : ℝ) (hD : 0< D) (hr : 1< r+σ) (hT : 0≤ T)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), inverse=true →
+      LFunction χ (s+shift σ freq)≠0) :
+    polynomial χ inverse W D σ freq = (1/(2*Real.pi) : ℂ)*
+      ((∫ t : ℝ in -T..T, integrand χ inverse W D σ freq ((l : ℂ)+t*I)) +
+      I*((∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+(-T)*I)) -
+        (∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+T*I))) +
+      ∫ t : ℝ in (Icc (-T) T)ᶜ, integrand χ inverse W D σ freq ((r : ℂ)+t*I)) := by
+  rw [polynomial_mellin χ inverse W a b ha hWs hW D r σ freq hD hr]
+  change (1/(2*Real.pi) : ℂ)*(∫ t : ℝ, integrand χ inverse W D σ freq ((r : ℂ)+t*I)) = _
+  rw [← integral_add_compl measurableSet_Icc
+    (integrand_vertical_integrable χ inverse W a b ha hWs hW D r σ freq hD hr)]
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith : -T≤ T)]
+  rw [finite_rectangle χ hχ inverse W a b ha hWs hW D σ freq l r T hD hz]
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open MeasureTheory Set Complex
+namespace HeckeDyadic
+open HeckeFamily
+
+theorem rapid_tail_bound (F : ℝ → ℂ) (C T : ℝ) (n : ℕ) (hC : 0≤ C) (hT : 0≤ T)
+    (hF : ∀ t : ℝ, (1+|t|)^(n+2)*‖F t‖≤ C) :
+    ‖∫ t : ℝ in (Icc (-T) T)ᶜ, F t‖ ≤ C/(1+T)^n*Real.pi := by
+  have hen (t : ℝ) (ht : t ∈ (Icc (-T) T)ᶜ) :
+      ‖F t‖≤(C/(1+T)^n)*(1+t^2)⁻¹ := by
+    have ht' : T≤|t| := by
+      by_contra h
+      have hab : |t|< T := lt_of_not_ge h
+      exact ht ⟨(abs_lt.mp hab).1.le, (abs_lt.mp hab).2.le⟩
+    have hp : (1+T)^n*(1+t^2)≤(1+|t|)^(n+2) := by
+      rw [pow_add]
+      apply mul_le_mul
+      · exact pow_le_pow_left₀ (by linarith) (by linarith) n
+      · nlinarith [sq_abs t, abs_nonneg t]
+      · positivity
+      · positivity
+    have hh : ‖F t‖*((1+T)^n*(1+t^2))≤ C :=
+      (mul_le_mul_of_nonneg_left hp (norm_nonneg _)).trans (by simpa [mul_comm] using hF t)
+    have hb := (le_div_iff₀ (by positivity : 0<(1+T)^n*(1+t^2))).mpr hh
+    simpa [div_mul_eq_div_div, div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hb
+  have hint := (integrable_inv_one_add_sq.const_mul (C/(1+T)^n))
+  calc
+    _ ≤ ∫ t : ℝ in (Icc (-T) T)ᶜ, (C/(1+T)^n)*(1+t^2)⁻¹ := by
+      apply norm_integral_le_of_norm_le hint.integrableOn
+      filter_upwards [ae_restrict_mem measurableSet_Icc.compl] with t ht
+      exact hen t ht
+    _ ≤ ∫ t : ℝ, (C/(1+T)^n)*(1+t^2)⁻¹ :=
+      integral_mono_measure Measure.restrict_le_self (by filter_upwards [] with t; positivity) hint
+    _ = _ := by rw [integral_const_mul, integral_univ_inv_one_add_sq]
+
+theorem absolute_tail_bound (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D r σ freq C T : ℝ) (n : ℕ) (hD : 0< D) (hr : 1< r+σ) (hC : 0≤ C) (hT : 0≤ T)
+    (hm : ∀ t : ℝ, (1+|t|)^(n+2)*‖mellin W ((r : ℂ)+t*I)‖≤ C) :
+    ‖∫ t : ℝ in (Icc (-T) T)ᶜ, integrand χ inverse W D σ freq ((r : ℂ)+t*I)‖ ≤
+      (C*D^(r+σ-1/2)*HeckeReciprocalBound.bound (r+σ))/(1+T)^n*Real.pi := by
+  apply rapid_tail_bound _ _ T n
+  · exact mul_nonneg (mul_nonneg hC (Real.rpow_nonneg hD.le _))
+      (tsum_nonneg (fun _ => norm_nonneg _))
+  · exact hT
+  · intro t
+    rw [integrand_norm χ inverse W D σ freq hD]
+    have hb := series_norm_le χ inverse hr (s := (r : ℂ)+t*I+shift σ freq) (by simp)
+    simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+      sub_self, add_zero]
+    calc
+      _ = ((1+|t|)^(n+2)*‖mellin W ((r : ℂ)+t*I)‖)*D^(r+σ-1/2)*
+        ‖series χ inverse ((r : ℂ)+t*I+shift σ freq)‖ := by ring
+      _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_right (hm t) (Real.rpow_nonneg hD.le _))
+        hb (norm_nonneg _) (mul_nonneg hC (Real.rpow_nonneg hD.le _))
+
+theorem central_segment_bound (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D l σ freq C K T : ℝ) (hD : 0< D) (hC : 0≤ C) (hK : 0≤ K) (hT : 0≤ T)
+    (hm : ∀ t : ℝ, (1+|t|)^2*‖mellin W ((l : ℂ)+t*I)‖≤ C)
+    (hs : ∀ t ∈ Icc (-T) T, ‖series χ inverse ((l : ℂ)+t*I+shift σ freq)‖≤ K) :
+    ‖∫ t : ℝ in -T..T, integrand χ inverse W D σ freq ((l : ℂ)+t*I)‖ ≤
+      C*D^(l+σ-1/2)*K*Real.pi := by
+  rw [intervalIntegral.integral_of_le (by linarith : -T≤ T)]
+  have hint := integrable_inv_one_add_sq.const_mul (C*D^(l+σ-1/2)*K)
+  calc
+    _ ≤ ∫ t : ℝ in Ioc (-T) T, (C*D^(l+σ-1/2)*K)*(1+t^2)⁻¹ := by
+      apply norm_integral_le_of_norm_le hint.integrableOn
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+      rw [integrand_norm χ inverse W D σ freq hD]
+      have hb := weighted_two_to_cauchy (norm_nonneg _) t (hm t)
+      simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+        sub_self, add_zero]
+      calc
+        _ ≤ (C/(1+t^2))*D^(l+σ-1/2)*K :=
+          mul_le_mul (mul_le_mul_of_nonneg_right hb (Real.rpow_nonneg hD.le _))
+            (hs t ⟨ht.1.le,ht.2⟩) (norm_nonneg _) (by positivity)
+        _ = _ := by ring
+    _ ≤ ∫ t : ℝ, (C*D^(l+σ-1/2)*K)*(1+t^2)⁻¹ :=
+      integral_mono_measure Measure.restrict_le_self (by filter_upwards [] with t; positivity) hint
+    _ = _ := by rw [integral_const_mul, integral_univ_inv_one_add_sq]
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Complex
+namespace HeckeDyadicReflection
+open HeckeFamily HeckePrimitive HeckeStripActual
+
+variable (c : O) [NeZero c]
+
+theorem functional_equation (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O))=1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ) (hχ : χ≠1)
+    {s : ℂ} (hs : s.re<1) :
+    LFunction (character c χ hu) s = TraceCharacter.normalizedGauss c χ *
+      (HeckeStrip.completionScale (conductor c) : ℂ)^(1-2*s) *
+      (Complex.Gamma (1-s)/Complex.Gamma s) *
+      LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)) (1-s) := by
+  by_cases h0 : s=0
+  · subst s
+    rw [LFunction_eq_uncompleted c χ hu hp hχ]
+    simp
+  have h1 : s≠1 := by intro h; norm_num [h] at hs
+  have hs0 : 1-s≠0 := sub_ne_zero.mpr (Ne.symm h1)
+  have hs1 : 1-s≠1 := by intro h; apply h0; linear_combination -h
+  have hΓ : Complex.Gamma (1-s)≠0 := Complex.Gamma_ne_zero_of_re_pos (by simp; linarith)
+  have he := completedL_functional_equation c χ hu hp hs0 hs1
+  rw [sub_sub_cancel] at he
+  rw [LFunction_eq_uncompleted c χ hu hp hχ,he,
+    completedL_eq_standard c χ⁻¹ (inverse_unit_trivial c χ hu) hp.inv hs0 hs1 hΓ]
+  have ha : ((HeckeStrip.completionScale (conductor c)) : ℂ)≠0 :=
+    Complex.ofReal_ne_zero.mpr (HeckeStrip.completionScale_pos _
+      (lt_of_lt_of_le zero_lt_one (conductor_ge_one c))).ne'
+  have hpow : (HeckeStrip.completionScale (conductor c) : ℂ)^(-s)*
+      (HeckeStrip.completionScale (conductor c) : ℂ)^(1-s)=
+      (HeckeStrip.completionScale (conductor c) : ℂ)^(1-2*s) := by
+    rw [←Complex.cpow_add _ _ ha]
+    congr 1
+    ring
+  rw [div_eq_mul_inv]
+  calc
+    _ = TraceCharacter.normalizedGauss c χ *
+        ((HeckeStrip.completionScale (conductor c) : ℂ)^(-s)*
+          (HeckeStrip.completionScale (conductor c) : ℂ)^(1-s)) *
+        (Complex.Gamma (1-s)*(Complex.Gamma s)⁻¹) *
+        LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)) (1-s) := by ring
+    _ = _ := by rw [hpow]
+
+theorem gamma_real_ratio_bound : ∃ C : ℝ, 0< C ∧
+    ∀ x ∈ Icc (-(1/10 : ℝ)) (1/2), Real.Gamma (1-x)/Real.Gamma (x+2)≤ C := by
+  have hcont : ContinuousOn (fun x : ℝ => Real.Gamma (1-x)/Real.Gamma (x+2))
+      (Icc (-(1/10 : ℝ)) (1/2)) := by
+    intro x hx
+    have hnum : DifferentiableAt ℝ Real.Gamma (1-x) :=
+      Real.differentiableAt_Gamma (by intro n hn; have hnn := Nat.cast_nonneg (α:=ℝ) n; linarith [hx.2])
+    have hden : DifferentiableAt ℝ Real.Gamma (x+2) :=
+      Real.differentiableAt_Gamma (by intro n hn; have hnn := Nat.cast_nonneg (α:=ℝ) n; linarith [hx.1])
+    exact ((hnum.continuousAt.comp (g := Real.Gamma) (f := fun y : ℝ => 1-y) (show ContinuousAt (fun y : ℝ => 1-y) x by fun_prop)).div
+      (hden.continuousAt.comp (g := Real.Gamma) (f := fun y : ℝ => y+2) (show ContinuousAt (fun y : ℝ => y+2) x by fun_prop))
+      (Real.Gamma_pos_of_pos (show 0< x+2 by linarith [hx.1])).ne').continuousWithinAt
+  obtain ⟨C,hC⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont
+  refine ⟨|C|+1,by positivity,?_⟩
+  intro x hx
+  exact (le_abs_self _).trans ((hC x hx).trans (by linarith [le_abs_self C]))
+
+theorem gamma_ratio_strip_bound : ∃ C : ℝ, 0< C ∧ ∀ s : ℂ,
+    -(1/10 : ℝ)≤ s.re → s.re≤1/2 →
+    ‖Complex.Gamma (1-s)/Complex.Gamma s‖≤ C*(3+|s.im|)^2 := by
+  obtain ⟨C,hC,hreal⟩ := gamma_real_ratio_bound
+  refine ⟨C,hC,?_⟩
+  intro s hl hr
+  have hb := Gamma_shifted_pair_bound
+    (1/2) (1/2-s.re) (-s.im) 2 (by linarith) (by norm_num; linarith)
+  have hnum : ((1/2 : ℝ) : ℂ)+((1/2-s.re : ℝ)+(-s.im)*I)=1-s := by
+    apply Complex.ext <;> simp; ring
+  have hden : ((1/2 : ℝ) : ℂ)-((1/2-s.re : ℝ)+(-s.im)*I)+(2 : ℕ)=s+2 := by
+    apply Complex.ext <;> simp
+  simp only [ofReal_neg] at hb
+  rw [hnum,hden] at hb
+  have hreal' := hreal s.re ⟨hl,hr⟩
+  have hb' : ‖Complex.Gamma (1-s)/Complex.Gamma (s+2)‖≤ C := by
+    apply hb.trans
+    have hn : (1/2 : ℝ)+(1/2-s.re)=1-s.re := by ring
+    have hd : (1/2 : ℝ)-(1/2-s.re)+(2 : ℕ)=s.re+2 := by ring
+    simpa only [hn, hd] using hreal'
+  have heq : Complex.Gamma (1-s)/Complex.Gamma s =
+      (∏ k ∈ Finset.range 2, (s+k))*(Complex.Gamma (1-s)/Complex.Gamma (s+2)) := by
+    rw [div_eq_mul_inv,CubicGammaExponential.inverse_Gamma_shift s 2]
+    simp only [Nat.cast_ofNat,div_eq_mul_inv]
+    ring
+  have hs : ‖s‖≤1+|s.im| := by
+    have hsr : |s.re|≤1 := abs_le.mpr ⟨by linarith,by linarith⟩
+    have hn := Complex.norm_le_abs_re_add_abs_im s
+    linarith
+  have hf := norm_Gamma_shift_factor s 2
+  norm_num only [Nat.cast_ofNat] at hf
+  have hf' : ‖∏ k ∈ Finset.range 2,(s+k)‖≤(3+|s.im|)^2 :=
+    hf.trans (pow_le_pow_left₀ (by positivity) (show ‖s‖+2≤3+|s.im| by linarith) 2)
+  rw [heq,norm_mul]
+  exact (mul_le_mul hf' hb' (norm_nonneg _) (sq_nonneg _)).trans_eq (mul_comm _ _)
+
+theorem completionScale_rpow_le {Q x : ℝ} (hQ : 0< Q) (hx : 0≤ x) :
+    HeckeStrip.completionScale Q ^ x≤ Q^(x/2) := by
+  have hs3 : Real.sqrt 3≤2 := by
+    rw [Real.sqrt_le_iff]
+    norm_num
+  have hscale : HeckeStrip.completionScale Q≤ Real.sqrt Q := by
+    unfold HeckeStrip.completionScale
+    rw [Real.sqrt_mul (by norm_num : (0 : ℝ)≤3)]
+    apply (div_le_iff₀ (by positivity : 0<2*Real.pi)).mpr
+    nlinarith [Real.sqrt_nonneg Q,Real.pi_gt_three]
+  calc
+    _ ≤ (Real.sqrt Q)^x := Real.rpow_le_rpow
+      (HeckeStrip.completionScale_pos Q hQ).le hscale hx
+    _ = _ := by
+      rw [Real.sqrt_eq_rpow,←Real.rpow_mul hQ.le]
+      congr 1
+      ring
+
+theorem primitive_reflected_bound : ∃ C : ℝ, 0< C ∧
+    ∀ (c : O) [NeZero c] (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+      (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O))=1)
+      (_hp : FiniteFourier.IsPrimitiveOnIdeals χ), χ≠1 →
+    ∀ s : ℂ, -(1/10 : ℝ)≤ s.re → s.re≤1/2 →
+    ‖LFunction (character c χ hu) s‖≤
+      C*(conductor c)^(1/2-s.re)*(3+|s.im|)^2*
+        ‖LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)) (1-s)‖ := by
+  obtain ⟨C,hC,hgamma⟩ := gamma_ratio_strip_bound
+  refine ⟨C,hC,?_⟩
+  intro c _ χ hu hp hχ s hl hr
+  rw [functional_equation c χ hu hp hχ (by linarith),norm_mul,norm_mul,norm_mul,
+    TraceCharacter.normalizedGauss_norm c χ hp,one_mul,
+    Complex.norm_cpow_eq_rpow_re_of_pos (HeckeStrip.completionScale_pos _
+      (lt_of_lt_of_le zero_lt_one (conductor_ge_one c)))]
+  have hscale := completionScale_rpow_le
+    (lt_of_lt_of_le zero_lt_one (conductor_ge_one c)) (show 0≤1-2*s.re by linarith)
+  have he : (1-2*s).re=1-2*s.re := by simp
+  rw [he]
+  have he' : (1-2*s.re)/2=1/2-s.re := by ring
+  rw [he'] at hscale
+  calc
+    _ ≤ ((conductor c)^(1/2-s.re)*(C*(3+|s.im|)^2))*
+        ‖LFunction (character c χ⁻¹ (inverse_unit_trivial c χ hu)) (1-s)‖ :=
+      mul_le_mul_of_nonneg_right (mul_le_mul hscale (hgamma s hl hr)
+        (norm_nonneg _) (Real.rpow_nonneg (by exact_mod_cast (conductor_ge_one c).trans' zero_le_one) _))
+        (norm_nonneg _)
+    _ = _ := by ring
+
+end HeckeDyadicReflection
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open scoped Classical BigOperators Topology
+open Set Complex
+namespace HeckeDetectorDyadicBridge
+open HeckeFamily HeckeDyadic
+lemma polynomial_eq_finite (χ : Character) (inverse : Bool) (W : ℝ→ℂ)
+    (D σ freq : ℝ) (S : Finset (Ideal O))
+    (hcover : ∀ J : Ideal O, J≠0 → W ((J.absNorm : ℝ)/D)≠0 → J∈S) :
+    polynomial χ inverse W D σ freq =
+      (D : ℂ)^(-(1/2 : ℂ))*∑ J∈S,
+        coefficient χ inverse J*W ((J.absNorm : ℝ)/D)*
+          (((J.absNorm : ℝ)/D : ℝ) : ℂ)^(-HeckeDyadic.shift σ freq) := by
+  unfold polynomial
+  congr 1
+  let f : Ideal O→ℂ := fun J => coefficient χ inverse J*W ((J.absNorm : ℝ)/D)*
+    (((J.absNorm : ℝ)/D : ℝ) : ℂ)^(-HeckeDyadic.shift σ freq)
+  have hf : Function.support f ⊆ {J : Ideal O | J≠0} := by
+    intro J hJ hzero
+    subst J
+    apply hJ
+    dsimp only [f]
+    rw [coefficient_zero, zero_mul, zero_mul]
+  have he := tsum_subtype_eq_of_support_subset hf
+  change (∑' J : {J : Ideal O // J≠0}, f J.val)=_
+  apply he.trans
+  apply tsum_eq_sum
+  intro J hJ
+  by_cases hj : J=0
+  · subst J
+    dsimp only [f]
+    rw [coefficient_zero, zero_mul, zero_mul]
+  have hw : W ((J.absNorm : ℝ)/D)=0 := by
+    by_contra hw
+    exact hJ (hcover J hj hw)
+  simp [f,hw]
+
+
+end HeckeDetectorDyadicBridge
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+open MeasureTheory Set
+namespace HeckeDetectorRowwise
+
+theorem norm_sq_le_anchor_integral (F F' : ℝ→ℂ)
+    (hF : Continuous F) (hF' : Continuous F')
+    (hd : ∀ x, HasDerivAt F (F' x) x) {a b x : ℝ} (hx : x∈Icc a b) :
+    ‖F x‖^2≤‖F a‖^2+∫ t in a..b, (‖F t‖^2+‖F' t‖^2) := by
+  let G : ℝ→ℝ := fun t => ‖F t‖^2+‖F' t‖^2
+  have hG : Continuous G := (hF.norm.pow 2).add (hF'.norm.pow 2)
+  have hh := intervalIntegral.sub_le_integral_of_hasDeriv_right_of_le hx.1
+    (hF.norm.pow 2).continuousOn
+    (fun t ht => (hd t).norm_sq.hasDerivWithinAt)
+    (hG.continuousOn.integrableOn_Icc)
+    (fun t ht => show 2*inner (𝕜:=ℝ) (F t) (F' t)≤ G t by
+      dsimp [G]
+      have hc := real_inner_le_norm (F t) (F' t)
+      change (F' t * (starRingEnd ℂ) (F t)).re ≤ ‖F t‖*‖F' t‖ at hc
+      nlinarith [sq_nonneg (‖F t‖-‖F' t‖)])
+  simp only [Pi.pow_apply] at hh
+  have hm := intervalIntegral.integral_mono_interval (μ:=volume) (le_refl a) hx.1 hx.2
+    (Filter.Eventually.of_forall (fun t => show 0≤ G t by dsimp [G]; positivity))
+    (hG.intervalIntegrable a b)
+  change ‖F x‖^2≤‖F a‖^2+∫ t in a..b, G t
+  linarith
+
+theorem rowwise_energy {ι : Type*} (rows : Finset ι) (F F' : ι→ℝ→ℂ)
+    (hF : ∀ i∈rows, Continuous (F i)) (hF' : ∀ i∈rows, Continuous (F' i))
+    (hd : ∀ i∈rows, ∀ x, HasDerivAt (F i) (F' i x) x)
+    (a b E : ℝ) (hab : a≤ b) (choice : ι→ℝ)
+    (hc : ∀ i∈rows, choice i∈Icc a b)
+    (henergy : ∀ t∈Icc a b, ∑ i∈rows, ‖F i t‖^2≤ E)
+    (henergy' : ∀ t∈Icc a b, ∑ i∈rows, ‖F' i t‖^2≤ E) :
+    ∑ i∈rows, ‖F i (choice i)‖^2≤(1+2*(b-a))*E := by
+  have hg (i : ι) (hi : i∈rows) :
+      Continuous (fun t => ‖F i t‖^2+‖F' i t‖^2) :=
+    ((hF i hi).norm.pow 2).add ((hF' i hi).norm.pow 2)
+  have hs := Finset.sum_le_sum (fun i hi =>
+    norm_sq_le_anchor_integral (F i) (F' i) (hF i hi) (hF' i hi) (hd i hi) (hc i hi))
+  rw [Finset.sum_add_distrib,←intervalIntegral.integral_finsetSum
+    (fun i hi => (hg i hi).intervalIntegrable a b)] at hs
+  have hm : (∫ t in a..b, ∑ i∈rows, (‖F i t‖^2+‖F' i t‖^2))≤(b-a)*(2*E) := by
+    have hh := intervalIntegral.integral_mono_on (μ:=volume) hab
+      ((continuous_finsetSum rows (fun i hi => hg i hi)).intervalIntegrable a b)
+      (continuous_const.intervalIntegrable a b)
+      (fun t ht => show (∑ i∈rows, (‖F i t‖^2+‖F' i t‖^2))≤2*E by
+        rw [Finset.sum_add_distrib]
+        linarith [henergy t ht,henergy' t ht])
+    simpa only [intervalIntegral.integral_const,smul_eq_mul] using hh
+  have ha := henergy a ⟨le_refl a,hab⟩
+  nlinarith
+
+theorem rowwise_energy_two {ι : Type*} (rows : Finset ι)
+    (F : Fin 2→Fin 2→ι→ℝ→ℝ→ℂ)
+    (hcont : ∀ j k i, i∈rows → Continuous (Function.uncurry (F j k i)))
+    (hdx : ∀ k i, i∈rows → ∀ x y,
+      HasDerivAt (fun u => F 0 k i u y) (F 1 k i x y) x)
+    (hdy : ∀ j i, i∈rows → ∀ x y,
+      HasDerivAt (F j 0 i x) (F j 1 i x y) y)
+    (a b c d E : ℝ) (hab : a≤ b) (hcd : c≤ d) (px py : ι→ℝ)
+    (hpx : ∀ i∈rows, px i∈Icc a b) (hpy : ∀ i∈rows, py i∈Icc c d)
+    (henergy : ∀ j k x, x∈Icc a b → ∀ y, y∈Icc c d →
+      ∑ i∈rows, ‖F j k i x y‖^2≤ E) :
+    ∑ i∈rows, ‖F 0 0 i (px i) (py i)‖^2≤
+      (1+2*(b-a))*((1+2*(d-c))*E) := by
+  have cx (j k : Fin 2) (i : ι) (hi : i∈rows) (y : ℝ) :
+      Continuous (fun x => F j k i x y) :=
+    (hcont j k i hi).comp (continuous_id.prodMk continuous_const)
+  have cy (j k : Fin 2) (i : ι) (hi : i∈rows) (x : ℝ) :
+      Continuous (F j k i x) :=
+    (hcont j k i hi).comp (continuous_const.prodMk continuous_id)
+  have he (j : Fin 2) (x : ℝ) (hx : x∈Icc a b) :
+      ∑ i∈rows, ‖F j 0 i x (py i)‖^2≤(1+2*(d-c))*E :=
+    rowwise_energy rows (fun i => F j 0 i x) (fun i => F j 1 i x)
+      (fun i hi => cy j 0 i hi x) (fun i hi => cy j 1 i hi x)
+      (fun i hi y => hdy j i hi x y) c d E hcd py hpy
+      (fun y hy => henergy j 0 x hx y hy) (fun y hy => henergy j 1 x hx y hy)
+  exact rowwise_energy rows (fun i x => F 0 0 i x (py i))
+    (fun i x => F 1 0 i x (py i))
+    (fun i hi => cx 0 0 i hi (py i)) (fun i hi => cx 1 0 i hi (py i))
+    (fun i hi x => hdx 0 i hi x (py i)) a b ((1+2*(d-c))*E) hab px hpx
+    (he 0) (he 1)
+
+theorem source_height_cost {T E : ℝ} (_hT : 0≤ T) (hE : 0≤ E) :
+    (1+2*((1:ℝ)-0))*((1+2*(T-(-T)))*E)≤12*(1+T)*E := by
+  nlinarith
+
+end HeckeDetectorRowwise
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff Topology
+open MeasureTheory Set Complex
+namespace HeckeInverseAmplification
+open HeckeFamily HeckeDyadic HeckeDetectorDyadicBridge HeckeDetectorRowwise
+
+def scaleProfile (W : ℝ→ℂ) (y : ℝ) : ℂ := -W y/2-(y : ℂ)*deriv W y
+
+def scaleSum (χ : Character) (W : ℝ→ℂ) (S : Finset (Ideal O)) (l : ℝ) : ℂ :=
+  Complex.exp (-(l : ℂ)/2)*∑ J∈S,
+    coefficient χ true J*W ((J.absNorm : ℝ)*Real.exp (-l))
+
+theorem scaleProfile_continuous (W : ℝ→ℂ) (hW : ContDiff ℝ ∞ W) :
+    Continuous (scaleProfile W) := by
+  have hd := hW.continuous_deriv (by simp)
+  unfold scaleProfile
+  fun_prop
+
+theorem scaleProfile_support (W : ℝ→ℂ) (a b : ℝ)
+    (hs : Function.support W⊆Icc a b) : Function.support (scaleProfile W)⊆Icc a b := by
+  intro y hy
+  by_contra hn
+  have hw : W y=0 := by by_contra hw; exact hn (hs hw)
+  have hd : deriv W y=0 := by
+    apply deriv_of_notMem_tsupport
+    exact fun h => hn ((closure_minimal hs isClosed_Icc) h)
+  exact hy (by simp [scaleProfile,hw,hd])
+
+theorem scaleSum_continuous (χ : Character) (W : ℝ→ℂ) (S : Finset (Ideal O))
+    (hW : Continuous W) : Continuous (scaleSum χ W S) := by
+  unfold scaleSum
+  fun_prop
+
+theorem scaleSum_deriv (χ : Character) (W : ℝ→ℂ) (S : Finset (Ideal O))
+    (hW : Differentiable ℝ W) (l : ℝ) :
+    HasDerivAt (scaleSum χ W S) (scaleSum χ (scaleProfile W) S l) l := by
+  have hE : HasDerivAt (fun t : ℝ => Complex.exp (-(t : ℂ)/2))
+      (Complex.exp (-(l : ℂ)/2)*(-(1 : ℂ)/2)) l := by
+    convert ((Complex.ofRealCLM.hasDerivAt (x:=l)).neg.div_const (2 : ℂ)).cexp using 1
+    all_goals rfl
+  have hd (J : Ideal O) (hJ : J∈S) :
+      HasDerivAt (fun t => coefficient χ true J*W ((J.absNorm : ℝ)*Real.exp (-t)))
+        (coefficient χ true J*(deriv W ((J.absNorm : ℝ)*Real.exp (-l))*
+          (-((J.absNorm : ℝ)*Real.exp (-l)) : ℝ))) l := by
+    have hy := ((hasDerivAt_id l).neg.exp).const_mul (J.absNorm : ℝ)
+    convert ((hW _).hasDerivAt.scomp l hy).const_mul (coefficient χ true J) using 1 <;> try rfl
+    dsimp only [Pi.neg_apply, id_eq]
+    rw [Complex.real_smul]
+    push_cast
+    ring
+  convert hE.mul (HasDerivAt.sum (u:=S) hd) using 1
+  all_goals
+    solve
+    | ext x y <;> rfl
+    | ext t; simp only [scaleSum, Pi.mul_apply, Finset.sum_apply]
+    | simp only [scaleSum, scaleProfile, Finset.sum_apply]
+      simp_rw [Finset.mul_sum]
+      rw [←Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro J hJ
+      push_cast
+      ring
+
+theorem scale_normalization (l : ℝ) :
+    ((Real.exp l : ℝ) : ℂ)^(-(1/2 : ℂ))=Complex.exp (-(l : ℂ)/2) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos l).ne'),
+    ←Complex.ofReal_log (Real.exp_pos l).le,Real.log_exp]
+  congr 1
+  ring
+
+theorem scaleSum_eq_polynomial (χ : Character) (W : ℝ→ℂ) (S : Finset (Ideal O))
+    (l : ℝ) (hc : ∀ J : Ideal O, J≠0 → W ((J.absNorm : ℝ)/Real.exp l)≠0 → J∈S) :
+    scaleSum χ W S l=polynomial χ true W (Real.exp l) 0 0 := by
+  rw [polynomial_eq_finite χ true W (Real.exp l) 0 0 S hc,scale_normalization]
+  simp only [HeckeDyadic.shift,ofReal_zero,zero_mul,sub_self,neg_zero,Complex.cpow_zero,mul_one]
+  unfold scaleSum
+  congr 1
+  apply Finset.sum_congr rfl
+  intro J hJ
+  rw [Real.exp_neg,div_eq_mul_inv]
+
+end HeckeInverseAmplification
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff Topology
+open MeasureTheory Set Complex
+namespace HeckeInverseAmplification
+open HeckeFamily HeckeDyadic HeckeDetectorRowwise
+
+/-- Nonzero ideals with norm at most the given bound. -/
+noncomputable def idealsUpTo (D : ℕ) : Finset (Ideal O) :=
+  (Finset.Icc 1 D).biUnion
+    (fun n => (Ideal.finite_setOf_absNorm_eq (S := O) n).toFinset)
+
+lemma mem_idealsUpTo {D : ℕ} {I : Ideal O} :
+    I ∈ idealsUpTo D ↔ 1 ≤ Ideal.absNorm I ∧ Ideal.absNorm I ≤ D := by
+  simp only [idealsUpTo, Finset.mem_biUnion, Finset.mem_Icc, Set.Finite.mem_toFinset,
+    Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨n, hn, rfl⟩
+    exact hn
+  · intro h
+    exact ⟨Ideal.absNorm I, h, rfl⟩
+
+def scaleSupport (upper b : ℝ) : Finset (Ideal O) := idealsUpTo ⌈Real.exp upper*b⌉₊
+
+theorem scaleSupport_cover (W : ℝ→ℂ) (a b upper l : ℝ) (hb : 0≤ b)
+    (hWs : Function.support W⊆Icc a b) (hl : l≤ upper) :
+    ∀ J : Ideal O, J≠0 → W ((J.absNorm : ℝ)/Real.exp l)≠0 → J∈scaleSupport upper b := by
+  intro J hJ hw
+  apply mem_idealsUpTo.mpr
+  refine ⟨Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hJ),?_⟩
+  have hh := (div_le_iff₀ (Real.exp_pos l)).mp (hWs hw).2
+  have hm := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hl) hb
+  have hn : (J.absNorm : ℝ)≤ Real.exp upper*b := by nlinarith
+  exact_mod_cast hn.trans (Nat.le_ceil _)
+
+theorem rowwise_scales {ι : Type*} (rows : Finset ι) (χ : ι→Character)
+    (W : ℝ→ℂ) (a b : ℝ) (hb : 0≤ b) (hWs : Function.support W⊆Icc a b)
+    (hW : ContDiff ℝ ∞ W) (lo hi E : ℝ) (hlh : lo≤ hi) (l : ι→ℝ)
+    (hl : ∀ i∈rows, l i∈Icc lo hi)
+    (h0 : ∀ t∈Icc lo hi, ∑ i∈rows, ‖polynomial (χ i) true W (Real.exp t) 0 0‖^2≤ E)
+    (h1 : ∀ t∈Icc lo hi, ∑ i∈rows,
+      ‖polynomial (χ i) true (scaleProfile W) (Real.exp t) 0 0‖^2≤ E) :
+    ∑ i∈rows, ‖polynomial (χ i) true W (Real.exp (l i)) 0 0‖^2≤(1+2*(hi-lo))*E := by
+  let S := scaleSupport hi b
+  have hsp := scaleProfile_support W a b hWs
+  have eq0 (i : ι) (t : ℝ) (ht : t∈Icc lo hi) :=
+    scaleSum_eq_polynomial (χ i) W S t (scaleSupport_cover W a b hi t hb hWs ht.2)
+  have eq1 (i : ι) (t : ℝ) (ht : t∈Icc lo hi) :=
+    scaleSum_eq_polynomial (χ i) (scaleProfile W) S t
+      (scaleSupport_cover (scaleProfile W) a b hi t hb hsp ht.2)
+  have hh := rowwise_energy rows (fun i => scaleSum (χ i) W S)
+    (fun i => scaleSum (χ i) (scaleProfile W) S)
+    (fun i hi => scaleSum_continuous (χ i) W S hW.continuous)
+    (fun i hi => scaleSum_continuous (χ i) (scaleProfile W) S (scaleProfile_continuous W hW))
+    (fun i hi t => scaleSum_deriv (χ i) W S (hW.differentiable (by simp)) t)
+    lo hi E hlh l hl
+    (fun t ht => by simpa only [eq0 _ t ht] using h0 t ht)
+    (fun t ht => by simpa only [eq1 _ t ht] using h1 t ht)
+  convert hh using 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [eq0 i (l i) (hl i hi)]
+
+theorem exists_scale_majorant {ι : Type*} (rows : Finset ι) (χ : ι→Character)
+    (W : ℝ→ℂ) (a b : ℝ) (hb : 0≤ b) (hWs : Function.support W⊆Icc a b)
+    (hW : ContDiff ℝ ∞ W) (lo hi E : ℝ) (hlh : lo≤ hi)
+    (h0 : ∀ t∈Icc lo hi, ∑ i∈rows, ‖polynomial (χ i) true W (Real.exp t) 0 0‖^2≤ E)
+    (h1 : ∀ t∈Icc lo hi, ∑ i∈rows,
+      ‖polynomial (χ i) true (scaleProfile W) (Real.exp t) 0 0‖^2≤ E) :
+    ∃ B : ι→ℝ, (∀ i, 0≤ B i) ∧
+      (∀ i, ∀ t∈Icc lo hi, ‖polynomial (χ i) true W (Real.exp t) 0 0‖^2≤ B i) ∧
+      (∑ i∈rows, B i)≤(1+2*(hi-lo))*E := by
+  let S := scaleSupport hi b
+  have hm (i : ι) : ∃ t∈Icc lo hi, ∀ u∈Icc lo hi,
+      ‖scaleSum (χ i) W S u‖^2≤‖scaleSum (χ i) W S t‖^2 := by
+    exact isCompact_Icc.exists_isMaxOn (nonempty_Icc.mpr hlh)
+      ((scaleSum_continuous (χ i) W S hW.continuous).norm.pow 2).continuousOn
+  choose t ht hmax using hm
+  refine ⟨fun i => ‖polynomial (χ i) true W (Real.exp (t i)) 0 0‖^2,
+    fun i => sq_nonneg _,?_,?_⟩
+  · intro i u hu
+    have hh := hmax i u hu
+    rw [scaleSum_eq_polynomial (χ i) W S u (scaleSupport_cover W a b hi u hb hWs hu.2),
+      scaleSum_eq_polynomial (χ i) W S (t i) (scaleSupport_cover W a b hi (t i) hb hWs (ht i).2)] at hh
+    exact hh
+  · exact rowwise_scales rows χ W a b hb hWs hW lo hi E hlh t (fun i hi => ht i) h0 h1
+
+theorem polynomial_zero_small_scale (χ : Character) (inv : Bool) (W : ℝ→ℂ)
+    (a b D σ freq : ℝ) (hD : 0< D) (hs : Function.support W⊆Icc a b)
+    (hsmall : D*b<1) : polynomial χ inv W D σ freq=0 := by
+  unfold polynomial
+  suffices hh : (∑' J : HeckeDyadic.NonzeroIdeal, HeckeDyadic.summand χ inv W D σ freq J)=0 by
+    rw [hh,mul_zero]
+  have hz : ∀ J : HeckeDyadic.NonzeroIdeal, HeckeDyadic.summand χ inv W D σ freq J=0 := by
+    intro J
+    have hw : W (norm J/D)=0 := by
+      by_contra hn
+      have hb := (div_le_iff₀ hD).mp (hs hn).2
+      have hN : 1≤ norm J := by
+        change (1 : ℝ) ≤ (J.val.absNorm : ℝ)
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr J.property)
+      nlinarith
+    simp only [HeckeDyadic.summand,hw,mul_zero,zero_mul]
+  simp only [hz,tsum_zero]
+
+end HeckeInverseAmplification
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff Topology
+open MeasureTheory Set Complex
+namespace CenteredMomentScaleSupremum
+open HeckeFamily HeckeDyadic HeckeDetectorRowwise HeckeDetectorDyadicBridge
+open HeckeInverseAmplification (scaleProfile scaleProfile_continuous scaleProfile_support
+  scale_normalization scaleSupport scaleSupport_cover)
+def scaleSum (χ : Character) (inv : Bool) (W : ℝ→ℂ) (S : Finset (Ideal O)) (l : ℝ) : ℂ :=
+  Complex.exp (-(l : ℂ)/2)*∑ J∈S,
+    coefficient χ inv J*W ((J.absNorm : ℝ)*Real.exp (-l))
+
+theorem scaleSum_continuous (χ : Character) (inv : Bool) (W : ℝ→ℂ) (S : Finset (Ideal O))
+    (hW : Continuous W) : Continuous (scaleSum χ inv W S) := by
+  unfold scaleSum
+  fun_prop
+
+theorem scaleSum_deriv (χ : Character) (inv : Bool) (W : ℝ→ℂ) (S : Finset (Ideal O))
+    (hW : Differentiable ℝ W) (l : ℝ) :
+    HasDerivAt (scaleSum χ inv W S) (scaleSum χ inv (scaleProfile W) S l) l := by
+  have hE : HasDerivAt (fun t : ℝ => Complex.exp (-(t : ℂ)/2))
+      (Complex.exp (-(l : ℂ)/2)*(-(1 : ℂ)/2)) l := by
+    convert ((Complex.ofRealCLM.hasDerivAt (x:=l)).neg.div_const (2 : ℂ)).cexp using 1
+    all_goals rfl
+  have hd (J : Ideal O) (hJ : J∈S) :
+      HasDerivAt (fun t => coefficient χ inv J*W ((J.absNorm : ℝ)*Real.exp (-t)))
+        (coefficient χ inv J*(deriv W ((J.absNorm : ℝ)*Real.exp (-l))*
+          (-((J.absNorm : ℝ)*Real.exp (-l)) : ℝ))) l := by
+    have hy := ((hasDerivAt_id l).neg.exp).const_mul (J.absNorm : ℝ)
+    convert ((hW _).hasDerivAt.scomp l hy).const_mul (coefficient χ inv J) using 1 <;> try rfl
+    dsimp only [Pi.neg_apply, id_eq]
+    rw [Complex.real_smul]
+    push_cast
+    ring
+  convert hE.mul (HasDerivAt.sum (u:=S) hd) using 1
+  all_goals
+    solve
+    | ext x y <;> rfl
+    | ext t; simp only [scaleSum, Pi.mul_apply, Finset.sum_apply]
+    | simp only [scaleSum, scaleProfile, Finset.sum_apply]
+      simp_rw [Finset.mul_sum]
+      rw [←Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro J hJ
+      push_cast
+      ring
+
+theorem scaleSum_eq_polynomial (χ : Character) (inv : Bool) (W : ℝ→ℂ) (S : Finset (Ideal O))
+    (l : ℝ) (hc : ∀ J : Ideal O, J≠0 → W ((J.absNorm : ℝ)/Real.exp l)≠0 → J∈S) :
+    scaleSum χ inv W S l=polynomial χ inv W (Real.exp l) 0 0 := by
+  rw [polynomial_eq_finite χ inv W (Real.exp l) 0 0 S hc,scale_normalization]
+  simp only [HeckeDyadic.shift,ofReal_zero,zero_mul,sub_self,neg_zero,Complex.cpow_zero,mul_one]
+  unfold scaleSum
+  congr 1
+  apply Finset.sum_congr rfl
+  intro J hJ
+  rw [Real.exp_neg,div_eq_mul_inv]
+
+def scaleTest (W : ℝ→ℂ) (j : Fin 2) : ℝ→ℂ :=
+  if j=0 then W else scaleProfile W
+
+lemma scaleTest_continuous (W : ℝ→ℂ) (hW : ContDiff ℝ ∞ W) (j : Fin 2) :
+    Continuous (scaleTest W j) := by
+  unfold scaleTest
+  split
+  · exact hW.continuous
+  · exact scaleProfile_continuous W hW
+
+lemma scaleTest_support (W : ℝ→ℂ) (a b : ℝ)
+    (hs : Function.support W⊆Icc a b) (j : Fin 2) :
+    Function.support (scaleTest W j)⊆Icc a b := by
+  unfold scaleTest
+  split
+  · exact hs
+  · exact scaleProfile_support W a b hs
+
+theorem paired_rowwise_scales {ι : Type*} (rows : Finset ι)
+    (χ ψ : ι→Character) (P : ι→ℂ) (W V : ℝ→ℂ)
+    (a b c d : ℝ) (hb : 0≤ b) (hd : 0≤ d)
+    (hWs : Function.support W⊆Icc a b) (hVs : Function.support V⊆Icc c d)
+    (hW : ContDiff ℝ ∞ W) (hV : ContDiff ℝ ∞ V)
+    (lo hi low high E : ℝ) (hlh : lo≤ hi) (hlw : low≤ high) (lx ly : ι→ℝ)
+    (hlx : ∀ i∈rows,lx i∈Icc lo hi) (hly : ∀ i∈rows,ly i∈Icc low high)
+    (henergy : ∀ j k : Fin 2,∀ x∈Icc lo hi,∀ y∈Icc low high,
+      ∑ i∈rows,‖polynomial (χ i) false (scaleTest W j) (Real.exp x) 0 0 *
+        polynomial (ψ i) false (scaleTest V k) (Real.exp y) 0 0 * P i‖^2≤ E) :
+    ∑ i∈rows,‖polynomial (χ i) false W (Real.exp (lx i)) 0 0 *
+      polynomial (ψ i) false V (Real.exp (ly i)) 0 0 * P i‖^2≤
+      (1+2*(hi-lo))*((1+2*(high-low))*E) := by
+  let S := scaleSupport hi b
+  let T := scaleSupport high d
+  let F (j k : Fin 2) (i : ι) (x y : ℝ) :=
+    scaleSum (χ i) false (scaleTest W j) S x *
+      scaleSum (ψ i) false (scaleTest V k) T y * P i
+  have eqW (i : ι) (j : Fin 2) (x : ℝ) (hx : x∈Icc lo hi) :=
+    scaleSum_eq_polynomial (χ i) false (scaleTest W j) S x
+      (scaleSupport_cover _ a b hi x hb (scaleTest_support W a b hWs j) hx.2)
+  have eqV (i : ι) (k : Fin 2) (y : ℝ) (hy : y∈Icc low high) :=
+    scaleSum_eq_polynomial (ψ i) false (scaleTest V k) T y
+      (scaleSupport_cover _ c d high y hd (scaleTest_support V c d hVs k) hy.2)
+  have hc (j k : Fin 2) (i : ι) : Continuous (Function.uncurry (F j k i)) := by
+    exact (((scaleSum_continuous (χ i) false _ S (scaleTest_continuous W hW j)).comp
+      continuous_fst).mul ((scaleSum_continuous (ψ i) false _ T
+      (scaleTest_continuous V hV k)).comp continuous_snd)).mul continuous_const
+  have hx (k : Fin 2) (i : ι) (x y : ℝ) :
+      HasDerivAt (fun u=> F 0 k i u y) (F 1 k i x y) x := by
+    simpa [F,scaleTest] using
+      (scaleSum_deriv (χ i) false W S (hW.differentiable (by simp)) x).mul_const
+        (scaleSum (ψ i) false (scaleTest V k) T y) |>.mul_const (P i)
+  have hy (j : Fin 2) (i : ι) (x y : ℝ) :
+      HasDerivAt (F j 0 i x) (F j 1 i x y) y := by
+    simpa [F,scaleTest] using
+      ((scaleSum_deriv (ψ i) false V T (hV.differentiable (by simp)) y).const_mul
+        (scaleSum (χ i) false (scaleTest W j) S x)).mul_const (P i)
+  have hh := rowwise_energy_two rows F (fun j k i _=> hc j k i)
+    (fun k i _ x y=> hx k i x y) (fun j i _ x y=> hy j i x y)
+    lo hi low high E hlh hlw lx ly hlx hly (by
+      intro j k x hx y hy
+      simpa only [F,eqW _ j x hx,eqV _ k y hy] using henergy j k x hx y hy)
+  convert hh using 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  dsimp only [F]
+  rw [eqW i 0 (lx i) (hlx i hi),eqV i 0 (ly i) (hly i hi)]
+  simp only [scaleTest,ite_true]
+
+theorem exists_paired_scale_majorant {ι : Type*} (rows : Finset ι)
+    (χ ψ : ι→Character) (P : ι→ℂ) (W V : ℝ→ℂ)
+    (a b c d : ℝ) (hb : 0≤ b) (hd : 0≤ d)
+    (hWs : Function.support W⊆Icc a b) (hVs : Function.support V⊆Icc c d)
+    (hW : ContDiff ℝ ∞ W) (hV : ContDiff ℝ ∞ V)
+    (lo hi low high E : ℝ) (hlh : lo≤ hi) (hlw : low≤ high)
+    (henergy : ∀ j k : Fin 2,∀ x∈Icc lo hi,∀ y∈Icc low high,
+      ∑ i∈rows,‖polynomial (χ i) false (scaleTest W j) (Real.exp x) 0 0 *
+        polynomial (ψ i) false (scaleTest V k) (Real.exp y) 0 0 * P i‖^2≤ E) :
+    ∃ B : ι→ℝ,(∀i,0≤ B i) ∧
+      (∀i,∀ x∈Icc lo hi,∀ y∈Icc low high,
+        ‖polynomial (χ i) false W (Real.exp x) 0 0 *
+          polynomial (ψ i) false V (Real.exp y) 0 0 * P i‖^2≤ B i) ∧
+      (∑ i∈rows,B i)≤(1+2*(hi-lo))*((1+2*(high-low))*E) := by
+  let S := scaleSupport hi b
+  let T := scaleSupport high d
+  let F (i : ι) (p : ℝ×ℝ) :=
+    scaleSum (χ i) false W S p.1 * scaleSum (ψ i) false V T p.2 * P i
+  have hc (i : ι) : Continuous (F i) :=
+    (((scaleSum_continuous (χ i) false W S hW.continuous).comp continuous_fst).mul
+      ((scaleSum_continuous (ψ i) false V T hV.continuous).comp continuous_snd)).mul continuous_const
+  have heq (i : ι) (x y : ℝ) (hx : x∈Icc lo hi) (hy : y∈Icc low high) :
+      F i (x,y)=polynomial (χ i) false W (Real.exp x) 0 0 *
+        polynomial (ψ i) false V (Real.exp y) 0 0 * P i := by
+    dsimp only [F]
+    rw [scaleSum_eq_polynomial (χ i) false W S x
+      (scaleSupport_cover W a b hi x hb hWs hx.2),
+      scaleSum_eq_polynomial (ψ i) false V T y
+      (scaleSupport_cover V c d high y hd hVs hy.2)]
+  have hm (i : ι) : ∃p∈(Icc lo hi)×ˢ(Icc low high),
+      ∀q∈(Icc lo hi)×ˢ(Icc low high),‖F i q‖^2≤‖F i p‖^2 := by
+    exact (isCompact_Icc.prod isCompact_Icc).exists_isMaxOn
+      ((nonempty_Icc.mpr hlh).prod (nonempty_Icc.mpr hlw)) ((hc i).norm.pow 2).continuousOn
+  choose p hp hmax using hm
+  refine ⟨fun i=>‖F i (p i)‖^2,fun i=> sq_nonneg _,?_,?_⟩
+  · intro i x hx y hy
+    have hh := hmax i (x,y) ⟨hx,hy⟩
+    rwa [heq i x y hx hy] at hh
+  · have hh := paired_rowwise_scales rows χ ψ P W V a b c d hb hd hWs hVs hW hV
+      lo hi low high E hlh hlw (fun i=>(p i).1) (fun i=>(p i).2)
+      (fun i _=>(hp i).1) (fun i _=>(hp i).2) henergy
+    convert hh using 1
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [←heq i (p i).1 (p i).2 (hp i).1 (hp i).2]
+
+end CenteredMomentScaleSupremum
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Filter Metric Complex
+
+namespace LogarithmicControl
+
+theorem differentiableOn_of_exp_eq {U : Set ℂ} (hU : IsOpen U)
+    {L g : ℂ → ℂ} (hL : DifferentiableOn ℂ L U)
+    (hg : ContinuousOn g U) (he : EqOn (Complex.exp ∘ g) L U) :
+    DifferentiableOn ℂ g U := by
+  intro z hz
+  have hgc : ContinuousAt g z := (hg z hz).continuousAt (hU.mem_nhds hz)
+  have hLc : DifferentiableAt ℂ L z := (hL z hz).differentiableAt (hU.mem_nhds hz)
+  have hs := Complex.hasStrictDerivAt_exp (g z)
+  let inv := hs.localInverse Complex.exp (Complex.exp (g z)) (g z)
+    (Complex.exp_ne_zero _)
+  have hi : DifferentiableAt ℂ inv (L z) := by
+    rw [← he hz]
+    exact (hs.to_localInverse (Complex.exp_ne_zero _)).hasDerivAt.differentiableAt
+  have heq : (fun w ↦ inv (L w)) =ᶠ[𝓝 z] g := by
+    have hlocal := hgc.eventually (hs.eventually_left_inverse (Complex.exp_ne_zero _))
+    filter_upwards [hlocal, hU.mem_nhds hz] with w hw hwU
+    simpa only [← he hwU, Function.comp_apply] using hw
+  exact ((hi.comp z hLc).congr_of_eventuallyEq heq.symm).differentiableWithinAt
+
+theorem exists_holomorphic_log {L : ℂ → ℂ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hL : DifferentiableOn ℂ L (ball c R))
+    (h0 : ∀ z ∈ ball c R, L z ≠ 0) :
+    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (ball c R) ∧
+      EqOn (Complex.exp ∘ g) L (ball c R) := by
+  let : ContractibleSpace (ball c R) := contractibleSpace_ball hR
+  have hsc : IsSimplyConnected (ball c R) := by
+    change SimplyConnectedSpace (ball c R)
+    infer_instance
+  obtain ⟨g, hg, he⟩ := Complex.exists_continuousOn_eqOn_exp_comp hsc
+    isOpen_ball hL.continuousOn (by
+      rintro ⟨z, hz, heq⟩
+      exact h0 z hz heq)
+  exact ⟨g, differentiableOn_of_exp_eq isOpen_ball hL hg he, he⟩
+
+theorem exists_holomorphic_log_normalized {L : ℂ → ℂ} {c m : ℂ} {R : ℝ} (hR : 0 < R)
+    (hL : DifferentiableOn ℂ L (ball c R))
+    (h0 : ∀ z ∈ ball c R, L z ≠ 0) (hm : Complex.exp m = L c) :
+    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (ball c R) ∧
+      EqOn (Complex.exp ∘ g) L (ball c R) ∧ g c = m := by
+  obtain ⟨g, hg, he⟩ := exists_holomorphic_log hR hL h0
+  refine ⟨fun z ↦ g z + (m - g c), hg.add_const _, ?_, by simp⟩
+  intro z hz
+  change Complex.exp (g z + (m - g c)) = L z
+  have hez : Complex.exp (g z) = L z := he hz
+  have hec : Complex.exp (g c) = L c := he (mem_ball_self hR)
+  rw [Complex.exp_add, Complex.exp_sub, hm, hez,
+    hec, div_self (h0 c (mem_ball_self hR)), mul_one]
+
+theorem log_eqOn_of_eq_center {g h : ℂ → ℂ} {c : ℂ} {r : ℝ} (hr : 0 < r)
+    (hg : DifferentiableOn ℂ g (ball c r)) (hh : DifferentiableOn ℂ h (ball c r))
+    (he : EqOn (Complex.exp ∘ g) (Complex.exp ∘ h) (ball c r)) (hc : g c = h c) :
+    EqOn g h (ball c r) := by
+  have hcm : c ∈ ball c r := mem_ball_self hr
+  have hgc := (hg.continuousOn c hcm).continuousAt (isOpen_ball.mem_nhds hcm)
+  have hhc := (hh.continuousOn c hcm).continuousAt (isOpen_ball.mem_nhds hcm)
+  have hs := Complex.hasStrictDerivAt_exp (g c)
+  have hleft := hs.eventually_left_inverse (Complex.exp_ne_zero _)
+  have hgleft := hgc.eventually hleft
+  have hhc' : Tendsto h (𝓝 c) (𝓝 (g c)) := by
+    rw [hc]
+    exact hhc.tendsto
+  have hhleft := hhc'.eventually hleft
+  have heq : g =ᶠ[𝓝 c] h := by
+    filter_upwards [hgleft, hhleft, isOpen_ball.mem_nhds hcm] with z hz1 hz2 hz
+    rw [← hz1, ← hz2]
+    exact congrArg _ (he hz)
+  exact (hg.analyticOnNhd isOpen_ball).eqOn_of_preconnected_of_eventuallyEq
+    (hh.analyticOnNhd isOpen_ball) (convex_ball c r).isPreconnected hcm heq
+
+theorem borel_caratheodory_closedBall {g : ℂ → ℂ} {c : ℂ} {r R M A : ℝ}
+    (hr : 0 ≤ r) (hrR : r < R) (hM : 0 < M) (hA : 0 ≤ A)
+    (hg : DifferentiableOn ℂ g (ball c R))
+    (hRe : ∀ z ∈ ball c R, (g z).re ≤ M) (hc : ‖g c‖ ≤ A)
+    {z : ℂ} (hz : z ∈ closedBall c r) :
+    ‖g z‖ ≤ 2 * M * r / (R - r) + A * (R + r) / (R - r) := by
+  have hzn : ‖z - c‖ ≤ r := by simpa [mem_closedBall, dist_eq_norm] using hz
+  have hzR : ‖z - c‖ < R := hzn.trans_lt hrR
+  have hRp : 0 < R := hr.trans_lt hrR
+  have hg' : DifferentiableOn ℂ (fun w ↦ g (c + w)) (ball 0 R) := by
+    apply hg.comp ((differentiable_const c).add differentiable_id).differentiableOn
+    intro w hw
+    simpa [mem_ball, dist_eq_norm] using hw
+  have hb := Complex.borelCaratheodory hM hg' (fun w hw ↦ hRe _ (by
+    simpa [mem_ball, dist_eq_norm] using hw)) (hr.trans_lt hrR)
+    (show z - c ∈ ball 0 R by simpa using hzR)
+  simp only [add_sub_cancel, add_zero] at hb
+  refine hb.trans ?_
+  apply add_le_add
+  · gcongr
+  · gcongr
+
+theorem three_circles {g : ℂ → ℂ} {c z : ℂ} {r R S A B : ℝ}
+    (hr : 0 < r) (hrR : r < R) (hRS : R < S)
+    (hg : DifferentiableOn ℂ g (ball c S))
+    (ha : ∀ w ∈ closedBall c r, ‖g w‖ ≤ A)
+    (hb : ∀ w ∈ closedBall c R, ‖g w‖ ≤ B)
+    (hzr : r ≤ ‖z - c‖) (hzR : ‖z - c‖ ≤ R) :
+    ‖g z‖ ≤ A ^ (1 - (Real.log ‖z - c‖ - Real.log r) /
+      (Real.log R - Real.log r)) *
+      B ^ ((Real.log ‖z - c‖ - Real.log r) / (Real.log R - Real.log r)) := by
+  let F : ℂ → ℂ := fun w ↦ g (c + Complex.exp w)
+  have hRp : 0 < R := hr.trans hrR
+  have hlog : Real.log r < Real.log R := Real.log_lt_log hr hrR
+  have hmap (w : ℂ) (hw : w.re ≤ Real.log R) : c + Complex.exp w ∈ closedBall c R := by
+    simp only [mem_closedBall, dist_eq_norm, add_sub_cancel_left, Complex.norm_exp]
+    exact (Real.exp_le_exp.mpr hw).trans_eq (Real.exp_log hRp)
+  have hclosed : closure (HadamardThreeLines.verticalStrip (Real.log r) (Real.log R)) ⊆
+      HadamardThreeLines.verticalClosedStrip (Real.log r) (Real.log R) := by
+    apply closure_minimal
+    · intro w hw
+      exact ⟨hw.1.le, hw.2.le⟩
+    · exact isClosed_Icc.preimage Complex.continuous_re
+  have hd : DiffContOnCl ℂ F
+      (HadamardThreeLines.verticalStrip (Real.log r) (Real.log R)) := by
+    apply DifferentiableOn.diffContOnCl
+    intro w hw
+    have hm := hmap w (hclosed hw).2
+    have hm' : c + Complex.exp w ∈ ball c S :=
+      closedBall_subset_ball hRS hm
+    exact ((hg _ hm').differentiableAt (isOpen_ball.mem_nhds hm')).comp w
+      ((differentiableAt_const c).add (Complex.differentiable_exp w)) |>.differentiableWithinAt
+  have hbound : BddAbove ((norm ∘ F) ''
+      HadamardThreeLines.verticalClosedStrip (Real.log r) (Real.log R)) := by
+    refine ⟨B, ?_⟩
+    rintro _ ⟨w, hw, rfl⟩
+    exact hb _ (hmap w hw.2)
+  have hzn : 0 < ‖z - c‖ := hr.trans_le hzr
+  have hz0 : z - c ≠ 0 := norm_pos_iff.mp hzn
+  have hw : Complex.log (z - c) ∈
+      HadamardThreeLines.verticalClosedStrip (Real.log r) (Real.log R) := by
+    change Real.log r ≤ (Complex.log (z - c)).re ∧
+      (Complex.log (z - c)).re ≤ Real.log R
+    simp only [Complex.log_re]
+    exact ⟨Real.log_le_log hr hzr, Real.log_le_log hzn hzR⟩
+  have h := HadamardThreeLines.norm_le_interp_of_mem_verticalClosedStrip'
+    hlog hw hd hbound (a := A) (b := B) ?_ ?_
+  · simpa [F, Complex.exp_log hz0, Complex.log_re] using h
+  · intro w hw
+    apply ha
+    simp only [mem_preimage, mem_singleton_iff] at hw
+    simp [mem_closedBall, dist_eq_norm, hw, Complex.norm_exp, Real.exp_log hr]
+  · intro w hw
+    exact hb _ (hmap w (le_of_eq hw))
+
+theorem three_circles_power_bound {g : ℂ → ℂ} {c z : ℂ} {r ρ R S A B T : ℝ}
+    (hr : 0 < r) (hrρ : r < ρ) (hρR : ρ < R) (hRS : R < S)
+    (hA : 1 ≤ A) (hB : 1 ≤ B) (hT : 1 ≤ T)
+    (hg : DifferentiableOn ℂ g (ball c S))
+    (ha : ∀ w ∈ closedBall c r, ‖g w‖ ≤ A)
+    (hb : ∀ w ∈ closedBall c R, ‖g w‖ ≤ B * T)
+    (hz : z ∈ closedBall c ρ) :
+    ‖g z‖ ≤ A * B * T ^ ((Real.log ρ - Real.log r) /
+      (Real.log R - Real.log r)) := by
+  let θ := (Real.log ρ - Real.log r) / (Real.log R - Real.log r)
+  have hlogR : 0 < Real.log R - Real.log r :=
+    sub_pos.mpr (Real.log_lt_log hr (hrρ.trans hρR))
+  have hθ0 : 0 ≤ θ := div_nonneg
+    (sub_nonneg.mpr (Real.log_le_log hr hrρ.le)) hlogR.le
+  have hθ1 : θ ≤ 1 := (div_le_one hlogR).mpr (by
+    linarith [Real.log_le_log (hr.trans hrρ) hρR.le])
+  have hzn : ‖z - c‖ ≤ ρ := by simpa [mem_closedBall, dist_eq_norm] using hz
+  have hAp : 0 ≤ A := zero_le_one.trans hA
+  have hBp : 0 ≤ B := zero_le_one.trans hB
+  have hTp : 0 ≤ T := zero_le_one.trans hT
+  have hp1 : 1 ≤ T ^ θ := Real.one_le_rpow hT hθ0
+  by_cases hzr : ‖z - c‖ ≤ r
+  · have hgz := ha z (by simpa [mem_closedBall, dist_eq_norm] using hzr)
+    exact hgz.trans (by nlinarith [mul_le_mul hB hp1 zero_le_one hBp])
+  · have hzr' : r ≤ ‖z - c‖ := (lt_of_not_ge hzr).le
+    have hzx : 0 < ‖z - c‖ := hr.trans_le hzr'
+    let x := (Real.log ‖z - c‖ - Real.log r) / (Real.log R - Real.log r)
+    have hx0 : 0 ≤ x := div_nonneg
+      (sub_nonneg.mpr (Real.log_le_log hr hzr')) hlogR.le
+    have hxθ : x ≤ θ := (div_le_div_iff_of_pos_right hlogR).mpr (by
+      linarith [Real.log_le_log hzx hzn])
+    have hx1 : x ≤ 1 := hxθ.trans hθ1
+    have h := three_circles hr (hrρ.trans hρR) hRS hg ha hb hzr' (hzn.trans hρR.le)
+    have hAa : A ^ (1 - x) ≤ A := by
+      simpa using Real.rpow_le_rpow_of_exponent_le hA (show 1 - x ≤ 1 by linarith)
+    have hBb : B ^ x ≤ B := by
+      simpa using Real.rpow_le_rpow_of_exponent_le hB hx1
+    have hTT : T ^ x ≤ T ^ θ := Real.rpow_le_rpow_of_exponent_le hT hxθ
+    calc
+      ‖g z‖ ≤ A ^ (1 - x) * (B * T) ^ x := h
+      _ = A ^ (1 - x) * (B ^ x * T ^ x) := by rw [Real.mul_rpow hBp hTp]
+      _ ≤ A * (B * T ^ θ) := mul_le_mul hAa
+        (mul_le_mul hBb hTT (Real.rpow_nonneg hTp _) hBp)
+        (by positivity) hAp
+      _ = A * B * T ^ θ := by ring
+
+def uniformTheta (e : ℝ) : ℝ := 1 - Real.log (1 + e) / Real.log (200 / 49)
+
+theorem uniformTheta_mem {e : ℝ} (he : 0 < e) (he' : e < 1 / 1000) :
+    0 < uniformTheta e ∧ uniformTheta e < 1 := by
+  have hD : 0 < Real.log (200 / 49) := Real.log_pos (by norm_num)
+  have hn : 0 < Real.log (1 + e) := Real.log_pos (by linarith)
+  have hnD : Real.log (1 + e) < Real.log (200 / 49) :=
+    Real.log_lt_log (by linarith) (by linarith)
+  unfold uniformTheta
+  constructor
+  · linarith [(div_lt_one hD).mpr hnD]
+  · linarith [div_pos hn hD]
+
+theorem three_circles_exponent_uniform {a e : ℝ}
+    (ha : 1 / 2 ≤ a) (ha' : a ≤ 1) (he : 0 < e) (he' : e < 1 / 1000) :
+    (Real.log (2 - a - 6 * e) - Real.log (49 / 100)) /
+      (Real.log (2 - a - 4 * e) - Real.log (49 / 100)) ≤ uniformTheta e := by
+  have hr : (0 : ℝ) < 49 / 100 := by norm_num
+  have h6 : (49 / 100 : ℝ) < 2 - a - 6 * e := by linarith
+  have h4 : (49 / 100 : ℝ) < 2 - a - 4 * e := by linarith
+  have h6p : 0 < 2 - a - 6 * e := hr.trans h6
+  have h4p : 0 < 2 - a - 4 * e := hr.trans h4
+  have hep : 0 < 1 + e := by linarith
+  have hD : 0 < Real.log (2 - a - 4 * e) - Real.log (49 / 100) :=
+    sub_pos.mpr (Real.log_lt_log hr h4)
+  have hU : 0 < Real.log (200 / 49) := Real.log_pos (by norm_num)
+  have hDU : Real.log (2 - a - 4 * e) - Real.log (49 / 100) ≤
+      Real.log (200 / 49) := by
+    rw [← Real.log_div h4p.ne' hr.ne']
+    apply Real.log_le_log (div_pos h4p hr)
+    apply (div_le_iff₀ hr).mpr
+    norm_num
+    linarith
+  have hprod : (2 - a - 6 * e) * (1 + e) ≤ 2 - a - 4 * e := by
+    have : 2 - a - 6 * e ≤ 2 := by linarith
+    nlinarith
+  have hdiff : Real.log (1 + e) ≤ Real.log (2 - a - 4 * e) -
+      Real.log (2 - a - 6 * e) := by
+    have h := Real.log_le_log (mul_pos h6p hep) hprod
+    rw [Real.log_mul h6p.ne' hep.ne'] at h
+    linarith
+  have hfrac : Real.log (1 + e) / Real.log (200 / 49) ≤
+      (Real.log (2 - a - 4 * e) - Real.log (2 - a - 6 * e)) /
+      (Real.log (2 - a - 4 * e) - Real.log (49 / 100)) := by
+    gcongr
+    exact (Real.log_pos (by linarith : 1 < 1 + e)).le.trans hdiff
+  calc
+    _ = 1 - (Real.log (2 - a - 4 * e) - Real.log (2 - a - 6 * e)) /
+        (Real.log (2 - a - 4 * e) - Real.log (49 / 100)) := by
+      apply eq_sub_iff_add_eq.mpr
+      rw [← add_div]
+      convert div_self hD.ne' using 1
+      ring
+    _ ≤ uniformTheta e := sub_le_sub_left hfrac 1
+
+theorem exp_sublinear_le {θ K ε : ℝ} (hθ : 0 ≤ θ) (hθ' : θ < 1)
+    (hK : 0 ≤ K) (hε : 0 < ε) :
+    ∃ D : ℝ, 0 < D ∧ ∀ x : ℝ, 1 ≤ x →
+      Real.exp (K * x ^ θ) ≤ D * Real.exp (ε * x) := by
+  have ht : Tendsto (fun x : ℝ ↦ K * x ^ (-(1 - θ))) atTop (𝓝 0) := by
+    simpa using (tendsto_rpow_neg_atTop (by linarith : 0 < 1 - θ)).const_mul K
+  obtain ⟨X, hX⟩ := eventually_atTop.mp (ht.eventually (gt_mem_nhds hε))
+  let Y := max 1 X
+  refine ⟨Real.exp (K * Y ^ θ), Real.exp_pos _, ?_⟩
+  intro x hx
+  have hxp : 0 < x := zero_lt_one.trans_le hx
+  have hYp : 0 < Y := zero_lt_one.trans_le (le_max_left _ _)
+  by_cases hxy : x ≤ Y
+  · have h1 : Real.exp (K * x ^ θ) ≤ Real.exp (K * Y ^ θ) := by
+      apply Real.exp_le_exp.mpr
+      exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow hxp.le hxy hθ) hK
+    exact h1.trans (le_mul_of_one_le_right (Real.exp_pos _).le
+      (Real.one_le_exp (by positivity)))
+  · have hlarge := hX x ((le_max_right 1 X).trans (lt_of_not_ge hxy).le)
+    have heq : K * x ^ θ = (K * x ^ (-(1 - θ))) * x := by
+      have hp := Real.rpow_add hxp (-(1 - θ)) 1
+      rw [Real.rpow_one] at hp
+      rw [mul_assoc, ← hp]
+      congr 2
+      ring
+    have hlin : K * x ^ θ ≤ ε * x := by
+      rw [heq]
+      exact mul_le_mul_of_nonneg_right hlarge.le hxp.le
+    exact (Real.exp_le_exp.mpr hlin).trans (le_mul_of_one_le_left
+      (Real.exp_pos _).le (Real.one_le_exp (mul_nonneg hK (Real.rpow_nonneg hYp.le _))))
+
+def outerConstant (e A M : ℝ) : ℝ := (4 * M + 4 * A) / e
+
+theorem outerConstant_ge_one {e A M : ℝ} (he : 0 < e) (he' : e < 1 / 1000)
+    (hA : 1 ≤ A) (hM : 1 ≤ M) : 1 ≤ outerConstant e A M := by
+  unfold outerConstant
+  apply (le_div_iff₀ he).mpr
+  nlinarith
+
+theorem outer_log_bound {g : ℂ → ℂ} {c : ℂ} {a e A M T : ℝ}
+    (ha : 1 / 2 ≤ a) (ha' : a ≤ 1) (he : 0 < e) (he' : e < 1 / 1000)
+    (hA : 1 ≤ A) (hM : 1 ≤ M) (hT : 1 ≤ T)
+    (hg : DifferentiableOn ℂ g (ball c (2 - a - 2 * e)))
+    (hRe : ∀ z ∈ ball c (2 - a - 3 * e), (g z).re ≤ M * T)
+    (hc : ‖g c‖ ≤ A) {z : ℂ} (hz : z ∈ closedBall c (2 - a - 4 * e)) :
+    ‖g z‖ ≤ outerConstant e A M * T := by
+  have hAp : 0 ≤ A := zero_le_one.trans hA
+  have hMp : 0 < M := zero_lt_one.trans_le hM
+  have hTp : 0 < T := zero_lt_one.trans_le hT
+  have hb := borel_caratheodory_closedBall (by linarith : 0 ≤ 2 - a - 4 * e)
+    (by linarith : 2 - a - 4 * e < 2 - a - 3 * e) (mul_pos hMp hTp) hAp
+    (hg.mono (ball_subset_ball (by linarith))) hRe hc hz
+  have hgap : 2 - a - 3 * e - (2 - a - 4 * e) = e := by ring
+  rw [hgap] at hb
+  have hfirst : 2 * (M * T) * (2 - a - 4 * e) ≤ 4 * M * T := by
+    nlinarith [mul_le_mul_of_nonneg_left
+      (show 2 - a - 4 * e ≤ 2 by linarith) (show 0 ≤ 2 * M * T by positivity)]
+  have hsecond : A * (2 - a - 3 * e + (2 - a - 4 * e)) ≤ 4 * A * T := by
+    have h1 := mul_le_mul_of_nonneg_left
+      (show 2 - a - 3 * e + (2 - a - 4 * e) ≤ 4 by linarith) hAp
+    nlinarith [mul_le_mul_of_nonneg_left hT (show 0 ≤ 4 * A by positivity)]
+  refine hb.trans ?_
+  rw [← add_div]
+  unfold outerConstant
+  rw [div_mul_eq_mul_div]
+  exact (div_le_div_iff_of_pos_right he).mpr (by nlinarith)
+
+theorem inner_log_bound {g : ℂ → ℂ} {c : ℂ} {a e A M T : ℝ}
+    (ha : 1 / 2 ≤ a) (ha' : a ≤ 1) (he : 0 < e) (he' : e < 1 / 1000)
+    (hA : 1 ≤ A) (hM : 1 ≤ M) (hT : 1 ≤ T)
+    (hg : DifferentiableOn ℂ g (ball c (2 - a - 2 * e)))
+    (hRe : ∀ z ∈ ball c (2 - a - 3 * e), (g z).re ≤ M * T)
+    (hin : ∀ z ∈ closedBall c (49 / 100), ‖g z‖ ≤ A)
+    {z : ℂ} (hz : z ∈ closedBall c (2 - a - 6 * e)) :
+    ‖g z‖ ≤ A * outerConstant e A M * T ^ uniformTheta e := by
+  have hB := outerConstant_ge_one he he' hA hM
+  have hb : ∀ w ∈ closedBall c (2 - a - 4 * e), ‖g w‖ ≤ outerConstant e A M * T :=
+    fun w hw ↦ outer_log_bound ha ha' he he' hA hM hT hg hRe
+      (hin c (mem_closedBall_self (by norm_num))) hw
+  have h := three_circles_power_bound (by norm_num : (0 : ℝ) < 49 / 100)
+    (by linarith : 49 / 100 < 2 - a - 6 * e)
+    (by linarith : 2 - a - 6 * e < 2 - a - 4 * e)
+    (by linarith : 2 - a - 4 * e < 2 - a - 2 * e)
+    hA hB hT hg hin hb hz
+  exact h.trans (mul_le_mul_of_nonneg_left
+    (Real.rpow_le_rpow_of_exponent_le hT (three_circles_exponent_uniform ha ha' he he'))
+    (by positivity))
+
+theorem logarithm_derivative_bound {g : ℂ → ℂ} {c : ℂ} {a e A M T : ℝ}
+    (ha : 1 / 2 ≤ a) (ha' : a ≤ 1) (he : 0 < e) (he' : e < 1 / 1000)
+    (hA : 1 ≤ A) (hM : 1 ≤ M) (hT : 1 ≤ T)
+    (hg : DifferentiableOn ℂ g (ball c (2 - a - 2 * e)))
+    (hRe : ∀ z ∈ ball c (2 - a - 3 * e), (g z).re ≤ M * T)
+    (hc : ‖g c‖ ≤ A) {z : ℂ} (hz : z ∈ closedBall c (2 - a - 8 * e)) :
+    ‖deriv g z‖ ≤ (outerConstant e A M / (2 * e)) * T := by
+  have hzn : dist z c ≤ 2 - a - 8 * e := hz
+  have hsub : closedBall z (2 * e) ⊆ ball c (2 - a - 2 * e) := by
+    intro w hw
+    have hw' : dist w z ≤ 2 * e := hw
+    have hdist := dist_triangle w z c
+    change dist w c < _
+    linarith
+  have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by linarith : 0 < 2 * e)
+    (hg.diffContOnCl_ball hsub) (C := outerConstant e A M * T) ?_
+  · exact h.trans_eq (by ring)
+  · intro w hw
+    apply outer_log_bound ha ha' he he' hA hM hT hg hRe hc
+    have hw' : dist w z = 2 * e := hw
+    have hdist := dist_triangle w z c
+    change dist w c ≤ _
+    linarith
+
+theorem zero_free_disk_logarithm {L E : ℂ → ℂ} {c : ℂ} {a e A M C : ℝ}
+    (ha' : a ≤ 1) (he : 0 < e) (he' : e < 1 / 1000) (hC : 0 < C)
+    (hL : DifferentiableOn ℂ L (ball c (2 - a - 2 * e)))
+    (h0 : ∀ z ∈ ball c (2 - a - 2 * e), L z ≠ 0)
+    (hpoly : ∀ z ∈ ball c (2 - a - 3 * e), ‖L z‖ ≤ C ^ M)
+    (hE : DifferentiableOn ℂ E (ball c (1 / 2)))
+    (hEL : EqOn (Complex.exp ∘ E) L (ball c (1 / 2)))
+    (hEb : ∀ z ∈ closedBall c (49 / 100), ‖E z‖ ≤ A) :
+    ∃ g : ℂ → ℂ, DifferentiableOn ℂ g (ball c (2 - a - 2 * e)) ∧
+      EqOn (Complex.exp ∘ g) L (ball c (2 - a - 2 * e)) ∧
+      (∀ z ∈ closedBall c (49 / 100), ‖g z‖ ≤ A) ∧
+      (∀ z ∈ ball c (2 - a - 3 * e), (g z).re ≤ M * Real.log C) := by
+  have hR : (1 / 2 : ℝ) < 2 - a - 2 * e := by linarith
+  obtain ⟨g, hg, hge, hgc⟩ := exists_holomorphic_log_normalized
+    (by linarith : 0 < 2 - a - 2 * e) hL h0
+    (hEL (mem_ball_self (by norm_num : (0 : ℝ) < 1 / 2)))
+  have hgE : EqOn g E (ball c (1 / 2)) := log_eqOn_of_eq_center (by norm_num)
+    (hg.mono (ball_subset_ball hR.le)) hE
+    (fun z hz ↦ (hge (ball_subset_ball hR.le hz)).trans (hEL hz).symm) hgc
+  refine ⟨g, hg, hge, ?_, ?_⟩
+  · intro z hz
+    rw [hgE (closedBall_subset_ball (by norm_num : (49 / 100 : ℝ) < 1 / 2) hz)]
+    exact hEb z hz
+  · intro z hz
+    have hz' : z ∈ ball c (2 - a - 2 * e) := ball_subset_ball (by linarith) hz
+    have hez : Complex.exp (g z) = L z := hge hz'
+    have hp := hpoly z hz
+    rw [← hez, Complex.norm_exp, Real.rpow_def_of_pos hC] at hp
+    simpa [mul_comm] using Real.exp_le_exp.mp hp
+
+theorem logarithmic_derivative_eq {L g : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hg : DifferentiableOn ℂ g U) (he : EqOn (Complex.exp ∘ g) L U)
+    {z : ℂ} (hz : z ∈ U) : deriv L z / L z = deriv g z := by
+  have hgz := (hg z hz).differentiableAt (hU.mem_nhds hz)
+  have hd := hgz.hasDerivAt.cexp
+  have heq : L =ᶠ[𝓝 z] (fun w ↦ Complex.exp (g w)) := by
+    filter_upwards [hU.mem_nhds hz] with w hw
+    exact (he hw).symm
+  have hdl := hd.congr_of_eventuallyEq heq
+  rw [hdl.deriv]
+  have hez : Complex.exp (g z) = L z := he hz
+  rw [← hez]
+  field_simp
+
+theorem logarithmic_control {e A M ε : ℝ}
+    (he : 0 < e) (he' : e < 1 / 1000) (hA : 1 ≤ A) (hM : 1 ≤ M) (hε : 0 < ε) :
+    ∃ D : ℝ, 0 < D ∧ ∀ (a C : ℝ) (L E : ℂ → ℂ) (c : ℂ),
+      1 / 2 ≤ a → a ≤ 1 → Real.exp 1 ≤ C →
+      DifferentiableOn ℂ L (ball c (2 - a - 2 * e)) →
+      (∀ z ∈ ball c (2 - a - 2 * e), L z ≠ 0) →
+      (∀ z ∈ ball c (2 - a - 3 * e), ‖L z‖ ≤ C ^ M) →
+      DifferentiableOn ℂ E (ball c (1 / 2)) →
+      EqOn (Complex.exp ∘ E) L (ball c (1 / 2)) →
+      (∀ z ∈ closedBall c (49 / 100), ‖E z‖ ≤ A) →
+      (∀ z ∈ closedBall c (2 - a - 6 * e), ‖L z‖ + ‖(L z)⁻¹‖ ≤ D * C ^ ε) ∧
+      (∀ z ∈ closedBall c (2 - a - 8 * e),
+        ‖deriv L z / L z‖ ≤ (outerConstant e A M / (2 * e)) * Real.log C) := by
+  have hθ := uniformTheta_mem he he'
+  have hB := outerConstant_ge_one he he' hA hM
+  have hK : 0 ≤ A * outerConstant e A M := by positivity
+  obtain ⟨D, hD, hDb⟩ := exp_sublinear_le hθ.1.le hθ.2 hK hε
+  refine ⟨2 * D, by positivity, ?_⟩
+  intro a C L E c ha ha' hC hL h0 hpoly hE hEL hEb
+  have hCp : 0 < C := (Real.exp_pos 1).trans_le hC
+  have hT : 1 ≤ Real.log C := by simpa using Real.log_le_log (Real.exp_pos 1) hC
+  obtain ⟨g, hg, hge, hgin, hgRe⟩ :=
+    zero_free_disk_logarithm ha' he he' hCp hL h0 hpoly hE hEL hEb
+  constructor
+  · intro z hz
+    have hz' : z ∈ ball c (2 - a - 2 * e) :=
+      closedBall_subset_ball (by linarith) hz
+    have hez : Complex.exp (g z) = L z := hge hz'
+    have hb := inner_log_bound ha ha' he he' hA hM hT hg hgRe hgin hz
+    have hp : Real.exp (A * outerConstant e A M * Real.log C ^ uniformTheta e) ≤
+        D * C ^ ε := by
+      convert hDb (Real.log C) hT using 1
+      rw [Real.rpow_def_of_pos hCp, mul_comm ε]
+    have hu : ‖L z‖ ≤ D * C ^ ε := by
+      rw [← hez, Complex.norm_exp]
+      exact (Real.exp_le_exp.mpr ((Complex.re_le_norm _).trans hb)).trans hp
+    have hl : ‖(L z)⁻¹‖ ≤ D * C ^ ε := by
+      rw [← hez, ← Complex.exp_neg, Complex.norm_exp, Complex.neg_re]
+      have hre : -(g z).re ≤ ‖g z‖ :=
+        (neg_le_abs _).trans (Complex.abs_re_le_norm _)
+      exact (Real.exp_le_exp.mpr (hre.trans hb)).trans hp
+    nlinarith
+  · intro z hz
+    rw [logarithmic_derivative_eq isOpen_ball hg hge
+      (closedBall_subset_ball (by linarith) hz)]
+    exact logarithm_derivative_bound ha ha' he he' hA hM hT hg hgRe
+      (hgin c (mem_closedBall_self (by norm_num))) hz
+
+theorem conductor_height_scale_ge_exp (Q t : ℝ) (hQ : 1 ≤ Q) :
+    Real.exp 1 ≤ 2 * Q * (3 + |t|) ^ 2 := by
+  have hs : 9 ≤ (3 + |t|) ^ 2 := by nlinarith [abs_nonneg t]
+  have hq := mul_le_mul_of_nonneg_right hQ (sq_nonneg (3 + |t|))
+  nlinarith [Real.exp_one_lt_three]
+
+theorem absorb_polynomial_constant {K p : ℝ} (hp : 0 ≤ p) :
+    ∃ M : ℝ, 1 ≤ M ∧ ∀ C : ℝ, Real.exp 1 ≤ C → K * C ^ p ≤ C ^ M := by
+  let J := max 1 K
+  have hJ : 1 ≤ J := le_max_left _ _
+  have hJp : 0 < J := zero_lt_one.trans_le hJ
+  have hlogJ : 0 ≤ Real.log J := Real.log_nonneg hJ
+  refine ⟨p + Real.log J + 1, by linarith, ?_⟩
+  intro C hC
+  have hCp : 0 < C := (Real.exp_pos 1).trans_le hC
+  have hlogC : 1 ≤ Real.log C := by simpa using Real.log_le_log (Real.exp_pos 1) hC
+  have hJC : J ≤ C ^ Real.log J := by
+    rw [Real.rpow_def_of_pos hCp, ← Real.exp_log hJp]
+    simp only [Real.log_exp]
+    apply Real.exp_le_exp.mpr
+    nlinarith
+  calc
+    K * C ^ p ≤ J * C ^ p := mul_le_mul_of_nonneg_right (le_max_right _ _)
+      (Real.rpow_nonneg hCp.le _)
+    _ ≤ C ^ Real.log J * C ^ p := mul_le_mul_of_nonneg_right hJC
+      (Real.rpow_nonneg hCp.le _)
+    _ = C ^ (p + Real.log J) := by rw [← Real.rpow_add hCp]; congr 1; ring
+    _ ≤ C ^ (p + Real.log J + 1) := Real.rpow_le_rpow_of_exponent_le
+      ((show (1 : ℝ) ≤ Real.exp 1 by exact Real.one_le_exp (by norm_num)).trans hC)
+      (by linarith)
+
+theorem disk_re_gt {a e t : ℝ} {z : ℂ}
+    (hz : z ∈ ball (2 + (t : ℂ) * Complex.I) (2 - a - 2 * e)) :
+    a + 2 * e < z.re := by
+  have hn : ‖z - (2 + (t : ℂ) * Complex.I)‖ < 2 - a - 2 * e := by
+    simpa [mem_ball, dist_eq_norm] using hz
+  have hr := Complex.abs_re_le_norm (z - (2 + (t : ℂ) * Complex.I))
+  simp only [Complex.sub_re, Complex.add_re, Complex.mul_re,
+    Complex.ofReal_re, Complex.I_re, mul_zero, Complex.ofReal_im,
+    Complex.I_im, zero_mul, sub_zero, add_zero] at hr
+  norm_num at hr
+  linarith [neg_le_abs (z.re - 2)]
+
+theorem same_height_mem_disk {a e t v x : ℝ} (hev : 8 * e ≤ v)
+    (hx : a + v ≤ x) (hx' : x ≤ 2) :
+    (x : ℂ) + (t : ℂ) * Complex.I ∈
+      closedBall (2 + (t : ℂ) * Complex.I) (2 - a - 8 * e) := by
+  rw [mem_closedBall, dist_eq_norm]
+  have heq : (x : ℂ) + (t : ℂ) * Complex.I - (2 + (t : ℂ) * Complex.I) =
+      ((x - 2 : ℝ) : ℂ) := by push_cast; ring
+  rw [heq, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith : x - 2 ≤ 0)]
+  linarith
+
+theorem principal_regularizer_norm_le_one {s : ℂ} (hs : 0 ≤ s.re) :
+    ‖(s - 1) / (s + 1)‖ ≤ 1 := by
+  have hn : ‖s - 1‖ ≤ ‖s + 1‖ := by
+    rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)]
+    simp only [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.one_re,
+      Complex.sub_im, Complex.one_im, sub_zero, Complex.add_re, Complex.add_im, add_zero]
+    nlinarith
+  rw [norm_div]
+  exact div_le_one_of_le₀ hn (norm_nonneg _)
+
+theorem principal_reciprocal_transfer {s Z L : ℂ} (hs : 0 ≤ s.re)
+    (hL : L = ((s - 1) / (s + 1)) * Z) (h0 : L ≠ 0) : ‖Z⁻¹‖ ≤ ‖L⁻¹‖ := by
+  have hf0 : (s - 1) / (s + 1) ≠ 0 := by
+    intro hf
+    apply h0
+    rw [hL, hf, zero_mul]
+  have heq : Z⁻¹ = ((s - 1) / (s + 1)) * L⁻¹ := by
+    rw [hL, mul_inv]
+    rw [← mul_assoc, mul_inv_cancel₀ hf0, one_mul]
+  rw [heq, norm_mul]
+  exact (mul_le_mul_of_nonneg_right (principal_regularizer_norm_le_one hs)
+    (norm_nonneg _)).trans_eq (one_mul _)
+
+end LogarithmicControl
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set MeasureTheory
+namespace HeckePrincipalStrip
+open HeckeFamily HeckeTheta
+
+def normalized (η : Character) (s : ℂ) : ℂ := HeckeOrigin.poleRemoved η s / (s+2)
+
+theorem normalized_diffContOnCl (η : Character) :
+    DiffContOnCl ℂ (normalized η) HeckeStrip.strip := by
+  apply DifferentiableOn.diffContOnCl
+  intro z hz
+  exact ((HeckeOrigin.poleRemoved_entire η z).div (differentiableAt_id.add_const 2)
+    (HeckeStrip.shift_ne_zero z (HeckeStrip.closure_strip_subset hz))).differentiableWithinAt
+
+theorem norm_sub_one_le_shift (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖z-1‖ ≤ ‖z+2‖ := by
+  have h : ‖z+2‖^2 - ‖z-1‖^2 = 6*z.re+3 := by
+    norm_num [Complex.sq_norm, Complex.normSq_apply, Complex.add_re, Complex.add_im,
+      Complex.sub_re, Complex.sub_im]
+    ring
+  nlinarith [hz.1, norm_nonneg (z-1), norm_nonneg (z+2)]
+
+theorem normalized_norm_le (η : Character) {z : ℂ} (hz : z ∈ HeckeStrip.closedStrip)
+    (h0 : z ≠ 0) (h1 : z ≠ 1) : ‖normalized η z‖ ≤ ‖LFunction η z‖ := by
+  unfold normalized
+  rw [HeckeOrigin.poleRemoved_eq η h0 h1, norm_div, norm_mul]
+  apply (div_le_iff₀ (lt_of_lt_of_le zero_lt_one (HeckeStrip.shift_norm_lower z hz))).mpr
+  simpa only [mul_comm] using mul_le_mul_of_nonneg_right (norm_sub_one_le_shift z hz)
+    (norm_nonneg (LFunction η z))
+
+private theorem norm_z_le_height (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖z‖ ≤ 3 + |z.im| := by
+  apply (Complex.norm_le_abs_re_add_abs_im z).trans
+  have hr : |z.re| ≤ 3 := abs_le.mpr ⟨by linarith [hz.1], by linarith [hz.2]⟩
+  linarith
+
+private theorem norm_sub_one_le_height (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖z-1‖ ≤ 3 + |z.im| := by
+  apply (Complex.norm_le_abs_re_add_abs_im (z-1)).trans
+  have hr : |z.re-1| ≤ 3 := abs_le.mpr ⟨by linarith [hz.1], by linarith [hz.2]⟩
+  simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im, sub_zero]
+  linarith
+
+theorem regularized_completion_bound (η : Character) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ z ∈ HeckeStrip.closedStrip,
+      ‖HeckeMellinIdentity.regularized (pair (coefficients η)) z‖ ≤ C * (3+|z.im|)^2 := by
+  let P := pair (coefficients η)
+  have hstrong := P.isStrongFEPair_toStrongFEPair
+  obtain ⟨C, hC, hbound⟩ := mellin_uniform_strip_bound P.f_modif
+    (-(1/10)) (11/10) (hstrong.hasMellin _).1 (hstrong.hasMellin _).1
+  let D := C + ‖P.f₀‖ + ‖P.ε‖ * ‖P.g₀‖
+  refine ⟨D, by dsimp [D]; positivity, ?_⟩
+  intro z hz
+  have hΛ : ‖P.Λ₀ z‖ ≤ C := hbound z hz.1 hz.2
+  have hT : 1 ≤ 3+|z.im| := by linarith [abs_nonneg z.im]
+  have hz0 := norm_z_le_height z hz
+  have hz1 := norm_sub_one_le_height z hz
+  unfold HeckeMellinIdentity.regularized
+  change ‖z*(z-1)*P.Λ₀ z - (z-1)*P.f₀ + z*P.ε*P.g₀‖ ≤ _
+  apply (norm_add_le _ _).trans
+  apply (add_le_add (norm_sub_le _ _) (le_refl ‖z*P.ε*P.g₀‖)).trans
+  simp only [norm_mul]
+  calc
+    _ ≤ ((3+|z.im|)*(3+|z.im|))*C + (3+|z.im|)*‖P.f₀‖ +
+        (3+|z.im|)*‖P.ε‖*‖P.g₀‖ := by gcongr
+    _ ≤ D*(3+|z.im|)^2 := by
+      dsimp [D]
+      have hf := norm_nonneg P.f₀
+      have hg := mul_nonneg (norm_nonneg P.ε) (norm_nonneg P.g₀)
+      have hsq : 3+|z.im| ≤ (3+|z.im|)^2 := by nlinarith
+      nlinarith
+
+theorem normalized_exp_growth (η : Character) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧ ∀ z ∈ HeckeStrip.strip,
+      ‖normalized η z‖ ≤ A * Real.exp (B * |z.im|) := by
+  obtain ⟨C, hC, hCbound⟩ := regularized_completion_bound η
+  obtain ⟨G, hG, hGbound⟩ := CubicGammaExponential.inverse_Gamma_strip_exp_bound_complex
+    (9/10) (21/10)
+  let S : ℝ := Real.pi ^ (-(1/10) : ℝ) + Real.pi ^ (11/10 : ℝ)
+  have hS : 0 ≤ S := by dsimp [S]; positivity
+  refine ⟨9*S*G*C, Real.pi+2, by positivity, by positivity, ?_⟩
+  intro z hz
+  have hzc : z ∈ HeckeStrip.closedStrip := ⟨hz.1.le, hz.2.le⟩
+  have hp : ‖(Real.pi : ℂ)^z‖ ≤ S := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos Real.pi_pos]
+    exact rpow_between_endpoints Real.pi (-(1/10)) (11/10) z.re
+      Real.pi_pos hzc.1 hzc.2
+  have hg : ‖(Complex.Gamma (z+1))⁻¹‖ ≤ G*Real.exp (Real.pi*|z.im|) := by
+    simpa using hGbound (z+1) (by constructor <;> simp only [Complex.add_re, Complex.one_re] <;>
+      linarith [hzc.1, hzc.2])
+  have ht : (3+|z.im|)^2 ≤ 9*Real.exp (2*|z.im|) := by
+    have he := Real.add_one_le_exp |z.im|
+    have ht0 := abs_nonneg z.im
+    have hle : 3+|z.im| ≤ 3*Real.exp |z.im| := by linarith
+    have hs := sq_le_sq₀ (by positivity : 0 ≤ 3+|z.im|) (by positivity : 0 ≤ 3*Real.exp |z.im|)
+    have hsq := hs.mpr hle
+    rw [mul_pow, ← Real.exp_nat_mul] at hsq
+    norm_num at hsq ⊢
+    exact hsq
+  unfold normalized HeckeOrigin.poleRemoved
+  simp only [norm_div, norm_mul]
+  norm_num only [Complex.norm_ofNat]
+  calc
+    _ ≤ ‖(Real.pi : ℂ)^z‖ * ‖(Complex.Gamma (z+1))⁻¹‖ *
+        ‖HeckeMellinIdentity.regularized (pair (coefficients η)) z‖ := by
+      apply (div_le_self (by positivity) (HeckeStrip.shift_norm_lower z hzc)).trans
+      exact div_le_self (by positivity) (by norm_num)
+    _ ≤ S * (G*Real.exp (Real.pi*|z.im|)) * (C*(3+|z.im|)^2) := by
+      gcongr
+      exact hCbound z hzc
+    _ ≤ S * (G*Real.exp (Real.pi*|z.im|)) * (C*(9*Real.exp (2*|z.im|))) := by gcongr
+    _ = _ := by
+      rw [show (Real.pi+2)*|z.im| = Real.pi*|z.im| + 2*|z.im| by ring, Real.exp_add]
+      ring
+
+theorem primitive_normalized_bound (c : O) [NeZero c]
+    (χ : MulChar (O ⧸ Ideal.span {c}) ℂ)
+    (hu : ∀ u : Oˣ, χ (Ideal.Quotient.mk (Ideal.span {c}) (u : O)) = 1)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals χ)
+    (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖normalized (HeckePrimitive.character c χ hu) z‖ ≤
+      36 * ((1+HeckeStrip.leftConstant)*HeckeReciprocalBound.bound (11/10)) *
+        HeckeStripActual.conductor c ^ (3/5 : ℝ) * (3+|z.im|)^2 := by
+  let η := HeckePrimitive.character c χ hu
+  let D := HeckeReciprocalBound.bound (11/10)
+  have hD : 0 ≤ D := tsum_nonneg (fun _ => norm_nonneg _)
+  have hc := HeckeStrip.leftConstant_pos
+  have hQ := HeckeStripActual.conductor_ge_one c
+  apply HeckeStrip.uniform_strip_bound (HeckeStripActual.conductor c)
+    ((1+HeckeStrip.leftConstant)*D) hQ (by positivity) (normalized η)
+    (normalized_diffContOnCl η) (normalized_exp_growth η) ?_ ?_ z hz
+  · intro w hw
+    have hwc : w ∈ HeckeStrip.closedStrip := ⟨by rw [hw], by rw [hw]; norm_num⟩
+    apply (normalized_norm_le η hwc (by intro h; simp [h] at hw)
+      (by intro h; norm_num [h] at hw)).trans
+    have hb := HeckeStrip.left_boundary_of_functional_equation
+      (HeckeStripActual.conductor c) D (lt_of_lt_of_le zero_lt_one hQ) hD
+      (LFunction η) (LFunction (HeckePrimitive.character c χ⁻¹
+        (HeckePrimitive.inverse_unit_trivial c χ hu))) (TraceCharacter.normalizedGauss c χ)
+      (TraceCharacter.normalizedGauss_norm c χ hp)
+      (fun _ hs => HeckeStripActual.functional_equation_left c χ hu hp hs)
+      (fun _ hs => HeckeStripActual.LFunction_norm_le _ (by norm_num : (1 : ℝ)<11/10) hs.ge) w hw
+    apply hb.trans
+    have hbase : HeckeStrip.leftConstant*D ≤ (1+HeckeStrip.leftConstant)*D := by nlinarith
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hbase (Real.rpow_nonneg (by linarith) _)) (sq_nonneg _)
+  · intro w hw
+    have hwc : w ∈ HeckeStrip.closedStrip := ⟨by rw [hw]; norm_num, by rw [hw]⟩
+    apply (normalized_norm_le η hwc (by intro h; norm_num [h] at hw)
+      (by intro h; norm_num [h] at hw)).trans
+    apply (HeckeStripActual.LFunction_norm_le η (by norm_num : (1 : ℝ)<11/10) hw.ge).trans
+    change D ≤ (1+HeckeStrip.leftConstant)*D
+    nlinarith
+
+theorem poleRemoved_principalCharacter (η : Character) (s : ℂ) :
+    HeckeOrigin.poleRemoved (HeckePresentation.principalCharacter η) s =
+      HeckeOrigin.poleRemoved η s := by
+  have he : HeckeOrigin.poleRemoved (HeckePresentation.principalCharacter η) =
+      HeckeOrigin.poleRemoved η := by
+    apply (Complex.analyticOnNhd_univ_iff_differentiable.mpr
+      (HeckeOrigin.poleRemoved_entire _)).eq_of_eventuallyEq
+      (Complex.analyticOnNhd_univ_iff_differentiable.mpr
+      (HeckeOrigin.poleRemoved_entire _)) (z₀ := (2 : ℂ))
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+      (by norm_num : (1 : ℝ)<(2 : ℂ).re)] with z hz
+    have h0 : z ≠ 0 := by intro h; norm_num [h] at hz
+    have h1 : z ≠ 1 := by intro h; norm_num [h] at hz
+    rw [HeckeOrigin.poleRemoved_eq _ h0 h1, HeckeOrigin.poleRemoved_eq _ h0 h1]
+    congr 1
+    unfold LFunction
+    congr 1
+    exact continuedLattice_eq_of_elementCoeff_eq _ _
+      (HeckePresentation.principalCharacter_elementCoeff η) (by linarith) h1
+  exact congr_fun he s
+
+theorem uniform_normalized_strip_bound (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue)
+    (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖normalized η z‖ ≤
+      36 * ((1+HeckeStrip.leftConstant)*HeckeReciprocalBound.bound (11/10)) *
+        (η.modulus.absNorm : ℝ) ^ (3/5 : ℝ) * (3+|z.im|)^2 := by
+  have h := primitive_normalized_bound (HeckePresentation.generator η)
+    (HeckePresentation.principalResidue η) (HeckePresentation.principalResidue_unit η)
+    (HeckePresentation.principalResidue_primitive η hp) z hz
+  change ‖normalized (HeckePresentation.principalCharacter η) z‖ ≤ _ at h
+  unfold normalized at h ⊢
+  rw [poleRemoved_principalCharacter] at h
+  simpa only [HeckeStripActual.conductor, HeckePresentation.span_generator] using h
+
+def sourceNormalized (η : Character) (s : ℂ) : ℂ :=
+  HeckeOrigin.poleRemoved η s / (s+1)
+
+theorem sourceNormalized_norm_le (η : Character) (z : ℂ)
+    (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖sourceNormalized η z‖ ≤ 3 * ‖normalized η z‖ := by
+  have hlow : (9/10 : ℝ) ≤ ‖z+1‖ := by
+    have hre := Complex.re_le_norm (z+1)
+    simp only [Complex.add_re, Complex.one_re] at hre
+    linarith [hz.1]
+  have hn1 : z+1 ≠ 0 := norm_pos_iff.mp (by linarith)
+  have hn2 : z+2 ≠ 0 := HeckeStrip.shift_ne_zero z hz
+  have hratio : ‖z+2‖ ≤ 3*‖z+1‖ := by
+    have ht := norm_add_le (z+1) (1 : ℂ)
+    rw [norm_one, show z+1+1=z+2 by ring] at ht
+    linarith
+  have heq : sourceNormalized η z = normalized η z * ((z+2)/(z+1)) := by
+    unfold sourceNormalized normalized
+    field_simp
+  rw [heq, norm_mul, norm_div]
+  have hd : ‖z+2‖ / ‖z+1‖ ≤ 3 := (div_le_iff₀ (norm_pos_iff.mpr hn1)).mpr hratio
+  nlinarith [norm_nonneg (normalized η z)]
+
+theorem uniform_source_normalized_strip_bound (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue)
+    (z : ℂ) (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖sourceNormalized η z‖ ≤
+      108 * ((1+HeckeStrip.leftConstant)*HeckeReciprocalBound.bound (11/10)) *
+        (η.modulus.absNorm : ℝ) ^ (3/5 : ℝ) * (3+|z.im|)^2 := by
+  apply (sourceNormalized_norm_le η z hz).trans
+  have h := mul_le_mul_of_nonneg_left (uniform_normalized_strip_bound η hp z hz) (by norm_num : (0 : ℝ) ≤ 3)
+  convert h using 1 ; ring
+
+end HeckePrincipalStrip
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set
+namespace HeckeLogarithmicInput
+open HeckeFamily
+
+def regular (η : Character) (s : ℂ) : ℂ :=
+  if η.residue = 1 then HeckePrincipalStrip.sourceNormalized η s else LFunction η s
+
+theorem regular_eq_nonprincipal (η : Character) (hη : η.residue ≠ 1) :
+    regular η = LFunction η := by funext s; simp [regular, hη]
+
+theorem regular_differentiableAt (η : Character) {s : ℂ} (hs : 0 < s.re) :
+    DifferentiableAt ℂ (regular η) s := by
+  have hplus : s+1 ≠ 0 := by
+    intro h
+    have he := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.one_re, Complex.zero_re] at he
+    linarith
+  by_cases hη : η.residue = 1
+  · have he : regular η = HeckePrincipalStrip.sourceNormalized η := by
+      funext z; simp [regular, hη]
+    rw [he]
+    exact (HeckeOrigin.poleRemoved_entire η s).div (differentiableAt_id.add_const 1) hplus
+  · rw [regular_eq_nonprincipal η hη]
+    exact LFunction_entire_nonprincipal η hη s
+
+theorem regular_ne_zero (η : Character) {s : ℂ}
+    (hs : HeckeZeroSupremum.beta < s.re) : regular η s ≠ 0 := by
+  have hs0 : 0 < s.re := by linarith [HeckeZeroSupremum.half_le_beta]
+  have h0 : s ≠ 0 := by intro h; simp [h] at hs0
+  have hplus : s+1 ≠ 0 := by
+    intro h
+    have he := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.one_re, Complex.zero_re] at he
+    linarith
+  by_cases hη : η.residue = 1
+  · simp only [regular, if_pos hη, HeckePrincipalStrip.sourceNormalized]
+    apply div_ne_zero _ hplus
+    by_cases h1 : s = 1
+    · subst s; exact HeckeOrigin.poleRemoved_one_ne_zero η hη
+    · rw [HeckeOrigin.poleRemoved_eq η h0 h1]
+      exact mul_ne_zero (sub_ne_zero.mpr h1)
+        (HeckeZeroSupremum.LFunction_ne_zero_of_beta_lt η hs (Or.inl h1))
+  · rw [regular_eq_nonprincipal η hη]
+    exact HeckeZeroSupremum.LFunction_ne_zero_of_beta_lt η hs (Or.inr hη)
+
+theorem regular_inverse_differentiableAt (η : Character) {s : ℂ}
+    (hs : HeckeZeroSupremum.beta < s.re) :
+    DifferentiableAt ℂ (fun z => (regular η z)⁻¹) s :=
+  (regular_differentiableAt η (by linarith [HeckeZeroSupremum.half_le_beta])).inv
+    (regular_ne_zero η hs)
+
+theorem principal_regular_factor_bound {s : ℂ} (hs : 0 ≤ s.re) :
+    ‖s-1‖ ≤ ‖s+1‖ := by
+  have he : ‖s+1‖^2 - ‖s-1‖^2 = 4*s.re := by
+    simp only [Complex.sq_norm, Complex.normSq_apply, Complex.add_re, Complex.add_im,
+      Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im]
+    ring
+  nlinarith [norm_nonneg (s-1), norm_nonneg (s+1)]
+
+theorem regular_norm_le (η : Character) {σ : ℝ} (hσ : 1 < σ)
+    {s : ℂ} (hs : σ ≤ s.re) : ‖regular η s‖ ≤ HeckeReciprocalBound.bound σ := by
+  by_cases hη : η.residue = 1
+  · have h0 : s ≠ 0 := by intro h; simp [h] at hs; linarith
+    have h1 : s ≠ 1 := by intro h; simp [h] at hs; linarith
+    have hp : 0 < ‖s+1‖ := by
+      have hr := Complex.re_le_norm (s+1)
+      simp only [Complex.add_re, Complex.one_re] at hr
+      linarith
+    simp only [regular, if_pos hη, HeckePrincipalStrip.sourceNormalized,
+      HeckeOrigin.poleRemoved_eq η h0 h1, norm_div, norm_mul]
+    apply le_trans _ (HeckeStripActual.LFunction_norm_le η hσ hs)
+    apply (div_le_iff₀ hp).mpr
+    nlinarith [principal_regular_factor_bound (s := s) (by linarith), norm_nonneg (LFunction η s)]
+  · rw [regular_eq_nonprincipal η hη]
+    exact HeckeStripActual.LFunction_norm_le η hσ hs
+
+theorem regular_inverse_norm_le (η : Character) {s : ℂ} (hs : (3/2 : ℝ) ≤ s.re) :
+    ‖(regular η s)⁻¹‖ ≤ 5 * HeckeReciprocalBound.bound (3/2) := by
+  have h0 : s ≠ 0 := by intro h; norm_num [h] at hs
+  have h1 : s ≠ 1 := by intro h; norm_num [h] at hs
+  have hL := HeckeReciprocalBound.reciprocal_norm_le η (by norm_num : (1 : ℝ)<3/2) hs
+  rw [HeckeReciprocal.reciprocal_eq_inv η h0 h1] at hL
+  have hB : 0 ≤ HeckeReciprocalBound.bound (3/2) := tsum_nonneg (fun _ => norm_nonneg _)
+  by_cases hη : η.residue = 1
+  · have hlow : (1/2 : ℝ) ≤ ‖s-1‖ := by
+      have hr := Complex.re_le_norm (s-1)
+      simp only [Complex.sub_re, Complex.one_re] at hr
+      linarith
+    have hratio : ‖s+1‖ / ‖s-1‖ ≤ 5 := by
+      apply (div_le_iff₀ (by linarith : 0 < ‖s-1‖)).mpr
+      have hr := norm_add_le (s-1) (2 : ℂ)
+      norm_num only [Complex.norm_ofNat] at hr
+      rw [show s-1+2=s+1 by ring] at hr
+      linarith
+    simp only [regular, if_pos hη, HeckePrincipalStrip.sourceNormalized,
+      HeckeOrigin.poleRemoved_eq η h0 h1, inv_div, norm_div, norm_mul]
+    calc
+      _ = (‖s+1‖ / ‖s-1‖) * ‖(LFunction η s)⁻¹‖ := by rw [norm_inv]; ring
+      _ ≤ _ := mul_le_mul hratio hL (norm_nonneg _) (by norm_num)
+  · rw [regular_eq_nonprincipal η hη]
+    linarith
+
+def uniformConstant : ℝ :=
+  108*((1+HeckeStrip.leftConstant)*HeckeReciprocalBound.bound (11/10))
+
+theorem uniformConstant_nonneg : 0 ≤ uniformConstant := by
+  have hc := HeckeStrip.leftConstant_pos
+  have hD : 0 ≤ HeckeReciprocalBound.bound (11/10) := tsum_nonneg (fun _ => norm_nonneg _)
+  unfold uniformConstant
+  positivity
+
+theorem modulus_norm_ge_one (η : Character) : 1 ≤ (η.modulus.absNorm : ℝ) := by
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+    (Ideal.absNorm_eq_zero_iff.not.mpr η.modulus_ne_bot)
+
+theorem regular_strip_bound (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue) (z : ℂ)
+    (hz : z ∈ HeckeStrip.closedStrip) :
+    ‖regular η z‖ ≤ uniformConstant * (η.modulus.absNorm : ℝ)^(3/5 : ℝ) *
+      (3+|z.im|)^2 := by
+  by_cases hη : η.residue = 1
+  · simpa only [regular, if_pos hη, uniformConstant] using
+      HeckePrincipalStrip.uniform_source_normalized_strip_bound η hp z hz
+  · rw [regular_eq_nonprincipal η hη]
+    apply (HeckePresentation.uniform_strip_bound η hp hη z hz).trans
+    have hc := HeckeStrip.leftConstant_pos
+    have hD : 0 ≤ HeckeReciprocalBound.bound (11/10) := tsum_nonneg (fun _ => norm_nonneg _)
+    unfold uniformConstant
+    gcongr ; norm_num
+
+theorem regular_right_growth (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue) {z : ℂ}
+    (hz : -(1/10 : ℝ) ≤ z.re) :
+    ‖regular η z‖ ≤ uniformConstant * (η.modulus.absNorm : ℝ)^(3/5 : ℝ) *
+      (3+|z.im|)^2 := by
+  by_cases hright : z.re ≤ 11/10
+  · exact regular_strip_bound η hp z ⟨hz, hright⟩
+  · apply (regular_norm_le η (by norm_num : (1 : ℝ)<11/10) (le_of_not_ge hright)).trans
+    have hD : 0 ≤ HeckeReciprocalBound.bound (11/10) := tsum_nonneg (fun _ => norm_nonneg _)
+    have hc := HeckeStrip.leftConstant_pos
+    have hC : HeckeReciprocalBound.bound (11/10) ≤ uniformConstant := by
+      unfold uniformConstant; nlinarith
+    have hQ : 1 ≤ (η.modulus.absNorm : ℝ)^(3/5 : ℝ) :=
+      Real.one_le_rpow (modulus_norm_ge_one η) (by norm_num)
+    have hT : 1 ≤ (3+|z.im|)^2 := by nlinarith [abs_nonneg z.im]
+    exact hC.trans ((le_mul_of_one_le_right uniformConstant_nonneg hQ).trans
+      (le_mul_of_one_le_right (mul_nonneg uniformConstant_nonneg (by linarith : 0 ≤ (η.modulus.absNorm : ℝ)^(3/5 : ℝ))) hT))
+
+theorem regular_ne_zero_on_disk (η : Character) (a e t : ℝ)
+    (ha : HeckeZeroSupremum.beta ≤ a) (he : 0 < e) {z : ℂ}
+    (hz : z ∈ Metric.ball ((2 : ℂ)+t*Complex.I) (2-a-2*e)) :
+    regular η z ≠ 0 := by
+  apply regular_ne_zero η
+  have hn : ‖z-((2 : ℂ)+t*Complex.I)‖ < 2-a-2*e := by
+    simpa only [Metric.mem_ball, dist_eq_norm] using hz
+  have hr := Complex.abs_re_le_norm (z-((2 : ℂ)+t*Complex.I))
+  have hrl := neg_abs_le (z-((2 : ℂ)+t*Complex.I)).re
+  norm_num [Complex.sub_re, Complex.add_re, Complex.mul_re] at hr hrl
+  linarith
+
+theorem reciprocal_norm_le_regular_inverse (η : Character) {s : ℂ}
+    (hs : HeckeZeroSupremum.beta < s.re) :
+    ‖HeckeReciprocal.reciprocal η s‖ ≤ ‖(regular η s)⁻¹‖ := by
+  have hs0 : 0 < s.re := by linarith [HeckeZeroSupremum.half_le_beta]
+  have h0 : s ≠ 0 := by intro h; simp [h] at hs0
+  by_cases hη : η.residue = 1
+  · by_cases h1 : s = 1
+    · subst s
+      rw [HeckeReciprocal.reciprocal_principal_one η hη, norm_zero]
+      exact norm_nonneg _
+    have hp : s+1 ≠ 0 := by
+      intro h
+      have he := congrArg Complex.re h
+      simp only [Complex.add_re, Complex.one_re, Complex.zero_re] at he
+      linarith
+    have hL := HeckeZeroSupremum.LFunction_ne_zero_of_beta_lt η hs (Or.inl h1)
+    have he : HeckeReciprocal.reciprocal η s =
+        ((s-1)/(s+1))*(regular η s)⁻¹ := by
+      rw [HeckeReciprocal.reciprocal_eq_inv η h0 h1]
+      simp only [regular, if_pos hη, HeckePrincipalStrip.sourceNormalized,
+        HeckeOrigin.poleRemoved_eq η h0 h1]
+      field_simp
+    rw [he, norm_mul]
+    apply mul_le_of_le_one_left (norm_nonneg _)
+    rw [norm_div]
+    exact (div_le_one (norm_pos_iff.mpr hp)).mpr (principal_regular_factor_bound hs0.le)
+  · simp only [HeckeReciprocal.reciprocal, regular, if_neg hη, le_refl]
+
+theorem regular_disk_growth (η : Character)
+    (hp : FiniteFourier.IsPrimitiveOnIdeals η.residue) (a e t : ℝ)
+    (ha : (1/2 : ℝ) ≤ a) (he : 0 ≤ e) {z : ℂ}
+    (hz : z ∈ Metric.closedBall ((2 : ℂ)+t*Complex.I) (2-a-2*e)) :
+    ‖regular η z‖ ≤ (4*uniformConstant) * (η.modulus.absNorm : ℝ)^(3/5 : ℝ) *
+      (3+|t|)^2 := by
+  have hn : ‖z-((2 : ℂ)+t*Complex.I)‖ ≤ 2-a-2*e := by
+    simpa only [Metric.mem_closedBall, dist_eq_norm] using hz
+  have hr := Complex.abs_re_le_norm (z-((2 : ℂ)+t*Complex.I))
+  have hi := Complex.abs_im_le_norm (z-((2 : ℂ)+t*Complex.I))
+  norm_num [Complex.sub_re, Complex.add_re, Complex.mul_re,
+    Complex.sub_im, Complex.add_im, Complex.mul_im] at hr hi
+  have hzre : -(1/10 : ℝ) ≤ z.re := by
+    have hh := neg_abs_le (z.re-2)
+    linarith
+  have hheight : 3+|z.im| ≤ 2*(3+|t|) := by
+    have hab := abs_add_le (z.im-t) t
+    rw [sub_add_cancel] at hab
+    linarith [abs_nonneg t]
+  apply (regular_right_growth η hp hzre).trans
+  have hsq : (3+|z.im|)^2 ≤ 4*(3+|t|)^2 := by
+    have h := (sq_le_sq₀ (by positivity : 0 ≤ 3+|z.im|)
+      (by positivity : 0 ≤ 2*(3+|t|))).mpr hheight
+    nlinarith
+  calc
+    _ ≤ uniformConstant*(η.modulus.absNorm : ℝ)^(3/5 : ℝ)*(4*(3+|t|)^2) :=
+      mul_le_mul_of_nonneg_left hsq (mul_nonneg uniformConstant_nonneg (Real.rpow_nonneg (by positivity) _))
+    _ = _ := by ring
+
+end HeckeLogarithmicInput
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Metric
+namespace HeckeLogarithmic
+open HeckeFamily HeckeLogarithmicInput
+
+def complexity (η : Character) (t : ℝ) : ℝ :=
+  2*(η.modulus.absNorm : ℝ)*(3+|t|)^2
+
+theorem complexity_ge_exp (η : Character) (t : ℝ) : Real.exp 1 ≤ complexity η t :=
+  LogarithmicControl.conductor_height_scale_ge_exp _ t (modulus_norm_ge_one η)
+
+theorem regular_disk_differentiable (η : Character) {a e t : ℝ}
+    (ha : (1/2 : ℝ) ≤ a) (he : 0 < e) :
+    DifferentiableOn ℂ (regular η) (ball ((2 : ℂ)+t*Complex.I) (2-a-2*e)) := by
+  intro z hz
+  exact (regular_differentiableAt η (by
+    have hr := LogarithmicControl.disk_re_gt hz
+    linarith)).differentiableWithinAt
+
+theorem exists_uniform_polynomial_exponent :
+    ∃ M : ℝ, 1 ≤ M ∧ ∀ (η : Character), FiniteFourier.IsPrimitiveOnIdeals η.residue →
+      ∀ a e t : ℝ, 1/2 ≤ a → 0 < e → ∀ z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-3*e),
+        ‖regular η z‖ ≤ (complexity η t)^M := by
+  obtain ⟨M, hM, hb⟩ := LogarithmicControl.absorb_polynomial_constant
+    (K := 2*uniformConstant) (p := 1) (by norm_num)
+  refine ⟨M, hM, ?_⟩
+  intro η hp a e t ha he z hz
+  have hz2 : z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-2*e) :=
+    ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith)) hz
+  have h := regular_disk_growth η hp a e t ha he.le hz2
+  have hQ : (η.modulus.absNorm : ℝ)^(3/5 : ℝ) ≤ (η.modulus.absNorm : ℝ) := by
+    simpa using Real.rpow_le_rpow_of_exponent_le (modulus_norm_ge_one η)
+      (show (3/5 : ℝ)≤1 by norm_num)
+  apply h.trans
+  calc
+    _ ≤ (4*uniformConstant)*(η.modulus.absNorm : ℝ)*(3+|t|)^2 := by
+      gcongr
+      exact mul_nonneg (by norm_num) uniformConstant_nonneg
+    _ = (2*uniformConstant)*complexity η t := by unfold complexity; ring
+    _ ≤ (complexity η t)^M := by simpa only [Real.rpow_one] using hb _ (complexity_ge_exp η t)
+
+theorem disk_control_of_euler_log (e A ε : ℝ)
+    (he : 0 < e) (he' : e < 1/1000) (hA : 1 ≤ A) (hε : 0 < ε) :
+    ∃ D B : ℝ, 0 < D ∧ 0 ≤ B ∧ ∀ (η : Character),
+      FiniteFourier.IsPrimitiveOnIdeals η.residue → ∀ (a t : ℝ) (E : ℂ → ℂ),
+      1/2 ≤ a → a ≤ 1 →
+      (∀ z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), regular η z ≠ 0) →
+      DifferentiableOn ℂ E (ball ((2 : ℂ)+t*Complex.I) (1/2)) →
+      EqOn (Complex.exp ∘ E) (regular η) (ball ((2 : ℂ)+t*Complex.I) (1/2)) →
+      (∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (49/100), ‖E z‖ ≤ A) →
+      (∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-6*e),
+        ‖regular η z‖ + ‖(regular η z)⁻¹‖ ≤ D*(complexity η t)^ε) ∧
+      (∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-8*e),
+        ‖deriv (regular η) z / regular η z‖ ≤ B*Real.log (complexity η t)) := by
+  obtain ⟨M,hM,hpoly⟩ := exists_uniform_polynomial_exponent
+  obtain ⟨D,hD,hb⟩ := LogarithmicControl.logarithmic_control he he' hA hM hε
+  refine ⟨D, LogarithmicControl.outerConstant e A M/(2*e), hD, ?_, ?_⟩
+  · have hB := LogarithmicControl.outerConstant_ge_one he he' hA hM
+    positivity
+  · intro η hp a t E ha ha' hzero hE hEL hEb
+    exact hb a (complexity η t) (regular η) E ((2 : ℂ)+t*Complex.I) ha ha'
+      (complexity_ge_exp η t) (regular_disk_differentiable η ha he) hzero
+      (hpoly η hp a e t ha he) hE hEL hEb
+
+end HeckeLogarithmic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology BigOperators
+open Set Metric Filter Complex Eisenstein
+open IdealEuler IdealCharacter
+open HeckeIdealSeries (PrimeIdeal)
+
+namespace HeckeIdealSeries
+
+lemma prime_norm_series_summable (σ : ℝ) (hσ : 0 < σ) :
+    Summable (fun P : PrimeIdeal => (Ideal.absNorm P.val : ℝ)^(-(1+σ))) := by
+  have ht := (fullIdealWeight_summable_norm (1+(σ : ℂ))
+    (by simp; linarith)).comp_injective
+      (i := fun P : PrimeIdeal => P.val) Subtype.val_injective
+  apply ht.congr
+  intro P
+  simp only [Function.comp_def, fullIdealWeight, if_neg P.property.ne_zero]
+  simpa only [Complex.neg_re, Complex.add_re, Complex.one_re, Complex.ofReal_re,
+    Complex.ofReal_natCast] using
+    (Complex.norm_cpow_eq_rpow_re_of_pos (prime_norm_pos P) (-(1+(σ : ℂ))))
+
+lemma prod_primeSet {M : Type*} [CommMonoid M] (I : Ideal O) (f : Ideal O → M) :
+    (∏ P ∈ primeSet I, f P.val) = ∏ P ∈ primeSupport I, f P := by
+  unfold primeSet
+  rw [Finset.prod_image]
+  · exact Finset.prod_attach (primeSupport I) f
+  · intro P hP Q hQ he
+    exact Subtype.ext (congrArg (fun R : PrimeIdeal => R.val) he)
+
+end HeckeIdealSeries
+
+namespace HeckeEulerLog
+
+def eulerLog (a : Ideal O →*₀ ℂ) (s : ℂ) : ℂ :=
+  ∑' P : PrimeIdeal, -Complex.log (1 - weighted a s P.val)
+
+def majorant (σ : ℝ) (P : PrimeIdeal) : ℝ :=
+  (3 / 2) * (Ideal.absNorm P.val : ℝ) ^ (-σ)
+
+theorem majorant_summable {σ : ℝ} (hσ : 1 < σ) : Summable (majorant σ) := by
+  have h := (HeckeIdealSeries.prime_norm_series_summable (σ - 1)
+    (by linarith)).mul_left (3 / 2)
+  have he : -(1+(σ-1)) = -σ := by ring
+  simp only [he] at h
+  convert h using 1 <;> (ext x y <;> rfl)
+
+theorem weighted_norm_le (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (P : PrimeIdeal) {s : ℂ} {σ : ℝ} (hs : σ ≤ s.re) :
+    ‖weighted a s P.val‖ ≤ (Ideal.absNorm P.val : ℝ) ^ (-σ) := by
+  change ‖a P.val * fullIdealWeight s P.val‖ ≤ _
+  simp only [fullIdealWeight, P.property.ne_zero, ite_false, norm_mul]
+  change ‖a P.val‖ * ‖HeckeIdealSeries.primeNormPower P s‖ ≤ _
+  rw [HeckeIdealSeries.norm_primeNormPower]
+  have hn : (1 : ℝ) ≤ Ideal.absNorm P.val := by
+    exact_mod_cast (show 1 ≤ Ideal.absNorm P.val from
+      (by have := HeckeIdealSeries.prime_norm_two_le P; omega))
+  exact (mul_le_of_le_one_left (by positivity) (ha _)).trans
+    (Real.rpow_le_rpow_of_exponent_le hn (neg_le_neg hs))
+
+theorem weighted_norm_le_half (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (P : PrimeIdeal) {s : ℂ} (hs : 1 ≤ s.re) : ‖weighted a s P.val‖ ≤ 1 / 2 := by
+  refine (weighted_norm_le a ha P hs).trans ?_
+  rw [Real.rpow_neg_one]
+  have hn : (2 : ℝ) ≤ Ideal.absNorm P.val := by
+    exact_mod_cast HeckeIdealSeries.prime_norm_two_le P
+  exact inv_le_of_inv_le₀ (by norm_num) (by norm_num at *; exact hn)
+
+theorem log_factor_norm_le (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (P : PrimeIdeal) {s : ℂ} {σ : ℝ} (hσ : 1 ≤ σ) (hs : σ ≤ s.re) :
+    ‖-Complex.log (1 - weighted a s P.val)‖ ≤ majorant σ P := by
+  have hhalf := weighted_norm_le_half a ha P (hσ.trans hs)
+  have h := Complex.norm_log_one_add_half_le_self
+    (z := -weighted a s P.val) (by simpa using hhalf)
+  simp only [norm_neg, ← sub_eq_add_neg] at h ⊢
+  exact h.trans (mul_le_mul_of_nonneg_left (weighted_norm_le a ha P hs) (by norm_num))
+
+theorem weighted_differentiable (a : Ideal O →*₀ ℂ) (P : PrimeIdeal) :
+    Differentiable ℂ (fun s ↦ weighted a s P.val) := by
+  have hn : (Ideal.absNorm P.val : ℂ) ≠ 0 := by
+    exact_mod_cast (HeckeIdealSeries.prime_norm_pos P).ne'
+  change Differentiable ℂ (fun s ↦ a P.val * fullIdealWeight s P.val)
+  simp only [fullIdealWeight, P.property.ne_zero, ite_false]
+  exact (differentiable_id.neg.const_cpow (Or.inl hn)).const_mul _
+
+theorem log_factor_differentiableOn (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (P : PrimeIdeal) :
+    DifferentiableOn ℂ (fun s ↦ -Complex.log (1 - weighted a s P.val)) {s : ℂ | 1 < s.re} := by
+  intro s hs
+  change 1 < s.re at hs
+  have hn := prime_norm_lt_one a ha s (by linarith : 0 < s.re) P
+  have hslit : 1 - weighted a s P.val ∈ Complex.slitPlane := by
+    simpa only [sub_eq_add_neg] using Complex.mem_slitPlane_of_norm_lt_one
+      (z := -weighted a s P.val) (by simpa using hn)
+  exact ((Complex.differentiableAt_log hslit).comp s
+    ((differentiableAt_const (1 : ℂ)).sub (weighted_differentiable a P s))).neg.differentiableWithinAt
+
+theorem eulerLog_differentiableOn_halfplane (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    {σ : ℝ} (hσ : 1 < σ) : DifferentiableOn ℂ (eulerLog a) {s : ℂ | σ < s.re} := by
+  apply Complex.differentiableOn_tsum_of_summable_norm (majorant_summable hσ)
+  · intro P
+    exact (log_factor_differentiableOn a ha P).mono (fun s hs ↦ hσ.trans hs)
+  · exact isOpen_lt continuous_const Complex.continuous_re
+  · intro P s hs
+    exact log_factor_norm_le a ha P hσ.le hs.le
+
+theorem eulerLog_differentiableOn (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1) :
+    DifferentiableOn ℂ (eulerLog a) {s : ℂ | 1 < s.re} := by
+  intro s hs
+  change 1 < s.re at hs
+  have hσ : 1 < (1 + s.re) / 2 := by linarith
+  have hmem : s ∈ {w : ℂ | (1 + s.re) / 2 < w.re} := by dsimp; linarith
+  exact ((eulerLog_differentiableOn_halfplane a ha hσ s hmem).differentiableAt
+    ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hmem)).differentiableWithinAt
+
+theorem exp_eulerLog_eq_series (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (s : ℂ) (hs : 1 < s.re) : Complex.exp (eulerLog a s) = series a s :=
+  HeckeBoundary.exp_log_euler_eq_series a ha s hs
+
+def eulerLogBound : ℝ := 1 + ∑' P : PrimeIdeal, majorant (3 / 2) P
+
+theorem eulerLogBound_ge_one : 1 ≤ eulerLogBound := by
+  unfold eulerLogBound
+  have h : 0 ≤ ∑' P : PrimeIdeal, majorant (3 / 2) P :=
+    tsum_nonneg (fun P ↦ by unfold majorant; positivity)
+  linarith
+
+theorem eulerLog_norm_le (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    {s : ℂ} (hs : 3 / 2 ≤ s.re) : ‖eulerLog a s‖ ≤ eulerLogBound := by
+  have hb : ∀ P : PrimeIdeal, ‖-Complex.log (1 - weighted a s P.val)‖ ≤ majorant (3 / 2) P :=
+    fun P ↦ log_factor_norm_le a ha P (by norm_num) hs
+  have hsum := majorant_summable (by norm_num : (1 : ℝ) < 3 / 2)
+  have hnorm : Summable (fun P : PrimeIdeal ↦ ‖-Complex.log (1 - weighted a s P.val)‖) :=
+    hsum.of_nonneg_of_le (fun _ ↦ norm_nonneg _) hb
+  calc
+    ‖eulerLog a s‖ ≤ ∑' P : PrimeIdeal, ‖-Complex.log (1 - weighted a s P.val)‖ :=
+      norm_tsum_le_tsum_norm hnorm
+    _ ≤ ∑' P : PrimeIdeal, majorant (3 / 2) P := hnorm.tsum_le_tsum hb hsum
+    _ ≤ eulerLogBound := by unfold eulerLogBound; linarith
+
+theorem inner_disk_re {t : ℝ} {s : ℂ}
+    (hs : s ∈ closedBall (2 + (t : ℂ) * Complex.I) (1 / 2)) : 3 / 2 ≤ s.re := by
+  have hn : ‖(2 + (t : ℂ) * Complex.I) - s‖ ≤ 1 / 2 := by
+    simpa only [mem_closedBall, dist_eq_norm, norm_sub_rev] using hs
+  have hr := Complex.re_le_norm ((2 + (t : ℂ) * Complex.I) - s)
+  norm_num at hr
+  linarith
+
+theorem eulerLog_inner_disk (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1) (t : ℝ) :
+    DifferentiableOn ℂ (eulerLog a) (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      EqOn (Complex.exp ∘ eulerLog a) (series a)
+        (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      ∀ s ∈ closedBall (2 + (t : ℂ) * Complex.I) (49 / 100),
+        ‖eulerLog a s‖ ≤ eulerLogBound := by
+  have hsub : ball (2 + (t : ℂ) * Complex.I) (1 / 2) ⊆ {s : ℂ | 1 < s.re} := by
+    intro s hs
+    have := inner_disk_re (ball_subset_closedBall hs)
+    change 1 < s.re
+    linarith
+  refine ⟨(eulerLog_differentiableOn a ha).mono hsub, ?_, ?_⟩
+  · intro s hs
+    exact exp_eulerLog_eq_series a ha s (hsub hs)
+  · intro s hs
+    exact eulerLog_norm_le a ha (inner_disk_re (closedBall_subset_closedBall (by norm_num) hs))
+
+theorem continued_inner_disk (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (L : ℂ → ℂ) (hL : ∀ s : ℂ, 1 < s.re → L s = series a s) (t : ℝ) :
+    DifferentiableOn ℂ (eulerLog a) (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      EqOn (Complex.exp ∘ eulerLog a) L (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      ∀ s ∈ closedBall (2 + (t : ℂ) * Complex.I) (49 / 100),
+        ‖eulerLog a s‖ ≤ eulerLogBound := by
+  obtain ⟨hd, he, hb⟩ := eulerLog_inner_disk a ha t
+  refine ⟨hd, ?_, hb⟩
+  intro s hs
+  have hr := inner_disk_re (ball_subset_closedBall hs)
+  exact (he hs).trans (hL s (by linarith)).symm
+
+def principalLog (s : ℂ) : ℂ := Complex.log (1 - 2 / (s + 1))
+
+theorem norm_two_div_add_one_lt_one {s : ℂ} (hs : 1 < s.re) :
+    ‖(2 : ℂ) / (s + 1)‖ < 1 := by
+  have hr := Complex.re_le_norm (s + 1)
+  norm_num at hr
+  have hn : 0 < ‖s + 1‖ := by linarith
+  rw [norm_div]
+  norm_num only [Complex.norm_ofNat]
+  exact (div_lt_one hn).mpr (by linarith)
+
+theorem norm_two_div_add_one_le {s : ℂ} (hs : 3 / 2 ≤ s.re) :
+    ‖(2 : ℂ) / (s + 1)‖ ≤ 4 / 5 := by
+  have hr := Complex.re_le_norm (s + 1)
+  norm_num at hr
+  have hn : 0 < ‖s + 1‖ := by linarith
+  rw [norm_div]
+  norm_num only [Complex.norm_ofNat]
+  exact (div_le_iff₀ hn).mpr (by linarith)
+
+theorem principalLog_differentiableOn :
+    DifferentiableOn ℂ principalLog {s : ℂ | 1 < s.re} := by
+  intro s hs
+  change 1 < s.re at hs
+  have hnorm := norm_two_div_add_one_lt_one hs
+  have hslit : 1 - (2 : ℂ) / (s + 1) ∈ Complex.slitPlane := by
+    simpa only [sub_eq_add_neg, neg_div] using Complex.mem_slitPlane_of_norm_lt_one
+      (z := -(2 : ℂ) / (s + 1)) (by simpa using hnorm)
+  have hs1 : s + 1 ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    norm_num at hre
+    linarith
+  exact ((Complex.differentiableAt_log hslit).comp s
+    ((differentiableAt_const (1 : ℂ)).sub ((differentiableAt_const (2 : ℂ)).div
+      (differentiableAt_id.add_const 1) hs1))).differentiableWithinAt
+
+theorem exp_principalLog {s : ℂ} (hs : 1 < s.re) :
+    Complex.exp (principalLog s) = (s - 1) / (s + 1) := by
+  have hs1 : s + 1 ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    norm_num at hre
+    linarith
+  rw [principalLog, Complex.exp_log (HeckeIdealSeries.one_sub_ne_zero
+    (norm_two_div_add_one_lt_one hs))]
+  field_simp
+  ring
+
+theorem principalLog_norm_le {s : ℂ} (hs : 3 / 2 ≤ s.re) : ‖principalLog s‖ ≤ 3 := by
+  have hb := norm_two_div_add_one_le hs
+  have hlt : ‖-(2 : ℂ) / (s + 1)‖ < 1 := by simpa using hb.trans_lt (by norm_num : (4 : ℝ) / 5 < 1)
+  have h := Complex.norm_log_one_add_le hlt
+  have hn : ‖-(2 : ℂ) / (s + 1)‖ = ‖(2 : ℂ) / (s + 1)‖ := by simp
+  rw [hn] at h
+  have heq : 1 + -(2 : ℂ) / (s + 1) = 1 - 2 / (s + 1) := by ring
+  rw [heq] at h
+  change ‖principalLog s‖ ≤ _ at h
+  have hden : 0 < 1 - ‖(2 : ℂ) / (s + 1)‖ := by linarith
+  have hinv : (1 - ‖(2 : ℂ) / (s + 1)‖)⁻¹ ≤ 5 := by
+    rw [inv_eq_one_div, div_le_iff₀ hden]
+    linarith
+  have hnorm := norm_nonneg ((2 : ℂ) / (s + 1))
+  have hsq : ‖(2 : ℂ) / (s + 1)‖ ^ 2 ≤ 16 / 25 := by nlinarith
+  have hmul := mul_le_mul hsq hinv (inv_nonneg.mpr hden.le) (by norm_num : (0 : ℝ) ≤ 16 / 25)
+  nlinarith
+
+def principalEulerLog (a : Ideal O →*₀ ℂ) (s : ℂ) : ℂ := principalLog s + eulerLog a s
+
+theorem principalEulerLog_differentiableOn (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1) :
+    DifferentiableOn ℂ (principalEulerLog a) {s : ℂ | 1 < s.re} :=
+  principalLog_differentiableOn.add (eulerLog_differentiableOn a ha)
+
+theorem exp_principalEulerLog (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    {s : ℂ} (hs : 1 < s.re) :
+    Complex.exp (principalEulerLog a s) = ((s - 1) / (s + 1)) * series a s := by
+  rw [principalEulerLog, Complex.exp_add, exp_principalLog hs, exp_eulerLog_eq_series a ha s hs]
+
+theorem principalEulerLog_norm_le (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    {s : ℂ} (hs : 3 / 2 ≤ s.re) : ‖principalEulerLog a s‖ ≤ 3 + eulerLogBound :=
+  (norm_add_le _ _).trans (add_le_add (principalLog_norm_le hs) (eulerLog_norm_le a ha hs))
+
+theorem principal_continued_inner_disk (a : Ideal O →*₀ ℂ) (ha : ∀ I, ‖a I‖ ≤ 1)
+    (L : ℂ → ℂ)
+    (hL : ∀ s : ℂ, 1 < s.re → L s = ((s - 1) / (s + 1)) * series a s) (t : ℝ) :
+    DifferentiableOn ℂ (principalEulerLog a) (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      EqOn (Complex.exp ∘ principalEulerLog a) L
+        (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      ∀ s ∈ closedBall (2 + (t : ℂ) * Complex.I) (49 / 100),
+        ‖principalEulerLog a s‖ ≤ 3 + eulerLogBound := by
+  have hsub : ball (2 + (t : ℂ) * Complex.I) (1 / 2) ⊆ {s : ℂ | 1 < s.re} := by
+    intro s hs
+    have := inner_disk_re (ball_subset_closedBall hs)
+    change 1 < s.re
+    linarith
+  refine ⟨(principalEulerLog_differentiableOn a ha).mono hsub, ?_, ?_⟩
+  · intro s hs
+    exact (exp_principalEulerLog a ha (hsub hs)).trans (hL s (hsub hs)).symm
+  · intro s hs
+    exact principalEulerLog_norm_le a ha
+      (inner_disk_re (closedBall_subset_closedBall (by norm_num) hs))
+
+theorem residue_continued_inner_disk (M : Ideal O) [Finite (O ⧸ M)]
+    (χ : MulChar (O ⧸ M) ℂ) (hχ : UnitInvariant M χ) (L : ℂ → ℂ)
+    (hL : ∀ s : ℂ, 1 < s.re → L s = series (ofResidue M χ hχ) s) (t : ℝ) :
+    DifferentiableOn ℂ (eulerLog (ofResidue M χ hχ))
+        (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      EqOn (Complex.exp ∘ eulerLog (ofResidue M χ hχ)) L
+        (ball (2 + (t : ℂ) * Complex.I) (1 / 2)) ∧
+      ∀ s ∈ closedBall (2 + (t : ℂ) * Complex.I) (49 / 100),
+        ‖eulerLog (ofResidue M χ hχ) s‖ ≤ eulerLogBound :=
+  continued_inner_disk _ (norm_ofResidue_le_one M χ hχ) L hL t
+
+theorem continued_logarithmic_control {e M ε : ℝ}
+    (he : 0 < e) (he' : e < 1 / 1000) (hM : 1 ≤ M) (hε : 0 < ε) :
+    ∃ D : ℝ, 0 < D ∧ ∀ (b C t : ℝ) (a : Ideal O →*₀ ℂ),
+      (∀ I, ‖a I‖ ≤ 1) → ∀ L : ℂ → ℂ,
+      1 / 2 ≤ b → b ≤ 1 → Real.exp 1 ≤ C →
+      (∀ s : ℂ, 1 < s.re → L s = series a s) →
+      DifferentiableOn ℂ L (ball (2 + (t : ℂ) * Complex.I) (2 - b - 2 * e)) →
+      (∀ z ∈ ball (2 + (t : ℂ) * Complex.I) (2 - b - 2 * e), L z ≠ 0) →
+      (∀ z ∈ ball (2 + (t : ℂ) * Complex.I) (2 - b - 3 * e), ‖L z‖ ≤ C ^ M) →
+      (∀ z ∈ closedBall (2 + (t : ℂ) * Complex.I) (2 - b - 6 * e),
+        ‖L z‖ + ‖(L z)⁻¹‖ ≤ D * C ^ ε) ∧
+      (∀ z ∈ closedBall (2 + (t : ℂ) * Complex.I) (2 - b - 8 * e),
+        ‖deriv L z / L z‖ ≤
+          (LogarithmicControl.outerConstant e eulerLogBound M / (2 * e)) * Real.log C) := by
+  obtain ⟨D, hD, hbound⟩ := LogarithmicControl.logarithmic_control he he'
+    eulerLogBound_ge_one hM hε
+  refine ⟨D, hD, ?_⟩
+  intro b C t a ha L hb hb' hC hEq hL h0 hp
+  obtain ⟨hE, heq, hEb⟩ := continued_inner_disk a ha L hEq t
+  exact hbound b C L (eulerLog a) (2 + (t : ℂ) * Complex.I)
+    hb hb' hC hL h0 hp hE heq hEb
+
+theorem principal_continued_logarithmic_control {e M ε : ℝ}
+    (he : 0 < e) (he' : e < 1 / 1000) (hM : 1 ≤ M) (hε : 0 < ε) :
+    ∃ D : ℝ, 0 < D ∧ ∀ (b C t : ℝ) (a : Ideal O →*₀ ℂ),
+      (∀ I, ‖a I‖ ≤ 1) → ∀ L : ℂ → ℂ,
+      1 / 2 ≤ b → b ≤ 1 → Real.exp 1 ≤ C →
+      (∀ s : ℂ, 1 < s.re → L s = ((s - 1) / (s + 1)) * series a s) →
+      DifferentiableOn ℂ L (ball (2 + (t : ℂ) * Complex.I) (2 - b - 2 * e)) →
+      (∀ z ∈ ball (2 + (t : ℂ) * Complex.I) (2 - b - 2 * e), L z ≠ 0) →
+      (∀ z ∈ ball (2 + (t : ℂ) * Complex.I) (2 - b - 3 * e), ‖L z‖ ≤ C ^ M) →
+      (∀ z ∈ closedBall (2 + (t : ℂ) * Complex.I) (2 - b - 6 * e),
+        ‖L z‖ + ‖(L z)⁻¹‖ ≤ D * C ^ ε) ∧
+      (∀ z ∈ closedBall (2 + (t : ℂ) * Complex.I) (2 - b - 8 * e),
+        ‖deriv L z / L z‖ ≤
+          (LogarithmicControl.outerConstant e (3 + eulerLogBound) M / (2 * e)) * Real.log C) := by
+  have hA : 1 ≤ 3 + eulerLogBound := by linarith [eulerLogBound_ge_one]
+  obtain ⟨D, hD, hbound⟩ := LogarithmicControl.logarithmic_control he he' hA hM hε
+  refine ⟨D, hD, ?_⟩
+  intro b C t a ha L hb hb' hC hEq hL h0 hp
+  obtain ⟨hE, heq, hEb⟩ := principal_continued_inner_disk a ha L hEq t
+  exact hbound b C L (principalEulerLog a) (2 + (t : ℂ) * Complex.I)
+    hb hb' hC hL h0 hp hE heq hEb
+
+end HeckeEulerLog
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace HeckeDeletionBounds
+open HeckeFamily
+
+theorem constant_pow_primeSupport_bound (K ε : ℝ) (hK : 0 ≤ K) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ M : Ideal O, M ≠ ⊥ →
+      K^(primeSupport M).card ≤ C*(M.absNorm : ℝ)^ε := by
+  obtain ⟨n, hn⟩ := exists_nat_gt (max K 1)
+  have hn0 : 0 < (n : ℝ) := by linarith [le_max_right K 1]
+  have hKpow : K ≤ (2 : ℝ)^n := by
+    have hn2 : (n : ℝ) ≤ (2 : ℝ)^n := by exact_mod_cast (show n < 2^n from Nat.lt_two_pow_self).le
+    linarith [le_max_left K 1]
+  obtain ⟨C, hC, hbound⟩ := CompletedGauss.prime_support_subsets_bound
+    (ε/(n : ℝ)) (div_pos hε hn0)
+  refine ⟨C^n, by positivity, ?_⟩
+  intro M hM
+  calc
+    _ ≤ ((2 : ℝ)^n)^(primeSupport M).card :=
+      pow_le_pow_left₀ hK hKpow _
+    _ = ((2 : ℝ)^(primeSupport M).card)^n := by
+      rw [← pow_mul, ← pow_mul, Nat.mul_comm]
+    _ ≤ (C*(M.absNorm : ℝ)^(ε/(n : ℝ)))^n :=
+      pow_le_pow_left₀ (by positivity) (hbound M hM) n
+    _ = C^n*(M.absNorm : ℝ)^ε := by
+      rw [mul_pow, ← Real.rpow_mul_natCast (by positivity), div_mul_cancel₀ _ hn0.ne']
+
+def localBound (σ : ℝ) : ℝ := (1-(2 : ℝ)^(-σ))⁻¹
+
+theorem localBound_pos {σ : ℝ} (hσ : 0 < σ) : 0 < localBound σ := by
+  unfold localBound
+  exact inv_pos.mpr (sub_pos.mpr (Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)))
+
+theorem term_bound {σ N : ℝ} (hσ : 0 < σ) (hN : 2 ≤ N)
+    {a s : ℂ} (ha : ‖a‖ ≤ 1) (hs : σ ≤ s.re) :
+    ‖a*(N : ℂ)^(-s)‖ ≤ (2 : ℝ)^(-σ) := by
+  rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (by linarith : 0 < N), Complex.neg_re]
+  apply (mul_le_of_le_one_left (Real.rpow_nonneg (by linarith) _) ha).trans
+  apply (Real.rpow_le_rpow_of_exponent_le (by linarith : 1 ≤ N) (by linarith : -s.re ≤ -σ)).trans
+  exact Real.rpow_le_rpow_of_nonpos (by norm_num) hN (by linarith)
+
+theorem factor_bounds {σ N : ℝ} (hσ : 0 < σ) (hN : 2 ≤ N)
+    {a s : ℂ} (ha : ‖a‖ ≤ 1) (hs : σ ≤ s.re) :
+    ‖EulerFactors.factor N a s‖ ≤ localBound σ ∧
+      ‖(EulerFactors.factor N a s)⁻¹‖ ≤ localBound σ := by
+  have hδ : (2 : ℝ)^(-σ) < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
+  have hδ0 : 0 ≤ (2 : ℝ)^(-σ) := Real.rpow_nonneg (by norm_num) _
+  have ht := term_bound hσ hN ha hs
+  have hl : 1-(2 : ℝ)^(-σ) ≤ ‖EulerFactors.factor N a s‖ := by
+    have hh := norm_sub_le (1-a*(N : ℂ)^(-s)) (-a*(N : ℂ)^(-s))
+    have he : (1-a*(N : ℂ)^(-s))-(-a*(N : ℂ)^(-s)) = 1 := by ring
+    rw [he, norm_one, neg_mul, norm_neg] at hh
+    change 1-(2 : ℝ)^(-σ) ≤ ‖1-a*(N : ℂ)^(-s)‖
+    linarith
+  constructor
+  · apply (norm_sub_le _ _).trans
+    rw [norm_one]
+    apply (add_le_add (le_refl 1) ht).trans
+    unfold localBound
+    rw [inv_eq_one_div]
+    apply (le_div_iff₀ (by linarith : 0 < 1-(2 : ℝ)^(-σ))).mpr
+    nlinarith [sq_nonneg ((2 : ℝ)^(-σ))]
+  · rw [norm_inv]
+    exact (inv_le_inv₀ (by linarith : 0 < ‖EulerFactors.factor N a s‖)
+      (by linarith : 0 < 1-(2 : ℝ)^(-σ))).mpr hl
+
+theorem factors_bound_pow (σ : ℝ) (hσ : 0 < σ) (M : Ideal O)
+    (ψ : Character) {s : ℂ} (hs : σ ≤ s.re) :
+    ‖HeckeFiniteDeletion.factors M ψ s‖ ≤
+      (localBound σ)^(primeSupport M).card ∧
+    ‖(HeckeFiniteDeletion.factors M ψ s)⁻¹‖ ≤
+      (localBound σ)^(primeSupport M).card := by
+  have hfactor (P : HeckeIdealSeries.PrimeIdeal) :
+      ‖EulerFactors.factor (P.val.absNorm : ℝ) (idealCoeff ψ P.val) s‖ ≤ localBound σ ∧
+      ‖(EulerFactors.factor (P.val.absNorm : ℝ) (idealCoeff ψ P.val) s)⁻¹‖ ≤ localBound σ :=
+    factor_bounds hσ (by exact_mod_cast HeckeIdealSeries.prime_norm_two_le P)
+      (idealCoeff_norm_le_one ψ P.val) hs
+  have he : (∏ P ∈ HeckeIdealSeries.primeSet M, localBound σ) =
+      (localBound σ)^(primeSupport M).card := by
+    rw [HeckeIdealSeries.prod_primeSet M (fun _ => localBound σ)]
+    simp
+  constructor
+  · unfold HeckeFiniteDeletion.factors EulerFactors.deletedProduct
+    rw [norm_prod, ← he]
+    exact Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun P _ => (hfactor P).1)
+  · unfold HeckeFiniteDeletion.factors EulerFactors.deletedProduct
+    rw [← Finset.prod_inv_distrib, norm_prod, ← he]
+    exact Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun P _ => (hfactor P).2)
+
+theorem factors_subpower_bound (σ ε : ℝ) (hσ : 0 < σ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (M : Ideal O), M ≠ ⊥ → ∀ (ψ : Character) (s : ℂ),
+      σ ≤ s.re → ‖HeckeFiniteDeletion.factors M ψ s‖ +
+        ‖(HeckeFiniteDeletion.factors M ψ s)⁻¹‖ ≤ C*(M.absNorm : ℝ)^ε := by
+  obtain ⟨C, hC, hb⟩ := constant_pow_primeSupport_bound (localBound σ) ε
+    (localBound_pos hσ).le hε
+  refine ⟨2*C, by positivity, ?_⟩
+  intro M hM ψ s hs
+  obtain ⟨h1, h2⟩ := factors_bound_pow σ hσ M ψ hs
+  have h := hb M hM
+  nlinarith
+
+def radical (M : Ideal O) : Ideal O :=
+  HeckeIdealSeries.primeProduct (HeckeIdealSeries.primeSet M)
+
+theorem radical_ne_zero (M : Ideal O) : radical M ≠ 0 :=
+  HeckeIdealSeries.primeProduct_ne_zero _
+
+theorem factors_radical (M : Ideal O) (ψ : Character) (s : ℂ) :
+    HeckeFiniteDeletion.factors (radical M) ψ s = HeckeFiniteDeletion.factors M ψ s := by
+  unfold HeckeFiniteDeletion.factors radical
+  rw [HeckeIdealSeries.primeSet_primeProduct]
+
+theorem factors_radical_subpower_bound (σ ε : ℝ) (hσ : 0 < σ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (M : Ideal O) (ψ : Character) (s : ℂ),
+      σ ≤ s.re → ‖HeckeFiniteDeletion.factors M ψ s‖ +
+        ‖(HeckeFiniteDeletion.factors M ψ s)⁻¹‖ ≤ C*((radical M).absNorm : ℝ)^ε := by
+  obtain ⟨C, hC, hb⟩ := factors_subpower_bound σ ε hσ hε
+  refine ⟨C, hC, ?_⟩
+  intro M ψ s hs
+  simpa only [factors_radical] using hb (radical M) (radical_ne_zero M) ψ s hs
+
+theorem factor_bound_any_re {N : ℝ} (hN : 2 ≤ N) {a s : ℂ} (ha : ‖a‖ ≤ 1) :
+    ‖EulerFactors.factor N a s‖ ≤ 2*N^(max (-s.re) 0) := by
+  have hn : 1 ≤ N := by linarith
+  have ht : ‖a*(N : ℂ)^(-s)‖ ≤ N^(-s.re) := by
+    rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (by linarith : 0 < N), Complex.neg_re]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg (by linarith) _) ha
+  have hpow : N^(-s.re) ≤ N^(max (-s.re) 0) :=
+    Real.rpow_le_rpow_of_exponent_le hn (le_max_left _ _)
+  have h1 : 1 ≤ N^(max (-s.re) 0) := Real.one_le_rpow hn (le_max_right _ _)
+  have hb := norm_sub_le (1 : ℂ) (a*(N : ℂ)^(-s))
+  rw [norm_one] at hb
+  change ‖1-a*(N : ℂ)^(-s)‖ ≤ _
+  linarith
+
+theorem factors_bound_any_re (M : Ideal O) (ψ : Character) (s : ℂ) :
+    ‖HeckeFiniteDeletion.factors M ψ s‖ ≤
+      (2 : ℝ)^(HeckeIdealSeries.primeSet M).card *
+        ((radical M).absNorm : ℝ)^(max (-s.re) 0) := by
+  unfold HeckeFiniteDeletion.factors EulerFactors.deletedProduct
+  rw [norm_prod]
+  calc
+    _ ≤ ∏ P ∈ HeckeIdealSeries.primeSet M,
+        2*(P.val.absNorm : ℝ)^(max (-s.re) 0) := by
+      apply Finset.prod_le_prod (fun _ _ => norm_nonneg _)
+      intro P _
+      exact factor_bound_any_re (show (2 : ℝ) ≤ (P.val.absNorm : ℝ) by exact_mod_cast HeckeIdealSeries.prime_norm_two_le P)
+        (idealCoeff_norm_le_one ψ P.val)
+    _ = _ := by
+      rw [Finset.prod_mul_distrib, Finset.prod_const,
+        Real.finsetProd_rpow _ _ (fun _ _ => by positivity)]
+      simp only [radical, HeckeIdealSeries.primeProduct, map_prod, Nat.cast_prod]
+
+theorem primeSet_card (M : Ideal O) :
+    (HeckeIdealSeries.primeSet M).card =
+      (primeSupport M).card := by
+  unfold HeckeIdealSeries.primeSet
+  rw [Finset.card_image_iff.mpr ?_, Finset.card_attach]
+  intro P hP Q hQ h
+  exact Subtype.ext (congrArg (fun R : HeckeIdealSeries.PrimeIdeal => R.val) h)
+
+theorem factors_any_re_subpower_bound (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (M : Ideal O) (ψ : Character) (s : ℂ),
+      ‖HeckeFiniteDeletion.factors M ψ s‖ ≤
+        C*((radical M).absNorm : ℝ)^(max (-s.re) 0 + ε) := by
+  obtain ⟨C, hC, hb⟩ := CompletedGauss.prime_support_subsets_bound ε hε
+  refine ⟨C, hC, ?_⟩
+  intro M ψ s
+  have hR : 0 < ((radical M).absNorm : ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero M))
+  have hc : (2 : ℝ)^(HeckeIdealSeries.primeSet M).card ≤ C*((radical M).absNorm : ℝ)^ε := by
+    have h := hb (radical M) (radical_ne_zero M)
+    rw [← primeSet_card, radical, HeckeIdealSeries.primeSet_primeProduct] at h
+    exact h
+  apply (factors_bound_any_re M ψ s).trans
+  calc
+    _ ≤ (C*((radical M).absNorm : ℝ)^ε)*((radical M).absNorm : ℝ)^(max (-s.re) 0) :=
+      mul_le_mul_of_nonneg_right hc (Real.rpow_nonneg hR.le _)
+    _ = _ := by rw [Real.rpow_add hR]; ring
+
+end HeckeDeletionBounds
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace HeckeDeletionReciprocal
+open HeckeFamily HeckeFiniteDeletion HeckeReciprocal HeckeDeletionBounds
+
+theorem reciprocal_eq_of_mask (χ ψ : Character)
+    (hmask : ∀ I : Ideal O, idealCoeff χ I =
+      if IsCoprime I χ.modulus then idealCoeff ψ I else 0)
+    {s : ℂ} (hs : 0 < s.re) :
+    reciprocal χ s = reciprocal ψ s * (factors χ.modulus ψ s)⁻¹ := by
+  by_cases hχ : χ.residue = 1
+  · have hψ := (principal_iff_of_mask χ ψ hmask).mp hχ
+    simp only [reciprocal, if_pos hχ, if_pos hψ]
+    rw [regularizedL_eq_of_mask χ ψ hmask hs]
+    ring
+  · have hψ : ψ.residue ≠ 1 := fun h => hχ ((principal_iff_of_mask χ ψ hmask).mpr h)
+    simp only [reciprocal, if_neg hχ, if_neg hψ]
+    rw [LFunction_eq_of_mask_nonprincipal χ ψ hmask hχ hs, mul_inv]
+
+theorem exists_primitive_reciprocal_reduction (σ ε : ℝ) (hσ : 0 < σ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ χ : Character,
+      ∃ ψ : Character, FiniteFourier.IsPrimitiveOnIdeals ψ.residue ∧
+        ψ.modulus.absNorm ≤ χ.modulus.absNorm ∧
+        (∀ I : Ideal O, idealCoeff χ I =
+          if IsCoprime I χ.modulus then idealCoeff ψ I else 0) ∧
+        ∀ s : ℂ, σ ≤ s.re →
+          ‖reciprocal χ s‖ ≤ C*((radical χ.modulus).absNorm : ℝ)^ε * ‖reciprocal ψ s‖ := by
+  obtain ⟨C, hC, hb⟩ := factors_radical_subpower_bound σ ε hσ hε
+  refine ⟨C, hC, ?_⟩
+  intro χ
+  obtain ⟨ψ, _, hp, hn, hm⟩ := exists_primitive_character χ
+  refine ⟨ψ, hp, hn, hm, ?_⟩
+  intro s hs
+  rw [reciprocal_eq_of_mask χ ψ hm (hσ.trans_le hs), norm_mul]
+  have hf := hb χ.modulus ψ s hs
+  have hfb : ‖(factors χ.modulus ψ s)⁻¹‖ ≤ C*((radical χ.modulus).absNorm : ℝ)^ε := by
+    linarith [norm_nonneg (factors χ.modulus ψ s)]
+  simpa only [mul_comm] using mul_le_mul_of_nonneg_left hfb (norm_nonneg (reciprocal ψ s))
+
+end HeckeDeletionReciprocal
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Metric
+namespace HeckeLogarithmicActual
+open HeckeFamily HeckeLogarithmicInput HeckeLogarithmic
+
+def eulerLog (η : Character) : ℂ → ℂ :=
+  if η.residue = 1 then HeckeEulerLog.principalEulerLog (idealCoeff η)
+  else HeckeEulerLog.eulerLog (idealCoeff η)
+
+def innerBound : ℝ := 3+HeckeEulerLog.eulerLogBound
+
+theorem innerBound_ge_one : 1 ≤ innerBound := by
+  unfold innerBound
+  linarith [HeckeEulerLog.eulerLogBound_ge_one]
+
+theorem actual_inner_log (η : Character) (t : ℝ) :
+    DifferentiableOn ℂ (eulerLog η) (ball ((2 : ℂ)+t*Complex.I) (1/2)) ∧
+    EqOn (Complex.exp ∘ eulerLog η) (regular η) (ball ((2 : ℂ)+t*Complex.I) (1/2)) ∧
+    ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (49/100), ‖eulerLog η z‖ ≤ innerBound := by
+  by_cases hη : η.residue = 1
+  · have hright (s : ℂ) (hs : 1< s.re) : regular η s =
+        ((s-1)/(s+1))*IdealEuler.series (idealCoeff η) s := by
+      have h0 : s ≠ 0 := by intro h; norm_num [h] at hs
+      have h1 : s ≠ 1 := by intro h; norm_num [h] at hs
+      simp only [regular, if_pos hη, HeckePrincipalStrip.sourceNormalized]
+      rw [HeckeOrigin.poleRemoved_eq η h0 h1, LFunction_eq_series η hs]
+      ring
+    simpa only [eulerLog, if_pos hη, innerBound] using
+      HeckeEulerLog.principal_continued_inner_disk (idealCoeff η) (idealCoeff_norm_le_one η)
+        (regular η) hright t
+  · have hright (s : ℂ) (hs : 1< s.re) : regular η s = IdealEuler.series (idealCoeff η) s := by
+      rw [regular_eq_nonprincipal η hη]
+      exact LFunction_eq_series η hs
+    obtain ⟨hd,he,hb⟩ := HeckeEulerLog.continued_inner_disk (idealCoeff η)
+      (idealCoeff_norm_le_one η) (regular η) hright t
+    simp only [eulerLog, if_neg hη]
+    refine ⟨hd,he,?_⟩
+    intro z hz
+    have h := hb z hz
+    unfold innerBound
+    linarith
+
+theorem disk_control (e ε : ℝ) (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ D B : ℝ, 0< D ∧ 0≤ B ∧ ∀ (η : Character),
+      FiniteFourier.IsPrimitiveOnIdeals η.residue → ∀ a t : ℝ,
+      1/2≤ a → a≤1 →
+      (∀ z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), regular η z ≠ 0) →
+      (∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-6*e),
+        ‖regular η z‖ + ‖(regular η z)⁻¹‖ ≤ D*(complexity η t)^ε) ∧
+      (∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-8*e),
+        ‖deriv (regular η) z / regular η z‖ ≤ B*Real.log (complexity η t)) := by
+  obtain ⟨D,B,hD,hB,hb⟩ := disk_control_of_euler_log e innerBound ε he he' innerBound_ge_one hε
+  refine ⟨D,B,hD,hB,?_⟩
+  intro η hp a t ha ha' hzero
+  obtain ⟨hE,hEL,hEb⟩ := actual_inner_log η t
+  exact hb η hp a t (eulerLog η) ha ha' hzero hE hEL hEb
+
+theorem primitive_reciprocal_subpower (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ D : ℝ, 0< D ∧ ∀ (η : Character), FiniteFourier.IsPrimitiveOnIdeals η.residue →
+      ∀ s : ℂ, HeckeZeroSupremum.beta+8*e ≤ s.re →
+        ‖HeckeReciprocal.reciprocal η s‖ ≤ D*(complexity η s.im)^ε := by
+  obtain ⟨D,B,hD,_,hb⟩ := disk_control e ε he he' hε
+  have hEuler : 0 ≤ HeckeReciprocalBound.bound 2 := tsum_nonneg (fun _ => norm_nonneg _)
+  refine ⟨D+HeckeReciprocalBound.bound 2, by linarith, ?_⟩
+  intro η hp s hs
+  have hcomp : 1 ≤ (complexity η s.im)^ε := Real.one_le_rpow
+    ((Real.one_le_exp (by norm_num : (0 : ℝ)≤1)).trans (complexity_ge_exp η s.im)) hε.le
+  by_cases hs2 : s.re ≤ 2
+  · have hbound := (hb η hp HeckeZeroSupremum.beta s.im HeckeZeroSupremum.half_le_beta
+      HeckeZeroSupremum.beta_le_one (fun z hz => regular_ne_zero_on_disk η HeckeZeroSupremum.beta e s.im le_rfl he hz)).1
+    have hmem : s ∈ closedBall ((2 : ℂ)+s.im*Complex.I) (2-HeckeZeroSupremum.beta-6*e) := by
+      have h := LogarithmicControl.same_height_mem_disk (a := HeckeZeroSupremum.beta)
+        (e := e) (t := s.im) (v := 8*e) le_rfl hs hs2
+      rw [Complex.re_add_im] at h
+      exact closedBall_subset_closedBall (by linarith) h
+    have hz := hbound s hmem
+    have hr := reciprocal_norm_le_regular_inverse η (by linarith : HeckeZeroSupremum.beta< s.re)
+    have hcp : 0 ≤ (complexity η s.im)^ε := by linarith
+    nlinarith [norm_nonneg (regular η s)]
+  · have hr := HeckeReciprocalBound.reciprocal_norm_le η (by norm_num : (1 : ℝ)<2)
+      (le_of_not_ge hs2)
+    have hp0 : 0 ≤ D+HeckeReciprocalBound.bound 2 := by linarith
+    exact hr.trans ((by linarith : HeckeReciprocalBound.bound 2 ≤ D+HeckeReciprocalBound.bound 2).trans
+      (le_mul_of_one_le_right hp0 hcomp))
+
+end HeckeLogarithmicActual
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace HeckeReciprocalGrowth
+open HeckeFamily HeckeLogarithmic HeckeDeletionBounds
+
+def presentationComplexity (χ : Character) (t : ℝ) : ℝ :=
+  ((radical χ.modulus).absNorm : ℝ)*complexity χ t
+
+theorem reciprocal_subpower (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ D : ℝ, 0< D ∧ ∀ (χ : Character) (s : ℂ),
+      HeckeZeroSupremum.beta+8*e ≤ s.re →
+      ‖HeckeReciprocal.reciprocal χ s‖ ≤ D*(presentationComplexity χ s.im)^ε := by
+  obtain ⟨Dp,hDp,hpbound⟩ := HeckeLogarithmicActual.primitive_reciprocal_subpower e ε he he' hε
+  obtain ⟨Cd,hCd,hreduce⟩ := HeckeDeletionReciprocal.exists_primitive_reciprocal_reduction
+    (HeckeZeroSupremum.beta+8*e) ε (by linarith [HeckeZeroSupremum.half_le_beta]) hε
+  refine ⟨Cd*Dp, mul_pos hCd hDp, ?_⟩
+  intro χ s hs
+  obtain ⟨ψ,hp,hn,_,hr⟩ := hreduce χ
+  have hc : complexity ψ s.im ≤ complexity χ s.im := by
+    unfold complexity
+    have hn' : (ψ.modulus.absNorm : ℝ) ≤ χ.modulus.absNorm := by exact_mod_cast hn
+    gcongr
+  have hc0 : 0 ≤ complexity ψ s.im :=
+    (Real.exp_pos 1).le.trans (complexity_ge_exp ψ s.im)
+  have hr0 : 0 ≤ ((radical χ.modulus).absNorm : ℝ) := by positivity
+  apply (hr s hs).trans
+  calc
+    _ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε * (Dp*(complexity ψ s.im)^ε) :=
+      mul_le_mul_of_nonneg_left (hpbound ψ hp s hs) (by positivity)
+    _ = (Cd*Dp)*(((radical χ.modulus).absNorm : ℝ)*complexity ψ s.im)^ε := by
+      rw [Real.mul_rpow hr0 hc0]
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (mul_nonneg hr0 hc0) (mul_le_mul_of_nonneg_left hc hr0) hε.le)
+      (mul_pos hCd hDp).le
+
+theorem polynomial_reciprocal_bound (χ : Character) (a : ℝ)
+    (hβ : HeckeZeroSupremum.beta < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, a ≤ s.re →
+      ‖HeckeReciprocal.reciprocal χ s‖ ≤ C*(1+|s.im|^2) := by
+  let e : ℝ := min (1/2000) ((a-HeckeZeroSupremum.beta)/16)
+  have he : 0< e := lt_min (by norm_num) (by linarith)
+  have he' : e<1/1000 := lt_of_le_of_lt (min_le_left _ _) (by norm_num)
+  have hmargin : HeckeZeroSupremum.beta+8*e ≤ a := by
+    have hh := min_le_right (1/2000 : ℝ) ((a-HeckeZeroSupremum.beta)/16)
+    change e ≤ (a-HeckeZeroSupremum.beta)/16 at hh
+    linarith
+  obtain ⟨C,hC,hbound⟩ := reciprocal_subpower e 1 he he' (by norm_num)
+  let K : ℝ := C*((radical χ.modulus).absNorm : ℝ)*(2*(χ.modulus.absNorm : ℝ))
+  have hK : 0 ≤ K := by dsimp [K]; positivity
+  refine ⟨18*K, by positivity, ?_⟩
+  intro s hs
+  have h := hbound χ s (hmargin.trans hs)
+  have hheight : (3+|s.im|)^2 ≤ 18*(1+|s.im|^2) := by
+    nlinarith [sq_nonneg (|s.im|-1), sq_nonneg |s.im|]
+  rw [Real.rpow_one] at h
+  calc
+    _ ≤ K*(3+|s.im|)^2 := by
+      convert h using 1 ; unfold K presentationComplexity complexity ; ring
+    _ ≤ K*(18*(1+|s.im|^2)) := mul_le_mul_of_nonneg_left hheight hK
+    _ = _ := by ring
+
+end HeckeReciprocalGrowth
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+namespace Detector
+
+theorem exists_small_increment (M : ℕ → ℝ) {n : ℕ} (hn : 0 < n)
+    {lo hi e : ℝ} (hlo : lo ≤ M 0) (hhi : M n ≤ hi)
+    (hwidth : hi - lo ≤ n * e) :
+    ∃ i < n, M (i + 1) - M i ≤ e := by
+  by_contra h
+  have hinc : ∀ i ∈ Finset.range n, e < M (i + 1) - M i := by
+    intro i hi
+    exact lt_of_not_ge (fun hle => h ⟨i, Finset.mem_range.mp hi, hle⟩)
+  have hs := Finset.sum_lt_sum_of_nonempty (Finset.nonempty_range_iff.mpr (Nat.ne_of_gt hn)) hinc
+  simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul,
+    Finset.sum_range_sub] at hs
+  linarith
+
+theorem buffered_bin_of_rounding {x y a e : ℝ}
+    (hround : a ≤ x ∧ x < a + e) (hstep : y - x ≤ e) :
+    a ≤ x ∧ x < a + e ∧ y < a + 2 * e := by
+  exact ⟨hround.1, hround.2, by linarith [hround.2]⟩
+
+theorem exists_grid_rounding {base x e : ℝ} (he : 0 < e) (hx : base ≤ x) :
+    ∃ k : ℕ, base + e * k ≤ x ∧ x < base + e * k + e := by
+  let k := ⌊(x - base) / e⌋₊
+  have hnonneg : 0 ≤ (x - base) / e := div_nonneg (sub_nonneg.mpr hx) he.le
+  have hlo := Nat.floor_le hnonneg
+  have hhi := Nat.lt_floor_add_one ((x - base) / e)
+  have hlo' := (le_div_iff₀ he).mp hlo
+  have hhi' := (div_lt_iff₀ he).mp hhi
+  refine ⟨k, ?_, ?_⟩ <;> dsimp [k] <;> nlinarith
+
+theorem exists_buffered_bin (M : ℕ → ℝ) {n : ℕ} (hn : 0 < n)
+    {e : ℝ} (he : 0 < e)
+    (hbound : ∀ j ≤ n, (51 / 100 : ℝ) ≤ M j ∧ M j ≤ 1)
+    (hwidth : (49 / 100 : ℝ) ≤ n * e) :
+    ∃ i < n, ∃ k : ℕ,
+      let a : ℝ := 51 / 100 + e * k
+      a ≤ 1 ∧ a ≤ M i ∧ M i < a + e ∧ M (i + 1) < a + 2 * e := by
+  obtain ⟨i, hi, hstep⟩ := exists_small_increment M hn (e := e)
+    (hbound 0 (Nat.zero_le _)).1 (hbound n le_rfl).2 (by linarith)
+  obtain ⟨k, hklo, hkhi⟩ := exists_grid_rounding he (hbound i hi.le).1
+  refine ⟨i, hi, k, ?_, hklo, hkhi, ?_⟩
+  · exact hklo.trans (hbound i hi.le).2
+  · linarith
+
+theorem maximal_zero_of_floor_lt {ι : Type*} (L : ι → ℂ → ℂ)
+    (zeros : Finset (ι × ℂ)) {floor M : ℝ}
+    (hzero : ∀ p ∈ zeros, L p.1 p.2 = 0)
+    (hmax : M ∈ insert floor (zeros.image (fun p => p.2.re)))
+    (hfloor : floor < M) :
+    ∃ χ ρ, (χ, ρ) ∈ zeros ∧ L χ ρ = 0 ∧ ρ.re = M := by
+  classical
+  rcases Finset.mem_insert.mp hmax with h | h
+  · exact False.elim ((ne_of_gt hfloor) h)
+  · obtain ⟨⟨χ, ρ⟩, hp, heq⟩ := Finset.mem_image.mp h
+    exact ⟨χ, ρ, hp, hzero _ hp, heq⟩
+
+theorem simultaneous_saturation {U δ r m ε A B : ℝ}
+    (hU : 1 < U) (hδ : (1 / 50 : ℝ) ≤ δ) (hε : 0 ≤ ε)
+    (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (hprod : U ^ (δ * (r + m) - ε) ≤ A * B)
+    (hupperA : A ≤ U ^ (δ * r + ε))
+    (hupperB : B ≤ U ^ (δ * min m (1 - m) + ε)) :
+    m ≤ 1 / 2 + 75 * ε ∧
+      U ^ (δ * r - 2 * ε) ≤ A ∧ U ^ (δ * m - 2 * ε) ≤ B := by
+  have hU0 : 0 < U := by linarith
+  have hδ0 : 0 ≤ δ := by linarith
+  have hBcoarse : B ≤ U ^ (δ * m + ε) := by
+    apply hupperB.trans
+    exact Real.rpow_le_rpow_of_exponent_le hU.le
+      (by have h := mul_le_mul_of_nonneg_left (min_le_left m (1 - m)) hδ0; linarith)
+  have hpupper : A * B ≤ U ^ (δ * r + ε + (δ * min m (1 - m) + ε)) := by
+    rw [Real.rpow_add hU0]
+    exact mul_le_mul hupperA hupperB hB (Real.rpow_nonneg hU0.le _)
+  have hexp := (Real.rpow_le_rpow_left_iff hU).mp (hprod.trans hpupper)
+  have hlength : m ≤ 1 / 2 + 75 * ε := by
+    by_cases hm : m ≤ 1 / 2
+    · linarith
+    · have hmin : min m (1 - m) = 1 - m := min_eq_right (by linarith)
+      rw [hmin] at hexp
+      have hm0 : 0 ≤ m - 1 / 2 := by linarith
+      have hmul := mul_le_mul_of_nonneg_right hδ hm0
+      nlinarith
+  have hlowerA : U ^ (δ * r - 2 * ε) ≤ A := by
+    have hp : U ^ (δ * r - 2 * ε) * U ^ (δ * m + ε) ≤
+        A * U ^ (δ * m + ε) := by
+      calc
+        _ = U ^ (δ * (r + m) - ε) := by rw [← Real.rpow_add hU0]; congr 1; ring
+        _ ≤ A * B := hprod
+        _ ≤ _ := mul_le_mul_of_nonneg_left hBcoarse hA
+    have hpos := Real.rpow_pos_of_pos hU0 (δ * m + ε)
+    nlinarith
+  have hlowerB : U ^ (δ * m - 2 * ε) ≤ B := by
+    have hp : U ^ (δ * m - 2 * ε) * U ^ (δ * r + ε) ≤
+        B * U ^ (δ * r + ε) := by
+      calc
+        _ = U ^ (δ * (r + m) - ε) := by rw [← Real.rpow_add hU0]; congr 1; ring
+        _ ≤ A * B := hprod
+        _ ≤ _ := by simpa [mul_comm] using mul_le_mul_of_nonneg_right hupperA hB
+    have hpos := Real.rpow_pos_of_pos hU0 (δ * r + ε)
+    nlinarith
+  exact ⟨hlength, hlowerA, hlowerB⟩
+
+theorem inverse_length_of_saturation {r m t ε κ : ℝ}
+    (hsupport : t - κ ≤ r + m) (hplain : m ≤ 1 / 2 + 75 * ε) :
+    t - 1 / 2 - 75 * ε - κ ≤ r := by linarith
+
+theorem complex_simultaneous_saturation {U δ r m ε : ℝ} {M S : ℂ}
+    (hU : 1 < U) (hδ : (1 / 50 : ℝ) ≤ δ) (hε : 0 ≤ ε)
+    (hprod : U ^ (δ * (r + m) - ε) ≤ ‖M * S‖ ^ 2)
+    (hupperM : ‖M‖ ^ 2 ≤ U ^ (δ * r + ε))
+    (hupperS : ‖S‖ ^ 2 ≤ U ^ (δ * min m (1 - m) + ε)) :
+    m ≤ 1 / 2 + 75 * ε ∧
+      U ^ (δ * r - 2 * ε) ≤ ‖M‖ ^ 2 ∧
+      U ^ (δ * m - 2 * ε) ≤ ‖S‖ ^ 2 := by
+  apply simultaneous_saturation hU hδ hε (sq_nonneg _) (sq_nonneg _)
+    _ hupperM hupperS
+  simpa only [norm_mul, mul_pow] using hprod
+
+end Detector
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open Set Filter
+open scoped Classical Topology
+namespace HeckeDetectorZeros
+open HeckeFamily
+
+def rectangle (T : ℝ) : Set ℂ :=
+  {s | (51/100 : ℝ) ≤ s.re ∧ s.re ≤ 1 ∧ |s.im| ≤ T}
+
+theorem rectangle_compact (T : ℝ) : IsCompact (rectangle T) := by
+  have heq : rectangle T = Set.Icc (51/100 : ℝ) 1 ×ℂ Set.Icc (-T) T := by
+    ext z
+    simp only [rectangle, Set.mem_setOf_eq, Complex.mem_reProdIm, Set.mem_Icc, abs_le]
+    tauto
+  rw [heq]
+  exact isCompact_Icc.reProdIm isCompact_Icc
+
+def zeros (χ : Character) (T : ℝ) : Set ℂ := {s ∈ rectangle T | LFunction χ s = 0}
+
+theorem zeros_finite (χ : Character) (hχ : χ.residue ≠ 1) (T : ℝ) :
+    (zeros χ T).Finite := by
+  have ha : AnalyticOnNhd ℂ (LFunction χ) Set.univ :=
+    Complex.analyticOnNhd_univ_iff_differentiable.mpr (LFunction_entire_nonprincipal χ hχ)
+  have hcod := ha.preimage_zero_mem_codiscreteWithin
+    (LFunction_ne_zero_of_one_lt_re χ (by norm_num : 1 < (2 : ℂ).re))
+    (Set.mem_univ (2 : ℂ)) isConnected_univ
+  have hfin := (rectangle_compact T).finite_sdiff_of_mem_codiscreteWithin
+    (codiscreteWithin_mono (Set.subset_univ (rectangle T)) hcod)
+  convert hfin using 1
+  ext s
+  simp [zeros]
+
+def zeroFinset (χ : Character) (hχ : χ.residue ≠ 1) (T : ℝ) : Finset ℂ :=
+  (zeros_finite χ hχ T).toFinset
+
+@[simp] theorem mem_zeroFinset (χ : Character) (hχ : χ.residue ≠ 1) (T : ℝ) (s : ℂ) :
+    s ∈ zeroFinset χ hχ T ↔
+      (51/100 : ℝ) ≤ s.re ∧ s.re ≤ 1 ∧ |s.im| ≤ T ∧ LFunction χ s = 0 := by
+  simp only [zeroFinset, Set.Finite.mem_toFinset, zeros, rectangle, Set.mem_setOf_eq]
+  tauto
+
+variable {ι : Type*} [Fintype ι]
+
+def familyZeros (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ) :
+    Finset (ι × ℂ) :=
+  Finset.univ.biUnion (fun i => (zeroFinset (χ i) (hχ i) T).image (fun s => (i,s)))
+
+@[simp] theorem mem_familyZeros (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1)
+    (T : ℝ) (i : ι) (s : ℂ) :
+    (i,s) ∈ familyZeros χ hχ T ↔
+      (51/100 : ℝ) ≤ s.re ∧ s.re ≤ 1 ∧ |s.im| ≤ T ∧ LFunction (χ i) s = 0 := by
+  simp [familyZeros]
+
+def realParts (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ) : Finset ℝ :=
+  insert (51/100) ((familyZeros χ hχ T).image (fun p => p.2.re))
+
+theorem realParts_nonempty (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ) :
+    (realParts χ hχ T).Nonempty := Finset.insert_nonempty _ _
+
+def zeroMaximum (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ) : ℝ :=
+  (realParts χ hχ T).max' (realParts_nonempty χ hχ T)
+
+theorem zeroMaximum_mem (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ) :
+    zeroMaximum χ hχ T ∈ realParts χ hχ T := Finset.max'_mem _ _
+
+theorem zeroMaximum_bounds (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ) :
+    (51/100 : ℝ) ≤ zeroMaximum χ hχ T ∧ zeroMaximum χ hχ T ≤ 1 := by
+  constructor
+  · exact Finset.le_max' _ _ (Finset.mem_insert_self _ _)
+  · apply Finset.max'_le
+    intro x hx
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · norm_num
+    · obtain ⟨⟨i,s⟩, hs, rfl⟩ := Finset.mem_image.mp hx
+      exact (mem_familyZeros χ hχ T i s |>.mp hs).2.1
+
+theorem zero_re_le_maximum (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1)
+    (T : ℝ) (i : ι) {s : ℂ} (hs : (51/100 : ℝ) ≤ s.re)
+    (ht : |s.im| ≤ T) (hz : LFunction (χ i) s = 0) : s.re ≤ zeroMaximum χ hχ T := by
+  have hle : s.re ≤ 1 := by
+    by_contra hn
+    exact LFunction_ne_zero_of_one_lt_re (χ i) (lt_of_not_ge hn) hz
+  apply Finset.le_max'
+  exact Finset.mem_insert_of_mem (Finset.mem_image.mpr
+    ⟨(i,s), (mem_familyZeros χ hχ T i s).mpr ⟨hs, hle, ht, hz⟩, rfl⟩)
+
+theorem maximum_attained (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1) (T : ℝ)
+    (hmax : (51/100 : ℝ) < zeroMaximum χ hχ T) :
+    ∃ i s, LFunction (χ i) s = 0 ∧ |s.im| ≤ T ∧ s.re = zeroMaximum χ hχ T := by
+  have hm := zeroMaximum_mem χ hχ T
+  rcases Finset.mem_insert.mp hm with hm | hm
+  · exact False.elim ((ne_of_gt hmax) hm)
+  · obtain ⟨⟨i,s⟩, hs, heq⟩ := Finset.mem_image.mp hm
+    have hz := (mem_familyZeros χ hχ T i s).mp hs
+    exact ⟨i,s,hz.2.2.2,hz.2.2.1,heq⟩
+
+theorem zeroMaximum_mono (χ : ι → Character) (hχ : ∀ i, (χ i).residue ≠ 1)
+    {T T' : ℝ} (hT : T ≤ T') : zeroMaximum χ hχ T ≤ zeroMaximum χ hχ T' := by
+  rcases lt_or_ge (51/100 : ℝ) (zeroMaximum χ hχ T) with hm | hm
+  · obtain ⟨i,s,hz,ht,heq⟩ := maximum_attained χ hχ T hm
+    rw [← heq]
+    apply zero_re_le_maximum χ hχ T' i _ (ht.trans hT) hz
+    rw [heq]
+    exact hm.le
+  · exact hm.trans (zeroMaximum_bounds χ hχ T').1
+
+theorem nonzero_on_buffered_disk (χ : ι → Character) (hχ : ∀ j, (χ j).residue ≠ 1)
+    (T a e : ℝ) (i : ℕ) (hT : 2 < T) (ha : (51/100 : ℝ) ≤ a) (he : 0 < e)
+    (hmax : zeroMaximum χ hχ (3*(i+1 : ℕ)*T) < a+2*e)
+    (j : ι) (t : ℝ) (ht : |t| ≤ (3*i+2 : ℕ)*T)
+    {s : ℂ} (hs : s ∈ Metric.closedBall ((2 : ℂ)+t*Complex.I) (2-a-2*e)) :
+    LFunction (χ j) s ≠ 0 := by
+  have hn : ‖s-((2 : ℂ)+t*Complex.I)‖ ≤ 2-a-2*e := by
+    simpa only [Metric.mem_closedBall, dist_eq_norm] using hs
+  have hr := Complex.abs_re_le_norm (s-((2 : ℂ)+t*Complex.I))
+  have hi := Complex.abs_im_le_norm (s-((2 : ℂ)+t*Complex.I))
+  norm_num at hr hi
+  have hre : a+2*e ≤ s.re := by linarith [(abs_le.mp (hr.trans hn)).1]
+  have him : |s.im| ≤ 3*(i+1 : ℕ)*T := by
+    have ht' := abs_add_le (s.im-t) t
+    rw [sub_add_cancel] at ht'
+    push_cast at ht ⊢
+    nlinarith [hi.trans hn]
+  intro hz
+  have hle := zero_re_le_maximum χ hχ (3*(i+1 : ℕ)*T) j (by linarith) him hz
+  linarith
+
+theorem exists_actual_buffered_bin (χ : ι → Character)
+    (hχ : ∀ j, (χ j).residue ≠ 1) (T e : ℝ) (hT : 2 < T) (he : 0 < e)
+    (n : ℕ) (hn : 0 < n) (hwidth : (49/100 : ℝ) ≤ n*e) :
+    ∃ i k : ℕ, 1 ≤ i ∧ i ≤ n ∧
+      let a : ℝ := 51/100+e*k
+      a ≤ 1 ∧ a ≤ zeroMaximum χ hχ (3*i*T) ∧
+      zeroMaximum χ hχ (3*i*T) < a+e ∧
+      zeroMaximum χ hχ (3*(i+1 : ℕ)*T) < a+2*e ∧
+      (51/100 < a → ∃ j s, LFunction (χ j) s = 0 ∧ a ≤ s.re ∧
+        s.re < a+e ∧ |s.im| ≤ 3*i*T) ∧
+      (∀ j t, |t| ≤ (3*i+2 : ℕ)*T → ∀ s ∈
+        Metric.closedBall ((2 : ℂ)+t*Complex.I) (2-a-2*e), LFunction (χ j) s ≠ 0) := by
+  let M : ℕ → ℝ := fun j => zeroMaximum χ hχ (3*(j+1 : ℕ)*T)
+  obtain ⟨i,hk,k,hone,hlo,hhi,hnext⟩ := Detector.exists_buffered_bin M hn he
+    (fun j _ => zeroMaximum_bounds χ hχ _) hwidth
+  refine ⟨i+1,k,by omega,by omega,hone,hlo,hhi,?_,?_,?_⟩
+  · exact hnext
+  · intro ha
+    obtain ⟨j,s,hz,ht,hs⟩ := maximum_attained χ hχ (3*(i+1 : ℕ)*T) (lt_of_lt_of_le ha hlo)
+    exact ⟨j,s,hz,by rw [hs]; exact hlo,by rw [hs]; exact hhi,ht⟩
+  · intro j t ht s hs
+    apply nonzero_on_buffered_disk χ hχ T (51/100+e*k) e (i+1) hT
+      (by nlinarith [Nat.cast_nonneg (α := ℝ) k]) he hnext j t ht hs
+
+end HeckeDetectorZeros
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Metric
+namespace HeckeDyadicControl
+open HeckeFamily HeckeLogarithmicInput HeckeLogarithmic HeckeFiniteDeletion
+open HeckeDeletionBounds HeckeReciprocalGrowth
+
+theorem original_disk_control (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ (χ : Character), χ.residue ≠ 1 → ∀ a t : ℝ,
+      1/2≤ a → a≤1 →
+      (∀ z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), LFunction χ z ≠ 0) →
+      ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-6*e),
+        ‖LFunction χ z‖ + ‖HeckeReciprocal.reciprocal χ z‖ ≤
+          C*(presentationComplexity χ t)^ε := by
+  obtain ⟨Dp,B,hDp,_,hprimitive⟩ := HeckeLogarithmicActual.disk_control e ε he he' hε
+  obtain ⟨Cd,hCd,hdelete⟩ := factors_radical_subpower_bound (1/2) ε (by norm_num) hε
+  refine ⟨Dp*Cd,mul_pos hDp hCd,?_⟩
+  intro χ hχ a t ha ha' hzero z hz
+  obtain ⟨ψ,_,hp,hn,hmask⟩ := exists_primitive_character χ
+  have hψ : ψ.residue ≠ 1 := fun h => hχ ((principal_iff_of_mask χ ψ hmask).mpr h)
+  have hregular : regular ψ = LFunction ψ := regular_eq_nonprincipal ψ hψ
+  have hzeroψ : ∀ w ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), regular ψ w ≠ 0 := by
+    intro w hw
+    rw [hregular]
+    have hwp : 0 < w.re := by
+      have hr := LogarithmicControl.disk_re_gt hw
+      linarith
+    intro hh
+    apply hzero w hw
+    rw [LFunction_eq_of_mask_nonprincipal χ ψ hmask hχ hwp, hh, zero_mul]
+  have hbound := (hprimitive ψ hp a t ha ha' hzeroψ).1 z hz
+  rw [hregular] at hbound
+  have hz2 : z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e) :=
+    closedBall_subset_ball (by linarith) hz
+  have hzre : (1/2 : ℝ) ≤ z.re := by
+    have hr := LogarithmicControl.disk_re_gt hz2
+    linarith
+  have hzpos : 0 < z.re := by linarith
+  have hdel := hdelete χ.modulus ψ z hzre
+  have hL : LFunction χ z = LFunction ψ z*factors χ.modulus ψ z :=
+    LFunction_eq_of_mask_nonprincipal χ ψ hmask hχ hzpos
+  have hR : HeckeReciprocal.reciprocal χ z =
+      (LFunction ψ z)⁻¹*(factors χ.modulus ψ z)⁻¹ := by
+    rw [HeckeDeletionReciprocal.reciprocal_eq_of_mask χ ψ hmask hzpos]
+    simp only [HeckeReciprocal.reciprocal, if_neg hψ]
+  have hdel1 : ‖factors χ.modulus ψ z‖ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε := by
+    linarith [norm_nonneg ((factors χ.modulus ψ z)⁻¹)]
+  have hdel2 : ‖(factors χ.modulus ψ z)⁻¹‖ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε := by
+    linarith [norm_nonneg (factors χ.modulus ψ z)]
+  have hQ : complexity ψ t ≤ complexity χ t := by
+    unfold complexity
+    have hn' : (ψ.modulus.absNorm : ℝ) ≤ χ.modulus.absNorm := by exact_mod_cast hn
+    gcongr
+  have hc0 : 0 ≤ complexity ψ t := (Real.exp_pos 1).le.trans (complexity_ge_exp ψ t)
+  have hr0 : 0 ≤ ((radical χ.modulus).absNorm : ℝ) := by positivity
+  rw [hL,hR,norm_mul,norm_mul]
+  calc
+    _ ≤ (‖LFunction ψ z‖+‖(LFunction ψ z)⁻¹‖)*
+        (Cd*((radical χ.modulus).absNorm : ℝ)^ε) := by
+      have h1 := mul_le_mul_of_nonneg_left hdel1 (norm_nonneg (LFunction ψ z))
+      have h2 := mul_le_mul_of_nonneg_left hdel2 (norm_nonneg ((LFunction ψ z)⁻¹))
+      nlinarith
+    _ ≤ (Dp*(complexity ψ t)^ε)*(Cd*((radical χ.modulus).absNorm : ℝ)^ε) :=
+      mul_le_mul_of_nonneg_right hbound (by positivity)
+    _ = (Dp*Cd)*(((radical χ.modulus).absNorm : ℝ)*complexity ψ t)^ε := by
+      rw [Real.mul_rpow hr0 hc0]
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (mul_nonneg hr0 hc0) (mul_le_mul_of_nonneg_left hQ hr0) hε.le)
+      (mul_pos hDp hCd).le
+
+theorem buffered_original_control (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue ≠ 1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T) < a+2*e →
+      ∀ (j : ι) (t : ℝ), |t| ≤ (3*i+2 : ℕ)*T →
+      ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-6*e),
+        ‖LFunction (χ j) z‖+‖HeckeReciprocal.reciprocal (χ j) z‖ ≤
+          C*(presentationComplexity (χ j) t)^ε := by
+  obtain ⟨C,hC,hbound⟩ := original_disk_control e ε he he' hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j t ht z hz
+  exact hbound (χ j) (hχ j) a t (by linarith) ha'
+    (fun w hw => HeckeDetectorZeros.nonzero_on_buffered_disk χ hχ T a e i hT ha he
+      hmax j t ht (ball_subset_closedBall hw)) z hz
+
+end HeckeDyadicControl
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open MeasureTheory Set Complex
+namespace HeckeDyadic
+open HeckeFamily
+
+theorem horizontal_join_bound (χ : Character) (inverse : Bool) (W : ℝ → ℂ)
+    (D σ freq l r y C K : ℝ) (n : ℕ)
+    (hD : 1≤ D) (hlr : l≤ r) (hC : 0≤ C) (_hK : 0≤ K)
+    (hm : ∀ x ∈ Icc l r, (1+|y|)^n*‖mellin W ((x : ℂ)+y*I)‖≤ C)
+    (hs : ∀ x ∈ Icc l r, ‖series χ inverse ((x : ℂ)+y*I+shift σ freq)‖≤ K) :
+    ‖∫ x : ℝ in l..r, integrand χ inverse W D σ freq ((x : ℂ)+y*I)‖ ≤
+      (C*D^(r+σ-1/2)*K/(1+|y|)^n)*|r-l| := by
+  apply intervalIntegral.norm_integral_le_of_norm_le_const
+  intro x hx
+  have hx' : x ∈ Icc l r := by simpa [uIcc_of_le hlr] using uIoc_subset_uIcc hx
+  have hb : ‖mellin W ((x : ℂ)+y*I)‖≤ C/(1+|y|)^n := by
+    apply (le_div_iff₀ (by positivity : 0<(1+|y|)^n)).mpr
+    simpa [mul_comm] using hm x hx'
+  have hpow : D^(x+σ-1/2)≤ D^(r+σ-1/2) :=
+    Real.rpow_le_rpow_of_exponent_le hD (by linarith [hx'.2])
+  rw [integrand_norm χ inverse W D σ freq (by linarith)]
+  simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+    sub_self, add_zero]
+  calc
+    _ ≤ (C/(1+|y|)^n)*D^(r+σ-1/2)*K :=
+      mul_le_mul (mul_le_mul hb hpow (by positivity) (by positivity))
+        (hs x hx') (norm_nonneg _) (by positivity)
+    _ = _ := by ring
+
+theorem profile_strip_decay (a b : ℝ) (ha : 0< a) (l r : ℝ) (n : ℕ) :
+    ∃ (S : Finset (ℕ×ℕ)) (C : ℝ), 0< C ∧
+      ∀ W : SchwartzMap ℝ ℂ, Function.support (W : ℝ → ℂ)⊆Icc a b →
+      ∀ x ∈ Icc l r, ∀ y : ℝ,
+      (1+|y|)^n*‖mellin W ((x : ℂ)+y*I)‖≤
+        C*S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W :=
+  CompletedHeight.mellin_strip_source_bound a b ha l r n
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Metric Complex
+namespace HeckeDyadic
+open HeckeFamily HeckeLogarithmic HeckeReciprocalGrowth
+
+theorem presentationComplexity_mono_height (χ : Character) {t H : ℝ}
+    (ht : |t|≤ H) : presentationComplexity χ t≤ presentationComplexity χ H := by
+  unfold presentationComplexity complexity
+  have hH : 0≤ H := (abs_nonneg t).trans ht
+  rw [abs_of_nonneg hH]
+  gcongr
+
+theorem buffered_rectangle_control (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (z : ℂ), a+6*e≤ z.re → z.re≤2 →
+      |z.im|≤(3*i+2 : ℕ)*T →
+      LFunction (χ j) z≠0 ∧
+      ‖LFunction (χ j) z‖+‖HeckeReciprocal.reciprocal (χ j) z‖≤
+        C*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε := by
+  obtain ⟨C,hC,hbound⟩ := HeckeDyadicControl.buffered_original_control e ε he he' hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j z hzl hzr hzi
+  have hz6 : z ∈ closedBall ((2 : ℂ)+z.im*I) (2-a-6*e) := by
+    rw [mem_closedBall,dist_eq_norm]
+    have heq : z-((2 : ℂ)+z.im*I)=((z.re-2 : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp
+    rw [heq,Complex.norm_real,Real.norm_eq_abs,abs_of_nonpos (by linarith : z.re-2≤0)]
+    linarith
+  have hz2 : z ∈ closedBall ((2 : ℂ)+z.im*I) (2-a-2*e) :=
+    closedBall_subset_closedBall (by linarith) hz6
+  refine ⟨HeckeDetectorZeros.nonzero_on_buffered_disk χ hχ T a e i hT ha he
+    hmax j z.im hzi hz2, ?_⟩
+  apply (hbound χ hχ T a i hT ha ha' hmax j z.im hzi z hz6).trans
+  apply mul_le_mul_of_nonneg_left _ hC.le
+  apply Real.rpow_le_rpow
+  · unfold presentationComplexity complexity
+    positivity
+  · exact presentationComplexity_mono_height _ hzi
+  · exact hε.le
+
+theorem translated_rectangle_mem {a e σ freq l r H T : ℝ}
+    (hl : a+6*e≤ l+σ) (hr : r+σ≤2) (hlr : l≤ r) (hT : 0≤ T)
+    (hfreq : |freq|+T≤ H) {s : ℂ} (hs : s ∈ (uIcc l r ×ℂ uIcc (-T) T)) :
+    a+6*e≤(s+shift σ freq).re ∧ (s+shift σ freq).re≤2 ∧
+      |(s+shift σ freq).im|≤ H := by
+  have hs' : s.re ∈ Icc l r ∧ s.im ∈ Icc (-T) T := by
+    change s.re ∈ uIcc l r ∧ s.im ∈ uIcc (-T) T at hs
+    simpa [uIcc_of_le hlr,uIcc_of_le (by linarith : -T≤ T)] using hs
+  have hsi : |s.im|≤ T := abs_le.mpr hs'.2
+  constructor
+  · simp only [add_re,shift_re]
+    linarith [hs'.1.1]
+  constructor
+  · simp only [add_re,shift_re]
+    linarith [hs'.1.2]
+  · have hi : (s+shift σ freq).im=s.im-freq := by simp [shift,sub_eq_add_neg]
+    rw [hi]
+    exact (abs_sub _ _).trans (by linarith)
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open Set MeasureTheory Complex
+namespace HeckeDyadic
+open HeckeFamily
+
+theorem norm_four_sides (A B C D : ℂ) :
+    ‖A+I*(B-C)+D‖≤‖A‖+‖B‖+‖C‖+‖D‖ := by
+  have h₁ := norm_add_le (A+I*(B-C)) D
+  have h₂ := norm_add_le A (I*(B-C))
+  have h₃ := norm_sub_le B C
+  simp only [norm_mul,norm_I,one_mul] at h₂
+  linarith
+
+theorem polynomial_bound_of_rectangle (χ : Character) (hχ : χ.residue≠1)
+    (inverse : Bool) (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T C₂ Cn K : ℝ) (n : ℕ)
+    (hD : 1≤ D) (hlr : l≤ r) (hr : 1< r+σ) (hT : 0≤ T)
+    (hC₂ : 0≤ C₂) (hCn : 0≤ Cn) (hK : 0≤ K)
+    (hm₂ : ∀ t : ℝ, (1+|t|)^2*‖mellin W ((l : ℂ)+t*I)‖≤ C₂)
+    (hmn : ∀ x ∈ Icc l r, ∀ t : ℝ,
+      (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), inverse=true →
+      LFunction χ (s+shift σ freq)≠0)
+    (hs : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T),
+      ‖series χ inverse (s+shift σ freq)‖≤ K) :
+    ‖polynomial χ inverse W D σ freq‖≤(1/(2*Real.pi))*
+      (C₂*D^(l+σ-1/2)*K*Real.pi +
+       2*(Cn*D^(r+σ-1/2)*K/(1+T)^n)*|r-l| +
+       (Cn*D^(r+σ-1/2)*HeckeReciprocalBound.bound (r+σ))/(1+T)^n*Real.pi) := by
+  have hDp : 0< D := by linarith
+  have hmem (x t : ℝ) (hx : x∈Icc l r) (ht : t∈Icc (-T) T) :
+      ((x : ℂ)+t*I) ∈ (uIcc l r ×ℂ uIcc (-T) T) := by
+    change (((x : ℂ)+t*I).re∈uIcc l r) ∧ (((x : ℂ)+t*I).im∈uIcc (-T) T)
+    simpa [uIcc_of_le hlr,uIcc_of_le (by linarith : -T≤ T)] using And.intro hx ht
+  have hcentral := central_segment_bound χ inverse W D l σ freq C₂ K T hDp hC₂ hK hT
+    hm₂ (fun t ht => hs _ (hmem l t ⟨le_rfl,hlr⟩ ht))
+  have hm (x : ℝ) (hx : x∈Icc l r) (t : ℝ) :
+      (1+|t|)^n*‖mellin W ((x : ℂ)+t*I)‖≤ Cn := by
+    apply le_trans _ (hmn x hx t)
+    gcongr
+    · exact le_add_of_nonneg_right (abs_nonneg t)
+    · omega
+  have hbottom := horizontal_join_bound χ inverse W D σ freq l r (-T) Cn K n hD hlr hCn hK
+    (fun x hx => hm x hx (-T)) (fun x hx => hs _ (hmem x (-T) hx ⟨le_rfl,by linarith⟩))
+  have htop := horizontal_join_bound χ inverse W D σ freq l r T Cn K n hD hlr hCn hK
+    (fun x hx => hm x hx T) (fun x hx => hs _ (hmem x T hx ⟨by linarith,le_rfl⟩))
+  simp only [abs_neg,abs_of_nonneg hT,ofReal_neg] at hbottom htop
+  have htail := absolute_tail_bound χ inverse W D r σ freq Cn T n hDp hr hCn hT
+    (hmn r ⟨hlr,le_rfl⟩)
+  rw [polynomial_finite_shift χ hχ inverse W a b ha hWs hW D σ freq l r T hDp hr hT hz,
+    norm_mul]
+  have hnorm : ‖(1/(2*Real.pi) : ℂ)‖=(1/(2*Real.pi) : ℝ) := by
+    simp [Real.norm_eq_abs,abs_of_pos Real.pi_pos]
+  rw [hnorm]
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  exact (norm_four_sides _ _ _ _).trans (by linarith)
+
+theorem polynomial_bound_of_rectangle_split (χ : Character) (hχ : χ.residue≠1)
+    (inverse : Bool) (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T C₂ Cn K Kc : ℝ) (n : ℕ)
+    (hD : 1≤ D) (hlr : l≤ r) (hr : 1< r+σ) (hT : 0≤ T)
+    (hC₂ : 0≤ C₂) (hCn : 0≤ Cn) (hK : 0≤ K) (hKc : 0≤ Kc)
+    (hm₂ : ∀ t : ℝ, (1+|t|)^2*‖mellin W ((l : ℂ)+t*I)‖≤ C₂)
+    (hmn : ∀ x ∈ Icc l r, ∀ t : ℝ,
+      (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn)
+    (hcentralSeries : ∀ t ∈ Icc (-T) T, ‖series χ inverse ((l : ℂ)+t*I+shift σ freq)‖≤ Kc)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), inverse=true →
+      LFunction χ (s+shift σ freq)≠0)
+    (hs : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T),
+      ‖series χ inverse (s+shift σ freq)‖≤ K) :
+    ‖polynomial χ inverse W D σ freq‖≤(1/(2*Real.pi))*
+      (C₂*D^(l+σ-1/2)*Kc*Real.pi +
+       2*(Cn*D^(r+σ-1/2)*K/(1+T)^n)*|r-l| +
+       (Cn*D^(r+σ-1/2)*HeckeReciprocalBound.bound (r+σ))/(1+T)^n*Real.pi) := by
+  have hDp : 0< D := by linarith
+  have hmem (x t : ℝ) (hx : x∈Icc l r) (ht : t∈Icc (-T) T) :
+      ((x : ℂ)+t*I) ∈ (uIcc l r ×ℂ uIcc (-T) T) := by
+    change (((x : ℂ)+t*I).re∈uIcc l r) ∧ (((x : ℂ)+t*I).im∈uIcc (-T) T)
+    simpa [uIcc_of_le hlr,uIcc_of_le (by linarith : -T≤ T)] using And.intro hx ht
+  have hcentral := central_segment_bound χ inverse W D l σ freq C₂ Kc T hDp hC₂ hKc hT
+    hm₂ hcentralSeries
+  have hm (x : ℝ) (hx : x∈Icc l r) (t : ℝ) :
+      (1+|t|)^n*‖mellin W ((x : ℂ)+t*I)‖≤ Cn := by
+    apply le_trans _ (hmn x hx t)
+    gcongr
+    · exact le_add_of_nonneg_right (abs_nonneg t)
+    · omega
+  have hbottom := horizontal_join_bound χ inverse W D σ freq l r (-T) Cn K n hD hlr hCn hK
+    (fun x hx => hm x hx (-T)) (fun x hx => hs _ (hmem x (-T) hx ⟨le_rfl,by linarith⟩))
+  have htop := horizontal_join_bound χ inverse W D σ freq l r T Cn K n hD hlr hCn hK
+    (fun x hx => hm x hx T) (fun x hx => hs _ (hmem x T hx ⟨by linarith,le_rfl⟩))
+  simp only [abs_neg,abs_of_nonneg hT,ofReal_neg] at hbottom htop
+  have htail := absolute_tail_bound χ inverse W D r σ freq Cn T n hDp hr hCn hT
+    (hmn r ⟨hlr,le_rfl⟩)
+  rw [polynomial_finite_shift χ hχ inverse W a b ha hWs hW D σ freq l r T hDp hr hT hz,
+    norm_mul]
+  have hnorm : ‖(1/(2*Real.pi) : ℂ)‖=(1/(2*Real.pi) : ℝ) := by
+    simp [Real.norm_eq_abs,abs_of_pos Real.pi_pos]
+  rw [hnorm]
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  exact (norm_four_sides _ _ _ _).trans (by linarith)
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckeDyadic
+open HeckeFamily HeckeReciprocalGrowth
+
+theorem buffered_polynomial_bound (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (inverse : Bool) (W : ℝ → ℂ) (A B : ℝ),
+      0< A → Function.support W⊆Icc A B → ContDiff ℝ ∞ W →
+      ∀ (D σ freq V C₂ Cn : ℝ) (n : ℕ), 1≤ D → 0≤ V →
+      |freq|+V≤(3*i+2 : ℕ)*T → 0≤ C₂ → 0≤ Cn →
+      (∀ t : ℝ, (1+|t|)^2*‖mellin W (((a+6*e-σ : ℝ) : ℂ)+t*I)‖≤ C₂) →
+      (∀ x ∈ Icc (a+6*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
+      let K := C*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε
+      ‖polynomial (χ j) inverse W D σ freq‖≤(1/(2*Real.pi))*
+        (C₂*D^(a+6*e-1/2)*K*Real.pi +
+         2*(Cn*D^(3/2 : ℝ)*K/(1+V)^n)*|2-a-6*e| +
+         (Cn*D^(3/2 : ℝ)*HeckeReciprocalBound.bound 2)/(1+V)^n*Real.pi) := by
+  obtain ⟨C,hC,hrect⟩ := buffered_rectangle_control e ε he he' hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j inverse W A B hA hWs hW
+    D σ freq V C₂ Cn n hD hV hfreq hC₂ hCn hm₂ hmn
+  dsimp only
+  let K := C*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε
+  have hK : 0≤ K := mul_nonneg hC.le (Real.rpow_nonneg (by
+    unfold presentationComplexity HeckeLogarithmic.complexity
+    positivity) _)
+  have hlr : a+6*e-σ≤2-σ := by linarith
+  have hmem {s : ℂ} (hs : s ∈ (uIcc (a+6*e-σ) (2-σ) ×ℂ uIcc (-V) V)) :=
+    translated_rectangle_mem (a:=a) (e:=e) (σ:=σ) (freq:=freq)
+      (by linarith : a+6*e≤ a+6*e-σ+σ) (by linarith : 2-σ+σ≤2) hlr hV hfreq hs
+  have hz {s : ℂ} (hs : s ∈ (uIcc (a+6*e-σ) (2-σ) ×ℂ uIcc (-V) V)) :=
+    hrect χ hχ T a i hT ha ha' hmax j (s+shift σ freq) (hmem hs).1 (hmem hs).2.1 (hmem hs).2.2
+  have hseries (s : ℂ) (hs : s ∈ (uIcc (a+6*e-σ) (2-σ) ×ℂ uIcc (-V) V)) :
+      ‖series (χ j) inverse (s+shift σ freq)‖≤ K := by
+    have hb := (hz hs).2
+    cases inverse
+    · exact (le_add_of_nonneg_right (norm_nonneg _)).trans hb
+    · exact (le_add_of_nonneg_left (norm_nonneg _)).trans hb
+  have hbound := polynomial_bound_of_rectangle (χ j) (hχ j) inverse W A B hA hWs hW
+    D σ freq (a+6*e-σ) (2-σ) V C₂ Cn K n hD hlr (by linarith) hV hC₂ hCn hK hm₂ hmn
+    (fun _ hs _ => (hz hs).1) hseries
+  dsimp only [K] at hbound
+  convert hbound using 1 ; congr 2 <;> ring_nf
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ComplexConjugate
+open Complex Set
+namespace HeckeDyadicReflection
+open HeckeFamily HeckePresentation HeckeFiniteDeletion
+
+theorem family_reflected_bound : ∃ C : ℝ, 0< C ∧ ∀ η : Character,
+    FiniteFourier.IsPrimitiveOnIdeals η.residue → η.residue≠1 →
+    ∀ s : ℂ, -(1/10 : ℝ)≤ s.re → s.re≤1/2 →
+    ‖LFunction η s‖≤ C*(η.modulus.absNorm : ℝ)^(1/2-s.re)*(3+|s.im|)^2*
+      ‖LFunction η (1-conj s)‖ := by
+  obtain ⟨C,hC,hbound⟩ := primitive_reflected_bound
+  refine ⟨C,hC,?_⟩
+  intro η hp hη s hl hr
+  have h := hbound (generator η) (principalResidue η) (principalResidue_unit η)
+    (principalResidue_primitive η hp) (principalResidue_ne_one η hη) s hl hr
+  have hi : HeckePrimitive.character (generator η) (principalResidue η)⁻¹
+      (HeckePrimitive.inverse_unit_trivial (generator η) (principalResidue η) (principalResidue_unit η)) =
+      (principalCharacter η).inverse := rfl
+  rw [hi,LFunction_inverse_conj (principalCharacter η) (principalResidue_ne_one η hη),
+    norm_conj,map_sub,map_one] at h
+  change ‖LFunction (principalCharacter η) s‖≤ _ at h
+  rw [LFunction_principalCharacter η hη,LFunction_principalCharacter η hη] at h
+  simpa only [HeckeStripActual.conductor,span_generator] using h
+
+theorem LFunction_eq_of_mask_entire (χ ψ : Character) (hχ : χ.residue≠1)
+    (hmask : ∀ J : Ideal O, idealCoeff χ J=
+      if IsCoprime J χ.modulus then idealCoeff ψ J else 0) (s : ℂ) :
+    LFunction χ s=LFunction ψ s*factors χ.modulus ψ s := by
+  have hψ : ψ.residue≠1 := fun h => hχ ((principal_iff_of_mask χ ψ hmask).mpr h)
+  have ha := LFunction_entire_nonprincipal χ hχ
+  have hb : Differentiable ℂ (fun z => LFunction ψ z*factors χ.modulus ψ z) :=
+    (LFunction_entire_nonprincipal ψ hψ).mul (factors_differentiable _ _)
+  have he : LFunction χ=(fun z => LFunction ψ z*factors χ.modulus ψ z) := by
+    apply (Complex.analyticOnNhd_univ_iff_differentiable.mpr ha).eq_of_eventuallyEq
+      (Complex.analyticOnNhd_univ_iff_differentiable.mpr hb) (z₀ := (2 : ℂ))
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num : (1 : ℝ)<(2 : ℂ).re)] with z hz
+    exact LFunction_eq_of_mask_right χ ψ hmask hz
+  exact congr_fun he s
+
+theorem original_reflected_bound : ∃ C : ℝ, 0< C ∧ ∀ χ ψ : Character,
+    FiniteFourier.IsPrimitiveOnIdeals ψ.residue → χ.residue≠1 →
+    (∀ J : Ideal O, idealCoeff χ J=
+      if IsCoprime J χ.modulus then idealCoeff ψ J else 0) →
+    ∀ s : ℂ, -(1/10 : ℝ)≤ s.re → s.re≤1/2 →
+    ‖LFunction χ s‖≤ C*(ψ.modulus.absNorm : ℝ)^(1/2-s.re)*(3+|s.im|)^2*
+      ‖LFunction χ (1-conj s)‖*
+      (‖factors χ.modulus ψ s‖*‖(factors χ.modulus ψ (1-conj s))⁻¹‖) := by
+  obtain ⟨C,hC,hbound⟩ := family_reflected_bound
+  refine ⟨C,hC,?_⟩
+  intro χ ψ hp hχ hmask s hl hr
+  have hψ : ψ.residue≠1 := fun h => hχ ((principal_iff_of_mask χ ψ hmask).mpr h)
+  have h := hbound ψ hp hψ s hl hr
+  have hd : factors χ.modulus ψ (1-conj s)≠0 := factors_ne_zero _ _ (by simp; linarith)
+  have he : LFunction ψ (1-conj s)=LFunction χ (1-conj s)*(factors χ.modulus ψ (1-conj s))⁻¹ := by
+    rw [LFunction_eq_of_mask_entire χ ψ hχ hmask]
+    field_simp
+  rw [he,norm_mul] at h
+  rw [LFunction_eq_of_mask_entire χ ψ hχ hmask,norm_mul]
+  calc
+    _ ≤ (C*(ψ.modulus.absNorm : ℝ)^(1/2-s.re)*(3+|s.im|)^2*
+        (‖LFunction χ (1-conj s)‖*‖(factors χ.modulus ψ (1-conj s))⁻¹‖))*
+          ‖factors χ.modulus ψ s‖ := mul_le_mul_of_nonneg_right h (norm_nonneg _)
+    _ = _ := by ring
+
+theorem original_reflected_subpower (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ χ : Character, χ.residue≠1 →
+    ∀ s : ℂ, -(1/10 : ℝ)≤ s.re → s.re≤1/2 →
+    ‖LFunction χ s‖≤ C*(χ.modulus.absNorm : ℝ)^(1/2-s.re)*
+      ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)*
+      (3+|s.im|)^2*‖LFunction χ (1-conj s)‖ := by
+  obtain ⟨Cg,hCg,hreflect⟩ := original_reflected_bound
+  obtain ⟨Cl,hCl,hleft⟩ := HeckeDeletionBounds.factors_any_re_subpower_bound ε hε
+  obtain ⟨Cr,hCr,hright⟩ := HeckeDeletionBounds.factors_radical_subpower_bound (1/2) ε (by norm_num) hε
+  refine ⟨Cg*Cl*Cr,by positivity,?_⟩
+  intro χ hχ s hl hr
+  obtain ⟨ψ,_,hp,hQ,hmask⟩ := exists_primitive_character χ
+  have hR : 0<((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr
+      (HeckeDeletionBounds.radical_ne_zero χ.modulus))
+  have hd₁ := hleft χ.modulus ψ s
+  have hd₂ : ‖(factors χ.modulus ψ (1-conj s))⁻¹‖≤
+      Cr*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε := by
+    have h := hright χ.modulus ψ (1-conj s) (by simp; linarith)
+    exact (le_add_of_nonneg_left (norm_nonneg _)).trans h
+  have hd : ‖factors χ.modulus ψ s‖*‖(factors χ.modulus ψ (1-conj s))⁻¹‖≤
+      (Cl*Cr)*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε) := by
+    calc
+      _ ≤ (Cl*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+ε))*
+          (Cr*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε) :=
+        mul_le_mul hd₁ hd₂ (norm_nonneg _) (mul_nonneg hCl.le (Real.rpow_nonneg hR.le _))
+      _ = _ := by
+        have he : ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+ε)*
+            ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε =
+            ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε) := by
+          rw [←Real.rpow_add hR]
+          congr 1
+          ring
+        calc
+          _ = (Cl*Cr)*(((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+ε)*
+              ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε) := by ring
+          _ = _ := by rw [he]
+  have hQ' : (ψ.modulus.absNorm : ℝ)^(1/2-s.re)≤(χ.modulus.absNorm : ℝ)^(1/2-s.re) :=
+    Real.rpow_le_rpow (by positivity) (by exact_mod_cast hQ) (by linarith)
+  calc
+    _ ≤ Cg*(ψ.modulus.absNorm : ℝ)^(1/2-s.re)*(3+|s.im|)^2*
+        ‖LFunction χ (1-conj s)‖*
+        (‖factors χ.modulus ψ s‖*‖(factors χ.modulus ψ (1-conj s))⁻¹‖) :=
+      hreflect χ ψ hp hχ hmask s hl hr
+    _ ≤ Cg*(χ.modulus.absNorm : ℝ)^(1/2-s.re)*(3+|s.im|)^2*
+        ‖LFunction χ (1-conj s)‖*
+        ((Cl*Cr)*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)) := by
+      apply mul_le_mul _ hd (mul_nonneg (norm_nonneg _) (norm_nonneg _)) (by positivity)
+      gcongr
+    _ = _ := by ring
+
+end HeckeDyadicReflection
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ComplexConjugate
+open Complex Set
+namespace HeckeDyadic
+open HeckeFamily HeckeReciprocalGrowth HeckeDeletionBounds HeckeDyadicReflection
+
+theorem radical_norm_ge_one (M : Ideal O) : 1≤((radical M).absNorm : ℝ) := by
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+    (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero M))
+
+theorem buffered_reflected_line_control (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (s : ℂ), s.re=1-a-6*e → |s.im|≤(3*i+2 : ℕ)*T →
+      ‖LFunction (χ j) s‖≤ C*((χ j).modulus.absNorm : ℝ)^(a-1/2+6*e)*
+        ((radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε)*
+        (3+(3*i+2 : ℕ)*T)^2*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε := by
+  obtain ⟨Cg,hCg,hreflect⟩ := original_reflected_subpower ε hε
+  obtain ⟨Cb,hCb,hrect⟩ := buffered_rectangle_control e ε he he' hε
+  refine ⟨Cg*Cb,mul_pos hCg hCb,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j s hs him
+  have hwre : (1-conj s).re=a+6*e := by simp; linarith
+  have hwim : (1-conj s).im=s.im := by simp
+  have hw := hrect χ hχ T a i hT ha ha' hmax j (1-conj s)
+    (by rw [hwre]) (by rw [hwre]; linarith) (by rwa [hwim])
+  have hL : ‖LFunction (χ j) (1-conj s)‖≤
+      Cb*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε :=
+    (le_add_of_nonneg_right (norm_nonneg _)).trans hw.2
+  have href := hreflect (χ j) (hχ j) s (by rw [hs]; linarith) (by rw [hs]; linarith)
+  have hexp : 1/2-s.re=a-1/2+6*e := by rw [hs]; ring
+  rw [hexp] at href
+  have hR : ((radical (χ j).modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)≤
+      ((radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε) := by
+    apply Real.rpow_le_rpow_of_exponent_le (radical_norm_ge_one _)
+    have hm : max (-s.re) 0≤6*e := max_le (by rw [hs]; linarith) (by positivity)
+    linarith
+  calc
+    _ ≤ Cg*((χ j).modulus.absNorm : ℝ)^(a-1/2+6*e)*
+        ((radical (χ j).modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)*
+        (3+|s.im|)^2*‖LFunction (χ j) (1-conj s)‖ := href
+    _ ≤ Cg*((χ j).modulus.absNorm : ℝ)^(a-1/2+6*e)*
+        ((radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε)*
+        (3+(3*i+2 : ℕ)*T)^2*(Cb*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε) := by
+      gcongr
+    _ = _ := by ring
+
+theorem original_upper_strip (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ χ : Character, χ.residue≠1 → ∀ s : ℂ,
+      -(1/10 : ℝ)≤ s.re →
+      ‖LFunction χ s‖≤ C*(χ.modulus.absNorm : ℝ)^(3/5 : ℝ)*
+        ((radical χ.modulus).absNorm : ℝ)^(1/10+ε)*(3+|s.im|)^2 := by
+  obtain ⟨Cd,hCd,hdel⟩ := factors_any_re_subpower_bound ε hε
+  refine ⟨(1+HeckeLogarithmicInput.uniformConstant)*Cd,
+    mul_pos (by linarith [HeckeLogarithmicInput.uniformConstant_nonneg]) hCd,?_⟩
+  intro χ hχ s hs
+  obtain ⟨ψ,_,hp,hQ,hmask⟩ := exists_primitive_character χ
+  have hψ : ψ.residue≠1 := fun h => hχ ((HeckeFiniteDeletion.principal_iff_of_mask χ ψ hmask).mpr h)
+  have hg := HeckeLogarithmicInput.regular_right_growth ψ hp hs
+  rw [HeckeLogarithmicInput.regular_eq_nonprincipal ψ hψ] at hg
+  have hQ' : (ψ.modulus.absNorm : ℝ)^(3/5 : ℝ)≤(χ.modulus.absNorm : ℝ)^(3/5 : ℝ) :=
+    Real.rpow_le_rpow (by positivity) (by exact_mod_cast hQ) (by norm_num)
+  have hd : ‖HeckeFiniteDeletion.factors χ.modulus ψ s‖≤
+      Cd*((radical χ.modulus).absNorm : ℝ)^(1/10+ε) := by
+    apply (hdel χ.modulus ψ s).trans
+    apply mul_le_mul_of_nonneg_left _ hCd.le
+    apply Real.rpow_le_rpow_of_exponent_le (radical_norm_ge_one _)
+    have hm : max (-s.re) 0≤1/10 := max_le (by linarith) (by norm_num)
+    linarith
+  have hU := HeckeLogarithmicInput.uniformConstant_nonneg
+  rw [LFunction_eq_of_mask_entire χ ψ hχ hmask,norm_mul]
+  calc
+    _ ≤ (HeckeLogarithmicInput.uniformConstant*(ψ.modulus.absNorm : ℝ)^(3/5 : ℝ)*(3+|s.im|)^2)*
+        (Cd*((radical χ.modulus).absNorm : ℝ)^(1/10+ε)) :=
+      mul_le_mul hg hd (norm_nonneg _) (by positivity)
+    _ ≤ ((1+HeckeLogarithmicInput.uniformConstant)*(χ.modulus.absNorm : ℝ)^(3/5 : ℝ)*(3+|s.im|)^2)*
+        (Cd*((radical χ.modulus).absNorm : ℝ)^(1/10+ε)) := by
+      gcongr
+      linarith
+    _ = _ := by ring
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckeDyadic
+open HeckeFamily HeckeReciprocalGrowth HeckeDeletionBounds
+
+theorem reflected_polynomial_bound (e ε : ℝ)
+    (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
+    ∃ Cg Cr : ℝ, 0< Cg ∧ 0< Cr ∧
+    ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (W : ℝ → ℂ) (A B : ℝ),
+      0< A → Function.support W⊆Icc A B → ContDiff ℝ ∞ W →
+      ∀ (D σ freq V C₂ Cn : ℝ) (n : ℕ), 1≤ D → 0≤ V →
+      |freq|+V≤(3*i+2 : ℕ)*T → 0≤ C₂ → 0≤ Cn →
+      (∀ t : ℝ, (1+|t|)^2*‖mellin W (((1-a-6*e-σ : ℝ) : ℂ)+t*I)‖≤ C₂) →
+      (∀ x ∈ Icc (1-a-6*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
+      let H := (3*i+2 : ℕ)*T
+      let Q := ((χ j).modulus.absNorm : ℝ)
+      let R := ((radical (χ j).modulus).absNorm : ℝ)
+      let Kg := Cg*Q^(3/5 : ℝ)*R^(1/10+ε)*(3+H)^2
+      let Kr := Cr*Q^(a-1/2+6*e)*R^(6*e+2*ε)*(3+H)^2*
+        (presentationComplexity (χ j) H)^ε
+      ‖polynomial (χ j) false W D σ freq‖≤(1/(2*Real.pi))*
+        (C₂*D^(1/2-a-6*e)*Kr*Real.pi +
+         2*(Cn*D^(3/2 : ℝ)*Kg/(1+V)^n)*|1+a+6*e| +
+         (Cn*D^(3/2 : ℝ)*HeckeReciprocalBound.bound 2)/(1+V)^n*Real.pi) := by
+  obtain ⟨Cg,hCg,hglobal⟩ := original_upper_strip ε hε
+  obtain ⟨Cr,hCr,hreflect⟩ := buffered_reflected_line_control e ε he he' hε
+  refine ⟨Cg,Cr,hCg,hCr,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j W A B hA hWs hW
+    D σ freq V C₂ Cn n hD hV hfreq hC₂ hCn hm₂ hmn
+  dsimp only
+  let H : ℝ := (3*i+2 : ℕ)*T
+  let Q : ℝ := (χ j).modulus.absNorm
+  let R : ℝ := (radical (χ j).modulus).absNorm
+  let Kg := Cg*Q^(3/5 : ℝ)*R^(1/10+ε)*(3+H)^2
+  let Kr := Cr*Q^(a-1/2+6*e)*R^(6*e+2*ε)*(3+H)^2*
+    (presentationComplexity (χ j) H)^ε
+  have hKg : 0≤ Kg := by dsimp [Kg,Q,R]; positivity
+  have hKr : 0≤ Kr := by dsimp [Kr,Q,R,presentationComplexity,HeckeLogarithmic.complexity]; positivity
+  have hlr : 1-a-6*e-σ≤2-σ := by linarith
+  have hmem {s : ℂ} (hs : s ∈ (uIcc (1-a-6*e-σ) (2-σ) ×ℂ uIcc (-V) V)) :
+      1-a-6*e≤(s+shift σ freq).re ∧ (s+shift σ freq).re≤2 ∧ |(s+shift σ freq).im|≤ H := by
+    have h := translated_rectangle_mem (a:=1-a-12*e) (e:=e) (σ:=σ) (freq:=freq)
+      (by linarith : 1-a-12*e+6*e≤1-a-6*e-σ+σ)
+      (by linarith : 2-σ+σ≤2) hlr hV hfreq hs
+    constructor
+    · linarith [h.1]
+    · exact h.2
+  have hseries (s : ℂ) (hs : s ∈ (uIcc (1-a-6*e-σ) (2-σ) ×ℂ uIcc (-V) V)) :
+      ‖series (χ j) false (s+shift σ freq)‖≤ Kg := by
+    have h := hglobal (χ j) (hχ j) (s+shift σ freq) (by linarith [(hmem hs).1])
+    apply h.trans
+    dsimp [Kg,Q,R]
+    gcongr
+    exact (hmem hs).2.2
+  have hcentral (t : ℝ) (ht : t∈Icc (-V) V) :
+      ‖series (χ j) false (((1-a-6*e-σ : ℝ) : ℂ)+t*I+shift σ freq)‖≤ Kr := by
+    have him : |t-freq|≤ H := (abs_sub _ _).trans (by
+      have ht' := abs_le.mpr ht
+      change |t|+|freq|≤ H
+      linarith)
+    apply hreflect χ hχ T a i hT ha ha' hmax j
+    · simp only [add_re,ofReal_re,mul_re,ofReal_im,I_re,mul_zero,I_im,zero_mul,
+        sub_self,add_zero,shift_re]
+      ring
+    · simpa [shift,sub_eq_add_neg,H] using him
+  have hb := polynomial_bound_of_rectangle_split (χ j) (hχ j) false W A B hA hWs hW
+    D σ freq (1-a-6*e-σ) (2-σ) V C₂ Cn Kg Kr n hD hlr (by linarith)
+    hV hC₂ hCn hKg hKr hm₂ hmn hcentral (fun _ _ h => Bool.false_ne_true h |>.elim) hseries
+  dsimp only [Kg,Kr,Q,R,H] at hb
+  convert hb using 1 ; congr 2 <;> ring_nf
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace HeckeDyadic
+open HeckeFamily HeckeDeletionBounds HeckeReciprocalGrowth HeckeLogarithmic
+
+theorem radical_dvd (M : Ideal O) (hM : M≠0) : radical M∣M := by
+  unfold radical HeckeIdealSeries.primeProduct
+  rw [HeckeIdealSeries.prod_primeSet M (fun J : Ideal O => J)]
+  exact support_product_dvd hM (Finset.Subset.refl _)
+
+theorem radical_norm_le_modulus (χ : Character) :
+    ((radical χ.modulus).absNorm : ℝ)≤χ.modulus.absNorm := by
+  exact_mod_cast Nat.le_of_dvd (Nat.pos_iff_ne_zero.mpr
+    (Ideal.absNorm_eq_zero_iff.not.mpr χ.modulus_ne_bot))
+    (map_dvd Ideal.absNorm (radical_dvd χ.modulus χ.modulus_ne_bot))
+
+theorem presentationComplexity_le_of_modulus_le (χ : Character) (U H : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) :
+    presentationComplexity χ H≤2*U^2*(3+|H|)^2 := by
+  have hR := (radical_norm_le_modulus χ).trans hQ
+  have hU : 0≤ U := (Nat.cast_nonneg χ.modulus.absNorm).trans hQ
+  unfold presentationComplexity complexity
+  calc
+    _ ≤ U*(2*U*(3+|H|)^2) := by gcongr
+    _ = _ := by ring
+
+theorem reflected_conductor_cost (χ : Character) (U a e ε : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) (ha : 1/2≤ a) (he : 0≤ e) (hε : 0≤ε) :
+    (χ.modulus.absNorm : ℝ)^(a-1/2+6*e)*
+      ((radical χ.modulus).absNorm : ℝ)^(6*e+2*ε)≤ U^(a-1/2+12*e+2*ε) := by
+  have hU : 0< U := lt_of_lt_of_le zero_lt_one
+    ((HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ)
+  have hR := (radical_norm_le_modulus χ).trans hQ
+  calc
+    _ ≤ U^(a-1/2+6*e)*U^(6*e+2*ε) :=
+      mul_le_mul (Real.rpow_le_rpow (by positivity) hQ (by linarith))
+        (Real.rpow_le_rpow (by positivity) hR (by positivity))
+        (Real.rpow_nonneg (by positivity) _) (Real.rpow_nonneg hU.le _)
+    _ = _ := by
+      rw [←Real.rpow_add hU]
+      congr 1
+      ring
+
+theorem positive_scale_exponent (U a e r : ℝ) (hU : 0< U) :
+    (U^r)^(a+6*e-1/2)=U^((a-1/2+6*e)*r) := by
+  rw [←Real.rpow_mul hU.le]
+  congr 1
+  ring
+
+theorem reflected_scale_exponent (U a e ε m : ℝ) (hU : 0< U) :
+    U^(a-1/2+12*e+2*ε)*(U^m)^(1/2-a-6*e)=
+      U^((a-1/2)*(1-m)+6*e*(2-m)+2*ε) := by
+  rw [←Real.rpow_mul hU.le,←Real.rpow_add hU]
+  congr 1
+  ring
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace HeckeDyadic
+
+theorem exists_external_tail_order (τ B p : ℝ) (hτ : 0<τ) :
+    ∃ n : ℕ, ∀ Z : ℝ, 1≤ Z → Z^B/(1+Z^τ)^n≤ Z^p := by
+  obtain ⟨n,hn⟩ := exists_nat_gt ((B-p)/τ)
+  refine ⟨n,?_⟩
+  intro Z hZ
+  have hZp : 0< Z := lt_of_lt_of_le zero_lt_one hZ
+  have hn' : B≤ p+τ*(n : ℝ) := by
+    have h := (div_lt_iff₀ hτ).mp hn
+    nlinarith
+  have hden : 0<(1+Z^τ)^n := by positivity
+  apply (div_le_iff₀ hden).mpr
+  calc
+    Z^B ≤ Z^(p+τ*(n : ℝ)) := Real.rpow_le_rpow_of_exponent_le hZ hn'
+    _ = Z^p*(Z^τ)^n := by
+      rw [Real.rpow_add hZp,Real.rpow_mul hZp.le,Real.rpow_natCast]
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ (Real.rpow_nonneg hZp.le _) (by linarith) n)
+      (Real.rpow_nonneg hZp.le _)
+
+theorem constant_absorbed_eventually (C ε : ℝ) (hε : 0<ε) :
+    ∀ᶠ Z : ℝ in Filter.atTop, C≤ Z^ε := by
+  exact (tendsto_rpow_atTop hε).eventually (Filter.eventually_ge_atTop C)
+
+theorem uniform_external_tail_order (τ dmax B R : ℝ)
+    (hτ : 0<τ) (_hdmax : 0≤ dmax) (hB : 0≤ B) (hR : 0≤ R) :
+    ∃ n : ℕ, ∀ Z d p : ℝ, 1≤ Z → 0≤ d → d≤ dmax → -R≤ p →
+      (Z^d)^B/(1+Z^τ/2)^n≤(2 : ℝ)^n*(Z^d)^p := by
+  obtain ⟨n,hn⟩ := exists_external_tail_order τ (dmax*B) (-dmax*R) hτ
+  refine ⟨n,?_⟩
+  intro Z d p hZ hd hd' hp
+  have hZp : 0< Z := lt_of_lt_of_le zero_lt_one hZ
+  have hnum : (Z^d)^B≤ Z^(dmax*B) := by
+    rw [←Real.rpow_mul hZp.le]
+    exact Real.rpow_le_rpow_of_exponent_le hZ (mul_le_mul_of_nonneg_right hd' hB)
+  have htarget : Z^(-dmax*R)≤(Z^d)^p := by
+    rw [←Real.rpow_mul hZp.le]
+    apply Real.rpow_le_rpow_of_exponent_le hZ
+    nlinarith [mul_nonneg hd (show 0≤ p+R by linarith),
+      mul_nonneg (show 0≤ dmax-d by linarith) hR]
+  have hden : ((1+Z^τ)/2)^n≤(1+Z^τ/2)^n :=
+    pow_le_pow_left₀ (by positivity) (by linarith) n
+  calc
+    _ ≤ (Z^(dmax*B))/((1+Z^τ)/2)^n :=
+      div_le_div₀ (by positivity) hnum (by positivity) hden
+    _ = (2 : ℝ)^n*(Z^(dmax*B)/(1+Z^τ)^n) := by
+      rw [div_pow]
+      field_simp
+    _ ≤ (2 : ℝ)^n*Z^(-dmax*R) := mul_le_mul_of_nonneg_left (hn Z hZ) (by positivity)
+    _ ≤ _ := mul_le_mul_of_nonneg_left htarget (by positivity)
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace HeckeDyadic
+open HeckeFamily HeckeDeletionBounds HeckeReciprocalGrowth HeckeLogarithmic
+
+theorem presentation_cost (χ : Character) (U H ε : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (hε : 0≤ε) (hε' : ε≤1) :
+    (presentationComplexity χ H)^ε≤2*U^(2*ε)*(3+H)^2 := by
+  have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ
+  have hbase : 1≤3+H := by linarith
+  have hc := presentationComplexity_le_of_modulus_le χ U H hQ
+  rw [abs_of_nonneg hH] at hc
+  have hp : (presentationComplexity χ H)^ε≤(2*U^2*(3+H)^2)^ε :=
+    Real.rpow_le_rpow (by unfold presentationComplexity complexity; positivity) hc hε
+  have he : (2*U^2*(3+H)^2)^ε=(2 : ℝ)^ε*U^(2*ε)*(3+H)^(2*ε) := by
+    rw [Real.mul_rpow (by positivity) (by positivity),Real.mul_rpow (by norm_num) (by positivity)]
+    simp only [←Real.rpow_natCast,←Real.rpow_mul (by linarith : 0≤ U),
+      ←Real.rpow_mul (by linarith : 0≤3+H),Nat.cast_ofNat]
+  rw [he] at hp
+  have h2 : (2 : ℝ)^ε≤2 := by
+    simpa using Real.rpow_le_rpow_of_exponent_le (by norm_num : (1 : ℝ)≤2) hε'
+  have hh : (3+H)^(2*ε)≤(3+H)^2 := by
+    rw [←Real.rpow_natCast]
+    exact Real.rpow_le_rpow_of_exponent_le hbase (by norm_num; linarith)
+  exact hp.trans (mul_le_mul (mul_le_mul_of_nonneg_right h2 (Real.rpow_nonneg (by linarith) _))
+    hh (Real.rpow_nonneg (by linarith) _) (by positivity))
+
+theorem positive_central_cost (χ : Character) (U H a e ε η r : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (hε : 0≤ε) (hε' : ε≤1)
+    (hheight : (3+H)^4≤ U^η) :
+    (U^r)^(a+6*e-1/2)*(presentationComplexity χ H)^ε≤
+      2*U^((a-1/2+6*e)*r+2*ε+η) := by
+  have hU : 0< U := lt_of_lt_of_le zero_lt_one ((HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ)
+  have hh : (3+H)^2≤ U^η := by
+    apply le_trans _ hheight
+    exact pow_le_pow_right₀ (by linarith) (by decide : 2≤4)
+  calc
+    _ ≤ (U^r)^(a+6*e-1/2)*(2*U^(2*ε)*U^η) :=
+      mul_le_mul_of_nonneg_left ((presentation_cost χ U H ε hQ hH hε hε').trans
+        (mul_le_mul_of_nonneg_left hh (by positivity))) (by positivity)
+    _ = _ := by
+      rw [positive_scale_exponent U a e r hU]
+      rw [Real.rpow_add hU,Real.rpow_add hU]
+      ring
+
+theorem reflected_central_cost (χ : Character) (U H a e ε η m : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (ha : 1/2≤ a)
+    (he : 0≤ e) (hε : 0≤ε) (hε' : ε≤1) (hheight : (3+H)^4≤ U^η) :
+    (χ.modulus.absNorm : ℝ)^(a-1/2+6*e)*
+      ((radical χ.modulus).absNorm : ℝ)^(6*e+2*ε)*(3+H)^2*
+      (presentationComplexity χ H)^ε*(U^m)^(1/2-a-6*e)≤
+      2*U^((a-1/2)*(1-m)+6*e*(2-m)+4*ε+η) := by
+  have hU : 0< U := lt_of_lt_of_le zero_lt_one ((HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ)
+  have hcost := reflected_conductor_cost χ U a e ε hQ ha he hε
+  have hcomplex := presentation_cost χ U H ε hQ hH hε hε'
+  have hcomplex0 : 0≤(presentationComplexity χ H)^ε := Real.rpow_nonneg (by
+    unfold presentationComplexity complexity
+    positivity) _
+  calc
+    _ ≤ U^(a-1/2+12*e+2*ε)*(3+H)^2*(2*U^(2*ε)*(3+H)^2)*(U^m)^(1/2-a-6*e) := by
+      gcongr
+    _ = 2*(U^(a-1/2+12*e+2*ε)*(U^m)^(1/2-a-6*e))*U^(2*ε)*(3+H)^4 := by ring
+    _ ≤ 2*(U^(a-1/2+12*e+2*ε)*(U^m)^(1/2-a-6*e))*U^(2*ε)*U^η :=
+      mul_le_mul_of_nonneg_left hheight (by positivity)
+    _ = _ := by
+      rw [reflected_scale_exponent U a e ε m hU]
+      calc
+        _ = 2*(U^((a-1/2)*(1-m)+6*e*(2-m)+2*ε)*U^(2*ε)*U^η) := by ring
+        _ = 2*U^(((a-1/2)*(1-m)+6*e*(2-m)+2*ε)+2*ε+η) := by
+          rw [←Real.rpow_add hU,←Real.rpow_add hU]
+        _ = _ := by congr 2; ring
+
+theorem direct_external_cost (χ : Character) (U H κ η r R : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (hκ : 0≤κ) (hκ' : κ≤1)
+    (hr : 0≤ r) (hrR : r≤ R) (hheight : (3+H)^4≤ U^η) :
+    (U^r)^(3/2 : ℝ)*(presentationComplexity χ H)^κ≤2*U^(2*R+2+η) := by
+  have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ
+  have h := positive_central_cost χ U H 2 0 κ η r hQ hH hκ hκ' hheight
+  norm_num only [mul_zero,add_zero] at h
+  apply h.trans
+  apply mul_le_mul_of_nonneg_left _ (by norm_num)
+  apply Real.rpow_le_rpow_of_exponent_le hU
+  nlinarith
+
+theorem reflected_external_cost (χ : Character) (U H κ η r R : ℝ)
+    (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (hκ : 0≤κ) (hκ' : κ≤1)
+    (hr : 0≤ r) (hrR : r≤ R) (hheight : (3+H)^4≤ U^η) :
+    (U^r)^(3/2 : ℝ)*(χ.modulus.absNorm : ℝ)^(3/5 : ℝ)*
+      ((radical χ.modulus).absNorm : ℝ)^(1/10+κ)*(3+H)^2≤ U^(2*R+2+η) := by
+  have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hR := (radical_norm_le_modulus χ).trans hQ
+  have hh : (3+H)^2≤ U^η :=
+    (pow_le_pow_right₀ (by linarith) (by decide : 2≤4)).trans hheight
+  calc
+    _ ≤ (U^r)^(3/2 : ℝ)*U^(3/5 : ℝ)*U^(1/10+κ)*U^η := by
+      gcongr
+    _ = U^(r*(3/2)+(3/5)+(1/10+κ)+η) := by
+      rw [←Real.rpow_mul hUp.le,←Real.rpow_add hUp,←Real.rpow_add hUp,←Real.rpow_add hUp]
+    _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hU (by nlinarith)
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace HeckeDyadic
+
+theorem central_squared_exponents (R a e κ η ε r m : ℝ)
+    (hR : 0≤ R) (he : 0≤ e) (hκ : 0≤κ) (_hη : 0≤η)
+    (hr : r≤ R) (hm : 0≤ m)
+    (hbudget : 12*e*(R+2)+8*κ+2*η≤ε) :
+    2*((a-1/2+6*e)*r+2*κ+η)≤(2*a-1)*r+ε ∧
+    2*((a-1/2)*(1-m)+6*e*(2-m)+4*κ+η)≤(2*a-1)*(1-m)+ε := by
+  have hEr : e*r≤ e*R := mul_le_mul_of_nonneg_left hr he
+  have hEm : 0≤ e*m := mul_nonneg he hm
+  have hER : 0≤ e*R := mul_nonneg he hR
+  constructor <;> nlinarith
+
+theorem exists_central_loss_parameters (R ε : ℝ) (hR : 0≤ R) (hε : 0<ε) :
+    ∃ e₀ κ η : ℝ, 0< e₀ ∧ e₀≤1/1000 ∧ 0<κ ∧ κ≤1 ∧ 0<η ∧
+      ∀ e : ℝ, 0< e → e< e₀ → 12*e*(R+2)+8*κ+2*η≤ε/2 := by
+  let e₀ : ℝ := min (1/1000) (ε/(96*(R+2)))
+  let κ : ℝ := min (1/2) (ε/64)
+  let η : ℝ := ε/16
+  have hRp : 0< R+2 := by linarith
+  have he₀ : 0< e₀ := lt_min (by norm_num) (div_pos hε (by positivity))
+  have hκ : 0<κ := lt_min (by norm_num) (div_pos hε (by norm_num))
+  refine ⟨e₀,κ,η,he₀,min_le_left _ _,hκ,(min_le_left _ _).trans (by norm_num),
+    div_pos hε (by norm_num),?_⟩
+  intro e he he'
+  have heb : e≤ε/(96*(R+2)) := he'.le.trans (min_le_right _ _)
+  have heb' := (le_div_iff₀ (by positivity : 0<96*(R+2))).mp heb
+  have hκb : κ≤ε/64 := min_le_right _ _
+  dsimp only [η]
+  nlinarith
+
+theorem indexed_height_bound (i I : ℕ) (hi : i≤ I) (T : ℝ) (hT : 0≤ T) :
+    (3+(3*i+2 : ℕ)*T)^4≤(3*(I : ℝ)+5)^4*(1+T)^4 := by
+  have hi' : (i : ℝ)≤ I := by exact_mod_cast hi
+  have hlin : 3+(3*i+2 : ℕ)*T≤(3*(I : ℝ)+5)*(1+T) := by
+    push_cast
+    nlinarith [mul_le_mul_of_nonneg_right hi' hT,Nat.cast_nonneg (α:=ℝ) I]
+  calc
+    _ ≤ ((3*(I : ℝ)+5)*(1+T))^4 := pow_le_pow_left₀ (by positivity) hlin 4
+    _ = _ := mul_pow _ _ _
+
+theorem min_plain_bound (X C U δ m ε : ℝ)
+    (h₁ : X≤ C*U^(δ*m+ε)) (h₂ : X≤ C*U^(δ*(1-m)+ε)) :
+    X≤ C*U^(δ*min m (1-m)+ε) := by
+  rcases le_total m (1-m) with h | h
+  · simpa only [min_eq_left h] using h₁
+  · simpa only [min_eq_right h] using h₂
+
+theorem squared_bound_of_central_and_error (z : ℂ) (U C E p b ε : ℝ)
+    (hU : 1≤ U) (hC : 0≤ C) (hE : 0≤ E) (hε : 0≤ε)
+    (hb : 2*b≤ε)
+    (hz : ‖z‖≤ C*U^(p+b)+E*U^p) :
+    ‖z‖^2≤(C+E)^2*U^(2*p+ε) := by
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hp₁ : U^(p+b)≤ U^(p+ε/2) :=
+    Real.rpow_le_rpow_of_exponent_le hU (by linarith)
+  have hp₂ : U^p≤ U^(p+ε/2) :=
+    Real.rpow_le_rpow_of_exponent_le hU (by linarith)
+  have hn : ‖z‖≤(C+E)*U^(p+ε/2) := by
+    calc
+      _ ≤ C*U^(p+b)+E*U^p := hz
+      _ ≤ C*U^(p+ε/2)+E*U^(p+ε/2) := add_le_add
+        (mul_le_mul_of_nonneg_left hp₁ hC) (mul_le_mul_of_nonneg_left hp₂ hE)
+      _ = _ := by ring
+  calc
+    _ ≤ ((C+E)*U^(p+ε/2))^2 := pow_le_pow_left₀ (norm_nonneg _) hn 2
+    _ = _ := by
+      have hp : (U^(p+ε/2))^2=U^(2*p+ε) := by
+        rw [←Real.rpow_natCast,←Real.rpow_mul hUp.le]
+        congr 1
+        norm_num
+        ring
+      rw [mul_pow,hp]
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckeDyadic
+open HeckeFamily HeckeReciprocalGrowth
+
+theorem scaled_direct_bound (e κ : ℝ) (he : 0< e) (he' : e<1/1000)
+    (hκ : 0<κ) (hκ' : κ≤1) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (inverse : Bool) (W : ℝ → ℂ) (A B : ℝ),
+      0< A → Function.support W⊆Icc A B → ContDiff ℝ ∞ W →
+      ∀ (U r R η σ freq V C₂ Cn : ℝ) (n : ℕ),
+      (χ j).modulus.absNorm≤ U → 0≤ r → r≤ R → 0≤η → 0≤ V →
+      |freq|+V≤(3*i+2 : ℕ)*T → (3+(3*i+2 : ℕ)*T)^4≤ U^η → 0≤ C₂ → 0≤ Cn →
+      (∀ t : ℝ, (1+|t|)^2*‖mellin W (((a+6*e-σ : ℝ) : ℂ)+t*I)‖≤ C₂) →
+      (∀ x ∈ Icc (a+6*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
+      ‖polynomial (χ j) inverse W (U^r) σ freq‖≤
+        C*C₂*U^((a-1/2+6*e)*r+2*κ+η)+C*Cn*U^(2*R+2+η)/(1+V)^n := by
+  obtain ⟨Cb,hCb,hbound⟩ := buffered_polynomial_bound e κ he he' hκ
+  let E := HeckeReciprocalBound.bound 2
+  have hE : 0≤ E := tsum_nonneg (fun _ => norm_nonneg _)
+  let C := 1+2*Cb*Real.pi+8*Cb+E*Real.pi
+  have hC : 0< C := by dsimp [C]; positivity
+  refine ⟨C,hC,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j inverse W A B hA hWs hW
+    U r R η σ freq V C₂ Cn n hQ hr hrR hη hV hfreq hheight hC₂ hCn hm₂ hmn
+  let H : ℝ := (3*i+2 : ℕ)*T
+  have hH : 0≤ H := by dsimp [H]; positivity
+  have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one (χ j)).trans hQ
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hD : 1≤ U^r := Real.one_le_rpow hU hr
+  have hb := hbound χ hχ T a i hT ha ha' hmax j inverse W A B hA hWs hW
+    (U^r) σ freq V C₂ Cn n hD hV hfreq hC₂ hCn hm₂ hmn
+  dsimp only at hb
+  have hcentral := positive_central_cost (χ j) U H a e κ η r hQ hH hκ.le hκ' hheight
+  have hexternal := direct_external_cost (χ j) U H κ η r R hQ hH hκ.le hκ' hr hrR hheight
+  have hpow : (U^r)^(3/2 : ℝ)≤ U^(2*R+2+η) := by
+    rw [←Real.rpow_mul hUp.le]
+    exact Real.rpow_le_rpow_of_exponent_le hU (by nlinarith)
+  have hwidth : |2-a-6*e|≤2 := abs_le.mpr ⟨by linarith,by linarith⟩
+  have hc : C₂*(U^r)^(a+6*e-1/2)*(Cb*(presentationComplexity (χ j) H)^κ)*Real.pi≤
+      (2*Cb*Real.pi)*C₂*U^((a-1/2+6*e)*r+2*κ+η) := by
+    calc
+      _ = (C₂*Cb*Real.pi)*((U^r)^(a+6*e-1/2)*(presentationComplexity (χ j) H)^κ) := by ring
+      _ ≤ (C₂*Cb*Real.pi)*(2*U^((a-1/2+6*e)*r+2*κ+η)) :=
+        mul_le_mul_of_nonneg_left hcentral (by positivity)
+      _ = _ := by ring
+  have hj : 2*(Cn*(U^r)^(3/2 : ℝ)*(Cb*(presentationComplexity (χ j) H)^κ)/(1+V)^n)*|2-a-6*e|≤
+      (8*Cb)*Cn*U^(2*R+2+η)/(1+V)^n := by
+    calc
+      _ = 2*Cn*Cb*((U^r)^(3/2 : ℝ)*(presentationComplexity (χ j) H)^κ)/(1+V)^n*|2-a-6*e| := by ring
+      _ ≤ 2*Cn*Cb*(2*U^(2*R+2+η))/(1+V)^n*2 := by gcongr
+      _ = _ := by ring
+  have ht : (Cn*(U^r)^(3/2 : ℝ)*E)/(1+V)^n*Real.pi≤
+      (E*Real.pi)*Cn*U^(2*R+2+η)/(1+V)^n := by
+    calc
+      _ ≤ (Cn*U^(2*R+2+η)*E)/(1+V)^n*Real.pi := by gcongr
+      _ = _ := by ring
+  have hfac : 1/(2*Real.pi)≤(1 : ℝ) := by
+    apply (div_le_one (by positivity)).mpr
+    linarith [Real.pi_gt_three]
+  have hcomp : 0≤(presentationComplexity (χ j) H)^κ := Real.rpow_nonneg (by
+    unfold presentationComplexity HeckeLogarithmic.complexity
+    positivity) _
+  apply (hb.trans (mul_le_of_le_one_left (by positivity) hfac)).trans
+  change _ ≤ _ at hc hj ht
+  have hcC : 2*Cb*Real.pi≤ C := by dsimp [C]; nlinarith [mul_nonneg hE Real.pi_pos.le]
+  have heC : 8*Cb+E*Real.pi≤ C := by dsimp [C]; nlinarith [Real.pi_pos]
+  calc
+    _ ≤ (2*Cb*Real.pi)*C₂*U^((a-1/2+6*e)*r+2*κ+η)+
+        (8*Cb)*Cn*U^(2*R+2+η)/(1+V)^n+(E*Real.pi)*Cn*U^(2*R+2+η)/(1+V)^n := by
+      exact add_le_add (add_le_add hc hj) ht
+    _ = (2*Cb*Real.pi)*C₂*U^((a-1/2+6*e)*r+2*κ+η)+
+        (8*Cb+E*Real.pi)*Cn*U^(2*R+2+η)/(1+V)^n := by ring
+    _ ≤ _ := by gcongr
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckeDyadic
+open HeckeFamily HeckeReciprocalGrowth
+
+theorem scaled_reflected_bound (e κ : ℝ) (he : 0< e) (he' : e<1/1000)
+    (hκ : 0<κ) (hκ' : κ≤1) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (W : ℝ → ℂ) (A B : ℝ),
+      0< A → Function.support W⊆Icc A B → ContDiff ℝ ∞ W →
+      ∀ (U r R η σ freq V C₂ Cn : ℝ) (n : ℕ),
+      (χ j).modulus.absNorm≤ U → 0≤ r → r≤ R → 0≤η → 0≤ V →
+      |freq|+V≤(3*i+2 : ℕ)*T → (3+(3*i+2 : ℕ)*T)^4≤ U^η → 0≤ C₂ → 0≤ Cn →
+      (∀ t : ℝ, (1+|t|)^2*‖mellin W (((1-a-6*e-σ : ℝ) : ℂ)+t*I)‖≤ C₂) →
+      (∀ x ∈ Icc (1-a-6*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
+      ‖polynomial (χ j) false W (U^r) σ freq‖≤
+        C*C₂*U^((a-1/2)*(1-r)+6*e*(2-r)+4*κ+η)+C*Cn*U^(2*R+2+η)/(1+V)^n := by
+  obtain ⟨Cg,Cr,hCg,hCr,hbound⟩ := reflected_polynomial_bound e κ he he' hκ
+  let E := HeckeReciprocalBound.bound 2
+  have hE : 0≤ E := tsum_nonneg (fun _ => norm_nonneg _)
+  let C := 1+2*Cr*Real.pi+6*Cg+E*Real.pi
+  have hC : 0< C := by dsimp [C]; positivity
+  refine ⟨C,hC,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j W A B hA hWs hW
+    U r R η σ freq V C₂ Cn n hQ hr hrR hη hV hfreq hheight hC₂ hCn hm₂ hmn
+  let H : ℝ := (3*i+2 : ℕ)*T
+  have hH : 0≤ H := by dsimp [H]; positivity
+  have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one (χ j)).trans hQ
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hD : 1≤ U^r := Real.one_le_rpow hU hr
+  have hb := hbound χ hχ T a i hT ha ha' hmax j W A B hA hWs hW
+    (U^r) σ freq V C₂ Cn n hD hV hfreq hC₂ hCn hm₂ hmn
+  dsimp only at hb
+  have hcentral := reflected_central_cost (χ j) U H a e κ η r hQ hH (by linarith) he.le hκ.le hκ' hheight
+  have hexternal := reflected_external_cost (χ j) U H κ η r R hQ hH hκ.le hκ' hr hrR hheight
+  have hpow : (U^r)^(3/2 : ℝ)≤ U^(2*R+2+η) := by
+    rw [←Real.rpow_mul hUp.le]
+    exact Real.rpow_le_rpow_of_exponent_le hU (by nlinarith)
+  have hwidth : |1+a+6*e|≤3 := abs_le.mpr ⟨by linarith,by linarith⟩
+  let Q : ℝ := (χ j).modulus.absNorm
+  let Rad : ℝ := (HeckeDeletionBounds.radical (χ j).modulus).absNorm
+  have hc : C₂*(U^r)^(1/2-a-6*e)*(Cr*Q^(a-1/2+6*e)*Rad^(6*e+2*κ)*(3+H)^2*
+      (presentationComplexity (χ j) H)^κ)*Real.pi≤
+      (2*Cr*Real.pi)*C₂*U^((a-1/2)*(1-r)+6*e*(2-r)+4*κ+η) := by
+    calc
+      _ = (C₂*Cr*Real.pi)*(Q^(a-1/2+6*e)*Rad^(6*e+2*κ)*(3+H)^2*
+        (presentationComplexity (χ j) H)^κ*(U^r)^(1/2-a-6*e)) := by ring
+      _ ≤ (C₂*Cr*Real.pi)*(2*U^((a-1/2)*(1-r)+6*e*(2-r)+4*κ+η)) :=
+        mul_le_mul_of_nonneg_left hcentral (by positivity)
+      _ = _ := by ring
+  have hj : 2*(Cn*(U^r)^(3/2 : ℝ)*(Cg*Q^(3/5 : ℝ)*Rad^(1/10+κ)*(3+H)^2)/(1+V)^n)*|1+a+6*e|≤
+      (6*Cg)*Cn*U^(2*R+2+η)/(1+V)^n := by
+    calc
+      _ = 2*Cn*Cg*((U^r)^(3/2 : ℝ)*Q^(3/5 : ℝ)*Rad^(1/10+κ)*(3+H)^2)/(1+V)^n*|1+a+6*e| := by ring
+      _ ≤ 2*Cn*Cg*U^(2*R+2+η)/(1+V)^n*3 := by gcongr
+      _ = _ := by ring
+  have ht : (Cn*(U^r)^(3/2 : ℝ)*E)/(1+V)^n*Real.pi≤
+      (E*Real.pi)*Cn*U^(2*R+2+η)/(1+V)^n := by
+    calc
+      _ ≤ (Cn*U^(2*R+2+η)*E)/(1+V)^n*Real.pi := by gcongr
+      _ = _ := by ring
+  have hfac : 1/(2*Real.pi)≤(1 : ℝ) := by
+    apply (div_le_one (by positivity)).mpr
+    linarith [Real.pi_gt_three]
+  have hcomp : 0≤(presentationComplexity (χ j) H)^κ := Real.rpow_nonneg (by
+    unfold presentationComplexity HeckeLogarithmic.complexity
+    positivity) _
+  apply (hb.trans (mul_le_of_le_one_left (by positivity) hfac)).trans
+  change _ ≤ _ at hc hj ht
+  have hcC : 2*Cr*Real.pi≤ C := by dsimp [C]; nlinarith only [hCg,mul_nonneg hE Real.pi_pos.le]
+  have heC : 6*Cg+E*Real.pi≤ C := by dsimp [C]; nlinarith only [mul_pos hCr Real.pi_pos]
+  calc
+    _ ≤ (2*Cr*Real.pi)*C₂*U^((a-1/2)*(1-r)+6*e*(2-r)+4*κ+η)+
+        (6*Cg)*Cn*U^(2*R+2+η)/(1+V)^n+(E*Real.pi)*Cn*U^(2*R+2+η)/(1+V)^n := by
+      exact add_le_add (add_le_add hc hj) ht
+    _ = (2*Cr*Real.pi)*C₂*U^((a-1/2)*(1-r)+6*e*(2-r)+4*κ+η)+
+        (6*Cg+E*Real.pi)*Cn*U^(2*R+2+η)/(1+V)^n := by ring
+    _ ≤ _ := by gcongr
+
+end HeckeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckeDyadic
+open HeckeFamily
+
+theorem source_dyadic_bounds (R dmax τ ε e κ η : ℝ)
+    (hR : 0≤ R) (hdmax : 0≤ dmax) (hτ : 0<τ) (hε : 0<ε)
+    (he : 0< e) (he' : e<1/1000) (hκ : 0<κ) (hκ' : κ≤1) (hη : 0≤η)
+    (hbudget : 12*e*(R+2)+8*κ+2*η≤ε)
+    (profileBound : ℕ → ℝ) (hprofile : ∀ k, 0≤ profileBound k) :
+    ∃ n : ℕ, ∃ C : ℝ, 0< C ∧
+    ∀ (Z d : ℝ), 1≤ Z → 0≤ d → d≤ dmax → 2< Z^τ →
+    ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (a : ℝ) (i : ℕ),
+      51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*(Z^τ))< a+2*e →
+      ∀ (j : ι) (inverse : Bool) (W : ℝ → ℂ) (A B : ℝ),
+      0< A → Function.support W⊆Icc A B → ContDiff ℝ ∞ W →
+      ∀ r σ freq : ℝ, (χ j).modulus.absNorm≤ Z^d → 0≤ r → r≤ R →
+      |freq|+(Z^τ)/2≤(3*i+2 : ℕ)*(Z^τ) →
+      (3+(3*i+2 : ℕ)*(Z^τ))^4≤(Z^d)^η →
+      (∀ x ∈ Icc (1-a-6*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^2*‖mellin W ((x : ℂ)+t*I)‖≤ profileBound 2) →
+      (∀ x ∈ Icc (1-a-6*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ profileBound (n+2)) →
+      ‖polynomial (χ j) inverse W ((Z^d)^r) σ freq‖^2≤ C*(Z^d)^((2*a-1)*r+ε) ∧
+      ‖polynomial (χ j) false W ((Z^d)^r) σ freq‖^2≤ C*(Z^d)^((2*a-1)*min r (1-r)+ε) := by
+  obtain ⟨Cd,hCd,hdirect⟩ := scaled_direct_bound e κ he he' hκ hκ'
+  obtain ⟨Cr,hCr,hreflect⟩ := scaled_reflected_bound e κ he he' hκ hκ'
+  obtain ⟨n,htail⟩ := uniform_external_tail_order τ dmax (2*R+2+η) (R+1)
+    hτ hdmax (by positivity) (by positivity)
+  let K := Cd+Cr
+  have hK : 0< K := add_pos hCd hCr
+  let M := K*profileBound 2
+  let E := K*profileBound (n+2)*(2 : ℝ)^n
+  let C := (M+E)^2+1
+  have hM : 0≤ M := mul_nonneg hK.le (hprofile 2)
+  have hE : 0≤ E := mul_nonneg (mul_nonneg hK.le (hprofile (n+2))) (by positivity)
+  refine ⟨n,C,by dsimp [C]; positivity,?_⟩
+  intro Z d hZ hd hd' hT ι _ χ hχ a i ha ha' hmax j inverse W A B hA hWs hW
+    r σ freq hQ hr hrR hfreq hheight hm₂ hmn
+  let U := Z^d
+  have hU : 1≤ U := Real.one_le_rpow hZ hd
+  have hV : 0≤ Z^τ/2 := by positivity
+  have hleft : a+6*e-σ ∈ Icc (1-a-6*e-σ) (2-σ) := ⟨by linarith,by linarith⟩
+  have hleft' : 1-a-6*e-σ ∈ Icc (1-a-6*e-σ) (2-σ) := ⟨le_rfl,by linarith⟩
+  have hsub : Icc (a+6*e-σ) (2-σ)⊆Icc (1-a-6*e-σ) (2-σ) := by
+    intro x hx
+    exact ⟨hleft.1.trans hx.1,hx.2⟩
+  have hD (inv : Bool) := hdirect χ hχ (Z^τ) a i hT ha ha' hmax j inv W A B hA hWs hW
+    U r R η σ freq (Z^τ/2) (profileBound 2) (profileBound (n+2)) n hQ hr hrR hη hV
+    hfreq hheight (hprofile 2) (hprofile (n+2))
+    (hm₂ _ hleft) (fun x hx => hmn x (hsub hx))
+  have hP := hreflect χ hχ (Z^τ) a i hT ha ha' hmax j W A B hA hWs hW
+    U r R η σ freq (Z^τ/2) (profileBound 2) (profileBound (n+2)) n hQ hr hrR hη hV
+    hfreq hheight (hprofile 2) (hprofile (n+2)) (hm₂ _ hleft') hmn
+  have hCdK : Cd≤ K := le_add_of_nonneg_right hCr.le
+  have hCrK : Cr≤ K := le_add_of_nonneg_left hCd.le
+  have hnormD (inv : Bool) :
+      ‖polynomial (χ j) inv W (U^r) σ freq‖≤
+        M*U^((a-1/2)*r+(6*e*r+2*κ+η))+
+          K*profileBound (n+2)*U^(2*R+2+η)/(1+Z^τ/2)^n := by
+    apply (hD inv).trans
+    dsimp only [M]
+    have hexp : (a-1/2+6*e)*r+2*κ+η=(a-1/2)*r+(6*e*r+2*κ+η) := by ring
+    rw [hexp]
+    gcongr <;> exact hprofile _
+  have hnormP : ‖polynomial (χ j) false W (U^r) σ freq‖≤
+      M*U^((a-1/2)*(1-r)+(6*e*(2-r)+4*κ+η))+
+        K*profileBound (n+2)*U^(2*R+2+η)/(1+Z^τ/2)^n := by
+    apply hP.trans
+    dsimp only [M]
+    have hexp : (a-1/2)*(1-r)+6*e*(2-r)+4*κ+η=
+        (a-1/2)*(1-r)+(6*e*(2-r)+4*κ+η) := by ring
+    rw [hexp]
+    gcongr <;> exact hprofile _
+  have hfinish (z : ℂ) (p b : ℝ) (hp : -(R+1)≤ p) (hb : 2*b≤ε)
+      (hz : ‖z‖≤ M*U^(p+b)+K*profileBound (n+2)*U^(2*R+2+η)/(1+Z^τ/2)^n) :
+      ‖z‖^2≤ C*U^(2*p+ε) := by
+    have ht := htail Z d p hZ hd hd' hp
+    have herror : K*profileBound (n+2)*U^(2*R+2+η)/(1+Z^τ/2)^n≤ E*U^p := by
+      calc
+        _ = (K*profileBound (n+2))*(U^(2*R+2+η)/(1+Z^τ/2)^n) := by ring
+        _ ≤ (K*profileBound (n+2))*((2 : ℝ)^n*U^p) :=
+          mul_le_mul_of_nonneg_left ht (mul_nonneg hK.le (hprofile _))
+        _ = _ := by dsimp [E]; ring
+    have hn := hz.trans (add_le_add (le_refl _) herror)
+    have hs := squared_bound_of_central_and_error z U M E p b ε hU hM hE hε.le hb hn
+    apply hs.trans
+    apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg (by linarith) _)
+    dsimp [C]
+    linarith
+  have hpos : 0≤(a-1/2)*r := mul_nonneg (by linarith) hr
+  have href : -(R+1)≤(a-1/2)*(1-r) := by
+    have hp : (a-1/2)*r≤(1/2)*R := mul_le_mul (by linarith) hrR hr (by norm_num)
+    nlinarith
+  have hbud := central_squared_exponents R a e κ η ε r r hR he.le hκ.le hη hrR hr hbudget
+  have hbD : 2*(6*e*r+2*κ+η)≤ε := by nlinarith [hbud.1]
+  have hbP : 2*(6*e*(2-r)+4*κ+η)≤ε := by nlinarith [hbud.2]
+  have hfinalD (inv : Bool) :
+      ‖polynomial (χ j) inv W (U^r) σ freq‖^2≤ C*U^((2*a-1)*r+ε) := by
+    convert hfinish _ ((a-1/2)*r) (6*e*r+2*κ+η) (by linarith) hbD (hnormD inv) using 1 ;
+      congr 2 ; ring
+  have hfinalP : ‖polynomial (χ j) false W (U^r) σ freq‖^2≤ C*U^((2*a-1)*(1-r)+ε) := by
+    convert hfinish _ ((a-1/2)*(1-r)) (6*e*(2-r)+4*κ+η) href hbP hnormP using 1 ;
+      congr 2 ; ring
+  exact ⟨hfinalD inverse,min_plain_bound _ C U (2*a-1) r ε (hfinalD false) hfinalP⟩
+
+end HeckeDyadic
+
+end
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

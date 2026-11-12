@@ -50,10 +50,10 @@ the multiplier bound; near the pole, resolvent L¹ bounds its Fourier
 transform. Combining both bounds gives `O((1+|r|)^(-1))` decay and hence
 Gamma admission directly from the square-root Gamma bound.
 
-No proof or contribution is counted.
+No imaginary-axis nonvanishing theorem is claimed.
 
-Written, unchecked support in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`:
+Support in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`:
 
-- `GammaIntegrabilityFromLinearFourierDecay`: Gamma admission from spectral decay.
-- `UndampedCausalResolventBasicDomain`: actual L¹∩L² admission at an imaginary-axis zero.
-- `CausalResolventMixedEnergy`: exact mixed energy, including the weighted undamped case.
+- `GammaIntegrabilityFromLinearFourierDecay`: Gamma admission from spectral decay; Lean verified.
+- `UndampedCausalResolventBasicDomain`: actual L¹∩L² admission at an imaginary-axis zero; Lean verified.
+- `CausalResolventMixedEnergy`: exact mixed energy, including the weighted undamped case; written, unchecked.

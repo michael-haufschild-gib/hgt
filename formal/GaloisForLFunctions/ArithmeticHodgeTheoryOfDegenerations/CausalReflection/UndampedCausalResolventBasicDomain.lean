@@ -55,6 +55,8 @@ theorem undampedCausalConvolution_memLp_and_integrable (b : ℝ)
   refine ⟨hK2, ?_⟩
   have hi := integrable_complexLaplaceWeighted_of_halfLine_memLp
     (q := 0) (by norm_num) hK2 hKw hKs
-  simpa only [complexLaplaceWeighted, zero_mul, Complex.exp_zero, one_mul] using hi
+  change Integrable (fun u : ℝ => Complex.exp ((0 : ℂ) * (u : ℂ)) *
+    modulatedCausalConvolution 0 b f u) at hi
+  simpa only [zero_mul, Complex.exp_zero, one_mul] using hi
 
 end GaloisForLFunctions.HTGeometry

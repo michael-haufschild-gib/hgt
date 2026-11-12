@@ -9,7 +9,7 @@ support of a physical profile is required.
 -/
 
 noncomputable section
-open MeasureTheory Filter
+open MeasureTheory Filter Zeta23
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open _root_.RHTower

@@ -17,7 +17,7 @@ Folder: `formal/GaloisForLFunctions/MatomakiRadziwill/` (top level, umbrella `Ma
 | RT | Route T for `χ`: `Σ_{p∈B} χ(p)p^{-it}` small for high blocks `B`, `\|t\| ≤ X` | **Lean** (`exists_twistedChebyshev_le`, `exists_primeBlock_le`) |
 | D | low frequencies: `sup_{\|t\|≤T₀} \|Σ_{n≤x} λχ(n)n^{-it}\| = o(x)` | open |
 | L | the ladder: Ramaré, mean value, large values, Halász–Montgomery, rough class | **Lean** for `χ ≠ 1` (`exists_mean_square_twLiouville_le`) |
-| P | Parseval: additive short windows from the Dirichlet-polynomial mean square | open |
+| P | Parseval: additive short windows from the Dirichlet-polynomial mean square | **Lean** for `χ ≠ 1` (`exists_short_sum_mean_square_twLiouville_le`) |
 | A | assembly for `λχ`; transfer to `V(b/s,T)` | open |
 
 ### V. Zero-free region for `L(s,χ)`
@@ -165,9 +165,11 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderTopTerms` | top blocks `≤ ℓ²+2`; kernel `≤ 60000ℓe^{ℓ/2}`; exceptional term `≤ (ℓ²+2)²ρ²(6 + Cℓ^{27}e^{-ℓ/50+2ℓ^{0.96}} + 384(ℓ+3))`; top Ramaré, top density `≥ 0.03 log ℓ − C_M`; non-rough `≤ 216(Σ1/A_j + 1/A*)` | compiled |
 | `LadderBound` | concrete rough part (`ladder_rough_le`) and non-rough part (`ladder_nonrough_le`) | compiled |
 | `LadderMeanSquare` | `L`-part `O(1/log L)`, `X`-part `O(1/log log X)`; **`exists_mean_square_twLiouville_le`**: `∫_{\|w\|≤W}\|Σ_{X<n≤4X} λχ(n)/n·n^{2πiw}\|² ≤ ε` for `L ≥ L₀`, `X ≥ X₀(L)`, `W ≤ Xe^{-L/2}`, `χ ≠ 1` (axioms: propext, choice, Quot.sound) | compiled |
+| `ParsevalWindows` | dyadic shells: `∫_{\|w\|>W}\|K_δ\|²\|P\|² ≤ E(4/W + M/W²)`; `∫_ℝ\|window\|² ≤ δ²∫_{\|w\|≤W}\|P\|² + E(4/W + M/W²)`; raw windows `≤ 32X²·(f(n)/n windows) + 2((4X(e^δ−1)+1)δ)²(log 4 + δ)` | compiled |
+| `ParsevalMeanSquare` | windows `log(1+h/Y)` `≤ 32h²ε' + 768h + 6`; **`exists_short_sum_mean_square_twLiouville_le`**: `Σ_{X≤m<2X}\|Σ_{m<n≤m+h} λχ(n)\|² ≤ εh²X` for `h ≥ h₀`, `X ≥ X₀(h)`, `χ ≠ 1` (corpus `Sieve.sum_normSq_window_le_bound`, `N` blocks of ratio `1+1/N`; axioms: propext, choice, Quot.sound) | compiled |
 
-Remaining for (MR) for `λχ`: Parseval (P) from `exists_mean_square_twLiouville_le` to additive windows,
-principal characters, transfer (A).
+Remaining for (MR) for `λχ`: principal characters (no paper proof yet: step D and the ζ Route T scale
+with the pole), transfer (A) to `V(b/s, T)` (A21 card §7).
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery

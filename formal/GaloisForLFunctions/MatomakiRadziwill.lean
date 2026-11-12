@@ -38,6 +38,8 @@ import GaloisForLFunctions.MatomakiRadziwill.LadderLastScale
 import GaloisForLFunctions.MatomakiRadziwill.LadderTopTerms
 import GaloisForLFunctions.MatomakiRadziwill.LadderBound
 import GaloisForLFunctions.MatomakiRadziwill.LadderMeanSquare
+import GaloisForLFunctions.MatomakiRadziwill.ParsevalWindows
+import GaloisForLFunctions.MatomakiRadziwill.ParsevalMeanSquare
 
 /-!
 # Matomäki–Radziwiłł for twisted Liouville functions
@@ -71,4 +73,8 @@ Toward the mean square of short sums of `λχ`, `χ` a Dirichlet character of fi
   `a_0 = 200 log L`, `b_0 = L/2`, `a_{j+1} = 2b_j²`, `b_{j+1} = a_{j+1}²` below `(log X)^{0.93}` and the
   Route T scale above it give, for `χ ≠ 1` (`exists_mean_square_twLiouville_le`):
   `∫_{|w| ≤ W} |Σ_{X<n≤4X} λχ(n)/n · n^{2πiw}|² ≤ ε` for `L ≥ L₀(ε)`, `X ≥ X₀(L)`, `W ≤ X e^{-L/2}`.
+* **Parseval** (`ParsevalWindows`, `ParsevalMeanSquare`): Plancherel for logarithmic windows with the
+  dyadic frequency tail, the passage from `f(n)/n` to `f(n)`, and the corpus block transfer give
+  `Σ_{X ≤ m < 2X} |Σ_{m<n≤m+h} λχ(n)|² ≤ ε h² X` for `h ≥ h₀(ε)`, `X ≥ X₀(h)`
+  (`exists_short_sum_mean_square_twLiouville_le`).
 -/

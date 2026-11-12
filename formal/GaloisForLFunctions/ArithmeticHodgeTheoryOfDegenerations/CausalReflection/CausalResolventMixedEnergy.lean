@@ -64,7 +64,7 @@ theorem integral_causalConvolution_mixed_energy {a : ℝ} (ha : 0 < a)
   have hp : 0 < -(1 / 2 : ℝ) + (a + 1 / 2) := by linarith only [ha]
   have he := integral_causalExponential_reflection_energy
     (a := -(1 / 2 : ℝ)) (x := a + 1 / 2) hp hf
-  simp only [show -(1 / 2 : ℝ) + (a + 1 / 2) = a by ring] at he
+  simp only [show -(1 / 2 : ℝ) + (a + 1 / 2) = a by ring, Complex.ofReal_neg] at he
   change (∫ u, ‖f u‖ ^ 2) =
     (∫ u, ‖-f u + (2 * (-(1 / 2 : ℝ)) : ℂ) * g u‖ ^ 2) +
       (4 * (-(1 / 2 : ℝ)) * (a + 1 / 2)) * ∫ u, ‖g u‖ ^ 2 at he
