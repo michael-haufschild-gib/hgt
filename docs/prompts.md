@@ -382,11 +382,11 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-before we did create these documents:
-- docs/reports/review-1111/walls-ledger.md
-- docs/reports/review-1111/route-obstacles.md
-- docs/reports/review-1111/route-unification-ledger.md
-- docs/reports/review-1111/obstacles-summary.md
+a while ago we did create these documents:
+- docs/reports/review-1211/walls-ledger.md
+- docs/reports/review-1211/route-obstacles.md
+- docs/reports/review-1211/route-unification-ledger.md
+- docs/reports/review-1211/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
@@ -411,9 +411,13 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.14 design a research programme aiming at constructing (\(\mathbb{F}_{1}\)) (the field with one element),  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.15. Design a research programme aiming at closing the RH proof route WD,  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.16.  Design a research programme aiming at closing the RH proof route ACS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-   2.17.  Design a research programme aiming at closing the RH proof route ZCG, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.3. What is the one big question the is less hard than proving AAL, RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
-4. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
-5. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
+   2.17.  Design a research programme aiming at closing the RH proof route ZCG, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.18.  Design a research programme aiming at closing the RH proof route MC/JAS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.19.  Design a research programme to develop general Galois theory that treats the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.20  Lets assume that RH is false. Design a research programme to a) prove that RH is wrong, b) find a concrete counterexample (without computation). s the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.21 What is the one big question the is less hard than proving AAL, RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
+3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
+4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
 do not read other markdown files, only the ones i mentioned.
 do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. 
@@ -422,7 +426,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-1111/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-1211/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -492,8 +496,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-1011/obstacles-summary.md
+a prior report is docs/reports/review-1011/fable.md
 
-under "## 4. If every route is a receiver: a research programme" it suggest a new research programme for a RH proof route
+docs/reports/review-1011/fable.md suggests under "## 10. A research programme for a Galois theory of the zeros"  a new research programme called "Galois theory of the zeros"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -516,7 +521,8 @@ Follow the example of other research programmes: formal/GaloisForLFunctions/Arit
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work. But do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
+
 
 The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
 
@@ -525,9 +531,9 @@ Start with writing the first draft of README.md for the the programme
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-1011/obstacles-summary.md
+read and understand docs/reports/review-1111/obstacles-summary.md
 
-under "## 4. If every route is a receiver: a research programme" it suggest a new research programme
+under "## 2.17 A research programme to close the route ZCG" it suggest a new research programme
 
 Your task: develop this research programme and do the actual research and formalization, until all open questions are answered, and a viable producer is found.
 
@@ -549,7 +555,8 @@ Follow the example of other research programmes: formal/GaloisForLFunctions/Arit
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work. But do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
+
 
 ## openings
 Do not use the hgtl7 skill.
@@ -679,14 +686,33 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
+## question paper
+
+read and understand fully: docs/reports/review-1211/obstacles-summary.md
+
+under "## 3. The one big question: what does a fake zero cost in the functional equation? (B186)" it asks a question.
+
+your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries as paper proofs ready for another ai agent to formalize in lean.
+
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
+
+**Rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
+2. No computations
+3. Paper proof only, but complete and understandable in a pipeline card, ready for another coding agent to pick up and formalize in lean.
+
+Make good use of the search tool for our lean corpus.
+
+Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
 
 ## question
 
 Do not use the hgtl7 skill.
 
-read and understand fully: docs/reports/review-1111/obstacles-summary.md
+read and understand fully: docs/reports/review-1211/obstacles-summary.md
 
-under "## 4. A question on the models: is there a fake below the square root without a real zero?" it asks a question.
+under "## 3. The one big question: what does a fake zero cost in the functional equation? (B186)" it asks a question.
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
 
