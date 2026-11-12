@@ -331,6 +331,71 @@ distinguishes centrality from equality of the geometric involutions, without
 deciding which Gaussian regime occurs or whether any width is nonzero.
 [Geometric actions and fixed fields](TheGeometricInvolutionsOfTheZeroField.lean).
 
+### Squared-width quotient and arithmetic sign kernel
+
+Put `D=K(δ_q² : all q)⊆E`. This is a normal extension of `K`: each source
+automorphism sends an imaginary offset to another offset in the same ordinate
+fibre and therefore permutes their squares. Restriction is continuous and
+surjective, with exact sequence
+
+```
+1 → Gal(L/D) → Gal(L/K) → Gal(D/K) → 1.
+```
+
+The kernel admits an explicit arithmetic classification. Index all nonzero
+widths by `q`, put `b_q=iδ_q` and `a_q=−δ_q²∈D`, and prescribe signs `ε_q`.
+There is a unique automorphism of the entire `L/D` with
+`σ(b_q)=ε_q b_q` exactly when
+
+```
+∀ finite S, (∏_(q∈S) a_q is a square in D) ⇒ ∏_(q∈S) ε_q=1.
+```
+
+This gives both a group isomorphism and a homeomorphism onto the closed
+subgroup of compatible signs. It includes relations across distinct ordinates
+and forces consistency between repeated divisor copies. No independence of
+width square classes is assumed. Relations are tested over `D`, before the
+pairwise width products are adjoined to form `E`.
+
+A product sign character is trivial precisely when its radical product lies
+in `D`, by infinite Galois correspondence. That is precisely the displayed
+square condition. Finite sign characters separate each finite coordinate image;
+compactness realizes all coordinates simultaneously. The offsets and the
+source ordinates generate the whole field, proving uniqueness.
+
+Conjugation is uniform sign reversal. Every square relation has even parity,
+since its imaginary radical product must be fixed by conjugation. This locates
+conjugation within the relation description. The actual relation space and
+splitting of this exact sequence remain undetermined; no width is proved nonzero.
+[Full Kummer sign kernel](TheKummerRelationsOfTheZeroWidths.lean).
+
+### Euclidean topology and arithmetic action
+
+Give `L` its inherited complex topology while keeping the Krull topology on
+`Gal(L/K)`. The Euclidean-continuous source automorphisms are exactly `1`
+and `c_L`; equivalently, these are exactly the automorphisms bounded on the
+whole field's unit ball. Every other source automorphism satisfies
+
+```
+∀ ε,M>0, ∃ z∈E: |z|<ε and |σ(z)|>M.
+```
+
+Indeed `Gal(L/E)={1,c_L}` by closed-subgroup Galois correspondence.
+An automorphism outside this pair moves a real `a∈E`. Rational approximation
+makes `N(a−q)` arbitrarily small while its image becomes arbitrarily large.
+Yet every source automorphism moves every centered zero by less than one:
+ordinate preservation and the open strip bound control the whole zero carrier.
+Any action outside `{1,c_L}` would obey this bound while remaining unbounded
+near zero on the generated field.
+
+Every fixed-element orbit map from the Krull group is continuous. Joint
+continuity of `Gal(L/K) × L → ℂ`, or continuity of every individual field
+automorphism, is equivalent to `E=K`. In that case the group has at most two
+elements. This locates the exact obstruction to treating the arithmetic action
+as an analytic action; it neither identifies `E` with `K` nor asserts that an
+automorphism outside `{1,c_L}` exists.
+[Euclidean action and amplification](TheEuclideanTopologyOfTheZeroField.lean).
+
 ### Jensen equations, folding, and discriminants
 
 For a monic real polynomial `Q` of degree `n`, folding has the exact identities

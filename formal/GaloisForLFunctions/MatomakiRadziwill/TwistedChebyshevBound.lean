@@ -220,7 +220,7 @@ theorem perron_term_le {N : ℕ} (hN : 1 ≤ N) {X T σ₀ : ℝ} (hX : 4 ≤ X)
 /-- **The contour term.**  With `σ₁ ≥ ½`, `σ₀ − σ₁ ≤ 1` and `x^{σ₀} ≤ 3x`, the three shifted sides
 contribute at most `B T x^{σ₁} + B x/T`. -/
 theorem contour_term_le {B x σ₁ σ₀ T : ℝ} (hB : 0 ≤ B) (hx : 0 < x) (hσ₁ : 1 / 2 ≤ σ₁)
-    (hσ₁₀ : σ₁ ≤ σ₀) (hd : σ₀ - σ₁ ≤ 1) (hxσ₀ : x ^ σ₀ ≤ 3 * x) (hT : 0 < T) :
+    (hd : σ₀ - σ₁ ≤ 1) (hxσ₀ : x ^ σ₀ ≤ 3 * x) (hT : 0 < T) :
     (1 / (2 * Real.pi)) * (B * (x ^ σ₁ / σ₁) * (2 * T) + 2 * (B * (x ^ σ₀ / T) * (σ₀ - σ₁)))
       ≤ B * T * x ^ σ₁ + B * x / T := by
   have hpi : 3 ≤ Real.pi := Real.pi_gt_three.le
@@ -260,6 +260,140 @@ theorem rpow_mul_pow_six_le_exp {ℓ A : ℝ} (hℓ : 0 < ℓ) (h : (A + 6) * Re
   rw [Real.rpow_def_of_pos hℓ, h6, ← Real.exp_add]
   exact Real.exp_le_exp.mpr (by linarith)
 
+/-- **Assembly at a fixed scale.**  The master inequality, with the three pieces bounded by
+`N/(3(log X)^A)` each. -/
+theorem twistedChebyshev_arith {N : ℕ} (hN : 1 ≤ N) {X ℓ La T B E K₁ σ₀ σ₁ x S : ℝ}
+    (hX4 : 4 ≤ X) (hNX : (N : ℝ) ≤ X) (hℓ : ℓ = Real.log X) (hℓ0 : 0 < ℓ) (hLa : 0 < La)
+    (hT : T = La * ℓ ^ 6) (hx : x = (N : ℝ) + 1 / 2) (hlogx : 1 ≤ Real.log x)
+    (hσ₀ : σ₀ = 1 + 1 / Real.log x) (hσ₁half : 1 / 2 ≤ σ₁) (hd : σ₀ - σ₁ ≤ 1)
+    (hxσ₀ : x ^ σ₀ ≤ 3 * x) (hB0 : 0 ≤ B) (hBle : B ≤ 4 * K₁ * ℓ ^ 2) (hE0 : 0 ≤ E)
+    (hxσ₁ : x ^ σ₁ ≤ x * E) (h2160 : 2160 ≤ ℓ ^ 4) (hK : 18 * K₁ ≤ ℓ ^ 4)
+    (hexp : 18 * K₁ * (La * La * ℓ ^ 8) * E ≤ 1)
+    (hS : S ≤ ((1 / (Real.pi * T * Real.log 2)) * (x ^ σ₀ * (8 / (σ₀ - 1) ^ 2))
+          + (16 * Real.log (2 * x) * x / (Real.pi * T))
+            * (4 * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))))
+        + (1 / (2 * Real.pi)) * (B * (x ^ σ₁ / σ₁) * (2 * T)
+          + 2 * (B * (x ^ σ₀ / T) * (σ₀ - σ₁)))) :
+    S ≤ N / La := by
+  subst hx hT hℓ
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hx0 : 0 < (N : ℝ) + 1 / 2 := by linarith
+  have hT0 : 0 < La * Real.log X ^ 6 := by positivity
+  have hperron := perron_term_le hN hX4 hNX hT0 hlogx hσ₀
+  have hcontour := contour_term_le hB0 hx0 hσ₁half hd hxσ₀ hT0
+  have hx32 : (N : ℝ) + 1 / 2 ≤ 3 / 2 * N := by linarith
+  have hNLa : 0 ≤ (N : ℝ) * La * Real.log X ^ 2 := by positivity
+  have hpa : 720 * N * Real.log X ^ 2 / (La * Real.log X ^ 6) ≤ N / (3 * La) := by
+    rw [div_le_div_iff₀ hT0 (by positivity)]
+    calc 720 * N * Real.log X ^ 2 * (3 * La) = 2160 * (N * La * Real.log X ^ 2) := by ring
+      _ ≤ Real.log X ^ 4 * (N * La * Real.log X ^ 2) := mul_le_mul_of_nonneg_right h2160 hNLa
+      _ = N * (La * Real.log X ^ 6) := by ring
+  have hpb : B * ((N : ℝ) + 1 / 2) / (La * Real.log X ^ 6) ≤ N / (3 * La) := by
+    have h1 : B * ((N : ℝ) + 1 / 2) ≤ 4 * K₁ * Real.log X ^ 2 * (3 / 2 * N) :=
+      mul_le_mul hBle hx32 hx0.le (le_trans hB0 hBle)
+    have h2 := div_le_div_of_nonneg_right h1 hT0.le
+    have h3 : 4 * K₁ * Real.log X ^ 2 * (3 / 2 * N) / (La * Real.log X ^ 6) ≤ N / (3 * La) := by
+      rw [div_le_div_iff₀ hT0 (by positivity)]
+      calc 4 * K₁ * Real.log X ^ 2 * (3 / 2 * N) * (3 * La)
+          = 18 * K₁ * (N * La * Real.log X ^ 2) := by ring
+        _ ≤ Real.log X ^ 4 * (N * La * Real.log X ^ 2) := mul_le_mul_of_nonneg_right hK hNLa
+        _ = N * (La * Real.log X ^ 6) := by ring
+    linarith
+  have hpc : B * (La * Real.log X ^ 6) * ((N : ℝ) + 1 / 2) ^ σ₁ ≤ N / (3 * La) := by
+    have hxE : ((N : ℝ) + 1 / 2) ^ σ₁ ≤ 3 / 2 * N * E :=
+      le_trans hxσ₁ (mul_le_mul_of_nonneg_right hx32 hE0)
+    have h1 : B * (La * Real.log X ^ 6) * ((N : ℝ) + 1 / 2) ^ σ₁
+        ≤ 4 * K₁ * Real.log X ^ 2 * (La * Real.log X ^ 6) * (3 / 2 * N * E) :=
+      mul_le_mul (mul_le_mul_of_nonneg_right hBle hT0.le) hxE
+        (Real.rpow_nonneg hx0.le _) (mul_nonneg (le_trans hB0 hBle) hT0.le)
+    have h2 : 4 * K₁ * Real.log X ^ 2 * (La * Real.log X ^ 6) * (3 / 2 * N * E)
+        ≤ N / (3 * La) := by
+      rw [le_div_iff₀ (by positivity)]
+      calc 4 * K₁ * Real.log X ^ 2 * (La * Real.log X ^ 6) * (3 / 2 * N * E) * (3 * La)
+          = (N : ℝ) * (18 * K₁ * (La * La * Real.log X ^ 8) * E) := by ring
+        _ ≤ (N : ℝ) * 1 := mul_le_mul_of_nonneg_left hexp (by positivity)
+        _ = (N : ℝ) := mul_one _
+    linarith
+  have hthree : (N : ℝ) / (3 * La) + N / (3 * La) + N / (3 * La) = N / La := by
+    field_simp
+    ring
+  linarith
+
+/-- **The width at the scale `X`.**  From `κ₀ (log 4X)^{-β} ≤ v` with `β ≤ 1`:
+`κ₀ (2 log X)^{-β} ≤ v` and `C log(2X)/v ≤ 4(C/κ₀)(log X)²`. -/
+theorem width_at_scale {C κ₀ β X v : ℝ} (hC : 0 < C) (hκ₀ : 0 < κ₀) (hβ0 : 0 < β) (hβ1 : β ≤ 1)
+    (hX4 : 4 ≤ X) (hℓ1 : 1 ≤ Real.log X) (hv : κ₀ * Real.log (4 * X) ^ (-β) ≤ v) :
+    κ₀ * (2 * Real.log X) ^ (-β) ≤ v ∧ C * Real.log (2 * X) / v ≤ 4 * (C / κ₀) * Real.log X ^ 2 := by
+  have hX0 : 0 < X := by linarith
+  have hlog4X : Real.log (4 * X) ≤ 2 * Real.log X :=
+    log_le_two_log_of_le_sq (by positivity) (by nlinarith)
+  have hlog4X0 : 0 < Real.log (4 * X) := Real.log_pos (by linarith)
+  have hv1 : κ₀ * (2 * Real.log X) ^ (-β) ≤ v := by
+    have h3 : (2 * Real.log X) ^ (-β) ≤ Real.log (4 * X) ^ (-β) :=
+      Real.rpow_le_rpow_of_nonpos hlog4X0 hlog4X (by linarith)
+    have h4 := mul_le_mul_of_nonneg_left h3 hκ₀.le
+    linarith
+  refine ⟨hv1, ?_⟩
+  have hvlow : κ₀ / (2 * Real.log X) ≤ v := by
+    have h1 : (2 * Real.log X) ^ (-1 : ℝ) ≤ (2 * Real.log X) ^ (-β) :=
+      Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith)
+    rw [Real.rpow_neg_one] at h1
+    have h2 := mul_le_mul_of_nonneg_left h1 hκ₀.le
+    rw [div_eq_mul_inv]
+    linarith
+  have hlog2X : Real.log (2 * X) ≤ 2 * Real.log X :=
+    log_le_two_log_of_le_sq (by positivity) (by nlinarith)
+  have hℓ0 : 0 < Real.log X := by linarith
+  have h := div_le_div₀ (by positivity : (0 : ℝ) ≤ C * (2 * Real.log X))
+    (mul_le_mul_of_nonneg_left hlog2X hC.le) (by positivity : (0 : ℝ) < κ₀ / (2 * Real.log X))
+    hvlow
+  have he : C * (2 * Real.log X) / (κ₀ / (2 * Real.log X)) = 4 * (C / κ₀) * Real.log X ^ 2 := by
+    field_simp
+    ring
+  linarith
+
+/-- **The saving on the left edge.**  `x^{1 − v/2} ≤ x e^{−κ ℓ^{θ−β}}` with `κ = κ₀ 2^{-β}/2`,
+when `κ₀ (2ℓ)^{-β} ≤ v` and `ℓ^θ ≤ log x`. -/
+theorem rpow_left_edge_le {κ₀ β θ ℓ v x : ℝ} (hκ₀ : 0 < κ₀) (hℓ0 : 0 < ℓ) (hx : 0 < x)
+    (hv : κ₀ * (2 * ℓ) ^ (-β) ≤ v) (hlogx : ℓ ^ θ ≤ Real.log x) :
+    x ^ (1 - v / 2) ≤ x * Real.exp (-(κ₀ * (2 : ℝ) ^ (-β) / 2 * ℓ ^ (θ - β))) := by
+  have hsave : κ₀ * (2 : ℝ) ^ (-β) / 2 * ℓ ^ (θ - β) ≤ Real.log x * (v / 2) := by
+    have h1 : κ₀ * (2 * ℓ) ^ (-β) / 2 * ℓ ^ θ = κ₀ * (2 : ℝ) ^ (-β) / 2 * ℓ ^ (θ - β) := by
+      rw [Real.mul_rpow (by norm_num) hℓ0.le, Real.rpow_sub hℓ0, Real.rpow_neg hℓ0.le]
+      field_simp
+    have hθ0 : 0 ≤ ℓ ^ θ := Real.rpow_nonneg hℓ0.le θ
+    have hpos : 0 ≤ κ₀ * (2 * ℓ) ^ (-β) / 2 := by
+      have := Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ 2 * ℓ) (-β)
+      positivity
+    have h2 : κ₀ * (2 * ℓ) ^ (-β) / 2 * ℓ ^ θ ≤ (v / 2) * Real.log x :=
+      mul_le_mul (by linarith) hlogx hθ0 (by linarith)
+    linarith
+  rw [Real.rpow_sub hx, Real.rpow_one, Real.rpow_def_of_pos hx, div_eq_mul_inv, ← Real.exp_neg]
+  exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hx.le
+
+/-- The conditions on `ℓ = log X` used by the assembly, all eventually true. -/
+theorem eventually_scale_conditions {θ A κ η K₁ : ℝ} (hθ : 0 < θ) (hA : 0 ≤ A) (hκ : 0 < κ)
+    (hη : 0 < η) (hK₁ : 0 < K₁) :
+    ∀ᶠ ℓ : ℝ in atTop, 0 < ℓ ∧ 8 ≤ ℓ ^ θ ∧ max 2160 (18 * K₁) ≤ ℓ ^ 4 ∧
+      18 * K₁ * (ℓ ^ A * ℓ ^ A * ℓ ^ 8) * Real.exp (-(κ * ℓ ^ η)) ≤ 1 ∧
+      (A + 6) * Real.log ℓ ≤ ℓ := by
+  have e1 := eventually_gt_atTop (0 : ℝ)
+  have e2 := (tendsto_rpow_atTop hθ).eventually_ge_atTop 8
+  have e3 := (tendsto_pow_atTop (by norm_num : (4 : ℕ) ≠ 0)).eventually_ge_atTop
+    (max 2160 (18 * K₁))
+  have e4 := eventually_mul_rpow_mul_exp_le_one (p := 2 * A + 8) hκ hη
+    (by positivity : (0 : ℝ) < 18 * K₁) (by linarith)
+  have e5 := eventually_log_le_rpow (κ := 1) (η := 1) (P := A + 6) (K := 0) one_pos one_pos
+    (by linarith)
+  filter_upwards [e1, e2, e3, e4, e5] with ℓ h1 h2 h3 h4 h5
+  refine ⟨h1, h2, h3, ?_, by simpa using h5⟩
+  have hsplit : ℓ ^ (2 * A + 8) = ℓ ^ A * ℓ ^ A * ℓ ^ 8 := by
+    rw [show 2 * A + 8 = A + A + 8 by ring, Real.rpow_add h1, Real.rpow_add h1]
+    congr 1
+    exact_mod_cast Real.rpow_natCast ℓ 8
+  rw [← hsplit]
+  exact h4
+
 variable {q : ℕ} [NeZero q]
 
 /-- **Route T for `χ`.**  For a nonprincipal character `χ`, `θ > 2/3` and `A ≥ 0`, for all large
@@ -272,185 +406,92 @@ theorem exists_twistedChebyshev_le (χ : DirichletCharacter ℂ q) (hχ : χ ≠
         ‖∑ n ∈ Finset.Icc 1 N, twistedVM χ τ n‖ ≤ N / Real.log X ^ A := by
   obtain ⟨C, Y₀, hC, hY₀v, hstrip⟩ := exists_LFunction_logDeriv_strip χ hχ
   obtain ⟨κ₀, β, hκ₀, hβ0, hβθ, hβ1, hvk⟩ := exists_vkWidth_rpow_lower hθ
-  set η : ℝ := θ - β with hηdef
-  have hη : 0 < η := by rw [hηdef]; linarith
-  set κ : ℝ := κ₀ * (2 : ℝ) ^ (-β) / 2 with hκdef
-  have hκ : 0 < κ := by rw [hκdef]; have := Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 2) (-β)
-                        positivity
-  set K₁ : ℝ := C / κ₀ with hK₁def
-  have hK₁ : 0 < K₁ := by rw [hK₁def]; positivity
-  -- the conditions on `ℓ = log X`
-  have hℓev : ∀ᶠ ℓ : ℝ in atTop, 0 < ℓ ∧ 8 ≤ ℓ ^ θ ∧ max 2160 (18 * K₁) ≤ ℓ ^ 4 ∧
-      18 * K₁ * (ℓ ^ A * ℓ ^ A * ℓ ^ 8) * Real.exp (-(κ * ℓ ^ η)) ≤ 1 ∧
-      (A + 6) * Real.log ℓ ≤ ℓ := by
-    have e1 := eventually_gt_atTop (0 : ℝ)
-    have e2 := (tendsto_rpow_atTop (by linarith : (0 : ℝ) < θ)).eventually_ge_atTop 8
-    have e3 := (tendsto_pow_atTop (by norm_num : (4 : ℕ) ≠ 0)).eventually_ge_atTop
-      (max 2160 (18 * K₁))
-    have e4 := eventually_mul_rpow_mul_exp_le_one (p := 2 * A + 8) hκ hη
-      (by positivity : (0 : ℝ) < 18 * K₁) (by linarith)
-    have e5 := eventually_log_le_rpow (κ := 1) (η := 1) (P := A + 6) (K := 0) one_pos one_pos
-      (by linarith)
-    filter_upwards [e1, e2, e3, e4, e5] with ℓ h1 h2 h3 h4 h5
-    refine ⟨h1, h2, h3, ?_, by simpa using h5⟩
-    have hsplit : ℓ ^ (2 * A + 8) = ℓ ^ A * ℓ ^ A * ℓ ^ 8 := by
-      rw [show 2 * A + 8 = A + A + 8 by ring, Real.rpow_add h1, Real.rpow_add h1]
-      congr 1
-      exact_mod_cast Real.rpow_natCast ℓ 8
-    rw [← hsplit]
-    exact h4
-  have hXev : ∀ᶠ X : ℝ in atTop, (0 < Real.log X ∧ 8 ≤ Real.log X ^ θ ∧
-      max 2160 (18 * K₁) ≤ Real.log X ^ 4 ∧
-      18 * K₁ * (Real.log X ^ A * Real.log X ^ A * Real.log X ^ 8)
-        * Real.exp (-(κ * Real.log X ^ η)) ≤ 1 ∧
-      (A + 6) * Real.log (Real.log X) ≤ Real.log X) ∧ 4 ≤ X ∧ Y₀ ≤ X ∧ vkThreshold ≤ X :=
-    (Real.tendsto_log_atTop.eventually hℓev).and ((eventually_ge_atTop 4).and
+  have hη : 0 < θ - β := by linarith
+  have hκ : 0 < κ₀ * (2 : ℝ) ^ (-β) / 2 := by
+    have := Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 2) (-β)
+    positivity
+  have hK₁ : 0 < C / κ₀ := by positivity
+  have hXev := (Real.tendsto_log_atTop.eventually (eventually_scale_conditions (A := A)
+    (by linarith : (0 : ℝ) < θ) hA hκ hη hK₁)).and ((eventually_ge_atTop 4).and
       ((eventually_ge_atTop Y₀).and (eventually_ge_atTop vkThreshold)))
   obtain ⟨X₀, hX₀⟩ := eventually_atTop.mp hXev
   refine ⟨X₀, fun X hX τ hτ N hlogN hNX => ?_⟩
   obtain ⟨⟨hℓ0, hℓθ, hℓ4, hexp, hT6⟩, hX4, hXY, hXv⟩ := hX₀ X hX
-  set ℓ : ℝ := Real.log X with hℓdef
   have hX0 : 0 < X := by linarith
-  have hℓ4' : 2160 ≤ ℓ ^ 4 := le_trans (le_max_left _ _) hℓ4
-  have hℓK : 18 * K₁ ≤ ℓ ^ 4 := le_trans (le_max_right _ _) hℓ4
-  have hℓ1 : 1 ≤ ℓ := by
-    rw [hℓdef, Real.le_log_iff_exp_le hX0]
+  have hℓ1 : 1 ≤ Real.log X := by
+    rw [Real.le_log_iff_exp_le hX0]
     linarith [le_of_lt (lt_trans Real.exp_one_lt_d9 (by norm_num : (2.7182818286 : ℝ) < 4))]
-  -- `N ≥ 1` and `log x ≥ ℓ^θ`
+  -- `N ≥ 1` and `log x ≥ (log X)^θ`
   have hlogN8 : 8 ≤ Real.log N := le_trans hℓθ hlogN
   have hN : 1 ≤ N := by
     rcases Nat.eq_zero_or_pos N with h | h
     · rw [h] at hlogN8; simp at hlogN8; linarith
     · exact h
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
-  set x : ℝ := (N : ℝ) + 1 / 2 with hxdef
+  obtain ⟨x, hxdef⟩ : ∃ x : ℝ, x = (N : ℝ) + 1 / 2 := ⟨_, rfl⟩
   have hx1 : 1 < x := by rw [hxdef]; linarith
   have hx0 : 0 < x := by linarith
-  have hlogx : ℓ ^ θ ≤ Real.log x :=
+  have hlogx : Real.log X ^ θ ≤ Real.log x :=
     le_trans hlogN (Real.log_le_log (by linarith) (by rw [hxdef]; linarith))
   have hlogx8 : 8 ≤ Real.log x := le_trans hℓθ hlogx
-  -- the abscissae
-  set σ₀ : ℝ := 1 + 1 / Real.log x with hσ₀def
-  have hσ₀1 : 1 < σ₀ := by rw [hσ₀def]; have : 0 < 1 / Real.log x := by positivity
-                           linarith
-  have hσ₀98 : σ₀ ≤ 9 / 8 := by
-    rw [hσ₀def]
-    have : 1 / Real.log x ≤ 1 / 8 := one_div_le_one_div_of_le (by norm_num) hlogx8
-    linarith
-  set Y : ℝ := 2 * X with hYdef
-  have hYv : vkThreshold ≤ Y + 1 := by rw [hYdef]; linarith
-  set vY : ℝ := vkWidth (Y + 1) with hvYdef
-  have hvY0 : 0 < vY := vkWidth_pos hYv
-  have hvY80 : vY ≤ 1 / 80 := vkWidth_le hYv
-  set σ₁ : ℝ := 1 - vY / 2 with hσ₁def
+  -- the abscissae and the height
+  obtain ⟨σ₀, hσ₀def⟩ : ∃ σ₀ : ℝ, σ₀ = 1 + 1 / Real.log x := ⟨_, rfl⟩
+  have hinv : 0 < 1 / Real.log x := by positivity
+  have hinv8 : 1 / Real.log x ≤ 1 / 8 := one_div_le_one_div_of_le (by norm_num) hlogx8
+  have hσ₀1 : 1 < σ₀ := by rw [hσ₀def]; linarith
+  have hσ₀98 : σ₀ ≤ 9 / 8 := by rw [hσ₀def]; linarith
+  have hYv : vkThreshold ≤ 2 * X + 1 := by linarith
+  obtain ⟨v, hvdef⟩ : ∃ v : ℝ, v = vkWidth (2 * X + 1) := ⟨_, rfl⟩
+  have hv0 : 0 < v := by rw [hvdef]; exact vkWidth_pos hYv
+  have hv80 : v ≤ 1 / 80 := by rw [hvdef]; exact vkWidth_le hYv
+  obtain ⟨σ₁, hσ₁def⟩ : ∃ σ₁ : ℝ, σ₁ = 1 - v / 2 := ⟨_, rfl⟩
   have hσ₁half : 1 / 2 ≤ σ₁ := by rw [hσ₁def]; linarith
   have hσ₁₀ : σ₁ ≤ σ₀ := by rw [hσ₁def]; linarith
   have hd : σ₀ - σ₁ ≤ 1 := by rw [hσ₁def]; linarith
-  -- the height
-  set La : ℝ := ℓ ^ A with hLadef
-  have hLa : 0 < La := Real.rpow_pos_of_pos hℓ0 A
-  set T : ℝ := La * ℓ ^ 6 with hTdef
-  have hT : 0 < T := by positivity
+  obtain ⟨La, hLadef⟩ : ∃ La : ℝ, La = Real.log X ^ A := ⟨_, rfl⟩
+  have hLa : 0 < La := by rw [hLadef]; exact Real.rpow_pos_of_pos hℓ0 A
+  obtain ⟨T, hTdef⟩ : ∃ T : ℝ, T = La * Real.log X ^ 6 := ⟨_, rfl⟩
+  have hT : 0 < T := by rw [hTdef]; positivity
   have hTX : T ≤ X := by
     have h := rpow_mul_pow_six_le_exp hℓ0 hT6
-    rw [hℓdef, Real.exp_log hX0] at h
+    rw [Real.exp_log hX0, ← hLadef, ← hTdef] at h
     exact h
   -- the strip
-  set B : ℝ := C * Real.log Y / vY with hBdef
+  obtain ⟨B, hBdef⟩ : ∃ B : ℝ, B = C * Real.log (2 * X) / v := ⟨_, rfl⟩
   have hstrip' : ∀ u t : ℝ, σ₁ ≤ u → u ≤ σ₀ → |t| ≤ T →
       DirichletCharacter.LFunction χ ((u : ℂ) + ((t + τ : ℝ) : ℂ) * I) ≠ 0 ∧
       ‖logDeriv (DirichletCharacter.LFunction χ) ((u : ℂ) + ((t + τ : ℝ) : ℂ) * I)‖ ≤ B := by
     intro u t hu1 hu2 ht
-    have hht : |t + τ| ≤ Y := by
-      rw [hYdef]
-      linarith [abs_add_le t τ]
-    exact hstrip Y (by rw [hYdef]; linarith) u (t + τ) hht hu1 (le_trans hu2 hσ₀98)
+    have hht : |t + τ| ≤ 2 * X := by linarith [abs_add_le t τ]
+    have h := hstrip (2 * X) (by linarith) u (t + τ) hht (by rw [← hvdef, ← hσ₁def]; exact hu1)
+      (le_trans hu2 hσ₀98)
+    rw [← hvdef, ← hBdef] at h
+    exact h
   have hmaster := norm_twistedChebyshev_le χ hχ τ hN (by linarith : 0 < σ₁) hσ₁₀ hσ₀1
     (by linarith) hT hstrip'
-  -- the width at `4X` and the size of `B`
-  have hlog4X : Real.log (4 * X) ≤ 2 * ℓ := log_le_two_log_of_le_sq (by positivity) (by nlinarith)
-  have hlog4X0 : 0 < Real.log (4 * X) := Real.log_pos (by linarith)
-  have hv4X : κ₀ * (2 * ℓ) ^ (-β) ≤ vY := by
-    have h1 : vkWidth (4 * X) ≤ vY := vkWidth_anti hYv (by rw [hYdef]; linarith)
+  rw [← hxdef] at hmaster
+  -- the width
+  have hv4 : κ₀ * Real.log (4 * X) ^ (-β) ≤ v := by
+    have h1 : vkWidth (4 * X) ≤ v := by rw [hvdef]; exact vkWidth_anti hYv (by linarith)
     have h2 := hvk (4 * X) (by linarith)
-    have h3 : (2 * ℓ) ^ (-β) ≤ Real.log (4 * X) ^ (-β) :=
-      Real.rpow_le_rpow_of_nonpos hlog4X0 hlog4X (by linarith)
-    have h4 := mul_le_mul_of_nonneg_left h3 hκ₀.le
     linarith
-  have hvlow : κ₀ / (2 * ℓ) ≤ vY := by
-    have h1 : (2 * ℓ) ^ (-1 : ℝ) ≤ (2 * ℓ) ^ (-β) :=
-      Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith)
-    rw [Real.rpow_neg_one] at h1
-    have h2 := mul_le_mul_of_nonneg_left h1 hκ₀.le
-    rw [div_eq_mul_inv]
-    linarith
-  have hlogY : Real.log Y ≤ 2 * ℓ := log_le_two_log_of_le_sq (by positivity) (by rw [hYdef]; nlinarith)
-  have hlogY0 : 0 ≤ Real.log Y := Real.log_nonneg (by rw [hYdef]; linarith)
-  have hB0 : 0 ≤ B := by rw [hBdef]; positivity
-  have hBle : B ≤ 4 * K₁ * ℓ ^ 2 := by
-    have h := div_le_div₀ (by positivity : (0 : ℝ) ≤ C * (2 * ℓ))
-      (mul_le_mul_of_nonneg_left hlogY hC.le) (by positivity : (0 : ℝ) < κ₀ / (2 * ℓ)) hvlow
-    have he : C * (2 * ℓ) / (κ₀ / (2 * ℓ)) = 4 * K₁ * ℓ ^ 2 := by
-      rw [hK₁def]; field_simp; ring
+  obtain ⟨hv2ℓ, hBle⟩ := width_at_scale hC hκ₀ hβ0 hβ1 hX4 hℓ1 hv4
+  rw [← hBdef] at hBle
+  have hB0 : 0 ≤ B := by
     rw [hBdef]
-    linarith
-  -- `x^{σ₁} ≤ x e^{−κ ℓ^η}`
-  have hsave : κ * ℓ ^ η ≤ Real.log x * (vY / 2) := by
-    have h1 : κ₀ * (2 * ℓ) ^ (-β) / 2 * ℓ ^ θ = κ * ℓ ^ η := by
-      rw [Real.mul_rpow (by norm_num) hℓ0.le, hκdef, hηdef, Real.rpow_sub hℓ0, Real.rpow_neg hℓ0.le]
-      field_simp
-    have h2 : κ₀ * (2 * ℓ) ^ (-β) / 2 * ℓ ^ θ ≤ (vY / 2) * Real.log x := by
-      have hθ0 : 0 ≤ ℓ ^ θ := Real.rpow_nonneg hℓ0.le θ
-      exact mul_le_mul (by linarith) hlogx hθ0 (by linarith)
-    linarith
-  have hxσ₁ : x ^ σ₁ ≤ x * Real.exp (-(κ * ℓ ^ η)) := by
-    rw [hσ₁def, Real.rpow_sub hx0, Real.rpow_one, Real.rpow_def_of_pos hx0, div_eq_mul_inv,
-      ← Real.exp_neg]
-    exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hx0.le
+    have : 0 ≤ Real.log (2 * X) := Real.log_nonneg (by linarith)
+    positivity
+  have hxσ₁ := rpow_left_edge_le hκ₀ hℓ0 hx0 hv2ℓ hlogx
+  rw [← hσ₁def] at hxσ₁
   have hxσ₀ : x ^ σ₀ ≤ 3 * x := by
     rw [hσ₀def, rpow_one_add_inv_log hx1]
     exact mul_le_mul_of_nonneg_right
       (le_of_lt (lt_trans Real.exp_one_lt_d9 (by norm_num))) hx0.le
-  -- the three pieces
-  have hperron := perron_term_le hN hX4 hNX hT (by linarith) hσ₀def
-  have hcontour := contour_term_le hB0 hx0 hσ₁half hσ₁₀ hd hxσ₀ hT
-  have hx32 : x ≤ 3 / 2 * N := by rw [hxdef]; linarith
-  have hNLa : 0 ≤ (N : ℝ) * La * ℓ ^ 2 := by positivity
-  have hpa : 720 * N * ℓ ^ 2 / T ≤ N / (3 * La) := by
-    rw [div_le_div_iff₀ hT (by positivity)]
-    calc 720 * N * ℓ ^ 2 * (3 * La) = 2160 * (N * La * ℓ ^ 2) := by ring
-      _ ≤ ℓ ^ 4 * (N * La * ℓ ^ 2) := mul_le_mul_of_nonneg_right hℓ4' hNLa
-      _ = N * T := by rw [hTdef]; ring
-  have hpb : B * x / T ≤ N / (3 * La) := by
-    have h1 : B * x ≤ 4 * K₁ * ℓ ^ 2 * (3 / 2 * N) := mul_le_mul hBle hx32 hx0.le (by positivity)
-    have h2 : B * x / T ≤ 4 * K₁ * ℓ ^ 2 * (3 / 2 * N) / T := div_le_div_of_nonneg_right h1 hT.le
-    have h3 : 4 * K₁ * ℓ ^ 2 * (3 / 2 * N) / T ≤ N / (3 * La) := by
-      rw [div_le_div_iff₀ hT (by positivity)]
-      calc 4 * K₁ * ℓ ^ 2 * (3 / 2 * N) * (3 * La) = 18 * K₁ * (N * La * ℓ ^ 2) := by ring
-        _ ≤ ℓ ^ 4 * (N * La * ℓ ^ 2) := mul_le_mul_of_nonneg_right hℓK hNLa
-        _ = N * T := by rw [hTdef]; ring
-    linarith
-  have hpc : B * T * x ^ σ₁ ≤ N / (3 * La) := by
-    set E : ℝ := Real.exp (-(κ * ℓ ^ η)) with hEdef
-    have hE0 : 0 ≤ E := (Real.exp_pos _).le
-    have h1 : B * T * x ^ σ₁ ≤ 4 * K₁ * ℓ ^ 2 * T * (3 / 2 * N * E) := by
-      have hxE : x ^ σ₁ ≤ 3 / 2 * N * E :=
-        le_trans hxσ₁ (mul_le_mul_of_nonneg_right hx32 hE0)
-      exact mul_le_mul (mul_le_mul_of_nonneg_right hBle hT.le) hxE
-        (Real.rpow_nonneg hx0.le _) (by positivity)
-    have h2 : 4 * K₁ * ℓ ^ 2 * T * (3 / 2 * N * E) ≤ N / (3 * La) := by
-      rw [le_div_iff₀ (by positivity)]
-      calc 4 * K₁ * ℓ ^ 2 * T * (3 / 2 * N * E) * (3 * La)
-          = N * (18 * K₁ * (La * La * ℓ ^ 8) * E) := by rw [hTdef]; ring
-        _ ≤ N * 1 := mul_le_mul_of_nonneg_left hexp (by positivity)
-        _ = N := mul_one _
-    linarith
-  have hthree : N / (3 * La) + N / (3 * La) + N / (3 * La) = N / La := by
-    field_simp
-    ring
-  have hfinal := le_trans hmaster (add_le_add hperron hcontour)
-  rw [hℓdef] at hpa hpb hpc hthree
-  linarith
+  have hres := twistedChebyshev_arith hN hX4 hNX rfl hℓ0 hLa hTdef hxdef (by linarith) hσ₀def
+    hσ₁half hd hxσ₀ hB0 hBle (Real.exp_pos _).le hxσ₁ (le_trans (le_max_left _ _) hℓ4)
+    (le_trans (le_max_right _ _) hℓ4) (by rw [hLadef]; exact hexp) hmaster
+  rw [hLadef] at hres
+  exact hres
 
 end
 

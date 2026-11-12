@@ -121,13 +121,14 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 ## Open
 
 - Finer blocks: each `R` is a finite statement in dimension `(Q−1)R`; by M6 the margins decrease
-  along divisibility of `R`, to the bottom of Weil's form on a window of length `log Q`.
+  along divisibility of `R`, to the bottom of Weil's form on a window of length `log Q`, and by
+  M21 by at most `C_Q²/(log R − E_Q − μ_R)` from `R` on.
 - An index theorem for the floor correspondences.
 
 ## Log
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
-- 2026-11-12 — M9–M19 proved and formalized
+- 2026-11-12 — M9–M22 proved and formalized
 
 ## The neutral part (M9, M10)
 
@@ -184,6 +185,12 @@ A supersolution cannot certify a window on which the neutral part has a negative
 - [x] M18 index law at finite scale: block matrices `#{zeros right of the line}`, neutral part
   one more
 - [x] M19 at every ratio the block matrices are nonnegative on thin step packets
+- [x] M20 coercivity: `𝔚_Q ≥ (log R − E_Q) Σζ²` on the step packets of a refinement whose sums
+  over the blocks above `R` vanish
+- [x] M21 rate: a margin `μ` above `R` is a margin `μ − ε` on every refinement once
+  `log R ≥ E_Q + C_Q²/ε + μ`
+- [x] M22 index: at most `J` negative squares on every refinement once `log R ≥ E_Q`; at most
+  `(Q − 1)⌈e^{E_Q}⌉` at every block size
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -314,5 +321,42 @@ Lean: `…/TheBlockMatricesOfEveryRatioAreNonnegativeOnThinStepPackets.lean` (`I
 `exists_forall_packetForm_thin_stepPacket_nonneg_ratio`,
 `exists_forall_sum_blockMatrix_thin_nonneg`).
 
+**M20.** `E_Q = 3 + Q/4 + 2ψ(Q) + log 4π`, `C_Q = 12 + 2Q + 2ψ(Q)`. Window `(R, R + J]`,
+`R + J ≤ QR`, refined by `m`: unit blocks of `(mR, mR + mJ]`. Let `ζ` on the fine blocks have
+`Σ_{i<m} ζ_{mj+i} = 0` for every `j`. On the comb above `N = mRB` put `c_n = ζ(block of n)`,
+blocks of `B` points. The coarse blocks have `mB = N/R` points, and the sum of `c` over a coarse
+block is `B Σ_{i<m} ζ_{mj+i} = 0`. Corpus (HodgeTheoryOfAFixedPart): for divisors with vanishing
+sums over blocks of `N/R` points, `d₂ = 0` and `D·D ≤ −(log(N/2π) − ρ) Σc_n²` with
+`log(N/2π) − ρ ≥ log R − E_Q`. So `𝔚_comb(c) ≥ (log R − E_Q) B Σζ_i²`; divide by `B`; the comb
+form per point of a block tends to `𝔚_Q` of the step packet (M2).
+
+**M21.** With `τ` on the coarse blocks and `s_n = τ(coarse block of n)`: corpus,
+`2|𝔚_comb(s, c)| ≤ C_Q (p Σs_n² + q Σc_n²)` for `pq = 1`, uniformly in the block size. So
+`𝔚_comb(s + c) ≥ 𝔚_comb(s) − C_Q p Σs² + (log R − E_Q − C_Q q) Σc²`; divide by `B`, let
+`B → ∞`: `𝔚_Q(τ' + ζ) ≥ 𝔚_Q(τ') − C_Q p Σ_i τ'_i² + (log R − E_Q − C_Q q) Σζ_i²`, `τ'_i = τ_{⌊i/m⌋}`.
+With `τ'` the refinement `τ_{⌊i/m⌋}/√m` of a step function on the blocks above `R`:
+`𝔚_Q(τ') = 𝔚_Q(τ)` and `Στ'² = Στ²` (M6). Every fine `σ` is `τ' + ζ` with
+`τ_j = Σ_{i<m} σ_{mj+i}/√m`, and `Σσ² = Στ² + Σζ²`. Take `p = ε/C_Q`, `q = C_Q/ε`: if
+`𝔚_Q(τ) ≥ μΣτ²` and `log R − E_Q − C_Q²/ε ≥ μ`, then `𝔚_Q(σ) ≥ (μ − ε)(Στ² + Σζ²)`. With M6:
+the margins of the tower above `R` lie in `[μ_R − C_Q²/(log R − E_Q − μ_R), μ_R]`. For
+`μ₀ > 0` and `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀` the margin of every refinement is `≥ μ₀/2`.
+
+**M22.** If `log R ≥ E_Q`, the block matrix of the refinement is nonnegative on the complex block
+values with vanishing sums over the `J` coarse blocks (M20 for real and imaginary part): at most
+`J` negative squares. Every window: refine `(R', R' + J']` by `R₀ = ⌈e^{E_Q}⌉` (the index does not
+decrease), extend by zero to `R'·(Q − 1)R₀ ≥ R₀J'` fine blocks (a principal submatrix), and read
+the fine blocks above `R'R₀` as the refinement by `R'` of the `(Q − 1)R₀` blocks above `R₀`.
+For `Q = 4`: `ψ(4) = log 12`, `e^{E_4} = e⁴ · 144 · 4π ≤ 55 · 144 · 12.6 < 10⁵`, so `𝔚_4` has at
+most `300000` negative squares at every block size.
+
+Lean: `…/TheStepPacketMatricesOfARatioAreDecidedOnCoarseBlocks.lean` (`rowExcess`,
+`IsCoarseNeutral`, `combForm_coarseNeutral_ge`, `combForm_coarse_add_ge`,
+`packetForm_coarseNeutral_ge`, `packetForm_refineStep_add_ge`, `sum_sq_refine_add`,
+`packetForm_refined_ge_of_margin`, `packetForm_refined_ge_half_of_margin`,
+`hermNegIndex_blockWindow_refined_le`, `hermNegIndex_blockWindow_le_refined`,
+`hermNegIndex_blockWindow_mono`, `hermNegIndex_blockWindow_le_uniform`,
+`hermNegIndex_blockWindow_ratioFour_le`).
+
 Open: positivity of the block matrix on windows of ratio above `103/50` on all step packets,
-without RH; the constants `N₀`, `κ` of M19 are not explicit.
+without RH; by M21 it is, with a margin, a statement about one matrix, at a scale `R` with
+`log R ≥ E_Q + 2C_Q²/μ₀ + μ₀`. The constants `N₀`, `κ` of M19 are not explicit.

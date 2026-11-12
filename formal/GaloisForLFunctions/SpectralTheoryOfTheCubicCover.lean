@@ -4,6 +4,8 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheConstantTermContinue
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquareOfTheCubicThetaUnfolds
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquareOfTheSourceThetaUnfolds
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubeFrequenciesOfTheThetaSquareFactorOut
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCuspHeightsOfAPointAreSparse
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaCoefficientsHaveTheHeckeBound
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -15,5 +17,6 @@ height profile with the constant term; the constant term of the cubic Eisenstein
 across `4/3`, its residue and the logarithm in its Laurent coefficient; the constant term of `θ²`
 and the Rankin–Selberg identity of `θ²` and of the projected `θ_s²` against incomplete Eisenstein
 series; the factorization of the Dirichlet series of the squared theta coefficients through
-`ζ_K(3w − 1)`. See `SpectralTheoryOfTheCubicCover/README.md`.
+`ζ_K(3w − 1)`; the count of cusp cosets lifting a point to height `≥ Y`, and the Hecke bound
+`|T_s(h)| ≤ C(1 + |ξ_h|)` for the projected theta coefficients. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/

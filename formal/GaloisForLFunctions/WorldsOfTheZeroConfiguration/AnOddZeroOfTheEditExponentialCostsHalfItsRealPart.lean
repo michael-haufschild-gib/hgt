@@ -30,7 +30,8 @@ edit exponential itself is singular at `ρ/2`.
 -/
 
 open Complex Filter Topology Finset
-open RHTower RHTower.BeurlingDeletion GaloisForLFunctions.RigidArithmeticOfCuts
+open RHTower RHTower.BeurlingDeletion RHTower.BeurlingDeletion.DeletionData
+open GaloisForLFunctions.RigidArithmeticOfCuts
 open GaloisForLFunctions.SumProductArithmeticOfTheLogarithm
 
 noncomputable section

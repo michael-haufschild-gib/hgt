@@ -107,10 +107,14 @@ theorem powerTailPrimeRightRemainder_eq {a σ β x : ℝ}
             t ^ (-a - 1) * primeRightTraceRemainder σ β t := by
         apply setIntegral_congr_fun measurableSet_Ioc
         intro t ht
+        dsimp only
         rw [hR t ht.1.le]
         dsimp only [id_eq]
         ring
-      _ = _ := by rw [integral_add (hiid.sub hiQ) hiR, integral_sub hiid hiQ]
+      _ = _ := by
+        have hadd := integral_add (hiid.sub hiQ) hiR
+        simp only [Pi.sub_apply] at hadd
+        rw [hadd, integral_sub hiid hiQ]
   have hψ : weightedAbelRemainder a Chebyshev.psi x =
       weightedAbelRemainder a id x -
         weightedAbelRemainder a (fun t => (rightShiftedZeroTrace σ 0 0 t).re) x +
@@ -154,15 +158,17 @@ theorem exists_power_bound_powerTailPrimeRightRemainder {a σ β : ℝ}
         |weightedAbelRemainder a id x - powerTailPrefix a x| +
         |(rightShiftedZeroTrace σ 0 0 1).re| + |(rightShiftedZeroTrace σ a a 1).re| := by
     rw [powerTailPrimeRightRemainder_eq ha.le haσ hσ hσβ hβ1 hβ hx]
-    exact (abs_add_le _ _).trans (add_le_add_right
-      ((abs_sub _ _).trans (add_le_add_right (abs_add_le _ _) _)) _)
+    apply (abs_add_le _ _).trans
+    apply add_le_add _ le_rfl
+    apply (abs_sub _ _).trans
+    exact add_le_add (abs_add_le _ _) le_rfl
   have hBx : B ≤ B * x ^ (κ - a) :=
     le_mul_of_one_le_right hB (Real.one_le_rpow hx hdκ.le)
   calc
     _ ≤ D * x ^ (κ - a) + B := by
       dsimp only [D, B]
       linarith only [htriangle, hW, hE]
-    _ ≤ D * x ^ (κ - a) + B * x ^ (κ - a) := add_le_add_left hBx _
+    _ ≤ D * x ^ (κ - a) + B * x ^ (κ - a) := add_le_add le_rfl hBx
     _ = _ := by ring
 
 /-- At a subcritical power boundary, retaining a right band leaves an

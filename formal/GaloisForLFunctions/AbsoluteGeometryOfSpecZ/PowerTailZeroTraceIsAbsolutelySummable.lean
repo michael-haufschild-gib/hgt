@@ -105,7 +105,8 @@ def powerTailRightZeroWave (a σ u : ℝ) (q : XiZeroCopy) : ℂ :=
   powerTailRightZeroAmplitude a σ q *
     Complex.exp (((q.1 : ℂ) - ((1 - a : ℝ) : ℂ)) * (u : ℂ))
 
-private theorem norm_powerTailRightZeroWave_le {a σ u : ℝ} (hu : 0 ≤ u)
+/-- Nonnegative logarithmic lags are dominated by the residue amplitudes. -/
+theorem norm_powerTailRightZeroWave_le {a σ u : ℝ} (hu : 0 ≤ u)
     (q : XiZeroCopy) :
     ‖powerTailRightZeroWave a σ u q‖ ≤ ‖powerTailRightZeroAmplitude a σ q‖ := by
   classical
@@ -119,7 +120,8 @@ private theorem norm_powerTailRightZeroWave_le {a σ u : ℝ} (hu : 0 ≤ u)
   · simp only [powerTailRightZeroWave, powerTailRightZeroAmplitude, hq,
       if_false, zero_mul, norm_zero, le_refl]
 
-private theorem tendsto_powerTailRightZeroWave_zero {a σ : ℝ}
+/-- Every mode away from the boundary vanishes as the logarithmic lag grows. -/
+theorem tendsto_powerTailRightZeroWave_zero {a σ : ℝ}
     (q : XiZeroCopy) (hne : (q.1 : ℂ).re ≠ 1 - a) :
     Tendsto (fun u => powerTailRightZeroWave a σ u q) atTop (𝓝 0) := by
   classical

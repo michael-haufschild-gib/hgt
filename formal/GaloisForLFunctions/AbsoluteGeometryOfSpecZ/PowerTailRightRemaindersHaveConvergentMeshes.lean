@@ -31,18 +31,25 @@ theorem riemannOn_powerTailPrimeRightRemainder {a σ : ℝ}
   have hexp1 : a + κ < 1 := by linarith only [hκβ]
   let Q : ℝ → ℝ := fun x => (rightShiftedZeroTrace σ a a (max 1 x)).re
   have hQc : Continuous Q := by
-    exact Complex.continuous_re.comp
-      ((continuousOn_rightShiftedZeroTrace hσ ha.le).comp_continuous
-        (continuous_const.max continuous_id) (fun _ => le_max_left _ _))
+    have hcomplex : Continuous (fun x : ℝ => rightShiftedZeroTrace σ a a (max 1 x)) :=
+      (continuousOn_rightShiftedZeroTrace hσ ha.le).comp_continuous
+        (continuous_const.max continuous_id) (fun x => by
+          change (1 : ℝ) ≤ max 1 x
+          exact le_max_left _ _)
+    exact Complex.continuous_re.comp hcomplex
   let g : ℝ → ℝ := fun t => -(t ^ (-(2 * a)) * Q (1 / t))
   have hgm : Measurable g :=
     ((measurable_id.pow_const (-(2 * a))).mul
       (hQc.measurable.comp (measurable_const.div measurable_id))).neg
   have hgc : ContinuousOn g (Ioc 0 1) := by
     intro t ht
-    exact (((continuousAt_id.rpow_const (Or.inl ht.1.ne')).mul
-      (hQc.continuousAt.comp (continuousAt_const.div continuousAt_id ht.1.ne'))).neg)
-      .continuousWithinAt
+    have hp : ContinuousAt (fun x : ℝ => x ^ (-(2 * a))) t :=
+      continuousAt_id.rpow_const (Or.inl ht.1.ne')
+    have hinv : ContinuousAt (fun x : ℝ => 1 / x) t :=
+      continuousAt_const.div continuousAt_id ht.1.ne'
+    have hq : ContinuousAt (fun x : ℝ => Q (1 / x)) t := hQc.continuousAt.comp hinv
+    have hg : ContinuousAt g t := (hp.mul hq).neg
+    exact hg.continuousWithinAt
   have he (t : ℝ) (ht : t ∈ Ioc (0 : ℝ) 1) :
       arithmeticPowerProfile (2 * a) (powerTailPrimeDeviation a) t - g t =
         t ^ (-(2 * a)) * powerTailPrimeRightRemainder a σ (1 / t) := by

@@ -46,6 +46,7 @@ theorem sum_powerTailWeight_vonMangoldt_eq (a : ℝ) {x : ℝ} (hx : 1 ≤ x) :
     rw [← integral_const_mul]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro t ht
+    dsimp only
     rw [hd (zero_lt_one.trans ht.1)]
     ring
   rw [hint] at h
@@ -152,7 +153,7 @@ theorem abs_weightedAbelRemainder_le {a κ C : ℝ} {f : ℝ → ℝ}
       _ = _ := by rw [← Real.rpow_add hx0]; congr 2; ring
   unfold weightedAbelRemainder
   apply (abs_add_le _ _).trans
-  rw [abs_mul, abs_of_nonneg ha]
+  rw [abs_mul a _, abs_of_nonneg ha]
   calc
     _ ≤ C * x ^ (κ - a) + a * (C * (x ^ (κ - a) / (κ - a))) :=
       add_le_add hhead (mul_le_mul_of_nonneg_left hI ha)

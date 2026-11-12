@@ -103,6 +103,10 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceRemainder
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRiemannSums
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRiemannSumsAcrossJumps
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailWeightedPrimeAbel
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailPrimeErrorKeepsItsRightTrace
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightRemaindersHaveConvergentMeshes
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZetaMultiplierBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanProfile
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerTailJetMesh
@@ -182,6 +186,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePoleAddsOneNegativeSquareT
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheIndexOfTheNeutralPartIsOnePlusTheNumberOfZerosRightOfTheLine
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralFormOfANumberRingHasTheIndexOfItsZetaFunctionPlusOne
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBlockMatricesOfEveryRatioAreNonnegativeOnThinStepPackets
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheStepPacketMatricesOfARatioAreDecidedOnCoarseBlocks
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -240,7 +246,9 @@ Lorentzian on the first step packets; the margin of the block matrices of ratio 
 `103/50` at every block size; the neutral part as Weil's form of the zeros minus the poles; and
 the Riemann hypothesis as one negative square of the neutral part of every window, with the
 index law at finite scale: the block matrices carry the zeros right of the line and the neutral
-part one square more, the pole; and the sign of the block matrices of every ratio on thin step
-packets. See
+part one square more, the pole; the sign of the block matrices of every ratio on thin step
+packets; and the coarse blocks of a ratio, which carry the index at every block size and decide
+the margin of every refinement; and the contacts of a number ring as its point counts over the
+finite fields, with the relative square of two number rings at finite scale. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/

@@ -22,6 +22,7 @@ import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AFakeBelowItsTopIsBalanc
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TwinsContinuePastTheLine
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AFiniteLayerCanBeEditedAway
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheFloorOfPrimeEditsWithACountRate
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AnOddZeroOfTheEditExponentialCostsHalfItsRealPart
 
 /-!
 # Worlds of the Zero Configuration
@@ -35,7 +36,10 @@ line, any sparse configuration (zeros on a vertical line, zeros rising to a line
 of every such model: the balance law of the doubled and the deleted primes,
 the count floor (the remainder of the count sees the edited primes through the large sieve),
 the count balance (additions are paid in full) and Landau's zero from the count (a count below
-the exponent of the deleted primes is balance or a real zero).  In the floor calculus the
-mechanism "prime edit with a count rate" has floor at least `13/30`.  See
+the exponent of the deleted primes is balance or a real zero), and the half-top law (the square
+of the zeta function sees the edit exponential at `2s`: a pair twin has count exponent at least
+half its top).  In the floor calculus the mechanism "prime edit with a count rate" has floor at
+least `13/30`, and at least `1/6` when read on the strip `1/3 < Re s < 2/3` where the zeros are
+symmetric.  See
 `WorldsOfTheZeroConfiguration/README.md`.
 -/

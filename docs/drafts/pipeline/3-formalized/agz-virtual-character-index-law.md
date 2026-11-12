@@ -19,6 +19,8 @@
 - [ ] V6 Brauer's theorem and the identification of induced characters with Hecke characters
 - [x] V7 zeros minus poles: the neutral form of `ℤ` and of every number ring has index one plus
   the number of zeros right of the line
+- [x] V8 the contacts of a number ring are its point counts over the finite fields; the relative
+  square of two number rings at finite scale
   (classical; not in the corpus): the law for every Artin character
 
 ## Paper proof
@@ -71,6 +73,29 @@ right of the line. `1 ∉ A` for the zeros of `ζ` (`Re ρ < 1`). For a number f
 at `1` is the limit from the right, `(discriminant factor)(1) · (Gamma factor)(1) · res`, and
 none of the three vanishes (class number formula).
 
+**V8.** `K` a number field, `O` its ring of integers, `Λ_K(n) = Σ_{N𝔭^k = n} log N𝔭`.
+
+(a) If `N𝔭^k = p^m`, `k ≥ 1`, then `N𝔭 ∣ p^m`, so `N𝔭 = p^d` with `d ≥ 1` (`N𝔭 ≠ 1`) and
+`dk = m`. The pairs `(𝔭, k)` with `N𝔭^k = p^m` are in bijection with the pairs `(d, 𝔭)`, `d ∣ m`,
+`N𝔭 = p^d`, by `k = m/d`, and `log N𝔭 = d log p`. So `Λ_K(p^m) = N_m(p) log p` with
+`N_m(p) = Σ_{d ∣ m} d a_d(p)`, `a_d(p)` the number of primes of norm `p^d`. If `n` is not a prime
+power, no `N𝔭^k` equals `n` (`N𝔭` is the order of a finite field) and `Λ_K(n) = 0`.
+
+(b) Let `F` be a field with `p^m` elements. A homomorphism `φ : O → F` has a prime kernel `𝔭`;
+`p ∈ 𝔭` (`F` has characteristic `p`), so `𝔭 ≠ 0` and `O/𝔭` is a finite field embedded in `F`.
+Homomorphisms with kernel `𝔭` are the homomorphisms `O/𝔭 → F` (a homomorphism of fields is
+injective). Finite fields: a field `E` with `p^d` elements has characteristic `p`; ring
+homomorphisms `E → F` are `𝔽_p`-linear (the prime field has one homomorphism to any ring), so
+they are the `𝔽_p`-embeddings: none unless `d = [E : 𝔽_p]` divides `m = [F : 𝔽_p]`, and then `d`
+(Galois theory of finite fields, Mathlib). So the kernels are the primes of norm `p^d`, `d ∣ m`,
+each with `d` homomorphisms: `#Hom(O, F) = N_m(p)`.
+
+(c) For two number fields subtract the two limits of the pairing of the ideals at finite scale
+(corpus: jets, counterterm and twice the contacts tend to `2c₀c₁ − Z_K(f)`). The contacts are
+linear in the weight. The pole planes cancel; the limit is `Z_K(f) − Z_L(f)`. The form at finite
+scale has `([L:ℚ] − [K:ℚ])` jets, `(r₂(L) − r₂(K))` conjugate jets, the counterterm
+`log|d_L| − log|d_K|` and the contacts `(N_m^L(p) − N_m^K(p)) log p`.
+
 ## Lean
 
 Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
@@ -82,6 +107,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 
 | V7 | `TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles` | `poleConfig`, `poleConfig_W`, `poleConfig_W_ofReal`, `virtualDefect_poleConfig`, `exists_le_negIndex_sub_poleConfig_iff`, `rightZeros_eq_empty_iff_forall_negIndex_sub_poleConfig_le_one`, `exists_le_negIndex_neutralGram_iff`, `riemannHypothesis_iff_forall_negIndex_neutralGram_le_one` |
 | V7 | `TheNeutralFormOfANumberRingHasTheIndexOfItsZetaFunctionPlusOne` | `heckeXi_trivialModulus_one_ne_zero`, `one_notMem_dedekindZeros`, `exists_le_negIndex_dedekind_sub_poleConfig_iff`, `forall_negIndex_dedekind_sub_poleConfig_le_one_iff` |
+| V8 | `TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields` | `ringHom_finiteField`, `kerEquivQuotientHom`, `primesOfNorm`, `fibrePointCount`, `idealContact_prime_pow`, `idealContact_eq_zero`, `natCard_ringHom_ker_eq`, `ker_mem_biUnion_primesOfNorm`, `natCard_ringHom_eq_fibrePointCount`, `idealContact_prime_pow_eq_natCard_ringHom`, `ringForm_sub`, `relativeContact_prime_pow`, `tendsto_relativeForm_add_relativeContact` |
 
 ## Open
 
@@ -89,8 +115,9 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
   products of Hecke `L`-functions and the law reads: the index of `ρ` is the number of zeros and
   poles of `L(s, ρ)` right of the line plus the number of its poles on the line; Bézout for `ρ`
   is the Riemann hypothesis of `L(s, ρ)` with Artin's conjecture on the line.
-- The pairing of a virtual character at finite scale on the comb (contacts
-  `Σ n_i Re Λ_{ψ_i}`): follows from the Hecke case by linearity; not stated.
+- The pairing at finite scale of a virtual character with members that are not trivial
+  characters (contacts `Σ n_i Re Λ_{ψ_i}`): follows from the Hecke case by linearity; stated for
+  the relative square of two number rings (V8).
 
 ## Log
-- 2026-11-12 — proved and formalized (V1–V5, V7)
+- 2026-11-12 — proved and formalized (V1–V5, V7, V8)

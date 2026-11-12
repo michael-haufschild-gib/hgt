@@ -62,13 +62,14 @@ each to a named residual; a producer for AAL or ZAL is the success criterion.
 | `AdditionsArePaidInFull` | Theorem H: dyadic counts give the exponent; Chebyshev for a system with `u ≥ 0`; add-only edits; `μ_S * 1_{Sᶜ} = 1`, the restored system; count balance |
 | `EveryConfigurationThatApproachesTheLineIsRealized` | Theorem G: `landingTarget`, `landingTail`, `IsLayerTwinOn`, `IsLandingTwin`; gluing of half-planes (`exists_glue`) |
 | `TheTailOfZetaBeyondACutoff` | `zetaCut N` (entire), `norm_zetaCut_le`, `cutTarget`, `lseriesHasSum_cutTarget`, the balanced cutoff `norm_zetaCut_sq_le` |
-| `ACountBelowTheDeletionExponentIsARealZero` | Theorem J: `countDefect`, `exists_continuation_of_count`, `differentiableOn_editRem_of_summable`, `zero_at_expo_minus_of_count`, `balance_or_zero_of_count`, `zero_of_delete_only_of_count` |
+| `ACountBelowTheDeletionExponentIsARealZero` | Theorem J: `countDefect`, `norm_growthCont_le`, `exists_continuation_of_count_linear`, `exists_continuation_of_count`, `differentiableOn_editRem_of_summable`, `zero_at_expo_minus_of_count`, `balance_or_zero_of_count`, `zero_of_delete_only_of_count` |
 | `AFakeZeroOnTheTopLineCostsLogarithmicDensity` | Theorem M: `primeSum`, `exists_mul_log_le_primeSum_add_of_bound`, `exists_order_mul_log_le_primeSum_add`, `exists_half_of_sum`, `exists_order_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
 | `AFakeBelowItsTopIsBalancedOrHasARealTop` | `balance_or_real_top`, `balance_or_real_top_of_fake`: the B183 dichotomy below `√x` |
 | `TwinsContinuePastTheLine` | Theorem K: `IsFactorTwinOn c`, `isFactorTwinOn_gedit`, `isFactorTwinOn_edit`, `exists_continuation_not_symmetric`, `exists_isEdit_layerTwinOn` |
 | `InfinitelyManyStrictFakeZerosOnALine` | `ζ` is not identically zero on a vertical segment; heights chosen in `[(j+1)^A, (j+1)^A + 1]` off the zeros of `ζ`; an integer-norm fake with infinitely many strict fake zeros on a line |
 | `AFiniteLayerCanBeEditedAway` | Theorem L: `logDeriv_fun_inv`, `exists_isEdit_layer_removed`, `zero_iff_of_layer_removed`, `exists_isEdit_zero_free_of_finite_layer` |
 | `TheFloorOfPrimeEditsWithACountRate` | Theorem N: `PrimeEditDivisorOn c`, `exists_isEdit_zeros_zeta_and_quartet`, `exists_isEdit_zeros_symmetric_in_a_strip`, `hasModelAt_primeEditDivisorOn`, `le_floor_primeEditDivisorOn`, `le_floor_primeEditDivisor`, `le_floor_primeEditDivisorOn_third` |
+| `AnOddZeroOfTheEditExponentialCostsHalfItsRealPart` | Theorem P: `logRem3`, `editRem3`, `differentiableOn_editRem3_of_summable`, `editRem_eq`, `even_of_sq_eq_pow_mul`, `even_order_of_count`, `half_re_le_of_count_edit` |
 | `EverySparseConfigurationIsRealized` | `IsFactorTwin`, `isFactorTwin_gedit` (general: any target of size `k^{−η}` with a factor), `IsSparseConfig`, Theorem G′, vertical line and rising points |
 
 Module 2 holds the general greedy edit `gedit m` with the drift criterion (`abs_gdisc_le`,
@@ -204,9 +205,11 @@ Upper bounds go through `M_u(y) = Σ_{d≤y} u(d)`: hyperbola gives `β ≤ θ/(
   the primes with smooth weights: analytic with `O(log t)` growth only for
   `Re s > Re ρ − 1 + Θ_ζ`. With `Θ_ζ ≤ 7/8` there is room for `Re ρ < 9/16`; conditional on a
   zero-free half-plane, so not a theorem of the corpus.
-- Growth law (not formalized): a remainder `O(x^β)` makes `ζ_B` holomorphic on `Re s > β` with
-  linear growth; for `β < κ` this is a one-sided bound `Re E(σ+it) ≤ C log t` on the sparse prime
-  sum left of its abscissa. Resonance gives only `Ω((log t)^{1−σ/κ})`: no contradiction. The
+- Growth law — in Lean (`BalanceLaw.norm_growthCont_le`,
+  `exists_continuation_of_count_linear`): a remainder `O(x^β)` makes `ζ_B − Aζ` holomorphic on
+  `Re s > β` with `|ζ_B(s) − Aζ(s)| ≤ C(1 + |s| Σ_i i^{β−σ₀−1})` on `Re s ≥ σ₀ > β` (summation by
+  parts on every partial sum, then the limit); for `β < κ` this is a one-sided bound
+  `Re E(σ+it) ≤ C log t` on the sparse prime sum left of its abscissa. Resonance gives only `Ω((log t)^{1−σ/κ})`: no contradiction. The
   smooth model (target mass on all integers) has super-polynomial growth at resonant heights;
   the edit, a sparse prime sum, does not inherit it.
 
@@ -383,6 +386,29 @@ zeros in a strip are not the functional equation: the identity has no model (Ham
 rigidity), the symmetry of the divisor has. The strip is limited by `c > Re ρ/2`: beyond it the
 prime-power remainder `Σ_k E(ks)/k` of the twin has a square-root branch point at `ρ/2`.
 
+## Theorem P (half the top) — in Lean
+`E(s) = Σ_p e(p)p^{−s}`. `Q = E(2s)/2 + Q₃`, `Q₃ = Σ_p e(p) r₃(p^{−s})`,
+`r₃(z) = −log(1−z) − z − z²/2`, `|r₃(z)| ≤ |z|³/(3(1−|z|))`; `Q₃` holomorphic on `Re s > θ/3` if
+`Σ|e(p)|p^{−θ} < ∞`. On `Re s > 1`:
+`G² = (u·e^{E}·e^{Q₃})² · e^{E(2s)}`, `G = (s−1)ζ_B`, `u = (s−1)ζ`.
+- `even_order_of_count`: count `Ax + O(x^β)`; `F` holomorphic on `Re s > c₀`, `F = e^{E}` on
+  `Re s > 1`; `ord_ρ F = m`, `Re ρ > 2max(β, c₀, θ/3)` ⇒ `m` even. Proof: the count continues
+  `G` to `Re s > β`; the identity holds on `Re s > max(β, c₀, θ/3)` with `F`; at `s₁ = ρ/2`,
+  `F(2s) = 2^m(s−s₁)^m f(2s)`, `f(ρ) ≠ 0`, so `G² = (s−s₁)^m P² V`, `V(s₁) ≠ 0`,
+  `P = u F e^{Q₃}` not locally zero (else `G ≡ 0`, but `G(2) ≠ 0`); orders: `2n = m + 2a`.
+- `half_re_le_of_count_edit`: greedy edit at a non-real `ρ`, `½ < Re ρ < 13/15`. For
+  `Re ρ − 13/30 < c₀ < Re ρ/2` the discrepancy is `O(n^{c₀})`, so
+  `e^{E} = C(s−ρ)(s−ρ̄)e^{K}` on `Re s > c₀`: a simple zero at `ρ`. With `θ = 5Re ρ/4`:
+  every count exponent has `β ≥ Re ρ/2`.
+
+Reading: `ζ_B` of a pair twin has a square-root branch point at `ρ/2`: the count exponent of
+the twins of this programme (entire factor with a simple zero at the top) is in
+`[Re ρ/2, Re ρ]`, above `x^{1/4}`. For B183 below `√x`: a model with `β < Re ρ/2` has an edit
+exponential that is singular at `ρ/2`; Möbius inversion `E(s) = Σ_k μ(k)/k · log(ζ_B/ζ)(ks)`
+shows what it must be: logarithmic singularities `μ(k)/k · log(s − ρ/k)` at every `ρ/k`. The
+target `−Σ_{k≤K} μ(k)·2Re n^{ρ/k−1}` removes the branch points down to `Re ρ/(K+1)`; the full
+sum over `k` diverges.
+
 ## Theorem K (twins continue past the line) — in Lean
 For a target `|m(k)| ≤ Ak^{−η}`, `0 < η < 1`, `m(0) = 0`, and `max(17/30 − η, (1−η)/2) < c ≤ 1`:
 if `L′/L = −Σ mk^{−s} − Φ₀` on `Re s > 1` with `Φ₀` holomorphic on `Re s > c`, then
@@ -415,7 +441,10 @@ no edit law decides it: `NO PRODUCER`.
 ## Next conjectures
 - C-a: a density law or a dense model: fake zeros of an edit with count exponent `β` in
   `Re s ≥ σ`, between `T^{2(1−σ)}` (realized without structure) and `T log T` (half-scale tail).
-- C-b: the count exponent of a pair twin (between the floor and `Re ρ`).
+- C-b: the count exponent of a pair twin: in `[Re ρ/2, Re ρ]` (Theorem P); above `Re ρ/2` it
+  is a growth question.
+- C-e: corrected targets `−Σ_{k≤K} μ(k)·2Re n^{ρ/k−1}`: twins without the branch points at
+  `ρ/2, …, ρ/K` (factor with fractional powers on `Re s > Re ρ/2`).
 - C-c: done for sparse tails (`exists_isEdit_fake_with_strict_zeros_on_a_line`); for the
   half-scale tail of Theorem D it still needs a zero count.
 - C-d: a count floor for integer-norm systems that are not thin edits.
@@ -443,3 +472,7 @@ no edit law decides it: `NO PRODUCER`.
   `≥ 13/30`, bridge to the floor calculus) in Lean (24 modules).
 - 2026-11-12 — symmetric quartet in a strip (`PrimeEditDivisorOn c`, floor
   `≥ min(c − 1/15, 2c − ½)`) in Lean, same module.
+- 2026-11-12 — Theorem P (half-top law: odd zeros of the edit exponential, pair twin
+  `β ≥ Re ρ/2`) in Lean (25 modules).
+- 2026-11-12 — growth law (`exists_continuation_of_count_linear`) in Lean, in the module of
+  Theorem J. Paused on user instruction; every paper proof on this card is formalized.

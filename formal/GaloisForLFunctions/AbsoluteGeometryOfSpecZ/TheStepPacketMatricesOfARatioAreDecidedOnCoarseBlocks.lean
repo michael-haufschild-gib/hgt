@@ -26,7 +26,8 @@ function on the coarse blocks plus a part whose sum over each coarse block vanis
 * **Index** (`hermNegIndex_blockWindow_refined_le`, `hermNegIndex_blockWindow_le_uniform`): for
   `log R ≥ E_Q` the block matrix of every refinement has at most `J` negative squares, and at
   every block size the block matrices of ratio at most `Q` have at most `(Q − 1)⌈e^{E_Q}⌉`
-  negative squares.
+  negative squares; for the ratio four, at most `300000`
+  (`hermNegIndex_blockWindow_ratioFour_le`).
 
 The proofs are on the comb. Above the scale `mRB` take blocks of `mB` points: Weil's form is
 coercive on the divisors with vanishing block sums, and the cross term with a divisor constant
@@ -495,5 +496,52 @@ theorem hermNegIndex_blockWindow_le_uniform {Q R J : ℕ} (hR : 1 ≤ R) (hQ : R
     hR₀pos hR (le_of_eq (by ring)) hlog
   rw [Nat.mul_comm R₀ R] at h1 h2
   exact h1.trans (h2.trans h3)
+
+/-! ### Ratio four -/
+
+/-- `ψ(4) = log 12`. -/
+theorem chebyshev_four : chebyshev 4 = Real.log 12 := by
+  rw [HodgeTheoryOfAFixedPart.chebyshev, show Icc 1 4 = ({1, 2, 3, 4} : Finset ℕ) by rfl,
+    Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_insert (by decide),
+    Finset.sum_singleton, ArithmeticFunction.vonMangoldt_apply_one,
+    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two,
+    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_three,
+    show (4 : ℕ) = 2 ^ 2 by norm_num,
+    ArithmeticFunction.vonMangoldt_apply_pow (by norm_num),
+    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two, zero_add,
+    ← Real.log_mul (by norm_num) (by norm_num), ← Real.log_mul (by norm_num) (by norm_num)]
+  norm_num
+
+/-- `e^{E_4} = 576 π e⁴ ≤ 100000`. -/
+theorem exp_rowExcess_four_le : Real.exp (rowExcess 4) ≤ 100000 := by
+  have he : Real.exp 4 ≤ 55 := by
+    have h4 : Real.exp 4 = Real.exp 1 ^ 4 := by
+      rw [← Real.exp_nat_mul]
+      norm_num
+    rw [h4]
+    calc Real.exp 1 ^ 4 ≤ 2.7182818286 ^ 4 :=
+          pow_le_pow_left₀ (Real.exp_pos 1).le Real.exp_one_lt_d9.le 4
+      _ ≤ 55 := by norm_num
+  have hsplit : rowExcess 4 = 4 + Real.log (144 * (4 * Real.pi)) := by
+    unfold rowExcess
+    rw [chebyshev_four, Real.log_mul (x := 144) (y := 4 * Real.pi) (by norm_num)
+      (by positivity), show (144 : ℝ) = 12 ^ 2 by norm_num, Real.log_pow]
+    push_cast
+    ring
+  rw [hsplit, Real.exp_add, Real.exp_log (by positivity)]
+  have hprod : Real.exp 4 * Real.pi ≤ 55 * 3.15 :=
+    mul_le_mul he Real.pi_lt_d2.le Real.pi_pos.le (by norm_num)
+  linarith
+
+/-- **Ratio four.** At every block size the block matrix of a window of ratio at most four has
+at most `300000` negative squares. -/
+theorem hermNegIndex_blockWindow_ratioFour_le {R J : ℕ} (hR : 1 ≤ R) (hQ : R + J ≤ 4 * R) :
+    hermNegIndex ((blockWindow 4 R J).map (↑) : Matrix (Fin J) (Fin J) ℂ) ≤ 300000 := by
+  have hc : ⌈Real.exp (rowExcess 4)⌉₊ ≤ 100000 :=
+    Nat.ceil_le.mpr (by exact_mod_cast exp_rowExcess_four_le)
+  calc hermNegIndex ((blockWindow 4 R J).map (↑) : Matrix (Fin J) (Fin J) ℂ)
+      ≤ (4 - 1) * ⌈Real.exp (rowExcess 4)⌉₊ := hermNegIndex_blockWindow_le_uniform hR hQ
+    _ ≤ 3 * 100000 := Nat.mul_le_mul (by norm_num) hc
+    _ = 300000 := by norm_num
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

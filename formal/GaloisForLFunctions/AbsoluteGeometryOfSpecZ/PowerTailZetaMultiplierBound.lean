@@ -29,7 +29,8 @@ private theorem rawPrefix_eq_powerSum (s : ℂ) (N : ℕ) :
 private theorem norm_le_coordinate_mass (s : ℂ) : ‖s‖ ≤ |s.re| + |s.im| := by
   have hsq : ‖s‖ ^ 2 ≤ (|s.re| + |s.im|) ^ 2 := by
     rw [Complex.sq_norm, Complex.normSq_apply]
-    nlinarith only [abs_nonneg s.re, abs_nonneg s.im, sq_abs s.re, sq_abs s.im]
+    nlinarith only [sq_abs s.re, sq_abs s.im,
+      mul_nonneg (abs_nonneg s.re) (abs_nonneg s.im)]
   nlinarith only [hsq, norm_nonneg s, abs_nonneg s.re, abs_nonneg s.im]
 
 /-- A fixed left edge below one gives a uniform polynomial bound across
@@ -123,8 +124,10 @@ theorem norm_zeta_le_ordinate_power_in_closed_strip
       ‖(N : ℂ) ^ (1 - s) / (1 - s)‖ + ‖kernel s N / 2‖ +
       ‖powerSumRemainder s N‖ := by
     rw [he]
-    exact (norm_sub_le _ _).trans (add_le_add_right
-      ((norm_sub_le _ _).trans (add_le_add_right (norm_sub_le _ _) _)) _)
+    apply (norm_sub_le _ _).trans
+    apply add_le_add _ le_rfl
+    apply (norm_sub_le _ _).trans
+    exact add_le_add (norm_sub_le _ _) le_rfl
   calc
     _ ≤ U / (1 - σ₀) + U + U + 20 * U :=
       htriangle.trans (add_le_add (add_le_add (add_le_add hraw hmain) hend) hrem)

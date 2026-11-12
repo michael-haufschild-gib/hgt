@@ -31,7 +31,7 @@ WZC is the programme of the two worlds:
 |---|---|---|
 | Edit | `TwoSidedEdits.IsEdit e`, `plusSet e`, `minusSet e` | a sign `e : ℕ → {−1, 0, 1}` supported on the primes; doubled primes `e = 1`, deleted primes `e = −1` |
 | System of an edit | `editSystem e` | the rational primes with the deleted primes removed and a second generator of norm `p` for each doubled prime; integer norms |
-| Edit series, remainder | `LSeries (e ·)`, `editRem e` | `E(s) = Σ_p e(p) p^{−s}`; `Q(s) = Σ_p e(p)(−log(1 − p^{−s}) − p^{−s})`, holomorphic on `Re s > ½`, and on `Re s > θ/2` if the edit is summable at `θ` |
+| Edit series, remainders | `LSeries (e ·)`, `editRem e`, `BalanceLaw.editRem3 e` | `E(s) = Σ_p e(p) p^{−s}`; `Q(s) = Σ_p e(p)(−log(1 − p^{−s}) − p^{−s})`, holomorphic on `Re s > ½`, and on `Re s > θ/2` if the edit is summable at `θ`; `Q = E(2s)/2 + Q₃` with `Q₃` holomorphic on `Re s > θ/3` |
 | Target | `PrimeEdits.target ρ`, `layerTarget J ρ`, `cutTarget ρ N` | `m(k) = −2 Re k^{ρ−1}`: minus the coefficient of `ζ(s+1−ρ) + ζ(s+1−ρ̄)`; sums over a layer; a pair that is on for `k > N` only |
 | Greedy edit | `GreedyRounding.sgn`, `PrimeEdits.gedit m`, `gdisc m`; `edit ρ` | the greedy rounding of a target on the primes with the weights `log p`, and its discrepancy `Σ_{k≤n}(m(k) − e(k) log k)` |
 | Twin with a factor | `IsFactorTwinOn c B L`; `IsFactorTwin`, `IsPairTwin`, `IsLayerTwin`, `IsTailTwin`, `IsLandingTwin` | `(s−1)ζ_B(s) = (s−1)ζ(s) · C · L(s) · e^{H(s)}`, `C ≠ 0`, `H` holomorphic on `Re s > c`; the named cases have `c = ½` and `L` a pair, a layer `∏(s−ρ_j)(s−ρ̄_j)`, a pair times `u(2s−2a)`, a sequence of layers |
@@ -113,6 +113,11 @@ WZC is the programme of the two worlds:
     configuration are summable when `Σ_j |Im ρ_j|^{−(2−2b)} < ∞`, and the prescribed factor is the
     canonical product of the configuration. The exponent `2 − 2b` is that of the density
     hypothesis.
+11. **The square sees the edit exponential at `2s`.** `ζ_B = ζ exp(E(s) + E(2s)/2 + Q₃(s))`, so
+    `((s−1)ζ_B)² = ((s−1)ζ · e^{E(s)} e^{Q₃(s)})² · e^{E(2s)}`. A count `Ax + O(x^β)` makes the
+    left side the square of a holomorphic function on `Re s > β`; if `e^{E}` continues to
+    `F`, the right side has at `ρ/2` an even order plus the order of `F` at `ρ`. An odd zero of
+    `F` at `ρ` is a square-root branch point of `ζ_B` at `ρ/2`.
 
 ## 5. Pillar theorems
 
@@ -150,9 +155,10 @@ proofs.
 | Thickness: a fake zero has `Re ρ ≤ max(κ₊, κ₋, ½)` | `BalanceLaw.re_le_of_fake_zero` |
 | Balance: a positive Euler factor does not continue across its real abscissa; no surplus of doubled primes; a surplus of deleted primes is a real zero at `κ₋`; no real zero ⇒ `κ₊ = κ₋` | `BalanceLaw.not_differentiableOn_exp_gdSeries`, `expo_plus_le`, `zero_at_expo_minus`, `balance` |
 | Logarithmic density: a fake zero of order `m` on the line `Re s = κ` right of which the edit is summable costs `Σ_{p edited} p^{−σ} ≥ m log(1/(σ−κ)) − C`; without a real zero at `κ`, each side at least `(m/2) log(1/(σ−κ)) − C` (so `½` each for the greedy edit at a non-real `ρ`) | `BalanceLaw.exists_order_mul_log_le_primeSum_add`, `exists_order_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
-| The count continues `(s−1)ζ_B` to `Re s > β`. If `β < max(κ₊, κ₋)` then `κ₊ = κ₋`, or `ζ_B` has a zero of an order `m ≥ 1` at `κ₋` and `Σ_{p deleted} p^{−σ} = m log(1/(σ−κ₋)) + O(1)` | `BalanceLaw.exists_continuation_of_count`, `balance_or_zero_of_count`, `exists_order_of_count` |
+| The count continues `(s−1)ζ_B` to `Re s > β`, and `ζ_B − Aζ` grows at most linearly on `Re s ≥ σ₀ > β`. If `β < max(κ₊, κ₋)` then `κ₊ = κ₋`, or `ζ_B` has a zero of an order `m ≥ 1` at `κ₋` and `Σ_{p deleted} p^{−σ} = m log(1/(σ−κ₋)) + O(1)` | `BalanceLaw.exists_continuation_of_count_linear`, `exists_continuation_of_count`, `balance_or_zero_of_count`, `exists_order_of_count` |
 | A fake below its top: if `β < Re ρ₀` for a fake zero `ρ₀` (always if `β ≤ ½`), then `κ₊ = κ₋`, or `ζ_B(κ₋) = 0` with `κ₋ > ½` at or right of every fake zero | `BalanceLaw.balance_or_real_top`, `balance_or_real_top_of_fake` |
 | Additions are paid in full: `κ₊ ≤ max(β, κ₋)`; an add-only edit has count exponent exactly `κ₊` | `CountFloor.expo_plus_le_max`, `expo_plus_le_of_add_only` |
+| Half the top: if `F` continues `e^{E}` to `Re s > c₀` and the edit is summable at `θ`, every zero `ρ` of `F` with `Re ρ > 2 max(β, c₀, θ/3)` has even order; the pair twin at a non-real `ρ`, `Re ρ < 13/15`, has `β ≥ Re ρ/2` | `BalanceLaw.even_order_of_count`, `half_re_le_of_count_edit` |
 | Count floor: an edit thin at `θ` has at most `cQ^{2β(2−θ)/(1−θ)}` edited primes up to `Q`; `κ(1−κ) ≤ 2β(2−κ)`; a fake zero has `(1−κ₋) Re ρ ≤ 2β(2−κ₋)`; a thin fake has `β > (1−θ)/(4(2−θ))` | `CountSieve.card_le_rpow`, `CountFloor.expo_mul_one_sub_le`, `one_sub_expo_mul_re_le`, `lt_of_isIntegerNormFakeAt` |
 | Exponent zero: a thin edit has a remainder below every power iff `κ₊ = κ₋ = 0`; then it has no fake zero | `CountFloor.expo_eq_zero_iff` |
 
@@ -167,7 +173,8 @@ proofs.
 | The construction needs a zero-free region of `ζ` | The greedy edit matches the target on the integers, not on the primes; `ζ` enters through `ζ(w) − 1/(w−1)` only |
 | The balance law is a statement about the half-plane right of the line | It holds at every height above the count exponent. A count below `κ₋` without balance quantizes the deleted primes: the logarithmic density of `m` copies of the primes at the scale `κ₋` |
 | Doubled primes can hide below the count remainder | Additions are paid in full: `κ₊ ≤ max(β, κ₋)`. Only deletions can hide, and only down to the count floor |
-| The zeta function of a pair twin stops at the line | It is holomorphic on `Re s > Re ρ/2` apart from the pole. What keeps its count above `√x` is growth on vertical lines, not a singularity |
+| The zeta function of a pair twin stops at the line | It is holomorphic on `Re s > Re ρ/2` apart from the pole, and has a square-root branch point at `ρ/2`. Between `Re ρ/2` and `Re ρ` what keeps its count high is growth on vertical lines, not a singularity |
+| A twin with an entire factor can have a count below `x^{1/4}` | A simple zero of the edit exponential at `ρ` costs `β ≥ Re ρ/2 > ¼`. A count below that needs an edit exponential that is itself singular at `ρ/2` |
 | The bound `14/15` limits the real part of a fake zero | It limits the half-plane of the factorization: for `Re ρ ≤ b < 1` the layer is the exact zero set in `Re s > max(b − 13/30, b/2)` |
 | `ζ` has the largest zero-free half-plane among the systems over its primes | In world I it does not: the edit that removes the top layer has integer norms, a count rate and a larger zero-free half-plane. "No edit with a count rate beats `ζ`" implies AAL; it is a statement about `ζ`, not a law of edits |
 | A model can also carry the reflection | A discrete Beurling system with Riemann's functional equation is the rational primes (`ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation`). The zeros of a pair twin are not symmetric |
@@ -206,7 +213,8 @@ Chebyshev's identity for a system; the restored system of an edit; targets with 
 on along a dyadic schedule; gluing of twins on a decreasing family of half-planes; pairs that
 enter at the balanced cutoff `|Im ρ|²` and the size of their regular parts; canonical products
 as prescribed factors; twins with a factor; the continuation of `(s−1)ζ_B` from the count; the
-prime-power remainder of a thin edit left of the line.
+prime-power remainder of a thin edit left of the line; the Euler product of an edit to third
+order and the parity of the order of a square.
 
 **To build.** A two-sided selection of primes with square-root discrepancy at every frequency
 and the Perron analysis of its count; factors beyond absolute convergence of the regular parts
@@ -225,7 +233,11 @@ and the Perron analysis of its count; factors beyond absolute convergence of the
 - The count exponent of deletions: is `β ≥ κ₋/2` for delete-only edits? A delete-only edit with
   `β < κ₋` has `ζ_B(κ₋) = 0`: its deleted primes imitate a zero. The floor `κ(1−κ)/(2(2−κ))` and
   the short-interval variance both stop at `κ/4` (independence of the primes up to `√X` only).
-- The count exponent of a pair twin: between `Re ρ(1−Re ρ)/(2(2−Re ρ))` and `Re ρ`.
+- The count exponent of a pair twin: between `Re ρ/2` and `Re ρ`. Above `Re ρ/2` the question
+  is the growth of `exp(−∫ζ)` on vertical lines left of `Re ρ`.
+- Edits whose exponential is singular at `ρ/2`, `ρ/3`, …: the target with the corrections
+  `−μ(k) · 2 Re n^{ρ/k−1}`, `k ≤ K`, removes the branch points down to `Re ρ/(K+1)`. Its count
+  exponent is open.
 - The loss `1−θ` in the count floor: the twin coefficients in `(X, 2X]` enter the peak as
   `Σ u(d) e(d/p)`, bounded by their number; any saving there widens the range of the sieve.
 - A count floor for integer-norm systems that are not thin edits.
@@ -272,8 +284,8 @@ argument that uses one of the first three rows holds for its models and is wrong
   finite data, for one tail left of an isolated pair, for configurations that approach the line
   and for sparse configurations (world II); open below `√x` and for dense configurations.
 - Count laws: the exact count exponent of each class of edits. Exact for add-only edits
-  (`κ₊`); bounded below for thin edits (count floor); the sharp value for deletions and for
-  pair twins is open.
+  (`κ₊`); bounded below for thin edits (count floor) and for pair twins (`Re ρ/2`); the sharp
+  value for deletions and for pair twins is open.
 
 ## 12. What a contribution must be
 

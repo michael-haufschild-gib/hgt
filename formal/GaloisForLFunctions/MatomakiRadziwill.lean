@@ -5,6 +5,11 @@ import GaloisForLFunctions.MatomakiRadziwill.LFunctionGrowth
 import GaloisForLFunctions.MatomakiRadziwill.LFunctionThreeFourOne
 import GaloisForLFunctions.MatomakiRadziwill.LFunctionDLVP
 import GaloisForLFunctions.MatomakiRadziwill.LFunctionZeroFree
+import GaloisForLFunctions.MatomakiRadziwill.LFunctionConj
+import GaloisForLFunctions.MatomakiRadziwill.LFunctionLogDerivStrip
+import GaloisForLFunctions.MatomakiRadziwill.TwistedChebyshevContour
+import GaloisForLFunctions.MatomakiRadziwill.TwistedChebyshevBound
+import GaloisForLFunctions.MatomakiRadziwill.PrimeBlockRouteT
 
 /-!
 # Matomäki–Radziwiłł for twisted Liouville functions
@@ -16,4 +21,10 @@ Toward the mean square of short sums of `λχ`, `χ` a Dirichlet character of fi
   estimate and the `k`-th derivative test hold for shifted phases `(n+α)^{it}`, so Hurwitz partial
   sums and `L(s, χ)` grow like `log τ` across the Vinogradov–Korobov width, and the de la Vallée
   Poussin argument gives `L(β + iγ, χ) ≠ 0` for `β > 1 − (log γ)^{-2/3}(log log γ)^{-5/3}/10⁸`.
+* **Route T for `χ`** (`LFunctionConj`, `LFunctionLogDerivStrip`, `TwistedChebyshevContour`,
+  `TwistedChebyshevBound`, `PrimeBlockRouteT`): reflection `L(s, χ⁻¹) = conj L(conj s, χ)` covers
+  negative heights; Landau's lemma bounds `L'/L ≪ log Y/ε(Y)` in the strip of half the
+  Vinogradov–Korobov width at heights `≤ Y`; truncated Perron and Cauchy's theorem on the rectangle
+  give `Σ_{n ≤ N} χ(n)Λ(n)n^{-iτ} ≤ N/(log X)^A` for `|τ| ≤ X`, `log N ≥ (log X)^θ`, `θ > 2/3`, and
+  hence `Σ_{P < p ≤ 2P} χ(p)p^{-1-iτ} ≤ (log X)^{-A}`.
 -/

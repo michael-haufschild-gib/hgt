@@ -1,22 +1,23 @@
 # Euclidean regularity of the full zero-field action
 
 - **ID:** galois-zero-euclidean-action
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Questions:** Topology of the zero algebra; arithmetic versus analytic symmetry.
 
 Let `K` be the complete-fibre source field, `L` the centered zero field,
 `E=L∩ℝ`, and `c` centered conjugation. Give `L` its inherited complex topology;
 this is distinct from the Krull topology on `Gal(L/K)`.
 
-## Target
+## Theorem
 
-The Euclidean-continuous source automorphisms are exactly `1` and `c`.
+The Euclidean-continuous source automorphisms are exactly `1` and `c`;
+these are also exactly the actions bounded on the field's unit ball.
 Every other source automorphism has arbitrary amplification near zero:
 for every `ε,M>0`, there is `z∈E` with `|z|<ε` and `|σ(z)|>M`.
 Nevertheless, every source automorphism moves every centered zero by less
-than one. Uniform displacement on the entire zero carrier therefore supplies
-no bound on the induced field action.
+than one. Any action outside `{1,c}` would satisfy this zero-displacement
+bound while remaining unbounded near zero on the generated field.
 
 The whole source group acts by Euclidean-continuous field automorphisms
 exactly when `E=K`; this also characterizes joint continuity of the action
@@ -34,7 +35,8 @@ Write `D=|σ(a)−a|>0`. Choose a positive integer `N` with `ND/2>M`, then
 choose `q∈ℚ` with `|a−q|<min(ε/N,D/2)`. Since source automorphisms fix
 rationals, `z=N(a−q)∈E` satisfies `|z|<ε` and
 `|σ(z)|≥N(D−|a−q|)>ND/2>M`. This contradicts continuity at zero.
-Identity and conjugation are Euclidean-continuous.
+Taking `ε=1` and `M=|B|+1` also contradicts any unit-ball bound `B`.
+Identity and conjugation are Euclidean-continuous isometries.
 
 Every source automorphism preserves an ordinate fibre, and both original
 and image widths lie strictly between `−1/2` and `1/2`. Their distance is
@@ -47,6 +49,18 @@ Krull group is discrete, so continuity of its individual field actions gives
 joint continuity. Conversely joint continuity gives every individual action.
 For each fixed field element its stabilizer is Krull-open, making its orbit
 map locally constant.
+
+## Formalization
+
+`GaloisTheoryOfZeros/TheEuclideanTopologyOfTheZeroField.lean`:
+`evenWidthInCentered_fixingSubgroup`, `source_aut_fixes_real_iff`,
+`source_aut_amplification`, `source_aut_euclidean_continuous_iff`,
+`source_aut_bounded_iff`, `all_source_auts_euclidean_continuous_iff`,
+`source_aut_zero_displacement_lt_one`, `source_aut_orbit_continuous`,
+and `source_aut_joint_continuous_iff`.
+
+Direct source audit passed. All nine main transitive axiom closures contain
+only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella import wired.
 
 ## Boundary
 

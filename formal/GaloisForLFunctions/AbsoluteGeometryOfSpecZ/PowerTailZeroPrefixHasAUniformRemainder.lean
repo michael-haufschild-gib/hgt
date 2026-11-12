@@ -43,7 +43,8 @@ theorem partialSumRate_zero_add_le {a : ℝ} (q : XiZeroCopy)
     have hcoord : ‖w‖ ≤ |w.re| + |w.im| := by
       have hsq : ‖w‖ ^ 2 ≤ (|w.re| + |w.im|) ^ 2 := by
         rw [Complex.sq_norm, Complex.normSq_apply]
-        nlinarith only [abs_nonneg w.re, abs_nonneg w.im, sq_abs w.re, sq_abs w.im]
+        nlinarith only [sq_abs w.re, sq_abs w.im,
+          mul_nonneg (abs_nonneg w.re) (abs_nonneg w.im)]
       nlinarith only [hsq, norm_nonneg w, abs_nonneg w.re, abs_nonneg w.im]
     rw [abs_of_pos hr, hwre, hwim] at hcoord
     linarith only [hcoord, hhi, hγ1]

@@ -10,6 +10,9 @@ The balance law of an edit was proved for a given continuation of `(s − 1) ζ_
 * **The count continues the zeta function** (`exists_continuation_of_count`).  For an
   integer-norm system with `N(x) = A x + O(x^β)`, `0 ≤ β ≤ 1`, the coefficients `a(n) − A` of
   `ζ_B − A ζ` have partial sums `O(x^β)`, so `(s − 1) ζ_B(s)` is holomorphic on `Re s > β`.
+  Summation by parts bounds the continuation of `ζ_B − A ζ` by
+  `C (1 + |s| Σ_i i^{β − σ₀ − 1})` on `Re s ≥ σ₀ > β`: linear growth on vertical lines
+  (`norm_growthCont_le`, `exists_continuation_of_count_linear`).
 * **The prime-power remainder of a thin edit** (`differentiableOn_editRem_of_summable`).  If
   `Σ_p |e(p)| p^{−θ} < ∞`, `θ > 0`, then `Q(s) = Σ_p e(p) (−log(1 − p^{−s}) − p^{−s})` is
   holomorphic on `Re s > θ/2`.
@@ -90,19 +93,54 @@ theorem hasLinearCounting_of_count {B : BeurlingSystem} {A C β : ℝ} (hβ1 : �
   have h4 : C * X ^ β ≤ C * X := mul_le_mul_of_nonneg_left h2 hC
   linarith
 
-/-- **The count continues the zeta function.**  An integer-norm system with
-`N(x) = A x + O(x^β)`, `0 ≤ β ≤ 1`, has a holomorphic continuation of `(s − 1) ζ_B(s)` to
-`Re s > β`. -/
-theorem exists_continuation_of_count {B : BeurlingSystem} (h : HasIntegerNorms B)
+/-- **Linear growth.**  A Dirichlet series whose coefficients have partial sums `O(x^θ)` is, on
+`Re s ≥ σ₀ > θ`, at most `K (1 + |s| Σ_i i^{θ − σ₀ − 1})`. -/
+theorem norm_growthCont_le {c : ℕ → ℂ} {θ K : ℝ} (hc0 : c 0 = 0) (hθ : 0 ≤ θ)
+    (hK : ∀ x : ℝ, 1 ≤ x → ‖∑ k ∈ Icc 1 ⌊x⌋₊, c k‖ ≤ K * x ^ θ) {σ₀ : ℝ} (hσ₀ : θ < σ₀)
+    {s : ℂ} (hs : σ₀ ≤ s.re) :
+    ‖growthCont c θ s‖ ≤ K * (1 + ‖s‖ * ∑' i : ℕ, (i : ℝ) ^ (θ - σ₀ - 1)) := by
+  have hK0 : 0 ≤ K := by simpa using (norm_nonneg _).trans (hK 1 le_rfl)
+  have hsθ : θ < s.re := lt_of_lt_of_le hσ₀ hs
+  -- summation by parts bounds every partial sum
+  have hb : ∀ N, ‖∑ n ∈ range N, LSeries.term c s n‖ ≤
+      K * (1 + ‖s‖ * ∑' i : ℕ, (i : ℝ) ^ (θ - s.re - 1)) := fun N => by
+    simp_rw [term_eq_mul_powNeg_of_zero hc0]
+    refine BoundedPartialSums.norm_sum_mul_powNeg_le_of_growth hθ hK0 hc0 (fun n hn => ?_) hsθ N
+    rw [BoundedPartialSums.partialSum, HeckeLFunctions.sum_range_succ_eq_sum_Icc hc0]
+    simpa using hK n (by exact_mod_cast hn)
+  have hlim := le_of_tendsto' (tendsto_sum_term_growthCont hc0 hθ hK hsθ).norm hb
+  -- the sum over `i` decreases with the abscissa
+  have hS₁ : Summable fun i : ℕ => (i : ℝ) ^ (θ - s.re - 1) :=
+    Real.summable_nat_rpow.mpr (by linarith)
+  have hS₂ : Summable fun i : ℕ => (i : ℝ) ^ (θ - σ₀ - 1) :=
+    Real.summable_nat_rpow.mpr (by linarith)
+  have h0 : ∀ a : ℝ, a < 0 → ((0 : ℕ) : ℝ) ^ a = 0 := fun a ha => by
+    rw [Nat.cast_zero, Real.zero_rpow ha.ne]
+  have hmono : ∑' i : ℕ, (i : ℝ) ^ (θ - s.re - 1) ≤ ∑' i : ℕ, (i : ℝ) ^ (θ - σ₀ - 1) := by
+    refine hasSum_le (fun i => ?_) hS₁.hasSum hS₂.hasSum
+    rcases Nat.eq_zero_or_pos i with rfl | hi
+    · exact le_of_eq (by rw [h0 _ (by linarith), h0 _ (by linarith)])
+    · exact Real.rpow_le_rpow_of_exponent_le (Nat.one_le_cast.mpr hi) (by linarith)
+  have hmul := mul_le_mul_of_nonneg_left hmono (norm_nonneg s)
+  exact hlim.trans (mul_le_mul_of_nonneg_left (by linarith) hK0)
+
+/-- **The count continues the zeta function, with linear growth.**  An integer-norm system with
+`N(x) = A x + O(x^β)`, `0 ≤ β ≤ 1`, has a holomorphic continuation `G` of `(s − 1) ζ_B(s)` to
+`Re s > β`, and `|G(s) − A (s − 1) ζ(s)| ≤ |s − 1| · C (1 + |s| Σ_i i^{β − σ₀ − 1})` on
+`Re s ≥ σ₀ > β`. -/
+theorem exists_continuation_of_count_linear {B : BeurlingSystem} (h : HasIntegerNorms B)
     (hd : B.IsDiscrete) {A C β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
     (hN : ∀ x : ℝ, 1 ≤ x → |(B.countBall x : ℝ) - A * x| ≤ C * x ^ β) :
     ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | β < s.re} ∧
-      ∀ s : ℂ, 1 < s.re → G s = (s - 1) * B.zetaSeriesC s := by
+      (∀ s : ℂ, 1 < s.re → G s = (s - 1) * B.zetaSeriesC s) ∧
+      ∀ σ₀ : ℝ, β < σ₀ → ∀ s : ℂ, σ₀ ≤ s.re →
+        ‖G s - (A : ℂ) * zetaResidueUnit s‖ ≤
+          ‖s - 1‖ * (C * (1 + ‖s‖ * ∑' i : ℕ, (i : ℝ) ^ (β - σ₀ - 1))) := by
   have hc0 : countDefect B h A 0 = 0 := by simp [countDefect]
   have hgrow := norm_sum_countDefect_le h hd hβ hN
   have hlin := hasLinearCounting_of_count hβ1 hN
   refine ⟨fun s => (A : ℂ) * zetaResidueUnit s + (s - 1) * growthCont (countDefect B h A) β s,
-    ?_, fun s hs => ?_⟩
+    ?_, fun s hs => ?_, fun σ₀ hσ₀ s hs => ?_⟩
   · exact ((differentiableOn_const _).mul differentiable_zetaResidueUnit.differentiableOn).add
       ((differentiable_id.sub_const 1).differentiableOn.mul
         (differentiableOn_growthCont hc0 hβ hgrow))
@@ -133,6 +171,21 @@ theorem exists_continuation_of_count {B : BeurlingSystem} (h : HasIntegerNorms B
     rw [growthCont_eq_LSeries hc0 hβ hgrow (lt_of_le_of_lt hβ1 hs) hsc, hLc,
       zetaResidueUnit_of_ne hs1]
     ring
+  · show ‖(A : ℂ) * zetaResidueUnit s + (s - 1) * growthCont (countDefect B h A) β s -
+      (A : ℂ) * zetaResidueUnit s‖ ≤ _
+    rw [add_sub_cancel_left, norm_mul]
+    exact mul_le_mul_of_nonneg_left (norm_growthCont_le hc0 hβ hgrow hσ₀ hs) (norm_nonneg _)
+
+/-- **The count continues the zeta function.**  An integer-norm system with
+`N(x) = A x + O(x^β)`, `0 ≤ β ≤ 1`, has a holomorphic continuation of `(s − 1) ζ_B(s)` to
+`Re s > β`. -/
+theorem exists_continuation_of_count {B : BeurlingSystem} (h : HasIntegerNorms B)
+    (hd : B.IsDiscrete) {A C β : ℝ} (hβ : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hN : ∀ x : ℝ, 1 ≤ x → |(B.countBall x : ℝ) - A * x| ≤ C * x ^ β) :
+    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | β < s.re} ∧
+      ∀ s : ℂ, 1 < s.re → G s = (s - 1) * B.zetaSeriesC s := by
+  obtain ⟨G, hG, hGeq, -⟩ := exists_continuation_of_count_linear h hd hβ hβ1 hN
+  exact ⟨G, hG, hGeq⟩
 
 /-! ## The prime-power remainder of a thin edit -/
 

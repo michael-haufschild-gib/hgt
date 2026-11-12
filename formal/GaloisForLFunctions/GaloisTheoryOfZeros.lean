@@ -34,6 +34,10 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheArithmeticSignsOfTheZeroFibres
 
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheQuadraticCharactersOfConjugation
 
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheEuclideanTopologyOfTheZeroField
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheKummerRelationsOfTheZeroWidths
+
 /-!
 # Galois theory of zeros
 
