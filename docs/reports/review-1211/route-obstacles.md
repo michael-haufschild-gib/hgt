@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** `b98864a8e1` with its working tree (2026-11-12). Fact log: `logs/review-1211-status-quo-facts.md` (identifiers such as `FC-T1`, `CR4`, `AG-L2`, `PC1`, `WZ2`, `GZ1`, `CAM1` are its entries; `D1–D8` are its deductions; §6 lists the baseline declarations re-read for this report). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** `5920325719` with its working tree (2026-11-12). Fact log: `logs/review-1211-status-quo-facts.md` (identifiers such as `FC-T1`, `CR4`, `AG-L2`, `PC1`, `WZ2`, `GZ1`, `CAM1` are its entries; `D1–D8` are its deductions; §6 lists the baseline declarations re-read for this report). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. HJ is PA; the BSY criterion of FEL belongs to CTF; PCS, DR, PW-B are retired labels.
 
@@ -28,7 +28,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | The finite-scale Hodge index holds on every window of ratio `≤103/50` at every block size (margin `1/5000`), on the first step packets of ratios 4 and 7 (`1/20`, `1/100`), and every ratio is nonnegative on thin step packets | [L*] (AG-F5–AG-F8) | the first windows with the contacts of two and three primes are certified at their first block sizes |
 | The index of the restricted Weil form at aperture `b` is the sum of the nullities of the resonant apertures below `b`; it is the number of crossings of the path of aperture conormals (Lagrangian, independent of the primes) with the graph of Weil's operator; its supremum at energy zero is the number of zeros right of the line; RH ⇔ no crossing | [L*] (AG-L1–AG-L3) | the Morse index of the sign problem is a Maslov index; the far end of the path carries the zeros |
 | Below the pole-vanishing floor `μ₀(a)` every null mode is charged and the index is the crossing number of a path of Lagrangian planes in the fixed space `ℂ²×ℂ²`, split into an even and an odd line; ground modes are charged iff `μ(a)<μ₀(a)` | [L*] (AG-L5–AG-L8) | B104 has the exact form `μ(a)=μ₀(a)` |
-| The critical comb `F_{½}(N)` has growth exponent exactly the zero width; it never converges; RH ⇔ subpolynomial growth ⇔ absolute logarithmic Abel integrability; for `0<a<½`: Abel integrable ⇔ `a+w≤½` | [L*] (PC1–PC5) | the width is read on one explicit sequence |
+| The critical comb `F_{½}(N)` has growth exponent exactly the zero width; it never converges; RH ⇔ subpolynomial growth ⇔ absolute logarithmic Abel integrability; for `0<a<½`: Abel integrable ⇔ `a+w≤½`, and ordinary convergence ⇔ every zero has `Re ρ<1−a` | [L*] (PC1–PC5, `powerCombTailConverges_iff_forall_zero_re_lt`) | the width is read on one explicit sequence |
 | `Θ≤7/8`; `Θ<1⇔Θ∞<1`; the world `Θ=Θ∞=1` is excluded; RH ⇔ ZAL ∧ B13 ∧ Landing; B13 ⇔ the packet index is `0` or `∞` | [X]; [L*] (`QuasiRHIsATailLaw`, `TheFiniteStratumIsThePacketIndexDichotomy`) | a failure of RH is world I or world II with top `≤7/8` |
 | AAL ⇔ at most one or infinitely many zeros right of every line; non-attainment on windows, of `ψ(x)−x`, at the primes, one moment exponent for all orders: each gives AAL | [L*] (FFA §6 of the log) | AAL is a unit gap |
 | Two-sided edits of the rational primes with a count rate realize: a non-real pair alone on top at every count exponent `β>½`; every finite layer with multiplicities; an isolated pair above an infinite half-scale tail; every configuration that approaches the line; every sparse configuration; zeros symmetric about the line in a strip `c<Re s<1−c`; a finite layer of ζ edited away | [L*] (WZ1, WZ4–WZ7) | Euler product over the rational primes, integer norms and a count rate constrain no finite layer, no landing, no sparse tail |
@@ -186,6 +186,7 @@ Established: RH ⇔ every compact pulse rings down at the quarter rate [L*] (`ri
 | B147 | Shimura nonvanishing for one eigenform | indep. |
 | B114, B117, B171 | partner involution; a regulator with a gap before the limit; a form of signature `(1,∞)` | producer |
 | B178 | a relaxation rate beyond the tempered exponent from a principle of the horizon | producer |
+| B188 | the Kuznetsov–Kloosterman mechanism of Selberg's `3/16` applied to the scattering resonances: a resonance-free strip | producer |
 
 ### S8. The exceptional coordinate: two worlds and three atoms
 Routes: BAG, ZCG, JAS (shell), SC (undamped), WL (thick runs), ACS (sampling), LA (finite support), RW (polar ground energy). Programmes: ZCG AbscissaLaws, ELT, EFT, IWT, IRW, IRP, APD, AAD, TAPO, FFA, SPAL, WZC.
@@ -226,10 +227,10 @@ Established: near-total returns need `log t>(log y)^{3/2−ε}` [F]; under `Θ�
 Routes: ACS, HF, HAT-C, PM (count), LI. Programmes: SOSZ, HAT, AGZ, HFP, AE, RIAC, HHAC, CTH, LST, KPA.
 
 Established:
-- Forced data: `CombBezoutShift c ⇔ c≤0 ∧ RH`; a contact changed at its price is RH at every parameter [L*] (`combBezoutWith_contactAt_price_iff`).
+- Forced data: `CombBezoutShift c ⇔ c≤0 ∧ RH`; a contact altered by `t` and paid at its price is RH at every parameter [L*] (`combBezoutWith_contactAt_price_iff`).
 - Index: exact count of right zeros for ζ with Dirichlet characters, Dedekind zeta functions, class characters, the degree-two Artin character of `ℚ(∛2,ω)/ℚ` and `ζ_{ℚ(∛2)}` (`forall_negIndex_cubeRootsOfTwo_eq_zero_iff`); a virtual configuration counts zeros and poles; `W_{ζ_L}−W_{ζ_K}` has no negative square ⇔ equal right zeros and on the line Dedekind's divisibility; the neutral form of a number ring has the index of its zeta function plus one [L*] (AG-V1–AG-V3).
-- Finite scale: block matrix = charges + potential + Dirichlet form with attracting jets and contacts; the ground vector of the neutral part has one sign and is charged [doc] (AG-F4); RH ⇔ one negative square of the neutral part on every window [L*]; RH ⇔ a positive mass floor on every ratio window [L*] (`riemannHypothesis_iff_ratioWindow_positive_mass_floor`); short windows, first blocks of ratios 4, 7, thin packets certified [L*]; a margin above one scale `R` with `log R≥E_Q+2C_Q²/μ₀+μ₀` transfers to every refinement [L*] (`packetForm_refined_ge_half_of_margin`).
-- Power tails: §0.
+- Finite scale: block matrix = charges + potential + Dirichlet form with attracting jets and contacts; the ground vector of the neutral part has one sign and is charged [doc] (AG-F4); RH ⇔ one negative square of the neutral part on every window [L*]; at a fixed ratio `Q` the block matrix has at most `(Q−1)⌈e^{E_Q}⌉` negative squares at every block size, at most `300000` at ratio four [L*] (`hermNegIndex_blockWindow_le_uniform`); RH ⇔ a positive mass floor on every ratio window [L*] (`riemannHypothesis_iff_ratioWindow_positive_mass_floor`); short windows, first blocks of ratios 4, 7, thin packets certified [L*]; a margin above one scale `R` with `log R≥E_Q+2C_Q²/μ₀+μ₀` transfers to every refinement [L*] (`packetForm_refined_ge_half_of_margin`).
+- Power tails: §0. The contacts of a number ring are its point counts over the finite fields: `idealContact K (p^m)=#Hom(𝓞_K,𝔽_{p^m})·log p` [L*].
 - Sections: the sections of the first `N` graphs in aligned boxes number the volume over `N!` [L*].
 
 | | Obstacle | Strength |
@@ -238,7 +239,6 @@ Established:
 | A146 | the sign of `𝔚_4` and `𝔚_7` at every block size: certified margins between the first block size and the transfer threshold (`log R` about `2.5·10⁴` at ratio 4) (unverified) | — |
 | A150 | Brauer induction, extending the quotient index law to every Artin character [C] | — |
 | A141 | the half-plane `[X]` for fields containing `ζ₃` and every ray class character (unverified) | — |
-| A152 | ordinary comb convergence at an unattained subcritical boundary: the contact-prefix convolution and its finite-part constant (unverified; pieces [S]) | — |
 | B87, B88 | a count on the rays defined without `Q`; the sign of the comb finite part | RH |
 | B149, B169 | Bézout from a property of the object; a doubling with a canonical height | RH (producer) |
 | B152 | the sign on step packets at every ratio and block size | RH |
@@ -390,7 +390,7 @@ Receiver statements follow the frontier map unless marked.
 ### PM — Physical model
 - **Path:** scattering source → reflection Krein sign, ringdown rate, cavity rate or a count → RH.
 - **Established:** S7.
-- **(a)** A26, A54, A148. **(b)** B68, B71, B87; B147; B114, B117, B171; B178.
+- **(a)** A26, A54, A148. **(b)** B68, B71, B87; B147; B114, B117, B171; B178, B188.
 
 ### PTR — Cosine source
 - **Path:** no exceptional point of the cosine producers on the open depth band → RH.
@@ -458,7 +458,7 @@ Receiver statements follow the frontier map unless marked.
 ### ACS — Castelnuovo–Severi on the degree points
 - **Path:** the comb sign, the neutral-part index on every window, subpolynomial critical-comb growth, or critical Abel integrability → RH.
 - **Established:** S10; §0 (finite-scale index, short windows, first blocks, thin packets, critical comb).
-- **(a)** A28, A41, A48, A141, A146, A150, A152.
+- **(a)** A28, A41, A48, A141, A146, A150.
 - **(b)** B152, B149, B169, B88, B87; B130; B28; B13.
 
 ### ECP — Endpoint character positivity
@@ -488,14 +488,14 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
-| AGZ | forced data; paths; exact index for Hecke characters, number rings, one Artin character, virtual configurations; finite-scale index law; short windows and first blocks certified; thin packets; Morse = Maslov index; polar Lagrangian; power and critical combs [L*] | A146, A150, A152 | B104, B149, B169, B88, B87, B152 |
+| AGZ | forced data; paths; exact index for Hecke characters, number rings, one Artin character, virtual configurations; contacts = point counts; finite-scale index law; short windows and first blocks certified; thin packets; a uniform index bound at each ratio; Morse = Maslov index; polar Lagrangian; power and critical combs, with the exact convergence boundary [L*] | A146, A150 | B104, B149, B169, B88, B87, B152 |
 | HFP | mass floors on ratio windows; robust index; Li tails [L*] | — | B152 |
 | WZC | two-sided edits: every finite layer, pair alone above `√x`, tails, landing failure, sparse configurations, layer removal; balance, parity, additions, count floor; floor of prime edits `≥13/30` [L*] | A151 | B183, B186 |
 | CRF | short columns, short Gram, average row, completed pair Gram, root numbers `Gγ₂²`, wall = phase `L`-function, wall = price of completion [L*] | A149 | B185, B187 |
-| STCC | unfolding of `θ²`, scattering coefficient across `4/3`, cube frequencies of `θ²` [doc] | A148 | B180 |
+| STCC | unfolding of `θ²`, scattering coefficient across `4/3`, cube frequencies of `θ²`, the Hecke bound `\|T_s(h)\|≤C(1+\|ξ_h\|)`, the Mellin transform of `θ²` as the Dirichlet series of the squared coefficients [L*]/[doc] | A148 | B180 |
 | FCT | frame, corrections, coupled tower to `3/5`, zero transfer, budget, signed-Gram curve, twist-family law [L*] | A118, A138 | B161, B174 |
 | MMD | cube identity, cubic reciprocity, cubic Eisenstein residue, quadratic sieve over `ℤ[ω]` [L*]/[F] | A33, A118 | — |
-| GaloisTheoryOfZeros | zero field over the source field; Jensen quartets; Euclidean topology [L*/doc] | — | an independent restriction forcing `L=K` |
+| GaloisTheoryOfZeros | zero field over the source field; Jensen quartets; Euclidean topology; Kummer relations of the width signs [L*/doc] | — | an independent restriction forcing `L=K` |
 | FFA | floors; receivers and kills of every off-scale kind; tangent data [L*] | A144 | B170–B173 |
 | SPAL | count rigidity; integer-norm fakes above and below `½`; the real top of a deletion [L*] | — | — |
 | EFT / APD | FE rigidity with `L¹`/`L²` defects; firewall; Hamburger rigidity [L*] | — | B186 |
@@ -503,7 +503,7 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 | ELT | atoms; filters; growing-order reduction [L*] | — | B141, B145, B138, B13 |
 | CTZ, IRP | no bounded or Wiener constituent; index semicontinuity [L*] | — | B146 |
 | MZF / CDG | twisted moments; positive proportion; cameras and box cameras [L*]/[doc] | A18 | B62, B57, B59 |
-| LogarithmicChowla, PrimeExponentialSums, MatomakiRadziwill | entropy decrement; circle method; prime kernel off major arcs; VK region for Dirichlet `L` [L*]/[doc]; twisted Chebyshev [S] | A147 | — |
+| LogarithmicChowla, PrimeExponentialSums, MatomakiRadziwill | entropy decrement; circle method; prime kernel off major arcs; VK region for Dirichlet `L`; prime blocks `≤(log X)^{−A}`; ladder mean values; Ramaré's identity [L*]/[doc]; twisted Chebyshev [S] | A147 | — |
 | ShortIntervalPrimesInProgressions | primes in `(x,x+x^θ]` in every class; Siegel–Walfisz in windows [L*] | — | — |
 | SignFreePurityMechanisms | Goss Riemann hypothesis [L*] | — | a norm for ξ |
 | HAT | clock; tower; unbounded critical inverse [L*]/[KR] | A54 | B88, B117 |

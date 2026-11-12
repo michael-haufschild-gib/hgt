@@ -140,7 +140,8 @@ theorem tendsto_powerTailRightZeroWave_zero {a σ : ℝ}
       simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re,
         Complex.ofReal_im, mul_zero, sub_zero]
       ring
-    simpa only [mul_zero] using he.const_mul (powerTailRightZeroAmplitude a σ q)
+    simpa only [powerTailRightZeroWave, mul_zero] using
+      he.const_mul (powerTailRightZeroAmplitude a σ q)
   · simpa only [powerTailRightZeroWave, powerTailRightZeroAmplitude, hq,
       if_false, zero_mul] using
       (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℂ)) atTop (𝓝 0))

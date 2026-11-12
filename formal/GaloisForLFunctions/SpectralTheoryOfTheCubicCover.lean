@@ -6,6 +6,7 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquareOfTheSourceThe
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubeFrequenciesOfTheThetaSquareFactorOut
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCuspHeightsOfAPointAreSparse
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaCoefficientsHaveTheHeckeBound
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheMellinTransformOfTheThetaSquareReadsItsDirichletSeries
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -18,5 +19,6 @@ across `4/3`, its residue and the logarithm in its Laurent coefficient; the cons
 and the Rankin–Selberg identity of `θ²` and of the projected `θ_s²` against incomplete Eisenstein
 series; the factorization of the Dirichlet series of the squared theta coefficients through
 `ζ_K(3w − 1)`; the count of cusp cosets lifting a point to height `≥ Y`, and the Hecke bound
-`|T_s(h)| ≤ C(1 + |ξ_h|)` for the projected theta coefficients. See `SpectralTheoryOfTheCubicCover/README.md`.
+`|T_s(h)| ≤ C(1 + |ξ_h|)` for the projected theta coefficients; the Mellin transform of the nonconstant part of the constant
+term of `θ_s²` as `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}`. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/

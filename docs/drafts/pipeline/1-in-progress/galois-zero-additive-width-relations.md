@@ -22,16 +22,27 @@ and the offset sum must vanish separately in each arithmetic square class.
 This constrains rational relations without assuming independence of zero
 ordinates or widths.
 
-## Proof route
+## Paper proof
 
 Each radical is an eigenvector for the full kernel `Gal(L/D)` with its
 quadratic sign character. Two characters coincide exactly when the ratio
 of their radicals is fixed by the whole kernel, hence belongs to `D`;
 this is exactly equality of their radicand square classes.
-Distinct multiplicative characters are linearly independent. Applying every
-kernel automorphism to a relation therefore forces each character component
-to vanish separately. Conjugation separates the source-field ordinate sum
-from the purely imaginary offsets.
+For a finite relation, apply every kernel automorphism. Group the resulting
+identity by the distinct multiplicative characters. Dedekind independence
+forces each grouped coefficient to vanish. Conversely, summing the zero
+components recovers the relation. Zero radicals contribute nothing, so this
+also covers every divisor copy on the critical line.
+
+For distinct classes, each component of a relation has a single nonzero
+radical, forcing its coefficient to vanish. Equal classes give proportional
+radicals and hence a dependence.
+
+Write each centered zero as `w_q=t_q+b_q`. Conjugation fixes all coefficients
+in `D` and all `t_q`, while negating every `b_q`. Adding and subtracting a
+relation and its conjugate separates its ordinate and offset parts. Apply
+the class decomposition to the offset part. Specializing coefficients to
+integers gives the exact equivalence for the entire centered zero divisor.
 
 ## Boundary
 

@@ -306,7 +306,7 @@ theorem fibrePointCount_rat {p m : ℕ} (hp : p.Prime) (hm : 1 ≤ m) :
     ⟨(Int.castRingHom (GaloisField p m)).comp Rat.ringOfIntegersEquiv.toRingHom⟩
   haveI : Subsingleton (𝓞 ℚ →+* GaloisField p m) := ⟨fun φ ψ => RingHom.ext fun x => by
     have hx : x = ((Rat.ringOfIntegersEquiv x : ℤ) : 𝓞 ℚ) := by
-      rw [← map_intCast Rat.ringOfIntegersEquiv.symm, RingEquiv.symm_apply_apply]
+      rw [← map_intCast Rat.ringOfIntegersEquiv.symm, Int.cast_id, RingEquiv.symm_apply_apply]
     rw [hx, map_intCast, map_intCast]⟩
   exact Nat.card_unique
 

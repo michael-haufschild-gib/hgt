@@ -138,7 +138,8 @@ theorem besselSqMellin_four_thirds_ne_zero : besselSqMellin (4 / 3) ≠ 0 := by
     have hc : (t : ℂ) ^ ((4 / 3 : ℂ) - 1) = ((t ^ ((1 : ℝ) / 3) : ℝ) : ℂ) := by
       rw [Complex.ofReal_cpow ht.le]
       norm_num
-    rw [besselSq, hK, hc, smul_eq_mul, ← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re]
+    rw [besselSq, hK, hc, smul_eq_mul, ← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re,
+      Complex.ofReal_re]
   have hpos : ∀ t : ℝ, 0 < t → 0 < t ^ ((1 : ℝ) / 3) * (schlafliBesselK (1 / 3) t).re ^ 2 := by
     intro t ht
     have h1 := hK t ht
@@ -146,14 +147,19 @@ theorem besselSqMellin_four_thirds_ne_zero : besselSqMellin (4 / 3) ≠ 0 := by
     exact mul_pos (Real.rpow_pos_of_pos ht _) (pow_pos (h2.trans_le h1) 2)
   intro h0
   have hre : (∫ t in Set.Ioi (0 : ℝ), (((t : ℂ) ^ ((4 / 3 : ℂ) - 1) • besselSq t).re)) = 0 := by
-    rw [integral_re hconv]
+    have h1 := integral_re hconv
+    simp only [RCLike.re_to_complex] at h1
+    rw [h1]
     change (besselSqMellin (4 / 3)).re = 0
     rw [h0, Complex.zero_re]
   have hI : IntegrableOn (fun t : ℝ => (((t : ℂ) ^ ((4 / 3 : ℂ) - 1) • besselSq t).re))
       (Set.Ioi 0) := hconv.re
   have hnn : 0 ≤ᵐ[volume.restrict (Set.Ioi (0 : ℝ))]
       fun t : ℝ => (((t : ℂ) ^ ((4 / 3 : ℂ) - 1) • besselSq t).re) :=
-    ae_restrict_of_forall_mem measurableSet_Ioi fun t ht => by rw [hpt t ht]; exact (hpos t ht).le
+    ae_restrict_of_forall_mem measurableSet_Ioi fun t ht => by
+      simp only [Pi.zero_apply]
+      rw [hpt t ht]
+      exact (hpos t ht).le
   have hsupp : Function.support (fun t : ℝ => (((t : ℂ) ^ ((4 / 3 : ℂ) - 1) • besselSq t).re)) ∩
       Set.Ioi 0 = Set.Ioi 0 := by
     refine Set.inter_eq_right.mpr fun t ht => ?_
@@ -281,7 +287,6 @@ theorem integral_thetaSqRemainder (s : ℂ) (hs : 4 < s.re) :
     · simp only [hF, hh, if_false, sourceAmplitude_mul_neg v hv h hh, besselSq, smul_eq_mul, hcp,
         ha_def]
       field_simp
-      ring
   -- each `F h` is integrable, with integral `T_s(h)² a_h^{−s} M(s)`
   have hint : ∀ h, Integrable (F h) (volume.restrict (Set.Ioi 0)) := by
     intro h

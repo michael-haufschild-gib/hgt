@@ -23,19 +23,27 @@
 
 ## Roadmap (2): the spectral side (user: "continue 1, then 2")
 Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3`, leading coefficient
-`∝ Σ_𝔞 c_𝔞³` (constant terms `c_𝔞 v^{2/3}` of θ_s at the cusps 𝔞; on the rational orbit `c_𝔞³ = c³`,
-no cancellation since `κ³ = 1`); then `S` has a simple pole at 2/3 (via `thetaSquareDirichlet_eq`).
-- 2a. Size of `T_s` at ramified frequencies `uλ^k a b³`: `T(hb³) = |b|T(h)`, prime factors `|·| ≤ 1`
-  (`rationalSourceResidualFourierCoefficient_prime_factor`) reduce to `T(uλ^k)`; need a bound in k
-  (ramified local factor) or a Hecke bound from a uniform growth bound of θ_s (Ford cover, all cusp tails).
-- 2b. Mellin link: `∫_0^∞ v^{s−3}(A(v) − const-mode²) dv = |P| M(s) Σ_h T(h)²(4π|ξ_h|)^{−s}`, `M(s) = ∫ t^{s−1}K_{1/3}(t)²`.
-- 2c. Eisenstein series at every cusp / seeds at every cusp tail; constant terms `φ_{∞𝔞}(s) v_𝔞^{2−s}`.
-- 2d. Continuation of `E` along `{Re s > 1, Im s > 0} ∪ B(4/3, ε)` (MMD corrected family) with the cusp
-  expansion (constant term + rapidly decreasing) at every cusp, uniformly near 4/3.
-- 2e. Truncated pairing `I(s,T) = ∫ θ_s² (E(s) − 1_{v>T} v^s)` (converges for Re s > 4/3), equal to
-  `|P| ∫_0^T v^{s−3} A(v) dv` for Re s > 2 (unfolding, done for compact profiles).
-- 2f. Pole bookkeeping: `∫_T^∞ c_𝔞² v^{4/3} φ_{∞𝔞}(s) v^{2−s} v^{−3}` gives the double pole; residual part
-  `⟨θ_s², θ̃⟩` the next coefficient.
+`∝ c³` (`c = 3πr` the constant-term coefficient of θ_s); then `S` has a simple pole at 2/3 (via
+`thetaSquareDirichlet_eq`). Route (no pointwise continuation of E needed; only MMD's L² meromorphy):
+- 2a [done, module 8] Hecke bound `|T_s(h)| ≤ C(1+|ξ_h|)` for all h ≠ 0 (ramified included).
+- 2b [done, module 9] Mellin link `∫_0^∞ v^s R(v) v^{−3} = M(s)·Σ_{h≠0} T_s(h)²(4π|ξ_h|)^{−s}`, Re s > 4;
+  `M` holomorphic on Re s > 2/3, `M(4/3) ≠ 0`; constant term of θ_s² = `b(v,0)² + R(v)`.
+- 2c Pairing continuation: for G of multiplier κ⁻¹, G ∈ L² (kernel quotient), exponentially small at
+  cusp ∞: `Φ_G(s) = ∫_{D_Γ} G·E(s)` (Re s > 2) equals `∫G·seed(s) + ∫G·Corr(s)` for Re s > 4, Im s > 0
+  (MMD `kernelEisensteinL2Correction_initial_overlap`, a = 2, b = 3), hence continues to
+  `{Re s > 1, Im s > 0} ∪ B(4/3, ε)` with at most a simple pole at 4/3 (`kernelEisensteinCorrectionNumerator_*`).
+- 2d The subtraction `H = 4c²·Proj(E_κ̄(·|η v^{4/3}))` (η = smooth cutoff, 0 below 1, 1 above 2) and
+  `G = θ_s² − H`: G is Γ_rat-equivariant, `θ_s² − c²v^{4/3}` is exponentially small at ∞ (rational cusps
+  by equivariance), θ_s is exponentially small at the two primitive ramified cusp classes
+  (`three_cusp_decomposition`, `ramifiedSource_exponential_decay`), H vanishes high in them ⇒ G ∈ L².
+- 2e Scattering of H: with compact profiles f_T and both unfoldings,
+  `Mellin(a₀(H_T) − c²f_T)(s) = 4c² Φ_rat(s) ∫ f_T v^{−1−s} dv`, `Φ_rat` = v^{2−s} coefficient of the
+  constant term of `E_rat(s) = Proj E(s)`; T → ∞ for Re s > 2. Needs the constant term of E(s) at every
+  height (check MMD Fourier expansion of `hyperbolicEisenstein`).
+- 2f Continuation of Φ_rat from L²: `Φ_rat(s)·∫g v^{−1−s} = ⟨Proj Corr(s), E_κ̄(·|g)⟩` for g supported
+  high in the cusp; simple pole at 4/3 with residue from the constant term of θ_s (`Proj Res = θ_s`).
+- 2g Assembly: `|P| M_R(s) = Φ_G(s) − |P|c² ∫(1−η)v^{s−5/3} + c²·4Φ_rat(s) f̃(s)`, `f̃(s) = 1/(s−4/3) + entire`
+  ⇒ M_R has a double pole at 4/3 with coefficient `∝ c² Res Φ_rat ≠ 0`; divide by M(s).
 
 ## Lean modules
 | Module | Content | State |
@@ -45,6 +53,9 @@ no cancellation since `κ³ = 1`); then `S` has a simple pole at 2/3 (via `theta
 | `TheSquareOfTheCubicThetaUnfolds` | θ = `cubicResidualFunction` (MMD olean built 2026-11-12 10:12 from the 10:02 source); `thetaSq_automorphy`; Parseval on P (`integral_nonzeroSeries_sq`); `integral_thetaSq_periodDomain`; `thetaAmplitude_mul_neg` (Bessel form); `integral_thetaSq_mul_incompleteEisenstein(_of_compact)` (SQ3) | clean |
 | `TheSquareOfTheSourceThetaUnfolds` | generic Parseval `integral_cuspCharacterSeries_sq`; generic RS `integral_sq_mul_incompleteEisenstein`; θ_s instance (multiplier via `RationalSource.extendedComplexCharacter_restrict`); `sourceAmplitude_mul_neg` (T_s(h)² v² K²) | clean |
 | `TheCubeFrequenciesOfTheThetaSquareFactorOut` | uniqueness of A·B³ (`thetaSquarefreePart_mul_cube`, `thetaCubePart_mul_cube`, `mul_cube_injective`); `sourceCoefficient_sq`; `normWeight_shift`; `thetaSquareDirichlet_eq` (Σ_I N^{−w}T_s² = C̄² Z₀(3w−1) S(w), Re w>1, unramified ideals) | clean |
+| `TheCuspHeightsOfAPointAreSparse` | lattice points in a disc; at most `K/Y²` cusp cosets give a point height `≥ Y` (`card_cuspCosets_height_le`) | clean; olean built |
+| `TheThetaCoefficientsHaveTheHeckeBound` | one-coefficient Parseval bound; strip lintegral coordinates; `∫_{D_Γ}|θ_s|² < ∞` (L² residue + `levelSet ⊆` kernel set); unfolding bound on `[Y,2Y]`; `sourceCoefficient_hecke_bound` | clean; olean built |
+| `TheMellinTransformOfTheThetaSquareReadsItsDirichletSeries` | `|K_{1/3}(x)| ≤ Cx^{−1/3}e^{−x/2}`; `M(s)` holomorphic on Re s > 2/3, `M(4/3) ≠ 0`; `Σ_{h≠0}|ξ_h|^{−t}` (t > 2, ZLattice); `tsum_amplitude_mul_neg`; `integral_thetaSqRemainder` (Re s > 4) | clean; olean built |
 | `TheConstantTermContinuesAcrossFourThirds` | `clearedScattering` = (s−4/3)φ(s) via zetaPoleFilled·L(χ₋₃)/Z₀; holomorphic on Re s>1; value r at 4/3; `dedekindZeta_residue_eq`; `clearedConstantTerm` (residue 3πr v^{2/3}); `hasDerivAt_clearedConstantTerm` (log term) | clean |
 
 ## Notes
@@ -56,5 +67,6 @@ no cancellation since `κ³ = 1`); then `S` has a simple pole at 2/3 (via `theta
 ## Conjecture ledger
 
 ## Log
+- 2026-11-12 — (2) started: 2a Hecke bound and 2b Mellin link formalized (modules 7–9); roadmap (2) rewritten around MMD's L² meromorphy (2c–2g).
 - 2026-11-12 — (1) arithmetic side done: RS for θ_s², cube factorization. Open in (1): ramified frequencies (no polynomial bound on T_s(λ^k·)), element-vs-ideal bookkeeping (±primary), bridge σ(A) ↔ CRF γ₂(A)² (cubicUnitGaussSum 1 a vs sexticGaussPow 2 a 1).
 - 2026-11-12 — created; README first draft; modules 1–4 clean (SQ1, SQ3 done; SQ2/SQ4 constant-term part done). Next: small-height asymptotics of A(v) = c²v^{4/3} + Σ a a (spectral side, renormalization) — needs E continued as a function with growth and the spectral expansion of θ² − c²E*.
