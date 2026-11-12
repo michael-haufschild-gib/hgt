@@ -1,11 +1,13 @@
 import GaloisForLFunctions.MatomakiRadziwill.LadderTopTerms
+import GaloisForLFunctions.MatomakiRadziwill.LadderMasterOn
 
 /-!
 # The mean square of the concrete ladder
 
 For `L = log h ≥ 2^{20}` and `X` with `J ≥ 2` ladder scales, at frequencies `e ≤ W ≤ X e^{-L/2}`:
 
-* the rough part (`ladder_rough_le`): the master inequality with the first step
+* the rough part (`ladder_rough_le`), integrated over any measurable `A ⊆ [−W, W]` with the top-scale
+  bound needed on `A` only (`ladder_master_on`): the master inequality with the first step
   (`first_term_le`), the moment steps (the `j`-th at most `e^{-b_{j−1}} ≤ e^{-2^{j−1} L/2}`, summing to
   `≤ 2e^{-L/2}`), the Ramaré errors of the ladder scales (`≤ 256 · 52/a_0` in total), the top Ramaré
   error and the exceptional term with a pointwise bound `ρ` for the top blocks;
@@ -66,10 +68,11 @@ theorem ladder_rough_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) (hmul : 
     {X : ℕ} (hX : Real.exp 1 ≤ (X : ℝ)) (hJ : 2 ≤ ladderJ hL (X : ℝ))
     (hlarge : 864 * Real.log X
       ≤ (Real.log X ^ (93 / 100 : ℝ) / 4) ^ (1 / 8 : ℝ) * Real.log X ^ (93 / 100 : ℝ))
-    {W : ℝ} (hWe : Real.exp 1 ≤ W) (hWX : W ≤ X * Real.exp (-(L / 2))) {ρ : ℝ}
-    (hρ : ∀ v ∈ (ladderConfig hL (X : ℝ)).topBlocks (Real.log X), ∀ w ∈ Icc (-W) W,
+    {W : ℝ} (hWe : Real.exp 1 ≤ W) (hWX : W ≤ X * Real.exp (-(L / 2))) {A : Set ℝ}
+    (hAm : MeasurableSet A) (hAs : A ⊆ Icc (-W) W) {ρ : ℝ}
+    (hρ : ∀ v ∈ (ladderConfig hL (X : ℝ)).topBlocks (Real.log X), ∀ w ∈ A,
       ‖blockQ f (ladderConfig hL (X : ℝ)).top (Real.log X) v w‖ ≤ ρ) :
-    (∫ w in Icc (-W) W, ‖logPoly (coefA f) ((ladderConfig hL (X : ℝ)).ladderS X) w‖ ^ 2)
+    (∫ w in A, ‖logPoly (coefA f) ((ladderConfig hL (X : ℝ)).ladderS X) w‖ ^ 2)
       ≤ (2 * (256 * (52 / seqA L 0)) + 2 * (L ^ 52 * (10 * Real.pi * Real.exp (-(6 / 25) * L)
             + 40 * Real.exp 1 * Real.exp 1 * Real.exp (-96 * Real.log L)))
           + 2 * (2 * Real.exp (-(L / 2))))
@@ -114,7 +117,7 @@ theorem ladder_rough_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) (hmul : 
     intro p hp
     have hp' : p ∈ topScale (X : ℝ) := hp
     exact Nat.succ_le_of_lt (mem_primesIoc.mp hp').1
-  have hmaster := C.ladder_master hf hmul (by rw [hCJ]; omega) hX1' hW1 (H := seqH L)
+  have hmaster := C.ladder_master_on hf hmul (by rw [hCJ]; omega) hX1' hW1 hAm hAs (H := seqH L)
     (fun j => by linarith [(seqH_props hL j).1]) (Htop := Real.log X) hlogX2
     (P := fun j => ⌊Real.exp (seqA L j)⌋₊ + 1) hP2 hPmin hPtop2 hPtopmin
     (ladderC L) (fun j u => Real.exp_pos _) (ladderEll L) hρ

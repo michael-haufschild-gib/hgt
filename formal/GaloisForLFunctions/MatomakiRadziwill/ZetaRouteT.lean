@@ -188,6 +188,152 @@ theorem eventually_zeta_conditions (Ctot Cδ delta τ₀ : ℝ) (hCδ : 0 < Cδ)
     eventually_exp_decay_le hCδ] with ℓ h1 h2 h3 h4 h5 h6 h7
   exact ⟨h1, h2, h3, h4, h5, h6, h7⟩
 
+/-- The arithmetic of the `ζ` Chebyshev bound, in abstract variables. -/
+theorem cheb_assembly {K H ℓ τa LN M E LKH Ctot Cδ : ℝ} (hK : 0 < K) (hH : H = K / ℓ ^ 6)
+    (hℓ : 5 ≤ ℓ) (hτa : ℓ ^ 19 ≤ τa) (hLN0 : 0 ≤ LN) (hLN : LN ≤ ℓ) (hM0 : 0 ≤ M)
+    (hM : M ≤ (1 + 900 * Cδ) * ℓ ^ 4) (hE0 : 0 ≤ E) (hE : E ≤ 1 / ℓ ^ 40) (hLKH : LKH ≤ 2 * ℓ)
+    (hℓC : Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) + 2 ≤ ℓ) (hCtot : 0 < Ctot)
+    (hCδ : 0 < Cδ) :
+    Ctot * K * (K / H) ^ 2 * (LN ^ 2 / τa + M * (E + 1 / τa ^ 2)) / (2 * Real.pi) + LKH * H
+      ≤ K / ℓ ^ 4 := by
+  have hℓ0 : 0 < ℓ := by linarith
+  have hℓ1 : (1 : ℝ) ≤ ℓ := by linarith
+  have hτ0 : 0 < τa := lt_of_lt_of_le (by positivity) hτa
+  have hKH : (K / H) ^ 2 = ℓ ^ 12 := by rw [hH, div_div_cancel₀ hK.ne']; ring
+  -- the pole term
+  have ht1 : LN ^ 2 / τa ≤ 1 / ℓ ^ 17 := by
+    rw [div_le_div_iff₀ hτ0 (by positivity)]
+    have h1 : LN ^ 2 ≤ ℓ ^ 2 := pow_le_pow_left₀ hLN0 hLN 2
+    have h3 : LN ^ 2 * ℓ ^ 17 ≤ ℓ ^ 2 * ℓ ^ 17 := mul_le_mul_of_nonneg_right h1 (by positivity)
+    have h2 : ℓ ^ 2 * ℓ ^ 17 = ℓ ^ 19 := by ring
+    linarith
+  -- the zero-free term
+  have hb2 : 1 / τa ^ 2 ≤ 1 / ℓ ^ 38 := by
+    have : ℓ ^ 38 ≤ τa ^ 2 := by
+      calc ℓ ^ 38 = (ℓ ^ 19) ^ 2 := by ring
+        _ ≤ τa ^ 2 := pow_le_pow_left₀ (by positivity) hτa 2
+    exact one_div_le_one_div_of_le (by positivity) this
+  have hEb : E + 1 / τa ^ 2 ≤ 2 / ℓ ^ 38 := by
+    have : 1 / ℓ ^ 40 ≤ 1 / ℓ ^ 38 :=
+      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hℓ1 (by norm_num))
+    have e : (2 : ℝ) / ℓ ^ 38 = 1 / ℓ ^ 38 + 1 / ℓ ^ 38 := by ring
+    linarith
+  have hME : M * (E + 1 / τa ^ 2) ≤ 2 * (1 + 900 * Cδ) / ℓ ^ 17 := by
+    have h1 := mul_le_mul hM hEb (by positivity) (by positivity)
+    have h2 : (1 + 900 * Cδ) * ℓ ^ 4 * (2 / ℓ ^ 38) = 2 * (1 + 900 * Cδ) / ℓ ^ 34 := by
+      field_simp
+    have h3 : 2 * (1 + 900 * Cδ) / ℓ ^ 34 ≤ 2 * (1 + 900 * Cδ) / ℓ ^ 17 :=
+      div_le_div_of_nonneg_left (by positivity) (by positivity)
+        (pow_le_pow_right₀ hℓ1 (by norm_num))
+    linarith
+  have hinner : LN ^ 2 / τa + M * (E + 1 / τa ^ 2) ≤ (1 + 2 * (1 + 900 * Cδ)) / ℓ ^ 17 := by
+    have e : (1 + 2 * (1 + 900 * Cδ)) / ℓ ^ 17 = 1 / ℓ ^ 17 + 2 * (1 + 900 * Cδ) / ℓ ^ 17 := by
+      ring
+    linarith
+  have hC0 : 0 ≤ Ctot * K * (K / H) ^ 2 / (2 * Real.pi) := by
+    rw [hKH]; positivity
+  have hmain : Ctot * K * (K / H) ^ 2 * (LN ^ 2 / τa + M * (E + 1 / τa ^ 2)) / (2 * Real.pi)
+      ≤ Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) * K / ℓ ^ 5 := by
+    have e1 : Ctot * K * (K / H) ^ 2 * (LN ^ 2 / τa + M * (E + 1 / τa ^ 2)) / (2 * Real.pi)
+        = Ctot * K * (K / H) ^ 2 / (2 * Real.pi) * (LN ^ 2 / τa + M * (E + 1 / τa ^ 2)) := by
+      ring
+    rw [e1]
+    refine le_trans (mul_le_mul_of_nonneg_left hinner hC0) (le_of_eq ?_)
+    rw [hKH]; field_simp
+  -- the smoothing
+  have hH0 : 0 < H := by rw [hH]; positivity
+  have hLKH0 : LKH * H ≤ 2 * K / ℓ ^ 5 := by
+    calc LKH * H ≤ 2 * ℓ * H := mul_le_mul_of_nonneg_right hLKH hH0.le
+      _ = 2 * K / ℓ ^ 5 := by rw [hH]; field_simp
+  have hfin : Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) * K / ℓ ^ 5 + 2 * K / ℓ ^ 5
+      ≤ K / ℓ ^ 4 := by
+    rw [← add_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    have hNℓ : (Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) + 2) * K ≤ ℓ * K :=
+      mul_le_mul_of_nonneg_right hℓC hK.le
+    have h4 : (0 : ℝ) ≤ ℓ ^ 4 := by positivity
+    have := mul_le_mul_of_nonneg_right hNℓ h4
+    have e : ℓ ^ 5 = ℓ * ℓ ^ 4 := by ring
+    rw [e]
+    linarith
+  linarith
+
+/-- The zero-free bracket `1/|τ| + log(3|τ|/2)/w(3|τ|/2+1) ≤ (1 + 900C)ℓ⁴`. -/
+theorem bracket_le {A X τ Cδ : ℝ} (hX7 : 7 ≤ X) (hℓ5 : 5 ≤ Real.log X) (hτ1 : 1 ≤ |τ|)
+    (hτX : |τ| ≤ X) (hCδ : 0 < Cδ)
+    (hz : 1 / (450 * Cδ * Real.log X ^ (9 / 10 : ℝ) * Real.log (Real.log X) ^ 2)
+      ≤ routeTZeroFreeWidth A (3 * |τ| / 2 + 1)) :
+    1 / |τ| + Real.log (3 * |τ| / 2) / routeTZeroFreeWidth A (3 * |τ| / 2 + 1)
+      ≤ (1 + 900 * Cδ) * Real.log X ^ 4 := by
+  set ℓ := Real.log X with hℓdef
+  have hℓ0 : 0 < ℓ := by linarith
+  have hX0 : 0 < X := by linarith
+  have hτ0 : 0 < |τ| := by linarith
+  set z := 1 / (450 * Cδ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2) with hzdef
+  have hlogℓ1 : 1 ≤ Real.log ℓ := by
+    rw [Real.le_log_iff_exp_le hℓ0]; linarith [Real.exp_one_lt_d9]
+  have hz0 : 0 < z := by
+    have := Real.rpow_pos_of_pos hℓ0 (9 / 10 : ℝ); positivity
+  have h1 : 1 / |τ| ≤ 1 := by rw [div_le_one hτ0]; exact hτ1
+  have hlog0 : 0 ≤ Real.log (3 * |τ| / 2) := Real.log_nonneg (by linarith)
+  have hX2 : 7 * X ≤ X * X := mul_le_mul_of_nonneg_right hX7 hX0.le
+  have hlog2 : Real.log (3 * |τ| / 2) ≤ 2 * ℓ := by
+    have : 3 * |τ| / 2 ≤ X ^ 2 := by rw [sq]; linarith
+    calc Real.log (3 * |τ| / 2) ≤ Real.log (X ^ 2) := Real.log_le_log (by positivity) this
+      _ = 2 * ℓ := by rw [Real.log_pow]; push_cast; ring
+  have h2 : Real.log (3 * |τ| / 2) / routeTZeroFreeWidth A (3 * |τ| / 2 + 1) ≤ 2 * ℓ / z :=
+    div_le_div₀ (by linarith) hlog2 hz0 hz
+  have h3 : 2 * ℓ / z = 900 * Cδ * ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2 := by
+    rw [hzdef]; field_simp; ring
+  have h4 : ℓ ^ (9 / 10 : ℝ) ≤ ℓ := by
+    calc ℓ ^ (9 / 10 : ℝ) ≤ ℓ ^ (1 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num)
+      _ = ℓ := Real.rpow_one ℓ
+  have h5 : Real.log ℓ ≤ ℓ := le_trans (Real.log_le_sub_one_of_pos hℓ0) (by linarith)
+  have h6 : Real.log ℓ ^ 2 ≤ ℓ ^ 2 := pow_le_pow_left₀ (by linarith) h5 2
+  have h7 : 900 * Cδ * ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2 ≤ 900 * Cδ * ℓ ^ 4 := by
+    have hr0 : 0 ≤ ℓ ^ (9 / 10 : ℝ) := Real.rpow_nonneg hℓ0.le _
+    have : ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2 ≤ ℓ * ℓ * ℓ ^ 2 :=
+      mul_le_mul (mul_le_mul_of_nonneg_left h4 hℓ0.le) h6 (sq_nonneg _) (by positivity)
+    have e : ℓ * ℓ * ℓ ^ 2 = ℓ ^ 4 := by ring
+    calc 900 * Cδ * ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2
+        = 900 * Cδ * (ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2) := by ring
+      _ ≤ 900 * Cδ * (ℓ * ℓ * ℓ ^ 2) := mul_le_mul_of_nonneg_left this (by positivity)
+      _ = 900 * Cδ * ℓ ^ 4 := by rw [e]
+  have h8 : (1 : ℝ) ≤ ℓ ^ 4 := one_le_pow₀ (by linarith)
+  linarith
+
+/-- The saving `(3K)^{-w} ≤ ℓ^{-40}` once the width is at least half the zero-free lower bound. -/
+theorem rpow_saving_le {K ℓ Cδ w' : ℝ} (hK : 0 < K) (hℓ5 : 5 ≤ ℓ) (hCδ : 0 < Cδ)
+    (hlogK : ℓ ^ (92 / 100 : ℝ) ≤ Real.log K)
+    (hw' : 1 / (450 * Cδ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2) / 2 ≤ w')
+    (hexp : Real.exp (-(ℓ ^ (2 / 100 : ℝ) / (900 * Cδ * Real.log ℓ ^ 2))) ≤ 1 / ℓ ^ 40) :
+    (3 * K) ^ (-w') ≤ 1 / ℓ ^ 40 := by
+  have hℓ0 : 0 < ℓ := by linarith
+  have hlogℓ1 : 1 ≤ Real.log ℓ := by
+    rw [Real.le_log_iff_exp_le hℓ0]; linarith [Real.exp_one_lt_d9]
+  set z := 1 / (450 * Cδ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2) with hzdef
+  have hz0 : 0 < z := by
+    have := Real.rpow_pos_of_pos hℓ0 (9 / 10 : ℝ); positivity
+  have hw0 : 0 ≤ w' := by linarith
+  have h1 : (3 * K) ^ (-w') ≤ K ^ (-w') :=
+    Real.rpow_le_rpow_of_nonpos hK (by linarith) (by linarith)
+  have h2 : K ^ (-w') = Real.exp (-(w' * Real.log K)) := by
+    rw [Real.rpow_def_of_pos hK]; ring_nf
+  have h3 : z / 2 * ℓ ^ (92 / 100 : ℝ) ≤ w' * Real.log K :=
+    mul_le_mul hw' hlogK (Real.rpow_nonneg hℓ0.le _) hw0
+  have h4 : z / 2 * ℓ ^ (92 / 100 : ℝ) = ℓ ^ (2 / 100 : ℝ) / (900 * Cδ * Real.log ℓ ^ 2) := by
+    have hsplit : ℓ ^ (92 / 100 : ℝ) = ℓ ^ (9 / 10 : ℝ) * ℓ ^ (2 / 100 : ℝ) := by
+      rw [← Real.rpow_add hℓ0]; norm_num
+    rw [hzdef, hsplit]
+    have : 0 < ℓ ^ (9 / 10 : ℝ) := Real.rpow_pos_of_pos hℓ0 _
+    field_simp
+    ring
+  calc (3 * K) ^ (-w') ≤ K ^ (-w') := h1
+    _ = Real.exp (-(w' * Real.log K)) := h2
+    _ ≤ Real.exp (-(ℓ ^ (2 / 100 : ℝ) / (900 * Cδ * Real.log ℓ ^ 2))) :=
+        Real.exp_le_exp.mpr (by linarith)
+    _ ≤ 1 / ℓ ^ 40 := hexp
+
 /-- **The twisted Chebyshev bound for `ζ` above polylogarithmic heights.** -/
 theorem exists_zetaChebyshev_le :
     ∃ X₀ : ℝ, ∀ X : ℝ, X₀ ≤ X → ∀ τ : ℝ, Real.log X ^ 19 ≤ |τ| → |τ| ≤ X → ∀ N : ℕ,
@@ -203,9 +349,8 @@ theorem exists_zetaChebyshev_le :
   refine ⟨max X₂ 7, fun X hX τ hτlo hτhi N hlogN hNX => ?_⟩
   obtain ⟨hℓ5, hℓC, hτ₀ℓ, hτπ, hℓ9, hzδ, hexp⟩ := hX₂ X (le_trans (le_max_left _ _) hX)
   have hX7 : 7 ≤ X := le_trans (le_max_right _ _) hX
-  set ℓ := Real.log X with hℓdef
-  have hℓ0 : 0 < ℓ := by linarith
   have hX0 : 0 < X := by linarith
+  have hℓ0 : 0 < Real.log X := by linarith
   -- `N ≥ e⁹`
   have hlogN9 : 9 ≤ Real.log N := le_trans hℓ9 hlogN
   have hN0 : (0 : ℝ) < N := by
@@ -216,157 +361,37 @@ theorem exists_zetaChebyshev_le :
   have hN9 : Real.exp 9 ≤ N := by
     rw [← Real.exp_log hN0]; exact Real.exp_le_exp.mpr hlogN9
   have hN1 : (1 : ℝ) ≤ N := le_trans (Real.one_le_exp (by norm_num)) hN9
-  -- the smoothing width `H = N/ℓ^6`
-  set H : ℝ := N / ℓ ^ 6 with hHdef
-  have hℓ6 : 1 ≤ ℓ ^ 6 := one_le_pow₀ (by linarith)
+  set H : ℝ := N / Real.log X ^ 6 with hHdef
+  have hℓ6 : 1 ≤ Real.log X ^ 6 := one_le_pow₀ (by linarith)
   have hH0 : 0 < H := by positivity
   have hHN : H ≤ N := div_le_self hN0.le hℓ6
   have hτ₀ : τ₀ ≤ |τ| := le_trans hτ₀ℓ hτlo
   have hb := hbound N H τ hN9 hH0 hHN hτ₀
   rw [sum_Icc_twistedVM_trivial]
   refine le_trans hb ?_
-  -- the pieces
-  have hτ0 : 0 < |τ| := lt_of_lt_of_le (by positivity) hτlo
   have hτ1 : 1 ≤ |τ| := le_trans (one_le_pow₀ (by linarith)) hτlo
-  have hKH : ((N : ℝ) / H) ^ 2 = ℓ ^ 12 := by
-    rw [hHdef, div_div_cancel₀ hN0.ne']; ring
-  have hlogNℓ : Real.log N ≤ ℓ := Real.log_le_log hN0 hNX
-  have hlogN0 : 0 ≤ Real.log N := by linarith
-  have ht1 : Real.log N ^ 2 / |τ| ≤ 1 / ℓ ^ 17 := by
-    rw [div_le_div_iff₀ hτ0 (by positivity)]
-    have h1 : Real.log N ^ 2 ≤ ℓ ^ 2 := pow_le_pow_left₀ hlogN0 hlogNℓ 2
-    have h2 : ℓ ^ 2 * ℓ ^ 17 = ℓ ^ 19 := by ring
-    nlinarith
-  -- the zero-free width and the saving
-  have hz := zfw_ge A hX7 hℓ5 (by linarith) hτhi
-  set z := 1 / (450 * Cδ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2) with hzdef
-  have hlogℓ1 : 1 ≤ Real.log ℓ := by
-    rw [Real.le_log_iff_exp_le hℓ0]; linarith [Real.exp_one_lt_d9]
-  have hz0 : 0 < z := by
-    have := Real.rpow_pos_of_pos hℓ0 (9 / 10 : ℝ); positivity
-  have hzfw0 := routeTZeroFreeWidth_pos A (3 * |τ| / 2 + 1)
-  have hM : 1 / |τ| + Real.log (3 * |τ| / 2) / routeTZeroFreeWidth A (3 * |τ| / 2 + 1)
-      ≤ (1 + 900 * Cδ) * ℓ ^ 4 := by
-    have h1 : 1 / |τ| ≤ 1 := by rw [div_le_one hτ0]; exact hτ1
-    have hlog0 : 0 ≤ Real.log (3 * |τ| / 2) := Real.log_nonneg (by linarith)
-    have hlog2 : Real.log (3 * |τ| / 2) ≤ 2 * ℓ := by
-      have : 3 * |τ| / 2 ≤ X ^ 2 := by nlinarith
-      calc Real.log (3 * |τ| / 2) ≤ Real.log (X ^ 2) := Real.log_le_log (by positivity) this
-        _ = 2 * ℓ := by rw [Real.log_pow]; push_cast; ring
-    have h2 : Real.log (3 * |τ| / 2) / routeTZeroFreeWidth A (3 * |τ| / 2 + 1) ≤ 2 * ℓ / z :=
-      div_le_div₀ (by linarith) hlog2 hz0 hz
-    have h3 : 2 * ℓ / z = 900 * Cδ * ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2 := by
-      rw [hzdef]; field_simp; ring
-    have h4 : ℓ ^ (9 / 10 : ℝ) ≤ ℓ := by
-      calc ℓ ^ (9 / 10 : ℝ) ≤ ℓ ^ (1 : ℝ) :=
-            Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num)
-        _ = ℓ := Real.rpow_one ℓ
-    have h5 : Real.log ℓ ≤ ℓ := le_trans (Real.log_le_sub_one_of_pos hℓ0) (by linarith)
-    have h6 : Real.log ℓ ^ 2 ≤ ℓ ^ 2 := pow_le_pow_left₀ (by linarith) h5 2
-    have h7 : 900 * Cδ * ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2 ≤ 900 * Cδ * ℓ ^ 4 := by
-      have hr0 : 0 ≤ ℓ ^ (9 / 10 : ℝ) := Real.rpow_nonneg hℓ0.le _
-      have : ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2 ≤ ℓ * ℓ * ℓ ^ 2 :=
-        mul_le_mul (mul_le_mul_of_nonneg_left h4 hℓ0.le) h6 (sq_nonneg _) (by positivity)
-      have e : ℓ * ℓ * ℓ ^ 2 = ℓ ^ 4 := by ring
-      calc 900 * Cδ * ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2
-          = 900 * Cδ * (ℓ * ℓ ^ (9 / 10 : ℝ) * Real.log ℓ ^ 2) := by ring
-        _ ≤ 900 * Cδ * (ℓ * ℓ * ℓ ^ 2) := mul_le_mul_of_nonneg_left this (by positivity)
-        _ = 900 * Cδ * ℓ ^ 4 := by rw [e]
-    have h8 : (1 : ℝ) ≤ ℓ ^ 4 := one_le_pow₀ (by linarith)
-    nlinarith
-  have hE : (3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) ≤ 1 / ℓ ^ 40 := by
-    set w' := routeTUniformRegWidth A delta (3 * |τ| / 2) with hw'
-    have hw'z : z / 2 ≤ w' := by
-      rw [hw', routeTUniformRegWidth]
-      have : z ≤ min delta (routeTZeroFreeWidth A (3 * |τ| / 2 + 1)) := le_min hzδ hz
-      linarith
-    have h1 : (3 * (N : ℝ)) ^ (-w') ≤ (N : ℝ) ^ (-w') :=
-      Real.rpow_le_rpow_of_nonpos hN0 (by linarith) (by linarith)
-    have h2 : (N : ℝ) ^ (-w') = Real.exp (-(w' * Real.log N)) := by
-      rw [Real.rpow_def_of_pos hN0]; ring_nf
-    have h3 : z / 2 * ℓ ^ (92 / 100 : ℝ) ≤ w' * Real.log N :=
-      mul_le_mul hw'z hlogN (Real.rpow_nonneg hℓ0.le _) (by linarith)
-    have h4 : z / 2 * ℓ ^ (92 / 100 : ℝ) = ℓ ^ (2 / 100 : ℝ) / (900 * Cδ * Real.log ℓ ^ 2) := by
-      have hsplit : ℓ ^ (92 / 100 : ℝ) = ℓ ^ (9 / 10 : ℝ) * ℓ ^ (2 / 100 : ℝ) := by
-        rw [← Real.rpow_add hℓ0]; norm_num
-      rw [hzdef, hsplit]
-      have : 0 < ℓ ^ (9 / 10 : ℝ) := Real.rpow_pos_of_pos hℓ0 _
-      field_simp
-      ring
-    calc (3 * (N : ℝ)) ^ (-w') ≤ (N : ℝ) ^ (-w') := h1
-      _ = Real.exp (-(w' * Real.log N)) := h2
-      _ ≤ Real.exp (-(ℓ ^ (2 / 100 : ℝ) / (900 * Cδ * Real.log ℓ ^ 2))) :=
-          Real.exp_le_exp.mpr (by linarith)
-      _ ≤ 1 / ℓ ^ 40 := hexp
-  have hb2 : 1 / |τ| ^ 2 ≤ 1 / ℓ ^ 38 := by
-    have : ℓ ^ 38 ≤ |τ| ^ 2 := by
-      calc ℓ ^ 38 = (ℓ ^ 19) ^ 2 := by ring
-        _ ≤ |τ| ^ 2 := pow_le_pow_left₀ (by positivity) hτlo 2
-    exact one_div_le_one_div_of_le (by positivity) this
-  have hEb : (3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) + 1 / |τ| ^ 2
-      ≤ 2 / ℓ ^ 38 := by
-    have : 1 / ℓ ^ 40 ≤ 1 / ℓ ^ 38 :=
-      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ (by linarith) (by norm_num))
-    have e : (2 : ℝ) / ℓ ^ 38 = 1 / ℓ ^ 38 + 1 / ℓ ^ 38 := by ring
-    linarith
+  have hz := zfw_ge A hX7 hℓ5 (le_trans hτπ hτlo) hτhi
+  have hM := bracket_le hX7 hℓ5 hτ1 hτhi hCδ hz
   have hM0 : 0 ≤ 1 / |τ| + Real.log (3 * |τ| / 2) / routeTZeroFreeWidth A (3 * |τ| / 2 + 1) := by
     have : 0 ≤ Real.log (3 * |τ| / 2) := Real.log_nonneg (by linarith)
+    have := routeTZeroFreeWidth_pos A (3 * |τ| / 2 + 1)
     positivity
-  have hinner : Real.log N ^ 2 / |τ| + (1 / |τ| + Real.log (3 * |τ| / 2)
-        / routeTZeroFreeWidth A (3 * |τ| / 2 + 1))
-        * ((3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) + 1 / |τ| ^ 2)
-      ≤ (1 + 2 * (1 + 900 * Cδ)) / ℓ ^ 17 := by
-    have h1 := mul_le_mul hM hEb (by positivity) (by positivity)
-    have h2 : (1 + 900 * Cδ) * ℓ ^ 4 * (2 / ℓ ^ 38) ≤ 2 * (1 + 900 * Cδ) / ℓ ^ 17 := by
-      rw [show (1 + 900 * Cδ) * ℓ ^ 4 * (2 / ℓ ^ 38) = 2 * (1 + 900 * Cδ) / ℓ ^ 34 by
-        field_simp; ring]
-      exact div_le_div_of_nonneg_left (by positivity) (by positivity)
-        (pow_le_pow_right₀ (by linarith) (by norm_num))
-    have e : (1 + 2 * (1 + 900 * Cδ)) / ℓ ^ 17 = 1 / ℓ ^ 17 + 2 * (1 + 900 * Cδ) / ℓ ^ 17 := by
-      ring
+  have hw' : 1 / (450 * Cδ * Real.log X ^ (9 / 10 : ℝ) * Real.log (Real.log X) ^ 2) / 2
+      ≤ routeTUniformRegWidth A delta (3 * |τ| / 2) := by
+    rw [routeTUniformRegWidth]
+    have : 1 / (450 * Cδ * Real.log X ^ (9 / 10 : ℝ) * Real.log (Real.log X) ^ 2)
+        ≤ min delta (routeTZeroFreeWidth A (3 * |τ| / 2 + 1)) := le_min hzδ hz
     linarith
-  have hlast : Real.log ((N : ℝ) + H) * H ≤ 2 * N / ℓ ^ 5 := by
-    have h1 : Real.log ((N : ℝ) + H) ≤ 2 * ℓ := by
-      have : (N : ℝ) + H ≤ X ^ 2 := by nlinarith
-      calc Real.log ((N : ℝ) + H) ≤ Real.log (X ^ 2) := Real.log_le_log (by positivity) this
-        _ = 2 * ℓ := by rw [Real.log_pow]; push_cast; ring
-    have h2 : 0 ≤ Real.log ((N : ℝ) + H) := Real.log_nonneg (by linarith)
-    calc Real.log ((N : ℝ) + H) * H ≤ 2 * ℓ * H := mul_le_mul_of_nonneg_right h1 hH0.le
-      _ = 2 * N / ℓ ^ 5 := by rw [hHdef]; field_simp; ring
-  have hC0 : 0 ≤ Ctot * (N : ℝ) * ((N : ℝ) / H) ^ 2 / (2 * Real.pi) := by positivity
-  have hmain : Ctot * (N : ℝ) * ((N : ℝ) / H) ^ 2
-        * (Real.log N ^ 2 / |τ| + (1 / |τ| + Real.log (3 * |τ| / 2)
-          / routeTZeroFreeWidth A (3 * |τ| / 2 + 1))
-          * ((3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) + 1 / |τ| ^ 2))
-        / (2 * Real.pi)
-      ≤ Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) * N / ℓ ^ 5 := by
-    have e1 : Ctot * (N : ℝ) * ((N : ℝ) / H) ^ 2
-          * (Real.log N ^ 2 / |τ| + (1 / |τ| + Real.log (3 * |τ| / 2)
-            / routeTZeroFreeWidth A (3 * |τ| / 2 + 1))
-            * ((3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) + 1 / |τ| ^ 2))
-          / (2 * Real.pi)
-        = Ctot * (N : ℝ) * ((N : ℝ) / H) ^ 2 / (2 * Real.pi)
-          * (Real.log N ^ 2 / |τ| + (1 / |τ| + Real.log (3 * |τ| / 2)
-            / routeTZeroFreeWidth A (3 * |τ| / 2 + 1))
-            * ((3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) + 1 / |τ| ^ 2)) := by
-      ring
-    rw [e1]
-    refine le_trans (mul_le_mul_of_nonneg_left hinner hC0) (le_of_eq ?_)
-    rw [hKH]; field_simp; ring
-  have hfin : Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) * N / ℓ ^ 5 + 2 * N / ℓ ^ 5
-      ≤ N / ℓ ^ 4 := by
-    rw [div_add_div_same, div_le_div_iff₀ (by positivity) (by positivity)]
-    have e : ℓ ^ 5 = ℓ * ℓ ^ 4 := by ring
-    rw [e]
-    have hC1 : 0 ≤ Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) := by positivity
-    have : (Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) * N + 2 * N) * ℓ ^ 4
-        ≤ ℓ * N * ℓ ^ 4 := by
-      have hNℓ : (Ctot / (2 * Real.pi) * (1 + 2 * (1 + 900 * Cδ)) + 2) * N ≤ ℓ * N :=
-        mul_le_mul_of_nonneg_right hℓC hN0.le
-      have h4 : (0 : ℝ) ≤ ℓ ^ 4 := by positivity
-      nlinarith
-    linarith
-  linarith
+  have hE := rpow_saving_le hN0 hℓ5 hCδ hlogN hw' hexp
+  have hE0 : 0 ≤ (3 * (N : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2))) :=
+    Real.rpow_nonneg (by positivity) _
+  have hlogNℓ : Real.log N ≤ Real.log X := Real.log_le_log hN0 hNX
+  have hX2 : 7 * X ≤ X * X := mul_le_mul_of_nonneg_right hX7 hX0.le
+  have hLKH : Real.log ((N : ℝ) + H) ≤ 2 * Real.log X := by
+    have : (N : ℝ) + H ≤ X ^ 2 := by rw [sq]; linarith
+    calc Real.log ((N : ℝ) + H) ≤ Real.log (X ^ 2) := Real.log_le_log (by positivity) this
+      _ = 2 * Real.log X := by rw [Real.log_pow]; push_cast; ring
+  exact cheb_assembly hN0 hHdef hℓ5 hτlo (by linarith) hlogNℓ hM0 hM hE0 hE hLKH hℓC hCtot hCδ
 
 /-- **Prime blocks for `ζ` above polylogarithmic heights.** -/
 theorem exists_zetaPrimeBlock_le :
@@ -434,7 +459,7 @@ theorem exists_zetaPrimeBlock_le :
   have hterm1 : (3 * P) / ℓ ^ 4 * primeWeight P ≤ 1 / (2 * ℓ ^ 3) := by
     have h1 : (3 * P) / ℓ ^ 4 * primeWeight P ≤ (3 * P) / ℓ ^ 4 * (1 / P) :=
       mul_le_mul_of_nonneg_left hw (by positivity)
-    have h2 : (3 * P) / ℓ ^ 4 * (1 / P) = 3 / (ℓ ^ 3 * ℓ) := by field_simp; ring
+    have h2 : (3 * P) / ℓ ^ 4 * (1 / P) = 3 / (ℓ ^ 3 * ℓ) := by field_simp
     have h3 : 3 / (ℓ ^ 3 * ℓ) ≤ 1 / (2 * ℓ ^ 3) := by
       rw [div_le_div_iff₀ (by positivity) (by positivity)]
       have : (0 : ℝ) < ℓ ^ 3 := by positivity
@@ -505,7 +530,9 @@ theorem exists_norm_blockQ_liouville_le :
     have h2 : (8 : ℝ) < Real.exp 3 := by
       have h4 : (2.7182818283 : ℝ) < Real.exp 1 := Real.exp_one_gt_d9
       have h3 : Real.exp 3 = Real.exp 1 ^ 3 := by rw [← Real.exp_nat_mul]; norm_num
-      rw [h3]; nlinarith
+      have h5 : (2.7182818283 : ℝ) ^ 3 < Real.exp 1 ^ 3 :=
+        pow_lt_pow_left₀ h4 (by norm_num) (by norm_num)
+      rw [h3]; norm_num at h5 ⊢; linarith
     have : (8 : ℝ) < Pa := lt_of_lt_of_le h2 h1
     have : 8 < Pa := by exact_mod_cast this
     omega

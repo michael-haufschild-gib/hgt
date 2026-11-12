@@ -301,7 +301,8 @@ theorem exists_mean_square_twLiouville_le {q : ℕ} [NeZero q] (χ : DirichletCh
         _ = X := mul_one _
     exact hX₁ X hXX₁ _ _ (Real.log X) hlog2 hlogPa hPb v w hw'
   -- the two parts of the ladder bound
-  have hrough := ladder_rough_le hf hmul hL hstep hXe hJ hlarge hW'e hW'X hρ
+  have hrough := ladder_rough_le hf hmul hL hstep hXe hJ hlarge hW'e hW'X measurableSet_Icc
+    subset_rfl hρ
   have hnon := ladder_nonrough_le hf hL hlogL h0 h1 hXe htop1 htop2 htop3 hW'1 hW'X'
   -- `|F|² ≤ 2|F − F_S|² + 2|F_S|²`, integrated over `[−W', W']`
   set R := logPoly (coefA f) ((ladderConfig hL (X : ℝ)).ladderS X) with hRdef
