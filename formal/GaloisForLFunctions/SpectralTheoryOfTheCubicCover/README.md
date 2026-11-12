@@ -98,6 +98,9 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | the rational cusp subtraction `H`: multiplier `κ⁻¹`, `= c² f(v)` above height `1/2`; its scattering `Mellin(a₀(H) − |P|c²f) = c² Φ(s) f̃(s)` (`Re s > 10/3`) | `cuspSubtraction_upper`, `integral_scatterPart`, `sub_mul_scatterTotal` | SQ4, SQ6 |
 | `G = θ_s² − H` is bounded on `ℍ³`, `O(v^{−7/3})` high in the cusp, square integrable | `renormalizedThetaSq_bounded`, `renormalizedThetaSq_memLp` | SQ4, SQ6 |
 | **double pole**: `M(s) D(s)` continues to `{1 < Re s < 13/3, Im s > 0}` and to a punctured disc at `4/3`, with `(s − 4/3)² M(s) D(s) → 108 π³ r³ ≠ 0` | `thetaSqDirichlet_double_pole` | SQ4 |
+| twisted multiplicativity `T(h₀ gen I) T(1) = (h₀/gen I)₃ T(h₀) T(gen I)`; every `h ≠ 0` is uniquely `u λ^m gen I`; `D(s) = \overline{C}² Z₀(3s/2 − 1) Σ_{u,m} (T(uλ^m)/T(1))² (4π|ξ_{uλ^m}|)^{−s} S_{uλ^m}(s/2)` with nine twisted squarefree series `S_{h₀}(w) = Σ_A (h₀/gen A)₃² σ(A) N(A)^{−w}` (`u` mod `±1`, `m` mod 3); `T(uλ) = 0`, `T(u) ≠ 0 ⇒ u = ±1` | `sourceCoefficient_twisted_mul`, `thetaSqDirichlet_eq_zeta_mul`, `twistedSquarefreeSeries_lambda_mod`, `sourceCoefficient_unit_mul_lambda`, `sourceCoefficient_unit_eq` | SQ5 |
+| the twisted squarefree combination `Q` has a simple pole at `4/3`: `(s − 4/3) M(s) Q(s) → 243 π³ r³ / (\overline{C}² L(1, χ₋₃)) ≠ 0` | `twistedSquarefreeCombination_simple_pole` | SQ5 |
+| rotated correlations `C_ε = Σ T(εh) T(h) |ξ_h|^{−s}` split the same way with twists `S_{ε²uλ^m}`; for `ε ≠ ±1` only frequencies divisible by 3 contribute | `rotatedCorrelation_eq_zeta_mul`, `rotatedCorrelation_eq_three_layer` | SQ5 |
 | `θ²` has multiplier `κ⁻¹`; its constant term is `|P|(c² v^{4/3} + Σ_h a(v, h) a(v, −h))`, `c = 3πr`, `a(v, h)a(v, −h) = T(h)T(−h)v²K_{1/3}(4π|ξ_h|v)²`; Rankin–Selberg: `∫_{D_Γ} θ² E(·∣ψ) = |P| ∫_0^∞ ψ(v)(c²v^{4/3} + Σ_h a(v,h)a(v,−h)) v^{−3} dv`, unconditional for continuous `ψ` of compact support in `(0, ∞)` | `thetaSq_automorphy`, `integral_thetaSq_periodDomain`, `thetaAmplitude_mul_neg`, `integral_thetaSq_mul_incompleteEisenstein_of_compact` | SQ3 |
 
 ## 6. Questions
@@ -108,7 +111,7 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | SQ2 | Is `E(w, s)` meromorphic on `Re s > 1` as a function on `ℍ³`, with the single pole `4/3`, and of polynomial growth on vertical lines? | not needed: pairings of `L²` functions with `E(s)` continue by MMD's resolvent (Lean); the pointwise form stays open |
 | SQ3 | The constant term of `θ²`: `c² v^{4/3} + Σ_ν T(ν)T(−ν) W_ν(v)²`, `T(−ν) = T(ν)` | yes (Lean) |
 | SQ4 | The renormalized `R(θ², s)`: continuation past `4/3`, the double pole, its leading coefficient | yes for `θ_s`: `(s − 4/3)² M(s)D(s) → 108π³r³` (Lean) |
-| SQ5 | The main term of `Σ_{N(ν) ≤ X} T(ν)² ω(N(ν)/X)` and of the squarefree part `S` | open: element sums vs unramified ideals (units, ramified powers), and the contour shift for complex `T²` |
+| SQ5 | The main term of `Σ_{N(ν) ≤ X} T(ν)² ω(N(ν)/X)` and of the squarefree part `S` | partly: `D = \overline{C}² Z₀ · Q` with `Q = 2(4π|ξ₁|)^{−s} S(s/2) + (3-divisible layer)` and `Q` has a simple pole (Lean); separating `S` needs the ramified values `T(uλ^m)`, `m ≥ 2` (nine Patterson residues); contour shift open |
 | SQ6 | The other cusps of `Γ` where `θ` has a constant term | for `θ_s`: the four rational cusps, none at the two ramified classes (Lean) |
 | SQ7 | The twisted versions read by the long columns: `θ · θ_n` for the column index `n` | open |
 

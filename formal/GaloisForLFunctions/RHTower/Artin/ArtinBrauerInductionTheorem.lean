@@ -130,6 +130,7 @@ theorem BrauerElementarySubgroup.productHomOf_surjective :
   rw [Prod.mk.eta, hx] at h
   exact h.symm
 
+include E hK in
 /-- **A subgroup of a Brauer-elementary subgroup is Brauer-elementary.** -/
 theorem mem_brauerElementaryFamily_of_le : K ∈ brauerElementaryFamily G := by
   haveI := E.finite_cyclicPart
