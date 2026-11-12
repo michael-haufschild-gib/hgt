@@ -352,8 +352,9 @@ Formalized (compile clean, `formal/GaloisForLFunctions/`):
 - Thm I.3: general `integral_norm_sq_mul_exp_ge_of_missing_multiples` (needs only density A > 0, N(n) = An + o(n)), `not_le_sqrt_log_of_missing_multiples`, `not_bounded_of_missing_multiples`; edits `FEDefect.editSystem_fake_defect_energy`, `editSystem_fake_defect_not_le_sqrt_log`, `editSystem_fake_least_deleted_prime_energy`.
 - Thm II.2: (a) `fake_abelMass_floor`; (b) `signedPoly_eq_exp` (real prime-power weights w̃_r), `signedPoly_hamburgerStripDefect` (β = 0, ‖g‖ ≤ 2(1+2^{1/4})²), `signedPoly_fake` (γ₀ = 1, Abel floor 1/12).
 - Cor III.1: `FEDefect.IsFactorTwinOn.stripDefect_eq`, `pairTwin_stripDefect_eq`, `pairFactor_criticalLine`, `quartetFactor_criticalLine`, `quartetTwin_defect`.
+- Thm I.4: `WorldsOfTheZeroConfiguration.SignedEdit.frontier_dichotomy`, `exists_subpolynomialDefectFake` (conclusions `IsSubpolynomialDefectFake`), modules `ASignedGroupedEditHasSquareRootDiscrepancy` → `TheSignedEditSeriesContinuesBelowOneHalf` → `TheSignedEditRemaindersContinueBelowOneHalf` → `TheSignedEditFactorsThroughTheTemperedModel` → `FakeEditsWithSubpolynomialDefectEnergy`. Stronger than stated: needs only `1/2 < β₀ < 3/2 − Θ` (no `5/8`, any `γ₀`); `σ₁ = max(α/2, β₀ − 1/2, Θ + β₀ − 1)`; pointwise `‖g(t)‖ ≤ C_ε(1+|t|)^{1/6+ε}` (Weyl, corpus `norm_riemannZeta_half_le_abs_rpow`). Construction: signs selected per group from `|cos(γ₀ log p)|` weights with the corpus Bernstein net (`BeurlingRandomPrimeDeletion`), group exponent `α = (β₀+β_c)/2`; `H₁` bounded by summation by parts, `Q` by sparsity at `θ > α`.
 
-Open: Thm I.4; Thm II.1; Thm II.3; Cor III.2; II.2(b) Möbius-inverted prime weights w_m.
+Open: Thm II.1; Thm II.3; Cor III.2; II.2(b) Möbius-inverted prime weights w_m.
 
 Correction: Thm I.4 Branch A's clause "the WZC greedy pair twin has polynomial defect g" has no proof — the twin exponent K(1/2+2it) is only O(1+|t|) (III.1(1)), so e^{K} may grow exponentially. The dichotomy needs only "Θ = 1 ⇒ AsymptoticAbscissaLaw"; Branch A is formalized without that clause.
 
