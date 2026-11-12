@@ -384,7 +384,8 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
       have : 4 * Real.pi * T = 2 * Real.log X ^ 19 := by rw [hTdef]; field_simp; ring
       have hpi := Real.pi_pos
       nlinarith
-    exact pow_le_pow_left₀ (norm_nonneg _) (hlowF X hXN hX1 w h4) 2
+    have hXN' : N₀ ≤ X := by exact_mod_cast hXN
+    exact pow_le_pow_left₀ (norm_nonneg _) (hlowF X hXN' hX1 w h4) 2
   have hiT : IntegrableOn (fun w => ‖fullPoly f X w‖ ^ 2) (Icc (-T) T) :=
     (hcF.norm.pow 2).continuousOn.integrableOn_compact isCompact_Icc
   have hlowInt : (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖fullPoly f X w‖ ^ 2)
@@ -392,7 +393,7 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
     have h1 : (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖fullPoly f X w‖ ^ 2)
         ≤ ∫ w in Icc (-T) T, ‖fullPoly f X w‖ ^ 2 :=
       setIntegral_mono_set hiT (ae_of_all _ fun w => sq_nonneg _)
-        (inter_subset_right.trans Ioo_subset_Icc_self).eventuallyLE
+        (Set.inter_subset_right.trans Set.Ioo_subset_Icc_self).eventuallyLE
     have h2 : (∫ w in Icc (-T) T, ‖fullPoly f X w‖ ^ 2)
         ≤ ∫ _w in Icc (-T) T, (8 * liouvilleRate K X) ^ 2 :=
       setIntegral_mono_on hiT (integrableOn_const (by simp)) measurableSet_Icc hlowpt
@@ -404,7 +405,7 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
   -- assemble
   have hiW : IntegrableOn (fun w => ‖fullPoly f X w‖ ^ 2) (Icc (-W') W') :=
     (hcF.norm.pow 2).continuousOn.integrableOn_compact isCompact_Icc
-  have hsplit := integral_inter_add_diff (μ := volume) (measurableSet_Ioo (a := -T) (b := T)) hiW
+  have hsplit := integral_inter_add_sdiff (μ := volume) (measurableSet_Ioo (a := -T) (b := T)) hiW
   have hmono : (∫ w in Icc (-W) W, ‖fullPoly f X w‖ ^ 2)
       ≤ ∫ w in Icc (-W') W', ‖fullPoly f X w‖ ^ 2 :=
     setIntegral_mono_set hiW (ae_of_all _ fun w => sq_nonneg _)

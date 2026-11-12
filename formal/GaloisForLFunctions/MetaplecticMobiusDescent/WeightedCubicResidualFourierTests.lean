@@ -222382,4 +222382,10927 @@ end
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentZeroMeanBridge
+open Eisenstein  CubicEisenstein SchwartzPlanePoisson
+open CanonicalQuadraticSieve CanonicalRowCompletion 
+open TruncatedPrincipalPoisson CenteredMomentCommonSupport
+open CenteredMomentFourier CenteredMomentCorrelation CenteredMomentSupportedCorrelation
+open CenteredMomentSectorLocalization CenteredMomentFirstReduced CenteredMomentCanonicalFirst
+open CenteredMomentActive CenteredMomentFirstDiscardedEnergy CenteredMomentFirstLocalization
+local notation "O" => Eisenstein.O
+
+def quotientMean (a : O) (F : Residue a → ℂ) : ℂ :=
+  (normValue a : ℂ)⁻¹ * ∑' x : Residue a, F x
+
+lemma normValue_ne_zero (a : O) (ha : a ≠ 0) : normValue a ≠ 0 :=
+  by
+    rw [normValue_eq_embedding]
+    exact pow_ne_zero _ (norm_ne_zero_iff.mpr (ringComplex_ne_zero ha))
+
+theorem quotientMean_pullback (a m : O) (ha : a ≠ 0) (hm : m ≠ 0)
+    (h : a ∣ m) (F : Residue a → ℂ) :
+    quotientMean m (fun x => F (frequencyReduction a m h x)) = quotientMean a F := by
+  obtain ⟨b, rfl⟩ := h
+  have hb : b ≠ 0 := right_ne_zero_of_mul hm
+  have hh := conductorFourier_lift a b ha hb F 0
+  simp only [mul_zero, conductorFourier, map_zero, zero_mul, AddChar.map_zero_eq_one,
+    mul_one] at hh
+  have he : frequencyReduction a (a*b) (dvd_mul_right a b) = conductorReduction a b := rfl
+  unfold quotientMean
+  rw [he, hh, normValue_mul, Complex.ofReal_mul]
+  have ha' : (normValue a : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (normValue_ne_zero a ha)
+  have hb' : (normValue b : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (normValue_ne_zero b hb)
+  change ((normValue a : ℂ) * (normValue b : ℂ))⁻¹ *
+    ((normValue b : ℂ) * _) = _
+  field_simp
+
+def dilationMask (e d : O) (F : Residue d → ℂ) (x : Residue (d*e)) : ℂ :=
+  if frequencyReduction e (d*e) (dvd_mul_left e d) x = 0 then
+    F (frequencyReduction d (d*e) (dvd_mul_right d e) x) else 0
+
+@[simp] theorem dilationMask_mk (e d : O) (F : Residue d → ℂ) (z : O) :
+    dilationMask e d F (Ideal.Quotient.mk _ z) =
+      if e ∣ z then F (Ideal.Quotient.mk _ z) else 0 := by
+  simp only [dilationMask, frequencyReduction_mk, Ideal.Quotient.eq_zero_iff_mem,
+    Ideal.mem_span_singleton]
+
+theorem dilationMask_sum (e d : O) (he : e ≠ 0) (F : Residue d → ℂ) :
+    (∑' x : Residue (d*e), dilationMask e d F x) =
+      ∑' y : Residue d, F (Ideal.Quotient.mk _ e * y) := by
+  have hi := scaledResidue_injective d e (d*e) rfl he
+  have hz (x : Residue (d*e)) (hx : x ∉ Set.range (scaledResidue d e (d*e) rfl)) :
+      dilationMask e d F x = 0 := by
+    obtain ⟨z,rfl⟩ := Ideal.Quotient.mk_surjective x
+    rw [dilationMask_mk]
+    split_ifs with h
+    · obtain ⟨y,rfl⟩ := h
+      exact False.elim (hx ⟨Ideal.Quotient.mk _ y, rfl⟩)
+    · rfl
+  have hs : Function.support (dilationMask e d F) ⊆ Set.range (scaledResidue d e (d*e) rfl) := by
+    intro x hx
+    by_contra hn
+    exact hx (hz x hn)
+  rw [← hi.tsum_eq hs]
+  apply tsum_congr
+  intro y
+  obtain ⟨z,rfl⟩ := Ideal.Quotient.mk_surjective y
+  rw [scaledResidue_mk, dilationMask_mk, if_pos (dvd_mul_right e z), map_mul]
+
+theorem quotientMean_dilation (e d : O) (he : e ≠ 0) (_hd : d ≠ 0)
+    (F : Residue d → ℂ) (hF : ∀ x y, F (x*y) = F x * F y) :
+    quotientMean (d*e) (dilationMask e d F) =
+      (normValue e : ℂ)⁻¹ * F (Ideal.Quotient.mk _ e) * quotientMean d F := by
+  rw [quotientMean, dilationMask_sum e d he]
+  simp_rw [hF]
+  rw [tsum_mul_left, normValue_mul, Complex.ofReal_mul, quotientMean]
+  ring
+
+theorem quotientMean_finite_sum {ι : Type*} [Fintype ι]
+    (a : O) (ha : a ≠ 0) (F : Residue a → ℂ)
+    (d : ι → O) (hd : ∀ i, d i ≠ 0) (G : (i : ι) → Residue (d i) → ℂ)
+    (c : ι → ℂ)
+    (h : ∀ z : O, F (Ideal.Quotient.mk _ z) =
+      ∑ i, c i * G i (Ideal.Quotient.mk _ z)) :
+    quotientMean a F = ∑ i, c i * quotientMean (d i) (G i) := by
+  let m := a * ∏ i, d i
+  have hm : m ≠ 0 := mul_ne_zero ha (Finset.prod_ne_zero_iff.mpr (fun i _ => hd i))
+  have haM : a ∣ m := dvd_mul_right _ _
+  have hdM (i : ι) : d i ∣ m := dvd_mul_of_dvd_right (Finset.dvd_prod_of_mem d (Finset.mem_univ i)) a
+  let := finiteEisensteinQuotientOfNonzero hm
+  let : Fintype (Residue m) := Fintype.ofFinite _
+  rw [← quotientMean_pullback a m ha hm haM F]
+  have hh (x : Residue m) : F (frequencyReduction a m haM x) =
+      ∑ i, c i * G i (frequencyReduction (d i) m (hdM i) x) := by
+    obtain ⟨z,rfl⟩ := Ideal.Quotient.mk_surjective x
+    simpa only [frequencyReduction_mk] using h z
+  simp_rw [quotientMean, hh, tsum_fintype]
+  rw [Finset.sum_comm, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hl := quotientMean_pullback (d i) m (hd i) hm (hdM i) (G i)
+  rw [quotientMean, tsum_fintype] at hl
+  rw [← Finset.mul_sum, mul_left_comm, hl]
+  rfl
+
+theorem row_mask_expansion {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (z : O) (v : ℂ) :
+    rowCoprimeMask P S z * v =
+      ∑ E ∈ S.powerset, (UniqueFactorizationMonoid.moebius (∏ i∈E,P i) : ℂ) *
+        (if primeSubsetGenerator P E ∣ z then v else 0) := by
+  rw [rowCoprimeMask, primeCoprimeMask_divisor_expansion _ (generator_pairwise_coprime P hinj),
+    Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro E hE
+  have hp (i : ι) : Prime (P i) := Ideal.prime_of_isPrime (NeZero.ne _) inferInstance
+  rw [prime_product_moebius P hp hinj E]
+  by_cases h : primeSubsetGenerator P E ∣ z <;>
+    simp only [primeSubsetGenerator] at h ⊢ <;>
+    simp only [h, ite_true, ite_false, mul_one, zero_mul, mul_zero]
+
+
+theorem quotientMean_mask_expansion {ι : Type*} [DecidableEq ι]
+    (P : ι → Ideal O) [∀ i, (P i).IsMaximal] (hinj : Function.Injective P)
+    (S : Finset ι) (a d : O) (ha : a ≠ 0) (hd : d ≠ 0)
+    (F : Residue a → ℂ) (G : Residue d → ℂ)
+    (hG : ∀ x y, G (x*y) = G x * G y)
+    (hFG : ∀ z : O, F (Ideal.Quotient.mk _ z) =
+      rowCoprimeMask P S z * G (Ideal.Quotient.mk _ z)) :
+    quotientMean a F =
+      ∑ E ∈ S.powerset, (UniqueFactorizationMonoid.moebius (∏ i∈E,P i) : ℂ) *
+        (normValue (primeSubsetGenerator P E) : ℂ)⁻¹ *
+          G (Ideal.Quotient.mk _ (primeSubsetGenerator P E)) * quotientMean d G := by
+  have h := quotientMean_finite_sum a ha F
+    (fun E : S.powerset => d * primeSubsetGenerator P E.val)
+    (fun E => mul_ne_zero hd (primeSubsetGenerator_ne_zero P E.val))
+    (fun E => dilationMask (primeSubsetGenerator P E.val) d G)
+    (fun E => (UniqueFactorizationMonoid.moebius (∏ i∈E.val,P i) : ℂ)) (by
+      intro z
+      rw [hFG, row_mask_expansion P hinj S z]
+      simp only [dilationMask_mk]
+      exact (Finset.sum_coe_sort S.powerset _).symm)
+  simp_rw [quotientMean_dilation _ _ (primeSubsetGenerator_ne_zero P _) hd G hG] at h
+  simp only [← mul_assoc] at h
+  exact h.trans (Finset.sum_coe_sort S.powerset (fun E : Finset ι =>
+    (UniqueFactorizationMonoid.moebius (∏ i∈E,P i) : ℂ) *
+      (normValue (primeSubsetGenerator P E) : ℂ)⁻¹ *
+        G (Ideal.Quotient.mk _ (primeSubsetGenerator P E)) * quotientMean d G))
+
+theorem tripleResidue_mul (a b r : O) (χa : MulChar (Residue a) ℂ)
+    (χb : MulChar (Residue b) ℂ) (G : Residue r → ℂ)
+    (hG : ∀ x y, G (x*y) = G x * G y) (x y : Residue (a*(b*r))) :
+    tripleResidue a b r χa χb G (x*y) =
+      tripleResidue a b r χa χb G x * tripleResidue a b r χa χb G y := by
+  obtain ⟨u,rfl⟩ := Ideal.Quotient.mk_surjective x
+  obtain ⟨v,rfl⟩ := Ideal.Quotient.mk_surjective y
+  rw [← map_mul, tripleResidue_mk, tripleResidue_mk, tripleResidue_mk]
+  exact tripleRow_mul a b r χa χb G hG u v
+
+theorem original_pair_reduced_mask (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (z : O) :
+    idealRowHom z I * star (idealRowHom z J) =
+      rowCoprimeMask (fun P : CommonIndex I J => P.val)
+        (principalSupport Finset.univ (leftExponent I J) (rightExponent I J)) z *
+      tripleRow (residualGenerator I J) (residualGenerator J I) (activeConductor I J)
+        (residualCharacter I J hI) (residualCharacter J I hJ)⁻¹ (activeFunction I J hI) z := by
+  rw [original_pair_factor I J hI hJ]
+  rw [common_ideal_pair_active (fun P : CommonIndex I J => P.val) (common_good I J hI)
+    (common_odd I J hI) Finset.univ (leftExponent I J) (rightExponent I J)
+    (fun P _ => (leftExponent_pos I J P).ne') (fun P _ => (rightExponent_pos I J P).ne')]
+  have hactive : activeFunction I J hI (Ideal.Quotient.mk _ z) =
+      finiteSexticRow (activePrime I J) (activeGood I J hI)
+        (CenteredMomentCanonicalFirst.activeExponent I J) z :=
+    principalSexticRow_mk (activePrime I J) (activeCoprime I J) (activeGood I J hI)
+      (CenteredMomentCanonicalFirst.activeExponent I J) (activeConductor I J)
+      (span_finitePrimeModulus _) z
+  simp only [tripleRow, hactive]
+  convert mul_left_comm
+    ((residualCharacter I J hI) (Ideal.Quotient.mk _ z) *
+      (residualCharacter J I hJ)⁻¹ (Ideal.Quotient.mk _ z))
+    (rowCoprimeMask (fun P : CommonIndex I J => P.val)
+      (principalSupport Finset.univ (leftExponent I J) (rightExponent I J)) z)
+    (finiteSexticRow (activePrime I J) (activeGood I J hI)
+      (CenteredMomentCanonicalFirst.activeExponent I J) z) using 1
+  congr 2
+
+theorem original_pair_mean (I J : Ideal O) (hI : Supported I) (hJ : Supported J) :
+    let hi : Supported (Ideal.span {primaryIdealGenerator I}) :=
+      (CenteredMomentSourceRow.primary_span_supported I hI).symm ▸ hI
+    let hj : Supported (Ideal.span {primaryIdealGenerator J}) :=
+      (CenteredMomentSourceRow.primary_span_supported J hJ).symm ▸ hJ
+    quotientMean (primaryIdealGenerator I * primaryIdealGenerator J)
+      (CenteredMomentRowNorm.pairResidue _ _ hi hj) =
+    ∑ E ∈ inactiveSubsets I J,
+      (UniqueFactorizationMonoid.moebius (∏ P∈E,P.val) : ℂ) *
+        (normValue (primeSubsetGenerator (fun P : CommonIndex I J => P.val) E) : ℂ)⁻¹ *
+      tripleRow (residualGenerator I J) (residualGenerator J I) (activeConductor I J)
+        (residualCharacter I J hI) (residualCharacter J I hJ)⁻¹ (activeFunction I J hI)
+        (primeSubsetGenerator (fun P : CommonIndex I J => P.val) E) *
+      quotientMean (residualGenerator I J * (residualGenerator J I * activeConductor I J))
+        (tripleResidue (residualGenerator I J) (residualGenerator J I) (activeConductor I J)
+          (residualCharacter I J hI) (residualCharacter J I hJ)⁻¹ (activeFunction I J hI)) := by
+  dsimp only
+  have h := quotientMean_mask_expansion (fun P : CommonIndex I J => P.val) Subtype.val_injective
+    (principalSupport Finset.univ (leftExponent I J) (rightExponent I J))
+    (primaryIdealGenerator I * primaryIdealGenerator J)
+    (residualGenerator I J * (residualGenerator J I * activeConductor I J))
+    (mul_ne_zero (supported_primaryIdealGenerator_ne_zero I hI) (supported_primaryIdealGenerator_ne_zero J hJ))
+    (mul_ne_zero (supported_element_ne_zero _ (residualGenerator_supported I J hI))
+      (mul_ne_zero (supported_element_ne_zero _ (residualGenerator_supported J I hJ))
+        (finitePrimeModulus_ne_zero _)))
+    (CenteredMomentRowNorm.pairResidue _ _
+      ((CenteredMomentSourceRow.primary_span_supported I hI).symm ▸ hI)
+      ((CenteredMomentSourceRow.primary_span_supported J hJ).symm ▸ hJ))
+    (tripleResidue (residualGenerator I J) (residualGenerator J I) (activeConductor I J)
+      (residualCharacter I J hI) (residualCharacter J I hJ)⁻¹ (activeFunction I J hI))
+    (tripleResidue_mul _ _ _ _ _ _ (principalSexticRow_mul _ _ _ _ _ _)) (by
+      intro z
+      rw [CenteredMomentRowNorm.pairResidue_mk, CenteredMomentSourceRow.primary_span_supported I hI,
+        CenteredMomentSourceRow.primary_span_supported J hJ, tripleResidue_mk]
+      exact original_pair_reduced_mask I J hI hJ z)
+  simpa only [inactiveSubsets, tripleResidue_mk] using h
+
+theorem canonicalZeroTerm_eq_mean (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (E : Finset (CommonIndex I J)) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    canonicalZeroTerm I J hI hJ E W K = (K : ℂ) *
+      ((UniqueFactorizationMonoid.moebius (∏ P∈E,P.val) : ℂ) *
+        (normValue (primeSubsetGenerator (fun P : CommonIndex I J => P.val) E) : ℂ)⁻¹ *
+      tripleRow (residualGenerator I J) (residualGenerator J I) (activeConductor I J)
+        (residualCharacter I J hI) (residualCharacter J I hJ)⁻¹ (activeFunction I J hI)
+        (primeSubsetGenerator (fun P : CommonIndex I J => P.val) E) *
+      quotientMean (residualGenerator I J * (residualGenerator J I * activeConductor I J))
+        (tripleResidue (residualGenerator I J) (residualGenerator J I) (activeConductor I J)
+          (residualCharacter I J hI) (residualCharacter J I hJ)⁻¹ (activeFunction I J hI))) *
+      paperRadialFourier W 0 := by
+  simp only [canonicalZeroTerm, tripleFourier, map_zero, zero_mul,
+    AddChar.map_zero_eq_one, mul_one, quotientMean, div_eq_mul_inv,
+    Complex.ofReal_mul, Complex.ofReal_inv]
+  ring
+
+theorem canonicalZeroPair_eq_original (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    let hi : Supported (Ideal.span {primaryIdealGenerator I}) :=
+      (CenteredMomentSourceRow.primary_span_supported I hI).symm ▸ hI
+    let hj : Supported (Ideal.span {primaryIdealGenerator J}) :=
+      (CenteredMomentSourceRow.primary_span_supported J hJ).symm ▸ hJ
+    canonicalZeroPair I J hI hJ W K =
+      (((K / ‖ringComplex (primaryIdealGenerator I * primaryIdealGenerator J)‖^2 : ℝ) : ℂ) *
+        CenteredMomentRowNorm.pairFourier (primaryIdealGenerator I) (primaryIdealGenerator J)
+          hi hj 0) * paperRadialFourier W 0 := by
+  dsimp only
+  rw [canonicalZeroPair]
+  simp_rw [canonicalZeroTerm_eq_mean]
+  rw [← Finset.sum_mul, ← Finset.mul_sum, ← original_pair_mean I J hI hJ]
+  rw [CenteredMomentZeroMode.pairFourier_zero, quotientMean, ← normValue_eq_embedding,
+    Complex.ofReal_div, div_eq_mul_inv]
+  ring
+
+theorem quotientMean_congr (a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (F : Residue a → ℂ) (G : Residue b → ℂ)
+    (h : ∀ z : O, F (Ideal.Quotient.mk _ z) = G (Ideal.Quotient.mk _ z)) :
+    quotientMean a F = quotientMean b G := by
+  have hh := quotientMean_finite_sum a ha F (fun _ : Unit => b) (fun _ => hb)
+    (fun _ => G) (fun _ => (1 : ℂ)) (by intro z; simpa using h z)
+  simpa using hh
+
+theorem scaled_pairFourier_eq_mean (a b : O)
+    (ha : Supported (Ideal.span {a})) (hb : Supported (Ideal.span {b})) (K : ℝ) :
+    (((K / ‖ringComplex (a*b)‖^2 : ℝ) : ℂ) * CenteredMomentRowNorm.pairFourier a b ha hb 0) =
+      (K : ℂ) * quotientMean (a*b) (CenteredMomentRowNorm.pairResidue a b ha hb) := by
+  rw [CenteredMomentZeroMode.pairFourier_zero, quotientMean, ← normValue_eq_embedding,
+    Complex.ofReal_div, div_eq_mul_inv]
+  ring
+
+theorem canonicalZeroPair_eq_generators (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (a b : O) (ha : Supported (Ideal.span {a})) (hb : Supported (Ideal.span {b}))
+    (haI : Ideal.span {a} = I) (hbJ : Ideal.span {b} = J) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    canonicalZeroPair I J hI hJ W K =
+      (((K / ‖ringComplex (a*b)‖^2 : ℝ) : ℂ) * CenteredMomentRowNorm.pairFourier a b ha hb 0) *
+        paperRadialFourier W 0 := by
+  rw [canonicalZeroPair_eq_original, scaled_pairFourier_eq_mean, scaled_pairFourier_eq_mean]
+  congr 2
+  apply quotientMean_congr
+    _ _ (mul_ne_zero (supported_primaryIdealGenerator_ne_zero I hI) (supported_primaryIdealGenerator_ne_zero J hJ))
+    (mul_ne_zero (supported_element_ne_zero a ha) (supported_element_ne_zero b hb))
+  intro z
+  simp only [CenteredMomentRowNorm.pairResidue_mk, CenteredMomentSourceRow.primary_span_supported I hI,
+    CenteredMomentSourceRow.primary_span_supported J hJ, haI, hbJ]
+
+theorem canonical_ideal_zero_sum (S : Finset (Ideal O)) (hS : ∀ I ∈ S, Supported I)
+    (c : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    (∑ I : S, ∑ J : S, (c I.val * star (c J.val)) *
+      canonicalZeroPair I.val J.val (hS I.val I.property) (hS J.val J.property) W K) =
+      CenteredMomentZeroMode.idealZeroEnergy S hS c K * paperRadialFourier W 0 := by
+  rw [CenteredMomentZeroMode.idealZeroEnergy]
+  simp only [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro I hI
+  apply Finset.sum_congr rfl
+  intro J hJ
+  rw [canonicalZeroPair_eq_generators I.val J.val (hS I.val I.property) (hS J.val J.property)
+    (CenteredMomentZeroMode.idealColumn S I) (CenteredMomentZeroMode.idealColumn S J)
+    (CenteredMomentZeroMode.idealColumn_supported S hS I) (CenteredMomentZeroMode.idealColumn_supported S hS J)
+    (CenteredMomentZeroMode.idealColumn_span S I) (CenteredMomentZeroMode.idealColumn_span S J)]
+  ring
+
+theorem zeroEnergy_eq_original (η : HeckeFamily.Character) (m A : O) (t : ℝ)
+    (S : Finset (Ideal O)) (c : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    zeroEnergy η m A t S c W K =
+      CenteredMomentZeroMode.idealZeroEnergy (CenteredMomentSourceRow.supportedColumns S)
+        (fun _ h => (Finset.mem_filter.mp h).2)
+        (fun I => c I * CenteredMomentHeckeExpansion.rowWeight η m A 1 t I) K * paperRadialFourier W 0 := by
+  unfold zeroEnergy
+  exact canonical_ideal_zero_sum (CenteredMomentSourceRow.supportedColumns S)
+    (fun _ h => (Finset.mem_filter.mp h).2)
+    (fun I => c I * CenteredMomentHeckeExpansion.rowWeight η m A 1 t I) W K
+
+theorem productColumnCoefficient_mul_whole (S T : Finset (Ideal O))
+    (β : Ideal O → Ideal O → ℂ) (w : Ideal O → ℂ) (I : Ideal O) :
+    CompletedGauss.productColumnCoefficient S T (fun J L => β J L * w (J*L)) I =
+      CompletedGauss.productColumnCoefficient S T β I * w I := by
+  rw [CompletedGauss.productColumnCoefficient, CompletedGauss.productColumnCoefficient, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro p hp
+  rw [(Finset.mem_filter.mp hp).2]
+
+theorem zeroEnergy_product_eq (η : HeckeFamily.Character) (m A : O) (t : ℝ)
+    (S T : Finset (Ideal O)) (hS : ∀ I ∈ S, Supported I) (hT : ∀ J ∈ T, Supported J)
+    (β : Ideal O → Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    zeroEnergy η m A t ((S ×ˢ T).image (fun p : Ideal O × Ideal O => p.1*p.2))
+      (CompletedGauss.productColumnCoefficient S T β) W K =
+    CenteredMomentZeroMode.productZeroEnergy S T hS hT
+      (fun I J => β I J * CenteredMomentHeckeExpansion.rowWeight η m A 1 t (I*J)) K *
+      paperRadialFourier W 0 := by
+  let P := (S ×ˢ T).image (fun p : Ideal O × Ideal O => p.1*p.2)
+  have hp := CenteredMomentZeroMode.productColumns_supported S T hS hT
+  have hs : CenteredMomentSourceRow.supportedColumns P = P := Finset.filter_eq_self.mpr hp
+  have hh := zeroEnergy_eq_original η m A t P (CompletedGauss.productColumnCoefficient S T β) W K
+  simp only [hs] at hh
+  rw [hh]
+  congr 1
+  unfold CenteredMomentZeroMode.productZeroEnergy
+  congr 1
+  funext I
+  exact (productColumnCoefficient_mul_whole S T β
+    (CenteredMomentHeckeExpansion.rowWeight η m A 1 t) I).symm
+
+theorem normalized_zeroEnergy_product_bound (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ (η : HeckeFamily.Character) (m A : O) (t : ℝ)
+      (S T : Finset (Ideal O)) (_hS : ∀ I ∈ S, Supported I) (_hT : ∀ J ∈ T, Supported J)
+      (β : Ideal O → Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (X K B : ℝ),
+      1 ≤ X → 0 ≤ K → 0 ≤ B →
+      (∀ I ∈ S, ∀ J ∈ T, (Ideal.absNorm (I*J) : ℝ) ≤ X) →
+      (∀ I ∈ S, ∀ J ∈ T, ‖β I J‖ ≤ B) →
+      ‖((X⁻¹ : ℝ) : ℂ) *
+        zeroEnergy η m A t ((S ×ˢ T).image (fun p : Ideal O × Ideal O => p.1*p.2))
+          (CompletedGauss.productColumnCoefficient S T β) W K‖ ≤
+        C * K * B^2 * ‖paperRadialFourier W 0‖ * X^ε := by
+  obtain ⟨C,hC,hc⟩ := CenteredMomentZeroMode.normalized_product_zero_mode_bound ε hε
+  refine ⟨C,hC,?_⟩
+  intro η m A t S T hS hT β W X K B hX hK hB hN hβ
+  rw [zeroEnergy_product_eq η m A t S T hS hT]
+  apply hc S T hS hT _ W X K B hX hK hB hN
+  intro I hi J hj
+  rw [norm_mul]
+  exact (mul_le_mul (hβ I hi J hj)
+    (CenteredMomentFirstTailAggregate.rowWeight_norm_le_one η m A 1 t (I*J)
+      (mul_ne_zero (hS I hi).1 (hT J hj).1)) (norm_nonneg _) hB).trans_eq (mul_one B)
+
+end CenteredMomentZeroMeanBridge
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSupportedZeroEnergy
+open Eisenstein  CanonicalQuadraticSieve CanonicalRowCompletion 
+open CenteredMomentAddedZeroUniform CenteredMomentSourceMass CenteredMomentZeroMode
+open CenteredMomentSourceRow CenteredMomentHeckeExpansion CenteredMomentFirstLocalization
+open CenteredMomentZeroMeanBridge SchwartzPlanePoisson HeckeFamily
+local notation "O" => Eisenstein.O
+
+theorem idealZeroEnergy_filter (S : Finset (Ideal O)) (hS : ∀ I∈S,Supported I)
+    (c : Ideal O → ℂ) (K : ℝ) (p : Ideal O → Prop) [DecidablePred p]
+    (hc : ∀ I∈S, ¬p I → c I=0) :
+    idealZeroEnergy S hS c K =
+      idealZeroEnergy (S.filter p) (fun I h => hS I (Finset.mem_filter.mp h).1) c K := by
+  let e : S.filter p → S := fun I => ⟨I.val,(Finset.mem_filter.mp I.property).1⟩
+  let ep : (S.filter p) × (S.filter p) → S × S := fun q => (e q.1,e q.2)
+  have he : Function.Injective e := by
+    intro I J h
+    apply Subtype.ext
+    exact congrArg (fun x : S => x.val) h
+  have hep : Function.Injective ep := by
+    intro q r h
+    exact Prod.ext (he (congrArg Prod.fst h)) (he (congrArg Prod.snd h))
+  let f : S × S → ℂ := fun q => (c q.1.val * star (c q.2.val)) *
+    (((K / ‖ringComplex (idealColumn S q.1 * idealColumn S q.2)‖^2 : ℝ) : ℂ) *
+      CenteredMomentRowNorm.pairFourier (idealColumn S q.1) (idealColumn S q.2)
+        (idealColumn_supported S hS q.1) (idealColumn_supported S hS q.2) 0)
+  have hs : Function.support f ⊆ Set.range ep := by
+    intro q hq
+    have hi : p q.1.val := by
+      by_contra hn
+      exact hq (by simp only [f,hc q.1.val q.1.property hn,zero_mul])
+    have hj : p q.2.val := by
+      by_contra hn
+      exact hq (by simp only [f,hc q.2.val q.2.property hn,star_zero,mul_zero,zero_mul])
+    exact ⟨(⟨q.1.val,Finset.mem_filter.mpr ⟨q.1.property,hi⟩⟩,
+      ⟨q.2.val,Finset.mem_filter.mpr ⟨q.2.property,hj⟩⟩),rfl⟩
+  have ht := hep.tsum_eq hs
+  simpa only [tsum_fintype,Fintype.sum_prod_type,f,ep,e,idealZeroEnergy,idealColumn] using ht.symm
+
+def activeColumns (S : Finset (Ideal O)) (c : Ideal O → ℂ) : Finset (Ideal O) :=
+  (supportedColumns S).filter (fun I => c I≠0)
+
+lemma activeColumns_supported (S : Finset (Ideal O)) (c : Ideal O → ℂ)
+    (I : Ideal O) (hI : I∈activeColumns S c) : Supported I :=
+  (Finset.mem_filter.mp (Finset.mem_filter.mp hI).1).2
+
+theorem zeroEnergy_eq_active_original (η : Character) (m A : O) (t : ℝ)
+    (S : Finset (Ideal O)) (c : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    zeroEnergy η m A t S c W K =
+      idealZeroEnergy (activeColumns S c) (activeColumns_supported S c)
+        (fun I => c I*rowWeight η m A 1 t I) K * paperRadialFourier W 0 := by
+  rw [zeroEnergy_eq_original]
+  congr 1
+  exact idealZeroEnergy_filter (supportedColumns S) (fun I h => (Finset.mem_filter.mp h).2)
+    (fun I => c I*rowWeight η m A 1 t I) K (fun I => c I≠0)
+    (fun I _ h => by simp only [not_not] at h; rw [h,zero_mul])
+
+theorem zeroEnergy_eq_active (η : Character) (m A : O) (t : ℝ)
+    (S : Finset (Ideal O)) (c : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    zeroEnergy η m A t S c W K = zeroEnergy η m A t (activeColumns S c) c W K := by
+  rw [zeroEnergy_eq_active_original,zeroEnergy_eq_original]
+  have he : supportedColumns (activeColumns S c)=activeColumns S c :=
+    Finset.filter_eq_self.mpr (activeColumns_supported S c)
+  simp only [he]
+
+theorem finiteColumnCoefficient_witness {ι : Type*} [Fintype ι]
+    (S : Finset (Tuple ι)) (β : Tuple ι → ℂ) (I : Ideal O)
+    (hI : finiteColumnCoefficient S β I≠0) :
+    ∃ v∈S, β v≠0 ∧ finiteTupleProduct v=I := by
+  obtain ⟨v,hv,hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hI
+  exact ⟨v,(Finset.mem_filter.mp hv).1,hne,(Finset.mem_filter.mp hv).2⟩
+
+theorem finite_tuple_fiber_card {ι : Type*} [Fintype ι]
+    (S : Finset (Tuple ι)) (I : Ideal O) (hI : I≠0) :
+    (S.filter (fun v => finiteTupleProduct v=I)).card ≤
+      (idealDivisors I).card^(Fintype.card ι+2) := by
+  let T := S.filter (fun v => finiteTupleProduct v=I)
+  let f (v : T) : (ι ⊕ Fin 2) → idealDivisors I := fun i => ⟨v.val i,by
+    apply (mem_idealDivisors hI).mpr
+    rw [← (Finset.mem_filter.mp v.property).2]
+    exact Finset.dvd_prod_of_mem v.val (Finset.mem_univ i)⟩
+  have hf : Function.Injective f := by
+    intro v w he
+    apply Subtype.ext
+    funext i
+    exact congrArg Subtype.val (congrFun he i)
+  simpa only [Fintype.card_coe,Fintype.card_fun,Fintype.card_sum,Fintype.card_fin,T]
+    using Fintype.card_le_of_injective f hf
+
+theorem finiteColumnCoefficient_norm_le {ι : Type*} [Fintype ι]
+    (S : Finset (Tuple ι)) (β : Tuple ι → ℂ) (B : ℝ) (hB : 0≤ B)
+    (hβ : ∀ v∈S, finiteTupleProduct v≠0 → ‖β v‖≤ B) (I : Ideal O) (hI : I≠0) :
+    ‖finiteColumnCoefficient S β I‖ ≤ B*((idealDivisors I).card:ℝ)^(Fintype.card ι+2) := by
+  calc
+    _ ≤ ∑ v∈S.filter (fun v => finiteTupleProduct v=I),‖β v‖ := norm_sum_le _ _
+    _ ≤ ∑ _v∈S.filter (fun v => finiteTupleProduct v=I),B := by
+      apply Finset.sum_le_sum
+      intro v hv
+      exact hβ v (Finset.mem_filter.mp hv).1 ((Finset.mem_filter.mp hv).2 ▸ hI)
+    _ = B*((S.filter (fun v => finiteTupleProduct v=I)).card:ℝ) := by simp; ring
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_left _ hB
+      exact_mod_cast finite_tuple_fiber_card S I hI
+
+theorem active_tuple_zero_energy_bound (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (η : Character) (m A : O) (t : ℝ) (S : Finset (Tuple ι))
+        (β : Tuple ι → ℂ) (W : 𝓢(ℝ,ℂ)) (X K B : ℝ),
+      1≤ X → 0≤ K → 0≤ B →
+      (∀ v∈S,finiteTupleProduct v≠0 → ‖β v‖≤ B) →
+      (∀ I∈supportedColumns (finiteColumns S),finiteColumnCoefficient S β I≠0 →
+        (Ideal.absNorm I:ℝ)≤ X) →
+      ‖zeroEnergy η m A t (finiteColumns S) (finiteColumnCoefficient S β) W K‖ ≤
+        C*K*B^2*‖paperRadialFourier W 0‖*X^(1+ε) := by
+  let δ := ε/(4*(N+2:ℕ))
+  have hδ : 0<δ := by dsimp [δ]; positivity
+  have hn : (N+2:ℝ)≠0 := by positivity
+  have hδn : δ*(N+2:ℕ)=ε/4 := by dsimp [δ]; push_cast; field_simp
+  obtain ⟨D,hD,hd⟩ := IdealDivisorBound.ideal_divisor_small_power δ hδ
+  obtain ⟨C,hC,hc⟩ := ideal_zero_energy_bound (ε/2) (by positivity)
+  refine ⟨C*((1+D)^(N+2))^2,by positivity,?_⟩
+  intro ι _ hi η m A t S β W X K B hX hK hB hβ hN
+  let c := finiteColumnCoefficient S β
+  let Q := activeColumns (finiteColumns S) c
+  have hQ : ∀ I∈Q,Supported I := activeColumns_supported _ _
+  have hX0 : 0< X := zero_lt_one.trans_le hX
+  have hNX (I : Ideal O) (hI : I∈Q) : (Ideal.absNorm I:ℝ)≤ X :=
+    hN I (Finset.mem_filter.mp hI).1 (Finset.mem_filter.mp hI).2
+  have hbase : 1≤(1+D)*X^δ := by
+    have hxδ : 1≤ X^δ := Real.one_le_rpow hX hδ.le
+    nlinarith
+  have hcoeff (I : Ideal O) (hI : I∈Q) :
+      ‖c I*rowWeight η m A 1 t I‖ ≤ B*((1+D)^(N+2)*X^(ε/4)) := by
+    have hI0 := (hQ I hI).1
+    have hdI : ((idealDivisors I).card:ℝ) ≤ (1+D)*X^δ := by
+      apply (hd I hI0).trans
+      apply mul_le_mul (by linarith : D≤1+D)
+        (Real.rpow_le_rpow (Nat.cast_nonneg _) (hNX I hI) hδ.le) (by positivity) (by positivity)
+    have hp : ((1+D)*X^δ)^(N+2) = (1+D)^(N+2)*X^(ε/4) := by
+      rw [mul_pow,←Real.rpow_mul_natCast hX0.le,hδn]
+    rw [norm_mul]
+    calc
+      _ ≤ ‖c I‖*1 := mul_le_mul_of_nonneg_left
+        (CenteredMomentFirstTailAggregate.rowWeight_norm_le_one η m A 1 t I hI0) (norm_nonneg _)
+      _ = ‖c I‖ := mul_one _
+      _ ≤ B*((idealDivisors I).card:ℝ)^(Fintype.card ι+2) :=
+        finiteColumnCoefficient_norm_le S β B hB hβ I hI0
+      _ ≤ B*((1+D)*X^δ)^(Fintype.card ι+2) := by gcongr
+      _ ≤ B*((1+D)*X^δ)^(N+2) :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hbase (by omega)) hB
+      _ = _ := by rw [hp]
+  have hb := hc Q hQ (fun I => c I*rowWeight η m A 1 t I)
+    X K (B*((1+D)^(N+2)*X^(ε/4))) hX hK (by positivity) hNX hcoeff
+  rw [zeroEnergy_eq_active_original,norm_mul]
+  apply (mul_le_mul_of_nonneg_right hb (norm_nonneg _)).trans_eq
+  have hxpow : (X^(ε/4))^2*X^(1+ε/2)=X^(1+ε) := by
+    rw [←Real.rpow_mul_natCast hX0.le,←Real.rpow_add hX0]
+    congr 1
+    ring
+  calc
+    _ = C*((1+D)^(N+2))^2*K*B^2*‖paperRadialFourier W 0‖*
+      ((X^(ε/4))^2*X^(1+ε/2)) := by ring
+    _ = _ := by rw [hxpow]
+
+theorem normalized_active_tuple_zero_energy_bound (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (η : Character) (m A : O) (t : ℝ) (S : Finset (Tuple ι))
+        (β : Tuple ι → ℂ) (W : 𝓢(ℝ,ℂ)) (X K B : ℝ),
+      1≤ X → 0≤ K → 0≤ B →
+      (∀ v∈S,finiteTupleProduct v≠0 → ‖β v‖≤ B) →
+      (∀ I∈supportedColumns (finiteColumns S),finiteColumnCoefficient S β I≠0 →
+        (Ideal.absNorm I:ℝ)≤ X) →
+      ‖((X⁻¹:ℝ):ℂ)*zeroEnergy η m A t (finiteColumns S) (finiteColumnCoefficient S β) W K‖ ≤
+        C*K*B^2*‖paperRadialFourier W 0‖*X^ε := by
+  obtain ⟨C,hC,hc⟩ := active_tuple_zero_energy_bound N ε hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ hi η m A t S β W X K B hX hK hB hβ hN
+  have hX0 : 0< X := zero_lt_one.trans_le hX
+  have hb := hc hi η m A t S β W X K B hX hK hB hβ hN
+  rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (inv_pos.mpr hX0)]
+  apply (mul_le_mul_of_nonneg_left hb (inv_nonneg.mpr hX0.le)).trans_eq
+  rw [Real.rpow_add hX0,Real.rpow_one]
+  field_simp
+
+theorem normalized_supported_tuple_zero_energy_bound (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (η : Character) (m A : O) (t : ℝ) (S : Finset (Tuple ι))
+        (β : Tuple ι → ℂ) (W : 𝓢(ℝ,ℂ)) (X K B : ℝ),
+      1≤ X → 0≤ K → 0≤ B →
+      (∀ v∈S,‖β v‖≤ B) →
+      (∀ v∈S,β v≠0 → (Ideal.absNorm (finiteTupleProduct v):ℝ)≤ X) →
+      ‖((X⁻¹:ℝ):ℂ)*zeroEnergy η m A t (finiteColumns S) (finiteColumnCoefficient S β) W K‖ ≤
+        C*K*B^2*‖paperRadialFourier W 0‖*X^ε := by
+  obtain ⟨C,hC,hc⟩ := normalized_active_tuple_zero_energy_bound N ε hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ hi η m A t S β W X K B hX hK hB hβ hN
+  apply hc hi η m A t S β W X K B hX hK hB (fun v hv _ => hβ v hv)
+  intro I _ hI
+  obtain ⟨v,hv,hne,he⟩ := finiteColumnCoefficient_witness S β I hI
+  rw [←he]
+  exact hN v hv hne
+
+end CenteredMomentSupportedZeroEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+namespace CenteredMomentSourceZeroEnergy
+open Eisenstein HeckeFamily CenteredMomentRectangle
+open CenteredMomentAddedZeroUniform CenteredMomentSourceMass
+open CenteredMomentSourceProfileMass CenteredMomentSupportedZeroEnergy
+open CenteredMomentFirstLocalization CenteredMomentSourceRow
+open SchwartzPlanePoisson
+local notation "O" => Eisenstein.O
+
+theorem profileCoefficient_norm_le {ι : Type*} [Fintype ι]
+    (R : Ideal O) (ν : ι → Ideal O → ℂ) (hν : ∀ j I,‖ν j I‖≤1)
+    (Wslot : ι → ℝ → ℂ) (P D : ι → ℝ) (W₁ W₂ : ℝ → ℂ) (D₁ D₂ : ℝ)
+    (hD : ∀ j,0≤ D j) (hD₁ : 0≤ D₁) (hD₂ : 0≤ D₂)
+    (hslot : ∀ j x,‖Wslot j x‖≤ D j)
+    (h₁ : ∀ x,‖W₁ x‖≤ D₁) (h₂ : ∀ x,‖W₂ x‖≤ D₂)
+    (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ s : Ideal O) (v : Tuple ι) :
+    ‖profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s v‖≤
+      2*D₁*D₂*(∏ j,D j) := by
+  have hp : ‖∏ j,ν j (v (Sum.inl j))*Wslot j ((Ideal.absNorm (v (Sum.inl j)):ℝ)/P j)‖≤∏ j,D j := by
+    rw [norm_prod]
+    apply Finset.prod_le_prod (fun _ _ => norm_nonneg _)
+    intro j _
+    rw [norm_mul]
+    simpa only [one_mul] using mul_le_mul (hν j _) (hslot j _)
+      (norm_nonneg _) zero_le_one
+  have hr (I J : Ideal O) : ‖idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ I J‖≤2*D₁*D₂ := by
+    unfold idealRectangle
+    apply (norm_sub_le _ _).trans
+    rw [norm_mul,norm_mul]
+    have hx := mul_le_mul (h₁ ((Ideal.absNorm I:ℝ)/X₁))
+      (h₂ ((Ideal.absNorm J:ℝ)/X₂)) (norm_nonneg _) hD₁
+    have hy := mul_le_mul (h₁ ((Ideal.absNorm I:ℝ)/Y₁))
+      (h₂ ((Ideal.absNorm J:ℝ)/Y₂)) (norm_nonneg _) hD₁
+    linarith
+  have hm (p : Prop) [Decidable p] : ‖(if p then 1 else 0 : ℂ)‖≤1 := by
+    split_ifs <;> norm_num
+  have hDp : 0≤∏ j,D j := Finset.prod_nonneg (fun j _ => hD j)
+  unfold profileCoefficient
+  rw [norm_mul,norm_mul,norm_mul]
+  have h := mul_le_mul
+    (mul_le_mul (mul_le_mul hp (hm (IsCoprime (finiteTupleProduct v) R)) (norm_nonneg _) (Finset.prod_nonneg (fun j _ => hD j)))
+      (hr (B₁*v (Sum.inr 0)) (B₂*v (Sum.inr 1))) (norm_nonneg _) (by positivity))
+    (hm (s∣finiteTupleProduct v)) (norm_nonneg _) (by positivity)
+  simpa only [mul_one] using h.trans_eq (by ring)
+
+theorem profileCoefficient_product_bound {ι : Type*} [Fintype ι]
+    (R : Ideal O) (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ)
+    (P b : ι → ℝ) (W₁ W₂ : ℝ → ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ)
+    (B₁ B₂ s : Ideal O)
+    (hP : ∀ j,0< P j) (hX₁ : 0< X₁) (hX₂ : 0< X₂) (hY₁ : 0< Y₁) (hY₂ : 0< Y₂)
+    (hB₁ : B₁≠0) (hB₂ : B₂≠0) (hX : X₁*X₂=T) (hY : Y₁*Y₂=T)
+    (hz : ∀ j,Wslot j 0=0) (hz₁ : W₁ 0=0) (hz₂ : W₂ 0=0)
+    (hs : ∀ j x,Wslot j x≠0 → x≤ b j)
+    (hs₁ : ∀ x,W₁ x≠0 → x≤ b₁) (hs₂ : ∀ x,W₂ x≠0 → x≤ b₂)
+    (v : Tuple ι)
+    (hv : profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s v≠0) :
+    finiteTupleProduct v≠0 ∧ (Ideal.absNorm (finiteTupleProduct v):ℝ)≤
+      (∏ j,b j)*b₁*b₂*(T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j) := by
+  let e := Fintype.equivFin ι
+  have hzero : ∀ i,sourceProfiles (fun j => Wslot (e.symm j)) W₁ W₂ i 0=0 := by
+    simpa only [Fin.forall_fin_add,sourceProfiles,Fin.append_left,Fin.append_right,
+      Fin.forall_fin_two,Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_fin_one]
+      using And.intro (fun j => hz (e.symm j)) (And.intro hz₁ hz₂)
+  have hsup : ∀ i x,sourceProfiles (fun j => Wslot (e.symm j)) W₁ W₂ i x≠0 →
+      x≤ sourceBounds (fun j => b (e.symm j)) b₁ b₂ i := by
+    simpa only [Fin.forall_fin_add,sourceProfiles,sourceBounds,Fin.append_left,Fin.append_right,
+      Fin.forall_fin_two,Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_fin_one]
+      using And.intro (fun j => hs (e.symm j)) (And.intro hs₁ hs₂)
+  have hn : CenteredMomentAddedZero.originalCoefficient (Fintype.card ι) 1
+      (1 : MulChar (O ⧸ Ideal.span {(1:O)}) ℂ) R 0
+      (fun j => ν (e.symm j)) (fun j => Wslot (e.symm j)) (fun j => P (e.symm j))
+      W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s (tupleEquiv e v)≠0 := by
+    rw [originalCoefficient_reindex,←profileCoefficient_eq_original]
+    exact hv
+  have hh := originalCoefficient_product_bound (Fintype.card ι) 1
+    (1 : MulChar (O ⧸ Ideal.span {(1:O)}) ℂ) R 0 (fun j => ν (e.symm j))
+    (fun j => Wslot (e.symm j)) (fun j => P (e.symm j)) (fun j => b (e.symm j))
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ s (fun j => hP (e.symm j))
+    hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY hzero hsup (tupleEquiv e v) hn
+  simpa only [tupleProduct_reindex,sourceRadius,e.symm.prod_comp] using hh
+
+theorem zeroEnergy_eq_zero_of_subunit {ι : Type*} [Fintype ι]
+    (η : Character) (m A : O) (t : ℝ) (S : Finset (Tuple ι)) (β : Tuple ι → ℂ)
+    (W : 𝓢(ℝ,ℂ)) (K Y : ℝ) (hY : Y<1)
+    (hN : ∀ v∈S,β v≠0 → finiteTupleProduct v≠0 ∧
+      (Ideal.absNorm (finiteTupleProduct v):ℝ)≤ Y) :
+    zeroEnergy η m A t (finiteColumns S) (finiteColumnCoefficient S β) W K=0 := by
+  have hb (v : Tuple ι) (hv : v∈S) : β v=0 := by
+    by_contra hn
+    have hh := hN v hv hn
+    have hnorm : (1:ℝ)≤ Ideal.absNorm (finiteTupleProduct v) := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hh.1)
+    linarith
+  have hc (I : Ideal O) : finiteColumnCoefficient S β I=0 := by
+    unfold finiteColumnCoefficient
+    exact Finset.sum_eq_zero (fun v hv => hb v (Finset.mem_filter.mp hv).1)
+  simp only [zeroEnergy,hc,zero_mul,star_zero,mul_zero,Finset.sum_const_zero]
+
+theorem smooth_source_zero_energy {ι : Type*} [Fintype ι]
+    (Wslot : ι → ℝ → ℂ) (W₁ W₂ : ℝ → ℂ)
+    (a b : ι → ℝ) (a₁ b₁ a₂ b₂ : ℝ)
+    (ha : ∀ j,0< a j) (hb : ∀ j,0≤ b j)
+    (ha₁ : 0< a₁) (hb₁ : 0≤ b₁) (ha₂ : 0< a₂) (hb₂ : 0≤ b₂)
+    (hsSlot : ∀ j,Function.support (Wslot j)⊆Set.Icc (a j) (b j))
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hWslot : ∀ j,ContDiff ℝ ∞ (Wslot j)) (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (η : Character) (m A : O) (t : ℝ)
+      (R : Ideal O) (ν : ι → Ideal O → ℂ), (∀ j I,‖ν j I‖≤1) →
+      ∀ (P : ι → ℝ) (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ s : Ideal O),
+      (∀ j,0< P j) → 0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → B₁≠0 → B₂≠0 →
+      X₁*X₂=T → Y₁*Y₂=T → ∀ (S : Finset (Tuple ι)) (Φ : 𝓢(ℝ,ℂ)) (X K : ℝ),
+      0< X → 0≤ K → (T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j)≤ X →
+      ‖((X⁻¹:ℝ):ℂ)*zeroEnergy η m A t (finiteColumns S)
+        (finiteColumnCoefficient S (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) Φ K‖≤
+        C*K*‖paperRadialFourier Φ 0‖*X^ε := by
+  choose D hD hDb hz hs using fun j => smooth_annular_bound (Wslot j) (a j) (b j) (ha j) (hsSlot j) (hWslot j)
+  obtain ⟨D₁,hD₁,hDb₁,hz₁,hsb₁⟩ := smooth_annular_bound W₁ a₁ b₁ ha₁ hs₁ hW₁
+  obtain ⟨D₂,hD₂,hDb₂,hz₂,hsb₂⟩ := smooth_annular_bound W₂ a₂ b₂ ha₂ hs₂ hW₂
+  let B := 2*D₁*D₂*(∏ j,D j)
+  have hB : 0≤ B := mul_nonneg (by positivity) (Finset.prod_nonneg (fun j _ => hD j))
+  have hend : 0≤(∏ j,b j)*b₁*b₂ := mul_nonneg
+    (mul_nonneg (Finset.prod_nonneg (fun j _ => hb j)) hb₁) hb₂
+  let L := 1+(∏ j,b j)*b₁*b₂
+  have hL : 0< L := by dsimp only [L]; linarith
+  have hendL : (∏ j,b j)*b₁*b₂≤ L := by dsimp only [L]; linarith
+  obtain ⟨C₀,hC₀,hbound⟩ := active_tuple_zero_energy_bound (Fintype.card ι) ε hε
+  let C := C₀*(1+B^2)*L^(1+ε)
+  have hC : 0< C := mul_pos (mul_pos hC₀ (by positivity)) (Real.rpow_pos_of_pos hL _)
+  refine ⟨C,hC,?_⟩
+  intro η m A t R ν hν P X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY S Φ X K hXX hK hscale
+  let β := profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s
+  have hβ (v : Tuple ι) : ‖β v‖≤ B :=
+    profileCoefficient_norm_le R ν hν Wslot P D W₁ W₂ D₁ D₂ hD hD₁ hD₂ hDb hDb₁ hDb₂
+      X₁ X₂ Y₁ Y₂ B₁ B₂ s v
+  have hT : 0< T := hX ▸ mul_pos hX₁ hX₂
+  have hraw : 0≤(T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j) :=
+    mul_nonneg (div_nonneg hT.le (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)))
+      (Finset.prod_nonneg (fun j _ => (hP j).le))
+  have hN (v : Tuple ι) (hv : β v≠0) :
+      finiteTupleProduct v≠0 ∧ (Ideal.absNorm (finiteTupleProduct v):ℝ)≤ L*X := by
+    have hh := profileCoefficient_product_bound R ν Wslot P b W₁ W₂ b₁ b₂
+      X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY
+      hz hz₁ hz₂ hs hsb₁ hsb₂ v hv
+    refine ⟨hh.1,hh.2.trans ?_⟩
+    calc
+      _ = ((∏ j,b j)*b₁*b₂)*((T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j)) := by ring
+      _ ≤ L*X := mul_le_mul hendL hscale hraw hL.le
+  by_cases hsmall : L*X<1
+  · have he := zeroEnergy_eq_zero_of_subunit η m A t S β Φ K (L*X) hsmall
+      (fun v _ hv => hN v hv)
+    change ‖((X⁻¹:ℝ):ℂ)*zeroEnergy η m A t (finiteColumns S) (finiteColumnCoefficient S β) Φ K‖≤ _
+    rw [he,mul_zero,norm_zero]
+    exact mul_nonneg (mul_nonneg (mul_nonneg hC.le hK) (norm_nonneg _)) (Real.rpow_nonneg hXX.le _)
+  have hradius : 1≤ L*X := le_of_not_gt hsmall
+  have he := hbound (le_refl (Fintype.card ι)) η m A t S β Φ (L*X) K B hradius hK hB
+    (fun v _ _ => hβ v) (fun I _ hI => by
+      obtain ⟨v,hv,hne,hprod⟩ := finiteColumnCoefficient_witness S β I hI
+      rw [←hprod]
+      exact (hN v hne).2)
+  have hpower : X⁻¹*(L*X)^(1+ε)=L^(1+ε)*X^ε := by
+    rw [Real.mul_rpow hL.le hXX.le,Real.rpow_add hXX,Real.rpow_one]
+    field_simp
+  change ‖((X⁻¹:ℝ):ℂ)*zeroEnergy η m A t (finiteColumns S) (finiteColumnCoefficient S β) Φ K‖≤ _
+  rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (inv_pos.mpr hXX)]
+  apply (mul_le_mul_of_nonneg_left he (inv_nonneg.mpr hXX.le)).trans
+  calc
+    _ = C₀*B^2*L^(1+ε)*K*‖paperRadialFourier Φ 0‖*X^ε := by
+      calc
+        _ = C₀*B^2*K*‖paperRadialFourier Φ 0‖*(X⁻¹*(L*X)^(1+ε)) := by ring
+        _ = _ := by rw [hpower];ring
+    _ ≤ C*K*‖paperRadialFourier Φ 0‖*X^ε := by
+      apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg hXX.le _)
+      apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+      apply mul_le_mul_of_nonneg_right _ hK
+      dsimp only [C]
+      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (by linarith : B^2≤1+B^2) hC₀.le)
+        (Real.rpow_nonneg hL.le _)
+
+theorem smooth_source_zero_energy_at_radius {ι : Type*} [Fintype ι]
+    (Wslot : ι → ℝ → ℂ) (W₁ W₂ : ℝ → ℂ)
+    (a b : ι → ℝ) (a₁ b₁ a₂ b₂ : ℝ)
+    (ha : ∀ j,0< a j) (hb : ∀ j,0≤ b j)
+    (ha₁ : 0< a₁) (hb₁ : 0≤ b₁) (ha₂ : 0< a₂) (hb₂ : 0≤ b₂)
+    (hsSlot : ∀ j,Function.support (Wslot j)⊆Set.Icc (a j) (b j))
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hWslot : ∀ j,ContDiff ℝ ∞ (Wslot j)) (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (η : Character) (m A : O) (t : ℝ)
+      (R : Ideal O) (ν : ι → Ideal O → ℂ), (∀ j I,‖ν j I‖≤1) →
+      ∀ (P : ι → ℝ) (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ s : Ideal O),
+      (∀ j,0< P j) → 0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → B₁≠0 → B₂≠0 →
+      X₁*X₂=T → Y₁*Y₂=T → ∀ (S : Finset (Tuple ι)) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ), 0≤ K →
+      let X := (∏ j,b j)*b₁*b₂*(T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j)
+      let E := zeroEnergy η m A t (finiteColumns S)
+        (finiteColumnCoefficient S (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) Φ K
+      (X<1 → E=0) ∧ ‖((X⁻¹:ℝ):ℂ)*E‖≤ C*K*‖paperRadialFourier Φ 0‖*X^ε := by
+  choose D hD hDb hz hs using fun j => smooth_annular_bound (Wslot j) (a j) (b j) (ha j) (hsSlot j) (hWslot j)
+  obtain ⟨D₁,hD₁,hDb₁,hz₁,hsb₁⟩ := smooth_annular_bound W₁ a₁ b₁ ha₁ hs₁ hW₁
+  obtain ⟨D₂,hD₂,hDb₂,hz₂,hsb₂⟩ := smooth_annular_bound W₂ a₂ b₂ ha₂ hs₂ hW₂
+  let B := 2*D₁*D₂*(∏ j,D j)
+  have hB : 0≤ B := mul_nonneg (by positivity) (Finset.prod_nonneg (fun j _ => hD j))
+  obtain ⟨C₀,hC₀,hbound⟩ := normalized_supported_tuple_zero_energy_bound (Fintype.card ι) ε hε
+  refine ⟨C₀*(1+B^2),mul_pos hC₀ (by positivity),?_⟩
+  intro η m A t R ν hν P X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY S Φ K hK X E
+  let β := profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s
+  have hβ (v : Tuple ι) : ‖β v‖≤ B :=
+    profileCoefficient_norm_le R ν hν Wslot P D W₁ W₂ D₁ D₂ hD hD₁ hD₂ hDb hDb₁ hDb₂
+      X₁ X₂ Y₁ Y₂ B₁ B₂ s v
+  have hN (v : Tuple ι) (hv : β v≠0) :
+      finiteTupleProduct v≠0 ∧ (Ideal.absNorm (finiteTupleProduct v):ℝ)≤ X :=
+    profileCoefficient_product_bound R ν Wslot P b W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ s
+      hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY hz hz₁ hz₂ hs hsb₁ hsb₂ v hv
+  have hzero (hx : X<1) : E=0 :=
+    zeroEnergy_eq_zero_of_subunit η m A t S β Φ K X hx (fun v _ hv => hN v hv)
+  refine ⟨hzero,?_⟩
+  have hT : 0< T := hX ▸ mul_pos hX₁ hX₂
+  have hXX : 0≤ X := by
+    dsimp only [X]
+    exact mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
+      (Finset.prod_nonneg (fun j _ => hb j)) hb₁) hb₂)
+      (div_nonneg hT.le (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))))
+      (Finset.prod_nonneg (fun j _ => (hP j).le))
+  by_cases hx : X<1
+  · rw [hzero hx,mul_zero,norm_zero]
+    positivity
+  have he := hbound (le_refl (Fintype.card ι)) η m A t S β Φ X K B
+    (le_of_not_gt hx) hK hB (fun v _ => hβ v) (fun v _ hv => (hN v hv).2)
+  apply he.trans
+  apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg hXX _)
+  apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+  calc
+    C₀*K*B^2 = C₀*B^2*K := by ring
+    _ ≤ C₀*(1+B^2)*K := mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (by linarith : B^2≤1+B^2) hC₀.le) hK
+
+theorem smooth_subset_source_zero_energy {α : Type*} (F : Finset α)
+    (Wslot : α → ℝ → ℂ) (W₁ W₂ : ℝ → ℂ)
+    (a b : α → ℝ) (a₁ b₁ a₂ b₂ : ℝ)
+    (ha : ∀ j∈F,0< a j) (hb : ∀ j∈F,0≤ b j)
+    (ha₁ : 0< a₁) (hb₁ : 0≤ b₁) (ha₂ : 0< a₂) (hb₂ : 0≤ b₂)
+    (hsSlot : ∀ j∈F,Function.support (Wslot j)⊆Set.Icc (a j) (b j))
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hWslot : ∀ j∈F,ContDiff ℝ ∞ (Wslot j)) (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ J : Finset α,J⊆F →
+      ∀ (η : Character) (m A : O) (t : ℝ) (R : Ideal O) (ν : α → Ideal O → ℂ),
+      (∀ j∈J,∀ I,‖ν j I‖≤1) →
+      ∀ (P : α → ℝ) (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ s : Ideal O),
+      (∀ j∈J,0< P j) → 0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → B₁≠0 → B₂≠0 →
+      X₁*X₂=T → Y₁*Y₂=T → ∀ (S : Finset (Tuple J)) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ),0≤ K →
+      let H := (T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j∈J,P j)
+      let ρ := (∏ j∈J,b j)*b₁*b₂*H
+      let E := zeroEnergy η m A t (finiteColumns S)
+        (finiteColumnCoefficient S (profileCoefficient R (fun j : J => ν j.val)
+          (fun j : J => Wslot j.val) (fun j : J => P j.val)
+          W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) Φ K
+      (ρ<1 → E=0) ∧
+      ‖((ρ⁻¹:ℝ):ℂ)*E‖≤ C*K*‖paperRadialFourier Φ 0‖*ρ^ε ∧
+      ∀ X : ℝ,0< X → H≤ X → ‖((X⁻¹:ℝ):ℂ)*E‖≤ C*K*‖paperRadialFourier Φ 0‖*X^ε := by
+  have hraw (J : Finset α) (hJ : J⊆F) := smooth_source_zero_energy
+    (fun j : J => Wslot j.val) W₁ W₂ (fun j : J => a j.val) (fun j : J => b j.val)
+    a₁ b₁ a₂ b₂ (fun j => ha j.val (hJ j.property)) (fun j => hb j.val (hJ j.property))
+    ha₁ hb₁ ha₂ hb₂ (fun j => hsSlot j.val (hJ j.property)) hs₁ hs₂
+    (fun j => hWslot j.val (hJ j.property)) hW₁ hW₂ ε hε
+  have hrad (J : Finset α) (hJ : J⊆F) := smooth_source_zero_energy_at_radius
+    (fun j : J => Wslot j.val) W₁ W₂ (fun j : J => a j.val) (fun j : J => b j.val)
+    a₁ b₁ a₂ b₂ (fun j => ha j.val (hJ j.property)) (fun j => hb j.val (hJ j.property))
+    ha₁ hb₁ ha₂ hb₂ (fun j => hsSlot j.val (hJ j.property)) hs₁ hs₂
+    (fun j => hWslot j.val (hJ j.property)) hW₁ hW₂ ε hε
+  let D (J : Finset α) : ℝ := if hJ : J⊆F then (hraw J hJ).choose+(hrad J hJ).choose else 1
+  have hD (J : Finset α) : 0< D J := by
+    dsimp only [D]
+    split_ifs with hJ
+    · exact add_pos (hraw J hJ).choose_spec.1 (hrad J hJ).choose_spec.1
+    · norm_num
+  let C := 1+∑ J∈F.powerset,D J
+  have hC : 0< C := by
+    have hsum := Finset.sum_nonneg (fun J (_ : J∈F.powerset) => (hD J).le)
+    dsimp only [C]
+    linarith
+  refine ⟨C,hC,?_⟩
+  intro J hJ η m A t R ν hν P X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY S Φ K hK H ρ E
+  have hDC : D J≤ C := by
+    have hle := Finset.single_le_sum (fun L (_ : L∈F.powerset) => (hD L).le) (Finset.mem_powerset.mpr hJ)
+    dsimp only [C]
+    linarith
+  have hde : D J=(hraw J hJ).choose+(hrad J hJ).choose := by simp only [D,dif_pos hJ]
+  have hrawC : (hraw J hJ).choose≤ C := by
+    rw [hde] at hDC
+    linarith [(hrad J hJ).choose_spec.1]
+  have hradC : (hrad J hJ).choose≤ C := by
+    rw [hde] at hDC
+    linarith [(hraw J hJ).choose_spec.1]
+  have hr := (hrad J hJ).choose_spec.2 η m A t R (fun j : J => ν j.val)
+    (fun j I => hν j.val j.property I) (fun j : J => P j.val)
+    X₁ X₂ Y₁ Y₂ T B₁ B₂ s (fun j => hP j.val j.property)
+    hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY S Φ K hK
+  have heq : (∏ j : J,b j.val)*b₁*b₂*(T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j : J,P j.val)=ρ := by
+    rw [Finset.prod_coe_sort,Finset.prod_coe_sort]
+    dsimp only [ρ,H]
+    ring
+  dsimp only at hr
+  rw [heq] at hr
+  have hT : 0< T := hX ▸ mul_pos hX₁ hX₂
+  have hprodB : 0≤∏ j∈J,b j := Finset.prod_nonneg (fun j hj => hb j (hJ hj))
+  have hprodP : 0≤∏ j∈J,P j := Finset.prod_nonneg (fun j hj => (hP j hj).le)
+  have hρ : 0≤ρ := by dsimp only [ρ,H]; positivity
+  refine ⟨hr.1,hr.2.trans ?_,?_⟩
+  · exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hradC hK) (norm_nonneg _))
+      (Real.rpow_nonneg hρ _)
+  · intro X hXX hscale
+    have hx := (hraw J hJ).choose_spec.2 η m A t R (fun j : J => ν j.val)
+      (fun j I => hν j.val j.property I) (fun j : J => P j.val)
+      X₁ X₂ Y₁ Y₂ T B₁ B₂ s (fun j => hP j.val j.property)
+      hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY S Φ X K hXX hK
+      (by simpa only [Finset.prod_coe_sort] using hscale)
+    exact hx.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hrawC hK) (norm_nonneg _))
+      (Real.rpow_nonneg hXX.le _))
+
+end CenteredMomentSourceZeroEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentCommonMaskExpansion
+open HeckeFamily CenteredMomentReflectionDeletion CenteredMomentReflectionMass
+open UniqueFactorizationMonoid
+local notation "O" => Eisenstein.O
+
+def naturalSlot (χ : Character) (pool : Finset (Ideal O)) (β : Ideal O→ℂ) (P : ℝ) : ℂ :=
+  (Real.sqrt P:ℂ)⁻¹ * ∑ I∈pool,idealCoeff χ I*β I
+
+def profileSlot (χ : Character) (pool : Finset (Ideal O))
+    (ν : Ideal O→ℂ) (W : ℝ→ℂ) (P : ℝ) : ℂ :=
+  naturalSlot χ pool (fun I=>ν I*W ((I.absNorm:ℝ)/P)) P
+
+lemma outside_prime (R : Finset (Ideal O)) (hR : ∀ I∈R,Prime I)
+    (I : Ideal O) (hI : Prime I) : outside R I ↔ I∉R := by
+  constructor
+  · intro h hi
+    exact h I hi dvd_rfl
+  · intro h J hj hd
+    have he : J=I := (prime_dvd_prime_iff_eq (hR J hj) hI).mp hd
+    exact h (he ▸ hj)
+
+lemma deleted_prime (χ : Character) (R : Finset (Ideal O)) (hR : ∀ I∈R,Prime I)
+    (I : Ideal O) (hI : Prime I) :
+    idealCoeff (χ.excludePrimes R hR) I = if I∈R then 0 else idealCoeff χ I := by
+  have h:=deleted_coefficient χ R hR ⟨I,hI.ne_zero⟩
+  simpa only [outside_prime R hR I hI,ite_not] using h
+
+theorem naturalSlot_delete (χ : Character) (R : Finset (Ideal O)) (hR : ∀ I∈R,Prime I)
+    (pool : Finset (Ideal O)) (hp : ∀ I∈pool,Prime I) (β : Ideal O→ℂ) (P : ℝ) :
+    naturalSlot (χ.excludePrimes R hR) pool β P =
+      naturalSlot χ pool β P - naturalSlot χ (pool∩R) β P := by
+  unfold naturalSlot
+  have hinter : pool∩R=pool.filter (fun I=> I∈R) := by ext I;simp
+  rw [←mul_sub,hinter,Finset.sum_filter,←Finset.sum_sub_distrib]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro I hi
+  rw [deleted_prime χ R hR I (hp I hi)]
+  by_cases h:I∈R <;> simp [h]
+
+lemma prod_sub_expansion {α : Type*} [DecidableEq α] (F : Finset α) (a b : α→ℂ) :
+    (∏i∈F,(a i-b i))=∑J∈F.powerset,(-1:ℂ)^J.card*(∏i∈J,b i)*(∏i∈F\J,a i) := by
+  have he : (∏i∈F,(a i-b i))=∏i∈F,((-b i)+a i) := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    ring
+  rw [he,Finset.prod_add]
+  simp only [Finset.prod_neg]
+
+def plainCoefficient (χ : Character) (D : Finset (Ideal O)) : ℂ :=
+  (moebius (∏I∈D,I):ℂ)*(idealCoeff χ (∏I∈D,I)/(Real.sqrt (Ideal.absNorm (∏I∈D,I):ℝ):ℂ))
+
+variable {α : Type*} [DecidableEq α]
+
+def signedCoefficient (χ : Character) (R D₁ D₂ : Finset (Ideal O))
+    (J : Finset α) (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) : ℂ :=
+  plainCoefficient χ D₁*plainCoefficient χ D₂*(-1:ℂ)^J.card*
+    ∏i∈J,naturalSlot χ (pool i∩R) (β i) (P i)
+
+theorem simultaneous_deletion (χ : Character) (R : Finset (Ideal O))
+    (hR : ∀ I∈R,Prime I) (W₁ W₂ : 𝓢(ℝ,ℂ)) (X₁ X₂ : ℝ)
+    (hX₁ : 0< X₁) (hX₂ : 0< X₂) (F : Finset α)
+    (pool : α→Finset (Ideal O)) (hp : ∀i∈F,∀I∈pool i,Prime I)
+    (β : α→Ideal O→ℂ) (P : α→ℝ) :
+    HeckeDyadic.polynomial (χ.excludePrimes R hR) false W₁ X₁ 0 0 *
+      HeckeDyadic.polynomial (χ.excludePrimes R hR) false W₂ X₂ 0 0 *
+      (∏i∈F,naturalSlot (χ.excludePrimes R hR) (pool i) (β i) (P i)) =
+    ∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,
+      signedCoefficient χ R D₁ D₂ J pool β P *
+        (HeckeDyadic.polynomial χ false W₁ (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+         HeckeDyadic.polynomial χ false W₂ (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+         ∏i∈F\J,naturalSlot χ (pool i) (β i) (P i)) := by
+  have hs : (∏i∈F,naturalSlot (χ.excludePrimes R hR) (pool i) (β i) (P i))=
+      ∑J∈F.powerset,(-1:ℂ)^J.card*(∏i∈J,naturalSlot χ (pool i∩R) (β i) (P i))*
+        (∏i∈F\J,naturalSlot χ (pool i) (β i) (P i)) := by
+    have hh:=prod_sub_expansion F (fun i=> naturalSlot χ (pool i) (β i) (P i))
+      (fun i=> naturalSlot χ (pool i∩R) (β i) (P i))
+    exact (Finset.prod_congr rfl (fun i hi=> naturalSlot_delete χ R hR (pool i) (hp i hi) (β i) (P i))).trans hh
+  rw [normalized_finite_deletion_moebius χ R hR W₁ (schwartz_decayTwo W₁) X₁ hX₁,
+    normalized_finite_deletion_moebius χ R hR W₂ (schwartz_decayTwo W₂) X₂ hX₂,hs]
+  rw [Finset.sum_mul_sum,Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro D₁ hD₁
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro D₂ hD₂
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro J hJ
+  dsimp only [signedCoefficient,plainCoefficient]
+  ring
+
+def slotMass (R pool : Finset (Ideal O)) (β : Ideal O→ℂ) (P : ℝ) : ℝ :=
+  (Real.sqrt P)⁻¹ * ∑I∈pool∩R,‖β I‖
+
+lemma slotMass_nonneg (R pool : Finset (Ideal O)) (β : Ideal O→ℂ) (P : ℝ) :
+    0≤ slotMass R pool β P := by unfold slotMass;positivity
+
+lemma naturalSlot_norm (χ : Character) (R pool : Finset (Ideal O)) (β : Ideal O→ℂ) (P : ℝ) :
+    ‖naturalSlot χ (pool∩R) β P‖≤ slotMass R pool β P := by
+  rw [naturalSlot,norm_mul,norm_inv,Complex.norm_real,Real.norm_eq_abs,
+    abs_of_nonneg (Real.sqrt_nonneg _)]
+  apply mul_le_mul_of_nonneg_left _ (inv_nonneg.mpr (Real.sqrt_nonneg _))
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro I hi
+  rw [norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (idealCoeff_norm_le_one χ I)
+
+lemma plainCoefficient_norm (χ : Character) (D : Finset (Ideal O))
+    (hD : ∀I∈D,Prime I) : ‖plainCoefficient χ D‖≤ weight (∏I∈D,I) := by
+  rw [plainCoefficient,subset_product_moebius D hD]
+  simp only [norm_mul,norm_pow,norm_neg,norm_one,one_pow,one_mul,norm_div,
+    Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _)]
+  exact (div_le_div_of_nonneg_right (idealCoeff_norm_le_one χ _) (Real.sqrt_nonneg _)).trans_eq
+    (by simp only [weight,one_div])
+
+lemma slot_point_mass (I : Ideal O) (hI : Prime I) (β : Ideal O→ℂ)
+    (P b M : ℝ) (hP : 0< P) (hM : 0≤ M) (hβ : ‖β I‖≤ M)
+    (hs : β I≠0 → (I.absNorm:ℝ)≤ b*P) :
+    (Real.sqrt P)⁻¹*‖β I‖≤(Real.sqrt (max 1 b)*M)*weight I := by
+  by_cases hz : β I=0
+  · simp only [hz,norm_zero,mul_zero]
+    exact mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hM) (weight_nonneg _)
+  have hN : (0:ℝ)< I.absNorm := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI.ne_zero)
+  have hB : 0≤ max 1 b := le_trans zero_le_one (le_max_left _ _)
+  have hsqrt : Real.sqrt (I.absNorm:ℝ)≤ Real.sqrt (max 1 b)*Real.sqrt P := by
+    rw [←Real.sqrt_mul hB]
+    exact Real.sqrt_le_sqrt ((hs hz).trans (mul_le_mul_of_nonneg_right (le_max_right _ _) hP.le))
+  have hi : (Real.sqrt P)⁻¹≤ Real.sqrt (max 1 b)*weight I := by
+    rw [weight,←div_eq_mul_inv,inv_eq_one_div,
+      div_le_div_iff₀ (Real.sqrt_pos.mpr hP) (Real.sqrt_pos.mpr hN)]
+    simpa using hsqrt
+  calc
+    _≤(Real.sqrt (max 1 b)*weight I)*M :=
+      mul_le_mul hi hβ (norm_nonneg _) (mul_nonneg (Real.sqrt_nonneg _) (weight_nonneg _))
+    _=_ := by ring
+
+lemma slotMass_bound (R pool : Finset (Ideal O)) (hp : ∀I∈pool,Prime I)
+    (β : Ideal O→ℂ) (P b M : ℝ) (hP : 0< P) (hM : 0≤ M)
+    (hβ : ∀I∈pool,‖β I‖≤ M) (hs : ∀I∈pool,β I≠0 → (I.absNorm:ℝ)≤ b*P) :
+    slotMass R pool β P≤(Real.sqrt (max 1 b)*M)*∑I∈R,weight I := by
+  unfold slotMass
+  rw [Finset.mul_sum]
+  calc
+    _≤∑I∈pool∩R,(Real.sqrt (max 1 b)*M)*weight I :=
+      Finset.sum_le_sum (fun I hi=> slot_point_mass I (hp I (Finset.mem_inter.mp hi).1)
+        β P b M hP hM (hβ I (Finset.mem_inter.mp hi).1) (hs I (Finset.mem_inter.mp hi).1))
+    _=(Real.sqrt (max 1 b)*M)*∑I∈pool∩R,weight I := (Finset.mul_sum _ _ _).symm
+    _≤ _ := mul_le_mul_of_nonneg_left
+      (Finset.sum_le_sum_of_subset_of_nonneg Finset.inter_subset_right (fun I hi hn=> weight_nonneg I))
+      (mul_nonneg (Real.sqrt_nonneg _) hM)
+
+lemma one_add_sum_weight (R : Finset (Ideal O)) :
+    1+∑I∈R,weight I≤∏I∈R,(1+weight I) := by
+  induction R using Finset.induction_on with
+  | empty => simp
+  | @insert I R hi ih =>
+    rw [Finset.sum_insert hi,Finset.prod_insert hi]
+    have hw:=weight_nonneg I
+    have hs:0≤∑J∈R,weight J:=Finset.sum_nonneg (fun J _=> weight_nonneg J)
+    nlinarith
+
+lemma deletion_le_euler (R : Finset (Ideal O)) (hR : ∀I∈R,Prime I) :
+    (∏I∈R,(1+weight I))≤∏I∈R,localMass I := by
+  apply Finset.prod_le_prod (fun I hi=> by linarith [weight_nonneg I])
+  intro I hi
+  apply (le_div_iff₀ (sub_pos.mpr (prime_weight_lt_one I (hR I hi)))).mpr
+  have h:=weight_nonneg I
+  nlinarith
+
+lemma euler_ge_one (R : Finset (Ideal O)) (hR : ∀I∈R,Prime I) :
+    1≤∏I∈R,localMass I :=
+  (show 1≤∏I∈R,(1+weight I) by
+    linarith [Finset.sum_nonneg (s:=R) (fun I _=> weight_nonneg I),one_add_sum_weight R]).trans
+    (deletion_le_euler R hR)
+
+lemma one_add_slotMass (R pool : Finset (Ideal O)) (hR : ∀I∈R,Prime I)
+    (hp : ∀I∈pool,Prime I) (β : Ideal O→ℂ) (P b M : ℝ) (hP : 0< P) (hM : 0≤ M)
+    (hβ : ∀I∈pool,‖β I‖≤ M) (hs : ∀I∈pool,β I≠0 → (I.absNorm:ℝ)≤ b*P) :
+    1+slotMass R pool β P≤ max 1 (Real.sqrt (max 1 b)*M)*(∏I∈R,localMass I) := by
+  have ha:=slotMass_bound R pool hp β P b M hP hM hβ hs
+  have hb:1+∑I∈R,weight I≤∏I∈R,localMass I:=
+    (one_add_sum_weight R).trans (deletion_le_euler R hR)
+  have hc:=le_max_left 1 (Real.sqrt (max 1 b)*M)
+  have hd:=le_max_right 1 (Real.sqrt (max 1 b)*M)
+  have he:0≤∑I∈R,weight I:=Finset.sum_nonneg (fun I _=> weight_nonneg I)
+  nlinarith
+
+def coefficientMajorant (R D₁ D₂ : Finset (Ideal O)) (J : Finset α)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) : ℝ :=
+  weight (∏I∈D₁,I)*weight (∏I∈D₂,I)*∏i∈J,slotMass R (pool i) (β i) (P i)
+
+omit [DecidableEq α] in
+lemma signedCoefficient_norm (χ : Character) (R : Finset (Ideal O)) (hR : ∀I∈R,Prime I)
+    (D₁ D₂ : Finset (Ideal O)) (hD₁ : D₁⊆R) (hD₂ : D₂⊆R) (J : Finset α)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) :
+    ‖signedCoefficient χ R D₁ D₂ J pool β P‖≤ coefficientMajorant R D₁ D₂ J pool β P := by
+  simp only [signedCoefficient,norm_mul,norm_pow,norm_neg,norm_one,one_pow,mul_one,norm_prod]
+  apply mul_le_mul
+  · exact mul_le_mul (plainCoefficient_norm χ D₁ (fun I hi=> hR I (hD₁ hi)))
+      (plainCoefficient_norm χ D₂ (fun I hi=> hR I (hD₂ hi))) (norm_nonneg _) (weight_nonneg _)
+  · exact Finset.prod_le_prod (fun i _=> norm_nonneg _) (fun i _=> naturalSlot_norm χ R (pool i) (β i) (P i))
+  · positivity
+  · exact mul_nonneg (weight_nonneg _) (weight_nonneg _)
+
+omit [DecidableEq α] in
+lemma majorant_mass (R : Finset (Ideal O)) (F : Finset α)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) :
+    (∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,
+      coefficientMajorant R D₁ D₂ J pool β P)=
+      (∏I∈R,(1+weight I))^2*(∏i∈F,(1+slotMass R (pool i) (β i) (P i))) := by
+  simp only [coefficientMajorant,←Finset.mul_sum]
+  rw [←Finset.prod_one_add]
+  simp only [←Finset.sum_mul]
+  rw [←Finset.sum_mul_sum,deletion_mass]
+  ring
+
+def uniformMajorant (R D₁ D₂ : Finset (Ideal O)) (J : Finset α) (b M : α→ℝ) : ℝ :=
+  weight (∏I∈D₁,I)*weight (∏I∈D₂,I)*
+    ∏i∈J,(Real.sqrt (max 1 (b i))*M i)*(∑I∈R,weight I)
+
+omit [DecidableEq α] in
+lemma uniformMajorant_nonneg (R D₁ D₂ : Finset (Ideal O)) (J : Finset α)
+    (b M : α→ℝ) (hM : ∀i∈J,0≤ M i) :
+    0≤ uniformMajorant R D₁ D₂ J b M := by
+  apply mul_nonneg (mul_nonneg (weight_nonneg _) (weight_nonneg _))
+  exact Finset.prod_nonneg (fun i hi=> mul_nonneg
+    (mul_nonneg (Real.sqrt_nonneg _) (hM i hi))
+    (Finset.sum_nonneg (fun I _=> weight_nonneg I)))
+
+omit [DecidableEq α] in
+lemma signedCoefficient_uniform (χ : Character) (R : Finset (Ideal O)) (hR : ∀I∈R,Prime I)
+    (D₁ D₂ : Finset (Ideal O)) (hD₁ : D₁⊆R) (hD₂ : D₂⊆R) (J : Finset α)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P b M : α→ℝ)
+    (hp : ∀i∈J,∀I∈pool i,Prime I) (hP : ∀i∈J,0< P i) (hM : ∀i∈J,0≤ M i)
+    (hβ : ∀i∈J,∀I∈pool i,‖β i I‖≤ M i)
+    (hs : ∀i∈J,∀I∈pool i,β i I≠0 → (I.absNorm:ℝ)≤ b i*P i) :
+    ‖signedCoefficient χ R D₁ D₂ J pool β P‖≤ uniformMajorant R D₁ D₂ J b M := by
+  apply (signedCoefficient_norm χ R hR D₁ D₂ hD₁ hD₂ J pool β P).trans
+  apply mul_le_mul_of_nonneg_left _ (mul_nonneg (weight_nonneg _) (weight_nonneg _))
+  exact Finset.prod_le_prod (fun i _=> slotMass_nonneg _ _ _ _)
+    (fun i hi=> slotMass_bound R (pool i) (hp i hi) (β i) (P i) (b i) (M i)
+      (hP i hi) (hM i hi) (hβ i hi) (hs i hi))
+
+omit [DecidableEq α] in
+lemma uniformMajorant_mass (R : Finset (Ideal O)) (F : Finset α) (b M : α→ℝ) :
+    (∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,uniformMajorant R D₁ D₂ J b M)=
+      (∏I∈R,(1+weight I))^2*
+        ∏i∈F,(1+(Real.sqrt (max 1 (b i))*M i)*(∑I∈R,weight I)) := by
+  simp only [uniformMajorant,←Finset.mul_sum]
+  rw [←Finset.prod_one_add]
+  simp only [←Finset.sum_mul]
+  rw [←Finset.sum_mul_sum,deletion_mass]
+  ring
+
+omit [DecidableEq α] in
+lemma uniformMajorant_mass_le (R : Finset (Ideal O)) (hR : ∀I∈R,Prime I)
+    (F : Finset α) (b M : α→ℝ) (hM : ∀i∈F,0≤ M i) :
+    (∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,uniformMajorant R D₁ D₂ J b M)≤
+      (∏i∈F,max 1 (Real.sqrt (max 1 (b i))*M i)) * (∏I∈R,localMass I)^(2+F.card) := by
+  rw [uniformMajorant_mass]
+  have hE:=euler_ge_one R hR
+  have hp (i : α) (hi : i∈F) :
+      1+(Real.sqrt (max 1 (b i))*M i)*(∑I∈R,weight I)≤
+        max 1 (Real.sqrt (max 1 (b i))*M i)*(∏I∈R,localMass I) := by
+    have ha:1+∑I∈R,weight I≤∏I∈R,localMass I:=(one_add_sum_weight R).trans (deletion_le_euler R hR)
+    have hb:=le_max_left 1 (Real.sqrt (max 1 (b i))*M i)
+    have hc:=le_max_right 1 (Real.sqrt (max 1 (b i))*M i)
+    have hs:0≤∑I∈R,weight I:=Finset.sum_nonneg (fun I _=> weight_nonneg I)
+    nlinarith
+  calc
+    _≤(∏I∈R,localMass I)^2*
+        ∏i∈F,max 1 (Real.sqrt (max 1 (b i))*M i)*(∏I∈R,localMass I) := by
+      apply mul_le_mul
+      · exact pow_le_pow_left₀ (Finset.prod_nonneg (fun I _=> by linarith [weight_nonneg I]))
+          (deletion_le_euler R hR) 2
+      · exact Finset.prod_le_prod (fun i hi=> add_nonneg zero_le_one
+          (mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (hM i hi))
+            (Finset.sum_nonneg (fun I _=> weight_nonneg I)))) hp
+      · exact Finset.prod_nonneg (fun i hi=> add_nonneg zero_le_one
+          (mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (hM i hi))
+            (Finset.sum_nonneg (fun I _=> weight_nonneg I))))
+      · exact sq_nonneg _
+    _=_ := by rw [Finset.prod_mul_distrib,Finset.prod_const,pow_add];ring
+
+omit [DecidableEq α] in
+
+theorem uniform_mass_subpower (F : Finset α) (b M : α→ℝ) (hM : ∀i∈F,0≤ M i)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (R : Finset (Ideal O)) (_hR : ∀I∈R,Prime I),
+      (∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,uniformMajorant R D₁ D₂ J b M)≤
+        C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε := by
+  let n:ℕ:=2+F.card
+  have hn:(0:ℝ)< n:=by dsimp [n];positivity
+  let δ:ℝ:=ε/n
+  have hδ:0<δ:=div_pos hε hn
+  obtain ⟨C₀,hC₀,hbound⟩:=euler_mass_subpower δ hδ
+  let A:ℝ:=∏i∈F,max 1 (Real.sqrt (max 1 (b i))*M i)
+  have hA:0< A:=Finset.prod_pos (fun i _=> lt_of_lt_of_le zero_lt_one (le_max_left _ _))
+  refine ⟨A*C₀^n,mul_pos hA (pow_pos hC₀ n),?_⟩
+  intro R hR
+  have he:0≤∏I∈R,localMass I:=(euler_ge_one R hR).trans' zero_le_one
+  have hr:0≤(Ideal.absNorm (∏I∈R,I):ℝ):=Nat.cast_nonneg _
+  have hpow:((Ideal.absNorm (∏I∈R,I):ℝ)^δ)^n=(Ideal.absNorm (∏I∈R,I):ℝ)^ε := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul hr]
+    congr 1
+    dsimp [δ]
+    exact div_mul_cancel₀ _ hn.ne'
+  calc
+    _≤ A*(∏I∈R,localMass I)^n:=uniformMajorant_mass_le R hR F b M hM
+    _≤ A*(C₀*(Ideal.absNorm (∏I∈R,I):ℝ)^δ)^n:=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ he (hbound R hR) n) hA.le
+    _=_:=by rw [mul_pow,hpow];ring
+
+omit [DecidableEq α] in
+
+theorem signed_mass_subpower (F : Finset α) (b M : α→ℝ) (hM : ∀i∈F,0≤ M i)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (R : Finset (Ideal O)) (_hR : ∀I∈R,Prime I)
+      (χ : Character) (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ),
+      (∀i∈F,∀I∈pool i,Prime I) → (∀i∈F,0< P i) →
+      (∀i∈F,∀I∈pool i,‖β i I‖≤ M i) →
+      (∀i∈F,∀I∈pool i,β i I≠0 → (I.absNorm:ℝ)≤ b i*P i) →
+      (∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,
+        ‖signedCoefficient χ R D₁ D₂ J pool β P‖)≤ C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε := by
+  obtain ⟨C,hC,hbound⟩:=uniform_mass_subpower F b M hM ε hε
+  refine ⟨C,hC,?_⟩
+  intro R hR χ pool β P hp hP hβ hs
+  apply le_trans _ (hbound R hR)
+  apply Finset.sum_le_sum
+  intro D₁ hD₁
+  apply Finset.sum_le_sum
+  intro D₂ hD₂
+  apply Finset.sum_le_sum
+  intro J hJ
+  have hj:=Finset.mem_powerset.mp hJ
+  exact signedCoefficient_uniform χ R hR D₁ D₂ (Finset.mem_powerset.mp hD₁)
+    (Finset.mem_powerset.mp hD₂) J pool β P b M
+    (fun i hi=> hp i (hj hi)) (fun i hi=> hP i (hj hi)) (fun i hi=> hM i (hj hi))
+    (fun i hi=> hβ i (hj hi)) (fun i hi=> hs i (hj hi))
+
+lemma profile_bounds (pool : Finset (Ideal O)) (ν : Ideal O→ℂ) (W : ℝ→ℂ)
+    (P b M : ℝ) (hP : 0< P) (hν : ∀I∈pool,‖ν I‖≤1)
+    (hW : ∀x,‖W x‖≤ M) (hs : Function.support W⊆Set.Iic b) :
+    (∀I∈pool,‖ν I*W ((I.absNorm:ℝ)/P)‖≤ M) ∧
+      (∀I∈pool,ν I*W ((I.absNorm:ℝ)/P)≠0 → (I.absNorm:ℝ)≤ b*P) := by
+  constructor
+  · intro I hi
+    rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (hν I hi)).trans (hW _)
+  · intro I hi hn
+    exact (div_le_iff₀ hP).mp (hs (right_ne_zero_of_mul hn))
+
+omit [DecidableEq α] in
+
+theorem profile_signed_mass_subpower (F : Finset α) (b M : α→ℝ)
+    (hM : ∀i∈F,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (R : Finset (Ideal O)) (_hR : ∀I∈R,Prime I)
+      (χ : Character) (pool : α→Finset (Ideal O)) (ν : α→Ideal O→ℂ)
+      (W : α→ℝ→ℂ) (P : α→ℝ),
+      (∀i∈F,∀I∈pool i,Prime I) → (∀i∈F,0< P i) →
+      (∀i∈F,∀I∈pool i,‖ν i I‖≤1) → (∀i∈F,∀x,‖W i x‖≤ M i) →
+      (∀i∈F,Function.support (W i)⊆Set.Iic (b i)) →
+      (∑D₁∈R.powerset,∑D₂∈R.powerset,∑J∈F.powerset,
+        ‖signedCoefficient χ R D₁ D₂ J pool
+          (fun i I=>ν i I*W i ((I.absNorm:ℝ)/P i)) P‖)≤
+        C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε := by
+  obtain ⟨C,hC,hbound⟩:=signed_mass_subpower F b M hM ε hε
+  refine ⟨C,hC,?_⟩
+  intro R hR χ pool ν W P hp hP hν hW hs
+  exact hbound R hR χ pool (fun i I=>ν i I*W i ((I.absNorm:ℝ)/P i)) P hp hP
+    (fun i hi=>(profile_bounds (pool i) (ν i) (W i) (P i) (b i) (M i)
+      (hP i hi) (hν i hi) (hW i hi) (hs i hi)).1)
+    (fun i hi=>(profile_bounds (pool i) (ν i) (W i) (P i) (b i) (M i)
+      (hP i hi) (hν i hi) (hW i hi) (hs i hi)).2)
+
+end CenteredMomentCommonMaskExpansion
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentNaturalRowSource
+open HeckeFamily CompletedGauss UniqueFactorizationMonoid 
+local notation "O" => Eisenstein.O
+
+lemma support_prime (R P : Ideal O) (hP : P∈primeSupport R) : Prime P :=
+  prime_of_normalized_factor P (Multiset.mem_toFinset.mp hP)
+
+lemma coprime_support_iff (I R : Ideal O) (hR : R≠0) :
+    (∀P∈primeSupport R,IsCoprime I P) ↔ IsCoprime I R := by
+  constructor
+  · intro h
+    have aux : ∀s : Multiset (Ideal O),(∀P∈s,IsCoprime I P)→IsCoprime I s.prod := by
+      intro s
+      induction s using Multiset.induction_on with
+      | empty => intro _; simpa using (isCoprime_one_right : IsCoprime I 1)
+      | @cons a s ih =>
+        intro hs
+        rw [Multiset.prod_cons]
+        exact (hs a (Multiset.mem_cons_self _ _)).mul_right
+          (ih (fun P hP=> hs P (Multiset.mem_cons_of_mem hP)))
+    rw [←Ideal.prod_normalizedFactors_eq_self hR]
+    exact aux _ (fun P hP=> h P (Multiset.mem_toFinset.mpr hP))
+  · intro h P hP
+    exact h.of_isCoprime_of_dvd_right (dvd_of_mem_normalizedFactors (Multiset.mem_toFinset.mp hP))
+
+def excluded (χ : Character) (R : Ideal O) : Character :=
+  χ.excludePrimes (primeSupport R) (support_prime R)
+
+lemma excluded_ideal (χ : Character) (R : Ideal O) (hR : R≠0) (I : Ideal O) :
+    idealCoeff (excluded χ R) I=if IsCoprime I R then idealCoeff χ I else 0 := by
+  simp only [excluded,idealCoeff_excludePrimes,coprime_support_iff I R hR]
+
+lemma excluded_element (χ : Character) (hχ0 : elementCoeff χ 0=0)
+    (R : Ideal O) (hR : R≠0) (n : O) :
+    elementCoeff (excluded χ R) n=
+      if IsCoprime (Ideal.span {n}) R then elementCoeff χ n else 0 := by
+  by_cases hn : n=0
+  · subst n
+    have hh : elementCoeff (excluded χ R) 0=0 := by
+      rw [excluded,Character.excludePrimes,elementCoeff_refineModulus,hχ0]
+      split_ifs <;> rfl
+    rw [hh,hχ0]
+    split_ifs <;> rfl
+  · rw [←idealCoeff_span _ hn,excluded_ideal χ R hR,idealCoeff_span χ hn]
+
+lemma excluded_element_generator (χ : Character) (hχ0 : elementCoeff χ 0=0)
+    (R : Ideal O) (hR : R≠0) (n : O) :
+    elementCoeff (excluded χ R) n=
+      if IsCoprime n (cubicIdealGenerator R) then elementCoeff χ n else 0 := by
+  rw [excluded_element χ hχ0 R hR]
+  conv_lhs => rw [←span_cubicIdealGenerator R,Ideal.isCoprime_span_singleton_iff]
+
+end CenteredMomentNaturalRowSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentNaturalRowSource
+open HeckeFamily HeckeRowClosure CanonicalRowCompletion 
+open CenteredMomentSecondHeightFamily CenteredMomentFixedRowMask CenteredExceptionalProfile
+local notation "O" => Eisenstein.O
+
+structure NaturalRow (η : Character) (z : O) where
+  character : Character
+  modulus_bound : character.modulus.absNorm≤ rowConductorBound η fixedBadMask 1 z
+  element : ∀n,elementCoeff character n=rowTwist (elementHom η) fixedBadMask 1 z n
+
+def naturalRow (η : Character) (z : O) (hz : z≠0) : NaturalRow η z := by
+  let e:=exists_row_character_with_conductor η fixedBadMask 1 z
+    fixedBadMask_ne_zero one_ne_zero hz (dvd_mul_right _ _) (dvd_mul_left _ _)
+  exact ⟨Classical.choose e,(Classical.choose_spec e).1,(Classical.choose_spec e).2⟩
+
+lemma NaturalRow.ideal {η : Character} {z : O} (F : NaturalRow η z) (I : Ideal O) :
+    idealCoeff F.character I=idealCoeff η I*idealRowHom (fixedBadMask^6*z) I := by
+  simpa only [one_pow,mul_one] using idealCoeff_eq_row η F.character fixedBadMask 1 z F.element I
+
+lemma NaturalRow.element_zero {η : Character} {z : O} (F : NaturalRow η z) :
+    elementCoeff F.character 0=0 := by
+  rw [F.element]
+  change elementHom η 0*idealRowHom (fixedBadMask^6*1^4*z) (Ideal.span {(0:O)})=0
+  rw [Ideal.span_singleton_zero]
+  change elementHom η 0*idealRowHom (fixedBadMask^6*1^4*z) (0:Ideal O)=0
+  rw [(idealRowHom (fixedBadMask^6*1^4*z)).map_zero,mul_zero]
+
+lemma NaturalRow.masked_element {η : Character} {z : O} (F : NaturalRow η z)
+    (R : Ideal O) (hR : R≠0) (n : O) :
+    elementCoeff (excluded F.character R) n=
+      rowTwist (elementHom η) (fixedBadMask*cubicIdealGenerator R) 1 z n := by
+  rw [excluded_element_generator F.character F.element_zero R hR,F.element]
+  simpa only [one_mul] using
+    (row_mask_mul η fixedBadMask (cubicIdealGenerator R) 1 z n
+      (dvd_mul_right _ _) (dvd_mul_left _ _)).symm
+
+lemma NaturalRow.masked_ideal {η : Character} {z : O} (F : NaturalRow η z)
+    (R : Ideal O) (hR : R≠0) (I : Ideal O) :
+    idealCoeff (excluded F.character R) I=
+      idealCoeff η I*idealRowHom ((fixedBadMask*cubicIdealGenerator R)^6*z) I := by
+  simpa only [one_pow,mul_one] using idealCoeff_eq_row η (excluded F.character R)
+    (fixedBadMask*cubicIdealGenerator R) 1 z (F.masked_element R hR) I
+
+lemma NaturalRow.masked_element_span {η : Character} {z : O} (F : NaturalRow η z)
+    (r : O) (hr : r≠0) (n : O) :
+    elementCoeff (excluded F.character (Ideal.span {r})) n=
+      rowTwist (elementHom η) (fixedBadMask*r) 1 z n := by
+  rw [excluded_element F.character F.element_zero (Ideal.span {r})
+    (Ideal.span_singleton_eq_bot.not.mpr hr),Ideal.isCoprime_span_singleton_iff,F.element]
+  simpa only [one_mul] using
+    (row_mask_mul η fixedBadMask r 1 z n (dvd_mul_right _ _) (dvd_mul_left _ _)).symm
+
+theorem NaturalRow.nonprincipal {η : Character} {z : O} (F : NaturalRow η z)
+    (hz : z≠0) (Q R : Ideal O) (hR : R≠0)
+    (hex : ¬FixedInducingRow η Q (fixedBadMask*cubicIdealGenerator R) 1 z) :
+    F.character.residue≠1 := by
+  have hbase : ¬FixedInducingRow η Q fixedBadMask 1 z := by
+    intro h
+    exact hex ((fixedInducingRow_mul_mask_iff η Q fixedBadMask (cubicIdealGenerator R) 1 z
+      fixedBadMask_ne_zero (cubicIdealGenerator_ne_zero R hR) one_ne_zero hz
+      (dvd_mul_right _ _) (dvd_mul_left _ _)).mpr h)
+  exact CenteredMomentNonprincipalGate.actual_row_nonprincipal η F.character Q fixedBadMask 1 z
+    (by simpa only [one_mul] using F.element) hbase
+
+def fixedConductorFactor : ℕ := (Ideal.span {fixedBadMask}).absNorm*(Ideal.span {(72:O)}).absNorm
+
+lemma NaturalRow.natural_modulus_bound {η : Character} {z : O} (F : NaturalRow η z) :
+    F.character.modulus.absNorm≤η.modulus.absNorm*fixedConductorFactor*(Ideal.span {z}).absNorm := by
+  have hh:=F.modulus_bound
+  simpa [rowConductorBound,fixedConductorFactor,Ideal.span_singleton_one,mul_assoc] using hh
+
+theorem NaturalRow.modulus_power_bound {η : Character} {z : O} (F : NaturalRow η z)
+    (Z m q Cz : ℝ) (hZ : 0< Z) (_hCz : 0≤ Cz)
+    (hη : (η.modulus.absNorm:ℝ)≤ Z^m)
+    (hz : ((Ideal.span {z}).absNorm:ℝ)≤ Cz*Z^q) :
+    (F.character.modulus.absNorm:ℝ)≤(fixedConductorFactor:ℝ)*Cz*Z^(m+q) := by
+  have hb : (F.character.modulus.absNorm:ℝ)≤
+      (η.modulus.absNorm:ℝ)*(fixedConductorFactor:ℝ)*((Ideal.span {z}).absNorm:ℝ) :=
+    by exact_mod_cast F.natural_modulus_bound
+  apply hb.trans
+  calc
+    _≤(Z^m*(fixedConductorFactor:ℝ))*(Cz*Z^q) :=
+      mul_le_mul (mul_le_mul_of_nonneg_right hη (Nat.cast_nonneg _)) hz
+        (Nat.cast_nonneg _) (mul_nonneg (Real.rpow_nonneg hZ.le _) (Nat.cast_nonneg _))
+    _=(fixedConductorFactor:ℝ)*Cz*Z^(m+q) := by rw [Real.rpow_add hZ]; ring
+
+end CenteredMomentNaturalRowSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentNaturalRowSource
+open HeckeFamily CenteredMomentSecondHeightFamily 
+open CenteredMomentHeckeHeight CenteredMomentHeckeTwist CenteredMomentHeckeSlots
+open CenteredMomentRetainedEnergy CenteredMomentRetainedProfile
+local notation "O" => Eisenstein.O
+
+lemma NaturalRow.masked_plain {η : Character} {z : O} (F : NaturalRow η z)
+    (R : Ideal O) (hR : R≠0) (W : ℝ→ℂ) (t X : ℝ) :
+    rowTwistedSum η (fixedBadMask*cubicIdealGenerator R) 1 z W t X=
+      twistedIdealSum (excluded F.character R) W t X := by
+  exact rowTwistedSum_eq η (excluded F.character R) (fixedBadMask*cubicIdealGenerator R) 1 z
+    (by simpa only [one_mul] using F.masked_element R hR) W t X
+
+lemma NaturalRow.masked_slot {η : Character} {z : O} (F : NaturalRow η z)
+    (R : Ideal O) (hR : R≠0) (S : Finset (Ideal O)) (β : Ideal O→ℂ) (t : ℝ) :
+    rowSlot η (fixedBadMask*cubicIdealGenerator R) 1 z S β t=
+      ∑I∈S,β I*idealCoeff (excluded F.character R) I*(I.absNorm:ℂ)^(Complex.I*t) := by
+  unfold rowSlot
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [F.masked_ideal R hR I,one_mul]
+
+theorem NaturalRow.masked_positive {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {η : Character} {z : O} (F : NaturalRow η z) (R : Ideal O) (hR : R≠0)
+    (W₁ W₂ : ℝ→ℂ) (S : ι→Finset (Ideal O)) (β : ι→Ideal O→ℂ)
+    (P : ι→ℝ) (t X₁ X₂ : ℝ) :
+    positiveSlotRow η (fixedBadMask*cubicIdealGenerator R) 1 z W₁ W₂ S β P t X₁ X₂=
+      (Real.sqrt (X₁*X₂*∏i,P i):ℂ)⁻¹*
+        ((twistedIdealSum (excluded F.character R) W₁ t X₁*
+          twistedIdealSum (excluded F.character R) W₂ t X₂)*
+          ∏i,∑I∈S i,β i I*idealCoeff (excluded F.character R) I*(I.absNorm:ℂ)^(Complex.I*t)) := by
+  simp only [positiveSlotRow,F.masked_plain R hR,F.masked_slot R hR]
+
+theorem NaturalRow.masked_retained {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {η : Character} {z : O} (F : NaturalRow η z) (R : Ideal O) (hR : R≠0)
+    (W₁ W₂ : ℝ→ℂ) (S : ι→Finset (Ideal O)) (β : ι→Ideal O→ℂ)
+    (P : ι→ℝ) (t X₁ X₂ : ℝ) :
+    retainedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z W₁ W₂ S β P t X₁ X₂=
+      (Real.sqrt (clippedScale X₁*clippedScale X₂*∏i,P i):ℂ)⁻¹*
+        ((twistedIdealSum (excluded F.character R) (dilated W₁ (clipDilation X₁)) t (clippedScale X₁)*
+          twistedIdealSum (excluded F.character R) (dilated W₂ (clipDilation X₂)) t (clippedScale X₂))*
+          ∏i,∑I∈S i,β i I*idealCoeff (excluded F.character R) I*(I.absNorm:ℂ)^(Complex.I*t)) := by
+  exact F.masked_positive R hR _ _ S β P t _ _
+
+end CenteredMomentNaturalRowSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentCommonMaskEnergy
+open HeckeFamily CenteredMomentCommonMaskExpansion CenteredMomentNaturalRowSource
+open CenteredMomentHeckeTwist CenteredMomentHeckeVolume CenteredMomentHeckeCancellation CenteredMomentLattice
+open CenteredMomentRetainedEnergy CenteredMomentRetainedProfile
+local notation "O" => Eisenstein.O
+
+theorem finite_shared_energy {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (a f : ι→κ→ℂ) (ρ : κ→ℝ) (hρ : ∀j,0≤ρ j)
+    (ha : ∀i j,‖a i j‖≤ρ j) (E : ℝ) (hE : 0≤ E)
+    (hf : ∀j,(∑i,‖f i j‖^2)≤ E) :
+    (∑i,‖∑j,a i j*f i j‖^2)≤(∑j,ρ j)^2*E := by
+  have hb (j : κ) : (∑i,‖a i j*f i j‖^2)≤(ρ j*Real.sqrt E)^2 := by
+    calc
+      _≤∑i,(ρ j)^2*‖f i j‖^2 := Finset.sum_le_sum (fun i _=> by
+        rw [norm_mul,mul_pow]
+        exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (ha i j) 2) (sq_nonneg _))
+      _=(ρ j)^2*(∑i,‖f i j‖^2) := (Finset.mul_sum _ _ _).symm
+      _≤(ρ j)^2*E := mul_le_mul_of_nonneg_left (hf j) (sq_nonneg _)
+      _=_ := by rw [mul_pow,Real.sq_sqrt hE]
+  have hh := CompletedGauss.finite_tsum_energy_bound
+    (fun j i=> a i j*f i j) (fun j=>ρ j*Real.sqrt E)
+    (fun j=> mul_nonneg (hρ j) (Real.sqrt_nonneg _)) (summable_of_hasFiniteSupport (Set.toFinite _)) hb
+  simpa only [tsum_fintype,←Finset.sum_mul,mul_pow,Real.sq_sqrt hE] using hh.2
+
+lemma triple_sum {τ : Type*} {υ : Type*} {ξ : Type*} {A : Type*} [AddCommMonoid A]
+    (S : Finset τ) (T : Finset υ) (U : Finset ξ)
+    [Fintype ({x // x∈S}×{x // x∈T}×{x // x∈U})]
+    (g : τ→υ→ξ→A) :
+    (∑j : {x // x∈S}×{x // x∈T}×{x // x∈U},g j.1.val j.2.1.val j.2.2.val)=
+      ∑x∈S,∑y∈T,∑z∈U,g x y z := by
+  have hh : (∑j : {x // x∈S}×{x // x∈T}×{x // x∈U},g j.1.val j.2.1.val j.2.2.val)=
+      ∑j∈S×ˢ(T×ˢU),g j.1 j.2.1 j.2.2 := by
+    apply Finset.sum_bij (fun j _=>(j.1.val,j.2.1.val,j.2.2.val))
+    · intro j _
+      exact Finset.mem_product.mpr ⟨j.1.property,Finset.mem_product.mpr ⟨j.2.1.property,j.2.2.property⟩⟩
+    · intro i _ j _ h
+      apply Prod.ext
+      · exact Subtype.ext (congrArg Prod.fst h)
+      · apply Prod.ext
+        · exact Subtype.ext (congrArg (fun x=> x.2.1) h)
+        · exact Subtype.ext (congrArg (fun x=> x.2.2) h)
+    · intro j hj
+      obtain ⟨h1,h23⟩:=Finset.mem_product.mp hj
+      obtain ⟨h2,h3⟩:=Finset.mem_product.mp h23
+      exact ⟨(⟨j.1,h1⟩,⟨j.2.1,h2⟩,⟨j.2.2,h3⟩),Finset.mem_univ _,rfl⟩
+    · intro j _
+      rfl
+  simpa only [Finset.sum_product] using hh
+
+theorem actual_shared_energy {α : Type*} [DecidableEq α]
+    (F : Finset α) (b M : α→ℝ) (hM : ∀j∈F,0≤ M j) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀{ι : Type*} [Fintype ι],
+      ∀(R : Finset (Ideal O))(hR : ∀I∈R,Prime I)(χ : ι→Character)
+        (W₁ W₂ : ι→𝓢(ℝ,ℂ))(X₁ X₂ : ι→ℝ)
+        (pool : ι→α→Finset (Ideal O))(β : ι→α→Ideal O→ℂ)(P : ι→α→ℝ),
+      (∀i,0< X₁ i) → (∀i,0< X₂ i) →
+      (∀i j,j∈F → ∀I∈pool i j,Prime I) → (∀i j,j∈F → 0< P i j) →
+      (∀i j,j∈F → ∀I∈pool i j,‖β i j I‖≤ M j) →
+      (∀i j,j∈F → ∀I∈pool i j,β i j I≠0 → (I.absNorm:ℝ)≤ b j*P i j) →
+      ∀E : ℝ,0≤ E →
+      (∀D₁∈R.powerset,∀D₂∈R.powerset,∀J∈F.powerset,
+        (∑i,‖HeckeDyadic.polynomial (χ i) false (W₁ i)
+          (X₁ i/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+          HeckeDyadic.polynomial (χ i) false (W₂ i)
+          (X₂ i/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+          ∏j∈F\J,naturalSlot (χ i) (pool i j) (β i j) (P i j)‖^2)≤ E) →
+      (∑i,‖HeckeDyadic.polynomial ((χ i).excludePrimes R hR) false (W₁ i) (X₁ i) 0 0 *
+        HeckeDyadic.polynomial ((χ i).excludePrimes R hR) false (W₂ i) (X₂ i) 0 0 *
+        ∏j∈F,naturalSlot ((χ i).excludePrimes R hR) (pool i j) (β i j) (P i j)‖^2)≤
+        C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε*E := by
+  obtain ⟨C,hC,hmass⟩:=uniform_mass_subpower F b M hM (ε/2) (by positivity)
+  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  intro ι _ R hR χ W₁ W₂ X₁ X₂ pool β P hX₁ hX₂ hp hP hβ hs E hE he
+  let κ := {D : Finset (Ideal O) // D∈R.powerset} ×
+    {D : Finset (Ideal O) // D∈R.powerset} × {J : Finset α // J∈F.powerset}
+  let a (i : ι) (j : κ) := signedCoefficient (χ i) R j.1.val j.2.1.val j.2.2.val (pool i) (β i) (P i)
+  let f (i : ι) (j : κ) := HeckeDyadic.polynomial (χ i) false (W₁ i)
+    (X₁ i/(Ideal.absNorm (∏I∈j.1.val,I):ℝ)) 0 0 *
+    HeckeDyadic.polynomial (χ i) false (W₂ i)
+    (X₂ i/(Ideal.absNorm (∏I∈j.2.1.val,I):ℝ)) 0 0 *
+    ∏k∈F\j.2.2.val,naturalSlot (χ i) (pool i k) (β i k) (P i k)
+  let ρ (j : κ) := uniformMajorant R j.1.val j.2.1.val j.2.2.val b M
+  have hρ (j : κ) : 0≤ρ j := uniformMajorant_nonneg _ _ _ _ _ _
+    (fun k hk=> hM k (Finset.mem_powerset.mp j.2.2.property hk))
+  have ha (i : ι) (j : κ) : ‖a i j‖≤ρ j := by
+    exact signedCoefficient_uniform (χ i) R hR _ _
+      (Finset.mem_powerset.mp j.1.property) (Finset.mem_powerset.mp j.2.1.property)
+      _ (pool i) (β i) (P i) b M
+      (fun k hk=> hp i k (Finset.mem_powerset.mp j.2.2.property hk))
+      (fun k hk=> hP i k (Finset.mem_powerset.mp j.2.2.property hk))
+      (fun k hk=> hM k (Finset.mem_powerset.mp j.2.2.property hk))
+      (fun k hk=> hβ i k (Finset.mem_powerset.mp j.2.2.property hk))
+      (fun k hk=> hs i k (Finset.mem_powerset.mp j.2.2.property hk))
+  have hh:=finite_shared_energy a f ρ hρ ha E hE
+    (fun j=> he j.1.val j.1.property j.2.1.val j.2.1.property j.2.2.val j.2.2.property)
+  have hid (i : ι) : (∑j,a i j*f i j)=
+      HeckeDyadic.polynomial ((χ i).excludePrimes R hR) false (W₁ i) (X₁ i) 0 0 *
+      HeckeDyadic.polynomial ((χ i).excludePrimes R hR) false (W₂ i) (X₂ i) 0 0 *
+      ∏j∈F,naturalSlot ((χ i).excludePrimes R hR) (pool i j) (β i j) (P i j) := by
+    exact (triple_sum R.powerset R.powerset F.powerset
+      (fun D₁ D₂ J=> signedCoefficient (χ i) R D₁ D₂ J (pool i) (β i) (P i)*
+        (HeckeDyadic.polynomial (χ i) false (W₁ i) (X₁ i/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+         HeckeDyadic.polynomial (χ i) false (W₂ i) (X₂ i/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+         ∏k∈F\J,naturalSlot (χ i) (pool i k) (β i k) (P i k)))).trans
+      (simultaneous_deletion (χ i) R hR (W₁ i) (W₂ i) (X₁ i) (X₂ i) (hX₁ i) (hX₂ i)
+        F (pool i) (hp i) (β i) (P i)).symm
+  have hm : (∑j,ρ j)≤ C*(Ideal.absNorm (∏I∈R,I):ℝ)^(ε/2) := by
+    exact (triple_sum R.powerset R.powerset F.powerset
+      (fun D₁ D₂ J=> uniformMajorant R D₁ D₂ J b M)).trans_le (hmass R hR)
+  have hr : ((Ideal.absNorm (∏I∈R,I):ℝ)^(ε/2))^2=(Ideal.absNorm (∏I∈R,I):ℝ)^ε := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul (Nat.cast_nonneg _)]
+    congr 1
+    norm_num
+  simp_rw [hid] at hh
+  exact hh.trans ((mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ (Finset.sum_nonneg (fun j _=> hρ j)) hm 2) hE).trans_eq
+      (by rw [mul_pow,hr]))
+
+lemma sqrt_inverse_cpow (X : ℝ) (hX : 0< X) :
+    (Real.sqrt X:ℂ)⁻¹=(X:ℂ)^(-(1/2:ℂ)) := by
+  rw [Complex.cpow_neg,Real.sqrt_eq_rpow]
+  congr 1
+  simpa using (Complex.ofReal_cpow hX.le (1/2:ℝ))
+
+lemma plain_zero_height (χ : Character) (W : ℝ→ℂ) (X : ℝ) (hX : 0< X) :
+    HeckeDyadic.polynomial χ false W X 0 0=(Real.sqrt X:ℂ)⁻¹*idealSum χ W X := by
+  rw [sqrt_inverse_cpow X hX]
+  unfold HeckeDyadic.polynomial idealSum
+  congr 1
+  have he:=tsum_subtype_eq_of_support_subset
+    (s:={I : Ideal O | I≠0}) (f:=fun I : Ideal O=> idealCoeff χ I*W ((I.absNorm:ℝ)/X))
+    (by intro I hI hi;subst I;exact hI (by simp only [map_zero,zero_mul]))
+  change (∑' I : HeckeDyadic.NonzeroIdeal,idealCoeff χ I.val*W ((I.val.absNorm:ℝ)/X))=_ at he
+  simpa only [HeckeDyadic.summand,HeckeDyadic.coefficient,Bool.false_eq_true,ite_false,
+    HeckeDyadic.norm,HeckeDyadic.shift,Complex.ofReal_zero,zero_mul,mul_zero,sub_zero,
+    neg_zero,Complex.cpow_zero,mul_one,HeckeDyadic.NonzeroIdeal,CubicEisenstein.NonzeroIdeal] using he
+
+def heightCoefficient (β : Ideal O→ℂ) (t : ℝ) (I : Ideal O) : ℂ :=
+  β I*(I.absNorm:ℂ)^(Complex.I*t)
+
+lemma heightCoefficient_norm (β : Ideal O→ℂ) (t : ℝ) (I : Ideal O) (hI : I≠0) :
+    ‖heightCoefficient β t I‖=‖β I‖ := by
+  have hn : (0:ℝ)< I.absNorm := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  rw [heightCoefficient,norm_mul]
+  have hp : ‖(I.absNorm:ℂ)^(Complex.I*t)‖=1 := by
+    simpa using Complex.norm_cpow_eq_rpow_re_of_pos hn (Complex.I*t)
+  rw [hp,mul_one]
+
+lemma normalized_twisted_plain (χ : Character) (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (t X : ℝ) (hX : 0< X) :
+    (Real.sqrt X:ℂ)⁻¹*twistedIdealSum χ W t X=
+      (X:ℂ)^(Complex.I*t)*HeckeDyadic.polynomial χ false
+        (normPowerProfile W a b ha hs hW t) X 0 0 := by
+  rw [twistedIdealSum_scale χ W a b ha hs hW t X hX,plain_zero_height _ _ X hX]
+  ring
+
+theorem original_positive_normalized {α : Type*} [Fintype α] [DecidableEq α]
+    {η : Character} {z : O} (F : NaturalRow η z) (R : Ideal O) (hR : R≠0)
+    (W₁ W₂ : ℝ→ℂ) (a₁ b₁ a₂ b₂ : ℝ) (ha₁ : 0< a₁) (ha₂ : 0< a₂)
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ)
+    (hP : ∀i,0< P i) (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂) :
+    positiveSlotRow η (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z W₁ W₂ pool β P t X₁ X₂=
+      ((X₁:ℂ)^(Complex.I*t)*(X₂:ℂ)^(Complex.I*t))*
+        (HeckeDyadic.polynomial (excluded F.character R) false
+          (normPowerProfile W₁ a₁ b₁ ha₁ hs₁ hW₁ t) X₁ 0 0 *
+         HeckeDyadic.polynomial (excluded F.character R) false
+          (normPowerProfile W₂ a₂ b₂ ha₂ hs₂ hW₂ t) X₂ 0 0 *
+         ∏i,naturalSlot (excluded F.character R) (pool i) (heightCoefficient (β i) t) (P i)) := by
+  rw [F.masked_positive R hR,twistedIdealSum_scale _ W₁ a₁ b₁ ha₁ hs₁ hW₁ t X₁ hX₁,
+    twistedIdealSum_scale _ W₂ a₂ b₂ ha₂ hs₂ hW₂ t X₂ hX₂,
+    plain_zero_height _ _ X₁ hX₁,plain_zero_height _ _ X₂ hX₂]
+  have hn : (Real.sqrt (X₁*X₂*∏i,P i):ℂ)⁻¹=
+      (Real.sqrt X₁:ℂ)⁻¹*(Real.sqrt X₂:ℂ)⁻¹*∏i,(Real.sqrt (P i):ℂ)⁻¹ := by
+    rw [Real.sqrt_mul (mul_pos hX₁ hX₂).le,Real.sqrt_mul hX₁.le,
+      Real.sqrt_prod _ (fun i _=>(hP i).le),Complex.ofReal_mul,Complex.ofReal_mul,
+      Complex.ofReal_prod,mul_inv_rev,mul_inv_rev,Finset.prod_inv_distrib]
+    ring
+  have hc (i : α) : (∑I∈pool i,β i I*idealCoeff (excluded F.character R) I*(I.absNorm:ℂ)^(Complex.I*t))=
+      ∑I∈pool i,idealCoeff (excluded F.character R) I*heightCoefficient (β i) t I := by
+    apply Finset.sum_congr rfl
+    intro I hI
+    unfold heightCoefficient
+    ring
+  simp_rw [hc]
+  simp only [naturalSlot,Finset.prod_mul_distrib]
+  rw [hn]
+  ring
+
+lemma deleted_height_phase (X N t : ℝ) (hX : 0< X) (hN : 0< N) :
+    (X:ℂ)^(Complex.I*t)=(N:ℂ)^(Complex.I*t)*((X/N:ℝ):ℂ)^(Complex.I*t) := by
+  have hh:=Complex.mul_cpow_ofReal_nonneg hN.le (div_nonneg hX.le hN.le) (Complex.I*t)
+  rw [←Complex.ofReal_mul,show N*(X/N)=X by field_simp] at hh
+  exact hh
+
+lemma positive_height_phase_norm (X t : ℝ) (hX : 0< X) : ‖(X:ℂ)^(Complex.I*t)‖=1 := by
+  simpa using Complex.norm_cpow_eq_rpow_re_of_pos hX (Complex.I*t)
+
+lemma deleted_normalized_twisted_plain (χ : Character) (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (t X N : ℝ) (hX : 0< X) (hN : 0< N) :
+    (X:ℂ)^(Complex.I*t)*HeckeDyadic.polynomial χ false
+      (normPowerProfile W a b ha hs hW t) (X/N) 0 0=
+      (N:ℂ)^(Complex.I*t)*((Real.sqrt (X/N):ℂ)⁻¹*twistedIdealSum χ W t (X/N)) := by
+  rw [normalized_twisted_plain χ W a b ha hs hW t (X/N) (div_pos hX hN),
+    deleted_height_phase X N t hX hN]
+  ring
+
+theorem original_positive_deletion {α : Type*} [Fintype α] [DecidableEq α]
+    (η : Character) (z : O) (hz : z≠0) (R : Ideal O) (hR : R≠0)
+    (W₁ W₂ : ℝ→ℂ) (a₁ b₁ a₂ b₂ : ℝ) (ha₁ : 0< a₁) (ha₂ : 0< a₂)
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (pool : α→Finset (Ideal O)) (hp : ∀i,∀I∈pool i,Prime I)
+    (β : α→Ideal O→ℂ) (P : α→ℝ) (hP : ∀i,0< P i)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂) :
+    let χ:=(naturalRow η z hz).character
+    let S:=primeSupport R
+    positiveSlotRow η (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z W₁ W₂ pool β P t X₁ X₂=
+      ((X₁:ℂ)^(Complex.I*t)*(X₂:ℂ)^(Complex.I*t))*
+        ∑D₁∈S.powerset,∑D₂∈S.powerset,∑J∈(Finset.univ : Finset α).powerset,
+          signedCoefficient χ S D₁ D₂ J pool (fun i=> heightCoefficient (β i) t) P *
+          (HeckeDyadic.polynomial χ false (normPowerProfile W₁ a₁ b₁ ha₁ hs₁ hW₁ t)
+            (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+           HeckeDyadic.polynomial χ false (normPowerProfile W₂ a₂ b₂ ha₂ hs₂ hW₂ t)
+            (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+           ∏i∈Finset.univ\J,naturalSlot χ (pool i) (heightCoefficient (β i) t) (P i)) := by
+  dsimp only
+  rw [original_positive_normalized (naturalRow η z hz) R hR W₁ W₂ a₁ b₁ a₂ b₂
+    ha₁ ha₂ hs₁ hs₂ hW₁ hW₂ pool β P hP t X₁ X₂ hX₁ hX₂]
+  congr 1
+  exact simultaneous_deletion (naturalRow η z hz).character (primeSupport R)
+    (fun _ h => support_prime h) (normPowerProfile W₁ a₁ b₁ ha₁ hs₁ hW₁ t)
+    (normPowerProfile W₂ a₂ b₂ ha₂ hs₂ hW₂ t) X₁ X₂ hX₁ hX₂ Finset.univ pool
+    (fun i _=> hp i) (fun i=> heightCoefficient (β i) t) P
+
+theorem original_retained_normalized {α : Type*} [Fintype α] [DecidableEq α]
+    {η : Character} {z : O} (F : NaturalRow η z) (R : Ideal O) (hR : R≠0)
+    (W₁ W₂ : ℝ→ℂ) (a₁ b₁ a₂ b₂ : ℝ) (ha₁ : 0< a₁) (ha₂ : 0< a₂)
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) (hP : ∀i,0< P i)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂) (hr₁ : 1≤ X₁*b₁) (hr₂ : 1≤ X₂*b₂) :
+    retainedPositiveRow η (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z W₁ W₂ pool β P t X₁ X₂=
+      (((clippedScale X₁):ℂ)^(Complex.I*t)*((clippedScale X₂):ℂ)^(Complex.I*t))*
+        (HeckeDyadic.polynomial (excluded F.character R) false
+          (retainedProfile W₁ a₁ b₁ ha₁ hs₁ hW₁ X₁ hX₁ hr₁ t) (clippedScale X₁) 0 0 *
+         HeckeDyadic.polynomial (excluded F.character R) false
+          (retainedProfile W₂ a₂ b₂ ha₂ hs₂ hW₂ X₂ hX₂ hr₂ t) (clippedScale X₂) 0 0 *
+         ∏i,naturalSlot (excluded F.character R) (pool i) (heightCoefficient (β i) t) (P i)) := by
+  exact original_positive_normalized F R hR (dilated W₁ (clipDilation X₁))
+    (dilated W₂ (clipDilation X₂)) (a₁/max 1 b₁) b₁ (a₂/max 1 b₂) b₂
+    (div_pos ha₁ (lt_of_lt_of_le zero_lt_one (le_max_left _ _)))
+    (div_pos ha₂ (lt_of_lt_of_le zero_lt_one (le_max_left _ _)))
+    (dilated_support W₁ a₁ b₁ (max 1 b₁) (clipDilation X₁) ha₁ (le_max_left _ _)
+      (clipDilation_ge_one X₁ hX₁) (clipDilation_le b₁ X₁ hX₁ hr₁) hs₁)
+    (dilated_support W₂ a₂ b₂ (max 1 b₂) (clipDilation X₂) ha₂ (le_max_left _ _)
+      (clipDilation_ge_one X₂ hX₂) (clipDilation_le b₂ X₂ hX₂ hr₂) hs₂)
+    (dilated_contDiff W₁ hW₁ _) (dilated_contDiff W₂ hW₂ _) pool β P hP t
+    _ _ (by unfold clippedScale;positivity) (by unfold clippedScale;positivity)
+
+theorem original_retained_zero {α : Type*} [Fintype α]
+    (η : Character) (m A z : O) (W₁ W₂ : ℝ→ℂ) (b₁ b₂ : ℝ)
+    (hs₁ : Function.support W₁⊆Set.Iic b₁) (hs₂ : Function.support W₂⊆Set.Iic b₂)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂)
+    (hz : X₁*b₁<1 ∨ X₂*b₂<1) :
+    retainedPositiveRow η m A z W₁ W₂ pool β P t X₁ X₂=0 := by
+  unfold retainedPositiveRow positiveSlotRow
+  rw [←clipped_rowTwistedSum η m A z W₁ t X₁ hX₁,
+    ←clipped_rowTwistedSum η m A z W₂ t X₂ hX₂]
+  rcases hz with h|h
+  · rw [strict_subunit_rowTwistedSum_zero η m A z W₁ b₁ t X₁ hX₁ hs₁ h]
+    simp
+  · rw [strict_subunit_rowTwistedSum_zero η m A z W₂ b₂ t X₂ hX₂ hs₂ h]
+    simp
+
+theorem original_positive_energy {α : Type*} [Fintype α] [DecidableEq α]
+    (b M : α→ℝ) (hM : ∀j,0≤ M j) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀{ι : Type*} [Fintype ι],
+      ∀(η : ι→Character)(z : ι→O)(hz : ∀i,z i≠0)(R : Ideal O),R≠0 →
+      ∀(W₁ W₂ : ι→ℝ→ℂ)(a₁ b₁ a₂ b₂ : ι→ℝ)
+        (ha₁ : ∀i,0< a₁ i)(ha₂ : ∀i,0< a₂ i)
+        (hs₁ : ∀i,Function.support (W₁ i)⊆Set.Icc (a₁ i) (b₁ i))
+        (hs₂ : ∀i,Function.support (W₂ i)⊆Set.Icc (a₂ i) (b₂ i))
+        (hW₁ : ∀i,ContDiff ℝ ∞ (W₁ i))(hW₂ : ∀i,ContDiff ℝ ∞ (W₂ i))
+        (pool : ι→α→Finset (Ideal O))(β : ι→α→Ideal O→ℂ)(P : ι→α→ℝ)
+        (t X₁ X₂ : ι→ℝ),
+      (∀i,0< X₁ i) → (∀i,0< X₂ i) →
+      (∀i j,∀I∈pool i j,Prime I) → (∀i j,0< P i j) →
+      (∀i j,∀I∈pool i j,‖β i j I‖≤ M j) →
+      (∀i j,∀I∈pool i j,β i j I≠0 → (I.absNorm:ℝ)≤ b j*P i j) →
+      ∀E : ℝ,0≤ E →
+      let χ:=fun i=>(naturalRow (η i) (z i) (hz i)).character
+      let S:=primeSupport R
+      (∀D₁∈S.powerset,∀D₂∈S.powerset,∀J∈(Finset.univ : Finset α).powerset,
+        (∑i,‖HeckeDyadic.polynomial (χ i) false
+          (normPowerProfile (W₁ i) (a₁ i) (b₁ i) (ha₁ i) (hs₁ i) (hW₁ i) (t i))
+          (X₁ i/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+          HeckeDyadic.polynomial (χ i) false
+          (normPowerProfile (W₂ i) (a₂ i) (b₂ i) (ha₂ i) (hs₂ i) (hW₂ i) (t i))
+          (X₂ i/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+          ∏j∈Finset.univ\J,naturalSlot (χ i) (pool i j) (heightCoefficient (β i j) (t i)) (P i j)‖^2)≤ E) →
+      (∑i,‖positiveSlotRow (η i)
+        (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+        1 (z i) (W₁ i) (W₂ i) (pool i) (β i) (P i) (t i) (X₁ i) (X₂ i)‖^2)≤
+        C*(Ideal.absNorm (∏I∈S,I):ℝ)^ε*E := by
+  obtain ⟨C,hC,hbound⟩:=actual_shared_energy (Finset.univ : Finset α) b M (fun j _=> hM j) ε hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ η z hz R hR W₁ W₂ a₁ b₁ a₂ b₂ ha₁ ha₂ hs₁ hs₂ hW₁ hW₂ pool β P t X₁ X₂
+    hX₁ hX₂ hp hP hβ hs E hE
+  dsimp only
+  intro hchild
+  have hh:=hbound (primeSupport R) (fun _ h => support_prime h)
+    (fun i=>(naturalRow (η i) (z i) (hz i)).character)
+    (fun i=> normPowerProfile (W₁ i) (a₁ i) (b₁ i) (ha₁ i) (hs₁ i) (hW₁ i) (t i))
+    (fun i=> normPowerProfile (W₂ i) (a₂ i) (b₂ i) (ha₂ i) (hs₂ i) (hW₂ i) (t i))
+    X₁ X₂ pool (fun i j=> heightCoefficient (β i j) (t i)) P hX₁ hX₂
+    (fun i j _=> hp i j) (fun i j _=> hP i j)
+    (fun i j _ I hi=> by rw [heightCoefficient_norm _ _ _ (hp i j I hi).ne_zero];exact hβ i j I hi)
+    (fun i j _ I hi hn=> hs i j I hi (left_ne_zero_of_mul hn)) E hE hchild
+  have he (i : ι) := original_positive_normalized (naturalRow (η i) (z i) (hz i)) R hR
+    (W₁ i) (W₂ i) (a₁ i) (b₁ i) (a₂ i) (b₂ i) (ha₁ i) (ha₂ i) (hs₁ i) (hs₂ i)
+    (hW₁ i) (hW₂ i) (pool i) (β i) (P i) (hP i) (t i) (X₁ i) (X₂ i) (hX₁ i) (hX₂ i)
+  simp_rw [he,norm_mul,positive_height_phase_norm _ _ (hX₁ _),
+    positive_height_phase_norm _ _ (hX₂ _),one_mul]
+  simpa only [excluded,norm_mul] using hh
+
+theorem original_positive_deletion_height {α : Type*} [Fintype α] [DecidableEq α]
+    (η : Character) (z : O) (hz : z≠0) (R : Ideal O) (hR : R≠0)
+    (W₁ W₂ : ℝ→ℂ) (a₁ b₁ a₂ b₂ : ℝ) (ha₁ : 0< a₁) (ha₂ : 0< a₂)
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (pool : α→Finset (Ideal O)) (hp : ∀i,∀I∈pool i,Prime I)
+    (β : α→Ideal O→ℂ) (P : α→ℝ) (hP : ∀i,0< P i)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂) :
+    let χ:=(naturalRow η z hz).character
+    let S:=primeSupport R
+    positiveSlotRow η (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z W₁ W₂ pool β P t X₁ X₂=
+      ∑D₁∈S.powerset,∑D₂∈S.powerset,∑J∈(Finset.univ : Finset α).powerset,
+        (signedCoefficient χ S D₁ D₂ J pool (fun i=> heightCoefficient (β i) t) P *
+          ((Ideal.absNorm (∏I∈D₁,I):ℂ)^(Complex.I*t)*
+           (Ideal.absNorm (∏I∈D₂,I):ℂ)^(Complex.I*t))) *
+        (((Real.sqrt (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)):ℂ)⁻¹ *
+          twistedIdealSum χ W₁ t (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ))) *
+         ((Real.sqrt (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)):ℂ)⁻¹ *
+          twistedIdealSum χ W₂ t (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ))) *
+         ∏i∈Finset.univ\J,naturalSlot χ (pool i) (heightCoefficient (β i) t) (P i)) := by
+  dsimp only
+  rw [original_positive_deletion η z hz R hR W₁ W₂ a₁ b₁ a₂ b₂ ha₁ ha₂ hs₁ hs₂ hW₁ hW₂
+    pool hp β P hP t X₁ X₂ hX₁ hX₂]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro D₁ hD₁
+  apply Finset.sum_congr rfl
+  intro D₂ hD₂
+  apply Finset.sum_congr rfl
+  intro J hJ
+  have hN₁:=CenteredMomentReflectionDeletion.subset_product_norm_pos D₁
+    (fun I hi=> support_prime (Finset.mem_powerset.mp hD₁ hi))
+  have hN₂:=CenteredMomentReflectionDeletion.subset_product_norm_pos D₂
+    (fun I hi=> support_prime (Finset.mem_powerset.mp hD₂ hi))
+  have h1:=deleted_normalized_twisted_plain (naturalRow η z hz).character W₁ a₁ b₁ ha₁ hs₁ hW₁
+    t X₁ (Ideal.absNorm (∏I∈D₁,I):ℝ) hX₁ hN₁
+  have h2:=deleted_normalized_twisted_plain (naturalRow η z hz).character W₂ a₂ b₂ ha₂ hs₂ hW₂
+    t X₂ (Ideal.absNorm (∏I∈D₂,I):ℝ) hX₂ hN₂
+  convert congrArg (fun q : ℂ=>
+    signedCoefficient (naturalRow η z hz).character (primeSupport R) D₁ D₂ J pool
+      (fun i=> heightCoefficient (β i) t) P * q *
+      ∏i∈Finset.univ\J,naturalSlot (naturalRow η z hz).character (pool i) (heightCoefficient (β i) t) (P i))
+    (congrArg₂ (fun x y : ℂ=> x*y) h1 h2) using 1 <;> push_cast <;> ring
+
+end CenteredMomentCommonMaskEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+namespace DyadicTransfer
+
+noncomputable def annularCutoff (φ : ℝ → ℂ) (y : ℝ) : ℂ :=
+  φ y - φ (2 * y)
+
+theorem annularCutoff_eq_zero_of_le_half (φ : ℝ → ℂ)
+    (hsmall : ∀ y : ℝ, y ≤ 1 → φ y = 1)
+    {y : ℝ} (hy : y ≤ 1 / 2) : annularCutoff φ y = 0 := by
+  have hy1 : y ≤ 1 := by linarith
+  have h2y : 2 * y ≤ 1 := by linarith
+  simp [annularCutoff, hsmall y hy1, hsmall (2 * y) h2y]
+
+theorem annularCutoff_eq_zero_of_two_le (φ : ℝ → ℂ)
+    (hlarge : ∀ y : ℝ, 2 ≤ y → φ y = 0)
+    {y : ℝ} (hy : 2 ≤ y) : annularCutoff φ y = 0 := by
+  have h2y : 2 ≤ 2 * y := by linarith
+  simp [annularCutoff, hlarge y hy, hlarge (2 * y) h2y]
+
+theorem partial_partition (φ : ℝ → ℂ) (x : ℝ) (K : ℕ) :
+    (∑ k ∈ Finset.range (K + 1),
+      annularCutoff φ (x / (2 : ℝ) ^ k)) =
+      φ (x / (2 : ℝ) ^ K) - φ (2 * x) := by
+  induction K with
+  | zero =>
+      simp [annularCutoff]
+  | succ K ih =>
+      rw [Finset.sum_range_succ, ih]
+      unfold annularCutoff
+      have hpow : (2 : ℝ) ^ (K + 1) ≠ 0 := by positivity
+      have hshift : 2 * (x / (2 : ℝ) ^ (K + 1)) = x / (2 : ℝ) ^ K := by
+        rw [pow_succ]
+        field_simp
+      rw [hshift]
+      ring
+
+end DyadicTransfer
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+namespace HeckeDetectorPartition
+open DyadicTransfer
+theorem annular_support (V : ℝ → ℂ)
+    (hsmall : ∀ y : ℝ, 0 ≤ y → y ≤ 1 → V y = 1)
+    (hlarge : ∀ y : ℝ, 2 ≤ y → V y = 0)
+    (x : ℝ) (hx : 0 ≤ x) (j : ℕ)
+    (hne : annularCutoff V (x/(2 : ℝ)^j) ≠ 0) :
+    (2 : ℝ)^j / 2 < x ∧ x < 2*(2 : ℝ)^j := by
+  have hp : 0 < (2 : ℝ)^j := by positivity
+  have hy : 0 ≤ x/(2 : ℝ)^j := div_nonneg hx hp.le
+  have hlo : 1/2 < x/(2 : ℝ)^j := by
+    by_contra h
+    have hh := le_of_not_gt h
+    apply hne
+    rw [annularCutoff, hsmall _ hy (by linarith), hsmall _ (by positivity) (by linarith)]
+    ring
+  have hhi : x/(2 : ℝ)^j < 2 := by
+    by_contra h
+    apply hne
+    exact annularCutoff_eq_zero_of_two_le V hlarge (le_of_not_gt h)
+  constructor
+  · have := (lt_div_iff₀ hp).mp hlo
+    linarith
+  · exact (div_lt_iff₀ hp).mp hhi
+
+
+end HeckeDetectorPartition
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+namespace HeckeDetectorProfiles
+open scoped BigOperators Classical ContDiff FourierTransform SchwartzMap
+noncomputable section
+
+abbrev cutoff : SchwartzMap ℝ ℂ := SchwartzPlanePoisson.sieveCutoff
+
+lemma cutoff_one (x : ℝ) (hx : 0 ≤ x) (hx1 : x ≤ 1) : cutoff x = 1 := by
+  simp only [cutoff, SchwartzPlanePoisson.sieveCutoff_apply,
+    SchwartzPlanePoisson.sieveBump_eq_one hx hx1, Complex.ofReal_one]
+
+lemma cutoff_zero (x : ℝ) (hx : 2 ≤ x) : cutoff x = 0 := by
+  rw [SchwartzPlanePoisson.sieveCutoff_apply]
+  have hh := SchwartzPlanePoisson.sieveBump.zero_of_le_dist (x := x)
+    (show SchwartzPlanePoisson.sieveBump.rOut ≤ dist x 0 by
+      change 2 ≤ dist x 0
+      simpa [dist_zero_right, Real.norm_eq_abs, abs_of_nonneg (by linarith : 0 ≤ x)] using hx)
+  rw [hh, Complex.ofReal_zero]
+
+lemma cutoff_norm_le (x : ℝ) : ‖cutoff x‖ ≤ 1 := by
+  rw [SchwartzPlanePoisson.sieveCutoff_apply, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg SchwartzPlanePoisson.sieveBump.nonneg]
+  exact SchwartzPlanePoisson.sieveBump.le_one
+
+lemma annular_log_bound (x : ℝ) (hx : 0 ≤ x)
+    (hactive : DyadicTransfer.annularCutoff cutoff x ≠ 0) : |Real.log x| ≤ Real.log 2 := by
+  have hh := HeckeDetectorPartition.annular_support cutoff cutoff_one cutoff_zero x hx 0
+    (by simpa using hactive)
+  norm_num at hh
+  have hx0 : 0 < x := by linarith
+  have hlo := Real.log_le_log (by norm_num : 0 < (2 : ℝ)⁻¹)
+    (show (2 : ℝ)⁻¹ ≤ x by linarith)
+  rw [Real.log_inv] at hlo
+  exact abs_le.mpr ⟨hlo,Real.log_le_log hx0 hh.2.le⟩
+
+theorem exists_product_log_cutoff :
+    ∃ Ω : ℝ → ℂ, HasCompactSupport Ω ∧ ContDiff ℝ ∞ Ω ∧
+      tsupport Ω ⊆ Set.Icc (-(2*Real.log 2+1)) (2*Real.log 2+1) ∧
+      ∀ x y : ℝ, 0 ≤ x → 0 ≤ y →
+        DyadicTransfer.annularCutoff cutoff x ≠ 0 → DyadicTransfer.annularCutoff cutoff y ≠ 0 →
+        Ω (Real.log x+Real.log y) = 1 := by
+  have hlog : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  obtain ⟨Ω,hc,hs,hone,hsupp,hzero⟩ :=
+    JointLogSeparation.exists_complex_smooth_cutoff (2*Real.log 2) (by positivity)
+  refine ⟨Ω,hc,hs,hsupp,?_⟩
+  intro x y hx hy hax hay
+  apply hone
+  have hb1 := annular_log_bound x hx hax
+  have hb2 := annular_log_bound y hy hay
+  exact (abs_add_le _ _).trans (by linarith)
+
+end
+end HeckeDetectorProfiles
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical ContDiff
+open Set
+namespace HeckeDetectorDyadicProfiles
+open HeckeDetectorProfiles
+
+lemma exists_positive_annular : ∃ W : ℝ→ℂ,
+    ContDiff ℝ ∞ W ∧ Function.support W⊆Icc (1/4) (9/4) ∧
+    ∀ x : ℝ, 0≤ x → W x=DyadicTransfer.annularCutoff cutoff x := by
+  obtain ⟨g,hgc,hgs,hgone,hgsupp,hgzero⟩ :=
+    JointLogSeparation.exists_complex_smooth_cutoff 3 (by norm_num)
+  let W : ℝ→ℂ := fun x => g (4*x-5)*DyadicTransfer.annularCutoff cutoff x
+  have hs : ContDiff ℝ ∞ (DyadicTransfer.annularCutoff cutoff) :=
+    (cutoff.smooth ⊤).sub ((cutoff.smooth ⊤).comp (by fun_prop))
+  refine ⟨W,(hgs.comp (by fun_prop)).mul hs,?_,?_⟩
+  · intro x hx
+    have hg : g (4*x-5)≠0 := (mul_ne_zero_iff.mp hx).1
+    have hh := hgsupp (subset_tsupport g hg)
+    constructor <;> norm_num at hh <;> linarith [hh.1,hh.2]
+  · intro x hx
+    by_cases hh : DyadicTransfer.annularCutoff cutoff x=0
+    · simp [W,hh]
+    have ha := HeckeDetectorPartition.annular_support cutoff cutoff_one cutoff_zero x hx 0
+      (by simpa using hh)
+    norm_num at ha
+    have hg : g (4*x-5)=1 := hgone _ (abs_le.mpr ⟨by linarith [ha.1],by linarith [ha.2]⟩)
+    simp only [W,hg,one_mul]
+
+def positiveAnnular : ℝ→ℂ := Classical.choose exists_positive_annular
+
+lemma positiveAnnular_smooth : ContDiff ℝ ∞ positiveAnnular :=
+  (Classical.choose_spec exists_positive_annular).1
+
+lemma positiveAnnular_support : Function.support positiveAnnular⊆Icc (1/4) (9/4) :=
+  (Classical.choose_spec exists_positive_annular).2.1
+
+lemma positiveAnnular_eq (x : ℝ) (hx : 0≤ x) :
+    positiveAnnular x=DyadicTransfer.annularCutoff cutoff x :=
+  (Classical.choose_spec exists_positive_annular).2.2 x hx
+
+lemma positiveAnnular_zero (x : ℝ) (hx : 2≤ x) : positiveAnnular x=0 := by
+  rw [positiveAnnular_eq x (by linarith)]
+  exact DyadicTransfer.annularCutoff_eq_zero_of_two_le cutoff cutoff_zero hx
+
+
+end HeckeDetectorDyadicProfiles
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff
+open Set Filter
+namespace HeckeInverseAmplification
+open HeckeFamily HeckeDyadic HeckeDetectorRowwisePolynomial
+
+def logTest (W : ℝ→ℂ) : ℕ→ℝ→ℂ
+  | 0 => W
+  | n+1 => logProfile (logTest W n)
+
+theorem logTest_support (W : ℝ→ℂ) (n : ℕ) :
+    Function.support (logTest W n)⊆Function.support W := by
+  induction n with
+  | zero => exact subset_rfl
+  | succ n ih => exact (logProfile_support (logTest W n)).trans ih
+
+theorem logTest_smooth (W : ℝ→ℂ) (n : ℕ) (a b : ℝ) (ha : 0< a)
+    (hs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W) :
+    ContDiff ℝ ∞ (logTest W n) := by
+  induction n with
+  | zero => exact hW
+  | succ n ih => exact logProfile_smooth (logTest W n) a b ha ((logTest_support W n).trans hs) ih
+
+
+end HeckeInverseAmplification
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical ContDiff ComplexConjugate
+namespace CenteredMomentDetectorDictionary
+open HeckeFamily HeckeInverseAmplification HeckeDetectorCoefficientTransfer
+open HeckeDetectorRowwisePolynomial HeckeDetectorDyadicProfiles
+
+lemma logTest_eq_iterate (W : ℝ→ℂ) (n : ℕ) : logTest W n=(logProfile^[n]) W := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp only [logTest,Function.iterate_succ_apply',ih]
+
+lemma oriented_logTest (reverse : Bool) (W : ℝ→ℂ) (n : ℕ) :
+    orientedProfile reverse ((logProfile^[n]) W)=logTest (orientedProfile reverse W) n := by
+  rw [←logTest_eq_iterate]
+  cases reverse
+  · rfl
+  · induction n with
+    | zero => rfl
+    | succ n ih =>
+      simp only [logTest,orientedProfile,ite_true] at ih ⊢
+      funext x
+      rw [←logProfile_conjugate]
+      exact congrArg (fun f : ℝ→ℂ=> logProfile f x) ih
+
+theorem detector_profile_support (reverse : Bool) (n : ℕ) (σ t : ℝ) :
+    Function.support (twistProfile (orientedProfile reverse ((logProfile^[n]) positiveAnnular)) σ t)
+      ⊆Set.Icc (1/4) (9/4) := by
+  apply (oriented_twist_support reverse _ σ t).trans
+  rw [←logTest_eq_iterate]
+  exact (logTest_support positiveAnnular n).trans positiveAnnular_support
+
+theorem detector_profile_smooth (reverse : Bool) (n : ℕ) (σ t : ℝ) :
+    ContDiff ℝ ∞ (twistProfile (orientedProfile reverse ((logProfile^[n]) positiveAnnular)) σ t) := by
+  apply twistProfile_smooth _ σ t (1/4) (9/4) (by norm_num)
+  · cases reverse <;> simp only [orientedProfile,ite_true]
+    · rw [←logTest_eq_iterate]
+      exact (logTest_support positiveAnnular n).trans positiveAnnular_support
+    · rw [conjugate_profile_support,←logTest_eq_iterate]
+      exact (logTest_support positiveAnnular n).trans positiveAnnular_support
+  · have hw := logTest_smooth positiveAnnular n (1/4) (9/4) (by norm_num)
+      positiveAnnular_support positiveAnnular_smooth
+    rw [logTest_eq_iterate] at hw
+    cases reverse
+    · exact hw
+    · exact conjugate_profile_smooth _ hw
+
+end CenteredMomentDetectorDictionary
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff Topology
+open Set
+
+namespace CenteredMomentDetectorDictionary
+open HeckeInverseAmplification HeckeDyadic HeckeDetectorCoefficientTransfer
+open HeckeDetectorRowwisePolynomial HeckeDetectorDyadicProfiles
+
+lemma twistProfile_zero (W : ℝ→ℂ) : twistProfile W 0 0=W := by
+  funext x
+  simp [twistProfile,HeckeDyadic.shift]
+
+lemma oriented_detector_log_support (reverse : Bool) (n : ℕ) :
+    Function.support (orientedProfile reverse ((logProfile^[n]) positiveAnnular))⊆Icc (1/4) (9/4) := by
+  simpa only [twistProfile_zero] using detector_profile_support reverse n 0 0
+
+lemma oriented_detector_log_smooth (reverse : Bool) (n : ℕ) :
+    ContDiff ℝ ∞ (orientedProfile reverse ((logProfile^[n]) positiveAnnular)) := by
+  simpa only [twistProfile_zero] using detector_profile_smooth reverse n 0 0
+
+def detectorSchwartz (reverse : Bool) (n : ℕ) (σ t : ℝ) : 𝓢(ℝ,ℂ) :=
+  interpolatedProfile (orientedProfile reverse ((logProfile^[n]) positiveAnnular)) (1/4) (9/4)
+    (by norm_num) (oriented_detector_log_support reverse n) (oriented_detector_log_smooth reverse n) σ
+      (orientedFrequency reverse t)
+
+lemma detectorSchwartz_apply (reverse : Bool) (n : ℕ) (σ t x : ℝ) :
+    detectorSchwartz reverse n σ t x=
+      twistProfile (orientedProfile reverse ((logProfile^[n]) positiveAnnular)) σ (orientedFrequency reverse t) x :=
+  interpolatedProfile_apply _ _ _ _ _ _ _ _ _
+
+theorem detectorSchwartz_uniform (S : Finset (ℕ×ℕ)) :
+    ∃J : ℕ,∃C : ℝ,0< C ∧ ∀reverse : Bool,∀n : ℕ,n≤2→∀σ∈Icc (0:ℝ) 1,∀t : ℝ,
+      S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (detectorSchwartz reverse n σ t)≤ C*(1+‖t‖)^J := by
+  choose degree C hC hb using fun q : Bool×Fin 3=> interpolatedProfile_uniform
+    (orientedProfile q.1 ((logProfile^[q.2.val]) positiveAnnular)) (1/4) (9/4)
+    (by norm_num) (oriented_detector_log_support q.1 q.2.val) (oriented_detector_log_smooth q.1 q.2.val) S
+  let J := (Finset.univ : Finset (Bool×Fin 3)).sup degree
+  have hsum : 0≤∑q : Bool×Fin 3,C q := Finset.sum_nonneg (fun q _=>(hC q).le)
+  refine ⟨J,1+∑q : Bool×Fin 3,C q,by linarith,?_⟩
+  intro reverse n hn σ hσ t
+  let q : Bool×Fin 3 := (reverse,⟨n,by omega⟩)
+  have hCq : C q≤1+∑q : Bool×Fin 3,C q := by
+    have hh := Finset.single_le_sum (fun q (_ : q∈(Finset.univ : Finset (Bool×Fin 3)))=>(hC q).le) (Finset.mem_univ q)
+    linarith
+  have hdegree : degree q≤ J := Finset.le_sup (Finset.mem_univ q)
+  have he := hb q σ hσ (orientedFrequency reverse t)
+  have hnorm : ‖orientedFrequency reverse t‖=‖t‖ := by cases reverse <;> simp [orientedFrequency]
+  rw [hnorm] at he
+  change S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (detectorSchwartz reverse n σ t)≤ _ at he
+  exact he.trans (mul_le_mul hCq (pow_le_pow_right₀ (by linarith [norm_nonneg t]) hdegree)
+    (by positivity) (by linarith))
+
+end CenteredMomentDetectorDictionary
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff ComplexConjugate
+open MeasureTheory
+namespace CenteredMomentUniformReflectionProfile
+open HeckeFamily JointLogSeparation SchwartzPlanePoisson
+open CenteredMomentReflectedProfileMeasure CenteredMomentReflectedPairEnergy
+open CenteredMomentReflectedUniformPair CenteredMomentOneReflectionEnergy
+
+theorem source_separation (V : ℝ→ℂ) (M : ℝ) (hM : 0≤ M)
+    (hV : ∀y,V y≠0 → |y|≤ M) (A J : ℕ) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀G : 𝓢(ℝ,ℂ),∀D : ℝ,0< D →
+      H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G≤ D → ∀s : ℝ,0< s →
+      ∃density : 𝓢(ℝ,ℂ),
+        (∀y : ℝ,V y*paperRadialFourier G (s*Real.exp y)=
+          ∫v : ℝ,(V y*kernelLogPhase v y)*density v) ∧
+        Integrable (fun v : ℝ=>(1+‖v‖)^J*‖density v‖) ∧
+        (1+s)^A*(∫v : ℝ,(1+‖v‖)^J*‖density v‖)≤ C*D ∧
+        (∀v : ℝ,(1+s)^A*(1+‖v‖)^J*‖density v‖≤ C*D) := by
+  obtain ⟨C,hC,hsep⟩ := LocalLogFourier.coupled_positive_log_separation_linear_constant
+    (fun _ : Unit=> V) (fun _=>1) (fun _=> M) (fun _=> hM) (fun _=> hV) A J
+  obtain ⟨H,K,hK,hEuler⟩ := paperRadialFourier_euler_source_weighted_bound
+    A (J+(volume : Measure ℝ).integrablePower)
+  refine ⟨H,(C+1)*K,by positivity,?_⟩
+  intro G D hD hGD s hs
+  obtain ⟨density,hid,hi,hm,hp⟩ := hsep (paperRadialFourier G)
+    (paperRadialFourier_contDiffOn G) (K*D) (by positivity)
+    (fun j hj x hx=>(hEuler G j hj x hx.le).trans
+      (mul_le_mul_of_nonneg_left hGD hK.le)) s hs
+  have hconst : C*(K*D)≤((C+1)*K)*D := by nlinarith [mul_pos hK hD]
+  exact ⟨density,(fun y=> by simpa using hid (fun _ : Unit=> y)),hi,
+    hm.trans hconst,fun v=>(hp v).trans hconst⟩
+
+theorem actual_one_uniform (V : ℝ→ℂ) (M : ℝ) (hM : 0≤ M)
+    (hV : ∀y,V y≠0 → |y|≤ M) (A J : ℕ) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀{ι : Type} [Fintype ι],
+      ∀(G : ι→𝓢(ℝ,ℂ))(χ : ι→Character)(P : ι→ℂ)(s X : ι→ℝ),
+      (∀i,0< s i) → (∀i,0< X i) → ∀D E : ℝ,0< D → 0≤ E →
+      (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ D) →
+      (∀v,(∑i,‖HeckeDyadic.polynomial (χ i) false (logWindow V) (X i) 0 (2*Real.pi*v)*P i‖^2)
+        ≤ E*((1+‖v‖)^J)^2) →
+      (∑i,‖HeckeDyadic.polynomial (χ i) false
+        (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier (G i) (s i*x))
+          (X i) 0 0*P i‖^2)≤ C*D^2*E := by
+  obtain ⟨H,K,hK,hb⟩ := source_separation V M hM hV A (J+2)
+  refine ⟨H,(K*Real.pi)^2,by positivity,?_⟩
+  intro ι _ G χ P s X hs hX D E hD hE hGD henergy
+  choose d hid hi hm hp using fun i=> hb (G i) D hD (hGD i) (s i) (hs i)
+  let e (i : ι) : ℂ := (1+s i)^A
+  let F (i : ι) (x : ℝ) := e i*paperRadialFourier (G i) x
+  let φ (i : ι) (v : ℝ) := HeckeDyadic.polynomial (χ i) false (logWindow V) (X i) 0 (2*Real.pi*v)*P i
+  have hsep (i : ι) (y : ℝ) : V y*F i (s i*Real.exp y)=
+      ∫v : ℝ,(V y*kernelLogPhase v y)*(e i • d i) v := by
+    simp only [smul_apply,smul_eq_mul]
+    have he : (fun v : ℝ=>(V y*kernelLogPhase v y)*(e i*d i v))=
+        (fun v=> e i*((V y*kernelLogPhase v y)*d i v)) := by funext v;ring
+    rw [he,integral_const_mul,←hid i y]
+    dsimp [F]
+    ring
+  have hsource (i : ι) : HeckeDyadic.polynomial (χ i) false
+      (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier (G i) (s i*x))
+        (X i) 0 0*P i=∫v : ℝ,(e i • d i) v*φ i v := by
+    have hf : (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier (G i) (s i*x))=
+        (fun x=> logWindow V x*F i (s i*x)) := by funext x;dsimp [F,e];ring
+    rw [hf,plain_annular_separation V (F i) M (s i) (X i) (hX i) hV (e i • d i) (hsep i),
+      ←integral_mul_const]
+    apply integral_congr_ae
+    filter_upwards [] with v
+    dsimp [φ]
+    ring
+  have hint (i : ι) : Integrable (fun v : ℝ=>(e i • d i) v*φ i v) := by
+    have hh := (plain_density_integrable V M (X i) (hX i) hV (χ i) (e i • d i)).mul_const (P i)
+    apply hh.congr
+    filter_upwards [] with v
+    dsimp [φ]
+    ring
+  have hpoint (i : ι) : ∀v,‖(e i • d i) v‖≤ envelope (K*D) J v := by
+    have hh := normalized_density_bound A 0 J (s i) 0 (K*D) (hs i) (d i)
+      (by simpa using hp i)
+    simpa [heightScale,e] using hh
+  have hh := row_density_energy (fun i=>(e i • d i:𝓢(ℝ,ℂ))) φ (envelope (K*D) J)
+    (fun v=>(1+‖v‖)^J) (envelope_pos (K*D) (mul_pos hK hD) J)
+    (by intro v;positivity) hpoint hint (envelope_integrable (K*D) J) E hE henergy
+  rw [envelope_integral] at hh
+  simp_rw [←hsource] at hh
+  convert hh using 1
+  ring
+
+lemma inverse_annular_frequency (χ : Character) (V : ℝ→ℂ)
+    (hreal : ∀y,conj (V y)=V y) (X v : ℝ) (hX : 0< X) :
+    HeckeDyadic.polynomial χ.inverse false (logWindow V) X 0 (2*Real.pi*v)=
+      conj (HeckeDyadic.polynomial χ false (logWindow V) X 0 (-2*Real.pi*v)) := by
+  have hr (x : ℝ) : conj (logWindow V x)=logWindow V x := by
+    unfold logWindow
+    split_ifs <;> simp [hreal]
+  have ht : (fun x=> conj (CompletedHeight.normTwistedSource (logWindow V) v x))=
+      CompletedHeight.normTwistedSource (logWindow V) (-v) := by
+    funext x
+    simp only [CompletedHeight.normTwistedSource,map_mul,hr]
+    exact congrArg (fun z=> z*logWindow V x) (JointLogSeparation.kernelLogPhase_conjugate v _)
+  rw [CenteredMomentTwistedReflection.polynomial_twisted_source χ.inverse _ X v hX,
+    polynomial_inverse_plain χ _ X hX,ht,
+    ←CenteredMomentTwistedReflection.polynomial_twisted_source χ _ X (-v) hX]
+  congr 2
+  ring
+
+theorem actual_inverse_uniform (V : ℝ→ℂ) (M : ℝ) (hM : 0≤ M)
+    (hV : ∀y,V y≠0 → |y|≤ M) (hreal : ∀y,conj (V y)=V y) (A J : ℕ) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀{ι : Type} [Fintype ι],
+      ∀(G : ι→𝓢(ℝ,ℂ))(χ : ι→Character)(P : ι→ℂ)(s X : ι→ℝ),
+      (∀i,0< s i) → (∀i,0< X i) → ∀D E : ℝ,0< D → 0≤ E →
+      (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ D) →
+      (∀v,(∑i,‖HeckeDyadic.polynomial (χ i) false (logWindow V) (X i) 0 (-2*Real.pi*v)*P i‖^2)
+        ≤ E*((1+‖v‖)^J)^2) →
+      (∑i,‖HeckeDyadic.polynomial (χ i).inverse false
+        (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier (G i) (s i*x))
+          (X i) 0 0*P i‖^2)≤ C*D^2*E := by
+  obtain ⟨H,C,hC,hbound⟩ := actual_one_uniform V M hM hV A J
+  refine ⟨H,C,hC,?_⟩
+  intro ι _ G χ P s X hs hX D E hD hE hGD henergy
+  apply hbound G (fun i=>(χ i).inverse) P s X hs hX D E hD hE hGD
+  intro v
+  have he (i : ι) :
+      ‖HeckeDyadic.polynomial (χ i).inverse false (logWindow V) (X i) 0 (2*Real.pi*v)*P i‖=
+      ‖HeckeDyadic.polynomial (χ i) false (logWindow V) (X i) 0 (-2*Real.pi*v)*P i‖ := by
+    rw [inverse_annular_frequency (χ i) V hreal (X i) v (hX i),norm_mul,
+      Complex.norm_conj,←norm_mul]
+  simpa only [he] using henergy v
+
+lemma paperRadialFourier_real_smul (c : ℝ) (G : 𝓢(ℝ,ℂ)) (x : ℝ) :
+    paperRadialFourier (c • G : 𝓢(ℝ,ℂ)) x=(c:ℂ)*paperRadialFourier G x := by
+  rw [paperRadialFourier_eq_ray,paperRadialFourier_eq_ray]
+  simp only [map_smul,smul_apply,Complex.real_smul]
+
+lemma polynomial_const_mul (χ : Character) (W : ℝ→ℂ) (X σ omega : ℝ) (c : ℂ) :
+    HeckeDyadic.polynomial χ false (fun x=> c*W x) X σ omega=
+      c*HeckeDyadic.polynomial χ false W X σ omega := by
+  unfold HeckeDyadic.polynomial
+  have he : (fun I : HeckeDyadic.NonzeroIdeal=>
+      HeckeDyadic.summand χ false (fun x=> c*W x) X σ omega I)=
+      (fun I=> c*HeckeDyadic.summand χ false W X σ omega I) := by
+    funext I
+    unfold HeckeDyadic.summand
+    ring
+  rw [he,tsum_mul_left]
+  ring
+
+lemma reflected_polynomial_real_smul (χ : Character) (V : ℝ→ℂ)
+    (G : 𝓢(ℝ,ℂ)) (s X c : ℝ) (A : ℕ) :
+    HeckeDyadic.polynomial χ false
+      (fun x=> logWindow V x*((1+s)^A:ℂ)*paperRadialFourier (c • G : 𝓢(ℝ,ℂ)) (s*x)) X 0 0=
+      (c:ℂ)*HeckeDyadic.polynomial χ false
+        (fun x=> logWindow V x*((1+s)^A:ℂ)*paperRadialFourier G (s*x)) X 0 0 := by
+  simp_rw [paperRadialFourier_real_smul]
+  have he : (fun x=> logWindow V x*((1+s)^A:ℂ)*((c:ℂ)*paperRadialFourier G (s*x)))=
+      (fun x=>(c:ℂ)*(logWindow V x*((1+s)^A:ℂ)*paperRadialFourier G (s*x))) := by
+    funext x
+    ring
+  rw [he,polynomial_const_mul]
+
+theorem detector_source_control (H : Finset (ℕ×ℕ)) :
+    ∃n : ℕ,∃D : ℝ,0< D ∧ ∀reverse : Bool,∀k : ℕ,k≤2→
+      ∀σ∈Set.Icc (0:ℝ) 1,∀t : ℝ,
+      H.sup (schwartzSeminormFamily ℝ ℝ ℂ)
+        (((1+‖t‖)^n)⁻¹ • CenteredMomentDetectorDictionary.detectorSchwartz reverse k σ t)≤ D := by
+  obtain ⟨n,D,hD,hb⟩ := CenteredMomentDetectorDictionary.detectorSchwartz_uniform H
+  refine ⟨n,D,hD,?_⟩
+  intro reverse k hk σ hσ t
+  rw [map_smul_eq_mul,Real.norm_of_nonneg (by positivity : 0≤((1+‖t‖)^n)⁻¹)]
+  exact (inv_mul_le_iff₀ (by positivity : 0<(1+‖t‖)^n)).mpr
+    (by simpa only [mul_comm] using hb reverse k hk σ hσ t)
+
+theorem detector_inverse_uniform (V : ℝ→ℂ) (M : ℝ) (hM : 0≤ M)
+    (hV : ∀y,V y≠0 → |y|≤ M) (hreal : ∀y,conj (V y)=V y) (A J : ℕ) :
+    ∃n : ℕ,∃C : ℝ,0< C ∧ ∀{ι : Type} [Fintype ι],
+      ∀(reverse : ι→Bool)(k : ι→ℕ)(σ t : ι→ℝ),
+      (∀i,k i≤2) → (∀i,σ i∈Set.Icc (0:ℝ) 1) →
+      ∀(χ : ι→Character)(P : ι→ℂ)(s X : ι→ℝ),
+      (∀i,0< s i) → (∀i,0< X i) → ∀E : ℝ,0≤ E →
+      (∀v,(∑i,‖HeckeDyadic.polynomial (χ i) false (logWindow V) (X i) 0 (-2*Real.pi*v)*
+        (((1+‖t i‖)^n:ℝ):ℂ)*P i‖^2)≤ E*((1+‖v‖)^J)^2) →
+      (∑i,‖HeckeDyadic.polynomial (χ i).inverse false
+        (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier
+          (CenteredMomentDetectorDictionary.detectorSchwartz (reverse i) (k i) (σ i) (t i)) (s i*x))
+        (X i) 0 0*P i‖^2)≤ C*E := by
+  obtain ⟨H,C,hC,hb⟩ := actual_inverse_uniform V M hM hV hreal A J
+  obtain ⟨n,D,hD,hcontrol⟩ := detector_source_control H
+  refine ⟨n,C*D^2,by positivity,?_⟩
+  intro ι _ reverse k σ t hk hσ χ P s X hs hX E hE henergy
+  let G (i : ι) := CenteredMomentDetectorDictionary.detectorSchwartz (reverse i) (k i) (σ i) (t i)
+  let w (i : ι) : ℝ := (1+‖t i‖)^n
+  have hw (i : ι) : 0< w i := by dsimp [w];positivity
+  have hh := hb (fun i=>(w i)⁻¹ • G i) χ (fun i=>(w i:ℂ)*P i) s X hs hX D E hD hE
+    (fun i=> hcontrol (reverse i) (k i) (hk i) (σ i) (hσ i) (t i))
+    (by intro v;simpa only [w,mul_assoc] using henergy v)
+  have he (i : ι) : HeckeDyadic.polynomial (χ i).inverse false
+      (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier ((w i)⁻¹ • G i : 𝓢(ℝ,ℂ)) (s i*x))
+      (X i) 0 0*((w i:ℂ)*P i)=
+      HeckeDyadic.polynomial (χ i).inverse false
+      (fun x=> logWindow V x*((1+s i)^A:ℂ)*paperRadialFourier (G i) (s i*x)) (X i) 0 0*P i := by
+    rw [reflected_polynomial_real_smul,Complex.ofReal_inv]
+    have hne : (w i:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (hw i).ne'
+    rw [mul_mul_mul_comm,inv_mul_cancel₀ hne,one_mul]
+  simp_rw [he] at hh
+  simpa only [G] using hh
+
+end CenteredMomentUniformReflectionProfile
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff ComplexConjugate
+namespace CenteredMomentUniformReflectionScale
+open HeckeFamily HeckeDyadic SchwartzPlanePoisson
+open CenteredMomentSectorLocalization CenteredMomentScaleSupremum
+open CenteredMomentOneReflectionScaleEnergy CenteredMomentUniformReflectionProfile
+open CenteredMomentReflectedNormalization
+
+theorem actual_rowwise_scales (A J : ℕ) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀{ι : Type}[Fintype ι],
+      ∀(G : ι→𝓢(ℝ,ℂ))(χ : ι→Character)(P : ι→ℂ)
+      (s lx ly omega : ι→ℝ)(Wshort : ℝ→ℂ)(c d lo hi low high D E : ℝ),
+      0≤ d → Function.support Wshort⊆Set.Icc c d → ContDiff ℝ ∞ Wshort →
+      lo≤ hi → low≤ high → (∀i,lx i∈Set.Icc lo hi) → (∀i,ly i∈Set.Icc low high) →
+      (∀i,0< s i) → 0< D → 0≤ E →
+      (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ D) →
+      (∀v : ℝ,∀j k : Fin 2,∀x∈Set.Icc lo hi,∀y∈Set.Icc low high,
+        (∑i,‖polynomial (χ i) false (scaleTest (fun z : ℝ=>(annulus z:ℂ)) j)
+          (Real.exp x) 0 (-2*Real.pi*v)*
+          polynomial (χ i) false (scaleTest Wshort k) (Real.exp y) 0 (omega i)*P i‖^2)
+          ≤ E*(1+‖v‖)^(2*J)) →
+      (∑i,‖polynomial (χ i).inverse false
+        (fun x=>(annulus x:ℂ)*((1+s i)^A:ℂ)*paperRadialFourier (G i) (s i*x))
+        (Real.exp (lx i)) 0 0*
+        polynomial (χ i) false Wshort (Real.exp (ly i)) 0 (omega i)*P i‖^2)≤
+        C*D^2*(1+2*(hi-lo))*(1+2*(high-low))*E := by
+  have hlog : 0≤ Real.log 4 := Real.log_nonneg (by norm_num)
+  have hwindow : ∀y,CenteredMomentReflectedAnnuli.logWindow y≠0 → |y|≤ Real.log 4 := by
+    intro y hy
+    have hh := CenteredMomentReflectedAnnuli.logWindow_support hy
+    exact abs_le.mpr ⟨hh.1,hh.2.trans hlog⟩
+  have hreal : ∀y,conj (CenteredMomentReflectedAnnuli.logWindow y)=
+      CenteredMomentReflectedAnnuli.logWindow y := by
+    intro y
+    exact Complex.conj_ofReal _
+  obtain ⟨H,C,hC,hbound⟩:=actual_inverse_uniform
+    CenteredMomentReflectedAnnuli.logWindow (Real.log 4) hlog hwindow hreal A J
+  refine ⟨H,C,hC,?_⟩
+  intro ι _ G χ P s lx ly omega Wshort c d lo hi low high D E
+    hd hshort hshortsmooth hlh hlw hlx hly hspos hD hE hGD henergy
+  have hdx : 0≤1+2*(hi-lo) := by linarith
+  have hdy : 0≤1+2*(high-low) := by linarith
+  have hfixed (v : ℝ) :
+      (∑i,‖polynomial (χ i) false
+        (CenteredMomentReflectedProfileMeasure.logWindow CenteredMomentReflectedAnnuli.logWindow)
+        (Real.exp (lx i)) 0 (-2*Real.pi*v)*
+        (polynomial (χ i) false Wshort (Real.exp (ly i)) 0 (omega i)*P i)‖^2)≤
+      ((1+2*(hi-lo))*((1+2*(high-low))*E))*((1+‖v‖)^J)^2 := by
+    have hh := CenteredMomentFrequencyScaleSupremum.paired_rowwise_scales Finset.univ
+      χ χ (fun _=>-2*Real.pi*v) omega P (fun z : ℝ=>(annulus z:ℂ)) Wshort
+      (1/4) 1 c d (by norm_num) hd annulus_complex_support hshort annulus_complex_smooth hshortsmooth
+      lo hi low high (E*(1+‖v‖)^(2*J)) hlh hlw lx ly
+      (fun i _=> hlx i) (fun i _=> hly i) (henergy v)
+    rw [actual_log_window]
+    simp only [←mul_assoc]
+    have hp : ((1+‖v‖)^J)^2=(1+‖v‖)^(2*J) := by rw [←pow_mul,Nat.mul_comm J 2]
+    apply hh.trans_eq
+    rw [hp]
+    ring
+  have hh:=hbound G χ (fun i=> polynomial (χ i) false Wshort (Real.exp (ly i)) 0 (omega i)*P i)
+    s (fun i=> Real.exp (lx i)) hspos (fun i=> Real.exp_pos _) D
+    ((1+2*(hi-lo))*((1+2*(high-low))*E)) hD (mul_nonneg hdx (mul_nonneg hdy hE)) hGD hfixed
+  simp only [actual_log_window,←mul_assoc] at hh
+  convert hh using 1
+
+end CenteredMomentUniformReflectionScale
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentUniformReflectionChoices
+open HeckeFamily HeckeDyadic SchwartzPlanePoisson
+open CenteredMomentSectorLocalization CenteredMomentScaleSupremum
+open CenteredMomentUniformReflectionScale
+
+theorem actual_independent_choices (B J : ℕ) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀{ι : Type}[Fintype ι],∀{α : ι→Type},
+      ∀(G : ι→𝓢(ℝ,ℂ))(χ : ι→Character)(P : ι→ℂ)(s X : ∀i,α i→ℝ)(keep : ∀i,α i→Prop)
+        (ly omega : ι→ℝ)(Wshort : ℝ→ℂ)(c d lo hi low high D E : ℝ),
+      0≤ d → Function.support Wshort⊆Set.Icc c d → ContDiff ℝ ∞ Wshort →
+      lo≤ hi → low≤ high → (∀i,ly i∈Set.Icc low high) →
+      (∀i u,0< s i u) → (∀i u,keep i u → 0< X i u ∧ Real.log (X i u)∈Set.Icc lo hi) → 0< D → 0≤ E →
+      (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ D) →
+      (∀v : ℝ,∀j k : Fin 2,∀x∈Set.Icc lo hi,∀y∈Set.Icc low high,
+        (∑i,‖polynomial (χ i) false (scaleTest (fun z : ℝ=>(annulus z:ℂ)) j)
+          (Real.exp x) 0 (-2*Real.pi*v)*
+          polynomial (χ i) false (scaleTest Wshort k) (Real.exp y) 0 (omega i)*P i‖^2)
+          ≤ E*(1+‖v‖)^(2*J)) →
+      ∀u : ∀i,α i,
+      (∑i,‖if keep i (u i) then polynomial (χ i).inverse false
+        (fun x=>(annulus x:ℂ)*((1+s i (u i))^B:ℂ)*paperRadialFourier (G i) (s i (u i)*x))
+        (X i (u i)) 0 0*
+        polynomial (χ i) false Wshort (Real.exp (ly i)) 0 (omega i)*P i else 0‖^2)≤
+        C*D^2*(1+2*(hi-lo))*(1+2*(high-low))*E := by
+  obtain ⟨H,C,hC,hb⟩ := actual_rowwise_scales B J
+  refine ⟨H,C,hC,?_⟩
+  intro ι _ α G χ P s X keep ly omega Wshort c d lo hi low high D E
+    hd hshort hshortsmooth hlh hlw hly hspos hgeom hD hE hGD henergy u
+  let lx (i : ι) := if keep i (u i) then Real.log (X i (u i)) else lo
+  let P' (i : ι) := if keep i (u i) then P i else 0
+  have hlx (i : ι) : lx i∈Set.Icc lo hi := by
+    dsimp [lx]
+    split_ifs with hk
+    · exact (hgeom i (u i) hk).2
+    · exact ⟨le_rfl,hlh⟩
+  have he (v : ℝ) (j k : Fin 2) (x : ℝ) (hx : x∈Set.Icc lo hi)
+      (y : ℝ) (hy : y∈Set.Icc low high) :
+      (∑i,‖polynomial (χ i) false (scaleTest (fun z : ℝ=>(annulus z:ℂ)) j)
+        (Real.exp x) 0 (-2*Real.pi*v)*
+        polynomial (χ i) false (scaleTest Wshort k) (Real.exp y) 0 (omega i)*P' i‖^2)
+        ≤ E*(1+‖v‖)^(2*J) := by
+    apply (Finset.sum_le_sum (fun i _=>?_)).trans (henergy v j k x hx y hy)
+    dsimp only [P']
+    split_ifs
+    · exact le_rfl
+    · simp only [mul_zero,norm_zero,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,zero_pow]
+      exact sq_nonneg _
+  have hh := hb G χ P' (fun i=> s i (u i)) lx ly omega Wshort c d lo hi low high D E
+    hd hshort hshortsmooth hlh hlw hlx hly (fun i=> hspos i (u i)) hD hE hGD he
+  convert hh using 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  dsimp only [lx,P']
+  split_ifs with hk
+  · rw [Real.exp_log (hgeom i (u i) hk).1]
+  · simp
+
+end CenteredMomentUniformReflectionChoices
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentUniformReflectionApproximation
+open HeckeFamily CenteredMomentReflectionDeletion CenteredMomentReflectionMass
+open CenteredMomentComparisonReflection CenteredMomentReflectionTailMass
+open CenteredMomentRetainedReflection CenteredMomentOriginalReflectionApproximation
+open CenteredMomentSectorLocalization CenteredMomentNaturalPrimitive
+open SchwartzPlanePoisson
+local notation "O" => Eisenstein.O
+
+theorem discarded_bound (A B : ℕ) (hB : 2≤ B) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀(G : 𝓢(ℝ,ℂ))(χ : Character)(Y R : ℝ),
+      0< Y → 0< R →
+      ‖HeckeDyadic.polynomial χ false
+        (fun x=>(discardedWeight R x:ℂ)*paperRadialFourier G x) Y 0 0‖≤
+        C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*(Y^B/Real.sqrt Y)/R^A := by
+  obtain ⟨H,D,hD,hDb⟩ := paperRadialFourier_euler_source_weighted_bound (B+A) 0
+  obtain ⟨K,hK,hKb⟩ := plain_rapid_bound B hB
+  refine ⟨H,K*D,mul_pos hK hD,?_⟩
+  intro G χ Y R hY hR
+  have hG : 0≤ H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G := apply_nonneg _ _
+  have hf : ∀x : ℝ,0< x → x^(B+A)*‖paperRadialFourier G x‖≤
+      D*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G := by
+    intro x hx
+    have hh := hDb G 0 (by omega) x hx.le
+    simp only [LocalLogFourier.eulerDeriv,iteratedDeriv_zero,Real.exp_zero,mul_one] at hh
+    exact (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hx.le (by linarith : x≤1+x) (B+A))
+      (norm_nonneg _)).trans hh
+  have hm := discarded_rapid_control _ A B (D*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G)
+    R (by positivity) hR hf
+  exact (hKb χ _ ((D*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G)/R^A)
+    Y (by positivity) hY hm).trans_eq (by ring)
+
+theorem discarded_negligible (xi saving L Cscale : ℝ)
+    (hxi : 0< xi) (hscale : 0< Cscale) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀(G : 𝓢(ℝ,ℂ))(χ : Character)(Y Z : ℝ),
+      1≤ Z → 0< Y → Y≤ Cscale*Z^L →
+      ‖HeckeDyadic.polynomial χ false
+        (fun x=>(discardedWeight (Z^(xi/2)) x:ℂ)*paperRadialFourier G x) Y 0 0‖≤
+        C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*Z^(-saving) := by
+  obtain ⟨A,hA⟩ := exists_nat_gt ((saving+L*(3/2))/(xi/2))
+  have hsav : saving+L*(3/2)≤ xi/2*(A:ℝ) := by
+    have hh := (div_le_iff₀ (by linarith : 0< xi/2)).mp hA.le
+    nlinarith
+  obtain ⟨H,C,hC,hbound⟩ := discarded_bound A 2 (by omega)
+  refine ⟨H,C*Cscale^(3/2:ℝ),by positivity,?_⟩
+  intro G χ Y Z hZ hY hYZ
+  have hG : 0≤ H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G := apply_nonneg _ _
+  have hz : 0< Z := zero_lt_one.trans_le hZ
+  have hR : 0< Z^(xi/2) := Real.rpow_pos_of_pos hz _
+  have hp : Y^2/Real.sqrt Y≤ Cscale^(3/2:ℝ)*Z^(L*(3/2)) := by
+    rw [normalized_power_eq Y hY 2]
+    norm_num only [Nat.cast_ofNat,show (2:ℝ)-1/2=3/2 by norm_num]
+    calc
+      _≤(Cscale*Z^L)^(3/2:ℝ) := Real.rpow_le_rpow hY.le hYZ (by norm_num)
+      _=_ := by rw [Real.mul_rpow hscale.le (by positivity),←Real.rpow_mul hz.le]
+  have hd : (Z^(xi/2))^A=Z^((xi/2)*(A:ℝ)) := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul hz.le]
+  calc
+    _≤ C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*(Y^2/Real.sqrt Y)/(Z^(xi/2))^A :=
+      hbound G χ Y _ hY hR
+    _≤ C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*
+        (Cscale^(3/2:ℝ)*Z^(L*(3/2)))/(Z^(xi/2))^A :=
+      div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hp (by positivity)) (by positivity)
+    _=(C*Cscale^(3/2:ℝ))*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*
+        Z^(L*(3/2)-(xi/2)*(A:ℝ)) := by
+      rw [hd,Real.rpow_sub hz]
+      ring
+    _≤ _ := mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le hZ (by linarith)) (by positivity)
+
+theorem deleted_discarded_negligible (xi saving L Cscale epsilon : ℝ)
+    (hxi : 0< xi) (hscale : 0< Cscale) (hepsilon : 0< epsilon) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀(G : 𝓢(ℝ,ℂ))
+      (S : Finset (Ideal O))(_hS : ∀P∈S,Prime P)(η ηi χ : Character)(Q X Z : ℝ),
+      1≤ Z → 0< Q → 0< X → Q*(Ideal.absNorm (∏P∈S,P):ℝ)≤ Cscale*Z^L*X →
+      let F := fun x=>(discardedWeight (Z^(xi/2)) x:ℂ)*paperRadialFourier G x
+      (∀D∈S.powerset,Summable (fun I : SmoothIdeal S=> coefficient η ηi S D I*
+        HeckeDyadic.polynomial χ false F
+          (Q*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val)) 0 0)) ∧
+      ‖∑D∈S.powerset,∑'I : SmoothIdeal S,coefficient η ηi S D I*
+        HeckeDyadic.polynomial χ false F
+          (Q*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val)) 0 0‖≤
+        C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*
+          (Ideal.absNorm (∏P∈S,P):ℝ)^epsilon*Z^(-saving) := by
+  obtain ⟨H,C,hC,hCb⟩ := discarded_negligible xi saving L Cscale hxi hscale
+  obtain ⟨D,hD,hDb⟩ := coefficient_column_bound epsilon hepsilon
+  refine ⟨H,D*C,mul_pos hD hC,?_⟩
+  intro G S hS η ηi χ Q X Z hZ hQ hX hcap
+  dsimp only
+  have hG : 0≤ H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G := apply_nonneg _ _
+  have hh := hDb S hS η ηi
+    (fun E I=> HeckeDyadic.polynomial χ false
+      (fun x=>(discardedWeight (Z^(xi/2)) x:ℂ)*paperRadialFourier G x)
+      (Q*(Ideal.absNorm (∏P∈E,P):ℝ)/(X*norm I.val)) 0 0)
+    (C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*Z^(-saving)) (by positivity) (by
+      intro E hE I
+      have hy := dual_scale_bounds S E hS (Finset.mem_powerset.mp hE) I Q X (Cscale*Z^L) hQ hX hcap
+      exact hCb G χ _ Z hZ hy.1 hy.2)
+  exact ⟨hh.1,hh.2.trans_eq (by ring)⟩
+
+def retainedSchwartz (χ ψ : Character) (G : 𝓢(ℝ,ℂ)) (X R : ℝ) : ℂ :=
+  let S := redundantSet χ.modulus ψ.modulus
+  ∑D∈S.powerset,∑'I : SmoothIdeal S,coefficient ψ ψ.inverse S D I*
+    finiteAnnularColumn χ.inverse (paperRadialFourier G) R
+      ((ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val))
+
+def discardedSchwartz (χ ψ : Character) (G : 𝓢(ℝ,ℂ)) (X R : ℝ) : ℂ :=
+  let S := redundantSet χ.modulus ψ.modulus
+  ∑D∈S.powerset,∑'I : SmoothIdeal S,coefficient ψ ψ.inverse S D I*
+    HeckeDyadic.polynomial χ.inverse false (fun x=>(discardedWeight R x:ℂ)*paperRadialFourier G x)
+      ((ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val)) 0 0
+
+lemma retainedSchwartz_eq (χ ψ : Character) (G : 𝓢(ℝ,ℂ)) (X R : ℝ) (hX : 0< X) :
+    retainedSchwartz χ ψ G X R=
+      let S := redundantSet χ.modulus ψ.modulus
+      ∑D∈S.powerset,∑'I : SmoothIdeal S,coefficient ψ ψ.inverse S D I*
+        HeckeDyadic.polynomial χ.inverse false (fun x=>(retainedWeight R x:ℂ)*paperRadialFourier G x)
+          ((ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val)) 0 0 := by
+  unfold retainedSchwartz
+  apply Finset.sum_congr rfl
+  intro D hD
+  apply tsum_congr
+  intro I
+  have hQ : 0<(ψ.modulus.absNorm:ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr ψ.modulus_ne_bot)
+  have hN := subset_product_norm_pos D (fun P hP=> redundantSet_prime _ _ P
+    ((Finset.mem_powerset.mp hD) hP))
+  have hI := norm_pos I.val
+  rw [finiteAnnularColumn_eq _ _ (reflected_decayTwo G) _ _ (by positivity)]
+
+lemma restoration_summable (χ ψ : Character) (G : 𝓢(ℝ,ℂ)) (X R : ℝ) (hX : 0< X) :
+    let S := redundantSet χ.modulus ψ.modulus
+    ∀D∈S.powerset,
+      Summable (fun I : SmoothIdeal S=> coefficient ψ ψ.inverse S D I*
+        finiteAnnularColumn χ.inverse (paperRadialFourier G) R
+          ((ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val))) ∧
+      Summable (fun I : SmoothIdeal S=> coefficient ψ ψ.inverse S D I*
+        HeckeDyadic.polynomial χ.inverse false
+          (fun x=>(discardedWeight R x:ℂ)*paperRadialFourier G x)
+          ((ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈D,P):ℝ)/(X*norm I.val)) 0 0) := by
+  dsimp only
+  intro D hD
+  have hS := redundantSet_prime χ.modulus ψ.modulus
+  have hQ : 0<(ψ.modulus.absNorm:ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr ψ.modulus_ne_bot)
+  have hF := reflected_decayTwo G
+  have hr := reflected_column_summable _ hS ψ ψ.inverse χ.inverse _
+    (masked_decayTwo _ hF _ (retainedWeight_bounds R)) _ X hQ hX D hD
+  have hd := reflected_column_summable _ hS ψ ψ.inverse χ.inverse _
+    (masked_decayTwo _ hF _ (discardedWeight_bounds R)) _ X hQ hX D hD
+  refine ⟨hr.congr ?_,hd⟩
+  intro I
+  have hN := subset_product_norm_pos D (fun P hP=> hS P ((Finset.mem_powerset.mp hD) hP))
+  have hI := norm_pos I.val
+  rw [finiteAnnularColumn_eq _ _ hF _ _ (by positivity)]
+
+theorem original_split (χ : Character) (hn : χ.residue≠1) :
+    ∃(ψ : Character)(g : ℂ),FiniteFourier.IsPrimitiveOnIdeals ψ.residue ∧ ψ.residue≠1 ∧ ‖g‖=1 ∧
+      ψ.modulus.absNorm*(redundantIdeal χ.modulus ψ.modulus).absNorm≤χ.modulus.absNorm ∧
+      ∀(G : 𝓢(ℝ,ℂ))(X R : ℝ),0< X →
+        HeckeDyadic.polynomial χ false G X 0 0=
+          g*(retainedSchwartz χ ψ G X R+discardedSchwartz χ ψ G X R) := by
+  obtain ⟨ψ,g,hp,hnp,hg,hcap,h⟩ := original_retained_reflection χ hn
+  refine ⟨ψ,g,hp,hnp,hg,hcap,?_⟩
+  intro G X R hX
+  rw [retainedSchwartz_eq χ ψ G X R hX]
+  exact h G X R hX
+
+theorem actual_original_approximation (xi saving L Cscale epsilon : ℝ)
+    (hxi : 0< xi) (hscale : 0< Cscale) (hepsilon : 0< epsilon) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀χ : Character,χ.residue≠1 →
+      ∃(ψ : Character)(g : ℂ),FiniteFourier.IsPrimitiveOnIdeals ψ.residue ∧ ψ.residue≠1 ∧ ‖g‖=1 ∧
+      ψ.modulus.absNorm*(redundantIdeal χ.modulus ψ.modulus).absNorm≤χ.modulus.absNorm ∧
+      ∀(G : 𝓢(ℝ,ℂ))(X Z : ℝ),0< X → 1≤ Z →
+        (χ.modulus.absNorm:ℝ)≤ Cscale*Z^L*X →
+        ‖HeckeDyadic.polynomial χ false G X 0 0-
+          g*retainedSchwartz χ ψ G X (Z^(xi/2))‖≤
+          C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G*(χ.modulus.absNorm:ℝ)^epsilon*Z^(-saving) := by
+  obtain ⟨H,C,hC,hCb⟩ := deleted_discarded_negligible xi saving L Cscale epsilon hxi hscale hepsilon
+  refine ⟨H,C,hC,?_⟩
+  intro χ hn
+  obtain ⟨ψ,g,hp,hnp,hg,hcap,hsplit⟩ := original_split χ hn
+  refine ⟨ψ,g,hp,hnp,hg,hcap,?_⟩
+  intro G X Z hX hZ hmod
+  let S := redundantSet χ.modulus ψ.modulus
+  have hS : ∀P∈S,Prime P := redundantSet_prime _ _
+  have hQ : 0<(ψ.modulus.absNorm:ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr ψ.modulus_ne_bot)
+  have hcap' : (ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈S,P):ℝ)≤ Cscale*Z^L*X := by
+    have hc : (ψ.modulus.absNorm:ℝ)*(Ideal.absNorm (∏P∈S,P):ℝ)≤(χ.modulus.absNorm:ℝ) := by
+      exact_mod_cast hcap
+    exact hc.trans hmod
+  rw [hsplit G X (Z^(xi/2)) hX,mul_add,add_sub_cancel_left,norm_mul,hg,one_mul]
+  have hb := (hCb G S hS ψ ψ.inverse χ.inverse _ X Z hZ hQ hX hcap').2
+  apply hb.trans
+  have hG : 0≤ H.sup (schwartzSeminormFamily ℝ ℝ ℂ) G := apply_nonneg _ _
+  apply mul_le_mul_of_nonneg_right _ (by positivity)
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  exact Real.rpow_le_rpow (Nat.cast_nonneg _) (radical_le_original χ ψ hcap) hepsilon.le
+
+lemma retainedSchwartz_uniformTwisted (χ ψ : Character) (W : ℝ→ℂ)
+    (a b : ℝ) (ha : 0< a) (hs : Function.support W⊆Set.Icc a b)
+    (hW : ContDiff ℝ ∞ W) (t X R : ℝ) :
+    retainedSchwartz χ ψ (CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t) X R=
+      retainedOriginal χ ψ W X R t := by
+  have he : (CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t : ℝ→ℂ)=
+      CompletedHeight.normTwistedSource W t := by
+    funext x
+    exact CompletedHeight.uniformTwistedSchwartz_apply W a b ha hs hW t x
+  unfold retainedSchwartz retainedOriginal
+  rw [he]
+
+theorem actual_twisted_approximation (xi saving L Cscale epsilon : ℝ)
+    (hxi : 0< xi) (hscale : 0< Cscale) (hepsilon : 0< epsilon) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀χ : Character,χ.residue≠1 →
+      ∃(ψ : Character)(g : ℂ),FiniteFourier.IsPrimitiveOnIdeals ψ.residue ∧ ψ.residue≠1 ∧ ‖g‖=1 ∧
+      ψ.modulus.absNorm*(redundantIdeal χ.modulus ψ.modulus).absNorm≤χ.modulus.absNorm ∧
+      ∀(W : ℝ→ℂ)(a b : ℝ)(ha : 0< a)(hs : Function.support W⊆Set.Icc a b)
+        (hW : ContDiff ℝ ∞ W)(t X Z : ℝ),0< X → 1≤ Z →
+        (χ.modulus.absNorm:ℝ)≤ Cscale*Z^L*X →
+        ‖HeckeDyadic.polynomial χ false W X 0 (2*Real.pi*t)-
+          g*retainedOriginal χ ψ W X (Z^(xi/2)) t‖≤
+          C*H.sup (schwartzSeminormFamily ℝ ℝ ℂ)
+            (CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t)*
+            (χ.modulus.absNorm:ℝ)^epsilon*Z^(-saving) := by
+  obtain ⟨H,C,hC,hb⟩ := actual_original_approximation xi saving L Cscale epsilon hxi hscale hepsilon
+  refine ⟨H,C,hC,?_⟩
+  intro χ hn
+  obtain ⟨ψ,g,hp,hnp,hg,hcap,hbound⟩ := hb χ hn
+  refine ⟨ψ,g,hp,hnp,hg,hcap,?_⟩
+  intro W a b ha hs hW t X Z hX hZ hmod
+  have hh := hbound (CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t) X Z hX hZ hmod
+  rw [retainedSchwartz_uniformTwisted] at hh
+  have he : (CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t : ℝ→ℂ)=
+      CompletedHeight.normTwistedSource W t := by
+    funext x
+    exact CompletedHeight.uniformTwistedSchwartz_apply W a b ha hs hW t x
+  have ht := CenteredMomentTwistedReflection.polynomial_twisted_source χ W X t hX
+  rw [←he] at ht
+  rw [←ht] at hh
+  exact hh
+
+theorem detector_original_approximation (xi saving L Cscale epsilon : ℝ)
+    (hxi : 0< xi) (hscale : 0< Cscale) (hepsilon : 0< epsilon) :
+    ∃n : ℕ,∃C : ℝ,0< C ∧ ∀χ : Character,χ.residue≠1 →
+      ∃(ψ : Character)(g : ℂ),FiniteFourier.IsPrimitiveOnIdeals ψ.residue ∧ ψ.residue≠1 ∧ ‖g‖=1 ∧
+      ψ.modulus.absNorm*(redundantIdeal χ.modulus ψ.modulus).absNorm≤χ.modulus.absNorm ∧
+      ∀reverse : Bool,∀k : ℕ,k≤2→∀σ∈Set.Icc (0:ℝ) 1,∀t X Z : ℝ,
+        0< X → 1≤ Z → (χ.modulus.absNorm:ℝ)≤ Cscale*Z^L*X →
+        let G := CenteredMomentDetectorDictionary.detectorSchwartz reverse k σ t
+        ‖HeckeDyadic.polynomial χ false G X 0 0-
+          g*retainedSchwartz χ ψ G X (Z^(xi/2))‖≤
+          C*(χ.modulus.absNorm:ℝ)^epsilon*(1+‖t‖)^n*Z^(-saving) := by
+  obtain ⟨H,C,hC,hb⟩ := actual_original_approximation xi saving L Cscale epsilon hxi hscale hepsilon
+  obtain ⟨n,D,hD,hcontrol⟩ := CenteredMomentDetectorDictionary.detectorSchwartz_uniform H
+  refine ⟨n,C*D,mul_pos hC hD,?_⟩
+  intro χ hn
+  obtain ⟨ψ,g,hp,hnp,hg,hcap,hbound⟩ := hb χ hn
+  refine ⟨ψ,g,hp,hnp,hg,hcap,?_⟩
+  intro reverse k hk σ hσ t X Z hX hZ hmod
+  dsimp only
+  apply (hbound _ X Z hX hZ hmod).trans
+  have he := hcontrol reverse k hk σ hσ t
+  have hh := mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left he hC.le) (by positivity :
+      0≤(χ.modulus.absNorm:ℝ)^epsilon)) (by positivity : 0≤ Z^(-saving))
+  exact hh.trans_eq (by ring)
+
+end CenteredMomentUniformReflectionApproximation
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentUniformRetainedEnergy
+open HeckeFamily HeckeDyadic SchwartzPlanePoisson CenteredMomentScaleSupremum
+open CenteredMomentUniformReflectionChoices CenteredMomentRetainedWeightedSource
+open CenteredMomentReflectionWeightedEnergy CenteredMomentReflectedTruncation
+open CenteredMomentOriginalReflectionApproximation CenteredMomentSectorLocalization
+open CenteredMomentUniformReflectionApproximation CenteredMomentReflectedUniformPair
+open CenteredMomentReflectedNormalization
+
+lemma twisted_zero (W:ℝ→ℂ) : CompletedHeight.normTwistedSource W 0=W := by
+  funext x
+  simp [CompletedHeight.normTwistedSource,kernelLogPhase]
+
+lemma normalized_zero (G:𝓢(ℝ,ℂ)) (B:ℕ) (s:ℝ) :
+    normalizedReflected CenteredMomentReflectedAnnuli.logWindow G B 0 s 0=
+      (fun x=>(annulus x:ℂ)*((1+s)^B:ℂ)*paperRadialFourier G (s*x)) := by
+  funext x
+  simp only [normalizedReflected,heightScale,pow_zero,div_one,twisted_zero,actual_log_window]
+  push_cast
+  rfl
+
+lemma retained_zero (χ ψ:Character) (G:𝓢(ℝ,ℂ)) (X R:ℝ) :
+    retainedOriginal χ ψ G X R 0=retainedSchwartz χ ψ G X R := by
+  unfold retainedOriginal retainedSchwartz
+  rw [twisted_zero]
+
+theorem actual_retained_uniform_energy (epsilon : ℝ)
+    (hepsilon : 0< epsilon) (B J : ℕ) (hB : 2≤ B) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀{ι : Type}[Fintype ι],
+      ∀(G : ι→𝓢(ℝ,ℂ))(χ ψ : ι→Character)(P : ι→ℂ)(X R ly omega : ι→ℝ)
+        (Wshort : ℝ→ℂ)(c d lo hi low high D E Rcap : ℝ),
+      (∀i,0< X i) → 0≤ d → Function.support Wshort⊆Set.Icc c d → ContDiff ℝ ∞ Wshort →
+      lo≤ hi → low≤ high → (∀i,ly i∈Set.Icc low high) →
+      (∀i (u : Index (sourcePrimes (χ i) (ψ i))),
+        ∀hY : 0< dualScale (χ i) (ψ i) (X i) u.1.1 u.1.2,
+        u.2∈retainedAnnuli (R i) (dualScale (χ i) (ψ i) (X i) u.1.1 u.1.2) hY →
+        Real.log (dyadicScale u.2*dualScale (χ i) (ψ i) (X i) u.1.1 u.1.2)∈Set.Icc lo hi) →
+      0< D → 0≤ E → (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ D) → 1≤ Rcap →
+      (∀i,(Ideal.absNorm (∏Q∈sourcePrimes (χ i) (ψ i),Q):ℝ)≤ Rcap) →
+      (∀v : ℝ,∀j k : Fin 2,∀x∈Set.Icc lo hi,∀y∈Set.Icc low high,
+        (∑i,‖polynomial (χ i) false (scaleTest (fun z : ℝ=>(annulus z:ℂ)) j)
+          (Real.exp x) 0 (-2*Real.pi*v)*
+          polynomial (χ i) false (scaleTest Wshort k) (Real.exp y) 0 (omega i)*P i‖^2)
+          ≤ E*(1+‖v‖)^(2*J)) →
+      (∑i,‖retainedSchwartz (χ i) (ψ i) (G i) (X i) (R i)*
+        polynomial (χ i) false Wshort (Real.exp (ly i)) 0 (omega i)*P i‖^2)≤
+        C*Rcap^epsilon*D^2*(1+2*(hi-lo))*(1+2*(high-low))*E := by
+  obtain ⟨H,Cp,hCp,hp⟩ := actual_independent_choices B J
+  obtain ⟨Cw,hCw,hw⟩ := actual_retained_weighted_energy epsilon hepsilon
+  refine ⟨H,Cw*Cp,mul_pos hCw hCp,?_⟩
+  intro ι _ G χ ψ P X R ly omega Wshort c d lo hi low high D E Rcap
+    hX hd hshort hshortsmooth hlh hlw hly hgeom hD hE hGD hRcap hcap henergy
+  let α (i : ι) := Index (sourcePrimes (χ i) (ψ i))
+  let s (i : ι) (u : α i) := dyadicScale u.2
+  let Y (i : ι) (u : α i) := s i u*dualScale (χ i) (ψ i) (X i) u.1.1 u.1.2
+  let keep (i : ι) (u : α i) := u.2∈retainedAnnuli (R i)
+    (dualScale (χ i) (ψ i) (X i) u.1.1 u.1.2) (dualScale_pos _ _ _ (hX i) _ _)
+  have hchoice := hp G χ P s Y keep ly omega Wshort c d lo hi low high D E
+    hd hshort hshortsmooth hlh hlw hly
+    (fun i u=> dyadicScale_pos u.2)
+    (fun i u hu=>⟨mul_pos (dyadicScale_pos u.2) (dualScale_pos _ _ _ (hX i) _ _),
+      hgeom i u _ hu⟩) hD hE hGD henergy
+  let P' (i : ι) := polynomial (χ i) false Wshort (Real.exp (ly i)) 0 (omega i)*P i
+  have hselected (u : ∀i,α i) :
+      (∑i,‖retainedColumn (χ i) (ψ i) (G i) (X i) (R i) 0 (hX i) B 0 (P' i) (u i)‖^2)≤
+        Cp*D^2*(1+2*(hi-lo))*(1+2*(high-low))*E := by
+    simpa only [retainedColumn,P',Y,s,keep,normalized_zero,mul_assoc] using hchoice u
+  have hh := hw χ ψ (fun i=>(G i:ℝ→ℂ)) X R (fun _=>0) hX (fun _=> B) 0 P' (fun _=> hB)
+    0 Rcap _ le_rfl (fun _=> by simp) hRcap hcap hselected
+  have hfinal := hh.2.2.2
+  simp only [retained_zero,P',Nat.mul_zero,pow_zero,mul_one,←mul_assoc] at hfinal
+  convert hfinal using 1 ; ring
+
+end CenteredMomentUniformRetainedEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentUniformNaturalRetained
+open HeckeFamily HeckeDyadic CenteredMomentScaleSupremum CenteredMomentNaturalPrimitive
+open CenteredMomentUniformRetainedEnergy CenteredMomentUniformReflectionApproximation CenteredMomentRetainedWeightedSource
+open CenteredMomentReflectedChoiceEnergy CenteredMomentReflectionWeightedEnergy
+open CenteredMomentOriginalReflectionApproximation CenteredMomentSectorLocalization
+
+theorem actual_natural_retained_energy (epsilon Cscale xi : ℝ)
+     (hepsilon : 0< epsilon) (hscale : 0< Cscale) (hxi : 0< xi)
+    (B J : ℕ) (hB : 2≤ B) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀ᶠ Z : ℝ in atTop,1< Z ∧
+      ∀{ι : Type}[Fintype ι],∀(G : ι→𝓢(ℝ,ℂ))(χ ψ : ι→Character)(P : ι→ℂ)(omega : ι→ℝ)
+        (Wshort : ℝ→ℂ)(c d M along bshort D E Rcap : ℝ),
+      0≤ d → Function.support Wshort⊆Set.Icc c d → ContDiff ℝ ∞ Wshort →
+      (∀i,(ψ i).modulus.absNorm*(redundantIdeal (χ i).modulus (ψ i).modulus).absNorm≤(χ i).modulus.absNorm) →
+      (∀i,((χ i).modulus.absNorm:ℝ)≤ Cscale*Z^M) →
+      0< D → 0≤ E → (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ D) → 1≤ Rcap →
+      (∀i,((χ i).modulus.absNorm:ℝ)≤ Rcap) →
+      (∀v : ℝ,∀j k : Fin 2,∀x∈Set.Icc 0 (max 0 (M-along+xi)*Real.log Z),
+        (∑i,‖polynomial (χ i) false (scaleTest (fun z : ℝ=>(annulus z:ℂ)) j)
+          (Real.exp x) 0 (-2*Real.pi*v)*
+          polynomial (χ i) false (scaleTest Wshort k) (Z^bshort) 0 (omega i)*P i‖^2)
+          ≤ E*(1+‖v‖)^(2*J)) →
+      (∑i,‖retainedSchwartz (χ i) (ψ i) (G i) (Z^along) (Z^(xi/4))*
+        polynomial (χ i) false Wshort (Z^bshort) 0 (omega i)*P i‖^2)≤
+        C*Rcap^epsilon*D^2*(1+2*(max 0 (M-along+xi)*Real.log Z))*E := by
+  obtain ⟨H,C,hC,hb⟩ := actual_retained_uniform_energy epsilon hepsilon B J hB
+  refine ⟨H,C,hC,?_⟩
+  filter_upwards [eventually_natural_choice_geometry Cscale xi hscale hxi] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro ι _ G χ ψ P omega Wshort c d M along bshort D E Rcap hd hshort hshortsmooth
+    hnatural hmod hD hE hGD hRcap hcap henergy
+  have hz : 0< Z := by linarith [hZ.1]
+  have hlog : 0≤ Real.log Z := (Real.log_pos hZ.1).le
+  have hexp : Real.exp (bshort*Real.log Z)=Z^bshort := by
+    rw [Real.rpow_def_of_pos hz,mul_comm]
+  have hgeom (i : ι) (u : Index (sourcePrimes (χ i) (ψ i)))
+      (hY : 0< dualScale (χ i) (ψ i) (Z^along) u.1.1 u.1.2)
+      (hu : u.2∈CenteredMomentReflectedTruncation.retainedAnnuli (Z^(xi/4))
+        (dualScale (χ i) (ψ i) (Z^along) u.1.1 u.1.2) hY) :
+      Real.log (dyadicScale u.2*dualScale (χ i) (ψ i) (Z^along) u.1.1 u.1.2)∈
+        Set.Icc 0 (max 0 (M-along+xi)*Real.log Z) := by
+    have hh := hZ.2 (χ i) (ψ i) M along (hnatural i) (hmod i) u hY hu
+    exact ⟨hh.2.1,hh.2.2.trans (mul_le_mul_of_nonneg_right (le_max_right _ _) hlog)⟩
+  have hrad (i : ι) : (Ideal.absNorm (∏Q∈sourcePrimes (χ i) (ψ i),Q):ℝ)≤ Rcap :=
+    (radical_le_original (χ i) (ψ i) (hnatural i)).trans (hcap i)
+  have hh := hb G χ ψ P (fun _=> Z^along) (fun _=> Z^(xi/4)) (fun _=> bshort*Real.log Z) omega
+    Wshort c d 0 (max 0 (M-along+xi)*Real.log Z) (bshort*Real.log Z) (bshort*Real.log Z)
+    D E Rcap (fun _=> Real.rpow_pos_of_pos hz _) hd hshort hshortsmooth
+    (mul_nonneg (le_max_left _ _) hlog) le_rfl (fun _=>⟨le_rfl,le_rfl⟩) hgeom
+    hD hE hGD hRcap hrad (by
+      intro v j k x hx y hy
+      have hey : y=bshort*Real.log Z := le_antisymm hy.2 hy.1
+      simpa only [hey,hexp] using henergy v j k x hx)
+  simpa only [hexp,sub_zero,sub_self,mul_zero,add_zero,mul_one] using hh
+
+end CenteredMomentUniformNaturalRetained
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentUniformOriginalEnergy
+open HeckeFamily CenteredMomentUniformReflectionApproximation CenteredMomentNaturalPrimitive
+open CenteredMomentOriginalReflectionEnergy
+
+theorem actual_original_energy_to_retained (xi saving L Cscale ε : ℝ)
+     (hxi : 0< xi) (hscale : 0< Cscale) (hε : 0<ε) :
+    ∃H : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧ ∀{ι : Type}[Fintype ι],∀χ : ι→Character,
+        (∀i,(χ i).residue≠1) →
+        ∃ψ : ι→Character,
+        (∀i,FiniteFourier.IsPrimitiveOnIdeals (ψ i).residue ∧ (ψ i).residue≠1 ∧
+          (ψ i).modulus.absNorm*(redundantIdeal (χ i).modulus (ψ i).modulus).absNorm≤(χ i).modulus.absNorm) ∧
+        ∀(W : ι→𝓢(ℝ,ℂ))(X : ι→ℝ)(P : ι→ℂ)(D Z Rcap : ℝ),0< D → 1≤ Z → 1≤ Rcap →
+          (∀i,0< X i) → (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (W i)≤ D) → (∀i,((χ i).modulus.absNorm:ℝ)≤ Rcap) →
+          (∀i,((χ i).modulus.absNorm:ℝ)≤ Cscale*Z^L*X i) →
+          (∑i,‖HeckeDyadic.polynomial (χ i) false (W i) (X i) 0 0*P i‖^2)≤
+            2*(∑i,‖retainedSchwartz (χ i) (ψ i) (W i) (X i) (Z^(xi/2))*P i‖^2)+
+            C*Rcap^(2*ε)*D^2*Z^(-2*saving)*(∑i,‖P i‖^2) := by
+  obtain ⟨H,C,hC,hb⟩ := actual_original_approximation xi saving L Cscale ε hxi hscale hε
+  refine ⟨H,2*C^2,by positivity,?_⟩
+  intro ι _ χ hχ
+  choose ψ G hp hnψ hG hcap happrox using fun i=> hb (χ i) (hχ i)
+  refine ⟨ψ,fun i=>⟨hp i,hnψ i,hcap i⟩,?_⟩
+  intro W X P D Z Rcap hD hZ hR hX hWD hmod hsource
+  let B := C*D*Rcap^ε*Z^(-saving)
+  have hB : 0≤ B := by dsimp [B];positivity
+  have herr (i : ι) :
+      ‖HeckeDyadic.polynomial (χ i) false (W i) (X i) 0 0-
+        G i*retainedSchwartz (χ i) (ψ i) (W i) (X i) (Z^(xi/2))‖≤ B := by
+    apply (happrox i (W i) (X i) Z (hX i) hZ (hsource i)).trans
+    dsimp [B]
+    apply mul_le_mul_of_nonneg_right _ (by positivity)
+    exact mul_le_mul (mul_le_mul_of_nonneg_left (hWD i) hC.le)
+      (Real.rpow_le_rpow (Nat.cast_nonneg _) (hmod i) hε.le)
+      (by positivity) (by positivity)
+  have hpoint (i : ι) :
+      ‖HeckeDyadic.polynomial (χ i) false (W i) (X i) 0 0*P i‖^2≤
+      2*‖retainedSchwartz (χ i) (ψ i) (W i) (X i) (Z^(xi/2))*P i‖^2+B^2*(2*‖P i‖^2) := by
+    have hh := norm_sq_comparison
+      (HeckeDyadic.polynomial (χ i) false (W i) (X i) 0 0*P i)
+      ((G i*retainedSchwartz (χ i) (ψ i) (W i) (X i) (Z^(xi/2)))*P i)
+    have he : ‖HeckeDyadic.polynomial (χ i) false (W i) (X i) 0 0*P i-
+        (G i*retainedSchwartz (χ i) (ψ i) (W i) (X i) (Z^(xi/2)))*P i‖≤ B*‖P i‖ := by
+      rw [←sub_mul,norm_mul]
+      exact mul_le_mul_of_nonneg_right (herr i) (norm_nonneg _)
+    have hs := pow_le_pow_left₀ (norm_nonneg _) he 2
+    simp only [norm_mul,hG,one_mul] at hh
+    simp only [mul_pow] at hs
+    simp only [norm_mul]
+    nlinarith
+  have hh := Finset.sum_le_sum (fun i (_ : i∈(Finset.univ : Finset ι))=> hpoint i)
+  simp only [Finset.sum_add_distrib,←Finset.mul_sum] at hh
+  have hBeq : B^2*2=(2*C^2)*Rcap^(2*ε)*D^2*Z^(-2*saving) := by
+    have hr0 : 0≤ Rcap := by linarith
+    have hz0 : 0≤ Z := by linarith
+    have hr : (Rcap^ε)^2=Rcap^(2*ε) := by
+      rw [←Real.rpow_natCast,←Real.rpow_mul hr0];congr 1;ring
+    have hz : (Z^(-saving))^2=Z^(-2*saving) := by
+      rw [←Real.rpow_natCast,←Real.rpow_mul hz0];congr 1;ring
+    dsimp [B]
+    rw [mul_pow,mul_pow,mul_pow,hr,hz]
+    ring
+  convert hh using 1
+  all_goals try rfl
+  rw [←mul_assoc,hBeq]
+
+end CenteredMomentUniformOriginalEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentUniformOriginalComparison
+open HeckeFamily HeckeDyadic CenteredMomentScaleSupremum
+open CenteredMomentUniformNaturalRetained CenteredMomentUniformOriginalEnergy
+open CenteredMomentSectorLocalization
+
+theorem actual_original_comparison (epsilon Cscale xi saving L : ℝ)
+     (hepsilon : 0< epsilon) (hscale : 0< Cscale) (hxi : 0< xi)
+    (B J : ℕ) (hB : 2≤ B) :
+    ∃H : Finset (ℕ×ℕ),∃C D : ℝ,0< C ∧ 0< D ∧ ∀ᶠ Z : ℝ in atTop,1< Z ∧
+      ∀{ι : Type}[Fintype ι],∀(G : ι→𝓢(ℝ,ℂ))(χ : ι→Character)(P : ι→ℂ)(omega : ι→ℝ)
+        (Wshort : ℝ→ℂ)(c d M along bshort E S Rcap : ℝ),
+      (∀i,(χ i).residue≠1) →
+      0≤ d → Function.support Wshort⊆Set.Icc c d → ContDiff ℝ ∞ Wshort →
+      M≤ L+along → (∀i,((χ i).modulus.absNorm:ℝ)≤ Cscale*Z^M) →
+      0≤ E → 0< S → (∀i,H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ S) → 1≤ Rcap →
+      (∀i,((χ i).modulus.absNorm:ℝ)≤ Rcap) →
+      (∀v : ℝ,∀j k : Fin 2,∀x∈Set.Icc 0 (max 0 (M-along+xi)*Real.log Z),
+        (∑i,‖polynomial (χ i) false (scaleTest (fun z : ℝ=>(annulus z:ℂ)) j)
+          (Real.exp x) 0 (-2*Real.pi*v)*
+          polynomial (χ i) false (scaleTest Wshort k) (Z^bshort) 0 (omega i)*P i‖^2)
+          ≤ E*(1+‖v‖)^(2*J)) →
+      (∑i,‖polynomial (χ i) false (G i) (Z^along) 0 0*
+        polynomial (χ i) false Wshort (Z^bshort) 0 (omega i)*P i‖^2)≤
+        C*Rcap^epsilon*S^2*(1+2*(max 0 (M-along+xi)*Real.log Z))*E+
+        D*Rcap^(2*epsilon)*S^2*Z^(-2*saving)*
+          (∑i,‖polynomial (χ i) false Wshort (Z^bshort) 0 (omega i)*P i‖^2) := by
+  obtain ⟨H,C,hC,hr⟩ := actual_natural_retained_energy epsilon Cscale xi hepsilon hscale hxi B J hB
+  obtain ⟨H',D,hD,ho⟩ := actual_original_energy_to_retained (xi/2) saving L Cscale epsilon
+    (by positivity) hscale hepsilon
+  refine ⟨H∪H',2*C,D,by positivity,hD,?_⟩
+  filter_upwards [hr] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro ι _ G χ P omega Wshort c d M along bshort E S Rcap hχ hd hshort hshortsmooth
+    hML hmod hE hS hGS hRcap hcap henergy
+  have hz : 0< Z := by linarith [hZ.1]
+  have hG1 (i:ι):H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ S :=
+    (Seminorm.le_def.mp (Finset.sup_mono (Finset.subset_union_left : H⊆H∪H')) (G i)).trans (hGS i)
+  have hG2 (i:ι):H'.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G i)≤ S :=
+    (Seminorm.le_def.mp (Finset.sup_mono (Finset.subset_union_right : H'⊆H∪H')) (G i)).trans (hGS i)
+  obtain ⟨ψ,hψ,horiginal⟩ := ho χ hχ
+  let Q (i : ι) := polynomial (χ i) false Wshort (Z^bshort) 0 (omega i)*P i
+  have hsource (i : ι) : ((χ i).modulus.absNorm:ℝ)≤ Cscale*Z^L*Z^along := by
+    have hh := (hmod i).trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le hZ.1.le hML) hscale.le)
+    rw [Real.rpow_add hz] at hh
+    simpa only [mul_assoc] using hh
+  have he := horiginal G (fun _=> Z^along) Q S Z Rcap hS hZ.1.le hRcap
+    (fun _=> Real.rpow_pos_of_pos hz _) hG2 hcap hsource
+  have hcut : (xi/2)/2=xi/4 := by ring
+  rw [hcut] at he
+  have hretained := hZ.2 G χ ψ P omega Wshort c d M along bshort S E Rcap
+    hd hshort hshortsmooth (fun i=>(hψ i).2.2) hmod hS hE hG1 hRcap hcap henergy
+  dsimp only [Q] at he
+  simp only [←mul_assoc] at he
+  have hh := he.trans (add_le_add (mul_le_mul_of_nonneg_left hretained (by norm_num : (0:ℝ)≤2)) le_rfl)
+  convert hh using 1 <;> first | rfl | ring
+
+end CenteredMomentUniformOriginalComparison
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentUniformRadialComparison
+open HeckeFamily HeckeDyadic 
+open CenteredMomentScaleSupremum CenteredMomentSectorLocalization
+open CenteredMomentOriginalRadialComparison CenteredMomentRadialPolynomialEnergy
+local notation "O" => Eisenstein.O
+
+theorem actual_original_radial_comparison (epsilon Cscale xi saving L : ℝ)
+     (hepsilon : 0< epsilon) (hscale : 0< Cscale) (hxi : 0< xi)
+    (B J : ℕ) (hB : 2≤ B) :
+    ∃H : Finset (ℕ×ℕ),∃C D : ℝ,0< C ∧ 0< D ∧ ∀ᶠ Z : ℝ in atTop,1< Z ∧
+      ∀(G:O→𝓢(ℝ,ℂ))(χ : O→Character)(P : O→ℂ)(omega : O→ℝ)(keep : O→Prop)
+        (Φ : 𝓢(ℝ,ℂ))(K Pbound : ℝ)(Wshort : ℝ→ℂ)(c d M along bshort E Src Rcap : ℝ),
+      0< K → (∀z,0≤(Φ (‖ringComplex z‖^2/K)).re) → (∀z,‖P z‖≤ Pbound) →
+      (∀z,keep z → (χ z).residue≠1) →
+      0≤ d → Function.support Wshort⊆Set.Icc c d → ContDiff ℝ ∞ Wshort →
+      M≤ L+along → (∀z,keep z → ((χ z).modulus.absNorm:ℝ)≤ Cscale*Z^M) →
+      0≤ E → 0< Src → (∀z,keep z → H.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G z)≤ Src) → 1≤ Rcap →
+      (∀z,keep z → ((χ z).modulus.absNorm:ℝ)≤ Rcap) →
+      (∀v : ℝ,∀j k : Fin 2,∀x∈Set.Icc 0 (max 0 (M-along+xi)*Real.log Z),
+        radialEnergy (fun z=> polynomial (χ z) false (scaleTest (fun y : ℝ=>(annulus y:ℂ)) j)
+          (Real.exp x) 0 (-2*Real.pi*v)*
+          polynomial (χ z) false (scaleTest Wshort k) (Z^bshort) 0 (omega z)*P z) keep Φ K
+          ≤ E*(1+‖v‖)^(2*J)) →
+      radialEnergy (fun z=> polynomial (χ z) false (G z) (Z^along) 0 0*
+        polynomial (χ z) false Wshort (Z^bshort) 0 (omega z)*P z) keep Φ K≤
+        C*Rcap^epsilon*Src^2*(1+2*(max 0 (M-along+xi)*Real.log Z))*E+
+        D*Rcap^(2*epsilon)*Src^2*Z^(-2*saving)*
+          radialEnergy (fun z=> polynomial (χ z) false Wshort (Z^bshort) 0 (omega z)*P z) keep Φ K := by
+  obtain ⟨H,C,D,hC,hD,h⟩:=CenteredMomentUniformOriginalComparison.actual_original_comparison
+    epsilon Cscale xi saving L hepsilon hscale hxi B J hB
+  refine ⟨H,C,D,hC,hD,?_⟩
+  filter_upwards [h] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro G χ P omega keep Φ K Pbound Wshort c d M along bshort E Src Rcap hK hΦ hP hχ
+    hd hshort hshortsmooth hML hmod hE hSrc hGS hRcap hcap henergy
+  have hz : 0< Z:=by linarith [hZ.1]
+  have hshortsum:=single_radial_summable χ P omega Wshort c d (Z^bshort) Pbound hd
+    (Real.rpow_pos_of_pos hz _) hshort hP keep Φ K hK
+  unfold radialEnergy
+  apply Real.tsum_le_of_sum_le (fun z=> by split_ifs;exact mul_nonneg (sq_nonneg _) (hΦ z);exact le_rfl)
+  intro rows
+  let S:=rows.filter keep
+  let weightedP (z : ↥S) : ℂ:=P z*(Real.sqrt ((Φ (‖ringComplex z‖^2/K)).re):ℂ)
+  have hmem (z : ↥S) : keep (z:O):=(Finset.mem_filter.mp z.property).2
+  have hh:=hZ.2 (fun z:↥S=> G z) (fun z:↥S=>χ z) weightedP (fun z=> omega z)
+    Wshort c d M along bshort E Src Rcap (fun z=> hχ z (hmem z)) hd hshort hshortsmooth
+    hML (fun z=> hmod z (hmem z)) hE hSrc (fun z=> hGS z (hmem z)) hRcap
+    (fun z=> hcap z (hmem z)) ?_
+  · simp only [weightedP,←mul_assoc] at hh
+    rw [finite_weighted rows keep (fun z=> polynomial (χ z) false (G z) (Z^along) 0 0*polynomial (χ z) false Wshort (Z^bshort) 0 (omega z)*P z) Φ K hΦ,
+      finite_weighted rows keep (fun z=> polynomial (χ z) false Wshort (Z^bshort) 0 (omega z)*P z) Φ K hΦ] at hh
+    apply hh.trans
+    apply add_le_add
+    · apply le_of_eq;ring
+    apply mul_le_mul_of_nonneg_left _ (by positivity)
+    exact hshortsum.sum_le_tsum rows (fun z _=> by split_ifs;exact mul_nonneg (sq_nonneg _) (hΦ z);exact le_rfl)
+  · intro v j k x hx
+    have hschild:=pair_radial_summable χ P (fun _=>-2*Real.pi*v) omega
+      (scaleTest (fun y:ℝ=>(annulus y:ℂ)) j) (scaleTest Wshort k)
+      (1/4) 1 c d (Real.exp x) (Z^bshort) Pbound (by norm_num) hd
+      (Real.exp_pos _) (Real.rpow_pos_of_pos hz _)
+      (scaleTest_support _ _ _ CenteredMomentOneReflectionScaleEnergy.annulus_complex_support j)
+      (scaleTest_support _ _ _ hshort k) hP keep Φ K hK
+    simp only [weightedP,←mul_assoc]
+    rw [finite_weighted rows keep (fun z=> polynomial (χ z) false (scaleTest (fun y:ℝ=>(annulus y:ℂ)) j) (Real.exp x) 0 (-2*Real.pi*v)*polynomial (χ z) false (scaleTest Wshort k) (Z^bshort) 0 (omega z)*P z) Φ K hΦ]
+    exact (hschild.sum_le_tsum rows (fun z _=> by split_ifs;exact mul_nonneg (sq_nonneg _) (hΦ z);exact le_rfl)).trans
+      (henergy v j k x hx)
+
+end CenteredMomentUniformRadialComparison
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+namespace CenteredMomentCommonMaskRadialEnergy
+open HeckeFamily HeckeDyadic 
+open CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentOriginalRadialComparison CenteredMomentRadialPolynomialEnergy
+open CenteredMomentUniformReflectionProfile
+local notation "O" => Eisenstein.O
+
+lemma naturalSlot_bounded (pool : Finset (Ideal O)) (β : Ideal O→ℂ) (P : ℝ) :
+    ∃B : ℝ,0≤ B ∧ ∀χ : Character,‖naturalSlot χ pool β P‖≤ B := by
+  refine ⟨‖(Real.sqrt P:ℂ)⁻¹‖*∑I∈pool,‖β I‖,by positivity,?_⟩
+  intro χ
+  unfold naturalSlot
+  rw [norm_mul]
+  apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro I hI
+  rw [norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (idealCoeff_norm_le_one χ I)
+
+lemma slots_bounded {α : Type*} (F : Finset α) (pool : α→Finset (Ideal O))
+    (β : α→Ideal O→ℂ) (P : α→ℝ) :
+    ∃B : ℝ,0≤ B ∧ ∀χ : Character,‖∏j∈F,naturalSlot χ (pool j) (β j) (P j)‖≤ B := by
+  choose B hB hb using fun j=> naturalSlot_bounded (pool j) (β j) (P j)
+  refine ⟨∏j∈F,B j,Finset.prod_nonneg (fun j _=> hB j),?_⟩
+  intro χ
+  rw [norm_prod]
+  exact Finset.prod_le_prod (fun j _=> norm_nonneg _) (fun j _=> hb j χ)
+
+theorem actual_radial_shared_energy {α : Type*} [DecidableEq α]
+    (F : Finset α) (b M : α→ℝ) (hM : ∀j∈F,0≤ M j) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀(R : Finset (Ideal O))(hR : ∀I∈R,Prime I)
+      (χ : O→Character)(W₁ W₂ : 𝓢(ℝ,ℂ))(X₁ X₂ a₁ b₁ a₂ b₂ : ℝ)
+      (pool : α→Finset (Ideal O))(β : α→Ideal O→ℂ)(P : α→ℝ)
+      (keep : O→Prop)(Φ : 𝓢(ℝ,ℂ))(K E : ℝ),
+      0< X₁ → 0< X₂ → 0≤ b₁ → 0≤ b₂ →
+      Function.support (W₁:ℝ→ℂ)⊆Set.Icc a₁ b₁ →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a₂ b₂ →
+      (∀j∈F,∀I∈pool j,Prime I) → (∀j∈F,0< P j) →
+      (∀j∈F,∀I∈pool j,‖β j I‖≤ M j) →
+      (∀j∈F,∀I∈pool j,β j I≠0 → (I.absNorm:ℝ)≤ b j*P j) →
+      0< K → (∀z,0≤(Φ (‖ringComplex z‖^2/K)).re) → 0≤ E →
+      (∀D₁∈R.powerset,∀D₂∈R.powerset,∀J∈F.powerset,
+        radialEnergy (fun z=> polynomial (χ z) false W₁
+          (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+          polynomial (χ z) false W₂ (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+          ∏j∈F\J,naturalSlot (χ z) (pool j) (β j) (P j)) keep Φ K≤ E) →
+      radialEnergy (fun z=> polynomial ((χ z).excludePrimes R hR) false W₁ X₁ 0 0 *
+        polynomial ((χ z).excludePrimes R hR) false W₂ X₂ 0 0 *
+        ∏j∈F,naturalSlot ((χ z).excludePrimes R hR) (pool j) (β j) (P j)) keep Φ K≤
+        C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε*E := by
+  obtain ⟨C,hC,he⟩:=actual_shared_energy F b M hM ε hε
+  refine ⟨C,hC,?_⟩
+  intro R hR χ W₁ W₂ X₁ X₂ a₁ b₁ a₂ b₂ pool β P keep Φ K E
+    hX₁ hX₂ hb₁ hb₂ hs₁ hs₂ hp hP hβ hs hK hΦ hE hchild
+  unfold radialEnergy
+  apply Real.tsum_le_of_sum_le (fun z=> by split_ifs;exact mul_nonneg (sq_nonneg _) (hΦ z);exact le_rfl)
+  intro rows
+  let S:=rows.filter keep
+  let q (z : ↥S) : ℂ:=(Real.sqrt ((Φ (‖ringComplex z‖^2/K)).re):ℂ)
+  have hh:=he R hR (fun z:↥S=>χ z) (fun z=> q z • W₁) (fun _=> W₂)
+    (fun _=> X₁) (fun _=> X₂) (fun _=> pool) (fun _=>β) (fun _=> P)
+    (fun _=> hX₁) (fun _=> hX₂) (fun _=> hp) (fun _=> hP)
+    (fun _=> hβ) (fun _=> hs) E hE ?_
+  · have hid (χ₀ : Character) (z : ↥S) (X : ℝ) :
+        polynomial χ₀ false (q z • W₁ : 𝓢(ℝ,ℂ)) X 0 0=q z*polynomial χ₀ false W₁ X 0 0 := by
+      exact polynomial_const_mul χ₀ W₁ X 0 0 (q z)
+    simp_rw [hid] at hh
+    have halg (z : ↥S) (u v w : ℂ) : q z*u*v*w=(u*v*w)*q z := by ring
+    simp_rw [halg] at hh
+    exact (finite_weighted rows keep _ Φ K hΦ).symm.trans_le hh
+  · intro D₁ hD₁ D₂ hD₂ J hJ
+    have hn (D : Finset (Ideal O)) (hD : D∈R.powerset) :
+        0<(Ideal.absNorm (∏I∈D,I):ℝ) := by
+      apply Nat.cast_pos.mpr
+      exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Finset.prod_ne_zero_iff.mpr (fun I hI=>(hR I (Finset.mem_powerset.mp hD hI)).ne_zero)))
+    obtain ⟨PB,hPB,hbound⟩:=slots_bounded (F\J) pool β P
+    have hsum:=pair_radial_summable χ
+      (fun z=>∏j∈F\J,naturalSlot (χ z) (pool j) (β j) (P j))
+      (fun _=>0) (fun _=>0) W₁ W₂ a₁ b₁ a₂ b₂
+      (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) PB
+      hb₁ hb₂ (div_pos hX₁ (hn D₁ hD₁)) (div_pos hX₂ (hn D₂ hD₂)) hs₁ hs₂
+      (fun z=> hbound (χ z)) keep Φ K hK
+    have hid (χ₀ : Character) (z : ↥S) (X : ℝ) :
+        polynomial χ₀ false (q z • W₁ : 𝓢(ℝ,ℂ)) X 0 0=q z*polynomial χ₀ false W₁ X 0 0 :=
+      polynomial_const_mul χ₀ W₁ X 0 0 (q z)
+    simp_rw [hid]
+    have halg (z : ↥S) (u v w : ℂ) : q z*u*v*w=(u*v*w)*q z := by ring
+    simp_rw [halg]
+    dsimp only [q]
+    rw [finite_weighted rows keep (fun z=> polynomial (χ z) false W₁
+      (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+      polynomial (χ z) false W₂ (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+      ∏j∈F\J,naturalSlot (χ z) (pool j) (β j) (P j)) Φ K hΦ]
+    exact (hsum.sum_le_tsum rows (fun z _=> by split_ifs;exact mul_nonneg (sq_nonneg _) (hΦ z);exact le_rfl)).trans
+      (hchild D₁ hD₁ D₂ hD₂ J hJ)
+end CenteredMomentCommonMaskRadialEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentNaturalCoreFloor
+open HeckeFamily HeckeRowClosure CenteredMomentCoreFloor CenteredMomentPlainGlobalEnergy
+open CenteredMomentNaturalRowSource CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentRadialEligibleEnergy (Radial)
+open InversePrincipalEnergy 
+local notation "O"=> Eisenstein.O
+
+ theorem natural_zero_all_lengths_floor (a b:ℝ)(ha:0< a):
+    ∃S:Finset (ℕ×ℕ),∃C:ℝ,0< C ∧
+    ∀(W₁ W₂:SchwartzMap ℝ ℂ),Function.support (W₁:ℝ→ℂ)⊆Set.Icc a b→
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a b→
+    ∀(η:Character)(Q:Ideal O)(r:Radial)(bΦ:ℝ),0≤ bΦ→
+      (Function.support (r.profile:ℝ→ℂ)⊆Set.Iic bΦ)→
+      (∀z,r.keep z→z≠0)→
+      (∀z,r.keep z→¬FixedInducingRow η Q fixedBadMask 1 z)→
+    ∀(Z m q ρ t X₁ X₂:ℝ),1≤ Z→0≤ m→0≤ q→
+      r.scale=Z^m→m+q≤ρ→1≤ X₁→1≤ X₂→
+      (η.modulus.absNorm:ℝ)≤ Z^q→
+    zeroEnergy η fixedBadMask 1 t W₁ W₂ X₁ X₂ r≤
+      C*bΦ^4*diagonalControl r.profile*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*(3+|t|)^8*Z^(m+q+4*ρ):=by
+  obtain ⟨S,C,hC,hfloor⟩:=zero_all_lengths_floor a b ha
+  let F:ℝ:=fixedConductorFactor
+  have hF:0< F:=by
+    unfold F fixedConductorFactor
+    norm_cast
+    apply Nat.mul_pos
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr fixedBadMask_ne_zero))
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr (by norm_num : (72:O)≠0)))
+  refine ⟨S,C*F^4,mul_pos hC (pow_pos hF _),?_⟩
+  intro W₁ W₂ hs₁ hs₂ η Q r bΦ hbΦ hΦsupp hz hex Z m q ρ t X₁ X₂ hZ hm hq hscale hwidth hX₁ hX₂ hη
+  let r':Radial:={r with keep:=fun z=> r.keep z ∧ r.profile (‖ringComplex z‖^2/r.scale)≠0}
+  let χ:O→Character:=fun z=> if hz:z≠0 then (naturalRow η z hz).character else η
+  have hrow (z:O)(h:r'.keep z):∀n,elementCoeff (χ z) n=
+      CanonicalRowCompletion.rowTwist (elementHom η) fixedBadMask 1 (1*z) n:=by
+    have hz0:=hz z h.1
+    simpa only [χ,dif_pos hz0,one_mul] using (naturalRow η z hz0).element
+  have hnon (z:O)(h:r'.keep z):(χ z).residue≠1:=
+    CenteredMomentNonprincipalGate.actual_row_nonprincipal η (χ z) Q fixedBadMask 1 z
+      (hrow z h) (hex z h.1)
+  have hmod (z:O)(h:r'.keep z):((χ z).modulus.absNorm:ℝ)≤(F*bΦ)*Z^(m+q):=by
+    have hz0:=hz z h.1
+    have hs:‖ringComplex z‖^2/r.scale≤ bΦ:=hΦsupp h.2
+    have hn:((Ideal.span {z}).absNorm:ℝ)≤ bΦ*Z^m:=by
+      rw [←ringComplex_norm_sq_eq_absNorm_span]
+      rw [←hscale]
+      exact (div_le_iff₀ r.scale_pos).mp hs
+    have hh:=(naturalRow η z hz0).modulus_power_bound Z q m bΦ
+      (zero_lt_one.trans_le hZ) hbΦ hη hn
+    simpa only [χ,dif_pos hz0,add_comm q m] using hh
+  have he:=hfloor W₁ W₂ hs₁ hs₂ η fixedBadMask 1 r' χ hnon hrow
+    Z m q ρ (F*bΦ) t X₁ X₂ hZ hm hq (mul_nonneg hF.le hbΦ) hscale hwidth hX₁ hX₂ hmod
+  have heq:zeroEnergy η fixedBadMask 1 t W₁ W₂ X₁ X₂ r=
+      zeroEnergy η fixedBadMask 1 t W₁ W₂ X₁ X₂ r':=by
+    unfold zeroEnergy
+    apply tsum_congr
+    intro z
+    by_cases hk:r.keep z
+    · by_cases hp:r.profile (‖ringComplex z‖^2/r.scale)=0
+      · simp [r',hk,hp]
+      · simp [r',hk,hp]
+    · simp [r',hk]
+  rw [heq]
+  exact he.trans_eq (by dsimp [r'];ring)
+
+end CenteredMomentNaturalCoreFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+
+namespace CenteredMomentNaturalFixedRaySource
+open HeckeFamily CenteredMomentHeckeHeight CenteredMomentHeckeVolume
+open CenteredMomentHeckeCancellation CenteredMomentHeckeTwist CenteredMomentLattice
+open CenteredMomentMask CenteredMomentTwist CenteredMomentHeight CenteredMomentHeckeSlots
+open InversePrincipalEnergy SchwartzPlanePoisson
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+
+theorem volumeControl_uniform_degree (a b ε B : ℝ)
+    (ha : 0 < a) (hε : 0 < ε) (hB : 0 ≤ B) :
+    ∃ n : ℕ, ∀ Q : Ideal O, ∀ W : ℝ → ℂ, ∀ hs : Function.support W ⊆ Set.Icc a b,
+      ∀ hW : ContDiff ℝ ∞ W, ∃ C : ℝ, 0 < C ∧
+      ∀ Z : ℝ, 1 ≤ Z → ∀ χ : Character, (Ideal.absNorm χ.modulus : ℝ) ≤ Z ^ B →
+      ∀ t : ℝ, volumeControl Q χ (normPowerProfile W a b ha hs hW t) ≤
+        C * Z ^ ε * (1 + ‖t‖) ^ n := by
+  obtain ⟨n, hn⟩ := normPowerProfile_uniform_degree a b ha pvSeminorms
+  obtain ⟨D, hD, hdiv⟩ := polynomial_mask_divisor_bound ε B hε hB
+  refine ⟨n, ?_⟩
+  intro Q W hs hW
+  obtain ⟨C, hC, hprofile⟩ := hn W hs hW
+  let mass : ℝ := Nat.card (O ⧸ Ideal.span {fixedPeriod Q})
+  have hmass : 0 ≤ mass := Nat.cast_nonneg _
+  let A := D * mass * pvConstant * C
+  have hA : 0 ≤ A := mul_nonneg (mul_nonneg (mul_nonneg hD.le hmass) pvConstant_pos.le) hC.le
+  refine ⟨1 + A, by linarith, ?_⟩
+  intro Z hZ χ hnorm t
+  have hheight : (1 + ‖t / (2 * Real.pi)‖) ^ n ≤ (1 + ‖t‖) ^ n := by
+    gcongr
+    exact normalized_height_le t
+  have hseminorm := (hprofile t).trans (mul_le_mul_of_nonneg_left hheight hC.le)
+  have herr : volumeControl Q χ (normPowerProfile W a b ha hs hW t) ≤
+      (D * Z ^ ε) * (mass * (pvConstant * (C * (1 + ‖t‖) ^ n))) := by
+    unfold volumeControl pvControl
+    rw [mul_assoc]
+    apply mul_le_mul (hdiv Z hZ χ.modulus χ.modulus_ne_bot hnorm)
+      (mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_left hseminorm pvConstant_pos.le) hmass)
+    · exact mul_nonneg hmass (mul_nonneg pvConstant_pos.le (apply_nonneg _ _))
+    · exact mul_nonneg hD.le (Real.rpow_nonneg (by linarith) _)
+  calc
+    _ ≤ (D * Z ^ ε) * (mass * (pvConstant * (C * (1 + ‖t‖) ^ n))) := herr
+    _ = A * Z ^ ε * (1 + ‖t‖) ^ n := by dsimp only [A]; ring
+    _ ≤ (1 + A) * Z ^ ε * (1 + ‖t‖) ^ n :=
+      mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (by linarith : A ≤ 1 + A)
+          (Real.rpow_nonneg (le_trans zero_le_one hZ) ε)) (by positivity)
+
+theorem rectangle_uniform_degree
+    (a₁ b₁ a₂ b₂ ε B : ℝ) (ha₁ : 0 < a₁) (ha₂ : 0 < a₂)
+    (hb₁ : 0 ≤ b₁) (hb₂ : 0 ≤ b₂) (hε : 0 < ε) (hB : 0 ≤ B) :
+    ∃ J : ℕ, ∀ Q : Ideal O, Q≠0 → ∀ W₁ W₂ : ℝ → ℂ,
+      ∀ _hs₁ : Function.support W₁ ⊆ Set.Icc a₁ b₁,
+      ∀ _hs₂ : Function.support W₂ ⊆ Set.Icc a₂ b₂,
+      ∀ _hW₁ : ContDiff ℝ ∞ W₁, ∀ _hW₂ : ContDiff ℝ ∞ W₂,
+      ∃ C : ℝ, 0 < C ∧ ∀ Z : ℝ, 1 ≤ Z →
+      ∀ η χ ψ : Character, (Ideal.absNorm χ.modulus : ℝ) ≤ Z ^ B →
+      (Q ≤ ψ.modulus) → CenteredExceptionalProfile.InducedBy χ ψ →
+      ∀ m A₀ z : O, (lambda ∣ m) → ((2:O) ∣ m) →
+      (∀ n, elementCoeff χ n=CanonicalRowCompletion.rowTwist (HeckeRowClosure.elementHom η) m 1 (A₀*z) n) →
+      ∀ t X₁ X₂ Y₁ Y₂ T L : ℝ, 0 < L →
+      L ≤ X₁ → L ≤ X₂ → L ≤ Y₁ → L ≤ Y₂ → X₁ * X₂ = T → Y₁ * Y₂ = T →
+      ‖(Real.sqrt T : ℂ)⁻¹ *
+        (twistedIdealSum χ W₁ t X₁ * twistedIdealSum χ W₂ t X₂ -
+          twistedIdealSum χ W₁ t Y₁ * twistedIdealSum χ W₂ t Y₂)‖ ≤
+        C * Z ^ ε * (1 + ‖t‖) ^ J * (Real.sqrt T / L) := by
+  obtain ⟨n₁, hn₁⟩ := volumeControl_uniform_degree a₁ b₁ ε B ha₁ hε hB
+  obtain ⟨n₂, hn₂⟩ := volumeControl_uniform_degree a₂ b₂ ε B ha₂ hε hB
+  refine ⟨max n₁ n₂, ?_⟩
+  intro Q hQ W₁ W₂ hs₁ hs₂ hW₁ hW₂
+  obtain ⟨D₁, hD₁, herr₁⟩ := hn₁ Q W₁ hs₁ hW₁
+  obtain ⟨D₂, hD₂, herr₂⟩ := hn₂ Q W₂ hs₂ hW₂
+  let M₁ := SchwartzMap.seminorm ℝ 0 0 (normPowerProfile W₁ a₁ b₁ ha₁ hs₁ hW₁ 0)
+  let M₂ := SchwartzMap.seminorm ℝ 0 0 (normPowerProfile W₂ a₂ b₂ ha₂ hs₂ hW₂ 0)
+  have hM₁ : 0 ≤ M₁ := apply_nonneg _ _
+  have hM₂ : 0 ≤ M₂ := apply_nonneg _ _
+  have hbound₁ (y : ℝ) : ‖W₁ y‖ ≤ M₁ := by
+    rw [← normPowerProfile_norm W₁ a₁ b₁ ha₁ hs₁ hW₁ 0 y]
+    exact SchwartzMap.norm_le_seminorm ℝ _ _
+  have hbound₂ (y : ℝ) : ‖W₂ y‖ ≤ M₂ := by
+    rw [← normPowerProfile_norm W₂ a₂ b₂ ha₂ hs₂ hW₂ 0 y]
+    exact SchwartzMap.norm_le_seminorm ℝ _ _
+  let V := 128 * (b₁ * M₁ + b₂ * M₂)
+  have hV : 0 ≤ V := mul_nonneg (by norm_num)
+    (add_nonneg (mul_nonneg hb₁ hM₁) (mul_nonneg hb₂ hM₂))
+  let C := 1 + 4 * (D₁ + D₂) * V
+  have hC : 0 < C := by dsimp only [C]; positivity
+  refine ⟨C, hC, ?_⟩
+  intro Z hZ η χ ψ hnorm hQψ hind m A₀ z hmLam hm2 hrow t X₁ X₂ Y₁ Y₂ T L hL hX₁ hX₂ hY₁ hY₂ hpX hpY
+  let E := volumeControl Q χ (normPowerProfile W₁ a₁ b₁ ha₁ hs₁ hW₁ t) +
+    volumeControl Q χ (normPowerProfile W₂ a₂ b₂ ha₂ hs₂ hW₂ t)
+  have ht : 1 ≤ 1 + ‖t‖ := by linarith [norm_nonneg t]
+  have hpow₁ := pow_le_pow_right₀ ht (le_max_left n₁ n₂)
+  have hpow₂ := pow_le_pow_right₀ ht (le_max_right n₁ n₂)
+  have hz : 0 ≤ Z ^ ε := Real.rpow_nonneg (le_trans zero_le_one hZ) ε
+  have hE : E ≤ (D₁ + D₂) * Z ^ ε * (1 + ‖t‖) ^ max n₁ n₂ := by
+    have h₁ := (herr₁ Z hZ χ hnorm t).trans
+      (mul_le_mul_of_nonneg_left hpow₁ (mul_nonneg hD₁.le hz))
+    have h₂ := (herr₂ Z hZ χ hnorm t).trans
+      (mul_le_mul_of_nonneg_left hpow₂ (mul_nonneg hD₂.le hz))
+    dsimp only [E]
+    nlinarith
+  have hraw := actual_twisted_rectangle_saving η χ ψ Q hQ hQψ hind m A₀ z hmLam hm2 hrow W₁ W₂ a₁ b₁ a₂ b₂ M₁ M₂
+    ha₁ ha₂ hb₁ hb₂ hM₁ hM₂ hs₁ hs₂ hW₁ hW₂ hbound₁ hbound₂
+    t X₁ X₂ Y₁ Y₂ T L hL hX₁ hX₂ hY₁ hY₂ hpX hpY
+  have hT : 0 < T := hpX ▸ mul_pos (lt_of_lt_of_le hL hX₁) (lt_of_lt_of_le hL hX₂)
+  have hnormalized := CenteredMoment.normalized_centered_saving _ T L V E hT hraw
+  have hratio : 0 ≤ Real.sqrt T / L := div_nonneg (Real.sqrt_nonneg T) hL.le
+  calc
+    _ ≤ 4 * E * V * (Real.sqrt T / L) := hnormalized
+    _ ≤ 4 * ((D₁ + D₂) * Z ^ ε * (1 + ‖t‖) ^ max n₁ n₂) * V *
+        (Real.sqrt T / L) :=
+      mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hE (by norm_num)) hV) hratio
+    _ = (4 * (D₁ + D₂) * V) * Z ^ ε * (1 + ‖t‖) ^ max n₁ n₂ *
+        (Real.sqrt T / L) := by ring
+    _ ≤ C * Z ^ ε * (1 + ‖t‖) ^ max n₁ n₂ * (Real.sqrt T / L) :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (by dsimp only [C]; linarith) hz) (by positivity)) hratio
+
+theorem row_rectangle_uniform_degree
+    (a₁ b₁ a₂ b₂ ε B : ℝ) (ha₁ : 0 < a₁) (ha₂ : 0 < a₂)
+    (hb₁ : 0 ≤ b₁) (hb₂ : 0 ≤ b₂) (hε : 0 < ε) (hB : 0 ≤ B) :
+    ∃ J : ℕ, ∀ Q : Ideal O, Q≠0 → ∀ W₁ W₂ : ℝ → ℂ,
+      ∀ _hs₁ : Function.support W₁ ⊆ Set.Icc a₁ b₁,
+      ∀ _hs₂ : Function.support W₂ ⊆ Set.Icc a₂ b₂,
+      ∀ _hW₁ : ContDiff ℝ ∞ W₁, ∀ _hW₂ : ContDiff ℝ ∞ W₂,
+      ∃ C : ℝ, 0 < C ∧ ∀ Z : ℝ, 1 ≤ Z → ∀ (η : Character) (m A₀ z : O),
+      m ≠ 0 → A₀ ≠ 0 → z ≠ 0 →
+      (lambda ∣ m) → ((2:O) ∣ m) →
+      (HeckeRowClosure.rowConductorBound η m 1 (A₀*z):ℝ) ≤ Z^B →
+      CenteredExceptionalProfile.FixedInducingRow η Q m A₀ z →
+      ∀ t X₁ X₂ Y₁ Y₂ T L : ℝ, 0 < L →
+      L ≤ X₁ → L ≤ X₂ → L ≤ Y₁ → L ≤ Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      ‖(Real.sqrt T:ℂ)⁻¹ *
+        (rowTwistedSum η m A₀ z W₁ t X₁*rowTwistedSum η m A₀ z W₂ t X₂-
+         rowTwistedSum η m A₀ z W₁ t Y₁*rowTwistedSum η m A₀ z W₂ t Y₂)‖ ≤
+        C*Z^ε*(1+‖t‖)^J*(Real.sqrt T/L) := by
+  obtain ⟨J,hJ⟩ := rectangle_uniform_degree a₁ b₁ a₂ b₂ ε B ha₁ ha₂ hb₁ hb₂ hε hB
+  refine ⟨J,?_⟩
+  intro Q hQ W₁ W₂ hs₁ hs₂ hW₁ hW₂
+  obtain ⟨C,hC,hbound⟩ := hJ Q hQ W₁ W₂ hs₁ hs₂ hW₁ hW₂
+  refine ⟨C,hC,?_⟩
+  intro Z hZ η m A₀ z hm hA hz hmLam hm2 hcond hex t X₁ X₂ Y₁ Y₂ T L hL hX₁ hX₂ hY₁ hY₂ hpX hpY
+  obtain ⟨χ,ψ,hχ,hprim,hind,hQψ,hrow⟩ := fixedInducingRow_controlled η Q m A₀ z hm hA hz hmLam hm2 hex
+  have hχnorm : (Ideal.absNorm χ.modulus:ℝ) ≤ Z^B :=
+    (show (Ideal.absNorm χ.modulus:ℝ) ≤ HeckeRowClosure.rowConductorBound η m 1 (A₀*z) by exact_mod_cast hχ).trans hcond
+  simp_rw [rowTwistedSum_eq η χ m A₀ z hrow]
+  exact hbound Z hZ η χ ψ hχnorm hQψ hind m A₀ z hmLam hm2 hrow
+    t X₁ X₂ Y₁ Y₂ T L hL hX₁ hX₂ hY₁ hY₂ hpX hpY
+
+theorem slots_uniform_degree
+    (a₁ b₁ a₂ b₂ ε B : ℝ) (ha₁ : 0 < a₁) (ha₂ : 0 < a₂)
+    (hb₁ : 0 ≤ b₁) (hb₂ : 0 ≤ b₂) (hε : 0 < ε) (hB : 0 ≤ B) :
+    ∃ J : ℕ, ∀ Q : Ideal O, Q≠0 → ∀ W₁ W₂ : ℝ → ℂ,
+      ∀ _hs₁ : Function.support W₁ ⊆ Set.Icc a₁ b₁,
+      ∀ _hs₂ : Function.support W₂ ⊆ Set.Icc a₂ b₂,
+      ∀ _hW₁ : ContDiff ℝ ∞ W₁, ∀ _hW₂ : ContDiff ℝ ∞ W₂,
+      ∃ C : ℝ, 0 < C ∧ ∀ Z : ℝ, 1 ≤ Z → ∀ (η : Character) (m A z : O),
+      m ≠ 0 → A ≠ 0 → z ≠ 0 →
+      (lambda ∣ m) → ((2:O) ∣ m) →
+      (HeckeRowClosure.rowConductorBound η m 1 (A*z):ℝ) ≤ Z^B →
+      CenteredExceptionalProfile.FixedInducingRow η Q m A z →
+      ∀ (S : ι → Finset (Ideal O)) (β : ι → Ideal O → ℂ) (p b M : ι → ℝ),
+      (∀ i, 0 < p i) → (∀ i, 0 ≤ b i) → (∀ i, 0 ≤ M i) →
+      (∀ i, ∀ P ∈ S i, ‖β i P‖ ≤ M i) →
+      (∀ i, ∀ P ∈ S i, β i P ≠ 0 → (Ideal.absNorm P:ℝ) ≤ b i*p i) →
+      ∀ t X₁ X₂ Y₁ Y₂ T L : ℝ, 0 < L →
+      L ≤ X₁ → L ≤ X₂ → L ≤ Y₁ → L ≤ Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      ‖centeredSlotRow η m A z W₁ W₂ S β p t X₁ X₂ Y₁ Y₂ T‖ ≤
+        C*Z^ε*(1+‖t‖)^J*(∏ i,128*b i*M i)*(Real.sqrt (T*∏ i,p i)/L) := by
+  obtain ⟨J,hJ⟩ := row_rectangle_uniform_degree a₁ b₁ a₂ b₂ ε B ha₁ ha₂ hb₁ hb₂ hε hB
+  refine ⟨J,?_⟩
+  intro Q hQ W₁ W₂ hs₁ hs₂ hW₁ hW₂
+  obtain ⟨C,hC,hbound⟩ := hJ Q hQ W₁ W₂ hs₁ hs₂ hW₁ hW₂
+  refine ⟨C,hC,?_⟩
+  intro Z hZ η m A z hm hA hz hmLam hm2 hcond hex S β p b M hp hb hM hβ hN
+    t X₁ X₂ Y₁ Y₂ T L hL hX₁ hX₂ hY₁ hY₂ hpX hpY
+  have hT : 0 < T := hpX ▸ mul_pos (hL.trans_le hX₁) (hL.trans_le hX₂)
+  have hslots (i : ι) : ‖rowSlot η m A z (S i) (β i) t‖ ≤ (128*b i*M i)*p i := by
+    convert rowSlot_bound η m A z (S i) (β i) t (b i*p i) (M i)
+      (mul_nonneg (hb i) (hp i).le) (hM i) (hβ i) (hN i) using 1 ; ring
+  exact whole_product_normalization _ (fun i => rowSlot η m A z (S i) (β i) t)
+    (fun i => 128*b i*M i) p (C*Z^ε*(1+‖t‖)^J) T L
+    (by positivity) hT hL (fun i => mul_nonneg (mul_nonneg (by norm_num) (hb i)) (hM i)) hp hslots
+    (hbound Z hZ η m A z hm hA hz hmLam hm2 hcond hex
+      t X₁ X₂ Y₁ Y₂ T L hL hX₁ hX₂ hY₁ hY₂ hpX hpY)
+
+end CenteredMomentNaturalFixedRaySource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+
+namespace CenteredMomentFiniteProfileExceptional
+open JointLogSeparation JointLogSeparation CompletedHeight CenteredMomentLattice
+open SchwartzPlanePoisson
+
+theorem frequencyTwist_source_control (S : Finset (ℕ × ℕ)) :
+    ∃ n : ℕ, ∃ T : Finset (ℕ × ℕ), ∃ C : ℝ, 0 < C ∧
+      ∀ (g : 𝓢(ℝ, ℂ)) (t : ℝ),
+        S.sup (schwartzSeminormFamily ℝ ℝ ℂ) (frequencyTwist g t) ≤
+          C * T.sup (schwartzSeminormFamily ℝ ℝ ℂ) g * (1 + ‖t‖)^n := by
+  let T := S.biUnion fun z => (Finset.range (z.2+1)).image fun i => (z.1,i)
+  let c : ℕ × ℕ → ℝ := fun z => (2:ℝ)^z.2*(1+2*Real.pi)^z.2*(z.2+1)
+  let C := 1 + ∑ z ∈ S, c z
+  have hc (z) : 0 ≤ c z := by dsimp [c]; positivity
+  have hC : 0 < C := by
+    have := Finset.sum_nonneg (fun z (_ : z∈S) => hc z)
+    dsimp [C]; linarith
+  refine ⟨S.sup Prod.snd,T,C,hC,?_⟩
+  intro g t
+  have hder (z) (hz : z ∈ S) : derivativeSeminormSum g z.1 z.2 ≤
+      (z.2+1:ℝ) * T.sup (schwartzSeminormFamily ℝ ℝ ℂ) g := by
+    calc
+      _ ≤ ∑ i ∈ Finset.range (z.2+1), T.sup (schwartzSeminormFamily ℝ ℝ ℂ) g := by
+        apply Finset.sum_le_sum
+        intro i hi
+        apply Seminorm.le_finset_sup_apply (p := schwartzSeminormFamily ℝ ℝ ℂ) (i := (z.1,i))
+        exact Finset.mem_biUnion.mpr ⟨z,hz,Finset.mem_image.mpr ⟨i,hi,rfl⟩⟩
+      _ = _ := by simp
+  apply Seminorm.finset_sup_apply_le (by positivity)
+  intro z hz
+  have hzC : c z ≤ C := by
+    have := Finset.single_le_sum (fun z (_ : z∈S) => hc z) hz
+    dsimp [C]; linarith
+  calc
+    _ ≤ ((2:ℝ)^z.2*(1+2*Real.pi)^z.2*derivativeSeminormSum g z.1 z.2) *
+        (1+‖t‖)^z.2 := frequencyTwist_seminorm_polynomial g t z.1 z.2
+    _ ≤ (c z * T.sup (schwartzSeminormFamily ℝ ℝ ℂ) g) *
+        (1+‖t‖)^z.2 := by
+      dsimp only [c]
+      exact (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (hder z hz)
+          (show 0 ≤ (2:ℝ)^z.2*(1+2*Real.pi)^z.2 by positivity))
+        (show 0 ≤ (1+‖t‖)^z.2 by positivity)).trans_eq (by ring)
+    _ ≤ (C * T.sup (schwartzSeminormFamily ℝ ℝ ℂ) g) *
+        (1+‖t‖)^(S.sup Prod.snd) := by
+      apply mul_le_mul
+      · exact mul_le_mul_of_nonneg_right hzC (apply_nonneg _ _)
+      · exact pow_le_pow_right₀ (by linarith [norm_nonneg t]) (Finset.le_sup hz)
+      · positivity
+      · positivity
+
+theorem normPowerProfile_source_control (a b : ℝ) (ha : 0 < a)
+    (S : Finset (ℕ × ℕ)) :
+    ∃ n : ℕ, ∃ T : Finset (ℕ × ℕ), ∃ C : ℝ, 0 < C ∧
+      ∀ W : 𝓢(ℝ, ℂ), ∀ hs : Function.support (W : ℝ → ℂ) ⊆ Set.Icc a b,
+      ∀ t : ℝ,
+        S.sup (schwartzSeminormFamily ℝ ℝ ℂ)
+          (normPowerProfile W a b ha hs (W.smooth ⊤) t) ≤
+        C * T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W * (1+‖t‖)^n := by
+  obtain ⟨S₁,C₁,hC₁,h₁⟩ := schwartzCLM_finite_seminorm_control (fixedLogReturnCLM a b ha) S
+  obtain ⟨n,S₂,C₂,hC₂,h₂⟩ := frequencyTwist_source_control S₁
+  obtain ⟨T,C₃,hC₃,h₃⟩ := schwartzCLM_finite_seminorm_control
+    (logPullbackCLM a b) S₂
+  refine ⟨n,T,C₁*C₂*C₃,by positivity,?_⟩
+  intro W hs t
+  have heq : kernelLogSource W a b ha hs (W.smooth ⊤) =
+      logPullbackCLM a b W := by
+    ext u
+    rw [kernelLogSource_apply,
+      logPullbackCLM_eq_actual a b ha W hs]
+  have ht : (1+‖t/(2*Real.pi)‖)^n ≤ (1+‖t‖)^n := by
+    gcongr
+    exact CenteredMomentHeight.normalized_height_le t
+  unfold normPowerProfile uniformTwistedSchwartz
+  rw [heq]
+  calc
+    _ ≤ C₁ * S₁.sup (schwartzSeminormFamily ℝ ℝ ℂ)
+      (frequencyTwist (logPullbackCLM a b W) (t/(2*Real.pi))) := h₁ _
+    _ ≤ C₁ * (C₂ * (C₃ * T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) * (1+‖t‖)^n) := by
+      apply mul_le_mul_of_nonneg_left _ hC₁.le
+      exact (h₂ _ _).trans (mul_le_mul
+        (mul_le_mul_of_nonneg_left (h₃ W) hC₂.le) ht (by positivity) (by positivity))
+    _ = _ := by ring
+end CenteredMomentFiniteProfileExceptional
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSourceRectangle
+open Eisenstein HeckeFamily CenteredMomentHeckeExpansion CenteredMomentRectangle
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentAddedZeroUniform
+open CenteredMomentExtraction CenteredMomentFirstSectors
+open CenteredMomentSourceLiveColumn CenteredMomentCommonProfile CenteredMomentRemainingBox
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+
+def tuplePools (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O)) :
+    (ι⊕Fin 2)→Finset (Ideal O) := Sum.elim slots (fun j=> if j=0 then S₁ else S₂)
+
+def tuplePool (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O)) : Finset (Tuple ι) :=
+  Fintype.piFinset (tuplePools slots S₁ S₂)
+
+def pack (v : ι→Ideal O) (I J : Ideal O) : Tuple ι :=
+  Sum.elim v (fun j=> if j=0 then I else J)
+
+omit [Fintype ι] in
+@[simp] theorem pack_slot (v : ι→Ideal O) (I J : Ideal O) (i : ι) :
+    pack v I J (Sum.inl i)=v i := rfl
+omit [Fintype ι] in
+@[simp] theorem pack_left (v : ι→Ideal O) (I J : Ideal O) :
+    pack v I J (Sum.inr 0)=I := by simp [pack]
+omit [Fintype ι] in
+@[simp] theorem pack_right (v : ι→Ideal O) (I J : Ideal O) :
+    pack v I J (Sum.inr 1)=J := by simp [pack]
+
+theorem pack_product (v : ι→Ideal O) (I J : Ideal O) :
+    finiteTupleProduct (pack v I J)=(∏ i,v i)*I*J := by
+  simp only [finiteTupleProduct,Fintype.prod_sum_type,pack_slot,Fin.prod_univ_two,
+    pack_left,pack_right,mul_assoc]
+
+def tuplePoolEquiv (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O)) :
+    tuplePool slots S₁ S₂ ≃ ((∀ i,slots i)×S₁×S₂) where
+  toFun v := ((fun i=>⟨v.val (Sum.inl i),Fintype.mem_piFinset.mp v.property (Sum.inl i)⟩),
+    ⟨v.val (Sum.inr 0),by simpa [tuplePools] using Fintype.mem_piFinset.mp v.property (Sum.inr 0)⟩,
+    ⟨v.val (Sum.inr 1),by simpa [tuplePools] using Fintype.mem_piFinset.mp v.property (Sum.inr 1)⟩)
+  invFun v := ⟨pack (fun i=> v.1 i) v.2.1 v.2.2,by
+    apply Fintype.mem_piFinset.mpr
+    intro i
+    cases i with
+    | inl i => exact (v.1 i).property
+    | inr j => fin_cases j <;> simp [pack,tuplePools]⟩
+  left_inv v := by
+    apply Subtype.ext
+    funext i
+    cases i with
+    | inl i => rfl
+    | inr j => fin_cases j <;> rfl
+  right_inv v := rfl
+
+theorem sum_tuplePool (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O))
+    (f : Tuple ι→ℂ) :
+    (∑ v∈tuplePool slots S₁ S₂,f v)=
+      ∑ v : (∀ i,slots i),∑ I : S₁,∑ J : S₂,f (pack (fun i=> v i) I J) := by
+  rw [← Finset.sum_coe_sort (tuplePool slots S₁ S₂) f]
+  have he := (tuplePoolEquiv slots S₁ S₂).symm.sum_comp (fun v : tuplePool slots S₁ S₂=> f v)
+  change (∑ x : ((∀ i,slots i)×S₁×S₂),f (pack (fun i=> x.1 i) x.2.1 x.2.2))=
+    (∑ v : tuplePool slots S₁ S₂,f v) at he
+  simpa only [Fintype.sum_prod_type] using he.symm
+
+theorem finite_column_regroup (S : Finset (Tuple ι)) (β : Tuple ι→ℂ) (w : Ideal O→ℂ) :
+    (∑ I∈finiteColumns S,finiteColumnCoefficient S β I*w I)=
+      ∑ v∈S,β v*w (finiteTupleProduct v) := by
+  simp only [finiteColumnCoefficient,Finset.sum_mul]
+  calc
+    _ = ∑ I∈finiteColumns S,∑ v∈S.filter (fun v=> finiteTupleProduct v=I),
+        β v*w (finiteTupleProduct v) := by
+      apply Finset.sum_congr rfl
+      intro I hI
+      apply Finset.sum_congr rfl
+      intro v hv
+      rw [(Finset.mem_filter.mp hv).2]
+    _ = _ := Finset.sum_fiberwise_of_maps_to (fun v hv=> Finset.mem_image.mpr ⟨v,hv,rfl⟩) _
+
+def PlainCoverage (S : Finset (Ideal O)) (W : ℝ→ℂ) (B : Ideal O) (X Y : ℝ) : Prop :=
+  ∀ I, W ((Ideal.absNorm (B*I):ℝ)/X)≠0 ∨ W ((Ideal.absNorm (B*I):ℝ)/Y)≠0 → I∈S
+
+theorem rectangle_zero_left (S₁ : Finset (Ideal O)) (W₁ W₂ : ℝ→ℂ)
+    (B₁ B₂ : Ideal O) (X₁ X₂ Y₁ Y₂ : ℝ)
+    (h : PlainCoverage S₁ W₁ B₁ X₁ Y₁) (I J : Ideal O) (hI : I∉S₁) :
+    idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*I) (B₂*J)=0 := by
+  have hx : W₁ ((Ideal.absNorm (B₁*I):ℝ)/X₁)=0 := by
+    by_contra hn;exact hI (h I (Or.inl hn))
+  have hy : W₁ ((Ideal.absNorm (B₁*I):ℝ)/Y₁)=0 := by
+    by_contra hn;exact hI (h I (Or.inr hn))
+  simp only [idealRectangle,hx,hy,zero_mul,sub_self]
+
+theorem rectangle_zero_right (S₂ : Finset (Ideal O)) (W₁ W₂ : ℝ→ℂ)
+    (B₁ B₂ : Ideal O) (X₁ X₂ Y₁ Y₂ : ℝ)
+    (h : PlainCoverage S₂ W₂ B₂ X₂ Y₂) (I J : Ideal O) (hJ : J∉S₂) :
+    idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*I) (B₂*J)=0 := by
+  have hx : W₂ ((Ideal.absNorm (B₂*J):ℝ)/X₂)=0 := by
+    by_contra hn;exact hJ (h J (Or.inl hn))
+  have hy : W₂ ((Ideal.absNorm (B₂*J):ℝ)/Y₂)=0 := by
+    by_contra hn;exact hJ (h J (Or.inr hn))
+  simp only [idealRectangle,hx,hy,mul_zero,sub_self]
+
+theorem finite_plain_rectangle (S₁ S₂ : Finset (Ideal O)) (W₁ W₂ : ℝ→ℂ)
+    (B₁ B₂ : Ideal O) (X₁ X₂ Y₁ Y₂ : ℝ)
+    (h₁ : PlainCoverage S₁ W₁ B₁ X₁ Y₁) (h₂ : PlainCoverage S₂ W₂ B₂ X₂ Y₂)
+    (f : Ideal O→Ideal O→ℂ) :
+    (∑ I : S₁,∑ J : S₂,f I J*idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*I) (B₂*J))=
+      ∑' I : Ideal O,∑' J : Ideal O,f I J*idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*I) (B₂*J) := by
+  symm
+  rw [tsum_eq_sum (s := S₁)]
+  · rw [← Finset.sum_coe_sort S₁ (fun I=>∑' J : Ideal O,
+      f I J*idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*I) (B₂*J))]
+    apply Finset.sum_congr rfl
+    intro I hI
+    rw [tsum_eq_sum (s := S₂)]
+    · exact (Finset.sum_coe_sort S₂ _).symm
+    · intro J hJ
+      rw [rectangle_zero_right S₂ W₁ W₂ B₁ B₂ X₁ X₂ Y₁ Y₂ h₂ I J hJ,mul_zero]
+  · intro I hI
+    simp only [rectangle_zero_left S₁ W₁ W₂ B₁ B₂ X₁ X₂ Y₁ Y₂ h₁ I _ hI,mul_zero,tsum_zero]
+
+def fullMaskedRectangle (η : Character) (m A z : O) (t : ℝ)
+    (slots : ι→Finset (Ideal O)) (ν Wslot : ι→Ideal O→ℂ)
+    (R L : Ideal O) (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) : ℂ :=
+  ∑ v : (∀ i,slots i),(∏ i,ν i (v i)*Wslot i (v i))*
+    ∑' I : Ideal O,∑' J : Ideal O,
+      (if IsCoprime ((∏ i,(v i:Ideal O))*I*J) R then (1:ℂ) else 0)*
+      (if L∣(∏ i,(v i:Ideal O))*I*J then (1:ℂ) else 0)*
+      rowWeight η m A z t ((∏ i,(v i:Ideal O))*I*J)*
+      idealRectangle W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*I) (B₂*J)
+
+theorem source_polynomial_eq_full_masked_rectangle (η : Character) (m A z : O) (t : ℝ)
+    (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (h₁ : PlainCoverage S₁ W₁ B₁ X₁ Y₁) (h₂ : PlainCoverage S₂ W₂ B₂ X₂ Y₂) :
+    (∑ I∈finiteColumns (tuplePool slots S₁ S₂),
+      finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L) I * rowWeight η m A z t I)=
+      fullMaskedRectangle η m A z t slots ν (fun i I=> Wslot i ((Ideal.absNorm I:ℝ)/P i))
+        R L W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ := by
+  rw [finite_column_regroup,sum_tuplePool]
+  unfold fullMaskedRectangle
+  apply Finset.sum_congr rfl
+  intro v hv
+  rw [← finite_plain_rectangle S₁ S₂ W₁ W₂ B₁ B₂ X₁ X₂ Y₁ Y₂ h₁ h₂]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro I hI
+  apply Finset.sum_congr rfl
+  intro J hJ
+  simp only [profileCoefficient,pack_product,pack_slot,pack_left,pack_right]
+  ring
+
+theorem fullMaskedRectangle_pullback (η : Character) (m A z : O) (t : ℝ)
+    (slots : ι→Finset (Ideal O)) (ν Wslot : ι→Ideal O→ℂ)
+    (R L : Ideal O) (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) :
+    fullMaskedRectangle η m A z t slots ν Wslot R L W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ =
+      fullMaskedRectangle η m A z t slots ν Wslot R L W₁ W₂
+        (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)
+        (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂) 1 1 := by
+  unfold fullMaskedRectangle
+  simp only [one_mul,idealRectangle_extract]
+
+theorem pullback_same_product (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O)
+    (hX : X₁*X₂=T) (hY : Y₁*Y₂=T) :
+    (X₁/Ideal.absNorm B₁)*(X₂/Ideal.absNorm B₂)=T/(Ideal.absNorm B₁*Ideal.absNorm B₂:ℝ) ∧
+    (Y₁/Ideal.absNorm B₁)*(Y₂/Ideal.absNorm B₂)=T/(Ideal.absNorm B₁*Ideal.absNorm B₂:ℝ) :=
+  extracted_product_scale X₁ X₂ Y₁ Y₂ T B₁ B₂ hX hY
+
+theorem fullMaskedRectangle_modulus_one [DecidableEq ι]
+    (η : Character) (m A z : O) (t : ℝ)
+    (slots : ι→Finset (Ideal O)) (ν Wslot : ι→Ideal O→ℂ)
+    (L : Ideal O) (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) :
+    fullMaskedRectangle η m A z t slots ν Wslot 1 L W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ =
+      CenteredMomentDivisorRowEnergy.maskedRectangle η m A z t slots
+        (fun i I=>ν i I*Wslot i I) L W₁ W₂
+        (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)
+        (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂) := by
+  simp only [fullMaskedRectangle,CenteredMomentDivisorRowEnergy.maskedRectangle,
+    isCoprime_one_right,ite_true,one_mul,idealRectangle_extract]
+  apply Finset.sum_congr (by ext; simp)
+  intro v hv
+  rfl
+
+theorem source_polynomial_eq_maskedRectangle [DecidableEq ι]
+    (η : Character) (m A z : O) (t : ℝ)
+    (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O))
+    (L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (h₁ : PlainCoverage S₁ W₁ B₁ X₁ Y₁) (h₂ : PlainCoverage S₂ W₂ B₂ X₂ Y₂) :
+    (∑ I∈finiteColumns (tuplePool slots S₁ S₂),
+      finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient 1 ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L) I * rowWeight η m A z t I)=
+      CenteredMomentDivisorRowEnergy.maskedRectangle η m A z t slots
+        (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) L W₁ W₂
+        (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)
+        (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂) :=
+  (source_polynomial_eq_full_masked_rectangle η m A z t slots S₁ S₂ 1 L ν Wslot P
+    W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ h₁ h₂).trans
+    (fullMaskedRectangle_modulus_one η m A z t slots ν _ L W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)
+
+theorem plainCoverage_residualPool (S : Finset (Ideal O)) (W : ℝ→ℂ)
+    (B C : Ideal O) (hC : C≠0) (X Y : ℝ) (h : PlainCoverage S W B X Y) :
+    PlainCoverage (residualPool C hC S) W (B*C) X Y := by
+  intro I hi
+  apply (mem_residualPool C hC S I).mpr
+  apply h (C*I)
+  simpa only [mul_assoc] using hi
+
+def plainSupportPool (b X Y : ℝ) : Finset (Ideal O) := idealBall (b*X)∪idealBall (b*Y)
+
+theorem plainSupportPool_coverage (W : ℝ→ℂ) (b X Y : ℝ)
+    (hW₀ : W 0=0) (hs : Function.support W⊆Set.Iic b) (hX : 0< X) (hY : 0< Y) :
+    PlainCoverage (plainSupportPool b X Y) W 1 X Y := by
+  intro I hi
+  simp only [one_mul] at hi
+  have cover (Q : ℝ) (hQ : 0< Q) (hne : W ((Ideal.absNorm I:ℝ)/Q)≠0) :
+      I∈idealBall (b*Q) := by
+    apply (mem_idealBall _ _).mpr
+    constructor
+    · intro hI
+      subst I
+      apply hne
+      simp only [map_zero,Nat.cast_zero,zero_div,hW₀]
+    · exact (div_le_iff₀ hQ).mp (hs hne)
+  obtain hi|hi := hi
+  · exact Finset.mem_union_left _ (cover X hX hi)
+  · exact Finset.mem_union_right _ (cover Y hY hi)
+
+theorem extracted_plainSupportPool_coverage (W : ℝ→ℂ) (B : Ideal O) (hB : B≠0)
+    (b X Y : ℝ) (hW₀ : W 0=0) (hs : Function.support W⊆Set.Iic b)
+    (hX : 0< X) (hY : 0< Y) :
+    PlainCoverage (residualPool B hB (plainSupportPool b X Y)) W B X Y := by
+  simpa only [one_mul] using plainCoverage_residualPool (plainSupportPool b X Y)
+    W 1 B hB X Y (plainSupportPool_coverage W b X Y hW₀ hs hX hY)
+
+theorem supported_source_polynomial_eq_full_rectangle
+    (η : Character) (m A z : O) (t : ℝ)
+    (slots : ι→Finset (Ideal O)) (R L : Ideal O)
+    (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (hB₁ : B₁≠0) (hB₂ : B₂≠0) (hw₁ : W₁ 0=0) (hw₂ : W₂ 0=0)
+    (hs₁ : Function.support W₁⊆Set.Iic b₁) (hs₂ : Function.support W₂⊆Set.Iic b₂)
+    (hX₁ : 0< X₁) (hX₂ : 0< X₂) (hY₁ : 0< Y₁) (hY₂ : 0< Y₂) :
+    let T := tuplePool slots
+      (residualPool B₁ hB₁ (plainSupportPool b₁ X₁ Y₁))
+      (residualPool B₂ hB₂ (plainSupportPool b₂ X₂ Y₂))
+    (∑ I∈finiteColumns T,finiteColumnCoefficient T
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L) I*rowWeight η m A z t I)=
+      fullMaskedRectangle η m A z t slots ν (fun i I=> Wslot i ((Ideal.absNorm I:ℝ)/P i))
+        R L W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ :=
+  source_polynomial_eq_full_masked_rectangle η m A z t slots _ _ R L ν Wslot P
+    W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂
+    (extracted_plainSupportPool_coverage W₁ B₁ hB₁ b₁ X₁ Y₁ hw₁ hs₁ hX₁ hY₁)
+    (extracted_plainSupportPool_coverage W₂ B₂ hB₂ b₂ X₂ Y₂ hw₂ hs₂ hX₂ hY₂)
+
+theorem liveBox_eq_tuplePool (S : (ι⊕Fin 2)→Finset (Ideal O)) (B : Tuple ι)
+    (hB : ∀ i,B i≠0) :
+    liveBox S B hB = tuplePool
+      (fun i : liveIndices B=> residualPool (B (Sum.inl i.val)) (hB _) (S (Sum.inl i.val)))
+      (residualPool (B (Sum.inr 0)) (hB _) (S (Sum.inr 0)))
+      (residualPool (B (Sum.inr 1)) (hB _) (S (Sum.inr 1))) := by
+  ext v
+  simp only [liveBox,tuplePool,Fintype.mem_piFinset]
+  constructor <;> intro h i
+  all_goals
+    cases i with
+    | inl i => exact h (Sum.inl i)
+    | inr j =>
+      fin_cases j
+      · exact h (Sum.inr 0)
+      · exact h (Sum.inr 1)
+
+theorem live_source_polynomial_eq_full_rectangle
+    (η : Character) (m A z : O) (t : ℝ)
+    (S : (ι⊕Fin 2)→Finset (Ideal O)) (B : Tuple ι) (hB : ∀ i,B i≠0)
+    (C R : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (h₁ : PlainCoverage (S (Sum.inr 0)) W₁ B₁ X₁ Y₁)
+    (h₂ : PlainCoverage (S (Sum.inr 1)) W₂ B₂ X₂ Y₂) :
+    (∑ I∈finiteColumns (liveBox S B hB),finiteColumnCoefficient (liveBox S B hB)
+      (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂) I * rowWeight η m A z t I)=
+      fullMaskedRectangle η m A z t
+        (fun i : liveIndices B=> residualPool (B (Sum.inl i.val)) (hB _) (S (Sum.inl i.val)))
+        (fun i=>ν i.val) (fun i I=> Wslot i.val ((Ideal.absNorm I:ℝ)/P i.val))
+        (R*C) 1 W₁ W₂ X₁ X₂ Y₁ Y₂ (B₁*B (Sum.inr 0)) (B₂*B (Sum.inr 1)) := by
+  rw [liveBox_eq_tuplePool]
+  exact source_polynomial_eq_full_masked_rectangle η m A z t _ _ _ (R*C) 1
+    (fun i : liveIndices B=>ν i.val) (fun i=> Wslot i.val) (fun i=> P i.val)
+    W₁ W₂ X₁ X₂ Y₁ Y₂ _ _
+    (plainCoverage_residualPool _ W₁ B₁ _ (hB _) X₁ Y₁ h₁)
+    (plainCoverage_residualPool _ W₂ B₂ _ (hB _) X₂ Y₂ h₂)
+
+end CenteredMomentSourceRectangle
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentSourceRectangleMask
+open HeckeFamily CanonicalRowCompletion CanonicalQuadraticSieve 
+open CenteredMomentSourceRow CenteredMomentHeckeExpansion CenteredMomentSourceRectangle
+open CenteredMomentDivisorRowEnergy CenteredMomentRectangle CenteredMomentExtraction
+local notation "O" => Eisenstein.O
+
+theorem rowWeight_ideal_mask (η : Character) (m A z : O) (t : ℝ)
+    (hmLam : lambda∣m) (hm2 : (2:O)∣m) (R I : Ideal O) :
+    (if IsCoprime I R then (1:ℂ) else 0)*rowWeight η m A z t I=
+      rowWeight η (m*cubicIdealGenerator R) A z t I := by
+  by_cases hI : Supported I
+  · have hm : (m*cubicIdealGenerator R)^6*(A*z)=(cubicIdealGenerator R)^6*(m^6*(A*z)) := by ring
+    change (if IsCoprime I R then (1:ℂ) else 0)*
+      ((idealCoeff η I*idealRowHom (m^6*(A*z)) I)*(Ideal.absNorm I:ℂ)^(Complex.I*t))=
+      (idealCoeff η I*idealRowHom ((m*cubicIdealGenerator R)^6*(A*z)) I)*(Ideal.absNorm I:ℂ)^(Complex.I*t)
+    rw [hm,idealRowHom_argument_mul ((cubicIdealGenerator R)^6) (m^6*(A*z)) I,
+      idealRowHom_sixth_mask (cubicIdealGenerator R) I ((supported_iff_native _).mp hI),span_cubicIdealGenerator]
+    ring
+  · rw [rowWeight_zero_of_not_supported η m A z t hmLam hm2 I hI,
+      rowWeight_zero_of_not_supported η (m*cubicIdealGenerator R) A z t
+        (hmLam.trans (dvd_mul_right _ _)) (hm2.trans (dvd_mul_right _ _)) I hI,mul_zero]
+
+theorem ideal_mask_nonzero (m : O) (hm : m≠0) (R : Ideal O) (hR : R≠0) :
+    m*cubicIdealGenerator R≠0 := mul_ne_zero hm (cubicIdealGenerator_ne_zero R hR)
+
+theorem fullMaskedRectangle_eq_maskedRectangle {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (η : Character) (m A z : O) (t : ℝ)
+    (hmLam : lambda∣m) (hm2 : (2:O)∣m)
+    (slots : ι→Finset (Ideal O)) (ν Wslot : ι→Ideal O→ℂ)
+    (R L : Ideal O) (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) :
+    fullMaskedRectangle η m A z t slots ν Wslot R L W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂=
+      maskedRectangle η (m*cubicIdealGenerator R) A z t slots
+        (fun i I=>ν i I*Wslot i I) L W₁ W₂
+        (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)
+        (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂) := by
+  unfold fullMaskedRectangle maskedRectangle
+  apply Finset.sum_congr (by ext;simp)
+  intro v hv
+  congr 1
+  apply tsum_congr
+  intro I
+  apply tsum_congr
+  intro J
+  rw [idealRectangle_extract]
+  rw [mul_right_comm (if IsCoprime _ R then (1:ℂ) else 0) _,rowWeight_ideal_mask η m A z t hmLam hm2]
+  ring
+
+theorem source_polynomial_eq_maskedRectangle {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (η : Character) (m A z : O) (t : ℝ)
+    (hmLam : lambda∣m) (hm2 : (2:O)∣m)
+    (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (h₁ : PlainCoverage S₁ W₁ B₁ X₁ Y₁) (h₂ : PlainCoverage S₂ W₂ B₂ X₂ Y₂) :
+    (∑ I∈CenteredMomentSourceMass.finiteColumns (tuplePool slots S₁ S₂),
+      CenteredMomentSourceMass.finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (CenteredMomentSourceProfileMass.profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L) I * rowWeight η m A z t I)=
+      maskedRectangle η (m*cubicIdealGenerator R) A z t slots
+        (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) L W₁ W₂
+        (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)
+        (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂) :=
+  (source_polynomial_eq_full_masked_rectangle η m A z t slots S₁ S₂ R L ν Wslot P
+    W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ h₁ h₂).trans
+    (fullMaskedRectangle_eq_maskedRectangle η m A z t hmLam hm2 slots ν _ R L W₁ W₂
+      X₁ X₂ Y₁ Y₂ B₁ B₂)
+
+end CenteredMomentSourceRectangleMask
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+open MeasureTheory
+
+namespace CenteredMomentPlainWindowEnergy
+open CanonicalQuadraticSieve CenteredMomentRowNorm CenteredMomentPlainEnergy
+open CenteredMomentHeckeColumnWindow CenteredMomentHeckeWindowEnergy
+open HeckeFamily JointLogSeparation CenteredMomentSmooth
+local notation "O" => Eisenstein.O
+
+theorem plain_column_integral {α : Type*} (S : Finset α) (a : α → O)
+    (ha : ∀ i,CanonicalQuadraticSieve.Supported (Ideal.span {a i}))
+    (β : α → ℂ) (τ : Character) (t θ X : ℝ) (hX : 0< X)
+    (V : ℝ → ℂ) (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V) (z : O) :
+    rowPolynomial S a (fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+      columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ) z=
+      ∫ w : ℝ,columnDensity V hVc hVs w*kernelLogPhase (θ-w) (Real.log X)*
+        rowPolynomial S a (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) z := by
+  have hi (i : α) : Integrable (fun w : ℝ => β i*
+      (columnDensity V hVc hVs w*kernelLogPhase (θ-w) (Real.log X)*
+        heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i}))*CanonicalRowCompletion.idealRowHom z (Ideal.span {a i})) :=
+    ((height_column_integrable V hVc hVs τ _ (ha i).1 t θ X hX).const_mul _).mul_const _
+  unfold rowPolynomial
+  calc
+    _ = ∑ i∈S,∫ w : ℝ,β i*
+      (columnDensity V hVc hVs w*kernelLogPhase (θ-w) (Real.log X)*
+        heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i}))*CanonicalRowCompletion.idealRowHom z (Ideal.span {a i}) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [integral_mul_const,integral_const_mul,← height_column_integral V hVc hVs τ _ (ha i).1 t θ X hX]
+      ring
+    _ = _ := by
+      rw [← integral_finsetSum _ (fun i _ => hi i)]
+      apply integral_congr_ae
+      filter_upwards [] with w
+      simp only [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i hi
+      ring
+
+theorem plain_column_integrable {α : Type*} (S : Finset α) (a : α → O)
+    (ha : ∀ i,Supported (Ideal.span {a i}))
+    (β : α → ℂ) (τ : Character) (t θ X : ℝ) (hX : 0< X)
+    (V : ℝ → ℂ) (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V) (z : O) :
+    Integrable (fun w : ℝ => columnDensity V hVc hVs w*kernelLogPhase (θ-w) (Real.log X)*
+      rowPolynomial S a (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) z) := by
+  have hi (i : α) := ((height_column_integrable V hVc hVs τ _ (ha i).1 t θ X hX).const_mul (β i)).mul_const
+    (CanonicalRowCompletion.idealRowHom z (Ideal.span {a i}))
+  convert integrable_finsetSum S (fun i _ => hi i) using 1
+  all_goals try rfl
+  funext w
+  simp only [rowPolynomial,Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  ring
+
+theorem rowEnergy_hasSum_re {α : Type*} (S : Finset α) (a : α → O)
+    (ha : ∀ i,Supported (Ideal.span {a i})) (c : α → ℂ)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K) :
+    HasSum (fun z : O => ‖rowPolynomial S a c z‖^2*
+      (U (‖ringComplex z‖^2/K)).re) (CenteredMomentRowNorm.rowEnergy S a c U K).re := by
+  have hs := Complex.hasSum_re (rowEnergy_summable S a ha c U K hK).hasSum
+  simpa only [CenteredMomentRowNorm.rowEnergy,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,zero_mul,sub_zero] using hs
+
+theorem finite_weighted_le_rowEnergy {α : Type*} (S : Finset α) (a : α → O)
+    (ha : ∀ i,Supported (Ideal.span {a i})) (c : α → ℂ)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hU : ∀ z : O,0≤(U (‖ringComplex z‖^2/K)).re) (rows : Finset O) :
+    (∑ z∈rows,‖rowPolynomial S a c z‖^2*(U (‖ringComplex z‖^2/K)).re)≤
+      (CenteredMomentRowNorm.rowEnergy S a c U K).re :=
+  sum_le_hasSum rows (fun z _ => mul_nonneg (sq_nonneg _) (hU z)) (rowEnergy_hasSum_re S a ha c U K hK)
+
+theorem plain_window_energy_from_shifted {α : Type*}
+    (V : ℝ → ℂ) (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V)
+    (J : ℕ) (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i}))
+    (β : α → ℂ) (τ : Character) (t θ X : ℝ) (hX : 0< X)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hU : ∀ z : O,0≤(U (‖ringComplex z‖^2/K)).re)
+    (E : ℝ) (hE : 0≤ E)
+    (henergy : ∀ w : ℝ,(CenteredMomentRowNorm.rowEnergy S a
+      (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) U K).re≤ E*(1+‖w‖)^(2*J)) :
+    (CenteredMomentRowNorm.rowEnergy S a (fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+      CenteredMomentSmooth.columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ) U K).re≤
+      E*(∫ w : ℝ,(1+‖w‖)^J*‖columnDensity V hVc hVs w‖)^2 := by
+  let u := fun z : O => (U (‖ringComplex z‖^2/K)).re
+  let c := fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+    CenteredMomentSmooth.columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ
+  have hnorm (z : O) (x : ℂ) : ‖(Real.sqrt (u z):ℂ)*x‖^2=u z*‖x‖^2 := by
+    rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _),mul_pow,
+      Real.sq_sqrt (hU z)]
+  have hfin (rows : Finset O) : (∑ z∈rows,‖rowPolynomial S a c z‖^2*u z)≤
+      E*(∫ w : ℝ,(1+‖w‖)^J*‖columnDensity V hVc hVs w‖)^2 := by
+    let φ := fun z : rows => fun w : ℝ => (Real.sqrt (u z):ℂ)*
+      (kernelLogPhase (θ-w) (Real.log X)*rowPolynomial S a
+        (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) z)
+    have hi (z : rows) : Integrable (fun w => columnDensity V hVc hVs w*φ z w) := by
+      have h := (plain_column_integrable S a ha β τ t θ X hX V hVc hVs z).const_mul (Real.sqrt (u z):ℂ)
+      convert h using 1
+      funext w
+      dsimp only [φ]
+      ring
+    have hb (w : ℝ) : (∑ z : rows,‖φ z w‖^2)≤ E*((1+‖w‖)^J)^2 := by
+      simp only [φ]
+      simp_rw [hnorm]
+      simp only [norm_mul,kernelLogPhase_norm,one_mul,← pow_mul]
+      rw [Finset.sum_coe_sort rows (fun z : O => u z*‖rowPolynomial S a
+        (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) z‖^2)]
+      simpa only [mul_comm,Nat.mul_comm] using
+        (finite_weighted_le_rowEnergy S a ha _ U K hK hU rows).trans (henergy w)
+    have hh := finite_weighted_integral_energy (columnDensity V hVc hVs) φ
+      (fun w => (1+‖w‖)^J) (by intro w;positivity) E hE (columnDensity_moments V hVc hVs J) hi hb
+    have he (z : rows) : (∫ w : ℝ,columnDensity V hVc hVs w*φ z w)=
+        (Real.sqrt (u z):ℂ)*rowPolynomial S a c z := by
+      rw [show rowPolynomial S a c z=_ from plain_column_integral S a ha β τ t θ X hX V hVc hVs z,
+        ← integral_const_mul]
+      apply integral_congr_ae
+      filter_upwards [] with w
+      dsimp only [φ]
+      ring
+    simp only [he,hnorm] at hh
+    rw [Finset.sum_coe_sort rows (fun z : O => u z*‖rowPolynomial S a c z‖^2)] at hh
+    simpa only [mul_comm] using hh
+  have hs := rowEnergy_hasSum_re S a ha c U K hK
+  rw [← hs.tsum_eq]
+  exact Real.tsum_le_of_sum_le (fun z => mul_nonneg (sq_nonneg _) (hU z)) hfin
+
+theorem plain_window_energy_from_height {α : Type*}
+    (V : ℝ → ℂ) (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V)
+    (J : ℕ) (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i}))
+    (β : α → ℂ) (τ : Character) (t θ X : ℝ) (hX : 0< X)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hU : ∀ z : O,0≤(U (‖ringComplex z‖^2/K)).re)
+    (E : ℝ) (hE : 0≤ E)
+    (henergy : ∀ v : ℝ,(CenteredMomentRowNorm.rowEnergy S a
+      (fun i => β i*heightCoeff τ v (Ideal.span {a i})) U K).re≤ E*(1+‖v‖)^(2*J)) :
+    (CenteredMomentRowNorm.rowEnergy S a (fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+      CenteredMomentSmooth.columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ) U K).re≤
+      (E*heightCost t θ^(2*J))*(∫ w : ℝ,(1+‖w‖)^J*‖columnDensity V hVc hVs w‖)^2 := by
+  apply plain_window_energy_from_shifted V hVc hVs J S a ha β τ t θ X hX U K hK hU
+    (E*heightCost t θ^(2*J)) (mul_nonneg hE (pow_nonneg (heightCost_pos t θ).le _))
+  intro w
+  calc
+    _ ≤ E*(1+‖t+2*Real.pi*(w-θ)‖)^(2*J) := henergy _
+    _ ≤ E*(heightCost t θ*(1+‖w‖))^(2*J) :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) (norm_height_shift t θ w) _) hE
+    _ = _ := by rw [mul_pow,mul_assoc]
+
+end CenteredMomentPlainWindowEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+open MeasureTheory
+
+namespace CenteredMomentRestrictedWindow
+open CanonicalQuadraticSieve CenteredMomentRowNorm CenteredMomentRestrictedEnergy
+open CenteredMomentPlainWindowEnergy CenteredMomentHeckeColumnWindow CenteredMomentHeckeWindowEnergy
+open HeckeFamily JointLogSeparation CenteredMomentSmooth
+local notation "O" => Eisenstein.O
+
+theorem restricted_hasSum_weighted {α : Type*} (keep : O → Prop)
+    (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i})) (c : α → ℂ)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K) :
+    HasSum (fun z : O => ‖rowPolynomial S a c z‖^2*
+      (if keep z then (U (‖ringComplex z‖^2/K)).re else 0))
+      (restrictedEnergy keep S a c U K) := by
+  simpa only [mul_ite,mul_zero,restrictedEnergy] using
+    (restricted_summable keep S a ha c U K hK).hasSum
+
+theorem finite_weighted_le_restricted {α : Type*} (keep : O → Prop)
+    (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i})) (c : α → ℂ)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hU : ∀ z : O,0≤(U (‖ringComplex z‖^2/K)).re) (rows : Finset O) :
+    (∑ z∈rows,‖rowPolynomial S a c z‖^2*
+      (if keep z then (U (‖ringComplex z‖^2/K)).re else 0))≤
+      restrictedEnergy keep S a c U K := by
+  apply sum_le_hasSum rows _ (restricted_hasSum_weighted keep S a ha c U K hK)
+  intro z hz
+  apply mul_nonneg (sq_nonneg _)
+  split_ifs
+  · exact hU z
+  · exact le_rfl
+
+theorem restricted_window_energy_from_shifted {α : Type*} (keep : O → Prop)
+    (V : ℝ → ℂ) (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V)
+    (J : ℕ) (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i}))
+    (β : α → ℂ) (τ : Character) (t θ X : ℝ) (hX : 0< X)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hU : ∀ z : O,0≤(U (‖ringComplex z‖^2/K)).re)
+    (E : ℝ) (hE : 0≤ E)
+    (henergy : ∀ w : ℝ,(restrictedEnergy keep S a
+      (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) U K)≤ E*(1+‖w‖)^(2*J)) :
+    (restrictedEnergy keep S a (fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+      CenteredMomentSmooth.columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ) U K)≤
+      E*(∫ w : ℝ,(1+‖w‖)^J*‖columnDensity V hVc hVs w‖)^2 := by
+  let u := fun z : O => if keep z then (U (‖ringComplex z‖^2/K)).re else 0
+  have hu (z : O) : 0≤ u z := by dsimp only [u];split_ifs;exact hU z;exact le_rfl
+  let c := fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+    CenteredMomentSmooth.columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ
+  have hnorm (z : O) (x : ℂ) : ‖(Real.sqrt (u z):ℂ)*x‖^2=u z*‖x‖^2 := by
+    rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _),mul_pow,
+      Real.sq_sqrt (hu z)]
+  have hfin (rows : Finset O) : (∑ z∈rows,‖rowPolynomial S a c z‖^2*u z)≤
+      E*(∫ w : ℝ,(1+‖w‖)^J*‖columnDensity V hVc hVs w‖)^2 := by
+    let φ := fun z : rows => fun w : ℝ => (Real.sqrt (u z):ℂ)*
+      (kernelLogPhase (θ-w) (Real.log X)*rowPolynomial S a
+        (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) z)
+    have hi (z : rows) : Integrable (fun w => columnDensity V hVc hVs w*φ z w) := by
+      have h := (plain_column_integrable S a ha β τ t θ X hX V hVc hVs z).const_mul (Real.sqrt (u z):ℂ)
+      convert h using 1
+      funext w
+      dsimp only [φ]
+      ring
+    have hb (w : ℝ) : (∑ z : rows,‖φ z w‖^2)≤ E*((1+‖w‖)^J)^2 := by
+      simp only [φ]
+      simp_rw [hnorm]
+      simp only [norm_mul,kernelLogPhase_norm,one_mul,← pow_mul]
+      rw [Finset.sum_coe_sort rows (fun z : O => u z*‖rowPolynomial S a
+        (fun i => β i*heightCoeff τ (t+2*Real.pi*(w-θ)) (Ideal.span {a i})) z‖^2)]
+      have hbound :=
+        (finite_weighted_le_restricted keep S a ha _ U K hK hU rows).trans (henergy w)
+      rw [Nat.mul_comm 2 J] at hbound
+      calc
+        _ = ∑ z ∈ rows, ‖rowPolynomial S a
+            (fun i => β i * heightCoeff τ (t + 2 * Real.pi * (w - θ))
+              (Ideal.span {a i})) z‖ ^ 2 * u z := by
+          apply Finset.sum_congr rfl
+          intro z hz
+          exact mul_comm _ _
+        _ ≤ _ := hbound
+    have hh := finite_weighted_integral_energy (columnDensity V hVc hVs) φ
+      (fun w => (1+‖w‖)^J) (by intro w;positivity) E hE (columnDensity_moments V hVc hVs J) hi hb
+    have he (z : rows) : (∫ w : ℝ,columnDensity V hVc hVs w*φ z w)=
+        (Real.sqrt (u z):ℂ)*rowPolynomial S a c z := by
+      rw [show rowPolynomial S a c z=_ from plain_column_integral S a ha β τ t θ X hX V hVc hVs z,
+        ← integral_const_mul]
+      apply integral_congr_ae
+      filter_upwards [] with w
+      dsimp only [φ]
+      ring
+    simp only [he,hnorm] at hh
+    rw [Finset.sum_coe_sort rows (fun z : O => u z*‖rowPolynomial S a c z‖^2)] at hh
+    calc
+      _ = ∑ z ∈ rows, u z * ‖rowPolynomial S a c z‖ ^ 2 := by
+        apply Finset.sum_congr rfl
+        intro z hz
+        exact mul_comm _ _
+      _ ≤ _ := hh
+  have hs := restricted_hasSum_weighted keep S a ha c U K hK
+  rw [← hs.tsum_eq]
+  exact Real.tsum_le_of_sum_le (fun z => mul_nonneg (sq_nonneg _) (hu z)) hfin
+
+theorem restricted_window_energy_from_height {α : Type*} (keep : O → Prop)
+    (V : ℝ → ℂ) (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V)
+    (J : ℕ) (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i}))
+    (β : α → ℂ) (τ : Character) (t θ X : ℝ) (hX : 0< X)
+    (U : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hU : ∀ z : O,0≤(U (‖ringComplex z‖^2/K)).re)
+    (E : ℝ) (hE : 0≤ E)
+    (henergy : ∀ v : ℝ,(restrictedEnergy keep S a
+      (fun i => β i*heightCoeff τ v (Ideal.span {a i})) U K)≤ E*(1+‖v‖)^(2*J)) :
+    (restrictedEnergy keep S a (fun i => β i*heightCoeff τ t (Ideal.span {a i})*
+      CenteredMomentSmooth.columnPhase V (Real.log ((Ideal.absNorm (Ideal.span {a i}):ℝ)/X)) θ) U K)≤
+      (E*heightCost t θ^(2*J))*(∫ w : ℝ,(1+‖w‖)^J*‖columnDensity V hVc hVs w‖)^2 := by
+  apply restricted_window_energy_from_shifted keep V hVc hVs J S a ha β τ t θ X hX U K hK hU
+    (E*heightCost t θ^(2*J)) (mul_nonneg hE (pow_nonneg (heightCost_pos t θ).le _))
+  intro w
+  calc
+    _ ≤ E*(1+‖t+2*Real.pi*(w-θ)‖)^(2*J) := henergy _
+    _ ≤ E*(heightCost t θ*(1+‖w‖))^(2*J) :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) (norm_height_shift t θ w) _) hE
+    _ = _ := by rw [mul_pow,mul_assoc]
+
+end CenteredMomentRestrictedWindow
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentRestrictedDomain
+open CenteredMomentSourceLiveColumn CenteredMomentLiveSupport CenteredMomentSourceMass
+open CenteredMomentAddedZeroUniform CenteredMomentCommonProfile CenteredMomentCommonAllocationSum
+open CenteredMomentFirstSectors CenteredMomentSourceRow CanonicalQuadraticSieve
+open CenteredMomentRowNorm CenteredMomentRestrictedEnergy CenteredMomentLiveDomain
+local notation "O" => Eisenstein.O
+
+theorem source_rowPolynomial (S : Finset (Ideal O)) (c : Ideal O → ℂ) (z : O) :
+    rowPolynomial Finset.univ (sourceGenerator S)
+      (fun I : supportedColumns S => c I) z=
+      ∑ I∈supportedColumns S,c I*CanonicalRowCompletion.idealRowHom z I := by
+  unfold rowPolynomial
+  rw [← Finset.sum_coe_sort (supportedColumns S) (fun I => c I*CanonicalRowCompletion.idealRowHom z I)]
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [sourceGenerator,primary_span_supported I (Finset.mem_filter.mp I.property).2]
+
+variable {ι : Type*} [Fintype ι]
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem live_rowPolynomial (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (B : Tuple ι) (hB : ∀ i,B i≠0) (C R : Ideal O) (hC : Supported C)
+    (hlabel : B∈allocationLabels S C) (hprod : finiteTupleProduct B=C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) (f : Ideal O → ℂ) (z : O) :
+    let c := finiteColumnCoefficient (liveBox S B hB)
+      (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)
+    let Q := residualPool C hC.1 (finiteColumns (Fintype.piFinset S))
+    let T := finiteColumns (liveBox S B hB)
+    rowPolynomial Finset.univ (sourceGenerator Q)
+      (fun I : supportedColumns Q => c I*f I) z=
+      rowPolynomial Finset.univ (sourceGenerator T)
+        (fun I : supportedColumns T => c I*f I) z := by
+  let c := finiteColumnCoefficient (liveBox S B hB)
+    (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)
+  let Q := residualPool C hC.1 (finiteColumns (Fintype.piFinset S))
+  let T := finiteColumns (liveBox S B hB)
+  change rowPolynomial Finset.univ (sourceGenerator Q)
+    (fun I : supportedColumns Q => c I*f I) z=_
+  refine (source_rowPolynomial Q (fun I => c I*f I) z).trans ?_
+  refine Eq.trans ?_ (source_rowPolynomial T (fun I => c I*f I) z).symm
+  simpa only [mul_assoc] using live_column_sum S hS hp B hB C R hC hlabel hprod ν Wslot P W₁ W₂
+    X₁ X₂ Y₁ Y₂ B₁ B₂ (fun I => f I*CanonicalRowCompletion.idealRowHom z I)
+
+theorem live_restrictedEnergy (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (B : Tuple ι) (hB : ∀ i,B i≠0) (C R : Ideal O) (hC : Supported C)
+    (hlabel : B∈allocationLabels S C) (hprod : finiteTupleProduct B=C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) (f : Ideal O → ℂ) (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    let c := finiteColumnCoefficient (liveBox S B hB)
+      (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)
+    let Q := residualPool C hC.1 (finiteColumns (Fintype.piFinset S))
+    let T := finiteColumns (liveBox S B hB)
+    restrictedEnergy keep Finset.univ (sourceGenerator Q)
+      (fun I : supportedColumns Q => c I*f I) W K=
+      restrictedEnergy keep Finset.univ (sourceGenerator T)
+        (fun I : supportedColumns T => c I*f I) W K := by
+  dsimp only
+  unfold restrictedEnergy
+  apply tsum_congr
+  intro z
+  exact congrArg (fun x : ℂ => if keep z then ‖x‖^2*(W (‖ringComplex z‖^2/K)).re else 0)
+    (live_rowPolynomial S hS hp B hB C R hC hlabel hprod ν Wslot P W₁ W₂
+      X₁ X₂ Y₁ Y₂ B₁ B₂ f z)
+
+end CenteredMomentRestrictedDomain
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentRestrictedSource
+open CanonicalQuadraticSieve CenteredMomentSourceRow CenteredMomentRowNorm
+open CenteredMomentRestrictedEnergy CenteredMomentRestrictedWindow CenteredMomentRestrictedDomain
+open CenteredMomentSourceLiveColumn CenteredMomentSourceProfileMass CenteredMomentSourceMass
+open CenteredMomentAddedZeroUniform CenteredMomentCommonAllocationSum CenteredMomentFirstSectors
+open CenteredMomentOriginalChildEnergy
+local notation "O" => Eisenstein.O
+
+theorem rowPolynomial_allocation {α γ : Type*} [Fintype γ]
+    (S : Finset α) (a : α → O) (b : γ → ℂ) (d : γ → α → ℂ) (z : O) :
+    rowPolynomial S a (fun i => ∑ B,b B*d B i) z=
+      ∑ B,b B*rowPolynomial S a (d B) z := by
+  simp only [rowPolynomial,Finset.sum_mul,Finset.mul_sum,mul_assoc]
+  exact Finset.sum_comm
+
+def sourceRestrictedEnergy (keep : O → Prop) (Q : Finset (Ideal O)) (c f : Ideal O → ℂ)
+    (W : 𝓢(ℝ,ℂ)) (K : ℝ) : ℝ :=
+  restrictedEnergy keep Finset.univ (sourceGenerator Q)
+    (fun I : supportedColumns Q => c I*f I) W K
+
+theorem smoothed_restricted_allocation {α γ : Type*} [Fintype γ] (keep : O → Prop)
+    (S : Finset α) (a : α → O) (ha : ∀ i,Supported (Ideal.span {a i}))
+    (b : γ → ℂ) (d : γ → α → ℂ)
+    (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    (restrictedEnergy keep S a (fun i => ∑ B,b B*d B i) W K)≤
+      (Fintype.card γ:ℝ)*∑ B,‖b B‖^2*(restrictedEnergy keep S a (d B) W K) := by
+  let u := fun z : O => if keep z then (W (‖ringComplex z‖^2/K)).re else 0
+  have hu (z : O) : 0≤ u z := by dsimp only [u];split_ifs;exact hW z;exact le_rfl
+  have hs := restricted_hasSum_weighted keep S a ha (fun i => ∑ B,b B*d B i) W K hK
+  rw [← hs.tsum_eq]
+  apply Real.tsum_le_of_sum_le (fun z => mul_nonneg (sq_nonneg _) (hu z))
+  intro rows
+  calc
+    _ ≤ ∑ z∈rows,(Fintype.card γ:ℝ)*∑ B,‖b B‖^2*
+        (‖rowPolynomial S a (d B) z‖^2*u z) := by
+      apply Finset.sum_le_sum
+      intro z hz
+      have h := mul_le_mul_of_nonneg_right
+        (cover_norm_sum_sq_le_card Finset.univ
+          (fun B => b B*rowPolynomial S a (d B) z)) (hu z)
+      rw [rowPolynomial_allocation]
+      simpa only [Finset.card_univ,norm_mul,mul_pow,Finset.sum_mul,mul_assoc] using h
+    _ = (Fintype.card γ:ℝ)*∑ B,‖b B‖^2*
+        ∑ z∈rows,‖rowPolynomial S a (d B) z‖^2*u z := by
+      rw [← Finset.mul_sum,Finset.sum_comm]
+      simp only [Finset.mul_sum]
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+      apply Finset.sum_le_sum
+      intro B hB
+      exact mul_le_mul_of_nonneg_left
+        (finite_weighted_le_restricted keep S a ha (d B) W K hK hW rows) (sq_nonneg _)
+
+variable {ι : Type*} [Fintype ι]
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem original_restricted_child_energy (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (C R s : Ideal O) (hC : Supported C) (hsC : s∣C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (f : Ideal O → ℂ) (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    (sourceRestrictedEnergy keep (residualPool C hC.1 (finiteColumns (Fintype.piFinset S)))
+      (fun I => if IsCoprime C I then finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (C*I) else 0) f W K)≤
+      ((actualAllocations S C).card:ℝ)*∑ B : actualAllocations S C,
+        ‖frozenCoefficient B C R ν Wslot P‖^2*
+          (sourceRestrictedEnergy keep
+            (finiteColumns (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1))
+            (finiteColumnCoefficient
+              (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+              (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)) f W K) := by
+  let Q := residualPool C hC.1 (finiteColumns (Fintype.piFinset S))
+  let b := fun B : actualAllocations S C => frozenCoefficient B C R ν Wslot P
+  let d := fun (B : actualAllocations S C) (I : supportedColumns Q) =>
+    finiteColumnCoefficient (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+      (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂) I*f I
+  have he (I : supportedColumns Q) :
+      (if IsCoprime C (I:Ideal O) then finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (C*I) else 0)*f I=
+      ∑ B,b B*d B I := by
+    rw [original_source_punctured_column S hS hp C R s I hC.1
+      (Finset.mem_filter.mp I.property).2.1 hsC ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂,Finset.sum_mul]
+    simp only [b,d,mul_assoc]
+  have h := smoothed_restricted_allocation keep Finset.univ (sourceGenerator Q) (sourceGenerator_supported Q) b d W K hK hW
+  have he' := funext he
+  change (restrictedEnergy keep Finset.univ (sourceGenerator Q) _ W K)≤ _
+  rw [he']
+  apply h.trans_eq
+  rw [Fintype.card_coe]
+  apply congrArg (fun x : ℝ => ((actualAllocations S C).card:ℝ)*x)
+  apply Finset.sum_congr rfl
+  intro B hB
+  simpa only [b,d,sourceRestrictedEnergy] using
+    congrArg (fun x : ℝ => ‖frozenCoefficient B C R ν Wslot P‖^2*x)
+    (live_restrictedEnergy S hS hp B
+    (allocation_data S C B (Finset.mem_filter.mp B.property).1).1 C R hC
+    (Finset.mem_filter.mp B.property).1 (Finset.mem_filter.mp B.property).2
+    ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ f keep W K)
+
+end CenteredMomentRestrictedSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSourceRectangleEnergy
+open HeckeFamily CanonicalRowCompletion CanonicalQuadraticSieve 
+open CenteredMomentSourceRow CenteredMomentHeckeExpansion CenteredMomentSecondHeightFamily
+open CenteredMomentRestrictedDomain CenteredMomentRestrictedSource CenteredMomentRestrictedEnergy
+open CenteredMomentRowNorm CenteredMomentHeckeColumnWindow CenteredMomentSourceRectangle
+open CenteredMomentSourceRectangleMask CenteredMomentSourceMass CenteredMomentSourceProfileMass
+open CenteredMomentDivisorRowEnergy CenteredMomentDivisorRetained
+local notation "O" => Eisenstein.O
+
+theorem height_source_row (η : Character) (t : ℝ) (S : Finset (Ideal O))
+    (β : Ideal O→ℂ) (z : O) :
+    rowPolynomial Finset.univ (sourceGenerator S)
+      (fun I : supportedColumns S=>β I*heightCoeff η t I) z=
+      ∑ I∈S,β I*rowWeight η fixedBadMask 1 z t I := by
+  rw [source_rowPolynomial S (fun I=>β I*heightCoeff η t I) z]
+  calc
+    _ = ∑ I∈supportedColumns S,β I*rowWeight η fixedBadMask 1 z t I := by
+      apply Finset.sum_congr rfl
+      intro I hI
+      rw [heightCoeff_eq_fixed_rowWeight η t I (Finset.mem_filter.mp hI).2,
+        rowWeight_split η fixedBadMask 1 z t I]
+      ring
+    _ = _ := Finset.sum_filter_of_ne (fun I hI hn => by
+      by_contra hs
+      apply hn
+      rw [rowWeight_zero_of_not_supported η fixedBadMask 1 z t
+        (dvd_mul_right _ _) (dvd_mul_left _ _) I hs,mul_zero])
+
+theorem source_restricted_energy_eq_rectangle {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (η : Character) (t : ℝ) (keep : O→Prop)
+    (slots : ι→Finset (Ideal O)) (S₁ S₂ : Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (h₁ : PlainCoverage S₁ W₁ B₁ X₁ Y₁) (h₂ : PlainCoverage S₂ W₂ B₂ X₂ Y₂)
+    (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    sourceRestrictedEnergy keep (finiteColumns (tuplePool slots S₁ S₂))
+      (finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L))
+      (heightCoeff η t) W K=
+      ∑' z : O,if keep z then
+        ‖maskedRectangle η (fixedBadMask*cubicIdealGenerator R) 1 z t slots
+          (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) L W₁ W₂
+          (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)
+          (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2*
+        (W (‖ringComplex z‖^2/K)).re else 0 := by
+  unfold sourceRestrictedEnergy restrictedEnergy
+  apply tsum_congr
+  intro z
+  rw [height_source_row]
+  rw [CenteredMomentSourceRectangleMask.source_polynomial_eq_maskedRectangle
+    η fixedBadMask 1 z t (dvd_mul_right _ _) (dvd_mul_left _ _)
+    slots S₁ S₂ R L ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ h₁ h₂]
+
+end CenteredMomentSourceRectangleEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentRadialSourceDictionary
+open CenteredMomentEligibleEnergy CenteredMomentRadialEligibleEnergy
+open CenteredMomentSourceRectangle CenteredMomentSourceRectangleEnergy
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentRestrictedSource
+open CenteredMomentSecondHeightFamily CenteredMomentHeckeColumnWindow
+
+local notation "O" => Eisenstein.O
+
+ theorem actual_source_energy {ι:Type*} [Fintype ι] [DecidableEq ι]
+    (s:Data ι) (r:Radial) (S₁ S₂:Finset (Ideal O)) (R L B₁ B₂:Ideal O)
+    (X₁ X₂ Y₁ Y₂:ℝ)
+    (hm:s.m=fixedBadMask*cubicIdealGenerator R) (hA:s.A=1)
+    (hX₁:s.X₁=X₁/Ideal.absNorm B₁) (hX₂:s.X₂=X₂/Ideal.absNorm B₂)
+    (hY₁:s.Y₁=Y₁/Ideal.absNorm B₁) (hY₂:s.Y₂=Y₂/Ideal.absNorm B₂)
+    (hcov₁:PlainCoverage S₁ s.W₁ B₁ X₁ Y₁) (hcov₂:PlainCoverage S₂ s.W₂ B₂ X₂ Y₂) :
+    sourceRestrictedEnergy r.keep (finiteColumns (tuplePool s.slots S₁ S₂))
+      (finiteColumnCoefficient (tuplePool s.slots S₁ S₂)
+        (profileCoefficient R s.ν s.W s.P s.W₁ s.W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L))
+      (heightCoeff s.η s.t) r.profile r.scale/(s.X₁*s.X₂*∏i,s.P i)=energy s r L := by
+  rw [source_restricted_energy_eq_rectangle s.η s.t r.keep s.slots S₁ S₂ R L
+    s.ν s.W s.P s.W₁ s.W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ hcov₁ hcov₂ r.profile r.scale]
+  unfold energy
+  rw [←tsum_div_const]
+  apply tsum_congr
+  intro z
+  have ht:0< s.X₁*s.X₂*∏i,s.P i:=mul_pos (mul_pos s.X₁_pos s.X₂_pos)
+    (Finset.prod_pos (fun i _=> s.P_pos i))
+  rw [CenteredMomentDivisorRawEnergy.normalized_norm_sq _ ht]
+  have hc:s.coefficient=(fun i I=> s.ν i I*s.W i ((Ideal.absNorm I:ℝ)/s.P i)):=rfl
+  rw [hc]
+  dsimp only [Radial.weight]
+  rw [hm,hA,hX₁,hX₂,hY₁,hY₂]
+  split_ifs <;> ring
+
+end CenteredMomentRadialSourceDictionary
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentActiveSourceRetained
+open CenteredMomentActiveAllocation HeckeFamily  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceRectangle CenteredMomentSourceRectangleEnergy
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentSourceRow
+open CenteredMomentHeckeColumnWindow CenteredMomentRowNorm CenteredMomentDivisorRetained
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRaw
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem source_plain_to_active_retained (N : ℕ) (hslots : Fintype.card ι≤ N)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (η : Character) (t : ℝ)
+      (slots : ι→Finset (Ideal O)),(∀ i,∀ I∈slots i,Prime I) →
+      ∀ (S₁ S₂ : Finset (Ideal O)) (R L : Ideal O),Squarefree L →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i,0≤ M i) →
+      (∀ i,∀ I∈slots i,‖ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)‖≤ M i) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O),
+      B₁≠0 → B₂≠0 → Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage S₁ W₁ B₁ X₁ Y₁ → PlainCoverage S₂ W₂ B₂ X₂ Y₂ →
+      ∀ (rows : Finset O) («ω» : O→ℝ),(∀ z∈rows,0≤«ω» z) →
+      let Q := finiteColumns (tuplePool slots S₁ S₂)
+      let β := finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+      let raw := T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      let coeff := fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)
+      (∑ z∈rows,«ω» z*‖(Real.sqrt (raw*∏ i,P i):ℂ)⁻¹*
+        rowPolynomial Finset.univ (sourceGenerator Q)
+          (fun I : supportedColumns Q=>β I*heightCoeff η t I) z‖^2)≤
+      C*(Ideal.absNorm L:ℝ)^ε*
+        ∑ a ∈ activeAllocations η (fixedBadMask*cubicIdealGenerator R) 1 t slots coeff L W₁ W₂
+          (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂) (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂),
+          ((2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P)*
+          ∑ z∈rows,«ω» z*
+            (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+             ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2) := by
+  obtain ⟨C,hC,hbound⟩ := active_raw_to_retained_energy (ι:=ι) N hslots ε hε
+  refine ⟨C,hC,?_⟩
+  intro η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hX hY hcov₁ hcov₂ rows «ω» hω
+  dsimp only
+  simp_rw [height_source_row]
+  simp_rw [CenteredMomentSourceRectangleMask.source_polynomial_eq_maskedRectangle
+    η fixedBadMask 1 _ t (dvd_mul_right _ _) (dvd_mul_left _ _)
+    slots S₁ S₂ R L ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ hcov₁ hcov₂]
+  have hb₁ : (0:ℝ)< Ideal.absNorm B₁ := by exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB₁)
+  have hb₂ : (0:ℝ)< Ideal.absNorm B₂ := by exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB₂)
+  obtain ⟨hx,hy⟩ := pullback_same_product X₁ X₂ Y₁ Y₂ T B₁ B₂ hX hY
+  exact hbound η (fixedBadMask*cubicIdealGenerator R) 1 t slots hp
+    (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) M P hM hP hcoeff L hL
+    W₁ W₂ b₁ b₂ _ _ _ _ _ hs₁ hs₂
+    (div_pos hX₁ hb₁) (div_pos hX₂ hb₂) (div_pos hY₁ hb₁) (div_pos hY₂ hb₂)
+    hx hy rows «ω» hω
+
+end CenteredMomentActiveSourceRetained
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentActiveSmoothedSource
+open CenteredMomentActiveAllocation HeckeFamily  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceRectangle CenteredMomentSourceRectangleEnergy
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentSourceRow
+open CenteredMomentHeckeColumnWindow CenteredMomentRowNorm CenteredMomentDivisorRetained
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRaw
+open CenteredMomentRestrictedSource CenteredMomentRestrictedEnergy CenteredMomentPositiveSummability
+open CenteredMomentActiveSourceRetained
+local notation "O" => Eisenstein.O
+variable {ι:Type*} [Fintype ι] [DecidableEq ι]
+
+theorem source_plain_to_active_smoothed (N : ℕ) (hslots : Fintype.card ι≤ N)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (η : Character) (t : ℝ)
+      (slots : ι→Finset (Ideal O)),(∀ i,∀ I∈slots i,Prime I) →
+      ∀ (S₁ S₂ : Finset (Ideal O)) (R L : Ideal O),Squarefree L →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i,0≤ M i) →
+      (∀ i,∀ I∈slots i,‖ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)‖≤ M i) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O),
+      B₁≠0 → B₂≠0 → Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage S₁ W₁ B₁ X₁ Y₁ → PlainCoverage S₂ W₂ B₂ X₂ Y₂ →
+      ∀(keep:O→Prop) (Φ:𝓢(ℝ,ℂ)) (K:ℝ),0< K →
+      (∀z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q := finiteColumns (tuplePool slots S₁ S₂)
+      let β := finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+      let raw := T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      let coeff := fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)
+      sourceRestrictedEnergy keep Q β (heightCoeff η t) Φ K/(raw*∏i,P i)≤
+      C*(Ideal.absNorm L:ℝ)^ε*
+        ∑ a ∈ activeAllocations η (fixedBadMask*cubicIdealGenerator R) 1 t slots coeff L W₁ W₂
+          (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂) (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂),
+          ((2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P)*
+          ∑' z:O,(if keep z then (Φ (‖ringComplex z‖^2/K)).re else 0)*
+            (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+             ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2) := by
+  obtain ⟨C,hC,hbound⟩:=source_plain_to_active_retained (ι:=ι) N hslots ε hε
+  refine ⟨C,hC,?_⟩
+  intro η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ keep Φ K hK hΦ
+  dsimp only
+  let Q:=finiteColumns (tuplePool slots S₁ S₂)
+  let β:=finiteColumnCoefficient (tuplePool slots S₁ S₂)
+    (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+  let raw:=T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+  let coeff:=fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)
+  let «ω»:=fun z:O=> if keep z then (Φ (‖ringComplex z‖^2/K)).re else 0
+  have hω (z:O):0≤«ω» z:=by dsimp only [«ω»];split_ifs;exact hΦ z;exact le_rfl
+  have hbn (B:Ideal O) (hB:B≠0):(0:ℝ)< Ideal.absNorm B:=by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB)
+  have hraw:0< raw:=div_pos (hXT ▸ mul_pos hX₁ hX₂) (mul_pos (hbn B₁ hB₁) (hbn B₂ hB₂))
+  have htotal:0< raw*∏i,P i:=mul_pos hraw (Finset.prod_pos (fun i _=> hP i))
+  change sourceRestrictedEnergy keep Q β (heightCoeff η t) Φ K/(raw*∏i,P i)≤ _
+  unfold sourceRestrictedEnergy restrictedEnergy
+  rw [←tsum_div_const]
+  have he (z:O):
+      (if keep z then ‖rowPolynomial Finset.univ (sourceGenerator Q)
+        (fun I:supportedColumns Q=>β I*heightCoeff η t I) z‖^2*
+        (Φ (‖ringComplex z‖^2/K)).re else 0)/(raw*∏i,P i)=
+      «ω» z*‖(Real.sqrt (raw*∏i,P i):ℂ)⁻¹*rowPolynomial Finset.univ (sourceGenerator Q)
+        (fun I:supportedColumns Q=>β I*heightCoeff η t I) z‖^2 := by
+    rw [CenteredMomentDivisorRawEnergy.normalized_norm_sq _ htotal]
+    dsimp only [«ω»]
+    split_ifs <;> ring
+  simp_rw [he]
+  apply Real.tsum_le_of_sum_le (fun z=> mul_nonneg (hω z) (sq_nonneg _))
+  intro rows
+  have hh:=hbound η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂
+    rows «ω» (fun z _=> hω z)
+  apply hh.trans
+  apply mul_le_mul_of_nonneg_left _ (mul_nonneg hC.le (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+  apply Finset.sum_le_sum
+  intro a ha
+  have hf:0< formalReductionFactor L a P:=mul_pos (selectedNorm_pos L a)
+    (Finset.prod_pos (fun i _=> hP i))
+  have hfac:0≤(2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P:=by
+    apply div_nonneg _ hf.le
+    exact mul_nonneg (by positivity) (sq_nonneg _)
+  apply mul_le_mul_of_nonneg_left ?_ hfac
+  have hX:=allocated_positive_summable η (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂ b₁ b₂ _ _ hs₁ hs₂
+    (div_pos hX₁ (hbn B₁ hB₁)) (div_pos hX₂ (hbn B₂ hB₂)) slots coeff P L a keep Φ K hK
+  have hY:=allocated_positive_summable η (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂ b₁ b₂ _ _ hs₁ hs₂
+    (div_pos hY₁ (hbn B₁ hB₁)) (div_pos hY₂ (hbn B₂ hB₂)) slots coeff P L a keep Φ K hK
+  have hs:Summable (fun z:O=>«ω» z*
+    (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+      (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+     ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+      (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2)):=by
+    convert hX.add hY using 1
+    funext z
+    dsimp only [«ω»]
+    split_ifs <;> ring
+  exact sum_le_hasSum rows (fun z _=> mul_nonneg (hω z) (add_nonneg (sq_nonneg _) (sq_nonneg _))) hs.hasSum
+end CenteredMomentActiveSmoothedSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentSourceRetainedEnergy
+open HeckeFamily  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceRectangle CenteredMomentSourceRectangleEnergy
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentSourceRow
+open CenteredMomentHeckeColumnWindow CenteredMomentRowNorm CenteredMomentDivisorRetained
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRaw
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem source_plain_to_retained (N : ℕ) (hslots : Fintype.card ι≤ N)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (η : Character) (t : ℝ)
+      (slots : ι→Finset (Ideal O)),(∀ i,∀ I∈slots i,Prime I) →
+      ∀ (S₁ S₂ : Finset (Ideal O)) (R L : Ideal O),Squarefree L →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i,0≤ M i) →
+      (∀ i,∀ I∈slots i,‖ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)‖≤ M i) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O),
+      B₁≠0 → B₂≠0 → Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage S₁ W₁ B₁ X₁ Y₁ → PlainCoverage S₂ W₂ B₂ X₂ Y₂ →
+      ∀ (rows : Finset O) («ω» : O→ℝ),(∀ z∈rows,0≤«ω» z) →
+      let Q := finiteColumns (tuplePool slots S₁ S₂)
+      let β := finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+      let raw := T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      let coeff := fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)
+      (∑ z∈rows,«ω» z*‖(Real.sqrt (raw*∏ i,P i):ℂ)⁻¹*
+        rowPolynomial Finset.univ (sourceGenerator Q)
+          (fun I : supportedColumns Q=>β I*heightCoeff η t I) z‖^2)≤
+      C*(Ideal.absNorm L:ℝ)^ε*
+        ∑ a : Allocation L (Finset.univ : Finset (ι⊕Fin 2)),
+          ((2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P)*
+          ∑ z∈rows,«ω» z*
+            (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+             ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2) := by
+  obtain ⟨C,hC,hbound⟩ := masked_raw_to_retained_energy (ι:=ι) N hslots ε hε
+  refine ⟨C,hC,?_⟩
+  intro η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hX hY hcov₁ hcov₂ rows «ω» hω
+  dsimp only
+  simp_rw [height_source_row]
+  simp_rw [CenteredMomentSourceRectangleMask.source_polynomial_eq_maskedRectangle
+    η fixedBadMask 1 _ t (dvd_mul_right _ _) (dvd_mul_left _ _)
+    slots S₁ S₂ R L ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ hcov₁ hcov₂]
+  have hb₁ : (0:ℝ)< Ideal.absNorm B₁ := by exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB₁)
+  have hb₂ : (0:ℝ)< Ideal.absNorm B₂ := by exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB₂)
+  obtain ⟨hx,hy⟩ := pullback_same_product X₁ X₂ Y₁ Y₂ T B₁ B₂ hX hY
+  exact hbound η (fixedBadMask*cubicIdealGenerator R) 1 t slots hp
+    (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) M P hM hP hcoeff L hL
+    W₁ W₂ b₁ b₂ _ _ _ _ _ hs₁ hs₂
+    (div_pos hX₁ hb₁) (div_pos hX₂ hb₂) (div_pos hY₁ hb₁) (div_pos hY₂ hb₂)
+    hx hy rows «ω» hω
+
+end CenteredMomentSourceRetainedEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentSmoothedRetainedSource
+open HeckeFamily  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceRectangle CenteredMomentSourceRectangleEnergy
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentSourceRow
+open CenteredMomentHeckeColumnWindow CenteredMomentRowNorm CenteredMomentDivisorRetained
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRaw
+open CenteredMomentRestrictedSource CenteredMomentRestrictedEnergy CenteredMomentPositiveSummability
+open CenteredMomentSourceRetainedEnergy
+local notation "O" => Eisenstein.O
+variable {ι:Type*} [Fintype ι] [DecidableEq ι]
+
+theorem source_plain_to_smoothed_retained (N : ℕ) (hslots : Fintype.card ι≤ N)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (η : Character) (t : ℝ)
+      (slots : ι→Finset (Ideal O)),(∀ i,∀ I∈slots i,Prime I) →
+      ∀ (S₁ S₂ : Finset (Ideal O)) (R L : Ideal O),Squarefree L →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i,0≤ M i) →
+      (∀ i,∀ I∈slots i,‖ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)‖≤ M i) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O),
+      B₁≠0 → B₂≠0 → Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage S₁ W₁ B₁ X₁ Y₁ → PlainCoverage S₂ W₂ B₂ X₂ Y₂ →
+      ∀(keep:O→Prop) (Φ:𝓢(ℝ,ℂ)) (K:ℝ),0< K →
+      (∀z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q := finiteColumns (tuplePool slots S₁ S₂)
+      let β := finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+      let raw := T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      let coeff := fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)
+      sourceRestrictedEnergy keep Q β (heightCoeff η t) Φ K/(raw*∏i,P i)≤
+      C*(Ideal.absNorm L:ℝ)^ε*
+        ∑ a : Allocation L (Finset.univ : Finset (ι⊕Fin 2)),
+          ((2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P)*
+          ∑' z:O,(if keep z then (Φ (‖ringComplex z‖^2/K)).re else 0)*
+            (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+             ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+              (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2) := by
+  obtain ⟨C,hC,hbound⟩:=source_plain_to_retained (ι:=ι) N hslots ε hε
+  refine ⟨C,hC,?_⟩
+  intro η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ keep Φ K hK hΦ
+  dsimp only
+  let Q:=finiteColumns (tuplePool slots S₁ S₂)
+  let β:=finiteColumnCoefficient (tuplePool slots S₁ S₂)
+    (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+  let raw:=T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+  let coeff:=fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)
+  let «ω»:=fun z:O=> if keep z then (Φ (‖ringComplex z‖^2/K)).re else 0
+  have hω (z:O):0≤«ω» z:=by dsimp only [«ω»];split_ifs;exact hΦ z;exact le_rfl
+  have hbn (B:Ideal O) (hB:B≠0):(0:ℝ)< Ideal.absNorm B:=by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB)
+  have hraw:0< raw:=div_pos (hXT ▸ mul_pos hX₁ hX₂) (mul_pos (hbn B₁ hB₁) (hbn B₂ hB₂))
+  have htotal:0< raw*∏i,P i:=mul_pos hraw (Finset.prod_pos (fun i _=> hP i))
+  change sourceRestrictedEnergy keep Q β (heightCoeff η t) Φ K/(raw*∏i,P i)≤ _
+  unfold sourceRestrictedEnergy restrictedEnergy
+  rw [←tsum_div_const]
+  have he (z:O):
+      (if keep z then ‖rowPolynomial Finset.univ (sourceGenerator Q)
+        (fun I:supportedColumns Q=>β I*heightCoeff η t I) z‖^2*
+        (Φ (‖ringComplex z‖^2/K)).re else 0)/(raw*∏i,P i)=
+      «ω» z*‖(Real.sqrt (raw*∏i,P i):ℂ)⁻¹*rowPolynomial Finset.univ (sourceGenerator Q)
+        (fun I:supportedColumns Q=>β I*heightCoeff η t I) z‖^2 := by
+    rw [CenteredMomentDivisorRawEnergy.normalized_norm_sq _ htotal]
+    dsimp only [«ω»]
+    split_ifs <;> ring
+  simp_rw [he]
+  apply Real.tsum_le_of_sum_le (fun z=> mul_nonneg (hω z) (sq_nonneg _))
+  intro rows
+  have hh:=hbound η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂
+    rows «ω» (fun z _=> hω z)
+  apply hh.trans
+  apply mul_le_mul_of_nonneg_left _ (mul_nonneg hC.le (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+  apply Finset.sum_le_sum
+  intro a ha
+  have hf:0< formalReductionFactor L a P:=mul_pos (selectedNorm_pos L a)
+    (Finset.prod_pos (fun i _=> hP i))
+  have hfac:0≤(2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P:=by
+    apply div_nonneg _ hf.le
+    exact mul_nonneg (by positivity) (sq_nonneg _)
+  apply mul_le_mul_of_nonneg_left ?_ hfac
+  have hX:=allocated_positive_summable η (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂ b₁ b₂ _ _ hs₁ hs₂
+    (div_pos hX₁ (hbn B₁ hB₁)) (div_pos hX₂ (hbn B₂ hB₂)) slots coeff P L a keep Φ K hK
+  have hY:=allocated_positive_summable η (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂ b₁ b₂ _ _ hs₁ hs₂
+    (div_pos hY₁ (hbn B₁ hB₁)) (div_pos hY₂ (hbn B₂ hB₂)) slots coeff P L a keep Φ K hK
+  have hs:Summable (fun z:O=>«ω» z*
+    (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+      (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+     ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots coeff P L a W₁ W₂
+      (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2)):=by
+    convert hX.add hY using 1
+    funext z
+    dsimp only [«ω»]
+    split_ifs <;> ring
+  exact sum_le_hasSum rows (fun z _=> mul_nonneg (hω z) (add_nonneg (sq_nonneg _) (sq_nonneg _))) hs.hasSum
+end CenteredMomentSmoothedRetainedSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentSecondSectorChildren
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss
+open CenteredMomentSourceRow CenteredMomentHeckeColumnWindow CenteredMomentSecondSourceEnergy
+open CenteredMomentSecondSectorColumns CenteredMomentSecondHeightFamily CenteredMomentSupport
+open CenteredMomentSecondScaled CenteredMomentSupportedCorrelation CenteredMomentChildAssembly
+open CenteredMomentFixedRay CenteredMomentMobiusRegroup RayFourExpansion
+local notation "O" => Eisenstein.O
+
+theorem sector_correlation_children (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (C D : Ideal O)
+    (hC : Supported C) (hD : Supported D)
+    (hCD : primeSupport C=primeSupport D)
+    (A₀ : O) (rows : Finset O) (q : O → ℂ) (K : O → Ideal O → Ideal O → ℂ) :
+    let a := sectorElement C hC.1 S
+    let b := sectorElement D hD.1 S
+    let c := fun I : sectorPool C hC.1 S => β (C*I)*heightCoeff η t I
+    let d := fun J : sectorPool D hD.1 S => β (D*J)*heightCoeff η t J
+    (∑ z∈rows,q z*∑ I : sectorPool C hC.1 S,∑ J : sectorPool D hD.1 S,
+      (if IsCoprime (I:Ideal O) (J:Ideal O) then
+        idealCorrelation (C*I) (D*J)
+          ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+          ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A₀*z)
+        else 0)*(c I*star (d J))*K z I J)=
+      ∑ L∈divisorPool Finset.univ (fun J : sectorPool D hD.1 S => (J:Ideal O)),
+        (UniqueFactorizationMonoid.moebius L:ℂ)*
+          ∑ χ : RayCharacter,∑ ξ : RayCharacter,
+            pairCoeff (phaseTable (primaryIdealGenerator C) (primaryIdealGenerator D)) χ ξ*
+              ∑ z∈rows,(q z*idealCorrelation C D hC hD (A₀*z))*
+                ∑ I : sectorPool C hC.1 S,∑ J : sectorPool D hD.1 S,
+                  ((divisorCoefficient L a (movingCoefficient A₀ a c) χ I*idealRowHom z I)*
+                    star (divisorCoefficient L b (movingCoefficient A₀ b d) (ξ⁻¹) J*idealRowHom (-z) J))*K z I J := by
+  dsimp only
+  have hb (J : sectorPool D hD.1 S) :
+      IsCoprime (primaryIdealGenerator C*primaryIdealGenerator D) (sectorElement D hD.1 S J) := by
+    simpa only [mul_comm] using sectorElement_coprime D C hD hC hCD.symm S J
+  have he := actual_scaled_row_children rows Finset.univ Finset.univ
+    (primaryIdealGenerator C) (primaryIdealGenerator D) A₀
+    (sectorElement C hC.1 S) (sectorElement D hD.1 S)
+    ((supported_span_primaryIdealGenerator_iff C).mpr hC) ((supported_span_primaryIdealGenerator_iff D).mpr hD)
+    (sectorElement_supported C hC.1 S) (sectorElement_supported D hD.1 S)
+    (primaryIdealGenerator_spec C (supported_primaryIdealGenerator_ne_zero C hC)).2
+    (primaryIdealGenerator_spec D (supported_primaryIdealGenerator_ne_zero D hD)).2
+    (sectorElement_primary C hC.1 S) (sectorElement_primary D hD.1 S)
+    (sectorElement_coprime C D hC hD hCD S) hb q
+    (fun I => β (C*I)*heightCoeff η t I) (fun J => β (D*J)*heightCoeff η t J)
+    (fun z I J => K z I J)
+  have hcop (I : sectorPool C hC.1 S) (J : sectorPool D hD.1 S) :
+      IsCoprime (sectorElement C hC.1 S I) (sectorElement D hD.1 S J) ↔ IsCoprime (I:Ideal O) (J:Ideal O) := by
+    rw [←Ideal.isCoprime_span_singleton_iff,sectorElement_span,sectorElement_span]
+  simp_rw [hcop,sectorElement_span] at he
+  simpa only [idealCorrelation,primaryIdealGenerator_mul,sectorElement] using he
+
+end CenteredMomentSecondSectorChildren
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondSectorEnergy
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss
+open CenteredMomentSourceRow CenteredMomentHeckeColumnWindow CenteredMomentSecondSourceEnergy
+open CenteredMomentSecondSectorColumns CenteredMomentSecondHeightFamily
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentRestrictedSource CenteredMomentRestrictedDomain CenteredMomentRestrictedEnergy
+open CenteredMomentLiveDomain CenteredMomentFirstSectors RayFourExpansion
+local notation "O" => Eisenstein.O
+
+theorem sector_divisor_coefficient (η τ : Character) (χ : RayCharacter) (A : O)
+    (hτ : ∀ I : Ideal O,Supported I → ∀ t : ℝ,
+      heightCoeff τ t I=heightCoeff η t I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I))
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (C : Ideal O) (hC : Supported C)
+    (L : Ideal O) (t : ℝ) (I : sectorPool C hC.1 S) :
+    divisorCoefficient L (sectorElement C hC.1 S)
+      (movingCoefficient A (sectorElement C hC.1 S)
+        (fun J : sectorPool C hC.1 S => β (C*J)*heightCoeff η t J)) χ I=
+      (if L∣(I:Ideal O) then β (C*I) else 0)*heightCoeff τ t I := by
+  rw [divisorCoefficient,movingCoefficient,sectorElement_span,hτ I (sectorPool_supported C hC.1 S I) t]
+  dsimp only [sectorElement]
+  split_ifs <;> ring
+
+theorem sector_rowPolynomial (S : Finset (Ideal O)) (c : Ideal O → ℂ)
+    (C : Ideal O) (hC : Supported C) (z : O) :
+    rowPolynomial Finset.univ (sectorElement C hC.1 S)
+      (fun I : sectorPool C hC.1 S => c I) z=
+      rowPolynomial Finset.univ (sourceGenerator (residualPool C hC.1 S))
+        (fun I : supportedColumns (residualPool C hC.1 S) => if IsCoprime C (I:Ideal O) then c I else 0) z := by
+  rw [source_rowPolynomial (residualPool C hC.1 S)
+    (fun I => if IsCoprime C I then c I else 0) z]
+  unfold rowPolynomial
+  simp only [sectorElement_span]
+  rw [Finset.sum_coe_sort (sectorPool C hC.1 S) (fun I => c I*idealRowHom z I)]
+  rw [sectorPool,Finset.sum_filter,supported_residualPool C hC S]
+  apply Finset.sum_congr rfl
+  intro I hI
+  split_ifs <;> simp
+
+theorem sector_child_row (η τ : Character) (χ : RayCharacter) (A : O)
+    (hτ : ∀ I : Ideal O,Supported I → ∀ t : ℝ,
+      heightCoeff τ t I=heightCoeff η t I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I))
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (C : Ideal O) (hC : Supported C)
+    (L : Ideal O) (t : ℝ) (z : O) :
+    rowPolynomial Finset.univ (sectorElement C hC.1 S)
+      (divisorCoefficient L (sectorElement C hC.1 S)
+        (movingCoefficient A (sectorElement C hC.1 S)
+          (fun J : sectorPool C hC.1 S => β (C*J)*heightCoeff η t J)) χ) z=
+      rowPolynomial Finset.univ (sourceGenerator (residualPool C hC.1 S))
+        (fun I : supportedColumns (residualPool C hC.1 S) =>
+          (if IsCoprime C (I:Ideal O) ∧ L∣(I:Ideal O) then β (C*I) else 0)*heightCoeff τ t I) z := by
+  have he := funext (sector_divisor_coefficient η τ χ A hτ S β C hC L t)
+  rw [he,sector_rowPolynomial S (fun I => (if L∣I then β (C*I) else 0)*heightCoeff τ t I) C hC z]
+  congr 1
+  funext I
+  split_ifs <;> simp_all
+
+theorem sector_child_energy (η τ : Character) (χ : RayCharacter) (A : O)
+    (hτ : ∀ I : Ideal O,Supported I → ∀ t : ℝ,
+      heightCoeff τ t I=heightCoeff η t I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I))
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (C : Ideal O) (hC : Supported C)
+    (L : Ideal O) (t : ℝ) (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    restrictedEnergy keep Finset.univ (sectorElement C hC.1 S)
+      (divisorCoefficient L (sectorElement C hC.1 S)
+        (movingCoefficient A (sectorElement C hC.1 S)
+          (fun J : sectorPool C hC.1 S => β (C*J)*heightCoeff η t J)) χ) W K=
+      sourceRestrictedEnergy keep (residualPool C hC.1 S)
+        (fun I => if IsCoprime C I ∧ L∣I then β (C*I) else 0) (heightCoeff τ t) W K := by
+  unfold restrictedEnergy sourceRestrictedEnergy
+  apply tsum_congr
+  intro z
+  rw [sector_child_row η τ χ A hτ S β C hC L t z]
+
+end CenteredMomentSecondSectorEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentAmplificationLiveMask
+open CenteredMomentSourceLiveColumn CenteredMomentSourceProfileMass CenteredMomentSourceMass
+open CenteredMomentAddedZeroUniform CenteredMomentCommonAllocationSum
+open CenteredMomentOriginalChildEnergy CenteredMomentRemainingBox CenteredMomentCommonProfile
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+ theorem profile_mask (R : Ideal O) (ν : ι → Ideal O → ℂ)
+    (Wslot : ι → ℝ → ℂ) (P : ι → ℝ) (W₁ W₂ : ℝ → ℂ)
+    (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ s : Ideal O) (v : Tuple ι) :
+    profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s v=
+      profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ 1 v*
+        (if s∣finiteTupleProduct v then 1 else 0) := by
+  simp only [profileCoefficient,one_dvd,ite_true,mul_one]
+
+theorem column_mask (S : Finset (Tuple ι)) (R : Ideal O) (ν : ι → Ideal O → ℂ)
+    (Wslot : ι → ℝ → ℂ) (P : ι → ℝ) (W₁ W₂ : ℝ → ℂ)
+    (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ s I : Ideal O) :
+    finiteColumnCoefficient S
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) I=
+      finiteColumnCoefficient S
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ 1) I*
+          (if s∣I then 1 else 0) := by
+  unfold finiteColumnCoefficient
+  rw [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro v hv
+  rw [profile_mask,(Finset.mem_filter.mp hv).2]
+
+ def maskedLiveProfile (B : Tuple ι) (C R s : Ideal O)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) :
+    Tuple (liveIndices B) → ℂ :=
+  profileCoefficient (R*C) (fun i : liveIndices B => ν i.val)
+    (fun i => Wslot i.val) (fun i => P i.val) W₁ W₂ X₁ X₂ Y₁ Y₂
+    (B₁*B (Sum.inr 0)) (B₂*B (Sum.inr 1)) s
+
+theorem original_masked_live_column (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (C R s I : Ideal O) (hC : C≠0) (hI : I≠0) (hsc : IsCoprime s C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O) :
+    (if IsCoprime C I then finiteColumnCoefficient (Fintype.piFinset S)
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (C*I) else 0)=
+      ∑ B : actualAllocations S C,frozenCoefficient B C R ν Wslot P*
+        finiteColumnCoefficient (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+          (maskedLiveProfile B C R s ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂) I := by
+  have he := original_source_punctured_column S hS hp C R 1 I hC hI (one_dvd C)
+    ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂
+  have hdiv : s ∣ C*I ↔ s ∣ I :=
+    ⟨hsc.dvd_of_dvd_mul_left, fun h => dvd_mul_of_dvd_right h C⟩
+  rw [column_mask,hdiv]
+  have hh := congrArg (fun z : ℂ => z*(if s∣I then 1 else 0)) he
+  rw [Finset.sum_mul] at hh
+  convert hh using 1
+  · split_ifs <;> simp
+  · apply Finset.sum_congr rfl
+    intro B hB
+    rw [maskedLiveProfile,column_mask]
+    dsimp only [liveProfile]
+    ring
+
+end CenteredMomentAmplificationLiveMask
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentSecondSourceMask
+open CanonicalQuadraticSieve CenteredMomentSecondSectorColumns CenteredMomentFirstSectors
+open CenteredMomentSourceRow CenteredMomentSourceProfileMass CenteredMomentSourceMass
+open CenteredMomentAddedZeroUniform CenteredMomentAmplificationLiveMask
+open CenteredMomentCompleteCommon
+local notation "O" => Eisenstein.O
+
+theorem divisor_dvd_common (C D a b s : Ideal O)
+    (hC : C≠0) (hD : D≠0) (ha : a≠0) (hb : b≠0)
+    (hCD : primeSupport C=primeSupport D)
+    (hCa : IsCoprime C a) (hCb : IsCoprime C b) (hab : IsCoprime a b)
+    (hsI : s∣C*a) (hsJ : s∣D*b) : s∣C ∧ s∣D := by
+  have hDa := (coprime_of_same_support C D a hC hD ha hCD).mp hCa
+  have hDb := (coprime_of_same_support C D b hC hD hb hCD).mp hCb
+  have hsa : IsCoprime s a := ((hDa.symm.mul_right hab).of_isCoprime_of_dvd_right hsJ).symm
+  have hsb : IsCoprime s b := ((hCb.symm.mul_right hab.symm).of_isCoprime_of_dvd_right hsI).symm
+  exact ⟨hsa.dvd_of_dvd_mul_right hsI,hsb.dvd_of_dvd_mul_right hsJ⟩
+
+variable {ι : Type*} [Fintype ι]
+
+theorem column_nonzero_divisor (S : Finset (Tuple ι)) (R : Ideal O)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ s I : Ideal O)
+    (h : finiteColumnCoefficient S
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) I≠0) : s∣I := by
+  rw [column_mask] at h
+  by_contra hn
+  exact h (by rw [if_neg hn,mul_zero])
+
+theorem source_pair_divisor_common (S : Finset (Tuple ι)) (R : Ideal O)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ s C D a b : Ideal O)
+    (hC : C≠0) (hD : D≠0) (ha : a≠0) (hb : b≠0)
+    (hCD : primeSupport C=primeSupport D)
+    (hCa : IsCoprime C a) (hCb : IsCoprime C b) (hab : IsCoprime a b)
+    (hleft : finiteColumnCoefficient S
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (C*a)≠0)
+    (hright : finiteColumnCoefficient S
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (D*b)≠0) : s∣C ∧ s∣D :=
+  divisor_dvd_common C D a b s hC hD ha hb hCD hCa hCb hab
+    (column_nonzero_divisor S R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s _ hleft)
+    (column_nonzero_divisor S R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s _ hright)
+
+end CenteredMomentSecondSourceMask
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondLiveEnergy
+open HeckeFamily CanonicalQuadraticSieve CenteredMomentSourceRow
+open CenteredMomentHeckeColumnWindow CenteredMomentSecondSectorEnergy CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRestrictedSource
+open CenteredMomentRestrictedEnergy CenteredMomentSourceLiveColumn CenteredMomentSourceProfileMass
+open CenteredMomentSourceMass CenteredMomentAddedZeroUniform CenteredMomentCommonAllocationSum
+open CenteredMomentAmplificationLiveMask CenteredMomentFirstSectors RayFourExpansion
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem live_divisor_energy (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (B : Tuple ι) (hB : ∀ i,B i≠0) (C R L : Ideal O)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (f : Ideal O → ℂ) (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    sourceRestrictedEnergy keep (finiteColumns (liveBox S B hB))
+      (finiteColumnCoefficient (liveBox S B hB) (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂))
+      (fun I => (if L∣I then 1 else 0)*f I) W K=
+    sourceRestrictedEnergy keep (finiteColumns (liveBox S B hB))
+      (finiteColumnCoefficient (liveBox S B hB) (maskedLiveProfile B C R L ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)) f W K := by
+  unfold sourceRestrictedEnergy
+  congr 1
+  funext I
+  rw [maskedLiveProfile,column_mask]
+  dsimp only [liveProfile]
+  ring
+
+theorem actual_second_child_live_energy (η τ : Character) (χ : RayCharacter) (A : O)
+    (hτ : ∀ I : Ideal O,Supported I → ∀ t : ℝ,
+      heightCoeff τ t I=heightCoeff η t I*CanonicalRowCompletion.idealRowHom A I*
+        rayMonoid χ (primaryIdealGenerator I))
+    (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (C R s : Ideal O) (hC : Supported C) (hsC : s∣C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ L : Ideal O) (t : ℝ)
+    (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    let Q := finiteColumns (Fintype.piFinset S)
+    let β := finiteColumnCoefficient (Fintype.piFinset S)
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)
+    restrictedEnergy keep Finset.univ (sectorElement C hC.1 Q)
+      (divisorCoefficient L (sectorElement C hC.1 Q)
+        (movingCoefficient A (sectorElement C hC.1 Q)
+          (fun J : sectorPool C hC.1 Q => β (C*J)*heightCoeff η t J)) χ) W K≤
+      ((actualAllocations S C).card:ℝ)*∑ B : actualAllocations S C,
+        ‖frozenCoefficient B C R ν Wslot P‖^2*
+          sourceRestrictedEnergy keep
+            (finiteColumns (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1))
+            (finiteColumnCoefficient
+              (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+              (maskedLiveProfile B C R L ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂))
+            (heightCoeff τ t) W K := by
+  dsimp only
+  rw [sector_child_energy η τ χ A hτ (finiteColumns (Fintype.piFinset S))
+    (finiteColumnCoefficient (Fintype.piFinset S)
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) C hC L t keep W K]
+  have he := original_restricted_child_energy S hS hp C R s hC hsC
+    ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂
+    (fun I => (if L∣I then 1 else 0)*heightCoeff τ t I) keep W K hK hW
+  simp_rw [live_divisor_energy] at he
+  refine le_trans ?_ he
+  apply le_of_eq
+  unfold sourceRestrictedEnergy
+  congr 1
+  funext I
+  dsimp only
+  split_ifs <;> simp_all
+
+end CenteredMomentSecondLiveEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentAllocationCost
+open CenteredMomentCommonAllocationSum CenteredMomentSourceLiveColumn
+open CenteredMomentAddedZeroUniform
+local notation "O" => Eisenstein.O
+
+ theorem actualAllocations_uniform_small_power (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ D : ℝ,0< D ∧ ∀ {ι : Type*} [Fintype ι],Fintype.card ι≤ N →
+      ∀ (S : ι → Finset (Ideal O)) (C : Ideal O),C≠0 →
+        ((actualAllocations S C).card:ℝ)≤ D*(Ideal.absNorm C:ℝ)^ε := by
+  let δ := ε/(N+1:ℕ)
+  have hδ : 0<δ := by dsimp [δ];positivity
+  obtain ⟨D,hD,hdiv⟩ := IdealDivisorBound.ideal_divisor_small_power δ hδ
+  refine ⟨(1+D)^(N+1),by positivity,?_⟩
+  intro ι _ hn S C hC
+  have hNC : (1:ℝ)≤ Ideal.absNorm C := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hC)
+  have hb : 1≤(1+D)*(Ideal.absNorm C:ℝ)^δ := by
+    nlinarith [Real.one_le_rpow hNC hδ.le]
+  have hd : δ*(N+1:ℕ)=ε := by
+    dsimp only [δ]
+    field_simp
+  calc
+    _ ≤ ((idealDivisors C).card:ℝ)^Fintype.card ι := by
+      exact_mod_cast actualAllocations_card S C hC
+    _ ≤ ((1+D)*(Ideal.absNorm C:ℝ)^δ)^Fintype.card ι := by
+      apply pow_le_pow_left₀ (Nat.cast_nonneg _) _ _
+      exact (hdiv C hC).trans (mul_le_mul_of_nonneg_right (by linarith) (by positivity))
+    _ ≤ ((1+D)*(Ideal.absNorm C:ℝ)^δ)^(N+1) := pow_le_pow_right₀ hb (by omega)
+    _ = _ := by rw [mul_pow,←Real.rpow_mul_natCast (Nat.cast_nonneg _),hd]
+
+ theorem frozenCoefficient_norm {ι : Type*} [Fintype ι]
+    (B : Tuple ι) (C R : Ideal O) (ν : ι → Ideal O → ℂ)
+    (Wslot : ι → ℝ → ℂ) (P M : ι → ℝ)
+    (hν : ∀ i I,‖ν i I‖≤1) (hW : ∀ i x,‖Wslot i x‖≤ M i)
+    (hM : ∀ i,1≤ M i) :
+    ‖frozenCoefficient B C R ν Wslot P‖≤∏ i,M i := by
+  unfold frozenCoefficient
+  rw [norm_mul]
+  have hc : ‖(if IsCoprime C R then (1:ℂ) else 0)‖≤1 := by split_ifs <;> simp
+  apply (mul_le_of_le_one_right (norm_nonneg _) hc).trans
+  rw [norm_prod]
+  calc
+    _ ≤ ∏ i∈Finset.univ.filter (fun i => B (Sum.inl i)≠1),M i := by
+      apply Finset.prod_le_prod (fun i _ => norm_nonneg _)
+      intro i hi
+      rw [norm_mul]
+      exact (mul_le_of_le_one_left (norm_nonneg _) (hν i _)).trans (hW i _)
+    _ ≤ ∏ i,M i := Finset.prod_le_prod_of_subset_of_one_le (Finset.subset_univ _)
+      (fun i _ => zero_le_one.trans (hM i)) (fun i _ _ => hM i)
+
+end CenteredMomentAllocationCost
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentCommonRawScale
+open CenteredMomentCommonProfile CenteredMomentSourceLiveColumn CenteredMomentAddedZeroUniform
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+
+def frozenScale (B : Tuple ι) (P : ι → ℝ) (i : ι) : ℝ :=
+  if B (Sum.inl i)=1 then 1 else P i
+
+def plainNorm (B : Tuple ι) : ℝ :=
+  (Ideal.absNorm (B (Sum.inr 0)):ℝ)*Ideal.absNorm (B (Sum.inr 1))
+
+def rawReduction (B : Tuple ι) (P : ι → ℝ) : ℝ := plainNorm B*∏ i,frozenScale B P i
+
+def remainingRaw (B : Tuple ι) (T : ℝ) (P : ι → ℝ) : ℝ :=
+  (T/plainNorm B)*∏ i : liveIndices B,P i
+
+omit [Fintype ι] in
+theorem plainNorm_pos (B : Tuple ι) (hB : ∀ i,B i≠0) : 0< plainNorm B := by
+  unfold plainNorm
+  apply mul_pos <;> exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (hB _))
+
+omit [Fintype ι] in
+theorem frozenScale_pos (B : Tuple ι) (P : ι → ℝ) (hP : ∀ i,0< P i) (i : ι) :
+    0< frozenScale B P i := by
+  unfold frozenScale
+  split_ifs
+  · exact zero_lt_one
+  · exact hP i
+
+theorem rawReduction_pos (B : Tuple ι) (hB : ∀ i,B i≠0) (P : ι → ℝ) (hP : ∀ i,0< P i) :
+    0< rawReduction B P := mul_pos (plainNorm_pos B hB) (Finset.prod_pos (fun i _ => frozenScale_pos B P hP i))
+
+theorem slot_scale_split (B : Tuple ι) (P : ι → ℝ) :
+    (∏ i,frozenScale B P i)*(∏ i : liveIndices B,P i)=∏ i,P i := by
+  rw [Finset.prod_coe_sort (liveIndices B) P]
+  rw [← Finset.prod_filter_mul_prod_filter_not Finset.univ (fun i => B (Sum.inl i)=1) P]
+  unfold frozenScale liveIndices
+  rw [Finset.prod_ite]
+  simp only [Finset.prod_const_one,one_mul]
+  ring
+
+theorem raw_scale_identity (B : Tuple ι) (hB : ∀ i,B i≠0) (T : ℝ) (P : ι → ℝ) :
+    remainingRaw B T P*rawReduction B P=T*∏ i,P i := by
+  unfold remainingRaw rawReduction
+  have h := slot_scale_split B P
+  calc
+    _ = T*((∏ i,frozenScale B P i)*(∏ i : liveIndices B,P i)) := by
+      field_simp [(plainNorm_pos B hB).ne']
+    _ = _ := by rw [h]
+
+theorem remainingRaw_source (B : Tuple ι) (_hB : ∀ i,B i≠0)
+    (B₁ B₂ : Ideal O) (_hB₁ : B₁≠0) (_hB₂ : B₂≠0) (T : ℝ) (P : ι → ℝ) :
+    remainingRaw B (T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)) P=
+      (T/((Ideal.absNorm (B₁*B (Sum.inr 0)):ℝ)*Ideal.absNorm (B₂*B (Sum.inr 1))))*
+        ∏ i : liveIndices B,P i := by
+  unfold remainingRaw plainNorm
+  simp only [map_mul,Nat.cast_mul]
+  ring
+
+theorem product_norm (B : Tuple ι) :
+    (Ideal.absNorm (finiteTupleProduct B):ℝ)=plainNorm B*∏ i,(Ideal.absNorm (B (Sum.inl i)):ℝ) := by
+  simp only [finiteTupleProduct,Fintype.prod_sum_type,Fin.prod_univ_two,map_mul,map_prod,
+    Nat.cast_mul,Nat.cast_prod,plainNorm]
+  ring
+
+theorem frozen_window_ne_zero (B : Tuple ι) (C R : Ideal O) (ν : ι → Ideal O → ℂ)
+    (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (hne : frozenCoefficient B C R ν Wslot P≠0) (i : ι) (hi : B (Sum.inl i)≠1) :
+    Wslot i ((Ideal.absNorm (B (Sum.inl i)):ℝ)/P i)≠0 := by
+  have hp := (mul_ne_zero_iff.mp hne).1
+  have hx := Finset.prod_ne_zero_iff.mp hp i (Finset.mem_filter.mpr ⟨Finset.mem_univ _,hi⟩)
+  exact (mul_ne_zero_iff.mp hx).2
+
+theorem actual_reduction_norm (B : Tuple ι) (hB : ∀ i,B i≠0) (C R : Ideal O)
+    (hprod : finiteTupleProduct B=C) (ν : ι → Ideal O → ℂ)
+    (Wslot : ι → ℝ → ℂ) (P : ι → ℝ) (hP : ∀ i,0< P i)
+    (a b : ℝ) (ha : 0< a) (hW : ∀ i,Function.support (Wslot i)⊆Set.Icc a b)
+    (hne : frozenCoefficient B C R ν Wslot P≠0) :
+    (min 1 a)^Fintype.card ι*rawReduction B P≤(Ideal.absNorm C:ℝ) ∧
+      (Ideal.absNorm C:ℝ)≤(max 1 b)^Fintype.card ι*rawReduction B P := by
+  have hi (i : ι) : min 1 a*frozenScale B P i≤(Ideal.absNorm (B (Sum.inl i)):ℝ) ∧
+      (Ideal.absNorm (B (Sum.inl i)):ℝ)≤ max 1 b*frozenScale B P i := by
+    by_cases h : B (Sum.inl i)=1
+    · simp only [frozenScale,h,ite_true,map_one,Nat.cast_one,mul_one]
+      exact ⟨min_le_left _ _,le_max_left _ _⟩
+    · have hs := hW i (frozen_window_ne_zero B C R ν Wslot P hne i h)
+      rw [frozenScale,if_neg h]
+      exact ⟨le_trans (mul_le_mul_of_nonneg_right (min_le_right _ _) (hP i).le)
+          ((le_div_iff₀ (hP i)).mp hs.1),
+        le_trans ((div_le_iff₀ (hP i)).mp hs.2)
+          (mul_le_mul_of_nonneg_right (le_max_right _ _) (hP i).le)⟩
+  rw [←hprod,product_norm]
+  constructor
+  · have hh := Finset.prod_le_prod (s:=Finset.univ)
+      (fun i _ => mul_nonneg (le_of_lt (lt_min zero_lt_one ha)) (frozenScale_pos B P hP i).le)
+      (fun i _ => (hi i).1)
+    simp only [Finset.prod_mul_distrib,Finset.prod_const,Finset.card_univ] at hh
+    have hh' := mul_le_mul_of_nonneg_left hh (plainNorm_pos B hB).le
+    simpa only [rawReduction,mul_left_comm,mul_assoc] using hh'
+  · have hh := Finset.prod_le_prod (s:=Finset.univ) (fun i _ => Nat.cast_nonneg (Ideal.absNorm (B (Sum.inl i))))
+      (fun i _ => (hi i).2)
+    simp only [Finset.prod_mul_distrib,Finset.prod_const,Finset.card_univ] at hh
+    have hh' := mul_le_mul_of_nonneg_left hh (plainNorm_pos B hB).le
+    simpa only [rawReduction,mul_left_comm,mul_assoc] using hh'
+
+end CenteredMomentCommonRawScale
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+
+namespace CenteredMomentCommonRawCost
+open CenteredMomentCommonRawScale CenteredMomentAllocationCost CenteredMomentSourceLiveColumn
+open CenteredMomentAddedZeroUniform
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+
+theorem frozen_normalized_cost (B : Tuple ι) (hB : ∀ i,B i≠0) (C R : Ideal O) (hC : C≠0)
+    (hprod : finiteTupleProduct B=C) (ν : ι → Ideal O → ℂ)
+    (Wslot : ι → ℝ → ℂ) (P M : ι → ℝ) (hP : ∀ i,0< P i)
+    (hν : ∀ i I,‖ν i I‖≤1) (hWnorm : ∀ i x,‖Wslot i x‖≤ M i) (hM : ∀ i,1≤ M i)
+    (a b : ℝ) (ha : 0< a) (hW : ∀ i,Function.support (Wslot i)⊆Set.Icc a b) :
+    ‖frozenCoefficient B C R ν Wslot P‖^2/rawReduction B P≤
+      ((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ) := by
+  have hN : (0:ℝ)< Ideal.absNorm C := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hC)
+  have hR := rawReduction_pos B hB P hP
+  by_cases hz : frozenCoefficient B C R ν Wslot P=0
+  · rw [hz,norm_zero,zero_pow (by decide : 2≠0),zero_div]
+    exact div_nonneg (mul_nonneg (sq_nonneg _) (pow_nonneg (zero_le_one.trans (le_max_left _ _)) _)) hN.le
+  · have hm := frozenCoefficient_norm B C R ν Wslot P M hν hWnorm hM
+    have hh := (actual_reduction_norm B hB C R hprod ν Wslot P hP a b ha hW hz).2
+    have hi : (1:ℝ)/rawReduction B P≤(max 1 b)^Fintype.card ι/(Ideal.absNorm C:ℝ) := by
+      apply (div_le_div_iff₀ hR hN).mpr
+      simpa only [one_mul] using hh
+    calc
+      _ ≤ (∏ i,M i)^2/rawReduction B P :=
+        div_le_div_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hm _) hR.le
+      _ = (∏ i,M i)^2*(1/rawReduction B P) := by ring
+      _ ≤ (∏ i,M i)^2*((max 1 b)^Fintype.card ι/(Ideal.absNorm C:ℝ)) :=
+        mul_le_mul_of_nonneg_left hi (sq_nonneg _)
+      _ = _ := by ring
+
+end CenteredMomentCommonRawCost
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentRestrictedSourceNormalization
+open CanonicalQuadraticSieve CenteredMomentSourceRow CenteredMomentRestrictedSource
+open CenteredMomentSourceLiveColumn CenteredMomentSourceProfileMass CenteredMomentSourceMass
+open CenteredMomentAddedZeroUniform CenteredMomentCommonAllocationSum CenteredMomentFirstSectors
+open CenteredMomentCommonRawScale CenteredMomentCommonRawCost CenteredMomentRestrictedEnergy
+local notation "O" => Eisenstein.O
+
+theorem sourceRestrictedEnergy_nonneg (keep : O → Prop) (Q : Finset (Ideal O)) (c f : Ideal O → ℂ)
+    (W : 𝓢(ℝ,ℂ)) (K : ℝ) (_hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    0≤ sourceRestrictedEnergy keep Q c f W K := by
+  unfold sourceRestrictedEnergy restrictedEnergy
+  apply tsum_nonneg
+  intro z
+  split_ifs
+  · exact mul_nonneg (sq_nonneg _) (hW z)
+  · exact le_rfl
+
+variable {ι : Type*} [Fintype ι]
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem normalized_restricted_child_energy (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (C R s : Ideal O) (hC : Supported C) (hsC : s∣C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (Traw : ℝ) (hTraw : 0< Traw) (hP : ∀ i,0< P i)
+    (f : Ideal O → ℂ) (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    (sourceRestrictedEnergy keep (residualPool C hC.1 (finiteColumns (Fintype.piFinset S)))
+      (fun I => if IsCoprime C I then finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (C*I) else 0) f W K)/(Traw*∏ i,P i)≤
+      ((actualAllocations S C).card:ℝ)*∑ B : actualAllocations S C,
+        (‖frozenCoefficient B C R ν Wslot P‖^2/rawReduction B P)*
+          ((sourceRestrictedEnergy keep
+            (finiteColumns (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1))
+            (finiteColumnCoefficient
+              (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+              (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)) f W K)/remainingRaw B Traw P) := by
+  have h := original_restricted_child_energy S hS hp C R s hC hsC ν Wslot P W₁ W₂
+    X₁ X₂ Y₁ Y₂ B₁ B₂ f keep W K hK hW
+  have htotal : 0< Traw*∏ i,P i := mul_pos hTraw (Finset.prod_pos (fun i _ => hP i))
+  apply (div_le_div_of_nonneg_right h htotal.le).trans_eq
+  rw [mul_div_assoc,Finset.sum_div]
+  apply congrArg (fun x : ℝ => ((actualAllocations S C).card:ℝ)*x)
+  apply Finset.sum_congr rfl
+  intro B hB
+  have hb := (allocation_data S C B (Finset.mem_filter.mp B.property).1).1
+  have hr := raw_scale_identity B hb Traw P
+  have hpR := rawReduction_pos B hb P hP
+  have hpL : 0< remainingRaw B Traw P := by
+    apply (mul_pos_iff_of_pos_right hpR).mp
+    exact hr.symm ▸ htotal
+  have alg (d e n r l : ℝ) (hr : 0< r) (hl : 0< l) (hn : l*r=n) :
+      d*e/n=(d/r)*(e/l) := by
+    rw [←hn]
+    field_simp [hr.ne',hl.ne']
+  exact alg _ _ _ _ _ hpR hpL hr
+
+theorem restricted_child_common_saving (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (C R s : Ideal O) (hC : Supported C) (hsC : s∣C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (Traw : ℝ) (hTraw : 0< Traw) (hP : ∀ i,0< P i)
+    (M : ι → ℝ) (hν : ∀ i I,‖ν i I‖≤1) (hWnorm : ∀ i x,‖Wslot i x‖≤ M i)
+    (hM : ∀ i,1≤ M i) (a b : ℝ) (ha : 0< a)
+    (hslot : ∀ i,Function.support (Wslot i)⊆Set.Icc a b)
+    (f : Ideal O → ℂ) (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    (sourceRestrictedEnergy keep (residualPool C hC.1 (finiteColumns (Fintype.piFinset S)))
+      (fun I => if IsCoprime C I then finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s) (C*I) else 0) f W K)/(Traw*∏ i,P i)≤
+      ((actualAllocations S C).card:ℝ)*
+        (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))*
+          ∑ B : actualAllocations S C, ((sourceRestrictedEnergy keep
+            (finiteColumns (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1))
+            (finiteColumnCoefficient
+              (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+              (liveProfile B C R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂)) f W K)/remainingRaw B Traw P) := by
+  have h := normalized_restricted_child_energy S hS hp C R s hC hsC ν Wslot P W₁ W₂
+    X₁ X₂ Y₁ Y₂ B₁ B₂ Traw hTraw hP f keep W K hK hW
+  apply h.trans
+  rw [mul_assoc]
+  apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+  rw [Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro B hB
+  have hb := (allocation_data S C B (Finset.mem_filter.mp B.property).1).1
+  have hprod : finiteTupleProduct (B : Tuple ι)=C := (Finset.mem_filter.mp B.property).2
+  have hc := frozen_normalized_cost (ι:=ι) (B : Tuple ι) hb C R hC.1 hprod ν Wslot P M hP hν hWnorm hM a b ha hslot
+  apply mul_le_mul_of_nonneg_right hc
+  have hr := raw_scale_identity B hb Traw P
+  have hpR := rawReduction_pos B hb P hP
+  have htotal : 0< Traw*∏ i,P i := mul_pos hTraw (Finset.prod_pos (fun i _ => hP i))
+  have hpL : 0< remainingRaw B Traw P := (mul_pos_iff_of_pos_right hpR).mp (hr.symm ▸ htotal)
+  exact div_nonneg (sourceRestrictedEnergy_nonneg keep _ _ f W K hK hW) hpL.le
+
+end CenteredMomentRestrictedSourceNormalization
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondSourceCost
+open HeckeFamily CanonicalQuadraticSieve CenteredMomentSourceRow
+open CenteredMomentHeckeColumnWindow CenteredMomentSecondSectorEnergy CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRestrictedSource
+open CenteredMomentRestrictedEnergy CenteredMomentSourceLiveColumn CenteredMomentSourceProfileMass
+open CenteredMomentSourceMass CenteredMomentAddedZeroUniform CenteredMomentCommonAllocationSum
+open CenteredMomentAmplificationLiveMask CenteredMomentFirstSectors RayFourExpansion
+open CenteredMomentSecondLiveEnergy CenteredMomentRestrictedSourceNormalization
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι]
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem source_divisor_common_saving (τ : Character)
+    (S : (ι ⊕ Fin 2) → Finset (Ideal O))
+    (hS : ∀ i,∀ I∈S i,I≠0) (hp : ∀ i,∀ I∈S (Sum.inl i),Prime I)
+    (C R s : Ideal O) (hC : Supported C) (hsC : s∣C)
+    (ν : ι → Ideal O → ℂ) (Wslot : ι → ℝ → ℂ) (P : ι → ℝ)
+    (W₁ W₂ : ℝ → ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ L : Ideal O) (t : ℝ)
+    (Traw : ℝ) (hTraw : 0< Traw) (hP : ∀ i,0< P i)
+    (M : ι → ℝ) (hν : ∀ i I,‖ν i I‖≤1) (hWnorm : ∀ i x,‖Wslot i x‖≤ M i)
+    (hM : ∀ i,1≤ M i) (a b : ℝ) (ha : 0< a)
+    (hslot : ∀ i,Function.support (Wslot i)⊆Set.Icc a b)
+    (keep : O → Prop) (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K)
+    (hW : ∀ z : O,0≤(W (‖ringComplex z‖^2/K)).re) :
+    let Q := finiteColumns (Fintype.piFinset S)
+    let β := finiteColumnCoefficient (Fintype.piFinset S)
+      (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)
+    sourceRestrictedEnergy keep (residualPool C hC.1 Q)
+      (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+      (heightCoeff τ t) W K/(Traw*∏ i,P i)≤
+      ((actualAllocations S C).card:ℝ)*
+        (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))*
+          ∑ B : actualAllocations S C, (sourceRestrictedEnergy keep
+            (finiteColumns (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1))
+            (finiteColumnCoefficient
+              (liveBox S B (allocation_data S C B (Finset.mem_filter.mp B.property).1).1)
+              (maskedLiveProfile B C R L ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂))
+            (heightCoeff τ t) W K)/CenteredMomentCommonRawScale.remainingRaw B Traw P := by
+  dsimp only
+  have he := restricted_child_common_saving S hS hp C R s hC hsC
+    ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ Traw hTraw hP M hν hWnorm hM a b ha hslot
+    (fun I => (if L∣I then 1 else 0)*heightCoeff τ t I) keep W K hK hW
+  simp_rw [live_divisor_energy] at he
+  refine le_trans ?_ he
+  apply le_of_eq
+  congr 1
+  unfold sourceRestrictedEnergy
+  congr 1
+  funext I
+  dsimp only
+  by_cases hc : IsCoprime C I.val <;> by_cases hd : L ∣ I.val <;>
+    simp only [hc, hd, and_true, and_false, true_and, false_and,
+      ite_true, ite_false, zero_mul, mul_zero, one_mul]
+
+end CenteredMomentSecondSourceCost
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentCanonicalRetainedSource
+open CanonicalQuadraticSieve CenteredMomentFirstSectors
+open HeckeFamily  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceRectangle CenteredMomentSourceMass CenteredMomentSourceProfileMass
+open CenteredMomentSourceRow CenteredMomentHeckeColumnWindow CenteredMomentDivisorRetained
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRaw
+open CenteredMomentRestrictedSource CenteredMomentRestrictedEnergy
+open CenteredMomentSourceLiveColumn CenteredMomentCommonAllocationSum
+open CenteredMomentAmplificationLiveMask CenteredMomentCommonProfile CenteredMomentAddedZeroUniform
+open CenteredMomentCommonRawScale CenteredMomentRestrictedSourceNormalization
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def positiveChildren (η : Character) (t : ℝ) (slots : ι→Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ) : ℝ :=
+  ∑ a : Allocation L (Finset.univ : Finset (ι⊕Fin 2)),
+    ((2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P)*
+      ∑' z:O,(if keep z then (Φ (‖ringComplex z‖^2/K)).re else 0)*
+        (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots
+          (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) P L a W₁ W₂
+          (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+         ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots
+          (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) P L a W₁ W₂
+          (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2)
+
+theorem positiveChildren_nonneg (η : Character) (t : ℝ) (slots : ι→Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+    (hP : ∀ i,0< P i) (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ)
+    (hΦ : ∀ z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) :
+    0≤ positiveChildren η t slots R L ν Wslot P M W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K := by
+  apply Finset.sum_nonneg
+  intro a _
+  apply mul_nonneg
+  · apply div_nonneg
+    · exact mul_nonneg (by positivity) (sq_nonneg _)
+    · exact (mul_pos (selectedNorm_pos L a) (Finset.prod_pos (fun i _=> hP i))).le
+  · apply tsum_nonneg
+    intro z
+    apply mul_nonneg
+    · split_ifs;exact hΦ z;exact le_rfl
+    · exact add_nonneg (sq_nonneg _) (sq_nonneg _)
+
+def SmoothedBound (ι : Type*) [Fintype ι] [DecidableEq ι] (D ε : ℝ) : Prop :=
+∀ (η : Character) (t : ℝ)
+      (slots : ι→Finset (Ideal O)),(∀ i,∀ I∈slots i,Prime I) →
+    ∀ (S₁ S₂ : Finset (Ideal O)) (R L : Ideal O),Squarefree L →
+    ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i,0≤ M i) →
+      (∀ i,∀ I∈slots i,‖ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)‖≤ M i) →
+    ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O),
+      B₁≠0 → B₂≠0 → Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage S₁ W₁ B₁ X₁ Y₁ → PlainCoverage S₂ W₂ B₂ X₂ Y₂ →
+    ∀(keep:O→Prop) (Φ:𝓢(ℝ,ℂ)) (K:ℝ),0< K →
+      (∀z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q := finiteColumns (tuplePool slots S₁ S₂)
+      let β := finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+      let raw := T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      sourceRestrictedEnergy keep Q β (heightCoeff η t) Φ K/(raw*∏i,P i)≤
+      D*(Ideal.absNorm L:ℝ)^ε*
+        positiveChildren η t slots R L ν Wslot P M W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K
+
+theorem uniform_smoothed_bound (ε : ℝ) (hε : 0<ε) :
+    ∃ D:ℝ,0< D ∧ ∀ J:Finset ι,SmoothedBound J D ε := by
+  have hex (J:Finset ι) : ∃ D:ℝ,0< D ∧ SmoothedBound J D ε := by
+    simpa only [SmoothedBound,positiveChildren] using
+      CenteredMomentSmoothedRetainedSource.source_plain_to_smoothed_retained
+        (ι:=J) (Fintype.card ι) (by simpa using Finset.card_le_univ J) ε hε
+  choose D hD hbound using hex
+  let C:ℝ:=1+∑ J:Finset ι,D J
+  have hs:0≤∑ J:Finset ι,D J:=Finset.sum_nonneg (fun J _=>(hD J).le)
+  have hC:0< C:=by dsimp [C];linarith
+  have hDC (J:Finset ι):D J≤ C:=by
+    have hh:=Finset.single_le_sum (fun J _=>(hD J).le) (Finset.mem_univ J)
+    dsimp [C];linarith
+  refine ⟨C,hC,?_⟩
+  intro J η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ keep Φ K hK hΦ
+  have hh:=hbound J η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ keep Φ K hK hΦ
+  exact hh.trans (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_right (hDC J) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+    (positiveChildren_nonneg η t slots R L ν Wslot P M hP W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K hΦ))
+
+omit [DecidableEq ι] in
+
+theorem live_residual_pool (S : (ι⊕Fin 2)→Finset (Ideal O)) (B : Tuple ι)
+    (hB : ∀ j,B j≠0) (i : liveIndices B) :
+    residualPool (B (Sum.inl i.val)) (hB _) (S (Sum.inl i.val))=S (Sum.inl i.val) := by
+  ext I
+  rw [mem_residualPool,(Finset.mem_filter.mp i.property).2,one_mul]
+
+omit [DecidableEq ι] in
+theorem liveBox_original_pools (S : (ι⊕Fin 2)→Finset (Ideal O)) (B : Tuple ι)
+    (hB : ∀ j,B j≠0) :
+    liveBox S B hB=tuplePool (fun i:liveIndices B=> S (Sum.inl i.val))
+      (residualPool (B (Sum.inr 0)) (hB _) (S (Sum.inr 0)))
+      (residualPool (B (Sum.inr 1)) (hB _) (S (Sum.inr 1))) := by
+  rw [liveBox_eq_tuplePool]
+  simp_rw [live_residual_pool]
+
+def commonPositiveChildren (τ : Character) (t : ℝ)
+    (S : (ι⊕Fin 2)→Finset (Ideal O)) (B : Tuple ι) (C R L : Ideal O)
+    (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ) : ℝ :=
+  positiveChildren τ t (fun i:liveIndices B=> S (Sum.inl i.val)) (R*C) L
+    (fun i=>ν i.val) (fun i=> Wslot i.val) (fun i=> P i.val) (fun i=> M i.val)
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ (B₁*B (Sum.inr 0)) (B₂*B (Sum.inr 1)) keep Φ K
+
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem canonical_source_to_positive (ε : ℝ) (hε : 0<ε) :
+    ∃ D:ℝ,0< D ∧ ∀ (τ : Character)
+      (S : (ι⊕Fin 2)→Finset (Ideal O)),
+      (∀ j,∀ I∈S j,I≠0) → (∀ i,∀ I∈S (Sum.inl i),Prime I) →
+      ∀ (C R s : Ideal O) (hC : Supported C),s∣C →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i I,‖ν i I‖≤1) → (∀ i x,‖Wslot i x‖≤ M i) → (∀ i,1≤ M i) →
+      ∀ (a b : ℝ),0< a → (∀ i,Function.support (Wslot i)⊆Set.Icc a b) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ L : Ideal O),
+      B₁≠0 → B₂≠0 → Squarefree L →
+      Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage (S (Sum.inr 0)) W₁ B₁ X₁ Y₁ →
+      PlainCoverage (S (Sum.inr 1)) W₂ B₂ X₂ Y₂ →
+      ∀ (t : ℝ) (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ),0< K →
+      (∀ z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q:=finiteColumns (Fintype.piFinset S)
+      let β:=finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)
+      let raw:=T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      sourceRestrictedEnergy keep (residualPool C hC.1 Q)
+        (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+        (heightCoeff τ t) Φ K/(raw*∏ i,P i)≤
+        ((actualAllocations S C).card:ℝ)*
+          (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))*
+          D*(Ideal.absNorm L:ℝ)^ε*
+          ∑ B:actualAllocations S C,
+            commonPositiveChildren τ t S B C R L ν Wslot P M W₁ W₂
+              b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K := by
+  obtain ⟨D,hD,hbound⟩:=uniform_smoothed_bound (ι:=ι) ε hε
+  refine ⟨D,hD,?_⟩
+  intro τ S hS hp C R s hC hsC ν Wslot P M hP hν hWnorm hM a b ha hslot
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ L hB₁ hB₂ hL hs₁ hs₂
+    hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ t keep Φ K hK hΦ
+  dsimp only
+  have hbn (I:Ideal O) (hI:I≠0):(0:ℝ)< Ideal.absNorm I:=by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  have hraw:0< T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂):=
+    div_pos (hXT ▸ mul_pos hX₁ hX₂) (mul_pos (hbn B₁ hB₁) (hbn B₂ hB₂))
+  have hcommon:=CenteredMomentSecondSourceCost.source_divisor_common_saving τ S hS hp C R s hC hsC
+    ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L t _ hraw hP M hν hWnorm hM a b ha hslot keep Φ K hK hΦ
+  dsimp only at hcommon
+  refine hcommon.trans ?_
+  let pref:ℝ:=((actualAllocations S C).card:ℝ)*
+    (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))
+  have hpref:0≤ pref:=by dsimp [pref];positivity
+  change pref*_≤ pref*D*(Ideal.absNorm L:ℝ)^ε*_
+  calc
+    _ ≤ pref*∑ B:actualAllocations S C,
+      D*(Ideal.absNorm L:ℝ)^ε*commonPositiveChildren τ t S B C R L ν Wslot P M
+        W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K := by
+      apply mul_le_mul_of_nonneg_left ?_ hpref
+      apply Finset.sum_le_sum
+      intro B _
+      have hB:= (allocation_data S C B (Finset.mem_filter.mp B.property).1).1
+      have hcoeff (i:liveIndices (B:Tuple ι)) (I:Ideal O) :
+          ‖ν i.val I*Wslot i.val ((Ideal.absNorm I:ℝ)/P i.val)‖≤ M i.val := by
+        rw [norm_mul]
+        calc
+          _ ≤ 1*M i.val := mul_le_mul (hν _ _) (hWnorm _ _) (norm_nonneg _) (by norm_num)
+          _ = _ := one_mul _
+      have hh:=hbound (liveIndices (B:Tuple ι)) τ t
+        (fun i:liveIndices (B:Tuple ι)=> S (Sum.inl i.val))
+        (fun i I hI=> hp i.val I hI)
+        (residualPool (B.val (Sum.inr 0)) (hB _) (S (Sum.inr 0)))
+        (residualPool (B.val (Sum.inr 1)) (hB _) (S (Sum.inr 1)))
+        (R*C) L hL (fun i=>ν i.val) (fun i=> Wslot i.val) (fun i=> P i.val) (fun i=> M i.val)
+        (fun i=> hP i.val) (fun i=>(hM i.val).trans' zero_le_one) (fun i I _=> hcoeff i I)
+        W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T (B₁*B.val (Sum.inr 0)) (B₂*B.val (Sum.inr 1))
+        (mul_ne_zero hB₁ (hB _)) (mul_ne_zero hB₂ (hB _)) hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT
+        (plainCoverage_residualPool _ W₁ B₁ _ (hB _) X₁ Y₁ hcov₁)
+        (plainCoverage_residualPool _ W₂ B₂ _ (hB _) X₂ Y₂ hcov₂) keep Φ K hK hΦ
+      dsimp only at hh
+      rw [remainingRaw_source B hB B₁ B₂ hB₁ hB₂ T P,liveBox_original_pools]
+      exact hh
+    _ = _ := by rw [←Finset.mul_sum];ring
+
+def CanonicalBound (ι : Type*) [Fintype ι] [DecidableEq ι] (D ε : ℝ) : Prop :=
+∀ (τ : Character)
+      (S : (ι⊕Fin 2)→Finset (Ideal O)),
+      (∀ j,∀ I∈S j,I≠0) → (∀ i,∀ I∈S (Sum.inl i),Prime I) →
+      ∀ (C R s : Ideal O) (hC : Supported C),s∣C →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i I,‖ν i I‖≤1) → (∀ i x,‖Wslot i x‖≤ M i) → (∀ i,1≤ M i) →
+      ∀ (a b : ℝ),0< a → (∀ i,Function.support (Wslot i)⊆Set.Icc a b) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ L : Ideal O),
+      B₁≠0 → B₂≠0 → Squarefree L →
+      Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage (S (Sum.inr 0)) W₁ B₁ X₁ Y₁ →
+      PlainCoverage (S (Sum.inr 1)) W₂ B₂ X₂ Y₂ →
+      ∀ (t : ℝ) (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ),0< K →
+      (∀ z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q:=finiteColumns (Fintype.piFinset S)
+      let β:=finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)
+      let raw:=T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      sourceRestrictedEnergy keep (residualPool C hC.1 Q)
+        (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+        (heightCoeff τ t) Φ K/(raw*∏ i,P i)≤
+        ((actualAllocations S C).card:ℝ)*
+          (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))*
+          D*(Ideal.absNorm L:ℝ)^ε*
+          ∑ B:actualAllocations S C,
+            commonPositiveChildren τ t S B C R L ν Wslot P M W₁ W₂
+              b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K
+
+theorem uniform_canonical_source_to_positive (ε : ℝ) (hε : 0<ε) :
+    ∃ D:ℝ,0< D ∧ ∀ J:Finset ι,CanonicalBound J D ε := by
+  have hex (J:Finset ι):∃ D:ℝ,0< D ∧ CanonicalBound J D ε:=by
+    simpa only [CanonicalBound] using canonical_source_to_positive (ι:=J) ε hε
+  choose D hD hbound using hex
+  let E:ℝ:=1+∑ J:Finset ι,D J
+  have hs:0≤∑ J:Finset ι,D J:=Finset.sum_nonneg (fun J _=>(hD J).le)
+  have hE:0< E:=by dsimp [E];linarith
+  have hDE (J:Finset ι):D J≤ E:=by
+    have hh:=Finset.single_le_sum (fun J _=>(hD J).le) (Finset.mem_univ J)
+    dsimp [E];linarith
+  refine ⟨E,hE,?_⟩
+  intro J τ S hS hp C R s hC hsC ν Wslot P M hP hν hWnorm hM a b ha hslot
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ L hB₁ hB₂ hL hs₁ hs₂
+    hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ t keep Φ K hK hΦ
+  have hh:=hbound J τ S hS hp C R s hC hsC ν Wslot P M hP hν hWnorm hM a b ha hslot
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ L hB₁ hB₂ hL hs₁ hs₂
+    hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ t keep Φ K hK hΦ
+  refine hh.trans ?_
+  have hsum:0≤∑ B:actualAllocations S C,
+      commonPositiveChildren τ t S B C R L ν Wslot P M W₁ W₂
+        b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K:=by
+    apply Finset.sum_nonneg
+    intro B _
+    exact positiveChildren_nonneg (ι:=liveIndices (B.val : Tuple J)) τ t
+      (fun i=> S (Sum.inl i.val)) (R*C) L (fun i=>ν i.val) (fun i=> Wslot i.val)
+      (fun i=> P i.val) (fun i=> M i.val) (fun i=> hP i.val)
+      W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ (B₁*B.val (Sum.inr 0)) (B₂*B.val (Sum.inr 1)) keep Φ K hΦ
+  apply mul_le_mul_of_nonneg_right ?_ hsum
+  apply mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+  apply mul_le_mul_of_nonneg_left (hDE J)
+  positivity
+
+end CenteredMomentCanonicalRetainedSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentActiveCanonicalSource
+open CenteredMomentActiveAllocation
+open CanonicalQuadraticSieve CenteredMomentFirstSectors
+open HeckeFamily  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceRectangle CenteredMomentSourceMass CenteredMomentSourceProfileMass
+open CenteredMomentSourceRow CenteredMomentHeckeColumnWindow CenteredMomentDivisorRetained
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRaw
+open CenteredMomentRestrictedSource CenteredMomentRestrictedEnergy
+open CenteredMomentSourceLiveColumn CenteredMomentCommonAllocationSum
+open CenteredMomentAmplificationLiveMask CenteredMomentCommonProfile CenteredMomentAddedZeroUniform
+open CenteredMomentCommonRawScale CenteredMomentRestrictedSourceNormalization
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def positiveChildren (η : Character) (t : ℝ) (slots : ι→Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ) : ℝ :=
+  ∑ a ∈ activeAllocations η (fixedBadMask*cubicIdealGenerator R) 1 t slots
+    (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) L W₁ W₂
+    (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂) (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂),
+    ((2*(max 1 b₁*max 1 b₂))*(∏ i∈frozenIndices L a,M i)^2/formalReductionFactor L a P)*
+      ∑' z:O,(if keep z then (Φ (‖ringComplex z‖^2/K)).re else 0)*
+        (‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots
+          (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) P L a W₁ W₂
+          (X₁/Ideal.absNorm B₁) (X₂/Ideal.absNorm B₂)‖^2+
+         ‖allocatedPositiveRow η (fixedBadMask*cubicIdealGenerator R) 1 z t slots
+          (fun i I=>ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) P L a W₁ W₂
+          (Y₁/Ideal.absNorm B₁) (Y₂/Ideal.absNorm B₂)‖^2)
+
+theorem positiveChildren_nonneg (η : Character) (t : ℝ) (slots : ι→Finset (Ideal O))
+    (R L : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+    (hP : ∀ i,0< P i) (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ)
+    (hΦ : ∀ z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) :
+    0≤ positiveChildren η t slots R L ν Wslot P M W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K := by
+  apply Finset.sum_nonneg
+  intro a _
+  apply mul_nonneg
+  · apply div_nonneg
+    · exact mul_nonneg (by positivity) (sq_nonneg _)
+    · exact (mul_pos (selectedNorm_pos L a) (Finset.prod_pos (fun i _=> hP i))).le
+  · apply tsum_nonneg
+    intro z
+    apply mul_nonneg
+    · split_ifs;exact hΦ z;exact le_rfl
+    · exact add_nonneg (sq_nonneg _) (sq_nonneg _)
+
+def SmoothedBound (ι : Type*) [Fintype ι] [DecidableEq ι] (D ε : ℝ) : Prop :=
+∀ (η : Character) (t : ℝ)
+      (slots : ι→Finset (Ideal O)),(∀ i,∀ I∈slots i,Prime I) →
+    ∀ (S₁ S₂ : Finset (Ideal O)) (R L : Ideal O),Squarefree L →
+    ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i,0≤ M i) →
+      (∀ i,∀ I∈slots i,‖ν i I*Wslot i ((Ideal.absNorm I:ℝ)/P i)‖≤ M i) →
+    ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ : Ideal O),
+      B₁≠0 → B₂≠0 → Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage S₁ W₁ B₁ X₁ Y₁ → PlainCoverage S₂ W₂ B₂ X₂ Y₂ →
+    ∀(keep:O→Prop) (Φ:𝓢(ℝ,ℂ)) (K:ℝ),0< K →
+      (∀z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q := finiteColumns (tuplePool slots S₁ S₂)
+      let β := finiteColumnCoefficient (tuplePool slots S₁ S₂)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L)
+      let raw := T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      sourceRestrictedEnergy keep Q β (heightCoeff η t) Φ K/(raw*∏i,P i)≤
+      D*(Ideal.absNorm L:ℝ)^ε*
+        positiveChildren η t slots R L ν Wslot P M W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K
+
+theorem uniform_smoothed_bound (ε : ℝ) (hε : 0<ε) :
+    ∃ D:ℝ,0< D ∧ ∀ J:Finset ι,SmoothedBound J D ε := by
+  have hex (J:Finset ι) : ∃ D:ℝ,0< D ∧ SmoothedBound J D ε := by
+    simpa only [SmoothedBound,positiveChildren] using
+      CenteredMomentActiveSmoothedSource.source_plain_to_active_smoothed
+        (ι:=J) (Fintype.card ι) (by simpa using Finset.card_le_univ J) ε hε
+  choose D hD hbound using hex
+  let C:ℝ:=1+∑ J:Finset ι,D J
+  have hs:0≤∑ J:Finset ι,D J:=Finset.sum_nonneg (fun J _=>(hD J).le)
+  have hC:0< C:=by dsimp [C];linarith
+  have hDC (J:Finset ι):D J≤ C:=by
+    have hh:=Finset.single_le_sum (fun J _=>(hD J).le) (Finset.mem_univ J)
+    dsimp [C];linarith
+  refine ⟨C,hC,?_⟩
+  intro J η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ keep Φ K hK hΦ
+  have hh:=hbound J η t slots hp S₁ S₂ R L hL ν Wslot P M hP hM hcoeff W₁ W₂
+    b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ hB₁ hB₂ hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ keep Φ K hK hΦ
+  exact hh.trans (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_right (hDC J) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+    (positiveChildren_nonneg η t slots R L ν Wslot P M hP W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K hΦ))
+
+omit [DecidableEq ι] in
+
+def commonPositiveChildren (τ : Character) (t : ℝ)
+    (S : (ι⊕Fin 2)→Finset (Ideal O)) (B : Tuple ι) (C R L : Ideal O)
+    (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ) : ℝ :=
+  positiveChildren τ t (fun i:liveIndices B=> S (Sum.inl i.val)) (R*C) L
+    (fun i=>ν i.val) (fun i=> Wslot i.val) (fun i=> P i.val) (fun i=> M i.val)
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ (B₁*B (Sum.inr 0)) (B₂*B (Sum.inr 1)) keep Φ K
+
+local instance : DecidableEq (ι ⊕ Fin 2) := Classical.decEq _
+
+theorem canonical_source_to_positive (ε : ℝ) (hε : 0<ε) :
+    ∃ D:ℝ,0< D ∧ ∀ (τ : Character)
+      (S : (ι⊕Fin 2)→Finset (Ideal O)),
+      (∀ j,∀ I∈S j,I≠0) → (∀ i,∀ I∈S (Sum.inl i),Prime I) →
+      ∀ (C R s : Ideal O) (hC : Supported C),s∣C →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i I,‖ν i I‖≤1) → (∀ i x,‖Wslot i x‖≤ M i) → (∀ i,1≤ M i) →
+      ∀ (a b : ℝ),0< a → (∀ i,Function.support (Wslot i)⊆Set.Icc a b) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ L : Ideal O),
+      B₁≠0 → B₂≠0 → Squarefree L →
+      Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage (S (Sum.inr 0)) W₁ B₁ X₁ Y₁ →
+      PlainCoverage (S (Sum.inr 1)) W₂ B₂ X₂ Y₂ →
+      ∀ (t : ℝ) (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ),0< K →
+      (∀ z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q:=finiteColumns (Fintype.piFinset S)
+      let β:=finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)
+      let raw:=T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      sourceRestrictedEnergy keep (residualPool C hC.1 Q)
+        (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+        (heightCoeff τ t) Φ K/(raw*∏ i,P i)≤
+        ((actualAllocations S C).card:ℝ)*
+          (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))*
+          D*(Ideal.absNorm L:ℝ)^ε*
+          ∑ B:actualAllocations S C,
+            commonPositiveChildren τ t S B C R L ν Wslot P M W₁ W₂
+              b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K := by
+  obtain ⟨D,hD,hbound⟩:=uniform_smoothed_bound (ι:=ι) ε hε
+  refine ⟨D,hD,?_⟩
+  intro τ S hS hp C R s hC hsC ν Wslot P M hP hν hWnorm hM a b ha hslot
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ L hB₁ hB₂ hL hs₁ hs₂
+    hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ t keep Φ K hK hΦ
+  dsimp only
+  have hbn (I:Ideal O) (hI:I≠0):(0:ℝ)< Ideal.absNorm I:=by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  have hraw:0< T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂):=
+    div_pos (hXT ▸ mul_pos hX₁ hX₂) (mul_pos (hbn B₁ hB₁) (hbn B₂ hB₂))
+  have hcommon:=CenteredMomentSecondSourceCost.source_divisor_common_saving τ S hS hp C R s hC hsC
+    ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ L t _ hraw hP M hν hWnorm hM a b ha hslot keep Φ K hK hΦ
+  dsimp only at hcommon
+  refine hcommon.trans ?_
+  let pref:ℝ:=((actualAllocations S C).card:ℝ)*
+    (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))
+  have hpref:0≤ pref:=by dsimp [pref];positivity
+  change pref*_≤ pref*D*(Ideal.absNorm L:ℝ)^ε*_
+  calc
+    _ ≤ pref*∑ B:actualAllocations S C,
+      D*(Ideal.absNorm L:ℝ)^ε*commonPositiveChildren τ t S B C R L ν Wslot P M
+        W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K := by
+      apply mul_le_mul_of_nonneg_left ?_ hpref
+      apply Finset.sum_le_sum
+      intro B _
+      have hB:= (allocation_data S C B (Finset.mem_filter.mp B.property).1).1
+      have hcoeff (i:liveIndices (B:Tuple ι)) (I:Ideal O) :
+          ‖ν i.val I*Wslot i.val ((Ideal.absNorm I:ℝ)/P i.val)‖≤ M i.val := by
+        rw [norm_mul]
+        calc
+          _ ≤ 1*M i.val := mul_le_mul (hν _ _) (hWnorm _ _) (norm_nonneg _) (by norm_num)
+          _ = _ := one_mul _
+      have hh:=hbound (liveIndices (B:Tuple ι)) τ t
+        (fun i:liveIndices (B:Tuple ι)=> S (Sum.inl i.val))
+        (fun i I hI=> hp i.val I hI)
+        (residualPool (B.val (Sum.inr 0)) (hB _) (S (Sum.inr 0)))
+        (residualPool (B.val (Sum.inr 1)) (hB _) (S (Sum.inr 1)))
+        (R*C) L hL (fun i=>ν i.val) (fun i=> Wslot i.val) (fun i=> P i.val) (fun i=> M i.val)
+        (fun i=> hP i.val) (fun i=>(hM i.val).trans' zero_le_one) (fun i I _=> hcoeff i I)
+        W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T (B₁*B.val (Sum.inr 0)) (B₂*B.val (Sum.inr 1))
+        (mul_ne_zero hB₁ (hB _)) (mul_ne_zero hB₂ (hB _)) hs₁ hs₂ hX₁ hX₂ hY₁ hY₂ hXT hYT
+        (plainCoverage_residualPool _ W₁ B₁ _ (hB _) X₁ Y₁ hcov₁)
+        (plainCoverage_residualPool _ W₂ B₂ _ (hB _) X₂ Y₂ hcov₂) keep Φ K hK hΦ
+      dsimp only at hh
+      rw [remainingRaw_source B hB B₁ B₂ hB₁ hB₂ T P,CenteredMomentCanonicalRetainedSource.liveBox_original_pools]
+      exact hh
+    _ = _ := by rw [←Finset.mul_sum];ring
+
+def CanonicalBound (ι : Type*) [Fintype ι] [DecidableEq ι] (D ε : ℝ) : Prop :=
+∀ (τ : Character)
+      (S : (ι⊕Fin 2)→Finset (Ideal O)),
+      (∀ j,∀ I∈S j,I≠0) → (∀ i,∀ I∈S (Sum.inl i),Prime I) →
+      ∀ (C R s : Ideal O) (hC : Supported C),s∣C →
+      ∀ (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ),
+      (∀ i,0< P i) → (∀ i I,‖ν i I‖≤1) → (∀ i x,‖Wslot i x‖≤ M i) → (∀ i,1≤ M i) →
+      ∀ (a b : ℝ),0< a → (∀ i,Function.support (Wslot i)⊆Set.Icc a b) →
+      ∀ (W₁ W₂ : ℝ→ℂ) (b₁ b₂ X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ L : Ideal O),
+      B₁≠0 → B₂≠0 → Squarefree L →
+      Function.support W₁⊆Set.Iic b₁ → Function.support W₂⊆Set.Iic b₂ →
+      0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → X₁*X₂=T → Y₁*Y₂=T →
+      PlainCoverage (S (Sum.inr 0)) W₁ B₁ X₁ Y₁ →
+      PlainCoverage (S (Sum.inr 1)) W₂ B₂ X₂ Y₂ →
+      ∀ (t : ℝ) (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ),0< K →
+      (∀ z:O,0≤(Φ (‖ringComplex z‖^2/K)).re) →
+      let Q:=finiteColumns (Fintype.piFinset S)
+      let β:=finiteColumnCoefficient (Fintype.piFinset S)
+        (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)
+      let raw:=T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂)
+      sourceRestrictedEnergy keep (residualPool C hC.1 Q)
+        (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+        (heightCoeff τ t) Φ K/(raw*∏ i,P i)≤
+        ((actualAllocations S C).card:ℝ)*
+          (((∏ i,M i)^2*(max 1 b)^Fintype.card ι)/(Ideal.absNorm C:ℝ))*
+          D*(Ideal.absNorm L:ℝ)^ε*
+          ∑ B:actualAllocations S C,
+            commonPositiveChildren τ t S B C R L ν Wslot P M W₁ W₂
+              b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K
+
+theorem uniform_canonical_source_to_positive (ε : ℝ) (hε : 0<ε) :
+    ∃ D:ℝ,0< D ∧ ∀ J:Finset ι,CanonicalBound J D ε := by
+  have hex (J:Finset ι):∃ D:ℝ,0< D ∧ CanonicalBound J D ε:=by
+    simpa only [CanonicalBound] using canonical_source_to_positive (ι:=J) ε hε
+  choose D hD hbound using hex
+  let E:ℝ:=1+∑ J:Finset ι,D J
+  have hs:0≤∑ J:Finset ι,D J:=Finset.sum_nonneg (fun J _=>(hD J).le)
+  have hE:0< E:=by dsimp [E];linarith
+  have hDE (J:Finset ι):D J≤ E:=by
+    have hh:=Finset.single_le_sum (fun J _=>(hD J).le) (Finset.mem_univ J)
+    dsimp [E];linarith
+  refine ⟨E,hE,?_⟩
+  intro J τ S hS hp C R s hC hsC ν Wslot P M hP hν hWnorm hM a b ha hslot
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ L hB₁ hB₂ hL hs₁ hs₂
+    hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ t keep Φ K hK hΦ
+  have hh:=hbound J τ S hS hp C R s hC hsC ν Wslot P M hP hν hWnorm hM a b ha hslot
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ L hB₁ hB₂ hL hs₁ hs₂
+    hX₁ hX₂ hY₁ hY₂ hXT hYT hcov₁ hcov₂ t keep Φ K hK hΦ
+  refine hh.trans ?_
+  have hsum:0≤∑ B:actualAllocations S C,
+      commonPositiveChildren τ t S B C R L ν Wslot P M W₁ W₂
+        b₁ b₂ X₁ X₂ Y₁ Y₂ B₁ B₂ keep Φ K:=by
+    apply Finset.sum_nonneg
+    intro B _
+    exact positiveChildren_nonneg (ι:=liveIndices (B.val : Tuple J)) τ t
+      (fun i=> S (Sum.inl i.val)) (R*C) L (fun i=>ν i.val) (fun i=> Wslot i.val)
+      (fun i=> P i.val) (fun i=> M i.val) (fun i=> hP i.val)
+      W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ (B₁*B.val (Sum.inr 0)) (B₂*B.val (Sum.inr 1)) keep Φ K hΦ
+  apply mul_le_mul_of_nonneg_right ?_ hsum
+  apply mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+  apply mul_le_mul_of_nonneg_left (hDE J)
+  positivity
+
+end CenteredMomentActiveCanonicalSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentCommonRadialData
+open CenteredMomentEligibleEnergy CenteredMomentRadialEligibleEnergy
+open CenteredMomentSourceRectangle CenteredMomentSourceMass CenteredMomentSourceProfileMass
+open CenteredMomentSourceLiveColumn CenteredMomentCommonAllocationSum CenteredMomentCommonProfile
+open CenteredMomentAmplificationLiveMask CenteredMomentAddedZeroUniform CenteredMomentCommonRawScale
+open CenteredMomentRestrictedSource CenteredMomentSecondHeightFamily CenteredMomentHeckeColumnWindow
+open CenteredMomentFirstSectors  CanonicalQuadraticSieve
+local notation "O" => Eisenstein.O
+variable {ι:Type*} [Fintype ι] [DecidableEq ι]
+
+structure Input (ι:Type*) [Fintype ι] extends Data ι where
+  plain₁ : Finset (Ideal O)
+  plain₂ : Finset (Ideal O)
+  plain₁_ne : ∀I∈plain₁,I≠0
+  plain₂_ne : ∀I∈plain₂,I≠0
+  coverage₁ : PlainCoverage plain₁ W₁ 1 X₁ Y₁
+  coverage₂ : PlainCoverage plain₂ W₂ 1 X₂ Y₂
+  ν_bound : ∀i I,‖ν i I‖≤1
+  W_bound : ∀i x,‖W i x‖≤ M i
+  lower : ℝ
+  upper : ℝ
+  lower_pos : 0< lower
+  lower_le : ∀i,lower≤ lo i
+  upper_ge : ∀i,hi i≤ upper
+
+ def Input.pools (s:Input ι) : (ι⊕Fin 2)→Finset (Ideal O) :=
+  Sum.elim s.slots (fun j=> if j=0 then s.plain₁ else s.plain₂)
+
+omit [DecidableEq ι] in
+lemma Input.pools_ne (s:Input ι) (j:ι⊕Fin 2) : ∀I∈s.pools j,I≠0 := by
+  cases j with
+  | inl i => exact fun I hI=>(s.prime i I hI).ne_zero
+  | inr j =>
+    fin_cases j
+    · simpa [Input.pools] using s.plain₁_ne
+    · simpa [Input.pools] using s.plain₂_ne
+
+omit [DecidableEq ι] in
+lemma Input.slot_support (s:Input ι) (i:ι) : Function.support (s.W i)⊆Set.Icc s.lower s.upper :=
+  fun _x hx=>⟨(s.lower_le i).trans (s.support i hx).1,((s.support i hx).2).trans (s.upper_ge i)⟩
+
+omit [DecidableEq ι] in
+lemma alloc_ne (s:Input ι) (C:Ideal O) (B:actualAllocations s.pools C)
+    (j:ι⊕Fin 2) : B.val j≠0 :=
+  (allocation_data s.pools C B (Finset.mem_filter.mp B.property).1).1 j
+
+omit [DecidableEq ι] in
+lemma alloc_norm_pos (s:Input ι) (C:Ideal O) (B:actualAllocations s.pools C)
+    (j:ι⊕Fin 2) : (0:ℝ)< Ideal.absNorm (B.val j) := by
+  exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (alloc_ne s C B j))
+
+ def commonData (s:Input ι) (C R:Ideal O) (B:actualAllocations s.pools C) : Data (liveIndices B.val) where
+  η:=s.η
+  m:=fixedBadMask*cubicIdealGenerator (R*C)
+  A:=1
+  t:=s.t
+  slots:=fun i=> s.slots i.val
+  prime:=fun i I hI=> s.prime i.val I hI
+  ν:=fun i=> s.ν i.val
+  W:=fun i=> s.W i.val
+  lo:=fun i=> s.lo i.val
+  hi:=fun i=> s.hi i.val
+  P:=fun i=> s.P i.val
+  lo_pos:=fun i=> s.lo_pos i.val
+  P_pos:=fun i=> s.P_pos i.val
+  support:=fun i=> s.support i.val
+  W₁:=s.W₁
+  W₂:=s.W₂
+  X₁:=s.X₁/Ideal.absNorm (B.val (Sum.inr 0))
+  X₂:=s.X₂/Ideal.absNorm (B.val (Sum.inr 1))
+  Y₁:=s.Y₁/Ideal.absNorm (B.val (Sum.inr 0))
+  Y₂:=s.Y₂/Ideal.absNorm (B.val (Sum.inr 1))
+  M:=fun i=> s.M i.val
+  M_ge_one:=fun i=> s.M_ge_one i.val
+  coefficient_bound:=fun i I hI=> s.coefficient_bound i.val I hI
+  b₁:=s.b₁
+  b₂:=s.b₂
+  support₁:=s.support₁
+  support₂:=s.support₂
+  X₁_pos:=div_pos s.X₁_pos (alloc_norm_pos s C B _)
+  X₂_pos:=div_pos s.X₂_pos (alloc_norm_pos s C B _)
+  Y₁_pos:=div_pos s.Y₁_pos (alloc_norm_pos s C B _)
+  Y₂_pos:=div_pos s.Y₂_pos (alloc_norm_pos s C B _)
+  same_product:=by rw [div_mul_div_comm,div_mul_div_comm,s.same_product]
+  rows:=∅
+  weight:=fun _=>0
+  weight_nonneg:=by simp
+
+omit [DecidableEq ι] in
+lemma common_profile_le (s:Input ι) (C R:Ideal O) (B:actualAllocations s.pools C) :
+    (commonData s C R B).profileFactor≤ s.toData.profileFactor := by
+  unfold Data.profileFactor
+  change (2*(max 1 s.b₁*max 1 s.b₂))*(∏i:liveIndices B.val,s.M i.val)^2≤ _
+  rw [Finset.prod_coe_sort]
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  apply pow_le_pow_left₀ (Finset.prod_nonneg (fun i _=> zero_le_one.trans (s.M_ge_one i)))
+  exact Finset.prod_le_prod_of_subset_of_one_le (Finset.subset_univ _)
+    (fun i _=> zero_le_one.trans (s.M_ge_one i)) (fun i _ _=> s.M_ge_one i)
+
+end CenteredMomentCommonRadialData
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentAllocatedNaturalSource
+open HeckeFamily CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentNaturalRowSource CenteredMomentRetainedEnergy CenteredMomentRetainedProfile
+open CenteredMomentHeckeTwist CenteredMomentHeckeVolume CenteredMomentHeckeCancellation
+open CenteredMomentDivisorAllocation CenteredMomentDivisorExtraction CenteredMomentDivisorRectangle
+open CenteredMomentDivisorRaw CenteredMomentDivisorRetained
+local notation "O" => Eisenstein.O
+
+structure Plain where
+  W : ℝ→ℂ
+  a : ℝ
+  b : ℝ
+  a_pos : 0< a
+  support : Function.support W⊆Set.Icc a b
+  smooth : ContDiff ℝ ∞ W
+
+def Plain.profile (V : Plain) (U : ℝ) (hU : 0< U) (t : ℝ) : 𝓢(ℝ,ℂ) :=
+  if h : 1≤ U*V.b then retainedProfile V.W V.a V.b V.a_pos V.support V.smooth U hU h t else 0
+
+lemma Plain.profile_retained (V : Plain) (U : ℝ) (hU : 0< U) (t : ℝ) (h : 1≤ U*V.b) :
+    V.profile U hU t=retainedProfile V.W V.a V.b V.a_pos V.support V.smooth U hU h t := by
+  simp [Plain.profile,h]
+
+lemma Plain.profile_zero (V : Plain) (U : ℝ) (hU : 0< U) (t : ℝ) (h : U*V.b<1) :
+    V.profile U hU t=0 := by simp [Plain.profile,not_le.mpr h]
+
+lemma polynomial_zero (χ : Character) (X : ℝ) :
+    HeckeDyadic.polynomial χ false (0 : 𝓢(ℝ,ℂ)) X 0 0=0 := by
+  simp [HeckeDyadic.polynomial,HeckeDyadic.summand]
+
+theorem retained_normalized (η : Character) (z : O) (hz : z≠0) (R : Ideal O) (hR : R≠0)
+    {α : Type*} [Fintype α] [DecidableEq α] (V₁ V₂ : Plain)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) (hP : ∀i,0< P i)
+    (t U₁ U₂ : ℝ) (hU₁ : 0< U₁) (hU₂ : 0< U₂) :
+    retainedPositiveRow η (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z V₁.W V₂.W pool β P t U₁ U₂=
+      (((clippedScale U₁):ℂ)^(Complex.I*t)*((clippedScale U₂):ℂ)^(Complex.I*t))*
+        (HeckeDyadic.polynomial (excluded (naturalRow η z hz).character R) false
+          (V₁.profile U₁ hU₁ t) (clippedScale U₁) 0 0 *
+         HeckeDyadic.polynomial (excluded (naturalRow η z hz).character R) false
+          (V₂.profile U₂ hU₂ t) (clippedScale U₂) 0 0 *
+         ∏i,naturalSlot (excluded (naturalRow η z hz).character R) (pool i) (heightCoefficient (β i) t) (P i)) := by
+  by_cases h₁ : 1≤ U₁*V₁.b
+  · by_cases h₂ : 1≤ U₂*V₂.b
+    · rw [V₁.profile_retained U₁ hU₁ t h₁,V₂.profile_retained U₂ hU₂ t h₂]
+      exact original_retained_normalized (naturalRow η z hz) R hR _ _ _ _ _ _ V₁.a_pos V₂.a_pos
+        V₁.support V₂.support V₁.smooth V₂.smooth pool β P hP t U₁ U₂ hU₁ hU₂ h₁ h₂
+    · rw [original_retained_zero η _ 1 z V₁.W V₂.W V₁.b V₂.b
+        (fun _ h=>(V₁.support h).2) (fun _ h=>(V₂.support h).2) pool β P t U₁ U₂ hU₁ hU₂
+        (Or.inr (lt_of_not_ge h₂)),V₂.profile_zero U₂ hU₂ t (lt_of_not_ge h₂),polynomial_zero]
+      simp
+  · rw [original_retained_zero η _ 1 z V₁.W V₂.W V₁.b V₂.b
+      (fun _ h=>(V₁.support h).2) (fun _ h=>(V₂.support h).2) pool β P t U₁ U₂ hU₁ hU₂
+      (Or.inl (lt_of_not_ge h₁)),V₁.profile_zero U₁ hU₁ t (lt_of_not_ge h₁),polynomial_zero]
+    simp
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+def rawScale (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2))) (X : ℝ) (j : Fin 2) : ℝ :=
+  X/Ideal.absNorm (selectedPlain D a j)
+
+lemma rawScale_pos (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2)))
+    (X : ℝ) (hX : 0< X) (j : Fin 2) : 0< rawScale D a X j := by
+  apply div_pos hX
+  exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (selectedDivisor_ne_zero D Finset.univ a _))
+
+lemma raw_same_product (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2)))
+    (X₁ X₂ Y₁ Y₂ : ℝ) (h : X₁*X₂=Y₁*Y₂) :
+    rawScale D a X₁ 0*rawScale D a X₂ 1=rawScale D a Y₁ 0*rawScale D a Y₂ 1 := by
+  simp only [rawScale,div_mul_div_comm,h]
+
+theorem allocated_normalized (η : Character) (z : O) (hz : z≠0) (R : Ideal O) (hR : R≠0)
+    (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2)))
+    (V₁ V₂ : Plain) (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ) (hP : ∀i,0< P i)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂) :
+    allocatedPositiveRow η (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z t pool β P D a V₁.W V₂.W X₁ X₂=
+      (((clippedScale (rawScale D a X₁ 0)):ℂ)^(Complex.I*t)*
+       ((clippedScale (rawScale D a X₂ 1)):ℂ)^(Complex.I*t))*
+        (HeckeDyadic.polynomial (excluded (naturalRow η z hz).character R) false
+          (V₁.profile _ (rawScale_pos D a X₁ hX₁ 0) t) (clippedScale (rawScale D a X₁ 0)) 0 0 *
+         HeckeDyadic.polynomial (excluded (naturalRow η z hz).character R) false
+          (V₂.profile _ (rawScale_pos D a X₂ hX₂ 1) t) (clippedScale (rawScale D a X₂ 1)) 0 0 *
+         ∏i∈liveIndices D a,naturalSlot (excluded (naturalRow η z hz).character R)
+           (pool i) (heightCoefficient (β i) t) (P i)) := by
+  have h:=retained_normalized η z hz R hR V₁ V₂
+    (fun i : liveIndices D a=> pool i) (fun i : liveIndices D a=>β i) (fun i : liveIndices D a=> P i)
+    (fun i=> hP i) t _ _ (rawScale_pos D a X₁ hX₁ 0) (rawScale_pos D a X₂ hX₂ 1)
+  have hp': (∏i : liveIndices D a,naturalSlot (excluded (naturalRow η z hz).character R)
+      (pool i) (heightCoefficient (β i) t) (P i))=
+      ∏i∈liveIndices D a,naturalSlot (excluded (naturalRow η z hz).character R)
+      (pool i) (heightCoefficient (β i) t) (P i) := Finset.prod_coe_sort (liveIndices D a) (fun i : α=> naturalSlot (excluded (naturalRow η z hz).character R) (pool i) (heightCoefficient (β i) t) (P i))
+  rw [hp'] at h
+  exact h
+
+omit [Fintype α] [DecidableEq α] in
+
+theorem slot_controls (ν : α→Ideal O→ℂ) (W : α→ℝ→ℂ) (P b M : α→ℝ)
+    (hP : ∀i,0< P i) (hν : ∀i I,‖ν i I‖≤1)
+    (hW : ∀i x,‖W i x‖≤ M i) (hs : ∀i,Function.support (W i)⊆Set.Iic (b i)) :
+    (∀i I,‖ν i I*W i ((I.absNorm:ℝ)/P i)‖≤ M i) ∧
+    (∀i I,ν i I*W i ((I.absNorm:ℝ)/P i)≠0 → (I.absNorm:ℝ)≤ b i*P i) := by
+  constructor
+  · intro i I
+    rw [norm_mul]
+    exact (mul_le_mul_of_nonneg_right (hν i I) (norm_nonneg _)).trans (by simpa using hW i _)
+  · intro i I hn
+    exact (div_le_iff₀ (hP i)).mp (hs i (right_ne_zero_of_mul hn))
+
+def SharedBound (F : Finset α) (b M : α→ℝ) (C ε : ℝ) : Prop :=
+    ∀{ι : Type*} [Fintype ι],
+      ∀(R : Finset (Ideal O))(hR : ∀I∈R,Prime I)(χ : ι→Character)
+        (W₁ W₂ : ι→𝓢(ℝ,ℂ))(X₁ X₂ : ι→ℝ)
+        (pool : ι→α→Finset (Ideal O))(β : ι→α→Ideal O→ℂ)(P : ι→α→ℝ),
+      (∀i,0< X₁ i) → (∀i,0< X₂ i) →
+      (∀i j,j∈F → ∀I∈pool i j,Prime I) → (∀i j,j∈F → 0< P i j) →
+      (∀i j,j∈F → ∀I∈pool i j,‖β i j I‖≤ M j) →
+      (∀i j,j∈F → ∀I∈pool i j,β i j I≠0 → (I.absNorm:ℝ)≤ b j*P i j) →
+      ∀E : ℝ,0≤ E →
+      (∀D₁∈R.powerset,∀D₂∈R.powerset,∀J∈F.powerset,
+        (∑i,‖HeckeDyadic.polynomial (χ i) false (W₁ i)
+          (X₁ i/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+          HeckeDyadic.polynomial (χ i) false (W₂ i)
+          (X₂ i/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+          ∏j∈F\J,naturalSlot (χ i) (pool i j) (β i j) (P i j)‖^2)≤ E) →
+      (∑i,‖HeckeDyadic.polynomial ((χ i).excludePrimes R hR) false (W₁ i) (X₁ i) 0 0 *
+        HeckeDyadic.polynomial ((χ i).excludePrimes R hR) false (W₂ i) (X₂ i) 0 0 *
+        ∏j∈F,naturalSlot ((χ i).excludePrimes R hR) (pool i j) (β i j) (P i j)‖^2)≤
+        C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε*E
+
+theorem uniform_shared (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀F : Finset α,SharedBound F b M C ε := by
+  have he (F : Finset α) : ∃C : ℝ,0< C ∧ SharedBound F b M C ε :=
+    actual_shared_energy F b M (fun i _=> hM i) ε hε
+  choose C hC hb using he
+  let B : ℝ:=1+∑F : Finset α,C F
+  have hsum : 0≤∑F : Finset α,C F:=Finset.sum_nonneg (fun F _=>(hC F).le)
+  refine ⟨B,by dsimp [B];linarith,?_⟩
+  intro F ι _ R hR χ W₁ W₂ X₁ X₂ pool β P hX₁ hX₂ hp hP hβ hs E hE hchild
+  have hCB : C F≤ B := by
+    have hh:=Finset.single_le_sum (fun G _=>(hC G).le) (Finset.mem_univ F)
+    dsimp [B]
+    linarith
+  exact (hb F R hR χ W₁ W₂ X₁ X₂ pool β P hX₁ hX₂ hp hP hβ hs E hE hchild).trans
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCB (Real.rpow_nonneg (Nat.cast_nonneg _) _)) hE)
+
+lemma primeSupport_product_radical (R : Ideal O) (hR : R≠0) :
+    (∏I∈primeSupport R,I)=R.radical := by
+  ext x
+  change x∈(∏I∈primeSupport R,I) ↔ ∃n : ℕ,x^n∈R
+  simp_rw [←Ideal.span_singleton_le_iff_mem,←Ideal.dvd_iff_le,←Ideal.span_singleton_pow]
+  exact (UniqueFactorizationMonoid.exists_dvd_pow_iff_radical_dvd hR).symm
+
+def child (χ : Character) (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2)))
+    (V₁ V₂ : Plain) (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂) (D₁ D₂ : Finset (Ideal O)) (J : Finset α) : ℂ :=
+  HeckeDyadic.polynomial χ false (V₁.profile _ (rawScale_pos D a X₁ hX₁ 0) t)
+    (clippedScale (rawScale D a X₁ 0)/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+  HeckeDyadic.polynomial χ false (V₂.profile _ (rawScale_pos D a X₂ hX₂ 1) t)
+    (clippedScale (rawScale D a X₂ 1)/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+  ∏i∈liveIndices D a\J,naturalSlot χ (pool i) (heightCoefficient (β i) t) (P i)
+
+def AllocatedBound (b M : α→ℝ) (C ε : ℝ) : Prop :=
+  ∀(D : Ideal O)(a : Allocation D (Finset.univ : Finset (α⊕Fin 2))),
+  ∀{ι : Type*} [Fintype ι],∀(η : ι→Character)(z : ι→O)(hz : ∀i,z i≠0)
+    (R : Ideal O),R≠0 → ∀(V₁ V₂ : ι→Plain)
+    (pool : ι→α→Finset (Ideal O))(β : ι→α→Ideal O→ℂ)(P : ι→α→ℝ)(t X₁ X₂ : ι→ℝ)
+    (hX₁ : ∀i,0< X₁ i)(hX₂ : ∀i,0< X₂ i),
+    (∀i j,∀I∈pool i j,Prime I) → (∀i j,0< P i j) →
+    (∀i j,∀I∈pool i j,‖β i j I‖≤ M j) →
+    (∀i j,∀I∈pool i j,β i j I≠0 → (I.absNorm:ℝ)≤ b j*P i j) →
+    ∀E : ℝ,0≤ E →
+    (∀D₁∈(primeSupport R).powerset,
+     ∀D₂∈(primeSupport R).powerset,∀J∈(liveIndices D a).powerset,
+       (∑i,‖child (naturalRow (η i) (z i) (hz i)).character D a (V₁ i) (V₂ i)
+         (pool i) (β i) (P i) (t i) (X₁ i) (X₂ i) (hX₁ i) (hX₂ i) D₁ D₂ J‖^2)≤ E) →
+    (∑i,‖allocatedPositiveRow (η i)
+      (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 (z i) (t i) (pool i) (β i) (P i) D a (V₁ i).W (V₂ i).W (X₁ i) (X₂ i)‖^2)≤
+      C*(Ideal.absNorm R.radical:ℝ)^ε*E
+
+theorem allocated_energy (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ AllocatedBound b M C ε := by
+  obtain ⟨C,hC,hbound⟩:=uniform_shared b M hM ε hε
+  refine ⟨C,hC,?_⟩
+  intro D a ι _ η z hz R hR V₁ V₂ pool β P t X₁ X₂ hX₁ hX₂ hp hP hβ hs E hE hchild
+  have hh:=hbound (liveIndices D a) (primeSupport R) (fun _ h => support_prime h)
+    (fun i=>(naturalRow (η i) (z i) (hz i)).character)
+    (fun i=>(V₁ i).profile _ (rawScale_pos D a (X₁ i) (hX₁ i) 0) (t i))
+    (fun i=>(V₂ i).profile _ (rawScale_pos D a (X₂ i) (hX₂ i) 1) (t i))
+    (fun i=> clippedScale (rawScale D a (X₁ i) 0)) (fun i=> clippedScale (rawScale D a (X₂ i) 1))
+    pool (fun i j=> heightCoefficient (β i j) (t i)) P
+    (fun _=> by unfold clippedScale;positivity) (fun _=> by unfold clippedScale;positivity)
+    (fun i j _=> hp i j) (fun i j _=> hP i j)
+    (fun i j _ I hi=> by rw [heightCoefficient_norm _ _ _ (hp i j I hi).ne_zero];exact hβ i j I hi)
+    (fun i j _ I hi hn=> hs i j I hi (left_ne_zero_of_mul hn)) E hE hchild
+  have he (i : ι):=allocated_normalized (η i) (z i) (hz i) R hR D a (V₁ i) (V₂ i)
+    (pool i) (β i) (P i) (hP i) (t i) (X₁ i) (X₂ i) (hX₁ i) (hX₂ i)
+  have hphase (U t : ℝ) : ‖((clippedScale U):ℂ)^(Complex.I*t)‖=1 :=
+    positive_height_phase_norm _ _ (by unfold clippedScale;positivity)
+  simp_rw [he,norm_mul,hphase,one_mul]
+  rw [←primeSupport_product_radical R hR]
+  simpa only [SharedBound,excluded,norm_mul] using hh
+
+theorem uniform_allocated_energy (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀T : Finset α,
+      AllocatedBound (fun i : T=> b i) (fun i : T=> M i) C ε := by
+  have he (T : Finset α) : ∃C : ℝ,0< C ∧ AllocatedBound (fun i : T=> b i) (fun i : T=> M i) C ε :=
+    allocated_energy (fun i : T=> b i) (fun i : T=> M i) (fun i=> hM i) ε hε
+  choose C hC hb using he
+  let B : ℝ:=1+∑T : Finset α,C T
+  have hsum : 0≤∑T : Finset α,C T:=Finset.sum_nonneg (fun T _=>(hC T).le)
+  refine ⟨B,by dsimp [B];linarith,?_⟩
+  intro T D a ι _ η z hz R hR V₁ V₂ pool β P t X₁ X₂ hX₁ hX₂ hp hP hβ hs E hE hchild
+  have hCB : C T≤ B := by
+    have hh:=Finset.single_le_sum (fun G _=>(hC G).le) (Finset.mem_univ T)
+    dsimp [B]
+    linarith
+  exact (hb T D a η z hz R hR V₁ V₂ pool β P t X₁ X₂ hX₁ hX₂ hp hP hβ hs E hE hchild).trans
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCB (Real.rpow_nonneg (Nat.cast_nonneg _) _)) hE)
+
+theorem natural_nonprincipal_width (η : Character) (z : O) (hz : z≠0)
+    (Q R : Ideal O) (hR : R≠0)
+    (hex : ¬CenteredExceptionalProfile.FixedInducingRow η Q
+      (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R) 1 z)
+    (Z m q Cz : ℝ) (hZ : 0< Z) (hCz : 0≤ Cz)
+    (hη : (η.modulus.absNorm:ℝ)≤ Z^m) (hrow : ((Ideal.span {z}).absNorm:ℝ)≤ Cz*Z^q) :
+    (naturalRow η z hz).character.residue≠1 ∧
+    ((naturalRow η z hz).character.modulus.absNorm:ℝ)≤(fixedConductorFactor:ℝ)*Cz*Z^(m+q) :=
+  ⟨(naturalRow η z hz).nonprincipal hz Q R hR hex,
+    (naturalRow η z hz).modulus_power_bound Z m q Cz hZ hCz hη hrow⟩
+
+structure Slots (α : Type*) (b M : α→ℝ) where
+  pool : α→Finset (Ideal O)
+  ν : α→Ideal O→ℂ
+  W : α→ℝ→ℂ
+  P : α→ℝ
+  prime : ∀i,∀I∈pool i,Prime I
+  P_pos : ∀i,0< P i
+  ν_bound : ∀i I,‖ν i I‖≤1
+  W_bound : ∀i x,‖W i x‖≤ M i
+  support : ∀i,Function.support (W i)⊆Set.Iic (b i)
+
+def Slots.coefficient {b M : α→ℝ} (s : Slots α b M) (i : α) (I : Ideal O) : ℂ :=
+  s.ν i I*s.W i ((I.absNorm:ℝ)/s.P i)
+
+omit [Fintype α] [DecidableEq α] in
+lemma Slots.controls {b M : α→ℝ} (s : Slots α b M) :
+    (∀i I,‖s.coefficient i I‖≤ M i) ∧
+    (∀i I,s.coefficient i I≠0 → (I.absNorm:ℝ)≤ b i*s.P i) :=
+  slot_controls s.ν s.W s.P b M s.P_pos s.ν_bound s.W_bound s.support
+
+structure Row (α : Type*) (b M : α→ℝ) where
+  η : Character
+  z : O
+  z_ne : z≠0
+  plain₁ : Plain
+  plain₂ : Plain
+  slots : Slots α b M
+  t : ℝ
+  X₁ : ℝ
+  X₂ : ℝ
+  Y₁ : ℝ
+  Y₂ : ℝ
+  X₁_pos : 0< X₁
+  X₂_pos : 0< X₂
+  Y₁_pos : 0< Y₁
+  Y₂_pos : 0< Y₂
+  same_product : X₁*X₂=Y₁*Y₂
+
+lemma Row.extracted_same_product {b M : α→ℝ} (s : Row α b M)
+    (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2))) :
+    rawScale D a s.X₁ 0*rawScale D a s.X₂ 1=rawScale D a s.Y₁ 0*rawScale D a s.Y₂ 1 :=
+  raw_same_product D a _ _ _ _ s.same_product
+
+theorem uniform_paired_nuW_energy (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀T : Finset α,
+    ∀(D : Ideal O)(a : Allocation D (Finset.univ : Finset (T⊕Fin 2))),
+    ∀{ι : Type*} [Fintype ι],∀s : ι→Row T (fun i=> b i) (fun i=> M i),
+    ∀(R : Ideal O),R≠0 → ∀E₁ E₂ : ℝ,0≤ E₁ → 0≤ E₂ →
+    (∀D₁∈(primeSupport R).powerset,
+     ∀D₂∈(primeSupport R).powerset,∀J∈(liveIndices D a).powerset,
+       (∑i,‖child (naturalRow (s i).η (s i).z (s i).z_ne).character D a
+         (s i).plain₁ (s i).plain₂ (s i).slots.pool (s i).slots.coefficient (s i).slots.P
+         (s i).t (s i).X₁ (s i).X₂ (s i).X₁_pos (s i).X₂_pos D₁ D₂ J‖^2)≤ E₁) →
+    (∀D₁∈(primeSupport R).powerset,
+     ∀D₂∈(primeSupport R).powerset,∀J∈(liveIndices D a).powerset,
+       (∑i,‖child (naturalRow (s i).η (s i).z (s i).z_ne).character D a
+         (s i).plain₁ (s i).plain₂ (s i).slots.pool (s i).slots.coefficient (s i).slots.P
+         (s i).t (s i).Y₁ (s i).Y₂ (s i).Y₁_pos (s i).Y₂_pos D₁ D₂ J‖^2)≤ E₂) →
+    (∑i,(‖allocatedPositiveRow (s i).η
+      (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 (s i).z (s i).t (s i).slots.pool (s i).slots.coefficient (s i).slots.P D a
+      (s i).plain₁.W (s i).plain₂.W (s i).X₁ (s i).X₂‖^2+
+      ‖allocatedPositiveRow (s i).η
+      (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 (s i).z (s i).t (s i).slots.pool (s i).slots.coefficient (s i).slots.P D a
+      (s i).plain₁.W (s i).plain₂.W (s i).Y₁ (s i).Y₂‖^2))≤
+      C*(Ideal.absNorm R.radical:ℝ)^ε*(E₁+E₂) := by
+  obtain ⟨C,hC,hbound⟩:=uniform_allocated_energy b M hM ε hε
+  refine ⟨C,hC,?_⟩
+  intro T D a ι _ s R hR E₁ E₂ hE₁ hE₂ hleft hright
+  have hl:=hbound T D a (fun i=>(s i).η) (fun i=>(s i).z) (fun i=>(s i).z_ne) R hR
+    (fun i=>(s i).plain₁) (fun i=>(s i).plain₂) (fun i=>(s i).slots.pool)
+    (fun i=>(s i).slots.coefficient) (fun i=>(s i).slots.P) (fun i=>(s i).t)
+    (fun i=>(s i).X₁) (fun i=>(s i).X₂) (fun i=>(s i).X₁_pos) (fun i=>(s i).X₂_pos)
+    (fun i=>(s i).slots.prime) (fun i=>(s i).slots.P_pos)
+    (fun i j I _=>(s i).slots.controls.1 j I) (fun i j I _=>(s i).slots.controls.2 j I)
+    E₁ hE₁ hleft
+  have hr:=hbound T D a (fun i=>(s i).η) (fun i=>(s i).z) (fun i=>(s i).z_ne) R hR
+    (fun i=>(s i).plain₁) (fun i=>(s i).plain₂) (fun i=>(s i).slots.pool)
+    (fun i=>(s i).slots.coefficient) (fun i=>(s i).slots.P) (fun i=>(s i).t)
+    (fun i=>(s i).Y₁) (fun i=>(s i).Y₂) (fun i=>(s i).Y₁_pos) (fun i=>(s i).Y₂_pos)
+    (fun i=>(s i).slots.prime) (fun i=>(s i).slots.P_pos)
+    (fun i j I _=>(s i).slots.controls.1 j I) (fun i j I _=>(s i).slots.controls.2 j I)
+    E₂ hE₂ hright
+  rw [Finset.sum_add_distrib,mul_add]
+  exact add_le_add hl hr
+
+def inputSlots (s : CenteredMomentCommonRadialData.Input α) : Slots α s.hi s.M where
+  pool:=s.slots
+  ν:=s.ν
+  W:=s.W
+  P:=s.P
+  prime:=s.prime
+  P_pos:=s.P_pos
+  ν_bound:=s.ν_bound
+  W_bound:=s.W_bound
+  support:=fun i _ hx=>(s.support i hx).2
+
+omit [DecidableEq α] in
+lemma inputSlots_coefficient (s : CenteredMomentCommonRadialData.Input α) :
+    (inputSlots s).coefficient=s.toData.coefficient := rfl
+
+def commonSlots (s : CenteredMomentCommonRadialData.Input α) (C : Ideal O)
+    (B : CenteredMomentCommonAllocationSum.actualAllocations s.pools C) :
+    Slots (CenteredMomentCommonProfile.liveIndices B.val) (fun i=> s.hi i) (fun i=> s.M i) where
+  pool:=fun i=> s.slots i
+  ν:=fun i=> s.ν i
+  W:=fun i=> s.W i
+  P:=fun i=> s.P i
+  prime:=fun i=> s.prime i
+  P_pos:=fun i=> s.P_pos i
+  ν_bound:=fun i=> s.ν_bound i
+  W_bound:=fun i=> s.W_bound i
+  support:=fun i _ hx=>(s.support i hx).2
+
+omit [DecidableEq α] in
+lemma commonSlots_coefficient (s : CenteredMomentCommonRadialData.Input α) (C R : Ideal O)
+    (B : CenteredMomentCommonAllocationSum.actualAllocations s.pools C) :
+    (commonSlots s C B).coefficient=(CenteredMomentCommonRadialData.commonData s C R B).coefficient := rfl
+
+end CenteredMomentAllocatedNaturalSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentNaturalMaskedFloor
+open HeckeFamily HeckeDyadic  InversePrincipalEnergy
+open CenteredMomentPlainPositiveEnergy CenteredMomentPlainGlobalEnergy
+open CenteredMomentCommonMaskRadialEnergy CenteredMomentOriginalRadialComparison
+open CenteredMomentNaturalRowSource CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentCoreFloor CenteredMomentLattice CenteredMomentTwist
+open CenteredMomentAllocatedNaturalSource HeckeInverseAmplification
+open CenteredMomentRadialEligibleEnergy (Radial)
+local notation "O" => Eisenstein.O
+
+theorem excluded_pair (a b ε : ℝ) (ha : 0< a) (hb : 0≤ b) (hε : 0<ε) :
+    ∃ S : Finset (ℕ×ℕ), ∃ C : ℝ, 0< C ∧
+    ∀ (W₁ W₂ : 𝓢(ℝ,ℂ)), Function.support (W₁:ℝ→ℂ)⊆Set.Icc a b →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a b →
+    ∀ (χ : O→Character) (r : Radial) (R : Ideal O) (Q X₁ X₂ : ℝ), R≠0 →
+      0≤ Q → 0< X₁ → 0< X₂ →
+      (∀z,r.keep z→(χ z).residue≠1) →
+      (∀z,r.keep z→((χ z).modulus.absNorm:ℝ)≤ Q) →
+    radialEnergy (fun z=> polynomial (excluded (χ z) R) false W₁ X₁ 0 0 *
+      polynomial (excluded (χ z) R) false W₂ X₂ 0 0) r.keep r.profile r.scale ≤
+      C*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*max 1 r.scale*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*Q^4 := by
+  obtain ⟨S,C,hC,hpair⟩ := actual_radial_pair_bound a b ha
+  obtain ⟨Cd,hCd,hdel⟩ := actual_radial_shared_energy (∅ : Finset (Fin 0))
+    (fun _=>0) (fun _=>0) (by simp) ε hε
+  refine ⟨S,Cd*C*3^8,by positivity,?_⟩
+  intro W₁ W₂ hs₁ hs₂ χ r R Q X₁ X₂ hR hQ hX₁ hX₂ hχ hmod
+  let E := C*diagonalControl r.profile*max 1 r.scale*
+    ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+      (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*Q^4*3^8
+  have hdiag := diagonalControl_nonneg r.profile
+  have hE : 0≤ E := by dsimp [E]; positivity
+  have hh := hdel (primeSupport R) (fun _ h => support_prime h) χ W₁ W₂
+    X₁ X₂ a b a b (fun _=>∅) (fun _ _=>0) (fun _=>1) r.keep r.profile r.scale E
+    hX₁ hX₂ hb hb hs₁ hs₂ (by simp) (by simp) (by simp) (by simp)
+    r.scale_pos r.nonneg hE ?_
+  · simp only [Finset.prod_empty,mul_one] at hh
+    rw [primeSupport_product_radical R hR] at hh
+    change radialEnergy (fun z=> polynomial (excluded (χ z) R) false W₁ X₁ 0 0 *
+      polynomial (excluded (χ z) R) false W₂ X₂ 0 0) r.keep r.profile r.scale ≤ _ at hh
+    exact hh.trans_eq (by dsimp [E]; ring)
+  · intro D₁ hD₁ D₂ hD₂ J hJ
+    have hn (D : Finset (Ideal O)) (hD : D∈(primeSupport R).powerset) :
+        0<(Ideal.absNorm (∏I∈D,I):ℝ) := by
+      exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Finset.prod_ne_zero_iff.mpr (fun I hi=>(support_prime (Finset.mem_powerset.mp hD hi)).ne_zero)))
+    have he := hpair W₁ W₂ hs₁ hs₂ χ r Q
+      (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0
+      hQ (div_pos hX₁ (hn D₁ hD₁)) (div_pos hX₂ (hn D₂ hD₂)) hχ hmod
+    norm_num only [abs_zero,add_zero,show (3:ℝ)^4=81 by norm_num] at he
+    simpa only [Finset.empty_sdiff,Finset.prod_empty,mul_one] using he.trans_eq (by dsimp [E]; ring)
+
+lemma twist_polynomial (χ : Character) (W : 𝓢(ℝ,ℂ)) (a b : ℝ) (ha : 0< a)
+    (hs : Function.support (W:ℝ→ℂ)⊆Set.Icc a b) (t X : ℝ) :
+    polynomial χ false (normPowerProfile W a b ha hs (W.smooth ⊤) t) X 0 0 =
+      polynomial χ false W X 0 t := by
+  have hp : (normPowerProfile W a b ha hs (W.smooth ⊤) t:ℝ→ℂ)=twistProfile W 0 t := by
+    funext x
+    rw [normPowerProfile_apply]
+    unfold twistProfile HeckeDyadic.shift
+    simp only [Complex.ofReal_zero,zero_sub,neg_neg]
+    rw [mul_comm Complex.I (t:ℂ)]
+    ring
+  rw [hp,polynomial_twistProfile]
+
+theorem natural_masked_floor (a b ε : ℝ) (ha : 0< a) (hb : 0≤ b) (hε : 0<ε) :
+    ∃ n : ℕ, ∃ S : Finset (ℕ×ℕ), ∃ C : ℝ, 0< C ∧
+    ∀ (W₁ W₂ : 𝓢(ℝ,ℂ)), Function.support (W₁:ℝ→ℂ)⊆Set.Icc a b →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a b →
+    ∀ (η : Character) (Q R : Ideal O) (r : Radial) (bΦ : ℝ), R≠0 → 0≤ bΦ →
+      Function.support (r.profile:ℝ→ℂ)⊆Set.Iic bΦ →
+      (∀z,r.keep z→z≠0) →
+      (∀z,r.keep z→¬FixedInducingRow η Q (fixedBadMask*cubicIdealGenerator R) 1 z) →
+    ∀ (Z m q ρ t X₁ X₂ : ℝ), 1≤ Z → 0≤ m → 0≤ q → r.scale=Z^m →
+      m+q≤ρ → 0< X₁ → 0< X₂ → (η.modulus.absNorm:ℝ)≤ Z^q →
+    zeroEnergy η (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂ X₁ X₂ r ≤
+      C*(R.radical.absNorm:ℝ)^ε*bΦ^4*diagonalControl r.profile*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*(1+‖t‖)^n*Z^(m+q+4*ρ) := by
+  obtain ⟨S,C,hC,hpair⟩ := excluded_pair a b ε ha hb hε
+  obtain ⟨n,T,Ct,hCt,ht⟩ :=
+    CenteredMomentFiniteProfileExceptional.normPowerProfile_source_control a b ha S
+  let F : ℝ := fixedConductorFactor
+  have hF : 0< F := by
+    unfold F fixedConductorFactor
+    norm_cast
+    apply Nat.mul_pos
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr fixedBadMask_ne_zero))
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr (by norm_num : (72:O)≠0)))
+  refine ⟨4*n,T,C*Ct^4*F^4,by positivity,?_⟩
+  intro W₁ W₂ hs₁ hs₂ η Q R r bΦ hR hbΦ hsΦ hz hex Z m q ρ t X₁ X₂ hZ hm hq hscale hρ hX₁ hX₂ hη
+  let r' : Radial := {r with keep := fun z=> r.keep z ∧ r.profile (‖ringComplex z‖^2/r.scale)≠0}
+  let χ : O→Character := fun z=> if hz:z≠0 then (naturalRow η z hz).character else η
+  have hχ (z:O) (h:r'.keep z) : (χ z).residue≠1 := by
+    have hn := hz z h.1
+    have hc : χ z=(naturalRow η z hn).character := by simp [χ,hn]
+    exact (congrArg (fun ψ : Character=>ψ.residue≠1) hc).mpr
+      ((naturalRow η z hn).nonprincipal hn Q R hR (hex z h.1))
+  have hmod (z:O) (h:r'.keep z) : ((χ z).modulus.absNorm:ℝ)≤ F*bΦ*Z^(m+q) := by
+    have hn := hz z h.1
+    have hh : ((Ideal.span {z}).absNorm:ℝ)≤ bΦ*Z^m := by
+      rw [←ringComplex_norm_sq_eq_absNorm_span,←hscale]
+      exact (div_le_iff₀ r.scale_pos).mp (hsΦ h.2)
+    simpa only [χ,dif_pos hn,add_comm q m] using
+      (naturalRow η z hn).modulus_power_bound Z q m bΦ (zero_lt_one.trans_le hZ) hbΦ hη hh
+  let V₁ := normPowerProfile W₁ a b ha hs₁ (W₁.smooth ⊤) t
+  let V₂ := normPowerProfile W₂ a b ha hs₂ (W₂.smooth ⊤) t
+  have hv₁ : Function.support (V₁:ℝ→ℂ)⊆Set.Icc a b := (normPowerProfile_support W₁ a b ha hs₁ (W₁.smooth ⊤) t).trans hs₁
+  have hv₂ : Function.support (V₂:ℝ→ℂ)⊆Set.Icc a b := (normPowerProfile_support W₂ a b ha hs₂ (W₂.smooth ⊤) t).trans hs₂
+  have he := hpair V₁ V₂ hv₁ hv₂ χ r' R (F*bΦ*Z^(m+q)) X₁ X₂ hR
+    (by positivity) hX₁ hX₂ hχ hmod
+  have hid : zeroEnergy η (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂ X₁ X₂ r =
+      radialEnergy (fun z=> polynomial (excluded (χ z) R) false V₁ X₁ 0 0 *
+        polynomial (excluded (χ z) R) false V₂ X₂ 0 0) r'.keep r'.profile r'.scale := by
+    unfold zeroEnergy radialEnergy
+    apply tsum_congr
+    intro z
+    by_cases hk : r.keep z
+    · by_cases hp : r.profile (‖ringComplex z‖^2/r.scale)=0
+      · simp [r',hk,hp]
+      · have hn := hz z hk
+        simp only [r',hk,true_and,ite_true]
+        rw [zero_row_norm η (excluded (χ z) R) _ 1 z
+          (by simpa only [χ,dif_pos hn,one_mul] using (naturalRow η z hn).masked_element R hR)
+          W₁ W₂ a b ha hs₁ hs₂ (W₁.smooth ⊤) (W₂.smooth ⊤) t X₁ X₂ hX₁ hX₂]
+        rw [norm_mul,twist_polynomial,twist_polynomial]
+        split_ifs with h
+        · rfl
+        · exact False.elim (h hp)
+    · simp [r',hk]
+  rw [←hid] at he
+  have hB₁ := ht W₁ hs₁ t
+  have hB₂ := ht W₂ hs₂ t
+  have hprod : (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V₁ * S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V₂)^2 ≤
+      (Ct^4*(T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁*T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)^2)*(1+‖t‖)^(4*n) := by
+    have hh := pow_le_pow_left₀ (mul_nonneg (apply_nonneg _ _) (apply_nonneg _ _))
+      (mul_le_mul hB₁ hB₂ (apply_nonneg _ _) (by positivity)) 2
+    exact hh.trans_eq (by dsimp [V₁,V₂]; rw [Nat.mul_comm 4 n,pow_mul]; ring)
+  have hp : Z^m*(Z^(m+q))^4≤ Z^(m+q+4*ρ) := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul (zero_le_one.trans hZ),←Real.rpow_add (zero_lt_one.trans_le hZ)]
+    apply Real.rpow_le_rpow_of_exponent_le hZ
+    norm_num
+    linarith
+  have hd := diagonalControl_nonneg r.profile
+  dsimp only [r'] at he
+  rw [hscale,max_eq_right (Real.one_le_rpow hZ hm)] at he
+  apply he.trans
+  calc
+    _ ≤ C*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*Z^m*
+      ((Ct^4*(T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁*T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)^2)*(1+‖t‖)^(4*n))*(F*bΦ*Z^(m+q))^4 := by
+        gcongr
+    _ = (C*Ct^4*F^4*(R.radical.absNorm:ℝ)^ε*bΦ^4*diagonalControl r.profile*
+      (T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁*T.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)^2*(1+‖t‖)^(4*n))*(Z^m*(Z^(m+q))^4) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hp (by positivity)
+
+end CenteredMomentNaturalMaskedFloor
+
+end
+
+end
+
+noncomputable section
+namespace HeckeTauberian
+/-- Nonnegative terms have nonnegative partial sums. -/
+lemma cumsum_nonneg {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) (N : ℕ) : 0 ≤ cumsum f N :=
+  Finset.sum_nonneg (fun n _ => hf n)
+end HeckeTauberian
+end
+
+noncomputable section
+namespace HeckeTauberian
+open Real Complex MeasureTheory Filter Topology BoundedContinuousFunction SchwartzMap  BigOperators
+open scoped ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ}
+
+@[ext] structure CS (n : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] where
+  toFun : ℝ → E
+  h1 : ContDiff ℝ n toFun
+  h2 : HasCompactSupport toFun
+
+structure trunc extends (CS 2 ℝ) where
+  h3 : (Set.Icc (-1) (1)).indicator 1 ≤ toFun
+  h4 : toFun ≤ Set.indicator (Set.Ioo (-2) (2)) 1
+
+structure W1 (n : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] where
+  toFun : ℝ → E
+  smooth : ContDiff ℝ n toFun
+  integrable : ∀ ⦃k⦄, k ≤ n → Integrable (iteratedDeriv k toFun)
+
+abbrev W21 := W1 2 ℂ
+
+section lemmas
+
+noncomputable def funscale {E : Type*} (g : ℝ → E) (R x : ℝ) : E := g (R⁻¹ • x)
+
+lemma contDiff_ofReal : ContDiff ℝ ∞ ofReal := by
+  have key x : HasDerivAt ofReal 1 x := hasDerivAt_id x |>.ofReal_comp
+  have key' : deriv ofReal = fun _ => 1 := by ext x ; exact (key x).deriv
+  refine contDiff_infty_iff_deriv.mpr ⟨fun x => (key x).differentiableAt, ?_⟩
+  simpa [key'] using contDiff_const
+
+omit [NormedSpace ℝ E] in
+lemma tendsto_funscale {f : ℝ → E} (hf : ContinuousAt f 0) (x : ℝ) :
+    Tendsto (fun R => funscale f R x) atTop (𝓝 (f 0)) :=
+  hf.tendsto.comp (by simpa using tendsto_inv_atTop_zero.mul_const x)
+
+end lemmas
+
+namespace CS
+
+variable {f : CS n E} {R x v : ℝ}
+
+instance : CoeFun (CS n E) (fun _ => ℝ → E) where coe := CS.toFun
+
+instance : Coe (CS n ℝ) (CS n ℂ) where coe f := ⟨fun x => f x,
+  contDiff_ofReal.of_le (mod_cast le_top) |>.comp f.h1, f.h2.comp_left (g := ofReal) rfl⟩
+
+def neg (f : CS n E) : CS n E where
+  toFun := -f
+  h1 := f.h1.neg
+  h2 := by simpa [HasCompactSupport, tsupport] using f.h2
+
+instance : Neg (CS n E) where neg := neg
+
+@[simp] lemma neg_apply {x : ℝ} : (-f) x = - (f x) := rfl
+
+def smul (R : ℝ) (f : CS n E) : CS n E := ⟨R • f, f.h1.const_smul R, f.h2.smul_left⟩
+
+instance : HSMul ℝ (CS n E) (CS n E) where hSMul := smul
+
+@[simp] lemma smul_apply : (R • f) x = R • f x := rfl
+
+lemma continuous (f : CS n E) : Continuous f := f.h1.continuous
+
+noncomputable def deriv (f : CS (n + 1) E) : CS n E where
+  toFun := _root_.deriv f
+  h1 := (contDiff_succ_iff_deriv.mp f.h1).2.2
+  h2 := f.h2.deriv
+
+lemma hasDerivAt (f : CS (n + 1) E) (x : ℝ) : HasDerivAt f (f.deriv x) x :=
+  (f.h1.differentiable (by simp)).differentiableAt.hasDerivAt
+
+lemma deriv_apply {f : CS (n + 1) E} {x : ℝ} : f.deriv x = _root_.deriv f x := rfl
+
+lemma deriv_smul {f : CS (n + 1) E} : (R • f).deriv = R • f.deriv := by
+  ext x ; exact (f.hasDerivAt x |>.const_smul R).deriv
+
+noncomputable def scale (g : CS n E) (R : ℝ) : CS n E := by
+  by_cases h : R = 0
+  · exact ⟨0, contDiff_const, by simp [HasCompactSupport, tsupport]⟩
+  · refine ⟨fun x => funscale g R x, ?_, ?_⟩
+    · exact g.h1.comp (contDiff_const_smul R⁻¹)
+    · exact g.h2.comp_smul (inv_ne_zero h)
+
+lemma deriv_scale {f : CS (n + 1) E} : (f.scale R).deriv = R⁻¹ • f.deriv.scale R := by
+  ext v ; by_cases hR : R = 0
+  · simp [hR, scale, deriv]
+  · simp only [scale, hR, ↓reduceDIte, smul_apply]
+    exact ((f.hasDerivAt (R⁻¹ • v)).scomp v
+      (by simpa using! (hasDerivAt_id v).const_smul R⁻¹)).deriv
+
+lemma deriv_scale' {f : CS (n + 1) E} :
+    (f.scale R).deriv v = R⁻¹ • f.deriv (R⁻¹ • v) := by
+  rw [deriv_scale, smul_apply]
+  by_cases hR : R = 0 <;> simp [hR, scale, funscale]
+
+lemma hasDerivAt_scale (f : CS (n + 1) E) (R x : ℝ) :
+    HasDerivAt (f.scale R) (R⁻¹ • _root_.deriv f (R⁻¹ • x)) x := by
+  convert hasDerivAt (f.scale R) x ; rw [deriv_scale'] ; rfl
+
+lemma tendsto_scale (f : CS n E) (x : ℝ) : Tendsto (fun R => f.scale R x) atTop (𝓝 (f 0)) := by
+  apply (tendsto_funscale f.continuous.continuousAt x).congr'
+  filter_upwards [eventually_ne_atTop 0] with R hR ; simp [scale, hR]
+
+lemma bounded : ∃ C, ∀ v, ‖f v‖ ≤ C := by
+  obtain ⟨x, hx⟩ :=
+    (continuous_norm.comp f.continuous).exists_forall_ge_of_hasCompactSupport f.h2.norm
+  exact ⟨_, hx⟩
+
+end CS
+
+namespace trunc
+
+instance : CoeFun trunc (fun _ => ℝ → ℝ) where coe f := f.toFun
+
+instance : Coe trunc (CS 2 ℝ) where coe := trunc.toCS
+
+lemma nonneg (g : trunc) (x : ℝ) : 0 ≤ g x := (Set.indicator_nonneg (by simp) x).trans (g.h3 x)
+
+lemma le_one (g : trunc) (x : ℝ) : g x ≤ 1 :=
+  (g.h4 x).trans <| Set.indicator_le_self' (by simp) x
+
+lemma zero (g : trunc) : g =ᶠ[𝓝 0] 1 := by
+  have : Set.Icc (-1) 1 ∈ 𝓝 (0 : ℝ) := by apply Icc_mem_nhds <;> linarith
+  exact eventually_of_mem this (fun x hx => le_antisymm (g.le_one x) (by simpa [hx] using g.h3 x))
+
+@[simp] lemma zero_at {g : trunc} : g 0 = 1 := g.zero.eq_of_nhds
+
+end trunc
+
+namespace W1
+
+instance : CoeFun (W1 n E) (fun _ => ℝ → E) where coe := W1.toFun
+
+lemma continuous (f : W1 n E) : Continuous f := f.smooth.continuous
+
+lemma differentiable (f : W1 (n + 1) E) : Differentiable ℝ f :=
+  f.smooth.differentiable (by simp)
+
+lemma iteratedDeriv_sub {f g : ℝ → E} (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) :
+    iteratedDeriv n (f - g) = iteratedDeriv n f - iteratedDeriv n g := by
+  induction n generalizing f g with
+  | zero => rfl
+  | succ n ih =>
+    have hf' : ContDiff ℝ n (deriv f) := hf.iterate_deriv' n 1
+    have hg' : ContDiff ℝ n (deriv g) := hg.iterate_deriv' n 1
+    have hfg : deriv (f - g) = deriv f - deriv g := by
+      ext x ; apply deriv_sub
+      · exact (hf.differentiable (by simp)).differentiableAt
+      · exact (hg.differentiable (by simp)).differentiableAt
+    simp_rw [iteratedDeriv_succ', ← ih hf' hg', hfg]
+
+noncomputable def deriv (f : W1 (n + 1) E) : W1 n E where
+  toFun := _root_.deriv f
+  smooth := contDiff_succ_iff_deriv.mp f.smooth |>.2.2
+  integrable k hk := by
+    simpa [iteratedDeriv_succ'] using f.integrable (Nat.succ_le_succ hk)
+
+lemma hasDerivAt (f : W1 (n + 1) E) (x : ℝ) : HasDerivAt f (f.deriv x) x :=
+  f.differentiable.differentiableAt.hasDerivAt
+
+def sub (f g : W1 n E) : W1 n E where
+  toFun := f - g
+  smooth := f.smooth.sub g.smooth
+  integrable k hk := by
+    have hf : ContDiff ℝ k f := f.smooth.of_le (by simp [hk])
+    have hg : ContDiff ℝ k g := g.smooth.of_le (by simp [hk])
+    simpa [iteratedDeriv_sub hf hg] using (f.integrable hk).sub (g.integrable hk)
+
+instance : Sub (W1 n E) where sub := sub
+
+lemma integrable_iteratedDeriv_Schwarz {f : 𝓢(ℝ, ℂ)} : Integrable (iteratedDeriv n f) := by
+  induction n generalizing f with
+  | zero => exact f.integrable
+  | succ n ih => simpa [iteratedDeriv_succ'] using! ih (f := SchwartzMap.derivCLM ℝ ℂ f)
+
+noncomputable def of_Schwartz (f : 𝓢(ℝ, ℂ)) : W1 n ℂ where
+  toFun := f
+  smooth := f.smooth n
+  integrable _ _ := integrable_iteratedDeriv_Schwarz
+
+end W1
+
+namespace W21
+
+variable {f : W21}
+
+noncomputable def norm (f : ℝ → ℂ) : ℝ :=
+    (∫ v, ‖f v‖) + (4 * π ^ 2)⁻¹ * (∫ v, ‖deriv (deriv f) v‖)
+
+lemma norm_nonneg {f : ℝ → ℂ} : 0 ≤ norm f :=
+  add_nonneg (integral_nonneg (fun t => by simp))
+    (mul_nonneg (by positivity) (integral_nonneg (fun t => by simp)))
+
+noncomputable instance : Norm W21 where norm := norm ∘ W1.toFun
+
+noncomputable instance : Coe 𝓢(ℝ, ℂ) W21 where coe := W1.of_Schwartz
+
+def ofCS2 (f : CS 2 ℂ) : W21 := by
+  refine ⟨f, f.h1, fun k hk => ?_⟩ ; match k with
+  | 0 => exact f.h1.continuous.integrable_of_hasCompactSupport f.h2
+  | 1 => simpa using (f.h1.continuous_deriv one_le_two).integrable_of_hasCompactSupport f.h2.deriv
+  | 2 => simpa [iteratedDeriv_succ] using
+    (f.h1.iterate_deriv' 0 2).continuous.integrable_of_hasCompactSupport f.h2.deriv.deriv
+
+instance : Coe (CS 2 ℂ) W21 where coe := ofCS2
+
+instance : HMul (CS 2 ℂ) W21 (CS 2 ℂ) where
+  hMul g f := ⟨g * f, g.h1.mul f.smooth, g.h2.mul_right⟩
+
+instance : HMul (CS 2 ℝ) W21 (CS 2 ℂ) where hMul g f := (g : CS 2 ℂ) * f
+
+lemma hf (f : W21) : Integrable f := f.integrable zero_le_two
+
+lemma hf' (f : W21) : Integrable (deriv f) := by
+  simpa [iteratedDeriv_succ] using f.integrable one_le_two
+
+lemma hf'' (f : W21) : Integrable (deriv (deriv f))  := by
+  simpa [iteratedDeriv_succ] using f.integrable le_rfl
+
+end W21
+
+theorem W21_approximation (f : W21) (g : trunc) :
+    Tendsto (fun R => ‖f - (g.scale R * f : W21)‖) atTop (𝓝 0) := by
+
+  let f' := f.deriv
+  let f'' := f'.deriv
+  let g' := (g : CS 2 ℝ).deriv
+  let g'' := g'.deriv
+  let h R v := 1 - g.scale R v
+  let h' R := - (g.scale R).deriv
+  let h'' R := - (g.scale R).deriv.deriv
+
+  have ch {R} : Continuous (fun v => (h R v : ℂ)) :=
+    continuous_ofReal.comp <| continuous_const.sub (CS.continuous _)
+  have ch' {R} : Continuous (fun v => (h' R v : ℂ)) := continuous_ofReal.comp (CS.continuous _)
+  have ch'' {R} : Continuous (fun v => (h'' R v : ℂ)) := continuous_ofReal.comp (CS.continuous _)
+  have dh R v : HasDerivAt (h R) (h' R v) v := by
+    convert! CS.hasDerivAt_scale (g : CS 2 ℝ) R v |>.const_sub 1 using 1
+    simp [h', CS.deriv_scale', show g.deriv.toFun = deriv g.toFun from rfl]
+  have dh' R v : HasDerivAt (h' R) (h'' R v) v := ((g.scale R).deriv.hasDerivAt v).neg
+  have hh1 R v : |h R v| ≤ 1 := by
+    by_cases hR : R = 0 <;>
+      simp only [CS.scale, funscale, smul_eq_mul, hR, ↓reduceDIte, Pi.zero_apply, sub_zero,
+        abs_one, le_refl, h]
+    rw [abs_le] ; constructor <;>
+    linarith [g.le_one (R⁻¹ * v), g.nonneg (R⁻¹ * v)]
+  have vR v : Tendsto (fun R : ℝ => v * R⁻¹) atTop (𝓝 0) := by
+    simpa using tendsto_inv_atTop_zero.const_mul v
+
+  convert_to Tendsto (fun R => W21.norm (fun v => h R v * f v)) atTop (𝓝 0)
+  · ext R ; change W21.norm _ = _ ; congr ; ext v ; simp [h, sub_mul] ; rfl
+  rw [show (0 : ℝ) = 0 + ((4 * π ^ 2)⁻¹ : ℝ) * 0 by simp]
+  refine Tendsto.add ?_ (Tendsto.const_mul _ ?_)
+
+  · let F R v := ‖h R v * f v‖
+    have eh v : ∀ᶠ R in atTop, h R v = 0 := by
+      filter_upwards [(vR v).eventually g.zero, eventually_ne_atTop 0] with R hR hR'
+      simp [h, hR, CS.scale, hR', funscale, mul_comm R⁻¹]
+    have e1 : ∀ᶠ (n : ℝ) in atTop, AEStronglyMeasurable (F n) volume := by
+      apply Eventually.of_forall ; intro R
+      exact (ch.mul f.continuous).norm.aestronglyMeasurable
+    have e2 : ∀ᶠ (n : ℝ) in atTop, ∀ᵐ (a : ℝ), ‖F n a‖ ≤ ‖f a‖ := by
+      apply Eventually.of_forall ; intro R
+      apply Eventually.of_forall ; intro v
+      simpa [F] using mul_le_mul (hh1 R v) le_rfl (by simp) zero_le_one
+    have e4 : ∀ᵐ (a : ℝ), Tendsto (fun n ↦ F n a) atTop (𝓝 0) := by
+      apply Eventually.of_forall ; intro v
+      apply tendsto_nhds_of_eventually_eq ; filter_upwards [eh v] with R hR ; simp [F, hR]
+    simpa [F] using tendsto_integral_filter_of_dominated_convergence _ e1 e2 f.hf.norm e4
+
+  · let F R v := ‖h'' R v * f v + 2 * h' R v * f' v + h R v * f'' v‖
+    convert_to Tendsto (fun R ↦ ∫ (v : ℝ), F R v) atTop (𝓝 0)
+    · have this R v :
+        deriv (deriv (fun v => h R v * f v)) v =
+          h'' R v * f v + 2 * h' R v * f' v + h R v * f'' v := by
+        have df v : HasDerivAt f (f' v) v := f.hasDerivAt v
+        have df' v : HasDerivAt f' (f'' v) v := f'.hasDerivAt v
+        have l3 v : HasDerivAt (fun v => h R v * f v) (h' R v * f v + h R v * f' v) v :=
+          (dh R v).ofReal_comp.mul (df v)
+        have l5 : HasDerivAt (fun v => h' R v * f v) (h'' R v * f v + h' R v * f' v) v :=
+          (dh' R v).ofReal_comp.mul (df v)
+        have l7 : HasDerivAt (fun v => h R v * f' v) (h' R v * f' v + h R v * f'' v) v :=
+          (dh R v).ofReal_comp.mul (df' v)
+        have d1 : deriv (fun v => h R v * f v) = fun v => h' R v * f v + h R v * f' v :=
+          funext (fun v => (l3 v).deriv)
+        rw [d1] ; convert! (l5.add l7).deriv using 1 ; ring
+      simp_rw [this, F]
+
+    obtain ⟨c1, mg'⟩ := g'.bounded
+    obtain ⟨c2, mg''⟩ := g''.bounded
+    let bound v := c2 * ‖f v‖ + 2 * c1 * ‖f' v‖ + ‖f'' v‖
+    have e1 : ∀ᶠ (n : ℝ) in atTop, AEStronglyMeasurable (F n) volume := by
+      apply Eventually.of_forall ; intro R ; apply (Continuous.norm ?_).aestronglyMeasurable
+      exact ((ch''.mul f.continuous).add ((continuous_const.mul ch').mul f.deriv.continuous)).add
+        (ch.mul f.deriv.deriv.continuous)
+    have e2 : ∀ᶠ R in atTop, ∀ᵐ (a : ℝ), ‖F R a‖ ≤ bound a := by
+      have hc1 : ∀ᶠ R in atTop, ∀ v, |h' R v| ≤ c1 := by
+        filter_upwards [eventually_ge_atTop 1] with R hR v
+        have hR' : R ≠ 0 := by linarith
+        have : 0 ≤ R := by linarith
+        simp only [CS.deriv_scale, CS.neg_apply, CS.smul_apply, smul_eq_mul, abs_neg, abs_mul,
+          abs_inv, abs_eq_self.mpr this, ge_iff_le, h']
+        simp only [CS.scale, hR', ↓reduceDIte, funscale, smul_eq_mul]
+        convert_to _ ≤ c1 * 1
+        · simp
+        · rw [mul_comm]
+          apply mul_le_mul (mg' _)
+            (inv_le_of_inv_le₀ (by linarith) (by simpa using hR)) (by positivity)
+          exact (abs_nonneg _).trans (mg' 0)
+      have hc2 : ∀ᶠ R in atTop, ∀ v, |h'' R v| ≤ c2 := by
+        filter_upwards [eventually_ge_atTop 1] with R hR v
+        have e1 : 0 ≤ R := by linarith
+        have e2 : R⁻¹ ≤ 1 := inv_le_of_inv_le₀ (by linarith) (by simpa using hR)
+        have e3 : R ≠ 0 := by linarith
+        simp only [CS.deriv_scale, CS.deriv_smul, CS.neg_apply, CS.smul_apply, smul_eq_mul, abs_neg,
+          abs_mul, abs_inv, abs_eq_self.mpr e1, ge_iff_le, h'']
+        convert_to _ ≤ 1 * (1 * c2)
+        · simp
+        apply mul_le_mul e2 ?_ (by positivity) zero_le_one
+        apply mul_le_mul e2 ?_ (by positivity) zero_le_one
+        simp only [CS.scale, e3, ↓reduceDIte, funscale, smul_eq_mul] ; apply mg''
+      filter_upwards [hc1, hc2] with R hc1 hc2
+      apply Eventually.of_forall ; intro v ; specialize hc1 v ; specialize hc2 v
+      simp only [F, bound, norm_norm]
+      refine (norm_add_le _ _).trans ?_ ; apply add_le_add
+      · refine (norm_add_le _ _).trans ?_ ; apply add_le_add <;> simp only [Complex.norm_mul,
+        Complex.norm_ofNat, norm_real, norm_eq_abs] <;> gcongr
+      · simpa using mul_le_mul (hh1 R v) le_rfl (by simp) zero_le_one
+    have e3 : Integrable bound volume :=
+      (((f.hf.norm).const_mul _).add ((f.hf'.norm).const_mul _)).add f.hf''.norm
+    have e4 : ∀ᵐ (a : ℝ), Tendsto (fun n ↦ F n a) atTop (𝓝 0) := by
+      apply Eventually.of_forall ; intro v
+      have evg' : g' =ᶠ[𝓝 0] 0 := by convert! ← g.zero.deriv ; exact deriv_const' _
+      have evg'' : g'' =ᶠ[𝓝 0] 0 := by convert! ← evg'.deriv ; exact deriv_const' _
+      refine tendsto_norm_zero.comp <| (ZeroAtFilter.add ?_ ?_).add ?_
+      · have eh'' v : ∀ᶠ R in atTop, h'' R v = 0 := by
+          filter_upwards [(vR v).eventually evg'', eventually_ne_atTop 0] with R hR hR'
+          simp only [CS.deriv_scale, CS.deriv_smul, CS.neg_apply, CS.smul_apply, smul_eq_mul,
+            neg_eq_zero, mul_eq_zero, inv_eq_zero, hR', false_or, h'']
+          simp only [CS.scale, hR', ↓reduceDIte, funscale, smul_eq_mul, mul_comm R⁻¹]
+          exact hR
+        apply tendsto_nhds_of_eventually_eq
+        filter_upwards [eh'' v] with R hR ; simp [hR]
+      · have eh' v : ∀ᶠ R in atTop, h' R v = 0 := by
+          filter_upwards [(vR v).eventually evg'] with R hR
+          simp [g'] at hR
+          simp [h', CS.deriv_scale', mul_comm R⁻¹, hR]
+        apply tendsto_nhds_of_eventually_eq
+        filter_upwards [eh' v] with R hR ; simp [hR]
+      · simpa [h] using! ((g.tendsto_scale v).const_sub 1).ofReal.mul tendsto_const_nhds
+    simpa [F] using tendsto_integral_filter_of_dominated_convergence bound e1 e2 e3 e4
+
+end HeckeTauberian
+end
+
+noncomputable section
+namespace HeckeTauberian
+open FourierTransform Real Complex MeasureTheory Filter Topology BoundedContinuousFunction
+  SchwartzMap VectorFourier BigOperators
+
+local instance {E : Type*} : Coe (E → ℝ) (E → ℂ) := ⟨fun f n => f n⟩
+
+section lemmas
+
+@[simp]
+theorem nnnorm_eq_of_mem_circle (z : Circle) : ‖z.val‖₊ = 1 := NNReal.coe_eq_one.mp (by simp)
+
+@[simp]
+theorem nnnorm_circle_smul (z : Circle) (s : ℂ) : ‖z • s‖₊ = ‖s‖₊ := by
+  simp [show z • s = z.val * s from rfl]
+
+noncomputable def e (u : ℝ) : ℝ →ᵇ ℂ where
+  toFun v := 𝐞 (-v * u)
+  map_bounded' :=
+    ⟨2, fun x y => (dist_le_norm_add_norm _ _).trans (by simp [one_add_one_eq_two])⟩
+
+@[simp] lemma e_apply (u : ℝ) (v : ℝ) : e u v = 𝐞 (-v * u) := rfl
+
+theorem hasDerivAt_e {u x : ℝ} : HasDerivAt (e u) (-2 * π * u * I * e u x) x := by
+  have l2 : HasDerivAt (fun v => -v * u) (-u) x := by
+    simpa only [neg_mul_comm] using hasDerivAt_mul_const (-u)
+  convert! (hasDerivAt_fourierChar (-x * u)).scomp x l2 using 1
+  change _ = ((-u : ℝ) : ℂ) * _ -- `scomp` introduces ℝ-smul on ℂ, which we undo
+  simp ; ring
+
+lemma fourierIntegral_deriv_aux2 (e : ℝ →ᵇ ℂ) {f : ℝ → ℂ} (hf : Integrable f) :
+    Integrable (⇑e * f) :=
+  hf.bdd_mul e.continuous.aestronglyMeasurable (ae_of_all _ e.norm_coe_le_norm)
+
+@[simp] lemma F_neg {f : ℝ → ℂ} {u : ℝ} : 𝓕 (fun x => -f x) u = - 𝓕 f u := by
+  simp [fourier_eq, integral_neg]
+
+@[simp] lemma F_add {f g : ℝ → ℂ} (hf : Integrable f) (hg : Integrable g) (x : ℝ) :
+    𝓕 (fun x => f x + g x) x = 𝓕 f x + 𝓕 g x := by
+  have : Continuous fun p : ℝ × ℝ ↦ ((innerₗ ℝ) p.1) p.2 := continuous_inner
+  have := fourierIntegral_add continuous_fourierChar this hf hg
+  exact congr_fun this x
+
+@[simp] lemma F_sub {f g : ℝ → ℂ} (hf : Integrable f) (hg : Integrable g) (x : ℝ) :
+    𝓕 (fun x => f x - g x) x = 𝓕 f x - 𝓕 g x := by
+  simpa [sub_eq_add_neg, Pi.neg_def] using F_add hf hg.neg x
+
+@[simp] lemma F_mul {f : ℝ → ℂ} {c : ℂ} {u : ℝ} :
+    𝓕 (fun x => c * f x) u = c * 𝓕 f u := by
+  exact congr_fun (VectorFourier.fourierIntegral_const_smul 𝐞 _ _ f c) u
+
+end lemmas
+
+theorem fourierIntegral_self_add_deriv_deriv (f : W21) (u : ℝ) :
+    (1 + u ^ 2) * 𝓕 (f : ℝ → ℂ) u =
+      𝓕 (fun u : ℝ => (f u - (1 / (4 * π ^ 2)) * deriv^[2] f u : ℂ)) u := by
+  have l1 : Integrable (fun x => (((π : ℂ) ^ 2)⁻¹ * 4⁻¹) * deriv (deriv f) x) := by
+    apply Integrable.const_mul ; simpa [iteratedDeriv_succ] using f.integrable le_rfl
+  have l4 : Differentiable ℝ f := f.differentiable
+  have l5 : Differentiable ℝ (deriv f) := f.deriv.differentiable
+  simp [f.hf, l1, add_mul, Real.fourier_deriv f.hf' l5 f.hf'', Real.fourier_deriv f.hf l4 f.hf']
+  field_simp [pi_ne_zero] ; ring_nf ; simp
+
+@[simp] lemma deriv_ofReal : deriv ofReal = fun _ => 1 := by
+  ext x ; exact ((hasDerivAt_id x).ofReal_comp).deriv
+
+
+end HeckeTauberian
+end
+
+noncomputable section
+namespace HeckeTauberian
+open MeasureTheory Set Real
+open scoped ContDiff
+
+lemma smooth_urysohn_support_Ioo {a b c d : ℝ} (h1 : a < b) (h3 : c < d) :
+    ∃ Ψ : ℝ → ℝ, (ContDiff ℝ ∞ Ψ) ∧ (HasCompactSupport Ψ) ∧
+    Set.indicator (Set.Icc b c) 1 ≤ Ψ ∧ Ψ ≤ Set.indicator (Set.Ioo a d) 1 ∧
+    (Function.support Ψ = Set.Ioo a d) := by
+  have := exists_contMDiff_zero_iff_one_iff_of_isClosed (n := ⊤)
+    (modelWithCornersSelf ℝ ℝ) (s := Set.Iic a ∪ Set.Ici d) (t := Set.Icc b c)
+    (IsClosed.union isClosed_Iic isClosed_Ici) isClosed_Icc
+    (by
+      simp_rw [Set.disjoint_union_left, Set.disjoint_iff, Set.subset_def,
+        Set.mem_inter_iff, Set.mem_Iic, Set.mem_Icc, Set.mem_empty_iff_false,
+        and_imp, imp_false, not_le, Set.mem_Ici]
+      constructor <;> intros <;> linarith)
+  obtain ⟨Ψ, hΨSmooth, hΨrange, hΨ0, hΨ1⟩ := this
+  simp only [Set.mem_union, Set.mem_Iic, Set.mem_Ici, Set.mem_Icc] at *
+  use Ψ
+  simp only [range_subset_iff, mem_Icc] at hΨrange
+  refine ⟨ContMDiff.contDiff hΨSmooth, ?_, ?_, ?_, ?_⟩
+  · apply HasCompactSupport.of_support_subset_isCompact (K := Set.Icc a d) isCompact_Icc
+    simp only [Function.support_subset_iff, ne_eq, mem_Icc, ← hΨ0, not_or]
+    bound
+  · apply Set.indicator_le'
+    · intro x hx
+      rw [hΨ1 x |>.mp, Pi.one_apply]
+      simpa using hx
+    · exact fun x _ ↦ (hΨrange x).1
+  · intro x
+    apply Set.le_indicator_apply
+    · exact fun _ ↦ (hΨrange x).2
+    · intro hx
+      rw [← hΨ0 x |>.mp]
+      simpa [-not_and, mem_Ioo, not_and_or, not_lt] using hx
+  · ext x
+    simp only [Function.mem_support, ne_eq, mem_Ioo, ← hΨ0, not_or, not_le]
+
+
+end HeckeTauberian
+end
+
+noncomputable section
+namespace HeckeTauberian
+open Real BigOperators ArithmeticFunction MeasureTheory Filter Set FourierTransform LSeries
+  Asymptotics SchwartzMap
+open Complex hiding log
+open scoped Topology
+open scoped ContDiff
+open scoped ComplexConjugate
+
+variable {n : ℕ} {A a b c d u x y t σ' : ℝ} {ψ Ψ : ℝ → ℂ} {F G : ℂ → ℂ} {f : ℕ → ℂ} {𝕜 : Type}
+  [RCLike 𝕜]
+
+lemma hf_coe1 (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (hσ : 1 < σ') :
+    ∑' i, (‖term f σ' i‖₊ : ENNReal) ≠ ⊤ := by
+  simp_rw [ENNReal.tsum_coe_ne_top_iff_summable_coe, ← norm_toNNReal]
+  norm_cast
+  apply Summable.toNNReal
+  convert hf σ' hσ with i
+  simp [nterm_eq_norm_term]
+
+instance instMeasurableSpace : MeasurableSpace Circle :=
+  inferInstanceAs <| MeasurableSpace <| Subtype _
+instance instBorelSpace : BorelSpace Circle :=
+  inferInstanceAs <| BorelSpace <| Subtype (· ∈ Metric.sphere (0 : ℂ) 1)
+
+attribute [fun_prop] Real.continuous_fourierChar
+
+lemma first_fourier_aux1 (hψ : AEMeasurable ψ) {x : ℝ} (n : ℕ) : AEMeasurable fun (u : ℝ) ↦
+    (‖fourierChar (-(u * ((1 : ℝ) / ((2 : ℝ) * π) * (n / x).log))) • ψ u‖ₑ : ENNReal) := by
+  fun_prop
+
+lemma first_fourier_aux2a :
+    (2 : ℂ) * π * -(y * (1 / (2 * π) * Real.log ((n) / x))) = -(y * ((n) / x).log) := by
+  calc
+    _ = -(y * (((2 : ℂ) * π) / (2 * π) * Real.log ((n) / x))) := by ring
+    _ = _ := by rw [div_self (by norm_num), one_mul]
+
+lemma first_fourier_aux2 (hx : 0 < x) (n : ℕ) :
+    term f σ' n * 𝐞 (-(y * (1 / (2 * π) * Real.log (n / x)))) • ψ y =
+    term f (σ' + y * I) n • (ψ y * x ^ (y * I)) := by
+  by_cases hn : n = 0
+  · simp [term, hn]
+  simp only [term, hn, ↓reduceIte]
+  calc
+    _ = (f n * (cexp ((2 * π * -(y * (1 / (2 * π) * Real.log (n / x)))) * I) /
+        ↑((n : ℝ) ^ σ'))) • ψ y := by
+      rw [Circle.smul_def, fourierChar_apply, ofReal_cpow (by norm_num)]
+      simp only [one_div, mul_inv_rev, mul_neg, ofReal_neg, ofReal_mul, ofReal_ofNat, ofReal_inv,
+        neg_mul, smul_eq_mul, ofReal_natCast]
+      ring
+    _ = (f n * (x ^ (y * I) / n ^ (σ' + y * I))) • ψ y := by
+      congr 2
+      have l1 : 0 < (n : ℝ) := by simpa using Nat.pos_iff_ne_zero.mpr hn
+      have l2 : (x : ℂ) ≠ 0 := by simp [hx.ne.symm]
+      have l3 : (n : ℂ) ≠ 0 := by simp [hn]
+      rw [Real.rpow_def_of_pos l1, Complex.cpow_def_of_ne_zero l2, Complex.cpow_def_of_ne_zero l3]
+      push_cast
+      simp_rw [← Complex.exp_sub]
+      congr 1
+      rw [first_fourier_aux2a, Real.log_div l1.ne.symm hx.ne.symm]
+      push_cast
+      rw [Complex.ofReal_log hx.le]
+      ring
+    _ = _ := by simp ; group
+
+set_option backward.isDefEq.respectTransparency false in
+lemma first_fourier (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hsupp : Integrable ψ) (hx : 0 < x) (hσ : 1 < σ') :
+    ∑' n : ℕ, term f σ' n * (𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x))) =
+    ∫ t : ℝ, LSeries f (σ' + t * I) * ψ t * x ^ (t * I) := by
+
+  calc
+    _ = ∑' n, term f σ' n * ∫ (v : ℝ), 𝐞 (-(v * ((1 : ℝ) /
+        ((2 : ℝ) * π) * Real.log (n / x)))) • ψ v := by
+      simp only [Real.fourier_eq]
+      simp only [one_div, mul_inv_rev, RCLike.inner_apply', conj_trivial]
+    _ = ∑' n, ∫ (v : ℝ), term f σ' n * 𝐞 (-(v * ((1 : ℝ) /
+        ((2 : ℝ) * π) * Real.log (n / x)))) • ψ v := by
+      simp [integral_const_mul]
+    _ = ∫ (v : ℝ), ∑' n, term f σ' n * 𝐞 (-(v * ((1 : ℝ) /
+        ((2 : ℝ) * π) * Real.log (n / x)))) • ψ v := by
+      refine (integral_tsum ?_ ?_).symm
+      · refine fun _ ↦ AEMeasurable.aestronglyMeasurable ?_
+        have := hsupp.aemeasurable
+        fun_prop
+      · simp only [enorm_mul]
+        simp_rw [lintegral_const_mul'' _ (first_fourier_aux1 hsupp.aemeasurable _)]
+        calc
+          _ = (∑' (i : ℕ), ‖term f σ' i‖ₑ) * ∫⁻ (a : ℝ), ‖ψ a‖ₑ ∂volume := by
+            simp [ENNReal.tsum_mul_right, enorm_eq_nnnorm]
+          _ ≠ ⊤ := ENNReal.mul_ne_top (hf_coe1 hf hσ)
+            (ne_top_of_lt hsupp.2)
+    _ = _ := by
+      congr 1; ext y
+      simp_rw [mul_assoc (LSeries _ _), ← smul_eq_mul (a := (LSeries _ _)), LSeries]
+      rw [← Summable.tsum_smul_const]
+      · simp_rw [first_fourier_aux2 hx]
+      · apply Summable.of_norm
+        convert hf σ' hσ with n
+        rw [norm_term_eq_nterm_re]
+        simp
+
+@[continuity]
+lemma continuous_multiplicative_ofAdd : Continuous (⇑Multiplicative.ofAdd : ℝ → ℝ) := ⟨fun _ ↦ id⟩
+
+attribute [fun_prop] measurable_coe_nnreal_ennreal
+
+lemma second_fourier_integrable_aux1a (hσ : 1 < σ') :
+    IntegrableOn (fun (x : ℝ) ↦ cexp (-((x : ℂ) * ((σ' : ℂ) - 1)))) (Ici (-Real.log x)) := by
+  norm_cast
+  suffices IntegrableOn (fun (x : ℝ) ↦ (rexp (-(x * (σ' - 1))))) (Ici (-x.log)) _ from this.ofReal
+  simp_rw [fun (a x : ℝ) ↦ (by ring : -(x * a) = -a * x)]
+  rw [integrableOn_Ici_iff_integrableOn_Ioi]
+  apply exp_neg_integrableOn_Ioi
+  linarith
+
+lemma second_fourier_integrable_aux1 (hcont : Measurable ψ) (hsupp : Integrable ψ) (hσ : 1 < σ') :
+    let ν : Measure (ℝ × ℝ) := (volume.restrict (Ici (-Real.log x))).prod volume
+    Integrable (Function.uncurry fun (u : ℝ) (a : ℝ) ↦ ((rexp (-u * (σ' - 1))) : ℂ) •
+    (𝐞 (Multiplicative.ofAdd (-(a * (u / (2 * π))))) : ℂ) • ψ a) ν := by
+  intro ν
+  constructor
+  · apply Measurable.aestronglyMeasurable
+
+    simp only [neg_mul, ofReal_exp, ofReal_neg, ofReal_mul, ofReal_sub, ofReal_one,
+      Multiplicative.ofAdd, Equiv.coe_fn_mk, smul_eq_mul]
+    fun_prop
+  · let f1 : ℝ → ENNReal := fun a1 ↦ ‖cexp (-(↑a1 * (↑σ' - 1)))‖ₑ
+    let f2 : ℝ → ENNReal := fun a2 ↦ ‖ψ a2‖ₑ
+    suffices ∫⁻ (a : ℝ × ℝ), f1 a.1 * f2 a.2 ∂ν < ⊤ by
+      simpa [hasFiniteIntegral_iff_enorm, enorm_eq_nnnorm, Function.uncurry]
+    refine (lintegral_prod_mul ?_ ?_).trans_lt ?_ <;> try fun_prop
+    exact ENNReal.mul_lt_top (second_fourier_integrable_aux1a hσ).2 hsupp.2
+
+lemma second_fourier_integrable_aux2 (hσ : 1 < σ') :
+    IntegrableOn (fun (u : ℝ) ↦ cexp ((1 - ↑σ' - ↑t * I) * ↑u)) (Ioi (-Real.log x)) := by
+  refine (integrable_norm_iff (Measurable.aestronglyMeasurable <| by fun_prop)).mp ?_
+  suffices IntegrableOn (fun a ↦ rexp (-(σ' - 1) * a)) (Ioi (-x.log)) _ by simpa [Complex.norm_exp]
+  apply exp_neg_integrableOn_Ioi
+  linarith
+
+lemma second_fourier_aux (hx : 0 < x) :
+    -(cexp (-((1 - ↑σ' - ↑t * I) * ↑(Real.log x))) / (1 - ↑σ' - ↑t * I)) =
+    ↑(x ^ (σ' - 1)) * (↑σ' + ↑t * I - 1)⁻¹ * ↑x ^ (↑t * I) := by
+  calc
+    _ = cexp (↑(Real.log x) * ((↑σ' - 1) + ↑t * I)) * (↑σ' + ↑t * I - 1)⁻¹ := by
+      rw [← div_neg]; ring_nf
+    _ = (x ^ ((↑σ' - 1) + ↑t * I)) * (↑σ' + ↑t * I - 1)⁻¹ := by
+      rw [Complex.cpow_def_of_ne_zero (ofReal_ne_zero.mpr (ne_of_gt hx)), Complex.ofReal_log hx.le]
+    _ = (x ^ ((σ' : ℂ) - 1)) * (x ^ (↑t * I)) * (↑σ' + ↑t * I - 1)⁻¹ := by
+      rw [Complex.cpow_add _ _ (ofReal_ne_zero.mpr (ne_of_gt hx))]
+    _ = _ := by rw [ofReal_cpow hx.le]; push_cast; ring
+
+set_option backward.isDefEq.respectTransparency false in
+lemma second_fourier (hcont : Measurable ψ) (hsupp : Integrable ψ)
+    {x σ' : ℝ} (hx : 0 < x) (hσ : 1 < σ') :
+    ∫ u in Ici (-log x), Real.exp (-u * (σ' - 1)) * 𝓕 (ψ : ℝ → ℂ) (u / (2 * π)) =
+    (x^(σ' - 1) : ℝ) * ∫ t, (1 / (σ' + t * I - 1)) * ψ t * x^(t * I) ∂ volume := by
+
+  conv in ↑(rexp _) * _ => { rw [Real.fourier_real_eq, ← smul_eq_mul, ← integral_smul] }
+  rw [MeasureTheory.integral_integral_swap]
+  swap
+  · exact second_fourier_integrable_aux1 hcont hsupp hσ
+  rw [← integral_const_mul]
+  congr 1; ext t
+  dsimp [Real.fourierChar, Circle.exp]
+
+  simp_rw [mul_smul_comm, ← smul_mul_assoc, integral_mul_const]
+  rw [fun (a b d : ℂ) ↦ show a * (b * (ψ t) * d) = (a * b * d) * ψ t by ring]
+  congr 1
+  conv =>
+    lhs
+    enter [2]
+    ext a
+    rw [AddChar.coe_mk, Submonoid.mk_smul, smul_eq_mul]
+  push_cast
+  simp_rw [← Complex.exp_add]
+  have (u : ℝ) :
+      2 * ↑π * -(↑t * (↑u / (2 * ↑π))) * I + -↑u * (↑σ' - 1) = (1 - σ' - t * I) * u := calc
+    _ = -↑u * (↑σ' - 1) + (2 * ↑π) / (2 * ↑π) * -(↑t * ↑u) * I := by ring
+    _ = -↑u * (↑σ' - 1) + 1 * -(↑t * ↑u) * I := by rw [div_self (by norm_num)]
+    _ = _ := by ring
+  simp_rw [this]
+  let c : ℂ := (1 - ↑σ' - ↑t * I)
+  have : c ≠ 0 := by simp [Complex.ext_iff, c, sub_ne_zero.mpr hσ.ne]
+  let f' (u : ℝ) := cexp (c * u)
+  let f := fun (u : ℝ) ↦ (f' u) / c
+  have hderiv : ∀ u ∈ Ici (-Real.log x), HasDerivAt f (f' u) u := by
+    intro u _
+    rw [show f' u = cexp (c * u) * (c * 1) / c by simp only [f']; field_simp]
+    exact (hasDerivAt_id' u).ofReal_comp.const_mul c |>.cexp.div_const c
+  have hf : Tendsto f atTop (𝓝 0) := by
+    apply tendsto_zero_iff_norm_tendsto_zero.mpr
+    suffices Tendsto (fun (x : ℝ) ↦ ‖cexp (c * ↑x)‖ / ‖c‖) atTop (𝓝 (0 / ‖c‖)) by
+      simpa [f, f'] using this
+    apply Filter.Tendsto.div_const
+    suffices Tendsto (· * (1 - σ')) atTop atBot by simpa [Complex.norm_exp, mul_comm (1 - σ'), c]
+    exact Tendsto.atTop_mul_const_of_neg (by linarith) fun ⦃s⦄ h ↦ h
+  rw [integral_Ici_eq_integral_Ioi,
+    integral_Ioi_of_hasDerivAt_of_tendsto' hderiv (second_fourier_integrable_aux2 hσ) hf]
+  simpa [f, f'] using second_fourier_aux hx
+
+lemma one_add_sq_pos (u : ℝ) : 0 < 1 + u ^ 2 := zero_lt_one.trans_le (by simpa using sq_nonneg u)
+
+theorem prelim_decay (ψ : ℝ → ℂ) (u : ℝ) : ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤ ∫ t, ‖ψ t‖ :=
+  VectorFourier.norm_fourierIntegral_le_integral_norm ..
+
+lemma decay_bounds_key (f : W21) (u : ℝ) : ‖𝓕 (f : ℝ → ℂ) u‖ ≤ ‖f‖ * (1 + u ^ 2)⁻¹ := by
+  have l1 : 0 < 1 + u ^ 2 := one_add_sq_pos _
+  have l2 : 1 + u ^ 2 = ‖(1 : ℂ) + u ^ 2‖ := by
+    norm_cast ; simp only [Real.norm_eq_abs, abs_eq_self.2 l1.le]
+  have l3 : ‖1 / ((4 : ℂ) * ↑π ^ 2)‖ ≤ (4 * π ^ 2)⁻¹ := by simp
+  have key := fourierIntegral_self_add_deriv_deriv f u
+  simp only [Function.iterate_succ _ 1, Function.iterate_one, Function.comp_apply] at key
+  rw [F_sub f.hf (f.hf''.const_mul (1 / (4 * ↑π ^ 2)))] at key
+  rw [← div_eq_mul_inv, le_div_iff₀ l1, mul_comm, l2, ← norm_mul, key, sub_eq_add_neg]
+  apply norm_add_le _ _ |>.trans
+  change _ ≤ W21.norm _
+  rw [norm_neg, F_mul, norm_mul, W21.norm]
+  gcongr <;> apply VectorFourier.norm_fourierIntegral_le_integral_norm
+
+lemma decay_bounds_aux {f : ℝ → ℂ} (hf : AEStronglyMeasurable f volume)
+    (h : ∀ t, ‖f t‖ ≤ A * (1 + t ^ 2)⁻¹) :
+    ∫ t, ‖f t‖ ≤ π * A := by
+  have l1 : Integrable (fun x ↦ A * (1 + x ^ 2)⁻¹) := integrable_inv_one_add_sq.const_mul A
+  simp_rw [← integral_univ_inv_one_add_sq, mul_comm, ← integral_const_mul]
+  exact integral_mono (l1.mono' hf (Eventually.of_forall h)).norm l1 h
+
+theorem decay_bounds_W21 (f : W21) (hA : ∀ t, ‖f t‖ ≤ A / (1 + t ^ 2))
+    (hA' : ∀ t, ‖deriv (deriv f) t‖ ≤ A / (1 + t ^ 2)) (u) :
+    ‖𝓕 (f : ℝ → ℂ) u‖ ≤ (π + 1 / (4 * π)) * A / (1 + u ^ 2) := by
+  have l0 : 1 * (4 * π)⁻¹ * A = (4 * π ^ 2)⁻¹ * (π * A) := by field_simp
+  have l1 : ∫ (v : ℝ), ‖f v‖ ≤ π * A := by
+    apply decay_bounds_aux f.continuous.aestronglyMeasurable
+    simp_rw [← div_eq_mul_inv] ; exact hA
+  have l2 : ∫ (v : ℝ), ‖deriv (deriv f) v‖ ≤ π * A := by
+    apply decay_bounds_aux f.deriv.deriv.continuous.aestronglyMeasurable
+    simp_rw [← div_eq_mul_inv] ; exact hA'
+  apply decay_bounds_key f u |>.trans
+  change W21.norm _ * _ ≤ _
+  simp_rw [W21.norm, div_eq_mul_inv, add_mul, l0] ; gcongr
+
+lemma decay_bounds (ψ : CS 2 ℂ) (hA : ∀ t, ‖ψ t‖ ≤ A / (1 + t ^ 2))
+    (hA' : ∀ t, ‖deriv^[2] ψ t‖ ≤ A / (1 + t ^ 2)) :
+    ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤ (π + 1 / (4 * π)) * A / (1 + u ^ 2) := by
+  exact decay_bounds_W21 ψ hA hA' u
+
+lemma decay_bounds_cor_aux (ψ : CS 2 ℂ) : ∃ C : ℝ, ∀ u, ‖ψ u‖ ≤ C / (1 + u ^ 2) := by
+  have l1 : HasCompactSupport (fun u : ℝ => ((1 + u ^ 2) : ℝ) * ψ u) := by exact ψ.h2.mul_left
+  have := ψ.h1.continuous
+  obtain ⟨C, hC⟩ := l1.exists_bound_of_continuous (by fun_prop)
+  refine ⟨C, fun u => ?_⟩
+  specialize hC u
+  simp only [norm_mul, Complex.norm_real, norm_of_nonneg (one_add_sq_pos u).le] at hC
+  rwa [le_div_iff₀' (one_add_sq_pos _)]
+
+lemma decay_bounds_cor (ψ : W21) :
+    ∃ C : ℝ, ∀ u, ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤ C / (1 + u ^ 2) := by
+  simpa only [div_eq_mul_inv] using ⟨_, decay_bounds_key ψ⟩
+
+set_option backward.isDefEq.respectTransparency false in
+@[continuity, fun_prop] lemma continuous_FourierIntegral (ψ : W21) : Continuous (𝓕 (ψ : ℝ → ℂ)) :=
+  VectorFourier.fourierIntegral_continuous continuous_fourierChar
+    (by simp only [innerₗ_apply_apply, RCLike.inner_apply', conj_trivial, continuous_mul])
+    ψ.hf
+
+lemma W21.integrable_fourier (ψ : W21) (hc : c ≠ 0) :
+    Integrable fun u ↦ 𝓕 (ψ : ℝ → ℂ) (u / c) := by
+  have l1 (C) : Integrable (fun u ↦ C / (1 + (u / c) ^ 2)) volume := by
+    simpa using! (integrable_inv_one_add_sq.comp_div hc).const_mul C
+  have l2 : AEStronglyMeasurable (fun u ↦ 𝓕 (ψ : ℝ → ℂ) (u / c)) volume := by
+    apply Continuous.aestronglyMeasurable ; fun_prop
+  obtain ⟨C, h⟩ := decay_bounds_cor ψ
+  apply @Integrable.mono' ℝ ℂ _ volume _ _ (fun u => C / (1 + (u / c) ^ 2)) (l1 C) l2 ?_
+  apply Eventually.of_forall (fun x => h _)
+
+lemma continuous_LSeries_aux (hf : Summable (nterm f σ')) :
+    Continuous fun x : ℝ => LSeries f (σ' + x * I) := by
+
+  have l1 i : Continuous fun x : ℝ ↦ term f (σ' + x * I) i := by
+    by_cases h : i = 0
+    · simpa [h] using continuous_const
+    · simpa [h] using! continuous_const.div (continuous_const.cpow (by fun_prop) (by simp [h]))
+        (fun x => by simp [h])
+  have l2 n (x : ℝ) : ‖term f (σ' + x * I) n‖ = nterm f σ' n := by
+    by_cases h : n = 0
+    · simp [h, nterm]
+    · simp [h, nterm, cpow_add _ _ (Nat.cast_ne_zero.mpr h),
+        Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero h)]
+  exact continuous_tsum l1 hf (fun n x => le_of_eq (l2 n x))
+
+set_option backward.isDefEq.respectTransparency false in
+lemma limiting_fourier_aux (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re})
+    (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (ψ : CS 2 ℂ) (hx : 1 ≤ x) (σ' : ℝ)
+    (hσ' : 1 < σ') :
+    ∑' n, term f σ' n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x)) -
+    A * (x ^ (1 - σ') : ℝ) * ∫ u in Ici (- log x), rexp (-u * (σ' - 1)) * 𝓕 (ψ : ℝ → ℂ)
+      (u / (2 * π)) = ∫ t : ℝ, G (σ' + t * I) * ψ t * x ^ (t * I) := by
+  have hint : Integrable ψ := ψ.h1.continuous.integrable_of_hasCompactSupport ψ.h2
+  have l3 : 0 < x := zero_lt_one.trans_le hx
+  have l1 (σ') (hσ' : 1 < σ') := first_fourier hf hint l3 hσ'
+  have l2 (σ') (hσ' : 1 < σ') := second_fourier ψ.h1.continuous.measurable hint l3 hσ'
+  have l8 : Continuous fun t : ℝ ↦ (x : ℂ) ^ (t * I) :=
+    continuous_const.cpow (continuous_ofReal.mul continuous_const) (by simp [l3])
+  have l6 : Continuous fun t : ℝ ↦ LSeries f (↑σ' + ↑t * I) * ψ t * ↑x ^ (↑t * I) := by
+    apply ((continuous_LSeries_aux (hf _ hσ')).mul ψ.h1.continuous).mul l8
+  have l4 : Integrable fun t : ℝ ↦ LSeries f (↑σ' + ↑t * I) * ψ t * ↑x ^ (↑t * I) := by
+    exact l6.integrable_of_hasCompactSupport ψ.h2.mul_left.mul_right
+  have e2 (u : ℝ) : σ' + u * I - 1 ≠ 0 := by
+    intro h ; have := congr_arg Complex.re h ; simp at this ; linarith
+  have l7 : Continuous fun a ↦ A * ↑(x ^ (1 - σ')) * (↑(x ^ (σ' - 1)) *
+      (1 / (σ' + a * I - 1) * ψ a * x ^ (a * I))) := by
+    simp only [one_div, ← mul_assoc]
+    refine ((continuous_const.mul <| Continuous.inv₀ ?_ e2).mul ψ.h1.continuous).mul l8
+    fun_prop
+  have l5 : Integrable fun a ↦ A * ↑(x ^ (1 - σ')) * (↑(x ^ (σ' - 1)) *
+      (1 / (σ' + a * I - 1) * ψ a * x ^ (a * I))) := by
+    apply l7.integrable_of_hasCompactSupport
+    exact ψ.h2.mul_left.mul_right.mul_left.mul_left
+
+  simp_rw [l1 σ' hσ', l2 σ' hσ', ← integral_const_mul, ← integral_sub l4 l5]
+  apply integral_congr_ae
+  apply Eventually.of_forall
+  intro u
+  have e1 : 1 < ((σ' : ℂ) + (u : ℂ) * I).re := by simp [hσ']
+  simp_rw [hG' e1, sub_mul, ← mul_assoc]
+  simp only [one_div, sub_right_inj, mul_eq_mul_right_iff, cpow_eq_zero_iff, ofReal_eq_zero, ne_eq,
+    mul_eq_zero, I_ne_zero, or_false]
+  left ; left
+  field_simp [e2]
+  norm_cast
+  simp [mul_assoc, ← rpow_add l3]
+
+section nabla
+
+variable {α E : Type*} [OfNat α 1] [Add α] [Sub α] {u : α → ℂ}
+
+def nabla [Sub E] (u : α → E) (n : α) : E := u (n + 1) - u n
+
+def nnabla [Sub E] (u : α → E) (n : α) : E := u n - u (n + 1)
+
+def shift (u : α → E) (n : α) : E := u (n + 1)
+
+@[simp] lemma cumsum_zero [AddCommMonoid E] {u : ℕ → E} : cumsum u 0 = 0 := by simp [cumsum]
+
+lemma cumsum_succ [AddCommMonoid E] {u : ℕ → E} (n : ℕ) :
+    cumsum u (n + 1) = cumsum u n + u n := by
+  simp [cumsum, Finset.sum_range_succ]
+
+@[simp] lemma nabla_cumsum [AddCommGroup E] {u : ℕ → E} : nabla (cumsum u) = u := by
+  ext n ; simp [nabla, cumsum, Finset.range_add_one]
+
+lemma neg_cumsum [AddCommGroup E] {u : ℕ → E} : -(cumsum u) = cumsum (-u) :=
+  funext (fun n => by simp [cumsum])
+
+omit [Sub α] in
+lemma neg_nabla [Ring E] {u : α → E} : -(nabla u) = nnabla u := by ext n ; simp [nabla, nnabla]
+
+omit [Sub α] in
+@[simp] lemma nabla_mul [Ring E] {u : α → E} {c : E} : nabla (fun n => c * u n) = c • nabla u := by
+  ext n ; simp [nabla, mul_sub]
+
+omit [Sub α] in
+@[simp] lemma nnabla_mul [Ring E] {u : α → E} {c : E} :
+    nnabla (fun n => c * u n) = c • nnabla u := by
+  ext n ; simp [nnabla, mul_sub]
+
+lemma nnabla_cast (u : ℝ → E) [Sub E] : nnabla u ∘ ((↑) : ℕ → ℝ) = nnabla (u ∘ (↑)) := by
+  ext n ; simp [nnabla]
+
+end nabla
+
+lemma Finset.sum_shift_front {E : Type*} [Ring E] {u : ℕ → E} {n : ℕ} :
+    cumsum u (n + 1) = u 0 + cumsum (shift u) n := by
+  simp_rw [add_comm n, cumsum, _root_.Finset.sum_range_add,
+    _root_.Finset.sum_range_one, add_comm 1] ; rfl
+
+lemma Finset.sum_shift_front' {E : Type*} [Ring E] {u : ℕ → E} :
+    shift (cumsum u) = (fun _ => u 0) + cumsum (shift u) := by
+  ext n ; apply Finset.sum_shift_front
+
+lemma Finset.sum_shift_back {E : Type*} [Ring E] {u : ℕ → E} {n : ℕ} :
+    cumsum u (n + 1) = cumsum u n + u n := by
+  simp [cumsum, Finset.range_add_one, add_comm]
+
+lemma Finset.sum_shift_back' {E : Type*} [Ring E] {u : ℕ → E} :
+    shift (cumsum u) = cumsum u + u := by
+  ext n ; apply Finset.sum_shift_back
+
+lemma summation_by_parts {E : Type*} [Ring E] {a A b : ℕ → E} (ha : a = nabla A) {n : ℕ} :
+    cumsum (a * b) (n + 1) = A (n + 1) * b n - A 0 * b 0 -
+    cumsum (shift A * fun i => (b (i + 1) - b i)) n := by
+  have l1 : ∑ x ∈ Finset.range (n + 1), A (x + 1) * b x = ∑ x ∈ Finset.range n,
+      A (x + 1) * b x + A (n + 1) * b n :=
+    Finset.sum_shift_back
+  have l2 : ∑ x ∈ Finset.range (n + 1), A x * b x = A 0 * b 0 + ∑ x ∈ Finset.range n,
+      A (x + 1) * b (x + 1) :=
+    Finset.sum_shift_front
+  simp only [cumsum, ha, Pi.mul_apply, nabla, sub_mul, Finset.sum_sub_distrib, l1, l2, shift,
+    mul_sub]
+  abel
+
+lemma summation_by_parts' {E : Type*} [Ring E] {a b : ℕ → E} {n : ℕ} :
+    cumsum (a * b) (n + 1) = cumsum a (n + 1) * b n - cumsum (shift (cumsum a) * nabla b) n := by
+  simpa using! summation_by_parts (a := a) (b := b) (A := cumsum a) (by simp)
+
+lemma summation_by_parts'' {E : Type*} [Ring E] {a b : ℕ → E} :
+    shift (cumsum (a * b)) = shift (cumsum a) * b - cumsum (shift (cumsum a) * nabla b) := by
+  ext n ; apply summation_by_parts'
+
+lemma summable_iff_bounded {u : ℕ → ℝ} (hu : 0 ≤ u) :
+    Summable u ↔ BoundedAtFilter atTop (cumsum u) := by
+  have l1 : (cumsum u =O[atTop] 1) ↔ _ := isBigO_one_nat_atTop_iff
+  have l2 n : ‖cumsum u n‖ = cumsum u n := by simpa using cumsum_nonneg hu n
+  simp only [BoundedAtFilter, l1, l2]
+  constructor <;> intro ⟨C, h1⟩
+  · exact ⟨C, fun n => sum_le_hasSum _ (fun i _ => hu i) h1⟩
+  · exact summable_of_sum_range_le hu h1
+
+lemma Filter.EventuallyEq.summable {u v : ℕ → ℝ} (h : u =ᶠ[atTop] v) (hu : Summable v) :
+    Summable u :=
+  summable_of_isBigO_nat hu h.isBigO
+
+lemma summable_congr_ae {u v : ℕ → ℝ} (huv : u =ᶠ[atTop] v) : Summable u ↔ Summable v := by
+  exact ⟨fun h => Filter.EventuallyEq.summable huv.symm h,
+    fun h => Filter.EventuallyEq.summable huv h⟩
+
+lemma BoundedAtFilter.add_const {u : ℕ → ℝ} {c : ℝ} :
+    BoundedAtFilter atTop (fun n => u n + c) ↔ BoundedAtFilter atTop u := by
+  have : u = fun n => (u n + c) + (-c) := by ext n ; ring
+  simp only [BoundedAtFilter]
+  constructor <;> intro h
+  on_goal 1 => rw [this]
+  all_goals { exact h.add (const_boundedAtFilter _ _) }
+
+lemma BoundedAtFilter.comp_add {u : ℕ → ℝ} {N : ℕ} :
+    BoundedAtFilter atTop (fun n => u (n + N)) ↔ BoundedAtFilter atTop u := by
+  simp only [BoundedAtFilter, isBigO_iff, norm_eq_abs, Pi.one_apply,
+    eventually_atTop]
+  constructor <;> intro ⟨C, n₀, h⟩ <;> use C
+  · refine ⟨n₀ + N, fun n hn => ?_⟩
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le' (m := N) (n := n) (by grind)
+    exact h _ <| Nat.add_le_add_iff_right.mp hn
+  · exact ⟨n₀, fun n hn => h _ (by grind)⟩
+
+lemma summable_iff_bounded' {u : ℕ → ℝ} (hu : ∀ᶠ n in atTop, 0 ≤ u n) :
+    Summable u ↔ BoundedAtFilter atTop (cumsum u) := by
+  obtain ⟨N, hu⟩ := eventually_atTop.mp hu
+  have e2 : cumsum (fun i ↦ u (i + N)) = fun n => cumsum u (n + N) - cumsum u N := by
+    ext n ; simp_rw [cumsum, add_comm _ N, Finset.sum_range_add] ; ring
+  rw [← summable_nat_add_iff N, summable_iff_bounded (fun n => hu _ <| Nat.le_add_left N n), e2]
+  simp_rw [sub_eq_add_neg, BoundedAtFilter.add_const, BoundedAtFilter.comp_add]
+
+lemma bounded_of_shift {u : ℕ → ℝ} (h : BoundedAtFilter atTop (shift u)) :
+    BoundedAtFilter atTop u := by
+  simp only [BoundedAtFilter, isBigO_iff, eventually_atTop] at h ⊢
+  obtain ⟨C, N, hC⟩ := h
+  refine ⟨C, N + 1, fun n hn => ?_⟩
+  simp only [shift] at hC
+  have r1 : n - 1 ≥ N := Nat.le_sub_one_of_lt hn
+  have r2 : n - 1 + 1 = n := Nat.sub_add_cancel (by omega)
+  simpa [r2] using hC (n - 1) r1
+
+lemma dirichlet_test' {a b : ℕ → ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
+    (hAb : BoundedAtFilter atTop (shift (cumsum a) * b)) (hbb : ∀ᶠ n in atTop, b (n + 1) ≤ b n)
+    (h : Summable (shift (cumsum a) * nnabla b)) : Summable (a * b) := by
+  have l1 : ∀ᶠ n in atTop, 0 ≤ (shift (cumsum a) * nnabla b) n := by
+    filter_upwards [hbb] with n hb
+    exact mul_nonneg (by simpa [shift] using! Finset.sum_nonneg' ha) (sub_nonneg.mpr hb)
+  rw [summable_iff_bounded (mul_nonneg ha hb)]
+  rw [summable_iff_bounded' l1] at h
+  apply bounded_of_shift
+  simpa only [summation_by_parts'', sub_eq_add_neg, neg_cumsum, ← mul_neg, neg_nabla]
+    using hAb.add h
+
+lemma exists_antitone_of_eventually {u : ℕ → ℝ} (hu : ∀ᶠ n in atTop, u (n + 1) ≤ u n) :
+    ∃ v : ℕ → ℝ, range v ⊆ range u ∧ Antitone v ∧ v =ᶠ[atTop] u := by
+  obtain ⟨N, hN⟩ := eventually_atTop.mp hu
+  let v (n : ℕ) := u (if n < N then N else n)
+  refine ⟨v, ?_, ?_, ?_⟩
+  · exact fun x ⟨n, hn⟩ => ⟨if n < N then N else n, hn⟩
+  · refine antitone_nat_of_succ_le (fun n => ?_)
+    by_cases h : n < N
+    · by_cases h' : n + 1 < N <;> simp [v, h, h']
+      have : n + 1 = N := by linarith
+      simp [this]
+    · have : ¬(n + 1 < N) := by linarith
+      simp only [this, ↓reduceIte, h, ge_iff_le, v] ; apply hN ; linarith
+  · have : ∀ᶠ n in atTop, ¬(n < N) := by simpa using ⟨N, fun b hb => by linarith⟩
+    filter_upwards [this] with n hn ; simp [v, hn]
+
+lemma summable_inv_mul_log_sq : Summable (fun n : ℕ => (n * (Real.log n) ^ 2)⁻¹) := by
+  let u (n : ℕ) := (n * (Real.log n) ^ 2)⁻¹
+  have l7 : ∀ᶠ n : ℕ in atTop, 1 ≤ Real.log n :=
+    tendsto_atTop.mp (tendsto_log_atTop.comp tendsto_natCast_atTop_atTop) 1
+  have l8 : ∀ᶠ n : ℕ in atTop, 1 ≤ n := eventually_ge_atTop 1
+  have l9 : ∀ᶠ n in atTop, u (n + 1) ≤ u n := by
+    filter_upwards [l7, l8] with n l2 l8; dsimp [u]; gcongr <;> simp
+  obtain ⟨v, l1, l2, l3⟩ := exists_antitone_of_eventually l9
+  rw [summable_congr_ae l3.symm]
+  have l4 (n : ℕ) : 0 ≤ v n := by obtain ⟨k, hk⟩ := l1 ⟨n, rfl⟩ ; rw [← hk] ; positivity
+  apply (summable_condensed_iff_of_nonneg l4 (fun _ _ _ a ↦ l2 a)).mp
+  suffices this : ∀ᶠ k : ℕ in atTop, 2 ^ k * v (2 ^ k) = ((k : ℝ) ^ 2)⁻¹ * ((Real.log 2) ^ 2)⁻¹ by
+    exact (summable_congr_ae this).mpr <| (Real.summable_nat_pow_inv.mpr one_lt_two).mul_right _
+  have l5 : ∀ᶠ k in atTop, v (2 ^ k) = u (2 ^ k) :=
+    l3.comp_tendsto <| tendsto_pow_atTop_atTop_of_one_lt Nat.le.refl
+  filter_upwards [l5, l8] with k l5 l8
+  simp only [l5, mul_inv_rev, Nat.cast_pow, Nat.cast_ofNat, log_pow, u]
+  field_simp
+
+lemma tendsto_mul_add_atTop {a : ℝ} (ha : 0 < a) (b : ℝ) :
+    Tendsto (fun x => a * x + b) atTop atTop :=
+  tendsto_atTop_add_const_right _ b (tendsto_id.const_mul_atTop ha)
+
+lemma isLittleO_const_of_tendsto_atTop {α : Type*} [Preorder α] (a : ℝ) {f : α → ℝ}
+    (hf : Tendsto f atTop atTop) : (fun _ => a) =o[atTop] f := by
+  simp [tendsto_norm_atTop_atTop.comp hf]
+
+lemma isBigO_pow_pow_of_le {m n : ℕ} (h : m ≤ n) :
+    (fun x : ℝ => x ^ m) =O[atTop] (fun x : ℝ => x ^ n) := by
+  apply IsBigO.of_bound 1
+  filter_upwards [eventually_ge_atTop 1] with x l1
+  simpa [abs_eq_self.mpr (zero_le_one.trans l1)] using pow_le_pow_right₀ l1 h
+
+lemma isLittleO_mul_add_sq (a b : ℝ) : (fun x => a * x + b) =o[atTop] (fun x => x ^ 2) := by
+  apply IsLittleO.add
+  · apply IsLittleO.const_mul_left ; simpa using isLittleO_pow_pow_atTop_of_lt (𝕜 := ℝ) one_lt_two
+  · apply isLittleO_const_of_tendsto_atTop _ <| tendsto_pow_atTop (by linarith)
+
+lemma log_mul_add_isBigO_log {a : ℝ} (ha : 0 < a) (b : ℝ) :
+    (fun x => Real.log (a * x + b)) =O[atTop] Real.log := by
+  apply IsBigO.of_bound (2 : ℕ)
+  have l2 : ∀ᶠ x : ℝ in atTop, 0 ≤ log x := tendsto_atTop.mp tendsto_log_atTop 0
+  have l3 : ∀ᶠ x : ℝ in atTop, 0 ≤ log (a * x + b) :=
+    tendsto_atTop.mp (tendsto_log_atTop.comp (tendsto_mul_add_atTop ha b)) 0
+  have l5 : ∀ᶠ x : ℝ in atTop, 1 ≤ a * x + b := tendsto_atTop.mp (tendsto_mul_add_atTop ha b) 1
+  have l1 : ∀ᶠ x : ℝ in atTop, a * x + b ≤ x ^ 2 := by
+    filter_upwards [(isLittleO_mul_add_sq a b).eventuallyLE, l5] with x r2 l5
+    simpa [abs_eq_self.mpr (zero_le_one.trans l5)] using r2
+  filter_upwards [l1, l2, l3, l5] with x l1 l2 l3 l5
+  simpa [abs_eq_self.mpr l2, abs_eq_self.mpr l3, Real.log_pow] using
+    Real.log_le_log (by linarith) l1
+
+lemma isBigO_log_mul_add {a : ℝ} (ha : 0 < a) (b : ℝ) :
+    Real.log =O[atTop] (fun x => Real.log (a * x + b)) := by
+  convert! (log_mul_add_isBigO_log (b := -b / a) (inv_pos.mpr ha)).comp_tendsto
+    (tendsto_mul_add_atTop (b := b) ha) using 1
+  ext x
+  simp only [Function.comp_apply]
+  congr
+  field_simp
+  simp
+
+lemma log_isbigo_log_div {d : ℝ} (hb : 0 < d) :
+    (fun n ↦ Real.log n) =O[atTop] (fun n ↦ Real.log (n / d)) := by
+  convert isBigO_log_mul_add (inv_pos.mpr hb) 0 using 1; simp only [add_zero]; field_simp
+
+lemma Asymptotics.IsBigO.add_isLittleO_right {f g : ℝ → ℝ} (h : g =o[atTop] f) :
+    f =O[atTop] (f + g) := by
+  rw [isLittleO_iff] at h ; specialize h (c := 2⁻¹) (by norm_num)
+  rw [isBigO_iff'']
+  refine ⟨2⁻¹, by norm_num, ?_⟩
+  filter_upwards [h] with x h
+  simp only [norm_eq_abs, Pi.add_apply] at h ⊢
+  calc _ = |f x| - 2⁻¹ * |f x| := by ring
+       _ ≤ |f x| - |g x| := by linarith
+       _ ≤ |(|f x| - |g x|)| := le_abs_self _
+       _ ≤ _ := by rw [← sub_neg_eq_add, ← abs_neg (g x)] ; exact abs_abs_sub_abs_le (f x) (-g x)
+
+lemma Asymptotics.IsBigO.sq {α : Type*} [Preorder α] {f g : α → ℝ} (h : f =O[atTop] g) :
+    (fun n ↦ f n ^ 2) =O[atTop] (fun n => g n ^ 2) := by
+  simpa [pow_two] using h.mul h
+
+lemma log_sq_isbigo_mul {a b : ℝ} (hb : 0 < b) :
+    (fun x ↦ Real.log x ^ 2) =O[atTop] (fun x ↦ a + Real.log (x / b) ^ 2) := by
+  apply (Asymptotics.IsBigO.sq (log_isbigo_log_div hb)).trans ; simp_rw [add_comm a]
+  refine Asymptotics.IsBigO.add_isLittleO_right <| isLittleO_const_of_tendsto_atTop _ ?_
+  exact (tendsto_pow_atTop two_ne_zero).comp <|
+    tendsto_log_atTop.comp <| tendsto_id.atTop_div_const hb
+
+theorem log_add_div_isBigO_log (a : ℝ) {b : ℝ} (hb : 0 < b) :
+    (fun x ↦ Real.log ((x + a) / b)) =O[atTop] fun x ↦ Real.log x := by
+  convert log_mul_add_isBigO_log (inv_pos.mpr hb) (a / b) using 3 ; ring
+
+lemma log_add_one_sub_log_le {x : ℝ} (hx : 0 < x) : nabla Real.log x ≤ x⁻¹ := by
+  have l1 : ContinuousOn Real.log (Icc x (x + 1)) := by
+    apply continuousOn_log.mono ; intro t ⟨h1, _⟩ ; simp ; linarith
+  have l2 t (ht : t ∈ Ioo x (x + 1)) : HasDerivAt Real.log t⁻¹ t :=
+    Real.hasDerivAt_log (by linarith [ht.1])
+  obtain ⟨t, ⟨ht1, _⟩, htx⟩ := exists_hasDerivAt_eq_slope Real.log (·⁻¹) (by linarith) l1 l2
+  simp only [add_sub_cancel_left, div_one] at htx
+  rw [nabla, ← htx, inv_le_inv₀ (by linarith) hx]
+  exact ht1.le
+
+lemma nabla_log_main : nabla Real.log =O[atTop] fun x ↦ 1 / x := by
+  apply IsBigO.of_bound 1
+  filter_upwards [eventually_gt_atTop 0] with x l1
+  have l2 : log x ≤ log (x + 1) := log_le_log l1 (by linarith)
+  simpa [nabla, abs_eq_self.mpr l1.le, abs_eq_self.mpr (sub_nonneg.mpr l2)] using
+    log_add_one_sub_log_le l1
+
+lemma nabla_log {b : ℝ} (hb : 0 < b) :
+    nabla (fun x => Real.log (x / b)) =O[atTop] (fun x => 1 / x) := by
+  refine EventuallyEq.trans_isBigO ?_ nabla_log_main
+  filter_upwards [eventually_gt_atTop 0] with x l2
+  rw [nabla, log_div (by linarith) (by linarith), log_div l2.ne.symm (by linarith), nabla] ; ring
+
+lemma nnabla_mul_log_sq (a : ℝ) {b : ℝ} (hb : 0 < b) :
+    nabla (fun x => x * (a + Real.log (x / b) ^ 2)) =O[atTop] (fun x => Real.log x ^ 2) := by
+
+  have l1 : nabla (fun n => n * (a + Real.log (n / b) ^ 2)) = fun n =>
+      a + Real.log ((n + 1) / b) ^ 2 +
+        (n * (Real.log ((n + 1) / b) ^ 2 - Real.log (n / b) ^ 2)) := by
+    ext n ; simp [nabla] ; ring
+  have l2 := (isLittleO_const_of_tendsto_atTop a
+    ((tendsto_pow_atTop two_ne_zero).comp tendsto_log_atTop)).isBigO
+  have l3 := Asymptotics.IsBigO.sq (log_add_div_isBigO_log 1 hb)
+  have l4 : (fun x => Real.log ((x + 1) / b) + Real.log (x / b)) =O[atTop] Real.log := by
+    simpa using (log_add_div_isBigO_log _ hb).add (log_add_div_isBigO_log 0 hb)
+  have e2 : (fun x : ℝ => x * (Real.log x * (1 / x))) =ᶠ[atTop] Real.log := by
+    filter_upwards [eventually_ge_atTop 1] with x hx using by field_simp
+  have l5 : (fun n ↦ n * (Real.log n * (1 / n))) =O[atTop] (fun n ↦ (Real.log n) ^ 2) :=
+    e2.trans_isBigO
+      (by simpa using! (isLittleO_mul_add_sq 1 0).isBigO.comp_tendsto Real.tendsto_log_atTop)
+
+  simp_rw [l1, _root_.sq_sub_sq]
+  exact ((l2.add l3).add (isBigO_refl (·) atTop |>.mul (l4.mul (nabla_log hb)) |>.trans l5))
+
+lemma nnabla_bound_aux1 (a : ℝ) {b : ℝ} (hb : 0 < b) :
+    Tendsto (fun x => x * (a + Real.log (x / b) ^ 2)) atTop atTop :=
+  tendsto_id.atTop_mul_atTop₀ <| tendsto_atTop_add_const_left _ _ <|
+    (tendsto_pow_atTop two_ne_zero).comp <| tendsto_log_atTop.comp <| tendsto_id.atTop_div_const hb
+
+lemma nnabla_bound_aux2 (a : ℝ) {b : ℝ} (hb : 0 < b) :
+    ∀ᶠ x in atTop, 0 < x * (a + Real.log (x / b) ^ 2) :=
+  (nnabla_bound_aux1 a hb).eventually (eventually_gt_atTop 0)
+
+lemma Real.log_eventually_gt_atTop (a : ℝ) :
+    ∀ᶠ x in atTop, a < Real.log x :=
+  Real.tendsto_log_atTop.eventually (eventually_gt_atTop a)
+
+@[local gcongr]
+theorem norm_lt_norm_of_nonneg (x y : ℝ) (hx : 0 ≤ x) (hxy : x ≤ y) :
+    ‖x‖ ≤ ‖y‖ := by
+  simp_rw [Real.norm_eq_abs]
+  apply abs_le_abs hxy
+  linarith
+
+lemma nnabla_bound_aux {x : ℝ} (hx : 0 < x) :
+    nnabla (fun n ↦ 1 / (n * ((2 * π) ^ 2 + Real.log (n / x) ^ 2))) =O[atTop]
+    (fun n ↦ 1 / (Real.log n ^ 2 * n ^ 2)) := by
+
+  let d n : ℝ := n * ((2 * π) ^ 2 + Real.log (n / x) ^ 2)
+  change (fun x_1 ↦ nnabla (fun n ↦ 1 / d n) x_1) =O[atTop] _
+
+  have l2 : ∀ᶠ n in atTop, 0 < d n := (nnabla_bound_aux2 ((2 * π) ^ 2) hx)
+  have l3 : ∀ᶠ n in atTop, 0 < d (n + 1) :=
+    (tendsto_atTop_add_const_right atTop (1 : ℝ) tendsto_id).eventually l2
+  have l1 : ∀ᶠ n : ℝ in atTop,
+      nnabla (fun n ↦ 1 / d n) n = (d (n + 1) - d n) * (d n)⁻¹ * (d (n + 1))⁻¹ := by
+    filter_upwards [l2, l3] with n l2 l3
+    rw [nnabla, one_div, one_div, inv_sub_inv l2.ne.symm l3.ne.symm, div_eq_mul_inv, mul_inv,
+      mul_assoc]
+
+  have l4 : (fun n => (d n)⁻¹) =O[atTop] (fun n => (n * (Real.log n) ^ 2)⁻¹) := by
+    apply IsBigO.inv_rev
+    · refine (isBigO_refl _ _).mul <| (log_sq_isbigo_mul hx)
+    · filter_upwards [Real.log_eventually_gt_atTop 0, eventually_gt_atTop 0] with x hx hx'
+      rw [← not_imp_not]
+      intro _
+      positivity
+  have l5 : (fun n => (d (n + 1))⁻¹) =O[atTop] (fun n => (n * (Real.log n) ^ 2)⁻¹) := by
+    refine IsBigO.trans ?_ l4
+    rw [isBigO_iff]; use 1
+    have e3 : ∀ᶠ n in atTop, d n ≤ d (n + 1) := by
+      filter_upwards [eventually_ge_atTop x] with n hn
+      have e2 : 1 ≤ n / x := (one_le_div hx).mpr hn
+      have : 0 ≤ n := hx.le.trans hn
+      simp only [d]
+      gcongr <;> simp [Real.log_nonneg, *]
+    filter_upwards [l2, l3, e3] with n e1 e2 e3
+    simp_rw [one_mul]
+    gcongr
+
+  have l6 : (fun n => d (n + 1) - d n) =O[atTop] (fun n => (Real.log n) ^ 2) := by
+    simpa [d, nabla] using! (nnabla_mul_log_sq ((2 * π) ^ 2) hx)
+
+  apply EventuallyEq.trans_isBigO l1
+
+  apply ((l6.mul l4).mul l5).trans_eventuallyEq
+  filter_upwards [eventually_ge_atTop 2, Real.log_eventually_gt_atTop 0] with n hn hn'
+  field_simp
+
+lemma nnabla_bound (C : ℝ) {x : ℝ} (hx : 0 < x) :
+    nnabla (fun n => C / (1 + (Real.log (n / x) / (2 * π)) ^ 2) / n) =O[atTop]
+    (fun n => (n ^ 2 * (Real.log n) ^ 2)⁻¹) := by
+  field_simp
+  simp only [div_eq_mul_inv, mul_inv, nnabla_mul, one_mul]
+  apply IsBigO.const_mul_left
+  simpa [div_eq_mul_inv, mul_pow, mul_comm] using nnabla_bound_aux hx
+
+def chebyWith (C : ℝ) (f : ℕ → ℂ) : Prop := ∀ n, cumsum (‖f ·‖) n ≤ C * n
+
+def cheby (f : ℕ → ℂ) : Prop := ∃ C, chebyWith C f
+
+lemma cheby.bigO (h : cheby f) : cumsum (‖f ·‖) =O[atTop] ((↑) : ℕ → ℝ) := by
+  have l1 : 0 ≤ cumsum (‖f ·‖) := cumsum_nonneg (fun _ => norm_nonneg _)
+  obtain ⟨C, hC⟩ := h
+  apply isBigO_of_le' (c := C) atTop
+  intro n
+  rw [Real.norm_eq_abs, abs_eq_self.mpr (l1 n)]
+  simpa using hC n
+
+lemma limiting_fourier_lim1_aux (hcheby : cheby f) (hx : 0 < x) (C : ℝ) (hC : 0 ≤ C) :
+    Summable fun n ↦ ‖f n‖ / ↑n * (C / (1 + (1 / (2 * π) * Real.log (↑n / x)) ^ 2)) := by
+
+  let a (n : ℕ) := (C / (1 + (Real.log (↑n / x) / (2 * π)) ^ 2) / ↑n)
+  replace hcheby := hcheby.bigO
+
+  have l1 : shift (cumsum (‖f ·‖)) =O[atTop] (fun n : ℕ => (↑(n + 1) : ℝ)) :=
+    hcheby.comp_tendsto <| tendsto_add_atTop_nat 1
+  have l2 : shift (cumsum (‖f ·‖)) =O[atTop] (fun n => (n : ℝ)) :=
+    l1.trans
+      (by simpa using (isBigO_refl _ _).add <| isBigO_iff.mpr ⟨1, by simpa using ⟨1, by tauto⟩⟩)
+  have l5 : BoundedAtFilter atTop (fun n : ℕ => C / (1 + (Real.log (↑n / x) / (2 * π)) ^ 2)) := by
+    simp only [BoundedAtFilter]
+    field_simp
+    apply isBigO_of_le' (c := C) ; intro n
+    have : 0 ≤ 2 ^ 2 * π ^ 2 + Real.log (n / x) ^ 2 := by positivity
+    simp only [norm_div, norm_mul, norm_eq_abs, abs_eq_self.mpr hC, norm_pow,
+      abs_eq_self.mpr pi_nonneg, abs_eq_self.mpr this, Pi.one_apply, one_mem,
+      CStarRing.norm_of_mem_unitary, mul_one, ge_iff_le, Nat.abs_ofNat]
+    apply div_le_of_le_mul₀ this hC
+    rw [mul_add, ← mul_assoc]
+    apply le_add_of_le_of_nonneg le_rfl
+    positivity
+  have l3 : a =O[atTop] (fun n => 1 / (n : ℝ)) := by
+    simpa [a] using! IsBigO.mul l5 (isBigO_refl (fun n : ℕ => 1 / (n : ℝ)) _)
+  have l4 : nnabla a =O[atTop] (fun n : ℕ => (n ^ 2 * (Real.log n) ^ 2)⁻¹) := by
+    convert (nnabla_bound C hx).comp_tendsto tendsto_natCast_atTop_atTop using 1 <;>
+      first | rfl | (funext n; simp only [nnabla, a, Function.comp_apply, Nat.cast_add, Nat.cast_one])
+
+  simp_rw [div_mul_eq_mul_div, mul_div_assoc, one_mul]
+  apply dirichlet_test'
+  · intro n ; exact norm_nonneg _
+  · intro n ; positivity
+  · apply (l2.mul l3).trans_eventuallyEq
+    apply eventually_of_mem (Ici_mem_atTop 1)
+    intro x (hx : 1 ≤ x)
+    have : x ≠ 0 := Nat.one_le_iff_ne_zero.mp hx
+    simp [this]
+  · have : ∀ᶠ n : ℕ in atTop, x ≤ n := by simpa using eventually_ge_atTop ⌈x⌉₊
+    filter_upwards [this] with n hn
+    have e1 : 0 < (n : ℝ) := by linarith
+    have e2 : 1 ≤ n / x := (one_le_div hx).mpr hn
+    have e3 := Nat.le_succ n
+    gcongr
+    refine div_nonneg (Real.log_nonneg e2) (by norm_num [pi_nonneg])
+  · apply summable_of_isBigO_nat summable_inv_mul_log_sq
+    apply (l2.mul l4).trans_eventuallyEq
+    apply eventually_of_mem (Ici_mem_atTop 2)
+    intro x (hx : 2 ≤ x)
+    have : (x : ℝ) ≠ 0 := by simp ; linarith
+    have : Real.log x ≠ 0 := by
+      have ll : 2 ≤ (x : ℝ) := by simp [hx]
+      simp
+      grind
+    field_simp
+
+theorem limiting_fourier_lim1 (hcheby : cheby f) (ψ : W21) (hx : 0 < x) :
+    Tendsto (fun σ' : ℝ ↦
+        ∑' n, term f σ' n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * Real.log (n / x))) (𝓝[>] 1)
+      (𝓝 (∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * Real.log (n / x)))) := by
+
+  obtain ⟨C, hC⟩ := decay_bounds_cor ψ
+  have : 0 ≤ C := by simpa using (norm_nonneg _).trans (hC 0)
+  refine tendsto_tsum_of_dominated_convergence
+    (limiting_fourier_lim1_aux hcheby hx C this) (fun n => ?_) ?_
+  · apply Tendsto.mul_const
+    by_cases h : n = 0 <;> simp only [term, h, ↓reduceIte, CharP.cast_eq_zero, div_zero,
+      tendsto_const_nhds_iff]
+    refine tendsto_const_nhds.div ?_ (by simp [h])
+    simpa using ((continuous_ofReal.tendsto 1).mono_left nhdsWithin_le_nhds).const_cpow
+  · rw [eventually_nhdsWithin_iff]
+    apply Eventually.of_forall
+    intro σ' (hσ' : 1 < σ') n
+    rw [norm_mul, ← nterm_eq_norm_term]
+    refine mul_le_mul ?_ (hC _) (norm_nonneg _) (div_nonneg (norm_nonneg _) (Nat.cast_nonneg _))
+    by_cases h : n = 0 <;> simp only [nterm, h, ↓reduceIte, CharP.cast_eq_zero, div_zero, le_refl]
+    have : 1 ≤ (n : ℝ) := by simpa using! Nat.pos_iff_ne_zero.mpr h
+    refine div_le_div₀ (norm_nonneg _) le_rfl (by simpa [Nat.pos_iff_ne_zero]) ?_
+    simpa using Real.rpow_le_rpow_of_exponent_le this hσ'.le
+
+theorem limiting_fourier_lim2_aux (x : ℝ) (C : ℝ) :
+    Integrable (fun t ↦ max |x| 1 * (C / (1 + (t / (2 * π)) ^ 2)))
+      (Measure.restrict volume (Ici (-Real.log x))) := by
+  simp_rw [div_eq_mul_inv C]
+  exact (((integrable_inv_one_add_sq.comp_div
+    (by simp [pi_ne_zero])).const_mul _).const_mul _).restrict
+
+theorem limiting_fourier_lim2 (A : ℝ) (ψ : W21) (hx : 1 ≤ x) :
+    Tendsto (fun σ' ↦ A * ↑(x ^ (1 - σ')) *
+        ∫ u in Ici (-Real.log x), rexp (-u * (σ' - 1)) * 𝓕 (ψ : ℝ → ℂ) (u / (2 * π)))
+      (𝓝[>] 1) (𝓝 (A * ∫ u in Ici (-Real.log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π)))) := by
+
+  obtain ⟨C, hC⟩ := decay_bounds_cor ψ
+  apply Tendsto.mul
+  · suffices h : Tendsto (fun σ' : ℝ ↦ ofReal (x ^ (1 - σ'))) (𝓝[>] 1) (𝓝 1) by
+      simpa using h.const_mul ↑A
+    suffices h : Tendsto (fun σ' : ℝ ↦ x ^ (1 - σ')) (𝓝[>] 1) (𝓝 1) from
+      (continuous_ofReal.tendsto 1).comp h
+    have : Tendsto (fun σ' : ℝ ↦ σ') (𝓝 1) (𝓝 1) := fun _ a ↦ a
+    have : Tendsto (fun σ' : ℝ ↦ 1 - σ') (𝓝[>] 1) (𝓝 0) :=
+      tendsto_nhdsWithin_of_tendsto_nhds (by simpa using this.const_sub 1)
+    simpa using tendsto_const_nhds.rpow this (Or.inl (zero_lt_one.trans_le hx).ne.symm)
+  · refine tendsto_integral_filter_of_dominated_convergence _ ?_ ?_
+      (limiting_fourier_lim2_aux x C) ?_
+    · apply Eventually.of_forall ; intro σ'
+      apply Continuous.aestronglyMeasurable
+      have := continuous_FourierIntegral ψ
+      continuity
+    · apply eventually_of_mem (U := Ioo 1 2)
+      · apply Ioo_mem_nhdsGT_of_mem ; simp
+      · intro σ' ⟨h1, h2⟩
+        rw [ae_restrict_iff' measurableSet_Ici]
+        apply Eventually.of_forall
+        intro t (ht : - Real.log x ≤ t)
+        rw [norm_mul]
+        have hdom_nonneg : 0 ≤ max |x| 1 := by
+          exact (abs_nonneg x).trans (le_max_left _ _)
+        refine mul_le_mul ?_ (hC _) (norm_nonneg _) hdom_nonneg
+        simp only [neg_mul, ofReal_exp, ofReal_neg, ofReal_mul, ofReal_sub, ofReal_one, norm_exp,
+          neg_re, mul_re, ofReal_re, sub_re, one_re, ofReal_im, sub_im, one_im, sub_self, mul_zero,
+          sub_zero]
+        have : -Real.log x * (σ' - 1) ≤ t * (σ' - 1) := mul_le_mul_of_nonneg_right ht (by linarith)
+        have : -(t * (σ' - 1)) ≤ Real.log x * (σ' - 1) := by simpa using neg_le_neg this
+        have := Real.exp_monotone this
+        apply this.trans
+        have l1 : σ' - 1 ≤ 1 := by linarith
+        have : 0 ≤ Real.log x := Real.log_nonneg hx
+        have := mul_le_mul_of_nonneg_left l1 this
+        refine (Real.exp_monotone this).trans ?_
+        have hxabs : |x| = x := abs_of_nonneg (zero_le_one.trans hx)
+        calc
+          Real.exp (Real.log x * 1) = |x| := by
+            simpa [mul_one, hxabs] using (Real.exp_log (zero_lt_one.trans_le hx))
+          _ ≤ max |x| 1 := le_max_left _ _
+    · apply Eventually.of_forall
+      intro x
+      suffices h : Tendsto (fun n ↦ ((rexp (-x * (n - 1))) : ℂ)) (𝓝[>] 1) (𝓝 1) by
+        simpa using h.mul_const _
+      apply Tendsto.mono_left ?_ nhdsWithin_le_nhds
+      suffices h : Continuous (fun n ↦ ((rexp (-x * (n - 1))) : ℂ)) by simpa using h.tendsto 1
+      continuity
+
+theorem limiting_fourier_lim3 (hG : ContinuousOn G {s | 1 ≤ s.re}) (ψ : CS 2 ℂ) (hx : 1 ≤ x) :
+    Tendsto (fun σ' : ℝ ↦ ∫ t : ℝ, G (σ' + t * I) * ψ t * x ^ (t * I)) (𝓝[>] 1)
+      (𝓝 (∫ t : ℝ, G (1 + t * I) * ψ t * x ^ (t * I))) := by
+
+  by_cases hh : tsupport ψ = ∅
+  · simp [tsupport_eq_empty_iff.mp hh]
+  obtain ⟨a₀, ha₀⟩ := Set.nonempty_iff_ne_empty.mpr hh
+
+  let S : Set ℂ := reProdIm (Icc 1 2) (tsupport ψ)
+  have l1 : IsCompact S := by
+    refine Metric.isCompact_iff_isClosed_bounded.mpr ⟨?_, ?_⟩
+    · exact isClosed_Icc.reProdIm (isClosed_tsupport ψ)
+    · exact (Metric.isBounded_Icc 1 2).reProdIm ψ.h2.isBounded
+  have l2 : S ⊆ {s : ℂ | 1 ≤ s.re} := fun z hz => (mem_reProdIm.mp hz).1.1
+  have l3 : ContinuousOn (‖G ·‖) S := (hG.mono l2).norm
+  have l4 : S.Nonempty := ⟨1 + a₀ * I, by simp [S, mem_reProdIm, ha₀]⟩
+  obtain ⟨z, -, hmax⟩ := l1.exists_isMaxOn l4 l3
+  let MG := ‖G z‖
+  let bound (a : ℝ) : ℝ := MG * ‖ψ a‖
+
+  apply tendsto_integral_filter_of_dominated_convergence (bound := bound)
+  · apply eventually_of_mem (U := Icc 1 2) (Icc_mem_nhdsGT_of_mem (by simp)) ; intro u hu
+    apply Continuous.aestronglyMeasurable
+    apply Continuous.mul
+    · exact (hG.comp_continuous (by fun_prop) (by simp [hu.1])).mul ψ.h1.continuous
+    · apply Continuous.const_cpow (by fun_prop) ; simp ; linarith
+  · apply eventually_of_mem (U := Icc 1 2) (Icc_mem_nhdsGT_of_mem (by simp))
+    intro u hu
+    apply Eventually.of_forall ; intro v
+    by_cases h : v ∈ tsupport ψ
+    · have r1 : u + v * I ∈ S := by simp [S, mem_reProdIm, hu.1, hu.2, h]
+      have r2 := isMaxOn_iff.mp hmax _ r1
+      have r4 : (x : ℂ) ≠ 0 := by simp ; linarith
+      have r5 : arg x = 0 := by simp [arg_eq_zero_iff] ; linarith
+      have r3 : ‖(x : ℂ) ^ (v * I)‖ = 1 := by simp [norm_cpow_of_ne_zero r4, r5]
+      simp_rw [norm_mul, r3, mul_one]
+      exact mul_le_mul_of_nonneg_right r2 (norm_nonneg _)
+    · have : v ∉ Function.support ψ := fun a ↦ h (subset_tsupport ψ a)
+      simp at this ; simp [this, bound]
+
+  · suffices h : Continuous bound by exact h.integrable_of_hasCompactSupport ψ.h2.norm.mul_left
+    have := ψ.h1.continuous ; fun_prop
+  · apply Eventually.of_forall ; intro t
+    apply Tendsto.mul_const
+    apply Tendsto.mul_const
+    refine (hG (1 + t * I) (by simp)).tendsto.comp <| tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · exact ((continuous_ofReal.tendsto _).add tendsto_const_nhds).mono_left nhdsWithin_le_nhds
+    · exact eventually_nhdsWithin_of_forall (fun x (hx : 1 < x) => by simp [hx.le])
+
+lemma limiting_fourier (hcheby : cheby f)
+    (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re})
+    (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (ψ : CS 2 ℂ) (hx : 1 ≤ x) :
+    ∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x)) -
+      A * ∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π)) =
+      ∫ (t : ℝ), (G (1 + t * I)) * (ψ t) * x ^ (t * I) := by
+
+  have l1 := limiting_fourier_lim1 hcheby ψ (by linarith)
+  have l2 := limiting_fourier_lim2 A ψ hx
+  have l3 := limiting_fourier_lim3 hG ψ hx
+  apply tendsto_nhds_unique_of_eventuallyEq (l1.sub l2) l3
+  simpa [eventuallyEq_nhdsWithin_iff] using! Eventually.of_forall (limiting_fourier_aux hG' hf ψ hx)
+
+set_option backward.isDefEq.respectTransparency false in
+lemma limiting_cor_aux {f : ℝ → ℂ} : Tendsto (fun x : ℝ ↦ ∫ t, f t * x ^ (t * I)) atTop (𝓝 0) := by
+
+  have l1 : ∀ᶠ x : ℝ in atTop, ∀ t : ℝ, x ^ (t * I) = exp (log x * t * I) := by
+    filter_upwards [eventually_ne_atTop 0, eventually_ge_atTop 0] with x hx hx' t
+    rw [Complex.cpow_def_of_ne_zero (ofReal_ne_zero.mpr hx), ofReal_log hx'] ; ring_nf
+
+  have l2 : ∀ᶠ x : ℝ in atTop, ∫ t, f t * x ^ (t * I) = ∫ t, f t * exp (log x * t * I) := by
+    filter_upwards [l1] with x hx
+    refine integral_congr_ae (Eventually.of_forall (fun x => by simp [hx]))
+
+  simp_rw [tendsto_congr' l2]
+  convert_to Tendsto (fun x => 𝓕 f (-Real.log x / (2 * π))) atTop (𝓝 0)
+  · ext ; congr ; ext
+    simp only [← ofReal_mul, mul_comm (f _), fourierChar, Circle.exp, ContinuousMap.coe_mk,
+      innerₗ_apply_apply, RCLike.inner_apply, conj_trivial, AddChar.coe_mk, mul_neg, ofReal_neg,
+      neg_mul]
+    congr
+    rw [← neg_mul] ; congr ; norm_cast ; field_simp
+  refine (Real.zero_at_infty_fourier f).comp <| Tendsto.mono_right ?_ _root_.atBot_le_cocompact
+  exact (tendsto_neg_atBot_iff.mpr tendsto_log_atTop).atBot_mul_const (inv_pos.mpr two_pi_pos)
+
+lemma limiting_cor (ψ : CS 2 ℂ) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (hcheby : cheby f)
+    (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) :
+    Tendsto (fun x : ℝ ↦ ∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x)) -
+      A * ∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))) atTop (𝓝 0) := by
+
+  apply limiting_cor_aux.congr'
+  filter_upwards [eventually_ge_atTop 1] with x hx using
+    limiting_fourier hcheby hG hG' hf ψ hx |>.symm
+
+lemma smooth_urysohn (a b c d : ℝ) (h1 : a < b) (h3 : c < d) : ∃ Ψ : ℝ → ℝ,
+    (ContDiff ℝ ∞ Ψ) ∧ (HasCompactSupport Ψ) ∧
+      Set.indicator (Set.Icc b c) 1 ≤ Ψ ∧ Ψ ≤ Set.indicator (Set.Ioo a d) 1 := by
+
+  obtain ⟨ψ, l1, l2, l3, l4, -⟩ := smooth_urysohn_support_Ioo h1 h3
+  refine ⟨ψ, l1, l2, l3, l4⟩
+
+noncomputable def exists_trunc : trunc := by
+  choose ψ h1 h2 h3 h4 using smooth_urysohn (-2) (-1) (1) (2) (by linarith) (by linarith)
+  exact ⟨⟨ψ, h1.of_le (by norm_cast), h2⟩, h3, h4⟩
+
+lemma one_div_sub_one (n : ℕ) : 1 / (↑(n - 1) : ℝ) ≤ 2 / n := by
+  match n with
+  | 0 => simp
+  | 1 => simp
+  | n + 2 => { norm_cast ; rw [div_le_div_iff₀] <;> simp [mul_add] <;> linarith }
+
+lemma quadratic_pos (a b c x : ℝ) (ha : 0 < a) (hΔ : discrim a b c < 0) :
+    0 < a * x ^ 2 + b * x + c := by
+  have l1 : a * x ^ 2 + b * x + c = a * (x + b / (2 * a)) ^ 2 - discrim a b c / (4 * a) := by
+    simp only [discrim]; field_simp; ring
+  have l2 : 0 < - discrim a b c := by linarith
+  rw [l1, sub_eq_add_neg, ← neg_div] ; positivity
+
+noncomputable def pp (a x : ℝ) : ℝ := a ^ 2 * (x + 1) ^ 2 + (1 - a) * (1 + a)
+
+noncomputable def pp' (a x : ℝ) : ℝ := a ^ 2 * (2 * (x + 1))
+
+lemma pp_pos {a : ℝ} (ha : a ∈ Ioo (-1) 1) (x : ℝ) : 0 < pp a x := by
+  simp only [pp]
+  have : 0 < 1 - a := by linarith [ha.2]
+  have : 0 < 1 + a := by linarith [ha.1]
+  positivity
+
+lemma pp_deriv (a x : ℝ) : HasDerivAt (pp a) (pp' a x) x := by
+  unfold pp pp'
+  simpa using hasDerivAt_id x |>.add_const 1 |>.pow 2 |>.const_mul _
+
+lemma pp_deriv_eq (a : ℝ) : deriv (pp a) = pp' a := by
+  ext x ; exact pp_deriv a x |>.deriv
+
+lemma pp'_deriv (a x : ℝ) : HasDerivAt (pp' a) (a ^ 2 * 2) x := by
+  simpa using! hasDerivAt_id x |>.add_const 1 |>.const_mul 2 |>.const_mul (a ^ 2)
+
+lemma pp'_deriv_eq (a : ℝ) : deriv (pp' a) = fun _ => a ^ 2 * 2 := by
+  ext x ; exact pp'_deriv a x |>.deriv
+
+noncomputable def hh (a t : ℝ) : ℝ := (t * (1 + (a * log t) ^ 2))⁻¹
+
+noncomputable def hh' (a t : ℝ) : ℝ := - pp a (log t) * hh a t ^ 2
+
+lemma hh_nonneg (a : ℝ) {t : ℝ} (ht : 0 ≤ t) : 0 ≤ hh a t := by dsimp only [hh] ; positivity
+
+lemma hh_le (a t : ℝ) (ht : 0 ≤ t) : |hh a t| ≤ t⁻¹ := by
+  by_cases h0 : t = 0
+  · simp [hh, h0]
+  replace ht : 0 < t := lt_of_le_of_ne ht (by tauto)
+  unfold hh
+  rw [abs_inv, inv_le_inv₀ (by positivity) ht, abs_mul, abs_eq_self.mpr ht.le]
+  convert_to! t * 1 ≤ _
+  · simp
+  apply mul_le_mul le_rfl ?_ zero_le_one ht.le
+  rw [abs_eq_self.mpr (by positivity)]
+  simp only [le_add_iff_nonneg_right]
+  positivity
+
+lemma hh_deriv (a : ℝ) {t : ℝ} (ht : t ≠ 0) : HasDerivAt (hh a) (hh' a t) t := by
+  have e1 : t * (1 + (a * log t) ^ 2) ≠ 0 := mul_ne_zero ht (_root_.ne_of_lt (by positivity)).symm
+  have l5 : HasDerivAt (fun t : ℝ => log t) t⁻¹ t := Real.hasDerivAt_log ht
+  have l4 : HasDerivAt (fun t : ℝ => a * log t) (a * t⁻¹) t := l5.const_mul _
+  have l3 : HasDerivAt (fun t : ℝ => (a * log t) ^ 2) (2 * a ^ 2 * t⁻¹ * log t) t := by
+    convert! l4.pow 2 using 1 ; ring
+  have l2 : HasDerivAt (fun t : ℝ => 1 + (a * log t) ^ 2) (2 * a ^ 2 * t⁻¹ * log t) t :=
+    l3.const_add _
+  have l1 : HasDerivAt (fun t : ℝ => t * (1 + (a * log t) ^ 2))
+      (1 + 2 * a ^ 2 * log t + a ^ 2 * log t ^ 2) t := by
+    convert! (hasDerivAt_id' t).mul l2 using 1; field_simp; ring
+  convert! l1.inv e1 using 1; simp only [hh', pp, hh]; field_simp; ring
+
+lemma hh_continuous (a : ℝ) : ContinuousOn (hh a) (Ioi 0) :=
+  fun t (ht : 0 < t) => (hh_deriv a ht.ne.symm).continuousAt.continuousWithinAt
+
+lemma hh'_nonpos {a x : ℝ} (ha : a ∈ Ioo (-1) 1) : hh' a x ≤ 0 := by
+  have := pp_pos ha (log x)
+  simp only [hh', neg_mul, Left.neg_nonpos_iff, ge_iff_le]
+  positivity
+
+lemma hh_antitone {a : ℝ} (ha : a ∈ Ioo (-1) 1) : AntitoneOn (hh a) (Ioi 0) := by
+  have l1 x (hx : x ∈ interior (Ioi 0)) :
+      HasDerivWithinAt (hh a) (hh' a x) (interior (Ioi 0)) x := by
+    have : x ≠ 0 := by contrapose! hx ; simp [hx]
+    exact (hh_deriv a this).hasDerivWithinAt
+  apply antitoneOn_of_hasDerivWithinAt_nonpos (convex_Ioi _) (hh_continuous _) l1
+    (fun x _ => hh'_nonpos ha)
+
+noncomputable def gg (x i : ℝ) : ℝ := 1 / i * (1 + (1 / (2 * π) * log (i / x)) ^ 2)⁻¹
+
+lemma gg_of_hh {x : ℝ} (hx : x ≠ 0) (i : ℝ) : gg x i = x⁻¹ * hh (1 / (2 * π)) (i / x) := by
+  simp only [gg, hh]
+  field_simp
+
+lemma gg_l1 {x : ℝ} (hx : 0 < x) (n : ℕ) : |gg x n| ≤ 1 / n := by
+  simp only [gg_of_hh hx.ne.symm, one_div, mul_inv_rev, abs_mul]
+  apply mul_le_mul le_rfl (hh_le _ _ (by positivity)) (by positivity) (by positivity) |>.trans
+    (le_of_eq ?_)
+  simp [abs_inv, abs_eq_self.mpr hx.le] ; field_simp
+
+lemma gg_le_one (i : ℕ) : gg x i ≤ 1 := by
+  by_cases hi : i = 0 <;> simp only [gg, hi, CharP.cast_eq_zero, div_zero, one_div, mul_inv_rev,
+    zero_div, Real.log_zero, mul_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
+    add_zero, inv_one, mul_one, zero_le_one]
+  have l1 : 1 ≤ (i : ℝ) := by simp ; omega
+  have l2 : 1 ≤ 1 + (π⁻¹ * 2⁻¹ * Real.log (↑i / x)) ^ 2 := by
+    simp only [le_add_iff_nonneg_right] ; positivity
+  rw [← mul_inv] ; apply inv_le_one_of_one_le₀ ; simpa using mul_le_mul l1 l2 zero_le_one (by simp)
+
+lemma one_div_two_pi_mem_Ioo : 1 / (2 * π) ∈ Ioo (-1) 1 := by
+  constructor
+  · trans 0
+    · linarith
+    · positivity
+  · rw [div_lt_iff₀ (by positivity)]
+    convert_to! 1 * 1 < 2 * π
+    · simp
+    · simp
+    apply mul_lt_mul one_lt_two ?_ zero_lt_one zero_le_two
+    trans 2
+    · exact one_le_two
+    · exact two_le_pi
+
+lemma sum_telescopic (a : ℕ → ℝ) (n : ℕ) : ∑ i ∈ Finset.range n, (a (i + 1) - a i) = a n - a 0 := by
+  apply Finset.sum_range_sub
+
+lemma cancel_aux {C : ℝ} {f g : ℕ → ℝ} (hf : 0 ≤ f) (hg : 0 ≤ g)
+    (hf' : ∀ n, cumsum f n ≤ C * n) (hg' : Antitone g) (n : ℕ) :
+    ∑ i ∈ Finset.range n, f i * g i ≤ g (n - 1) * (C * n) + (C * (↑(n - 1 - 1) + 1) * g 0
+      - C * (↑(n - 1 - 1) + 1) * g (n - 1) -
+    ((n - 1 - 1) • (C * g 0) - ∑ x ∈ Finset.range (n - 1 - 1), C * g (x + 1))) := by
+
+  have l1 (n : ℕ) :
+      (g n - g (n + 1)) * ∑ i ∈ Finset.range (n + 1), f i ≤ (g n - g (n + 1)) * (C * (n + 1)) := by
+    apply mul_le_mul le_rfl (by simpa using! hf' (n + 1)) (Finset.sum_nonneg' hf) ?_
+    simp only [sub_nonneg] ; apply hg' ; simp
+  have l2 (x : ℕ) : C * (↑(x + 1) + 1) - C * (↑x + 1) = C := by simp ; ring
+  have l3 (n : ℕ) : 0 ≤ cumsum f n := Finset.sum_nonneg' hf
+
+  convert_to ∑ i ∈ Finset.range n, (g i) • (f i) ≤ _
+  · simp [mul_comm]
+  rw [Finset.sum_range_by_parts, sub_eq_add_neg, ← Finset.sum_neg_distrib]
+  simp_rw [← neg_smul, neg_sub, smul_eq_mul]
+  apply _root_.add_le_add
+  · exact mul_le_mul le_rfl (hf' n) (l3 n) (hg _)
+  · apply Finset.sum_le_sum (fun n _ => l1 n) |>.trans
+    convert_to! ∑ i ∈ Finset.range (n - 1), (C * (↑i + 1)) • (g i - g (i + 1)) ≤ _
+    · congr ; ext i ; simp ; ring
+    rw [Finset.sum_range_by_parts]
+    simp_rw [Finset.sum_range_sub', l2, smul_sub, smul_eq_mul, Finset.sum_sub_distrib,
+      Finset.sum_const, Finset.card_range]
+    apply le_of_eq ; ring_nf
+
+lemma sum_range_succ (a : ℕ → ℝ) (n : ℕ) :
+    ∑ i ∈ Finset.range n, a (i + 1) = (∑ i ∈ Finset.range (n + 1), a i) - a 0 := by
+  have := Finset.sum_range_sub a n
+  rw [Finset.sum_sub_distrib, sub_eq_iff_eq_add] at this
+  rw [Finset.sum_range_succ, this] ; ring
+
+lemma cancel_aux' {C : ℝ} {f g : ℕ → ℝ} (hf : 0 ≤ f) (hg : 0 ≤ g)
+    (hf' : ∀ n, cumsum f n ≤ C * n) (hg' : Antitone g) (n : ℕ) :
+    ∑ i ∈ Finset.range n, f i * g i ≤
+        C * n * g (n - 1)
+      + C * cumsum g (n - 1 - 1 + 1)
+      - C * (↑(n - 1 - 1) + 1) * g (n - 1)
+      := by
+  have := cancel_aux hf hg hf' hg' n
+  simp only [nsmul_eq_mul, ← Finset.mul_sum, sum_range_succ] at this
+  convert this using 1 ; unfold cumsum ; ring
+
+lemma cancel_main {C : ℝ} {f g : ℕ → ℝ} (hf : 0 ≤ f) (hg : 0 ≤ g)
+    (hf' : ∀ n, cumsum f n ≤ C * n) (hg' : Antitone g) (n : ℕ) (hn : 2 ≤ n) :
+    cumsum (f * g) n ≤ C * cumsum g n := by
+  convert! cancel_aux' hf hg hf' hg' n using 1
+  match n with
+  | n + 2 => simp only [cumsum_succ] ; push_cast ; ring
+
+lemma cancel_main' {C : ℝ} {f g : ℕ → ℝ} (hf : 0 ≤ f) (hf0 : f 0 = 0) (hg : 0 ≤ g)
+    (hf' : ∀ n, cumsum f n ≤ C * n) (hg' : Antitone g) (n : ℕ) :
+    cumsum (f * g) n ≤ C * cumsum g n := by
+  match n with
+  | 0 => simp [cumsum]
+  | 1 => specialize hg 0 ; specialize hf' 1 ; simp only [cumsum, Finset.range_one,
+    Finset.sum_singleton, hf0, Nat.cast_one, mul_one, Pi.zero_apply, Pi.mul_apply, zero_mul,
+    ge_iff_le] at hf' hg ⊢ ; positivity
+  | n + 2 => convert! cancel_aux' hf hg hf' hg' (n + 2) using 1 ; simp [cumsum_succ] ; ring
+
+theorem sum_le_integral {x₀ : ℝ} {f : ℝ → ℝ} {n : ℕ} (hf : AntitoneOn f (Ioc x₀ (x₀ + n)))
+    (hfi : IntegrableOn f (Icc x₀ (x₀ + n))) :
+    (∑ i ∈ Finset.range n, f (x₀ + ↑(i + 1))) ≤ ∫ x in x₀..x₀ + n, f x := by
+
+  cases n with simp only [Nat.cast_add, Nat.cast_one, CharP.cast_eq_zero, add_zero,
+      lt_self_iff_false, not_false_eq_true,
+    Ioc_eq_empty, Finset.range_zero, Nat.cast_add, Nat.cast_one, Finset.sum_empty,
+    intervalIntegral.integral_same, le_refl] at hf ⊢
+  | succ n =>
+  have : Finset.range (n + 1) = {0} ∪ Finset.Ico 1 (n + 1) := by
+    ext i ; by_cases hi : i = 0 <;> simp [hi] ; omega
+  simp only [this, Finset.singleton_union, Finset.mem_Ico, nonpos_iff_eq_zero, one_ne_zero,
+    lt_add_iff_pos_left, add_pos_iff, zero_lt_one, or_true, and_true, not_false_eq_true,
+    Finset.sum_insert, CharP.cast_eq_zero, zero_add, ge_iff_le]
+
+  have l4 : IntervalIntegrable f volume x₀ (x₀ + 1) := by
+    apply IntegrableOn.intervalIntegrable
+    simp only [le_add_iff_nonneg_right, zero_le_one, uIcc_of_le]
+    apply hfi.mono_set
+    apply Icc_subset_Icc le_rfl
+    simp
+  have l5 x (hx : x ∈ Ioc x₀ (x₀ + 1)) : (fun x ↦ f (x₀ + 1)) x ≤ f x := by
+    rcases hx with ⟨hx1, hx2⟩
+    refine hf ⟨hx1, by linarith⟩ ⟨by linarith, by linarith⟩ hx2
+  have l6 : ∫ x in x₀..x₀ + 1, f (x₀ + 1) = f (x₀ + 1) := by simp
+
+  have l1 : f (x₀ + 1) ≤ ∫ x in x₀..x₀ + 1, f x := by
+    rw [← l6] ; apply intervalIntegral.integral_mono_ae_restrict (by linarith) (by simp) l4
+    apply eventually_of_mem _ l5
+    have : (Ioc x₀ (x₀ + 1))ᶜ ∩ Icc x₀ (x₀ + 1) = {x₀} := by simp [← sdiff_eq_compl_inter]
+    simp [ae, this]
+
+  have l2 : AntitoneOn (fun x ↦ f (x₀ + x)) (Icc 1 ↑(n + 1)) := by
+    intro u ⟨hu1, _⟩ v ⟨_, hv2⟩ huv ; push_cast at hv2
+    refine hf ⟨?_, ?_⟩ ⟨?_, ?_⟩ ?_ <;> linarith
+
+  have l3 := @AntitoneOn.sum_le_integral_Ico 1 (n + 1) (fun x => f (x₀ + x)) (by simp)
+    (by simpa using l2)
+
+  simp only [Nat.cast_add, Nat.cast_one, intervalIntegral.integral_comp_add_left] at l3
+  convert! _root_.add_le_add l1 l3
+
+  have := @intervalIntegral.integral_comp_mul_add ℝ _ _ 1 (n + 1) 1 f one_ne_zero x₀
+  rw [intervalIntegral.integral_add_adjacent_intervals]
+  · exact l4
+  · apply IntegrableOn.intervalIntegrable
+    simp only [add_le_add_iff_left, le_add_iff_nonneg_left, Nat.cast_nonneg, uIcc_of_le]
+    apply hfi.mono_set
+    apply Icc_subset_Icc
+    · linarith
+    · simp
+
+lemma hh_integrable_aux (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
+    (IntegrableOn (fun t ↦ a * hh b (t / c)) (Ici 0)) ∧
+    (∫ (t : ℝ) in Ioi 0, a * hh b (t / c) = a * c / b * π) := by
+
+  rw [integrableOn_Ici_iff_integrableOn_Ioi]
+  simp only [hh]
+
+  let g (x : ℝ) := (a * c / b) * Real.arctan (b * log (x / c))
+  let g₀ (x : ℝ) := if x = 0 then ((a * c / b) * (- (π / 2))) else g x
+  let g' (x : ℝ) := a * (x / c * (1 + (b * Real.log (x / c)) ^ 2))⁻¹
+
+  have l3 (x) (hx : 0 < x) : HasDerivAt Real.log x⁻¹ x := by apply Real.hasDerivAt_log (by linarith)
+  have l4 (x) : HasDerivAt (fun t => t / c) (1 / c) x := (hasDerivAt_id x).div_const c
+  have l2 (x) (hx : 0 < x) : HasDerivAt (fun t => log (t / c)) x⁻¹ x := by
+    have := @HasDerivAt.comp _ _ _ _ _ _ (fun t => t / c) _ _ _  (l3 (x / c) (by positivity)) (l4 x)
+    convert! this using 1 ; field_simp
+  have l5 (x) (hx : 0 < x) := (l2 x hx).const_mul b
+  have l1 (x) (hx : 0 < x) := (l5 x hx).arctan
+  have l6 (x) (hx : 0 < x) : HasDerivAt g (g' x) x := by
+    convert! (l1 x hx).const_mul (a * c / b) using 1
+    simp only [g']
+    field_simp
+  have key (x) (hx : 0 < x) : HasDerivAt g₀ (g' x) x := by
+    apply (l6 x hx).congr_of_eventuallyEq
+    apply eventually_of_mem <| Ioi_mem_nhds hx
+    intro y (hy : 0 < y)
+    simp [g₀, hy.ne.symm]
+
+  have k1 : Tendsto g₀ atTop (𝓝 ((a * c / b) * (π / 2))) := by
+    have : g =ᶠ[atTop] g₀ := by
+      apply eventually_of_mem (Ioi_mem_atTop 0)
+      intro y (hy : 0 < y)
+      simp [g₀, hy.ne.symm]
+    apply Tendsto.congr' this
+    apply Tendsto.const_mul
+    apply (tendsto_arctan_atTop.mono_right nhdsWithin_le_nhds).comp
+    apply Tendsto.const_mul_atTop hb
+    apply tendsto_log_atTop.comp
+    apply Tendsto.atTop_div_const hc
+    apply tendsto_id
+
+  have k2 : Tendsto g₀ (𝓝[>] 0) (𝓝 (g₀ 0)) := by
+    have : g =ᶠ[𝓝[>] 0] g₀ := by
+      apply eventually_of_mem self_mem_nhdsWithin
+      intro x (hx : 0 < x) ; simp [g₀, hx.ne.symm]
+    simp only [g₀]
+    apply Tendsto.congr' this
+    apply Tendsto.const_mul
+    apply (tendsto_arctan_atBot.mono_right nhdsWithin_le_nhds).comp
+    apply Tendsto.const_mul_atBot hb
+    apply tendsto_log_nhdsGT_zero.comp
+    rw [Metric.tendsto_nhdsWithin_nhdsWithin]
+    intro ε hε
+    refine ⟨c * ε, by positivity, fun x hx1 hx2 => ⟨?_, ?_⟩⟩
+    · simp only [mem_Ioi] at hx1 ⊢ ; positivity
+    · simp only [dist_zero_right, norm_eq_abs, norm_div, abs_eq_self.mpr hc.le] at hx2 ⊢
+      rwa [div_lt_iff₀ hc, mul_comm]
+
+  have k3 : ContinuousWithinAt g₀ (Ici 0) 0 := by
+    rw [Metric.continuousWithinAt_iff]
+    rw [Metric.tendsto_nhdsWithin_nhds] at k2
+    peel k2 with ε hε δ hδ x h
+    intro (hx : 0 ≤ x)
+    have := le_iff_lt_or_eq.mp hx
+    cases this with
+    | inl hx => exact h hx
+    | inr hx => simp [g₀, hx.symm, hε]
+
+  have k4 : ∀ x ∈ Ioi 0, 0 ≤ g' x := by
+    intro x (hx : 0 < x) ; simp only [mul_inv_rev, inv_div, g'] ; positivity
+
+  constructor
+  · convert_to IntegrableOn g' _
+    exact integrableOn_Ioi_deriv_of_nonneg k3 key k4 k1
+  · have := integral_Ioi_of_hasDerivAt_of_nonneg k3 key k4 k1
+    simp only [mul_inv_rev, inv_div, mul_neg, ↓reduceIte, sub_neg_eq_add, g', g₀] at this ⊢
+    convert this using 1 ; field_simp ; ring
+
+lemma hh_integrable (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
+    IntegrableOn (fun t ↦ a * hh b (t / c)) (Ici 0) :=
+  hh_integrable_aux ha hb hc |>.1
+
+lemma hh_integral (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
+    ∫ (t : ℝ) in Ioi 0, a * hh b (t / c) = a * c / b * π :=
+  hh_integrable_aux ha hb hc |>.2
+
+lemma hh_integral' : ∫ t in Ioi 0, hh (1 / (2 * π)) t = 2 * π ^ 2 := by
+  have := hh_integral (a := 1) (b := 1 / (2 * π)) (c := 1)
+    (by positivity) (by positivity) (by positivity)
+  convert this using 1 <;> simp ; ring
+
+lemma bound_sum_log {C : ℝ} (hf0 : f 0 = 0) (hf : chebyWith C f) {x : ℝ} (hx : 1 ≤ x) :
+    ∑' i, ‖f i‖ / i * (1 + (1 / (2 * π) * log (i / x)) ^ 2)⁻¹ ≤
+      C * (1 + ∫ t in Ioi 0, hh (1 / (2 * π)) t) := by
+
+  let ggg (i : ℕ) : ℝ := if i = 0 then 1 else gg x i
+
+  have l0 : x ≠ 0 := by linarith
+  have l1 i : 0 ≤ ggg i := by by_cases hi : i = 0 <;> simp only [gg, one_div, mul_inv_rev, hi,
+    ↓reduceIte, zero_le_one, ggg] ; positivity
+  have l2 : Antitone ggg := by
+    intro i j hij ; by_cases hi : i = 0 <;> by_cases hj : j = 0 <;> simp only [hj, ↓reduceIte, hi,
+      le_refl, ggg]
+    · exact gg_le_one _
+    · omega
+    · simp only [gg_of_hh l0]
+      gcongr
+      apply hh_antitone one_div_two_pi_mem_Ioo
+      · simp only [mem_Ioi] ; positivity
+      · simp only [mem_Ioi] ; positivity
+      · gcongr
+  have l3 : 0 ≤ C := by simpa [cumsum, hf0] using hf 1
+
+  have l4 : 0 ≤ ∫ (t : ℝ) in Ioi 0, hh (π⁻¹ * 2⁻¹) t :=
+    setIntegral_nonneg measurableSet_Ioi (fun x hx => hh_nonneg _ (LT.lt.le hx))
+
+  have l5 {n : ℕ} : AntitoneOn (fun t ↦ x⁻¹ * hh (1 / (2 * π)) (t / x)) (Ioc 0 n) := by
+    intro u ⟨hu1, _⟩ v ⟨hv1, _⟩ huv
+    simp only
+    apply mul_le_mul le_rfl ?_ (hh_nonneg _ (by positivity)) (by positivity)
+    apply hh_antitone one_div_two_pi_mem_Ioo (by simp only [mem_Ioi] ; positivity)
+      (by simp only [mem_Ioi] ; positivity)
+    apply (div_le_div_iff_of_pos_right (by positivity)).mpr huv
+
+  have l6 {n : ℕ} : IntegrableOn (fun t ↦ x⁻¹ * hh (π⁻¹ * 2⁻¹) (t / x)) (Icc 0 n) volume := by
+    apply IntegrableOn.mono_set
+      (hh_integrable (by positivity) (by positivity) (by positivity)) Icc_subset_Ici_self
+
+  apply Real.tsum_le_of_sum_range_le (fun n => by positivity) ; intro n
+  convert_to! ∑ i ∈ Finset.range n, ‖f i‖ * ggg i ≤ _
+  · congr ; ext i
+    by_cases hi : i = 0
+    · simp [hi, hf0]
+    · simp only [gg, hi, ↓reduceIte, ggg]
+      field_simp
+
+  apply cancel_main' (fun _ => norm_nonneg _) (by simp [hf0]) l1 hf l2 n |>.trans
+  gcongr ; simp only [cumsum, gg_of_hh l0, one_div, mul_inv_rev, ggg]
+
+  by_cases hn : n = 0
+  · simp only [hn, Finset.range_zero, Finset.sum_empty] ; positivity
+  replace hn : 0 < n := by omega
+  have : Finset.range n = {0} ∪ Finset.Ico 1 n := by
+    ext i ; simp ; by_cases hi : i = 0 <;> simp [hi, hn] ; omega
+  simp only [this, Finset.singleton_union, Finset.mem_Ico, nonpos_iff_eq_zero, one_ne_zero,
+    false_and, not_false_eq_true, Finset.sum_insert, ↓reduceIte, add_le_add_iff_left, ge_iff_le]
+  convert_to! ∑ x_1 ∈ Finset.Ico 1 n, x⁻¹ * hh (π⁻¹ * 2⁻¹) (↑x_1 / x) ≤ _
+  · apply Finset.sum_congr rfl (fun i hi => ?_)
+    simp at hi
+    have : i ≠ 0 := by omega
+    simp [this]
+  simp_rw [Finset.sum_Ico_eq_sum_range, add_comm 1]
+  have := @sum_le_integral 0 (fun t => x⁻¹ * hh (π⁻¹ * 2⁻¹) (t / x)) (n - 1)
+    (by simpa using l5) (by simpa using l6)
+  simp only [zero_add] at this
+  apply this.trans
+  rw [@intervalIntegral.integral_comp_div ℝ _ _ 0 ↑(n - 1) x (fun t => x⁻¹ * hh (π⁻¹ * 2⁻¹) (t)) l0]
+  simp only [zero_div, intervalIntegral.integral_const_mul, smul_eq_mul, ← mul_assoc,
+    mul_inv_cancel₀ l0, one_mul]
+  have : (0 : ℝ) ≤ ↑(n - 1) / x := by positivity
+  rw [intervalIntegral.intervalIntegral_eq_integral_uIoc]
+  simp only [this, ↓reduceIte, uIoc_of_le, smul_eq_mul, one_mul, ge_iff_le]
+  apply integral_mono_measure
+  · apply Measure.restrict_mono Ioc_subset_Ioi_self le_rfl
+  · apply eventually_of_mem (self_mem_ae_restrict measurableSet_Ioi)
+    intro x (hx : 0 < x)
+    apply hh_nonneg _ hx.le
+  · have := (@hh_integrable 1 (1 / (2 * π)) 1 (by positivity) (by positivity) (by positivity))
+    simpa using! this.mono_set Ioi_subset_Ici_self
+
+lemma bound_sum_log0 {C : ℝ} (hf : chebyWith C f) {x : ℝ} (hx : 1 ≤ x) :
+    ∑' i, ‖f i‖ / i * (1 + (1 / (2 * π) * log (i / x)) ^ 2)⁻¹ ≤
+      C * (1 + ∫ t in Ioi 0, hh (1 / (2 * π)) t) := by
+
+  let f0 i := if i = 0 then 0 else f i
+  have l1 : chebyWith C f0 := by
+    intro n ; refine Finset.sum_le_sum (fun i _ => ?_) |>.trans (hf n)
+    by_cases hi : i = 0 <;> simp [hi, f0]
+  have l2 i : ‖f i‖ / i = ‖f0 i‖ / i := by by_cases hi : i = 0 <;> simp [hi, f0]
+  simp_rw [l2] ; apply bound_sum_log rfl l1 hx
+
+lemma bound_sum_log' {C : ℝ} (hf : chebyWith C f) {x : ℝ} (hx : 1 ≤ x) :
+    ∑' i, ‖f i‖ / i * (1 + (1 / (2 * π) * log (i / x)) ^ 2)⁻¹ ≤ C * (1 + 2 * π ^ 2) := by
+  simpa only [hh_integral'] using bound_sum_log0 hf hx
+
+variable (f x) in
+lemma summable_fourier_aux (ψ : W21) (i : ℕ) :
+    ‖f i / i * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * Real.log (i / x))‖ ≤
+      W21.norm ψ * (‖f i‖ / i * (1 + (1 / (2 * π) * log (i / x)) ^ 2)⁻¹) := by
+  convert! mul_le_mul_of_nonneg_left (decay_bounds_key ψ (1 / (2 * π) * log (i / x)))
+    (norm_nonneg (f i / i)) using 1
+  · simp
+  · change _ = _ * (W21.norm ψ * _)
+    simp only [W21.norm, mul_inv_rev, one_div, Complex.norm_div, RCLike.norm_natCast]
+    ring
+
+lemma summable_fourier (x : ℝ) (hx : 0 < x) (ψ : W21) (hcheby : cheby f) :
+    Summable fun i ↦ ‖f i / ↑i * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * Real.log (↑i / x))‖ := by
+  have l5 : Summable fun i ↦ ‖f i‖ / ↑i * ((1 + (1 / (2 * ↑π) * ↑(Real.log (↑i / x))) ^ 2)⁻¹) := by
+    simpa using limiting_fourier_lim1_aux hcheby hx 1 (zero_le_one' ℝ)
+  have l6 := summable_fourier_aux x f ψ
+  exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) l6
+    (by simpa using l5.const_smul (W21.norm ψ))
+
+lemma bound_I1 (x : ℝ) (hx : 0 < x) (ψ : W21) (hcheby : cheby f) :
+    ‖∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x))‖ ≤
+    W21.norm ψ • ∑' i, ‖f i‖ / i * (1 + (1 / (2 * π) * log (i / x)) ^ 2)⁻¹ := by
+
+  have l5 : Summable fun i ↦ ‖f i‖ / ↑i * ((1 + (1 / (2 * ↑π) * ↑(Real.log (↑i / x))) ^ 2)⁻¹) := by
+    simpa using limiting_fourier_lim1_aux hcheby hx 1 (zero_le_one' ℝ)
+  have l6 := summable_fourier_aux x f ψ
+  have l1 : Summable fun i ↦ ‖f i / ↑i * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * Real.log (↑i / x))‖ := by
+    exact summable_fourier x hx ψ hcheby
+  apply (norm_tsum_le_tsum_norm l1).trans
+  simpa only [← Summable.tsum_const_smul _ l5] using!
+    Summable.tsum_mono l1 (by simpa using l5.const_smul (W21.norm ψ)) l6
+
+lemma bound_I1' {C : ℝ} (x : ℝ) (hx : 1 ≤ x) (ψ : W21) (hcheby : chebyWith C f) :
+    ‖∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x))‖ ≤
+      W21.norm ψ * C * (1 + 2 * π ^ 2) := by
+
+  apply bound_I1 x (by linarith) ψ ⟨_, hcheby⟩ |>.trans
+  rw [smul_eq_mul, mul_assoc]
+  apply mul_le_mul le_rfl (bound_sum_log' hcheby hx) ?_ W21.norm_nonneg
+  apply tsum_nonneg (fun i => by positivity)
+
+lemma bound_I2 (x : ℝ) (ψ : W21) :
+    ‖∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))‖ ≤ W21.norm ψ * (2 * π ^ 2) := by
+
+  have key a : ‖𝓕 (ψ : ℝ → ℂ) (a / (2 * π))‖ ≤ W21.norm ψ * (1 + (a / (2 * π)) ^ 2)⁻¹ :=
+    decay_bounds_key ψ _
+  have twopi : 0 ≤ 2 * π := by simp [pi_nonneg]
+  have l3 : Integrable (fun a ↦ (1 + (a / (2 * π)) ^ 2)⁻¹) :=
+    integrable_inv_one_add_sq.comp_div (by norm_num [pi_ne_zero])
+  have l2 : IntegrableOn (fun i ↦ W21.norm ψ * (1 + (i / (2 * π)) ^ 2)⁻¹) (Ici (-Real.log x)) := by
+    exact (l3.const_mul _).integrableOn
+  have l1 : IntegrableOn (fun i ↦ ‖𝓕 (ψ : ℝ → ℂ) (i / (2 * π))‖) (Ici (-Real.log x)) := by
+    refine ((l3.const_mul (W21.norm ψ)).mono' ?_ ?_).integrableOn
+    · apply Continuous.aestronglyMeasurable ; fun_prop
+    · simp only [norm_norm, key] ; simp
+  have l5 : 0 ≤ᵐ[volume] fun a ↦ (1 + (a / (2 * π)) ^ 2)⁻¹ := by
+    apply Eventually.of_forall ; intro x ; positivity
+  refine (norm_integral_le_integral_norm _).trans <| (setIntegral_mono l1 l2 key).trans ?_
+  rw [integral_const_mul] ; gcongr
+  · apply W21.norm_nonneg
+  refine (setIntegral_le_integral l3 l5).trans ?_
+  rw [Measure.integral_comp_div (fun x => (1 + x ^ 2)⁻¹) (2 * π)]
+  simp [abs_eq_self.mpr twopi] ; ring_nf ; rfl
+
+lemma bound_main {C : ℝ} (A : ℂ) (x : ℝ) (hx : 1 ≤ x) (ψ : W21)
+    (hcheby : chebyWith C f) :
+    ‖∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x)) -
+      A * ∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))‖ ≤
+      W21.norm ψ * (C * (1 + 2 * π ^ 2) + ‖A‖ * (2 * π ^ 2)) := by
+
+  have l1 := bound_I1' x hx ψ hcheby
+  have l2 := mul_le_mul (le_refl ‖A‖) (bound_I2 x ψ) (by positivity) (by positivity)
+  apply norm_sub_le _ _ |>.trans ; rw [norm_mul]
+  convert _root_.add_le_add l1 l2 using 1 ; ring
+
+set_option backward.isDefEq.respectTransparency false in
+lemma limiting_cor_W21 (ψ : W21) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) :
+    Tendsto (fun x : ℝ ↦ ∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x)) -
+      A * ∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))) atTop (𝓝 0) := by
+
+  let S1 x (ψ : ℝ → ℂ) := ∑' (n : ℕ), f n / ↑n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * Real.log (↑n / x))
+  let S2 x (ψ : ℝ → ℂ) := ↑A * ∫ (u : ℝ) in Ici (-Real.log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))
+  let S x ψ := S1 x ψ - S2 x ψ ; change Tendsto (fun x ↦ S x ψ) atTop (𝓝 0)
+
+  obtain g := exists_trunc
+  let Ψ R := g.scale R * ψ
+  have key R : Tendsto (fun x ↦ S x (Ψ R)) atTop (𝓝 0) := limiting_cor (Ψ R) hf hcheby hG hG'
+
+  obtain ⟨C, hcheby⟩ := hcheby
+  have hC : 0 ≤ C := by
+    have : ‖f 0‖ ≤ C := by simpa [cumsum] using hcheby 1
+    have : 0 ≤ ‖f 0‖ := by positivity
+    linarith
+  have key2 : Tendsto (fun R ↦ W21.norm (ψ - Ψ R)) atTop (𝓝 0) := W21_approximation ψ g
+  simp_rw [Metric.tendsto_nhds] at key key2 ⊢ ; intro ε hε
+  let M := C * (1 + 2 * π ^ 2) + ‖(A : ℂ)‖ * (2 * π ^ 2)
+  obtain ⟨R, hRψ⟩ := (key2 ((ε / 2) / (1 + M)) (by positivity)).exists
+  simp only [dist_zero_right, Real.norm_eq_abs, abs_eq_self.mpr W21.norm_nonneg] at hRψ key
+
+  filter_upwards [eventually_ge_atTop 1, key R (ε / 2) (by positivity)] with x hx key
+
+  have key3 : ‖S x (ψ - Ψ R)‖ < ε / 2 := by
+    have : ‖S x _‖ ≤ _ * M := @bound_main f C A x hx (ψ - Ψ R) hcheby
+    apply this.trans_lt
+    apply (mul_le_mul (d := 1 + M) le_rfl (by simp) (by positivity) W21.norm_nonneg).trans_lt
+    have : 0 < 1 + M := by positivity
+    convert! (mul_lt_mul_iff_left₀ this).mpr hRψ using 1 ; field_simp
+
+  have S1_sub_1 x : 𝓕 (⇑ψ - ⇑(Ψ R)) x = 𝓕 (ψ : ℝ → ℂ) x - 𝓕 ⇑(Ψ R) x := by
+    have l1 : AEStronglyMeasurable (fun x_1 : ℝ ↦ cexp (-(2 * ↑π * (↑x_1 * ↑x) * I))) volume := by
+      refine (Continuous.mul ?_ continuous_const).neg.cexp.aestronglyMeasurable
+      apply continuous_const.mul <| contDiff_ofReal.continuous.mul continuous_const
+    simp only [Real.fourier_eq', neg_mul, RCLike.inner_apply', conj_trivial, ofReal_neg,
+      ofReal_mul, ofReal_ofNat, Pi.sub_apply, smul_eq_mul, mul_sub]
+    apply integral_sub
+    · apply ψ.hf.bdd_mul (c := 1) l1 ; simp [Complex.norm_exp]
+    · apply (Ψ R : W21) |>.hf |>.bdd_mul (c := 1) l1
+      simp [Complex.norm_exp]
+
+  have S1_sub : S1 x (ψ - Ψ R) = S1 x ψ - S1 x (Ψ R) := by
+    simp only [one_div, mul_inv_rev, S1_sub_1, mul_sub, S1] ; apply Summable.tsum_sub
+    · have := summable_fourier x (by positivity) ψ ⟨_, hcheby⟩
+      rw [summable_norm_iff] at this
+      simpa using this
+    · have := summable_fourier x (by positivity) (Ψ R) ⟨_, hcheby⟩
+      rw [summable_norm_iff] at this
+      simpa using! this
+
+  have S2_sub : S2 x (ψ - Ψ R) = S2 x ψ - S2 x (Ψ R) := by
+    simp only [S1_sub_1, S2] ; rw [integral_sub]
+    · ring
+    · exact ψ.integrable_fourier (by positivity) |>.restrict
+    · exact (Ψ R : W21).integrable_fourier (by positivity) |>.restrict
+
+  have S_sub : S x (ψ - Ψ R) = S x ψ - S x (Ψ R) := by simp [S, S1_sub, S2_sub] ; ring
+  simpa [S_sub, Ψ] using norm_add_le _ _ |>.trans_lt (_root_.add_lt_add key3 key)
+
+lemma limiting_cor_schwartz (ψ : 𝓢(ℝ, ℂ)) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) :
+    Tendsto (fun x : ℝ ↦ ∑' n, f n / n * 𝓕 (ψ : ℝ → ℂ) (1 / (2 * π) * log (n / x)) -
+      A * ∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))) atTop (𝓝 0) :=
+  limiting_cor_W21 ψ hf hcheby hG hG'
+
+lemma fourier_surjection_on_schwartz (f : 𝓢(ℝ, ℂ)) : ∃ g : 𝓢(ℝ, ℂ), 𝓕 g = f := by
+  refine ⟨𝓕⁻ f, ?_⟩
+  exact FourierTransform.fourier_fourierInv_eq f
+
+noncomputable def toSchwartz (f : ℝ → ℂ) (h1 : ContDiff ℝ ∞ f)
+    (h2 : HasCompactSupport f) : 𝓢(ℝ, ℂ) := h2.toSchwartzMap h1
+
+@[simp] lemma toSchwartz_apply (f : ℝ → ℂ) {h1 h2 x} : toSchwartz f h1 h2 x = f x := rfl
+
+lemma comp_exp_support0 {Ψ : ℝ → ℂ} (hplus : closure (Function.support Ψ) ⊆ Ioi 0) :
+    ∀ᶠ x in 𝓝 0, Ψ x = 0 :=
+  notMem_tsupport_iff_eventuallyEq.mp (fun h => lt_irrefl 0 <| mem_Ioi.mp (hplus h))
+
+lemma comp_exp_support1 {Ψ : ℝ → ℂ} (hplus : closure (Function.support Ψ) ⊆ Ioi 0) :
+    ∀ᶠ x in atBot, Ψ (exp x) = 0 :=
+  Real.tendsto_exp_atBot <| comp_exp_support0 hplus
+
+lemma comp_exp_support2 {Ψ : ℝ → ℂ} (hsupp : HasCompactSupport Ψ) :
+    ∀ᶠ (x : ℝ) in atTop, (Ψ ∘ rexp) x = 0 := by
+  simp only [hasCompactSupport_iff_eventuallyEq, coclosedCompact_eq_cocompact,
+    cocompact_eq_atBot_atTop] at hsupp
+  exact Real.tendsto_exp_atTop hsupp.2
+
+theorem comp_exp_support {Ψ : ℝ → ℂ} (hsupp : HasCompactSupport Ψ)
+    (hplus : closure (Function.support Ψ) ⊆ Ioi 0) : HasCompactSupport (Ψ ∘ rexp) := by
+  simp only [hasCompactSupport_iff_eventuallyEq, coclosedCompact_eq_cocompact,
+    cocompact_eq_atBot_atTop]
+  exact ⟨comp_exp_support1 hplus, comp_exp_support2 hsupp⟩
+
+set_option backward.isDefEq.respectTransparency false in
+lemma wiener_ikehara_smooth_aux (l0 : Continuous Ψ) (hsupp : HasCompactSupport Ψ)
+    (hplus : closure (Function.support Ψ) ⊆ Ioi 0) (x : ℝ) (hx : 0 < x) :
+    ∫ (u : ℝ) in Ioi (-Real.log x), ↑(rexp u) * Ψ (rexp u) = ∫ (y : ℝ) in Ioi (1 / x), Ψ y := by
+
+  have l1 : ContinuousOn rexp (Ici (-Real.log x)) := by fun_prop
+  have l2 : Tendsto rexp atTop atTop := Real.tendsto_exp_atTop
+  have l3 t (_ : t ∈ Ioi (-log x)) : HasDerivWithinAt rexp (rexp t) (Ioi t) t :=
+    (Real.hasDerivAt_exp t).hasDerivWithinAt
+  have l4 : ContinuousOn Ψ (rexp '' Ioi (-Real.log x)) := by fun_prop
+  have l5 : IntegrableOn Ψ (rexp '' Ici (-Real.log x)) volume :=
+    (l0.integrable_of_hasCompactSupport hsupp).integrableOn
+  have l6 : IntegrableOn (fun x ↦ rexp x • (Ψ ∘ rexp) x) (Ici (-Real.log x)) volume := by
+    refine (Continuous.integrable_of_hasCompactSupport (by fun_prop) ?_).integrableOn
+    change HasCompactSupport (rexp • (Ψ ∘ rexp))
+    exact (comp_exp_support hsupp hplus).smul_left
+  have := MeasureTheory.integral_deriv_smul_comp_Ioi l1 l2 l3 l4 l5 l6
+  simpa [Real.exp_neg, Real.exp_log hx] using this
+
+theorem wiener_ikehara_smooth_sub (h1 : Integrable Ψ)
+    (hplus : closure (Function.support Ψ) ⊆ Ioi 0) :
+    Tendsto (fun x ↦ (↑A * ∫ (y : ℝ) in Ioi x⁻¹, Ψ y) - ↑A * ∫ (y : ℝ) in Ioi 0, Ψ y)
+      atTop (𝓝 0) := by
+
+  obtain ⟨ε, hε, hh⟩ := Metric.eventually_nhds_iff.mp <| comp_exp_support0 hplus
+  apply tendsto_nhds_of_eventually_eq ; filter_upwards [eventually_gt_atTop ε⁻¹] with x hxε
+
+  have l1 : Integrable (indicator (Ioi x⁻¹) (fun x : ℝ => Ψ x)) := h1.indicator measurableSet_Ioi
+  have l2 : Integrable (indicator (Ioi 0) (fun x : ℝ => Ψ x)) := h1.indicator measurableSet_Ioi
+
+  simp_rw [← MeasureTheory.integral_indicator measurableSet_Ioi, ← mul_sub, ← integral_sub l1 l2]
+  simp only [mul_eq_zero, ofReal_eq_zero]
+  right
+  apply MeasureTheory.integral_eq_zero_of_ae
+  apply Eventually.of_forall
+  intro t
+  simp only [Pi.zero_apply]
+
+  have hε' : 0 < ε⁻¹ := by positivity
+  have hx : 0 < x := by linarith
+  have hx' : 0 < x⁻¹ := by positivity
+  have hεx : x⁻¹ < ε := (inv_lt_comm₀ hε hx).mp hxε
+
+  have l3 : Ioi 0 = Ioc 0 x⁻¹ ∪ Ioi x⁻¹ := by
+    ext t ; simp only [mem_Ioi, mem_union, mem_Ioc] ; constructor <;> intro h
+    · simp [h, le_or_gt]
+    · cases h with
+      | inl h => exact h.1
+      | inr h => exact hx'.trans h
+  have l4 : Disjoint (Ioc 0 x⁻¹) (Ioi x⁻¹) := by simp
+  have l5 := Set.indicator_union_of_disjoint l4 Ψ
+  rw [l3, l5]
+  simp only
+  rw [add_comm, sub_add_cancel_left]
+  by_cases ht : t ∈ Ioc 0 x⁻¹
+  · simp only [ht, indicator_of_mem, neg_eq_zero]
+    apply hh ; simp only [mem_Ioc, dist_zero_right, norm_eq_abs] at ht ⊢
+    apply hεx.trans_le'
+    rw [abs_le] ; constructor <;> linarith
+  simp [ht]
+
+lemma wiener_ikehara_smooth (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (hcheby : cheby f)
+    (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re})
+    (hsmooth : ContDiff ℝ ∞ Ψ) (hsupp : HasCompactSupport Ψ)
+    (hplus : closure (Function.support Ψ) ⊆ Set.Ioi 0) :
+    Tendsto (fun x : ℝ ↦ (∑' n, f n * Ψ (n / x)) / x - A * ∫ y in Set.Ioi 0, Ψ y)
+      atTop (𝓝 0) := by
+
+  let h (x : ℝ) : ℂ := rexp (2 * π * x) * Ψ (exp (2 * π * x))
+  have h1 : ContDiff ℝ ∞ h := by
+    have : ContDiff ℝ ∞ (fun x : ℝ => (rexp (2 * π * x))) := (contDiff_const.mul contDiff_id).exp
+    exact (contDiff_ofReal.comp this).mul (hsmooth.comp this)
+  have h2 : HasCompactSupport h := by
+    have : 2 * π ≠ 0 := by simp [pi_ne_zero]
+    simpa using! (comp_exp_support hsupp hplus).comp_smul this |>.mul_left
+  obtain ⟨g, hg⟩ := fourier_surjection_on_schwartz (toSchwartz h h1 h2)
+
+  have l1 {y} (hy : 0 < y) : y * Ψ y = 𝓕 g (1 / (2 * π) * Real.log y) := by
+    simp only [one_div, mul_inv_rev, hg, ofReal_exp, ofReal_mul, ofReal_ofNat,
+      toSchwartz_apply, ofReal_inv, h]
+    field_simp
+    norm_cast
+    rw [Real.exp_log hy]
+
+  have key := limiting_cor_schwartz g hf hcheby hG hG'
+
+  have l2 : ∀ᶠ x in atTop, ∑' (n : ℕ), f n / ↑n * 𝓕 g (1 / (2 * π) * Real.log (↑n / x)) =
+      ∑' (n : ℕ), f n * Ψ (↑n / x) / x := by
+    filter_upwards [eventually_gt_atTop 0] with x hx
+    congr ; ext n
+    by_cases hn : n = 0
+    · simp [hn, (comp_exp_support0 hplus).self_of_nhds]
+    rw [← l1 (by positivity)]
+    have : (n : ℂ) ≠ 0 := by simpa using hn
+    have : (x : ℂ) ≠ 0 := by simpa using hx.ne.symm
+    simp only [ofReal_div, ofReal_natCast]
+    field_simp
+
+  have l3 : ∀ᶠ x in atTop, ↑A * ∫ (u : ℝ) in Ici (-Real.log x), 𝓕 g (u / (2 * π)) =
+      ↑A * ∫ (y : ℝ) in Ioi x⁻¹, Ψ y := by
+    filter_upwards [eventually_gt_atTop 0] with x hx
+    congr 1
+    simp only [hg, ofReal_exp, ofReal_mul, ofReal_ofNat, toSchwartz_apply,
+      ofReal_div, h]
+    norm_cast ; field_simp; norm_cast
+    rw [MeasureTheory.integral_Ici_eq_integral_Ioi]
+    exact wiener_ikehara_smooth_aux hsmooth.continuous hsupp hplus x hx
+
+  have l4 : Tendsto (fun x => (↑A * ∫ (y : ℝ) in Ioi x⁻¹, Ψ y) - ↑A * ∫ (y : ℝ) in Ioi 0, Ψ y)
+      atTop (𝓝 0) := by
+    exact wiener_ikehara_smooth_sub (hsmooth.continuous.integrable_of_hasCompactSupport hsupp) hplus
+
+  simpa [tsum_div_const] using (key.congr' <| EventuallyEq.sub l2 l3) |>.add l4
+
+lemma wiener_ikehara_smooth' (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (hcheby : cheby f)
+    (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re})
+    (hsmooth : ContDiff ℝ ∞ Ψ) (hsupp : HasCompactSupport Ψ)
+    (hplus : closure (Function.support Ψ) ⊆ Set.Ioi 0) :
+    Tendsto (fun x : ℝ ↦ (∑' n, f n * Ψ (n / x)) / x) atTop (nhds (A * ∫ y in Set.Ioi 0, Ψ y)) :=
+  tendsto_sub_nhds_zero_iff.mp <| wiener_ikehara_smooth hf hcheby hG hG' hsmooth hsupp hplus
+
+local instance {E : Type*} : Coe (E → ℝ) (E → ℂ) := ⟨fun f n => f n⟩
+
+@[norm_cast]
+theorem set_integral_ofReal {f : ℝ → ℝ} {s : Set ℝ} : ∫ x in s, (f x : ℂ) = ∫ x in s, f x :=
+  integral_ofReal
+
+lemma wiener_ikehara_smooth_real {f : ℕ → ℝ} {Ψ : ℝ → ℝ}
+    (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re})
+    (hsmooth : ContDiff ℝ ∞ Ψ) (hsupp : HasCompactSupport Ψ)
+    (hplus : closure (Function.support Ψ) ⊆ Set.Ioi 0) :
+    Tendsto (fun x : ℝ ↦ (∑' n, f n * Ψ (n / x)) / x) atTop (nhds (A * ∫ y in Set.Ioi 0, Ψ y)) := by
+
+  let Ψ' := ofReal ∘ Ψ
+  have l1 : ContDiff ℝ ∞ Ψ' := contDiff_ofReal.comp hsmooth
+  have l2 : HasCompactSupport Ψ' := hsupp.comp_left rfl
+  have l3 : closure (Function.support Ψ') ⊆ Ioi 0 := by rwa [Function.support_comp_eq] ; simp
+  have key := (continuous_re.tendsto _).comp
+    (@wiener_ikehara_smooth' A Ψ G f hf hcheby hG hG' l1 l2 l3)
+  simp at key ; norm_cast at key
+
+lemma interval_approx_inf (ha : 0 < a) (hab : a < b) :
+    ∀ᶠ ε in 𝓝[>] 0, ∃ ψ : ℝ → ℝ, ContDiff ℝ ∞ ψ ∧ HasCompactSupport ψ ∧
+      closure (Function.support ψ) ⊆ Set.Ioi 0 ∧
+        ψ ≤ indicator (Ico a b) 1 ∧ b - a - ε ≤ ∫ y in Ioi 0, ψ y := by
+
+  have l1 : Iio ((b - a) / 3) ∈ 𝓝[>] 0 := nhdsWithin_le_nhds <| Iio_mem_nhds <| by
+    rw [← sub_pos] at hab
+    positivity
+  filter_upwards [self_mem_nhdsWithin, l1] with ε (hε : 0 < ε) (hε' : ε < (b - a) / 3)
+  have l2 : a < a + ε / 2 := by simp [hε]
+  have l3 : b - ε / 2 < b := by simp [hε]
+  obtain ⟨ψ, h1, h2, h3, h4, h5⟩ := smooth_urysohn_support_Ioo l2 l3
+  refine ⟨ψ, h1, h2, ?_, ?_, ?_⟩
+  · simp [h5, hab.ne, Icc_subset_Ioi_iff hab.le, ha]
+  · exact h4.trans <| indicator_le_indicator_of_subset Ioo_subset_Ico_self (by simp)
+  · have l4 : 0 ≤ b - a - ε := by linarith
+    have l5 : Icc (a + ε / 2) (b - ε / 2) ⊆ Ioi 0 := by
+      intro t ht
+      simp only [mem_Icc, mem_Ioi] at ht ⊢
+      exact ha.trans <| l2.trans_le <| ht.1
+    have l6 : Icc (a + ε / 2) (b - ε / 2) ∩ Ioi 0 = Icc (a + ε / 2) (b - ε / 2) :=
+      inter_eq_left.mpr l5
+    have l7 : ∫ y in Ioi 0, indicator (Icc (a + ε / 2) (b - ε / 2)) 1 y = b - a - ε := by
+      simp only [measurableSet_Icc, integral_indicator_one, measureReal_restrict_apply, l6,
+        volume_real_Icc]
+      convert max_eq_left l4 using 1 ; ring_nf
+    have l8 : IntegrableOn ψ (Ioi 0) volume :=
+      (h1.continuous.integrable_of_hasCompactSupport h2).integrableOn
+    rw [← l7] ; apply setIntegral_mono ?_ l8 h3
+    rw [IntegrableOn, integrable_indicator_iff measurableSet_Icc]
+    apply IntegrableOn.mono ?_ subset_rfl Measure.restrict_le_self
+    apply integrableOn_const <;>
+    simp
+
+lemma interval_approx_sup (ha : 0 < a) (hab : a < b) :
+    ∀ᶠ ε in 𝓝[>] 0, ∃ ψ : ℝ → ℝ, ContDiff ℝ ∞ ψ ∧ HasCompactSupport ψ ∧
+      closure (Function.support ψ) ⊆ Set.Ioi 0 ∧
+        indicator (Ico a b) 1 ≤ ψ ∧ ∫ y in Ioi 0, ψ y ≤ b - a + ε := by
+
+  have l1 : Iio (a / 2) ∈ 𝓝[>] 0 := nhdsWithin_le_nhds <| Iio_mem_nhds (by linarith)
+  filter_upwards [self_mem_nhdsWithin, l1] with ε (hε : 0 < ε) (hε' : ε < a / 2)
+  have l2 : a - ε / 2 < a := by linarith
+  have l3 : b < b + ε / 2 := by linarith
+  obtain ⟨ψ, h1, h2, h3, h4, h5⟩ := smooth_urysohn_support_Ioo l2 l3
+  refine ⟨ψ, h1, h2, ?_, ?_, ?_⟩
+  · have l4 : a - ε / 2 < b + ε / 2 := by linarith
+    have l5 : ε / 2 < a := by linarith
+    simp [h5, l4.ne, Icc_subset_Ioi_iff l4.le, l5]
+  · apply le_trans ?_ h3
+    apply indicator_le_indicator_of_subset Ico_subset_Icc_self (by simp)
+  · have l4 : 0 ≤ b - a + ε := by linarith
+    have l5 : Ioo (a - ε / 2) (b + ε / 2) ⊆ Ioi 0 := by intro t ht ; simp at ht ⊢ ; linarith
+    have l6 : Ioo (a - ε / 2) (b + ε / 2) ∩ Ioi 0 = Ioo (a - ε / 2) (b + ε / 2) := inter_eq_left.mpr l5
+    have l7 : ∫ y in Ioi 0, indicator (Ioo (a - ε / 2) (b + ε / 2)) 1 y = b - a + ε := by
+      simp only [measurableSet_Ioo, integral_indicator_one, measureReal_restrict_apply, l6,
+        volume_real_Ioo]
+      convert max_eq_left l4 using 1 ; ring_nf
+    have l8 : IntegrableOn ψ (Ioi 0) volume := (h1.continuous.integrable_of_hasCompactSupport h2).integrableOn
+    rw [← l7]
+    refine setIntegral_mono l8 ?_ h4
+    rw [IntegrableOn, integrable_indicator_iff measurableSet_Ioo]
+    apply IntegrableOn.mono ?_ subset_rfl Measure.restrict_le_self
+    apply integrableOn_const <;>
+    simp
+
+lemma WI_summable {f : ℕ → ℝ} {g : ℝ → ℝ} (hg : HasCompactSupport g) (hx : 0 < x) :
+    Summable (fun n => f n * g (n / x)) := by
+  obtain ⟨M, hM⟩ := hg.bddAbove.mono subset_closure
+  apply summable_of_hasFiniteSupport
+  unfold Function.HasFiniteSupport
+  simp only [Function.support_mul] ; apply Finite.inter_of_right ; rw [finite_iff_bddAbove]
+  exact ⟨Nat.ceil (M * x), fun i hi => by simpa using Nat.ceil_mono ((div_le_iff₀ hx).mp (hM hi))⟩
+
+lemma WI_sum_le {f : ℕ → ℝ} {g₁ g₂ : ℝ → ℝ} (hf : 0 ≤ f) (hg : g₁ ≤ g₂) (hx : 0 < x)
+    (hg₁ : HasCompactSupport g₁) (hg₂ : HasCompactSupport g₂) :
+    (∑' n, f n * g₁ (n / x)) / x ≤ (∑' n, f n * g₂ (n / x)) / x := by
+  apply div_le_div_of_nonneg_right ?_ hx.le
+  exact Summable.tsum_le_tsum (fun n => mul_le_mul_of_nonneg_left (hg _) (hf _))
+    (WI_summable hg₁ hx) (WI_summable hg₂ hx)
+
+lemma WI_sum_Iab_le {f : ℕ → ℝ} (hpos : 0 ≤ f) {C : ℝ} (hcheby : chebyWith C f) (hb : 0 < b) (hxb : 2 / b < x) :
+    (∑' n, f n * indicator (Ico a b) 1 (n / x)) / x ≤ C * 2 * b := by
+  have hb' : 0 < 2 / b := by positivity
+  have hx : 0 < x := by linarith
+  have hxb' : 2 < x * b := (div_lt_iff₀ hb).mp hxb
+  have l1 (i : ℕ) (hi : i ∉ Finset.range ⌈b * x⌉₊) : f i * indicator (Ico a b) 1 (i / x) = 0 := by
+    simp_all [le_div_iff₀ hx]
+  have l2 (i : ℕ) (_ : i ∈ Finset.range ⌈b * x⌉₊) : f i * indicator (Ico a b) 1 (i / x) ≤ |f i| := by
+    rw [abs_eq_self.mpr (hpos _)]
+    convert_to _ ≤ f i * 1
+    · ring
+    apply mul_le_mul_of_nonneg_left ?_ (hpos _)
+    by_cases hi : (i / x) ∈ (Ico a b) <;> simp [hi]
+  rw [tsum_eq_sum l1, div_le_iff₀ hx, mul_assoc, mul_assoc]
+  apply Finset.sum_le_sum l2 |>.trans
+  have := hcheby ⌈b * x⌉₊ ; simp only [norm_real, norm_eq_abs] at this ; apply this.trans
+  have : 0 ≤ C := by have := hcheby 1 ; simp only [cumsum, Finset.range_one, norm_real,
+    Finset.sum_singleton, Nat.cast_one, mul_one] at this ; exact (abs_nonneg _).trans this
+  refine mul_le_mul_of_nonneg_left ?_ this
+  apply (Nat.ceil_lt_add_one (by positivity)).le.trans
+  linarith
+
+lemma WI_sum_Iab_le' {f : ℕ → ℝ} (hpos : 0 ≤ f) {C : ℝ} (hcheby : chebyWith C f) (hb : 0 < b) :
+    ∀ᶠ x : ℝ in atTop, (∑' n, f n * indicator (Ico a b) 1 (n / x)) / x ≤ C * 2 * b := by
+  filter_upwards [eventually_gt_atTop (2 / b)] with x hx using WI_sum_Iab_le hpos hcheby hb hx
+
+lemma le_of_eventually_nhdsWithin {a b : ℝ} (h : ∀ᶠ c in 𝓝[>] b, a ≤ c) : a ≤ b := by
+  apply le_of_forall_gt ; intro d hd
+  have key : ∀ᶠ c in 𝓝[>] b, c < d := by
+    apply eventually_of_mem (U := Iio d) ?_ (fun x hx => hx)
+    rw [mem_nhdsWithin]
+    refine ⟨Iio d, isOpen_Iio, hd, inter_subset_left⟩
+  obtain ⟨x, h1, h2⟩ := (h.and key).exists
+  linarith
+
+lemma ge_of_eventually_nhdsWithin {a b : ℝ} (h : ∀ᶠ c in 𝓝[<] b, c ≤ a) : b ≤ a := by
+  apply le_of_forall_lt ; intro d hd
+  have key : ∀ᶠ c in 𝓝[<] b, c > d := by
+    apply eventually_of_mem (U := Ioi d) ?_ (fun x hx => hx)
+    rw [mem_nhdsWithin]
+    refine ⟨Ioi d, isOpen_Ioi, hd, inter_subset_left⟩
+  obtain ⟨x, h1, h2⟩ := (h.and key).exists
+  linarith
+
+lemma WI_tendsto_aux (a b : ℝ) {A : ℝ} (hA : 0 < A) :
+    Tendsto (fun c => c / A - (b - a)) (𝓝[>] (A * (b - a))) (𝓝[>] 0) := by
+  rw [Metric.tendsto_nhdsWithin_nhdsWithin]
+  intro ε hε
+  refine ⟨A * ε, by positivity, ?_⟩
+  intro x hx1 hx2
+  constructor
+  · simpa [lt_div_iff₀' hA]
+  · simp only [Real.dist_eq, dist_zero_right, Real.norm_eq_abs] at hx2 ⊢
+    have : |x / A - (b - a)| = |x - A * (b - a)| / A := by
+      rw [← abs_eq_self.mpr hA.le, ← abs_div, abs_eq_self.mpr hA.le] ; congr ; field_simp
+    rwa [this, div_lt_iff₀' hA]
+
+lemma WI_tendsto_aux' (a b : ℝ) {A : ℝ} (hA : 0 < A) :
+    Tendsto (fun c => (b - a) - c / A) (𝓝[<] (A * (b - a))) (𝓝[>] 0) := by
+  rw [Metric.tendsto_nhdsWithin_nhdsWithin]
+  intro ε hε
+  refine ⟨A * ε, by positivity, ?_⟩
+  intro x hx1 hx2
+  constructor
+  · simpa [div_lt_iff₀' hA]
+  · simp only [Real.dist_eq, dist_zero_right, norm_eq_abs] at hx2 ⊢
+    have : |(b - a) - x / A| = |A * (b - a) - x| / A := by
+      rw [← abs_eq_self.mpr hA.le, ← abs_div, abs_eq_self.mpr hA.le] ; congr ; field_simp
+    rwa [this, div_lt_iff₀' hA, ← neg_sub, abs_neg]
+
+theorem residue_nonneg {f : ℕ → ℝ} (hpos : 0 ≤ f)
+    (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm (fun n ↦ ↑(f n)) σ')) (hcheby : cheby fun n ↦ ↑(f n))
+    (hG : ContinuousOn G {s | 1 ≤ s.re}) (hG' : EqOn G (fun s ↦ LSeries (fun n ↦ ↑(f n)) s - ↑A / (s - 1)) {s | 1 < s.re}) : 0 ≤ A := by
+  let S (g : ℝ → ℝ) (x : ℝ) := (∑' n, f n * g (n / x)) / x
+  have hSnonneg {g : ℝ → ℝ} (hg : 0 ≤ g) : ∀ᶠ x : ℝ in atTop, 0 ≤ S g x := by
+    filter_upwards [eventually_ge_atTop 0] with x hx
+    exact div_nonneg (tsum_nonneg (fun i => mul_nonneg (hpos _) (hg _))) hx
+  obtain ⟨ε, ψ, h1, h2, h3, h4, -⟩ := (interval_approx_sup zero_lt_one one_lt_two).exists
+  have key := @wiener_ikehara_smooth_real A G f ψ hf hcheby hG hG' h1 h2 h3
+  have l2 : 0 ≤ ψ := by apply le_trans _ h4 ; apply indicator_nonneg ; simp
+  have l1 : ∀ᶠ x in atTop, 0 ≤ S ψ x := hSnonneg l2
+  have l3 : 0 ≤ A * ∫ (y : ℝ) in Ioi 0, ψ y := ge_of_tendsto key l1
+  have l4 : 0 < ∫ (y : ℝ) in Ioi 0, ψ y := by
+    have r1 : 0 ≤ᵐ[Measure.restrict volume (Ioi 0)] ψ := Eventually.of_forall l2
+    have r2 : IntegrableOn (fun y ↦ ψ y) (Ioi 0) volume :=
+      (h1.continuous.integrable_of_hasCompactSupport h2).integrableOn
+    have r3 : Ico 1 2 ⊆ Function.support ψ := by intro x hx ; have := h4 x ; simp [hx] at this ⊢ ; linarith
+    have r4 : Ico 1 2 ⊆ Function.support ψ ∩ Ioi 0 := by
+      simp only [subset_inter_iff, r3, true_and] ; apply Ico_subset_Icc_self.trans ; rw [Icc_subset_Ioi_iff] <;> linarith
+    have r5 : 1 ≤ volume ((Function.support fun y ↦ ψ y) ∩ Ioi 0) := by convert! volume.mono r4 ; norm_num
+    simpa [setIntegral_pos_iff_support_of_nonneg_ae r1 r2] using! zero_lt_one.trans_le r5
+  have := div_nonneg l3 l4.le ; field_simp at this ; exact this
+
+lemma WienerIkeharaInterval {f : ℕ → ℝ} (hpos : 0 ≤ f) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) (ha : 0 < a) (hb : a ≤ b) :
+    Tendsto (fun x : ℝ ↦ (∑' n, f n * (indicator (Ico a b) 1 (n / x))) / x) atTop (nhds (A * (b - a))) := by
+
+  by_cases hab : a = b
+  · simp [hab]
+  replace hb : a < b := lt_of_le_of_ne hb hab ; clear hab
+
+  let S (g : ℝ → ℝ) (x : ℝ) :=  (∑' n, f n * g (n / x)) / x
+  have hSnonneg {g : ℝ → ℝ} (hg : 0 ≤ g) : ∀ᶠ x : ℝ in atTop, 0 ≤ S g x := by
+    filter_upwards [eventually_ge_atTop 0] with x hx
+    refine div_nonneg ?_ hx
+    refine tsum_nonneg (fun i => mul_nonneg (hpos _) (hg _))
+  have hA : 0 ≤ A := residue_nonneg hpos hf hcheby hG hG'
+
+  let Iab : ℝ → ℝ := indicator (Ico a b) 1
+  change Tendsto (S Iab) atTop (𝓝 (A * (b - a)))
+  have hIab : HasCompactSupport Iab := by simpa [Iab, HasCompactSupport, tsupport, hb.ne] using isCompact_Icc
+  have Iab_nonneg : ∀ᶠ x : ℝ in atTop, 0 ≤ S Iab x := hSnonneg (indicator_nonneg (by simp))
+  have Iab2 : IsBoundedUnder (· ≤ ·) atTop (S Iab) := by
+    obtain ⟨C, hC⟩ := hcheby ; exact ⟨C * 2 * b, WI_sum_Iab_le' hpos hC (by linarith)⟩
+  have Iab3 : IsBoundedUnder (· ≥ ·) atTop (S Iab) := ⟨0, Iab_nonneg⟩
+  have Iab0 : IsCoboundedUnder (· ≥ ·) atTop (S Iab) := Iab2.isCoboundedUnder_ge
+  have Iab1 : IsCoboundedUnder (· ≤ ·) atTop (S Iab) := Iab3.isCoboundedUnder_le
+
+  have sup_le : limsup (S Iab) atTop ≤ A * (b - a) := by
+    have l_sup : ∀ᶠ ε in 𝓝[>] 0, limsup (S Iab) atTop ≤ A * (b - a + ε) := by
+      filter_upwards [interval_approx_sup ha hb] with ε ⟨ψ, h1, h2, h3, h4, h6⟩
+      have l1 : Tendsto (S ψ) atTop _ := wiener_ikehara_smooth_real hf hcheby hG hG' h1 h2 h3
+      have l6 : S Iab ≤ᶠ[atTop] S ψ := by
+        filter_upwards [eventually_gt_atTop 0] with x hx using WI_sum_le hpos h4 hx hIab h2
+      have l5 : IsBoundedUnder (· ≤ ·) atTop (S ψ) := l1.isBoundedUnder_le
+      have l3 : limsup (S Iab) atTop ≤ limsup (S ψ) atTop := limsup_le_limsup l6 Iab1 l5
+      apply l3.trans ; rw [l1.limsup_eq] ; gcongr
+    obtain rfl | h := eq_or_ne A 0
+    · simpa using l_sup
+    apply le_of_eventually_nhdsWithin
+    have key : 0 < A := lt_of_le_of_ne hA h.symm
+    filter_upwards [WI_tendsto_aux a b key l_sup] with x hx
+    simpa [mul_div_cancel₀ _ h] using hx
+
+  have le_inf : A * (b - a) ≤ liminf (S Iab) atTop := by
+    have l_inf : ∀ᶠ ε in 𝓝[>] 0, A * (b - a - ε) ≤ liminf (S Iab) atTop := by
+      filter_upwards [interval_approx_inf ha hb] with ε ⟨ψ, h1, h2, h3, h5, h6⟩
+      have l1 : Tendsto (S ψ) atTop _ := wiener_ikehara_smooth_real hf hcheby hG hG' h1 h2 h3
+      have l2 : S ψ ≤ᶠ[atTop] S Iab := by
+        filter_upwards [eventually_gt_atTop 0] with x hx using WI_sum_le hpos h5 hx h2 hIab
+      have l4 : IsBoundedUnder (· ≥ ·) atTop (S ψ) := l1.isBoundedUnder_ge
+      have l3 : liminf (S ψ) atTop ≤ liminf (S Iab) atTop := liminf_le_liminf l2 l4 Iab0
+      apply le_trans ?_ l3 ; rw [l1.liminf_eq] ; gcongr
+    obtain rfl | h := eq_or_ne A 0
+    · simpa using l_inf
+    apply ge_of_eventually_nhdsWithin
+    have key : 0 < A := lt_of_le_of_ne hA h.symm
+    filter_upwards [WI_tendsto_aux' a b key l_inf] with x hx
+    simpa [mul_div_cancel₀ _ h] using hx
+
+  have : liminf (S Iab) atTop ≤ limsup (S Iab) atTop := liminf_le_limsup Iab2 Iab3
+  refine tendsto_of_liminf_eq_limsup ?_ ?_ Iab2 Iab3 <;> linarith
+
+lemma le_floor_mul_iff (hb : 0 ≤ b) (hx : 0 < x) : n ≤ ⌊b * x⌋₊ ↔ n / x ≤ b := by
+  rw [div_le_iff₀ hx, Nat.le_floor_iff] ; positivity
+
+lemma lt_ceil_mul_iff (hx : 0 < x) : n < ⌈b * x⌉₊ ↔ n / x < b := by
+  rw [div_lt_iff₀ hx, Nat.lt_ceil]
+
+lemma ceil_mul_le_iff (hx : 0 < x) : ⌈a * x⌉₊ ≤ n ↔ a ≤ n / x := by
+  rw [le_div_iff₀ hx, Nat.ceil_le]
+
+lemma mem_Icc_iff_div (hb : 0 ≤ b) (hx : 0 < x) : n ∈ Finset.Icc ⌈a * x⌉₊ ⌊b * x⌋₊ ↔ n / x ∈ Icc a b := by
+  rw [Finset.mem_Icc, mem_Icc, ceil_mul_le_iff hx, le_floor_mul_iff hb hx]
+
+lemma mem_Ico_iff_div (hx : 0 < x) : n ∈ Finset.Ico ⌈a * x⌉₊ ⌈b * x⌉₊ ↔ n / x ∈ Ico a b := by
+  rw [Finset.mem_Ico, mem_Ico, ceil_mul_le_iff hx, lt_ceil_mul_iff hx]
+
+lemma tsum_indicator {f : ℕ → ℝ} (hx : 0 < x) :
+    ∑' n, f n * (indicator (Ico a b) 1 (n / x)) = ∑ n ∈ Finset.Ico ⌈a * x⌉₊ ⌈b * x⌉₊, f n := by
+  have l1 : ∀ n ∉ Finset.Ico ⌈a * x⌉₊ ⌈b * x⌉₊, f n * indicator (Ico a b) 1 (↑n / x) = 0 := by
+    simp [mem_Ico_iff_div hx] ; tauto
+  rw [tsum_eq_sum l1] ; apply Finset.sum_congr rfl ; simp only [mem_Ico_iff_div hx] ; intro n hn ; simp [hn]
+
+lemma WienerIkeharaInterval_discrete {f : ℕ → ℝ} (hpos : 0 ≤ f) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) (ha : 0 < a) (hb : a ≤ b) :
+    Tendsto (fun x : ℝ ↦ (∑ n ∈ Finset.Ico ⌈a * x⌉₊ ⌈b * x⌉₊, f n) / x) atTop (nhds (A * (b - a))) := by
+  apply (WienerIkeharaInterval hpos hf hcheby hG hG' ha hb).congr'
+  filter_upwards [eventually_gt_atTop 0] with x hx
+  rw [tsum_indicator hx]
+
+lemma WienerIkeharaInterval_discrete' {f : ℕ → ℝ} (hpos : 0 ≤ f) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) (ha : 0 < a) (hb : a ≤ b) :
+    Tendsto (fun N : ℕ ↦ (∑ n ∈ Finset.Ico ⌈a * N⌉₊ ⌈b * N⌉₊, f n) / N) atTop (nhds (A * (b - a))) :=
+  WienerIkeharaInterval_discrete hpos hf hcheby hG hG' ha hb |>.comp tendsto_natCast_atTop_atTop
+
+lemma tendsto_mul_ceil_div :
+    Tendsto (fun (p : ℝ × ℕ) => ⌈p.1 * p.2⌉₊ / (p.2 : ℝ)) (𝓝[>] 0 ×ˢ atTop) (𝓝 0) := by
+  rw [Metric.tendsto_nhds] ; intro δ hδ
+  have l1 : ∀ᶠ ε : ℝ in 𝓝[>] 0, ε ∈ Ioo 0 (δ / 2) := inter_mem_nhdsWithin _ (Iio_mem_nhds (by positivity))
+  have l2 : ∀ᶠ N : ℕ in atTop, 1 ≤ δ / 2 * N := by
+    apply Tendsto.eventually_ge_atTop
+    exact tendsto_natCast_atTop_atTop.const_mul_atTop (by positivity)
+  filter_upwards [l1.prod_mk l2] with (ε, N) ⟨⟨hε, h1⟩, h2⟩ ; dsimp only at *
+  have l3 : 0 < (N : ℝ) := by
+    simp only [Nat.cast_pos, Nat.pos_iff_ne_zero] ; rintro rfl ; simp [zero_lt_one.not_ge] at h2
+  have l5 : 0 ≤ ε * ↑N := by positivity
+  have l6 : ε * N ≤ δ / 2 * N := mul_le_mul h1.le le_rfl (by positivity) (by positivity)
+  simp only [dist_zero_right, norm_div, RCLike.norm_natCast, div_lt_iff₀ l3, gt_iff_lt]
+  convert (Nat.ceil_lt_add_one l5).trans_le (add_le_add l6 h2) using 1 ; ring
+
+noncomputable def S (f : ℕ → 𝕜) (ε : ℝ) (N : ℕ) : 𝕜 := (∑ n ∈ Finset.Ico ⌈ε * N⌉₊ N, f n) / N
+
+lemma S_sub_S {f : ℕ → 𝕜} {ε : ℝ} {N : ℕ} (hε : ε ≤ 1) : S f 0 N - S f ε N = cumsum f ⌈ε * N⌉₊ / N := by
+  have hceilN : ⌈ε * N⌉₊ ≤ N := by
+    simp only [Nat.ceil_le]
+    exact mul_le_of_le_one_left N.cast_nonneg hε
+  have r1 : Finset.range N = Finset.range ⌈ε * N⌉₊ ∪ Finset.Ico ⌈ε * N⌉₊ N := by
+    ext n
+    simp only [Finset.mem_range, Finset.mem_union, Finset.mem_Ico]
+    omega
+  have r2 : Disjoint (Finset.range ⌈ε * N⌉₊) (Finset.Ico ⌈ε * N⌉₊ N) := by
+    rw [Finset.range_eq_Ico] ; apply Finset.Ico_disjoint_Ico_consecutive
+  simp [S, r1, Finset.sum_union r2, cumsum, add_div]
+
+lemma tendsto_S_S_zero {f : ℕ → ℝ} (hpos : 0 ≤ f) (hcheby : cheby f) :
+    TendstoUniformlyOnFilter (S f) (S f 0) (𝓝[>] 0) atTop := by
+  rw [Metric.tendstoUniformlyOnFilter_iff] ; intro δ hδ
+  obtain ⟨C, hC⟩ := hcheby
+  have l1 : ∀ᶠ (p : ℝ × ℕ) in 𝓝[>] 0 ×ˢ atTop, C * ⌈p.1 * p.2⌉₊ / p.2 < δ := by
+    have r1 := tendsto_mul_ceil_div.const_mul C
+    simp only [mul_div_assoc', mul_zero] at r1 ; exact r1 (Iio_mem_nhds hδ)
+  have : Ioc 0 1 ∈ 𝓝[>] (0 : ℝ) := inter_mem_nhdsWithin _ (Iic_mem_nhds zero_lt_one)
+  filter_upwards [l1, Eventually.prod_inl this _] with (ε, N) h1 h2
+  have l2 : ‖cumsum f ⌈ε * ↑N⌉₊ / ↑N‖ ≤ C * ⌈ε * N⌉₊ / N := by
+    have r1 := hC ⌈ε * N⌉₊
+    have r2 : 0 ≤ cumsum f ⌈ε * N⌉₊ := by apply cumsum_nonneg hpos
+    simp only [norm_real, norm_of_nonneg (hpos _), norm_div,
+      norm_of_nonneg r2, Real.norm_natCast] at r1 ⊢
+    apply div_le_div_of_nonneg_right r1 (by positivity)
+  simpa [← S_sub_S h2.2] using! l2.trans_lt h1
+
+theorem WienerIkeharaTheorem' {f : ℕ → ℝ} (hpos : 0 ≤ f)
+    (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
+    (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
+    (hG' : Set.EqOn G (fun s ↦ LSeries f s - A / (s - 1)) {s | 1 < s.re}) :
+    Tendsto (fun N => cumsum f N / N) atTop (𝓝 A) := by
+
+  convert_to Tendsto (S f 0) atTop (𝓝 A) ; · ext N ; simp [S, cumsum]
+  apply (tendsto_S_S_zero hpos hcheby).tendsto_of_eventually_tendsto
+  · have L0 : Ioc 0 1 ∈ 𝓝[>] (0 : ℝ) := inter_mem_nhdsWithin _ (Iic_mem_nhds zero_lt_one)
+    apply eventually_of_mem L0
+    · intro ε hε
+      simpa using! WienerIkeharaInterval_discrete' hpos hf hcheby hG hG' hε.1 hε.2
+  · have : Tendsto (fun ε : ℝ => ε) (𝓝[>] 0) (𝓝 0) := nhdsWithin_le_nhds
+    simpa using (this.const_sub 1).const_mul A
+
+
+end HeckeTauberian
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+namespace PNT
+
+open Filter ArithmeticFunction HeckeTauberian
+open scoped Topology BigOperators
+
+theorem cumsum_div_tendsto_zero_of_summable_div {f : ℕ → ℝ}
+    (hf : ∀ n, 0 ≤ f n) (hzero : f 0 = 0)
+    (hsum : Summable (fun n => f n / n)) :
+    Tendsto (fun N : ℕ => cumsum f N / N) atTop (𝓝 0) := by
+  let F : ℕ → ℕ → ℝ := fun N n => if n < N then f n / N else 0
+  have hlim (n : ℕ) : Tendsto (fun N => F N n) atTop (𝓝 0) := by
+    apply (tendsto_const_div_atTop_nhds_zero_nat (f n)).congr'
+    filter_upwards [eventually_gt_atTop n] with N hN
+    simp [F, hN]
+  have hbound : ∀ N n, ‖F N n‖ ≤ f n / n := by
+    intro N n
+    by_cases hn : n = 0
+    · subst n
+      simp [F, hzero]
+    by_cases hN : n < N
+    · simp only [F, if_pos hN, Real.norm_eq_abs,
+        abs_of_nonneg (div_nonneg (hf n) (Nat.cast_nonneg N))]
+      exact div_le_div_of_nonneg_left (hf n)
+        (show (0 : ℝ) < n by exact_mod_cast Nat.pos_of_ne_zero hn)
+        (show (n : ℝ) ≤ N by exact_mod_cast hN.le)
+    · simp only [F, if_neg hN, norm_zero]
+      exact div_nonneg (hf n) (by positivity)
+  have h := tendsto_tsum_of_dominated_convergence hsum hlim
+    (Filter.Eventually.of_forall hbound)
+  have heq (N : ℕ) : (∑' n, F N n) = cumsum f N / N := by
+    rw [tsum_eq_sum (s := Finset.range N) (fun n hn => by
+      simp only [Finset.mem_range] at hn
+      simp [F, hn])]
+    rw [cumsum, Finset.sum_div]
+    apply Finset.sum_congr rfl
+    intro n hn
+    simp [F, Finset.mem_range.mp hn]
+  simpa only [heq, tsum_zero] using h
+
+
+end PNT
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+namespace PNT.IdealPrimeMass
+
+open Eisenstein ArithmeticFunction Filter HeckeTauberian
+open IdealMangoldt
+open scoped BigOperators Classical Topology
+
+noncomputable section
+
+def primeClassCoeff (C : Set (Ideal O)) (n : ℕ) : ℝ :=
+  classCoeff {I | I ∈ C ∧ Prime I} n
+
+def higherClassCoeff (C : Set (Ideal O)) (n : ℕ) : ℝ :=
+  classCoeff {I | I ∈ C ∧ ¬Prime I} n
+
+theorem value_prime {P : Ideal O} (hP : Prime P) : value P = Real.log (Ideal.absNorm P) := by
+  simpa only [pow_one] using value_pow hP (k := 1) (by decide)
+
+theorem prime_of_isPrimePow_of_norm_prime {I : Ideal O}
+    (hI : IsPrimePow I) (hn : (Ideal.absNorm I).Prime) : Prime I := by
+  obtain ⟨P, k, hP, hk, rfl⟩ := hI
+  rw [map_pow] at hn
+  rw [hn.eq_one_of_pow, pow_one]
+  exact hP
+
+theorem value_eq_zero_of_nonprime_of_norm_prime {I : Ideal O}
+    (hI : ¬Prime I) (hn : (Ideal.absNorm I).Prime) : value I = 0 := by
+  apply if_neg
+  exact fun hpow => hI (prime_of_isPrimePow_of_norm_prime hpow hn)
+
+theorem primeClassCoeff_eq_sum_log (C : Set (Ideal O)) (n : ℕ) :
+    primeClassCoeff C n =
+      ∑ P ∈ (normFiber n).filter (fun P => P ∈ C ∧ Prime P), Real.log (Ideal.absNorm P) := by
+  unfold primeClassCoeff classCoeff coeff
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro I hI
+  by_cases h : I ∈ C ∧ Prime I
+  · simp [h, value_prime h.2]
+  · simp only [Set.mem_setOf_eq, h, ite_false, zero_mul]
+
+theorem primeClassCoeff_nonneg (C : Set (Ideal O)) (n : ℕ) : 0 ≤ primeClassCoeff C n :=
+  classCoeff_nonneg _ n
+
+theorem higherClassCoeff_nonneg (C : Set (Ideal O)) (n : ℕ) : 0 ≤ higherClassCoeff C n :=
+  classCoeff_nonneg _ n
+
+theorem classCoeff_eq_prime_add_higher (C : Set (Ideal O)) (n : ℕ) :
+    classCoeff C n = primeClassCoeff C n + higherClassCoeff C n := by
+  unfold primeClassCoeff higherClassCoeff classCoeff coeff
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro I hI
+  by_cases hC : I ∈ C <;> by_cases hP : Prime I <;> simp [hC, hP]
+
+@[simp] theorem higherClassCoeff_zero (C : Set (Ideal O)) : higherClassCoeff C 0 = 0 :=
+  coeff_eq_zero_of_not_primePow not_isPrimePow_zero _
+
+@[simp] theorem primeClassCoeff_zero (C : Set (Ideal O)) : primeClassCoeff C 0 = 0 :=
+  coeff_eq_zero_of_not_primePow not_isPrimePow_zero _
+
+theorem higherClassCoeff_eq_zero_of_prime (C : Set (Ideal O)) {n : ℕ} (hn : n.Prime) :
+    higherClassCoeff C n = 0 := by
+  apply Finset.sum_eq_zero
+  intro I hI
+  simp only [Set.mem_setOf_eq]
+  split_ifs with h
+  · rw [value_eq_zero_of_nonprime_of_norm_prime h.2
+      (by simpa only [(mem_normFiber n I).mp hI] using hn), mul_zero]
+  · exact zero_mul _
+
+theorem higherClassCoeff_le_nonprime_vonMangoldt (C : Set (Ideal O)) (n : ℕ) :
+    higherClassCoeff C n ≤ 2 * (if n.Prime then 0 else vonMangoldt n) := by
+  by_cases hn : n.Prime
+  · rw [higherClassCoeff_eq_zero_of_prime C hn, if_pos hn, mul_zero]
+  · rw [if_neg hn]
+    exact classCoeff_le_two_vonMangoldt _ n
+
+theorem summable_nonprime_vonMangoldt_div :
+    Summable (fun n : ℕ => (if n.Prime then 0 else vonMangoldt n) / n) := by
+  have h := vonMangoldt.summable_residueClass_non_primes_div (0 : ZMod 1)
+  simpa only [vonMangoldt.residueClass, Subsingleton.elim (α := ZMod 1) _ 0,
+    Set.setOf_true, Set.indicator_univ] using h
+
+theorem higherClassCoeff_summable_div (C : Set (Ideal O)) :
+    Summable (fun n : ℕ => higherClassCoeff C n / n) := by
+  apply (summable_nonprime_vonMangoldt_div.mul_left 2).of_nonneg_of_le
+  · intro n
+    exact div_nonneg (higherClassCoeff_nonneg C n) (Nat.cast_nonneg n)
+  · intro n
+    rw [← mul_div_assoc]
+    exact div_le_div_of_nonneg_right (higherClassCoeff_le_nonprime_vonMangoldt C n)
+      (Nat.cast_nonneg n)
+
+theorem higherClassCoeff_ratio_tendsto_zero (C : Set (Ideal O)) :
+    Tendsto (fun N : ℕ => cumsum (higherClassCoeff C) N / N) atTop (𝓝 0) :=
+  cumsum_div_tendsto_zero_of_summable_div (higherClassCoeff_nonneg C)
+    (higherClassCoeff_zero C) (higherClassCoeff_summable_div C)
+
+theorem primeClassCoeff_ratio_tendsto (C : Set (Ideal O)) {A : ℝ}
+    (h : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A)) :
+    Tendsto (fun N : ℕ => cumsum (primeClassCoeff C) N / N) atTop (𝓝 A) := by
+  have h' := h.sub (higherClassCoeff_ratio_tendsto_zero C)
+  have heq (N : ℕ) :
+      cumsum (classCoeff C) N / N - cumsum (higherClassCoeff C) N / N =
+        cumsum (primeClassCoeff C) N / N := by
+    rw [← sub_div]
+    congr 1
+    simp only [cumsum, ← Finset.sum_sub_distrib]
+    apply Finset.sum_congr rfl
+    intro n hn
+    rw [classCoeff_eq_prime_add_higher, add_sub_cancel_right]
+  simpa only [heq, sub_zero] using h'
+
+def primeIdealsBelow (C : Set (Ideal O)) (N : ℕ) : Finset (Ideal O) :=
+  (Ideal.finite_setOf_absNorm_le (S := O) N).toFinset.filter
+    (fun P => P ∈ C ∧ Prime P ∧ Ideal.absNorm P < N)
+
+@[simp] theorem mem_primeIdealsBelow (C : Set (Ideal O)) (N : ℕ) (P : Ideal O) :
+    P ∈ primeIdealsBelow C N ↔ P ∈ C ∧ Prime P ∧ Ideal.absNorm P < N := by
+  simp only [primeIdealsBelow, Finset.mem_filter, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+  exact ⟨fun h => h.2, fun h => ⟨h.2.2.le, h⟩⟩
+
+theorem zero_not_mem_primeIdealsBelow (C : Set (Ideal O)) (N : ℕ) :
+    (0 : Ideal O) ∉ primeIdealsBelow C N := by
+  intro h
+  exact ((mem_primeIdealsBelow C N 0).mp h).2.1.ne_zero rfl
+
+def primeLogMass (C : Set (Ideal O)) (N : ℕ) : ℝ :=
+  ∑ P ∈ primeIdealsBelow C N, Real.log (Ideal.absNorm P)
+
+theorem primeLogMass_eq_cumsum (C : Set (Ideal O)) (N : ℕ) :
+    primeLogMass C N = cumsum (primeClassCoeff C) N := by
+  have hmap : ∀ P ∈ primeIdealsBelow C N, Ideal.absNorm P ∈ Finset.range N := by
+    intro P hP
+    exact Finset.mem_range.mpr ((mem_primeIdealsBelow C N P).mp hP).2.2
+  rw [primeLogMass, ← Finset.sum_fiberwise_of_maps_to hmap]
+  unfold cumsum
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [primeClassCoeff_eq_sum_log]
+  apply Finset.sum_congr
+  · ext P
+    simp only [Finset.mem_filter, mem_primeIdealsBelow, mem_normFiber]
+    constructor
+    · rintro ⟨⟨hC, hP, hN⟩, heq⟩
+      exact ⟨heq, hC, hP⟩
+    · rintro ⟨heq, hC, hP⟩
+      exact ⟨⟨hC, hP, heq ▸ Finset.mem_range.mp hn⟩, heq⟩
+  · intro P hP
+    rfl
+
+theorem primeLogMass_ratio_tendsto (C : Set (Ideal O)) {A : ℝ}
+    (h : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A)) :
+    Tendsto (fun N : ℕ => primeLogMass C N / N) atTop (𝓝 A) := by
+  simpa only [primeLogMass_eq_cumsum] using primeClassCoeff_ratio_tendsto C h
+
+end
+
+end PNT.IdealPrimeMass
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+namespace PNT.RayAsymptotic
+
+open Eisenstein RayOrthogonality Filter HeckeTauberian
+open scoped BigOperators Classical Topology
+
+noncomputable section
+
+variable (M : Ideal O) [Finite (O ⧸ M)]
+
+def classCoeff (n : ℕ) : ℝ := IdealMangoldt.classCoeff (principalIdeals M) n
+
+theorem sum_coeff (n : ℕ) :
+    (∑ χ : rayCharacters M, IdealLogDerivative.coeff (idealCharacter M χ) n) =
+      (rayCard M : ℂ) * (classCoeff M n : ℂ) := by
+  unfold IdealLogDerivative.coeff HeckeIdealSeries.normFiberCoeff
+  rw [Finset.sum_comm]
+  unfold classCoeff IdealMangoldt.classCoeff IdealMangoldt.coeff IdealMangoldt.normFiber
+  rw [Complex.ofReal_sum, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [← Finset.mul_sum, sum_idealCharacters]
+  by_cases hI : I ∈ principalIdeals M
+  · simp only [hI, ite_true, one_mul, mul_comm]
+  · simp only [hI, ite_false, zero_mul, Complex.ofReal_zero, mul_zero]
+
+theorem average_coeff (n : ℕ) :
+    (classCoeff M n : ℂ) =
+      (∑ χ : rayCharacters M, IdealLogDerivative.coeff (idealCharacter M χ) n) /
+        (rayCard M : ℂ) := by
+  rw [sum_coeff]
+  have hc : (rayCard M : ℂ) ≠ 0 := by exact_mod_cast (rayCard_pos M).ne'
+  exact (mul_div_cancel_left₀ _ hc).symm
+
+theorem classCoeff_LSeries (s : ℂ) (hs : 1 < s.re) :
+    LSeries (fun n => (classCoeff M n : ℂ)) s =
+      (∑ χ : rayCharacters M, LSeries (IdealLogDerivative.coeff (idealCharacter M χ)) s) /
+        (rayCard M : ℂ) := by
+  have heq : (fun n => (classCoeff M n : ℂ)) =
+      (rayCard M : ℂ)⁻¹ • ∑ χ : rayCharacters M, IdealLogDerivative.coeff (idealCharacter M χ) := by
+    funext n
+    rw [average_coeff]
+    simp only [Pi.smul_apply, Finset.sum_apply, smul_eq_mul, div_eq_mul_inv, mul_comm]
+  rw [heq, LSeries_smul, LSeries_sum]
+  · rw [div_eq_mul_inv, mul_comm]
+  · intro χ _
+    exact IdealLogDerivative.coeff_summable _ (norm_idealCharacter_le_one M χ) s hs
+
+def principalRegularization (F : ℂ → ℂ) (residue : ℂ) : ℂ → ℂ :=
+  Function.update (fun s => (s - 1) * F s) 1 residue
+
+omit [Finite (O ⧸ M)] in
+theorem principalRegularization_eventuallyEq (F : ℂ → ℂ) (residue : ℂ)
+    {s : ℂ} (hs : s ≠ 1) :
+    principalRegularization F residue =ᶠ[𝓝 s] (fun z => (z - 1) * F z) := by
+  refine eventuallyEq_iff_exists_mem.mpr ?_
+  exact ⟨_, isOpen_ne.mem_nhds hs, fun z hz => Function.update_of_ne hz ..⟩
+
+omit [Finite (O ⧸ M)] in
+theorem principalRegularization_analyticAt (F : ℂ → ℂ) (residue : ℂ)
+    {s : ℂ} (hs : s ≠ 1) (hF : AnalyticAt ℂ F s) :
+    AnalyticAt ℂ (principalRegularization F residue) s :=
+  ((analyticAt_id.sub analyticAt_const).mul hF).congr
+    (principalRegularization_eventuallyEq F residue hs).symm
+
+omit [Finite (O ⧸ M)] in
+
+theorem principalRegularization_analyticAt_of_local (F R : ℂ → ℂ)
+    (hR : AnalyticAt ℂ R 1)
+    (hFR : ∀ᶠ s in 𝓝 (1 : ℂ), s ≠ 1 → (s - 1) * F s = R s) :
+    AnalyticAt ℂ (principalRegularization F (R 1)) 1 := by
+  apply hR.congr
+  filter_upwards [hFR] with s hs
+  by_cases hs1 : s = 1
+  · subst s
+    simp only [principalRegularization, Function.update_self]
+  · rw [principalRegularization, Function.update_of_ne hs1]
+    exact (hs hs1).symm
+
+omit [Finite (O ⧸ M)] in
+theorem principalRegularization_logDeriv (F : ℂ → ℂ) (residue : ℂ)
+    {s : ℂ} (hs : s ≠ 1) (hF : AnalyticAt ℂ F s) (hF0 : F s ≠ 0) :
+    -deriv (principalRegularization F residue) s / principalRegularization F residue s =
+      -deriv F s / F s - 1 / (s - 1) := by
+  have hd := (principalRegularization_eventuallyEq F residue hs).deriv_eq
+  rw [hd, principalRegularization, Function.update_of_ne hs,
+    deriv_fun_mul (by fun_prop) hF.differentiableAt, deriv_sub_const, deriv_id'', one_mul]
+  field_simp
+  ring
+
+def regularizedFamily (F : rayCharacters M → ℂ → ℂ) (residue : ℂ)
+    (χ : rayCharacters M) : ℂ → ℂ :=
+  if χ = 1 then principalRegularization (F χ) residue else F χ
+
+def remainder (F : rayCharacters M → ℂ → ℂ) (residue : ℂ) (s : ℂ) : ℂ :=
+  (∑ χ : rayCharacters M,
+    -deriv (regularizedFamily M F residue χ) s / regularizedFamily M F residue χ s) /
+      (rayCard M : ℂ)
+
+structure AnalyticFamily (F : rayCharacters M → ℂ → ℂ) (residue : ℂ) : Prop where
+  eq_series : ∀ (χ : rayCharacters M) (s : ℂ), 1 < s.re →
+    F χ s = IdealEuler.series (idealCharacter M χ) s
+  analytic : ∀ (χ : rayCharacters M) (s : ℂ), 1 ≤ s.re →
+    χ ≠ 1 ∨ s ≠ 1 → AnalyticAt ℂ (F χ) s
+  nonzero : ∀ (χ : rayCharacters M) (s : ℂ), 1 ≤ s.re →
+    χ ≠ 1 ∨ s ≠ 1 → F χ s ≠ 0
+  pole_analytic : AnalyticAt ℂ (principalRegularization (F 1) residue) 1
+  residue_ne_zero : residue ≠ 0
+
+theorem regularizedFamily_analyticAt {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) (χ : rayCharacters M) (s : ℂ) (hs : 1 ≤ s.re) :
+    AnalyticAt ℂ (regularizedFamily M F residue χ) s := by
+  by_cases hχ : χ = 1
+  · subst χ
+    rw [regularizedFamily, if_pos rfl]
+    by_cases hs1 : s = 1
+    · subst s
+      exact hF.pole_analytic
+    · exact principalRegularization_analyticAt _ _ hs1 (hF.analytic 1 s hs (Or.inr hs1))
+  · rw [regularizedFamily, if_neg hχ]
+    exact hF.analytic χ s hs (Or.inl hχ)
+
+theorem regularizedFamily_ne_zero {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) (χ : rayCharacters M) (s : ℂ) (hs : 1 ≤ s.re) :
+    regularizedFamily M F residue χ s ≠ 0 := by
+  by_cases hχ : χ = 1
+  · subst χ
+    rw [regularizedFamily, if_pos rfl]
+    by_cases hs1 : s = 1
+    · subst s
+      simpa only [principalRegularization, Function.update_self] using hF.residue_ne_zero
+    · rw [principalRegularization, Function.update_of_ne hs1]
+      exact mul_ne_zero (sub_ne_zero.mpr hs1) (hF.nonzero 1 s hs (Or.inr hs1))
+  · rw [regularizedFamily, if_neg hχ]
+    exact hF.nonzero χ s hs (Or.inl hχ)
+
+theorem remainder_continuousOn {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) :
+    ContinuousOn (remainder M F residue) {s : ℂ | 1 ≤ s.re} := by
+  intro s hs
+  apply ContinuousAt.continuousWithinAt
+  apply ContinuousAt.div_const
+  apply tendsto_finsetSum
+  intro χ _
+  have h := regularizedFamily_analyticAt M hF χ s hs
+  exact h.deriv.continuousAt.neg.div h.continuousAt (regularizedFamily_ne_zero M hF χ s hs)
+
+theorem regularizedFamily_logDeriv {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) (χ : rayCharacters M) (s : ℂ) (hs : 1 < s.re) :
+    -deriv (regularizedFamily M F residue χ) s / regularizedFamily M F residue χ s =
+      -deriv (F χ) s / F χ s - (if χ = 1 then 1 / (s - 1) else 0) := by
+  by_cases hχ : χ = 1
+  · rw [regularizedFamily, if_pos hχ, if_pos hχ]
+    have hs1 : s ≠ 1 := by intro heq; simp only [heq, Complex.one_re] at hs; linarith
+    exact principalRegularization_logDeriv _ _ hs1
+      (hF.analytic χ s hs.le (Or.inr hs1)) (hF.nonzero χ s hs.le (Or.inr hs1))
+  · simp only [regularizedFamily, hχ, ite_false, sub_zero]
+
+theorem remainder_eqOn {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) :
+    Set.EqOn (remainder M F residue)
+      (fun s => LSeries (fun n => (classCoeff M n : ℂ)) s -
+        (rayCard M : ℂ)⁻¹ / (s - 1)) {s : ℂ | 1 < s.re} := by
+  intro s hs
+  change remainder M F residue s = LSeries (fun n => (classCoeff M n : ℂ)) s -
+    (rayCard M : ℂ)⁻¹ / (s - 1)
+  rw [remainder, classCoeff_LSeries M s hs]
+  simp_rw [regularizedFamily_logDeriv M hF _ s hs]
+  rw [Finset.sum_sub_distrib]
+  have hsum : (∑ χ : rayCharacters M, if χ = 1 then 1 / (s - 1) else (0 : ℂ)) =
+      1 / (s - 1) := by simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  rw [hsum]
+  have hlog (χ : rayCharacters M) : -deriv (F χ) s / F χ s =
+      LSeries (IdealLogDerivative.coeff (idealCharacter M χ)) s :=
+    (IdealLogDerivative.coeff_LSeries_eq_neg_logDeriv_of_eq _
+      (norm_idealCharacter_le_one M χ) (F χ) (hF.eq_series χ) s hs).symm
+  simp_rw [hlog]
+  ring
+
+theorem classCoeff_ratio_tendsto {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) :
+    Tendsto (fun N : ℕ => cumsum (classCoeff M) N / N)
+      atTop (𝓝 ((rayCard M : ℝ)⁻¹)) := by
+  apply HeckeTauberian.WienerIkeharaTheorem'
+    (IdealMangoldt.classCoeff_nonneg (principalIdeals M))
+    (fun σ hσ => IdealMangoldt.classCoeff_summable_nterm (principalIdeals M) hσ)
+    (IdealMangoldt.classCoeff_chebyshev (principalIdeals M))
+    (remainder_continuousOn M hF)
+  simpa only [classCoeff, Complex.ofReal_inv, Complex.ofReal_natCast] using remainder_eqOn M hF
+
+section Quotient
+
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : globalUnits M ≤ H)
+
+def quotientClassCoeff (n : ℕ) : ℝ := IdealMangoldt.classCoeff (RayQuotient.identityClass M H) n
+
+theorem quotient_sum_coeff (n : ℕ) :
+    (∑ χ : RayQuotient.Characters M H,
+      IdealLogDerivative.coeff (RayQuotient.idealCharacter M H hH χ) n) =
+      (RayQuotient.classNumber M H : ℂ) * (quotientClassCoeff M H n : ℂ) := by
+  unfold IdealLogDerivative.coeff HeckeIdealSeries.normFiberCoeff
+  rw [Finset.sum_comm]
+  unfold quotientClassCoeff IdealMangoldt.classCoeff IdealMangoldt.coeff IdealMangoldt.normFiber
+  rw [Complex.ofReal_sum, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [← Finset.mul_sum, RayQuotient.sum_idealCharacters]
+  by_cases hI : I ∈ RayQuotient.identityClass M H
+  · simp only [hI, ite_true, one_mul, mul_comm]
+  · simp only [hI, ite_false, zero_mul, Complex.ofReal_zero, mul_zero]
+
+theorem quotient_average_coeff (n : ℕ) :
+    (quotientClassCoeff M H n : ℂ) =
+      (∑ χ : RayQuotient.Characters M H,
+        IdealLogDerivative.coeff (RayQuotient.idealCharacter M H hH χ) n) /
+          (RayQuotient.classNumber M H : ℂ) := by
+  rw [quotient_sum_coeff]
+  have hc : (RayQuotient.classNumber M H : ℂ) ≠ 0 := by
+    exact_mod_cast (RayQuotient.classNumber_pos M H).ne'
+  exact (mul_div_cancel_left₀ _ hc).symm
+
+theorem quotientClassCoeff_LSeries (s : ℂ) (hs : 1 < s.re) :
+    LSeries (fun n => (quotientClassCoeff M H n : ℂ)) s =
+      (∑ χ : RayQuotient.Characters M H,
+        LSeries (IdealLogDerivative.coeff (RayQuotient.idealCharacter M H hH χ)) s) /
+          (RayQuotient.classNumber M H : ℂ) := by
+  have heq : (fun n => (quotientClassCoeff M H n : ℂ)) =
+      (RayQuotient.classNumber M H : ℂ)⁻¹ • ∑ χ : RayQuotient.Characters M H,
+        IdealLogDerivative.coeff (RayQuotient.idealCharacter M H hH χ) := by
+    funext n
+    rw [quotient_average_coeff M H hH]
+    simp only [Pi.smul_apply, Finset.sum_apply, smul_eq_mul, div_eq_mul_inv, mul_comm]
+  rw [heq, LSeries_smul, LSeries_sum]
+  · rw [div_eq_mul_inv, mul_comm]
+  · intro χ _
+    exact IdealLogDerivative.coeff_summable _ (RayQuotient.norm_idealCharacter_le_one M H hH χ) s hs
+
+def quotientRemainder (F : rayCharacters M → ℂ → ℂ) (residue : ℂ) (s : ℂ) : ℂ :=
+  (∑ χ : RayQuotient.Characters M H,
+    -deriv (regularizedFamily M F residue (RayQuotient.toFullRay M H hH χ)) s /
+      regularizedFamily M F residue (RayQuotient.toFullRay M H hH χ) s) /
+        (RayQuotient.classNumber M H : ℂ)
+
+theorem quotientRemainder_continuousOn {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) :
+    ContinuousOn (quotientRemainder M H hH F residue) {s : ℂ | 1 ≤ s.re} := by
+  intro s hs
+  apply ContinuousAt.continuousWithinAt
+  apply ContinuousAt.div_const
+  apply tendsto_finsetSum
+  intro χ _
+  have h := regularizedFamily_analyticAt M hF (RayQuotient.toFullRay M H hH χ) s hs
+  exact h.deriv.continuousAt.neg.div h.continuousAt
+    (regularizedFamily_ne_zero M hF (RayQuotient.toFullRay M H hH χ) s hs)
+
+theorem quotientRemainder_eqOn {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) :
+    Set.EqOn (quotientRemainder M H hH F residue)
+      (fun s => LSeries (fun n => (quotientClassCoeff M H n : ℂ)) s -
+        (RayQuotient.classNumber M H : ℂ)⁻¹ / (s - 1)) {s : ℂ | 1 < s.re} := by
+  intro s hs
+  change quotientRemainder M H hH F residue s =
+    LSeries (fun n => (quotientClassCoeff M H n : ℂ)) s -
+      (RayQuotient.classNumber M H : ℂ)⁻¹ / (s - 1)
+  rw [quotientRemainder, quotientClassCoeff_LSeries M H hH s hs]
+  simp_rw [regularizedFamily_logDeriv M hF _ s hs, RayQuotient.toFullRay_eq_one]
+  rw [Finset.sum_sub_distrib]
+  have hsum : (∑ χ : RayQuotient.Characters M H, if χ = 1 then 1 / (s - 1) else (0 : ℂ)) =
+      1 / (s - 1) := by simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  rw [hsum]
+  have hlog (χ : RayQuotient.Characters M H) :
+      -deriv (F (RayQuotient.toFullRay M H hH χ)) s / F (RayQuotient.toFullRay M H hH χ) s =
+        LSeries (IdealLogDerivative.coeff (RayQuotient.idealCharacter M H hH χ)) s := by
+    rw [RayQuotient.idealCharacter_eq_fullRay]
+    exact (IdealLogDerivative.coeff_LSeries_eq_neg_logDeriv_of_eq _
+      (norm_idealCharacter_le_one M _) (F _) (hF.eq_series _) s hs).symm
+  simp_rw [hlog]
+  ring
+
+include hH in
+
+theorem quotientClassCoeff_ratio_tendsto {F : rayCharacters M → ℂ → ℂ} {residue : ℂ}
+    (hF : AnalyticFamily M F residue) :
+    Tendsto (fun N : ℕ => cumsum (quotientClassCoeff M H) N / N)
+      atTop (𝓝 ((RayQuotient.classNumber M H : ℝ)⁻¹)) := by
+  apply HeckeTauberian.WienerIkeharaTheorem'
+    (IdealMangoldt.classCoeff_nonneg (RayQuotient.identityClass M H))
+    (fun σ hσ => IdealMangoldt.classCoeff_summable_nterm (RayQuotient.identityClass M H) hσ)
+    (IdealMangoldt.classCoeff_chebyshev (RayQuotient.identityClass M H))
+    (quotientRemainder_continuousOn M H hH hF)
+  simpa only [quotientClassCoeff, Complex.ofReal_inv, Complex.ofReal_natCast]
+    using quotientRemainder_eqOn M H hH hF
+
+end Quotient
+
+end
+end PNT.RayAsymptotic
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Filter HeckeTauberian
+namespace HeckeRayPrimes
+open HeckeFamily
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+local instance : IsPrincipalIdealRing O := IsCyclotomicExtension.Rat.three_pid K
+
+theorem analytic_family : PNT.RayAsymptotic.AnalyticFamily M
+    (fun χ => LFunction (HeckeRayFamily.character M χ))
+    (HeckeOrigin.poleRemoved (HeckeRayFamily.character M 1) 1) := by
+  refine ⟨?_, ?_, ?_, ?_, HeckeRayFamily.principal_pole_ne_zero M⟩
+  · intro χ s hs
+    exact LFunction_eq_series _ hs
+  · intro χ s hs hpole
+    rcases hpole with hχ | hs1
+    · exact (HeckeRayFamily.character_entire M χ hχ).analyticAt s
+    · apply Complex.analyticAt_iff_eventually_differentiableAt.mpr
+      have hs0 : s ≠ 0 := by intro h; norm_num [h] at hs
+      filter_upwards [isOpen_ne.mem_nhds hs0, isOpen_ne.mem_nhds hs1] with z hz0 hz1
+      exact LFunction_differentiableAt _ hz0 (Or.inl hz1)
+  · intro χ s hs hpole
+    exact HeckeRayFamily.character_boundary_ne_zero M χ hs hpole.symm
+  · apply PNT.RayAsymptotic.principalRegularization_analyticAt_of_local
+      _ (HeckeOrigin.poleRemoved (HeckeRayFamily.character M 1))
+      ((HeckeOrigin.poleRemoved_entire _).analyticAt 1)
+    filter_upwards [isOpen_ne.mem_nhds (by norm_num : (1 : ℂ) ≠ 0)] with s hs0
+    intro hs1
+    exact (HeckeOrigin.poleRemoved_eq _ hs0 hs1).symm
+
+theorem classCoeff_ratio_tendsto :
+    Tendsto (fun N : ℕ => cumsum (PNT.RayAsymptotic.classCoeff M) N / N)
+      atTop (𝓝 ((RayOrthogonality.rayCard M : ℝ)⁻¹)) :=
+  PNT.RayAsymptotic.classCoeff_ratio_tendsto M (analytic_family M)
+
+theorem quotientClassCoeff_ratio_tendsto
+    (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H) :
+    Tendsto (fun N : ℕ => cumsum (PNT.RayAsymptotic.quotientClassCoeff M H) N / N)
+      atTop (𝓝 ((RayQuotient.classNumber M H : ℝ)⁻¹)) :=
+  PNT.RayAsymptotic.quotientClassCoeff_ratio_tendsto M H hH (analytic_family M)
+
+theorem primeLogMass_ratio_tendsto :
+    Tendsto (fun N : ℕ => PNT.IdealPrimeMass.primeLogMass (RayOrthogonality.principalIdeals M) N / N)
+      atTop (𝓝 ((RayOrthogonality.rayCard M : ℝ)⁻¹)) :=
+  PNT.IdealPrimeMass.primeLogMass_ratio_tendsto _ (classCoeff_ratio_tendsto M)
+
+theorem quotientPrimeLogMass_ratio_tendsto
+    (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H) :
+    Tendsto (fun N : ℕ => PNT.IdealPrimeMass.primeLogMass (RayQuotient.identityClass M H) N / N)
+      atTop (𝓝 ((RayQuotient.classNumber M H : ℝ)⁻¹)) :=
+  PNT.IdealPrimeMass.primeLogMass_ratio_tendsto _ (quotientClassCoeff_ratio_tendsto M H hH)
+
+end HeckeRayPrimes
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+namespace PNT.AnnularPrimeMass
+
+open Eisenstein ArithmeticFunction Filter MeasureTheory HeckeTauberian
+open IdealMangoldt PNT.IdealPrimeMass
+open scoped BigOperators Classical Topology ContDiff
+
+noncomputable section
+
+def cumulative (f : ℕ → ℝ) (t : ℝ) : ℝ := cumsum f (⌊t⌋₊ + 1)
+
+def scaledCumulative (f : ℕ → ℝ) (x y : ℝ) : ℝ := cumulative f (x * y) / x
+
+theorem cumulative_ratio_tendsto {f : ℕ → ℝ} {A : ℝ}
+    (h : Tendsto (fun N : ℕ => cumsum f N / N) atTop (𝓝 A)) :
+    Tendsto (fun t : ℝ => cumulative f t / t) atTop (𝓝 A) := by
+  have ht : Tendsto (fun t : ℝ => ⌊t⌋₊ + 1) atTop atTop :=
+    tendsto_atTop_mono (fun _ => Nat.le_succ _) tendsto_nat_floor_atTop
+  have hr : Tendsto (fun t : ℝ => ((⌊t⌋₊ + 1 : ℕ) : ℝ) / t) atTop (𝓝 1) := by
+    convert (tendsto_nat_floor_div_atTop (R := ℝ)).add
+      (show Tendsto (fun t : ℝ => 1 / t) atTop (𝓝 0) by simpa only [one_div] using tendsto_inv_atTop_zero) using 1 <;> simp [add_div]
+  convert (h.comp ht).mul hr using 1
+  · ext t
+    simp only [Function.comp_def, cumulative]
+    field_simp
+  · simp
+
+theorem scaledCumulative_tendsto {f : ℕ → ℝ} {A : ℝ}
+    (h : Tendsto (fun N : ℕ => cumsum f N / N) atTop (𝓝 A))
+    {y : ℝ} (hy : 0 < y) :
+    Tendsto (fun x : ℝ => scaledCumulative f x y) atTop (𝓝 (A * y)) := by
+  have ht : Tendsto (fun x : ℝ => x * y) atTop atTop := tendsto_id.atTop_mul_const hy
+  apply ((cumulative_ratio_tendsto h).comp ht).mul_const y |>.congr'
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+  unfold scaledCumulative
+  dsimp only [Function.comp_def]
+  field_simp
+
+theorem cumulative_nonneg {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) (t : ℝ) :
+    0 ≤ cumulative f t := cumsum_nonneg hf _
+
+theorem scaledCumulative_bound {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n)
+    {C : ℝ} (hC : 0 ≤ C) (hbound : ∀ N : ℕ, cumsum f N ≤ C * N)
+    {x y b : ℝ} (hx : 1 ≤ x) (hy : 0 ≤ y) (hyb : y ≤ b) :
+    ‖scaledCumulative f x y‖ ≤ C * (b + 1) := by
+  have hx0 : 0 < x := lt_of_lt_of_le zero_lt_one hx
+  rw [scaledCumulative, Real.norm_eq_abs, abs_of_nonneg
+    (div_nonneg (cumulative_nonneg hf _) hx0.le)]
+  calc
+    cumulative f (x * y) / x ≤ (C * (⌊x * y⌋₊ + 1 : ℕ)) / x := by
+      exact div_le_div_of_nonneg_right (hbound _) hx0.le
+    _ ≤ (C * (x * y + 1)) / x := by
+      gcongr
+      push_cast
+      linarith [Nat.floor_le (mul_nonneg hx0.le hy)]
+    _ ≤ C * (b + 1) := by
+      rw [div_le_iff₀ hx0]
+      nlinarith [mul_le_mul_of_nonneg_left hyb hx0.le,
+        mul_nonneg hC (sub_nonneg.mpr hx)]
+
+theorem measurable_cumulative (f : ℕ → ℝ) : Measurable (cumulative f) :=
+  (measurable_of_countable (cumsum f)).comp (measurable_id.nat_floor.add_const 1)
+
+theorem measurable_scaledCumulative (f : ℕ → ℝ) (x : ℝ) :
+    Measurable (scaledCumulative f x) :=
+  ((measurable_cumulative f).comp (measurable_const.mul measurable_id)).div_const x
+
+def annularSum (f : ℕ → ℝ) (φ : ℝ → ℝ) (a b x : ℝ) : ℝ :=
+  ∑ n ∈ Finset.Ioc ⌊x * a⌋₊ ⌊x * b⌋₊, f n * φ (n / x)
+
+theorem annularSum_div_eq_integral (f : ℕ → ℝ) (φ : ℝ → ℝ)
+    (hφ : Differentiable ℝ φ) (hφ' : Continuous (deriv φ))
+    {a b x : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (hx : 0 < x)
+    (hφa : φ a = 0) (hφb : φ b = 0) :
+    annularSum f φ a b x / x =
+      -(∫ y in a..b, deriv φ y * scaledCumulative f x y) := by
+  let g : ℝ → ℝ := fun t => φ (t / x)
+  have hg (t : ℝ) : HasDerivAt g (deriv φ (t / x) / x) t := by
+    convert (hφ (t / x)).hasDerivAt.comp t ((hasDerivAt_id t).div_const x) using 1 <;>
+      first | rfl | simp only [g, Function.comp_def, div_eq_mul_inv, id_eq, one_mul]
+  have hgc : Continuous (deriv g) := by
+    have heq : deriv g = fun t => deriv φ (t / x) / x := funext (fun t => (hg t).deriv)
+    rw [heq]
+    exact (hφ'.comp (continuous_id.div_const x)).div_const x
+  have h := sum_mul_eq_sub_sub_integral_mul f (a := x * a) (b := x * b)
+    (mul_nonneg hx.le ha) (mul_le_mul_of_nonneg_left hab hx.le)
+    (fun t _ => (hg t).differentiableAt) hgc.integrableOn_Icc
+  have hcum (t : ℝ) : (∑ k ∈ Finset.Icc 0 ⌊t⌋₊, f k) = cumulative f t := by
+    simp only [cumulative, cumsum, Nat.range_succ_eq_Icc_zero]
+  simp_rw [hcum, (hg _).deriv] at h
+  have hga : g (x * a) = 0 := by simp only [g, mul_div_cancel_left₀ _ hx.ne', hφa]
+  have hgb : g (x * b) = 0 := by simp only [g, mul_div_cancel_left₀ _ hx.ne', hφb]
+  rw [hga, hgb, zero_mul, zero_mul, sub_zero, zero_sub,
+    ← intervalIntegral.integral_of_le (mul_le_mul_of_nonneg_left hab hx.le)] at h
+  have hs : annularSum f φ a b x =
+      -(∫ t in x * a..x * b, (deriv φ (t / x) / x) * cumulative f t) := by
+    rw [← h]
+    unfold annularSum g
+    apply Finset.sum_congr rfl
+    intro n hn
+    ring
+  rw [hs, neg_div]
+  congr 1
+  have hi := intervalIntegral.integral_comp_mul_left
+    (fun t => (deriv φ (t / x) / x) * cumulative f t) hx.ne' (a := a) (b := b)
+  simp only [smul_eq_mul, ← div_eq_inv_mul] at hi
+  rw [← hi]
+  apply intervalIntegral.integral_congr
+  intro y hy
+  simp only [mul_div_cancel_left₀ _ hx.ne', scaledCumulative]
+  ring
+
+theorem integral_scaledCumulative_tendsto {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n)
+    {A C a b : ℝ} (hC : 0 ≤ C) (hbound : ∀ N : ℕ, cumsum f N ≤ C * N)
+    (hmass : Tendsto (fun N : ℕ => cumsum f N / N) atTop (𝓝 A))
+    (ha : 0 < a) (hab : a ≤ b) (g : ℝ → ℝ) (hg : Continuous g) :
+    Tendsto (fun x : ℝ => ∫ y in a..b, g y * scaledCumulative f x y) atTop
+      (𝓝 (∫ y in a..b, g y * (A * y))) := by
+  simp_rw [intervalIntegral.integral_of_le hab]
+  apply tendsto_integral_filter_of_dominated_convergence (fun y => ‖g y‖ * (C * (b + 1)))
+  · exact Eventually.of_forall (fun x =>
+      (hg.measurable.mul (measurable_scaledCumulative f x)).aestronglyMeasurable)
+  · filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with y hy
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left
+      (scaledCumulative_bound hf hC hbound hx (ha.le.trans hy.1.le) hy.2) (norm_nonneg _)
+  · exact (hg.norm.mul_const _).integrableOn_Icc.mono_set Set.Ioc_subset_Icc_self
+  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with y hy
+    exact (scaledCumulative_tendsto hmass (ha.trans hy.1)).const_mul (g y)
+
+theorem annularSum_div_tendsto {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n)
+    {A C a b : ℝ} (hC : 0 ≤ C) (hbound : ∀ N : ℕ, cumsum f N ≤ C * N)
+    (hmass : Tendsto (fun N : ℕ => cumsum f N / N) atTop (𝓝 A))
+    (φ : ℝ → ℝ) (hφ : Differentiable ℝ φ) (hφ' : Continuous (deriv φ))
+    (ha : 0 < a) (hab : a ≤ b) (hφa : φ a = 0) (hφb : φ b = 0) :
+    Tendsto (fun x : ℝ => annularSum f φ a b x / x) atTop
+      (𝓝 (A * ∫ y in a..b, φ y)) := by
+  have h := (integral_scaledCumulative_tendsto hf hC hbound hmass ha hab (deriv φ) hφ').neg
+  have hibp := intervalIntegral.integral_mul_deriv_eq_deriv_mul
+    (u := fun y : ℝ => y) (u' := fun _ => (1 : ℝ)) (v := φ) (v' := deriv φ)
+    (fun y _ => hasDerivAt_id y) (fun y _ => (hφ y).hasDerivAt)
+    (continuous_const.intervalIntegrable a b) (hφ'.intervalIntegrable a b)
+  have heq : -(∫ y in a..b, deriv φ y * (A * y)) = A * ∫ y in a..b, φ y := by
+    have hfun : (fun y => deriv φ y * (A * y)) = fun y => A * (y * deriv φ y) := by
+      ext y
+      ring
+    rw [hfun, intervalIntegral.integral_const_mul, hibp, hφa, hφb]
+    simp
+  rw [heq] at h
+  apply h.congr'
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+  exact (annularSum_div_eq_integral f φ hφ hφ' ha.le hab hx hφa hφb).symm
+
+def annularPrimeIdeals (C : Set (Ideal O)) (a b x : ℝ) : Finset (Ideal O) :=
+  (primeIdealsBelow C (⌊x * b⌋₊ + 1)).filter (fun P => ⌊x * a⌋₊ < Ideal.absNorm P)
+
+@[simp] theorem mem_annularPrimeIdeals (C : Set (Ideal O)) (a b x : ℝ) (P : Ideal O) :
+    P ∈ annularPrimeIdeals C a b x ↔
+      P ∈ C ∧ Prime P ∧ ⌊x * a⌋₊ < Ideal.absNorm P ∧ Ideal.absNorm P ≤ ⌊x * b⌋₊ := by
+  simp only [annularPrimeIdeals, Finset.mem_filter, mem_primeIdealsBelow, Nat.lt_succ_iff]
+  tauto
+
+def primeAnnularSum (C : Set (Ideal O)) (φ : ℝ → ℝ) (a b x : ℝ) : ℝ :=
+  ∑ P ∈ annularPrimeIdeals C a b x, φ (Ideal.absNorm P / x)
+
+def primeLogAnnularSum (C : Set (Ideal O)) (φ : ℝ → ℝ) (a b x : ℝ) : ℝ :=
+  ∑ P ∈ annularPrimeIdeals C a b x, Real.log (Ideal.absNorm P) * φ (Ideal.absNorm P / x)
+
+theorem primeLogAnnularSum_eq (C : Set (Ideal O)) (φ : ℝ → ℝ) (a b x : ℝ) :
+    primeLogAnnularSum C φ a b x = annularSum (primeClassCoeff C) φ a b x := by
+  have hmap : ∀ P ∈ annularPrimeIdeals C a b x,
+      Ideal.absNorm P ∈ Finset.Ioc ⌊x * a⌋₊ ⌊x * b⌋₊ := by
+    intro P hP
+    exact Finset.mem_Ioc.mpr ((mem_annularPrimeIdeals C a b x P).mp hP).2.2
+  rw [primeLogAnnularSum, ← Finset.sum_fiberwise_of_maps_to hmap]
+  unfold annularSum
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [primeClassCoeff_eq_sum_log, Finset.sum_mul]
+  apply Finset.sum_congr
+  · ext P
+    simp only [Finset.mem_filter, mem_annularPrimeIdeals, mem_normFiber]
+    constructor
+    · rintro ⟨⟨hC, hP, hN⟩, heq⟩
+      exact ⟨heq, hC, hP⟩
+    · rintro ⟨heq, hC, hP⟩
+      exact ⟨⟨hC, hP, heq ▸ Finset.mem_Ioc.mp hn⟩, heq⟩
+  · intro P hP
+    rw [(mem_normFiber n P).mp (Finset.mem_filter.mp hP).1]
+
+theorem primeClassCoeff_chebyshev (C : Set (Ideal O)) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ N : ℕ, cumsum (primeClassCoeff C) N ≤ B * N := by
+  obtain ⟨B, hB⟩ := classCoeff_chebyshev {I | I ∈ C ∧ Prime I}
+  have hbound (N : ℕ) : cumsum (primeClassCoeff C) N ≤ B * N := by
+    convert hB N using 1
+    congr 1
+    funext n
+    exact (Complex.norm_of_nonneg (primeClassCoeff_nonneg C n)).symm
+  refine ⟨B, ?_, hbound⟩
+  have h := (cumsum_nonneg (primeClassCoeff_nonneg C) 1).trans (hbound 1)
+  simpa only [Nat.cast_one, mul_one, Pi.zero_apply] using h
+
+theorem primeLogAnnularSum_div_tendsto (C : Set (Ideal O)) {A a b : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (φ : ℝ → ℝ) (hφ : Differentiable ℝ φ) (hφ' : Continuous (deriv φ))
+    (ha : 0 < a) (hab : a ≤ b) (hφa : φ a = 0) (hφb : φ b = 0) :
+    Tendsto (fun x : ℝ => primeLogAnnularSum C φ a b x / x) atTop
+      (𝓝 (A * ∫ y in a..b, φ y)) := by
+  obtain ⟨B, hB, hbound⟩ := primeClassCoeff_chebyshev C
+  simpa only [primeLogAnnularSum_eq] using annularSum_div_tendsto
+    (primeClassCoeff_nonneg C) hB hbound (primeClassCoeff_ratio_tendsto C hmass)
+    φ hφ hφ' ha hab hφa hφb
+
+theorem norm_bounds_of_mem_annularPrimeIdeals {C : Set (Ideal O)} {a b x : ℝ}
+    (ha : 0 ≤ a) (hab : a ≤ b) (hx : 0 < x) {P : Ideal O}
+    (hP : P ∈ annularPrimeIdeals C a b x) :
+    x * a < (Ideal.absNorm P : ℝ) ∧ (Ideal.absNorm P : ℝ) ≤ x * b := by
+  have h := (mem_annularPrimeIdeals C a b x P).mp hP
+  exact ⟨(Nat.floor_lt (mul_nonneg hx.le ha)).mp h.2.2.1,
+    (Nat.le_floor_iff (mul_nonneg hx.le (ha.trans hab))).mp h.2.2.2⟩
+
+theorem ratio_mem_of_mem_annularPrimeIdeals {C : Set (Ideal O)} {a b x : ℝ}
+    (ha : 0 ≤ a) (hab : a ≤ b) (hx : 0 < x) {P : Ideal O}
+    (hP : P ∈ annularPrimeIdeals C a b x) :
+    (Ideal.absNorm P : ℝ) / x ∈ Set.Icc a b := by
+  obtain ⟨hl, hu⟩ := norm_bounds_of_mem_annularPrimeIdeals ha hab hx hP
+  exact ⟨(le_div_iff₀ hx).mpr (by nlinarith), (div_le_iff₀ hx).mpr (by nlinarith)⟩
+
+theorem log_norm_difference_bound {a b x : ℝ} (ha : 0 < a) (_hab : a ≤ b)
+    (hx : 0 < x) {n : ℕ} (hn : (n : ℝ) / x ∈ Set.Icc a b) :
+    |Real.log x - Real.log n| ≤ |Real.log a| + |Real.log b| := by
+  have hn0 : 0 < (n : ℝ) := by
+    have h := (le_div_iff₀ hx).mp hn.1
+    exact (mul_pos ha hx).trans_le h
+  have hl := Real.log_le_log ha hn.1
+  have hu := Real.log_le_log (ha.trans_le hn.1) hn.2
+  rw [Real.log_div hn0.ne' hx.ne'] at hl hu
+  apply abs_le.mpr
+  constructor <;> linarith [le_abs_self (Real.log a), neg_abs_le (Real.log a),
+    le_abs_self (Real.log b), neg_abs_le (Real.log b), abs_nonneg (Real.log a),
+    abs_nonneg (Real.log b)]
+
+theorem annularPrime_card_div_bound (C : Set (Ideal O)) {B a b x : ℝ}
+    (hB : 0 ≤ B) (hbound : ∀ N : ℕ, cumsum (primeClassCoeff C) N ≤ B * N)
+    (ha : 0 < a) (hab : a ≤ b) (hx : 1 ≤ x) (hxa : 1 < x * a) :
+    ((annularPrimeIdeals C a b x).card : ℝ) / x ≤ B * (b + 1) / Real.log (x * a) := by
+  have hx0 : 0 < x := lt_of_lt_of_le zero_lt_one hx
+  have hlog : 0 < Real.log (x * a) := Real.log_pos hxa
+  have hlower : Real.log (x * a) * (annularPrimeIdeals C a b x).card ≤
+      ∑ P ∈ annularPrimeIdeals C a b x, Real.log (Ideal.absNorm P) := by
+    rw [mul_comm, ← nsmul_eq_mul, ← Finset.sum_const]
+    apply Finset.sum_le_sum
+    intro P hP
+    exact Real.log_le_log (mul_pos hx0 ha)
+      (norm_bounds_of_mem_annularPrimeIdeals ha.le hab hx0 hP).1.le
+  have hupper : (∑ P ∈ annularPrimeIdeals C a b x, Real.log (Ideal.absNorm P)) ≤
+      cumsum (primeClassCoeff C) (⌊x * b⌋₊ + 1) := by
+    rw [← primeLogMass_eq_cumsum, primeLogMass]
+    apply Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
+    intro P hP _
+    rw [← value_prime ((mem_primeIdealsBelow C _ P).mp hP).2.1]
+    exact value_nonneg P
+  have hnorm := scaledCumulative_bound (primeClassCoeff_nonneg C) hB hbound hx
+    (ha.le.trans hab) (le_refl b)
+  have hcum : cumsum (primeClassCoeff C) (⌊x * b⌋₊ + 1) / x ≤ B * (b + 1) :=
+    (le_abs_self _).trans (by simpa only [Real.norm_eq_abs, scaledCumulative, cumulative] using hnorm)
+  apply (le_div_iff₀ hlog).mpr
+  calc
+    ((annularPrimeIdeals C a b x).card : ℝ) / x * Real.log (x * a) =
+        (Real.log (x * a) * (annularPrimeIdeals C a b x).card) / x := by ring
+    _ ≤ (∑ P ∈ annularPrimeIdeals C a b x, Real.log (Ideal.absNorm P)) / x :=
+      div_le_div_of_nonneg_right hlower hx0.le
+    _ ≤ cumsum (primeClassCoeff C) (⌊x * b⌋₊ + 1) / x :=
+      div_le_div_of_nonneg_right hupper hx0.le
+    _ ≤ _ := hcum
+
+theorem primeAnnularSum_log_error_bound (C : Set (Ideal O)) (φ : ℝ → ℝ)
+    {B M a b x : ℝ} (hB : 0 ≤ B)
+    (hbound : ∀ N : ℕ, cumsum (primeClassCoeff C) N ≤ B * N)
+    (hM : 0 ≤ M) (hφ : ∀ y ∈ Set.Icc a b, |φ y| ≤ M)
+    (ha : 0 < a) (hab : a ≤ b) (hx : 1 ≤ x) (hxa : 1 < x * a) :
+    ‖Real.log x * primeAnnularSum C φ a b x / x - primeLogAnnularSum C φ a b x / x‖ ≤
+      ((|Real.log a| + |Real.log b|) * M) * (B * (b + 1) / Real.log (x * a)) := by
+  have hx0 : 0 < x := lt_of_lt_of_le zero_lt_one hx
+  have heq : Real.log x * primeAnnularSum C φ a b x - primeLogAnnularSum C φ a b x =
+      ∑ P ∈ annularPrimeIdeals C a b x,
+        (Real.log x - Real.log (Ideal.absNorm P)) * φ (Ideal.absNorm P / x) := by
+    simp only [primeAnnularSum, primeLogAnnularSum, Finset.mul_sum, ← Finset.sum_sub_distrib,
+      sub_mul]
+  rw [← sub_div, heq, norm_div, Real.norm_of_nonneg hx0.le]
+  calc
+    _ ≤ (∑ P ∈ annularPrimeIdeals C a b x,
+        ‖(Real.log x - Real.log (Ideal.absNorm P)) * φ (Ideal.absNorm P / x)‖) / x :=
+      div_le_div_of_nonneg_right (norm_sum_le _ _) hx0.le
+    _ ≤ (∑ _P ∈ annularPrimeIdeals C a b x, (|Real.log a| + |Real.log b|) * M) / x := by
+      apply div_le_div_of_nonneg_right _ hx0.le
+      apply Finset.sum_le_sum
+      intro P hP
+      rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      have hratio := ratio_mem_of_mem_annularPrimeIdeals ha.le hab hx0 hP
+      exact mul_le_mul (log_norm_difference_bound ha hab hx0 hratio) (hφ _ hratio)
+        (abs_nonneg _) (add_nonneg (abs_nonneg _) (abs_nonneg _))
+    _ = ((|Real.log a| + |Real.log b|) * M) * ((annularPrimeIdeals C a b x).card / x) := by
+      rw [Finset.sum_const, nsmul_eq_mul]
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (annularPrime_card_div_bound C hB hbound ha hab hx hxa)
+      (mul_nonneg (add_nonneg (abs_nonneg _) (abs_nonneg _)) hM)
+
+theorem primeAnnularSum_log_error_tendsto (C : Set (Ideal O)) (φ : ℝ → ℝ)
+    (hφ : Continuous φ) {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    Tendsto (fun x : ℝ => Real.log x * primeAnnularSum C φ a b x / x -
+      primeLogAnnularSum C φ a b x / x) atTop (𝓝 0) := by
+  obtain ⟨B, hB, hbound⟩ := primeClassCoeff_chebyshev C
+  obtain ⟨M, hMbound⟩ := isCompact_Icc.exists_bound_of_continuousOn hφ.continuousOn
+  have hM : 0 ≤ M := (norm_nonneg _).trans (hMbound a ⟨le_rfl, hab⟩)
+  have hup : Tendsto (fun x : ℝ => ((|Real.log a| + |Real.log b|) * M) *
+      (B * (b + 1) / Real.log (x * a))) atTop (𝓝 0) := by
+    have hi := tendsto_inv_atTop_zero.comp
+      (Real.tendsto_log_atTop.comp (tendsto_id.atTop_mul_const ha))
+    convert (hi.const_mul (B * (b + 1))).const_mul ((|Real.log a| + |Real.log b|) * M)
+      using 1 <;> simp only [div_eq_mul_inv, mul_zero, Function.comp_def, id_eq]
+  apply squeeze_zero_norm' _ hup
+  filter_upwards [eventually_ge_atTop (1 : ℝ),
+    (tendsto_id.atTop_mul_const ha).eventually_gt_atTop 1] with x hx hxa
+  exact primeAnnularSum_log_error_bound C φ hB hbound hM
+    (fun y hy => by simpa only [Real.norm_eq_abs] using hMbound y hy) ha hab hx hxa
+
+theorem primeAnnularSum_log_div_tendsto (C : Set (Ideal O)) {A a b : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (φ : ℝ → ℝ) (hφ : Differentiable ℝ φ) (hφ' : Continuous (deriv φ))
+    (ha : 0 < a) (hab : a ≤ b) (hφa : φ a = 0) (hφb : φ b = 0) :
+    Tendsto (fun x : ℝ => Real.log x * primeAnnularSum C φ a b x / x) atTop
+      (𝓝 (A * ∫ y in a..b, φ y)) := by
+  have h := (primeAnnularSum_log_error_tendsto C φ hφ.continuous ha hab).add
+    (primeLogAnnularSum_div_tendsto C hmass φ hφ hφ' ha hab hφa hφb)
+  simpa only [sub_add_cancel, zero_add] using h
+
+theorem contDiff_powerWeight (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W)
+    {a b : ℝ} (ha : 0 < a) (hsupp : Function.support W ⊆ Set.Ioo a b) (r : ℝ) :
+    ContDiff ℝ ∞ (fun y => W y * y ^ r) := by
+  rw [contDiff_iff_contDiffAt]
+  intro y
+  by_cases hy : y = 0
+  · subst y
+    apply (contDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq
+    filter_upwards [Iio_mem_nhds ha] with y hy
+    have hWy : W y = 0 := Function.notMem_support.mp (by
+      intro h
+      exact (not_lt_of_ge (hsupp h).1.le) hy)
+    simp only [hWy, zero_mul]
+  · exact hW.contDiffAt.mul (Real.contDiffAt_rpow_const_of_ne hy)
+
+def weightedPrimeAnnularSum (C : Set (Ideal O)) (W : ℝ → ℝ) (a b x : ℝ) : ℝ :=
+  ∑ P ∈ annularPrimeIdeals C a b x,
+    W (Ideal.absNorm P / x) * (Ideal.absNorm P : ℝ) ^ (-5 / 6 : ℝ)
+
+theorem weightedPrimeAnnularSum_normalization (C : Set (Ideal O)) (W : ℝ → ℝ)
+    (a b : ℝ) {x : ℝ} (hx : 0 < x) :
+    Real.log x / x ^ (1 / 6 : ℝ) * weightedPrimeAnnularSum C W a b x =
+      Real.log x * primeAnnularSum C (fun y => W y * y ^ (-5 / 6 : ℝ)) a b x / x := by
+  have heq : primeAnnularSum C (fun y => W y * y ^ (-5 / 6 : ℝ)) a b x =
+      weightedPrimeAnnularSum C W a b x / x ^ (-5 / 6 : ℝ) := by
+    unfold primeAnnularSum weightedPrimeAnnularSum
+    rw [Finset.sum_div]
+    apply Finset.sum_congr rfl
+    intro P hP
+    dsimp only
+    rw [Real.div_rpow (Nat.cast_nonneg _) hx.le]
+    ring
+  have hp : x ^ (-5 / 6 : ℝ) * x = x ^ (1 / 6 : ℝ) := by
+    calc
+      _ = x ^ (-5 / 6 : ℝ) * x ^ (1 : ℝ) := by rw [Real.rpow_one]
+      _ = x ^ ((-5 / 6 : ℝ) + 1) := (Real.rpow_add hx _ _).symm
+      _ = _ := by norm_num
+  rw [heq, mul_div_assoc, div_div, hp]
+  ring
+
+theorem weightedPrimeAnnularSum_tendsto (C : Set (Ideal O)) {A a b : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W)
+    (ha : 0 < a) (hab : a ≤ b) (hsupp : Function.support W ⊆ Set.Ioo a b) :
+    Tendsto (fun x : ℝ => Real.log x / x ^ (1 / 6 : ℝ) * weightedPrimeAnnularSum C W a b x)
+      atTop (𝓝 (A * ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ))) := by
+  let φ : ℝ → ℝ := fun y => W y * y ^ (-5 / 6 : ℝ)
+  have hφ : ContDiff ℝ ∞ φ := contDiff_powerWeight W hW ha hsupp _
+  have hWa : W a = 0 := Function.notMem_support.mp (fun h => (hsupp h).1.false)
+  have hWb : W b = 0 := Function.notMem_support.mp (fun h => (hsupp h).2.false)
+  have hφa : φ a = 0 := by simp only [φ, hWa, zero_mul]
+  have hφb : φ b = 0 := by simp only [φ, hWb, zero_mul]
+  have hint : (∫ y in a..b, φ y) = ∫ y, φ y := by
+    rw [intervalIntegral.integral_of_le hab]
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro y hy
+    have hWy : W y = 0 := Function.notMem_support.mp
+      (fun h => hy ⟨(hsupp h).1, (hsupp h).2.le⟩)
+    simp only [φ, hWy, zero_mul]
+  have h := primeAnnularSum_log_div_tendsto C hmass φ (hφ.differentiable (by simp))
+    (hφ.continuous_deriv (by simp)) ha hab hφa hφb
+  rw [hint] at h
+  apply h.congr'
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+  exact (weightedPrimeAnnularSum_normalization C W a b hx).symm
+
+theorem weightedPrimeAnnularSum_nat_tendsto (C : Set (Ideal O)) {A a b : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W)
+    (ha : 0 < a) (hab : a ≤ b) (hsupp : Function.support W ⊆ Set.Ioo a b) :
+    Tendsto (fun N : ℕ => Real.log N / (N : ℝ) ^ (1 / 6 : ℝ) *
+      weightedPrimeAnnularSum C W a b N) atTop (𝓝 (A * ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ))) :=
+  (weightedPrimeAnnularSum_tendsto C hmass W hW ha hab hsupp).comp tendsto_natCast_atTop_atTop
+
+theorem exists_positive_support_annulus (W : ℝ → ℝ) (hc : HasCompactSupport W)
+    (hp : tsupport W ⊆ Set.Ioi 0) :
+    ∃ a b : ℝ, 0 < a ∧ a < b ∧ Function.support W ⊆ Set.Ioo a b := by
+  by_cases hne : (tsupport W).Nonempty
+  · obtain ⟨m, hm, hmin⟩ := hc.exists_isMinOn hne continuous_id.continuousOn
+    obtain ⟨M, hM, hmax⟩ := hc.exists_isMaxOn hne continuous_id.continuousOn
+    have hm0 : 0 < m := hp hm
+    have hmM : m ≤ M := hmin hM
+    refine ⟨m / 2, M + 1, by positivity, by linarith, ?_⟩
+    intro y hy
+    have hyt : y ∈ tsupport W := subset_closure hy
+    have hl : m ≤ y := hmin hyt
+    have hu : y ≤ M := hmax hyt
+    exact ⟨by linarith, by linarith⟩
+  · refine ⟨1, 2, by norm_num, by norm_num, ?_⟩
+    intro y hy
+    exact (hne ⟨y, subset_closure hy⟩).elim
+
+theorem mem_annularPrimeIdeals_of_weight_ne_zero {C : Set (Ideal O)} {W : ℝ → ℝ}
+    {a b x : ℝ} (ha : 0 < a) (hab : a ≤ b)
+    (hsupp : Function.support W ⊆ Set.Ioo a b) (hx : 0 < x)
+    {P : Ideal O} (hC : P ∈ C) (hP : Prime P) (hW : W (Ideal.absNorm P / x) ≠ 0) :
+    P ∈ annularPrimeIdeals C a b x := by
+  have hy := hsupp hW
+  apply (mem_annularPrimeIdeals C a b x P).mpr
+  refine ⟨hC, hP, ?_, ?_⟩
+  · apply (Nat.floor_lt (mul_nonneg hx.le ha.le)).mpr
+    have h := (lt_div_iff₀ hx).mp hy.1
+    nlinarith
+  · apply (Nat.le_floor_iff (mul_nonneg hx.le (ha.le.trans hab))).mpr
+    have h := (div_lt_iff₀ hx).mp hy.2
+    nlinarith
+
+def primeWeightTerm (C : Set (Ideal O)) (W : ℝ → ℝ) (x : ℝ) (P : Ideal O) : ℝ :=
+  if P ∈ C ∧ Prime P then W (Ideal.absNorm P / x) * (Ideal.absNorm P : ℝ) ^ (-5 / 6 : ℝ) else 0
+
+def weightedPrimeSum (C : Set (Ideal O)) (W : ℝ → ℝ) (x : ℝ) : ℝ :=
+  ∑ᶠ P : Ideal O, primeWeightTerm C W x P
+
+theorem primeWeightTerm_support_subset (C : Set (Ideal O)) (W : ℝ → ℝ)
+    {a b x : ℝ} (ha : 0 < a) (hab : a ≤ b)
+    (hsupp : Function.support W ⊆ Set.Ioo a b) (hx : 0 < x) :
+    Function.support (primeWeightTerm C W x) ⊆ (annularPrimeIdeals C a b x : Set (Ideal O)) := by
+  intro P hP
+  change primeWeightTerm C W x P ≠ 0 at hP
+  unfold primeWeightTerm at hP
+  split_ifs at hP with h
+  · exact mem_annularPrimeIdeals_of_weight_ne_zero ha hab hsupp hx h.1 h.2
+      (left_ne_zero_of_mul hP)
+  · exact (hP rfl).elim
+
+theorem primeWeightTerm_hasFiniteSupport (C : Set (Ideal O)) (W : ℝ → ℝ)
+    (hc : HasCompactSupport W) (hp : tsupport W ⊆ Set.Ioi 0) {x : ℝ} (hx : 0 < x) :
+    (Function.support (primeWeightTerm C W x)).Finite := by
+  obtain ⟨a, b, ha, hab, hsupp⟩ := exists_positive_support_annulus W hc hp
+  exact (annularPrimeIdeals C a b x).finite_toSet.subset
+    (primeWeightTerm_support_subset C W ha hab.le hsupp hx)
+
+theorem weightedPrimeSum_eq_annular (C : Set (Ideal O)) (W : ℝ → ℝ)
+    {a b x : ℝ} (ha : 0 < a) (hab : a ≤ b)
+    (hsupp : Function.support W ⊆ Set.Ioo a b) (hx : 0 < x) :
+    weightedPrimeSum C W x = weightedPrimeAnnularSum C W a b x := by
+  rw [weightedPrimeSum, finsum_eq_finsetSum_of_support_subset _
+    (primeWeightTerm_support_subset C W ha hab hsupp hx)]
+  apply Finset.sum_congr rfl
+  intro P hP
+  have h := (mem_annularPrimeIdeals C a b x P).mp hP
+  simp only [primeWeightTerm, h.1, h.2.1, and_self, ite_true]
+
+theorem weightedPrimeSum_tendsto (C : Set (Ideal O)) {A : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W)
+    (hp : tsupport W ⊆ Set.Ioi 0) :
+    Tendsto (fun x : ℝ => Real.log x / x ^ (1 / 6 : ℝ) * weightedPrimeSum C W x)
+      atTop (𝓝 (A * ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ))) := by
+  obtain ⟨a, b, ha, hab, hsupp⟩ := exists_positive_support_annulus W hc hp
+  apply (weightedPrimeAnnularSum_tendsto C hmass W hW ha hab.le hsupp).congr'
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+  rw [weightedPrimeSum_eq_annular C W ha hab.le hsupp hx]
+
+def weightedPrimeSumDeleted (C : Set (Ideal O)) (S : Finset (Ideal O))
+    (W : ℝ → ℝ) (x : ℝ) : ℝ :=
+  ∑ᶠ P : Ideal O, if P ∈ S then 0 else primeWeightTerm C W x P
+
+theorem finite_prime_weights_eventually_zero (C : Set (Ideal O)) (S : Finset (Ideal O))
+    (W : ℝ → ℝ) (hp : tsupport W ⊆ Set.Ioi 0) :
+    ∀ᶠ x : ℝ in atTop, ∀ P ∈ S, primeWeightTerm C W x P = 0 := by
+  have hz : ∀ᶠ y in 𝓝 (0 : ℝ), W y = 0 :=
+    notMem_tsupport_iff_eventuallyEq.mp (fun h => (show (0 : ℝ) < 0 from hp h).false)
+  rw [eventually_all_finset]
+  intro P hP
+  have ht : Tendsto (fun x : ℝ => (Ideal.absNorm P : ℝ) / x) atTop (𝓝 0) := by
+    simpa only [div_eq_mul_inv, mul_zero] using
+      tendsto_inv_atTop_zero.const_mul (Ideal.absNorm P : ℝ)
+  filter_upwards [ht hz] with x hx
+  change W (Ideal.absNorm P / x) = 0 at hx
+  simp only [primeWeightTerm, hx, zero_mul, ite_self]
+
+theorem fixed_prime_deletion_eventually_eq (C : Set (Ideal O)) (S : Finset (Ideal O))
+    (W : ℝ → ℝ) (hp : tsupport W ⊆ Set.Ioi 0) :
+    weightedPrimeSumDeleted C S W =ᶠ[atTop] weightedPrimeSum C W := by
+  filter_upwards [finite_prime_weights_eventually_zero C S W hp] with x hx
+  unfold weightedPrimeSumDeleted weightedPrimeSum
+  congr 1
+  ext P
+  by_cases hP : P ∈ S
+  · simp only [hP, ite_true, hx P hP]
+  · simp only [hP, ite_false]
+
+theorem finite_prime_deleted_mass_eventually_zero (C : Set (Ideal O)) (S : Finset (Ideal O))
+    (W : ℝ → ℝ) (hp : tsupport W ⊆ Set.Ioi 0) :
+    ∀ᶠ x : ℝ in atTop, (∑ P ∈ S, primeWeightTerm C W x P) = 0 := by
+  filter_upwards [finite_prime_weights_eventually_zero C S W hp] with x hx
+  exact Finset.sum_eq_zero hx
+
+theorem weightedPrimeSumDeleted_tendsto (C : Set (Ideal O)) (S : Finset (Ideal O)) {A : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W)
+    (hp : tsupport W ⊆ Set.Ioi 0) :
+    Tendsto (fun x : ℝ => Real.log x / x ^ (1 / 6 : ℝ) * weightedPrimeSumDeleted C S W x)
+      atTop (𝓝 (A * ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ))) := by
+  apply (weightedPrimeSum_tendsto C hmass W hW hc hp).congr'
+  filter_upwards [fixed_prime_deletion_eventually_eq C S W hp] with x hx
+  rw [hx]
+
+theorem weightedPrimeSumDeleted_eq_annular (C : Set (Ideal O)) (S : Finset (Ideal O))
+    (W : ℝ → ℝ) {a b x : ℝ} (ha : 0 < a) (hab : a ≤ b)
+    (hsupp : Function.support W ⊆ Set.Ioo a b) (hx : 0 < x) :
+    weightedPrimeSumDeleted C S W x =
+      ∑ P ∈ annularPrimeIdeals C a b x \ S,
+        W (Ideal.absNorm P / x) * (Ideal.absNorm P : ℝ) ^ (-5 / 6 : ℝ) := by
+  have hsub : Function.support (fun P => if P ∈ S then 0 else primeWeightTerm C W x P) ⊆
+      (↑(annularPrimeIdeals C a b x \ S) : Set (Ideal O)) := by
+    intro P hP
+    change (if P ∈ S then 0 else primeWeightTerm C W x P) ≠ 0 at hP
+    by_cases hPS : P ∈ S
+    · simp only [hPS, ite_true, ne_self_iff_false] at hP
+    · simp only [hPS, ite_false] at hP
+      exact Finset.mem_sdiff.mpr ⟨primeWeightTerm_support_subset C W ha hab hsupp hx hP, hPS⟩
+  rw [weightedPrimeSumDeleted, finsum_eq_finsetSum_of_support_subset _ hsub]
+  apply Finset.sum_congr rfl
+  intro P hP
+  have hS := (Finset.mem_sdiff.mp hP).2
+  have h := (mem_annularPrimeIdeals C a b x P).mp (Finset.mem_sdiff.mp hP).1
+  simp only [hS, ite_false, primeWeightTerm, h.1, h.2.1, and_self, ite_true]
+
+theorem powerWeight_integral_pos (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W)
+    (hc : HasCompactSupport W) (hp : tsupport W ⊆ Set.Ioi 0)
+    (hW0 : ∀ y, 0 ≤ W y) (hWne : W ≠ 0) :
+    0 < ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ) := by
+  obtain ⟨a, b, ha, hab, hsupp⟩ := exists_positive_support_annulus W hc hp
+  have hφ := contDiff_powerWeight W hW ha hsupp (-5 / 6)
+  obtain ⟨y, hy⟩ : ∃ y : ℝ, W y ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hWne (funext h)
+  have hy0 : 0 < y := hp (subset_closure hy)
+  apply hφ.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hc.mul_right
+  · intro z
+    by_cases hz : W z = 0
+    · simp only [hz, zero_mul, Pi.zero_apply, le_refl]
+    · have hz0 : 0 < z := hp (subset_closure hz)
+      exact mul_nonneg (hW0 z) (Real.rpow_nonneg hz0.le _)
+  · exact mul_ne_zero hy (Real.rpow_pos_of_pos hy0 _).ne'
+
+theorem weightedPrimeSumDeleted_eventually_lower_bound (C : Set (Ideal O))
+    (S : Finset (Ideal O)) {A : ℝ} (hA : 0 < A)
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W)
+    (hp : tsupport W ⊆ Set.Ioi 0) (hW0 : ∀ y, 0 ≤ W y) (hWne : W ≠ 0) :
+    ∃ c : ℝ, 0 < c ∧ ∀ᶠ x : ℝ in atTop,
+      c * x ^ (1 / 6 : ℝ) / Real.log x ≤ weightedPrimeSumDeleted C S W x := by
+  let L : ℝ := A * ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ)
+  have hL : 0 < L := mul_pos hA (powerWeight_integral_pos W hW hc hp hW0 hWne)
+  refine ⟨L / 2, half_pos hL, ?_⟩
+  have ht := weightedPrimeSumDeleted_tendsto C S hmass W hW hc hp
+  have he := ht (Ioi_mem_nhds (half_lt_self hL))
+  filter_upwards [he, eventually_gt_atTop (1 : ℝ)] with x hx hx1
+  change L / 2 < Real.log x / x ^ (1 / 6 : ℝ) * weightedPrimeSumDeleted C S W x at hx
+  have hxp : 0 < x ^ (1 / 6 : ℝ) := Real.rpow_pos_of_pos (zero_lt_one.trans hx1) _
+  apply (div_le_iff₀ (Real.log_pos hx1)).mpr
+  have hmul := (le_div_iff₀ hxp).mp (show L / 2 ≤
+      (Real.log x * weightedPrimeSumDeleted C S W x) / x ^ (1 / 6 : ℝ) by
+    convert hx.le using 1 <;> first | rfl | ring)
+  nlinarith
+
+theorem weightedPrimeSumDeleted_eventually_pos (C : Set (Ideal O))
+    (S : Finset (Ideal O)) {A : ℝ} (hA : 0 < A)
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W)
+    (hp : tsupport W ⊆ Set.Ioi 0) (hW0 : ∀ y, 0 ≤ W y) (hWne : W ≠ 0) :
+    ∀ᶠ x : ℝ in atTop, 0 < weightedPrimeSumDeleted C S W x := by
+  obtain ⟨c, hc0, he⟩ := weightedPrimeSumDeleted_eventually_lower_bound C S hA hmass
+    W hW hc hp hW0 hWne
+  filter_upwards [he, eventually_gt_atTop (1 : ℝ)] with x hx hx1
+  exact (div_pos (mul_pos hc0 (Real.rpow_pos_of_pos (zero_lt_one.trans hx1) _))
+    (Real.log_pos hx1)).trans_le hx
+
+theorem weightedPrimeSum_nat_tendsto (C : Set (Ideal O)) {A : ℝ}
+    (hmass : Tendsto (fun N : ℕ => cumsum (classCoeff C) N / N) atTop (𝓝 A))
+    (W : ℝ → ℝ) (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W)
+    (hp : tsupport W ⊆ Set.Ioi 0) :
+    Tendsto (fun N : ℕ => Real.log N / (N : ℝ) ^ (1 / 6 : ℝ) * weightedPrimeSum C W N)
+      atTop (𝓝 (A * ∫ y : ℝ, W y * y ^ (-5 / 6 : ℝ))) :=
+  (weightedPrimeSum_tendsto C hmass W hW hc hp).comp tendsto_natCast_atTop_atTop
+
+end
+
+end PNT.AnnularPrimeMass
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open Filter MeasureTheory
+open scoped Classical Topology ContDiff
+namespace RayPrimeNormalizer
+open HeckeFamily
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H)
+
+def normalizer (S : Finset (Ideal O)) (W : ℝ → ℝ) (x : ℝ) : ℝ :=
+  PNT.AnnularPrimeMass.weightedPrimeSumDeleted (RayQuotient.identityClass M H) S W x
+
+include hH
+
+theorem asymptotic (S : Finset (Ideal O)) (W : ℝ → ℝ)
+    (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W) (hp : tsupport W ⊆ Set.Ioi 0) :
+    Tendsto (fun x : ℝ => Real.log x / x ^ (1/6 : ℝ) * normalizer M H S W x)
+      atTop (𝓝 ((RayQuotient.classNumber M H : ℝ)⁻¹ * ∫ y : ℝ, W y * y ^ (-5/6 : ℝ))) :=
+  PNT.AnnularPrimeMass.weightedPrimeSumDeleted_tendsto _ S
+    (HeckeRayPrimes.quotientClassCoeff_ratio_tendsto M H hH) W hW hc hp
+
+theorem eventually_lower_bound (S : Finset (Ideal O)) (W : ℝ → ℝ)
+    (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W) (hp : tsupport W ⊆ Set.Ioi 0)
+    (hW0 : ∀ y, 0 ≤ W y) (hWne : W ≠ 0) :
+    ∃ c : ℝ, 0 < c ∧ ∀ᶠ x : ℝ in atTop,
+      c * x ^ (1/6 : ℝ) / Real.log x ≤ normalizer M H S W x := by
+  apply PNT.AnnularPrimeMass.weightedPrimeSumDeleted_eventually_lower_bound _ S
+    (show 0 < (RayQuotient.classNumber M H : ℝ)⁻¹ from inv_pos.mpr (by
+      exact_mod_cast RayQuotient.classNumber_pos M H))
+    (HeckeRayPrimes.quotientClassCoeff_ratio_tendsto M H hH) W hW hc hp hW0 hWne
+
+theorem eventually_pos (S : Finset (Ideal O)) (W : ℝ → ℝ)
+    (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W) (hp : tsupport W ⊆ Set.Ioi 0)
+    (hW0 : ∀ y, 0 ≤ W y) (hWne : W ≠ 0) :
+    ∀ᶠ x : ℝ in atTop, 0 < normalizer M H S W x := by
+  apply PNT.AnnularPrimeMass.weightedPrimeSumDeleted_eventually_pos _ S
+    (show 0 < (RayQuotient.classNumber M H : ℝ)⁻¹ from inv_pos.mpr (by
+      exact_mod_cast RayQuotient.classNumber_pos M H))
+    (HeckeRayPrimes.quotientClassCoeff_ratio_tendsto M H hH) W hW hc hp hW0 hWne
+
+end RayPrimeNormalizer
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical Topology ContDiff
+open Filter
+namespace CenteredMomentPrimePool
+open HeckeFamily PNT.AnnularPrimeMass CenteredMomentAmplificationCount
+
+def primePool (M : Ideal O) [NeZero M]
+    (H : Subgroup (O ⧸ M)ˣ) (S : Finset (Ideal O)) (a b x : ℝ) : Finset (Ideal O) :=
+  annularPrimeIdeals (RayQuotient.identityClass M H) a b x \ S
+
+theorem annular_weighted_card_bound (C : Set (Ideal O)) (S : Finset (Ideal O))
+    (W : ℝ → ℝ) (a b B x : ℝ) (ha : 0 < a) (hab : a ≤ b) (hB : 0 ≤ B)
+    (hsupp : Function.support W ⊆ Set.Ioo a b) (hW : ∀ y, W y ≤ B) (hx : 0 < x) :
+    weightedPrimeSumDeleted C S W x ≤
+      ((annularPrimeIdeals C a b x \ S).card : ℝ) * (B * a^(-5/6 : ℝ)) * x^(-5/6 : ℝ) := by
+  rw [weightedPrimeSumDeleted_eq_annular C S W ha hab hsupp hx]
+  calc
+    _ ≤ ∑ _P ∈ annularPrimeIdeals C a b x \ S, B*(a*x)^(-5/6 : ℝ) := by
+      apply Finset.sum_le_sum
+      intro P hP
+      have hn := (norm_bounds_of_mem_annularPrimeIdeals ha.le hab hx (Finset.mem_sdiff.mp hP).1).1
+      apply mul_le_mul (hW _) _ (Real.rpow_nonneg (Nat.cast_nonneg _) _) hB
+      exact Real.rpow_le_rpow_of_nonpos (mul_pos ha hx) (by nlinarith) (by norm_num)
+    _ = _ := by
+      rw [Finset.sum_const,nsmul_eq_mul,Real.mul_rpow ha.le hx.le]
+      ring
+
+section FixedRay
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H)
+
+include hH
+
+theorem eventually_primePool_card (S : Finset (Ideal O)) (W : ℝ → ℝ)
+    (hW : ContDiff ℝ ∞ W) (hc : HasCompactSupport W) (hp : tsupport W ⊆ Set.Ioi 0)
+    (hW0 : ∀ y, 0 ≤ W y) (hWne : W ≠ 0)
+    (a b B : ℝ) (ha : 0 < a) (hab : a ≤ b) (hB : 0 < B)
+    (hsupp : Function.support W ⊆ Set.Ioo a b) (hbound : ∀ y, W y ≤ B) :
+    ∃ c : ℝ, 0 < c ∧ ∀ᶠ x : ℝ in atTop,
+      c*x/Real.log x ≤ (primePool M H S a b x).card := by
+  obtain ⟨c,hcpos,hlower⟩ := RayPrimeNormalizer.eventually_lower_bound M H hH S W hW hc hp hW0 hWne
+  let D : ℝ := B*a^(-5/6 : ℝ)
+  have hD : 0 < D := mul_pos hB (Real.rpow_pos_of_pos ha _)
+  refine ⟨c/D,div_pos hcpos hD,?_⟩
+  filter_upwards [hlower,eventually_gt_atTop (1 : ℝ)] with x hlow hx
+  have hx0 : 0 < x := zero_lt_one.trans hx
+  have hu := annular_weighted_card_bound (RayQuotient.identityClass M H) S W a b B x
+    ha hab hB.le hsupp hbound hx0
+  change weightedPrimeSumDeleted _ S W x ≤ (primePool M H S a b x).card * D * x^(-5/6 : ℝ) at hu
+  change c*x^(1/6 : ℝ)/Real.log x ≤ weightedPrimeSumDeleted _ S W x at hlow
+  have hpower : x*x^(-5/6 : ℝ) = x^(1/6 : ℝ) := by
+    calc
+      _ = x^(1 : ℝ)*x^(-5/6 : ℝ) := by rw [Real.rpow_one]
+      _ = x^((1 : ℝ)+(-5/6)) := (Real.rpow_add hx0 _ _).symm
+      _ = _ := by norm_num
+  have hmul : (c*x/Real.log x)*x^(-5/6 : ℝ) ≤
+      ((primePool M H S a b x).card * D)*x^(-5/6 : ℝ) := by
+    calc
+      _ = c*(x*x^(-5/6 : ℝ))/Real.log x := by ring
+      _ = _ := by rw [hpower]
+      _ ≤ _ := hlow.trans hu
+  have hcancel := le_of_mul_le_mul_right hmul (Real.rpow_pos_of_pos hx0 (-5/6 : ℝ))
+  convert (div_le_iff₀ hD).mpr hcancel using 1 <;> first | rfl | ring
+
+end FixedRay
+
+def eligiblePool (P : Finset (Ideal O)) (R : Ideal O) : Finset (Ideal O) :=
+  P.filter (fun Q => ¬Q ∣ R)
+
+theorem eligiblePool_card_lower (P : Finset (Ideal O)) (hp : ∀ Q ∈ P, Prime Q)
+    (R : Ideal O) (hR : R ≠ 0) (Z ℓ B : ℝ) (hZ : 1 < Z) (hℓ : 0 < ℓ)
+    (hlower : ∀ Q ∈ P, Z^ℓ ≤ (Ideal.absNorm Q : ℝ))
+    (hupper : (Ideal.absNorm R : ℝ) ≤ Z^B) :
+    (P.card : ℝ) - B/ℓ ≤ (eligiblePool P R).card := by
+  have hbad := large_prime_divisor_count (P.filter (fun Q => Q ∣ R))
+    (fun Q hQ => hp Q (Finset.mem_filter.mp hQ).1) R hR
+    (fun Q hQ => (Finset.mem_filter.mp hQ).2) Z ℓ B hZ hℓ
+    (fun Q hQ => hlower Q (Finset.mem_filter.mp hQ).1) hupper
+  have he := Finset.card_filter_add_card_filter_not (s := P) (fun Q => Q ∣ R)
+  have her : ((P.filter (fun Q => Q ∣ R)).card : ℝ) + (eligiblePool P R).card = P.card := by
+    exact_mod_cast he
+  linarith
+
+theorem eligiblePool_half (P : Finset (Ideal O)) (hp : ∀ Q ∈ P, Prime Q)
+    (R : Ideal O) (hR : R ≠ 0) (Z ℓ B : ℝ) (hZ : 1 < Z) (hℓ : 0 < ℓ)
+    (hlower : ∀ Q ∈ P, Z^ℓ ≤ (Ideal.absNorm Q : ℝ))
+    (hupper : (Ideal.absNorm R : ℝ) ≤ Z^B) (hsize : 2*(B/ℓ) ≤ P.card) :
+    (P.card : ℝ)/2 ≤ (eligiblePool P R).card := by
+  have h := eligiblePool_card_lower P hp R hR Z ℓ B hZ hℓ hlower hupper
+  linarith
+
+end CenteredMomentPrimePool
+
+end
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
