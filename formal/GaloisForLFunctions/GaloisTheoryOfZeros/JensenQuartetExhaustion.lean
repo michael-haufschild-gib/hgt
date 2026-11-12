@@ -35,7 +35,7 @@ theorem centered_jensenMass_pos (d : ℕ) {t : ℝ} (ht : 0 < t) :
   have hle' : t ^ d * xiMoment (1 / 2) 0 ≤
       jensenMass (xiMoment (1 / 2)) d t := by
     simpa only [Nat.choose_zero_right, Nat.cast_one, Nat.sub_zero, one_mul,
-      ← jensenMass] using hle
+      jensenMass] using hle
   exact hpos.trans_le hle'
 
 /-- No centered Jensen equation has a nonzero purely imaginary root. -/
@@ -83,6 +83,7 @@ theorem jensenNonrealCount_eq_four_mul (d : ℕ) :
   have hconj : M.map (starRingEnd ℂ) = M := centered_roots_conj d
   have hneg : M.map (fun z => -z) = M := roots_xiJensen_half_map_neg d
   have hhor : M.map (fun z => -(starRingEnd ℂ) z) = M := by
+    change M.map ((fun z : ℂ => -z) ∘ (starRingEnd ℂ)) = M
     rw [← Multiset.map_map, hconj, hneg]
   have hv : (M.filter fun z => z.im < 0).card =
       (M.filter fun z => 0 < z.im).card := by
@@ -113,7 +114,9 @@ theorem jensenNonrealCount_eq_four_mul (d : ℕ) :
         · simp [hi, hr, not_lt_of_ge hr.le]
         · simp [hi, hr, not_lt_of_ge hr.le]
       · simp [hi]
-    · simp [Multiset.count_eq_zero_of_notMem hz]
+    · have hzero (p : ℂ → Prop) [DecidablePred p] : Multiset.count z (M.filter p) = 0 :=
+        Multiset.count_eq_zero_of_notMem (fun h => hz (Multiset.mem_filter.mp h).1)
+      simp [hzero]
   have hc := congrArg Multiset.card hsplit
   have hu := congrArg Multiset.card hupper
   simp only [Multiset.card_add, hv, hh] at hc hu

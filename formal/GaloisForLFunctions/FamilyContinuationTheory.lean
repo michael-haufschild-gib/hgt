@@ -49,6 +49,10 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheSeriesOfAMultiplicativeFu
 import GaloisForLFunctions.FamilyContinuationTheory.ThePrincipalRowIsAnEulerProduct
 import GaloisForLFunctions.FamilyContinuationTheory.TheCorrectionOfAnUnramifiedRowHasNoPoleInW
 import GaloisForLFunctions.FamilyContinuationTheory.ThePrincipalCorrectionContinuesToTheResiduePoint
+import GaloisForLFunctions.FamilyContinuationTheory.TheSexticGrossencharacterFactorizesTheProbeCorrection
+import GaloisForLFunctions.FamilyContinuationTheory.HarmonicGaussianPoissonGivesGrossencharacterContinuation
+import GaloisForLFunctions.FamilyContinuationTheory.GrossencharacterLFunctionsHaveZerosInTheRightHalfStrip
+import GaloisForLFunctions.FamilyContinuationTheory.TheCubicProbeIsACoupledTowerReachingThreeFifths
 
 /-!
 # Family continuation theory
@@ -181,4 +185,22 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   circularity lock every Cauchy–Schwarz `L²` Voronoi sieve at `θ ≥ (n − 2)/(n − 1)`, leaving
   pre-Cauchy–Schwarz bilinear row-column cancellation `sBilin > 0` (`θ ≥ (n − 2)/(n − 1) −
   (2n/(n − 1)) sBilin`) as the unique escape route below `(n − 2)/(n − 1)`.
+* **Grossencharacter coupling and the three-fifths reach of the cubic probe frame.** Over
+  `K = ℚ(ω)`, the sixth power of the local probe phase `(π̄_v / √N(v)) η(v)` at every prime `v`
+  away from `λ = ω − 1` equals `ψ₆(v) η⁶(v)`, where `ψ₆((a)) = (ā / |a|)⁶` is the sextic
+  archimedean Grossencharacter on ideals of `ℤ[ω]`. Factoring `(1 − ψ₆(v) η⁶(v) N(v)^{3 − 6s})⁻¹`
+  out of `principalLocalFactor` leaves a residual Euler product holomorphic, bounded on `Re s ≥ 2`,
+  and everywhere nonvanishing on `Re s > ½` without prime-norm cutoff. Two-dimensional harmonic
+  Gaussian self-duality and Poisson summation on conductor cosets continue the primitive
+  Grossencharacter `L`-functions `L(w, ψ₆^k ψ)` (`k ≥ 1`) to entire completed `L`-functions of
+  order `1` with functional equation `Λ(1 − w) = ε(ψ, k) conj(Λ(conj w))`; `3 + 4 cos θ + cos 2θ ≥ 0`
+  eliminates zeros on the closed half-plane `Re w ≥ 1`, while Hadamard subquadratic rigidity forces
+  infinitely many zeros with unbounded ordinates in `½ ≤ Re w < 1`. Consequently, the uncoupled
+  probe frame reaches `Re s ≥ 2/3` with fixed cutoff `N₀ = 160` and fails unconditionally below
+  `2/3` (`7/12 ≤ Re s < 2/3` contains infinitely many zeros of `continuedProbeCorrection`), clearing
+  `L^S(6s − 3, ψ₆ η⁶)` incurs an unconditional `c · Z^{2/3}` squarefree Möbius norm floor, and
+  coupling the infinite-order Grossencharacter tower `{ψ₆^{k_r} η^{6^r}}` (`k₀ = 0`,
+  `k_{r+1} = 6 k_r + 1`) contracts `b ↦ (3 + b)/6` from `1` to `max(σ₀, 3/5)` unconditionally
+  (`max(σ₀, 7/12)` under sextic GRH), optimal across all contour shears, `6r`-periodic Gauss
+  pairings, and multi-theta cubings.
 -/

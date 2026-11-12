@@ -1,0 +1,182 @@
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactCoefficientIsTheRealResidue
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.LogarithmicAbelMeans
+import GaloisForLFunctions.RHTower.XiHedenmalmKummerRootRH
+
+/-!
+# Subpolynomial critical comb growth detects RH
+
+At the critical exponent, convolution by `n⁻¹` still preserves every
+strict nonnegative growth threshold. Removing the remaining `n⁻¹ᐟ²`
+weight turns subpolynomial contact growth into the square-root prime-error
+bound. Subtracting the forced harmonic drift and restoring the convergent
+elementary remainder preserves this equivalence for the literal comb.
+-/
+
+noncomputable section
+
+open Finset Filter Topology MeasureTheory
+open scoped ArithmeticFunction.zeta
+
+namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
+
+open ArithmeticCorrespondencePositivity
+
+/-- Harmonic numbers have every positive power bound. -/
+theorem strictGrowth_harm : _root_.HTGeometry.StrictNaturalPowerGrowth harm 0 := by
+  intro δ hδ
+  let α : ℝ := min δ (1 / 2)
+  have hα : 0 < α := lt_min hδ (by norm_num)
+  have hα1 : α < 1 := (min_le_right _ _).trans_lt (by norm_num)
+  have hαδ : α ≤ δ := min_le_left _ _
+  refine ⟨1 / α, by positivity, fun N hN => ?_⟩
+  have hH0 : 0 ≤ harm N := by unfold harm; positivity
+  rw [abs_of_nonneg hH0, harm, zero_add]
+  calc
+    _ ≤ ∑ n ∈ range N, ((n : ℝ) + 1) ^ (α - 1) := by
+      apply sum_le_sum
+      intro n _
+      have hp := Real.rpow_le_rpow_of_exponent_le
+        (by positivity : (1 : ℝ) ≤ (n : ℝ) + 1)
+        (by linarith only [hα] : (-1 : ℝ) ≤ α - 1)
+      simpa only [Real.rpow_neg_one, one_div] using hp
+    _ ≤ (N : ℝ) ^ α / α := _root_.HTGeometry.sum_rpow_sub_one_le hα hα1 N
+    _ ≤ (N : ℝ) ^ δ / α := div_le_div_of_nonneg_right
+      (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN) hαδ) hα.le
+    _ = _ := by ring
+
+/-- Critical contacts retain the exact growth/zero-half-plane equivalence
+at every nonnegative exponent, including zero. -/
+theorem strictGrowth_criticalPowerContactPrefix_iff_zeroHalfPlane
+    {σ : ℝ} (hσ : 0 ≤ σ) :
+    _root_.HTGeometry.StrictNaturalPowerGrowth (powerContactPrefix (1 / 2)) σ ↔
+      RHTower.XiZeroHalfPlaneBound σ := by
+  have hp : _root_.HTGeometry.StrictNaturalPowerGrowth (powerContactPrefix (1 / 2)) σ ↔
+      RHTower.PartialSumPowerBound
+        (fun n => (powerTailZeta 1 * powerTailPrimeDeviation (1 / 2)) (n + 1)) σ := by
+    simpa only [RHTower.PartialSumPowerBound, RHTower.sum_range_succ_eq_sourcePartialSum,
+      RHTower.sourcePartialSum, powerContactPrefix,
+      show 2 * (1 / 2 : ℝ) = 1 by norm_num] using
+        (_root_.HTGeometry.strictNaturalPowerGrowth_iff_succ
+          (by simp [powerContactPrefix] : powerContactPrefix (1 / 2) 0 = 0)
+          hσ)
+  have hc := partialSumPowerBound_powerTailZeta_mul_iff 1 σ
+    hσ (by linarith only [hσ]) (powerTailPrimeDeviation (1 / 2))
+  have hw := partialSumPowerBound_powerTailTwist_iff
+    (ArithmeticFunction.vonMangoldt - (ζ : ArithmeticFunction ℝ))
+    (1 / 2) (1 / 2 + σ) (by linarith only [hσ]) (by linarith only [hσ])
+  have he : (fun n => (ArithmeticFunction.vonMangoldt - (ζ : ArithmeticFunction ℝ)) (n + 1)) =
+      RHTower.vonMangoldtMinusOne := by
+    funext n
+    change ArithmeticFunction.vonMangoldt (n + 1) - (ζ : ArithmeticFunction ℝ) (n + 1) =
+      ArithmeticFunction.vonMangoldt (n + 1) - 1
+    simp
+  have hw' : RHTower.PartialSumPowerBound
+      (fun n => powerTailPrimeDeviation (1 / 2) (n + 1)) σ ↔
+        RHTower.PartialSumPowerBound RHTower.vonMangoldtMinusOne (1 / 2 + σ) := by
+    simpa only [show 1 / 2 + σ - (1 / 2 : ℝ) = σ by ring,
+      powerTailPrimeDeviation, he] using hw
+  have hz := RHTower.xiZeroHalfPlaneBound_iff_vonMangoldtMinusOne_converges hσ
+  have hz' : RHTower.ConvergesRightOf RHTower.vonMangoldtMinusOne (1 / 2 + σ) ↔
+      RHTower.XiZeroHalfPlaneBound σ := by
+    simpa only [RHTower.ConvergesRightOf] using hz.symm
+  exact hp.trans (hc.trans (hw'.trans
+    ((RHTower.partialSumPowerBound_iff_convergesRightOf _ (by linarith only [hσ])).trans hz')))
+
+/-- Subpolynomial critical contacts are equivalent to RH. -/
+theorem strictGrowth_criticalPowerContactPrefix_iff_rh :
+    _root_.HTGeometry.StrictNaturalPowerGrowth (powerContactPrefix (1 / 2)) 0 ↔
+      RiemannHypothesis :=
+  (strictGrowth_criticalPowerContactPrefix_iff_zeroHalfPlane (le_refl (0 : ℝ))).trans
+    _root_.RHTower.xiZeroHalfPlaneBound_zero_iff_rh
+
+/-- Removing the forced harmonic drift does not change the critical
+contact growth criterion. -/
+theorem strictGrowth_criticalHarmonicContacts_iff_zeroHalfPlane
+    {σ : ℝ} (hσ : 0 ≤ σ) :
+    _root_.HTGeometry.StrictNaturalPowerGrowth criticalHarmonicContacts σ ↔
+      RHTower.XiZeroHalfPlaneBound σ := by
+  have hh := (strictGrowth_harm.mono hσ).const_mul criticalPowerContactCoefficient
+  constructor
+  · intro hg
+    apply (strictGrowth_criticalPowerContactPrefix_iff_zeroHalfPlane hσ).mp
+    simpa only [criticalHarmonicContacts, sub_add_cancel] using hg.add hh
+  · intro hz
+    exact ((strictGrowth_criticalPowerContactPrefix_iff_zeroHalfPlane hσ).mpr hz).sub hh
+
+/-- Harmonic subtraction preserves the subpolynomial RH criterion. -/
+theorem strictGrowth_criticalHarmonicContacts_iff_rh :
+    _root_.HTGeometry.StrictNaturalPowerGrowth criticalHarmonicContacts 0 ↔
+      RiemannHypothesis :=
+  (strictGrowth_criticalHarmonicContacts_iff_zeroHalfPlane (le_refl (0 : ℝ))).trans
+    _root_.RHTower.xiZeroHalfPlaneBound_zero_iff_rh
+
+/-- The elementary critical comb after both harmonic main terms are removed. -/
+def criticalPowerCombElementaryRemainder (N : ℕ) : ℝ :=
+  (powerTailArchimedean (1 / 2) N - powerTailArchimedeanRowLimit (1 / 2) * harm N) -
+    2 * tailRiemannSum criticalPowerTailReferenceProfile N + powerTailCombRemainder (1 / 2) N
+
+/-- Its constant is expressed by an absolutely summable row correction
+and an integrable reference profile. -/
+def criticalPowerCombElementaryLimit : ℝ :=
+  (∑' n : ℕ, criticalPowerTailArchimedeanError n) -
+    2 * (∫ t in Set.Ioc (0 : ℝ) 1, criticalPowerTailReferenceProfile t) +
+      2 * powerTailPole (1 / 2) * (riemannZeta ((1 / 2 : ℝ) : ℂ)).re
+
+theorem tendsto_criticalPowerCombElementaryRemainder :
+    Tendsto criticalPowerCombElementaryRemainder atTop (𝓝 criticalPowerCombElementaryLimit) := by
+  have hA := summable_criticalPowerTailArchimedeanError.hasSum.tendsto_sum_nat.congr
+    (fun N => sum_criticalPowerTailArchimedeanError N)
+  exact (hA.sub (riemannOn_criticalPowerTailReferenceProfile.2.const_mul 2)).add
+    tendsto_criticalPowerTailCombRemainder
+
+/-- The critical comb is a convergent elementary term minus twice its
+harmonically centered contacts. -/
+theorem powerCombTail_half_eq_elementary_sub_contacts {N : ℕ} (hN : 1 ≤ N) :
+    powerCombTail (1 / 2) N =
+      criticalPowerCombElementaryRemainder N - 2 * criticalHarmonicContacts N := by
+  rw [powerCombTail_eq_mellin_meshes (1 / 2) hN]
+  simp only [show 2 * (1 / 2 : ℝ) - 1 = 0 by ring, Real.rpow_zero, one_mul]
+  dsimp only [criticalPowerCombElementaryRemainder, criticalHarmonicContacts,
+    criticalPowerContactCoefficient, powerContactPrefix]
+  rw [tailRiemannSum_criticalPowerTailReferenceProfile hN]
+  ring
+
+private theorem strictGrowth_congr_pos {f g : ℕ → ℝ} {θ : ℝ}
+    (hf : _root_.HTGeometry.StrictNaturalPowerGrowth f θ)
+    (he : ∀ N : ℕ, 1 ≤ N → f N = g N) :
+    _root_.HTGeometry.StrictNaturalPowerGrowth g θ := by
+  intro δ hδ
+  obtain ⟨C, hC, hb⟩ := hf δ hδ
+  refine ⟨C, hC, fun N hN => ?_⟩
+  rw [← he N hN]
+  exact hb N hN
+
+/-- The critical literal comb reads the same zero half-plane as its
+contacts, at every nonnegative growth threshold. -/
+theorem strictGrowth_criticalPowerCombTail_iff_zeroHalfPlane
+    {σ : ℝ} (hσ : 0 ≤ σ) :
+    _root_.HTGeometry.StrictNaturalPowerGrowth (powerCombTail (1 / 2)) σ ↔
+      RHTower.XiZeroHalfPlaneBound σ := by
+  have hE := (strictPowerGrowth_zero_of_tendsto
+    tendsto_criticalPowerCombElementaryRemainder).mono hσ
+  constructor
+  · intro hc
+    apply (strictGrowth_criticalHarmonicContacts_iff_zeroHalfPlane hσ).mp
+    apply strictGrowth_congr_pos ((hE.sub hc).const_mul (1 / 2))
+    intro N hN
+    rw [powerCombTail_half_eq_elementary_sub_contacts hN]
+    ring
+  · intro hz
+    have hg := (strictGrowth_criticalHarmonicContacts_iff_zeroHalfPlane hσ).mpr hz
+    exact strictGrowth_congr_pos (hE.sub (hg.const_mul 2)) fun N hN =>
+      (powerCombTail_half_eq_elementary_sub_contacts hN).symm
+
+/-- The critical literal comb has every positive power bound exactly
+under RH, despite its failure of ordinary convergence. -/
+theorem strictGrowth_criticalPowerCombTail_iff_rh :
+    _root_.HTGeometry.StrictNaturalPowerGrowth (powerCombTail (1 / 2)) 0 ↔
+      RiemannHypothesis :=
+  (strictGrowth_criticalPowerCombTail_iff_zeroHalfPlane (le_refl (0 : ℝ))).trans
+    _root_.RHTower.xiZeroHalfPlaneBound_zero_iff_rh
+
+end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsTheSignOfWeilsFormOnStepPackets
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBlockMatrixOfTheDegreesTheJetsAndTheFloorMaps
 
 /-!
 # The matrix of a step packet is the mixed difference of its windows
@@ -16,12 +17,23 @@ difference
 and `𝔚_Q(step packet) = Σ_{j, l < J} σ_j σ_l m(j, l)` (`packetForm_stepPacket_eq_sum_blockEntry`).
 On the diagonal `m(j, j) = w(j, j + 1)`. The proof is summation by parts in both variables.
 
-The window values are elementary (`windowValue_eq`): for `a = R + j < b = R + l`,
+The window values are elementary (`windowValue_eq_windowClosed`): for `a = R + j ≤ b = R + l`,
 
   `w = 2(b − a) log(b/a) − [(b − a)(γ + log 2π) + (b + a) log 2 + 2a log a
         − (b + a) log(b + a) + (b − a) log(b − a)] − 2 Σ_{k ≤ Q} Λ(k)(b/k − a)⁺`:
 
 the pole term, the jets, and the contacts of the window with itself.
+
+**The matrix in closed form** (`blockEntry_eq_blockMatrix`,
+`packetForm_stepPacket_eq_sum_blockMatrix`). The mixed second difference of the window values is
+the block matrix of the degrees, the jets and the floor maps:
+
+  `m(j, l) = d(a) + d(b) + δ_{ab} ϱ(a) − J(a, b) − Σ_{k ≤ Q} (Λ(k)/k)·[⌊b/k⌋ = a]`,  `a ≤ b`,
+
+with `a = R + j`, `b = R + l`: the degrees `log((a+1)/a)` of the pole plane, the density of the
+comb on the diagonal, the second differences of `n log n` for the jets, and for the contacts
+the graphs of the floor maps `b ↦ ⌊b/k⌋`. So `𝔚_Q` on the step packets above `R` is the
+intersection form of the blocks `R, …, R + J − 1` under these correspondences.
 -/
 
 open Finset
@@ -116,22 +128,43 @@ theorem flatPairing_window {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
   rw [flatPairing_self (ha.trans hab.le), flatPairing_self ha, flatPairing, h4]
   ring
 
-/-- **The value of a window**: pole term, jets and contacts in closed form. -/
-theorem windowValue_eq {R j l : ℕ} (hR : 1 ≤ R) (hjl : j < l) (Q : ℕ) :
-    windowValue Q R j l =
-      2 * ((Real.log ((R + l : ℕ) : ℝ) - Real.log ((R + j : ℕ) : ℝ)) *
-          (((R + l : ℕ) : ℝ) - ((R + j : ℕ) : ℝ))) -
-        ((((R + l : ℕ) : ℝ) - ((R + j : ℕ) : ℝ)) *
-            (Real.eulerMascheroniConstant + Real.log (2 * Real.pi)) +
-          (((R + l : ℕ) : ℝ) + ((R + j : ℕ) : ℝ)) * Real.log 2 +
-          2 * ((R + j : ℕ) : ℝ) * Real.log ((R + j : ℕ) : ℝ) -
-          (((R + l : ℕ) : ℝ) + ((R + j : ℕ) : ℝ)) *
-            Real.log (((R + l : ℕ) : ℝ) + ((R + j : ℕ) : ℝ)) +
-          (((R + l : ℕ) : ℝ) - ((R + j : ℕ) : ℝ)) *
-            Real.log (((R + l : ℕ) : ℝ) - ((R + j : ℕ) : ℝ))) -
-        2 * ∑ k ∈ Icc 2 Q, (Λ k : ℝ) * max ((((R + l : ℕ) : ℝ)) / k - ((R + j : ℕ) : ℝ)) 0 := by
-  have hlt : R + j < R + l := by omega
-  rw [windowValue, min_eq_left hlt.le, max_eq_right hlt.le,
-    packetForm_flatPacket_eq (by omega) hlt Q, flatPairing_window (by omega) hlt]
+/-- **The value of a window**: pole term, jets and contacts in closed form. An empty window has
+the value zero. -/
+theorem windowValue_eq_windowClosed {R j l : ℕ} (hR : 1 ≤ R) (hjl : j ≤ l) (Q : ℕ) :
+    windowValue Q R j l = windowClosed Q ((R + j : ℕ) : ℝ) ((R + l : ℕ) : ℝ) := by
+  rcases hjl.eq_or_lt with rfl | hlt
+  · rw [windowValue_self, windowClosed_self (Nat.cast_pos.mpr (by omega))]
+  · have hlt' : R + j < R + l := by omega
+    rw [windowValue, min_eq_left hlt'.le, max_eq_right hlt'.le,
+      packetForm_flatPacket_eq (by omega) hlt' Q, flatPairing_window (by omega) hlt',
+      windowClosed, windowSmooth]
+
+/-! ### The matrix in closed form -/
+
+/-- **The entries of the matrix of a step packet** are the block matrix of the degrees, the
+jets and the floor maps. -/
+theorem blockEntry_eq_blockMatrix {R : ℕ} (hR : 1 ≤ R) (Q j l : ℕ) :
+    blockEntry Q R j l = blockMatrix Q (R + j) (R + l) := by
+  wlog hjl : j ≤ l generalizing j l
+  · rw [blockEntry_comm, blockMatrix_comm]
+    exact this l j (not_le.mp hjl).le
+  have c1 : ((R + (j + 1) : ℕ) : ℝ) = ((R + j : ℕ) : ℝ) + 1 := by push_cast; ring
+  have c2 : ((R + (l + 1) : ℕ) : ℝ) = ((R + l : ℕ) : ℝ) + 1 := by push_cast; ring
+  rcases hjl.eq_or_lt with rfl | hlt
+  · rw [blockEntry_self, windowValue_eq_windowClosed hR (Nat.le_succ j), c1]
+    exact windowClosed_succ (by omega) Q
+  · rw [blockEntry, windowValue_eq_windowClosed hR (by omega : j ≤ l + 1),
+      windowValue_eq_windowClosed hR (by omega : j + 1 ≤ l),
+      windowValue_eq_windowClosed hR hlt.le,
+      windowValue_eq_windowClosed hR (by omega : j + 1 ≤ l + 1), c1, c2]
+    exact windowClosed_mixed (by omega) Q
+
+/-- **Weil's form of a step packet is the form of the block matrix**: degrees, density, jets
+and the graphs of the floor maps on the blocks `R, …, R + J − 1`. -/
+theorem packetForm_stepPacket_eq_sum_blockMatrix {R : ℕ} (hR : 1 ≤ R) (Q J : ℕ) (σ : ℕ → ℝ) :
+    packetForm Q (stepPacket R J σ) =
+      ∑ j ∈ range J, ∑ l ∈ range J, σ j * σ l * blockMatrix Q (R + j) (R + l) := by
+  rw [packetForm_stepPacket_eq_sum_blockEntry hR]
+  simp only [blockEntry_eq_blockMatrix hR]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

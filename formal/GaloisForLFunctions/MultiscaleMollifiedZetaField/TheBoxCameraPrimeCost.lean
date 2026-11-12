@@ -35,7 +35,7 @@ theorem eventually_integral_boxCameraPoly_sq_le
   have hc0 : 0 < c := hc₀.trans_le hcmin
   have hLc : 64 / c ^ 2 ≤ Real.log T := by
     apply le_trans _ hLd
-    exact div_le_div_of_nonneg_left (by norm_num) (sq_pos_of_pos hc₀)
+    exact div_le_div_of_nonneg_left (by norm_num) (by positivity)
       (pow_le_pow_left₀ hc₀.le hcmin 2)
   have hδ := boxCameraRadius_pos hA hh hr n
   have hy0 : 0 ≤ y + c * Real.log T := by rw [← heq]; linarith only [hδ, hy]

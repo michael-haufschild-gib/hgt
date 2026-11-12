@@ -33,12 +33,36 @@ each to a named residual; a producer for AAL or ZAL is the success criterion.
 ## Questions and state
 | # | Question | State |
 |---|---|---|
-| Q2 | B183: integer norms, a count rate, one non-real pair of fake zeros and no real fake zero | Theorem A below: paper proof done; Lean in progress |
-| Q1 | B145 / B170: AAL | open |
-| Q3 | B141: `¬AAL ⇒ ZAL` | open |
+| Q2 | B183: integer norms, a count rate, one non-real pair of fake zeros and no real fake zero | Theorem A in Lean at every exponent `β > ½` (unconditional). Below `√x`: Theorem B, not done (needs a two-sided selection with discrepancy at every frequency and the Perron analysis of the corpus's deletion fakes with signed weights; conditional on a zero-free half-plane like `exists_integerNormFakeAt_lt_half_of_zeroFree`) |
+| Q2′ | Which edits can have a non-real top | Balance law in Lean (Theorem C) |
+| Q1 | B145 / B170: AAL | open; no producer |
+| Q3 | B141: `¬AAL ⇒ ZAL` | open for `ζ`; model side answered: Theorem D in Lean (an edit of the rational primes with a count rate, an isolated pair on top and an infinite tail that does not approach the line) |
+| Q2″ | Every finite datum over the rational primes | Theorem E in Lean (finite layers with multiplicities) |
 | Q4 | B13, Landing; B157, A120 | open |
 | Q5 | B59: cluster wall of the cameras | a peer session works on box cameras in MZF; not started here |
 | Q6 | half-planes of world II | the questions of §2.18; not started here |
+
+## Lean modules (`formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/`)
+| Module | Content |
+|---|---|
+| `GreedyRoundingOfASignedTarget` | abstract greedy rounding: thinness, discrepancy `≤ τ + B` under the window criterion |
+| `PrimesRoundAnOscillatingDensity` | `target ρ`, `edit ρ`; `O(n^{Re ρ})` edited primes; discrepancy `O(n^c)` from the prime window bound |
+| `TheEditSeriesHasAPrescribedZeroPair` | `exp(Σ e(p)p^{−s}) = C(s−ρ)(s−ρ̄)e^{K}`; `zetaRegular` |
+| `ThinAdditionsKeepTheCountRate` | count and zeta of `sumSystem`; count rate under thin additions; integers supported on a thin set of primes are summable |
+| `TwoSidedPrimeEdits` | `IsEdit`, `editSystem`, Euler product `ζ_B = ζ exp(E + Q)`, count, not norm-equivalent to the primes |
+| `ANonRealPairAloneOnTopOfATwoSidedEdit` | `IsPairTwin`, `HasFakeZeroSet`; Theorem A and its unconditional corollary |
+| `TheBalanceLawOfTwoSidedEdits` | Landau for `exp D`; thickness; no surplus of doubled primes; real zero for a surplus of deleted primes; balance; exponents of the greedy edit |
+| `EveryFiniteLayerIsRealizedByATwoSidedEdit` | `layerTarget`, `layerFactor`, `IsLayerTwin`; every finite family `½ < Re ρ_j ≤ b < 14/15` with multiplicities |
+| `TheSquareTargetOfAHalfScaleCopy` | `sqTarget a`: Dirichlet series `2Σ Λ(j) j^{−(2s−2a)}`; spikes of an interval |
+| `AFiniteLayerWithATailOverTheRationalPrimes` | `tailTarget`, `tailFactor`, `IsTailTwin`, `tailSet`; Theorem D |
+
+Module 2 holds the general greedy edit `gedit m` with the drift criterion (`abs_gdisc_le`,
+`exists_abs_gdisc_le_rpow_of_abs_le`); module 3 the prescribed factor theorem
+`exists_exp_geditSeries_eq` (hypothesis `logDeriv L = −LSeries m − Φ₀`).
+
+Axioms of `exists_isEdit_fake_without_real_zero`, `exists_isEdit_fake_with_zero_pair`,
+`exists_isEdit_fake_with_layer`, `exists_isEdit_finite_layer_with_tail`: propext,
+Classical.choice, Quot.sound.
 
 ## Theorem A (two-sided prime edits with a non-real pair alone)
 **Statement.** Let `½ < β₀ < 14/15`, `γ₀ ≠ 0`, `ρ₀ = β₀ + iγ₀`, `ζ(ρ₀) ≠ 0`, and `β > β₀`. There are
@@ -80,5 +104,52 @@ over the rational primes do not force a real zero on top of a finite layer: the 
 the deletion fakes is a property of one-sided edits. Below `√x` the count needs discrepancy at
 every frequency (random selection) and a zero-free half-plane of `ζ`: Theorem B, not started.
 
+## Theorem C (balance law) — in Lean
+For an edit with a holomorphic continuation `G` of `(s−1)ζ_B` to `Re s > ½`, `κ₊`, `κ₋` the
+exponents of the doubled and the deleted primes:
+1. every fake zero has `Re ρ ≤ max(κ₊, κ₋, ½)`; exponents `≤ ½` give no fake;
+2. `κ₊ ≤ max(κ₋, ½)`;
+3. `κ₋ > max(κ₊, ½) ⇒ G(κ₋) = 0`;
+4. no real zero of `G` in `(½, ∞)` ⇒ `max(κ₊, ½) = max(κ₋, ½)`; the greedy edit at a non-real
+   `ρ` with `ζ(ρ) ≠ 0` has `κ₊ = κ₋ = Re ρ`.
+Proof: right of both exponents `G = (s−1)ζ·exp(D₊ − D₋ + Q)`. `exp D`, `D ≥ 0` coefficientwise,
+does not continue across its real abscissa (corpus `eulerFactor_abscissa_eq_zero` plus
+`|exp D| ≥ 1` on the real axis). Apply to `exp D₊ = G e^{D₋−Q}/u` and to `exp D₋ = u e^{D₊+Q}/G`.
+
+**Remark on the corpus.** `FloorFreeArithmetic.eulerFactor_abscissa_eq_zero` (AO1) has
+contradictory hypotheses: a function equal to `exp D` right of `σ_c` and holomorphic on a disc
+around `σ_c` does not exist. "A system that only adds primes vanishes at its real abscissa" is
+vacuous; the true statement is that it does not continue.
+
+## Theorem D (a finite layer with a tail over the rational primes) — in Lean
+`exists_isEdit_finite_layer_with_tail`: for `¼ < a ≤ 3/10`, `a + ½ < Re ρ ≤ 9/10`, `β ∈ (Re ρ, 1)`
+there is an edit with count `Ax + O(x^β)` and
+`(s−1)ζ_B = (s−1)ζ · C(s−ρ)(s−ρ̄)·u(2s−2a)·e^{H}`, `u(w) = (w−1)ζ(w)`, `H` holomorphic on
+`Re s > ½`. Fake zeros: `ρ, ρ̄` and the tail `a + z/2`, `ζ(z) = 0`; the tail is infinite
+(`tailSet_infinite`, from infinitely many zeros of `ξ` and the functional equation) and lies in
+`Re s < a + ½ < Re ρ`.
+Target `m = −2Re k^{ρ−1} + [k = j²]·2Λ(j)j^{2a} − k^{a−1/2}`; its series is
+`−ζ(s+1−ρ) − ζ(s+1−ρ̄) − 2ζ′/ζ(2s−2a) − ζ(s+½−a)`; the pole of `ζ(2s−2a)` at `a + ½` is paid by
+the smooth deletion. With `α = 3/5`: smooth part `≤ 3k^{−1/10}`, spikes `≤ 10 n^{2/5}`, at most
+`(n−b)/√n + 1` squares in `(b, n]`, discrepancy `O(√n)`.
+Not proved: that infinitely many tail points are fake zeros in the strict sense (`ζ ≠ 0` there);
+a coincidence `ζ(z) = ζ(a + z/2) = 0` is not excluded pointwise. A count of zeros would give it
+(`N(T)/2 − N(T/2) → ∞`).
+
+## Theorem E (every finite layer) — in Lean
+`exists_isEdit_layerTwin`, `exists_isEdit_fake_with_layer`: for a finite family `ρ_j`, `j ∈ J`
+(repetitions allowed), `½ < Re ρ_j ≤ b < 14/15`, `β ∈ (b, 1)`: an edit with count `Ax + O(x^β)`
+and `(s−1)ζ_B = (s−1)ζ · C ∏_j (s−ρ_j)(s−ρ̄_j) · e^{H}`.
+
+## Next conjectures
+- C-a: a model for Landing over the rational primes: fake zeros approaching the line, infinitely
+  many off it. Needs a factor with zeros at `a_j + z/λ_j`-type sets accumulating at the line;
+  one factor `u(λ(s−a))` has its critical zeros on one line `Re s = a + 1/(2λ)`.
+- C-b: Theorem B (count below `√x`).
+- C-c: infinitely many strict fake zeros in the tail (zero count).
+
 ## Log
 - 2026-11-11 — created; Theorem A proved on paper.
+- 2026-11-12 — Theorem A and Theorem C in Lean (7 modules, wired into the umbrella and
+  `MainTheorems`); README written.
+- 2026-11-12 — general greedy edit and prescribed factor; Theorems D and E in Lean (10 modules).

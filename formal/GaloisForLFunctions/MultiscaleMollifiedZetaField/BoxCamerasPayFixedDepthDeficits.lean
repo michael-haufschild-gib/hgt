@@ -43,7 +43,7 @@ theorem eventually_box_cluster_visible_or_deep_companion
   have ht := tendsto_boxRelativeExteriorMajorant (A := A) (L := L) hh hg hgapRate hdepthRate
   filter_upwards [ht.eventually (gt_mem_nhds hK)]
     with n hn ℓ t hℓ hy hlag hspan hheight s hcard hsector ρ hρ hnear
-  have hbnd := boxExteriorBound_mul_exp_le hA.le hh hr hg hd hL n hlag hheight
+  have hbnd := boxExteriorBound_mul_exp_le hA.le hh hg hd hL n hlag hheight
     (b := b) (η := η)
   have hraw : boxExteriorBound A h n r g d (((M : ℝ) + 1) * ℓ) t ≤
       (A * turanConstant N M / 2) / Real.exp (η * b * ((n : ℝ) + 1)) :=
@@ -90,6 +90,7 @@ theorem exists_fixed_deficit_box_cluster_visible_or_deep_companion
   refine ⟨η, hη, ?_⟩
   have hmain := eventually_box_cluster_visible_or_deep_companion
     hA hh hr hg hd.le hL hη hηgap hηdepth (M := 0) hN
+  simp only [Nat.cast_zero] at hmain
   obtain ⟨n₀, hn₀⟩ := exists_nat_ge (A + r)
   filter_upwards [hmain, eventually_ge_atTop n₀]
     with n hn hnlarge t ht s hcard hsec ρ hρ hnear

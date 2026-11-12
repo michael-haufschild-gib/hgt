@@ -22,7 +22,12 @@ with the positive subcritical parameters for which `P_a` converges.
    real `a<1/2`, independently of RH.
 
 Convergence at a positive subcritical parameter implies `a+w≤1/2`.
-The boundary case itself is not decided or needed for the supremum equality.
+The supremum equality does not require boundary convergence.
+The [boundary extension](convergent-power-combs-exclude-boundary-zeros.md)
+now excludes zeros on `Re ρ=1-a` whenever the comb converges, proves
+divergence at an attained positive width, and identifies every convergent
+endpoint limit with the same zero pairing. Ordinary convergence at an
+unattained endpoint remains open.
 
 ## Proof
 
@@ -75,4 +80,5 @@ Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`:
   `riemannHypothesis_iff_powerCombTails_tendsto_zeroPairings`.
 
 All supporting modules checked; final leaf check passed. Umbrella imports
-include the complete chain. No boundary-convergence or RH proof is claimed.
+include the complete chain. No ordinary convergence at an unattained
+endpoint or RH proof is claimed.

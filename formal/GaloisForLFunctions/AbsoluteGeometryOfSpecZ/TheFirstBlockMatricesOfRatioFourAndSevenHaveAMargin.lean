@@ -14,7 +14,9 @@ is positive definite:
 * `sum_blockMatrix_four_ge`: `Σ σ_j σ_l blockMatrix 4 (1 + j) (1 + l) ≥ (1/20) Σ σ_j²` on three
   blocks (contacts of `2` and `3`);
 * `sum_blockMatrix_seven_ge`: `Σ σ_j σ_l blockMatrix 7 (1 + j) (1 + l) ≥ (1/100) Σ σ_j²` on six
-  blocks (contacts of `2`, `3`, `4`, `5`).
+  blocks (contacts of `2`, `3`, `4`, `5`);
+* `sum_blockMatrix_four_fine_ge`: `Σ σ_j σ_l blockMatrix 4 (2 + j) (2 + l) ≥ (1/100) Σ σ_j²` on
+  the six blocks `2, …, 7`: the window of ratio four on blocks of half the size.
 
 The entries are integer combinations of `γ`, `log π` and the logarithms of the primes up to `13`.
 Each entry is enclosed within `10⁻⁴` of a decimal table (`table4`, `table7`), and the form of the
@@ -181,6 +183,14 @@ theorem log_twelve : Real.log 12 = 2 * Real.log 2 + Real.log 3 := by
 theorem log_fourteen : Real.log 14 = Real.log 2 + Real.log 7 := by
   rw [show (14 : ℝ) = 2 * 7 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
 
+theorem log_fifteen : Real.log 15 = Real.log 3 + Real.log 5 := by
+  rw [show (15 : ℝ) = 3 * 5 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
+
+theorem log_sixteen : Real.log 16 = 4 * Real.log 2 := by
+  rw [show (16 : ℝ) = 2 ^ 4 by norm_num, Real.log_pow]
+  push_cast
+  ring
+
 /-! ### The contacts up to `4` and up to `7` -/
 
 theorem vonMangoldt_two : (Λ 2 : ℝ) = Real.log 2 := by
@@ -257,7 +267,7 @@ macro "block_entry" : tactic =>
   `(tactic|
     (simp only [blockDegree, blockDensity, blockJet, xLogXDiff, xLogX]
      norm_num [log_two_pi, log_four, log_six, log_eight, log_nine, log_ten, log_twelve,
-       log_fourteen]
+       log_fourteen, log_fifteen, log_sixteen]
      linarith [Real.log_two_gt_d9, Real.log_two_lt_d9, log_three_mem.1, log_three_mem.2,
        log_five_mem.1, log_five_mem.2, log_seven_mem.1, log_seven_mem.2, log_eleven_mem.1,
        log_eleven_mem.2, log_thirteen_mem.1, log_thirteen_mem.2, log_pi_lt,
@@ -458,6 +468,155 @@ theorem sum_blockMatrix_seven_ge (σ : ℕ → ℝ) :
     (ε := 1 / 10000) (by norm_num) (fun j l => blockMatrix_comm 7 _ _) table7_symm table7_diag
     table7_off)
   have h := table7_form_ge σ
+  have h0 : 0 ≤ ∑ j ∈ range 6, σ j ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  push_cast
+  linarith
+
+/-! ### Ratio four on finer blocks: the six blocks above two -/
+
+/-- The decimal table of the block matrix with the contacts up to `4` on the blocks
+`2, …, 7`. -/
+def table4fine : ℕ → ℕ → ℝ
+  | 0, 0 => 0.20465
+  | 1, 1 => 0.3379
+  | 2, 2 => 0.4775
+  | 3, 3 => 0.60735
+  | 4, 4 => 0.72548
+  | 5, 5 => 0.83273
+  | 0, 1 => -0.08372
+  | 1, 0 => -0.08372
+  | 0, 2 => -0.05126
+  | 2, 0 => -0.05126
+  | 0, 3 => 0.00865
+  | 3, 0 => 0.00865
+  | 0, 4 => 0.01141
+  | 4, 0 => 0.01141
+  | 0, 5 => 0.02203
+  | 5, 0 => 0.02203
+  | 1, 2 => -0.24499
+  | 2, 1 => -0.24499
+  | 1, 3 => 0.15271
+  | 3, 1 => 0.15271
+  | 1, 4 => -0.12472
+  | 4, 1 => -0.12472
+  | 1, 5 => -0.09721
+  | 5, 1 => -0.09721
+  | 2, 3 => -0.33777
+  | 3, 2 => -0.33777
+  | 2, 4 => 0.07015
+  | 4, 2 => 0.07015
+  | 2, 5 => 0.14506
+  | 5, 2 => 0.14506
+  | 3, 4 => -0.39839
+  | 4, 3 => -0.39839
+  | 3, 5 => 0.01573
+  | 5, 3 => 0.01573
+  | 4, 5 => -0.44121
+  | 5, 4 => -0.44121
+  | _, _ => 0
+
+theorem table4fine_symm (j l : ℕ) : table4fine j l = table4fine l j := by
+  rcases j with _ | _ | _ | _ | _ | _ | j <;> rcases l with _ | _ | _ | _ | _ | _ | l <;> rfl
+
+theorem table4fine_diag (j : ℕ) (hj : j < 6) :
+    table4fine j j ≤ blockMatrix 4 (2 + j) (2 + j) := by
+  interval_cases j
+  · show (0.20465 : ℝ) ≤ blockMatrix 4 2 2
+    rw [blockMatrix_self (by norm_num)]
+    block_entry
+  · show (0.3379 : ℝ) ≤ blockMatrix 4 3 3
+    rw [blockMatrix_self (by norm_num)]
+    block_entry
+  · show (0.4775 : ℝ) ≤ blockMatrix 4 4 4
+    rw [blockMatrix_self (by norm_num)]
+    block_entry
+  · show (0.60735 : ℝ) ≤ blockMatrix 4 5 5
+    rw [blockMatrix_self (by norm_num)]
+    block_entry
+  · show (0.72548 : ℝ) ≤ blockMatrix 4 6 6
+    rw [blockMatrix_self (by norm_num)]
+    block_entry
+  · show (0.83273 : ℝ) ≤ blockMatrix 4 7 7
+    rw [blockMatrix_self (by norm_num)]
+    block_entry
+
+/-- An entry off the diagonal of the block matrix with the contacts up to `4`, within `10⁻⁴` of
+a decimal. -/
+macro "block_off4" : tactic =>
+  `(tactic|
+    (rw [blockMatrix_of_lt (by norm_num), floorContact_four, abs_le]
+     constructor <;> block_entry))
+
+theorem table4fine_off (j l : ℕ) (hjl : j < l) (hl : l < 6) :
+    |blockMatrix 4 (2 + j) (2 + l) - table4fine j l| ≤ 1 / 10000 := by
+  interval_cases l <;> interval_cases j
+  · show |blockMatrix 4 2 3 - (-0.08372)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 2 4 - (-0.05126)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 3 4 - (-0.24499)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 2 5 - 0.00865| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 3 5 - 0.15271| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 4 5 - (-0.33777)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 2 6 - 0.01141| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 3 6 - (-0.12472)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 4 6 - 0.07015| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 5 6 - (-0.39839)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 2 7 - 0.02203| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 3 7 - (-0.09721)| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 4 7 - 0.14506| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 5 7 - 0.01573| ≤ 1 / 10000
+    block_off4
+  · show |blockMatrix 4 6 7 - (-0.44121)| ≤ 1 / 10000
+    block_off4
+
+/-- The table minus `106/10000` is a sum of six squares plus a diagonally dominant remainder:
+the Cholesky factors of the table minus `1/50`, eliminated from the last block. -/
+theorem table4fine_form_ge (σ : ℕ → ℝ) :
+    106 / 10000 * ∑ j ∈ range 6, σ j ^ 2 ≤
+      ∑ j ∈ range 6, ∑ l ∈ range 6, σ j * σ l * table4fine j l := by
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, table4fine]
+  have s6 := mul_nonneg (by norm_num : (0 : ℝ) ≤ 0.8127736)
+    (sq_nonneg (σ 5 + 0.0271059 * σ 0 + -0.119607 * σ 1 + 0.1784765 * σ 2 + 0.0193533 * σ 3 +
+      -0.5428455 * σ 4))
+  have s5 := mul_nonneg (by norm_num : (0 : ℝ) ≤ 0.4660141)
+    (sq_nonneg (σ 4 + 0.0501378 * σ 0 + -0.38088 * σ 1 + 0.3195163 * σ 2 + -0.8365672 * σ 3))
+  have s4 := mul_nonneg (by norm_num : (0 : ℝ) ≤ 0.2609586)
+    (sq_nonneg (σ 3 + 0.1064153 * σ 0 + 0.02339 * σ 1 + -0.8277525 * σ 2))
+  have s3 := mul_nonneg (by norm_num : (0 : ℝ) ≤ 0.205268)
+    (sq_nonneg (σ 2 + -0.1932771 * σ 0 + -0.8080658 * σ 1))
+  have s2 := mul_nonneg (by norm_num : (0 : ℝ) ≤ 0.1045294) (sq_nonneg (σ 1 + -1.0035191 * σ 0))
+  have s1 := mul_nonneg (by norm_num : (0 : ℝ) ≤ 0.0670439) (sq_nonneg (σ 0))
+  linarith [sq_nonneg (σ 0), sq_nonneg (σ 1), sq_nonneg (σ 2), sq_nonneg (σ 3), sq_nonneg (σ 4),
+    sq_nonneg (σ 5), sq_nonneg (σ 0 - σ 1), sq_nonneg (σ 0 + σ 1), sq_nonneg (σ 0 - σ 2),
+    sq_nonneg (σ 0 + σ 2), sq_nonneg (σ 0 - σ 3), sq_nonneg (σ 0 + σ 3), sq_nonneg (σ 0 - σ 4),
+    sq_nonneg (σ 0 + σ 4), sq_nonneg (σ 0 - σ 5), sq_nonneg (σ 0 + σ 5), sq_nonneg (σ 1 - σ 2),
+    sq_nonneg (σ 1 + σ 2), sq_nonneg (σ 1 - σ 3), sq_nonneg (σ 1 + σ 3), sq_nonneg (σ 1 - σ 4),
+    sq_nonneg (σ 1 + σ 4), sq_nonneg (σ 1 - σ 5), sq_nonneg (σ 1 + σ 5), sq_nonneg (σ 2 - σ 3),
+    sq_nonneg (σ 2 + σ 3), sq_nonneg (σ 2 - σ 4), sq_nonneg (σ 2 + σ 4), sq_nonneg (σ 2 - σ 5),
+    sq_nonneg (σ 2 + σ 5), sq_nonneg (σ 3 - σ 4), sq_nonneg (σ 3 + σ 4), sq_nonneg (σ 3 - σ 5),
+    sq_nonneg (σ 3 + σ 5), sq_nonneg (σ 4 - σ 5), sq_nonneg (σ 4 + σ 5)]
+
+/-- **Ratio four on finer blocks.** The block matrix on the blocks `2, …, 7` with the contacts
+up to `4` is at least `1/100`. -/
+theorem sum_blockMatrix_four_fine_ge (σ : ℕ → ℝ) :
+    1 / 100 * ∑ j ∈ range 6, σ j ^ 2 ≤
+      ∑ j ∈ range 6, ∑ l ∈ range 6, σ j * σ l * blockMatrix 4 (2 + j) (2 + l) := by
+  refine le_trans ?_ (sum_sum_mul_ge_of_close σ (fun j l => blockMatrix 4 (2 + j) (2 + l))
+    table4fine (ε := 1 / 10000) (by norm_num) (fun j l => blockMatrix_comm 4 _ _)
+    table4fine_symm table4fine_diag table4fine_off)
+  have h := table4fine_form_ge σ
   have h0 : 0 ≤ ∑ j ∈ range 6, σ j ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
   push_cast
   linarith

@@ -877,21 +877,70 @@ theorem summable_ef : Summable (eCoef χ) ∧ Summable (fCoef χ) := by
   exact summable_affine (x₁ := (2 : ℝ)) (x₂ := (3 : ℝ)) (by norm_num) (hrest 2 (by norm_num))
     (hrest 3 (by norm_num))
 
-/-- **The explicit formula for a primitive character.** For `X > 1`,
-`X S(X, χ) − ψ(X, χ) = −Σ_ρ X^ρ/(ρ(ρ−1)) + αX + β + γ' log X + Θ(X)`, `|Θ(X)| ≤ D/X`,
-with `X S − ψ = Σ_{n ≤ X} χ(n)Λ(n)(X/n − 1)`. -/
-theorem explicitFormula (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
-    ∃ α β γ' : ℂ, ∃ D : ℝ, 0 ≤ D ∧ ∀ X : ℝ, 1 < X →
+/-- The coefficient `γ' = ½ Σ_k ℓ_k` of `log X` in the explicit formula (from the trivial zero at
+`0` of an even character). -/
+def efGamma (χ : DirichletCharacter ℂ N) : ℂ := (1 / 2) * ∑' k, lCoef χ k
+
+/-- The constant `D = Σ_{k ≥ 0} (k+1)^{−2}` of the remainder `D/X` in the explicit formula. -/
+def efD : ℝ := ∑' k : ℕ, 1 / ((k : ℝ) + 1) ^ (2 : ℕ)
+
+theorem efD_nonneg : 0 ≤ efD := tsum_nonneg fun k => by positivity
+
+omit [NeZero N] in
+/-- `|γ'| ≤ 1`: only the trivial zero `0` of an even character contributes. -/
+theorem norm_efGamma_le (χ : DirichletCharacter ℂ N) : ‖efGamma χ‖ ≤ 1 := by
+  have h0 : ∀ k : ℕ, k ≠ 0 → lCoef χ k = 0 := by
+    intro k hk
+    unfold lCoef
+    rw [if_neg]
+    intro hp
+    have := congrArg Complex.re hp
+    rw [trivialPoint_re, zero_re] at this
+    have := Nat.cast_nonneg (α := ℝ) (parity χ)
+    have : (1 : ℝ) ≤ k := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk
+    linarith
+  rw [efGamma, tsum_eq_single 0 h0]
+  have : ‖lCoef χ 0‖ ≤ 2 := by
+    unfold lCoef
+    split_ifs <;> simp
+  rw [norm_mul]
+  calc ‖(1 / 2 : ℂ)‖ * ‖lCoef χ 0‖ ≤ ‖(1 / 2 : ℂ)‖ * 2 := by gcongr
+    _ = 1 := by norm_num
+
+/-- `D = ζ(2) ≤ 2`. -/
+theorem efD_le_two : efD ≤ 2 := by
+  have h := (hasSum_nat_add_iff' 1).mpr hasSum_zeta_two
+  have h' : HasSum (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ (2 : ℕ)) (Real.pi ^ 2 / 6) := by
+    have e1 : (fun k : ℕ => 1 / ((k : ℝ) + 1) ^ (2 : ℕ))
+        = fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+      funext k
+      push_cast
+      ring
+    have e2 : Real.pi ^ 2 / 6
+        = Real.pi ^ 2 / 6 - ∑ i ∈ Finset.range 1, 1 / ((i : ℕ) : ℝ) ^ 2 := by simp
+    rw [e1, e2]
+    exact h
+  rw [efD, h'.tsum_eq]
+  have := Real.pi_lt_d2
+  have := Real.pi_pos
+  nlinarith
+
+/-- **The explicit formula for a primitive character, with uniform constants.** For `X > 1`,
+`X S(X, χ) − ψ(X, χ) = −Σ_ρ X^ρ/(ρ(ρ−1)) + αX + β + γ' log X + Θ(X)` with `γ' = efGamma χ` and
+`|Θ(X)| ≤ efD/X`. -/
+theorem explicitFormula_uniform (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∃ α β : ℂ, ∀ X : ℝ, 1 < X →
       ‖∑ n ∈ Finset.Icc 1 ⌊X⌋₊, twistedVM χ n * ((X : ℂ) / n - 1) +
           ∑' q : LZero χ, (X : ℂ) ^ q.point / (q.point * (q.point - 1)) -
-          (α * X + β + γ' * Complex.log X)‖ ≤ D / X := by
+          (α * X + β + efGamma χ * Complex.log X)‖ ≤ efD / X := by
   obtain ⟨c, hc⟩ := explicit_identity hχ hprim
   obtain ⟨hu, hv⟩ := summable_uv hχ hprim
   obtain ⟨he, hf⟩ := summable_ef (χ := χ)
   set D : ℝ := ∑' k : ℕ, 1 / ((k : ℝ) + 1) ^ (2 : ℕ)
   refine ⟨c - ∑' q : LZero χ, uCoef q.point + (1 / 2) * ∑' k, eCoef χ k,
-    -c - ∑' q : LZero χ, vCoef q.point + (1 / 2) * ∑' k, fCoef χ k,
-    (1 / 2) * ∑' k, lCoef χ k, D, tsum_nonneg fun k => by positivity, fun X hX => ?_⟩
+    -c - ∑' q : LZero χ, vCoef q.point + (1 / 2) * ∑' k, fCoef χ k, fun X hX => ?_⟩
+  show _ ≤ D / X
+  simp only [efGamma]
   have hX0 : 0 < X := by linarith
   have hz : ∑' q : LZero χ, zVal X q.point =
       ∑' q : LZero χ, (X : ℂ) ^ q.point / (q.point * (q.point - 1)) +
@@ -924,6 +973,17 @@ theorem explicitFormula (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
           rw [← norm_neg]; congr 1; ring
     _ ≤ X⁻¹ * D := hg
     _ = D / X := by ring
+
+/-- **The explicit formula for a primitive character.** For `X > 1`,
+`X S(X, χ) − ψ(X, χ) = −Σ_ρ X^ρ/(ρ(ρ−1)) + αX + β + γ' log X + Θ(X)`, `|Θ(X)| ≤ D/X`,
+with `X S − ψ = Σ_{n ≤ X} χ(n)Λ(n)(X/n − 1)`. -/
+theorem explicitFormula (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∃ α β γ' : ℂ, ∃ D : ℝ, 0 ≤ D ∧ ∀ X : ℝ, 1 < X →
+      ‖∑ n ∈ Finset.Icc 1 ⌊X⌋₊, twistedVM χ n * ((X : ℂ) / n - 1) +
+          ∑' q : LZero χ, (X : ℂ) ^ q.point / (q.point * (q.point - 1)) -
+          (α * X + β + γ' * Complex.log X)‖ ≤ D / X := by
+  obtain ⟨α, β, h⟩ := explicitFormula_uniform hχ hprim
+  exact ⟨α, β, efGamma χ, efD, efD_nonneg, h⟩
 
 end
 

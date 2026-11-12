@@ -103,7 +103,8 @@ hypothesis. Proved without hypothesis:
   graph are the powers of its contact with the diagonal;
 - it is a statement about finite matrices: it holds iff Weil's form is nonnegative on step
   packets, and iff at every large scale the form on the comb is at least `−η Σ c_n²` on all
-  real divisors of a window.
+  real divisors of a window. The matrices are explicit (§2.6), and the first two with contacts
+  are positive with a margin: on the three unit blocks of `(1, 4]` and on the six of `(1, 7]`.
 
 ### 2.4 What is forced
 
@@ -137,14 +138,23 @@ Each clause is a reading of theorems of §6.
    each parameter.
 4. Its Néron–Severi lattice is the same for every number ring up to the density of the comb.
    The index is the number of distinct zeros to the right of the line, for each Hecke character
-   and for the Artin character of degree two of the cube roots of two.
+   and for the Artin character of degree two of the cube roots of two. For a virtual character,
+   a quotient of `L`-functions, it counts zeros and poles: every point right of the line with
+   net multiplicity not zero, and every pole on the line.
 5. Its sections count like a curve, not like a surface: the volume over the gluing index, with
    no quadratic term.
-6. Its index is a function of the aperture: it does not decrease, immediately right of an
-   aperture it is the index plus the number of null modes there, and below every aperture
-   only finitely many apertures carry a null mode (corpus).
-7. Its zero width is read on one sequence of tails: the power tail of exponent `a` grows at the
-   rate `σ` iff no zero has real part above `1 − a + σ`.
+6. Its index is a Morse index of the aperture: at every energy the negative index of Weil's
+   form at an aperture is the sum of the numbers of null modes of the smaller apertures, a
+   finite sum (`negativeRank_eq_sum_nullity`). At the energy zero the null modes of all
+   apertures together count the zeros to the right of the line. The Riemann hypothesis is the
+   statement that the path has no conjugate point. The index is a crossing number in a
+   symplectic space: the conormals of the apertures are a path of Lagrangian subspaces that
+   does not depend on the primes, the graph of Weil's operator is one fixed Lagrangian, and the
+   null modes are their crossings. The same index counts the eigenvalues below the energy: the
+   number of null modes met between two points of the (aperture, energy) plane does not depend
+   on the monotone path.
+7. Its zero width is read on one sequence of tails: the power tail of exponent `a`,
+   `0 < a < ½`, is `O(N^{σ+ε})` for every `ε > 0` iff no zero has real part above `1 − a + σ`.
 8. Passing from `𝔽_p[T]` to `ℤ` is a deformation by the carry, a cocycle that is not a
    coboundary; it keeps the lattice and loses the count. Extensions of the base are covers
    with ramification, not extensions of constants, and `ζ` is the fixed part of every family
@@ -153,6 +163,39 @@ Each clause is a reading of theorems of §6.
    not a count rate: a bounded count error identifies the rational primes, and at every
    exponent above `½` there are systems with integer norms, a count with that power saving,
    and a zero that `ζ` does not have (test bench).
+
+### 2.6 The matrix at finite scale
+
+On the unit blocks `(a, a + 1]`, `a = R, …, R + J − 1`, Weil's form `𝔚_Q` of a step packet is
+the quadratic form of the **block matrix**
+
+  `m(a, b) = d(a) + d(b) + δ_{ab} ϱ(a) − J(a, b) − Σ_{k ≤ Q} (Λ(k)/k)·[⌊b/k⌋ = a]`,  `a ≤ b`.
+
+- `d(a) = log((a + 1)/a)`: the degrees; `d ⊗ 1 + 1 ⊗ d` is the pole plane.
+- `ϱ(a) = ∫_a^{a+1} log(x/2π) dx + 1 − γ`: the density of the comb, on the diagonal.
+- `J(a, b) = ½(D(a + b + 1) + D(b − a))`, `D` the second difference of `n log n`: the jets.
+- The contacts are the graphs of the **floor maps** `b ↦ ⌊b/k⌋`, with the weights `Λ(k)/k`:
+  the block `b` lies in the `k`-fold dilate of the block `a` iff `⌊b/k⌋ = a`. For a prime `p`
+  the maps `b ↦ ⌊b/p^j⌋` are the ancestors in the `p`-ary tree on the integers, so at finite
+  scale the tree of `p` is this tree, with the weight `log p / p^j` on the ancestor of order
+  `j`.
+
+So the step-packet matrices are the intersection matrices of the blocks under these
+correspondences (`packetForm_stepPacket_eq_sum_blockMatrix`). Without the degrees the matrix
+is a potential plus the Dirichlet form of a weighted graph: the jets join every pair of blocks
+and the floor maps join a block to its images, with positive weights. The degrees add the
+product of the two charges of the packet, a hyperbolic plane. On the first step packets the
+neutral part has exactly one negative square, the signature of an intersection form on a
+surface; the hyperbolic plane is what makes the matrix positive. Their index is bounded by the
+Morse index of the aperture path: at most the number of null modes below any aperture wider
+than half the length of the window. No index theorem intrinsic to the floor maps is known.
+On the blocks `1, 2, 3` with `Q = 4` the matrix is at least `1/20`, on the blocks `1, …, 6`
+with `Q = 7` at least `1/100`; the second is not diagonally dominant. On the blocks `2, …, 7`
+with `Q = 4`, the window of ratio four on blocks of half the size, it is at least `1/100`; the
+least eigenvalue falls from near `0.069` to near `0.03`. The matrices of one
+window ratio form a tower: translation by `log m` refines the blocks above `R` into the blocks
+above `mR`, so the matrix above `R` is a compression of the matrix above `mR`, and a margin on
+the finer blocks is a margin on the coarser ones.
 
 ## 3. Objects
 
@@ -172,6 +215,10 @@ Each clause is a reading of theorems of §6.
 | Zero sum, defect | `zeroSum`, `offLineDefect` | `Z(f)`; `Σ_ρ m_ρ\|f̂(γ_ρ) − f̂(conj γ_ρ)\|²/4` |
 | Weil's form of a bounded packet | `packetForm`, `flatPacket`, `stepPacket` | `𝔚_Q(g)`: pole term, `A(0) h_g(0)`, the jump integral of `h_g`, the contacts up to `Q`; `e^{u/2}` on a window; a combination of flat packets of adjacent windows |
 | Divisors on blocks | `windowDivisor`, `nestedCoeff` | `1` on `(A, B]`; the coefficients of a block-constant divisor on nested windows |
+| Block matrix | `blockMatrix`, `blockDegree`, `blockDensity`, `blockJet`, `floorContact`, `windowClosed` | the matrix of `𝔚_Q` on step packets and its four parts; the closed form of `𝔚_Q` on a window |
+| Aperture path | `negativeRank`, `weilNullity` (corpus), `resonantBelow`, `eigenvaluesBelow` | the negative index and the number of null modes of Weil's form restricted to an aperture, at an energy; the resonant apertures below an aperture; the eigenvalues below an energy |
+| Lagrangians of the path | `sympForm`, `weilGraph`, `apertureConormal`, `apertureCrossing` | `ω((x, y), (x′, y′)) = ⟨y, x′⟩ − ⟨x, y′⟩` on `H_b × H_b`; the graph of Weil's operator at `b`; `H_a × H_aᗮ` for `a ≤ b`; the dimension of their crossing |
+| Charges | `polarCharge`, `polarLagrangian`, `chargedNullity`, `neutralNullity` | the two pole coefficients of a vector; the pairs (charges, forcing) of the solutions of the forced equation, a Lagrangian plane in `ℂ² × ℂ²`; the dimension of the charges of the null modes; the dimension of the null modes without charge |
 | Bézout and its variants | `CombBezout`, `CombBezoutAt`, `CombBezoutShift`, `CombBezoutWith`, `CombBezoutScaled` | on all packets; at an aperture; with another constant; with a pair `(δ, c)`; with scaled contacts |
 | Tree with an edge length | `treeDeviation`, `busemannMass`, `TreeBezout`, `TreeBezoutAt`, `treeGenerator` | contacts `ℓ` along the chains of `p`; `v_p(n)` against the masses; `E_p(f) = ∫f²/(p−1) − (2/√p)·h_f(log p)` |
 | Contact at its price | `contactAt`, `priceGenerator`, `PriceBezoutAt` | the contact at `n₀` changed by `t`, the counterterm raised by `2\|t\|/√n₀`; `(\|t\|/√n₀)∫(f(u + log n₀) − sgn(t) f(u))²`; Bézout at a length along the path |
@@ -197,7 +244,15 @@ Each clause is a reading of theorems of §6.
 - **Bézout at an aperture**: the inequality on the packets of that aperture. **Margin**: `c₀`
   with `D·D ≤ 2 d₁ d₂ − c₀ ∫f²` there.
 - **Index** of a square: the largest number of negative squares of `2 d₁ d₂ − D·D` on a finite
-  family of tests.
+  family of tests. **Index at an aperture**: the same on tests of that aperture. **Null mode**:
+  a test of an aperture that pairs to zero with every test of the aperture. **Resonant** (or
+  **conjugate**) **aperture**: one that carries a null mode.
+- **Charge** of a vector: its two pole coefficients. A null mode is **charged** if its charge is
+  not zero, **neutral** otherwise. **Forcing**: a combination of the two pole profiles on the
+  right of the equation of a null mode. **Eigenvalue** at an aperture: an energy with a null
+  mode. **Pole-vanishing ground energy** `μ₀(a)`: the floor of Weil's form on the vectors
+  without charge (corpus).
+- **Block**: the interval `(a, a + 1]`. **Floor map** of `k`: `b ↦ ⌊b/k⌋` on the blocks.
 - **Pair** `(δ, c)`: a deviation of the contacts and a constant added to the counterterm.
   **Symbol** `P_δ(τ) = Σ 2 δ(n) n^{−1/2} cos(τ log n)`; its supremum is the **price** of `δ`.
 - **Path of the price** at `n₀`: the squares with the contact at `n₀` changed by `t` and the
@@ -287,6 +342,47 @@ Each clause is a reading of theorems of §6.
     same recursion is `ρ + (1 − ρ) = 1`. Only the flat tail needs analysis, and it pairs through
     its row: von Mangoldt's formula for `ψ` at the ratio `N/n`.
 
+24. **The dilate of a block is a union of blocks.** The contact of `k` between two windows is
+    the overlap `(b/k − a)⁺`; its mixed second difference at integer ends is `−1/k` if
+    `⌊b/k⌋ = a` and `0` otherwise. So the contacts of a step packet are the graphs of the
+    floor maps, and pole term and jets are mixed second differences of `x log x`.
+25. **An interval matrix with a Cholesky certificate.** Each entry of a block matrix is an
+    integer combination of `γ`, `log π` and logarithms of primes, enclosed within `10⁻⁴` of a
+    decimal; the decimal matrix minus the margin is a sum of squares plus a diagonally
+    dominant remainder.
+26. **The index at an aperture is attained strictly inside.** The negative index is attained on
+    finitely many smooth packets with compact support in the open aperture; they live in a
+    smaller aperture with the same form and the same mass. With the jump to the right (the
+    nullity) and the logarithmic floor of the ground energy at small apertures, an induction
+    on the index gives the law of a Morse index.
+
+27. **A pole is a zero with the sign reversed.** In the coordinates of the zeros, the form of a
+    quotient is `⟨T x, y⟩` with `(T x)_τ = s_τ x_{1−τ̄}`, `s = −1` at a pole. Off the line the
+    pair `τ, 1 − τ̄` is a hyperbolic plane for either sign: one negative square. On the line a
+    zero is a positive square and a pole a negative one. Common zeros cancel before counting.
+
+28. **A compression is a crossing.** For a self-adjoint `T` on `H` and a closed subspace `K`,
+    the graph of `T` and the conormal `K × Kᗮ` are Lagrangian in `H × H`, and they meet in the
+    `x ∈ K` with `T x ⊥ K`: the null space of the form of `T` on `K`. Weil's operator at a
+    larger aperture compresses to Weil's operator at a smaller one, so one graph meets the
+    conormals of all smaller apertures in their null modes.
+
+29. **The polar relation.** For a self-adjoint `T = 1 − compact` and a charge map `d` to a
+    finite-dimensional space, the pairs `(d ξ, y)` with `T ξ = d† y` form a Lagrangian
+    subspace: isotropic by symmetry of `T`, half-dimensional because the range of `T` is the
+    orthogonal complement of its kernel. It meets the charge axis in `d(ker T)` and the forcing
+    axis in the null vectors of the form of `T` on `ker d`. It sees a null vector only through
+    its charge. With a symmetry that exchanges the two charges, an isotropic plane in
+    `ℂ² × ℂ²` is the sum of a line of equal pairs and a line of opposite pairs: two pairs of
+    one parity `(s, t)`, `(s′, t′)` are isotropic iff `t̄ s′ = s̄ t′`, so they are proportional.
+
+30. **One counting law, two directions.** A count on the line that grows by the jump across
+    every point, is constant just below, jumps by exactly the jump just above and vanishes
+    somewhere is the sum of the jumps below. In the aperture the jump is the nullity (strict
+    interior, compact limit); in the energy as well (a negative form on a finite-dimensional
+    space is uniformly negative; extra negative unit vectors have a weak limit that is a null
+    mode orthogonal to itself).
+
 ## 6. Pillar theorems
 
 | Area | Theorem | Lean |
@@ -311,6 +407,9 @@ Each clause is a reading of theorems of §6.
 | | under RH Weil's form is nonnegative on bounded packets that are not smooth | `packetForm_nonneg_of_riemannHypothesis` |
 | | RH ⇔ Weil's form is nonnegative on the step packets of `3KR` blocks, all `K, R` | `riemannHypothesis_iff_forall_packetForm_stepPacket_nonneg` |
 | | RH ⇔ at every large scale `2 d₁ d₂ − D·D ≥ −η Σ c_n²` on all real divisors of a window | `riemannHypothesis_iff_eventually_combForm_ge` |
+| | the matrix of `𝔚_Q` on step packets is the block matrix of the degrees, the density, the jets and the floor maps | `packetForm_stepPacket_eq_sum_blockMatrix`, `windowClosed_mixed` |
+| | the first windows with contacts: `𝔚_4 ≥ (1/20) Σσ_j²` on the three blocks of `(1, 4]`, `𝔚_7 ≥ (1/100) Σσ_j²` on the six blocks of `(1, 7]`, `𝔚_4 ≥ (1/100) Σσ_j²` on the six blocks of `(2, 8]`; on the comb, divisors constant on the three blocks of `(B, 4B]` have form `≥ (1/40) B Σσ_j²` for `B ≥ 300000`, on the six blocks of `(B, 7B]` and of `(2B, 8B]` form `≥ (1/200) B Σσ_j²` for `B ≥ 3000000` | `packetForm_stepPacket_ratioFour_ge`, `packetForm_stepPacket_ratioSeven_ge`, `packetForm_stepPacket_ratioFour_fine_ge`, `combForm_ratioFour_ge`, `combForm_ratioSeven_ge`, `combForm_ratioFour_fine_ge` |
+| | the tower of a window: `𝔚_Q` of a step packet above `R` is `𝔚_Q` of its refinement above `mR`; a margin on finer blocks is a margin on coarser blocks | `packetForm_stepPacket_refine`, `sum_blockMatrix_refine`, `margin_of_refined_margin` |
 | | on `[1, N]` the form is a quadratic form in the increments of the divisor, with the rows of the flat tails (the remainders of the prime number theorem) as coefficients | `combForm_Icc_eq_sum_increments` |
 | | the explicit error: on `J` blocks of `B` points above `RB` the form per block point differs from `𝔚_Q` of the step packet by at most `6(J+1)·(2X + 16(1 + log 2XB) + 2ψ(Q))/B · Σσ_j²`, `X = R + J`; a margin of the matrix gives the sign of the comb at explicit block sizes, and conversely | `abs_combForm_blockFunction_div_sub_le`, `le_combForm_of_packetForm_ge`, `packetForm_ge_of_combForm_ge` |
 | Tails | Weil's form of two logarithmic tails per degree point: `𝔚_{[1,N]}(log^k(N/·), log^l(N/·))/N → k! l! Re Σ_ρ ρ^{−k−1}(1−ρ)^{−l−1}` | `tendsto_logTailForm_div_zeroMoment` |
@@ -318,6 +417,21 @@ Each clause is a reading of theorems of §6.
 | | the row of the flat tail is `1/t − ψ(1/t) − ½ log(1−t²) − log 2π` in the coordinate `t = n/N`; its Mellin transform is `Σ_ρ 1/(ρ(s−ρ))` and its logarithmic moments are `j! Σ_ρ 1/(ρ(1−ρ)^{j+1})` | `mellin_rowProfile`, `rowMoment_eq_tsum` |
 | | the scaling recursion: the forms of all logarithmic tails are determined by their pairings with the flat tail | `logTailForm_succ`, `tendsto_logTailForm_div` |
 | | power tails `F_a(N)`, the form of `(N/n)^a` on `[1, N]` per degree point, `0 < a < ½`: growth at every rate above `σ` iff no zero has real part above `1 − a + σ`; the tails converge exactly for `a < ½ − w`, `w` the width of the zeros; RH iff every tail converges | `powerCombTailGrowth_iff_zeroHalfPlane`, `powerCombConvergenceRadius_eq_half_sub_zeroWidth`, `riemannHypothesis_iff_all_powerCombTails_converge` |
+| The aperture path | at every energy the negative index at an aperture is the sum of the nullities of the resonant apertures below it; the index is attained at a smaller aperture; it vanishes at small apertures | `negativeRank_eq_sum_nullity`, `exists_smaller_aperture_negativeRank_eq`, `exists_aperture_negativeRank_eq_zero` |
+| | RH iff no aperture carries a null mode at the energy zero | `riemannHypothesis_iff_forall_weilNullity_zero` |
+| | the far end: `ζ` has at least `r` distinct zeros right of the line iff some finite set of apertures carries `r` null modes in total; the index exhausts the zeros | `nat_le_rightZeros_iff_exists_sum_nullity`, `iSup_negativeRank_zero_eq_rightZeros` |
+| | the Gram matrix of `𝔚_Q − E` on the flat packets of nested windows in `(x₀, X]` has at most as many negative squares as the path has null modes below any aperture wider than `½ log(X/x₀)` | `negIndex_nestedStepGram_le_sum_nullity` |
+| | the index as a crossing number: in `H_b × H_b` the graph of Weil's operator and the conormals of the apertures `a ≤ b` are Lagrangian, the path of conormals is increasing and ends at `H_b × 0`, its crossing with the graph at `a` is the space of null modes at `a`, and the index at `b` is the number of crossings | `mem_weilGraph_iff_forall_sympForm`, `mem_apertureConormal_iff_forall_sympForm`, `finrank_weilGraph_inf_apertureConormal`, `negativeRank_eq_sum_apertureCrossing` |
+| | the index in the energy: the number of eigenvalues below `E`, with multiplicity; the ground energy is the lowest eigenvalue | `negativeRank_eq_sum_eigenvalues`, `weilNullity_groundEnergy_pos` |
+| | two paths, one index: the null modes met along the apertures up to `b` at the energy `E` are as many as the eigenvalues below `E` at `b`; on a rectangle of apertures and energies the two monotone paths meet equally many null modes | `sum_nullity_apertures_eq_sum_eigenvalues`, `null_modes_along_two_paths` |
+| The charge of a null mode | the polar Lagrangian of an aperture is a Lagrangian plane in `ℂ² × ℂ²`; it meets the charge axis in the charges of the null modes and the forcing axis in the null modes of the form on the vectors without charge; nullity = charged nullity + neutral nullity, charged nullity `≤ 2` | `finrank_polarLagrangian`, `polarLagrangian_isotropic`, `mem_nullCharges_iff`, `exists_forcing_iff_constrained_null`, `weilNullity_eq_charged_add_neutral` |
+| | a null mode at an energy below `μ₀(a)` is charged; up to `μ₀(a)` the index is at most two; the ground modes are all charged iff `μ(a) < μ₀(a)` | `neutralNullity_eq_zero_of_lt_polarGroundEnergy`, `negativeRank_le_two_of_le_polarGroundEnergy`, `neutralNullity_groundEnergy_eq_zero_iff` |
+| | below `μ₀(b)` the index at `b` is the number of crossings of the polar Lagrangian with the charge axis; without hypothesis for `b ≤ ½(log 2 + 1/50)` and `E < 1/20` | `negativeRank_eq_sum_chargedNullity_of_lt_polarGroundEnergy`, `negativeRank_eq_sum_chargedNullity_of_le_primeTwo` |
+| | parity: Weil's operator commutes with the reflection of the aperture, which exchanges the two charges; the polar Lagrangian is an even line and an odd line; a charged null mode has a charged null mode of pure parity; a crossing of dimension two is an even and an odd charged null mode at one aperture | `operator_reflection`, `finrank_polarLagrangian_inf_parityPairs`, `exists_pureParity_charged_null_mode`, `exists_even_odd_charged_of_chargedNullity_two` |
+| | the nullities are not all even: on a short aperture the null space at the ground energy is a line, and just above that energy the path meets exactly one null mode, of nullity one | `exists_weilNullity_groundEnergy_eq_one`, `exists_single_simple_null_mode` |
+| | up to the ground energy the polar Lagrangian is the graph of a positive form on the forcings: every forcing has one charge, their pairing is the maximum of `2 Re⟨y, d u⟩ − ⟨T u, u⟩`, positive, and increasing in the aperture | `exists_mem_polarLagrangian_of_lt_ground`, `forced_variational`, `re_inner_forcing_charge_pos`, `re_inner_forcing_charge_mono` |
+| The block matrix as a Dirichlet form | on step packets Weil's form is `2 c₀ c₁ + Σ V_j σ_j² + ½ Σ w_{jl}(σ_j − σ_l)²`: the product of the two charges, a potential, and the Dirichlet form of a weighted graph on the blocks whose weights, the jets and the contacts, are positive; the neutral part does not increase under the modulus | `sum_blockMatrix_eq_charges_potential_dirichlet`, `blockWeight_pos`, `sum_neutralBlock_abs_le`, `sum_sum_mul_eq_doob` |
+| | the neutral part is Lorentzian on the first step packets of ratio four and seven: positive with the margin of the block matrix where a charge vanishes, negative on the first block | `sum_neutralBlock_four_ge`, `sum_neutralBlock_seven_ge`, `sum_neutralBlock_four_fine_ge`, `neutralBlock_one_one_neg` |
 | Forced data | weights, constant, scale, tree lengths, exchange law | §2.4 |
 | | a reversed contact at `2` fails | `exists_packet_degreePairing_gt_of_flippedContact` |
 | The tree of `2` | on packets of length `≤ log 4` the generator is `≥ (1 − 1/√2)∫f²`; Bézout is monotone in the length, holds for long trees, and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two` |
@@ -339,6 +453,8 @@ Each clause is a reading of theorems of §6.
 | | below the first contact (packets shorter than `log 2`): `Z_ψ(f) ≥ m_ψ 2d₁d₂ + (log N − (d − c) log 128π − c log 4π)∫f²`; for `\|d_K\| ≥ (128π)^{r₁+r₂−1}(4π)^{r₂}` the inequality holds on the square of the ring with the margin `∫f²/5000` | `heckeZeroSum_ge_of_no_contact`, `heckeZeroSum_nonneg_of_no_contact`, `tendsto_ringForm_le_degrees_of_short` |
 | | summed over the `h` class characters the contacts keep the principal prime powers; `h` times the pairing of the ring with these contacts tends to `2d₁d₂ − Σ_ψ Z_ψ(f)`, and its index is the number of distinct zeros to the right of the line of all `L(s, ψ)` | `sum_heckeMangoldt_trivialModulus`, `classTrivialContact_eq`, `tendsto_ringForm_add_classTrivialContact`, `exists_le_negIndex_classGram_iff` |
 | An extension that is not abelian | the splitting field of `X³ − 2` has the group `S₃`; its character `ρ` of degree two has the contacts `(#{x ∈ 𝔽_{p^m} : x³ = 2} − 1) log p`, which are the von Mangoldt function of the cubic character of `2`, a ray class character modulo `6` of `ℚ(ω)`; Weil's explicit formula and the index law for `ρ` | `exists_not_commute_cubeRootsOfTwo`, `heckeMangoldt_cubicTwoHecke`, `W_artinZeros_eq`, `exists_le_negIndex_artinGram_iff` |
+| Virtual characters | for tempered configurations `A`, `B`, the form `W_A − W_B` has `n` negative squares on some family iff `A − B` has `n` defect points: points right of the line with net multiplicity `≠ 0`, points on the line with net multiplicity `< 0`; it has none iff the quotient has neither zero nor pole off the line and no pole on it | `exists_le_negIndex_sub_zeroGram_iff`, `forall_negIndex_sub_zeroGram_eq_zero_iff` |
+| | the same for quotients of products of `L`-functions, and for the relative square of two number rings | `exists_le_negIndex_quotient_iff`, `exists_le_negIndex_relativeSquare_iff`, `forall_negIndex_relativeSquare_eq_zero_iff` |
 | Order one | two vertical lines weigh the zeros of an entire function of order one; with a functional equation and a conjugation the zeros are a tempered configuration with Weil's explicit formula | `hasSum_zeros_two_lines`, `hasSum_zeros_explicit`, `zerosConfig`, `temperedConfig_zerosConfig` |
 | Twisted parts | nonpositive up to the trivial aperture, uniformly in the character | `exists_uniform_trivial_conductor_aperture` |
 | | a real zero is one square of explicit depth and repels the others | `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`, `exists_twistedComb_square_margin` |
@@ -363,11 +479,11 @@ Each construction asks for a property that is an inequality and has a kill condi
 | I | a path on the comb lattice: the inequality at a base point and a transport that is not RH | every candidate has transport equivalent to RH | closed. Dilation, overlap flow, coupling Laplacian: equivalent to RH (corpus). The length of the tree of `2` is monotone on packets shorter than `log 4`; odd trees fail. The path of the price is monotone at every `n₀ ≥ 2` and is RH at every parameter |
 | II | the archimedean fibre glued to the trees so that the glued form is the comb form | every gluing is the pairing itself or fails | invariant gluings have a constant diagonal; along the comb every free parameter is forced (§2.4) |
 | III | Stepanov on the planar square: a small section vanishing on a window | the forced value is the product of the contact ideals and is attained | closed: `planarValues_eq_prod` |
-| IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters and the character of degree two of `X³ − 2`. Open: Artin characters in general |
+| IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters, the character of degree two of `X³ − 2`, and for every virtual character of Hecke characters (zeros and poles). Open: Brauer's theorem and the reciprocity that make an Artin character such a virtual character |
 | V | Bézout for an integer-norm system on its own comb | the jets of the comb are not those of the system | closed for the squares: `exists_packet_squarePairing_gt` |
 | VI | a count: natural numbers with a quadratic Tate limit | no definition without the form | the count on the object is linear (split norm; volume over the gluing index); counts on the surviving prime rays exist iff RH (corpus). Open: a definition without the form |
-| VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors. Open: the sign of a matrix `𝔚_Q` beyond the first contact |
-| VIII | the index as a topological invariant: index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | not started |
+| VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors; the matrices are those of the floor maps; `𝔚_4` and `𝔚_7` are positive with a margin on unit blocks. Open: finer blocks; an index theorem for the object |
+| VIII | the index as a topological invariant: index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | the index is a Morse index: the sum of the nullities of the conjugate apertures, at every energy; the near end is zero and the far end is the number of zeros right of the line. The symplectic structure exists and is defined from the places: the index is the number of crossings of the aperture conormals with the graph of Weil's operator, and it is the same along every monotone path in the (aperture, energy) plane. The invariant does not fix its own value: index zero is RH |
 | IX | the width on the tails | the growth of the tail is the zero-free half-plane | closed as an equivalence (`powerCombTailGrowth_iff_zeroHalfPlane`) |
 
 **The path at `2`.** A tree of `p` glued with the edge length `ℓ` has the contacts `ℓ` along
@@ -412,7 +528,7 @@ A construction is read against sixteen criteria; the pairing of the degree point
 | C12 | at finite scale it is the sign on step packets | on block-constant divisors the form tends to Weil's form of the step packet with an explicit error, and the inequality at finite scale is RH in both directions |
 | C13 | it is a statement at the point: no deformation of the square transports it | every path through the square of `ℤ` is RH at each parameter |
 | C14 | its count is quadratic in the divisor | the counts on the object are linear |
-| C15 | it treats a null mode at a resonant aperture | the index jumps by the nullity (corpus) |
+| C15 | it treats a null mode at a resonant aperture | the index is the sum of the nullities below (`negativeRank_eq_sum_nullity`) |
 | C16 | its tails grow at the rate of the width | `powerCombTailGrowth_iff_zeroHalfPlane` |
 
 ## 9. Questions, order of work, decisive test
@@ -421,25 +537,29 @@ A construction is read against sixteen criteria; the pairing of the degree point
 |---|---|---|
 | 1 | a count quadratic in the divisor, with the pairing as its Tate limit | Open. On the object every count is linear: the split norm on two graphs, the volume over the gluing index in a box. A count with values in `ℕ` and the integer probes as Tate limit exists iff RH (corpus) |
 | 2 | Bézout from a property of the object | RH. Every structure found is an identity or a receiver; weights, constant, scale, tree lengths and prices admit no deformation |
-| 3 | the index as a homotopy invariant of the aperture path | Open. Known: the jump law and the finiteness of the resonant apertures below an aperture (corpus). No symplectic structure for the family |
-| 4 | Artin characters in general | Proved for one character that is not abelian, of degree two and monomial. Open: every monomial character; characters that are not monomial |
-| 5 | the step-packet matrices as intersection matrices of an object with an index theorem; first the sign of `𝔚_4` | The matrices are explicit and the transfer to the comb has an explicit error. Open: the sign of any `𝔚_Q` with a contact |
-| 6 | the polar charge of a null mode | Open |
+| 3 | the index as a homotopy invariant of the aperture path | Answered as a structure. The index at `b` is the number of crossings of a path of Lagrangian subspaces, the conormals of the apertures, with one fixed Lagrangian, the graph of Weil's operator, in `H_b × H_b`; the crossings are the resonant apertures with their nullities (`negativeRank_eq_sum_apertureCrossing`). The path is defined by the apertures alone; the primes and the poles enter only the graph. The index is the same along every monotone path in the (aperture, energy) plane (`null_modes_along_two_paths`); its far end at the energy zero is the number of zeros right of the line. In the four-dimensional space of charges and forcings the polar Lagrangian sees exactly the charged null modes (question 6); it is an even line and an odd line, so the path is a pair of points on two projective lines (`finrank_polarLagrangian_inf_parityPairs`). The value zero of the index is RH and is not produced by the invariance |
+| 4 | Artin characters in general | Proved: the index law of a virtual character. For a quotient of products of Hecke `L`-functions the index is the number of zeros and poles right of the line plus the number of poles on it (`exists_le_negIndex_quotient_iff`); so Bézout for an Artin character is the Riemann hypothesis of its `L`-function together with Artin's conjecture on the line. Proved for one character that is not abelian (degree two, monomial). Open (classical inputs, not in the corpus): Brauer's theorem; the identification of an induced character with a Hecke character |
+| 5 | the step-packet matrices as intersection matrices of an object with an index theorem; first the sign of `𝔚_4` | The matrices are the intersection matrices of the unit blocks under the floor maps `b ↦ ⌊b/k⌋`, with the degrees, the density and the jets (§2.6); their index is at most the Morse index of the aperture path; they form a tower under refinement. `𝔚_4 ≥ 1/20` on the three blocks of `(1, 4]` and `≥ 1/100` on the six blocks of `(2, 8]`; `𝔚_7 ≥ 1/100` on the six blocks of `(1, 7]`; each with the sign of the comb at explicit block sizes. The neutral part of the matrix is a potential plus the Dirichlet form of the jets and the floor maps, and it is Lorentzian on these packets (`sum_neutralBlock_four_ge`, `neutralBlock_one_one_neg`): the matrices have the shape of the Hodge index theorem, one hyperbolic plane of charges over a neutral part with one negative square. A positive supersolution of the neutral part certifies the sign on charge-free packets (`sum_blockMatrix_ge_of_supersolution`), and none exists once the neutral part has a negative square. Open: finer blocks; the single negative square of the neutral part at every scale |
+| 6 | the polar charge of a null mode | Reduced to one inequality. Nullity = charged nullity + neutral nullity, and the charged null modes are the crossings of the polar Lagrangian with the charge axis. A null mode at an energy below the pole-vanishing ground energy `μ₀(a)` is charged, and the ground modes at `a` are all charged iff `μ(a) < μ₀(a)` (`neutralNullity_groundEnergy_eq_zero_iff`). Proved for every aperture up to `½(log 2 + 1/50)` at energies below `1/20`. Open: `μ(a) < μ₀(a)` at the critical aperture (B104) |
 
 Settled, and now part of §6: the limit matrices at finite scale and the converse; Hecke
 characters, ideals as degree points and a ring that is not abelian; the Li ladder on the
 Laguerre tails and the width on the power tails; a path at an odd prime (the price path).
 
-**Order of work.** The sign of `𝔚_4` and `𝔚_7` with a margin; Artin characters; the
-Hamiltonian form of the family of restricted forms (first step of question 3); a quadratic
-count.
+**Order of work.** The strict inequality `μ(a) < μ₀(a)` between the two ground energies; a
+quadratic count; the step-packet matrices on finer blocks; Brauer's theorem and reciprocity for
+Artin characters.
 
 **The decisive test.** A construction whose Bézout holds for an integer-norm system with a
 finite layer, for a fake, for the Liouville twist at the first rung of the conductor ladder,
-for a wrong constant, or along a path of squares, is wrong. The pairing of the degree points
-passes each without hypothesis. The test for a wrong constant is meant with the contacts
-fixed: wrong contacts with a larger counterterm pass, under RH, from the supremum of their
-symbol on.
+for a wrong constant, or along a path of squares, is wrong. On the comb of the integers the
+pairing rejects each: Bézout for a weight is RH and the weight `Λ` (`combBezout_iff`), so the
+contacts of any other system fail; a counterterm lowered by a positive constant fails
+(`combBezoutShift_iff`); a contact
+changed without its price fails (`combBezoutWith_contactAt_iff`), and with its price it is RH
+at every parameter; the Liouville twist fails just above the trivial aperture (test bench).
+The test for a wrong constant is meant with the contacts fixed: wrong contacts with a larger
+counterterm pass, under RH, from the supremum of their symbol on.
 
 ## 10. Traps
 
@@ -474,9 +594,13 @@ symbol on.
 | A ring can satisfy the inequality while `ℤ` does not | negative squares of the square of `ℤ` are negative squares of every abelian ring over it (its zeta function is `ζ` times Dirichlet `L`-functions); for a ring that is not abelian this is Dedekind's conjecture `ζ ∣ ζ_K` |
 | A tower of covers replaces the extension of constants | per degree the form of `ζ` has the weight `1/[K:ℚ]` |
 | The index of a ring is the sum of the indices of its characters | it is the number of distinct zeros; a shared zero is one negative square |
+| An Artin character has an index only if its `L`-function is entire | as a virtual character it has the index of its zeros and poles; a pole on the line is a negative square, a pole right of the line counts like a zero |
 | An integer-norm system passes on its own comb when its zeros lie on a line | the system of the squares fails: the comb gives its density, and the jets are those of the norms |
 | The sizes of the contacts can pass the trivial aperture | the systems `Λ`, `−Λ` and the Liouville twist with a conductor fail beyond it (test bench) |
 | The carries can be removed by another choice of digits | the carry is a cocycle that is not a coboundary |
+| The first windows with contacts lie within the proved lengths | `(1, 4]` has the length `log 4`, beyond every length with a sign for all packets; the sign is proved there on step packets of unit blocks only |
+| A step-packet matrix is diagonally dominant | on the six blocks of `(1, 7]` the first block has the diagonal `0.19` and off-diagonal entries of size up to `0.19`; the certificate is a Cholesky factorization |
+| The index jumps where a zero is seen | it jumps at an aperture with a null mode, by the number of null modes; a zero off the line is one unit of the total |
 | A power tail of small exponent converges | it converges exactly for `a < ½ − w`: its growth is the width of the zeros |
 | A count rate identifies the integers | at every exponent above `½` a system with integer norms has that count rate and a zero that `ζ` lacks; a bounded count error identifies the rational primes (test bench) |
 | A path of squares transports the inequality | every path through the square of `ℤ` in the corpus is RH at each parameter |
@@ -488,9 +612,35 @@ symbol on.
 on the step packets of the `3KR` blocks of `(R, (3K+1)R]` is nonnegative. Its entries are
 elementary: `2 log(b/a)(b − a)`, the closed form of the jets on flat packets, and the overlaps
 `(b/k − a)⁺` with the weights `Λ(k)`, `k ≤ 3K + 1`. The comb at block size `B` is within an
-explicit error of the matrix. *Open:* the sign of one of these matrices with a contact; an
-object with an index theorem whose intersection matrices they are; whether the cone of step
-packets has a description in which the entries are positive term by term.
+explicit error of the matrix. On unit blocks the matrix is `d ⊗ 1 + 1 ⊗ d + ϱ − J − C`: degrees,
+density, jets, and the graphs of the floor maps (§2.6). *Proved:* on `R = 1` the matrices of
+ratio four and seven are positive with the margins `1/20` and `1/100` (least eigenvalues near
+`0.069` and `0.028`); on `R = 2` the matrix of ratio four is positive with the margin `1/100`
+(least eigenvalue near `0.03`); a margin above `mR` implies the same margin above `R`. *Open:*
+the same windows on finer blocks (matrices of size `3R` and `6R`, whose margins decrease along
+divisibility to the bottom of Weil's form on the window); an
+index theorem for the floor maps; whether the cone of step packets has a description in which
+the entries are positive term by term.
+
+**The aperture path (question 3).** Weil's form restricted to the aperture `a` and shifted by
+an energy `E` has finitely many negative squares and finitely many null modes. *Proved:* the
+index at `b` is the sum of the nullities of the apertures below `b`, at every energy: the
+number of eigenvalues below a level is the number of null modes at that level met on the way.
+RH iff no aperture has a null mode at the energy zero. The two ends: the index is zero at
+small apertures, and the sum of all nullities at the energy zero is the number of distinct
+zeros to the right of the line.
+The null modes are the crossings of the conormals of the apertures with the graph of Weil's
+operator, and the index is also the number of eigenvalues below the energy: on a rectangle of
+apertures and energies the two monotone paths meet equally many null modes. In the space of
+charges and forcings, `ℂ² × ℂ²`, each aperture has a Lagrangian plane that meets the charge
+axis in the charges of its null modes; a null mode below the pole-vanishing ground energy is
+charged, and there the index is at most two.
+The plane is an even line and an odd line. The nullities are not all even: a short aperture has
+a simple ground mode.
+*Open:* whether a ground mode can be neutral, that is whether `μ(a) = μ₀(a)` can occur (B104);
+the differential equation of the two lines in the aperture (a Hamiltonian) beyond the first
+conjugate aperture; whether the even and the odd line cross the charge axis at different
+apertures.
 
 **A property of the object (question 2).** A one-parameter family of squares through that of `ℤ` which ends at
 a square where the inequality is known and along which the inequality can be transported; or
@@ -513,9 +663,14 @@ enter the square of the ring; summed over the class characters the contacts keep
 prime powers, with one pole plane for `h` copies of the jets. Below the first contact a large
 discriminant gives the inequality. For the splitting field of `X³ − 2` the character of degree two is induced
 from the cubic character of `2` over `ℚ(ω)`: its contacts are point counts of `x³ = 2`, and its
-index is the number of distinct zeros of its `L`-function to the right of the line. *Open:* the
-index of every monomial character (it needs the contacts of an induced character in general);
-characters that are not monomial, whose `L`-functions are quotients of Hecke `L`-functions; the
+index is the number of distinct zeros of its `L`-function to the right of the line. A character
+that is not monomial has an `L`-function that is a quotient of products of Hecke `L`-functions;
+for every such quotient the index of the difference of the forms is the number of its zeros and
+poles right of the line plus the number of its poles on the line, common zeros cancelled. For
+two number rings the relative form `W_{ζ_L} − W_{ζ_K}` has no negative square iff the zeta
+functions agree right of the line and `ζ_K` divides `ζ_L` on it. *Open:* Brauer's theorem and
+the reciprocity law that turn an Artin character into such a quotient (classical, not in the
+corpus); the contacts of a virtual character on the comb at finite scale; the
 zeros of the completion as zeros of a continuation of `ζ_K` itself; small discriminants on short packets (below
 `(128π)^{r₁+r₂−1}(4π)^{r₂}` the places do not pay for themselves); the units of a real
 quadratic ring.

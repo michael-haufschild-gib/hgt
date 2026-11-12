@@ -48,7 +48,7 @@ def complexUnitConj : ℂ →*₀ ℂ where
   map_one' := by simp
   map_mul' z w := by
     simp only [map_mul, norm_mul, Complex.ofReal_mul]
-    exact div_mul_div_comm _ _ _ _
+    exact (div_mul_div_comm (conj z) (‖z‖ : ℂ) (conj w) (‖w‖ : ℂ)).symm
 
 @[simp]
 theorem complexUnitConj_apply (z : ℂ) : complexUnitConj z = conj z / (‖z‖ : ℂ) := rfl
@@ -63,9 +63,11 @@ theorem norm_complexUnitConj_le_one (z : ℂ) : ‖complexUnitConj z‖ ≤ 1 :=
   · exact (norm_complexUnitConj_of_ne_zero hz).le
 
 /-- The sixth-power archimedean phase `a ↦ (ā / |a|)⁶` on `O = ℤ[ω]`. -/
-def elemPsiSix : O →*₀ ℂ :=
-  (powMonoidWithZeroHom (M₀ := ℂ) (6 : ℕ) (by decide)).comp
-    (complexUnitConj.comp ringComplex.toMonoidWithZeroHom)
+def elemPsiSix : O →*₀ ℂ where
+  toFun a := complexUnitConj (ringComplex a) ^ 6
+  map_zero' := by simp
+  map_one' := by simp
+  map_mul' a b := by rw [map_mul, map_mul, mul_pow]
 
 theorem elemPsiSix_apply (a : O) : elemPsiSix a = complexUnitConj (ringComplex a) ^ 6 := rfl
 
@@ -73,7 +75,7 @@ theorem elemPsiSix_unit (u : Oˣ) : elemPsiSix (u : O) = 1 := by
   have hu6 : u ^ 6 = 1 := by
     rw [← card_units_thirdCyclotomic K]
     exact pow_card_eq_one'
-  have hcoe : (u : O) ^ 6 = 1 := by exact_mod_cast hu6
+  have hcoe : (u : O) ^ 6 = 1 := by rw [← Units.val_pow_eq_pow_val, hu6, Units.val_one]
   calc elemPsiSix (u : O)
       = complexUnitConj (ringComplex ((u : O) ^ 6)) := by
           rw [elemPsiSix_apply, map_pow, map_pow]
@@ -95,10 +97,12 @@ def idealPsiSix (I : Ideal O) : ℂ :=
   elemPsiSix (Submodule.IsPrincipal.generator I)
 
 theorem idealPsiSix_span_singleton (a : O) : idealPsiSix (Ideal.span {a}) = elemPsiSix a := by
-  unfold idealPsiSix
   obtain ⟨u, hu⟩ : Associated (Submodule.IsPrincipal.generator (Ideal.span ({a} : Set O))) a :=
     Ideal.span_singleton_eq_span_singleton.mp (Ideal.span_singleton_generator _)
-  rw [← hu, map_mul, elemPsiSix_unit, mul_one]
+  calc idealPsiSix (Ideal.span {a})
+      = elemPsiSix (Submodule.IsPrincipal.generator (Ideal.span ({a} : Set O))) *
+          elemPsiSix (u : O) := by rw [idealPsiSix, elemPsiSix_unit, mul_one]
+    _ = elemPsiSix a := by rw [← map_mul, hu]
 
 @[simp]
 theorem idealPsiSix_bot : idealPsiSix ⊥ = 0 := by
@@ -109,7 +113,8 @@ theorem idealPsiSix_top : idealPsiSix ⊤ = 1 := by
   rw [← Ideal.span_singleton_one, idealPsiSix_span_singleton, map_one]
 
 @[simp]
-theorem idealPsiSix_one : idealPsiSix 1 = 1 := idealPsiSix_top
+theorem idealPsiSix_one : idealPsiSix 1 = 1 := by
+  rw [Ideal.one_eq_top, idealPsiSix_top]
 
 theorem idealPsiSix_mul (I J : Ideal O) : idealPsiSix (I * J) = idealPsiSix I * idealPsiSix J := by
   conv_lhs =>
@@ -148,9 +153,9 @@ theorem absNorm_le_nine_of_lambda_mem {v : HeightOneSpectrum O} (hlam : lambda �
     Ideal.dvd_iff_le.mpr ((Ideal.span_singleton_le_iff_mem _).mpr hmem3)
   have hnorm3 : Ideal.absNorm (Ideal.span ({(3 : O)} : Set O)) = 9 := by
     have h9 : Algebra.norm ℤ (3 : O) = 9 := by
-      have h3 : (3 : O) = (3 : ℤ) • (1 : O) + (0 : ℤ) • eisEta K := by simp
-      rw [h3, algebraNorm_eq_eisNorm K]
-      decide
+      have h3 : (3 : O) = Coordinates.eval 3 0 := by simp [Coordinates.eval]
+      rw [h3, Coordinates.norm_eval]
+      norm_num
     rw [Ideal.absNorm_span_singleton, h9]
     rfl
   exact Nat.le_of_dvd (by norm_num) (hnorm3 ▸ map_dvd Ideal.absNorm hdvd)
@@ -185,7 +190,7 @@ theorem primeKappaAt_pow_six (𝔪 : Modulus K) (η : HeckeCharacter 𝔪) {v : 
     (hlam : lambda ∉ v.asIdeal) :
     primeKappaAt 𝔪 η v ^ 6 = idealPsiSix v.asIdeal * heckeValue 𝔪 (η ^ 6) v.asIdeal := by
   unfold primeKappaAt
-  rw [primeKappa_primeGen_pow_six hlam, heckeValue_pow_ne_zero 𝔪 η (by decide : (6 : ℕ) ≠ 0)]
+  rw [primeKappa_primeGen_pow_six hlam, heckeValue_pow_ne_zero 𝔪 η (Nat.succ_ne_zero 5)]
 
 /-- **Tower shift law for the local probe phase.** Replacing `η(v)` by the level-`k` Grossencharacter
 value `ψ₆(v)^k · ψ(v)` shifts `(k, ψ)` to `(6k + 1, ψ⁶)`. -/
@@ -194,7 +199,7 @@ theorem primeKappa_tower_pow_six (𝔪 : Modulus K) (ψ : HeckeCharacter 𝔪) (
     primeKappa (primeGen v) (idealPsiSix v.asIdeal ^ k * heckeValue 𝔪 ψ v.asIdeal) ^ 6 =
       idealPsiSix v.asIdeal ^ (6 * k + 1) * heckeValue 𝔪 (ψ ^ 6) v.asIdeal := by
   rw [primeKappa_primeGen_pow_six hlam, mul_pow, ← pow_mul, mul_comm k 6,
-    heckeValue_pow_ne_zero 𝔪 ψ (by decide : (6 : ℕ) ≠ 0)]
+    heckeValue_pow_ne_zero 𝔪 ψ (Nat.succ_ne_zero 5)]
   ring
 
 /-! ### The residual local factor and its cutoff-free nonvanishing on `Re s ≥ 1/2` -/
@@ -337,8 +342,9 @@ theorem norm_residualLocalFactor_le_four {Q : ℝ} (hQ : 2 ≤ Q) {A η s : ℂ}
     rw [norm_one] at this
     linarith
   have hq2 : ‖1 - q ^ 2‖ ≤ 5 / 4 := by
-    calc ‖1 - q ^ 2‖ ≤ 1 + ‖q‖ ^ 2 := by simpa [norm_pow] using norm_sub_le (1 : ℂ) (q ^ 2)
-      _ ≤ 5 / 4 := by nlinarith [norm_nonneg q]
+    have h := norm_sub_le (1 : ℂ) (q ^ 2)
+    rw [norm_one, norm_pow] at h
+    nlinarith [norm_nonneg q]
   have hmid : ‖1 - q * (R - D) / (1 - D)‖ ≤ 5 / 2 := by
     have hdiv : ‖q * (R - D) / (1 - D)‖ ≤ 3 / 2 := by
       rw [norm_div, norm_mul, div_le_iff₀ (by linarith)]
@@ -419,7 +425,8 @@ theorem norm_residualLocalFactor_sub_one_le {Q σ e : ℝ} {A η s : ℂ} (hQ : 
   rw [hid]
   calc ‖-(q ^ 2) - (1 - q ^ 2) * (q * (R - D) / (1 - D))‖
       ≤ ‖q ^ 2‖ + ‖(1 - q ^ 2) * (q * (R - D) / (1 - D))‖ := by
-        simpa [norm_neg] using norm_sub_le (-(q ^ 2)) ((1 - q ^ 2) * (q * (R - D) / (1 - D)))
+        have h := norm_sub_le (-(q ^ 2)) ((1 - q ^ 2) * (q * (R - D) / (1 - D)))
+        rwa [norm_neg] at h
     _ ≤ T + 2 * (4 * T) := by
         rw [norm_pow, norm_mul]
         exact add_le_add hq2 (mul_le_mul hq2' ha (norm_nonneg _) (by norm_num))
@@ -428,13 +435,17 @@ theorem norm_residualLocalFactor_sub_one_le {Q σ e : ℝ} {A η s : ℂ} (hQ : 
 /-! ### Cutoff-free holomorphy and nonvanishing of the residual Euler product on `Re s > 1/2` -/
 
 /-- Splitting any infinite product at a finite set once its complement is multipliable. -/
-theorem tprod_eq_finset_prod_mul_compl {ι : Type*} {f : ι → ℂ} (T : Finset ι)
-    (hsub : Multipliable fun i : {i : ι // i ∈ (↑T : Set ι)ᶜ} => f i.1) :
-    ∏' i, f i = (∏ i ∈ T, f i) * ∏' i : {i : ι // i ∈ (↑T : Set ι)ᶜ}, f i.1 := by
+theorem hasProd_and_tprod_eq_finset_prod_mul_notMem {ι : Type*} {f : ι → ℂ} (T : Finset ι)
+    (hsub : Multipliable fun i : {i : ι // i ∉ T} => f i.1) :
+    Multipliable f ∧
+      ∏' i, f i = (∏ i ∈ T, f i) * ∏' i : {i : ι // i ∉ T}, f i.1 := by
   have hfin : HasProd (fun i : {i : ι // i ∈ (↑T : Set ι)} => f i.1) (∏ i ∈ T, f i) := by
     have hft := hasProd_fintype (fun i : {i : ι // i ∈ (↑T : Set ι)} => f i.1)
-    rwa [Finset.prod_coe_sort T f] at hft
-  exact (HasProd.mul_compl hfin hsub.hasProd).tprod_eq
+    have hval : (∏ i : {i : ι // i ∈ (↑T : Set ι)}, f i.1) = ∏ i ∈ T, f i :=
+      Finset.prod_coe_sort T f
+    rwa [hval] at hft
+  have hp := HasProd.mul_compl hfin hsub.hasProd
+  exact ⟨⟨_, hp⟩, hp.tprod_eq⟩
 
 section ResidualProduct
 
@@ -475,6 +486,93 @@ private theorem residual_denominator_ne_zero {η : ℂ} (hη : ‖η‖ ≤ 1)
   rw [h, norm_zero, norm_one] at this
   linarith
 
+private theorem four_le_primeNorm_of_weight_le_sixth {e : ℝ} (he2 : e ≤ 2)
+    {v : HeightOneSpectrum (𝓞 L)} (hw : residualDefectWeight e v ≤ 1 / 6) :
+    4 ≤ primeNorm v := by
+  by_contra hlt
+  have hv_le3 : primeNorm v ≤ 3 := by
+    have hnat : v.asIdeal.absNorm < 4 := by
+      unfold primeNorm at hlt
+      exact_mod_cast not_le.mp hlt
+    unfold primeNorm
+    exact_mod_cast Nat.le_of_lt_succ hnat
+  have hv2 := two_le_primeNorm v
+  have hpow : primeNorm v ^ e ≤ 9 := by
+    calc primeNorm v ^ e ≤ primeNorm v ^ (2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by linarith) he2
+      _ ≤ (3 : ℝ) ^ (2 : ℝ) := Real.rpow_le_rpow (by linarith) hv_le3 (by norm_num)
+      _ = 9 := by norm_num
+  have hge1 : 1 ≤ residualDefectWeight e v := by
+    unfold residualDefectWeight
+    rw [Real.rpow_neg (by linarith)]
+    have hpos : 0 < primeNorm v ^ e := Real.rpow_pos_of_pos (by linarith) e
+    rw [← div_eq_mul_inv, one_le_div hpos]
+    exact hpow
+  linarith
+
+/-- Tail behavior of the residual product outside `T : Finset {v // v ∉ S}` once the defect tail is
+at most `1 / 6`. -/
+private theorem residualCorrection_compl_properties {σ : ℝ} (hσ : 1 / 2 < σ)
+    (A η : HeightOneSpectrum (𝓞 L) → ℂ) (hA : ∀ v, ‖A v‖ ≤ 1) (hη : ∀ v, ‖η v‖ ≤ 1)
+    (S : Finset (HeightOneSpectrum (𝓞 L)))
+    (T : Finset {v : HeightOneSpectrum (𝓞 L) // v ∉ S})
+    (hT : ∑' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+      residualDefectWeight (residualDefectExponent σ) j.1.1 ≤ 1 / 6) :
+    DifferentiableOn ℂ (fun s => ∏' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+        residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s) {s : ℂ | σ < s.re} ∧
+      (∀ s : ℂ, σ < s.re → ‖(∏' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+        residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s) - 1‖ ≤ 1 / 2) ∧
+      (∀ s : ℂ, σ < s.re → Multipliable fun j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T} =>
+        residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s) := by
+  have he1 : 1 < residualDefectExponent σ := one_lt_residualDefectExponent hσ
+  have he6 : residualDefectExponent σ ≤ 6 * σ - 2 := min_le_left _ _
+  have heσ : residualDefectExponent σ ≤ 1 + σ := (min_le_right _ _).trans (min_le_left _ _)
+  have he2 : residualDefectExponent σ ≤ 2 := (min_le_right _ _).trans (min_le_right _ _)
+  have hBS : Summable fun v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} =>
+      residualDefectWeight (residualDefectExponent σ) v.1 :=
+    ((numberField_summable_finitePlace_absNorm_rpow (K := L) he1).mul_left 9).comp_injective
+      Subtype.val_injective
+  have hBT : Summable fun j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T} =>
+      residualDefectWeight (residualDefectExponent σ) j.1.1 :=
+    hBS.comp_injective Subtype.val_injective
+  have hle_sixth : ∀ j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+      residualDefectWeight (residualDefectExponent σ) j.1.1 ≤ 1 / 6 :=
+    fun j => (Summable.le_tsum hBT j fun w _ => residualDefectWeight_nonneg _ w.1.1).trans hT
+  have hhalf : ∀ j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+      residualDefectWeight (residualDefectExponent σ) j.1.1 ≤ 1 / 2 :=
+    fun j => (hle_sixth j).trans (by norm_num)
+  have hfour : ∀ j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T}, 4 ≤ primeNorm j.1.1 :=
+    fun j => four_le_primeNorm_of_weight_le_sixth he2 (hle_sixth j)
+  have hU : IsOpen {s : ℂ | σ < s.re} := isOpen_lt continuous_const continuous_re
+  have hdef : ∀ (j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T}) {s : ℂ}, σ < s.re →
+      ‖residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s - 1‖ ≤
+        residualDefectWeight (residualDefectExponent σ) j.1.1 :=
+    fun j _ hs => norm_residualLocalFactor_sub_one_le (hfour j) (hA j.1.1) (hη j.1.1)
+      (le_of_lt hs) hσ.le he6 heσ he2
+  obtain ⟨hdiff, hrep⟩ := hasProd_and_bounds_of_defect
+    (f := fun (j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T}) s =>
+      residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s)
+    (b := fun j => residualDefectWeight (residualDefectExponent σ) j.1.1) hU hBT
+    (fun j s hs => by
+      have hs0 : 0 < s.re := by have : σ < s.re := hs; linarith
+      exact (differentiableAt_residualLocalFactor (by linarith [two_le_primeNorm j.1.1]) _ _
+        (residual_denominator_ne_zero (hη j.1.1) j.1.1 hs0)).differentiableWithinAt)
+    (fun j _ hs => hdef j hs) hhalf
+  refine ⟨hdiff, fun s hs => ?_, fun s hs => ?_⟩
+  · obtain ⟨hexp, hlog⟩ := hrep s hs
+    have hz : ‖∑' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+        Complex.log (residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s)‖ ≤ 1 / 4 :=
+      hlog.trans (by linarith)
+    rw [hexp]
+    calc _ ≤ 2 * ‖∑' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+          Complex.log (residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s)‖ :=
+          Complex.norm_exp_sub_one_le (hz.trans (by norm_num))
+      _ ≤ 1 / 2 := by linarith
+  · have hsum : Summable fun j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T} =>
+        residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s - 1 :=
+      (hBT.of_nonneg_of_le (fun _ => norm_nonneg _) fun j => hdef j hs).of_norm
+    exact (Complex.multipliable_one_add_of_summable hsum).congr fun _ => by ring
+
 /-- On each half-plane `Re s > σ` (`σ > 1/2`), `residualCorrection A η S` is holomorphic,
 everywhere nonvanishing, multipliable at every point, and bounded on `Re s ≥ 2`, with **no**
 norm cutoff on `S`. -/
@@ -486,132 +584,52 @@ theorem differentiableOn_and_ne_zero_residualCorrection_gt {σ : ℝ} (hσ : 1 /
       (∀ s : ℂ, σ < s.re → Multipliable fun v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} =>
         residualLocalFactor (primeNorm v.1) (A v.1) (η v.1) s) ∧
       (σ < 2 → ∃ M : ℝ, ∀ s : ℂ, 2 ≤ s.re → ‖residualCorrection A η S s‖ ≤ M) := by
-  set e := residualDefectExponent σ
-  have he1 : 1 < e := one_lt_residualDefectExponent hσ
-  have he6 : e ≤ 6 * σ - 2 := min_le_left _ _
-  have heσ : e ≤ 1 + σ := (min_le_right _ _).trans (min_le_left _ _)
-  have he2 : e ≤ 2 := (min_le_right _ _).trans (min_le_right _ _)
-  have hB : Summable (residualDefectWeight (L := L) e) :=
-    (numberField_summable_finitePlace_absNorm_rpow (K := L) he1).mul_left 9
-  obtain ⟨F, hF⟩ := ((tendsto_order.1 (tendsto_tsum_compl_atTop_zero
-    (residualDefectWeight (L := L) e))).2 (1 / 6) (by norm_num)).exists
-  let ι := {v : HeightOneSpectrum (𝓞 L) // v ∉ S}
-  let T : Finset ι := F.subtype fun v => v ∉ S
-  have hnotF : ∀ i : {i : ι // i ∈ (↑T : Set ι)ᶜ}, i.1.1 ∉ F := by
-    intro i hiF
-    apply i.2
-    exact Finset.mem_coe.mpr (Finset.mem_subtype.mpr hiF)
-  have hBF : Summable fun v : {v : HeightOneSpectrum (𝓞 L) // v ∉ F} =>
-      residualDefectWeight e v.1 := hB.comp_injective Subtype.val_injective
-  have hinj : Function.Injective fun i : {i : ι // i ∈ (↑T : Set ι)ᶜ} =>
-      (⟨i.1.1, hnotF i⟩ : {v : HeightOneSpectrum (𝓞 L) // v ∉ F}) :=
-    fun i j h => Subtype.ext (Subtype.ext (congrArg Subtype.val h))
-  have hBTc : Summable fun i : {i : ι // i ∈ (↑T : Set ι)ᶜ} => residualDefectWeight e i.1.1 :=
-    hBF.comp_injective hinj
-  have hsmall : ∑' i : {i : ι // i ∈ (↑T : Set ι)ᶜ}, residualDefectWeight e i.1.1 ≤ 1 / 6 :=
-    (Summable.tsum_le_tsum_of_inj _ hinj (fun _ _ => residualDefectWeight_nonneg e _)
-      (fun _ => le_rfl) hBTc hBF).trans hF.le
-  have hfour : ∀ i : {i : ι // i ∈ (↑T : Set ι)ᶜ}, 4 ≤ primeNorm i.1.1 := by
-    intro i
-    by_contra hlt
-    have hv_le3 : primeNorm i.1.1 ≤ 3 := by
-      have hnat : i.1.1.asIdeal.absNorm < 4 := by
-        unfold primeNorm at hlt
-        exact_mod_cast not_le.mp hlt
-      unfold primeNorm
-      exact_mod_cast Nat.le_of_lt_succ hnat
-    have hv2 := two_le_primeNorm i.1.1
-    have hpow : primeNorm i.1.1 ^ e ≤ 9 := by
-      calc primeNorm i.1.1 ^ e ≤ primeNorm i.1.1 ^ (2 : ℝ) :=
-            Real.rpow_le_rpow_of_exponent_le (by linarith) he2
-        _ ≤ (3 : ℝ) ^ (2 : ℝ) := Real.rpow_le_rpow (by linarith) hv_le3 (by norm_num)
-        _ = 9 := by norm_num
-    have hge1 : 1 ≤ residualDefectWeight e i.1.1 := by
-      unfold residualDefectWeight
-      rw [Real.rpow_neg (by linarith)]
-      have hpos : 0 < primeNorm i.1.1 ^ e := Real.rpow_pos_of_pos (by linarith) e
-      rw [← div_eq_mul_inv, one_le_div hpos]
-      exact hpow
-    have hle_sixth : residualDefectWeight e i.1.1 ≤ 1 / 6 :=
-      (Summable.le_tsum hBTc i fun j _ => residualDefectWeight_nonneg e j.1.1).trans hsmall
-    linarith
-  have hhalf : ∀ i : {i : ι // i ∈ (↑T : Set ι)ᶜ}, residualDefectWeight e i.1.1 ≤ 1 / 2 :=
-    fun i => (Summable.le_tsum hBTc i fun j _ => residualDefectWeight_nonneg e j.1.1).trans
-      (hsmall.trans (by norm_num))
-  set U : Set ℂ := {s : ℂ | σ < s.re}
-  have hU : IsOpen U := isOpen_lt continuous_const continuous_re
-  have hdef : ∀ (i : {i : ι // i ∈ (↑T : Set ι)ᶜ}), ∀ s ∈ U,
-      ‖residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s - 1‖ ≤
-        residualDefectWeight e i.1.1 :=
-    fun i s hs => norm_residualLocalFactor_sub_one_le (hfour i) (hA i.1.1) (hη i.1.1)
-      (le_of_lt hs) hσ.le he6 heσ he2
-  obtain ⟨hdiff_tail, hrep_tail⟩ := hasProd_and_bounds_of_defect
-    (f := fun (i : {i : ι // i ∈ (↑T : Set ι)ᶜ}) s =>
-      residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s)
-    (b := fun i => residualDefectWeight e i.1.1) hU hBTc
-    (fun i s hs => by
-      have hs0 : 0 < s.re := by have : σ < s.re := hs; linarith
-      exact (differentiableAt_residualLocalFactor (by linarith [two_le_primeNorm i.1.1]) _ _
-        (residual_denominator_ne_zero (hη i.1.1) i.1.1 hs0)).differentiableWithinAt)
-    hdef hhalf
-  have hmul_tail : ∀ s ∈ U, Multipliable fun i : {i : ι // i ∈ (↑T : Set ι)ᶜ} =>
-      residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s := by
-    intro s hs
-    have hsum : Summable fun i : {i : ι // i ∈ (↑T : Set ι)ᶜ} =>
-        residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s - 1 :=
-      (hBTc.of_nonneg_of_le (fun _ => norm_nonneg _) fun i => hdef i s hs).of_norm
-    exact (Complex.multipliable_one_add_of_summable hsum).congr fun _ => by ring
-  have hsplit : ∀ s ∈ U, residualCorrection A η S s =
-      (∏ i ∈ T, residualLocalFactor (primeNorm i.1) (A i.1) (η i.1) s) *
-        ∏' i : {i : ι // i ∈ (↑T : Set ι)ᶜ},
-          residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s :=
-    fun s hs => tprod_eq_finset_prod_mul_compl T (hmul_tail s hs)
+  obtain ⟨T, hT⟩ := ((tendsto_order.1 (tendsto_tsum_compl_atTop_zero
+    (fun v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} =>
+      residualDefectWeight (residualDefectExponent σ) v.1))).2 (1 / 6) (by norm_num)).exists
+  obtain ⟨hdiff_tail, hclose_tail, hmul_tail⟩ :=
+    residualCorrection_compl_properties hσ A η hA hη S T hT.le
+  have hsplit : ∀ s : ℂ, σ < s.re →
+      (Multipliable fun v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} =>
+        residualLocalFactor (primeNorm v.1) (A v.1) (η v.1) s) ∧
+      residualCorrection A η S s =
+        (∏ v ∈ T, residualLocalFactor (primeNorm v.1) (A v.1) (η v.1) s) *
+          ∏' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+            residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s :=
+    fun s hs => hasProd_and_tprod_eq_finset_prod_mul_notMem T (hmul_tail s hs)
   have hdiff_fin : DifferentiableOn ℂ
-      (fun s => ∏ i ∈ T, residualLocalFactor (primeNorm i.1) (A i.1) (η i.1) s) U := by
-    refine DifferentiableOn.fun_finsetProd fun i _ s hs => ?_
+      (fun s => ∏ v ∈ T, residualLocalFactor (primeNorm v.1) (A v.1) (η v.1) s)
+      {s : ℂ | σ < s.re} := by
+    refine DifferentiableOn.fun_finsetProd fun v _ s hs => ?_
     have hs0 : 0 < s.re := by have : σ < s.re := hs; linarith
-    exact (differentiableAt_residualLocalFactor (by linarith [two_le_primeNorm i.1]) _ _
-      (residual_denominator_ne_zero (hη i.1) i.1 hs0)).differentiableWithinAt
-  refine ⟨(hdiff_fin.mul hdiff_tail).congr hsplit, fun s hs => ?_, fun s hs => ?_, fun hσ2 => ?_⟩
-  · rw [hsplit s hs]
-    refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun i _ => ?_) ?_
-    · exact residualLocalFactor_ne_zero (two_le_primeNorm i.1) (hA i.1) (hη i.1)
+    exact (differentiableAt_residualLocalFactor (by linarith [two_le_primeNorm v.1]) _ _
+      (residual_denominator_ne_zero (hη v.1) v.1 hs0)).differentiableWithinAt
+  refine ⟨(hdiff_fin.mul hdiff_tail).congr (fun s hs => (hsplit s hs).2),
+    fun s hs => ?_, fun s hs => (hsplit s hs).1, fun hσ2 => ?_⟩
+  · rw [(hsplit s hs).2]
+    refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun v _ => ?_) (fun h0 => ?_)
+    · exact residualLocalFactor_ne_zero (two_le_primeNorm v.1) (hA v.1) (hη v.1)
         (by have : σ < s.re := hs; linarith)
-    · rw [(hrep_tail s hs).1]
-      exact Complex.exp_ne_zero _
-  · have hfin : HasProd (fun i : {i : ι // i ∈ (↑T : Set ι)} =>
-        residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s)
-        (∏ i ∈ T, residualLocalFactor (primeNorm i.1) (A i.1) (η i.1) s) := by
-      have hft := hasProd_fintype (fun i : {i : ι // i ∈ (↑T : Set ι)} =>
-        residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s)
-      rwa [Finset.prod_coe_sort T _] at hft
-    exact ⟨_, HasProd.mul_compl hfin (hmul_tail s hs).hasProd⟩
+    · have hc := hclose_tail s hs
+      rw [h0, zero_sub, norm_neg, norm_one] at hc
+      linarith
   · refine ⟨4 ^ T.card * (3 / 2), fun s hs => ?_⟩
-    have hsU : s ∈ U := by show σ < s.re; linarith
-    rw [hsplit s hsU, norm_mul]
-    have hfin_le : ‖∏ i ∈ T, residualLocalFactor (primeNorm i.1) (A i.1) (η i.1) s‖ ≤
+    have hsσ : σ < s.re := by linarith
+    rw [(hsplit s hsσ).2, norm_mul]
+    have hfin_le : ‖∏ v ∈ T, residualLocalFactor (primeNorm v.1) (A v.1) (η v.1) s‖ ≤
         4 ^ T.card := by
       refine (Finset.norm_prod_le _ _).trans ?_
-      calc ∏ i ∈ T, ‖residualLocalFactor (primeNorm i.1) (A i.1) (η i.1) s‖
-          ≤ ∏ _i ∈ T, (4 : ℝ) := Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun i _ =>
-            norm_residualLocalFactor_le_four (two_le_primeNorm i.1) (hA i.1) (hη i.1) hs
+      calc ∏ v ∈ T, ‖residualLocalFactor (primeNorm v.1) (A v.1) (η v.1) s‖
+          ≤ ∏ _v ∈ T, (4 : ℝ) :=
+            Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun v _ =>
+              norm_residualLocalFactor_le_four (two_le_primeNorm v.1) (hA v.1) (hη v.1) hs
         _ = 4 ^ T.card := Finset.prod_const _
-    have htail_le : ‖∏' i : {i : ι // i ∈ (↑T : Set ι)ᶜ},
-        residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s‖ ≤ 3 / 2 := by
-      obtain ⟨hexp, hlog⟩ := hrep_tail s hsU
-      have hz : ‖∑' i : {i : ι // i ∈ (↑T : Set ι)ᶜ},
-          Complex.log (residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s)‖ ≤ 1 / 4 :=
-        hlog.trans (by linarith)
-      have hsub1 : ‖cexp (∑' i : {i : ι // i ∈ (↑T : Set ι)ᶜ},
-          Complex.log (residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s)) - 1‖ ≤
-            1 / 2 := by
-        calc _ ≤ 2 * ‖∑' i : {i : ι // i ∈ (↑T : Set ι)ᶜ},
-              Complex.log (residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s)‖ :=
-              Complex.norm_exp_sub_one_le (hz.trans (by norm_num))
-          _ ≤ 1 / 2 := by linarith
-      rw [hexp]
-      have htri := norm_sub_norm_le (cexp (∑' i : {i : ι // i ∈ (↑T : Set ι)ᶜ},
-        Complex.log (residualLocalFactor (primeNorm i.1.1) (A i.1.1) (η i.1.1) s))) 1
+    have htail_le : ‖∏' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+        residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s‖ ≤ 3 / 2 := by
+      have hc := hclose_tail s hsσ
+      have htri := norm_sub_norm_le
+        (∏' j : {v : {v : HeightOneSpectrum (𝓞 L) // v ∉ S} // v ∉ T},
+          residualLocalFactor (primeNorm j.1.1) (A j.1.1) (η j.1.1) s) 1
       rw [norm_one] at htri
       linarith
     exact mul_le_mul hfin_le htail_le (norm_nonneg _) (by positivity)

@@ -1,4 +1,14 @@
 import GaloisForLFunctions.GaloisTheoryOfZeros.FoldedDiscriminant
+import GaloisForLFunctions.GaloisTheoryOfZeros.JensenQuartetExhaustion
+import GaloisForLFunctions.GaloisTheoryOfZeros.CenteredJensenDiscriminant
+import GaloisForLFunctions.GaloisTheoryOfZeros.CenteredJensenDiscriminantField
+import GaloisForLFunctions.GaloisTheoryOfZeros.FoldedJensenExhaustion
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheFieldOfAllLocalContourMoments
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheFieldOfCompleteFibreTraces
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheGaussianExtensionOfTheZeroField
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheMaximalRealSubfieldOfTheZeroField
 
 /-!
 # Galois theory of zeros

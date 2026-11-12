@@ -3,7 +3,7 @@
 - **ID:** agz-absolute-geometry-of-spec-z
 - **Stage:** 3-formalized (every theorem below is in Lean; open topics listed at the end)
 - **Type:** THEOREM (Lean)
-- **Source:** `docs/reports/review-0911/fable.md` §9; `docs/reports/review-1011/obstacles-summary.md` §2.14; `docs/reports/review-1011/fable.md` §9
+- **Source:** `docs/reports/review-0911/fable.md` §9; `docs/reports/review-1011/obstacles-summary.md` §2.14; `docs/reports/review-1011/fable.md` §9; `docs/reports/review-1111/obstacles-summary.md` §2.14 (current specification)
 - **Lean:** `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/` (umbrella `AbsoluteGeometryOfSpecZ.lean`)
 - **Statement:** In Λ-geometry `Spec ℤ ×_{𝔽₁} Spec ℤ = Spec W(ℤ)` exists, is the union of the
   Frobenius graphs, and carries the prime part of Weil's off-diagonal exactly; neither Weil's nor
@@ -1063,9 +1063,13 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G15 | `TheCountOfSectionsInABoxIsItsVolumeOverTheGluingIndex` (`card_filter_mem_alignedBox_mul_index`, `card_pairRing_box`, `mem_sectionLattice_iff`, `index_sectionLattice`, `card_sections_alignedBox`, `log_card_sections_alignedBox`) |
 | G16 | `WeilsFormOnTheCombIsAQuadraticFormInTheIncrementsOfTheDivisor` (`combForm_add_const`, `combForm_Icc_succ`, `combForm_Icc_eq_sum_increments`, `combForm_Icc_eq_sum_increments_cut`) |
 | G17 | `TheFormOfLogarithmicTailsIsDeterminedByTheRowsOfTheFlatTail`, `SumsOverTheDegreePointsOfATailAreRiemannSums`, `TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail`, `TheJetsOfTheFlatTailHaveLogarithmicMoments`, `TheRowOfTheFlatTailHasTheMellinTransformOfTheZeros`, `TheLogarithmicMomentsOfTheRowOfTheFlatTailAreSumsOverTheZeros`, `TheLaguerreTailsOfTheCombTendToTheLiCoefficients` (`tendsto_logTailForm_div_zeroMoment`, `tendsto_combForm_laguerreTail_div`) |
+| G18 | card `agz-step-packet-matrices-floor-maps`: `TheBlockMatrixOfTheDegreesTheJetsAndTheFloorMaps`, `TheMatrixOfAStepPacketIsTheMixedDifferenceOfItsWindows`, `TheFirstBlockMatricesOfRatioFourAndSevenHaveAMargin`, `WeilsFormHasAMarginOnTheFirstStepPacketsOfRatioFourAndSeven` (`packetForm_stepPacket_eq_sum_blockMatrix`, `packetForm_stepPacket_ratioFour_ge`, `packetForm_stepPacket_ratioSeven_ge`, `combForm_ratioFour_ge`, `combForm_ratioSeven_ge`) |
+| G19 | card `agz-aperture-path-index-law`: `TheIndexAtAnApertureIsTheSumOfTheNullitiesBelowIt`, `TheNullModesOfTheAperturePathCountTheZerosRightOfTheLine` (`negativeRank_eq_sum_nullity`, `riemannHypothesis_iff_forall_weilNullity_zero`, `nat_le_rightZeros_iff_exists_sum_nullity`, `iSup_negativeRank_zero_eq_rightZeros`, `negIndex_nestedStepGram_le_sum_nullity`) |
+| G20 | card `agz-virtual-character-index-law`: `TheIndexOfAVirtualConfigurationCountsItsZerosAndItsPoles`, `TheIndexOfAQuotientOfLFunctionsCountsItsZerosAndItsPoles` (`exists_le_negIndex_sub_zeroGram_iff`, `forall_negIndex_sub_zeroGram_eq_zero_iff`, `exists_le_negIndex_quotient_iff`, `exists_le_negIndex_relativeSquare_iff`) |
 
 Umbrella `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ.lean`: one import per module of the
-folder (100 modules, 100 imports, none twice), all before the module docstring; the umbrella is not
+folder that its owner has finished (135 imports, none twice; modules a peer is still writing are
+wired by the peer), all before the module docstring; the umbrella is not
 compiled. Audit of a module: `lake --old env lean <module>`, exit 0, no output; axioms of
 `tendsto_combForm_laguerreTail_div`: `propext`, `Classical.choice`, `Quot.sound`.
 

@@ -190,7 +190,9 @@ Notation as in [route-obstacles.md](route-obstacles.md).
 |---|---|
 | One inequality per prime: Weil test = Stepanov count = count on a prime ray = sign-free trace = upper side, on logarithmic windows off power-thin exceptions | SOSZ [L*] |
 | One matrix on the integers: Weil's form on packets = comb form → zero sum; exact index = number of right zeros; the same for abelian rings with Riemann–Hurwitz | AGZ, HFP [L*] |
-| Positive power combs have convergence radius `1/2-zetaZeroWidth`; below the boundary their limit is the reflected zero pairing; convergence of every subcritical tail is equivalent to RH | [AGZ power tails](../../drafts/pipeline/3-formalized/power-comb-tails-detect-the-zero-width.md) [L*] |
+| Positive power combs have convergence radius `1/2-zetaZeroWidth`; every convergent subcritical comb has its reflected zero-pairing limit and excludes boundary zeros. An attained positive width forces endpoint divergence. Convergence of every subcritical tail is equivalent to RH | [AGZ power tails](../../drafts/pipeline/3-formalized/power-comb-tails-detect-the-zero-width.md); [boundary zeros and limits](../../drafts/pipeline/3-formalized/convergent-power-combs-exclude-boundary-zeros.md) [L*] |
+| Box convolution and actual-width centering pay a fixed cluster depth deficit: visibility or a deep exterior companion, with uniform prime and remainder costs | [MMZF box cameras](../../drafts/pipeline/3-formalized/box-convolutions-pay-a-fixed-cluster-depth-deficit.md) [L*] |
+| Original cluster mass control forces deep isolation: an equally deep companion within `1/δ` at a distinct ordinate violates it for every core bound; eligible right-half-strip ordinates are automatically separated | [MMZF cluster rigidity](../../drafts/pipeline/3-formalized/cluster-mass-control-forces-deep-isolation.md) [L*] |
 | One ladder: mass, aperture, rung; saving `γ` ⇔ rung `1/(2γ)` ⇔ depth `δ=1/(2κ)` ⇔ mollifier exponent `θ` | SA, CDG [L*]/[L] |
 | A height is a conductor of the twisted contacts; a floor is a conductor | SA [L*] |
 | The rung above one in the height aspect = no partial alignment of short prime sums = the dark range | SA, TAPO [D] |

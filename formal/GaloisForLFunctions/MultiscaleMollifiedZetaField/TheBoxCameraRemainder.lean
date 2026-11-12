@@ -30,7 +30,8 @@ theorem norm_paperFT_boxCenteredCamera_real_le
         (1 + x ^ 2)⁻¹ := by
   rw [paperFT_boxCenteredCamera]
   have hz : ((x : ℂ) + I * b).im = b := by simp
-  have hf := norm_damped_boxPlateau_le_lorentz hA hh hr n hy hb (le_of_eq hz.symm)
+  have hf := norm_damped_boxPlateau_le_lorentz hA hh hr n hy hb
+    (z := (x : ℂ) + I * (b : ℂ)) (le_of_eq hz.symm)
   simpa only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
     Complex.I_im, Complex.ofReal_im, mul_zero, zero_mul, sub_zero, add_zero, one_div] using hf
 
@@ -96,7 +97,9 @@ theorem norm_paperFT_boxCenteredCamera_pole_le
         (Real.exp (-(b * (y - boxCameraRadius A h n r))) * (1 + t ^ 2))) *
         (1 / (1 + t ^ 2)) :=
       mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hE (by positivity)) (by positivity)
-    _ = _ := by field_simp
+    _ = _ := by
+      have hden : (1 + t ^ 2 : ℝ) ≠ 0 := by positivity
+      field_simp [hden]
 
 theorem widthCenteredBoxZeroField_add_poly_eq
     {A h r y : ℝ} (hA : 0 ≤ A) (hh : 0 < h) (hr : 0 < r) (n : ℕ)

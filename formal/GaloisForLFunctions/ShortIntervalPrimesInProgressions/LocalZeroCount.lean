@@ -130,19 +130,27 @@ theorem point_re_lt_one (hχ : χ ≠ 1) (q : LZero χ) : q.point.re < 1 := by
   by_contra hle
   exact completedLFunction_ne_zero_of_one_le_re hχ (not_lt.mp hle) (completedLFunction_point hχ q)
 
-/-- **The local zero count.** The zeros of `Λ(s, χ)` with `Re ρ ≥ ½` and `|Im ρ − t| ≤ 1` are
-finitely many and number at most `C log(|t| + 3)`, with multiplicity. -/
-theorem card_zeros_near_le (hχ : χ ≠ 1) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
-      {q : LZero χ | 1 / 2 ≤ q.point.re ∧ |q.point.im - t| ≤ 1}.Finite ∧
+/-- The constant `(log(162N) + 1)/log(39/37)` of the local zero count. -/
+def localCountConst (N : ℕ) : ℝ := (Real.log (162 * N) + 1) / Real.log ((39 / 20 : ℝ) / (37 / 20))
+
+omit [NeZero N] in
+theorem localCountConst_nonneg (hN : 1 ≤ N) : 0 ≤ localCountConst N := by
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hlogRr : 0 < Real.log ((39 / 20 : ℝ) / (37 / 20)) := Real.log_pos (by norm_num)
+  exact div_nonneg (by have := Real.log_nonneg (show (1 : ℝ) ≤ 162 * N by linarith); linarith)
+    hlogRr.le
+
+/-- **The local zero count, explicit constant.** The zeros of `Λ(s, χ)` with `Re ρ ≥ ½` and
+`|Im ρ − t| ≤ 1` are finitely many and number at most `localCountConst N · log(|t| + 3)`, with
+multiplicity. -/
+theorem card_zeros_near_le_explicit (hχ : χ ≠ 1) (t : ℝ) :
+    {q : LZero χ | 1 / 2 ≤ q.point.re ∧ |q.point.im - t| ≤ 1}.Finite ∧
       ({q : LZero χ | 1 / 2 ≤ q.point.re ∧ |q.point.im - t| ≤ 1}.ncard : ℝ) ≤
-        C * Real.log (|t| + 3) := by
+        localCountConst N * Real.log (|t| + 3) := by
   classical
   have hlogRr : 0 < Real.log ((39 / 20 : ℝ) / (37 / 20)) := Real.log_pos (by norm_num)
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne N)
-  refine ⟨(Real.log (162 * N) + 1) / Real.log ((39 / 20 : ℝ) / (37 / 20)),
-    div_nonneg (by have := Real.log_nonneg (show (1 : ℝ) ≤ 162 * N by linarith); linarith)
-      hlogRr.le, fun t => ?_⟩
+  unfold localCountConst
   set g := shiftedLFunction χ
   set c : ℂ := (t : ℂ) * I
   set r : ℝ := 37 / 20
@@ -272,6 +280,16 @@ theorem card_zeros_near_le (hχ : χ ≠ 1) :
     _ ≤ (Real.log (162 * N) + 1) * Real.log (|t| + 3) / Real.log (R / r) :=
         div_le_div_of_nonneg_right hlog hlogRr.le
     _ = _ := by simp only [R, r]; ring
+
+/-- **The local zero count.** The zeros of `Λ(s, χ)` with `Re ρ ≥ ½` and `|Im ρ − t| ≤ 1` are
+finitely many and number at most `C log(|t| + 3)`, with multiplicity. -/
+theorem card_zeros_near_le (hχ : χ ≠ 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
+      {q : LZero χ | 1 / 2 ≤ q.point.re ∧ |q.point.im - t| ≤ 1}.Finite ∧
+      ({q : LZero χ | 1 / 2 ≤ q.point.re ∧ |q.point.im - t| ≤ 1}.ncard : ℝ) ≤
+        C * Real.log (|t| + 3) :=
+  ⟨localCountConst N, localCountConst_nonneg (Nat.one_le_iff_ne_zero.mpr (NeZero.ne N)),
+    card_zeros_near_le_explicit hχ⟩
 
 end
 

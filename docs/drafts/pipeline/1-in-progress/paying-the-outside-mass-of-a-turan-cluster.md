@@ -55,10 +55,28 @@ uncontrolled profile constant.
 
 ## Remaining obstruction
 
+[Varying box profiles](../3-formalized/box-convolutions-pay-a-fixed-cluster-depth-deficit.md)
+now pay a **fixed positive depth deficit**, with uniform prime mean-square
+and explicit-formula remainder costs. Every eligible sector cluster is
+visible or has a deep exterior companion; no mass premise remains in that
+alternative. This strengthens the fixed-profile result above.
+
 The original core-cardinality bound controls neither exterior
 multiplicities nor surrounding annuli. It does not imply an empty annulus.
 The required near-top sector geometry and deep gap have not been proved
 for arbitrary ζ clusters. The old `ClusterAt` and full A78 remain open.
+
+[The original mass condition itself forces deep isolation](../3-formalized/cluster-mass-control-forces-deep-isolation.md).
+For a target on or right of the critical line, every equally deep or deeper
+zero at a different ordinate must satisfy
+`4 ≤ κ(N,M)(1+(δ|γq−γρ|+1/10)²)`.
+A companion within `1/δ` therefore rules out `ClusterAt`, for every core
+bound `N`. The opposite endpoint of the target's centre window puts that
+companion outside the sector; its singleton mass exceeds the allowance.
+Distinct ordinates of right-half-strip zeros satisfying `ClusterAt` are
+automatically more than `1/δ` apart. These statements are formalized in
+`ClusterMassControlForcesDeepIsolation`; existence of obstructing ζ pairs
+is not asserted.
 
 `eventually_volume_rightDepthMass_gt_le` already controls depth mass outside
 a set of window centres of measure `o(T)`. This does not control the selected
@@ -68,3 +86,26 @@ a fixed positive depth-mass contribution and may belong to that exceptional set.
 Separately, `TheStripPaysTheVeryDeepCameraNoise` removes the hyperbolic
 camera's very-deep mass premise when `3c log T≤(1-3c)α`; its Blaschke-product
 condition remains.
+
+## Adaptive-camera alternative
+
+`ZeroConfigurationGeometry/NegativeTests/ZetaClusters` supplies actual ζ
+clusters by an empty-annulus argument and pays the Fourier exterior mass:
+`zeta_cluster_camera_explicit` annihilates every nearby exterior zero,
+approximates one on the cluster to `1/4`, and bounds the full distant
+multiplicity-weighted Fourier tail by `1/4`. The isolation logarithm is
+controlled cubically in log height by `exists_zeta_camera_cluster` for
+zeros deeper than `exp(-c log³(T/(2π)))`.
+
+This changes the camera. It does not prove `ClusterAt` for the original
+fixed profile or provide its uniform prime mean-square cost. Thus adaptive
+annihilation removes exterior interference but does not close A78.
+
+`RHTower/HodgeClusterNyquistExclusion` gives a second replacement: divide
+Riemann's kernel by the full cluster divisor, interpolate its nodes, then
+truncate. `ClusterSetup.test_off_node` bounds every exterior Fourier value
+by the truncation tail, and `re_W_le_nodes_add` sums the full exterior
+contribution with its multiplicities. Internal cluster separation is absent.
+Its stated horizon is of Nyquist size `T≈2 exp(2a-3/4)`; the interpolation
+norm retains an `exp(πT/4)` cost. This supplies neither the original fixed
+Turán mass condition nor its shorter-aperture uniform prime estimate.

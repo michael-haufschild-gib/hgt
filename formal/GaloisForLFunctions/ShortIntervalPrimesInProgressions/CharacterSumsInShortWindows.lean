@@ -215,16 +215,19 @@ theorem summable_zeroShortWeight (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) {x Y 
 /-- The window statistic `F(X)/X = S(X,χ) − ψ(X,χ)/X`. -/
 def windowStat (χ : DirichletCharacter ℂ N) (X : ℝ) : ℂ := sChi χ X - psiChi χ X / X
 
-/-- **The zero side of a window.** For `1 < a < b ≤ 2a` the window average equals
-`Σ_ρ T(ρ; a, b) − β` up to `|γ'|(1 + log a) + 4D/(b − a)`. -/
-theorem norm_window_sub_zeroSum_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
-    ∃ β γ' : ℂ, ∃ D : ℝ, 0 ≤ D ∧ ∀ a b : ℝ, 1 < a → a < b → b ≤ 2 * a →
+/-- **The zero side of a window, uniform constants.** For `1 < a < b ≤ 2a` the window average
+equals `Σ_ρ T(ρ; a, b) − β` up to `|γ'|(1 + log a) + 4D/(b − a)`, `γ' = efGamma χ`, `D = efD`. -/
+theorem norm_window_sub_zeroSum_le_uniform (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∃ β : ℂ, ∀ a b : ℝ, 1 < a → a < b → b ≤ 2 * a →
       Summable (fun q : LZero χ => RHTower.lagWindowZeroTerm q.point a b) ∧
       ‖(windowStat χ b - windowStat χ a) / ((1 / a - 1 / b : ℝ) : ℂ) -
           (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a b - β)‖ ≤
-        ‖γ'‖ * (1 + Real.log a) + 4 * D / (b - a) := by
-  obtain ⟨α, β, γ', D, hD, hEF⟩ := explicitFormula hχ hprim
-  refine ⟨β, γ', D, hD, fun a b ha hab hb2 => ?_⟩
+        ‖efGamma χ‖ * (1 + Real.log a) + 4 * efD / (b - a) := by
+  obtain ⟨α, β, hEF⟩ := explicitFormula_uniform hχ hprim
+  set γ' := efGamma χ
+  set D := efD
+  have hD : 0 ≤ D := efD_nonneg
+  refine ⟨β, fun a b ha hab hb2 => ?_⟩
   have ha0 : 0 < a := by linarith
   have hb0 : 0 < b := by linarith
   have hb1 : 1 < b := by linarith
@@ -351,18 +354,34 @@ theorem norm_window_sub_zeroSum_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
           rw [← norm_mul]; exact norm_add_le _ _
     _ ≤ ‖γ'‖ * (1 + Real.log a) + 4 * D / (b - a) := by gcongr
 
-/-- **Short windows of a primitive character sum.** For `2 ≤ x`, `0 < h'`, `2h' ≤ h ≤ x`,
+/-- **The zero side of a window.** For `1 < a < b ≤ 2a` the window average equals
+`Σ_ρ T(ρ; a, b) − β` up to `|γ'|(1 + log a) + 4D/(b − a)`. -/
+theorem norm_window_sub_zeroSum_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∃ β γ' : ℂ, ∃ D : ℝ, 0 ≤ D ∧ ∀ a b : ℝ, 1 < a → a < b → b ≤ 2 * a →
+      Summable (fun q : LZero χ => RHTower.lagWindowZeroTerm q.point a b) ∧
+      ‖(windowStat χ b - windowStat χ a) / ((1 / a - 1 / b : ℝ) : ℂ) -
+          (∑' q : LZero χ, RHTower.lagWindowZeroTerm q.point a b - β)‖ ≤
+        ‖γ'‖ * (1 + Real.log a) + 4 * D / (b - a) := by
+  obtain ⟨β, h⟩ := norm_window_sub_zeroSum_le_uniform hχ hprim
+  exact ⟨β, efGamma χ, efD, efD_nonneg, h⟩
+
+/-- **Short windows, explicit constant.** For `2 ≤ x`, `0 < h'`, `2h' ≤ h ≤ x`,
 `|ψ(x+h, χ) − ψ(x, χ)|` is at most the untwisted masses of the two windows, plus
-`2h Σ_ρ x^{β−1} min(1, 8x²/(hh'|ρ||1−ρ|))`, plus `C(1 + log 2x) + C/h'`. -/
-theorem norm_psiChi_window_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x h h' : ℝ, 2 ≤ x → 0 < h' → 2 * h' ≤ h → h ≤ x →
+`2h Σ_ρ x^{β−1} min(1, 8x²/(hh'|ρ||1−ρ|))`, plus `C(1 + log 2x) + C/h'` with
+`C = 2|γ'| + 8D`. -/
+theorem norm_psiChi_window_le_explicit (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∀ x h h' : ℝ, 2 ≤ x → 0 < h' → 2 * h' ≤ h → h ≤ x →
       ‖psiChi χ (x + h) - psiChi χ x‖ ≤
         (Chebyshev.psi (x + h') - Chebyshev.psi x) +
           2 * (Chebyshev.psi (x + h) - Chebyshev.psi (x + h - h')) +
           2 * h * ∑' q : LZero χ, RHTower.zeroShortWeight x (8 * x ^ 2 / (h * h')) q.point +
-          C * (1 + Real.log (2 * x)) + C / h' := by
-  obtain ⟨β, γ', D, hD, hwin⟩ := norm_window_sub_zeroSum_le hχ hprim
-  refine ⟨2 * ‖γ'‖ + 8 * D, by positivity, fun x h h' hx hh' hh'h hhx => ?_⟩
+          (2 * ‖efGamma χ‖ + 8 * efD) * (1 + Real.log (2 * x))
+          + (2 * ‖efGamma χ‖ + 8 * efD) / h' := by
+  obtain ⟨β, hwin⟩ := norm_window_sub_zeroSum_le_uniform hχ hprim
+  set γ' := efGamma χ
+  set D := efD
+  have hD : 0 ≤ D := efD_nonneg
+  intro x h h' hx hh' hh'h hhx
   have hx0 : 0 < x := by linarith
   have hh : 0 < h := by linarith
   set a₁ := x
@@ -437,6 +456,43 @@ theorem norm_psiChi_window_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
         have := h₂.2
         have := h₁.2
         linarith
+
+
+/-- **Short windows of a primitive character sum.** For `2 ≤ x`, `0 < h'`, `2h' ≤ h ≤ x`,
+`|ψ(x+h, χ) − ψ(x, χ)|` is at most the untwisted masses of the two windows, plus
+`2h Σ_ρ x^{β−1} min(1, 8x²/(hh'|ρ||1−ρ|))`, plus `C(1 + log 2x) + C/h'`. -/
+theorem norm_psiChi_window_le (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x h h' : ℝ, 2 ≤ x → 0 < h' → 2 * h' ≤ h → h ≤ x →
+      ‖psiChi χ (x + h) - psiChi χ x‖ ≤
+        (Chebyshev.psi (x + h') - Chebyshev.psi x) +
+          2 * (Chebyshev.psi (x + h) - Chebyshev.psi (x + h - h')) +
+          2 * h * ∑' q : LZero χ, RHTower.zeroShortWeight x (8 * x ^ 2 / (h * h')) q.point +
+          C * (1 + Real.log (2 * x)) + C / h' :=
+  ⟨2 * ‖efGamma χ‖ + 8 * efD, by have := efD_nonneg; positivity,
+    norm_psiChi_window_le_explicit hχ hprim⟩
+
+/-- **Short windows, uniformly in the modulus.** The constant is at most `18`. -/
+theorem norm_psiChi_window_le_uniform (hχ : χ ≠ 1) (hprim : χ.IsPrimitive) {x h h' : ℝ}
+    (hx : 2 ≤ x) (hh' : 0 < h') (hh'h : 2 * h' ≤ h) (hhx : h ≤ x) :
+    ‖psiChi χ (x + h) - psiChi χ x‖ ≤
+      (Chebyshev.psi (x + h') - Chebyshev.psi x) +
+        2 * (Chebyshev.psi (x + h) - Chebyshev.psi (x + h - h')) +
+        2 * h * ∑' q : LZero χ, RHTower.zeroShortWeight x (8 * x ^ 2 / (h * h')) q.point +
+        18 * (1 + Real.log (2 * x)) + 18 / h' := by
+  have hb := norm_psiChi_window_le_explicit hχ hprim x h h' hx hh' hh'h hhx
+  have hC : 2 * ‖efGamma χ‖ + 8 * efD ≤ 18 := by
+    have := norm_efGamma_le χ
+    have := efD_le_two
+    linarith
+  have hC0 : 0 ≤ 2 * ‖efGamma χ‖ + 8 * efD := by have := efD_nonneg; positivity
+  have hlog : 0 ≤ 1 + Real.log (2 * x) := by
+    have : 0 ≤ Real.log (2 * x) := Real.log_nonneg (by linarith)
+    linarith
+  have h1 : (2 * ‖efGamma χ‖ + 8 * efD) * (1 + Real.log (2 * x)) ≤ 18 * (1 + Real.log (2 * x)) :=
+    mul_le_mul_of_nonneg_right hC hlog
+  have h2 : (2 * ‖efGamma χ‖ + 8 * efD) / h' ≤ 18 / h' :=
+    div_le_div_of_nonneg_right hC hh'.le
+  linarith
 
 end
 

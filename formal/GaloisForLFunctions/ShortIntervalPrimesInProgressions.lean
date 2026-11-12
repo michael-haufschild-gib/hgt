@@ -10,6 +10,8 @@ import GaloisForLFunctions.ShortIntervalPrimesInProgressions.ZeroDensityForAChar
 import GaloisForLFunctions.ShortIntervalPrimesInProgressions.TheZeroSumVanishes
 import GaloisForLFunctions.ShortIntervalPrimesInProgressions.CharacterWindows
 import GaloisForLFunctions.ShortIntervalPrimesInProgressions.PrimesInShortProgressions
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.UniformZeroCounts
+import GaloisForLFunctions.ShortIntervalPrimesInProgressions.SiegelWalfisz
 
 /-!
 # Primes in short intervals of a residue class
@@ -28,4 +30,8 @@ class in the interval is `∼ x^θ/φ(q)` (`PrimesInShortProgressions`).
   discrete mean value theorem (`ZeroDetectionForACharacter`, `ZeroDensityForACharacter`).
 * The weighted zero sum vanishes (`TheZeroSumVanishes`); windows of `ψ(·, χ)` for every character
   (`CharacterWindows`).
+* Uniformly in the modulus: zero counts through the functional-equation reflection
+  (`UniformZeroCounts`), and the Siegel–Walfisz theorem in short windows,
+  `|ψ(x+h, χ) − ψ(x, χ)| ≤ h/(log x)^A` for primitive `χ` of modulus `≤ (log x)^B` and
+  `h ≥ x/(log x)^H` (`SiegelWalfisz`).
 -/

@@ -481,7 +481,7 @@ variable {K : Type*} [Field K] [NumberField K] (𝔪 : Modulus K)
 `Z^{a₁}` and a comparison `Z^{a₂}` with the signal of `exp((s − c)²) H(s)/L(s, ψ)`: every zero
 `ρ ≠ 1` of `L(s, ψ)` with `Re ρ > max(b, a₁, a₂)` is a zero of `H`. -/
 theorem heckeLFunction_transport (ψ : HeckeCharacter 𝔪) {H : ℂ → ℂ} {b a₁ a₂ c C Z₀ : ℝ}
-    (hb : b < 1) (ha₁ : a₁ < 1) (ha₂ : a₂ < 1) (hb1 : b ≤ 1)
+    (hb : b < 1) (ha₁ : a₁ < 1) (ha₂ : a₂ < 1)
     (hH : DifferentiableOn ℂ H {s : ℂ | b < s.re}) (hHb : ∀ s : ℂ, 2 ≤ s.re → ‖H s‖ ≤ C)
     (J : ℝ → ℂ) (hZ₀ : 1 ≤ Z₀) (hJ : ∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ C * Z ^ a₁)
     (hJf : ∀ Z : ℝ, Z₀ ≤ Z →
@@ -555,9 +555,7 @@ theorem heckeLFunction_transport (ψ : HeckeCharacter 𝔪) {H : ℂ → ℂ} {b
     split_ifs
     · exact sub_ne_zero.mpr hρ1
     · exact one_ne_zero
-  have := hE
-  simp only at this
-  rcases mul_eq_zero.mp this with h | h
+  rcases mul_eq_zero.mp hE with h | h
   · rcases mul_eq_zero.mp h with h' | h'
     · exact absurd h' (Complex.exp_ne_zero _)
     · exact h'
@@ -577,7 +575,7 @@ theorem heckeLFunction_transport_phase (ψ : HeckeCharacter 𝔪) {H Λ E : ℂ 
         C * Z ^ a₂)
     {ρ : ℂ} (hρ : max b (max a₁ a₂) < ρ.re) (hρ1 : ρ ≠ 1) (h0 : heckeLFunction 𝔪 ψ ρ = 0) :
     Λ (6 * ρ - 3) = 0 := by
-  have hHρ := heckeLFunction_transport 𝔪 ψ hb ha₁ ha₂ hb.le hH hHb J hZ₀ hJ hJf hρ hρ1 h0
+  have hHρ := heckeLFunction_transport 𝔪 ψ hb ha₁ ha₂ hH hHb J hZ₀ hJ hJf hρ hρ1 h0
   have hbρ : b < ρ.re := lt_of_le_of_lt (le_max_left _ _) hρ
   rw [hHΛ ρ hbρ] at hHρ
   exact (mul_eq_zero.mp hHρ).resolve_right (hE0 ρ hbρ)

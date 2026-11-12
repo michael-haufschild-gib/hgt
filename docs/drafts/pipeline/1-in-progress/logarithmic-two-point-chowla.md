@@ -90,14 +90,15 @@ Lean form of §2–§4: weights `w_k = (|𝐏_k| − C)₊/H_k` replace `1/k`; `
 ### §6 (PRIME)
 
 Dirichlet with denominator bound `2^k/k^{12}` gives `|β − a/q| ≤ k^{12}/(q2^k)`, `q ≤ 2^k/k^{12}`.
+(Lean form of §5 uses arcs of width `1/(4T)` and the discrete circle `ℤ/R`, `R = M + 2^{k+1}h + T`.)
 
 - `q > k^{12}`: Vaughan's identity, `|Σ_{n≤N} Λ(n)e(nβ)| ≪ (N q^{-1/2} + N^{4/5} + (Nq)^{1/2})(log N)^4`.
 - `Q₀ < q ≤ k^{12}`: `e(pa/q) = φ(q)^{-1} Σ_χ χ̄(a) τ(χ) χ̄(p)`, `|τ(χ)| ≤ √q` (Parseval over `a`),
-  `τ(χ₀) = μ(q)`. The principal term is `≤ 1/φ(q)`; at most one exceptional real character per
-  modulus, bounded trivially by `√q/φ(q)`; every other character has
-  `ψ(x, χ) ≪ x exp(−c√log x)` uniformly in `q ≤ (log x)^{12}` (zero-free region
-  `1 − c/log(q(|t|+2))` with Landau's exception, truncated explicit formula). Partial summation
-  against `e(tθ)/log t` costs `1 + 2π|θ|2^{k+1} ≤ 3πk^{12}`.
+  `τ(χ₀) = μ(q)`. The principal term is `≤ 1/φ(q)`; every other character has
+  `ψ(x, χ) ≪ x (log x)^{-A}` uniformly in `q ≤ (log x)^{12}` (Siegel–Walfisz: the uniform region
+  `1 − c/log²(q(|t|+3))` away from real zeros of real characters, Siegel's `β ≤ 1 − c(ε)q^{-ε}`
+  for those, the uniform local zero count, and the window bound of A59 with `h = x`). Partial
+  summation against `e(tθ)/log t` costs `1 + 2π|θ|2^{k+1} ≤ 3πk^{12}`.
 - `q ≤ Q₀`, `W/2^k < |β − a/q|`: the same expansion; the principal term is
   `φ(q)^{-1} avg_p e(pθ) ≪ 1/(W φ(q))`, the others are `o(1)` (fixed modulus).
 
@@ -116,9 +117,9 @@ for `μχ`. Its non-generic input is a Vinogradov–Korobov-type zero-free regio
 | Input | Content | Corpus | Status |
 |---|---|---|---|
 | §0–§4 | limit functionals, entropy, decrement, Hoeffding, event inequality | — | **Lean** (`exists_scale_corr_close`) |
-| §5 | circle method, arc mass | — | open |
+| §5 | circle method, arc mass | — | **Lean** (`abs_avg_corr_le`) |
 | §6 minor arcs | Vaughan bound for general `β` | Vaughan at prime roots of unity (`BezoutValuationIncidence.TheCentredPrimeRowIsMinorArcBelowTheDiagonal`), Type II (`Sieve.VaughanTypeIIEstimate`) | open |
-| §6 intermediate arcs | uniform zero-free region, Landau exception, explicit formula uniform in `q` | fixed-`q` versions: `ShortIntervalPrimesInProgressions/` | open |
+| §6 intermediate arcs | Siegel–Walfisz for `q ≤ (log x)^{12}`: **Lean** for primitive `χ` in short windows (`ShortIntervalPrimesInProgressions.siegelWalfisz_window`); partial summation to `Σ_p χ(p)e(pθ)` and the character expansion of `e(pa/q)` open | Siegel `RHTower.siegel_zero_free`; uniform region `RHTower.uniform_zero_free_region` (width `c/log²(q(|γ|+3))`); uniform local count `RHTower.localCountChi_uniform'`; window bound `ShortIntervalPrimesInProgressions.norm_psiChi_window_le` (its constant is `2‖γ'‖ + 8D`, uniform but stated existentially) | open |
 | §7 | MR for `μχ`, fixed `χ` | MR for `μ`: fibre form all `h → ∞` (`Sieve.MoebiusAveragedMeanSquareAllLengths`), integer start `ℓ ≥ log N` (`TwinPrime.eventually_dyadicMeanSquare_moebius_le_integerWindowRate`); VK for `ζ` (`Sieve.VinogradovKorobovZeroFree`) | open |
 
 ## Lean
@@ -134,6 +135,10 @@ Folder `formal/GaloisForLFunctions/LogarithmicChowla/`, umbrella `LogarithmicCho
 | `EntropyDecrement` | `H(X_{2H}|R) ≤ 2H(X_H|R)`, refinement by CRT, `Σ I_k/H_k ≤ log 2`, good scales | compiled |
 | `ShiftDeviation` | `W_p`, `|W_p| ≤ 5/2`, mean zero, concentration of `Z` | compiled |
 | `PrimeShiftReduction` | `L(Z) = c(h) − avg c(ph)`, event bound, `exists_scale_corr_close` | compiled |
+| `DiscreteFourier` | `e(x)`, orthogonality over `ℤ/R`, twisted Parseval, `|D_T(θ)| ≥ T/2` on `|θ| ≤ 1/(4T)` | compiled |
+| `ArcMass` | box identity, arc mass `≤ 4V(θ,T)(M+1)/M + 8T/M` | compiled |
+| `CircleMethod` | `|avg c(ph) − R⁻¹Σ F(r) Re K(hr/R)| ≤ 2^{k+1}h/M` | compiled |
+| `CircleBound` | minor/major split, covering by arcs, `M → ∞`: `abs_avg_corr_le` | compiled |
 
 ## Log
 - 2026-11-11 — created; paper architecture §0–§7.

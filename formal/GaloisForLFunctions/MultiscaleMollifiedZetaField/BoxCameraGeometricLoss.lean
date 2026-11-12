@@ -43,11 +43,12 @@ theorem tendsto_boxRelativeExteriorMajorant
   have hs := (hq.const_mul (((2 / h) * ((1 + g ^ 2) / g ^ 2)) * Real.exp (η * b))).add
     (hp.const_mul ((4 * A + 4 / h) * Real.exp (η * b - d * a)))
   have ht := hs.const_mul (8 * (xiLineTwoLogDerivConstant + L))
-  simpa only [boxRelativeExteriorMajorant, mul_zero, add_zero] using ht
+  simp only [mul_zero, add_zero] at ht
+  exact ht.congr fun n => rfl
 
 /-- The existing logarithmic zero-mass estimate supplies the entire height cost. -/
 theorem boxExteriorBound_mul_exp_le
-    {A h r g d a b η L y t : ℝ} (hA : 0 ≤ A) (hh : 0 < h) (hr : 0 < r)
+    {A h r g d a b η L y t : ℝ} (hA : 0 ≤ A) (hh : 0 < h)
     (hg : 0 < g) (hd : 0 ≤ d) (hL : 0 ≤ L) (n : ℕ)
     (hlag : a * ((n : ℝ) + 1) ≤ y - boxCameraRadius A h n r)
     (ht : Real.log (|t| + 4) ≤ L * ((n : ℝ) + 1)) :
