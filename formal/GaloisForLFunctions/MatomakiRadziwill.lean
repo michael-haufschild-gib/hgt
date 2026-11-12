@@ -36,6 +36,8 @@ import GaloisForLFunctions.MatomakiRadziwill.LadderStepTerm
 import GaloisForLFunctions.MatomakiRadziwill.LadderFirstTerm
 import GaloisForLFunctions.MatomakiRadziwill.LadderLastScale
 import GaloisForLFunctions.MatomakiRadziwill.LadderTopTerms
+import GaloisForLFunctions.MatomakiRadziwill.LadderBound
+import GaloisForLFunctions.MatomakiRadziwill.LadderMeanSquare
 
 /-!
 # Matomäki–Radziwiłł for twisted Liouville functions
@@ -58,11 +60,15 @@ Toward the mean square of short sums of `λχ`, `χ` a Dirichlet character of fi
   `LadderRouteT`, `LadderCover`, `LadderRough`, `LadderMaster`, `LadderNumerics`,
   `LadderNumericsMoment`, `LadderNumericsExceptional`, `LadderNonRough`,
   `LadderDensity`, `LadderSequence`, `LadderConfig`, `LadderHBounds`,
-  `LadderStepTerm`, `LadderFirstTerm`, `LadderLastScale`, `LadderTopTerms`):
+  `LadderStepTerm`, `LadderFirstTerm`, `LadderLastScale`, `LadderTopTerms`, `LadderBound`,
+  `LadderMeanSquare`):
   the moment computation for powers of prime blocks with arbitrary bounded
   coefficients; Ramaré's identity at one scale and its block decomposition
   `Σ_{n ∈ S} f(n)n^{-1-it} ≈ Σ_v Q_v R_v`, with mean-square error `≪ (W/X + 1)(1/H + 1/P)`; the
   first step (mean value theorem where every block is small), the later steps (moment trick against
   the previous scale), and the exceptional set (Markov for its measure, a pointwise bound for the top
-  scale), assembled into the master inequality `LadderScales.ladder_master`.
+  scale), assembled into the master inequality `LadderScales.ladder_master`; the concrete ladder
+  `a_0 = 200 log L`, `b_0 = L/2`, `a_{j+1} = 2b_j²`, `b_{j+1} = a_{j+1}²` below `(log X)^{0.93}` and the
+  Route T scale above it give, for `χ ≠ 1` (`exists_mean_square_twLiouville_le`):
+  `∫_{|w| ≤ W} |Σ_{X<n≤4X} λχ(n)/n · n^{2πiw}|² ≤ ε` for `L ≥ L₀(ε)`, `X ≥ X₀(L)`, `W ≤ X e^{-L/2}`.
 -/

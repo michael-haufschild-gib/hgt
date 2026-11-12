@@ -917,6 +917,62 @@ kernel. It does not assert rationality of zero real parts, existence of a
 global reflection lift, or purity.
 [Rational weights and arithmetic orbits](TheRationalWeightsOfPrimeZeroOrbits.lean).
 
+### The rational-real-part residue layer
+
+Let `L_rat` be the subfield of the prime spectral extension generated over
+`B` by all prime values at actual zeros with rational real part. This is a
+field of nonreal zero exponents, distinct from the rational-weight prime
+field. It contains the full residue field of every critical zero.
+
+Each individual residue field in this layer is quadratic over `B`.
+Rational-orbit rigidity places the conjugate-pair trace
+`u=p^ρ+conjugate(p^ρ)` and norm `v=p^(2 Re ρ)` in `B`. A nonreal prime
+coordinate generates the full residue field and satisfies `X²−uX+v`;
+its degree cannot be one because `B` is real.
+
+For every nonreal coordinate, `d=p^ρ−conjugate(p^ρ)` has square
+`D=u²−4v∈B`, strictly negative in the chosen real embedding. These actual
+radicals generate all of `L_rat`. Its entire Galois group, with its Krull
+topology, is the sign group satisfying every finite discriminant
+square-product relation. The extension is therefore abelian of exponent
+two. Restriction from `Gal(E/B)` is continuous and surjective.
+
+Ordinary complex conjugation is exactly uniform radical negation. Every
+square product has even cardinality, and this uniform negative assignment
+has a unique realization. Thus conjugation is central on the whole layer,
+including the entire critical-zero residue field. Rationality of all real
+parts, equality `L_rat=E`, and centrality on the remaining extension are
+not asserted.
+[Rational residue layer](TheRationalResidueLayerOfTheZeros.lean).
+
+### The even-product field of original centered zeros
+
+There is a separate field construction directly over `ℚ`. Let
+`a_ρ=ρ−1/2`, let `L=ℚ(a_ρ : ρ an actual zero)`, and let
+`K=ℚ(a_ρ a_τ : ρ,τ actual zeros)`. These fields use the entire divisor;
+`K` is defined from zero products and is not identified with a prime-source
+field.
+
+Every anchor `a_ρ` is nonzero and generates `L` over `K`: each other
+centered zero equals `(a_τ a_ρ)/a_ρ`. Thus `[L:K]≤2`. The degree is two
+exactly when the anchor is outside `K`, a criterion independent of the
+anchor. In that case quadratic conjugation negates every centered zero
+and realizes the actual functional equation on the original coordinates.
+
+Conversely, any rational field automorphism negating all centered zeros
+fixes every even product. Such a lift exists exactly when `a_ρ∉K`; it is
+unique, and its fixed field is precisely `K`. This classifies the lifting
+obstruction without assuming that the geometric permutation preserves
+all field relations.
+
+Ordinary complex conjugation preserves both fields. The even-product
+field is real exactly when every actual zero is critical. For the forward
+implication, an unconditionally existing critical zero supplies a nonzero
+purely imaginary anchor; reality of its product with every other centered
+zero forces each real part to vanish. The converse follows directly from
+the products. Neither reality of `K` nor exclusion of its anchors is assumed.
+[Even-product field](TheEvenProductFieldOfTheZeros.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

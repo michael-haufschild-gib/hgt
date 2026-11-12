@@ -123,7 +123,15 @@ theorem pairFactor_criticalLine (ρ : ℂ) (t : ℝ) :
     ((1 / 2 : ℂ) + (2 * t : ℝ) * I - ρ) * ((1 / 2 : ℂ) + (2 * t : ℝ) * I - (starRingEnd ℂ) ρ) =
       ((-4 * t ^ 2 + (1 / 2 - ρ.re) ^ 2 + ρ.im ^ 2 : ℝ) : ℂ) +
         ((4 * (1 / 2 - ρ.re) * t : ℝ) : ℂ) * I := by
-  apply Complex.ext <;> simp <;> ring
+  apply Complex.ext
+  · simp only [Complex.mul_re, Complex.add_re, Complex.sub_re, Complex.mul_im, Complex.add_im,
+      Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+      Complex.conj_re, Complex.conj_im]
+    norm_num; ring
+  · simp only [Complex.mul_re, Complex.add_re, Complex.sub_re, Complex.mul_im, Complex.add_im,
+      Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+      Complex.conj_re, Complex.conj_im]
+    norm_num; ring
 
 /-- **Corollary III.1(1): the defect of the pair twin.**  For `1/2 < Re ρ < 14/15` the greedy edit
 of the pair `ρ, ρ̄` is a twin on a half-plane containing the critical line, and its critical-line
@@ -216,7 +224,9 @@ theorem quartetTwin_defect {ρ : ℂ} (hδ0 : 1 / 2 < ρ.re) (hδ1 : ρ.re < 1 /
   -- the continuation vanishes at `ρ`
   obtain ⟨G, hGd, hGeq, hGzero⟩ := htwin.exists_continuation hLd
   have hρc : c < ρ.re := by rw [← hb]; linarith
-  have hρ1 : ρ ≠ 1 := fun h => by rw [h] at hδ1; norm_num at hδ1
+  have hρ1 : ρ ≠ 1 := fun h => by
+    have : b = 1 := by rw [hb, h, Complex.one_re]
+    linarith
   have hG0 : G ρ = 0 := (hGzero ρ hρc hρ1 hζ).mpr
     ((layerFactor_eq_zero_iff _ _ ρ).mpr ⟨0, Finset.mem_univ _, Or.inl (by simp [hρs])⟩)
   -- an edited prime exists: otherwise `ζ_B = ζ` and `G = (s - 1) ζ(s)`
@@ -227,7 +237,8 @@ theorem quartetTwin_defect {ρ : ℂ} (hδ0 : 1 / 2 < ρ.re) (hδ1 : ρ.re < 1 /
       intro s hs
       rw [editSystem_zetaSeriesC he hs]
       have hE : LSeries (fun k => (e k : ℂ)) s = 0 := by
-        simp [hall, LSeries]
+        rw [show (fun k => (e k : ℂ)) = 0 by funext k; simp [hall]]
+        exact congrFun LSeries_zero s
       have hQ : editRem e s = 0 := by simp [editRem, hall]
       rw [hE, hQ, add_zero, Complex.exp_zero, mul_one]
     have hZd : DifferentiableOn ℂ zetaResidueUnit {s : ℂ | c < s.re} := fun s _ =>

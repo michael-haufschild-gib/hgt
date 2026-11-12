@@ -16,7 +16,7 @@ Folder: `formal/GaloisForLFunctions/MatomakiRadziwill/` (top level, umbrella `Ma
 | V | Vinogradov–Korobov zero-free region for `L(s,χ)` | **Lean** (`LFunction_ne_zero_vinogradovKorobov`) |
 | RT | Route T for `χ`: `Σ_{p∈B} χ(p)p^{-it}` small for high blocks `B`, `\|t\| ≤ X` | **Lean** (`exists_twistedChebyshev_le`, `exists_primeBlock_le`) |
 | D | low frequencies: `sup_{\|t\|≤T₀} \|Σ_{n≤x} λχ(n)n^{-it}\| = o(x)` | open |
-| L | the ladder: Ramaré, mean value, large values, Halász–Montgomery, rough class | open |
+| L | the ladder: Ramaré, mean value, large values, Halász–Montgomery, rough class | **Lean** for `χ ≠ 1` (`exists_mean_square_twLiouville_le`) |
 | P | Parseval: additive short windows from the Dirichlet-polynomial mean square | open |
 | A | assembly for `λχ`; transfer to `V(b/s,T)` | open |
 
@@ -161,15 +161,13 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderHBounds` | `a_j ≥ 2^j a_0`; `Σ_{j<J}(10/H_j+16/P_j) ≤ 52/a_0`; `C x^n e^{-1.52x} ≤ e^{-x}` eventually; `Σ e^{-2^k b} ≤ 2e^{-b}`; `log a_{j+1} ≥ 2^j log a_1`; `Σ 1/A_j ≤ 1/D_0 + 2/D_1`; `C_M ≥ 0` | compiled |
 | `LadderStepTerm` | concrete moment step `j+1` of the master inequality `≤ 144e·2^{48} b_j^{66} e^{-1.52 b_j}`; `#V` bounds; `e^{b_j} ≤ X` below the top | compiled |
 | `LadderFirstTerm` | first step `≤ L^{52}(10πe^{-αL} + 40e²e^{-96 log L})` for `W ≤ X e^{-L/2}` | compiled |
+| `LadderLastScale` | `J ≥ 2` ⇒ `4a_{J−1}^8 > (log X)^{0.93}`; exceptional-set condition `18(log W/(a_{J−1} − 1/H_{J−1}) + 1) ≤ H_{J−1}` | compiled |
+| `LadderTopTerms` | top blocks `≤ ℓ²+2`; kernel `≤ 60000ℓe^{ℓ/2}`; exceptional term `≤ (ℓ²+2)²ρ²(6 + Cℓ^{27}e^{-ℓ/50+2ℓ^{0.96}} + 384(ℓ+3))`; top Ramaré, top density `≥ 0.03 log ℓ − C_M`; non-rough `≤ 216(Σ1/A_j + 1/A*)` | compiled |
+| `LadderBound` | concrete rough part (`ladder_rough_le`) and non-rough part (`ladder_nonrough_le`) | compiled |
+| `LadderMeanSquare` | `L`-part `O(1/log L)`, `X`-part `O(1/log log X)`; **`exists_mean_square_twLiouville_le`**: `∫_{\|w\|≤W}\|Σ_{X<n≤4X} λχ(n)/n·n^{2πiw}\|² ≤ ε` for `L ≥ L₀`, `X ≥ X₀(L)`, `W ≤ Xe^{-L/2}`, `χ ≠ 1` (axioms: propext, choice, Quot.sound) | compiled |
 
-Remaining for (MR) for `λχ`: the concrete scale sequence and the final asymptotics of
-`ladder_master` + `LadderNonRough` (every term has an explicit numeric bound in `LadderNumerics*`).
-Scales (`a_j = log P_j`, `b_j = log Q_j`): `a_0 = 200 log log h`, `b_0 = (log h)/2`, `H_0 = (log h)^{25}`;
-`a_{j+1} = 2b_j²`, `b_{j+1} = a_{j+1}²`, `H_{j+1} = a_{j+1}^8`.  Then `A_j ≥ log a_j − C` (Mertens,
-`Sieve.le_mertensS`/`Sieve.mertensS_le`), the moment step `j` needs `18e(b_j/(a_{j−1} − 1/H_{j−1}) + 1) ≤ H_{j−1}`
-(`≈ 196a^7 ≤ a^8`), and each step costs `≲ b^{45} e^{-1.52 b}`, `b = b_{j−1}`.  Top scale
-`[exp((log X)^{0.93}), exp((log X)^{0.96})]`, `H* = log X`, `ρ = (log X)^{-3}`; `J` = number of `j` with
-`b_j ≤ (log X)^{0.93}`.  Then Parseval (P), principal characters, transfer (A).
+Remaining for (MR) for `λχ`: Parseval (P) from `exists_mean_square_twLiouville_le` to additive windows,
+principal characters, transfer (A).
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery

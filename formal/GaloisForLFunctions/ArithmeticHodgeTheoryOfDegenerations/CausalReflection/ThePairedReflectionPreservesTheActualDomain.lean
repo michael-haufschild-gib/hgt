@@ -97,7 +97,6 @@ theorem CriticalHalfLineEnergyDomain.realPairedCausalReflection {a : ℝ} (ha : 
       HTGeometry.realPairedCausalReflection a b F u ^ 2 * Real.exp (-(8 * u))
     rw [norm_sq_causalLaplaceWeighted,
       show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp; norm_num]
-    dsimp only
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   · intro u hu
     rw [HTGeometry.realPairedCausalReflection,

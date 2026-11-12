@@ -56,3 +56,4 @@ Written, unchecked support in `ArithmeticHodgeTheoryOfDegenerations/CausalReflec
 
 - `GammaIntegrabilityFromLinearFourierDecay`: Gamma admission from spectral decay.
 - `UndampedCausalResolventBasicDomain`: actual L¹∩L² admission at an imaginary-axis zero.
+- `CausalResolventMixedEnergy`: exact mixed energy, including the weighted undamped case.

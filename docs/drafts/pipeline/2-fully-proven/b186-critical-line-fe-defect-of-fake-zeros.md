@@ -345,12 +345,17 @@ Referring to the three scenarios in `obstacles-summary.md:684–689` and Criteri
 
 Formalized (compile clean, `formal/GaloisForLFunctions/`):
 - Def 1.1 = `EulerFETransportTheory.HamburgerStripDefect`.
+- Lemma 1.2: `hamburgerStripDefect_of_stripContinuation` (defect `stripDefect`), `stripDefect_eq_of_factor` (`EulerFETransportTheory/PolynomialStripContinuationsLieInTheHamburgerClass`).
 - Thm I.1(1): `SumProductArithmeticOfTheLogarithm.pos_density_of_integerNormFakeAt_lt_one` (A > 0, every integer-norm fake, β_c < 1); `EulerFETransportTheory.pole_eq_half_density` (β = A/2, any density A).
 - Thm I.1(2): `WorldsOfTheZeroConfiguration.FEDefect.exists_least_deleted_prime`, `intCoeff_editSystem_mul_eq_zero`.
-- Thm I.2: general `eventually_le_mul_abelMass_of_coeff_ne` (floor ‖a_{m₂}−a_{m₁}‖/(3(m₂+1))), `not_tendsto_zero_of_coeff_ne`, `not_le_rpow_neg_of_coeff_ne`; edits `FEDefect.editSystem_eventually_le_mul_abelMass`, `editSystem_defect_not_decaying` (no count-rate premise beyond β_c < 1, any deleted prime).
-- Thm I.3: general `integral_norm_sq_mul_exp_ge_of_missing_multiples` (needs only density A > 0, i.e. N(n) = An + o(n)), `not_le_sqrt_log_of_missing_multiples`, `not_bounded_of_missing_multiples`; edits `FEDefect.editSystem_fake_defect_energy`, `editSystem_fake_defect_not_le_sqrt_log`, `editSystem_fake_least_deleted_prime_energy`.
+- Thm I.2: general `eventually_le_mul_abelMass_of_coeff_ne` (floor ‖a_{m₂}−a_{m₁}‖/(3(m₂+1))), `not_tendsto_zero_of_coeff_ne`, `not_le_rpow_neg_of_coeff_ne`; edits `FEDefect.editSystem_eventually_le_mul_abelMass`, `editSystem_defect_not_decaying` (any deleted prime).
+- Thm I.3: general `integral_norm_sq_mul_exp_ge_of_missing_multiples` (needs only density A > 0, N(n) = An + o(n)), `not_le_sqrt_log_of_missing_multiples`, `not_bounded_of_missing_multiples`; edits `FEDefect.editSystem_fake_defect_energy`, `editSystem_fake_defect_not_le_sqrt_log`, `editSystem_fake_least_deleted_prime_energy`.
+- Thm II.2: (a) `fake_abelMass_floor`; (b) `signedPoly_eq_exp` (real prime-power weights w̃_r), `signedPoly_hamburgerStripDefect` (β = 0, ‖g‖ ≤ 2(1+2^{1/4})²), `signedPoly_fake` (γ₀ = 1, Abel floor 1/12).
+- Cor III.1: `FEDefect.IsFactorTwinOn.stripDefect_eq`, `pairTwin_stripDefect_eq`, `pairFactor_criticalLine`, `quartetFactor_criticalLine`, `quartetTwin_defect`.
 
-Open: Lemma 1.2; Thm I.4; Thm II.1; Thm II.2; Thm II.3; Cor III.1; Cor III.2.
+Open: Thm I.4; Thm II.1; Thm II.3; Cor III.2; II.2(b) Möbius-inverted prime weights w_m.
+
+Correction: Thm I.4 Branch A's clause "the WZC greedy pair twin has polynomial defect g" has no proof — the twin exponent K(1/2+2it) is only O(1+|t|) (III.1(1)), so e^{K} may grow exponentially. The dichotomy needs only "Θ = 1 ⇒ AsymptoticAbscissaLaw"; Branch A is formalized without that clause.
 
 ## 5. Lean 4 Formalization Blueprint
 

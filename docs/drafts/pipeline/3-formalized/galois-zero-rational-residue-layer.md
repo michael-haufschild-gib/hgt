@@ -1,22 +1,24 @@
 # The rational-real-part residue layer
 
 - **ID:** galois-zero-rational-residue-layer
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Questions:** Arithmetic location of conjugation; quadratic residue extensions; infinite descent.
 
-## Target
+## Theorems
 
 Let `E_rat` be the subextension of the prime spectral field generated over
 `B` by all prime values at actual zeros whose real parts are rational.
 This differs from the rational-weight prime field: the exponents here are
 nonreal zeros. It includes the entire critical-zero prime field.
 
-Prove that each individual residue field in this layer is quadratic over
-`B`, and that `E_rat/B` is the full infinite multiquadratic extension
-specified by the actual prime-coordinate discriminants. Identify its
-Galois group through all finite square-product relations. Locate complex
-conjugation as the uniform negative sign, central on this entire layer.
+Each individual residue field in this layer is quadratic over `B`. Their
+full compositum `E_rat/B` is the multiquadratic extension specified by the
+actual prime-coordinate discriminants. Its Galois group
+is the sign group determined by all finite square-product relations, with
+the Krull topology. Complex conjugation is the uniform negative sign,
+central on this entire layer. Restriction from `Gal(E/B)` is continuous and
+surjective.
 
 ## Paper argument
 
@@ -39,8 +41,25 @@ primes. No finite height or bounded prime set defines the layer.
 
 ## Boundary
 
-The rational-orbit theorem is formalized in
-`TheRationalWeightsOfPrimeZeroOrbits.lean`. No Lean module for this layer
-exists yet. It does not assert
-that all real parts are rational, that the layer equals the full spectral
-field, or that conjugation is central on the remaining extension.
+This does not assert that all real parts are rational, that the layer equals
+the full spectral field, or that conjugation is central on the remaining
+extension.
+
+## Lean
+
+`formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheRationalResidueLayerOfTheZeros.lean`
+
+- `rationalPrimeResidueField_degree_two`
+- `criticalPrimeResidueField_le_rationalLayer`
+- `rationalZeroResidueRestriction_surjective`
+- `rationalPrimeRadicand_negative`
+- `rationalPrimeRadicals_adjoin_top`
+- `rationalResidueSignAction_unique_extension`
+- `rationalResidueSignHomeomorph`
+- `rationalPrimeRadicands_square_even`
+- `rationalResidueConjugation_unique`
+- `rationalResidueConjugation_central`
+- `rationalPrimeNorm_coe`
+
+Direct source check passed. All 28 axiom audits use only `propext`,
+`Classical.choice`, and `Quot.sound`.

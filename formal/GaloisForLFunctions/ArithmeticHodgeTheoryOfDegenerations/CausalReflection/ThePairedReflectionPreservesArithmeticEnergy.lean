@@ -11,6 +11,7 @@ product, which is preserved by the conjugate pair's reciprocal factors.
 
 noncomputable section
 open MeasureTheory Filter Set Topology Zeta23 FourierTransform
+open _root_.RHTower
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open CriticalArithmeticCorrelationTheory ArithmeticCastelnuovoSeveri HTGeometry
@@ -108,6 +109,10 @@ theorem poleTerm_realPairedCausalReflection {a : ℝ} (ha : 0 < a)
     exact congrArg (fun z : ℂ => Complex.exp (q * (u : ℂ)) * z) hu
   have hp := pairedCausalReflection_laplace_pair ha hb hF.integrable
     hF.memLp_complex hF.memLp_weightedComplex hF.support hz (s := 1 / 2) (by norm_num)
+  change negativeHalfLineLaplace (pairedCausalReflection a b (cx F)) ((1 / 2 : ℝ) : ℂ) *
+      negativeHalfLineLaplace (pairedCausalReflection a b (cx F)) (-((1 / 2 : ℝ) : ℂ)) =
+    negativeHalfLineLaplace (cx F) ((1 / 2 : ℝ) : ℂ) *
+      negativeHalfLineLaplace (cx F) (-((1 / 2 : ℝ) : ℂ)) at hp
   obtain ⟨hHplus, hHminus⟩ := negativeHalfLineLaplace_halfPole_real hH.weighted
   obtain ⟨hFplus, hFminus⟩ := negativeHalfLineLaplace_halfPole_real hF.weighted
   rw [← hl _, ← hl _, hHplus, hHminus, hFplus, hFminus] at hp

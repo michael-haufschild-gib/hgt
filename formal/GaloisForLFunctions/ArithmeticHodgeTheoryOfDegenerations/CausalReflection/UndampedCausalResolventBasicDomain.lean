@@ -50,7 +50,8 @@ theorem undampedCausalConvolution_memLp_and_integrable (b : ℝ)
   have hKw := memLp_weighted_modulatedCausalConvolution
     (a := 0) (x := 4 / Real.pi) (by positivity) b hw
   have hKs := modulatedCausalConvolution_support_of_laplace_zero 0 b hs hz
-  have hK2 := memLp_two_of_weighted_negativeHalfLine (by positivity) hKm hKw hKs
+  have hK2 := memLp_two_of_weighted_negativeHalfLine
+    (x := 4 / Real.pi) (by positivity) hKm hKw hKs
   refine ⟨hK2, ?_⟩
   have hi := integrable_complexLaplaceWeighted_of_halfLine_memLp
     (q := 0) (by norm_num) hK2 hKw hKs

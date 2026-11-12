@@ -87,7 +87,7 @@ theorem ae_eq_zero_of_fullEnergy_zero_of_complex_laplace_zero
     have hb : z.im / (2 * Real.pi) ≠ 0 :=
       div_ne_zero him (mul_ne_zero (by norm_num) Real.pi_ne_zero)
     have he : modulatedLaplaceRate (z.re / Real.pi) (z.im / (2 * Real.pi)) = z := by
-      apply Complex.ext <;> simp [modulatedLaplaceRate] <;> field_simp [Real.pi_ne_zero]
+      apply Complex.ext <;> simp [modulatedLaplaceRate] <;> field_simp [Real.pi_ne_zero] <;> ring
     apply ae_eq_zero_of_fullEnergy_zero_of_nonreal_laplace_zero hW hthreshold hd henergy ha hb
     rw [he]
     exact hz
