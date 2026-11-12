@@ -116,6 +116,7 @@ theorem criticalHalfLineGroundState_boundaryLaplace_ne_zero
       _ = ∫ _u : ℝ, (0 : ℝ) := by
         apply integral_congr_ae
         filter_upwards [hFzero] with u hu
+        change (F u : ℂ) = 0 at hu
         have hfu : F u = 0 := Complex.ofReal_eq_zero.mp hu
         rw [hfu, zero_pow (by norm_num : (2 : ℕ) ≠ 0)]
       _ = 0 := by simp
@@ -130,12 +131,16 @@ theorem criticalHalfLineGroundState_closedRightHalfPlaneLaplace_ne_zero
   rcases lt_or_eq_of_le hz with hpos | heq
   · exact criticalHalfLineGroundState_complexLaplace_ne_zero hW hthreshold hF hpos
   · have he : modulatedLaplaceRate 0 (z.im / (2 * Real.pi)) = z := by
-      apply Complex.ext
-      · simpa [modulatedLaplaceRate] using heq
-      · simp only [modulatedLaplaceRate, Complex.add_im, Complex.mul_im,
-          Complex.ofReal_re, Complex.ofReal_im, Complex.I_im, Complex.I_re,
-          mul_one, mul_zero, add_zero, zero_add]
+      have hi : 2 * Real.pi * (z.im / (2 * Real.pi)) = z.im := by
         field_simp [Real.pi_ne_zero]
+      unfold modulatedLaplaceRate
+      rw [hi]
+      apply Complex.ext
+      · simpa only [mul_zero, Complex.ofReal_zero, zero_add, Complex.mul_re,
+          Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+          zero_mul, sub_zero] using heq
+      · simp only [mul_zero, Complex.ofReal_zero, zero_add, Complex.mul_im,
+          Complex.ofReal_re, Complex.ofReal_im, Complex.I_im, Complex.I_re, mul_one, add_zero]
     rw [← he]
     exact criticalHalfLineGroundState_boundaryLaplace_ne_zero hW hthreshold hF _
 

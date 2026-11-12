@@ -244414,4 +244414,5092 @@ end
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace HeckeDeletionDerivative
+open HeckeFamily HeckeDeletionBounds
+
+theorem factor_deriv {N : ℝ} (hN : 0 < N) (a s : ℂ) :
+    deriv (EulerFactors.factor N a) s = a*(N : ℂ)^(-s)*Complex.log (N : ℂ) := by
+  have h := (hasDerivAt_const s (1 : ℂ)).sub
+    (((hasDerivAt_id s).neg.const_cpow (Or.inl (Complex.ofReal_ne_zero.mpr hN.ne'))).const_mul a)
+  have h' : HasDerivAt (EulerFactors.factor N a)
+      (a*(N : ℂ)^(-s)*Complex.log (N : ℂ)) s := by
+    convert h using 1 <;> first | rfl | (dsimp; ring)
+  exact h'.deriv
+
+theorem factor_logDeriv_norm {σ N : ℝ} (hσ : 0 < σ) (hN : 2 ≤ N)
+    {a s : ℂ} (ha : ‖a‖ ≤ 1) (hs : σ ≤ s.re) :
+    ‖logDeriv (EulerFactors.factor N a) s‖ ≤ localBound σ * Real.log N := by
+  have hn0 : 0 < N := by linarith
+  have hl : 0 ≤ Real.log N := Real.log_nonneg (by linarith)
+  have ht := term_bound hσ hN ha hs
+  have hδ : (2 : ℝ)^(-σ) ≤ 1 :=
+    (Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)).le
+  have hf := (factor_bounds hσ hN ha hs).2
+  rw [logDeriv_apply, factor_deriv hn0, div_eq_mul_inv, norm_mul, norm_mul,
+    ← Complex.ofReal_log hn0.le, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hl]
+  have hterm : ‖a*(N : ℂ)^(-s)‖ ≤ 1 := ht.trans hδ
+  calc
+    _ ≤ (1*Real.log N)*localBound σ := by gcongr
+    _ = _ := by ring
+
+theorem factors_logDeriv_norm (σ : ℝ) (hσ : 0 < σ) (M : Ideal O)
+    (ψ : Character) {s : ℂ} (hs : σ ≤ s.re) :
+    ‖logDeriv (HeckeFiniteDeletion.factors M ψ) s‖ ≤
+      localBound σ * Real.log ((radical M).absNorm : ℝ) := by
+  have hp0 (P : HeckeIdealSeries.PrimeIdeal) : 0 < (P.val.absNorm : ℝ) := by
+    have h := HeckeIdealSeries.prime_norm_two_le P
+    exact_mod_cast (by omega : 0 < P.val.absNorm)
+  have hp2 (P : HeckeIdealSeries.PrimeIdeal) : 2 ≤ (P.val.absNorm : ℝ) := by
+    exact_mod_cast HeckeIdealSeries.prime_norm_two_le P
+  have he : logDeriv (HeckeFiniteDeletion.factors M ψ) s =
+      ∑ P ∈ HeckeIdealSeries.primeSet M,
+        logDeriv (EulerFactors.factor (P.val.absNorm : ℝ) (idealCoeff ψ P.val)) s := by
+    apply logDeriv_prod
+    · intro P _
+      exact EulerFactors.factor_ne_zero (by linarith [hp2 P]) (idealCoeff_norm_le_one ψ P.val)
+        (hσ.trans_le hs)
+    · intro P _
+      exact EulerFactors.differentiable_factor (hp0 P) _ s
+  rw [he]
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ P ∈ HeckeIdealSeries.primeSet M, localBound σ*Real.log (P.val.absNorm : ℝ) := by
+      apply Finset.sum_le_sum
+      intro P _
+      exact factor_logDeriv_norm hσ (hp2 P) (idealCoeff_norm_le_one ψ P.val) hs
+    _ = localBound σ * Real.log ((radical M).absNorm : ℝ) := by
+      rw [← Finset.mul_sum, ← Real.log_prod (fun P _ => (hp0 P).ne')]
+      simp only [radical, HeckeIdealSeries.primeProduct, map_prod, Nat.cast_prod]
+
+end HeckeDeletionDerivative
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology ContDiff
+open MeasureTheory Set
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic
+
+
+def coefficient (χ : Character) (I : Ideal O) : ℂ :=
+  (IdealMangoldt.value I : ℂ) * idealCoeff χ I
+
+@[simp] theorem coefficient_zero (χ : Character) : coefficient χ 0 = 0 := by
+  unfold coefficient
+  rw [IdealMangoldt.value_zero, Complex.ofReal_zero, zero_mul]
+
+def series (χ : Character) (s : ℂ) : ℂ := -deriv (LFunction χ) s / LFunction χ s
+
+theorem series_eq_tsum (χ : Character) {s : ℂ} (hs : 1 < s.re) :
+    series χ s = ∑' I : NonzeroIdeal, coefficient χ I.val * (norm I : ℂ)^(-s) := by
+  have he : (∑' I : NonzeroIdeal, (IdealMangoldt.value I.val : ℂ) *
+      IdealEuler.weighted (idealCoeff χ) s I.val) =
+      ∑' I : Ideal O, (IdealMangoldt.value I : ℂ) * IdealEuler.weighted (idealCoeff χ) s I := by
+    apply tsum_subtype_eq_of_support_subset (s := {I : Ideal O | I ≠ 0})
+      (f := fun I : Ideal O => (IdealMangoldt.value I : ℂ) * IdealEuler.weighted (idealCoeff χ) s I)
+    intro I hI hi
+    subst I
+    exact hI (by
+      change (IdealMangoldt.value 0 : ℂ) * IdealEuler.weighted (idealCoeff χ) s 0 = 0
+      rw [IdealMangoldt.value_zero, Complex.ofReal_zero, zero_mul])
+  change -deriv (LFunction χ) s / LFunction χ s = _
+  rw [← HeckeLogDerivative.coeff_LSeries_eq χ hs]
+  change LSeries (IdealLogDerivative.coeff (idealCoeff χ)) s = _
+  rw [← IdealLogDerivative.mangoldt_series_eq_LSeries _ (idealCoeff_norm_le_one χ) s hs, ← he]
+  apply tsum_congr
+  intro I
+  simp only [coefficient, IdealEuler.weighted, IdealEuler.normWeight,
+    MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, fullIdealWeight]
+  rw [if_neg I.property]
+  simp only [HeckeDyadic.norm, Complex.ofReal_natCast, mul_assoc]
+
+def twistedCoefficient (χ : Character) (σ freq : ℝ) (I : NonzeroIdeal) : ℂ :=
+  coefficient χ I.val * (norm I : ℂ)^(-shift σ freq)
+
+theorem twisted_coefficient_summable (χ : Character) (c σ freq : ℝ)
+    (hc : 1 < c+σ) :
+    Summable (fun I : NonzeroIdeal => ‖twistedCoefficient χ σ freq I‖*(norm I)^(-c)) := by
+  have hf := (IdealLogDerivative.mangoldt_weighted_summable_norm
+    (idealCoeff χ) (idealCoeff_norm_le_one χ) ((c+σ : ℝ) : ℂ)
+    (by simpa using hc)).comp_injective (Subtype.val_injective : Function.Injective
+      (fun I : NonzeroIdeal => I.val))
+  apply hf.congr
+  intro I
+  symm
+  simp only [Function.comp_apply, twistedCoefficient, coefficient, IdealEuler.weighted, IdealEuler.normWeight,
+    MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, fullIdealWeight,
+    if_neg I.property, norm_mul]
+  change (‖(IdealMangoldt.value I.val : ℂ)‖ * ‖idealCoeff χ I.val‖ *
+      ‖(norm I : ℂ)^(-shift σ freq)‖) * (norm I)^(-c) =
+    ‖(IdealMangoldt.value I.val : ℂ)‖ * (‖idealCoeff χ I.val‖ *
+      ‖(norm I : ℂ)^(-((c+σ : ℝ) : ℂ))‖)
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos (norm_pos I),
+    Complex.norm_cpow_eq_rpow_re_of_pos (norm_pos I)]
+  simp only [Complex.neg_re, shift_re, Complex.ofReal_re]
+  rw [mul_assoc, mul_assoc, ← Real.rpow_add (norm_pos I)]
+  congr 3
+  ring
+
+def summand (χ : Character) (W : ℝ → ℂ) (D σ freq : ℝ) (I : NonzeroIdeal) : ℂ :=
+  coefficient χ I.val * W (norm I/D) * ((norm I/D : ℝ) : ℂ)^(-shift σ freq)
+
+def polynomial (χ : Character) (W : ℝ → ℂ) (D σ freq : ℝ) : ℂ :=
+  (D : ℂ)^(-(1/2 : ℂ)) * ∑' I : NonzeroIdeal, summand χ W D σ freq I
+
+theorem twisted_series_eq (χ : Character) (σ freq : ℝ)
+    {s : ℂ} (hs : 1 < (s+shift σ freq).re) :
+    (∑' I : NonzeroIdeal, twistedCoefficient χ σ freq I*(norm I : ℂ)^(-s)) =
+      series χ (s+shift σ freq) := by
+  rw [series_eq_tsum χ hs]
+  apply tsum_congr
+  intro I
+  unfold twistedCoefficient
+  rw [mul_assoc, ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr (norm_pos I).ne')]
+  congr 2
+  ring
+
+theorem polynomial_eq_weighted (χ : Character) (W : ℝ → ℂ)
+    (D σ freq : ℝ) (hD : 0 < D) :
+    polynomial χ W D σ freq =
+      (D : ℂ)^(shift σ freq-(1/2 : ℂ)) *
+        ∑' I : NonzeroIdeal, twistedCoefficient χ σ freq I * W (norm I/D) := by
+  have he (I : NonzeroIdeal) : summand χ W D σ freq I =
+      (D : ℂ)^(shift σ freq) * (twistedCoefficient χ σ freq I * W (norm I/D)) := by
+    unfold summand twistedCoefficient
+    rw [positive_quotient_cpow_neg _ _ (norm_pos I) hD]
+    ring
+  unfold polynomial
+  simp_rw [he]
+  rw [tsum_mul_left, ← mul_assoc, ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hD.ne')]
+  congr 2
+  ring
+
+theorem polynomial_mellin (χ : Character) (W : ℝ → ℂ)
+    (a b : ℝ) (ha : 0 < a) (hWs : Function.support W ⊆ Icc a b)
+    (hW : ContDiff ℝ ∞ W) (D c σ freq : ℝ) (hD : 0 < D) (hc : 1 < c+σ) :
+    polynomial χ W D σ freq = (1/(2*Real.pi) : ℂ)*∫ t : ℝ,
+      mellin W ((c : ℂ)+t*Complex.I) *
+        (D : ℂ)^(((c : ℂ)+t*Complex.I)+shift σ freq-(1/2 : ℂ)) *
+          series χ (((c : ℂ)+t*Complex.I)+shift σ freq) := by
+  rw [polynomial_eq_weighted χ W D σ freq hD]
+  rw [weightedMellin_inversion norm norm_pos
+    (twistedCoefficient χ σ freq) c (twisted_coefficient_summable χ c σ freq hc)
+    W a b ha hWs hW D hD]
+  rw [mul_left_comm, ← integral_const_mul]
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [] with t
+  rw [twisted_series_eq χ σ freq (by simpa using hc)]
+  have he : (D : ℂ)^(shift σ freq-(1/2 : ℂ))*(D : ℂ)^((c : ℂ)+t*Complex.I) =
+      (D : ℂ)^(((c : ℂ)+t*Complex.I)+shift σ freq-(1/2 : ℂ)) := by
+    rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hD.ne')]
+    congr 1
+    ring
+  calc
+    _ = mellin W ((c : ℂ)+t*Complex.I) *
+        ((D : ℂ)^(shift σ freq-(1/2 : ℂ))*(D : ℂ)^((c : ℂ)+t*Complex.I)) *
+          series χ (((c : ℂ)+t*Complex.I)+shift σ freq) := by ring
+    _ = _ := by rw [he]
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic
+
+def eulerBound (b : ℝ) : ℝ :=
+  ∑' I : NonzeroIdeal, IdealMangoldt.value I.val * (norm I)^(-b)
+
+theorem eulerBound_summable {b : ℝ} (hb : 1< b) :
+    Summable (fun I : NonzeroIdeal => IdealMangoldt.value I.val * (norm I)^(-b)) := by
+  have ha (I : Ideal O) : ‖IdealEuler.normWeight 0 I‖ ≤ 1 := by
+    change ‖fullIdealWeight 0 I‖ ≤ 1
+    by_cases hI : I = 0
+    · rw [fullIdealWeight, if_pos hI, norm_zero]
+      norm_num
+    · rw [fullIdealWeight, if_neg hI]
+      simp
+  have hf := (IdealLogDerivative.mangoldt_weighted_summable_norm
+    (IdealEuler.normWeight 0) ha (b : ℂ) (by simpa using hb)).comp_injective
+      (Subtype.val_injective : Function.Injective (fun I : NonzeroIdeal => I.val))
+  apply hf.congr
+  intro I
+  symm
+  simp only [Function.comp_apply, IdealEuler.weighted, IdealEuler.normWeight,
+    MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, fullIdealWeight,
+    if_neg I.property, neg_zero, Complex.cpow_zero, one_mul]
+  change IdealMangoldt.value I.val * (norm I)^(-b) =
+    ‖(IdealMangoldt.value I.val : ℂ) * (norm I : ℂ)^(-(b : ℂ))‖
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (IdealMangoldt.value_nonneg _),
+    Complex.norm_cpow_eq_rpow_re_of_pos (norm_pos I)]
+  simp
+
+theorem series_norm_le (χ : Character) {b : ℝ} (hb : 1< b)
+    {s : ℂ} (hs : b≤ s.re) : ‖series χ s‖ ≤ eulerBound b := by
+  rw [series_eq_tsum χ (hb.trans_le hs)]
+  have hbound (I : NonzeroIdeal) :
+      ‖coefficient χ I.val * (norm I : ℂ)^(-s)‖ ≤
+        IdealMangoldt.value I.val * (norm I)^(-b) := by
+    rw [norm_mul]
+    have hn : 1 ≤ norm I := by
+      unfold HeckeDyadic.norm
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr I.property)
+    have hc : ‖coefficient χ I.val‖ ≤ IdealMangoldt.value I.val := by
+      rw [coefficient, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (IdealMangoldt.value_nonneg _)]
+      exact mul_le_of_le_one_right (IdealMangoldt.value_nonneg _) (idealCoeff_norm_le_one χ _)
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos (norm_pos I), Complex.neg_re]
+    exact mul_le_mul hc (Real.rpow_le_rpow_of_exponent_le hn (neg_le_neg hs))
+      (Real.rpow_nonneg (norm_pos I).le _) (IdealMangoldt.value_nonneg _)
+
+  have hf := (eulerBound_summable hb).of_nonneg_of_le (fun _ => norm_nonneg _) hbound
+  exact (norm_tsum_le_tsum_norm hf).trans (hf.tsum_le_tsum hbound (eulerBound_summable hb))
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology ContDiff
+open MeasureTheory Set Complex
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic
+
+def integrand (χ : Character) (W : ℝ → ℂ)
+    (D σ freq : ℝ) (s : ℂ) : ℂ :=
+  mellin W s * (D : ℂ)^(s+HeckeDyadic.shift σ freq-(1/2 : ℂ)) *
+    series χ (s+HeckeDyadic.shift σ freq)
+
+theorem series_differentiableAt_nonprincipal (χ : Character) (hχ : χ.residue≠1)
+    {s : ℂ} (hz : LFunction χ s≠0) : DifferentiableAt ℂ (series χ) s := by
+  have h := (LFunction_entire_nonprincipal χ hχ).analyticAt s
+  exact (h.deriv.neg.div h hz).differentiableAt
+
+theorem series_differentiableAt_right (χ : Character) {s : ℂ}
+    (hs : 1< s.re) : DifferentiableAt ℂ (series χ) s := by
+  have ha : AnalyticAt ℂ (LFunction χ) s := by
+    apply (Complex.analyticOnNhd_iff_differentiableOn (isOpen_lt continuous_const Complex.continuous_re)).2 ?_ s hs
+    intro z hz
+    exact (LFunction_differentiableAt χ
+      (by intro h; norm_num [h] at hz) (Or.inl (by intro h; norm_num [h] at hz))).differentiableWithinAt
+  exact (ha.deriv.neg.div ha (LFunction_ne_zero_of_one_lt_re χ hs)).differentiableAt
+
+theorem integrand_differentiableAt (χ : Character) (W : ℝ → ℂ)
+    (a b : ℝ) (ha : 0< a) (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq : ℝ) (hD : 0< D) {s : ℂ}
+    (hseries : DifferentiableAt ℂ (series χ) (s+HeckeDyadic.shift σ freq)) :
+    DifferentiableAt ℂ (integrand χ W D σ freq) s := by
+  apply DifferentiableAt.mul
+  · apply DifferentiableAt.mul
+    · exact compact_source_mellin_differentiable W a b ha hWs hW s
+    · exact ((differentiableAt_id.add_const (HeckeDyadic.shift σ freq)).sub_const (1/2)).const_cpow
+        (Or.inl (Complex.ofReal_ne_zero.mpr hD.ne'))
+  · exact hseries.comp s (differentiableAt_id.add_const (HeckeDyadic.shift σ freq))
+
+theorem integrand_norm (χ : Character) (W : ℝ → ℂ)
+    (D σ freq : ℝ) (hD : 0< D) (s : ℂ) :
+    ‖integrand χ W D σ freq s‖ =
+      ‖mellin W s‖*D^(s.re+σ-1/2)*‖series χ (s+HeckeDyadic.shift σ freq)‖ := by
+  unfold integrand
+  rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hD]
+  simp
+
+theorem integrand_vertical_integrable (χ : Character) (W : ℝ → ℂ)
+    (a b : ℝ) (ha : 0< a) (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D c σ freq : ℝ) (hD : 0< D) (hc : 1< c+σ) :
+    Integrable (fun t : ℝ => integrand χ W D σ freq ((c : ℂ)+t*I)) := by
+  have hcont : Continuous (fun t : ℝ => integrand χ W D σ freq ((c : ℂ)+t*I)) := by
+    apply continuous_iff_continuousAt.mpr
+    intro t
+    apply (integrand_differentiableAt χ W a b ha hWs hW D σ freq hD
+      (series_differentiableAt_right χ (by simpa using hc))).continuousAt.comp
+    fun_prop
+  have hm := (compactMellin_vertical_integrable W a b ha hWs hW c).norm
+  apply (hm.mul_const (D^(c+σ-1/2)*eulerBound (c+σ))).mono'
+    hcont.aestronglyMeasurable
+  apply ae_of_all
+  intro t
+  rw [integrand_norm χ W D σ freq hD]
+  simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+    sub_self, add_zero]
+  rw [← mul_assoc]
+  apply mul_le_mul_of_nonneg_left
+    (series_norm_le χ hc (by simp))
+  positivity
+
+theorem finite_rectangle (χ : Character) (hχ : χ.residue≠1)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T : ℝ) (hD : 0< D)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), LFunction χ (s+HeckeDyadic.shift σ freq)≠0) :
+    (∫ t : ℝ in -T..T, integrand χ W D σ freq ((r : ℂ)+t*I)) =
+      (∫ t : ℝ in -T..T, integrand χ W D σ freq ((l : ℂ)+t*I)) +
+      I*((∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+(-T)*I)) -
+        (∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+T*I))) := by
+  have hhol : DifferentiableOn ℂ (integrand χ W D σ freq)
+      (uIcc l r ×ℂ uIcc (-T) T) := by
+    intro s hs
+    exact (integrand_differentiableAt χ W a b ha hWs hW D σ freq hD
+      (series_differentiableAt_nonprincipal χ hχ (hz s hs))).differentiableWithinAt
+  have h := Complex.integral_boundary_rect_eq_zero_of_differentiableOn
+    (integrand χ W D σ freq) ((l : ℂ)+(-T)*I) ((r : ℂ)+T*I)
+    (by simpa using hhol)
+  have hr :
+      (∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+(-T)*I)) -
+      (∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+T*I)) +
+      I*(∫ t : ℝ in -T..T, integrand χ W D σ freq ((r : ℂ)+t*I)) -
+      I*(∫ t : ℝ in -T..T, integrand χ W D σ freq ((l : ℂ)+t*I)) = 0 := by
+    simpa [smul_eq_mul] using h
+  have hh := congrArg (fun z : ℂ => -I*z) hr
+  ring_nf at hh ⊢
+  simp only [I_sq] at hh
+  linear_combination hh
+
+theorem polynomial_finite_shift (χ : Character) (hχ : χ.residue≠1)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T : ℝ) (hD : 0< D) (hr : 1< r+σ) (hT : 0≤ T)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), LFunction χ (s+HeckeDyadic.shift σ freq)≠0) :
+    polynomial χ W D σ freq = (1/(2*Real.pi) : ℂ)*
+      ((∫ t : ℝ in -T..T, integrand χ W D σ freq ((l : ℂ)+t*I)) +
+      I*((∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+(-T)*I)) -
+        (∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+T*I))) +
+      ∫ t : ℝ in (Icc (-T) T)ᶜ, integrand χ W D σ freq ((r : ℂ)+t*I)) := by
+  rw [polynomial_mellin χ W a b ha hWs hW D r σ freq hD hr]
+  change (1/(2*Real.pi) : ℂ)*(∫ t : ℝ, integrand χ W D σ freq ((r : ℂ)+t*I)) = _
+  rw [← integral_add_compl measurableSet_Icc
+    (integrand_vertical_integrable χ W a b ha hWs hW D r σ freq hD hr)]
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith : -T≤ T)]
+  rw [finite_rectangle χ hχ W a b ha hWs hW D σ freq l r T hD hz]
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology
+open Set Metric Complex
+namespace HeckePrimeDyadicControl
+open HeckeFamily HeckeLogarithmicInput HeckeLogarithmic HeckeFiniteDeletion
+open HeckeDeletionBounds HeckeReciprocalGrowth
+
+theorem logDeriv_eq_of_mask (χ ψ : Character)
+    (hmask : ∀ I : Ideal O, idealCoeff χ I =
+      if IsCoprime I χ.modulus then idealCoeff ψ I else 0)
+    (hχ : χ.residue ≠ 1) {s : ℂ} (hs : 0 < s.re)
+    (hψs : LFunction ψ s ≠ 0) :
+    logDeriv (LFunction χ) s = logDeriv (LFunction ψ) s +
+      logDeriv (factors χ.modulus ψ) s := by
+  have hψ : ψ.residue ≠ 1 := fun h => hχ ((principal_iff_of_mask χ ψ hmask).mpr h)
+  have heq : LFunction χ =ᶠ[nhds s] (fun z => LFunction ψ z * factors χ.modulus ψ z) := by
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs] with z hz
+    exact LFunction_eq_of_mask_nonprincipal χ ψ hmask hχ hz
+  have hd : logDeriv (LFunction χ) s =
+      logDeriv (fun z => LFunction ψ z * factors χ.modulus ψ z) s :=
+    (heq.deriv.div heq).self_of_nhds
+  rw [hd]
+  exact logDeriv_mul s hψs (factors_ne_zero _ _ hs)
+    (LFunction_entire_nonprincipal ψ hψ s) (factors_differentiable _ _ s)
+
+theorem original_disk_control (e : ℝ) (he : 0< e) (he' : e<1/1000) :
+    ∃ B : ℝ, 0≤ B ∧ ∀ (χ : Character), χ.residue ≠ 1 → ∀ a t : ℝ,
+      1/2≤ a → a≤1 →
+      (∀ z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), LFunction χ z ≠ 0) →
+      ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-8*e),
+        ‖logDeriv (LFunction χ) z‖ ≤ B*Real.log (complexity χ t) +
+          localBound (1/2)*Real.log ((radical χ.modulus).absNorm : ℝ) := by
+  obtain ⟨Dp,B,_,hB,hprimitive⟩ := HeckeLogarithmicActual.disk_control e 1 he he' (by norm_num)
+  refine ⟨B,hB,?_⟩
+  intro χ hχ a t ha ha' hzero z hz
+  obtain ⟨ψ,_,hp,hn,hmask⟩ := exists_primitive_character χ
+  have hψ : ψ.residue ≠ 1 := fun h => hχ ((principal_iff_of_mask χ ψ hmask).mpr h)
+  have hregular : regular ψ = LFunction ψ := regular_eq_nonprincipal ψ hψ
+  have hzeroψ : ∀ w ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), regular ψ w ≠ 0 := by
+    intro w hw
+    rw [hregular]
+    have hwp : 0 < w.re := by
+      have hr := LogarithmicControl.disk_re_gt hw
+      linarith
+    intro hh
+    apply hzero w hw
+    rw [LFunction_eq_of_mask_nonprincipal χ ψ hmask hχ hwp, hh, zero_mul]
+  have hbound := (hprimitive ψ hp a t ha ha' hzeroψ).2 z hz
+  rw [hregular] at hbound
+  have hz2 : z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e) :=
+    closedBall_subset_ball (by linarith) hz
+  have hzre : (1/2 : ℝ) ≤ z.re := by
+    have hr := LogarithmicControl.disk_re_gt hz2
+    linarith
+  have hzpos : 0 < z.re := by linarith
+  have hdel := HeckeDeletionDerivative.factors_logDeriv_norm (1/2) (by norm_num)
+    χ.modulus ψ hzre
+  have hQ : complexity ψ t ≤ complexity χ t := by
+    unfold complexity
+    have hn' : (ψ.modulus.absNorm : ℝ) ≤ χ.modulus.absNorm := by exact_mod_cast hn
+    gcongr
+  have hc0 : 0 < complexity ψ t := (Real.exp_pos 1).trans_le (complexity_ge_exp ψ t)
+  rw [logDeriv_eq_of_mask χ ψ hmask hχ hzpos (by simpa [hregular] using hzeroψ z hz2)]
+  apply (norm_add_le _ _).trans
+  exact add_le_add (hbound.trans (mul_le_mul_of_nonneg_left (Real.log_le_log hc0 hQ) hB)) hdel
+
+theorem buffered_original_control (e : ℝ) (he : 0< e) (he' : e<1/1000) :
+    ∃ B : ℝ, 0≤ B ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue ≠ 1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T) < a+2*e →
+      ∀ (j : ι) (t : ℝ), |t| ≤ (3*i+2 : ℕ)*T →
+      ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-8*e),
+        ‖logDeriv (LFunction (χ j)) z‖ ≤ B*Real.log (complexity (χ j) t) +
+          localBound (1/2)*Real.log ((radical (χ j).modulus).absNorm : ℝ) := by
+  obtain ⟨B,hB,hbound⟩ := original_disk_control e he he'
+  refine ⟨B,hB,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j t ht z hz
+  exact hbound (χ j) (hχ j) a t (by linarith) ha'
+    (fun w hw => HeckeDetectorZeros.nonzero_on_buffered_disk χ hχ T a e i hT ha he
+      hmax j t ht (ball_subset_closedBall hw)) z hz
+
+theorem buffered_rectangle_control (e : ℝ)
+    (he : 0< e) (he' : e<1/1000) :
+    ∃ B : ℝ, 0≤ B ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (z : ℂ), a+8*e≤ z.re → z.re≤2 →
+      |z.im|≤(3*i+2 : ℕ)*T →
+      LFunction (χ j) z≠0 ∧
+      ‖logDeriv (LFunction (χ j)) z‖≤
+        B*Real.log (complexity (χ j) ((3*i+2 : ℕ)*T)) +
+          localBound (1/2)*Real.log ((radical (χ j).modulus).absNorm : ℝ) := by
+  obtain ⟨B,hB,hbound⟩ := buffered_original_control e he he'
+  refine ⟨B,hB,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j z hzl hzr hzi
+  have hz6 : z ∈ closedBall ((2 : ℂ)+z.im*I) (2-a-8*e) := by
+    rw [mem_closedBall,dist_eq_norm]
+    have heq : z-((2 : ℂ)+z.im*I)=((z.re-2 : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp
+    rw [heq,Complex.norm_real,Real.norm_eq_abs,abs_of_nonpos (by linarith : z.re-2≤0)]
+    linarith
+  have hz2 : z ∈ closedBall ((2 : ℂ)+z.im*I) (2-a-2*e) :=
+    closedBall_subset_closedBall (by linarith) hz6
+  refine ⟨HeckeDetectorZeros.nonzero_on_buffered_disk χ hχ T a e i hT ha he
+    hmax j z.im hzi hz2, ?_⟩
+  apply (hbound χ hχ T a i hT ha ha' hmax j z.im hzi z hz6).trans
+  apply add_le_add _ le_rfl
+  apply mul_le_mul_of_nonneg_left _ hB
+  apply Real.log_le_log ((Real.exp_pos 1).trans_le (complexity_ge_exp _ _))
+  unfold complexity
+  have hH : 0 ≤ (3*i+2 : ℕ)*T := (abs_nonneg z.im).trans hzi
+  rw [abs_of_nonneg hH]
+  gcongr
+
+end HeckePrimeDyadicControl
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open MeasureTheory Set Complex
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic
+
+theorem absolute_tail_bound (χ : Character) (W : ℝ → ℂ)
+    (D r σ freq C T : ℝ) (n : ℕ) (hD : 0< D) (hr : 1< r+σ) (hC : 0≤ C) (hT : 0≤ T)
+    (hm : ∀ t : ℝ, (1+|t|)^(n+2)*‖mellin W ((r : ℂ)+t*I)‖≤ C) :
+    ‖∫ t : ℝ in (Icc (-T) T)ᶜ, integrand χ W D σ freq ((r : ℂ)+t*I)‖ ≤
+      (C*D^(r+σ-1/2)*eulerBound (r+σ))/(1+T)^n*Real.pi := by
+  apply rapid_tail_bound _ _ T n
+  · exact mul_nonneg (mul_nonneg hC (Real.rpow_nonneg hD.le _))
+      (tsum_nonneg (fun I => mul_nonneg (IdealMangoldt.value_nonneg _) (Real.rpow_nonneg (norm_pos I).le _)))
+  · exact hT
+  · intro t
+    rw [integrand_norm χ W D σ freq hD]
+    have hb := series_norm_le χ hr (s := (r : ℂ)+t*I+shift σ freq) (by simp)
+    simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+      sub_self, add_zero]
+    calc
+      _ = ((1+|t|)^(n+2)*‖mellin W ((r : ℂ)+t*I)‖)*D^(r+σ-1/2)*
+        ‖series χ ((r : ℂ)+t*I+shift σ freq)‖ := by ring
+      _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_right (hm t) (Real.rpow_nonneg hD.le _))
+        hb (norm_nonneg _) (mul_nonneg hC (Real.rpow_nonneg hD.le _))
+
+theorem central_segment_bound (χ : Character) (W : ℝ → ℂ)
+    (D l σ freq C K T : ℝ) (hD : 0< D) (hC : 0≤ C) (hK : 0≤ K) (hT : 0≤ T)
+    (hm : ∀ t : ℝ, (1+|t|)^2*‖mellin W ((l : ℂ)+t*I)‖≤ C)
+    (hs : ∀ t ∈ Icc (-T) T, ‖series χ ((l : ℂ)+t*I+shift σ freq)‖≤ K) :
+    ‖∫ t : ℝ in -T..T, integrand χ W D σ freq ((l : ℂ)+t*I)‖ ≤
+      C*D^(l+σ-1/2)*K*Real.pi := by
+  rw [intervalIntegral.integral_of_le (by linarith : -T≤ T)]
+  have hint := integrable_inv_one_add_sq.const_mul (C*D^(l+σ-1/2)*K)
+  calc
+    _ ≤ ∫ t : ℝ in Ioc (-T) T, (C*D^(l+σ-1/2)*K)*(1+t^2)⁻¹ := by
+      apply norm_integral_le_of_norm_le hint.integrableOn
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+      rw [integrand_norm χ W D σ freq hD]
+      have hb := weighted_two_to_cauchy (norm_nonneg _) t (hm t)
+      simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+        sub_self, add_zero]
+      calc
+        _ ≤ (C/(1+t^2))*D^(l+σ-1/2)*K :=
+          mul_le_mul (mul_le_mul_of_nonneg_right hb (Real.rpow_nonneg hD.le _))
+            (hs t ⟨ht.1.le,ht.2⟩) (norm_nonneg _) (by positivity)
+        _ = _ := by ring
+    _ ≤ ∫ t : ℝ, (C*D^(l+σ-1/2)*K)*(1+t^2)⁻¹ :=
+      integral_mono_measure Measure.restrict_le_self (by filter_upwards [] with t; positivity) hint
+    _ = _ := by rw [integral_const_mul, integral_univ_inv_one_add_sq]
+
+theorem horizontal_join_bound (χ : Character) (W : ℝ → ℂ)
+    (D σ freq l r y C K : ℝ) (n : ℕ)
+    (hD : 1≤ D) (hlr : l≤ r) (hC : 0≤ C) (_hK : 0≤ K)
+    (hm : ∀ x ∈ Icc l r, (1+|y|)^n*‖mellin W ((x : ℂ)+y*I)‖≤ C)
+    (hs : ∀ x ∈ Icc l r, ‖series χ ((x : ℂ)+y*I+shift σ freq)‖≤ K) :
+    ‖∫ x : ℝ in l..r, integrand χ W D σ freq ((x : ℂ)+y*I)‖ ≤
+      (C*D^(r+σ-1/2)*K/(1+|y|)^n)*|r-l| := by
+  apply intervalIntegral.norm_integral_le_of_norm_le_const
+  intro x hx
+  have hx' : x ∈ Icc l r := by simpa [uIcc_of_le hlr] using uIoc_subset_uIcc hx
+  have hb : ‖mellin W ((x : ℂ)+y*I)‖≤ C/(1+|y|)^n := by
+    apply (le_div_iff₀ (by positivity : 0<(1+|y|)^n)).mpr
+    simpa [mul_comm] using hm x hx'
+  have hpow : D^(x+σ-1/2)≤ D^(r+σ-1/2) :=
+    Real.rpow_le_rpow_of_exponent_le hD (by linarith [hx'.2])
+  rw [integrand_norm χ W D σ freq (by linarith)]
+  simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, mul_zero, I_im, zero_mul,
+    sub_self, add_zero]
+  calc
+    _ ≤ (C/(1+|y|)^n)*D^(r+σ-1/2)*K :=
+      mul_le_mul (mul_le_mul hb hpow (by positivity) (by positivity))
+        (hs x hx') (norm_nonneg _) (by positivity)
+    _ = _ := by ring
+
+theorem polynomial_bound_of_rectangle (χ : Character) (hχ : χ.residue≠1)
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (D σ freq l r T C₂ Cn K : ℝ) (n : ℕ)
+    (hD : 1≤ D) (hlr : l≤ r) (hr : 1< r+σ) (hT : 0≤ T)
+    (hC₂ : 0≤ C₂) (hCn : 0≤ Cn) (hK : 0≤ K)
+    (hm₂ : ∀ t : ℝ, (1+|t|)^2*‖mellin W ((l : ℂ)+t*I)‖≤ C₂)
+    (hmn : ∀ x ∈ Icc l r, ∀ t : ℝ,
+      (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn)
+    (hz : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T), LFunction χ (s+shift σ freq)≠0)
+    (hs : ∀ s ∈ (uIcc l r ×ℂ uIcc (-T) T),
+      ‖series χ (s+shift σ freq)‖≤ K) :
+    ‖polynomial χ W D σ freq‖≤(1/(2*Real.pi))*
+      (C₂*D^(l+σ-1/2)*K*Real.pi +
+       2*(Cn*D^(r+σ-1/2)*K/(1+T)^n)*|r-l| +
+       (Cn*D^(r+σ-1/2)*eulerBound (r+σ))/(1+T)^n*Real.pi) := by
+  have hDp : 0< D := by linarith
+  have hmem (x t : ℝ) (hx : x∈Icc l r) (ht : t∈Icc (-T) T) :
+      ((x : ℂ)+t*I) ∈ (uIcc l r ×ℂ uIcc (-T) T) := by
+    change (((x : ℂ)+t*I).re∈uIcc l r) ∧ (((x : ℂ)+t*I).im∈uIcc (-T) T)
+    simpa [uIcc_of_le hlr,uIcc_of_le (by linarith : -T≤ T)] using And.intro hx ht
+  have hcentral := central_segment_bound χ W D l σ freq C₂ K T hDp hC₂ hK hT
+    hm₂ (fun t ht => hs _ (hmem l t ⟨le_rfl,hlr⟩ ht))
+  have hm (x : ℝ) (hx : x∈Icc l r) (t : ℝ) :
+      (1+|t|)^n*‖mellin W ((x : ℂ)+t*I)‖≤ Cn := by
+    apply le_trans _ (hmn x hx t)
+    gcongr
+    · exact le_add_of_nonneg_right (abs_nonneg t)
+    · omega
+  have hbottom := horizontal_join_bound χ W D σ freq l r (-T) Cn K n hD hlr hCn hK
+    (fun x hx => hm x hx (-T)) (fun x hx => hs _ (hmem x (-T) hx ⟨le_rfl,by linarith⟩))
+  have htop := horizontal_join_bound χ W D σ freq l r T Cn K n hD hlr hCn hK
+    (fun x hx => hm x hx T) (fun x hx => hs _ (hmem x T hx ⟨by linarith,le_rfl⟩))
+  simp only [abs_neg,abs_of_nonneg hT,ofReal_neg] at hbottom htop
+  have htail := absolute_tail_bound χ W D r σ freq Cn T n hDp hr hCn hT
+    (hmn r ⟨hlr,le_rfl⟩)
+  rw [polynomial_finite_shift χ hχ W a b ha hWs hW D σ freq l r T hDp hr hT hz,
+    norm_mul]
+  have hnorm : ‖(1/(2*Real.pi) : ℂ)‖=(1/(2*Real.pi) : ℝ) := by
+    simp [Real.norm_eq_abs,abs_of_pos Real.pi_pos]
+  rw [hnorm]
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  exact (norm_four_sides _ _ _ _).trans (by linarith)
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical Topology ContDiff
+open Set Metric MeasureTheory Complex
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic HeckeLogarithmic HeckeDeletionBounds
+
+def binCost (B : ℝ) (χ : Character) (H : ℝ) : ℝ :=
+  B*Real.log (complexity χ H) + localBound (1/2)*Real.log ((radical χ.modulus).absNorm : ℝ)
+
+theorem binCost_nonneg {B : ℝ} (hB : 0≤ B) (χ : Character) (H : ℝ) : 0≤ binCost B χ H := by
+  have hc : 1≤ complexity χ H :=
+    (Real.one_le_exp (by norm_num : (0 : ℝ)≤1)).trans (complexity_ge_exp χ H)
+  have hr : (1 : ℝ)≤(radical χ.modulus).absNorm := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+      (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero χ.modulus))
+  exact add_nonneg (mul_nonneg hB (Real.log_nonneg hc))
+    (mul_nonneg (localBound_pos (by norm_num : (0 : ℝ)<1/2)).le (Real.log_nonneg hr))
+
+theorem polynomial_bound_in_bin (e : ℝ) (he : 0< e) (he' : e<1/1000) :
+    ∃ B : ℝ, 0≤ B ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι→Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (W : ℝ→ℂ) (α β : ℝ), 0<α → Function.support W⊆Icc α β →
+      ContDiff ℝ ∞ W → ∀ D σ freq L C₂ Cn : ℝ, ∀ n : ℕ,
+      1≤ D → 0≤ L → 0≤ C₂ → 0≤ Cn → |freq|+L≤(3*i+2 : ℕ)*T →
+      (∀ t : ℝ, (1+|t|)^2*‖mellin W (((a+8*e-σ : ℝ) : ℂ)+t*I)‖≤ C₂) →
+      (∀ x∈Icc (a+8*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
+      ‖polynomial (χ j) W D σ freq‖ ≤ (1/(2*Real.pi))*
+        (C₂*D^(a+8*e-1/2)*binCost B (χ j) ((3*i+2 : ℕ)*T)*Real.pi +
+          2*(Cn*D^(3/2 : ℝ)*binCost B (χ j) ((3*i+2 : ℕ)*T)/(1+L)^n)*|2-a-8*e| +
+          (Cn*D^(3/2 : ℝ)*eulerBound 2)/(1+L)^n*Real.pi) := by
+  obtain ⟨B,hB,hbound⟩ := HeckePrimeDyadicControl.buffered_rectangle_control e he he'
+  refine ⟨B,hB,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j W α β hα hWs hW D σ freq L C₂ Cn n
+    hD hL hC₂ hCn hfreq hm₂ hmn
+  have hlr : a+8*e-σ≤2-σ := by linarith
+  have hmem (s : ℂ) (hs : s ∈ (uIcc (a+8*e-σ) (2-σ) ×ℂ uIcc (-L) L)) :
+      a+8*e≤(s+HeckeDyadic.shift σ freq).re ∧ (s+HeckeDyadic.shift σ freq).re≤2 ∧
+        |(s+HeckeDyadic.shift σ freq).im|≤(3*i+2 : ℕ)*T := by
+    convert HeckeDyadic.translated_rectangle_mem (a := a+2*e) (e := e)
+      (by linarith) (by linarith) hlr hL hfreq hs using 1 ; ring_nf
+  have hs (s : ℂ) (hs : s ∈ (uIcc (a+8*e-σ) (2-σ) ×ℂ uIcc (-L) L)) :=
+    hbound χ hχ T a i hT ha ha' hmax j (s+HeckeDyadic.shift σ freq)
+      (hmem s hs).1 (hmem s hs).2.1 (hmem s hs).2.2
+  have hh := polynomial_bound_of_rectangle (χ j) (hχ j) W α β hα hWs hW
+    D σ freq (a+8*e-σ) (2-σ) L C₂ Cn (binCost B (χ j) ((3*i+2 : ℕ)*T)) n
+    hD hlr (by linarith) hL hC₂ hCn (binCost_nonneg hB _ _)
+    hm₂ hmn (fun s h => (hs s h).1) (fun s h => by
+      simpa only [series, neg_div, norm_neg, logDeriv_apply, binCost] using (hs s h).2)
+  convert hh using 1 <;> first | rfl | (congr 1; ring_nf)
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic HeckeDeletionBounds HeckeLogarithmic
+
+theorem binCost_le_log (χ : Character) (B U H η : ℝ)
+    (hB : 0≤ B) (hU : 2≤ U) (hQ : (χ.modulus.absNorm : ℝ)≤ U)
+    (hheight : (3+|H|)^2≤ U^η) :
+    binCost B χ H ≤ (B*(2+η)+localBound (1/2))*Real.log U := by
+  have hUp : 0< U := by linarith
+  have hcp : 0< complexity χ H := (Real.exp_pos 1).trans_le (complexity_ge_exp χ H)
+  have hcomplex : complexity χ H ≤ 2*U^(1+η) := by
+    unfold complexity
+    calc
+      2*(χ.modulus.absNorm : ℝ)*(3+|H|)^2 ≤ 2*U*U^η := by gcongr
+      _ = _ := by rw [Real.rpow_add hUp, Real.rpow_one]; ring
+  have hlog : Real.log (complexity χ H) ≤ (2+η)*Real.log U := by
+    apply (Real.log_le_log hcp hcomplex).trans
+    rw [Real.log_mul (by norm_num) (Real.rpow_pos_of_pos hUp _).ne', Real.log_rpow hUp]
+    have h2 := Real.log_le_log (by norm_num : (0 : ℝ)<2) hU
+    nlinarith
+  have hrad : 0<((radical χ.modulus).absNorm : ℝ) := by
+    exact_mod_cast Nat.pos_iff_ne_zero.mpr
+      (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero χ.modulus))
+  have hrlog := Real.log_le_log hrad ((radical_norm_le_modulus χ).trans hQ)
+  unfold binCost
+  calc
+    _ ≤ B*((2+η)*Real.log U)+localBound (1/2)*Real.log U :=
+      add_le_add (mul_le_mul_of_nonneg_left hlog hB)
+        (mul_le_mul_of_nonneg_left hrlog (localBound_pos (by norm_num : (0 : ℝ)<1/2)).le)
+    _ = _ := by ring
+
+theorem binCost_le_power (χ : Character) (B U H η ε : ℝ)
+    (hB : 0≤ B) (hU : 2≤ U) (hQ : (χ.modulus.absNorm : ℝ)≤ U)
+    (hη : 0≤η) (hε : 0<ε) (hheight : (3+|H|)^2≤ U^η) :
+    binCost B χ H ≤ ((B*(2+η)+localBound (1/2))/ε)*U^ε := by
+  apply (binCost_le_log χ B U H η hB hU hQ hheight).trans
+  have hc : 0≤ B*(2+η)+localBound (1/2) := by
+    exact add_nonneg (mul_nonneg hB (by linarith))
+      (localBound_pos (by norm_num : (0 : ℝ)<1/2)).le
+  have hh := mul_le_mul_of_nonneg_left
+    (Real.log_le_rpow_div (by linarith : 0≤ U) hε) hc
+  convert hh using 1 <;> first | rfl | ring
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic HeckeDeletionBounds
+
+theorem scaled_direct_bound (e κ η : ℝ) (he : 0< e) (he' : e<1/1000)
+    (hκ : 0<κ) (hη : 0≤η) :
+    ∃ C : ℝ, 0< C ∧ ∀ {ι : Type*} [Fintype ι] (χ : ι → Character)
+      (hχ : ∀ j, (χ j).residue≠1) (T a : ℝ) (i : ℕ),
+      2< T → 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
+      ∀ (j : ι) (W : ℝ → ℂ) (A B : ℝ),
+      0< A → Function.support W⊆Icc A B → ContDiff ℝ ∞ W →
+      ∀ (U r R σ freq V C₂ Cn : ℝ) (n : ℕ),
+      2≤ U → (χ j).modulus.absNorm≤ U → 0≤ r → r≤ R → 0≤ V →
+      |freq|+V≤(3*i+2 : ℕ)*T → (3+(3*i+2 : ℕ)*T)^2≤ U^η → 0≤ C₂ → 0≤ Cn →
+      (∀ t : ℝ, (1+|t|)^2*‖mellin W (((a+8*e-σ : ℝ) : ℂ)+t*I)‖≤ C₂) →
+      (∀ x ∈ Icc (a+8*e-σ) (2-σ), ∀ t : ℝ,
+        (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
+      ‖polynomial (χ j) W (U^r) σ freq‖≤
+        C*C₂*U^((a-1/2+8*e)*r+κ)+C*Cn*U^(2*R+κ)/(1+V)^n := by
+  obtain ⟨B,hB,hbound⟩ := polynomial_bound_in_bin e he he'
+  let Cb := (B*(2+η)+localBound (1/2))/κ
+  have hCb : 0< Cb := div_pos
+    (add_pos_of_nonneg_of_pos (mul_nonneg hB (by linarith))
+      (localBound_pos (by norm_num : (0 : ℝ)<1/2))) hκ
+  let E := eulerBound 2
+  have hE : 0≤ E := tsum_nonneg (fun I => mul_nonneg (IdealMangoldt.value_nonneg _) (Real.rpow_nonneg (norm_pos I).le _))
+  let C := 1+Cb*Real.pi+4*Cb+E*Real.pi
+  have hC : 0< C := by dsimp [C]; positivity
+  refine ⟨C,hC,?_⟩
+  intro ι _ χ hχ T a i hT ha ha' hmax j W A B' hA hWs hW
+    U r R σ freq V C₂ Cn n hU2 hQ hr hrR hV hfreq hheight hC₂ hCn hm₂ hmn
+  let H : ℝ := (3*i+2 : ℕ)*T
+  have hH : 0≤ H := by dsimp [H]; positivity
+  have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one (χ j)).trans hQ
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hD : 1≤ U^r := Real.one_le_rpow hU hr
+  have hb := hbound χ hχ T a i hT ha ha' hmax j W A B' hA hWs hW
+    (U^r) σ freq V C₂ Cn n hD hV hC₂ hCn hfreq hm₂ hmn
+  have hcost : binCost B (χ j) H ≤ Cb*U^κ :=
+    binCost_le_power (χ j) B U H η κ hB hU2 hQ hη hκ (by rw [abs_of_nonneg hH]; exact hheight)
+  have hcentral : (U^r)^(a+8*e-1/2)*binCost B (χ j) H ≤
+      Cb*U^((a-1/2+8*e)*r+κ) := by
+    calc
+      _ ≤ (U^r)^(a+8*e-1/2)*(Cb*U^κ) :=
+        mul_le_mul_of_nonneg_left hcost (Real.rpow_nonneg (Real.rpow_nonneg hUp.le _) _)
+      _ = _ := by rw [←Real.rpow_mul hUp.le, mul_left_comm, ←Real.rpow_add hUp]; congr 2; ring
+  have hexternal : (U^r)^(3/2 : ℝ)*binCost B (χ j) H ≤ Cb*U^(2*R+κ) := by
+    calc
+      _ ≤ (U^r)^(3/2 : ℝ)*(Cb*U^κ) :=
+        mul_le_mul_of_nonneg_left hcost (Real.rpow_nonneg (Real.rpow_nonneg hUp.le _) _)
+      _ = Cb*U^(r*(3/2)+κ) := by rw [←Real.rpow_mul hUp.le, mul_left_comm, ←Real.rpow_add hUp]
+      _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hU (by nlinarith)) hCb.le
+  have hpow : (U^r)^(3/2 : ℝ)≤ U^(2*R+κ) := by
+    rw [←Real.rpow_mul hUp.le]
+    exact Real.rpow_le_rpow_of_exponent_le hU (by nlinarith)
+  have hwidth : |2-a-8*e|≤2 := abs_le.mpr ⟨by linarith,by linarith⟩
+  have hc : C₂*(U^r)^(a+8*e-1/2)*binCost B (χ j) H*Real.pi≤
+      (Cb*Real.pi)*C₂*U^((a-1/2+8*e)*r+κ) := by
+    calc
+      _ = (C₂*Real.pi)*((U^r)^(a+8*e-1/2)*binCost B (χ j) H) := by ring
+      _ ≤ (C₂*Real.pi)*(Cb*U^((a-1/2+8*e)*r+κ)) :=
+        mul_le_mul_of_nonneg_left hcentral (by positivity)
+      _ = _ := by ring
+  have hj : 2*(Cn*(U^r)^(3/2 : ℝ)*binCost B (χ j) H/(1+V)^n)*|2-a-8*e|≤
+      (4*Cb)*Cn*U^(2*R+κ)/(1+V)^n := by
+    calc
+      _ = 2*Cn*((U^r)^(3/2 : ℝ)*binCost B (χ j) H)/(1+V)^n*|2-a-8*e| := by ring
+      _ ≤ 2*Cn*(Cb*U^(2*R+κ))/(1+V)^n*2 := by gcongr
+      _ = _ := by ring
+  have ht : (Cn*(U^r)^(3/2 : ℝ)*E)/(1+V)^n*Real.pi≤
+      (E*Real.pi)*Cn*U^(2*R+κ)/(1+V)^n := by
+    calc
+      _ ≤ (Cn*U^(2*R+κ)*E)/(1+V)^n*Real.pi := by gcongr
+      _ = _ := by ring
+  have hfac : 1/(2*Real.pi)≤(1 : ℝ) := by
+    apply (div_le_one (by positivity)).mpr
+    linarith [Real.pi_gt_three]
+  have hcomp : 0≤ binCost B (χ j) H := binCost_nonneg hB _ _
+  apply (hb.trans (mul_le_of_le_one_left (by positivity) hfac)).trans
+  change _ ≤ _ at hc hj ht
+  have hcC : Cb*Real.pi≤ C := by dsimp [C]; nlinarith only [hCb, mul_nonneg hE Real.pi_pos.le]
+  have heC : 4*Cb+E*Real.pi≤ C := by dsimp [C]; nlinarith only [mul_nonneg hCb.le Real.pi_pos.le]
+  calc
+    _ ≤ (Cb*Real.pi)*C₂*U^((a-1/2+8*e)*r+κ)+
+        (4*Cb)*Cn*U^(2*R+κ)/(1+V)^n+(E*Real.pi)*Cn*U^(2*R+κ)/(1+V)^n := by
+      exact add_le_add (add_le_add hc hj) ht
+    _ = (Cb*Real.pi)*C₂*U^((a-1/2+8*e)*r+κ)+
+        (4*Cb+E*Real.pi)*Cn*U^(2*R+κ)/(1+V)^n := by ring
+    _ ≤ _ := by gcongr
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical FourierTransform SchwartzMap ContDiff Topology
+open MeasureTheory Filter Set
+namespace CompactProfileFamily
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+theorem section_deriv_smooth (F : E → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) :
+    ContDiff ℝ ∞ (fun p : E × ℝ => deriv (F p.1) p.2) := by
+  have hFp : ContDiff ℝ ∞
+      (Function.uncurry (fun p : E × ℝ => F p.1)) :=
+    hF.comp (contDiff_fst.fst.prodMk contDiff_snd)
+  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ ∞)
+  simpa only [deriv] using hd.clm_apply (contDiff_const (c := (1 : ℝ)))
+
+theorem section_iteratedDeriv_smooth (F : E → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (j : ℕ) :
+    ContDiff ℝ ∞ (fun p : E × ℝ => iteratedDeriv j (F p.1) p.2) := by
+  induction j with
+  | zero => simpa only [iteratedDeriv_zero, Function.uncurry_def] using hF
+  | succ j ih =>
+    simpa only [iteratedDeriv_succ] using
+      section_deriv_smooth (fun σ => iteratedDeriv j (F σ)) ih
+
+theorem tsupport_iteratedDeriv_subset (f : ℝ → ℂ) (j : ℕ) :
+    tsupport (iteratedDeriv j f) ⊆ tsupport f := by
+  induction j with
+  | zero => simp
+  | succ j ih =>
+    rw [iteratedDeriv_succ]
+    exact tsupport_deriv_subset.trans ih
+
+theorem compact_family_deriv_integrable (F : E → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (σ : E) (j : ℕ) :
+    Integrable (iteratedDeriv j (F σ)) := by
+  have hs : ContDiff ℝ ∞ (F σ) := hF.comp (contDiff_const.prodMk contDiff_id)
+  have hc : HasCompactSupport (iteratedDeriv j (F σ)) := by
+    apply HasCompactSupport.of_support_subset_isCompact hK
+    exact (subset_tsupport _).trans ((tsupport_iteratedDeriv_subset (F σ) j).trans
+      (closure_minimal (hsupp σ) hK.isClosed))
+  exact (hs.continuous_iteratedDeriv j (by exact_mod_cast (le_top : (j : ℕ∞) ≤ ⊤))).integrable_of_hasCompactSupport hc
+
+theorem compact_family_deriv_L1_bound (F : E → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (J : Set E) (hJ : IsCompact J)
+    (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ J, (∫ u : ℝ, ‖iteratedDeriv j (F σ) u‖) ≤ C := by
+  have hc := (section_iteratedDeriv_smooth F hF j).continuous.norm
+  obtain ⟨M, hM⟩ := (hJ.prod hK).bddAbove_image hc.continuousOn
+  let C : ℝ := (|M| + 1) * (volume.real K + 1)
+  refine ⟨C, by dsimp [C]; positivity, ?_⟩
+  intro σ hσ
+  have hbound : ∀ u ∈ K, ‖iteratedDeriv j (F σ) u‖ ≤ |M| + 1 := by
+    intro u hu
+    exact (hM (Set.mem_image_of_mem _ (show (σ, u) ∈ J ×ˢ K from ⟨hσ, hu⟩))).trans (by linarith [le_abs_self M])
+  have hs : Function.support (iteratedDeriv j (F σ)) ⊆ K :=
+    (subset_tsupport _).trans ((tsupport_iteratedDeriv_subset (F σ) j).trans
+      (closure_minimal (hsupp σ) hK.isClosed))
+  have hzero : ∀ u, u ∉ K → ‖iteratedDeriv j (F σ) u‖ = 0 := by
+    intro u hu
+    have hz : iteratedDeriv j (F σ) u = 0 := by
+      by_contra hn
+      exact hu (hs hn)
+    simp [hz]
+  have hi := norm_setIntegral_le_of_norm_le_const («μ» := volume) (f := fun u => ‖iteratedDeriv j (F σ) u‖)
+    hK.measure_lt_top (C := |M| + 1) (fun u hu => by simpa using hbound u hu)
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hzero] at hi
+  rw [Real.norm_of_nonneg (integral_nonneg (fun u => norm_nonneg _))] at hi
+  exact hi.trans (by dsimp [C]; nlinarith [abs_nonneg M])
+
+theorem compact_family_fourier_power_bound (F : E → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (J : Set E) (hJ : IsCompact J)
+    (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ J, ∀ w : ℝ,
+      |w| ^ j * ‖𝓕 (F σ) w‖ ≤ C := by
+  obtain ⟨C, hC, hb⟩ := compact_family_deriv_L1_bound F hF K hK hsupp J hJ j
+  refine ⟨C / (2 * Real.pi) ^ j, by positivity, ?_⟩
+  intro σ hσ w
+  have hs : ContDiff ℝ ∞ (F σ) := hF.comp (contDiff_const.prodMk contDiff_id)
+  have hfour := Real.fourier_iteratedDeriv (N := (⊤ : ℕ∞)) hs
+    (fun k _ => compact_family_deriv_integrable F hF K hK hsupp σ k)
+    (by simp : (j : ℕ∞) ≤ ⊤)
+  have hid : (2 * Real.pi) ^ j * (|w| ^ j * ‖𝓕 (F σ) w‖) =
+      ‖𝓕 (iteratedDeriv j (F σ)) w‖ := by
+    rw [hfour]
+    simp only [norm_smul, norm_pow, norm_mul, Complex.norm_I, mul_one,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
+    norm_num
+    ring
+  have hn : ‖𝓕 (iteratedDeriv j (F σ)) w‖ ≤ C := by
+    apply (VectorFourier.norm_fourierIntegral_le_integral_norm
+      Real.fourierChar volume (innerₗ ℝ) (iteratedDeriv j (F σ)) w).trans
+    exact hb σ hσ
+  apply (le_div_iff₀ (by positivity : 0 < (2 * Real.pi) ^ j)).mpr
+  rw [← hid] at hn
+  calc
+    _ = (2 * Real.pi) ^ j * (|w| ^ j * ‖𝓕 (F σ) w‖) := mul_comm _ _
+    _ ≤ C := hn
+
+theorem compact_family_fourier_weighted_bound (F : E → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (J : Set E) (hJ : IsCompact J)
+    (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ J, ∀ w : ℝ,
+      (1 + |w|) ^ j * ‖𝓕 (F σ) w‖ ≤ C := by
+  obtain ⟨C₀, hC₀, h0⟩ := compact_family_fourier_power_bound F hF K hK hsupp J hJ 0
+  obtain ⟨Cj, hCj, hj⟩ := compact_family_fourier_power_bound F hF K hK hsupp J hJ j
+  refine ⟨2 ^ j * (C₀ + Cj), by positivity, ?_⟩
+  intro σ hσ w
+  have hbase : ‖𝓕 (F σ) w‖ ≤ C₀ := by simpa using h0 σ hσ w
+  by_cases hw : |w| ≤ 1
+  · calc
+      _ ≤ 2 ^ j * ‖𝓕 (F σ) w‖ :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) (by linarith) j) (norm_nonneg _)
+      _ ≤ 2 ^ j * C₀ := mul_le_mul_of_nonneg_left hbase (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  · have hw' : 1 ≤ |w| := le_of_lt (lt_of_not_ge hw)
+    calc
+      _ ≤ (2 * |w|) ^ j * ‖𝓕 (F σ) w‖ :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) (by linarith) j) (norm_nonneg _)
+      _ = 2 ^ j * (|w| ^ j * ‖𝓕 (F σ) w‖) := by rw [mul_pow, mul_assoc]
+      _ ≤ 2 ^ j * Cj := mul_le_mul_of_nonneg_left (hj σ hσ w) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+end CompactProfileFamily
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical ContDiff Topology FourierTransform SchwartzMap
+open Set Filter MeasureTheory
+namespace PrimeLogProfile
+
+def safeInverse (x : ℝ) : ℂ :=
+  (1-SchwartzPlanePoisson.sieveCutoff (4*x))/(x : ℂ)
+
+theorem safeInverse_eq (x : ℝ) (hx : 1/2≤|x|) : safeInverse x=(x : ℂ)⁻¹ := by
+  have hz : SchwartzPlanePoisson.sieveBump (4*x)=0 := by
+    apply SchwartzPlanePoisson.sieveBump.zero_of_le_dist
+    change 2≤ dist (4*x) 0
+    rw [dist_zero_right, Real.norm_eq_abs, abs_mul]
+    norm_num
+    linarith
+  simp [safeInverse, SchwartzPlanePoisson.sieveCutoff_apply, hz]
+
+theorem safeInverse_smooth : ContDiff ℝ ∞ safeInverse := by
+  apply contDiff_iff_contDiffAt.mpr
+  intro x
+  by_cases hx : x=0
+  · subst x
+    have he : safeInverse =ᶠ[nhds (0 : ℝ)] (fun _ => 0) := by
+      filter_upwards [Metric.ball_mem_nhds (0 : ℝ) (by norm_num : (0 : ℝ)<1/4)] with y hy
+      have hy' : |y|<1/4 := by simpa [Metric.mem_ball, dist_zero_right, Real.norm_eq_abs] using hy
+      have hone : SchwartzPlanePoisson.sieveBump (4*y)=1 := by
+        apply SchwartzPlanePoisson.sieveBump.one_of_mem_closedBall
+        change dist (4*y) 0≤1
+        rw [dist_zero_right, Real.norm_eq_abs, abs_mul]
+        norm_num
+        linarith
+      simp [safeInverse, SchwartzPlanePoisson.sieveCutoff_apply, hone]
+    exact contDiffAt_const.congr_of_eventuallyEq he
+  · have hnum : ContDiff ℝ ∞ (fun y : ℝ => (1 : ℂ)-SchwartzPlanePoisson.sieveCutoff (4*y)) :=
+      contDiff_const.sub ((SchwartzPlanePoisson.sieveCutoff.smooth ⊤).comp
+        (contDiff_const.mul contDiff_id))
+    change ContDiffAt ℝ ∞ (fun y : ℝ => (1-SchwartzPlanePoisson.sieveCutoff (4*y))/(y : ℂ)) x
+    simpa only [div_eq_mul_inv, Pi.inv_apply, Complex.ofRealCLM_apply] using hnum.contDiffAt.mul
+      (Complex.ofRealCLM.contDiff.contDiffAt.inv (Complex.ofReal_ne_zero.mpr hx))
+
+def profile (W : ℝ→ℂ) (A y : ℝ) : ℂ :=
+  W y * (A : ℂ) * safeInverse (1+A*Real.log y)
+
+theorem profile_support (W : ℝ→ℂ) (A : ℝ) :
+    Function.support (profile W A) ⊆ Function.support W := by
+  intro y hy hW
+  exact hy (by simp [profile,hW])
+
+theorem profile_smooth (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W) (A : ℝ) :
+    ContDiff ℝ ∞ (profile W A) := by
+  apply contDiff_iff_contDiffAt.mpr
+  intro y
+  by_cases hy : y=0
+  · subst y
+    have he : profile W A =ᶠ[nhds (0 : ℝ)] (fun _ => 0) := by
+      filter_upwards [(isOpen_Iio.mem_nhds ha)] with y hy
+      have hw : W y=0 := by
+        by_contra hh
+        exact (not_le_of_gt hy) (hWs hh).1
+      simp [profile,hw]
+    exact contDiffAt_const.congr_of_eventuallyEq he
+  · exact ((hW.contDiffAt.mul contDiffAt_const).mul
+      (safeInverse_smooth.contDiffAt.comp y
+        (contDiffAt_const.add (contDiffAt_const.mul (Real.contDiffAt_log.mpr hy)))))
+
+def logFamily (W : ℝ→ℂ) (p : ℝ×ℝ) (u : ℝ) : ℂ :=
+  Real.exp (-p.2*u) • (W (Real.exp (-u)) * (p.1 : ℂ) * safeInverse (1-p.1*u))
+
+theorem logFamily_smooth (W : ℝ→ℂ) (hW : ContDiff ℝ ∞ W) :
+    ContDiff ℝ ∞ (Function.uncurry (logFamily W)) := by
+  change ContDiff ℝ ∞ (fun p : (ℝ×ℝ)×ℝ =>
+    Real.exp (-p.1.2*p.2) • (W (Real.exp (-p.2)) * (p.1.1 : ℂ) * safeInverse (1-p.1.1*p.2)))
+  exact (Real.contDiff_exp.comp (contDiff_fst.snd.neg.mul contDiff_snd)).smul
+    (((hW.comp (Real.contDiff_exp.comp contDiff_snd.neg)).mul
+      (Complex.ofRealCLM.contDiff.comp contDiff_fst.fst)).mul
+      (safeInverse_smooth.comp (contDiff_const.sub (contDiff_fst.fst.mul contDiff_snd))))
+
+theorem logFamily_eq (W : ℝ→ℂ) (A σ u : ℝ) :
+    logFamily W (A,σ) u = mellinLogFamily (profile W A) σ u := by
+  simp only [logFamily, mellinLogFamily, profile, Real.log_exp]
+  congr 3
+  ring
+
+theorem logFamily_support (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (p : ℝ×ℝ) :
+    Function.support (logFamily W p) ⊆ Icc (-Real.log b) (-Real.log a) := by
+  have he : logFamily W p = mellinLogFamily (profile W p.1) p.2 := by
+    funext u
+    exact logFamily_eq W p.1 p.2 u
+  rw [he]
+  exact mellinLogFamily_support _ a b ha ((profile_support W p.1).trans hWs) _
+
+theorem uniform_mellin_decay (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hW : ContDiff ℝ ∞ W)
+    (lo hi : ℝ) (j : ℕ) :
+    ∃ C : ℝ, 0< C ∧ ∀ A ∈ Icc (0 : ℝ) 1, ∀ σ ∈ Icc lo hi, ∀ t : ℝ,
+      (1+|t|)^j*‖mellin (profile W A) ((σ : ℂ)+t*Complex.I)‖≤ C := by
+  obtain ⟨C,hC,hb⟩ := CompactProfileFamily.compact_family_fourier_weighted_bound
+    (logFamily W) (logFamily_smooth W hW)
+    (Icc (-Real.log b) (-Real.log a)) isCompact_Icc
+    (logFamily_support W a b ha hWs)
+    ((Icc (0 : ℝ) 1) ×ˢ (Icc lo hi)) (isCompact_Icc.prod isCompact_Icc) j
+  refine ⟨(1+2*Real.pi)^j*C,by positivity,?_⟩
+  intro A hA σ hσ t
+  rw [mellin_eq_logFamily_fourier]
+  have he : mellinLogFamily (profile W A) σ = logFamily W (A,σ) := by
+    funext u
+    exact (logFamily_eq W A σ u).symm
+  rw [he]
+  have ht : |t|=(2*Real.pi)*|t/(2*Real.pi)| := by
+    rw [abs_div,abs_of_pos (by positivity : 0<2*Real.pi)]
+    field_simp
+  have hbase : 1+|t|≤(1+2*Real.pi)*(1+|t/(2*Real.pi)|) := by
+    rw [ht]
+    nlinarith [Real.pi_pos,abs_nonneg (t/(2*Real.pi))]
+  calc
+    _ ≤ ((1+2*Real.pi)*(1+|t/(2*Real.pi)|))^j *
+        ‖𝓕 (logFamily W (A,σ)) (t/(2*Real.pi))‖ :=
+      mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) hbase j) (norm_nonneg _)
+    _ = (1+2*Real.pi)^j*((1+|t/(2*Real.pi)|)^j *
+        ‖𝓕 (logFamily W (A,σ)) (t/(2*Real.pi))‖) := by rw [mul_pow,mul_assoc]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hb (A,σ) ⟨hA,hσ⟩ _) (by positivity)
+
+theorem profile_eq_log_division (W : ℝ→ℂ) (a b P : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Icc a b) (hP : 0< P)
+    (hlarge : 2*(|Real.log a|+|Real.log b|)+1≤ Real.log P) :
+    profile W (1/Real.log P) = fun y => W y / (Real.log (P*y) : ℂ) := by
+  funext y
+  by_cases hy : W y=0
+  · simp [profile,hy]
+  have hs := hWs hy
+  have hyp : 0< y := ha.trans_le hs.1
+  have hlogs : |Real.log y|≤|Real.log a|+|Real.log b| := by
+    apply abs_le.mpr
+    constructor
+    · have h := Real.log_le_log ha hs.1
+      linarith [neg_abs_le (Real.log a),abs_nonneg (Real.log b)]
+    · have h := Real.log_le_log hyp hs.2
+      linarith [le_abs_self (Real.log b),abs_nonneg (Real.log a)]
+  have hp : 0< Real.log P := by linarith [abs_nonneg (Real.log a),abs_nonneg (Real.log b)]
+  have hhalf : 1/2≤1+(1/Real.log P)*Real.log y := by
+    have he : 1+(1/Real.log P)*Real.log y = (Real.log P+Real.log y)/Real.log P := by field_simp
+    rw [he]
+    apply (le_div_iff₀ hp).mpr
+    linarith [(abs_le.mp hlogs).1]
+  have hi := safeInverse_eq (1+(1/Real.log P)*Real.log y)
+    (hhalf.trans (le_abs_self _))
+  rw [profile,hi,Real.log_mul (ne_of_gt hP) (ne_of_gt hyp)]
+  push_cast
+  have hn : (Real.log P : ℂ)≠0 := Complex.ofReal_ne_zero.mpr hp.ne'
+  have hn' : (Real.log P : ℂ)+(Real.log y : ℂ)≠0 := by
+    have : 0< Real.log P+Real.log y := by
+      linarith [(abs_le.mp hlogs).1,abs_nonneg (Real.log a),abs_nonneg (Real.log b)]
+    exact_mod_cast this.ne'
+  field_simp
+
+end PrimeLogProfile
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckePrimeDyadic
+open HeckeFamily HeckeDyadic
+
+theorem source_log_profile_bound (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : ContDiff ℝ ∞ W)
+    (R dmax τ ε e κ η σmin σmax : ℝ)
+    (hR : 0≤ R) (hdmax : 0≤ dmax) (hτ : 0<τ) (he : 0< e)
+    (he' : e<1/1000) (hκ : 0<κ) (hη : 0≤η)
+    (hbudget : 8*e*R+κ≤ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ Z d : ℝ, 1≤ Z → 0≤ d → d≤ dmax → 2≤ Z^d → 2< Z^τ →
+    ∀ {ι : Type*} [Fintype ι] (χ : ι→Character) (hχ : ∀ j, (χ j).residue≠1)
+      (a : ℝ) (i : ℕ), 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*Z^τ)< a+2*e →
+    ∀ r σ freq L : ℝ,
+      0≤ r → r≤ R → σmin≤σ → σ≤σmax → L∈Icc (0 : ℝ) 1 →
+      ∀ k : ι, (χ k).modulus.absNorm≤ Z^d →
+      |freq|+Z^τ/2≤(3*i+2 : ℕ)*Z^τ →
+      (3+(3*i+2 : ℕ)*Z^τ)^2≤(Z^d)^η →
+      ‖polynomial (χ k) (PrimeLogProfile.profile W L) ((Z^d)^r) σ freq‖≤
+        C*(Z^d)^((a-1/2)*r+ε) := by
+  obtain ⟨Cd,hCd,hdirect⟩ := scaled_direct_bound e κ η he he' hκ hη
+  obtain ⟨n,htail⟩ := uniform_external_tail_order τ dmax (2*R+κ) 0
+    hτ hdmax (by positivity) (by norm_num)
+  obtain ⟨C₂,hC₂,hm₂⟩ := PrimeLogProfile.uniform_mellin_decay W A B hA hWs hW
+    (-σmax) (2-σmin) 2
+  obtain ⟨Cn,hCn,hmn⟩ := PrimeLogProfile.uniform_mellin_decay W A B hA hWs hW
+    (-σmax) (2-σmin) (n+2)
+  refine ⟨Cd*C₂+Cd*Cn*(2 : ℝ)^n,by positivity,?_⟩
+  intro Z d hZ hd hd' hU2 hT ι _ χ hχ a i ha ha' hmax r σ freq L
+    hr hrR hσmin hσmax hL k hQ hfreq hheight
+  let U := Z^d
+  have hU : 1≤ U := Real.one_le_rpow hZ hd
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hs : Icc (a+8*e-σ) (2-σ)⊆Icc (-σmax) (2-σmin) := by
+    intro x hx
+    exact ⟨by linarith [hx.1],by linarith [hx.2]⟩
+  have hleft : a+8*e-σ∈Icc (-σmax) (2-σmin) := by
+    constructor <;> linarith
+  have hb := hdirect χ hχ (Z^τ) a i hT ha ha' hmax k
+    (PrimeLogProfile.profile W L) A B hA
+    ((PrimeLogProfile.profile_support W L).trans hWs)
+    (PrimeLogProfile.profile_smooth W A B hA hWs hW L)
+    U r R σ freq (Z^τ/2) C₂ Cn n hU2 hQ hr hrR (by positivity)
+    hfreq hheight hC₂.le hCn.le (hm₂ L hL _ hleft) (fun x hx => hmn L hL x (hs hx))
+  have htail' := htail Z d 0 hZ hd hd' (by norm_num)
+  simp only [Real.rpow_zero,mul_one] at htail'
+  have hexp : (a-1/2+8*e)*r+κ≤(a-1/2)*r+ε := by
+    nlinarith [mul_le_mul_of_nonneg_left hrR (by positivity : 0≤8*e)]
+  have hp : 0≤(a-1/2)*r+ε := by
+    have : 0≤8*e*R := by positivity
+    nlinarith [mul_nonneg (show 0≤ a-1/2 by linarith) hr]
+  calc
+    _ ≤ Cd*C₂*U^((a-1/2)*r+ε)+Cd*Cn*(2 : ℝ)^n := by
+      apply hb.trans
+      apply add_le_add
+      · exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hU hexp) (by positivity)
+      · calc
+          _ = (Cd*Cn)*(U^(2*R+κ)/(1+Z^τ/2)^n) := by ring
+          _ ≤ _ := mul_le_mul_of_nonneg_left htail' (by positivity)
+    _ ≤ (Cd*C₂+Cd*Cn*(2 : ℝ)^n)*U^((a-1/2)*r+ε) := by
+      rw [add_mul]
+      apply add_le_add (le_refl _)
+      exact le_mul_of_one_le_right (by positivity) (Real.one_le_rpow hU hp)
+
+end HeckePrimeDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace HeckePrimePowers
+open HeckeFamily UniqueFactorizationMonoid
+
+theorem nonprime_primePow_powerful {I : Ideal O} (hpow : IsPrimePow I) (hprime : ¬Prime I) :
+    CompletedGauss.PowerfulIdeal I := by
+  obtain ⟨P,k,hP,hk,rfl⟩ := hpow
+  have hk2 : 2≤ k := by
+    by_contra h
+    have hk1 : k=1 := by omega
+    subst k
+    exact hprime (by simpa using hP)
+  refine ⟨pow_ne_zero _ hP.ne_zero,?_⟩
+  intro Q hQ
+  rw [hP.irreducible.normalizedFactors_pow] at hQ ⊢
+  have hQP := (Multiset.mem_replicate.mp hQ).2
+  subst Q
+  simpa using hk2
+
+def logWeight (I : Ideal O) : ℝ := IdealMangoldt.value I / Real.log (Ideal.absNorm I)
+
+theorem logWeight_nonneg (I : Ideal O) : 0≤ logWeight I :=
+  div_nonneg (IdealMangoldt.value_nonneg _) (Real.log_natCast_nonneg _)
+
+theorem logWeight_le_one (I : Ideal O) : logWeight I≤1 := by
+  by_cases hlog : Real.log (Ideal.absNorm I)=0
+  · simp [logWeight,hlog]
+  · apply (div_le_one (lt_of_le_of_ne (Real.log_natCast_nonneg _) (Ne.symm hlog))).mpr
+    exact IdealLogDerivative.value_le_log_norm I
+
+theorem logWeight_prime {P : Ideal O} (hP : Prime P) : logWeight P=1 := by
+  have hp2 : (2 : ℝ)≤ P.absNorm := by
+    exact_mod_cast HeckeIdealSeries.prime_norm_two_le ⟨P,hP⟩
+  have hp : 0< Real.log (P.absNorm : ℝ) := Real.log_pos (by linarith)
+  rw [logWeight, PNT.IdealPrimeMass.value_prime hP, div_self hp.ne']
+
+theorem logWeight_eq_zero {I : Ideal O} (hI : ¬IsPrimePow I) : logWeight I=0 := by
+  simp only [logWeight, IdealMangoldt.value, if_neg hI, zero_div]
+
+theorem sum_prime_extraction (χ : Character) (S : Finset (Ideal O)) (f : Ideal O→ℂ) :
+    (∑ I∈S, (logWeight I : ℂ)*idealCoeff χ I*f I) -
+      (∑ I∈S.filter Prime, idealCoeff χ I*f I) =
+      ∑ I∈S.filter (fun I => IsPrimePow I ∧ ¬Prime I),
+        (logWeight I : ℂ)*idealCoeff χ I*f I := by
+  rw [Finset.sum_filter, Finset.sum_filter, ← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro I hI
+  by_cases hP : Prime I
+  · simp only [hP, ite_true, not_true_eq_false, and_false, ite_false,
+      logWeight_prime hP, Complex.ofReal_one, one_mul, sub_self]
+  · by_cases hp : IsPrimePow I
+    · simp [hP,hp]
+    · simp [hP,hp,logWeight_eq_zero hp]
+
+theorem prime_extraction_error (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ (χ : Character) (S : Finset (Ideal O)) (f : Ideal O→ℂ)
+      (X B : ℝ), 1≤ X → 0≤ B →
+      (∀ I∈S, (I.absNorm : ℝ)≤ X) → (∀ I∈S, ‖f I‖≤ B) →
+      ‖(∑ I∈S, (logWeight I : ℂ)*idealCoeff χ I*f I) -
+        (∑ I∈S.filter Prime, idealCoeff χ I*f I)‖ ≤ C*X^(1/2+ε)*B := by
+  obtain ⟨C,hC,hcount⟩ := CompletedGauss.powerful_ideal_count ε hε
+  refine ⟨C,hC,?_⟩
+  intro χ S f X B hX hB hnorm hf
+  rw [sum_prime_extraction]
+  let A := S.filter (fun I => IsPrimePow I ∧ ¬Prime I)
+  have hA : (A.card : ℝ)≤ C*X^(1/2+ε) := by
+    apply hcount A X hX
+    intro I hI
+    obtain ⟨hIS,hpow,hprime⟩ := Finset.mem_filter.mp hI
+    exact ⟨nonprime_primePow_powerful hpow hprime,hnorm I hIS⟩
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _I∈A, B := by
+      apply Finset.sum_le_sum
+      intro I hI
+      rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (logWeight_nonneg _)]
+      have hcoeff : logWeight I*‖idealCoeff χ I‖≤1 :=
+        (mul_le_of_le_one_right (logWeight_nonneg I) (idealCoeff_norm_le_one χ I)).trans
+          (logWeight_le_one I)
+      exact (mul_le_mul_of_nonneg_right hcoeff (norm_nonneg _)).trans
+        (by simpa using hf I (Finset.mem_filter.mp hI).1)
+    _ = (A.card : ℝ)*B := by simp
+    _ ≤ _ := mul_le_mul_of_nonneg_right hA hB
+
+end HeckePrimePowers
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology
+open Set
+namespace HeckePrimeAnnular
+open HeckeFamily HeckeDyadic 
+local notation "O" => Eisenstein.O
+
+theorem log_polynomial_eq_finite (χ : Character) (W : ℝ→ℂ) (a b D σ freq : ℝ)
+    (ha : 0< a) (hD : 0< D) (hWs : Function.support W⊆Icc a b)
+    (hlarge : 2*(|Real.log a|+|Real.log b|)+1≤ Real.log D) :
+    HeckePrimeDyadic.polynomial χ (PrimeLogProfile.profile W (1/Real.log D)) D σ freq =
+      (D : ℂ)^(-(1/2 : ℂ))*∑ I∈annulusSet b D,
+        (HeckePrimePowers.logWeight I : ℂ)*idealCoeff χ I*annularWeight W D σ freq I := by
+  rw [PrimeLogProfile.profile_eq_log_division W a b D ha hWs hD hlarge]
+  unfold HeckePrimeDyadic.polynomial
+  congr 1
+  have he : (fun I : NonzeroIdeal => HeckePrimeDyadic.summand χ
+      (fun y => W y/(Real.log (D*y) : ℂ)) D σ freq I) =
+      fun I : NonzeroIdeal => (HeckePrimePowers.logWeight I.val : ℂ)*
+        idealCoeff χ I.val*annularWeight W D σ freq I.val := by
+    funext I
+    unfold HeckePrimeDyadic.summand HeckePrimeDyadic.coefficient annularWeight
+    dsimp only [HeckePrimePowers.logWeight, HeckeDyadic.norm]
+    rw [mul_div_cancel₀ _ hD.ne']
+    simp only [Complex.ofReal_div]
+    ring
+  rw [he]
+  calc
+    _ = ∑' I : Ideal O, (HeckePrimePowers.logWeight I : ℂ)*idealCoeff χ I*annularWeight W D σ freq I := by
+      apply tsum_subtype_eq_of_support_subset (s := {I : Ideal O | I≠0})
+        (f := fun I : Ideal O => (HeckePrimePowers.logWeight I : ℂ)*idealCoeff χ I*annularWeight W D σ freq I)
+      intro I hI hzero
+      subst I
+      exact hI (by simp [HeckePrimePowers.logWeight])
+    _ = _ := by
+      apply tsum_eq_sum
+      intro I hI
+      have hw : W ((I.absNorm : ℝ)/D)=0 := by
+        by_contra hh
+        exact hI (annular_support W a b D ha hD hWs I hh)
+      simp [annularWeight,hw]
+
+theorem extraction_bound (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ (χ : Character) (W : ℝ→ℂ) (a b D σ freq B : ℝ),
+      0< a → 1≤ D → Function.support W⊆Icc a b →
+      2*(|Real.log a|+|Real.log b|)+1≤ Real.log D → 0≤ B →
+      (∀ y∈Icc a b, ‖W y‖*y^(-σ)≤ B) →
+      ‖HeckePrimeDyadic.polynomial χ (PrimeLogProfile.profile W (1/Real.log D)) D σ freq -
+        primePolynomial χ W b D σ freq‖≤
+        C*(max 1 b)^((1/2 : ℝ)+ε)*D^ε*B := by
+  obtain ⟨C,hC,herr⟩ := HeckePrimePowers.prime_extraction_error ε hε
+  refine ⟨C,hC,?_⟩
+  intro χ W a b D σ freq B ha hD hWs hlarge hB hWbound
+  have hDp : 0< D := lt_of_lt_of_le zero_lt_one hD
+  have hX : 1≤ max 1 b*D := hD.trans (le_mul_of_one_le_left hDp.le (le_max_left _ _))
+  have hnorm (I : Ideal O) (hI : I∈annulusSet b D) : (I.absNorm : ℝ)≤ max 1 b*D := by
+    exact (Nat.cast_le.mpr (HeckeInverseAmplification.mem_idealsUpTo.mp hI).2).trans
+      (Nat.floor_le (by positivity))
+  have hw (I : Ideal O) (_hI : I∈annulusSet b D) : ‖annularWeight W D σ freq I‖≤ B := by
+    by_cases hz : W ((I.absNorm : ℝ)/D)=0
+    · simpa [annularWeight,hz] using hB
+    · have hs := hWs hz
+      have hy : 0<(I.absNorm : ℝ)/D := ha.trans_le hs.1
+      rw [annularWeight,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos hy]
+      simpa only [Complex.neg_re,shift_re] using hWbound _ hs
+  have hb := herr χ (annulusSet b D) (annularWeight W D σ freq) (max 1 b*D) B
+    hX hB hnorm hw
+  have hn : ‖(D : ℂ)^(-(1/2 : ℂ))‖=D^(-(1/2 : ℝ)) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hDp]
+    norm_num
+  rw [log_polynomial_eq_finite χ W a b D σ freq ha hDp hWs hlarge,
+    primePolynomial,←mul_sub,norm_mul,hn]
+  calc
+    _ ≤ D^(-(1/2 : ℝ))*(C*(max 1 b*D)^(1/2+ε)*B) := by
+      exact mul_le_mul_of_nonneg_left hb (Real.rpow_nonneg hDp.le _)
+    _ = _ := by
+      rw [Real.mul_rpow (by positivity : 0≤ max 1 b) hDp.le]
+      have he : D^(-(1/2 : ℝ))*D^(1/2+ε)=D^ε := by
+        rw [←Real.rpow_add hDp]
+        congr 1
+        ring
+      calc
+        _ = C*(max 1 b)^(1/2+ε)*(D^(-(1/2 : ℝ))*D^(1/2+ε))*B := by ring
+        _ = _ := by rw [he]
+
+end HeckePrimeAnnular
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+open scoped Classical Topology ContDiff
+open Set Complex
+namespace HeckePrimeAnnular
+open HeckeFamily HeckeDyadic
+
+theorem prime_bin_bound (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : ContDiff ℝ ∞ W)
+    (R dmax τ ε e κ η σmin σmax : ℝ)
+    (hR : 0≤ R) (hdmax : 0≤ dmax) (hτ : 0<τ) (hε : 0<ε) (he : 0< e)
+    (he' : e<1/1000) (hκ : 0<κ) (hη : 0≤η)
+    (hbudget : 8*e*R+κ≤ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ Z d : ℝ, 1≤ Z → 0≤ d → d≤ dmax → 2≤ Z^d → 2< Z^τ →
+    ∀ {ι : Type*} [Fintype ι] (χ : ι→Character) (hχ : ∀ j, (χ j).residue≠1)
+      (a : ℝ) (i : ℕ), 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*Z^τ)< a+2*e →
+    ∀ r σ freq : ℝ, 0≤ r → r≤ R → σmin≤σ → σ≤σmax →
+      2*(|Real.log A|+|Real.log B|)+1≤ Real.log ((Z^d)^r) →
+      ∀ k : ι, (χ k).modulus.absNorm≤ Z^d →
+      |freq|+Z^τ/2≤(3*i+2 : ℕ)*Z^τ →
+      (3+(3*i+2 : ℕ)*Z^τ)^2≤(Z^d)^η →
+      ‖primePolynomial (χ k) W B ((Z^d)^r) σ freq‖≤
+        C*(Z^d)^((a-1/2)*r+ε) := by
+  obtain ⟨Cp,hCp,hprime⟩ := HeckePrimeDyadic.source_log_profile_bound W A B hA hWs hW
+    R dmax τ ε e κ η σmin σmax hR hdmax hτ he he' hκ hη hbudget
+  let ξ := ε/(R+1)
+  have hξ : 0<ξ := div_pos hε (by positivity)
+  obtain ⟨Ce,hCe,herror⟩ := extraction_bound ξ hξ
+  obtain ⟨Bf,hBf,hprofile⟩ := fixed_profile_norm_bound W hW.continuous A B σmin σmax hA
+  let E := Ce*(max 1 B)^(1/2+ξ)*Bf
+  have hE : 0< E := by dsimp [E]; positivity
+  refine ⟨Cp+E,by positivity,?_⟩
+  intro Z d hZ hd hd' hU2 hT ι _ χ hχ a i ha ha' hmax r σ freq hr hrR
+    hσmin hσmax hlarge k hQ hfreq hheight
+  let U := Z^d
+  let D := U^r
+  have hU : 1≤ U := Real.one_le_rpow hZ hd
+  have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
+  have hD : 1≤ D := Real.one_le_rpow hU hr
+  have hlog : 1≤ Real.log D := by
+    linarith [abs_nonneg (Real.log A),abs_nonneg (Real.log B)]
+  have hL : 1/Real.log D∈Icc (0 : ℝ) 1 :=
+    ⟨by positivity,(div_le_one (by linarith)).mpr hlog⟩
+  have hp := hprime Z d hZ hd hd' hU2 hT χ hχ a i ha ha' hmax
+    r σ freq (1/Real.log D) hr hrR hσmin hσmax hL k hQ hfreq hheight
+  have he := herror (χ k) W A B D σ freq Bf hA hD hWs hlarge hBf.le
+    (hprofile σ ⟨hσmin,hσmax⟩)
+  have hpow : D^ξ≤ U^((a-1/2)*r+ε) := by
+    dsimp [D]
+    rw [←Real.rpow_mul hUp.le]
+    apply Real.rpow_le_rpow_of_exponent_le hU
+    have hxi : ξ*(R+1)=ε := by dsimp [ξ]; field_simp
+    nlinarith [mul_nonneg (show 0≤ a-1/2 by linarith) hr,
+      mul_le_mul_of_nonneg_right hrR hξ.le]
+  have he' : ‖HeckePrimeDyadic.polynomial (χ k) (PrimeLogProfile.profile W (1/Real.log D)) D σ freq-
+      primePolynomial (χ k) W B D σ freq‖≤ E*U^((a-1/2)*r+ε) := by
+    apply he.trans
+    calc
+      _ = E*D^ξ := by dsimp [E]; ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left hpow hE.le
+  calc
+    _ ≤ ‖HeckePrimeDyadic.polynomial (χ k) (PrimeLogProfile.profile W (1/Real.log D)) D σ freq‖+
+        ‖HeckePrimeDyadic.polynomial (χ k) (PrimeLogProfile.profile W (1/Real.log D)) D σ freq-
+          primePolynomial (χ k) W B D σ freq‖ := by
+      have hid : primePolynomial (χ k) W B D σ freq =
+          HeckePrimeDyadic.polynomial (χ k) (PrimeLogProfile.profile W (1/Real.log D)) D σ freq-
+          (HeckePrimeDyadic.polynomial (χ k) (PrimeLogProfile.profile W (1/Real.log D)) D σ freq-
+            primePolynomial (χ k) W B D σ freq) := by ring
+      conv_lhs => rw [hid]
+      exact norm_sub_le _ _
+    _ ≤ Cp*U^((a-1/2)*r+ε)+E*U^((a-1/2)*r+ε) := add_le_add hp he'
+    _ = _ := by ring
+
+end HeckePrimeAnnular
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff
+open Set
+namespace HeckePrimeRay
+open HeckeFamily HeckePrimeAnnular
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+local instance : IsPrincipalIdealRing O := IsCyclotomicExtension.Rat.three_pid K
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem ray_prime_bin_bound (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : ContDiff ℝ ∞ W)
+    (R dmax τ ε e κ η σmin σmax : ℝ)
+    (hR : 0≤ R) (hdmax : 0≤ dmax) (hτ : 0<τ) (hε : 0<ε) (he : 0< e)
+    (he' : e<1/1000) (hκ : 0<κ) (hη : 0≤η)
+    (hbudget : 8*e*R+κ≤ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ Z d : ℝ, 1≤ Z → 0≤ d → d≤ dmax → 2≤ Z^d → 2< Z^τ →
+    ∀ (ηrow : Character) (hχ : ∀ θ : RayQuotient.Characters M H,
+      (twistedFamily M H hH ηrow θ).residue≠1)
+      (a : ℝ) (i : ℕ), 51/100≤ a → a≤1 →
+      HeckeDetectorZeros.zeroMaximum (twistedFamily M H hH ηrow) hχ (3*(i+1 : ℕ)*Z^τ)< a+2*e →
+    ∀ r σ freq : ℝ, 0≤ r → r≤ R → σmin≤σ → σ≤σmax →
+      2*(|Real.log A|+|Real.log B|)+1≤ Real.log ((Z^d)^r) →
+      (∀ θ : RayQuotient.Characters M H,
+        (twistedFamily M H hH ηrow θ).modulus.absNorm≤ Z^d) →
+      |freq|+Z^τ/2≤(3*i+2 : ℕ)*Z^τ →
+      (3+(3*i+2 : ℕ)*Z^τ)^2≤(Z^d)^η →
+      ‖rayPrimePolynomial M H ηrow W B ((Z^d)^r) σ freq‖≤
+        C*(Z^d)^((a-1/2)*r+ε) := by
+  obtain ⟨C,hC,hbound⟩ := prime_bin_bound W A B hA hWs hW
+    R dmax τ ε e κ η σmin σmax hR hdmax hτ hε he he' hκ hη hbudget
+  refine ⟨C,hC,?_⟩
+  intro Z d hZ hd hd' hU hT ηrow hχ a i ha ha' hmax r σ freq hr hrR
+    hσmin hσmax hlarge hQ hfreq hheight
+  apply rayPrimePolynomial_norm_le M H hH
+  intro θ
+  exact hbound Z d hZ hd hd' hU hT (twistedFamily M H hH ηrow) hχ a i ha ha' hmax
+    r σ freq hr hrR hσmin hσmax hlarge θ (hQ θ) hfreq hheight
+
+end HeckePrimeRay
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open Filter
+open scoped Topology
+namespace HeckePrimeScale
+open HeckeFamily
+
+theorem log_scale_eventually (dmin rmin K : ℝ) (hd : 0< dmin) (hr : 0< rmin) :
+    ∀ᶠ Z : ℝ in atTop, ∀ d r : ℝ, dmin≤ d → rmin≤ r →
+      K≤ Real.log ((Z^d)^r) := by
+  have hlog : ∀ᶠ Z : ℝ in atTop, max 0 (K/(dmin*rmin))≤ Real.log Z :=
+    Real.tendsto_log_atTop.eventually (eventually_ge_atTop _)
+  filter_upwards [hlog,eventually_ge_atTop (1 : ℝ)] with Z hlog hZ
+  intro d r hd' hr'
+  have hZp : 0< Z := lt_of_lt_of_le zero_lt_one hZ
+  rw [Real.log_rpow (Real.rpow_pos_of_pos hZp _),Real.log_rpow hZp]
+  have hp : 0< dmin*rmin := mul_pos hd hr
+  have hk : K≤ dmin*rmin*Real.log Z := by
+    have hh := (div_le_iff₀ hp).mp ((le_max_right 0 _).trans hlog)
+    nlinarith
+  have hprod : dmin*rmin≤ d*r := mul_le_mul hd' hr' hr.le (hd.trans_le hd').le
+  have hl : 0≤ Real.log Z := (le_max_left _ _).trans hlog
+  nlinarith [mul_le_mul_of_nonneg_right hprod hl]
+
+theorem product_modulus_bound (χ ψ : Character) :
+    (χ.product ψ).modulus.absNorm≤χ.modulus.absNorm*ψ.modulus.absNorm := by
+  let : Finite (O ⧸ χ.modulus) := Ring.HasFiniteQuotients.finiteQuotient χ.modulus_ne_bot
+  let : Finite (O ⧸ ψ.modulus) := Ring.HasFiniteQuotients.finiteQuotient ψ.modulus_ne_bot
+  exact FiniteConductor.absNorm_inf_le_mul χ.modulus ψ.modulus
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem twisted_modulus_bound (χ : Character) (θ : RayQuotient.Characters M H) :
+    (HeckePrimeRay.twistedFamily M H hH χ θ).modulus.absNorm≤χ.modulus.absNorm*M.absNorm :=
+  product_modulus_bound χ (HeckeRayQuotient.character M H hH θ)
+
+theorem twisted_row_modulus_bound (χ : Character) (m u : O)
+    (hχ : χ.modulus.absNorm≤ HeckeRowClosure.rowConductorBound (HeckeRayFamily.character M 1) m 1 u)
+    (θ : RayQuotient.Characters M H) :
+    (HeckePrimeRay.twistedFamily M H hH χ θ).modulus.absNorm≤
+      M.absNorm^2*(Ideal.span {m}).absNorm*(Ideal.span {(72 : O)}).absNorm*(Ideal.span {u}).absNorm := by
+  apply (twisted_modulus_bound M H hH χ θ).trans
+  have hn := Nat.mul_le_mul_right M.absNorm hχ
+  simpa [HeckeRowClosure.rowConductorBound,HeckeRayFamily.character,
+    Character.ofResidue,pow_two,mul_assoc,mul_left_comm,mul_comm] using hn
+
+end HeckePrimeScale
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical ContDiff
+open Set
+namespace CenteredMomentPrimeGlobal
+open HeckeFamily HeckePrimeRay HeckeZeroSupremum
+
+lemma zeroMaximum_le_beta {ι : Type*} [Fintype ι]
+    (χ : ι→Character) (hχ : ∀i,(χ i).residue≠1) (T : ℝ)
+    (hbeta : (51/100:ℝ)≤ beta) :
+    HeckeDetectorZeros.zeroMaximum χ hχ T≤ beta := by
+  apply Finset.max'_le
+  intro x hx
+  rcases Finset.mem_insert.mp hx with rfl|hx
+  · exact hbeta
+  · obtain ⟨⟨i,s⟩,hs,rfl⟩ := Finset.mem_image.mp hx
+    have hz := (HeckeDetectorZeros.mem_familyZeros χ hχ T i s).mp hs
+    exact zero_re_le_beta (χ i) (by linarith [hz.1]) (Or.inr (hχ i)) hz.2.2.2
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem ray_prime_global_squared (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : ContDiff ℝ ∞ W)
+    (R dmax τ ε e slack η σmin σmax κ : ℝ)
+    (hR : 0≤ R) (hdmax : 0≤ dmax) (hτ : 0<τ) (hε : 0<ε) (he : 0< e)
+    (he' : e<1/1000) (hslack : 0< slack) (hη : 0≤η)
+    (hbudget : 8*e*R+slack≤ε) (hbeta : (51/100:ℝ)≤ beta)
+    (hκ : 2*beta-1≤κ) :
+    ∃ C : ℝ,0< C ∧ ∀ Z d : ℝ,1≤ Z → 0≤ d → d≤ dmax → 2≤ Z^d → 2< Z^τ →
+    ∀ (χ : Character) (_hn : ∀θ : RayQuotient.Characters M H,
+      (twistedFamily M H hH χ θ).residue≠1) (i : ℕ),
+    ∀ r σ freq : ℝ,0≤ r → r≤ R → σmin≤σ → σ≤σmax →
+      2*(|Real.log A|+|Real.log B|)+1≤ Real.log ((Z^d)^r) →
+      (∀θ : RayQuotient.Characters M H,
+        (twistedFamily M H hH χ θ).modulus.absNorm≤ Z^d) →
+      |freq|+Z^τ/2≤(3*i+2 : ℕ)*Z^τ →
+      (3+(3*i+2 : ℕ)*Z^τ)^2≤(Z^d)^η →
+      ‖rayPrimePolynomial M H χ W B ((Z^d)^r) σ freq‖^2≤
+        C*(Z^d)^(κ*r+2*ε) := by
+  obtain ⟨C,hC,hbound⟩ := ray_prime_bin_bound M H hH W A B hA hWs hW
+    R dmax τ ε e slack η σmin σmax hR hdmax hτ hε he he' hslack hη hbudget
+  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  intro Z d hZ hd hdmax hU hT χ hn i r σ freq hr hrR hσ hσmax hlarge hQ hf ht
+  have hmax := zeroMaximum_le_beta (twistedFamily M H hH χ) hn
+    (3*(i+1:ℕ)*Z^τ) hbeta
+  have hb := hbound Z d hZ hd hdmax hU hT χ hn beta i hbeta beta_le_one
+    (by linarith) r σ freq hr hrR hσ hσmax hlarge hQ hf ht
+  have hUp : 0< Z^d := by linarith
+  have hp : ((Z^d)^((beta-1/2)*r+ε))^2 = (Z^d)^(2*((beta-1/2)*r+ε)) := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul hUp.le]
+    congr 1
+    ring
+  calc
+    _≤(C*(Z^d)^((beta-1/2)*r+ε))^2 := pow_le_pow_left₀ (norm_nonneg _) hb 2
+    _=C^2*(Z^d)^(2*((beta-1/2)*r+ε)) := by rw [mul_pow,hp]
+    _≤ C^2*(Z^d)^(κ*r+2*ε) := mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le (by linarith : 1≤ Z^d)
+        (by nlinarith [mul_le_mul_of_nonneg_right hκ hr])) (sq_nonneg _)
+
+end CenteredMomentPrimeGlobal
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff
+open Set
+namespace CenteredMomentPrimeHeight
+open HeckeFamily HeckePrimeRay HeckePrimeAnnular HeckeDyadic HeckeZeroSupremum
+local notation "O" => Eisenstein.O
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+omit [NeZero M] in
+theorem ray_prime_bounded_scale (W : ℝ→ℂ) (A B lo hi D : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : Continuous W) (_hD : 1≤ D) :
+    ∃C : ℝ,0< C ∧ ∀(χ : Character)(P σ freq : ℝ),1≤ P → P≤ D → lo≤σ → σ≤ hi →
+      ‖rayPrimePolynomial M H χ W B P σ freq‖≤ C := by
+  obtain ⟨Cw,hCw,hprofile⟩ := fixed_profile_norm_bound W hW A B lo hi hA
+  let S := annulusSet B D
+  refine ⟨((S.card:ℝ)+1)*Cw,by positivity,?_⟩
+  intro χ P σ freq hP hPD hσ hσhi
+  have hp : 0< P := zero_lt_one.trans_le hP
+  have hsub : (annulusSet B P).filter (fun I=> Prime I ∧ I∈RayQuotient.identityClass M H)⊆S := by
+    intro I hI
+    have hi := HeckeInverseAmplification.mem_idealsUpTo.mp (Finset.mem_filter.mp hI).1
+    apply HeckeInverseAmplification.mem_idealsUpTo.mpr
+    exact ⟨hi.1,hi.2.trans (Nat.floor_mono (mul_le_mul_of_nonneg_left hPD (le_trans zero_le_one (le_max_left _ _))))⟩
+  have hn (I : Ideal O) : ‖idealCoeff χ I*annularWeight W P σ freq I‖≤ Cw := by
+    have hc := idealCoeff_norm_le_one χ I
+    apply (show ‖idealCoeff χ I*annularWeight W P σ freq I‖≤‖annularWeight W P σ freq I‖ by
+      rw [norm_mul];exact mul_le_of_le_one_left (norm_nonneg _) hc).trans
+    by_cases hz : W ((I.absNorm:ℝ)/P)=0
+    · simp [annularWeight,hz,hCw.le]
+    · have hs := hWs hz
+      rw [annularWeight,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos (hA.trans_le hs.1)]
+      simpa only [Complex.neg_re,shift_re] using hprofile σ ⟨hσ,hσhi⟩ _ hs
+  have hpow : ‖(P:ℂ)^(-(1/2:ℂ))‖≤1 := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hp]
+    norm_num only [Complex.neg_re,show ((1/2:ℂ).re)=1/2 by norm_num]
+    exact Real.rpow_le_one_of_one_le_of_nonpos hP (by norm_num)
+  unfold rayPrimePolynomial
+  rw [norm_mul]
+  calc
+    _ ≤ ‖∑ I∈(annulusSet B P).filter (fun I=> Prime I ∧ I∈RayQuotient.identityClass M H),
+        idealCoeff χ I*annularWeight W P σ freq I‖ := mul_le_of_le_one_left (norm_nonneg _) hpow
+    _ ≤ ∑ I∈(annulusSet B P).filter (fun I=> Prime I ∧ I∈RayQuotient.identityClass M H),Cw :=
+      (norm_sum_le _ _).trans (Finset.sum_le_sum (fun I _=> hn I))
+    _ ≤ ∑ _I∈S,Cw := Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _=> hCw.le)
+    _ ≤ _ := by simp only [Finset.sum_const,nsmul_eq_mul];nlinarith
+
+lemma lifted_scale_power (Z T D P κ loss : ℝ) (hZ : 0< Z) (hT : 0< T) (hD : D≠0)
+    (hU : 1<(Z*T)^D) (hP : 0< P) :
+    ((Z*T)^D)^(κ*Real.logb ((Z*T)^D) P+2*(loss/(2*D)))=
+      P^κ*Z^loss*T^loss := by
+  have hu : 0<(Z*T)^D := zero_lt_one.trans hU
+  rw [Real.rpow_add hu]
+  have hs : ((Z*T)^D)^(κ*Real.logb ((Z*T)^D) P)=P^κ := by
+    rw [mul_comm κ,Real.rpow_mul hu.le,Real.rpow_logb hu (ne_of_gt hU) hP]
+  rw [hs,←Real.rpow_mul (mul_pos hZ hT).le]
+  have he : D*(2*(loss/(2*D)))=loss := by field_simp
+  rw [he,Real.mul_rpow hZ.le hT.le]
+  ring
+
+theorem ray_prime_all_height_large (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : ContDiff ℝ ∞ W)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (_hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃C Z₀ : ℝ,0< C ∧ 1< Z₀ ∧ ∀ Z P : ℝ,Z₀≤ Z → 1≤ P → P≤ Z^Lslot →
+    ∀χ : Character,(χ.modulus.absNorm:ℝ)≤ Z^Lmod →
+      (∀θ : RayQuotient.Characters M H,(twistedFamily M H hH χ θ).residue≠1) →
+    ∀σ freq : ℝ,lo≤σ → σ≤ hi →
+      2*(|Real.log A|+|Real.log B|)+1≤ Real.log P →
+      ‖rayPrimePolynomial M H χ W B P σ freq‖^2≤ C*P^κ*Z^loss*(3+|freq|)^loss := by
+  let d := max Lmod Lslot+2
+  have hd : 0< d := by dsimp [d];have := le_max_left Lmod Lslot;linarith
+  have hd1 : 1≤ d := by dsimp [d];have := le_max_left Lmod Lslot;linarith
+  have hmd : Lmod+1≤ d := by dsimp [d];have := le_max_left Lmod Lslot;linarith
+  have hsd : Lslot≤ d := by dsimp [d];have := le_max_right Lmod Lslot;linarith
+  let eps := loss/(2*d)
+  have heps : 0< eps := by dsimp [eps];positivity
+  let e := min (eps/32) (1/2000)
+  have he : 0< e := lt_min (by positivity) (by norm_num)
+  have he' : e<1/1000 := (min_le_right _ _).trans_lt (by norm_num)
+  have hbudget : 8*e*1+eps/2≤ eps := by have := min_le_left (eps/32) (1/2000);dsimp [e];linarith
+  obtain ⟨C,hC,hbound⟩ := CenteredMomentPrimeGlobal.ray_prime_global_squared M H hH W A B hA hWs hW
+    1 d 1 eps e (eps/2) (4/d) lo hi κ (by norm_num) hd.le (by norm_num) heps he he'
+    (by positivity) (by positivity) hbudget hbeta hκ
+  let Z₀ := max 2 (M.absNorm:ℝ)
+  refine ⟨C,Z₀,hC,lt_of_lt_of_le (by norm_num : (1:ℝ)<2) (le_max_left _ _),?_⟩
+  intro Z P hZ hP hPcap χ hχ hn σ freq hσ hσhi hlarge
+  have hz2 : 2≤ Z := (le_max_left _ _).trans hZ
+  have hz : 0< Z := by linarith
+  have hz1 : 1≤ Z := by linarith
+  have hMZ : (M.absNorm:ℝ)≤ Z := (le_max_right _ _).trans hZ
+  let T := 3+|freq|
+  let Zt := Z*T
+  let U := Zt^d
+  have hT3 : 3≤ T := by dsimp [T];linarith [abs_nonneg freq]
+  have hT : 0< T := by linarith
+  have hzt6 : 6≤ Zt := by dsimp [Zt];nlinarith
+  have hzt : 0< Zt := by linarith
+  have hzt1 : 1≤ Zt := by linarith
+  have hZzt : Z≤ Zt := by dsimp [Zt];nlinarith
+  have hTzt : T≤ Zt := by dsimp [Zt];nlinarith
+  have hztU : Zt≤ U := by
+    simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hzt1 hd1
+  have hU : 1< U := by linarith
+  have hUp : 0< U := by linarith
+  have hPU : P≤ U := hPcap.trans ((Real.rpow_le_rpow_of_exponent_le hz1 hsd).trans
+    (Real.rpow_le_rpow hz.le hZzt hd.le))
+  let r := Real.logb U P
+  have hr : 0≤ r := Real.logb_nonneg hU hP
+  have hr1 : r≤1 := (Real.logb_le_iff_le_rpow hU (zero_lt_one.trans_le hP)).mpr
+    (by simpa only [Real.rpow_one] using hPU)
+  have hPr : U^r=P := Real.rpow_logb hUp (ne_of_gt hU) (zero_lt_one.trans_le hP)
+  have hQ (θ : RayQuotient.Characters M H) : ((twistedFamily M H hH χ θ).modulus.absNorm:ℝ)≤ U := by
+    have ht : ((twistedFamily M H hH χ θ).modulus.absNorm:ℝ)≤(χ.modulus.absNorm:ℝ)*M.absNorm := by
+      exact_mod_cast HeckePrimeScale.twisted_modulus_bound M H hH χ θ
+    apply ht.trans
+    calc
+      _ ≤ Z^Lmod*Z := mul_le_mul hχ hMZ (Nat.cast_nonneg _) (Real.rpow_nonneg hz.le _)
+      _ = Z^(Lmod+1) := by rw [Real.rpow_add hz,Real.rpow_one]
+      _ ≤ Z^d := Real.rpow_le_rpow_of_exponent_le hz1 hmd
+      _ ≤ U := Real.rpow_le_rpow hz.le hZzt hd.le
+  have hheight : (3+2*Zt)^2≤ U^(4/d) := by
+    have heq : U^(4/d)=Zt^(4:ℝ) := by
+      dsimp [U]
+      rw [←Real.rpow_mul hzt.le]
+      congr 1
+      field_simp
+    rw [heq,Real.rpow_ofNat]
+    have hb : 3+2*Zt≤ Zt^2 := by nlinarith
+    calc
+      _ ≤ (Zt^2)^2 := pow_le_pow_left₀ (by positivity) hb 2
+      _ = _ := by ring
+  have hb := hbound Zt d hzt1 hd.le le_rfl (by linarith : 2≤ Zt^d)
+    (by simpa only [Real.rpow_one] using (show (2:ℝ)< Zt by linarith)) χ hn 0 r σ freq hr hr1 hσ hσhi
+    (by change _≤ Real.log (U^r);rw [hPr];exact hlarge) hQ
+    (by norm_num only [Nat.mul_zero,Nat.zero_add,Nat.cast_ofNat,Real.rpow_one];dsimp [T] at hTzt;linarith)
+    (by simpa only [Nat.mul_zero,Nat.zero_add,Nat.cast_ofNat,Real.rpow_one] using hheight)
+  change ‖rayPrimePolynomial M H χ W B (U^r) σ freq‖^2≤ C*U^(κ*r+2*eps) at hb
+  rw [hPr] at hb
+  apply hb.trans_eq
+  dsimp only [U,Zt,r,eps,T]
+  rw [lifted_scale_power Z (3+|freq|) d P κ loss hz hT hd.ne' hU (zero_lt_one.trans_le hP)]
+  ring
+
+theorem ray_prime_all_height_squared (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
+    (hWs : Function.support W⊆Icc A B) (hW : ContDiff ℝ ∞ W)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃C Z₀ : ℝ,0< C ∧ 1< Z₀ ∧ ∀ Z P : ℝ,Z₀≤ Z → 1≤ P → P≤ Z^Lslot →
+    ∀χ : Character,(χ.modulus.absNorm:ℝ)≤ Z^Lmod →
+      (∀θ : RayQuotient.Characters M H,(twistedFamily M H hH χ θ).residue≠1) →
+    ∀σ freq : ℝ,lo≤σ → σ≤ hi →
+      ‖rayPrimePolynomial M H χ W B P σ freq‖^2≤ C*(1+|freq|)^degree*Z^loss*P^κ := by
+  obtain ⟨Cbig,Z₀,hCbig,hZ₀,hbig⟩ := ray_prime_all_height_large M H hH W A B hA hWs hW
+    Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
+  let K := 2*(|Real.log A|+|Real.log B|)+1
+  have hK : 0≤ K := by dsimp [K];positivity
+  obtain ⟨Csmall,hCs,hsmall⟩ := ray_prime_bounded_scale M H W A B lo hi (Real.exp K) hA hWs hW.continuous
+    (Real.one_le_exp hK)
+  let degree := ⌈loss⌉₊
+  let C0 := Cbig+Csmall^2
+  have hC0 : 0< C0 := by dsimp [C0];positivity
+  refine ⟨degree,C0*(3:ℝ)^degree,Z₀,by positivity,hZ₀,?_⟩
+  intro Z P hZ hP hPcap χ hχ hn σ freq hσ hσhi
+  have hz1 : 1≤ Z := hZ₀.le.trans hZ
+  have hκ0 : 0≤κ := by linarith
+  have hpκ : 1≤ P^κ := Real.one_le_rpow hP hκ0
+  have hzloss : 1≤ Z^loss := Real.one_le_rpow hz1 hloss.le
+  have htbase : 1≤3+|freq| := by linarith [abs_nonneg freq]
+  have htloss : 1≤(3+|freq|)^loss := Real.one_le_rpow htbase hloss.le
+  have hbase : ‖rayPrimePolynomial M H χ W B P σ freq‖^2≤ C0*P^κ*Z^loss*(3+|freq|)^loss := by
+    by_cases hlarge : K≤ Real.log P
+    · exact (hbig Z P hZ hP hPcap χ hχ hn σ freq hσ hσhi hlarge).trans
+        (by dsimp [C0];gcongr; nlinarith [sq_nonneg Csmall])
+    · have hPD : P≤ Real.exp K := by
+        have he := Real.exp_le_exp.mpr (le_of_not_ge hlarge)
+        simpa only [Real.exp_log (zero_lt_one.trans_le hP)] using he
+      have hb := pow_le_pow_left₀ (norm_nonneg _) (hsmall χ P σ freq hP hPD hσ hσhi) 2
+      apply hb.trans
+      calc
+        Csmall^2 ≤ C0 := by dsimp [C0];linarith
+        _ ≤ C0*P^κ := le_mul_of_one_le_right hC0.le hpκ
+        _ ≤ C0*P^κ*Z^loss := le_mul_of_one_le_right (by positivity) hzloss
+        _ ≤ _ := le_mul_of_one_le_right (by positivity) htloss
+  have hheight : (3+|freq|)^loss≤(3:ℝ)^degree*(1+|freq|)^degree := by
+    calc
+      _ ≤ (3+|freq|)^(degree:ℝ) := Real.rpow_le_rpow_of_exponent_le htbase (Nat.le_ceil loss)
+      _ = (3+|freq|)^degree := Real.rpow_natCast _ _
+      _ ≤ (3*(1+|freq|))^degree := pow_le_pow_left₀ (by positivity) (by linarith [abs_nonneg freq]) _
+      _ = _ := mul_pow _ _ _
+  apply hbase.trans
+  calc
+    _ ≤ C0*P^κ*Z^loss*((3:ℝ)^degree*(1+|freq|)^degree) :=
+      mul_le_mul_of_nonneg_left hheight (by positivity)
+    _ = _ := by ring
+
+end CenteredMomentPrimeHeight
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ComplexConjugate
+
+namespace CenteredMomentDetectorDictionary
+open HeckeFamily HeckeRowClosure CanonicalRowCompletion
+open CenteredMomentHeckeSlots CenteredMomentWholeSlotDeletion CenteredMomentPrimeSlot
+local notation "O" => Eisenstein.O
+
+lemma normalizedSlot_character (η ν : Character) (m A z : O)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (t D : ℝ) :
+    normalizedSlot η m A z S (fun P=> idealCoeff ν P*β P) t D=
+      normalizedSlot (η.product ν) m A z S β t D := by
+  unfold normalizedSlot rowSlot
+  congr 1
+  apply Finset.sum_congr rfl
+  intro P hP
+  rw [idealCoeff_product]
+  ring
+
+lemma product_row_presentation (η χ ν : Character) (m A z : O)
+    (hrow : ∀n,elementCoeff χ n=rowTwist (elementHom η) m 1 (A*z) n) :
+    ∀n,elementCoeff (χ.product ν) n=rowTwist (elementHom (η.product ν)) m 1 (A*z) n := by
+  intro n
+  rw [elementCoeff_product,hrow]
+  change (elementCoeff η n*((idealRowHom (m^6*1^4*(A*z))).toMonoidHom.comp principalIdealHom.toMonoidHom) n)*elementCoeff ν n=
+    elementCoeff (η.product ν) n*((idealRowHom (m^6*1^4*(A*z))).toMonoidHom.comp principalIdealHom.toMonoidHom) n
+  rw [elementCoeff_product]
+  ring
+
+theorem relative_normalizedSlot_eq_ray (M : Ideal O) (H : Subgroup (O⧸M)ˣ)
+    (η χ ν : Character) (m A z : O)
+    (hrow : ∀n,elementCoeff χ n=rowTwist (elementHom η) m 1 (A*z) n)
+    (W : ℝ→ℂ) (b D σ t v : ℝ) (hD : 0< D) :
+    normalizedSlot η m A z (primePool M H b D)
+      (fun P=> idealCoeff ν P*HeckePrimeAnnular.annularWeight W D σ v P) t D=
+      (D:ℂ)^(Complex.I*t)*HeckePrimeRay.rayPrimePolynomial M H (χ.product ν) W b D σ (t+v) := by
+  rw [normalizedSlot_character]
+  exact CenteredMomentPrimeSlotShift.normalizedSlot_eq_ray M H (η.product ν) (χ.product ν)
+    m A z (product_row_presentation η χ ν m A z hrow) W b D σ t v hD
+
+theorem physicalSlot_eq_relativeRay (M : Ideal O) (H : Subgroup (O⧸M)ˣ)
+    (η χ : Character) (m A u : O)
+    (hrow : ∀n,elementCoeff χ n=rowTwist (elementHom η) m 1 (A*u) n)
+    (W : ℝ→ℂ) (b D t : ℝ) (z : ℂ) (hD : 0< D) :
+    normalizedSlot η m A u (primePool M H b D) (physicalSlotCoefficient η W D z) t D=
+      (D:ℂ)^(Complex.I*t)*HeckePrimeRay.rayPrimePolynomial M H (χ.product η.inverse)
+        (fun y=> conj (W y)) b D (1-z.re) (t-z.im) := by
+  have he : normalizedSlot η m A u (primePool M H b D) (physicalSlotCoefficient η W D z) t D=
+      normalizedSlot η m A u (primePool M H b D)
+        (fun P=> idealCoeff η.inverse P*HeckePrimeAnnular.annularWeight (fun y=> conj (W y)) D (1-z.re) (-z.im) P) t D := by
+    unfold normalizedSlot rowSlot
+    congr 1
+    apply Finset.sum_congr rfl
+    intro P hP
+    rw [physicalSlotCoefficient_annular η W D z P (Finset.mem_filter.mp hP).2.1.ne_zero hD]
+  rw [he]
+  exact relative_normalizedSlot_eq_ray M H η χ η.inverse m A u hrow
+    (fun y=> conj (W y)) b D (1-z.re) t (-z.im) hD
+
+end CenteredMomentDetectorDictionary
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentFixedRayInducingTransport
+open HeckeFamily HeckeRowClosure CenteredExceptionalProfile
+open CanonicalRowCompletion 
+open CenteredMomentExceptionalPair CenteredMomentFixedRowMask
+local notation "O" => Eisenstein.O
+
+theorem modulus_generator_ne_zero (ν : Character) :
+    cubicIdealGenerator ν.modulus ≠ 0 :=
+  cubicIdealGenerator_ne_zero ν.modulus ν.modulus_ne_bot
+
+theorem modulus_unit_iff (ν : Character) (n : O) :
+    IsUnit (Ideal.Quotient.mk ν.modulus n) ↔
+      IsCoprime n (cubicIdealGenerator ν.modulus) := by
+  rw [IdealCharacter.isUnit_mk_iff_isCoprime]
+  conv_lhs => rw [←span_cubicIdealGenerator ν.modulus]
+  rw [Ideal.isCoprime_span_singleton_iff]
+
+theorem elementCoeff_product_inverse_mask (η ν : Character) (n : O) :
+    elementCoeff ((η.product ν).product ν.inverse) n =
+      if IsCoprime n (cubicIdealGenerator ν.modulus) then elementCoeff η n else 0 := by
+  rw [elementCoeff_product,elementCoeff_product,elementCoeff_inverse]
+  by_cases hn : IsCoprime n (cubicIdealGenerator ν.modulus)
+  · have hv : elementCoeff ν n ≠ 0 :=
+      MulChar.apply_ne_zero_iff.mpr ((modulus_unit_iff ν n).mpr hn)
+    simp only [hn,ite_true,mul_assoc,mul_inv_cancel₀ hv,mul_one]
+  · have hv : elementCoeff ν n = 0 :=
+      MulChar.map_nonunit ν.residue (fun hu=> hn ((modulus_unit_iff ν n).mp hu))
+    simp only [hn,ite_false,hv,mul_zero,zero_mul]
+
+theorem rowTwist_product (η ν : Character) (m f z n : O) :
+    rowTwist (elementHom (η.product ν)) m f z n =
+      rowTwist (elementHom η) m f z n * elementCoeff ν n := by
+  change elementCoeff (η.product ν) n * idealRowHom (m^6*f^4*z) (Ideal.span {n}) =
+    (elementCoeff η n * idealRowHom (m^6*f^4*z) (Ideal.span {n})) * elementCoeff ν n
+  rw [elementCoeff_product]
+  ring
+
+theorem rowTwist_product_inverse_mask (η ν : Character) (m A z n : O)
+    (hmLam : lambda ∣ m) (hm2 : (2:O) ∣ m) :
+    rowTwist (elementHom ((η.product ν).product ν.inverse)) m 1 (A*z) n =
+      rowTwist (elementHom η) (m*cubicIdealGenerator ν.modulus) 1 (A*z) n := by
+  rw [row_mask_mul η m (cubicIdealGenerator ν.modulus) A z n hmLam hm2]
+  change elementCoeff ((η.product ν).product ν.inverse) n *
+    idealRowHom (m^6*1^4*(A*z)) (Ideal.span {n}) = _
+  rw [elementCoeff_product_inverse_mask]
+  split_ifs
+  · rfl
+  · exact zero_mul _
+
+theorem fixedInducingRow_product_of (η ν : Character) (Q : Ideal O)
+    (m A z : O) (hν : Q ≤ ν.modulus)
+    (h : FixedInducingRow η Q m A z) :
+    FixedInducingRow (η.product ν) Q m A z :=
+  fixedInducingRow_of_product η (η.product ν) ν Q m A z z hν
+    (fun n=> rowTwist_product η ν m 1 (A*z) n) h
+
+theorem fixedInducingRow_product_iff (η ν : Character) (Q : Ideal O)
+    (m A z : O) (hν : Q ≤ ν.modulus)
+    (hm : m≠0) (hA : A≠0) (hz : z≠0)
+    (hmLam : lambda ∣ m) (hm2 : (2:O) ∣ m) :
+    FixedInducingRow (η.product ν) Q m A z ↔ FixedInducingRow η Q m A z := by
+  constructor
+  · intro h
+    have hi := fixedInducingRow_product_of (η.product ν) ν.inverse Q m A z hν h
+    obtain ⟨χ,ψ,hprim,hind,hQ,hrow⟩ := hi
+    apply (fixedInducingRow_mul_mask_iff η Q m (cubicIdealGenerator ν.modulus) A z
+      hm (modulus_generator_ne_zero ν) hA hz hmLam hm2).mp
+    exact ⟨χ,ψ,hprim,hind,hQ,fun n=>(hrow n).trans
+      (rowTwist_product_inverse_mask η ν m A z n hmLam hm2)⟩
+  · exact fixedInducingRow_product_of η ν Q m A z hν
+
+theorem not_fixedInducingRow_product_iff (η ν : Character) (Q : Ideal O)
+    (m A z : O) (hν : Q ≤ ν.modulus)
+    (hm : m≠0) (hA : A≠0) (hz : z≠0)
+    (hmLam : lambda ∣ m) (hm2 : (2:O) ∣ m) :
+    (¬FixedInducingRow (η.product ν) Q m A z) ↔ ¬FixedInducingRow η Q m A z :=
+  not_congr (fixedInducingRow_product_iff η ν Q m A z hν hm hA hz hmLam hm2)
+
+theorem fixedInducingRow_product_inverse_iff (η ν : Character) (Q : Ideal O)
+    (m A z : O) (hν : Q ≤ ν.modulus)
+    (hm : m≠0) (hA : A≠0) (hz : z≠0)
+    (hmLam : lambda ∣ m) (hm2 : (2:O) ∣ m) :
+    FixedInducingRow (η.product ν.inverse) Q m A z ↔ FixedInducingRow η Q m A z :=
+  fixedInducingRow_product_iff η ν.inverse Q m A z hν hm hA hz hmLam hm2
+
+theorem not_fixedInducingRow_product_inverse_iff (η ν : Character) (Q : Ideal O)
+    (m A z : O) (hν : Q ≤ ν.modulus)
+    (hm : m≠0) (hA : A≠0) (hz : z≠0)
+    (hmLam : lambda ∣ m) (hm2 : (2:O) ∣ m) :
+    (¬FixedInducingRow (η.product ν.inverse) Q m A z) ↔ ¬FixedInducingRow η Q m A z :=
+  not_congr (fixedInducingRow_product_inverse_iff η ν Q m A z hν hm hA hz hmLam hm2)
+
+end CenteredMomentFixedRayInducingTransport
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentNaturalFixedRaySource
+open HeckeFamily HeckeRowClosure  CanonicalRowCompletion
+open CenteredMomentNaturalRowSource CenteredMomentSecondHeightFamily
+open CenteredMomentFixedRayInducingTransport CenteredMomentFixedRowMask CenteredExceptionalProfile
+local notation "O" => Eisenstein.O
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+def relativeCharacter (η₀ : Character) (θ : RayQuotient.Characters M H) : Character :=
+  (HeckeRayQuotient.character M H hH θ).product η₀.inverse
+
+lemma relativeCharacter_ideal (η₀ : Character) (θ : RayQuotient.Characters M H) (I : Ideal O) :
+    idealCoeff (relativeCharacter M H hH η₀ θ) I=
+      idealCoeff (HeckeRayQuotient.character M H hH θ) I*idealCoeff η₀.inverse I :=
+  idealCoeff_product _ _ _
+
+lemma relativeCharacter_norm (η₀ : Character) (θ : RayQuotient.Characters M H) (I : Ideal O) :
+    ‖idealCoeff (relativeCharacter M H hH η₀ θ) I‖≤1 := idealCoeff_norm_le_one _ _
+
+lemma relativeCharacter_modulus (η₀ : Character) (θ : RayQuotient.Characters M H) :
+    (relativeCharacter M H hH η₀ θ).modulus.absNorm≤ M.absNorm*η₀.modulus.absNorm :=
+  HeckePrimeScale.product_modulus_bound _ _
+
+lemma relativeCharacter_fixedQ (η₀ : Character) (θ : RayQuotient.Characters M H)
+    (Q : Ideal O) (hQM : Q≤ M) (hQη : Q≤η₀.modulus) :
+    Q≤(relativeCharacter M H hH η₀ θ).modulus := le_inf hQM hQη
+
+lemma excluded_product_ideal (χ ν : Character) (R : Ideal O) (hR : R≠0) (I : Ideal O) :
+    idealCoeff (excluded χ R) I*idealCoeff ν I=idealCoeff (excluded (χ.product ν) R) I := by
+  rw [excluded_ideal χ R hR,excluded_ideal (χ.product ν) R hR,idealCoeff_product]
+  split_ifs <;> simp
+
+lemma sector_element {η : Character} {z : O} (F : NaturalRow η z)
+    (η₀ : Character) (θ : RayQuotient.Characters M H) (n : O) :
+    elementCoeff (F.character.product (relativeCharacter M H hH η₀ θ)) n=
+      rowTwist (elementHom (η.product (relativeCharacter M H hH η₀ θ))) fixedBadMask 1 z n := by
+  simpa only [one_mul] using CenteredMomentDetectorDictionary.product_row_presentation η F.character
+    (relativeCharacter M H hH η₀ θ) fixedBadMask 1 z
+    (by simpa only [one_mul] using F.element) n
+
+theorem sector_fixedQ_iff (η η₀ : Character) (θ : RayQuotient.Characters M H)
+    (Q R : Ideal O) (z : O) (hQM : Q≤ M) (hQη : Q≤η₀.modulus)
+    (hR : R≠0) (hz : z≠0) :
+    FixedInducingRow (η.product (relativeCharacter M H hH η₀ θ)) Q
+      (fixedBadMask*cubicIdealGenerator R) 1 z ↔
+    FixedInducingRow η Q (fixedBadMask*cubicIdealGenerator R) 1 z :=
+  fixedInducingRow_product_iff η (relativeCharacter M H hH η₀ θ) Q
+    (fixedBadMask*cubicIdealGenerator R) 1 z
+    (relativeCharacter_fixedQ M H hH η₀ θ Q hQM hQη)
+    (mul_ne_zero fixedBadMask_ne_zero (cubicIdealGenerator_ne_zero R hR)) one_ne_zero hz
+    ((dvd_mul_right _ _).trans (dvd_mul_right _ _))
+    ((dvd_mul_left _ _).trans (dvd_mul_right _ _))
+
+theorem sector_nonprincipal {η : Character} {z : O} (F : NaturalRow η z)
+    (η₀ : Character) (θ : RayQuotient.Characters M H) (Q R : Ideal O)
+    (hQM : Q≤ M) (hQη : Q≤η₀.modulus) (hR : R≠0) (hz : z≠0)
+    (hex : ¬FixedInducingRow η Q (fixedBadMask*cubicIdealGenerator R) 1 z) :
+    (F.character.product (relativeCharacter M H hH η₀ θ)).residue≠1 := by
+  have hbase : ¬FixedInducingRow η Q fixedBadMask 1 z := by
+    intro h
+    exact hex ((fixedInducingRow_mul_mask_iff η Q fixedBadMask (cubicIdealGenerator R) 1 z
+      fixedBadMask_ne_zero (cubicIdealGenerator_ne_zero R hR) one_ne_zero hz
+      (dvd_mul_right _ _) (dvd_mul_left _ _)).mpr h)
+  exact CenteredMomentRayNonprincipal.actual_row_twist_nonprincipal η F.character
+    (relativeCharacter M H hH η₀ θ) Q fixedBadMask 1 z
+    (by simpa only [one_mul] using F.element)
+    (relativeCharacter_fixedQ M H hH η₀ θ Q hQM hQη) hbase
+
+end CenteredMomentNaturalFixedRaySource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentNaturalFixedRaySource
+open HeckeFamily CenteredExceptionalProfile CenteredExceptionalCount
+open HeckeRowClosure CanonicalRowCompletion 
+open CenteredMomentNaturalRowSource UniqueFactorizationMonoid
+local notation "O" => Eisenstein.O
+
+def internalQ (Q : Ideal O) (η₀ : Character) : Ideal O := Q⊓η₀.modulus
+
+lemma internalQ_ne_zero (Q : Ideal O) (hQ : Q≠0) (η₀ : Character) : internalQ Q η₀≠0 :=
+  Ideal.inf_ne_bot_of_ne_bot hQ η₀.modulus_ne_bot
+
+lemma internalQ_ne_top (Q : Ideal O) (hQ : Q≠⊤) (η₀ : Character) : internalQ Q η₀≠⊤ := by
+  intro h
+  exact hQ (top_le_iff.mp (h ▸ (inf_le_left : internalQ Q η₀≤ Q)))
+
+lemma internalQ_coprime (Q P : Ideal O) (η₀ : Character)
+    (hQP : IsCoprime Q P) (hηP : IsCoprime η₀.modulus P) : IsCoprime (internalQ Q η₀) P :=
+  (hQP.mul_left hηP).of_isCoprime_of_dvd_left (Ideal.dvd_iff_le.mpr Ideal.mul_le_inf)
+
+lemma natural_nonzero_base {η : Character} {z : O} (F : NaturalRow η z) (I : Ideal O)
+    (h : idealCoeff F.character I≠0) : idealCoeff η I≠0 := by
+  rw [F.ideal] at h
+  exact left_ne_zero_of_mul h
+
+lemma coefficient_forcing_coprime (η₀ : Character) (e : O) (he : elementCoeff η₀ e≠0)
+    (Q P : Ideal O) (hQP : IsCoprime Q P) (hPe : P∣Ideal.span {e}) :
+    IsCoprime (internalQ Q η₀) P :=
+  internalQ_coprime Q P η₀ hQP (CenteredMomentChildRows.old_coefficient_prime_coprime η₀ e he P hPe)
+
+theorem energy_split (η η₀ : Character) (Q : Ideal O) (m A : O)
+    (rows : Finset O) (f : O→ℂ) :
+    (∑z∈rows,‖f z‖^2)=
+      (∑z∈rows.filter (fun z=>¬FixedInducingRow η (internalQ Q η₀) m A z),‖f z‖^2)+
+      ∑z∈rows.filter (fun z=> FixedInducingRow η (internalQ Q η₀) m A z),‖f z‖^2 := by
+  simpa only [not_not] using
+    (Finset.sum_filter_add_sum_filter_not rows (fun z=>¬FixedInducingRow η (internalQ Q η₀) m A z)
+      (fun z=>‖f z‖^2)).symm
+
+theorem internal_exceptional_count (η η₀ : Character) (Q : Ideal O)
+    (hQ0 : Q≠0) (hQ : Q≠⊤) (hQ72 : Q≤ Ideal.span {(72:O)})
+    (m A : O) (hm : m≠0) (hA : A≠0) (hmLam : lambda∣m) (hm2 : (2:O)∣m)
+    (rows : Finset O) (hrows : ∀z∈rows,z≠0)
+    (D : Ideal O) (hD : Squarefree D)
+    (hgood : ∀P∈normalizedFactors D,lambda∉P ∧ (2:O)∉P ∧
+      IsCoprime Q P ∧ IsCoprime η₀.modulus P ∧ IsCoprime η.modulus P ∧ valuation (Ideal.span {A}) P%6=2)
+    (Z C M F : ℝ) (hZ : 0< Z) (hC : 0≤ C)
+    (hDnorm : Z^(F/2)≤(D.absNorm:ℝ))
+    (hN : ∀z∈rows,((Ideal.span {z}).absNorm:ℝ)≤ C*Z^M) :
+    ((rows.filter (fun z=> FixedInducingRow η (internalQ Q η₀) m A z)).card:ℝ)≤
+      768*(6:ℝ)^(normalizedFactors (internalQ Q η₀)).toFinset.card*C^(1/6:ℝ)*Z^((M-2*F)/6) := by
+  apply fixed_support_exceptional_count η (internalQ Q η₀) (internalQ_ne_zero Q hQ0 η₀)
+    (internalQ_ne_top Q hQ η₀) (inf_le_left.trans hQ72) m A hm hA hmLam hm2
+    (rows.filter (fun z=> FixedInducingRow η (internalQ Q η₀) m A z))
+    (fun z hz=> hrows z (Finset.mem_filter.mp hz).1)
+    (fun z hz=>(Finset.mem_filter.mp hz).2) D hD ?_ Z C M F hZ hC hDnorm
+    (fun z hz=> hN z (Finset.mem_filter.mp hz).1)
+  intro P hP
+  obtain ⟨hLam,h2,hQP,hη₀,hη,hv⟩:=hgood P hP
+  exact ⟨hLam,h2,internalQ_coprime Q P η₀ hQP hη₀,hη,hv⟩
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem internal_sector_nonprincipal {η : Character} {z : O} (F : NaturalRow η z)
+    (η₀ : Character) (θ : RayQuotient.Characters M H) (Q R : Ideal O)
+    (hQM : Q≤ M) (hR : R≠0) (hz : z≠0)
+    (hex : ¬FixedInducingRow η (internalQ Q η₀) (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R) 1 z) :
+    (F.character.product (relativeCharacter M H hH η₀ θ)).residue≠1 :=
+  sector_nonprincipal M H hH F η₀ θ (internalQ Q η₀) R
+    (inf_le_left.trans hQM) inf_le_right hR hz hex
+
+end CenteredMomentNaturalFixedRaySource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff Topology
+open Filter
+
+namespace CenteredMomentNaturalFixedRaySource
+open HeckeFamily HeckeRowClosure HeckePrimeRay HeckeZeroSupremum
+open CenteredMomentDetectorDictionary CenteredMomentNaturalRowSource
+open CenteredExceptionalProfile CenteredMomentSecondHeightFamily 
+open CenteredMomentFixedRayInducingTransport CenteredMomentWholeSlotDeletion CenteredMomentPrimeSlot
+local notation "O" => Eisenstein.O
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+lemma natural_relative_twists {η : Character} {z : O} (F : NaturalRow η z) (hz : z≠0)
+    (η₀ : Character) (Q : Ideal O) (hQM : Q≤ M)
+    (hex : ¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z) :
+    ∀θ : RayQuotient.Characters M H,
+      (twistedFamily M H hH (F.character.product η₀.inverse) θ).residue≠1 := by
+  have hn : ¬FixedInducingRow (η.product η₀.inverse) (internalQ Q η₀) fixedBadMask 1 z :=
+    (not_fixedInducingRow_product_iff η η₀.inverse _ fixedBadMask 1 z inf_le_right
+      fixedBadMask_ne_zero one_ne_zero hz (dvd_mul_right _ _) (dvd_mul_left _ _)).mpr hex
+  apply CenteredMomentRayNonprincipal.all_ray_twists_nonprincipal M H hH
+    (η.product η₀.inverse) (F.character.product η₀.inverse) (internalQ Q η₀)
+    fixedBadMask 1 z ?_ (inf_le_left.trans hQM) hn
+  exact product_row_presentation η F.character η₀.inverse fixedBadMask 1 z
+    (by simpa only [one_mul] using F.element)
+
+include hH
+
+theorem natural_relative_slot_bound (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃C : ℝ,0< C ∧ ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+      ∀P : ℝ,1≤ P → P≤ Z^Lslot → ∀η : Character,∀z : O,z≠0 →
+      ∀F : NaturalRow η z,(F.character.modulus.absNorm:ℝ)≤ Z^Lmod →
+      ∀Q : Ideal O,Q≤ M → ¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z →
+      ∀σ t v : ℝ,lo≤σ → σ≤ hi →
+      ‖normalizedSlot η fixedBadMask 1 z (primePool M H b P)
+        (fun I=> idealCoeff η₀.inverse I*HeckePrimeAnnular.annularWeight W P σ v I) t P‖^2≤
+        C*(1+|t|+|v|)^degree*Z^loss*P^κ := by
+  obtain ⟨degree,C,Z₀,hC,hZ₀,hbound⟩:=CenteredMomentPrimeHeight.ray_prime_all_height_squared
+    M H hH W a b ha hWs hW (Lmod+1) Lslot loss lo hi κ (by linarith) hLs hloss hbeta hκ
+  refine ⟨degree,C,hC,?_⟩
+  intro η₀
+  filter_upwards [eventually_ge_atTop Z₀,eventually_ge_atTop (η₀.modulus.absNorm:ℝ),
+    eventually_gt_atTop (0:ℝ)] with Z hZ0 hη₀ hZ
+  intro P hP hPcap η z hz F hcond Q hQM hex σ t v hσ hσhi
+  have hc : ((F.character.product η₀.inverse).modulus.absNorm:ℝ)≤ Z^(Lmod+1) := by
+    have hb : ((F.character.product η₀.inverse).modulus.absNorm:ℝ)≤
+        (F.character.modulus.absNorm:ℝ)*(η₀.modulus.absNorm:ℝ) := by
+      exact_mod_cast HeckePrimeScale.product_modulus_bound F.character η₀.inverse
+    apply hb.trans
+    calc
+      _≤ Z^Lmod*Z := mul_le_mul hcond hη₀ (Nat.cast_nonneg _) (Real.rpow_nonneg hZ.le _)
+      _=Z^(Lmod+1) := by rw [Real.rpow_add hZ,Real.rpow_one]
+  have hb:=hbound Z P hZ0 hP hPcap (F.character.product η₀.inverse) hc
+    (natural_relative_twists M H hH F hz η₀ Q hQM hex) σ (t+v) hσ hσhi
+  rw [relative_normalizedSlot_eq_ray M H η F.character η₀.inverse fixedBadMask 1 z
+    (by simpa only [one_mul] using F.element) W b P σ t v (zero_lt_one.trans_le hP),norm_mul,
+    CenteredMomentTwist.norm_real_imaginary_power P t (zero_lt_one.trans_le hP),one_mul]
+  apply hb.trans
+  apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg (zero_le_one.trans hP) _)
+  apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg hZ.le _)
+  apply mul_le_mul_of_nonneg_left _ hC.le
+  exact pow_le_pow_left₀ (by positivity) (by linarith [abs_add_le t v]) degree
+
+theorem natural_character_slot_bound (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃C : ℝ,0< C ∧ ∀ν : Character,∀ᶠZ : ℝ in atTop,
+      ∀P : ℝ,1≤ P → P≤ Z^Lslot → ∀η : Character,∀z : O,z≠0 →
+      ∀F : NaturalRow η z,(F.character.modulus.absNorm:ℝ)≤ Z^Lmod →
+      ∀Q : Ideal O,Q≤ M → Q≤ν.modulus → ¬FixedInducingRow η Q fixedBadMask 1 z →
+      ∀σ t v : ℝ,lo≤σ → σ≤ hi →
+      ‖normalizedSlot η fixedBadMask 1 z (primePool M H b P)
+        (fun I=> idealCoeff ν I*HeckePrimeAnnular.annularWeight W P σ v I) t P‖^2≤
+        C*(1+|t|+|v|)^degree*Z^loss*P^κ := by
+  obtain ⟨degree,C,hC,hbound⟩:=natural_relative_slot_bound M H hH W a b ha hWs hW
+    Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
+  refine ⟨degree,C,hC,?_⟩
+  intro ν
+  filter_upwards [hbound ν.inverse] with Z hz
+  intro P hP hPcap η z hz0 F hcond Q hQM hQν hex σ t v hσ hσhi
+  have hQeq : internalQ Q ν.inverse=Q := inf_eq_left.mpr hQν
+  have he:=hz P hP hPcap η z hz0 F hcond Q hQM (by simpa only [hQeq] using hex) σ t v hσ hσhi
+  simpa only [idealCoeff_inverse_conj,starRingEnd_self_apply] using he
+
+end CenteredMomentNaturalFixedRaySource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff Topology
+open Filter
+
+namespace CenteredMomentNaturalFixedRaySource
+open HeckeFamily HeckeZeroSupremum CenteredMomentNaturalRowSource
+open CenteredExceptionalProfile CenteredMomentSecondHeightFamily
+open CenteredMomentWholeSlotDeletion CenteredMomentPrimeSlot
+local notation "O" => Eisenstein.O
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem natural_ray_slots_uniform (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃C : ℝ,0< C ∧ ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+      ∀θ : RayQuotient.Characters M H,
+      ∀P : ℝ,1≤ P → P≤ Z^Lslot → ∀η : Character,∀z : O,z≠0 →
+      ∀F : NaturalRow η z,(F.character.modulus.absNorm:ℝ)≤ Z^Lmod →
+      ∀Q : Ideal O,Q≤ M → ¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z →
+      ∀σ t v : ℝ,lo≤σ → σ≤ hi →
+      ‖normalizedSlot η fixedBadMask 1 z (primePool M H b P)
+        (fun I=> idealCoeff (relativeCharacter M H hH η₀ θ) I*
+          HeckePrimeAnnular.annularWeight W P σ v I) t P‖^2≤
+        C*(1+|t|+|v|)^degree*Z^loss*P^κ := by
+  obtain ⟨degree,C,hC,hbound⟩:=natural_character_slot_bound M H hH W a b ha hWs hW
+    Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
+  refine ⟨degree,C,hC,?_⟩
+  intro η₀
+  have hall:=Filter.eventually_all.mpr (fun θ : RayQuotient.Characters M H=>
+    hbound (relativeCharacter M H hH η₀ θ))
+  filter_upwards [hall] with Z hz
+  intro θ P hP hPcap η z hz0 F hcond Q hQM hex σ t v hσ hσhi
+  exact hz θ P hP hPcap η z hz0 F hcond (internalQ Q η₀)
+    (inf_le_left.trans hQM)
+    (relativeCharacter_fixedQ M H hH η₀ θ (internalQ Q η₀) (inf_le_left.trans hQM) inf_le_right)
+    hex σ t v hσ hσhi
+
+end CenteredMomentNaturalFixedRaySource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ContDiff
+open Filter
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeZeroSupremum CenteredMomentNaturalFixedRaySource
+open CenteredMomentNaturalRowSource CenteredMomentCommonMaskExpansion
+open CenteredMomentCommonMaskEnergy CenteredMomentWholeSlotDeletion
+open CenteredMomentHeckeSlots CenteredMomentPrimeSlot CenteredExceptionalProfile
+open CenteredMomentSecondHeightFamily
+local notation "O" => Eisenstein.O
+
+lemma natural_slot_eq {η : Character} {z : O} (F : NaturalRow η z)
+    (pool : Finset (Ideal O)) (β : Ideal O→ℂ) (P t : ℝ) :
+    naturalSlot F.character pool (heightCoefficient β t) P=
+      normalizedSlot η fixedBadMask 1 z pool β t P := by
+  unfold naturalSlot normalizedSlot rowSlot
+  congr 1
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [F.ideal]
+  simp only [heightCoefficient,one_mul]
+  ring
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem natural_slot_product {α : Type*} [DecidableEq α]
+    (F : Finset α) (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃C : ℝ,0< C ∧ ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+    ∀(θ : α→RayQuotient.Characters M H)(w σ v : α→ℝ)(t T : ℝ),
+      (∀i∈F,0≤ w i) → (∀i∈F,w i≤ Lslot) →
+      (∀i∈F,lo≤σ i) → (∀i∈F,σ i≤ hi) → 0≤ T → (∀i∈F,|v i|≤ T) →
+    ∀(η : Character)(z : O),z≠0 → ∀N : NaturalRow η z,
+      (N.character.modulus.absNorm:ℝ)≤ Z^Lmod →
+    ∀Q : Ideal O,Q≤ M → ¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z →
+    ∀A : Finset α,A⊆F →
+      ‖∏i∈A,naturalSlot N.character (primePool M H b (Z^(w i)))
+        (heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+          HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t) (Z^(w i))‖^2 ≤
+      C*(1+|t|+T)^degree*Z^(loss+κ*(∑i∈F,w i)) := by
+  let el : ℝ := loss/(F.card+1)
+  have hel : 0< el := div_pos hloss (by positivity)
+  obtain ⟨J,C,hC,hbound⟩ := natural_ray_slots_uniform M H hH W a b ha hWs hW
+    Lmod Lslot el lo hi κ hLm hLs hel hbeta hκ
+  let C₀ := max 1 C
+  have hC₀ : 1≤ C₀ := le_max_left _ _
+  refine ⟨J*F.card,C₀^F.card,pow_pos (zero_lt_one.trans_le hC₀) _,?_⟩
+  intro η₀
+  filter_upwards [hbound η₀,eventually_gt_atTop (1:ℝ)] with Z hz hZ
+  intro θ w σ v t T hw hwL hσlo hσhi hT hv η z hz0 N hmod Q hQM hex A hAF
+  have hZ0 : 0< Z := zero_lt_one.trans hZ
+  have hk : 0≤κ := by linarith
+  have hh : 1≤1+|t|+T := by linarith [abs_nonneg t]
+  have hslot (i : α) (hi : i∈A) :
+      ‖naturalSlot N.character (primePool M H b (Z^(w i)))
+        (heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+          HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t) (Z^(w i))‖^2 ≤
+      (C₀*(1+|t|+T)^J)*Z^(el+κ*w i) := by
+    rw [natural_slot_eq N]
+    have he := hz (θ i) (Z^(w i)) (Real.one_le_rpow hZ.le (hw i (hAF hi)))
+      (Real.rpow_le_rpow_of_exponent_le hZ.le (hwL i (hAF hi))) η z hz0 N hmod Q hQM hex
+      (σ i) t (v i) (hσlo i (hAF hi)) (hσhi i (hAF hi))
+    apply he.trans
+    rw [←Real.rpow_mul hZ0.le]
+    calc
+      _ ≤ (C₀*(1+|t|+T)^J)*Z^el*Z^(w i*κ) := by
+        gcongr
+        · exact le_max_right 1 C
+        · exact hv i (hAF hi)
+      _ = _ := by rw [mul_assoc,←Real.rpow_add hZ0]; congr 2 ; ring
+  rw [norm_prod,←Finset.prod_pow]
+  apply (Finset.prod_le_prod (fun i _=> sq_nonneg _) hslot).trans
+  rw [Finset.prod_mul_distrib,Finset.prod_const,←Real.rpow_sum_of_pos hZ0]
+  have hexp : (∑i∈A,(el+κ*w i))≤ loss+κ*(∑i∈F,w i) := by
+    rw [Finset.sum_add_distrib,Finset.sum_const,nsmul_eq_mul,←Finset.mul_sum]
+    have hc : (A.card:ℝ)≤ F.card+1 := by exact_mod_cast (Finset.card_le_card hAF).trans (Nat.le_succ _)
+    have he : (A.card:ℝ)*el≤ loss := by
+      calc
+        _ ≤ (F.card+1)*el := mul_le_mul_of_nonneg_right hc hel.le
+        _ = _ := by dsimp [el]; field_simp
+    have hs := Finset.sum_le_sum_of_subset_of_nonneg hAF (fun i hi _=> hw i hi)
+    nlinarith
+  have hp : 1≤ C₀*(1+|t|+T)^J := one_le_mul_of_one_le_of_one_le hC₀ (one_le_pow₀ hh)
+  apply (mul_le_mul (pow_le_pow_right₀ hp (Finset.card_le_card hAF))
+    (Real.rpow_le_rpow_of_exponent_le hZ.le hexp) (by positivity) (by positivity)).trans_eq
+  rw [mul_pow,←pow_mul]
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical ContDiff
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeDyadic HeckePrimeAnnular CenteredMomentCommonMaskEnergy
+local notation "O" => Eisenstein.O
+
+ theorem slot_coefficient_bounds (W : ℝ→ℂ) (a b lo hi : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : Continuous W) :
+    ∃B : ℝ,0< B ∧ ∀(ν : Character)(P σ v t : ℝ),0< P → lo≤σ → σ≤ hi →
+    ∀I : Ideal O,I≠0 →
+      ‖heightCoefficient (fun I=> idealCoeff ν I*annularWeight W P σ v I) t I‖≤ B ∧
+      (heightCoefficient (fun I=> idealCoeff ν I*annularWeight W P σ v I) t I≠0 →
+        (I.absNorm:ℝ)≤ b*P) := by
+  obtain ⟨B,hB,hprofile⟩ := fixed_profile_norm_bound W hW a b lo hi ha
+  refine ⟨B,hB,?_⟩
+  intro ν P σ v t hP hσlo hσhi I hI
+  rw [heightCoefficient_norm _ _ _ hI]
+  constructor
+  · apply (show ‖idealCoeff ν I*annularWeight W P σ v I‖≤‖annularWeight W P σ v I‖ by
+      rw [norm_mul]; exact mul_le_of_le_one_left (norm_nonneg _) (idealCoeff_norm_le_one ν I)).trans
+    by_cases hz : W ((I.absNorm:ℝ)/P)=0
+    · simp [annularWeight,hz,hB.le]
+    · have hs := hWs hz
+      rw [annularWeight,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos (ha.trans_le hs.1)]
+      simpa only [Complex.neg_re,shift_re] using hprofile σ ⟨hσlo,hσhi⟩ _ hs
+  · intro hn
+    have hw : W ((I.absNorm:ℝ)/P)≠0 := by
+      intro hh
+      exact hn (by simp [heightCoefficient,annularWeight,hh])
+    exact (div_le_iff₀ hP).mp (hWs hw).2
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeDyadic HeckeZeroSupremum InversePrincipalEnergy
+open CenteredMomentNaturalFixedRaySource CenteredMomentNaturalRowSource
+open CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentAllocatedNaturalRadial CenteredMomentPrimeSlot
+open CenteredMomentPlainPositiveScale CenteredMomentOriginalRadialComparison
+open CenteredMomentPlainGlobalEnergy CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentRadialEligibleEnergy (Radial)
+local notation "O" => Eisenstein.O
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem natural_pair_slots {α : Type*} [DecidableEq α]
+    (F : Finset α) (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (a₀ b₀ : ℝ) (ha₀ : 0< a₀)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃S : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧
+    ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+    ∀(θ : α→RayQuotient.Characters M H)(w σ v : α→ℝ)(t T : ℝ),
+      (∀i∈F,0≤ w i) → (∀i∈F,w i≤ Lslot) →
+      (∀i∈F,lo≤σ i) → (∀i∈F,σ i≤ hi) → 0≤ T → (∀i∈F,|v i|≤ T) →
+    ∀(η : Character)(Q : Ideal O)(r : Radial)(Qbound : ℝ),Q≤ M → 0≤ Qbound →
+      (∀z,r.keep z→z≠0) →
+      (∀z,r.keep z→¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z) →
+      (∀z,r.keep z→((naturalCharacter η z).modulus.absNorm:ℝ)≤ Z^Lmod) →
+      (∀z,r.keep z→((naturalCharacter η z).modulus.absNorm:ℝ)≤ Qbound) →
+    ∀(W₁ W₂ : 𝓢(ℝ,ℂ)),Function.support (W₁:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+    ∀X₁ X₂ : ℝ,0< X₁ → 0< X₂ → ∀A : Finset α,A⊆F →
+      radialEnergy (fun z=> polynomial (naturalCharacter η z) false W₁ X₁ 0 0*
+        polynomial (naturalCharacter η z) false W₂ X₂ 0 0*
+        ∏i∈A,naturalSlot (naturalCharacter η z) (primePool M H b (Z^(w i)))
+          (heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+            HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t) (Z^(w i)))
+        r.keep r.profile r.scale ≤
+      C*diagonalControl r.profile*max 1 r.scale*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*Qbound^4*
+         (1+|t|+T)^degree*Z^(loss+κ*(∑i∈F,w i)) := by
+  obtain ⟨J,Cs,hCs,hslot⟩ := natural_slot_product M H hH F W a b ha hWs hW
+    Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
+  obtain ⟨S,Cp,hCp,hplain⟩ := global_positive_scale a₀ b₀ ha₀
+  refine ⟨J,S,Cp^4*3^8*Cs,by positivity,?_⟩
+  intro η₀
+  filter_upwards [hslot η₀,eventually_gt_atTop (0:ℝ)] with Z hZ hZ0
+  intro θ w σ v t T hw hwL hσlo hσhi hT hv η Q r Qbound hQM hQbound hz hex hmod hQ
+    W₁ W₂ hs₁ hs₂ X₁ X₂ hX₁ hX₂ A hAF
+  let E := Cs*(1+|t|+T)^J*Z^(loss+κ*(∑i∈F,w i))
+  have hE : 0≤ E := by dsimp [E]; positivity
+  let B₁ := S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁
+  let B₂ := S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂
+  have hB₁ : 0≤ B₁ := apply_nonneg _ _
+  have hB₂ : 0≤ B₂ := apply_nonneg _ _
+  let B := Cp^2*(B₁*B₂)*Qbound^2*3^4*Real.sqrt E
+  have hB : 0≤ B := by dsimp [B]; positivity
+  have hpoint (z : O) (hkeep : r.keep z) :
+      ‖polynomial (naturalCharacter η z) false W₁ X₁ 0 0*
+        polynomial (naturalCharacter η z) false W₂ X₂ 0 0*
+        ∏i∈A,naturalSlot (naturalCharacter η z) (primePool M H b (Z^(w i)))
+          (heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+            HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t) (Z^(w i))‖≤ B := by
+    have hn := hz z hkeep
+    have heq := naturalCharacter_eq η z hn
+    have hnon : (naturalCharacter η z).residue≠1 := by
+      rw [heq]
+      exact CenteredMomentNonprincipalGate.actual_row_nonprincipal η
+        (naturalRow η z hn).character (internalQ Q η₀) fixedBadMask 1 z
+        (by simpa only [one_mul] using (naturalRow η z hn).element) (hex z hkeep)
+    have h₁ : ‖polynomial (naturalCharacter η z) false W₁ X₁ 0 0‖≤ Cp*B₁*Qbound*3^2 := by
+      have he := hplain W₁ hs₁ _ hnon X₁ 0 hX₁
+      norm_num only [abs_zero,add_zero] at he
+      apply he.trans
+      simpa only [show (3:ℝ)^2=9 by norm_num] using (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (hQ z hkeep) (mul_nonneg hCp.le hB₁)) (show (0:ℝ)≤9 by norm_num))
+    have h₂ : ‖polynomial (naturalCharacter η z) false W₂ X₂ 0 0‖≤ Cp*B₂*Qbound*3^2 := by
+      have he := hplain W₂ hs₂ _ hnon X₂ 0 hX₂
+      norm_num only [abs_zero,add_zero] at he
+      apply he.trans
+      simpa only [show (3:ℝ)^2=9 by norm_num] using (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (hQ z hkeep) (mul_nonneg hCp.le hB₂)) (show (0:ℝ)≤9 by norm_num))
+    have hs := hZ θ w σ v t T hw hwL hσlo hσhi hT hv η z hn (naturalRow η z hn)
+      (by simpa only [heq] using hmod z hkeep) Q hQM (hex z hkeep) A hAF
+    rw [←heq] at hs
+    have hsroot := (Real.le_sqrt (norm_nonneg _) hE).mpr hs
+    rw [norm_mul,norm_mul]
+    apply (mul_le_mul (mul_le_mul h₁ h₂ (norm_nonneg _) (by positivity))
+      hsroot (norm_nonneg _) (by positivity)).trans_eq
+    dsimp [B,B₁,B₂]
+    norm_num only [abs_zero,add_zero]
+    ring
+  have he := radial_bound_on_keep _ r B hB hpoint
+  apply he.trans_eq
+  dsimp [B,E,B₁,B₂]
+  rw [mul_pow,mul_pow,mul_pow,mul_pow,Real.sq_sqrt hE]
+  ring
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeDyadic HeckeZeroSupremum InversePrincipalEnergy 
+open CenteredMomentNaturalFixedRaySource CenteredMomentNaturalRowSource
+open CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentAllocatedNaturalSource CenteredMomentAllocatedNaturalRadial CenteredMomentPrimeSlot
+open CenteredMomentPlainPositiveScale CenteredMomentOriginalRadialComparison
+open CenteredMomentPlainGlobalEnergy CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentRadialEligibleEnergy (Radial)
+local notation "O" => Eisenstein.O
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem masked_natural_pair_slots {α : Type*} [DecidableEq α]
+    (F : Finset α) (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (a₀ b₀ ε : ℝ) (ha₀ : 0< a₀) (hb₀ : 0≤ b₀) (hε : 0<ε)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃S : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧
+    ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+    ∀(θ : α→RayQuotient.Characters M H)(w σ v : α→ℝ)(t T : ℝ),
+      (∀i∈F,0≤ w i) → (∀i∈F,w i≤ Lslot) →
+      (∀i∈F,lo≤σ i) → (∀i∈F,σ i≤ hi) → 0≤ T → (∀i∈F,|v i|≤ T) →
+    ∀(η : Character)(Q : Ideal O)(r : Radial)(Qbound : ℝ)(R : Ideal O),R≠0 → Q≤ M → 0≤ Qbound →
+      (∀z,r.keep z→z≠0) →
+      (∀z,r.keep z→¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z) →
+      (∀z,r.keep z→((naturalCharacter η z).modulus.absNorm:ℝ)≤ Z^Lmod) →
+      (∀z,r.keep z→((naturalCharacter η z).modulus.absNorm:ℝ)≤ Qbound) →
+    ∀(W₁ W₂ : 𝓢(ℝ,ℂ)),Function.support (W₁:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+    ∀X₁ X₂ : ℝ,0< X₁ → 0< X₂ →
+      radialEnergy (fun z=> polynomial (excluded (naturalCharacter η z) R) false W₁ X₁ 0 0*
+        polynomial (excluded (naturalCharacter η z) R) false W₂ X₂ 0 0*
+        ∏i∈F,naturalSlot (excluded (naturalCharacter η z) R) (primePool M H b (Z^(w i)))
+          (heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+            HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t) (Z^(w i)))
+        r.keep r.profile r.scale ≤
+      C*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*max 1 r.scale*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*Qbound^4*
+         (1+|t|+T)^degree*Z^(loss+κ*(∑i∈F,w i)) := by
+  obtain ⟨J,S,C,hC,hbound⟩ := natural_pair_slots M H hH F W a b ha hWs hW a₀ b₀ ha₀
+    Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
+  obtain ⟨B,hB,hcoeff⟩ := slot_coefficient_bounds W a b lo hi ha hWs hW.continuous
+  obtain ⟨Cd,hCd,hdelete⟩ := CenteredMomentCommonMaskRadialEnergy.actual_radial_shared_energy
+    F (fun _=> b) (fun _=> B) (fun _ _=> hB.le) ε hε
+  refine ⟨J,S,Cd*C,mul_pos hCd hC,?_⟩
+  intro η₀
+  filter_upwards [hbound η₀,eventually_gt_atTop (0:ℝ)] with Z hZ hZ0
+  intro θ w σ v t T hw hwL hσlo hσhi hT hv η Q r Qbound R hR hQM hQbound hz hex hmod hQ
+    W₁ W₂ hs₁ hs₂ X₁ X₂ hX₁ hX₂
+  let E := C*diagonalControl r.profile*max 1 r.scale*
+    ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+      (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*Qbound^4*
+      (1+|t|+T)^J*Z^(loss+κ*(∑i∈F,w i))
+  have hd := diagonalControl_nonneg r.profile
+  have hE : 0≤ E := by dsimp [E]; positivity
+  have hp (i : α) (hi : i∈F) (I : Ideal O) (hI : I∈primePool M H b (Z^(w i))) : Prime I :=
+    (Finset.mem_filter.mp hI).2.1
+  have hc (i : α) (hi : i∈F) (I : Ideal O) (hI : I∈primePool M H b (Z^(w i))) :=
+    hcoeff (relativeCharacter M H hH η₀ (θ i)) (Z^(w i)) (σ i) (v i) t
+      (Real.rpow_pos_of_pos hZ0 _) (hσlo i hi) (hσhi i hi) I (hp i hi I hI).ne_zero
+  have he := hdelete (primeSupport R) (CenteredMomentNaturalRowSource.support_prime R) (naturalCharacter η)
+    W₁ W₂ X₁ X₂ a₀ b₀ a₀ b₀ (fun i=> primePool M H b (Z^(w i)))
+    (fun i=> heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+      HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t)
+    (fun i=> Z^(w i)) r.keep r.profile r.scale E hX₁ hX₂ hb₀ hb₀ hs₁ hs₂ hp
+    (fun _ _=> Real.rpow_pos_of_pos hZ0 _) (fun i hi I hI=>(hc i hi I hI).1)
+    (fun i hi I hI=>(hc i hi I hI).2) r.scale_pos r.nonneg hE ?_
+  · rw [primeSupport_product_radical R hR] at he
+    exact he.trans_eq (by dsimp [E]; ring)
+  · intro D₁ hD₁ D₂ hD₂ A hA
+    have hn (D : Finset (Ideal O)) (hD : D∈(primeSupport R).powerset) :
+        0<(Ideal.absNorm (∏I∈D,I):ℝ) := by
+      exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Finset.prod_ne_zero_iff.mpr (fun I hi=>(CenteredMomentNaturalRowSource.support_prime R I (Finset.mem_powerset.mp hD hi)).ne_zero)))
+    exact hZ θ w σ v t T hw hwL hσlo hσhi hT hv η Q r Qbound hQM hQbound hz hex hmod hQ
+      W₁ W₂ hs₁ hs₂ _ _ (div_pos hX₁ (hn D₁ hD₁)) (div_pos hX₂ (hn D₂ hD₂))
+      (F\A) Finset.sdiff_subset
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeDyadic HeckeZeroSupremum InversePrincipalEnergy 
+open CenteredMomentNaturalFixedRaySource CenteredMomentNaturalRowSource
+open CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentAllocatedNaturalSource CenteredMomentAllocatedNaturalRadial CenteredMomentPrimeSlot
+open CenteredMomentPlainPositiveScale CenteredMomentOriginalRadialComparison
+open CenteredMomentPlainGlobalEnergy CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentRadialEligibleEnergy (Radial)
+local notation "O" => Eisenstein.O
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem original_masked_positive_floor {α : Type*} [Fintype α] [DecidableEq α] (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (a₀ b₀ ε : ℝ) (ha₀ : 0< a₀) (hb₀ : 0≤ b₀) (hε : 0<ε)
+    (Lmod Lslot loss lo hi κ : ℝ) (hLm : 0≤ Lmod) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃S : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧
+    ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+    ∀(θ : α→RayQuotient.Characters M H)(w σ v : α→ℝ)(t T : ℝ),
+      (∀i,0≤ w i) → (∀i,w i≤ Lslot) →
+      (∀i,lo≤σ i) → (∀i,σ i≤ hi) → 0≤ T → (∀i,|v i|≤ T) →
+    ∀(η : Character)(Q : Ideal O)(r : Radial)(Qbound : ℝ)(R : Ideal O),R≠0 → Q≤ M → 0≤ Qbound →
+      (∀z,r.keep z→z≠0) →
+      (∀z,r.keep z→¬FixedInducingRow η (internalQ Q η₀) (fixedBadMask*cubicIdealGenerator R) 1 z) →
+      (∀z,r.keep z→((naturalCharacter η z).modulus.absNorm:ℝ)≤ Z^Lmod) →
+      (∀z,r.keep z→((naturalCharacter η z).modulus.absNorm:ℝ)≤ Qbound) →
+    ∀(W₁ W₂ : 𝓢(ℝ,ℂ)),Function.support (W₁:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+    ∀X₁ X₂ : ℝ,0< X₁ → 0< X₂ →
+      CenteredMomentInductionEnergy.energy η (fixedBadMask*cubicIdealGenerator R) 1 t
+        W₁ W₂ (fun i=> primePool M H b (Z^(w i)))
+        (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+          HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+        (fun i=> Z^(w i)) X₁ X₂ r.keep r.profile r.scale ≤
+      C*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*max 1 r.scale*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*Qbound^4*
+         (1+|t|+T)^degree*Z^(loss+κ*(∑i,w i)) := by
+  obtain ⟨J,S,C,hC,hbound⟩ := masked_natural_pair_slots M H hH (Finset.univ : Finset α)
+    W a b ha hWs hW a₀ b₀ ε ha₀ hb₀ hε Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
+  obtain ⟨n,T₀,Ct,hCt,ht⟩ :=
+    CenteredMomentFiniteProfileExceptional.normPowerProfile_source_control a₀ b₀ ha₀ S
+  refine ⟨4*n+J,T₀,C*Ct^4,by positivity,?_⟩
+  intro η₀
+  filter_upwards [hbound η₀,eventually_gt_atTop (0:ℝ)] with Z hZ hZ0
+  intro θ w σ v t T hw hwL hσlo hσhi hT hv η Q r Qbound R hR hQM hQbound hz hex hmod hQ
+    W₁ W₂ hs₁ hs₂ X₁ X₂ hX₁ hX₂
+  have hexbase (z : O) (hk : r.keep z) :
+      ¬FixedInducingRow η (internalQ Q η₀) fixedBadMask 1 z := by
+    intro hh
+    apply hex z hk
+    exact (CenteredMomentFixedRowMask.fixedInducingRow_mul_mask_iff η (internalQ Q η₀)
+      fixedBadMask (cubicIdealGenerator R) 1 z fixedBadMask_ne_zero
+      (cubicIdealGenerator_ne_zero R hR) one_ne_zero (hz z hk)
+      (dvd_mul_right _ _) (dvd_mul_left _ _)).mpr hh
+  let V₁ := CenteredMomentLattice.normPowerProfile W₁ a₀ b₀ ha₀ hs₁ (W₁.smooth ⊤) t
+  let V₂ := CenteredMomentLattice.normPowerProfile W₂ a₀ b₀ ha₀ hs₂ (W₂.smooth ⊤) t
+  have hv₁ : Function.support (V₁:ℝ→ℂ)⊆Set.Icc a₀ b₀ :=
+    (CenteredMomentTwist.normPowerProfile_support W₁ a₀ b₀ ha₀ hs₁ (W₁.smooth ⊤) t).trans hs₁
+  have hv₂ : Function.support (V₂:ℝ→ℂ)⊆Set.Icc a₀ b₀ :=
+    (CenteredMomentTwist.normPowerProfile_support W₂ a₀ b₀ ha₀ hs₂ (W₂.smooth ⊤) t).trans hs₂
+  have he := hZ θ w σ v t T (fun i _=> hw i) (fun i _=> hwL i)
+    (fun i _=> hσlo i) (fun i _=> hσhi i) hT (fun i _=> hv i)
+    η Q r Qbound R hR hQM hQbound hz hexbase hmod hQ V₁ V₂ hv₁ hv₂ X₁ X₂ hX₁ hX₂
+  have hid : CenteredMomentInductionEnergy.energy η
+      (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂
+      (fun i=> primePool M H b (Z^(w i)))
+      (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+        HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+      (fun i=> Z^(w i)) X₁ X₂ r.keep r.profile r.scale =
+    radialEnergy (fun z=> polynomial (excluded (naturalCharacter η z) R) false V₁ X₁ 0 0*
+      polynomial (excluded (naturalCharacter η z) R) false V₂ X₂ 0 0*
+      ∏i,naturalSlot (excluded (naturalCharacter η z) R) (primePool M H b (Z^(w i)))
+        (heightCoefficient (fun I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+          HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I) t) (Z^(w i)))
+      r.keep r.profile r.scale := by
+    unfold CenteredMomentInductionEnergy.energy radialEnergy
+    apply tsum_congr
+    intro z
+    by_cases hk : r.keep z
+    · simp only [hk,ite_true]
+      rw [original_positive_normalized (naturalRow η z (hz z hk)) R hR W₁ W₂
+        a₀ b₀ a₀ b₀ ha₀ ha₀ hs₁ hs₂ (W₁.smooth ⊤) (W₂.smooth ⊤)
+        _ _ _ (fun i=> Real.rpow_pos_of_pos hZ0 _) t X₁ X₂ hX₁ hX₂]
+      rw [norm_mul,norm_mul,positive_height_phase_norm X₁ t hX₁,
+        positive_height_phase_norm X₂ t hX₂,one_mul,one_mul,naturalCharacter_eq η z (hz z hk)]
+    · simp only [hk,ite_false]
+  rw [hid]
+  apply he.trans
+  have hB₁ := ht W₁ hs₁ t
+  have hB₂ := ht W₂ hs₂ t
+  have hprod : (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V₁ *
+      S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V₂)^2 ≤
+      (Ct^4*(T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁*
+        T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)^2)*(1+|t|+T)^(4*n) := by
+    have hh := pow_le_pow_left₀ (mul_nonneg (apply_nonneg _ _) (apply_nonneg _ _))
+      (mul_le_mul hB₁ hB₂ (apply_nonneg _ _) (by positivity)) 2
+    have hheight : (1+‖t‖)^(4*n)≤(1+|t|+T)^(4*n) := by
+      apply pow_le_pow_left₀ (by positivity)
+      rw [Real.norm_eq_abs]
+      linarith
+    calc
+      _ ≤ (Ct*(T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*(1+‖t‖)^n*
+        (Ct*(T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)*(1+‖t‖)^n))^2 := hh
+      _ = (Ct^4*(T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁*
+        T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)^2)*(1+‖t‖)^(4*n) := by
+          rw [Nat.mul_comm 4 n,pow_mul]
+          ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left hheight (by positivity)
+  have hd := diagonalControl_nonneg r.profile
+  calc
+    _ ≤ C*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*max 1 r.scale*
+      ((Ct^4*(T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁*
+        T₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂)^2)*(1+|t|+T)^(4*n))*Qbound^4*
+      (1+|t|+T)^J*Z^(loss+κ*(∑i,w i)) := by gcongr
+    _ = _ := by rw [pow_add]; ring
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeDyadic HeckeZeroSupremum InversePrincipalEnergy 
+open CenteredMomentNaturalFixedRaySource CenteredMomentNaturalRowSource
+open CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentAllocatedNaturalSource CenteredMomentAllocatedNaturalRadial CenteredMomentPrimeSlot
+open CenteredMomentPlainPositiveScale CenteredMomentOriginalRadialComparison
+open CenteredMomentPlainGlobalEnergy CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentRadialEligibleEnergy (Radial)
+local notation "O" => Eisenstein.O
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem natural_masked_positive_floor {α : Type*} [Fintype α] [DecidableEq α] (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (a₀ b₀ ε : ℝ) (ha₀ : 0< a₀) (hb₀ : 0≤ b₀) (hε : 0<ε)
+    (L Lslot loss lo hi κ bΦ : ℝ) (hL : 0≤ L) (hbΦ : 0≤ bΦ) (hLs : 0≤ Lslot) (hloss : 0< loss)
+    (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃S : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧
+    ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+    ∀(θ : α→RayQuotient.Characters M H)(w σ v : α→ℝ)(t T : ℝ),
+      (∀i,0≤ w i) → (∀i,w i≤ Lslot) →
+      (∀i,lo≤σ i) → (∀i,σ i≤ hi) → 0≤ T → (∀i,|v i|≤ T) →
+    ∀(η : Character)(Q : Ideal O)(r : Radial)(R : Ideal O),R≠0 → Q≤ M →
+      (∀z,r.keep z→z≠0) →
+      (∀z,r.keep z→¬FixedInducingRow η (internalQ Q η₀) (fixedBadMask*cubicIdealGenerator R) 1 z) →
+      Function.support (r.profile:ℝ→ℂ)⊆Set.Iic bΦ →
+    ∀(m q ρ : ℝ),0≤ m → 0≤ q → m+q≤ρ → ρ≤ L → r.scale=Z^m →
+      (η.modulus.absNorm:ℝ)≤ Z^q →
+    ∀(W₁ W₂ : 𝓢(ℝ,ℂ)),Function.support (W₁:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a₀ b₀ →
+    ∀X₁ X₂ : ℝ,0< X₁ → 0< X₂ →
+      CenteredMomentInductionEnergy.energy η (fixedBadMask*cubicIdealGenerator R) 1 t
+        W₁ W₂ (fun i=> primePool M H b (Z^(w i)))
+        (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+          HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+        (fun i=> Z^(w i)) X₁ X₂ r.keep r.profile r.scale ≤
+      C*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*bΦ^4*
+        ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
+         (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*
+         (1+|t|+T)^degree*Z^(m+4*ρ+loss+κ*(∑i,w i)) := by
+  obtain ⟨J,S,C,hC,hbound⟩ := original_masked_positive_floor (α:=α) M H hH W a b ha hWs hW
+    a₀ b₀ ε ha₀ hb₀ hε (L+1) Lslot loss lo hi κ (by linarith) hLs hloss hbeta hκ
+  let Fc : ℝ := fixedConductorFactor
+  have hFc : 0< Fc := by
+    unfold Fc fixedConductorFactor
+    norm_cast
+    apply Nat.mul_pos
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr fixedBadMask_ne_zero))
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr (by norm_num : (72:O)≠0)))
+  refine ⟨J,S,C*Fc^4,by positivity,?_⟩
+  intro η₀
+  filter_upwards [hbound η₀,eventually_ge_atTop (Fc*bΦ),eventually_ge_atTop (1:ℝ)] with Z hZ hconst hZ1
+  intro θ w σ v t T hw hwL hσlo hσhi hT hv η Q r R hR hQM hz hex hsΦ
+    m q ρ hm hq hρ hρL hscale hη W₁ W₂ hs₁ hs₂ X₁ X₂ hX₁ hX₂
+  have hZ0 : 0< Z := zero_lt_one.trans_le hZ1
+  let r' : Radial := {r with keep := fun z=> r.keep z ∧ r.profile (‖ringComplex z‖^2/r.scale)≠0}
+  have hmod (z : O) (hk : r'.keep z) :
+      ((naturalCharacter η z).modulus.absNorm:ℝ)≤ Fc*bΦ*Z^ρ := by
+    have hn := hz z hk.1
+    rw [naturalCharacter_eq η z hn]
+    have hrow : ((Ideal.span {z}).absNorm:ℝ)≤ bΦ*Z^m := by
+      rw [←ringComplex_norm_sq_eq_absNorm_span,←hscale]
+      exact (div_le_iff₀ r.scale_pos).mp (hsΦ hk.2)
+    have he := (naturalRow η z hn).modulus_power_bound Z q m bΦ hZ0 hbΦ hη hrow
+    apply he.trans
+    apply mul_le_mul_of_nonneg_left _ (mul_nonneg hFc.le hbΦ)
+    exact Real.rpow_le_rpow_of_exponent_le hZ1 (by linarith)
+  have hcap (z : O) (hk : r'.keep z) :
+      ((naturalCharacter η z).modulus.absNorm:ℝ)≤ Z^(L+1) := by
+    apply (hmod z hk).trans
+    calc
+      _ ≤ Z*Z^L := mul_le_mul hconst (Real.rpow_le_rpow_of_exponent_le hZ1 hρL)
+        (Real.rpow_nonneg hZ0.le _) hZ0.le
+      _ = _ := by rw [Real.rpow_add hZ0,Real.rpow_one]; ring
+  have he := hZ θ w σ v t T hw hwL hσlo hσhi hT hv η Q r'
+    (Fc*bΦ*Z^ρ) R hR hQM (by positivity) (fun z hk=> hz z hk.1)
+    (fun z hk=> hex z hk.1) hcap hmod W₁ W₂ hs₁ hs₂ X₁ X₂ hX₁ hX₂
+  have hid : CenteredMomentInductionEnergy.energy η
+      (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂
+      (fun i=> primePool M H b (Z^(w i)))
+      (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+        HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+      (fun i=> Z^(w i)) X₁ X₂ r'.keep r'.profile r'.scale =
+    CenteredMomentInductionEnergy.energy η
+      (fixedBadMask*cubicIdealGenerator R) 1 t W₁ W₂
+      (fun i=> primePool M H b (Z^(w i)))
+      (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+        HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+      (fun i=> Z^(w i)) X₁ X₂ r.keep r.profile r.scale := by
+    unfold CenteredMomentInductionEnergy.energy
+    apply tsum_congr
+    intro z
+    by_cases hk : r.keep z
+    · by_cases hp : r.profile (‖ringComplex z‖^2/r.scale)=0
+      · simp [r',hk,hp]
+      · simp [r',hk,hp]
+    · simp [r',hk]
+  rw [hid] at he
+  dsimp only [r'] at he
+  rw [hscale,max_eq_right (Real.one_le_rpow hZ1 hm)] at he
+  rw [hscale]
+  apply he.trans_eq
+  have hzpow : Z^m*(Z^ρ)^4*Z^(loss+κ*(∑i,w i))=Z^(m+4*ρ+loss+κ*(∑i,w i)) := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul hZ0.le,←Real.rpow_add hZ0,←Real.rpow_add hZ0]
+    congr 1
+    norm_num
+    ring
+  calc
+    _ = (C*Fc^4*(R.radical.absNorm:ℝ)^ε*diagonalControl r.profile*bΦ^4*
+      ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*(S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*
+      (1+|t|+T)^J)*(Z^m*(Z^ρ)^4*Z^(loss+κ*(∑i,w i))) := by ring
+    _ = _ := by rw [hzpow]
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+namespace CenteredMomentEnergyState
+open HeckeFamily CenteredMomentSecondHeightFamily CenteredExceptionalProfile
+open CenteredMomentRadialEligibleEnergy (Radial)
+open CenteredMomentFiniteProfileExceptional
+open CenteredMomentInductionEnergy InversePrincipalEnergy
+local notation "O"=> Eisenstein.O
+
+structure NaturalState (Z Bmask bΦ:ℝ) where
+  character : Character
+  fixedModulus : Ideal O
+  puncture : Ideal O
+  radial : Radial
+  rowWidth : ℝ
+  characterWidth : ℝ
+  base_ge_one : 1≤ Z
+  row_nonneg : 0≤ rowWidth
+  character_nonneg : 0≤ characterWidth
+  scale_eq : radial.scale=Z^rowWidth
+  modulus_bound : (character.modulus.absNorm:ℝ)≤ Z^characterWidth
+  puncture_ne_zero : puncture≠0
+  puncture_bound : (puncture.absNorm:ℝ)≤ Z^Bmask
+  radial_support : Function.support (radial.profile:ℝ→ℂ)⊆Set.Iic bΦ
+  row_ne_zero : ∀z,radial.keep z→z≠0
+  nonexceptional : ∀z,radial.keep z→
+    ¬FixedInducingRow character fixedModulus
+      (fixedBadMask*cubicIdealGenerator puncture) 1 z
+
+namespace NaturalState
+variable {Z Bmask bΦ:ℝ}
+def width (s:NaturalState Z Bmask bΦ):ℝ := s.rowWidth+s.characterWidth
+lemma width_nonneg (s:NaturalState Z Bmask bΦ):0≤ s.width :=
+  add_nonneg s.row_nonneg s.character_nonneg
+
+def mask (s:NaturalState Z Bmask bΦ):O :=
+  fixedBadMask*cubicIdealGenerator s.puncture
+
+def plainEnergy (s:NaturalState Z Bmask bΦ) {a b:ℝ} (p:Profiles a b)
+    (t X₁ X₂:ℝ):ℝ :=
+  energy s.character s.mask 1 t (p.profile 0) (p.profile 1)
+    (fun _:Fin 0=>∅) (fun _:Fin 0=>0) (fun _:Fin 0=>1)
+    X₁ X₂ s.radial.keep s.radial.profile s.radial.scale
+
+lemma plainEnergy_eq_zero (s:NaturalState Z Bmask bΦ) {a b:ℝ} (p:Profiles a b)
+    (t X₁ X₂:ℝ):
+    s.plainEnergy p t X₁ X₂=CenteredMomentCoreFloor.zeroEnergy s.character s.mask 1 t
+      (p.profile 0) (p.profile 1) X₁ X₂ s.radial :=
+  (CenteredMomentCoreFloor.zero_energy_eq _ _ _ _ _ _ _ _ _).symm
+
+lemma radical_bound (s:NaturalState Z Bmask bΦ):
+    (s.puncture.radical.absNorm:ℝ)≤ Z^Bmask :=by
+  apply le_trans _ s.puncture_bound
+  exact_mod_cast Nat.le_of_dvd
+    (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr s.puncture_ne_zero))
+    (map_dvd Ideal.absNorm (Ideal.dvd_iff_le.mpr (Ideal.le_radical (I:=s.puncture))))
+end NaturalState
+
+def ZeroBound (Q:Ideal O) (a b bΦ Bmask M ε:ℝ)(degree:ℕ)(S:Finset (ℕ×ℕ))(C Z₀:ℝ):Prop :=
+  ∀Z:ℝ,Z₀≤ Z→∀s:NaturalState Z Bmask bΦ,s.fixedModulus=Q→s.width≤ M→
+  ∀p:Profiles a b,∀t X₁ X₂:ℝ,0< X₁→0< X₂→
+    s.plainEnergy p t X₁ X₂≤
+      C*diagonalControl s.radial.profile*(p.control S)^2*(1+‖t‖)^degree*
+        Z^(s.width+ε)
+
+end CenteredMomentEnergyState
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentRayMaskedFloor
+open HeckeFamily HeckeZeroSupremum InversePrincipalEnergy
+open CenteredMomentEnergyState CenteredMomentFiniteProfileExceptional
+open CenteredMomentNaturalFixedRaySource CenteredMomentSecondHeightFamily
+open CenteredMomentPrimeSlot CenteredMomentInductionEnergy
+local notation "O" => Eisenstein.O
+
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O⧸M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O⧸M)ˣ) (hH : RayOrthogonality.globalUnits M≤ H)
+
+theorem exists_positive_floor {α : Type*} [Fintype α] [DecidableEq α]
+    (W : ℝ→ℂ) (a b : ℝ) (ha : 0< a)
+    (hWs : Function.support W⊆Set.Icc a b) (hW : ContDiff ℝ ∞ W)
+    (a₀ b₀ bΦ Bmask ε Lslot lo hi κ : ℝ)
+    (ha₀ : 0< a₀) (hb₀ : 0≤ b₀) (hbΦ : 0< bΦ) (hmask : 0≤ Bmask)
+    (hε : 0<ε) (hLs : 0≤ Lslot) (hbeta : (51/100:ℝ)≤ beta) (hκ : 2*beta-1≤κ) :
+    ∃degree : ℕ,∃S : Finset (ℕ×ℕ),∃C : ℝ,0< C ∧
+    ∀η₀ : Character,∀ᶠZ : ℝ in atTop,
+    ∀(θ : α→RayQuotient.Characters M H)(w σ v : α→ℝ)(t T : ℝ),
+      (∀i,0≤ w i) → (∀i,w i≤ Lslot) → (∀i,lo≤σ i) → (∀i,σ i≤ hi) →
+      0≤ T → (∀i,|v i|≤ T) →
+    ∀(Q : Ideal O),Q≤ M → ∀s : NaturalState Z Bmask bΦ,
+      s.fixedModulus=internalQ Q η₀ → s.width≤ε/16 → 6*κ*(∑i,w i)≤ s.width →
+    ∀p : Profiles a₀ b₀,∀X₁ X₂ : ℝ,0< X₁ → 0< X₂ →
+      energy s.character s.mask 1 t (p.profile 0) (p.profile 1)
+        (fun i=> primePool M H b (Z^(w i)))
+        (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+          HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+        (fun i=> Z^(w i)) X₁ X₂ s.radial.keep s.radial.profile s.radial.scale ≤
+      C*diagonalControl s.radial.profile*(p.control S)^2*(1+|t|+T)^degree*Z^(s.width+ε) := by
+  let e : ℝ := ε/(4*(Bmask+1))
+  have he : 0< e := div_pos hε (by positivity)
+  have hcost : Bmask*e≤ε/4 := by
+    have hh := mul_le_mul_of_nonneg_left (show Bmask≤ Bmask+1 by linarith) he.le
+    have hid : e*(Bmask+1)=ε/4 := by dsimp [e]; field_simp
+    rw [hid] at hh
+    linarith
+  obtain ⟨J,S,C,hC,hfloor⟩ := natural_masked_positive_floor (α:=α) M H hH W a b ha hWs hW
+    a₀ b₀ e ha₀ hb₀ he (ε/16) Lslot (ε/4) lo hi κ bΦ (by positivity) hbΦ.le hLs
+    (by positivity) hbeta hκ
+  refine ⟨J,S,C*bΦ^4,mul_pos hC (pow_pos hbΦ _),?_⟩
+  intro η₀
+  filter_upwards [hfloor η₀] with Z hZ
+  intro θ w σ v t T hw hwL hσlo hσhi hT hv Q hQM s hQ hs hslots p X₁ X₂ hX₁ hX₂
+  have hZ1 := s.base_ge_one
+  have hZ0 : 0< Z := zero_lt_one.trans_le hZ1
+  have hrad : (s.puncture.radical.absNorm:ℝ)^e≤ Z^(Bmask*e) := by
+    rw [Real.rpow_mul hZ0.le]
+    exact Real.rpow_le_rpow (by positivity) s.radical_bound he.le
+  have hex (z : O) (hz : s.radial.keep z) :
+      ¬CenteredExceptionalProfile.FixedInducingRow s.character (internalQ Q η₀)
+        (fixedBadMask*cubicIdealGenerator s.puncture) 1 z := by
+    rw [←hQ]
+    exact s.nonexceptional z hz
+  have hh := hZ θ w σ v t T hw hwL hσlo hσhi hT hv s.character Q s.radial s.puncture
+    s.puncture_ne_zero hQM s.row_ne_zero hex s.radial_support s.rowWidth s.characterWidth
+    (ε/16) s.row_nonneg s.character_nonneg hs le_rfl s.scale_eq s.modulus_bound
+    (p.profile 0) (p.profile 1) (p.support 0) (p.support 1) X₁ X₂ hX₁ hX₂
+  have hwidth : s.rowWidth≤ s.width := by dsimp [NaturalState.width]; linarith [s.character_nonneg]
+  have hbudget : Bmask*e+(s.rowWidth+4*(ε/16)+ε/4+κ*(∑i,w i))≤ s.width+ε := by
+    linarith
+  have hpow : Z^(Bmask*e)*Z^(s.rowWidth+4*(ε/16)+ε/4+κ*(∑i,w i))≤ Z^(s.width+ε) := by
+    rw [←Real.rpow_add hZ0]
+    exact Real.rpow_le_rpow_of_exponent_le hZ1 hbudget
+  have hd := diagonalControl_nonneg s.radial.profile
+  have hc := p.control_nonneg S
+  apply hh.trans
+  change C*(s.puncture.radical.absNorm:ℝ)^e*diagonalControl s.radial.profile*bΦ^4*
+    (p.control S)^2*(1+|t|+T)^J*Z^(s.rowWidth+4*(ε/16)+ε/4+κ*(∑i,w i))≤ _
+  calc
+    _ ≤ C*Z^(Bmask*e)*diagonalControl s.radial.profile*bΦ^4*
+      (p.control S)^2*(1+|t|+T)^J*Z^(s.rowWidth+4*(ε/16)+ε/4+κ*(∑i,w i)) := by gcongr
+    _ = (C*bΦ^4*diagonalControl s.radial.profile*(p.control S)^2*(1+|t|+T)^J)*
+      (Z^(Bmask*e)*Z^(s.rowWidth+4*(ε/16)+ε/4+κ*(∑i,w i))) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hpow (by positivity)
+
+end CenteredMomentRayMaskedFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+namespace CenteredMomentEnergyState
+open HeckeFamily CenteredMomentNaturalMaskedFloor
+open CenteredMomentFiniteProfileExceptional InversePrincipalEnergy
+
+theorem exists_zero_floor (a b bΦ Bmask ε:ℝ)(ha:0< a)(hb:0≤ b)
+    (hbΦ:0< bΦ)(hmask:0≤ Bmask)(hε:0<ε):
+    ∃degree:ℕ,∃S:Finset (ℕ×ℕ),∃C:ℝ,0< C ∧
+      ∀Q:Ideal Eisenstein.O,ZeroBound Q a b bΦ Bmask (ε/16) ε degree S C 1:=by
+  let e:ℝ:=ε/(4*(Bmask+1))
+  have he:0< e:=div_pos hε (by positivity)
+  have hbudget:e*Bmask+4*(ε/16)≤ε:=by
+    have hcost:e*Bmask≤ε/4:=by
+      have hinc:Bmask≤ Bmask+1:=by linarith
+      have hh:=mul_le_mul_of_nonneg_left hinc he.le
+      have hid:e*(Bmask+1)=ε/4:=by dsimp [e];field_simp
+      rw [hid] at hh
+      exact hh
+    linarith
+  obtain ⟨degree,S,C,hC,hfloor⟩:=natural_masked_floor a b e ha hb he
+  refine ⟨degree,S,C*bΦ^4,mul_pos hC (pow_pos hbΦ _),?_⟩
+  intro Q Z hZ₀ s hQ hs p t X₁ X₂ hX₁ hX₂
+  have hZ:=s.base_ge_one
+  have hZ0:0< Z:=zero_lt_one.trans_le hZ
+  have hrad: (s.puncture.radical.absNorm:ℝ)^e≤ Z^(Bmask*e):=by
+    rw [Real.rpow_mul hZ0.le]
+    exact Real.rpow_le_rpow (by positivity) s.radical_bound he.le
+  have hp:Z^(Bmask*e)*Z^(s.width+4*(ε/16))≤ Z^(s.width+ε):=by
+    rw [←Real.rpow_add hZ0]
+    apply Real.rpow_le_rpow_of_exponent_le hZ
+    linarith
+  have hh:=hfloor (p.profile 0) (p.profile 1) (p.support 0) (p.support 1)
+    s.character s.fixedModulus s.puncture s.radial bΦ s.puncture_ne_zero hbΦ.le
+    s.radial_support s.row_ne_zero s.nonexceptional Z s.rowWidth s.characterWidth
+    (ε/16) t X₁ X₂ hZ s.row_nonneg s.character_nonneg s.scale_eq hs hX₁ hX₂ s.modulus_bound
+  rw [s.plainEnergy_eq_zero]
+  change CenteredMomentCoreFloor.zeroEnergy _ _ _ _ _ _ _ _ _≤ _
+  apply hh.trans
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have hc:=p.control_nonneg S
+  change C*(s.puncture.radical.absNorm:ℝ)^e*bΦ^4*diagonalControl s.radial.profile*
+    (p.control S)^2*(1+‖t‖)^degree*Z^(s.width+4*(ε/16))≤ _
+  calc
+    _≤ C*Z^(Bmask*e)*bΦ^4*diagonalControl s.radial.profile*
+      (p.control S)^2*(1+‖t‖)^degree*Z^(s.width+4*(ε/16)):=by gcongr
+    _=(C*bΦ^4*diagonalControl s.radial.profile*(p.control S)^2*(1+‖t‖)^degree)*
+      (Z^(Bmask*e)*Z^(s.width+4*(ε/16))):=by ring
+    _≤ _:=mul_le_mul_of_nonneg_left hp (by positivity)
+
+end CenteredMomentEnergyState
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+namespace CenteredMomentEnergyBands
+open HeckeFamily CenteredMomentEnergyState CenteredMomentFiniteProfileExceptional
+open CenteredMomentNaturalFixedRaySource CenteredMomentInductionEnergy
+open CenteredMomentPrimeSlot InversePrincipalEnergy
+local notation "O"=> Eisenstein.O
+
+def length (Z X:ℝ):ℝ:=Real.logb Z (max 1 X)
+
+lemma length_nonneg (Z X:ℝ)(hZ:1< Z):0≤ length Z X:=
+  Real.logb_nonneg hZ (le_max_left _ _)
+
+def ZeroAt (Q:Ideal O)(a b bΦ Bmask L M ε Z:ℝ)
+    (degree:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ):Prop:=
+  ∀s:NaturalState Z Bmask bΦ,s.fixedModulus=Q→s.width≤ M→
+  ∀p:Profiles a b,∀t X₁ X₂:ℝ,0< X₁→0< X₂→X₁≤ Z^L→X₂≤ Z^L→
+    s.plainEnergy p t X₁ X₂≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+      (1+‖t‖)^degree*Z^(s.width+ε)
+
+lemma zeroAt_of_zeroBound (Q:Ideal O)(a b bΦ Bmask L M ε Z Z₀:ℝ)
+    (degree:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ)
+    (h:ZeroBound Q a b bΦ Bmask M ε degree S C Z₀)(hZ:Z₀≤ Z):
+    ZeroAt Q a b bΦ Bmask L M ε Z degree S C:=by
+  intro s hQ hs p t X₁ X₂ hX₁ hX₂ _ _
+  exact h Z hZ s hQ hs p t X₁ X₂ hX₁ hX₂
+
+variable {α:Type*}[Fintype α][DecidableEq α]
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+def PositiveAt (W:ℝ→ℂ)(bslot a b bΦ Bmask L Lslot lo hi Mcap ε κ Z:ℝ)
+    (η₀:Character)(Q:Ideal O)(degree:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ):Prop:=
+  ∀T:Finset α,∀(θ:T→RayQuotient.Characters M H)(w σ v:T→ℝ)(t height:ℝ),
+    (∀i,0≤ w i)→(∀i,w i≤ Lslot)→(∀i,lo≤σ i)→(∀i,σ i≤ hi)→
+    0≤ height→(∀i,|v i|≤ height)→
+  ∀s:NaturalState Z Bmask bΦ,s.fixedModulus=internalQ Q η₀→s.width≤ Mcap→
+  ∀p:Profiles a b,∀X₁ X₂:ℝ,0< X₁→0< X₂→X₁≤ Z^L→X₂≤ Z^L→
+    length Z X₁+length Z X₂+6*κ*(∑i,w i)≤ s.width→
+    energy s.character s.mask 1 t (p.profile 0) (p.profile 1)
+      (fun i=> primePool M H bslot (Z^(w i)))
+      (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+        HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+      (fun i=> Z^(w i)) X₁ X₂ s.radial.keep s.radial.profile s.radial.scale≤
+      C*diagonalControl s.radial.profile*(p.control S)^2*
+        (1+|t|+height)^degree*Z^(s.width+ε)
+
+theorem exists_positive_bottom (W:ℝ→ℂ)(aslot bslot:ℝ)(haslot:0< aslot)
+    (hWs:Function.support W⊆Set.Icc aslot bslot)(hW:ContDiff ℝ ∞ W)
+    (a b bΦ Bmask L Lslot lo hi ε κ:ℝ)
+    (ha:0< a)(hb:0≤ b)(hbΦ:0< bΦ)(hmask:0≤ Bmask)(hε:0<ε)(hLs:0≤ Lslot)
+    (hbeta:(51/100:ℝ)≤ HeckeZeroSupremum.beta)(hκ:2*HeckeZeroSupremum.beta-1≤κ):
+    ∃degree:ℕ,∃S:Finset (ℕ×ℕ),∃C:ℝ,0< C ∧
+      ∀η₀:Character,∀ᶠZ:ℝ in atTop,1< Z ∧ ∀Q:Ideal O,Q≤ M→
+        PositiveAt (α:=α) M H hH W bslot a b bΦ Bmask L Lslot lo hi
+          (ε/16) ε κ Z η₀ Q degree S C:=by
+  have hs (T:Finset α):=CenteredMomentRayMaskedFloor.exists_positive_floor (α:=T)
+    M H hH W aslot bslot haslot hWs hW a b bΦ Bmask ε Lslot lo hi κ
+    ha hb hbΦ hmask hε hLs hbeta hκ
+  choose J S C hC hbound using hs
+  let S₀:Finset (ℕ×ℕ):=Finset.univ.biUnion S
+  let C₀:ℝ:=1+∑T:Finset α,C T
+  have hC₀:0< C₀:=by
+    have hh:=Finset.sum_nonneg (fun T (_:T∈(Finset.univ:Finset (Finset α)))=>(hC T).le)
+    dsimp [C₀];linarith
+  refine ⟨∑T:Finset α,J T,S₀,C₀,hC₀,?_⟩
+  intro η₀
+  have hall:∀ᶠZ:ℝ in atTop,∀T:Finset α,_:=Filter.eventually_all.mpr (fun T=> hbound T η₀)
+  filter_upwards [hall,eventually_gt_atTop (1:ℝ)] with Z hZ hZ1
+  refine ⟨hZ1,?_⟩
+  intro Q hQM T θ w σ v t height hw hwL hσlo hσhi hheight hv s hQ hs p X₁ X₂ hX₁ hX₂ hcap₁ hcap₂ hcapacity
+  have hslots:6*κ*(∑i,w i)≤ s.width:=by
+    linarith [length_nonneg Z X₁ hZ1,length_nonneg Z X₂ hZ1]
+  have hh:=hZ T θ w σ v t height hw hwL hσlo hσhi hheight hv Q hQM s hQ hs hslots p X₁ X₂ hX₁ hX₂
+  have hsub:S T⊆S₀:=by
+    intro x hx
+    exact Finset.mem_biUnion.mpr ⟨T,Finset.mem_univ _,hx⟩
+  have hpc:p.control (S T)≤ p.control S₀:=by
+    unfold Profiles.control
+    exact mul_le_mul (Seminorm.le_def.mp (Finset.sup_mono hsub) (p.profile 0))
+      (Seminorm.le_def.mp (Finset.sup_mono hsub) (p.profile 1))
+      (sourceControl_nonneg _ _) (sourceControl_nonneg _ _)
+  have hc:C T≤ C₀:=by
+    have hh:=Finset.single_le_sum (fun T (_:T∈(Finset.univ:Finset (Finset α)))=>(hC T).le)
+      (Finset.mem_univ T)
+    dsimp [C₀];linarith
+  have hj:J T≤∑T:Finset α,J T:=Finset.single_le_sum (fun _ _=> Nat.zero_le _) (Finset.mem_univ T)
+  have hpow:(1+|t|+height)^(J T)≤(1+|t|+height)^(∑T:Finset α,J T):=
+    pow_le_pow_right₀ (by linarith [abs_nonneg t]) hj
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have hp:=p.control_nonneg S₀
+  have hpt:=p.control_nonneg (S T)
+  apply hh.trans
+  gcongr
+end CenteredMomentEnergyBands
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentEnergyBandMonotonicity
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentFiniteProfileExceptional CenteredMomentInductionEnergy InversePrincipalEnergy
+local notation "O"=> Eisenstein.O
+
+def widenState {Z B b B' b':ℝ}(s:NaturalState Z B b)(hB:B≤ B')(hb:b≤ b'):
+    NaturalState Z B' b':=
+  {s with
+    puncture_bound:=s.puncture_bound.trans (Real.rpow_le_rpow_of_exponent_le s.base_ge_one hB)
+    radial_support:=fun _x hx=> le_trans (s.radial_support hx) hb}
+
+def widenProfiles {a b a' b':ℝ}(p:Profiles a b)(ha:a'≤ a)(hb:b≤ b'):Profiles a' b' where
+  profile:=p.profile
+  support:=fun i _x hx=>⟨ha.trans (p.support i hx).1,(p.support i hx).2.trans hb⟩
+
+lemma widenState_width {Z B b B' b':ℝ}(s:NaturalState Z B b)(hB:B≤ B')(hb:b≤ b'):
+    (widenState s hB hb).width=s.width:=rfl
+
+lemma widenProfiles_control {a b a' b':ℝ}(p:Profiles a b)(ha:a'≤ a)(hb:b≤ b')
+    (S:Finset (ℕ×ℕ)):(widenProfiles p ha hb).control S=p.control S:=rfl
+
+lemma profile_control_mono {a b:ℝ}(p:Profiles a b){S T:Finset (ℕ×ℕ)}(hst:S⊆T):
+    p.control S≤ p.control T:=by
+  unfold Profiles.control
+  exact mul_le_mul (Seminorm.le_def.mp (Finset.sup_mono hst) (p.profile 0))
+    (Seminorm.le_def.mp (Finset.sup_mono hst) (p.profile 1))
+    (sourceControl_nonneg _ _) (sourceControl_nonneg _ _)
+
+theorem zeroAt_transport (Q:Ideal O)(a b radial mask L Mcap eps Z:ℝ)
+    (a' b' radial' mask' L' Mcap' eps':ℝ)
+    (J J':ℕ)(S T:Finset (ℕ×ℕ))(C C':ℝ)
+    (hZ:1≤ Z)(ha:a≤ a')(hb:b'≤ b)(hr:radial'≤ radial)(hm:mask'≤ mask)
+    (hL:L'≤ L)(hM:Mcap'≤ Mcap)(he:eps≤ eps')(hJ:J≤ J')(hS:S⊆T)
+    (hC:0≤ C)(hCC:C≤ C')
+    (h:ZeroAt Q a b radial mask L Mcap eps Z J S C):
+    ZeroAt Q a' b' radial' mask' L' Mcap' eps' Z J' T C':=by
+  intro s hQ hwidth p t X₁ X₂ hX₁ hX₂ hcap₁ hcap₂
+  have hcap:Z^L'≤ Z^L:=Real.rpow_le_rpow_of_exponent_le hZ hL
+  have hh:=h (widenState s hm hr) hQ (hwidth.trans hM) (widenProfiles p ha hb)
+    t X₁ X₂ hX₁ hX₂ (hcap₁.trans hcap) (hcap₂.trans hcap)
+  change s.plainEnergy p t X₁ X₂≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+    (1+‖t‖)^J*Z^(s.width+eps) at hh
+  have hp:=profile_control_mono p hS
+  have hp0:=p.control_nonneg S
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have ht:(1+‖t‖)^J≤(1+‖t‖)^J':=pow_le_pow_right₀ (by linarith [norm_nonneg t]) hJ
+  have hz:Z^(s.width+eps)≤ Z^(s.width+eps'):=Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  have hCnew:0≤ C':=hC.trans hCC
+  apply hh.trans
+  gcongr
+
+variable {α:Type*}[Fintype α][DecidableEq α]
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+omit [Fintype α] [DecidableEq α] in
+theorem positiveAt_transport (W:ℝ→ℂ)(bslot a b radial mask L Lslot lo hi Mcap eps κ Z:ℝ)
+    (a' b' radial' mask' L' Mcap' eps':ℝ)
+    (η₀:Character)(Q:Ideal O)(J J':ℕ)(S T:Finset (ℕ×ℕ))(C C':ℝ)
+    (hZ:1≤ Z)(ha:a≤ a')(hb:b'≤ b)(hr:radial'≤ radial)(hm:mask'≤ mask)
+    (hL:L'≤ L)(hM:Mcap'≤ Mcap)(he:eps≤ eps')(hJ:J≤ J')(hS:S⊆T)
+    (hC:0≤ C)(hCC:C≤ C')
+    (h:PositiveAt (α:=α) M H hH W bslot a b radial mask L Lslot lo hi Mcap eps κ Z η₀ Q J S C):
+    PositiveAt (α:=α) M H hH W bslot a' b' radial' mask' L' Lslot lo hi Mcap' eps' κ Z η₀ Q J' T C':=by
+  intro A θ w σ freq t height hw hwL hσlo hσhi hheight hfreq s hQ hwidth
+    p X₁ X₂ hX₁ hX₂ hcap₁ hcap₂ hcapacity
+  have hcap:Z^L'≤ Z^L:=Real.rpow_le_rpow_of_exponent_le hZ hL
+  have hh:=h A θ w σ freq t height hw hwL hσlo hσhi hheight hfreq
+    (widenState s hm hr) hQ (hwidth.trans hM) (widenProfiles p ha hb)
+    X₁ X₂ hX₁ hX₂ (hcap₁.trans hcap) (hcap₂.trans hcap) hcapacity
+  change _≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+    (1+|t|+height)^J*Z^(s.width+eps) at hh
+  have hp:=profile_control_mono p hS
+  have hp0:=p.control_nonneg S
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have ht:(1+|t|+height)^J≤(1+|t|+height)^J':=
+    pow_le_pow_right₀ (by linarith [abs_nonneg t]) hJ
+  have hz:Z^(s.width+eps)≤ Z^(s.width+eps'):=Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  have hCnew:0≤ C':=hC.trans hCC
+  apply hh.trans
+  gcongr
+
+end CenteredMomentEnergyBandMonotonicity
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+
+namespace CenteredMomentEnergyWidthFloor
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentEnergyWidthSchedule CenteredMomentFiniteProfileExceptional
+open CenteredMomentNaturalFixedRaySource CenteredMomentInductionEnergy
+open InversePrincipalEnergy
+local notation "O"=> Eisenstein.O
+
+private lemma control_mono {a b:ℝ}(p:Profiles a b){S T:Finset (ℕ×ℕ)}(h:S⊆T):
+    p.control S≤ p.control T:=by
+  unfold Profiles.control
+  exact mul_le_mul (Seminorm.le_def.mp (Finset.sup_mono h) (p.profile 0))
+    (Seminorm.le_def.mp (Finset.sup_mono h) (p.profile 1))
+    (sourceControl_nonneg _ _) (sourceControl_nonneg _ _)
+
+variable {α:Type*}[Fintype α][DecidableEq α]
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+theorem actual_joint_floor (Mcap B κ ε:ℝ)(hMcap:0≤ Mcap)(hB:0≤ B)
+    (hκ0:0≤κ)(hε:0<ε)
+    (W:ℝ→ℂ)(aslot bslot:ℝ)(haslot:0< aslot)
+    (hWs:Function.support W⊆Set.Icc aslot bslot)(hW:ContDiff ℝ ∞ W)
+    (a b bΦ Bmask L lo hi:ℝ)(ha:0< a)(hb:0≤ b)(hbΦ:0< bΦ)(hmask:0≤ Bmask)
+    (hbeta:(51/100:ℝ)≤ HeckeZeroSupremum.beta)(hκ:2*HeckeZeroSupremum.beta-1≤κ):
+    ∃degree:ℕ,∃S:Finset (ℕ×ℕ),∃Czero Cpositive:ℝ,0< Czero ∧ 0< Cpositive ∧
+      ∀η₀:Character,∀ᶠZ:ℝ in atTop,1< Z ∧ ∀Q:Ideal O,Q≤ M→
+        ZeroAt (internalQ Q η₀) a b bΦ Bmask L (width Mcap B ε 0)
+          (loss Mcap B ε 0) Z degree S Czero ∧
+        PositiveAt (α:=α) M H hH W bslot a b bΦ Bmask L (mesh Mcap B κ ε) lo hi
+          (width Mcap B ε 0) (loss Mcap B ε 0) κ Z η₀ Q degree S Cpositive:=by
+  have hs:=bounds Mcap B κ ε hMcap hB hκ0 hε
+  have hr:=hs.2.2.2.1
+  have hm:=hs.2.2.2.2.1
+  obtain ⟨Jzero,Szero,Czero,hCzero,hzero⟩:=exists_zero_floor
+    a b bΦ Bmask (reserve Mcap B ε) ha hb hbΦ hmask hr
+  obtain ⟨Jpositive,Spositive,Cpositive,hCpositive,hpositive⟩:=exists_positive_bottom (α:=α)
+    M H hH W aslot bslot haslot hWs hW a b bΦ Bmask L (mesh Mcap B κ ε) lo hi
+      (reserve Mcap B ε) κ ha hb hbΦ hmask hr hm.le hbeta hκ
+  refine ⟨Jzero+Jpositive,Szero∪Spositive,Czero,Cpositive,hCzero,hCpositive,?_⟩
+  intro η₀
+  filter_upwards [hpositive η₀] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro Q hQM
+  rw [width_zero,loss_zero]
+  constructor
+  · intro s hQ hwidth p t X₁ X₂ hX₁ hX₂ _ _
+    have hh:=hzero (internalQ Q η₀) Z hZ.1.le s hQ hwidth p t X₁ X₂ hX₁ hX₂
+    have hp:=control_mono p (Finset.subset_union_left (s₁:=Szero) (s₂:=Spositive))
+    have hpn:=p.control_nonneg Szero
+    have hpU:=p.control_nonneg (Szero∪Spositive)
+    have hd:=diagonalControl_nonneg s.radial.profile
+    have ht:(1+‖t‖)^Jzero≤(1+‖t‖)^(Jzero+Jpositive):=
+      pow_le_pow_right₀ (by linarith [norm_nonneg t]) (Nat.le_add_right _ _)
+    apply hh.trans
+    gcongr
+    exact Real.rpow_nonneg (zero_le_one.trans hZ.1.le) _
+  · intro T θ w σ v t height hw hwL hσlo hσhi hheight hv s hQ hwidth
+      p X₁ X₂ hX₁ hX₂ hc₁ hc₂ hcap
+    have hh:=hZ.2 Q hQM T θ w σ v t height hw hwL hσlo hσhi hheight hv
+      s hQ hwidth p X₁ X₂ hX₁ hX₂ hc₁ hc₂ hcap
+    have hp:=control_mono p (Finset.subset_union_right (s₁:=Szero) (s₂:=Spositive))
+    have hpn:=p.control_nonneg Spositive
+    have hpU:=p.control_nonneg (Szero∪Spositive)
+    have hd:=diagonalControl_nonneg s.radial.profile
+    have ht:(1+|t|+height)^Jpositive≤(1+|t|+height)^(Jzero+Jpositive):=
+      pow_le_pow_right₀ (by linarith [abs_nonneg t]) (Nat.le_add_left _ _)
+    apply hh.trans
+    gcongr
+    exact Real.rpow_nonneg (zero_le_one.trans hZ.1.le) _
+
+end CenteredMomentEnergyWidthFloor
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter
+
+namespace CenteredMomentEnergyCappedWidthInduction
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyWidthRanges
+open CenteredMomentEnergyStageReserveSchedule CenteredMomentEnergyBandMonotonicity
+open CenteredMomentEnergyWidthFloor CenteredMomentFiniteProfileExceptional
+open CenteredMomentNaturalFixedRaySource
+local notation "O"=> Eisenstein.O
+
+open CenteredMomentEnergyWidthInduction (remaining lowerAt lengthAt lowerAt_pos child_support child_length)
+
+variable {α:Type*}[Fintype α][DecidableEq α]
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+def CertifiedBand (W:ℝ→ℂ)(bslot a b radial Bmask L lo hi Mcap κ ε:ℝ)(k:ℕ):Prop:=
+  ∃degree:ℕ,∃S:Finset (ℕ×ℕ),∀η₀:Character,∀Q:Ideal O,Q≤ M→
+    internalQ Q η₀≠0→internalQ Q η₀≠⊤→internalQ Q η₀≤ Ideal.span {(72:O)}→
+    ∃Czero Cpositive:ℝ,0< Czero ∧ 0< Cpositive ∧
+    ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ZeroAt (internalQ Q η₀) (lowerAt a b Mcap ε k) b radial Bmask
+        (lengthAt Mcap Bmask L ε k)
+        (bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε k)
+        (stageLoss Mcap (finalSourceCap Mcap Bmask L ε) ε k) Z degree S Czero ∧
+      PositiveAt (α:=α) M H hH W bslot (lowerAt a b Mcap ε k) b radial Bmask
+        (lengthAt Mcap Bmask L ε k) (fineMesh Mcap Bmask L κ ε) lo hi
+        (bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε k)
+        (stageLoss Mcap (finalSourceCap Mcap Bmask L ε) ε k) κ Z η₀ Q degree S Cpositive
+
+theorem certified_floor (W:ℝ→ℂ)(aslot bslot a b radial Bmask L lo hi Mcap κ ε:ℝ)
+    (haslot:0< aslot)(hWs:Function.support W⊆Set.Icc aslot bslot)(hW:ContDiff ℝ ∞ W)
+    (ha:0< a)(hb:0≤ b)(hrad:0< radial)(hmask:0≤ Bmask)(hMcap:0≤ Mcap)
+    (hκ0:0≤κ)(hε:0<ε)(hbeta:(51/100:ℝ)≤ HeckeZeroSupremum.beta)
+    (hκ:2*HeckeZeroSupremum.beta-1≤κ):
+    CertifiedBand (α:=α) M H hH W bslot a b radial Bmask L lo hi Mcap κ ε 0:=by
+  let Bs:=finalSourceCap Mcap Bmask L ε
+  have hBs:0≤ Bs:=sourceCap_nonneg Mcap Bmask L hMcap hmask _
+  have ha0:=lowerAt_pos a b Mcap ε ha 0
+  obtain ⟨degree,S,Czero,Cpositive,hCzero,hCpositive,hfloor⟩:=
+    actual_joint_floor (α:=α) M H hH Mcap Bs κ ε hMcap hBs hκ0 hε W aslot bslot
+      haslot hWs hW (lowerAt a b Mcap ε 0) b radial Bmask (lengthAt Mcap Bmask L ε 0)
+      lo hi ha0 hb hrad hmask hbeta hκ
+  refine ⟨degree,S,?_⟩
+  intro η₀ Q hQM _ _ _
+  refine ⟨Czero,Cpositive,hCzero,hCpositive,?_⟩
+  filter_upwards [hfloor η₀] with Z hZ
+  have hh:=hZ.2 Q hQM
+  have hloss:loss Mcap Bs ε 0≤ stageLoss Mcap Bs ε 0:=by
+    unfold stageLoss
+    linarith
+  refine ⟨hZ.1,?_,?_⟩
+  · exact zeroAt_transport (internalQ Q η₀) _ _ _ _ _ _ _ Z _ _ _ _ _ _ _
+      degree degree S S Czero Czero hZ.1.le le_rfl le_rfl le_rfl le_rfl
+      le_rfl (bandWidth_le_schedule Mcap Bs ε 0) hloss le_rfl (Finset.Subset.refl _) hCzero.le le_rfl hh.1
+  · exact positiveAt_transport (α:=α) M H hH W bslot _ _ _ _ _ _ _ _ _ _ κ Z
+      _ _ _ _ _ _ _ η₀ Q degree degree S S Cpositive Cpositive hZ.1.le
+      le_rfl le_rfl le_rfl le_rfl le_rfl (bandWidth_le_schedule Mcap Bs ε 0) hloss le_rfl (Finset.Subset.refl _)
+      hCpositive.le le_rfl hh.2
+
+omit [Fintype α] [DecidableEq α] in
+theorem certified_terminal (W:ℝ→ℂ)(bslot a b radial Bmask L lo hi Mcap κ ε:ℝ)
+    (hmask:0≤ Bmask)(hMcap:0≤ Mcap)(hκ0:0≤κ)(hε:0<ε)
+    (h:CertifiedBand (α:=α) M H hH W bslot a b radial Bmask L lo hi Mcap κ ε (count Mcap ε)):
+    ∃degree:ℕ,∃S:Finset (ℕ×ℕ),∀η₀:Character,∀Q:Ideal O,Q≤ M→
+      internalQ Q η₀≠0→internalQ Q η₀≠⊤→internalQ Q η₀≤ Ideal.span {(72:O)}→
+      ∃Czero Cpositive:ℝ,0< Czero ∧ 0< Cpositive ∧
+      ∀ᶠZ:ℝ in atTop,1< Z ∧
+        ZeroAt (internalQ Q η₀) a b radial Bmask L Mcap ε Z degree S Czero ∧
+        PositiveAt (α:=α) M H hH W bslot a b radial Bmask L
+          (fineMesh Mcap Bmask L κ ε) lo hi Mcap ε κ Z η₀ Q degree S Cpositive:=by
+  let Bs:=finalSourceCap Mcap Bmask L ε
+  have hBs:0≤ Bs:=sourceCap_nonneg Mcap Bmask L hMcap hmask _
+  obtain ⟨hs,hs1,hse,hr,hm,hmm,hκm,h20,hcover,hloss⟩:=bounds Mcap Bs κ ε hMcap hBs hκ0 hε
+  have he:stageLoss Mcap Bs ε (count Mcap ε)≤ε:=by
+    have hh:=stageLoss_final Mcap Bs κ ε hMcap hBs hκ0 hε (count Mcap ε) le_rfl
+    linarith
+  obtain ⟨degree,S,hbound⟩:=h
+  refine ⟨degree,S,?_⟩
+  intro η₀ Q hQM hQ0 hQt hQ72
+  obtain ⟨Czero,Cpositive,hCzero,hCpositive,hcert⟩:=hbound η₀ Q hQM hQ0 hQt hQ72
+  refine ⟨Czero,Cpositive,hCzero,hCpositive,?_⟩
+  filter_upwards [hcert] with Z hZ
+  have hz:=hZ.2.1
+  have hp:=hZ.2.2
+  simp only [lowerAt,lengthAt,remaining,Nat.sub_self,CenteredMomentEnergyProfiles.lower,range] at hz hp
+  have hterminal:=bandWidth_terminal Mcap Bs ε hMcap hBs hε
+  change bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε (count Mcap ε)=Mcap at hterminal
+  rw [hterminal] at hz hp
+  refine ⟨hZ.1,?_,?_⟩
+  · exact zeroAt_transport (internalQ Q η₀) _ _ _ _ _ _ _ Z _ _ _ _ _ _ _
+      degree degree S S Czero Czero hZ.1.le le_rfl le_rfl le_rfl le_rfl
+      (le_max_right _ _) le_rfl he le_rfl (Finset.Subset.refl _) hCzero.le le_rfl hz
+  · exact positiveAt_transport (α:=α) M H hH W bslot _ _ _ _ _ _ _ _ _ _ κ Z
+      _ _ _ _ _ _ _ η₀ Q degree degree S S Cpositive Cpositive hZ.1.le
+      le_rfl le_rfl le_rfl le_rfl (le_max_right _ _) le_rfl he le_rfl (Finset.Subset.refl _)
+      hCpositive.le le_rfl hp
+
+end CenteredMomentEnergyCappedWidthInduction
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+open Filter
+
+namespace CenteredMomentEnergyCappedRadialTransport
+open HeckeFamily CenteredMomentEnergyCappedWidthInduction
+open CenteredMomentEnergyBandMonotonicity
+local notation "O" => Eisenstein.O
+variable {α : Type*}
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H)
+
+theorem certified_radial_mono (W : ℝ → ℂ)
+    (bslot a b radialOld radialNew Bmask L lo hi Mcap κ ε : ℝ) (k : ℕ)
+    (hrad : radialNew ≤ radialOld)
+    (h : CertifiedBand (α := α) M H hH W bslot a b radialOld Bmask L lo hi Mcap κ ε k) :
+    CertifiedBand (α := α) M H hH W bslot a b radialNew Bmask L lo hi Mcap κ ε k := by
+  obtain ⟨degree, S, hbound⟩ := h
+  refine ⟨degree, S, ?_⟩
+  intro η₀ Q hQM hQ0 hQt hQ72
+  obtain ⟨Czero, Cpositive, hCzero, hCpositive, hcert⟩ := hbound η₀ Q hQM hQ0 hQt hQ72
+  refine ⟨Czero, Cpositive, hCzero, hCpositive, ?_⟩
+  filter_upwards [hcert] with Z hZ
+  refine ⟨hZ.1, ?_, ?_⟩
+  · exact zeroAt_transport _ _ _ _ _ _ _ _ Z _ _ _ _ _ _ _
+      degree degree S S Czero Czero hZ.1.le le_rfl le_rfl hrad le_rfl
+      le_rfl le_rfl le_rfl le_rfl (Finset.Subset.refl _) hCzero.le le_rfl hZ.2.1
+  · exact positiveAt_transport (α := α) M H hH W bslot _ _ _ _ _ _ _ _ _ _ κ Z
+      _ _ _ _ _ _ _ η₀ Q degree degree S S Cpositive Cpositive hZ.1.le
+      le_rfl le_rfl hrad le_rfl le_rfl le_rfl le_rfl le_rfl (Finset.Subset.refl _)
+      hCpositive.le le_rfl hZ.2.2
+
+theorem certified_from_max_two (W : ℝ → ℂ)
+    (bslot a b radial Bmask L lo hi Mcap κ ε : ℝ) (k : ℕ)
+    (h : CertifiedBand (α := α) M H hH W bslot a b (max 2 radial)
+      Bmask L lo hi Mcap κ ε k) :
+    CertifiedBand (α := α) M H hH W bslot a b radial Bmask L lo hi Mcap κ ε k :=
+  certified_radial_mono (α := α) M H hH W bslot a b (max 2 radial) radial
+    Bmask L lo hi Mcap κ ε k (le_max_right _ _) h
+
+end CenteredMomentEnergyCappedRadialTransport
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentEnergyReferenceLowBands
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentNaturalFixedRaySource CenteredMomentInductionEnergy
+open CenteredMomentPrimeSlot InversePrincipalEnergy
+open CenteredMomentFiniteProfileExceptional
+local notation "O"=> Eisenstein.O
+
+def ZeroLowAt (Q:Ideal O)(a b bΦ Bmask L M ε Z:ℝ)
+    (degree:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ):Prop:=
+  ∀s:NaturalState Z Bmask bΦ,s.fixedModulus=Q→s.width≤ M→
+  ∀p:Profiles a b,∀t X₁ X₂:ℝ,0< X₁→0< X₂→X₁≤ Z^L→X₂≤ Z^L→
+    length Z X₁+length Z X₂≤5*s.width/6→
+    s.plainEnergy p t X₁ X₂≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+      (1+‖t‖)^degree*Z^(s.width+ε)
+
+variable {α:Type*}[Fintype α][DecidableEq α]
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+def PositiveLowAt (W:ℝ→ℂ)(bslot a b bΦ Bmask L Lslot lo hi Mcap ε κ Z:ℝ)
+    (η₀:Character)(Q:Ideal O)(degree:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ):Prop:=
+  ∀T:Finset α,∀(θ:T→RayQuotient.Characters M H)(w σ v:T→ℝ)(t height:ℝ),
+    (∀i,0≤ w i)→(∀i,w i≤ Lslot)→(∀i,lo≤σ i)→(∀i,σ i≤ hi)→
+    0≤ height→(∀i,|v i|≤ height)→
+  ∀s:NaturalState Z Bmask bΦ,s.fixedModulus=internalQ Q η₀→s.width≤ Mcap→
+  ∀p:Profiles a b,∀X₁ X₂:ℝ,0< X₁→0< X₂→X₁≤ Z^L→X₂≤ Z^L→
+    length Z X₁+length Z X₂+6*κ*(∑i,w i)≤ s.width→
+    length Z X₁+length Z X₂+(∑i,w i)≤5*s.width/6→
+    energy s.character s.mask 1 t (p.profile 0) (p.profile 1)
+      (fun i=> primePool M H bslot (Z^(w i)))
+      (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+        HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+      (fun i=> Z^(w i)) X₁ X₂ s.radial.keep s.radial.profile s.radial.scale≤
+      C*diagonalControl s.radial.profile*(p.control S)^2*
+        (1+|t|+height)^degree*Z^(s.width+ε)
+
+end CenteredMomentEnergyReferenceLowBands
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+open Filter
+
+namespace CenteredMomentEnergyZeroGrowth
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentFiniteProfileExceptional CenteredMomentInductionEnergy
+open CenteredMomentEnergyReferenceLowBands InversePrincipalEnergy
+local notation "O" => Eisenstein.O
+
+def ZeroGrowthAt (Q : Ideal O) (a b bΦ Bmask L M ε Z : ℝ)
+    (degree : ℕ) (S : Finset (ℕ × ℕ)) (C : ℝ) : Prop :=
+  ∀ s : NaturalState Z Bmask bΦ, s.fixedModulus = Q → s.width ≤ M →
+  ∀ p : Profiles a b, ∀ t X₁ X₂ : ℝ,
+    0 < X₁ → 0 < X₂ → X₁ ≤ Z ^ L → X₂ ≤ Z ^ L →
+    s.plainEnergy p t X₁ X₂ ≤
+      C * diagonalControl s.radial.profile * (p.control S) ^ 2 *
+        (1 + ‖t‖) ^ degree *
+        Z ^ (max s.width (length Z X₁ + length Z X₂) + ε)
+
+lemma zeroGrowth_of_zeroAt (Q : Ideal O) (a b bΦ Bmask L M ε Z : ℝ)
+    (degree : ℕ) (S : Finset (ℕ × ℕ)) (C : ℝ) (hC : 0 ≤ C)
+    (h : ZeroAt Q a b bΦ Bmask L M ε Z degree S C) :
+    ZeroGrowthAt Q a b bΦ Bmask L M ε Z degree S C := by
+  intro s hQ hs p t X₁ X₂ hX₁ hX₂ hc₁ hc₂
+  apply (h s hQ hs p t X₁ X₂ hX₁ hX₂ hc₁ hc₂).trans
+  have he : s.width + ε ≤ max s.width (length Z X₁ + length Z X₂) + ε := by
+    linarith [le_max_left s.width (length Z X₁ + length Z X₂)]
+  apply mul_le_mul_of_nonneg_left
+    (Real.rpow_le_rpow_of_exponent_le s.base_ge_one he)
+  exact mul_nonneg (mul_nonneg (mul_nonneg hC
+    (diagonalControl_nonneg _)) (sq_nonneg _)) (pow_nonneg (by positivity) _)
+
+lemma zeroGrowth_on_capacity (Q : Ideal O) (a b bΦ Bmask L M ε Z : ℝ)
+    (degree : ℕ) (S : Finset (ℕ × ℕ)) (C : ℝ)
+    (h : ZeroGrowthAt Q a b bΦ Bmask L M ε Z degree S C)
+    (s : NaturalState Z Bmask bΦ) (hQ : s.fixedModulus = Q) (hs : s.width ≤ M)
+    (p : Profiles a b) (t X₁ X₂ : ℝ) (hX₁ : 0 < X₁) (hX₂ : 0 < X₂)
+    (hc₁ : X₁ ≤ Z ^ L) (hc₂ : X₂ ≤ Z ^ L)
+    (hcapacity : length Z X₁ + length Z X₂ ≤ s.width) :
+    s.plainEnergy p t X₁ X₂ ≤ C * diagonalControl s.radial.profile *
+      (p.control S) ^ 2 * (1 + ‖t‖) ^ degree * Z ^ (s.width + ε) := by
+  simpa only [max_eq_left hcapacity] using
+    h s hQ hs p t X₁ X₂ hX₁ hX₂ hc₁ hc₂
+
+theorem exists_zero_growth_floor (a b bΦ Bmask L ε : ℝ)
+    (ha : 0 < a) (hb : 0 ≤ b) (hbΦ : 0 < bΦ) (hmask : 0 ≤ Bmask)
+    (hε : 0 < ε) :
+    ∃ degree : ℕ, ∃ S : Finset (ℕ × ℕ), ∃ C : ℝ, 0 < C ∧
+      ∀ Q : Ideal O, ∀ Z : ℝ, 1 ≤ Z →
+        ZeroGrowthAt Q a b bΦ Bmask L (ε / 16) ε Z degree S C := by
+  obtain ⟨degree, S, C, hC, hf⟩ := exists_zero_floor a b bΦ Bmask ε ha hb hbΦ hmask hε
+  refine ⟨degree, S, C, hC, ?_⟩
+  intro Q Z hZ
+  exact zeroGrowth_of_zeroAt Q a b bΦ Bmask L (ε / 16) ε Z degree S C hC.le
+    (zeroAt_of_zeroBound Q a b bΦ Bmask L (ε / 16) ε Z 1 degree S C (hf Q) hZ)
+
+end CenteredMomentEnergyZeroGrowth
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open Filter
+namespace CenteredMomentEnergyPositiveHighSourceBound
+open HeckeFamily CenteredMomentInductionEnergy CenteredMomentPrimeSlot
+open CenteredMomentEnergyState CenteredMomentEnergyBands CenteredMomentEnergyReferenceLowBands
+open CenteredMomentFiniteProfileExceptional CenteredMomentNaturalFixedRaySource InversePrincipalEnergy
+local notation "O" => Eisenstein.O
+variable {α : Type*} [Fintype α] [DecidableEq α]
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H)
+def PositiveHighAt (W:ℝ→ℂ)(bslot a b bΦ Bmask L Lslot lo hi rho Mcap ε κ Z:ℝ)
+    (η₀:Character)(Q:Ideal O)(degree:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ):Prop:=
+  ∀T:Finset α,∀(θ:T→RayQuotient.Characters M H)(w σ v:T→ℝ)(t height:ℝ),
+    (∀i,0≤ w i)→(∀i,w i≤ Lslot)→(∀i,lo≤σ i)→(∀i,σ i≤ hi)→
+    0≤ height→(∀i,|v i|≤ height)→
+  ∀s:NaturalState Z Bmask bΦ,s.fixedModulus=internalQ Q η₀→ rho≤ s.width→s.width≤ Mcap→
+  ∀p:Profiles a b,∀X₁ X₂:ℝ,0< X₁→0< X₂→X₁≤ Z^L→X₂≤ Z^L→
+    length Z X₁+length Z X₂+6*κ*(∑i,w i)≤ s.width→
+    5*s.width/6≤ length Z X₁+length Z X₂+(∑i,w i)→
+    energy s.character s.mask 1 t (p.profile 0) (p.profile 1)
+      (fun i=> primePool M H bslot (Z^(w i)))
+      (fun i I=> idealCoeff (relativeCharacter M H hH η₀ (θ i)) I*
+        HeckePrimeAnnular.annularWeight W (Z^(w i)) (σ i) (v i) I)
+      (fun i=> Z^(w i)) X₁ X₂ s.radial.keep s.radial.profile s.radial.scale≤
+      C*diagonalControl s.radial.profile*(p.control S)^2*
+        (1+|t|+height)^degree*Z^(s.width+ε)
+
+omit [Fintype α] [DecidableEq α] in
+theorem positive_from_stages
+    (W:ℝ→ℂ)(bslot a b bΦ Bmask L Lslot lo hi rho Mcap e κ Z:ℝ)
+    (η₀:Character)(Q:Ideal O)(J:ℕ)(S:Finset (ℕ×ℕ))(C:ℝ)
+    (hold:PositiveAt (α:=α) M H hH W bslot a b bΦ Bmask L Lslot lo hi rho e κ Z η₀ Q J S C)
+    (hlow:PositiveLowAt (α:=α) M H hH W bslot a b bΦ Bmask L Lslot lo hi Mcap e κ Z η₀ Q J S C)
+    (hhigh:PositiveHighAt (α:=α) M H hH W bslot a b bΦ Bmask L Lslot lo hi rho Mcap e κ Z η₀ Q J S C):
+    PositiveAt (α:=α) M H hH W bslot a b bΦ Bmask L Lslot lo hi Mcap e κ Z η₀ Q J S C:=by
+  intro T θ w σ v t height hw hwL hσlo hσhi hheight hv s hQ hs p X₁ X₂
+    hX₁ hX₂ hcap₁ hcap₂ hcapacity
+  by_cases hsmall:s.width≤ rho
+  · exact hold T θ w σ v t height hw hwL hσlo hσhi hheight hv s hQ hsmall p X₁ X₂
+      hX₁ hX₂ hcap₁ hcap₂ hcapacity
+  by_cases hl:length Z X₁+length Z X₂+(∑i,w i)≤5*s.width/6
+  · exact hlow T θ w σ v t height hw hwL hσlo hσhi hheight hv s hQ hs p X₁ X₂
+      hX₁ hX₂ hcap₁ hcap₂ hcapacity hl
+  exact hhigh T θ w σ v t height hw hwL hσlo hσhi hheight hv s hQ (le_of_not_ge hsmall) hs
+    p X₁ X₂ hX₁ hX₂ hcap₁ hcap₂ hcapacity (le_of_not_ge hl)
+
+end CenteredMomentEnergyPositiveHighSourceBound
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentEnergyStageMonotonicity
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentFiniteProfileExceptional CenteredMomentInductionEnergy InversePrincipalEnergy
+open CenteredMomentEnergyBandMonotonicity CenteredMomentEnergyReferenceLowBands
+open CenteredMomentEnergyPositiveHighSourceBound CenteredMomentEnergyZeroGrowth
+local notation "O"=> Eisenstein.O
+
+theorem zeroLowAt_transport (Q:Ideal O)(a b radial mask L Mcap eps Z:ℝ)
+    (a' b' radial' mask' L' Mcap' eps':ℝ)
+    (J J':ℕ)(S T:Finset (ℕ×ℕ))(C C':ℝ)
+    (hZ:1≤ Z)(ha:a≤ a')(hb:b'≤ b)(hr:radial'≤ radial)(hm:mask'≤ mask)
+    (hL:L'≤ L)(hM:Mcap'≤ Mcap)(he:eps≤ eps')(hJ:J≤ J')(hS:S⊆T)
+    (hC:0≤ C)(hCC:C≤ C')
+    (h:ZeroLowAt Q a b radial mask L Mcap eps Z J S C):
+    ZeroLowAt Q a' b' radial' mask' L' Mcap' eps' Z J' T C':=by
+  intro s hQ hwidth p t X₁ X₂ hX₁ hX₂ hcap₁ hcap₂ hlow
+  have hcap:Z^L'≤ Z^L:=Real.rpow_le_rpow_of_exponent_le hZ hL
+  have hh:=h (widenState s hm hr) hQ (hwidth.trans hM) (widenProfiles p ha hb)
+    t X₁ X₂ hX₁ hX₂ (hcap₁.trans hcap) (hcap₂.trans hcap) hlow
+  change s.plainEnergy p t X₁ X₂≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+    (1+‖t‖)^J*Z^(s.width+eps) at hh
+  have hp:=profile_control_mono p hS
+  have hp0:=p.control_nonneg S
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have ht:(1+‖t‖)^J≤(1+‖t‖)^J':=pow_le_pow_right₀ (by linarith [norm_nonneg t]) hJ
+  have hz:Z^(s.width+eps)≤ Z^(s.width+eps'):=Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  have hCnew:0≤ C':=hC.trans hCC
+  apply hh.trans
+  gcongr
+
+theorem zeroGrowthAt_transport (Q:Ideal O)(a b radial mask L Mcap eps Z:ℝ)
+    (a' b' radial' mask' L' Mcap' eps':ℝ)
+    (J J':ℕ)(S T:Finset (ℕ×ℕ))(C C':ℝ)
+    (hZ:1≤ Z)(ha:a≤ a')(hb:b'≤ b)(hr:radial'≤ radial)(hm:mask'≤ mask)
+    (hL:L'≤ L)(hM:Mcap'≤ Mcap)(he:eps≤ eps')(hJ:J≤ J')(hS:S⊆T)
+    (hC:0≤ C)(hCC:C≤ C')
+    (h:ZeroGrowthAt Q a b radial mask L Mcap eps Z J S C):
+    ZeroGrowthAt Q a' b' radial' mask' L' Mcap' eps' Z J' T C':=by
+  intro s hQ hwidth p t X₁ X₂ hX₁ hX₂ hcap₁ hcap₂
+  have hcap:Z^L'≤ Z^L:=Real.rpow_le_rpow_of_exponent_le hZ hL
+  have hh:=h (widenState s hm hr) hQ (hwidth.trans hM) (widenProfiles p ha hb)
+    t X₁ X₂ hX₁ hX₂ (hcap₁.trans hcap) (hcap₂.trans hcap)
+  change s.plainEnergy p t X₁ X₂≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+    (1+‖t‖)^J*Z^(max s.width (length Z X₁+length Z X₂)+eps) at hh
+  have hp:=profile_control_mono p hS
+  have hp0:=p.control_nonneg S
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have ht:(1+‖t‖)^J≤(1+‖t‖)^J':=pow_le_pow_right₀ (by linarith [norm_nonneg t]) hJ
+  have hz:Z^(max s.width (length Z X₁+length Z X₂)+eps)≤ Z^(max s.width (length Z X₁+length Z X₂)+eps'):=Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  have hCnew:0≤ C':=hC.trans hCC
+  apply hh.trans
+  gcongr
+
+variable {α:Type*}[Fintype α][DecidableEq α]
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+omit [Fintype α] [DecidableEq α] in
+theorem positiveLowAt_transport (W:ℝ→ℂ)(bslot a b radial mask L Lslot lo hi Mcap eps κ Z:ℝ)
+    (a' b' radial' mask' L' Mcap' eps':ℝ)
+    (η₀:Character)(Q:Ideal O)(J J':ℕ)(S T:Finset (ℕ×ℕ))(C C':ℝ)
+    (hZ:1≤ Z)(ha:a≤ a')(hb:b'≤ b)(hr:radial'≤ radial)(hm:mask'≤ mask)
+    (hL:L'≤ L)(hM:Mcap'≤ Mcap)(he:eps≤ eps')(hJ:J≤ J')(hS:S⊆T)
+    (hC:0≤ C)(hCC:C≤ C')
+    (h:PositiveLowAt (α:=α) M H hH W bslot a b radial mask L Lslot lo hi Mcap eps κ Z η₀ Q J S C):
+    PositiveLowAt (α:=α) M H hH W bslot a' b' radial' mask' L' Lslot lo hi Mcap' eps' κ Z η₀ Q J' T C':=by
+  intro A θ w σ freq t height hw hwL hσlo hσhi hheight hfreq s hQ hwidth
+    p X₁ X₂ hX₁ hX₂ hcap₁ hcap₂ hcapacity hlow
+  have hcap:Z^L'≤ Z^L:=Real.rpow_le_rpow_of_exponent_le hZ hL
+  have hh:=h A θ w σ freq t height hw hwL hσlo hσhi hheight hfreq
+    (widenState s hm hr) hQ (hwidth.trans hM) (widenProfiles p ha hb)
+    X₁ X₂ hX₁ hX₂ (hcap₁.trans hcap) (hcap₂.trans hcap) hcapacity hlow
+  change _≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+    (1+|t|+height)^J*Z^(s.width+eps) at hh
+  have hp:=profile_control_mono p hS
+  have hp0:=p.control_nonneg S
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have ht:(1+|t|+height)^J≤(1+|t|+height)^J':=
+    pow_le_pow_right₀ (by linarith [abs_nonneg t]) hJ
+  have hz:Z^(s.width+eps)≤ Z^(s.width+eps'):=Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  have hCnew:0≤ C':=hC.trans hCC
+  apply hh.trans
+  gcongr
+
+omit [Fintype α] [DecidableEq α] in
+theorem positiveHighAt_transport (W:ℝ→ℂ)(bslot a b radial mask L Lslot lo hi rho Mcap eps κ Z:ℝ)
+    (a' b' radial' mask' L' rho' Mcap' eps':ℝ)
+    (η₀:Character)(Q:Ideal O)(J J':ℕ)(S T:Finset (ℕ×ℕ))(C C':ℝ)
+    (hZ:1≤ Z)(ha:a≤ a')(hb:b'≤ b)(hr:radial'≤ radial)(hm:mask'≤ mask)
+    (hL:L'≤ L)(hM:Mcap'≤ Mcap)(hrho:rho≤ rho')(he:eps≤ eps')(hJ:J≤ J')(hS:S⊆T)
+    (hC:0≤ C)(hCC:C≤ C')
+    (h:PositiveHighAt (α:=α) M H hH W bslot a b radial mask L Lslot lo hi rho Mcap eps κ Z η₀ Q J S C):
+    PositiveHighAt (α:=α) M H hH W bslot a' b' radial' mask' L' Lslot lo hi rho' Mcap' eps' κ Z η₀ Q J' T C':=by
+  intro A θ w σ freq t height hw hwL hσlo hσhi hheight hfreq s hQ hwidthLo hwidth
+    p X₁ X₂ hX₁ hX₂ hcap₁ hcap₂ hcapacity hlarge
+  have hcap:Z^L'≤ Z^L:=Real.rpow_le_rpow_of_exponent_le hZ hL
+  have hh:=h A θ w σ freq t height hw hwL hσlo hσhi hheight hfreq
+    (widenState s hm hr) hQ (hrho.trans hwidthLo) (hwidth.trans hM) (widenProfiles p ha hb)
+    X₁ X₂ hX₁ hX₂ (hcap₁.trans hcap) (hcap₂.trans hcap) hcapacity hlarge
+  change _≤ C*diagonalControl s.radial.profile*(p.control S)^2*
+    (1+|t|+height)^J*Z^(s.width+eps) at hh
+  have hp:=profile_control_mono p hS
+  have hp0:=p.control_nonneg S
+  have hd:=diagonalControl_nonneg s.radial.profile
+  have ht:(1+|t|+height)^J≤(1+|t|+height)^J':=
+    pow_le_pow_right₀ (by linarith [abs_nonneg t]) hJ
+  have hz:Z^(s.width+eps)≤ Z^(s.width+eps'):=Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  have hCnew:0≤ C':=hC.trans hCC
+  apply hh.trans
+  gcongr
+
+end CenteredMomentEnergyStageMonotonicity
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+open Filter
+
+namespace CenteredMomentEnergyCappedSuccessorPacking
+open HeckeFamily CenteredMomentEnergyState CenteredMomentEnergyBands
+open CenteredMomentEnergyCappedWidthInduction CenteredMomentEnergyWidthInduction
+open CenteredMomentEnergyWidthSchedule CenteredMomentEnergyWidthRanges
+open CenteredMomentEnergyStageReserveSchedule CenteredMomentEnergyBandMonotonicity
+open CenteredMomentEnergyStageMonotonicity CenteredMomentEnergyReferenceLowBands
+open CenteredMomentEnergyPositiveHighSourceBound CenteredMomentNaturalFixedRaySource
+local notation "O"=> Eisenstein.O
+variable {α:Type*}
+variable (M:Ideal O)[NeZero M]
+local instance : Finite (O⧸M):=Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H:Subgroup (O⧸M)ˣ)(hH:RayOrthogonality.globalUnits M≤ H)
+
+theorem certified_from_stages
+    (W:ℝ→ℂ)(bslot a b radial Bmask L lo hi Mcap κ ε:ℝ)
+    (ha:0< a)(hmask:0≤ Bmask)(hMcap:0≤ Mcap)(hκ:0≤κ)(hε:0<ε)(k:ℕ)
+    (ez el eh:ℝ)
+    (hez:ez≤ stageLoss Mcap (finalSourceCap Mcap Bmask L ε) ε (k+1))
+    (hel:el≤ stageLoss Mcap (finalSourceCap Mcap Bmask L ε) ε (k+1))
+    (heh:eh≤ stageLoss Mcap (finalSourceCap Mcap Bmask L ε) ε (k+1))
+    (hold:CenteredMomentEnergyCappedWidthInduction.CertifiedBand (α:=α) M H hH
+      W bslot a b radial Bmask L lo hi Mcap κ ε k)
+    (hzero:∃J:ℕ,∃S:Finset (ℕ×ℕ),∀η₀:Character,∀Q:Ideal O,Q≤ M→
+      internalQ Q η₀≠0→internalQ Q η₀≠⊤→internalQ Q η₀≤ Ideal.span {(72:O)}→
+      ∃C:ℝ,0< C ∧ ∀ᶠZ:ℝ in atTop,
+        ZeroAt (internalQ Q η₀) (lowerAt a b Mcap ε (k+1)) b radial Bmask
+          (lengthAt Mcap Bmask L ε (k+1))
+          (bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε (k+1)) ez Z J S C)
+    (hlow:∃J:ℕ,∃S:Finset (ℕ×ℕ),∀η₀:Character,∀Q:Ideal O,Q≤ M→
+      internalQ Q η₀≠0→internalQ Q η₀≠⊤→internalQ Q η₀≤ Ideal.span {(72:O)}→
+      ∃C:ℝ,0< C ∧ ∀ᶠZ:ℝ in atTop,
+        PositiveLowAt (α:=α) M H hH W bslot (lowerAt a b Mcap ε (k+1)) b radial Bmask
+          (lengthAt Mcap Bmask L ε (k+1)) (fineMesh Mcap Bmask L κ ε) lo hi
+          (bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε (k+1)) el κ Z η₀ Q J S C)
+    (hhigh:∃J:ℕ,∃S:Finset (ℕ×ℕ),∀η₀:Character,∀Q:Ideal O,Q≤ M→
+      internalQ Q η₀≠0→internalQ Q η₀≠⊤→internalQ Q η₀≤ Ideal.span {(72:O)}→
+      ∃C:ℝ,0< C ∧ ∀ᶠZ:ℝ in atTop,
+        PositiveHighAt (α:=α) M H hH W bslot (lowerAt a b Mcap ε (k+1)) b radial Bmask
+          (lengthAt Mcap Bmask L ε (k+1)) (fineMesh Mcap Bmask L κ ε) lo hi
+          (bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε k)
+          (bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε (k+1)) eh κ Z η₀ Q J S C):
+    CenteredMomentEnergyCappedWidthInduction.CertifiedBand (α:=α) M H hH
+      W bslot a b radial Bmask L lo hi Mcap κ ε (k+1):=by
+  let Bs:=finalSourceCap Mcap Bmask L ε
+  have hBs:0≤ Bs:=sourceCap_nonneg Mcap Bmask L hMcap hmask _
+  have hr:0< reserve Mcap Bs ε:=(bounds Mcap Bs κ ε hMcap hBs hκ hε).2.2.2.1
+  have hlower:lowerAt a b Mcap ε k≤ lowerAt a b Mcap ε (k+1):=
+    CenteredMomentEnergyProfiles.lower_antitone a b ha (by unfold remaining;omega)
+  have hlength:lengthAt Mcap Bmask L ε (k+1)≤ lengthAt Mcap Bmask L ε k:=
+    range_mono Mcap Bmask L hMcap hmask (by unfold remaining;omega)
+  have hloss:stageLoss Mcap Bs ε k≤ stageLoss Mcap Bs ε (k+1):=by
+    unfold stageLoss
+    rw [loss_succ]
+    linarith
+  obtain ⟨Jold,Sold,hold⟩:=hold
+  obtain ⟨Jz,Sz,hzero⟩:=hzero
+  obtain ⟨Jl,Sl,hlow⟩:=hlow
+  obtain ⟨Jh,Sh,hhigh⟩:=hhigh
+  let J:=Jold+Jz+Jl+Jh
+  let S:=Sold∪Sz∪Sl∪Sh
+  have hJo:Jold≤ J:=by dsimp [J];omega
+  have hJz:Jz≤ J:=by dsimp [J];omega
+  have hJl:Jl≤ J:=by dsimp [J];omega
+  have hJh:Jh≤ J:=by dsimp [J];omega
+  have hSo:Sold⊆S:=by intro x hx;simp [S,hx]
+  have hSz:Sz⊆S:=by intro x hx;simp [S,hx]
+  have hSl:Sl⊆S:=by intro x hx;simp [S,hx]
+  have hSh:Sh⊆S:=by intro x hx;simp [S,hx]
+  refine ⟨J,S,?_⟩
+  intro η₀ Q hQM hQ0 hQt hQ72
+  obtain ⟨Coz,Cop,hCoz,hCop,hold⟩:=hold η₀ Q hQM hQ0 hQt hQ72
+  obtain ⟨Cz,hCz,hzero⟩:=hzero η₀ Q hQM hQ0 hQt hQ72
+  obtain ⟨Cl,hCl,hlow⟩:=hlow η₀ Q hQM hQ0 hQt hQ72
+  obtain ⟨Ch,hCh,hhigh⟩:=hhigh η₀ Q hQM hQ0 hQt hQ72
+  let Cp:=Cop+Cl+Ch
+  have hCp:0< Cp:=by dsimp [Cp];linarith
+  have hCop':Cop≤ Cp:=by dsimp [Cp];linarith
+  have hCl':Cl≤ Cp:=by dsimp [Cp];linarith
+  have hCh':Ch≤ Cp:=by dsimp [Cp];linarith
+  refine ⟨Cz,Cp,hCz,hCp,?_⟩
+  filter_upwards [hold,hzero,hlow,hhigh] with Z hold hz hl hh
+  refine ⟨hold.1,?_,?_⟩
+  · exact zeroAt_transport (internalQ Q η₀) _ _ _ _ _ _ _ Z _ _ _ _ _ _ _
+      Jz J Sz S Cz Cz hold.1.le le_rfl le_rfl le_rfl le_rfl le_rfl le_rfl
+      hez hJz hSz hCz.le le_rfl hz
+  · apply positive_from_stages (α:=α) M H hH W bslot _ _ _ _ _ _ _ _
+      (bandWidth Mcap Bs ε k) _ _ κ Z η₀ Q J S Cp
+    · exact positiveAt_transport (α:=α) M H hH W bslot _ _ _ _ _ _ _ _ _ _ κ Z
+        _ _ _ _ _ _ _ η₀ Q Jold J Sold S Cop Cp hold.1.le
+        hlower le_rfl le_rfl le_rfl hlength le_rfl hloss hJo hSo hCop.le hCop' hold.2.2
+    · exact positiveLowAt_transport (α:=α) M H hH W bslot _ _ _ _ _ _ _ _ _ _ κ Z
+        _ _ _ _ _ _ _ η₀ Q Jl J Sl S Cl Cp hold.1.le
+        le_rfl le_rfl le_rfl le_rfl le_rfl le_rfl hel hJl hSl hCl.le hCl' hl
+    · exact positiveHighAt_transport (α:=α) M H hH W bslot _ _ _ _ _ _ _ _ _ _ _ κ Z
+        _ _ _ _ _ _ _ _ η₀ Q Jh J Sh S Ch Cp hold.1.le
+        le_rfl le_rfl le_rfl le_rfl le_rfl le_rfl le_rfl heh hJh hSh hCh.le hCh' hh
+
+end CenteredMomentEnergyCappedSuccessorPacking
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+namespace CenteredMomentAmplificationChildInput
+open CenteredMomentCommonRadialData
+variable {ι : Type*} [Fintype ι]
+def volume (s : Input ι) : ℝ := s.X₁*s.X₂*∏i,s.P i
+
+theorem volume_pos (s : Input ι) : 0< volume s :=
+  mul_pos (mul_pos s.X₁_pos s.X₂_pos) (Finset.prod_pos (fun i _=> s.P_pos i))
+
+
+end CenteredMomentAmplificationChildInput
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentOriginalCommonHarmonic
+open HeckeFamily CanonicalQuadraticSieve
+open CenteredMomentCommonRadialData CenteredMomentSourceProfileMass CenteredMomentSourceMass
+open CenteredMomentSupportedZeroEnergy CenteredMomentSourceZeroEnergy CenteredMomentAddedZeroUniform
+open CenteredMomentActiveSource
+local notation "O" => Eisenstein.O
+variable {ι:Type*} [Fintype ι] [DecidableEq ι]
+local instance : DecidableEq (ι⊕Fin 2) := Classical.decEq _
+
+def coefficient (s:Input ι) (R seed:Ideal O) : Ideal O→ℂ:=
+  finiteColumnCoefficient (Fintype.piFinset s.pools)
+    (profileCoefficient R s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+
+def sourceRadius (s:Input ι):ℝ:=(∏i,s.hi i)*s.b₁*s.b₂*(s.X₁*s.X₂)*(∏i,s.P i)
+
+omit [DecidableEq ι] in
+ theorem original_column_mask (s:Input ι) (R seed I:Ideal O) (h:coefficient s R seed I≠0):
+    seed∣I:=by
+  obtain ⟨v,hv,hv0,he⟩:=finiteColumnCoefficient_witness (Fintype.piFinset s.pools)
+    (profileCoefficient R s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed) I h
+  rw [←he]
+  by_contra hn
+  apply hv0
+  simp only [profileCoefficient,hn,ite_false,mul_zero]
+
+omit [DecidableEq ι] in
+ theorem original_column_norm (s:Input ι) (R seed I:Ideal O)
+    (hz₁:s.W₁ 0=0) (hz₂:s.W₂ 0=0) (h:coefficient s R seed I≠0):
+    I≠0 ∧ (Ideal.absNorm I:ℝ)≤ sourceRadius s:=by
+  obtain ⟨v,hv,hv0,he⟩:=finiteColumnCoefficient_witness (Fintype.piFinset s.pools)
+    (profileCoefficient R s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed) I h
+  have hz (i:ι):s.W i 0=0:=by
+    by_contra hn
+    have hh:=(s.support i hn).1
+    linarith [s.lo_pos i]
+  have hh:=profileCoefficient_product_bound R s.ν s.W s.P s.hi s.W₁ s.W₂ s.b₁ s.b₂
+    s.X₁ s.X₂ s.Y₁ s.Y₂ (s.X₁*s.X₂) 1 1 seed s.P_pos s.X₁_pos s.X₂_pos s.Y₁_pos s.Y₂_pos
+    one_ne_zero one_ne_zero rfl s.same_product hz hz₁ hz₂
+    (fun i x hx=>(s.support i hx).2) (fun x hx=> s.support₁ hx) (fun x hx=> s.support₂ hx) v hv0
+  rw [he] at hh
+  simpa only [sourceRadius,map_one,Nat.cast_one,mul_one,div_one] using hh
+
+
+end CenteredMomentOriginalCommonHarmonic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentEnergyOriginalSource
+open HeckeFamily CanonicalQuadraticSieve 
+open CenteredMomentEligibleEnergy CenteredMomentCommonRadialData
+open CenteredMomentSourceRectangle CenteredMomentSourceRectangleMask
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentSourceRow
+open CenteredMomentHeckeExpansion CenteredMomentHeckeSlots CenteredMomentRetainedEnergy
+open CenteredMomentHeckeHeight
+open CenteredMomentDivisorRowEnergy CenteredMomentSecondHeightFamily
+open CenteredMomentOriginalCommonHarmonic CenteredMomentSourceRectangleEnergy
+open CenteredMomentPositiveSummability CenteredMomentPlainEnergy CenteredMomentRowNorm
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+local instance energyOriginalSourceDecidableSum : DecidableEq (ι⊕Fin 2) := Classical.decEq _
+
+def completeInput (s : Data ι) (hz₁ : s.W₁ 0=0) (hz₂ : s.W₂ 0=0)
+    (hν : ∀i I,‖s.ν i I‖≤1) (hW : ∀i x,‖s.W i x‖≤ s.M i)
+    (lo hi : ℝ) (hlo : 0< lo) (hl : ∀i,lo≤ s.lo i) (hh : ∀i,s.hi i≤ hi) : Input ι where
+  toData := s
+  plain₁ := plainSupportPool s.b₁ s.X₁ s.Y₁
+  plain₂ := plainSupportPool s.b₂ s.X₂ s.Y₂
+  plain₁_ne := by
+    intro I hI
+    rcases Finset.mem_union.mp hI with hI|hI
+    · exact (CenteredMomentSourceMass.mem_idealBall _ _).mp hI |>.1
+    · exact (CenteredMomentSourceMass.mem_idealBall _ _).mp hI |>.1
+  plain₂_ne := by
+    intro I hI
+    rcases Finset.mem_union.mp hI with hI|hI
+    · exact (CenteredMomentSourceMass.mem_idealBall _ _).mp hI |>.1
+    · exact (CenteredMomentSourceMass.mem_idealBall _ _).mp hI |>.1
+  coverage₁ := plainSupportPool_coverage s.W₁ s.b₁ s.X₁ s.Y₁ hz₁ s.support₁ s.X₁_pos s.Y₁_pos
+  coverage₂ := plainSupportPool_coverage s.W₂ s.b₂ s.X₂ s.Y₂ hz₂ s.support₂ s.X₂_pos s.Y₂_pos
+  ν_bound := hν
+  W_bound := hW
+  lower := lo
+  upper := hi
+  lower_pos := hlo
+  lower_le := hl
+  upper_ge := hh
+
+omit [DecidableEq ι] in
+lemma input_tuplePool (s : Input ι) :
+    Fintype.piFinset s.pools=tuplePool s.slots s.plain₁ s.plain₂ := by
+  ext v
+  simp only [Fintype.mem_piFinset,tuplePool,tuplePools,Input.pools]
+
+lemma input_polynomial_difference (s : Input ι) (R : Ideal O) (z : O) :
+    (∑I∈finiteColumns (Fintype.piFinset s.pools),coefficient s R 1 I*
+      rowWeight s.η fixedBadMask 1 z s.t I)=
+    (rowTwistedSum s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.t s.X₁*
+      rowTwistedSum s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₂ s.t s.X₂-
+     rowTwistedSum s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.t s.Y₁*
+      rowTwistedSum s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₂ s.t s.Y₂)*
+        ∏i,rowSlot s.η (fixedBadMask*cubicIdealGenerator R) 1 z (s.slots i)
+          (s.toData.coefficient i) s.t := by
+  unfold coefficient
+  rw [input_tuplePool]
+  rw [source_polynomial_eq_maskedRectangle s.η fixedBadMask 1 z s.t
+    (dvd_mul_right _ _) (dvd_mul_left _ _) s.slots s.plain₁ s.plain₂ R 1
+    s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 s.coverage₁ s.coverage₂]
+  simp only [map_one,Nat.cast_one,div_one,maskedRectangle,one_dvd,ite_true,one_mul]
+  exact actual_slot_rectangle_sum s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.slots
+    s.toData.coefficient s.t s.W₁ s.W₂ s.b₁ s.b₂ s.X₁ s.X₂ s.Y₁ s.Y₂
+    s.support₁ s.support₂ s.X₁_pos s.X₂_pos s.Y₁_pos s.Y₂_pos
+
+lemma normalized_input_difference (s : Input ι) (R : Ideal O) (z : O) :
+    positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+      s.toData.coefficient s.P s.t s.X₁ s.X₂-
+    positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+      s.toData.coefficient s.P s.t s.Y₁ s.Y₂=
+    (Real.sqrt (CenteredMomentAmplificationChildInput.volume s):ℂ)⁻¹*
+      ∑I∈finiteColumns (Fintype.piFinset s.pools),coefficient s R 1 I*
+        rowWeight s.η fixedBadMask 1 z s.t I := by
+  rw [input_polynomial_difference]
+  unfold positiveSlotRow CenteredMomentAmplificationChildInput.volume
+  rw [s.same_product]
+  ring
+
+omit [DecidableEq ι] in
+lemma input_energy_hasSum (s : Input ι) (R : Ideal O) (Φ : 𝓢(ℝ,ℂ))
+    (K : ℝ) (hK : 0< K) :
+    HasSum (fun z : O=>
+      ‖∑I∈finiteColumns (Fintype.piFinset s.pools),coefficient s R 1 I*
+        rowWeight s.η fixedBadMask 1 z s.t I‖^2*
+          (Φ (‖ringComplex z‖^2/K)).re)
+      (finiteHeckeEnergy s.η fixedBadMask 1 s.t (finiteColumns (Fintype.piFinset s.pools))
+        (coefficient s R 1) Φ K).re := by
+  have hs := Complex.hasSum_re (rowEnergy_summable Finset.univ
+    (sourceGenerator (finiteColumns (Fintype.piFinset s.pools))) (sourceGenerator_supported _)
+    (fun I=> coefficient s R 1 I*rowWeight s.η fixedBadMask 1 1 s.t I) Φ K hK).hasSum
+  change HasSum _ (CenteredMomentRowNorm.rowEnergy _ _ _ Φ K).re at hs
+  simp only [Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,zero_mul,sub_zero] at hs
+  simpa only [finiteHeckeEnergy_eq s.η fixedBadMask 1 s.t (dvd_mul_right _ _) (dvd_mul_left _ _),
+    finite_hecke_sum_eq_rowPolynomial s.η fixedBadMask 1 _ s.t (dvd_mul_right _ _) (dvd_mul_left _ _)] using hs
+
+theorem kept_difference_energy (s : Input ι) (R : Ideal O)
+    (keep : O→Prop) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    (∑'z : O,if keep z then
+      ‖positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+          s.toData.coefficient s.P s.t s.X₁ s.X₂-
+        positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+          s.toData.coefficient s.P s.t s.Y₁ s.Y₂‖^2*
+        (Φ (‖ringComplex z‖^2/K)).re else 0)=
+      CenteredMomentRestrictedSource.sourceRestrictedEnergy keep
+        (finiteColumns (Fintype.piFinset s.pools)) (coefficient s R 1)
+        (CenteredMomentHeckeColumnWindow.heightCoeff s.η s.t) Φ K /
+          CenteredMomentAmplificationChildInput.volume s := by
+  unfold CenteredMomentRestrictedSource.sourceRestrictedEnergy
+    CenteredMomentRestrictedEnergy.restrictedEnergy
+  rw [←tsum_div_const]
+  apply tsum_congr
+  intro z
+  rw [height_source_row]
+  by_cases hk : keep z
+  · rw [if_pos hk,if_pos hk,normalized_input_difference,
+      CenteredMomentDivisorRawEnergy.normalized_norm_sq _
+        (CenteredMomentAmplificationChildInput.volume_pos s)]
+    ring
+  · simp only [if_neg hk,zero_div]
+
+omit [DecidableEq ι] in
+lemma input_positive_summable (s : Input ι) (R : Ideal O) (keep : O→Prop)
+    (Φ : 𝓢(ℝ,ℂ)) (K X₁ X₂ : ℝ) (hK : 0< K) (hX₁ : 0< X₁) (hX₂ : 0< X₂) :
+    Summable (fun z : O=> if keep z then
+      ‖positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+        s.toData.coefficient s.P s.t X₁ X₂‖^2*
+          (Φ (‖ringComplex z‖^2/K)).re else 0) := by
+  obtain ⟨B,hB⟩ := product_bounded s.η (fixedBadMask*cubicIdealGenerator R) 1 s.t
+    (Real.sqrt (X₁*X₂*∏i,s.P i):ℂ)⁻¹ s.W₁ s.W₂ s.b₁ s.b₂ X₁ X₂
+    s.support₁ s.support₂ hX₁ hX₂ s.slots s.toData.coefficient
+  exact bounded_radial_summable _ B hB keep Φ K hK
+
+theorem positive_energy_comparison (s : Input ι) (R : Ideal O)
+    (r : CenteredMomentRadialEligibleEnergy.Radial) :
+    CenteredMomentInductionEnergy.energy s.η (fixedBadMask*cubicIdealGenerator R) 1 s.t
+      s.W₁ s.W₂ s.slots s.toData.coefficient s.P s.X₁ s.X₂ r.keep r.profile r.scale ≤
+    2*‖finiteHeckeEnergy s.η fixedBadMask 1 s.t (finiteColumns (Fintype.piFinset s.pools))
+      (coefficient s R 1) r.profile r.scale‖ / CenteredMomentAmplificationChildInput.volume s+
+    2*CenteredMomentInductionEnergy.energy s.η (fixedBadMask*cubicIdealGenerator R) 1 s.t
+      s.W₁ s.W₂ s.slots s.toData.coefficient s.P s.Y₁ s.Y₂ r.keep r.profile r.scale := by
+  let V := CenteredMomentAmplificationChildInput.volume s
+  have hV : 0< V := CenteredMomentAmplificationChildInput.volume_pos s
+  let f : O→ℝ := fun z=>
+    (‖∑I∈finiteColumns (Fintype.piFinset s.pools),coefficient s R 1 I*
+      rowWeight s.η fixedBadMask 1 z s.t I‖^2*
+      (r.profile (‖ringComplex z‖^2/r.scale)).re)/V
+  let g : O→ℝ := fun z=> if r.keep z then
+    ‖positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+      s.toData.coefficient s.P s.t s.Y₁ s.Y₂‖^2*
+      (r.profile (‖ringComplex z‖^2/r.scale)).re else 0
+  have hf := (input_energy_hasSum s R r.profile r.scale r.scale_pos).div_const V
+  have hg := input_positive_summable s R r.keep r.profile r.scale s.Y₁ s.Y₂
+    r.scale_pos s.Y₁_pos s.Y₂_pos
+  have hfn (z : O) : 0≤ f z := div_nonneg (mul_nonneg (sq_nonneg _) (r.nonneg z)) hV.le
+  have hgn (z : O) : 0≤ g z := by
+    dsimp only [g]
+    split_ifs
+    · exact mul_nonneg (sq_nonneg _) (r.nonneg z)
+    · rfl
+  unfold CenteredMomentInductionEnergy.energy
+  apply Real.tsum_le_of_sum_le (fun z=> by
+    split_ifs
+    · exact mul_nonneg (sq_nonneg _) (r.nonneg z)
+    · rfl)
+  intro rows
+  have hp (z : O) :
+      (if r.keep z then
+        ‖positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+          s.toData.coefficient s.P s.t s.X₁ s.X₂‖^2*
+          (r.profile (‖ringComplex z‖^2/r.scale)).re else 0) ≤ 2*f z+2*g z := by
+    by_cases hk : r.keep z
+    · let x := positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+        s.toData.coefficient s.P s.t s.X₁ s.X₂
+      let y := positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+        s.toData.coefficient s.P s.t s.Y₁ s.Y₂
+      have hn : ‖x‖≤‖x-y‖+‖y‖ := by simpa only [sub_add_cancel] using norm_add_le (x-y) y
+      have hsq : ‖x‖^2≤2*‖x-y‖^2+2*‖y‖^2 := by
+        have hh := pow_le_pow_left₀ (norm_nonneg x) hn 2
+        nlinarith [sq_nonneg (‖x-y‖-‖y‖)]
+      dsimp only [x,y] at hsq
+      rw [normalized_input_difference,CenteredMomentDivisorRawEnergy.normalized_norm_sq _ hV] at hsq
+      have hh := mul_le_mul_of_nonneg_right hsq (r.nonneg z)
+      dsimp only [f,g]
+      rw [if_pos hk,if_pos hk]
+      convert hh using 1 <;> first | rfl | ring
+    · rw [if_neg hk]
+      exact add_nonneg (mul_nonneg (by norm_num) (hfn z)) (mul_nonneg (by norm_num) (hgn z))
+  have hb := Finset.sum_le_sum (fun z (_:z∈rows)=> hp z)
+  rw [Finset.sum_add_distrib,←Finset.mul_sum,←Finset.mul_sum] at hb
+  have hs := sum_le_hasSum rows (fun z _=> hfn z) hf
+  have ht := sum_le_hasSum rows (fun z _=> hgn z) hg.hasSum
+  have he := div_le_div_of_nonneg_right
+    (Complex.re_le_norm (finiteHeckeEnergy s.η fixedBadMask 1 s.t
+      (finiteColumns (Fintype.piFinset s.pools)) (coefficient s R 1) r.profile r.scale)) hV.le
+  change ∑z∈rows,f z≤ _ at hs
+  change ∑z∈rows,g z≤∑'z,g z at ht
+  change _≤2*‖finiteHeckeEnergy s.η fixedBadMask 1 s.t
+    (finiteColumns (Fintype.piFinset s.pools)) (coefficient s R 1) r.profile r.scale‖/V+2*∑'z,g z
+  rw [mul_div_assoc]
+  linarith
+
+section Natural
+open CenteredMomentEnergyState CenteredMomentFiniteProfileExceptional
+variable {Z Bmask bΦ a b : ℝ}
+variable (state : NaturalState Z Bmask bΦ) (p : Profiles a b) (ha : 0< a)
+variable (S : ι→Finset (Ideal O)) (hp : ∀i,∀I∈S i,Prime I)
+variable (ν : ι→Character) (Wslot : ι→ℝ→ℂ) (P M : ι→ℝ)
+variable (hP : ∀i,0< P i) (hM : ∀i,1≤ M i)
+variable (aslot bslot : ℝ) (haslot : 0< aslot)
+variable (hsSlot : ∀i,Function.support (Wslot i)⊆Set.Icc aslot bslot)
+variable (hWslot : ∀i x,‖Wslot i x‖≤ M i)
+variable (t X₁ X₂ Y₁ Y₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂)
+variable (hY₁ : 0< Y₁) (hY₂ : 0< Y₂) (hsame : Y₁*Y₂=X₁*X₂)
+
+def naturalData : Data ι where
+  η := state.character
+  m := state.mask
+  A := 1
+  t := t
+  slots := S
+  prime := hp
+  ν := fun i=> idealCoeff (ν i)
+  W := Wslot
+  lo := fun _=> aslot
+  hi := fun _=> bslot
+  P := P
+  lo_pos := fun _=> haslot
+  P_pos := hP
+  support := hsSlot
+  W₁ := p.profile 0
+  W₂ := p.profile 1
+  X₁ := X₁
+  X₂ := X₂
+  Y₁ := Y₁
+  Y₂ := Y₂
+  M := M
+  M_ge_one := hM
+  coefficient_bound := fun i I _=> by
+    rw [norm_mul]
+    exact (mul_le_mul_of_nonneg_right (idealCoeff_norm_le_one (ν i) I) (norm_nonneg _)).trans
+      (by simpa only [one_mul] using hWslot i ((Ideal.absNorm I:ℝ)/P i))
+  b₁ := b
+  b₂ := b
+  support₁ := fun x hx=>(p.support 0 hx).2
+  support₂ := fun x hx=>(p.support 1 hx).2
+  X₁_pos := hX₁
+  X₂_pos := hX₂
+  Y₁_pos := hY₁
+  Y₂_pos := hY₂
+  same_product := hsame
+  rows := ∅
+  weight := fun _=>0
+  weight_nonneg := fun _ _=> le_refl _
+
+def naturalInput : Input ι :=
+  completeInput (naturalData state p S hp ν Wslot P M hP hM aslot bslot haslot hsSlot hWslot
+    t X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hsame)
+    (by
+      by_contra hn
+      exact (not_le_of_gt ha) ((p.support 0 hn).1))
+    (by
+      by_contra hn
+      exact (not_le_of_gt ha) ((p.support 1 hn).1))
+    (fun i I=> idealCoeff_norm_le_one (ν i) I) hWslot aslot bslot haslot
+    (fun _=> le_refl _) (fun _=> le_refl _)
+
+theorem natural_energy_comparison :
+    let inp := naturalInput state p ha S hp ν Wslot P M hP hM aslot bslot haslot hsSlot hWslot
+      t X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hsame
+    CenteredMomentInductionEnergy.energy state.character state.mask 1 t
+      (p.profile 0) (p.profile 1) S
+      (fun i I=> idealCoeff (ν i) I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) P X₁ X₂
+      state.radial.keep state.radial.profile state.radial.scale ≤
+    2*‖finiteHeckeEnergy state.character fixedBadMask 1 t
+      (finiteColumns (Fintype.piFinset inp.pools)) (coefficient inp state.puncture 1)
+      state.radial.profile state.radial.scale‖/(X₁*X₂*∏i,P i)+
+    2*CenteredMomentInductionEnergy.energy state.character state.mask 1 t
+      (p.profile 0) (p.profile 1) S
+      (fun i I=> idealCoeff (ν i) I*Wslot i ((Ideal.absNorm I:ℝ)/P i)) P Y₁ Y₂
+      state.radial.keep state.radial.profile state.radial.scale :=
+  positive_energy_comparison
+    (naturalInput state p ha S hp ν Wslot P M hP hM aslot bslot haslot hsSlot hWslot
+      t X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hsame) state.puncture state.radial
+
+end Natural
+end CenteredMomentEnergyOriginalSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+namespace CenteredMomentAllocatedRayDictionary
+open HeckeFamily CenteredMomentCommonRadialData CenteredMomentCommonHeightEnvelope
+open CenteredMomentCommonAllocationSum CenteredMomentDivisorAllocation
+open CenteredMomentCommonMaskEnergy CenteredMomentInductionEnergy
+open CenteredMomentNaturalFixedRaySource CenteredMomentPrimeSlot HeckePrimeAnnular
+open CenteredMomentAllocatedNaturalSource CenteredMomentRetainedProfile
+open CenteredMomentHeckeTwist CenteredMomentHeckeCancellation
+local notation "O" => Eisenstein.O
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+section RayData
+variable (M : Ideal O) [NeZero M]
+local instance : Finite (O ⧸ M) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne M)
+variable (H : Subgroup (O ⧸ M)ˣ) (hH : RayOrthogonality.globalUnits M ≤ H)
+
+structure Matches (s : Input α) (η₀ : Character)
+    (θ : α → RayQuotient.Characters M H) (w σ freq : α → ℝ)
+    (W : ℝ → ℂ) (bslot Z : ℝ) : Prop where
+  character : ∀ i I, s.ν i I = idealCoeff (relativeCharacter M H hH η₀ (θ i)) I
+  profile : ∀ i y, s.W i y = W y * (y : ℂ)^(-HeckeDyadic.shift (σ i) (freq i))
+  pool : ∀ i, s.slots i = primePool M H bslot (Z^(w i))
+  scale : ∀ i, s.P i = Z^(w i)
+
+
+end RayData
+end CenteredMomentAllocatedRayDictionary
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentEnergyNaturalInputMatches
+open HeckeFamily HeckePrimeAnnular CenteredMomentPrimeSlot
+open CenteredMomentEnergyState CenteredMomentFiniteProfileExceptional
+open CenteredMomentCommonRadialData CenteredMomentNaturalFixedRaySource
+open CenteredMomentInductionEnergy CenteredMomentHeckeSlots CenteredMomentRetainedEnergy
+local notation "O" => Eisenstein.O
+
+def profile (W : ℝ → ℂ) (σ freq y : ℝ) : ℂ :=
+  W y * (y : ℂ)^(-HeckeDyadic.shift σ freq)
+
+lemma profile_support (W : ℝ → ℂ) (a b : ℝ)
+    (hWs : Function.support W ⊆ Set.Icc a b) (σ freq : ℝ) :
+    Function.support (profile W σ freq) ⊆ Set.Icc a b := by
+  intro y hy
+  apply hWs
+  intro hz
+  exact hy (by simp only [profile, hz, zero_mul])
+
+lemma profile_zero (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hWs : Function.support W ⊆ Set.Icc a b) (σ freq : ℝ) :
+    profile W σ freq 0 = 0 := by
+  by_contra hn
+  exact (not_le_of_gt ha) ((profile_support W a b hWs σ freq hn).1)
+
+lemma profile_norm (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hWs : Function.support W ⊆ Set.Icc a b) (σ freq y : ℝ) :
+    ‖profile W σ freq y‖ = ‖W y‖ * y^(-σ) := by
+  by_cases hz : W y = 0
+  · simp only [profile, hz, zero_mul, norm_zero]
+  · have hy : 0 < y := ha.trans_le (hWs hz).1
+    simp only [profile, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy,
+      Complex.neg_re, HeckeDyadic.shift_re]
+
+theorem exists_profile_bound (W : ℝ → ℂ) (hW : Continuous W)
+    (a b lo hi : ℝ) (ha : 0 < a)
+    (hWs : Function.support W ⊆ Set.Icc a b) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ σ ∈ Set.Icc lo hi, ∀ freq y : ℝ,
+      ‖profile W σ freq y‖ ≤ C := by
+  obtain ⟨C, hC, hb⟩ := fixed_profile_norm_bound W hW a b lo hi ha
+  refine ⟨max 1 C, le_max_left _ _, ?_⟩
+  intro σ hσ freq y
+  by_cases hz : W y = 0
+  · simpa only [profile, hz, zero_mul, norm_zero] using
+      (zero_le_one.trans (le_max_left 1 C))
+  · rw [profile_norm W a b ha hWs]
+    exact (hb σ hσ y (hWs hz)).trans (le_max_right _ _)
+
+def profileBound (W : ℝ → ℂ) (hW : Continuous W)
+    (a b lo hi : ℝ) (ha : 0 < a)
+    (hWs : Function.support W ⊆ Set.Icc a b) : ℝ :=
+  (exists_profile_bound W hW a b lo hi ha hWs).choose
+
+lemma profileBound_ge_one (W : ℝ → ℂ) (hW : Continuous W)
+    (a b lo hi : ℝ) (ha : 0 < a)
+    (hWs : Function.support W ⊆ Set.Icc a b) :
+    1 ≤ profileBound W hW a b lo hi ha hWs :=
+  (exists_profile_bound W hW a b lo hi ha hWs).choose_spec.1
+
+lemma norm_profile_le (W : ℝ → ℂ) (hW : Continuous W)
+    (a b lo hi : ℝ) (ha : 0 < a)
+    (hWs : Function.support W ⊆ Set.Icc a b)
+    (σ : ℝ) (hσ : σ ∈ Set.Icc lo hi) (freq y : ℝ) :
+    ‖profile W σ freq y‖ ≤ profileBound W hW a b lo hi ha hWs :=
+  (exists_profile_bound W hW a b lo hi ha hWs).choose_spec.2 σ hσ freq y
+
+section Input
+variable {ι : Type*} [Fintype ι]
+variable (Q : Ideal O) [NeZero Q]
+local instance : Finite (O ⧸ Q) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne Q)
+variable (H : Subgroup (O ⧸ Q)ˣ) (hH : RayOrthogonality.globalUnits Q ≤ H)
+variable (η₀ : Character) (θ : ι → RayQuotient.Characters Q H)
+variable (W : ℝ → ℂ) (hW : Continuous W)
+variable (aslot bslot lo hi : ℝ) (haslot : 0 < aslot)
+variable (hWs : Function.support W ⊆ Set.Icc aslot bslot)
+variable (w σ freq : ι → ℝ) (hσ : ∀ i, σ i ∈ Set.Icc lo hi)
+variable {Z Bmask bΦ a b : ℝ}
+variable (state : NaturalState Z Bmask bΦ) (p : Profiles a b) (ha : 0 < a)
+variable (t X₁ X₂ Y₁ Y₂ : ℝ) (hX₁ : 0 < X₁) (hX₂ : 0 < X₂)
+variable (hY₁ : 0 < Y₁) (hY₂ : 0 < Y₂) (hsame : Y₁ * Y₂ = X₁ * X₂)
+
+def input : Input ι :=
+  CenteredMomentEnergyOriginalSource.naturalInput state p ha
+    (fun i => primePool Q H bslot (Z^(w i)))
+    (fun _ _ hI => (Finset.mem_filter.mp hI).2.1)
+    (fun i => relativeCharacter Q H hH η₀ (θ i))
+    (fun i => profile W (σ i) (freq i)) (fun i => Z^(w i))
+    (fun _ => profileBound W hW aslot bslot lo hi haslot hWs)
+    (fun _ => Real.rpow_pos_of_pos (zero_lt_one.trans_le state.base_ge_one) _)
+    (fun _ => profileBound_ge_one W hW aslot bslot lo hi haslot hWs)
+    aslot bslot haslot (fun i => profile_support W aslot bslot hWs (σ i) (freq i))
+    (fun i => norm_profile_le W hW aslot bslot lo hi haslot hWs (σ i) (hσ i) (freq i))
+    t X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hsame
+
+local notation "inp" => input Q H hH η₀ θ W hW aslot bslot lo hi haslot hWs
+  w σ freq hσ state p ha t X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hsame
+
+theorem input_matches :
+    CenteredMomentAllocatedRayDictionary.Matches Q H hH inp η₀ θ w σ freq W bslot Z := by
+  constructor <;> intros <;> rfl
+
+lemma lower_eq : (inp).lower = aslot := rfl
+lemma upper_eq : (inp).upper = bslot := rfl
+lemma slot_control_eq (i : ι) :
+    (inp).M i = profileBound W hW aslot bslot lo hi haslot hWs := rfl
+lemma character_eq : (inp).η = state.character := rfl
+lemma mask_eq : (inp).m = state.mask := rfl
+lemma height_eq : (inp).t = t := rfl
+lemma first_rectangle_eq : (inp).X₁ = X₁ ∧ (inp).X₂ = X₂ := ⟨rfl, rfl⟩
+lemma second_rectangle_eq : (inp).Y₁ = Y₁ ∧ (inp).Y₂ = Y₂ := ⟨rfl, rfl⟩
+
+theorem coefficient_eq (i : ι) (I : Ideal O) :
+    (inp).toData.coefficient i I =
+      idealCoeff (relativeCharacter Q H hH η₀ (θ i)) I *
+        annularWeight W (Z^(w i)) (σ i) (freq i) I := rfl
+
+theorem positive_row_eq (z : O) :
+    positiveSlotRow (inp).η state.mask 1 z (inp).W₁ (inp).W₂ (inp).slots
+      (inp).toData.coefficient (inp).P (inp).t (inp).X₁ (inp).X₂ =
+    positiveSlotRow state.character state.mask 1 z (p.profile 0) (p.profile 1)
+      (fun i => primePool Q H bslot (Z^(w i)))
+      (fun i I => idealCoeff (relativeCharacter Q H hH η₀ (θ i)) I *
+        annularWeight W (Z^(w i)) (σ i) (freq i) I)
+      (fun i => Z^(w i)) t X₁ X₂ := rfl
+
+theorem energy_eq :
+    energy (inp).η state.mask 1 (inp).t (inp).W₁ (inp).W₂ (inp).slots
+      (inp).toData.coefficient (inp).P (inp).X₁ (inp).X₂
+      state.radial.keep state.radial.profile state.radial.scale =
+    energy state.character state.mask 1 t (p.profile 0) (p.profile 1)
+      (fun i => primePool Q H bslot (Z^(w i)))
+      (fun i I => idealCoeff (relativeCharacter Q H hH η₀ (θ i)) I *
+        annularWeight W (Z^(w i)) (σ i) (freq i) I)
+      (fun i => Z^(w i)) X₁ X₂
+      state.radial.keep state.radial.profile state.radial.scale := rfl
+
+theorem reference_energy_eq :
+    energy (inp).η state.mask 1 (inp).t (inp).W₁ (inp).W₂ (inp).slots
+      (inp).toData.coefficient (inp).P (inp).Y₁ (inp).Y₂
+      state.radial.keep state.radial.profile state.radial.scale =
+    energy state.character state.mask 1 t (p.profile 0) (p.profile 1)
+      (fun i => primePool Q H bslot (Z^(w i)))
+      (fun i I => idealCoeff (relativeCharacter Q H hH η₀ (θ i)) I *
+        annularWeight W (Z^(w i)) (σ i) (freq i) I)
+      (fun i => Z^(w i)) Y₁ Y₂
+      state.radial.keep state.radial.profile state.radial.scale := rfl
+
+end Input
+end CenteredMomentEnergyNaturalInputMatches
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+open Filter
+
+namespace CenteredMomentEnergyZeroComparison
+open HeckeFamily CenteredMomentCommonRadialData CenteredMomentEnergyOriginalSource
+open CenteredMomentRadialEligibleEnergy CenteredMomentInductionEnergy
+open CenteredMomentRetainedProfile CenteredMomentRetainedEnergy
+open CenteredMomentHeckeExpansion CenteredMomentOriginalCommonHarmonic
+open CenteredMomentAmplificationChildInput CenteredMomentSourceRow
+open CanonicalQuadraticSieve  CenteredMomentSecondHeightFamily
+open CenteredMomentSourceProfileMass CenteredMomentHeckeHeight CenteredMomentSourceMass
+local notation "O" => Eisenstein.O
+variable {ι:Type*}[Fintype ι][DecidableEq ι]
+local instance : DecidableEq (ι⊕Fin 2):=energyOriginalSourceDecidableSum
+
+def smallScale (b:ℝ):ℝ:=1/(2*max 1 b)
+
+lemma smallScale_pos (b:ℝ):0< smallScale b:=by unfold smallScale;positivity
+
+lemma smallScale_le_one (b:ℝ):smallScale b≤1:=by
+  unfold smallScale
+  apply (div_le_iff₀ (by positivity:0<(2:ℝ)*max 1 b)).mpr
+  linarith [le_max_left (1:ℝ) b]
+
+lemma smallScale_strict (b:ℝ):smallScale b*b<1:=by
+  have hm:0< max 1 b:=zero_lt_one.trans_le (le_max_left _ _)
+  unfold smallScale
+  have hb:=le_max_right (1:ℝ) b
+  rw [div_mul_eq_mul_div,one_mul]
+  exact (div_lt_iff₀ (mul_pos (by norm_num) hm)).mpr (by linarith)
+
+def zeroData (s:Input ι):CenteredMomentEligibleEnergy.Data ι := { s.toData with
+  Y₁ := smallScale s.b₁
+  Y₂ := s.X₁*s.X₂/smallScale s.b₁
+  Y₁_pos := smallScale_pos _
+  Y₂_pos := div_pos (mul_pos s.X₁_pos s.X₂_pos) (smallScale_pos _)
+  same_product := by field_simp [ne_of_gt (smallScale_pos s.b₁)] }
+
+def zeroInput (s:Input ι)(hz₁:s.W₁ 0=0)(hz₂:s.W₂ 0=0):Input ι :=
+  completeInput (zeroData s) hz₁ hz₂ s.ν_bound s.W_bound s.lower s.upper
+    s.lower_pos s.lower_le s.upper_ge
+
+omit [DecidableEq ι] in
+@[simp] lemma zeroInput_volume (s:Input ι)(hz₁:s.W₁ 0=0)(hz₂:s.W₂ 0=0):
+    volume (zeroInput s hz₁ hz₂)=volume s:=rfl
+
+omit [DecidableEq ι] in
+lemma comparison_row_zero (s:Input ι)(hz₁:s.W₁ 0=0)(hz₂:s.W₂ 0=0)
+    (R:Ideal O)(z:O):
+    positiveSlotRow s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.W₂ s.slots
+      s.toData.coefficient s.P s.t (zeroInput s hz₁ hz₂).Y₁ (zeroInput s hz₁ hz₂).Y₂=0:=by
+  unfold positiveSlotRow
+  change _*(rowTwistedSum s.η (fixedBadMask*cubicIdealGenerator R) 1 z s.W₁ s.t (smallScale s.b₁)*_*_)=0
+  rw [strict_subunit_rowTwistedSum_zero s.η (fixedBadMask*cubicIdealGenerator R) 1 z
+    s.W₁ s.b₁ s.t (smallScale s.b₁) (smallScale_pos _) s.support₁ (smallScale_strict _)]
+  simp only [zero_mul,mul_zero]
+
+omit [DecidableEq ι] in
+lemma comparison_energy_zero (s:Input ι)(hz₁:s.W₁ 0=0)(hz₂:s.W₂ 0=0)
+    (R:Ideal O)(r:Radial):
+    CenteredMomentInductionEnergy.energy s.η (fixedBadMask*cubicIdealGenerator R) 1 s.t s.W₁ s.W₂ s.slots
+      s.toData.coefficient s.P (zeroInput s hz₁ hz₂).Y₁ (zeroInput s hz₁ hz₂).Y₂
+      r.keep r.profile r.scale=0:=by
+  unfold CenteredMomentInductionEnergy.energy
+  simp only [comparison_row_zero s hz₁ hz₂ R, norm_zero, zero_pow (by decide : (2:ℕ)≠0),
+    zero_mul, ite_self, tsum_zero]
+
+theorem actual_zero_comparison_entry (s:Input ι)(hz₁:s.W₁ 0=0)(hz₂:s.W₂ 0=0)
+    (R:Ideal O)(r:Radial):
+    CenteredMomentInductionEnergy.energy s.η (fixedBadMask*cubicIdealGenerator R) 1 s.t s.W₁ s.W₂ s.slots
+      s.toData.coefficient s.P s.X₁ s.X₂ r.keep r.profile r.scale≤
+    2*‖finiteHeckeEnergy s.η fixedBadMask 1 s.t
+      (finiteColumns (Fintype.piFinset (zeroInput s hz₁ hz₂).pools))
+      (coefficient (zeroInput s hz₁ hz₂) R 1) r.profile r.scale‖/volume s:=by
+  have hh:=positive_energy_comparison (zeroInput s hz₁ hz₂) R r
+  change _≤ _+2*CenteredMomentInductionEnergy.energy s.η (fixedBadMask*cubicIdealGenerator R) 1 s.t s.W₁ s.W₂ s.slots
+    s.toData.coefficient s.P (zeroInput s hz₁ hz₂).Y₁ (zeroInput s hz₁ hz₂).Y₂
+    r.keep r.profile r.scale at hh
+  rw [comparison_energy_zero s hz₁ hz₂ R r,mul_zero,add_zero] at hh
+  exact hh
+
+omit [DecidableEq ι] in
+theorem zero_comparison_scale_caps (b L ε:ℝ)(hL:0≤ L)(hε:0<ε):
+    ∀ᶠ Z:ℝ in atTop,1< Z ∧ ∀s:Input ι,∀hz₁:s.W₁ 0=0,∀hz₂:s.W₂ 0=0,
+      s.b₁≤ b → s.X₁≤ Z^L → s.X₂≤ Z^L →
+      (zeroInput s hz₁ hz₂).Y₁≤ Z^(2*L+ε) ∧
+      (zeroInput s hz₁ hz₂).Y₂≤ Z^(2*L+ε):=by
+  filter_upwards [(Filter.tendsto_atTop.1 (tendsto_rpow_atTop hε)) (2*max 1 b),
+    eventually_gt_atTop (1:ℝ)] with Z hc hZ
+  refine ⟨hZ,?_⟩
+  intro s hz₁ hz₂ hb hX₁ hX₂
+  have hZ0:0< Z:=zero_lt_one.trans hZ
+  refine ⟨(smallScale_le_one _).trans (Real.one_le_rpow hZ.le (by positivity)),?_⟩
+  change s.X₁*s.X₂/smallScale s.b₁≤ _
+  have hp:s.X₁*s.X₂≤ Z^(2*L):=by
+    have hh:=mul_le_mul hX₁ hX₂ s.X₂_pos.le (Real.rpow_pos_of_pos hZ0 L).le
+    rw [←Real.rpow_add hZ0] at hh
+    simpa only [two_mul] using hh
+  have hconst:2*max 1 s.b₁≤ Z^ε:=(mul_le_mul_of_nonneg_left (max_le_max_left 1 hb) (by norm_num)).trans hc
+  unfold smallScale
+  rw [div_div_eq_mul_div,div_one]
+  calc
+    s.X₁*s.X₂*(2*max 1 s.b₁)≤ Z^(2*L)*Z^ε:=
+      mul_le_mul hp hconst (by positivity) (Real.rpow_pos_of_pos hZ0 _).le
+    _=Z^(2*L+ε):=(Real.rpow_add hZ0 _ _).symm
+
+end CenteredMomentEnergyZeroComparison
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentEnergyInputParentCapacity
+open CenteredMomentEnergyBands CenteredMomentCommonRadialData
+open CenteredMomentAmplificationChildInput
+variable {ι:Type*} [Fintype ι]
+
+lemma raw_log_le_length (Z X:ℝ)(hZ:1< Z)(hX:0< X):
+    Real.logb Z X≤ length Z X :=
+  Real.logb_le_logb_of_le hZ hX (le_max_right _ _)
+
+lemma length_eq_max_log (Z X:ℝ)(hZ:1< Z)(hX:0< X):
+    length Z X=max 0 (Real.logb Z X) := by
+  by_cases hx:1≤ X
+  · rw [length,max_eq_right hx,max_eq_right (Real.logb_nonneg hZ hx)]
+  · have hh:X≤1:=le_of_not_ge hx
+    have hl:Real.logb Z X≤0 := by
+      simpa using Real.logb_le_logb_of_le hZ hX hh
+    rw [length,max_eq_left hh,Real.logb_one,max_eq_left hl]
+
+theorem postmask_length (Z X D:ℝ)(hZ:1< Z)(hD:1≤ D):
+    length Z (max 1 X/D)=length Z X-min (Real.logb Z D) (length Z X) := by
+  have hp:0< max 1 X:=lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+  have hd:0< D:=zero_lt_one.trans_le hD
+  rw [length_eq_max_log Z _ hZ (div_pos hp hd),Real.logb_div hp.ne' hd.ne']
+  change max 0 (length Z X-Real.logb Z D)=_
+  by_cases h:Real.logb Z D≤ length Z X
+  · rw [min_eq_left h,max_eq_right (sub_nonneg.mpr h)]
+  · rw [min_eq_right (le_of_not_ge h),max_eq_left (sub_nonpos.mpr (le_of_not_ge h)),sub_self]
+
+lemma postmask_length_le (Z X D:ℝ)(hZ:1< Z)(hD:1≤ D):
+    length Z (max 1 X/D)≤ length Z X := by
+  rw [postmask_length Z X D hZ hD]
+  have hm:0≤ min (Real.logb Z D) (length Z X):=
+    le_min (Real.logb_nonneg hZ hD) (length_nonneg Z X hZ)
+  linarith
+
+theorem input_volume_log (s:Input ι)(Z:ℝ):
+    Real.logb Z (volume s)=Real.logb Z s.X₁+Real.logb Z s.X₂+
+      ∑i,Real.logb Z (s.P i) := by
+  rw [volume,Real.logb_mul (mul_pos s.X₁_pos s.X₂_pos).ne'
+    (Finset.prod_pos (fun i _=> s.P_pos i)).ne',
+    Real.logb_mul s.X₁_pos.ne' s.X₂_pos.ne',
+    Real.logb_prod _ _ (fun i _=>(s.P_pos i).ne')]
+
+theorem input_affine_capacity (s:Input ι)(Z κ M:ℝ)(hZ:1< Z)
+    (hcap:length Z s.X₁+length Z s.X₂+6*κ*(∑i,Real.logb Z (s.P i))≤ M):
+    Real.logb Z (volume s)+(6*κ-1)*(∑i,Real.logb Z (s.P i))≤ M := by
+  rw [input_volume_log]
+  have h1:=raw_log_le_length Z s.X₁ hZ s.X₁_pos
+  have h2:=raw_log_le_length Z s.X₂ hZ s.X₂_pos
+  nlinarith
+
+theorem input_reference_affine_capacity (s:Input ι)(Z κ M:ℝ)(hZ:1< Z)
+    (hcap:length Z s.X₁+length Z s.X₂+6*κ*(∑i,Real.logb Z (s.P i))≤ M):
+    Real.logb Z (s.Y₁*s.Y₂*∏i,s.P i)+(6*κ-1)*(∑i,Real.logb Z (s.P i))≤ M := by
+  rw [s.same_product]
+  exact input_affine_capacity s Z κ M hZ hcap
+
+theorem original_slot_logs (s:Input ι)(Z:ℝ)(hZ:1< Z)(w:ι→ℝ)
+    (hw:∀i,0≤ w i)(hP:∀i,s.P i=Z^(w i)):
+    (∀i,1≤ s.P i) ∧ (∀i,Real.logb Z (s.P i)=w i) := by
+  constructor
+  · intro i;rw [hP i];exact Real.one_le_rpow hZ.le (hw i)
+  · intro i;rw [hP i,Real.logb_rpow (zero_lt_one.trans hZ) hZ.ne']
+
+theorem original_exponent_capacity (s:Input ι)(Z κ M:ℝ)(hZ:1< Z)(w:ι→ℝ)
+    (hP:∀i,s.P i=Z^(w i))
+    (hcap:length Z s.X₁+length Z s.X₂+6*κ*(∑i,w i)≤ M):
+    Real.logb Z (volume s)+(6*κ-1)*(∑i,Real.logb Z (s.P i))≤ M := by
+  apply input_affine_capacity s Z κ M hZ
+  simpa only [hP,Real.logb_rpow (zero_lt_one.trans hZ) hZ.ne'] using hcap
+
+theorem original_volume_cap (s:Input ι)(Z κ M:ℝ)(hZ:1< Z)(hk:1/6≤κ)
+    (hP:∀i,1≤ s.P i)
+    (hcap:length Z s.X₁+length Z s.X₂+6*κ*(∑i,Real.logb Z (s.P i))≤ M):
+    volume s≤ Z^M := by
+  have hh:=input_affine_capacity s Z κ M hZ hcap
+  have hn:0≤∑i,Real.logb Z (s.P i):=
+    Finset.sum_nonneg (fun i _=> Real.logb_nonneg hZ (hP i))
+  have hp:0≤(6*κ-1)*(∑i,Real.logb Z (s.P i)):=mul_nonneg (by linarith) hn
+  exact (Real.logb_le_iff_le_rpow hZ (volume_pos s)).mp (by linarith)
+
+end CenteredMomentEnergyInputParentCapacity
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+namespace CenteredMomentSourceInputTailUniform
+open CenteredMomentCommonRadialData
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+def plainControl (s:Input ι)(W₁ W₂:𝓢(ℝ,ℂ)):ℝ:=
+  (∏i,s.M i)*SchwartzMap.seminorm ℝ 0 0 W₁*SchwartzMap.seminorm ℝ 0 0 W₂
+
+omit [DecidableEq ι] in
+lemma plainControl_nonneg (s:Input ι)(W₁ W₂:𝓢(ℝ,ℂ)):0≤ plainControl s W₁ W₂:=by
+  unfold plainControl
+  exact mul_nonneg (mul_nonneg (Finset.prod_nonneg (fun i _=>(s.M_ge_one i).trans' zero_le_one))
+    (apply_nonneg _ _)) (apply_nonneg _ _)
+
+
+end CenteredMomentSourceInputTailUniform
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentFirstPhysicalSource
+open Eisenstein  HeckeFamily CanonicalQuadraticSieve
+open CenteredMomentSecondHeightFamily CenteredMomentCanonicalFirst
+open CenteredMomentFirstCanonicalFamily
+local notation "O"=> Eisenstein.O
+
+def fixedPresentationCost : ℝ:=
+  (Ideal.absNorm (Ideal.span {fixedBadMask}):ℝ)*Ideal.absNorm (Ideal.span {(72:O)})
+
+theorem fixedPresentationCost_pos : 0< fixedPresentationCost:=by
+  apply mul_pos
+  · exact_mod_cast Nat.pos_of_ne_zero
+      (Ideal.absNorm_eq_zero_iff.not.mpr (by simpa only [Ideal.span_singleton_eq_bot] using fixedBadMask_ne_zero))
+  · exact_mod_cast Nat.pos_of_ne_zero
+      (Ideal.absNorm_eq_zero_iff.not.mpr (by simp))
+
+theorem fixed_presentation_norm (η τ:Character)(C D:Ideal O)(E:Finset (CommonIndex C D))
+    (hM:τ.modulus=η.modulus*Ideal.span {fixedBadMask}*Ideal.span {(72:O)}*
+      Ideal.span {TruncatedPrincipalPoisson.primeSubsetGenerator (fun P:CommonIndex C D=> P.val) E*activeConductor C D}):
+    (τ.modulus.absNorm:ℝ)=fixedPresentationCost*(η.modulus.absNorm:ℝ)*
+      ‖ringComplex (TruncatedPrincipalPoisson.primeSubsetGenerator (fun P:CommonIndex C D=> P.val) E)‖^2*
+      ‖ringComplex (activeConductor C D)‖^2:=by
+  rw [hM,←Ideal.span_singleton_mul_span_singleton]
+  simp only [map_mul,Nat.cast_mul,ringComplex_norm_sq_eq_absNorm_span,fixedPresentationCost]
+  ring
+
+theorem fixed_pair_presentation_caps (η τ₁ τ₂:Character)(C D:Ideal O)
+    (E:Finset (CommonIndex C D))
+    (hM₁:τ₁.modulus=η.modulus*Ideal.span {fixedBadMask}*Ideal.span {(72:O)}*
+      Ideal.span {TruncatedPrincipalPoisson.primeSubsetGenerator (fun P:CommonIndex C D=> P.val) E*activeConductor C D})
+    (hM₂:τ₂.modulus=η.modulus*Ideal.span {fixedBadMask}*Ideal.span {(72:O)}*
+      Ideal.span {TruncatedPrincipalPoisson.primeSubsetGenerator (fun P:CommonIndex C D=> P.val) E*activeConductor C D}):
+    (τ₁.modulus.absNorm:ℝ)≤ fixedPresentationCost*(η.modulus.absNorm:ℝ)*
+      ‖ringComplex (TruncatedPrincipalPoisson.primeSubsetGenerator (fun P:CommonIndex C D=> P.val) E)‖^2*
+      ‖ringComplex (activeConductor C D)‖^2 ∧
+    (τ₂.modulus.absNorm:ℝ)≤ fixedPresentationCost*(η.modulus.absNorm:ℝ)*
+      ‖ringComplex (TruncatedPrincipalPoisson.primeSubsetGenerator (fun P:CommonIndex C D=> P.val) E)‖^2*
+      ‖ringComplex (activeConductor C D)‖^2:=
+  ⟨(fixed_presentation_norm η τ₁ C D E hM₁).le,(fixed_presentation_norm η τ₂ C D E hM₂).le⟩
+
+end CenteredMomentFirstPhysicalSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+namespace CenteredMomentFirstReferenceEnergy
+open CenteredMomentCommonRadialData CenteredMomentSecondHeightFamily
+open CenteredMomentFirstPhysicalSource
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+def sourceFactor (s:Input ι)(a₁ a₂ K:ℝ):ℝ:=
+  (Real.exp (Real.log 4)/((∏i,s.lo i)*a₁*a₂))*fixedPresentationCost*K*(s.η.modulus.absNorm:ℝ)
+omit [DecidableEq ι] in
+lemma sourceFactor_nonneg (s:Input ι)(a₁ a₂ K:ℝ)(ha₁:0< a₁)(ha₂:0< a₂)(hK:0< K):
+    0≤ sourceFactor s a₁ a₂ K:=by
+  have hlo:0<∏i,s.lo i:=Finset.prod_pos (fun i _=> s.lo_pos i)
+  have hf:=fixedPresentationCost_pos
+  unfold sourceFactor
+  positivity
+
+
+end CenteredMomentFirstReferenceEnergy
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentEnergyOriginalProfileControl
+open CenteredMomentFirstPhysicalSource
+open HeckeFamily CenteredMomentCommonRadialData CenteredMomentFiniteProfileExceptional
+open CenteredMomentSourceInputTailUniform CenteredMomentFirstReferenceEnergy
+open CenteredMomentEnergyZeroComparison CenteredMomentEnergyNaturalInputMatches
+open CenteredMomentEnergyState
+variable {ι:Type*}[Fintype ι][DecidableEq ι]
+
+omit [DecidableEq ι] in
+lemma slot_product_le (s:Input ι)(N:ℕ)(C:ℝ)(hC:1≤ C)
+    (hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C): (∏i,s.M i)≤ C^N := by
+  calc
+    _≤∏_i:ι,C:=Finset.prod_le_prod (fun i _=>(s.M_ge_one i).trans' zero_le_one) (fun i _=> hM i)
+    _=C^(Fintype.card ι):=by simp
+    _≤ C^N:=pow_le_pow_right₀ hC hN
+
+omit [DecidableEq ι] in
+lemma plain_control_le {a b:ℝ}(s:Input ι)(p:Profiles a b)(S:Finset (ℕ×ℕ))
+    (N:ℕ)(C:ℝ)(hC:1≤ C)(hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C):
+    plainControl s (p.profile 0) (p.profile 1)≤ C^N*p.control (insert (0,0) S) := by
+  have h0 (i:Fin 2):SchwartzMap.seminorm ℝ 0 0 (p.profile i)≤
+      sourceControl (insert (0,0) S) (p.profile i):=
+    Seminorm.le_finset_sup_apply (p:=schwartzSeminormFamily ℝ ℝ ℂ)
+      (s:=insert (0,0) S) (i:=(0,0)) (x:=p.profile i) (Finset.mem_insert_self _ _)
+  have hpair:=mul_le_mul (h0 0) (h0 1) (apply_nonneg _ _) (sourceControl_nonneg _ _)
+  have hh:=mul_le_mul (slot_product_le s N C hC hN hM) hpair
+    (mul_nonneg (apply_nonneg _ _) (apply_nonneg _ _)) (pow_nonneg (by linarith) _)
+  simpa only [plainControl,Profiles.control,mul_assoc] using hh
+
+omit [DecidableEq ι] in
+lemma plain_control_sq_le {a b:ℝ}(s:Input ι)(p:Profiles a b)(S:Finset (ℕ×ℕ))
+    (N:ℕ)(C:ℝ)(hC:1≤ C)(hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C):
+    (plainControl s (p.profile 0) (p.profile 1))^2≤ C^(2*N)*(p.control (insert (0,0) S))^2 := by
+  have hh:=pow_le_pow_left₀ (plainControl_nonneg _ _ _) (plain_control_le s p S N C hC hN hM) 2
+  simpa only [mul_pow,←pow_mul,Nat.mul_comm N 2] using hh
+
+omit [DecidableEq ι] in
+lemma zero_plain_control (s:Input ι)(hz₁:s.W₁ 0=0)(hz₂:s.W₂ 0=0)(W₁ W₂:𝓢(ℝ,ℂ)):
+    plainControl (zeroInput s hz₁ hz₂) W₁ W₂=plainControl s W₁ W₂:=rfl
+
+omit [DecidableEq ι] in
+lemma lower_product (s:Input ι)(N:ℕ)(a:ℝ)(ha:0< a)
+    (hN:Fintype.card ι≤ N)(hlo:∀i,a≤ s.lo i):
+    (min 1 a)^N≤∏i,s.lo i := by
+  have hm:0≤ min 1 a:=le_min zero_le_one ha.le
+  calc
+    _≤(min 1 a)^(Fintype.card ι):=pow_le_pow_of_le_one hm (min_le_left _ _) hN
+    _=∏_i:ι,min 1 a:=by simp
+    _≤∏i,s.lo i:=Finset.prod_le_prod (fun _ _=> hm) (fun i _=>(min_le_right _ _).trans (hlo i))
+
+omit [DecidableEq ι] in
+lemma source_factor_le (s:Input ι)(N:ℕ)(aslot a K:ℝ)(hs:0< aslot)(ha:0< a)(hK:0< K)
+    (hN:Fintype.card ι≤ N)(hlo:∀i,aslot≤ s.lo i):
+    sourceFactor s a a K≤
+      (Real.exp (Real.log 4)*fixedPresentationCost/((min 1 aslot)^N*a*a))*K*(s.η.modulus.absNorm:ℝ) := by
+  have hd:0<(min 1 aslot)^N*a*a:=by positivity
+  have hprod:=lower_product s N aslot hs hN hlo
+  have hden:(min 1 aslot)^N*a*a≤(∏i,s.lo i)*a*a:=
+    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hprod ha.le) ha.le
+  have hdiv:=div_le_div_of_nonneg_left (Real.exp_pos (Real.log 4)).le hd hden
+  have hc:=fixedPresentationCost_pos
+  have hn:0≤(s.η.modulus.absNorm:ℝ):=Nat.cast_nonneg _
+  have hh:=mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_right hdiv hc.le) hK.le) hn
+  unfold sourceFactor
+  convert hh using 1 <;> first | rfl | ring
+
+local notation "O"=> Eisenstein.O
+section Input
+variable {ι : Type*} [Fintype ι]
+variable (Q : Ideal O) [NeZero Q]
+local instance : Finite (O ⧸ Q) := Ring.HasFiniteQuotients.finiteQuotient (NeZero.ne Q)
+variable (H : Subgroup (O ⧸ Q)ˣ) (hH : RayOrthogonality.globalUnits Q ≤ H)
+variable (η₀ : Character) (θ : ι → RayQuotient.Characters Q H)
+variable (W : ℝ → ℂ) (hW : Continuous W)
+variable (aslot bslot lo hi : ℝ) (haslot : 0 < aslot)
+variable (hWs : Function.support W ⊆ Set.Icc aslot bslot)
+variable (w σ freq : ι → ℝ) (hσ : ∀ i, σ i ∈ Set.Icc lo hi)
+variable {Z Bmask bΦ a b : ℝ}
+variable (state : NaturalState Z Bmask bΦ) (p : Profiles a b) (ha : 0 < a)
+variable (t X₁ X₂ Y₁ Y₂ : ℝ) (hX₁ : 0 < X₁) (hX₂ : 0 < X₂)
+variable (hY₁ : 0 < Y₁) (hY₂ : 0 < Y₂) (hsame : Y₁ * Y₂ = X₁ * X₂)
+
+local notation "inp" => CenteredMomentEnergyNaturalInputMatches.input Q H hH η₀ θ W hW aslot bslot lo hi haslot hWs
+  w σ freq hσ state p ha t X₁ X₂ Y₁ Y₂ hX₁ hX₂ hY₁ hY₂ hsame
+
+theorem natural_plain_control (N:ℕ)(hN:Fintype.card ι≤ N)(S:Finset (ℕ×ℕ)):
+    (plainControl inp (p.profile 0) (p.profile 1))^2≤
+      (profileBound W hW aslot bslot lo hi haslot hWs)^(2*N)*
+        (p.control (insert (0,0) S))^2 :=
+  plain_control_sq_le inp p S N _
+    (profileBound_ge_one W hW aslot bslot lo hi haslot hWs) hN (fun _=> le_refl _)
+
+theorem natural_zero_plain_control (N:ℕ)(hN:Fintype.card ι≤ N)(S:Finset (ℕ×ℕ))
+    (hz₁:(inp).W₁ 0=0)(hz₂:(inp).W₂ 0=0):
+    (plainControl (zeroInput inp hz₁ hz₂) (p.profile 0) (p.profile 1))^2≤
+      (profileBound W hW aslot bslot lo hi haslot hWs)^(2*N)*
+        (p.control (insert (0,0) S))^2 :=
+  plain_control_sq_le (zeroInput inp hz₁ hz₂) p S N _
+    (profileBound_ge_one W hW aslot bslot lo hi haslot hWs) hN (fun _=> le_refl _)
+
+theorem natural_source_factor (N:ℕ)(hN:Fintype.card ι≤ N)(K:ℝ)(hK:0< K):
+    sourceFactor inp a a K≤
+      (Real.exp (Real.log 4)*fixedPresentationCost/((min 1 aslot)^N*a*a))*K*
+        (state.character.modulus.absNorm:ℝ) :=
+  source_factor_le inp N aslot a K haslot ha hK hN (fun _=> le_refl _)
+
+theorem natural_zero_source_factor (N:ℕ)(hN:Fintype.card ι≤ N)(K:ℝ)(hK:0< K)
+    (hz₁:(inp).W₁ 0=0)(hz₂:(inp).W₂ 0=0):
+    sourceFactor (zeroInput inp hz₁ hz₂) a a K≤
+      (Real.exp (Real.log 4)*fixedPresentationCost/((min 1 aslot)^N*a*a))*K*
+        (state.character.modulus.absNorm:ℝ) :=
+  source_factor_le (zeroInput inp hz₁ hz₂) N aslot a K haslot ha hK hN (fun _=> le_refl _)
+
+end Input
+end CenteredMomentEnergyOriginalProfileControl
+
+end
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

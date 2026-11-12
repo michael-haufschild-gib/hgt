@@ -188,8 +188,8 @@ theorem norm_dilWin_sub_winSum_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1
     omega
   have hdiff : I \ Wn ⊆ {A + h} := by
     intro m hm
-    rw [mem_sdiff, hI, mem_filter, mem_range] at hm
-    obtain ⟨⟨-, h1, h2⟩, h3⟩ := hm
+    obtain ⟨hmI, h3⟩ := Finset.mem_sdiff.mp hm
+    obtain ⟨-, h1, h2⟩ := Finset.mem_filter.mp hmI
     rw [hW, mem_Ioc] at h3
     rw [mem_singleton]
     -- `m ≥ A`
@@ -270,6 +270,183 @@ theorem sum_comp_ceilDiv_le {G : ℕ → ℝ} (hG0 : ∀ k, 0 ≤ G k) {D X : �
     _ ≤ D * ∑ k ∈ Icc Y (2 * Y + 1), G k :=
         mul_le_mul_of_nonneg_left (sum_le_sum_of_subset_of_nonneg himage
           fun k _ _ => hG0 k) (Nat.cast_nonneg D)
+
+theorem norm_dilWin_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {D : ℕ} (hD : 1 ≤ D) (n T : ℕ) :
+    ‖dilWin f D n T‖ ≤ T + 1 := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · have hsub : (range (0 + T)).filter (fun m => 0 ≤ D * m ∧ D * m < 0 + T) ⊆ range T := by
+      intro m hm; rw [zero_add] at hm; exact (mem_filter.mp hm).1
+    calc ‖dilWin f D 0 T‖ ≤ ∑ m ∈ (range (0 + T)).filter (fun m => 0 ≤ D * m ∧ D * m < 0 + T),
+          ‖f m‖ := norm_sum_le _ _
+      _ ≤ ∑ _m ∈ (range (0 + T)).filter (fun m => 0 ≤ D * m ∧ D * m < 0 + T), (1 : ℝ) :=
+          sum_le_sum fun m _ => hf m
+      _ = ((range (0 + T)).filter (fun m => 0 ≤ D * m ∧ D * m < 0 + T)).card := by simp
+      _ ≤ (range T).card := by exact_mod_cast card_le_card hsub
+      _ ≤ T + 1 := by simp
+  · have h1 := norm_dilWin_sub_winSum_le hf (T := T) hD hn
+    have h2 := norm_winSum_le hf ((n + D - 1) / D - 1) (T / D)
+    have h3 : ((T / D : ℕ) : ℝ) ≤ T := by exact_mod_cast Nat.div_le_self T D
+    have h4 := norm_sub_norm_le (dilWin f D n T) (winSum f ((n + D - 1) / D - 1) (T / D))
+    linarith
+
+/-- The window comparison, squared and normalised. -/
+theorem dilWin_sq_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {D n T : ℕ} (hD : 1 ≤ D) (hn : 1 ≤ n)
+    (hT : 0 < (T : ℝ)) :
+    ‖dilWin f D n T‖ ^ 2 / (T : ℝ) ^ 2
+      ≤ (2 * ‖winSum f ((n + D - 1) / D - 1) (T / D)‖ ^ 2 + 2) / (T : ℝ) ^ 2 := by
+  have h1 := norm_dilWin_sub_winSum_le hf (T := T) hD hn
+  have h2 := norm_sub_norm_le (dilWin f D n T) (winSum f ((n + D - 1) / D - 1) (T / D))
+  have h3 : ‖dilWin f D n T‖ ≤ ‖winSum f ((n + D - 1) / D - 1) (T / D)‖ + 1 := by linarith
+  have h4 : ‖dilWin f D n T‖ ^ 2 ≤ 2 * ‖winSum f ((n + D - 1) / D - 1) (T / D)‖ ^ 2 + 2 := by
+    have := pow_le_pow_left₀ (norm_nonneg _) h3 2
+    nlinarith [sq_nonneg (‖winSum f ((n + D - 1) / D - 1) (T / D)‖ - 1)]
+  exact div_le_div_of_nonneg_right h4 (by positivity)
+
+/-- The short windows met by `n ∈ [X, 2X)`. -/
+theorem sum_winSum_comp_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1) {D h X₀ X : ℕ} (hD : 1 ≤ D)
+    {ε' : ℝ} (hε' : 0 ≤ ε')
+    (hX₀ : ∀ Y, X₀ ≤ Y → ∑ k ∈ range Y, ‖winSum f (Y + k) h‖ ^ 2 ≤ ε' * (h : ℝ) ^ 2 * Y)
+    (hX : D * (X₀ + 1) ≤ X) :
+    ∑ n ∈ Ico X (2 * X), ‖winSum f ((n + D - 1) / D - 1) h‖ ^ 2
+      ≤ ε' * (h : ℝ) ^ 2 * X + 2 * D * (h : ℝ) ^ 2 := by
+  have hX1 : 1 ≤ X := le_trans (Nat.le_mul_of_pos_right D (Nat.succ_pos X₀)) hX |>.trans' hD
+  have hfib := sum_comp_ceilDiv_le (G := fun k => ‖winSum f k h‖ ^ 2)
+    (fun k => by positivity) hD hX1
+  set Y := (X + D - 1) / D - 1 with hY
+  obtain ⟨hXc1, hXc2, hXc0⟩ := ceilDiv_facts (n := X) hD hX1
+  obtain ⟨A, hA⟩ : ∃ A, A = (X + D - 1) / D := ⟨_, rfl⟩
+  rw [← hA] at hXc1 hXc2 hXc0
+  have hYA : Y + 1 = A := by rw [hY, hA]; omega
+  obtain ⟨p, hp⟩ : ∃ p, p = D * A := ⟨_, rfl⟩
+  have hYX₀ : X₀ ≤ Y := by
+    have h1 : D * (X₀ + 1) ≤ D * A := by omega
+    have h2 := Nat.le_of_mul_le_mul_left h1 (by omega)
+    omega
+  have hDY : (D : ℝ) * Y ≤ X := by
+    have h1 : D * Y + D = D * A := by rw [← hYA, mul_add_one]
+    have : D * Y ≤ X := by omega
+    exact_mod_cast this
+  have hsq : ∀ k, ‖winSum f k h‖ ^ 2 ≤ (h : ℝ) ^ 2 := fun k =>
+    pow_le_pow_left₀ (norm_nonneg _) (norm_winSum_le hf k h) 2
+  have hIcc : ∑ k ∈ Icc Y (2 * Y + 1), ‖winSum f k h‖ ^ 2
+      ≤ ε' * (h : ℝ) ^ 2 * Y + 2 * (h : ℝ) ^ 2 := by
+    have e : Icc Y (2 * Y + 1) = Ico Y (2 * Y) ∪ {2 * Y, 2 * Y + 1} := by
+      ext k; simp only [mem_Icc, mem_union, mem_Ico, mem_insert, mem_singleton]; omega
+    have hd : Disjoint (Ico Y (2 * Y)) {2 * Y, 2 * Y + 1} := by
+      rw [disjoint_left]; intro k hk hk'
+      rw [mem_Ico] at hk; simp only [mem_insert, mem_singleton] at hk'; omega
+    rw [e, sum_union hd]
+    have h1 : ∑ k ∈ Ico Y (2 * Y), ‖winSum f k h‖ ^ 2 ≤ ε' * (h : ℝ) ^ 2 * Y := by
+      have := hX₀ Y hYX₀
+      rw [sum_Ico_eq_sum_range]
+      have e2 : 2 * Y - Y = Y := by omega
+      rw [e2]; exact this
+    have h2 : ∑ k ∈ ({2 * Y, 2 * Y + 1} : Finset ℕ), ‖winSum f k h‖ ^ 2 ≤ 2 * (h : ℝ) ^ 2 := by
+      rw [sum_pair (by omega)]
+      linarith [hsq (2 * Y), hsq (2 * Y + 1)]
+    linarith
+  have h1 := le_trans hfib (mul_le_mul_of_nonneg_left hIcc (Nat.cast_nonneg D))
+  have h2 : (D : ℝ) * (ε' * (h : ℝ) ^ 2 * Y) ≤ ε' * (h : ℝ) ^ 2 * X := by
+    have := mul_le_mul_of_nonneg_left hDY (by positivity : (0 : ℝ) ≤ ε' * (h : ℝ) ^ 2)
+    linarith [mul_comm ((D : ℝ)) (ε' * (h : ℝ) ^ 2 * Y)]
+  have e3 : (D : ℝ) * (ε' * (h : ℝ) ^ 2 * Y + 2 * (h : ℝ) ^ 2)
+      = (D : ℝ) * (ε' * (h : ℝ) ^ 2 * Y) + 2 * D * (h : ℝ) ^ 2 := by ring
+  linarith
+
+/-- The arithmetic of the dyadic bound for the dilated windows. -/
+theorem dilWin_dyadic_arith {S X h T D ε' : ℝ} (hX : 0 < X) (hT : 1 ≤ T) (hhT : h ≤ T) (hh : 0 ≤ h)
+    (hε' : 0 ≤ ε') (hD : 0 ≤ D) (hXD : 4 * D ≤ ε' * X)
+    (hS : S ≤ ε' * h ^ 2 * X + 2 * D * h ^ 2) :
+    (2 * S + 2 * X) / T ^ 2 ≤ (3 * ε' + 2 / T ^ 2) * X := by
+  have hT2 : 0 < T ^ 2 := by positivity
+  have hhT2 : h ^ 2 ≤ T ^ 2 := pow_le_pow_left₀ hh hhT 2
+  rw [div_le_iff₀ hT2]
+  have e : (3 * ε' + 2 / T ^ 2) * X * T ^ 2 = 3 * ε' * X * T ^ 2 + 2 * X := by
+    field_simp
+  rw [e]
+  have h1 : ε' * h ^ 2 * X ≤ ε' * T ^ 2 * X :=
+    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hhT2 hε') hX.le
+  have h2 : 2 * D * h ^ 2 ≤ 2 * D * T ^ 2 := mul_le_mul_of_nonneg_left hhT2 (by positivity)
+  have h3 : 4 * D * T ^ 2 ≤ ε' * X * T ^ 2 := mul_le_mul_of_nonneg_right hXD hT2.le
+  nlinarith
+
+/-- **(A2) Dilated windows of a function with short-window cancellation.** -/
+theorem exists_limAvg_dilWin_le (hU : (U : Filter ℝ) ≤ atTop) {f : ℕ → ℂ}
+    (hf : ∀ n, ‖f n‖ ≤ 1) (hMR : DyadicMR f) {D : ℕ} (hD : 1 ≤ D) {ε : ℝ} (hε : 0 < ε) :
+    ∃ T₀ : ℕ, ∀ T : ℕ, T₀ ≤ T →
+      limAvg U (fun n => ‖dilWin f D n T‖ ^ 2 / (T : ℝ) ^ 2) ≤ ε := by
+  set ε' := ε / 18 with hε'
+  have hε'0 : 0 < ε' := by positivity
+  obtain ⟨h₀, hh₀⟩ := hMR ε' hε'0
+  refine ⟨max (D * (h₀ + 1)) (⌈12 / ε⌉₊ + 1), fun T hT => ?_⟩
+  have hT1 : D * (h₀ + 1) ≤ T := le_trans (le_max_left _ _) hT
+  have hT2 : ⌈12 / ε⌉₊ + 1 ≤ T := le_trans (le_max_right _ _) hT
+  have hTpos : 1 ≤ T := le_trans (by omega) hT2
+  have hTR : (1 : ℝ) ≤ T := by exact_mod_cast hTpos
+  have hT0 : (0 : ℝ) < T := by linarith
+  have hh₀' : h₀ ≤ T / D := by
+    rw [Nat.le_div_iff_mul_le (by omega)]
+    calc h₀ * D ≤ (h₀ + 1) * D := Nat.mul_le_mul_right D (Nat.le_succ h₀)
+      _ = D * (h₀ + 1) := mul_comm _ _
+      _ ≤ T := hT1
+  have hhT : ((T / D : ℕ) : ℝ) ≤ T := by exact_mod_cast Nat.div_le_self T D
+  obtain ⟨X₀, hX₀⟩ := hh₀ (T / D) hh₀'
+  set G : ℕ → ℝ := fun n => ‖dilWin f D n T‖ ^ 2 / (T : ℝ) ^ 2 with hGdef
+  have hG0 : ∀ n, 0 ≤ G n := fun n => by positivity
+  have hGB : ∀ n, G n ≤ 4 := by
+    intro n
+    have h1 := norm_dilWin_le hf hD n T
+    have h2 : ‖dilWin f D n T‖ ^ 2 ≤ (2 * (T : ℝ)) ^ 2 :=
+      pow_le_pow_left₀ (norm_nonneg _) (by linarith) 2
+    rw [hGdef, div_le_iff₀ (by positivity)]
+    nlinarith
+  set c : ℝ := 3 * ε' + 2 / (T : ℝ) ^ 2 with hc
+  have hc0 : 0 ≤ c := by positivity
+  have hdy : ∀ X, max (D * (X₀ + 1)) (⌈4 * D / ε'⌉₊ + 1) ≤ X →
+      ∑ k ∈ range X, G (X + k) ≤ c * X := by
+    intro X hX
+    have hXa : D * (X₀ + 1) ≤ X := le_trans (le_max_left _ _) hX
+    have hXb : ⌈4 * D / ε'⌉₊ + 1 ≤ X := le_trans (le_max_right _ _) hX
+    have hX1 : 1 ≤ X := le_trans (by omega) hXb
+    have hXR : (0 : ℝ) < X := by exact_mod_cast hX1
+    have hXD : 4 * (D : ℝ) ≤ ε' * X := by
+      have h4 : 4 * (D : ℝ) / ε' ≤ X := by
+        have := Nat.le_ceil (4 * (D : ℝ) / ε')
+        have h' : ((⌈4 * D / ε'⌉₊ + 1 : ℕ) : ℝ) ≤ X := by exact_mod_cast hXb
+        push_cast at h'
+        linarith
+      rw [div_le_iff₀ hε'0] at h4
+      linarith
+    have hre : ∑ k ∈ range X, G (X + k) = ∑ n ∈ Ico X (2 * X), G n := by
+      rw [sum_Ico_eq_sum_range, show 2 * X - X = X by omega]
+    rw [hre]
+    have hpt : ∀ n ∈ Ico X (2 * X),
+        G n ≤ (2 * ‖winSum f ((n + D - 1) / D - 1) (T / D)‖ ^ 2 + 2) / (T : ℝ) ^ 2 :=
+      fun n hn => dilWin_sq_le hf hD (by rw [mem_Ico] at hn; omega) hT0
+    have hsum1 : ∑ n ∈ Ico X (2 * X), G n
+        ≤ (2 * ∑ n ∈ Ico X (2 * X), ‖winSum f ((n + D - 1) / D - 1) (T / D)‖ ^ 2 + 2 * X)
+          / (T : ℝ) ^ 2 := by
+      refine le_trans (sum_le_sum hpt) (le_of_eq ?_)
+      rw [← sum_div, sum_add_distrib, ← mul_sum, sum_const, Nat.card_Ico, nsmul_eq_mul]
+      congr 2
+      have : 2 * X - X = X := by omega
+      rw [this]; ring
+    have hS := sum_winSum_comp_le hf hD hε'0.le hX₀ hXa
+    exact le_trans hsum1 (dilWin_dyadic_arith hXR hTR hhT (Nat.cast_nonneg _) hε'0.le
+      (Nat.cast_nonneg D) hXD hS)
+  have hA1 := limAvg_le_of_dyadic hU hG0 hGB hc0 (by omega) hdy
+  have hT12 : 12 / ε ≤ (T : ℝ) := by
+    have := Nat.le_ceil (12 / ε)
+    have h' : ((⌈12 / ε⌉₊ + 1 : ℕ) : ℝ) ≤ T := by exact_mod_cast hT2
+    push_cast at h'
+    linarith
+  have h6 : 6 / (T : ℝ) ^ 2 ≤ ε / 2 := by
+    rw [div_le_iff₀ (by positivity)]
+    have h1 : 12 ≤ ε * T := by rw [div_le_iff₀ hε] at hT12; linarith
+    nlinarith
+  calc limAvg U G ≤ 3 * c := hA1
+    _ = 9 * ε' + 6 / (T : ℝ) ^ 2 := by rw [hc]; ring
+    _ ≤ ε := by rw [hε']; linarith
 
 end
 

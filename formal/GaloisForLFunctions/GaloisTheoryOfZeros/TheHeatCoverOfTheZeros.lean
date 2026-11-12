@@ -20,7 +20,7 @@ where `G` is analytic on `ℂ²` and `G(0, y) = (a/m!) Q_m(y)`, with `a = H_t^{(
 surviving term carries the factor `s^m`.
 
 * `complexHeat`, `complexHeat_ofReal`, `complexHeat_neg`, `complexHeat_conj`: the family at complex
-  time and its two symmetries.
+  time and its two symmetries; `analyticAt_complexHeat`: it is analytic in time and place.
 * `collisionBlowup`, `complexHeat_blowup`: the function `G` and the factorization.
 * `analyticAt_collisionBlowup`, `collisionBlowup_zero`: analyticity and the profile at `s = 0`.
 * `collisionBlowup_neg`, `collisionBlowup_conj`: the deck symmetry `G(−s, −y) = (−1)^m G(s, y)` of
@@ -177,6 +177,47 @@ theorem complexHeat_conj (τ z : ℂ) :
   simp only [map_mul, map_add, map_pow, Complex.conj_ofReal, ← Complex.exp_conj, Complex.conj_I]
   congr 2
   ring
+
+/-- **The heat family is analytic in time and place.** -/
+theorem analyticAt_complexHeat (p : ℂ × ℂ) :
+    AnalyticAt ℂ (fun p : ℂ × ℂ => complexHeat p.1 p.2) p := by
+  refine analyticAt_integral_of_dominated
+    (K := fun p x => (riemannKernelReal x : ℂ) * cexp (p.1 * (x : ℂ) ^ 2 + I * p.2 * x))
+    (fun x => by fun_prop) (fun p => ?_) (fun R => ?_) p
+  · have h := continuous_riemannKernelReal
+    exact (by fun_prop : Continuous fun x : ℝ =>
+      (riemannKernelReal x : ℂ) * cexp (p.1 * (x : ℂ) ^ 2 + I * p.2 * x)).aestronglyMeasurable
+  · refine ⟨fun x => ‖heatWeight |R| x‖ * Real.exp (|R| * |x|),
+      integrable_heatWeight (abs_nonneg R) |R|, fun p hp x => ?_⟩
+    show ‖(riemannKernelReal x : ℂ) * cexp (p.1 * (x : ℂ) ^ 2 + I * p.2 * x)‖ ≤
+      ‖heatWeight |R| x‖ * Real.exp (|R| * |x|)
+    have h1 : ‖p.1‖ ≤ |R| := ((norm_fst_le p).trans hp).trans (le_abs_self R)
+    have h2 : ‖p.2‖ ≤ |R| := ((norm_snd_le p).trans hp).trans (le_abs_self R)
+    have hpos := riemannKernelReal_pos x
+    have hw : ‖heatWeight |R| x‖ = riemannKernelReal x * Real.exp (|R| * x ^ 2) := by
+      rw [heatWeight, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos (mul_pos hpos (Real.exp_pos _))]
+    have he1 : ‖cexp (p.1 * (x : ℂ) ^ 2)‖ ≤ Real.exp (|R| * x ^ 2) := by
+      rw [Complex.norm_exp]
+      refine Real.exp_le_exp.mpr ((Complex.re_le_norm _).trans ?_)
+      rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+      exact mul_le_mul_of_nonneg_right h1 (sq_nonneg x)
+    have he2 : ‖cexp (I * p.2 * x)‖ ≤ Real.exp (|R| * |x|) :=
+      (norm_exp_I_mul_le p.2 x).trans (Real.exp_le_exp.mpr
+        (mul_le_mul_of_nonneg_right ((Complex.abs_im_le_norm _).trans h2) (abs_nonneg x)))
+    rw [Complex.exp_add, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos hpos, hw]
+    calc riemannKernelReal x * (‖cexp (p.1 * (x : ℂ) ^ 2)‖ * ‖cexp (I * p.2 * x)‖)
+        ≤ riemannKernelReal x * (Real.exp (|R| * x ^ 2) * Real.exp (|R| * |x|)) := by gcongr
+      _ = riemannKernelReal x * Real.exp (|R| * x ^ 2) * Real.exp (|R| * |x|) := by ring
+
+theorem continuous_complexHeat : Continuous fun p : ℂ × ℂ => complexHeat p.1 p.2 :=
+  continuous_iff_continuousAt.mpr fun p => (analyticAt_complexHeat p).continuousAt
+
+/-- At every complex time the family is entire in the place. -/
+theorem differentiable_complexHeat (τ : ℂ) : Differentiable ℂ (complexHeat τ) := fun z =>
+  (analyticAt_complexHeat (τ, z)).differentiableAt.comp z
+    (by fun_prop : DifferentiableAt ℂ (fun z : ℂ => (τ, z)) z)
 
 /-! ## The remainder kernel -/
 

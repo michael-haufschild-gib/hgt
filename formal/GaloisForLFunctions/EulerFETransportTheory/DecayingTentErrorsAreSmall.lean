@@ -417,8 +417,8 @@ theorem integral_sq_tentDefect_le_high {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (h
       linarith
     have hφ0 : ∀ σ, 0 ≤ φ σ y := fun σ => by rw [hφ]; positivity
     have hcs : (φ 1 y + 2 * φ 0 y + φ (-1) y) ^ 2 ≤ 6 * (φ 1 y ^ 2 + φ 0 y ^ 2 + φ (-1) y ^ 2) := by
-      nlinarith [sq_nonneg (φ 1 y - φ 0 y), sq_nonneg (φ 0 y - φ (-1) y),
-        sq_nonneg (φ 1 y - φ (-1) y), sq_nonneg (φ 1 y - 2 * φ 0 y + φ (-1) y)]
+      nlinarith [sq_nonneg (φ 0 y - 2 * φ 1 y), sq_nonneg (φ (-1) y - φ 1 y),
+        sq_nonneg (2 * φ (-1) y - φ 0 y)]
     have hsq : (-(1 / h) * (A - 2 * B + C).re) ^ 2 ≤
         (1 / h) ^ 2 * (M ^ 2 * (φ 1 y + 2 * φ 0 y + φ (-1) y)) ^ 2 := by
       rw [show (-(1 / h) * (A - 2 * B + C).re) ^ 2 = (1 / h) ^ 2 * |(A - 2 * B + C).re| ^ 2 by
@@ -449,5 +449,369 @@ theorem integral_sq_tentDefect_le_high {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (h
         · exact hrow 0
         · exact hrow (-1)
     _ = 18 * M ^ 4 / h ^ 2 * (Real.pi⁻¹ * V) := by ring
+
+/-! ## Decaying defects: the frequency split -/
+
+theorem three_sixteenths_le_norm_tentFactor (t : ℝ) :
+    3 / 16 * (1 + |t|) ^ 2 ≤ ‖tentFactor t‖ := by
+  rw [tentFactor, norm_mul]
+  have hre1 := Complex.abs_re_le_norm ((3 / 2 : ℂ) + 2 * t * I)
+  have him1 := Complex.abs_im_le_norm ((3 / 2 : ℂ) + 2 * t * I)
+  have hre2 := Complex.abs_re_le_norm ((1 / 2 : ℂ) + 2 * t * I)
+  have him2 := Complex.abs_im_le_norm ((1 / 2 : ℂ) + 2 * t * I)
+  simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.I_re,
+    Complex.I_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, mul_one, sub_zero, zero_add,
+    add_zero] at hre1 him1 hre2 him2
+  norm_num at hre1 him1 hre2 him2
+  have h1 : 3 / 4 * (1 + |t|) ≤ ‖(3 / 2 : ℂ) + 2 * t * I‖ := by
+    rcases le_or_gt |t| 1 with ht | ht
+    · nlinarith
+    · nlinarith
+  have h2 : 1 / 4 * (1 + |t|) ≤ ‖(1 / 2 : ℂ) + 2 * t * I‖ := by
+    rcases le_or_gt |t| 1 with ht | ht
+    · nlinarith
+    · nlinarith
+  have h0 : 0 ≤ 1 + |t| := by positivity
+  calc 3 / 16 * (1 + |t|) ^ 2 = (3 / 4 * (1 + |t|)) * (1 / 4 * (1 + |t|)) := by ring
+    _ ≤ _ := mul_le_mul h1 h2 (by positivity) (norm_nonneg _)
+
+/-- The low-frequency part `1_{|t| ≤ R} g`. -/
+def lowPart (R : ℝ) (g : ℝ → ℂ) : ℝ → ℂ := {t : ℝ | |t| ≤ R}.indicator g
+
+/-- The high-frequency part `1_{|t| > R} g`. -/
+def highPart (R : ℝ) (g : ℝ → ℂ) : ℝ → ℂ := {t : ℝ | |t| ≤ R}ᶜ.indicator g
+
+theorem measurableSet_abs_le (R : ℝ) : MeasurableSet {t : ℝ | |t| ≤ R} :=
+  measurableSet_le continuous_abs.measurable measurable_const
+
+theorem lowPart_add_highPart (R : ℝ) (g : ℝ → ℂ) : lowPart R g + highPart R g = g :=
+  Set.indicator_self_add_compl _ g
+
+theorem measurable_lowPart {g : ℝ → ℂ} (hgm : Measurable g) (R : ℝ) :
+    Measurable (lowPart R g) := hgm.indicator (measurableSet_abs_le R)
+
+theorem measurable_highPart {g : ℝ → ℂ} (hgm : Measurable g) (R : ℝ) :
+    Measurable (highPart R g) := hgm.indicator (measurableSet_abs_le R).compl
+
+theorem norm_lowPart_le (R : ℝ) (g : ℝ → ℂ) (t : ℝ) : ‖lowPart R g t‖ ≤ ‖g t‖ :=
+  norm_indicator_le_norm_self _ _
+
+theorem norm_highPart_le (R : ℝ) (g : ℝ → ℂ) (t : ℝ) : ‖highPart R g t‖ ≤ ‖g t‖ :=
+  norm_indicator_le_norm_self _ _
+
+theorem nonneg_of_decay {g : ℝ → ℂ} {C a : ℝ} (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) :
+    0 ≤ C := by
+  have := hgd 0
+  simp only [abs_zero, add_zero, Real.one_rpow, mul_one] at this
+  exact (norm_nonneg _).trans this
+
+theorem norm_lowPart_le_indicator {g : ℝ → ℂ} {C a : ℝ} (ha : 0 ≤ a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) (R t : ℝ) :
+    ‖lowPart R g t‖ ≤ {t : ℝ | |t| ≤ R}.indicator (fun _ => C) t := by
+  unfold lowPart
+  by_cases ht : t ∈ {t : ℝ | |t| ≤ R}
+  · rw [indicator_of_mem ht, indicator_of_mem ht]
+    refine (hgd t).trans (mul_le_of_le_one_right (nonneg_of_decay hgd) ?_)
+    exact Real.rpow_le_one_of_one_le_of_nonpos (by linarith [abs_nonneg t]) (by linarith)
+  · rw [indicator_of_notMem ht, indicator_of_notMem ht, norm_zero]
+
+/-- The twice-integrated high part decays at rate `R^{-q}`:
+`‖G_R(t)‖ ≤ (16/3) C R^{-q} (1 + |t|)^{-(2 + a - q)}` for `0 ≤ q`, `0 < R`. -/
+theorem norm_tentPrimitive_highPart_le {g : ℝ → ℂ} {C a : ℝ}
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 < R) (t : ℝ) :
+    ‖tentPrimitive (highPart R g) t‖ ≤ 16 / 3 * C * R ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) := by
+  have hC : 0 ≤ C * (1 + |t|) ^ (-a) := (norm_nonneg _).trans (hgd t)
+  have hpos : 0 < 1 + |t| := by positivity
+  have hF := three_sixteenths_le_norm_tentFactor t
+  have hFpos : 0 < ‖tentFactor t‖ := norm_pos_iff.mpr (tentFactor_ne_zero t)
+  unfold tentPrimitive highPart
+  by_cases ht : t ∈ {t : ℝ | |t| ≤ R}ᶜ
+  · rw [indicator_of_mem ht, norm_div, div_le_iff₀ hFpos]
+    have htR : R < |t| := by simpa using ht
+    have hRq : (1 + |t|) ^ (-q) ≤ R ^ (-q) :=
+      Real.rpow_le_rpow_of_nonpos hR (by linarith) (by linarith)
+    have hsplit : (1 + |t|) ^ (-a) = (1 + |t|) ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) *
+        (1 + |t|) ^ (2 : ℝ) := by
+      rw [← Real.rpow_add hpos, ← Real.rpow_add hpos]; ring_nf
+    have hsq : (1 + |t|) ^ (2 : ℝ) = (1 + |t|) ^ 2 := by norm_cast
+    have hC0 : 0 ≤ C := by
+      by_contra hneg
+      push Not at hneg
+      have : C * (1 + |t|) ^ (-a) < 0 := mul_neg_of_neg_of_pos hneg (by positivity)
+      linarith
+    calc ‖g t‖ ≤ C * (1 + |t|) ^ (-a) := hgd t
+      _ = C * ((1 + |t|) ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) * (1 + |t|) ^ 2) := by
+          rw [hsplit, hsq]
+      _ ≤ C * (R ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) * (16 / 3 * ‖tentFactor t‖)) := by
+          gcongr
+          linarith
+      _ = 16 / 3 * C * R ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) * ‖tentFactor t‖ := by ring
+  · rw [indicator_of_notMem ht, zero_div, norm_zero]
+    have hC0 : 0 ≤ C := by
+      by_contra hneg
+      push Not at hneg
+      have : C * (1 + |t|) ^ (-a) < 0 := mul_neg_of_neg_of_pos hneg (by positivity)
+      linarith
+    positivity
+
+theorem integrable_one_add_abs_rpow_neg {r : ℝ} (hr : 1 < r) :
+    Integrable fun t : ℝ => (1 + |t|) ^ (-r) := by
+  have h := integrable_one_add_norm (E := ℝ) (μ := volume) (r := r) (by simpa using hr)
+  simpa [Real.norm_eq_abs] using h
+
+theorem poly_of_decay {g : ℝ → ℂ} {C a : ℝ} (ha : 0 ≤ a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) (t : ℝ) : ‖g t‖ ≤ C * (1 + |t|) ^ (0 : ℕ) := by
+  rw [pow_zero, mul_one]
+  exact (hgd t).trans (mul_le_of_le_one_right (nonneg_of_decay hgd)
+    (Real.rpow_le_one_of_one_le_of_nonpos (by linarith [abs_nonneg t]) (by linarith)))
+
+theorem abs_le_eq_Icc (R : ℝ) : {t : ℝ | |t| ≤ R} = Icc (-R) R :=
+  Set.ext fun t => by rw [mem_setOf_eq, mem_Icc, abs_le]
+
+theorem integrable_indicator_abs_le (R C : ℝ) :
+    Integrable ({t : ℝ | |t| ≤ R}.indicator fun _ => C) := by
+  rw [abs_le_eq_Icc]
+  exact (integrableOn_const (by simp)).integrable_indicator measurableSet_Icc
+
+theorem integral_indicator_abs_le {R : ℝ} (hR : 0 ≤ R) (C : ℝ) :
+    ∫ t, {t : ℝ | |t| ≤ R}.indicator (fun _ => C) t = 2 * R * C := by
+  rw [abs_le_eq_Icc, integral_indicator measurableSet_Icc, setIntegral_const, measureReal_def,
+    Real.volume_Icc, ENNReal.toReal_ofReal (by linarith), smul_eq_mul]
+  ring
+
+/-- `‖1_{|t| ≤ R} g‖₁ ≤ 2RC`. -/
+theorem integral_norm_lowPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ} (ha : 0 ≤ a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R : ℝ} (hR : 0 ≤ R) :
+    Integrable (lowPart R g) ∧ ∫ t, ‖lowPart R g t‖ ≤ 2 * R * C := by
+  have hb : ∀ t, ‖lowPart R g t‖ ≤ {t : ℝ | |t| ≤ R}.indicator (fun _ => C) t :=
+    norm_lowPart_le_indicator ha hgd R
+  have hi : Integrable (lowPart R g) := (integrable_indicator_abs_le R C).mono'
+    (measurable_lowPart hgm R).aestronglyMeasurable (Eventually.of_forall hb)
+  refine ⟨hi, ?_⟩
+  rw [← integral_indicator_abs_le hR C]
+  exact integral_mono hi.norm (integrable_indicator_abs_le R C) hb
+
+/-- `‖1_{|t| ≤ R} g‖₂² ≤ 2RC²`. -/
+theorem integral_norm_sq_lowPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ} (ha : 0 ≤ a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R : ℝ} (hR : 0 ≤ R) :
+    MemLp (lowPart R g) 2 volume ∧ ∫ t, ‖lowPart R g t‖ ^ 2 ≤ 2 * R * C ^ 2 := by
+  have hC := nonneg_of_decay hgd
+  have hb : ∀ t, ‖lowPart R g t‖ ^ 2 ≤ {t : ℝ | |t| ≤ R}.indicator (fun _ => C ^ 2) t := by
+    intro t
+    have h1 := norm_lowPart_le_indicator ha hgd R t
+    by_cases ht : t ∈ {t : ℝ | |t| ≤ R}
+    · rw [indicator_of_mem ht] at h1 ⊢
+      exact pow_le_pow_left₀ (norm_nonneg _) h1 2
+    · rw [indicator_of_notMem ht] at h1 ⊢
+      have : ‖lowPart R g t‖ = 0 := le_antisymm h1 (norm_nonneg _)
+      rw [this]; norm_num
+  have hi : Integrable fun t => ‖lowPart R g t‖ ^ 2 := (integrable_indicator_abs_le R (C ^ 2)).mono'
+    ((measurable_lowPart hgm R).norm.pow_const 2).aestronglyMeasurable
+    (Eventually.of_forall fun t => by rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]; exact hb t)
+  refine ⟨(memLp_two_iff_integrable_sq_norm (measurable_lowPart hgm R).aestronglyMeasurable).mpr hi,
+    ?_⟩
+  rw [← integral_indicator_abs_le hR (C ^ 2)]
+  exact integral_mono hi (integrable_indicator_abs_le R _) hb
+
+/-- `‖G_R‖₁ ≤ (16/3) C R^{-q} ∫ (1 + |t|)^{-(2 + a - q)}` when `2 + a - q > 1`. -/
+theorem integral_norm_tentPrimitive_highPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 < R)
+    (hr : 1 < 2 + a - q) :
+    Integrable (tentPrimitive (highPart R g)) ∧ ∫ t, ‖tentPrimitive (highPart R g) t‖ ≤
+      16 / 3 * C * R ^ (-q) * ∫ t : ℝ, (1 + |t|) ^ (-(2 + a - q)) := by
+  have hI := integrable_one_add_abs_rpow_neg hr
+  have hb := norm_tentPrimitive_highPart_le hgd hq hR
+  have hi : Integrable (tentPrimitive (highPart R g)) := (hI.const_mul (16 / 3 * C * R ^ (-q))).mono'
+    (measurable_tentPrimitive (measurable_highPart hgm R)).aestronglyMeasurable
+    (Eventually.of_forall hb)
+  refine ⟨hi, ?_⟩
+  rw [← integral_const_mul]
+  exact integral_mono hi.norm (hI.const_mul _) hb
+
+/-- `‖G_R‖₂² ≤ (256/9) C² R^{-2q} ∫ (1 + |t|)^{-2(2 + a - q)}` when `2(2 + a - q) > 1`. -/
+theorem integral_norm_sq_tentPrimitive_highPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 < R)
+    (hr : 1 < 2 * (2 + a - q)) :
+    MemLp (tentPrimitive (highPart R g)) 2 volume ∧ ∫ t, ‖tentPrimitive (highPart R g) t‖ ^ 2 ≤
+      (16 / 3 * C * R ^ (-q)) ^ 2 * ∫ t : ℝ, (1 + |t|) ^ (-(2 * (2 + a - q))) := by
+  have hC := nonneg_of_decay hgd
+  have hI := integrable_one_add_abs_rpow_neg hr
+  have hm := (measurable_tentPrimitive (measurable_highPart hgm R))
+  have hb : ∀ t, ‖tentPrimitive (highPart R g) t‖ ^ 2 ≤
+      (16 / 3 * C * R ^ (-q)) ^ 2 * (1 + |t|) ^ (-(2 * (2 + a - q))) := by
+    intro t
+    have h1 := norm_tentPrimitive_highPart_le hgd hq hR t
+    have hpos : 0 < 1 + |t| := by positivity
+    have e : (1 + |t|) ^ (-(2 * (2 + a - q))) = ((1 + |t|) ^ (-(2 + a - q))) ^ 2 := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hpos.le]; push_cast; ring_nf
+    rw [e, ← mul_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) (h1.trans_eq (by ring)) 2
+  have hi : Integrable fun t => ‖tentPrimitive (highPart R g) t‖ ^ 2 := (hI.const_mul _).mono'
+    (hm.norm.pow_const 2).aestronglyMeasurable
+    (Eventually.of_forall fun t => by rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]; exact hb t)
+  refine ⟨(memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mpr hi, ?_⟩
+  rw [← integral_const_mul]
+  exact integral_mono hi (hI.const_mul _) hb
+
+/-- **The origin tent**: `|T_ε(b, 0)| ≤ K b^{1/2}` for `0 < ε ≤ 1`. -/
+theorem exists_abs_tentDefect_origin_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ} (ha : 0 < a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ b ε : ℝ, 0 < b → 0 < ε → ε ≤ 1 →
+      |tentDefect g b 0 ε| ≤ K * b ^ (1 / 2 : ℝ) := by
+  have hC := nonneg_of_decay hgd
+  -- `G = tentPrimitive g` is integrable (`highPart` at a negative cutoff is `g`)
+  have hhigh : highPart (-1) g = g := by
+    funext t
+    unfold highPart
+    rw [indicator_of_mem]
+    simp only [mem_compl_iff, mem_setOf_eq, not_le]
+    linarith [abs_nonneg t]
+  have hGi : Integrable (tentPrimitive g) := by
+    have hI := integrable_one_add_abs_rpow_neg (r := 2 + a) (by linarith)
+    refine (hI.const_mul (16 / 3 * C)).mono' (measurable_tentPrimitive hgm).aestronglyMeasurable
+      (Eventually.of_forall fun t => ?_)
+    have hpos : 0 < 1 + |t| := by positivity
+    have hF := three_sixteenths_le_norm_tentFactor t
+    have hFpos : 0 < ‖tentFactor t‖ := norm_pos_iff.mpr (tentFactor_ne_zero t)
+    rw [tentPrimitive, norm_div, div_le_iff₀ hFpos]
+    have hsplit : (1 + |t|) ^ (-a) = (1 + |t|) ^ (-(2 + a)) * (1 + |t|) ^ (2 : ℝ) := by
+      rw [← Real.rpow_add hpos]; ring_nf
+    calc ‖g t‖ ≤ C * (1 + |t|) ^ (-a) := hgd t
+      _ = C * ((1 + |t|) ^ (-(2 + a)) * (1 + |t|) ^ 2) := by
+          rw [hsplit]; norm_cast
+      _ ≤ C * ((1 + |t|) ^ (-(2 + a)) * (16 / 3 * ‖tentFactor t‖)) := by gcongr; linarith
+      _ = 16 / 3 * C * (1 + |t|) ^ (-(2 + a)) * ‖tentFactor t‖ := by ring
+  set K₀ := 3 / (2 * Real.pi) * ∫ t, ‖tentPrimitive g t‖ with hK₀
+  have hK₀ : 0 ≤ K₀ := by
+    have := integral_nonneg (μ := volume) (f := fun t => ‖tentPrimitive g t‖) fun t => norm_nonneg _
+    positivity
+  refine ⟨4 * K₀ * (2 : ℝ) ^ (3 / 2 : ℝ), by positivity, fun b ε hb hε hε1 => ?_⟩
+  have h := abs_tentDefect_le_high hgm (poly_of_decay ha.le hgd) hGi hb hε 0
+  rw [abs_zero, add_zero] at h
+  refine h.trans ?_
+  have hle : b * ε + b ≤ 2 * b := by nlinarith
+  have hpow : (b * ε + b) ^ (3 / 2 : ℝ) ≤ (2 : ℝ) ^ (3 / 2 : ℝ) * b ^ (3 / 2 : ℝ) := by
+    rw [← Real.mul_rpow (by norm_num) hb.le]
+    exact Real.rpow_le_rpow (by positivity) hle (by norm_num)
+  have hb32 : b ^ (3 / 2 : ℝ) = b * b ^ (1 / 2 : ℝ) := by
+    rw [show (3 / 2 : ℝ) = 1 + 1 / 2 by norm_num, Real.rpow_add hb, Real.rpow_one]
+  calc 4 / b * (K₀ * (b * ε + b) ^ (3 / 2 : ℝ))
+      ≤ 4 / b * (K₀ * ((2 : ℝ) ^ (3 / 2 : ℝ) * b ^ (3 / 2 : ℝ))) := by gcongr
+    _ = 4 * K₀ * (2 : ℝ) ^ (3 / 2 : ℝ) * b ^ (1 / 2 : ℝ) := by
+        rw [hb32]; field_simp
+
+/-- The low part above a tent away from the origin: for `R ≥ 0` and `2h ≤ η ≤ y`,
+`|T_ε(1_{|t| ≤ R} g; h, y)| ≤ 2h (3/2π)(2RC) √2 η^{-1/2}`. -/
+theorem abs_tentDefect_lowPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ} (ha : 0 < a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R η h y ε : ℝ} (hR : 0 ≤ R) (hh : 0 < h)
+    (hη : 2 * h ≤ η) (hy : η ≤ y) (hε : 0 < ε) :
+    |tentDefect (lowPart R g) h y ε| ≤
+      2 * h * (3 / (2 * Real.pi) * (2 * R * C) * ((2 : ℝ) ^ (1 / 2 : ℝ) * η ^ (-(1 / 2 : ℝ)))) := by
+  have hη0 : 0 < η := by linarith
+  obtain ⟨hi1, hn1⟩ := integral_norm_lowPart_le hgm ha.le hgd hR
+  have hlow := abs_tentDefect_le_low (measurable_lowPart hgm R)
+    (fun t => (norm_lowPart_le R g t).trans (poly_of_decay ha.le hgd t)) hi1 hh hε
+    (show h < y by linarith)
+  have hpow_y : (y - h) ^ (-(1 / 2 : ℝ)) ≤ (2 : ℝ) ^ (1 / 2 : ℝ) * η ^ (-(1 / 2 : ℝ)) := by
+    calc (y - h) ^ (-(1 / 2 : ℝ)) ≤ (η / 2) ^ (-(1 / 2 : ℝ)) :=
+          Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith) (by norm_num)
+      _ = (2 : ℝ) ^ (1 / 2 : ℝ) * η ^ (-(1 / 2 : ℝ)) := by
+          rw [Real.div_rpow hη0.le (by norm_num), Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2),
+            div_inv_eq_mul, mul_comm]
+  have h3 : 0 ≤ 3 / (2 * Real.pi) := by positivity
+  refine hlow.trans (mul_le_mul_of_nonneg_left (mul_le_mul (mul_le_mul_of_nonneg_left hn1 h3)
+    hpow_y (Real.rpow_nonneg (by linarith) _) ?_) (by positivity))
+  have := nonneg_of_decay hgd
+  positivity
+
+/-- The high part above a tent of height at most `2`: for `R > 0`, `h ≤ 1` and `ε ≤ 1`,
+`|T_ε(1_{|t| > R} g; h, y)| ≤ (4/h)(3/2π)((16/3) C R^{-q} I) 8`, `q = 1 + a/2`. -/
+theorem abs_tentDefect_highPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ} (ha : 0 < a)
+    (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R h y ε : ℝ} (hR : 0 < R) (hh : 0 < h)
+    (hh1 : h ≤ 1) (hy0 : 0 ≤ y) (hy : y ≤ 2) (hε : 0 < ε) (hε1 : ε ≤ 1) :
+    |tentDefect (highPart R g) h y ε| ≤ 4 / h * (3 / (2 * Real.pi) *
+      (16 / 3 * C * R ^ (-(1 + a / 2)) * ∫ t : ℝ, (1 + |t|) ^ (-(2 + a - (1 + a / 2)))) * 8) := by
+  obtain ⟨hi2, hn2⟩ := integral_norm_tentPrimitive_highPart_le hgm hgd (q := 1 + a / 2)
+    (by linarith) hR (by linarith)
+  have hhigh := abs_tentDefect_le_high (measurable_highPart hgm R)
+    (fun t => (norm_highPart_le R g t).trans (poly_of_decay ha.le hgd t)) hi2 hh hε y
+  have hM : (h * ε + |y| + h) ^ (3 / 2 : ℝ) ≤ 8 := by
+    have h4 : h * ε + |y| + h ≤ 4 := by
+      rw [abs_of_nonneg hy0]; nlinarith
+    calc (h * ε + |y| + h) ^ (3 / 2 : ℝ) ≤ (4 : ℝ) ^ (3 / 2 : ℝ) :=
+          Real.rpow_le_rpow (by positivity) h4 (by norm_num)
+      _ = 8 := by
+          rw [show (4 : ℝ) = 2 ^ (2 : ℝ) by norm_num, ← Real.rpow_mul (by norm_num)]
+          norm_num
+  have hint0 : 0 ≤ ∫ t, ‖tentPrimitive (highPart R g) t‖ :=
+    integral_nonneg (μ := volume) (f := fun t => ‖tentPrimitive (highPart R g) t‖)
+      fun t => norm_nonneg _
+  refine hhigh.trans (mul_le_mul_of_nonneg_left (mul_le_mul (mul_le_mul_of_nonneg_left hn2
+    (by positivity)) hM (by positivity) ?_) (by positivity))
+  have := nonneg_of_decay hgd
+  have : 0 ≤ ∫ t : ℝ, (1 + |t|) ^ (-(2 + a - (1 + a / 2))) := integral_nonneg fun t => by positivity
+  positivity
+
+/-- **Small widths**: for `2h ≤ η ≤ y ≤ 2`, `h ≤ 1` and `0 < ε ≤ 1`,
+`|T_ε(h, y)| ≤ K (η^{-1/2} + 1) h^ρ` with `ρ > 0`.  Split at `|t| = h^{-κ}`: the low part costs
+`h · h^{-κ} η^{-1/2}`, the twice-integrated high part `h⁻¹ h^{κq}`, `q = 1 + a/2`. -/
+theorem exists_abs_tentDefect_le_smallWidth {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
+    (ha : 0 < a) (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) :
+    ∃ K ρ : ℝ, 0 ≤ K ∧ 0 < ρ ∧ ∀ η h y ε : ℝ, 0 < h → h ≤ 1 → 2 * h ≤ η → η ≤ y → y ≤ 2 →
+      0 < ε → ε ≤ 1 → |tentDefect g h y ε| ≤ K * (η ^ (-(1 / 2 : ℝ)) + 1) * h ^ ρ := by
+  have hC := nonneg_of_decay hgd
+  obtain ⟨q, hq⟩ : ∃ q : ℝ, q = 1 + a / 2 := ⟨_, rfl⟩
+  have hq1 : 1 < q := by rw [hq]; linarith
+  obtain ⟨κ, hκ⟩ : ∃ κ : ℝ, κ = (1 + 1 / q) / 2 := ⟨_, rfl⟩
+  have hqinv : 1 / q < 1 := by rw [div_lt_one (by linarith)]; exact hq1
+  have hκ1 : κ < 1 := by rw [hκ]; linarith
+  have hκq : 1 < κ * q := by
+    rw [hκ, div_mul_eq_mul_div, add_mul, one_div_mul_cancel (by linarith), one_mul, lt_div_iff₀
+      (by norm_num)]
+    linarith
+  have hκ0 : 0 < κ := by rw [hκ]; positivity
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℝ, ρ = min (1 - κ) (κ * q - 1) := ⟨_, rfl⟩
+  have hρ0 : 0 < ρ := by rw [hρ]; exact lt_min (by linarith) (by linarith)
+  obtain ⟨I₁, hI₁⟩ : ∃ I₁ : ℝ, I₁ = ∫ t : ℝ, (1 + |t|) ^ (-(2 + a - (1 + a / 2))) := ⟨_, rfl⟩
+  have hI₁0 : 0 ≤ I₁ := by rw [hI₁]; exact integral_nonneg fun t => by positivity
+  obtain ⟨cL, hcL⟩ : ∃ cL : ℝ, cL = 2 * (3 / (2 * Real.pi)) * (2 * C) * (2 : ℝ) ^ (1 / 2 : ℝ) :=
+    ⟨_, rfl⟩
+  obtain ⟨cH, hcH⟩ : ∃ cH : ℝ, cH = 4 * (3 / (2 * Real.pi)) * (16 / 3 * C * I₁) * 8 := ⟨_, rfl⟩
+  have hcL0 : 0 ≤ cL := by rw [hcL]; positivity
+  have hcH0 : 0 ≤ cH := by rw [hcH]; positivity
+  refine ⟨cL + cH, ρ, by positivity, hρ0, fun η h y ε hh hh1 hη hy hy2 hε hε1 => ?_⟩
+  have hη0 : 0 < η := by linarith
+  obtain ⟨R, hRdef⟩ : ∃ R : ℝ, R = h ^ (-κ) := ⟨_, rfl⟩
+  have hR1 : 1 ≤ R := by
+    rw [hRdef]; exact Real.one_le_rpow_of_pos_of_le_one_of_nonpos hh hh1 (by linarith)
+  have hR0 : 0 < R := by linarith
+  have hsplit := tentDefect_add (measurable_lowPart hgm R) (measurable_highPart hgm R)
+    (fun t => (norm_lowPart_le R g t).trans (poly_of_decay ha.le hgd t))
+    (fun t => (norm_highPart_le R g t).trans (poly_of_decay ha.le hgd t)) hh hε y
+  rw [lowPart_add_highPart] at hsplit
+  have hlow := abs_tentDefect_lowPart_le hgm ha hgd hR0.le hh hη hy hε
+  have hhigh := abs_tentDefect_highPart_le hgm ha hgd hR0 hh hh1 (by linarith) hy2 hε hε1
+  rw [← hq, ← hI₁] at hhigh
+  -- exponent bookkeeping
+  have hhR : h * R ≤ h ^ ρ := by
+    rw [hRdef, ← Real.rpow_one_add' hh.le (by linarith)]
+    exact Real.rpow_le_rpow_of_exponent_ge hh hh1 (by rw [hρ]; linarith [min_le_left (1 - κ) (κ * q - 1)])
+  have hRq : R ^ (-q) / h ≤ h ^ ρ := by
+    rw [hRdef, ← Real.rpow_mul hh.le, ← Real.rpow_sub_one hh.ne']
+    exact Real.rpow_le_rpow_of_exponent_ge hh hh1
+      (by rw [hρ]; linarith [min_le_right (1 - κ) (κ * q - 1)])
+  have hlow' : |tentDefect (lowPart R g) h y ε| ≤ cL * η ^ (-(1 / 2 : ℝ)) * h ^ ρ := by
+    refine hlow.trans (le_of_eq_of_le (by rw [hcL]; ring) ?_)
+    · exact cL * η ^ (-(1 / 2 : ℝ)) * (h * R)
+    · exact mul_le_mul_of_nonneg_left hhR (by positivity)
+  have hhigh' : |tentDefect (highPart R g) h y ε| ≤ cH * h ^ ρ := by
+    refine hhigh.trans (le_of_eq_of_le (by rw [hcH]; ring) ?_)
+    · exact cH * (R ^ (-q) / h)
+    · exact mul_le_mul_of_nonneg_left hRq hcH0
+  have hηpos : 0 ≤ η ^ (-(1 / 2 : ℝ)) := by positivity
+  have hhρ : 0 ≤ h ^ ρ := by positivity
+  rw [hsplit]
+  refine (abs_add_le _ _).trans ((add_le_add hlow' hhigh').trans ?_)
+  nlinarith [mul_nonneg hcL0 hhρ, mul_nonneg hcH0 hhρ, mul_nonneg (mul_nonneg hcH0 hηpos) hhρ]
 
 end GaloisForLFunctions.EulerFETransportTheory

@@ -34,8 +34,9 @@ restriction is known.
    fibres or from the primes. Over these bases the group is abelian of exponent two up to a
    permutation part that the base field removes.
 3. **Monodromy.** The zeros as functions of a complex parameter. The parameter of this
-   programme is the heat time of the de Bruijn–Newman family `H_t`; branch points are the
-   collision times, and conjugation at a real time is read against the local monodromy.
+   programme is the heat time `τ` of the de Bruijn–Newman family `H_τ`, taken complex. The
+   zeros form a cover of the time plane; its branch points are the collisions, and conjugation
+   at a real time is read against the local monodromy.
 
 ## Objects
 
@@ -56,7 +57,10 @@ ordinate, `δ = ½ − Re ρ` the width. Conjugation of `w` is `cr`; negation of
 | even-product field | `K_even = ℚ((ρ−½)(τ−½))` over all pairs of zeros |
 | zero motive | `Δ`, the integer span of the zeros; its group algebra `ℂ[Δ]` with the prime translations `T_p[z] = p^z[z]` |
 | Jensen equations | the centred reversed sections `P_d` of `Ξ`, their quotients `Eₙ`, `Oₙ`, and the coefficient field `K_J = ℚ(μ₂ₙ/μ₀)` |
-| heat cover | the zero set of `(t,z) ↦ H_t(z)`; a collision is a multiple zero of some `H_{t₀}` |
+| heat cover | the zero set of `(τ,z) ↦ H_τ(z) = ∫ Φ(x) e^{τx²} e^{izx} dx` over complex times `τ` |
+| collision | `(t, z₀)` with `t ≥ 0` real and `z₀` a zero of `H_t` of exact order `m`; `a = H_t^{(m)}(z₀)` |
+| blow-up `G` | the analytic function on `ℂ²` with `H_{t+s²}(z₀ + s y) = s^m G(s, y)`; `G(0, y) = (a/m!) Q_m(y)`, `Q_m = e^{−D²}y^m` the Hermite profile |
+| sheets | `Z_ρ(s) = z₀ + s y_ρ(s)`, one for each of the `m` simple real roots `ρ` of `Q_m`; `y_ρ` is the analytic branch of `G = 0` through `(0, ρ)` |
 
 Language: *orbit* (of a zero under a group), *width class* (the square class of a radicand),
 *reflection kernel* (the group over the field that forgets the orientation of reflection
@@ -86,9 +90,13 @@ the heat cover at a collision).
   prime translations are diagonal, and conjugation is the only pointed real symmetry.
 - **Folding.** `disc Q(X²) = 4ⁿ(−1)ⁿQ(0)·disc(Q)²`: the discriminant of a folded equation
   keeps the branch points and loses the sign of the quotient discriminant.
-- **Parabolic blow-up.** At a collision of order `m` the heat family is, to leading order, the
-  heat evolution of `z^m`: its zeros leave along the roots of a Hermite polynomial at the
-  scale `√(t − t₀)`.
+- **Parabolic blow-up.** At a collision of order `m` put `τ = t + s²` and `z = z₀ + s y`. The
+  kernel expansion removes the moments of order `< m` and leaves `H = s^m G(s, y)` with `G`
+  analytic and `G(0, ·)` the Hermite profile. Its roots are simple, so each continues to an
+  analytic sheet: on the double cover in `s` the cover of zeros is unramified.
+- **Symmetries of the blow-up.** `G(−s, −y) = (−1)^m G(s, y)` is the deck map of `τ = t + s²`;
+  at a real centre `conj G(s, y) = G(conj s, conj y)`. Uniqueness of the continuous branch
+  through a simple root turns each symmetry into a law for the sheets.
 
 ## Pillar theorems
 
@@ -183,9 +191,18 @@ degree `d` has the full symmetric group (`HTGeometry/CenteredGenericGalois`).
 [coefficient field](CenteredJensenDiscriminantField.lean),
 [census](FoldedJensenExhaustion.lean), [quartets](JensenQuartetExhaustion.lean))
 
-**The heat family** (`RHTower`, `NodalGeometryOfTheDeBruijnFlow`). RH iff no `H_t`, `t > 0`,
-has a multiple zero; after every positive time there are finitely many collisions; at a zero
-of order `m` the parabolic rescaling converges to the Hermite profile of degree `m`.
+**The heat cover.** The family is analytic in complex time and place. At a collision of order
+`m` the blow-up `G` is analytic on `ℂ²` with `G(0, ·) = (a/m!) Q_m`, and through each of the
+`m` roots of `Q_m` passes one analytic sheet `Z_ρ` of zeros; the sheets are distinct for
+`s ≠ 0`. *Monodromy:* `Z_ρ(−s) = Z_{−ρ}(s)`, so one turn of the time around the collision is
+the reflection `ρ ↦ −ρ` of the Hermite roots: `⌊m/2⌋` disjoint transpositions, with a fixed
+sheet exactly when `m` is odd. *Conjugation:* at a real centre `conj Z_ρ(s) = Z_ρ(conj s)`;
+after the collision all `m` zeros are real, and before it conjugation carries the sheet `ρ`
+to the sheet `−ρ` and the zeros on the sheets `ρ ≠ 0` are not real. Before a real collision
+conjugation is the local monodromy. In `RHTower`: RH iff no `H_t`, `t > 0`, has a multiple
+zero, and after every positive time there are finitely many collisions.
+([heat cover](TheHeatCoverOfTheZeros.lean),
+[Hermite monodromy](TheHermiteMonodromyOfACollision.lean))
 
 ## Criteria
 
@@ -210,7 +227,9 @@ of order `m` the parabolic rescaling converges to the Hermite profile of degree 
 4. **Finite equations.** The group of one Jensen polynomial of ξ over the field of its
    coefficients, and the class of conjugation in it.
 5. **Monodromy.** The monodromy of the zeros of the heat family around a collision time, the
-   group it generates, and its relation to conjugation.
+   group it generates, and its relation to conjugation. The local part is answered: the
+   Hermite reflection, of order two, equal to conjugation before a real collision. The group
+   generated by all collisions is open.
 6. **Purity.** A restriction, from the prime traces alone, that forces `H = B`.
 
 ## Tools
@@ -248,8 +267,8 @@ one of the six questions.
 - The orbit of a zero with irrational real part: `{ρ, ρ̄}` or the full quartet.
 - Algebraic relations among the normalized moments `μ₂ₙ/μ₀`, which decide whether a Jensen
   equation is generic.
-- The global monodromy group of the heat cover and the position of its branch points
-  relative to the real time axis.
+- The global monodromy group of the heat cover: collisions at complex times, the graph of
+  sheets they connect, and the position of the branch points relative to the real time axis.
 - Orderings of `K`, `D` and `B` other than the one induced by `ℝ`, and the conjugations they
   define on the zero field.
 - A decomposition or Frobenius structure at a prime.
@@ -258,8 +277,8 @@ one of the six questions.
 
 `ArithmeticCastelnuovoSeveri` owns the Weil form on the zeros and its index laws; the trace
 form of the reflection is that form. `RHTower` and `NodalGeometryOfTheDeBruijnFlow` own the
-heat family, its collisions and their Hermite profiles; this programme reads them as a
-ramified cover. `HTGeometry` owns the generic Galois groups and the analytic implicit-function
+heat family at real times, its collision counts and their Hermite limits; this programme
+extends the family to complex time and owns its cover of zeros. `HTGeometry` owns the generic Galois groups and the analytic implicit-function
 tools. `TranscendenceTheoryOfThePrimeOrbit` owns the six-exponentials input.
 `WorldsOfTheZeroConfiguration` supplies the edits against which T5g is tested. `RHTower/Artin`
 owns the characters of covers. This programme owns the fields generated by the zeros, their
