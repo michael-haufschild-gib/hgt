@@ -96,6 +96,9 @@ linear in the weight. The pole planes cancel; the limit is `Z_K(f) − Z_L(f)`. 
 scale has `([L:ℚ] − [K:ℚ])` jets, `(r₂(L) − r₂(K))` conjugate jets, the counterterm
 `log|d_L| − log|d_K|` and the contacts `(N_m^L(p) − N_m^K(p)) log p`.
 
+(d) The ring of integers of `ℚ` is `ℤ`, with one homomorphism to every ring: `N_m(p) = 1`. So
+over `ℤ` the contacts of a number ring are `(#Hom(O, 𝔽_{p^m}) − 1) log p`.
+
 ## Lean
 
 Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
@@ -107,7 +110,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 
 | V7 | `TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles` | `poleConfig`, `poleConfig_W`, `poleConfig_W_ofReal`, `virtualDefect_poleConfig`, `exists_le_negIndex_sub_poleConfig_iff`, `rightZeros_eq_empty_iff_forall_negIndex_sub_poleConfig_le_one`, `exists_le_negIndex_neutralGram_iff`, `riemannHypothesis_iff_forall_negIndex_neutralGram_le_one` |
 | V7 | `TheNeutralFormOfANumberRingHasTheIndexOfItsZetaFunctionPlusOne` | `heckeXi_trivialModulus_one_ne_zero`, `one_notMem_dedekindZeros`, `exists_le_negIndex_dedekind_sub_poleConfig_iff`, `forall_negIndex_dedekind_sub_poleConfig_le_one_iff` |
-| V8 | `TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields` | `ringHom_finiteField`, `kerEquivQuotientHom`, `primesOfNorm`, `fibrePointCount`, `idealContact_prime_pow`, `idealContact_eq_zero`, `natCard_ringHom_ker_eq`, `ker_mem_biUnion_primesOfNorm`, `natCard_ringHom_eq_fibrePointCount`, `idealContact_prime_pow_eq_natCard_ringHom`, `ringForm_sub`, `relativeContact_prime_pow`, `tendsto_relativeForm_add_relativeContact` |
+| V8 | `TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields` | `ringHom_finiteField`, `kerEquivQuotientHom`, `primesOfNorm`, `fibrePointCount`, `idealContact_prime_pow`, `idealContact_eq_zero`, `natCard_ringHom_ker_eq`, `ker_mem_biUnion_primesOfNorm`, `natCard_ringHom_eq_fibrePointCount`, `idealContact_prime_pow_eq_natCard_ringHom`, `fibrePointCount_rat`, `ringForm_sub`, `relativeContact_prime_pow`, `relativeContact_rat_prime_pow`, `tendsto_relativeForm_add_relativeContact` |
 
 ## Open
 

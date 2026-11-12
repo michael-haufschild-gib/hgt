@@ -697,7 +697,8 @@ enter the square of the ring; summed over the class characters the contacts keep
 prime powers, with one pole plane for `h` copies of the jets. The contacts of the ring are
 its point counts: at `p^m` the contact order is `log p` times the number of ring homomorphisms
 from the ring of integers to the field with `p^m` elements, `Σ_{d ∣ m} d a_d(p)` with `a_d(p)`
-primes of norm `p^d` (`idealContact_prime_pow_eq_natCard_ringHom`). Below the first contact a large
+primes of norm `p^d` (`idealContact_prime_pow_eq_natCard_ringHom`); over `ℤ`, which has one
+point in every finite field, they are `(N_m(p) − 1) log p`. Below the first contact a large
 discriminant gives the inequality. For the splitting field of `X³ − 2` the character of degree two is induced
 from the cubic character of `2` over `ℚ(ω)`: its contacts are point counts of `x³ = 2`, and its
 index is the number of distinct zeros of its `L`-function to the right of the line. A character

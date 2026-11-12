@@ -38,6 +38,8 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheEuclideanTopologyOfTheZeroFiel
 
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheKummerRelationsOfTheZeroWidths
 
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheArithmeticClassesOfAdditiveZeroRelations
+
 /-!
 # Galois theory of zeros
 

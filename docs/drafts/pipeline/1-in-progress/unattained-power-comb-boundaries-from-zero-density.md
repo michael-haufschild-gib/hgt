@@ -65,14 +65,15 @@ bound with `powerCombTailConverges_excludes_boundary_zeros`.
 - `PowerTailRiemannSumsAcrossJumps`;
 - `PowerTailRightRemaindersHaveConvergentMeshes`;
 - `PowerTailZetaMultiplierBound`;
-- `PowerTailZeroTraceIsAbsolutelySummable`.
+- `PowerTailZeroTraceIsAbsolutelySummable`;
+- `PowerTailZeroPrefixHasAUniformRemainder`.
 
 Required oleans and umbrella imports are present for these inputs.
 
 ## Written chain awaiting checks
 
 All in `AbsoluteGeometryOfSpecZ`:
-- Finite modes: `PowerTailZeroPrefixHasAUniformRemainder`, `PowerTailZeroConvolutionModes`.
+- Finite modes: `PowerTailZeroConvolutionModes`.
 - Complete exterior: `PowerTailRightZeroCutoffs`, `PowerTailRightZeroConvolutionTails`.
 - Main-part limit: `PowerTailRightTraceCutoffsHaveTheirLimit`, `TheRightZeroConvolutionHasItsLimit`.
 - Arithmetic bridge: `PowerContactsSplitIntoRightTraceAndRemainder`.

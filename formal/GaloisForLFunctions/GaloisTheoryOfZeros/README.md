@@ -369,6 +369,44 @@ conjugation within the relation description. The actual relation space and
 splitting of this exact sequence remain undetermined; no width is proved nonzero.
 [Full Kummer sign kernel](TheKummerRelationsOfTheZeroWidths.lean).
 
+### Arithmetic splitting of additive relations
+
+The field `D=K(δ_q² : all q)` also controls additive relations. For nonzero
+widths put `b_q=iδ_q`, `a_q=b_q²=−δ_q²∈D`, and declare
+
+\[
+q\sim r\quad\Longleftrightarrow\quad a_qa_r\in D^{\times2}.
+\]
+
+These classes are exactly the distinct quadratic characters through which
+`Gal(L/D)` acts on the offsets. Within a class the offsets differ by a
+nonzero scalar in `D`; offsets from distinct classes are linearly independent
+over `D`. Thus every `D`-linear relation splits separately in each class.
+The proof applies all kernel automorphisms to the relation and uses
+Dedekind independence of multiplicative characters. Passing from `D` to the
+maximal real field `E` collapses these classes, since every pairwise width
+product belongs to `E`.
+
+For every finitely supported integer family `(n_q)` on the entire zero
+divisor, this yields the exact equivalence
+
+\[
+\sum_q n_qw_q=0
+\quad\Longleftrightarrow\quad
+\sum_q n_qt_q=0
+\quad\text{and}\quad
+\forall C,\ \sum_{q\in C}n_qb_q=0.
+\]
+
+Here `C` ranges over the nonzero width classes; zero offsets contribute
+nothing. Conjugation separates the ordinate sum from the offset sum.
+Repeated divisor copies are retained, and no height cutoff occurs.
+The square-class partition and the integer relations within each class
+remain arithmetic questions; the theorem does not assert rational
+independence of the ordinates or widths.
+
+[Arithmetic classes of additive relations](TheArithmeticClassesOfAdditiveZeroRelations.lean).
+
 ### Euclidean topology and arithmetic action
 
 Give `L` its inherited complex topology while keeping the Krull topology on

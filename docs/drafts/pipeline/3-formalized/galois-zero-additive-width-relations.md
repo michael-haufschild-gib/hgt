@@ -1,26 +1,31 @@
 # Arithmetic splitting of additive zero-width relations
 
 - **ID:** galois-zero-additive-width-relations
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Questions:** Additive relations among actual zeros; arithmetic invariants.
 
 Let `K` be the complete-fibre source, `L` the centered zero field,
 `D=K(δ_q² : all q)`, and `b_q=iδ_q` for nonzero widths.
 Declare `q∼r` when `−δ_q²` and `−δ_r²` have the same square class in `D`.
 
-## Target
+## Theorem
 
 Every finite `D`-linear relation among the `b_q` splits into separate
 relations within the classes `q∼r`. A family of these radicals is
 `D`-linearly independent exactly when its square classes are pairwise distinct.
 Within one class all radicals differ by a nonzero scalar in `D`.
 
-Apply this decomposition to all integer relations among centered spectral
-zeros `w_q=t_q+b_q`, with no height cutoff: the ordinate sum must vanish,
-and the offset sum must vanish separately in each arithmetic square class.
-This constrains rational relations without assuming independence of zero
-ordinates or widths.
+For every finitely supported integer family on the complete centered zero
+divisor,
+
+```
+∑ n_q w_q = 0  ↔  ∑ n_q t_q = 0 and ∀ C, ∑_(q∈C) n_q b_q = 0.
+```
+
+Here `w_q=t_q+b_q`, and `C` ranges over nonzero arithmetic width classes.
+Zero offsets contribute nothing. Multiplicities are retained, and no height
+cutoff or independence assumption is imposed.
 
 ## Paper proof
 
@@ -43,6 +48,18 @@ in `D` and all `t_q`, while negating every `b_q`. Adding and subtracting a
 relation and its conjugate separates its ordinate and offset parts. Apply
 the class decomposition to the offset part. Specializing coefficients to
 integers gives the exact equivalence for the entire centered zero divisor.
+
+## Formalization
+
+`GaloisTheoryOfZeros/TheArithmeticClassesOfAdditiveZeroRelations.lean`:
+`sourceRootSign_eq_iff_square`, `radical_relation_iff_nonzero_square_components`,
+`sameWidthSquareClass_equivalence`, `sameWidthSquareClass_iff_proportional`,
+`widthRadicals_linearIndependent_iff`, `zeroOffset_relation_iff_square_components`,
+`centeredZero_relation_iff_arithmetic_components`, and
+`centeredZero_integer_relation_iff`.
+
+Direct source audit passed. Eleven transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`. Umbrella import wired.
 
 ## Boundary
 

@@ -9,13 +9,16 @@
 - **Status:** Unproved. No polar-charge or weak Euler equation claimed.
 
 The ground-state definition bounds `lowGammaForm F T` uniformly for all
-large cutoffs. The other terms of `truncatedWeilForm` are independent of T.
-The continuous negative part of `gammaBracket` has compact support, by
-its proved logarithmic lower bound. Subtracting its finite contribution
-bounds all window integrals of
-`|paperFT(F)|² max(gammaBracket,0)`. Apply
-`HTGeometry.integrable_of_bounded_windows` to obtain full Gamma
-integrability; no smoothness of F is required.
+large cutoffs. Put `C=10+log 4`. The proved global inequality
+`log(2+|r|)≤gammaBracket(r)+C` makes
+`|paperFT(F)(r)|² (gammaBracket(r)+C)` nonnegative and continuous.
+`RHTower.KernelStrip.integrable_norm_sq_paperFT` applies to the state's
+actual L¹ and L² data; its full Fourier mass bounds the added constant
+term on every cutoff. Thus the original signed bound gives uniformly
+bounded positive window integrals. Apply
+`HTGeometry.integrable_of_bounded_windows`, then subtract the integrable
+constant term to obtain full Gamma integrability. No smoothness or compact
+support of F is required.
 
 The lower bound `log(2+|r|)≤gammaBracket(r)+10+log 4`, together with
 Plancherel, should then pay the actual logarithmic graph norm.

@@ -98,7 +98,9 @@ theorem mul_lt_of_mem_cof {rest : ℕ → Prop} [DecidablePred rest] {X : ℕ} {
       _ = 4 * X * Real.exp (1 / H) := by rw [← h, mul_one]
   push_cast
   rw [← hkey]
-  exact mul_lt_mul hpe hm.2.1 hm0 (Real.exp_pos _).le
+  calc (p : ℝ) * m < Real.exp (((blk H p : ℝ) + 1) / H) * m := mul_lt_mul_of_pos_right hpe hm0
+    _ ≤ Real.exp (((blk H p : ℝ) + 1) / H) * (4 * cofLo X H (blk H p)) :=
+        mul_le_mul_of_nonneg_left hm.2.1 (Real.exp_pos _).le
 
 /-- **Interior integers see every factorisation.**  For `Xe^{1/H} < n ≤ 4X`, a prime `p ∣ n` with
 `p ∈ Pr` and `n ∈ rest`, the cofactor `n/p` lies in `cof (blk p)`. -/
