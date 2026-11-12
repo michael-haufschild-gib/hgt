@@ -95,7 +95,7 @@ theorem summable_abs_sEdit_rpow (hα0 : 0 < α) (hα : α < 1) (γ : ℝ) (k₀ 
     have hs := (summable_geometric_of_lt_one hr0 hr1).mul_left 3
     have heq : ∑' k : ℕ, 3 * r ^ k = 3 / (1 - r) := by
       rw [tsum_mul_left, tsum_geometric_of_lt_one hr0 hr1, div_eq_mul_inv]
-    exact heq ▸ sum_le_tsum _ (fun _ _ => by positivity) hs
+    exact heq ▸ hs.sum_le_tsum _ (fun _ _ => by positivity)
   refine summable_of_sum_range_le (c := 3 / (1 - r)) (fun n => by positivity) fun N => ?_
   have h0 : |(sEdit α β γ k₀ 0 : ℝ)| * ((0 : ℕ) : ℝ) ^ (-θ) = 0 := by
     rw [(isEdit_sEdit α β γ k₀).prime 0 Nat.not_prime_zero]; simp
