@@ -39,11 +39,12 @@ theorem ae_eq_zero_of_fullEnergy_zero_of_nonreal_laplace_zero
     le_antisymm (neg_nonneg.mp hneg) (pairedCausalResolventEnergy_nonneg _ _ _ _)
   have hfirst : (∫ u, ‖causalLaplaceWeighted (4 / Real.pi)
       (modulatedCausalConvolution a b (cx F)) u‖ ^ 2) = 0 := by
-    have h1 := integral_nonneg fun u => sq_nonneg
-      ‖causalLaplaceWeighted (4 / Real.pi) (modulatedCausalConvolution a b (cx F)) u‖
-    have h2 := integral_nonneg fun u => sq_nonneg
-      ‖causalLaplaceWeighted (4 / Real.pi)
-        (modulatedCausalConvolution a (-b) (modulatedCausalReflection a b (cx F))) u‖
+    have h1 : 0 ≤ ∫ u, ‖causalLaplaceWeighted (4 / Real.pi)
+        (modulatedCausalConvolution a b (cx F)) u‖ ^ 2 :=
+      integral_nonneg fun _ => sq_nonneg _
+    have h2 : 0 ≤ ∫ u, ‖causalLaplaceWeighted (4 / Real.pi)
+        (modulatedCausalConvolution a (-b) (modulatedCausalReflection a b (cx F))) u‖ ^ 2 :=
+      integral_nonneg fun _ => sq_nonneg _
     unfold pairedCausalResolventEnergy at hmass
     linarith only [h1, h2, hmass]
   have hK := memLp_weighted_modulatedCausalConvolution (add_pos ha (by positivity)) b
@@ -54,6 +55,8 @@ theorem ae_eq_zero_of_fullEnergy_zero_of_nonreal_laplace_zero
       ‖causalLaplaceWeighted (4 / Real.pi) (modulatedCausalConvolution a b (cx F)) u‖) hKi).mp hfirst
   have hKzero : modulatedCausalConvolution a b (cx F) =ᵐ[volume] 0 := by
     filter_upwards [hae] with u hu
+    change ‖causalLaplaceWeighted (4 / Real.pi)
+      (modulatedCausalConvolution a b (cx F)) u‖ ^ 2 = 0 at hu
     have hn : ‖causalLaplaceWeighted (4 / Real.pi) (modulatedCausalConvolution a b (cx F)) u‖ = 0 := by
       nlinarith only [hu]
     have hv := norm_eq_zero.mp hn
@@ -87,7 +90,13 @@ theorem ae_eq_zero_of_fullEnergy_zero_of_complex_laplace_zero
     have hb : z.im / (2 * Real.pi) ≠ 0 :=
       div_ne_zero him (mul_ne_zero (by norm_num) Real.pi_ne_zero)
     have he : modulatedLaplaceRate (z.re / Real.pi) (z.im / (2 * Real.pi)) = z := by
-      apply Complex.ext <;> simp [modulatedLaplaceRate] <;> field_simp [Real.pi_ne_zero] <;> ring
+      have hr : Real.pi * (z.re / Real.pi) = z.re := by
+        field_simp [Real.pi_ne_zero] <;> ring
+      have hi : 2 * Real.pi * (z.im / (2 * Real.pi)) = z.im := by
+        field_simp [Real.pi_ne_zero] <;> ring
+      unfold modulatedLaplaceRate
+      rw [hr, hi]
+      apply Complex.ext <;> simp
     apply ae_eq_zero_of_fullEnergy_zero_of_nonreal_laplace_zero hW hthreshold hd henergy ha hb
     rw [he]
     exact hz

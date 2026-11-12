@@ -5,7 +5,7 @@
 - **Type:** CONJECTURE
 - **Source:** B104; actual weak equation and weighted causal resolvents.
 - **Statement:** Every actual critical half-line state at a finite global window threshold has `∫ F(u) exp(iτu) du ≠ 0` for every real τ.
-- **Status:** Unproved. The open-right-half-plane extension is also awaiting its final Lean check.
+- **Status:** Unproved. Open-right-half-plane nonvanishing is [formalized](../3-formalized/critical-half-line-laplace-transform-is-zero-free-in-the-right-half-plane.md).
 
 ## Goal
 

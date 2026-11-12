@@ -306,7 +306,8 @@ theorem exists_short_sum_mean_square_twLiouville_le {q : ℕ} [NeZero q]
   have hlin : 4608 * (N : ℝ) * h + 36 * N + 12 ≤ ε * h ^ 2 / 2 := by
     have hεh : 4 * (4644 * (N : ℝ) + 12) ≤ ε * h := by
       have : 4 * (4644 * (N : ℝ) + 12) / ε ≤ h := by linarith
-      rwa [div_le_iff₀ hε, mul_comm] at this
+      rw [div_le_iff₀ hε] at this
+      linarith
     have h1 := mul_le_mul_of_nonneg_right hεh hh0.le
     have h2 := mul_le_mul_of_nonneg_left hh1 hN0.le
     linarith
