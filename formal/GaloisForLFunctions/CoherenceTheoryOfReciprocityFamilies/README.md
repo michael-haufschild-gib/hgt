@@ -125,7 +125,7 @@ the correction of a family as a family of the same theory.
 
 | # | Question | State |
 |---|---|---|
-| Q1 (B175) | For the actual floor bin: is `R₀ < 1`, is there `s > 0` before Cauchy–Schwarz, or do the amplitudes saturate? | reduced (§7): the average row and the short columns are settled (Lean); the long columns are the first moment of `Gγ₂²`, coherent at `R₀ = 2/3` [C]/[D], so an evaluation lands the floor bin on the endpoint `7/9` of its curve; open: the remainder uniformly in the column |
+| Q1 (B175) | For the actual floor bin: is `R₀ < 1`, is there `s > 0` before Cauchy–Schwarz, or do the amplitudes saturate? | reduced (§7): the average row and the short columns are settled (Lean); the long columns are the first moment of `Gγ₂²`, coherent at `R₀ = 2/3` [C]/[D], the bifurcation point of the floor-bin curve (`7/9`); with the main term evaluated and a square-root remainder the curve reaches the wall `2/3`; open: the remainder uniformly in the column |
 | Q2 | Which directions of amplitude space are coherent besides the principal twists? | the principal twists (mode 0) are target-free; short columns are incoherent; the long columns are read by the squares `γ₂(u)²` of the theta coefficients (Lean), the normalized sextic Gauss sums of the rows, coherent along the sextic theta coefficients of the columns [C] |
 | Q3 | Is the signed Gram of two rows a completed sum with its own reflection? | yes (Lean): a sum over the dual frequencies `h mod u₁u₂` at dual length `N(u₁u₂)` over the row scale, whose coefficient is the same kernel at `h` times the root numbers `Φ = Gγ₂²` of the two rows times the bicharacter `r` modulo four; the reflected Gram of `α` is the Gram of `αΦ`, and its sixth-power frequencies are rank one |
 | Q4 (B184) | Do the families `ψ₆^k η` close under correction; their common abscissa; a form whose correction converges on `Re s > ½`? | closure `k ↦ 6k + 1` and the continuation of the tower `L`-functions (FCT); the wall is the zero abscissa of `L(·, ψ₆η⁶)` at `6s − 3` (here), and it is real: the continued correction has infinitely many zeros in `7/12 ≤ Re s < 2/3` and no nonvanishing continuation below `7/12` (FCT, `no_nonvanishing_continuation_of_probeCorrection_below_seven_twelfths`); without completion there is no wall, and completion is what the reflection needs; the common abscissa is a half-plane for the tower uniform in the infinity type: open |
@@ -161,26 +161,32 @@ cubic Gauss sum (`γ₂` up to the normalization of the additive character). Unf
 `D(w) = Σ_ν T(ν)² N(ν)^{−w}` as the regularized `∫ θ² E(·, 2w)` over Gamma factors, and the support
 formula factors it as `D = \overline{C}² ζ_K(3w − 1) S(w)` (unramified part), with
 `S(w) = Σ_a (δ/a)₃² \overline{G̃(a)}² N(a)^{−w}`. The cube frequencies `ν = b³` are principal and give
-the pole of `ζ_K(3w − 1)` at `w = 2/3` for every row. The constant term of `θ` is `c y^{2/3}`, so the
-renormalized integral has, besides the pole of `E` at `s = 4/3`, the growth pole of `c² y^{4/3}` at the
-same point: a double pole, with leading coefficient proportional to `c³ ≠ 0`. Hence the squarefree
+the pole of `ζ_K(3w − 1)` at `w = 2/3` for every row. The constant term of `θ` is `c y^{2/3}`, so `θ²` grows like
+`c² y^{4/3}`, the leading constant term of the Eisenstein series of multiplier `κ²` exactly at its own
+pole `s = 4/3`. The renormalization subtracts `c²` times the constant Laurent coefficient `E*` of that
+series, whose constant term carries `−r y^{2/3} log y` (`r` the residue of the scattering coefficient):
+the Mellin transform has a double pole at `s = 4/3` with leading coefficient `∝ c² r ∝ c³ ≠ 0`. Hence the squarefree
 part `S` — a finite-order twist of the long columns — has a simple pole at `w = 2/3`: it is coherent,
 and its main term is carried by the constant term of `θ`, the principal Fourier mode; the triple
 product `∫ θ³` enters the next Laurent coefficient. Below `2/3`, `S = D/(\overline{C}² ζ_K(3w − 1))`
 meets the zeros of `ζ_K`: a zero `ρ` with `Re ρ > ½` is a possible pole of `S` at `(ρ + 1)/3`.
 
-**What the budget reads [D].** FCT's floor-bin curve `θ(R₀) = ((6R₀ − 1)n − 8)/((6R₀ − 1)(n − 1))`
-(`signedGramSymmetricTheta`, defined for `R₀ ≥ ½ + 1/n`) with the half-plane `½ + (1 − 1/n)θ/2`
-gives at `n = 6`: `R₀ = 1 ↦ 13/15`, `R₀ = 5/6 ↦ 5/6` (the free floor), `R₀ = 2/3 ↦ 7/9`. The endpoint
-`R_crit(n) = ½ + 1/n` of the curve is the Kubota exponent of Gauss sums of order `n`, and the row root
-numbers are Gauss sums of order `n` (Lean at `n = 6`): an evaluation of the long columns lands the
-floor bin on the endpoint of its curve, `7/9` as the floor bin's own limit. A bound by squares stops
-at `R₀ = 5/6`: the cubic large sieve `(Q + N + (QN)^{2/3})(QN)^ε` of Heath-Brown gives `5/6` and no
-more, and its term `(QN)^{2/3}` comes from the cubes among the reflected frequencies, the principal
-subfamily of the reflected Gram — the coherent direction that the evaluation extracts as a main term.
-What is missing is the sextic Kubota series uniformly in the column index, with the remainder below
-`U^{2/3}`. The corpus has the cubic Eisenstein series, its residue and the cubic theta coefficients
-(MMD); it has neither the sextic metaplectic Eisenstein series nor a sextic large sieve.
+**What the budget reads.** FCT's floor-bin curve has two branches: `θ(R₀) =
+((6R₀ − 1)n − 8)/((6R₀ − 1)(n − 1))` for `R₀ ≥ ½ + 1/n` (`signedGramSymmetricTheta`) and a broken branch
+for `½ ≤ R₀ ≤ ½ + 1/n` (`signedGramBrokenTheta`), meeting at `θ = n/(n + 3)` and ending at
+`θ = (n − 4)/(n − 1)` for `R₀ = ½` (`signedGram_phase_endpoints`); the half-plane is `½ + (1 − 1/n)θ/2`.
+At `n = 6`: `R₀ = 1 ↦ 13/15`, `R₀ = 5/6 ↦ 5/6` (the free floor), `R₀ = 2/3 ↦ 7/9` (the bifurcation),
+`R₀ = ½ ↦ 2/3`. The bifurcation point `½ + 1/n` is the Kubota exponent of Gauss sums of order `n`, and the
+row root numbers are Gauss sums of order `n` (Lean at `n = 6`): the coherent main term of the long
+columns sits exactly at the bifurcation. A bound by squares stops at `R₀ = 5/6` [D]: the cubic large
+sieve `(Q + N + (QN)^{2/3})(QN)^ε` of Heath-Brown gives `5/6` and no more, and its term `(QN)^{2/3}` comes
+from the cubes among the reflected frequencies, the principal subfamily of the reflected Gram — the
+coherent direction that an evaluation extracts as a main term. With the main term evaluated and the
+remainder at square-root size the broken branch runs to `R₀ = ½`, whose half-plane is `1 − 2/n = 2/3`
+at `n = 6`: the wall of the frame. So the floor bin, fully evaluated, meets the wall and nothing
+below it. What is missing is the sextic Kubota series uniformly in the column index. The corpus has the
+cubic Eisenstein series, its residue and the cubic theta coefficients (MMD); it has neither the sextic
+metaplectic Eisenstein series nor a sextic large sieve.
 
 **Parity of the order.** The sign law gives the Möbius sign at odd order only; the large sieve over
 `ℤ[ω]` is sharp at order two (`sieveNorm_sharp`) and open at odd order. The families that carry
@@ -214,7 +220,7 @@ are its squares.
 | HTGeometry | Poisson summation on affine lattices, lattice weights |
 | SelectiveArithmetic | the ladder and the rungs that read the half-plane |
 | FloorFreeArithmetic | the floor census: every large-sieve budget has a floor |
-| summary §2.11 (reciprocity calculus without squares), §2.18 (route MC/JAS) | the same objects with an elementary reflection; the stages `7/8 → 13/15 → 5/6 → 2/3 → 3/5`, of which CRF owns `13/15 → 5/6 → 7/9` (the floor bin to the endpoint of its curve) and the wall |
+| summary §2.11 (reciprocity calculus without squares), §2.18 (route MC/JAS) | the same objects with an elementary reflection; the stages `7/8 → 13/15 → 5/6 → 2/3 → 3/5`, of which CRF owns `13/15 → 5/6 → 7/9 → 2/3` (the floor bin down its curve to the wall) and the wall |
 
 ## 10. Success criteria
 
@@ -250,11 +256,11 @@ are its squares.
    principal (sixth-power) frequencies produce the large-sieve term `(QN)^{2/3}`.
 3. The common abscissa of the tower `ψ₆^k η`: a half-plane uniform in the infinity type.
 4. Coherence exponents of Gauss-sum families against a column (Q6); the theta coefficients as the
-   coherent directions; for row twists of order `n`, the endpoint `½ + 1/n` of the budget curve as the
+   coherent directions; for row twists of order `n`, the bifurcation point `½ + 1/n` of the budget curve as the
    Kubota exponent of the row root numbers.
 5. A source outside the cubic probe whose correction converges on `Re s > ½` while keeping a
    reflection: within the cubic probe completion is necessary for the one and excludes the other.
 6. The function-field analogue (Q8): over `𝔽_q[T]`, `q ≡ 1 mod 6`, Hasse–Davenport gives the same
    root numbers `G γ₂²`, the Kubota series are rational functions in `q^{−s}` and the theta
    coefficients are explicit [C], so the long columns of a function-field probe can be evaluated
-   exactly; the analogue tests whether the floor bin reaches the endpoint `½ + 1/n` of its curve.
+   exactly; the analogue tests whether the floor bin reaches the bifurcation point `½ + 1/n` of its curve.

@@ -51,8 +51,11 @@ The unconditional outer zero bound supplies a coarse linear contact bound
 for the initial Dirichlet identity. Any zero with `Re ρ>1-a` then forces
 the nonzero interior residue `-mζ(ρ+a)`, contradicting holomorphy.
 
-Unverified Lean chain: `IntegrableLogarithmicStaircasesHaveHolomorphicMellinTransforms`,
-`LogarithmicAbelIntegrability`, `PowerContactAbelIntegrability`, and
+`IntegrableLogarithmicStaircasesHaveHolomorphicMellinTransforms` is verified:
+a weaker damping absorbs the derivative's logarithmic-time factor.
+`LogarithmicAbelIntegrability` and `PowerContactAbelIntegrability` are also
+verified: the actual comb pays contact integrability and its literal
+holomorphic Mellin symbol. Remaining unverified chain:
 `HolomorphicContactSymbolsExcludeInteriorZeros`, followed by
 `PowerCombAbelIntegrabilityDetectsTheZeroWidth`. The last states the exact
 equivalence and the forced Abel limit. No new contribution counted.

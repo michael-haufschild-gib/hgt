@@ -68,7 +68,9 @@ theorem holomorphic_contact_symbol_excludes_interior_zero
   have hvan : Tendsto (fun ε : ℝ => (ε : ℂ) *
       F (ρ - (a : ℂ) + (ε : ℂ)))
       (𝓝[>] 0) (𝓝 0) := by
-    simpa only [zero_mul] using heps.mul (hcont.tendsto.comp hpathF)
+    have hh := heps.mul (hcont.tendsto.comp hpathF)
+    rw [zero_mul] at hh
+    exact hh.congr fun _ => rfl
   obtain ⟨m, hm, hres⟩ := _root_.RHTower.neg_logDeriv_zeta_zero_residue hzero
   have hlog : Tendsto (fun ε : ℝ => (ε : ℂ) *
       (-deriv riemannZeta (ρ + ε) / riemannZeta (ρ + ε)))

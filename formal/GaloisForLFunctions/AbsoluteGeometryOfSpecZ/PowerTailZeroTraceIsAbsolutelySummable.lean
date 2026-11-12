@@ -11,7 +11,7 @@ contact residues are absolutely summable, with all multiplicities.
 
 noncomputable section
 
-open Complex
+open Complex Filter Topology
 open _root_.RHTower
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
@@ -33,7 +33,8 @@ theorem summable_norm_powerTailRightZeroAmplitude
   classical
   let p := σ + a
   let C := 22 + 1 / (1 - p)
-  have hC : 0 ≤ C := by dsimp only [C, p]; positivity
+  have hgap : 0 < 1 - p := sub_pos.mpr hp1
+  have hC : 0 ≤ C := by dsimp only [C]; positivity
   let w : XiZeroCopy → ℝ := fun q =>
     if σ ≤ (q.1 : ℂ).re then |xiCopyOrdinate q| ^ (-p) else 0
   have hw (q : XiZeroCopy) : 0 ≤ w q := by
@@ -54,12 +55,12 @@ theorem summable_norm_powerTailRightZeroAmplitude
       linarith only [hh]
     have hnum : ‖riemannZeta ((q.1 : ℂ) + (a : ℂ))‖ ≤
         C * |xiCopyOrdinate q| ^ (1 - p) := by
-      apply norm_zeta_le_ordinate_power_in_closed_strip hp0 hp1
-      · simp only [Complex.add_re, Complex.ofReal_re]
-        linarith only [hq.1]
-      · simp only [Complex.add_re, Complex.ofReal_re]
-        linarith only [hq.2]
-      · simpa only [Complex.add_im, Complex.ofReal_im, add_zero, xiCopyOrdinate] using hγ1
+      have hh := norm_zeta_le_ordinate_power_in_closed_strip hp0 hp1
+        (s := (q.1 : ℂ) + (a : ℂ))
+        (by simp only [Complex.add_re, Complex.ofReal_re]; linarith only [hq.1])
+        (by simp only [Complex.add_re, Complex.ofReal_re]; linarith only [hq.2])
+        (by simpa only [Complex.add_im, Complex.ofReal_im, add_zero, xiCopyOrdinate] using hγ1)
+      simpa only [Complex.add_im, Complex.ofReal_im, add_zero, xiCopyOrdinate] using hh
     have hden : |xiCopyOrdinate q| ≤ ‖(q.1 : ℂ) - (a : ℂ)‖ := by
       simpa only [Complex.sub_im, Complex.ofReal_im, sub_zero, xiCopyOrdinate] using
         Complex.abs_im_le_norm ((q.1 : ℂ) - (a : ℂ))
@@ -98,5 +99,101 @@ theorem exists_summable_powerTailRightZeroAmplitude
   rw [hmin]
   dsimp only [σ]
   linarith only [ha2]
+
+/-- Logarithmic phase of a contact residue, normalized at the power boundary. -/
+def powerTailRightZeroWave (a σ u : ℝ) (q : XiZeroCopy) : ℂ :=
+  powerTailRightZeroAmplitude a σ q *
+    Complex.exp (((q.1 : ℂ) - ((1 - a : ℝ) : ℂ)) * (u : ℂ))
+
+private theorem norm_powerTailRightZeroWave_le {a σ u : ℝ} (hu : 0 ≤ u)
+    (q : XiZeroCopy) :
+    ‖powerTailRightZeroWave a σ u q‖ ≤ ‖powerTailRightZeroAmplitude a σ q‖ := by
+  classical
+  by_cases hq : σ ≤ (q.1 : ℂ).re ∧ (q.1 : ℂ).re ≤ 1 - a
+  · rw [powerTailRightZeroWave, norm_mul]
+    apply mul_le_of_le_one_right (norm_nonneg _)
+    rw [Complex.norm_exp, Real.exp_le_one_iff]
+    simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re,
+      Complex.ofReal_im, mul_zero, sub_zero]
+    exact mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.mpr hq.2) hu
+  · simp only [powerTailRightZeroWave, powerTailRightZeroAmplitude, hq,
+      if_false, zero_mul, norm_zero, le_refl]
+
+private theorem tendsto_powerTailRightZeroWave_zero {a σ : ℝ}
+    (q : XiZeroCopy) (hne : (q.1 : ℂ).re ≠ 1 - a) :
+    Tendsto (fun u => powerTailRightZeroWave a σ u q) atTop (𝓝 0) := by
+  classical
+  by_cases hq : σ ≤ (q.1 : ℂ).re ∧ (q.1 : ℂ).re ≤ 1 - a
+  · have hp : 0 < (1 - a) - (q.1 : ℂ).re :=
+      sub_pos.mpr (lt_of_le_of_ne hq.2 hne)
+    have hl := Real.tendsto_exp_atBot.comp
+      (tendsto_neg_atTop_atBot.comp (Tendsto.const_mul_atTop hp tendsto_id))
+    have he : Tendsto (fun u : ℝ =>
+        Complex.exp (((q.1 : ℂ) - ((1 - a : ℝ) : ℂ)) * (u : ℂ))) atTop (𝓝 0) := by
+      rw [tendsto_zero_iff_norm_tendsto_zero]
+      refine hl.congr fun u => ?_
+      change Real.exp (-(((1 - a) - (q.1 : ℂ).re) * u)) = _
+      rw [Complex.norm_exp]
+      apply congrArg Real.exp
+      simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re,
+        Complex.ofReal_im, mul_zero, sub_zero]
+      ring
+    simpa only [mul_zero] using he.const_mul (powerTailRightZeroAmplitude a σ q)
+  · simpa only [powerTailRightZeroWave, powerTailRightZeroAmplitude, hq,
+      if_false, zero_mul] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℂ)) atTop (𝓝 0))
+
+/-- An absolutely summable contact trace retains exactly its boundary
+layer. No common gap below that layer is needed. -/
+theorem tendsto_powerTailRightZeroTrace_sub_boundary {a σ : ℝ}
+    (hs : Summable (fun q => ‖powerTailRightZeroAmplitude a σ q‖)) :
+    Tendsto (fun u : ℝ =>
+      (∑' q : XiZeroCopy, powerTailRightZeroWave a σ u q) -
+        ∑' q : XiZeroCopy, if (q.1 : ℂ).re = 1 - a then powerTailRightZeroWave a σ u q else 0)
+      atTop (𝓝 0) := by
+  classical
+  let boundary := fun (u : ℝ) (q : XiZeroCopy) =>
+    if (q.1 : ℂ).re = 1 - a then powerTailRightZeroWave a σ u q else 0
+  have hterm (u : ℝ) (hu : 0 ≤ u) : Summable (powerTailRightZeroWave a σ u) :=
+    Summable.of_norm_bounded hs (norm_powerTailRightZeroWave_le hu)
+  have hboundary (u : ℝ) (hu : 0 ≤ u) : Summable (boundary u) := by
+    refine Summable.of_norm_bounded hs fun q => ?_
+    dsimp only [boundary]
+    split_ifs
+    · exact norm_powerTailRightZeroWave_le hu q
+    · simpa only [norm_zero] using norm_nonneg (powerTailRightZeroAmplitude a σ q)
+  have hpt (q : XiZeroCopy) :
+      Tendsto (fun u : ℝ => powerTailRightZeroWave a σ u q - boundary u q) atTop (𝓝 0) := by
+    by_cases hq : (q.1 : ℂ).re = 1 - a
+    · simpa only [boundary, hq, if_true, sub_self] using
+        (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℂ)) atTop (𝓝 0))
+    · simpa only [boundary, hq, if_false, sub_zero] using
+        tendsto_powerTailRightZeroWave_zero q hq
+  have hdom : ∀ᶠ u : ℝ in atTop, ∀ q : XiZeroCopy,
+      ‖powerTailRightZeroWave a σ u q - boundary u q‖ ≤
+        ‖powerTailRightZeroAmplitude a σ q‖ := by
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with u hu q
+    dsimp only [boundary]
+    split_ifs
+    · simpa only [sub_self, norm_zero] using norm_nonneg (powerTailRightZeroAmplitude a σ q)
+    · simpa only [sub_zero] using norm_powerTailRightZeroWave_le hu q
+  have hh := tendsto_tsum_of_dominated_convergence hs hpt hdom
+  simp only [tsum_zero] at hh
+  refine hh.congr' ?_
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with u hu
+  exact (hterm u hu).tsum_sub (hboundary u hu)
+
+/-- Every subcritical power parameter has a right band with summable
+contact amplitudes and a vanishing contribution below the boundary. -/
+theorem exists_powerTailRightZeroTrace_boundary_decomposition
+    {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 - a ∧
+      Summable (fun q => ‖powerTailRightZeroAmplitude a σ q‖) ∧
+      Tendsto (fun u : ℝ =>
+        (∑' q : XiZeroCopy, powerTailRightZeroWave a σ u q) -
+          ∑' q : XiZeroCopy, if (q.1 : ℂ).re = 1 - a then powerTailRightZeroWave a σ u q else 0)
+        atTop (𝓝 0) := by
+  obtain ⟨σ, hσ, hσβ, hs⟩ := exists_summable_powerTailRightZeroAmplitude ha ha2
+  exact ⟨σ, hσ, hσβ, hs, tendsto_powerTailRightZeroTrace_sub_boundary hs⟩
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

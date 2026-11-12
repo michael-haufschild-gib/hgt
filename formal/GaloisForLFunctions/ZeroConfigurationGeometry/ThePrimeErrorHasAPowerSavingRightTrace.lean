@@ -29,7 +29,7 @@ leaves an actual power saving, even with no gap below the bounding line. -/
 theorem exists_power_bound_primeError_add_rightTrace {σ β : ℝ}
     (hσ : 1 / 2 < σ) (hσβ : σ < β) (hβ1 : β ≤ 1)
     (hβ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ β) :
-    ∃ κ C x₀ : ℝ, κ < β ∧ 0 ≤ C ∧ ∀ x : ℝ, x₀ ≤ x →
+    ∃ κ C x₀ : ℝ, σ < κ ∧ κ < β ∧ 0 ≤ C ∧ ∀ x : ℝ, x₀ ≤ x →
       |Chebyshev.psi x - x + x ^ β * (rightNormalizedZeroTrace σ β x).re| ≤
         C * x ^ κ := by
   classical
@@ -49,7 +49,8 @@ theorem exists_power_bound_primeError_add_rightTrace {σ β : ℝ}
   have hlog : 0 ≤ Real.log (2 * Real.pi) :=
     Real.log_nonneg (by nlinarith only [Real.pi_gt_three])
   refine ⟨κ, 2 + Real.log (2 * Real.pi) + 5 * S + 16 * W,
-    max 4 ((2 : ℝ) ^ (1 / (7 / 8 : ℝ))), hkβ, by positivity, ?_⟩
+    max 4 ((2 : ℝ) ^ (1 / (7 / 8 : ℝ))),
+    by linarith only [hk3, hσβ], hkβ, by positivity, ?_⟩
   intro x hx
   have hx4 : 4 ≤ x := (le_max_left _ _).trans hx
   have hx2 : (2 : ℝ) ^ (1 / (7 / 8 : ℝ)) ≤ x := (le_max_right _ _).trans hx
@@ -151,7 +152,7 @@ theorem exists_power_bound_primeError_add_rightTrace {σ β : ℝ}
 power-saving remainder; the upper bound on every zero is supplied. -/
 theorem exists_power_bound_primeError_add_actualRightTrace {σ : ℝ}
     (hσ : 1 / 2 < σ) (hσΘ : σ < zetaZeroAbscissa) :
-    ∃ κ C x₀ : ℝ, κ < zetaZeroAbscissa ∧ 0 ≤ C ∧ ∀ x : ℝ, x₀ ≤ x →
+    ∃ κ C x₀ : ℝ, σ < κ ∧ κ < zetaZeroAbscissa ∧ 0 ≤ C ∧ ∀ x : ℝ, x₀ ≤ x →
       |Chebyshev.psi x - x + x ^ zetaZeroAbscissa *
         (rightNormalizedZeroTrace σ zetaZeroAbscissa x).re| ≤ C * x ^ κ :=
   exists_power_bound_primeError_add_rightTrace hσ hσΘ zetaZeroAbscissa_le_one

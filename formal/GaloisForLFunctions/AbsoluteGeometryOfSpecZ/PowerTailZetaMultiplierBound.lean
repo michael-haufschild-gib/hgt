@@ -38,6 +38,7 @@ theorem norm_zeta_le_ordinate_power_in_closed_strip
     {σ₀ : ℝ} (hσ₀ : 0 < σ₀) (hσ₀1 : σ₀ < 1)
     {s : ℂ} (hs₀ : σ₀ ≤ s.re) (hs1 : s.re ≤ 1) (ht : 1 ≤ |s.im|) :
     ‖riemannZeta s‖ ≤ (22 + 1 / (1 - σ₀)) * |s.im| ^ (1 - σ₀) := by
+  have hgap : 0 < 1 - σ₀ := sub_pos.mpr hσ₀1
   let N := ⌊|s.im|⌋₊
   have hN : 1 ≤ N := Nat.le_floor (by simpa only [Nat.cast_one] using ht)
   have hNp : (0 : ℝ) < N := by exact_mod_cast hN

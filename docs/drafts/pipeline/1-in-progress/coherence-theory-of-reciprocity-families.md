@@ -117,7 +117,7 @@ odd orders open; the sign law needs odd order: sign-carrying ⇔ sieve not known
 of infinity type one ⇒ no metaplectic main term" is wrong: `μ·(angular)` is `γ₂³`, the twist is not a
 Hecke twist, and the long columns are first moments of sextic Gauss sums (Kubota series of order
 six, pole `½ + 1/6` [C]). N8's conjecture `R₀ = 2/3 = R_crit(6)` is the coherence exponent of the row
-root numbers; FG's curve `θ(R₀)` gives `7/9` there (floor bin's own limit). Heath-Brown's term
+root numbers; `R_crit(6) = 2/3` is the bifurcation of FG's curve (`7/9`); the broken branch `signedGramBrokenTheta` runs to `R₀ = ½ ↦ (n−4)/(n−1)`, half-plane `1 − 2/n = 2/3` = the wall at `n = 6`. Heath-Brown's term
 `(QN)^{2/3}` = cube frequencies of the reflected Gram (principal subfamily) [D]. Missing: the sextic
 Kubota series uniformly in the column index; a bridge `γ₂` ↔ MMD theta coefficients
 (`normalized_sourceFourier_squarefree_cube`, different additive normalization `cubicUnitGaussSum`).
@@ -135,7 +135,14 @@ RHTower/HalfWeight*, SelbergPoincareUnfolding), the bridge γ₂ ↔ G̃.
 **Next infrastructure (for C16/M2 in Lean).** (i) Rankin–Selberg unfolding of the cubic Eisenstein
 series on ℍ³ (MMD has E, the residue θ, cusp-strip Fourier tests; no unfolding over Γ\ℍ³); (ii) θ's
 Fourier expansion (in `WeightedCubicResidualFourierTests`, no olean, under peer edit); (iii) Zagier
-renormalization on ℍ³; (iv) bridge γ₂ ↔ G̃ (`residueTraceQuotientChar_phase`, `paperE`).
+renormalization on ℍ³; (iv) bridge γ₂ ↔ G̃ (`residueTraceQuotientChar_phase`, `paperE`). Checked
+2026-11-12: MMD has fundamental domains for every H ≤ levelThree
+(`hyperbolicFundamentalSet_isFundamentalDomain`), invariant volume, E as a height series
+(`hyperbolicEisenstein_eq_height_series`, `cosetHeight_cosetOf`) — unfolding is buildable — but the
+continuation of E is only local (resolvent near 8/9, `TheCubicMeromorphicResolvent`, not matched to E);
+no global continuation with growth. The double pole needs E_{κ²} near 4/3 with its Laurent coefficient E*
+(constant term v^{4/3} − r v^{2/3} log v + φ₀ v^{2/3}) and the spectral expansion of θ² − c²E* (in L²):
+a spectral theory of the cubic cover, not in the corpus.
 
 ## Conjecture ledger
 - C1 (PROVED, Lean): wall of the frame = phase `L`-function; frame premise ⇔ zero-free `L_A`.

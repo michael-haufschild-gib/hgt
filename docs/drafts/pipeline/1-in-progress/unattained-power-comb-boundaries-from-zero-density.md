@@ -78,7 +78,7 @@ Lean input written, verification pending:
 `RightSubstripCutoffsHavePowerTails` constructs the exact finite height
 cutoffs and bounds their full omitted reciprocal mass.
 `ThePrimeErrorHasAPowerSavingRightTrace` writes the resulting estimate
-`|ψ(x)−x+x^β Re rightTrace(σ,β,x)|≤C x^κ`, `κ<β`, using
+`|ψ(x)−x+x^β Re rightTrace(σ,β,x)|≤C x^κ`, `σ<κ<β`, using
 `κ=max((p+1)/8, β+(p−1)/8, (β+σ)/2)`.
 Both are unverified. No gap below β is assumed.
 
@@ -92,3 +92,22 @@ remainder are both `O(N^(1−σ₀))`, uniformly up to `Re s=1`.
 With `σ₀=σ+a`, division by `ρ−a` leaves the moment weight
 `|γ|^(-(σ+a))`. Choosing σ sufficiently close to `β=1−a` puts
 this exponent above the density threshold.
+
+`PowerTailZeroTraceIsAbsolutelySummable` is written, unverified. The band
+`σ≤Reρ≤1−a`, with `σ=1−a−(1/2−a)/100`, has
+`Σ |ζ(ρ+a)/(ρ−a)|<∞`, including multiplicities. The uniform multiplier
+bound reduces this to the substrip moment of order `σ+a`.
+The arithmetic identification of this trace is still missing.
+
+The trace module also writes its boundary-layer limit by dominated
+convergence: all terms with `Reρ<1−a` vanish, with no uniform gap.
+This remains unverified and is not an arithmetic prefix identity.
+
+For the missing weighted identity, finite Abel summation gives
+`Σ_(n≤x) Λ(n)n^-a = x^-a ψ(x)+a∫₁ˣ t^(-a-1)ψ(t)dt`.
+The compact reciprocal majorant permits integrating the retained zero
+trace termwise. Since `σ<κ<β` and `σ>1/2>a`, its remainder becomes
+`O(x^(κ-a))`. After harmonic convolution the mesh envelope is
+`t^(-(a+κ))`, with `a+κ<1`. Right meshes `ceil(Nt)/N≥t` preserve this
+integrable envelope, giving a dominated-convergence route through the
+reciprocal-integer jumps. Those two identities are not yet formalized.

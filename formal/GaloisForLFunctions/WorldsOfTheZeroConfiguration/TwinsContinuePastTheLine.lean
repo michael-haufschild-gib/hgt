@@ -43,7 +43,7 @@ def IsFactorTwinOn (c : ℝ) (B : BeurlingSystem) (L : ℂ → ℂ) : Prop :=
       zetaResidueUnit s * (C * L s * Complex.exp (H s))
 
 /-- The mass of a target of size `A k^{−η}` is `O(n^{1−η})`. -/
-theorem sum_abs_le_of_abs_le {m : ℕ → ℝ} {A η : ℝ} (hA : 0 ≤ A) (hη1 : η < 1)
+theorem sum_abs_le_of_abs_le {m : ℕ → ℝ} {A η : ℝ} (hA : 0 ≤ A) (hη0 : 0 ≤ η) (hη1 : η < 1)
     (hm : ∀ k : ℕ, 1 ≤ k → |m k| ≤ A * (k : ℝ) ^ (-η)) (n : ℕ) :
     ∑ k ∈ Ioc 0 n, |m k| ≤ A / (1 - η) * (n : ℝ) ^ (1 - η) := by
   have hθ : 0 < 1 - η := by linarith
@@ -89,7 +89,7 @@ theorem isFactorTwinOn_gedit {m : ℕ → ℝ} {A η c : ℝ} (hA : 0 ≤ A) (h�
   -- the edited primes are summable at `2c`: the prime-power remainder is holomorphic on `Re s > c`
   have hthin : Summable fun k : ℕ => |(gedit m k : ℝ)| * (k : ℝ) ^ (-(2 * c)) :=
     summable_abs_gedit_rpow (θ := 1 - η) (by linarith) (K := A / (1 - η))
-      (div_nonneg hA (by linarith)) (fun n _ => sum_abs_le_of_abs_le hA hη1 hm n) (by linarith)
+      (div_nonneg hA (by linarith)) (fun n _ => sum_abs_le_of_abs_le hA hη0.le hη1 hm n) (by linarith)
   have hQ : DifferentiableOn ℂ (editRem (gedit m)) {s : ℂ | c < s.re} := by
     have h := BalanceLaw.differentiableOn_editRem_of_summable (θ := 2 * c) (by linarith) hthin
     rwa [show 2 * c / 2 = c by ring] at h
@@ -174,6 +174,9 @@ theorem exists_continuation_not_symmetric {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (hρ2
     have hzu : zetaResidueUnit (1 - (starRingEnd ℂ) ρ) ≠ 0 := by
       rw [zetaResidueUnit_of_ne hz1]
       exact mul_ne_zero (sub_ne_zero.mpr hz1) hζ
+    show zetaResidueUnit (1 - (starRingEnd ℂ) ρ) *
+      (C * ((1 - (starRingEnd ℂ) ρ - ρ) * (1 - (starRingEnd ℂ) ρ - (starRingEnd ℂ) ρ)) *
+        Complex.exp (H (1 - (starRingEnd ℂ) ρ))) ≠ 0
     exact mul_ne_zero hzu (mul_ne_zero (mul_ne_zero hC (mul_ne_zero h1 h2))
       (Complex.exp_ne_zero _))
 

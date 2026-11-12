@@ -32,7 +32,7 @@ private theorem two_quadratic_steps_degree_four (K A B : Type*)
   rw [← Module.finrank_mul_finrank K A B,hA,hB]
 
 /-- Every quadratic complex subfield has a nonbase generator whose square lies in the base. -/
-private theorem quadratic_subfield_square_generator (E : Subfield ℂ)
+theorem quadratic_subfield_square_generator (E : Subfield ℂ)
     (N : IntermediateField E ℂ) (hN : Module.finrank E N = 2) :
     ∃ r : ℂ, r ∈ N ∧ r ∉ E ∧ r*r ∈ E ∧ N = E⟮r⟯ := by
   letI : Algebra.IsQuadraticExtension E N :=
@@ -106,7 +106,7 @@ private theorem quadratic_subfield_square_generator (E : Subfield ℂ)
     (IntermediateField.eq_of_le_of_finrank_eq hle (hdeg.trans hN.symm)).symm⟩
 
 /-- A square root over the base in a quadratic extension lies on one of its two coordinate lines. -/
-private theorem quadratic_square_root_line (E : Subfield ℂ) {d z : ℂ}
+theorem quadratic_square_root_line (E : Subfield ℂ) {d z : ℂ}
     (hdd : d*d ∈ E) (hd : d ∉ E) (hz : z ∈ E⟮d⟯) (hzz : z*z ∈ E) :
     z ∈ E ∨ ∃ b : E, z = (b : ℂ)*d := by
   obtain ⟨a,b,hab⟩ := HTGeometry.exists_repr_of_mem_adjoin_sqrt

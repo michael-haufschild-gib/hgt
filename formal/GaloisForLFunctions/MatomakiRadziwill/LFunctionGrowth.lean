@@ -223,7 +223,6 @@ theorem norm_LFunction_le_vinogradovKorobov {q : ℕ} [NeZero q] (χ : Dirichlet
       _ = q * ((q : ℝ) ^ 2 + hurwitzGrowthConstant * Real.log τ) := by
           rw [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul]
           congr 1
-          push_cast
   have hC0 : 0 ≤ hurwitzGrowthConstant := by
     unfold hurwitzGrowthConstant; have := hurwitzBlockConstant_nonneg; linarith
   have htri := norm_sub_norm_le (DirichletCharacter.LFunction χ s)

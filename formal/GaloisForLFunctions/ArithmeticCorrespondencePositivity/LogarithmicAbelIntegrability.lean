@@ -47,7 +47,7 @@ theorem LogarithmicAbelIntegrable.sub {f g : ℕ → ℝ}
   intro ε hε
   apply ((hf ε hε).sub (hg ε hε)).congr
   exact Eventually.of_forall fun u => by
-    simp only [stepLaplaceIntegrand, ofReal_sub]
+    simp only [Pi.sub_apply, stepLaplaceIntegrand, ofReal_sub]
     ring
 
 /-- Scalar multiplication preserves absolute Abel integrability. -/

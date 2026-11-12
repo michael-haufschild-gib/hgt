@@ -229,3 +229,4 @@ the Riemann hypothesis as one negative square of the neutral part of every windo
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability

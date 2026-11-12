@@ -95769,7 +95769,7 @@ lemma sourceLabel_norm (x : SecondExpansionData ι) :
   rw [sourceLabel,map_mul,Nat.cast_mul,←primeProductNorm_eq_ideal_norm,←primeProductNorm_eq_ideal_norm]
 
 /-- Logarithmic representatives keep all four profile arguments in one fixed compact interval. -/
-theorem initial_log_coordinates (hp : ∀i,p i≠0) (Z : ℝ) (hZ : 0<Z)
+theorem initial_log_coordinates (hp : ∀i,p i≠0) (Z : ℝ) (hZ : 0 < Z)
     (R : Finset ι) (x : SecondExpansionData ι) (hs : InSourceSector R x) (hk : x.frequency≠0) :
     let j:=initialLogIndex p x
     let X:=initialLogColumn Z (primeProductNorm p R) j
@@ -95803,7 +95803,7 @@ theorem initial_log_coordinates (hp : ∀i,p i≠0) (Z : ℝ) (hZ : 0<Z)
   · change |Real.log (primeProductNorm p x.overlap/normLogScale (normLogBin _))| ≤ 2
     rw [abs_of_nonneg hv.1]
     linarith only [hv.2]
-  · change |Real.log (‖ringComplex (sourceRow p x)‖^2/normLogScale (normLogBin _))| ≤ 2
+  · change |Real.log (‖ringComplex (sourceRow p x)‖^2/normLogScale (normLogBin (‖ringComplex (sourceRow p x)‖^2)))| ≤ 2
     rw [abs_of_nonneg hk'.1]
     linarith only [hk'.2]
 
@@ -95848,17 +95848,17 @@ lemma initialLogColumn_pos (Z B : ℝ) (j : SecondLogIndex) (hZ : 0 < Z) (hB : 0
     0 < initialLogColumn Z B j :=
   div_pos hZ (mul_pos (mul_pos (normLogScale_pos _) (normLogScale_pos _)) hB)
 
-lemma initialLogColumn_le (Z B : ℝ) (j : SecondLogIndex) (hZ : 0  ≤  Z) (hB : 1  ≤  B) :
-    initialLogColumn Z B j  ≤  Z := div_le_self hZ
+lemma initialLogColumn_le (Z B : ℝ) (j : SecondLogIndex) (hZ : 0 ≤ Z) (hB : 1 ≤ B) :
+    initialLogColumn Z B j ≤ Z := div_le_self hZ
   (one_le_mul_of_one_le_of_one_le
     (one_le_mul_of_one_le_of_one_le (normLogScale_ge_one _) (normLogScale_ge_one _)) hB)
 
 
 theorem initial_radial_invariant (Z B c σ θ deltaLoss κ : ℝ) (j : SecondLogIndex)
-    (hZ : 1  ≤  Z) (hB : 0 < B) (hc : 0  ≤  c) (hcZ : c  ≤  Z^deltaLoss)
-    (hmargin : deltaLoss+θ  ≤  σ-κ)
-    (hrad : initialRadial Z (Z^(1+σ)) B j  ≤  Z^θ) :
-    (secondLogK j*Real.exp 2)*(c*B)  ≤ 
+    (hZ : 1 ≤ Z) (hB : 0 < B) (hc : 0 ≤ c) (hcZ : c ≤ Z^deltaLoss)
+    (hmargin : deltaLoss+θ ≤ σ-κ)
+    (hrad : initialRadial Z (Z^(1+σ)) B j ≤ Z^θ) :
+    (secondLogK j*Real.exp 2)*(c*B) ≤ 
       initialLogColumn Z B j*initialLogLabel j*Z^(-κ) := by
   have hZ0 := zero_lt_one.trans_le hZ
   have hH : 0 < Z^(1+σ) := Real.rpow_pos_of_pos hZ0 _
@@ -95879,12 +95879,12 @@ theorem initial_radial_invariant (Z B c σ θ deltaLoss κ : ℝ) (j : SecondLog
   apply (div_le_iff₀ hm).mp
   rw [hid,he]
   calc
-    c*Z^(-σ)*(Z^(1+σ)*secondLogK j*B^2/Z^2)  ≤  c*Z^(-σ)*Z^θ :=
+    c*Z^(-σ)*(Z^(1+σ)*secondLogK j*B^2/Z^2) ≤ c*Z^(-σ)*Z^θ :=
       mul_le_mul_of_nonneg_left hrad (mul_nonneg hc (Real.rpow_nonneg hZ0.le _))
-    _  ≤  Z^deltaLoss*Z^(-σ)*Z^θ := mul_le_mul_of_nonneg_right
+    _ ≤ Z^deltaLoss*Z^(-σ)*Z^θ := mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_right hcZ (Real.rpow_nonneg hZ0.le _)) (Real.rpow_nonneg hZ0.le _)
     _ = Z^(deltaLoss-σ+θ) := by rw [←Real.rpow_add hZ0,←Real.rpow_add hZ0]; congr 1
-    _  ≤  Z^(-κ) := Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+    _ ≤ Z^(-κ) := Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
 
 
 /-- A retained radial sector satisfies the initial rank mass and mask inequalities. -/
@@ -95892,7 +95892,7 @@ theorem initial_retained_geometry (Z B c σ θ δ : ℝ) (j : SecondLogIndex)
     (hZ : 1 ≤ Z) (hlarge : Real.exp 2 ≤ Z) (hB : 1 ≤ B) (hc : 0 ≤ c)
     (hcZ : c ≤ Z^δ) (hmargin : δ+θ ≤ σ-(1:ℝ)/20)
     (hrad : initialRadial Z (Z^(1+σ)) B j ≤ Z^θ) :
-    0<initialLogColumn Z B j ∧ 1 ≤ initialLogLabel j ∧ 1 ≤ secondLogK j*Real.exp 2 ∧
+    0 < initialLogColumn Z B j ∧ 1 ≤ initialLogLabel j ∧ 1 ≤ secondLogK j*Real.exp 2 ∧
       initialLogColumn Z B j*initialLogLabel j ≤ Z^2 ∧
       (secondLogK j*Real.exp 2)*(c*B) ≤ 
         initialLogColumn Z B j*initialLogLabel j*Z^(-(1:ℝ)/20) := by
@@ -95907,7 +95907,7 @@ theorem initial_retained_geometry (Z B c σ θ δ : ℝ) (j : SecondLogIndex)
     calc
       _ ≤ Z*Real.exp 2:=mul_le_mul_of_nonneg_right (div_le_self hZ0.le hB) (Real.exp_pos _).le
       _ ≤ Z^2:=by simpa only [pow_two] using mul_le_mul_of_nonneg_left hlarge hZ0.le
-  · exact initial_radial_invariant Z B c σ θ δ ((1:ℝ)/20) j hZ hB0 hc hcZ hmargin hrad
+  · simpa only [neg_div] using initial_radial_invariant Z B c σ θ δ ((1:ℝ)/20) j hZ hB0 hc hcZ hmargin hrad
 
 end InitialMeanSquare
 
@@ -95928,10 +95928,10 @@ theorem retained_initial_fixed_density
     (hsupport : primeSupport (Ideal.span {c})⊆S)
     [Fintype (O⧸Ideal.span {9*c})]
     (hperiod : ∀x y : O,x-y∈Qbase → base x=base y)
-    (ε : ℝ) (hε : 0<ε) (A : ℝ) (hA : 0 ≤ A) :
+    (ε : ℝ) (hε : 0 < ε) (A : ℝ) (hA : 0 ≤ A) :
     ∃d : ℕ,∀(V₁ V₂ : ℝ→ℂ),ContDiff ℝ ∞ V₁ → ContDiff ℝ ∞ V₂ →
       (∀s,V₁ s≠0→|s| ≤ A) → (∀s,V₂ s≠0→|s| ≤ A) →
-    ∃C Z₀ : ℝ,0<C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
+    ∃C Z₀ : ℝ,0 < C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
       (R : Finset (primePool (outsideSquarefreeIdeals S D)))
       (negative₁ negative₂ : Bool) (r₁ s₁ r₂ s₂ : QuadraticRayRing)
       (j : SecondLogIndex) (T : Finset (Ideal O×O)) (σ θ : ℝ),
@@ -96067,8 +96067,8 @@ theorem retained_initial_fixed_source
     [Fintype (O⧸Ideal.span {9*c})]
     (hperiod : ∀x y : O,x-y∈Qbase → base x=base y)
     (g W : 𝓢(ℝ,ℂ)) (A : ℝ) (hA : 0 ≤ A) (hgA : ∀u,g u≠0→|u| ≤ A)
-    (ε : ℝ) (hε : 0<ε) (N : ℕ) :
-    ∃C Z₀ : ℝ,0<C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
+    (ε : ℝ) (hε : 0 < ε) (N : ℕ) :
+    ∃C Z₀ : ℝ,0 < C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
       (R : Finset (primePool (outsideSquarefreeIdeals S D)))
       (negative : Bool) (r : QuadraticRayRing) (ray a b : QuadraticRayRing×QuadraticRayRing)
       (j : SecondLogIndex) (s : Finset (SecondExpansionData (primePool (outsideSquarefreeIdeals S D))))
@@ -96094,6 +96094,7 @@ theorem retained_initial_fixed_source
   obtain ⟨Ce,Z₀,hCe,hZ₀,he⟩:=hd (windows 5) (windows 6) (hws 5) (hws 6) (hwb 5) (hwb 6)
   refine ⟨(Ct+1)*Ce*Real.exp 4,Z₀,by positivity,hZ₀,?_⟩
   intro D Z Ψ R negative r ray a b j s σ θ hZ hD hΨ hmargin hs hk hj hrad
+  dsimp only
   let P:=outsideSquarefreeIdeals S D
   let hP:=outsideSquarefree_admissible S D hbad
   let p:=poolPrimary P
@@ -96106,8 +96107,8 @@ theorem retained_initial_fixed_source
     simpa only [p,poolPrimary_span P hP] using hh
   have hpr : ∀i,lambda^2∣p i-1:=fun i=>(primaryIdealPrime_spec i.val (hp i)).2.2.2
   have hZ1 : 1 ≤ Z:=hZ₀.trans hZ
-  have hZp : 0<Z:=zero_lt_one.trans_le hZ1
-  have hHp : 0<Z^(1+σ):=Real.rpow_pos_of_pos hZp _
+  have hZp : 0 < Z:=zero_lt_one.trans_le hZ1
+  have hHp : 0 < Z^(1+σ):=Real.rpow_pos_of_pos hZp _
   have hBp:=primeProductNorm_pos p hp R
   let X:=initialLogColumn Z (primeProductNorm p R) j
   let T:=initialSourceTargets p s
@@ -96124,7 +96125,7 @@ theorem retained_initial_fixed_source
     (initialSquarefreeSector p s) T Ψ 1 Z (Z^(1+σ)) (secondLogE j) (secondLogV j) X
     (secondLogK j) (initialLogLabel j) negative r ray a b hZp hHp
     (normLogScale_pos _) (normLogScale_pos _) (initialLogColumn_pos _ _ _ hZp hBp)
-    (normLogScale_pos _) (by unfold initialLogLabel secondLogE secondLogV; positivity)
+    (normLogScale_pos _) (by unfold initialLogLabel secondLogE secondLogV normLogScale; positivity)
     (hΨ.norm_le hbase) (fun x hx=>hs x (Finset.mem_filter.mp hx).1)
     (fun x hx=>hk x (Finset.mem_filter.mp hx).1)
     (fun x hx=>(hcoords x hx).1) (fun x hx=>(hcoords x hx).2.1)
@@ -96137,17 +96138,1006 @@ theorem retained_initial_fixed_source
   rw [initial_fixed_source_squarefree p (poolPrimary_good P hP) hinj Finset.univ Ψ 1
     (normalizedColumn p (fun T=>g (columnLog p Z T))) W (Z^(1+σ)) negative r ray a b s
     (fun x hx=>(hs x hx).1)]
-  have hL : 0 ≤ initialLogLabel j:=by unfold initialLogLabel secondLogE secondLogV; positivity
+  have hL : 0 ≤ initialLogLabel j:=by unfold initialLogLabel secondLogE secondLogV normLogScale; positivity
   have hf : 0 ≤ Ct*Z^(1+σ)*primeProductNorm p R/Z^2*‖rayQuadraticPair ray.1 ray.2‖*(initialLogLabel j)^ε:=by positivity
   refine hsource.trans ((mul_le_mul_of_nonneg_left hdensity hf).trans ?_)
-  have heq : (Real.exp (2:ℝ))^2=Real.exp 4:=by rw [←Real.exp_nat_mul]; norm_num
-  dsimp only [X]
+  have heq : (Real.exp (2:ℝ))^2=Real.exp 4:=by rw [pow_two,←Real.exp_add]; norm_num
   rw [initial_log_mass Z _ hBp.ne' j]
   calc
     _=Ct*Ce*Real.exp 4*Z^(1+σ)/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*
-        (initialLogLabel j)^ε*Z^ε:=by rw [mul_pow,div_pow,heq]; field_simp; ring
+        (initialLogLabel j)^ε*Z^ε:=by rw [mul_pow,div_pow,heq]; field_simp <;> ring
     _ ≤ ((Ct+1)*Ce*Real.exp 4)*Z^(1+σ)/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*
         (initialLogLabel j)^ε*Z^ε:=by gcongr; linarith
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open scoped BigOperators Classical
+
+def secondLogBinBox (U K : ℝ) : Finset SecondLogIndex:=
+  (Finset.range (normLogBin U+1)).product
+    ((Finset.range (normLogBin U+1)).product (Finset.range (normLogBin K+1)))
+
+lemma secondLogBinBox_card (U K : ℝ) :
+    (secondLogBinBox U K).card=(normLogBin U+1)^2*(normLogBin K+1) := by
+  simp only [secondLogBinBox,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.card_product,Finset.card_range]
+  ring
+
+lemma initialLogLabel_ge_one (j : SecondLogIndex) : 1 ≤ initialLogLabel j:=
+  one_le_mul_of_one_le_of_one_le
+    (one_le_mul_of_one_le_of_one_le (normLogScale_ge_one _) (normLogScale_ge_one _))
+    (Real.one_le_exp (by norm_num))
+
+variable {ι : Type*} [DecidableEq ι] (p : ι→O)
+
+def initialSupportedPool (pool : Finset ι) (K : Finset ι→Finset ι→Finset O) (Z M : ℝ) :
+    Finset (SecondExpansionData ι):=
+  (secondExpansionPool pool (fun G E=>(K G E).erase 0)).filter (SecondSourceSupport p Z M)
+
+def initialLogSector (pool R : Finset ι) (K : Finset ι→Finset ι→Finset O)
+    (Z M : ℝ) (j : SecondLogIndex) : Finset (SecondExpansionData ι):=
+  (initialSupportedPool p pool K Z M).filter
+    (fun x=>x.sourceCommon\x.divisor=R ∧ initialLogIndex p x=j)
+
+lemma initialLogSector_geometry (pool R : Finset ι) (K : Finset ι→Finset ι→Finset O)
+    (Z M : ℝ) (j : SecondLogIndex) (x : SecondExpansionData ι)
+    (hx : x∈initialLogSector p pool R K Z M j) :
+    InSourceSector R x ∧ x.frequency≠0 ∧ initialLogIndex p x=j ∧ SecondSourceSupport p Z M x := by
+  obtain ⟨hx,hR,hj⟩:=Finset.mem_filter.mp hx
+  obtain ⟨hx,hs⟩:=Finset.mem_filter.mp hx
+  have hm:=(mem_secondExpansionPool _ _ x).mp hx
+  exact ⟨⟨hm.2.1,hR⟩,(Finset.mem_erase.mp hm.2.2.2).1,hj,hs⟩
+
+lemma initial_source_support_bounds (hp : ∀i,p i≠0) (Z M : ℝ)
+    (x : SecondExpansionData ι) (hs : SecondSourceSupport p Z M x) (hE : x.divisor⊆x.sourceCommon) :
+    primeProductNorm p x.sourceCommon ≤ Z*Real.exp M ∧
+      primeProductNorm p x.divisor ≤ Z*Real.exp M ∧ primeProductNorm p x.overlap ≤ Z*Real.exp M := by
+  have hG : primeProductNorm p x.sourceCommon ≤ Z*Real.exp M:=
+    (le_mul_of_one_le_right (primeProductNorm_pos p hp _).le (primeProductNorm_ge_one p hp _)).trans hs.2
+  exact ⟨hG,(primeProductNorm_mono p hp hE).trans hG,
+    (le_mul_of_one_le_left (primeProductNorm_pos p hp _).le (primeProductNorm_ge_one p hp _)).trans hs.2⟩
+
+lemma initialLogIndex_mem_box (hp : ∀i,p i≠0) (Z M K : ℝ) (x : SecondExpansionData ι)
+    (hs : SecondSourceSupport p Z M x) (hE : x.divisor⊆x.sourceCommon)
+    (hk : x.frequency≠0) (hK : elementNorm (sourceRow p x) ≤ K) :
+    initialLogIndex p x∈secondLogBinBox (Z*Real.exp M) K := by
+  obtain ⟨hG,hE',hV⟩:=initial_source_support_bounds p hp Z M x hs hE
+  simp only [initialLogIndex,secondLogBinBox,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.mem_product,Finset.mem_range,Nat.lt_succ_iff]
+  exact ⟨normLogBin_mono (primeProductNorm_pos p hp _) hE',
+    normLogBin_mono (primeProductNorm_pos p hp _) hV,
+    normLogBin_mono (elementNorm_pos _ (sourceRow_ne_zero p hp x hk)) hK⟩
+
+lemma initialLogLabel_cap (U K : ℝ) (hU : 1 ≤ U) (j : SecondLogIndex)
+    (hj : j∈secondLogBinBox U K) : initialLogLabel j ≤ U^2*Real.exp 2 := by
+  have hj' : j.1 < normLogBin U+1 ∧ j.2.1 < normLogBin U+1 ∧ j.2.2 < normLogBin K+1:=by
+    simpa only [secondLogBinBox,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.mem_product,Finset.mem_range] using hj
+  have he : secondLogE j ≤ U:=by
+    apply le_trans _ (normLogBin_scale_bounds U hU).1
+    unfold secondLogE normLogScale
+    apply Real.exp_le_exp.mpr
+    exact_mod_cast Nat.le_of_lt_succ hj'.1
+  have hv : secondLogV j ≤ U:=by
+    apply le_trans _ (normLogBin_scale_bounds U hU).1
+    unfold secondLogV normLogScale
+    apply Real.exp_le_exp.mpr
+    exact_mod_cast Nat.le_of_lt_succ hj'.2.1
+  unfold initialLogLabel
+  simpa only [pow_two] using mul_le_mul_of_nonneg_right
+    (mul_le_mul he hv (normLogScale_pos _).le (zero_le_one.trans hU)) (Real.exp_pos 2).le
+
+lemma initial_bin_row_scale_le (U K : ℝ) (hK : 1 ≤ K) (j : SecondLogIndex)
+    (hj : j∈secondLogBinBox U K) : secondLogK j ≤ K := by
+  have hj' : j.1 < normLogBin U+1 ∧ j.2.1 < normLogBin U+1 ∧ j.2.2 < normLogBin K+1:=by
+    simpa only [secondLogBinBox,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.product_eq_sprod,Finset.mem_product,Finset.mem_range] using hj
+  have hscale : secondLogK j ≤ normLogScale (normLogBin K):=by
+    unfold secondLogK normLogScale
+    apply Real.exp_le_exp.mpr
+    exact_mod_cast Nat.le_of_lt_succ hj'.2.2
+  exact hscale.trans (normLogBin_scale_bounds K hK).1
+
+/-- Three logarithmic indices and the harmonic support sum cost arbitrarily small powers. -/
+theorem initial_log_harmonic_small_power (η : ℝ) (hη : 0 < η) :
+    ∃C : ℝ,0 < C ∧ ∀Y U K : ℝ,1 ≤ Y → 0 < U → 0 < K → U ≤ Y → K ≤ Y →
+      ((secondLogBinBox U K).card:ℝ)*(descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ)) ≤ C*Y^η := by
+  obtain ⟨C,hC,hbound⟩:=globalLogFactor_small_power η hη
+  have hdc:=descentLatticeConstant_pos
+  refine ⟨descentLatticeConstant*Real.exp 1*C,by positivity,?_⟩
+  intro Y U K hY hU hK hUY hKY
+  let B:=1+Real.log 27+22*Real.log Y
+  have hlog:=Real.log_nonneg hY
+  have h27 : 0 ≤ Real.log 27:=Real.log_nonneg (by norm_num)
+  have hB : 1 ≤ B:=by dsimp [B]; linarith
+  have hu:=normLogBin_le_log_upper U Y hU.le hUY hY
+  have hk:=normLogBin_le_log_upper K Y hK.le hKY hY
+  have huB : (normLogBin U:ℝ)+1 ≤ B:=by dsimp [B]; linarith
+  have hkB : (normLogBin K:ℝ)+1 ≤ B:=by dsimp [B]; linarith
+  have hcard : ((secondLogBinBox U K).card:ℝ) ≤ B^3:=by
+    rw [secondLogBinBox_card,Nat.cast_mul,Nat.cast_pow,Nat.cast_add,Nat.cast_add,Nat.cast_one]
+    calc
+      _ ≤ B^2*B:=mul_le_mul (pow_le_pow_left₀ (by positivity) huB 2) hkB (by positivity) (sq_nonneg B)
+      _=B^3:=by ring
+  have hh : descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ) ≤ descentLatticeConstant*Real.exp 1*B:=
+    mul_le_mul_of_nonneg_left huB (by positivity)
+  calc
+    _ ≤ B^3*(descentLatticeConstant*Real.exp 1*B):=mul_le_mul hcard hh (by positivity) (by positivity)
+    _=descentLatticeConstant*Real.exp 1*B^4:=by ring
+    _ ≤ descentLatticeConstant*Real.exp 1*B^10:=mul_le_mul_of_nonneg_left
+      (pow_le_pow_right₀ hB (by decide)) (by positivity)
+    _ ≤ descentLatticeConstant*Real.exp 1*(C*Y^η):=mul_le_mul_of_nonneg_left (hbound Y hY) (by positivity)
+    _= _:=by ring
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open scoped BigOperators Classical SchwartzMap
+
+/-- Total mass of the finite quadratic residue factors. -/
+def initialRayMass : ℝ:=∑ray : QuadraticRayRing×QuadraticRayRing,‖rayQuadraticPair ray.1 ray.2‖
+
+lemma initialRayMass_nonneg : 0 ≤ initialRayMass:=Finset.sum_nonneg (fun _ _=>norm_nonneg _)
+
+variable {ι : Type*} [DecidableEq ι] (p : ι→O)
+
+theorem initial_harmonic_aggregation [∀i,(Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (U K D : ℝ) (hD : 0 ≤ D)
+    (a : (QuadraticRayRing×QuadraticRayRing)→Finset ι→SecondLogIndex→ℝ)
+    (ha : ∀ray,∀R∈boundedPrimeSupports p pool U,∀j∈secondLogBinBox U K,
+      a ray R j ≤ D/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖) :
+    (∑ray : QuadraticRayRing×QuadraticRayRing,∑R∈boundedPrimeSupports p pool U,
+      ∑j∈secondLogBinBox U K,a ray R j) ≤ 
+      D*initialRayMass*((secondLogBinBox U K).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ)) := by
+  let B:=secondLogBinBox U K
+  let C:=descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ)
+  have hsum:=primeSupport_inverse_sum p hinj (boundedPrimeSupports p pool U) U
+    (fun R hR=>(Finset.mem_filter.mp hR).2)
+  have hinner (ray : QuadraticRayRing×QuadraticRayRing) :
+      (∑R∈boundedPrimeSupports p pool U,∑j∈B,a ray R j) ≤ 
+        (D*‖rayQuadraticPair ray.1 ray.2‖*(B.card:ℝ))*C := by
+    calc
+      _ ≤ ∑R∈boundedPrimeSupports p pool U,∑_j∈B,
+          D/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖:=by
+        apply Finset.sum_le_sum
+        intro R hR
+        exact Finset.sum_le_sum (fun j hj=>ha ray R hR j hj)
+      _=(D*‖rayQuadraticPair ray.1 ray.2‖*(B.card:ℝ))*
+          ∑R∈boundedPrimeSupports p pool U,1/primeProductNorm p R:=by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro R hR
+        simp only [Finset.sum_const,nsmul_eq_mul]
+        ring
+      _ ≤ _:=mul_le_mul_of_nonneg_left hsum (by positivity)
+  calc
+    _ ≤ ∑ray : QuadraticRayRing×QuadraticRayRing,(D*‖rayQuadraticPair ray.1 ray.2‖*(B.card:ℝ))*C:=
+      Finset.sum_le_sum (fun ray _=>hinner ray)
+    _= _:=by
+      unfold initialRayMass
+      simp only [Finset.sum_mul,Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro ray hray
+      ring
+
+/-- Every supported row belongs to a bounded residual support and one logarithmic bin. -/
+theorem initial_supported_pool_binning (hp : ∀i,p i≠0)
+    (pool : Finset ι) (K : Finset ι→Finset ι→Finset O) (Z M Kmax : ℝ)
+    (hK : ∀x∈initialSupportedPool p pool K Z M,elementNorm (sourceRow p x) ≤ Kmax)
+    (f : SecondExpansionData ι→ℂ) :
+    (∑x∈initialSupportedPool p pool K Z M,f x)=
+      ∑R∈boundedPrimeSupports p pool (Z*Real.exp M),∑j∈secondLogBinBox (Z*Real.exp M) Kmax,
+        ∑x∈initialLogSector p pool R K Z M j,f x := by
+  let s:=initialSupportedPool p pool K Z M
+  let Q:=(boundedPrimeSupports p pool (Z*Real.exp M)).product (secondLogBinBox (Z*Real.exp M) Kmax)
+  let key:=fun x : SecondExpansionData ι=>(x.sourceCommon\x.divisor,initialLogIndex p x)
+  have hm (x : SecondExpansionData ι) (hx : x∈s) : key x∈Q := by
+    obtain ⟨hx',hs⟩:=Finset.mem_filter.mp hx
+    have hp':=(mem_secondExpansionPool _ _ x).mp hx'
+    have hbounds:=initial_source_support_bounds p hp Z M x hs hp'.2.1
+    refine Finset.mem_product.mpr ⟨Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr
+      (Finset.sdiff_subset.trans hp'.1),?_⟩,?_⟩
+    · exact (primeProductNorm_mono p hp Finset.sdiff_subset).trans hbounds.1
+    · exact initialLogIndex_mem_box p hp Z M Kmax x hs hp'.2.1
+        (Finset.mem_erase.mp hp'.2.2.2).1 (hK x hx)
+  have he:=(Finset.sum_fiberwise_of_maps_to hm f).symm
+  simp only [Q,Finset.product_eq_sprod,Finset.sum_product] at he
+  exact he.trans (by
+    apply Finset.sum_congr rfl
+    intro R hR
+    apply Finset.sum_congr rfl
+    intro j hj
+    apply Finset.sum_congr _ (fun _ _=>rfl)
+    apply Finset.filter_congr
+    intro x hx
+    exact Prod.mk.inj_iff)
+
+/-- Removing unsupported rows and partitioning the rest preserves the literal fixed-residue source. -/
+theorem initial_fixed_source_eq_bins (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (pool : Finset ι) (K : Finset ι→Finset ι→Finset O) (Ψ : O→*ℂ)
+    (g W : 𝓢(ℝ,ℂ)) (Z H M Kmax : ℝ) (hZ : 0 < Z) (hgM : ∀u,g u≠0→|u| ≤ M)
+    (negative : Bool) (r : QuadraticRayRing) (ray a b : QuadraticRayRing×QuadraticRayRing)
+    (hK : ∀x∈initialSupportedPool p pool K Z M,elementNorm (sourceRow p x) ≤ Kmax) :
+    (∑x∈secondExpansionPool pool (fun G E=>(K G E).erase 0),
+      secondFixedExpansionTerm p hg pool Ψ 1 1 1
+        (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x)=
+    ∑R∈boundedPrimeSupports p pool (Z*Real.exp M),∑j∈secondLogBinBox (Z*Real.exp M) Kmax,
+      ∑x∈initialLogSector p pool R K Z M j,
+        secondFixedExpansionTerm p hg pool Ψ 1 1 1
+          (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x := by
+  rw [←initial_supported_pool_binning p hp pool K Z M Kmax hK]
+  unfold initialSupportedPool
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro x hx
+  by_cases hs : SecondSourceSupport p Z M x
+  · rw [if_pos hs]
+  · rw [if_neg hs]
+    exact secondFixedExpansionTerm_zero_off_support p hp hg pool Ψ 1 1 1 g W Z H M hZ hgM
+      negative r ray a b x ((mem_secondExpansionPool _ _ x).mp hx).2.1 hs
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open JointLogSeparation MeasureTheory
+open scoped BigOperators Classical SchwartzMap ContDiff
+local instance : Finite Oˣ:=cubic_units_finite
+local instance : Fintype Oˣ:=Fintype.ofFinite _
+
+/-- The elementary density bound is quadratic in the column-label mass. -/
+theorem initial_density_elementary_squared_mass
+    {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal] (hg : ∀i,lambda∉Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i})) (hpr : ∀i,lambda^2∣p i-1)
+    (H₁ H₂ : Finset ι→ℂ) (hH₁ : ∀S,‖H₁ S‖ ≤ 1) (hH₂ : ∀S,‖H₂ S‖ ≤ 1)
+    (pool : Finset ι) (Ψ₁ Ψ₂ : O→*ℂ) (hΨ₁ : ∀u,‖Ψ₁ u‖ ≤ 1) (hΨ₂ : ∀u,‖Ψ₂ u‖ ≤ 1)
+    (m : O) (T : Finset (Ideal O×O)) (V₁ V₂ : ℝ→ℂ)
+    (X L K A M : ℝ) (J : ℕ) (hX : 0 < X) (hL : 1 ≤ L) (hK : 1 ≤ K) (hA : 0 ≤ A) (hM : 0 ≤ M)
+    (hV₁ : ∀u,‖V₁ u‖ ≤ M) (hV₂ : ∀u,‖V₂ u‖ ≤ M)
+    (hs₁ : ∀u,V₁ u≠0→|u| ≤ A) (hs₂ : ∀u,V₂ u≠0→|u| ≤ A)
+    (hT : ∀t∈T,t.1≠0 ∧ (Ideal.absNorm t.1:ℝ) ≤ L ∧ ‖ringComplex t.2‖^2 ≤ K) :
+    densityChildEnergy p hg H₁ H₂ pool Ψ₁ Ψ₂ m T V₁ V₂ X X (2*J) ≤ 
+      ((Fintype.card Oˣ:ℝ)*(diagonalControl sieveCutoff)^4*(Real.exp A*M)^2*
+        (∫t : ℝ,firstLogDensity 0 t)^3)*K*(X*L)^2 := by
+  let C:=(Fintype.card Oˣ:ℝ)*(diagonalControl sieveCutoff)^4*(Real.exp A*M)^2*
+    (∫t : ℝ,firstLogDensity 0 t)^3
+  have hI : 0 ≤ ∫t : ℝ,firstLogDensity 0 t:=integral_nonneg (fun t=>firstLogDensity_nonneg 0 t)
+  have hC : 0 ≤ C:=by dsimp [C]; positivity
+  have hd:=childDensity_elementary_all_scales p hp hg hinj hpr H₁ H₂ hH₁ hH₂ pool Ψ₁ Ψ₂
+    hΨ₁ hΨ₂ m T V₁ V₂ X L K A M J hX hL hK hA hM hV₁ hV₂ hs₁ hs₂ hT
+  have hXL : 0 < X*L:=mul_pos hX (zero_lt_one.trans_le hL)
+  have hx : X ≤ X*L:=le_mul_of_one_le_right hX.le hL
+  calc
+    _ ≤ (C*K*X)*(X*L):=(div_le_iff₀ hXL).mp hd
+    _ ≤ (C*K*(X*L))*(X*L):=mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hx (mul_nonneg hC (zero_le_one.trans hK))) hXL.le
+    _= _:=by dsimp only [C]; ring
+
+/-- One power of radial decay absorbs the descendant row scale. -/
+theorem initial_radial_absorbs_row (Z H B k : ℝ) (N : ℕ)
+    (hZ : 0 < Z) (hH : 0 ≤ H) (hB : 1 ≤ B) (hk : 0 ≤ k) :
+    H*k/(1+H*k*B^2/Z^2)^(N+1) ≤ Z^2/(1+H*k*B^2/Z^2)^N := by
+  let r:=H*k*B^2/Z^2
+  have hr : 0 ≤ r:=by dsimp [r]; positivity
+  have h1 : 0 < 1+r:=by linarith
+  have hnum : H*k ≤ Z^2*r:=by
+    have he : Z^2*r=H*k*B^2:=by dsimp [r]; field_simp
+    rw [he]
+    exact le_mul_of_one_le_right (mul_nonneg hH hk) (one_le_pow₀ hB)
+  change H*k/(1+r)^(N+1) ≤ Z^2/(1+r)^N
+  calc
+    _ ≤ Z^2*r/(1+r)^(N+1):=div_le_div_of_nonneg_right hnum (pow_nonneg h1.le _)
+    _ ≤ Z^2*(1+r)/(1+r)^(N+1):=div_le_div_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (by linarith) (sq_nonneg Z)) (pow_nonneg h1.le _)
+    _= _:=by rw [pow_succ]; field_simp [h1.ne'] <;> ring
+
+/-- All initial bins have arbitrarily strong radial decay, with an elementary polynomial cost. -/
+theorem initial_fixed_source_radial_decay
+    (g W : 𝓢(ℝ,ℂ)) (A : ℝ) (hA : 0 ≤ A) (hgA : ∀u,g u≠0→|u| ≤ A) (N : ℕ) :
+    ∃C : ℝ,0 < C ∧ ∀{ι : Type} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+      [∀i,(Ideal.span {p i}).IsMaximal] (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i})) (hpr : ∀i,lambda^2∣p i-1)
+      (pool R : Finset ι) (s : Finset (SecondExpansionData ι)) (Ψ : O→*ℂ)
+      (Z H : ℝ) (negative : Bool) (r : QuadraticRayRing) (ray a b : QuadraticRayRing×QuadraticRayRing)
+      (j : SecondLogIndex),
+      0 < Z → 0 < H → (∀u,‖Ψ u‖ ≤ 1) → (∀x∈s,InSourceSector R x) →
+      (∀x∈s,x.frequency≠0) → (∀x∈s,initialLogIndex p x=j) →
+      ‖∑x∈s,secondFixedExpansionTerm p hg pool Ψ 1 1 1
+        (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x‖ ≤ 
+        C*Z^2/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j/
+          (1+initialRadial Z H (primeProductNorm p R) j)^N := by
+  obtain ⟨windows,Ct,hCt,hwc,hws,hwb,ht⟩:=initial_sector_density_bound g W A hA hgA 1 (by norm_num) (N+1) 0
+  have hb (i : Fin 7) : ∃B : ℝ,0 ≤ B ∧ ∀u,‖windows i u‖ ≤ B:=by
+    obtain ⟨B,hB⟩:=((hwc i).isCompact_range (hws i).continuous).bddAbove_image continuous_norm.continuousOn
+    have hh (u : ℝ) : ‖windows i u‖ ≤ B:=hB ⟨windows i u,⟨u,rfl⟩,rfl⟩
+    exact ⟨B,(norm_nonneg _).trans (hh 0),hh⟩
+  obtain ⟨M₁,hM₁,hv₁⟩:=hb 5
+  obtain ⟨M₂,hM₂,hv₂⟩:=hb 6
+  let M:=max M₁ M₂
+  let Ce:=(Fintype.card Oˣ:ℝ)*(diagonalControl sieveCutoff)^4*(Real.exp (A+2+1)*M)^2*
+    (∫t : ℝ,firstLogDensity 0 t)^3
+  have hI : 0 ≤ ∫t : ℝ,firstLogDensity 0 t:=integral_nonneg (fun t=>firstLogDensity_nonneg 0 t)
+  have hCe : 0 ≤ Ce:=by dsimp [Ce]; positivity
+  let C:=Ct*Ce*Real.exp 6
+  have hC : 0 ≤ C:=by dsimp [C]; positivity
+  refine ⟨C+1,by linarith,?_⟩
+  intro ι _ p hp _ hg hinj hpr pool R s Ψ Z H negative r ray a b j hZ hH hΨ hs hk hj
+  let X:=initialLogColumn Z (primeProductNorm p R) j
+  let T:=initialSourceTargets p s
+  have hBp:=primeProductNorm_pos p hp R
+  have hX : 0 < X:=initialLogColumn_pos _ _ _ hZ hBp
+  have hL:=initialLogLabel_ge_one j
+  have hK : 1 ≤ secondLogK j*Real.exp 2:=one_le_mul_of_one_le_of_one_le
+    (normLogScale_ge_one _) (Real.one_le_exp (by norm_num))
+  have htarget:=initial_source_target_geometry p hp 1 (fun _=>Ideal.isCoprime_iff_sup_eq.mpr (by simp)) s j hk hj
+  have hc₁ (U : Finset ι) : ‖combinedFixedColumn p hg negative b.1 a.1 (fun _=>1) U‖ ≤ 1:=by
+    simpa only [norm_one] using combinedFixedColumn_norm_le p hg negative b.1 a.1 (fun _=>1) U
+  have hc₂ (U : Finset ι) : ‖combinedFixedColumn p hg negative b.2 a.2 (fun _=>1) U‖ ≤ 1:=by
+    simpa only [norm_one] using combinedFixedColumn_norm_le p hg negative b.2 a.2 (fun _=>1) U
+  have hdensity:=initial_density_elementary_squared_mass p hp hg hinj hpr _ _ hc₁ hc₂ pool Ψ Ψ hΨ hΨ
+    (∏i∈R,p i) T (windows 5) (windows 6) X (initialLogLabel j) (secondLogK j*Real.exp 2)
+    (A+2+1) M 0 hX hL hK (by linarith) (hM₁.trans (le_max_left _ _))
+    (fun u=>(hv₁ u).trans (le_max_left _ _)) (fun u=>(hv₂ u).trans (le_max_right _ _))
+    (hwb 5) (hwb 6) (fun t ht=>⟨(htarget t ht).1,(htarget t ht).2.2.2.1,(htarget t ht).2.2.2.2.2⟩)
+  have hcoords (x : SecondExpansionData ι) (hx : x∈initialSquarefreeSector p s) := by
+    have hxs:=(Finset.mem_filter.mp hx).1
+    have hh:=initial_log_coordinates p hp Z hZ R x (hs x hxs) (hk x hxs)
+    dsimp only at hh
+    rw [hj x hxs] at hh
+    exact hh
+  have hsource:=ht p hp hg hinj hpr pool R (initialSquarefreeSector p s) T Ψ 1 Z H
+    (secondLogE j) (secondLogV j) X (secondLogK j) (initialLogLabel j) negative r ray a b
+    hZ hH (normLogScale_pos _) (normLogScale_pos _) hX (normLogScale_pos _) (zero_le_one.trans hL) hΨ
+    (fun x hx=>hs x (Finset.mem_filter.mp hx).1) (fun x hx=>hk x (Finset.mem_filter.mp hx).1)
+    (fun x hx=>(hcoords x hx).1) (fun x hx=>(hcoords x hx).2.1)
+    (fun x hx=>(hcoords x hx).2.2.1) (fun x hx=>(hcoords x hx).2.2.2)
+    (fun x hx=>Finset.mem_image_of_mem _ hx) (fun t ht=>(htarget t ht).1)
+    (fun t ht=>(htarget t ht).2.2.2.1)
+  dsimp only [X] at hsource
+  rw [initial_log_radial Z H _ hZ.ne' hBp.ne' j] at hsource
+  simp only [one_mul,Real.rpow_one] at hsource
+  rw [initial_fixed_source_squarefree p hg hinj pool Ψ 1
+    (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b s
+    (fun x hx=>(hs x hx).1)]
+  have hρ : 0 ≤ initialRadial Z H (primeProductNorm p R) j:=by
+    have hk0:=(normLogScale_pos j.2.2).le
+    dsimp only [initialRadial,secondLogK]
+    positivity
+  have hden : 0 < (1+initialRadial Z H (primeProductNorm p R) j)^(N+1):=by positivity
+  have hf : 0 ≤ Ct*H*primeProductNorm p R/Z^2*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j:=by positivity
+  have htotal:=hsource.trans (mul_le_mul_of_nonneg_left hdensity hf)
+  have heq : Real.exp 2*(Real.exp 2)^2=Real.exp 6:=by rw [pow_two,←Real.exp_add,←Real.exp_add]; norm_num
+  have halgebra : (Ct*H*primeProductNorm p R/Z^2*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j)*
+      (Ce*(secondLogK j*Real.exp 2)*(X*initialLogLabel j)^2)=
+      (C/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j)*(H*secondLogK j):=by
+    dsimp only [X]
+    rw [initial_log_mass Z _ hBp.ne' j,mul_pow,div_pow]
+    dsimp only [C]
+    rw [←heq]
+    field_simp <;> ring
+  change _ ≤ (Ct*H*primeProductNorm p R/Z^2*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j)*
+      (Ce*(secondLogK j*Real.exp 2)*(X*initialLogLabel j)^2) at htotal
+  rw [halgebra] at htotal
+  rw [mul_comm ((1+H*secondLogK j*(primeProductNorm p R)^2/Z^2)^(N+1))] at htotal
+  have hb:=(le_div_iff₀ hden).mpr htotal
+  calc
+    _ ≤ (C/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j)*
+        (H*secondLogK j/(1+initialRadial Z H (primeProductNorm p R) j)^(N+1)):=by
+      simpa only [mul_div_assoc] using hb
+    _ ≤ (C/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j)*
+        (Z^2/(1+initialRadial Z H (primeProductNorm p R) j)^N):=mul_le_mul_of_nonneg_left
+      (initial_radial_absorbs_row Z H (primeProductNorm p R) (secondLogK j) N hZ hH.le
+        (primeProductNorm_ge_one p hp R) (normLogScale_pos _).le) (by positivity)
+    _=C*Z^2/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j/
+        (1+initialRadial Z H (primeProductNorm p R) j)^N:=by ring
+    _ ≤ _:=by gcongr; linarith
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels
+open scoped BigOperators Classical
+
+/-- Polynomial support and row cutoffs leave only a small-power loss after bin aggregation. -/
+theorem initial_label_log_budget (η Ccap : ℝ) (hη : 0 < η) (hcap : 1 ≤ Ccap) :
+    ∃C : ℝ,0 < C ∧ ∀Z U K : ℝ,1 ≤ Z → 0 < U → 0 < K →
+      U ≤ Ccap*Z^17 → K ≤ Ccap*Z^17 →
+      (U^2*Real.exp 2)^η*((secondLogBinBox U K).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ)) ≤ C*Z^(51*η) := by
+  obtain ⟨C,hC,hlog⟩:=initial_log_harmonic_small_power η hη
+  refine ⟨C*(Real.exp 2)^η*Ccap^(3*η),by positivity,?_⟩
+  intro Z U K hZ hU hK hUY hKY
+  have hZ0:=zero_lt_one.trans_le hZ
+  have hcap0:=zero_lt_one.trans_le hcap
+  let Y:=Ccap*Z^17
+  have hY : 1 ≤ Y:=one_le_mul_of_one_le_of_one_le hcap (one_le_pow₀ hZ)
+  have hY0:=zero_lt_one.trans_le hY
+  have hdc:=descentLatticeConstant_pos
+  have hlogs:=hlog Y U K hY hU hK hUY hKY
+  have hlabel : (U^2*Real.exp 2)^η ≤ (Y^2*Real.exp 2)^η:=Real.rpow_le_rpow
+    (by positivity) (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hU.le hUY 2) (Real.exp_pos _).le) hη.le
+  calc
+    _=(U^2*Real.exp 2)^η*(((secondLogBinBox U K).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ))):=by ring
+    _ ≤ (Y^2*Real.exp 2)^η*(C*Y^η):=mul_le_mul hlabel hlogs (by positivity) (by positivity)
+    _=C*(Real.exp 2)^η*Y^(3*η):=by
+      rw [Real.mul_rpow (sq_nonneg Y) (Real.exp_pos _).le,←Real.rpow_natCast_mul hY0.le]
+      norm_num
+      rw [show 3*η=2*η+η by ring,Real.rpow_add hY0]
+      ring
+    _=(C*(Real.exp 2)^η*Ccap^(3*η))*Z^(51*η):=by
+      dsimp [Y]
+      rw [Real.mul_rpow hcap0.le (pow_nonneg hZ0.le _),←Real.rpow_natCast_mul hZ0.le]
+      norm_num
+      ring_nf
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson CompletedGauss SecondPassArithmetic FirstPassCubeLabels
+open CanonicalCoefficientClass CanonicalCubeSeparation JointLogSeparation SecondPassIntegration
+open CanonicalRowCompletion
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+/-- The complete retained source sum has arbitrarily small loss over the row length. -/
+theorem retained_initial_source_sum
+    (S : Finset (Ideal O)) (hSp : ∀P∈S,Prime P) (hbad : fixedBadPrimes⊆S)
+    (base : O→*ℂ) (hbase : ∀u,‖base u‖ ≤ 1)
+    (Qbase : Ideal O) (h4 : Qbase ≤ Ideal.span {(4:O)})
+    (c : O) (hc : c≠0) (hspan : Ideal.span {c}=Qbase*Ideal.span {(72:O)})
+    (hsupport : primeSupport (Ideal.span {c})⊆S) [Fintype (O⧸Ideal.span {9*c})]
+    (hperiod : ∀x y : O,x-y∈Qbase → base x=base y)
+    (g W : 𝓢(ℝ,ℂ)) (A Ccap ε : ℝ) (hA : 0 ≤ A) (hcap : 1 ≤ Ccap)
+    (hgA : ∀u,g u≠0→|u| ≤ A) (hε : 0 < ε) :
+    ∃C Z₀ : ℝ,0 < C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
+      (K : Finset (primePool (outsideSquarefreeIdeals S D))→
+        Finset (primePool (outsideSquarefreeIdeals S D))→Finset O)
+      (Kmax σ θ : ℝ) (negative : Bool) (r : QuadraticRayRing)
+      (a b : QuadraticRayRing×QuadraticRayRing),
+      Z₀ ≤ Z → Real.exp (radiusIter (A+2+1) 3000)*Z^3 ≤ D → IsBaseRayTwist base Ψ →
+      0 < Kmax → Z*Real.exp A ≤ Ccap*Z^17 → Kmax ≤ Ccap*Z^17 → θ ≤ σ-(1:ℝ)/20 →
+      let P:=outsideSquarefreeIdeals S D
+      let hP:=outsideSquarefree_admissible S D hbad
+      letI : ∀i : primePool P,(Ideal.span {poolPrimary P i}).IsMaximal:=
+        fun i=>by rw [poolPrimary_span P hP i]; infer_instance
+      (∑ray : QuadraticRayRing×QuadraticRayRing,
+        ∑R∈boundedPrimeSupports (poolPrimary P) Finset.univ (Z*Real.exp A),
+        ∑j∈secondLogBinBox (Z*Real.exp A) Kmax,
+          if initialRadial Z (Z^(1+σ)) (primeProductNorm (poolPrimary P) R) j ≤ Z^θ then
+            ‖∑x∈initialLogSector (poolPrimary P) Finset.univ R K Z A j,
+              secondFixedExpansionTerm (poolPrimary P) (poolPrimary_good P hP) Finset.univ Ψ 1 1 1
+                (normalizedColumn (poolPrimary P) (fun T=>g (columnLog (poolPrimary P) Z T))) W
+                (Z^(1+σ)) negative r ray a b x‖ else 0) ≤ C*Z^(1+σ)*Z^ε := by
+  let δ:=ε/52
+  have hδ : 0 < δ:=by dsimp [δ]; positivity
+  obtain ⟨Cb,Z₀,hCb,hZ₀,hbin⟩:=retained_initial_fixed_source S hSp hbad base hbase Qbase h4 c hc
+    hspan hsupport hperiod g W A hA hgA δ hδ 0
+  obtain ⟨Cl,hCl,hlog⟩:=initial_label_log_budget δ Ccap hδ hcap
+  have hmass:=initialRayMass_nonneg
+  let C0:=Cb*initialRayMass*Cl
+  have hC0 : 0 ≤ C0:=by dsimp [C0]; positivity
+  refine ⟨C0+1,Z₀,by linarith,hZ₀,?_⟩
+  intro D Z Ψ K Kmax σ θ negative r a b hZ hD hΨ hK hUcap hKcap hmargin
+  dsimp only
+  let P:=outsideSquarefreeIdeals S D
+  let hP:=outsideSquarefree_admissible S D hbad
+  let p:=poolPrimary P
+  let hp:=poolPrimary_ne_zero P hP
+  letI : ∀i : primePool P,(Ideal.span {p i}).IsMaximal:=
+    fun i=>by change (Ideal.span {poolPrimary P i}).IsMaximal; rw [poolPrimary_span P hP i]; infer_instance
+  have hinj : Function.Injective (fun i=>Ideal.span {p i}):=by
+    intro i k hh
+    apply Subtype.ext
+    simpa only [p,poolPrimary_span P hP] using hh
+  have hZ1 : 1 ≤ Z:=hZ₀.trans hZ
+  have hZp:=zero_lt_one.trans_le hZ1
+  let U:=Z*Real.exp A
+  have hU : 1 ≤ U:=one_le_mul_of_one_le_of_one_le hZ1 (Real.one_le_exp hA)
+  have hUp:=zero_lt_one.trans_le hU
+  let H:=Z^(1+σ)
+  let B:=Cb*H*(U^2*Real.exp 2)^δ*Z^δ
+  have hB : 0 ≤ B:=by dsimp [B,H]; positivity
+  let f:=fun (ray : QuadraticRayRing×QuadraticRayRing) (R : Finset (primePool P)) (j : SecondLogIndex)=>
+    if initialRadial Z H (primeProductNorm p R) j ≤ Z^θ then
+      ‖∑x∈initialLogSector p Finset.univ R K Z A j,
+        secondFixedExpansionTerm p (poolPrimary_good P hP) Finset.univ Ψ 1 1 1
+          (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x‖ else 0
+  have hpoint (ray : QuadraticRayRing×QuadraticRayRing) (R : Finset (primePool P))
+      (hR : R∈boundedPrimeSupports p Finset.univ U) (j : SecondLogIndex)
+      (hj : j∈secondLogBinBox U Kmax) : f ray R j ≤ B/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖ := by
+    dsimp only [f]
+    split_ifs with hrad
+    · have hs:=initialLogSector_geometry p Finset.univ R K Z A j
+      have hb:=hbin D Z Ψ R negative r ray a b j (initialLogSector p Finset.univ R K Z A j)
+        σ θ hZ hD hΨ hmargin (fun x hx=>(hs x hx).1) (fun x hx=>(hs x hx).2.1)
+        (fun x hx=>(hs x hx).2.2.1) hrad
+      simp only [pow_zero,one_mul] at hb
+      have hl:=Real.rpow_le_rpow (zero_le_one.trans (initialLogLabel_ge_one j))
+        (initialLogLabel_cap U Kmax hU j hj) hδ.le
+      calc
+        _ ≤ Cb*H/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*(initialLogLabel j)^δ*Z^δ:=hb
+        _ ≤ Cb*H/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*(U^2*Real.exp 2)^δ*Z^δ:=by
+          apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg hZp.le _)
+          exact mul_le_mul_of_nonneg_left hl (by have hRp:=(primeProductNorm_pos p hp R).le; dsimp [H]; positivity)
+        _= _:=by dsimp [B]; ring
+    · have hRp:=(primeProductNorm_pos p hp R).le
+      positivity
+  have hsum:=initial_harmonic_aggregation p hinj Finset.univ U Kmax B hB f hpoint
+  have hlogs:=hlog Z U Kmax hZ1 hUp hK hUcap hKcap
+  have he : δ+51*δ=ε:=by dsimp [δ]; ring
+  calc
+    _ ≤ B*initialRayMass*((secondLogBinBox U Kmax).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ)):=hsum
+    _=(Cb*initialRayMass)*H*Z^δ*((U^2*Real.exp 2)^δ*((secondLogBinBox U Kmax).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ))):=by dsimp [B]; ring
+    _ ≤ (Cb*initialRayMass)*H*Z^δ*(Cl*Z^(51*δ)):=mul_le_mul_of_nonneg_left hlogs (by dsimp [H]; positivity)
+    _=C0*H*Z^ε:=by rw [←he,Real.rpow_add hZp]; dsimp [C0]; ring
+    _ ≤ (C0+1)*H*Z^ε:=by gcongr; linarith
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open scoped BigOperators Classical SchwartzMap
+
+/-- The discarded radial bins have any prescribed power saving. -/
+theorem initial_high_radial_sum
+    (g W : 𝓢(ℝ,ℂ)) (A Ccap θ τ : ℝ) (hA : 0 ≤ A) (hcap : 1 ≤ Ccap)
+    (hgA : ∀u,g u≠0→|u| ≤ A) (hθ : 0 < θ) :
+    ∃C : ℝ,0 < C ∧ ∀{ι : Type} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+      [∀i,(Ideal.span {p i}).IsMaximal] (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i})) (hpr : ∀i,lambda^2∣p i-1)
+      (pool : Finset ι) (K : Finset ι→Finset ι→Finset O) (Ψ : O→*ℂ)
+      (Z H Kmax : ℝ) (negative : Bool) (r : QuadraticRayRing) (a b : QuadraticRayRing×QuadraticRayRing),
+      1 ≤ Z → 0 < H → 0 < Kmax → (∀u,‖Ψ u‖ ≤ 1) →
+      Z*Real.exp A ≤ Ccap*Z^17 → Kmax ≤ Ccap*Z^17 →
+      (∑ray : QuadraticRayRing×QuadraticRayRing,∑R∈boundedPrimeSupports p pool (Z*Real.exp A),
+        ∑j∈secondLogBinBox (Z*Real.exp A) Kmax,
+          if Z^θ < initialRadial Z H (primeProductNorm p R) j then
+            ‖∑x∈initialLogSector p pool R K Z A j,
+              secondFixedExpansionTerm p hg pool Ψ 1 1 1
+                (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x‖ else 0) ≤ C*Z^(-τ) := by
+  obtain ⟨N,hN⟩:=exists_nat_gt ((21+τ)/θ)
+  have horder : 21+τ ≤ θ*(N:ℝ):=by
+    have hh:=(div_lt_iff₀ hθ).mp hN
+    nlinarith only [hh]
+  obtain ⟨Cb,hCb,hbin⟩:=initial_fixed_source_radial_decay g W A hA hgA N
+  obtain ⟨Cl,hCl,hlog⟩:=initial_log_harmonic_small_power 1 (by norm_num)
+  have hmass:=initialRayMass_nonneg
+  let C0:=Cb*(Real.exp A)^2*Real.exp 2*initialRayMass*Cl*Ccap
+  have hC0 : 0 ≤ C0:=by dsimp [C0]; positivity
+  refine ⟨C0+1,by linarith,?_⟩
+  intro ι _ p hp _ hg hinj hpr pool K Ψ Z H Kmax negative r a b hZ hH hK hΨ hUcap hKcap
+  have hZp:=zero_lt_one.trans_le hZ
+  let U:=Z*Real.exp A
+  have hU : 1 ≤ U:=one_le_mul_of_one_le_of_one_le hZ (Real.one_le_exp hA)
+  let B:=Cb*Z^2*(U^2*Real.exp 2)/(Z^θ)^N
+  have hB : 0 ≤ B:=by dsimp [B]; positivity
+  let f:=fun (ray : QuadraticRayRing×QuadraticRayRing) (R : Finset ι) (j : SecondLogIndex)=>
+    if Z^θ < initialRadial Z H (primeProductNorm p R) j then
+      ‖∑x∈initialLogSector p pool R K Z A j,secondFixedExpansionTerm p hg pool Ψ 1 1 1
+        (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x‖ else 0
+  have hpoint (ray : QuadraticRayRing×QuadraticRayRing) (R : Finset ι)
+      (hR : R∈boundedPrimeSupports p pool U) (j : SecondLogIndex) (hj : j∈secondLogBinBox U Kmax) :
+      f ray R j ≤ B/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖ := by
+    dsimp only [f]
+    have hRp:=primeProductNorm_pos p hp R
+    split_ifs with hrad
+    · have hs:=initialLogSector_geometry p pool R K Z A j
+      have hb:=hbin p hp hg hinj hpr pool R (initialLogSector p pool R K Z A j) Ψ Z H
+        negative r ray a b j hZp hH hΨ (fun x hx=>(hs x hx).1)
+        (fun x hx=>(hs x hx).2.1) (fun x hx=>(hs x hx).2.2.1)
+      have hden : (Z^θ)^N ≤ (1+initialRadial Z H (primeProductNorm p R) j)^N:=
+        pow_le_pow_left₀ (Real.rpow_nonneg hZp.le _) (by linarith) N
+      have hnum : 0 ≤ Cb*Z^2/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j:=by
+        have hl:=initialLogLabel_ge_one j
+        positivity
+      calc
+        _ ≤ Cb*Z^2/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j/
+            (1+initialRadial Z H (primeProductNorm p R) j)^N:=hb
+        _ ≤ Cb*Z^2/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*initialLogLabel j/(Z^θ)^N:=
+          div_le_div_of_nonneg_left hnum (pow_pos (Real.rpow_pos_of_pos hZp _) _) hden
+        _ ≤ Cb*Z^2/primeProductNorm p R*‖rayQuadraticPair ray.1 ray.2‖*(U^2*Real.exp 2)/(Z^θ)^N:=
+          div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (initialLogLabel_cap U Kmax hU j hj)
+            (by positivity)) (by positivity)
+        _= _:=by dsimp [B]; ring
+    · positivity
+  have hsum:=initial_harmonic_aggregation p hinj pool U Kmax B hB f hpoint
+  have hY : 1 ≤ Ccap*Z^17:=one_le_mul_of_one_le_of_one_le hcap (one_le_pow₀ hZ)
+  have hlogs:=hlog (Ccap*Z^17) U Kmax hY (zero_lt_one.trans_le hU) hK hUcap hKcap
+  rw [Real.rpow_one] at hlogs
+  have hscalar : Z^(21:ℕ)/(Z^θ)^N ≤ Z^(-τ):=by
+    have he : Z^(21:ℕ)/(Z^θ)^N=Z^((21:ℝ)-θ*(N:ℝ)):=by
+      rw [Real.rpow_sub hZp,Real.rpow_mul_natCast hZp.le]
+      norm_cast
+    rw [he]
+    exact Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+  calc
+    _ ≤ B*initialRayMass*((secondLogBinBox U Kmax).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ)):=hsum
+    _=(B*initialRayMass)*(((secondLogBinBox U Kmax).card:ℝ)*
+        (descentLatticeConstant*Real.exp 1*(normLogBin U+1:ℝ))):=by ring
+    _ ≤ (B*initialRayMass)*(Cl*(Ccap*Z^17)):=mul_le_mul_of_nonneg_left hlogs (by positivity)
+    _=C0*(Z^(21:ℕ)/(Z^θ)^N):=by dsimp [B,U,C0]; ring
+    _ ≤ C0*Z^(-τ):=mul_le_mul_of_nonneg_left hscalar hC0
+    _ ≤ (C0+1)*Z^(-τ):=mul_le_mul_of_nonneg_right (by linarith) (Real.rpow_nonneg hZp.le _)
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson CompletedGauss SecondPassArithmetic FirstPassCubeLabels
+open CanonicalCoefficientClass CanonicalCubeSeparation JointLogSeparation SecondPassIntegration CanonicalRowCompletion
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+/-- The nonzero-frequency initial source is bounded by the row length with arbitrarily small loss. -/
+theorem initial_truncated_source_bound
+    (S : Finset (Ideal O)) (hSp : ∀P∈S,Prime P) (hbad : fixedBadPrimes⊆S)
+    (base : O→*ℂ) (hbase : ∀u,‖base u‖ ≤ 1)
+    (Qbase : Ideal O) (h4 : Qbase ≤ Ideal.span {(4:O)})
+    (c : O) (hc : c≠0) (hspan : Ideal.span {c}=Qbase*Ideal.span {(72:O)})
+    (hsupport : primeSupport (Ideal.span {c})⊆S) [Fintype (O⧸Ideal.span {9*c})]
+    (hperiod : ∀x y : O,x-y∈Qbase → base x=base y)
+    (g W : 𝓢(ℝ,ℂ)) (A Ccap σ ε : ℝ) (hA : 0 ≤ A) (hcap : 1 ≤ Ccap)
+    (hgA : ∀u,g u≠0→|u| ≤ A) (hσ : (1:ℝ)/20 < σ) (hε : 0 < ε) :
+    ∃C Z₀ : ℝ,0 < C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
+      (K : Finset (primePool (outsideSquarefreeIdeals S D))→
+        Finset (primePool (outsideSquarefreeIdeals S D))→Finset O)
+      (Kmax : ℝ) (negative : Bool) (r : QuadraticRayRing),
+      Z₀ ≤ Z → Real.exp (radiusIter (A+2+1) 3000)*Z^3 ≤ D → IsBaseRayTwist base Ψ →
+      0 < Kmax → Z*Real.exp A ≤ Ccap*Z^17 → Kmax ≤ Ccap*Z^17 →
+      (∀x∈initialSupportedPool (poolPrimary (outsideSquarefreeIdeals S D)) Finset.univ K Z A,
+        elementNorm (sourceRow (poolPrimary (outsideSquarefreeIdeals S D)) x) ≤ Kmax) →
+      let P:=outsideSquarefreeIdeals S D
+      let hP:=outsideSquarefree_admissible S D hbad
+      letI : ∀i : primePool P,(Ideal.span {poolPrimary P i}).IsMaximal:=
+        fun i=>by rw [poolPrimary_span P hP i]; infer_instance
+      ‖truncatedSecondSource (poolPrimary P) (poolPrimary_ne_zero P hP) (poolPrimary_good P hP)
+        Finset.univ Ψ 1 1 1
+        (firstFixedColumn (poolPrimary P) (poolPrimary_good P hP) negative r
+          (normalizedColumn (poolPrimary P) (fun T=>g (columnLog (poolPrimary P) Z T))))
+        W (Z^(1+σ)) (fun G E=>(K G E).erase 0)‖ ≤ C*Z^(1+σ)*Z^ε := by
+  let θ:=(σ-(1:ℝ)/20)/2
+  have hθ : 0 < θ:=by dsimp [θ]; linarith
+  have hmargin : θ ≤ σ-(1:ℝ)/20:=by dsimp [θ]; linarith
+  obtain ⟨Cr,Z₀,hCr,hZ₀,hret⟩:=retained_initial_source_sum S hSp hbad base hbase Qbase h4 c hc
+    hspan hsupport hperiod g W A Ccap ε hA hcap hgA hε
+  obtain ⟨Ch,hCh,hhigh⟩:=initial_high_radial_sum g W A Ccap θ 0 hA hcap hgA hθ
+  let C0:=(Fintype.card (QuadraticRayRing×QuadraticRayRing):ℝ)^2*(Cr+Ch)
+  have hC0 : 0 ≤ C0:=by dsimp [C0]; positivity
+  refine ⟨C0+1,Z₀,by linarith,hZ₀,?_⟩
+  intro D Z Ψ K Kmax negative r hZ hD hΨ hK hUcap hKcap hrow
+  dsimp only
+  let P:=outsideSquarefreeIdeals S D
+  let hP:=outsideSquarefree_admissible S D hbad
+  let p:=poolPrimary P
+  let hp:=poolPrimary_ne_zero P hP
+  let hg:=poolPrimary_good P hP
+  letI : ∀i : primePool P,(Ideal.span {p i}).IsMaximal:=
+    fun i=>by change (Ideal.span {poolPrimary P i}).IsMaximal; rw [poolPrimary_span P hP i]; infer_instance
+  have hinj : Function.Injective (fun i=>Ideal.span {p i}):=by
+    intro i k hh
+    apply Subtype.ext
+    simpa only [p,poolPrimary_span P hP] using hh
+  have hpr : ∀i,lambda^2∣p i-1:=fun i=>(primaryIdealPrime_spec i.val (hp i)).2.2.2
+  have hZ1 : 1 ≤ Z:=hZ₀.trans hZ
+  have hZp:=zero_lt_one.trans_le hZ1
+  let H:=Z^(1+σ)
+  have hH1 : 1 ≤ H:=Real.one_le_rpow hZ1 (by linarith)
+  have hHp:=zero_lt_one.trans_le hH1
+  have hHZ : 1 ≤ H*Z^ε:=one_le_mul_of_one_le_of_one_le hH1 (Real.one_le_rpow hZ1 hε.le)
+  let U:=Z*Real.exp A
+  let f:=fun (ray a b : QuadraticRayRing×QuadraticRayRing) (R : Finset (primePool P)) (j : SecondLogIndex)=>
+    ‖∑x∈initialLogSector p Finset.univ R K Z A j,
+      secondFixedExpansionTerm p hg Finset.univ Ψ 1 1 1
+        (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x‖
+  have hfixed (a b : QuadraticRayRing×QuadraticRayRing) :
+      (∑ray : QuadraticRayRing×QuadraticRayRing,∑R∈boundedPrimeSupports p Finset.univ U,
+        ∑j∈secondLogBinBox U Kmax,f ray a b R j) ≤ (Cr+Ch)*H*Z^ε := by
+    have hlo:=hret D Z Ψ K Kmax σ θ negative r a b hZ hD hΨ hK hUcap hKcap hmargin
+    have hhi:=hhigh p hp hg hinj hpr Finset.univ K Ψ Z H Kmax negative r a b
+      hZ1 hHp hK (hΨ.norm_le hbase) hUcap hKcap
+    simp only [neg_zero,Real.rpow_zero,mul_one] at hhi
+    have he : (∑ray : QuadraticRayRing×QuadraticRayRing,∑R∈boundedPrimeSupports p Finset.univ U,
+        ∑j∈secondLogBinBox U Kmax,f ray a b R j)=
+        (∑ray : QuadraticRayRing×QuadraticRayRing,∑R∈boundedPrimeSupports p Finset.univ U,
+          ∑j∈secondLogBinBox U Kmax,
+            if initialRadial Z H (primeProductNorm p R) j ≤ Z^θ then f ray a b R j else 0)+
+        (∑ray : QuadraticRayRing×QuadraticRayRing,∑R∈boundedPrimeSupports p Finset.univ U,
+          ∑j∈secondLogBinBox U Kmax,
+            if Z^θ < initialRadial Z H (primeProductNorm p R) j then f ray a b R j else 0) := by
+      rw [←Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro ray hray
+      rw [←Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro R hR
+      rw [←Finset.sum_add_distrib]
+      apply Finset.sum_congr rfl
+      intro j hj
+      by_cases hlow : initialRadial Z H (primeProductNorm p R) j ≤ Z^θ
+      · rw [if_pos hlow,if_neg (not_lt_of_ge hlow),add_zero]
+      · rw [if_neg hlow,if_pos (lt_of_not_ge hlow),zero_add]
+    rw [he]
+    exact (add_le_add hlo hhi).trans (by nlinarith only [mul_le_mul_of_nonneg_left hHZ hCh.le])
+  let F:=fun ray a b : QuadraticRayRing×QuadraticRayRing=>
+    ∑x∈secondExpansionPool Finset.univ (fun G E=>(K G E).erase 0),
+      secondFixedExpansionTerm p hg Finset.univ Ψ 1 1 1
+        (normalizedColumn p (fun T=>g (columnLog p Z T))) W H negative r ray a b x
+  have hterm (ray a b : QuadraticRayRing×QuadraticRayRing) :
+      ‖F ray a b‖ ≤ ∑R∈boundedPrimeSupports p Finset.univ U,∑j∈secondLogBinBox U Kmax,f ray a b R j := by
+    dsimp only [F]
+    rw [initial_fixed_source_eq_bins p hp hg Finset.univ K Ψ g W Z H A Kmax hZp hgA
+      negative r ray a b hrow]
+    exact (norm_sum_le _ _).trans (Finset.sum_le_sum (fun R hR=>norm_sum_le _ _))
+  rw [truncatedSecondSource_eq_fixed_residues p hg hp hinj (poolPrimary_odd P hP) hpr]
+  change ‖∑ray : QuadraticRayRing×QuadraticRayRing,∑a : QuadraticRayRing×QuadraticRayRing,
+    ∑b : QuadraticRayRing×QuadraticRayRing,F ray a b‖ ≤ (C0+1)*H*Z^ε
+  calc
+    _ ≤ ∑ray : QuadraticRayRing×QuadraticRayRing,∑a : QuadraticRayRing×QuadraticRayRing,
+        ∑b : QuadraticRayRing×QuadraticRayRing,
+          ∑R∈boundedPrimeSupports p Finset.univ U,∑j∈secondLogBinBox U Kmax,f ray a b R j := by
+      apply (norm_sum_le _ _).trans
+      apply Finset.sum_le_sum
+      intro ray hray
+      apply (norm_sum_le _ _).trans
+      apply Finset.sum_le_sum
+      intro a ha
+      exact (norm_sum_le _ _).trans (Finset.sum_le_sum (fun b hb=>hterm ray a b))
+    _=∑a : QuadraticRayRing×QuadraticRayRing,∑b : QuadraticRayRing×QuadraticRayRing,
+        ∑ray : QuadraticRayRing×QuadraticRayRing,
+          ∑R∈boundedPrimeSupports p Finset.univ U,∑j∈secondLogBinBox U Kmax,f ray a b R j := by
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro a ha
+      exact Finset.sum_comm
+    _ ≤ ∑_a : QuadraticRayRing×QuadraticRayRing,∑_b : QuadraticRayRing×QuadraticRayRing,(Cr+Ch)*H*Z^ε:=
+      Finset.sum_le_sum (fun a ha=>Finset.sum_le_sum (fun b hb=>hfixed a b))
+    _=C0*H*Z^ε:=by simp only [Finset.sum_const,Finset.card_univ,nsmul_eq_mul]; dsimp [C0]; ring
+    _ ≤ _:=by gcongr; linarith
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open scoped BigOperators Classical
+
+/-- A polynomial frequency disk makes the complementary source tail negligible. -/
+def initialFrequencyCutoff (A Z H : ℝ) : Finset O:=secondTailCutoff (Z*Real.exp A) H (Z^12)
+
+def initialRowCutoff (A Z : ℝ) : ℝ:=Real.exp (4*A)*Z^17
+
+lemma initial_polynomial_caps (A Z : ℝ) (hA : 0 ≤ A) (hZ : 1 ≤ Z) :
+    1 ≤ Real.exp (4*A) ∧ 0 < initialRowCutoff A Z ∧ Z*Real.exp A ≤ Real.exp (4*A)*Z^17 := by
+  have hZp:=zero_lt_one.trans_le hZ
+  refine ⟨Real.one_le_exp (by linarith),by unfold initialRowCutoff; positivity,?_⟩
+  have he : Real.exp A ≤ Real.exp (4*A):=Real.exp_le_exp.mpr (by linarith)
+  have hz : Z ≤ Z^17:=by simpa only [pow_one] using pow_le_pow_right₀ hZ (by decide : 1 ≤ 17)
+  calc
+    _ ≤ Z^17*Real.exp (4*A):=mul_le_mul hz he (Real.exp_pos _).le (pow_nonneg hZp.le _)
+    _= _:=by ring
+
+/-- Supported source rows fit the polynomial row cutoff for the concrete frequency disk. -/
+theorem initial_frequency_cutoff_row_bound {ι : Type*} [DecidableEq ι]
+    (p : ι→O) (hp : ∀i,p i≠0) (pool : Finset ι) (A Z H : ℝ)
+    (hA : 0 ≤ A) (hZ : 1 ≤ Z) (hH : 1 ≤ H) :
+    ∀x∈initialSupportedPool p pool (fun _ _=>initialFrequencyCutoff A Z H) Z A,
+      elementNorm (sourceRow p x) ≤ initialRowCutoff A Z := by
+  intro x hx
+  obtain ⟨hx,hs⟩:=Finset.mem_filter.mp hx
+  have hm:=(mem_secondExpansionPool _ _ x).mp hx
+  have hb:=(initial_source_support_bounds p hp Z A x hs hm.2.1).2.1
+  have hZp:=zero_lt_one.trans_le hZ
+  have hHp:=zero_lt_one.trans_le hH
+  have hf:=secondTailCutoff_norm_sq_le (Z*Real.exp A) H (Z^12) (by positivity) hHp
+    (by positivity) x.frequency (Finset.mem_erase.mp hm.2.2.2).2
+  have he : elementNorm (sourceRow p x)=primeProductNorm p x.divisor*‖ringComplex x.frequency‖^2:=by
+    simp only [elementNorm,sourceRow,map_mul,norm_mul,mul_pow,primeProductNorm]
+  rw [he]
+  calc
+    _ ≤ (Z*Real.exp A)*(Z^12*(Z*Real.exp A)^3/H):=
+      mul_le_mul hb hf (sq_nonneg _) (by positivity)
+    _=(Z^12*(Z*Real.exp A)^4)/H:=by ring
+    _ ≤ Z^12*(Z*Real.exp A)^4:=div_le_self (by positivity) hH
+    _=(Real.exp A)^4*Z^16:=by ring
+    _=Real.exp (4*A)*Z^16:=by rw [←Real.exp_nat_mul]; norm_num
+    _ ≤ initialRowCutoff A Z:=by
+      unfold initialRowCutoff
+      exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hZ (by decide)) (Real.exp_pos _).le
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open scoped BigOperators Classical SchwartzMap
+
+/-- The concrete frequency disk controls the entire complementary lattice tail uniformly in the prime pool. -/
+theorem initial_source_tail_bound
+    (g W : 𝓢(ℝ,ℂ)) (A : ℝ) (hA : 0 ≤ A) (hgA : ∀u,g u≠0→|u| ≤ A) :
+    ∃C : ℝ,0 < C ∧ ∀{ι : Type} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+      [∀i,(Ideal.span {p i}).IsMaximal] (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i})) (pool : Finset ι) (Ψ : O→*ℂ)
+      (Z H : ℝ) (negative : Bool) (r : QuadraticRayRing),
+      1 ≤ Z → 1 ≤ H → (∀u,‖Ψ u‖ ≤ 1) →
+      ‖secondSourceTail p hp hg pool Ψ 1 1 1
+        (firstFixedColumn p hg negative r (normalizedColumn p (fun T=>g (columnLog p Z T))))
+        W H (fun _ _=>initialFrequencyCutoff A Z H)‖ ≤ C*H := by
+  obtain ⟨s,Cs,hCs,hbound⟩:=full_uniform_secondSourceTail_bounded_test 1
+  let B:=SchwartzMap.seminorm ℝ 0 0 g
+  let CW:=Cs*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W
+  have hB : 0 ≤ B:=apply_nonneg _ _
+  have hCW : 0 ≤ CW:=mul_nonneg hCs.le (apply_nonneg _ _)
+  let C0:=(diagonalControl sieveCutoff)^4*B^2*CW*4*(Real.exp A)^10
+  have hC0 : 0 ≤ C0:=by dsimp [C0]; positivity
+  refine ⟨C0+1,by linarith,?_⟩
+  intro ι _ p hp _ hg hinj pool Ψ Z H negative r hZ hH hΨ
+  let L:=Z*Real.exp A
+  have hZp:=zero_lt_one.trans_le hZ
+  have hHp:=zero_lt_one.trans_le hH
+  have hL : 1 ≤ L:=one_le_mul_of_one_le_of_one_le hZ (Real.one_le_exp hA)
+  let col:=firstFixedColumn p hg negative r (normalizedColumn p (fun T=>g (columnLog p Z T)))
+  have hcol (U : Finset ι) : ‖col U‖ ≤ B:=
+    (firstFixedColumn_norm_le p hg negative r _ U).trans (normalizedColumn_schwartz_bound p hp g Z U)
+  have hsupp (U : Finset ι) (hU : col U≠0) : primeProductNorm p U ≤ L := by
+    have hn : normalizedColumn p (fun T=>g (columnLog p Z T)) U≠0:=by
+      intro hz
+      have hh:=firstFixedColumn_norm_le p hg negative r (normalizedColumn p (fun T=>g (columnLog p Z T))) U
+      rw [hz,norm_zero] at hh
+      exact hU (norm_eq_zero.mp (le_antisymm hh (norm_nonneg _)))
+    have hg0 : g (columnLog p Z U)≠0:=by
+      intro hz
+      exact hn (by simp only [normalizedColumn,hz,zero_div])
+    exact columnLog_norm_upper p hp Z A hZp U ((le_abs_self _).trans (hgA _ hg0))
+  have hb:=hbound p hp hg hinj pool Ψ 1 1 1 col W B L H (Z^12) hΨ hB hL hHp
+    (by positivity) hcol hsupp
+  have hL3 : 1 ≤ L^3:=one_le_pow₀ hL
+  have hscale : 1+L^3/H ≤ 2*L^3:=by
+    have hh:=div_le_self (pow_nonneg (zero_le_one.trans hL) 3) hH
+    linarith
+  have hr : Z^10/(1+Z^12) ≤ (1:ℝ):=by
+    apply (div_le_one (by positivity : 0 < 1+Z^12)).mpr
+    exact (pow_le_pow_right₀ hZ (by decide : 10 ≤ 12)).trans (by linarith)
+  calc
+    _ ≤ (diagonalControl sieveCutoff*L)^4*(B^2*(H*CW*(1+L^3/H)^2/(1+Z^12)^1)):=hb
+    _ ≤ (diagonalControl sieveCutoff*L)^4*(B^2*(H*CW*(2*L^3)^2/(1+Z^12))):=by
+      rw [pow_one]
+      gcongr
+    _=C0*H*(Z^10/(1+Z^12)):=by dsimp [C0,L]; ring
+    _ ≤ C0*H:=by simpa only [mul_one] using mul_le_mul_of_nonneg_left hr (mul_nonneg hC0 hHp.le)
+    _ ≤ (C0+1)*H:=mul_le_mul_of_nonneg_right (by linarith) hHp.le
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels SecondPassIntegration
+open scoped BigOperators Classical SchwartzMap
+
+/-- The zero frequency is bounded by the normalized diagonal column mass. -/
+theorem initial_zero_frequency_bound
+    (g W : 𝓢(ℝ,ℂ)) (A : ℝ) (hgA : ∀u,g u≠0→|u| ≤ A) :
+    ∃C : ℝ,0 < C ∧ ∀{ι : Type} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+      [∀i,(Ideal.span {p i}).IsMaximal] (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i})) (pool : Finset ι) (Ψ : O→*ℂ)
+      (Z H : ℝ) (negative : Bool) (r : QuadraticRayRing),
+      0 < Z → 0 ≤ H → (∀u,‖Ψ u‖ ≤ 1) →
+      ‖truncatedSecondZero p hg pool Ψ 1 1 1
+        (firstFixedColumn p hg negative r (normalizedColumn p (fun T=>g (columnLog p Z T))))
+        W H (fun _ _=>initialFrequencyCutoff A Z H)‖ ≤ C*H := by
+  obtain ⟨Cm,hCm,hmass⟩:=full_uniform_normalized_second_mass g A hgA
+  refine ⟨‖paperRadialFourier W 0‖*Cm+1,by positivity,?_⟩
+  intro ι _ p hp _ hg hinj pool Ψ Z H negative r hZ hH hΨ
+  have hm:=(Finset.sum_le_sum (fun U (hU : U∈pool.powerset)=>pow_le_pow_left₀ (norm_nonneg _)
+    (secondInputCoefficient_fixedColumn_norm_le p hg Ψ 1 1 1 negative r
+      (normalizedColumn p (fun T=>g (columnLog p Z T))) U) 2)).trans
+      (hmass p hp hg hinj pool Ψ hΨ 1 1 1 Z hZ)
+  have hz:=truncatedSecondZero_norm_le p hg hinj pool Ψ 1 1 1
+    (firstFixedColumn p hg negative r (normalizedColumn p (fun T=>g (columnLog p Z T))))
+    W H (fun _ _=>initialFrequencyCutoff A Z H)
+    (fun _ _ _ _=>zero_mem_secondTailCutoff (Z*Real.exp A) H (Z^12))
+  rw [abs_of_nonneg hH] at hz
+  calc
+    _ ≤ H*‖paperRadialFourier W 0‖*Cm:=hz.trans (mul_le_mul_of_nonneg_left hm (by positivity))
+    _ ≤ (‖paperRadialFourier W 0‖*Cm+1)*H:=by nlinarith only [hH]
+
+end InitialMeanSquare
+
+
+
+namespace InitialMeanSquare
+open Eisenstein SchwartzPlanePoisson CompletedGauss SecondPassArithmetic FirstPassCubeLabels
+open CanonicalCoefficientClass CanonicalCubeSeparation JointLogSeparation SecondPassIntegration CanonicalRowCompletion
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+/-- The complete initial mean square, including the zero frequency and complementary lattice tail. -/
+theorem initial_fixed_mean_square_bound
+    (S : Finset (Ideal O)) (hSp : ∀P∈S,Prime P) (hbad : fixedBadPrimes⊆S)
+    (base : O→*ℂ) (hbase : ∀u,‖base u‖ ≤ 1)
+    (Qbase : Ideal O) (h4 : Qbase ≤ Ideal.span {(4:O)})
+    (c : O) (hc : c≠0) (hspan : Ideal.span {c}=Qbase*Ideal.span {(72:O)})
+    (hsupport : primeSupport (Ideal.span {c})⊆S) [Fintype (O⧸Ideal.span {9*c})]
+    (hperiod : ∀x y : O,x-y∈Qbase → base x=base y)
+    (g W : 𝓢(ℝ,ℂ)) (A σ ε : ℝ) (hA : 0 ≤ A)
+    (hgA : ∀u,g u≠0→|u| ≤ A) (hσ : (1:ℝ)/20 < σ) (hε : 0 < ε) :
+    ∃C Z₀ : ℝ,0 < C ∧ 1 ≤ Z₀ ∧ ∀(D : ℕ) (Z : ℝ) (Ψ : O→*ℂ)
+      (negative : Bool) (r : QuadraticRayRing),
+      Z₀ ≤ Z → Real.exp (radiusIter (A+2+1) 3000)*Z^3 ≤ D → IsBaseRayTwist base Ψ →
+      let P:=outsideSquarefreeIdeals S D
+      let hP:=outsideSquarefree_admissible S D hbad
+      letI : ∀i : primePool P,(Ideal.span {poolPrimary P i}).IsMaximal:=
+        fun i=>by rw [poolPrimary_span P hP i]; infer_instance
+      ‖∑'z : O,W (‖ringComplex z‖^2/(Z^(1+σ)))*
+        (‖inputConjugateRow (poolPrimary P) (fun i=>complexSexticChar (Ideal.span {poolPrimary P i})
+          (poolPrimary_good P hP i)) Finset.univ Ψ 1 1 1
+          (firstFixedColumn (poolPrimary P) (poolPrimary_good P hP) negative r
+            (normalizedColumn (poolPrimary P) (fun T=>g (columnLog (poolPrimary P) Z T)))) z‖^2:ℝ)‖ ≤ 
+        C*Z^(1+σ)*Z^ε := by
+  have hcap : 1 ≤ Real.exp (4*A):=Real.one_le_exp (by linarith)
+  obtain ⟨Ct,Z₀,hCt,hZ₀,htrunc⟩:=initial_truncated_source_bound S hSp hbad base hbase Qbase h4 c hc
+    hspan hsupport hperiod g W A (Real.exp (4*A)) σ ε hA hcap hgA hσ hε
+  obtain ⟨Cz,hCz,hzero⟩:=initial_zero_frequency_bound g W A hgA
+  obtain ⟨Ce,hCe,htail⟩:=initial_source_tail_bound g W A hA hgA
+  refine ⟨Ct+Cz+Ce,Z₀,by positivity,hZ₀,?_⟩
+  intro D Z Ψ negative r hZ hD hΨ
+  dsimp only
+  let P:=outsideSquarefreeIdeals S D
+  let hP:=outsideSquarefree_admissible S D hbad
+  let p:=poolPrimary P
+  let hp:=poolPrimary_ne_zero P hP
+  let hg:=poolPrimary_good P hP
+  letI : ∀i : primePool P,(Ideal.span {p i}).IsMaximal:=
+    fun i=>by change (Ideal.span {poolPrimary P i}).IsMaximal; rw [poolPrimary_span P hP i]; infer_instance
+  have hinj : Function.Injective (fun i=>Ideal.span {p i}):=by
+    intro i k hh
+    apply Subtype.ext
+    simpa only [p,poolPrimary_span P hP] using hh
+  have hZ1 : 1 ≤ Z:=hZ₀.trans hZ
+  have hZp:=zero_lt_one.trans_le hZ1
+  let H:=Z^(1+σ)
+  have hH : 1 ≤ H:=Real.one_le_rpow hZ1 (by linarith)
+  have hHp:=zero_lt_one.trans_le hH
+  have hεpow : 1 ≤ Z^ε:=Real.one_le_rpow hZ1 hε.le
+  let K:=fun _ _ : Finset (primePool P)=>initialFrequencyCutoff A Z H
+  let col:=firstFixedColumn p hg negative r (normalizedColumn p (fun T=>g (columnLog p Z T)))
+  have hcaps:=initial_polynomial_caps A Z hA hZ1
+  have hrow:=initial_frequency_cutoff_row_bound p hp Finset.univ A Z H hA hZ1 hH
+  have ht:=htrunc D Z Ψ K (initialRowCutoff A Z) negative r hZ hD hΨ hcaps.2.1
+    hcaps.2.2 le_rfl hrow
+  have hz:=hzero p hp hg hinj Finset.univ Ψ Z H negative r hZp hHp.le (hΨ.norm_le hbase)
+  have he:=htail p hp hg hinj Finset.univ Ψ Z H negative r hZ1 hH (hΨ.norm_le hbase)
+  rw [inputConjugateRow_eq_truncated_add_tail p hp hg hinj Finset.univ Ψ 1 1 1 col W H hHp K,
+    truncatedSecondSource_eq_nonzero_add_zero p hg hp Finset.univ Ψ 1 1 1 col W H K]
+  calc
+    _ ≤ (‖truncatedSecondSource p hp hg Finset.univ Ψ 1 1 1 col W H (fun G E=>(K G E).erase 0)‖+
+        ‖truncatedSecondZero p hg Finset.univ Ψ 1 1 1 col W H K‖)+
+        ‖secondSourceTail p hp hg Finset.univ Ψ 1 1 1 col W H K‖:=
+      (norm_add_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+    _ ≤ (Ct*H*Z^ε+Cz*H)+Ce*H:=add_le_add (add_le_add ht hz) he
+    _ ≤ (Ct+Cz+Ce)*H*Z^ε:=by
+      have hz':=le_mul_of_one_le_right (mul_nonneg hCz.le hHp.le) hεpow
+      have he':=le_mul_of_one_le_right (mul_nonneg hCe.le hHp.le) hεpow
+      nlinarith only [hz',he']
 
 end InitialMeanSquare
 
