@@ -136677,4 +136677,1869 @@ lemma idealWeights_norm {σ : Type u} (F : Finset (Ideal Eis))
 
 end InverseCanonicalShortAttachment
 
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+lemma integralComplexMatrix_apply (M : SL(2,Eis)) (i j : Fin 2) :
+    integralComplexMatrix M i j = ringComplex (M i j) := rfl
+
+lemma upper_right_removed_bottom (M T:SL(2,Eis)) (hT:T 1 0=0) :
+    (M*T⁻¹) 1 0=M 1 0*T 1 1 := by
+  simp [Matrix.SpecialLinearGroup.coe_mul,Matrix.SpecialLinearGroup.coe_inv,
+    Matrix.adjugate_fin_two,Matrix.mul_apply,Fin.sum_univ_two,hT]
+
+lemma upper_right_removed_top (M T:SL(2,Eis)) (hT:T 1 0=0) :
+    (M*T⁻¹) 0 0=M 0 0*T 1 1 := by
+  simp [Matrix.SpecialLinearGroup.coe_mul,Matrix.SpecialLinearGroup.coe_inv,
+    Matrix.adjugate_fin_two,Matrix.mul_apply,Fin.sum_univ_two,hT]
+
+lemma upper_right_removed_last (M T:SL(2,Eis)) :
+    (M*T⁻¹) 1 1= -M 1 0*T 0 1+M 1 1*T 0 0 := by
+  simp [Matrix.SpecialLinearGroup.coe_mul,Matrix.SpecialLinearGroup.coe_inv,
+    Matrix.adjugate_fin_two,Matrix.mul_apply,Fin.sum_univ_two]
+
+lemma upper_diagonal_product (T:SL(2,Eis)) (hT:T 1 0=0) : T 0 0*T 1 1=1 := by
+  have hd:=T.property
+  simpa only [Matrix.det_fin_two,hT,mul_zero,sub_zero] using hd
+
+structure FixedCuspShape (H:SL(2,Eis)) where
+  gamma : rationalExtension
+  index : Fin 3
+  upper : SL(2,Eis)
+  lower_zero : upper 1 0=0
+  upper_unit : IsUnit (upper 0 0)
+  lower_unit : IsUnit (upper 1 1)
+  factorization : H=(gamma:SL(2,Eis))*cuspRepresentative index*upper
+
+lemma exists_fixedCuspShape (H:SL(2,Eis)) : Nonempty (FixedCuspShape H) := by
+  obtain ⟨G,j,T,hT,hT0,hT1,he⟩:=three_cusp_decomposition H
+  exact ⟨⟨G,j,T,hT,hT0,hT1,he⟩⟩
+
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H) (g:rationalExtension)
+
+lemma removed_eq : (g:SL(2,Eis))*H*s.upper⁻¹=
+    ((g*s.gamma:rationalExtension):SL(2,Eis))*cuspRepresentative s.index := by
+  calc
+    _ = (g:SL(2,Eis))*((s.gamma:SL(2,Eis))*cuspRepresentative s.index*s.upper)*s.upper⁻¹ :=
+      congrArg (fun K:SL(2,Eis)=>(g:SL(2,Eis))*K*s.upper⁻¹) s.factorization
+    _ = _ := by simp only [Subgroup.coe_mul]; group
+
+def datum (h:((g:SL(2,Eis))*H) 1 0≠0) : SourceCuspDatum where
+  gamma := g*s.gamma
+  index := s.index
+  lower_ne_zero := by
+    rw [←map_mul,←s.removed_eq g,integralComplexMatrix_apply,
+      upper_right_removed_bottom _ _ s.lower_zero,map_mul]
+    exact mul_ne_zero (ringComplex_ne_zero h) (ringComplex_ne_zero s.lower_unit.ne_zero)
+
+lemma datum_matrix (h:((g:SL(2,Eis))*H) 1 0≠0) :
+    (s.datum g h).matrix=integralComplexMatrix ((g:SL(2,Eis))*H*s.upper⁻¹) := by
+  rw [s.removed_eq g,map_mul]
+  rfl
+
+lemma datum_point (h:((g:SL(2,Eis))*H) 1 0≠0) :
+    (s.datum g h).point=
+      ringComplex (((g:SL(2,Eis))*H) 0 0)/ringComplex (((g:SL(2,Eis))*H) 1 0) := by
+  rw [SourceCuspDatum.point,s.datum_matrix]
+  rw [integralComplexMatrix_apply,integralComplexMatrix_apply,
+    upper_right_removed_top _ _ s.lower_zero,upper_right_removed_bottom _ _ s.lower_zero]
+  simp only [map_mul]
+  exact mul_div_mul_right _ _ (ringComplex_ne_zero s.lower_unit.ne_zero)
+
+lemma datum_heightScale (h:((g:SL(2,Eis))*H) 1 0≠0) :
+    (s.datum g h).heightScale=‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^2 := by
+  rw [SourceCuspDatum.heightScale,s.datum_matrix,integralComplexMatrix_apply,
+    upper_right_removed_bottom _ _ s.lower_zero,map_mul,norm_mul]
+  have hn:‖ringComplex (s.upper 1 1)‖=1 := by
+    rcases s.lower_unit with ⟨u,hu⟩
+    rw [←hu]
+    exact norm_ringComplex_unit u
+  rw [hn,mul_one]
+
+lemma datum_dualPoint (h:((g:SL(2,Eis))*H) 1 0≠0) :
+    (s.datum g h).dualPoint=
+      ringComplex (s.upper 0 0*s.upper 0 1)-
+        ringComplex (s.upper 0 0)^2*
+          (ringComplex (((g:SL(2,Eis))*H) 1 1)/ringComplex (((g:SL(2,Eis))*H) 1 0)) := by
+  rw [SourceCuspDatum.dualPoint,s.datum_matrix]
+  rw [integralComplexMatrix_apply,integralComplexMatrix_apply,upper_right_removed_last,
+    upper_right_removed_bottom _ _ s.lower_zero]
+  simp only [map_add,map_neg,map_mul]
+  have hd:ringComplex (s.upper 0 0)*ringComplex (s.upper 1 1)=1 := by
+    rw [←map_mul,upper_diagonal_product _ s.lower_zero,map_one]
+  have hc:=ringComplex_ne_zero h
+  have ht:=ringComplex_ne_zero s.lower_unit.ne_zero
+  field_simp [hc,ht]
+  linear_combination (ringComplex (s.upper 0 0)*ringComplex (((g:SL(2,Eis))*H) 1 1)-
+    ringComplex (((g:SL(2,Eis))*H) 1 0)*ringComplex (s.upper 0 1))*hd
+
+lemma datum_multiplier (h:((g:SL(2,Eis))*H) 1 0≠0) :
+    (s.datum g h).multiplier=
+      -star (extendedComplexCharacter g)*star (extendedComplexCharacter s.gamma)*
+        ringComplex (s.upper 0 0)^2/ringComplex (((g:SL(2,Eis))*H) 1 0)^2 := by
+  rw [SourceCuspDatum.multiplier,s.datum_matrix,integralComplexMatrix_apply,
+    upper_right_removed_bottom _ _ s.lower_zero,map_mul]
+  change -star (extendedComplexCharacter (g*s.gamma))/
+    (ringComplex (((g:SL(2,Eis))*H) 1 0)*ringComplex (s.upper 1 1))^2=_
+  rw [map_mul,star_mul]
+  have hc:=ringComplex_ne_zero h
+  have ht:=ringComplex_ne_zero s.lower_unit.ne_zero
+  have hd:ringComplex (s.upper 0 0)*ringComplex (s.upper 1 1)=1 := by
+    rw [←map_mul,upper_diagonal_product _ s.lower_zero,map_one]
+  have hp:ringComplex (s.upper 0 0)^2*ringComplex (s.upper 1 1)^2=1 := by
+    rw [←mul_pow,hd,one_pow]
+  field_simp [hc,ht]
+  linear_combination (star (extendedComplexCharacter g)*star (extendedComplexCharacter s.gamma))*hp
+
+lemma datum_additive_phase (h:((g:SL(2,Eis))*H) 1 0≠0) (freq:ℂ) (scale:ℂ) :
+    tracePhase (-freq*(s.datum g h).dualPoint/scale)=
+      tracePhase (-freq*ringComplex (s.upper 0 0*s.upper 0 1)/scale)*
+      tracePhase (freq*ringComplex (s.upper 0 0)^2*
+        (ringComplex (((g:SL(2,Eis))*H) 1 1)/ringComplex (((g:SL(2,Eis))*H) 1 0))/scale) := by
+  rw [s.datum_dualPoint]
+  rw [show -freq*(ringComplex (s.upper 0 0*s.upper 0 1)-
+      ringComplex (s.upper 0 0)^2*(ringComplex (((g:SL(2,Eis))*H) 1 1)/
+        ringComplex (((g:SL(2,Eis))*H) 1 0)))/scale=
+    -freq*ringComplex (s.upper 0 0*s.upper 0 1)/scale+
+      freq*ringComplex (s.upper 0 0)^2*ringComplex (((g:SL(2,Eis))*H) 1 1)/
+        ringComplex (((g:SL(2,Eis))*H) 1 0)/scale by ring]
+  simp only [AddChar.map_add_eq_mul,mul_div_assoc]
+
+end FixedCuspShape
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+structure ControlledStratumArithmetic {ι:Type*} [Fintype ι]
+    (p:ι→Eis) (N a0 c0:Eis) (numeratorMode:Bool) where
+  lift : (∀i,(Eis⧸Ideal.span {p i})ˣ)→ι→Eis
+  lift_period : ∀v i,N^2∣lift v i
+  lift_residue : ∀v i,Ideal.Quotient.mk (Ideal.span {p i}) (lift v i)=(v i:Eis⧸Ideal.span {p i})
+  U : Eis
+  w : Eis
+  bezout : U*(∏i,p i)+(traceLambda^3*w)*c0=1
+  sigma : ∀i,(Eis⧸Ideal.span {p i})ˣ
+  epsilon : ∀i,(Eis⧸Ideal.span {p i})ˣ
+  sigma_value : ∀i,(sigma i:Eis⧸Ideal.span {p i})=
+    Ideal.Quotient.mk (Ideal.span {p i}) (traceLambda^2*c0*cuspPrimeCofactor p i)
+  epsilon_value : ∀i,Ideal.Quotient.mk (Ideal.span {p i}) (traceLambda^3*c0*cuspPrimeCofactor p i)*
+    (sigma i:Eis⧸Ideal.span {p i})*(epsilon i:Eis⧸Ideal.span {p i})=-1
+  matrix : (∀i,(Eis⧸Ideal.span {p i})ˣ)→SL(2,Eis)
+  numerator : ∀v,matrix v 0 0=cuspCrossNumerator a0 c0 traceLambda p (lift v)
+  denominator : ∀v,matrix v 1 0=c0*∏i,p i
+  matrix_fixed : ∀v i j,N∣matrix v i j-matrix (fun _=>1) i j
+  conditions : ∀v,if numeratorMode then
+    (9:Eis)∣matrix v 0 1 ∧ (3:Eis)∣matrix v 1 1-1
+    else (3:Eis)∣matrix v 0 1+1 ∧ (9:Eis)∣matrix v 1 1
+
+/-- Fixed-frequency matrices and their local inverse coefficients share one residue class. -/
+theorem exists_controlledStratumArithmetic {ι:Type*} [Fintype ι]
+    (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal] (hp:∀i,p i≠0)
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hprimary:∀i,lambda^2∣p i-1)
+    (N a0 c0:Eis) (hc0:c0≠0) (hN:(9:Eis)*c0∣N)
+    (mode:Bool) (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (hac:IsCoprime a0 c0) (hNp:∀i,IsCoprime N (p i)) :
+    Nonempty (ControlledStratumArithmetic p N a0 c0 mode) := by
+  have h9N : (9:Eis)∣N := (dvd_mul_right 9 c0).trans hN
+  have hcN : c0∣N := (dvd_mul_left c0 9).trans hN
+  have hl9 : traceLambda∣(9:Eis) := by
+    rw [←traceLambda_pow_four]
+    exact dvd_pow_self _ (by decide)
+  have hlN := hl9.trans h9N
+  have hDN : traceLambda^3*c0∣N := by
+    apply dvd_trans _ hN
+    refine ⟨traceLambda,?_⟩
+    rw [←traceLambda_pow_four]
+    ring
+  have hpairs : Pairwise (Function.onFun IsCoprime p) := by
+    intro i j hij
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp (hcop hij)
+  have hNr : IsCoprime N (∏i,p i) := IsCoprime.prod_right (fun i _=>hNp i)
+  obtain ⟨U,w,huw⟩ := hNr.symm.of_isCoprime_of_dvd_right hDN
+  have hbez : U*(∏i,p i)+(traceLambda^3*w)*c0=1 := by linear_combination huw
+  obtain ⟨σ,ε,hσ,hε⟩ := exists_cusp_local_units p c0 c0 traceLambda hpairs
+    (fun i=>(hNp i).of_isCoprime_of_dvd_left hcN)
+    (fun i=>(hNp i).of_isCoprime_of_dvd_left hcN)
+    (fun i=>(hNp i).of_isCoprime_of_dvd_left hlN)
+  obtain ⟨lift,M,hperiod,hres,hnum,hden,hfixed,hcond⟩ :=
+    exists_fixed_cusp_frequency_matrices p N a0 c0 traceLambda hpairs hprimary hNp
+      h9N hcN hlN hac mode hbase
+  exact ⟨⟨lift,hperiod,hres,U,w,hbez,σ,ε,hσ,hε,M,hnum,hden,hfixed,hcond⟩⟩
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace ControlledStratumArithmetic
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+
+lemma frequency_congruence (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) (i:ι) :
+    Ideal.Quotient.mk (Ideal.span {p i}) (D.matrix v 0 0)=
+      (D.sigma i:Eis⧸Ideal.span {p i})*(v i:Eis⧸Ideal.span {p i}) := by
+  rw [D.numerator,cuspCrossNumerator_local,D.sigma_value,D.lift_residue]
+
+lemma numerator_congruence (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    N∣D.matrix v 0 0-a0*∏i,p i := by
+  rw [D.numerator]
+  exact cuspCrossNumerator_fixed N a0 c0 traceLambda p (D.lift v)
+    (fun i=>(dvd_pow_self N (by decide : (2:ℕ)≠0)).trans (D.lift_period v i))
+
+lemma numerator_mod_three (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (h3N:(3:Eis)∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : (3:Eis)∣D.matrix v 0 0-a0 := by
+  have hprod:=three_dvd_primary_sub_one (∏i,p i) hr
+  convert dvd_add (h3N.trans (D.numerator_congruence v))
+    (dvd_mul_of_dvd_right hprod a0) using 1 ; ring
+
+lemma numerator_primary (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (h3N:(3:Eis)∣N) (hr:lambda^2∣(∏i,p i)-1) (ha:lambda^2∣a0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : lambda^2∣D.matrix v 0 0-1 := by
+  convert dvd_add (lambda_sq_dvd_three.trans (D.numerator_mod_three h3N hr v)) ha using 1 ; ring
+
+lemma denominator_primary (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hr:lambda^2∣(∏i,p i)-1) (hc:lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : lambda^2∣D.matrix v 1 0-1 := by
+  rw [D.denominator]
+  exact primary_mul c0 (∏i,p i) hc hr
+
+lemma ramified_relative (D:ControlledStratumArithmetic p N a0 c0 true)
+    (h3N:(3:Eis)∣N) (hr:lambda^2∣(∏i,p i)-1) (ha:lambda^2∣a0-1)
+    (u:Eis) (hcu:(3:Eis)∣c0-u) (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    D.matrix v*(lowerCuspMatrix u)⁻¹∈levelThree := by
+  have hcond := D.conditions v
+  simp only [ ↓reduceIte] at hcond
+  apply primary_numerator_matrix_relative (D.matrix v) u
+  · exact D.numerator_primary h3N hr ha v
+  · exact hcond.1
+  · rw [D.denominator]
+    have hprod:=three_dvd_primary_sub_one (∏i,p i) hr
+    convert dvd_add (dvd_mul_of_dvd_right hprod c0) hcu using 1 <;> ring
+  · exact hcond.2
+
+lemma unramified_relative (D:ControlledStratumArithmetic p N a0 c0 false)
+    (h3N:(3:Eis)∣N) (hr:lambda^2∣(∏i,p i)-1) (hc:lambda^2∣c0-1)
+    (u:Eis) (hau:(3:Eis)∣a0-u) (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    D.matrix v*(weylCuspMatrix u)⁻¹∈levelThree := by
+  have hcond := D.conditions v
+  simp only [Bool.false_eq_true, ↓reduceIte] at hcond
+  apply primary_denominator_matrix_relative (D.matrix v) u
+  · convert dvd_add (D.numerator_mod_three h3N hr v) hau using 1 <;> ring
+  · exact hcond.1
+  · exact D.denominator_primary hr hc v
+  · exact hcond.2
+
+lemma inverse_fixed (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    traceLambda^3*c0∣D.matrix v 1 1-D.matrix (fun _=>1) 1 1 := by
+  have hD9:traceLambda^3*c0∣(9:Eis)*c0 := by
+    refine ⟨traceLambda,?_⟩
+    rw [←traceLambda_pow_four]
+    ring
+  exact (hD9.trans hN).trans (D.matrix_fixed v 1 1)
+
+lemma determinant (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    D.matrix v 0 0*D.matrix v 1 1-D.matrix v 0 1*(c0*∏i,p i)=1 := by
+  simpa only [Matrix.det_fin_two,D.denominator] using (D.matrix v).property
+
+
+end ControlledStratumArithmetic
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace ControlledStratumArithmetic
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+
+def fixedCusp (a0 c0:Eis) (mode:Bool) : SL(2,Eis) :=
+  if mode then lowerCuspMatrix c0 else weylCuspMatrix a0
+
+lemma relative (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    D.matrix v*(fixedCusp a0 c0 mode)⁻¹∈levelThree := by
+  have h3N:(3:Eis)∣N:=(show (3:Eis)∣9 from ⟨3,by norm_num⟩).trans
+    ((dvd_mul_right 9 c0).trans hN)
+  cases mode
+  · exact D.unramified_relative h3N hr hbase a0 (by simp) v
+  · exact D.ramified_relative h3N hr hbase c0 (by simp) v
+
+def relativeGamma (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : levelThree :=
+  ⟨D.matrix v*(fixedCusp a0 c0 mode)⁻¹,D.relative hN hr hbase v⟩
+
+lemma relativeGamma_mul (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    (D.relativeGamma hN hr hbase v:SL(2,Eis))*fixedCusp a0 c0 mode=D.matrix v := by
+  exact inv_mul_cancel_right (D.matrix v) (fixedCusp a0 c0 mode)
+
+def fixedFactor (D:ControlledStratumArithmetic p N a0 c0 mode) : ℂ :=
+  if mode then
+    ringComplex (symbol (-c0) (D.matrix (fun _=>1) 0 0-c0*D.matrix (fun _=>1) 0 1)*
+      symbol 1 (D.matrix (fun _=>1) 0 0))
+  else ringComplex (symbol (D.matrix (fun _=>1) 0 0) c0)
+
+theorem relative_character (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    complexCharacter (D.relativeGamma hN hr hbase v)=
+      D.fixedFactor*ringComplex (symbol (D.matrix v 0 0) (∏i,p i)) := by
+  have h9N : (9:Eis)∣N := (dvd_mul_right 9 c0).trans hN
+  have h3N : (3:Eis)∣N := (show (3:Eis)∣9 from ⟨3,by norm_num⟩).trans h9N
+  have hcN : c0∣N := (dvd_mul_left c0 9).trans hN
+  cases mode
+  · have hb := levelThree_primary (D.relativeGamma hN hr hbase v)
+    change lambda^2∣(((D.matrix v*(weylCuspMatrix a0)⁻¹:SL(2,Eis)):Matrix (Fin 2) (Fin 2) Eis) 0 0)-1 at hb
+    rw [weylCusp_relative_matrix] at hb
+    change lambda^2∣(-D.matrix v 0 1)-1 at hb
+    change complexCharacter ⟨D.matrix v*(weylCuspMatrix a0)⁻¹,_⟩=_
+    rw [weylCusp_relative_character,cuspSymbol_weyl_factor _ _ _ _ _ (D.determinant v) hb
+      (primary_mul c0 _ hbase hr) (dvd_mul_of_dvd_right (D.conditions v).2 _),map_mul]
+    rw [cuspSymbol_weyl_fixed_congr N c0 _ _ hcN (D.matrix_fixed v 0 0)]
+    rfl
+  · have ha := D.numerator_primary h3N hr hbase v
+    have ha0 := D.numerator_primary h3N hr hbase (fun _=>1)
+    have hA := lowerCusp_relative_primary (D.matrix v) c0 (D.relative hN hr hbase v)
+    have hA0 := lowerCusp_relative_primary (D.matrix (fun _=>1)) c0 (D.relative hN hr hbase (fun _=>1))
+    change complexCharacter ⟨D.matrix v*(lowerCuspMatrix c0)⁻¹,_⟩=_
+    rw [lowerCusp_relative_character,D.denominator]
+    have he := cuspSymbol_ramified_factor (D.matrix v 0 0) (D.matrix v 0 1) 1 (∏i,p i)
+      (D.matrix v 1 1) c0 (by simpa only [one_mul] using D.determinant v) ha hA hr
+    simp only [one_mul] at he
+    rw [he,cuspSymbol_ramified_fixed_congr N 1 c0 _ _ _ _ h9N (one_dvd _) hcN
+      ha ha0 hA hA0 (D.matrix_fixed v 0 0) (D.matrix_fixed v 0 1),map_mul]
+    rfl
+
+theorem fixedFactor_norm (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1) : ‖D.fixedFactor‖=1 := by
+  have h3N : (3:Eis)∣N := (show (3:Eis)∣9 from ⟨3,by norm_num⟩).trans
+    ((dvd_mul_right 9 c0).trans hN)
+  cases mode
+  · exact cuspSymbol_weyl_fixed_norm _ _ _ _ _ (D.determinant (fun _=>1)) hbase
+  · apply cuspSymbol_ramified_fixed_norm _ _ 1 (∏i,p i) _ c0
+    · simpa only [one_mul] using D.determinant (fun _=>1)
+    · exact D.numerator_primary h3N hr hbase (fun _=>1)
+    · exact lowerCusp_relative_primary (D.matrix (fun _=>1)) c0
+        (D.relative hN hr hbase (fun _=>1))
+
+end ControlledStratumArithmetic
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+/-- One positive bound for all three cusp coefficient families. -/
+def fixedCuspCoefficientBound : ℝ :=
+  1 + ∑ j : Fin 3, sourceCuspCoefficientBaseBound j
+
+lemma fixedCuspCoefficientBound_pos : 0 < fixedCuspCoefficientBound := by
+  have hs := Finset.sum_nonneg
+    (fun j (_ : j ∈ (Finset.univ : Finset (Fin 3))) => sourceCuspCoefficientBaseBound_nonneg j)
+  exact add_pos_of_pos_of_nonneg zero_lt_one hs
+
+def fixedCuspArrayIndex (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : Eis :=
+  (u.val*lambda^m)*primaryIdealGenerator I*(primaryIdealGenerator J)^3
+
+def fixedCuspArrayEligible (I J:Ideal Eis) : Prop :=
+  Squarefree I ∧ primaryIdealGenerator I≠0 ∧ primaryIdealGenerator J≠0
+
+def fixedCuspArrayWeight (m:ℕ) (J:Ideal Eis) : ℝ :=
+  (3:ℝ)^((m:ℝ)/6)*Real.sqrt (Ideal.absNorm J:ℝ)
+
+lemma fixedCuspArrayWeight_nonneg (m:ℕ) (J:Ideal Eis) :
+    0≤fixedCuspArrayWeight m J := by
+  unfold fixedCuspArrayWeight
+  positivity
+
+lemma fixedCuspArrayWeight_pos (m:ℕ) (J:Ideal Eis) (hJ:primaryIdealGenerator J≠0) :
+    0<fixedCuspArrayWeight m J := by
+  rw [fixedCuspArrayWeight,←primaryIdealGenerator_norm J hJ]
+  exact mul_pos (Real.rpow_pos_of_pos (by norm_num) _) (norm_pos_iff.mpr (ringComplex_ne_zero hJ))
+
+lemma sourceCuspCoefficients_squarefree_cube_bound (j:Fin 3) (u:Eisˣ) (m:ℕ)
+    (I J:Ideal Eis) (helig:fixedCuspArrayEligible I J) :
+    ‖sourceCuspCoefficient j (fixedCuspArrayIndex u m I J)‖≤
+      fixedCuspCoefficientBound*fixedCuspArrayWeight m J := by
+  rcases helig with ⟨hsq,hI,hJ⟩
+  have hb := sourceCuspCoefficient_full_bound j (u,m,(⟨I,hsq,hI⟩,⟨J,hJ⟩))
+  have hc : sourceCuspCoefficientBaseBound j ≤ fixedCuspCoefficientBound := by
+    apply (Finset.single_le_sum (s := Finset.univ)
+      (fun i _ => sourceCuspCoefficientBaseBound_nonneg i) (Finset.mem_univ j)).trans
+    exact le_add_of_nonneg_left zero_le_one
+  have hr : ‖ringComplex ((u:Eis)*lambda^m)‖^(1/3:ℝ) = (3:ℝ)^((m:ℝ)/6) := by
+    rw [ramified_unit_norm,←Real.rpow_mul (by norm_num)]
+    congr 1
+    ring
+  change ‖sourceCuspCoefficient j (fixedCuspArrayIndex u m I J)‖ ≤ _ at hb
+  rw [hr,primaryIdealGenerator_norm J hJ] at hb
+  exact hb.trans (by
+    dsimp only [fixedCuspArrayWeight]
+    simpa only [mul_assoc] using mul_le_mul_of_nonneg_right hc
+      (mul_nonneg (Real.rpow_nonneg (by norm_num) _) (Real.sqrt_nonneg _)))
+
+
+def fixedCuspArray (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ℂ :=
+  if fixedCuspArrayEligible I J then
+    sourceCuspCoefficient j (fixedCuspArrayIndex u m I J) /
+      ((fixedCuspCoefficientBound*fixedCuspArrayWeight m J:ℝ):ℂ)
+  else 0
+
+lemma fixedCuspArray_zero_of_ineligible (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (h:¬fixedCuspArrayEligible I J) : fixedCuspArray j u m I J=0 := by
+  simp only [fixedCuspArray,if_neg h]
+
+lemma fixedCuspArray_norm_le_one (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    ‖fixedCuspArray j u m I J‖≤1 := by
+  by_cases h:fixedCuspArrayEligible I J
+  · have hpos:=mul_pos fixedCuspCoefficientBound_pos (fixedCuspArrayWeight_pos m J h.2.2)
+    rw [fixedCuspArray,if_pos h,norm_div,Complex.norm_real,Real.norm_of_nonneg hpos.le]
+    exact (div_le_one hpos).mpr (sourceCuspCoefficients_squarefree_cube_bound j u m I J h)
+  · simp only [fixedCuspArray,if_neg h,norm_zero,zero_le_one]
+
+lemma fixedCuspArray_reconstruct (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (h:fixedCuspArrayEligible I J) :
+    sourceCuspCoefficient j (fixedCuspArrayIndex u m I J)=
+      ((fixedCuspCoefficientBound*fixedCuspArrayWeight m J:ℝ):ℂ)*fixedCuspArray j u m I J := by
+  have hpos:=mul_pos fixedCuspCoefficientBound_pos (fixedCuspArrayWeight_pos m J h.2.2)
+  rw [fixedCuspArray,if_pos h,mul_div_cancel₀ _ (Complex.ofReal_ne_zero.mpr hpos.ne')]
+
+def fixedConjugateCuspArray (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ℂ :=
+  star (fixedCuspArray j u m I J)
+
+lemma fixedConjugateCuspArray_norm_le_one (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    ‖fixedConjugateCuspArray j u m I J‖≤1 := by
+  simpa only [fixedConjugateCuspArray,norm_star] using fixedCuspArray_norm_le_one j u m I J
+
+lemma fixedConjugateCuspArray_reconstruct (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (h:fixedCuspArrayEligible I J) :
+    star (sourceCuspCoefficient j (fixedCuspArrayIndex u m I J))=
+      ((fixedCuspCoefficientBound*fixedCuspArrayWeight m J:ℝ):ℂ)*fixedConjugateCuspArray j u m I J := by
+  rw [fixedCuspArray_reconstruct j u m I J h,star_mul]
+  simp only [fixedConjugateCuspArray,Complex.star_def,Complex.conj_ofReal]
+  ring
+
+lemma fixedConjugateCuspArray_reconstruct_explicit (j:Fin 3) (u:Eisˣ) (m:ℕ)
+    (I J:Ideal Eis) (hsq:Squarefree I) (hI:primaryIdealGenerator I≠0) (hJ:primaryIdealGenerator J≠0) :
+    star (sourceCuspCoefficient j
+      ((u.val*lambda^m)*primaryIdealGenerator I*(primaryIdealGenerator J)^3))=
+      ((fixedCuspCoefficientBound*(3:ℝ)^((m:ℝ)/6)*Real.sqrt (Ideal.absNorm J:ℝ):ℝ):ℂ)*
+        fixedConjugateCuspArray j u m I J := by
+  simpa only [fixedCuspArrayIndex,fixedCuspArrayWeight,mul_assoc] using
+    fixedConjugateCuspArray_reconstruct j u m I J ⟨hsq,hI,hJ⟩
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+def fixedCuspArrayWithPhase (cusp:Fin 3) (u:Eisˣ)
+    (phaseArray:ℕ→Ideal Eis→Ideal Eis→ℂ) (m:ℕ) (n b:Ideal Eis) : ℂ :=
+  phaseArray m n b*fixedConjugateCuspArray cusp u m n b
+
+lemma fixedCuspArrayWithPhase_norm_le_one (cusp:Fin 3) (u:Eisˣ)
+    (phaseArray:ℕ→Ideal Eis→Ideal Eis→ℂ) (hphase:∀m n b,‖phaseArray m n b‖≤1)
+    (m:ℕ) (n b:Ideal Eis) : ‖fixedCuspArrayWithPhase cusp u phaseArray m n b‖≤1 := by
+  rw [fixedCuspArrayWithPhase,norm_mul]
+  exact (mul_le_of_le_one_left (norm_nonneg _)
+    (hphase m n b)).trans (fixedConjugateCuspArray_norm_le_one cusp u m n b)
+
+lemma fixedCuspArrayWithPhase_zero (cusp:Fin 3) (u:Eisˣ)
+    (phaseArray:ℕ→Ideal Eis→Ideal Eis→ℂ) (m:ℕ) (n b:Ideal Eis)
+    (h:¬fixedCuspArrayEligible n b) : fixedCuspArrayWithPhase cusp u phaseArray m n b=0 := by
+  simp only [fixedCuspArrayWithPhase,fixedConjugateCuspArray,
+    fixedCuspArray_zero_of_ineligible _ _ _ _ _ h,star_zero,mul_zero]
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace ControlledStratumArithmetic
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+def sourceGamma (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : rationalExtension :=
+  ⟨D.relativeGamma hN hr hbase v,levelThree_le_rationalExtension (D.relativeGamma hN hr hbase v).property⟩
+
+lemma sourceGamma_mul (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    (D.sourceGamma hN hr hbase v:SL(2,Eis))*fixedCusp a0 c0 mode=D.matrix v :=
+  D.relativeGamma_mul hN hr hbase v
+
+lemma sourceGamma_character (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    extendedComplexCharacter (D.sourceGamma hN hr hbase v)=
+      complexCharacter (D.relativeGamma hN hr hbase v) :=
+  extendedComplexCharacter_restrict _
+
+def datum (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0) (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : SourceCuspDatum :=
+  s.datum (D.sourceGamma hN hr hbase v) (by
+    rw [D.sourceGamma_mul,D.denominator]
+    exact mul_ne_zero hc0 (Finset.prod_ne_zero_iff.mpr (fun i _=>hp i)))
+
+lemma datum_point (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0) (v:∀i,(Eis⧸Ideal.span {p i})ˣ) :
+    (D.datum hN hr hbase s hp hc0 v).point=ringComplex a0/ringComplex c0+
+      (ringComplex traceLambda)^2*∑i,ringComplex (D.lift v i)/ringComplex (p i) := by
+  rw [datum,s.datum_point,D.sourceGamma_mul,D.numerator,D.denominator]
+  exact
+    cuspCrossNumerator_fraction a0 c0 traceLambda p (D.lift v) hc0 hp
+
+
+end ControlledStratumArithmetic
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein Eisenstein.Coordinates
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+
+/-- Unit cubic symbols are trivial on the affine lattice of modulus `3λ`. -/
+lemma unit_symbol_lambda_affine (u : Eisˣ) (x : Eis) :
+    symbol (u:Eis) (1+3*(lambda*x)) = 1 := by
+  obtain ⟨a,b,hx⟩ := exists_coordinates x
+  have hp : lambda^2 ∣ (1+3*(lambda*x))-1 :=
+    lambda_sq_dvd_three.trans ⟨lambda*x,by ring⟩
+  have harg : 1+3*(lambda*x) = primaryCoord (-a-b) (a-2*b) := by
+    rw [hx,primaryCoord_eq,lambda]
+    push_cast
+    linear_combination 3*(b:Eis)*cusp_omega_relation
+  have ho : symbol omega (1+3*(lambda*x)) = 1 := by
+    rw [symbol_omega_eq_linearRay _ hp,harg,linearRay_primaryCoord]
+    simpa only [neg_one_mul,sub_eq_add_neg] using
+      (cubicExp_eq_of_dvd_sub (show (3:ℤ) ∣ (2*(-a-b)-(a-2*b))-0
+        from ⟨-a,by ring⟩)).trans cubicExp_zero
+  obtain ⟨j,hj|hj⟩ := unit_eq_sign_omega u
+  · rw [hj,symbol_pow_numerator _ _ hp,ho,one_pow]
+  · rw [hj,symbol_neg_numerator _ _ hp,symbol_pow_numerator _ _ hp,ho,one_pow]
+
+/-- The finite Fourier frequency of a unit symbol is divisible by the ramified prime. -/
+lemma ramifiedArithmeticPhase_unit_dvd (u : Eisˣ) :
+    lambda ∣ ramifiedArithmeticPhase u 0 := by
+  let r := ramifiedArithmeticPhase u 0
+  have he : residueTraceQuotientChar (r*lambda) 3 (by norm_num) = 1 := by
+    ext z
+    obtain ⟨x,rfl⟩ := Ideal.Quotient.mk_surjective z
+    rw [residueTraceQuotientChar_three_phase,AddChar.one_apply]
+    have hh := ramifiedArithmeticPhase_spec u 0 (lambda*x)
+    simp only [pow_zero,mul_one,unit_symbol_lambda_affine,map_one] at hh
+    convert hh.symm using 1 <;> simp only [cuspFrequency,map_mul] <;> congr 1 <;> ring
+  have hz : Ideal.Quotient.mk (Ideal.span {(3:Eis)}) (r*lambda) = 0 := by
+    apply AddChar.to_mulShift_inj_of_isPrimitive (residueTraceQuotientChar_primitive 3 (by norm_num))
+    rw [←residueTraceQuotientChar_mulShift,AddChar.mulShift_zero]
+    exact he
+  have hd : lambda^2 ∣ r*lambda := lambda_sq_dvd_three.trans
+    (Ideal.mem_span_singleton.mp (Ideal.Quotient.eq_zero_iff_mem.mp hz))
+  obtain ⟨k,hk⟩ := hd
+  refine ⟨k,?_⟩
+  apply mul_right_cancel₀ residue_lambda_prime.ne_zero
+  change r*lambda=(lambda*k)*lambda
+  rw [hk]
+  ring
+
+lemma scaledAffineGaussWeight_unit_zero (q : Eis) (u : Eisˣ) (h : Eis) (s : ℂ)
+    (hh : ¬lambda∣h) : scaledAffineGaussWeight q u 0 h s = 0 := by
+  unfold scaledAffineGaussWeight
+  split_ifs with hq hfreq
+  · exfalso
+    have h3 : lambda∣(3:Eis) :=
+      (dvd_pow_self lambda (by decide : (2:ℕ)≠0)).trans lambda_sq_dvd_three
+    have hk : lambda∣hq.choose := by
+      convert dvd_sub (h3.trans hfreq) (ramifiedArithmeticPhase_unit_dvd u) using 1 <;> ring
+    apply hh
+    rw [hq.choose_spec]
+    exact dvd_mul_of_dvd_right hk q
+  · rfl
+  · rfl
+
+lemma ramifiedSixWeight_zero_of_not_lambda_dvd (u t : Eisˣ) (h : Eis) (i : RamifiedSixBranch)
+    (s : ℂ) (hh : ¬lambda∣h) : ramifiedSixWeight u t h i s = 0 := by
+  rcases i with i|i
+  · simp only [ramifiedSixWeight,scaledAffineGaussWeight_unit_zero _ _ _ _ hh,mul_zero]
+  rcases i with i|i
+  · simp only [ramifiedSixWeight,scaledAffineGaussWeight_unit_zero _ _ _ _ hh,mul_zero]
+  rcases i with i|j
+  · simp only [ramifiedSixWeight,scaledAffineGaussWeight_unit_zero _ _ _ _ hh,mul_zero]
+  · have hq : ¬onceCuspScale t*omega^j.val∣h := by
+      intro hd
+      apply hh
+      apply (dvd_mul_of_dvd_left (show lambda∣onceCuspScale t from ?_) _).trans hd
+      rw [onceCuspScale,traceLambda_eq_unit_mul_lambda]
+      exact dvd_mul_of_dvd_right (dvd_mul_left lambda (-omega)) _
+    simp only [ramifiedSixWeight,scaledAffineGaussWeight,dif_neg hq,mul_zero]
+
+lemma ramifiedResidualFourierCoefficient_lambda_dvd (u t : Eisˣ) (h : Eis)
+    (hh : ramifiedResidualFourierCoefficient u t h≠0) : lambda∣h := by
+  by_contra hn
+  have hz : ramifiedArithmeticResidue u t h=0 := by
+    unfold ramifiedArithmeticResidue
+    apply Finset.sum_eq_zero
+    intro i hi
+    rw [ramifiedSixWeight_zero_of_not_lambda_dvd _ _ _ _ _ hn,zero_mul]
+  exact hh (by simp only [ramifiedResidualFourierCoefficient,hz,mul_zero,zero_div,zero_mul])
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss
+open scoped BigOperators Classical MatrixGroups
+local notation "Eis" => Eisenstein.O
+def traceLambdaUnit : Eisˣ := -cuspOmegaUnit
+
+lemma traceLambda_unit_mul : traceLambda = (traceLambdaUnit:Eis)*lambda := by
+  simpa only [traceLambdaUnit,Units.val_neg,cuspOmegaUnit_val] using traceLambda_eq_unit_mul_lambda
+
+lemma traceLambda_dvd_of_lambda_dvd (h:Eis) (hh:lambda∣h) :
+    traceLambda∣h := by
+  obtain ⟨q,hq⟩:=hh
+  refine ⟨(traceLambdaUnit⁻¹:Eisˣ)*q,?_⟩
+  change h=traceLambda*((traceLambdaUnit⁻¹:Eisˣ)*q)
+  rw [traceLambda_unit_mul,hq]
+  have hu : (traceLambdaUnit:Eis)*(traceLambdaUnit⁻¹:Eisˣ)=1 := by
+    simpa only [Units.val_mul,Units.val_one] using
+      congrArg (fun v:Eisˣ=>(v:Eis)) (mul_inv_cancel traceLambdaUnit)
+  calc
+    _=(traceLambdaUnit:Eis)*(traceLambdaUnit⁻¹:Eisˣ)*(lambda*q) := by rw [hu,one_mul]
+    _=_ := by ring
+
+def traceLambdaQuotient (h:Eis) : Eis :=
+  if hh:traceLambda∣h then hh.choose else 0
+
+lemma traceLambdaQuotient_mul (h:Eis) (hh:traceLambda∣h) :
+    traceLambda*traceLambdaQuotient h=h := by
+  simp only [traceLambdaQuotient,dif_pos hh]
+  exact hh.choose_spec.symm
+
+lemma sourceCuspCoefficients_ramified_divisibility (j:Fin 3) (hj:j≠0) (h:Eis)
+    (hh:sourceCuspCoefficient j h≠0) : traceLambda∣h := by
+  apply traceLambda_dvd_of_lambda_dvd
+  fin_cases j
+  · exact (hj rfl).elim
+  · exact ramifiedResidualFourierCoefficient_lambda_dvd _ _ h hh
+  · exact ramifiedResidualFourierCoefficient_lambda_dvd _ _ h hh
+
+
+def sourceCuspPhaseNumerator (j:Fin 3) (u h:Eis) : Eis :=
+  if j=0 then traceLambda*u^2*h else -u^2*traceLambdaQuotient h
+
+lemma traceLambda_complex_square : (ringComplex traceLambda)^2 = (-3:ℂ) := by
+  simpa only [map_pow,map_neg,map_ofNat] using congrArg ringComplex traceLambda_square
+
+lemma sourceCuspPhaseNumerator_embedding (j:Fin 3) (u h:Eis)
+    (hh:sourceCuspCoefficient j h≠0) :
+    ringComplex (sourceCuspPhaseNumerator j u h)=
+      -(ringComplex traceLambda)^4*cuspFrequency h*(ringComplex u)^2/(sourceCuspScale j:ℂ) := by
+  by_cases hj:j=0
+  · subst j
+    simp only [sourceCuspPhaseNumerator,ite_true,map_mul,map_pow,
+      cuspFrequency,sourceCuspScale]
+    norm_num only [Matrix.cons_val_zero,Complex.ofReal_one,div_one]
+    rw [show (ringComplex traceLambda)^4=(9:ℂ) from by
+      calc
+        (ringComplex traceLambda)^4=((ringComplex traceLambda)^2)^2 := by ring
+        _=9 := by rw [traceLambda_complex_square]; norm_num]
+    field_simp [(ringComplex_ne_zero traceLambda_ne_zero)]
+    linear_combination (3*ringComplex h*(ringComplex u)^2)*traceLambda_complex_square
+  · have hdiv:=sourceCuspCoefficients_ramified_divisibility j hj h hh
+    have hprod:=congrArg ringComplex (traceLambdaQuotient_mul h hdiv)
+    have hscale:sourceCuspScale j=3 := by fin_cases j <;> simp_all [sourceCuspScale]
+    have hfour:(ringComplex traceLambda)^4=(9:ℂ) := by
+      calc
+        (ringComplex traceLambda)^4=((ringComplex traceLambda)^2)^2:=by ring
+        _=9:=by rw [traceLambda_complex_square];norm_num
+    rw [sourceCuspPhaseNumerator,if_neg hj]
+    simp only [map_mul,map_neg,map_pow]
+    rw [cuspFrequency,hscale,←hprod,map_mul,hfour]
+    norm_num only [Complex.ofReal_ofNat]
+    field_simp [(ringComplex_ne_zero traceLambda_ne_zero)]
+    ; ring
+
+lemma sourceCuspPhaseNumerator_phase (j:Fin 3) (u h c d:Eis) (hc:c≠0)
+    (hh:sourceCuspCoefficient j h≠0) :
+    tracePhase (cuspFrequency h*(ringComplex u)^2*
+      (ringComplex d/ringComplex c)/(sourceCuspScale j:ℂ))=
+    tracePhase (-(ringComplex d*
+      (ringComplex (sourceCuspPhaseNumerator j u h)/(ringComplex traceLambda)^4))/ringComplex c) := by
+  rw [sourceCuspPhaseNumerator_embedding j u h hh]
+  congr 1
+  field_simp [(ringComplex_ne_zero traceLambda_ne_zero),ringComplex_ne_zero hc,
+    Complex.ofReal_ne_zero.mpr (sourceCuspScale_pos j).ne']
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss
+open scoped BigOperators Classical MatrixGroups
+local notation "Eis" => Eisenstein.O
+lemma fixedConjugateCuspArray_nonzero (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (h:fixedConjugateCuspArray j u m I J≠0) :
+    fixedCuspArrayEligible I J ∧
+      sourceCuspCoefficient j (fixedCuspArrayIndex u m I J)≠0 := by
+  have helig:fixedCuspArrayEligible I J:=by
+    by_contra he
+    apply h
+    simp only [fixedConjugateCuspArray,fixedCuspArray,if_neg he,star_zero]
+  refine ⟨helig,?_⟩
+  intro hz
+  apply h
+  simp only [fixedConjugateCuspArray,fixedCuspArray,if_pos helig,hz,zero_div,star_zero]
+
+lemma fixedCusp_ramified_index_pos (j:Fin 3) (hj:j≠0) (u:Eisˣ)
+    (m:ℕ) (I J:Ideal Eis) (helig:fixedCuspArrayEligible I J)
+    (h:sourceCuspCoefficient j (fixedCuspArrayIndex u m I J)≠0) : 0 < m := by
+  apply Nat.pos_of_ne_zero
+  intro hm
+  have hp:lambda∣traceLambda:=by
+    change lambda∣traceLambda
+    rw [traceLambda_unit_mul]
+    exact dvd_mul_left lambda _
+  have hd:=hp.trans (sourceCuspCoefficients_ramified_divisibility j hj _ h)
+  simp only [fixedCuspArrayIndex,hm,pow_zero,mul_one] at hd
+  have hu:IsCoprime lambda (u:Eis):=⟨0,(↑u⁻¹:Eis),by simp⟩
+  have hni:IsCoprime lambda (primaryIdealGenerator I):=coprime_of_dvd_sub_one lambda _
+    ((dvd_pow_self lambda (by decide : (2:ℕ)≠0)).trans (primaryIdealGenerator_spec I helig.2.1).2)
+  have hnj:IsCoprime lambda (primaryIdealGenerator J):=coprime_of_dvd_sub_one lambda _
+    ((dvd_pow_self lambda (by decide : (2:ℕ)≠0)).trans (primaryIdealGenerator_spec J helig.2.2).2)
+  exact residue_lambda_prime.2.1 (((hu.mul_right hni).mul_right hnj.pow_right).isUnit_of_dvd hd)
+
+def sourcePhaseUnit (j:Fin 3) (w u:Eisˣ) : Eisˣ :=
+  if j=0 then traceLambdaUnit*w^2*u else -(w^2*u*traceLambdaUnit⁻¹)
+
+def sourcePhaseExponent (j:Fin 3) (m:ℕ) : ℕ :=
+  if j=0 then m+1 else m-1
+
+lemma traceLambdaQuotient_succ (u:Eisˣ) (m:ℕ) (n b:Eis) :
+    traceLambdaQuotient ((u.val*lambda^(m+1))*n*b^3)=
+      (traceLambdaUnit⁻¹:Eisˣ).val*u.val*lambda^m*n*b^3 := by
+  have hp:traceLambda*((traceLambdaUnit⁻¹:Eisˣ).val*u.val*lambda^m*n*b^3)=
+      (u.val*lambda^(m+1))*n*b^3 := by
+    change traceLambda*((traceLambdaUnit⁻¹:Eisˣ).val*u.val*lambda^m*n*b^3)=_
+    rw [traceLambda_unit_mul,pow_succ]
+    have hi:(traceLambdaUnit:Eis)*(traceLambdaUnit⁻¹:Eisˣ)=1:=by simp
+    calc
+      _=((traceLambdaUnit:Eis)*(traceLambdaUnit⁻¹:Eisˣ))*(u.val*lambda^m*lambda*n*b^3):=by ring
+      _=_:=by rw [hi,one_mul];ring
+  have hd:traceLambda∣(u.val*lambda^(m+1))*n*b^3:=⟨_,hp.symm⟩
+  have hn:traceLambda≠0:=traceLambda_ne_zero
+  apply mul_left_cancel₀ hn
+  rw [traceLambdaQuotient_mul _ hd,hp]
+
+theorem sourceCuspPhaseNumerator_columns (j:Fin 3) (w u:Eisˣ)
+    (m:ℕ) (I J:Ideal Eis) (helig:fixedCuspArrayEligible I J)
+    (h:sourceCuspCoefficient j (fixedCuspArrayIndex u m I J)≠0) :
+    sourceCuspPhaseNumerator j w.val (fixedCuspArrayIndex u m I J)=
+      ((sourcePhaseUnit j w u).val*lambda^(sourcePhaseExponent j m))*
+        (primaryIdealGenerator I*(primaryIdealGenerator J)^3) := by
+  by_cases hj:j=0
+  · subst j
+    simp only [sourceCuspPhaseNumerator,sourcePhaseUnit,sourcePhaseExponent,ite_true,
+      fixedCuspArrayIndex,Units.val_mul,Units.val_pow_eq_pow_val]
+    change traceLambda*w.val^2*((u.val*lambda^m)*primaryIdealGenerator I*(primaryIdealGenerator J)^3)=_
+    rw [traceLambda_unit_mul,pow_succ]
+    ring
+  · have hm:=fixedCusp_ramified_index_pos j hj u m I J helig h
+    cases m with
+    | zero => omega
+    | succ m =>
+      simp only [sourceCuspPhaseNumerator,sourcePhaseUnit,sourcePhaseExponent,if_neg hj,
+        fixedCuspArrayIndex,Nat.succ_sub_succ_eq_sub,Nat.sub_zero,Units.val_neg,Units.val_mul,
+        Units.val_pow_eq_pow_val]
+      rw [traceLambdaQuotient_succ]
+      ring
+
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H)
+
+def phaseUpperUnit : Eisˣ := s.upper_unit.unit
+
+lemma phaseUpperUnit_val : (s.phaseUpperUnit:Eis)=s.upper 0 0 := s.upper_unit.unit_spec
+
+def modelDualNumerator (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : Eis :=
+  sourceCuspPhaseNumerator s.index (s.upper 0 0) (fixedCuspArrayIndex u m I J)
+
+end FixedCuspShape
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical
+namespace NormalizedReflection
+section
+variable {F:Type*} [Field F] [Fintype F]
+def tau (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (j : ℕ) : ℂ :=
+  (rootCard F : ℂ)⁻¹ * gaussSum (χ ^ j) ψ
+
+def phase (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (j : ℕ) (ε : Fˣ) : ℂ :=
+  if j = 4 then tau χ (ψ.mulShift (-1)) 4
+  else if j = 0 then -tau χ ψ 2 * (χ ^ 2)⁻¹ ε
+  else tau χ (ψ.mulShift (-1)) j * tau χ ψ (j + 2) * (χ ^ (j + 2))⁻¹ ε
+
+theorem norm_tau (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (j : ℕ)
+    (hχ : χ^j≠1) (hψ : ψ.IsPrimitive) : ‖tau χ ψ j‖=1 := by
+  apply (sq_eq_sq₀ (norm_nonneg _) zero_le_one).mp
+  have hg : ‖gaussSum (χ^j) ψ‖^2=(Fintype.card F:ℝ) := by
+    rw [←Complex.normSq_eq_norm_sq,ArithmeticEffectivityTheory.normSq_gaussSum_eq_card hχ hψ]
+  rw [tau,norm_mul,mul_pow,norm_inv,Complex.norm_real,
+    Real.norm_of_nonneg (rootCard_pos (F:=F)).le,inv_pow,rootCard_sq,hg]
+  have hq : (Fintype.card F:ℝ)≠0 := by exact_mod_cast Fintype.card_ne_zero
+  simp only [inv_mul_cancel₀ hq,one_pow]
+
+omit [Fintype F] in
+theorem shifted_power_nontrivial (χ : MulChar F ℂ) (h6 : χ ^ 6 = 1)
+    (hn : ∀ k : ℕ, k ≠ 0 → k < 6 → χ ^ k ≠ 1)
+    (j : ℕ) (hj0 : j ≠ 0) (hj6 : j < 6) (hj4 : j ≠ 4) : χ ^ (j + 2) ≠ 1 := by
+  by_cases hj : j = 5
+  · subst j
+    have heq : χ ^ (5 + 2) = χ ^ 1 := by
+      rw [show (5 + 2 : ℕ) = 6 + 1 by decide, pow_add, h6, one_mul]
+    rw [heq]
+    exact hn 1 (by decide) (by decide)
+  · exact hn (j + 2) (by omega) (by omega)
+
+theorem phase_norm (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (h6 : χ ^ 6 = 1) (hn : ∀ k : ℕ, k ≠ 0 → k < 6 → χ ^ k ≠ 1)
+    (hψ : ψ.IsPrimitive) (j : ℕ) (hj6 : j < 6) (ε : Fˣ) :
+    ‖phase χ ψ j ε‖ = 1 := by
+  have hψminus : (ψ.mulShift (-1)).IsPrimitive :=
+    AddChar.IsPrimitive.of_ne_one (hψ (a := (-1 : F)) (by simp))
+  by_cases hj4 : j = 4
+  · subst j
+    simp only [phase, ↓reduceIte]
+    exact norm_tau χ _ 4 (hn 4 (by decide) (by decide)) hψminus
+  by_cases hj0 : j = 0
+  · subst j
+    simp only [phase, if_neg hj4, ↓reduceIte, norm_mul, norm_neg]
+    rw [norm_tau χ ψ 2 (hn 2 (by decide) (by decide)) hψ,
+      finiteMulChar_unit_norm]
+    norm_num
+  · simp only [phase, if_neg hj4, if_neg hj0, norm_mul]
+    rw [norm_tau χ _ j (hn j hj0 hj6) hψminus,
+      norm_tau χ ψ (j + 2) (shifted_power_nontrivial χ h6 hn j hj0 hj6 hj4) hψ,
+      finiteMulChar_unit_norm]
+    norm_num
+
+/-- The exact Gauss product separates into a unit phase and the normalized bracket. -/
+theorem gauss_eq_phase_bracket (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (h6 : χ^6=1) (hn : ∀k:ℕ,k≠0→k<6→χ^k≠1) (hψ : ψ.IsPrimitive)
+    (j:ℕ) (hj:j<6) (ε:Fˣ) (x:F) :
+    finiteReflectionGauss χ ψ j ((ε:F)*x)=phase χ ψ j ε*bracket χ j x := by
+  have hr : (rootCard F:ℂ)≠0 := Complex.ofReal_ne_zero.mpr (rootCard_pos (F:=F)).ne'
+  have hq : (Fintype.card F:ℂ)=(rootCard F:ℂ)^2 := by exact_mod_cast (rootCard_sq (F:=F)).symm
+  by_cases h4:j=4
+  · subst j
+    rw [finiteReflectionGauss_fourth_indicator χ ψ h6 hψ]
+    simp only [phase,bracket,if_pos rfl,tau,mul_eq_zero,ε.ne_zero,false_or]
+    rw [hq]
+    split_ifs <;> field_simp [hr] <;> ring
+  by_cases h0:j=0
+  · subst j
+    have hnext : χ^(0+2)≠1 := hn 2 (by decide) (by decide)
+    rw [finiteReflectionGauss_nonexceptional χ ψ 0 hnext]
+    simp only [phase,bracket,if_neg h4,if_pos rfl,tau,zero_add,pow_zero,map_mul,↓reduceIte]
+    rw [gaussSum_one_left (hψ (neg_ne_zero.mpr one_ne_zero)),hq]
+    field_simp [hr] <;> ring
+  · rw [finiteReflectionGauss_nonexceptional χ ψ j
+      (shifted_power_nontrivial χ h6 hn j h0 hj h4)]
+    simp only [phase,bracket,if_neg h4,if_neg h0,tau,map_mul]
+    rw [hq]
+    field_simp [hr] <;> ring
+
+end
+
+theorem canonical_phase_norm (P:Ideal Eisenstein.O) [P.IsMaximal]
+    (hg:Eisenstein.lambda∉P) (hchar:ringChar (Eisenstein.O⧸P)≠2)
+    (ψ:AddChar (Eisenstein.O⧸P) ℂ) (hψ:ψ.IsPrimitive)
+    (j:ℕ) (hj:j<6) (ε:(Eisenstein.O⧸P)ˣ) :
+    ‖phase (complexSexticChar P hg) ψ j ε‖=1 :=
+  phase_norm _ _ (complexSexticChar_powers P hg).2.2
+    (fun k hk0 hk => complexSexticChar_pow_ne_one P hg hchar k hk hk0) hψ j hj ε
+
+theorem canonical_gauss_eq_phase_bracket (P:Ideal Eisenstein.O) [P.IsMaximal]
+    (hg:Eisenstein.lambda∉P) (hchar:ringChar (Eisenstein.O⧸P)≠2)
+    (ψ:AddChar (Eisenstein.O⧸P) ℂ) (hψ:ψ.IsPrimitive)
+    (j:ℕ) (hj:j<6) (ε:(Eisenstein.O⧸P)ˣ) (x:Eisenstein.O⧸P) :
+    finiteReflectionGauss (complexSexticChar P hg) ψ j ((ε:Eisenstein.O⧸P)*x)=
+      phase (complexSexticChar P hg) ψ j ε*bracket (complexSexticChar P hg) j x :=
+  gauss_eq_phase_bracket _ _ (complexSexticChar_powers P hg).2.2
+    (fun k hk0 hk => complexSexticChar_pow_ne_one P hg hchar k hk hk0) hψ j hj ε x
+
+end NormalizedReflection
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+/-- The exact reflected radial series at a fixed cusp. -/
+def SourceCuspDatum.smoothedKernel (d:SourceCuspDatum) (W:ℝ→ℂ) (X:ℝ) : ℂ :=
+  (d.multiplier*(d.heightScale:ℂ)*(sourceCuspScale d.index:ℂ)^2)*
+    ∑'n:Eis,sourceCuspRadialCoefficient d.index d.dualPoint n*
+      paperKernel (Vstar W)
+        (X*sourceCuspRadialLength n/(27*(sourceCuspScale d.index)^2*d.heightScale^2))
+
+lemma SourceCuspDatum.smoothedKernel_full_index (d:SourceCuspDatum) (W:ℝ→ℂ) (X:ℝ) :
+    d.smoothedKernel W X=
+      (d.multiplier*(d.heightScale:ℂ)*(sourceCuspScale d.index:ℂ)^2)*
+        ∑'p:ThetaFullIndex,sourceCuspRadialCoefficient d.index d.dualPoint (thetaFullFrequency p)*
+          paperKernel (Vstar W)
+            (X*sourceCuspRadialLength (thetaFullFrequency p)/
+              (27*(sourceCuspScale d.index)^2*d.heightScale^2)) := by
+  rw [SourceCuspDatum.smoothedKernel]
+  congr 1
+  exact sourceCuspRadial_tsum_full_index d.index d.dualPoint
+    (fun h=>paperKernel (Vstar W)
+      (X*sourceCuspRadialLength h/(27*(sourceCuspScale d.index)^2*d.heightScale^2)))
+
+
+lemma SourceCuspDatum.smoothedKernel_full_index_norm_summable
+    (d:SourceCuspDatum) (W:ℝ→ℂ) (v0 v1:ℝ) (hv0:0<v0)
+    (hWs:Function.support W⊆Set.Icc v0 v1) (hW:ContDiff ℝ ∞ W)
+    (X:ℝ) (hX:0<X) :
+    Summable (fun p:ThetaFullIndex=>
+      ‖sourceCuspRadialCoefficient d.index d.dualPoint (thetaFullFrequency p)*
+        paperKernel (Vstar W)
+          (X*sourceCuspRadialLength (thetaFullFrequency p)/
+            (27*(sourceCuspScale d.index)^2*d.heightScale^2))‖) := by
+  have hsum : Summable (fun h : Eis => ‖sourceCuspRadialCoefficient d.index d.dualPoint h‖ *
+      sourceCuspRadialLength h ^ (-(3/2:ℝ))) := by
+    simpa only [neg_div] using sourceCuspRadialCoefficient_weighted_summable d.index d.dualPoint
+  have hs:=paperKernel_weighted_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceCuspRadialCoefficient d.index d.dualPoint)
+    hsum
+    (Vstar W) v0 v1 hv0 (Vstar_support W v0 v1 hWs) (Vstar_contDiff W v0 v1 hv0 hWs hW)
+    (X/(27*(sourceCuspScale d.index)^2*d.heightScale^2))
+    (by have := sourceCuspScale_pos d.index; have := d.heightScale_pos; positivity)
+  have hp:=hs.comp_injective thetaFullFrequency_injective
+  apply hp.congr
+  intro p
+  exact congrArg (fun y:ℝ=>‖sourceCuspRadialCoefficient d.index d.dualPoint (thetaFullFrequency p)*
+    paperKernel (Vstar W) y‖)
+    (by ring :
+      X/(27*(sourceCuspScale d.index)^2*d.heightScale^2)*sourceCuspRadialLength (thetaFullFrequency p)=
+        X*sourceCuspRadialLength (thetaFullFrequency p)/(27*(sourceCuspScale d.index)^2*d.heightScale^2))
+
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+lemma fixedCuspArrayIndex_ne_zero (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (hI:primaryIdealGenerator I≠0) (hJ:primaryIdealGenerator J≠0) :
+    fixedCuspArrayIndex u m I J≠0 :=
+  mul_ne_zero (mul_ne_zero (ramifiedElement_ne_zero u m) hI) (pow_ne_zero _ hJ)
+
+lemma fixedCuspArrayIndex_norm_sq (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (hI:primaryIdealGenerator I≠0) (hJ:primaryIdealGenerator J≠0) :
+    ‖ringComplex (fixedCuspArrayIndex u m I J)‖^2=
+      (3:ℝ)^m*(Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)^3 := by
+  have hr:‖ringComplex (u.val*lambda^m)‖^2=(3:ℝ)^m := by
+    rw [ringComplex_norm_sq_eq_absNorm_span,ramifiedElement_absNorm,Nat.cast_pow,Nat.cast_ofNat]
+  calc
+    _=‖ringComplex (u.val*lambda^m)‖^2*‖ringComplex (primaryIdealGenerator I)‖^2*
+      (‖ringComplex (primaryIdealGenerator J)‖^2)^3 := by
+        simp only [fixedCuspArrayIndex,map_mul,map_pow,norm_mul,norm_pow]
+        ring
+    _=_ := by rw [hr,primaryIdealGenerator_norm_sq I hI,primaryIdealGenerator_norm_sq J hJ]
+
+lemma fixedCuspArrayIndex_norm (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (hI:primaryIdealGenerator I≠0) (hJ:primaryIdealGenerator J≠0) :
+    ‖ringComplex (fixedCuspArrayIndex u m I J)‖=
+      Real.sqrt ((3:ℝ)^m*(Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)^3) := by
+  rw [←fixedCuspArrayIndex_norm_sq u m I J hI hJ,Real.sqrt_sq_eq_abs,abs_of_nonneg (norm_nonneg _)]
+
+lemma fixedCuspArrayWeight_div_norm (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (hI:primaryIdealGenerator I≠0) (hJ:primaryIdealGenerator J≠0) :
+    fixedCuspArrayWeight m J/‖ringComplex (fixedCuspArrayIndex u m I J)‖=
+      1/((3:ℝ)^((m:ℝ)/3)*Real.sqrt (Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)) := by
+  have hn:0<(Ideal.absNorm I:ℝ) := by
+    rw [←primaryIdealGenerator_norm_sq I hI]
+    exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hI))
+  have hb:0<(Ideal.absNorm J:ℝ) := by
+    rw [←primaryIdealGenerator_norm_sq J hJ]
+    exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hJ))
+  rw [fixedCuspArrayWeight,fixedCuspArrayIndex_norm u m I J hI hJ]
+  simpa only [Real.rpow_natCast] using cusp_coefficient_normalization (m:ℝ)
+    (Ideal.absNorm I:ℝ) (Ideal.absNorm J:ℝ) hn hb
+
+theorem fixedConjugateCuspArray_div_norm (j:Fin 3) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis)
+    (h:fixedCuspArrayEligible I J) :
+    star (sourceCuspCoefficient j (fixedCuspArrayIndex u m I J))/
+      (‖ringComplex (fixedCuspArrayIndex u m I J)‖:ℂ)=
+    (fixedCuspCoefficientBound:ℂ)*fixedConjugateCuspArray j u m I J/
+      (((3:ℝ)^((m:ℝ)/3)*Real.sqrt (Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ):ℝ):ℂ) := by
+  rw [fixedConjugateCuspArray_reconstruct j u m I J h]
+  calc
+    _=(fixedCuspCoefficientBound:ℂ)*fixedConjugateCuspArray j u m I J*
+      ((fixedCuspArrayWeight m J/‖ringComplex (fixedCuspArrayIndex u m I J)‖:ℝ):ℂ) := by
+        push_cast
+        ring
+    _=_ := by
+      rw [fixedCuspArrayWeight_div_norm u m I J h.2.1 h.2.2]
+      push_cast
+      ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+lemma thetaFullFrequency_eq_fixedCuspArrayIndex (p:ThetaFullIndex) :
+    thetaFullFrequency p=fixedCuspArrayIndex p.1 p.2.1 p.2.2.1.val p.2.2.2.val := rfl
+
+lemma sourceCuspRadialLength_full_index (p:ThetaFullIndex) :
+    sourceCuspRadialLength (thetaFullFrequency p)=
+      (3:ℝ)^p.2.1*(Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3 := by
+  rw [sourceCuspRadialLength,if_neg (thetaFullFrequency_ne_zero p),thetaFullFrequency_eq_fixedCuspArrayIndex]
+  exact fixedCuspArrayIndex_norm_sq p.1 p.2.1 p.2.2.1.val p.2.2.2.val
+    p.2.2.1.property.2 p.2.2.2.property
+
+lemma thetaRamifiedScale_eq (m:ℕ) :
+    ramifiedScale 1 completedRamifiedStep m=(3:ℝ)^((m:ℝ)/3) := by
+  unfold ramifiedScale completedRamifiedStep
+  rw [one_mul,←Real.rpow_mul_natCast (by norm_num)]
+  congr 1
+  ring
+
+lemma thetaRamifiedScale_cube (m:ℕ) :
+    (ramifiedScale 1 completedRamifiedStep m)^3=(3:ℝ)^m := by
+  rw [thetaRamifiedScale_eq,←Real.rpow_mul_natCast (by norm_num)]
+  norm_num only [Nat.cast_ofNat]
+  rw [show ((m:ℝ)/3)*(3:ℝ)=m by ring,Real.rpow_natCast]
+
+lemma sourceCusp_full_index_kernel_argument (p:ThetaFullIndex) (j:Fin 3) (Q X:ℝ) :
+    X*sourceCuspRadialLength (thetaFullFrequency p)/(27*(sourceCuspScale j)^2*Q^2)=
+      (X/(27*(sourceCuspScale j)^2*Q^2))*(ramifiedScale 1 completedRamifiedStep p.2.1)^3*
+        (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3 := by
+  rw [sourceCuspRadialLength_full_index,thetaRamifiedScale_cube]
+  ring
+
+lemma sourceCuspRadialCoefficient_angle (j:Fin 3) (z:ℂ) (h:Eis) (hh:h≠0) :
+    sourceCuspRadialCoefficient j z h=
+      ((-2*Real.pi*Complex.I*thetaFrequencyScale)/(sourceCuspScale j:ℂ)^2)*
+        angularFactor h*
+        (star (sourceCuspCoefficient j h)/(‖ringComplex h‖:ℂ))*
+        tracePhase (-cuspFrequency h*(z/(sourceCuspScale j:ℂ))) := by
+  have hn:(‖ringComplex h‖:ℂ)≠0:=Complex.ofReal_ne_zero.mpr
+    (norm_ne_zero_iff.mpr (ringComplex_ne_zero hh))
+  have hs:(sourceCuspScale j:ℂ)≠0:=Complex.ofReal_ne_zero.mpr (sourceCuspScale_pos j).ne'
+  rw [sourceCuspRadialCoefficient,sourceCuspRadialBaseCoefficient,sourceCuspRadialLength,if_neg hh]
+  rw [cuspFrequency_eq_thetaFrequencyScale]
+  unfold angularFactor
+  push_cast
+  field_simp [hn,hs]
+
+def fixedRadialCoefficientScalar : ℂ :=
+  (-2*Real.pi*Complex.I)*thetaFrequencyScale*(fixedCuspCoefficientBound:ℂ)
+
+theorem sourceCuspRadialCoefficient_fixed_array
+    (j:Fin 3) (z:ℂ) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) (h:fixedCuspArrayEligible I J) :
+    sourceCuspRadialCoefficient j z (fixedCuspArrayIndex u m I J)=
+      (fixedRadialCoefficientScalar/(sourceCuspScale j:ℂ)^2)*
+        (fixedConjugateCuspArray j u m I J*
+          angularFactor (fixedCuspArrayIndex u m I J)*
+          tracePhase (-cuspFrequency (fixedCuspArrayIndex u m I J)*
+            (z/(sourceCuspScale j:ℂ))))/
+        ((ramifiedScale 1 completedRamifiedStep m*Real.sqrt (Ideal.absNorm I:ℝ)*
+          (Ideal.absNorm J:ℝ):ℝ):ℂ) := by
+  rw [sourceCuspRadialCoefficient_angle _ _ _
+    (fixedCuspArrayIndex_ne_zero u m I J h.2.1 h.2.2),
+    fixedConjugateCuspArray_div_norm j u m I J h,thetaRamifiedScale_eq]
+  unfold fixedRadialCoefficientScalar
+  push_cast
+  ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+lemma thetaFullIndex_denominator_pos (p:ThetaFullIndex) :
+    0<ramifiedScale 1 completedRamifiedStep p.2.1*
+      Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ) := by
+  have hI:0<(Ideal.absNorm p.2.2.1.val:ℝ):=by
+    rw [←primaryIdealGenerator_norm_sq _ p.2.2.1.property.2]
+    exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero p.2.2.1.property.2))
+  have hJ:0<(Ideal.absNorm p.2.2.2.val:ℝ):=by
+    rw [←primaryIdealGenerator_norm_sq _ p.2.2.2.property]
+    exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero p.2.2.2.property))
+  rw [thetaRamifiedScale_eq]
+  positivity
+
+lemma SourceCuspDatum.smoothed_unit_phase_norm (d:SourceCuspDatum) :
+    ‖d.multiplier*(d.heightScale:ℂ)‖=1 := by
+  rw [norm_mul,d.multiplier_norm,Complex.norm_real,Real.norm_eq_abs,
+    abs_of_pos d.heightScale_pos,inv_mul_cancel₀ d.heightScale_pos.ne']
+
+theorem SourceCuspDatum.smoothedFullCoefficient_normalization (d:SourceCuspDatum) (p:ThetaFullIndex) :
+    (d.multiplier*(d.heightScale:ℂ)*(sourceCuspScale d.index:ℂ)^2)*
+      sourceCuspRadialCoefficient d.index d.dualPoint (thetaFullFrequency p)=
+    (fixedRadialCoefficientScalar*(d.multiplier*(d.heightScale:ℂ)))*
+      (fixedConjugateCuspArray d.index p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+        angularFactor (thetaFullFrequency p)*
+        tracePhase (-cuspFrequency (thetaFullFrequency p)*
+          (d.dualPoint/(sourceCuspScale d.index:ℂ))))/
+      ((ramifiedScale 1 completedRamifiedStep p.2.1*
+        Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ) := by
+  have hs:(sourceCuspScale d.index:ℂ)≠0:=Complex.ofReal_ne_zero.mpr (sourceCuspScale_pos _).ne'
+  have hn:((ramifiedScale 1 completedRamifiedStep p.2.1*
+      Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ)≠0:=
+    Complex.ofReal_ne_zero.mpr (thetaFullIndex_denominator_pos p).ne'
+  simp only [thetaFullFrequency_eq_fixedCuspArrayIndex]
+  rw [sourceCuspRadialCoefficient_fixed_array _ _ _ _ _ _
+    ⟨p.2.2.1.property.1,p.2.2.1.property.2,p.2.2.2.property⟩]
+  field_simp [hs,hn]
+
+lemma SourceCuspDatum.smoothedFullCoefficient_norm_le (d:SourceCuspDatum) (p:ThetaFullIndex) :
+    ‖(d.multiplier*(d.heightScale:ℂ)*(sourceCuspScale d.index:ℂ)^2)*
+      sourceCuspRadialCoefficient d.index d.dualPoint (thetaFullFrequency p)‖≤
+    ‖fixedRadialCoefficientScalar‖/
+      (ramifiedScale 1 completedRamifiedStep p.2.1*
+        Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)) := by
+  have ha:‖fixedConjugateCuspArray d.index p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+      angularFactor (thetaFullFrequency p)*
+      tracePhase (-cuspFrequency (thetaFullFrequency p)*
+        (d.dualPoint/(sourceCuspScale d.index:ℂ)))‖≤1:=by
+    rw [norm_mul,norm_mul,norm_angularFactor _ (thetaFullFrequency_ne_zero p),tracePhase_norm,mul_one,mul_one]
+    exact fixedConjugateCuspArray_norm_le_one _ _ _ _ _
+  rw [d.smoothedFullCoefficient_normalization,norm_div,norm_mul,norm_mul,
+    d.smoothed_unit_phase_norm,mul_one,Complex.norm_real,Real.norm_of_nonneg (thetaFullIndex_denominator_pos p).le]
+  exact div_le_div_of_nonneg_right
+    (mul_le_of_le_one_right (norm_nonneg _) ha) (thetaFullIndex_denominator_pos p).le
+
+theorem SourceCuspDatum.smoothedKernel_fixed_array (d:SourceCuspDatum) (W:ℝ→ℂ) (X:ℝ) :
+    d.smoothedKernel W X=(fixedRadialCoefficientScalar*(d.multiplier*(d.heightScale:ℂ)))*
+      ∑'p:ThetaFullIndex,
+        ((fixedConjugateCuspArray d.index p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+          angularFactor (thetaFullFrequency p)*
+          tracePhase (-cuspFrequency (thetaFullFrequency p)*
+            (d.dualPoint/(sourceCuspScale d.index:ℂ))))/
+          ((ramifiedScale 1 completedRamifiedStep p.2.1*
+            Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ))*
+        paperKernel (Vstar W)
+          ((X/(27*(sourceCuspScale d.index)^2*d.heightScale^2))*
+            (ramifiedScale 1 completedRamifiedStep p.2.1)^3*
+            (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3) := by
+  rw [d.smoothedKernel_full_index,←tsum_mul_left,←tsum_mul_left]
+  apply tsum_congr
+  intro p
+  rw [←mul_assoc,d.smoothedFullCoefficient_normalization,sourceCusp_full_index_kernel_argument]
+  ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H)
+
+def amplitude (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ℂ :=
+  fixedConjugateCuspArray s.index u m I J*
+    angularFactor (fixedCuspArrayIndex u m I J)*
+    tracePhase (-cuspFrequency (fixedCuspArrayIndex u m I J)*
+      ringComplex (s.upper 0 0*s.upper 0 1)/(sourceCuspScale s.index:ℂ))
+
+lemma amplitude_norm (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ‖s.amplitude u m I J‖≤1 := by
+  by_cases he:fixedCuspArrayEligible I J
+  · rw [amplitude,norm_mul,norm_mul,tracePhase_norm,
+      norm_angularFactor _ (fixedCuspArrayIndex_ne_zero u m I J he.2.1 he.2.2),mul_one,mul_one]
+    exact fixedConjugateCuspArray_norm_le_one _ _ _ _ _
+  · simp only [amplitude,fixedConjugateCuspArray,
+      fixedCuspArray_zero_of_ineligible _ _ _ _ _ he,star_zero,zero_mul,norm_zero]
+    norm_num
+
+theorem smoothedKernel_fixed_shape (g:rationalExtension) (hc:((g:SL(2,Eis))*H) 1 0≠0)
+    (W:ℝ→ℂ) (X:ℝ) :
+    (s.datum g hc).smoothedKernel W X=
+      (fixedRadialCoefficientScalar*((s.datum g hc).multiplier*
+        (‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^2:ℝ)))*
+      ∑'p:ThetaFullIndex,
+        ((s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+          tracePhase (cuspFrequency (thetaFullFrequency p)*
+            ringComplex (s.upper 0 0)^2*
+            (ringComplex (((g:SL(2,Eis))*H) 1 1)/ringComplex (((g:SL(2,Eis))*H) 1 0))/
+            (sourceCuspScale s.index:ℂ)))/
+          ((ramifiedScale 1 completedRamifiedStep p.2.1*
+            Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ))*
+        paperKernel (Vstar W)
+          ((X/(27*(sourceCuspScale s.index)^2*‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^4))*
+            (ramifiedScale 1 completedRamifiedStep p.2.1)^3*
+            (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3) := by
+  rw [(s.datum g hc).smoothedKernel_fixed_array,s.datum_heightScale]
+  have hi:(s.datum g hc).index=s.index:=rfl
+  simp only [hi,←pow_mul,show (2:ℕ)*2=4 by norm_num]
+  congr 1
+  apply tsum_congr
+  intro p
+  have hp:=s.datum_additive_phase g hc (cuspFrequency (thetaFullFrequency p))
+    (sourceCuspScale s.index:ℂ)
+  rw [show -cuspFrequency (thetaFullFrequency p)*
+      ((s.datum g hc).dualPoint/(sourceCuspScale s.index:ℂ))=
+      -cuspFrequency (thetaFullFrequency p)*(s.datum g hc).dualPoint/(sourceCuspScale s.index:ℂ) by ring,hp]
+  unfold amplitude
+  rw [←thetaFullFrequency_eq_fixedCuspArrayIndex]
+  ring
+
+lemma smoothed_row_factor (g:rationalExtension) (hc:((g:SL(2,Eis))*H) 1 0≠0) :
+    (s.datum g hc).multiplier*((s.datum g hc).heightScale:ℂ)=
+      -star (extendedComplexCharacter g)*
+        (star (extendedComplexCharacter s.gamma)*ringComplex (s.upper 0 0)^2)*
+        ((‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^2:ℝ):ℂ)/
+        ringComplex (((g:SL(2,Eis))*H) 1 0)^2 := by
+  rw [s.datum_multiplier,s.datum_heightScale]
+  push_cast
+  ring
+
+end FixedCuspShape
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+theorem sum_smoothedKernel_common_cusp {ι:Type*} [Fintype ι]
+    (d:ι→SourceCuspDatum) (w:ι→ℂ) (j:Fin 3) (Q:ℝ)
+    (hj:∀i,(d i).index=j) (hQ:∀i,(d i).heightScale=Q)
+    (W:ℝ→ℂ) (a b:ℝ) (ha:0<a) (hsupp:Function.support W⊆Set.Icc a b)
+    (hW:ContDiff ℝ ∞ W) (X:ℝ) (hX:0<X) :
+    (∑i,w i*(d i).smoothedKernel W X)=fixedRadialCoefficientScalar*
+      ∑'p:ThetaFullIndex,
+        ((fixedConjugateCuspArray j p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+          angularFactor (thetaFullFrequency p))/
+          ((ramifiedScale 1 completedRamifiedStep p.2.1*
+            Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ))*
+        paperKernel (Vstar W)
+          (X*sourceCuspRadialLength (thetaFullFrequency p)/(27*(sourceCuspScale j)^2*Q^2))*
+        (∑i,w i*((d i).multiplier*(Q:ℂ))*
+          tracePhase (-cuspFrequency (thetaFullFrequency p)*
+            ((d i).dualPoint/(sourceCuspScale j:ℂ)))) := by
+  let F:ι→ThetaFullIndex→ℂ:=fun i p=>w i*
+    ((d i).multiplier*((d i).heightScale:ℂ)*(sourceCuspScale (d i).index:ℂ)^2)*
+    (sourceCuspRadialCoefficient (d i).index (d i).dualPoint (thetaFullFrequency p)*
+      paperKernel (Vstar W)
+        (X*sourceCuspRadialLength (thetaFullFrequency p)/
+          (27*(sourceCuspScale (d i).index)^2*(d i).heightScale^2)))
+  have hs (i:ι):Summable (F i):=by
+    exact ((d i).smoothedKernel_full_index_norm_summable W a b ha hsupp hW X hX).of_norm.mul_left _
+  have he (i:ι):w i*(d i).smoothedKernel W X=∑'p,F i p := by
+    rw [(d i).smoothedKernel_full_index]
+    simp only [F,tsum_mul_left]
+    ring
+  simp_rw [he]
+  rw [←Summable.tsum_finsetSum (fun i _=>hs i),←tsum_mul_left]
+  apply tsum_congr
+  intro p
+  rw [Finset.mul_sum,Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hn:=(d i).smoothedFullCoefficient_normalization p
+  dsimp only [F]
+  calc
+    _=w i*(((d i).multiplier*((d i).heightScale:ℂ)*(sourceCuspScale (d i).index:ℂ)^2)*
+      sourceCuspRadialCoefficient (d i).index (d i).dualPoint (thetaFullFrequency p))*
+      paperKernel (Vstar W)
+        (X*sourceCuspRadialLength (thetaFullFrequency p)/
+          (27*(sourceCuspScale (d i).index)^2*(d i).heightScale^2)):=by ring
+    _=_:=by rw [hn,hj i,hQ i]; ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H)
+
+lemma amplitude_source_nonzero (p:ThetaFullIndex)
+    (hp:s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val≠0) :
+    sourceCuspCoefficient s.index (thetaFullFrequency p)≠0 := by
+  intro hz
+  apply hp
+  have hz':sourceCuspCoefficient s.index
+      (fixedCuspArrayIndex p.1 p.2.1 p.2.2.1.val p.2.2.2.val)=0:=by
+    simpa only [thetaFullFrequency_eq_fixedCuspArrayIndex] using hz
+  simp only [amplitude,fixedConjugateCuspArray,fixedCuspArray,hz',zero_div,ite_self,
+    star_zero,zero_mul]
+
+lemma amplitude_integral_phase (p:ThetaFullIndex) (c d:Eis) (hc:c≠0) :
+    s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val *
+      tracePhase (cuspFrequency (thetaFullFrequency p)*ringComplex (s.upper 0 0)^2*
+        (ringComplex d/ringComplex c)/(sourceCuspScale s.index:ℂ)) =
+    s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val *
+      tracePhase (-(ringComplex d*
+        (ringComplex (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency p))/(ringComplex traceLambda)^4))/
+          ringComplex c) := by
+  by_cases hp:s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val=0
+  · rw [hp,zero_mul,zero_mul]
+  · rw [sourceCuspPhaseNumerator_phase s.index (s.upper 0 0) (thetaFullFrequency p) c d hc
+      (s.amplitude_source_nonzero p hp)]
+
+lemma datum_integral_phase (g:rationalExtension) (c:Eis) (hc:c≠0)
+    (hg:((g:SL(2,Eis))*H) 1 0=c) (p:ThetaFullIndex) :
+    (fixedConjugateCuspArray s.index p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+      angularFactor (thetaFullFrequency p))*
+      tracePhase (-cuspFrequency (thetaFullFrequency p)*
+        ((s.datum g (by rwa [hg])).dualPoint/(sourceCuspScale s.index:ℂ))) =
+    s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+      tracePhase (-(ringComplex (((g:SL(2,Eis))*H) 1 1)*
+        (ringComplex (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency p))/(ringComplex traceLambda)^4))/
+          ringComplex c) := by
+  have hphase:=s.datum_additive_phase g (by rwa [hg])
+    (cuspFrequency (thetaFullFrequency p)) (sourceCuspScale s.index:ℂ)
+  simp only [hg] at hphase
+  calc
+    _=s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+        tracePhase (cuspFrequency (thetaFullFrequency p)*ringComplex (s.upper 0 0)^2*
+          (ringComplex (((g:SL(2,Eis))*H) 1 1)/ringComplex c)/(sourceCuspScale s.index:ℂ)) := by
+      rw [show -cuspFrequency (thetaFullFrequency p)*
+          ((s.datum g (by rwa [hg])).dualPoint/(sourceCuspScale s.index:ℂ))=
+        -cuspFrequency (thetaFullFrequency p)*(s.datum g (by rwa [hg])).dualPoint/
+          (sourceCuspScale s.index:ℂ) by ring,hphase]
+      unfold amplitude
+      rw [←thetaFullFrequency_eq_fixedCuspArrayIndex]
+      ring
+    _=_:=s.amplitude_integral_phase p c _ hc
+
+def stratumShapeFactor (c:Eis) : ℂ :=
+  -star (extendedComplexCharacter s.gamma)*ringComplex (s.upper 0 0)^2*
+    ((Ideal.absNorm (Ideal.span {c}):ℝ):ℂ)/ringComplex c^2
+
+lemma datum_common_row_factor (g:rationalExtension) (c:Eis) (hc:c≠0)
+    (hg:((g:SL(2,Eis))*H) 1 0=c) :
+    (s.datum g (by rwa [hg])).multiplier*((Ideal.absNorm (Ideal.span {c}):ℝ):ℂ)=
+      s.stratumShapeFactor c*star (extendedComplexCharacter g) := by
+  have hm:=s.smoothed_row_factor g (by rwa [hg])
+  simp only [s.datum_heightScale,hg,ringComplex_norm_sq_eq_absNorm_span] at hm
+  rw [hm]
+  unfold stratumShapeFactor
+  ring
+
+end FixedCuspShape
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open MeasureTheory
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H)
+theorem sum_smoothedKernel_integral_phase {ι:Type*} [Fintype ι]
+    (g:ι → rationalExtension) (c:Eis) (hc:c≠0) (hC:∀v,((g v:SL(2,Eis))*H) 1 0=c)
+    (w:ι→ℂ) (W:ℝ→ℂ) (a b:ℝ) (ha:0<a) (hsupp:Function.support W⊆Set.Icc a b)
+    (hW:ContDiff ℝ ∞ W) (X:ℝ) (hX:0<X) :
+    (∑v,w v*(s.datum (g v) (by rw [hC v];exact hc)).smoothedKernel W X)=
+      fixedRadialCoefficientScalar*s.stratumShapeFactor c*
+      ∑'p:ThetaFullIndex,
+        (s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val /
+          ((ramifiedScale 1 completedRamifiedStep p.2.1*
+            Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ))*
+        paperKernel (Vstar W)
+          ((X/(27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c}):ℝ)^2))*
+            (ramifiedScale 1 completedRamifiedStep p.2.1)^3*
+            (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3)*
+        (∑v,w v*star (extendedComplexCharacter (g v))*
+          tracePhase (-(ringComplex (((g v:SL(2,Eis))*H) 1 1)*
+            (ringComplex (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency p))/(ringComplex traceLambda)^4))/
+              ringComplex c)) := by
+  let d:ι→SourceCuspDatum:=fun v=>s.datum (g v) (by rw [hC v];exact hc)
+  have hindex:∀v,(d v).index=s.index:=fun _=>rfl
+  have hheight:∀v,(d v).heightScale=(Ideal.absNorm (Ideal.span {c}):ℝ):=by
+    intro v
+    dsimp only [d]
+    rw [s.datum_heightScale,hC v,ringComplex_norm_sq_eq_absNorm_span]
+  have he:=sum_smoothedKernel_common_cusp d w s.index (Ideal.absNorm (Ideal.span {c}):ℝ)
+    hindex hheight W a b ha hsupp hW X hX
+  rw [he]
+  conv_rhs => rw [mul_assoc]
+  apply congrArg (fun z:ℂ=>fixedRadialCoefficientScalar*z)
+  rw [←tsum_mul_left]
+  apply tsum_congr
+  intro p
+  rw [sourceCusp_full_index_kernel_argument p s.index (Ideal.absNorm (Ideal.span {c}):ℝ) X]
+  let A:ℂ:=fixedConjugateCuspArray s.index p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
+    angularFactor (thetaFullFrequency p)
+  let B:ℂ:=s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val
+  let lengthScale:ι→ℂ:=fun v=>w v*((d v).multiplier*((Ideal.absNorm (Ideal.span {c}):ℝ):ℂ))*
+    tracePhase (-cuspFrequency (thetaFullFrequency p)*((d v).dualPoint/(sourceCuspScale s.index:ℂ)))
+  let R:ι→ℂ:=fun v=>w v*star (extendedComplexCharacter (g v))*
+    tracePhase (-(ringComplex (((g v:SL(2,Eis))*H) 1 1)*
+      (ringComplex (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency p))/(ringComplex traceLambda)^4))/ringComplex c)
+  have hs:A*(∑v,lengthScale v)=s.stratumShapeFactor c*B*(∑v,R v):=by
+    rw [Finset.mul_sum,Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro v hv
+    dsimp only [lengthScale,R]
+    calc
+      _=w v*(((d v).multiplier*((Ideal.absNorm (Ideal.span {c}):ℝ):ℂ))*
+          (A*tracePhase (-cuspFrequency (thetaFullFrequency p)*
+            ((d v).dualPoint/(sourceCuspScale s.index:ℂ))))):=by ring
+      _=w v*((s.stratumShapeFactor c*star (extendedComplexCharacter (g v)))*
+          (B*tracePhase (-(ringComplex (((g v:SL(2,Eis))*H) 1 1)*
+            (ringComplex (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency p))/(ringComplex traceLambda)^4))/ringComplex c))):=by
+        rw [s.datum_common_row_factor (g v) c hc (hC v),s.datum_integral_phase (g v) c hc (hC v) p]
+      _=_:=by ring
+  let D:ℂ:=((ramifiedScale 1 completedRamifiedStep p.2.1*
+    Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ)
+  let K:ℂ:=paperKernel (Vstar W)
+    ((X/(27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c}):ℝ)^2))*
+      (ramifiedScale 1 completedRamifiedStep p.2.1)^3*
+      (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3)
+  change A/D*K*(∑v,lengthScale v)=s.stratumShapeFactor c*(B/D*K*(∑v,R v))
+  calc
+    _=(A*(∑v,lengthScale v))/D*K:=by ring
+    _=(s.stratumShapeFactor c*B*(∑v,R v))/D*K:=by rw [hs]
+    _=_:=by ring
+
+lemma stratumShapeFactor_norm (c:Eis) (hc:c≠0) : ‖s.stratumShapeFactor c‖=1 := by
+  have hu:‖ringComplex (s.upper 0 0)‖=1:=by
+    rcases s.upper_unit with ⟨u,hu⟩
+    rw [←hu]
+    exact norm_ringComplex_unit u
+  have hn:‖ringComplex c‖^2≠0:=pow_ne_zero _ (norm_ne_zero_iff.mpr (ringComplex_ne_zero hc))
+  rw [stratumShapeFactor,norm_div,norm_mul,norm_mul,norm_neg,norm_star,
+    norm_extendedComplexCharacter,norm_pow,hu,one_pow,one_mul,one_mul,norm_pow,
+    Complex.norm_real,Real.norm_of_nonneg (Nat.cast_nonneg _),
+    ←ringComplex_norm_sq_eq_absNorm_span]
+  exact div_self hn
+
+end FixedCuspShape
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein
+open scoped BigOperators Classical MatrixGroups
+local notation "Eis" => Eisenstein.O
+
+lemma cuspBadModulus_ne_zero (c:Eis) (hc:c≠0) : traceLambda^3*c≠0 :=
+  mul_ne_zero (pow_ne_zero _ traceLambda_ne_zero) hc
+
+def cuspBadPhase (c:Eis) (hc:c≠0) (d U x:Eis) : ℂ :=
+  residueTraceQuotientChar 1 (traceLambda^3*c) (cuspBadModulus_ne_zero c hc)
+    (Ideal.Quotient.mk _ (-d*U*x))
+
+lemma cuspBadPhase_eq (c:Eis) (hc:c≠0) (d U x:Eis) :
+    cuspBadPhase c hc d U x =
+      tracePhase (-(ringComplex d*ringComplex U*(ringComplex x/(ringComplex traceLambda)^4))/ringComplex c) := by
+  rw [cuspBadPhase,residueTraceQuotientChar_mk]
+  unfold residueAdditive cuspFrequency
+  simp only [one_mul,map_mul,map_pow,map_neg,map_ofNat,map_one]
+  congr 1
+  field_simp [ringComplex_ne_zero traceLambda_ne_zero,ringComplex_ne_zero hc] <;> ring
+
+lemma cuspBadPhase_eq_of_residue (c:Eis) (hc:c≠0) (d U d' U' x:Eis)
+    (hres:traceLambda^3*c∣d*U-d'*U') :
+    cuspBadPhase c hc d U x=cuspBadPhase c hc d' U' x := by
+  unfold cuspBadPhase
+  congr 1
+  apply Ideal.Quotient.eq.mpr
+  apply Ideal.mem_span_singleton.mpr
+  have hd:=dvd_mul_of_dvd_left hres (-x)
+  convert hd using 1 <;> ring
+
+lemma cuspBadPhase_norm (c:Eis) (hc:c≠0) (d U x:Eis) :
+    ‖cuspBadPhase c hc d U x‖=1 := by
+  rw [cuspBadPhase_eq]
+  exact tracePhase_norm _
+
+def cuspResiduePhase (c:Eis) (hc:c≠0)
+    (v:Eis⧸Ideal.span {traceLambda^3*c}) (x:Eis) : ℂ :=
+  residueTraceQuotientChar 1 (traceLambda^3*c) (cuspBadModulus_ne_zero c hc)
+    (v*Ideal.Quotient.mk _ x)
+
+lemma cuspBadPhase_as_fixed_residue (c:Eis) (hc:c≠0) (d U:Eis) :
+    cuspBadPhase c hc d U=cuspResiduePhase c hc (Ideal.Quotient.mk _ (-d*U)) := by
+  funext x
+  simp only [cuspBadPhase,cuspResiduePhase,map_mul]
+
+lemma cuspResiduePhase_norm (c:Eis) (hc:c≠0)
+    (v:Eis⧸Ideal.span {traceLambda^3*c}) (x:Eis) : ‖cuspResiduePhase c hc v x‖=1 := by
+  let : Finite (Eis⧸Ideal.span {traceLambda^3*c}) :=
+    (Ideal.span {traceLambda^3*c}).finiteQuotientOfFreeOfNeBot
+      (Ideal.span_singleton_eq_bot.not.mpr (cuspBadModulus_ne_zero c hc))
+  exact AddChar.norm_apply _ _
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss
+open scoped BigOperators Classical MatrixGroups
+local notation "Eis" => Eisenstein.O
+lemma norm_angularFactor_le_one (h:Eis) : ‖angularFactor h‖≤1 := by
+  by_cases hh:h=0
+  · simp only [hh,angularFactor,map_zero,norm_zero,Complex.ofReal_zero,div_zero]
+    norm_num
+  · exact (norm_angularFactor h hh).le
+
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H)
+
+def reflectionStaticPhase (c0:Eis) (hc0:c0≠0)
+    (v:Eis⧸Ideal.span {traceLambda^3*c0})
+    (dualNumerator:ℕ→Ideal Eis→Ideal Eis→Eis) (u:Eisˣ)
+    (m:ℕ) (I J:Ideal Eis) : ℂ :=
+  angularFactor (fixedCuspArrayIndex u m I J)*
+    tracePhase (-cuspFrequency (fixedCuspArrayIndex u m I J)*
+      ringComplex (s.upper 0 0*s.upper 0 1)/(sourceCuspScale s.index:ℂ))*
+    cuspResiduePhase c0 hc0 v (dualNumerator m I J)
+
+lemma reflectionStaticPhase_norm_le_one (c0:Eis) (hc0:c0≠0)
+    (v:Eis⧸Ideal.span {traceLambda^3*c0})
+    (dualNumerator:ℕ→Ideal Eis→Ideal Eis→Eis) (u:Eisˣ)
+    (m:ℕ) (I J:Ideal Eis) : ‖s.reflectionStaticPhase c0 hc0 v dualNumerator u m I J‖≤1 := by
+  simp only [reflectionStaticPhase,norm_mul,tracePhase_norm,cuspResiduePhase_norm,mul_one]
+  exact norm_angularFactor_le_one _
+
+lemma fixedCuspArrayWithPhase_reflectionStaticPhase (c0:Eis) (hc0:c0≠0)
+    (v:Eis⧸Ideal.span {traceLambda^3*c0})
+    (dualNumerator:ℕ→Ideal Eis→Ideal Eis→Eis) (u:Eisˣ)
+    (m:ℕ) (I J:Ideal Eis) :
+    fixedCuspArrayWithPhase s.index u (s.reflectionStaticPhase c0 hc0 v dualNumerator u) m I J=
+      s.amplitude u m I J*cuspResiduePhase c0 hc0 v (dualNumerator m I J) := by
+  unfold fixedCuspArrayWithPhase reflectionStaticPhase amplitude
+  ring
+
+end FixedCuspShape
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+theorem cuspMatrix_character_frequency_sum {ι : Type*} [Fintype ι] (p t : ι → O)
+    [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hpair : Pairwise (Function.onFun IsCoprime p))
+    (ht : ∀ i, p i ∣ cuspPrimeCofactor p i * t i - 1)
+    (c U w x : O) (hc : c ≠ 0)
+    (hbez : U * (∏ i, p i) + (traceLambda ^ 3 * w) * c = 1)
+    (M : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → SL(2, O))
+    (hM : ∀ v, (∏ i, p i) ∣ M v 1 0)
+    (hfixed : ∀ v, traceLambda ^ 3 * c ∣ M v 1 1 - M (fun _ => 1) 1 1)
+    (σ ε : ∀ i, (O ⧸ Ideal.span {p i})ˣ)
+    (hfreq : ∀ v i, Ideal.Quotient.mk (Ideal.span {p i}) (M v 0 0) =
+      (σ i : O ⧸ Ideal.span {p i}) * (v i : O ⧸ Ideal.span {p i}))
+    (hε : ∀ i, Ideal.Quotient.mk (Ideal.span {p i})
+      (traceLambda ^ 3 * c * cuspPrimeCofactor p i) *
+      (σ i : O ⧸ Ideal.span {p i}) * (ε i : O ⧸ Ideal.span {p i}) = -1)
+    (κ : ℂ) (χ₀ : (∀ i, (O ⧸ Ideal.span {p i})ˣ) → ℂ) (hκ : ∀ v, χ₀ v =
+      κ * ringComplex (symbol (M v 0 0) (∏ i, p i))) (j : ι → ℕ) :
+    (∑ v : ∀ i, (O ⧸ Ideal.span {p i})ˣ,
+      (∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i))
+        (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ)
+        (v i : O ⧸ Ideal.span {p i})) *
+      star (χ₀ v) *
+      tracePhase (-(ringComplex (M v 1 1) * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c * ringComplex (∏ i, p i)))) =
+    (star κ * tracePhase (-(ringComplex (M (fun _ => 1) 1 1) * ringComplex U * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c))) *
+      ∏ i, ((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹ ^ 2) (σ i) *
+        ((Fintype.card (O ⧸ Ideal.span {p i}) : ℂ)⁻¹ *
+          gaussSum (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i)
+            ((residueTraceQuotientChar 1 (p i) (hp i)).mulShift (-1)) *
+          gaussSum (complexSexticChar (Ideal.span {p i}) (hg i) ^ (j i + 2))
+            ((residueTraceQuotientChar 1 (p i) (hp i)).mulShift
+              ((ε i : O ⧸ Ideal.span {p i}) * Ideal.Quotient.mk (Ideal.span {p i}) x))) := by
+  classical
+  let χ := fun i => complexSexticChar (Ideal.span {p i}) (hg i)
+  let ψ := fun i => residueTraceQuotientChar 1 (p i) (hp i)
+  let C := star κ * tracePhase
+    (-(ringComplex (M (fun _ => 1) 1 1) * ringComplex U * ringComplex x) /
+      (ringComplex traceLambda ^ 4 * ringComplex c))
+  let f := fun (i : ι) (v : (O ⧸ Ideal.span {p i})ˣ) =>
+    finiteAdditiveFourierCoeff (ψ i) (χ i ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ) v *
+      ((χ i)⁻¹ ^ 2) v * ψ i ((ε i : O ⧸ Ideal.span {p i}) *
+        Ideal.Quotient.mk (Ideal.span {p i}) x * (↑v⁻¹ : O ⧸ Ideal.span {p i}))
+  have hpoint (v : ∀ i, (O ⧸ Ideal.span {p i})ˣ) :
+      (∏ i, finiteAdditiveFourierCoeff (ψ i) (χ i ^ j i : MulChar (O ⧸ Ideal.span {p i}) ℂ) (v i)) *
+      star (χ₀ v) *
+      tracePhase (-(ringComplex (M v 1 1) * ringComplex x) /
+        (ringComplex traceLambda ^ 4 * ringComplex c * ringComplex (∏ i, p i))) =
+      (C * ∏ i, ((χ i)⁻¹ ^ 2) (σ i)) * ∏ i, f i (v i) := by
+    rw [hκ v, star_mul, cuspSymbol_sextic_product p hg,
+      cuspMatrix_inverse_phase_product p t hp hpair ht c U w x hc hbez (M v) (hM v) σ ε v (hfreq v) hε,
+      cuspInverse_fixed_phase_congr c _ _ U x hc (hfixed v)]
+    simp_rw [hfreq v]
+    simp only [map_mul, Finset.prod_mul_distrib, C, f, χ, ψ]
+    ring
+  calc
+    _ = (C * ∏ i, ((χ i)⁻¹ ^ 2) (σ i)) * ∑ v : ∀ i, (O ⧸ Ideal.span {p i})ˣ, ∏ i, f i (v i) := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl (fun v _ => hpoint v)
+    _ = (C * ∏ i, ((χ i)⁻¹ ^ 2) (σ i)) * ∏ i, ∑ v : (O ⧸ Ideal.span {p i})ˣ, f i v := by
+      rw [← Fintype.prod_sum f]
+    _ = _ := by
+      have he (i) : (∑ v : (O ⧸ Ideal.span {p i})ˣ, f i v) =
+          (Fintype.card (O ⧸ Ideal.span {p i}) : ℂ)⁻¹ *
+          gaussSum (χ i ^ j i) ((ψ i).mulShift (-1)) *
+          gaussSum (χ i ^ (j i + 2)) ((ψ i).mulShift
+            ((ε i : O ⧸ Ideal.span {p i}) * Ideal.Quotient.mk (Ideal.span {p i}) x)) :=
+        finiteReflectionGauss_product (χ i) (ψ i) (j i) _
+      simp_rw [he]
+      dsimp only [C, χ, ψ]
+      simp only [Finset.prod_mul_distrib]
+      ring
+
+
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace ControlledStratumArithmetic
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+noncomputable def fourierWeight [∀i,(Ideal.span {p i}).IsMaximal]
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ)
+    (v:∀i,(Eis⧸Ideal.span {p i})ˣ) : ℂ := by
+  letI (i:ι):Fintype (Eis⧸Ideal.span {p i}):=Fintype.ofFinite _
+  exact ∏i,finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i))
+    (fun t=>(complexSexticChar (Ideal.span {p i}) (hg i)^j i) t) (v i)
+
+noncomputable def multiplierSum (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ) (x:Eis) : ℂ := by
+  letI (i:ι):Fintype (Eis⧸Ideal.span {p i}):=Fintype.ofFinite _
+  exact ∑v:∀i,(Eis⧸Ideal.span {p i})ˣ,
+    fourierWeight hp hg j v*star (complexCharacter (D.relativeGamma hN hr hbase v))*
+      tracePhase (-(ringComplex (D.matrix v 1 1)*(ringComplex x/(ringComplex traceLambda)^4))/
+        (ringComplex c0*ringComplex (∏i,p i)))
+
+noncomputable def bracketProduct (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ) (x:Eis) : ℂ := by
+  letI (i:ι):Field (Eis⧸Ideal.span {p i}):=Ideal.Quotient.field _
+  letI (i:ι):Fintype (Eis⧸Ideal.span {p i}):=Fintype.ofFinite _
+  exact ∏i,(((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+    NormalizedReflection.phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) (j i) (D.epsilon i)*
+    bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i) (Ideal.Quotient.mk _ x)
+
+theorem multiplierSum_eq (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (hp:∀i,p i≠0) (hc0:c0≠0)
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i}) (hchar:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (j:ι→ℕ) (hj:∀i,j i<6) (x:Eis) :
+    D.multiplierSum hN hr hbase hp hg j x=
+      (star D.fixedFactor*cuspBadPhase c0 hc0 (D.matrix (fun _=>1) 1 1) D.U x)*
+        D.bracketProduct hp hg j x := by
+  have hpair : Pairwise (Function.onFun IsCoprime p) := by
+    intro i k hik
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp (hcop hik)
+  have ht (i:ι) : ∃t:Eis,p i∣cuspPrimeCofactor p i*t-1 := by
+    have hc : IsCoprime (p i) (cuspPrimeCofactor p i) :=
+      IsCoprime.prod_right (fun k hk=>hpair (Ne.symm (Finset.mem_erase.mp hk).1))
+    obtain ⟨a,b,hab⟩ := hc
+    exact ⟨b,⟨-a,by linear_combination hab⟩⟩
+  choose t ht using ht
+  have he := cuspMatrix_character_frequency_sum p t hp hg hpair ht c0 D.U D.w x hc0
+    D.bezout D.matrix (fun v=>by rw [D.denominator];exact dvd_mul_left _ _)
+    (D.inverse_fixed hN) D.sigma D.epsilon D.frequency_congruence D.epsilon_value
+    D.fixedFactor (fun v=>complexCharacter (D.relativeGamma hN hr hbase v))
+    (D.relative_character hN hr hbase) j
+  have hgprod :
+      (∏i,((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹^2) (D.sigma i)*
+        finiteReflectionGauss (complexSexticChar (Ideal.span {p i}) (hg i))
+          (residueTraceQuotientChar 1 (p i) (hp i)) (j i)
+          ((D.epsilon i:Eis⧸Ideal.span {p i})*Ideal.Quotient.mk _ x)) =
+      D.bracketProduct hp hg j x := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    rw [canonical_gauss_eq_phase_bracket (Ideal.span {p i}) (hg i) (hchar i)
+      _ (residueTraceQuotientChar_primitive (p i) (hp i)) (j i) (hj i)]
+    ring
+  simp_rw [←finiteReflectionGauss_product] at he
+  rw [hgprod] at he
+  rw [cuspBadPhase_eq]
+  rw [show -(ringComplex (D.matrix (fun _ => 1) 1 1) * ringComplex D.U *
+      (ringComplex x / ringComplex traceLambda ^ 4)) / ringComplex c0 =
+      -(ringComplex (D.matrix (fun _ => 1) 1 1) * ringComplex D.U * ringComplex x) /
+      (ringComplex traceLambda ^ 4 * ringComplex c0) by ring]
+  refine Eq.trans ?_ he
+  unfold multiplierSum fourierWeight
+  apply Finset.sum_congr rfl
+  intro v hv
+  congr 2
+  simp only [div_eq_mul_inv, mul_inv_rev]
+  ring
+
+end ControlledStratumArithmetic
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace ControlledStratumArithmetic
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+noncomputable def smoothedValue (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0) (hg:∀i,lambda∉Ideal.span {p i})
+    (j:ι→ℕ) (W:ℝ→ℂ) (X:ℝ) : ℂ := by
+  letI (i:ι):Fintype (Eis⧸Ideal.span {p i}):=Fintype.ofFinite _
+  exact ∑v:∀i,(Eis⧸Ideal.span {p i})ˣ,fourierWeight hp hg j v*
+    (D.datum hN hr hbase s hp hc0 v).smoothedKernel W X
+
+noncomputable def reflectedValue (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0) (hg:∀i,lambda∉Ideal.span {p i})
+    (j:ι→ℕ) (W:ℝ→ℂ) (X:ℝ) : ℂ :=
+  fixedRadialCoefficientScalar*s.stratumShapeFactor (c0*∏i,p i)*
+    ∑'t:ThetaFullIndex,
+      (s.amplitude t.1 t.2.1 t.2.2.1.val t.2.2.2.val /
+        ((ramifiedScale 1 completedRamifiedStep t.2.1*
+          Real.sqrt (Ideal.absNorm t.2.2.1.val:ℝ)*(Ideal.absNorm t.2.2.2.val:ℝ):ℝ):ℂ))*
+      paperKernel (Vstar W)
+        ((X/(27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c0*∏i,p i}):ℝ)^2))*
+          (ramifiedScale 1 completedRamifiedStep t.2.1)^3*
+          (Ideal.absNorm t.2.2.1.val:ℝ)*(Ideal.absNorm t.2.2.2.val:ℝ)^3)*
+      ((star D.fixedFactor*cuspBadPhase c0 hc0 (D.matrix (fun _=>1) 1 1) D.U
+        (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency t)))*
+          D.bracketProduct hp hg j
+            (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency t)))
+
+theorem smoothed_eq_reflected (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0)
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i}) (hchar:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (j:ι→ℕ) (hj:∀i,j i<6)
+    (W:ℝ→ℂ) (lo hi:ℝ) (hlo:0<lo) (hsupp:Function.support W⊆Set.Icc lo hi)
+    (hW:ContDiff ℝ ∞ W) (X:ℝ) (hX:0<X) :
+    D.smoothedValue hN hr hbase s hp hc0 hg j W X=D.reflectedValue s hp hc0 hg j W X := by
+  let (i:ι):Fintype (Eis⧸Ideal.span {p i}):=Fintype.ofFinite _
+  have hc:c0*(∏i,p i)≠0:=mul_ne_zero hc0 (Finset.prod_ne_zero_iff.mpr (fun i _=>hp i))
+  have hC:∀v,((D.sourceGamma hN hr hbase v:SL(2,Eis))*fixedCusp a0 c0 mode) 1 0=c0*∏i,p i := by
+    intro v
+    rw [D.sourceGamma_mul,D.denominator]
+  have he:=s.sum_smoothedKernel_integral_phase (D.sourceGamma hN hr hbase) _ hc hC
+    (fourierWeight hp hg j) W lo hi hlo hsupp hW X hX
+  change D.smoothedValue hN hr hbase s hp hc0 hg j W X=_ at he
+  rw [he]
+  unfold reflectedValue
+  apply congrArg (fun z:ℂ=>fixedRadialCoefficientScalar*s.stratumShapeFactor (c0*∏i,p i)*z)
+  apply tsum_congr
+  intro t
+  apply congrArg (fun z:ℂ=>
+    (s.amplitude t.1 t.2.1 t.2.2.1.val t.2.2.2.val /
+      ((ramifiedScale 1 completedRamifiedStep t.2.1*
+        Real.sqrt (Ideal.absNorm t.2.2.1.val:ℝ)*(Ideal.absNorm t.2.2.2.val:ℝ):ℝ):ℂ))*
+      paperKernel (Vstar W)
+        ((X/(27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c0*∏i,p i}):ℝ)^2))*
+          (ramifiedScale 1 completedRamifiedStep t.2.1)^3*
+          (Ideal.absNorm t.2.2.1.val:ℝ)*(Ideal.absNorm t.2.2.2.val:ℝ)^3)*z)
+  simpa only [multiplierSum,D.sourceGamma_character,D.sourceGamma_mul,map_mul] using
+    D.multiplierSum_eq hN hr hbase hp hc0 hcop hg hchar j hj
+      (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency t))
+
+end ControlledStratumArithmetic
+
+theorem exists_constructed_stratum_reflection {ι:Type*} [Fintype ι]
+    (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal] (hp:∀i,p i≠0)
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hprimary:∀i,lambda^2∣p i-1)
+    (hg:∀i,lambda∉Ideal.span {p i}) (hchar:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (N a0 c0:Eis) (hc0:c0≠0) (hN:(9:Eis)*c0∣N)
+    (mode:Bool) (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (hac:IsCoprime a0 c0) (hNp:∀i,IsCoprime N (p i)) :
+    ∃s:FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode),
+      ∃D:ControlledStratumArithmetic p N a0 c0 mode,
+      ∀j:ι→ℕ,(∀i,j i<6)→∀(W:ℝ→ℂ)(lo hi:ℝ),0<lo→
+        Function.support W⊆Set.Icc lo hi → ContDiff ℝ ∞ W→∀X:ℝ,0<X→
+        D.smoothedValue hN (primary_finset_product Finset.univ p (fun i _=>hprimary i))
+          hbase s hp hc0 hg j W X=D.reflectedValue s hp hc0 hg j W X := by
+  obtain ⟨s⟩:=exists_fixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode)
+  obtain ⟨D⟩:=exists_controlledStratumArithmetic p hp hcop hprimary N a0 c0 hc0 hN mode hbase hac hNp
+  refine ⟨s,D,?_⟩
+  intro j hj W lo hi hlo hsupp hW X hX
+  exact D.smoothed_eq_reflected hN _ hbase s hp hc0 hcop hg hchar j hj W lo hi hlo hsupp hW X hX
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

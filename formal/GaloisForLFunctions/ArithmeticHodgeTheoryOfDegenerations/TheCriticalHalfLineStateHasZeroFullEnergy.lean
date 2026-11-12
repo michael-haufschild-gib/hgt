@@ -81,6 +81,67 @@ theorem criticalHalfLineFullEnergy_nonpos {W₀ : ℝ} {F : ℝ → ℝ}
   filter_upwards [eventually_ge_atTop ⌈Real.exp factorialSpanGammaOffset⌉₊] with N hN
   exact hF.2.2.2.2.2.2 N ((Nat.le_ceil _).trans (by exact_mod_cast hN))
 
+/-- Polar positivity controls the full energy of every admissible profile,
+including zero-norm profiles. A vanishing auxiliary charge removes the
+nontriviality restriction without a separate almost-everywhere case. -/
+theorem criticalHalfLineFullEnergy_nonneg_of_halfLinePolarPositive {R : ℝ}
+    (hpos : HalfLinePolarPositive R) {F : ℝ → ℝ}
+    (hm : Measurable F) (h1 : Integrable F) (h2 : Integrable (fun u => F u ^ 2))
+    (hnorm : (∫ u, F u ^ 2) ≤ 1)
+    (h8 : Integrable (fun u => F u ^ 2 * Real.exp (-(8 * u))))
+    (hs : ∀ u, 0 ≤ u → F u = 0)
+    (hγ : Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r)) :
+    0 ≤ criticalHalfLineFullEnergy R F := by
+  let P : ℝ → ℝ := fun β => -(criticalHalfLineFullEnergy R F +
+    (∫ u, tiltedUnitSpline u ^ 2) * criticalPoleWindowCost R * β ^ 2 +
+    2 * (∫ u, tiltedUnitSpline u) * β * (∫ u, F u * polarSourceProfile u))
+  have hc : ContinuousAt P 0 := by dsimp only [P]; fun_prop
+  have hbound : ∀ᶠ β in 𝓝[>] (0 : ℝ), P β ≤ 0 := by
+    filter_upwards [self_mem_nhdsWithin] with β hβ
+    have hβpos : 0 < β := hβ
+    have hnonzero : 0 < (∫ u, F u ^ 2) + β ^ 2 :=
+      add_pos_of_nonneg_of_pos (integral_nonneg fun u => sq_nonneg _) (pow_pos hβpos 2)
+    obtain ⟨T, hT, hp⟩ := hpos F β hm h1 h2 hnorm h8 hs hnonzero
+    have hΓ := lowGammaForm_le_archForm_of_integrable hγ hT
+    dsimp only [P, criticalHalfLineFullEnergy]
+    dsimp only [truncatedWeilForm] at hp
+    linarith only [hp, hΓ]
+  have hh := le_of_tendsto
+    (hc.tendsto.mono_left (show 𝓝[>] (0 : ℝ) ≤ 𝓝 (0 : ℝ) from nhdsWithin_le_nhds)) hbound
+  simpa only [P, zero_pow (by omega : 2 ≠ 0), mul_zero, zero_mul, add_zero,
+    neg_nonpos] using hh
+
+/-- Equality of the thresholds gives a nonnegative full form on the
+entire normalized finite-energy half-line domain. -/
+theorem criticalHalfLineFullEnergy_nonneg_of_threshold_equality
+    {W₀ : ℝ} (hW : 0 < W₀)
+    (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    (hpolar : polarPaymentCriticalThreshold = (W₀ : EReal))
+    {F : ℝ → ℝ} (hm : Measurable F) (h1 : Integrable F)
+    (h2 : Integrable (fun u => F u ^ 2)) (hnorm : (∫ u, F u ^ 2) ≤ 1)
+    (h8 : Integrable (fun u => F u ^ 2 * Real.exp (-(8 * u))))
+    (hs : ∀ u, 0 ≤ u → F u = 0)
+    (hγ : Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r)) :
+    0 ≤ criticalHalfLineFullEnergy W₀ F := by
+  have hbelow := polarPaymentCriticalThreshold_eq_iInf_windowThreshold_iff_halfLinePolarPositive.mp
+    (hpolar.trans hthreshold.symm)
+  have hpos (R : ℝ) (hR : R ∈ Ioo 0 W₀) : 0 ≤ criticalHalfLineFullEnergy R F := by
+    have hRthreshold : (R : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A := by
+      rw [hthreshold, EReal.coe_lt_coe_iff]
+      exact hR.2
+    exact criticalHalfLineFullEnergy_nonneg_of_halfLinePolarPositive
+      (hbelow R hR.1 hRthreshold) hm h1 h2 hnorm h8 hs hγ
+  have hWne : W₀ ≠ 0 := hW.ne'
+  have hc : ContinuousAt (fun R : ℝ => -(criticalHalfLineFullEnergy R F)) W₀ := by
+    dsimp only [criticalHalfLineFullEnergy, criticalAliasCoefficient]
+    simp only [div_eq_mul_inv, mul_inv_rev]
+    fun_prop (disch := assumption)
+  have hh : -(criticalHalfLineFullEnergy W₀ F) ≤ 0 :=
+    le_of_tendsto (hc.tendsto.mono_left
+      (show 𝓝[<] W₀ ≤ 𝓝 W₀ from nhdsWithin_le_nhds))
+      (by filter_upwards [Ioo_mem_nhdsLT hW] with R hR; exact neg_nonpos.mpr (hpos R hR))
+  exact neg_nonpos.mp hh
+
 /-- At equality of the polar and window thresholds, every critical state
 has zero full energy. All integrability is supplied by the state itself. -/
 theorem criticalHalfLineFullEnergy_eq_zero_of_threshold_equality
@@ -89,33 +150,10 @@ theorem criticalHalfLineFullEnergy_eq_zero_of_threshold_equality
     (hpolar : polarPaymentCriticalThreshold = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
     criticalHalfLineFullEnergy W₀ F = 0 := by
-  have hbelow := polarPaymentCriticalThreshold_eq_iInf_windowThreshold_iff_halfLinePolarPositive.mp
-    (hpolar.trans hthreshold.symm)
-  have hpos (R : ℝ) (hR : R ∈ Ioo 0 W₀) : 0 < criticalHalfLineFullEnergy R F := by
-    have hRthreshold : (R : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A := by
-      rw [hthreshold, EReal.coe_lt_coe_iff]
-      exact hR.2
-    obtain ⟨T, hT, hp⟩ := hbelow R hR.1 hRthreshold F 0
+  exact le_antisymm (criticalHalfLineFullEnergy_nonpos hF)
+    (criticalHalfLineFullEnergy_nonneg_of_threshold_equality hW hthreshold hpolar
       hF.1 hF.2.1 hF.2.2.1 hF.2.2.2.1.le hF.2.2.2.2.1 hF.2.2.2.2.2.1
-      (by rw [hF.2.2.2.1]; norm_num)
-    simp only [zero_pow (by omega : 2 ≠ 0), mul_zero, zero_mul, add_zero] at hp
-    have hΓ := lowGammaForm_le_archForm_of_integrable
-      (integrable_gamma_of_criticalHalfLineGroundState hF) hT
-    dsimp only [truncatedWeilForm] at hp
-    dsimp only [criticalHalfLineFullEnergy]
-    linarith only [hp, hΓ]
-  have hWne : W₀ ≠ 0 := hW.ne'
-  have hc : ContinuousAt (fun R : ℝ => -(criticalHalfLineFullEnergy R F)) W₀ := by
-    dsimp only [criticalHalfLineFullEnergy, criticalAliasCoefficient]
-    simp only [div_eq_mul_inv, mul_inv_rev]
-    fun_prop (disch := assumption)
-  have hnonneg : 0 ≤ criticalHalfLineFullEnergy W₀ F := by
-    have hh : -(criticalHalfLineFullEnergy W₀ F) ≤ 0 :=
-      le_of_tendsto (hc.tendsto.mono_left
-        (show 𝓝[<] W₀ ≤ 𝓝 W₀ from nhdsWithin_le_nhds))
-        (by filter_upwards [Ioo_mem_nhdsLT hW] with R hR; exact neg_nonpos.mpr (hpos R hR).le)
-    linarith only [hh]
-  exact le_antisymm (criticalHalfLineFullEnergy_nonpos hF) hnonneg
+      (integrable_gamma_of_criticalHalfLineGroundState hF))
 
 /-- The unconditional threshold classification has an actual zero-energy
 state in its remaining case, with the established polar orthogonality retained. -/

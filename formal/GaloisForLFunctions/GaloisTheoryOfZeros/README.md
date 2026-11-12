@@ -456,6 +456,43 @@ The actual coordinate relations, gluing group, and membership of `1/2`
 in `Δ` remain undetermined.
 [Integral zero motive](TheIntegralZeroMotive.lean).
 
+### Prime-time sampling and exact algebraic identities
+
+The full zero motive has coordinate algebra `ℂ[Δ]`, whose basis elements
+`[z]` satisfy `[z][w]=[z+w]`. Each element has finite support in the entire
+integer zero group; the algebra itself has no height cutoff. Its complex
+algebra points are exactly the characters `Δ→ℂˣ`. This equivalence identifies
+the established exponential flow with evaluation `[z]↦exp(uz)`.
+
+Evaluation at prime times is injective even after any finite set of primes
+is discarded:
+
+```
+ℂ[Δ] → ∏_(p prime, p∉E) ℂ,       f ↦ (f(χ_log p))_p.
+```
+
+Every nonzero regular function is detected outside any prescribed finite
+prime set. Thus prime-time points are Zariski dense in the coordinate-algebra
+sense.
+For a regular function `f=Σ c_z[z]`, its flow evaluation is an entire finite
+exponential sum. Vanishing at every prime logarithm contradicts the linear
+zero-count bound for nonzero functions of finite exponential type:
+Chebyshev's prime count supplies exponentially many distinct zeros.
+A polynomial vanishing at the omitted logarithms restores the full sampling
+hypothesis without leaving finite exponential type. Independence of distinct
+exponential characters then forces every `c_z=0`.
+
+A polynomial in the zero coordinates therefore vanishes at all but finitely
+many prime times exactly when, for each exponent `z`, the coefficients of all
+its monomials with total zero exponent `z` sum to zero. These exponent collisions
+are the actual additive relations among the original zeros. Neither
+independence of ordinates nor simplicity of zeros is assumed.
+
+This gives faithful algebraic sampling and a complete relation test. It
+does not give a bounded sampling inverse, determine the relation group,
+or produce a purity criterion.
+[Prime-time density](ThePrimeTimePointsOfTheZeroMotive.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

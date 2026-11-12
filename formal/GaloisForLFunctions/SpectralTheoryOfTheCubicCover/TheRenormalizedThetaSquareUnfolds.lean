@@ -160,8 +160,8 @@ theorem cpow_mul_rpow_div (s : ℂ) (a : ℝ) (v : ℝ) (hv : 0 < v) :
 
 theorem low_power_integrand_eq (s : ℂ) (v : ℝ) (hv : 0 < v) :
     (v : ℂ) ^ s * (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3 =
-      (Set.Iio 2).indicator (fun v => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3)) v := by
-  by_cases h2 : v < 2
+      (Set.Iio 2).indicator (fun v : ℝ => (v : ℂ) ^ (s + ((4 : ℝ) / 3 : ℝ) - 3)) v := by
+  by_cases h2 : v ∈ Set.Iio (2 : ℝ)
   · rw [Set.indicator_of_mem h2, Set.indicator_of_mem h2, cpow_mul_rpow_div s _ v hv]
   · rw [Set.indicator_of_notMem h2, Set.indicator_of_notMem h2, mul_zero, zero_div]
 
@@ -205,31 +205,32 @@ theorem integral_growthProfile_full_eq (s : ℂ) (hs : 4 / 3 < s.re) :
     ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
       (2 : ℂ) ^ (4 / 3 - s) / (s - 4 / 3) := by
   have hpt : ∀ v ∈ Set.Ioi (0 : ℝ), growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
-      (Set.Ici 2).indicator (fun v => (v : ℂ) ^ (((4 : ℝ) / 3 : ℝ) + (2 - s) - 3)) v := by
+      (Set.Ici 2).indicator (fun v : ℝ => (v : ℂ) ^ (((4 : ℝ) / 3 : ℝ) + (2 - s) - 3)) v := by
     intro v (hv : 0 < v)
     by_cases h2 : v ∈ Set.Ici (2 : ℝ)
     · rw [growthProfile, Set.indicator_of_mem h2, Set.indicator_of_mem h2]
       have := cpow_mul_rpow_div (2 - s) ((4 : ℝ) / 3) v hv
-      rw [← this]
+      rw [show (((4 : ℝ) / 3 : ℝ) : ℂ) + (2 - s) - 3 = 2 - s + (((4 : ℝ) / 3 : ℝ) : ℂ) - 3 by ring, ← this]
       ring
     · rw [growthProfile, Set.indicator_of_notMem h2, Set.indicator_of_notMem h2, zero_mul, zero_div]
   have ha : (((4 : ℝ) / 3 : ℝ) + (2 - s) - 3 : ℂ).re < -1 := by
     simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.re_ofNat]
     linarith
   rw [setIntegral_congr_fun measurableSet_Ioi hpt, setIntegral_indicator measurableSet_Ici,
-    Set.Ioi_inter_Ici, show max (0 : ℝ) 2 = 2 by norm_num, integral_Ici_eq_integral_Ioi,
+    show Set.Ioi (0 : ℝ) ∩ Set.Ici 2 = Set.Ici 2 from
+      Set.inter_eq_right.mpr (fun v (hv : v ∈ Set.Ici (2 : ℝ)) => show (0 : ℝ) < v by
+        linarith [Set.mem_Ici.mp hv]),
+    integral_Ici_eq_integral_Ioi,
     integral_Ioi_cpow_of_lt ha (by norm_num)]
   have hne : s - 4 / 3 ≠ 0 := by
     intro h
     have := congrArg Complex.re h
-    simp only [Complex.sub_re, Complex.re_ofNat, Complex.zero_re] at this
+    simp only [Complex.sub_re, Complex.zero_re] at this
     norm_num at this
     linarith
   push_cast
-  rw [show (4 : ℂ) / 3 + (2 - s) - 3 + 1 = -(s - 4 / 3) by ring,
-    show (4 : ℂ) / 3 + (2 - s) - 3 + 1 = 4 / 3 - s by ring] at *
-  field_simp
-  ring_nf
+  rw [show (4 : ℂ) / 3 + (2 - s) - 3 + 1 = -(s - 4 / 3) by ring, neg_div_neg_eq,
+    show -(s - 4 / 3) = (4 : ℂ) / 3 - s by ring]
 
 /-! ### The cleared scattering coefficient -/
 
@@ -247,6 +248,7 @@ theorem sub_mul_scatterTotal (s : ℂ) (hs : 2 < s.re) :
   have hφdef : scatteringCoefficient s 0 = arithmeticDirichletSeries s 0 / cuspArea := rfl
   have hU' : unramifiedCubicGaussSeries s 0 =
       ((3 : ℂ) ^ (3 * s - 3) - 1) / 2 * (cuspArea * scatteringCoefficient s 0) := by
+    have hd' : (3 : ℂ) ^ (3 * (s - 1)) - 1 ≠ 0 := by rwa [show 3 * (s - 1) = 3 * s - 3 by ring]
     rw [hφdef, mul_div_cancel₀ _ hP, hU]
     field_simp
   rw [scatterTotal, clearedScatterTotal, hU', ← hφ]
@@ -264,11 +266,17 @@ theorem clearedScatterTotal_differentiableAt (s : ℂ) (hs : 1 < s.re) :
   have hcl : DifferentiableAt ℂ clearedScattering s :=
     clearedScattering_differentiableOn.differentiableAt
       ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs)
-  unfold clearedScatterTotal
   have hpow : DifferentiableAt ℂ (fun s : ℂ => (3 : ℂ) ^ (3 * s - 3)) s :=
     ((differentiableAt_id.const_mul 3).sub_const 3).const_cpow (Or.inl (by norm_num))
-  exact ((((differentiableAt_const _).div (differentiableAt_id.sub_const 1) hs1).mul
-    (differentiableAt_const _)).mul hcl |>.mul ((hpow.const_mul 3).sub_const 1)).div_const 2
+  have h0 : DifferentiableAt ℂ (fun s : ℂ => s - 1) s := differentiableAt_id.sub_const 1
+  have h1 : DifferentiableAt ℂ (fun s : ℂ => (Real.pi : ℂ) / (s - 1)) s :=
+    (differentiableAt_const _).div h0 hs1
+  have h3 : DifferentiableAt ℂ (fun s : ℂ => (Real.pi : ℂ) / (s - 1) * cuspArea * clearedScattering s) s :=
+    (h1.mul_const _).mul hcl
+  have h4 : DifferentiableAt ℂ (fun s : ℂ => 3 * (3 : ℂ) ^ (3 * s - 3) - 1) s :=
+    (hpow.const_mul 3).sub_const 1
+  have h5 := (h3.mul h4).div_const 2
+  exact h5
 
 /-- `Φ₀(4/3) = 12π |P| r`. -/
 theorem clearedScatterTotal_four_thirds :
@@ -279,6 +287,81 @@ theorem clearedScatterTotal_four_thirds :
   have h3 : (4 : ℂ) / 3 - 1 = 1 / 3 := by norm_num
   rw [h3]
   field_simp
+  ring
+
+/-! ### The Mellin identity -/
+
+/-- **The renormalized theta square against the Eisenstein series.** For `4 < Re s < 13/3`:
+`∫_{D_Γ} G E(s) = |P| M(s) D(s) + |P| c² 2^{s−2/3}/(s − 2/3) − c² Φ(s) 2^{4/3−s}/(s − 4/3)`. -/
+theorem integral_renormalized_mul_eisenstein (s : ℂ) (hs4 : 4 < s.re) (hs : s.re < 13 / 3) :
+    ∫ w in levelSet, renormalizedThetaSq w * hyperbolicEisenstein s w ∂hyperbolicVolume =
+      periodArea * (besselSqMellin s * thetaSqDirichlet s) +
+        periodArea * thetaCoeff ^ 2 * ((2 : ℂ) ^ (s - 2 / 3) / (s - 2 / 3)) -
+          thetaCoeff ^ 2 * scatterTotal s * ((2 : ℂ) ^ (4 / 3 - s) / (s - 4 / 3)) := by
+  have hσ2 : 2 < s.re := by linarith
+  have hψ : ∀ v : ℝ, 0 < v → ‖(v : ℂ) ^ s‖ ≤ v ^ s.re := fun v hv =>
+    le_of_eq (Complex.norm_cpow_eq_rpow_re_of_pos hv s)
+  have hint := renormalized_integrableOn_unfolded (fun t => (t : ℂ) ^ s)
+    (Complex.measurable_ofReal.pow_const s) hσ2 hs hψ
+  rw [integral_mul_hyperbolicEisenstein_eq_constantTerm renormalizedThetaSq renormalizedThetaSq_automorphy
+    s hint]
+  set A : ℝ → ℂ := fun v => (v : ℂ) ^ s * cuspConstantTerm renormalizedThetaSq v / (v : ℂ) ^ 3 with hAdef
+  change ∫ v in Set.Ioi (0 : ℝ), A v = _
+  -- integrability of the constant-term integrand, from the strip coordinates
+  have hA : IntegrableOn A (Set.Ioi 0) := by
+    have h := (cuspStrip_coordinates _ hint).1
+    rw [IntegrableOn, show (volume : Measure (ℝ × ℂ)) = (volume : Measure ℝ).prod volume from rfl,
+      ← Measure.prod_restrict] at h
+    have h2 : IntegrableOn (fun v : ℝ => ∫ z in periodDomain,
+        unfolded renormalizedThetaSq (fun t => (t : ℂ) ^ s) (cuspCoordinateLift (v, z)) / (v : ℂ) ^ 3)
+        (Set.Ioi 0) := h.integral_prod_left
+    refine h2.congr_fun (fun v (hv : 0 < v) => ?_) measurableSet_Ioi
+    have hh : ∀ z, unfolded renormalizedThetaSq (fun t => (t : ℂ) ^ s) (cuspCoordinateLift (v, z)) =
+        renormalizedThetaSq (cuspCoordinateLift (v, z)) * (v : ℂ) ^ s := fun z => by
+      rw [unfolded, cuspCoordinateLift_positive v z hv, hyperbolicHeight_upperPoint]
+    simp only [hh, hAdef, cuspConstantTerm]
+    rw [integral_div, integral_mul_const]
+    ring
+  have hB := integrableOn_low_power s (by linarith)
+  have hC := integrableOn_scatterPart thetaCoeff (Set.Ici 2) le_rfl measurableSet_Ici s (by linarith)
+  have hP : periodArea ≠ 0 := Complex.ofReal_ne_zero.mpr periodAreaReal_pos.ne'
+  have hpt : ∀ v ∈ Set.Ioi (0 : ℝ), A v =
+      periodArea * ((v : ℂ) ^ s * thetaSqRemainder v / (v : ℂ) ^ 3) +
+        periodArea * thetaCoeff ^ 2 * ((v : ℂ) ^ s *
+          (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3) -
+        (v : ℂ) ^ s * scatterPart thetaCoeff (Set.Ici 2) v / (v : ℂ) ^ 3 := by
+    intro v (hv : 0 < v)
+    have hg : growthProfile (Set.Ici 2) v = ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ) -
+        (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v := by
+      by_cases h : v < 2
+      · rw [growthProfile, Set.indicator_of_notMem (show v ∉ Set.Ici (2 : ℝ) from fun h' => by
+          linarith [Set.mem_Ici.mp h']), Set.indicator_of_mem (show v ∈ Set.Iio (2 : ℝ) from h), sub_self]
+      · rw [growthProfile, Set.indicator_of_mem (show v ∈ Set.Ici (2 : ℝ) from not_lt.mp h),
+          Set.indicator_of_notMem (show v ∉ Set.Iio (2 : ℝ) from h), sub_zero]
+    simp only [hAdef, scatterPart]
+    rw [cuspConstantTerm_renormalized v hv, hg]
+    ring
+  set Rf : ℝ → ℂ := fun v => (v : ℂ) ^ s * thetaSqRemainder v / (v : ℂ) ^ 3 with hRfdef
+  set Bf : ℝ → ℂ := fun v => (v : ℂ) ^ s *
+    (Set.Iio 2).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v / (v : ℂ) ^ 3 with hBfdef
+  set Cf : ℝ → ℂ := fun v => (v : ℂ) ^ s * scatterPart thetaCoeff (Set.Ici 2) v / (v : ℂ) ^ 3 with hCfdef
+  have hcomb : IntegrableOn (fun v => periodArea⁻¹ * (A v - periodArea * thetaCoeff ^ 2 * Bf v + Cf v))
+      (Set.Ioi 0) :=
+    ((hA.sub (hB.const_mul (periodArea * thetaCoeff ^ 2))).add hC).const_mul periodArea⁻¹
+  have hR : IntegrableOn Rf (Set.Ioi 0) := by
+    refine IntegrableOn.congr_fun hcomb (fun v hv => ?_) measurableSet_Ioi
+    simp only
+    rw [hpt v hv]
+    field_simp
+    ring
+  have hR' : IntegrableOn (fun v => periodArea * Rf v) (Set.Ioi 0) := hR.const_mul _
+  have hB' : IntegrableOn (fun v => periodArea * thetaCoeff ^ 2 * Bf v) (Set.Ioi 0) := hB.const_mul _
+  have hRB : IntegrableOn (fun v => periodArea * Rf v + periodArea * thetaCoeff ^ 2 * Bf v) (Set.Ioi 0) :=
+    hR'.add hB'
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_sub hRB hC, integral_add hR' hB',
+    integral_const_mul, integral_const_mul, hRfdef, hBfdef, hCfdef,
+    integral_thetaSqRemainder s hs4, integral_low_power s (by linarith),
+    integral_scatterPart thetaCoeff s (by linarith), integral_growthProfile_full_eq s (by linarith)]
   ring
 
 end GaloisForLFunctions.SpectralTheoryOfTheCubicCover

@@ -148,6 +148,7 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderExceptional` | pure moments `∫\|Q_u\|^{2k} ≤ 144(18k/H')^k`; Markov measure of the exceptional set; `∫_E\|ΣQ*R*\|² ≤ #Vρ²Σ∫_E\|R*\|²` | compiled |
 | `LadderHM` | `∫_E\|R_v\|² ≤ (2π)^{-1} hmMassRecip(⌊4lo⌋, 2πW, 2π\|E\|)·4/lo` (corpus set-integral Halász–Montgomery) | compiled |
 | `LadderRouteT` | `λχ` completely multiplicative, `\|λχ\| ≤ 1`; top-scale blocks are prime intervals with ratio `≤ 2`; `\|Q_v(w)\| ≤ (log X)^{-A}` for `2π\|w\| ≤ X` | compiled |
+| `LadderCover` | every frequency lies in `small_0`, some `small_j ∖ small_{j−1}`, or `small_{J−1}ᶜ`; integrated cover inequality | compiled |
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery
