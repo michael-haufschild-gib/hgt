@@ -29,10 +29,10 @@ a positive multiple of the sum of the two resolvent norms.
 
 ## Exact missing inputs
 
-- Full Gamma admission of the actual undamped resolvent near its cancelled Fourier pole.
-- The neutral complex moment law with integrability of the actual resolvent derived from the weighted domain.
+- The neutral complex moment law for the admitted undamped resolvent.
+- Linear Fourier decay of that resolvent, hence actual Gamma admission.
 - Exact vanishing of the symmetric prime/Gamma and pole mixed terms.
-- The positive weighted mixed identity and its use in the actual weak equation.
+- Admission of the real conjugate-resolvent test in the actual weak equation and application of the verified weighted mixed identity.
 
 ## Corpus inputs
 
@@ -41,7 +41,7 @@ a positive multiple of the sum of the two resolvent norms.
 - `RHTower.WeilHerglotz.continuous_gammaBracket`: local Gamma control near each cancelled Fourier pole.
 - `RHTower.integrable_expWeight_of_memLp_two`: reflected weighted L² data admit L¹ after removing part of the exponential weight.
 - `RHTower.WeilSpectral.abs_gammaBracket_le_sqrt`: linear Fourier decay makes the Gamma density integrable with a `(1+|r|)^(-3/2)` majorant; the domination proof occurs in `tendsto_archPoleEnergy_truncTest`.
-- `integral_causalExponential_reflection_energy` with zero rate shift: expanding its norm identity gives `Re ∫ conj(g) Kₓg = x ∫ |Kₓg|²`. Modulation and exponential weighting transfer this to the undamped weighted mixed term.
+- `integral_weighted_modulatedCausalConvolution_mixed_energy`: the exact positive-coefficient mixed identity, including undamped rates.
 
 The neutral moment proof can use actual resolvent L¹ admission: approach
 the imaginary axis through positive real parts and apply the verified
@@ -52,8 +52,8 @@ Gamma admission directly from the square-root Gamma bound.
 
 No imaginary-axis nonvanishing theorem is claimed.
 
-Support in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`:
+The [boundary-support results](../3-formalized/undamped-causal-resolvent-domain-and-weighted-mixed-energy.md) are formalized in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`:
 
 - `GammaIntegrabilityFromLinearFourierDecay`: Gamma admission from spectral decay; Lean verified.
 - `UndampedCausalResolventBasicDomain`: actual L¹∩L² admission at an imaginary-axis zero; Lean verified.
-- `CausalResolventMixedEnergy`: exact mixed energy, including the weighted undamped case; written, unchecked.
+- `CausalResolventMixedEnergy`: exact mixed energy, including the weighted undamped case; Lean verified.
