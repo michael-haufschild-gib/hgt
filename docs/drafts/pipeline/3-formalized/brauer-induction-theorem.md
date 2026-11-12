@@ -1,7 +1,7 @@
 # Brauer's induction theorem
 
 - **ID:** A150-brauer
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (classical; formalization)
 - **Source:** `docs/reports/review-1211/obstacles-summary.md` §2.1 (A150), §2.14 question 4
 - **Statement:** for a finite group `G`, every virtual character is an integer combination of
@@ -11,10 +11,11 @@
 
 ## Goal
 
-The integral monomial span of the virtual characters. For the index law of an Artin character
-the rational statement suffices and is proved (`exists_nsmul_mem_closure_monomial`,
+The integral monomial span of the virtual characters: proved in Lean as `brauer_induction`
+(`formal/GaloisForLFunctions/RHTower/Artin/ArtinBrauerInductionTheorem.lean`). For the index law
+of an Artin character the rational statement suffices (`exists_nsmul_mem_closure_monomial`,
 `exists_le_negIndex_power_iff`; card `3-formalized/agz-virtual-character-index-law.md`, V9). The
-integral statement is needed for the function `L(s, χ)` itself. Both uses also need the
+integral statement is the one needed for the function `L(s, χ)` itself. Both uses also need the
 reciprocity law (the `L`-function of an induced linear character is a Hecke `L`-function), which
 is class field theory and is not in the corpus.
 
@@ -42,9 +43,9 @@ is class field theory and is not in the corpus.
   `p`-elementary subgroups
 - [x] B8 the virtual characters are spanned over `ℤ` by characters induced from elementary
   subgroups
-- [ ] B9 every irreducible character of a Brauer-elementary group is induced from a linear
-  character of a subgroup
-- [ ] B10 the theorem
+- [x] B9 every character of a finite nilpotent group, in particular of a Brauer-elementary
+  group, is an integer combination of characters induced from linear characters of subgroups
+- [x] B10 the theorem
 
 ## Approach
 
@@ -146,6 +147,13 @@ Folder `formal/GaloisForLFunctions/RHTower/Artin/`.
 | B6 | `ArtinElementarySubgroupOfARegularElement`, `ArtinClassFunctionOfARegularElement` | done: `elementaryHom_injective`, `elementarySubgroup`, `elementaryEquiv`, `eq_one_of_regular_mul`, `brauerElementaryFamily`, `elementarySubgroup_mem_brauerElementaryFamily`, `zpowers_mem_brauerElementaryFamily`, `centralizerSylow`, `not_dvd_centralizerSylowIndex`; `mem_linearIntSpan_of_card_mul`, `inducedFunction_mem_inducedSpanInt`, `elementarySpike`, `elementaryClassFunction`, `exists_nat_elementaryClassFunction`, `elementaryClassFunction_eq_zero`, `card_mul_elementaryClassFunction_self`, `regularClassFunction_self` |
 | B7 | `ArtinRegularClassSum`, `ArtinBrauerElementarySpan` | done: `exists_regular_part`, `regularClassSum`, `regularClassSum_of_regular`, `exists_nat_not_dvd_regularClassSum`; `ordCompl_mem_inducedSpanInt` |
 | B8 | `ArtinBrauerElementarySpan` | done: `one_mem_inducedSpanInt_brauerElementary`, `inducedSpan_brauerElementaryFamily` (`inducedSpan (brauerElementaryFamily G) = virtualCharacterGroup G`; axioms `propext`, `Classical.choice`, `Quot.sound`) |
+| B9a | `ArtinMonomialSpan` | done: `monomialSpan`, `inducedFunction_inducedFunction` (induction in stages), `inducedFunction_mem_monomialSpan`, `inducedFunction_comap` (inflation), `comp_mem_monomialSpan`, `fdCharacterSet_subset_monomialSpan_of_comm` |
+| B9b | `ArtinRangeOfACommutingIdempotent` | done: `rangeRepresentation`, `rangeRepresentation_character`, `trace_mul_idempotent_mem_fdCharacterSet` |
+| B9c | `ArtinIdempotentsOfAnAbelianNormalSubgroup` | done: `sum_linearCharacter_apply`, `conjCharacterAction`, `isotypicProjector`, `isotypicProjector_mul`, `sum_isotypicProjector`, `apply_mul_isotypicProjector_mul_apply_inv`, `isotypicTrace`, `isotypicTrace_eq_zero`, `isotypicTrace_mem_fdCharacterSet_stabilizer` |
+| B9d | `ArtinOrbitDecompositionOfACharacter` | done: `sum_eq_sum_orbit_representatives`, `stabilizerInduced`, `card_mul_stabilizerInduced`, `character_eq_sum_stabilizerInduced` |
+| B9e | `ArtinScalarActionAndTheCommutatorQuotient` | done: `rangeRepresentation_apply_of_scalar`, `exists_character_quotient_commutator` |
+| B9f | `ArtinNilpotentGroupsAreMonomial` | done: `exists_commutator_mem_center_not_mem_center`, `centerZpowers`, `exists_normal_comm_not_le_center`, `fdCharacterSet_subset_monomialSpan_of_nilpotent` |
+| B10 | `ArtinBrauerInductionTheorem` | done: `BrauerElementarySubgroup.isNilpotent`, `mem_brauerElementaryFamily_of_le`, `brauerMonomialSpan_eq`, `brauer_induction` (`AddSubgroup.closure (Set.range (brauerElementaryMonomialVirtualCharacter G)) = ⊤`; axioms `propext`, `Classical.choice`, `Quot.sound`) |
 
 ## Log
 - 2026-11-12 — created; plan fixed
@@ -154,5 +162,6 @@ Folder `formal/GaloisForLFunctions/RHTower/Artin/`.
 - 2026-11-12 — B4 formalized
 - 2026-11-12 — B5 formalized
 - 2026-11-12 — B3 formalized
-- 2026-11-12 — B6, B7, B8 formalized: Brauer's theorem on elementary subgroups. Remaining: B9
-  (monomiality on elementary groups), B10 (transitivity of induction, the monomial form).
+- 2026-11-12 — B6, B7, B8 formalized: Brauer's theorem on elementary subgroups
+- 2026-11-12 — B9, B10 formalized: monomiality of nilpotent groups and `brauer_induction`. All
+  gates closed; card moved to `3-formalized`.

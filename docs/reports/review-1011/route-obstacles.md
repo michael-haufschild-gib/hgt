@@ -62,7 +62,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | M9 Production | integer stencils, integrality, Stepanov over ℤ | rate = Mertens level; exact count = Chebyshev; cost `m·θ(S)` |
 | M10 Count | nonnegative count with quadratic Tate limit | every hyperelliptic curve; over ℤ: RH ⇔ counts on the surviving prime rays; the object's own count is the split norm |
 | M11 Orbit at finite time | prime phases, returns, resonators | depth by Baker; breadth to VK; resonator means to `κ<2σ−1` |
-| M12 Critical compactness | thresholds, pole channel, half-line ground states | threshold identities; three-way classification; actual full-domain zero energy and weak equation; no positive real Laplace zero, without polar-threshold equality [L] |
+| M12 Critical compactness | thresholds, pole channel, half-line ground states | threshold identities; three-way classification; actual full-domain zero energy and weak equation; no positive real Laplace zero and uniqueness up to sign, without polar-threshold equality [L] |
 | M13 Topology of the prime complex | nerve, persistence, orientation cover | centred count `M(N)`; weight `½` ⇔ RH |
 | M14 Infinite-rank elimination | towers, thick sets, Turán, resolvent of a tower | elimination proved; with an attained top a thick crude count is RH |
 | M15 Prime-degree sampling | logarithmic windows, exceptions, upper side, counts, moments | complete receiver; resolution logarithmic at the level of configurations |
@@ -90,6 +90,7 @@ Established:
 - A critical half-line ground state with nonzero polar pairing forces `R_polar<W` [L*].
 - Every actual critical half-line state has full Gamma/logarithmic energy, causal coordinates, zero full energy and a weak equation against every finite-energy half-line test, without polar-threshold equality [L]. [Proof](../../drafts/pipeline/3-formalized/critical-half-line-states-have-causal-logarithmic-coordinates.md). The polar pairing remains undecided (B104).
 - Every actual critical state has nonzero Laplace value at every positive real argument, without positivity or polar-threshold equality [L]. A positive Laplace zero would permit an admissible reflection preserving Gamma, prime and pole energy while strictly reducing exponential mass. [Proof](../../drafts/pipeline/3-formalized/critical-half-line-states-have-no-positive-laplace-zero.md).
+- Actual normalized critical states are unique up to sign almost everywhere. At every `s>0`, `F=(L_F(s)/L_G(s))G`; the weak equation and Laplace-zero exclusion force this relation [L]. [Proof](../../drafts/pipeline/3-formalized/critical-half-line-ground-states-are-unique-up-to-sign.md).
 - Complete tilted-spline matrix positive for every subcritical exponent `<1/8` [L], and at `c≤2K₀(log N)^{1/8}` [K]; no countable square-bounded family of holomorphic multipliers dominates the depleted kernel [L].
 
 | | Obstacle | Strength |
@@ -97,7 +98,7 @@ Established:
 | A9 | explicit constants of the eighth-root horizon and the Beurling schedule | — |
 | A13 | near-gcd charges and periods beyond the admissible scale (unverified) | — |
 | B6, B101 | full-space sign at every critical multiple; polar payment at every ratio | RH |
-| B104 | whether a critical half-line ground state at finite `W` can be polar-orthogonal | method |
+| B104 | whether the unique critical-state line at finite `W` can be polar-orthogonal | method |
 | B123 | correlated arithmetic pairings dominating the depleted kernel | method |
 
 ### S2. Window tower, canonical flow and the aperture–height exchange

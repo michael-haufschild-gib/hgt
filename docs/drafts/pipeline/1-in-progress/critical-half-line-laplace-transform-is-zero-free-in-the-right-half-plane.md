@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** B104; complex factorization of the actual critical-state line.
 - **Statement:** Every actual critical half-line state F at a finite global window threshold has `∫ F(u) exp(zu) du ≠ 0` whenever `Re z>0`.
-- **Status:** Unproved. The positive-real-axis case is verified; uniqueness is being formalized separately.
+- **Status:** Unproved. Positive-real-axis nonvanishing and uniqueness up to sign are verified. Complex-rate support modules are written, unchecked.
 
 ## Proposed connection
 
@@ -25,6 +25,18 @@ an outer factorization or regularity of the actual state.
 - `HTGeometry/WeightedCausalExponentialReflection`: verified real-rate weighted norm defect.
 - `HTGeometry/CausalExponentialLaplaceReflection`: verified two-sided kernel representation and resonance-inclusive moment laws.
 - Verified real-state input: `TheCriticalHalfLineStateHasNoPositiveLaplaceZero`.
+
+Verified:
+
+- `HTGeometry/NegativeHalfLineLaplaceContinuity`: actual L¹ admission and continuity on the closed right half-plane.
+- `HTGeometry/ModulatedCausalExponentialReflection`: literal modulation, L¹/L² closure and resolvent conjugacy.
+
+Written, unchecked:
+
+- `HTGeometry/ModulatedCausalReflectionEnergy`: weighted L² closure, exact norm defect and real-frequency modulus preservation.
+- `HTGeometry/ModulatedCausalLaplaceReflection`: complex rate and support preservation at one complex Laplace zero.
+- `HTGeometry/ComplexCausalLaplaceWeight`: complex kernel admission, exact kernel mass and stable-side moment law.
+- `HTGeometry/ComplexCausalLaplaceDuality`: lower/upper Laplace tails and the anti-causal representation at a complex zero.
 
 Missing: modulated resolvent laws; preservation of the conjugate zero after
 the first reflection; real representative of the composed reflection;

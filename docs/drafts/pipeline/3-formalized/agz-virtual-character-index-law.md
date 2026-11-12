@@ -16,7 +16,8 @@
 - [x] V3 attainment for a disjoint pair
 - [x] V4 cancellation to a disjoint pair
 - [x] V5 the law; quotients of products; the relative square of two number rings
-- [ ] V6 Brauer's theorem and the identification of induced characters with Hecke characters
+- [ ] V6 the identification of induced characters with Hecke characters (Brauer's theorem is
+  proved: card `3-formalized/brauer-induction-theorem.md`, `brauer_induction`)
 - [x] V7 zeros minus poles: the neutral form of `ℤ` and of every number ring has index one plus
   the number of zeros right of the line
 - [x] V8 the contacts of a number ring are its point counts over the finite fields; the relative
@@ -118,7 +119,8 @@ denominator `N` and `z = Nc` integral: `η = Σ z_q μ_q` has `⟨η, μ_{q'}⟩
 The index of a virtual configuration counts points: where the net multiplicity is not zero
 right of the line, where it is negative on the line. So `n` copies of two families have the
 index of the families, and the index law of a character needs `nχ` in the monomial lattice
-only. The integral statement (Brauer) is needed for the function `L(s, χ)`, not for the index.
+only. The integral statement (Brauer, `brauer_induction`) gives the function `L(s, χ)` itself as
+a quotient; the index does not need it.
 
 ## Lean
 
@@ -140,7 +142,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 
 - V6. With reciprocity (the `L`-function of an induced linear character is a Hecke
   `L`-function) and V9, a power of `L(s, ρ)` of an Artin character is a quotient of products of
-  Hecke `L`-functions; with Brauer's theorem `L(s, ρ)` itself is. The law reads: the index of `ρ` is the number of zeros and
+  Hecke `L`-functions; with Brauer's theorem (proved) `L(s, ρ)` itself is. The law reads: the index of `ρ` is the number of zeros and
   poles of `L(s, ρ)` right of the line plus the number of its poles on the line; Bézout for `ρ`
   is the Riemann hypothesis of `L(s, ρ)` with Artin's conjecture on the line.
 - The pairing at finite scale of a virtual character with members that are not trivial

@@ -1187,7 +1187,7 @@ theorem not_le_sqrt_log_of_missing_multiples {a : ℕ → ℂ}
       Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))
     have hsec : 0 ≤ c ^ 2 * ((Real.log T + |t| / T) * Real.exp (-(|t| / T))) := by positivity
     by_cases ht : |t| ≤ t₂
-    · rw [indicator_of_mem (abs_le.mp ht)]
+    · rw [indicator_of_mem (show t ∈ Icc (-t₂) t₂ from abs_le.mp ht)]
       have hb : ‖g t‖ ≤ Cg * (1 + t₂) ^ Ng :=
         (hgb t).trans (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity)
           (by linarith) Ng) hCg)
@@ -1245,7 +1245,10 @@ theorem not_le_sqrt_log_of_missing_multiples {a : ℕ → ℂ}
       calc ‖g t‖ ^ 2 * Real.exp (-((1 / T) * |t|))
           ≤ Cg ^ 2 * (1 + |t|) ^ (2 * Ng) * Real.exp (-((1 / T) * |t|)) := by gcongr
         _ = _ := by ring
-    have hle := integral_mono ig (iind.add (ilog.const_mul (c ^ 2))) (hmaj T hT)
+    have hle : ∫ t : ℝ, ‖g t‖ ^ 2 * Real.exp (-(|t| / T)) ≤
+        ∫ t : ℝ, ((Icc (-t₂) t₂).indicator (fun _ => K₁) t +
+          c ^ 2 * ((Real.log T + |t| / T) * Real.exp (-(|t| / T)))) :=
+      integral_mono ig (iind.add (ilog.const_mul (c ^ 2))) (hmaj T hT)
     rw [integral_add iind (ilog.const_mul _), integral_const_mul, integral_log_add_mul_exp hT0,
       integral_indicator measurableSet_Icc, setIntegral_const, smul_eq_mul,
       measureReal_def, Real.volume_Icc, ENNReal.toReal_ofReal (by linarith)] at hle
@@ -1253,8 +1256,8 @@ theorem not_le_sqrt_log_of_missing_multiples {a : ℕ → ℂ}
   -- a large `T` contradicts the logarithmic lower bound
   set δ₀ : ℝ := A ^ 2 / (256 * Real.pi * p) - 2 * c ^ 2 with hδ₀
   have hδ₀0 : 0 < δ₀ := by
-    have : A ^ 2 / (512 * Real.pi * p) ≤ A ^ 2 / (256 * Real.pi * p) := by
-      gcongr; norm_num
+    have : A ^ 2 / (512 * Real.pi * p) ≤ A ^ 2 / (256 * Real.pi * p) :=
+      div_le_div_of_nonneg_left (by positivity) (by positivity) (by nlinarith)
     linarith
   set T : ℝ := max (max T₀ 1) (Real.exp ((2 * t₂ * K₁ + 2 * c ^ 2 + 1) / δ₀)) with hTdef
   have hT1 : 1 ≤ T := (le_max_right _ _).trans (le_max_left _ _)
@@ -1264,7 +1267,8 @@ theorem not_le_sqrt_log_of_missing_multiples {a : ℕ → ℂ}
   have hlogT : (2 * t₂ * K₁ + 2 * c ^ 2 + 1) / δ₀ ≤ Real.log T := by
     rw [Real.le_log_iff_exp_le hT0]; exact le_max_right _ _
   have hlogT' : 2 * t₂ * K₁ + 2 * c ^ 2 + 1 ≤ δ₀ * Real.log T := by
-    rwa [div_le_iff₀ hδ₀0, mul_comm] at hlogT
+    rw [div_le_iff₀ hδ₀0] at hlogT
+    linarith
   have hK : 0 ≤ 2 * t₂ * K₁ := by positivity
   have key : δ₀ * (T * Real.log T) ≤ 2 * t₂ * K₁ + 2 * c ^ 2 * T := by
     have e : δ₀ * (T * Real.log T) = A ^ 2 / (256 * Real.pi * p) * (T * Real.log T) -
@@ -1304,5 +1308,215 @@ theorem not_bounded_of_missing_multiples {a : ℕ → ℂ}
     _ ≤ |M| := le_abs_self M
     _ = c * (|M| / c) := by field_simp
     _ ≤ c * Real.sqrt (Real.log |t|) := by gcongr
+
+/-! ## The pole parameter is half the density -/
+
+/-- On the positive axis `‖L_a(ε)‖ ≤ (ε/π) Σ ‖a_n‖/n²`. -/
+theorem norm_hamburgerSeries_ofReal_le {a : ℕ → ℂ}
+    (ha : Summable fun n : ℕ => ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) {ε : ℝ} (hε : 0 < ε) :
+    ‖hamburgerSeries a ε‖ ≤
+      ε / Real.pi * ∑' n : ℕ, ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+  have hpi := Real.pi_pos
+  have hpt : ∀ n : ℕ, ‖a (n + 1) * (ε : ℂ) / ((Real.pi : ℂ) * (((n + 1 : ℕ) : ℂ) ^ 2 +
+      (ε : ℂ) ^ 2))‖ ≤ ε / Real.pi * (‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) := by
+    intro n
+    have e : (Real.pi : ℂ) * (((n + 1 : ℕ) : ℂ) ^ 2 + (ε : ℂ) ^ 2) =
+        ((Real.pi * (((n + 1 : ℕ) : ℝ) ^ 2 + ε ^ 2) : ℝ) : ℂ) := by push_cast; ring
+    have hk : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+    rw [e, norm_div, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_of_nonneg hε.le,
+      Real.norm_of_nonneg (by positivity)]
+    rw [div_le_iff₀ (by positivity)]
+    have : ‖a (n + 1)‖ * ε ≤ ε / Real.pi * (‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) *
+        (Real.pi * ((n + 1 : ℕ) : ℝ) ^ 2) := by
+      field_simp; rfl
+    have h2 : ε / Real.pi * (‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) *
+        (Real.pi * ((n + 1 : ℕ) : ℝ) ^ 2) ≤ ε / Real.pi * (‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) *
+        (Real.pi * (((n + 1 : ℕ) : ℝ) ^ 2 + ε ^ 2)) := by gcongr; linarith [sq_nonneg ε]
+    linarith
+  have hmaj : Summable fun n : ℕ => ε / Real.pi * (‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) :=
+    ha.mul_left _
+  have hnorms := hmaj.of_nonneg_of_le (fun n => norm_nonneg _) hpt
+  unfold hamburgerSeries
+  calc _ ≤ _ := norm_tsum_le_tsum_norm hnorms
+    _ ≤ _ := Summable.tsum_le_tsum hpt hnorms hmaj
+    _ = _ := tsum_mul_left
+
+/-- `ε e^{-2πε}/(1 - e^{-2πε})` is within `ε` of `1/(2π)`. -/
+theorem abs_mul_exp_div_sub_le {ε : ℝ} (hε : 0 < ε) :
+    |ε * Real.exp (-(2 * Real.pi * ε)) / (1 - Real.exp (-(2 * Real.pi * ε))) -
+      1 / (2 * Real.pi)| ≤ ε := by
+  have hpi := Real.pi_pos
+  set u : ℝ := 2 * Real.pi * ε with hu
+  have hu0 : 0 < u := by positivity
+  have he := Real.add_one_le_exp u
+  have hm := Real.add_one_le_exp (-u)
+  have hprod : Real.exp (-u) * Real.exp u = 1 := by rw [← Real.exp_add]; simp
+  have hp := Real.exp_pos (-u)
+  have h1 : u * Real.exp (-u) ≤ 1 - Real.exp (-u) := by nlinarith
+  have h2 : 1 - Real.exp (-u) ≤ u := by linarith
+  have hd : 0 < 1 - Real.exp (-u) := lt_of_lt_of_le (by positivity) h1
+  have hε' : ε = u / (2 * Real.pi) := by rw [hu]; field_simp
+  rw [hε']
+  have e : u / (2 * Real.pi) * Real.exp (-u) / (1 - Real.exp (-u)) - 1 / (2 * Real.pi) =
+      (u * Real.exp (-u) - (1 - Real.exp (-u))) / (2 * Real.pi * (1 - Real.exp (-u))) := by
+    field_simp
+  rw [e, abs_div, abs_of_pos (by positivity : 0 < 2 * Real.pi * (1 - Real.exp (-u))),
+    abs_of_nonpos (by linarith), div_le_div_iff₀ (by positivity) (by positivity)]
+  -- `(1 - e^{-u} - u e^{-u}) · 2π ≤ u · 2π (1 - e^{-u})`
+  have h3 : 1 - Real.exp (-u) - u * Real.exp (-u) ≤ u * (1 - Real.exp (-u)) := by nlinarith
+  nlinarith
+
+/-- **The pole parameter is half the density.**  If `N_a(n) = A n + o(n)`, then `β = A/2`.
+On the positive axis `ε L_a(ε) → 0` and `ε J_g(ε) → 0`, while Abel summation gives
+`ε F_a(ε) → A/(2π)`; the Hamburger identity then reads `0 = A/(2π) - β/π`. -/
+theorem pole_eq_half_density {a : ℕ → ℂ}
+    (ha : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => ‖a (n + 1)‖ / ((n : ℝ) + 1) ^ σ)
+    {β : ℂ} {g : ℝ → ℂ} (hH : HamburgerStripDefect (coeffDirichlet a) β g) {A : ℝ}
+    (hN : ∀ η : ℝ, 0 < η → ∃ C : ℝ, ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ η * n + C) :
+    β = A / 2 := by
+  have hpi := Real.pi_pos
+  obtain ⟨-, -, -, -, -, -, -, hgm, Cg, Ng, hgb⟩ := id hH
+  have hgm' := hgm.aestronglyMeasurable (μ := volume)
+  have ha2 : Summable fun n : ℕ => ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+    simpa using summable_sq_of_forall_rpow ha
+  set S : ℝ := ∑' n : ℕ, ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2 with hS
+  set M₂ : ℝ := abelMass g 2 with hM₂
+  set D : ℝ := ‖β / Real.pi - (A : ℂ) / (2 * Real.pi)‖ with hD
+  -- for every `η > 0`, `D ≤ 2η/π`
+  have hηb : ∀ η : ℝ, 0 < η → D ≤ 2 * η / Real.pi := by
+    intro η hη
+    obtain ⟨C₀, hC₀⟩ := hN η hη
+    have hC : 0 ≤ max C₀ 0 := le_max_right _ _
+    have hNC : ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ η * n + max C₀ 0 :=
+      fun n => (hC₀ n).trans (by linarith [le_max_left C₀ 0])
+    have hK : ∀ n, ‖coeffSum a n‖ ≤ (η + |A| + max C₀ 0) * ((n : ℝ) + 1) := by
+      intro n
+      have h1 := hNC n
+      have h2 : ‖coeffSum a n‖ ≤ ‖coeffSum a n - A * n‖ + ‖(A : ℂ) * n‖ := by
+        have := norm_add_le (coeffSum a n - A * n) ((A : ℂ) * n)
+        simpa using this
+      have h3 : ‖(A : ℂ) * n‖ = |A| * n := by
+        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_natCast]
+      have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+      nlinarith [abs_nonneg A]
+    -- the bound at a small positive `ε`
+    have hbound : ∀ ε : ℝ, 0 < ε → ε ≤ 1 / (4 * Real.pi) →
+        D ≤ 2 * η / Real.pi + ((|A| + ‖β‖ + 2 * max C₀ 0) * ε +
+          3 / (2 * Real.pi) * M₂ * ε ^ (1 / 2 : ℝ) + S / Real.pi * ε ^ 2) := by
+      intro ε hε hε4
+      have hu : 2 * Real.pi * ε ≤ 1 / 2 := by
+        rw [le_div_iff₀ (by positivity)] at hε4; linarith
+      set w : ℂ := cexp (-(2 * Real.pi * (ε : ℂ))) with hw
+      have hwr : w = ((Real.exp (-(2 * Real.pi * ε)) : ℝ) : ℂ) := by
+        rw [hw, Complex.ofReal_exp]; push_cast; ring_nf
+      have hwn : ‖w‖ = Real.exp (-(2 * Real.pi * ε)) := by
+        rw [hwr, Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le]
+      have hq1 : ‖w‖ < 1 := by
+        rw [hwn]
+        have h : Real.exp (-(2 * Real.pi * ε)) < Real.exp 0 :=
+          Real.exp_lt_exp.mpr (by nlinarith)
+        rwa [Real.exp_zero] at h
+      have h1q : Real.pi * ε ≤ 1 - ‖w‖ := by
+        rw [hwn]
+        have := half_le_one_sub_exp_neg (u := 2 * Real.pi * ε) (by positivity) hu
+        linarith
+      have h1w : ‖1 - w‖ ≤ 2 * Real.pi * ε := by
+        have h := norm_one_sub_cexp_neg_le (u := 2 * Real.pi * (ε : ℂ)) (by simp; positivity)
+        calc ‖1 - w‖ ≤ ‖2 * (Real.pi : ℂ) * (ε : ℂ)‖ := h
+          _ = 2 * Real.pi * ε := by
+              rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
+                Real.norm_of_nonneg hpi.le, Real.norm_of_nonneg hε.le]; norm_num
+      have hRem := norm_tsum_remainder_le (a := a) (A := A) hη.le hC hNC hq1
+      set Rs := ∑' n : ℕ, (coeffSum a (n + 1) - (A : ℂ) * ((n : ℂ) + 1)) * w ^ (n + 1) with hRs
+      have hF : expSeries a ε = (A : ℂ) * w / (1 - w) + (1 - w) * Rs := by
+        rw [expSeries_eq_tsum_pow, ← hw, tsum_coeff_mul_pow_eq (A : ℂ) hK hq1]
+      -- the Abel remainder
+      have hRs : ‖(ε : ℂ) * ((1 - w) * Rs)‖ ≤ 2 * η / Real.pi + 2 * max C₀ 0 * ε := by
+        have hb : ‖Rs‖ ≤ η / (Real.pi * ε) ^ 2 + max C₀ 0 / (Real.pi * ε) :=
+          hRem.trans (add_le_add (by gcongr) (by gcongr))
+        rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hε.le]
+        calc ε * (‖1 - w‖ * ‖Rs‖)
+            ≤ ε * (2 * Real.pi * ε * (η / (Real.pi * ε) ^ 2 + max C₀ 0 / (Real.pi * ε))) := by
+              gcongr
+          _ = 2 * η / Real.pi + 2 * max C₀ 0 * ε := by field_simp
+      -- the main term
+      have hmain : ‖(ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi)‖ ≤ |A| * ε := by
+        have e : (ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi) =
+            ((A * (ε * Real.exp (-(2 * Real.pi * ε)) / (1 - Real.exp (-(2 * Real.pi * ε))) -
+              1 / (2 * Real.pi)) : ℝ) : ℂ) := by
+          rw [hwr]; push_cast; ring
+        rw [e, Complex.norm_real, Real.norm_eq_abs, abs_mul]
+        exact mul_le_mul_of_nonneg_left (abs_mul_exp_div_sub_le hε) (abs_nonneg A)
+      -- the defect term
+      have hJ : ‖(ε : ℂ) * defectLaplace g ε‖ ≤ 3 / (2 * Real.pi) * M₂ * ε ^ (1 / 2 : ℝ) := by
+        have hre : 0 < ((ε : ℂ)).re := by simpa using hε
+        have hb := norm_defectLaplace_le hgm' hgb hre
+        have hn : ‖(ε : ℂ)‖ = ε := by rw [Complex.norm_real, Real.norm_of_nonneg hε.le]
+        rw [hn, Complex.ofReal_re, div_self hε.ne', mul_one] at hb
+        rw [norm_mul, hn]
+        have e : ε * ε ^ (-(1 / 2 : ℝ)) = ε ^ (1 / 2 : ℝ) := by
+          rw [← Real.rpow_one_add' hε.le (by norm_num)]; norm_num
+        calc ε * ‖defectLaplace g ε‖ ≤ ε * (3 / (2 * Real.pi) * ε ^ (-(1 / 2 : ℝ)) * M₂) := by
+              gcongr
+          _ = 3 / (2 * Real.pi) * M₂ * (ε * ε ^ (-(1 / 2 : ℝ))) := by ring
+          _ = _ := by rw [e]
+      -- the Hamburger series term
+      have hL : ‖(ε : ℂ) * hamburgerSeries a ε‖ ≤ S / Real.pi * ε ^ 2 := by
+        rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hε.le]
+        calc ε * ‖hamburgerSeries a ε‖ ≤ ε * (ε / Real.pi * S) := by
+              gcongr; exact norm_hamburgerSeries_ofReal_le ha2 hε
+          _ = S / Real.pi * ε ^ 2 := by ring
+      have hβε : ‖(ε : ℂ) * β‖ = ‖β‖ * ε := by
+        rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hε.le, mul_comm]
+      -- the Hamburger identity on the axis
+      have hid := hamburgerSeries_eq_defect ha hH (τ := (ε : ℂ)) (by simpa using hε)
+      have hεne : (ε : ℂ) ≠ 0 := by exact_mod_cast hε.ne'
+      have hπne : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast hpi.ne'
+      have hkey : β / Real.pi - (A : ℂ) / (2 * Real.pi) =
+          ((ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi)) +
+            (ε : ℂ) * ((1 - w) * Rs) + (ε : ℂ) * β + (ε : ℂ) * defectLaplace g ε -
+              (ε : ℂ) * hamburgerSeries a ε := by
+        have hcancel : (ε : ℂ) * (β / ((Real.pi : ℂ) * ε)) = β / Real.pi := by field_simp
+        rw [hid, hF]
+        linear_combination (-1 : ℂ) * hcancel
+      rw [hD, hkey]
+      have t1 := norm_sub_le (((ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi)) +
+        (ε : ℂ) * ((1 - w) * Rs) + (ε : ℂ) * β + (ε : ℂ) * defectLaplace g ε)
+        ((ε : ℂ) * hamburgerSeries a ε)
+      have t2 := norm_add_le (((ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi)) +
+        (ε : ℂ) * ((1 - w) * Rs) + (ε : ℂ) * β) ((ε : ℂ) * defectLaplace g ε)
+      have t3 := norm_add_le (((ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi)) +
+        (ε : ℂ) * ((1 - w) * Rs)) ((ε : ℂ) * β)
+      have t4 := norm_add_le ((ε : ℂ) * ((A : ℂ) * w / (1 - w)) - (A : ℂ) / (2 * Real.pi))
+        ((ε : ℂ) * ((1 - w) * Rs))
+      rw [hβε] at t3
+      linarith only [t1, t2, t3, t4, hmain, hRs, hJ, hL]
+    -- let `ε → 0⁺`
+    have hlim : Tendsto (fun ε : ℝ => 2 * η / Real.pi + ((|A| + ‖β‖ + 2 * max C₀ 0) * ε +
+        3 / (2 * Real.pi) * M₂ * ε ^ (1 / 2 : ℝ) + S / Real.pi * ε ^ 2)) (𝓝[>] 0)
+        (𝓝 (2 * η / Real.pi)) := by
+      have hc : ContinuousAt (fun ε : ℝ => 2 * η / Real.pi + ((|A| + ‖β‖ + 2 * max C₀ 0) * ε +
+          3 / (2 * Real.pi) * M₂ * ε ^ (1 / 2 : ℝ) + S / Real.pi * ε ^ 2)) 0 := by
+        have := Real.continuousAt_rpow_const 0 (1 / 2 : ℝ) (Or.inr (by norm_num))
+        fun_prop
+      have := hc.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi 0))
+      simpa [Real.zero_rpow (by norm_num : (1 / 2 : ℝ) ≠ 0)] using this
+    refine ge_of_tendsto hlim ?_
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (Iio_mem_nhds (by positivity : (0 : ℝ) < 1 / (4 * Real.pi)))]
+      with ε hε hε4
+    exact hbound ε hε (le_of_lt hε4)
+  -- hence `D = 0`
+  have hD0 : D = 0 := by
+    by_contra hne
+    have hpos : 0 < D := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+    have h := hηb (Real.pi * D / 4) (by positivity)
+    have e : 2 * (Real.pi * D / 4) / Real.pi = D / 2 := by field_simp; ring
+    rw [e] at h
+    linarith
+  have hz : β / Real.pi - (A : ℂ) / (2 * Real.pi) = 0 := norm_eq_zero.mp hD0
+  have hπne : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast hpi.ne'
+  field_simp at hz
+  linear_combination hz / 2
 
 end GaloisForLFunctions.EulerFETransportTheory

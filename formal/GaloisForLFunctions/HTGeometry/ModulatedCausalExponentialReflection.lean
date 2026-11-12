@@ -130,7 +130,7 @@ theorem integrable_modulatedCausalConvolution {a : ℝ} (ha : 0 < a) (b : ℝ)
     {f : ℝ → ℂ} (hf : Integrable f) : Integrable (modulatedCausalConvolution a b f) := by
   rw [modulatedCausalConvolution_eq_conjugate]
   apply integrable_causalModulation
-  exact (causalFourierExponential_integrable ha).convolution
-    (integrable_causalModulation b hf) (ContinuousLinearMap.mul ℂ ℂ)
+  exact (causalFourierExponential_integrable ha).integrable_convolution
+    (ContinuousLinearMap.mul ℂ ℂ) (integrable_causalModulation b hf)
 
 end GaloisForLFunctions.HTGeometry

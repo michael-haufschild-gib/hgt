@@ -18,6 +18,9 @@ combination of characters induced from linear characters of Brauer-elementary su
   (`mem_brauerElementaryFamily_of_le`): it is the product of its intersections with the two
   factors, because the two coordinates of an element of `K` lie in `K`.
 * Induction in stages.
+
+Consequently an additive invariant of the virtual characters is determined by its values on
+these induced characters (`addMonoidHom_ext_of_brauer`).
 -/
 
 open scoped Classical BigOperators
@@ -225,5 +228,14 @@ theorem brauer_induction :
     · intro x hx ihx hneg
       exact neg_mem (ihx (brauerMonomialSpan_le hx))
   exact key θ.val (brauerMonomialSpan_eq (G := G) ▸ θ.2) θ.2
+
+/-- **An additive invariant of the virtual characters is determined by its values on the
+characters induced from linear characters of Brauer-elementary subgroups.** So an additive
+assignment of `L`-functions to characters has at most one extension from these. -/
+theorem addMonoidHom_ext_of_brauer {M : Type*} [AddMonoid M] {f g : VirtualCharacter G →+ M}
+    (h : ∀ q : brauerElementaryMonomialIndex G,
+      f (brauerElementaryMonomialVirtualCharacter G q) =
+        g (brauerElementaryMonomialVirtualCharacter G q)) : f = g :=
+  AddMonoidHom.eq_of_eqOn_dense brauer_induction fun _ ⟨q, hq⟩ => hq ▸ h q
 
 end GaloisForLFunctions

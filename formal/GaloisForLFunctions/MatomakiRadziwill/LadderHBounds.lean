@@ -12,7 +12,7 @@ For `L = log h ≥ 2^{20}`, summed over any number `J` of ladder scales:
   (`sum_exp_neg_two_pow_le`).
 -/
 
-open Finset Filter Topology
+open Finset Filter Topology RHTower.Sieve
 
 namespace GaloisForLFunctions.MatomakiRadziwill
 
@@ -167,6 +167,26 @@ theorem log_seqA_ge {L : ℝ} (hL : 2 ^ 20 ≤ L) (j : ℕ) :
     rw [pow_succ]
     linarith
 
+theorem mertensScaleConst_nonneg : 0 ≤ mertensScaleConst := by
+  have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hl21 : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+  have h4 : Real.log 4 ≤ mertensFirstConst := le_max_left _ _
+  have hlog4 : Real.log 4 = 2 * Real.log 2 := by
+    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast; ring
+  have hq : 2 ≤ mertensFirstConst / Real.log 2 := by rw [le_div_iff₀ hl2]; linarith
+  have hll3 : 0 ≤ logLog 3 := by
+    unfold logLog
+    refine Real.log_nonneg ?_
+    rw [Real.le_log_iff_exp_le (by norm_num)]
+    have := Real.exp_one_lt_d9
+    push_cast
+    linarith
+  have hll2 : logLog 2 ≤ 0 := by
+    unfold logLog
+    exact Real.log_nonpos hl2.le hl21.le
+  unfold mertensScaleConst mertensSecondLowerConst mertensSecondUpperConst
+  linarith
+
 /-- **The density of the ladder scales.**  With `A_j ≥ log(b_j/a_j) − C_M` and
 `log(b_0/a_0) − C_M ≥ D_0 > 0`, `log a_1 ≥ 2C_M + 2D_1`, `D_1 > 0`:
 `Σ_{j<J} 1/A_j ≤ 1/D_0 + 2/D_1`. -/
@@ -176,12 +196,7 @@ theorem sum_inv_density_le {L : ℝ} (hL : 2 ^ 20 ≤ L) (J : ℕ) {A : ℕ → 
     (h0 : D0 ≤ Real.log (seqB L 0 / seqA L 0) - mertensScaleConst)
     (h1 : 2 * mertensScaleConst + 2 * D1 ≤ Real.log (seqA L 1)) :
     ∑ j ∈ range J, 1 / A j ≤ 1 / D0 + 2 / D1 := by
-  have hMC : 0 ≤ mertensScaleConst + D1 := by
-    have : 0 ≤ Real.log (seqA L 1) := Real.log_nonneg (one_le_seqA hL 1)
-    by_contra h
-    push Not at h
-    have : Real.log (seqA L 1) < 0 := by linarith
-    linarith
+  have hCM0 := mertensScaleConst_nonneg
   -- for `j ≥ 1`: `A_j ≥ log a_j − C_M ≥ 2^{j−1} D_1`
   have hj1 : ∀ j, 2 ^ j * D1 ≤ A (j + 1) := by
     intro j
@@ -196,7 +211,13 @@ theorem sum_inv_density_le {L : ℝ} (hL : 2 ^ 20 ≤ L) (J : ℕ) {A : ℕ → 
     -- `2^j log a_1 − C_M ≥ 2^j (2C_M + 2D_1) − C_M ≥ 2^j D_1`
     have h3 : 2 ^ j * (2 * mertensScaleConst + 2 * D1) ≤ 2 ^ j * Real.log (seqA L 1) :=
       mul_le_mul_of_nonneg_left h1 (by positivity)
-    nlinarith
+    have e : (2 : ℝ) ^ j * (2 * mertensScaleConst + 2 * D1)
+        = 2 * (2 ^ j * mertensScaleConst) + 2 * (2 ^ j * D1) := by ring
+    rw [e] at h3
+    have h4 : mertensScaleConst ≤ 2 ^ j * mertensScaleConst := le_mul_of_one_le_left hCM0 h2j
+    have h5 : 0 ≤ 2 ^ j * D1 := by positivity
+    have h6 : 0 ≤ 2 ^ j * mertensScaleConst := by positivity
+    linarith
   have hpos : ∀ j, 0 < A j := by
     intro j
     cases j with
