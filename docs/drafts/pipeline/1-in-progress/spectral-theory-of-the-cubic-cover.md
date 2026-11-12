@@ -45,6 +45,24 @@ Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3
 - 2g Assembly: `|P| M_R(s) = Φ_G(s) − |P|c² ∫(1−η)v^{s−5/3} + c²·4Φ_rat(s) f̃(s)`, `f̃(s) = 1/(s−4/3) + entire`
   ⇒ M_R has a double pole at 4/3 with coefficient `∝ c² Res Φ_rat ≠ 0`; divide by M(s).
 
+## Roadmap (3): the twisted layer (user: "continue with the twisted layer")
+Goal: the nine twists `P_{a,r}(s) = Σ_{h' primary} (ω^aλ^r/h')₃² T(h')² |ξ_{h'}|^{−s}` (a, r mod 3), whose
+untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combination of them.
+- T1 [bookkeeping] twisted multiplicativity `T(h₀h')T(1) = T(h₀)(h₀/h')₃T(h')` for `h₀ = ελ^m`, `h'` primary
+  (from `rationalSourceResidualFourierCoefficient_prime_normalized` + cube law + support); unique
+  factorization `h = ε λ^m h'`; `D(s) = Σ_{ε,m} (T(ελ^m)/T(1))² 3^{−ms/2} P_{ε,m}(s)`; the twist depends only on
+  `(ε mod ±1, m mod 3)`.
+- T2 [units, existing L² theory] rotation `R_ε = diag(η, η⁻¹)`, `η² = ε`: normalizes Γ, `κ^{R_ε} = κ·(ε⁻¹/d)₃`;
+  `θ_s(εw)θ_s(ε⁻¹w)` has multiplier κ² and constant term `Σ_h T(h)T(ε²h)…` (correlations `C_ω, C_{ω²}`);
+  pairs with `E_κ` through `levelPairing` after a change of variables.
+- T3 cusp analysis of the rotated products: `ω` is not in the rational cusp class (column (ω,1) is not an
+  integer column mod 3), so `θ_s(εw)` decays at `−ε`; growth only where both rotations land in the rational
+  class; renormalize, double-pole coefficients of `C_ω, C_{ω²}` (possible cancellation of phases).
+- T4 [λ-twists] level 9: `(λ/d)₃` is a character of Γ(3) trivial on Γ(9) but not a conjugate of κ by any
+  element normalizing Γ(3); needs translates `θ_s(w + t)`, `t ∈ (1/3)O`, Γ(9)-automorphic, traced to Γ(3):
+  the trace involves θ_s at affinely transformed cusps `g⁻¹τ_tγ` (upper triangular in SL₂(K)) — explicit from
+  the three cusp classes, but large bookkeeping. Rank question: do the available combinations determine all nine `P_{a,r}` near 4/3?
+
 ## Lean modules
 | Module | Content | State |
 |---|---|---|
@@ -59,6 +77,9 @@ Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3
 | `TheEisensteinPairingContinuesAcrossFourThirds` | `levelPairing` (u ↦ ∫_{D_Γ} G·u, CLM on L² of the kernel quotient via the measure-preserving pullback); `∫_{D_Γ}G·E(s) = ∫G·seed(s) + ⟨G,Corr(s)⟩` (Re s>4, Im s>0); correction pairing analytic off ℝ, `(s−4/3)⟨G,Corr⟩ = ⟨G,N(s)⟩`, N(4/3) = residue; seed term = Mellin of a₀(G) against χv^s | clean; olean built |
 | `TheThetaSquareHasARationalCuspSubtraction` | `cosetHeight_translate_le` (bottom-left c of x·g caps height at 1/(\|c\|²v)); `cuspSubtraction` H_S = c²Σ_q conj(E_1(r_q w∣f_S)); multiplier κ⁻¹; `cuspSubtraction_upper` (= c²f_S(v) above height 1/2); `setIntegral_levelSet_translate` | clean; olean built |
 | `TheRationalCuspSubtractionScatters` | strip-bounded functions pair with E(s) (absolute unfolding); unfolding of conj E_1(·∣f); constant terms of E(s), E(s)∘S (MMD); truncated identity; `integral_scatterPart`: Mellin(a₀(H) − \|P\|c²f) = c²Φ(s)·∫f v^{−1−s} (Re s>10/3), Φ = \|P\|(π/(s−1))φ + 3(π/(s−1))U | clean; olean built |
+| `TheRenormalizedThetaSquareIsBounded` | `G = θ_s² − H` (c = 3πr): rational equivariance of \|G\| (κ̃³ = 1); `lowerLeft_ramified_ne_zero` (r₁₀ + r₁₁ω^j ≢ 0 mod 3); H = 0 through ramified cusps; `renormalizedThetaSq_bounded`, `_memLp`; `O(v^{−7/3})` high; a₀(G) = \|P\|(c²v^{4/3} + R) − a₀(H) | clean; olean built |
+| `TheRenormalizedThetaSquareUnfolds` | strip bound ∫\|G\|v^σ < ∞ (2 < σ < 13/3); explicit Mellin integrals; Φ₀ = (π/(s−1))\|P\|(s−4/3)φ·(3·3^{3s−3}−1)/2, Φ₀(4/3) = 12π\|P\|r; `integral_renormalized_mul_eisenstein` (4 < Re s < 13/3) | clean; olean built |
+| `TheSquaredThetaSeriesHasADoublePole` | `seedPair` holomorphic (Mellin, 0 < Re s < 13/3); `completedThetaSq` = continuation of M(s)D(s); **`thetaSqDirichlet_double_pole`**: (s−4/3)²M(s)D(s) → 108π³r³ ≠ 0; axioms: propext, choice, Quot.sound | clean; olean built |
 | `TheConstantTermContinuesAcrossFourThirds` | `clearedScattering` = (s−4/3)φ(s) via zetaPoleFilled·L(χ₋₃)/Z₀; holomorphic on Re s>1; value r at 4/3; `dedekindZeta_residue_eq`; `clearedConstantTerm` (residue 3πr v^{2/3}); `hasDerivAt_clearedConstantTerm` (log term) | clean |
 
 ## Notes
@@ -70,6 +91,7 @@ Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3
 ## Conjecture ledger
 
 ## Log
+- 2026-11-12 — **SQ4 answered in Lean**: `thetaSqDirichlet_double_pole` (modules 13–15). Route: bounded renormalization G = θ_s² − H + MMD's L² correction (no pointwise continuation of E); double pole only from the explicit scattering of H. Open: SQ5 (element sum ↔ unramified squarefree series S; contour shift for complex T²), SQ7 (column twists θ·θ_n).
 - 2026-11-12 — 2c–2e formalized (modules 10–12). Remaining: G = θ_s² − H bounded on H³ (reduction + three cusp classes; mod-3 residue of r_q c_j bottom-left ≠ 0), assembly with clearedScatterTotal = (π/(s−1))\|P\|·clearedScattering·(3·3^{3s−3}−1)/2 (value 12π\|P\|r at 4/3); polynomial cusp decay v^{−7/3} suffices (region 1 < Re s < 13/3).
 - 2026-11-12 — (2) started: 2a Hecke bound and 2b Mellin link formalized (modules 7–9); roadmap (2) rewritten around MMD's L² meromorphy (2c–2g).
 - 2026-11-12 — (1) arithmetic side done: RS for θ_s², cube factorization. Open in (1): ramified frequencies (no polynomial bound on T_s(λ^k·)), element-vs-ideal bookkeeping (±primary), bridge σ(A) ↔ CRF γ₂(A)² (cubicUnitGaussSum 1 a vs sexticGaussPow 2 a 1).

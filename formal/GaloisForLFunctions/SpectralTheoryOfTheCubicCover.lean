@@ -11,6 +11,8 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheEisensteinPairingCon
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaSquareHasARationalCuspSubtraction
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRationalCuspSubtractionScatters
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRenormalizedThetaSquareIsBounded
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRenormalizedThetaSquareUnfolds
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquaredThetaSeriesHasADoublePole
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -27,5 +29,6 @@ series; the factorization of the Dirichlet series of the squared theta coefficie
 term of `θ_s²` as `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}`; the Eisenstein pairing split into a seed
 term and an `L²` correction with at most a simple pole at `4/3`; the rational cusp subtraction of
 `θ_s²` and the Mellin transform of its scattering; boundedness and square integrability of the
-renormalized `θ_s² − H`. See `SpectralTheoryOfTheCubicCover/README.md`.
+renormalized `θ_s² − H`; the continuation of `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}` to
+`{1 < Re s < 13/3, Im s > 0}` and its double pole at `4/3` with leading coefficient `108π³r³`. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalHalfLineFormHasItsActualDomain
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowThresholdControlsTheFullHalfLineForm
 
 /-!
 # The actual critical half-line state's weak equation
@@ -131,21 +131,20 @@ private theorem mixed_eq_zero_of_nonnegative_variations {A B : ℝ} (hA : 0 ≤ 
   rw [he] at hp
   nlinarith only [hp, mul_nonneg hA (sq_nonneg B), sq_nonneg B]
 
-/-- In the finite equality case the actual critical state solves the full
+/-- At the global window threshold the actual critical state solves the full
 weak equation against every finite-energy half-line test. -/
 theorem criticalHalfLineMixedEnergy_groundState_eq_zero
     {W₀ : ℝ} (hW : 0 < W₀)
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    (hpolar : polarPaymentCriticalThreshold = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F)
     {G : ℝ → ℝ} (hG : CriticalHalfLineEnergyDomain G) :
     criticalHalfLineMixedEnergy W₀ F G = 0 := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
-  have hzero := criticalHalfLineFullEnergy_eq_zero_of_threshold_equality hW hthreshold hpolar hF
+  have hzero := criticalHalfLineFullEnergy_groundState_eq_zero hW hthreshold hF
   apply mixed_eq_zero_of_nonnegative_variations
-    (criticalHalfLineFullEnergy_nonneg_on_domain hW hthreshold hpolar hG)
+    (criticalHalfLineFullEnergy_nonneg_at_windowThreshold hW hthreshold hG)
   intro c
-  have hp := criticalHalfLineFullEnergy_nonneg_on_domain hW hthreshold hpolar (hd.add_const_mul hG c)
+  have hp := criticalHalfLineFullEnergy_nonneg_at_windowThreshold hW hthreshold (hd.add_const_mul hG c)
   rwa [criticalHalfLineFullEnergy_add_const_mul W₀ hd hG, hzero, zero_add] at hp
 
 /-- The unconditional threshold classification supplies a genuine weak
@@ -164,6 +163,20 @@ theorem criticalHalfLine_weakEquation_classification :
   · exact Or.inl hRH
   · exact Or.inr (Or.inl hlt)
   · exact Or.inr (Or.inr ⟨W₀, F, hW, hp, ht, hF, criticalHalfLineEnergyDomain_of_groundState hF,
-      hzero, fun G hG => criticalHalfLineMixedEnergy_groundState_eq_zero hW ht hp hF hG, horth⟩)
+      hzero, fun G hG => criticalHalfLineMixedEnergy_groundState_eq_zero hW ht hF hG, horth⟩)
+
+/-- Failure of RH supplies an actual weak zero mode at the global window
+threshold, independently of the polar threshold. -/
+theorem riemannHypothesis_or_exists_weak_criticalHalfLineGroundState :
+    RiemannHypothesis ∨ ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ CriticalHalfLineEnergyDomain F ∧
+      criticalHalfLineFullEnergy W₀ F = 0 ∧
+      ∀ G : ℝ → ℝ, CriticalHalfLineEnergyDomain G → criticalHalfLineMixedEnergy W₀ F G = 0 := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F, hW, ht, hF⟩
+  · exact Or.inl hRH
+  · exact Or.inr ⟨W₀, F, hW, ht, hF, criticalHalfLineEnergyDomain_of_groundState hF,
+      criticalHalfLineFullEnergy_groundState_eq_zero hW ht hF,
+      fun G hG => criticalHalfLineMixedEnergy_groundState_eq_zero hW ht hF hG⟩
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -49,3 +49,6 @@ Arithmetic symmetry, equations and descent of the full zero divisor.
 -/
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheDescentOfFunctionalEquationReflection
 import GaloisForLFunctions.GaloisTheoryOfZeros.ThePrimeTimePointsOfTheZeroMotive
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheMaximalArithmeticQuotientOfTheZeroMotive
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheCentralizerOfPrimeTranslations
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheRealStructureOfPrimeTranslations

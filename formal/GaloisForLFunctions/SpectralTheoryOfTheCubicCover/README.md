@@ -56,10 +56,15 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 2. *Continuation by seed and resolvent* (MMD). `E(s) = seed(s) − R(s(2 − s)) defect(s)`, the defect
    compactly supported and entire in `s`; the resolvent exists off the spectrum and is meromorphic at
    `8/9`.
-3. *Renormalization.* `θ² − c² E*` has constant term `c² r v^{2/3} log v − c² φ₀ v^{2/3}` plus rapid
-   decay, with `r` the residue of the scattering coefficient; it is square integrable.
-4. *The double pole.* The Mellin transform of `v^{2/3} log v` has a double pole at `s = 4/3`; so
-   `D(w)` has a double pole at `w = 2/3` with leading coefficient `∝ c² r ∝ c³`.
+3. *Renormalization by the rational cusp subtraction.* `G = θ_s² − H`,
+   `H = c² Σ_q conj E_1(r_q · ∣ 1_{v≥2} v^{4/3})` over the four rational cusps. `θ_s` grows only in
+   the rational cusp class and is exponentially small at the two ramified classes, so `G` is bounded
+   and square integrable. Its pairing with `E(s)` is a seed term (holomorphic for `Re s < 13/3`) plus
+   the `L²` pairing with MMD's resolvent correction (at most a simple pole at `4/3`). No pointwise
+   continuation of `E` is needed.
+4. *The double pole.* The scattering of `H` into `∞` has Mellin transform `c² Φ(s) f̃(s)`,
+   `f̃(s) = 2^{4/3−s}/(s − 4/3)`, `Φ(s) = Φ₀(s)/(s − 4/3)`, `Φ₀(4/3) = 12π|P| r`; the four rational
+   cusps contribute `1 + 3 = 4`. So `(s − 4/3)² M(s) D(s) → 12π c² r = 108 π³ r³ ≠ 0`.
 5. *Cube frequencies.* `D(w) = \overline{C}² ζ_K(3w − 1) S(w)` on unramified indices; a double pole of `D`
    is a simple pole of `S`: the squarefree part is coherent at `2/3`.
 
@@ -87,19 +92,25 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | the constant term of `E` continues across `4/3` with residue `3πr v^{2/3}`; its constant Laurent coefficient is `v^{4/3} + v^{2/3}(g'(4/3) − 3πr log v)` | `sub_mul_constantTerm`, `clearedConstantTerm_four_thirds`, `hasDerivAt_clearedConstantTerm` | SQ2, SQ4 |
 | Parseval on `P` for absolutely convergent cusp-character series; Rankin–Selberg for the square of any multiplier-`κ` function with such expansions; the instance `θ_s` (projected theta), with `b(v,h)b(v,−h) = T_s(h)² v² K_{1/3}(4π|ξ_h|v)²` | `integral_cuspCharacterSeries_sq`, `integral_sq_mul_incompleteEisenstein`, `integral_sourceThetaSq_mul_incompleteEisenstein`, `sourceAmplitude_mul_neg` | SQ3 |
 | the cube frequencies factor out: `A B³` determines `A` (squarefree) and `B`; `T_s(gen(A)gen(B)³)² = \overline{C}² N(B) σ(A)` with `|σ(A)| = 1`; for `Re w > 1`, `Σ_I N(I)^{−w} T_s(gen I)² = \overline{C}² Z₀(3w − 1) Σ_{A sqfree} N(A)^{−w} σ(A)` (unramified ideals) | `thetaSquarefreePart_mul_cube`, `thetaCubePart_mul_cube`, `sourceCoefficient_sq`, `thetaSquareDirichlet_eq` | SQ5 |
+| Hecke bound `|T_s(h)| ≤ C(1 + |ξ_h|)` at every frequency, from `θ_s ∈ L²` and the cusp-height count `#{x : v_x(w) ≥ Y} ≤ K/Y²` | `sourceCoefficient_hecke_bound`, `card_cuspCosets_height_le` | SQ5 |
+| Mellin link: `∫_0^∞ v^s R(v) v^{−3} dv = M(s) Σ_{h≠0} T_s(h)²(4π|ξ_h|)^{−s}` (`Re s > 4`), `M` holomorphic on `Re s > 2/3`, `M(4/3) ≠ 0` | `integral_thetaSqRemainder`, `besselSqMellin_differentiableAt`, `besselSqMellin_four_thirds_ne_zero` | SQ4 |
+| the Eisenstein pairing of an `L²` function splits into seed term and resolvent correction; the correction pairing is holomorphic off `ℝ` and has at most a simple pole at `4/3` | `integral_mul_eisenstein_eq`, `levelPairing_correction_analyticAt`, `levelPairing_correction_center` | SQ2 |
+| the rational cusp subtraction `H`: multiplier `κ⁻¹`, `= c² f(v)` above height `1/2`; its scattering `Mellin(a₀(H) − |P|c²f) = c² Φ(s) f̃(s)` (`Re s > 10/3`) | `cuspSubtraction_upper`, `integral_scatterPart`, `sub_mul_scatterTotal` | SQ4, SQ6 |
+| `G = θ_s² − H` is bounded on `ℍ³`, `O(v^{−7/3})` high in the cusp, square integrable | `renormalizedThetaSq_bounded`, `renormalizedThetaSq_memLp` | SQ4, SQ6 |
+| **double pole**: `M(s) D(s)` continues to `{1 < Re s < 13/3, Im s > 0}` and to a punctured disc at `4/3`, with `(s − 4/3)² M(s) D(s) → 108 π³ r³ ≠ 0` | `thetaSqDirichlet_double_pole` | SQ4 |
 | `θ²` has multiplier `κ⁻¹`; its constant term is `|P|(c² v^{4/3} + Σ_h a(v, h) a(v, −h))`, `c = 3πr`, `a(v, h)a(v, −h) = T(h)T(−h)v²K_{1/3}(4π|ξ_h|v)²`; Rankin–Selberg: `∫_{D_Γ} θ² E(·∣ψ) = |P| ∫_0^∞ ψ(v)(c²v^{4/3} + Σ_h a(v,h)a(v,−h)) v^{−3} dv`, unconditional for continuous `ψ` of compact support in `(0, ∞)` | `thetaSq_automorphy`, `integral_thetaSq_periodDomain`, `thetaAmplitude_mul_neg`, `integral_thetaSq_mul_incompleteEisenstein_of_compact` | SQ3 |
 
 ## 6. Questions
 
-| # | Question |
-|---|---|
-| SQ1 | Unfolding: is `∫_{Γ\ℍ³} F · E(·∣ψ) = ∫_{Γ∞\ℍ³} F · ψ(v)` for every `F` of multiplier `κ^{−1}` with the right integrability? |
-| SQ2 | Is `E(w, s)` meromorphic on `Re s > 1` as a function on `ℍ³`, with the single pole `4/3`, and of polynomial growth on vertical lines? |
-| SQ3 | The constant term of `θ²`: `c² v^{4/3} + Σ_ν T(ν)T(−ν) W_ν(v)²`, `T(−ν) = T(ν)` |
-| SQ4 | The renormalized `R(θ², s)`: continuation past `4/3`, the double pole, its leading coefficient |
-| SQ5 | The main term of `Σ_{N(ν) ≤ X} T(ν)² ω(N(ν)/X)` and of the squarefree part `S` |
-| SQ6 | The other cusps of `Γ` where `θ` has a constant term |
-| SQ7 | The twisted versions read by the long columns: `θ · θ_n` for the column index `n` |
+| # | Question | State |
+|---|---|---|
+| SQ1 | Unfolding: is `∫_{Γ\ℍ³} F · E(·∣ψ) = ∫_{Γ∞\ℍ³} F · ψ(v)` for every `F` of multiplier `κ^{−1}` with the right integrability? | yes (Lean) |
+| SQ2 | Is `E(w, s)` meromorphic on `Re s > 1` as a function on `ℍ³`, with the single pole `4/3`, and of polynomial growth on vertical lines? | not needed: pairings of `L²` functions with `E(s)` continue by MMD's resolvent (Lean); the pointwise form stays open |
+| SQ3 | The constant term of `θ²`: `c² v^{4/3} + Σ_ν T(ν)T(−ν) W_ν(v)²`, `T(−ν) = T(ν)` | yes (Lean) |
+| SQ4 | The renormalized `R(θ², s)`: continuation past `4/3`, the double pole, its leading coefficient | yes for `θ_s`: `(s − 4/3)² M(s)D(s) → 108π³r³` (Lean) |
+| SQ5 | The main term of `Σ_{N(ν) ≤ X} T(ν)² ω(N(ν)/X)` and of the squarefree part `S` | open: element sums vs unramified ideals (units, ramified powers), and the contour shift for complex `T²` |
+| SQ6 | The other cusps of `Γ` where `θ` has a constant term | for `θ_s`: the four rational cusps, none at the two ramified classes (Lean) |
+| SQ7 | The twisted versions read by the long columns: `θ · θ_n` for the column index `n` | open |
 
 ## 7. Traps
 
@@ -110,6 +121,7 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | A growth exponent gives a simple pole | when it coincides with a pole of the renormalizing series it gives a logarithm and a double pole |
 | A pole of `D` at `2/3` shows the squarefree part is coherent | the cube frequencies alone give a simple pole; the squarefree part needs the double pole |
 | The resolvent continuation covers the real segment `1 < s < 2` | off the real axis self-adjointness suffices; on the segment it needs the Fredholm pencil |
+| The double pole needs `E(s)` continued pointwise with cusp expansions | a bounded renormalization `G = θ_s² − H` pairs with the `L²` correction; only the explicit scattering of `H` is computed pointwise |
 
 ## 8. Tools this programme develops
 
@@ -128,9 +140,10 @@ of Fourier coefficients.
 
 ## 10. Success criteria
 
-1. SQ1 in Lean for incomplete and complete Eisenstein series.
+1. SQ1 in Lean for incomplete and complete Eisenstein series. (done)
 2. The Eisenstein series continued as a function to `Re s > 1` near `4/3`, with growth control.
-3. The double pole of `R(θ², s)` at `4/3` with its leading coefficient, unconditionally.
+   (bypassed by the `L²` route)
+3. The double pole of `R(θ², s)` at `4/3` with its leading coefficient, unconditionally. (done for `θ_s`)
 4. A main term for the smoothed first moment of the squarefree squares, and the consequence for
    CRF's Q1.
 
@@ -143,7 +156,8 @@ of Fourier coefficients.
 
 ## 12. Open research topics
 
-1. The constant terms of `θ` at all cusps of `Γ` and the scattering matrix at `4/3`.
+1. The pass from `Σ_{h ∈ ℤ[ω]∖0} T_s(h)² |h|^{−s}` to the squarefree series `S` (units and ramified
+   frequencies), and the contour shift that turns the double pole into a smoothed first moment.
 2. The triple product `∫ θ³` and the next Laurent coefficient of `R(θ², s)`.
 3. The products `θ(z) θ(nz)` and their constant terms (the column twists of CRF).
 4. Uniformity in the column index (the remainder of the long columns).

@@ -138542,4 +138542,7467 @@ theorem exists_constructed_stratum_reflection {ι:Type*} [Fintype ι]
 
 end
 
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+lemma divisor_principal_norm_le (c0 c:Eis) (hc:c≠0) (hdiv:c0∣c) :
+    (Ideal.absNorm (Ideal.span {c0}):ℝ)≤(Ideal.absNorm (Ideal.span {c}):ℝ) := by
+  have hp:0<Ideal.absNorm (Ideal.span {c}):=Nat.pos_of_ne_zero (by
+    intro hz
+    exact hc (Ideal.span_singleton_eq_bot.mp (Ideal.absNorm_eq_zero_iff.mp hz)))
+  have hd:Ideal.absNorm (Ideal.span {c0})∣Ideal.absNorm (Ideal.span {c}) := by
+    obtain ⟨d,hd⟩:=hdiv
+    rw [hd,←Ideal.span_singleton_mul_span_singleton,map_mul]
+    exact dvd_mul_right _ _
+  exact_mod_cast Nat.le_of_dvd hp hd
+
+def fixedCuspLevelBound (c:Eis) : ℝ :=
+  243*(Ideal.absNorm (Ideal.span {c}):ℝ)^2
+
+def fixedCuspLevelScale (j:Fin 3) (c0:Eis) : ℝ :=
+  27*(sourceCuspScale j)^2*(Ideal.absNorm (Ideal.span {c0}):ℝ)^2
+
+lemma fixedCuspLevelBound_ge_one (c:Eis) (hc:c≠0) : 1≤fixedCuspLevelBound c := by
+  have hp:1≤Ideal.absNorm (Ideal.span {c}):=Nat.one_le_iff_ne_zero.mpr (by
+    intro hz
+    exact hc (Ideal.span_singleton_eq_bot.mp (Ideal.absNorm_eq_zero_iff.mp hz)))
+  have hr:(1:ℝ)≤(Ideal.absNorm (Ideal.span {c}):ℝ):=by exact_mod_cast hp
+  unfold fixedCuspLevelBound
+  nlinarith
+
+lemma fixedCuspLevelScale_pos (j:Fin 3) (c0:Eis) (hc0:c0≠0) : 0<fixedCuspLevelScale j c0 := by
+  have hp:0<Ideal.absNorm (Ideal.span {c0}):=Nat.pos_of_ne_zero (by
+    intro hz
+    exact hc0 (Ideal.span_singleton_eq_bot.mp (Ideal.absNorm_eq_zero_iff.mp hz)))
+  have hr:(0:ℝ)<(Ideal.absNorm (Ideal.span {c0}):ℝ):=by exact_mod_cast hp
+  have hs:=sourceCuspScale_pos j
+  unfold fixedCuspLevelScale
+  positivity
+
+lemma fixedCuspLevelScale_le (j:Fin 3) (c0 c:Eis) (hc:c≠0) (hdiv:c0∣c) :
+    fixedCuspLevelScale j c0≤fixedCuspLevelBound c := by
+  have hd:=divisor_principal_norm_le c0 c hc hdiv
+  have hs:(sourceCuspScale j)^2≤9:=by fin_cases j <;> norm_num [sourceCuspScale]
+  unfold fixedCuspLevelScale fixedCuspLevelBound
+  calc
+    27*(sourceCuspScale j)^2*(Ideal.absNorm (Ideal.span {c0}):ℝ)^2≤
+      27*9*(Ideal.absNorm (Ideal.span {c}):ℝ)^2:=by gcongr
+    _=_:=by ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+structure FixedFourierGeometry (c:Eis) (h:Eis⧸Ideal.span {c}) where
+  a0 : Eis
+  c0 : Eis
+  denominator_ne_zero : c0≠0
+  denominator_dvd : c0∣c
+  coprime : IsCoprime a0 c0
+  point : ringComplex a0/ringComplex c0=thetaFourierTranslation c h
+  mode : Bool
+  primary : if mode then lambda^2∣a0-1 else lambda^2∣c0-1
+  shape : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode)
+
+lemma exists_fixedFourierGeometry (c:Eis) (hc:c≠0) (h:Eis⧸Ideal.span {c}) :
+    Nonempty (FixedFourierGeometry c h) := by
+  obtain ⟨a0,c0,hc0,hcop,hdiv,hprimary,hpoint⟩ :=
+    exists_primary_cusp_coordinates (-3*Quotient.out h) c hc
+  have hp:ringComplex a0/ringComplex c0=thetaFourierTranslation c h := by
+    rw [hpoint,thetaFourierTranslation]
+    simp only [map_mul,map_neg,map_ofNat]
+  rcases hprimary with ha | hc'
+  · obtain ⟨s⟩:=exists_fixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 true)
+    exact ⟨⟨a0,c0,hc0,hdiv,hcop,hp,true,ha,s⟩⟩
+  · obtain ⟨s⟩:=exists_fixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 false)
+    exact ⟨⟨a0,c0,hc0,hdiv,hcop,hp,false,hc',s⟩⟩
+
+
+def fixedFourierGeometry (c:Eis) (hc:c≠0) (h:Eis⧸Ideal.span {c}) :
+    FixedFourierGeometry c h := Classical.choice (exists_fixedFourierGeometry c hc h)
+
+namespace FixedFourierGeometry
+variable {c:Eis} {h:Eis⧸Ideal.span {c}} (G:FixedFourierGeometry c h)
+
+abbrev PhaseResidue := Eis⧸Ideal.span {traceLambda^3*G.c0}
+
+instance phaseResidue_finite : Finite G.PhaseResidue :=
+  (Ideal.span {traceLambda^3*G.c0}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (cuspBadModulus_ne_zero G.c0 G.denominator_ne_zero))
+
+def levelScale : ℝ := fixedCuspLevelScale G.shape.index G.c0
+
+lemma levelScale_pos : 0<G.levelScale :=
+  fixedCuspLevelScale_pos G.shape.index G.c0 G.denominator_ne_zero
+
+lemma levelScale_le (hc:c≠0) : G.levelScale≤fixedCuspLevelBound c :=
+  fixedCuspLevelScale_le G.shape.index G.c0 c hc G.denominator_dvd
+
+def dualNumerator (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : Eis :=
+  sourceCuspPhaseNumerator G.shape.index (G.shape.upper 0 0)
+    (fixedCuspArrayIndex u m I J)
+
+def staticPhase (v:G.PhaseResidue) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ℂ :=
+  G.shape.reflectionStaticPhase G.c0 G.denominator_ne_zero v (G.dualNumerator u) u m I J
+
+lemma staticPhase_norm_le_one (v:G.PhaseResidue) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    ‖G.staticPhase v u m I J‖≤1 :=
+  G.shape.reflectionStaticPhase_norm_le_one G.c0 G.denominator_ne_zero v _ u m I J
+
+def array (v:G.PhaseResidue) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ℂ :=
+  fixedCuspArrayWithPhase G.shape.index u (G.staticPhase v u) m I J
+
+lemma array_norm_le_one (v:G.PhaseResidue) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    ‖G.array v u m I J‖≤1 :=
+  fixedCuspArrayWithPhase_norm_le_one G.shape.index u _ (G.staticPhase_norm_le_one v u) m I J
+
+lemma array_eq (v:G.PhaseResidue) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    G.array v u m I J=G.shape.amplitude u m I J*
+      cuspResiduePhase G.c0 G.denominator_ne_zero v (G.dualNumerator u m I J) :=
+  G.shape.fixedCuspArrayWithPhase_reflectionStaticPhase G.c0 G.denominator_ne_zero v _ u m I J
+
+end FixedFourierGeometry
+
+def FixedReflectionRay (c:Eis) (hc:c≠0) :=
+  Σh:Eis⧸Ideal.span {c},(fixedFourierGeometry c hc h).PhaseResidue×Eisˣ
+
+instance fixedReflectionRay_finite (c:Eis) (hc:c≠0) : Finite (FixedReflectionRay c hc) := by
+  let:Finite (Eis⧸Ideal.span {c}):=(Ideal.span {c}).finiteQuotientOfFreeOfNeBot (Ideal.span_singleton_eq_bot.not.mpr hc)
+  let:Finite Eisˣ:=cubic_units_finite
+  unfold FixedReflectionRay
+  infer_instance
+
+noncomputable instance fixedReflectionRay_fintype (c:Eis) (hc:c≠0) :
+    Fintype (FixedReflectionRay c hc) := Fintype.ofFinite _
+
+def fixedReflectionRayCount (c:Eis) (hc:c≠0) : ℕ := Fintype.card (FixedReflectionRay c hc)
+
+def fixedReflectionRayEquiv (c:Eis) (hc:c≠0) :
+    FixedReflectionRay c hc≃Fin (fixedReflectionRayCount c hc) := Fintype.equivFin _
+
+lemma fixedReflectionRayCount_subpower (c:Eis) (hc:c≠0) (z:ℂ) (κ:ℝ) (hκ:0≤κ) :
+    ∃C:ℝ,0≤C ∧ ∀Z:ℝ,1≤Z→
+      (fixedReflectionRayCount c hc:ℝ)^2*‖z‖^2≤C*Z^κ := by
+  refine ⟨(fixedReflectionRayCount c hc:ℝ)^2*‖z‖^2,by positivity,?_⟩
+  intro Z hZ
+  have hz:1≤Z^κ:=Real.one_le_rpow hZ hκ
+  exact le_mul_of_one_le_right (by positivity) hz
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+structure PrimeFamily (ι : Type*) where
+  ideal : ι → Ideal Eis
+  maximal : ∀ i, (ideal i).IsMaximal
+  good : ∀ i, lambda ∉ ideal i
+
+namespace PrimeFamily
+variable {ι : Type*} (G : PrimeFamily ι)
+instance idealMaximal (i : ι) : (G.ideal i).IsMaximal := G.maximal i
+
+def generator (i : ι) : Eis := primaryIdealPrime (G.ideal i)
+
+lemma generator_ne_zero (i : ι) : G.generator i ≠ 0 := primaryIdealPrime_ne_zero _ (G.good i)
+lemma generator_span (i : ι) : Ideal.span {G.generator i} = G.ideal i :=
+  (primaryIdealPrime_spec _ (G.generator_ne_zero i)).2.2.1
+lemma generator_primary (i : ι) : lambda^2 ∣ G.generator i-1 :=
+  (primaryIdealPrime_spec _ (G.generator_ne_zero i)).2.2.2
+instance generatorMaximal (i : ι) : (Ideal.span {G.generator i}).IsMaximal :=
+  G.generator_span i ▸ G.maximal i
+lemma generator_good (i : ι) : lambda ∉ Ideal.span {G.generator i} := by
+  rw [G.generator_span]
+  exact G.good i
+
+lemma generator_product [Fintype ι] :
+    (∏ i, G.generator i) = primaryIdealGenerator (∏ i, G.ideal i) := by
+  change _ = primaryIdealGeneratorHom (∏ i, G.ideal i)
+  rw [map_prod]
+  apply Finset.prod_congr rfl
+  intro i hi
+  change G.generator i = primaryIdealGenerator (G.ideal i)
+  rw [←G.generator_span i,
+    primaryIdealGenerator_span _ (G.generator_ne_zero i) (G.generator_primary i)]
+
+lemma generator_product_primary [Fintype ι] : lambda^2 ∣ (∏ i, G.generator i)-1 :=
+  primary_finset_product Finset.univ G.generator (fun i _ => G.generator_primary i)
+
+lemma generator_coprime_period (N : Eis)
+    (hN : ∀ i, IsCoprime (Ideal.span {N}) (G.ideal i)) (i : ι) :
+    IsCoprime N (G.generator i) := by
+  apply (Ideal.isCoprime_span_singleton_iff _ _).mp
+  rw [G.generator_span]
+  exact hN i
+
+lemma generator_product_coprime_period [Fintype ι] (N c : Eis) (hc : c ∣ N)
+    (hN : ∀ i, IsCoprime (Ideal.span {N}) (G.ideal i)) :
+    IsCoprime (∏ i, G.generator i) (N*c) := by
+  have hh : IsCoprime N (∏ i, G.generator i) :=
+    IsCoprime.prod_right (fun i _ => G.generator_coprime_period N hN i)
+  exact hh.symm.mul_right (hh.symm.of_isCoprime_of_dvd_right hc)
+
+theorem exists_controlled [Fintype ι] (N a c : Eis) (mode : Bool)
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hcop : Pairwise (Function.onFun IsCoprime G.ideal))
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) (G.ideal i)) :
+    Nonempty (ControlledStratumArithmetic G.generator N a c mode) := by
+  apply exists_controlledStratumArithmetic G.generator G.generator_ne_zero
+  · intro i k hik
+    simpa only [G.generator_span] using hcop hik
+  · exact G.generator_primary
+  · exact hc
+  · exact hN
+  · exact hbase
+  · exact hac
+  · exact G.generator_coprime_period N hNp
+
+end PrimeFamily
+
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace NormalizedReflection
+variable {F : Type*} [Field F] [Fintype F]
+
+def unitArgumentFactor (χ : MulChar F ℂ) (j : ℕ) (z : F) : ℂ :=
+  if j=4 then 1 else (χ^(j+2))⁻¹ z
+
+theorem bracket_mul_unit (χ : MulChar F ℂ) (j : ℕ) (z x : F) (hz : z≠0) :
+    bracket χ j (z*x)=unitArgumentFactor χ j z*bracket χ j x := by
+  by_cases hj4 : j=4
+  · simp [unitArgumentFactor,bracket,hj4,hz]
+  · by_cases hj0 : j=0
+    · subst j
+      simp only [unitArgumentFactor,bracket,show (0:ℕ)≠4 by decide,ite_false,ite_true,
+        zero_add,map_mul]
+      ring
+    · simp only [unitArgumentFactor,bracket,if_neg hj4,if_neg hj0,map_mul]
+
+theorem unitArgumentFactor_norm (χ : MulChar F ℂ) (j : ℕ) (z : F) (hz : z≠0) :
+    ‖unitArgumentFactor χ j z‖=1 := by
+  by_cases hj : j=4
+  · simp [unitArgumentFactor,hj]
+  · rw [unitArgumentFactor,if_neg hj]
+    exact finiteMulChar_unit_norm ((χ^(j+2))⁻¹) (Units.mk0 z hz)
+
+end NormalizedReflection
+namespace CompletedGauss
+open Eisenstein NormalizedReflection
+
+theorem unit_ramified_quotient_ne_zero (P : Ideal O) [P.IsMaximal]
+    (hg : lambda∉P) (u : Oˣ) (m : ℕ) :
+    Ideal.Quotient.mk P ((u:O)*lambda^m)≠0 := by
+  rw [map_mul,map_pow]
+  apply mul_ne_zero
+  · exact (u.isUnit.map (Ideal.Quotient.mk P)).ne_zero
+  · exact pow_ne_zero _ (fun h => hg (Ideal.Quotient.eq_zero_iff_mem.mp h))
+
+def ramifiedBranchPhase {ι : Type*} [Fintype ι]
+    (P : ι→Ideal O) [∀i,(P i).IsMaximal] (hg : ∀i,lambda∉P i)
+    (j : ι→ℕ) (u : Oˣ) (m : ℕ) : ℂ :=
+  ∏i,unitArgumentFactor (complexSexticChar (P i) (hg i)) (j i)
+    (Ideal.Quotient.mk (P i) ((u:O)*lambda^m))
+
+theorem ramifiedBranchPhase_norm {ι : Type*} [Fintype ι]
+    (P : ι→Ideal O) [∀i,(P i).IsMaximal] (hg : ∀i,lambda∉P i)
+    (j : ι→ℕ) (u : Oˣ) (m : ℕ) : ‖ramifiedBranchPhase P hg j u m‖=1 := by
+  rw [ramifiedBranchPhase,norm_prod]
+  have hh (i : ι) := unitArgumentFactor_norm (complexSexticChar (P i) (hg i)) (j i)
+    _ (unit_ramified_quotient_ne_zero (P i) (hg i) u m)
+  simp only [hh,Finset.prod_const_one]
+
+theorem ramified_bracket_full_expansion {ι : Type*} [Fintype ι]
+    (P : ι→Ideal O) [∀i,(P i).IsMaximal] (hg : ∀i,lambda∉P i)
+    (j : ι→ℕ) (u : Oˣ) (m : ℕ) (n b : O) :
+    (∏i,bracket (complexSexticChar (P i) (hg i)) (j i)
+      (Ideal.Quotient.mk (P i) ((u:O)*lambda^m*(n*b^3))))=
+      ramifiedBranchPhase P hg j u m*∑e : ι→Fin 3,reflectedBranch P hg j e n b := by
+  have hl (i : ι) : bracket (complexSexticChar (P i) (hg i)) (j i)
+      (Ideal.Quotient.mk (P i) ((u:O)*lambda^m*(n*b^3)))=
+      unitArgumentFactor (complexSexticChar (P i) (hg i)) (j i)
+        (Ideal.Quotient.mk (P i) ((u:O)*lambda^m))*
+      bracket (complexSexticChar (P i) (hg i)) (j i) (Ideal.Quotient.mk (P i) (n*b^3)) := by
+    rw [map_mul]
+    exact bracket_mul_unit _ _ _ _ (unit_ramified_quotient_ne_zero (P i) (hg i) u m)
+  simp_rw [hl]
+  rw [Finset.prod_mul_distrib,prod_bracket_eq_full_branches P hg j n b]
+  rfl
+
+end CompletedGauss
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+theorem fixedCuspArray_phase_brackets {ι:Type*} [Fintype ι]
+    (P:ι→Ideal Eis) [∀i,(P i).IsMaximal] (hg:∀i,lambda∉P i) (exponent:ι→ℕ)
+    (j:Fin 3) (w u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    fixedConjugateCuspArray j u m I J*
+      (∏i,bracket (complexSexticChar (P i) (hg i)) (exponent i)
+        (Ideal.Quotient.mk (P i) (sourceCuspPhaseNumerator j w.val (fixedCuspArrayIndex u m I J))))=
+    fixedConjugateCuspArray j u m I J*
+      ramifiedBranchPhase P hg exponent (sourcePhaseUnit j w u) (sourcePhaseExponent j m)*
+      ∑e:ι→Fin 3,reflectedBranch P hg exponent e (primaryIdealGenerator I) (primaryIdealGenerator J) := by
+  by_cases hz:fixedConjugateCuspArray j u m I J=0
+  · rw [hz,zero_mul,zero_mul,zero_mul]
+  · obtain ⟨he,hh⟩:=fixedConjugateCuspArray_nonzero j u m I J hz
+    rw [sourceCuspPhaseNumerator_columns j w u m I J he hh,
+      ramified_bracket_full_expansion]
+    ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace FixedCuspShape
+variable {H:SL(2,Eis)} (s:FixedCuspShape H)
+theorem model_array_brackets {ι:Type*} [Fintype ι]
+    (P:ι→Ideal Eis) [∀i,(P i).IsMaximal] (hg:∀i,lambda∉P i) (j:ι→ℕ)
+    (c0:Eis) (hc0:c0≠0) (d U:Eis) (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    (s.amplitude u m I J*cuspBadPhase c0 hc0 d U (s.modelDualNumerator u m I J))*
+      (∏i,bracket (complexSexticChar (P i) (hg i)) (j i)
+        (Ideal.Quotient.mk (P i) (s.modelDualNumerator u m I J)))=
+    ramifiedBranchPhase P hg j (sourcePhaseUnit s.index s.phaseUpperUnit u)
+      (sourcePhaseExponent s.index m)*
+      ∑e:ι→Fin 3,
+        fixedCuspArrayWithPhase s.index u
+          (s.reflectionStaticPhase c0 hc0 (Ideal.Quotient.mk _ (-d*U)) (s.modelDualNumerator u) u) m I J*
+        reflectedBranch P hg j e (primaryIdealGenerator I) (primaryIdealGenerator J) := by
+  let φ:=s.reflectionStaticPhase c0 hc0 (Ideal.Quotient.mk _ (-d*U)) (s.modelDualNumerator u) u
+  have hA:φ m I J*fixedConjugateCuspArray s.index u m I J=
+      s.amplitude u m I J*cuspBadPhase c0 hc0 d U (s.modelDualNumerator u m I J) := by
+    rw [cuspBadPhase_as_fixed_residue]
+    exact s.fixedCuspArrayWithPhase_reflectionStaticPhase c0 hc0 _ _ u m I J
+  have hbr:=fixedCuspArray_phase_brackets P hg j s.index s.phaseUpperUnit u m I J
+  rw [s.phaseUpperUnit_val] at hbr
+  change fixedConjugateCuspArray s.index u m I J*
+    (∏i,bracket (complexSexticChar (P i) (hg i)) (j i) (Ideal.Quotient.mk (P i) (s.modelDualNumerator u m I J)))=_ at hbr
+  rw [←hA]
+  calc
+    _=φ m I J*(fixedConjugateCuspArray s.index u m I J*
+      (∏i,bracket (complexSexticChar (P i) (hg i)) (j i) (Ideal.Quotient.mk (P i) (s.modelDualNumerator u m I J)))) := by ring
+    _=φ m I J*(fixedConjugateCuspArray s.index u m I J*
+      ramifiedBranchPhase P hg j (sourcePhaseUnit s.index s.phaseUpperUnit u)
+        (sourcePhaseExponent s.index m)*
+        ∑e:ι→Fin 3,reflectedBranch P hg j e (primaryIdealGenerator I) (primaryIdealGenerator J)) := by rw [hbr]
+    _=_ := by
+      simp only [fixedCuspArrayWithPhase]
+      rw [←Finset.mul_sum]
+      dsimp only [φ]
+      ring
+
+end FixedCuspShape
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace ControlledStratumArithmetic
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+noncomputable local instance coefficientField (P:Ideal Eis) [P.IsMaximal] : Field (Eis⧸P) :=
+  Ideal.Quotient.field P
+noncomputable local instance coefficientFintype (P:Ideal Eis) [P.IsMaximal] : Fintype (Eis⧸P) :=
+  Fintype.ofFinite _
+
+def activePhase (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ) : ℂ :=
+  ∏i,(((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+    phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) (j i) (D.epsilon i)
+
+lemma activePhase_norm (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i})
+    (hchar:∀i,ringChar (Eis⧸Ideal.span {p i})≠2) (j:ι→ℕ) (hj:∀i,j i<6) :
+    ‖D.activePhase hp hg j‖=1 := by
+  rw [activePhase,norm_prod]
+  have he (i:ι):‖(((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+      phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) (j i) (D.epsilon i)‖=1 := by
+    rw [norm_mul,finiteMulChar_unit_norm,one_mul]
+    exact canonical_phase_norm (Ideal.span {p i}) (hg i) (hchar i) (residueTraceQuotientChar 1 (p i) (hp i))
+      (residueTraceQuotientChar_primitive (p i) (hp i)) (j i) (hj i) (D.epsilon i)
+  simp only [he,Finset.prod_const_one]
+
+lemma bracketProduct_eq (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ) (x:Eis) :
+    D.bracketProduct hp hg j x=D.activePhase hp hg j*
+      ∏i,bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i) (Ideal.Quotient.mk _ x) := by
+  exact Finset.prod_mul_distrib
+
+def modelRowPhase (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ) (u:Eisˣ) (m:ℕ) : ℂ :=
+  star D.fixedFactor*D.activePhase hp hg j*
+    ramifiedBranchPhase (fun i=>Ideal.span {p i}) hg j
+      (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m)
+
+theorem modelRowPhase_norm (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hg:∀i,lambda∉Ideal.span {p i})
+    (hchar:∀i,ringChar (Eis⧸Ideal.span {p i})≠2) (j:ι→ℕ) (hj:∀i,j i<6)
+    (u:Eisˣ) (m:ℕ) : ‖D.modelRowPhase s hp hg j u m‖=1 := by
+  rw [modelRowPhase,norm_mul,norm_mul,norm_star,D.fixedFactor_norm hN hr hbase,
+    D.activePhase_norm hp hg hchar j hj,ramifiedBranchPhase_norm,one_mul,one_mul]
+
+theorem model_coefficient (D:ControlledStratumArithmetic p N a0 c0 mode)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (s:FixedCuspShape (fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0) (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ)
+    (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) :
+    s.amplitude u m I J*
+      (star D.fixedFactor*cuspBadPhase c0 hc0 (D.matrix (fun _=>1) 1 1) D.U (s.modelDualNumerator u m I J))*
+      D.bracketProduct hp hg j (s.modelDualNumerator u m I J)=
+    D.modelRowPhase s hp hg j u m*
+      ∑e:ι→Fin 3,
+        fixedCuspArrayWithPhase s.index u
+          (s.reflectionStaticPhase c0 hc0 (Ideal.Quotient.mk _ (-(D.matrix (fun _=>1) 1 1)*D.U))
+            (s.modelDualNumerator u) u) m I J*
+        reflectedBranch (fun i=>Ideal.span {p i}) hg j e (primaryIdealGenerator I) (primaryIdealGenerator J) := by
+  rw [D.bracketProduct_eq]
+  have he:=s.model_array_brackets (fun i=>Ideal.span {p i}) hg j c0 hc0
+    (D.matrix (fun _=>1) 1 1) D.U u m I J
+  calc
+    _=(star D.fixedFactor*D.activePhase hp hg j)*
+      ((s.amplitude u m I J*cuspBadPhase c0 hc0 (D.matrix (fun _=>1) 1 1) D.U (s.modelDualNumerator u m I J))*
+        (∏i,bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+          (Ideal.Quotient.mk _ (s.modelDualNumerator u m I J)))) := by ring
+    _=_ := by rw [he];dsimp only [modelRowPhase];ring
+
+end ControlledStratumArithmetic
+
+lemma fixed_stratum_kernel_scale (j:Fin 3) (c0 r:Eis) :
+    27*(sourceCuspScale j)^2*(Ideal.absNorm (Ideal.span {c0*r}):ℝ)^2=
+      fixedCuspLevelScale j c0*(Ideal.absNorm (Ideal.span {r}):ℝ)^2 := by
+  rw [←Ideal.span_singleton_mul_span_singleton,map_mul,Nat.cast_mul,mul_pow,fixedCuspLevelScale]
+  ring
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped BigOperators Classical
+open NormalizedReflection
+noncomputable section
+
+lemma scalar_inverse_pair (a b c d : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) (hd : d ≠ 0)
+    (h : c*a*b=d) : a⁻¹*b⁻¹ = d⁻¹*c := by
+  field_simp
+  linear_combination -h
+
+theorem marked_local_phase {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (σ ε : Fˣ) (B z : F)
+    (he : B*z*(σ : F)*(ε : F) = -1) :
+    ((χ⁻¹)^2) σ * phase χ ψ 0 ε =
+      (-tau χ ψ 2)*(χ (-1))⁻¹^2*(χ B)^2*(χ z)^2 := by
+  have hs : χ (σ : F) ≠ 0 := MulChar.apply_ne_zero_iff.mpr σ.isUnit
+  have he' : χ (ε : F) ≠ 0 := MulChar.apply_ne_zero_iff.mpr ε.isUnit
+  have hn : χ (-1) ≠ 0 := MulChar.apply_ne_zero_iff.mpr isUnit_neg_one
+  have hh := congrArg χ he
+  simp only [map_mul] at hh
+  have hi := scalar_inverse_pair (χ σ) (χ ε) (χ B*χ z) (χ (-1)) hs he' hn hh
+  simp only [phase, show (0 : ℕ) ≠ 4 by decide, ↓reduceIte,
+    MulChar.pow_apply_coe, MulChar.inv_apply_eq_inv']
+  calc
+    _ = (-tau χ ψ 2)*((χ σ)⁻¹*(χ ε)⁻¹)^2 := by ring
+    _ = _ := by rw [hi]; ring
+
+theorem residual_local_phase {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (σ ε : Fˣ) (A B z : F)
+    (hsigma : (σ : F) = A*z) (he : B*z*(σ : F)*(ε : F) = -1) :
+    ((χ⁻¹)^2) σ * phase χ ψ 1 ε =
+      (tau χ (ψ.mulShift (-1)) 1*tau χ ψ 3)*
+        (χ (-1))⁻¹^3*(χ A)*(χ B)^3*(χ z)^4 := by
+  have hs : χ (σ : F) ≠ 0 := MulChar.apply_ne_zero_iff.mpr σ.isUnit
+  have he' : χ (ε : F) ≠ 0 := MulChar.apply_ne_zero_iff.mpr ε.isUnit
+  have hn : χ (-1) ≠ 0 := MulChar.apply_ne_zero_iff.mpr isUnit_neg_one
+  have hh := congrArg χ he
+  simp only [map_mul] at hh
+  have hi := scalar_inverse_pair (χ σ) (χ ε) (χ B*χ z) (χ (-1)) hs he' hn hh
+  have hsig : χ (σ : F) = χ A*χ z := by rw [hsigma,map_mul]
+  simp only [phase, show (1 : ℕ) ≠ 4 by decide, show (1 : ℕ) ≠ 0 by decide,
+    ↓reduceIte, show (1 : ℕ)+2 = 3 by decide,
+    MulChar.pow_apply_coe, MulChar.inv_apply_eq_inv']
+  have hid : (χ σ)⁻¹^2*(χ ε)⁻¹^3 = (χ σ)*((χ σ)⁻¹*(χ ε)⁻¹)^3 := by
+    field_simp
+  calc
+    _ = (tau χ (ψ.mulShift (-1)) 1*tau χ ψ 3)*((χ σ)⁻¹^2*(χ ε)⁻¹^3) := by ring
+    _ = _ := by rw [hid,hi,hsig]; ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped BigOperators Classical
+open Eisenstein CompletedGauss 
+open NormalizedReflection 
+noncomputable section
+noncomputable local instance phaseField (P : Ideal Eis) [P.IsMaximal] : Field (Eis ⧸ P) := Ideal.Quotient.field P
+noncomputable local instance phaseFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+def markedPrimeScalar (p c0 : Eis) [hP : (Ideal.span {p}).IsMaximal]
+    (hp : p ≠ 0) (hg : lambda ∉ Ideal.span {p}) : ℂ :=
+  let χ := complexSexticChar (Ideal.span {p}) hg
+  (-tau χ (residueTraceQuotientChar 1 p hp) 2)*(χ (-1))⁻¹^2*
+    (χ (Ideal.Quotient.mk _ (traceLambda^3*c0)))^2
+
+def residualPrimeScalar (p c0 : Eis) [hP : (Ideal.span {p}).IsMaximal]
+    (hp : p ≠ 0) (hg : lambda ∉ Ideal.span {p}) : ℂ :=
+  let χ := complexSexticChar (Ideal.span {p}) hg
+  (tau χ ((residueTraceQuotientChar 1 p hp).mulShift (-1)) 1*tau χ (residueTraceQuotientChar 1 p hp) 3)*
+    (χ (-1))⁻¹^3*(χ (Ideal.Quotient.mk _ (traceLambda^2*c0)))*
+      (χ (Ideal.Quotient.mk _ (traceLambda^3*c0)))^3
+
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a0 c0 : Eis} {mode : Bool}
+
+theorem controlled_marked_phase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (i : ι) :
+    (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+      phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) 0 (D.epsilon i) =
+        markedPrimeScalar (p i) c0 (hp i) (hg i)*
+          ∏ k ∈ Finset.univ.erase i, FirstPassCubeLabels.crossSymbol p hg i k ^ 2 := by
+  have he : Ideal.Quotient.mk (Ideal.span {p i}) (traceLambda^3*c0)*
+      Ideal.Quotient.mk _ (cuspPrimeCofactor p i)*(D.sigma i : Eis ⧸ Ideal.span {p i})*
+      (D.epsilon i : Eis ⧸ Ideal.span {p i}) = -1 := by
+    simpa only [map_mul] using D.epsilon_value i
+  rw [marked_local_phase _ _ _ _ _ _ he]
+  change _ = _
+  simp only [markedPrimeScalar, cuspPrimeCofactor, map_prod, Finset.prod_pow,
+    FirstPassCubeLabels.crossSymbol]
+
+theorem controlled_residual_phase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (i : ι) :
+    (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+      phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) 1 (D.epsilon i) =
+        residualPrimeScalar (p i) c0 (hp i) (hg i)*
+          ∏ k ∈ Finset.univ.erase i, FirstPassCubeLabels.crossSymbol p hg i k ^ 4 := by
+  have hs : (D.sigma i : Eis ⧸ Ideal.span {p i}) =
+      Ideal.Quotient.mk _ (traceLambda^2*c0)*Ideal.Quotient.mk _ (cuspPrimeCofactor p i) := by
+    simpa only [map_mul] using D.sigma_value i
+  have he : Ideal.Quotient.mk (Ideal.span {p i}) (traceLambda^3*c0)*
+      Ideal.Quotient.mk _ (cuspPrimeCofactor p i)*(D.sigma i : Eis ⧸ Ideal.span {p i})*
+      (D.epsilon i : Eis ⧸ Ideal.span {p i}) = -1 := by
+    simpa only [map_mul] using D.epsilon_value i
+  rw [residual_local_phase _ _ _ _ _ _ _ hs he]
+  simp only [residualPrimeScalar, cuspPrimeCofactor, map_prod, Finset.prod_pow,
+    FirstPassCubeLabels.crossSymbol]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  CompletedGauss
+open NormalizedReflection 
+noncomputable section
+
+lemma scalar_phase_power (a b : ℂ) (ha : a ≠ 0) (j : ℕ) :
+    a⁻¹^2*b⁻¹^(j+2) = a^j*(a⁻¹*b⁻¹)^(j+2) := by
+  symm
+  calc
+    _ = (a^j*(a⁻¹)^j)*(a⁻¹)^2*(b⁻¹)^(j+2) := by rw [mul_pow,pow_add]; ring
+    _ = _ := by rw [← mul_pow,mul_inv_cancel₀ ha,one_pow,one_mul]
+
+theorem general_local_phase {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (σ ε : Fˣ) (A B z : F)
+    (hsigma : (σ : F) = A*z) (he : B*z*(σ : F)*(ε : F) = -1)
+    (j : ℕ) (hj0 : j ≠ 0) (hj4 : j ≠ 4) :
+    ((χ⁻¹)^2) σ * phase χ ψ j ε =
+      (tau χ (ψ.mulShift (-1)) j*tau χ ψ (j+2)) *
+        (χ (-1))⁻¹^(j+2)*(χ A)^j*(χ B)^(j+2)*(χ z)^(2*j+2) := by
+  have hs : χ (σ : F) ≠ 0 := MulChar.apply_ne_zero_iff.mpr σ.isUnit
+  have he' : χ (ε : F) ≠ 0 := MulChar.apply_ne_zero_iff.mpr ε.isUnit
+  have hn : χ (-1) ≠ 0 := MulChar.apply_ne_zero_iff.mpr isUnit_neg_one
+  have hh := congrArg χ he
+  simp only [map_mul] at hh
+  have hi := scalar_inverse_pair (χ σ) (χ ε) (χ B*χ z) (χ (-1)) hs he' hn hh
+  have hsig : χ (σ : F) = χ A*χ z := by rw [hsigma,map_mul]
+  simp only [phase,hj4,hj0,↓reduceIte,MulChar.pow_apply_coe,MulChar.inv_apply_eq_inv']
+  calc
+    _ = (tau χ (ψ.mulShift (-1)) j*tau χ ψ (j+2))*((χ σ)⁻¹^2*(χ ε)⁻¹^(j+2)) := by ring
+    _ = _ := by
+      rw [scalar_phase_power _ _ hs j,hi,hsig]
+      simp only [mul_pow,pow_add,show 2*j=j+j by omega]
+      ring
+
+theorem exceptional_local_phase {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (σ ε : Fˣ) (A z : F)
+    (hsigma : (σ : F) = A*z) :
+    ((χ⁻¹)^2) σ * phase χ ψ 4 ε =
+      (tau χ (ψ.mulShift (-1)) 4*(χ A)⁻¹^2)*(χ z)⁻¹^2 := by
+  simp only [phase,↓reduceIte,hsigma,map_mul,
+    ]
+  simp only [MulChar.pow_apply' _ (by decide : (2:ℕ) ≠ 0),MulChar.inv_apply_eq_inv']
+  ring
+
+noncomputable local instance frozenField (P : Ideal Eis) [P.IsMaximal] : Field (Eis ⧸ P) := Ideal.Quotient.field P
+noncomputable local instance frozenFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+def frozenPrimeScalar (p c : Eis) [(Ideal.span {p}).IsMaximal]
+    (hp : p ≠ 0) (hg : lambda ∉ Ideal.span {p}) (j : ℕ) : ℂ :=
+  let χ := complexSexticChar (Ideal.span {p}) hg
+  if j=4 then tau χ ((residueTraceQuotientChar 1 p hp).mulShift (-1)) 4*
+      (χ (Ideal.Quotient.mk _ (traceLambda^2*c)))⁻¹^2
+  else if j=0 then markedPrimeScalar p c hp hg
+  else (tau χ ((residueTraceQuotientChar 1 p hp).mulShift (-1)) j*tau χ (residueTraceQuotientChar 1 p hp) (j+2)) *
+    (χ (-1))⁻¹^(j+2)*(χ (Ideal.Quotient.mk _ (traceLambda^2*c)))^j*
+    (χ (Ideal.Quotient.mk _ (traceLambda^3*c)))^(j+2)
+
+def frozenCofactorCharacter (P : Ideal Eis) [P.IsMaximal]
+    (hg : lambda ∉ P) (j : ℕ) : Eis →* ℂ :=
+  (if j=4 then ((complexSexticChar P hg)⁻¹)^2 else (complexSexticChar P hg)^(2*j+2)).toMonoidHom.comp
+    (Ideal.Quotient.mk P).toMonoidHom
+
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+
+theorem controlled_frozen_phase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (i : ι) (j : ℕ) :
+    (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+      phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) j (D.epsilon i) =
+    frozenPrimeScalar (p i) c (hp i) (hg i) j *
+      frozenCofactorCharacter (Ideal.span {p i}) (hg i) j (cuspPrimeCofactor p i) := by
+  have hs : (D.sigma i : Eis ⧸ Ideal.span {p i}) =
+      Ideal.Quotient.mk _ (traceLambda^2*c)*Ideal.Quotient.mk _ (cuspPrimeCofactor p i) := by
+    simpa only [map_mul] using D.sigma_value i
+  have he : Ideal.Quotient.mk (Ideal.span {p i}) (traceLambda^3*c)*
+      Ideal.Quotient.mk _ (cuspPrimeCofactor p i)*(D.sigma i : Eis ⧸ Ideal.span {p i})*
+      (D.epsilon i : Eis ⧸ Ideal.span {p i}) = -1 := by
+    simpa only [map_mul] using D.epsilon_value i
+  by_cases hj4 : j=4
+  · subst j
+    rw [exceptional_local_phase _ _ _ _ _ _ hs]
+    simp only [frozenPrimeScalar,frozenCofactorCharacter,↓reduceIte,MonoidHom.comp_apply,
+      RingHom.toMonoidHom_eq_coe,MulChar.coe_toMonoidHom,
+      MulChar.pow_apply' _ (by decide : (2:ℕ) ≠ 0),MulChar.inv_apply_eq_inv']
+    rfl
+  · by_cases hj0 : j=0
+    · subst j
+      rw [marked_local_phase _ _ _ _ _ _ he]
+      simp [frozenPrimeScalar,frozenCofactorCharacter,markedPrimeScalar,
+        MulChar.pow_apply' _ (by decide : (2:ℕ) ≠ 0)]
+    · rw [general_local_phase _ _ _ _ _ _ _ hs he j hj0 hj4]
+      simp only [frozenPrimeScalar,frozenCofactorCharacter,hj4,hj0,↓reduceIte,
+        MonoidHom.comp_apply,RingHom.toMonoidHom_eq_coe,
+        MulChar.coe_toMonoidHom,MulChar.pow_apply' _ (by omega : 2*j+2 ≠ 0)]
+      rfl
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped BigOperators Classical
+noncomputable section
+
+theorem ordered_cross_partition_on {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (x : ι → ι → ℂ) (l : ι → ℂ) (a b : ℕ) (A B U : Finset ι)
+    (hd : Disjoint A B) (hu : A ∪ B = U) :
+    (∏ i ∈ U, ((∏ k ∈ U.erase i, x i k ^ (if i ∈ A then a else b)) * l i)) =
+      (∏ i ∈ A, (∏ k ∈ A.erase i, x i k ^ a) * l i) *
+      (∏ i ∈ B, (∏ k ∈ B.erase i, x i k ^ b) * l i) *
+      (∏ i ∈ A, ∏ k ∈ B, x i k ^ a * x k i ^ b) := by
+  have hA (i : ι) (hi : i ∈ A) :
+      (∏ k ∈ U.erase i, x i k ^ (if i ∈ A then a else b)) =
+        (∏ k ∈ A.erase i, x i k ^ a) * (∏ k ∈ B, x i k ^ a) := by
+    have hn : i ∉ B := fun hb => Finset.disjoint_left.mp hd hi hb
+    have he : U.erase i = A.erase i ∪ B := by
+      rw [← hu]
+      ext k
+      by_cases hk : k = i
+      · subst k; simp [hn]
+      · simp [hk]
+    rw [he, if_pos hi, Finset.prod_union (hd.mono_left (Finset.erase_subset _ _))]
+  have hB (i : ι) (hi : i ∈ B) :
+      (∏ k ∈ U.erase i, x i k ^ (if i ∈ A then a else b)) =
+        (∏ k ∈ B.erase i, x i k ^ b) * (∏ k ∈ A, x i k ^ b) := by
+    have hn : i ∉ A := fun ha => Finset.disjoint_left.mp hd ha hi
+    have he : U.erase i = B.erase i ∪ A := by
+      rw [← hu]
+      ext k
+      by_cases hk : k = i
+      · subst k; simp [hn]
+      · simp [hk, or_comm]
+    rw [he, if_neg hn, Finset.prod_union (hd.symm.mono_left (Finset.erase_subset _ _))]
+  have hpA : (∏ i ∈ A, ((∏ k ∈ U.erase i,
+      x i k ^ (if i ∈ A then a else b)) * l i)) =
+      (∏ i ∈ A, (∏ k ∈ A.erase i, x i k ^ a) * l i) *
+        (∏ i ∈ A, ∏ k ∈ B, x i k ^ a) := by
+    rw [← Finset.prod_mul_distrib]
+    apply Finset.prod_congr rfl
+    intro i hi
+    rw [hA i hi]
+    ring
+  have hpB : (∏ i ∈ B, ((∏ k ∈ U.erase i,
+      x i k ^ (if i ∈ A then a else b)) * l i)) =
+      (∏ i ∈ B, (∏ k ∈ B.erase i, x i k ^ b) * l i) *
+        (∏ i ∈ B, ∏ k ∈ A, x i k ^ b) := by
+    rw [← Finset.prod_mul_distrib]
+    apply Finset.prod_congr rfl
+    intro i hi
+    rw [hB i hi]
+    ring
+  calc
+    _ = (∏ i ∈ A, ((∏ k ∈ U.erase i,
+            x i k ^ (if i ∈ A then a else b)) * l i)) *
+        (∏ i ∈ B, ((∏ k ∈ U.erase i,
+            x i k ^ (if i ∈ A then a else b)) * l i)) := by
+      rw [← Finset.prod_union hd, hu]
+    _ = _ := by
+      rw [hpA, hpB]
+      rw [Finset.prod_comm (s := B) (t := A)]
+      simp only [Finset.prod_mul_distrib]
+      ring
+
+theorem ordered_cross_frozen_partition {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (x : ι → ι → ℂ) (l : ι → ℂ) (a b : ℕ) (R P F : Finset ι)
+    (hRP : Disjoint R P) (hF : Disjoint (R ∪ P) F)
+    (hu : (R ∪ P) ∪ F = Finset.univ) :
+    (∏ i ∈ R ∪ P, (∏ k ∈ Finset.univ.erase i,
+      x i k ^ (if i ∈ R then a else b))*l i) =
+      (∏ i ∈ R, (∏ k ∈ R.erase i, x i k^a)*(l i*∏ k ∈ F, x i k^a)) *
+      (∏ i ∈ P, (∏ k ∈ P.erase i, x i k^b)*(l i*∏ k ∈ F, x i k^b)) *
+      (∏ i ∈ R, ∏ k ∈ P, x i k^a*x k i^b) := by
+  let ll := fun i => l i*∏ k ∈ F, x i k ^ (if i ∈ R then a else b)
+  have hx : (∏ i ∈ R ∪ P, (∏ k ∈ Finset.univ.erase i,
+      x i k ^ (if i ∈ R then a else b))*l i) =
+      ∏ i ∈ R ∪ P, (∏ k ∈ (R ∪ P).erase i,
+        x i k ^ (if i ∈ R then a else b))*ll i := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    have hn : i ∉ F := fun hf => Finset.disjoint_left.mp hF hi hf
+    have he : Finset.univ.erase i = (R ∪ P).erase i ∪ F := by
+      rw [← hu]
+      ext k
+      by_cases hk : k = i
+      · subst k; simp [hn]
+      · simp [hk,or_assoc]
+    rw [he,Finset.prod_union (hF.mono_left (Finset.erase_subset _ _))]
+    dsimp [ll]
+    ring
+  rw [hx,ordered_cross_partition_on x ll a b R P (R ∪ P) hRP rfl]
+  congr 2
+  · apply Finset.prod_congr rfl
+    intro i hi
+    simp [ll,hi]
+  · apply Finset.prod_congr rfl
+    intro i hi
+    have hn : i ∉ R := fun hr => Finset.disjoint_left.mp hRP hr hi
+    simp [ll,hn]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+section
+variable {R:Type*} [CommRing R]
+theorem inverse_residue_congr (D r r0 u u0 : R) (hcop : IsCoprime D r)
+    (hr : D∣r-r0) (hu : D∣u*r-1) (hu0 : D∣u0*r0-1) : D∣u-u0 := by
+  apply hcop.dvd_of_dvd_mul_right
+  have hh := dvd_sub (dvd_sub hu hu0) (dvd_mul_of_dvd_right hr u0)
+  convert hh using 1 ; ring
+
+theorem inverse_weight_residue_congr (D r r0 u u0 d d0 : R)
+    (hcop : IsCoprime D r) (hr : D∣r-r0)
+    (hu : D∣u*r-1) (hu0 : D∣u0*r0-1) (hd : D∣d-d0) :
+    D∣(-d*u)-(-d0*u0) := by
+  have hi := inverse_residue_congr D r r0 u u0 hcop hr hu hu0
+  have hh := dvd_add (dvd_mul_of_dvd_left hd u) (dvd_mul_of_dvd_right hi d0)
+  convert dvd_neg.mpr hh using 1 ; ring
+
+
+end
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  
+noncomputable section
+
+theorem separate_product_congruence {A : Type*} [CommRing A]
+    (M f r r₀ P P₀ : A) (hr : M^2 ∣ r-r₀) (hP : M^2 ∣ P-P₀) :
+    M^2 ∣ f*r*P-f*r₀*P₀ := by
+  have h := dvd_add (dvd_mul_of_dvd_left hr P) (dvd_mul_of_dvd_right hP r₀)
+  convert dvd_mul_of_dvd_right h f using 1 ; ring
+
+def separateSector (M r P : Eis) :
+    (Eis ⧸ Ideal.span {M^2}) × (Eis ⧸ Ideal.span {M^2}) :=
+  (Ideal.Quotient.mk _ r, Ideal.Quotient.mk _ P)
+
+theorem separateSector_product (M f r r₀ P P₀ : Eis)
+    (h : separateSector M r P = separateSector M r₀ P₀) :
+    M^2 ∣ f*r*P-f*r₀*P₀ := by
+  apply separate_product_congruence
+  · exact Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp (congrArg Prod.fst h))
+  · exact Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp (congrArg Prod.snd h))
+
+theorem controlled_bad_phase_eq {ι κ : Type*} [Fintype ι] [Fintype κ]
+    {p : ι → Eis} {p₀ : κ → Eis} {N a c : Eis} {mode : Bool}
+    (D : ControlledStratumArithmetic p N a c mode)
+    (D₀ : ControlledStratumArithmetic p₀ N a c mode) (hc : c ≠ 0)
+    (hbad : traceLambda^3*c ∣ N)
+    (hr : N ∣ (∏ i, p i)-(∏ i, p₀ i))
+    (hd : N ∣ D.matrix (fun _ => 1) 1 1 - D₀.matrix (fun _ => 1) 1 1) :
+    cuspBadPhase c hc (D.matrix (fun _ => 1) 1 1) D.U =
+      cuspBadPhase c hc (D₀.matrix (fun _ => 1) 1 1) D₀.U := by
+  have hu : traceLambda^3*c ∣ D.U*(∏ i, p i)-1 := by
+    refine ⟨-D.w, ?_⟩
+    linear_combination D.bezout
+  have hu₀ : traceLambda^3*c ∣ D₀.U*(∏ i, p₀ i)-1 := by
+    refine ⟨-D₀.w, ?_⟩
+    linear_combination D₀.bezout
+  have hcop : IsCoprime (traceLambda^3*c) (∏ i, p i) := by
+    refine ⟨D.w,D.U,?_⟩
+    linear_combination D.bezout
+  have he := inverse_weight_residue_congr
+    (traceLambda^3*c) (∏ i, p i) (∏ i, p₀ i) D.U D₀.U
+    (D.matrix (fun _ => 1) 1 1) (D₀.matrix (fun _ => 1) 1 1)
+    hcop (hbad.trans hr) hu hu₀ (hbad.trans hd)
+  rw [cuspBadPhase_as_fixed_residue, cuspBadPhase_as_fixed_residue]
+  congr 1
+  exact Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr he)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  CompletedGauss 
+noncomputable section
+variable {ι κ : Type*} [Fintype ι] [Fintype κ]
+  {p : ι → Eis} {p₀ : κ → Eis} {N a c : Eis} {mode : Bool}
+
+theorem controlled_fixedFactor_eq
+    (D : ControlledStratumArithmetic p N a c mode)
+    (D₀ : ControlledStratumArithmetic p₀ N a c mode)
+    (hN : (9:Eis)*c ∣ N)
+    (hr : lambda^2 ∣ (∏ i, p i)-1) (hr₀ : lambda^2 ∣ (∏ i, p₀ i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (ha : N ∣ D.matrix (fun _ => 1) 0 0 - D₀.matrix (fun _ => 1) 0 0)
+    (hb : N ∣ D.matrix (fun _ => 1) 0 1 - D₀.matrix (fun _ => 1) 0 1) :
+    D.fixedFactor = D₀.fixedFactor := by
+  have h9N : (9:Eis) ∣ N := (dvd_mul_right 9 c).trans hN
+  have hcN : c ∣ N := (dvd_mul_left c 9).trans hN
+  have h3N : (3:Eis) ∣ N := (show (3:Eis) ∣ 9 from ⟨3,by norm_num⟩).trans h9N
+  cases mode
+  · exact congrArg ringComplex (cuspSymbol_weyl_fixed_congr N c _ _ hcN ha)
+  · apply congrArg ringComplex
+    exact cuspSymbol_ramified_fixed_congr N 1 c _ _ _ _ h9N (one_dvd _) hcN
+      (D.numerator_primary h3N hr hbase _) (D₀.numerator_primary h3N hr₀ hbase _)
+      (lowerCusp_relative_primary _ c (D.ramified_relative h3N hr hbase c (by simp) _))
+      (lowerCusp_relative_primary _ c (D₀.ramified_relative h3N hr₀ hbase c (by simp) _)) ha hb
+
+theorem controlled_static_array_eq
+    (D : ControlledStratumArithmetic p N a c mode)
+    (D₀ : ControlledStratumArithmetic p₀ N a c mode) (hc : c ≠ 0)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hbad : traceLambda^3*c ∣ N)
+    (hr : N ∣ (∏ i, p i)-(∏ i, p₀ i))
+    (hd : N ∣ D.matrix (fun _ => 1) 1 1 - D₀.matrix (fun _ => 1) 1 1)
+    (u : Eisˣ) (m : ℕ) (I J : Ideal Eis) :
+    fixedCuspArrayWithPhase s.index u
+      (s.reflectionStaticPhase c hc (Ideal.Quotient.mk _ (-(D.matrix (fun _ => 1) 1 1)*D.U))
+        (s.modelDualNumerator u) u) m I J =
+    fixedCuspArrayWithPhase s.index u
+      (s.reflectionStaticPhase c hc (Ideal.Quotient.mk _ (-(D₀.matrix (fun _ => 1) 1 1)*D₀.U))
+        (s.modelDualNumerator u) u) m I J := by
+  rw [s.fixedCuspArrayWithPhase_reflectionStaticPhase, s.fixedCuspArrayWithPhase_reflectionStaticPhase]
+  have he := congrFun (controlled_bad_phase_eq D D₀ hc hbad hr hd) (s.modelDualNumerator u m I J)
+  rw [cuspBadPhase_as_fixed_residue,cuspBadPhase_as_fixed_residue] at he
+  rw [he]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators MatrixGroups
+open Eisenstein    CompletedGauss
+noncomputable section
+
+theorem simultaneous_controlled_matrices_dependent {α Q : Type*} {ι : α → Type*} [∀ x, Fintype (ι x)]
+    (p : ∀ x, ι x → Eis) (N a c : Eis) (mode : Bool)
+    (D : ∀ x, ControlledStratumArithmetic (p x) N a c mode)
+    (hc : c ≠ 0) (h9N : (9:Eis) ∣ N) (hcN : c ∣ N)
+    (hprimary : ∀ x, lambda^2 ∣ (∏ i, p x i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (hcop : ∀ x, IsCoprime (∏ i, p x i) (N*c))
+    (sector : α → Q)
+    (hsector : ∀ x y, sector x = sector y → N^2 ∣ (∏ i, p x i)-(∏ i, p y i)) :
+    ∃ mat : ∀ x, (∀ i, (Eis ⧸ Ideal.span {p x i})ˣ) → SL(2,Eis),
+      (∀ x v, mat x v 0 0 = (D x).matrix v 0 0) ∧
+      (∀ x v, mat x v 1 0 = c*∏ i, p x i) ∧
+      (∀ x v, if mode then (9:Eis) ∣ mat x v 0 1 ∧ (3:Eis) ∣ mat x v 1 1-1
+        else (3:Eis) ∣ mat x v 0 1+1 ∧ (9:Eis) ∣ mat x v 1 1) ∧
+      ∀ x y v w, sector x = sector y → ∀ i j, N ∣ mat x v i j-mat y w i j := by
+  have h3N : (3:Eis)∣N := (show (3:Eis)∣9 from ⟨3,by norm_num⟩).trans h9N
+  have hlocal (q:Q) : ∃ C:SL(2,Eis), ∀ x, sector x=q →
+      ∀ v, ∃ M:SL(2,Eis),
+        M 0 0=(D x).matrix v 0 0 ∧ M 1 0=c*∏i,p x i ∧
+        (if mode then (9:Eis)∣M 0 1 ∧ (3:Eis)∣M 1 1-1
+          else (3:Eis)∣M 0 1+1 ∧ (9:Eis)∣M 1 1) ∧
+        ∀ i j, N∣M i j-C i j := by
+    by_cases hq:∃x,sector x=q
+    · obtain ⟨y,hy⟩:=hq
+      let C := (D y).matrix (fun _=>1)
+      refine ⟨C,?_⟩
+      intro x hx v
+      have hrr : N∣(∏i,p x i)-(∏i,p y i) :=
+        (dvd_pow_self N (by decide : (2:ℕ)≠0)).trans (hsector x y (hx.trans hy.symm))
+      have ha : N∣(D x).matrix v 0 0-C 0 0 := by
+        have h1 := (D x).numerator_congruence v
+        have h0 := (D y).numerator_congruence (fun _=>1)
+        convert dvd_sub (dvd_add h1 (dvd_mul_of_dvd_right hrr a)) h0 using 1 <;> ring
+      have hden : N∣(c*∏i,p x i)-C 1 0 := by
+        change N∣(c*∏i,p x i)-(D y).matrix (fun _=>1) 1 0
+        rw [(D y).denominator]
+        convert dvd_mul_of_dvd_right hrr c using 1 <;> ring
+      have hac : IsCoprime ((D x).matrix v 0 0) (c*∏i,p x i) :=
+        ⟨(D x).matrix v 1 1,-(D x).matrix v 0 1,by
+          linear_combination (D x).determinant v⟩
+      obtain ⟨M,hm0,hm1,hm⟩ := primitiveColumn_congruent_completion C
+        ((D x).matrix v 0 0) (c*∏i,p x i) N hac ha hden
+      refine ⟨M,hm0,hm1,?_,hm⟩
+      have hcnd := (D y).conditions (fun _=>1)
+      cases mode
+      · simp only [Bool.false_eq_true,↓reduceIte] at hcnd ⊢
+        constructor
+        · convert dvd_add (h3N.trans (hm 0 1)) hcnd.1 using 1 <;> ring
+        · convert dvd_add (h9N.trans (hm 1 1)) hcnd.2 using 1 <;> ring
+      · simp only [↓reduceIte] at hcnd ⊢
+        constructor
+        · convert dvd_add (h9N.trans (hm 0 1)) hcnd.1 using 1 <;> ring
+        · convert dvd_add (h3N.trans (hm 1 1)) hcnd.2 using 1 <;> ring
+    · exact ⟨1,fun x hx=>False.elim (hq ⟨x,hx⟩)⟩
+  choose C hC using hlocal
+  have hex (x:α) (v:∀i,(Eis⧸Ideal.span {p x i})ˣ) := hC (sector x) x rfl v
+  choose mat ha hd hcond hm using hex
+  refine ⟨mat,ha,hd,hcond,?_⟩
+  intro x y v w hxy i j
+  have h1 := hm x v i j
+  have h0 := hm y w i j
+  rw [hxy] at h1
+  convert dvd_sub h1 h0 using 1 <;> ring
+
+
+theorem exists_sector_controlled_arithmetic_dependent {α Q : Type*} {ι : α → Type*} [∀ x, Fintype (ι x)]
+    (p : ∀ x, ι x → Eis) (N a c : Eis) (mode : Bool)
+    (D : ∀ x, ControlledStratumArithmetic (p x) N a c mode)
+    (hc : c ≠ 0) (h9N : (9:Eis) ∣ N) (hcN : c ∣ N)
+    (hprimary : ∀ x, lambda^2 ∣ (∏ i, p x i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (hcop : ∀ x, IsCoprime (∏ i, p x i) (N*c))
+    (sector : α → Q)
+    (hsector : ∀ x y, sector x = sector y → N^2 ∣ (∏ i, p x i)-(∏ i, p y i)) :
+    ∃ E : ∀ x, ControlledStratumArithmetic (p x) N a c mode,
+      (∀ x, (E x).lift = (D x).lift) ∧
+      (∀ x, (E x).U = (D x).U) ∧
+      (∀ x, (E x).sigma = (D x).sigma) ∧
+      (∀ x, (E x).epsilon = (D x).epsilon) ∧
+      ∀ x y v w, sector x = sector y → ∀ i j,
+        N ∣ (E x).matrix v i j-(E y).matrix w i j := by
+  obtain ⟨mat,ha,hr,hcond,hfixed⟩ := simultaneous_controlled_matrices_dependent
+    p N a c mode D hc h9N hcN hprimary hbase hcop sector hsector
+  let E : ∀ x, ControlledStratumArithmetic (p x) N a c mode := fun x =>
+    { D x with
+      matrix := mat x
+      numerator := fun v => (ha x v).trans ((D x).numerator v)
+      denominator := hr x
+      matrix_fixed := fun v i j => hfixed x x v (fun _ => 1) rfl i j
+      conditions := hcond x }
+  exact ⟨E,fun _ => rfl,fun _ => rfl,fun _ => rfl,fun _ => rfl,hfixed⟩
+
+theorem exists_sector_templates {α Q : Type*} {ι : α → Type*} [∀ x, Fintype (ι x)]
+    (p : ∀ x, ι x → Eis) (N a c : Eis) (mode : Bool)
+    (D : ∀ x, ControlledStratumArithmetic (p x) N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hprimary : ∀ x, lambda^2 ∣ (∏ i, p x i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (sector : α → Q)
+    (hsector : ∀ x y, sector x = sector y → N^2 ∣ (∏ i, p x i)-(∏ i, p y i))
+    (hmatrix : ∀ x y, sector x = sector y → ∀ i j,
+      N ∣ (D x).matrix (fun _ => 1) i j-(D y).matrix (fun _ => 1) i j) :
+    ∃ (κ : Q → ℂ) (β : Q → Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+      (∀ x, (D x).fixedFactor = κ (sector x)) ∧
+      ∀ x u m n b,
+        fixedCuspArrayWithPhase s.index u
+          (s.reflectionStaticPhase c hc
+            (Ideal.Quotient.mk _ (-((D x).matrix (fun _ => 1) 1 1)*(D x).U))
+            (s.modelDualNumerator u) u) m n b = β (sector x) u m n b := by
+  have hbad : traceLambda^3*c ∣ N := by
+    apply (show traceLambda^3*c ∣ (9:Eis)*c from ?_).trans hN
+    refine ⟨traceLambda,?_⟩
+    rw [← traceLambda_pow_four]
+    ring
+  let A := fun x (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) =>
+    fixedCuspArrayWithPhase s.index u
+      (s.reflectionStaticPhase c hc
+        (Ideal.Quotient.mk _ (-((D x).matrix (fun _ => 1) 1 1)*(D x).U))
+        (s.modelDualNumerator u) u) m n b
+  have hf : (fun x => (D x).fixedFactor).FactorsThrough sector := by
+    intro x y hxy
+    exact controlled_fixedFactor_eq (D x) (D y) hN (hprimary x) (hprimary y) hbase
+      (hmatrix x y hxy 0 0) (hmatrix x y hxy 0 1)
+  have ha : A.FactorsThrough sector := by
+    intro x y hxy
+    funext u m n b
+    exact controlled_static_array_eq (D x) (D y) hc s hbad
+      ((dvd_pow_self N (by decide : (2:ℕ) ≠ 0)).trans (hsector x y hxy))
+      (hmatrix x y hxy 1 1) u m n b
+  obtain ⟨κ,hκ⟩ := (Function.factorsThrough_iff _).mp hf
+  obtain ⟨β,hβ⟩ := (Function.factorsThrough_iff A).mp ha
+  refine ⟨κ,β,fun x => congrFun hκ x,?_⟩
+  intro x u m n b
+  exact congrFun (congrFun (congrFun (congrFun (congrFun hβ x) u) m) n) b
+
+theorem exists_separate_ray_templates {α : Type*} {ι : α → Type*} [∀ x, Fintype (ι x)]
+    (p : ∀ x, ι x → Eis) (N a c : Eis) (mode : Bool)
+    (D : ∀ x, ControlledStratumArithmetic (p x) N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hprimary : ∀ x, lambda^2 ∣ (∏ i, p x i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (hcop : ∀ x, IsCoprime (∏ i, p x i) (N*c))
+    (f : Eis) (r P : α → Eis) (hprod : ∀ x, (∏ i, p x i) = f*r x*P x) :
+    ∃ E : ∀ x, ControlledStratumArithmetic (p x) N a c mode,
+      (∀ x, (E x).lift = (D x).lift) ∧
+      (∀ x, (E x).U = (D x).U) ∧
+      (∀ x, (E x).sigma = (D x).sigma) ∧
+      (∀ x, (E x).epsilon = (D x).epsilon) ∧
+      ∃ (κ : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) → ℂ)
+        (β : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) →
+          Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+        (∀ x, (E x).fixedFactor = κ (separateSector N (r x) (P x))) ∧
+        ∀ x u m n b,
+          fixedCuspArrayWithPhase s.index u
+            (s.reflectionStaticPhase c hc
+              (Ideal.Quotient.mk _ (-((E x).matrix (fun _ => 1) 1 1)*(E x).U))
+              (s.modelDualNumerator u) u) m n b = β (separateSector N (r x) (P x)) u m n b := by
+  let sector := fun x => separateSector N (r x) (P x)
+  have hsector : ∀ x y, sector x = sector y → N^2 ∣ (∏ i, p x i)-(∏ i, p y i) := by
+    intro x y hxy
+    rw [hprod x,hprod y]
+    exact separateSector_product N f (r x) (r y) (P x) (P y) hxy
+  obtain ⟨E,hlift,hU,hσ,hε,hmat⟩ := exists_sector_controlled_arithmetic_dependent p N a c mode D
+    hc ((dvd_mul_right 9 c).trans hN) ((dvd_mul_left c 9).trans hN)
+    hprimary hbase hcop sector hsector
+  refine ⟨E,hlift,hU,hσ,hε,?_⟩
+  exact exists_sector_templates p N a c mode E s hc hN hprimary hbase sector hsector
+    (fun x y hxy => hmat x y (fun _ => 1) (fun _ => 1) hxy)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open SchwartzPlanePoisson SecondPassArithmetic FirstPassCubeLabels
+variable {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+  (p : ι → Eisenstein.O) (hp : ∀ i, p i ≠ 0)
+  [∀ i, (Ideal.span {p i}).IsMaximal]
+  (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+  (hg : ∀ i, lambda ∉ Ideal.span {p i})
+
+include hcop
+
+omit [DecidableEq ι] in
+theorem row_slot_cross_phase
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (i k : ι) (hik : i ≠ k) :
+    FirstPassCubeLabels.crossSymbol p hg i k ^ 4 *
+      FirstPassCubeLabels.crossSymbol p hg k i ^ 2 = 1 := by
+  have hs : FirstPassCubeLabels.crossSymbol p hg i k ^ 2 =
+      FirstPassCubeLabels.crossSymbol p hg k i ^ 2 :=
+    FirstPassCubeLabels.cross_square_primary p hg hpr i k
+  have hnot : p k ∉ Ideal.span {p i} := by
+    intro hm
+    have hle : Ideal.span {p k} ≤ Ideal.span {p i} :=
+      Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hm)
+    have ht := (hcop hik).sup_eq
+    rw [sup_eq_left.mpr hle] at ht
+    exact (inferInstance : (Ideal.span {p i}).IsMaximal).ne_top ht
+  have hm : primeCoprimeMask p {i} (p k)=1 := by
+    rw [primeCoprimeMask_indicator]
+    apply if_pos
+    intro j hj hd
+    have hji := Finset.mem_singleton.mp hj
+    subst j
+    exact hnot (Ideal.mem_span_singleton.mpr hd)
+  have h6 : FirstPassCubeLabels.crossSymbol p hg i k^6=1 := by
+    simpa only [primeSubsetRow,Finset.prod_singleton,FirstPassCubeLabels.crossSymbol] using
+      (row_sixth p hg {i} (p k)).trans hm
+
+  calc
+    _ = FirstPassCubeLabels.crossSymbol p hg i k ^ 6 := by rw [← hs]; ring
+    _ = 1 := h6
+
+omit [DecidableEq ι] in
+theorem row_slot_product_phase
+    (hpr : ∀ i, lambda ^ 2 ∣ p i - 1) (R P : Finset ι) (hRP : Disjoint R P) :
+    (∏ i ∈ R, ∏ k ∈ P,
+      FirstPassCubeLabels.crossSymbol p hg i k ^ 4 *
+        FirstPassCubeLabels.crossSymbol p hg k i ^ 2) = 1 := by
+  apply Finset.prod_eq_one
+  intro i hi
+  apply Finset.prod_eq_one
+  intro k hk
+  exact row_slot_cross_phase p hcop hg hpr i k (fun h =>
+    (Finset.disjoint_left.mp hRP) hi (h.symm ▸ hk))
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  CompletedGauss NormalizedReflection
+noncomputable section
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+noncomputable local instance threeBlockFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+def residualWithFrozen [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis) (R F : Finset ι) : ℂ :=
+  ∏ i ∈ R, (∏ k ∈ R.erase i, FirstPassCubeLabels.crossSymbol p hg i k^4)*
+    (residualPrimeScalar (p i) c (hp i) (hg i)*∏ k ∈ F, FirstPassCubeLabels.crossSymbol p hg i k^4)
+
+def markedWithFrozen [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis) (P F : Finset ι) : ℂ :=
+  ∏ i ∈ P, (∏ k ∈ P.erase i, FirstPassCubeLabels.crossSymbol p hg i k^2)*
+    (markedPrimeScalar (p i) c (hp i) (hg i)*∏ k ∈ F, FirstPassCubeLabels.crossSymbol p hg i k^2)
+
+def frozenPhase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (F : Finset ι) : ℂ :=
+  ∏ i ∈ F, (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+    phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) (j i) (D.epsilon i)
+
+theorem activePhase_three_blocks [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hprimary : ∀ i, lambda^2 ∣ p i-1) (R P F : Finset ι)
+    (hRP : Disjoint R P) (hF : Disjoint (R ∪ P) F) (hu : (R ∪ P) ∪ F = Finset.univ)
+    (j : ι → ℕ) (hRj : ∀ i ∈ R, j i = 1) (hPj : ∀ i ∈ P, j i = 0) :
+    D.activePhase hp hg j = residualWithFrozen hp hg c R F *
+      markedWithFrozen hp hg c P F * frozenPhase D hp hg j F := by
+  let l : ι → ℂ := fun i => if i ∈ R then residualPrimeScalar (p i) c (hp i) (hg i)
+    else markedPrimeScalar (p i) c (hp i) (hg i)
+  let v : ι → ℂ := fun i => (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+    phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) (j i) (D.epsilon i)
+  have hm : (∏ i ∈ R ∪ P, v i) = ∏ i ∈ R ∪ P,
+      (∏ k ∈ Finset.univ.erase i, FirstPassCubeLabels.crossSymbol p hg i k ^
+        (if i ∈ R then 4 else 2))*l i := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    by_cases hr : i ∈ R
+    · simp only [v,hRj i hr,l,hr,ite_true]
+      rw [controlled_residual_phase]
+      ring
+    · have hp' : i ∈ P := (Finset.mem_union.mp hi).resolve_left hr
+      simp only [v,hPj i hp',l,hr,ite_false]
+      rw [controlled_marked_phase]
+      ring
+  have hfull : D.activePhase hp hg j = (∏ i ∈ R ∪ P, v i)*frozenPhase D hp hg j F := by
+    change (∏ i, v i) = (∏ i ∈ R ∪ P, v i)*(∏ i ∈ F, v i)
+    rw [← Finset.prod_union hF,hu]
+  rw [hfull,hm,ordered_cross_frozen_partition _ l 4 2 R P F hRP hF hu,
+    InverseMoment.row_slot_product_phase p hcop hg hprimary R P hRP,mul_one]
+  congr 2
+  · apply Finset.prod_congr rfl
+    intro i hi
+    simp [l,hi]
+  · apply Finset.prod_congr rfl
+    intro i hi
+    have hn : i ∉ R := fun hr => Finset.disjoint_left.mp hRP hr hi
+    simp [l,hn]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss NormalizedReflection
+noncomputable section
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+noncomputable local instance ramifiedFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+def ramifiedBlock [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι) (u : Eisˣ) (m : ℕ) : ℂ :=
+  ∏ i ∈ S, unitArgumentFactor (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+    (Ideal.Quotient.mk _ (u.val*lambda^m))
+
+theorem ramifiedPhase_three_blocks [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (R P F : Finset ι)
+    (hRP : Disjoint R P) (hF : Disjoint (R ∪ P) F) (hu : (R ∪ P) ∪ F = Finset.univ)
+    (j : ι → ℕ) (hRj : ∀ i ∈ R, j i = 1) (hPj : ∀ i ∈ P, j i = 0)
+    (u : Eisˣ) (m : ℕ) :
+    ramifiedBranchPhase (fun i => Ideal.span {p i}) hg j u m =
+      ramifiedBlock hg (fun _ => 1) R u m * ramifiedBlock hg (fun _ => 0) P u m *
+      ramifiedBlock hg j F u m := by
+  have hh : ramifiedBranchPhase (fun i => Ideal.span {p i}) hg j u m =
+      ramifiedBlock hg j R u m * ramifiedBlock hg j P u m * ramifiedBlock hg j F u m := by
+    unfold ramifiedBranchPhase ramifiedBlock
+    rw [← Finset.prod_union hRP,← Finset.prod_union hF,hu]
+  rw [hh]
+  congr 2
+  · apply Finset.prod_congr rfl
+    intro i hi
+    rw [hRj i hi]
+  · apply Finset.prod_congr rfl
+    intro i hi
+    rw [hPj i hi]
+
+theorem modelRowPhase_three_blocks [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hprimary : ∀ i, lambda^2 ∣ p i-1) (R P F : Finset ι)
+    (hRP : Disjoint R P) (hF : Disjoint (R ∪ P) F) (hu : (R ∪ P) ∪ F = Finset.univ)
+    (j : ι → ℕ) (hRj : ∀ i ∈ R, j i = 1) (hPj : ∀ i ∈ P, j i = 0)
+    (u : Eisˣ) (m : ℕ) :
+    D.modelRowPhase s hp hg j u m =
+      (residualWithFrozen hp hg c R F * ramifiedBlock hg (fun _ => 1) R
+        (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m)) *
+      (markedWithFrozen hp hg c P F * ramifiedBlock hg (fun _ => 0) P
+        (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m)) *
+      (star D.fixedFactor * frozenPhase D hp hg j F * ramifiedBlock hg j F
+        (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m)) := by
+  dsimp only [ControlledStratumArithmetic.modelRowPhase]
+  rw [activePhase_three_blocks D hp hg hcop hprimary R P F hRP hF hu j hRj hPj,
+    ramifiedPhase_three_blocks hg R P F hRP hF hu j hRj hPj]
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss 
+noncomputable section
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+noncomputable local instance frozenSplitFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+def frozenArgument [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (F : Finset ι) : Eis →* ℂ :=
+  ∏ i ∈ F, frozenCofactorCharacter (Ideal.span {p i}) (hg i) (j i)
+
+def frozenCore [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis)
+    (j : ι → ℕ) (F : Finset ι) : ℂ :=
+  ∏ i ∈ F, frozenPrimeScalar (p i) c (hp i) (hg i) (j i) *
+    frozenCofactorCharacter (Ideal.span {p i}) (hg i) (j i) (∏ k ∈ F.erase i, p k)
+
+theorem frozen_cuspPrimeCofactor_split (hp : ∀ i, p i ≠ 0) (R S F : Finset ι)
+    (hRS : Disjoint R S) (hF : Disjoint (R ∪ S) F) (hu : (R ∪ S) ∪ F = Finset.univ)
+    (i : ι) (hi : i ∈ F) :
+    cuspPrimeCofactor p i = (∏ k ∈ F.erase i, p k)*(∏ k ∈ R, p k)*(∏ k ∈ S, p k) := by
+  apply mul_left_cancel₀ (hp i)
+  rw [cuspPrime_mul_cofactor,← hu,Finset.prod_union hF,Finset.prod_union hRS,
+    ← Finset.mul_prod_erase F p hi]
+  ring
+
+theorem frozenPhase_split [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ)
+    (R S F : Finset ι) (hRS : Disjoint R S) (hF : Disjoint (R ∪ S) F)
+    (hu : (R ∪ S) ∪ F = Finset.univ) :
+    frozenPhase D hp hg j F = frozenCore hp hg c j F *
+      frozenArgument hg j F (∏ i ∈ R, p i) * frozenArgument hg j F (∏ i ∈ S, p i) := by
+  unfold frozenPhase
+  simp_rw [controlled_frozen_phase]
+  have he (i : ι) (hi : i ∈ F) :
+      frozenPrimeScalar (p i) c (hp i) (hg i) (j i)*
+        frozenCofactorCharacter (Ideal.span {p i}) (hg i) (j i) (cuspPrimeCofactor p i) =
+      (frozenPrimeScalar (p i) c (hp i) (hg i) (j i)*
+        frozenCofactorCharacter (Ideal.span {p i}) (hg i) (j i) (∏ k ∈ F.erase i, p k))*
+      frozenCofactorCharacter (Ideal.span {p i}) (hg i) (j i) (∏ k ∈ R, p k)*
+      frozenCofactorCharacter (Ideal.span {p i}) (hg i) (j i) (∏ k ∈ S, p k) := by
+    rw [frozen_cuspPrimeCofactor_split hp R S F hRS hF hu i hi,map_mul,map_mul]
+    ring
+  rw [Finset.prod_congr rfl he]
+  simp only [Finset.prod_mul_distrib,frozenCore,frozenArgument,MonoidHom.finsetProd_apply]
+
+omit [Fintype ι] in
+theorem frozenArgument_norm_le_one [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (F : Finset ι) (z : Eis) :
+    ‖frozenArgument hg j F z‖ ≤ 1 := by
+  simp only [frozenArgument,MonoidHom.finsetProd_apply,norm_prod]
+  apply Finset.prod_le_one
+  · intro i hi; exact norm_nonneg _
+  · intro i hi
+    unfold frozenCofactorCharacter
+    split_ifs
+    · exact FiniteRayExpansion.norm_char_le_one (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2)
+        (Ideal.Quotient.mk (Ideal.span {p i}) z)
+    · exact FiniteRayExpansion.norm_char_le_one ((complexSexticChar (Ideal.span {p i}) (hg i))^(2*j i+2))
+        (Ideal.Quotient.mk (Ideal.span {p i}) z)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CompletedDyadic NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  CompletedGauss NormalizedReflection
+noncomputable section
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+noncomputable local instance phaseNormField (P : Ideal Eis) [P.IsMaximal] : Field (Eis ⧸ P) := Ideal.Quotient.field P
+noncomputable local instance phaseNormFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+omit [Fintype ι] in
+theorem crossSymbol_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (i k : ι) (hik : i ≠ k) : ‖FirstPassCubeLabels.crossSymbol p hg i k‖ = 1 := by
+  have hnot : p k ∉ Ideal.span {p i} := by
+    intro hm
+    have hle : Ideal.span {p k} ≤ Ideal.span {p i} :=
+      Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hm)
+    have ht := (hcop hik).sup_eq
+    rw [sup_eq_left.mpr hle] at ht
+    exact (inferInstance : (Ideal.span {p i}).IsMaximal).ne_top ht
+  have hn : Ideal.Quotient.mk (Ideal.span {p i}) (p k)≠0 :=
+    fun hz=>hnot (Ideal.Quotient.eq_zero_iff_mem.mp hz)
+  exact finiteMulChar_unit_norm (complexSexticChar (Ideal.span {p i}) (hg i))
+    (Units.mk0 _ hn)
+
+
+theorem local_phase_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (i : ι) (j : ℕ) (hj : j < 6) :
+    ‖(((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹)^2) (D.sigma i)*
+      phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) j (D.epsilon i)‖ = 1 := by
+  rw [norm_mul,finiteMulChar_unit_norm,one_mul]
+  exact canonical_phase_norm (Ideal.span {p i}) (hg i) (hchar i) (residueTraceQuotientChar 1 (p i) (hp i))
+    (residueTraceQuotientChar_primitive (p i) (hp i)) j hj (D.epsilon i)
+
+theorem markedPrimeScalar_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i}))) (i : ι) :
+    ‖markedPrimeScalar (p i) c (hp i) (hg i)‖ = 1 := by
+  have h := local_phase_norm D hp hg hchar i 0 (by decide)
+  rw [controlled_marked_phase,norm_mul,norm_prod] at h
+  have he : (∏ k ∈ Finset.univ.erase i, ‖FirstPassCubeLabels.crossSymbol p hg i k^2‖) = 1 := by
+    apply Finset.prod_eq_one
+    intro k hk
+    rw [norm_pow,crossSymbol_norm hg hcop i k (Finset.mem_erase.mp hk).1.symm,one_pow]
+  simpa only [he,mul_one] using h
+
+theorem residualPrimeScalar_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i}))) (i : ι) :
+    ‖residualPrimeScalar (p i) c (hp i) (hg i)‖ = 1 := by
+  have h := local_phase_norm D hp hg hchar i 1 (by decide)
+  rw [controlled_residual_phase,norm_mul,norm_prod] at h
+  have he : (∏ k ∈ Finset.univ.erase i, ‖FirstPassCubeLabels.crossSymbol p hg i k^4‖) = 1 := by
+    apply Finset.prod_eq_one
+    intro k hk
+    rw [norm_pow,crossSymbol_norm hg hcop i k (Finset.mem_erase.mp hk).1.symm,one_pow]
+  simpa only [he,mul_one] using h
+
+theorem residualWithFrozen_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (R F : Finset ι) (hd : Disjoint R F) : ‖residualWithFrozen hp hg c R F‖ = 1 := by
+  unfold residualWithFrozen
+  rw [norm_prod]
+  apply Finset.prod_eq_one
+  intro i hi
+  simp only [norm_mul,norm_prod,norm_pow,residualPrimeScalar_norm D hp hg hchar hcop i,one_mul]
+  have hR : (∏ k ∈ R.erase i, ‖FirstPassCubeLabels.crossSymbol p hg i k‖^4) = 1 := by
+    apply Finset.prod_eq_one
+    intro k hk
+    rw [crossSymbol_norm hg hcop i k (Finset.mem_erase.mp hk).1.symm,one_pow]
+  have hF : (∏ k ∈ F, ‖FirstPassCubeLabels.crossSymbol p hg i k‖^4) = 1 := by
+    apply Finset.prod_eq_one
+    intro k hk
+    rw [crossSymbol_norm hg hcop i k (fun h => Finset.disjoint_left.mp hd hi (h ▸ hk)),one_pow]
+  rw [hR,hF,one_mul]
+
+theorem markedWithFrozen_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (P F : Finset ι) (hd : Disjoint P F) : ‖markedWithFrozen hp hg c P F‖ = 1 := by
+  unfold markedWithFrozen
+  rw [norm_prod]
+  apply Finset.prod_eq_one
+  intro i hi
+  simp only [norm_mul,norm_prod,norm_pow,markedPrimeScalar_norm D hp hg hchar hcop i,one_mul]
+  have hP : (∏ k ∈ P.erase i, ‖FirstPassCubeLabels.crossSymbol p hg i k‖^2) = 1 := by
+    apply Finset.prod_eq_one
+    intro k hk
+    rw [crossSymbol_norm hg hcop i k (Finset.mem_erase.mp hk).1.symm,one_pow]
+  have hF : (∏ k ∈ F, ‖FirstPassCubeLabels.crossSymbol p hg i k‖^2) = 1 := by
+    apply Finset.prod_eq_one
+    intro k hk
+    rw [crossSymbol_norm hg hcop i k (fun h => Finset.disjoint_left.mp hd hi (h ▸ hk)),one_pow]
+  rw [hP,hF,one_mul]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein
+open scoped BigOperators Classical
+namespace EisensteinLatticeCount
+def q (x : ℤ × ℤ) : ℤ := x.1 ^ 2 - x.1 * x.2 + x.2 ^ 2
+
+theorem coordinate_squares (a b D : ℤ) (hD : 0 ≤ D)
+    (h : a ^ 2 - a * b + b ^ 2 ≤ D) :
+    a ^ 2 ≤ 2 * D ∧ b ^ 2 ≤ 2 * D := by
+  constructor <;> nlinarith only [h, hD, sq_nonneg (a - 2 * b), sq_nonneg (2 * a - b)]
+
+theorem finite_lattice_count (S : Finset (ℤ × ℤ)) (D R : ℕ)
+    (hR : 2 * D < R ^ 2)
+    (hS : ∀ x ∈ S, q x ≤ D) :
+    S.card ≤ (2 * R + 1) ^ 2 := by
+  let I : Finset ℤ := Finset.Icc (-(R : ℤ)) (R : ℤ)
+  have hbox : S ⊆ I.product I := by
+    intro x hx
+    rcases x with ⟨a, b⟩
+    have hD : (0 : ℤ) ≤ D := by positivity
+    obtain ⟨ha, hb⟩ := coordinate_squares a b D hD (hS (a, b) hx)
+    have hR' : 2 * (D : ℤ) < (R : ℤ) ^ 2 := by exact_mod_cast hR
+    have hRnonneg : (0 : ℤ) ≤ R := by positivity
+    apply Finset.mem_product.mpr
+    constructor <;> simp only [I, Finset.mem_Icc] <;> constructor <;>
+      nlinarith only [ha, hb, hR', hRnonneg, sq_nonneg (a - R),
+      sq_nonneg (a + R), sq_nonneg (b - R), sq_nonneg (b + R)]
+  have hI : I.card = 2 * R + 1 := by
+    dsimp [I]
+    rw [Int.card_Icc]
+    have hcast : (R : ℤ) + 1 + (R : ℤ) = ((R + 1 + R : ℕ) : ℤ) := by
+      push_cast
+      ring
+    rw [sub_neg_eq_add, hcast, Int.toNat_natCast]
+    ring
+  calc
+    S.card ≤ (I.product I).card := Finset.card_le_card hbox
+    _ = I.card * I.card := Finset.card_product _ _
+    _ = (2 * R + 1) ^ 2 := by rw [hI]; ring
+
+theorem finite_lattice_count_linear (S : Finset (ℤ × ℤ)) (D : ℕ)
+    (hS : ∀ x ∈ S, q x ≤ D) :
+    S.card ≤ 64 * (D + 1) := by
+  have hR : 2 * D < (Nat.sqrt (2 * D) + 1) ^ 2 := by
+    exact Nat.lt_succ_sqrt' _
+  have hcount := finite_lattice_count S D (Nat.sqrt (2 * D) + 1) hR hS
+  have hsquare : (Nat.sqrt (2 * D)) ^ 2 ≤ 2 * D := Nat.sqrt_le' _
+  have hroot : Nat.sqrt (2 * D) ≤ 2 * D := Nat.sqrt_le_self _
+  nlinarith only [hcount, hsquare, hroot]
+
+/-- An integral norm ball injects into a coordinate square. -/
+theorem finite_norm_ball_card (S : Finset O) (D : ℕ)
+    (hS : ∀ x ∈ S, ‖ringComplex x‖ ^ 2 ≤ D) :
+    S.card ≤ 64 * (D + 1) := by
+  rw [←Finset.card_image_of_injective S Coordinates.coordinateEquiv.injective]
+  apply finite_lattice_count_linear
+  intro v hv
+  obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hv
+  have hn := Coordinates.complex_norm_eval_sq (Coordinates.coords x).1 (Coordinates.coords x).2
+  rw [Coordinates.eval_coords] at hn
+  have he : ((q (Coordinates.coords x) : ℤ) : ℝ) = ‖ringComplex x‖ ^ 2 := by
+    simpa only [q, Int.cast_add, Int.cast_sub, Int.cast_mul, Int.cast_pow] using hn.symm
+  change q (Coordinates.coords x) ≤ D
+  exact_mod_cast he.trans_le (hS x hx)
+
+theorem finite_ideal_card (S : Finset (Ideal O)) (D : ℕ)
+    (hS : ∀ I ∈ S, Ideal.absNorm I ≤ D) : S.card ≤ 64 * (D+1) := by
+  rw [←Finset.card_image_of_injective S cubicIdealGenerator_injective]
+  apply finite_norm_ball_card
+  intro z hz
+  obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hz
+  rw [ringComplex_norm_sq_eq_absNorm_span,span_cubicIdealGenerator]
+  exact_mod_cast hS I hI
+
+/-- A uniform explicit ideal-count constant for real norm intervals. -/
+theorem finite_ideal_count_real (S : Finset (Ideal O)) (H : ℝ) (hH : 1 ≤ H)
+    (_hpos : ∀ I ∈ S, I ≠ ⊥)
+    (hN : ∀ I ∈ S, (Ideal.absNorm I : ℝ) ≤ H) :
+    (S.card : ℝ) ≤ 128*H := by
+  have hc := finite_ideal_card S ⌊H⌋₊ (fun I hI => Nat.le_floor (hN I hI))
+  have hf : (⌊H⌋₊ : ℝ) ≤ H := Nat.floor_le (by linarith only [hH])
+  have hr : (S.card : ℝ) ≤ 64*((⌊H⌋₊ : ℝ)+1) := by exact_mod_cast hc
+  linarith only [hr,hf,hH]
+
+end EisensteinLatticeCount
+end
+
+noncomputable section
+open Eisenstein
+open scoped BigOperators Classical
+namespace EisensteinLatticeCount
+
+def unitCoordinates : Finset (ℤ × ℤ) :=
+  {(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1)}
+
+theorem q_eq_one_iff_unitCoordinates (z : ℤ × ℤ) : q z = 1 ↔ z ∈ unitCoordinates := by
+  rcases z with ⟨a, b⟩
+  constructor
+  · intro h
+    have hs := coordinate_squares a b 1 (by norm_num) (le_of_eq h)
+    have ha : -1 ≤ a ∧ a ≤ 1 := by
+      constructor <;> nlinarith only [hs.1, sq_nonneg (a-1), sq_nonneg (a+1)]
+    have hb : -1 ≤ b ∧ b ≤ 1 := by
+      constructor <;> nlinarith only [hs.2, sq_nonneg (b-1), sq_nonneg (b+1)]
+    rcases ha with ⟨ha1, ha2⟩
+    rcases hb with ⟨hb1, hb2⟩
+    interval_cases a <;> interval_cases b <;> norm_num [q, unitCoordinates] at *
+  · intro h
+    simp only [unitCoordinates, Finset.mem_insert, Finset.mem_singleton] at h
+    rcases h with h | h | h | h | h | h <;> rw [h] <;> norm_num [q]
+
+theorem unit_coordinate_mem (u : Oˣ) : Coordinates.coords u.val ∈ unitCoordinates := by
+  apply (q_eq_one_iff_unitCoordinates _).mp
+  have he := ramifiedElement_absNorm u 0
+  simp only [pow_zero, mul_one] at he
+  have hn := Coordinates.complex_norm_eval_sq
+    (Coordinates.coords u.val).1 (Coordinates.coords u.val).2
+  rw [Coordinates.eval_coords, ringComplex_norm_sq_eq_absNorm_span, he, Nat.cast_one] at hn
+  exact_mod_cast hn.symm
+
+/-- Each unit has one of six integral coordinate pairs. -/
+theorem card_units_le_six [Fintype Oˣ] : Fintype.card Oˣ ≤ 6 := by
+  let f : Oˣ → unitCoordinates := fun u => ⟨Coordinates.coords u.val, unit_coordinate_mem u⟩
+  have hf : Function.Injective f := by
+    intro u v h
+    apply Units.ext
+    exact Coordinates.coordinateEquiv.injective (congrArg Subtype.val h)
+  have hc := Fintype.card_le_of_injective f hf
+  norm_num [Fintype.card_coe, unitCoordinates] at hc
+  exact hc
+
+end EisensteinLatticeCount
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CubicSieve
+open scoped BigOperators Classical
+noncomputable section
+
+theorem square_eq_star_of_fourth_eq (z : ℂ) (hz : z ^ 4 = z) : z ^ 2 = star z := by
+  by_cases h0 : z = 0
+  · simp [h0]
+  have h3 : z ^ 3 = 1 := by
+    apply mul_right_cancel₀ h0
+    simpa only [← pow_succ, one_mul] using hz
+  have hn := Complex.norm_eq_one_of_pow_eq_one h3 (by decide : (3 : ℕ) ≠ 0)
+  change z ^ 2 = (starRingEnd ℂ) z
+  rw [← Complex.inv_eq_conj hn]
+  apply mul_right_cancel₀ h0
+  rw [inv_mul_cancel₀ h0]
+  simpa only [← pow_succ] using h3
+
+variable {R : Type*} [CommRing R] [Finite Rˣ]
+
+omit [Finite Rˣ] in
+theorem cubic_inv_eq_square (χ : MulChar R ℂ) (hχ : χ ^ 3 = 1) :
+    χ⁻¹ = χ ^ 2 := by
+  calc
+    χ⁻¹ = χ⁻¹ * χ ^ 3 := by rw [hχ, mul_one]
+    _ = χ ^ 2 := by group
+
+theorem cubic_square_eq_star (χ : MulChar R ℂ) (hχ : χ ^ 3 = 1) (x : R) :
+    χ x ^ 2 = star (χ x) := by
+  rw [MulChar.star_apply', cubic_inv_eq_square χ hχ, MulChar.pow_apply' _ (by decide)]
+
+omit [Finite Rˣ] in
+theorem cubic_fourth_eq (χ : MulChar R ℂ) (hχ : χ ^ 3 = 1) (x : R) :
+    χ x ^ 4 = χ x := by
+  have h : χ ^ 4 = χ := by
+    rw [show (4 : ℕ) = 3 + 1 by decide, pow_add, hχ, one_mul, pow_one]
+  rw [← MulChar.pow_apply' χ (by decide : (4 : ℕ) ≠ 0), h]
+
+omit [Finite Rˣ] in
+theorem cubic_cube_eq_mask (χ : MulChar R ℂ) (hχ : χ ^ 3 = 1) (x : R) :
+    χ (x ^ 3) = if IsUnit x then 1 else 0 := by
+  classical
+  rw [map_pow, ← MulChar.pow_apply' χ (by decide : (3 : ℕ) ≠ 0), hχ]
+  by_cases hx : IsUnit x
+  · rw [if_pos hx, MulChar.one_apply hx]
+  · rw [if_neg hx, MulChar.map_nonunit _ hx]
+
+theorem cubic_row_decomposition (χ : MulChar R ℂ) (hχ : χ ^ 3 = 1)
+    (a b c : R) :
+    χ (a * b ^ 2 * c ^ 3) =
+      χ a * star (χ b) * (if IsUnit c then 1 else 0) := by
+  rw [map_mul, map_mul, map_pow, cubic_square_eq_star χ hχ,
+    cubic_cube_eq_mask χ hχ]
+
+omit [Finite Rˣ] in
+theorem cubic_norm_le_one (χ : MulChar R ℂ) (hχ : χ ^ 3 = 1) (x : R) :
+    ‖χ x‖ ≤ 1 := by
+  by_cases hx : IsUnit x
+  · have hc : χ x ^ 3 = 1 := by
+      rw [← MulChar.pow_apply' χ (by decide : (3 : ℕ) ≠ 0), hχ, MulChar.one_apply hx]
+    exact (Complex.norm_eq_one_of_pow_eq_one hc (by decide)).le
+  · rw [MulChar.map_nonunit _ hx, norm_zero]
+    exact zero_le_one
+
+theorem row_decomposition_sum {ι M : Type*} [CommMonoid M]
+    (S : Finset ι) (coef : ι → ℂ) (ρ : ι → M →* R)
+    (χ : ι → MulChar R ℂ) (hχ : ∀ n ∈ S, χ n ^ 3 = 1)
+    (a b c : M) :
+    (∑ n ∈ S, coef n * χ n (ρ n (a * b ^ 2 * c ^ 3))) =
+      ∑ n ∈ S,
+        (coef n * star (χ n (ρ n b)) *
+          (if IsUnit (ρ n c) then 1 else 0)) * χ n (ρ n a) := by
+  classical
+  apply Finset.sum_congr rfl
+  intro n hn
+  have hmap : ρ n (a * b ^ 2 * c ^ 3) =
+      ρ n a * (ρ n b) ^ 2 * (ρ n c) ^ 3 := by simp only [map_mul, map_pow]
+  rw [hmap, cubic_row_decomposition (χ n) (hχ n hn)]
+  ring
+
+omit [Finite Rˣ] in
+theorem extracted_coefficients_energy_le {ι : Type*}
+    (S : Finset ι) (coef : ι → ℂ) (χ : ι → MulChar R ℂ)
+    (hχ : ∀ n ∈ S, χ n ^ 3 = 1) (b c : ι → R) :
+    (∑ n ∈ S, ‖coef n * star (χ n (b n)) *
+      (if IsUnit (c n) then (1 : ℂ) else 0)‖ ^ 2) ≤
+      ∑ n ∈ S, ‖coef n‖ ^ 2 := by
+  classical
+  apply Finset.sum_le_sum
+  intro n hn
+  by_cases hc : IsUnit (c n)
+  · simp only [if_pos hc, mul_one, norm_mul, norm_star]
+    apply pow_le_pow_left₀ (by positivity)
+    exact mul_le_of_le_one_right (norm_nonneg _) (cubic_norm_le_one (χ n) (hχ n hn) _)
+  · simp only [if_neg hc, mul_zero, norm_zero, zero_pow (by decide : 2 ≠ 0)]
+    exact sq_nonneg _
+
+end
+end CubicSieve
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CubicSieve
+/-- Squarefree ideals with a nonzero primary generator. -/
+def Admissible (I : Ideal Eis) : Prop := Squarefree I ∧ primaryIdealGenerator I ≠ 0
+
+def idealKernel (I J : Ideal Eis) : ℂ :=
+  ringComplex (idealSymbol I (primaryIdealGenerator J))
+
+theorem idealKernel_reciprocity (I J : Ideal Eis)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) :
+    idealKernel I J = idealKernel J I := by
+  apply congrArg ringComplex
+  have he := symbol_reciprocity (primaryIdealGenerator J) (primaryIdealGenerator I)
+    (primaryIdealGenerator_spec J hJ).2 (primaryIdealGenerator_spec I hI).2
+  simpa only [symbol,(primaryIdealGenerator_spec I hI).1,
+    (primaryIdealGenerator_spec J hJ).1] using he
+
+theorem idealKernel_norm_le_one (I J : Ideal Eis) : ‖idealKernel I J‖ ≤ 1 := by
+  rw [idealKernel, ←idealRowHom_square, norm_pow]
+  exact (pow_le_pow_left₀ (norm_nonneg _) (idealRowHom_norm (primaryIdealGenerator J) I) 2).trans_eq
+    (by norm_num)
+
+theorem idealSymbol_fourth (I : Ideal Eis) (x : Eis) :
+    (ringComplex (idealSymbol I x)) ^ 4 = ringComplex (idealSymbol I x) := by
+  have hlocal (P : Ideal Eis) :
+      (ringComplex (primeValue P x)) ^ 4 = ringComplex (primeValue P x) := by
+    by_cases h : P.IsMaximal ∧ lambda ∉ P
+    · letI : P.IsMaximal := h.1
+      have hχ : (complexSexticChar P h.2 ^ 2) ^ 3 = 1 := by
+        rw [←pow_mul]
+        exact (complexSexticChar_powers P h.2).2.2
+      rw [←localRowValue_square,localRowValue_good x P h.2]
+      simpa only [MulChar.pow_apply' _ (by decide : (2:ℕ) ≠ 0)] using
+        cubic_fourth_eq (complexSexticChar P h.2 ^ 2) hχ (Ideal.Quotient.mk P x)
+    · simp only [primeValue,dif_neg h,map_zero,zero_pow (by decide : (4:ℕ) ≠ 0)]
+  have hprod (S : Multiset (Ideal Eis)) :
+      (ringComplex ((S.map (fun P => primeValue P x)).prod)) ^ 4 =
+        ringComplex ((S.map (fun P => primeValue P x)).prod) := by
+    induction S using Multiset.induction_on with
+    | empty => simp
+    | @cons P S ih =>
+      simp only [Multiset.map_cons,Multiset.prod_cons,map_mul,mul_pow,hlocal,ih]
+  by_cases hI : I = 0
+  · simp only [hI,idealSymbol_zero,map_zero,zero_pow (by decide : (4:ℕ) ≠ 0)]
+  · simpa only [idealSymbol,if_neg hI] using hprod (UniqueFactorizationMonoid.normalizedFactors I)
+
+theorem idealSymbol_cube_mask (I : Ideal Eis) (x : Eis)
+    (hI : primaryIdealGenerator I ≠ 0) :
+    (ringComplex (idealSymbol I x)) ^ 3 = if IsCoprime I (Ideal.span {x}) then 1 else 0 := by
+  have hlocal (P : Ideal Eis) (hP : P.IsMaximal ∧ lambda ∉ P) :
+      (ringComplex (primeValue P x)) ^ 3 = if IsCoprime P (Ideal.span {x}) then 1 else 0 := by
+    letI : P.IsMaximal := hP.1
+    rw [←localRowValue_square,localRowValue_good x P hP.2,←pow_mul]
+    have he := idealRowHom_prime_sixth_mask x P hP.2
+    rw [idealRowHom_prime _ P hP.2,map_pow,map_pow] at he
+    exact he
+  have hprod (S : Multiset (Ideal Eis))
+      (hS : ∀ P ∈ S, P.IsMaximal ∧ lambda ∉ P) :
+      (ringComplex ((S.map (fun P => primeValue P x)).prod)) ^ 3 =
+        if IsCoprime S.prod (Ideal.span {x}) then 1 else 0 := by
+    induction S using Multiset.induction_on with
+    | empty => simp only [Multiset.map_zero,Multiset.prod_zero,map_one,one_pow,isCoprime_one_left,ite_true]
+    | @cons P S ih =>
+      have hp := hS P (Multiset.mem_cons_self _ _)
+      have ht := fun Q hQ => hS Q (Multiset.mem_cons_of_mem hQ)
+      simp only [Multiset.map_cons,Multiset.prod_cons,map_mul,mul_pow,hlocal P hp,ih ht,IsCoprime.mul_left_iff]
+      by_cases hP : IsCoprime P (Ideal.span {x}) <;>
+        by_cases hS : IsCoprime S.prod (Ideal.span {x}) <;> simp [hP,hS]
+  have hI0 := primaryIdealGenerator_ne_zero_ideal I hI
+  have hf : ∀ P ∈ UniqueFactorizationMonoid.normalizedFactors I, P.IsMaximal ∧ lambda ∉ P := by
+    intro P hP
+    have h := primaryIdealPrime_spec P (primaryIdealPrime_factor_ne_zero I P hI hP)
+    exact ⟨h.1,h.2.1⟩
+  have h := hprod (UniqueFactorizationMonoid.normalizedFactors I) hf
+  rw [Ideal.prod_normalizedFactors_eq_self hI0] at h
+  simpa only [idealSymbol,if_neg hI0] using h
+
+theorem idealKernel_square_eq_star (I J : Ideal Eis) :
+    idealKernel I J ^ 2 = star (idealKernel I J) :=
+  square_eq_star_of_fourth_eq _ (idealSymbol_fourth I (primaryIdealGenerator J))
+
+def idealNumeratorHom (I : Ideal Eis) (hI : primaryIdealGenerator I ≠ 0) : Ideal Eis →* ℂ where
+  toFun := idealKernel I
+  map_one' := by
+    rw [idealKernel,primaryIdealGenerator_one,←idealRowHom_square,idealRowHom_one_good I hI,one_pow]
+  map_mul' A B := by
+    simp only [idealKernel,primaryIdealGenerator_mul,idealSymbol_map_mul,map_mul]
+
+theorem idealKernel_row_decomposition (I A B C : Ideal Eis) (hI : primaryIdealGenerator I ≠ 0) :
+    idealKernel I (A * B ^ 2 * C ^ 3) =
+      idealKernel I A * star (idealKernel I B) * idealKernel I C ^ 3 := by
+  change idealNumeratorHom I hI (A * B ^ 2 * C ^ 3) = _
+  rw [map_mul,map_mul,map_pow,map_pow]
+  change idealKernel I A * idealKernel I B ^ 2 * idealKernel I C ^ 3 = _
+  rw [idealKernel_square_eq_star]
+
+end CubicSieve
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion FiniteSieveOperator
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace FiniteSieveOperator
+variable {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+def conjugateVector (x : EuclideanSpace ℂ n) : EuclideanSpace ℂ n :=
+  WithLp.toLp 2 (fun j => star (x j))
+
+omit [Fintype n] [DecidableEq n] in
+@[simp] theorem conjugateVector_apply (x : EuclideanSpace ℂ n) (j : n) :
+    conjugateVector x j = star (x j) := rfl
+
+omit [DecidableEq n] in
+@[simp] theorem norm_conjugateVector (x : EuclideanSpace ℂ n) :
+    ‖conjugateVector x‖ = ‖x‖ := by
+  apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+  simp only [EuclideanSpace.norm_sq_eq, conjugateVector_apply, norm_star]
+
+omit [DecidableEq m] in
+theorem operator_conjugate_apply (A : Matrix m n ℂ) (x : EuclideanSpace ℂ n) :
+    operator (fun i j => star (A i j)) x = conjugateVector (operator A (conjugateVector x)) := by
+  ext i
+  change (∑ j, star (A i j) * x j) = star (∑ j, A i j * star (x j))
+  simp only [star_sum, star_mul, star_star]
+  apply Finset.sum_congr rfl
+  intro j _
+  exact mul_comm _ _
+
+omit [DecidableEq m] in
+theorem operator_conjugate_norm_le (A : Matrix m n ℂ) :
+    ‖operator (fun i j => star (A i j))‖ ≤ ‖operator A‖ := by
+  apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _)
+  intro x
+  rw [operator_conjugate_apply, norm_conjugateVector]
+  simpa only [norm_conjugateVector] using (operator A).le_opNorm (conjugateVector x)
+
+omit [DecidableEq m] in
+theorem operator_conjugate_norm (A : Matrix m n ℂ) :
+    ‖operator (fun i j => star (A i j))‖ = ‖operator A‖ := by
+  apply le_antisymm (operator_conjugate_norm_le A)
+  simpa only [star_star] using operator_conjugate_norm_le (fun i j => star (A i j))
+
+end FiniteSieveOperator
+namespace CubicSieve
+variable {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
+def squaredNorm (A : Matrix m n ℂ) : ℝ := ‖FiniteSieveOperator.operator A‖ ^ 2
+theorem squaredNorm_transpose (A : Matrix m n ℂ) :
+    squaredNorm A.transpose = squaredNorm A := by
+  unfold squaredNorm
+  have h := operator_conjugate_norm A.transpose
+  change ‖operator A.conjTranspose‖ = ‖operator A.transpose‖ at h
+  rw [operator_conjTranspose_norm] at h
+  exact congrArg (fun x : ℝ => x ^ 2) h.symm
+
+theorem squaredNorm_reciprocity (A : Matrix m n ℂ) (B : Matrix n m ℂ)
+    (hrecip : ∀ i j, A i j = B j i) : squaredNorm A = squaredNorm B := by
+  have h : A = B.transpose := by ext i j; exact hrecip i j
+  rw [h, squaredNorm_transpose]
+
+omit [DecidableEq m] in
+theorem energy_le_squaredNorm (A : Matrix m n ℂ) (c : n → ℂ) :
+    (∑ i, ‖∑ j, A i j * c j‖ ^ 2) ≤ squaredNorm A * ∑ j, ‖c j‖ ^ 2 :=
+  FiniteSieveOperator.energy_bound A c
+end CubicSieve
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion FiniteSieveOperator
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CubicSieve
+open scoped BigOperators
+noncomputable section
+
+variable {a b n : Type*} [Fintype a] [Fintype b] [Fintype n]
+  [DecidableEq n]
+
+theorem squaredNorm_nonneg (A : Matrix a n ℂ) : 0 ≤ squaredNorm A := sq_nonneg _
+
+theorem masked_energy_le (A : Matrix a n ℂ) (coef phase : n → ℂ)
+    (hphase : ∀ j, ‖phase j‖ ≤ 1) :
+    (∑ i, ‖∑ j, A i j * (coef j * phase j)‖ ^ 2) ≤
+      squaredNorm A * ∑ j, ‖coef j‖ ^ 2 := by
+  apply (energy_le_squaredNorm A (fun j => coef j * phase j)).trans
+  apply mul_le_mul_of_nonneg_left _ (squaredNorm_nonneg A)
+  apply Finset.sum_le_sum
+  intro j _
+  rw [norm_mul]
+  apply pow_le_pow_left₀ (by positivity)
+  exact mul_le_of_le_one_right (norm_nonneg _) (hphase j)
+
+theorem rectangular_block_energy_le
+    (A : Matrix a n ℂ) (B : Matrix b n ℂ) (coef mask : n → ℂ)
+    (hA : ∀ i j, ‖A i j‖ ≤ 1) (hB : ∀ k j, ‖B k j‖ ≤ 1)
+    (hmask : ∀ j, ‖mask j‖ ≤ 1) :
+    (∑ k, ∑ i, ‖∑ j, A i j * star (B k j) * coef j * mask j‖ ^ 2) ≤
+      min ((Fintype.card b : ℝ) * squaredNorm A)
+        ((Fintype.card a : ℝ) * squaredNorm B) * ∑ j, ‖coef j‖ ^ 2 := by
+  have hleft :
+      (∑ k, ∑ i, ‖∑ j, A i j * star (B k j) * coef j * mask j‖ ^ 2) ≤
+        ((Fintype.card b : ℝ) * squaredNorm A) * ∑ j, ‖coef j‖ ^ 2 := by
+    calc
+      _ ≤ ∑ k : b, squaredNorm A * ∑ j, ‖coef j‖ ^ 2 := by
+        apply Finset.sum_le_sum
+        intro k _
+        have h := masked_energy_le A coef (fun j => star (B k j) * mask j) (by
+          intro j
+          rw [norm_mul, norm_star]
+          exact (mul_le_mul_of_nonneg_right (hB k j) (norm_nonneg _)).trans (by simpa using hmask j))
+        simpa only [mul_assoc, mul_left_comm, mul_comm] using h
+      _ = _ := by simp [mul_assoc]
+  have hright :
+      (∑ k, ∑ i, ‖∑ j, A i j * star (B k j) * coef j * mask j‖ ^ 2) ≤
+        ((Fintype.card a : ℝ) * squaredNorm B) * ∑ j, ‖coef j‖ ^ 2 := by
+    rw [Finset.sum_comm]
+    calc
+      _ ≤ ∑ i : a, squaredNorm (fun k j => star (B k j)) * ∑ j, ‖coef j‖ ^ 2 := by
+        apply Finset.sum_le_sum
+        intro i _
+        have h := masked_energy_le (fun k j => star (B k j)) coef
+          (fun j => A i j * mask j) (by
+            intro j
+            rw [norm_mul]
+            exact (mul_le_mul_of_nonneg_right (hA i j) (norm_nonneg _)).trans (by simpa using hmask j))
+        simpa only [mul_assoc, mul_left_comm, mul_comm] using h
+      _ = _ := by
+        have hn : squaredNorm (fun k j => star (B k j)) = squaredNorm B := by
+          unfold squaredNorm
+          rw [operator_conjugate_norm]
+        rw [hn]
+        simp [mul_assoc]
+  rcases le_total ((Fintype.card b : ℝ) * squaredNorm A)
+      ((Fintype.card a : ℝ) * squaredNorm B) with h | h
+  · rw [min_eq_left h]
+    exact hleft
+  · rw [min_eq_right h]
+    exact hright
+
+theorem cube_family_block_energy_le {c : Type*} [Fintype c]
+    (A : Matrix a n ℂ) (B : Matrix b n ℂ) (coef : n → ℂ) (mask : c → n → ℂ)
+    (hA : ∀ i j, ‖A i j‖ ≤ 1) (hB : ∀ k j, ‖B k j‖ ≤ 1)
+    (hmask : ∀ l j, ‖mask l j‖ ≤ 1) :
+    (∑ l, ∑ k, ∑ i, ‖∑ j, A i j * star (B k j) * coef j * mask l j‖ ^ 2) ≤
+      (Fintype.card c : ℝ) *
+        min ((Fintype.card b : ℝ) * squaredNorm A)
+          ((Fintype.card a : ℝ) * squaredNorm B) * ∑ j, ‖coef j‖ ^ 2 := by
+  calc
+    _ ≤ ∑ l : c, min ((Fintype.card b : ℝ) * squaredNorm A)
+        ((Fintype.card a : ℝ) * squaredNorm B) * ∑ j, ‖coef j‖ ^ 2 := by
+      apply Finset.sum_le_sum
+      intro l _
+      exact rectangular_block_energy_le A B coef (mask l) hA hB (hmask l)
+    _ = _ := by simp [mul_assoc]
+
+end
+end CubicSieve
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion FiniteSieveOperator
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CubicSieve
+open scoped BigOperators Classical
+open UniqueFactorizationMonoid
+noncomputable section
+
+variable {M : Type*} [CommMonoidWithZero M] [UniqueFactorizationMonoid M]
+  [NormalizationMonoid M] [Subsingleton Mˣ]
+
+def firstPart (x : M) : M :=
+  ∏ p ∈ (normalizedFactors x).toFinset.filter
+    (fun p => (normalizedFactors x).count p % 3 = 1), p
+
+def secondPart (x : M) : M :=
+  ∏ p ∈ (normalizedFactors x).toFinset.filter
+    (fun p => (normalizedFactors x).count p % 3 = 2), p
+
+def cubePart (x : M) : M :=
+  ∏ p ∈ (normalizedFactors x).toFinset, p ^ ((normalizedFactors x).count p / 3)
+
+theorem count_mod_three (k : ℕ) :
+    k = (if k % 3 = 1 then 1 else 0) +
+      2 * (if k % 3 = 2 then 1 else 0) + 3 * (k / 3) := by
+  have h := Nat.mod_add_div k 3
+  have hlt := Nat.mod_lt k (by decide : 0 < 3)
+  split_ifs <;> omega
+
+omit [Subsingleton Mˣ] in
+private theorem residual_squarefree (x : M) (r : ℕ) :
+    Squarefree (∏ p ∈ (normalizedFactors x).toFinset.filter
+      (fun p => (normalizedFactors x).count p % 3 = r), p) := by
+  apply Finset.squarefree_prod_of_pairwise_isCoprime
+  · intro p hp q hq hpq
+    have hp' : p ∈ normalizedFactors x := Multiset.mem_toFinset.mp (Finset.mem_filter.mp hp).1
+    have hq' : q ∈ normalizedFactors x := Multiset.mem_toFinset.mp (Finset.mem_filter.mp hq).1
+    apply (irreducible_of_normalized_factor p hp').isRelPrime_iff_not_dvd.mpr
+    intro hd
+    exact hpq (normalizedFactors_eq_of_dvd x p hp' q hq' hd)
+  · intro p hp
+    exact (irreducible_of_normalized_factor p
+      (Multiset.mem_toFinset.mp (Finset.mem_filter.mp hp).1)).squarefree
+
+omit [Subsingleton Mˣ] in
+theorem firstPart_squarefree (x : M) : Squarefree (firstPart x) :=
+  residual_squarefree x 1
+
+omit [Subsingleton Mˣ] in
+theorem secondPart_squarefree (x : M) : Squarefree (secondPart x) :=
+  residual_squarefree x 2
+
+omit [Subsingleton Mˣ] in
+theorem residual_parts_isRelPrime (x : M) : IsRelPrime (firstPart x) (secondPart x) := by
+  unfold firstPart secondPart
+  apply IsRelPrime.prod_left
+  intro p hp
+  apply IsRelPrime.prod_right
+  intro q hq
+  have hp' := Finset.mem_filter.mp hp
+  have hq' := Finset.mem_filter.mp hq
+  apply (irreducible_of_normalized_factor p (Multiset.mem_toFinset.mp hp'.1)).isRelPrime_iff_not_dvd.mpr
+  intro hd
+  have heq := normalizedFactors_eq_of_dvd x p (Multiset.mem_toFinset.mp hp'.1)
+    q (Multiset.mem_toFinset.mp hq'.1) hd
+  subst q
+  omega
+
+theorem cubic_factorization (x : M) (hx : x ≠ 0) :
+    x = firstPart x * secondPart x ^ 2 * cubePart x ^ 3 := by
+  have hp : (∏ p ∈ (normalizedFactors x).toFinset,
+      p ^ (normalizedFactors x).count p) = x := by
+    rw [← Finset.prod_multiset_count]
+    exact associated_iff_eq.mp (prod_normalizedFactors hx)
+  have hper (p : M) : p ^ (normalizedFactors x).count p =
+      (if (normalizedFactors x).count p % 3 = 1 then p else 1) *
+      (if (normalizedFactors x).count p % 3 = 2 then p else 1) ^ 2 *
+      (p ^ ((normalizedFactors x).count p / 3)) ^ 3 := by
+    conv_lhs => rw [count_mod_three ((normalizedFactors x).count p)]
+    rw [pow_add, pow_add, Nat.mul_comm 3, pow_mul]
+    split_ifs <;> simp [pow_mul]
+  calc
+    x = ∏ p ∈ (normalizedFactors x).toFinset,
+        p ^ (normalizedFactors x).count p := hp.symm
+    _ = firstPart x * secondPart x ^ 2 * cubePart x ^ 3 := by
+      simp_rw [hper]
+      simp only [Finset.prod_mul_distrib, Finset.prod_pow]
+      simp only [firstPart, secondPart, cubePart, Finset.prod_filter]
+
+theorem extraction_injective_on_nonzero :
+    Set.InjOn (fun x : M => (firstPart x, secondPart x, cubePart x)) {x | x ≠ 0} := by
+  intro x hx y hy h
+  have h1 := congrArg (fun t : M × M × M => t.1) h
+  have h2 := congrArg (fun t : M × M × M => t.2.1) h
+  have h3 := congrArg (fun t : M × M × M => t.2.2) h
+  dsimp only at h1 h2 h3
+  rw [cubic_factorization x hx, cubic_factorization y hy, h1, h2, h3]
+
+end
+end CubicSieve
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion FiniteSieveOperator
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CubicSieve
+/-- Squarefree primary ideals of bounded norm. -/
+def idealRange (X : ℝ) : Finset (Ideal Eis) :=
+  (Ideal.finite_setOf_absNorm_le (S := Eis) ⌈max 0 X⌉₊).toFinset.filter
+    (fun I => Admissible I ∧ (Ideal.absNorm I : ℝ) ≤ X)
+
+theorem mem_idealRange {X : ℝ} {I : Ideal Eis} :
+    I ∈ idealRange X ↔ Admissible I ∧ (Ideal.absNorm I : ℝ) ≤ X := by
+  constructor
+  · exact fun h => (Finset.mem_filter.mp h).2
+  · intro h
+    apply Finset.mem_filter.mpr
+    refine ⟨?_, h⟩
+    rw [Set.Finite.mem_toFinset]
+    exact Nat.cast_le.mp (h.2.trans ((le_max_right 0 X).trans (Nat.le_ceil _)))
+
+def idealMatrix (M N : ℝ) : Matrix (idealRange M) (idealRange N) ℂ :=
+  fun I J => idealKernel J.val I.val
+
+def sieveNorm (M N : ℝ) : ℝ := squaredNorm (idealMatrix M N)
+
+theorem sieveNorm_reciprocity (M N : ℝ) : sieveNorm M N = sieveNorm N M := by
+  apply squaredNorm_reciprocity
+  intro I J
+  exact idealKernel_reciprocity J.val I.val
+    (mem_idealRange.mp J.property).1.2 (mem_idealRange.mp I.property).1.2
+
+theorem ideal_energy_bound (M N : ℝ) (coef : idealRange N → ℂ) :
+    (∑ I : idealRange M, ‖∑ J : idealRange N,
+      idealKernel J.val I.val * coef J‖ ^ 2) ≤
+        sieveNorm M N * ∑ J, ‖coef J‖ ^ 2 :=
+  energy_le_squaredNorm (idealMatrix M N) coef
+
+theorem family_squared_norm_le {m n : Type*} [Fintype m] [Fintype n]
+    [DecidableEq m] [DecidableEq n]
+    (rows : m → Ideal Eis) (cols : n → Ideal Eis)
+    (hr : Function.Injective rows) (hc : Function.Injective cols)
+    (M N : ℝ) (hrows : ∀ i, Admissible (rows i) ∧ (Ideal.absNorm (rows i) : ℝ) ≤ M)
+    (hcols : ∀ j, Admissible (cols j) ∧ (Ideal.absNorm (cols j) : ℝ) ≤ N) :
+    squaredNorm (fun i j => idealKernel (cols j) (rows i)) ≤ sieveNorm M N := by
+  let r : m → idealRange M := fun i => ⟨rows i, mem_idealRange.mpr (hrows i)⟩
+  let c : n → idealRange N := fun j => ⟨cols j, mem_idealRange.mpr (hcols j)⟩
+  have hri : Function.Injective r := fun i j h => hr (congrArg Subtype.val h)
+  have hci : Function.Injective c := fun i j h => hc (congrArg Subtype.val h)
+  have h := FiniteSieveRestriction.submatrix_norm_le r hri c hci (idealMatrix M N)
+  exact pow_le_pow_left₀ (norm_nonneg _) h 2
+
+theorem ideal_cube_block_energy_le {a b c n : Type*}
+    [Fintype a] [Fintype b] [Fintype c] [Fintype n]
+    [DecidableEq a] [DecidableEq b] [DecidableEq n]
+    (A : a → Ideal Eis) (B : b → Ideal Eis) (C : c → Ideal Eis)
+    (cols : n → Ideal Eis) (hc : ∀ j, primaryIdealGenerator (cols j) ≠ 0)
+    (coef : n → ℂ) :
+    (∑ l, ∑ k, ∑ i, ‖∑ j, coef j *
+      idealKernel (cols j) (A i * B k ^ 2 * C l ^ 3)‖ ^ 2) ≤
+      (Fintype.card c : ℝ) *
+        min ((Fintype.card b : ℝ) * squaredNorm (fun i j => idealKernel (cols j) (A i)))
+          ((Fintype.card a : ℝ) * squaredNorm (fun k j => idealKernel (cols j) (B k))) *
+        ∑ j, ‖coef j‖ ^ 2 := by
+  have he (i : a) (k : b) (l : c) :
+      (∑ j, coef j * idealKernel (cols j) (A i * B k ^ 2 * C l ^ 3)) =
+        ∑ j, idealKernel (cols j) (A i) * star (idealKernel (cols j) (B k)) *
+          coef j * idealKernel (cols j) (C l) ^ 3 := by
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [idealKernel_row_decomposition _ _ _ _ (hc j)]
+    ring
+  simp_rw [he]
+  apply cube_family_block_energy_le
+  · exact fun i j => idealKernel_norm_le_one _ _
+  · exact fun k j => idealKernel_norm_le_one _ _
+  · intro l j
+    rw [norm_pow]
+    exact (pow_le_pow_left₀ (norm_nonneg _) (idealKernel_norm_le_one _ _) 3).trans_eq (by norm_num)
+
+theorem ideal_cubic_factorization (I : Ideal Eis) (hI : I ≠ 0) :
+    I = firstPart I * secondPart I ^ 2 * cubePart I ^ 3 := cubic_factorization I hI
+
+end CubicSieve
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open scoped BigOperators Classical
+namespace CubicSieve
+
+abbrev CubicPrime := {P : Ideal O // P.IsMaximal ∧ lambda ∉ P}
+instance cubicPrimeMaximal (P : CubicPrime) : P.val.IsMaximal := P.property.1
+
+def primeGenerator (P : CubicPrime) : O := primaryIdealPrime P.val
+lemma primeGenerator_ne_zero (P : CubicPrime) : primeGenerator P ≠ 0 :=
+  primaryIdealPrime_ne_zero P.val P.property.2
+lemma primeGenerator_span (P : CubicPrime) : Ideal.span {primeGenerator P} = P.val :=
+  (primaryIdealPrime_spec P.val (primeGenerator_ne_zero P)).2.2.1
+instance primeGeneratorMaximal (P : CubicPrime) : (Ideal.span {primeGenerator P}).IsMaximal := by
+  rw [primeGenerator_span]
+  infer_instance
+lemma primeGenerator_good (P : CubicPrime) : lambda ∉ Ideal.span {primeGenerator P} := by
+  rw [primeGenerator_span]
+  exact P.property.2
+lemma primeGenerator_span_injective :
+    Function.Injective (fun P : CubicPrime => Ideal.span {primeGenerator P}) := by
+  intro P Q h
+  exact Subtype.ext (by simpa only [primeGenerator_span] using h)
+
+abbrev CubicIdeal := {I : Ideal O // Admissible I}
+def idealPrimeIndex (I : CubicIdeal) (P : primeSupport I.val) : CubicPrime :=
+  ⟨P.val, (primaryIdealPrime_spec P.val
+    (primaryIdealPrime_factor_ne_zero I.val P.val I.property.2
+      (Multiset.mem_toFinset.mp P.property))).1,
+    (primaryIdealPrime_spec P.val
+    (primaryIdealPrime_factor_ne_zero I.val P.val I.property.2
+      (Multiset.mem_toFinset.mp P.property))).2.1⟩
+
+def idealSupport (I : CubicIdeal) : Finset CubicPrime :=
+  (primeSupport I.val).attach.map
+    ⟨idealPrimeIndex I, fun _ _ h => Subtype.ext (congrArg (fun P : CubicPrime => P.val) h)⟩
+
+lemma idealSupport_product (I : CubicIdeal) :
+    (∏ P ∈ idealSupport I, primeGenerator P) = primaryIdealGenerator I.val := by
+  rw [idealSupport, Finset.prod_map]
+  change (∏ P ∈ (primeSupport I.val).attach, primaryIdealPrime P.val) = _
+  rw [Finset.prod_attach]
+  exact (primaryIdealGenerator_squarefree_support I.val I.property.2 I.property.1).symm
+
+lemma idealSupport_ideal_product (I : CubicIdeal) :
+    (∏ P ∈ idealSupport I, P.val) = I.val := by
+  rw [idealSupport, Finset.prod_map]
+  change (∏ P ∈ (primeSupport I.val).attach, P.val) = _
+  rw [Finset.prod_attach (primeSupport I.val) (fun P : Ideal O => P)]
+  have hn := (UniqueFactorizationMonoid.squarefree_iff_nodup_normalizedFactors
+    (primaryIdealGenerator_ne_zero_ideal I.val I.property.2)).mp I.property.1
+  have hv : (primeSupport I.val).val = UniqueFactorizationMonoid.normalizedFactors I.val := by
+    simpa only [primeSupport, Multiset.toFinset_val] using hn.dedup
+  change (primeSupport I.val).prod id = I.val
+  rw [←Finset.prod_val, hv]
+  exact Ideal.prod_normalizedFactors_eq_self (primaryIdealGenerator_ne_zero_ideal I.val I.property.2)
+
+lemma idealGenerator_injective :
+    Function.Injective (fun I : CubicIdeal => primaryIdealGenerator I.val) := by
+  intro I J h
+  change primaryIdealGenerator I.val = primaryIdealGenerator J.val at h
+  apply Subtype.ext
+  rw [←(primaryIdealGenerator_spec I.val I.property.2).1,
+    ←(primaryIdealGenerator_spec J.val J.property.2).1, h]
+
+lemma idealSupport_injective : Function.Injective idealSupport := by
+  intro I J h
+  apply idealGenerator_injective
+  change primaryIdealGenerator I.val = primaryIdealGenerator J.val
+  rw [←idealSupport_product I, ←idealSupport_product J, h]
+
+lemma idealSupport_norm (I : CubicIdeal) :
+    primeSubsetNorm primeGenerator (idealSupport I) = (Ideal.absNorm I.val : ℝ) := by
+  rw [primeSubsetNorm, idealSupport_product, primaryIdealGenerator_norm_sq I.val I.property.2]
+
+lemma idealSymbol_eq_primeSubsetRow (I : CubicIdeal) (z : O) :
+    ringComplex (idealSymbol I.val z) = primeSubsetRow primeGenerator
+      (fun P => complexCubicChar (Ideal.span {primeGenerator P}) (primeGenerator_good P))
+      (idealSupport I) z := by
+  rw [←idealRowHom_square, ←idealSupport_ideal_product I, map_prod,
+    ←Finset.prod_pow]
+  unfold primeSubsetRow
+  apply Finset.prod_congr rfl
+  intro P hP
+  rw [idealRowHom_prime _ P.val P.property.2,
+    ←MulChar.pow_apply' _ (by decide : (2 : ℕ) ≠ 0), (complexSexticChar_powers P.val P.property.2).1]
+  change ringComplex (cubicChar P.val P.property.2 (Ideal.Quotient.mk P.val z)) =
+    ringComplex (cubicChar (Ideal.span {primeGenerator P}) (primeGenerator_good P)
+      (Ideal.Quotient.mk (Ideal.span {primeGenerator P}) z))
+  rw [←primeValue_eq P.val P.property.2,
+    ←primeValue_eq (Ideal.span {primeGenerator P}) (primeGenerator_good P),primeGenerator_span]
+
+/-- The native prime-row estimate gives the initial cubic exponent two. -/
+theorem sieveNorm_initial : ∃ C : ℝ, 0 < C ∧ ∀ M N : ℝ, 1 ≤ M → 1 ≤ N →
+    sieveNorm M N ≤ C * (M + N ^ 2) := by
+  obtain ⟨C, hC, hbound⟩ := primeSubsetRow_initial_operator_bound
+  refine ⟨C, hC, ?_⟩
+  intro M N hM hN
+  let rows : idealRange M → CubicIdeal := fun I => ⟨I.val, (mem_idealRange.mp I.property).1⟩
+  let cols : idealRange N → CubicIdeal := fun I => ⟨I.val, (mem_idealRange.mp I.property).1⟩
+  have hr : Function.Injective rows := fun I J h => Subtype.ext (congrArg (fun I : CubicIdeal => I.val) h)
+  have hc : Function.Injective cols := fun I J h => Subtype.ext (congrArg (fun I : CubicIdeal => I.val) h)
+  have hb := hbound primeGenerator primeGenerator_ne_zero primeGenerator_span_injective
+    (fun P => complexCubicChar (Ideal.span {primeGenerator P}) (primeGenerator_good P))
+    (fun P => complexCubicChar_ne_one _ (primeGenerator_good P))
+    (fun I => primaryIdealGenerator (rows I).val) (idealGenerator_injective.comp hr)
+    (fun J => idealSupport (cols J)) (idealSupport_injective.comp hc) M N hM hN
+    (fun I => by
+      rw [primaryIdealGenerator_norm_sq _ (rows I).property.2]
+      exact (mem_idealRange.mp I.property).2)
+    (fun J => by rw [idealSupport_norm]; exact (mem_idealRange.mp J.property).2)
+  have he : idealMatrix M N = fun I J => primeSubsetRow primeGenerator
+      (fun P => complexCubicChar (Ideal.span {primeGenerator P}) (primeGenerator_good P))
+      (idealSupport (cols J)) (primaryIdealGenerator (rows I).val) := by
+    ext I J
+    exact idealSymbol_eq_primeSubsetRow (cols J) (primaryIdealGenerator (rows I).val)
+  unfold sieveNorm squaredNorm
+  rw [he]
+  exact hb
+
+end CubicSieve
+end
+
+noncomputable section
+open scoped BigOperators Classical
+namespace CubicSieve
+
+def HasCubicExponent (ξ : ℝ) : Prop :=
+  ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 < C ∧
+    ∀ M N : ℝ, 1 ≤ M → 1 ≤ N →
+      sieveNorm M N ≤ C*(M*N)^ε*(M + N^ξ + (M*N)^(2/3 : ℝ))
+
+theorem hasCubicExponent_initial : HasCubicExponent 2 := by
+  intro ε hε
+  obtain ⟨C,hC,hb⟩ := sieveNorm_initial
+  refine ⟨C,hC,?_⟩
+  intro M N hM hN
+  have hp : 1 ≤ (M*N)^ε := Real.one_le_rpow
+    (one_le_mul_of_one_le_of_one_le hM hN) hε.le
+  have hx : 0 ≤ (M*N)^(2/3 : ℝ) := Real.rpow_nonneg (by positivity) _
+  calc
+    _ ≤ C*(M+N^2) := hb M N hM hN
+    _ ≤ C*(M+N^(2:ℝ)+(M*N)^(2/3:ℝ)) := by
+      rw [Real.rpow_two]
+      exact mul_le_mul_of_nonneg_left (le_add_of_nonneg_right hx) hC.le
+    _ ≤ _ := by
+      rw [mul_assoc C ((M*N)^ε)]
+      apply mul_le_mul_of_nonneg_left _ hC.le
+      exact le_mul_of_one_le_left (by positivity) hp
+
+lemma HasCubicExponent.swapped {ξ : ℝ} (h : HasCubicExponent ξ)
+    (ε : ℝ) (hε : 0 < ε) : ∃ C : ℝ, 0 < C ∧
+      ∀ M N : ℝ, 1 ≤ M → 1 ≤ N →
+        sieveNorm M N ≤ C*(M*N)^ε*(M^ξ + N + (M*N)^(2/3 : ℝ)) := by
+  obtain ⟨C,hC,hb⟩ := h ε hε
+  refine ⟨C,hC,?_⟩
+  intro M N hM hN
+  rw [sieveNorm_reciprocity]
+  simpa only [mul_comm, add_comm, add_left_comm, add_assoc] using hb N M hN hM
+
+lemma HasCubicExponent.doubled {ξ : ℝ} (h : HasCubicExponent ξ)
+    (ε : ℝ) (hε : 0 < ε) : ∃ C : ℝ, 0 < C ∧
+      ∀ X N : ℝ, 1 ≤ X → 1 ≤ N →
+        sieveNorm (2*X) N ≤ C*(X*N)^ε*(X^ξ + N + (X*N)^(2/3 : ℝ)) := by
+  obtain ⟨C,hC,hb⟩ := h.swapped ε hε
+  let A : ℝ := 1 + (2:ℝ)^ξ + (2:ℝ)^(2/3 : ℝ)
+  have hA : 0 < A := by dsimp [A]; positivity
+  refine ⟨C*(2:ℝ)^ε*A, by positivity, ?_⟩
+  intro X N hX hN
+  have hX0 : 0 ≤ X := by linarith
+  have hN0 : 0 ≤ N := by linarith
+  have hxξ := Real.rpow_nonneg hX0 ξ
+  have hcross := Real.rpow_nonneg (mul_nonneg hX0 hN0) (2/3 : ℝ)
+  have hshape : (2*X)^ξ + N + ((2*X)*N)^(2/3 : ℝ) ≤
+      A*(X^ξ+N+(X*N)^(2/3 : ℝ)) := by
+    rw [Real.mul_rpow (by norm_num) hX0]
+    rw [show (2*X)*N = 2*(X*N) by ring, Real.mul_rpow (by norm_num) (mul_nonneg hX0 hN0)]
+    dsimp only [A]
+    nlinarith [mul_nonneg (Real.rpow_nonneg (by norm_num : (0:ℝ)≤2) ξ) hN0,
+      mul_nonneg (Real.rpow_nonneg (by norm_num : (0:ℝ)≤2) ξ) hcross,
+      mul_nonneg (Real.rpow_nonneg (by norm_num : (0:ℝ)≤2) (2/3 : ℝ)) hN0,
+      mul_nonneg (Real.rpow_nonneg (by norm_num : (0:ℝ)≤2) (2/3 : ℝ)) hxξ]
+  calc
+    _ ≤ C*((2*X)*N)^ε*((2*X)^ξ+N+((2*X)*N)^(2/3 : ℝ)) := hb (2*X) N (by linarith) hN
+    _ ≤ C*((2*X)*N)^ε*(A*(X^ξ+N+(X*N)^(2/3 : ℝ))) :=
+      mul_le_mul_of_nonneg_left hshape (by positivity)
+    _ = _ := by
+      rw [show (2*X)*N = 2*(X*N) by ring, Real.mul_rpow (by norm_num) (mul_nonneg hX0 hN0)]
+      ring
+
+end CubicSieve
+end
+
+noncomputable section
+open Eisenstein CompletedGauss CanonicalRowCompletion
+open scoped BigOperators Classical
+namespace InverseMoment
+
+theorem inverse_eq_square_of_fourth_eq {z : ℂ} (hz : z ^ 4 = z) :
+    z⁻¹ = z ^ 2 := by
+  by_cases hzero : z = 0
+  · simp [hzero]
+  have hcube : z ^ 3 = 1 := by
+    apply mul_left_cancel₀ hzero
+    calc
+      z * z ^ 3 = z ^ 4 := by ring
+      _ = z := hz
+      _ = z * 1 := by ring
+  calc
+    z⁻¹ = z⁻¹ * z ^ 3 := by rw [hcube, mul_one]
+    _ = z ^ 2 := by field_simp
+
+/-- The inverse cubic character in the ideal denominator, evaluated at the primary numerator. -/
+def inverseCubicKernel (P n : Ideal O) : ℂ :=
+  star (CubicSieve.idealKernel P n)
+
+theorem inverseCubicKernel_eq_inverse_square (P n : Ideal O) :
+    inverseCubicKernel P n = (idealRowHom (primaryIdealGenerator n) P)⁻¹ ^ 2 := by
+  rw [inv_pow, idealRowHom_square,
+    inverse_eq_square_of_fourth_eq (CubicSieve.idealSymbol_fourth P _)]
+  exact (CubicSieve.idealKernel_square_eq_star P n).symm
+
+theorem inverseCubicKernel_norm_le_one (P n : Ideal O) :
+    ‖inverseCubicKernel P n‖ ≤ 1 := by
+  simpa only [inverseCubicKernel, norm_star] using CubicSieve.idealKernel_norm_le_one P n
+
+theorem inverseCubicKernel_mul_left (R P n : Ideal O) :
+    inverseCubicKernel (R * P) n = inverseCubicKernel R n * inverseCubicKernel P n := by
+  simp only [inverseCubicKernel, CubicSieve.idealKernel, CubicJacobi.idealSymbol_mul,
+    map_mul, star_mul]
+  ring
+
+theorem inverseCubicKernel_mul_right (P n m : Ideal O)
+    (hP : primaryIdealGenerator P ≠ 0) :
+    inverseCubicKernel P (n * m) = inverseCubicKernel P n * inverseCubicKernel P m := by
+  change star (CubicSieve.idealNumeratorHom P hP (n * m)) =
+    star (CubicSieve.idealNumeratorHom P hP n) * star (CubicSieve.idealNumeratorHom P hP m)
+  rw [map_mul, star_mul]
+  ring
+
+theorem inverseCubicKernel_quotients (R P' r c' m : Ideal O)
+    (hP' : primaryIdealGenerator P' ≠ 0) :
+    inverseCubicKernel (R * P') ((r * c') * m) =
+      inverseCubicKernel R ((r * c') * m) * inverseCubicKernel P' r *
+        inverseCubicKernel P' (c' * m) := by
+  rw [inverseCubicKernel_mul_left, mul_assoc r c' m,
+    inverseCubicKernel_mul_right P' r (c' * m) hP']
+  ring
+
+theorem inverseCubicKernel_eq_zero_of_not_coprime (P n : Ideal O)
+    (hP : primaryIdealGenerator P ≠ 0) (hn : primaryIdealGenerator n ≠ 0)
+    (hcop : ¬ IsCoprime P n) : inverseCubicKernel P n = 0 := by
+  have hc := CubicSieve.idealSymbol_cube_mask P (primaryIdealGenerator n) hP
+  rw [(primaryIdealGenerator_spec n hn).1, if_neg hcop] at hc
+  have hz := (pow_eq_zero_iff (by decide : (3 : ℕ) ≠ 0)).mp hc
+  simp only [inverseCubicKernel, CubicSieve.idealKernel, hz, star_zero]
+
+theorem inverse_cube_square_eq_sixth {z : ℂ} (h : z ^ 6 = 0 ∨ z ^ 6 = 1) :
+    ((z ^ 3)⁻¹) ^ 2 = z ^ 6 := by
+  rw [← inv_pow, ← pow_mul]
+  norm_num
+  rcases h with h | h <;> rw [h] <;> norm_num
+
+theorem inverse_square_cube_mask {M : Type*} [Monoid M]
+    (ψ : M →* ℂ) (n b : M) (h : ψ b ^ 6 = 0 ∨ ψ b ^ 6 = 1) :
+    (ψ (n * b ^ 3))⁻¹ ^ 2 = (ψ n)⁻¹ ^ 2 * ψ b ^ 6 := by
+  rw [map_mul, map_pow, mul_inv_rev, mul_pow, inverse_cube_square_eq_sixth h]
+  ring
+
+end InverseMoment
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace CanonicalQuadraticSieve
+abbrev PrimeIndex (I : Ideal O) := {P : Ideal O // P ∈ primeSupport I}
+
+instance primeIndexMaximal (I : Ideal O) (P : PrimeIndex I) : P.val.IsMaximal := by
+  have hp := UniqueFactorizationMonoid.prime_of_normalized_factor P.val
+    (Multiset.mem_toFinset.mp P.property)
+  exact (Ideal.isPrime_of_prime hp).isMaximal hp.ne_zero
+
+theorem primeIndex_good (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0) (P : PrimeIndex I) :
+    lambda ∉ P.val :=
+  (primaryIdealPrime_spec P.val (primaryIdealPrime_factor_ne_zero I P.val hI
+    (Multiset.mem_toFinset.mp P.property))).2.1
+
+theorem primeIndex_le (I : Ideal O) (hI : I ≠ 0) (P : PrimeIndex I) : I ≤ P.val :=
+  ((Ideal.mem_normalizedFactors_iff hI).mp (Multiset.mem_toFinset.mp P.property)).2
+
+def admissiblePrimeGood (K:Ideal Eis) (hK:Admissible K) (P:PrimeIndex K) : lambda∉P.val :=
+  (hK.2.2 P.val (Multiset.mem_toFinset.mp P.property)).1
+
+end CanonicalQuadraticSieve
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+theorem admissible_primeIndex_product (K : Ideal Eis) (hK : Admissible K) :
+    (∏ P : PrimeIndex K, P.val) = K := by
+  have hn := (UniqueFactorizationMonoid.squarefree_iff_nodup_normalizedFactors hK.1).mp hK.2.1
+  have hv : (primeSupport K).val = UniqueFactorizationMonoid.normalizedFactors K := by
+    simpa only [primeSupport, Multiset.toFinset_val] using hn.dedup
+  calc
+    _ = ∏ P ∈ primeSupport K, P := Finset.prod_coe_sort _ _
+    _ = (primeSupport K).val.prod := (Finset.prod_val _).symm
+    _ = K := by rw [hv]; exact Ideal.prod_normalizedFactors_eq_self hK.1
+
+theorem idealRowHom_cube_eq_quadratic (K : Ideal Eis) (hK : Admissible K) (z : Eis) :
+    idealRowHom z K ^ 3 = canonicalQuadraticRowOfIdeal K z := by
+  conv_lhs => rw [←admissible_primeIndex_product K hK,map_prod,←Finset.prod_pow]
+  rw [canonicalQuadraticRowOfIdeal_eq_prime_product K ((admissible_iff_native K).mp hK)]
+  apply Finset.prod_congr rfl
+  intro P hP
+  rw [idealRowHom_prime z P.val (admissiblePrimeGood K hK P),
+    ←MulChar.pow_apply' _ (by decide : (3:ℕ)≠0),
+    (complexSexticChar_powers P.val (admissiblePrimeGood K hK P)).2.1]
+
+
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  CompletedGauss
+open NormalizedReflection CanonicalRowCompletion
+noncomputable section
+noncomputable local instance bracketField (P : Ideal Eis) [P.IsMaximal] : Field (Eis ⧸ P) := Ideal.Quotient.field P
+noncomputable local instance bracketFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+theorem marked_bracket_cube (P : Ideal Eis) [P.IsMaximal]
+    (hg : lambda ∉ P) (n b : Eis) :
+    bracket (complexSexticChar P hg) 0 (Ideal.Quotient.mk P (n*b^3)) =
+      (Real.sqrt (Ideal.absNorm P : ℝ) : ℂ)⁻¹ *
+      (idealRowHom n P)⁻¹^2 * (if IsCoprime P (Ideal.span {b}) then 1 else 0) := by
+  have h6 : (complexSexticChar P hg (Ideal.Quotient.mk P b))^6 =
+      if b∈P then 0 else 1 := by
+    have h := idealRowHom_prime_sixth_mask b P hg
+    rw [idealRowHom_prime _ P hg,map_pow,map_pow] at h
+    simpa only [prime_coprime_span_iff,ite_not] using h
+  have h6' : (complexSexticChar P hg (Ideal.Quotient.mk P b))^6 = 0 ∨
+      (complexSexticChar P hg (Ideal.Quotient.mk P b))^6 = 1 := by
+    rw [h6]; split_ifs <;> simp
+  let ψ : Eis →* ℂ := (complexSexticChar P hg).toMonoidHom.comp (Ideal.Quotient.mk P).toMonoidHom
+  have he := InverseMoment.inverse_square_cube_mask ψ n b h6'
+  change ((complexSexticChar P hg) (Ideal.Quotient.mk P (n*b^3)))⁻¹^2 =
+    ((complexSexticChar P hg) (Ideal.Quotient.mk P n))⁻¹^2 *
+      ((complexSexticChar P hg) (Ideal.Quotient.mk P b))^6 at he
+  simp only [bracket,show (0:ℕ) ≠ 4 by decide,↓reduceIte,
+    MulChar.inv_apply_eq_inv',MulChar.pow_apply' _ (by decide : (2:ℕ) ≠ 0),inv_pow]
+  simp only [inv_pow] at he
+  rw [he,rootCard_eq_sqrt_absNorm,idealRowHom_prime n P hg,h6,
+    prime_coprime_span_iff]
+  by_cases hb : b ∈ P <;> simp [hb]
+
+theorem marked_bracket_product {ι : Type*} [Fintype ι]
+    (P : ι → Ideal Eis) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (n b : Eis) :
+    (∏ i, bracket (complexSexticChar (P i) (hg i)) 0 (Ideal.Quotient.mk (P i) (n*b^3))) =
+      (Real.sqrt (Ideal.absNorm (∏ i, P i) : ℝ) : ℂ)⁻¹ *
+      (idealRowHom n (∏ i, P i))⁻¹^2 *
+      (if IsCoprime (∏ i, P i) (Ideal.span {b}) then 1 else 0) := by
+  simp_rw [marked_bracket_cube]
+  rw [Finset.prod_mul_distrib,Finset.prod_mul_distrib]
+  have hn : (∏ i, (Real.sqrt (Ideal.absNorm (P i) : ℝ) : ℂ)⁻¹) =
+      (Real.sqrt (Ideal.absNorm (∏ i, P i) : ℝ) : ℂ)⁻¹ := by
+    rw [map_prod,Nat.cast_prod,Real.sqrt_prod,Complex.ofReal_prod,Finset.prod_inv_distrib]
+    intro i hi
+    positivity
+  have hc : (∏ i, (idealRowHom n (P i))⁻¹^2) = (idealRowHom n (∏ i, P i))⁻¹^2 := by
+    rw [map_prod,Finset.prod_pow,Finset.prod_inv_distrib]
+  have hm : (∏ i, if IsCoprime (P i) (Ideal.span {b}) then (1:ℂ) else 0) =
+      if IsCoprime (∏ i, P i) (Ideal.span {b}) then 1 else 0 := by
+    classical
+    by_cases h : ∀ i, IsCoprime (P i) (Ideal.span {b})
+    · simp [h,IsCoprime.prod_left (fun i _ => h i)]
+    · obtain ⟨i,hi⟩ := not_forall.mp h
+      have hp : ¬ IsCoprime (∏ i, P i) (Ideal.span {b}) := by
+        intro hp
+        exact hi (hp.of_isCoprime_of_dvd_left (Finset.dvd_prod_of_mem P (Finset.mem_univ i)))
+      rw [if_neg hp]
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+  rw [hn,hc,hm]
+
+theorem marked_bracket_hybrid {ι : Type*} [Fintype ι]
+    (P : ι → Ideal Eis) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    (∏ i, bracket (complexSexticChar (P i) (hg i)) 0
+      (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))) =
+      (Real.sqrt (Ideal.absNorm (∏ i, P i) : ℝ) : ℂ)⁻¹ *
+      InverseMoment.inverseCubicKernel (∏ i, P i) n *
+      (if IsCoprime (∏ i, P i) b then 1 else 0) := by
+  rw [marked_bracket_product,InverseMoment.inverseCubicKernel_eq_inverse_square,
+    (primaryIdealGenerator_spec b hb).1]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+theorem residual_bracket_finset {ι : Type*} [Fintype ι]
+    (P : ι → Ideal Eis) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (R : Finset ι) (hR : Admissible (∏ i ∈ R, P i))
+    (n b : Ideal Eis) :
+    (∏ i ∈ R, bracket (complexSexticChar (P i) (hg i)) 1
+      (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))) =
+      canonicalQuadraticRowOfIdeal (∏ i ∈ R, P i) (primaryIdealGenerator (n*b)) := by
+  have hl (i : ι) : bracket (complexSexticChar (P i) (hg i)) 1
+      (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3)) =
+      idealRowHom (primaryIdealGenerator (n*b)) (P i)^3 := by
+    rw [bracket_one_eq_quadratic,primaryIdealGenerator_mul,idealRowHom_prime _ (P i) (hg i)]
+    rw [←MulChar.pow_apply' _ (by decide : (3:ℕ)≠0),
+      (complexSexticChar_powers (P i) (hg i)).2.1]
+    simp only [map_mul,map_pow,complexQuadraticChar_cube]
+
+  simp_rw [hl]
+  rw [Finset.prod_pow,← map_prod,idealRowHom_cube_eq_quadratic _ hR]
+
+theorem marked_bracket_finset {ι : Type*} [Fintype ι]
+    (P : ι → Ideal Eis) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (S : Finset ι) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    (∏ i ∈ S, bracket (complexSexticChar (P i) (hg i)) 0
+      (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))) =
+      (Real.sqrt (Ideal.absNorm (∏ i ∈ S, P i) : ℝ) : ℂ)⁻¹ *
+      InverseMoment.inverseCubicKernel (∏ i ∈ S, P i) n *
+      (if IsCoprime (∏ i ∈ S, P i) b then 1 else 0) := by
+  have he := marked_bracket_hybrid (fun i : S => P i.val) (fun i => hg i.val) n b hb
+  have hl : (∏ i : S, bracket (complexSexticChar (P i.val) (hg i.val)) 0
+      (Ideal.Quotient.mk (P i.val) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))) =
+      ∏ i ∈ S, bracket (complexSexticChar (P i) (hg i)) 0
+        (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3)) := by
+    exact Finset.prod_coe_sort S (fun i => bracket (complexSexticChar (P i) (hg i)) 0
+      (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3)))
+  rw [hl] at he
+  simpa only [Finset.prod_coe_sort] using he
+
+theorem full_branch_sum_hybrid {ι : Type*} [Fintype ι]
+    (P : ι → Ideal Eis) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (R S F : Finset ι)
+    (hRS : Disjoint R S) (hF : Disjoint (R ∪ S) F) (hu : (R ∪ S) ∪ F = Finset.univ)
+    (j : ι → ℕ) (hRj : ∀ i ∈ R, j i = 1) (hSj : ∀ i ∈ S, j i = 0)
+    (hR : Admissible (∏ i ∈ R, P i)) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    (∑ e : ι → Fin 3, reflectedBranch P hg j e (primaryIdealGenerator n) (primaryIdealGenerator b)) =
+      (∏ i ∈ F, bracket (complexSexticChar (P i) (hg i)) (j i)
+        (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))) *
+      (Real.sqrt (Ideal.absNorm (∏ i ∈ S, P i) : ℝ) : ℂ)⁻¹ *
+      canonicalQuadraticRowOfIdeal (∏ i ∈ R, P i) (primaryIdealGenerator (n*b)) *
+      InverseMoment.inverseCubicKernel (∏ i ∈ S, P i) n *
+      (if IsCoprime (∏ i ∈ S, P i) b then 1 else 0) := by
+  trans ∏ i, bracket (complexSexticChar (P i) (hg i)) (j i)
+    (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))
+  · exact (prod_bracket_eq_full_branches P hg j (primaryIdealGenerator n) (primaryIdealGenerator b)).symm
+  let v := fun i => bracket (complexSexticChar (P i) (hg i)) (j i)
+    (Ideal.Quotient.mk (P i) (primaryIdealGenerator n*(primaryIdealGenerator b)^3))
+  have hr : (∏ i ∈ R, v i) = canonicalQuadraticRowOfIdeal (∏ i ∈ R, P i) (primaryIdealGenerator (n*b)) := by
+    rw [← residual_bracket_finset P hg R hR n b]
+    apply Finset.prod_congr rfl
+    intro i hi
+    simp only [v,hRj i hi]
+  have hs : (∏ i ∈ S, v i) =
+      (Real.sqrt (Ideal.absNorm (∏ i ∈ S, P i) : ℝ) : ℂ)⁻¹ *
+      InverseMoment.inverseCubicKernel (∏ i ∈ S, P i) n *
+      (if IsCoprime (∏ i ∈ S, P i) b then 1 else 0) := by
+    rw [← marked_bracket_finset P hg S n b hb]
+    apply Finset.prod_congr rfl
+    intro i hi
+    simp only [v,hSj i hi]
+  have hv : (∏ i, v i) = (∏ i ∈ R, v i)*(∏ i ∈ S, v i)*(∏ i ∈ F, v i) := by
+    rw [← Finset.prod_union hRS,← Finset.prod_union hF,hu]
+  change (∏ i, v i) = _
+  rw [hv,hr,hs]
+  ring
+
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+def mixedActiveBracket [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (i : ι) (x : Eis) : ℂ :=
+  if i ∈ S then
+    (rootCard (Eis ⧸ Ideal.span {p i}) : ℂ)⁻¹ *
+      tau (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) 2 *
+        (((complexSexticChar (Ideal.span {p i}) (hg i)) ^ 2)⁻¹)
+          ((D.sigma i : Eis ⧸ Ideal.span {p i}) * (D.epsilon i : Eis ⧸ Ideal.span {p i}) *
+            Ideal.Quotient.mk _ x)
+  else (((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹) ^ 2) (D.sigma i) *
+    phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i)) (j i) (D.epsilon i) *
+      bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i) (Ideal.Quotient.mk _ x)
+
+def markedActiveExponent (S : Finset ι) (j : ι → ℕ) (i : ι) : ℕ := if i ∈ S then 0 else j i
+
+theorem mixedActiveBracket_eq_signed [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (i : ι) (x : Eis) :
+    mixedActiveBracket hp hg j S D i x = (if i ∈ S then (-1 : ℂ) else 1) *
+      ((((complexSexticChar (Ideal.span {p i}) (hg i))⁻¹) ^ 2) (D.sigma i) *
+        phase (complexSexticChar (Ideal.span {p i}) (hg i)) (residueTraceQuotientChar 1 (p i) (hp i))
+          (markedActiveExponent S j i) (D.epsilon i) *
+        bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (markedActiveExponent S j i)
+          (Ideal.Quotient.mk _ x)) := by
+  by_cases hi : i ∈ S
+  · simp only [mixedActiveBracket, markedActiveExponent, hi,
+      phase, bracket, show (0 : ℕ) ≠ 4 by decide, ↓reduceIte, inv_pow, map_mul]
+    ring
+  · simp only [mixedActiveBracket, markedActiveExponent, hi, ite_false, one_mul]
+
+theorem mixedActiveBracket_product [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (D : ControlledStratumArithmetic p N a0 c0 mode) (x : Eis) :
+    (∏ i, mixedActiveBracket hp hg j S D i x) =
+      (-1 : ℂ) ^ S.card * D.bracketProduct hp hg (markedActiveExponent S j) x := by
+  simp_rw [mixedActiveBracket_eq_signed]
+  rw [Finset.prod_mul_distrib]
+  have hsign : (∏ i : ι, if i ∈ S then (-1 : ℂ) else 1) = (-1 : ℂ) ^ S.card := by
+    rw [Finset.prod_ite]
+    simp
+  rw [hsign]
+  rfl
+
+theorem mixed_model_coefficient [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (u : Eisˣ) (m : ℕ) (I J : Ideal Eis) :
+    s.amplitude u m I J *
+      (star D.fixedFactor * cuspBadPhase c0 hc0
+        (D.matrix (fun _ => 1) 1 1) D.U (s.modelDualNumerator u m I J)) *
+      (∏ i, mixedActiveBracket hp hg j S D i (s.modelDualNumerator u m I J)) =
+    ((-1 : ℂ) ^ S.card * D.modelRowPhase s hp hg (markedActiveExponent S j) u m) *
+      ∑ e : ι → Fin 3,
+        fixedCuspArrayWithPhase s.index u
+          (s.reflectionStaticPhase c0 hc0
+            (Ideal.Quotient.mk _ (-(D.matrix (fun _ => 1) 1 1) * D.U))
+            (s.modelDualNumerator u) u) m I J *
+        reflectedBranch (fun i => Ideal.span {p i}) hg (markedActiveExponent S j) e
+          (primaryIdealGenerator I) (primaryIdealGenerator J) := by
+  rw [mixedActiveBracket_product]
+  calc
+    _ = (-1 : ℂ) ^ S.card * (s.amplitude u m I J *
+      (star D.fixedFactor * cuspBadPhase c0 hc0
+        (D.matrix (fun _ => 1) 1 1) D.U (s.modelDualNumerator u m I J)) *
+      D.bracketProduct hp hg (markedActiveExponent S j) (s.modelDualNumerator u m I J)) := by ring
+    _ = _ :=
+      (congrArg ((-1 : ℂ) ^ S.card * ·)
+        (D.model_coefficient s hp hc0 hg (markedActiveExponent S j) u m I J)).trans
+          (mul_assoc _ _ _).symm
+
+theorem marked_modelRowPhase_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hN : (9 : Eis) * c0 ∣ N) (hr : lambda ^ 2 ∣ (∏ i, p i) - 1)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) (S : Finset ι) (u : Eisˣ) (m : ℕ) :
+    ‖(-1 : ℂ) ^ S.card * D.modelRowPhase s hp hg (markedActiveExponent S j) u m‖ = 1 := by
+  have hj' : ∀ i, markedActiveExponent S j i < 6 := by
+    intro i
+    unfold markedActiveExponent
+    split_ifs
+    · norm_num
+    · exact hj i
+  rw [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
+  exact D.modelRowPhase_norm hN hr hbase s hp hg hchar _ hj' u m
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein  CompletedGauss NormalizedReflection
+open InverseMoment
+noncomputable section
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+noncomputable local instance coefficientFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+def sourceRowPhase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (R F : Finset ι) (u : Eisˣ) (m : ℕ) : ℂ :=
+  residualWithFrozen hp hg c R F * ramifiedBlock hg (fun _ => 1) R
+    (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m) * frozenArgument hg j F (∏ i ∈ R, p i)
+
+def sourceSlotPhase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S F : Finset ι) (u : Eisˣ) (m : ℕ) : ℂ :=
+  markedWithFrozen hp hg c S F * ramifiedBlock hg (fun _ => 0) S
+    (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m) * frozenArgument hg j F (∏ i ∈ S, p i)
+
+def sourceFrozenPhase [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (F : Finset ι) (u : Eisˣ) (m : ℕ) : ℂ :=
+  star D.fixedFactor * frozenCore hp hg c j F * ramifiedBlock hg j F
+    (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m)
+
+def sourceColumn [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (F : Finset ι)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) : ℂ :=
+  fixedCuspArrayWithPhase s.index u
+    (s.reflectionStaticPhase c hc (Ideal.Quotient.mk _ (-(D.matrix (fun _ => 1) 1 1)*D.U))
+      (s.modelDualNumerator u) u) m n b *
+  ∏ i ∈ F, bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+    (Ideal.Quotient.mk _ (primaryIdealGenerator n*(primaryIdealGenerator b)^3))
+
+theorem mixed_coefficient_hybrid [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hc : c ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hprimary : ∀ i, lambda^2 ∣ p i-1) (R S F : Finset ι)
+    (hRS : Disjoint R S) (hF : Disjoint (R ∪ S) F) (hu : (R ∪ S) ∪ F = Finset.univ)
+    (j : ι → ℕ) (hRj : ∀ i ∈ R, j i = 1)
+    (hR : CanonicalQuadraticSieve.Admissible (∏ i ∈ R, Ideal.span {p i}))
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    s.amplitude u m n b *
+      (star D.fixedFactor * cuspBadPhase c hc (D.matrix (fun _ => 1) 1 1) D.U
+        (s.modelDualNumerator u m n b)) *
+      (∏ i, mixedActiveBracket hp hg j S D i (s.modelDualNumerator u m n b)) =
+    ((-1:ℂ)^S.card * sourceRowPhase s hp hg (markedActiveExponent S j) R F u m * sourceSlotPhase s hp hg (markedActiveExponent S j) S F u m *
+      sourceFrozenPhase D s hp hg (markedActiveExponent S j) F u m) *
+      sourceColumn D s hc hg (markedActiveExponent S j) F u m n b *
+      (Real.sqrt (Ideal.absNorm (∏ i ∈ S, Ideal.span {p i}) : ℝ) : ℂ)⁻¹ *
+      canonicalQuadraticRowOfIdeal (∏ i ∈ R, Ideal.span {p i}) (primaryIdealGenerator (n*b)) *
+      inverseCubicKernel (∏ i ∈ S, Ideal.span {p i}) n *
+      (if IsCoprime (∏ i ∈ S, Ideal.span {p i}) b then 1 else 0) *
+      (if IsCoprime (∏ i ∈ R, Ideal.span {p i}) (∏ i ∈ S, Ideal.span {p i}) then 1 else 0) := by
+  have hrj : ∀ i ∈ R, markedActiveExponent S j i = 1 := by
+    intro i hi
+    have hn : i ∉ S := fun hs => Finset.disjoint_left.mp hRS hi hs
+    simp only [markedActiveExponent,hn,ite_false,hRj i hi]
+  have hsj : ∀ i ∈ S, markedActiveExponent S j i = 0 := by
+    intro i hi
+    simp only [markedActiveExponent,hi,ite_true]
+  have hmask : IsCoprime (∏ i ∈ R, Ideal.span {p i}) (∏ i ∈ S, Ideal.span {p i}) := by
+    apply IsCoprime.prod_left
+    intro i hi
+    apply IsCoprime.prod_right
+    intro k hk
+    exact hcop (fun h => Finset.disjoint_left.mp hRS hi (h ▸ hk))
+  rw [mixed_model_coefficient,modelRowPhase_three_blocks D s hp hg hcop hprimary R S F hRS hF hu
+      (markedActiveExponent S j) hrj hsj,
+    frozenPhase_split D hp hg (markedActiveExponent S j) R S F hRS hF hu,← Finset.mul_sum,
+    full_branch_sum_hybrid (fun i => Ideal.span {p i}) hg R S F hRS hF hu
+      (markedActiveExponent S j) hrj hsj hR n b hb,if_pos hmask,mul_one]
+  unfold sourceRowPhase sourceSlotPhase sourceFrozenPhase sourceColumn
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss NormalizedReflection
+open InverseMoment
+noncomputable section
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a c : Eis} {mode : Bool}
+noncomputable local instance independentFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+omit [Fintype ι] in
+theorem ramifiedBlock_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι) (u : Eisˣ) (m : ℕ) :
+    ‖ramifiedBlock hg j S u m‖ = 1 := by
+  unfold ramifiedBlock
+  rw [norm_prod]
+  apply Finset.prod_eq_one
+  intro i hi
+  exact unitArgumentFactor_norm _ _ _ (unit_ramified_quotient_ne_zero _ (hg i) u m)
+
+theorem sourceRowPhase_norm_le_one [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (j : ι → ℕ) (R F : Finset ι) (hd : Disjoint R F) (u : Eisˣ) (m : ℕ) :
+    ‖sourceRowPhase s hp hg j R F u m‖ ≤ 1 := by
+  rw [sourceRowPhase,norm_mul,norm_mul,residualWithFrozen_norm D hp hg hchar hcop R F hd,
+    ramifiedBlock_norm,one_mul,one_mul]
+  exact frozenArgument_norm_le_one hg j F _
+
+theorem sourceSlotPhase_norm_le_one [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (j : ι → ℕ) (S F : Finset ι) (hd : Disjoint S F) (u : Eisˣ) (m : ℕ) :
+    ‖sourceSlotPhase s hp hg j S F u m‖ ≤ 1 := by
+  rw [sourceSlotPhase,norm_mul,norm_mul,markedWithFrozen_norm D hp hg hchar hcop S F hd,
+    ramifiedBlock_norm,one_mul,one_mul]
+  exact frozenArgument_norm_le_one hg j F _
+
+omit [Fintype ι] in
+theorem frozenArgument_congr [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j j' : ι → ℕ) (F : Finset ι)
+    (hj : ∀ i ∈ F, j i = j' i) : frozenArgument hg j F = frozenArgument hg j' F := by
+  unfold frozenArgument
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [hj i hi]
+
+omit [Fintype ι] in
+theorem frozenCore_congr [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis)
+    (j j' : ι → ℕ) (F : Finset ι) (hj : ∀ i ∈ F, j i = j' i) :
+    frozenCore hp hg c j F = frozenCore hp hg c j' F := by
+  unfold frozenCore
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [hj i hi]
+
+omit [Fintype ι] in
+theorem ramifiedBlock_congr [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j j' : ι → ℕ) (F : Finset ι)
+    (hj : ∀ i ∈ F, j i = j' i) (u : Eisˣ) (m : ℕ) :
+    ramifiedBlock hg j F u m = ramifiedBlock hg j' F u m := by
+  unfold ramifiedBlock
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [hj i hi]
+
+theorem marked_phases_eq [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (R S F : Finset ι) (hd : Disjoint S F) (u : Eisˣ) (m : ℕ) :
+    sourceRowPhase s hp hg (markedActiveExponent S j) R F u m = sourceRowPhase s hp hg j R F u m ∧
+    sourceSlotPhase s hp hg (markedActiveExponent S j) S F u m = sourceSlotPhase s hp hg j S F u m ∧
+    sourceFrozenPhase D s hp hg (markedActiveExponent S j) F u m = sourceFrozenPhase D s hp hg j F u m := by
+  have hj : ∀ i ∈ F, markedActiveExponent S j i = j i := by
+    intro i hi
+    have hn : i ∉ S := fun hs => Finset.disjoint_left.mp hd hs hi
+    simp only [markedActiveExponent,hn,ite_false]
+  simp only [sourceRowPhase,sourceSlotPhase,sourceFrozenPhase,
+    frozenArgument_congr hg _ _ F hj,frozenCore_congr hp hg c _ _ F hj,
+    ramifiedBlock_congr hg _ _ F hj]
+  simp
+
+theorem marked_sourceColumn_eq [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S F : Finset ι) (hd : Disjoint S F)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) :
+    sourceColumn D s hc hg (markedActiveExponent S j) F u m n b =
+      sourceColumn D s hc hg j F u m n b := by
+  unfold sourceColumn
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  have hn : i ∉ S := fun hs => Finset.disjoint_left.mp hd hs hi
+  simp only [markedActiveExponent,hn,ite_false]
+
+theorem mixed_coefficient_hybrid_original_exponents [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hc : c ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hprimary : ∀ i, lambda^2 ∣ p i-1) (R S F : Finset ι)
+    (hRS : Disjoint R S) (hF : Disjoint (R ∪ S) F) (hu : (R ∪ S) ∪ F = Finset.univ)
+    (j : ι → ℕ) (hRj : ∀ i ∈ R, j i = 1)
+    (hR : CanonicalQuadraticSieve.Admissible (∏ i ∈ R, Ideal.span {p i}))
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    s.amplitude u m n b *
+      (star D.fixedFactor * cuspBadPhase c hc (D.matrix (fun _ => 1) 1 1) D.U
+        (s.modelDualNumerator u m n b)) *
+      (∏ i, mixedActiveBracket hp hg j S D i (s.modelDualNumerator u m n b)) =
+    ((-1:ℂ)^S.card * sourceRowPhase s hp hg j R F u m * sourceSlotPhase s hp hg j S F u m *
+      sourceFrozenPhase D s hp hg j F u m) *
+      sourceColumn D s hc hg j F u m n b *
+      (Real.sqrt (Ideal.absNorm (∏ i ∈ S, Ideal.span {p i}) : ℝ) : ℂ)⁻¹ *
+      canonicalQuadraticRowOfIdeal (∏ i ∈ R, Ideal.span {p i}) (primaryIdealGenerator (n*b)) *
+      inverseCubicKernel (∏ i ∈ S, Ideal.span {p i}) n *
+      (if IsCoprime (∏ i ∈ S, Ideal.span {p i}) b then 1 else 0) *
+      (if IsCoprime (∏ i ∈ R, Ideal.span {p i}) (∏ i ∈ S, Ideal.span {p i}) then 1 else 0) := by
+  have hd : Disjoint S F := hF.mono_left Finset.subset_union_right
+  have he := mixed_coefficient_hybrid D s hp hc hg hcop hprimary R S F hRS hF hu j hRj hR u m n b hb
+  obtain ⟨hr,hs,hf⟩ := marked_phases_eq D s hp hg j R S F hd u m
+  rw [hr,hs,hf,marked_sourceColumn_eq D s hc hg j S F hd u m n b] at he
+  exact he
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss
+noncomputable section
+variable {ι κ : Type*} [Fintype ι] [Fintype κ] {p : ι → Eis}
+noncomputable local instance transportFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+omit [Fintype ι] [Fintype κ] in
+theorem residualWithFrozen_transport [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis)
+    (f : κ → ι) (hf : Function.Injective f) (R F : Finset κ) :
+    residualWithFrozen (fun i => hp (f i)) (fun i => hg (f i)) c R F =
+      residualWithFrozen hp hg c (R.image f) (F.image f) := by
+  unfold residualWithFrozen
+  rw [Finset.prod_image hf.injOn]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [← Finset.image_erase hf R i,Finset.prod_image hf.injOn,Finset.prod_image hf.injOn]
+  rfl
+
+omit [Fintype ι] [Fintype κ] in
+theorem markedWithFrozen_transport [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis)
+    (f : κ → ι) (hf : Function.Injective f) (S F : Finset κ) :
+    markedWithFrozen (fun i => hp (f i)) (fun i => hg (f i)) c S F =
+      markedWithFrozen hp hg c (S.image f) (F.image f) := by
+  unfold markedWithFrozen
+  rw [Finset.prod_image hf.injOn]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [← Finset.image_erase hf S i,Finset.prod_image hf.injOn,Finset.prod_image hf.injOn]
+  rfl
+
+omit [Fintype ι] [Fintype κ] in
+theorem ramifiedBlock_transport [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ)
+    (f : κ → ι) (hf : Function.Injective f) (S : Finset κ) (u : Eisˣ) (m : ℕ) :
+    ramifiedBlock (fun i => hg (f i)) (fun i => j (f i)) S u m =
+      ramifiedBlock hg j (S.image f) u m := by
+  unfold ramifiedBlock
+  rw [Finset.prod_image hf.injOn]
+
+omit [Fintype ι] [Fintype κ] in
+theorem frozenArgument_transport [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ)
+    (f : κ → ι) (hf : Function.Injective f) (F : Finset κ) :
+    frozenArgument (fun i => hg (f i)) (fun i => j (f i)) F =
+      frozenArgument hg j (F.image f) := by
+  unfold frozenArgument
+  rw [Finset.prod_image hf.injOn]
+
+omit [Fintype ι] [Fintype κ] in
+theorem sourceRowPhase_transport [∀ i, (Ideal.span {p i}).IsMaximal]
+    {a c : Eis} {mode : Bool} (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ)
+    (f : κ → ι) (hf : Function.Injective f) (R F : Finset κ) (u : Eisˣ) (m : ℕ) :
+    sourceRowPhase s (fun i => hp (f i)) (fun i => hg (f i)) (fun i => j (f i)) R F u m =
+      sourceRowPhase s hp hg j (R.image f) (F.image f) u m := by
+  unfold sourceRowPhase
+  rw [residualWithFrozen_transport hp hg c f hf R F,
+    ramifiedBlock_transport hg (fun _ => 1) f hf R,
+    frozenArgument_transport hg j f hf F,Finset.prod_image hf.injOn]
+
+omit [Fintype ι] [Fintype κ] in
+theorem sourceSlotPhase_transport [∀ i, (Ideal.span {p i}).IsMaximal]
+    {a c : Eis} {mode : Bool} (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ)
+    (f : κ → ι) (hf : Function.Injective f) (S F : Finset κ) (u : Eisˣ) (m : ℕ) :
+    sourceSlotPhase s (fun i => hp (f i)) (fun i => hg (f i)) (fun i => j (f i)) S F u m =
+      sourceSlotPhase s hp hg j (S.image f) (F.image f) u m := by
+  unfold sourceSlotPhase
+  rw [markedWithFrozen_transport hp hg c f hf S F,
+    ramifiedBlock_transport hg (fun _ => 0) f hf S,
+    frozenArgument_transport hg j f hf F,Finset.prod_image hf.injOn]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein
+noncomputable section
+
+lemma sourceRowPhase_congr_functions {κ : Type*} [Fintype κ]
+    {p q : κ → Eis} [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    {a c : Eis} {mode : Bool} (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hq : ∀ i, q i ≠ 0) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (j j' : κ → ℕ) (R F : Finset κ) (u : Eisˣ) (m : ℕ) (he : p=q) (hj : j=j') :
+    sourceRowPhase s hp hg j R F u m = sourceRowPhase s hq hqg j' R F u m := by
+  subst q
+  subst j'
+  rfl
+
+lemma sourceSlotPhase_congr_functions {κ : Type*} [Fintype κ]
+    {p q : κ → Eis} [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    {a c : Eis} {mode : Bool} (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hq : ∀ i, q i ≠ 0) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (j j' : κ → ℕ) (S F : Finset κ) (u : Eisˣ) (m : ℕ) (he : p=q) (hj : j=j') :
+    sourceSlotPhase s hp hg j S F u m = sourceSlotPhase s hq hqg j' S F u m := by
+  subst q
+  subst j'
+  rfl
+
+theorem sourceRowPhase_independent {ι μ κ : Type*} [Fintype ι] [Fintype μ] [Fintype κ]
+    {p : ι → Eis} {q : μ → Eis}
+    [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    {a c : Eis} {mode : Bool} (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hq : ∀ i, q i ≠ 0) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (j : ι → ℕ) (j' : μ → ℕ) (f : κ → ι) (g : κ → μ)
+    (hf : Function.Injective f) (hg' : Function.Injective g)
+    (he : ∀ i, p (f i)=q (g i)) (hj : ∀ i, j (f i)=j' (g i))
+    (R F : Finset κ) (u : Eisˣ) (m : ℕ) :
+    sourceRowPhase s hp hg j (R.image f) (F.image f) u m =
+      sourceRowPhase s hq hqg j' (R.image g) (F.image g) u m := by
+  rw [← sourceRowPhase_transport s hp hg j f hf R F u m,
+    ← sourceRowPhase_transport s hq hqg j' g hg' R F u m]
+  exact sourceRowPhase_congr_functions s _ _ _ _ _ _ R F u m (funext he) (funext hj)
+
+theorem sourceSlotPhase_independent {ι μ κ : Type*} [Fintype ι] [Fintype μ] [Fintype κ]
+    {p : ι → Eis} {q : μ → Eis}
+    [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    {a c : Eis} {mode : Bool} (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hq : ∀ i, q i ≠ 0) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (j : ι → ℕ) (j' : μ → ℕ) (f : κ → ι) (g : κ → μ)
+    (hf : Function.Injective f) (hg' : Function.Injective g)
+    (he : ∀ i, p (f i)=q (g i)) (hj : ∀ i, j (f i)=j' (g i))
+    (S F : Finset κ) (u : Eisˣ) (m : ℕ) :
+    sourceSlotPhase s hp hg j (S.image f) (F.image f) u m =
+      sourceSlotPhase s hq hqg j' (S.image g) (F.image g) u m := by
+  rw [← sourceSlotPhase_transport s hp hg j f hf S F u m,
+    ← sourceSlotPhase_transport s hq hqg j' g hg' S F u m]
+  exact sourceSlotPhase_congr_functions s _ _ _ _ _ _ S F u m (funext he) (funext hj)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss NormalizedReflection
+noncomputable section
+noncomputable local instance sectorIndependentFinite (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+theorem frozenCore_transport {ι κ : Type*} [Fintype ι] [Fintype κ]
+    {p : ι → Eis} [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i}) (c : Eis) (j : ι → ℕ)
+    (f : κ → ι) (hf : Function.Injective f) (F : Finset κ) :
+    frozenCore (fun i => hp (f i)) (fun i => hg (f i)) c (fun i => j (f i)) F =
+      frozenCore hp hg c j (F.image f) := by
+  unfold frozenCore
+  rw [Finset.prod_image hf.injOn]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [← Finset.image_erase hf F i,Finset.prod_image hf.injOn]
+
+lemma frozenCore_congr_functions {κ : Type*} [Fintype κ]
+    {p q : κ → Eis} [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hq : ∀ i, q i ≠ 0) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (c : Eis) (j j' : κ → ℕ) (F : Finset κ) (he : p=q) (hj : j=j') :
+    frozenCore hp hg c j F = frozenCore hq hqg c j' F := by
+  subst q; subst j'; rfl
+
+lemma ramifiedBlock_congr_functions {κ : Type*} [Fintype κ]
+    {p q : κ → Eis} [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (j j' : κ → ℕ) (F : Finset κ) (u : Eisˣ) (m : ℕ) (he : p=q) (hj : j=j') :
+    ramifiedBlock hg j F u m = ramifiedBlock hqg j' F u m := by
+  subst q; subst j'; rfl
+
+def frozenColumnProduct {κ : Type*} [Fintype κ]
+    {p : κ → Eis} [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : κ → ℕ) (F : Finset κ) (n b : Ideal Eis) : ℂ :=
+  ∏ i ∈ F, bracket (complexSexticChar (Ideal.span {p i}) (hg i)) (j i)
+    (Ideal.Quotient.mk _ (primaryIdealGenerator n*(primaryIdealGenerator b)^3))
+
+theorem frozenColumnProduct_transport {ι κ : Type*} [Fintype ι] [Fintype κ]
+    {p : ι → Eis} [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ)
+    (f : κ → ι) (hf : Function.Injective f) (F : Finset κ) (n b : Ideal Eis) :
+    frozenColumnProduct (fun i => hg (f i)) (fun i => j (f i)) F n b =
+      frozenColumnProduct hg j (F.image f) n b := by
+  unfold frozenColumnProduct
+  rw [Finset.prod_image hf.injOn]
+
+lemma frozenColumnProduct_congr_functions {κ : Type*} [Fintype κ]
+    {p q : κ → Eis} [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (j j' : κ → ℕ) (F : Finset κ) (n b : Ideal Eis) (he : p=q) (hj : j=j') :
+    frozenColumnProduct hg j F n b = frozenColumnProduct hqg j' F n b := by
+  subst q; subst j'; rfl
+
+theorem sourceFrozenPhase_sector_independent {ι μ κ : Type*} [Fintype ι] [Fintype μ] [Fintype κ]
+    {p : ι → Eis} {q : μ → Eis} {N a c : Eis} {mode : Bool}
+    [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode) (D₀ : ControlledStratumArithmetic q N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hq : ∀ i, q i ≠ 0) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (hN : (9:Eis)*c ∣ N) (hr : lambda^2 ∣ (∏ i, p i)-1) (hr₀ : lambda^2 ∣ (∏ i, q i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (hmatrix : ∀ i j, N ∣ D.matrix (fun _ => 1) i j-D₀.matrix (fun _ => 1) i j)
+    (j : ι → ℕ) (j' : μ → ℕ) (f : κ → ι) (g : κ → μ)
+    (hf : Function.Injective f) (hg' : Function.Injective g)
+    (he : ∀ i, p (f i)=q (g i)) (hj : ∀ i, j (f i)=j' (g i))
+    (F : Finset κ) (u : Eisˣ) (m : ℕ) :
+    sourceFrozenPhase D s hp hg j (F.image f) u m =
+      sourceFrozenPhase D₀ s hq hqg j' (F.image g) u m := by
+  unfold sourceFrozenPhase
+  rw [controlled_fixedFactor_eq D D₀ hN hr hr₀ hbase (hmatrix 0 0) (hmatrix 0 1),
+    ← frozenCore_transport hp hg c j f hf F,← frozenCore_transport hq hqg c j' g hg' F,
+    ← ramifiedBlock_transport hg j f hf F,← ramifiedBlock_transport hqg j' g hg' F,
+    frozenCore_congr_functions _ _ _ _ c _ _ F (funext he) (funext hj),
+    ramifiedBlock_congr_functions _ _ _ _ F _ _ (funext he) (funext hj)]
+
+theorem sourceColumn_sector_independent {ι μ κ : Type*} [Fintype ι] [Fintype μ] [Fintype κ]
+    {p : ι → Eis} {q : μ → Eis} {N a c : Eis} {mode : Bool}
+    [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode) (D₀ : ControlledStratumArithmetic q N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hqg : ∀ i, lambda ∉ Ideal.span {q i})
+    (hbad : traceLambda^3*c ∣ N)
+    (hr : N ∣ (∏ i, p i)-(∏ i, q i))
+    (hd : N ∣ D.matrix (fun _ => 1) 1 1-D₀.matrix (fun _ => 1) 1 1)
+    (j : ι → ℕ) (j' : μ → ℕ) (f : κ → ι) (g : κ → μ)
+    (hf : Function.Injective f) (hg' : Function.Injective g)
+    (he : ∀ i, p (f i)=q (g i)) (hj : ∀ i, j (f i)=j' (g i))
+    (F : Finset κ) (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) :
+    sourceColumn D s hc hg j (F.image f) u m n b =
+      sourceColumn D₀ s hc hqg j' (F.image g) u m n b := by
+  unfold sourceColumn
+  rw [controlled_static_array_eq D D₀ hc s hbad hr hd u m n b]
+  congr 1
+  change frozenColumnProduct hg j (F.image f) n b = frozenColumnProduct hqg j' (F.image g) n b
+  rw [← frozenColumnProduct_transport hg j f hf F,← frozenColumnProduct_transport hqg j' g hg' F]
+  exact frozenColumnProduct_congr_functions _ _ _ _ F n b (funext he) (funext hj)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss
+noncomputable section
+
+theorem exists_common_reflected_coefficients {α Q κ : Type*} [Fintype κ]
+    {ι : α → Type*} [∀ x, Fintype (ι x)]
+    (p : ∀ x, ι x → Eis) [∀ x i, (Ideal.span {p x i}).IsMaximal]
+    (N a c : Eis) (mode : Bool) (D : ∀ x, ControlledStratumArithmetic (p x) N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ x i, p x i ≠ 0) (hc : c ≠ 0) (hg : ∀ x i, lambda ∉ Ideal.span {p x i})
+    (hN : (9:Eis)*c ∣ N) (hprimary : ∀ x, lambda^2 ∣ (∏ i, p x i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (j : ∀ x, ι x → ℕ) (f : ∀ x, κ → ι x) (hf : ∀ x, Function.Injective (f x))
+    (hfixed : ∀ x y i, p x (f x i)=p y (f y i))
+    (hjfixed : ∀ x y i, j x (f x i)=j y (f y i)) (F : Finset κ)
+    (sector : α → Q)
+    (hsector : ∀ x y, sector x = sector y → N^2 ∣ (∏ i, p x i)-(∏ i, p y i))
+    (hmatrix : ∀ x y, sector x = sector y → ∀ i j,
+      N ∣ (D x).matrix (fun _ => 1) i j-(D y).matrix (fun _ => 1) i j) :
+    ∃ (γ : Q → Eisˣ → ℕ → ℂ) (β : Q → Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+      (∀ x u m, sourceFrozenPhase (D x) s (hp x) (hg x) (j x) (F.image (f x)) u m =
+        γ (sector x) u m) ∧
+      ∀ x u m n b, sourceColumn (D x) s hc (hg x) (j x) (F.image (f x)) u m n b =
+        β (sector x) u m n b := by
+  have hbad : traceLambda^3*c ∣ N := by
+    apply (show traceLambda^3*c ∣ (9:Eis)*c from ?_).trans hN
+    refine ⟨traceLambda,?_⟩
+    rw [← traceLambda_pow_four]
+    ring
+  let G := fun x => sourceFrozenPhase (D x) s (hp x) (hg x) (j x) (F.image (f x))
+  let B := fun x => sourceColumn (D x) s hc (hg x) (j x) (F.image (f x))
+  have hG : G.FactorsThrough sector := by
+    intro x y hxy
+    funext u m
+    exact sourceFrozenPhase_sector_independent (D x) (D y) s (hp x) (hg x) (hp y) (hg y)
+      hN (hprimary x) (hprimary y) hbase (hmatrix x y hxy) (j x) (j y) (f x) (f y)
+      (hf x) (hf y) (hfixed x y) (hjfixed x y) F u m
+  have hB : B.FactorsThrough sector := by
+    intro x y hxy
+    funext u m n b
+    exact sourceColumn_sector_independent (D x) (D y) s hc (hg x) (hg y) hbad
+      ((dvd_pow_self N (by decide : (2:ℕ) ≠ 0)).trans (hsector x y hxy))
+      (hmatrix x y hxy 1 1) (j x) (j y) (f x) (f y)
+      (hf x) (hf y) (hfixed x y) (hjfixed x y) F u m n b
+  obtain ⟨γ,hγ⟩ := (Function.factorsThrough_iff G).mp hG
+  obtain ⟨β,hβ⟩ := (Function.factorsThrough_iff B).mp hB
+  refine ⟨γ,β,?_,?_⟩
+  · intro x u m
+    exact congrFun (congrFun (congrFun hγ x) u) m
+  · intro x u m n b
+    exact congrFun (congrFun (congrFun (congrFun (congrFun hβ x) u) m) n) b
+
+theorem exists_separate_common_reflected_coefficients {α κ : Type*} [Fintype κ]
+    {ι : α → Type*} [∀ x, Fintype (ι x)]
+    (p : ∀ x, ι x → Eis) [∀ x i, (Ideal.span {p x i}).IsMaximal]
+    (N a c : Eis) (mode : Bool) (D : ∀ x, ControlledStratumArithmetic (p x) N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ x i, p x i ≠ 0) (hc : c ≠ 0) (hg : ∀ x i, lambda ∉ Ideal.span {p x i})
+    (hN : (9:Eis)*c ∣ N) (hprimary : ∀ x, lambda^2 ∣ (∏ i, p x i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (hcop : ∀ x, IsCoprime (∏ i, p x i) (N*c))
+    (j : ∀ x, ι x → ℕ) (f : ∀ x, κ → ι x) (hf : ∀ x, Function.Injective (f x))
+    (hfixed : ∀ x y i, p x (f x i)=p y (f y i))
+    (hjfixed : ∀ x y i, j x (f x i)=j y (f y i)) (F : Finset κ)
+    (fixedProduct : Eis) (r P : α → Eis)
+    (hprod : ∀ x, (∏ i, p x i) = fixedProduct*r x*P x) :
+    ∃ E : ∀ x, ControlledStratumArithmetic (p x) N a c mode,
+      (∀ x, (E x).lift = (D x).lift) ∧ (∀ x, (E x).U = (D x).U) ∧
+      (∀ x, (E x).sigma = (D x).sigma) ∧ (∀ x, (E x).epsilon = (D x).epsilon) ∧
+      ∃ (γ : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) → Eisˣ → ℕ → ℂ)
+        (β : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) →
+          Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+        (∀ x u m, sourceFrozenPhase (E x) s (hp x) (hg x) (j x) (F.image (f x)) u m =
+          γ (separateSector N (r x) (P x)) u m) ∧
+        ∀ x u m n b, sourceColumn (E x) s hc (hg x) (j x) (F.image (f x)) u m n b =
+          β (separateSector N (r x) (P x)) u m n b := by
+  let sector := fun x => separateSector N (r x) (P x)
+  have hsector : ∀ x y, sector x = sector y → N^2 ∣ (∏ i, p x i)-(∏ i, p y i) := by
+    intro x y hxy
+    rw [hprod x,hprod y]
+    exact separateSector_product N fixedProduct (r x) (r y) (P x) (P y) hxy
+  obtain ⟨E,hlift,hU,hσ,hε,hmat⟩ := exists_sector_controlled_arithmetic_dependent p N a c mode D
+    hc ((dvd_mul_right 9 c).trans hN) ((dvd_mul_left c 9).trans hN)
+    hprimary hbase hcop sector hsector
+  refine ⟨E,hlift,hU,hσ,hε,?_⟩
+  exact exists_common_reflected_coefficients p N a c mode E s hp hc hg hN hprimary hbase
+    j f hf hfixed hjfixed F sector hsector
+    (fun x y hxy => hmat x y (fun _ => 1) (fun _ => 1) hxy)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+theorem canonical_common_reflected_coefficients {α κ : Type*} [Fintype κ]
+    {ι : α → Type*} [∀ x, Fintype (ι x)] (G : ∀ x, PrimeFamily (ι x))
+    (N a c : Eis) (mode : Bool)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hcop : ∀ x, Pairwise (Function.onFun IsCoprime (G x).ideal))
+    (hNp : ∀ x i, IsCoprime (Ideal.span {N}) ((G x).ideal i))
+    (j : ∀ x, ι x → ℕ) (f : ∀ x, κ → ι x) (hf : ∀ x, Function.Injective (f x))
+    (hfixed : ∀ x y i, (G x).ideal (f x i)=(G y).ideal (f y i))
+    (hjfixed : ∀ x y i, j x (f x i)=j y (f y i)) (F : Finset κ)
+    (fixedIdeal : Ideal Eis) (row slot : α → Ideal Eis)
+    (hprod : ∀ x, (∏ i, (G x).ideal i) = fixedIdeal*row x*slot x) :
+    ∃ E : ∀ x, ControlledStratumArithmetic (G x).generator N a c mode,
+      ∃ (γ : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) → Eisˣ → ℕ → ℂ)
+        (β : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) →
+          Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+        (∀ x u m, sourceFrozenPhase (E x) s (G x).generator_ne_zero (G x).generator_good
+          (j x) (F.image (f x)) u m =
+          γ (separateSector N (primaryIdealGenerator (row x)) (primaryIdealGenerator (slot x))) u m) ∧
+        ∀ x u m n b, sourceColumn (E x) s hc (G x).generator_good (j x) (F.image (f x)) u m n b =
+          β (separateSector N (primaryIdealGenerator (row x)) (primaryIdealGenerator (slot x))) u m n b := by
+  let D : ∀ x, ControlledStratumArithmetic (G x).generator N a c mode := fun x =>
+    Classical.choice ((G x).exists_controlled N a c mode hc hN hbase hac (hcop x) (hNp x))
+  have hproduct (x : α) : (∏ i, (G x).generator i) =
+      primaryIdealGenerator fixedIdeal*primaryIdealGenerator (row x)*primaryIdealGenerator (slot x) := by
+    rw [(G x).generator_product,hprod x,primaryIdealGenerator_mul,primaryIdealGenerator_mul]
+  obtain ⟨E,_,_,_,_,γ,β,hγ,hβ⟩ := exists_separate_common_reflected_coefficients
+    (fun x => (G x).generator) N a c mode D s (fun x => (G x).generator_ne_zero) hc
+    (fun x => (G x).generator_good) hN (fun x => (G x).generator_product_primary) hbase
+    (fun x => (G x).generator_product_coprime_period N c ((dvd_mul_left c 9).trans hN) (hNp x))
+    j f hf (fun x y i => congrArg primaryIdealPrime (hfixed x y i)) hjfixed F
+    (primaryIdealGenerator fixedIdeal) (fun x => primaryIdealGenerator (row x)) (fun x => primaryIdealGenerator (slot x)) hproduct
+  exact ⟨E,γ,β,hγ,hβ⟩
+
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection FirstPassCubeLabels
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+
+namespace PrimeFamily
+variable {ι κ : Type*}
+
+def sum (G : PrimeFamily ι) (H : PrimeFamily κ) : PrimeFamily (ι ⊕ κ) where
+  ideal := Sum.elim G.ideal H.ideal
+  maximal i := by cases i with | inl i => exact G.maximal i | inr i => exact H.maximal i
+  good i := by cases i with | inl i => exact G.good i | inr i => exact H.good i
+
+lemma sum_product [Fintype ι] [Fintype κ] (G : PrimeFamily ι) (H : PrimeFamily κ) :
+    (∏ i, (G.sum H).ideal i) = (∏ i, G.ideal i)*(∏ i, H.ideal i) := by
+  simp only [sum,Fintype.prod_sum_type,Sum.elim_inl,Sum.elim_inr]
+
+lemma sum_pairwise (G : PrimeFamily ι) (H : PrimeFamily κ)
+    (hG : Pairwise (Function.onFun IsCoprime G.ideal))
+    (hH : Pairwise (Function.onFun IsCoprime H.ideal))
+    (hcross : ∀ i k, IsCoprime (G.ideal i) (H.ideal k)) :
+    Pairwise (Function.onFun IsCoprime (G.sum H).ideal) := by
+  intro i k hik
+  cases i with
+  | inl i => cases k with
+    | inl k => exact hG (fun h => hik (congrArg Sum.inl h))
+    | inr k => exact hcross i k
+  | inr i => cases k with
+    | inl k => exact (hcross k i).symm
+    | inr k => exact hH (fun h => hik (congrArg Sum.inr h))
+
+def residual (K : Ideal Eis) (hK : Admissible K) : PrimeFamily (PrimeIndex K) where
+  ideal := fun P => P.val
+  maximal _P := inferInstance
+  good := admissiblePrimeGood K hK
+
+lemma residual_product (K : Ideal Eis) (hK : Admissible K) :
+    (∏ P, (residual K hK).ideal P) = K := admissible_primeIndex_product K hK
+
+lemma residual_dvd (K : Ideal Eis) (hK : Admissible K) (P : PrimeIndex K) : P.val ∣ K :=
+  Ideal.dvd_iff_le.mpr (primeIndex_le K hK.1 P)
+
+lemma residual_pairwise (K : Ideal Eis) (hK : Admissible K) :
+    Pairwise (Function.onFun IsCoprime (residual K hK).ideal) := by
+  intro P Q hPQ
+  apply Ideal.isCoprime_of_isMaximal
+  intro h
+  exact hPQ (Subtype.ext h)
+
+def reflected {φ σ : Type*} (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) : PrimeFamily (φ ⊕ (PrimeIndex K ⊕ σ)) := F.sum ((residual K hK).sum S)
+
+lemma reflected_product {φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ) :
+    (∏ i, (F.reflected K hK S).ideal i) = (∏ i, F.ideal i)*K*(∏ i, S.ideal i) := by
+  rw [reflected,sum_product,sum_product,residual_product]
+  ring
+
+lemma reflected_pairwise {φ σ : Type*} [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal))
+    (hS : Pairwise (Function.onFun IsCoprime S.ideal))
+    (hKS : IsCoprime K (∏ i, S.ideal i))
+    (hFK : ∀ f, IsCoprime (F.ideal f) K)
+    (hFS : ∀ f i, IsCoprime (F.ideal f) (S.ideal i)) :
+    Pairwise (Function.onFun IsCoprime (F.reflected K hK S).ideal) := by
+  apply sum_pairwise F _ hF
+  · apply sum_pairwise _ S (residual_pairwise K hK) hS
+    intro P i
+    exact (hKS.of_isCoprime_of_dvd_left (residual_dvd K hK P)).of_isCoprime_of_dvd_right
+      (Finset.dvd_prod_of_mem S.ideal (Finset.mem_univ i))
+  · intro f i
+    cases i with
+    | inl P => exact (hFK f).of_isCoprime_of_dvd_right (residual_dvd K hK P)
+    | inr i => exact hFS f i
+
+lemma reflected_period {φ σ : Type*}
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ) (N : Eis)
+    (hF : ∀ f, IsCoprime (Ideal.span {N}) (F.ideal f))
+    (hK' : IsCoprime (Ideal.span {N}) K)
+    (hS : ∀ i, IsCoprime (Ideal.span {N}) (S.ideal i)) :
+    ∀ i, IsCoprime (Ideal.span {N}) ((F.reflected K hK S).ideal i) := by
+  intro i
+  cases i with
+  | inl f => exact hF f
+  | inr i => cases i with
+    | inl P => exact hK'.of_isCoprime_of_dvd_right (residual_dvd K hK P)
+    | inr i => exact hS i
+
+end PrimeFamily
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+
+def reflectedExponent {φ ρ σ : Type*} (jF : φ → ℕ) : φ ⊕ (ρ ⊕ σ) → ℕ :=
+  Sum.elim jF (Sum.elim (fun _ => 1) (fun _ => 0))
+
+def frozenIndices (φ ρ σ : Type*) [Fintype φ] : Finset (φ ⊕ (ρ ⊕ σ)) :=
+  @Finset.image φ (φ ⊕ (ρ ⊕ σ)) (Classical.decEq _) Sum.inl Finset.univ
+
+def residualIndices (φ ρ σ : Type*) [Fintype ρ] : Finset (φ ⊕ (ρ ⊕ σ)) :=
+  @Finset.image ρ (φ ⊕ (ρ ⊕ σ)) (Classical.decEq _) (Sum.inr ∘ Sum.inl) Finset.univ
+
+def slotIndices (φ ρ σ : Type*) [Fintype σ] : Finset (φ ⊕ (ρ ⊕ σ)) :=
+  @Finset.image σ (φ ⊕ (ρ ⊕ σ)) (Classical.decEq _) (Sum.inr ∘ Sum.inr) Finset.univ
+
+lemma reflected_indices_partition (φ ρ σ : Type*) [Fintype φ] [Fintype ρ] [Fintype σ] :
+    Disjoint (residualIndices φ ρ σ) (slotIndices φ ρ σ) ∧
+    Disjoint (residualIndices φ ρ σ ∪ slotIndices φ ρ σ) (frozenIndices φ ρ σ) ∧
+    (residualIndices φ ρ σ ∪ slotIndices φ ρ σ) ∪ frozenIndices φ ρ σ = Finset.univ := by
+  classical
+  simp only [residualIndices, slotIndices, frozenIndices, Finset.disjoint_left,
+    Finset.mem_image, Finset.mem_univ, true_and, Finset.mem_union, Function.comp_apply]
+  constructor
+  · rintro i ⟨r, rfl⟩ ⟨s, h⟩
+    cases h
+  constructor
+  · rintro i (⟨r, rfl⟩ | ⟨s, rfl⟩) ⟨f, h⟩ <;> cases h
+  · ext i
+    cases i with
+    | inl f => simp
+    | inr i => cases i with
+      | inl r => simp
+      | inr s => simp
+
+lemma reflected_residual_exponent {φ ρ σ : Type*} [Fintype ρ] (jF : φ → ℕ) :
+    ∀ i ∈ residualIndices φ ρ σ, reflectedExponent jF i = 1 := by
+  let : DecidableEq (φ ⊕ (ρ ⊕ σ)) := Classical.decEq _
+  rintro i hi
+  obtain ⟨r, _, rfl⟩ := Finset.mem_image.mp hi
+  rfl
+
+namespace PrimeFamily
+lemma reflected_residual_product {φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ) :
+    (∏ i ∈ residualIndices φ (PrimeIndex K) σ,
+      Ideal.span {(F.reflected K hK S).generator i}) = K := by
+  classical
+  let : DecidableEq (φ ⊕ (PrimeIndex K ⊕ σ)) := Classical.decEq _
+  simp only [generator_span, residualIndices]
+  rw [Finset.prod_image (Sum.inr_injective.comp Sum.inl_injective).injOn]
+  exact residual_product K hK
+
+lemma reflected_slot_product {φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ) :
+    (∏ i ∈ slotIndices φ (PrimeIndex K) σ,
+      Ideal.span {(F.reflected K hK S).generator i}) = ∏ i, S.ideal i := by
+  classical
+  let : DecidableEq (φ ⊕ (PrimeIndex K ⊕ σ)) := Classical.decEq _
+  simp only [generator_span, slotIndices]
+  rw [Finset.prod_image (Sum.inr_injective.comp Sum.inr_injective).injOn]
+  rfl
+end PrimeFamily
+
+theorem moving_common_reflected_coefficients {α φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : α → Ideal Eis) (hK : ∀ x, Admissible (K x))
+    (S : α → PrimeFamily σ) (jF : φ → ℕ)
+    (N a c : Eis) (mode : Bool)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1
+      else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal))
+    (hS : ∀ x, Pairwise (Function.onFun IsCoprime (S x).ideal))
+    (hKS : ∀ x, IsCoprime (K x) (∏ i, (S x).ideal i))
+    (hFK : ∀ x f, IsCoprime (F.ideal f) (K x))
+    (hFS : ∀ x f i, IsCoprime (F.ideal f) ((S x).ideal i))
+    (hNF : ∀ f, IsCoprime (Ideal.span {N}) (F.ideal f))
+    (hNK : ∀ x, IsCoprime (Ideal.span {N}) (K x))
+    (hNS : ∀ x i, IsCoprime (Ideal.span {N}) ((S x).ideal i)) :
+    ∃ E : ∀ x, ControlledStratumArithmetic (F.reflected (K x) (hK x) (S x)).generator N a c mode,
+      ∃ (γ : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) → Eisˣ → ℕ → ℂ)
+        (β : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) →
+          Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+        (∀ x u m, sourceFrozenPhase (E x) s
+          (F.reflected (K x) (hK x) (S x)).generator_ne_zero
+          (F.reflected (K x) (hK x) (S x)).generator_good
+          (reflectedExponent jF) (frozenIndices φ (PrimeIndex (K x)) σ) u m =
+          γ (separateSector N (primaryIdealGenerator (K x))
+            (primaryIdealGenerator (∏ i, (S x).ideal i))) u m) ∧
+        ∀ x u m n b, sourceColumn (E x) s hc
+          (F.reflected (K x) (hK x) (S x)).generator_good
+          (reflectedExponent jF) (frozenIndices φ (PrimeIndex (K x)) σ) u m n b =
+          β (separateSector N (primaryIdealGenerator (K x))
+            (primaryIdealGenerator (∏ i, (S x).ideal i))) u m n b := by
+  classical
+  simpa only [frozenIndices] using canonical_common_reflected_coefficients
+    (fun x => F.reflected (K x) (hK x) (S x)) N a c mode s hc hN hbase hac
+    (fun x => F.reflected_pairwise (K x) (hK x) (S x) hF (hS x) (hKS x) (hFK x) (hFS x))
+    (fun x => F.reflected_period (K x) (hK x) (S x) N hNF (hNK x) (hNS x))
+    (fun _ => reflectedExponent jF) (fun _ => Sum.inl) (fun _ => Sum.inl_injective)
+    (fun _ _ _ => rfl) (fun _ _ _ => rfl) Finset.univ (∏ i, F.ideal i) K
+    (fun x => ∏ i, (S x).ideal i) (fun x => F.reflected_product (K x) (hK x) (S x))
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+
+open scoped BigOperators Classical
+
+noncomputable section
+
+variable {F : Type*} [Field F] [Fintype F]
+
+def zeroMark (x : F) : ℂ := if x = 0 then 1 else 0
+
+def localFourier (f : F → ℂ) (ψ : AddChar F ℂ) (h : F) : ℂ :=
+  ∑ t : F, f t * ψ (-(h * t))
+
+theorem localFourier_zeroMark (ψ : AddChar F ℂ) (h : F) :
+    localFourier zeroMark ψ h = 1 := by
+  simp [localFourier, zeroMark]
+
+theorem localFourier_trivial_nonzero (ψ : AddChar F ℂ)
+    (hψ : ψ.IsPrimitive) (h : F) (hh : h ≠ 0) :
+    localFourier (fun t => (1 : MulChar F ℂ) t) ψ h = -1 := by
+  have he := gaussSum_one_left (hψ (neg_ne_zero.mpr hh))
+  simpa only [gaussSum, AddChar.mulShift_apply, neg_mul, localFourier] using he
+
+omit [Fintype F] in
+theorem zeroMark_complement (x : F) :
+    zeroMark x = 1 - (1 : MulChar F ℂ) x := by
+  by_cases hx : x = 0
+  · simp [zeroMark, hx, MulChar.map_zero]
+  · rw [zeroMark, if_neg hx, MulChar.one_apply (isUnit_iff_ne_zero.mpr hx)]
+    ring
+
+def localReflectionActive (f : F → ℂ) (χ : MulChar F ℂ)
+    (ψ : AddChar F ℂ) (σ ε : Fˣ) (x : F) : ℂ :=
+  (Fintype.card F : ℂ)⁻¹ * ∑ h : Fˣ,
+    localFourier f ψ h * ((χ⁻¹) ^ 2) (σ * h) *
+      ψ (((ε : F) * x) * ((h⁻¹ : Fˣ) : F))
+
+theorem marked_active_eq_neg_trivial (χ : MulChar F ℂ)
+    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (σ ε : Fˣ) (x : F) :
+    localReflectionActive zeroMark χ ψ σ ε x =
+      -localReflectionActive (fun t => (1 : MulChar F ℂ) t) χ ψ σ ε x := by
+  unfold localReflectionActive
+  rw [← mul_neg, ← Finset.sum_neg_distrib]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro h hh
+  rw [localFourier_zeroMark, localFourier_trivial_nonzero ψ hψ h (Units.ne_zero h)]
+  ring
+
+theorem marked_inactive_coefficient (ψ : AddChar F ℂ) :
+    (Fintype.card F : ℂ)⁻¹ * localFourier zeroMark ψ 0 =
+      (Fintype.card F : ℂ)⁻¹ := by
+  rw [localFourier_zeroMark, mul_one]
+
+end
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace NormalizedReflection
+section
+variable {F:Type*} [Field F] [Fintype F]
+def frequencyMultiplier (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (σ ε : Fˣ) (x h : F) : ℂ :=
+  if h=0 then 1 else (((χ⁻¹)^2) ((σ:F)*h))*ψ (((ε:F)*x)*h⁻¹)
+
+def frequencyRow (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (j : ℕ) (σ ε : Fˣ) (x h : F) : ℂ :=
+  finiteAdditiveFourierCoeff ψ (fun t=>(χ^j) t) h*frequencyMultiplier χ ψ σ ε x h
+
+
+/-- Separating the fixed unit leaves the native finite Gauss reflection. -/
+theorem frequencyRow_units (χ:MulChar F ℂ) (ψ:AddChar F ℂ)
+    (j:ℕ) (σ ε:Fˣ) (x:F) :
+    (∑h:Fˣ,frequencyRow χ ψ j σ ε x h)=
+      ((χ⁻¹)^2) σ * finiteReflectionGauss χ ψ j ((ε:F)*x) := by
+  simp only [frequencyRow,frequencyMultiplier,Units.ne_zero,ite_false,
+    finiteReflectionGauss,Finset.mul_sum,map_mul,Units.val_inv_eq_inv_val]
+  apply Finset.sum_congr rfl
+  intro h hh
+  ring
+end
+
+theorem canonical_frequencyRow_units (P:Ideal Eis) [P.IsMaximal]
+    (hg:lambda∉P) (hc:ringChar (Eis⧸P)≠2) (ψ:AddChar (Eis⧸P) ℂ)
+    (hψ:ψ.IsPrimitive) (j:ℕ) (hj:j<6) (σ ε:(Eis⧸P)ˣ) (x:Eis⧸P) :
+    (∑h:(Eis⧸P)ˣ,frequencyRow (complexSexticChar P hg) ψ j σ ε x h)=
+      (((complexSexticChar P hg)⁻¹)^2) σ *
+        phase (complexSexticChar P hg) ψ j ε * bracket (complexSexticChar P hg) j x := by
+  rw [frequencyRow_units,canonical_gauss_eq_phase_bracket P hg hc ψ hψ j hj]
+  ring
+end NormalizedReflection
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+theorem actual_marked_active_formula
+    (P:Ideal Eis) [P.IsMaximal] (hg:lambda∉P) (hc:ringChar (Eis⧸P)≠2)
+    (ψ:AddChar (Eis⧸P) ℂ) (hψ:ψ.IsPrimitive) (σ ε:(Eis⧸P)ˣ) (x:Eis⧸P) :
+    localReflectionActive zeroMark (complexSexticChar P hg) ψ σ ε x=
+      (rootCard (Eis⧸P):ℂ)⁻¹*tau (complexSexticChar P hg) ψ 2*
+        (((complexSexticChar P hg)^2)⁻¹) ((σ:Eis⧸P)*(ε:Eis⧸P)*x) := by
+  have he : localReflectionActive (fun t=>(1:MulChar (Eis⧸P) ℂ) t)
+      (complexSexticChar P hg) ψ σ ε x =
+      ∑h:(Eis⧸P)ˣ,frequencyRow (complexSexticChar P hg) ψ 0 σ ε x h := by
+    simp only [localReflectionActive,localFourier,frequencyRow,frequencyMultiplier,
+      finiteAdditiveFourierCoeff,pow_zero,Units.ne_zero,ite_false,
+      Finset.mul_sum,Units.val_inv_eq_inv_val,div_eq_mul_inv,neg_mul]
+    apply Finset.sum_congr rfl
+    intro h hh
+    ring
+  rw [marked_active_eq_neg_trivial _ ψ hψ,he,
+    canonical_frequencyRow_units P hg hc ψ hψ 0 (by decide)]
+  simp only [phase,bracket,show (0:ℕ)≠4 by decide,↓reduceIte,inv_pow,map_mul]
+  ring
+section
+variable {F:Type*} [Field F] [Fintype F]
+def markedFrequencyRow (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (σ ε : Fˣ) (x h : F) : ℂ :=
+  finiteAdditiveFourierCoeff ψ zeroMark h * frequencyMultiplier χ ψ σ ε x h
+
+theorem markedFrequencyRow_zero (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (σ ε : Fˣ) (x : F) :
+    markedFrequencyRow χ ψ σ ε x 0 = (Fintype.card F : ℂ)⁻¹ := by
+  simp [markedFrequencyRow, frequencyMultiplier, finiteAdditiveFourierCoeff, zeroMark]
+
+theorem markedFrequencyRow_units (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (σ ε : Fˣ) (x : F) :
+    (∑ h : Fˣ, markedFrequencyRow χ ψ σ ε x h) =
+      localReflectionActive zeroMark χ ψ σ ε x := by
+  unfold markedFrequencyRow finiteAdditiveFourierCoeff frequencyMultiplier localReflectionActive localFourier
+  simp only [Units.ne_zero, ite_false,  Units.val_inv_eq_inv_val,
+    Finset.mul_sum, neg_mul]
+  apply Finset.sum_congr rfl
+  intro h hh
+  ring
+
+def mixedFrequencyRow (χ : MulChar F ℂ) (ψ : AddChar F ℂ)
+    (marked : Bool) (j : ℕ) (σ ε : Fˣ) (x h : F) : ℂ :=
+  if marked then markedFrequencyRow χ ψ σ ε x h else frequencyRow χ ψ j σ ε x h
+
+end
+noncomputable local instance markedStratumField (P : Ideal Eis) [P.IsMaximal] : Field (Eis ⧸ P) :=
+  Ideal.Quotient.field P
+noncomputable local instance markedStratumFintype (P : Ideal Eis) [P.IsMaximal] : Fintype (Eis ⧸ P) :=
+  Fintype.ofFinite _
+
+theorem actual_mixed_frequency_units (P : Ideal Eis) [P.IsMaximal]
+    (hg : lambda ∉ P) (hc : ringChar (Eis ⧸ P) ≠ 2)
+    (ψ : AddChar (Eis ⧸ P) ℂ) (hψ : ψ.IsPrimitive) (marked : Bool)
+    (j : ℕ) (hj : j < 6) (σ ε : (Eis ⧸ P)ˣ) (x : Eis ⧸ P) :
+    (∑ h : (Eis ⧸ P)ˣ, mixedFrequencyRow (complexSexticChar P hg) ψ marked j σ ε x h) =
+      if marked then
+        (rootCard (Eis ⧸ P) : ℂ)⁻¹ * tau (complexSexticChar P hg) ψ 2 *
+          (((complexSexticChar P hg) ^ 2)⁻¹) ((σ : Eis ⧸ P) * (ε : Eis ⧸ P) * x)
+      else (((complexSexticChar P hg)⁻¹) ^ 2) σ *
+        phase (complexSexticChar P hg) ψ j ε * bracket (complexSexticChar P hg) j x := by
+  cases marked
+  · simp only [mixedFrequencyRow, Bool.false_eq_true, ite_false]
+    exact canonical_frequencyRow_units P hg hc ψ hψ j hj σ ε x
+  · simp only [mixedFrequencyRow, ite_true]
+    rw [markedFrequencyRow_units, actual_marked_active_formula P hg hc ψ hψ σ ε x]
+
+
+end InverseMoment
+
+end
+
+noncomputable section
+open Eisenstein CubicKubota CompletedGauss RationalSource NormalizedReflection
+open scoped BigOperators Classical MatrixGroups
+local notation "Eis" => Eisenstein.O
+lemma theta_lifted_phase (c : Eis) (hc : c≠0) (lift n : Eis) :
+    tracePhase (-cuspFrequency n*((ringComplex traceLambda)^2*ringComplex lift/ringComplex c)) =
+      residueTraceQuotientChar 1 c hc (Ideal.Quotient.mk _ lift*Ideal.Quotient.mk _ n) := by
+  rw [←map_mul,residueTraceQuotientChar_mk]
+  unfold residueAdditive cuspFrequency
+  simp only [map_mul,map_ofNat,mul_one,traceLambda_complex_square]
+  congr 1
+  field_simp
+
+lemma ControlledStratumArithmetic.datum_fourier_phase {ι:Type*} [Fintype ι]
+    {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+    (D:ControlledStratumArithmetic p N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hr:lambda^2∣(∏i,p i)-1)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hp:∀i,p i≠0) (hc0:c0≠0) (v:∀i,(Eis⧸Ideal.span {p i})ˣ) (n:Eis) :
+    tracePhase (-cuspFrequency n*(D.datum hN hr hbase s hp hc0 v).point)=
+      tracePhase (-cuspFrequency n*(ringComplex a0/ringComplex c0))*
+        ∏i,residueTraceQuotientChar 1 (p i) (hp i) ((v i:Eis⧸Ideal.span {p i})*Ideal.Quotient.mk _ n) := by
+  rw [D.datum_point]
+  have he:-cuspFrequency n*(ringComplex a0/ringComplex c0+
+      (ringComplex traceLambda)^2*∑i,ringComplex (D.lift v i)/ringComplex (p i))=
+      -cuspFrequency n*(ringComplex a0/ringComplex c0)+
+        ∑i,-cuspFrequency n*((ringComplex traceLambda)^2*ringComplex (D.lift v i)/ringComplex (p i)):=by
+    simp only [Finset.mul_sum,neg_mul,mul_add]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro i hi
+    ring
+  rw [he,AddChar.map_add_eq_mul,tracePhase_finset_sum]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [theta_lifted_phase,D.lift_residue]
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+
+namespace CanonicalCoefficientClass
+/-- A multiplicative character is constant on cosets of the ideal. -/
+def FactorsModulo (Q : Ideal Eis) (Ψ : Eis →* ℂ) : Prop :=
+  ∀ x y : Eis, x-y∈Q → Ψ x=Ψ y
+end CanonicalCoefficientClass
+
+/-- The different phase adds modulus nine to the arithmetic character. -/
+theorem fixedThetaTwist_periodic (Ψ:Eis→*ℂ) (Q:Ideal Eis)
+    (hΨ:CanonicalCoefficientClass.FactorsModulo Q Ψ) (x y:Eis)
+    (hxy:x-y∈Ideal.span {(9:Eis)}*Q) : fixedThetaTwist Ψ x=fixedThetaTwist Ψ y := by
+  have h9:(9:Eis)∣x-y:=Ideal.mem_span_singleton.mp (Ideal.mul_le_right hxy)
+  have hd:lambda^2∣x-y:=lambda_sq_dvd_three.trans ((show (3:Eis)∣9 from ⟨3,by norm_num⟩).trans h9)
+  have hp:lambda^2∣x-1 ↔ lambda^2∣y-1 := by
+    constructor
+    · intro hx
+      convert dvd_sub hx hd using 1 <;> ring
+    · intro hy
+      convert dvd_add hd hy using 1 <;> ring
+  by_cases hx:lambda^2∣x-1
+  · rw [fixedThetaTwist_primary _ x hx,fixedThetaTwist_primary _ y (hp.mp hx),
+      symbol_traceLambda_congr_mod_nine x y hx (hp.mp hx) h9,hΨ x y (Ideal.mul_le_left hxy)]
+  · simp only [fixedThetaTwist,if_neg hx,if_neg (fun hy=>hx (hp.mpr hy))]
+
+def fixedThetaQuotient (Ψ:Eis→*ℂ) (c:Eis) (x:Eis⧸Ideal.span {c}) : ℂ :=
+  fixedThetaTwist Ψ (Quotient.out x)
+
+lemma fixedThetaQuotient_mk (Ψ:Eis→*ℂ) (Q:Ideal Eis)
+    (hΨ:CanonicalCoefficientClass.FactorsModulo Q Ψ) (c:Eis)
+    (hc:Ideal.span {c}≤Ideal.span {(9:Eis)}*Q) (x:Eis) :
+    fixedThetaQuotient Ψ c (Ideal.Quotient.mk _ x)=fixedThetaTwist Ψ x := by
+  apply fixedThetaTwist_periodic Ψ Q hΨ
+  exact hc (Ideal.Quotient.eq.mp (Ideal.Quotient.mk_out (Ideal.Quotient.mk (Ideal.span {c}) x)))
+
+lemma fixedThetaQuotient_norm_le_one (Ψ:Eis→*ℂ) (hΨ:∀x,‖Ψ x‖≤1)
+    (c:Eis) (x:Eis⧸Ideal.span {c}) : ‖fixedThetaQuotient Ψ c x‖≤1 := by
+  rw [fixedThetaQuotient,fixedThetaTwist_norm]
+  split_ifs
+  · exact hΨ _
+  · norm_num
+
+def fixedThetaRowCoeff (c:Eis) (hc:c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (φ:Eis→*ℂ) (h:Eis⧸Ideal.span {c}) : ℂ :=
+  finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) (fixedThetaQuotient φ c) h
+
+lemma fixedThetaRowCoeff_norm (c:Eis) (hc:c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (φ:Eis→*ℂ) (hφ:∀n,‖φ n‖≤1) (h:Eis⧸Ideal.span {c}) :
+    ‖fixedThetaRowCoeff c hc φ h‖≤1 :=
+  finiteAdditiveFourierCoeff_norm_le_one _ _ (fixedThetaQuotient_norm_le_one φ hφ c) h
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+def activeStratumDatum {ι:Type*} [Fintype ι]
+    (p:ι→Eis) (hp:∀i,p i≠0) (hprimary:∀i,lambda^2∣p i-1)
+    {N a0 c0:Eis} {mode:Bool}
+    (D:∀A:Finset ι,ControlledStratumArithmetic (fun i:A=>p i.val) N a0 c0 mode)
+    (hN:(9:Eis)*c0∣N) (hc0:c0≠0)
+    (hbase:if mode then lambda^2∣a0-1 else lambda^2∣c0-1)
+    (s:FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (A:Finset ι) (v:∀i:A,(Eis⧸Ideal.span {p i.val})ˣ) : SourceCuspDatum :=
+  (D A).datum hN (primary_finset_product Finset.univ (fun i:A=>p i.val)
+    (fun i _=>hprimary i.val)) hbase s (fun i=>hp i.val) hc0 v
+
+abbrev FixedActiveCuspIndex {ι:Type*} (c:Eis) (p:ι→Eis) :=
+  Σ_h:Eis⧸Ideal.span {c},ΣA:Finset ι,∀i:A,(Eis⧸Ideal.span {p i.val})ˣ
+
+variable {ι:Type*} [Fintype ι] (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal]
+variable (hp:∀i,p i≠0) (hprimary:∀i,lambda^2∣p i-1)
+variable (hg:∀i,lambda∉Ideal.span {p i}) (j:ι→ℕ)
+variable (c:Eis) (hc:c≠0) [Fintype (Eis⧸Ideal.span {c})]
+variable (G:∀h:Eis⧸Ideal.span {c},FixedFourierGeometry c h) (N:Eis)
+variable (hN:∀h,(9:Eis)*(G h).c0∣N)
+variable (D:∀h:Eis⧸Ideal.span {c},∀A:Finset ι,
+  ControlledStratumArithmetic (fun i:A=>p i.val) N (G h).a0 (G h).c0 (G h).mode)
+
+def fixedActiveCuspDatum (t:FixedActiveCuspIndex c p) : SourceCuspDatum :=
+  activeStratumDatum p hp hprimary (D t.1) (hN t.1) (G t.1).denominator_ne_zero
+    (G t.1).primary (G t.1).shape t.2.1 t.2.2
+
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open scoped BigOperators Classical
+open CompletedGauss CubicEisenstein 
+noncomputable section
+noncomputable local instance activeQuotientFintype (P : Ideal Eis) [P.IsMaximal] :
+    Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+variable {ι : Type*} [Fintype ι]
+
+def localInactiveWeight (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ) (A : Finset ι) : ℂ :=
+  ∏ i ∈ (Finset.univ : Finset ι) \ A,
+    finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (F i) 0
+
+def localActiveWeight (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ)
+    (A : Finset ι) (v : ∀ i : A, (Eis ⧸ Ideal.span {p i.val})ˣ) : ℂ :=
+  ∏ i : A, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (F i.val) (v i)
+
+theorem primeFunction_fourier_by_active
+    (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ) (n : Eis) :
+    (∏ i, F i (Ideal.Quotient.mk _ n)) =
+      ∑ A : Finset ι, localInactiveWeight p hp F A *
+        ∑ v : ∀ i : A, (Eis ⧸ Ideal.span {p i.val})ˣ,
+          localActiveWeight p hp F A v *
+            ∏ i : A, residueTraceQuotientChar 1 (p i.val) (hp i.val)
+              ((v i : Eis ⧸ Ideal.span {p i.val}) * Ideal.Quotient.mk _ n) := by
+  let (i : ι) : Field (Eis ⧸ Ideal.span {p i}) := Ideal.Quotient.field _
+  have h := finiteAdditiveFourier_active_inversion
+    (fun i=>residueTraceQuotientChar 1 (p i) (hp i))
+    (fun i=>residueTraceQuotientChar_primitive (p i) (hp i)) F (fun i=>Ideal.Quotient.mk _ n)
+  rw [h]
+  apply Finset.sum_congr rfl
+  intro A hA
+  have hz : (∏i:{i // i∉A},finiteAdditiveFourierCoeff
+      (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (F i.val) 0)=localInactiveWeight p hp F A := by
+    rw [localInactiveWeight,Finset.prod_subtype (p := fun i => i ∉ A) (Finset.univ \ A) (by simp)]
+  rw [hz]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro v hv
+  simp only [localActiveWeight,Finset.prod_mul_distrib]
+
+theorem activeStratum_function_multiplier
+    (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hprimary : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ)
+    {N a0 c0 : Eis} {mode : Bool}
+    (D : ∀ A : Finset ι, ControlledStratumArithmetic (fun i : A => p i.val) N a0 c0 mode)
+    (hN : (9 : Eis) * c0 ∣ N) (hc0 : c0 ≠ 0)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode)) (n : Eis) :
+    (∑ A : Finset ι, localInactiveWeight p hp F A *
+      ∑ v : ∀ i : A, (Eis ⧸ Ideal.span {p i.val})ˣ,
+        localActiveWeight p hp F A v * tracePhase (-cuspFrequency n *
+          (activeStratumDatum p hp hprimary D hN hc0 hbase s A v).point)) =
+      tracePhase (-cuspFrequency n * (ringComplex a0 / ringComplex c0)) *
+        ∏ i, F i (Ideal.Quotient.mk _ n) := by
+  have hlocal (A : Finset ι) (v : ∀ i : A, (Eis ⧸ Ideal.span {p i.val})ˣ) :
+      tracePhase (-cuspFrequency n *
+        (activeStratumDatum p hp hprimary D hN hc0 hbase s A v).point) =
+      tracePhase (-cuspFrequency n * (ringComplex a0 / ringComplex c0)) *
+        ∏ i : A, residueTraceQuotientChar 1 (p i.val) (hp i.val)
+          ((v i : Eis ⧸ Ideal.span {p i.val}) * Ideal.Quotient.mk _ n) :=
+    (D A).datum_fourier_phase hN
+      (primary_finset_product Finset.univ (fun i : A => p i.val) (fun i _ => hprimary i.val))
+      hbase s (fun i => hp i.val) hc0 v n
+  simp_rw [hlocal]
+  rw [primeFunction_fourier_by_active p hp F n]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro A hA
+  apply Finset.sum_congr rfl
+  intro v hv
+  ring
+
+def fixedActiveFunctionWeight
+    (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ)
+    (c : Eis) (hc : c ≠ 0) [Fintype (Eis ⧸ Ideal.span {c})]
+    (φ : Eis →* ℂ) (t : FixedActiveCuspIndex c p) : ℂ :=
+  fixedThetaRowCoeff c hc φ t.1 * localInactiveWeight p hp F t.2.1 *
+    localActiveWeight p hp F t.2.1 t.2.2
+
+theorem fixedActiveFunction_multiplier
+    (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hprimary : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ)
+    (c : Eis) (hc : c ≠ 0) [Fintype (Eis ⧸ Ideal.span {c})]
+    (G : ∀ h : Eis ⧸ Ideal.span {c}, FixedFourierGeometry c h) (N : Eis)
+    (hN : ∀ h, (9 : Eis) * (G h).c0 ∣ N)
+    (D : ∀ h : Eis ⧸ Ideal.span {c}, ∀ A : Finset ι,
+      ControlledStratumArithmetic (fun i : A => p i.val) N (G h).a0 (G h).c0 (G h).mode)
+    (Q : Ideal Eis) (hcQ : Ideal.span {c} ≤ Ideal.span {(9 : Eis)} * Q)
+    (φ : Eis →* ℂ) (hφ : CanonicalCoefficientClass.FactorsModulo Q φ) (n : Eis) :
+    (∑ t : FixedActiveCuspIndex c p, fixedActiveFunctionWeight p hp F c hc φ t *
+      tracePhase (-cuspFrequency n *
+        (fixedActiveCuspDatum p hp hprimary c G N hN D t).point)) =
+      fixedThetaTwist φ n * ∏ i, F i (Ideal.Quotient.mk _ n) := by
+  simp only [FixedActiveCuspIndex, Fintype.sum_sigma, fixedActiveFunctionWeight, fixedActiveCuspDatum]
+  have hf : (∑ h : Eis ⧸ Ideal.span {c}, fixedThetaRowCoeff c hc φ h *
+      tracePhase (-cuspFrequency n * thetaFourierTranslation c h)) = fixedThetaTwist φ n := by
+    simp only [fixedThetaRowCoeff]
+    rw [thetaFourierTranslation_inversion c hc,
+      fixedThetaQuotient_mk φ Q hφ c hcQ]
+  rw [← hf, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro h hh
+  calc
+    _ = fixedThetaRowCoeff c hc φ h *
+        (∑ A : Finset ι, localInactiveWeight p hp F A *
+          ∑ v : ∀ i : A, (Eis ⧸ Ideal.span {p i.val})ˣ,
+            localActiveWeight p hp F A v * tracePhase (-cuspFrequency n *
+              (activeStratumDatum p hp hprimary (D h) (hN h) (G h).denominator_ne_zero
+                (G h).primary (G h).shape A v).point)) := by
+      simp only [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro A hA
+      apply Finset.sum_congr rfl
+      intro v hv
+      ring
+    _ = _ := by
+      rw [activeStratum_function_multiplier p hp hprimary F (D h) (hN h)
+        (G h).denominator_ne_zero (G h).primary (G h).shape n, (G h).point]
+      ring
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+
+theorem completed_summand_primary_support (Ψ:Eis→*ℂ) (W:ℝ→ℂ)
+    (X:ℝ) (I J:Ideal Eis) (h:CompletedGauss.summand Ψ W X I J≠0) :
+    primaryIdealGenerator (I*J^3)≠0 := by
+  have hs:=CompletedGauss.summand_primary_support Ψ W X I J h
+  change primaryIdealGeneratorHom (I*J^3)≠0
+  rw [map_mul,map_pow]
+  exact mul_ne_zero hs.1.2 (pow_ne_zero _ hs.2)
+
+theorem markedCompletedT_congr_primary (Ψ:Eis→*ℂ) (W:ℝ→ℂ) (X:ℝ)
+    (d e:Ideal Eis→ℂ) (h:∀A,primaryIdealGenerator A≠0→d A=e A) :
+    markedCompletedT Ψ W X d=markedCompletedT Ψ W X e := by
+  apply tsum_congr
+  intro I
+  apply tsum_congr
+  intro J
+  by_cases hz:CompletedGauss.summand Ψ W X I J=0
+  · simp only [hz,zero_mul]
+  · rw [h (I*J^3) (completed_summand_primary_support Ψ W X I J hz)]
+
+theorem summand_mul_fixed_twist (Ψ φ:Eis→*ℂ) (W:ℝ→ℂ) (X:ℝ) (I J:Ideal Eis) :
+    CompletedGauss.summand (φ*Ψ) W X I J=
+      φ (primaryIdealGenerator I*primaryIdealGenerator J^3)*CompletedGauss.summand Ψ W X I J := by
+  simp only [CompletedGauss.summand,columnWeight,cubeWeight,MonoidHom.coe_mk,
+    OneHom.coe_mk,MonoidHom.mul_apply,map_mul,map_pow,mul_pow]
+  ring
+open scoped BigOperators Classical
+open CompletedGauss CanonicalRowCompletion
+noncomputable section
+
+theorem markedCompletedT_monoid (Ψ φ : Eis →* ℂ) (W : ℝ → ℂ) (X : ℝ) :
+    markedCompletedT Ψ W X (fun A => φ (primaryIdealGenerator A)) = completedIdealT (φ * Ψ) W X := by
+  unfold markedCompletedT completedIdealT
+  apply tsum_congr
+  intro I
+  apply tsum_congr
+  intro J
+  change CompletedGauss.summand Ψ W X I J * φ (primaryIdealGenerator (I * J ^ 3)) = _
+  rw [summand_mul_fixed_twist, primaryIdealGenerator_mul,
+    show primaryIdealGenerator (J ^ 3) = primaryIdealGenerator J ^ 3 from map_pow primaryIdealGeneratorHom J 3]
+  exact mul_comm _ _
+
+theorem whole_prime_mark_eq_mask_complement (p : Eis) (hp : Prime p)
+    (A : Ideal Eis) (hA : primaryIdealGenerator A ≠ 0) :
+    (if Ideal.span {p} ∣ A then (1 : ℂ) else 0) =
+      1 - coprimalityMask p (primaryIdealGenerator A) := by
+  have hd : Ideal.span {p} ∣ A ↔ p ∣ primaryIdealGenerator A := by
+    calc
+      _ ↔ A ≤ Ideal.span {p} := Ideal.dvd_iff_le
+      _ ↔ Ideal.span {primaryIdealGenerator A} ≤ Ideal.span {p} := by
+        rw [(primaryIdealGenerator_spec A hA).1]
+      _ ↔ _ := by rw [Ideal.span_singleton_le_iff_mem, Ideal.mem_span_singleton]
+  change (if Ideal.span {p} ∣ A then (1 : ℂ) else 0) =
+    1 - (if IsCoprime p (primaryIdealGenerator A) then 1 else 0)
+  rw [hp.coprime_iff_not_dvd]
+  by_cases h : p ∣ primaryIdealGenerator A <;> simp [hd, h]
+
+theorem markedCompletedT_prime_product_twists {ι : Type*}
+    (S : Finset ι) (p : ι → Eis) (hp : ∀ i ∈ S, Prime (p i))
+    (Ψ : Eis →* ℂ) (W : ℝ → ℂ) (hW : HasCompactSupport W) (X : ℝ) (hX : 0 < X) :
+    markedCompletedT Ψ W X
+      (fun A => ∏ i ∈ S, if Ideal.span {p i} ∣ A then 1 else 0) =
+      ∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card *
+        completedIdealT ((∏ i ∈ T, coprimalityMask (p i)) * Ψ) W X := by
+  have he : markedCompletedT Ψ W X
+      (fun A => ∏ i ∈ S, if Ideal.span {p i} ∣ A then 1 else 0) =
+      markedCompletedT Ψ W X (fun A =>
+        ∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card *
+          (∏ i ∈ T, coprimalityMask (p i)) (primaryIdealGenerator A)) := by
+    apply markedCompletedT_congr_primary
+    intro A hA
+    calc
+      _ = ∏ i ∈ S, (1 - coprimalityMask (p i) (primaryIdealGenerator A)) := by
+        apply Finset.prod_congr rfl
+        intro i hi
+        exact whole_prime_mark_eq_mask_complement (p i) (hp i hi) A hA
+      _ = _ := by
+        rw [Finset.prod_sub]
+        simp
+  rw [he, markedCompletedT_finset_sum S.powerset Ψ W hW X hX]
+  apply Finset.sum_congr rfl
+  intro T hT
+  rw [markedCompletedT_const_mul, markedCompletedT_monoid]
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open scoped BigOperators Classical ContDiff
+open CompletedGauss CanonicalRowCompletion CubicEisenstein
+noncomputable section
+
+variable {ι : Type*}
+
+def markTwist (p : ι → Eis) (T : Finset ι) : Eis →* ℂ :=
+  ∏ i ∈ T, coprimalityMask (p i)
+
+theorem markTwist_norm (p : ι → Eis) (T : Finset ι) (x : Eis) : ‖markTwist p T x‖ ≤ 1 := by
+  simp only [markTwist, MonoidHom.finsetProd_apply, norm_prod]
+  exact Finset.prod_le_one (fun i hi => norm_nonneg _) (fun i hi => coprimalityMask_norm _ _)
+
+theorem markTwist_periodic (p : ι → Eis) (S T : Finset ι) (hTS : T ⊆ S) :
+    CanonicalCoefficientClass.FactorsModulo (Ideal.span {∏ i ∈ S, p i}) (markTwist p T) := by
+  intro x y hxy
+  simp only [markTwist, MonoidHom.finsetProd_apply]
+  apply Finset.prod_congr rfl
+  intro i hi
+  apply coprimalityMask_periodic (p i) x y
+  apply Ideal.mem_span_singleton.mpr
+  exact (Finset.dvd_prod_of_mem p (hTS hi)).trans (Ideal.mem_span_singleton.mp hxy)
+
+def markedThetaQuotient (p : ι → Eis) (S : Finset ι) (Ψ : Eis →* ℂ) (c : Eis)
+    (x : Eis ⧸ Ideal.span {c}) : ℂ :=
+  fixedThetaQuotient Ψ c x * ∏ i ∈ S, if p i ∣ Quotient.out x then 1 else 0
+
+theorem markedThetaQuotient_twists (p : ι → Eis) (S : Finset ι)
+    (hp : ∀ i ∈ S, Prime (p i)) (Ψ : Eis →* ℂ) (c : Eis)
+    (x : Eis ⧸ Ideal.span {c}) :
+    markedThetaQuotient p S Ψ c x =
+      ∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card * fixedThetaQuotient (markTwist p T * Ψ) c x := by
+  have hmark (i : ι) (hi : i ∈ S) :
+      (if p i ∣ Quotient.out x then (1 : ℂ) else 0) =
+        1 - coprimalityMask (p i) (Quotient.out x) := by
+    change (if p i ∣ Quotient.out x then (1 : ℂ) else 0) =
+      1 - (if IsCoprime (p i) (Quotient.out x) then 1 else 0)
+    rw [(hp i hi).coprime_iff_not_dvd]
+    by_cases h : p i ∣ Quotient.out x <;> simp [h]
+  unfold markedThetaQuotient
+  rw [Finset.prod_congr rfl hmark, Finset.prod_sub]
+  simp only [Finset.prod_const_one, mul_one, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro T hT
+  rw [show markTwist p T * Ψ = Ψ * markTwist p T from mul_comm _ _]
+  simp only [fixedThetaQuotient, fixedThetaTwist_mul, markTwist, MonoidHom.finsetProd_apply]
+  ring
+
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open scoped BigOperators Classical
+open CompletedGauss CanonicalRowCompletion CubicEisenstein
+noncomputable section
+noncomputable local instance mixedQuotientFintype (P : Ideal Eis) [P.IsMaximal] :
+    Fintype (Eis ⧸ P) := Fintype.ofFinite _
+variable {ι : Type*} [Fintype ι]
+
+def unmarkedSexticTwist (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι) : Eis →* ℂ where
+  toFun n := ∏ i ∈ (Finset.univ : Finset ι) \ S,
+    (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i) (Ideal.Quotient.mk _ n)
+  map_one' := by simp
+  map_mul' x y := by simp only [map_mul, Finset.prod_mul_distrib]
+
+def mixedPrimeFunction (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι)
+    (i : ι) (x : Eis ⧸ Ideal.span {p i}) : ℂ :=
+  if i ∈ S then zeroMark x else (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i) x
+
+theorem unmarkedSexticTwist_norm (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι) (n : Eis) :
+    ‖unmarkedSexticTwist p hg j S n‖ ≤ 1 := by
+  change ‖∏ i ∈ (Finset.univ : Finset ι) \ S,
+    (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i) (Ideal.Quotient.mk _ n)‖ ≤ 1
+  rw [norm_prod]
+  exact Finset.prod_le_one (fun i hi => norm_nonneg _)
+    (fun i hi => FiniteRayExpansion.norm_char_le_one _ _)
+
+theorem unmarkedSexticTwist_periodic (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι) :
+    CanonicalCoefficientClass.FactorsModulo (Ideal.span {∏ i, p i}) (unmarkedSexticTwist p hg j S) := by
+  intro x y hxy
+  change (∏ i ∈ (Finset.univ : Finset ι) \ S, _) = ∏ i ∈ (Finset.univ : Finset ι) \ S, _
+  apply Finset.prod_congr rfl
+  intro i hi
+  have he : Ideal.Quotient.mk (Ideal.span {p i}) x = Ideal.Quotient.mk _ y := by
+    apply Ideal.Quotient.eq.mpr
+    apply Ideal.mem_span_singleton.mpr
+    exact (Finset.dvd_prod_of_mem p (Finset.mem_univ i)).trans (Ideal.mem_span_singleton.mp hxy)
+  rw [he]
+
+theorem mixedPrimeFunction_product (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι) (n : Eis) :
+    (∏ i, mixedPrimeFunction p hg j S i (Ideal.Quotient.mk _ n)) =
+      unmarkedSexticTwist p hg j S n * ∏ i ∈ S, if p i ∣ n then 1 else 0 := by
+  rw [← Finset.prod_sdiff (Finset.subset_univ S)]
+  have hS : (∏ i ∈ S, mixedPrimeFunction p hg j S i (Ideal.Quotient.mk _ n)) =
+      ∏ i ∈ S, if p i ∣ n then (1 : ℂ) else 0 := by
+    apply Finset.prod_congr rfl
+    intro i hi
+    simp only [mixedPrimeFunction, hi, ite_true, zeroMark,
+      Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
+  rw [hS]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  simp only [mixedPrimeFunction, (Finset.mem_sdiff.mp hi).2, ite_false]
+
+omit [Fintype ι] in
+theorem markedThetaQuotient_mk (p : ι → Eis) (S : Finset ι)
+    (Ψ : Eis →* ℂ) (Q : Ideal Eis) (hΨ : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (c : Eis) (hcQ : Ideal.span {c} ≤ Ideal.span {(9 : Eis)} * (Q * Ideal.span {∏ i ∈ S, p i}))
+    (n : Eis) :
+    markedThetaQuotient p S Ψ c (Ideal.Quotient.mk _ n) =
+      fixedThetaTwist Ψ n * ∏ i ∈ S, if p i ∣ n then 1 else 0 := by
+  unfold markedThetaQuotient
+  have hcbase : Ideal.span {c} ≤ Ideal.span {(9 : Eis)} * Q :=
+    hcQ.trans (Ideal.mul_mono_right Ideal.mul_le_right)
+  rw [fixedThetaQuotient_mk Ψ Q hΨ c hcbase]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  have hxy : Quotient.out (Ideal.Quotient.mk (Ideal.span {c}) n) - n ∈ Ideal.span {c} :=
+    Ideal.Quotient.eq.mp (Ideal.Quotient.mk_out (Ideal.Quotient.mk (Ideal.span {c}) n))
+  have hp : p i ∣ Quotient.out (Ideal.Quotient.mk (Ideal.span {c}) n) - n :=
+    (Finset.dvd_prod_of_mem p hi).trans (Ideal.mem_span_singleton.mp
+      (Ideal.mul_le_left (Ideal.mul_le_left (hcQ hxy))))
+  simp only [dvd_iff_dvd_of_dvd_sub hp]
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+
+lemma SourceCuspDatum.smoothedKernel_eq (d:SourceCuspDatum) (W:ℝ→ℂ) (X:ℝ) :
+    d.smoothedKernel W X=d.smoothingMultiplier*∑'n:Eis,
+      sourceCuspRadialCoefficient d.index d.dualPoint n*
+        paperKernel (Vstar W) (d.smoothingScale X*sourceCuspRadialLength n) := by
+  have ht:‖ringComplex traceLambda‖^2=3 := by
+    rw [←norm_pow,traceLambda_complex_square]
+    norm_num
+  have hb:thetaBesselScale^2=1/27 := by
+    simp only [thetaBesselScale,thetaFrequencyScale,norm_div,norm_one,norm_mul,
+      div_pow,mul_pow,ht]
+    norm_num
+  have he:d.smoothingScale X=X/(27*(sourceCuspScale d.index)^2*d.heightScale^2) := by
+    rw [SourceCuspDatum.smoothingScale,sourceCuspRadialScale,sourceCuspRadialScale,
+      show sourceCuspScale 0=1 from rfl,div_one,div_pow,hb]
+    ring
+  rw [SourceCuspDatum.smoothedKernel,SourceCuspDatum.smoothingMultiplier,
+    sourceCuspRadialScale_ratio]
+  push_cast
+  rw [mul_assoc d.multiplier]
+  congr 1
+  apply tsum_congr
+  intro n
+  rw [he]
+  congr 2
+  ring
+
+/-- The reflected kernel equals the compactly smoothed source at its cusp. -/
+lemma SourceCuspDatum.smoothedKernel_source (d:SourceCuspDatum)
+    (W:ℝ→ℂ) (a b:ℝ) (ha:0<a) (hs:Function.support W⊆Set.Icc a b)
+    (hW:ContDiff ℝ ∞ W) (X:ℝ) (hX:0<X) :
+    d.smoothedKernel W X=∑'n:Eis,sourceBarRadialCoefficient d.point n*
+      Vstar W (sourceCuspRadialLength n/X) := by
+  rw [d.smoothedKernel_eq]
+  exact (d.smoothed_reflection (Vstar W) a b ha (Vstar_support W a b hs)
+    (Vstar_contDiff W a b ha hs hW) X hX).symm
+
+theorem completedT_canonical_smoothed_reflection (Ψ:Eis→*ℂ) (_hΨ:∀x,‖Ψ x‖≤1)
+    (Q:Ideal Eis) (hperiod:CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (c:Eis) (hc:c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ:Ideal.span {c}≤Ideal.span {(9:Eis)}*Q)
+    (W:ℝ→ℂ) (a b:ℝ) (ha:0<a) (hs:Function.support W⊆Set.Icc a b)
+    (hW:ContDiff ℝ ∞ W) (X:ℝ) (hX:0<X) :
+    completedT Ψ W X=thetaDerivativeScalar⁻¹*∑h:Eis⧸Ideal.span {c},
+      finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) (fixedThetaQuotient Ψ c) h*
+        (finiteTwistCusp c hc h).smoothedKernel W X := by
+  have hp (n:Eis) : (∑h:Eis⧸Ideal.span {c},
+      finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) (fixedThetaQuotient Ψ c) h*
+        tracePhase (-cuspFrequency n*(finiteTwistCusp c hc h).point))=fixedThetaTwist Ψ n := by
+    simp_rw [finiteTwistCusp_point]
+    rw [thetaFourierTranslation_inversion,fixedThetaQuotient_mk Ψ Q hperiod c hcQ]
+  simpa only [SourceCuspDatum.smoothedKernel_eq] using
+    completedT_finite_phase_reflection Ψ (finiteTwistCusp c hc)
+      (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) (fixedThetaQuotient Ψ c))
+      hp W a b ha hs hW X hX
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+theorem cusp_kernel_sum_congr {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (d : ι → SourceCuspDatum) (w : ι → ℂ)
+    (e : κ → SourceCuspDatum) (z : κ → ℂ)
+    (hmult : ∀ n : Eis,
+      (∑ i, w i * tracePhase (-cuspFrequency n * (d i).point)) =
+        ∑ k, z k * tracePhase (-cuspFrequency n * (e k).point))
+    (W : ℝ → ℂ) (lo hi : ℝ) (hlo : 0 < lo)
+    (hsupp : Function.support W ⊆ Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (X : ℝ) (hX : 0 < X) :
+    (∑ i, w i * (d i).smoothedKernel W X) = ∑ k, z k * (e k).smoothedKernel W X := by
+  have hcoeff:Summable (fun n:Eis=>‖sourceBarRadialCoefficient 0 n‖*
+      sourceCuspRadialLength n^(-(3/2:ℝ))) := by
+    simpa only [show (1/2:ℝ)-2=-(3/2) by norm_num] using sourceBarRadialCoefficient_summable 0 2 le_rfl
+  have hsum:=weighted_compact_test_norm_summable sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceBarRadialCoefficient 0) (3/2) hcoeff (Vstar W) lo hi hlo
+    (Vstar_support W lo hi hsupp) (Vstar_contDiff W lo hi hlo hsupp hW) X hX
+  simp_rw [SourceCuspDatum.smoothedKernel_source _ W lo hi hlo hsupp hW X hX]
+  rw [sourceBar_smoothed_phase_translation _ _ _ hsum,
+    sourceBar_smoothed_phase_translation _ _ _ hsum]
+  simp_rw [hmult]
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+variable {ι:Type*}
+theorem markedCompletedT_canonical_reflection (p : ι → Eis) (S : Finset ι)
+    (hp : ∀ i ∈ S, Prime (p i))
+    (Ψ : Eis →* ℂ) (hΨ : ∀ x, ‖Ψ x‖ ≤ 1)
+    (Q : Ideal Eis) (hperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (c : Eis) (hc : c ≠ 0) [Fintype (Eis ⧸ Ideal.span {c})]
+    (hcQ : Ideal.span {c} ≤ Ideal.span {(9 : Eis)} * (Q * Ideal.span {∏ i ∈ S, p i}))
+    (W : ℝ → ℂ) (hWcompact : HasCompactSupport W)
+    (v0 v1 : ℝ) (hv0 : 0 < v0) (hWs : Function.support W ⊆ Set.Icc v0 v1)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    markedCompletedT Ψ W X (fun A => ∏ i ∈ S, if Ideal.span {p i} ∣ A then 1 else 0) =
+      thetaDerivativeScalar⁻¹ * ∑ h : Eis ⧸ Ideal.span {c},
+        finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) (markedThetaQuotient p S Ψ c) h *
+          (finiteTwistCusp c hc h).smoothedKernel W X := by
+  have hnorm (T : Finset ι) : ∀ x, ‖(markTwist p T * Ψ) x‖ ≤ 1 := by
+    intro x
+    rw [MonoidHom.mul_apply, norm_mul]
+    exact (mul_le_mul_of_nonneg_right (markTwist_norm p T x) (norm_nonneg _)).trans
+      ((one_mul _).le.trans (hΨ x))
+  have hper (T : Finset ι) (hT : T ∈ S.powerset) :
+      CanonicalCoefficientClass.FactorsModulo (Q * Ideal.span {∏ i ∈ S, p i})
+        (markTwist p T * Ψ) := by
+    intro x y hxy
+    simp only [MonoidHom.mul_apply]
+    rw [markTwist_periodic p S T (Finset.mem_powerset.mp hT) x y (Ideal.mul_le_left hxy),
+      hperiod x y (Ideal.mul_le_right hxy)]
+  have hcoeff (h : Eis ⧸ Ideal.span {c}) :
+      finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) (markedThetaQuotient p S Ψ c) h =
+        ∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card *
+          finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc)
+            (fixedThetaQuotient (markTwist p T * Ψ) c) h := by
+    unfold finiteAdditiveFourierCoeff
+    simp_rw [markedThetaQuotient_twists p S hp Ψ c]
+    simp only [Finset.sum_mul]
+    rw [Finset.sum_comm]
+    simp only [Finset.sum_div, Finset.mul_sum, mul_div_assoc, mul_assoc]
+  rw [markedCompletedT_prime_product_twists S p hp Ψ W hWcompact X hX]
+  change (∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card * completedIdealT (markTwist p T * Ψ) W X) = _
+  calc
+    _ = ∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card * (thetaDerivativeScalar⁻¹ *
+        ∑ h : Eis ⧸ Ideal.span {c}, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc)
+          (fixedThetaQuotient (markTwist p T * Ψ) c) h *
+            (finiteTwistCusp c hc h).smoothedKernel W X) := by
+      apply Finset.sum_congr rfl
+      intro T hT
+      rw [completedIdealT_eq_completedT _ W hWcompact X hX, completedT_canonical_smoothed_reflection _ (hnorm T) _ (hper T hT)
+        c hc hcQ W v0 v1 hv0 hWs hW X hX]
+    _ = _ := by
+      simp_rw [hcoeff]
+      simp only [Finset.mul_sum, Finset.sum_mul]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro h hh
+      apply Finset.sum_congr rfl
+      intro T hT
+      ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+theorem markedCompletedT_of_cusp_multiplier {ι κ : Type*} [Fintype κ]
+    (p : ι → Eis) (S : Finset ι) (hp : ∀ i ∈ S, Prime (p i))
+    (Ψ : Eis →* ℂ) (hΨ : ∀ x, ‖Ψ x‖ ≤ 1)
+    (Q : Ideal Eis) (hperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (c : Eis) (hc : c ≠ 0) [Fintype (Eis ⧸ Ideal.span {c})]
+    (hcQ : Ideal.span {c} ≤ Ideal.span {(9 : Eis)} * (Q * Ideal.span {∏ i ∈ S, p i}))
+    (d : κ → SourceCuspDatum) (w : κ → ℂ)
+    (hmult : ∀ n : Eis, (∑ k, w k * tracePhase (-cuspFrequency n * (d k).point)) =
+      markedThetaQuotient p S Ψ c (Ideal.Quotient.mk _ n))
+    (W : ℝ → ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0 < lo) (hsupp : Function.support W ⊆ Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    markedCompletedT Ψ W X (fun A => ∏ i ∈ S, if Ideal.span {p i} ∣ A then 1 else 0) =
+      thetaDerivativeScalar⁻¹ * ∑ k, w k * (d k).smoothedKernel W X := by
+  rw [markedCompletedT_canonical_reflection p S hp Ψ hΨ Q hperiod c hc hcQ
+    W hWcompact lo hi hlo hsupp hW X hX]
+  congr 1
+  apply cusp_kernel_sum_congr (finiteTwistCusp c hc)
+    (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc)
+      (markedThetaQuotient p S Ψ c)) d w ?_ W lo hi hlo hsupp hW X hX
+  intro n
+  simp_rw [finiteTwistCusp_point]
+  rw [thetaFourierTranslation_inversion c hc, hmult]
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open scoped BigOperators Classical ContDiff
+open CompletedGauss CubicEisenstein CanonicalRowCompletion
+noncomputable section
+noncomputable local instance activeReflectionQuotientFintype (P : Ideal Eis) [P.IsMaximal] :
+    Fintype (Eis ⧸ P) := Fintype.ofFinite _
+
+theorem markedCompletedT_fixed_active_strata {ι : Type*} [Fintype ι]
+    (p : ι → Eis) [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hprime : ∀ i, Prime (p i))
+    (hprimary : ∀ i, lambda ^ 2 ∣ p i - 1)
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (j : ι → ℕ) (S : Finset ι)
+    (φ : Eis →* ℂ) (hφnorm : ∀ n, ‖φ n‖ ≤ 1)
+    (Q : Ideal Eis) (hφperiod : CanonicalCoefficientClass.FactorsModulo Q φ)
+    (c : Eis) (hc : c ≠ 0) [Fintype (Eis ⧸ Ideal.span {c})]
+    (hcQ : Ideal.span {c} ≤ Ideal.span {(9 : Eis)} * Q)
+    (G : ∀ h : Eis ⧸ Ideal.span {c}, FixedFourierGeometry c h) (N : Eis)
+    (hN : ∀ h, (9 : Eis) * (G h).c0 ∣ N)
+    (D : ∀ h : Eis ⧸ Ideal.span {c}, ∀ A : Finset ι,
+      ControlledStratumArithmetic (fun i : A => p i.val) N (G h).a0 (G h).c0 (G h).mode)
+    (call : Eis) (hcall : call ≠ 0) [Fintype (Eis ⧸ Ideal.span {call})]
+    (hcallQ : Ideal.span {call} ≤ Ideal.span {(9 : Eis)} *
+      ((Q * Ideal.span {∏ i, p i}) * Ideal.span {∏ i ∈ S, p i}))
+    (W : ℝ → ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0 < lo) (hsupp : Function.support W ⊆ Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    markedCompletedT (φ * unmarkedSexticTwist p hg j S) W X
+      (fun A => ∏ i ∈ S, if Ideal.span {p i} ∣ A then 1 else 0) =
+      thetaDerivativeScalar⁻¹ * ∑ t : FixedActiveCuspIndex c p,
+        fixedActiveFunctionWeight p hp (mixedPrimeFunction p hg j S) c hc φ t *
+          (fixedActiveCuspDatum p hp hprimary c G N hN D t).smoothedKernel W X := by
+  have hnorm (n : Eis) : ‖(φ * unmarkedSexticTwist p hg j S) n‖ ≤ 1 := by
+    rw [MonoidHom.mul_apply, norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (hφnorm n)).trans
+      (unmarkedSexticTwist_norm p hg j S n)
+  have hperiod : CanonicalCoefficientClass.FactorsModulo (Q * Ideal.span {∏ i, p i})
+      (φ * unmarkedSexticTwist p hg j S) := by
+    intro x y hxy
+    simp only [MonoidHom.mul_apply]
+    rw [hφperiod x y (Ideal.mul_le_right hxy),
+      unmarkedSexticTwist_periodic p hg j S x y (Ideal.mul_le_left hxy)]
+  apply markedCompletedT_of_cusp_multiplier p S (fun i _ => hprime i) _ hnorm _ hperiod
+    call hcall hcallQ (fixedActiveCuspDatum p hp hprimary c G N hN D)
+    (fixedActiveFunctionWeight p hp (mixedPrimeFunction p hg j S) c hc φ) ?_
+    W hWcompact lo hi hlo hsupp hW X hX
+  intro n
+  rw [fixedActiveFunction_multiplier p hp hprimary (mixedPrimeFunction p hg j S)
+    c hc G N hN D Q hcQ φ hφperiod,
+    markedThetaQuotient_mk p S _ _ hperiod call hcallQ,
+    fixedThetaTwist_mul, mixedPrimeFunction_product]
+  ring
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open scoped BigOperators Classical
+open CompletedGauss CubicEisenstein  CubicKubota
+open CubicJacobi   NormalizedReflection
+noncomputable section
+noncomputable local instance controlledField (P : Ideal Eis) [P.IsMaximal] :
+    Field (Eis ⧸ P) := Ideal.Quotient.field _
+noncomputable local instance controlledFintype (P : Ideal Eis) [P.IsMaximal] :
+    Fintype (Eis ⧸ P) := Fintype.ofFinite _
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a0 c0 : Eis} {mode : Bool}
+
+theorem controlled_phase_product (D : ControlledStratumArithmetic p N a0 c0 mode)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hN : (9 : Eis) * c0 ∣ N) (hr : lambda ^ 2 ∣ (∏ i, p i) - 1)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ) (x : Eis) :
+    star (complexCharacter (D.relativeGamma hN hr hbase v)) *
+      tracePhase (-(ringComplex (D.matrix v 1 1) * (ringComplex x / (ringComplex traceLambda) ^ 4)) /
+        (ringComplex c0 * ringComplex (∏ i, p i))) =
+    (star D.fixedFactor * cuspBadPhase c0 hc0 (D.matrix (fun _ => 1) 1 1) D.U x) *
+      ∏ i, frequencyMultiplier (complexSexticChar (Ideal.span {p i}) (hg i))
+        (residueTraceQuotientChar 1 (p i) (hp i)) (D.sigma i) (D.epsilon i) (Ideal.Quotient.mk _ x) (v i) := by
+  have hpair:Pairwise (Function.onFun IsCoprime p) := by
+    intro i k hik
+    exact (Ideal.isCoprime_span_singleton_iff _ _).mp (hcop hik)
+  have ht (i:ι):∃t:Eis,p i∣cuspPrimeCofactor p i*t-1 := by
+    have hc:IsCoprime (p i) (cuspPrimeCofactor p i):=
+      IsCoprime.prod_right (fun k hk=>hpair (Ne.symm (Finset.mem_erase.mp hk).1))
+    obtain ⟨a,b,hab⟩:=hc
+    exact ⟨b,⟨-a,by linear_combination hab⟩⟩
+  choose t ht using ht
+  have he:=cuspMatrix_inverse_phase_product p t hp hpair ht c0 D.U D.w x hc0
+    D.bezout (D.matrix v) (by rw [D.denominator];exact dvd_mul_left _ _)
+    D.sigma D.epsilon v (D.frequency_congruence v) D.epsilon_value
+  rw [cuspInverse_fixed_phase_congr c0 _ _ D.U x hc0 (D.inverse_fixed hN v)] at he
+  rw [D.relative_character hN hr hbase v,star_mul,cuspSymbol_sextic_product p hg]
+  simp_rw [D.frequency_congruence v]
+  have he':tracePhase (-(ringComplex (D.matrix v 1 1)*(ringComplex x/(ringComplex traceLambda)^4))/
+      (ringComplex c0*ringComplex (∏i,p i)))=
+      cuspBadPhase c0 hc0 (D.matrix (fun _=>1) 1 1) D.U x*
+        ∏i,(residueTraceQuotientChar 1 (p i) (hp i))
+          (((D.epsilon i:Eis⧸Ideal.span {p i})*Ideal.Quotient.mk _ x)*
+            ((v i : Eis⧸Ideal.span {p i})⁻¹)) := by
+    simpa only [cuspBadPhase_eq,div_eq_mul_inv,mul_inv_rev,Units.val_inv_eq_inv_val,neg_mul,mul_neg,mul_assoc,mul_comm,mul_left_comm] using he
+  rw [he']
+  simp only [frequencyMultiplier,Units.ne_zero,ite_false,map_mul,
+    Units.val_inv_eq_inv_val,Finset.prod_mul_distrib]
+  ring
+
+def fullLocalFourierWeight [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ)
+    (v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ) : ℂ :=
+  ∏ i, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (F i) (v i)
+
+theorem controlled_local_multiplier (D : ControlledStratumArithmetic p N a0 c0 mode)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hN : (9 : Eis) * c0 ∣ N) (hr : lambda ^ 2 ∣ (∏ i, p i) - 1)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (F : ∀ i, (Eis ⧸ Ideal.span {p i}) → ℂ) (x : Eis) :
+    (∑ v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ, fullLocalFourierWeight hp F v *
+      star (complexCharacter (D.relativeGamma hN hr hbase v)) *
+      tracePhase (-(ringComplex (D.matrix v 1 1) * (ringComplex x / (ringComplex traceLambda) ^ 4)) /
+        (ringComplex c0 * ringComplex (∏ i, p i)))) =
+    (star D.fixedFactor * cuspBadPhase c0 hc0 (D.matrix (fun _ => 1) 1 1) D.U x) *
+      ∏ i, ∑ v : (Eis ⧸ Ideal.span {p i})ˣ,
+        finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (F i) v *
+          frequencyMultiplier (complexSexticChar (Ideal.span {p i}) (hg i))
+            (residueTraceQuotientChar 1 (p i) (hp i)) (D.sigma i) (D.epsilon i) (Ideal.Quotient.mk _ x) v := by
+  rw [Fintype.prod_sum, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro v hv
+  rw [mul_assoc, controlled_phase_product D hN hr hbase hp hc0 hcop hg v x]
+  simp only [fullLocalFourierWeight, Finset.prod_mul_distrib]
+  ring
+
+theorem mixedActiveBracket_eq_units [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) (S : Finset ι)
+    (D : ControlledStratumArithmetic p N a0 c0 mode) (i : ι) (x : Eis) :
+    (∑ v : (Eis ⧸ Ideal.span {p i})ˣ,
+      finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i) (hp i)) (mixedPrimeFunction p hg j S i) v *
+        frequencyMultiplier (complexSexticChar (Ideal.span {p i}) (hg i))
+          (residueTraceQuotientChar 1 (p i) (hp i)) (D.sigma i) (D.epsilon i) (Ideal.Quotient.mk _ x) v) =
+      mixedActiveBracket hp hg j S D i x := by
+  have hh := actual_mixed_frequency_units (Ideal.span {p i}) (hg i) (hc i)
+    (residueTraceQuotientChar 1 (p i) (hp i))
+    (residueTraceQuotientChar_primitive (p i) (hp i))
+    (decide (i ∈ S)) (j i) (hj i) (D.sigma i) (D.epsilon i) (Ideal.Quotient.mk _ x)
+  have hfun : mixedPrimeFunction p hg j S i = fun t =>
+      if i ∈ S then zeroMark t else (complexSexticChar (Ideal.span {p i}) (hg i) ^ j i) t := rfl
+  rw [hfun]
+  by_cases hi : i ∈ S
+  · simpa only [hi, decide_true, mixedFrequencyRow, mixedPrimeFunction, mixedActiveBracket,
+      ite_true, markedFrequencyRow] using hh
+  · simpa only [hi, decide_false, mixedFrequencyRow, mixedPrimeFunction, mixedActiveBracket,
+      Bool.false_eq_true, ite_false, frequencyRow] using hh
+
+theorem controlled_mixed_multiplier (D : ControlledStratumArithmetic p N a0 c0 mode)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hN : (9 : Eis) * c0 ∣ N) (hr : lambda ^ 2 ∣ (∏ i, p i) - 1)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) (S : Finset ι) (x : Eis) :
+    (∑ v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ,
+      fullLocalFourierWeight hp (mixedPrimeFunction p hg j S) v *
+      star (complexCharacter (D.relativeGamma hN hr hbase v)) *
+      tracePhase (-(ringComplex (D.matrix v 1 1) * (ringComplex x / (ringComplex traceLambda) ^ 4)) /
+        (ringComplex c0 * ringComplex (∏ i, p i)))) =
+    (star D.fixedFactor * cuspBadPhase c0 hc0 (D.matrix (fun _ => 1) 1 1) D.U x) *
+      ∏ i, mixedActiveBracket hp hg j S D i x := by
+  rw [controlled_local_multiplier D hN hr hbase hp hc0 hcop hg]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro i hi
+  exact mixedActiveBracket_eq_units hp hg hc j hj S D i x
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups
+open CompletedGauss CubicEisenstein  CubicKubota CompletedDyadic
+open CubicJacobi   NormalizedReflection
+noncomputable section
+noncomputable local instance dualQuotientFintype (P : Ideal Eis) [P.IsMaximal] :
+    Fintype (Eis ⧸ P) := Fintype.ofFinite _
+variable {ι : Type*} [Fintype ι] {p : ι → Eis} {N a0 c0 : Eis} {mode : Bool}
+
+def mixedSmoothedValue (D : ControlledStratumArithmetic p N a0 c0 mode)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hN : (9 : Eis) * c0 ∣ N) (hr : lambda ^ 2 ∣ (∏ i, p i) - 1)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (W : ℝ → ℂ) (X : ℝ) : ℂ :=
+  ∑ v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ,
+    fullLocalFourierWeight hp (mixedPrimeFunction p hg j S) v *
+      (D.datum hN hr hbase s hp hc0 v).smoothedKernel W X
+
+def mixedReflectedValue (D : ControlledStratumArithmetic p N a0 c0 mode)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (W : ℝ → ℂ) (X : ℝ) : ℂ :=
+  fixedRadialCoefficientScalar * s.stratumShapeFactor (c0 * ∏ i, p i) *
+    ∑' t : ThetaFullIndex,
+      (s.amplitude t.1 t.2.1 t.2.2.1.val t.2.2.2.val /
+        ((ramifiedScale 1 completedRamifiedStep t.2.1 *
+          Real.sqrt (Ideal.absNorm t.2.2.1.val : ℝ) * (Ideal.absNorm t.2.2.2.val : ℝ) : ℝ) : ℂ)) *
+      paperKernel (Vstar W)
+        ((X / (27 * (sourceCuspScale s.index) ^ 2 * (Ideal.absNorm (Ideal.span {c0 * ∏ i, p i}) : ℝ) ^ 2)) *
+          (ramifiedScale 1 completedRamifiedStep t.2.1) ^ 3 *
+          (Ideal.absNorm t.2.2.1.val : ℝ) * (Ideal.absNorm t.2.2.2.val : ℝ) ^ 3) *
+      ((star D.fixedFactor * cuspBadPhase c0 hc0 (D.matrix (fun _ => 1) 1 1) D.U
+          (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency t))) *
+        ∏ i, mixedActiveBracket hp hg j S D i
+          (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency t)))
+
+theorem mixed_smoothed_eq_reflected (D : ControlledStratumArithmetic p N a0 c0 mode)
+    [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hN : (9 : Eis) * c0 ∣ N) (hr : lambda ^ 2 ∣ (∏ i, p i) - 1)
+    (hbase : if mode then lambda ^ 2 ∣ a0 - 1 else lambda ^ 2 ∣ c0 - 1)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i, lambda ∉ Ideal.span {p i}) (hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (j : ι → ℕ) (hj : ∀ i, j i < 6) (S : Finset ι)
+    (W : ℝ → ℂ) (lo hi : ℝ) (hlo : 0 < lo) (hsupp : Function.support W ⊆ Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    mixedSmoothedValue D hN hr hbase s hp hc0 hg j S W X =
+      mixedReflectedValue D s hp hc0 hg j S W X := by
+  have hden : c0 * (∏ i, p i) ≠ 0 :=
+    mul_ne_zero hc0 (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+  have hmat (v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ) :
+      (D.sourceGamma hN hr hbase v : SL(2, Eis)) *
+        ControlledStratumArithmetic.fixedCusp a0 c0 mode = D.matrix v :=
+    D.sourceGamma_mul hN hr hbase v
+  have hchar (v : ∀ i, (Eis ⧸ Ideal.span {p i})ˣ) :
+      extendedComplexCharacter (D.sourceGamma hN hr hbase v) =
+        complexCharacter (D.relativeGamma hN hr hbase v) :=
+    D.sourceGamma_character hN hr hbase v
+  have hC : ∀ v, ((D.sourceGamma hN hr hbase v : SL(2, Eis)) *
+      ControlledStratumArithmetic.fixedCusp a0 c0 mode) 1 0 = c0 * ∏ i, p i := by
+    intro v
+    exact (congrArg (fun M : SL(2, Eis) => M 1 0) (hmat v)).trans (D.denominator v)
+  have he := s.sum_smoothedKernel_integral_phase (D.sourceGamma hN hr hbase) _ hden hC
+    (fullLocalFourierWeight hp (mixedPrimeFunction p hg j S)) W lo hi hlo hsupp hW X hX
+  change mixedSmoothedValue D hN hr hbase s hp hc0 hg j S W X = _ at he
+  rw [he]
+  unfold mixedReflectedValue
+  apply congrArg (fun z : ℂ => fixedRadialCoefficientScalar * s.stratumShapeFactor (c0 * ∏ i, p i) * z)
+  apply tsum_congr
+  intro t
+  congr 1
+  simpa only [hchar, hmat, map_mul] using
+    controlled_mixed_multiplier D hN hr hbase hp hc0 hcop hg hc j hj S
+      (sourceCuspPhaseNumerator s.index (s.upper 0 0) (thetaFullFrequency t))
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss CanonicalRowCompletion NormalizedReflection
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseMoment
+variable {ι:Type*} [Fintype ι] {p:ι→Eis} {N a0 c0:Eis} {mode:Bool}
+theorem mixedReflectedValue_eq_signed [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a0 c0 mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a0 c0 mode))
+    (hp : ∀ i, p i ≠ 0) (hc0 : c0 ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (j : ι → ℕ) (S : Finset ι) (W : ℝ → ℂ) (X : ℝ) :
+    mixedReflectedValue D s hp hc0 hg j S W X =
+      (-1 : ℂ) ^ S.card * D.reflectedValue s hp hc0 hg (markedActiveExponent S j) W X := by
+  unfold mixedReflectedValue ControlledStratumArithmetic.reflectedValue
+  simp_rw [mixedActiveBracket_product]
+  conv_rhs => rw [mul_left_comm]
+  congr 1
+  rw [← tsum_mul_left]
+  apply tsum_congr
+  intro t
+  ring
+
+
+end InverseMoment
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+theorem markedCompletedT_twist_congr_primary (Ψ Φ : Eis→*ℂ)
+    (h : ∀ n : Eis, lambda^2∣n-1 → Ψ n=Φ n) (W : ℝ→ℂ) (X : ℝ) (d : Ideal Eis→ℂ) :
+    markedCompletedT Ψ W X d=markedCompletedT Φ W X d := by
+  unfold markedCompletedT
+  apply tsum_congr
+  intro I
+  apply tsum_congr
+  intro J
+  by_cases hi:primaryIdealGenerator I=0
+  · simp only [CompletedGauss.summand,columnWeight,
+      squarefreeGaussCoefficient_of_primary_zero I hi,zero_mul,zero_div]
+  by_cases hj:primaryIdealGenerator J=0
+  · simp only [CompletedGauss.summand,cubeWeight,MonoidHom.coe_mk,OneHom.coe_mk,
+      hj,angularFactor,map_zero,norm_zero,Complex.ofReal_zero,div_zero,star_zero,
+      zero_pow (by decide:(3:ℕ)≠0),zero_mul,mul_zero,zero_div]
+  simp only [CompletedGauss.summand,columnWeight,cubeWeight,MonoidHom.coe_mk,OneHom.coe_mk,
+    h _ (primaryIdealGenerator_spec I hi).2,h _ (primaryIdealGenerator_spec J hj).2]
+
+theorem actual_marked_row_fixed_factor {m f z : Eis} (D : GoodMaskRowData m f z)
+    (Ψ : Eis→*ℂ) (Q : Ideal Eis) (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (W : ℝ→ℂ) (X : ℝ) (d : Ideal Eis→ℂ) :
+    markedCompletedT (rowTwist Ψ m f z) W X d=
+      markedCompletedT (D.fixedFactor Ψ Q*freePrimeRow D.movingIdeal D.movingSupported
+        (Q*Ideal.span {(72:Eis)})) W X d :=
+by
+  apply markedCompletedT_twist_congr_primary
+  intro n hn
+  exact D.row_primary Ψ Q hmLam hm2 n hn
+
+def freePrimeFamily (I Q : Ideal Eis) (hI : quadraticSupported I) : PrimeFamily (FreePrimeIndex I Q) where
+  ideal P := P.val.val
+  maximal _P := inferInstance
+  good P := (supported_factors_good I hI P.val.val (Multiset.mem_toFinset.mp P.val.property)).2.1
+
+def markedSumSlots {ι σ : Type*} [Fintype ι] [Fintype σ] : Finset (ι⊕σ) :=
+  Finset.univ.filter (fun x => x.isRight)
+
+lemma actual_sextic_power_congr (P Q : Ideal Eis) [P.IsMaximal] [Q.IsMaximal]
+    (hP : lambda∉P) (hQ : lambda∉Q) (hPQ : P=Q) (j : ℕ) (n : Eis) :
+    (complexSexticChar P hP^j) (Ideal.Quotient.mk P n)=
+      (complexSexticChar Q hQ^j) (Ideal.Quotient.mk Q n) := by
+  subst Q
+  rfl
+
+lemma unmarked_sum_twist {ι σ : Type*} [Fintype ι] [Fintype σ]
+    (G : PrimeFamily ι) (S : PrimeFamily σ) (j : ι→ℕ) (n : Eis) :
+    unmarkedSexticTwist (G.sum S).generator (G.sum S).generator_good
+      (Sum.elim j (fun _ => 0)) markedSumSlots n =
+    ∏ i, (complexSexticChar (G.ideal i) (G.good i)^j i) (Ideal.Quotient.mk _ n) := by
+  let : DecidableEq (ι⊕σ) := Classical.decEq _
+  have hset : (Finset.univ : Finset (ι⊕σ))\markedSumSlots = Finset.univ.filter (fun x => x.isLeft) := by
+    ext x
+    cases x <;> simp [markedSumSlots]
+  unfold unmarkedSexticTwist
+  change (∏ i∈Finset.univ\markedSumSlots, _) = _
+  rw [hset,Finset.prod_filter,Fintype.prod_sum_type]
+  simp only [Sum.isLeft_inl,Sum.isLeft_inr,Bool.false_eq_true,ite_false,ite_true,
+    Finset.prod_const_one,mul_one,Sum.elim_inl]
+  apply Finset.prod_congr rfl
+  intro i hi
+  exact actual_sextic_power_congr _ _ ((G.sum S).generator_good (Sum.inl i)) (G.good i)
+    ((G.sum S).generator_span (Sum.inl i)) (j i) n
+
+theorem free_row_eq_joined_unmarked {σ : Type*} [Fintype σ]
+    (I Q : Ideal Eis) (hI : quadraticSupported I) (S : PrimeFamily σ) :
+    freePrimeRow I hI Q =
+      unmarkedSexticTwist ((freePrimeFamily I Q hI).sum S).generator
+        ((freePrimeFamily I Q hI).sum S).generator_good
+        (Sum.elim (fun P : FreePrimeIndex I Q => (UniqueFactorizationMonoid.normalizedFactors I).count P.val.val%6)
+          (fun _ => 0)) markedSumSlots := by
+  ext n
+  rw [unmarked_sum_twist]
+  rfl
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+lemma freePrimeRow_zero_at_prime (I Q : Ideal Eis) (hI : quadraticSupported I)
+    (P : FreePrimeIndex I Q) (n : Eis) (hn : n∈P.val.val) : freePrimeRow I hI Q n=0 := by
+  unfold freePrimeRow
+  change (∏ p : FreePrimeIndex I Q, _)=0
+  apply Finset.prod_eq_zero (Finset.mem_univ P)
+  rw [Ideal.Quotient.eq_zero_iff_mem.mpr hn,MulChar.map_zero]
+
+lemma primaryIdealGenerator_mem_of_ideal_dvd (P A : Ideal Eis) (hPA : P∣A) : primaryIdealGenerator A∈P := by
+  by_cases hz : primaryIdealGenerator A=0
+  · rw [hz]
+    exact Ideal.zero_mem _
+  have ha0 : primaryIdealGenerator A∈Ideal.span {primaryIdealGenerator A} := Ideal.subset_span (by simp)
+  have ha : primaryIdealGenerator A∈A := ((primaryIdealGenerator_spec A hz).1.le) ha0
+  exact (Ideal.dvd_iff_le.mp hPA) ha
+
+lemma free_row_whole_mark_overlap {σ : Type*} [Fintype σ]
+    (I Q : Ideal Eis) (hI : quadraticSupported I) (S : PrimeFamily σ)
+    (P : FreePrimeIndex I Q) (i : σ) (heq : S.ideal i=P.val.val) (A : Ideal Eis) :
+    freePrimeRow I hI Q (primaryIdealGenerator A)*
+      (∏ j, if S.ideal j∣A then (1:ℂ) else 0)=0 := by
+  by_cases hd : S.ideal i∣A
+  · have hn := primaryIdealGenerator_mem_of_ideal_dvd (S.ideal i) A hd
+    rw [heq] at hn
+    rw [freePrimeRow_zero_at_prime I Q hI P _ hn,zero_mul]
+  · have hz : (∏ j, if S.ideal j∣A then (1:ℂ) else 0)=0 := by
+      apply Finset.prod_eq_zero (Finset.mem_univ i)
+      rw [if_neg hd]
+    rw [hz,mul_zero]
+
+theorem markedCompletedT_free_overlap_zero {σ : Type*} [Fintype σ]
+    (I Q : Ideal Eis) (hI : quadraticSupported I) (S : PrimeFamily σ)
+    (P : FreePrimeIndex I Q) (i : σ) (heq : S.ideal i=P.val.val)
+    (φ : Eis→*ℂ) (W : ℝ→ℂ) (X : ℝ) :
+    markedCompletedT (φ*freePrimeRow I hI Q) W X
+      (fun A => ∏ j, if S.ideal j∣A then (1:ℂ) else 0)=0 := by
+  unfold markedCompletedT
+  calc
+    _ = ∑' n : Ideal Eis, ∑' b : Ideal Eis, (0:ℂ) := by
+      apply tsum_congr
+      intro n
+      apply tsum_congr
+      intro b
+      rw [mul_comm φ (freePrimeRow I hI Q),summand_mul_fixed_twist]
+      have hgen : primaryIdealGenerator (n*b^3)=primaryIdealGenerator n*(primaryIdealGenerator b)^3 := by
+        rw [primaryIdealGenerator_mul,show primaryIdealGenerator (b^3)=primaryIdealGenerator b^3 from map_pow primaryIdealGeneratorHom b 3]
+      rw [← hgen]
+      have hz := free_row_whole_mark_overlap I Q hI S P i heq (n*b^3)
+      calc
+        _ = CompletedGauss.summand φ W X n b*(freePrimeRow I hI Q (primaryIdealGenerator (n*b^3))*
+          (∏ j, if S.ideal j∣n*b^3 then (1:ℂ) else 0)) := by ring
+        _ = 0 := by rw [hz,mul_zero]
+    _ = 0 := by simp
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+lemma joined_whole_prime_mark {ι σ : Type*} [Fintype ι] [Fintype σ]
+    (G : PrimeFamily ι) (S : PrimeFamily σ) (A : Ideal Eis) :
+    (∏ i∈(markedSumSlots : Finset (ι⊕σ)),
+      if Ideal.span {(G.sum S).generator i}∣A then (1:ℂ) else 0)=
+      ∏ i, if S.ideal i∣A then (1:ℂ) else 0 := by
+  unfold markedSumSlots
+  rw [Finset.prod_filter,Fintype.prod_sum_type]
+  simp only [Sum.isRight_inl,Sum.isRight_inr,Bool.false_eq_true,ite_false,ite_true,
+    Finset.prod_const_one,one_mul]
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [(G.sum S).generator_span]
+  rfl
+
+theorem actual_marked_row_eq_joined {σ : Type*} [Fintype σ]
+    {m f z : Eis} (D : GoodMaskRowData m f z) (S : PrimeFamily σ)
+    (Ψ : Eis→*ℂ) (Q : Ideal Eis) (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (W : ℝ→ℂ) (X : ℝ) :
+    let Q₀ := Q*Ideal.span {(72:Eis)}
+    let G := (freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S
+    let j := Sum.elim
+      (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+        (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6) (fun _ => 0)
+    markedCompletedT (rowTwist Ψ m f z) W X (fun A => ∏ i, if S.ideal i∣A then (1:ℂ) else 0)=
+      markedCompletedT (D.fixedFactor Ψ Q*unmarkedSexticTwist G.generator G.generator_good j markedSumSlots)
+        W X (fun A => ∏ i∈markedSumSlots, if Ideal.span {G.generator i}∣A then (1:ℂ) else 0) := by
+  dsimp only
+  rw [actual_marked_row_fixed_factor D Ψ Q hmLam hm2,
+    free_row_eq_joined_unmarked D.movingIdeal (Q*Ideal.span {(72:Eis)}) D.movingSupported S]
+  congr 1
+  funext A
+  exact (joined_whole_prime_mark (freePrimeFamily D.movingIdeal (Q*Ideal.span {(72:Eis)}) D.movingSupported) S A).symm
+
+lemma joined_free_pairwise {σ : Type*} [Fintype σ]
+    (I Q : Ideal Eis) (hI : quadraticSupported I) (S : PrimeFamily σ)
+    (hS : Pairwise (Function.onFun IsCoprime S.ideal))
+    (hdis : ∀ P : FreePrimeIndex I Q, ∀ i, S.ideal i≠P.val.val) :
+    Pairwise (Function.onFun IsCoprime ((freePrimeFamily I Q hI).sum S).ideal) := by
+  apply PrimeFamily.sum_pairwise (freePrimeFamily I Q hI) S
+  · exact freePrimeIndex_pairwise_coprime I Q
+  · exact hS
+  · intro P i
+    exact Ideal.isCoprime_of_isMaximal (hdis P i).symm
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+namespace PrimeFamily
+variable {ι : Type*} (P : PrimeFamily ι)
+lemma generator_prime (i : ι) : Prime (P.generator i) :=
+  (Ideal.span_singleton_prime (P.generator_ne_zero i)).mp inferInstance
+
+def restrict (A : Finset ι) : PrimeFamily A where
+  ideal i := P.ideal i.val
+  maximal i := P.maximal i.val
+  good i := P.good i.val
+
+lemma restrict_pairwise (hP : Pairwise (Function.onFun IsCoprime P.ideal)) (A : Finset ι) :
+    Pairwise (Function.onFun IsCoprime (P.restrict A).ideal) := by
+  intro i k hik
+  exact hP (fun h => hik (Subtype.ext h))
+
+def activeControlled [Fintype ι]
+    (hP : Pairwise (Function.onFun IsCoprime P.ideal))
+    (c : Eis) (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) (P.ideal i))
+    (h : Eis⧸Ideal.span {c}) (A : Finset ι) :
+    ControlledStratumArithmetic (fun i : A => P.generator i.val) N (G h).a0 (G h).c0 (G h).mode :=
+  Classical.choice ((P.restrict A).exists_controlled N (G h).a0 (G h).c0 (G h).mode
+    (G h).denominator_ne_zero (hN h) (G h).primary (G h).coprime
+    (P.restrict_pairwise hP A) (fun i => hNp i.val))
+
+theorem marked_source [Fintype ι]
+    (hP : Pairwise (Function.onFun IsCoprime P.ideal)) (j : ι→ℕ) (S : Finset ι)
+    (φ : Eis→*ℂ) (hφnorm : ∀ n, ‖φ n‖≤1)
+    (Q : Ideal Eis) (hQ : Q≠0) (hφperiod : CanonicalCoefficientClass.FactorsModulo Q φ)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*Q)
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) (P.ideal i))
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    markedCompletedT (φ*unmarkedSexticTwist P.generator P.generator_good j S) W X
+      (fun A => ∏ i∈S, if Ideal.span {P.generator i}∣A then 1 else 0)=
+    thetaDerivativeScalar⁻¹*∑ t : FixedActiveCuspIndex c P.generator,
+      fixedActiveFunctionWeight P.generator P.generator_ne_zero
+        (mixedPrimeFunction P.generator P.generator_good j S) c hc φ t *
+      (fixedActiveCuspDatum P.generator P.generator_ne_zero P.generator_primary c G N hN
+        (P.activeControlled hP c G N hN hNp) t).smoothedKernel W X := by
+  let Qall := (Q*Ideal.span {∏ i, P.generator i})*Ideal.span {∏ i∈S, P.generator i}
+  have hprod : (∏ i, P.generator i)≠0 := Finset.prod_ne_zero_iff.mpr (fun i _ => P.generator_ne_zero i)
+  have hmark : (∏ i∈S, P.generator i)≠0 := Finset.prod_ne_zero_iff.mpr (fun i _ => P.generator_ne_zero i)
+  have hQall : Qall≠0 := mul_ne_zero (mul_ne_zero hQ
+    (by simpa only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot] using hprod))
+    (by simpa only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot] using hmark)
+  let call := cubicIdealGenerator (Ideal.span {(9:Eis)}*Qall)
+  have hcall : call≠0 := by
+    apply cubicIdealGenerator_ne_zero
+    apply mul_ne_zero _ hQall
+    simp only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot]
+    norm_num
+  let : Finite (Eis⧸Ideal.span {call}) := (Ideal.span {call}).finiteQuotientOfFreeOfNeBot (Ideal.span_singleton_eq_bot.not.mpr hcall)
+  let : Fintype (Eis⧸Ideal.span {call}) := Fintype.ofFinite _
+  have hcallQ : Ideal.span {call}≤Ideal.span {(9:Eis)}*Qall := by
+    rw [span_cubicIdealGenerator]
+  exact markedCompletedT_fixed_active_strata P.generator P.generator_ne_zero P.generator_prime
+    P.generator_primary P.generator_good j S φ hφnorm Q hφperiod c hc hcQ G N hN
+    (P.activeControlled hP c G N hN hNp) call hcall hcallQ W hWcompact lo hi hlo hsupp hW X hX
+end PrimeFamily
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+variable {ι : Type*} [Fintype ι]
+def activeMarks (A S : Finset ι) : Finset A := Finset.univ.filter (fun i => i.val∈S)
+
+omit [Fintype ι] in
+lemma mem_activeMarks (A S : Finset ι) (i : A) : i∈activeMarks A S ↔ i.val∈S := by
+  simp [activeMarks]
+
+omit [Fintype ι] in
+lemma mixedPrimeFunction_restrict (P : PrimeFamily ι) (j : ι→ℕ) (A S : Finset ι)
+    (i : A) (x : Eis⧸Ideal.span {P.generator i.val}) :
+    mixedPrimeFunction (P.restrict A).generator (P.restrict A).generator_good
+      (fun i => j i.val) (activeMarks A S) i x =
+    mixedPrimeFunction P.generator P.generator_good j S i.val x := by
+  simp only [mixedPrimeFunction,mem_activeMarks]
+  rfl
+
+omit [Fintype ι] in
+lemma localActiveWeight_restrict (P : PrimeFamily ι) (j : ι→ℕ) (A S : Finset ι)
+    (v : ∀ i : A, (Eis⧸Ideal.span {P.generator i.val})ˣ) :
+    localActiveWeight P.generator P.generator_ne_zero
+      (mixedPrimeFunction P.generator P.generator_good j S) A v =
+    fullLocalFourierWeight (P.restrict A).generator_ne_zero
+      (mixedPrimeFunction (P.restrict A).generator (P.restrict A).generator_good
+        (fun i => j i.val) (activeMarks A S)) v := by
+  unfold localActiveWeight fullLocalFourierWeight
+  apply Finset.prod_congr rfl
+  intro i hi
+  congr 1
+  funext x
+  exact (mixedPrimeFunction_restrict P j A S i x).symm
+
+lemma active_sum_eq_mixed (P : PrimeFamily ι) (j : ι→ℕ) (S : Finset ι)
+    (hP : Pairwise (Function.onFun IsCoprime P.ideal))
+    (c : Eis) (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) (P.ideal i))
+    (h : Eis⧸Ideal.span {c}) (A : Finset ι) (W : ℝ→ℂ) (X : ℝ) :
+    (∑ v : ∀ i : A, (Eis⧸Ideal.span {P.generator i.val})ˣ,
+      localActiveWeight P.generator P.generator_ne_zero
+        (mixedPrimeFunction P.generator P.generator_good j S) A v *
+      (activeStratumDatum P.generator P.generator_ne_zero P.generator_primary
+        (P.activeControlled hP c G N hN hNp h) (hN h) (G h).denominator_ne_zero
+        (G h).primary (G h).shape A v).smoothedKernel W X)=
+    mixedSmoothedValue (P.activeControlled hP c G N hN hNp h A) (hN h)
+      (P.restrict A).generator_product_primary (G h).primary (G h).shape
+      (P.restrict A).generator_ne_zero (G h).denominator_ne_zero (P.restrict A).generator_good
+      (fun i => j i.val) (activeMarks A S) W X := by
+  unfold mixedSmoothedValue
+  apply Finset.sum_congr (by ext v; simp only [Finset.mem_univ])
+  intro v hv
+  rw [localActiveWeight_restrict]
+  rfl
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+theorem finiteAdditiveFourierCoeff_zero_delta {R:Type*} [CommRing R] [Fintype R]
+    (ψ:AddChar R ℂ) (h:R) :
+    finiteAdditiveFourierCoeff ψ (fun x=>if x=0 then 1 else 0) h=(Fintype.card R:ℂ)⁻¹ := by
+  simp [finiteAdditiveFourierCoeff]
+
+theorem prime_zeroFourier_norm_formula (p:Eis) [hP:(Ideal.span {p}).IsMaximal]
+    (hp:p≠0) (hg:lambda∉Ideal.span {p}) (hc:ringChar (Eis⧸Ideal.span {p})≠2)
+    (j:ℕ) (hj:j<6) :
+    finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 p hp)
+      (fun x => (complexSexticChar (Ideal.span {p}) hg ^ j) x) 0=
+      if j=0 then 1-(Ideal.absNorm (Ideal.span {p}):ℂ)⁻¹ else 0 := by
+  rw [finiteAdditiveFourierCoeff_mulChar_zero]
+  by_cases hz:j=0
+  · subst j
+    simp only [pow_zero,if_pos rfl,Nat.card_eq_fintype_card,Fintype.card_units]
+    rw [Nat.cast_sub (Nat.succ_le_of_lt Fintype.card_pos),Nat.cast_one,
+      Ideal.absNorm_apply,Submodule.cardQuot_apply,Nat.card_eq_fintype_card]
+    have hq:(Fintype.card (Eis⧸Ideal.span {p}):ℂ)≠0:=by exact_mod_cast Fintype.card_ne_zero
+    field_simp
+  · rw [if_neg hz,if_neg (complexSexticChar_pow_ne_one _ hg hc j hj hz)]
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+variable {ι : Type*} [Fintype ι]
+
+omit [Fintype ι] in
+lemma mixed_inactive_coefficient (P : PrimeFamily ι)
+    (hodd : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (j : ι→ℕ) (hj : ∀ i, j i<6)
+    (S : Finset ι) (i : ι) :
+    finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (P.generator i) (P.generator_ne_zero i))
+      (mixedPrimeFunction P.generator P.generator_good j S i) 0 =
+    if i∈S then (Ideal.absNorm (P.ideal i):ℂ)⁻¹
+      else if j i=0 then 1-(Ideal.absNorm (P.ideal i):ℂ)⁻¹ else 0 := by
+  change finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (P.generator i) (P.generator_ne_zero i))
+    (fun x => if i∈S then zeroMark x else (complexSexticChar (Ideal.span {P.generator i}) (P.generator_good i)^j i) x) 0 = _
+  by_cases hi : i∈S
+  · simp only [hi,ite_true,zeroMark,finiteAdditiveFourierCoeff_zero_delta]
+    have hcard : Fintype.card (Eis⧸Ideal.span {P.generator i})=Ideal.absNorm (P.ideal i) := by
+      rw [← P.generator_span i,Ideal.absNorm_apply,Submodule.cardQuot_apply,Nat.card_eq_fintype_card]
+    rw [hcard]
+  · simp only [hi,ite_false]
+    have ho : ringChar (Eis⧸Ideal.span {P.generator i})≠2 := by
+      rw [P.generator_span]
+      exact hodd i
+    rw [prime_zeroFourier_norm_formula (P.generator i) (P.generator_ne_zero i)
+      (P.generator_good i) ho (j i) (hj i),P.generator_span]
+
+lemma mixed_inactive_weight (P : PrimeFamily ι)
+    (hodd : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (j : ι→ℕ) (hj : ∀ i, j i<6)
+    (S A : Finset ι) :
+    localInactiveWeight P.generator P.generator_ne_zero
+      (mixedPrimeFunction P.generator P.generator_good j S) A =
+    ∏ i∈(Finset.univ:Finset ι)\A,
+      if i∈S then (Ideal.absNorm (P.ideal i):ℂ)⁻¹
+        else if j i=0 then 1-(Ideal.absNorm (P.ideal i):ℂ)⁻¹ else 0 := by
+  unfold localInactiveWeight
+  apply Finset.prod_congr rfl
+  intro i hi
+  exact mixed_inactive_coefficient P hodd j hj S i
+
+lemma mixed_inactive_zero_of_omitted (P : PrimeFamily ι)
+    (hodd : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (j : ι→ℕ) (hj : ∀ i, j i<6)
+    (S A : Finset ι) (i : ι) (hi : i∉S) (hji : j i≠0) (hiA : i∉A) :
+    localInactiveWeight P.generator P.generator_ne_zero
+      (mixedPrimeFunction P.generator P.generator_good j S) A=0 := by
+  rw [mixed_inactive_weight P hodd j hj]
+  apply Finset.prod_eq_zero (Finset.mem_sdiff.mpr ⟨Finset.mem_univ i,hiA⟩)
+  simp only [hi,hji,ite_false]
+
+lemma mixed_inactive_nonzero_requires (P : PrimeFamily ι)
+    (hodd : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (j : ι→ℕ) (hj : ∀ i, j i<6)
+    (S A : Finset ι)
+    (h : localInactiveWeight P.generator P.generator_ne_zero
+      (mixedPrimeFunction P.generator P.generator_good j S) A≠0) :
+    ∀ i, i∉S → j i≠0 → i∈A := by
+  intro i hi hji
+  by_contra hiA
+  exact h (mixed_inactive_zero_of_omitted P hodd j hj S A i hi hji hiA)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open CanonicalRowCompletion
+noncomputable section
+variable {α β γ σ : Type*} [Fintype α] [Fintype β] [Fintype γ] [Fintype σ]
+
+def joinedFiberEquiv (e : α⊕β≃γ) : α⊕(β⊕σ)≃γ⊕σ :=
+  (Equiv.sumAssoc α β σ).symm.trans (Equiv.sumCongr e (Equiv.refl σ))
+
+def markedActiveSet (e : α⊕β≃γ) (B : Finset β) (T : Finset σ) : Finset (γ⊕σ) :=
+  residualActivePrimes (joinedFiberEquiv (σ:=σ) e) ∪
+    (B.disjSum T).image (fun x => joinedFiberEquiv e (Sum.inr x))
+
+lemma inactive_product_disjSum (z : β⊕σ→ℂ) (B : Finset β) (T : Finset σ) :
+    (∏ x∈(Finset.univ:Finset (β⊕σ))\B.disjSum T,z x)=
+    (∏ b∈(Finset.univ:Finset β)\B,z (Sum.inl b))*
+    ∏ t∈(Finset.univ:Finset σ)\T,z (Sum.inr t) := by
+  have hs : (Finset.univ:Finset (β⊕σ))\B.disjSum T=
+      ((Finset.univ:Finset β)\B).disjSum ((Finset.univ:Finset σ)\T) := by
+    ext x
+    cases x <;> simp
+  rw [hs,Finset.prod_disjSum]
+
+theorem inactive_weight_three_blocks (e : α⊕β≃γ) (z : γ⊕σ→ℂ)
+    (hz : ∀ a, z (Sum.inl (e (Sum.inl a)))=0) (F : Finset (γ⊕σ)→ℂ) :
+    (∑ A : Finset (γ⊕σ), (∏ x∈(Finset.univ:Finset (γ⊕σ))\A,z x)*F A)=
+    ∑ B : Finset β, ∑ T : Finset σ,
+      ((∏ b∈(Finset.univ:Finset β)\B,z (Sum.inl (e (Sum.inr b))))*
+        ∏ t∈(Finset.univ:Finset σ)\T,z (Sum.inr t))*F (markedActiveSet e B T) := by
+  have he := inactive_weight_nonresidual_subsets (joinedFiberEquiv e) z hz F
+  refine Eq.trans ?_ (Eq.trans he ?_)
+  · apply Finset.sum_congr (by ext A; simp only [Finset.mem_univ])
+    intro A hA
+    congr 1
+    apply Finset.prod_congr (by ext x; simp only [Finset.mem_sdiff,Finset.mem_univ])
+    intro x hx
+    rfl
+  · rw [← Fintype.sum_prod_type']
+    apply Fintype.sum_equiv Finset.sumEquiv.toEquiv
+    intro B
+    have hB : B=B.toLeft.disjSum B.toRight := (Finset.toLeft_disjSum_toRight).symm
+    conv_lhs => rw [hB]
+    congr 1
+    · refine Eq.trans ?_ (inactive_product_disjSum (fun x => z (joinedFiberEquiv e (Sum.inr x))) B.toLeft B.toRight)
+      apply Finset.prod_congr (by ext x; simp only [Finset.mem_sdiff,Finset.mem_univ])
+      intro x hx
+      rfl
+    · apply congrArg F
+      ext x
+      simp only [markedActiveSet,Finset.sumEquiv,Equiv.coe_fn_mk,Finset.mem_union,Finset.mem_image]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+abbrev markedRowFamily {σ : Type*} {m f z : Eis}
+    (D : GoodMaskRowData m f z) (S : PrimeFamily σ) (Q : Ideal Eis) :=
+  (freePrimeFamily D.movingIdeal (Q*Ideal.span {(72:Eis)}) D.movingSupported).sum S
+
+def markedRowExponent {σ : Type*} {m f z : Eis}
+    (D : GoodMaskRowData m f z) (Q : Ideal Eis) :
+    FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}) ⊕ σ → ℕ :=
+  Sum.elim (fun P => (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+    (fun _ => 0)
+
+theorem actual_marked_row_overlap_zero {σ : Type*} [Fintype σ]
+    {m f z : Eis} (D : GoodMaskRowData m f z) (S : PrimeFamily σ)
+    (Ψ : Eis→*ℂ) (Q : Ideal Eis) (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)})) (i : σ)
+    (hPi : S.ideal i=P.val.val) (W : ℝ→ℂ) (X : ℝ) :
+    markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ i, if S.ideal i∣A then (1:ℂ) else 0)=0 := by
+  rw [actual_marked_row_fixed_factor D Ψ Q hmLam hm2]
+  exact markedCompletedT_free_overlap_zero D.movingIdeal (Q*Ideal.span {(72:Eis)})
+    D.movingSupported S P i hPi (D.fixedFactor Ψ Q) W X
+
+def markedCuspSource {ι : Type*} [Fintype ι] (P : PrimeFamily ι)
+    (hP : Pairwise (Function.onFun IsCoprime P.ideal)) (j : ι→ℕ) (S : Finset ι)
+    (φ : Eis→*ℂ) (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) (P.ideal i)) (W : ℝ→ℂ) (X : ℝ) : ℂ :=
+  thetaDerivativeScalar⁻¹*∑ t : FixedActiveCuspIndex c P.generator,
+    fixedActiveFunctionWeight P.generator P.generator_ne_zero
+      (mixedPrimeFunction P.generator P.generator_good j S) c hc φ t *
+    (fixedActiveCuspDatum P.generator P.generator_ne_zero P.generator_primary c G N hN
+      (P.activeControlled hP c G N hN hNp) t).smoothedKernel W X
+
+theorem actual_marked_row_source {σ : Type*} [Fintype σ]
+    {m f z : Eis} (D : GoodMaskRowData m f z) (S : PrimeFamily σ)
+    (hS : Pairwise (Function.onFun IsCoprime S.ideal))
+    (Ψ : Eis→*ℂ) (Q : Ideal Eis) (hQ : Q≠0)
+    (hΨ : CanonicalCoefficientClass.FactorsModulo Q Ψ) (hΨnorm : ∀ n, ‖Ψ n‖≤1)
+    (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (hdis : ∀ P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}), ∀ i, S.ideal i≠P.val.val)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)}))
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) ((markedRowFamily D S Q).ideal i))
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ i, if S.ideal i∣A then (1:ℂ) else 0)=
+    markedCuspSource (markedRowFamily D S Q)
+      (joined_free_pairwise D.movingIdeal (Q*Ideal.span {(72:Eis)}) D.movingSupported S hS hdis)
+      (markedRowExponent D Q) markedSumSlots (D.fixedFactor Ψ Q) c hc G N hN hNp W X := by
+  have hQ0 : Q*Ideal.span {(72:Eis)}≠0 := by
+    apply mul_ne_zero hQ
+    simp only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot]
+    norm_num
+  exact (actual_marked_row_eq_joined D S Ψ Q hmLam hm2 W X).trans
+    ((markedRowFamily D S Q).marked_source
+      (joined_free_pairwise D.movingIdeal (Q*Ideal.span {(72:Eis)}) D.movingSupported S hS hdis)
+      (markedRowExponent D Q) markedSumSlots (D.fixedFactor Ψ Q) (D.fixedFactor_norm Ψ Q hΨnorm)
+      (Q*Ideal.span {(72:Eis)}) hQ0 (D.fixedFactor_periodic Ψ Q hΨ) c hc hcQ G N hN hNp
+      W hWcompact lo hi hlo hsupp hW X hX)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+lemma PrimeFamily.level_coprime {ι : Type*} (P : PrimeFamily ι)
+    (Q : Ideal Eis) (c : Eis) (hcQ : Ideal.span {c}=Ideal.span {(9:Eis)}*Q)
+    (hQ : ∀ i, IsCoprime Q (P.ideal i)) (i : ι) :
+    IsCoprime (Ideal.span {(9:Eis)*c}) (P.ideal i) := by
+  have h9 : IsCoprime (Ideal.span {(9:Eis)}) (P.ideal i) := by
+    rw [← P.generator_span i]
+    apply (Ideal.isCoprime_span_singleton_iff _ _).mpr
+    have h3:IsCoprime (3:Eis) (P.generator i):=by
+      simpa only [Units.val_one,pow_zero,mul_one] using
+        ramified_primary_coprime (1:Eisˣ) 0 (P.generator i) (P.generator_primary i)
+    simpa only [show (3:Eis)^2=9 by norm_num] using (h3.pow_left : IsCoprime ((3:Eis)^2) (P.generator i))
+  rw [← Ideal.span_singleton_mul_span_singleton,hcQ]
+  exact h9.mul_left (h9.mul_left (hQ i))
+
+lemma markedRowFamily_period {σ : Type*} {m f z : Eis}
+    (D : GoodMaskRowData m f z) (S : PrimeFamily σ) (Q : Ideal Eis)
+    (hS : ∀ i, IsCoprime (Q*Ideal.span {(72:Eis)}) (S.ideal i))
+    (c : Eis) (hcQ : Ideal.span {c}=Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)})) :
+    ∀ i, IsCoprime (Ideal.span {(9:Eis)*c}) ((markedRowFamily D S Q).ideal i) := by
+  apply PrimeFamily.level_coprime _ _ _ hcQ
+  intro i
+  cases i with
+  | inl P => exact freePrimeIndex_coprime _ _ P
+  | inr i => exact hS i
+
+lemma markedRowFamily_odd {σ : Type*} {m f z : Eis}
+    (D : GoodMaskRowData m f z) (S : PrimeFamily σ) (Q : Ideal Eis)
+    (hS : ∀ i, ringChar (Eis⧸S.ideal i)≠2) :
+    ∀ i, ringChar (Eis⧸(markedRowFamily D S Q).ideal i)≠2 := by
+  intro i
+  cases i with
+  | inl P => exact (supported_factors_good D.movingIdeal D.movingSupported P.val.val
+      (Multiset.mem_toFinset.mp P.val.property)).2.2
+  | inr i => exact hS i
+
+lemma markedRowExponent_lt {σ : Type*} {m f z : Eis}
+    (D : GoodMaskRowData m f z) (Q : Ideal Eis) :
+    ∀ i : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)})⊕σ, markedRowExponent D Q i<6 := by
+  intro i
+  cases i with
+  | inl P => exact Nat.mod_lt _ (by norm_num)
+  | inr i => norm_num [markedRowExponent]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+variable {ι σ : Type*} [Fintype ι] [Fintype σ]
+
+def joinedInactiveCoefficient (P : PrimeFamily ι) (S : PrimeFamily σ) (j : ι→ℕ) : ι⊕σ→ℂ :=
+  Sum.elim (fun i => if j i=0 then 1-(Ideal.absNorm (P.ideal i):ℂ)⁻¹ else 0)
+    (fun i => (Ideal.absNorm (S.ideal i):ℂ)⁻¹)
+
+lemma joined_inactive_weight (P : PrimeFamily ι) (S : PrimeFamily σ)
+    (hP : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (hS : ∀ i, ringChar (Eis⧸S.ideal i)≠2)
+    (j : ι→ℕ) (hj : ∀ i, j i<6) (A : Finset (ι⊕σ)) :
+    localInactiveWeight (P.sum S).generator (P.sum S).generator_ne_zero
+      (mixedPrimeFunction (P.sum S).generator (P.sum S).generator_good
+        (Sum.elim j (fun _ => 0)) markedSumSlots) A =
+    ∏ i∈(Finset.univ:Finset (ι⊕σ))\A, joinedInactiveCoefficient P S j i := by
+  have ho : ∀ i, ringChar (Eis⧸(P.sum S).ideal i)≠2 := by
+    intro i
+    cases i with
+    | inl i => exact hP i
+    | inr i => exact hS i
+  have hj' : ∀ i : ι⊕σ, Sum.elim j (fun _ => 0) i<6 := by
+    intro i
+    cases i with
+    | inl i => exact hj i
+    | inr i => norm_num
+  rw [mixed_inactive_weight (P.sum S) ho _ hj']
+  apply Finset.prod_congr (by ext i; simp only [Finset.mem_sdiff,Finset.mem_univ])
+  intro i hi
+  cases i <;> simp [markedSumSlots,joinedInactiveCoefficient,PrimeFamily.sum]
+
+theorem joined_inactive_three_blocks {α β : Type*} [Fintype α] [Fintype β]
+    (P : PrimeFamily ι) (S : PrimeFamily σ)
+    (hP : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (hS : ∀ i, ringChar (Eis⧸S.ideal i)≠2)
+    (j : ι→ℕ) (hj : ∀ i, j i<6) (e : α⊕β≃ι) (he : ∀ a, j (e (Sum.inl a))=1)
+    (F : Finset (ι⊕σ)→ℂ) :
+    (∑ A : Finset (ι⊕σ),
+      localInactiveWeight (P.sum S).generator (P.sum S).generator_ne_zero
+        (mixedPrimeFunction (P.sum S).generator (P.sum S).generator_good
+          (Sum.elim j (fun _ => 0)) markedSumSlots) A * F A)=
+    ∑ B : Finset β, ∑ T : Finset σ,
+      ((∏ b∈(Finset.univ:Finset β)\B,
+        if j (e (Sum.inr b))=0 then 1-(Ideal.absNorm (P.ideal (e (Sum.inr b))):ℂ)⁻¹ else 0)*
+        ∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (S.ideal t):ℂ)⁻¹)*F (markedActiveSet e B T) := by
+  have hz : ∀ a, joinedInactiveCoefficient P S j (Sum.inl (e (Sum.inl a)))=0 := by
+    intro a
+    simp [joinedInactiveCoefficient,he a]
+  have h := inactive_weight_three_blocks e (joinedInactiveCoefficient P S j) hz F
+  refine Eq.trans ?_ h
+  apply Finset.sum_congr (by ext A; simp only [Finset.mem_univ])
+  intro A hA
+  congr 1
+  exact joined_inactive_weight P S hP hS j hj A
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+lemma residualPart_admissible (I R:Ideal Eis) (hbad:∀P∈fixedBadPrimes,P∣R) :
+    CanonicalQuadraticSieve.Admissible (rowResidualPart I R) :=
+  (CanonicalQuadraticSieve.admissible_iff_native _).mpr
+    (CompletedGauss.rowResidualPart_admissible I R hbad)
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+local notation "E" => D.freePrimeFiberEquiv R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+
+theorem original_fiber_inactive_sum (S : PrimeFamily σ)
+    (hS : ∀ i, ringChar (Eis⧸S.ideal i)≠2)
+    (H : Finset (FreePrimeIndex D.movingIdeal Q₀⊕σ)→ℂ) :
+    (∑ A : Finset (FreePrimeIndex D.movingIdeal Q₀⊕σ),
+      localInactiveWeight ((freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S).generator
+        ((freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S).generator_ne_zero
+        (mixedPrimeFunction ((freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S).generator
+          ((freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S).generator_good
+          (Sum.elim (fun P => (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+            (fun _ => 0)) markedSumSlots) A * H A)=
+    ∑ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀), ∑ T : Finset σ,
+      ((∏ b∈(Finset.univ:Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀))\B,
+        if completedLocalExponent R F b.val=0 then 1-(Ideal.absNorm b.val:ℂ)⁻¹ else 0)*
+        ∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (S.ideal t):ℂ)⁻¹)*H (markedActiveSet E B T) := by
+  have hodd : ∀ P : FreePrimeIndex D.movingIdeal Q₀,
+      ringChar (Eis⧸(freePrimeFamily D.movingIdeal Q₀ D.movingSupported).ideal P)≠2 := by
+    intro P
+    exact (supported_factors_good D.movingIdeal D.movingSupported P.val.val
+      (Multiset.mem_toFinset.mp P.val.property)).2.2
+  have hres : ∀ a, (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count
+      (E (Sum.inl a)).val.val%6=1 := by
+    intro a
+    exact D.freePrimeFiberEquiv_exponent R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inl a)
+  have he := joined_inactive_three_blocks (freePrimeFamily D.movingIdeal Q₀ D.movingSupported)
+    S hodd hS (fun P => (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+    (fun _ => Nat.mod_lt _ (by norm_num)) E hres H
+  refine he.trans ?_
+  apply Finset.sum_congr (by ext B; simp only [Finset.mem_univ])
+  intro B hB
+  apply Finset.sum_congr (by ext T; simp only [Finset.mem_univ])
+  intro T hT
+  congr 2
+  apply Finset.prod_congr (by ext b; simp only [Finset.mem_sdiff,Finset.mem_univ])
+  intro b hb
+  rw [D.freePrimeFiberEquiv_exponent R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inr b)]
+  change (if completedLocalExponent R F b.val=0 then
+    1-(Ideal.absNorm (E (Sum.inr b)).val.val:ℂ)⁻¹ else 0)=_
+  rw [D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inr b)]
+  rfl
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open CanonicalRowCompletion
+noncomputable section
+variable {α β γ σ : Type*} [Fintype α] [Fintype β] [Fintype σ]
+
+def disjSumIndexEquiv (B : Finset β) (T : Finset σ) : B⊕T≃B.disjSum T where
+  toFun x := match x with
+    | Sum.inl b => ⟨Sum.inl b.val,by simp⟩
+    | Sum.inr t => ⟨Sum.inr t.val,by simp⟩
+  invFun x := match x with
+    | ⟨Sum.inl b,hb⟩ => Sum.inl ⟨b,by simpa using hb⟩
+    | ⟨Sum.inr t,ht⟩ => Sum.inr ⟨t,by simpa using ht⟩
+  left_inv x := by cases x <;> rfl
+  right_inv x := by rcases x with ⟨x,hx⟩; cases x <;> rfl
+
+omit [Fintype β] [Fintype σ] in
+lemma complete_marked_set (e : α⊕β≃γ) (B : Finset β) (T : Finset σ) :
+    completeActiveSet (joinedFiberEquiv e) (B.disjSum T)=markedActiveSet e B T := by
+  ext x
+  simp only [completeActiveSet,markedActiveSet,Finset.mem_union,Finset.mem_image]
+
+def markedActiveEquiv (e : α⊕β≃γ) (B : Finset β) (T : Finset σ) :
+    B⊕(α⊕T)≃markedActiveSet e B T :=
+  (((((Equiv.sumAssoc B α T).symm.trans
+    (Equiv.sumCongr (Equiv.sumComm B α) (Equiv.refl T))).trans (Equiv.sumAssoc α B T)).trans
+    (Equiv.sumCongr (Equiv.refl α) (disjSumIndexEquiv B T))).trans
+    (selectedActiveEquiv (joinedFiberEquiv e) (B.disjSum T))).trans
+    (Equiv.subtypeEquivRight (fun x => by rw [complete_marked_set e B T]))
+
+lemma markedActiveEquiv_frozen (e : α⊕β≃γ) (B : Finset β) (T : Finset σ) (b : B) :
+    (markedActiveEquiv e B T (Sum.inl b)).val=Sum.inl (e (Sum.inr b.val)) := rfl
+lemma markedActiveEquiv_residual (e : α⊕β≃γ) (B : Finset β) (T : Finset σ) (a : α) :
+    (markedActiveEquiv e B T (Sum.inr (Sum.inl a))).val=Sum.inl (e (Sum.inl a)) := rfl
+lemma markedActiveEquiv_slot (e : α⊕β≃γ) (B : Finset β) (T : Finset σ) (t : T) :
+    (markedActiveEquiv e B T (Sum.inr (Sum.inr t))).val=Sum.inr t.val := rfl
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators MatrixGroups
+open Eisenstein CompletedGauss CubicJacobi  
+noncomputable section
+variable {ι κ : Type*} [Fintype ι] [Fintype κ]
+
+lemma cuspPrimeCofactor_reindex (p : ι→Eis) (e : κ≃ι) (k : κ) :
+    cuspPrimeCofactor (fun k => p (e k)) k=cuspPrimeCofactor p (e k) := by
+  unfold cuspPrimeCofactor
+  apply Finset.prod_equiv e
+  · intro i
+    simp only [Finset.mem_erase,Finset.mem_univ,and_true,ne_eq,EmbeddingLike.apply_eq_iff_eq]
+  · intro i hi
+    rfl
+
+lemma cuspCrossNumerator_reindex (a c l : Eis) (p : ι→Eis) (e : κ≃ι) (h : ι→Eis) :
+    cuspCrossNumerator a c l (fun k => p (e k)) (fun k => h (e k))=
+      cuspCrossNumerator a c l p h := by
+  unfold cuspCrossNumerator
+  simp_rw [cuspPrimeCofactor_reindex]
+  rw [e.prod_comp,e.sum_comp (fun i => h i*cuspPrimeCofactor p i)]
+
+def unitFrequencyEquiv (p : ι→Eis) (e : κ≃ι) :
+    (∀ k, (Eis⧸Ideal.span {p (e k)})ˣ)≃(∀ i, (Eis⧸Ideal.span {p i})ˣ) :=
+  Equiv.piCongrLeft (fun i => (Eis⧸Ideal.span {p i})ˣ) e
+
+omit [Fintype ι] [Fintype κ] in
+lemma unitFrequencyEquiv_apply (p : ι→Eis) (e : κ≃ι)
+    (v : ∀ k, (Eis⧸Ideal.span {p (e k)})ˣ) (k : κ) :
+    unitFrequencyEquiv p e v (e k)=v k := Equiv.piCongrLeft_apply_apply _ _ _ _
+
+omit [Fintype ι] [Fintype κ] in
+lemma unitFrequencyEquiv_one (p : ι→Eis) (e : κ≃ι) :
+    unitFrequencyEquiv p e (fun _ => 1)=(fun _ => 1) := by
+  funext i
+  obtain ⟨k,rfl⟩ := e.surjective i
+  exact unitFrequencyEquiv_apply p e _ k
+
+def reindexControlled {p : ι→Eis} {N a c : Eis} {mode : Bool}
+    (D : ControlledStratumArithmetic p N a c mode) (e : κ≃ι) :
+    ControlledStratumArithmetic (fun k => p (e k)) N a c mode where
+  lift v k := D.lift (unitFrequencyEquiv p e v) (e k)
+  lift_period v k := D.lift_period _ _
+  lift_residue v k := (D.lift_residue _ _).trans (congrArg Units.val (unitFrequencyEquiv_apply p e v k))
+  U := D.U
+  w := D.w
+  bezout := by simpa only [e.prod_comp] using D.bezout
+  sigma k := D.sigma (e k)
+  epsilon k := D.epsilon (e k)
+  sigma_value k := by simpa only [cuspPrimeCofactor_reindex] using D.sigma_value (e k)
+  epsilon_value k := by simpa only [cuspPrimeCofactor_reindex] using D.epsilon_value (e k)
+  matrix v := D.matrix (unitFrequencyEquiv p e v)
+  numerator v := by
+    rw [D.numerator,cuspCrossNumerator_reindex]
+  denominator v := by simpa only [e.prod_comp] using D.denominator (unitFrequencyEquiv p e v)
+  matrix_fixed v i j := by
+    simpa only [unitFrequencyEquiv_one] using D.matrix_fixed (unitFrequencyEquiv p e v) i j
+  conditions v := D.conditions (unitFrequencyEquiv p e v)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss InverseMoment
+noncomputable section
+variable {ι κ : Type*} [Fintype ι] [Fintype κ] {p : ι→Eis} {N a c : Eis} {mode : Bool}
+
+lemma reindexControlled_matrix_one (D : ControlledStratumArithmetic p N a c mode) (e : κ≃ι) :
+    (reindexControlled D e).matrix (fun _ => 1)=D.matrix (fun _ => 1) := by
+  change D.matrix (unitFrequencyEquiv p e (fun _ => 1))=_
+  rw [unitFrequencyEquiv_one]
+
+lemma reindexControlled_fixedFactor (D : ControlledStratumArithmetic p N a c mode) (e : κ≃ι) :
+    (reindexControlled D e).fixedFactor=D.fixedFactor := by
+  unfold ControlledStratumArithmetic.fixedFactor
+  rw [reindexControlled_matrix_one]
+
+lemma reindexControlled_U (D : ControlledStratumArithmetic p N a c mode) (e : κ≃ι) :
+    (reindexControlled D e).U=D.U := rfl
+
+def reindexMarks (e : κ≃ι) (S : Finset ι) : Finset κ := Finset.univ.filter (fun k => e k∈S)
+
+omit [Fintype ι] in
+lemma mem_reindexMarks (e : κ≃ι) (S : Finset ι) (k : κ) : k∈reindexMarks e S ↔ e k∈S := by
+  simp [reindexMarks]
+
+lemma mixedActiveBracket_reindex [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode) (e : κ≃ι)
+    (hp : ∀ i, p i≠0) (hg : ∀ i, lambda∉Ideal.span {p i})
+    (j : ι→ℕ) (S : Finset ι) (k : κ) (x : Eis) :
+    mixedActiveBracket (fun k => hp (e k)) (fun k => hg (e k)) (fun k => j (e k))
+      (reindexMarks e S) (reindexControlled D e) k x =mixedActiveBracket hp hg j S D (e k) x := by
+  simp only [mixedActiveBracket,mem_reindexMarks]
+  rfl
+
+theorem mixedReflectedValue_reindex [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode) (e : κ≃ι)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i≠0) (hc : c≠0) (hg : ∀ i, lambda∉Ideal.span {p i})
+    (j : ι→ℕ) (S : Finset ι) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue (reindexControlled D e) s (fun k => hp (e k)) hc (fun k => hg (e k))
+      (fun k => j (e k)) (reindexMarks e S) W X =mixedReflectedValue D s hp hc hg j S W X := by
+  have hprod (x : Eis) :
+      (∏ k, mixedActiveBracket (fun k => hp (e k)) (fun k => hg (e k)) (fun k => j (e k))
+        (reindexMarks e S) (reindexControlled D e) k x)=∏ i, mixedActiveBracket hp hg j S D i x := by
+    simp_rw [mixedActiveBracket_reindex]
+    exact e.prod_comp (fun i => mixedActiveBracket hp hg j S D i x)
+  simp only [mixedReflectedValue,e.prod_comp p,reindexControlled_fixedFactor,
+    reindexControlled_matrix_one,reindexControlled_U,hprod]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+def poolPrimeFamily (R Q Q₀ : Ideal Eis) : PrimeFamily (FreeReflection.pool R Q Q₀) where
+  ideal P := P.val
+  maximal P := FreeReflection.pool_maximal R Q Q₀ P
+  good P := FreeReflection.pool_good R Q Q₀ P
+
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+local notation "E" => D.freePrimeFiberEquiv R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+
+lemma original_active_family_ideal (S : PrimeFamily σ)
+    (B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀)) (T : Finset σ)
+    (x : B⊕(PrimeIndex K⊕T)) :
+    (((freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S).restrict
+      (markedActiveSet E B T)).ideal (markedActiveEquiv E B T x)=
+    (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).ideal x := by
+  cases x with
+  | inl b =>
+    change (E (Sum.inr b.val)).val.val=b.val.val
+    exact D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inr b.val)
+  | inr x => cases x with
+    | inl a =>
+      change (E (Sum.inl a)).val.val=a.val
+      exact D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inl a)
+    | inr t => rfl
+
+lemma original_active_family_generator (S : PrimeFamily σ)
+    (B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀)) (T : Finset σ)
+    (x : B⊕(PrimeIndex K⊕T)) :
+    (((freePrimeFamily D.movingIdeal Q₀ D.movingSupported).sum S).restrict
+      (markedActiveSet E B T)).generator (markedActiveEquiv E B T x)=
+    (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator x :=
+  congrArg primaryIdealPrime (original_active_family_ideal D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T x)
+
+lemma original_active_exponent
+    (B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀)) (T : Finset σ)
+    (x : B⊕(PrimeIndex K⊕T)) :
+    Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+      (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6) (fun _ : σ => 0)
+      (markedActiveEquiv E B T x).val =
+    Sum.elim (fun b : B => completedLocalExponent R F b.val.val)
+      (Sum.elim (fun _ : PrimeIndex K => 1) (fun _ : T => 0)) x := by
+  cases x with
+  | inl b => exact D.freePrimeFiberEquiv_exponent R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inr b.val)
+  | inr x => cases x with
+    | inl a => exact D.freePrimeFiberEquiv_exponent R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inl a)
+    | inr t => rfl
+
+lemma original_active_marks
+    (B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀)) (T : Finset σ) :
+    reindexMarks (markedActiveEquiv E B T) (activeMarks (markedActiveSet E B T) markedSumSlots)=
+    Finset.univ.filter (fun x : B⊕(PrimeIndex K⊕T) => match x with
+      | Sum.inr (Sum.inr _) => True | _ => False) := by
+  ext x
+  simp only [mem_reindexMarks,mem_activeMarks,Finset.mem_filter,Finset.mem_univ,true_and]
+  cases x with
+  | inl b => simp [markedActiveEquiv_frozen,markedSumSlots]
+  | inr x => cases x with
+    | inl a => simp [markedActiveEquiv_residual,markedSumSlots]
+    | inr t => simp [markedActiveEquiv_slot,markedSumSlots]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+lemma maximal_coprime_of_not_dvd (P J : Ideal Eis) [P.IsMaximal] (h : ¬P∣J) : IsCoprime P J := by
+  rw [Ideal.isCoprime_iff_codisjoint]
+  apply ((Ideal.isMaximal_def.mp (inferInstance : P.IsMaximal)).not_le_iff_codisjoint).mp
+  exact fun hle => h (Ideal.dvd_iff_le.mpr hle)
+
+
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+lemma poolPrimeFamily_pairwise (R Q Q₀ : Ideal Eis) :
+    Pairwise (Function.onFun IsCoprime (poolPrimeFamily R Q Q₀).ideal) := by
+  intro P T hPT
+  exact Ideal.isCoprime_of_isMaximal (Subtype.val_injective.ne hPT)
+
+lemma poolPrimeFamily_period (R Q Q₀ : Ideal Eis) (P : FreeReflection.pool R Q Q₀) :
+    IsCoprime Q₀ ((poolPrimeFamily R Q Q₀).ideal P) := by
+  apply (maximal_coprime_of_not_dvd _ _ ?_).symm
+  intro h
+  exact FreeReflection.pool_free R Q Q₀ P (Ideal.dvd_iff_le.mp h)
+
+lemma poolPrimeFamily_odd (R Q Q₀ : Ideal Eis) (P : FreeReflection.pool R Q Q₀) :
+    ringChar (Eis⧸(poolPrimeFamily R Q Q₀).ideal P)≠2 := FreeReflection.pool_odd R Q Q₀ P
+
+lemma poolPrimeFamily_fiber_row_coprime (R I Q Q₀ : Ideal Eis)
+    (hR : R≠0) (hI : I≠0) (hQ : Q≠0)
+    (hpow : rowPowerfulPart R=rowPowerfulPart I) (hmask : rowMaskPart R Q=rowMaskPart I Q)
+    (P : FreeReflection.pool R Q Q₀) :
+    IsCoprime ((poolPrimeFamily R Q Q₀).ideal P) (rowResidualPart I Q) := by
+  apply maximal_coprime_of_not_dvd
+  exact FreeReflection.pool_nonresidual I Q Q₀
+    (nonresidualPoolEquiv R I Q Q₀ hR hI hQ hpow hmask P)
+
+lemma poolPrimeFamily_fiber_divides (R I Q Q₀ : Ideal Eis)
+    (hR : R≠0) (hI : I≠0) (hQ : Q≠0)
+    (hpow : rowPowerfulPart R=rowPowerfulPart I) (hmask : rowMaskPart R Q=rowMaskPart I Q)
+    (P : FreeReflection.pool R Q Q₀) :
+    (poolPrimeFamily R Q Q₀).ideal P∣I*Q :=
+  FreeReflection.pool_divides I Q Q₀ hI hQ (nonresidualPoolEquiv R I Q Q₀ hR hI hQ hpow hmask P)
+
+lemma poolPrimeFamily_fiber_exponent (R I F Q Q₀ : Ideal Eis)
+    (hR : R≠0) (hI : I≠0) (hQ : Q≠0)
+    (hpow : rowPowerfulPart R=rowPowerfulPart I) (hmask : rowMaskPart R Q=rowMaskPart I Q)
+    (P : FreeReflection.pool R Q Q₀) :
+    completedLocalExponent I F ((poolPrimeFamily R Q Q₀).ideal P)=completedLocalExponent R F P.val :=
+  nonresidualPoolEquiv_exponent R I F Q Q₀ hR hI hQ hpow hmask P
+
+lemma pool_restrict_completion_coprime (R Q Q₀ : Ideal Eis)
+    (B : Finset (FreeReflection.pool R Q Q₀)) (c : Eis)
+    (hc : Ideal.span {c}=Ideal.span {(9:Eis)}*Q₀) :
+    ∀ b : B, IsCoprime (Ideal.span {(9:Eis)*c}) (((poolPrimeFamily R Q Q₀).restrict B).ideal b) := by
+  exact ((poolPrimeFamily R Q Q₀).restrict B).level_coprime Q₀ c hc
+    (fun b => poolPrimeFamily_period R Q Q₀ b.val)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+def castControlled {ι : Type*} [Fintype ι] {p q : ι→Eis} {N a c : Eis} {mode : Bool}
+    (h : p=q) (D : ControlledStratumArithmetic p N a c mode) :
+    ControlledStratumArithmetic q N a c mode := h ▸ D
+
+lemma mixedReflectedValue_cast {ι : Type*} [Fintype ι] {p q : ι→Eis} {N a c : Eis} {mode : Bool}
+    [∀ i, (Ideal.span {p i}).IsMaximal] [∀ i, (Ideal.span {q i}).IsMaximal]
+    (h : p=q) (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i≠0) (hq : ∀ i, q i≠0) (hc : c≠0)
+    (hgp : ∀ i, lambda∉Ideal.span {p i}) (hgq : ∀ i, lambda∉Ideal.span {q i})
+    (j : ι→ℕ) (S : Finset ι) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue (castControlled h D) s hq hc hgq j S W X=
+      mixedReflectedValue D s hp hc hgp j S W X := by
+  subst q
+  rfl
+
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable (S : PrimeFamily σ) (B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀)) (T : Finset σ)
+local notation "E" => D.freePrimeFiberEquiv R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+local notation "PS" => PrimeFamily.restrict (PrimeFamily.sum (freePrimeFamily D.movingIdeal Q₀ D.movingSupported) S) (markedActiveSet E B T)
+local notation "PF" => PrimeFamily.reflected (PrimeFamily.restrict (poolPrimeFamily R (Ideal.span (Set.singleton m)*F) Q₀) B) K hK (S.restrict T)
+local notation "EA" => markedActiveEquiv E B T
+
+lemma original_active_marks_eq_slots :
+    reindexMarks EA (activeMarks (markedActiveSet E B T) markedSumSlots)=slotIndices B (PrimeIndex K) T := by
+  rw [original_active_marks D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T]
+  ext x
+  cases x with
+  | inl b => simp [slotIndices]
+  | inr x => cases x with
+    | inl a => simp [slotIndices]
+    | inr t => simp [slotIndices]
+
+def originalCanonicalControlled {N a c : Eis} {mode : Bool}
+    (C : ControlledStratumArithmetic (PS).generator N a c mode) :
+    ControlledStratumArithmetic (PF).generator N a c mode :=
+  castControlled (funext (original_active_family_generator D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T))
+    (reindexControlled C EA)
+
+theorem original_reflected_source_eq {N a c : Eis} {mode : Bool}
+    (C : ControlledStratumArithmetic (PS).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue C s (PS).generator_ne_zero hc (PS).generator_good
+      (fun i => Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+        (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+        (fun _ : σ => 0) i.val) (activeMarks (markedActiveSet E B T) markedSumSlots) W X =
+    mixedReflectedValue (originalCanonicalControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T C)
+      s (PF).generator_ne_zero hc (PF).generator_good
+      (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val)) (slotIndices B (PrimeIndex K) T) W X := by
+  rw [← mixedReflectedValue_reindex C EA]
+  have hj : (fun x => Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+        (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+        (fun _ : σ => 0) (EA x).val)=
+      reflectedExponent (fun b : B => completedLocalExponent R F b.val.val) := by
+    funext x
+    exact original_active_exponent D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T x
+  rw [hj,original_active_marks_eq_slots D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T]
+  exact (mixedReflectedValue_cast _ (reindexControlled C EA) s _ (PF).generator_ne_zero hc _ (PF).generator_good _ _ W X).symm
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+lemma maximal_coprime_iff_ne (P Q : Ideal Eis) [P.IsMaximal] [Q.IsMaximal] :
+    IsCoprime P Q ↔ P≠Q := by
+  constructor
+  · intro h he
+    subst Q
+    exact (show P.IsPrime from inferInstance).ne_top (by simpa using h.sup_eq)
+  · exact Ideal.isCoprime_of_isMaximal
+
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+local notation "E" => D.freePrimeFiberEquiv R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+
+include hR hI hF hm hf hz hbad hcop hpow hmask
+
+theorem original_slot_mask_iff (S : PrimeFamily σ) :
+    (∀ P : FreePrimeIndex D.movingIdeal Q₀, ∀ t, S.ideal t≠P.val.val) ↔
+    IsCoprime K (∏ t, S.ideal t) ∧
+      ∀ b : FreeReflection.pool R (Ideal.span {m}*F) Q₀, ∀ t, S.ideal t≠b.val := by
+  constructor
+  · intro h
+    constructor
+    · rw [← PrimeFamily.residual_product K hK]
+      apply IsCoprime.prod_left_iff.mpr
+      intro a ha
+      apply IsCoprime.prod_right_iff.mpr
+      intro t ht
+      apply Ideal.isCoprime_of_isMaximal
+      have hh := h (E (Sum.inl a)) t
+      rw [D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inl a)] at hh
+      exact hh.symm
+    · intro b t
+      have hh := h (E (Sum.inr b)) t
+      rw [D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inr b)] at hh
+      exact hh
+  · rintro ⟨hrow,hfixed⟩ P t
+    obtain ⟨x,rfl⟩ := (E).surjective P
+    cases x with
+    | inl a =>
+      rw [D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inl a)]
+      have hc := (hrow.of_isCoprime_of_dvd_left (PrimeFamily.residual_dvd K hK a)).of_isCoprime_of_dvd_right
+        (Finset.dvd_prod_of_mem S.ideal (Finset.mem_univ t))
+      exact ((maximal_coprime_iff_ne _ _).mp hc).symm
+    | inr b =>
+      rw [D.freePrimeFiberEquiv_val R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask (Sum.inr b)]
+      exact hfixed b t
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss InverseMoment
+noncomputable section
+variable {ι κ : Type*} [Fintype ι] [Fintype κ] {p : ι→Eis} {q : κ→Eis}
+    {N a c : Eis} {mode : Bool}
+
+omit [Fintype ι] [Fintype κ] in
+lemma pullback_generator_eq (e : κ≃ι) (h : (fun k => p (e k))=q) :
+    (fun i => q (e.symm i))=p := by
+  rw [← h]
+  simp only [Equiv.apply_symm_apply]
+
+def pullbackControlled (e : κ≃ι) (h : (fun k => p (e k))=q)
+    (D : ControlledStratumArithmetic q N a c mode) :
+    ControlledStratumArithmetic p N a c mode :=
+  castControlled (pullback_generator_eq e h) (reindexControlled D e.symm)
+
+lemma reindexMarks_symm (e : κ≃ι) (S : Finset ι) :
+    reindexMarks e.symm (reindexMarks e S)=S := by
+  ext i
+  simp only [mem_reindexMarks,Equiv.apply_symm_apply]
+
+theorem mixedReflectedValue_pullback
+    [∀ i, (Ideal.span {p i}).IsMaximal] [∀ k, (Ideal.span {q k}).IsMaximal]
+    (e : κ≃ι) (h : (fun k => p (e k))=q)
+    (D : ControlledStratumArithmetic q N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i≠0) (hq : ∀ k, q k≠0) (hc : c≠0)
+    (hgp : ∀ i, lambda∉Ideal.span {p i}) (hgq : ∀ k, lambda∉Ideal.span {q k})
+    (j : ι→ℕ) (S : Finset ι) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue (pullbackControlled e h D) s hp hc hgp j S W X=
+      mixedReflectedValue D s hq hc hgq (fun k => j (e k)) (reindexMarks e S) W X := by
+  unfold pullbackControlled
+  rw [mixedReflectedValue_cast _ _ s (fun i => hq (e.symm i)) hp hc
+    (fun i => hgq (e.symm i)) hgp]
+  have hj : (fun i => j (e (e.symm i)))=j := by funext i; simp only [Equiv.apply_symm_apply]
+  have he := mixedReflectedValue_reindex D e.symm s hq hc hgq
+    (fun k => j (e k)) (reindexMarks e S) W X
+  rw [hj,reindexMarks_symm] at he
+  exact he
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable (S : PrimeFamily σ) (B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀)) (T : Finset σ)
+local notation "E" => D.freePrimeFiberEquiv R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+local notation "PS" => PrimeFamily.restrict (PrimeFamily.sum (freePrimeFamily D.movingIdeal Q₀ D.movingSupported) S) (markedActiveSet E B T)
+local notation "PF" => PrimeFamily.reflected (PrimeFamily.restrict (poolPrimeFamily R (Ideal.span (Set.singleton m)*F) Q₀) B) K hK (S.restrict T)
+local notation "EA" => markedActiveEquiv E B T
+
+def originalChosenControlled {N a c : Eis} {mode : Bool}
+    (C : ControlledStratumArithmetic (PF).generator N a c mode) :
+    ControlledStratumArithmetic (PS).generator N a c mode :=
+  pullbackControlled EA
+    (funext (original_active_family_generator D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T)) C
+
+theorem original_chosen_reflected_source_eq {N a c : Eis} {mode : Bool}
+    (C : ControlledStratumArithmetic (PF).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue (originalChosenControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T C)
+      s (PS).generator_ne_zero hc (PS).generator_good
+      (fun i => Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+        (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+        (fun _ : σ => 0) i.val) (activeMarks (markedActiveSet E B T) markedSumSlots) W X =
+    mixedReflectedValue C s (PF).generator_ne_zero hc (PF).generator_good
+      (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val)) (slotIndices B (PrimeIndex K) T) W X := by
+  unfold originalChosenControlled
+  rw [mixedReflectedValue_pullback]
+  have hj : (fun x => Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+        (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+        (fun _ : σ => 0) (EA x).val)=
+      reflectedExponent (fun b : B => completedLocalExponent R F b.val.val) := by
+    funext x
+    exact original_active_exponent D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T x
+  rw [hj,original_active_marks_eq_slots D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+namespace PrimeFamily
+variable {ι : Type*} (P : PrimeFamily ι)
+
+theorem marked_source_of_controlled [Fintype ι]
+    (_hP : Pairwise (Function.onFun IsCoprime P.ideal)) (j : ι→ℕ) (S : Finset ι)
+    (φ : Eis→*ℂ) (hφnorm : ∀ n, ‖φ n‖≤1)
+    (Q : Ideal Eis) (hQ : Q≠0) (hφperiod : CanonicalCoefficientClass.FactorsModulo Q φ)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*Q)
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (C : ∀ h : Eis⧸Ideal.span {c}, ∀ A : Finset ι,
+      ControlledStratumArithmetic (fun i : A => P.generator i.val) N (G h).a0 (G h).c0 (G h).mode)
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    markedCompletedT (φ*unmarkedSexticTwist P.generator P.generator_good j S) W X
+      (fun A => ∏ i∈S, if Ideal.span {P.generator i}∣A then 1 else 0)=
+    thetaDerivativeScalar⁻¹*∑ t : FixedActiveCuspIndex c P.generator,
+      fixedActiveFunctionWeight P.generator P.generator_ne_zero
+        (mixedPrimeFunction P.generator P.generator_good j S) c hc φ t *
+      (fixedActiveCuspDatum P.generator P.generator_ne_zero P.generator_primary c G N hN
+        C t).smoothedKernel W X := by
+  let Qall := (Q*Ideal.span {∏ i, P.generator i})*Ideal.span {∏ i∈S, P.generator i}
+  have hprod : (∏ i, P.generator i)≠0 := Finset.prod_ne_zero_iff.mpr (fun i _ => P.generator_ne_zero i)
+  have hmark : (∏ i∈S, P.generator i)≠0 := Finset.prod_ne_zero_iff.mpr (fun i _ => P.generator_ne_zero i)
+  have hQall : Qall≠0 := mul_ne_zero (mul_ne_zero hQ
+    (by simpa only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot] using hprod))
+    (by simpa only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot] using hmark)
+  let call := cubicIdealGenerator (Ideal.span {(9:Eis)}*Qall)
+  have hcall : call≠0 := by
+    apply cubicIdealGenerator_ne_zero
+    apply mul_ne_zero _ hQall
+    simp only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot]
+    norm_num
+  let : Finite (Eis⧸Ideal.span {call}) := (Ideal.span {call}).finiteQuotientOfFreeOfNeBot (Ideal.span_singleton_eq_bot.not.mpr hcall)
+  let : Fintype (Eis⧸Ideal.span {call}) := Fintype.ofFinite _
+  have hcallQ : Ideal.span {call}≤Ideal.span {(9:Eis)}*Qall := by
+    rw [span_cubicIdealGenerator]
+  exact markedCompletedT_fixed_active_strata P.generator P.generator_ne_zero P.generator_prime
+    P.generator_primary P.generator_good j S φ hφnorm Q hφperiod c hc hcQ G N hN
+    C call hcall hcallQ W hWcompact lo hi hlo hsupp hW X hX
+end PrimeFamily
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+namespace PrimeFamily
+variable {ι : Type*} [Fintype ι] (P : PrimeFamily ι)
+
+lemma fixed_active_sum_eq_mixed_of_controlled
+    (_hP : Pairwise (Function.onFun IsCoprime P.ideal)) (j : ι→ℕ) (S : Finset ι)
+    (φ : Eis→*ℂ) (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (C : ∀ h : Eis⧸Ideal.span {c}, ∀ A : Finset ι,
+      ControlledStratumArithmetic (fun i : A => P.generator i.val) N (G h).a0 (G h).c0 (G h).mode) (W : ℝ→ℂ) (X : ℝ) :
+    (∑ t : FixedActiveCuspIndex c P.generator,
+      fixedActiveFunctionWeight P.generator P.generator_ne_zero
+        (mixedPrimeFunction P.generator P.generator_good j S) c hc φ t *
+      (fixedActiveCuspDatum P.generator P.generator_ne_zero P.generator_primary c G N hN
+        C t).smoothedKernel W X)=
+    ∑ h : Eis⧸Ideal.span {c}, fixedThetaRowCoeff c hc φ h *
+      ∑ A : Finset ι,
+        localInactiveWeight P.generator P.generator_ne_zero (mixedPrimeFunction P.generator P.generator_good j S) A *
+        mixedSmoothedValue (C h A) (hN h)
+          (P.restrict A).generator_product_primary (G h).primary (G h).shape
+          (P.restrict A).generator_ne_zero (G h).denominator_ne_zero (P.restrict A).generator_good
+          (fun i => j i.val) (activeMarks A S) W X := by
+  simp only [FixedActiveCuspIndex,Fintype.sum_sigma,fixedActiveFunctionWeight,fixedActiveCuspDatum,
+    Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro h hh
+  apply Finset.sum_congr rfl
+  intro A hA
+  simp only [mixedSmoothedValue,Finset.mul_sum]
+  apply Finset.sum_congr (by ext v; simp only [Finset.mem_univ])
+  intro v hv
+  rw [localActiveWeight_restrict]
+  have hw : fullLocalFourierWeight (P.restrict A).generator_ne_zero
+      (mixedPrimeFunction (P.restrict A).generator (P.restrict A).generator_good
+        (fun i => j i.val) (activeMarks A S)) v =
+      fullLocalFourierWeight (fun i : A => P.generator_ne_zero i.val)
+        (mixedPrimeFunction (fun i : A => P.generator i.val) (fun i => P.generator_good i.val)
+          (fun i => j i.val) (activeMarks A S)) v := rfl
+  rw [hw]
+  dsimp only [activeStratumDatum]
+  ring
+
+theorem marked_reflected_source_of_controlled
+    (hP : Pairwise (Function.onFun IsCoprime P.ideal))
+    (hodd : ∀ i, ringChar (Eis⧸P.ideal i)≠2) (j : ι→ℕ) (hj : ∀ i, j i<6) (S : Finset ι)
+    (φ : Eis→*ℂ) (hφnorm : ∀ n, ‖φ n‖≤1)
+    (Q : Ideal Eis) (hQ : Q≠0) (hφperiod : CanonicalCoefficientClass.FactorsModulo Q φ)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*Q)
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (C : ∀ h : Eis⧸Ideal.span {c}, ∀ A : Finset ι,
+      ControlledStratumArithmetic (fun i : A => P.generator i.val) N (G h).a0 (G h).c0 (G h).mode)
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    markedCompletedT (φ*unmarkedSexticTwist P.generator P.generator_good j S) W X
+      (fun A => ∏ i∈S, if Ideal.span {P.generator i}∣A then 1 else 0)=
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c}, fixedThetaRowCoeff c hc φ h *
+      ∑ A : Finset ι,
+        localInactiveWeight P.generator P.generator_ne_zero (mixedPrimeFunction P.generator P.generator_good j S) A *
+        mixedReflectedValue (C h A) (G h).shape
+          (P.restrict A).generator_ne_zero (G h).denominator_ne_zero (P.restrict A).generator_good
+          (fun i => j i.val) (activeMarks A S) W X := by
+  rw [P.marked_source_of_controlled hP j S φ hφnorm Q hQ hφperiod c hc hcQ G N hN C
+    W hWcompact lo hi hlo hsupp hW X hX,
+    P.fixed_active_sum_eq_mixed_of_controlled hP j S φ c hc G N hN C W X]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro h hh
+  congr 1
+  apply Finset.sum_congr rfl
+  intro A hA
+  congr 1
+  apply mixed_smoothed_eq_reflected
+  · intro i k hik
+    change IsCoprime (Ideal.span {P.generator i.val}) (Ideal.span {P.generator k.val})
+    rw [P.generator_span,P.generator_span]
+    exact hP (fun he => hik (Subtype.ext he))
+  · intro i
+    rw [P.generator_span]
+    exact hodd i.val
+  · exact fun i => hj i.val
+  · exact hlo
+  · exact hsupp
+  · exact hW
+  · exact hX
+end PrimeFamily
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open CanonicalRowCompletion
+noncomputable section
+
+def sourceDependentExtension {X Y : Type*} {D : Y→Type*}
+    (f : X→Y) (C : ∀ x, D (f x)) (fallback : ∀ y, D y) (y : Y) : D y :=
+  if h : ∃ x, f x=y then h.choose_spec ▸ C h.choose else fallback y
+
+lemma sourceDependentExtension_at {X Y : Type*} {D : Y→Type*}
+    (f : X→Y) (hinj : Function.Injective f) (C : ∀ x, D (f x))
+    (fallback : ∀ y, D y) (x : X) :
+    sourceDependentExtension f C fallback (f x)=C x := by
+  have h : ∃ z, f z=f x := ⟨x,rfl⟩
+  unfold sourceDependentExtension
+  rw [dif_pos h]
+  have he : h.choose=x := hinj h.choose_spec
+  have hcast : ∀ (z x : X) (hf : f z=f x), z=x → (hf ▸ C z)=C x := by
+    intro z x hf hx
+    subst x
+    rfl
+  exact hcast _ _ h.choose_spec he
+
+variable {α β γ σ : Type*} [Fintype α] [Fintype β] [Fintype σ]
+
+lemma markedActiveSet_injective (e : α⊕β≃γ) :
+    Function.Injective (fun q : Finset β×Finset σ => markedActiveSet e q.1 q.2) := by
+  intro x y he
+  have hh := congrArg (optionalPrimeActive (joinedFiberEquiv e)) he
+  dsimp only at hh
+  rw [← complete_marked_set,← complete_marked_set,
+    optionalPrimeActive_completeActiveSet,optionalPrimeActive_completeActiveSet] at hh
+  apply Prod.ext
+  · have h := congrArg Finset.toLeft hh
+    simpa using h
+  · have h := congrArg Finset.toRight hh
+    simpa using h
+
+theorem exists_marked_source_selection (e : α⊕β≃γ)
+    (D : Finset (γ⊕σ)→Type*) (fallback : ∀ A, D A)
+    (C : ∀ B : Finset β, ∀ T : Finset σ, D (markedActiveSet e B T)) :
+    ∃ E : ∀ A, D A, ∀ B T, E (markedActiveSet e B T)=C B T := by
+  refine ⟨sourceDependentExtension (fun q : Finset β×Finset σ => markedActiveSet e q.1 q.2)
+    (fun q => C q.1 q.2) fallback,?_⟩
+  intro B T
+  exact sourceDependentExtension_at _ (markedActiveSet_injective e) _ _ (B,T)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable (S : PrimeFamily σ)
+local notation "E" => D.freePrimeFiberEquiv R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+local notation "Pall" => PrimeFamily.sum (freePrimeFamily D.movingIdeal Q₀ D.movingSupported) S
+local notation "Jall" => Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+  Multiset.count (Subtype.val (Subtype.val P)) (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal)%6) (fun _ : σ => 0)
+
+include hR hI hF hm hf hz hbad hcop hpow hmask
+
+private theorem exists_original_controlled_source
+    (c : Eis) [Fintype (Eis⧸Ideal.span {c})]
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) ((Pall).ideal i))
+    (hP : Pairwise (Function.onFun IsCoprime (Pall).ideal))
+    (C : ∀ h : Eis⧸Ideal.span {c}, ∀ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀),
+      ∀ T : Finset σ, ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator
+        N (G h).a0 (G h).c0 (G h).mode) :
+    ∀ h : Eis⧸Ideal.span {c}, ∃ CC : ∀ A : Finset (FreePrimeIndex D.movingIdeal Q₀⊕σ),
+      ControlledStratumArithmetic (fun i : A => (Pall).generator i.val) N (G h).a0 (G h).c0 (G h).mode,
+      ∀ B T, CC (markedActiveSet E B T)=
+        originalChosenControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T (C h B T) := by
+  intro h
+  exact exists_marked_source_selection E
+    (fun A => ControlledStratumArithmetic (fun i : A => (Pall).generator i.val) N (G h).a0 (G h).c0 (G h).mode)
+    ((Pall).activeControlled hP c G N hN hNp h)
+    (fun B T => originalChosenControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T (C h B T))
+
+private theorem original_controlled_source_sum
+    (hSodd : ∀ i, ringChar (Eis⧸S.ideal i)≠2)
+    {N a c : Eis} {mode : Bool}
+    (C : ∀ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀),
+      ∀ T : Finset σ, ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator
+        N a c mode)
+    (CC : ∀ A : Finset (FreePrimeIndex D.movingIdeal Q₀⊕σ),
+      ControlledStratumArithmetic (fun i : A => (Pall).generator i.val) N a c mode)
+    (hCC : ∀ B T, CC (markedActiveSet E B T)=
+      originalChosenControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T (C B T))
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (X : ℝ) :
+    (∑ A : Finset (FreePrimeIndex D.movingIdeal Q₀⊕σ),
+      localInactiveWeight (Pall).generator (Pall).generator_ne_zero
+        (mixedPrimeFunction (Pall).generator (Pall).generator_good Jall markedSumSlots) A *
+        mixedReflectedValue (CC A) s ((Pall).restrict A).generator_ne_zero hc
+          ((Pall).restrict A).generator_good (fun i => Jall i.val)
+          (activeMarks A markedSumSlots) W X) =
+    ∑ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀), ∑ T : Finset σ,
+      ((∏ b∈(Finset.univ:Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀))\B,
+        if completedLocalExponent R F b.val=0 then 1-(Ideal.absNorm b.val:ℂ)⁻¹ else 0)*
+        ∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (S.ideal t):ℂ)⁻¹)*
+      mixedReflectedValue (C B T) s
+        (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator_ne_zero hc
+        (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator_good
+        (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val))
+        (slotIndices B (PrimeIndex K) T) W X := by
+  rw [original_fiber_inactive_sum D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S hSodd]
+  apply Finset.sum_congr rfl
+  intro B hB
+  apply Finset.sum_congr rfl
+  intro T hT
+  congr 1
+  rw [hCC B T]
+  exact original_chosen_reflected_source_eq D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T
+    (C B T) s hc W X
+
+theorem original_selected_reflected_expansion
+    (hS : Pairwise (Function.onFun IsCoprime S.ideal))
+    (hSodd : ∀ i, ringChar (Eis⧸S.ideal i)≠2)
+    (hdis : ∀ P : FreePrimeIndex D.movingIdeal Q₀, ∀ i, S.ideal i≠P.val.val)
+    (φ : Eis→*ℂ) (hφnorm : ∀ n, ‖φ n‖≤1) (hQ₀ : Q₀≠0)
+    (hφperiod : CanonicalCoefficientClass.FactorsModulo Q₀ φ)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*Q₀)
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) ((Pall).ideal i))
+    (C : ∀ h : Eis⧸Ideal.span {c}, ∀ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀),
+      ∀ T : Finset σ, ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator
+        N (G h).a0 (G h).c0 (G h).mode)
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    markedCompletedT (φ*unmarkedSexticTwist (Pall).generator (Pall).generator_good Jall markedSumSlots) W X
+      (fun A => ∏ i∈markedSumSlots, if Ideal.span {(Pall).generator i}∣A then 1 else 0)=
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c}, fixedThetaRowCoeff c hc φ h *
+      ∑ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀), ∑ T : Finset σ,
+        ((∏ b∈(Finset.univ:Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀))\B,
+          if completedLocalExponent R F b.val=0 then 1-(Ideal.absNorm b.val:ℂ)⁻¹ else 0)*
+          ∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (S.ideal t):ℂ)⁻¹)*
+        mixedReflectedValue (C h B T) (G h).shape
+          (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator_ne_zero
+          (G h).denominator_ne_zero
+          (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator_good
+          (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val))
+          (slotIndices B (PrimeIndex K) T) W X := by
+  have hP : Pairwise (Function.onFun IsCoprime (Pall).ideal) :=
+    joined_free_pairwise D.movingIdeal Q₀ D.movingSupported S hS hdis
+  have hodd : ∀ i, ringChar (Eis⧸(Pall).ideal i)≠2 := by
+    intro i
+    cases i with
+    | inl P => exact (supported_factors_good D.movingIdeal D.movingSupported P.val.val
+        (Multiset.mem_toFinset.mp P.val.property)).2.2
+    | inr t => exact hSodd t
+  have hj : ∀ i, Jall i<6 := by
+    intro i
+    cases i with
+    | inl P => exact Nat.mod_lt _ (by norm_num)
+    | inr t => norm_num
+  have hchoose := exists_original_controlled_source D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+    S c G N hN hNp hP C
+  choose CC hCC using hchoose
+  rw [(Pall).marked_reflected_source_of_controlled hP hodd Jall hj markedSumSlots φ hφnorm Q₀ hQ₀ hφperiod
+    c hc hcQ G N hN CC W hWcompact lo hi hlo hsupp hW X hX]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro h hh
+  congr 1
+  exact original_controlled_source_sum D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+    S hSodd (C h) (CC h) (hCC h) (G h).shape (G h).denominator_ne_zero W X
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime (Q*Ideal.span {(72:Eis)}) (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable (S : PrimeFamily σ)
+local notation "E" => D.freePrimeFiberEquiv R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+local notation "Pall" => PrimeFamily.sum (freePrimeFamily D.movingIdeal (Q*Ideal.span {(72:Eis)}) D.movingSupported) S
+local notation "Jall" => Sum.elim (fun P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}) =>
+  Multiset.count (Subtype.val (Subtype.val P)) (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal)%6) (fun _ : σ => 0)
+
+include hR hI hF hm hf hz hbad hcop hpow hmask
+
+theorem actual_marked_selected_reflection
+    (hS : Pairwise (Function.onFun IsCoprime S.ideal))
+    (hSodd : ∀ i, ringChar (Eis⧸S.ideal i)≠2)
+    (hdis : ∀ P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}), ∀ i, S.ideal i≠P.val.val)
+    (Ψ : Eis→*ℂ) (hΨnorm : ∀ n, ‖Ψ n‖≤1) (hQ : Q≠0)
+    (hΨperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)}))
+    (G : ∀ h : Eis⧸Ideal.span {c}, FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h, (9:Eis)*(G h).c0∣N)
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) ((Pall).ideal i))
+    (C : ∀ h : Eis⧸Ideal.span {c}, ∀ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+      ∀ T : Finset σ, ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict B).reflected K hK (S.restrict T)).generator
+        N (G h).a0 (G h).c0 (G h).mode)
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ i, if S.ideal i∣A then (1:ℂ) else 0)=
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c}, fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h *
+      ∑ B : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})), ∑ T : Finset σ,
+        ((∏ b∈(Finset.univ:Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})))\B,
+          if completedLocalExponent R F b.val=0 then 1-(Ideal.absNorm b.val:ℂ)⁻¹ else 0)*
+          ∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (S.ideal t):ℂ)⁻¹)*
+        mixedReflectedValue (C h B T) (G h).shape
+          (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict B).reflected K hK (S.restrict T)).generator_ne_zero
+          (G h).denominator_ne_zero
+          (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict B).reflected K hK (S.restrict T)).generator_good
+          (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val))
+          (slotIndices B (PrimeIndex K) T) W X := by
+  have hQ0 : (Q*Ideal.span {(72:Eis)})≠0 := by
+    apply mul_ne_zero hQ
+    simp only [ne_eq,Ideal.zero_eq_bot,Ideal.span_singleton_eq_bot]
+    norm_num
+  exact (actual_marked_row_eq_joined D S Ψ Q hmLam hm2 W X).trans
+    (original_selected_reflected_expansion D R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask S
+      hS hSodd hdis (D.fixedFactor Ψ Q) (D.fixedFactor_norm Ψ Q hΨnorm) hQ0
+      (D.fixedFactor_periodic Ψ Q hΨperiod) c hc hcQ G N hN hNp C W hWcompact lo hi hlo hsupp hW X hX)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace CanonicalRowCompletion.GoodMaskRowData
+lemma fixedCoefficient_norm {m f z : Eis} (D : GoodMaskRowData m f z)
+    (Ψ : Eis →* ℂ) (Q : Ideal Eis) (hΨ : ∀ n, ‖Ψ n‖ ≤ 1)
+    (c : Eis) (hc : c ≠ 0) [Fintype (Eis ⧸ Ideal.span {c})]
+    (h : Eis ⧸ Ideal.span {c}) :
+    ‖fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h‖ ≤ 1 :=
+  fixedThetaRowCoeff_norm c hc _ (D.fixedFactor_norm Ψ Q hΨ) h
+end CanonicalRowCompletion.GoodMaskRowData
+
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+
+def frozenInactiveWeight (J F Q Q₀ : Ideal Eis) (A : Finset (FreeReflection.pool J Q Q₀)) : ℂ :=
+  ∏ b∈(Finset.univ:Finset (FreeReflection.pool J Q Q₀))\A,
+    if completedLocalExponent J F b.val=0 then 1-(Ideal.absNorm b.val:ℂ)⁻¹ else 0
+
+lemma one_sub_inverse_norm_le_one (I : Ideal Eis) (hI : I≠0) :
+    ‖1-(Ideal.absNorm I:ℂ)⁻¹‖≤1 := by
+  have hn : (1:ℝ)≤Ideal.absNorm I := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  have hi : (Ideal.absNorm I:ℝ)⁻¹≤1 := inv_le_one_of_one_le₀ hn
+  have he : (1-(Ideal.absNorm I:ℂ)⁻¹)=((1-(Ideal.absNorm I:ℝ)⁻¹):ℝ) := by push_cast;rfl
+  rw [he,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (by linarith)]
+  have hp : 0≤(Ideal.absNorm I:ℝ)⁻¹ := inv_nonneg.mpr (Nat.cast_nonneg _)
+  linarith
+
+lemma frozenInactiveWeight_norm (J F Q Q₀ : Ideal Eis) (A : Finset (FreeReflection.pool J Q Q₀)) :
+    ‖frozenInactiveWeight J F Q Q₀ A‖≤1 := by
+  unfold frozenInactiveWeight
+  rw [norm_prod]
+  apply Finset.prod_le_one
+  · intro b hb
+    exact norm_nonneg _
+  · intro b hb
+    split_ifs
+    · exact one_sub_inverse_norm_le_one b.val
+        (NeZero.ne ((poolPrimeFamily J Q Q₀).ideal b))
+    · simp
+
+lemma original_fourier_frozen_weight_norm {m f z : Eis} (D : GoodMaskRowData m f z)
+    (Ψ : Eis→*ℂ) (Q : Ideal Eis) (hΨ : ∀ n,‖Ψ n‖≤1)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})] (h : Eis⧸Ideal.span {c})
+    (J F Q₀ : Ideal Eis) (A : Finset (FreeReflection.pool J (Ideal.span {m}*F) Q₀)) :
+    ‖fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h*frozenInactiveWeight J F (Ideal.span {m}*F) Q₀ A‖≤1 := by
+  rw [norm_mul]
+  exact (mul_le_mul (D.fixedCoefficient_norm Ψ Q hΨ c hc h)
+    (frozenInactiveWeight_norm J F (Ideal.span {m}*F) Q₀ A) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+lemma sum_subtype_dite_decidable {α : Type*} [Fintype α] (p : α→Prop) [DecidablePred p]
+    (f : ∀ x,p x→ℂ) :
+    (∑ x : {x // p x},f x.val x.property)=∑ x,if h:p x then f x h else 0 := by
+  have hh := Fintype.sum_subtype_add_sum_subtype p (fun x => if h:p x then f x h else 0)
+  have hz : (∑ x : {x // ¬p x},if h:p x.val then f x.val h else 0)=0 := by
+    apply Finset.sum_eq_zero
+    intro x hx
+    exact dif_neg x.property
+  rw [hz,add_zero] at hh
+  simpa only [Subtype.property,dif_pos] using hh
+
+variable {σ : Type*} [Fintype σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime (Q*Ideal.span {(72:Eis)}) (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable {α : Type*} [Fintype α] (Sp : α→PrimeFamily σ)
+local notation "E" => D.freePrimeFiberEquiv R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask
+local notation "K" => rowResidualPart I (Ideal.span (Set.singleton m)*F)
+local notation "hK" => residualPart_admissible I (Ideal.span (Set.singleton m)*F) hbad
+
+include hR hI hF hm hf hz hbad hcop hpow hmask
+
+theorem actual_marked_tuple_reflection
+    (hS : ∀ p,Pairwise (Function.onFun IsCoprime (Sp p).ideal))
+    (hSodd : ∀ p i,ringChar (Eis⧸(Sp p).ideal i)≠2)
+    (Ψ : Eis→*ℂ) (hΨnorm : ∀ n,‖Ψ n‖≤1) (hQ : Q≠0)
+    (hΨperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)}))
+    (G : ∀ h : Eis⧸Ideal.span {c},FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h,(9:Eis)*(G h).c0∣N)
+    (hNp : ∀ p i,IsCoprime (Ideal.span {N}) ((markedRowFamily D (Sp p) Q).ideal i))
+    (C : ∀ p : {p : α // ∀ P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}),∀ i,(Sp p).ideal i≠P.val.val},
+      ∀ h : Eis⧸Ideal.span {c},∀ A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+      ∀ T : Finset σ,ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected K hK ((Sp p.val).restrict T)).generator
+        N (G h).a0 (G h).c0 (G h).mode)
+    (w : α→ℂ) (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0<lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0<X) :
+    (∑ p : α,w p*markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ i,if (Sp p).ideal i∣A then (1:ℂ) else 0))=
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c},fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h*
+      ∑ A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),∑ T : Finset σ,
+        frozenInactiveWeight R F (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)}) A*
+        ∑ p : {p : α // ∀ P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}),∀ i,(Sp p).ideal i≠P.val.val},
+          (∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm ((Sp p.val).ideal t):ℂ)⁻¹)*w p.val*
+          mixedReflectedValue (C p h A T) (G h).shape
+            (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected K hK ((Sp p.val).restrict T)).generator_ne_zero
+            (G h).denominator_ne_zero
+            (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected K hK ((Sp p.val).restrict T)).generator_good
+            (reflectedExponent (fun b : A => completedLocalExponent R F b.val.val))
+            (slotIndices A (PrimeIndex K) T) W X := by
+  let good := fun p : α => ∀ P : FreePrimeIndex D.movingIdeal (Q*Ideal.span {(72:Eis)}),∀ i,(Sp p).ideal i≠P.val.val
+  let row := fun p : α => markedCompletedT (rowTwist Ψ m f z) W X
+    (fun A => ∏ i,if (Sp p).ideal i∣A then (1:ℂ) else 0)
+  have hzrow (p : α) (hp : ¬good p) : row p=0 := by
+    simp only [good,not_forall,not_not] at hp
+    obtain ⟨P,i,he⟩ := hp
+    exact actual_marked_row_overlap_zero D (Sp p) Ψ Q hmLam hm2 P i he W X
+  have hrestrict : (∑ p : α,w p*row p)=∑ p : {p // good p},w p.val*row p.val := by
+    calc
+      _ = ∑ p : α,if h:good p then w p*row p else 0 := by
+        apply Finset.sum_congr rfl
+        intro p hp
+        by_cases hg : good p
+        · rw [dif_pos hg]
+        · rw [dif_neg hg,hzrow p hg,mul_zero]
+      _ = _ := (sum_subtype_dite_decidable good (fun p _ => w p*row p)).symm
+  change (∑ p : α,w p*row p)=_
+  rw [hrestrict]
+  have he (p : {p // good p}) := actual_marked_selected_reflection D R I F Q hR hI hF hm hf hz hbad hcop hpow hmask
+    (Sp p.val) (hS p.val) (hSodd p.val) p.property Ψ hΨnorm hQ hΨperiod hmLam hm2 c hc hcQ G N hN
+    (hNp p.val) (C p) W hWcompact lo hi hlo hsupp hW X hX
+  dsimp only [row]
+  simp_rw [he]
+  simp only [Finset.mul_sum,frozenInactiveWeight]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro h hh
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro A hA
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro T hT
+  apply Finset.sum_congr rfl
+  intro p hp
+  ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+
+variable {φ σ : Type*} [Fintype φ] [Fintype σ]
+variable {a c : Eis} {mode : Bool}
+
+def actualRowPhase (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (jF : φ → ℕ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (u : Eisˣ) (m : ℕ) : ℂ :=
+  sourceRowPhase s (F.sum (PrimeFamily.residual K hK)).generator_ne_zero
+    (F.sum (PrimeFamily.residual K hK)).generator_good (Sum.elim jF (fun _ => 1))
+    (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m
+
+def actualSlotPhase (F : PrimeFamily φ) (S : PrimeFamily σ) (jF : φ → ℕ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (u : Eisˣ) (m : ℕ) : ℂ :=
+  sourceSlotPhase s (F.sum S).generator_ne_zero (F.sum S).generator_good
+    (Sum.elim jF (fun _ => 0)) (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m
+
+omit [Fintype σ] in
+theorem sourceRowPhase_eq_actual (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (u : Eisˣ) (m : ℕ) :
+    sourceRowPhase s (F.reflected K hK S).generator_ne_zero
+      (F.reflected K hK S).generator_good (reflectedExponent jF)
+      (residualIndices φ (PrimeIndex K) σ) (frozenIndices φ (PrimeIndex K) σ) u m =
+      actualRowPhase F K hK jF s u m := by
+  classical
+  let f : φ ⊕ PrimeIndex K → φ ⊕ (PrimeIndex K ⊕ σ) := Sum.elim Sum.inl (Sum.inr ∘ Sum.inl)
+  have hf : Function.Injective f := by
+    intro i k h
+    cases i <;> cases k <;> simp_all [f]
+  have he := sourceRowPhase_transport s (F.reflected K hK S).generator_ne_zero
+    (F.reflected K hK S).generator_good (reflectedExponent jF) f hf
+    (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m
+  have hp : (fun i => (F.reflected K hK S).generator (f i)) =
+      (F.sum (PrimeFamily.residual K hK)).generator := by
+    funext i
+    cases i <;> rfl
+  have hj : (fun i => reflectedExponent jF (f i)) = Sum.elim jF (fun _ => 1) := by
+    funext i
+    cases i <;> rfl
+  have hh := sourceRowPhase_congr_functions s
+    (fun i => (F.reflected K hK S).generator_ne_zero (f i))
+    (fun i => (F.reflected K hK S).generator_good (f i))
+    (F.sum (PrimeFamily.residual K hK)).generator_ne_zero
+    (F.sum (PrimeFamily.residual K hK)).generator_good
+    _ _ (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m hp hj
+  rw [he] at hh
+  simpa only [actualRowPhase,residualIndices,frozenIndices,Finset.image_image,
+    Function.comp_def,f,Sum.elim_inl,Sum.elim_inr] using hh
+
+theorem sourceSlotPhase_eq_actual (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (u : Eisˣ) (m : ℕ) :
+    sourceSlotPhase s (F.reflected K hK S).generator_ne_zero
+      (F.reflected K hK S).generator_good (reflectedExponent jF)
+      (slotIndices φ (PrimeIndex K) σ) (frozenIndices φ (PrimeIndex K) σ) u m =
+      actualSlotPhase F S jF s u m := by
+  classical
+  let f : φ ⊕ σ → φ ⊕ (PrimeIndex K ⊕ σ) := Sum.elim Sum.inl (Sum.inr ∘ Sum.inr)
+  have hf : Function.Injective f := by
+    intro i k h
+    cases i <;> cases k <;> simp_all [f]
+  have he := sourceSlotPhase_transport s (F.reflected K hK S).generator_ne_zero
+    (F.reflected K hK S).generator_good (reflectedExponent jF) f hf
+    (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m
+  have hp : (fun i => (F.reflected K hK S).generator (f i)) = (F.sum S).generator := by
+    funext i
+    cases i <;> rfl
+  have hj : (fun i => reflectedExponent jF (f i)) = Sum.elim jF (fun _ => 0) := by
+    funext i
+    cases i <;> rfl
+  have hh := sourceSlotPhase_congr_functions s
+    (fun i => (F.reflected K hK S).generator_ne_zero (f i))
+    (fun i => (F.reflected K hK S).generator_good (f i))
+    (F.sum S).generator_ne_zero (F.sum S).generator_good
+    _ _ (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m hp hj
+  rw [he] at hh
+  simpa only [actualSlotPhase,slotIndices,frozenIndices,Finset.image_image,
+    Function.comp_def,f,Sum.elim_inl,Sum.elim_inr] using hh
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+def actualMixedCoefficient (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) : ℂ :=
+  s.amplitude u m n b *
+    (star D.fixedFactor * cuspBadPhase c hc (D.matrix (fun _ => 1) 1 1) D.U
+      (s.modelDualNumerator u m n b)) *
+    ∏ i, mixedActiveBracket (F.reflected K hK S).generator_ne_zero
+      (F.reflected K hK S).generator_good (reflectedExponent jF)
+      (slotIndices φ (PrimeIndex K) σ) D i (s.modelDualNumerator u m n b)
+
+theorem actualMixedCoefficient_factor (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime (F.reflected K hK S).ideal))
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    actualMixedCoefficient F K hK S jF D s hc u m n b =
+      ((-1:ℂ)^(Fintype.card σ)*actualRowPhase F K hK jF s u m*actualSlotPhase F S jF s u m*
+        sourceFrozenPhase D s (F.reflected K hK S).generator_ne_zero
+          (F.reflected K hK S).generator_good (reflectedExponent jF)
+          (frozenIndices φ (PrimeIndex K) σ) u m)*
+      sourceColumn D s hc (F.reflected K hK S).generator_good (reflectedExponent jF)
+        (frozenIndices φ (PrimeIndex K) σ) u m n b *
+      (Real.sqrt (Ideal.absNorm (∏ i, S.ideal i):ℝ):ℂ)⁻¹*
+      canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (n*b))*inverseCubicKernel (∏ i, S.ideal i) n*
+      (if IsCoprime (∏ i, S.ideal i) b then 1 else 0)*
+      (if IsCoprime K (∏ i, S.ideal i) then 1 else 0) := by
+  classical
+  let : DecidableEq (φ ⊕ (PrimeIndex K ⊕ σ)) := Classical.decEq _
+  obtain ⟨hRS,hF,hu⟩ := reflected_indices_partition φ (PrimeIndex K) σ
+  have hF' : Disjoint (residualIndices φ (PrimeIndex K) σ ∪ slotIndices φ (PrimeIndex K) σ)
+      (frozenIndices φ (PrimeIndex K) σ) := by
+    simpa only [Finset.disjoint_left,Finset.mem_union] using hF
+  have hu' : (residualIndices φ (PrimeIndex K) σ ∪ slotIndices φ (PrimeIndex K) σ) ∪
+      frozenIndices φ (PrimeIndex K) σ = Finset.univ := by
+    simpa only [Finset.ext_iff,Finset.mem_union] using hu
+  have hcp : Pairwise (Function.onFun IsCoprime
+      (fun i => Ideal.span {(F.reflected K hK S).generator i})) := by
+    simpa only [PrimeFamily.generator_span] using hcop
+  have hr : Admissible (∏ i ∈ residualIndices φ (PrimeIndex K) σ,
+      Ideal.span {(F.reflected K hK S).generator i}) := by
+    rw [F.reflected_residual_product K hK S]
+    exact hK
+  have he := mixed_coefficient_hybrid_original_exponents D s
+    (F.reflected K hK S).generator_ne_zero hc (F.reflected K hK S).generator_good hcp
+    (F.reflected K hK S).generator_primary _ _ _ hRS hF' hu'
+    (reflectedExponent jF) (reflected_residual_exponent jF) hr u m n b hb
+  have hcard : (slotIndices φ (PrimeIndex K) σ).card = Fintype.card σ := by
+    rw [slotIndices,Finset.card_image_of_injective _ (Sum.inr_injective.comp Sum.inr_injective)]
+    rfl
+  rw [hcard,sourceRowPhase_eq_actual,sourceSlotPhase_eq_actual,
+    F.reflected_residual_product K hK S,F.reflected_slot_product K hK S] at he
+  exact he
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve NormalizedReflection
+noncomputable section
+variable {ι φ σ : Type*} [Fintype ι] [Fintype φ] [Fintype σ]
+variable {p : ι → Eis} {N a c : Eis} {mode : Bool}
+
+def actualCuspColumn (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) : ℂ :=
+  fixedCuspArrayWithPhase s.index u
+    (s.reflectionStaticPhase c hc (Ideal.Quotient.mk _ (-(D.matrix (fun _ => 1) 1 1)*D.U))
+      (s.modelDualNumerator u) u) m n b
+
+lemma actualCuspColumn_norm_le_one (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) : ‖actualCuspColumn D s hc u m n b‖ ≤ 1 :=
+  fixedCuspArrayWithPhase_norm_le_one s.index u _
+    (s.reflectionStaticPhase_norm_le_one c hc _ _ u) m n b
+
+def frozenBranchColumn (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (n b : Ideal Eis) : ℂ :=
+  A n b * reflectedBranch (fun i => Ideal.span {F.generator i}) F.generator_good jF e
+    (primaryIdealGenerator n) (primaryIdealGenerator b)
+
+def frozenExtracted (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3) (v : Fin 3) : Ideal Eis :=
+  reflectionExtractedDivisor (fun i => Ideal.span {F.generator i}) jF e v
+
+def frozenBranchScale (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3) : ℝ :=
+  Real.sqrt (Ideal.absNorm (frozenExtracted F jF e 1):ℝ)*
+    Real.sqrt (Ideal.absNorm (frozenExtracted F jF e 2):ℝ)/
+    Real.sqrt (Ideal.absNorm (frozenExtracted F jF e 0):ℝ)
+
+theorem sourceColumn_eq_sum_frozenBranches (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) :
+    sourceColumn D s hc (F.reflected K hK S).generator_good (reflectedExponent jF)
+      (frozenIndices φ (PrimeIndex K) σ) u m n b =
+      ∑ e : φ → Fin 3, frozenBranchColumn F jF e (actualCuspColumn D s hc u m) n b := by
+  classical
+  let : DecidableEq (φ ⊕ (PrimeIndex K ⊕ σ)) := Classical.decEq _
+  unfold sourceColumn frozenIndices
+  rw [Finset.prod_image Sum.inl_injective.injOn]
+  change actualCuspColumn D s hc u m n b *
+    (∏ i, bracket (complexSexticChar (Ideal.span {F.generator i}) (F.generator_good i)) (jF i)
+      (Ideal.Quotient.mk _ (primaryIdealGenerator n*(primaryIdealGenerator b)^3))) = _
+  exact (congrArg (actualCuspColumn D s hc u m n b * ·)
+    (prod_bracket_eq_full_branches (fun i => Ideal.span {F.generator i}) F.generator_good
+      jF (primaryIdealGenerator n) (primaryIdealGenerator b))).trans (Finset.mul_sum _ _ _)
+
+theorem frozenBranchColumn_norm_le (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (hA : ∀ n b, ‖A n b‖ ≤ 1) (n b : Ideal Eis) :
+    ‖frozenBranchColumn F jF e A n b‖ ≤ frozenBranchScale F jF e := by
+  rw [frozenBranchColumn,norm_mul]
+  calc
+    _ ≤ 1*‖reflectedBranch (fun i => Ideal.span {F.generator i}) F.generator_good jF e
+        (primaryIdealGenerator n) (primaryIdealGenerator b)‖ := mul_le_mul_of_nonneg_right (hA n b) (norm_nonneg _)
+    _ ≤ _ := by
+      rw [one_mul]
+      exact reflectedBranch_norm_bound _ F.generator_good jF e _ _
+
+theorem frozenBranchColumn_normalized_bound (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (hA : ∀ n b, ‖A n b‖ ≤ 1)
+    (n b : Ideal Eis) (U B : ℝ) (hU : 0<U) (hB : 0<B) :
+    ‖frozenBranchColumn F jF e A n b‖ /
+      (Real.sqrt ((Ideal.absNorm (frozenExtracted F jF e 1):ℝ)*U)*
+        ((Ideal.absNorm (frozenExtracted F jF e 2):ℝ)*B)) ≤
+      1/(Real.sqrt U*B*Real.sqrt ((Ideal.absNorm (frozenExtracted F jF e 0):ℝ)*
+        (Ideal.absNorm (frozenExtracted F jF e 2):ℝ))) := by
+  apply (div_le_div_of_nonneg_right ?_ (by positivity)).trans
+    (reflectedBranch_normalized_bound (fun i => Ideal.span {F.generator i}) F.generator_good
+      jF e (primaryIdealGenerator n) (primaryIdealGenerator b) U B hU hB)
+  rw [frozenBranchColumn,norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (hA n b)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+
+def boundedExtension (z : ℂ) : ℂ := if ‖z‖ ≤ 1 then z else 0
+lemma boundedExtension_norm (z : ℂ) : ‖boundedExtension z‖ ≤ 1 := by
+  unfold boundedExtension
+  split_ifs with h
+  · exact h
+  · simp
+lemma boundedExtension_eq (z : ℂ) (hz : ‖z‖ ≤ 1) : boundedExtension z = z := if_pos hz
+
+theorem canonical_bounded_cusp_templates {α : Type*} {ι : α → Type*}
+    [∀ x, Fintype (ι x)] (G : ∀ x, PrimeFamily (ι x))
+    (N a c : Eis) (mode : Bool)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hcop : ∀ x, Pairwise (Function.onFun IsCoprime (G x).ideal))
+    (hNp : ∀ x i, IsCoprime (Ideal.span {N}) ((G x).ideal i))
+    (fixedIdeal : Ideal Eis) (row slot : α → Ideal Eis)
+    (hprod : ∀ x, (∏ i, (G x).ideal i) = fixedIdeal*row x*slot x) :
+    ∃ E : ∀ x, ControlledStratumArithmetic (G x).generator N a c mode,
+      ∃ (κ : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) → ℂ)
+        (A : ((Eis ⧸ Ideal.span {N^2}) × (Eis ⧸ Ideal.span {N^2})) →
+          Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ),
+        (∀ q, ‖κ q‖ ≤ 1) ∧ (∀ q u m n b, ‖A q u m n b‖ ≤ 1) ∧
+        (∀ x, (E x).fixedFactor = κ (separateSector N (primaryIdealGenerator (row x))
+          (primaryIdealGenerator (slot x)))) ∧
+        ∀ x u m n b, actualCuspColumn (E x) s hc u m n b =
+          A (separateSector N (primaryIdealGenerator (row x)) (primaryIdealGenerator (slot x))) u m n b := by
+  let D : ∀ x, ControlledStratumArithmetic (G x).generator N a c mode := fun x =>
+    Classical.choice ((G x).exists_controlled N a c mode hc hN hbase hac (hcop x) (hNp x))
+  have hproduct (x : α) : (∏ i, (G x).generator i) =
+      primaryIdealGenerator fixedIdeal*primaryIdealGenerator (row x)*primaryIdealGenerator (slot x) := by
+    rw [(G x).generator_product,hprod x,primaryIdealGenerator_mul,primaryIdealGenerator_mul]
+  obtain ⟨E,_,_,_,_,κ,A,hκ,hA⟩ := exists_separate_ray_templates
+    (fun x => (G x).generator) N a c mode D s hc hN
+    (fun x => (G x).generator_product_primary) hbase
+    (fun x => (G x).generator_product_coprime_period N c ((dvd_mul_left c 9).trans hN) (hNp x))
+    (primaryIdealGenerator fixedIdeal) (fun x => primaryIdealGenerator (row x))
+    (fun x => primaryIdealGenerator (slot x)) hproduct
+  refine ⟨E,fun q => boundedExtension (κ q),fun q u m n b => boundedExtension (A q u m n b),
+    fun q => boundedExtension_norm _,fun q u m n b => boundedExtension_norm _,?_,?_⟩
+  · intro x
+    change (E x).fixedFactor = boundedExtension _
+    rw [← hκ x,boundedExtension_eq _ ((E x).fixedFactor_norm hN
+      (G x).generator_product_primary hbase).le]
+  · intro x u m n b
+    change actualCuspColumn (E x) s hc u m n b = boundedExtension _
+    rw [← hA x u m n b]
+    exact (boundedExtension_eq _ (actualCuspColumn_norm_le_one (E x) s hc u m n b)).symm
+
+theorem common_frozen_branch_bound {φ Q : Type*} [Fintype φ]
+    (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Q → Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ)
+    (hA : ∀ q u m n b, ‖A q u m n b‖ ≤ 1) (q : Q) (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) :
+    ‖frozenBranchColumn F jF e (A q u m) n b‖ ≤ frozenBranchScale F jF e :=
+  frozenBranchColumn_norm_le F jF e (A q u m) (hA q u m) n b
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve 
+noncomputable section
+variable {ι : Type*} {p : ι → Eis} {N a c : Eis} {mode : Bool}
+
+lemma frozenCofactorCharacter_cross_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (i k : ι) (hik : i ≠ k) (j : ℕ) :
+    ‖frozenCofactorCharacter (Ideal.span {p i}) (hg i) j (p k)‖ = 1 := by
+  have hn := crossSymbol_norm hg hcop i k hik
+  unfold frozenCofactorCharacter
+  split_ifs
+  · simp only [MonoidHom.comp_apply,RingHom.toMonoidHom_eq_coe,MulChar.coe_toMonoidHom,
+      MulChar.pow_apply' _ (by decide : (2:ℕ) ≠ 0),MulChar.inv_apply_eq_inv',norm_pow,norm_inv]
+    change ‖FirstPassCubeLabels.crossSymbol p hg i k‖⁻¹^2 = 1
+    rw [hn]; norm_num
+  · simp only [MonoidHom.comp_apply,RingHom.toMonoidHom_eq_coe,MulChar.coe_toMonoidHom,
+      MulChar.pow_apply' _ (by omega : 2*j+2 ≠ 0),norm_pow]
+    change ‖FirstPassCubeLabels.crossSymbol p hg i k‖^(2*j+2) = 1
+    rw [hn,one_pow]
+
+lemma frozenCofactorCharacter_product_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (i : ι) (S : Finset ι) (hi : i ∉ S) (j : ℕ) :
+    ‖frozenCofactorCharacter (Ideal.span {p i}) (hg i) j (∏ k ∈ S, p k)‖ = 1 := by
+  rw [map_prod,norm_prod]
+  apply Finset.prod_eq_one
+  intro k hk
+  exact frozenCofactorCharacter_cross_norm hg hcop i k (fun h => hi (h ▸ hk)) j
+
+variable [Fintype ι]
+
+lemma frozenPrimeScalar_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (i : ι) (j : ℕ) (hj : j < 6) : ‖frozenPrimeScalar (p i) c (hp i) (hg i) j‖ = 1 := by
+  have hh := local_phase_norm D hp hg hchar i j hj
+  rw [controlled_frozen_phase,norm_mul] at hh
+  have hn : ‖frozenCofactorCharacter (Ideal.span {p i}) (hg i) j (cuspPrimeCofactor p i)‖ = 1 := by
+    exact frozenCofactorCharacter_product_norm hg hcop i (Finset.univ.erase i) (by simp) j
+  simpa only [hn,mul_one] using hh
+
+lemma frozenCore_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (j : ι → ℕ) (F : Finset ι) (hj : ∀ i ∈ F, j i < 6) : ‖frozenCore hp hg c j F‖ = 1 := by
+  rw [frozenCore,norm_prod]
+  apply Finset.prod_eq_one
+  intro i hi
+  rw [norm_mul,frozenPrimeScalar_norm D hp hg hchar hcop i (j i) (hj i hi),one_mul]
+  exact frozenCofactorCharacter_product_norm hg hcop i (F.erase i) (by simp) (j i)
+
+lemma sourceFrozenPhase_norm [∀ i, (Ideal.span {p i}).IsMaximal]
+    (D : ControlledStratumArithmetic p N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hp : ∀ i, p i ≠ 0) (hg : ∀ i, lambda ∉ Ideal.span {p i})
+    (hchar : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hN : (9:Eis)*c ∣ N) (hr : lambda^2 ∣ (∏ i, p i)-1)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1)
+    (j : ι → ℕ) (F : Finset ι) (hj : ∀ i ∈ F, j i < 6) (u : Eisˣ) (m : ℕ) :
+    ‖sourceFrozenPhase D s hp hg j F u m‖ = 1 := by
+  rw [sourceFrozenPhase,norm_mul,norm_mul,norm_star,D.fixedFactor_norm hN hr hbase,
+    frozenCore_norm D hp hg hchar hcop j F hj,ramifiedBlock_norm]
+  norm_num
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+def actualFrozenPhase (F : PrimeFamily φ) (jF : φ → ℕ) (κ : ℂ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (u : Eisˣ) (m : ℕ) : ℂ :=
+  star κ * frozenCore F.generator_ne_zero F.generator_good c jF Finset.univ *
+    ramifiedBlock F.generator_good jF Finset.univ
+      (sourcePhaseUnit s.index s.phaseUpperUnit u) (sourcePhaseExponent s.index m)
+
+lemma sourceFrozenPhase_eq_actual (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (u : Eisˣ) (m : ℕ) :
+    sourceFrozenPhase D s (F.reflected K hK S).generator_ne_zero
+      (F.reflected K hK S).generator_good (reflectedExponent jF)
+      (frozenIndices φ (PrimeIndex K) σ) u m = actualFrozenPhase F jF D.fixedFactor s u m := by
+  classical
+  let : DecidableEq (φ ⊕ (PrimeIndex K ⊕ σ)) := Classical.decEq _
+  unfold sourceFrozenPhase frozenIndices
+  rw [← frozenCore_transport (F.reflected K hK S).generator_ne_zero
+      (F.reflected K hK S).generator_good c (reflectedExponent jF) Sum.inl Sum.inl_injective Finset.univ,
+    ← ramifiedBlock_transport (F.reflected K hK S).generator_good
+      (reflectedExponent jF) Sum.inl Sum.inl_injective Finset.univ]
+  rfl
+
+lemma frozenExtracted_ne_zero (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3) (v : Fin 3) :
+    frozenExtracted F jF e v ≠ 0 := by
+  apply reflectionExtractedDivisor_ne_zero
+  intro i
+  rw [F.generator_span]
+  exact NeZero.ne _
+
+lemma frozenBranchScale_pos (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3) :
+    0 < frozenBranchScale F jF e := by
+  have hn (v : Fin 3) : (0:ℝ) < Ideal.absNorm (frozenExtracted F jF e v) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (frozenExtracted_ne_zero F jF e v))
+  exact div_pos (mul_pos (Real.sqrt_pos.mpr (hn 1)) (Real.sqrt_pos.mpr (hn 2)))
+    (Real.sqrt_pos.mpr (hn 0))
+
+def normalizedFrozenColumn (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (n b : Ideal Eis) : ℂ :=
+  (frozenBranchScale F jF e : ℂ)⁻¹ * frozenBranchColumn F jF e A n b
+
+lemma normalizedFrozenColumn_norm_le_one (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (hA : ∀ n b, ‖A n b‖ ≤ 1) (n b : Ideal Eis) :
+    ‖normalizedFrozenColumn F jF e A n b‖ ≤ 1 := by
+  have hp := frozenBranchScale_pos F jF e
+  rw [normalizedFrozenColumn,norm_mul,norm_inv,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hp]
+  calc
+    _ ≤ (frozenBranchScale F jF e)⁻¹*frozenBranchScale F jF e :=
+      mul_le_mul_of_nonneg_left (frozenBranchColumn_norm_le F jF e A hA n b) (inv_nonneg.mpr hp.le)
+    _ = 1 := inv_mul_cancel₀ hp.ne'
+
+lemma frozenBranchColumn_eq_normalized (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (n b : Ideal Eis) :
+    frozenBranchColumn F jF e A n b =
+      (frozenBranchScale F jF e : ℂ)*normalizedFrozenColumn F jF e A n b := by
+  rw [normalizedFrozenColumn,← mul_assoc,mul_inv_cancel₀,one_mul]
+  exact_mod_cast (frozenBranchScale_pos F jF e).ne'
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+lemma two_block_phase_bounds (F : PrimeFamily φ) (S : PrimeFamily σ) (jF : φ → ℕ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hcop : Pairwise (Function.onFun IsCoprime (F.sum S).ideal))
+    (hNp : ∀ i, IsCoprime (Ideal.span {N}) ((F.sum S).ideal i))
+    (hchar : ∀ i, ringChar (Eis ⧸ (F.sum S).ideal i) ≠ 2) (u : Eisˣ) (m : ℕ) :
+    ‖sourceRowPhase s (F.sum S).generator_ne_zero (F.sum S).generator_good
+      (Sum.elim jF (fun _ => 1)) (Finset.univ.image Sum.inr) (Finset.univ.image Sum.inl) u m‖ ≤ 1 ∧
+    ‖actualSlotPhase F S jF s u m‖ ≤ 1 := by
+  classical
+  obtain ⟨D⟩ := (F.sum S).exists_controlled N a c mode hc hN hbase hac hcop hNp
+  have hcp : Pairwise (Function.onFun IsCoprime
+      (fun i => Ideal.span {(F.sum S).generator i})) := by
+    simpa only [PrimeFamily.generator_span] using hcop
+  have hch : ∀ i, ringChar (Eis ⧸ Ideal.span {(F.sum S).generator i}) ≠ 2 := by
+    intro i
+    have he := congrArg (fun I : Ideal Eis => ringChar (Eis ⧸ I)) ((F.sum S).generator_span i)
+    exact he.symm ▸ hchar i
+  have hd : Disjoint (Finset.univ.image (Sum.inr : σ → φ ⊕ σ)) (Finset.univ.image Sum.inl) := by
+    simp only [Finset.disjoint_left,Finset.mem_image,Finset.mem_univ,true_and]
+    rintro i ⟨k,rfl⟩ ⟨f,h⟩
+    cases h
+  exact ⟨sourceRowPhase_norm_le_one D s _ _ hch hcp _ _ _ hd u m,
+    sourceSlotPhase_norm_le_one D s _ _ hch hcp _ _ _ hd u m⟩
+
+lemma actualRowPhase_norm_le_one (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (jF : φ → ℕ) (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal))
+    (hFK : ∀ f, IsCoprime (F.ideal f) K)
+    (hNF : ∀ f, IsCoprime (Ideal.span {N}) (F.ideal f))
+    (hNK : IsCoprime (Ideal.span {N}) K)
+    (hcharF : ∀ f, ringChar (Eis ⧸ F.ideal f) ≠ 2) (u : Eisˣ) (m : ℕ) :
+    ‖actualRowPhase F K hK jF s u m‖ ≤ 1 := by
+  have hcp := PrimeFamily.sum_pairwise F (PrimeFamily.residual K hK) hF
+    (PrimeFamily.residual_pairwise K hK) (fun f P =>
+      (hFK f).of_isCoprime_of_dvd_right (PrimeFamily.residual_dvd K hK P))
+  have hNp : ∀ i, IsCoprime (Ideal.span {N}) ((F.sum (PrimeFamily.residual K hK)).ideal i) := by
+    intro i
+    cases i with
+    | inl f => exact hNF f
+    | inr P => exact hNK.of_isCoprime_of_dvd_right (PrimeFamily.residual_dvd K hK P)
+  have hchar : ∀ i, ringChar (Eis ⧸ (F.sum (PrimeFamily.residual K hK)).ideal i) ≠ 2 := by
+    intro i
+    cases i with
+    | inl f => exact hcharF f
+    | inr P => exact (hK.2.2 P.val (Multiset.mem_toFinset.mp P.property)).2
+  have hh := (two_block_phase_bounds F (PrimeFamily.residual K hK) jF s hc hN hbase hac hcp hNp hchar u m).1
+  unfold actualRowPhase
+  convert hh using 1 ; congr 2 <;> ext i <;> simp
+
+lemma actualFrozenPhase_norm_le_one (F : PrimeFamily φ) (jF : φ → ℕ) (κ : ℂ) (hκ : ‖κ‖ ≤ 1)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c ≠ 0) (hN : (9:Eis)*c ∣ N)
+    (hbase : if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) (hac : IsCoprime a c)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal))
+    (hNF : ∀ f, IsCoprime (Ideal.span {N}) (F.ideal f))
+    (hcharF : ∀ f, ringChar (Eis ⧸ F.ideal f) ≠ 2) (hj : ∀ f, jF f < 6) (u : Eisˣ) (m : ℕ) :
+    ‖actualFrozenPhase F jF κ s u m‖ ≤ 1 := by
+  obtain ⟨D⟩ := F.exists_controlled N a c mode hc hN hbase hac hF hNF
+  have hcp : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {F.generator i})) := by
+    simpa only [PrimeFamily.generator_span] using hF
+  have hch : ∀ i, ringChar (Eis ⧸ Ideal.span {F.generator i}) ≠ 2 := by
+    intro i
+    have he := congrArg (fun I : Ideal Eis => ringChar (Eis ⧸ I)) (F.generator_span i)
+    exact he.symm ▸ hcharF i
+  rw [actualFrozenPhase,norm_mul,norm_mul,norm_star,
+    frozenCore_norm D _ _ hch hcp _ _ (fun i _ => hj i),ramifiedBlock_norm,mul_one,mul_one]
+  exact hκ
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection InverseMoment
+open scoped BigOperators Classical ContDiff MatrixGroups Matrix
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+theorem actualMixedCoefficient_common_branches (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ → ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hcop : Pairwise (Function.onFun IsCoprime (F.reflected K hK S).ideal))
+    (κ : ℂ) (A : Eisˣ → ℕ → Ideal Eis → Ideal Eis → ℂ)
+    (hκ : D.fixedFactor = κ)
+    (hA : ∀ u m n b, actualCuspColumn D s hc u m n b = A u m n b)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    actualMixedCoefficient F K hK S jF D s hc u m n b =
+      ∑ e : φ → Fin 3,
+        ((-1:ℂ)^(Fintype.card σ)*actualRowPhase F K hK jF s u m*
+          actualSlotPhase F S jF s u m*actualFrozenPhase F jF κ s u m)*
+        (frozenBranchScale F jF e:ℂ)*normalizedFrozenColumn F jF e (A u m) n b*
+        (Real.sqrt (Ideal.absNorm (∏ i, S.ideal i):ℝ):ℂ)⁻¹*
+        canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (n*b))*inverseCubicKernel (∏ i, S.ideal i) n*
+        (if IsCoprime (∏ i, S.ideal i) b then 1 else 0)*
+        (if IsCoprime K (∏ i, S.ideal i) then 1 else 0) := by
+  rw [actualMixedCoefficient_factor F K hK S jF D s hc hcop u m n b hb,
+    sourceFrozenPhase_eq_actual,hκ,sourceColumn_eq_sum_frozenBranches]
+  have hfun : actualCuspColumn D s hc u m = A u m := funext (fun n => funext (fun b => hA u m n b))
+  rw [hfun,Finset.mul_sum]
+  simp only [Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro e he
+  rw [frozenBranchColumn_eq_normalized]
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

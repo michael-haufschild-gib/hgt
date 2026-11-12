@@ -62,7 +62,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | M9 Production | integer stencils, integrality, Stepanov over ℤ | rate = Mertens level; exact count = Chebyshev; cost `m·θ(S)` |
 | M10 Count | nonnegative count with quadratic Tate limit | every hyperelliptic curve; over ℤ: RH ⇔ counts on the surviving prime rays; the object's own count is the split norm |
 | M11 Orbit at finite time | prime phases, returns, resonators | depth by Baker; breadth to VK; resonator means to `κ<2σ−1` |
-| M12 Critical compactness | thresholds, pole channel, half-line ground states | threshold identities; three-way classification |
+| M12 Critical compactness | thresholds, pole channel, half-line ground states | threshold identities; three-way classification; actual full-domain zero energy and weak equation without polar-threshold equality [L] |
 | M13 Topology of the prime complex | nerve, persistence, orientation cover | centred count `M(N)`; weight `½` ⇔ RH |
 | M14 Infinite-rank elimination | towers, thick sets, Turán, resolvent of a tower | elimination proved; with an attained top a thick crude count is RH |
 | M15 Prime-degree sampling | logarithmic windows, exceptions, upper side, counts, moments | complete receiver; resolution logarithmic at the level of configurations |
@@ -88,6 +88,7 @@ Routes: HF, SRT, AIP, ACS (atomic), SC. Programmes: CACT, AHD, CSAR, ACPL, ADT, 
 Established:
 - `0<R_PD=R_PSD=R_polar=R_halfline≤W=R_prim=R_high=inf_A windowThreshold(A)`, each infinite iff RH [L]; `R_polar=R_halfline` and the three-way classification [L*].
 - A critical half-line ground state with nonzero polar pairing forces `R_polar<W` [L*].
+- Every actual critical half-line state has full Gamma/logarithmic energy, causal coordinates, zero full energy and a weak equation against every finite-energy half-line test, without polar-threshold equality [L]. [Proof](../../drafts/pipeline/3-formalized/critical-half-line-states-have-causal-logarithmic-coordinates.md). The polar pairing remains undecided (B104).
 - Complete tilted-spline matrix positive for every subcritical exponent `<1/8` [L], and at `c≤2K₀(log N)^{1/8}` [K]; no countable square-bounded family of holomorphic multipliers dominates the depleted kernel [L].
 
 | | Obstacle | Strength |

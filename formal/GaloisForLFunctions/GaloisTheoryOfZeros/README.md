@@ -493,6 +493,118 @@ does not give a bounded sampling inverse, determine the relation group,
 or produce a purity criterion.
 [Prime-time density](ThePrimeTimePointsOfTheZeroMotive.lean).
 
+### Two-prime dynamics and commuting symmetries
+
+On `A=ℂ[Δ]`, translation by the prime-time point acts as
+`T_p([z])=p^z[z]`. The pair `(2^z,3^z)` distinguishes all complex exponents:
+a common exponential period would give an integer relation between
+`log 2` and `log 3`, contradicting unique factorization.
+
+The joint eigenspaces of `T_2,T_3` are therefore precisely the individual
+character lines. Every complex-linear operator commuting with both is a
+unique diagonal coefficient multiplier. Among these, the algebra
+endomorphisms are exactly
+
+```
+T_χ([z]) = χ(z)[z],       χ∈Hom(Δ,ℂˣ).
+```
+
+All are invertible; requiring the identity point to be fixed leaves only
+the identity map. Thus a complex-linear symmetry commuting with both prime
+translations cannot permute distinct character exponents.
+
+The only ideals stable under both translations are `0` and `A`. Indeed,
+a nonzero stable ideal has an element of least coefficient-support size.
+If two exponents occur, subtracting a suitable eigenvalue times that
+element from one prime translate reduces its support without killing it.
+The resulting contradiction leaves a single character, which is a unit.
+
+Every nonnegative two-prime orbit through every complex motive point is
+consequently Zariski dense: its vanishing ideal is stable and proper, hence
+zero. In particular, values at all times `log(2^m 3^n)`, `m,n≥0`, determine
+every regular function on the entire motive. The finite support of each
+regular function imposes no height cutoff on the zero group.
+
+This classification concerns complex-linear maps. Passing to the real base
+recovers ordinary conjugation as follows; arithmetic descent remains open.
+[Prime translations and their centralizer](TheCentralizerOfPrimeTranslations.lean).
+
+### The real structure selected by prime translations
+
+On the same full algebra `A=ℂ[Δ]`, conjugating coefficients and exponents gives
+
+```
+J(Σ a_z[z]) = Σ conjugate(a_z)[conjugate(z)].
+```
+
+This real-algebra involution commutes with every prime translation. Conversely,
+every real-algebra endomorphism commuting with `T_2,T_3` has exactly one form
+
+```
+T_χ  or  T_χ ∘ J,       χ∈Hom(Δ,ℂˣ).
+```
+
+Indeed, the common fixed subspace of the two translations is the constant
+line. A commuting map therefore preserves the coefficient field. Its scalar
+action is identity or conjugation, reducing both cases to the complex-linear
+classification. Every such endomorphism is invertible. The two forms are
+distinguished by their action on the constant `i`.
+
+Preserving the identity point means preserving the augmentation ideal
+`ker(ε)`, where `ε([z])=1`. The resulting centralizer is exactly `{1,J}`.
+A translation preserving this ideal satisfies `χ(z)−1=0` for every `z`,
+by evaluating its image of `[z]−1`; hence its character is trivial. Thus the unique nonidentity pointed real
+symmetry commuting with the two prime translations is ordinary conjugation,
+and it sends every actual zero coordinate `[ρ]` to `[conjugate(ρ)]`.
+Conjugation preserves the ideal but conjugates the value of `ε`; requiring
+`ε∘J=ε` would incorrectly exclude it.
+
+On translating points, put `κχ(z)=conjugate(χ(conjugate(z)))`. Then
+`κ²=1` and `J T_χ=T_(κχ) J`, which determines composition in this centralizer.
+This locates the real structure on the entire motive using two prime
+translations. Its base is all of `ℝ`; descent to the arithmetic source field,
+comparison with functional-equation reflection, and purity remain open.
+[Real structure of prime translations](TheRealStructureOfPrimeTranslations.lean).
+
+### The maximal arithmetic quotient
+
+Prime-time density does not make the prime points algebraic. For any
+complex exponent `z` and any three distinct primes `p,q,r`,
+
+```
+p^z, q^z, r^z algebraic over ℚ  ⇔  z∈ℚ.
+```
+
+If `1,z` are rationally independent, the six-exponentials theorem applied
+to those two rows and the three prime logarithms excludes simultaneous
+algebraicity. For rational `z`, a positive integer power of each exponential
+is rational.
+
+Consequently a character subgroup `H≤Δ` has algebraic values at three
+prime times exactly when `H≤R=Δ∩ℚ`; equivalently, all prime-time values
+on `H` are algebraic. Algebraicity concerns the canonical form `ℚ[H]`,
+or its character basis, rather than arbitrary complex coefficients.
+The quotient with character group `R` is therefore maximal among these
+arithmetic quotients. It has rational rank one and contains the unit weight.
+Moreover `R` is saturated, so `Δ/R` is torsion-free.
+
+On complex points, restriction gives the exact sequence
+
+```
+1 → (Δ/R)^∨ → Δ^∨ → R^∨ → 1.
+```
+
+Every admissible character restriction factors uniquely through `R^∨`.
+Every actual zero lies outside `R`, since no zero is real. The kernel
+contains the injective real family `u↦(z↦exp(u·Im z))`, witnessed by any
+actual zero. Thus retaining three algebraic prime-time points forces a
+proper quotient that loses a full family of ordinate characters.
+
+The denominators occurring in `R` remain unknown; no finite-type assertion
+is made. This classification does not identify conjugation with functional
+reflection or prove purity.
+[Maximal arithmetic quotient](TheMaximalArithmeticQuotientOfTheZeroMotive.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

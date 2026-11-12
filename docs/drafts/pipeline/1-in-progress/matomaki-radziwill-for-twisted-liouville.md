@@ -149,6 +149,21 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderHM` | `∫_E\|R_v\|² ≤ (2π)^{-1} hmMassRecip(⌊4lo⌋, 2πW, 2π\|E\|)·4/lo` (corpus set-integral Halász–Montgomery) | compiled |
 | `LadderRouteT` | `λχ` completely multiplicative, `\|λχ\| ≤ 1`; top-scale blocks are prime intervals with ratio `≤ 2`; `\|Q_v(w)\| ≤ (log X)^{-A}` for `2π\|w\| ≤ X` | compiled |
 | `LadderCover` | every frequency lies in `small_0`, some `small_j ∖ small_{j−1}`, or `small_{J−1}ᶜ`; integrated cover inequality | compiled |
+| `LadderRough` | `LadderScales` (disjoint prime scales + top); rough set `S`; every scale sees `S`, rest conditions stable | compiled |
+| `LadderMaster` | master inequality: `∫\|F_S\|² ≤` Ramaré errors + first step + moment steps + exceptional set, all as explicit integrals | compiled |
+| `LadderNumerics` | `ramErr ≤ 256(10/H + 16/P)`; blocks in `[H log P − 1, H log Q]`, `#V ≤ H log(Q/P) + 2`; first step `≤ #V²(10π(W/X)Q^{1−2α} + 40e²P^{-2α})` | compiled |
+| `LadderNumericsMoment` | `ℓ = ⌈(v/H)/(u/H')⌉`; pair `≤ Q'^{2α}·144(18ℓ/H')^ℓ`; step `≤ #V²#V' Q'^{2α}·144 e^{-(log P − 1/H)/log Q'}` if `18e(log Q/(log P'−1/H')+1) ≤ H'` | compiled |
+| `LadderNumericsExceptional` | exceptional measure `≤ #V·144 W^{2α}Q^{2α}` (moment `k = ⌈log W/(u/H)⌉`); `∫_E\|R_v\|² ≤ 6 + 4K\|E\|/lo + 384 log(2+4πW)` | compiled |
+| `LadderNonRough` | `∫\|F_{(X,4X]} − F_S\|² ≤ (5πW/2+10eX)X^{-2}Σ_scales (4X+2#Pr)/A_Pr`, `A = Σ_{p∈Pr}1/p` (Turán) | compiled |
+
+Remaining for (MR) for `λχ`: the concrete scale sequence and the final asymptotics of
+`ladder_master` + `LadderNonRough` (every term has an explicit numeric bound in `LadderNumerics*`).
+Scales (`a_j = log P_j`, `b_j = log Q_j`): `a_0 = 200 log log h`, `b_0 = (log h)/2`, `H_0 = (log h)^{25}`;
+`a_{j+1} = 2b_j²`, `b_{j+1} = a_{j+1}²`, `H_{j+1} = a_{j+1}^8`.  Then `A_j ≥ log a_j − C` (Mertens,
+`Sieve.le_mertensS`/`Sieve.mertensS_le`), the moment step `j` needs `18e(b_j/(a_{j−1} − 1/H_{j−1}) + 1) ≤ H_{j−1}`
+(`≈ 196a^7 ≤ a^8`), and each step costs `≲ b^{45} e^{-1.52 b}`, `b = b_{j−1}`.  Top scale
+`[exp((log X)^{0.93}), exp((log X)^{0.96})]`, `H* = log X`, `ρ = (log X)^{-3}`; `J` = number of `j` with
+`b_j ≤ (log X)^{0.93}`.  Then Parseval (P), principal characters, transfer (A).
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery

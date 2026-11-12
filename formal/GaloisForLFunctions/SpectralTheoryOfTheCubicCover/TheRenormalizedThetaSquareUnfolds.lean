@@ -350,7 +350,6 @@ theorem integral_renormalized_mul_eisenstein (s : ℂ) (hs4 : 4 < s.re) (hs : s.
     ((hA.sub (hB.const_mul (periodArea * thetaCoeff ^ 2))).add hC).const_mul periodArea⁻¹
   have hR : IntegrableOn Rf (Set.Ioi 0) := by
     refine IntegrableOn.congr_fun hcomb (fun v hv => ?_) measurableSet_Ioi
-    simp only
     rw [hpt v hv]
     field_simp
     ring
@@ -362,6 +361,5 @@ theorem integral_renormalized_mul_eisenstein (s : ℂ) (hs4 : 4 < s.re) (hs : s.
     integral_const_mul, integral_const_mul, hRfdef, hBfdef, hCfdef,
     integral_thetaSqRemainder s hs4, integral_low_power s (by linarith),
     integral_scatterPart thetaCoeff s (by linarith), integral_growthProfile_full_eq s (by linarith)]
-  ring
 
 end GaloisForLFunctions.SpectralTheoryOfTheCubicCover

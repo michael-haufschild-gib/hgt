@@ -44,13 +44,22 @@ theorem linearCharacter_mem_fdCharacterSet {H : Type u} [Group H] (χ : LinearCh
     funext fun h => linearCharacterRepresentation_character χ h
   rwa [e] at h
 
-variable [Fintype G]
-
 theorem extendByZero_sum (H : Subgroup G) {ι : Type*} (s : Finset ι) (F : ι → H → ℂ) (x : G) :
     extendByZero H (fun h => ∑ i ∈ s, F i h) x = ∑ i ∈ s, extendByZero H (F i) x := by
   by_cases hx : x ∈ H
   · simp only [extendByZero_of_mem H _ hx]
   · simp only [extendByZero_of_notMem H _ hx, Finset.sum_const_zero]
+
+/-- The linear characters of a finite abelian group, as a finite type. -/
+noncomputable local instance finiteLinearCharacterOfComm {A : Type u} [CommGroup A] [Finite A] :
+    Finite (LinearCharacter A) :=
+  RHTower.deningerCharacterGroup_finite
+
+noncomputable local instance fintypeLinearCharacterOfComm {A : Type u} [CommGroup A]
+    [Finite A] : Fintype (LinearCharacter A) :=
+  Fintype.ofFinite _
+
+variable [Fintype G]
 
 /-- Induction commutes with finite sums. -/
 theorem inducedFunction_sum (H : Subgroup G) {ι : Type*} (s : Finset ι) (F : ι → H → ℂ) :
