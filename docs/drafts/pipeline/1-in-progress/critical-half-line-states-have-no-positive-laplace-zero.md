@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** B104; a spectral substitute for positivity of the state.
 - **Statement:** At the finite global window threshold, every actual critical state F satisfies `L_F(s)=∫ F(u) exp(su) du ≠ 0` for every real `s>0`.
-- **Status:** Support, real representatives, weighted domain closure and exact energy defect verified in Lean. Correlation, pole-product and final nonvanishing modules written; compilation incomplete. Not counted.
+- **Status:** Support, real representatives, weighted domain closure, exact energy defect and correlation preservation verified in Lean. Pole-product and final nonvanishing modules written; compilation incomplete. Not counted.
 
 ## Proposed argument
 
@@ -51,11 +51,11 @@ Verified:
 - `HTGeometry/CausalExponentialReflectionEnergy`: **verified** actual L² convolution, exact shifted-resolvent energy defect, Fourier-modulus preservation.
 - `HTGeometry/WeightedCausalExponentialReflection`: **verified** actual weighted L² closure and exact weighted norm defect.
 - `HTGeometry/RealCausalExponentialReflection`: literal real representatives, measurability, support, L¹ and weighted L² closure.
+- `HTGeometry/FourierModulusDeterminesActualCorrelation`: preservation of every literal translated correlation.
+- `HTGeometry/CausalExponentialLaplaceReflection`: causal/anti-causal moment laws, resonance-inclusive pole-product identity and actual resolvent injectivity.
 
 Written, unchecked:
 
-- `HTGeometry/FourierModulusDeterminesActualCorrelation`: preservation of every literal translated correlation.
-- `HTGeometry/CausalExponentialLaplaceReflection`: causal/anti-causal moment laws and resolvent injectivity.
 - AHT/`TheCausalReflectionPreservesPrimeAndGammaEnergy`: prime/Gamma invariance and every reflected-domain field.
 - AHT/`TheCausalReflectionPreservesThePoleProduct`: opposite pole-moment invariance, including resonance.
 - AHT/`TheCriticalHalfLineStateHasNoPositiveLaplaceZero`: exact full-form defect and actual-state nonvanishing.

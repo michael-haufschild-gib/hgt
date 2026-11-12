@@ -500,7 +500,8 @@ theorem norm_hamburgerSeries_le_of_coeff_eq_zero {a : ℕ → ℂ}
       rcases le_or_gt k (2 * m) with h | h
       · nlinarith
       · rw [hd, abs_of_pos (by linarith)]; nlinarith
-    have hkey : 2 * m * k ^ 2 ≤ 16 / 3 * m ^ 2 * (3 / 4 * (k * d)) := by nlinarith
+    have hkey : 2 * m * k ^ 2 ≤ 16 / 3 * m ^ 2 * (3 / 4 * (k * d)) := by
+      nlinarith [mul_le_mul_of_nonneg_left hkd (by positivity : (0 : ℝ) ≤ 2 * m * k)]
     have hnorm : ‖a (n + 1) * τ / ((Real.pi : ℂ) * (((n + 1 : ℕ) : ℂ) ^ 2 + τ ^ 2))‖ =
         ‖a (n + 1)‖ * ‖τ‖ / (Real.pi * ‖(k : ℂ) ^ 2 + τ ^ 2‖) := by
       rw [norm_div, norm_mul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hpi.le, hk]
@@ -512,7 +513,7 @@ theorem norm_hamburgerSeries_le_of_coeff_eq_zero {a : ℕ → ℂ}
           gcongr
       _ = ‖a (n + 1)‖ / Real.pi * (2 * m / (3 / 4 * (k * d))) := by ring
       _ ≤ ‖a (n + 1)‖ / Real.pi * (16 / 3 * m ^ 2 / k ^ 2) := by
-          gcongr
+          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
           rw [div_le_div_iff₀ (by positivity) (by positivity)]
           exact hkey
       _ = 16 / (3 * Real.pi) * m ^ 2 * (‖a (n + 1)‖ / k ^ 2) := by ring
@@ -578,7 +579,9 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
     congr 1
     simp [hure]
   have hq1 : ‖w‖ < 1 := by
-    rw [hwn, Real.exp_lt_one]; nlinarith
+    rw [hwn]
+    have h : Real.exp (-(2 * Real.pi * x)) < Real.exp 0 := Real.exp_lt_exp.mpr (by nlinarith)
+    rwa [Real.exp_zero] at h
   have hq78 : 7 / 8 ≤ ‖w‖ := by
     rw [hwn]
     have := Real.add_one_le_exp (-(2 * Real.pi * x))
@@ -641,18 +644,18 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
       _ = 14 / 576 * (A / (Real.pi * μ)) + 7 * Real.pi / 3 * C := by
           field_simp; ring
       _ ≤ ι + ι := by
-          gcongr
-          rw [hι, show A / (32 * Real.pi * μ) = 1 / 32 * (A / (Real.pi * μ)) by field_simp]
-          gcongr
-          norm_num
+          have e1 : 14 / 576 * (A / (Real.pi * μ)) ≤ ι := by
+            rw [hι, show A / (32 * Real.pi * μ) = 1 / 32 * (A / (Real.pi * μ)) by field_simp]
+            exact mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
+          exact add_le_add e1 hRC
       _ = 2 * ι := by ring
   -- the Hamburger series has no pole at `i m`
   have hτn : ‖τ‖ ≤ 2 * m := by
     have := Complex.norm_le_abs_re_add_abs_im τ
     rw [← hxdef, ← hydef, abs_of_pos hx0, abs_of_nonneg hy0] at this
-    nlinarith
+    linarith [hym.2]
   have hL := norm_hamburgerSeries_le_of_coeff_eq_zero (by simpa using summable_sq_of_forall_rpow ha)
-    hm ham hy0 (by linarith [hym.1, hym.2] |> fun _ => abs_le.mpr ⟨by linarith, by linarith⟩) hτn
+    hm ham hy0 (abs_le.mpr ⟨by linarith [hym.1], by linarith [hym.2]⟩) hτn
   -- the polar terms
   have hτ34 : 3 / 4 ≤ ‖τ‖ := by
     have := Complex.abs_im_le_norm τ
@@ -665,7 +668,7 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
       have : ‖β‖ * (4 / (3 * Real.pi)) * (Real.pi * ‖τ‖) = ‖β‖ * (4 / 3 * ‖τ‖) := by
         field_simp
       rw [this]
-      nlinarith [norm_nonneg β]
+      exact le_mul_of_one_le_right (norm_nonneg β) (by linarith)
     linarith
   -- assemble `J = L - F + β/(πτ) - β`
   have hJ : defectLaplace g τ =
@@ -676,7 +679,7 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
     rw [hper, hF]
     have := norm_sub_norm_le ((A : ℂ) * w / (1 - w)) (-((1 - w) * Rs))
     rw [sub_neg_eq_add, norm_neg] at this
-    linarith
+    linarith only [this, hmain, hrem]
   have hfin : 6 * ι ≤ ‖defectLaplace g τ‖ + ‖hamburgerSeries a τ‖ +
       (‖β / (Real.pi * τ)‖ + ‖β‖) := by
     have e : expSeries a τ = hamburgerSeries a τ - defectLaplace g τ +
@@ -685,9 +688,9 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
     have h2 := norm_add_le (hamburgerSeries a τ - defectLaplace g τ) (β / (Real.pi * τ))
     have h3 := norm_sub_le (hamburgerSeries a τ) (defectLaplace g τ)
     rw [← e] at h1
-    linarith
+    linarith only [h1, h2, h3, hFn]
   have hgoal : A / (8 * Real.pi * μ) = 4 * ι := by rw [hι]; field_simp; ring
   rw [hgoal]
-  linarith
+  linarith only [hfin, hL, hLS, hpol]
 
 end GaloisForLFunctions.EulerFETransportTheory

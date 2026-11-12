@@ -155,6 +155,7 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderNumericsMoment` | `ℓ = ⌈(v/H)/(u/H')⌉`; pair `≤ Q'^{2α}·144(18ℓ/H')^ℓ`; step `≤ #V²#V' Q'^{2α}·144 e^{-(log P − 1/H)/log Q'}` if `18e(log Q/(log P'−1/H')+1) ≤ H'` | compiled |
 | `LadderNumericsExceptional` | exceptional measure `≤ #V·144 W^{2α}Q^{2α}` (moment `k = ⌈log W/(u/H)⌉`); `∫_E\|R_v\|² ≤ 6 + 4K\|E\|/lo + 384 log(2+4πW)` | compiled |
 | `LadderNonRough` | `∫\|F_{(X,4X]} − F_S\|² ≤ (5πW/2+10eX)X^{-2}Σ_scales (4X+2#Pr)/A_Pr`, `A = Σ_{p∈Pr}1/p` (Turán) | compiled |
+| `LadderDensity` | `Σ_{e^a<p≤e^b} 1/p ≥ log(b/a) − C_M` (corpus Mertens) | compiled |
 
 Remaining for (MR) for `λχ`: the concrete scale sequence and the final asymptotics of
 `ladder_master` + `LadderNonRough` (every term has an explicit numeric bound in `LadderNumerics*`).

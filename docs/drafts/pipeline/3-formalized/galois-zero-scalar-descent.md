@@ -1,8 +1,8 @@
 # Scalar descent of prime-compatible symmetries
 
 - **ID:** galois-zero-scalar-descent
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Questions:** Arithmetic descent of the full zero motive.
 
 ## Theorem
@@ -60,3 +60,20 @@ independence or algebraicity assumptions on the zeros. The classification
 does not assert that every scalar embedding preserves it. Determining its
 stabilizer over the actual arithmetic source field remains open. No
 functional-equation descent or purity conclusion is asserted.
+
+## Formalization
+
+`GaloisForLFunctions/GaloisTheoryOfZeros/TheScalarDescentOfPrimeTranslations.lean`:
+
+- `primeTranslation_rational_algebra_centralizer`: full semilinear classification.
+- `zeroMotiveSemilinearLift_coordinates_injective`: uniqueness of both coordinates.
+- `rationalPrimeCommutant_injective`: automatic injectivity.
+- `primeSpectrumExponentHom_injective`: faithful transport of actual exponents.
+- `primeSpectrum_scalar_extension_iff`: unique pointed endomorphism extension.
+- `zeroMotiveSemilinearLift_pointed_iff`: exact removal of the character coordinate.
+- `primeSpectrum_scalar_automorphism_extension_iff`: exact automorphism criterion.
+- `zeroMotiveRationalScalarEquiv`: scalar restriction of every commuting automorphism.
+- `rationalPrimeCommutant_fixes_subfield`: descent to any ground subfield.
+
+Final direct source check passed without warnings. All 18 dependency audits
+use only `propext`, `Classical.choice`, `Quot.sound`.

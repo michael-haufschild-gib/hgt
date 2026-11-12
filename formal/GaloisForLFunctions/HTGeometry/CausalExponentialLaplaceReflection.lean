@@ -38,7 +38,9 @@ theorem reflectedCausalConvolution_eq_partial_laplace (b y : ℝ) (f : ℝ → �
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   dsimp only
   by_cases hu : u ∈ Ioi y
-  · have huy : u - y ∈ Ioi (0 : ℝ) := sub_pos.mpr hu
+  · have huy : u - y ∈ Ioi (0 : ℝ) := by
+      change (0 : ℝ) < u - y
+      exact sub_pos.mpr hu
     rw [causalFourierExponential, indicator_of_mem huy, indicator_of_mem hu]
     have he : Complex.exp (-((Real.pi * b : ℝ) : ℂ) * ((u - y : ℝ) : ℂ)) =
         Complex.exp ((Real.pi * b * y : ℝ) : ℂ) * Complex.exp (-(Real.pi * b * u : ℝ)) := by
@@ -48,7 +50,9 @@ theorem reflectedCausalConvolution_eq_partial_laplace (b y : ℝ) (f : ℝ → �
       ring
     rw [he]
     ring
-  · have huy : u - y ∉ Ioi (0 : ℝ) := not_lt.mpr (sub_nonpos.mpr (le_of_not_gt hu))
+  · have huy : u - y ∉ Ioi (0 : ℝ) := by
+      change ¬ (0 : ℝ) < u - y
+      exact not_lt.mpr (sub_nonpos.mpr (le_of_not_gt hu))
     rw [causalFourierExponential, indicator_of_notMem huy, indicator_of_notMem hu,
       zero_mul, mul_zero]
 
@@ -86,7 +90,7 @@ theorem integral_causalFourierExponential {b : ℝ} (hb : 0 < b) :
     (∫ u, causalFourierExponential b u) = (b : ℂ)⁻¹ := by
   have hh := causalLaplaceIntegral_causalFourierExponential (a := b) (x := 0) hb le_rfl
   simpa only [causalLaplaceIntegral, causalLaplaceWeighted, mul_zero, Complex.ofReal_zero,
-    neg_zero, Complex.exp_zero, one_mul, add_zero] using hh
+    zero_mul, neg_zero, Complex.exp_zero, one_mul, add_zero] using hh
 
 /-- The reflected kernel has the same total mass. -/
 theorem integral_reflectedCausalFourierExponential {b : ℝ} (hb : 0 < b) :
@@ -105,6 +109,7 @@ theorem causalLaplaceIntegral_causalConvolution_of_pos {a x : ℝ} (hb : 0 < a +
   rw [causalLaplaceWeighted_causalExponentialConvolution,
     integral_convolution (ContinuousLinearMap.mul ℂ ℂ) (causalFourierExponential_integrable hb) hf,
     integral_causalFourierExponential hb]
+  rfl
 
 /-- Beyond the resonant rate, the anti-causal representation gives the same law. -/
 theorem causalLaplaceIntegral_causalConvolution_of_neg {a x : ℝ} (hb : a + x < 0)
@@ -147,7 +152,8 @@ theorem causalLaplaceIntegral_causalConvolution_mul {a x : ℝ} {f : ℝ → ℂ
   · have hx : x = -a := by linarith only [hax]
     rw [hax, Complex.ofReal_zero, zero_mul, hx, hz]
   · have hi' : Integrable (fun u => Complex.exp ((Real.pi * a * u : ℝ) : ℂ) * f u) := by
-      simpa only [causalLaplaceWeighted, mul_neg, neg_mul, neg_neg, Complex.ofReal_neg] using hi
+      change Integrable (fun u => Complex.exp (-(Real.pi * (-a) * u : ℝ)) * f u) at hi
+      simpa only [mul_neg, neg_mul, neg_neg, Complex.ofReal_neg] using hi
     have hz' : (∫ u, Complex.exp ((Real.pi * a * u : ℝ) : ℂ) * f u) = 0 := by
       simpa only [causalLaplaceIntegral, causalLaplaceWeighted, mul_neg, neg_mul, neg_neg, Complex.ofReal_neg] using hz
     have hl : causalLaplaceIntegral x (causalFourierExponential a ⋆[ContinuousLinearMap.mul ℂ ℂ] f) =
@@ -174,8 +180,15 @@ theorem causalLaplaceIntegral_reflection_linear {a x : ℝ} {f : ℝ → ℂ}
     funext y
     unfold causalLaplaceWeighted causalBlaschkeStep
     ring
-  rw [causalLaplaceIntegral, hs, integral_add hf.neg (hc.const_mul (2 * a : ℂ)),
-    integral_neg, integral_const_mul]
+  rw [causalLaplaceIntegral, hs]
+  dsimp only
+  have hadd : (∫ y, -causalLaplaceWeighted x f y + (2 * a : ℂ) *
+      causalLaplaceWeighted x (causalFourierExponential a ⋆[ContinuousLinearMap.mul ℂ ℂ] f) y) =
+      (∫ y, -causalLaplaceWeighted x f y) +
+        ∫ y, (2 * a : ℂ) * causalLaplaceWeighted x
+          (causalFourierExponential a ⋆[ContinuousLinearMap.mul ℂ ℂ] f) y :=
+    integral_add hf.neg (hc.const_mul (2 * a : ℂ))
+  rw [hadd, integral_neg, integral_const_mul]
   change -causalLaplaceIntegral x f + (2 * a : ℂ) *
     causalLaplaceIntegral x (causalFourierExponential a ⋆[ContinuousLinearMap.mul ℂ ℂ] f) = _
   rw [← causalLaplaceIntegral_causalConvolution_mul hi hz hf]

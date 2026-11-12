@@ -566,6 +566,46 @@ translations. Its base is all of `ℝ`; descent to the arithmetic source field,
 comparison with functional-equation reflection, and purity remain open.
 [Real structure of prime translations](TheRealStructureOfPrimeTranslations.lean).
 
+### Scalar descent of the prime centralizer
+
+The restriction to real scalars can be removed. Define the actual joint spectrum
+
+```
+S = {(2^z,3^z) : z∈Δ} ⊂ ℂ².
+```
+
+Every rational-algebra endomorphism commuting with the two prime translations
+is injective and has the unique form
+
+```
+F(a[z]) = σ(a) χ(z)[φ(z)].
+```
+
+Here `σ:ℂ→ℂ` is a scalar embedding preserving `S`, `χ:Δ→ℂˣ` is an arbitrary
+character, and the additive injection `φ` is uniquely recovered from
+`(2^(φz),3^(φz))=(σ(2^z),σ(3^z))`. Conversely, every such pair `(σ,χ)`
+defines a commuting endomorphism. No continuity or real-line preservation
+is assumed.
+
+The common fixed subspace forces preservation of constants. Semilinearity
+then makes the image of each character a joint eigenvector. Distinctness of
+the spectrum forces a single exponent, and multiplication recovers both
+`φ` and `χ`. Injectivity also follows directly from difference simplicity:
+the kernel is a stable proper ideal and hence zero.
+
+Preserving the augmentation ideal is exactly `χ=1`. Thus scalar restriction
+identifies pointed commuting endomorphisms with scalar embeddings preserving
+`S`. For automorphisms the condition is invariance in both directions:
+`(σ×σ)(S)=S`. A commuting algebra automorphism restricts to an actual scalar
+automorphism, and the lift of every admissible scalar automorphism is unique.
+Fixing any ground subfield `K⊂ℂ` is precisely fixing `K` in this scalar action.
+
+This gives an exact arithmetic descent problem on an explicit infinite
+spectrum. It does not determine its stabilizer over the prime-side source
+field, assert that arbitrary scalar automorphisms preserve it, or identify
+functional reflection with conjugation.
+[Scalar descent of prime translations](TheScalarDescentOfPrimeTranslations.lean).
+
 ### The maximal arithmetic quotient
 
 Prime-time density does not make the prime points algebraic. For any

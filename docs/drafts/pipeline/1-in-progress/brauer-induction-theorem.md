@@ -102,10 +102,33 @@ constant `l` is in the span.
 Bézout and is `< m` because `p ∤ l_p`. Starting from `|G|` (B4) this reaches `1`. Then B3
 descends to the integer span and B2 gives the whole ring.
 
-**B9.** Serre Theorem 16 for groups with a normal abelian subgroup not in the center, by
-induction on the order: restriction to that subgroup is not isotypic, so the representation is
-induced from the stabilizer of an isotypic component, a proper subgroup that is again
-elementary (corpus: subgroups of a product of a `p'`-group and a `p`-group split).
+**B9.** Statement: for a finite nilpotent group `E`, every character is an integer combination
+of monomial characters `Ind_K^E λ` (`M(E)`, the monomial span). Strong induction on `|E|`; no
+irreducibility and no Maschke.
+
+- *Abelian `E`*: characters are sums of linear characters (corpus), and `λ = Ind_E^E λ`.
+- *Nonabelian `E`*: there is `a` in the second centre and not in the centre `Z`;
+  `A = Z · ⟨a⟩` is abelian, normal, not central. Let `ρ` be a representation on `V`, and for
+  `λ ∈ Â` let `e_λ = (1/|A|) Σ_a λ(a⁻¹) ρ(a)`. Then `ρ(b) e_λ = λ(b) e_λ`, `e_λ e_μ = δ e_λ`,
+  `Σ_λ e_λ = 1`, `ρ(g) e_λ ρ(g)⁻¹ = e_{gλ}` with `(gλ)(a) = λ(g⁻¹ag)`. Put
+  `F_λ(g) = tr(ρ(g) e_λ)`. Then `χ = Σ_λ F_λ`; `F_λ(y) = 0` unless `yλ = λ`
+  (`tr(ρ(y)e_λ) = tr(e_{yλ} ρ(y) e_λ) = tr(ρ(y) e_λ e_{yλ})`); and on the stabilizer `T_λ` the
+  function `F_λ` is the character of `T_λ` on the range of `e_λ` (a commuting idempotent).
+  `m_λ = Ind_{T_λ}^E F_λ = (1/|T_λ|) Σ_x F_{xλ}`, so `χ = (1/|E|) Σ_λ |T_λ| m_λ`, and `m` is
+  constant on orbits; by the orbit–stabilizer count `χ = Σ_{orbits} m_λ`.
+  - `T_λ ≠ E`: `F_λ|T_λ ∈ M(T_λ)` by induction, and induction in stages gives `m_λ ∈ M(E)`.
+  - `T_λ = E`: `A` acts on the range of `e_λ` by the scalar `λ`, so `N = [A, E] ≠ 1` acts
+    trivially; the range is a representation of `E/N`, in `M(E/N)` by induction, and inflation
+    maps `M(E/N)` into `M(E)` (`Infl Ind_{K̄} λ̄ = Ind_{π⁻¹K̄} (λ̄ ∘ π)`).
+
+Sub-gates: B9a monomial span, induction in stages, inflation, abelian case; B9b character on the
+range of a commuting idempotent; B9c the idempotents `e_λ`; B9d orbit decomposition; B9e scalar
+case; B9f nilpotent groups and the induction.
+
+**B10.** A Brauer-elementary group is nilpotent (cyclic times `p`-group); a subgroup of a
+Brauer-elementary subgroup is Brauer-elementary (corpus: subgroups of the product split). By B8,
+B9 and induction in stages every virtual character is an integer combination of
+`Ind_K^G λ`, `K` elementary.
 
 ## Lean
 

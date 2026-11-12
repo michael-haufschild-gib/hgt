@@ -24,11 +24,11 @@ theorem integrable_halfLineLaplace_of_domain {F : ℝ → ℝ}
     (hF.meas.mul (Real.continuous_exp.comp (continuous_const.mul continuous_id)).measurable).aestronglyMeasurable
   refine Eventually.of_forall fun u => ?_
   by_cases hu : 0 ≤ u
-  · rw [hF.support u hu, zero_mul, norm_zero]
-  · rw [norm_mul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-    exact (mul_le_mul_of_nonneg_left
-      (Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hs (le_of_not_ge hu))))
-      (norm_nonneg _)).trans_eq (mul_one _)
+  · simp only [hF.support u hu, zero_mul, norm_zero, le_refl]
+  · simp only [norm_mul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    have hw : Real.exp (s * u) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hs (le_of_not_ge hu))
+    exact (mul_le_mul_of_nonneg_left hw (abs_nonneg _)).trans_eq (mul_one _)
 
 /-- One positive Laplace value fixes the scalar between any two actual critical states. -/
 theorem criticalHalfLineGroundState_eq_laplace_ratio_ae
@@ -54,8 +54,7 @@ theorem criticalHalfLineGroundState_eq_laplace_ratio_ae
     rw [integral_add (integrable_halfLineLaplace_of_domain hdF hs.le)
       ((integrable_halfLineLaplace_of_domain hdG hs.le).const_mul c), integral_const_mul]
     dsimp only [c]
-    field_simp
-    ring
+    field_simp [hLG] <;> ring
   have hh := ae_eq_zero_of_criticalHalfLineFullEnergy_eq_zero_of_laplace_zero
     hW hthreshold hd he hs hz
   filter_upwards [hh] with u hu
@@ -91,5 +90,20 @@ theorem criticalHalfLineGroundState_unique_up_to_sign
   · right
     have hc1 : c = -1 := by linarith only [hc]
     simpa only [hc1, neg_one_mul] using hp
+
+/-- If RH fails, the finite global threshold has exactly one normalized
+critical-state line, represented by a profile with no positive Laplace zero. -/
+theorem riemannHypothesis_or_exists_unique_criticalHalfLineGroundState :
+    RiemannHypothesis ∨ ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧
+      (∀ s : ℝ, 0 < s → (∫ u, F u * Real.exp (s * u)) ≠ 0) ∧
+      ∀ G : ℝ → ℝ, IsCriticalHalfLineGroundState W₀ G →
+        (G =ᵐ[volume] F) ∨ (G =ᵐ[volume] fun u => -F u) := by
+  rcases riemannHypothesis_or_exists_laplaceZeroFree_criticalHalfLineGroundState with
+    hRH | ⟨W₀, F, hW, ht, hF, hL⟩
+  · exact Or.inl hRH
+  · exact Or.inr ⟨W₀, F, hW, ht, hF, hL,
+      fun _ hG => criticalHalfLineGroundState_unique_up_to_sign hW ht hG hF⟩
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

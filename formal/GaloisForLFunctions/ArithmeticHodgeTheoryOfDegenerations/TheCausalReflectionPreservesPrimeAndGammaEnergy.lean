@@ -21,7 +21,10 @@ open CriticalArithmeticCorrelationTheory ArithmeticCastelnuovoSeveri HTGeometry
 private theorem memLp_cx_profile {F : ℝ → ℝ} (hF1 : Integrable F)
     (hF2 : Integrable (fun u => F u ^ 2)) : MemLp (cx F) 2 volume := by
   apply (memLp_two_iff_integrable_sq_norm (hF1.ofReal (𝕜 := ℂ)).aestronglyMeasurable).mpr
-  simpa only [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hF2
+  apply hF2.congr
+  refine Eventually.of_forall fun u => ?_
+  change F u ^ 2 = ‖(F u : ℂ)‖ ^ 2
+  rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 /-- The literal paper Fourier modulus is unchanged at every real frequency. -/
 theorem norm_paperFT_realCausalReflection {a : ℝ} (ha : 0 < a)
@@ -60,7 +63,10 @@ theorem integral_mul_translate_realCausalReflection {a : ℝ} (ha : 0 < a)
   have hc := integral_conj_mul_translate_eq_of_fourier_norm
     (hH1.ofReal (𝕜 := ℂ)) (memLp_cx_profile hH1 hH2)
     (hF1.ofReal (𝕜 := ℂ)) (memLp_cx_profile hF1 hF2) hmod t
-  simp only [cx, Complex.conj_ofReal, ← Complex.ofReal_mul] at hc
+  change (∫ u, (starRingEnd ℂ) (realCausalReflection a F u : ℂ) *
+      (realCausalReflection a F (u + t) : ℂ)) =
+    ∫ u, (starRingEnd ℂ) (F u : ℂ) * (F (u + t) : ℂ) at hc
+  simp only [Complex.conj_ofReal, ← Complex.ofReal_mul] at hc
   rw [integral_complex_ofReal, integral_complex_ofReal] at hc
   exact Complex.ofReal_inj.mp hc
 
@@ -72,7 +78,7 @@ theorem primeSum_realCausalReflection {a : ℝ} (ha : 0 < a)
   apply tsum_congr
   intro n
   have hm := integral_mul_translate_realCausalReflection ha hF1 hF2 (-Real.log n)
-  simp only [add_neg_eq_sub] at hm
+  simp only [← sub_eq_add_neg] at hm
   rw [hm, integral_mul_translate_realCausalReflection ha hF1 hF2]
 
 /-- The resolvent inherits the actual exponential square integrability. -/
@@ -104,7 +110,7 @@ theorem CriticalHalfLineEnergyDomain.realCausalReflection {a : ℝ} (ha : 0 < a)
   · apply hF.gamma.congr
     refine Eventually.of_forall fun r => ?_
     change ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r =
-      ‖paperFT (cx (realCausalReflection a F)) r‖ ^ 2 * EF.gammaBracket r
+      ‖paperFT (cx (HTGeometry.realCausalReflection a F)) r‖ ^ 2 * EF.gammaBracket r
     rw [norm_paperFT_realCausalReflection ha hF.integrable]
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
