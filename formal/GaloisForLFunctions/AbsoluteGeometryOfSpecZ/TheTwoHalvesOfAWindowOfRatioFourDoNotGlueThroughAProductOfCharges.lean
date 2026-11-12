@@ -56,6 +56,7 @@ section Contacts
 
 variable {ι₁ ι₂ : Type*} [Fintype ι₁] [Fintype ι₂] [DecidableEq ι₂]
 
+omit [Fintype ι₁] in
 /-- The excess over a product of charges is at least the reserved couplings minus one row sum,
 when the second charge has a nonnegative sum. -/
 theorem sum_contacts_sub_le_sum_excessLeft_of_nonneg {K : ι₁ → ι₂ → ℝ} {u : ι₁ → ℝ}
@@ -130,6 +131,7 @@ theorem sum_contacts_sub_le_sum_excessLeft_of_nonneg {K : ι₁ → ι₂ → �
   rw [hex]
   linarith
 
+omit [Fintype ι₁] in
 /-- **A product of charges carries no contacts.** If `u_i v_j ≤ K_ij`, the couplings `K ≥ 0`
 have row sums at most `ρ`, and the blocks of `S` reserve disjoint sets `cont i` of blocks of the
 second form, then the excess of `S` over the product of the charges is at least the reserved
@@ -310,10 +312,9 @@ theorem sum_neutralBlock_window {Q R J : ℕ} (hJ : J ≤ R) :
   have h5 : ∑ j ∈ range J, xLogXStep (J - 1 - j) = xLogX J := by
     rw [Finset.sum_range_reflect (fun j => xLogXStep j) J]
     exact h4
-  rw [Finset.sum_congr rfl hrow, Finset.sum_sub_distrib, Finset.sum_sub_distrib,
-    Finset.sum_sub_distrib, ← Finset.sum_div, ← Finset.sum_div, Finset.sum_sub_distrib,
-    Finset.sum_add_distrib, h1, h2, h3, h4, h5, Finset.sum_const, Finset.card_range,
-    nsmul_eq_mul]
+  rw [Finset.sum_congr rfl hrow]
+  simp only [Finset.sum_sub_distrib, Finset.sum_add_distrib, ← Finset.sum_div, Finset.sum_const,
+    Finset.card_range, nsmul_eq_mul, h1, h2, h3, h4, h5]
   ring
 
 theorem xLogX_mul {c H : ℕ} (hc : 1 ≤ c) (hH : 1 ≤ H) :
@@ -394,8 +395,7 @@ theorem max_sub_max_mem (y x : ℝ) :
 
 /-- **Only the floor maps of `2` and `3` reach the blocks below `4a` from the block `a`**, each
 at most `k` times: the contacts add up to at most `log 2 + log 3`. -/
-theorem sum_Ico_floorContact_le {Q a L₁ L₂ : ℕ} (ha : 1 ≤ a) (hL : L₁ ≤ L₂)
-    (h4 : L₂ ≤ 4 * a) :
+theorem sum_Ico_floorContact_le {Q a L₁ L₂ : ℕ} (hL : L₁ ≤ L₂) (h4 : L₂ ≤ 4 * a) :
     ∑ l ∈ Ico L₁ L₂, floorContact Q a l ≤ Real.log 2 + Real.log 3 := by
   have hk : ∀ k ∈ Icc 2 Q, ∑ l ∈ Ico L₁ L₂, (if l / k = a then (Λ k : ℝ) / k else 0) ≤
       (if k = 2 then Real.log 2 else 0) + (if k = 3 then Real.log 3 else 0) := by
@@ -457,8 +457,8 @@ theorem sum_range_blockJet_eq {a L : ℕ} (haL : a < L) (K : ℕ) :
 /-- **The couplings of a block `a` with `K` blocks above `L`**, when `K ≤ a + L + 1` and the
 blocks stay below `4a`: the jets are at most `½ (log 2 + log(L − a + K)) + 1`, the contacts at
 most `log 2 + log 3`. -/
-theorem sum_range_blockWeight_le {Q a L K : ℕ} (ha : 1 ≤ a) (haL : a < L)
-    (hK : K ≤ a + L + 1) (h4 : L + K ≤ 4 * a) :
+theorem sum_range_blockWeight_le {Q a L K : ℕ} (haL : a < L) (hK : K ≤ a + L + 1)
+    (h4 : L + K ≤ 4 * a) :
     ∑ j ∈ range K, blockWeight Q a (L + j) ≤
       (Real.log 2 + Real.log ((L - a + K : ℕ) : ℝ)) / 2 + 1 + (Real.log 2 + Real.log 3) := by
   have hterm : ∀ j ∈ range K, blockWeight Q a (L + j) =
@@ -466,7 +466,7 @@ theorem sum_range_blockWeight_le {Q a L K : ℕ} (ha : 1 ≤ a) (haL : a < L)
     rw [blockWeight, neutralBlock_of_lt (show a < L + j by omega)]
     ring
   have hC : ∑ j ∈ range K, floorContact Q a (L + j) ≤ Real.log 2 + Real.log 3 := by
-    have h := sum_Ico_floorContact_le (Q := Q) ha (Nat.le_add_right L K) h4
+    have h := sum_Ico_floorContact_le (Q := Q) (a := a) (Nat.le_add_right L K) h4
     rwa [Finset.sum_Ico_eq_sum_range, Nat.add_sub_cancel_left] at h
   -- the jets to the sums: `log((a + L + K + 1)/(a + L + 1)) ≤ log 2`
   have hb1 := xLogXStep_le (a + L + K)
@@ -528,16 +528,20 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
         (fun i => s * (if (i : ℕ) < H then 1 else 0) + t * (if (i : ℕ) < H then 0 else 1)) ≤
         α * s ^ 2 + 2 * c * s * t + γ * t ^ 2 := by
   obtain ⟨K, hKdef⟩ : ∃ K : Fin (H + H) → Fin (4 * H) → ℝ,
-      K = fun i j => blockWeight Q (H + H + i) (H + H + (H + H) + j) := ⟨_, rfl⟩
+      K = fun (i : Fin (H + H)) (j : Fin (4 * H)) =>
+        blockWeight Q (H + H + i) (H + H + (H + H) + j) := ⟨_, rfl⟩
   rw [← hKdef]
+  have hKapp : ∀ i j, K i j = blockWeight Q (H + H + i) (H + H + (H + H) + j) := fun i j => by
+    rw [hKdef]
   have hH1 : 1 ≤ H := by omega
   have hHr : (64 : ℝ) ≤ H := by exact_mod_cast hH
+  have hHpos : (0 : ℝ) < H := by linarith
   have hK0 : ∀ i j, 0 ≤ K i j := fun i j => by
-    rw [hKdef]
-    have := i.2
-    exact (blockWeight_pos (by omega) Q).le
+    have hi := i.2
+    rw [hKapp]
+    exact (blockWeight_pos (show H + H + (i : ℕ) ≠ H + H + (H + H) + (j : ℕ) by omega) Q).le
   have hKle : ∀ i j, u i * v j ≤ K i j := fun i j => by
-    rw [hKdef]
+    rw [hKapp]
     exact huv i j
   -- the logarithms
   have l2a := Real.log_two_gt_d9
@@ -549,22 +553,22 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
   have hπ : Real.log 3 < Real.log Real.pi :=
     Real.log_lt_log (by norm_num) Real.pi_gt_three
   have hlogH : Real.log H ≤ 6 * Real.log 2 + H / 64 - 1 := by
-    have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (H : ℝ) / 64 by positivity)
-    rw [Real.log_div (by positivity) (by norm_num),
-      show (64 : ℝ) = 2 ^ 6 by norm_num, Real.log_pow] at h
-    push_cast at h
+    have h := Real.log_le_sub_one_of_pos (div_pos hHpos (by norm_num : (0 : ℝ) < 64))
+    have h64 : Real.log (64 : ℝ) = 6 * Real.log 2 := by
+      rw [show (64 : ℝ) = 2 ^ 6 by norm_num, Real.log_pow]
+      push_cast
+      ring
+    rw [Real.log_div hHpos.ne' (by norm_num), h64] at h
     linarith
   -- the row sums of the couplings
   obtain ⟨ρ, hρdef⟩ : ∃ ρ : ℝ,
       ρ = (Real.log 2 + Real.log ((6 * H : ℕ) : ℝ)) / 2 + 1 + (Real.log 2 + Real.log 3) :=
     ⟨_, rfl⟩
   have hlog6H : Real.log ((6 * H : ℕ) : ℝ) = Real.log 2 + Real.log 3 + Real.log H := by
-    have hH0 : (H : ℝ) ≠ 0 := by positivity
-    rw [Nat.cast_mul, Real.log_mul (by norm_num) hH0]
-    push_cast
-    rw [log_six]
+    have h6 : ((6 * H : ℕ) : ℝ) = 6 * (H : ℝ) := by push_cast; ring
+    rw [h6, Real.log_mul (by norm_num) hHpos.ne', log_six]
+  have hlogH0 : 0 ≤ Real.log H := Real.log_nonneg (by linarith)
   have hρ0 : 0 ≤ ρ := by
-    have := Real.log_nonneg (show (1 : ℝ) ≤ H by linarith)
     rw [hρdef, hlog6H]
     linarith [l3.1]
   have hρH : ρ ≤ 3 / 20 * H := by
@@ -574,14 +578,15 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
     intro i
     have hi := i.2
     have h := sum_range_blockWeight_le (Q := Q) (a := H + H + i) (L := H + H + (H + H))
-      (K := 4 * H) (by omega) (by omega) (by omega) (by omega)
+      (K := 4 * H) (by omega) (by omega) (by omega)
     have hmono : Real.log ((H + H + (H + H) - (H + H + (i : ℕ)) + 4 * H : ℕ) : ℝ) ≤
         Real.log ((6 * H : ℕ) : ℝ) :=
-      Real.log_le_log (by exact_mod_cast (by omega : 0 < H + H + (H + H) - (H + H + i) + 4 * H))
-        (by exact_mod_cast (by omega : H + H + (H + H) - (H + H + i) + 4 * H ≤ 6 * H))
+      Real.log_le_log
+        (by exact_mod_cast (by omega : 0 < H + H + (H + H) - (H + H + (i : ℕ)) + 4 * H))
+        (by exact_mod_cast (by omega : H + H + (H + H) - (H + H + (i : ℕ)) + 4 * H ≤ 6 * H))
     have hfin : ∑ j, K i j =
         ∑ j ∈ range (4 * H), blockWeight Q (H + H + i) (H + H + (H + H) + j) := by
-      rw [hKdef]
+      simp only [hKapp]
       exact Fin.sum_univ_eq_sum_range
         (fun j => blockWeight Q (H + H + i) (H + H + (H + H) + j)) (4 * H)
     rw [hfin, hρdef]
@@ -590,37 +595,39 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
   obtain ⟨cont, hcont⟩ : ∃ cont : Fin (H + H) → Finset (Fin (4 * H)),
       cont = fun i => Finset.univ.filter fun j : Fin (4 * H) => (j : ℕ) / 2 = (i : ℕ) :=
     ⟨_, rfl⟩
+  have hmem : ∀ (i : Fin (H + H)) (j : Fin (4 * H)), (j : ℕ) / 2 = (i : ℕ) → j ∈ cont i :=
+    fun i j hj => by
+      rw [hcont]
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩
+  have hof : ∀ (i : Fin (H + H)) (j : Fin (4 * H)), j ∈ cont i → (j : ℕ) / 2 = (i : ℕ) :=
+    fun i j hj => by
+      rw [hcont] at hj
+      exact (Finset.mem_filter.mp hj).2
   have hdisj : ∀ i i', i ≠ i' → Disjoint (cont i) (cont i') := by
     intro i i' hne
-    rw [hcont]
-    refine Finset.disjoint_filter.mpr fun j _ h1 h2 => hne (Fin.ext ?_)
-    rw [← h1, ← h2]
+    refine Finset.disjoint_left.mpr fun j h1 h2 => hne (Fin.ext ?_)
+    exact (hof i j h1).symm.trans (hof i' j h2)
   have hκ : ∀ i, Real.log 2 ≤ ∑ j ∈ cont i, K i j := by
     intro i
     have hi := i.2
-    have hmem : ∀ j : Fin (4 * H), (j : ℕ) / 2 = (i : ℕ) → j ∈ cont i := fun j hj => by
-      rw [hcont]
-      exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩
     have hval : ∀ j : Fin (4 * H), (j : ℕ) / 2 = (i : ℕ) → Real.log 2 / 2 ≤ K i j :=
       fun j hj => by
-        rw [hKdef]
+        rw [hKapp]
         exact log_two_div_two_le_blockWeight hQ (by omega) (by omega)
-    have h0 : (⟨2 * i, by omega⟩ : Fin (4 * H)) ≠ ⟨2 * i + 1, by omega⟩ := fun h => by
-      have := congrArg Fin.val h
-      simp at this
-    have hsub : ({⟨2 * i, by omega⟩, ⟨2 * i + 1, by omega⟩} : Finset (Fin (4 * H))) ⊆
-        cont i := by
+    obtain ⟨j₀, hj₀⟩ : ∃ j₀ : Fin (4 * H), (j₀ : ℕ) = 2 * i := ⟨⟨2 * i, by omega⟩, rfl⟩
+    obtain ⟨j₁, hj₁⟩ : ∃ j₁ : Fin (4 * H), (j₁ : ℕ) = 2 * i + 1 := ⟨⟨2 * i + 1, by omega⟩, rfl⟩
+    have h0 : j₀ ≠ j₁ := fun h => by
+      rw [h] at hj₀
+      omega
+    have hsub : ({j₀, j₁} : Finset (Fin (4 * H))) ⊆ cont i := by
       intro x hx
       rcases Finset.mem_insert.mp hx with rfl | hx
-      · exact hmem _ (by show 2 * (i : ℕ) / 2 = i; omega)
+      · exact hmem i _ (by omega)
       · rw [Finset.mem_singleton.mp hx]
-        exact hmem _ (by show (2 * (i : ℕ) + 1) / 2 = i; omega)
+        exact hmem i _ (by omega)
     calc Real.log 2 = Real.log 2 / 2 + Real.log 2 / 2 := by ring
-      _ ≤ K i ⟨2 * i, by omega⟩ + K i ⟨2 * i + 1, by omega⟩ :=
-          add_le_add (hval _ (by show 2 * (i : ℕ) / 2 = i; omega))
-            (hval _ (by show (2 * (i : ℕ) + 1) / 2 = i; omega))
-      _ = ∑ j ∈ ({⟨2 * i, by omega⟩, ⟨2 * i + 1, by omega⟩} : Finset (Fin (4 * H))), K i j :=
-          (Finset.sum_pair h0).symm
+      _ ≤ K i j₀ + K i j₁ := add_le_add (hval j₀ (by omega)) (hval j₁ (by omega))
+      _ = ∑ j ∈ ({j₀, j₁} : Finset (Fin (4 * H))), K i j := (Finset.sum_pair h0).symm
       _ ≤ ∑ j ∈ cont i, K i j :=
           Finset.sum_le_sum_of_subset_of_nonneg hsub fun j _ _ => hK0 i j
   -- the excess of each quarter: the contacts cannot be carried by the product of the charges
@@ -634,20 +641,25 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
         (S := Finset.univ) (fun i _ i' _ hne => hdisj (f i) (f i') fun h => hne (hf h)) hρ0
         fun i _ => hρ (f i)
     have hκ' : (H : ℝ) * Real.log 2 ≤ ∑ i : Fin H, ∑ j ∈ cont (f i), K (f i) j := by
-      calc (H : ℝ) * Real.log 2 = ∑ _i : Fin H, Real.log 2 := by simp
+      calc (H : ℝ) * Real.log 2 = ∑ _i : Fin H, Real.log 2 := by
+            rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
         _ ≤ _ := Finset.sum_le_sum fun i _ => hκ (f i)
     linarith
-  have hE1 := hE (Fin.castAdd H) (Fin.castAdd_injective H H)
-  have hE2 := hE (Fin.natAdd H) (Fin.natAdd_injective H H)
+  have hE1 := hE (Fin.castAdd H) fun a b h => Fin.ext (by
+    have h' := congrArg Fin.val h
+    rwa [Fin.coe_castAdd, Fin.coe_castAdd] at h')
+  have hE2 := hE (Fin.natAdd H) fun a b h => Fin.ext (by
+    have h' := congrArg Fin.val h
+    rw [Fin.coe_natAdd, Fin.coe_natAdd] at h'
+    omega)
   -- the three numbers
   obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, c₀ = Real.eulerMascheroniConstant + Real.log (2 * Real.pi) :=
     ⟨_, rfl⟩
-  have hc₀' : (3 / 2 : ℝ) + Real.log 2 < c₀ := by
+  have hc₀' : (799 / 500 : ℝ) + Real.log 2 < c₀ := by
     rw [hc₀, log_two_pi]
     linarith [l3.1]
-  have hHpos : (0 : ℝ) < H := by linarith
   have hA1 : 5 * Real.log 5 - 9 * Real.log 2 - c₀ - Real.log 2 ≤ -(117 / 100) := by
-    linarith [l5.2, l3.1]
+    linarith [l5.2]
   have hA2 : 7 * Real.log 7 - 7 * Real.log 2 - 6 * Real.log 3 - c₀ - Real.log 2 ≤
       -(4 / 5) := by
     linarith [l7.2, l3.1]
@@ -660,18 +672,16 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
   have hC2 : C ≤ 777 / 1000 := by
     rw [hC]
     linarith [l3.2, l5.1, l7.1]
+  have h1 := mul_le_mul_of_nonneg_left hA1 hHpos.le
+  have h2 := mul_le_mul_of_nonneg_left hA2 hHpos.le
+  have ha : H * (5 * Real.log 5 - 9 * Real.log 2 - c₀) - (H * Real.log 2 - ρ) ≤
+      -(51 / 50 * H) := by linarith
+  have hg : H * (7 * Real.log 7 - 7 * Real.log 2 - 6 * Real.log 3 - c₀) -
+      (H * Real.log 2 - ρ) ≤ -(13 / 20 * H) := by linarith
   refine ⟨H * (5 * Real.log 5 - 9 * Real.log 2 - c₀) - (H * Real.log 2 - ρ),
     H * (7 * Real.log 7 - 7 * Real.log 2 - 6 * Real.log 3 - c₀) - (H * Real.log 2 - ρ),
-    H * C, ?_, ?_, ?_⟩
-  · have h := mul_le_mul_of_nonneg_left hA1 hHpos.le
-    nlinarith
-  · have h1 := mul_le_mul_of_nonneg_left hA1 hHpos.le
-    have h2 := mul_le_mul_of_nonneg_left hA2 hHpos.le
-    have ha : H * (5 * Real.log 5 - 9 * Real.log 2 - c₀) - (H * Real.log 2 - ρ) ≤
-        -(51 / 50 * H) := by nlinarith
-    have hg : H * (7 * Real.log 7 - 7 * Real.log 2 - 6 * Real.log 3 - c₀) -
-        (H * Real.log 2 - ρ) ≤ -(13 / 20 * H) := by nlinarith
-    have hprod : 51 / 50 * H * (13 / 20 * H) ≤
+    H * C, by linarith, ?_, ?_⟩
+  · have hprod : 51 / 50 * H * (13 / 20 * H) ≤
         -(H * (5 * Real.log 5 - 9 * Real.log 2 - c₀) - (H * Real.log 2 - ρ)) *
           -(H * (7 * Real.log 7 - 7 * Real.log 2 - 6 * Real.log 3 - c₀) -
             (H * Real.log 2 - ρ)) :=
@@ -681,7 +691,7 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
       rw [mul_pow]
       exact mul_le_mul_of_nonneg_left hCsq (by positivity)
     have hH2 : (0 : ℝ) < (H : ℝ) ^ 2 := by positivity
-    nlinarith
+    linarith
   · intro s t
     -- the vector of the plane is the step function with the values `s`, `t`
     have hx : (fun i : Fin (H + H) =>
@@ -689,7 +699,6 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
           fun i => if (i : ℕ) < H then s else t := by
       funext i
       split_ifs <;> ring
-    rw [hx, bilin_sub_diagonal]
     have hN : bilin (neutralWindow Q (H + H) (H + H))
         (fun i : Fin (H + H) => if (i : ℕ) < H then s else t)
         (fun i : Fin (H + H) => if (i : ℕ) < H then s else t) =
@@ -716,11 +725,16 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
         rw [if_neg (show ¬((Fin.natAdd H i : Fin (H + H)) : ℕ) < H by
           rw [Fin.coe_natAdd]
           omega)]
+    rw [hx, bilin_sub_diagonal]
+    show bilin (neutralWindow Q (H + H) (H + H))
+        (fun i : Fin (H + H) => if (i : ℕ) < H then s else t)
+        (fun i : Fin (H + H) => if (i : ℕ) < H then s else t) -
+        ∑ i : Fin (H + H), excessLeft K u v i * (if (i : ℕ) < H then s else t) ^ 2 ≤ _
     rw [hN, hD, sum_neutralBlock_lower_quarter Q hH1, sum_neutralBlock_upper_quarter Q hH1,
       sum_neutralBlock_cross_quarters Q hH1, ← hc₀, ← hC]
     have hs := mul_le_mul_of_nonneg_right hE1 (sq_nonneg s)
     have ht := mul_le_mul_of_nonneg_right hE2 (sq_nonneg t)
-    nlinarith
+    linarith
 
 /-! ### The halves of the window `(2H, 8H]` -/
 

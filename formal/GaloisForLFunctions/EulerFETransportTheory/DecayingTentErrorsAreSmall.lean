@@ -315,6 +315,7 @@ theorem integral_sq_tentDefect_le_low {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hf
       exact intervalIntegral.integral_congr fun s _ => by ring
     rw [e] at hcs
     norm_num at hcs
+    rw [intervalIntegral.integral_const_mul] at hsq
     linarith
   -- each row has energy at most `V`
   have hrow : ∀ s, ∫ y in W..W', ψ y s ^ 2 ≤ Real.pi⁻¹ * V := by
@@ -324,7 +325,7 @@ theorem integral_sq_tentDefect_le_low {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hf
       (b := W')
     rw [show (fun y => ψ y s ^ 2) = fun y : ℝ =>
       ‖defectLaplace f (((h * ε : ℝ) : ℂ) + ((y + h * s : ℝ) : ℂ) * I)‖ ^ 2 by
-        rw [hψ]; push_cast; rfl, e, intervalIntegral.integral_of_le (by linarith)]
+        rw [hψ], e, intervalIntegral.integral_of_le (by linarith)]
     refine (setIntegral_le_integral hVi (Eventually.of_forall fun w => by positivity)).trans ?_
     exact hV
   have hcont2 : Continuous (uncurry fun y s => ψ y s ^ 2) := hψc.pow 2

@@ -239781,4 +239781,4637 @@ end
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+namespace CenteredMomentCommonAllowance
+open CenteredMomentActive CenteredMomentSecondLedger CanonicalQuadraticSieve
+local notation "O" => Eisenstein.O
+
+def activeIndicator (c d : ℕ) : ℝ := if netExponent c d ≠ 0 then 1 else 0
+
+theorem netExponent_self (c : ℕ) : netExponent c c = 0 := by
+  unfold netExponent
+  have h : c+5*c=6*c := by omega
+  rw [h, Nat.mul_mod_right]
+
+theorem local_allowance (c d : ℕ) (hc : 1 ≤ c) (hd : 1 ≤ d) :
+    max (3*(c:ℝ)-5*(d:ℝ)-activeIndicator c d) 0 / 6 +
+      max (3*(d:ℝ)-5*(c:ℝ)-activeIndicator c d) 0 / 6 ≤
+      (c:ℝ)+(d:ℝ)-2-activeIndicator c d := by
+  have hc' : (1:ℝ) ≤ c := by exact_mod_cast hc
+  have hd' : (1:ℝ) ≤ d := by exact_mod_cast hd
+  unfold activeIndicator
+  split_ifs with he
+  · have hne : c ≠ d := by rintro rfl; exact he (netExponent_self c)
+    have hgap : (c:ℝ)+1 ≤ d ∨ (d:ℝ)+1 ≤ c := by
+      rcases lt_or_gt_of_ne hne with h | h
+      · left; exact_mod_cast h
+      · right; exact_mod_cast h
+    rcases hgap with hgap | hgap <;>
+      rw [max_def,max_def] <;> split_ifs <;> linarith
+  · rw [max_def,max_def]; split_ifs <;> linarith
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+omit [DecidableEq ι] in
+theorem weighted_positive_part (a w : ι → ℝ) (hw : ∀ i, 0 ≤ w i) :
+    max (∑ i, a i*w i) 0 ≤ ∑ i, max (a i) 0*w i := by
+  apply max_le
+  · exact Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (le_max_left _ _) (hw i)
+  · exact Finset.sum_nonneg fun i _ => mul_nonneg (le_max_right _ _) (hw i)
+
+omit [DecidableEq ι] in
+theorem weighted_allowance (c d : ι → ℕ) (hc : ∀ i, 1 ≤ c i)
+    (hd : ∀ i, 1 ≤ d i) (w : ι → ℝ) (hw : ∀ i, 0 ≤ w i) :
+    max (3*(∑ i, (c i:ℝ)*w i)-5*(∑ i, (d i:ℝ)*w i)-
+      ∑ i, activeIndicator (c i) (d i)*w i) 0/6 +
+    max (3*(∑ i, (d i:ℝ)*w i)-5*(∑ i, (c i:ℝ)*w i)-
+      ∑ i, activeIndicator (c i) (d i)*w i) 0/6 ≤
+      (∑ i, (c i:ℝ)*w i)+(∑ i, (d i:ℝ)*w i)-
+        2*(∑ i, w i)-(∑ i, activeIndicator (c i) (d i)*w i) := by
+  have h₁ := weighted_positive_part (fun i => 3*(c i:ℝ)-5*(d i:ℝ)-activeIndicator (c i) (d i)) w hw
+  have h₂ := weighted_positive_part (fun i => 3*(d i:ℝ)-5*(c i:ℝ)-activeIndicator (c i) (d i)) w hw
+  have hsum := Finset.sum_le_sum (s := Finset.univ) (fun i _ =>
+    mul_le_mul_of_nonneg_right (local_allowance (c i) (d i) (hc i) (hd i)) (hw i))
+  simp only [sub_mul, add_mul, div_mul_eq_mul_div, mul_assoc,
+    Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.mul_sum,
+    ] at h₁ h₂ hsum ⊢
+  simp only [← Finset.sum_div] at hsum
+  linarith
+
+omit [DecidableEq ι] in
+theorem actual_common_support_allowance (p : ι → O)
+    (hp : ∀ i, Supported (Ideal.span {p i})) (c d : ι → ℕ)
+    (hc : ∀ i, 1 ≤ c i) (hd : ∀ i, 1 ≤ d i) (Z : ℝ) (hZ : 1 < Z) :
+    let C := Real.logb Z (Ideal.absNorm (∏ i, Ideal.span {p i}^c i) : ℝ)
+    let D := Real.logb Z (Ideal.absNorm (∏ i, Ideal.span {p i}^d i) : ℝ)
+    let P := Real.logb Z (Ideal.absNorm (∏ i, Ideal.span {p i}) : ℝ)
+    let R := Real.logb Z (Ideal.absNorm
+      (∏ i ∈ activeSupport Finset.univ c d, Ideal.span {p i}) : ℝ)
+    max (3*C-5*D-R) 0/6 + max (3*D-5*C-R) 0/6 ≤ C+D-2*P-R := by
+  dsimp only
+  rw [log_norm_power_product p hp c,log_norm_power_product p hp d,
+    log_norm_radical p hp,log_norm_radical p hp]
+  simpa only [activeSupport,Finset.sum_filter,activeIndicator,ite_mul,one_mul,zero_mul]
+    using weighted_allowance c d hc hd
+      (fun i => Real.logb Z (Ideal.absNorm (Ideal.span {p i}) : ℝ))
+      (fun i => Real.logb_nonneg hZ (by exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr (hp i).1))))
+
+end CenteredMomentCommonAllowance
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical
+namespace CenteredMomentFirstCanonicalAllowance
+open Eisenstein CanonicalQuadraticSieve 
+open CenteredMomentActive CenteredMomentCanonicalFirst CenteredMomentCompleteCommon
+open CenteredMomentSecondCanonical CenteredMomentFirstCanonicalFamily
+open CenteredMomentRankinRadical CenteredMomentCommonAllowance
+local notation "O" => Eisenstein.O
+
+theorem activeConductor_span_product (I J : Ideal O) :
+    Ideal.span {activeConductor I J} =
+      ∏ P ∈ activeSupport (Finset.univ : Finset (CommonIndex I J))
+        (leftExponent I J) (rightExponent I J), P.val := by
+  rw [activeConductor, span_finitePrimeModulus]
+  exact Finset.prod_coe_sort (s := ActiveIndex I J)
+    (f := fun P : CommonIndex I J => P.val)
+
+theorem active_generator_ideal_product (I J : Ideal O) (hI : Supported I) :
+    (∏ P ∈ activeSupport (Finset.univ : Finset (CommonIndex I J))
+      (leftExponent I J) (rightExponent I J), Ideal.span {commonPrime I J P}) =
+      Ideal.span {activeConductor I J} := by
+  simp_rw [commonPrime_span I J hI]
+  exact (activeConductor_span_product I J).symm
+
+theorem common_ideal_product (I J : Ideal O) :
+    (∏ P : CommonIndex I J, P.val) = commonRadical I J := by
+  exact Finset.prod_coe_sort (s := commonSupport I J) (f := fun P : Ideal O => P)
+
+theorem common_generator_ideal_product (I J : Ideal O) (hI : Supported I) :
+    (∏ P : CommonIndex I J, Ideal.span {commonPrime I J P}) = commonRadical I J := by
+  simp_rw [commonPrime_span I J hI]
+  exact common_ideal_product I J
+
+theorem commonRadical_active_principal (I J : Ideal O) :
+    commonRadical I J = Ideal.span {activeConductor I J} *
+      ∏ P ∈ principalSupport (Finset.univ : Finset (CommonIndex I J))
+        (leftExponent I J) (rightExponent I J), P.val := by
+  rw [← common_ideal_product, activeConductor_span_product]
+  simpa only [CenteredMomentActive.activeSupport, CenteredMomentActive.principalSupport, not_not] using
+    (Finset.prod_filter_mul_prod_filter_not Finset.univ
+    (fun P : CommonIndex I J => netExponent (leftExponent I J P) (rightExponent I J P) ≠ 0)
+    (fun P => P.val)).symm
+
+theorem actual_canonical_common_support_allowance
+    (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (hCD : primeSupport C = primeSupport D)
+    (Z : ℝ) (hZ : 1 < Z) :
+    let c := Real.logb Z (C.absNorm : ℝ)
+    let d := Real.logb Z (D.absNorm : ℝ)
+    let p := Real.logb Z ((commonRadical C D).absNorm : ℝ)
+    let r := Real.logb Z ((Ideal.span {activeConductor C D}).absNorm : ℝ)
+    max (3*c-5*d-r) 0/6 + max (3*d-5*c-r) 0/6 ≤ c+d-2*p-r := by
+  have h := actual_common_support_allowance (commonPrime C D)
+    (commonPrime_supported C D hC) (leftExponent C D) (rightExponent C D)
+    (leftExponent_pos C D) (rightExponent_pos C D) Z hZ
+  dsimp only at h ⊢
+  rw [left_ideal_product C D hC hCD, right_ideal_product C D hC hD hCD,
+    common_generator_ideal_product C D hC, active_generator_ideal_product C D hC] at h
+  exact h
+
+theorem activeConductor_span_filter (I J : Ideal O) :
+    Ideal.span {activeConductor I J} =
+      ∏ P ∈ (commonSupport I J).filter (fun P =>
+        netExponent (CenteredExceptionalCount.valuation I P)
+          (CenteredExceptionalCount.valuation J P) ≠ 0), P := by
+  rw [activeConductor_span_product]
+  simp only [CenteredMomentActive.activeSupport, Finset.prod_filter]
+  exact Finset.prod_coe_sort (s := commonSupport I J)
+    (f := fun P : Ideal O => if netExponent (CenteredExceptionalCount.valuation I P)
+      (CenteredExceptionalCount.valuation J P) ≠ 0 then P else 1)
+
+theorem extracted_activeConductor_span (I J : Ideal O) :
+    Ideal.span {activeConductor (commonPart I J) (commonPart J I)} =
+      Ideal.span {activeConductor I J} := by
+  have hs : commonSupport (commonPart I J) (commonPart J I) = commonSupport I J := by
+    unfold commonSupport
+    rw [commonPart_support, commonPart_support, commonSupport_comm J I, Finset.inter_self]
+    rfl
+  rw [activeConductor_span_filter, activeConductor_span_filter, hs]
+  apply Finset.prod_congr
+  · apply Finset.filter_congr
+    intro P hP
+    rw [commonPart_valuation, commonPart_valuation, commonSupport_comm J I,
+      if_pos hP, if_pos hP]
+  · intro P _
+    rfl
+
+theorem actual_extracted_common_support_allowance
+    (I J : Ideal O) (hI : Supported I) (hJ : Supported J) (Z : ℝ) (hZ : 1 < Z) :
+    let c := Real.logb Z ((commonPart I J).absNorm : ℝ)
+    let d := Real.logb Z ((commonPart J I).absNorm : ℝ)
+    let p := Real.logb Z ((commonRadical I J).absNorm : ℝ)
+    let r := Real.logb Z ((Ideal.span {activeConductor I J}).absNorm : ℝ)
+    max (3*c-5*d-r) 0/6 + max (3*d-5*c-r) 0/6 ≤ c+d-2*p-r := by
+  have h := actual_canonical_common_support_allowance
+    (commonPart I J) (commonPart J I) (commonPart_supported I J hI)
+    (commonPart_supported J I hJ) (commonParts_equal_support I J) Z hZ
+  dsimp only at h ⊢
+  rw [extracted_commonRadical, extracted_activeConductor_span] at h
+  exact h
+
+end CenteredMomentFirstCanonicalAllowance
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+namespace CenteredMomentSecondExceptionalPhysicalSaving
+open CanonicalQuadraticSieve CenteredMomentSecondPhysicalLedger CenteredMomentCanonicalFirst
+local notation "O" => Eisenstein.O
+lemma column_power_saving (Z c d θ:ℝ) (hZ:1< Z) (hc:1≤ c) (hd:1≤ d) (hθ:θ≤1/3) :
+    (c*d)^θ*Z^(-(Real.logb Z c+Real.logb Z d)/3)≤1 := by
+  have hc0:0< c:=zero_lt_one.trans_le hc
+  have hd0:0< d:=zero_lt_one.trans_le hd
+  have hz:0< Z:=zero_lt_one.trans hZ
+  have he:-(Real.logb Z c+Real.logb Z d)/3=Real.logb Z (c*d)*(-1/3):=by
+    rw [Real.logb_mul hc0.ne' hd0.ne'];ring
+  rw [he,Real.rpow_mul hz.le,Real.rpow_logb hz (ne_of_gt hZ) (mul_pos hc0 hd0),
+    ←Real.rpow_add (mul_pos hc0 hd0)]
+  have hcd:1≤ c*d:=by nlinarith
+  exact (Real.rpow_le_rpow_of_exponent_le hcd (by linarith : θ+ -1/3≤0)).trans_eq
+    (Real.rpow_zero _)
+
+lemma forcingNorm_ge_one (C D:Ideal O)(hC:Supported C)(U:Finset (CommonIndex C D)) :
+    1≤ forcingNorm C D U := by
+  have hf:0< forcingNorm C D U:=common_product_pos C D hC _
+  unfold forcingNorm at hf ⊢
+  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (by exact_mod_cast ne_of_gt hf)
+
+lemma column_cap_ledger (c d r:ℝ)(hc:0≤ c)(hd:0≤ d) :
+    2*max r 0/3≤(c+d)/3+max (r-min c d) 0 := by
+  have hmin:0≤ min c d:=le_min hc hd
+  have hc':min c d≤ c:=min_le_left _ _
+  have hd':min c d≤ d:=min_le_right _ _
+  by_cases hr:0≤ r
+  · rw [max_eq_left hr]
+    by_cases hm:r≤ min c d
+    · rw [max_eq_right (by linarith : r-min c d≤0)]
+      linarith
+    · rw [max_eq_left (by linarith : 0≤ r-min c d)]
+      linarith
+  · rw [max_eq_right (le_of_not_ge hr)]
+    have hm:0≤ max (r-min c d) 0:=le_max_right _ _
+    linarith
+
+
+end CenteredMomentSecondExceptionalPhysicalSaving
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+
+namespace CenteredMomentSecondExceptionalCommonSaving
+open CenteredMomentSecondExceptionalPhysicalSaving
+lemma common_weight_bound (Z c d θ B ε δ r:ℝ)(hZ:1< Z)(hc:1≤ c)(hd:1≤ d)
+    (hθ:0≤θ)(hC:c≤ Z^B)(hD:d≤ Z^B):
+    Z^(2*ε+δ-max (r-min (Real.logb Z c) (Real.logb Z d)) 0)*(c*d)^θ*
+      Z^(-(Real.logb Z c+Real.logb Z d)/3)≤
+        Z^(2*ε+δ+2*B*θ-2*max r 0/3):=by
+  have hz:0< Z:=zero_lt_one.trans hZ
+  have hcd:0≤ c*d:=mul_nonneg (zero_le_one.trans hc) (zero_le_one.trans hd)
+  have hpow:(c*d)^θ≤ Z^(2*B*θ):=by
+    calc
+      _≤(Z^B*Z^B)^θ:=Real.rpow_le_rpow hcd
+        (mul_le_mul hC hD (zero_le_one.trans hd) (Real.rpow_nonneg hz.le _)) hθ
+      _=Z^(2*B*θ):=by
+        rw [←Real.rpow_add hz,←Real.rpow_mul hz.le]
+        congr 1;ring
+  have hl:=column_cap_ledger (Real.logb Z c) (Real.logb Z d) r
+    (Real.logb_nonneg hZ hc) (Real.logb_nonneg hZ hd)
+  calc
+    _≤ Z^(2*ε+δ-max (r-min (Real.logb Z c) (Real.logb Z d)) 0)*Z^(2*B*θ)*
+      Z^(-(Real.logb Z c+Real.logb Z d)/3):=by gcongr
+    _=Z^((2*ε+δ-max (r-min (Real.logb Z c) (Real.logb Z d)) 0)+2*B*θ-
+      (Real.logb Z c+Real.logb Z d)/3):=by
+      rw [←Real.rpow_add hz,←Real.rpow_add hz]
+      congr 1;ring
+    _≤ _:=Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+end CenteredMomentSecondExceptionalCommonSaving
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentFiniteProfileExceptionalPhysical
+open HeckeFamily CanonicalQuadraticSieve UniqueFactorizationMonoid 
+open CenteredMomentCommonRadialData CenteredMomentExceptionalAmplitudePair
+open CenteredMomentSecondExceptionalPhysicalSaving
+open CenteredMomentFiniteProfileExceptional
+open CenteredMomentSecondPhysicalLedger CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalScalar CenteredMomentCanonicalFirst
+open CenteredMomentSectorLocalization CenteredMomentFirstCanonicalAllowance
+open CenteredMomentRankinRadical
+local notation "O"=> Eisenstein.O
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem original_budget_physical_saving_full
+    {wlo whi:ℝ} (Sprofile:Finset (ℕ×ℕ)) (s:Input ι)(p:Profiles wlo whi)(J:ℕ)(Q C D:Ideal O)(hC:Supported C)(hD:Supported D)
+    (hCD:primeSupport C=primeSupport D)(U:Finset (CommonIndex C D))
+    (K Z ε δ θ r Kphys a:ℝ)(n:Fin 4→ℤ)(hK:0≤ K)(hZ:1< Z)
+    (hKphys:0< Kphys)(ha:0< a)
+    (η:Character)(t:ℝ)(S:Finset (Ideal O))(β:Ideal O→ℂ)
+    (R:ℝ)(rows:Finset O)(hrows:∀z∈rows,z≠0)(W:𝓢(ℝ,ℂ))
+    (hlower:∀I:Ideal O,β I≠0→a*volume s.toData≤(Ideal.absNorm I:ℝ))
+    (hne:physicalBlock η t S β C D hC hD U R rows W Kphys n≠0) :
+    (1/volume s.toData)*outerScalar C D Kphys n*normalizer C D U*
+      sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1)))/
+      (1+dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3)))≤
+    profileFactor Sprofile s p J Q K*
+      Z^(2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+      ((C.absNorm:ℝ)*D.absNorm)^θ*
+      ((volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ))*
+      Z^(-(Real.logb Z (C.absNorm:ℝ)+Real.logb Z (D.absNorm:ℝ))/3)/
+      (Ideal.absNorm (commonRadical C D):ℝ) := by
+  have hp:0<(Ideal.absNorm (commonRadical C D):ℝ):=by
+    rw [←common_ideal_product]
+    exact common_product_pos C D hC Finset.univ
+  have hf:=forcingNorm_ge_one C D hC U
+  have hfp:1≤(forcingNorm C D U)^(1/3:ℝ):=Real.one_le_rpow hf (by norm_num)
+  have hcost:=original_block_physical_cost η t S β C D hC hD hCD U R rows hrows W Kphys n
+    hKphys (volume s.toData) a Z (volume_pos s.toData) ha hZ hlower hne
+  let A:ℝ:=profileFactor Sprofile s p J Q K*
+    Z^(2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+    ((C.absNorm:ℝ)*D.absNorm)^θ
+  let E:ℝ:=(volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)*
+    Z^(-(Real.logb Z (C.absNorm:ℝ)+Real.logb Z (D.absNorm:ℝ))/3)
+  have hA:0≤ A:=mul_nonneg
+    (mul_nonneg (profileFactor_nonneg Sprofile s p J Q K hK) (Real.rpow_nonneg (by linarith) _))
+    (Real.rpow_nonneg (by positivity) _)
+  have hv:=volume_pos s.toData
+  have hz:0< Z:=zero_lt_one.trans hZ
+  have hE:0≤ E:=by dsimp [E];positivity
+  rw [central_sourceBudget_exact Sprofile s p J Q C D hC hD U K Z ε δ θ r Kphys n hZ,
+    common_ideal_product]
+  change A*centralPhysicalCost C D U Kphys (volume s.toData) n/
+    ((Ideal.absNorm (commonRadical C D):ℝ)*(forcingNorm C D U)^(1/3:ℝ))≤ _
+  calc
+    _≤ A*E/((Ideal.absNorm (commonRadical C D):ℝ)*(forcingNorm C D U)^(1/3:ℝ)):=
+      div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hcost hA)
+        (mul_nonneg hp.le (Real.rpow_nonneg (by linarith) _))
+    _≤ A*E/(Ideal.absNorm (commonRadical C D):ℝ):=by
+      apply div_le_div_of_nonneg_left (mul_nonneg hA hE) hp
+      nlinarith
+    _= _:=by dsimp [A,E];ring
+
+end CenteredMomentFiniteProfileExceptionalPhysical
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalPhysical
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondWholeKernel CenteredMomentSectorLocalization
+open CenteredMomentSecondDyadicRowSupport
+
+open CenteredMomentSecondExceptionalPhysicalSaving CenteredMomentRankinRadical
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_saved_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,IsCoprime Q C → idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀a:ℝ,0< a → (∀I:Ideal O,β I≠0→a*volume s.toData≤(I.absNorm:ℝ)) →
+      ∀(R Kphys:ℝ),0< Kphys → ∀n:Fin 4→ℤ,
+      ‖physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n‖/volume s.toData≤
+        Ck*(profileFactor Sprofile s p J Q K*
+          Z^(2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+          ((C.absNorm:ℝ)*D.absNorm)^θ*(volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)*
+          Z^(-(Real.logb Z (C.absNorm:ℝ)+Real.logb Z (D.absNorm:ℝ))/3)/
+          (Ideal.absNorm (commonRadical C D):ℝ)) :=by
+  obtain ⟨J,Sprofile,hSprofile,Ck,hCk,hkernel⟩:=actual_dyadic_exceptional_block wlo whi hwlo hwhi lo hi W 1 ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hkernel Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hcop hη
+    m hm hml hm2 hex H hβ hHD a ha hlower R Kphys hKphys n
+  let F:=physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n
+  by_cases hne:F=0
+  · change ‖F‖/_≤ _
+    rw [hne,norm_zero,zero_div]
+    have hp:=profileFactor_nonneg Sprofile s p J Q K hK.le
+    have hz:0≤ Z:=(zero_lt_one.trans hZ.1).le
+    have hv:0≤ volume s.toData:=(volume_pos s.toData).le
+    positivity
+  have hp:=hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hcop hη
+    m hm hml hm2 hex H hβ hHD R Kphys hKphys n
+  let rK:=dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3))
+  have hd:0<1+rK:=by
+    have h0:=dyadicScale_pos (n 0)
+    have h1:=dyadicScale_pos (n 1)
+    have h2:=dyadicScale_pos (n 2)
+    have h3:=dyadicScale_pos (n 3)
+    dsimp [rK]; positivity
+  have hp':‖F‖≤ outerScalar C D Kphys n*normalizer C D U*
+      (Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1))))/(1+rK):=by
+    apply (le_div_iff₀ hd).mpr
+    simpa only [pow_one,mul_comm] using hp
+  have hs:=original_budget_physical_saving_full Sprofile s p J Q C D hC hD hCD U K Z ε δ θ r Kphys a n
+    hK.le hZ.1 hKphys ha s.η s.t S β R rows hn W hlower hne
+  calc
+    _≤(outerScalar C D Kphys n*normalizer C D U*
+      (Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1))))/(1+rK))/
+      volume s.toData:=div_le_div_of_nonneg_right hp' (volume_pos s.toData).le
+    _=Ck*((1/volume s.toData)*outerScalar C D Kphys n*normalizer C D U*
+      sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1)))/(1+rK)):=by ring
+    _≤ _:=by
+      convert mul_le_mul_of_nonneg_left hs hCk using 1 <;> first | rfl | ring
+
+end CenteredMomentFiniteProfileExceptionalPhysical
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalPhysical
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondWholeKernel CenteredMomentSectorLocalization
+open CenteredMomentSecondDyadicRowSupport
+
+open CenteredMomentSecondExceptionalPhysicalSaving CenteredMomentRankinRadical
+open CenteredMomentSecondExceptionalCommonSaving
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_uniform_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      (C.absNorm:ℝ)≤ Z^B → (D.absNorm:ℝ)≤ Z^B → primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,IsCoprime Q C → idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀a:ℝ,0< a → (∀I:Ideal O,β I≠0→a*volume s.toData≤(I.absNorm:ℝ)) →
+      ∀(R Kphys:ℝ),0< Kphys → ∀n:Fin 4→ℤ,
+      ‖physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n‖/volume s.toData≤
+        Ck*(profileFactor Sprofile s p J Q K*
+          Z^(2*ε+δ+2*B*θ-2*max r 0/3)*
+          (volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)/
+          (Ideal.absNorm (commonRadical C D):ℝ)) :=by
+  obtain ⟨J,Sprofile,hSprofile,Ck,hCk,hkernel⟩:=actual_saved_exceptional_block wlo whi hwlo hwhi lo hi W ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hkernel Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hNC hND hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hcop hη
+    m hm hml hm2 hex H hβ hHD a ha hlower R Kphys hKphys n
+  have hs:=hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hcop hη
+    m hm hml hm2 hex H hβ hHD a ha hlower R Kphys hKphys n
+  have hc:1≤(C.absNorm:ℝ):=by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hC.1)
+  have hd:1≤(D.absNorm:ℝ):=by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hD.1)
+  have hb:=common_weight_bound Z (C.absNorm:ℝ) (D.absNorm:ℝ) θ B ε δ r hZ.1 hc hd hθ.le hNC hND
+  let F:=Ck*profileFactor Sprofile s p J Q K*(volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)/
+    (Ideal.absNorm (commonRadical C D):ℝ)
+  have hF:0≤ F:=by
+    have hp:=profileFactor_nonneg Sprofile s p J Q K hK.le
+    have hv:0≤ volume s.toData:=(volume_pos s.toData).le
+    dsimp only [F]
+    positivity
+  apply hs.trans
+  calc
+    _=F*(Z^(2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+      ((C.absNorm:ℝ)*D.absNorm)^θ*Z^(-(Real.logb Z (C.absNorm:ℝ)+Real.logb Z (D.absNorm:ℝ))/3)):=by
+      dsimp only [F];ring
+    _≤ F*Z^(2*ε+δ+2*B*θ-2*max r 0/3):=mul_le_mul_of_nonneg_left hb hF
+    _=_:=by dsimp only [F];ring
+
+end CenteredMomentFiniteProfileExceptionalPhysical
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+
+namespace CenteredMomentFixedQForcingCount
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss 
+open CenteredMomentForcing CenteredMomentChildRows CenteredMomentRankinRadical
+open CenteredMomentSecondExceptionalCount CenteredMomentCanonicalFirst
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalNonunit
+open CenteredMomentSecondCanonicalLedger CenteredMomentSupport
+open CenteredMomentSourceRow
+open UniqueFactorizationMonoid 
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def goodSet (Q : Ideal O) (P : ι → Ideal O) (c d : ι → ℕ) (V : Finset ι) : Finset ι :=
+  (forcingSet c d V).filter (fun i => IsCoprime Q (P i))
+
+def excludedSet (Q : Ideal O) (P : ι → Ideal O) (c d : ι → ℕ) (V : Finset ι) : Finset ι :=
+  (forcingSet c d V).filter (fun i => ¬IsCoprime Q (P i))
+
+def goodIdeal (Q : Ideal O) (P : ι → Ideal O) (c d : ι → ℕ) (V : Finset ι) : Ideal O :=
+  ∏ i ∈ goodSet Q P c d V, P i
+
+def excludedIdeal (Q : Ideal O) (P : ι → Ideal O) (c d : ι → ℕ) (V : Finset ι) : Ideal O :=
+  ∏ i ∈ excludedSet Q P c d V, P i
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma prime_product_squarefree (P : ι → Ideal O) (hp : ∀ i, Prime (P i))
+    (hinj : Function.Injective P) (S : Finset ι) : Squarefree (∏ i ∈ S, P i) := by
+  simpa [forcingIdeal, forcingSet] using
+    forcingIdeal_squarefree P hp hinj (fun _ => 1) (fun _ => 1) S
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma prime_product_mem (P : ι → Ideal O) (hp : ∀ i, Prime (P i))
+    (S : Finset ι) (R : Ideal O) (hR : R ∈ normalizedFactors (∏ i ∈ S, P i)) :
+    ∃ i ∈ S, R = P i := by
+  simpa [forcingIdeal, forcingSet] using
+    forcing_prime_mem P hp (fun _ => 1) (fun _ => 1) S R (by
+      simpa [forcingIdeal, forcingSet] using hR)
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma goodIdeal_squarefree (Q : Ideal O) (P : ι → Ideal O) (hp : ∀ i, Prime (P i))
+    (hinj : Function.Injective P) (c d : ι → ℕ) (V : Finset ι) :
+    Squarefree (goodIdeal Q P c d V) :=
+  prime_product_squarefree P hp hinj _
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma goodIdeal_ne_zero (Q : Ideal O) (P : ι → Ideal O) (hp : ∀ i, Prime (P i))
+    (c d : ι → ℕ) (V : Finset ι) : goodIdeal Q P c d V ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr (fun i _ => (hp i).ne_zero)
+
+lemma good_valuation_two (Q : Ideal O) (P : ι → Ideal O) (hp : ∀ i, Prime (P i))
+    (hinj : Function.Injective P) (c d : ι → ℕ) (V : Finset ι) (i : ι)
+    (hi : i ∈ goodSet Q P c d V) :
+    CenteredExceptionalCount.valuation (movingIdeal P c d V) (P i) = 2 :=
+  forcing_valuation_two P hp hinj c d V i (Finset.mem_filter.mp hi).1
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma forcing_split (Q : Ideal O) (P : ι → Ideal O) (c d : ι → ℕ) (V : Finset ι) :
+    goodIdeal Q P c d V * excludedIdeal Q P c d V = forcingIdeal P c d V := by
+  exact Finset.prod_filter_mul_prod_filter_not _ _ _
+
+lemma prime_dvd_of_not_coprime (Q P : Ideal O) (hP : Prime P) (h : ¬IsCoprime Q P) : P ∣ Q := by
+  let : P.IsMaximal := (Ideal.isPrime_of_prime hP).isMaximal hP.ne_zero
+  have hs : Q ⊔ P ≠ ⊤ := by simpa only [Ideal.isCoprime_iff_sup_eq] using h
+  have he : P = Q ⊔ P := Ideal.IsMaximal.eq_of_le inferInstance hs le_sup_right
+  exact Ideal.dvd_iff_le.mpr (le_sup_left.trans_eq he.symm)
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma excludedIdeal_dvd_radical (Q : Ideal O) (hQ : Q ≠ 0)
+    (P : ι → Ideal O) (hp : ∀ i, Prime (P i)) (hinj : Function.Injective P)
+    (c d : ι → ℕ) (V : Finset ι) : excludedIdeal Q P c d V ∣ commonRadical Q Q := by
+  apply (CenteredMomentDivisorAllocation.squarefree_dvd_iff _ _
+    (prime_product_squarefree P hp hinj _)).mpr
+  intro R hR
+  obtain ⟨i,hi,rfl⟩ := prime_product_mem P hp _ R (Multiset.mem_toFinset.mp hR)
+  have hd := prime_dvd_of_not_coprime Q (P i) (hp i) (Finset.mem_filter.mp hi).2
+  have hm : P i ∈ primeSupport Q := by
+    simpa only [primeSupport, Multiset.mem_toFinset, mem_normalizedFactors_iff hQ,
+      hp i, true_and] using hd
+  exact Finset.dvd_prod_of_mem id (Finset.mem_inter.mpr ⟨hm,hm⟩)
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma forcing_dvd_good_mul_radical (Q : Ideal O) (hQ : Q ≠ 0)
+    (P : ι → Ideal O) (hp : ∀ i, Prime (P i)) (hinj : Function.Injective P)
+    (c d : ι → ℕ) (V : Finset ι) :
+    forcingIdeal P c d V ∣ goodIdeal Q P c d V * commonRadical Q Q := by
+  rw [←forcing_split Q P c d V]
+  exact mul_dvd_mul_left _ (excludedIdeal_dvd_radical Q hQ P hp hinj c d V)
+
+omit [Fintype ι] [DecidableEq ι] in
+lemma forcing_norm_le (Q : Ideal O) (hQ : Q ≠ 0)
+    (P : ι → Ideal O) (hp : ∀ i, Prime (P i)) (hinj : Function.Injective P)
+    (c d : ι → ℕ) (V : Finset ι) :
+    (Ideal.absNorm (forcingIdeal P c d V) : ℝ) ≤
+      (Ideal.absNorm (goodIdeal Q P c d V) : ℝ) * Ideal.absNorm (commonRadical Q Q) := by
+  have hd := map_dvd Ideal.absNorm (forcing_dvd_good_mul_radical Q hQ P hp hinj c d V)
+  have hn : (goodIdeal Q P c d V) * commonRadical Q Q ≠ 0 :=
+    mul_ne_zero (goodIdeal_ne_zero Q P hp c d V) (commonRadical_ne_zero Q Q)
+  have hh := Nat.le_of_dvd (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hn)) hd
+  exact_mod_cast (show Ideal.absNorm (forcingIdeal P c d V) ≤
+    Ideal.absNorm (goodIdeal Q P c d V) * Ideal.absNorm (commonRadical Q Q) by simpa using hh)
+
+lemma fixed_radical_power_loss (Z M f g r : ℝ) (hZ : 1 < Z)
+    (hf : 0 < f) (hg : 0 < g) (hr : 0 < r) (hfg : f ≤ g*r) :
+    Z ^ ((M-4*Real.logb Z g)/6) ≤
+      r^(2/3:ℝ) * Z^((M-4*Real.logb Z f)/6) := by
+  have hz : 0 < Z := zero_lt_one.trans hZ
+  have hl := Real.logb_le_logb_of_le hZ hf hfg
+  rw [Real.logb_mul hg.ne' hr.ne'] at hl
+  calc
+    _ ≤ Z^(Real.logb Z r*(2/3)+(M-4*Real.logb Z f)/6) :=
+      Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+    _ = _ := by
+      rw [Real.rpow_add hz,Real.rpow_mul hz.le,Real.rpow_logb hz hZ.ne' hr]
+
+theorem actual_forcing_exceptional_count_fixedQ (p : ι → O)
+    (hp : ∀ i, Prime (Ideal.span {p i})) (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (c d : ι → ℕ) (V : Finset ι)
+    (η : Character) (χ : RayFourExpansion.RayCharacter)
+    (Q : Ideal O) (hQ0 : Q ≠ 0) (hQ : Q ≠ ⊤) (hQ72 : Q ≤ Ideal.span {(72 : O)})
+    (m e : O) (hm : m ≠ 0) (hmLam : lambda ∣ m) (hm2 : (2 : O) ∣ m)
+    (he : elementCoeff η e ≠ 0) (rows : Finset O) (hrows : ∀ z ∈ rows, z ≠ 0)
+    (hex : ∀ z ∈ rows, CenteredExceptionalProfile.FixedInducingRow
+      (childCharacter η χ) Q m (movingElement p c d V) z)
+    (hgood : ∀ i ∈ forcingSet c d V,
+      lambda ∉ Ideal.span {p i} ∧ (2 : O) ∉ Ideal.span {p i} ∧
+      Ideal.span {p i} ∣ Ideal.span {e})
+    (Z Cr M : ℝ) (hZ : 1 < Z) (hCr : 0 ≤ Cr)
+    (hN : ∀ z ∈ rows, (Ideal.absNorm (Ideal.span {z}) : ℝ) ≤ Cr * Z ^ M) :
+    (rows.card : ℝ) ≤ (Ideal.absNorm (commonRadical Q Q):ℝ)^(2/3:ℝ) *
+      (768 * (6 : ℝ) ^ (normalizedFactors Q).toFinset.card * Cr^(1/6:ℝ) *
+        Z^((M-4*Real.logb Z (Ideal.absNorm
+          (forcingIdeal (fun i => Ideal.span {p i}) c d V):ℝ))/6)) := by
+  let P : ι → Ideal O := fun i => Ideal.span {p i}
+  let G := goodIdeal Q P c d V
+  have hA : movingElement p c d V ≠ 0 := by
+    apply Ideal.span_singleton_eq_bot.not.mp
+    rw [movingElement_span]
+    exact movingIdeal_ne_zero _ hp c d V
+  have hG0 : G ≠ 0 := goodIdeal_ne_zero Q P hp c d V
+  have hGn : (0:ℝ) < Ideal.absNorm G := CenteredExceptionalCount.norm_pos hG0
+  have hb := separated_exceptional_count η χ Q hQ0 hQ hQ72
+    m (movingElement p c d V) e hm hA hmLam hm2 he rows hrows hex G
+    (goodIdeal_squarefree Q P hp hinj c d V) (by
+      intro R hR
+      obtain ⟨i,hi,rfl⟩ := prime_product_mem P hp (goodSet Q P c d V) R hR
+      obtain ⟨hif,hQi⟩ := Finset.mem_filter.mp hi
+      obtain ⟨hl,h2,hd⟩ := hgood i hif
+      refine ⟨hl,h2,hQi,hd,?_⟩
+      rw [movingElement_span,good_valuation_two Q P hp hinj c d V i hi])
+    Z Cr M (2*Real.logb Z (Ideal.absNorm G:ℝ)) (zero_lt_one.trans hZ) hCr (by
+      rw [show (2*Real.logb Z (Ideal.absNorm G:ℝ))/2=Real.logb Z (Ideal.absNorm G:ℝ) by ring,
+        Real.rpow_logb (zero_lt_one.trans hZ) hZ.ne' hGn]) hN
+  have hb' : (rows.card:ℝ) ≤ 768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ)*
+      Z^((M-4*Real.logb Z (Ideal.absNorm G:ℝ))/6) := by
+    have heq : (M-2*(2*Real.logb Z (Ideal.absNorm G:ℝ)))/6 =
+        (M-4*Real.logb Z (Ideal.absNorm G:ℝ))/6 := by ring
+    simpa only [heq] using hb
+  have hf : (0:ℝ) < Ideal.absNorm (forcingIdeal P c d V) := by
+    apply CenteredExceptionalCount.norm_pos
+    exact Finset.prod_ne_zero_iff.mpr (fun i _ => (hp i).ne_zero)
+  have hr : (0:ℝ) < Ideal.absNorm (commonRadical Q Q) :=
+    CenteredExceptionalCount.norm_pos (commonRadical_ne_zero Q Q)
+  have hs := fixed_radical_power_loss Z M _ _ _ hZ hf hGn hr
+    (forcing_norm_le Q hQ0 P hp hinj c d V)
+  apply hb'.trans
+  calc
+    _ ≤ (768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+        ((Ideal.absNorm (commonRadical Q Q):ℝ)^(2/3:ℝ)*
+          Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal P c d V):ℝ))/6)) :=
+      mul_le_mul_of_nonneg_left hs (by positivity)
+    _ = _ := by ring
+
+theorem actual_canonical_exceptional_count_fixedQ (η : Character) (χ : RayFourExpansion.RayCharacter)
+    (C D : Ideal O) (hC : Supported C) (U : Finset (CommonIndex C D))
+    (Q : Ideal O) (hQ0 : Q ≠ 0) (hQ : Q ≠ ⊤) (hQ72 : Q ≤ Ideal.span {(72 : O)})
+    (hη : idealCoeff η C ≠ 0)
+    (m : O) (hm : m ≠ 0) (hmLam : lambda ∣ m) (hm2 : (2 : O) ∣ m)
+    (rows : Finset O) (hrows : ∀ z ∈ rows, z ≠ 0)
+    (hex : ∀ z ∈ rows, CenteredExceptionalProfile.FixedInducingRow (childCharacter η χ) Q m
+      (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U) z)
+    (Z Cr M : ℝ) (hZ : 1 < Z) (hCr : 0 ≤ Cr)
+    (hN : ∀ z ∈ rows, (Ideal.absNorm (Ideal.span {z}) : ℝ) ≤ Cr*Z^M) :
+    (rows.card:ℝ) ≤ (Ideal.absNorm (commonRadical Q Q):ℝ)^(2/3:ℝ)*
+      (768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ)*
+        Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D => P.val)
+          (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6)) := by
+  have he : elementCoeff η (primaryIdealGenerator C) ≠ 0 := by
+    rw [←idealCoeff_span η (supported_primaryIdealGenerator_ne_zero C hC),primary_span_supported C hC]
+    exact hη
+  have hinj : Function.Injective (fun P:CommonIndex C D => Ideal.span {commonPrime C D P}) := by
+    simpa only [commonPrime_span C D hC] using
+      (Subtype.val_injective : Function.Injective (fun P:CommonIndex C D => P.val))
+  have hb := actual_forcing_exceptional_count_fixedQ (commonPrime C D) (common_prime_prime C D hC) hinj
+    (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U) η χ
+    Q hQ0 hQ hQ72 m (primaryIdealGenerator C) hm hmLam hm2 he rows hrows hex (by
+      intro P _
+      rw [commonPrime_span C D hC P]
+      refine ⟨common_good C D hC P,CanonicalRowCompletion.good_odd_prime_two_not_mem _
+        (common_odd C D hC P),?_⟩
+      rw [primary_span_supported C hC]
+      exact common_prime_dvd_left C D P) Z Cr M hZ hCr hN
+  simpa only [commonPrime_span C D hC] using hb
+
+end CenteredMomentFixedQForcingCount
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+open Filter
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve  UniqueFactorizationMonoid
+open CenteredMomentSecondExceptionalCount CenteredMomentCanonicalFirst CenteredMomentSecondCanonical
+open CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit
+open CenteredMomentForcing CenteredMomentChildRows CompletedGauss
+open CenteredMomentCommonRadialData CenteredMomentCommonAllocationSum
+open CenteredMomentCommonLinearNormalization CenteredMomentCommonPairedSource
+open CenteredMomentCommonExceptionalCost CenteredMomentCommonExceptionalMass CenteredMomentCommonExceptionalGates
+open CenteredMomentExceptionalAsymmetricSource CenteredMomentExceptionalMaskedSource
+open CenteredMomentExceptionalAmplitudePair 
+open CenteredMomentSecondHeightFamily
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFixedQForcingCount CenteredMomentRankinRadical
+local notation "O" => Eisenstein.O
+universe u
+variable {ι:Type u} [Fintype ι] [DecidableEq ι]
+
+theorem actual_common_canonical_bound (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(ε δ θ B Lbound:ℝ)
+    (hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} → ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s v:Input ι)(p q:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,v.lo i=lo i) → (∀i,v.hi i=hi i) →
+      (∀i,1≤ s.P i) → (∀i,1≤ v.P i) →
+      s.W₁=p.profile 0 → s.W₂=p.profile 1 → v.W₁=q.profile 0 → v.W₂=q.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R seed:Ideal O),R≠0 → seed∣C → seed∣D →
+      ∀rLeft rRight:ℝ,
+      Z^rLeft≤ s.X₁ → Z^rLeft≤ s.X₂ → Z^rLeft≤ s.Y₁ → Z^rLeft≤ s.Y₂ →
+      Z^rRight≤ v.X₁ → Z^rRight≤ v.X₂ → Z^rRight≤ v.Y₁ → Z^rRight≤ v.Y₂ →
+      ∀rows:Finset O,(∀z∈rows,z≠0) →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow s.η Q fixedBadMask 1 z) →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow v.η Q fixedBadMask 1 z) →
+      (∀z∈rows,(s.η.modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀z∈rows,(v.η.modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀(η₀:Character)(χ:RayFourExpansion.RayCharacter)(U:Finset (CommonIndex C D)),
+      idealCoeff η₀ C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter η₀ χ) Q m
+        (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U) z) →
+      ∀Cr M:ℝ,0≤ Cr → (∀z∈rows,(Ideal.absNorm (Ideal.span {z}):ℝ)≤ Cr*Z^M) →
+      ∀Ds:Finset (Ideal O),(∀L∈Ds,(moebius L:ℂ)≠0 → (L.absNorm:ℝ)≤ Z^Lbound) →
+      (∑L∈Ds,‖(moebius L:ℂ)‖*∑z∈rows,
+        ‖normalizedColumn s C hC R seed L z‖*‖normalizedColumn v D hD R seed L z‖)≤
+        K*(768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+          Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D=> P.val)
+            (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6+2*ε+δ-max (max (rLeft-Real.logb Z (C.absNorm:ℝ)) 0)
+            (max (rRight-Real.logb Z (D.absNorm:ℝ)) 0))*
+          ((C.absNorm:ℝ)*D.absNorm)^θ*
+          (profileMass Sprofile s.toData v.toData p q J*frozenProfile s*frozenProfile v/
+            ((C.absNorm:ℝ)*D.absNorm)) :=by
+  obtain ⟨J,Sprofile,hSprofile,hJ⟩:=actual_common_better_side wlo whi hwlo hwhi lo hi ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hJ Q hQ
+  let qcost:ℝ:=(Ideal.absNorm (commonRadical Q Q):ℝ)^(2/3:ℝ)
+  have hqcost:0< qcost:=by
+    apply Real.rpow_pos_of_pos
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (commonRadical_ne_zero Q Q))
+  refine ⟨K*qcost,mul_pos hK hqcost,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s v p q hslo hshi hvlo hvhi hsP hvP hsW₁ hsW₂ hvW₁ hvW₂ C D hC hD R seed hR hsC hsD
+    rLeft rRight hsX₁ hsX₂ hsY₁ hsY₂ hvX₁ hvX₂ hvY₁ hvY₂ rows hn hsEx hvEx hsCond hvCond
+    η₀ χ U hη m hm hml hm2 hex Cr M hCr hN Ds hDs
+  have hc:=actual_canonical_exceptional_count_fixedQ η₀ χ C D hC U Q hQ hQtop hQ72 hη
+    m hm hml hm2 rows hn hex Z Cr M hZ.1 hCr hN
+  have hb:=hZ.2 s v p q hslo hshi hvlo hvhi hsP hvP hsW₁ hsW₂ hvW₁ hvW₂ C D hC hD R seed hR hsC hsD
+    rLeft rRight hsX₁ hsX₂ hsY₁ hsY₂ hvX₁ hvX₂ hvY₁ hvY₂ rows hn hsEx hvEx hsCond hvCond Ds hDs
+  let F:ℝ:=profileMass Sprofile s.toData v.toData p q J*frozenProfile s*frozenProfile v/((C.absNorm:ℝ)*D.absNorm)
+  have hF:0≤ F:=div_nonneg (mul_nonneg (mul_nonneg (profileMass_nonneg Sprofile _ _ _ _ _) (frozenProfile_nonneg _))
+    (frozenProfile_nonneg _)) (by positivity)
+  let e:ℝ:=2*ε+δ-max (max (rLeft-Real.logb Z (C.absNorm:ℝ)) 0)
+    (max (rRight-Real.logb Z (D.absNorm:ℝ)) 0)
+  let f:ℝ:=(M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D=> P.val)
+    (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6
+  have hz:=zero_lt_one.trans hZ.1
+  apply hb.trans
+  calc
+    _≤ K*(qcost*((768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*Z^f))*Z^e*
+        ((C.absNorm:ℝ)*D.absNorm)^θ*F:=by
+      apply mul_le_mul_of_nonneg_right _ hF
+      apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg (by positivity) _)
+      apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg hz.le _)
+      exact mul_le_mul_of_nonneg_left hc hK.le
+    _=_:=by
+      have hpow:Z^(f+e)=Z^f*Z^e:=Real.rpow_add hz _ _
+      change K*(qcost*((768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*Z^f))*Z^e*
+        ((C.absNorm:ℝ)*D.absNorm)^θ*F=(K*qcost)*(768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+        Z^(f+2*ε+δ-max (max (rLeft-Real.logb Z (C.absNorm:ℝ)) 0)
+          (max (rRight-Real.logb Z (D.absNorm:ℝ)) 0))*((C.absNorm:ℝ)*D.absNorm)^θ*F
+      rw [show f+2*ε+δ-max (max (rLeft-Real.logb Z (C.absNorm:ℝ)) 0)
+          (max (rRight-Real.logb Z (D.absNorm:ℝ)) 0)=f+e by dsimp [e];ring,hpow]
+      ring
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve  UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonHeightEnvelope
+open CenteredMomentCommonExceptionalCost
+open CenteredMomentCommonPairedSource CenteredMomentExceptionalAmplitudePair
+open  CenteredMomentCommonWindowColumn
+open CenteredMomentHeckeColumnWindow CenteredMomentSmooth
+open CenteredMomentSecondHeightFamily CenteredMomentLogDyadic
+open CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+local notation "O" => Eisenstein.O
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_canonical_common_window (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(ε δ θ B Lbound:ℝ)
+    (hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} → ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s v:Input ι)(p q:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,v.lo i=lo i) → (∀i,v.hi i=hi i) →
+      (∀i,1≤ s.P i) → (∀i,1≤ v.P i) →
+      s.W₁=p.profile 0 → s.W₂=p.profile 1 → v.W₁=q.profile 0 → v.W₂=q.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R seed:Ideal O),R≠0 → seed∣C → seed∣D →
+      ∀rLeft rRight:ℝ,
+      Z^rLeft≤ s.X₁ → Z^rLeft≤ s.X₂ → Z^rLeft≤ s.Y₁ → Z^rLeft≤ s.Y₂ →
+      Z^rRight≤ v.X₁ → Z^rRight≤ v.X₂ → Z^rRight≤ v.Y₁ → Z^rRight≤ v.Y₂ →
+      ∀rows:Finset O,(∀z∈rows,z≠0) →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow s.η Q fixedBadMask 1 z) →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow v.η Q fixedBadMask 1 z) →
+      (∀z∈rows,(s.η.modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀z∈rows,(v.η.modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀(η₀:Character)(χ:RayFourExpansion.RayCharacter)(U:Finset (CommonIndex C D)),
+      idealCoeff η₀ C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter η₀ χ) Q m
+        (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U) z) →
+      ∀Cr M:ℝ,0≤ Cr → (∀z∈rows,(Ideal.absNorm (Ideal.span {z}):ℝ)≤ Cr*Z^M) →
+      ∀θ₁ θ₂ X Y:ℝ,0< X → 0< Y →
+      ∀Ds:Finset (Ideal O),(∀L∈Ds,(moebius L:ℂ)≠0 → (L.absNorm:ℝ)≤ Z^Lbound) →
+      (∑L∈Ds,‖(moebius L:ℂ)‖*∑z∈rows,
+        ‖windowColumn s C hC R seed L s.η s.t θ₁ X logAnnulus z‖*
+        ‖windowColumn v D hD R seed L v.η v.t θ₂ Y logAnnulus z‖)≤
+        K*(768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+          Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D=> P.val)
+            (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6+
+            2*ε+δ-max (max (rLeft-Real.logb Z (C.absNorm:ℝ)) 0)
+              (max (rRight-Real.logb Z (D.absNorm:ℝ)) 0))*
+          ((C.absNorm:ℝ)*D.absNorm)^θ*
+          (frozenProfile s*frozenProfile v/((C.absNorm:ℝ)*D.absNorm))*
+          mass Sprofile s v p q s.t v.t θ₁ θ₂ J*
+          (∫u:ℝ,(1+‖u‖)^J*‖columnDensity logAnnulus logAnnulus_compact logAnnulus_smooth u‖)^2 :=by
+  obtain ⟨J,Sprofile,hSprofile,hJ⟩:=actual_common_canonical_bound wlo whi hwlo hwhi lo hi ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hJ Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s v p q hslo hshi hlo hhi hsP hvP hsW₁ hsW₂ hvW₁ hvW₂ C D hC hD R seed hR hsC hsD
+    rLeft rRight hsX₁ hsX₂ hsY₁ hsY₂ hvX₁ hvX₂ hvY₁ hvY₂ rows hn hsEx hvEx hsCond hvCond
+    η₀ χ U hη m hm hml hm2 hex Cr M hCr hN θ₁ θ₂ X Y hX hY Ds hDs
+  let F:=K*(768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+          Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D=> P.val)
+            (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6+
+            2*ε+δ-max (max (rLeft-Real.logb Z (C.absNorm:ℝ)) 0)
+              (max (rRight-Real.logb Z (D.absNorm:ℝ)) 0))*
+    ((C.absNorm:ℝ)*D.absNorm)^θ*(frozenProfile s*frozenProfile v/((C.absNorm:ℝ)*D.absNorm))
+  have hz:0< Z:=zero_lt_one.trans hZ.1
+  have hF:0≤ F:=by
+    dsimp only [F]
+    exact mul_nonneg (by positivity) (div_nonneg
+      (mul_nonneg (frozenProfile_nonneg s) (frozenProfile_nonneg v)) (by positivity))
+  have hh:=whole_window_pair s v C D hC hD R seed Ds (fun L=>(moebius L:ℂ)) rows
+    s.η v.η s.t v.t θ₁ θ₂ X Y hX hY logAnnulus logAnnulus
+    logAnnulus_compact logAnnulus_compact logAnnulus_smooth logAnnulus_smooth
+    J J (F*mass Sprofile s v p q s.t v.t θ₁ θ₂ J)
+    (mul_nonneg hF (mass_nonneg Sprofile s v p q s.t v.t θ₁ θ₂ J)) ?_
+  · simpa only [F,pow_two,mul_assoc] using hh
+  intro u w
+  have hb:=hZ.2 (withHeight s s.η (s.t+2*Real.pi*(u-θ₁)))
+    (withHeight v v.η (v.t+2*Real.pi*(w-θ₂))) p q hslo hshi hlo hhi hsP hvP hsW₁ hsW₂ hvW₁ hvW₂
+    C D hC hD R seed hR hsC hsD rLeft rRight hsX₁ hsX₂ hsY₁ hsY₂ hvX₁ hvX₂ hvY₁ hvY₂
+    rows hn hsEx hvEx hsCond hvCond η₀ χ U hη m hm hml hm2 hex Cr M hCr hN Ds hDs
+  have hm:=shifted_mass Sprofile s v s.η v.η p q s.t v.t θ₁ θ₂ u w J
+  apply hb.trans
+  calc
+    _=F*profileMass Sprofile (withHeight s s.η (s.t+2*Real.pi*(u-θ₁))).toData
+        (withHeight v v.η (v.t+2*Real.pi*(w-θ₂))).toData p q J:=by
+      dsimp only [F,frozenProfile,withHeight]
+      ring
+    _≤ F*(mass Sprofile s v p q s.t v.t θ₁ θ₂ J*(1+‖u‖)^J*(1+‖w‖)^J):=
+      mul_le_mul_of_nonneg_left hm hF
+    _=_:=by ring
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFiniteProfileExceptionalPhysical
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairDictionary CenteredMomentSecondExceptionalPairBound
+open CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_canonical_original_pair (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(ε δ θ B Lbound:ℝ)
+    (hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} → ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R seed:Ideal O),R≠0 → seed∣C → seed∣D →
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀(τ₁ τ₂:Character)(χ ξ:RayCharacter)(A:O),
+      (∀I:Ideal O,Supported I → IsCoprime C I → ∀v:ℝ,
+        heightCoeff τ₁ v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      (∀I:Ideal O,Supported I → IsCoprime D I → ∀v:ℝ,
+        heightCoeff τ₂ v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid ξ (primaryIdealGenerator I)) →
+      ∀rows:Finset O,(∀z∈rows,z≠0) →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow τ₁ Q fixedBadMask 1 z) →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow τ₂ Q fixedBadMask 1 (-z)) →
+      (∀z∈rows,(τ₁.modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀z∈rows,((reflected τ₂).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀(η₀:Character)(χ₀:RayCharacter)(U:Finset (CommonIndex C D)),
+      idealCoeff η₀ C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter η₀ χ₀) Q m
+        (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U) z) →
+      ∀Cr M:ℝ,0≤ Cr → (∀z∈rows,(Ideal.absNorm (Ideal.span {z}):ℝ)≤ Cr*Z^M) →
+      ∀(X Y:ℝ),0< X → 0< Y → ∀Ds:Finset (Ideal O),
+      (∀L∈Ds,(moebius L:ℂ)≠0 → (L.absNorm:ℝ)≤ Z^Lbound) → ∀w:ℝ,
+      originalPair s s.η χ ξ A C D hC hD R seed s.t w X Y Ds rows≤
+        (K*(768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+          Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D=> P.val)
+            (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6+
+            2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+          ((C.absNorm:ℝ)*D.absNorm)^θ*
+          ((1+2*Real.pi)^(4*J)*profileMass Sprofile s.toData s.toData p p J*
+            frozenProfile s*frozenProfile s/((C.absNorm:ℝ)*D.absNorm))*volume s.toData*
+          (∫u:ℝ,(1+‖u‖)^J*‖columnDensity logAnnulus logAnnulus_compact logAnnulus_smooth u‖)^2)*
+          (1+‖w‖)^(2*J):=by
+  obtain ⟨J,Sprofile,hSprofile,hJ⟩:=actual_canonical_common_window wlo whi hwlo hwhi lo hi ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hJ Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R seed hR hsC hsD r hX₁ hX₂ hY₁ hY₂
+    τ₁ τ₂ χ ξ A hτ₁ hτ₂ rows hn hex₁ hex₂ hcond₁ hcond₂ η₀ χ₀ U hη m hm hml hm2 hex Cr M hCr hN X Y hX hY Ds hDs w
+  have hex₂':∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (reflected τ₂) Q fixedBadMask 1 z:=by
+    intro z hz
+    exact (reflected_inducing τ₂ Q fixedBadMask 1 z (dvd_mul_right _ _) (dvd_mul_left _ _)).mp (hex₂ z hz)
+  have hb:=hZ.2 (withHeight s τ₁ s.t) (withHeight s (reflected τ₂) s.t) p p hlo hhi hlo hhi
+    hP hP hW₁ hW₂ hW₁ hW₂ C D hC hD R seed hR hsC hsD r r
+    hX₁ hX₂ hY₁ hY₂ hX₁ hX₂ hY₁ hY₂ rows hn hex₁ hex₂' hcond₁ hcond₂ η₀ χ₀ U hη m hm hml hm2 hex Cr M hCr hN w (-w) X Y hX hY Ds hDs
+  simp only [window_withHeight] at hb
+  rw [CenteredMomentCommonExceptionalSymmetry.same_raw_better_cap] at hb
+  rw [originalPair,original_pair s s.η τ₁ τ₂ χ ξ A C D hC hD R seed s.t w X Y Ds rows hτ₁ hτ₂]
+  apply (mul_le_mul_of_nonneg_left hb (volume_pos s.toData).le).trans
+  have hm:=mass_phase Sprofile s s p p w J
+  let F:=volume s.toData*(K*(768*(6:ℝ)^(normalizedFactors Q).toFinset.card*Cr^(1/6:ℝ))*
+          Z^((M-4*Real.logb Z (Ideal.absNorm (forcingIdeal (fun P:CommonIndex C D=> P.val)
+            (leftExponent C D) (rightExponent C D) (nonunitPartitionSet C D U)):ℝ))/6+
+            2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+    ((C.absNorm:ℝ)*D.absNorm)^θ*(frozenProfile s*frozenProfile s/((C.absNorm:ℝ)*D.absNorm)))*
+    (∫u:ℝ,(1+‖u‖)^J*‖columnDensity logAnnulus logAnnulus_compact logAnnulus_smooth u‖)^2
+  have hz:0< Z:=zero_lt_one.trans hZ.1
+  have hF:0≤ F:=by
+    dsimp only [F]
+    exact mul_nonneg (mul_nonneg (volume_pos s.toData).le
+      (mul_nonneg (by positivity) (div_nonneg (mul_nonneg (frozenProfile_nonneg s) (frozenProfile_nonneg s))
+        (by positivity)))) (sq_nonneg _)
+  calc
+    _=F*mass Sprofile s s p p s.t s.t w (-w) J:=by
+      dsimp only [F,frozenProfile,withHeight,CenteredMomentFiniteProfileExceptionalCommon.mass,
+        CenteredMomentAllocatedDetectorAmplitude.slotControl,CenteredMomentExceptionalAmplitudePair.volume]
+      ring
+    _≤ F*((1+2*Real.pi)^(4*J)*profileMass Sprofile s.toData s.toData p p J*(1+‖w‖)^(2*J)):=
+      mul_le_mul_of_nonneg_left hm hF
+    _=_:=by dsimp only [F];ring
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFiniteProfileExceptionalPhysical
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_original_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))(decay:ℕ)
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀Cr M:ℝ,0≤ Cr → (∀z∈rows,(Ideal.absNorm (Ideal.span {z}):ℝ)≤ Cr*Z^M) →
+      ∀X Y:ℝ,0< X → 0< Y →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀(R:ℝ)(ρ x:O→ℝ)(rK:ℝ),0< rK →
+      (1+rK)^decay*‖∑z∈rows,retainedScalar C D U R z*
+        ∑I:sectorPool C hC.1 S,∑J:sectorPool D hD.1 S,
+          (if IsCoprime (I:Ideal O) (J:Ideal O) then
+            idealCorrelation (C*I) (D*J)
+              ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+              ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A*z) else 0)*
+            ((β (C*I)*heightCoeff s.η s.t I)*star (β (D*J)*heightCoeff s.η s.t J))*
+              wholeKernel W (fun _=> logAnnulus) rK (ρ z) (x z)
+                (Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+                (Real.log ((Ideal.absNorm (J:Ideal O):ℝ)/Y))‖≤
+        Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r Cr M:=by
+  obtain ⟨J,Sprofile,hSprofile,hJ⟩:=actual_canonical_original_pair wlo whi hwlo hwhi lo hi ε δ θ B Lbound hε hδ hθ hB hL
+  obtain ⟨Ck,hCk,hkernel⟩:=actual_exceptional_block_bound W decay (2*J)
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hJ Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex Cr M hCr hN X Y hX hY H hβ hHD R ρ x rK hrK
+  apply hkernel rK hrK s.η s.t S β C D hC hD hCD U R rows ρ x
+    (fun I=> Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+    (fun I=> Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/Y)) Q m χ₀ hQ72 hml hm2 hex
+    (sourceBudget Sprofile s p J Q C D U K Z ε δ θ r Cr M)
+    (sourceBudget_nonneg Sprofile s p J Q C D U K Z ε δ θ r Cr M hK.le (zero_lt_one.trans hZ.1).le hCr)
+  intro χ ξ _ _ w
+  have hp:=hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD r
+    hX₁ hX₂ hY₁ hY₂ (τ χ) (τ (ξ⁻¹)) χ (ξ⁻¹) A
+    (fun I hI hc v=> hτ χ I hI (Or.inl hc) v)
+    (fun I hI hc v=> hτ (ξ⁻¹) I hI (Or.inr hc) v)
+    rows hn (hex₁ χ) (hex₂ (ξ⁻¹)) (hcond₁ χ) (hcond₂ (ξ⁻¹))
+    s.η χ₀ U hη m hm hml hm2 hex Cr M hCr hN X Y hX hY
+    ((divisorPool Finset.univ (fun I:sectorPool D hD.1 S=>(I:Ideal O))).filter
+      (fun L=>(L.absNorm:ℝ)≤ H/(D.absNorm:ℝ)))
+    (fun L hL _=>(Finset.mem_filter.mp hL).2.trans hHD) w
+  change originalPair s s.η χ (ξ⁻¹) A C D hC hD R0 seed s.t w X Y
+    (divisorPool Finset.univ (fun I:sectorPool D hD.1 S=>(I:Ideal O))) rows≤ _
+  rw [originalPair_filter_right s s.η χ (ξ⁻¹) A C D hC hD R0 seed s.t w X Y H _ rows hβ]
+  exact hp
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFiniteProfileExceptionalPhysical
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondWholeKernel CenteredMomentSectorLocalization
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_physical_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))(decay:ℕ)
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀Cr M:ℝ,0≤ Cr → (∀z∈rows,(Ideal.absNorm (Ideal.span {z}):ℝ)≤ Cr*Z^M) →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀(R Kphys:ℝ),0< Kphys → ∀n:Fin 4→ℤ,
+      let rK:=dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3))
+      (1+rK)^decay*‖physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n‖≤
+        outerScalar C D Kphys n*normalizer C D U*
+          (Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r Cr M) :=by
+  obtain ⟨J,Sprofile,hSprofile,Ck,hCk,hkernel⟩:=actual_original_exceptional_block wlo whi hwlo hwhi lo hi W decay ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hkernel Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex Cr M hCr hN H hβ hHD R Kphys hKphys n rK
+  have hrK:0< rK:=div_pos (mul_pos (dyadicScale_pos _) (dyadicScale_pos _))
+    (mul_pos (dyadicScale_pos _) (dyadicScale_pos _))
+  have hh:=hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex Cr M hCr hN (dyadicScale (n 2)) (dyadicScale (n 3))
+    (dyadicScale_pos _) (dyadicScale_pos _) H hβ hHD R
+    (fun _=> Real.log (secondEffectiveScale C D A Kphys/dyadicScale (n 0)))
+    (fun z=> Real.log (normValue z/dyadicScale (n 1))) rK hrK
+  change (1+rK)^decay*‖normalizedBlock s.η s.t S β C D hC hD U R rows W Kphys n‖≤ _ at hh
+  have ho:0≤ outerScalar C D Kphys n:=by unfold outerScalar; positivity
+  have hno:0≤ normalizer C D U:=(normalizer_pos C D hC U).le
+  rw [physicalBlock_eq s.η s.t S β C D hC hD U R rows hn W Kphys hKphys n,
+    norm_mul,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg ho,
+    Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hno]
+  calc
+    _=(outerScalar C D Kphys n*normalizer C D U)*
+        ((1+rK)^decay*‖normalizedBlock s.η s.t S β C D hC hD U R rows W Kphys n‖):=by ring
+    _≤ _:=mul_le_mul_of_nonneg_left hh (mul_nonneg ho hno)
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFiniteProfileExceptionalPhysical
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondWholeKernel CenteredMomentSectorLocalization
+open CenteredMomentSecondDyadicRowSupport
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_dyadic_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))(decay:ℕ)
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀(R Kphys:ℝ),0< Kphys → ∀n:Fin 4→ℤ,
+      let rK:=dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3))
+      (1+rK)^decay*‖physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n‖≤
+        outerScalar C D Kphys n*normalizer C D U*
+          (Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1)))) :=by
+  obtain ⟨J,Sprofile,hSprofile,Ck,hCk,hkernel⟩:=actual_physical_exceptional_block wlo whi hwlo hwhi lo hi W decay ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hkernel Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex H hβ hHD R Kphys hKphys n rK
+  rw [physicalBlock_dyadic_rows s.η s.t S β C D hC hD U R rows W Kphys n]
+  exact hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U
+    r hX₁ hX₂ hY₁ hY₂ τ hτ (dyadicRows rows n)
+    (fun z hz=> dyadicRows_nonzero rows n z hz)
+    (fun χ z hz=> hex₁ χ z (dyadicRows_subset rows n hz))
+    (fun χ z hz=> hex₂ χ z (dyadicRows_subset rows n hz))
+    (fun χ z hz=> hcond₁ χ z (dyadicRows_subset rows n hz))
+    (fun χ z hz=> hcond₂ χ z (dyadicRows_subset rows n hz))
+    χ₀ hη m hm hml hm2 (fun z hz=> hex z (dyadicRows_subset rows n hz))
+    1 (Real.logb Z (dyadicScale (n 1))) (by norm_num)
+    (fun z hz=> by simpa only [one_mul] using dyadicRows_power_cap rows n Z hZ.1 z hz)
+    H hβ hHD R Kphys hKphys n
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFiniteProfileExceptionalPhysical
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondWholeKernel CenteredMomentSectorLocalization
+open CenteredMomentSecondDyadicRowSupport
+
+open CenteredMomentSecondExceptionalPhysicalSaving CenteredMomentRankinRadical
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_saved_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀a:ℝ,0< a → (∀I:Ideal O,β I≠0→a*volume s.toData≤(I.absNorm:ℝ)) →
+      ∀(R Kphys:ℝ),0< Kphys → ∀n:Fin 4→ℤ,
+      ‖physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n‖/volume s.toData≤
+        Ck*(profileFactor Sprofile s p J Q K*
+          Z^(2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+          ((C.absNorm:ℝ)*D.absNorm)^θ*(volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)*
+          Z^(-(Real.logb Z (C.absNorm:ℝ)+Real.logb Z (D.absNorm:ℝ))/3)/
+          (Ideal.absNorm (commonRadical C D):ℝ)) :=by
+  obtain ⟨J,Sprofile,hSprofile,Ck,hCk,hkernel⟩:=actual_dyadic_exceptional_block wlo whi hwlo hwhi lo hi W 1 ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hkernel Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex H hβ hHD a ha hlower R Kphys hKphys n
+  let F:=physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n
+  by_cases hne:F=0
+  · change ‖F‖/_≤ _
+    rw [hne,norm_zero,zero_div]
+    have hp:=profileFactor_nonneg Sprofile s p J Q K hK.le
+    have hz:0≤ Z:=(zero_lt_one.trans hZ.1).le
+    have hv:0≤ volume s.toData:=(volume_pos s.toData).le
+    positivity
+  have hp:=hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex H hβ hHD R Kphys hKphys n
+  let rK:=dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3))
+  have hd:0<1+rK:=by
+    have h0:=dyadicScale_pos (n 0)
+    have h1:=dyadicScale_pos (n 1)
+    have h2:=dyadicScale_pos (n 2)
+    have h3:=dyadicScale_pos (n 3)
+    dsimp [rK]; positivity
+  have hp':‖F‖≤ outerScalar C D Kphys n*normalizer C D U*
+      (Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1))))/(1+rK):=by
+    apply (le_div_iff₀ hd).mpr
+    simpa only [pow_one,mul_comm] using hp
+  have hs:=original_budget_physical_saving_full Sprofile s p J Q C D hC hD hCD U K Z ε δ θ r Kphys a n
+    hK.le hZ.1 hKphys ha s.η s.t S β R rows hn W hlower hne
+  calc
+    _≤(outerScalar C D Kphys n*normalizer C D U*
+      (Ck*sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1))))/(1+rK))/
+      volume s.toData:=div_le_div_of_nonneg_right hp' (volume_pos s.toData).le
+    _=Ck*((1/volume s.toData)*outerScalar C D Kphys n*normalizer C D U*
+      sourceBudget Sprofile s p J Q C D U K Z ε δ θ r 1 (Real.logb Z (dyadicScale (n 1)))/(1+rK)):=by ring
+    _≤ _:=by
+      convert mul_le_mul_of_nonneg_left hs hCk using 1 <;> first | rfl | ring
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+open Filter MeasureTheory
+
+namespace CenteredMomentFiniteProfileExceptionalFixedQ
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss UniqueFactorizationMonoid
+open CenteredMomentCommonRadialData CenteredMomentCommonWindowColumn CenteredMomentReflectedSource
+open CenteredMomentCommonSectorWindow CenteredMomentSecondSectorColumns
+open CenteredMomentSecondScaled CenteredMomentChildAssembly CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentFirstSectors CenteredMomentSourceRow
+open CenteredMomentSourceMass CenteredMomentSourceProfileMass CenteredMomentExceptionalAmplitudePair
+open CenteredMomentLogDyadic RayFourExpansion CenteredMomentSmooth
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonExceptionalCost
+open   CenteredMomentSecondHeightFamily
+open CenteredMomentSecondExceptionalPairBound
+open CenteredMomentFiniteProfileExceptional CenteredMomentFiniteProfileExceptionalCommon
+open CenteredMomentFiniteProfileExceptionalPhysical
+open CenteredMomentSecondExceptionalKernel CenteredMomentSecondCanonical
+open CenteredMomentCanonicalFirst CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentForcing CenteredMomentChildRows
+open CenteredMomentSecondPhysicalBlock
+open CenteredMomentSecondWholeKernel CenteredMomentSectorLocalization
+open CenteredMomentSecondDyadicRowSupport
+
+open CenteredMomentSecondExceptionalPhysicalSaving CenteredMomentRankinRadical
+open CenteredMomentSecondExceptionalCommonSaving
+open  CenteredMomentMobiusRegroup CenteredMomentSupportedCorrelation
+open CenteredMomentSupport CenteredMomentSecondCanonicalScalar CenteredMomentSecondDivisorSupport
+local notation "O" => Eisenstein.O
+local instance {ι:Type*}:DecidableEq (ι⊕Fin 2):=Classical.decEq _
+universe u
+variable {ι:Type u}[Fintype ι][DecidableEq ι]
+
+theorem actual_uniform_exceptional_block (wlo whi:ℝ)(hwlo:0< wlo)(hwhi:0≤ whi)(lo hi:ι→ℝ)(W:𝓢(ℝ,ℂ))
+    (ε δ θ B Lbound:ℝ)(hε:0<ε)(hδ:0<δ)(hθ:0<θ)(hB:0≤ B)(hL:0≤ Lbound):
+    ∃J:ℕ,∃Sprofile:Finset (ℕ×ℕ),(0,0)∈Sprofile ∧ ∃Ck:ℝ,0≤ Ck ∧ ∀Q:Ideal O,Q≠0 → Q≠⊤ → Q≤ Ideal.span {(72:O)} →
+      ∃K:ℝ,0< K ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀(s:Input ι)(p:Profiles wlo whi),(∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) →
+      (∀i,1≤ s.P i) → s.W₁=p.profile 0 → s.W₂=p.profile 1 →
+      ∀(C D:Ideal O)(hC:Supported C)(hD:Supported D)(R0 seed:Ideal O),R0≠0 → seed∣C → seed∣D →
+      (C.absNorm:ℝ)≤ Z^B → (D.absNorm:ℝ)≤ Z^B → primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀r:ℝ,Z^r≤ s.X₁ → Z^r≤ s.X₂ → Z^r≤ s.Y₁ → Z^r≤ s.Y₂ →
+      ∀τ:RayCharacter→Character,
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff s.η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(rows:Finset O),(∀z∈rows,z≠0) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 z) →
+      (∀χ:RayCharacter,∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (τ χ) Q fixedBadMask 1 (-z)) →
+      (∀χ:RayCharacter,∀z∈rows,((τ χ).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*C.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      (∀χ:RayCharacter,∀z∈rows,((reflected (τ χ)).modulus.absNorm*(Ideal.span {(fixedBadMask:O)}).absNorm*
+        (Ideal.span {(72:O)}).absNorm*(R0.absNorm*D.absNorm)*(Ideal.span {z}).absNorm:ℝ)≤ Z^B) →
+      ∀χ₀:RayCharacter,idealCoeff s.η C≠0 →
+      ∀m:O,m≠0 → lambda∣m → (2:O)∣m →
+      (∀z∈rows,CenteredExceptionalProfile.FixedInducingRow (childCharacter s.η χ₀) Q m A z) →
+      ∀H:ℝ,(∀I:Ideal O,β I≠0 → (I.absNorm:ℝ)≤ H) → H/(D.absNorm:ℝ)≤ Z^Lbound →
+      ∀a:ℝ,0< a → (∀I:Ideal O,β I≠0→a*volume s.toData≤(I.absNorm:ℝ)) →
+      ∀(R Kphys:ℝ),0< Kphys → ∀n:Fin 4→ℤ,
+      ‖physicalBlock s.η s.t S β C D hC hD U R rows W Kphys n‖/volume s.toData≤
+        Ck*(profileFactor Sprofile s p J Q K*
+          Z^(2*ε+δ+2*B*θ-2*max r 0/3)*
+          (volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)/
+          (Ideal.absNorm (commonRadical C D):ℝ)) :=by
+  obtain ⟨J,Sprofile,hSprofile,Ck,hCk,hkernel⟩:=actual_saved_exceptional_block wlo whi hwlo hwhi lo hi W ε δ θ B Lbound hε hδ hθ hB hL
+  refine ⟨J,Sprofile,hSprofile,Ck,hCk,?_⟩
+  intro Q hQ hQtop hQ72
+  obtain ⟨K,hK,hbound⟩:=hkernel Q hQ hQtop hQ72
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hNC hND hCD U A S β
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex H hβ hHD a ha hlower R Kphys hKphys n
+  have hs:=hZ.2 s p hlo hhi hP hW₁ hW₂ C D hC hD R0 seed hR hsC hsD hCD U
+    r hX₁ hX₂ hY₁ hY₂ τ hτ rows hn hex₁ hex₂ hcond₁ hcond₂ χ₀ hη
+    m hm hml hm2 hex H hβ hHD a ha hlower R Kphys hKphys n
+  have hc:1≤(C.absNorm:ℝ):=by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hC.1)
+  have hd:1≤(D.absNorm:ℝ):=by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hD.1)
+  have hb:=common_weight_bound Z (C.absNorm:ℝ) (D.absNorm:ℝ) θ B ε δ r hZ.1 hc hd hθ.le hNC hND
+  let F:=Ck*profileFactor Sprofile s p J Q K*(volume s.toData)^(1/3:ℝ)*Kphys^(5/6:ℝ)*a^(-2/3:ℝ)/
+    (Ideal.absNorm (commonRadical C D):ℝ)
+  have hF:0≤ F:=by
+    have hp:=profileFactor_nonneg Sprofile s p J Q K hK.le
+    have hv:0≤ volume s.toData:=(volume_pos s.toData).le
+    dsimp only [F]
+    positivity
+  apply hs.trans
+  calc
+    _=F*(Z^(2*ε+δ-max (r-min (Real.logb Z (C.absNorm:ℝ)) (Real.logb Z (D.absNorm:ℝ))) 0)*
+      ((C.absNorm:ℝ)*D.absNorm)^θ*Z^(-(Real.logb Z (C.absNorm:ℝ)+Real.logb Z (D.absNorm:ℝ))/3)):=by
+      dsimp only [F];ring
+    _≤ F*Z^(2*ε+δ+2*B*θ-2*max r 0/3):=mul_le_mul_of_nonneg_left hb hF
+    _=_:=by dsimp only [F];ring
+
+end CenteredMomentFiniteProfileExceptionalFixedQ
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondNonexceptional
+open CanonicalRowCompletion CanonicalQuadraticSieve CenteredMomentSupportedCorrelation
+open CenteredMomentChildAssembly CenteredMomentMobiusRegroup CenteredMomentFixedRay
+open CenteredMomentRowNorm CenteredMomentSmooth RayFourExpansion
+open CenteredMomentSecondDescent CenteredMomentSecondScaled CenteredMomentRestrictedEnergy
+local notation "O" => Eisenstein.O
+
+theorem whole_kernel_nonexceptional_second_bound (W : 𝓢(ℝ, ℂ)) (V : Fin 4 → ℝ → ℂ)
+    (M : Fin 4 → ℝ) (hM : ∀ i, 0 ≤ M i)
+    (hV : ∀ i y, V i y ≠ 0 → |y| ≤ M i) (A J₁ J₂ : ℕ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R →
+      ∀ {α β : Type*} (rows : Finset O) (S : Finset α) (T : Finset β)
+        (D E A₀ : O) (a : α → O) (b : β → O)
+        (hD : Supported (Ideal.span {D})) (hE : Supported (Ideal.span {E}))
+        (ha : ∀ i, Supported (Ideal.span {a i})) (hb : ∀ j, Supported (Ideal.span {b j})),
+      (lambda^2 ∣ D-1) →
+      (lambda^2 ∣ E-1) →
+      (∀ i, lambda^2 ∣ a i-1) →
+      (∀ j, lambda^2 ∣ b j-1) →
+      (∀ i, IsCoprime (D*E) (a i)) → (∀ j, IsCoprime (D*E) (b j)) →
+      ∀ (q : O → ℂ) (c : α → ℂ) (d : β → ℂ) (u : α → ℝ) (v : β → ℝ)
+        (ρ x : O → ℝ) (η₀ : HeckeFamily.Character) (χ₀ : RayCharacter)
+        (Q : Ideal O) (m : O),
+      (Q ≤ Ideal.span {(72:O)}) → (lambda ∣ m) → ((2:O) ∣ m) →
+      (∀ z ∈ rows, nonexceptional η₀ χ₀ Q m A₀ z) →
+      (∀ z ∈ rows, ‖q z*actualCorrelation D E hD hE (A₀*z)‖ ≤ 1) →
+      (∀ z ∈ rows, ‖V 0 (ρ z)‖ ≤ 1) → (∀ z ∈ rows, ‖V 1 (x z)‖ ≤ 1) →
+      ∀ (U : 𝓢(ℝ, ℂ)) (K : ℝ), 0 < K →
+      (∀ z : O, 0 ≤ (U (‖ringComplex z‖^2/K)).re) →
+      (∀ z ∈ rows, 1 ≤ (U (‖ringComplex z‖^2/K)).re) →
+      ∀ (B₁ B₂ : Ideal O → ℝ),
+      (∀ L ∈ divisorPool T (fun j => Ideal.span {b j}), 0 ≤ B₁ L) →
+      (∀ L ∈ divisorPool T (fun j => Ideal.span {b j}), 0 ≤ B₂ L) →
+      (∀ L ∈ divisorPool T (fun j => Ideal.span {b j}), ∀ χ : RayCharacter, ∀ t : ℝ,
+        (restrictedEnergy (nonexceptional η₀ χ Q m A₀) S a (fun i => divisorCoefficient L a (movingCoefficient A₀ a c) χ i*columnPhase (V 2) (u i) t) U K) ≤
+          (B₁ L*(1+‖t‖)^J₁)^2) →
+      (∀ L ∈ divisorPool T (fun j => Ideal.span {b j}), ∀ ξ : RayCharacter, ∀ t : ℝ,
+        (restrictedEnergy (nonexceptional η₀ ξ Q m A₀) T b (fun j => divisorCoefficient L b (movingCoefficient A₀ b d) ξ j*star (columnPhase (V 3) (v j) t)) U K) ≤
+          (B₂ L*(1+‖t‖)^J₂)^2) →
+      (1+R)^A * ‖∑ z ∈ rows, q z * ∑ i ∈ S, ∑ j ∈ T,
+        (if IsCoprime (a i) (b j) then
+          actualCorrelation (D*a i) (E*b j)
+            (supported_mul_elements _ _ hD (ha i)) (supported_mul_elements _ _ hE (hb j)) (A₀*z)
+          else 0) * (c i*star (d j))*wholeKernel W V R (ρ z) (x z) (u i) (v j)‖ ≤
+        C*∑ L ∈ divisorPool T (fun j => Ideal.span {b j}),
+          ‖(UniqueFactorizationMonoid.moebius L : ℂ)‖*(B₁ L*B₂ L) := by
+  obtain ⟨C,hC,hbound⟩ := whole_kernel_restricted_child_bound W V M hM hV A J₁ J₂
+  refine ⟨256*C,mul_nonneg (by norm_num) hC,?_⟩
+  intro R hR α β rows S T D E A₀ a b hD hE ha hb hpD hpE hpa hpb hcopA hcopB
+    q c d u v ρ x η₀ χ₀ Q m hQ hmLam hm2 hrows hq hV₀ hV₁ U K hK hU hmajor B₁ B₂ hB₁ hB₂ hleft hright
+  rw [actual_scaled_row_children rows S T D E A₀ a b hD hE ha hb hpD hpE hpa hpb hcopA hcopB]
+  apply finite_ray_divisor_bound _ D E _ ((1+R)^A) C (by positivity) hC B₁ B₂ hB₁ hB₂
+  intro L hL χ ξ
+  exact hbound R hR rows S T a b ha hb
+    (divisorCoefficient L a (movingCoefficient A₀ a c) χ) (divisorCoefficient L b (movingCoefficient A₀ b d) (ξ⁻¹)) u v ρ x
+    (fun z => q z*actualCorrelation D E hD hE (A₀*z))
+    (nonexceptional η₀ χ Q m A₀) (nonexceptional η₀ (ξ⁻¹) Q m A₀)
+    (fun z hz => (nonexceptional_ray_independent η₀ χ₀ χ Q hQ m A₀ z hmLam hm2).mp (hrows z hz))
+    (fun z hz => (nonexceptional_reflection η₀ χ₀ (ξ⁻¹) Q hQ m A₀ z hmLam hm2).mp (hrows z hz)) hq hV₀ hV₁ U K hK hU hmajor
+    (B₁ L) (B₂ L) (hB₁ L hL) (hB₂ L hL) (hleft L hL χ) (hright L hL (ξ⁻¹))
+
+end CenteredMomentSecondNonexceptional
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondIdealBlockBound
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss 
+open CenteredMomentSecondSectorColumns CenteredMomentSecondCanonical CenteredMomentCanonicalFirst
+open CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit CenteredMomentSecondCanonicalScalar
+open CenteredMomentLogDyadic CenteredMomentSmooth CenteredMomentSupport CenteredMomentSupportedCorrelation
+open CenteredMomentSecondNonexceptional CenteredMomentRestrictedEnergy CenteredMomentSecondScaled
+open CenteredMomentChildAssembly CenteredMomentMobiusRegroup CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentSectorLocalization RayFourExpansion
+local notation "O" => Eisenstein.O
+
+theorem actual_nonexceptional_block_bound (W : 𝓢(ℝ,ℂ)) (decay J₁ J₂ : ℕ) :
+    ∃ B : ℝ,0≤ B ∧ ∀ r : ℝ,0< r →
+      ∀ (η : Character) (t : ℝ) (S : Finset (Ideal O)) (β : Ideal O→ℂ)
+        (C D : Ideal O) (hC : Supported C) (hD : Supported D),
+      primeSupport C=primeSupport D →
+      ∀ (U : Finset (CommonIndex C D)) (R : ℝ) (rows : Finset O)
+        (ρ x : O→ℝ) (u : sectorPool C hC.1 S→ℝ) (v : sectorPool D hD.1 S→ℝ)
+        (Q : Ideal O) (m : O) (χ₀ : RayCharacter),
+      Q≤ Ideal.span {(72:O)} → lambda∣m → (2:O)∣m →
+      let A := commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      let c := fun I : sectorPool C hC.1 S=>β (C*I)*heightCoeff η t I
+      let d := fun J : sectorPool D hD.1 S=>β (D*J)*heightCoeff η t J
+      (∀ z∈rows,nonexceptional η χ₀ Q m A z) →
+      ∀ (Φ : 𝓢(ℝ,ℂ)) (H : ℝ),0< H →
+      (∀ z : O,0≤(Φ (normValue z/H)).re) →
+      (∀ z∈rows,1≤(Φ (normValue z/H)).re) →
+      ∀ E₁ E₂ : Ideal O→ℝ,
+      (∀ L∈divisorPool Finset.univ (fun J : sectorPool D hD.1 S=>(J:Ideal O)),0≤ E₁ L) →
+      (∀ L∈divisorPool Finset.univ (fun J : sectorPool D hD.1 S=>(J:Ideal O)),0≤ E₂ L) →
+      (∀ L∈divisorPool Finset.univ (fun J : sectorPool D hD.1 S=>(J:Ideal O)),∀ χ : RayCharacter,∀ w : ℝ,
+        restrictedEnergy (nonexceptional η χ Q m A) Finset.univ (sectorElement C hC.1 S)
+          (fun I=> divisorCoefficient L (sectorElement C hC.1 S)
+            (movingCoefficient A (sectorElement C hC.1 S) c) χ I*columnPhase logAnnulus (u I) w) Φ H≤
+              (E₁ L*(1+‖w‖)^J₁)^2) →
+      (∀ L∈divisorPool Finset.univ (fun J : sectorPool D hD.1 S=>(J:Ideal O)),∀ χ : RayCharacter,∀ w : ℝ,
+        restrictedEnergy (nonexceptional η χ Q m A) Finset.univ (sectorElement D hD.1 S)
+          (fun J=> divisorCoefficient L (sectorElement D hD.1 S)
+            (movingCoefficient A (sectorElement D hD.1 S) d) χ J*star (columnPhase logAnnulus (v J) w)) Φ H≤
+              (E₂ L*(1+‖w‖)^J₂)^2) →
+      (1+r)^decay*‖∑ z∈rows,retainedScalar C D U R z*
+        ∑ I : sectorPool C hC.1 S,∑ J : sectorPool D hD.1 S,
+          (if IsCoprime (I:Ideal O) (J:Ideal O) then
+            idealCorrelation (C*I) (D*J)
+              ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+              ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A*z) else 0)*
+            (c I*star (d J))*wholeKernel W (fun _=> logAnnulus) r (ρ z) (x z) (u I) (v J)‖≤
+        B*∑ L∈divisorPool Finset.univ (fun J : sectorPool D hD.1 S=>(J:Ideal O)),
+          ‖(UniqueFactorizationMonoid.moebius L:ℂ)‖*(E₁ L*E₂ L) := by
+  obtain ⟨B,hB,hbound⟩ := whole_kernel_nonexceptional_second_bound W (fun _=> logAnnulus)
+    (fun _=> Real.log 4) (fun _=> Real.log_nonneg (by norm_num)) (fun _ x hx=> logAnnulus_enclosure x hx)
+    decay J₁ J₂
+  refine ⟨B,hB,?_⟩
+  intro r hr η t S β C D hC hD hCD U R rows ρ x u v Q m χ₀ hQ hmLam hm2
+  dsimp only
+  intro hrows Φ H hH hΦ hmajor E₁ E₂ hE₁ hE₂ hleft hright
+  have hcopD (J : sectorPool D hD.1 S) :
+      IsCoprime (primaryIdealGenerator C*primaryIdealGenerator D) (sectorElement D hD.1 S J) := by
+    simpa only [mul_comm] using sectorElement_coprime D C hD hC hCD.symm S J
+  have he := hbound r hr rows Finset.univ Finset.univ (primaryIdealGenerator C) (primaryIdealGenerator D)
+    (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U)
+    (sectorElement C hC.1 S) (sectorElement D hD.1 S)
+    ((supported_span_primaryIdealGenerator_iff C).mpr hC) ((supported_span_primaryIdealGenerator_iff D).mpr hD)
+    (sectorElement_supported C hC.1 S) (sectorElement_supported D hD.1 S)
+    (primaryIdealGenerator_spec C (supported_primaryIdealGenerator_ne_zero C hC)).2
+    (primaryIdealGenerator_spec D (supported_primaryIdealGenerator_ne_zero D hD)).2
+    (sectorElement_primary C hC.1 S) (sectorElement_primary D hD.1 S)
+    (sectorElement_coprime C D hC hD hCD S) hcopD
+    (retainedScalar C D U R) (fun I=>β (C*I)*heightCoeff η t I)
+    (fun J=>β (D*J)*heightCoeff η t J) u v ρ x η χ₀ Q m hQ hmLam hm2 hrows
+    (fun z _=> actual_retained_scalar_norm C D hC hD hCD U R z)
+    (fun z _=> logAnnulus_norm _) (fun z _=> logAnnulus_norm _)
+    Φ H hH (by simpa only [normValue_eq_embedding] using hΦ)
+    (by simpa only [normValue_eq_embedding] using hmajor) E₁ E₂
+    (by simpa only [sectorElement_span] using hE₁) (by simpa only [sectorElement_span] using hE₂)
+    (by simpa only [sectorElement_span] using hleft) (by simpa only [sectorElement_span] using hright)
+  have hcop (I : sectorPool C hC.1 S) (J : sectorPool D hD.1 S) :
+      IsCoprime (sectorElement C hC.1 S I) (sectorElement D hD.1 S J) ↔
+        IsCoprime (I:Ideal O) (J:Ideal O) := by
+    rw [←Ideal.isCoprime_span_singleton_iff,sectorElement_span,sectorElement_span]
+  simp_rw [hcop,sectorElement_span] at he
+  simpa only [idealCorrelation,primaryIdealGenerator_mul,sectorElement] using he
+
+end CenteredMomentSecondIdealBlockBound
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+open MeasureTheory
+
+namespace CenteredMomentSecondWindowBudget
+open CenteredMomentLogDyadic CenteredMomentHeckeColumnWindow CenteredMomentHeckeWindowEnergy
+open CenteredMomentSecondWindowSource
+
+def profileMoment (J : ℕ) : ℝ :=
+  ∫ w : ℝ,(1+‖w‖)^J*‖columnDensity logAnnulus logAnnulus_compact logAnnulus_smooth w‖
+
+theorem profileMoment_nonneg (J : ℕ) : 0≤ profileMoment J :=
+  integral_nonneg (fun w=> by positivity)
+
+def heightEnvelope (t : ℝ) : ℝ := (1+‖t‖+2*Real.pi)*(1+2*Real.pi)
+
+theorem heightEnvelope_pos (t : ℝ) : 0< heightEnvelope t := by unfold heightEnvelope;positivity
+
+theorem heightCost_le_envelope (t θ : ℝ) : heightCost t θ≤ heightEnvelope t*(1+‖θ‖) := by
+  have hh : 1+‖t‖+2*Real.pi*‖θ‖≤(1+‖t‖+2*Real.pi)*(1+‖θ‖) := by
+    nlinarith [norm_nonneg t,norm_nonneg θ,Real.pi_pos]
+  have he := mul_le_mul_of_nonneg_right hh (show 0≤1+2*Real.pi by positivity)
+  convert he using 1 <;> first | rfl | (simp only [heightCost,heightEnvelope]; ring)
+
+def windowBudget (J : ℕ) (t E : ℝ) : ℝ := Real.sqrt E*heightEnvelope t^J*profileMoment J
+
+theorem windowBudget_nonneg (J : ℕ) (t E : ℝ) : 0≤ windowBudget J t E :=
+  mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (pow_nonneg (heightEnvelope_pos _).le _))
+    (profileMoment_nonneg _)
+
+theorem shifted_window_budget (J : ℕ) (t θ E : ℝ) (hE : 0≤ E) :
+    (E*heightCost t θ^(2*J))*profileMoment J^2≤
+      (windowBudget J t E*(1+‖θ‖)^J)^2 := by
+  calc
+    _ ≤ E*(heightEnvelope t*(1+‖θ‖))^(2*J)*profileMoment J^2 :=
+      mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left
+          (pow_le_pow_left₀ (heightCost_pos _ _).le (heightCost_le_envelope t θ) _) hE)
+        (sq_nonneg _)
+    _ = _ := by
+      rw [show 2*J=J*2 by omega,pow_mul]
+      simp only [windowBudget,mul_pow,Real.sq_sqrt hE]
+      ring
+
+theorem conjugate_shifted_window_budget (J : ℕ) (t θ E : ℝ) (hE : 0≤ E) :
+    (E*heightCost t (-θ)^(2*J))*profileMoment J^2≤
+      (windowBudget J t E*(1+‖θ‖)^J)^2 := by
+  simpa only [norm_neg] using shifted_window_budget J t (-θ) E hE
+
+end CenteredMomentSecondWindowBudget
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+namespace CenteredMomentSecondRadicalBlock
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss 
+open CenteredMomentSecondSectorColumns CenteredMomentSecondCanonical CenteredMomentCanonicalFirst
+open CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit CenteredMomentSecondCanonicalScalar
+open CenteredMomentLogDyadic CenteredMomentSmooth CenteredMomentSupport
+open CenteredMomentSecondNonexceptional CenteredMomentRestrictedEnergy CenteredMomentSecondScaled
+open CenteredMomentChildAssembly CenteredMomentMobiusRegroup CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentSectorLocalization RayFourExpansion
+open CenteredMomentSecondMaskedWindow CenteredMomentSecondRadicalColumns CenteredMomentSecondWindowBudget
+open CenteredMomentRestrictedSource CenteredMomentFirstSectors CenteredMomentSecondWindowSource
+open CenteredMomentSecondIdealBlockBound
+local notation "O" => Eisenstein.O
+
+theorem actual_block_from_masked_source (W : 𝓢(ℝ,ℂ)) (decay J₁ J₂ : ℕ) :
+    ∃B:ℝ,0≤ B ∧ ∀r:ℝ,0< r →
+      ∀(η:Character) (τ:RayCharacter→Character) (t:ℝ) (S:Finset (Ideal O)) (β:Ideal O→ℂ)
+        (C D:Ideal O) (hC:Supported C) (hD:Supported D),
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(R:ℝ) (rows:Finset O) (ρ x:O→ℝ) (X Y:ℝ),0< X → 0< Y →
+      ∀(Q:Ideal O) (m:O) (χ₀:RayCharacter),Q≤ Ideal.span {(72:O)} →
+      lambda∣m → (2:O)∣m →
+      (∀z∈rows,nonexceptional η χ₀ Q m A z) →
+      ∀(Φ:𝓢(ℝ,ℂ)) (H:ℝ),0< H →
+      (∀z:O,0≤(Φ (normValue z/H)).re) → (∀z∈rows,1≤(Φ (normValue z/H)).re) →
+      ∀E₁ E₂:Ideal O→ℝ,
+      (∀L,0≤ E₁ L) → (∀L,0≤ E₂ L) →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),∀χ:RayCharacter,∀v:ℝ,
+        sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool C hC.1 S)
+          (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+          (heightCoeff (τ χ) v) Φ H≤ E₁ L*(1+‖v‖)^(2*J₁)) →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),∀χ:RayCharacter,∀v:ℝ,
+        sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool D hD.1 S)
+          (fun I=> if IsCoprime D I ∧ L∣I then β (D*I) else 0)
+          (heightCoeff (τ χ) v) Φ H≤ E₂ L*(1+‖v‖)^(2*J₂)) →
+      (1+r)^decay*‖∑z∈rows,retainedScalar C D U R z*
+        ∑I:sectorPool C hC.1 S,∑J:sectorPool D hD.1 S,
+          (if IsCoprime (I:Ideal O) (J:Ideal O) then
+            idealCorrelation (C*I) (D*J)
+              ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+              ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A*z) else 0)*
+            ((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+              wholeKernel W (fun _=> logAnnulus) r (ρ z) (x z)
+                (Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+                (Real.log ((Ideal.absNorm (J:Ideal O):ℝ)/Y))‖≤
+        B*∑L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),
+          ‖(UniqueFactorizationMonoid.moebius L:ℂ)‖*
+            (windowBudget J₁ t (E₁ L)*windowBudget J₂ t (E₂ L)) := by
+  obtain ⟨B,hB,hbound⟩:=actual_nonexceptional_block_bound W decay J₁ J₂
+  refine ⟨B,hB,?_⟩
+  intro r hr η τ t S β C D hC hD hCD U A hτ R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2
+    hrows Φ H hH hΦ hmajor E₁ E₂ hE₁ hE₂ hleft hright
+  apply hbound r hr η t S β C D hC hD hCD U R rows ρ x
+    (fun I=> Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+    (fun J=> Real.log ((Ideal.absNorm (J:Ideal O):ℝ)/Y)) Q m χ₀ hQ hmLam hm2 hrows Φ H hH hΦ hmajor
+    (fun L=> windowBudget J₁ t (E₁ L)) (fun L=> windowBudget J₂ t (E₂ L))
+    (fun L _=> windowBudget_nonneg _ _ _) (fun L _=> windowBudget_nonneg _ _ _)
+  · intro L hL χ w
+    exact (original_window_from_masked_source η (τ χ) χ A C hC
+      (fun I hi hc v=> hτ χ I hi (Or.inl hc) v) S β L _ t w X hX J₁ Φ H hH
+      (by simpa only [normValue_eq_embedding] using hΦ) (E₁ L) (hE₁ L) (hleft L hL χ)).trans
+        (shifted_window_budget J₁ t w (E₁ L) (hE₁ L))
+  · intro L hL χ w
+    simp only [star_logAnnulus_column]
+    exact (original_window_from_masked_source η (τ χ) χ A D hD
+      (fun I hi hc v=> hτ χ I hi (Or.inr hc) v) S β L _ t (-w) Y hY J₂ Φ H hH
+      (by simpa only [normValue_eq_embedding] using hΦ) (E₂ L) (hE₂ L) (hright L hL χ)).trans
+        (conjugate_shifted_window_budget J₂ t w (E₂ L) (hE₂ L))
+
+end CenteredMomentSecondRadicalBlock
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical Topology
+namespace CenteredMomentSecondRadicalBudget
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss
+open CenteredMomentSecondRadicalFamily CenteredMomentSecondMovingSupport
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalNonunit
+open CenteredMomentSecondCanonicalLedger CenteredMomentSecondHeightFamily
+open CenteredMomentCanonicalFirst CenteredMomentChildRows CenteredMomentPartitionNorm
+open CenteredMomentHeckeColumnWindow RayFourExpansion CenteredMomentCommonSupport CenteredMomentSupport
+local notation "O" => Eisenstein.O
+
+def fixedFactor : ℕ := (Ideal.span {(12:O)}).absNorm*
+  (Ideal.span {fixedBadMask}).absNorm*(Ideal.span {(72:O)}).absNorm
+
+theorem fixedFactor_pos : 0< fixedFactor := by
+  unfold fixedFactor
+  apply Nat.mul_pos
+  · apply Nat.mul_pos
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr (by norm_num)))
+    · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+        (Ideal.span_singleton_eq_bot.not.mpr fixedBadMask_ne_zero))
+  · exact Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr (by norm_num)))
+
+theorem child_modulus_bound (η : Character) (χ : RayCharacter) :
+    (childCharacter η χ).modulus.absNorm≤η.modulus.absNorm*(Ideal.span {(12:O)}).absNorm := by
+  have hn : η.modulus*Ideal.span {(12:O)}≠0 := mul_ne_zero η.modulus_ne_bot
+    (Ideal.span_singleton_eq_bot.not.mpr (by norm_num))
+  have hd : (childCharacter η χ).modulus∣η.modulus*Ideal.span {(12:O)} := by
+    apply Ideal.dvd_iff_le.mpr
+    exact le_inf Ideal.mul_le_right Ideal.mul_le_left
+  simpa only [map_mul] using Nat.le_of_dvd
+    (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hn)) (map_dvd Ideal.absNorm hd)
+
+theorem active_radical_dvd (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (hCD : primeSupport C=primeSupport D)
+    (U : Finset (CommonIndex C D)) (w : O)
+    (hne : idealCorrelation C D hC hD
+      (commonFrequencyGenerator C D*w)≠0) :
+    (∏P∈fixedActiveSet C D U,P.val)∣
+      (∏P∈U,P.val)*Ideal.span {nonunitFrequencyGenerator C D U} := by
+  have hd := Finset.prod_dvd_prod_of_subset (fixedActiveSet C D U)
+    (U∪nonunitPartitionSet C D U) (fun P:CommonIndex C D=> P.val)
+    (fixedActiveSet_subset C D hC hD hCD U w hne)
+  have hdis : Disjoint U (nonunitPartitionSet C D U) := by
+    apply Finset.disjoint_left.mpr
+    intro P hP hV
+    exact (Finset.mem_sdiff.mp hV).2 hP
+  rw [Finset.prod_union hdis] at hd
+  rw [nonunitFrequencyGenerator_span]
+  simpa only [unitIdeal,commonPrime_span C D hC] using hd
+
+theorem active_radical_norm_bound (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (hCD : primeSupport C=primeSupport D)
+    (U : Finset (CommonIndex C D)) (w : O)
+    (hne : idealCorrelation C D hC hD
+      (commonFrequencyGenerator C D*w)≠0) :
+    (∏P∈fixedActiveSet C D U,P.val).absNorm≤
+      (∏P∈U,P.val).absNorm*(Ideal.span {nonunitFrequencyGenerator C D U}).absNorm := by
+  have hp (S : Finset (CommonIndex C D)) : (∏P∈S,P.val)≠0 :=
+    Finset.prod_ne_zero_iff.mpr (fun P _=>(commonPrime_supported_ideal C D hC P).1)
+  have hv : Ideal.span {nonunitFrequencyGenerator C D U}≠0 := by
+    rw [nonunitFrequencyGenerator_span]
+    simpa only [unitIdeal,commonPrime_span C D hC] using hp (nonunitPartitionSet C D U)
+  simpa only [map_mul] using Nat.le_of_dvd
+    (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (mul_ne_zero (hp U) hv)))
+    (map_dvd Ideal.absNorm (active_radical_dvd C D hC hD hCD U w hne))
+
+theorem exists_second_budgeted_family (η : Character) (χ : RayCharacter)
+    (C D : Ideal O) (hC : Supported C) (U : Finset (CommonIndex C D)) :
+    ∃τ : Character,
+      (∀n:O,elementCoeff τ n=rowTwist (HeckeRowClosure.elementHom (childCharacter η χ))
+        fixedBadMask 1 (CenteredMomentSecondSixthReduction.reducedNumerator C D U) n) ∧
+      (∀I:Ideal O,Supported I → ∀t:ℝ,heightCoeff τ t I=heightCoeff η t I*
+        idealRowHom (CenteredMomentSecondSixthReduction.reducedNumerator C D U) I*
+        rayMonoid χ (primaryIdealGenerator I)) ∧
+      ∀(hD : Supported D),primeSupport C=primeSupport D →
+      ∀w:O,idealCorrelation C D hC hD
+        (commonFrequencyGenerator C D*w)≠0 →
+      τ.modulus.absNorm≤η.modulus.absNorm*fixedFactor*
+        (∏P∈U,P.val).absNorm*(Ideal.span {nonunitFrequencyGenerator C D U}).absNorm := by
+  obtain ⟨τ,hN,he,ht⟩ := exists_second_radical_family η χ C D hC U
+  refine ⟨τ,he,ht,?_⟩
+  intro hD hCD w hne
+  have h1 := child_modulus_bound η χ
+  have h2 := active_radical_norm_bound C D hC hD hCD U w hne
+  apply hN.trans
+  calc
+    _≤(η.modulus.absNorm*(Ideal.span {(12:O)}).absNorm)*
+      (Ideal.span {fixedBadMask}).absNorm*(Ideal.span {(72:O)}).absNorm*
+      ((∏P∈U,P.val).absNorm*(Ideal.span {nonunitFrequencyGenerator C D U}).absNorm) :=
+      Nat.mul_le_mul (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ h1)) h2
+    _=_ := by unfold fixedFactor;ring
+
+theorem conductor_log_bound (η τ : Character) (A B : Ideal O) (hA : A≠0) (hB : B≠0)
+    (hN : τ.modulus.absNorm≤η.modulus.absNorm*fixedFactor*A.absNorm*B.absNorm)
+    (Z : ℝ) (hZ : 1< Z) :
+    Real.logb Z (τ.modulus.absNorm:ℝ)≤ Real.logb Z (η.modulus.absNorm:ℝ)+
+      Real.logb Z (fixedFactor:ℝ)+Real.logb Z (A.absNorm:ℝ)+Real.logb Z (B.absNorm:ℝ) := by
+  have hτ : (0:ℝ)<τ.modulus.absNorm := by
+    exact_mod_cast (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr τ.modulus_ne_bot))
+  have hη : (η.modulus.absNorm:ℝ)≠0 := Nat.cast_ne_zero.mpr
+    (Ideal.absNorm_eq_zero_iff.not.mpr η.modulus_ne_bot)
+  have hK : (fixedFactor:ℝ)≠0 := Nat.cast_ne_zero.mpr (Nat.ne_zero_of_lt fixedFactor_pos)
+  have ha : (A.absNorm:ℝ)≠0 := Nat.cast_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hA)
+  have hb : (B.absNorm:ℝ)≠0 := Nat.cast_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hB)
+  have hh := Real.logb_le_logb_of_le hZ hτ (show (τ.modulus.absNorm:ℝ)≤
+      (η.modulus.absNorm:ℝ)*fixedFactor*A.absNorm*B.absNorm by exact_mod_cast hN)
+  rwa [Real.logb_mul (mul_ne_zero (mul_ne_zero hη hK) ha) hb,
+    Real.logb_mul (mul_ne_zero hη hK) ha,Real.logb_mul hη hK] at hh
+
+theorem exists_second_log_budgeted_family (η : Character) (χ : RayCharacter)
+    (C D : Ideal O) (hC : Supported C) (U : Finset (CommonIndex C D)) :
+    ∃τ : Character,
+      (∀n:O,elementCoeff τ n=rowTwist (HeckeRowClosure.elementHom (childCharacter η χ))
+        fixedBadMask 1 (CenteredMomentSecondSixthReduction.reducedNumerator C D U) n) ∧
+      (∀I:Ideal O,Supported I → ∀t:ℝ,heightCoeff τ t I=heightCoeff η t I*
+        idealRowHom (CenteredMomentSecondSixthReduction.reducedNumerator C D U) I*
+        rayMonoid χ (primaryIdealGenerator I)) ∧
+      ∀(hD : Supported D),primeSupport C=primeSupport D →
+      ∀w:O,idealCorrelation C D hC hD (commonFrequencyGenerator C D*w)≠0 →
+      ∀Z:ℝ,1< Z → Real.logb Z (τ.modulus.absNorm:ℝ)≤
+        Real.logb Z (η.modulus.absNorm:ℝ)+Real.logb Z (fixedFactor:ℝ)+
+        Real.logb Z ((∏P∈U,P.val).absNorm:ℝ)+
+        Real.logb Z ((Ideal.span {nonunitFrequencyGenerator C D U}).absNorm:ℝ) := by
+  obtain ⟨τ,he,ht,hN⟩ := exists_second_budgeted_family η χ C D hC U
+  refine ⟨τ,he,ht,?_⟩
+  intro hD hCD w hne Z hZ
+  have hp (S : Finset (CommonIndex C D)) : (∏P∈S,P.val)≠0 :=
+    Finset.prod_ne_zero_iff.mpr (fun P _=>(commonPrime_supported_ideal C D hC P).1)
+  have hv : Ideal.span {nonunitFrequencyGenerator C D U}≠0 := by
+    rw [nonunitFrequencyGenerator_span]
+    simpa only [unitIdeal,commonPrime_span C D hC] using hp (nonunitPartitionSet C D U)
+  exact conductor_log_bound η τ _ _ (hp U) hv (hN hD hCD w hne) Z hZ
+
+theorem fixed_log_cost_eventually (ε : ℝ) (hε : 0<ε) :
+    ∀ᶠZ:ℝ in Filter.atTop,1< Z ∧ Real.logb Z (fixedFactor:ℝ)≤ε := by
+  have he := (Filter.tendsto_atTop.1 (tendsto_rpow_atTop hε)) (fixedFactor:ℝ)
+  filter_upwards [he,Filter.eventually_gt_atTop (1:ℝ)] with Z hK hZ
+  refine ⟨hZ,?_⟩
+  have hp : (0:ℝ)< fixedFactor := by exact_mod_cast fixedFactor_pos
+  have hh := Real.logb_le_logb_of_le hZ hp hK
+  simpa only [Real.logb_rpow (zero_lt_one.trans hZ) (ne_of_gt hZ)] using hh
+
+end CenteredMomentSecondRadicalBudget
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators Topology
+
+namespace CenteredMomentSecondRetainedWidth
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss
+open CenteredMomentSecondRadicalBudget CenteredMomentSecondCanonical
+open CenteredMomentSecondCanonicalNonunit CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondHeightFamily CenteredMomentChildRows CenteredMomentCanonicalFirst
+open CenteredMomentSupport
+open CenteredMomentHeckeColumnWindow CenteredMomentSectorLocalization RayFourExpansion
+local notation "O" => Eisenstein.O
+
+theorem retained_log_budget (η τ : Character) (G V z : O) (U : Ideal O)
+    (hU : U≠0)
+    (hN : τ.modulus.absNorm≤η.modulus.absNorm*fixedFactor*U.absNorm*
+      (Ideal.span {V}).absNorm)
+    (R Z : ℝ) (hZ : 1< Z)
+    (hne : retainedWeight R (normValue ((G*V)*z))≠0) :
+    Real.logb Z (max 1 (4*R/(normValue G*normValue V)))+
+      Real.logb Z (τ.modulus.absNorm:ℝ)≤
+      Real.logb Z R+Real.logb Z (η.modulus.absNorm:ℝ)-Real.logb Z (normValue G)+
+        Real.logb Z (U.absNorm:ℝ)+Real.logb Z (4*(fixedFactor:ℝ)) := by
+  obtain ⟨hR,hG,hV,_,_,_,hmax⟩:=retained_geometry R G V z hne
+  have hg:=normValue_pos G hG
+  have hv:=normValue_pos V hV
+  have hF : (fixedFactor:ℝ)≠0:=by exact_mod_cast fixedFactor_pos.ne'
+  have hc:=conductor_log_bound η τ U (Ideal.span {V}) hU
+    (Ideal.span_singleton_eq_bot.not.mpr hV) hN Z hZ
+  change Real.logb Z (τ.modulus.absNorm:ℝ)≤ Real.logb Z (η.modulus.absNorm:ℝ)+
+    Real.logb Z (fixedFactor:ℝ)+Real.logb Z (U.absNorm:ℝ)+Real.logb Z (normValue V) at hc
+  rw [max_eq_right hmax,Real.logb_div (mul_ne_zero (by norm_num) hR.ne')
+    (mul_ne_zero hg.ne' hv.ne'),Real.logb_mul (by norm_num : (4:ℝ)≠0) hR.ne',
+    Real.logb_mul hg.ne' hv.ne',Real.logb_mul (by norm_num : (4:ℝ)≠0) hF]
+  linarith
+
+theorem retained_row_log_budget (η τ : Character) (G V z : O) (U : Ideal O)
+    (hU : U≠0)
+    (hN : τ.modulus.absNorm≤η.modulus.absNorm*fixedFactor*U.absNorm*
+      (Ideal.span {V}).absNorm)
+    (R Z : ℝ) (hZ : 1< Z)
+    (hne : retainedWeight R (normValue ((G*V)*z))≠0) :
+    Real.logb Z (normValue z)+Real.logb Z (τ.modulus.absNorm:ℝ)≤
+      Real.logb Z R+Real.logb Z (η.modulus.absNorm:ℝ)-Real.logb Z (normValue G)+
+        Real.logb Z (U.absNorm:ℝ)+Real.logb Z (4*(fixedFactor:ℝ)) := by
+  obtain ⟨_,_,_,hz,_,hn,_⟩:=retained_geometry R G V z hne
+  have hh:=Real.logb_le_logb_of_le hZ (normValue_pos z hz) (hn.trans (le_max_right 1 _))
+  have hb:=retained_log_budget η τ G V z U hU hN R Z hZ hne
+  linarith
+
+theorem exists_retained_width_family (η : Character) (χ : RayCharacter)
+    (C D : Ideal O) (hC : Supported C) (U : Finset (CommonIndex C D)) :
+    ∃τ : Character,
+      (∀n:O,elementCoeff τ n=rowTwist (HeckeRowClosure.elementHom (childCharacter η χ))
+        fixedBadMask 1 (CenteredMomentSecondSixthReduction.reducedNumerator C D U) n) ∧
+      (∀I:Ideal O,Supported I → ∀t:ℝ,heightCoeff τ t I=heightCoeff η t I*
+        idealRowHom (CenteredMomentSecondSixthReduction.reducedNumerator C D U) I*
+        rayMonoid χ (primaryIdealGenerator I)) ∧
+      ∀hD : Supported D,primeSupport C=primeSupport D →
+      ∀w:O,idealCorrelation C D hC hD (commonFrequencyGenerator C D*w)≠0 →
+      τ.modulus.absNorm≤η.modulus.absNorm*fixedFactor*(∏P∈U,P.val).absNorm*
+        (Ideal.span {nonunitFrequencyGenerator C D U}).absNorm ∧
+      ∀Z R:ℝ,1< Z → ∀z:O,
+        retainedWeight R (normValue ((commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U)*z))≠0 →
+        0< R ∧ z≠0 ∧ 1≤ normValue z ∧
+        normValue z≤4*R/(normValue (commonFrequencyGenerator C D)*normValue (nonunitFrequencyGenerator C D U)) ∧
+        Real.logb Z (max 1 (4*R/(normValue (commonFrequencyGenerator C D)*
+          normValue (nonunitFrequencyGenerator C D U))))+Real.logb Z (τ.modulus.absNorm:ℝ)≤
+          Real.logb Z R+Real.logb Z (η.modulus.absNorm:ℝ)-Real.logb Z (normValue (commonFrequencyGenerator C D))+
+            Real.logb Z ((∏P∈U,P.val).absNorm:ℝ)+Real.logb Z (4*(fixedFactor:ℝ)) ∧
+        Real.logb Z (normValue z)+Real.logb Z (τ.modulus.absNorm:ℝ)≤
+          Real.logb Z R+Real.logb Z (η.modulus.absNorm:ℝ)-Real.logb Z (normValue (commonFrequencyGenerator C D))+
+            Real.logb Z ((∏P∈U,P.val).absNorm:ℝ)+Real.logb Z (4*(fixedFactor:ℝ)) := by
+  obtain ⟨τ,he,ht,hN⟩:=exists_second_budgeted_family η χ C D hC U
+  refine ⟨τ,he,ht,?_⟩
+  intro hD hCD w hw
+  have hb:=hN hD hCD w hw
+  refine ⟨hb,?_⟩
+  intro Z R hZ z hz
+  have hU : (∏P∈U,P.val)≠0:=Finset.prod_ne_zero_iff.mpr
+    (fun P _=>(commonPrime_supported_ideal C D hC P).1)
+  obtain ⟨hR,_,_,hne,h1,hrow,_⟩:=retained_geometry R _ _ z hz
+  exact ⟨hR,hne,h1,hrow,retained_log_budget η τ _ _ z _ hU hb R Z hZ hz,
+    retained_row_log_budget η τ _ _ z _ hU hb R Z hZ hz⟩
+
+theorem fixed_width_cost_eventually (ε : ℝ) (hε : 0<ε) :
+    ∀ᶠZ:ℝ in Filter.atTop,1< Z ∧ Real.logb Z (4*(fixedFactor:ℝ))≤ε := by
+  have he:=(Filter.tendsto_atTop.1 (tendsto_rpow_atTop hε)) (4*(fixedFactor:ℝ))
+  filter_upwards [he,Filter.eventually_gt_atTop (1:ℝ)] with Z hF hZ
+  refine ⟨hZ,?_⟩
+  have hp : (0:ℝ)< fixedFactor:=by exact_mod_cast fixedFactor_pos
+  have hh:=Real.logb_le_logb_of_le hZ (by positivity : 0<4*(fixedFactor:ℝ)) hF
+  simpa only [Real.logb_rpow (zero_lt_one.trans hZ) (ne_of_gt hZ)] using hh
+
+theorem exists_uniform_retained_width_family (ε : ℝ) (hε : 0<ε) :
+    ∃Z₀:ℝ,1< Z₀ ∧ ∀(η:Character)(χ:RayCharacter)(C D:Ideal O)
+      (hC:Supported C)(U:Finset (CommonIndex C D)),
+    ∃τ:Character,
+      (∀n:O,elementCoeff τ n=rowTwist (HeckeRowClosure.elementHom (childCharacter η χ))
+        fixedBadMask 1 (CenteredMomentSecondSixthReduction.reducedNumerator C D U) n) ∧
+      (∀I:Ideal O,Supported I → ∀t:ℝ,heightCoeff τ t I=heightCoeff η t I*
+        idealRowHom (CenteredMomentSecondSixthReduction.reducedNumerator C D U) I*
+        rayMonoid χ (primaryIdealGenerator I)) ∧
+      ∀hD : Supported D,primeSupport C=primeSupport D →
+      ∀w:O,idealCorrelation C D hC hD (commonFrequencyGenerator C D*w)≠0 →
+      τ.modulus.absNorm≤η.modulus.absNorm*fixedFactor*(∏P∈U,P.val).absNorm*
+        (Ideal.span {nonunitFrequencyGenerator C D U}).absNorm ∧
+      ∀Z R:ℝ,Z₀≤ Z → ∀z:O,
+        retainedWeight R (normValue ((commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U)*z))≠0 →
+        0< R ∧ z≠0 ∧ 1≤ normValue z ∧
+        normValue z≤4*R/(normValue (commonFrequencyGenerator C D)*normValue (nonunitFrequencyGenerator C D U)) ∧
+        Real.logb Z (max 1 (4*R/(normValue (commonFrequencyGenerator C D)*
+          normValue (nonunitFrequencyGenerator C D U))))+Real.logb Z (τ.modulus.absNorm:ℝ)≤
+          Real.logb Z R+Real.logb Z (η.modulus.absNorm:ℝ)-Real.logb Z (normValue (commonFrequencyGenerator C D))+
+            Real.logb Z ((∏P∈U,P.val).absNorm:ℝ)+ε ∧
+        Real.logb Z (normValue z)+Real.logb Z (τ.modulus.absNorm:ℝ)≤
+          Real.logb Z R+Real.logb Z (η.modulus.absNorm:ℝ)-Real.logb Z (normValue (commonFrequencyGenerator C D))+
+            Real.logb Z ((∏P∈U,P.val).absNorm:ℝ)+ε := by
+  obtain ⟨Z₀,hZ₀⟩:=Filter.eventually_atTop.mp (fixed_width_cost_eventually ε hε)
+  refine ⟨Z₀,(hZ₀ Z₀ le_rfl).1,?_⟩
+  intro η χ C D hC U
+  obtain ⟨τ,he,ht,hb⟩:=exists_retained_width_family η χ C D hC U
+  refine ⟨τ,he,ht,?_⟩
+  intro hD hCD w hw
+  obtain ⟨hN,hrow⟩:=hb hD hCD w hw
+  refine ⟨hN,?_⟩
+  intro Z R hZ z hz
+  obtain ⟨hZ1,hcost⟩:=hZ₀ Z hZ
+  obtain ⟨hR,hn,h1,hup,hmax,hlog⟩:=hrow Z R hZ1 z hz
+  exact ⟨hR,hn,h1,hup,by linarith,by linarith⟩
+
+end CenteredMomentSecondRetainedWidth
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+namespace CenteredMomentSourceSecondZeroEnergy
+open Eisenstein HeckeFamily CanonicalQuadraticSieve CompletedGauss
+open CenteredMomentAddedZeroUniform CenteredMomentSourceMass CenteredMomentSourceProfileMass
+open CenteredMomentSourceZeroEnergy CenteredMomentSupportedZeroEnergy
+open CenteredMomentSourceRow CenteredMomentHeckeColumnWindow CenteredMomentSecondDiagonal
+local notation "O" => Eisenstein.O
+
+def sourceSecondZero (S : Finset (Ideal O)) (β : Ideal O→ℂ) (η : Character) (t : ℝ) : ℂ :=
+  secondZeroEnergy Finset.univ (sourceGenerator S) (sourceGenerator_supported S)
+    (fun I => β I*heightCoeff η t I)
+
+lemma heightCoeff_norm_le_one (η : Character) (t : ℝ) (I : Ideal O) (hI : I≠0) :
+    ‖heightCoeff η t I‖≤1 := by
+  have hn : (0:ℝ)< Ideal.absNorm I := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  have hp : ‖(Ideal.absNorm I:ℂ)^(Complex.I*t)‖=1 := by
+    rw [show (Ideal.absNorm I:ℂ)=((Ideal.absNorm I:ℝ):ℂ) by simp,
+      Complex.norm_cpow_eq_rpow_re_of_pos hn]
+    simp
+  rw [heightCoeff,norm_mul,hp,mul_one]
+  exact idealCoeff_norm_le_one η I
+
+theorem secondZeroEnergy_filter {α : Type*} (S : Finset α) (a : α→O)
+    (ha : ∀ i,Supported (Ideal.span {a i})) (c : α→ℂ)
+    (p : α→Prop) [DecidablePred p] (hc : ∀ i∈S,¬p i→c i=0) :
+    secondZeroEnergy S a ha c=secondZeroEnergy (S.filter p) a ha c := by
+  unfold secondZeroEnergy
+  simp only [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro i hi
+  by_cases hpi : p i
+  · rw [if_pos hpi]
+    apply Finset.sum_congr rfl
+    intro j hj
+    by_cases hpj : p j
+    · rw [if_pos hpj]
+    · simp only [if_neg hpj,hc j hj hpj,star_zero,mul_zero,zero_mul]
+  · simp only [if_neg hpi,hc i hi hpi,zero_mul,Finset.sum_const_zero]
+
+lemma sourceGenerator_span (S : Finset (Ideal O)) (I : supportedColumns S) :
+    Ideal.span {sourceGenerator S I}=(I:Ideal O) :=
+  primary_span_supported I (Finset.mem_filter.mp I.property).2
+lemma sourceGenerator_primary (S : Finset (Ideal O)) (I : supportedColumns S) :
+    lambda^2∣sourceGenerator S I-1 :=
+  (primaryIdealGenerator_spec I (supported_primaryIdealGenerator_ne_zero I (Finset.mem_filter.mp I.property).2)).2
+lemma sourceGenerator_injective (S : Finset (Ideal O)) : Function.Injective (sourceGenerator S) := by
+  intro I J h
+  apply Subtype.ext
+  rw [←sourceGenerator_span S I,←sourceGenerator_span S J,h]
+
+theorem sourceSecondZero_divisor_bound (S : Finset (Ideal O)) (β : Ideal O→ℂ)
+    (η : Character) (t B Y : ℝ) (hB : 0≤ B) (hY : 0≤ Y)
+    (s : Ideal O) (hs : s≠0)
+    (hc : ∀ I∈supportedColumns S,β I≠0→‖β I‖≤ B)
+    (hdiv : ∀ I∈supportedColumns S,β I≠0→s∣I)
+    (hN : ∀ I∈supportedColumns S,β I≠0→(Ideal.absNorm I:ℝ)≤ Y) :
+    ‖sourceSecondZero S β η t‖≤128*B^2*Y/(Ideal.absNorm s:ℝ) := by
+  let Q : Finset (supportedColumns S) := Finset.univ.filter (fun I => β I≠0)
+  rw [sourceSecondZero,secondZeroEnergy_filter Finset.univ (sourceGenerator S)
+    (sourceGenerator_supported S) (fun I => β I*heightCoeff η t I) (fun I => β I≠0)
+      (by intro I _ h; simp only [not_not] at h; rw [h,zero_mul])]
+  refine secondZeroEnergy_divisor_bound Q (sourceGenerator S) (sourceGenerator_supported S)
+    (sourceGenerator_primary S) (sourceGenerator_injective S).injOn _ B hB ?_ s hs ?_ Y hY ?_
+  · intro I hI
+    rw [norm_mul]
+    exact (mul_le_mul_of_nonneg_left (heightCoeff_norm_le_one η t I
+      (Finset.mem_filter.mp I.property).2.1) (norm_nonneg _)).trans
+      (by simpa only [mul_one] using hc I I.property (Finset.mem_filter.mp hI).2)
+  · intro I hI
+    rw [sourceGenerator_span]
+    exact hdiv I I.property (Finset.mem_filter.mp hI).2
+  · intro I hI
+    rw [sourceGenerator_span]
+    exact hN I I.property (Finset.mem_filter.mp hI).2
+
+theorem sourceSecondZero_eq_zero_of_subunit (S : Finset (Ideal O)) (β : Ideal O→ℂ)
+    (η : Character) (t Y : ℝ) (hY : Y<1)
+    (hN : ∀ I∈supportedColumns S,β I≠0→(Ideal.absNorm I:ℝ)≤ Y) :
+    sourceSecondZero S β η t=0 := by
+  have hc (I : supportedColumns S) : β I=0 := by
+    by_contra hn
+    have hi : (1:ℝ)≤ Ideal.absNorm (I:Ideal O) := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+        (Ideal.absNorm_eq_zero_iff.not.mpr (Finset.mem_filter.mp I.property).2.1)
+    linarith [hN I I.property hn]
+  simp only [sourceSecondZero,secondZeroEnergy,hc,zero_mul,star_zero,mul_zero,Finset.sum_const_zero]
+
+theorem tuple_second_zero_bound (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (S : Finset (Tuple ι)) (β : Tuple ι→ℂ) (η : Character) (t B Y : ℝ),
+      0≤ B → 1≤ Y → (∀ v∈S,finiteTupleProduct v≠0→‖β v‖≤ B) →
+      ∀ (s : Ideal O),s≠0 →
+      (∀ v∈S,β v≠0→s∣finiteTupleProduct v) →
+      (∀ v∈S,β v≠0→(Ideal.absNorm (finiteTupleProduct v):ℝ)≤ Y) →
+      ‖sourceSecondZero (finiteColumns S) (finiteColumnCoefficient S β) η t‖≤
+        C*B^2*Y^(1+ε)/(Ideal.absNorm s:ℝ) := by
+  let δ := ε/(2*(N+2:ℕ))
+  have hδ : 0<δ := by dsimp [δ]; positivity
+  have hδn : δ*(N+2:ℕ)=ε/2 := by dsimp [δ]; push_cast; field_simp
+  obtain ⟨D,hD,hd⟩ := IdealDivisorBound.ideal_divisor_small_power δ hδ
+  refine ⟨128*((1+D)^(N+2))^2,by positivity,?_⟩
+  intro ι _ hi S β η t B Y hB hY hβ s hs hdiv hN
+  let c := finiteColumnCoefficient S β
+  have hY0 : 0< Y := zero_lt_one.trans_le hY
+  have hbound (I : Ideal O) (hI : I∈supportedColumns (finiteColumns S)) (hn : c I≠0) :
+      (Ideal.absNorm I:ℝ)≤ Y := by
+    obtain ⟨v,hv,hv0,he⟩ := finiteColumnCoefficient_witness S β I hn
+    rw [←he]
+    exact hN v hv hv0
+  have hbase : 1≤(1+D)*Y^δ := by
+    have hp := Real.one_le_rpow hY hδ.le
+    nlinarith
+  have hcoeff (I : Ideal O) (hI : I∈supportedColumns (finiteColumns S)) (hn : c I≠0) :
+      ‖c I‖≤ B*((1+D)^(N+2)*Y^(ε/2)) := by
+    have hI0 := (Finset.mem_filter.mp hI).2.1
+    have hdI : ((idealDivisors I).card:ℝ)≤(1+D)*Y^δ :=
+      (hd I hI0).trans (mul_le_mul (by linarith)
+        (Real.rpow_le_rpow (Nat.cast_nonneg _) (hbound I hI hn) hδ.le) (by positivity) (by positivity))
+    have hp : ((1+D)*Y^δ)^(N+2)=(1+D)^(N+2)*Y^(ε/2) := by
+      rw [mul_pow,←Real.rpow_mul_natCast hY0.le,hδn]
+    calc
+      _ ≤ B*((idealDivisors I).card:ℝ)^(Fintype.card ι+2) :=
+        finiteColumnCoefficient_norm_le S β B hB hβ I hI0
+      _ ≤ B*((1+D)*Y^δ)^(Fintype.card ι+2) := by gcongr
+      _ ≤ B*((1+D)*Y^δ)^(N+2) :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hbase (by omega)) hB
+      _ = _ := by rw [hp]
+  have hb := sourceSecondZero_divisor_bound (finiteColumns S) c η t
+    (B*((1+D)^(N+2)*Y^(ε/2))) Y (by positivity) hY0.le s hs hcoeff
+    (by
+      intro I hI hn
+      obtain ⟨v,hv,hv0,he⟩ := finiteColumnCoefficient_witness S β I hn
+      rw [←he]
+      exact hdiv v hv hv0) hbound
+  apply hb.trans_eq
+  have hp : (Y^(ε/2))^2*Y=Y^(1+ε) := by
+    rw [←Real.rpow_mul_natCast hY0.le]
+    norm_num only [Nat.cast_ofNat]
+    rw [show ε/2*(2:ℝ)=ε by ring,Real.rpow_add hY0,Real.rpow_one]
+    ring
+  calc
+    _ = (128*((1+D)^(N+2))^2)*B^2*((Y^(ε/2))^2*Y)/(Ideal.absNorm s:ℝ) := by ring
+    _ = _ := by rw [hp]
+
+theorem normalized_tuple_second_zero_bound (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (S : Finset (Tuple ι)) (β : Tuple ι→ℂ) (η : Character) (t B L T : ℝ),
+      0≤ B → 0< L → 0< T → (∀ v∈S,finiteTupleProduct v≠0→‖β v‖≤ B) →
+      ∀ (s : Ideal O),s≠0 →
+      (∀ v∈S,β v≠0→s∣finiteTupleProduct v) →
+      (∀ v∈S,β v≠0→(Ideal.absNorm (finiteTupleProduct v):ℝ)≤ L*T) →
+      (L*T<1 → sourceSecondZero (finiteColumns S) (finiteColumnCoefficient S β) η t=0) ∧
+      ∀ κ : ℂ,‖(κ/(T:ℂ))*sourceSecondZero (finiteColumns S) (finiteColumnCoefficient S β) η t‖≤
+        C*‖κ‖*B^2*L^(1+ε)*T^ε/(Ideal.absNorm s:ℝ) := by
+  obtain ⟨C,hC,hbound⟩ := tuple_second_zero_bound N ε hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ hi S β η t B L T hB hL hT hβ s hs hdiv hN
+  have hz (hsmall : L*T<1) : sourceSecondZero (finiteColumns S) (finiteColumnCoefficient S β) η t=0 := by
+    apply sourceSecondZero_eq_zero_of_subunit _ _ η t (L*T) hsmall
+    intro I hI hn
+    obtain ⟨v,hv,hv0,he⟩ := finiteColumnCoefficient_witness S β I hn
+    rw [←he]
+    exact hN v hv hv0
+  refine ⟨hz,?_⟩
+  intro κ
+  by_cases hsmall : L*T<1
+  · rw [hz hsmall,mul_zero,norm_zero]
+    positivity
+  have hb := hbound hi S β η t B (L*T) hB (le_of_not_gt hsmall) hβ s hs hdiv hN
+  rw [norm_mul,norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hT]
+  apply (mul_le_mul_of_nonneg_left hb (div_nonneg (norm_nonneg _) hT.le)).trans_eq
+  rw [Real.mul_rpow hL.le hT.le,Real.rpow_add hT,Real.rpow_one]
+  field_simp
+
+lemma profileCoefficient_dvd {ι : Type*} [Fintype ι]
+    (R : Ideal O) (ν : ι→Ideal O→ℂ) (Wslot : ι→ℝ→ℂ) (P : ι→ℝ)
+    (W₁ W₂ : ℝ→ℂ) (X₁ X₂ Y₁ Y₂ : ℝ) (B₁ B₂ s : Ideal O) (v : Tuple ι)
+    (hv : profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s v≠0) :
+    s∣finiteTupleProduct v := by
+  by_contra h
+  exact hv (by simp only [profileCoefficient,if_neg h,mul_zero])
+
+theorem profile_second_zero_energy (N : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (η : Character) (t : ℝ) (R : Ideal O) (ν : ι→Ideal O→ℂ),
+      (∀ j I,‖ν j I‖≤1) → ∀ (Wslot : ι→ℝ→ℂ) (P D b : ι→ℝ)
+      (W₁ W₂ : ℝ→ℂ) (D₁ D₂ b₁ b₂ : ℝ),
+      (∀ j,0≤ D j) → 0≤ D₁ → 0≤ D₂ → (∀ j,0≤ b j) → 0≤ b₁ → 0≤ b₂ →
+      (∀ j x,‖Wslot j x‖≤ D j) → (∀ x,‖W₁ x‖≤ D₁) → (∀ x,‖W₂ x‖≤ D₂) →
+      (∀ j,Wslot j 0=0) → W₁ 0=0 → W₂ 0=0 →
+      (∀ j x,Wslot j x≠0→x≤ b j) → (∀ x,W₁ x≠0→x≤ b₁) → (∀ x,W₂ x≠0→x≤ b₂) →
+      ∀ (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ s : Ideal O),
+      (∀ j,0< P j) → 0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → B₁≠0 → B₂≠0 → s≠0 →
+      X₁*X₂=T → Y₁*Y₂=T → ∀ S : Finset (Tuple ι),
+      let Traw := (T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j)
+      let L := (∏ j,b j)*b₁*b₂
+      let E := sourceSecondZero (finiteColumns S)
+        (finiteColumnCoefficient S (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) η t
+      (L*Traw<1 → E=0) ∧ ∀ κ : ℂ,
+        ‖(κ/(Traw:ℂ))*E‖≤ C*‖κ‖*(2*D₁*D₂*(∏ j,D j))^2*(1+L)^(1+ε)*Traw^ε/(Ideal.absNorm s:ℝ) := by
+  obtain ⟨C,hC,hbound⟩ := normalized_tuple_second_zero_bound N ε hε
+  refine ⟨C,hC,?_⟩
+  intro ι _ hi η t R ν hν Wslot P D b W₁ W₂ D₁ D₂ b₁ b₂
+    hD hD₁ hD₂ hb hb₁ hb₂ hslot h₁ h₂ hz hz₁ hz₂ hs hs₁ hs₂
+    X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hsz hX hY S Traw L E
+  let β := profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s
+  have hβ (v : Tuple ι) : ‖β v‖≤2*D₁*D₂*(∏ j,D j) :=
+    profileCoefficient_norm_le R ν hν Wslot P D W₁ W₂ D₁ D₂ hD hD₁ hD₂
+      hslot h₁ h₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s v
+  have hT : 0< T := hX ▸ mul_pos hX₁ hX₂
+  have hn₁ : (0:ℝ)< Ideal.absNorm B₁ := by exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB₁)
+  have hn₂ : (0:ℝ)< Ideal.absNorm B₂ := by exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hB₂)
+  have hraw : 0< Traw := mul_pos (div_pos hT (mul_pos hn₁ hn₂)) (Finset.prod_pos (fun j _=> hP j))
+  have hL : 0≤ L := mul_nonneg (mul_nonneg (Finset.prod_nonneg (fun j _=> hb j)) hb₁) hb₂
+  have hN (v : Tuple ι) (hv : β v≠0) : (Ideal.absNorm (finiteTupleProduct v):ℝ)≤ L*Traw := by
+    have hh := profileCoefficient_product_bound R ν Wslot P b W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ s
+      hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY hz hz₁ hz₂ hs hs₁ hs₂ v hv
+    exact hh.2.trans_eq (by dsimp only [L,Traw];ring)
+  refine ⟨?_,?_⟩
+  · intro hsmall
+    apply sourceSecondZero_eq_zero_of_subunit _ _ η t (L*Traw) hsmall
+    intro I hI hn
+    obtain ⟨v,hv,hv0,he⟩ := finiteColumnCoefficient_witness S β I hn
+    rw [←he]
+    exact hN v hv0
+  · exact (hbound hi S β η t (2*D₁*D₂*(∏ j,D j)) (1+L) Traw
+      (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hD₁) hD₂) (Finset.prod_nonneg (fun j _=> hD j)))
+      (by linarith) hraw (fun v _ _=> hβ v) s hsz
+      (fun v _ hv=> profileCoefficient_dvd R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s v hv)
+      (fun v _ hv=>(hN v hv).trans (mul_le_mul_of_nonneg_right (by linarith : L≤1+L) hraw.le))).2
+
+theorem bounded_profile_second_zero_energy (N : ℕ) (ε : ℝ) (hε : 0<ε)
+    (D b : ℝ) (hD : 0≤ D) (hb : 0≤ b) :
+    ∃ C : ℝ,0< C ∧ ∀ {ι : Type*} [Fintype ι], Fintype.card ι≤ N →
+      ∀ (η : Character) (t : ℝ) (R : Ideal O) (ν : ι→Ideal O→ℂ),
+      (∀ j I,‖ν j I‖≤1) → ∀ (Wslot : ι→ℝ→ℂ) (P : ι→ℝ) (W₁ W₂ : ℝ→ℂ),
+      (∀ j x,‖Wslot j x‖≤ D) → (∀ x,‖W₁ x‖≤ D) → (∀ x,‖W₂ x‖≤ D) →
+      (∀ j,Wslot j 0=0) → W₁ 0=0 → W₂ 0=0 →
+      (∀ j x,Wslot j x≠0→x≤ b) → (∀ x,W₁ x≠0→x≤ b) → (∀ x,W₂ x≠0→x≤ b) →
+      ∀ (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ s : Ideal O),
+      (∀ j,0< P j) → 0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → B₁≠0 → B₂≠0 → s≠0 →
+      X₁*X₂=T → Y₁*Y₂=T → ∀ S : Finset (Tuple ι),
+      let Traw := (T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j,P j)
+      let E := sourceSecondZero (finiteColumns S)
+        (finiteColumnCoefficient S (profileCoefficient R ν Wslot P W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) η t
+      (b^(Fintype.card ι+2)*Traw<1 → E=0) ∧ ∀ κ : ℂ,
+        ‖(κ/(Traw:ℂ))*E‖≤ C*‖κ‖*Traw^ε/(Ideal.absNorm s:ℝ) := by
+  obtain ⟨C₀,hC₀,hmain⟩ := profile_second_zero_energy N ε hε
+  let B := 2*D*D*(1+D)^N
+  let L := (1+b)^(N+2)
+  let C := C₀*(1+B^2)*(1+L)^(1+ε)
+  have hB : 0≤ B := by dsimp [B];positivity
+  have hL : 0≤ L := by dsimp [L];positivity
+  have hC : 0< C := mul_pos (mul_pos hC₀ (by positivity)) (Real.rpow_pos_of_pos (by linarith) _)
+  refine ⟨C,hC,?_⟩
+  intro ι _ hi η t R ν hν Wslot P W₁ W₂ hslot h₁ h₂ hz hz₁ hz₂ hs hs₁ hs₂
+    X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hsz hX hY S Traw E
+  have hTpos : 0< T := hX ▸ mul_pos hX₁ hX₂
+  have hraw0 : 0≤ Traw := mul_nonneg (div_nonneg hTpos.le (by positivity))
+    (Finset.prod_nonneg (fun j _=>(hP j).le))
+  have hh := hmain hi η t R ν hν Wslot P (fun _=> D) (fun _=> b) W₁ W₂ D D b b
+    (fun _=> hD) hD hD (fun _=> hb) hb hb hslot h₁ h₂ hz hz₁ hz₂ hs hs₁ hs₂
+    X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hsz hX hY S
+  dsimp only at hh
+  simp only [Finset.prod_const,Finset.card_univ] at hh
+  have heL : b^Fintype.card ι*b*b=b^(Fintype.card ι+2) := by
+    rw [pow_add,pow_two];ring
+  rw [heL] at hh
+  refine ⟨hh.1,?_⟩
+  intro κ
+  have hBbound : 2*D*D*D^Fintype.card ι≤ B := by
+    apply mul_le_mul_of_nonneg_left _ (by positivity)
+    exact (pow_le_pow_left₀ hD (by linarith) _).trans (pow_le_pow_right₀ (by linarith) hi)
+  have hLbound : b^(Fintype.card ι+2)≤ L :=
+    (pow_le_pow_left₀ hb (by linarith) _).trans (pow_le_pow_right₀ (by linarith) (by omega))
+  have hpow : (1+b^(Fintype.card ι+2))^(1+ε)≤(1+L)^(1+ε) :=
+    Real.rpow_le_rpow (by positivity) (by linarith) (by linarith)
+  have hcoef : C₀*(2*D*D*D^Fintype.card ι)^2*(1+b^(Fintype.card ι+2))^(1+ε)≤ C := by
+    dsimp only [C]
+    apply mul_le_mul _ hpow (by positivity) (by positivity)
+    apply mul_le_mul_of_nonneg_left _ hC₀.le
+    exact (pow_le_pow_left₀ (by positivity) hBbound 2).trans (by linarith)
+  apply (hh.2 κ).trans
+  calc
+    _ = (C₀*(2*D*D*D^Fintype.card ι)^2*(1+b^(Fintype.card ι+2))^(1+ε))*
+        (‖κ‖*Traw^ε/(Ideal.absNorm s:ℝ)) := by ring
+    _ ≤ C*(‖κ‖*Traw^ε/(Ideal.absNorm s:ℝ)) :=
+      mul_le_mul_of_nonneg_right hcoef (by positivity)
+    _ = _ := by ring
+
+theorem smooth_subset_source_second_zero_energy {α : Type*} (F : Finset α)
+    (Wslot : α→ℝ→ℂ) (W₁ W₂ : ℝ→ℂ) (a b : α→ℝ) (a₁ b₁ a₂ b₂ : ℝ)
+    (ha : ∀ j∈F,0< a j) (hb : ∀ j∈F,0≤ b j)
+    (ha₁ : 0< a₁) (hb₁ : 0≤ b₁) (ha₂ : 0< a₂) (hb₂ : 0≤ b₂)
+    (hsSlot : ∀ j∈F,Function.support (Wslot j)⊆Set.Icc (a j) (b j))
+    (hs₁ : Function.support W₁⊆Set.Icc a₁ b₁) (hs₂ : Function.support W₂⊆Set.Icc a₂ b₂)
+    (hWslot : ∀ j∈F,ContDiff ℝ ∞ (Wslot j)) (hW₁ : ContDiff ℝ ∞ W₁) (hW₂ : ContDiff ℝ ∞ W₂)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ J : Finset α,J⊆F →
+      ∀ (η : Character) (t : ℝ) (R : Ideal O) (ν : α→Ideal O→ℂ),
+      (∀ j∈J,∀ I,‖ν j I‖≤1) → ∀ (P : α→ℝ)
+      (X₁ X₂ Y₁ Y₂ T : ℝ) (B₁ B₂ s : Ideal O),
+      (∀ j∈J,0< P j) → 0< X₁ → 0< X₂ → 0< Y₁ → 0< Y₂ → B₁≠0 → B₂≠0 → s≠0 →
+      X₁*X₂=T → Y₁*Y₂=T →
+      ∀ (pools : (J⊕Fin 2)→Finset (Ideal O)) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ),
+      let S := Fintype.piFinset pools
+      let Traw := (T/((Ideal.absNorm B₁:ℝ)*Ideal.absNorm B₂))*(∏ j∈J,P j)
+      let Y := (∏ j∈J,b j)*b₁*b₂*Traw
+      let E := sourceSecondZero (finiteColumns S)
+        (finiteColumnCoefficient S (profileCoefficient R (fun j : J=>ν j.val)
+          (fun j : J=> Wslot j.val) (fun j : J=> P j.val) W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s)) η t
+      (Y<1 → E=0) ∧
+        ‖(((K:ℂ)*SchwartzPlanePoisson.paperRadialFourier Φ 0)/(Traw:ℂ))*E‖≤
+          C*‖(K:ℂ)*SchwartzPlanePoisson.paperRadialFourier Φ 0‖*Traw^ε/(Ideal.absNorm s:ℝ) := by
+  choose D hD hDb hz hsb using fun j : F => smooth_annular_bound
+    (Wslot j.val) (a j.val) (b j.val) (ha j.val j.property)
+    (hsSlot j.val j.property) (hWslot j.val j.property)
+  obtain ⟨D₁,hD₁,hDb₁,hz₁,hsb₁⟩ := smooth_annular_bound W₁ a₁ b₁ ha₁ hs₁ hW₁
+  obtain ⟨D₂,hD₂,hDb₂,hz₂,hsb₂⟩ := smooth_annular_bound W₂ a₂ b₂ ha₂ hs₂ hW₂
+  let Dmax := 1+D₁+D₂+∑ j : F,D j
+  let bmax := 1+b₁+b₂+∑ j : F,b j.val
+  have hDs : 0≤∑ j : F,D j := Finset.sum_nonneg (fun j _=> hD j)
+  have hbs : 0≤∑ j : F,b j.val := Finset.sum_nonneg (fun j _=> hb j.val j.property)
+  have hDmax : 0≤ Dmax := by dsimp only [Dmax];linarith
+  have hbmax : 0≤ bmax := by dsimp only [bmax];linarith
+  have hD₁max : D₁≤ Dmax := by dsimp only [Dmax];linarith
+  have hD₂max : D₂≤ Dmax := by dsimp only [Dmax];linarith
+  have hb₁max : b₁≤ bmax := by dsimp only [bmax];linarith
+  have hb₂max : b₂≤ bmax := by dsimp only [bmax];linarith
+  have hDj (j : F) : D j≤ Dmax := by
+    have h := Finset.single_le_sum (fun k (_ : k∈(Finset.univ : Finset F))=> hD k) (Finset.mem_univ j)
+    dsimp only [Dmax]
+    linarith
+  have hbj (j : F) : b j.val≤ bmax := by
+    have h := Finset.single_le_sum (fun k (_ : k∈(Finset.univ : Finset F))=> hb k.val k.property) (Finset.mem_univ j)
+    dsimp only [bmax]
+    linarith
+  obtain ⟨C,hC,hbound⟩ := bounded_profile_second_zero_energy F.card ε hε Dmax bmax hDmax hbmax
+  refine ⟨C,hC,?_⟩
+  intro J hJ η t R ν hν P X₁ X₂ Y₁ Y₂ T B₁ B₂ s hP hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hsz hX hY pools Φ K S Traw Y E
+  let β := profileCoefficient R (fun j : J=>ν j.val) (fun j : J=> Wslot j.val) (fun j : J=> P j.val)
+    W₁ W₂ X₁ X₂ Y₁ Y₂ B₁ B₂ s
+  have hcard : Fintype.card J≤ F.card := by simpa only [Fintype.card_coe] using Finset.card_le_card hJ
+  have hh := hbound hcard η t R (fun j : J=>ν j.val) (fun j I=> hν j.val j.property I)
+    (fun j : J=> Wslot j.val) (fun j : J=> P j.val) W₁ W₂
+    (fun j x=>(hDb ⟨j.val,hJ j.property⟩ x).trans (hDj ⟨j.val,hJ j.property⟩))
+    (fun x=>(hDb₁ x).trans hD₁max) (fun x=>(hDb₂ x).trans hD₂max)
+    (fun j=> hz ⟨j.val,hJ j.property⟩) hz₁ hz₂
+    (fun j x hx=>(hsb ⟨j.val,hJ j.property⟩ x hx).trans (hbj ⟨j.val,hJ j.property⟩))
+    (fun x hx=>(hsb₁ x hx).trans hb₁max) (fun x hx=>(hsb₂ x hx).trans hb₂max)
+    X₁ X₂ Y₁ Y₂ T B₁ B₂ s (fun j=> hP j.val j.property)
+    hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hsz hX hY S
+  dsimp only at hh
+  rw [Finset.prod_coe_sort] at hh
+  refine ⟨?_,hh.2 ((K:ℂ)*SchwartzPlanePoisson.paperRadialFourier Φ 0)⟩
+  intro hsmall
+  apply sourceSecondZero_eq_zero_of_subunit _ _ η t Y hsmall
+  intro I hI hn
+  obtain ⟨v,hv,hv0,he⟩ := finiteColumnCoefficient_witness S β I hn
+  have hN := profileCoefficient_product_bound R (fun j : J=>ν j.val)
+    (fun j : J=> Wslot j.val) (fun j : J=> P j.val) (fun j : J=> b j.val)
+    W₁ W₂ b₁ b₂ X₁ X₂ Y₁ Y₂ T B₁ B₂ s (fun j=> hP j.val j.property)
+    hX₁ hX₂ hY₁ hY₂ hB₁ hB₂ hX hY (fun j=> hz ⟨j.val,hJ j.property⟩) hz₁ hz₂
+    (fun j=> hsb ⟨j.val,hJ j.property⟩) hsb₁ hsb₂ v hv0
+  rw [←he]
+  exact hN.2.trans_eq (by rw [Finset.prod_coe_sort,Finset.prod_coe_sort];dsimp only [Y,Traw];ring)
+
+end CenteredMomentSourceSecondZeroEnergy
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondTail
+open Eisenstein  SchwartzPlanePoisson CompletedGauss
+open CanonicalQuadraticSieve CenteredMomentSourceRow CenteredMomentSectorLocalization
+open CenteredMomentSupportedCorrelation CenteredMomentSecondWholeKernel
+local notation "O" => Eisenstein.O
+
+theorem actual_second_kernel_reference (I J : Ideal O) (hI : I≠0) (hJ : J≠0)
+    (K X H Tsec : ℝ) (hK : 0< K) (hX : 0< X)
+    (hi : (Ideal.absNorm I:ℝ)≤ Real.exp H*X) (hj : (Ideal.absNorm J:ℝ)≤ Real.exp H*X)
+    (hsec : X^2/K≤ Tsec) :
+    kernelReference Tsec H≤ K/((Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)) := by
+  have hT : 0< Tsec := (div_pos (sq_pos_of_pos hX) hK).trans_le hsec
+  have hNi := CenteredMomentFirstScale.norm_pos I hI
+  have hNj := CenteredMomentFirstScale.norm_pos J hJ
+  have hprod : (Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)≤ Real.exp (2*H)*X^2 := by
+    apply (mul_le_mul hi hj hNj.le (by positivity)).trans_eq
+    rw [show 2*H=H+H by ring,Real.exp_add]
+    ring
+  unfold kernelReference
+  apply (le_div_iff₀ (mul_pos hNi hNj)).mpr
+  calc
+    _ ≤ (Real.exp (-2*H)/Tsec)*(Real.exp (2*H)*X^2) :=
+      mul_le_mul_of_nonneg_left hprod (by positivity)
+    _ = X^2/Tsec := by
+      rw [show -2*H=-(2*H) by ring,Real.exp_neg]
+      field_simp
+    _ ≤ K := (div_le_iff₀ hT).mpr (by simpa only [mul_comm] using (div_le_iff₀ hK).mp hsec)
+
+def secondDiscardedPair (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) : ℂ :=
+  (K:ℂ)/((Real.sqrt (Ideal.absNorm I:ℝ):ℂ)*(Real.sqrt (Ideal.absNorm J:ℝ):ℂ))*
+    ∑' h : O,(discardedWeight (frequencyRadius Tsec Z ξ) (normValue h):ℂ)*
+      actualCorrelation (primaryIdealGenerator I) (primaryIdealGenerator J)
+        ((supported_span_primaryIdealGenerator_iff I).mpr hI) ((supported_span_primaryIdealGenerator_iff J).mpr hJ) (-h)*
+      paperRadialFourier W (K*‖ringComplex h‖^2/
+        ‖ringComplex (primaryIdealGenerator I*primaryIdealGenerator J)‖^2)
+
+theorem second_discarded_pair_bound (Adec : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ),0< C ∧
+      ∀ (W : 𝓢(ℝ,ℂ)) (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+        (K X H Tsec Z Csec ξ : ℝ),0< K → 0< X → 1< Z → 1≤ Csec →
+      (Ideal.absNorm I:ℝ)≤ Real.exp H*X → (Ideal.absNorm J:ℝ)≤ Real.exp H*X →
+      X^2/K≤ Tsec → (2*H/Real.log Z+Real.log (4*Csec)/Real.log Z<ξ/4) →
+      ‖secondDiscardedPair I J hI hJ W K Tsec Z ξ‖≤
+        K*(Real.exp H*X)^2*(C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/
+          ((min 1 (kernelReference Tsec H))^2*(1+Z^(ξ/4))^Adec) := by
+  obtain ⟨s,C,hC,ht⟩ := actual_discarded_second_tail Adec
+  refine ⟨s,C,hC,?_⟩
+  intro W I J hI hJ K X H Tsec Z Csec ξ hK hX hZ hCs hi hj hsec hthreshold
+  have hT : 0< Tsec := (div_pos (sq_pos_of_pos hX) hK).trans_le hsec
+  have hb := ht W Tsec Z Csec H ξ (K/((Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)))
+    hT hZ hCs hthreshold (actual_second_kernel_reference I J hI.1 hJ.1 K X H Tsec hK hX hi hj hsec)
+    (primaryIdealGenerator I) (primaryIdealGenerator J)
+    ((supported_span_primaryIdealGenerator_iff I).mpr hI) ((supported_span_primaryIdealGenerator_iff J).mpr hJ)
+  have he (h : O) : K*‖ringComplex h‖^2/‖ringComplex (primaryIdealGenerator I*primaryIdealGenerator J)‖^2=
+      (K/((Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)))*normValue h := by
+    rw [map_mul,norm_mul,mul_pow,primary_norm_sq I hI,primary_norm_sq J hJ,normValue_eq_embedding]
+    ring
+  have hu : normValue (primaryIdealGenerator I)=(Ideal.absNorm I:ℝ) := by rw [normValue,primary_span_supported I hI]
+  have hv : normValue (primaryIdealGenerator J)=(Ideal.absNorm J:ℝ) := by rw [normValue,primary_span_supported J hJ]
+  rw [hu,hv] at hb
+  have hNi : (1:ℝ)≤ Ideal.absNorm I := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hI.1)
+  have hNj : (1:ℝ)≤ Ideal.absNorm J := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hJ.1)
+  have hroot : 1≤ Real.sqrt (Ideal.absNorm I:ℝ)*Real.sqrt (Ideal.absNorm J:ℝ) :=
+    one_le_mul_of_one_le_of_one_le (Real.one_le_sqrt.mpr hNi) (Real.one_le_sqrt.mpr hNj)
+  have hnorm : ‖(K:ℂ)/((Real.sqrt (Ideal.absNorm I:ℝ):ℂ)*(Real.sqrt (Ideal.absNorm J:ℝ):ℂ))‖≤ K := by
+    rw [norm_div,norm_mul]
+    simp only [Complex.norm_real,Real.norm_eq_abs,abs_of_pos hK,abs_of_nonneg (Real.sqrt_nonneg _)]
+    exact div_le_self hK.le hroot
+  unfold secondDiscardedPair
+  simp_rw [he]
+  rw [norm_mul]
+  apply (mul_le_mul hnorm hb (norm_nonneg _) hK.le).trans
+  have hprod := mul_le_mul hi hj (Nat.cast_nonneg _) (by positivity : 0≤ Real.exp H*X)
+  have hfac : 0≤(C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/
+      ((min 1 (kernelReference Tsec H))^2*(1+Z^(ξ/4))^Adec) := by positivity
+  have hb' := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hprod hfac) hK.le
+  convert hb' using 1 <;> first | rfl | ring
+
+end CenteredMomentSecondTail
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSupportedTailAggregate
+open HeckeFamily CanonicalQuadraticSieve CenteredMomentSourceRow CenteredMomentHeckeColumnWindow
+open CenteredMomentSecondTail CenteredMomentFirstTailAggregate CenteredMomentFirstDiscardedEnergy
+open CenteredMomentFirstScale CenteredMomentSectorLocalization CenteredMomentSecondHeightFamily
+local notation "O" => Eisenstein.O
+
+private theorem pair_mass {α : Type*} [Fintype α] (c w : α → ℂ) (F : α → α → ℂ)
+    (hw : ∀ i,‖w i‖≤1) (B : ℝ) (_hB : 0≤ B)
+    (hF : ∀ i j,c i≠0 → c j≠0 → ‖F i j‖≤ B) :
+    ‖∑ i,∑ j,((c i*w i)*star (c j*w j))*F i j‖≤(∑ i,‖c i‖)^2*B := by
+  have ht (i j : α) : ‖((c i*w i)*star (c j*w j))*F i j‖≤‖c i‖*‖c j‖*B := by
+    by_cases hi : c i=0
+    · simp [hi]
+    by_cases hj : c j=0
+    · simp [hj]
+    rw [norm_mul,norm_mul,norm_star]
+    apply mul_le_mul _ (hF i j hi hj) (norm_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    apply mul_le_mul _ _ (norm_nonneg _) (norm_nonneg _)
+    · rw [norm_mul];exact mul_le_of_le_one_right (norm_nonneg _) (hw i)
+    · rw [norm_mul];exact mul_le_of_le_one_right (norm_nonneg _) (hw j)
+  calc
+    _ ≤ ∑ i,‖∑ j,((c i*w i)*star (c j*w j))*F i j‖ := norm_sum_le _ _
+    _ ≤ ∑ i,∑ j,‖c i‖*‖c j‖*B := Finset.sum_le_sum (fun i _ => (norm_sum_le _ _).trans (Finset.sum_le_sum (fun j _ => ht i j)))
+    _ = _ := by rw [pow_two,Finset.sum_mul,Finset.sum_mul];apply Finset.sum_congr rfl;intro i hi;rw [Finset.mul_sum,Finset.sum_mul]
+
+def secondDiscardedEnergy (η : Character) (t : ℝ) (S : Finset (Ideal O))
+    (c : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) : ℂ :=
+  ∑ I : supportedColumns S,∑ J : supportedColumns S,
+    ((c I*heightCoeff η t I)*star (c J*heightCoeff η t J))*
+      secondDiscardedPair I J (Finset.mem_filter.mp I.property).2
+        (Finset.mem_filter.mp J.property).2 W K Tsec Z ξ
+
+theorem second_discarded_energy_bound (Adec : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ),0< C ∧
+      ∀ (η : Character) (t : ℝ) (S : Finset (Ideal O)) (c : Ideal O → ℂ)
+        (W : 𝓢(ℝ,ℂ)) (K X H Tsec Z Csec ξ : ℝ),0< K → 0< X → 1< Z → 1≤ Csec →
+      (∀ I∈S,c I≠0 → (Ideal.absNorm I:ℝ)≤ Real.exp H*X) →
+      X^2/K≤ Tsec → (2*H/Real.log Z+Real.log (4*Csec)/Real.log Z<ξ/4) →
+      ‖secondDiscardedEnergy η t S c W K Tsec Z ξ‖≤
+        (∑ I∈S,‖c I‖)^2*K*(Real.exp H*X)^2*(C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/
+          ((min 1 (kernelReference Tsec H))^2*(1+Z^(ξ/4))^Adec) := by
+  obtain ⟨s,C,hC,ht⟩ := second_discarded_pair_bound Adec
+  refine ⟨s,C,hC,?_⟩
+  intro η t S c W K X H Tsec Z Csec ξ hK hX hZ hCs hN hsec hthreshold
+  let B := K*(Real.exp H*X)^2*(C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/
+    ((min 1 (kernelReference Tsec H))^2*(1+Z^(ξ/4))^Adec)
+  have hB : 0≤ B := by dsimp only [B];positivity
+  have hweight (I : supportedColumns S) : ‖heightCoeff η t I‖≤1 := by
+    rw [heightCoeff_eq_fixed_rowWeight η t I (Finset.mem_filter.mp I.property).2]
+    exact rowWeight_norm_le_one η fixedBadMask 1 1 t I (Finset.mem_filter.mp I.property).2.1
+  have hp := pair_mass (fun I : supportedColumns S => c I) (fun I => heightCoeff η t I)
+    (fun I J => secondDiscardedPair I J (Finset.mem_filter.mp I.property).2
+      (Finset.mem_filter.mp J.property).2 W K Tsec Z ξ) hweight B hB
+    (fun I J hi hj => ht W I J (Finset.mem_filter.mp I.property).2
+      (Finset.mem_filter.mp J.property).2 K X H Tsec Z Csec ξ hK hX hZ hCs
+      (hN I (Finset.mem_filter.mp I.property).1 hi) (hN J (Finset.mem_filter.mp J.property).1 hj) hsec hthreshold)
+  have hm : (∑ I : supportedColumns S,‖c I‖)≤∑ I∈S,‖c I‖ := by
+    rw [Finset.sum_coe_sort (supportedColumns S) (fun I => ‖c I‖)]
+    exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) (fun _ _ _ => norm_nonneg _)
+  apply hp.trans
+  convert mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ (show 0 ≤ ∑ I : supportedColumns S, ‖c I‖ from
+      Finset.sum_nonneg (fun I _ => norm_nonneg (c I))) hm 2) hB using 1 <;> first | rfl | (dsimp only [B];ring)
+
+theorem first_discarded_energy_bound (Adec : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ),0< C ∧
+      ∀ (η : Character) (m A : O) (t : ℝ) (S : Finset (Ideal O)) (c : Ideal O → ℂ)
+        (W : 𝓢(ℝ,ℂ)) (K X H Tsec Z Csec ξ : ℝ),0< K → 0< X → 1< Z → 1≤ Csec →
+      (∀ I∈S,c I≠0 → (Ideal.absNorm I:ℝ)≤ Real.exp H*X) →
+      (∀ I : supportedColumns S,∀ J : supportedColumns S,c I≠0 → c J≠0 →
+        ∀ E∈inactiveSubsets I J,firstNominalScale I J (∏ P∈E,P.val) K X≤ Tsec) →
+      (2*H/Real.log Z+Real.log (4*Csec)/Real.log Z<ξ/4) →
+      ‖discardedEnergy η m A t S c W K Tsec Z ξ‖≤
+        (∑ I∈S,‖c I‖)^2*(Real.exp H*X)^ε*K*(C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/
+          ((min 1 (kernelReference Tsec H))^2*(1+Z^(ξ/4))^Adec) := by
+  obtain ⟨s,C,hC,ht⟩ := canonical_discarded_pair_bound Adec ε hε
+  refine ⟨s,C,hC,?_⟩
+  intro η m A t S c W K X H Tsec Z Csec ξ hK hX hZ hCs hN hsec hthreshold
+  let B := (Real.exp H*X)^ε*K*(C*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/
+    ((min 1 (kernelReference Tsec H))^2*(1+Z^(ξ/4))^Adec)
+  have hB : 0≤ B := by dsimp only [B];positivity
+  have hpair (I J : supportedColumns S) (hi : c I≠0) (hj : c J≠0) :
+      ‖canonicalDiscardedPair I J (Finset.mem_filter.mp I.property).2
+        (Finset.mem_filter.mp J.property).2 W K Tsec Z ξ‖≤ B := by
+    have hni := hN I (Finset.mem_filter.mp I.property).1 hi
+    have hnj := hN J (Finset.mem_filter.mp J.property).1 hj
+    apply (ht W I J (Finset.mem_filter.mp I.property).2 (Finset.mem_filter.mp J.property).2
+      K X H Tsec Z Csec ξ hK hX hZ hCs hni hnj (hsec I J hi hj) hthreshold).trans
+    apply div_le_div_of_nonneg_right _ (by positivity)
+    apply mul_le_mul_of_nonneg_right _ (by positivity)
+    exact mul_le_mul_of_nonneg_right (Real.rpow_le_rpow (Nat.cast_nonneg _) hni hε.le) hK.le
+  have hp := pair_mass (fun I : supportedColumns S => c I)
+    (fun I => CenteredMomentHeckeExpansion.rowWeight η m A 1 t I)
+    (fun I J => canonicalDiscardedPair I J (Finset.mem_filter.mp I.property).2
+      (Finset.mem_filter.mp J.property).2 W K Tsec Z ξ)
+    (fun I => rowWeight_norm_le_one η m A 1 t I (Finset.mem_filter.mp I.property).2.1) B hB hpair
+  have hm : (∑ I : supportedColumns S,‖c I‖)≤∑ I∈S,‖c I‖ := by
+    rw [Finset.sum_coe_sort (supportedColumns S) (fun I => ‖c I‖)]
+    exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) (fun _ _ _ => norm_nonneg _)
+  apply hp.trans
+  convert mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ (show 0 ≤ ∑ I : supportedColumns S, ‖c I‖ from
+      Finset.sum_nonneg (fun I _ => norm_nonneg (c I))) hm 2) hB using 1 <;> first | rfl | (dsimp only [B];ring)
+
+end CenteredMomentSupportedTailAggregate
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondLocalization
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss  SchwartzPlanePoisson
+open CenteredMomentSourceRow CenteredMomentHeckeColumnWindow CenteredMomentSecondSourceEnergy
+open CenteredMomentSecondSourcePoisson CenteredMomentSecondWholeKernel CenteredMomentSecondTail
+open CenteredMomentFirstLocalization CenteredMomentSectorLocalization CenteredMomentSupportedCorrelation
+open CenteredMomentSupportedTailAggregate CenteredMomentSourceSecondZeroEnergy CenteredMomentSecondDiagonal
+local notation "O" => Eisenstein.O
+
+def secondRetainedPair (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) : ℂ :=
+  (K:ℂ)/((Real.sqrt (Ideal.absNorm I:ℝ):ℂ)*(Real.sqrt (Ideal.absNorm J:ℝ):ℂ))*
+    ∑' h : O,(retainedWeight (frequencyRadius Tsec Z ξ) (normValue h):ℂ)*
+      actualCorrelation (primaryIdealGenerator I) (primaryIdealGenerator J)
+        ((supported_span_primaryIdealGenerator_iff I).mpr hI) ((supported_span_primaryIdealGenerator_iff J).mpr hJ) (-h)*
+      paperRadialFourier W (K*‖ringComplex h‖^2/
+        ‖ringComplex (primaryIdealGenerator I*primaryIdealGenerator J)‖^2)
+
+theorem secondSourceKernel_split (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) (hK : 0< K) :
+    secondSourceKernel I J W K=
+      (K:ℂ)/((Real.sqrt (Ideal.absNorm I:ℝ):ℂ)*(Real.sqrt (Ideal.absNorm J:ℝ):ℂ))*
+        actualCorrelation (primaryIdealGenerator I) (primaryIdealGenerator J)
+          ((supported_span_primaryIdealGenerator_iff I).mpr hI) ((supported_span_primaryIdealGenerator_iff J).mpr hJ) 0*
+          paperRadialFourier W 0+
+      secondRetainedPair I J hI hJ W K Tsec Z ξ+
+      secondDiscardedPair I J hI hJ W K Tsec Z ξ := by
+  have hpI := (supported_span_primaryIdealGenerator_iff I).mpr hI
+  have hpJ := (supported_span_primaryIdealGenerator_iff J).mpr hJ
+  have hk : 0< K/((Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)) :=
+    div_pos hK (mul_pos (CenteredMomentFirstScale.norm_pos I hI.1) (CenteredMomentFirstScale.norm_pos J hJ.1))
+  have hs := lattice_fourier_split W _ hk
+    (fun h => actualCorrelation (primaryIdealGenerator I) (primaryIdealGenerator J) hpI hpJ (-h))
+    _ (fun h => CenteredMomentTail.actualCorrelation_norm_le _ _ hpI hpJ (-h))
+    (frequencyRadius Tsec Z ξ)
+  have he (h : O) : K*‖ringComplex h‖^2/‖ringComplex (primaryIdealGenerator I*primaryIdealGenerator J)‖^2=
+      (K/((Ideal.absNorm I:ℝ)*(Ideal.absNorm J:ℝ)))*normValue h := by
+    rw [map_mul,norm_mul,mul_pow,primary_norm_sq I hI,primary_norm_sq J hJ,normValue_eq_embedding]
+    ring
+  rw [secondSourceKernel_poisson I J hI hJ W K hK]
+  unfold secondRetainedPair secondDiscardedPair
+  simp_rw [he]
+  rw [hs]
+  simp only [neg_zero]
+  ring
+
+def secondRetainedEnergy (η : Character) (t : ℝ) (S : Finset (Ideal O))
+    (c : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) : ℂ :=
+  ∑ I : supportedColumns S,∑ J : supportedColumns S,
+    ((c I*heightCoeff η t I)*star (c J*heightCoeff η t J))*
+      secondRetainedPair I J (Finset.mem_filter.mp I.property).2
+        (Finset.mem_filter.mp J.property).2 W K Tsec Z ξ
+
+theorem sourceGaussEnergy_localized (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) (hK : 0< K) :
+    CenteredMomentOriginalChildEnergy.sourceGaussEnergy S β (heightCoeff η t) W K=
+      ((K:ℂ)*paperRadialFourier W 0)*sourceSecondZero S β η t+
+      secondRetainedEnergy η t S β W K Tsec Z ξ+
+      secondDiscardedEnergy η t S β W K Tsec Z ξ := by
+  rw [sourceGaussEnergy_poisson η t S β W K hK]
+  unfold sourceSecondZero secondZeroEnergy secondRetainedEnergy secondDiscardedEnergy
+  simp only [Finset.mul_sum,←Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro I hI
+  apply Finset.sum_congr rfl
+  intro J hJ
+  have he := secondSourceKernel_split I J (Finset.mem_filter.mp I.property).2
+    (Finset.mem_filter.mp J.property).2 W K Tsec Z ξ hK
+  rw [secondSourceKernel_poisson I J (Finset.mem_filter.mp I.property).2
+    (Finset.mem_filter.mp J.property).2 W K hK] at he
+  simp only [sourceGenerator,primary_span_supported I (Finset.mem_filter.mp I.property).2,
+    primary_span_supported J (Finset.mem_filter.mp J.property).2]
+  convert congrArg (fun x : ℂ => ((β I*heightCoeff η t I)*star (β J*heightCoeff η t J))*x) he using 1 <;> ring
+
+end CenteredMomentSecondLocalization
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+namespace CenteredMomentActiveSource
+open CanonicalQuadraticSieve CenteredMomentSourceRow CenteredMomentGaussEnergy
+open CenteredMomentLiveDomain CenteredMomentOriginalChildEnergy CenteredMomentSecondLocalization
+open CenteredMomentFirstSectors CenteredMomentCompleteCommon
+local notation "O" => Eisenstein.O
+
+def activeSource (S : Finset (Ideal O)) (β : Ideal O → ℂ) : Finset (Ideal O) :=
+  S.filter (fun I => β I≠0)
+
+@[simp] theorem mem_activeSource (S : Finset (Ideal O)) (β : Ideal O → ℂ) (I : Ideal O) :
+    I∈activeSource S β ↔ I∈S ∧ β I≠0 := Finset.mem_filter
+
+theorem supportedColumns_active (S : Finset (Ideal O)) (β : Ideal O → ℂ) :
+    supportedColumns (activeSource S β)=(supportedColumns S).filter (fun I => β I≠0) := by
+  ext I
+  simp only [supportedColumns,activeSource,Finset.mem_filter]
+  tauto
+
+theorem active_sum (S : Finset (Ideal O)) (β F : Ideal O → ℂ) :
+    (∑I∈supportedColumns (activeSource S β),β I*F I)=
+      ∑I∈supportedColumns S,β I*F I := by
+  rw [supportedColumns_active,Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro I hI
+  split_ifs with h <;> simp_all
+
+theorem sourceGaussEnergy_active (S : Finset (Ideal O)) (β f : Ideal O → ℂ)
+    (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    sourceGaussEnergy (activeSource S β) β f W K=sourceGaussEnergy S β f W K := by
+  unfold sourceGaussEnergy gaussEnergy
+  apply tsum_congr
+  intro z
+  congr 2
+  have hp := source_gaussPolynomial (activeSource S β) (fun I => β I*f I) z
+  have hq := source_gaussPolynomial S (fun I => β I*f I) z
+  rw [hp,hq]
+  congr 2
+  simpa only [mul_assoc] using active_sum S β (fun I => f I*primaryGaussRow I z)
+
+def retainedKernel (I J : Ideal O) (W : 𝓢(ℝ,ℂ)) (K T Z ξ : ℝ) : ℂ :=
+  if hI : Supported I then if hJ : Supported J then
+    secondRetainedPair I J hI hJ W K T Z ξ else 0 else 0
+
+theorem secondRetainedEnergy_eq_sum (η : HeckeFamily.Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K T Z ξ : ℝ) :
+    secondRetainedEnergy η t S β W K T Z ξ=
+      ∑I∈supportedColumns S,∑J∈supportedColumns S,
+        ((β I*CenteredMomentHeckeColumnWindow.heightCoeff η t I)*
+          star (β J*CenteredMomentHeckeColumnWindow.heightCoeff η t J))*
+          retainedKernel I J W K T Z ξ := by
+  unfold secondRetainedEnergy
+  conv_rhs => rw [←Finset.sum_coe_sort]
+  apply Finset.sum_congr rfl
+  intro I hI
+  conv_rhs => rw [←Finset.sum_coe_sort]
+  apply Finset.sum_congr rfl
+  intro J hJ
+  rw [retainedKernel,dif_pos (Finset.mem_filter.mp I.property).2,
+    dif_pos (Finset.mem_filter.mp J.property).2]
+
+theorem secondRetainedEnergy_active (η : HeckeFamily.Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K T Z ξ : ℝ) :
+    secondRetainedEnergy η t (activeSource S β) β W K T Z ξ=
+      secondRetainedEnergy η t S β W K T Z ξ := by
+  rw [secondRetainedEnergy_eq_sum,secondRetainedEnergy_eq_sum,supportedColumns_active]
+  simp only [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro I hI
+  by_cases hi : β I=0
+  · simp [hi]
+  · rw [if_pos hi]
+    apply Finset.sum_congr rfl
+    intro J hJ
+    by_cases hj : β J=0 <;> simp [hj]
+
+theorem commonLabel_witnesses (S : Finset (Ideal O)) (β : Ideal O → ℂ) (C D : Ideal O)
+    (h : (C,D)∈commonLabels (supportedColumns (activeSource S β))
+      (supportedColumns (activeSource S β))) :
+    ∃I∈S,∃J∈S,Supported I ∧ Supported J ∧ β I≠0 ∧ β J≠0 ∧
+      commonPart I J=C ∧ commonPart J I=D := by
+  obtain ⟨⟨I,J⟩,hp,he⟩ := Finset.mem_image.mp h
+  obtain ⟨hi,hj⟩ := Finset.mem_product.mp hp
+  obtain ⟨hi,hIs⟩ := Finset.mem_filter.mp hi
+  obtain ⟨hj,hJs⟩ := Finset.mem_filter.mp hj
+  obtain ⟨hi,hβi⟩ := mem_activeSource S β I |>.mp hi
+  obtain ⟨hj,hβj⟩ := mem_activeSource S β J |>.mp hj
+  exact ⟨I,hi,J,hj,hIs,hJs,hβi,hβj,(Prod.mk.inj he).1,(Prod.mk.inj he).2⟩
+
+theorem commonLabel_norm_bounds (S : Finset (Ideal O)) (β : Ideal O → ℂ)
+    (H : ℝ) (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H)
+    (C D : Ideal O) (h : (C,D)∈commonLabels (supportedColumns (activeSource S β))
+      (supportedColumns (activeSource S β))) :
+    (Ideal.absNorm C:ℝ)≤ H ∧ (Ideal.absNorm D:ℝ)≤ H := by
+  obtain ⟨I,hi,J,hj,hIs,hJs,hβi,hβj,hC,hD⟩ := commonLabel_witnesses S β C D h
+  constructor
+  · rw [←hC]
+    exact (Nat.cast_le.mpr (absNorm_commonPart_le I J hIs.1)).trans (hH I hi hβi)
+  · rw [←hD]
+    exact (Nat.cast_le.mpr (absNorm_commonPart_le J I hJs.1)).trans (hH J hj hβj)
+
+theorem residualPool_data (S : Finset (Ideal O)) (β : Ideal O → ℂ)
+    (H : ℝ) (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H)
+    (C : Ideal O) (hC : C≠0) (a : Ideal O)
+    (ha : a∈residualPool C hC (supportedColumns (activeSource S β))) :
+    C*a∈S ∧ β (C*a)≠0 ∧ Supported (C*a) ∧ a≠0 ∧
+      1≤(Ideal.absNorm a:ℝ) ∧ (Ideal.absNorm a:ℝ)≤ H/(Ideal.absNorm C:ℝ) := by
+  have hm := (mem_residualPool C hC _ a).mp ha
+  obtain ⟨hm,hsa⟩ := Finset.mem_filter.mp hm
+  obtain ⟨hm,hβ⟩ := (mem_activeSource S β (C*a)).mp hm
+  have ha0 : a≠0 := right_ne_zero_of_mul hsa.1
+  have hpos := CenteredMomentFirstScale.norm_pos C hC
+  have hab := hH (C*a) hm hβ
+  rw [map_mul,Nat.cast_mul] at hab
+  refine ⟨hm,hβ,hsa,ha0,?_,?_⟩
+  · exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr ha0)
+  · exact (le_div_iff₀ hpos).mpr (by simpa only [mul_comm] using hab)
+
+theorem source_energy_active_sectors (τ : HeckeFamily.Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O → ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) (hK : 0< K) :
+    sourceGaussEnergy S β (CenteredMomentHeckeColumnWindow.heightCoeff τ t) W K =
+      ∑p∈commonLabels (supportedColumns (activeSource S β))
+        (supportedColumns (activeSource S β)),
+      ∑q∈pairSector p.1 p.2 (supportedColumns (activeSource S β))
+        (supportedColumns (activeSource S β)),
+      ((β q.1*CenteredMomentHeckeColumnWindow.heightCoeff τ t q.1)*
+        star (β q.2*CenteredMomentHeckeColumnWindow.heightCoeff τ t q.2))*
+        CenteredMomentSecondSourceEnergy.secondSourceKernel q.1 q.2 W K := by
+  rw [←sourceGaussEnergy_active S β]
+  exact CenteredMomentSecondSourceEnergy.source_energy_common_sectors τ t _ β W K hK
+
+end CenteredMomentActiveSource
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondRetainedPair
+open CanonicalQuadraticSieve CompletedGauss  SchwartzPlanePoisson
+open CenteredMomentSecondSectorRetained CenteredMomentSupport CenteredMomentSupportedCorrelation
+open CenteredMomentSecondWholeKernel CenteredMomentFirstLocalization CenteredMomentSectorLocalization
+open CenteredMomentSecondLocalization CenteredMomentSourceRow
+local notation "O" => Eisenstein.O
+
+theorem physical_pair_summable (C D I J : Ideal O) (hI : Supported (C*I)) (hJ : Supported (D*J))
+    (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (hK : 0< K) :
+    Summable (fun j : O=> idealCorrelation (C*I) (D*J) hI hJ j*physicalKernel C D W K R j I J) := by
+  have hk : 0< K/((Ideal.absNorm (C*I):ℝ)*Ideal.absNorm (D*J)) :=
+    div_pos hK (mul_pos (CenteredMomentFirstScale.norm_pos _ hI.1) (CenteredMomentFirstScale.norm_pos _ hJ.1))
+  have hc (j : O) : ‖idealCorrelation (C*I) (D*J) hI hJ j‖≤
+      (Ideal.absNorm (C*I):ℝ)*Ideal.absNorm (D*J) := by
+    have hh := CenteredMomentTail.actualCorrelation_norm_le _ _
+      ((supported_span_primaryIdealGenerator_iff _).mpr hI) ((supported_span_primaryIdealGenerator_iff _).mpr hJ) j
+    simpa only [idealCorrelation,primary_span_supported _ hI,primary_span_supported _ hJ] using hh
+  have hs := weighted_fourier_summable W _ hk (fun j=> idealCorrelation (C*I) (D*J) hI hJ j)
+    (fun j=>(retainedWeight R (normValue j):ℂ)) _ hc (fun j=> retained_complex_norm R _)
+  have he (j : O) : K*‖ringComplex j‖^2/‖ringComplex (primaryIdealGenerator (C*I)*primaryIdealGenerator (D*J))‖^2=
+      (K/((Ideal.absNorm (C*I):ℝ)*Ideal.absNorm (D*J)))*normValue j := by
+    rw [map_mul,norm_mul,mul_pow,primary_norm_sq _ hI,primary_norm_sq _ hJ,normValue_eq_embedding]
+    ring
+  convert hs.mul_left
+    ((K:ℂ)/((Real.sqrt (Ideal.absNorm (C*I):ℝ):ℂ)*(Real.sqrt (Ideal.absNorm (D*J):ℝ):ℂ))) using 1
+  all_goals try rfl
+  funext j
+  dsimp only [physicalKernel]
+  rw [he]
+  ring
+
+theorem retainedPair_positive_frequency (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) :
+    secondRetainedPair I J hI hJ W K Tsec Z ξ=
+      ∑' j : O,idealCorrelation I J hI hJ j*physicalKernel 1 1 W K (frequencyRadius Tsec Z ξ) j I J := by
+  have he := (Equiv.neg O).tsum_eq (fun j : O=> idealCorrelation I J hI hJ j*
+    physicalKernel 1 1 W K (frequencyRadius Tsec Z ξ) j I J)
+  simp only [Equiv.neg_apply,physicalKernel,one_mul,map_neg,norm_neg,
+    normValue_eq_embedding] at he
+  simp only [physicalKernel,one_mul,normValue_eq_embedding]
+  rw [←he]
+  unfold secondRetainedPair
+  rw [←tsum_mul_left]
+  apply tsum_congr
+  intro j
+  simp only [idealCorrelation,normValue_eq_embedding]
+  ring
+
+end CenteredMomentSecondRetainedPair
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondSourceRetained
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss
+open CenteredMomentSourceRow CenteredMomentSecondLocalization CenteredMomentSecondSourceEnergy
+open CenteredMomentFirstSectors CenteredMomentCompleteCommon CenteredMomentSecondSectorColumns
+open CenteredMomentHeckeColumnWindow CenteredMomentSecondSectorRetained CenteredMomentSecondRetainedPair
+open CenteredMomentSecondSectorFrequency CenteredMomentSupport CenteredMomentSectorLocalization
+local notation "O" => Eisenstein.O
+
+def retainedKernel (I J : Ideal O) (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) : ℂ :=
+  if hI : Supported I then if hJ : Supported J then secondRetainedPair I J hI hJ W K Tsec Z ξ else 0 else 0
+
+theorem retainedKernel_eq (I J : Ideal O) (hI : Supported I) (hJ : Supported J)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) :
+    retainedKernel I J W K Tsec Z ξ=secondRetainedPair I J hI hJ W K Tsec Z ξ := by
+  simp only [retainedKernel,dif_pos hI,dif_pos hJ]
+
+theorem retainedEnergy_common_sectors (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) :
+    secondRetainedEnergy η t S β W K Tsec Z ξ=
+      ∑ p∈commonLabels (supportedColumns S) (supportedColumns S),
+        ∑ q∈pairSector p.1 p.2 (supportedColumns S) (supportedColumns S),
+          ((β q.1*heightCoeff η t q.1)*star (β q.2*heightCoeff η t q.2))*
+            retainedKernel q.1 q.2 W K Tsec Z ξ := by
+  let F := fun I J : Ideal O=>((β I*heightCoeff η t I)*star (β J*heightCoeff η t J))*
+    retainedKernel I J W K Tsec Z ξ
+  have he : secondRetainedEnergy η t S β W K Tsec Z ξ=
+      ∑ I : supportedColumns S,∑ J : supportedColumns S,F I J := by
+    apply Finset.sum_congr rfl
+    intro I hI
+    apply Finset.sum_congr rfl
+    intro J hJ
+    dsimp only [F]
+    rw [retainedKernel_eq I J (Finset.mem_filter.mp I.property).2 (Finset.mem_filter.mp J.property).2]
+  rw [he]
+  have hj (I : Ideal O) : (∑ J : supportedColumns S,F I J)=∑ J∈supportedColumns S,F I J :=
+    Finset.sum_coe_sort _ _
+  simp_rw [hj]
+  rw [Finset.sum_coe_sort (supportedColumns S) (fun I=>∑ J∈supportedColumns S,F I J)]
+  exact sum_common_sectors _ _ F
+
+theorem retained_sector_independent (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (C D : Ideal O) (hC : C≠0) (hD : D≠0)
+    (hCD : primeSupport C=primeSupport D)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) :
+    (∑ q∈pairSector C D (supportedColumns S) (supportedColumns S),
+      ((β q.1*heightCoeff η t q.1)*star (β q.2*heightCoeff η t q.2))*
+        retainedKernel q.1 q.2 W K Tsec Z ξ)=
+      heightCoeff η t C*star (heightCoeff η t D)*
+        ∑ I : sectorPool C hC S,∑ J : sectorPool D hD S,
+          if IsCoprime (I:Ideal O) (J:Ideal O) then
+            ((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+              retainedKernel (C*I) (D*J) W K Tsec Z ξ else 0 := by
+  rw [←independent_sector_pools C D hC hD hCD S
+    (fun I J=>((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+      retainedKernel (C*I) (D*J) W K Tsec Z ξ)]
+  rw [pairSector_double_sum C D hC hD hCD _ _
+    (fun I hI=>(Finset.mem_filter.mp hI).2.1) (fun I hI=>(Finset.mem_filter.mp hI).2.1)
+    (fun I J=>((β I*heightCoeff η t I)*star (β J*heightCoeff η t J))*
+      retainedKernel I J W K Tsec Z ξ)]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro J hJ
+  split_ifs <;> simp only [heightCoeff_mul,star_mul,mul_zero]
+  ring
+
+theorem retainedKernel_physical (C D I J : Ideal O) (hI : Supported (C*I)) (hJ : Supported (D*J))
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) :
+    retainedKernel (C*I) (D*J) W K Tsec Z ξ=
+      ∑' j : O,idealCorrelation (C*I) (D*J) hI hJ j*
+        physicalKernel C D W K (frequencyRadius Tsec Z ξ) j I J := by
+  rw [retainedKernel_eq _ _ hI hJ,retainedPair_positive_frequency]
+  simp only [physicalKernel,one_mul]
+
+end CenteredMomentSecondSourceRetained
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondSourceFrequency
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss
+open CenteredMomentSourceRow CenteredMomentSecondSourceRetained CenteredMomentFirstSectors
+open CenteredMomentSecondSectorColumns CenteredMomentHeckeColumnWindow CenteredMomentSecondSectorRetained
+open CenteredMomentSecondRetainedPair CenteredMomentSecondSectorFrequency CenteredMomentSupport CenteredMomentSectorLocalization
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit
+open CenteredMomentCanonicalFirst
+local notation "O" => Eisenstein.O
+
+theorem retained_sector_eq_physical (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (hCD : primeSupport C=primeSupport D)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) (hK : 0< K) :
+    (∑ q∈pairSector C D (supportedColumns S) (supportedColumns S),
+      ((β q.1*heightCoeff η t q.1)*star (β q.2*heightCoeff η t q.2))*
+        retainedKernel q.1 q.2 W K Tsec Z ξ)=
+      heightCoeff η t C*star (heightCoeff η t D)*
+        ∑' j : O,sectorFrequency η t S β C D hC hD
+          (physicalKernel C D W K (frequencyRadius Tsec Z ξ)) j := by
+  rw [retained_sector_independent η t S β C D hC.1 hD.1 hCD]
+  congr 1
+  let c := fun I : sectorPool C hC.1 S=>β (C*I)*heightCoeff η t I
+  let d := fun J : sectorPool D hD.1 S=>β (D*J)*heightCoeff η t J
+  have hci (I : sectorPool C hC.1 S) : Supported (C*(I:Ideal O)) :=
+    (supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩
+  have hdj (J : sectorPool D hD.1 S) : Supported (D*(J:Ideal O)) :=
+    (supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩
+  let f := fun (I : sectorPool C hC.1 S) (J : sectorPool D hD.1 S) (j : O)=>
+    if IsCoprime (I:Ideal O) (J:Ideal O) then
+      (c I*star (d J))*(idealCorrelation (C*I) (D*J) (hci I) (hdj J) j*
+        physicalKernel C D W K (frequencyRadius Tsec Z ξ) j I J) else 0
+  have hs (I : sectorPool C hC.1 S) (J : sectorPool D hD.1 S) : Summable (f I J) := by
+    by_cases hc : IsCoprime (I:Ideal O) (J:Ideal O)
+    · simpa only [f,if_pos hc] using (physical_pair_summable C D I J (hci I) (hdj J)
+        W K (frequencyRadius Tsec Z ξ) hK).mul_left (c I*star (d J))
+    · simp only [f,if_neg hc];exact summable_zero
+  have hp (I : sectorPool C hC.1 S) (J : sectorPool D hD.1 S) :
+      (if IsCoprime (I:Ideal O) (J:Ideal O) then
+        ((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+          retainedKernel (C*I) (D*J) W K Tsec Z ξ else 0)=∑' j : O,f I J j := by
+    by_cases hc : IsCoprime (I:Ideal O) (J:Ideal O)
+    · simp only [f,if_pos hc]
+      rw [retainedKernel_physical C D I J (hci I) (hdj J),tsum_mul_left]
+    · simp only [f,if_neg hc,tsum_zero]
+  have hf (j : O) : sectorFrequency η t S β C D hC hD
+      (physicalKernel C D W K (frequencyRadius Tsec Z ξ)) j=
+      ∑ I : sectorPool C hC.1 S,∑ J : sectorPool D hD.1 S,f I J j := by
+    apply Finset.sum_congr rfl
+    intro I hI
+    apply Finset.sum_congr rfl
+    intro J hJ
+    dsimp only [f,c,d]
+    split_ifs <;> ring
+  simp_rw [hp]
+  rw [tsum_congr hf, Summable.tsum_finsetSum (fun I _=> summable_sum (fun J _=> hs I J))]
+  exact Finset.sum_congr rfl (fun I _=>(Summable.tsum_finsetSum (fun J _=> hs I J)).symm)
+
+theorem original_retained_sector_GV (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (hCD : primeSupport C=primeSupport D)
+    (W : 𝓢(ℝ,ℂ)) (K Tsec Z ξ : ℝ) (hK : 0< K) :
+    (∑ q∈pairSector C D (supportedColumns S) (supportedColumns S),
+      ((β q.1*heightCoeff η t q.1)*star (β q.2*heightCoeff η t q.2))*
+        retainedKernel q.1 q.2 W K Tsec Z ξ)=
+      heightCoeff η t C*star (heightCoeff η t D)*
+        ∑ U : Finset (CommonIndex C D),∑' h : O,
+          if canonicalPartition C D U (nonunitFrequencyGenerator C D U*h) then
+            sectorFrequency η t S β C D hC hD
+              (physicalKernel C D W K (frequencyRadius Tsec Z ξ))
+              ((commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U)*h) else 0 := by
+  rw [retained_sector_eq_physical η t S β C D hC hD hCD W K Tsec Z ξ hK,
+    actual_retained_sector_GV η t S β C D hC hD hCD W K (frequencyRadius Tsec Z ξ) hK]
+
+end CenteredMomentSecondSourceFrequency
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondRetainedAggregate
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss
+open CenteredMomentSourceRow CenteredMomentFirstSectors CenteredMomentCanonicalFirst
+open CenteredMomentSecondLocalization CenteredMomentSecondSourceRetained CenteredMomentSecondSourceFrequency
+open CenteredMomentSecondSectorFrequency CenteredMomentSecondSectorRetained CenteredMomentSectorLocalization
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit
+open CenteredMomentHeckeColumnWindow CenteredMomentCompleteCommon
+local notation "O" => Eisenstein.O
+
+theorem commonLabels_supported (S : Finset (Ideal O)) (C D : Ideal O)
+    (h : (C,D)∈commonLabels (supportedColumns S) (supportedColumns S)) :
+    Supported C ∧ Supported D := by
+  obtain ⟨p,hp,he⟩ := Finset.mem_image.mp h
+  rcases Prod.mk.inj he with ⟨rfl,rfl⟩
+  have hp' := Finset.mem_product.mp hp
+  exact ⟨commonPart_supported _ _ (Finset.mem_filter.mp hp'.1).2,
+    commonPart_supported _ _ (Finset.mem_filter.mp hp'.2).2⟩
+
+theorem original_retained_energy_GV (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (W : 𝓢(ℝ,ℂ))
+    (K Tsec Z ξ : ℝ) (hK : 0< K) :
+    secondRetainedEnergy η t S β W K Tsec Z ξ=
+      ∑ p : commonLabels (supportedColumns S) (supportedColumns S),
+        heightCoeff η t p.val.1*star (heightCoeff η t p.val.2)*
+          ∑ U : Finset (CommonIndex p.val.1 p.val.2),∑' h : O,
+            if canonicalPartition p.val.1 p.val.2 U
+                (nonunitFrequencyGenerator p.val.1 p.val.2 U*h) then
+              sectorFrequency η t S β p.val.1 p.val.2
+                (commonLabels_supported S _ _ p.property).1
+                (commonLabels_supported S _ _ p.property).2
+                (physicalKernel p.val.1 p.val.2 W K (frequencyRadius Tsec Z ξ))
+                ((commonFrequencyGenerator p.val.1 p.val.2*
+                  nonunitFrequencyGenerator p.val.1 p.val.2 U)*h) else 0 := by
+  rw [retainedEnergy_common_sectors]
+  rw [←Finset.sum_coe_sort]
+  apply Finset.sum_congr rfl
+  intro p hp
+  exact original_retained_sector_GV η t S β p.val.1 p.val.2
+    (commonLabels_supported S _ _ p.property).1 (commonLabels_supported S _ _ p.property).2
+    (commonLabels_data _ _ _ _ p.property).2.2 W K Tsec Z ξ hK
+
+end CenteredMomentSecondRetainedAggregate
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondRetainedRows
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss 
+open CenteredMomentSecondSectorFrequency CenteredMomentSecondSectorRetained CenteredMomentSectorLocalization
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit
+open CenteredMomentCanonicalFirst
+local notation "O" => Eisenstein.O
+
+def retainedRows (R : ℝ) (A : O) : Finset O := TruncatedPrincipalPoisson.rowNormDisk (Nat.ceil (4*R/normValue A))
+
+theorem retained_mem_rows (R : ℝ) (A h : O) (hA : A≠0)
+    (hh : retainedWeight R (normValue (A*h))≠0) : h∈retainedRows R A := by
+  have he := retainedWeight_enclosure R _ hh
+  have hAh : A*h≠0 := by
+    intro hz
+    have hn : normValue (A*h)=0 := by simp [hz,normValue]
+    linarith [he.1]
+  have hh0 : h≠0 := right_ne_zero_of_mul hAh
+  apply (TruncatedPrincipalPoisson.mem_rowNormDisk _ _).mpr
+  constructor
+  · have hn := normValue_pos h hh0
+    unfold normValue at hn
+    exact_mod_cast hn
+  · have hbound : normValue h≤4*R/normValue A := by
+      apply (le_div_iff₀ (normValue_pos A hA)).mpr
+      simpa only [normValue_mul,mul_comm] using he.2
+    have hb := hbound.trans (Nat.le_ceil (4*R/normValue A))
+    unfold normValue at hb
+    exact_mod_cast hb
+
+theorem physical_sector_zero_of_weight (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (j : O)
+    (hj : retainedWeight R (normValue j)=0) :
+    sectorFrequency η t S β C D hC hD (physicalKernel C D W K R) j=0 := by
+  simp only [sectorFrequency,physicalKernel,hj,Complex.ofReal_zero,mul_zero,zero_mul,Finset.sum_const_zero]
+
+theorem physical_partition_finite_rows (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (A : O) (hA : A≠0) (part : O→Prop) :
+    (∑' h : O,if part h then
+      sectorFrequency η t S β C D hC hD (physicalKernel C D W K R) (A*h) else 0)=
+      ∑ h∈retainedRows R A,if part h then
+        sectorFrequency η t S β C D hC hD (physicalKernel C D W K R) (A*h) else 0 := by
+  apply tsum_eq_sum
+  intro h hh
+  by_cases hp : part h
+  · rw [if_pos hp]
+    apply physical_sector_zero_of_weight η t S β C D hC hD W K R (A*h)
+    by_contra hn
+    exact hh (retained_mem_rows R A h hA hn)
+  · rw [if_neg hp]
+
+theorem actual_GV_finite_rows (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (U : Finset (CommonIndex C D)) (W : 𝓢(ℝ,ℂ)) (K R : ℝ) :
+    let A := commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+    (∑' h : O,if canonicalPartition C D U (nonunitFrequencyGenerator C D U*h) then
+      sectorFrequency η t S β C D hC hD (physicalKernel C D W K R) (A*h) else 0)=
+      ∑ h∈retainedRows R A,if canonicalPartition C D U (nonunitFrequencyGenerator C D U*h) then
+        sectorFrequency η t S β C D hC hD (physicalKernel C D W K R) (A*h) else 0 := by
+  dsimp only
+  exact physical_partition_finite_rows η t S β C D hC hD W K R _
+    (mul_ne_zero (commonFrequencyGenerator_ne_zero C D hC)
+      (nonunitFrequencyGenerator_ne_zero C D hC U)) _
+
+end CenteredMomentSecondRetainedRows
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondDyadicPartition
+open HeckeFamily CanonicalQuadraticSieve  SchwartzPlanePoisson
+open CenteredMomentSecondSectorRetained CenteredMomentSecondPhysicalWindow
+open CenteredMomentSecondWholeKernel CenteredMomentFirstWholeKernel CenteredMomentSectorLocalization
+open CenteredMomentSmooth CenteredMomentLogDyadic CenteredMomentDyadicCount
+local notation "O" => Eisenstein.O
+
+abbrev Blocks (a b : Fin 4→ℝ) := ∀ i : Fin 4,↥(indices (a i) (b i))
+
+theorem dyadic_product_partition (a b q : Fin 4→ℝ)
+    (ha : ∀i,0< a i) (hq : ∀i,q i∈Set.Icc (a i) (b i)) :
+    (∑ n : Blocks a b,∏ i : Fin 4,dyadicWeight (n i) (q i))=1 := by
+  change (∑ n : (∀ i : Fin 4,↥(indices (a i) (b i))),∏ i : Fin 4,dyadicWeight (n i) (q i))=1
+  rw [←Fintype.prod_sum (fun (i : Fin 4) (n : indices (a i) (b i))=> dyadicWeight n (q i))]
+  have he (i : Fin 4) : (∑ n : indices (a i) (b i),dyadicWeight n (q i))=1 := by
+    rw [Finset.sum_coe_sort (indices (a i) (b i)) (fun n : ℤ=> dyadicWeight n (q i))]
+    exact dyadic_partition_on_interval _ _ _ (ha i) (hq i)
+  simp_rw [he]
+  simp
+
+theorem physical_kernel_dyadic_partition (C D I J : Ideal O)
+    (hC : Supported C) (hD : Supported D) (hI : Supported I) (hJ : Supported J)
+    (A h : O) (hA : A≠0) (hh : h≠0) (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (hK : 0< K)
+    (a b : Fin 4→ℝ) (ha : ∀i,0< a i)
+    (hband : ∀i, (![secondEffectiveScale C D A K,normValue h,
+      (Ideal.absNorm I:ℝ),(Ideal.absNorm J:ℝ)] : Fin 4→ℝ) i∈Set.Icc (a i) (b i)) :
+    physicalKernel C D W K R (A*h) I J=
+      ∑ n : Blocks a b,
+        ((K:ℂ)/((Real.sqrt (Ideal.absNorm C:ℝ):ℂ)*(Real.sqrt (Ideal.absNorm D:ℝ):ℂ)*
+          (Real.sqrt (dyadicScale (n 2)):ℂ)*(Real.sqrt (dyadicScale (n 3)):ℂ)))*
+          (retainedWeight R (normValue (A*h)):ℂ)*
+            wholeKernel W (fun _=> logAnnulus)
+              (dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3)))
+              (Real.log (secondEffectiveScale C D A K/dyadicScale (n 0)))
+              (Real.log (normValue h/dyadicScale (n 1)))
+              (Real.log ((Ideal.absNorm I:ℝ)/dyadicScale (n 2)))
+              (Real.log ((Ideal.absNorm J:ℝ)/dyadicScale (n 3))) := by
+  let q : Fin 4→ℝ := ![secondEffectiveScale C D A K,normValue h,
+    (Ideal.absNorm I:ℝ),(Ideal.absNorm J:ℝ)]
+  have he : (∑ n : Blocks a b,((∏i : Fin 4,dyadicWeight (n i) (q i)):ℝ):ℝ)=1 :=
+    dyadic_product_partition a b q ha hband
+  calc
+    _ = physicalKernel C D W K R (A*h) I J*(1:ℂ) := (mul_one _).symm
+    _ = ∑ n : Blocks a b,physicalKernel C D W K R (A*h) I J*
+        ((∏i : Fin 4,dyadicWeight (n i) (q i):ℝ):ℂ) := by
+      rw [←Finset.mul_sum,←Complex.ofReal_sum,he,Complex.ofReal_one]
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro n hn
+      rw [Fin.prod_univ_four]
+      exact physical_kernel_dyadic C D I J hC hD hI hJ A h hA hh W K R hK (fun i=> n i)
+
+end CenteredMomentSecondDyadicPartition
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondActiveDyadic
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss
+open CenteredMomentSecondSectorRetained CenteredMomentSecondSectorColumns CenteredMomentSectorLocalization
+open CenteredMomentSecondDyadicPartition CenteredMomentSecondWholeKernel CenteredMomentLogDyadic CenteredMomentSmooth
+open CenteredMomentActiveSource CenteredMomentSourceRow CenteredMomentSecondRetainedRows
+local notation "O" => Eisenstein.O
+
+def sourceLower (C D : Ideal O) (A : O) (K : ℝ) : Fin 4→ℝ :=
+  ![secondEffectiveScale C D A K,1,1,1]
+
+def sourceUpper (C D : Ideal O) (A : O) (K R H : ℝ) : Fin 4→ℝ :=
+  ![secondEffectiveScale C D A K,max 1 (4*R/normValue A),
+    max 1 (H/(Ideal.absNorm C:ℝ)),max 1 (H/(Ideal.absNorm D:ℝ))]
+
+def dyadicKernel (C D : Ideal O) (A : O) (W : 𝓢(ℝ,ℂ)) (K R : ℝ)
+    (n : Fin 4→ℤ) (h : O) (I J : Ideal O) : ℂ :=
+  ((K:ℂ)/((Real.sqrt (Ideal.absNorm C:ℝ):ℂ)*(Real.sqrt (Ideal.absNorm D:ℝ):ℂ)*
+    (Real.sqrt (dyadicScale (n 2)):ℂ)*(Real.sqrt (dyadicScale (n 3)):ℂ)))*
+    (retainedWeight R (normValue (A*h)):ℂ)*
+      wholeKernel W (fun _=> logAnnulus)
+        (dyadicScale (n 0)*dyadicScale (n 1)/(dyadicScale (n 2)*dyadicScale (n 3)))
+        (Real.log (secondEffectiveScale C D A K/dyadicScale (n 0)))
+        (Real.log (normValue h/dyadicScale (n 1)))
+        (Real.log ((Ideal.absNorm I:ℝ)/dyadicScale (n 2)))
+        (Real.log ((Ideal.absNorm J:ℝ)/dyadicScale (n 3)))
+
+theorem active_sector_norm (S : Finset (Ideal O)) (β : Ideal O→ℂ)
+    (H : ℝ) (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H)
+    (C : Ideal O) (hC : C≠0) (I : sectorPool C hC (activeSource S β)) :
+    (Ideal.absNorm (I:Ideal O):ℝ)∈Set.Icc 1 (max 1 (H/(Ideal.absNorm C:ℝ))) := by
+  have hh := residualPool_data S β H hH C hC I (Finset.mem_filter.mp I.property).1
+  exact ⟨hh.2.2.2.2.1,hh.2.2.2.2.2.trans (le_max_right _ _)⟩
+
+theorem sourceLower_pos (C D : Ideal O) (hC : C≠0) (hD : D≠0)
+    (A : O) (hA : A≠0) (K : ℝ) (hK : 0< K) : ∀i,0< sourceLower C D A K i := by
+  intro i
+  fin_cases i
+  · exact secondEffectiveScale_pos C D hC hD A hA K hK
+  all_goals norm_num [sourceLower]
+
+theorem active_physical_kernel_partition (_η : Character)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (H : ℝ)
+    (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H)
+    (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (I : sectorPool C hC.1 (activeSource S β)) (J : sectorPool D hD.1 (activeSource S β))
+    (A h : O) (hA : A≠0) (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (hK : 0< K) :
+    physicalKernel C D W K R (A*h) I J=
+      ∑ n : Blocks (sourceLower C D A K) (sourceUpper C D A K R H),
+        dyadicKernel C D A W K R (fun i=> n i) h I J := by
+  by_cases hw : retainedWeight R (normValue (A*h))=0
+  · simp only [physicalKernel,dyadicKernel,hw,Complex.ofReal_zero,mul_zero,zero_mul,Finset.sum_const_zero]
+  have he := retainedWeight_enclosure R _ hw
+  have hh : h≠0 := by
+    intro hz
+    subst h
+    simp [normValue] at he
+  have hrow : normValue h≤4*R/normValue A := by
+    apply (le_div_iff₀ (normValue_pos A hA)).mpr
+    simpa only [normValue_mul,mul_comm] using he.2
+  have hb : ∀i, (![secondEffectiveScale C D A K,normValue h,
+      (Ideal.absNorm (I:Ideal O):ℝ),(Ideal.absNorm (J:Ideal O):ℝ)] : Fin 4→ℝ) i∈
+        Set.Icc (sourceLower C D A K i) (sourceUpper C D A K R H i) := by
+    intro i
+    fin_cases i
+    · exact ⟨le_rfl,le_rfl⟩
+    · exact ⟨normValue_ge_one h hh,hrow.trans (le_max_right _ _)⟩
+    · exact active_sector_norm S β H hH C hC.1 I
+    · exact active_sector_norm S β H hH D hD.1 J
+  exact physical_kernel_dyadic_partition C D I J hC hD
+    (sectorPool_supported C hC.1 _ I) (sectorPool_supported D hD.1 _ J)
+    A h hA hh W K R hK _ _ (sourceLower_pos C D hC.1 hD.1 A hA K hK) hb
+
+end CenteredMomentSecondActiveDyadic
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap
+
+namespace CenteredMomentSecondBlockAggregate
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss 
+open CenteredMomentSourceRow CenteredMomentFirstSectors CenteredMomentCanonicalFirst
+open CenteredMomentSecondLocalization CenteredMomentSecondSectorFrequency
+open CenteredMomentSecondSectorRetained CenteredMomentSecondSectorColumns
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalFrequency
+open CenteredMomentSecondCanonicalNonunit CenteredMomentHeckeColumnWindow
+open CenteredMomentSectorLocalization CenteredMomentActiveSource
+open CenteredMomentSecondRetainedAggregate CenteredMomentSecondRetainedRows
+open CenteredMomentSecondActiveDyadic CenteredMomentSecondDyadicPartition
+open CenteredMomentSecondPhysicalWindow CenteredMomentSecondPhysicalBlock CenteredMomentSecondWholeKernel
+local notation "O" => Eisenstein.O
+
+abbrev ActiveLabel (S : Finset (Ideal O)) (β : Ideal O→ℂ) :=
+  ↥(commonLabels (supportedColumns (activeSource S β)) (supportedColumns (activeSource S β)))
+
+abbrev SourceBlocks (C D : Ideal O) (U : Finset (CommonIndex C D)) (K R H : ℝ) :=
+  Blocks (sourceLower C D (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U) K)
+    (sourceUpper C D (commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U) K R H)
+
+lemma retainedRows_ne_zero (R : ℝ) (A z : O) (hz : z∈retainedRows R A) : z≠0 := by
+  have hp := ((TruncatedPrincipalPoisson.mem_rowNormDisk _ _).mp hz).1
+  intro h
+  simp [h] at hp
+
+theorem active_kernel_windows (η : Character)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (H : ℝ)
+    (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H)
+    (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (I : sectorPool C hC.1 (activeSource S β)) (J : sectorPool D hD.1 (activeSource S β))
+    (A h : O) (hA : A≠0) (hh : h≠0) (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (hK : 0< K) :
+    physicalKernel C D W K R (A*h) I J=
+      ∑ n : Blocks (sourceLower C D A K) (sourceUpper C D A K R H),
+        physicalKernel C D W K R (A*h) I J*
+          ((dyadicWeight (n 0) (secondEffectiveScale C D A K)*dyadicWeight (n 1) (normValue h)*
+            dyadicWeight (n 2) (Ideal.absNorm (I:Ideal O):ℝ)*
+            dyadicWeight (n 3) (Ideal.absNorm (J:Ideal O):ℝ):ℝ):ℂ) := by
+  refine (active_physical_kernel_partition η S β H hH C D hC hD I J A h hA W K R hK).trans ?_
+  apply Finset.sum_congr rfl
+  intro n hn
+  exact (physical_kernel_dyadic C D I J hC hD
+    (sectorPool_supported C hC.1 _ I) (sectorPool_supported D hD.1 _ J)
+    A h hA hh W K R hK (fun i=> n i)).symm
+
+theorem sector_finite_blocks (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (H : ℝ)
+    (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H)
+    (C D : Ideal O) (hC : Supported C) (hD : Supported D)
+    (U : Finset (CommonIndex C D)) (W : 𝓢(ℝ,ℂ)) (K R : ℝ) (hK : 0< K) :
+    let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+    (∑h∈retainedRows R A,if canonicalPartition C D U (nonunitFrequencyGenerator C D U*h) then
+      sectorFrequency η t (activeSource S β) β C D hC hD (physicalKernel C D W K R) (A*h) else 0)=
+      ∑n : SourceBlocks C D U K R H,
+        physicalBlock η t (activeSource S β) β C D hC hD U R (retainedRows R A) W K
+          (fun i=>(n i:ℤ)) := by
+  dsimp only
+  have hA : commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U≠0 :=
+    mul_ne_zero (commonFrequencyGenerator_ne_zero C D hC)
+      (nonunitFrequencyGenerator_ne_zero C D hC U)
+  unfold physicalBlock
+  conv_rhs => rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro h hh
+  by_cases hp : canonicalPartition C D U (nonunitFrequencyGenerator C D U*h)
+  · simp only [hp,ite_true]
+    unfold sectorFrequency
+    conv_rhs => rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro I hI
+    conv_rhs => rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro J hJ
+    conv_lhs => rw [active_kernel_windows η S β H hH C D hC hD I J _ h hA
+      (retainedRows_ne_zero R _ h hh) W K R hK,Finset.mul_sum]
+  · simp only [hp,ite_false,Finset.sum_const_zero]
+
+theorem original_secondRetainedEnergy_blocks (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (W : 𝓢(ℝ,ℂ))
+    (K Tsec Z ξ H : ℝ) (hK : 0< K)
+    (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H) :
+    secondRetainedEnergy η t S β W K Tsec Z ξ=
+      ∑p : ActiveLabel S β,heightCoeff η t p.val.1*star (heightCoeff η t p.val.2)*
+        ∑U : Finset (CommonIndex p.val.1 p.val.2),
+          ∑n : SourceBlocks p.val.1 p.val.2 U K (frequencyRadius Tsec Z ξ) H,
+            physicalBlock η t (activeSource S β) β p.val.1 p.val.2
+              (commonLabels_supported (activeSource S β) _ _ p.property).1
+              (commonLabels_supported (activeSource S β) _ _ p.property).2 U
+              (frequencyRadius Tsec Z ξ)
+              (retainedRows (frequencyRadius Tsec Z ξ)
+                (commonFrequencyGenerator p.val.1 p.val.2*nonunitFrequencyGenerator p.val.1 p.val.2 U))
+              W K (fun i=>(n i:ℤ)) := by
+  rw [←secondRetainedEnergy_active η t S β W K Tsec Z ξ,
+    original_retained_energy_GV η t (activeSource S β) β W K Tsec Z ξ hK]
+  apply Finset.sum_congr rfl
+  intro p hp
+  congr 1
+  apply Finset.sum_congr rfl
+  intro U hU
+  rw [actual_GV_finite_rows]
+  exact sector_finite_blocks η t S β H hH _ _ _ _ U W K _ hK
+
+lemma common_height_norm_le_one (η : Character) (t : ℝ) (C D : Ideal O)
+    (hC : C≠0) (hD : D≠0) :
+    ‖heightCoeff η t C*star (heightCoeff η t D)‖≤1 := by
+  rw [norm_mul,norm_star]
+  have hc := CenteredMomentSourceSecondZeroEnergy.heightCoeff_norm_le_one η t C hC
+  have hd := CenteredMomentSourceSecondZeroEnergy.heightCoeff_norm_le_one η t D hD
+  nlinarith [norm_nonneg (heightCoeff η t C),norm_nonneg (heightCoeff η t D)]
+
+theorem original_secondRetainedEnergy_norm_le (η : Character) (t : ℝ)
+    (S : Finset (Ideal O)) (β : Ideal O→ℂ) (W : 𝓢(ℝ,ℂ))
+    (K Tsec Z ξ H : ℝ) (hK : 0< K)
+    (hH : ∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H) :
+    ‖secondRetainedEnergy η t S β W K Tsec Z ξ‖≤
+      ∑p : ActiveLabel S β,∑U : Finset (CommonIndex p.val.1 p.val.2),
+        ∑n : SourceBlocks p.val.1 p.val.2 U K (frequencyRadius Tsec Z ξ) H,
+          ‖physicalBlock η t (activeSource S β) β p.val.1 p.val.2
+            (commonLabels_supported (activeSource S β) _ _ p.property).1
+            (commonLabels_supported (activeSource S β) _ _ p.property).2 U
+            (frequencyRadius Tsec Z ξ)
+            (retainedRows (frequencyRadius Tsec Z ξ)
+              (commonFrequencyGenerator p.val.1 p.val.2*nonunitFrequencyGenerator p.val.1 p.val.2 U))
+            W K (fun i=>(n i:ℤ))‖ := by
+  rw [original_secondRetainedEnergy_blocks η t S β W K Tsec Z ξ H hK hH]
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro p hp
+  rw [norm_mul]
+  apply (mul_le_of_le_one_left (norm_nonneg _)
+    (common_height_norm_le_one η t _ _
+      (commonLabels_supported (activeSource S β) _ _ p.property).1.1
+      (commonLabels_supported (activeSource S β) _ _ p.property).2.1)).trans
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro U hU
+  exact norm_sum_le _ _
+
+end CenteredMomentSecondBlockAggregate
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentSecondLiveBlock
+open HeckeFamily CanonicalQuadraticSieve CompletedGauss
+open CenteredMomentSecondBlockAggregate CenteredMomentSecondRetainedAggregate
+open CenteredMomentSecondPhysicalBlock CenteredMomentSecondSectorRetained
+open CenteredMomentSecondCanonical CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit
+open CenteredMomentCanonicalFirst CenteredMomentSecondRetainedRows CenteredMomentSectorLocalization
+open CenteredMomentHeckeColumnWindow CenteredMomentSecondLocalization CenteredMomentActiveSource
+local notation "O" => Eisenstein.O
+
+def liveLabels (η:Character) (S:Finset (Ideal O)) (β:Ideal O→ℂ):Finset (ActiveLabel S β):=
+  Finset.univ.filter (fun p=> idealCoeff η p.val.1≠0 ∧ idealCoeff η p.val.2≠0)
+
+lemma mem_liveLabels (η:Character) (S:Finset (Ideal O)) (β:Ideal O→ℂ) (p:ActiveLabel S β):
+    p∈liveLabels η S β ↔ idealCoeff η p.val.1≠0 ∧ idealCoeff η p.val.2≠0:=by
+  simp only [liveLabels,Finset.mem_filter,Finset.mem_univ,true_and]
+
+lemma common_height_zero_of_not_live (η:Character) (t:ℝ)
+    (S:Finset (Ideal O)) (β:Ideal O→ℂ) (p:ActiveLabel S β)
+    (hp:p∉liveLabels η S β):heightCoeff η t p.val.1*star (heightCoeff η t p.val.2)=0:=by
+  rw [mem_liveLabels] at hp
+  push Not at hp
+  by_cases hc:idealCoeff η p.val.1=0
+  · simp only [heightCoeff,hc,zero_mul]
+  · simp only [heightCoeff,hp hc,zero_mul,star_zero,mul_zero]
+
+theorem original_live_blocks (η:Character) (t:ℝ)
+    (S:Finset (Ideal O)) (β:Ideal O→ℂ) (W:𝓢(ℝ,ℂ))
+    (K Tsec Z ξ H:ℝ) (hK:0< K)
+    (hH:∀I∈S,β I≠0 → (Ideal.absNorm I:ℝ)≤ H):
+    secondRetainedEnergy η t S β W K Tsec Z ξ=
+      ∑p∈liveLabels η S β,heightCoeff η t p.val.1*star (heightCoeff η t p.val.2)*
+        ∑U:Finset (CommonIndex p.val.1 p.val.2),
+          ∑n:SourceBlocks p.val.1 p.val.2 U K (frequencyRadius Tsec Z ξ) H,
+            physicalBlock η t (activeSource S β) β p.val.1 p.val.2
+              (commonLabels_supported (activeSource S β) _ _ p.property).1
+              (commonLabels_supported (activeSource S β) _ _ p.property).2 U
+              (frequencyRadius Tsec Z ξ)
+              (liveRows p.val.1 p.val.2 U (frequencyRadius Tsec Z ξ)
+                (retainedRows (frequencyRadius Tsec Z ξ)
+                  (commonFrequencyGenerator p.val.1 p.val.2*nonunitFrequencyGenerator p.val.1 p.val.2 U)))
+              W K (fun i=>(n i:ℤ)):=by
+  rw [original_secondRetainedEnergy_blocks η t S β W K Tsec Z ξ H hK hH]
+  trans ∑p∈liveLabels η S β,heightCoeff η t p.val.1*star (heightCoeff η t p.val.2)*
+    ∑U:Finset (CommonIndex p.val.1 p.val.2),
+      ∑n:SourceBlocks p.val.1 p.val.2 U K (frequencyRadius Tsec Z ξ) H,
+        physicalBlock η t (activeSource S β) β p.val.1 p.val.2
+          (commonLabels_supported (activeSource S β) _ _ p.property).1
+          (commonLabels_supported (activeSource S β) _ _ p.property).2 U
+          (frequencyRadius Tsec Z ξ)
+          (retainedRows (frequencyRadius Tsec Z ξ)
+            (commonFrequencyGenerator p.val.1 p.val.2*nonunitFrequencyGenerator p.val.1 p.val.2 U))
+          W K (fun i=>(n i:ℤ))
+  · symm
+    apply Finset.sum_subset (Finset.subset_univ _)
+    intro p hp hn
+    rw [common_height_zero_of_not_live η t S β p hn,zero_mul]
+  · apply Finset.sum_congr rfl
+    intro p hp
+    apply congrArg (fun x : ℂ => heightCoeff η t p.val.1 * star (heightCoeff η t p.val.2) * x)
+    apply Finset.sum_congr rfl
+    intro U hU
+    apply Finset.sum_congr rfl
+    intro n hn
+    exact physicalBlock_live_rows _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+end CenteredMomentSecondLiveBlock
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap
+
+namespace CenteredMomentSourceAbsoluteEnvelope
+open HeckeFamily CenteredMomentRestrictedSource CenteredMomentRestrictedEnergy
+open CenteredMomentSourceRow CenteredMomentRowNorm CenteredMomentSourceRectangleEnergy
+open CenteredMomentHeckeColumnWindow CenteredMomentHeckeHeight CenteredMomentPositiveSummability
+open CenteredMomentAbsoluteEnergy InversePrincipalEnergy 
+local notation "O" => Eisenstein.O
+
+ theorem actual_source_absolute (Q:Finset (Ideal O)) (c:Ideal O→ℂ) (η:Character) (t:ℝ)
+    (keep:O→Prop) (Φ:𝓢(ℝ,ℂ)) (K:ℝ) (hK:0< K) :
+    sourceRestrictedEnergy keep Q c (heightCoeff η t) Φ K≤
+      diagonalControl Φ*max 1 K*(∑I∈Q,‖c I‖)^2 := by
+  let F:O→ℂ:=fun z=> rowPolynomial Finset.univ (sourceGenerator Q)
+    (fun I:supportedColumns Q=> c I*heightCoeff η t I) z
+  let B:ℝ:=∑I∈Q,‖c I‖
+  have hB:0≤ B:=Finset.sum_nonneg (fun I _=> norm_nonneg _)
+  have hF (z:O):‖F z‖≤ B:=by
+    change ‖rowPolynomial Finset.univ (sourceGenerator Q) (fun I:supportedColumns Q=> c I*heightCoeff η t I) z‖≤∑I∈Q,‖c I‖
+    rw [height_source_row η t Q c z]
+    apply (norm_sum_le _ _).trans
+    apply Finset.sum_le_sum
+    intro I hI
+    rw [norm_mul]
+    exact mul_le_of_le_one_right (norm_nonneg (c I)) (CenteredMomentAbsoluteEnergy.rowWeight_norm_le_one_all η CenteredMomentSecondHeightFamily.fixedBadMask 1 z t I)
+  have hs:=bounded_radial_summable F B hF keep Φ K hK
+  have hh:=hs.tsum_le_tsum (g:=fun z:O=> B^2*‖Φ (‖ringComplex z‖^2/K)‖) (fun z=> by
+    split_ifs
+    · exact (mul_le_mul_of_nonneg_left (Complex.re_le_norm _) (sq_nonneg _)).trans
+        (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (hF z) 2) (norm_nonneg _))
+    · positivity) ((radial_norm_summable Φ K hK).mul_left (B^2))
+  rw [tsum_mul_left] at hh
+  apply hh.trans
+  exact (mul_le_mul_of_nonneg_left (radial_weight_lattice_bound_all Φ K hK) (sq_nonneg B)).trans_eq (by ring)
+
+end CenteredMomentSourceAbsoluteEnvelope
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+namespace CenteredMomentSecondSquarefreeBlock
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss 
+open CenteredMomentSecondSectorColumns CenteredMomentSecondCanonical CenteredMomentCanonicalFirst
+open CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit CenteredMomentSecondCanonicalScalar
+open CenteredMomentLogDyadic CenteredMomentSmooth CenteredMomentSupport
+open CenteredMomentSecondNonexceptional CenteredMomentRestrictedEnergy CenteredMomentSecondScaled
+open CenteredMomentChildAssembly CenteredMomentMobiusRegroup CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentSectorLocalization RayFourExpansion
+open CenteredMomentSecondMaskedWindow CenteredMomentSecondRadicalColumns CenteredMomentSecondWindowBudget
+open CenteredMomentRestrictedSource CenteredMomentFirstSectors CenteredMomentSecondWindowSource
+open CenteredMomentSecondIdealBlockBound
+local notation "O" => Eisenstein.O
+
+theorem actual_block_from_squarefree_source (W : 𝓢(ℝ,ℂ)) (decay J₁ J₂ : ℕ) :
+    ∃B:ℝ,0≤ B ∧ ∀r:ℝ,0< r →
+      ∀(η:Character) (τ:RayCharacter→Character) (t:ℝ) (S:Finset (Ideal O)) (β:Ideal O→ℂ)
+        (C D:Ideal O) (hC:Supported C) (hD:Supported D),
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      ∀(R:ℝ) (rows:Finset O) (ρ x:O→ℝ) (X Y:ℝ),0< X → 0< Y →
+      ∀(Q:Ideal O) (m:O) (χ₀:RayCharacter),Q≤ Ideal.span {(72:O)} →
+      lambda∣m → (2:O)∣m →
+      (∀z∈rows,nonexceptional η χ₀ Q m A z) →
+      ∀(Φ:𝓢(ℝ,ℂ)) (H:ℝ),0< H →
+      (∀z:O,0≤(Φ (normValue z/H)).re) → (∀z∈rows,1≤(Φ (normValue z/H)).re) →
+      ∀E₁ E₂:Ideal O→ℝ,
+      (∀L,0≤ E₁ L) → (∀L,0≤ E₂ L) →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),Squarefree L → ∀χ:RayCharacter,∀v:ℝ,
+        sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool C hC.1 S)
+          (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+          (heightCoeff (τ χ) v) Φ H≤ E₁ L*(1+‖v‖)^(2*J₁)) →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),Squarefree L → ∀χ:RayCharacter,∀v:ℝ,
+        sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool D hD.1 S)
+          (fun I=> if IsCoprime D I ∧ L∣I then β (D*I) else 0)
+          (heightCoeff (τ χ) v) Φ H≤ E₂ L*(1+‖v‖)^(2*J₂)) →
+      (1+r)^decay*‖∑z∈rows,retainedScalar C D U R z*
+        ∑I:sectorPool C hC.1 S,∑J:sectorPool D hD.1 S,
+          (if IsCoprime (I:Ideal O) (J:Ideal O) then
+            idealCorrelation (C*I) (D*J)
+              ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+              ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A*z) else 0)*
+            ((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+              wholeKernel W (fun _=> logAnnulus) r (ρ z) (x z)
+                (Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+                (Real.log ((Ideal.absNorm (J:Ideal O):ℝ)/Y))‖≤
+        B*∑L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),
+          ‖(UniqueFactorizationMonoid.moebius L:ℂ)‖*
+            (windowBudget J₁ t (E₁ L)*windowBudget J₂ t (E₂ L)) := by
+  obtain ⟨B,hB,hbound⟩:=CenteredMomentSecondRadicalBlock.actual_block_from_masked_source W decay J₁ J₂
+  refine ⟨B,hB,?_⟩
+  intro r hr η τ t S β C D hC hD hCD U A hτ R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2
+    hrows Φ H hH hΦ hmajor E₁ E₂ hE₁ hE₂ hleft hright
+  let coarse (G:Ideal O) (hg:G≠0) (L:Ideal O):ℝ:=
+    SchwartzPlanePoisson.diagonalControl Φ*max 1 H*
+      (∑I∈residualPool G hg S,‖if IsCoprime G I ∧ L∣I then β (G*I) else 0‖)^2
+  have hcoarse (G:Ideal O) (hg:G≠0) (L:Ideal O):0≤ coarse G hg L:=
+    mul_nonneg (mul_nonneg (SchwartzPlanePoisson.diagonalControl_nonneg Φ) (by positivity)) (sq_nonneg _)
+  let F₁:Ideal O→ℝ:=fun L=> if Squarefree L then E₁ L else coarse C hC.1 L
+  let F₂:Ideal O→ℝ:=fun L=> if Squarefree L then E₂ L else coarse D hD.1 L
+  have hF₁ (L:Ideal O):0≤ F₁ L:=by dsimp [F₁];split_ifs;exact hE₁ L;exact hcoarse C hC.1 L
+  have hF₂ (L:Ideal O):0≤ F₂ L:=by dsimp [F₂];split_ifs;exact hE₂ L;exact hcoarse D hD.1 L
+  have hsource (G:Ideal O) (hg:G≠0) (L:Ideal O) (χ:RayCharacter) (v:ℝ) (J:ℕ):
+      sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool G hg S)
+        (fun I=> if IsCoprime G I ∧ L∣I then β (G*I) else 0)
+        (heightCoeff (τ χ) v) Φ H≤ coarse G hg L*(1+‖v‖)^(2*J):=by
+    have hh:=CenteredMomentSourceAbsoluteEnvelope.actual_source_absolute (residualPool G hg S)
+      (fun I=> if IsCoprime G I ∧ L∣I then β (G*I) else 0) (τ χ) v
+      (nonexceptional η χ Q m A) Φ H hH
+    apply hh.trans
+    exact le_mul_of_one_le_right (hcoarse G hg L) (one_le_pow₀ (by linarith [norm_nonneg v]))
+  have hh:=hbound r hr η τ t S β C D hC hD hCD U hτ R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2
+    hrows Φ H hH hΦ hmajor F₁ F₂ hF₁ hF₂
+    (by
+      intro L hL χ v
+      by_cases hs:Squarefree L
+      · simpa only [F₁,if_pos hs] using hleft L hL hs χ v
+      · simpa only [F₁,if_neg hs] using hsource C hC.1 L χ v J₁)
+    (by
+      intro L hL χ v
+      by_cases hs:Squarefree L
+      · simpa only [F₂,if_pos hs] using hright L hL hs χ v
+      · simpa only [F₂,if_neg hs] using hsource D hD.1 L χ v J₂)
+  apply hh.trans_eq
+  congr 1
+  apply Finset.sum_congr rfl
+  intro L hL
+  by_cases hμ:(UniqueFactorizationMonoid.moebius L:ℂ)=0
+  · simp only [hμ,norm_zero,zero_mul]
+  · have hs:=CenteredMomentWholeDivisorShell.squarefree_of_moebius_ne_zero L hμ
+    simp only [F₁,F₂,if_pos hs]
+
+end CenteredMomentSecondSquarefreeBlock
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+open Filter
+
+namespace CenteredMomentMobiusHarmonicMass
+open CenteredMomentWholeDivisorShell CenteredMomentSectorLocalization
+open CenteredMomentDivisorBoundary CenteredMomentMobiusRegroup UniqueFactorizationMonoid
+local notation "O" => Eisenstein.O
+
+lemma shell_mass (Ds:Finset (Ideal O)) (n:ℤ) (hn:n∈selectedShells Ds) :
+    (∑D∈shell Ds n,‖(moebius D:ℂ)‖/(Ideal.absNorm D:ℝ))≤256 := by
+  have ht:1≤ dyadicScale n:=
+    (selected_scale_bounds Ds (∑D∈Ds,(Ideal.absNorm D:ℝ))
+      (fun D hD _=> Finset.single_le_sum (fun D _=> Nat.cast_nonneg _) hD) n hn).1
+  have htp:0< dyadicScale n:=zero_lt_one.trans_le ht
+  have hcard:=divisor_dyad_card (shell Ds n) (dyadicScale n) ht
+    (fun D hd=>(shell_member_data Ds n D hd).2.2.2.1)
+    (fun D hd=>(shell_member_data Ds n D hd).2.2.2.2.2)
+  calc
+    _≤∑D∈shell Ds n,1/dyadicScale n:=by
+      apply Finset.sum_le_sum
+      intro D hd
+      have hh:=(shell_member_data Ds n D hd).2.2.2.2.1
+      exact div_le_div₀ (by norm_num) (moebius_norm_le_one D) htp hh
+    _=((shell Ds n).card:ℝ)/dyadicScale n:=by simp [div_eq_mul_inv]
+    _≤256:=(div_le_iff₀ htp).mpr hcard
+
+ theorem full_mass_subpower (B δ:ℝ) (hB:0≤ B) (hδ:0<δ) :
+    ∃C:ℝ,0< C ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧ ∀Ds:Finset (Ideal O),
+      (∀D∈Ds,(moebius D:ℂ)≠0 → (Ideal.absNorm D:ℝ)≤ Z^B) →
+      (∑D∈Ds,‖(moebius D:ℂ)‖/(Ideal.absNorm D:ℝ))≤ C*Z^δ := by
+  obtain ⟨C,hC,hbound⟩:=selected_card_subpower B δ hB hδ
+  refine ⟨256*C,by positivity,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro Ds hn
+  have he:=sum_norm_moebius_shells Ds (fun D=>1/(Ideal.absNorm D:ℝ))
+  simp only [mul_one_div] at he
+  rw [he]
+  calc
+    _≤∑n∈selectedShells Ds,(256:ℝ):=Finset.sum_le_sum (fun n hn=> shell_mass Ds n hn)
+    _=((selectedShells Ds).card:ℝ)*256:=by simp
+    _≤(C*Z^δ)*256:=mul_le_mul_of_nonneg_right (hZ.2 Ds hn) (by norm_num)
+    _=_:=by ring
+
+ theorem actual_divisorPool_mass (B δ:ℝ) (hB:0≤ B) (hδ:0<δ) :
+    ∃C:ℝ,0< C ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀{α:Type*} (T:Finset α) (v:α→Ideal O),(∀j∈T,v j≠0) →
+      (∀j∈T,(Ideal.absNorm (v j):ℝ)≤ Z^B) →
+      (∑D∈divisorPool T v,‖(moebius D:ℂ)‖/(Ideal.absNorm D:ℝ))≤ C*Z^δ := by
+  obtain ⟨C,hC,hbound⟩:=full_mass_subpower B δ hB hδ
+  refine ⟨C,hC,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro α T v hv hn
+  exact hZ.2 (divisorPool T v) (fun D hd _=>(divisorPool_nonzero_norm T v hv (Z^B) hn D hd).2)
+
+end CenteredMomentMobiusHarmonicMass
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+open Filter
+
+namespace CenteredMomentSecondHarmonicBudget
+open CenteredMomentSecondWindowBudget CenteredMomentMobiusHarmonicMass
+open CenteredMomentMobiusRegroup UniqueFactorizationMonoid
+local notation "O" => Eisenstein.O
+
+lemma paired_divisor (J₁ J₂:ℕ) (t E₁ E₂ n:ℝ) (hn:0≤ n) :
+    windowBudget J₁ t (E₁/n)*windowBudget J₂ t (E₂/n)=
+      (windowBudget J₁ t E₁*windowBudget J₂ t E₂)/n := by
+  simp only [windowBudget,Real.sqrt_div' _ hn]
+  calc
+    _=(Real.sqrt E₁*heightEnvelope t^J₁*profileMoment J₁*
+        (Real.sqrt E₂*heightEnvelope t^J₂*profileMoment J₂))/
+          (Real.sqrt n*Real.sqrt n):=by ring
+    _=_:=by rw [Real.mul_self_sqrt hn]
+
+ theorem actual_divisor_budget (B δ:ℝ) (hB:0≤ B) (hδ:0<δ) :
+    ∃C:ℝ,0< C ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧
+      ∀{α:Type*} (T:Finset α) (v:α→Ideal O),(∀j∈T,v j≠0) →
+      (∀j∈T,(Ideal.absNorm (v j):ℝ)≤ Z^B) →
+      ∀J₁ J₂:ℕ,∀t E₁ E₂:ℝ,
+      (∑L∈divisorPool T v,‖(moebius L:ℂ)‖*
+        (windowBudget J₁ t (E₁/(Ideal.absNorm L:ℝ))*
+          windowBudget J₂ t (E₂/(Ideal.absNorm L:ℝ))))≤
+      C*Z^δ*(windowBudget J₁ t E₁*windowBudget J₂ t E₂) := by
+  obtain ⟨C,hC,hbound⟩:=actual_divisorPool_mass B δ hB hδ
+  refine ⟨C,hC,?_⟩
+  filter_upwards [hbound] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro α T v hv hn J₁ J₂ t E₁ E₂
+  have he:(∑L∈divisorPool T v,‖(moebius L:ℂ)‖*
+      (windowBudget J₁ t (E₁/(Ideal.absNorm L:ℝ))*windowBudget J₂ t (E₂/(Ideal.absNorm L:ℝ))))=
+      (∑L∈divisorPool T v,‖(moebius L:ℂ)‖/(Ideal.absNorm L:ℝ))*
+        (windowBudget J₁ t E₁*windowBudget J₂ t E₂):=by
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro L hL
+    rw [paired_divisor J₁ J₂ t E₁ E₂ _ (Nat.cast_nonneg _)]
+    ring
+  rw [he]
+  exact mul_le_mul_of_nonneg_right (hZ.2 T v hv hn)
+    (mul_nonneg (windowBudget_nonneg _ _ _) (windowBudget_nonneg _ _ _))
+
+end CenteredMomentSecondHarmonicBudget
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+namespace CenteredMomentSecondSummedBlock
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss 
+open CenteredMomentSecondSectorColumns CenteredMomentSecondCanonical CenteredMomentCanonicalFirst
+open CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit CenteredMomentSecondCanonicalScalar
+open CenteredMomentLogDyadic CenteredMomentSmooth CenteredMomentSupport
+open CenteredMomentSecondNonexceptional CenteredMomentRestrictedEnergy CenteredMomentSecondScaled
+open CenteredMomentChildAssembly CenteredMomentMobiusRegroup CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentSectorLocalization RayFourExpansion
+open CenteredMomentSecondMaskedWindow CenteredMomentSecondRadicalColumns CenteredMomentSecondWindowBudget
+open CenteredMomentRestrictedSource CenteredMomentFirstSectors CenteredMomentSecondWindowSource
+open CenteredMomentSecondIdealBlockBound
+local notation "O" => Eisenstein.O
+
+open Filter
+theorem actual_block_from_divisor_envelopes (W : 𝓢(ℝ,ℂ)) (decay J₁ J₂ : ℕ) (B δ:ℝ) (hB:0≤ B) (hδ:0<δ) :
+    ∃C0:ℝ,0< C0 ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧ ∀r:ℝ,0< r →
+      ∀(η:Character) (τ:RayCharacter→Character) (t:ℝ) (S:Finset (Ideal O)) (β:Ideal O→ℂ)
+        (C D:Ideal O) (hC:Supported C) (hD:Supported D),
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      (∀J:sectorPool D hD.1 S,(Ideal.absNorm (J:Ideal O):ℝ)≤ Z^B) →
+      ∀(R:ℝ) (rows:Finset O) (ρ x:O→ℝ) (X Y:ℝ),0< X → 0< Y →
+      ∀(Q:Ideal O) (m:O) (χ₀:RayCharacter),Q≤ Ideal.span {(72:O)} →
+      lambda∣m → (2:O)∣m →
+      (∀z∈rows,nonexceptional η χ₀ Q m A z) →
+      ∀(Φ:𝓢(ℝ,ℂ)) (H:ℝ),0< H →
+      (∀z:O,0≤(Φ (normValue z/H)).re) → (∀z∈rows,1≤(Φ (normValue z/H)).re) →
+      ∀E₁ E₂:ℝ,
+      0≤ E₁ → 0≤ E₂ →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),Squarefree L → ∀χ:RayCharacter,∀v:ℝ,
+        sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool C hC.1 S)
+          (fun I=> if IsCoprime C I ∧ L∣I then β (C*I) else 0)
+          (heightCoeff (τ χ) v) Φ H≤(E₁/(Ideal.absNorm L:ℝ))*(1+‖v‖)^(2*J₁)) →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),Squarefree L → ∀χ:RayCharacter,∀v:ℝ,
+        sourceRestrictedEnergy (nonexceptional η χ Q m A) (residualPool D hD.1 S)
+          (fun I=> if IsCoprime D I ∧ L∣I then β (D*I) else 0)
+          (heightCoeff (τ χ) v) Φ H≤(E₂/(Ideal.absNorm L:ℝ))*(1+‖v‖)^(2*J₂)) →
+      (1+r)^decay*‖∑z∈rows,retainedScalar C D U R z*
+        ∑I:sectorPool C hC.1 S,∑J:sectorPool D hD.1 S,
+          (if IsCoprime (I:Ideal O) (J:Ideal O) then
+            idealCorrelation (C*I) (D*J)
+              ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+              ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A*z) else 0)*
+            ((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+              wholeKernel W (fun _=> logAnnulus) r (ρ z) (x z)
+                (Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+                (Real.log ((Ideal.absNorm (J:Ideal O):ℝ)/Y))‖≤
+        C0*Z^δ*(windowBudget J₁ t E₁*windowBudget J₂ t E₂) := by
+  obtain ⟨K,hK,hkernel⟩:=CenteredMomentSecondSquarefreeBlock.actual_block_from_squarefree_source W decay J₁ J₂
+  obtain ⟨Cm,hCm,hmass⟩:=CenteredMomentSecondHarmonicBudget.actual_divisor_budget B δ hB hδ
+  refine ⟨max 1 K*Cm,mul_pos (lt_of_lt_of_le zero_lt_one (le_max_left _ _)) hCm,?_⟩
+  filter_upwards [hmass] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro r hr η τ t S β C D hC0 hD hCD U A hτ hn R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2
+    hrows Φ H hH hΦ hmajor E₁ E₂ hE₁ hE₂ hleft hright
+  have hk:=hkernel r hr η τ t S β C D hC0 hD hCD U hτ R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2
+    hrows Φ H hH hΦ hmajor
+    (fun L=> E₁/(Ideal.absNorm L:ℝ)) (fun L=> E₂/(Ideal.absNorm L:ℝ))
+    (fun L=> div_nonneg hE₁ (Nat.cast_nonneg _)) (fun L=> div_nonneg hE₂ (Nat.cast_nonneg _))
+    hleft hright
+  have hs:=hZ.2 Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O))
+    (fun J _=>(sectorPool_supported D hD.1 S J).1) (fun J _=> hn J) J₁ J₂ t E₁ E₂
+  apply hk.trans
+  calc
+    _≤ K*(Cm*Z^δ*(windowBudget J₁ t E₁*windowBudget J₂ t E₂)):=mul_le_mul_of_nonneg_left hs hK
+    _≤ max 1 K*(Cm*Z^δ*(windowBudget J₁ t E₁*windowBudget J₂ t E₂)):=
+      mul_le_mul_of_nonneg_right (le_max_right _ _)
+        (mul_nonneg (mul_nonneg hCm.le (Real.rpow_nonneg (zero_lt_one.trans hZ.1).le _))
+          (mul_nonneg (windowBudget_nonneg _ _ _) (windowBudget_nonneg _ _ _)))
+    _=_:=by ring
+
+end CenteredMomentSecondSummedBlock
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators Classical SchwartzMap ContDiff
+
+namespace CenteredMomentSecondOriginalChildren
+open HeckeFamily CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss 
+open CenteredMomentSecondSectorColumns CenteredMomentSecondCanonical CenteredMomentCanonicalFirst
+open CenteredMomentSecondCanonicalFrequency CenteredMomentSecondCanonicalNonunit CenteredMomentSecondCanonicalScalar
+open CenteredMomentLogDyadic CenteredMomentSmooth CenteredMomentSupport
+open CenteredMomentSecondNonexceptional CenteredMomentRestrictedEnergy CenteredMomentSecondScaled
+open CenteredMomentChildAssembly CenteredMomentMobiusRegroup CenteredMomentRowNorm
+open CenteredMomentHeckeColumnWindow CenteredMomentSectorLocalization RayFourExpansion
+open CenteredMomentSecondMaskedWindow CenteredMomentSecondRadicalColumns CenteredMomentSecondWindowBudget
+open CenteredMomentRestrictedSource CenteredMomentFirstSectors CenteredMomentSecondWindowSource
+open CenteredMomentSecondIdealBlockBound
+local notation "O" => Eisenstein.O
+
+open Filter
+open CenteredMomentCommonHeightEnvelope CenteredMomentCommonRadialData CenteredMomentCommonRadialPointwise
+open CenteredMomentRadialEligibleEnergy CenteredMomentSourceMass CenteredMomentSourceProfileMass
+open CenteredMomentCommonAllocationSum CenteredMomentEligibleEnergy
+variable {ι:Type*} [Fintype ι] [DecidableEq ι]
+local instance : DecidableEq (ι⊕Fin 2) := Classical.decEq _
+
+def core (s:Input ι) (C:Ideal O) (C0 Z δ E:ℝ) : ℝ :=
+  C0*Z^δ*(profileCost s*E)*(s.X₁*s.X₂*∏i,s.P i)/(Ideal.absNorm C:ℝ)
+
+omit [DecidableEq ι] in
+lemma envelope_eq_core (s:Input ι) (C L:Ideal O) (C0 Z δ E:ℝ) :
+    envelope s C L C0 Z δ E=core s C C0 Z δ E/(Ideal.absNorm L:ℝ):=by
+  unfold envelope core;ring
+
+def sourceRadial (keep:O→Prop) (Φ:𝓢(ℝ,ℂ)) (H:ℝ) (hH:0< H)
+    (hΦ:∀z:O,0≤(Φ (normValue z/H)).re) : Radial :=
+  ⟨keep,Φ,H,hH,fun z=> by simpa only [normValue_eq_embedding] using hΦ z⟩
+
+theorem actual_block_from_original_children (lo hi:ι→ℝ) (W : 𝓢(ℝ,ℂ)) (decay J₁ J₂ : ℕ) (B δ:ℝ) (hB:0≤ B) (hδ:0<δ) :
+    ∃C0 Ce:ℝ,0< C0 ∧ 0< Ce ∧ ∀ᶠZ:ℝ in atTop,1< Z ∧ ∀r:ℝ,0< r →
+      ∀(η:Character) (τ:RayCharacter→Character) (t:ℝ) (s:Input ι),
+      (∀i,s.lo i=lo i) → (∀i,s.hi i=hi i) → ∀R0 seed:Ideal O,
+      let S:=finiteColumns (Fintype.piFinset s.pools)
+      let β:=finiteColumnCoefficient (Fintype.piFinset s.pools)
+        (profileCoefficient R0 s.ν s.W s.P s.W₁ s.W₂ s.X₁ s.X₂ s.Y₁ s.Y₂ 1 1 seed)
+      ∀(C D:Ideal O) (hC:Supported C) (hD:Supported D),
+      seed∣C → seed∣D → (Ideal.absNorm C:ℝ)≤ Z^B → (Ideal.absNorm D:ℝ)≤ Z^B →
+      primeSupport C=primeSupport D → ∀U:Finset (CommonIndex C D),
+      let A:=commonFrequencyGenerator C D*nonunitFrequencyGenerator C D U
+      (∀χ:RayCharacter,∀I:Ideal O,Supported I → (IsCoprime C I ∨ IsCoprime D I) → ∀v:ℝ,
+        heightCoeff (τ χ) v I=heightCoeff η v I*idealRowHom A I*rayMonoid χ (primaryIdealGenerator I)) →
+      (∀J:sectorPool D hD.1 S,(Ideal.absNorm (J:Ideal O):ℝ)≤ Z^B) →
+      ∀(R:ℝ) (rows:Finset O) (ρ x:O→ℝ) (X Y:ℝ),0< X → 0< Y →
+      ∀(Q:Ideal O) (m:O) (χ₀:RayCharacter),Q≤ Ideal.span {(72:O)} →
+      lambda∣m → (2:O)∣m →
+      (∀z∈rows,nonexceptional η χ₀ Q m A z) →
+      ∀(Φ:𝓢(ℝ,ℂ)) (H:ℝ),∀hH:0< H,
+      ∀hΦ:(∀z:O,0≤(Φ (normValue z/H)).re), (∀z∈rows,1≤(Φ (normValue z/H)).re) →
+      ∀E₁ E₂:ℝ,
+      0≤ E₁ → 0≤ E₂ →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),Squarefree L →
+        ∀χ:RayCharacter,∀v:ℝ,∀b:actualAllocations s.pools C,
+        ∀a∈(commonData (withHeight s (τ χ) v) C R0 b).toSource.active L,
+          childEnergy (commonData (withHeight s (τ χ) v) C R0 b)
+            (sourceRadial (nonexceptional η χ Q m A) Φ H hH hΦ) L a≤ E₁*(1+‖v‖)^(2*J₁)) →
+      (∀L∈divisorPool Finset.univ (fun J:sectorPool D hD.1 S=>(J:Ideal O)),Squarefree L →
+        ∀χ:RayCharacter,∀v:ℝ,∀b:actualAllocations s.pools D,
+        ∀a∈(commonData (withHeight s (τ χ) v) D R0 b).toSource.active L,
+          childEnergy (commonData (withHeight s (τ χ) v) D R0 b)
+            (sourceRadial (nonexceptional η χ Q m A) Φ H hH hΦ) L a≤ E₂*(1+‖v‖)^(2*J₂)) →
+      (1+r)^decay*‖∑z∈rows,retainedScalar C D U R z*
+        ∑I:sectorPool C hC.1 S,∑J:sectorPool D hD.1 S,
+          (if IsCoprime (I:Ideal O) (J:Ideal O) then
+            idealCorrelation (C*I) (D*J)
+              ((supported_mul_iff _ _).mpr ⟨hC,sectorPool_supported C hC.1 S I⟩)
+              ((supported_mul_iff _ _).mpr ⟨hD,sectorPool_supported D hD.1 S J⟩) (A*z) else 0)*
+            ((β (C*I)*heightCoeff η t I)*star (β (D*J)*heightCoeff η t J))*
+              wholeKernel W (fun _=> logAnnulus) r (ρ z) (x z)
+                (Real.log ((Ideal.absNorm (I:Ideal O):ℝ)/X))
+                (Real.log ((Ideal.absNorm (J:Ideal O):ℝ)/Y))‖≤
+        C0*Z^δ*(windowBudget J₁ t (core s C Ce Z δ E₁)*windowBudget J₂ t (core s D Ce Z δ E₂)) := by
+  obtain ⟨Ce,hCe,hsource⟩:=actual_height_envelope lo hi B δ hB hδ
+  obtain ⟨C0,hC0,hkernel⟩:=CenteredMomentSecondSummedBlock.actual_block_from_divisor_envelopes W decay J₁ J₂ B δ hB hδ
+  refine ⟨C0,Ce,hC0,hCe,?_⟩
+  filter_upwards [hkernel] with Z hZ
+  refine ⟨hZ.1,?_⟩
+  intro r hr η τ t s hlo hhi R0 seed S β C D hC hD hsC hsD hnC hnD hCD U A hτ hn
+    R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2 hrows Φ H hH hΦ hmajor E₁ E₂ hE₁ hE₂ hleft hright
+  have hcore (G:Ideal O) (E:ℝ) (hE:0≤ E):0≤ core s G Ce Z δ E:=by
+    unfold core
+    exact div_nonneg (mul_nonneg (mul_nonneg (mul_nonneg hCe.le (Real.rpow_nonneg (zero_lt_one.trans hZ.1).le _))
+      (mul_nonneg (profileCost_nonneg s) hE))
+      (mul_nonneg (mul_nonneg s.X₁_pos.le s.X₂_pos.le) (Finset.prod_nonneg (fun i _=>(s.P_pos i).le)))) (Nat.cast_nonneg _)
+  apply hZ.2 r hr η τ t S β C D hC hD hCD U hτ hn R rows ρ x X Y hX hY Q m χ₀ hQ hmLam hm2
+    hrows Φ H hH hΦ hmajor (core s C Ce Z δ E₁) (core s D Ce Z δ E₂)
+    (hcore C E₁ hE₁) (hcore D E₂ hE₂)
+  · intro L hL hsf χ v
+    have hNL: (Ideal.absNorm L:ℝ)≤ Z^B:=
+      (CenteredMomentWholeDivisorShell.divisorPool_nonzero_norm Finset.univ
+        (fun J:sectorPool D hD.1 S=>(J:Ideal O))
+        (fun J _=>(sectorPool_supported D hD.1 S J).1) (Z^B) (fun J _=> hn J) L hL).2
+    have hh:=hsource s hlo hhi (sourceRadial (nonexceptional η χ Q m A) Φ H hH hΦ) C hC R0 seed L hsC hsf
+      E₁ Z hE₁ hZ.1 hnC hNL J₁ (τ χ) v (hleft L hL hsf χ v)
+    simpa only [envelope_eq_core,sourceRadial,S,β,A] using hh
+  · intro L hL hsf χ v
+    have hNL: (Ideal.absNorm L:ℝ)≤ Z^B:=
+      (CenteredMomentWholeDivisorShell.divisorPool_nonzero_norm Finset.univ
+        (fun J:sectorPool D hD.1 S=>(J:Ideal O))
+        (fun J _=>(sectorPool_supported D hD.1 S J).1) (Z^B) (fun J _=> hn J) L hL).2
+    have hh:=hsource s hlo hhi (sourceRadial (nonexceptional η χ Q m A) Φ H hH hΦ) D hD R0 seed L hsD hsf
+      E₂ Z hE₂ hZ.1 hnD hNL J₂ (τ χ) v (hright L hL hsf χ v)
+    simpa only [envelope_eq_core,sourceRadial,S,β,A] using hh
+
+end CenteredMomentSecondOriginalChildren
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators SchwartzMap ContDiff
+namespace CenteredMomentAllocatedNaturalRadial
+open HeckeFamily HeckeDyadic  MeasureTheory
+open CenteredMomentAllocatedNaturalSource CenteredMomentCommonMaskRadialEnergy
+open CenteredMomentCommonMaskExpansion CenteredMomentCommonMaskEnergy
+open CenteredMomentNaturalRowSource CenteredMomentRetainedProfile CenteredMomentLattice
+open CenteredMomentDivisorAllocation CenteredMomentDivisorRaw CenteredMomentDivisorRetained
+open CenteredMomentOriginalRadialComparison CenteredMomentRadialPolynomialEnergy
+open CenteredMomentCommonRadialData CenteredMomentCommonHeightEnvelope CenteredMomentEligibleEnergy
+open CenteredMomentCommonAllocationSum CenteredMomentRadialEligibleEnergy
+local notation "O" => Eisenstein.O
+
+lemma profile_support (V : Plain) (U : ℝ) (hU : 0< U) (t : ℝ) :
+    Function.support (V.profile U hU t : ℝ→ℂ)⊆Set.Icc (V.a/max 1 V.b) (max 1 V.b) := by
+  by_cases h : 1≤ U*V.b
+  · rw [V.profile_retained U hU t h]
+    exact (retainedProfile_support V.W V.a V.b V.a_pos V.support V.smooth U hU h t).trans
+      (fun _ hx=>⟨hx.1,hx.2.trans (le_max_right _ _)⟩)
+  · rw [V.profile_zero U hU t (lt_of_not_ge h)]
+    simp
+
+def naturalCharacter (η : Character) (z : O) : Character :=
+  if h : z≠0 then (naturalRow η z h).character else η
+
+lemma naturalCharacter_eq (η : Character) (z : O) (hz : z≠0) :
+    naturalCharacter η z=(naturalRow η z hz).character := by simp [naturalCharacter,hz]
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+def Shared (F : Finset α) (b M : α→ℝ) (C ε : ℝ) : Prop :=
+  ∀(R : Finset (Ideal O))(hR : ∀I∈R,Prime I)
+      (χ : O→Character)(W₁ W₂ : 𝓢(ℝ,ℂ))(X₁ X₂ a₁ b₁ a₂ b₂ : ℝ)
+      (pool : α→Finset (Ideal O))(β : α→Ideal O→ℂ)(P : α→ℝ)
+      (keep : O→Prop)(Φ : 𝓢(ℝ,ℂ))(K E : ℝ),
+      0< X₁ → 0< X₂ → 0≤ b₁ → 0≤ b₂ →
+      Function.support (W₁:ℝ→ℂ)⊆Set.Icc a₁ b₁ →
+      Function.support (W₂:ℝ→ℂ)⊆Set.Icc a₂ b₂ →
+      (∀j∈F,∀I∈pool j,Prime I) → (∀j∈F,0< P j) →
+      (∀j∈F,∀I∈pool j,‖β j I‖≤ M j) →
+      (∀j∈F,∀I∈pool j,β j I≠0 → (I.absNorm:ℝ)≤ b j*P j) →
+      0< K → (∀z,0≤(Φ (‖ringComplex z‖^2/K)).re) → 0≤ E →
+      (∀D₁∈R.powerset,∀D₂∈R.powerset,∀J∈F.powerset,
+        radialEnergy (fun z=> polynomial (χ z) false W₁
+          (X₁/(Ideal.absNorm (∏I∈D₁,I):ℝ)) 0 0 *
+          polynomial (χ z) false W₂ (X₂/(Ideal.absNorm (∏I∈D₂,I):ℝ)) 0 0 *
+          ∏j∈F\J,naturalSlot (χ z) (pool j) (β j) (P j)) keep Φ K≤ E) →
+      radialEnergy (fun z=> polynomial ((χ z).excludePrimes R hR) false W₁ X₁ 0 0 *
+        polynomial ((χ z).excludePrimes R hR) false W₂ X₂ 0 0 *
+        ∏j∈F,naturalSlot ((χ z).excludePrimes R hR) (pool j) (β j) (P j)) keep Φ K≤
+        C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε*E
+
+theorem uniform_shared (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀T : Finset α,∀F : Finset T,
+      Shared F (fun i=> b i) (fun i=> M i) C ε := by
+  have he (T : Finset α) (F : Finset T) : ∃C : ℝ,0< C ∧ Shared F (fun i=> b i) (fun i=> M i) C ε :=
+    actual_radial_shared_energy F (fun i=> b i) (fun i=> M i) (fun i _=> hM i) ε hε
+  choose C hC hb using he
+  let B : ℝ:=1+∑T : Finset α,∑F : Finset T,C T F
+  have hp (T : Finset α) : 0≤∑F : Finset T,C T F:=Finset.sum_nonneg (fun F _=>(hC T F).le)
+  refine ⟨B,by have hh : 0≤∑T : Finset α,∑F : Finset T,C T F:=Finset.sum_nonneg (fun T _=> hp T);dsimp [B];linarith,?_⟩
+  intro T F R hR χ W₁ W₂ X₁ X₂ a₁ b₁ a₂ b₂ pool β P keep Φ K E
+    hX₁ hX₂ hb₁ hb₂ hs₁ hs₂ hprime hP hβ hs hK hΦ hE hchild
+  have hCB : C T F≤ B := by
+    have h₁:=Finset.single_le_sum (fun G _=>(hC T G).le) (Finset.mem_univ F)
+    have h₂:=Finset.single_le_sum (fun T _=> hp T) (Finset.mem_univ T)
+    dsimp [B];linarith
+  exact (hb T F R hR χ W₁ W₂ X₁ X₂ a₁ b₁ a₂ b₂ pool β P keep Φ K E
+    hX₁ hX₂ hb₁ hb₂ hs₁ hs₂ hprime hP hβ hs hK hΦ hE hchild).trans
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCB
+      (Real.rpow_nonneg (Nat.cast_nonneg _) _)) hE)
+
+def commonChild (s : Input α) (τ : Character) (v : ℝ) (C R : Ideal O)
+    (B : actualAllocations s.pools C) (L : Ideal O)
+    (a : Allocation L (Finset.univ : Finset (CenteredMomentCommonProfile.liveIndices B.val⊕Fin 2)))
+    (V₁ V₂ : Plain) (left : Bool) (z : O) (D₁ D₂ : Finset (Ideal O))
+    (J : Finset (CenteredMomentCommonProfile.liveIndices B.val)) : ℂ :=
+  let d:=commonData (withHeight s τ v) C R B
+  if left then child (naturalCharacter τ z) L a V₁ V₂ d.slots d.coefficient d.P v
+    d.X₁ d.X₂ d.X₁_pos d.X₂_pos D₁ D₂ J
+  else child (naturalCharacter τ z) L a V₁ V₂ d.slots d.coefficient d.P v
+    d.Y₁ d.Y₂ d.Y₁_pos d.Y₂_pos D₁ D₂ J
+
+lemma common_rawScale (s : Input α) (τ : Character) (v : ℝ) (C R : Ideal O)
+    (B : actualAllocations s.pools C) (L : Ideal O)
+    (a : Allocation L (Finset.univ : Finset (CenteredMomentCommonProfile.liveIndices B.val⊕Fin 2))) :
+    rawScale L a (commonData (withHeight s τ v) C R B).X₁ 0=
+      s.X₁/(Ideal.absNorm (B.val (Sum.inr 0)*CenteredMomentDivisorRectangle.selectedPlain L a 0):ℝ) := by
+  simp only [rawScale,commonData,withHeight,map_mul,Nat.cast_mul,div_div]
+
+theorem common_allocated_normalized (s : Input α) (τ : Character) (v : ℝ) (C R : Ideal O)
+    (B : actualAllocations s.pools C) (hRC : R*C≠0) (L : Ideal O)
+    (a : Allocation L (Finset.univ : Finset (CenteredMomentCommonProfile.liveIndices B.val⊕Fin 2)))
+    (V₁ V₂ : Plain) (hV₁ : V₁.W=s.W₁) (hV₂ : V₂.W=s.W₂) (z : O) (hz : z≠0) :
+    let d:=commonData (withHeight s τ v) C R B
+    allocatedPositiveRow d.η d.m d.A z d.t d.slots d.coefficient d.P L a d.W₁ d.W₂ d.X₁ d.X₂=
+      (((clippedScale (rawScale L a d.X₁ 0)):ℂ)^(Complex.I*v)*
+       ((clippedScale (rawScale L a d.X₂ 1)):ℂ)^(Complex.I*v))*
+       (polynomial (excluded (naturalCharacter τ z) (R*C)) false
+          (V₁.profile _ (rawScale_pos L a d.X₁ d.X₁_pos 0) v) (clippedScale (rawScale L a d.X₁ 0)) 0 0*
+        polynomial (excluded (naturalCharacter τ z) (R*C)) false
+          (V₂.profile _ (rawScale_pos L a d.X₂ d.X₂_pos 1) v) (clippedScale (rawScale L a d.X₂ 1)) 0 0*
+        ∏i∈liveIndices L a,naturalSlot (excluded (naturalCharacter τ z) (R*C))
+          (d.slots i) (heightCoefficient (d.coefficient i) v) (d.P i)) := by
+  dsimp only
+  rw [naturalCharacter_eq τ z hz]
+  have hh:=allocated_normalized τ z hz (R*C) hRC L a V₁ V₂
+    (commonData (withHeight s τ v) C R B).slots
+    (commonData (withHeight s τ v) C R B).coefficient
+    (commonData (withHeight s τ v) C R B).P
+    (commonData (withHeight s τ v) C R B).P_pos v
+    (commonData (withHeight s τ v) C R B).X₁ (commonData (withHeight s τ v) C R B).X₂
+    (commonData (withHeight s τ v) C R B).X₁_pos (commonData (withHeight s τ v) C R B).X₂_pos
+  simpa only [hV₁,hV₂,commonData,withHeight] using hh
+
+theorem allocated_radial_bound (b M : α→ℝ) (C₀ ε : ℝ)
+    (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2)))
+    (hb : Shared (liveIndices D a) b M C₀ ε)
+    (η : Character) (R : Ideal O) (hR : R≠0) (V₁ V₂ : Plain)
+    (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ)
+    (hprime : ∀i,∀I∈pool i,Prime I) (hP : ∀i,0< P i)
+    (hβ : ∀i,∀I∈pool i,‖β i I‖≤ M i)
+    (hs : ∀i,∀I∈pool i,β i I≠0 → (I.absNorm:ℝ)≤ b i*P i)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂)
+    (r : Radial) (hkeep : ∀z,r.keep z → z≠0) (E : ℝ) (hE : 0≤ E)
+    (hchild : ∀D₁∈(primeSupport R).powerset,
+      ∀D₂∈(primeSupport R).powerset,∀J∈(liveIndices D a).powerset,
+      radialEnergy (fun z=> child (naturalCharacter η z) D a V₁ V₂ pool β P t X₁ X₂
+        hX₁ hX₂ D₁ D₂ J) r.keep r.profile r.scale≤ E) :
+    radialEnergy (fun z=> allocatedPositiveRow η
+      (CenteredMomentSecondHeightFamily.fixedBadMask*cubicIdealGenerator R)
+      1 z t pool β P D a V₁.W V₂.W X₁ X₂) r.keep r.profile r.scale≤
+        C₀*(Ideal.absNorm R.radical:ℝ)^ε*E := by
+  have hh:=hb (primeSupport R) (CenteredMomentNaturalRowSource.support_prime R) (naturalCharacter η)
+    (V₁.profile _ (rawScale_pos D a X₁ hX₁ 0) t)
+    (V₂.profile _ (rawScale_pos D a X₂ hX₂ 1) t)
+    (clippedScale (rawScale D a X₁ 0)) (clippedScale (rawScale D a X₂ 1))
+    (V₁.a/max 1 V₁.b) (max 1 V₁.b) (V₂.a/max 1 V₂.b) (max 1 V₂.b)
+    pool (fun i=> heightCoefficient (β i) t) P r.keep r.profile r.scale E
+    (by unfold clippedScale;positivity) (by unfold clippedScale;positivity)
+    (by positivity) (by positivity) (profile_support V₁ _ _ t) (profile_support V₂ _ _ t)
+    (fun i _=> hprime i) (fun i _=> hP i)
+    (fun i _ I hi=> by rw [heightCoefficient_norm _ _ _ (hprime i I hi).ne_zero];exact hβ i I hi)
+    (fun i _ I hi hn=> hs i I hi (left_ne_zero_of_mul hn)) r.scale_pos r.nonneg hE hchild
+  rw [←primeSupport_product_radical R hR]
+  convert hh using 1
+  all_goals try rfl
+  unfold radialEnergy
+  apply tsum_congr
+  intro z
+  split_ifs with hz
+  · dsimp only
+    rw [allocated_normalized η z (hkeep z hz) R hR D a V₁ V₂ pool β P hP t X₁ X₂ hX₁ hX₂,
+      naturalCharacter_eq η z (hkeep z hz)]
+    have hphase (U : ℝ) : ‖((clippedScale U):ℂ)^(Complex.I*t)‖=1 :=
+      positive_height_phase_norm _ _ (by unfold clippedScale;positivity)
+    simp only [excluded,norm_mul,hphase,one_mul]
+  · rfl
+
+theorem natural_child_summable (η : Character) (R : Ideal O)
+    (D : Ideal O) (a : Allocation D (Finset.univ : Finset (α⊕Fin 2)))
+    (V₁ V₂ : Plain) (pool : α→Finset (Ideal O)) (β : α→Ideal O→ℂ) (P : α→ℝ)
+    (t X₁ X₂ : ℝ) (hX₁ : 0< X₁) (hX₂ : 0< X₂)
+    (D₁ D₂ : Finset (Ideal O)) (hD₁ : D₁⊆primeSupport R)
+    (hD₂ : D₂⊆primeSupport R) (J : Finset α) (r : Radial) :
+    Summable (fun z=> if r.keep z then
+      ‖child (naturalCharacter η z) D a V₁ V₂ pool β P t X₁ X₂ hX₁ hX₂ D₁ D₂ J‖^2*
+        (r.profile (‖ringComplex z‖^2/r.scale)).re else 0) := by
+  have hn (S : Finset (Ideal O)) (hS : S⊆primeSupport R) :
+      (0:ℝ)< Ideal.absNorm (∏I∈S,I) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Finset.prod_ne_zero_iff.mpr (fun I hI=>(CenteredMomentNaturalRowSource.support_prime R I (hS hI)).ne_zero)))
+  obtain ⟨PB,hPB,hbound⟩:=slots_bounded (liveIndices D a\J) pool (fun i=> heightCoefficient (β i) t) P
+  exact pair_radial_summable (naturalCharacter η)
+    (fun z=>∏i∈liveIndices D a\J,naturalSlot (naturalCharacter η z) (pool i) (heightCoefficient (β i) t) (P i))
+    (fun _=>0) (fun _=>0)
+    (V₁.profile _ (rawScale_pos D a X₁ hX₁ 0) t) (V₂.profile _ (rawScale_pos D a X₂ hX₂ 1) t)
+    (V₁.a/max 1 V₁.b) (max 1 V₁.b) (V₂.a/max 1 V₂.b) (max 1 V₂.b)
+    (clippedScale (rawScale D a X₁ 0)/(Ideal.absNorm (∏I∈D₁,I):ℝ))
+    (clippedScale (rawScale D a X₂ 1)/(Ideal.absNorm (∏I∈D₂,I):ℝ)) PB
+    (by positivity) (by positivity) (div_pos (by unfold clippedScale;positivity) (hn D₁ hD₁))
+    (div_pos (by unfold clippedScale;positivity) (hn D₂ hD₂))
+    (profile_support V₁ _ _ t) (profile_support V₂ _ _ t) (fun z=> hbound (naturalCharacter η z))
+    r.keep r.profile r.scale r.scale_pos
+
+omit [DecidableEq α] in
+lemma common_nonzero (s : Input α) (C : Ideal O) (B : actualAllocations s.pools C) : C≠0 := by
+  rw [←(Finset.mem_filter.mp B.property).2]
+  exact Finset.prod_ne_zero_iff.mpr (fun i _=> alloc_ne s C B i)
+
+lemma child_energy_eq_radial (s : Data α) (r : Radial) (D : Ideal O)
+    (a : Allocation D (Finset.univ : Finset (α⊕Fin 2))) :
+    childEnergy s r D a=
+      radialEnergy (fun z=> allocatedPositiveRow s.η s.m s.A z s.t s.slots s.coefficient s.P
+        D a s.W₁ s.W₂ s.X₁ s.X₂) r.keep r.profile r.scale+
+      radialEnergy (fun z=> allocatedPositiveRow s.η s.m s.A z s.t s.slots s.coefficient s.P
+        D a s.W₁ s.W₂ s.Y₁ s.Y₂) r.keep r.profile r.scale := by
+  have hx:=CenteredMomentPositiveSummability.allocated_positive_summable s.η s.m s.A s.t
+    s.W₁ s.W₂ s.b₁ s.b₂ s.X₁ s.X₂ s.support₁ s.support₂ s.X₁_pos s.X₂_pos
+    s.slots s.coefficient s.P D a r.keep r.profile r.scale r.scale_pos
+  have hy:=CenteredMomentPositiveSummability.allocated_positive_summable s.η s.m s.A s.t
+    s.W₁ s.W₂ s.b₁ s.b₂ s.Y₁ s.Y₂ s.support₁ s.support₂ s.Y₁_pos s.Y₂_pos
+    s.slots s.coefficient s.P D a r.keep r.profile r.scale r.scale_pos
+  unfold childEnergy radialEnergy
+  rw [←hx.tsum_add hy]
+  apply tsum_congr
+  intro z
+  unfold Radial.weight
+  split_ifs <;> ring
+
+def CommonBound (b M : α→ℝ) (C₀ ε : ℝ) : Prop :=
+  ∀s : Input α,(∀i,s.hi i≤ b i) → (∀i,s.M i≤ M i) →
+    ∀(τ : Character) (v : ℝ) (C R : Ideal O),R≠0 → ∀B : actualAllocations s.pools C,
+    ∀(L : Ideal O) (a : Allocation L (Finset.univ : Finset (CenteredMomentCommonProfile.liveIndices B.val⊕Fin 2))),
+    ∀V₁ V₂ : Plain,V₁.W=s.W₁ → V₂.W=s.W₂ → ∀r : Radial,(∀z,r.keep z → z≠0) →
+    ∀E₁ E₂ : ℝ,0≤ E₁ → 0≤ E₂ →
+    (∀D₁∈(primeSupport (R*C)).powerset,
+     ∀D₂∈(primeSupport (R*C)).powerset,∀J∈(liveIndices L a).powerset,
+      radialEnergy (fun z=> commonChild s τ v C R B L a V₁ V₂ true z D₁ D₂ J) r.keep r.profile r.scale≤ E₁) →
+    (∀D₁∈(primeSupport (R*C)).powerset,
+     ∀D₂∈(primeSupport (R*C)).powerset,∀J∈(liveIndices L a).powerset,
+      radialEnergy (fun z=> commonChild s τ v C R B L a V₁ V₂ false z D₁ D₂ J) r.keep r.profile r.scale≤ E₂) →
+    childEnergy (commonData (withHeight s τ v) C R B) r L a≤
+      C₀*(Ideal.absNorm (R*C).radical:ℝ)^ε*(E₁+E₂)
+
+theorem actual_common_radial_energy (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C₀ : ℝ,0< C₀ ∧ CommonBound b M C₀ ε := by
+  obtain ⟨C₀,hC₀,hbound⟩:=uniform_shared b M hM ε hε
+  refine ⟨C₀,hC₀,?_⟩
+  intro s hhi hMs τ v C R hR B L a V₁ V₂ hV₁ hV₂ r hkeep E₁ E₂ hE₁ hE₂ hleft hright
+  let d:=commonData (withHeight s τ v) C R B
+  have hRC : R*C≠0:=mul_ne_zero hR (common_nonzero s C B)
+  have hb:=hbound (CenteredMomentCommonProfile.liveIndices B.val) (liveIndices L a)
+  have hc:= (commonSlots s C B).controls
+  have hβ : ∀i,∀I∈d.slots i,‖d.coefficient i I‖≤ M i := by
+    intro i I _
+    exact (hc.1 i I).trans (hMs i)
+  have hs : ∀i,∀I∈d.slots i,d.coefficient i I≠0 → (I.absNorm:ℝ)≤ b i*d.P i := by
+    intro i I _ hn
+    exact (hc.2 i I hn).trans (mul_le_mul_of_nonneg_right (hhi i) (s.P_pos i).le)
+  have hl:=allocated_radial_bound (fun i : CenteredMomentCommonProfile.liveIndices B.val=> b i)
+    (fun i=> M i) C₀ ε L a hb τ (R*C) hRC V₁ V₂ d.slots d.coefficient d.P
+    d.prime d.P_pos hβ hs v d.X₁ d.X₂ d.X₁_pos d.X₂_pos r hkeep E₁ hE₁ hleft
+  have hr:=allocated_radial_bound (fun i : CenteredMomentCommonProfile.liveIndices B.val=> b i)
+    (fun i=> M i) C₀ ε L a hb τ (R*C) hRC V₁ V₂ d.slots d.coefficient d.P
+    d.prime d.P_pos hβ hs v d.Y₁ d.Y₂ d.Y₁_pos d.Y₂_pos r hkeep E₂ hE₂ hright
+  rw [child_energy_eq_radial]
+  have hh:=add_le_add hl hr
+  rw [←mul_add] at hh
+  simpa only [d,commonData,withHeight,hV₁,hV₂] using hh
+
+lemma nonexceptional_nonzero (η : Character) (χ : RayFourExpansion.RayCharacter)
+    (Q : Ideal O) (m A z : O)
+    (hz : CenteredMomentRestrictedEnergy.nonexceptional η χ Q m A z) : z≠0 := hz.1
+
+theorem uniform_initial_common_radial_energy (b M : α→ℝ) (hM : ∀i,0≤ M i) (ε : ℝ) (hε : 0<ε) :
+    ∃C₀ : ℝ,0< C₀ ∧ ∀T : Finset α,CommonBound (fun i : T=> b i) (fun i : T=> M i) C₀ ε := by
+  have he (T : Finset α) : ∃C₀ : ℝ,0< C₀ ∧ CommonBound (fun i : T=> b i) (fun i : T=> M i) C₀ ε :=
+    actual_common_radial_energy (fun i : T=> b i) (fun i : T=> M i) (fun i=> hM i) ε hε
+  choose C hC hb using he
+  let C₀ : ℝ:=1+∑T : Finset α,C T
+  have hsum : 0≤∑T : Finset α,C T:=Finset.sum_nonneg (fun T _=>(hC T).le)
+  refine ⟨C₀,by dsimp [C₀];linarith,?_⟩
+  intro T s hhi hMs τ v I R hR B L a V₁ V₂ hV₁ hV₂ r hkeep E₁ E₂ hE₁ hE₂ hleft hright
+  have hCB : C T≤ C₀ := by
+    have hh:=Finset.single_le_sum (fun T _=>(hC T).le) (Finset.mem_univ T)
+    dsimp [C₀];linarith
+  exact (hb T s hhi hMs τ v I R hR B L a V₁ V₂ hV₁ hV₂ r hkeep E₁ E₂ hE₁ hE₂ hleft hright).trans
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCB
+      (Real.rpow_nonneg (Nat.cast_nonneg _) _)) (add_nonneg hE₁ hE₂))
+
+lemma common_raw_same_product (s : Input α) (τ : Character) (v : ℝ) (C R : Ideal O)
+    (B : actualAllocations s.pools C) (L : Ideal O)
+    (a : Allocation L (Finset.univ : Finset (CenteredMomentCommonProfile.liveIndices B.val⊕Fin 2))) :
+    let d:=commonData (withHeight s τ v) C R B
+    rawScale L a d.X₁ 0*rawScale L a d.X₂ 1=rawScale L a d.Y₁ 0*rawScale L a d.Y₂ 1 :=
+  raw_same_product L a _ _ _ _ (commonData (withHeight s τ v) C R B).same_product.symm
+
+theorem original_nonexceptional_common_radial_energy (b M : α→ℝ) (hM : ∀i,0≤ M i)
+    (ε : ℝ) (hε : 0<ε) :
+    ∃C₀ : ℝ,0< C₀ ∧ ∀s : Input α,(∀i,s.hi i≤ b i) → (∀i,s.M i≤ M i) →
+    ∀(τ : Character) (v : ℝ) (C R : Ideal O),R≠0 → ∀B : actualAllocations s.pools C,
+    ∀(L : Ideal O) (a : Allocation L (Finset.univ : Finset (CenteredMomentCommonProfile.liveIndices B.val⊕Fin 2))),
+    ∀V₁ V₂ : Plain,V₁.W=s.W₁ → V₂.W=s.W₂ → ∀(η : Character) (χ : RayFourExpansion.RayCharacter) (Q : Ideal O) (m A : O)
+      (Φ : 𝓢(ℝ,ℂ)) (H : ℝ) (hH : 0< H)
+      (hΦ : ∀z : O,0≤(Φ (CenteredMomentSectorLocalization.normValue z/H)).re),
+    let r:=CenteredMomentSecondOriginalChildren.sourceRadial
+      (CenteredMomentRestrictedEnergy.nonexceptional η χ Q m A) Φ H hH hΦ
+
+    ∀E₁ E₂ : ℝ,0≤ E₁ → 0≤ E₂ →
+    (∀D₁∈(primeSupport (R*C)).powerset,
+     ∀D₂∈(primeSupport (R*C)).powerset,∀J∈(liveIndices L a).powerset,
+      radialEnergy (fun z=> commonChild s τ v C R B L a V₁ V₂ true z D₁ D₂ J) r.keep r.profile r.scale≤ E₁) →
+    (∀D₁∈(primeSupport (R*C)).powerset,
+     ∀D₂∈(primeSupport (R*C)).powerset,∀J∈(liveIndices L a).powerset,
+      radialEnergy (fun z=> commonChild s τ v C R B L a V₁ V₂ false z D₁ D₂ J) r.keep r.profile r.scale≤ E₂) →
+    childEnergy (commonData (withHeight s τ v) C R B) r L a≤
+      C₀*(Ideal.absNorm (R*C).radical:ℝ)^ε*(E₁+E₂) := by
+  obtain ⟨C₀,hC₀,hb⟩:=actual_common_radial_energy b M hM ε hε
+  refine ⟨C₀,hC₀,?_⟩
+  intro s hhi hMs τ v C R hR B L a V₁ V₂ hV₁ hV₂ η χ Q m A Φ H hH hΦ r
+    E₁ E₂ hE₁ hE₂ hleft hright
+  exact hb s hhi hMs τ v C R hR B L a V₁ V₂ hV₁ hV₂ r
+    (fun _ hz=> hz.1) E₁ E₂ hE₁ hE₂ hleft hright
+
+end CenteredMomentAllocatedNaturalRadial
+
+end
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

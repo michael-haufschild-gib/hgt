@@ -38,9 +38,9 @@ Owner: `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`.
 
 1. `UndampedCausalLaplaceMoments`: verified.
 2. `UndampedCausalFourierDecay`: verified.
-3. `TheUndampedRealResolventHasTheActualDomain`: verification running.
-4. `SkewFourierPairsHaveZeroArithmeticMixedForm`: drafted.
-5. `TheUndampedRealResolventIsSkewInFrequency`: drafted.
+3. `TheUndampedRealResolventHasTheActualDomain`: verified.
+4. `SkewFourierPairsHaveZeroArithmeticMixedForm`: verified.
+5. `TheUndampedRealResolventIsSkewInFrequency`: verification running.
 6. `TheUndampedRealResolventCancelsThePoleForm`: drafted.
 7. `TheCriticalHalfLineStateHasNoBoundaryLaplaceZero`: drafted; final unconditional theorem `riemannHypothesis_or_exists_closedRightHalfPlaneLaplaceZeroFree_criticalHalfLineGroundState`.
 
