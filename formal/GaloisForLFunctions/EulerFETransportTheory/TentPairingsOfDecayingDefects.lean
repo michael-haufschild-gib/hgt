@@ -347,7 +347,7 @@ theorem integral_tent_mul_defectLaplace {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (
       exact isFiniteMeasure_restrict.mpr measure_Ioc_lt_top.ne
     have hmaj : Integrable (fun z : ℝ × ℝ => (1 : ℝ) * B z.2)
         ((volume.restrict (uIoc (-1 : ℝ) 1)).prod volume) :=
-      Integrable.prod_mul (integrable_const (1 : ℝ)) hBi
+      Integrable.mul_prod (integrable_const (1 : ℝ)) hBi
     refine hmaj.mono' ?_ ?_
     · have hcont : Continuous fun z : ℝ × ℝ => ((1 - |z.1| : ℝ) : ℂ) *
           (c * (kerCoeff z.2 * tentPt h n ε z.1 ^ kerExp z.2)) := by
@@ -373,16 +373,15 @@ theorem integral_tent_mul_defectLaplace {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (
         rw [uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] at this
         exact abs_le.mpr ⟨this.1.le, this.2⟩
       have hk := norm_pairKernel_tentPt_le hh hε n t hs
-      rw [pairKernel_eq_cpow t (hre s)] at hk
+      rw [pairKernel_eq_cpow t (hre s), norm_mul] at hk
       simp only [uncurry, hF, norm_mul, Complex.norm_real, Real.norm_eq_abs, hB, one_mul]
       have h1s : abs (1 - |s|) ≤ 1 :=
         abs_le.mpr ⟨by linarith [abs_nonneg s], by linarith [abs_nonneg s]⟩
-      calc abs (1 - |s|) * (‖c‖ * (‖g t‖ * ‖kerCoeff t * tentPt h n ε s ^ kerExp t‖))
+      calc abs (1 - |s|) * (‖c‖ * (‖g t‖ * (‖kerCoeff t‖ * ‖tentPt h n ε s ^ kerExp t‖)))
           ≤ 1 * (‖c‖ * ((Cg * (1 + |t|) ^ N) * (3 * (h * ε) ^ (-(1 / 2 : ℝ)) *
               Real.exp (-(δ * |t|))))) := by
             gcongr
-            · exact hgb t
-            · exact hk
+            all_goals exact hgb t
         _ = _ := by ring
   rw [intervalIntegral.integral_congr (fun s _ => hrow s), intervalIntegral_integral_swap hFint]
   -- each column is a second difference
@@ -418,9 +417,12 @@ theorem integral_tent_mul_defectLaplace {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (
       pairKernel (2 * t) (tentPt h n ε 0)) = 2 * (tentPt h n ε 0 ^ 2 * c *
         (tentPrimitive g t * pairKernel (2 * t) (tentPt h n ε 0))) by ring, e1 0, e1 (-1), hG]
     field_simp
-    ring
-  rw [integral_congr_ae (Eventually.of_forall hcol), integral_div,
-    integral_add (((hint 1).const_mul _).sub ((hint 0).const_mul _)) ((hint (-1)).const_mul _),
+  rw [integral_congr_ae (Eventually.of_forall hcol), integral_div]
+  have hA : Integrable (fun t => (tentPt h n ε 1 ^ 2 * c) *
+      (tentPrimitive g t * pairKernel (2 * t) (tentPt h n ε 1)) -
+        (2 * tentPt h n ε 0 ^ 2 * c) * (tentPrimitive g t * pairKernel (2 * t) (tentPt h n ε 0))) :=
+    ((hint 1).const_mul _).sub ((hint 0).const_mul _)
+  rw [integral_add hA ((hint (-1)).const_mul _),
     integral_sub ((hint 1).const_mul _) ((hint 0).const_mul _), integral_const_mul,
     integral_const_mul, integral_const_mul]
   simp only [defectLaplace, ← hc]

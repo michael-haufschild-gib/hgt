@@ -11,8 +11,8 @@ At a boundary zero, the undamped modulated causal resolvent retains negative-hal
 
 ## Open proof obligations
 
-- Neutral-rate Laplace identity, including the Fourier boundary: implementation in `UndampedCausalLaplaceMoments`, verification pending.
-- Fourier decay and actual Gamma-domain admission: implementation in `UndampedCausalFourierDecay`, verification pending.
+- Neutral-rate Laplace identity, including the Fourier boundary: `UndampedCausalLaplaceMoments` passed Lean.
+- Fourier decay and actual complex-resolvent Gamma-domain admission: `UndampedCausalFourierDecay` passed Lean.
 - Symmetric prime, Gamma and half-pole mixed cancellations.
 - Zero resolvent implies zero state; unconditional RH dichotomy.
 
@@ -27,5 +27,19 @@ At q=±1/2 the two coefficients are opposite, cancelling the polarized pole term
 The real-part Fourier multiplier is purely imaginary away from ±b; its
 symmetrized translated correlations and Gamma mixed density vanish.
 The surviving weighted mixed term is `(4/π)||exp(-4u)K||₂²`.
+
+## Formalization chain
+
+Owner: `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`.
+
+1. `UndampedCausalLaplaceMoments`: verified.
+2. `UndampedCausalFourierDecay`: verified.
+3. `TheUndampedRealResolventHasTheActualDomain`: verification running.
+4. `SkewFourierPairsHaveZeroArithmeticMixedForm`: drafted.
+5. `TheUndampedRealResolventIsSkewInFrequency`: drafted.
+6. `TheUndampedRealResolventCancelsThePoleForm`: drafted.
+7. `TheCriticalHalfLineStateHasNoBoundaryLaplaceZero`: drafted; final unconditional theorem `riemannHypothesis_or_exists_closedRightHalfPlaneLaplaceZeroFree_criticalHalfLineGroundState`.
+
+No contribution counted before the entire chain and transitive axiom audit pass.
 
 Existing inputs: `UndampedCausalResolventBasicDomain`, `CausalResolventMixedEnergy`, `GammaIntegrabilityFromLinearFourierDecay`, and `TheCriticalHalfLineStateSatisfiesTheWeakEquation`. No new analytic premise is permitted in the final statement.

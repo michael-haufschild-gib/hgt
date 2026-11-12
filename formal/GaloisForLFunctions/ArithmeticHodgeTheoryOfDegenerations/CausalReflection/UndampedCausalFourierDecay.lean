@@ -29,12 +29,11 @@ theorem linear_decay_fourier_undampedCausalConvolution (b : ℝ)
   let K := modulatedCausalConvolution 0 b f
   have he := congrArg norm (fourier_undampedCausalConvolution_mul b hm hf hw hs hz ξ)
   change ‖(((2 * (b + ξ) : ℝ) : ℂ) * Complex.I) * 𝓕 K ξ‖ = ‖𝓕 f ξ‖ at he
-  simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul,
+  simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (show (0 : ℝ) ≤ 2 by norm_num), Complex.norm_I, mul_one] at he
   have hfreq : |ξ| ≤ |b + ξ| + |b| := by
-    have h := abs_add (b + ξ) (-b)
-    rw [show b + ξ + -b = ξ by ring, abs_neg] at h
-    exact h
+    have h := norm_add_le (b + ξ) (-b)
+    simpa only [Real.norm_eq_abs, show b + ξ + -b = ξ by ring, abs_neg] using h
   have hK := norm_fourierIntegral_le_mass K ξ
   have hF := norm_fourierIntegral_le_mass f ξ
   have hmass := mul_le_mul_of_nonneg_left hK (by positivity : 0 ≤ 1 + |b|)
@@ -65,7 +64,9 @@ theorem exists_linear_decay_paperFT_undampedCausalConvolution (b : ℝ)
     (hz : negativeHalfLineLaplace f (modulatedLaplaceRate 0 b) = 0) :
     ∃ M : ℝ, ∀ r : ℝ,
       (1 + |r|) * ‖Zeta23.paperFT (modulatedCausalConvolution 0 b f) r‖ ≤ M := by
-  refine ⟨_, fun r => ?_⟩
+  refine ⟨(1 + 2 * Real.pi) *
+    ((1 + |b|) * (∫ u, ‖modulatedCausalConvolution 0 b f u‖) + (∫ u, ‖f u‖) / 2),
+    fun r => ?_⟩
   rw [Zeta23.paperFT_ofReal_eq_fourier]
   exact linear_decay_fourier_rescale (mul_pos (by norm_num) Real.pi_pos)
     (linear_decay_fourier_undampedCausalConvolution b hm hf hw hs hz) r

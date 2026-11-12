@@ -515,13 +515,13 @@ Each construction asks for a property that is an inequality and has a kill condi
 | I | a path on the comb lattice: the inequality at a base point and a transport that is not RH | every candidate has transport equivalent to RH | closed. Dilation, overlap flow, coupling Laplacian: equivalent to RH (corpus). The length of the tree of `2` is monotone on packets shorter than `log 4`; odd trees fail. The path of the price is monotone at every `n₀ ≥ 2` and is RH at every parameter |
 | II | the archimedean fibre glued to the trees so that the glued form is the comb form | every gluing is the pairing itself or fails | invariant gluings have a constant diagonal; along the comb every free parameter is forced (§2.4) |
 | III | Stepanov on the planar square: a small section vanishing on a window | the forced value is the product of the contact ideals and is attained | closed: `planarValues_eq_prod` |
-| IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters, the character of degree two of `X³ − 2`, and for every virtual character of Hecke characters (zeros and poles), with the contacts of a number ring as its point counts. Brauer's induction theorem is proved (`brauer_induction`). Open: the reciprocity that makes an Artin character such a virtual character (A150) |
+| IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters, the character of degree two of `X³ − 2`, and for every virtual character of Hecke characters (zeros and poles), with the contacts of a number ring as its point counts. Brauer's induction theorem is proved (`brauer_induction`). Open as work: the reciprocity law that makes an Artin character such a virtual character (A154) |
 | V | Bézout for an integer-norm system on its own comb | the jets of the comb are not those of the system | closed for the squares: `exists_packet_squarePairing_gt` |
 | VI | a count: natural numbers with a quadratic Tate limit | no definition without the form | the count on the object is linear (split norm; volume over the gluing index); counts on the surviving prime rays exist iff RH (corpus). Open: a definition without the form |
 | VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors; the matrices are those of the floor maps; `𝔚_4` and `𝔚_7` are positive with a margin on unit blocks; every window of ratio at most `103/50` has the margin `1/5000` at every block size; the neutral part is the form of the zeros minus the poles, and RH is its signature, on smooth tests and on the windows at finite scale; the margin of a ratio at every block size is decided by one matrix, at a scale `R` with `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀`. Open: ratio above `103/50` at every block size; first all blocks at the ratio four, where the index is between `0` and `300000` (A146) |
 | VIII | the index as a topological invariant: index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | closed as Morse = Maslov. The index is a Morse index: the sum of the nullities of the conjugate apertures, at every energy; the near end is zero and the far end is the number of zeros right of the line. The symplectic structure exists and is defined from the places: the index is the number of crossings of the aperture conormals with the graph of Weil's operator, and it is the same along every monotone path in the (aperture, energy) plane. The invariant does not fix its own value: index zero is RH |
 | IX | the width on the tails | the growth of the tail is the zero-free half-plane | closed as an equivalence on one sequence (`powerCombTailGrowth_iff_zeroHalfPlane`) |
-| X | bound states: the Hodge index as the number of bound states of the floor-map graph of a window, counted from its potential and its edge weights | the count is the index: one on the certified windows, and a wrong weight, constant or tree length gives a second | proposed. Built: the potential and the Dirichlet form with positive weights; the ground vector of the neutral part has one sign and is charged; one bound state on the certified windows; the refinement tower; a block and a far window couple by minus the product of their charges; coercivity on the coarse-neutral part and the bound `(Q − 1)⌈e^{E_Q}⌉` at each ratio; the gluing lemma for a coupling that is exactly the product of the charges. Open: a count from the potential and the weights; the gluing of two actual windows; the first window that could hold a second bound state |
+| X | bound states: the Hodge index as the number of bound states of the floor-map graph of a window, and the count of a union from the responses of its parts | the count is the index: one on the certified windows, and a wrong weight, constant or tree length gives a second | the potential and the Dirichlet form with positive weights, the sink count, the charged ground vector, the refinement tower and the gluing law for a coupling that is exactly the product of two charges are theorems. Open: the susceptibilities of actual windows and the gluing of the two halves of a window of ratio four (B189) |
 
 **The path at `2`.** A tree of `p` glued with the edge length `ℓ` has the contacts `ℓ` along
 the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)`. On packets of length at
@@ -547,7 +547,8 @@ the pillars of §6.
 
 ## 8. Criteria
 
-A construction is read against sixteen criteria; the pairing of the degree points meets each.
+A construction is read against seventeen criteria; the pairing of the degree points meets each
+except C14 and C17, which are open.
 
 | # | Criterion | Reading |
 |---|---|---|
@@ -567,6 +568,7 @@ A construction is read against sixteen criteria; the pairing of the degree point
 | C14 | a quadratic count | the counts on the object are linear |
 | C15 | treats neutral null modes | the index is the sum of the nullities below (`negativeRank_eq_sum_nullity`); the polar Lagrangian sees the charged null modes only |
 | C16 | its comb grows at the rate of the width | `powerCombTailGrowth_iff_zeroHalfPlane` |
+| C17 | its pieces glue by the susceptibility criterion | proved for a coupling that is the product of two charges (`hermNegIndex_glued_eq_one`, `hermNegIndex_glued_eq_two`); for two actual windows it is question 3 |
 
 ## 9. Questions, order of work, decisive test
 
@@ -586,8 +588,9 @@ index as a homotopy invariant of the aperture path, a Morse index and a Maslov i
 (`negativeRank_eq_sum_apertureCrossing`, `null_modes_along_two_paths`), whose value zero is RH
 and is not produced by the invariance.
 
-**Order of work.** The sign of `𝔚_4` at every block size (A146); Brauer induction (A150); a
-gluing lemma for two windows; charged ground vectors at finite scale (B104).
+**Order of work.** The susceptibilities of the certified windows and the gluing criterion on
+unions whose index is known (A156); the two halves of a window of ratio four (B189); the
+reciprocity law (A154); the sign of `𝔚_4` at every block size (A146).
 
 **The decisive test.** A construction whose Bézout holds for an edit with a finite layer, for
 a fake, for the Liouville twist at the first rung of the conductor ladder, for a wrong

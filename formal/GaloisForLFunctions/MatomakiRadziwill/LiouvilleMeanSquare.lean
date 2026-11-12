@@ -293,6 +293,78 @@ theorem eventually_liouville_conditions (K : ℝ) {ε : ℝ} (hε : 0 < ε) (N�
   rw [mul_assoc, e, mul_one] at this
   linarith
 
+/-- `ζ` Route T on the high frequencies `T ≤ |w|`, `2πT = (log X)^{19}`. -/
+theorem rho_on_high {X₁ : ℝ}
+    (hX₁ : ∀ X : ℝ, X₁ ≤ X → ∀ (Pa Pb : ℕ) (H : ℝ), 2 ≤ H →
+      Real.log X ^ (92 / 100 : ℝ) ≤ Real.log Pa → (Pb : ℝ) ≤ X → ∀ v : ℕ, ∀ w : ℝ,
+        Real.log X ^ 19 ≤ 2 * Real.pi * |w| → 2 * Real.pi * |w| ≤ X →
+          ‖blockQ (twLiouville (1 : DirichletCharacter ℂ 1)) ((Finset.Ioc Pa Pb).filter Nat.Prime)
+            H v w‖ ≤ 1 / Real.log X ^ (3 : ℝ))
+    {L : ℝ} (hL : 2 ^ 20 ≤ L) {X : ℕ} (hXX₁ : X₁ ≤ X) (hXe : Real.exp 1 ≤ (X : ℝ))
+    (hlog2 : 2 ≤ Real.log X) (htop1 : 1 ≤ ladderTopLow X)
+    (h92 : Real.log X ^ (92 / 100 : ℝ) ≤ ladderTopLow X - 1) {W' T : ℝ}
+    (hW'X : W' ≤ X * Real.exp (-(L / 2))) (hT : 2 * Real.pi * T = Real.log X ^ 19) :
+    ∀ v ∈ (ladderConfig hL (X : ℝ)).topBlocks (Real.log X), ∀ w ∈ Icc (-W') W' \ Ioo (-T) T,
+      ‖blockQ (twLiouville (1 : DirichletCharacter ℂ 1)) (ladderConfig hL (X : ℝ)).top
+        (Real.log X) v w‖ ≤ 1 / Real.log X ^ (3 : ℝ) := by
+  intro v _ w hw
+  obtain ⟨hwI, hwT⟩ := hw
+  have hX0 : (0 : ℝ) < X := lt_of_lt_of_le (Real.exp_pos 1) hXe
+  have hlogPa : Real.log X ^ (92 / 100 : ℝ)
+      ≤ Real.log (⌊Real.exp (ladderTopLow (X : ℝ))⌋₊ : ℝ) :=
+    le_trans h92 (log_floor_exp_ge htop1)
+  have hPb : ((⌊Real.exp (ladderTopHigh (X : ℝ))⌋₊ : ℕ) : ℝ) ≤ X := by
+    obtain ⟨-, hhX⟩ := ladderTop_le (one_le_log_of_exp_le hXe)
+    calc ((⌊Real.exp (ladderTopHigh (X : ℝ))⌋₊ : ℕ) : ℝ) ≤ Real.exp (ladderTopHigh X) :=
+          Nat.floor_le (Real.exp_pos _).le
+      _ ≤ Real.exp (Real.log X) := Real.exp_le_exp.mpr hhX
+      _ = X := Real.exp_log hX0
+  have hpi := Real.pi_pos
+  have hwlo : Real.log X ^ 19 ≤ 2 * Real.pi * |w| := by
+    have hT' : T ≤ |w| := by
+      by_contra h
+      push Not at h
+      exact hwT ⟨by linarith [neg_abs_le w], by linarith [le_abs_self w]⟩
+    rw [← hT]
+    exact mul_le_mul_of_nonneg_left hT' (by positivity)
+  have hwhi : 2 * Real.pi * |w| ≤ X := by
+    have h1' : |w| ≤ W' := abs_le.mpr ⟨by linarith [hwI.1], hwI.2⟩
+    have h2π : 2 * Real.pi * Real.exp (-(L / 2)) ≤ 1 := by
+      rw [Real.exp_neg, ← div_eq_mul_inv, div_le_one (Real.exp_pos _)]
+      linarith [Real.add_one_le_exp (L / 2), Real.pi_lt_d2]
+    calc 2 * Real.pi * |w| ≤ 2 * Real.pi * (X * Real.exp (-(L / 2))) :=
+          mul_le_mul_of_nonneg_left (le_trans h1' hW'X) (by positivity)
+      _ = X * (2 * Real.pi * Real.exp (-(L / 2))) := by ring
+      _ ≤ X * 1 := mul_le_mul_of_nonneg_left h2π hX0.le
+      _ = X := mul_one _
+  exact hX₁ X hXX₁ _ _ (Real.log X) hlog2 hlogPa hPb v w hwlo hwhi
+
+/-- The low frequencies against a pointwise bound. -/
+theorem lowFreq_integral_le {F : ℝ → ℂ} (hF : Continuous F) {T W' c : ℝ} (hT0 : 0 ≤ T)
+    (hpt : ∀ w ∈ Icc (-T) T, ‖F w‖ ≤ c) :
+    (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖F w‖ ^ 2) ≤ 2 * T * c ^ 2 := by
+  have hiT : IntegrableOn (fun w => ‖F w‖ ^ 2) (Icc (-T) T) :=
+    (hF.norm.pow 2).continuousOn.integrableOn_compact isCompact_Icc
+  have h1 : (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖F w‖ ^ 2) ≤ ∫ w in Icc (-T) T, ‖F w‖ ^ 2 :=
+    setIntegral_mono_set hiT (ae_of_all _ fun w => sq_nonneg _)
+      (Set.inter_subset_right.trans Set.Ioo_subset_Icc_self).eventuallyLE
+  have h2 : (∫ w in Icc (-T) T, ‖F w‖ ^ 2) ≤ ∫ _w in Icc (-T) T, c ^ 2 :=
+    setIntegral_mono_on hiT (integrableOn_const (by simp)) measurableSet_Icc fun w hw =>
+      pow_le_pow_left₀ (norm_nonneg _) (hpt w hw) 2
+  rw [setIntegral_const, Real.volume_real_Icc_of_le (by linarith), smul_eq_mul] at h2
+  linarith
+
+/-- The frequency split `[−W, W] ⊆ ([−W', W'] ∩ (−T, T)) ∪ ([−W', W'] ∖ (−T, T))`. -/
+theorem integral_split_le {F : ℝ → ℂ} (hF : Continuous F) {W W' T : ℝ} (hWW' : W ≤ W') :
+    (∫ w in Icc (-W) W, ‖F w‖ ^ 2)
+      ≤ (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖F w‖ ^ 2)
+        + ∫ w in Icc (-W') W' \ Ioo (-T) T, ‖F w‖ ^ 2 := by
+  have hiW : IntegrableOn (fun w => ‖F w‖ ^ 2) (Icc (-W') W') :=
+    (hF.norm.pow 2).continuousOn.integrableOn_compact isCompact_Icc
+  rw [integral_inter_add_sdiff (μ := volume) (measurableSet_Ioo (a := -T) (b := T)) hiW]
+  exact setIntegral_mono_set hiW (ae_of_all _ fun w => sq_nonneg _)
+    (Icc_subset_Icc (by linarith) hWW').eventuallyLE
+
 /-- **Matomäki–Radziwiłł in mean square for `λ`.** -/
 theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
     ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L → ∃ X₀ : ℝ, ∀ X : ℕ, X₀ ≤ (X : ℝ) → ∀ W : ℝ, 0 ≤ W →
@@ -314,9 +386,6 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
   refine ⟨X₀, fun X hX W hW0 hWX => ?_⟩
   obtain ⟨hXP, ⟨hXe, hlog2, htop1, htop2, htop3, hlarge, hJb, -⟩, ⟨hXN, hsqrt, h92, hlow⟩,
     hXX₁, hXL⟩ := hX₀ X hX
-  set f := twLiouville (1 : DirichletCharacter ℂ 1) with hfdef
-  have hf : ∀ n, ‖f n‖ ≤ 1 := norm_twLiouville_le _
-  have hmul : ∀ a b, f (a * b) = f a * f b := twLiouville_mul _
   have hX0 : (0 : ℝ) < X := lt_of_lt_of_le (Real.exp_pos 1) hXe
   have hX1 : 1 ≤ X := by
     have : (1 : ℝ) ≤ X := le_trans (by linarith [Real.add_one_le_exp (1 : ℝ)]) hXe
@@ -324,92 +393,34 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
   have hstep : ∀ x : ℝ, L / 2 ≤ x →
       144 * Real.exp 1 * 2 ^ 48 * x ^ 66 * Real.exp (-(152 / 100) * x) ≤ Real.exp (-x) :=
     fun x hx => hx₀ x (le_trans hx₀L hx)
-  -- enlarge the frequency range to `W' = max(W, e)`
   set W' := max W (Real.exp 1) with hW'def
-  have hW'e : Real.exp 1 ≤ W' := le_max_right _ _
-  have hWW' : W ≤ W' := le_max_left _ _
   have heX : Real.exp 1 ≤ X * Real.exp (-(L / 2)) := by
     rw [Real.exp_neg, ← div_eq_mul_inv, le_div_iff₀ (Real.exp_pos _)]; exact hXL
   have hW'X : W' ≤ X * Real.exp (-(L / 2)) := max_le hWX heX
-  have hexpL : Real.exp (-(L / 2)) ≤ 1 := by rw [Real.exp_le_one_iff]; linarith
-  have hW'X' : W' ≤ X := le_trans hW'X (by nlinarith)
-  -- the split at `T = (log X)^{19}/2π`
   set T : ℝ := Real.log X ^ 19 / (2 * Real.pi) with hTdef
+  have hT : 2 * Real.pi * T = Real.log X ^ 19 := by rw [hTdef]; field_simp
   have hT0 : 0 ≤ T := by
     have := Real.log_nonneg (by exact_mod_cast hX1 : (1 : ℝ) ≤ X); positivity
-  set A := Icc (-W') W' \ Ioo (-T) T with hAdef
-  have hAm : MeasurableSet A := measurableSet_Icc.diff measurableSet_Ioo
-  have hAs : A ⊆ Icc (-W') W' := diff_subset
-  -- `ζ` Route T on `A`
-  have hρ : ∀ v ∈ (ladderConfig hL (X : ℝ)).topBlocks (Real.log X), ∀ w ∈ A,
-      ‖blockQ f (ladderConfig hL (X : ℝ)).top (Real.log X) v w‖ ≤ 1 / Real.log X ^ (3 : ℝ) := by
-    intro v _ w hw
-    obtain ⟨hwI, hwT⟩ := hw
-    have hlogPa : Real.log X ^ (92 / 100 : ℝ)
-        ≤ Real.log (⌊Real.exp (ladderTopLow (X : ℝ))⌋₊ : ℝ) :=
-      le_trans h92 (log_floor_exp_ge htop1)
-    have hPb : ((⌊Real.exp (ladderTopHigh (X : ℝ))⌋₊ : ℕ) : ℝ) ≤ X := by
-      obtain ⟨-, hhX⟩ := ladderTop_le (one_le_log_of_exp_le hXe)
-      calc ((⌊Real.exp (ladderTopHigh (X : ℝ))⌋₊ : ℕ) : ℝ) ≤ Real.exp (ladderTopHigh X) :=
-            Nat.floor_le (Real.exp_pos _).le
-        _ ≤ Real.exp (Real.log X) := Real.exp_le_exp.mpr hhX
-        _ = X := Real.exp_log hX0
-    have hpi := Real.pi_pos
-    have hwlo : Real.log X ^ 19 ≤ 2 * Real.pi * |w| := by
-      have hT : T ≤ |w| := by
-        by_contra h
-        push Not at h
-        exact hwT ⟨by linarith [neg_abs_le w], by linarith [le_abs_self w]⟩
-      have : 2 * Real.pi * T = Real.log X ^ 19 := by rw [hTdef]; field_simp
-      nlinarith
-    have hwhi : 2 * Real.pi * |w| ≤ X := by
-      have h1' : |w| ≤ W' := abs_le.mpr ⟨by linarith [hwI.1], hwI.2⟩
-      have h2π : 2 * Real.pi * Real.exp (-(L / 2)) ≤ 1 := by
-        rw [Real.exp_neg, ← div_eq_mul_inv, div_le_one (Real.exp_pos _)]
-        linarith [Real.add_one_le_exp (L / 2), Real.pi_lt_d2]
-      calc 2 * Real.pi * |w| ≤ 2 * Real.pi * (X * Real.exp (-(L / 2))) :=
-            mul_le_mul_of_nonneg_left (le_trans h1' hW'X) (by positivity)
-        _ = X * (2 * Real.pi * Real.exp (-(L / 2))) := by ring
-        _ ≤ X * 1 := mul_le_mul_of_nonneg_left h2π hX0.le
-        _ = X := mul_one _
-    exact hX₁ X hXX₁ _ _ (Real.log X) hlog2 hlogPa hPb v w hwlo hwhi
-  have hon := integral_fullPoly_on_le hf hmul hL hstep hlogL h0 h1 hXe hJb hlarge htop1 htop2
-    htop3 hW'e hW'X hAm hAs hρ
-  -- the low frequencies
-  have hcF : Continuous (fullPoly f X) := continuous_logPoly _ _
-  have hlowpt : ∀ w ∈ Icc (-T) T, ‖fullPoly f X w‖ ^ 2 ≤ (8 * liouvilleRate K X) ^ 2 := by
+  have hρ := rho_on_high hX₁ hL hXX₁ hXe hlog2 htop1 h92 hW'X hT
+  have hon := integral_fullPoly_on_le (norm_twLiouville_le _) (twLiouville_mul _) hL hstep hlogL
+    h0 h1 hXe hJb hlarge htop1 htop2 htop3 (le_max_right _ _) hW'X
+    (measurableSet_Icc.diff measurableSet_Ioo) diff_subset hρ
+  have hXN' : N₀ ≤ X := by exact_mod_cast hXN
+  have hlowpt : ∀ w ∈ Icc (-T) T,
+      ‖fullPoly (twLiouville (1 : DirichletCharacter ℂ 1)) X w‖ ≤ 8 * liouvilleRate K X := by
     intro w hw
     have hwT : |w| ≤ T := abs_le.mpr hw
     have h4 : 4 * Real.pi * |w| ≤ Real.sqrt X := by
-      have : 4 * Real.pi * T = 2 * Real.log X ^ 19 := by rw [hTdef]; field_simp; ring
       have hpi := Real.pi_pos
-      nlinarith
-    have hXN' : N₀ ≤ X := by exact_mod_cast hXN
-    exact pow_le_pow_left₀ (norm_nonneg _) (hlowF X hXN' hX1 w h4) 2
-  have hiT : IntegrableOn (fun w => ‖fullPoly f X w‖ ^ 2) (Icc (-T) T) :=
-    (hcF.norm.pow 2).continuousOn.integrableOn_compact isCompact_Icc
-  have hlowInt : (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖fullPoly f X w‖ ^ 2)
-      ≤ Real.log X ^ 19 / Real.pi * (8 * liouvilleRate K X) ^ 2 := by
-    have h1 : (∫ w in Icc (-W') W' ∩ Ioo (-T) T, ‖fullPoly f X w‖ ^ 2)
-        ≤ ∫ w in Icc (-T) T, ‖fullPoly f X w‖ ^ 2 :=
-      setIntegral_mono_set hiT (ae_of_all _ fun w => sq_nonneg _)
-        (Set.inter_subset_right.trans Set.Ioo_subset_Icc_self).eventuallyLE
-    have h2 : (∫ w in Icc (-T) T, ‖fullPoly f X w‖ ^ 2)
-        ≤ ∫ _w in Icc (-T) T, (8 * liouvilleRate K X) ^ 2 :=
-      setIntegral_mono_on hiT (integrableOn_const (by simp)) measurableSet_Icc hlowpt
-    rw [setIntegral_const, Real.volume_real_Icc_of_le (by linarith), smul_eq_mul] at h2
-    have e : (T - -T) * (8 * liouvilleRate K X) ^ 2
-        = Real.log X ^ 19 / Real.pi * (8 * liouvilleRate K X) ^ 2 := by
-      rw [hTdef]; field_simp; ring
-    linarith
-  -- assemble
-  have hiW : IntegrableOn (fun w => ‖fullPoly f X w‖ ^ 2) (Icc (-W') W') :=
-    (hcF.norm.pow 2).continuousOn.integrableOn_compact isCompact_Icc
-  have hsplit := integral_inter_add_sdiff (μ := volume) (measurableSet_Ioo (a := -T) (b := T)) hiW
-  have hmono : (∫ w in Icc (-W) W, ‖fullPoly f X w‖ ^ 2)
-      ≤ ∫ w in Icc (-W') W', ‖fullPoly f X w‖ ^ 2 :=
-    setIntegral_mono_set hiW (ae_of_all _ fun w => sq_nonneg _)
-      (Icc_subset_Icc (by linarith) hWW').eventuallyLE
+      have : 4 * Real.pi * |w| ≤ 4 * Real.pi * T := mul_le_mul_of_nonneg_left hwT (by positivity)
+      linarith
+    exact hlowF X hXN' hX1 w h4
+  have hlowInt := lowFreq_integral_le (W' := W') (continuous_logPoly _ _) hT0 hlowpt
+  have hsplit := integral_split_le (F := fullPoly (twLiouville (1 : DirichletCharacter ℂ 1)) X)
+    (T := T) (continuous_logPoly _ _) (le_max_left W (Real.exp 1))
+  have e : 2 * T * (8 * liouvilleRate K X) ^ 2
+      = Real.log X ^ 19 / Real.pi * (8 * liouvilleRate K X) ^ 2 := by
+    rw [hTdef]; field_simp; ring
   linarith
 
 end
