@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ContactSymbolsContinueAcrossZeros
+import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 
 /-!
 # Holomorphic contact symbols exclude interior zeta zeros

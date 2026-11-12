@@ -127,11 +127,13 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 ## Log
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
+- 2026-11-12 — M9–M16 proved and formalized
 
 ## The neutral part (M9, M10)
 
 - [x] M9 the block matrix is the product of the charges, a potential and a Dirichlet form
 - [x] M10 the neutral part is Lorentzian on the certified step packets
+- [x] M11 a ground vector of the neutral part has one sign and is charged
 
 **M9.** `N(a, b) = m(a, b) − d(a) − d(b)`. Off the diagonal `N = −(J + C) < 0`: `J > 0`
 because the second difference of `n log n` is positive (strict convexity), `C ≥ 0`. For a
@@ -155,5 +157,105 @@ Lean: `…/WeilsFormOnStepPacketsIsTheChargesAPotentialAndADirichletForm.lean`
 `sum_neutralBlock_seven_ge`, `sum_neutralBlock_four_fine_ge`, `neutralBlock_one_one_neg`,
 `neutralBlock_two_two_neg`).
 
-Open: the single negative square of the neutral part at every scale; a supersolution cannot
-certify a window on which the neutral part has a negative square.
+**M11.** For `σ` with `σ_{j₀} > 0 > σ_{l₀}`: termwise `|σ_j||σ_l| N_{jl} ≤ σ_jσ_l N_{jl}`
+(`N_{jl} < 0` off the diagonal, equality on it), and strictly at `(j₀, l₀)`. So `|σ|` has the
+same length and a strictly lower form: a minimiser among vectors of its length has entries of
+one sign. Then `c₀ = Σσ_j` and `c₁ = Σσ_j d(R + j)` have that sign (`d > 0`), `c₀c₁ > 0`, and
+the form of `m` exceeds the form of `N` by `2c₀c₁`.
+
+Lean: `…/TheGroundVectorOfTheNeutralPartHasOneSignAndIsCharged.lean` (`blockDegree_pos`,
+`sum_neutralBlock_abs_lt`, `neutral_minimizer_one_sign`, `charges_mul_pos_of_neutral_minimizer`,
+`sum_neutralBlock_lt_sum_blockMatrix_of_minimizer`).
+
+A supersolution cannot certify a window on which the neutral part has a negative square.
+
+## The signature of the neutral part (M12–M16)
+
+- [x] M12 margin `1/5000` on every window of ratio at most `103/50`, at every block size
+- [x] M13 the neutral part is invariant under refinement; on the dyadic window it is negative
+- [x] M14 the indices of the neutral part and of the block matrix differ by at most one; the
+  neutral part has exactly one negative square on short windows, and on all windows under RH
+- [x] M15 the neutral part is Weil's form of the zeros minus the poles; its index is one plus
+  the number of zeros right of the line; RH iff at most one negative square on smooth tests
+- [x] M16 finite scale: RH iff the neutral part of every window with `R ≤ J` has exactly one
+  negative square
+
+**M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
+`181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
+bounded packet of finite jump energy by bumps of integral one converges in Weil's form and in
+mass and enlarges the support by twice the radius, so the bound holds for bounded packets of
+support length `< 181/250`. A step packet on the blocks of `(R, R + J]` with `50J ≤ 53R` has
+support length `log((R+J)/R) ≤ log 2 + log(103/100) < 0.6932 + 0.03 < 181/250`, and
+`181/250 < log 3`, so `Q = 2` carries every contact. Its mass is `Σσ_j²`.
+
+**M13.** Translation by `log m` maps the step packet of `σ` above `R` to that of
+`σ'_{mj+i} = σ_j/√m` above `mR`. `Σσ' = √m Σσ`; `Σσ'_i d(mR + i) = (Σσ_j d(R+j))/√m`, since
+the degrees of the `m` blocks above `m(R+j)` telescope to `log(m(R+j+1)) − log(m(R+j)) =
+d(R+j)`. The product of the charges is invariant and the block matrix is (M6), so the neutral
+part is. For `R = 1`, `J = 1`, `σ_0 = 1` and `m = R`: `Σ_{j,l<R} N(R+j, R+l)/R = N(1, 1) < 0`.
+
+**M14.** On complex packets with `Σc_j = 0` the real and imaginary parts have first charge
+zero, so the forms of `N` and `m` agree; two forms that agree on a hyperplane have indices
+differing by at most one. If `m ≥ 0` on the window, `N` has at most one negative square. If
+`R ≤ J`, the packet equal to one on the first `R` blocks is a negative vector (M13). `m ≥ 0`
+holds on short windows (M12) and, under RH, on every window.
+
+**M15.** `W_poles(f, g) = h_f(i/2) conj h_g(−i/2) + h_f(−i/2) conj h_g(i/2)` for the
+configuration `{0, 1}` (`γ_0 = i/2`, `γ_1 = −i/2`); on a real packet it is
+`2 ∫f e^{−u/2} · ∫f e^{u/2}`. So the form without the product of the charges is
+`W_ζ − W_poles` on smooth packets, and the neutral block matrix on step packets (charges of a
+step packet: `Σσ_j d(R+j)` and `Σσ_j`). Virtual index law: the largest number of negative
+squares of `W_A − W_B` is the number of points right of the line with different
+multiplicities plus the points on the line where `B` exceeds `A`. For `A` the zeros and
+`B = {0, 1}`: the zeros right of the line and the point `1` (`0 < Re ρ < 1` for a zero; `0`
+is left of the line). So the index is `1 + #{zeros right of the line}`, and it is `≤ 1` on
+every family iff RH.
+
+Lean: `…/TheBlockMatricesOfShortWindowsArePositiveAtEveryBlockSize.lean`
+(`groundEnergy_mul_nested_mass_le_packetForm_of_log_lt`, `log_window_lt`,
+`packetForm_stepPacket_ge_of_short`, `sum_blockMatrix_ge_of_short`,
+`sum_neutralBlock_ge_of_short`);
+`…/TheNeutralPartOfAWindowOfRatioTwoHasOneNegativeSquareAtEveryBlockSize.lean`
+(`sum_refineStep`, `sum_refineStep_mul_blockDegree`, `sum_neutralBlock_refine`,
+`sum_neutralBlock_dyadic`, `neutralWindow`, `blockWindow`,
+`hermNegIndex_neutralWindow_le_blockWindow_add_one`, `one_le_hermNegIndex_neutralWindow`,
+`hermNegIndex_neutralWindow_eq_one`, `hermNegIndex_neutralWindow_eq_one_of_riemannHypothesis`);
+`…/TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles.lean` (`poleConfig`, `poleConfig_W`,
+`poleConfig_W_ofReal`, `neutralForm`, `neutralForm_eq_re_sub`, `neutralForm_stepPacket`,
+`virtualDefect_zeta_poleConfig`, `exists_le_negIndex_neutralGram_iff`,
+`riemannHypothesis_iff_forall_negIndex_neutralGram_le_one`).
+
+**M16.** Let `σ` be a step packet on the blocks of `(R, R + J]` with `m(σ) = N(σ) + 2c₀c₁ < 0`,
+`c₁ = Σσ_j`, `c₀ = Σσ_j d(R+j)` (exists if RH fails). Put `ℓ = d(1)`, `n₁ = N(1, 1)`.
+
+(a) *A block and a far window.* For a block `a ≥ 1` and `1 ≤ c ≤ d`:
+`(1/M) Σ_{Mc ≤ l < Md} N(a, l) → −(d − c) d(a)`. For `a < l`, `N(a, l) = −J(a, l) − C(a, l)`.
+Jets: the second difference of `n log n` is `≤ 2/n` (`log(1 + 1/n) ≤ 1/n`,
+`log(1 − 1/n) ≤ −1/n`), so `J(a, l) ≤ 2/(l − a)` and the sum is `≤ 2M(d−c)/(Mc − a)`.
+Contacts: `[⌊l/k⌋ = a]/k = φ_k(l+1) − φ_k(l)`, `φ_k(y) = (y/k − a)⁺ − (y/k − a − 1)⁺`, so the
+sum telescopes to `G(Md) − G(Mc)`, `G(y) = S_a(y) − S_{a+1}(y)`,
+`S_x(y) = Σ_k Λ(k)(y/k − x)⁺ = y L(y/x) − x ψ(y/x)`, `L(t) = Σ_{k ≤ t} Λ(k)/k`. With
+`L(t) − log t → −γ` and `ψ(t)/t → 1`: `G(y)/y → log((a+1)/a)`.
+
+(b) *Three vectors* on the blocks of `(1, 2M]`: `u₁` the refinement of `σ` by `L` (blocks above
+`LR`), `u₂ = √L/M` on `M ≤ b < 2M`, `u₃ = 1/√L` on the block one. Exactly: `N(u₁,u₁) = N(σ)`
+(M13), `N(u₂,u₂) = L n₁/M` (M13), `N(u₃,u₃) = n₁/L`. By (a), as `M → ∞`:
+`N(u₁,u₂) → −√L Σ_i σ'_i d(LR + i) = −c₀` and `N(u₂,u₃) → −ℓ`; as `L → ∞`:
+`N(u₁,u₃) = (1/L) Σ_j σ_j Σ_{L(R+j) ≤ l < L(R+j+1)} N(1, l) → −ℓ c₁`. The cutoff of the contacts
+does not matter beyond the ratio of the blocks.
+
+(c) `w₂ = u₂ + u₃`, `w₁ = u₁ − c₁u₂ − (c₀/ℓ)u₃`. In the limit `N(w₂,w₂) = −2ℓ`,
+`N(w₁,w₂) = −c₀ − ℓc₁ + ℓc₁ + c₀ = 0`,
+`N(w₁,w₁) = N(σ) + 2c₁c₀ + 2c₀c₁ − 2c₀c₁ = m(σ) < 0`. So for `L` and then `M` large the form is
+negative definite on the plane of `w₁, w₂`: two negative squares on `(1, 2M]`. With M14 this
+is the equivalence.
+
+Lean: `…/TheNeutralPartOfABlockAndAFarWindowIsMinusTheProductOfTheirCharges.lean`
+(`xLogXDiff_le`, `sum_Ico_blockJet_le`, `contactSum_eq`, `sum_Ico_floorContact`,
+`tendsto_contactGap_div`, `tendsto_sum_Ico_neutralBlock_div`, `neutralBlock_eq_of_le`);
+`…/TheRiemannHypothesisIsOneNegativeSquareOfTheNeutralPartOfEveryWindow.lean`
+(`two_le_hermNegIndex_of_plane`, `tendsto_liftFar`, `tendsto_liftFirst`, `tendsto_farFirst`,
+`exists_two_le_hermNegIndex_neutralWindow`,
+`riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one`).
+
+Open: positivity of the block matrix on windows of ratio above `103/50` without RH.

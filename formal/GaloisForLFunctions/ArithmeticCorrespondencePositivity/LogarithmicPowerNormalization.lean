@@ -24,7 +24,8 @@ private theorem floor_negative_power_error
     {θ X : ℝ} (hθ : 0 ≤ θ) (hθ1 : θ ≤ 1) (hX : 1 ≤ X) :
     |(⌊X⌋₊ : ℝ) ^ (-θ) - X ^ (-θ)| ≤
       2 * θ * (⌊X⌋₊ : ℝ) ^ (-θ - 1) := by
-  have hN : (1 : ℝ) ≤ ⌊X⌋₊ := by exact_mod_cast (Nat.le_floor hX : 1 ≤ ⌊X⌋₊)
+  have hN : (1 : ℝ) ≤ ⌊X⌋₊ := by
+    exact_mod_cast (Nat.le_floor (by simpa only [Nat.cast_one] using hX) : 1 ≤ ⌊X⌋₊)
   have hnorm : ‖((-θ : ℝ) : ℂ)‖ = θ := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg hθ]
   have hb := _root_.RHTower.norm_cpow_natFloor_sub_cpow_le
@@ -62,7 +63,8 @@ theorem exists_decay_bound_logarithmicPowerNormalizationError
   obtain ⟨B, hB, hb⟩ := hf (1 / 2) (by norm_num)
   refine ⟨2 * θ * B, by positivity, fun u hu => ?_⟩
   have hX : 1 ≤ Real.exp u := Real.one_le_exp hu.le
-  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor hX
+  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor
+    (by simpa only [Nat.cast_one] using hX)
   have hN0 : (0 : ℝ) < ⌊Real.exp u⌋₊ := by exact_mod_cast hN
   rw [logarithmicPowerNormalizationError_eq, Complex.norm_real, Real.norm_eq_abs, abs_mul]
   calc
@@ -104,7 +106,8 @@ theorem exists_bound_logarithmicPowerNormalizationError
   obtain ⟨C, hC, hb⟩ := exists_decay_bound_logarithmicPowerNormalizationError hθ hθ1 hf
   refine ⟨C, hC, fun u hu => (hb u hu).trans ?_⟩
   have hN : (1 : ℝ) ≤ ⌊Real.exp u⌋₊ := by
-    exact_mod_cast (Nat.le_floor (Real.one_le_exp hu.le) : 1 ≤ ⌊Real.exp u⌋₊)
+    exact_mod_cast (Nat.le_floor
+      (by simpa only [Nat.cast_one] using Real.one_le_exp hu.le) : 1 ≤ ⌊Real.exp u⌋₊)
   have hp := Real.rpow_le_rpow_of_exponent_le hN
     (by norm_num : -(1 / 2 : ℝ) ≤ 0)
   rw [Real.rpow_zero] at hp

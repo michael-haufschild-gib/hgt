@@ -25,9 +25,10 @@ explicit phase:
 `g_c^{(1)} = μ(c) · c · \overline{χ_c(4)} · g_c^{(3)} · \overline{g_c^{(2)}} / N(c)`.
 
 So the Möbius sign of the row modulus appears on the dual side of every row, attached to a cubic
-Gauss sum: the long columns of the floor bin form a Möbius-signed family of cubic Gauss sums, the
-same arithmetic as the source identity of the probe (the cube of the composite cubic Gauss sum is
-the ideal Möbius value times a phase).
+Gauss sum. It is the sign of the source identity of the probe (the cube of the composite cubic Gauss
+sum is the ideal Möbius value times a phase) and is carried by that cube: the root number is the
+square of the normalized cubic Gauss sum times a phase of bounded conductor
+(`TheRowRootNumberIsTheSquareOfTheThetaCoefficient`).
 -/
 
 noncomputable section

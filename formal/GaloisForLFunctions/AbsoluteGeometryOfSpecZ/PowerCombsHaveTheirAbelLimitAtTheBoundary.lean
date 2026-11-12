@@ -108,6 +108,7 @@ theorem tendsto_logarithmicAbelMean_powerCombTail_of_add_width_le_half
     dsimp only [K, K₀]
     push_cast
     field_simp [hθ, hθ']
+    ring
   rw [href, harch] at hsplit
   have hmain : (1 - 2 * (a : ℂ)) * K =
       2 * logDeriv _root_.RHTower.xi (1 - (a : ℂ)) := by

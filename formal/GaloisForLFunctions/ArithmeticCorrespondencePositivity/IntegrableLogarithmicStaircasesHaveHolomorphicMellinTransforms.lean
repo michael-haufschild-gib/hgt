@@ -106,13 +106,17 @@ theorem differentiableOn_oneSidedStepMellin
       abs_of_pos (show 0 < u from hu), norm_stepLaplaceIntegrand,
       norm_stepLaplaceIntegrand, ofReal_re]
     calc
-      _ = (u * Real.exp (-w.re * u)) * |f ⌊Real.exp u⌋₊| := by congr 2 <;> ring
+      _ = (u * Real.exp (-w.re * u)) * |f ⌊Real.exp u⌋₊| := by
+        simp only [neg_mul]
+        ring
       _ ≤ (r⁻¹ * Real.exp (-(w.re - r) * u)) * |f ⌊Real.exp u⌋₊| :=
         mul_le_mul_of_nonneg_right hm (abs_nonneg _)
       _ ≤ (r⁻¹ * Real.exp (-c * u)) * |f ⌊Real.exp u⌋₊| :=
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left he (inv_nonneg.mpr hr.le)) (abs_nonneg _)
-      _ = _ := by congr 2 <;> ring
+      _ = _ := by
+        simp only [neg_mul]
+        ring
   have hdiff : ∀ᵐ u : ℝ ∂volume.restrict (Ioi 0), ∀ w ∈ V,
       HasDerivAt (fun v : ℂ => stepLaplaceIntegrand f v u) (D w u) w := by
     exact Eventually.of_forall fun u w _ => by

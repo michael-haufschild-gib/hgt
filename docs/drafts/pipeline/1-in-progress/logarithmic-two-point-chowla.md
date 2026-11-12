@@ -89,18 +89,21 @@ Lean form of §2–§4: weights `w_k = (|𝐏_k| − C)₊/H_k` replace `1/k`; `
 
 ### §6 (PRIME)
 
-Dirichlet with denominator bound `2^k/k^{12}` gives `|β − a/q| ≤ k^{12}/(q2^k)`, `q ≤ 2^k/k^{12}`.
+`N = 2^k`, `L = log N`, `K = (2L)^{14}`, `S_N(β) = Σ_{N<p≤2N} e(pβ)`, `#{N<p≤2N} ≥ N/(4L)` (θ-PNT).
+Dirichlet with denominators `≤ N/K`, reduced to lowest terms: `β = m + a/q + θ`, `|θ|N ≤ K`.
 (Lean form of §5 uses arcs of width `1/(4T)` and the discrete circle `ℤ/R`, `R = M + 2^{k+1}h + T`.)
 
-- `q > k^{12}`: Vaughan's identity, `|Σ_{n≤N} Λ(n)e(nβ)| ≪ (N q^{-1/2} + N^{4/5} + (Nq)^{1/2})(log N)^4`.
-- `Q₀ < q ≤ k^{12}`: `e(pa/q) = φ(q)^{-1} Σ_χ χ̄(a) τ(χ) χ̄(p)`, `|τ(χ)| ≤ √q` (Parseval over `a`),
-  `τ(χ₀) = μ(q)`. The principal term is `≤ 1/φ(q)`; every other character has
-  `ψ(x, χ) ≪ x (log x)^{-A}` uniformly in `q ≤ (log x)^{12}` (Siegel–Walfisz: the uniform region
-  `1 − c/log²(q(|t|+3))` away from real zeros of real characters, Siegel's `β ≤ 1 − c(ε)q^{-ε}`
-  for those, the uniform local zero count, and the window bound of A59 with `h = x`). Partial
-  summation against `e(tθ)/log t` costs `1 + 2π|θ|2^{k+1} ≤ 3πk^{12}`.
-- `q ≤ Q₀`, `W/2^k < |β − a/q|`: the same expansion; the principal term is
-  `φ(q)^{-1} avg_p e(pθ) ≪ 1/(W φ(q))`, the others are `o(1)` (fixed modulus).
+- `q ≥ K`: `|θ|N ≤ 1`. Vaughan at the exact rational `a/q` bounds every window
+  `|Σ_{N<n≤t} Λ(n)e(an/q)| ≤ 3N/L`; Abel summation against `e(nθ)/log n` (variation
+  `(2 + 2π|θ|N)/L`) and the prime powers (`ψ − θ ≤ 2√x log x`) give `S_N ≪ N/L² + √N log N`.
+- `q < K`: `e(pa/q) = φ(q)^{-1} Σ_χ c_χ χ(p)`, `c_χ = Σ_x χ̄(x)e(ax/q)`, `|c_χ| ≤ q`,
+  `c_{χ₀} = μ(q)`. Nonprincipal `χ` agree at `p > q` with their primitive characters; Siegel–Walfisz
+  in windows (`q ≤ L^{15}`, saving `L^{33}`) and Abel summation bound them by `O(N/L²)` after the
+  factor `q ≤ K`. The principal term is `|S_N(θ)|/φ(q)`:
+  - `q > Q₀ = ⌈32/η²⌉`: `q ≤ 2φ(q)²` gives `1/φ(q) ≤ η/4`;
+  - `q ≤ Q₀`: `|θ| > W/N`, `W = 8/η`; `S_N(θ) = Σ (1_P log − 1)(n) e(nθ)/log n + Σ e(nθ)/log n`, the
+    first `O(N/L²)` by θ-PNT with error `N/L^{33}`, the second `≤ 1/(2|θ|L) ≤ ηN/(16L)` by geometric
+    sums.
 
 ### §7 (MR)
 
@@ -118,8 +121,7 @@ for `μχ`. Its non-generic input is a Vinogradov–Korobov-type zero-free regio
 |---|---|---|---|
 | §0–§4 | limit functionals, entropy, decrement, Hoeffding, event inequality | — | **Lean** (`exists_scale_corr_close`) |
 | §5 | circle method, arc mass | — | **Lean** (`abs_avg_corr_le`) |
-| §6 minor arcs | Vaughan bound for general `β` | Vaughan at prime roots of unity (`BezoutValuationIncidence.TheCentredPrimeRowIsMinorArcBelowTheDiagonal`), Type II (`Sieve.VaughanTypeIIEstimate`) | open |
-| §6 intermediate arcs | Siegel–Walfisz for `q ≤ (log x)^{12}`: **Lean** for primitive `χ` in short windows (`ShortIntervalPrimesInProgressions.siegelWalfisz_window`); partial summation to `Σ_p χ(p)e(pθ)` and the character expansion of `e(pa/q)` open | Siegel `RHTower.siegel_zero_free`; uniform region `RHTower.uniform_zero_free_region` (width `c/log²(q(|γ|+3))`); uniform local count `RHTower.localCountChi_uniform'`; window bound `ShortIntervalPrimesInProgressions.norm_psiChi_window_le` (its constant is `2‖γ'‖ + 8D`, uniform but stated existentially) | open |
+| §6 (PRIME) | `|Σ_{N<p≤2N} e(pβ)| ≤ η #{p}` off the major arcs `q ≤ Q₀`, `|β − a/q| ≤ W/N` | Vaughan/Type II (`BezoutValuationIncidence.TheCentredPrimeRowIsMinorArcBelowTheDiagonal`), Siegel `RHTower.siegel_zero_free`, uniform region `RHTower.uniform_zero_free_region`, PNT with log-power error `RHTower.PrimeCells.exists_abs_theta_sub_le`, Ramanujan sum `Goldbach.norm_kloostermanSum_unit_zero_le`, `n ≤ 2φ(n)²` | **Lean** (`PrimeExponentialSums.exists_off_major_arcs`, `LogarithmicChowla.exists_norm_primeKernel_le`, `exists_abs_avg_corr_le`) |
 | §7 | MR for `μχ`, fixed `χ` | MR for `μ`: fibre form all `h → ∞` (`Sieve.MoebiusAveragedMeanSquareAllLengths`), integer start `ℓ ≥ log N` (`TwinPrime.eventually_dyadicMeanSquare_moebius_le_integerWindowRate`); VK for `ζ` (`Sieve.VinogradovKorobovZeroFree`) | open |
 
 ## Lean
@@ -139,6 +141,18 @@ Folder `formal/GaloisForLFunctions/LogarithmicChowla/`, umbrella `LogarithmicCho
 | `ArcMass` | box identity, arc mass `≤ 4V(θ,T)(M+1)/M + 8T/M` | compiled |
 | `CircleMethod` | `|avg c(ph) − R⁻¹Σ F(r) Re K(hr/R)| ≤ 2^{k+1}h/M` | compiled |
 | `CircleBound` | minor/major split, covering by arcs, `M → ∞`: `abs_avg_corr_le` | compiled |
+| `PrimeKernelBound` | (PRIME) for `K_k`; circle bound with (PRIME): `exists_abs_avg_corr_le` | compiled |
+
+Folder `formal/GaloisForLFunctions/PrimeExponentialSums/`, umbrella `PrimeExponentialSums.lean`.
+
+| Module | Content | Status |
+|---|---|---|
+| `VinogradovAtRationals` | Vaughan at `a/q`, any `q`: `norm_sum_vonMangoldt_pow_le` | compiled |
+| `VinogradovMinorArc` | `|Σ_{n≤N} Λ(n)e(an/q)| ≤ N/(log N)^A` for `(log N)^{2A+12} ≤ q ≤ N/(log N)^{2A+12}` | compiled |
+| `PrimeSumsByParts` | Abel summation, prime powers, geometric sums, untwisted prime sums from θ-PNT | compiled |
+| `MajorArcs` | character expansion, Ramanujan coefficient, Siegel–Walfisz twisted prime sums | compiled |
+| `DyadicPrimeSums` | Dirichlet in lowest terms; dyadic minor/major/principal bounds; `#{N<p≤2N} ≥ N/(4 log N)` | compiled |
+| `PrimesOffMajorArcs` | (PRIME): `exists_off_major_arcs` | compiled |
 
 ## Log
 - 2026-11-11 — created; paper architecture §0–§7.

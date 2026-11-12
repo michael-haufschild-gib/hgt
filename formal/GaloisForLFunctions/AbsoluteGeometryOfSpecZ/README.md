@@ -184,11 +184,18 @@ So the step-packet matrices are the intersection matrices of the blocks under th
 correspondences (`packetForm_stepPacket_eq_sum_blockMatrix`). Without the degrees the matrix
 is a potential plus the Dirichlet form of a weighted graph: the jets join every pair of blocks
 and the floor maps join a block to its images, with positive weights. The degrees add the
-product of the two charges of the packet, a hyperbolic plane. On the first step packets the
-neutral part has exactly one negative square, the signature of an intersection form on a
-surface; the hyperbolic plane is what makes the matrix positive. Their index is bounded by the
-Morse index of the aperture path: at most the number of null modes below any aperture wider
-than half the length of the window. No index theorem intrinsic to the floor maps is known.
+product of the two charges of the packet, a hyperbolic plane: Weil's form of the two poles
+`s = 0, 1` of the completed zeta function. So the neutral part is the form of a divisor, the
+zeros minus the poles. On smooth tests its largest number of negative squares is one plus the
+number of zeros right of the line: RH holds iff the neutral part has one negative square, the
+signature of an intersection form on a surface. The same holds at finite scale: RH holds iff
+the neutral part of the block matrix of every window `(R, R + J]` with `R ≤ J` has exactly one
+negative square. The indices of the neutral part and of the block matrix differ by at most one
+on every window; without RH the neutral part has exactly one negative square on the windows
+with `R ≤ J ≤ 53R/50`, at every block size. The index of the block matrix is bounded by
+the Morse index of the aperture path: at most the number of null modes below any aperture
+wider than half the length of the window.
+On every window of ratio at most `103/50` the matrix is at least `1/5000`, at every block size.
 On the blocks `1, 2, 3` with `Q = 4` the matrix is at least `1/20`, on the blocks `1, …, 6`
 with `Q = 7` at least `1/100`; the second is not diagonally dominant. On the blocks `2, …, 7`
 with `Q = 4`, the window of ratio four on blocks of half the size, it is at least `1/100`; the
@@ -432,6 +439,11 @@ the finer blocks is a margin on the coarser ones.
 | | up to the ground energy the polar Lagrangian is the graph of a positive form on the forcings: every forcing has one charge, their pairing is the maximum of `2 Re⟨y, d u⟩ − ⟨T u, u⟩`, positive, and increasing in the aperture | `exists_mem_polarLagrangian_of_lt_ground`, `forced_variational`, `re_inner_forcing_charge_pos`, `re_inner_forcing_charge_mono` |
 | The block matrix as a Dirichlet form | on step packets Weil's form is `2 c₀ c₁ + Σ V_j σ_j² + ½ Σ w_{jl}(σ_j − σ_l)²`: the product of the two charges, a potential, and the Dirichlet form of a weighted graph on the blocks whose weights, the jets and the contacts, are positive; the neutral part does not increase under the modulus | `sum_blockMatrix_eq_charges_potential_dirichlet`, `blockWeight_pos`, `sum_neutralBlock_abs_le`, `sum_sum_mul_eq_doob` |
 | | the neutral part is Lorentzian on the first step packets of ratio four and seven: positive with the margin of the block matrix where a charge vanishes, negative on the first block | `sum_neutralBlock_four_ge`, `sum_neutralBlock_seven_ge`, `sum_neutralBlock_four_fine_ge`, `neutralBlock_one_one_neg` |
+| | a vector that minimises the neutral part among the vectors of its length has entries of one sign, so both its charges are nonzero with one sign: the block matrix is strictly above its neutral part there | `neutral_minimizer_one_sign`, `charges_mul_pos_of_neutral_minimizer`, `sum_neutralBlock_lt_sum_blockMatrix_of_minimizer` |
+| | on every window `(R, R + J]` with `50J ≤ 53R`, at every block size, the block matrix is at least `1/5000`; the windows of ratio above two carry the contacts of the prime `2` | `packetForm_stepPacket_ge_of_short`, `sum_blockMatrix_ge_of_short` |
+| | the neutral part is invariant under refinement and is `R·N(1, 1) < 0` on the packet constant on `(R, 2R]`; its index and that of the block matrix differ by at most one; it has exactly one negative square on the windows with `R ≤ J ≤ 53R/50`, and under RH on all windows with `R ≤ J` | `sum_neutralBlock_refine`, `sum_neutralBlock_dyadic`, `hermNegIndex_neutralWindow_le_blockWindow_add_one`, `hermNegIndex_neutralWindow_eq_one`, `hermNegIndex_neutralWindow_eq_one_of_riemannHypothesis` |
+| | the neutral part is Weil's form of the zeros minus the poles `s = 0, 1`; on smooth tests its index is one plus the number of zeros right of the line; RH iff at most one negative square | `poleConfig_W_ofReal`, `neutralForm_eq_re_sub`, `neutralForm_stepPacket`, `exists_le_negIndex_neutralGram_iff`, `riemannHypothesis_iff_forall_negIndex_neutralGram_le_one` |
+| | a block and a far window pair by minus the product of their charges (Mertens with Euler's constant and the prime number theorem); a step packet of negative form gives two negative squares of the neutral part on a window `(1, 2M]`; RH iff the neutral part of every window with `R ≤ J` has exactly one negative square | `tendsto_sum_Ico_neutralBlock_div`, `exists_two_le_hermNegIndex_neutralWindow`, `riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one` |
 | Forced data | weights, constant, scale, tree lengths, exchange law | §2.4 |
 | | a reversed contact at `2` fails | `exists_packet_degreePairing_gt_of_flippedContact` |
 | The tree of `2` | on packets of length `≤ log 4` the generator is `≥ (1 − 1/√2)∫f²`; Bézout is monotone in the length, holds for long trees, and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two` |
@@ -482,7 +494,7 @@ Each construction asks for a property that is an inequality and has a kill condi
 | IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters, the character of degree two of `X³ − 2`, and for every virtual character of Hecke characters (zeros and poles). Open: Brauer's theorem and the reciprocity that make an Artin character such a virtual character |
 | V | Bézout for an integer-norm system on its own comb | the jets of the comb are not those of the system | closed for the squares: `exists_packet_squarePairing_gt` |
 | VI | a count: natural numbers with a quadratic Tate limit | no definition without the form | the count on the object is linear (split norm; volume over the gluing index); counts on the surviving prime rays exist iff RH (corpus). Open: a definition without the form |
-| VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors; the matrices are those of the floor maps; `𝔚_4` and `𝔚_7` are positive with a margin on unit blocks. Open: finer blocks; an index theorem for the object |
+| VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors; the matrices are those of the floor maps; `𝔚_4` and `𝔚_7` are positive with a margin on unit blocks; every window of ratio at most `103/50` has the margin `1/5000` at every block size; the neutral part is the form of the zeros minus the poles, and RH is its signature, on smooth tests and on the windows at finite scale. Open: ratio above `103/50` at every block size |
 | VIII | the index as a topological invariant: index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | the index is a Morse index: the sum of the nullities of the conjugate apertures, at every energy; the near end is zero and the far end is the number of zeros right of the line. The symplectic structure exists and is defined from the places: the index is the number of crossings of the aperture conormals with the graph of Weil's operator, and it is the same along every monotone path in the (aperture, energy) plane. The invariant does not fix its own value: index zero is RH |
 | IX | the width on the tails | the growth of the tail is the zero-free half-plane | closed as an equivalence (`powerCombTailGrowth_iff_zeroHalfPlane`) |
 
@@ -539,7 +551,7 @@ A construction is read against sixteen criteria; the pairing of the degree point
 | 2 | Bézout from a property of the object | RH. Every structure found is an identity or a receiver; weights, constant, scale, tree lengths and prices admit no deformation |
 | 3 | the index as a homotopy invariant of the aperture path | Answered as a structure. The index at `b` is the number of crossings of a path of Lagrangian subspaces, the conormals of the apertures, with one fixed Lagrangian, the graph of Weil's operator, in `H_b × H_b`; the crossings are the resonant apertures with their nullities (`negativeRank_eq_sum_apertureCrossing`). The path is defined by the apertures alone; the primes and the poles enter only the graph. The index is the same along every monotone path in the (aperture, energy) plane (`null_modes_along_two_paths`); its far end at the energy zero is the number of zeros right of the line. In the four-dimensional space of charges and forcings the polar Lagrangian sees exactly the charged null modes (question 6); it is an even line and an odd line, so the path is a pair of points on two projective lines (`finrank_polarLagrangian_inf_parityPairs`). The value zero of the index is RH and is not produced by the invariance |
 | 4 | Artin characters in general | Proved: the index law of a virtual character. For a quotient of products of Hecke `L`-functions the index is the number of zeros and poles right of the line plus the number of poles on it (`exists_le_negIndex_quotient_iff`); so Bézout for an Artin character is the Riemann hypothesis of its `L`-function together with Artin's conjecture on the line. Proved for one character that is not abelian (degree two, monomial). Open (classical inputs, not in the corpus): Brauer's theorem; the identification of an induced character with a Hecke character |
-| 5 | the step-packet matrices as intersection matrices of an object with an index theorem; first the sign of `𝔚_4` | The matrices are the intersection matrices of the unit blocks under the floor maps `b ↦ ⌊b/k⌋`, with the degrees, the density and the jets (§2.6); their index is at most the Morse index of the aperture path; they form a tower under refinement. `𝔚_4 ≥ 1/20` on the three blocks of `(1, 4]` and `≥ 1/100` on the six blocks of `(2, 8]`; `𝔚_7 ≥ 1/100` on the six blocks of `(1, 7]`; each with the sign of the comb at explicit block sizes. The neutral part of the matrix is a potential plus the Dirichlet form of the jets and the floor maps, and it is Lorentzian on these packets (`sum_neutralBlock_four_ge`, `neutralBlock_one_one_neg`): the matrices have the shape of the Hodge index theorem, one hyperbolic plane of charges over a neutral part with one negative square. A positive supersolution of the neutral part certifies the sign on charge-free packets (`sum_blockMatrix_ge_of_supersolution`), and none exists once the neutral part has a negative square. Open: finer blocks; the single negative square of the neutral part at every scale |
+| 5 | the step-packet matrices as intersection matrices of an object with an index theorem; first the sign of `𝔚_4` | The matrices are the intersection matrices of the unit blocks under the floor maps `b ↦ ⌊b/k⌋`, with the degrees, the density and the jets (§2.6); their index is at most the Morse index of the aperture path; they form a tower under refinement. `𝔚_4 ≥ 1/20` on the three blocks of `(1, 4]` and `≥ 1/100` on the six blocks of `(2, 8]`; `𝔚_7 ≥ 1/100` on the six blocks of `(1, 7]`; each with the sign of the comb at explicit block sizes. The neutral part of the matrix is a potential plus the Dirichlet form of the jets and the floor maps, and it is Lorentzian on these packets (`sum_neutralBlock_four_ge`, `neutralBlock_one_one_neg`): the matrices have the shape of the Hodge index theorem, one hyperbolic plane of charges over a neutral part with one negative square. A positive supersolution of the neutral part certifies the sign on charge-free packets (`sum_blockMatrix_ge_of_supersolution`), and none exists once the neutral part has a negative square. The neutral part is Weil's form of the zeros minus the poles of the completed zeta function, and the index law of a virtual configuration is its index theorem: one plus the number of zeros right of the line, so RH iff one negative square (`riemannHypothesis_iff_forall_negIndex_neutralGram_le_one`). The same at finite scale: RH iff the neutral part of every window with `R ≤ J` has exactly one negative square (`riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one`). At every block size the matrices of ratio at most `103/50` are at least `1/5000` and their neutral part has exactly one negative square (`sum_blockMatrix_ge_of_short`, `hermNegIndex_neutralWindow_eq_one`). Open: the sign of `𝔚_4` at every block size |
 | 6 | the polar charge of a null mode | Reduced to one inequality. Nullity = charged nullity + neutral nullity, and the charged null modes are the crossings of the polar Lagrangian with the charge axis. A null mode at an energy below the pole-vanishing ground energy `μ₀(a)` is charged, and the ground modes at `a` are all charged iff `μ(a) < μ₀(a)` (`neutralNullity_groundEnergy_eq_zero_iff`). Proved for every aperture up to `½(log 2 + 1/50)` at energies below `1/20`. Open: `μ(a) < μ₀(a)` at the critical aperture (B104) |
 
 Settled, and now part of §6: the limit matrices at finite scale and the converse; Hecke
@@ -547,8 +559,8 @@ characters, ideals as degree points and a ring that is not abelian; the Li ladde
 Laguerre tails and the width on the power tails; a path at an odd prime (the price path).
 
 **Order of work.** The strict inequality `μ(a) < μ₀(a)` between the two ground energies; a
-quadratic count; the step-packet matrices on finer blocks; Brauer's theorem and reciprocity for
-Artin characters.
+quadratic count; the step-packet matrices of ratio above `103/50` on finer blocks; Brauer's
+theorem and reciprocity for Artin characters.
 
 **The decisive test.** A construction whose Bézout holds for an integer-norm system with a
 finite layer, for a fake, for the Liouville twist at the first rung of the conductor ladder,
@@ -616,11 +628,14 @@ explicit error of the matrix. On unit blocks the matrix is `d ⊗ 1 + 1 ⊗ d + 
 density, jets, and the graphs of the floor maps (§2.6). *Proved:* on `R = 1` the matrices of
 ratio four and seven are positive with the margins `1/20` and `1/100` (least eigenvalues near
 `0.069` and `0.028`); on `R = 2` the matrix of ratio four is positive with the margin `1/100`
-(least eigenvalue near `0.03`); a margin above `mR` implies the same margin above `R`. *Open:*
-the same windows on finer blocks (matrices of size `3R` and `6R`, whose margins decrease along
-divisibility to the bottom of Weil's form on the window); an
-index theorem for the floor maps; whether the cone of step packets has a description in which
-the entries are positive term by term.
+(least eigenvalue near `0.03`); a margin above `mR` implies the same margin above `R`; every
+window of ratio at most `103/50` has the margin `1/5000` at every block size, and its neutral
+part has exactly one negative square; RH is the statement that the neutral part, the form of
+the zeros minus the poles, has one negative square, on smooth tests and on every window with
+`R ≤ J` at finite scale. *Open:* the windows of ratio four and seven on finer blocks (matrices
+of size `3R` and `6R`, whose margins decrease along divisibility to the bottom of Weil's form
+on the window); whether the cone of step packets has a description in which the entries are
+positive term by term.
 
 **The aperture path (question 3).** Weil's form restricted to the aperture `a` and shifted by
 an energy `E` has finitely many negative squares and finitely many null modes. *Proved:* the

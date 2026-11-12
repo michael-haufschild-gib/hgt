@@ -29,8 +29,9 @@ theorem logarithmicAbelMean_congr_pos {f g : ℕ → ℝ}
   rw [abelIntegral, abelIntegral]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro u hu
-  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor (Real.one_le_exp (le_of_lt hu))
-  rw [stepLaplaceIntegrand, stepLaplaceIntegrand, he _ hN]
+  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor
+    (by simpa only [Nat.cast_one] using Real.one_le_exp (le_of_lt hu))
+  simp only [stepLaplaceIntegrand, he _ hN]
 
 /-- The resonant Abel theorem at exponent zero reads the ordinary limit
 of a bounded logarithmic profile. -/
@@ -83,12 +84,13 @@ theorem integrableOn_logarithmicAbelIntegrand
     {ε : ℝ} (hε : 0 < ε) :
     IntegrableOn (fun u => stepLaplaceIntegrand f 0 u * abelKernel 0 (ε : ℂ) u) (Ioi 0) := by
   obtain ⟨C, hC, hb⟩ := hf (ε / 2) (by linarith only [hε])
+  have hm := (measurable_stepLaplaceIntegrand f 0).mul (measurable_abelKernel 0 (ε : ℂ))
   refine ((exp_neg_integrableOn_Ioi 0 (by linarith only [hε] : 0 < ε / 2)).const_mul C).mono'
-    ((measurable_stepLaplaceIntegrand f 0).mul (measurable_abelKernel 0 (ε : ℂ)))
-      .aestronglyMeasurable ?_
+    hm.aestronglyMeasurable ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
   have hu0 : 0 < u := hu
-  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor (Real.one_le_exp hu0.le)
+  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor
+    (by simpa only [Nat.cast_one] using Real.one_le_exp hu0.le)
   have hnp := Nat.floor_le (Real.exp_pos u).le
   have hpow := Real.rpow_le_rpow (Nat.cast_nonneg ⌊Real.exp u⌋₊) hnp
     (by linarith only [hε] : 0 ≤ ε / 2)

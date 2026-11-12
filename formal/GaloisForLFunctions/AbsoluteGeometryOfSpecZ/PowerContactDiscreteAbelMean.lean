@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 open ArithmeticCorrespondencePositivity SelbergClass.DegreeOne
 
 private theorem normalizedPowerContacts_eq_power_profile (a : ℝ) :
-    normalizedPowerContacts a = fun N => (N : ℝ) ^ (-(1 - 2 * a)) * powerContactPrefix a N := by
+    normalizedPowerContacts a = fun N : ℕ => (N : ℝ) ^ (-(1 - 2 * a)) * powerContactPrefix a N := by
   funext N
   change (N : ℝ) ^ (2 * a - 1) * powerContactPrefix a N = _
   rw [show -(1 - 2 * a) = 2 * a - 1 by ring]

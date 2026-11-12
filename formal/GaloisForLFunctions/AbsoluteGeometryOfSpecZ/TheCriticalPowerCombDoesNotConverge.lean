@@ -39,7 +39,7 @@ private theorem critical_contact_residue_vanishes
       linarith only [hgt]
     have hcont := ((differentiableOn_criticalPowerContactMellin hc).differentiableAt
       ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hmem)).continuousAt
-    simpa only [zero_mul] using heps.mul (hcont.tendsto.comp hpath)
+    simpa only [zero_mul, Function.comp_apply] using heps.mul (hcont.tendsto.comp hpath)
   · apply (tendsto_mul_criticalPowerContactMellin_at_nonreal_boundary hc hτ).congr
     intro ε
     have he : (ε : ℂ) + (ρ.im : ℂ) * I = ρ - (1 / 2 : ℝ) + (ε : ℂ) := by

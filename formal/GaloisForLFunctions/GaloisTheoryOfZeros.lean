@@ -10,6 +10,22 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheGaussianExtensionOfTheZeroFiel
 
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheMaximalRealSubfieldOfTheZeroField
 
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheRealWidthFieldOfTheZeros
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheSourceEquationsOfTheZeroWidths
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheBiquadraticDiagramOfTheZeroField
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheGeometricInvolutionsOfTheZeroField
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.ThePermutationActionOnAllZeroFibres
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheFiniteSourceCompositaOfTheZeros
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheHeightTowerOfTheZeroField
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheSignedPermutationsOfTheZeroFibres
+
 /-!
 # Galois theory of zeros
 

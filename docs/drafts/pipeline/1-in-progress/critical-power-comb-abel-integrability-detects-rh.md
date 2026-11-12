@@ -35,7 +35,7 @@ limit and the Abel limit has not been justified.
   `PowerTailArchimedeanMellinIntegral`. Their coefficient identity is now
   verified in `CriticalPowerContactCoefficientIsTheRealResidue`.
 - RH to subpolynomial critical-contact and comb growth: exact equivalences
-  now written in `CriticalPowerCombGrowthDetectsRH`, unverified. Weighted
+  verified in `CriticalPowerCombGrowthDetectsRH`. Weighted
   Möbius inversion remains valid at threshold zero; harmonic subtraction
   and the convergent elementary remainder preserve that threshold.
 - Converse: `CriticalPowerContactAbelIntegrability` now writes literal

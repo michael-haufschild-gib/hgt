@@ -8,6 +8,14 @@ import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheBalanceLawOfTwoSidedE
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.EveryFiniteLayerIsRealizedByATwoSidedEdit
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheSquareTargetOfAHalfScaleCopy
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AFiniteLayerWithATailOverTheRationalPrimes
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.EveryConfigurationThatApproachesTheLineIsRealized
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheTailOfZetaBeyondACutoff
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.EverySparseConfigurationIsRealized
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheCountSeesTheEditedPrimes
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheNormCountOfAnEditIsAConvolution
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.ThinEditsPayAPowerInTheCount
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AdditionsArePaidInFull
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.ACountBelowTheDeletionExponentIsARealZero
 
 /-!
 # Worlds of the Zero Configuration
@@ -16,6 +24,11 @@ Umbrella for the theory of the two failure worlds of the Riemann hypothesis — 
 top layer (world I) and a tail (world II) — of the atoms ZAL, B13 and Landing, and of their
 models.  Model theory over the rational primes: two-sided edits whose zeta function is that of
 `ζ` times a prescribed factor — a non-real pair with no real zero on top, any finite layer with
-multiplicities, a finite layer with an infinite tail — and the balance law of the doubled and the
-deleted primes.  See `WorldsOfTheZeroConfiguration/README.md`.
+multiplicities, a finite layer with an infinite tail, any configuration that approaches the
+line, any sparse configuration (zeros on a vertical line, zeros rising to a line) — and the laws
+of every such model: the balance law of the doubled and the deleted primes,
+the count floor (the remainder of the count sees the edited primes through the large sieve),
+the count balance (additions are paid in full) and Landau's zero from the count (a count below
+the exponent of the deleted primes is balance or a real zero).  See
+`WorldsOfTheZeroConfiguration/README.md`.
 -/

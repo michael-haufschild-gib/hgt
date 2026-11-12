@@ -23,21 +23,23 @@ turns this residue into the Abel mean of the normalized contacts. The
 already convergent archimedean, reference, and remainder terms then give
 the reflected zero pairing.
 
-## Lean chain — written, unverified
+## Lean chain
 
-- `StrictPowerGrowthHasAnOpenMellinHalfPlane`, `ContactSymbolsContinueAcrossZeros`,
-  `PowerContactSymbolAtTheClosedWidth`: strict contact growth and continuation.
+- `StrictPowerGrowthHasAnOpenMellinHalfPlane`, `ContactSymbolsContinueAcrossZeros`:
+  verified shared Mellin and continuation helpers.
+- `PowerContactSymbolAtTheClosedWidth`: strict contact growth and continuation;
+  verified.
 - `PowerContactRealBoundaryResidue`, `PowerContactAbelMean`: actual real
-  residue and continuously normalized Abel mean.
+  residue and continuously normalized Abel mean; verified.
 - `LogarithmicPowerNormalization`: the floor estimate makes the change
-  of normalization bounded and vanishing.
+  of normalization bounded and vanishing; verified.
 - `LogarithmicAbelMeans`: integrability under subpolynomial growth,
-  preservation of ordinary limits, and finite linear identities.
-- `PowerContactDiscreteAbelMean`: the literal integer-normalized contact mean.
+  preservation of ordinary limits, and finite linear identities; verified.
+- `PowerContactDiscreteAbelMean`: the literal integer-normalized contact mean; verified.
 - `PowerCombsHaveTheirAbelLimitAtTheBoundary`: integrability of the literal
-  comb and its Abel limit `powerTailZeroPairing a` in complex notation.
+  comb and its Abel limit `powerTailZeroPairing a` in complex notation; verified.
 
-The complete chain is written; verification pending. No new contribution counted.
+The remaining chain is written; verification pending. No new contribution counted.
 
 ## Converse — written, unverified
 

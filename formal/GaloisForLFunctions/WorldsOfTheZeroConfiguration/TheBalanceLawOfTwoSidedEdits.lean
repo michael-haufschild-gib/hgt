@@ -239,25 +239,27 @@ theorem differentiableOn_gdSeries_wt {T : Set ℕ} {c : ℝ} (h : ∀ σ, c < σ
   (differentiableAt_gdSeries (wt_nonneg T) freq_nonneg (h ((c + s.re) / 2)
     (by have : c < s.re := hs; linarith)) (by have : c < s.re := hs; linarith)).differentiableWithinAt
 
-/-- **The continuation right of both exponents**: `G = (s − 1) ζ(s) exp(D₊ − D₋ + Q)`. -/
-theorem continuation_eq {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ}
-    (hG : DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re})
+/-- **The continuation right of both exponents**: `G = (s − 1) ζ(s) exp(D₊ − D₋ + Q)`, on every
+half-plane `Re s > c₀` on which `G` and the prime-power remainder `Q` are holomorphic. -/
+theorem continuation_eq {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ} {c₀ : ℝ}
+    (hG : DifferentiableOn ℂ G {s : ℂ | c₀ < s.re})
     (hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (editSystem e).zetaSeriesC s)
-    {c : ℝ} (hc : 1 / 2 ≤ c) (hc1 : c ≤ 1)
+    (hQ : DifferentiableOn ℂ (editRem e) {s : ℂ | c₀ < s.re})
+    {c : ℝ} (hc : c₀ ≤ c) (hc1 : c ≤ 1)
     (hp : ∀ σ, c < σ → SummableAt (plusSet e) σ) (hm : ∀ σ, c < σ → SummableAt (minusSet e) σ)
     {s : ℂ} (hs : c < s.re) :
     G s = zetaResidueUnit s * cexp (gdSeries (wt (plusSet e)) freq s -
       gdSeries (wt (minusSet e)) freq s + editRem e s) := by
-  have hsub : {s : ℂ | c < s.re} ⊆ {s : ℂ | 1 / 2 < s.re} := fun z hz => by
+  have hsub : {s : ℂ | c < s.re} ⊆ {s : ℂ | c₀ < s.re} := fun z hz => by
     have : c < z.re := hz
-    show 1 / 2 < z.re
+    show c₀ < z.re
     linarith
   refine eqOn_halfPlane (c := c) (F₂ := fun z => zetaResidueUnit z *
     cexp (gdSeries (wt (plusSet e)) freq z - gdSeries (wt (minusSet e)) freq z + editRem e z))
     (hG.mono hsub) ?_ (fun z hz => ?_) hs
   · refine differentiable_zetaResidueUnit.differentiableOn.mul (DifferentiableOn.cexp ?_)
     exact ((differentiableOn_gdSeries_wt hp).sub (differentiableOn_gdSeries_wt hm)).add
-      ((differentiableOn_editRem he).mono hsub)
+      (hQ.mono hsub)
   · have hz1 : z ≠ 1 := fun h => by rw [h] at hz; norm_num at hz
     rw [hGeq z hz, editSystem_zetaSeriesC he hz,
       LSeries_edit_eq he (hp _ (lt_of_le_of_lt hc1 hz)) (hm _ (lt_of_le_of_lt hc1 hz)),
@@ -265,13 +267,14 @@ theorem continuation_eq {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ}
     ring
 
 /-- Right of both exponents the continuation vanishes only at the zeros of `ζ`. -/
-theorem zero_iff_of_re_gt {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ}
-    (hG : DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re})
+theorem zero_iff_of_re_gt {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ} {c₀ : ℝ}
+    (hG : DifferentiableOn ℂ G {s : ℂ | c₀ < s.re})
     (hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (editSystem e).zetaSeriesC s)
-    {c : ℝ} (hc : 1 / 2 ≤ c) (hc1 : c ≤ 1)
+    (hQ : DifferentiableOn ℂ (editRem e) {s : ℂ | c₀ < s.re})
+    {c : ℝ} (hc : c₀ ≤ c) (hc1 : c ≤ 1)
     (hp : ∀ σ, c < σ → SummableAt (plusSet e) σ) (hm : ∀ σ, c < σ → SummableAt (minusSet e) σ)
     {z : ℂ} (hz : c < z.re) (hz1 : z ≠ 1) : G z = 0 ↔ riemannZeta z = 0 := by
-  rw [continuation_eq he hG hGeq hc hc1 hp hm hz, zetaResidueUnit_of_ne hz1]
+  rw [continuation_eq he hG hGeq hQ hc hc1 hp hm hz, zetaResidueUnit_of_ne hz1]
   simp [Complex.exp_ne_zero, sub_eq_zero, hz1]
 
 /-! ## The two unbalanced cases -/
@@ -319,7 +322,7 @@ theorem not_plus_heavy {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ}
       differentiable_zetaResidueUnit.differentiableOn hune
   refine not_differentiableOn_exp_gdSeries (wt_nonneg (plusSet e)) freq_nonneg hp hpd hr hFd
     fun s hs hsκ => ?_
-  have hGs := continuation_eq he hG hGeq hκ.le hκ1 hp
+  have hGs := continuation_eq he hG hGeq (differentiableOn_editRem he) hκ.le hκ1 hp
     (fun σ hσ => hm.mono (by linarith)) hsκ
   have hsplit : cexp (gdSeries (wt (plusSet e)) freq s - gdSeries (wt (minusSet e)) freq s +
       editRem e s) * cexp (gdSeries (wt (minusSet e)) freq s - editRem e s) =
@@ -330,38 +333,39 @@ theorem not_plus_heavy {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ}
   simp only [hF]
   rw [hGs, mul_assoc, hsplit, mul_div_assoc, mul_comm, div_mul_cancel₀ _ (hune s hs)]
 
-/-- **A surplus of deleted primes is a real zero.**  If the deleted primes have a real abscissa
-`κ > 1/2` and the doubled primes are summable left of `κ`, the continuation of `(s − 1) ζ_B(s)`
-vanishes at `κ`. -/
-theorem zero_of_minus_heavy {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ}
-    (hG : DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re})
+/-- **A surplus of deleted primes is a real zero.**  Let `G` continue `(s − 1) ζ_B(s)` to
+`Re s > c₀`, where the prime-power remainder is holomorphic.  If the deleted primes have a real
+abscissa `κ > c₀` and the doubled primes are summable left of `κ`, then `G(κ) = 0`. -/
+theorem zero_of_minus_heavy {e : ℕ → ℤ} (he : IsEdit e) {G : ℂ → ℂ} {c₀ : ℝ}
+    (hG : DifferentiableOn ℂ G {s : ℂ | c₀ < s.re})
     (hGeq : ∀ s : ℂ, 1 < s.re → G s = (s - 1) * (editSystem e).zetaSeriesC s)
-    {κ κ' : ℝ} (hκ : 1 / 2 < κ) (hκ1 : κ ≤ 1) (hκ' : κ' < κ)
+    (hQ : DifferentiableOn ℂ (editRem e) {s : ℂ | c₀ < s.re})
+    {κ κ' : ℝ} (hκ : c₀ < κ) (hκ1 : κ ≤ 1) (hκ' : κ' < κ)
     (hp : SummableAt (plusSet e) κ') (hm : ∀ σ, κ < σ → SummableAt (minusSet e) σ)
     (hmd : ∀ σ, σ < κ → ¬ SummableAt (minusSet e) σ) : G (κ : ℂ) = 0 := by
   by_contra hne
-  set c₀ : ℝ := max κ' (1 / 2) with hc₀
-  have hc₀κ : c₀ < κ := max_lt hκ' hκ
-  have hUo : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
-  have hκmem : (κ : ℂ) ∈ {s : ℂ | 1 / 2 < s.re} := by
-    show 1 / 2 < (κ : ℂ).re
+  set c₁ : ℝ := max κ' c₀ with hc₁
+  have hc₁κ : c₁ < κ := max_lt hκ' hκ
+  have hUo : IsOpen {s : ℂ | c₀ < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hκmem : (κ : ℂ) ∈ {s : ℂ | c₀ < s.re} := by
+    show c₀ < (κ : ℂ).re
     rw [Complex.ofReal_re]; exact hκ
-  obtain ⟨r, hr, hre, hGne⟩ := exists_ball_ne_zero hc₀κ
+  obtain ⟨r, hr, hre, hGne⟩ := exists_ball_ne_zero hc₁κ
     (hG.continuousOn.continuousAt (hUo.mem_nhds hκmem)) hne
-  have hsubh : ball (κ : ℂ) r ⊆ {s : ℂ | 1 / 2 < s.re} := fun s hs =>
-    lt_of_le_of_lt (le_max_right κ' (1 / 2)) (hre s hs)
+  have hsubh : ball (κ : ℂ) r ⊆ {s : ℂ | c₀ < s.re} := fun s hs =>
+    lt_of_le_of_lt (le_max_right κ' c₀) (hre s hs)
   have hsubp : ball (κ : ℂ) r ⊆ {s : ℂ | κ' < s.re} := fun s hs =>
-    lt_of_le_of_lt (le_max_left κ' (1 / 2)) (hre s hs)
+    lt_of_le_of_lt (le_max_left κ' c₀) (hre s hs)
   have hDp : DifferentiableOn ℂ (gdSeries (wt (plusSet e)) freq) (ball (κ : ℂ) r) := fun s hs =>
     (differentiableAt_gdSeries (wt_nonneg _) freq_nonneg hp (hsubp hs)).differentiableWithinAt
   set F : ℂ → ℂ := fun s =>
     zetaResidueUnit s * cexp (gdSeries (wt (plusSet e)) freq s + editRem e s) / G s with hF
   have hFd : DifferentiableOn ℂ F (ball (κ : ℂ) r) :=
     (differentiable_zetaResidueUnit.differentiableOn.mul (DifferentiableOn.cexp
-      (hDp.add ((differentiableOn_editRem he).mono hsubh)))).div (hG.mono hsubh) hGne
+      (hDp.add (hQ.mono hsubh)))).div (hG.mono hsubh) hGne
   refine not_differentiableOn_exp_gdSeries (wt_nonneg (minusSet e)) freq_nonneg hm hmd hr hFd
     fun s hs hsκ => ?_
-  have hGs := continuation_eq he hG hGeq hκ.le hκ1
+  have hGs := continuation_eq he hG hGeq hQ hκ.le hκ1
     (fun σ hσ => hp.mono (by linarith)) hm hsκ
   have hGs0 := hGne s hs
   have hsplit : cexp (gdSeries (wt (plusSet e)) freq s + editRem e s) =
@@ -423,7 +427,7 @@ theorem re_le_of_fake_zero (he : IsEdit e)
     z.re ≤ max (max (expo (plusSet e)) (expo (minusSet e))) (1 / 2) := by
   by_contra h
   have h' : max (max (expo (plusSet e)) (expo (minusSet e))) (1 / 2) < z.re := not_le.mp h
-  refine hζ ((zero_iff_of_re_gt he hG hGeq (le_max_right _ _)
+  refine hζ ((zero_iff_of_re_gt he hG hGeq (differentiableOn_editRem he) (le_max_right _ _)
     (max_le (max_le (expo_le_one _) (expo_le_one _)) (by norm_num))
     (fun σ hσ => summableAt_of_expo_lt ?_) (fun σ hσ => summableAt_of_expo_lt ?_) h' hz1).mp hz)
   · exact lt_of_le_of_lt ((le_max_left _ _).trans (le_max_left _ _)) hσ
@@ -460,7 +464,7 @@ theorem zero_at_expo_minus (he : IsEdit e)
     G ((expo (minusSet e) : ℝ) : ℂ) = 0 := by
   have hκ : 1 / 2 < expo (minusSet e) := lt_of_le_of_lt (le_max_right _ _) h
   have hκp : expo (plusSet e) < expo (minusSet e) := lt_of_le_of_lt (le_max_left _ _) h
-  exact zero_of_minus_heavy he hG hGeq hκ (expo_le_one _)
+  exact zero_of_minus_heavy he hG hGeq (differentiableOn_editRem he) hκ (expo_le_one _)
     (κ' := (expo (plusSet e) + expo (minusSet e)) / 2) (by linarith)
     (summableAt_of_expo_lt (by linarith)) (fun σ hσ => summableAt_of_expo_lt hσ)
     (fun σ hσ => not_summableAt_of_lt_expo (by linarith) hσ)

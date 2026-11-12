@@ -14,8 +14,11 @@ for the Möbius function restricted to the integers composed of primes of `S` (`
 * **Twin coefficients** (`normCount_eq_sum_divisors`).  `1_S * 1_{Tᶜ} = 1 * u` with
   `u = μ_S * 1_{Tᶜ}`, the coefficients of `ζ_B / ζ`.
 * **Deleted primes** (`normCount_eq_zero`).  A prime of `S ∖ T` divides no norm.
-* **Mass of the twin coefficients** (`sum_abs_twinCoeff_le`).  If the primes of `S` and of `T`
-  are summable at the exponent `θ > 0`, then `Σ_{d ≤ y} |u(d)| ≤ K y^θ`.
+* **Doubled primes** (`twinCoeff_prime_mul`).  A prime `p` of `T ∖ S` leaves the twin
+  coefficients invariant: `u(p d) = u(d)`.
+* **Mass of the twin coefficients** (`sum_abs_twinCoeff_mul_rpow_le`).  If the primes of `S` and
+  of `T` are summable at the exponent `θ > 0`, then `Σ_{d ≤ y} |u(d)| d^{−θ} ≤ Z_S Z_T`, the
+  product of the sums over the integers composed of primes of `S` and of `T`.
 * **Count** (`sum_intCount_eq_countBall`, `sum_normCount_eq_countBall`).  The partial sums of the
   norm multiplicities are the count: `Σ_{n ≤ x} (1_S * 1_{Tᶜ})(n) = N_B(x)`.
 * **Positive density** (`density_pos`).  If `N_B(x) = A x + O(x^β)`, `β < 1`, and the primes of
@@ -124,19 +127,100 @@ theorem free_le_normCount (S T : Set ℕ) (m : ℕ) : sFreeR S m ≤ (freeFn S *
       (fun x _ => mul_nonneg (freeFn_nonneg S x.1) (freeFn_nonneg Tᶜ x.2)) hmem)
     rw [freeFn_apply, freeFn_apply, sFreeR_one, mul_one]
 
-/-! ## The mass of a convolution -/
+/-! ## Doubled primes -/
 
-/-- Rankin's bound for a convolution of nonnegative functions: the pairs `(m, j)` with
-`m j ≤ y` weigh at most `y^θ (m j)^{−θ}`. -/
-theorem sum_Ioc_mul_le {F G : ArithmeticFunction ℝ} (hF : ∀ n, 0 ≤ F n) (hG : ∀ n, 0 ≤ G n)
-    {θ : ℝ} (hθ : 0 ≤ θ) (y : ℕ) :
-    ∑ d ∈ Ioc 0 y, (F * G) d ≤
-      (y : ℝ) ^ θ * ((∑ m ∈ Ioc 0 y, F m * (m : ℝ) ^ (-θ)) *
-        ∑ j ∈ Ioc 0 y, G j * (j : ℝ) ^ (-θ)) := by
+/-- A convolution `g * h` with `g` supported off the multiples of `p` and `h` invariant under
+multiplication by `p` is invariant under multiplication by `p`. -/
+theorem mul_apply_prime_mul {g h : ArithmeticFunction ℝ} {p : ℕ} (hp : p.Prime)
+    (hg : ∀ i, p ∣ i → g i = 0) (hh : ∀ j, 1 ≤ j → h (p * j) = h j) {n : ℕ} (hn : 1 ≤ n) :
+    (g * h) (p * n) = (g * h) n := by
   classical
-  have hterm : ∀ d ∈ Ioc 0 y, (F * G) d ≤
+  have hn0 : n ≠ 0 := by omega
+  -- the pairs `(i, j)` with `p ∣ i` do not contribute
+  have hdrop : ∀ m : ℕ, ∑ x ∈ m.divisorsAntidiagonal, g x.1 * h x.2 =
+      ∑ x ∈ m.divisorsAntidiagonal.filter (fun x => ¬ p ∣ x.1), g x.1 * h x.2 := by
+    intro m
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    by_cases hx : p ∣ x.1
+    · rw [if_neg (not_not.mpr hx), hg x.1 hx, zero_mul]
+    · rw [if_pos hx]
+  -- the other pairs of `p n` are `(i, p j)` with `i j = n`
+  have hset : (p * n).divisorsAntidiagonal.filter (fun x => ¬ p ∣ x.1) =
+      (n.divisorsAntidiagonal.filter (fun x => ¬ p ∣ x.1)).image (fun x => (x.1, p * x.2)) := by
+    ext x
+    simp only [mem_filter, Nat.mem_divisorsAntidiagonal, mem_image]
+    constructor
+    · rintro ⟨⟨hx, -⟩, hpx⟩
+      have hcop : Nat.Coprime p x.1 := (Nat.Prime.coprime_iff_not_dvd hp).mpr hpx
+      have hdvd : p ∣ x.2 := hcop.dvd_of_dvd_mul_left (by
+        rw [hx]
+        exact dvd_mul_right p n)
+      obtain ⟨j, hj⟩ := hdvd
+      have hij : x.1 * j = n := by
+        rw [hj] at hx
+        exact Nat.eq_of_mul_eq_mul_left hp.pos (by rw [← hx]; ring)
+      exact ⟨(x.1, j), ⟨⟨hij, hn0⟩, hpx⟩, Prod.ext rfl hj.symm⟩
+    · rintro ⟨y, ⟨⟨hy, -⟩, hpy⟩, rfl⟩
+      refine ⟨⟨?_, mul_ne_zero hp.ne_zero hn0⟩, hpy⟩
+      show y.1 * (p * y.2) = p * n
+      rw [← hy]
+      ring
+  have hinj : ∀ x ∈ n.divisorsAntidiagonal.filter (fun x => ¬ p ∣ x.1),
+      ∀ y ∈ n.divisorsAntidiagonal.filter (fun x => ¬ p ∣ x.1),
+      (x.1, p * x.2) = (y.1, p * y.2) → x = y := fun x _ y _ hxy =>
+    Prod.ext (Prod.mk.inj hxy).1 (Nat.eq_of_mul_eq_mul_left hp.pos (Prod.mk.inj hxy).2)
+  rw [ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply, hdrop (p * n), hdrop n, hset,
+    Finset.sum_image hinj]
+  refine Finset.sum_congr rfl fun x hx => ?_
+  have hx2 : 1 ≤ x.2 := by
+    obtain ⟨hx', -⟩ := Nat.mem_divisorsAntidiagonal.mp (mem_filter.mp hx).1
+    refine Nat.pos_of_ne_zero fun h0 => hn0 ?_
+    rw [← hx', h0, mul_zero]
+  show g x.1 * h (p * x.2) = g x.1 * h x.2
+  rw [hh x.2 hx2]
+
+theorem mobSet_eq_zero_of_dvd {S : Set ℕ} {p i : ℕ} (hp : p.Prime) (hS : p ∉ S) (hpi : p ∣ i) :
+    mobSet S i = 0 := by
+  classical
+  unfold mobSet
+  rw [if_neg]
+  rintro ⟨hi0, hall⟩
+  exact hS (hall p (Nat.mem_primeFactors.mpr ⟨hp, hpi, hi0⟩))
+
+theorem sFreeR_prime_mul {T : Set ℕ} {p : ℕ} (hp : p.Prime) (hT : p ∈ T) {j : ℕ} (hj : 1 ≤ j) :
+    sFreeR Tᶜ (p * j) = sFreeR Tᶜ j := by
+  classical
+  rw [sFreeR_mul _ hp.ne_zero (by omega), sFreeR_prime _ hp,
+    if_neg (fun hc : p ∈ Tᶜ => hc hT), one_mul]
+
+/-- **A doubled prime leaves the twin coefficients invariant**: `u(p d) = u(d)` for a prime of
+`T ∖ S`. -/
+theorem twinCoeff_prime_mul {S T : Set ℕ} {p : ℕ} (hp : p.Prime) (hS : p ∉ S) (hT : p ∈ T)
+    {d : ℕ} (hd : 1 ≤ d) : (mobFn S * freeFn Tᶜ) (p * d) = (mobFn S * freeFn Tᶜ) d :=
+  mul_apply_prime_mul hp (fun _ hi => mobSet_eq_zero_of_dvd hp hS hi)
+    (fun _ hj => sFreeR_prime_mul hp hT hj) hd
+
+/-! ## The mass of the twin coefficients -/
+
+/-- The integers composed of a thin set of primes, summed below `y`. -/
+theorem sum_Ioc_free_compl_le {T : Set ℕ} {θ : ℝ} (hθ : 0 < θ)
+    (hT : Summable fun p : ℕ => T.indicator (fun n => (n : ℝ) ^ (-θ)) p) (y : ℕ) :
+    ∑ j ∈ Ioc 0 y, freeFn Tᶜ j * (j : ℝ) ^ (-θ) ≤
+      ∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ) :=
+  (summable_sFreeR_compl_rpow hθ hT).sum_le_tsum _ fun _ _ =>
+    mul_nonneg (sFreeR_nonneg _ _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+
+/-- A convolution of nonnegative functions against the weight `d^{−θ}`: the pairs `(m, j)` with
+`m j ≤ y` are among all pairs below `y`, and the weight is multiplicative. -/
+theorem sum_Ioc_mul_rpow_le {F G : ArithmeticFunction ℝ} (hF : ∀ n, 0 ≤ F n)
+    (hG : ∀ n, 0 ≤ G n) (θ : ℝ) (y : ℕ) :
+    ∑ d ∈ Ioc 0 y, (F * G) d * (d : ℝ) ^ (-θ) ≤
+      (∑ m ∈ Ioc 0 y, F m * (m : ℝ) ^ (-θ)) * ∑ j ∈ Ioc 0 y, G j * (j : ℝ) ^ (-θ) := by
+  classical
+  have hterm : ∀ d ∈ Ioc 0 y, (F * G) d * (d : ℝ) ^ (-θ) =
       ∑ x ∈ Ioc 0 y ×ˢ Ioc 0 y, if x.1 * x.2 = d then
-        (y : ℝ) ^ θ * ((F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ))) else 0 := by
+        (F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ)) else 0 := by
     intro d hd
     obtain ⟨hd0, hdy⟩ := mem_Ioc.mp hd
     have hset : d.divisorsAntidiagonal =
@@ -155,88 +239,55 @@ theorem sum_Ioc_mul_le {F G : ArithmeticFunction ℝ} (hF : ∀ n, 0 ≤ F n) (h
           (Nat.le_mul_of_pos_left _ h1).trans (hx.le.trans hdy)⟩, hx⟩
       · rintro ⟨-, hx⟩
         exact ⟨hx, by omega⟩
-    rw [ArithmeticFunction.mul_apply, ← Finset.sum_filter, hset]
-    refine Finset.sum_le_sum fun x hx => ?_
-    obtain ⟨hxP, hxd⟩ := mem_filter.mp hx
-    obtain ⟨hx1, hx2⟩ := mem_product.mp hxP
-    have hm0 : (0 : ℝ) < x.1 := by exact_mod_cast (mem_Ioc.mp hx1).1
-    have hj0 : (0 : ℝ) < x.2 := by exact_mod_cast (mem_Ioc.mp hx2).1
-    have hmj : (0 : ℝ) < (x.1 : ℝ) * (x.2 : ℝ) := mul_pos hm0 hj0
-    have hle : ((x.1 : ℝ) * (x.2 : ℝ)) ^ θ ≤ (y : ℝ) ^ θ :=
-      Real.rpow_le_rpow hmj.le (by exact_mod_cast hxd.le.trans hdy) hθ
-    have hone : 1 ≤ (y : ℝ) ^ θ * ((x.1 : ℝ) ^ (-θ) * (x.2 : ℝ) ^ (-θ)) := by
-      rw [← Real.mul_rpow hm0.le hj0.le, Real.rpow_neg hmj.le, ← div_eq_mul_inv,
-        one_le_div (Real.rpow_pos_of_pos hmj _)]
-      exact hle
-    have hFG : 0 ≤ F x.1 * G x.2 := mul_nonneg (hF _) (hG _)
-    calc F x.1 * G x.2 = F x.1 * G x.2 * 1 := (mul_one _).symm
-      _ ≤ F x.1 * G x.2 * ((y : ℝ) ^ θ * ((x.1 : ℝ) ^ (-θ) * (x.2 : ℝ) ^ (-θ))) :=
-          mul_le_mul_of_nonneg_left hone hFG
-      _ = (y : ℝ) ^ θ * ((F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ))) := by ring
-  have hnn : ∀ x : ℕ × ℕ,
-      0 ≤ (y : ℝ) ^ θ * ((F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ))) := fun x =>
-    mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _)
-      (mul_nonneg (mul_nonneg (hF _) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
-        (mul_nonneg (hG _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
-  calc ∑ d ∈ Ioc 0 y, (F * G) d
-      ≤ ∑ d ∈ Ioc 0 y, ∑ x ∈ Ioc 0 y ×ˢ Ioc 0 y, if x.1 * x.2 = d then
-          (y : ℝ) ^ θ * ((F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ))) else 0 :=
-        Finset.sum_le_sum hterm
-    _ = ∑ x ∈ Ioc 0 y ×ˢ Ioc 0 y, if x.1 * x.2 ∈ Ioc 0 y then
-          (y : ℝ) ^ θ * ((F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ))) else 0 := by
-        rw [Finset.sum_comm]
+    rw [ArithmeticFunction.mul_apply, Finset.sum_mul, ← Finset.sum_filter, hset]
+    refine Finset.sum_congr rfl fun x hx => ?_
+    rw [← (mem_filter.mp hx).2, Nat.cast_mul,
+      Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _)]
+    ring
+  calc ∑ d ∈ Ioc 0 y, (F * G) d * (d : ℝ) ^ (-θ)
+      = ∑ x ∈ Ioc 0 y ×ˢ Ioc 0 y, if x.1 * x.2 ∈ Ioc 0 y then
+          (F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ)) else 0 := by
+        rw [Finset.sum_congr rfl hterm, Finset.sum_comm]
         refine Finset.sum_congr rfl fun x _ => ?_
         rw [Finset.sum_ite_eq]
     _ ≤ ∑ x ∈ Ioc 0 y ×ˢ Ioc 0 y,
-          (y : ℝ) ^ θ * ((F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ))) :=
+          (F x.1 * (x.1 : ℝ) ^ (-θ)) * (G x.2 * (x.2 : ℝ) ^ (-θ)) :=
         Finset.sum_le_sum fun x _ => by
           split_ifs
-          exacts [le_rfl, hnn x]
-    _ = (y : ℝ) ^ θ * ((∑ m ∈ Ioc 0 y, F m * (m : ℝ) ^ (-θ)) *
-          ∑ j ∈ Ioc 0 y, G j * (j : ℝ) ^ (-θ)) := by
-        rw [Finset.sum_product, Finset.sum_mul_sum, Finset.mul_sum]
-        refine Finset.sum_congr rfl fun m _ => ?_
-        rw [Finset.mul_sum]
+          exacts [le_rfl, mul_nonneg
+            (mul_nonneg (hF _) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+            (mul_nonneg (hG _) (Real.rpow_nonneg (Nat.cast_nonneg _) _))]
+    _ = (∑ m ∈ Ioc 0 y, F m * (m : ℝ) ^ (-θ)) * ∑ j ∈ Ioc 0 y, G j * (j : ℝ) ^ (-θ) := by
+        rw [Finset.sum_product, Finset.sum_mul_sum]
 
-/-- The integers composed of a thin set of primes, summed below `y`. -/
-theorem sum_Ioc_free_compl_le {T : Set ℕ} {θ : ℝ} (hθ : 0 < θ)
-    (hT : Summable fun p : ℕ => T.indicator (fun n => (n : ℝ) ^ (-θ)) p) (y : ℕ) :
-    ∑ j ∈ Ioc 0 y, freeFn Tᶜ j * (j : ℝ) ^ (-θ) ≤
-      ∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ) :=
-  (summable_sFreeR_compl_rpow hθ hT).sum_le_tsum _ fun _ _ =>
-    mul_nonneg (sFreeR_nonneg _ _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+/-- The twin coefficients are dominated by the integers composed of edited primes. -/
+theorem abs_twinCoeff_le (S T : Set ℕ) (d : ℕ) :
+    |(mobFn S * freeFn Tᶜ) d| ≤ (freeFn Sᶜ * freeFn Tᶜ) d := by
+  rw [ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun x _ => ?_)
+  rw [abs_mul, abs_of_nonneg (freeFn_nonneg Tᶜ x.2)]
+  exact mul_le_mul_of_nonneg_right (abs_mobSet_le S x.1) (freeFn_nonneg _ _)
 
-/-- **Mass of the twin coefficients.** -/
-theorem sum_abs_twinCoeff_le {S T : Set ℕ} {θ : ℝ} (hθ : 0 < θ)
+/-- **Rankin form of the mass of the twin coefficients.** -/
+theorem sum_abs_twinCoeff_mul_rpow_le {S T : Set ℕ} {θ : ℝ} (hθ : 0 < θ)
     (hS : Summable fun p : ℕ => S.indicator (fun n => (n : ℝ) ^ (-θ)) p)
     (hT : Summable fun p : ℕ => T.indicator (fun n => (n : ℝ) ^ (-θ)) p) (y : ℕ) :
-    ∑ d ∈ Ioc 0 y, |(mobFn S * freeFn Tᶜ) d| ≤
-      (∑' j : ℕ, sFreeR Sᶜ j * (j : ℝ) ^ (-θ)) * (∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ)) *
-        (y : ℝ) ^ θ := by
-  have hpt : ∀ d : ℕ, |(mobFn S * freeFn Tᶜ) d| ≤ (freeFn Sᶜ * freeFn Tᶜ) d := by
-    intro d
-    rw [ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply]
-    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun x _ => ?_)
-    rw [abs_mul, abs_of_nonneg (freeFn_nonneg Tᶜ x.2)]
-    exact mul_le_mul_of_nonneg_right (abs_mobSet_le S x.1) (freeFn_nonneg _ _)
+    ∑ d ∈ Ioc 0 y, |(mobFn S * freeFn Tᶜ) d| * (d : ℝ) ^ (-θ) ≤
+      (∑' j : ℕ, sFreeR Sᶜ j * (j : ℝ) ^ (-θ)) * ∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ) := by
   have hZS := sum_Ioc_free_compl_le hθ hS y
   have hZT := sum_Ioc_free_compl_le hθ hT y
-  have hZT0 : 0 ≤ ∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ) :=
-    tsum_nonneg fun j => mul_nonneg (sFreeR_nonneg _ _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
-  have hS0 : 0 ≤ ∑ m ∈ Ioc 0 y, freeFn Sᶜ m * (m : ℝ) ^ (-θ) :=
+  have hnn : ∀ (U : Set ℕ), 0 ≤ ∑ m ∈ Ioc 0 y, freeFn Uᶜ m * (m : ℝ) ^ (-θ) := fun U =>
     Finset.sum_nonneg fun m _ =>
       mul_nonneg (freeFn_nonneg _ _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
-  calc ∑ d ∈ Ioc 0 y, |(mobFn S * freeFn Tᶜ) d|
-      ≤ ∑ d ∈ Ioc 0 y, (freeFn Sᶜ * freeFn Tᶜ) d := Finset.sum_le_sum fun d _ => hpt d
-    _ ≤ (y : ℝ) ^ θ * ((∑ m ∈ Ioc 0 y, freeFn Sᶜ m * (m : ℝ) ^ (-θ)) *
-          ∑ j ∈ Ioc 0 y, freeFn Tᶜ j * (j : ℝ) ^ (-θ)) :=
-        sum_Ioc_mul_le (freeFn_nonneg _) (freeFn_nonneg _) hθ.le y
-    _ ≤ (y : ℝ) ^ θ * ((∑' j : ℕ, sFreeR Sᶜ j * (j : ℝ) ^ (-θ)) *
-          ∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ)) :=
-        mul_le_mul_of_nonneg_left (mul_le_mul hZS hZT (Finset.sum_nonneg fun j _ =>
-          mul_nonneg (freeFn_nonneg _ _) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
-          (hS0.trans hZS)) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
-    _ = _ := by ring
+  calc ∑ d ∈ Ioc 0 y, |(mobFn S * freeFn Tᶜ) d| * (d : ℝ) ^ (-θ)
+      ≤ ∑ d ∈ Ioc 0 y, (freeFn Sᶜ * freeFn Tᶜ) d * (d : ℝ) ^ (-θ) :=
+        Finset.sum_le_sum fun d _ => mul_le_mul_of_nonneg_right (abs_twinCoeff_le S T d)
+          (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+    _ ≤ (∑ m ∈ Ioc 0 y, freeFn Sᶜ m * (m : ℝ) ^ (-θ)) *
+          ∑ j ∈ Ioc 0 y, freeFn Tᶜ j * (j : ℝ) ^ (-θ) :=
+        sum_Ioc_mul_rpow_le (freeFn_nonneg _) (freeFn_nonneg _) θ y
+    _ ≤ (∑' j : ℕ, sFreeR Sᶜ j * (j : ℝ) ^ (-θ)) * ∑' j : ℕ, sFreeR Tᶜ j * (j : ℝ) ^ (-θ) :=
+        mul_le_mul hZS hZT (hnn T) ((hnn S).trans hZS)
 
 /-! ## The count -/
 

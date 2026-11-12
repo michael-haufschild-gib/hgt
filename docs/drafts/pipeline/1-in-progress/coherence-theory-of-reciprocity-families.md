@@ -24,6 +24,8 @@ inside the mean square, Q8 function-field analogues.
 | `TheWallIsThePriceOfCompletion` | `hasSum_localTerm_uncompleted` (j = 0, l ≤ 1: `rowLocalSum` with `R = 0`); `rowLocalSum_sub_uncompleted` (completed part `∝ R`); `uncompleted_principal_factor`; `exists_uncompletedCorrection_cutoff` (no wall on `Re s > ½`) | clean |
 | `TheRowRootNumberIsAnAngularTwist` | `normSq_sexticGaussPow_prime`, `normSq_sexticGaussPow_prod` (`|g^{(j)}_c|² = |c|²`, `6 ∤ j`); `rowRootNumber_eq_angularTwist` (`g̃¹ = μ(c)(c/|c|)χ̄_c(4)g̃³ conj g̃²`) | clean |
 | `TheGramOfTwoRowsIsACompletedSum` | `tsum_column_eq_dual(Of)` (exact reflection of any column on `O/(c)`); `sum_pairColumn_traceChar` (mixed Gauss CRT); `gramEntry_eq_completedSum` (Q3, M1) | clean |
+| `TheRowRootNumberIsTheSquareOfTheThetaCoefficient` | `sexticGaussPow_two_cube_prime` (`G₂³ = −πN`); `rowHasseDavenport_prime`; `rowTheta_mul` (step: `X` vs `X³X⁴ = X`, `X³ = r(c,d)`); `rowHasseDavenport` (`χ_c(4)N(c)g¹ = g³(g²)²`, `g³ = |c|Γ(c)`); `rowRootNumber_eq_thetaPhase_mul_sq` (`g̃¹ = G(c)γ₂(c)²`); `thetaGauss_cube` (`γ₂³ = μ(c)c/|c|`); `moebius_angular_mul_conj_thetaGauss` | clean |
+| `TheReflectedGramIsTwistedByTheRowRootNumbers` | `sexticGaussPow_eq_conj_mul` (`g^{(j)}(x) = χ̄(x)^j g^{(j)}(1)`); `sexticGaussPow_one_mul_five` (`g¹g⁵ = χ(−1)N`); `gramCoeff_eq` (coefficient = `r(u₂,u₁)χ_{u₂}(−1)χ̄_{u₁}(−h)χ_{u₂}(−h)g¹_{u₁}\overline{g¹_{u₂}}`); `gramCoeff_eq_thetaSquares` (`|u₁||u₂|Φ(u₁)Φ̄(u₂)`, `Φ = Gγ₂²`); `gramCoeff_sixthPower` (rank one at `−h = k⁶`) | clean |
 | `TheShortSexticGramIsDiagonal` | `sexticGaussPow_zero_prime/prod` (`g_c^{(j)}(0) = 0`); `sum_pairColumn_eq_zero` (distinct squarefree rows orthogonal on `O/(u₁u₂)`); `norm_gramEntry_le` (short Gram entries negligible) | clean |
 
 ## Paper notes (derivations, with status)
@@ -109,6 +111,32 @@ large sieve conjecture `Q + N`): below `5/6` B175 is a named problem (T8). Q7: b
 length) every family cancels completely (Module 5); above, order two is sharp (`sieveNorm_sharp`),
 odd orders open; the sign law needs odd order: sign-carrying ⇔ sieve not known sharp.
 
+**N11 [Lean]+[C]/[D] The long columns are sextic, not Möbius-signed.** Hasse–Davenport for the rows
+(`rowHasseDavenport`) and `g³ = |c|Γ(c)` give `g̃¹ = G(c)γ₂(c)²` with `G = χ̄_c(4)Γ(c)` periodic and
+`γ₂ = g²/|c|` the probe's theta coefficient; `γ₂³ = μ(c)c/|c|`. So N9's "Möbius sign × angular twist
+of infinity type one ⇒ no metaplectic main term" is wrong: `μ·(angular)` is `γ₂³`, the twist is not a
+Hecke twist, and the long columns are first moments of sextic Gauss sums (Kubota series of order
+six, pole `½ + 1/6` [C]). N8's conjecture `R₀ = 2/3 = R_crit(6)` is the coherence exponent of the row
+root numbers; FG's curve `θ(R₀)` gives `7/9` there (floor bin's own limit). Heath-Brown's term
+`(QN)^{2/3}` = cube frequencies of the reflected Gram (principal subfamily) [D]. Missing: the sextic
+Kubota series uniformly in the column index; a bridge `γ₂` ↔ MMD theta coefficients
+(`normalized_sourceFourier_squarefree_cube`, different additive normalization `cubicUnitGaussSum`).
+
+**N12 [D] Rankin–Selberg square of θ.** θ (multiplier κ) and E_κ(·,s) (pole at s = 4/3, residue θ):
+θ²E is invariant (κ³ = 1); unfolding gives Σ_ν T(ν)T(−ν)·∫y^{s−1}K_{1/3}(4π|ν|y)²dy, T(−ν) = T(ν), so
+D(w) = Σ T(ν)²N(ν)^{−w} = R(2w)/(Γ-factor), R = regularized ∫θ²E (Zagier: constant term c y^{2/3} adds
+poles at s = 4/3, 2/3). MMD support formula T(ab³) = C|b|·conj((δ/a)₃)·G̃(a) ⇒ D = C²ζ_K^{(3)}(3w−1)S(w)
+(unramified), S = Σ_a conj((δ/a))²G̃(a)²N(a)^{−w}. Cube frequencies ⇒ pole of ζ_K(3w−1) at 2/3 for every
+row. Order of the pole of R at 4/3 decides whether S (finite-order twist of the long columns) has a
+pole at 2/3; residue ∝ ∫θ³. S = D/ζ_K(3w−1): zeros ρ of ζ_K with Re ρ > ½ are possible poles of S at
+(ρ+1)/3 (line ½ ↦ ½). Lean needs: unfolding on ℍ³ for the cubic cover (absent; ℍ² versions exist in
+RHTower/HalfWeight*, SelbergPoincareUnfolding), the bridge γ₂ ↔ G̃.
+
+**Next infrastructure (for C16/M2 in Lean).** (i) Rankin–Selberg unfolding of the cubic Eisenstein
+series on ℍ³ (MMD has E, the residue θ, cusp-strip Fourier tests; no unfolding over Γ\ℍ³); (ii) θ's
+Fourier expansion (in `WeightedCubicResidualFourierTests`, no olean, under peer edit); (iii) Zagier
+renormalization on ℍ³; (iv) bridge γ₂ ↔ G̃ (`residueTraceQuotientChar_phase`, `paperE`).
+
 ## Conjecture ledger
 - C1 (PROVED, Lean): wall of the frame = phase `L`-function; frame premise ⇔ zero-free `L_A`.
 - C2 (open): tower — the probe's phases are `ψ₆η⁶`, `ψ₆(π) = (π̄/|π|)⁶` of infinite order; the
@@ -118,12 +146,21 @@ odd orders open; the sign law needs odd order: sign-carrying ⇔ sieve not known
 - C4 (PROVED, Lean): the average row is target-free (N7).
 - C5 (PROVED, Lean): short columns are incoherent (Poisson in the rows).
 - C6 (PROVED, Lean): the Möbius sign of a squarefree row modulus in its Gauss sums (`rowGauss_product`).
-- C7 (open, [C]-supported): the long columns have no coherent main term (infinity type one twist).
+- C7 (withdrawn, N11): the long columns have no coherent main term (infinity type one twist).
 - C8 (PROVED, Lean): sharp short-column incoherence over ℤ[ω] (`norm_tsum_eisensteinColumn_le`).
 - C9 ([D]/[C]): classical tools give R₀ = 5/6 for the floor bin; below needs the cubic large sieve conjecture.
 - C13 (PROVED, Lean): Q7 — the short sextic Gram is diagonal (`norm_gramEntry_le`).
 - C12 (PROVED, Lean): Q3 — the Gram entry of two rows is a completed sum of products of their Gauss sums (`gramEntry_eq_completedSum`).
 - C11 (PROVED, Lean): N9's root-number form is native (`rowRootNumber_eq_angularTwist`).
+- C14 (PROVED, Lean): the row root number is `G(c)γ₂(c)²`; `γ₂³ = μ(c)c/|c|` (N11). C7 withdrawn:
+  the long columns are expected to carry the sextic Kubota main term `U^{½+1/6}` [C].
+- C15 (PROVED, Lean): Q3 with its own reflection — the completed-sum coefficient is the kernel at `h`
+  times `Φ(u₁)Φ̄(u₂)` times `r`; sixth-power dual frequencies rank one (`gramCoeff_sixthPower`).
+- C16 (expected false, [D]): the squarefree part S of Σ T(ν)²N(ν)^{−w} has no pole at w = 2/3. Zagier's
+  renormalization: the constant term c y^{2/3} of θ gives θ₀² = c²y^{4/3}, growth exponent α = 4/3 = the
+  pole of E; the term φ(s)T^{α−s}/(α−s) with φ ~ r/(s−4/3) makes a double pole of R at 4/3, leading
+  coefficient ∝ c²r ∝ c³ ≠ 0 (θ has nonzero constant term, MMD). So D has a double pole at 2/3 and S a
+  simple one: the squarefree part is coherent, main term from the constant term of θ (principal mode).
 - C10 (PROVED, Lean): the wall is the price of completion; completion is needed for the reflection [C] (external Prop 5.1): the four source conditions exclude each other within the cubic probe.
 
 ## Log

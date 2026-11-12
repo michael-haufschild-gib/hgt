@@ -120,6 +120,14 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerCombConvergenceP
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactCoefficientIsTheRealResidue
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactMellin
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactDirichletSymbol
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ContactSymbolsContinueAcrossZeros
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactSymbolAtTheClosedWidth
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactRealBoundaryResidue
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelMean
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactDiscreteAbelMean
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactContinuation
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCriticalPowerCombDoesNotConverge
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerCombGrowthDetectsRH
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceMellinIntegral
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanMellinIntegral
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZeroPairing
@@ -159,6 +167,12 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePolarLagrangianIsAnEvenLin
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.BelowTheGroundEnergyThePolarLagrangiansArePositiveAndIncrease
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilsFormOnStepPacketsIsTheChargesAPotentialAndADirichletForm
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartOfTheFirstBlockMatricesIsLorentzian
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGroundVectorOfTheNeutralPartHasOneSignAndIsCharged
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBlockMatricesOfShortWindowsArePositiveAtEveryBlockSize
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartOfAWindowOfRatioTwoHasOneNegativeSquareAtEveryBlockSize
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartOfABlockAndAFarWindowIsMinusTheProductOfTheirCharges
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsOneNegativeSquareOfTheNeutralPartOfEveryWindow
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -209,6 +223,9 @@ energy with the conservation law of a rectangle of apertures and energies, the s
 mode of a short aperture, and the polar Lagrangians below the ground energy as an increasing
 path of positive forms; Weil's form on step packets as the product of the two charges, a
 potential and the Dirichlet form of the jets and the floor maps, with a neutral part that is
-Lorentzian on the first step packets. See
+Lorentzian on the first step packets; the margin of the block matrices of ratio at most
+`103/50` at every block size; the neutral part as Weil's form of the zeros minus the poles; and
+the Riemann hypothesis as one negative square of the neutral part of every window. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary

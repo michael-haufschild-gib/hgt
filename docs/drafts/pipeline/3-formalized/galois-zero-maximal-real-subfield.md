@@ -60,5 +60,8 @@ Final source audit passed. All seven principal dependency closures contain
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
 The theorem does not establish the existence of a nonzero width or decide
-which Gaussian regime occurs. The full real-width group and source equations
-remain on [the width-field candidate](../1-in-progress/galois-zero-real-width-field.md).
+which Gaussian regime occurs. The [real-width group](galois-zero-real-width-group.md),
+[source equations](galois-zero-width-equations.md),
+[biquadratic diagram](galois-zero-biquadratic-diagram.md), and
+[geometric fixed fields](galois-zero-real-width-field.md) describe the
+associated equations, groups, and intermediate fields.

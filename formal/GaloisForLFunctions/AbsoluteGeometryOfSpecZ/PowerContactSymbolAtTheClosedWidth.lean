@@ -58,8 +58,9 @@ private theorem closedWidth_contact_initial
   have hb' : ∀ N : ℕ, |powerContactPrefix a N| ≤ C * (N : ℝ) ^ (1 - 2 * a + 1) := by
     intro N
     rcases Nat.eq_zero_or_pos N with rfl | hN
-    · simp only [powerContactPrefix, Icc_eq_empty_of_lt (by omega : 0 < 1), sum_empty, abs_zero]
-      positivity
+    · have hz : powerContactPrefix a 0 = 0 := by simp [powerContactPrefix]
+      rw [hz, abs_zero]
+      exact mul_nonneg hC (Real.rpow_nonneg (Nat.cast_nonneg 0) _)
     · exact hb N hN
   have hs0 : 0 < s.re := by linarith only [hs]
   have hgap : 1 - 2 * a + 1 < s.re := by linarith only [ha, hs]

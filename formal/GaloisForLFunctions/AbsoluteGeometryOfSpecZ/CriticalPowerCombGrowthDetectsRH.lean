@@ -1,6 +1,7 @@
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactCoefficientIsTheRealResidue
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCriticalPowerCombDoesNotConverge
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.LogarithmicAbelMeans
 import GaloisForLFunctions.RHTower.XiHedenmalmKummerRootRH
+import GaloisForLFunctions.SquareRootThreshold.TheWallsMeasureOneZeroWidth
 
 /-!
 # Subpolynomial critical comb growth detects RH
@@ -10,6 +11,8 @@ strict nonnegative growth threshold. Removing the remaining `n⁻¹ᐟ²`
 weight turns subpolynomial contact growth into the square-root prime-error
 bound. Subtracting the forced harmonic drift and restoring the convergent
 elementary remainder preserves this equivalence for the literal comb.
+Ordinary divergence excludes negative thresholds, so the full threshold
+set is the closed ray starting at `zetaZeroWidth`.
 -/
 
 noncomputable section
@@ -36,7 +39,7 @@ theorem strictGrowth_harm : _root_.HTGeometry.StrictNaturalPowerGrowth harm 0 :=
       apply sum_le_sum
       intro n _
       have hp := Real.rpow_le_rpow_of_exponent_le
-        (by positivity : (1 : ℝ) ≤ (n : ℝ) + 1)
+        (le_add_of_nonneg_left (Nat.cast_nonneg n) : (1 : ℝ) ≤ (n : ℝ) + 1)
         (by linarith only [hα] : (-1 : ℝ) ≤ α - 1)
       simpa only [Real.rpow_neg_one, one_div] using hp
     _ ≤ (N : ℝ) ^ α / α := _root_.HTGeometry.sum_rpow_sub_one_le hα hα1 N
@@ -178,5 +181,40 @@ theorem strictGrowth_criticalPowerCombTail_iff_rh :
       RiemannHypothesis :=
   (strictGrowth_criticalPowerCombTail_iff_zeroHalfPlane (le_refl (0 : ℝ))).trans
     _root_.RHTower.xiZeroHalfPlaneBound_zero_iff_rh
+
+/-- A negative strict growth threshold would force ordinary convergence,
+which the nonreal critical contact residues exclude. -/
+private theorem criticalPowerComb_growth_threshold_nonneg {σ : ℝ}
+    (hg : _root_.HTGeometry.StrictNaturalPowerGrowth (powerCombTail (1 / 2)) σ) :
+    0 ≤ σ := by
+  by_contra hσ
+  have hneg : σ < 0 := lt_of_not_ge hσ
+  obtain ⟨C, _, hb⟩ := hg (-σ / 2) (by linarith only [hneg])
+  have hp := (tendsto_rpow_neg_atTop
+    (by linarith only [hneg] : 0 < -σ / 2)).comp
+      (tendsto_natCast_atTop_atTop (R := ℝ))
+  have hlim : Tendsto (fun N : ℕ => C * (N : ℝ) ^ (-(-σ / 2)))
+      atTop (𝓝 0) := by
+    simpa only [Function.comp_apply, mul_zero] using hp.const_mul C
+  have hz : Tendsto (powerCombTail (1 / 2)) atTop (𝓝 0) := by
+    apply squeeze_zero_norm' _ hlim
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    simpa only [Real.norm_eq_abs, show σ + (-σ / 2) = -(-σ / 2) by ring] using hb N hN
+  exact not_powerCombTailConverges_half ⟨0, hz⟩
+
+/-- The literal critical comb measures exactly the zero width: its
+strict growth thresholds are precisely the real numbers at least that width. -/
+theorem strictGrowth_criticalPowerCombTail_iff_zeroWidth (σ : ℝ) :
+    _root_.HTGeometry.StrictNaturalPowerGrowth (powerCombTail (1 / 2)) σ ↔
+      SquareRootThreshold.zetaZeroWidth ≤ σ := by
+  constructor
+  · intro hg
+    have hσ := criticalPowerComb_growth_threshold_nonneg hg
+    exact (SquareRootThreshold.zetaZeroWidth_le_iff_xiZeroHalfPlaneBound hσ).mpr
+      ((strictGrowth_criticalPowerCombTail_iff_zeroHalfPlane hσ).mp hg)
+  · intro hwidth
+    have hσ := SquareRootThreshold.zetaZeroWidth_nonneg.trans hwidth
+    exact (strictGrowth_criticalPowerCombTail_iff_zeroHalfPlane hσ).mpr
+      ((SquareRootThreshold.zetaZeroWidth_le_iff_xiZeroHalfPlaneBound hσ).mp hwidth)
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

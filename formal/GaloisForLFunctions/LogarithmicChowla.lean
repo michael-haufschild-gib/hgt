@@ -9,6 +9,7 @@ import GaloisForLFunctions.LogarithmicChowla.DiscreteFourier
 import GaloisForLFunctions.LogarithmicChowla.ArcMass
 import GaloisForLFunctions.LogarithmicChowla.CircleMethod
 import GaloisForLFunctions.LogarithmicChowla.CircleBound
+import GaloisForLFunctions.LogarithmicChowla.PrimeKernelBound
 
 /-!
 # Logarithmic two-point Chowla
@@ -24,4 +25,7 @@ invariant and dilation covariant.
 * **Circle method** (`DiscreteFourier`, `ArcMass`, `CircleMethod`, `CircleBound`): over `ℤ/R`,
   `|avg_p c(ph)|` is at most the minor-arc size `η` of the prime kernel plus `4 Σ V(b/s, T)` over the
   fractions `b/s`, `s ≤ hQ₀`, where `V` is the twisted short mean square of `λ`.
+* **(PRIME)** (`PrimeKernelBound`): the prime kernel is small off the major arcs
+  (`PrimeExponentialSums.exists_off_major_arcs`), so `|avg_p c(ph)| ≤ η + 4 Σ V(b/s, T)` for all large
+  scales `k` and `T ≤ 2^k/(4W)`.
 -/

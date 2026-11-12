@@ -61,7 +61,10 @@ theorem tendsto_powerContactAbelMean_of_add_width_le_half
   have hp : Tendsto (fun ε : ℝ => ((1 - 2 * a + ε : ℝ) : ℂ))
       (𝓝[>] 0) (𝓝 ((1 - 2 * a : ℝ) : ℂ)) := by
     have hh := Complex.continuous_ofReal.continuousAt.tendsto.comp (heps.const_add (1 - 2 * a))
-    simpa only [add_zero] using hh
+    rw [add_zero] at hh
+    apply hh.congr
+    intro ε
+    rfl
   have hne : ((1 - 2 * a : ℝ) : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (by linarith only [ha2])
   apply ((tendsto_mul_powerContactMellin_at_real_width_boundary ha ha2 haw).div hp hne).congr'

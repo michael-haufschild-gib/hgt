@@ -15,8 +15,9 @@ twisted multiplicativity are unimodular. With the row Gauss identity
 The normalized sextic Gauss sum of the row modulus — the root number of the row — is the Möbius
 value, times the angular character `c ↦ c/|c|` of infinity type one, times the conjugate normalized
 cubic Gauss sum, times unimodular factors of bounded conductor (`χ_c(4)` and the normalized
-quadratic Gauss sum). The long columns of the floor bin are therefore sums of Möbius-signed
-conjugate cubic Gauss sums twisted by an angular character of infinity type one.
+quadratic Gauss sum). The Möbius value and the angular character together are the cube of the
+normalized cubic Gauss sum, so the root number is its square up to the bounded factors
+(`TheRowRootNumberIsTheSquareOfTheThetaCoefficient`).
 -/
 
 noncomputable section

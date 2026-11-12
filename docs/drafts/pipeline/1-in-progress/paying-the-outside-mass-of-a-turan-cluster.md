@@ -2,8 +2,8 @@
 
 - **Stage:** 1-in-progress
 - **Target:** Discharge the exterior-mass premise of `ClusterAt`.
-- **Status:** Near-top case formalized under a deep ordinate gap;
-  arbitrary bounded clusters remain open.
+- **Status:** Fixed-centre exterior mass classified exactly. Height-uniform
+  near-top case formalized under a deep gap; arbitrary bounded clusters remain open.
 
 ## Formalized exterior estimate
 
@@ -55,6 +55,15 @@ uncontrolled profile constant.
 
 ## Remaining obstruction
 
+[The fixed-centre exterior has an exact boundary-depth limit](../3-formalized/the-camera-retains-exactly-its-boundary-exterior-mass.md).
+For fixed `t`, `δ≥1`, and finite core `s`, its complete width-centered norm
+mass tends, as lag grows, to the mass of exterior zeros with depth exactly
+`zetaZeroWidth`. Every lower-depth contribution vanishes by summable
+Lorentzian domination; no common depth deficit or ordinate gap is needed.
+Capturing all maximal-depth zeros therefore pays the full exterior at large
+lag. Every larger tolerance bounds all finite exterior sums simultaneously.
+This fixed-centre limit supplies no uniform height-dependent lag rate.
+
 [Varying box profiles](../3-formalized/box-convolutions-pay-a-fixed-cluster-depth-deficit.md)
 now pay a **fixed positive depth deficit**, with uniform prime mean-square
 and explicit-formula remainder costs. Every eligible sector cluster is
@@ -89,6 +98,14 @@ condition remains.
 
 ## Adaptive-camera alternative
 
+[`exists_zeta_cluster_with_complete_exterior_mass`](../3-formalized/adaptive-clusters-pay-the-complete-exterior-mass.md)
+now constructs the finite core and proves its **complete** exterior Fourier
+norm mass is summable and at most `1/4`, with every multiplicity included.
+The same bound holds for every finite exterior set; the transform stays
+within `1/4` of one on the core. No isolation or mass premise remains.
+The theorem applies above the explicit camera height and cubic-logarithmic
+depth threshold. Lean: `NegativeTests/CompleteExteriorMass`.
+
 `ZeroConfigurationGeometry/NegativeTests/ZetaClusters` supplies actual ζ
 clusters by an empty-annulus argument and pays the Fourier exterior mass:
 `zeta_cluster_camera_explicit` annihilates every nearby exterior zero,
@@ -100,6 +117,10 @@ zeros deeper than `exp(-c log³(T/(2π)))`.
 This changes the camera. It does not prove `ClusterAt` for the original
 fixed profile or provide its uniform prime mean-square cost. Thus adaptive
 annihilation removes exterior interference but does not close A78.
+The profile depends on the selected centre and zero configuration.
+`exists_integral_depthCenteredCameraPoly_sq_le` integrates in the centre
+with one fixed profile; a uniform size bound alone does not justify its
+use for these centre-dependent cameras.
 
 `RHTower/HodgeClusterNyquistExclusion` gives a second replacement: divide
 Riemann's kernel by the full cluster divisor, interpolate its nodes, then

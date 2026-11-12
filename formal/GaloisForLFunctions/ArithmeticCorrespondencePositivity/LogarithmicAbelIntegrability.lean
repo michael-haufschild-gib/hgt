@@ -67,8 +67,9 @@ theorem LogarithmicAbelIntegrable.congr_pos {f g : ℕ → ℝ}
   intro ε hε
   apply (hf ε hε).congr
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
-  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor (Real.one_le_exp (le_of_lt hu))
-  rw [stepLaplaceIntegrand, stepLaplaceIntegrand, he _ hN]
+  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor
+    (by simpa only [Nat.cast_one] using Real.one_le_exp (le_of_lt hu))
+  simp only [stepLaplaceIntegrand, he _ hN]
 
 /-- Continuous power normalization is dominated by integer normalization
 on positive logarithmic time. -/
@@ -80,7 +81,8 @@ theorem integrableOn_stepLaplaceIntegrand_of_normalized_abel
   have hint := hf (c - θ) (sub_pos.mpr hc)
   apply hint.norm.mono' (measurable_stepLaplaceIntegrand f (c : ℂ)).aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
-  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor (Real.one_le_exp (le_of_lt hu))
+  have hN : 1 ≤ ⌊Real.exp u⌋₊ := Nat.le_floor
+    (by simpa only [Nat.cast_one] using Real.one_le_exp (le_of_lt hu))
   have hNp : (0 : ℝ) < ⌊Real.exp u⌋₊ := by exact_mod_cast hN
   have hp := Real.rpow_le_rpow_of_nonpos hNp (Nat.floor_le (Real.exp_pos u).le)
     (neg_nonpos.mpr hθ)
