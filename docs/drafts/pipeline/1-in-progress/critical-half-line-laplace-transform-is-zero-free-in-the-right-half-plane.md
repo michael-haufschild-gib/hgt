@@ -43,6 +43,8 @@ Written, unchecked:
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionIsReal`: conjugate kernels, commuting conjugate reflections and the actual real representative.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexHalfLinePoleDomain`: both half-pole moments from the actual weighted square domain.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionMoments`: linear reflection law, preservation of the conjugate zero and paired half-line support.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionPreservesPoleProduct`: the paired quadratic Laplace factor and reciprocal opposite real moments.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesTheActualDomain`: all six actual-domain fields, including Gamma integrability.
 
 Missing: modulated resolvent laws; preservation of the conjugate zero after
 the first reflection; real representative of the composed reflection;

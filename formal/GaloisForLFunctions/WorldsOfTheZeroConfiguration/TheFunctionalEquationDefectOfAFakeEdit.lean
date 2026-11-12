@@ -29,13 +29,13 @@ The count rate gives the density `a_1 + ⋯ + a_n = A n + o(n)` and absolute con
 open Complex Filter Topology Set
 open RHTower RHTower.BeurlingDeletion RHTower.HamburgerStability
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.EulerFETransportTheory
-open GaloisForLFunctions.SumProductArithmeticOfTheLogarithm
+open GaloisForLFunctions.SumProductArithmeticOfTheLogarithm GaloisForLFunctions.RigidArithmeticOfCuts
 
 noncomputable section
 
 namespace GaloisForLFunctions.WorldsOfTheZeroConfiguration.FEDefect
 
-open TwoSidedEdits NormCount
+open TwoSidedEdits NormCount ThinAdditions
 
 /-! ## Norm multiplicities of an integer-norm system -/
 
@@ -100,10 +100,18 @@ theorem density_of_count {B : BeurlingSystem} (h : HasIntegerNorms B)
   intro η hη
   obtain ⟨C', hC'0, hC'⟩ := exists_mul_rpow_le_mul_add hβ C hη
   refine ⟨C', fun n => ?_⟩
+  have hIoc : ∀ m : ℕ, coeffSum (intCoeff B h) m =
+      ∑ x ∈ Finset.Ioc 0 m, (intCount B h x : ℂ) := by
+    intro m
+    induction m with
+    | zero => simp [coeffSum]
+    | succ m ih =>
+      rw [coeffSum, Finset.sum_range_succ, ← coeffSum, ih,
+        Finset.sum_Ioc_succ_top (Nat.zero_le m)]
+      rfl
   have hsum : coeffSum (intCoeff B h) n = ((B.countBall (n : ℝ) : ℝ) : ℂ) := by
-    rw [← NormCount.sum_intCount_eq_countBall h hd n, coeffSum, Finset.range_eq_Ico]
+    rw [hIoc, ← NormCount.sum_intCount_eq_countBall h hd n]
     push_cast
-    rw [Finset.sum_Ico_add' (fun k => (intCount B h k : ℂ)) 0 n 1]
     rfl
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [coeffSum]; exact hC'0

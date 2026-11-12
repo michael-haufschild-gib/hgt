@@ -102,4 +102,40 @@ theorem coe_realPairedCausalReflection_ae {a : ℝ} (ha : 0 < a) (b : ℝ)
     change 0 = (pairedCausalReflection a b (fun t => (F t : ℂ)) u).im
     linarith only [hi]
 
+/-- The literal real representative is measurable. -/
+theorem measurable_realPairedCausalReflection (a b : ℝ) {F : ℝ → ℝ}
+    (hF : Measurable F) : Measurable (realPairedCausalReflection a b F) :=
+  Complex.continuous_re.measurable.comp
+    (measurable_modulatedCausalReflection a (-b)
+      (measurable_modulatedCausalReflection a b (Complex.continuous_ofReal.measurable.comp hF)))
+
+/-- The literal real representative retains actual L¹ admission. -/
+theorem integrable_realPairedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
+    {F : ℝ → ℝ} (hF : Integrable F) : Integrable (realPairedCausalReflection a b F) :=
+  (integrable_modulatedCausalReflection ha (-b)
+    (integrable_modulatedCausalReflection ha b (hF.ofReal (𝕜 := ℂ)))).re
+
+/-- The real representative has the same unweighted square domain as the complex pair. -/
+theorem memLp_realPairedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
+    {F : ℝ → ℝ} (hF : Integrable F) (hF2 : MemLp (fun u => (F u : ℂ)) 2 volume) :
+    MemLp (fun u => (realPairedCausalReflection a b F u : ℂ)) 2 volume := by
+  exact (memLp_congr_ae (coe_realPairedCausalReflection_ae ha b hF)).mpr
+    (memLp_modulatedCausalReflection ha (-b) (memLp_modulatedCausalReflection ha b hF2))
+
+/-- The real representative retains every admitted exponential square weight. -/
+theorem memLp_weighted_realPairedCausalReflection {a x : ℝ} (ha : 0 < a)
+    (hx : 0 < a + x) (b : ℝ) {F : ℝ → ℝ} (hF : Integrable F)
+    (hFx : MemLp (_root_.RHTower.causalLaplaceWeighted x (fun u => (F u : ℂ))) 2 volume) :
+    MemLp (_root_.RHTower.causalLaplaceWeighted x
+      (fun u => (realPairedCausalReflection a b F u : ℂ))) 2 volume := by
+  have hP := memLp_weighted_modulatedCausalReflection hx (-b)
+    (memLp_weighted_modulatedCausalReflection hx b hFx)
+  have he : _root_.RHTower.causalLaplaceWeighted x
+      (fun u => (realPairedCausalReflection a b F u : ℂ)) =ᵐ[volume]
+      _root_.RHTower.causalLaplaceWeighted x
+        (pairedCausalReflection a b (fun u => (F u : ℂ))) := by
+    filter_upwards [coe_realPairedCausalReflection_ae ha b hF] with u hu
+    exact congrArg (fun z : ℂ => Complex.exp (-(Real.pi * x * u : ℝ)) * z) hu
+  exact (memLp_congr_ae he).mpr hP
+
 end GaloisForLFunctions.HTGeometry

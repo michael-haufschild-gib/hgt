@@ -95,7 +95,8 @@ theorem integral_complexRateCausalKernel {z : ℂ} (hz : 0 < z.re) :
   unfold complexRateCausalKernel
   rw [integral_indicator measurableSet_Ioi, integral_const_mul,
     integral_exp_mul_complex_Ioi (a := -z) (by simpa only [Complex.neg_re] using neg_lt_zero.mpr hz) 0]
-  simp only [mul_zero, Complex.exp_zero, neg_div_neg_eq, one_div, div_eq_mul_inv]
+  simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero,
+    div_eq_mul_inv, inv_neg, neg_mul_neg, one_mul]
 
 /-- The literal convolution moment law on the side with a decaying causal kernel. -/
 theorem negativeHalfLineLaplace_causalConvolution_of_lt {z q : ℂ} (hdecay : 0 < (z - q).re)

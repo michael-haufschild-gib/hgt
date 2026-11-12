@@ -13,14 +13,20 @@ extension `E`, define
 `F_ρ = B(p^ρ : p prime)`,
 `H_ρ = B(p^ρ + p^(1−ρ) : p prime)`.
 
-For every actual zero, any two distinct prime values generate `F_ρ`; any three
+For every actual zero, any two distinct prime values generate `F_ρ`; any two
 distinct symmetrized prime values generate `H_ρ`. Both are finite over `B`.
 Their fixing subgroups are respectively the stabilizer of `ρ` and the
 stabilizer of its unordered functional-reflection pair. Moreover
 `[F_ρ:H_ρ]≤2`, and `F_ρ=H_ρ` exactly when functional reflection sends `ρ`
 outside its arithmetic orbit.
 
-The chosen embedding of `H_ρ` is real exactly when `Re ρ=1/2`. All arithmetic
+A single prime value generates `F_ρ` exactly when that value is nonreal.
+A single symmetric prime value generates `H_ρ` exactly when it is nonreal
+or `ρ` is critical. Thus each field has a generator among its coordinates
+at any two distinct primes.
+
+The chosen embedding of `H_ρ` is real exactly when `Re ρ=1/2`; then it is
+exactly `F_ρ∩ℝ`, with relative degree two. All arithmetic
 conjugates of `H_ρ` are real exactly when the entire arithmetic orbit of `ρ`
 lies on the critical line. This supplies an exact arithmetic place criterion,
 not a proof that the criterion holds.
@@ -38,8 +44,13 @@ Galois fixed-field duality proves the two-generator presentation.
 Write `U_p(z)=p^z+p^(1−z)`. Equality of `U_p(z)` and `U_p(w)` implies
 `p^z=p^w` or `p^z=p^(1−w)`, since the two summands have product `p`.
 Among three primes two choose the same branch; two-prime injectivity then
-gives `z=w` or `z=1−w`. Fixed-field duality therefore gives the three-generator
-presentation and the pair stabilizer.
+gives `z=w` or `z=1−w`. This gives the pair stabilizer. Absolute-height preservation strengthens
+the presentation: equality of one prime exponential fixes the real part,
+so an arithmetic image with that value is the zero or its conjugate. For
+symmetric coordinates the possible images are its reflection rectangle.
+A nonreal value excludes the conjugate branch; at a critical zero the two
+branches already form one reflection pair. Two primes rule out simultaneous
+resonance, yielding the sharp single-generator criteria above.
 
 At least one of two prime values distinguishes an actual nonreal zero from
 its reflection. Adjoining that value to `H_ρ` reduces the pair stabilizer to

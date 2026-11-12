@@ -33,6 +33,7 @@ import GaloisForLFunctions.MatomakiRadziwill.LadderSequence
 import GaloisForLFunctions.MatomakiRadziwill.LadderConfig
 import GaloisForLFunctions.MatomakiRadziwill.LadderHBounds
 import GaloisForLFunctions.MatomakiRadziwill.LadderStepTerm
+import GaloisForLFunctions.MatomakiRadziwill.LadderFirstTerm
 
 /-!
 # Matomäki–Radziwiłł for twisted Liouville functions
@@ -55,7 +56,7 @@ Toward the mean square of short sums of `λχ`, `χ` a Dirichlet character of fi
   `LadderRouteT`, `LadderCover`, `LadderRough`, `LadderMaster`, `LadderNumerics`,
   `LadderNumericsMoment`, `LadderNumericsExceptional`, `LadderNonRough`,
   `LadderDensity`, `LadderSequence`, `LadderConfig`, `LadderHBounds`,
-  `LadderStepTerm`):
+  `LadderStepTerm`, `LadderFirstTerm`):
   the moment computation for powers of prime blocks with arbitrary bounded
   coefficients; Ramaré's identity at one scale and its block decomposition
   `Σ_{n ∈ S} f(n)n^{-1-it} ≈ Σ_v Q_v R_v`, with mean-square error `≪ (W/X + 1)(1/H + 1/P)`; the
