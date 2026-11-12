@@ -20,6 +20,9 @@ norms) continue to the critical line in the Hamburger strip class with defect `g
   `w̃_r = -(2/r) 2^{3r/4} cos(r γ₀ log 2)` (`signedPoly_eq_exp`).  Its count is bounded
   (density `0`), it vanishes at `ρ₀`, and it lies in the Hamburger strip class with `β = 0` and a
   **bounded** defect `‖g(t)‖ ≤ 2(1 + 2^{1/4})²` (`signedPoly_hamburgerStripDefect`).
+  Möbius inversion turns the prime-power weights into Euler weights on the norms `2^m`:
+  `w_m = (1/m) Σ_{de = m} μ(d) e w̃_e`, `|w_m| ≤ 2 · 2^{3m/4}`, and
+  `F₀(s) = Π_m (1 - 2^{-ms})^{-w_m}` on `Re s > 3/4` (`hasProd_signedPoly`).
 -/
 
 open Complex MeasureTheory Filter Topology Set
@@ -356,5 +359,223 @@ theorem signedPoly_fake :
     rw [h3, h1, zero_sub, norm_neg, norm_one]
     norm_num
     linarith
+
+/-! ## (b) Euler weights by Möbius inversion -/
+
+/-- The Möbius-inverted Euler weights `w_m = (1/m) Σ_{d e = m} μ(d) e W_e` of prime-power
+weights `W`. -/
+def eulerWeight (W : ℕ → ℝ) (m : ℕ) : ℝ :=
+  (∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) * (x.2 * W x.2)) / m
+
+/-- **Möbius inversion**: `Σ_{m ∣ r} m w_m = r W_r`. -/
+theorem sum_divisors_mul_eulerWeight (W : ℕ → ℝ) {r : ℕ} (hr : 0 < r) :
+    ∑ m ∈ r.divisors, (m : ℝ) * eulerWeight W m = r * W r :=
+  (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq (R := ℝ)
+    (f := fun m => (m : ℝ) * eulerWeight W m) (g := fun r => (r : ℝ) * W r)).mpr
+    (fun n hn => by
+      simp only [eulerWeight]
+      rw [mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hn.ne')]) r hr
+
+/-- Exponentially bounded weights `|r W_r| ≤ C a^r` give `|w_m| ≤ C a^m`. -/
+theorem abs_eulerWeight_le {W : ℕ → ℝ} {C a : ℝ} (ha : 1 ≤ a)
+    (hW : ∀ r : ℕ, |(r : ℝ) * W r| ≤ C * a ^ r) (m : ℕ) : |eulerWeight W m| ≤ C * a ^ m := by
+  have hC : 0 ≤ C := by simpa using hW 0
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simp only [eulerWeight, Nat.divisorsAntidiagonal_zero, Finset.sum_empty, zero_div, abs_zero]
+    positivity
+  have hm' : (0 : ℝ) < m := by exact_mod_cast hm
+  rw [eulerWeight, abs_div, Nat.abs_cast, div_le_iff₀ hm']
+  have hcard : ((m.divisorsAntidiagonal.card : ℕ) : ℝ) ≤ m := by
+    rw [← Nat.map_div_right_divisors, Finset.card_map]
+    exact_mod_cast Nat.card_divisors_le_self m
+  calc |∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) * (x.2 * W x.2)|
+      ≤ ∑ x ∈ m.divisorsAntidiagonal, C * a ^ m := by
+        refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun x hx => ?_)
+        rw [abs_mul]
+        have hμ : |(ArithmeticFunction.moebius x.1 : ℝ)| ≤ 1 := by
+          exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+        have hx2 : x.2 ≤ m := Nat.divisor_le (Nat.snd_mem_divisors_of_mem_antidiagonal hx)
+        calc |(ArithmeticFunction.moebius x.1 : ℝ)| * |(x.2 : ℝ) * W x.2| ≤ 1 * (C * a ^ x.2) :=
+              mul_le_mul hμ (hW x.2) (abs_nonneg _) zero_le_one
+          _ ≤ C * a ^ m := by rw [one_mul]; gcongr
+    _ = (m.divisorsAntidiagonal.card : ℝ) * (C * a ^ m) := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ C * a ^ m * m := by rw [mul_comm]; gcongr
+
+/-- Divisor regrouping of a summable double series vanishing on the axes. -/
+theorem hasSum_divisorsAntidiagonal_regroupC {f : ℕ × ℕ → ℂ} (hf : Summable f)
+    (h0 : ∀ p : ℕ × ℕ, (p.1 = 0 ∨ p.2 = 0) → f p = 0) :
+    HasSum (fun N : ℕ => ∑ p ∈ N.divisorsAntidiagonal, f p) (∑' p, f p) := by
+  refine (hf.hasSum.tsum_fiberwise (fun p : ℕ × ℕ => p.1 * p.2)).congr_fun fun N => ?_
+  rw [tsum_subtype]
+  rcases Nat.eq_zero_or_pos N with rfl | hN
+  · simp only [Nat.divisorsAntidiagonal_zero, Finset.sum_empty]
+    have hz : ∀ p : ℕ × ℕ, ((fun p : ℕ × ℕ => p.1 * p.2) ⁻¹' {0}).indicator f p = 0 := by
+      intro p
+      by_cases hp : p ∈ (fun p : ℕ × ℕ => p.1 * p.2) ⁻¹' {0}
+      · rw [Set.indicator_of_mem hp]; exact h0 p (mul_eq_zero.mp hp)
+      · rw [Set.indicator_of_notMem hp]
+    simp only [hz, tsum_zero]
+  · rw [tsum_eq_sum (s := N.divisorsAntidiagonal)]
+    · refine Finset.sum_congr rfl fun p hp => ?_
+      rw [Set.indicator_of_mem]
+      exact (Nat.mem_divisorsAntidiagonal.mp hp).1
+    · intro p hp
+      rw [Set.indicator_of_notMem]
+      intro h
+      exact hp (Nat.mem_divisorsAntidiagonal.mpr ⟨h, hN.ne'⟩)
+
+/-- **The Euler product of Möbius-inverted weights**: if `W_0 = 0`, `|r W_r| ≤ C a^r` and
+`a ‖z‖ < 1`, then `Σ_m w_m (-log(1 - z^m)) = Σ_r W_r z^r`. -/
+theorem hasSum_eulerWeight_neg_log {W : ℕ → ℝ} (hW0 : W 0 = 0) {C a : ℝ} (ha : 1 ≤ a)
+    (hW : ∀ r : ℕ, |(r : ℝ) * W r| ≤ C * a ^ r) {z : ℂ} (hz : a * ‖z‖ < 1) :
+    HasSum (fun m : ℕ => (eulerWeight W m : ℂ) * -Complex.log (1 - z ^ m))
+      (∑' r : ℕ, (W r : ℂ) * z ^ r) := by
+  have hC : 0 ≤ C := by simpa using hW 0
+  have hz1 : ‖z‖ < 1 := by nlinarith [norm_nonneg z]
+  set q : ℝ := a * ‖z‖ with hq
+  have hq0 : 0 ≤ q := by positivity
+  have hzq : ‖z‖ ≤ q := by rw [hq]; nlinarith [norm_nonneg z]
+  have hw0 : eulerWeight W 0 = 0 := by simp [eulerWeight]
+  set f : ℕ × ℕ → ℂ := fun p => (eulerWeight W p.1 : ℂ) * ((z ^ p.1) ^ p.2 / (p.2 : ℂ)) with hf
+  have hf0 : ∀ p : ℕ × ℕ, (p.1 = 0 ∨ p.2 = 0) → f p = 0 := by
+    rintro ⟨m, k⟩ h
+    rcases h with h | h
+    · simp only [hf] at h ⊢; rw [h, hw0]; simp
+    · simp only [hf] at h ⊢; rw [h]; simp
+  -- absolute convergence: `‖f(m,k)‖ ≤ C q^m q^{k-1}`
+  have hbound : ∀ p : ℕ × ℕ, ‖f p‖ ≤ C * q ^ p.1 * q ^ (p.2 - 1) := by
+    rintro ⟨m, k⟩
+    rcases Nat.eq_zero_or_pos m with rfl | hm
+    · rw [hf0 _ (Or.inl rfl), norm_zero]; positivity
+    rcases Nat.eq_zero_or_pos k with rfl | hk
+    · rw [hf0 _ (Or.inr rfl), norm_zero]; positivity
+    simp only [hf, norm_mul, norm_div, norm_pow, Complex.norm_natCast, Complex.norm_real,
+      Real.norm_eq_abs]
+    have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
+    have hzk : (‖z‖ ^ m) ^ k ≤ ‖z‖ ^ m * q ^ (k - 1) := by
+      obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
+      rw [pow_succ, Nat.add_sub_cancel, mul_comm]
+      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+      calc (‖z‖ ^ m) ^ j ≤ ‖z‖ ^ j :=
+            pow_le_pow_left₀ (by positivity) (pow_le_of_le_one (norm_nonneg z) hz1.le hm.ne') j
+        _ ≤ q ^ j := pow_le_pow_left₀ (norm_nonneg z) hzq j
+    have ham : a ^ m * ‖z‖ ^ m = q ^ m := by rw [hq, mul_pow]
+    calc |eulerWeight W m| * ((‖z‖ ^ m) ^ k / k) ≤ C * a ^ m * (‖z‖ ^ m * q ^ (k - 1)) := by
+          gcongr
+          · exact abs_eulerWeight_le ha hW m
+          · exact (div_le_self (by positivity) hk1).trans hzk
+      _ = C * q ^ m * q ^ (k - 1) := by rw [← ham]; ring
+  have hgeo : Summable fun k : ℕ => q ^ (k - 1) := by
+    refine (summable_nat_add_iff 1).mp ?_
+    simpa using summable_geometric_of_lt_one hq0 hz
+  have hsum : Summable f := Summable.of_norm_bounded
+    (((summable_geometric_of_lt_one hq0 hz).mul_left C).mul_of_nonneg hgeo
+      (fun m => by positivity) (fun k => by positivity)) hbound
+  -- rows: `Σ_k f(m,k) = w_m (-log(1 - z^m))`
+  have hrow : ∀ m : ℕ, HasSum (fun k => f (m, k))
+      ((eulerWeight W m : ℂ) * -Complex.log (1 - z ^ m)) := by
+    intro m
+    rcases Nat.eq_zero_or_pos m with rfl | hm
+    · simp only [hf, hw0, Complex.ofReal_zero, zero_mul]; exact hasSum_zero
+    have hzm : ‖z ^ m‖ < 1 := by
+      rw [norm_pow]; exact pow_lt_one₀ (norm_nonneg z) hz1 hm.ne'
+    exact (Complex.hasSum_taylorSeries_neg_log hzm).mul_left _
+  -- fibres: `Σ_{m k = r} w_m z^r / k = W_r z^r`
+  have hfib : ∀ r : ℕ, ∑ p ∈ r.divisorsAntidiagonal, f p = (W r : ℂ) * z ^ r := by
+    intro r
+    rcases Nat.eq_zero_or_pos r with rfl | hr
+    · simp [hW0]
+    have hr0 : (r : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hr.ne'
+    have hterm : ∀ p ∈ r.divisorsAntidiagonal,
+        f p = z ^ r / r * ((p.1 : ℂ) * (eulerWeight W p.1 : ℂ)) := by
+      intro p hp
+      have hpr := (Nat.mem_divisorsAntidiagonal.mp hp).1
+      have hp2 : (p.2 : ℂ) ≠ 0 := by
+        refine Nat.cast_ne_zero.mpr fun h => ?_
+        rw [h, mul_zero] at hpr; omega
+      have hp1 : (p.1 : ℂ) ≠ 0 := by
+        refine Nat.cast_ne_zero.mpr fun h => ?_
+        rw [h, zero_mul] at hpr; omega
+      simp only [hf]
+      rw [← pow_mul, hpr]
+      have : (r : ℂ) = p.1 * p.2 := by rw [← hpr]; push_cast; ring
+      rw [this]
+      field_simp
+    rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum,
+      Nat.sum_divisorsAntidiagonal (f := fun i _ => (i : ℂ) * (eulerWeight W i : ℂ))]
+    have hm := sum_divisors_mul_eulerWeight W hr
+    have hmC : ∑ i ∈ r.divisors, (i : ℂ) * (eulerWeight W i : ℂ) = (r : ℂ) * (W r : ℂ) := by
+      exact_mod_cast hm
+    rw [hmC]
+    field_simp
+  have hcol := (hasSum_divisorsAntidiagonal_regroupC hsum hf0).congr_fun fun r => (hfib r).symm
+  rw [hcol.tsum_eq]
+  exact hsum.hasSum.prod_fiberwise hrow
+
+theorem abs_mul_signedWeight_le (γ₀ : ℝ) (r : ℕ) :
+    |(r : ℝ) * signedWeight γ₀ r| ≤ 2 * ((2 : ℝ) ^ (3 / 4 : ℝ)) ^ r := by
+  rcases Nat.eq_zero_or_pos r with rfl | hr
+  · simp
+  have hr' : (r : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hr.ne'
+  have e : (r : ℝ) * signedWeight γ₀ r = -2 * (2 : ℝ) ^ (3 * r / 4 : ℝ) *
+      Real.cos (r * γ₀ * Real.log 2) := by
+    rw [signedWeight]; field_simp
+  have hp : (2 : ℝ) ^ (3 * r / 4 : ℝ) = ((2 : ℝ) ^ (3 / 4 : ℝ)) ^ r := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; ring_nf
+  rw [e, abs_mul, abs_mul, hp, abs_of_pos (by positivity : (0 : ℝ) < ((2 : ℝ) ^ (3 / 4 : ℝ)) ^ r)]
+  have := Real.abs_cos_le_one (r * γ₀ * Real.log 2)
+  norm_num
+  nlinarith [pow_pos (by positivity : (0 : ℝ) < (2 : ℝ) ^ (3 / 4 : ℝ)) r]
+
+/-- **II.2(b) with Euler weights.**  On `Re s > 3/4`,
+`F₀(s) = Π_{m} (1 - 2^{-ms})^{-w_m}` with the real Euler weights `w_m` of `w̃`, and
+`|w_m| ≤ 2 · 2^{3m/4}`. -/
+theorem hasProd_signedPoly (γ₀ : ℝ) {s : ℂ} (hs : 3 / 4 < s.re) :
+    HasProd (fun m : ℕ => (1 - (2 : ℂ) ^ (-((m : ℂ) * s))) ^
+      (-(eulerWeight (signedWeight γ₀) m : ℂ))) (signedPoly γ₀ s) := by
+  set a : ℝ := (2 : ℝ) ^ (3 / 4 : ℝ) with ha
+  have ha1 : 1 ≤ a := Real.one_le_rpow (by norm_num) (by norm_num)
+  set z : ℂ := (2 : ℂ) ^ (-s) with hz
+  have hzn : ‖z‖ = (2 : ℝ) ^ (-s.re) := by rw [hz, norm_two_cpow, Complex.neg_re]
+  have hq : a * ‖z‖ < 1 := by
+    rw [hzn, ha, ← Real.rpow_add (by norm_num)]
+    exact Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
+  have hW0 : signedWeight γ₀ 0 = 0 := by simp [signedWeight]
+  have hS := hasSum_eulerWeight_neg_log hW0 ha1 (abs_mul_signedWeight_le γ₀) hq
+  have hpow : ∀ m : ℕ, z ^ m = (2 : ℂ) ^ (-((m : ℂ) * s)) := by
+    intro m; rw [hz, ← Complex.cpow_nat_mul]; ring_nf
+  -- the prime-power series of `F₀`
+  have hser : ∑' r : ℕ, (signedWeight γ₀ r : ℂ) * z ^ r = ∑' r : ℕ, (signedWeight γ₀ (r + 1) : ℂ) *
+      (2 : ℂ) ^ (-(((r + 1 : ℕ) : ℂ) * s)) := by
+    have hsm : Summable fun r : ℕ => (signedWeight γ₀ r : ℂ) * z ^ r := by
+      refine Summable.of_norm_bounded ((summable_geometric_of_lt_one (by positivity) hq).mul_left 2)
+        fun r => ?_
+      rcases Nat.eq_zero_or_pos r with rfl | hr
+      · simp [hW0]
+      have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_pow, mul_pow]
+      have h := abs_mul_signedWeight_le γ₀ r
+      rw [abs_mul, Nat.abs_cast] at h
+      have : |signedWeight γ₀ r| ≤ 2 * a ^ r := le_trans (le_mul_of_one_le_left (abs_nonneg _) hr1) h
+      calc |signedWeight γ₀ r| * ‖z‖ ^ r ≤ 2 * a ^ r * ‖z‖ ^ r := by gcongr
+        _ = 2 * (a ^ r * ‖z‖ ^ r) := by ring
+    rw [hsm.tsum_eq_zero_add]
+    simp only [hW0, Complex.ofReal_zero, zero_mul, zero_add]
+    exact tsum_congr fun r => by rw [hpow]
+  have hexp := hS.cexp
+  rw [hser, ← signedPoly_eq_exp γ₀ hs] at hexp
+  refine hexp.congr_fun fun m => ?_
+  simp only [Function.comp_apply]
+  rw [← hpow]
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simp [eulerWeight]
+  have hne : 1 - z ^ m ≠ 0 := by
+    intro h
+    have h1 : ‖z ^ m‖ = 1 := by rw [← sub_eq_zero.mp h, norm_one]
+    rw [norm_pow] at h1
+    have hz1 : ‖z‖ < 1 := by nlinarith [norm_nonneg z]
+    exact absurd h1 (pow_lt_one₀ (norm_nonneg z) hz1 hm.ne').ne
+  rw [Complex.cpow_def_of_ne_zero hne]
+  ring_nf
 
 end GaloisForLFunctions.EulerFETransportTheory
