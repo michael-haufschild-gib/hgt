@@ -23,6 +23,7 @@ theorem integrable_halfLineLaplace_of_domain {F : ℝ → ℝ}
   apply hF.integrable.norm.mono'
     (hF.meas.mul (Real.continuous_exp.comp (continuous_const.mul continuous_id)).measurable).aestronglyMeasurable
   refine Eventually.of_forall fun u => ?_
+  change ‖F u * Real.exp (s * u)‖ ≤ ‖F u‖
   by_cases hu : 0 ≤ u
   · simp only [hF.support u hu, zero_mul, norm_zero, le_refl]
   · simp only [norm_mul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
@@ -78,7 +79,6 @@ theorem criticalHalfLineGroundState_unique_up_to_sign
       _ = ∫ u, c ^ 2 * G u ^ 2 := by
         refine integral_congr_ae ?_
         filter_upwards [hp] with u hu
-        dsimp only
         rw [hu, mul_pow]
       _ = _ := integral_const_mul _ _
   rw [hF.2.2.2.1, hG.2.2.2.1, mul_one] at hn

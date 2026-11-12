@@ -690,6 +690,43 @@ its spectral stabilizer, and its relation to the contour-trace source field
 remain open. No normality over `ℚ` or purity conclusion is asserted.
 [Prime spectral field](ThePrimeSpectralFieldOfTheZeros.lean).
 
+### Algebraic monomial relations across all primes
+
+The prime spectral field has a constrained family of multiplicative relations.
+For an integer vector `m` with finite prime support, write
+
+`L(m)=Σ_p m_p log p`, `V_z(m)=exp(z L(m))`,
+`K_z={m : V_z(m) is algebraic over ℚ}`.
+
+Unique factorization makes `L` injective. The subgroup `K_z` is saturated:
+if a nonzero integer multiple of a vector belongs, so does the vector.
+For every actual zero `ρ`, any three vectors in `K_ρ` satisfy a nontrivial
+integer relation. If `Re ρ` is irrational, any two do. These bounds concern
+mixed products at every prime, with arbitrary positive and negative exponents.
+
+Consequently two members of `K_ρ` have supports whose union contains the
+support of every member. One member suffices when `Re ρ` is irrational.
+Thus a fixed finite set `S_ρ` captures every algebraic monomial: any prime
+product with a nonzero exponent outside `S_ρ` is transcendental.
+The finite set is a conclusion about the entire prime family; no prime
+cutoff enters the definition or proof.
+
+The mechanism is the six-exponentials theorem. The first bound uses the
+independent rows `1,ρ` and three prime-log frequencies. For the sharper
+bound, `1,ρ,conjugate(ρ)` are independent when `ρ` is nonreal with irrational
+real part; two independent frequencies would then give six algebraic
+exponentials again. In particular, algebraicity of two distinct prime values
+at an actual zero forces its real part to be rational.
+
+Compatible arithmetic scalar embeddings preserve `K_z` exactly. Ordinary
+conjugation and functional reflection also preserve it, since the value at
+`1-z` is the rational prime product at one divided by the value at `z`.
+This lattice therefore constrains arithmetic orbits but cannot alone
+separate horizontally reflected zeros. Exact algebraic monomial values,
+non-binomial relations, and the actual ranks and generators remain open.
+
+[Algebraic prime relations](TheAlgebraicPrimeRelationsOfTheZeros.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

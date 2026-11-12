@@ -1,10 +1,10 @@
 # The critical half-line Laplace transform is zero-free in the right half-plane
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Target:** B104; complex factorization of the actual critical-state line.
 - **Statement:** Every actual critical half-line state F at a finite global window threshold has `∫ F(u) exp(zu) du ≠ 0` whenever `Re z>0`.
-- **Status:** Unproved. The positive-real-axis case and uniqueness are being formalized separately.
+- **Status:** Unproved. The positive-real-axis case is verified; uniqueness is being formalized separately.
 
 ## Proposed connection
 
@@ -24,7 +24,7 @@ an outer factorization or regularity of the actual state.
 - `RHTower.fourier_exp_mul` in `SoninPacketFourierModulation`: literal modulation/translation identity.
 - `HTGeometry/WeightedCausalExponentialReflection`: verified real-rate weighted norm defect.
 - `HTGeometry/CausalExponentialLaplaceReflection`: verified two-sided kernel representation and resonance-inclusive moment laws.
-- Pending real-state input: `TheCriticalHalfLineStateHasNoPositiveLaplaceZero`.
+- Verified real-state input: `TheCriticalHalfLineStateHasNoPositiveLaplaceZero`.
 
 Missing: modulated resolvent laws; preservation of the conjugate zero after
 the first reflection; real representative of the composed reflection;
@@ -33,6 +33,8 @@ actual-domain closure and exact paired pole-product identity.
 At `Re z=1/2` the pole-weighted kernel has no exponential decay. The real
 resonance shortcut does not apply to a nonreal z; the pole law must pass
 through this case by continuity of the actual weighted Laplace moments.
+At the positive half-pole, negative-half-line support bounds the Laplace
+weights by one; actual L¹ integrability supplies the required domination.
 
 Zero-freeness alone is not an outer-factor theorem and does not establish
 the arithmetic polar charge.

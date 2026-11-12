@@ -101,7 +101,8 @@ theorem extendByZero_map (H : Subgroup G) (L : Subgroup H) (f : L → ℂ) (y : 
     rw [extendByZero_of_notMem _ _ hmap, extendByZero_of_notMem H _ hy]
 
 /-- **Induction in stages**: `Ind_H^G Ind_L^H f = Ind_L^G f`. -/
-theorem inducedFunction_inducedFunction (H : Subgroup G) (L : Subgroup H) (f : L → ℂ) :
+theorem inducedFunction_inducedFunction (H : Subgroup G) [Fintype H] (L : Subgroup H)
+    (f : L → ℂ) :
     inducedFunction H (inducedFunction L f) =
       inducedFunction (L.map H.subtype)
         (fun k => f ((L.equivMapOfInjective H.subtype H.subtype_injective).symm k)) := by
@@ -143,7 +144,7 @@ theorem inducedFunction_inducedFunction (H : Subgroup G) (L : Subgroup H) (f : L
   field_simp
 
 /-- **Induction maps the monomial span of a subgroup into the monomial span of the group.** -/
-theorem inducedFunction_mem_monomialSpan (H : Subgroup G) {m : H → ℂ}
+theorem inducedFunction_mem_monomialSpan (H : Subgroup G) [Fintype H] {m : H → ℂ}
     (hm : m ∈ monomialSpan H) : inducedFunction H m ∈ monomialSpan G := by
   have hle : monomialSpan H ≤ (monomialSpan G).comap (inducedFunctionHom H) := by
     rw [monomialSpan, AddSubgroup.closure_le]

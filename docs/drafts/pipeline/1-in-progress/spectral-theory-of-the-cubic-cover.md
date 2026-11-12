@@ -48,20 +48,28 @@ Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3
 ## Roadmap (3): the twisted layer (user: "continue with the twisted layer")
 Goal: the nine twists `P_{a,r}(s) = Σ_{h' primary} (ω^aλ^r/h')₃² T(h')² |ξ_{h'}|^{−s}` (a, r mod 3), whose
 untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combination of them.
-- T1 [bookkeeping] twisted multiplicativity `T(h₀h')T(1) = T(h₀)(h₀/h')₃T(h')` for `h₀ = ελ^m`, `h'` primary
-  (from `rationalSourceResidualFourierCoefficient_prime_normalized` + cube law + support); unique
-  factorization `h = ε λ^m h'`; `D(s) = Σ_{ε,m} (T(ελ^m)/T(1))² 3^{−ms/2} P_{ε,m}(s)`; the twist depends only on
-  `(ε mod ±1, m mod 3)`.
-- T2 [units, existing L² theory] rotation `R_ε = diag(η, η⁻¹)`, `η² = ε`: normalizes Γ, `κ^{R_ε} = κ·(ε⁻¹/d)₃`;
-  `θ_s(εw)θ_s(ε⁻¹w)` has multiplier κ² and constant term `Σ_h T(h)T(ε²h)…` (correlations `C_ω, C_{ω²}`);
-  pairs with `E_κ` through `levelPairing` after a change of variables.
-- T3 cusp analysis of the rotated products: `ω` is not in the rational cusp class (column (ω,1) is not an
-  integer column mod 3), so `θ_s(εw)` decays at `−ε`; growth only where both rotations land in the rational
-  class; renormalize, double-pole coefficients of `C_ω, C_{ω²}` (possible cancellation of phases).
+- T1 [done, `TheSquaredThetaSeriesSplitsIntoNineTwists`] `T(h₀ g)T(1) = (h₀/g)₃T(h₀)T(g)` (h₀ coprime to
+  g = gen I); split `h = uλ^m gen I`; `D(s) = C̄² Z₀(3s/2−1) Σ_{u,m} (T(uλ^m)/T(1))² (4π|ξ_{uλ^m}|)^{−s} S_{uλ^m}(s/2)`,
+  `S_{h₀}(w) = Σ_{A sqfree} (h₀/gen A)₃² σ(A) N(A)^{−w}`; twist depends on (u mod ±1, m mod 3); source mask:
+  `T(uλ) = 0`, `T(u) ≠ 0 ⇒ u = ±1`. So `Q = 2(4π|ξ₁|)^{−s} S_1(s/2) + Σ_{m≥2}`.
+- T1b [done, `TheTwistedSquarefreeCombinationHasASimplePole`] `Q` (the combination) continues; `(s−4/3)M(s)Q(s) →
+  243π³r³/(C̄² L(1,χ₋₃)) ≠ 0`. One linear relation among the nine residues `ρ_{a,r} = Res_{w=2/3} S_{aλ^r}`.
+- T2a [done, `TheRotatedCorrelationsSeeOnlyTheThreeDivisibleLayer`] `C_ε(s) = Σ T(εh)T(h)|ξ|^{−s} =
+  C̄² Z₀ Σ_{u,m} (T(εuλ^m)T(uλ^m)/T(1)²)(…)^{−s} S_{ε²uλ^m}(s/2)`; for ε ≠ ±1 only m ≥ 2 (unit layer invisible).
+- Finding: every coefficient of these relations at m ≥ 2 is a ramified value T(uλ^m); MMD writes these through
+  `lowRamifiedTransform` of the nine Patterson residues `U_{j,k} = unramifiedGaussResidue(ω^jλ^k)`, which the
+  corpus does not determine. Rotations add relations but cannot isolate `ρ_{1,0}` (S_1) without U_{j,k} or the
+  3-part (level 27).
+- T2b [in progress] spectral side for `F_R = θ_s(Rw)θ_s(R⁻¹w)`, R = diag(ω, ω²) (R³ = 1, SR = R⁻¹S):
+  linear subtraction `h = c Σ_q E_1(r_q w | 1_{≥2} v^{2/3})` (multiplier κ, rational-equivariant);
+  (i) F_R − h(R·)h(R⁻¹·) bounded by the product argument (θ_s − h = O(v^{−3}) rational / exp-small ramified);
+  (ii) pointwise `h(Rw)h(R⁻¹w) = c²[conj E_1(w|f) + conj E_1(Sw|f)]` (f = 1_{≥2}v^{4/3}): high cosets of Rw, R⁻¹w
+  are `RnR⁻¹, R⁻¹nR`, `κ(RnR⁻¹)κ(R⁻¹nR) = κ(n)²`; cross terms vanish since `(r_{q'} R r_q⁻¹)₁₀ = c₁ωa + d₁ω²c ≢ 0
+  mod 3` unless (q,q') ∈ {(1,1),(S,S)}; (iii) scattering = ∞ and S terms of Φ: leading coefficient
+  expected `(1+1)/4 · 108π³r³ = 54π³r³` for `M(s)C_ω(s)` (C_ω = C_{ω²}).
 - T4 [λ-twists] level 9: `(λ/d)₃` is a character of Γ(3) trivial on Γ(9) but not a conjugate of κ by any
-  element normalizing Γ(3); needs translates `θ_s(w + t)`, `t ∈ (1/3)O`, Γ(9)-automorphic, traced to Γ(3):
-  the trace involves θ_s at affinely transformed cusps `g⁻¹τ_tγ` (upper triangular in SL₂(K)) — explicit from
-  the three cusp classes, but large bookkeeping. Rank question: do the available combinations determine all nine `P_{a,r}` near 4/3?
+  element normalizing Γ(3); needs translates `θ_s(w + t)`, `t ∈ (1/3)O`. Rank question: do the available
+  combinations determine all nine residues?
 
 ## Lean modules
 | Module | Content | State |
@@ -81,6 +89,9 @@ untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combin
 | `TheRenormalizedThetaSquareUnfolds` | strip bound ∫\|G\|v^σ < ∞ (2 < σ < 13/3); explicit Mellin integrals; Φ₀ = (π/(s−1))\|P\|(s−4/3)φ·(3·3^{3s−3}−1)/2, Φ₀(4/3) = 12π\|P\|r; `integral_renormalized_mul_eisenstein` (4 < Re s < 13/3) | clean; olean built |
 | `TheSquaredThetaSeriesHasADoublePole` | `seedPair` holomorphic (Mellin, 0 < Re s < 13/3); `completedThetaSq` = continuation of M(s)D(s); **`thetaSqDirichlet_double_pole`**: (s−4/3)²M(s)D(s) → 108π³r³ ≠ 0; axioms: propext, choice, Quot.sound | clean; olean built |
 | `TheConstantTermContinuesAcrossFourThirds` | `clearedScattering` = (s−4/3)φ(s) via zetaPoleFilled·L(χ₋₃)/Z₀; holomorphic on Re s>1; value r at 4/3; `dedekindZeta_residue_eq`; `clearedConstantTerm` (residue 3πr v^{2/3}); `hasDerivAt_clearedConstantTerm` (log term) | clean |
+| `TheSquaredThetaSeriesSplitsIntoNineTwists` | `sourceCoefficient_twisted_mul`; `frequencySplit` (Oˣ×ℕ×GoodIdeal ≃ O∖0); `twistedPrimarySeries_eq` (P = C̄²Z₀(3w−1)S); `thetaSqDirichlet_eq_zeta_mul`; `_neg`, `_lambda_mod`; `sourceCoefficient_unit_mul_lambda`, `sourceCoefficient_unit_eq` | clean; olean built |
+| `TheTwistedSquarefreeCombinationHasASimplePole` | `clearedCubeZeta`; `completedCombination`; `twistedSquarefreeCombination_simple_pole` (residue 243π³r³/(C̄²L(1,χ₋₃))) | clean |
+| `TheRotatedCorrelationsSeeOnlyTheThreeDivisibleLayer` | `rotatedCorrelation`, `symbol_rotated_pair`, `rotatedCorrelation_eq_zeta_mul`, `rotatedLayerCoeff_zero/_one`, `rotatedCorrelation_eq_three_layer` | clean |
 
 ## Notes
 **N1 [D] Mechanism of the double pole** (see CRF card N12): `E_{κ²}` constant term `v^s + φ(s)v^{2−s}`,
@@ -91,6 +102,7 @@ untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combin
 ## Conjecture ledger
 
 ## Log
+- 2026-11-12 — twisted layer T1, T1b, T2a formalized; ramified layer reduces to MMD's nine U_{j,k}; T2b (rotated renormalization) planned via the linear subtraction h.
 - 2026-11-12 — **SQ4 answered in Lean**: `thetaSqDirichlet_double_pole` (modules 13–15). Route: bounded renormalization G = θ_s² − H + MMD's L² correction (no pointwise continuation of E); double pole only from the explicit scattering of H. Open: SQ5 (element sum ↔ unramified squarefree series S; contour shift for complex T²), SQ7 (column twists θ·θ_n).
 - 2026-11-12 — 2c–2e formalized (modules 10–12). Remaining: G = θ_s² − H bounded on H³ (reduction + three cusp classes; mod-3 residue of r_q c_j bottom-left ≠ 0), assembly with clearedScatterTotal = (π/(s−1))\|P\|·clearedScattering·(3·3^{3s−3}−1)/2 (value 12π\|P\|r at 4/3); polynomial cusp decay v^{−7/3} suffices (region 1 < Re s < 13/3).
 - 2026-11-12 — (2) started: 2a Hecke bound and 2b Mellin link formalized (modules 7–9); roadmap (2) rewritten around MMD's L² meromorphy (2c–2g).

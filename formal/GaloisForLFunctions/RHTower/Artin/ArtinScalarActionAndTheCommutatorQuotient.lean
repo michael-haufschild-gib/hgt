@@ -54,7 +54,7 @@ theorem exists_character_quotient_commutator (hP : P * P = P)
       rangeRepresentation_apply_of_scalar ρ P hP hcomm (hχ ⟨a, ha⟩),
       rangeRepresentation_apply_of_scalar ρ P hP hcomm (hχ ⟨a⁻¹, A.inv_mem ha⟩)]
     simp only [smul_mul_assoc, mul_smul_comm, one_mul, mul_one, smul_smul]
-    rw [hc, one_smul, ← map_mul, mul_inv_cancel, map_one]
+    rw [mul_comm, hc, one_smul, ← map_mul, mul_inv_cancel, map_one]
   refine ⟨Representation.character (QuotientGroup.lift _ (rangeRepresentation ρ P hP hcomm) hker),
     representation_character_mem_fdCharacterSet _ _, fun g => ?_⟩
   show LinearMap.trace ℂ _

@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** B104; rigidity of the actual critical state.
 - **Statement:** At a finite global window threshold, any two actual normalized critical half-line ground states agree almost everywhere up to sign.
-- **Status:** Algebraic consequence of the pending Laplace-zero exclusion and verified weak equation. Not counted.
+- **Status:** Laplace-zero exclusion and weak equation verified. Uniqueness module written, unchecked.
 
 ## Argument
 
@@ -26,9 +26,12 @@ Verified input: `criticalHalfLineMixedEnergy_groundState_eq_zero`,
 `CriticalHalfLineEnergyDomain.add_const_mul`, and
 `criticalHalfLineFullEnergy_add_const_mul`.
 
-Pending input:
+Verified input:
 `ae_eq_zero_of_criticalHalfLineFullEnergy_eq_zero_of_laplace_zero` in
 `TheCriticalHalfLineStateHasNoPositiveLaplaceZero`.
+
+Written, unchecked: `TheCriticalHalfLineStateIsUniqueUpToSign`, including
+the exact Laplace-ratio formula and unconditional existence/uniqueness dichotomy.
 
 The arithmetic polar pairing can still vanish on this single line; B104
 is not thereby closed.

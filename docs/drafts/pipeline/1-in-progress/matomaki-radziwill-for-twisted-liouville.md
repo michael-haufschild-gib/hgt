@@ -157,6 +157,7 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderNonRough` | `∫\|F_{(X,4X]} − F_S\|² ≤ (5πW/2+10eX)X^{-2}Σ_scales (4X+2#Pr)/A_Pr`, `A = Σ_{p∈Pr}1/p` (Turán) | compiled |
 | `LadderDensity` | `Σ_{e^a<p≤e^b} 1/p ≥ log(b/a) − C_M` (corpus Mertens) | compiled |
 | `LadderSequence` | `seqA, seqB, seqH`; `a_j + 1 ≤ b_j < a_{j+1}`, `b_j ≥ 2^j b_0`, widths admissible, step condition `18e(b_{j+1}/(a_j − 1/H_j) + 1) ≤ H_j` (`L ≥ 2^{20}`) | compiled |
+| `LadderConfig` | `ladderConfig L X`: scales `e^{a_j} < p ≤ e^{b_j}` for `j < J = min{b_J > (log X)^{0.93}}`, top `exp((log X)^{0.93}) < p ≤ exp((log X)^{0.96})`, disjoint | compiled |
 
 Remaining for (MR) for `λχ`: the concrete scale sequence and the final asymptotics of
 `ladder_master` + `LadderNonRough` (every term has an explicit numeric bound in `LadderNumerics*`).
