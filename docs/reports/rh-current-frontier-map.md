@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 12 candidates.**
-**Corpus checkpoint:** `f1df55cdf05b4ad9581f7d8ae061467397138c2a`; working-tree sources included.
+**Corpus checkpoint:** `20cada9c7a18fcb0d9e98027526a293a1992131d`; working-tree sources included.
 
 Live = arithmetic observable + proved RH receiver + explicit open source estimate. Candidate = proposed source-to-receiver step missing. An all-parameter critical-line detector alone is not a proof route.
 Window-sign formulations share the all-aperture sign problem; finite aperture, rank or height does not prove the uniform step. FU/CFC/RP have arithmetic history criteria, not estimates on advancing histories.
