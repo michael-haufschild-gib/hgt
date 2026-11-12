@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.NegativeHalfLineLaplaceContinuity
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.NegativeHalfLineLaplaceContinuity
 import GaloisForLFunctions.RHTower.SoninPacketFourierModulation
 
 /-!
@@ -49,6 +49,31 @@ theorem causalModulation_add (b c : ℝ) (f : ℝ → ℂ) :
   congr 2
   push_cast
   ring
+
+theorem measurable_causalModulation (b : ℝ) {f : ℝ → ℂ} (hf : Measurable f) :
+    Measurable (causalModulation b f) := by
+  exact (by fun_prop : Continuous (fun u : ℝ =>
+    Complex.exp (((2 * Real.pi * b * u : ℝ) : ℂ) * Complex.I))).measurable.mul hf
+
+theorem measurable_modulatedCausalExponential (a b : ℝ) :
+    Measurable (modulatedCausalExponential a b) := by
+  apply measurable_causalModulation
+  unfold causalFourierExponential
+  exact (by fun_prop : Continuous (fun u : ℝ => (Real.pi : ℂ) *
+    Complex.exp (-((Real.pi * a : ℝ) : ℂ) * u))).measurable.indicator measurableSet_Ioi
+
+/-- The literal resolvent is measurable without choosing an almost-everywhere representative. -/
+theorem measurable_modulatedCausalConvolution (a b : ℝ) {f : ℝ → ℂ}
+    (hf : Measurable f) : Measurable (modulatedCausalConvolution a b f) := by
+  have hm : StronglyMeasurable (modulatedCausalConvolution a b f) := by
+    apply StronglyMeasurable.integral_prod_right
+    exact (((measurable_modulatedCausalExponential a b).comp measurable_snd).mul
+      (hf.comp (measurable_fst.sub measurable_snd))).stronglyMeasurable
+  exact hm.measurable
+
+theorem measurable_modulatedCausalReflection (a b : ℝ) {f : ℝ → ℂ}
+    (hf : Measurable f) : Measurable (modulatedCausalReflection a b f) :=
+  hf.neg.add (measurable_const.mul (measurable_modulatedCausalConvolution a b hf))
 
 theorem aestronglyMeasurable_causalModulation (b : ℝ) {f : ℝ → ℂ}
     (hf : AEStronglyMeasurable f) : AEStronglyMeasurable (causalModulation b f) := by

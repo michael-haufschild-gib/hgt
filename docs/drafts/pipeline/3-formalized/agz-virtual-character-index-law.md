@@ -16,8 +16,9 @@
 - [x] V3 attainment for a disjoint pair
 - [x] V4 cancellation to a disjoint pair
 - [x] V5 the law; quotients of products; the relative square of two number rings
-- [ ] V6 the identification of induced characters with Hecke characters (Brauer's theorem is
-  proved: card `3-formalized/brauer-induction-theorem.md`, `brauer_induction`)
+- [ ] V6 the identification of induced characters with Hecke characters: invariance of Artin's
+  Euler product under induction and the reciprocity law (Brauer's theorem is proved: card
+  `3-formalized/brauer-induction-theorem.md`, `brauer_induction`)
 - [x] V7 zeros minus poles: the neutral form of `ℤ` and of every number ring has index one plus
   the number of zeros right of the line
 - [x] V8 the contacts of a number ring are its point counts over the finite fields; the relative

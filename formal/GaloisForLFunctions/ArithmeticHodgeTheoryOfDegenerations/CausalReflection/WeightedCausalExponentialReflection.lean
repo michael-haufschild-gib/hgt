@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CausalExponentialReflectionEnergy
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CausalExponentialReflectionEnergy
 import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
 
 /-!

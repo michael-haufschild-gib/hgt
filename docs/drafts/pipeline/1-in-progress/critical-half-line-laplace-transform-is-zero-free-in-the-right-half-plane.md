@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** B104; complex factorization of the actual critical-state line.
 - **Statement:** Every actual critical half-line state F at a finite global window threshold has `∫ F(u) exp(zu) du ≠ 0` whenever `Re z>0`.
-- **Status:** Unproved. Positive-real-axis nonvanishing and uniqueness up to sign are verified. Complex-rate support modules are written, unchecked.
+- **Status:** Unproved. Positive-real-axis nonvanishing and uniqueness up to sign are verified. Complex-rate support and weighted energy are verified; complex moment laws remain unchecked.
 
 ## Proposed connection
 
@@ -22,21 +22,27 @@ an outer factorization or regularity of the actual state.
 ## Corpus inputs and missing work
 
 - `RHTower.fourier_exp_mul` in `SoninPacketFourierModulation`: literal modulation/translation identity.
-- `HTGeometry/WeightedCausalExponentialReflection`: verified real-rate weighted norm defect.
-- `HTGeometry/CausalExponentialLaplaceReflection`: verified two-sided kernel representation and resonance-inclusive moment laws.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/WeightedCausalExponentialReflection`: verified real-rate weighted norm defect.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/CausalExponentialLaplaceReflection`: verified two-sided kernel representation and resonance-inclusive moment laws.
 - Verified real-state input: `TheCriticalHalfLineStateHasNoPositiveLaplaceZero`.
 
 Verified:
 
-- `HTGeometry/NegativeHalfLineLaplaceContinuity`: actual L¹ admission and continuity on the closed right half-plane.
-- `HTGeometry/ModulatedCausalExponentialReflection`: literal modulation, L¹/L² closure and resolvent conjugacy.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/NegativeHalfLineLaplaceContinuity`: actual L¹ admission and continuity on the closed right half-plane.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalExponentialReflection`: literal measurability, modulation, L¹/L² closure and resolvent conjugacy.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionEnergy`: unweighted/weighted L² closure, exact norm defect, Fourier modulus preservation and resolvent injectivity.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalLaplaceReflection`: complex rate and support preservation at one complex Laplace zero.
 
 Written, unchecked:
 
-- `HTGeometry/ModulatedCausalReflectionEnergy`: weighted L² closure, exact norm defect and real-frequency modulus preservation.
-- `HTGeometry/ModulatedCausalLaplaceReflection`: complex rate and support preservation at one complex Laplace zero.
-- `HTGeometry/ComplexCausalLaplaceWeight`: complex kernel admission, exact kernel mass and stable-side moment law.
-- `HTGeometry/ComplexCausalLaplaceDuality`: lower/upper Laplace tails and the anti-causal representation at a complex zero.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceWeight`: complex kernel admission, exact kernel mass and stable-side moment law.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceDuality`: lower/upper Laplace tails and the anti-causal representation at a complex zero.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceMoments`: opposite-side complex resolvent moments.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceBoundary`: continuity across neutral decay and the unrestricted admitted moment law.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionCommutation`: Fourier multipliers and almost-everywhere commutation.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionIsReal`: conjugate kernels, commuting conjugate reflections and the actual real representative.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexHalfLinePoleDomain`: both half-pole moments from the actual weighted square domain.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionMoments`: linear reflection law, preservation of the conjugate zero and paired half-line support.
 
 Missing: modulated resolvent laws; preservation of the conjugate zero after
 the first reflection; real representative of the composed reflection;

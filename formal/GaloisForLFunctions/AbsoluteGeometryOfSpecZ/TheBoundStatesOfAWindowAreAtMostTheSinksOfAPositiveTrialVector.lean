@@ -38,16 +38,14 @@ namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
 section General
 
-variable {ι : Type*} [Fintype ι] [DecidableEq ι] (B : Matrix ι ι ℝ)
+variable {ι : Type*} [Fintype ι] (B : Matrix ι ι ℝ)
 
-omit [DecidableEq ι] in
 /-- The real form of a real matrix as a double sum. -/
 theorem dotProduct_mulVec_eq_sum_sum (y : ι → ℝ) :
     y ⬝ᵥ (B *ᵥ y) = ∑ i, ∑ j, y i * y j * B i j := by
   simp only [dotProduct, mulVec, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-omit [DecidableEq ι] in
 /-- **The ground state substitution.** For a symmetric matrix with entries `≤ 0` off the diagonal
 and a positive `v`, the form is at least `Σ_i (σ_i² / v_i) (B v)_i`. -/
 theorem sum_div_mul_mulVec_le (hB : ∀ i j, B i j = B j i) (hoff : ∀ i j, i ≠ j → B i j ≤ 0)
@@ -87,7 +85,6 @@ theorem sum_div_mul_mulVec_le (hB : ∀ i j, B i j = B j i) (hoff : ∀ i j, i �
         (mul_nonpos_of_nonpos_of_nonneg (hoff i j hij) (hv i).le) (hv j).le
     exact neg_nonneg.mpr (mul_nonpos_of_nonpos_of_nonneg h1 (sq_nonneg _))
 
-omit [DecidableEq ι] in
 /-- The form is nonnegative on the packets that vanish at the sinks of `v`. -/
 theorem dotProduct_mulVec_nonneg_of_sinks (hB : ∀ i j, B i j = B j i)
     (hoff : ∀ i j, i ≠ j → B i j ≤ 0) {v : ι → ℝ} (hv : ∀ i, 0 < v i) {σ : ι → ℝ}

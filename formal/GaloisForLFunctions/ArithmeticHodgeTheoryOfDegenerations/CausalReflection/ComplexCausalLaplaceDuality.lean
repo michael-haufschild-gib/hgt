@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ComplexCausalLaplaceWeight
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ComplexCausalLaplaceWeight
 
 /-!
 # Two-sided representations of a complex causal resolvent

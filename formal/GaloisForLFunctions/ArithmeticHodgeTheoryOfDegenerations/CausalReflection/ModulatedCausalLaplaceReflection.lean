@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ModulatedCausalReflectionEnergy
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ModulatedCausalReflectionEnergy
 
 /-!
 # Complex Laplace zeros preserve causal-reflection support

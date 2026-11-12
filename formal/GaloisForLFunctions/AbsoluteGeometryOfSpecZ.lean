@@ -200,6 +200,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsOfANumberRingAreIt
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoWindowsCoupledThroughTheirChargesHoldOneBoundStateIffTheirSusceptibilitiesMultiplyToAtLeastOne
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.APowerOfAQuotientOfLFunctionsHasTheIndexOfTheQuotient
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBoundStatesOfAWindowAreAtMostTheSinksOfAPositiveTrialVector
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -264,6 +265,7 @@ the margin of every refinement; and the contacts of a number ring as its point c
 finite fields, with the relative square of two number rings at finite scale; the ground vector
 of the block matrix of a narrow window, of one sign and charged; and the gluing of two forms
 with one negative square each through the product of their charges; and the index of a power
-of a quotient of `L`-functions, which is the index of the quotient. See
-`AbsoluteGeometryOfSpecZ/README.md`.
+of a quotient of `L`-functions, which is the index of the quotient; and a count of the bound
+states of a window by the sinks of a positive trial vector, from its potential and its
+couplings. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

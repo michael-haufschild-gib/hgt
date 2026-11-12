@@ -97,7 +97,7 @@ theorem height_rotation (w : HyperbolicSpace) :
 
 theorem height_rotation_inv (w : HyperbolicSpace) :
     hyperbolicHeight (integralComplexMatrix rotation⁻¹ • w) = hyperbolicHeight w :=
-  height_unitDiag _ (by simp [Matrix.adjugate_fin_two])
+  height_unitDiag _ (by simp)
     (by simpa [Matrix.adjugate_fin_two] using omega_primitive.isUnit (by decide)) w
 
 /-- Moving a level-three matrix through `g`: `g n w = (g n g⁻¹)(g w)`. -/
@@ -128,11 +128,15 @@ theorem complexCharacter_rotation_pair (n : levelThree) :
     linear_combination (n : SL(2, O)) 0 0 * omega_cube
   have h10' : ((levelThreeConjugate rotation⁻¹ n : levelThree) : SL(2, O)) 1 0 = omega ^ 2 * c := by
     change (rotation⁻¹ * (n : SL(2, O)) * rotation⁻¹⁻¹) 1 0 = _
-    simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.adjugate_fin_two, c]
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, SL2_inv_10,
+      SL2_inv_11, inv_inv, rotation_apply_00, rotation_apply_10, neg_zero, zero_mul, mul_zero, add_zero,
+      zero_add, c]
     ring
   have h00' : ((levelThreeConjugate rotation⁻¹ n : levelThree) : SL(2, O)) 0 0 = a := by
     change (rotation⁻¹ * (n : SL(2, O)) * rotation⁻¹⁻¹) 0 0 = _
-    simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.adjugate_fin_two, a]
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, SL2_inv_00,
+      SL2_inv_01, inv_inv, rotation_apply_00, rotation_apply_01, rotation_apply_10, rotation_apply_11,
+      neg_zero, zero_mul, mul_zero, add_zero, a]
     linear_combination (n : SL(2, O)) 0 0 * omega_cube
   change ringComplex (value _) * ringComplex (value _) = ringComplex (value n) ^ 2
   rw [← map_mul, ← map_pow]
@@ -229,14 +233,16 @@ theorem cutoff_rotation_mul (F : ℝ → ℂ) (hF : ∀ t, conj (F t) = F t) (y 
   · push Not at hhigh
     have hR : ∀ m : levelThree, ¬ 1 < hyperbolicHeight (complexMatrix m • (integralComplexMatrix rotation • y)) := by
       intro m hm
-      have := high_conj rotation⁻¹ height_rotation_inv m (integralComplexMatrix rotation • y)
-      rw [map_inv, inv_smul_smul] at this
-      exact (hhigh _).not_gt (this ▸ hm)
+      have key : complexMatrix (levelThreeConjugate rotation⁻¹ m) • y =
+          integralComplexMatrix rotation⁻¹ • (complexMatrix m • (integralComplexMatrix rotation • y)) := by
+        rw [conj_smul, map_inv, inv_smul_smul]
+      exact (hhigh (levelThreeConjugate rotation⁻¹ m)).not_gt (by rw [key, height_rotation_inv]; exact hm)
     have hR' : ∀ m : levelThree, ¬ 1 < hyperbolicHeight (complexMatrix m • (integralComplexMatrix rotation⁻¹ • y)) := by
       intro m hm
-      have := high_conj rotation height_rotation m (integralComplexMatrix rotation⁻¹ • y)
-      rw [map_inv, smul_inv_smul] at this
-      exact (hhigh _).not_gt (this ▸ hm)
+      have key : complexMatrix (levelThreeConjugate rotation m) • y =
+          integralComplexMatrix rotation • (complexMatrix m • (integralComplexMatrix rotation⁻¹ • y)) := by
+        rw [conj_smul, map_inv, smul_inv_smul]
+      exact (hhigh (levelThreeConjugate rotation m)).not_gt (by rw [key, height_rotation]; exact hm)
     rw [cutoff_eq_zero_of_low F _ hR, cutoff_eq_zero_of_low _ y fun m hm => (hhigh m).not_gt hm,
       zero_mul, map_zero]
 
@@ -279,7 +285,7 @@ theorem rationalRep_pair_of_dvd (q q' : RationalFourCusp)
     q = q' ∧ q ∈ fixedCusps := by
   rcases q with ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ <;> rcases q' with ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ <;>
     simp [rationalRep, rationalFourCuspRep, ModularGroup.coe_S, ModularGroup.coe_T, pow_two,
-      Matrix.mul_apply, Fin.sum_univ_two, fixedCusps] at h ⊢ <;> norm_num at h
+      Matrix.mul_apply, Fin.sum_univ_two, fixedCusps] at h ⊢
 
 /-- **Mixed terms vanish.** Unless `q = q' ∈ {1, S}`, `E_1(r_q R w) E_1(r_{q'} R⁻¹ w) = 0`. -/
 theorem rotation_cross_zero (F : ℝ → ℂ) (q q' : RationalFourCusp) (hq : ¬ (q = q' ∧ q ∈ fixedCusps))
@@ -294,21 +300,22 @@ theorem rotation_cross_zero (F : ℝ → ℂ) (q q' : RationalFourCusp) (hq : ¬
   set g₂ : SL(2, O) := (n' : SL(2, O)) * rationalEmbedding (rationalRep q') * rotation⁻¹
   have e1 : complexMatrix n • (rationalComplex (rationalRep q) • (integralComplexMatrix rotation • w)) =
       integralComplexMatrix g₁ • w := by
-    rw [← mul_smul, ← mul_smul]
+    show _ = integralComplexMatrix ((n : SL(2, O)) * rationalEmbedding (rationalRep q) * rotation) • w
+    rw [← mul_smul, ← mul_smul, map_mul, map_mul]
     rfl
   have e2 : complexMatrix n' • (rationalComplex (rationalRep q') • (integralComplexMatrix rotation⁻¹ • w)) =
       integralComplexMatrix g₂ • w := by
-    rw [← mul_smul, ← mul_smul]
+    show _ = integralComplexMatrix ((n' : SL(2, O)) * rationalEmbedding (rationalRep q') * rotation⁻¹) • w
+    rw [← mul_smul, ← mul_smul, map_mul, map_mul]
     rfl
   rw [e1] at hn
   rw [e2] at hn'
   set A : SL(2, O) := rationalEmbedding (rationalRep q') * rotation * rationalEmbedding (rationalRep q)⁻¹
   have hg : g₂ * g₁⁻¹ = (n' : SL(2, O)) * A * (n : SL(2, O))⁻¹ := by
-    simp only [g₁, g₂, A, mul_inv_rev, map_inv]
-    rw [show (n' : SL(2, O)) * rationalEmbedding (rationalRep q') * rotation⁻¹ *
-        (rotation⁻¹ * ((rationalEmbedding (rationalRep q))⁻¹ * (n : SL(2, O))⁻¹)) =
-        (n' : SL(2, O)) * rationalEmbedding (rationalRep q') * (rotation⁻¹ * rotation⁻¹) *
-          (rationalEmbedding (rationalRep q))⁻¹ * (n : SL(2, O))⁻¹ by group, rotation_inv_mul_inv]
+    simp only [g₁, g₂, A]
+    calc _ = (n' : SL(2, O)) * rationalEmbedding (rationalRep q') * (rotation⁻¹ * rotation⁻¹) *
+          (rationalEmbedding (rationalRep q))⁻¹ * (n : SL(2, O))⁻¹ := by group
+      _ = _ := by rw [rotation_inv_mul_inv, map_inv]; group
   have h0 : (g₂ * g₁⁻¹) 1 0 = 0 := by
     by_contra hc
     have hp := integral_hyperbolicHeight_mul_le_one (g₂ * g₁⁻¹) hc (integralComplexMatrix g₁ • w)
@@ -318,8 +325,11 @@ theorem rotation_cross_zero (F : ℝ → ℂ) (q q' : RationalFourCusp) (hq : ¬
   rw [← hg, h0] at hk
   have hA : A 1 0 = omega * ((rationalRep q' 1 0 * rationalRep q 1 1 : ℤ) : O) +
       omega ^ 2 * ((-(rationalRep q' 1 1 * rationalRep q 1 0) : ℤ) : O) := by
-    simp only [A, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, ← map_inv]
-    simp [rationalEmbedding]
+    simp only [A, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+    simp only [rationalEmbedding, Matrix.SpecialLinearGroup.map_apply_coe, RingHom.mapMatrix_apply,
+      Matrix.map_apply, SL2_inv_00, SL2_inv_10, rotation_apply_00, rotation_apply_01, rotation_apply_10,
+      rotation_apply_11, eq_intCast]
+    push_cast
     ring
   have h3 : (3 : O) ∣ omega * ((rationalRep q' 1 0 * rationalRep q 1 1 : ℤ) : O) +
       omega ^ 2 * ((-(rationalRep q' 1 1 * rationalRep q 1 0) : ℤ) : O) :=

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ModulatedCausalExponentialReflection
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ModulatedCausalExponentialReflection
 
 /-!
 # Exact weighted energy loss for complex-rate reflections
@@ -19,6 +19,20 @@ open _root_.RHTower
 theorem integrable_modulatedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
     {f : ℝ → ℂ} (hf : Integrable f) : Integrable (modulatedCausalReflection a b f) := by
   exact hf.neg.add ((integrable_modulatedCausalConvolution ha b hf).const_mul (2 * a : ℂ))
+
+/-- The modulated resolvent preserves the unweighted actual square domain. -/
+theorem memLp_modulatedCausalConvolution {a : ℝ} (ha : 0 < a) (b : ℝ)
+    {f : ℝ → ℂ} (hf : MemLp f 2 volume) :
+    MemLp (modulatedCausalConvolution a b f) 2 volume := by
+  rw [modulatedCausalConvolution_eq_conjugate]
+  exact memLp_two_causalModulation (-b)
+    (memLp_causalExponentialConvolution ha (memLp_two_causalModulation b hf))
+
+/-- The modulated reflection preserves the unweighted actual square domain. -/
+theorem memLp_modulatedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
+    {f : ℝ → ℂ} (hf : MemLp f 2 volume) :
+    MemLp (modulatedCausalReflection a b f) 2 volume :=
+  hf.neg.add ((memLp_modulatedCausalConvolution ha b hf).const_mul (2 * a : ℂ))
 
 /-- The modulated resolvent preserves the actual weighted square domain. -/
 theorem memLp_weighted_modulatedCausalConvolution {a x : ℝ} (hb : 0 < a + x) (b : ℝ)
@@ -64,5 +78,26 @@ theorem norm_fourier_modulatedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
     fourier_causalModulation]
   congr 2
   ring
+
+/-- A zero modulated resolvent forces its actual integrable input to vanish. -/
+theorem ae_eq_zero_of_modulatedCausalConvolution_ae_zero {a : ℝ} (ha : 0 < a) (b : ℝ)
+    {f : ℝ → ℂ} (hf : Integrable f)
+    (hz : modulatedCausalConvolution a b f =ᵐ[volume] 0) : f =ᵐ[volume] 0 := by
+  rw [modulatedCausalConvolution_eq_conjugate] at hz
+  have hk : (causalFourierExponential a ⋆[ContinuousLinearMap.mul ℂ ℂ]
+      causalModulation b f) =ᵐ[volume] 0 := by
+    filter_upwards [hz] with u hu
+    have hn := congrArg norm hu
+    change ‖causalModulation (-b)
+      (causalFourierExponential a ⋆[ContinuousLinearMap.mul ℂ ℂ] causalModulation b f) u‖ = ‖(0 : ℂ)‖ at hn
+    rw [norm_causalModulation, norm_zero] at hn
+    exact norm_eq_zero.mp hn
+  have hm := ae_eq_zero_of_causalExponentialConvolution_ae_zero ha
+    (integrable_causalModulation b hf) hk
+  filter_upwards [hm] with u hu
+  have hn := congrArg norm hu
+  change ‖causalModulation b f u‖ = ‖(0 : ℂ)‖ at hn
+  rw [norm_causalModulation, norm_zero] at hn
+  exact norm_eq_zero.mp hn
 
 end GaloisForLFunctions.HTGeometry

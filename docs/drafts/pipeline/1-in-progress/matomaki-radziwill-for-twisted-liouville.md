@@ -159,6 +159,7 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderSequence` | `seqA, seqB, seqH`; `a_j + 1 ≤ b_j < a_{j+1}`, `b_j ≥ 2^j b_0`, widths admissible, step condition `18e(b_{j+1}/(a_j − 1/H_j) + 1) ≤ H_j` (`L ≥ 2^{20}`) | compiled |
 | `LadderConfig` | `ladderConfig L X`: scales `e^{a_j} < p ≤ e^{b_j}` for `j < J = min{b_J > (log X)^{0.93}}`, top `exp((log X)^{0.93}) < p ≤ exp((log X)^{0.96})`, disjoint | compiled |
 | `LadderHBounds` | `a_j ≥ 2^j a_0`; `Σ_{j<J}(10/H_j+16/P_j) ≤ 52/a_0`; `C x^n e^{-1.52x} ≤ e^{-x}` eventually; `Σ e^{-2^k b} ≤ 2e^{-b}`; `log a_{j+1} ≥ 2^j log a_1`; `Σ 1/A_j ≤ 1/D_0 + 2/D_1`; `C_M ≥ 0` | compiled |
+| `LadderStepTerm` | concrete moment step `j+1` of the master inequality `≤ 144e·2^{48} b_j^{66} e^{-1.52 b_j}`; `#V` bounds; `e^{b_j} ≤ X` below the top | compiled |
 
 Remaining for (MR) for `λχ`: the concrete scale sequence and the final asymptotics of
 `ladder_master` + `LadderNonRough` (every term has an explicit numeric bound in `LadderNumerics*`).

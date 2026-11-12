@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CausalExponentialZeroReflection
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CausalExponentialZeroReflection
 import GaloisForLFunctions.HTGeometry.L2ConvolutionFourierMultiplier
 import GaloisForLFunctions.RHTower.FourierPlancherelIntegral
 

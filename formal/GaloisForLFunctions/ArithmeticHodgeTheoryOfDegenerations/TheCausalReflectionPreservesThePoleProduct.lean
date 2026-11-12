@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCausalReflectionPreservesPrimeAndGammaEnergy
-import GaloisForLFunctions.HTGeometry.CausalExponentialLaplaceReflection
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CausalExponentialLaplaceReflection
 
 /-!
 # Pole-product preservation on the actual half-line domain

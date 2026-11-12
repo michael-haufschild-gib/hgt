@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ModulatedCausalLaplaceReflection
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ModulatedCausalLaplaceReflection
 
 /-!
 # Complex weighting of actual causal exponential kernels

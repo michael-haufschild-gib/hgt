@@ -159456,4 +159456,5967 @@ end InverseReflectedPhase
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem original_sector_full_budget_uniform_degree
+    (ε : ℝ) (hε : 0<ε) (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (ρ : ℝ) (hρ : 0<ρ) (η : ℝ) (hηpos : 0<η)
+    (κ δ Lscale Lpool : ℝ) (hκ : 0<κ) (hδL : 0≤δ+Lscale) (hLpool : 0≤ Lpool)
+    (Lcap saving : ℝ) (hδ : 0<δ) :
+    ∃ (degree : ℕ), ∀ {Nlevel a c₀ : Eis} {mode : Bool}
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c₀ mode)) (hc₀ : c₀≠0)
+    (_hNlevel : (9:Eis)*c₀∣Nlevel)
+    (_hbase : if mode then lambda^2∣a-1 else lambda^2∣c₀-1)
+    (_hac : IsCoprime a c₀),
+     ∃ (C Z₀ : ℝ), 0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ], ∀ (J I F B R Q₀ : Ideal Eis) (_hJ : J≠0) (_hI : I≠0) (_hF : F≠0) (_hB : B≠0) (_hR : R≠0),
+      rowPowerfulPart J=rowPowerfulPart I → rowMaskPart J (B*F*R)=rowMaskPart I (B*F*R) →
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot : ℝ),
+      Z₀≤ Z → 0< Ck → 0< CO → 0< CH → 0< Cf → 0< X → 0< QK → 0< QP →
+      (Ideal.absNorm I:ℝ)≤ Ck*Z^M →
+      Z^O₀/CO≤(Ideal.absNorm (rowPowerfulPart I):ℝ) →
+      Z^H/CH≤(Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ) →
+      (Ideal.absNorm F:ℝ)≤ Cf*Z^V →
+      Real.log (CH*Ck*CO)/Real.log Z≤η →
+      Real.log (widthConstant B Ck CO CH Cf)/Real.log Z≤η →
+      CanonicalMargins F₀ M (normWidth Z R) z₀ margin → F₀=N+V →
+      Nstar=N-3*hhat → V≤ d → hhat≤ d+η →
+      H=Real.logb Z QK → za=Real.logb Z (QP/2) → Nstar=Real.logb Z X →
+      0≤ M → 0≤ O₀ → 0≤ za → za≤ z₀ →
+      0< cstar → cstar/2≤ margin → d≤ cstar/200 →
+      η≤ cstar/1000 → δ+η≤ cstar/1000 → π≤ cstar/1000 →
+      QK≤ Z^Lrow → (QP/2)≤ Z^Lslot →
+      Real.logb Z 16≤η → ε*(Lrow+Lslot+2*(δ+Lscale+η))+η/2≤π →
+      X⁻¹≤ Z^Lcap → QK≤ Z^Lcap → QP≤ Z^Lcap → -saving≤ F₀-3*cstar/16-O₀/2 →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let j := fun b : A => completedLocalExponent J F b.val.val
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lcap →
+      (familyRawScale G s X QK QP)⁻¹≤ Z^Lscale →
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lpool → κ+ρ*Lpool≤ cstar/16 →
+    ∀ (rows Pset : Finset (Ideal Eis)) (S : Ideal Eis→PrimeFamily σ)
+      (hrows : ∀ K∈rows,Admissible K)
+      (E : SectorArithmetic (N:=Nlevel) G rows Pset S hrows s hc₀),
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ P∈Pset,(∏ b,(S P).ideal b)=P) →
+      (∀ P∈Pset,Pairwise (Function.onFun IsCoprime (G.sum (S P)).ideal)) →
+      (∀ P∈Pset,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (S P)).ideal b)) →
+      (∀ P∈Pset,∀ b,ringChar (Eis⧸(G.sum (S P)).ideal b)≠2) →
+    ∀ (θ : ℝ) (r aw : Ideal Eis→ℂ),
+      1≤ QK → 2≤ QP →
+      (∀ K∈rows,QK/2≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤ QK) →
+      (∀ P∈Pset,CubicSieve.Admissible P ∧ QP/2≤(Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ)≤ QP) →
+      (∀ K∈rows,‖r K‖≤1) → (∀ P∈Pset,‖aw P‖≤1) →
+      (∑ K : rows,‖literalWholeRow G K.val (hrows K.val K.property) S j Pset
+        (E.completion K) s hc₀ W θ X r aw‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2) := by
+  obtain ⟨Adecay,htail⟩ := actual_finite_source_tail_budget_uniform_degree Lcap δ saving hδ
+  obtain ⟨degree,degreeTail,hu⟩ := original_sector_full_energy_uniform_degree
+    Adecay ε hε lo hi hlo W hWs hW ρ hρ η hηpos κ δ Lscale Lpool hκ hδL hLpool
+  refine ⟨max degree (degreeTail*2),?_⟩
+  intro Nlevel a c₀ mode s hc₀ hNlevel hbase hac
+  obtain ⟨Cm,Ct,Z₀,hCm,hCt,hZ₀,henergy⟩ := hu (Nlevel:=Nlevel) (a:=a) (c₀:=c₀) (mode:=mode) s hc₀ hNlevel hbase hac
+  let cusp := 27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c₀}):ℝ)^2
+  let deg := max degree (degreeTail*2)
+  refine ⟨Cm+2*Ct^2*cusp^4+1,max Z₀ 128,by positivity,
+    lt_of_lt_of_le hZ₀ (le_max_left _ _),?_⟩
+  intro σ _ J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    hZ hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hz hzcap hc hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+  dsimp only
+  intro hFcap hscap hpool hsmall rows Pset S hrows E hGN hGchar hrowcop hprod hScop hSN hSchar θ r aw hqk hqp hKr hPr hr haw
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  have hz' : 1< Z := lt_of_lt_of_le hZ₀ ((le_max_left _ _).trans hZ)
+  have hzpos : 0< Z := lt_trans zero_lt_one hz'
+  have h128 : 128≤ Z := (le_max_right _ _).trans hZ
+  have hs := henergy J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    ((le_max_left _ _).trans hZ) hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hz hzcap hc hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hscap hpool hsmall
+    rows Pset S hrows E hGN hGchar hrowcop hprod hScop hSN hSchar θ r aw hqk hqp hKr hPr hr haw
+  have ht := htail s G rows Pset Z X QK QP h128 hX hqk (by linarith only [hqp])
+    (fun K hK => ⟨(hrows K hK).1,(hKr K hK).2⟩)
+    (fun P hP => ⟨(hPr P hP).1.1.ne_zero,(hPr P hP).2.2⟩) hFcap hKcap hPcap hXi
+  have hheight : 1≤1+‖θ‖ := by linarith only [norm_nonneg θ]
+  have hdm : (1+‖θ‖)^degree≤(1+‖θ‖)^deg := pow_le_pow_right₀ hheight (le_max_left _ _)
+  have hdt : (1+‖θ‖)^(degreeTail*2)≤(1+‖θ‖)^deg := pow_le_pow_right₀ hheight (le_max_right _ _)
+  have he := Real.rpow_le_rpow_of_exponent_le hz'.le hexp
+  apply hs.trans
+  have htailbound : 2*rows.card*(Pset.card*Ct*(1+‖θ‖)^degreeTail*
+        ((Ideal.absNorm (∏ b,G.ideal b):ℝ)*QK*QP)*(Z^δ)^(-(Adecay:ℝ))*(familyRawScale G s X QK QP^2)⁻¹)^2≤
+      (2*Ct^2*cusp^4)*(1+‖θ‖)^deg*Z^(F₀-3*cstar/16-O₀/2) := by
+    calc
+      _ = (2*Ct^2*(1+‖θ‖)^(degreeTail*2))*
+          (rows.card*(Pset.card*((Ideal.absNorm (∏ b,G.ideal b):ℝ)*QK*QP)*
+            (Z^δ)^(-(Adecay:ℝ))*(familyRawScale G s X QK QP^2)⁻¹)^2) := by rw [pow_mul];ring
+      _ ≤ (2*Ct^2*(1+‖θ‖)^(degreeTail*2))*(cusp^4*Z^(-saving)) := by
+        exact mul_le_mul_of_nonneg_left ht (by positivity)
+      _ ≤ (2*Ct^2*(1+‖θ‖)^deg)*(cusp^4*Z^(F₀-3*cstar/16-O₀/2)) := by gcongr
+      _ = _ := by ring
+  have hmain : Cm*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2)≤
+      Cm*(1+‖θ‖)^deg*Z^(F₀-3*cstar/16-O₀/2) := by gcongr
+  apply (add_le_add hmain htailbound).trans
+  have hp : 0≤(1+‖θ‖)^deg*Z^(F₀-3*cstar/16-O₀/2) := by positivity
+  nlinarith only [hp]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+def fullRaySector (N : Eis) (rows : Finset (Ideal Eis)) (r : Eis⧸Ideal.span {N^2}) : Finset (Ideal Eis) :=
+  rows.filter (fun K => Ideal.Quotient.mk (Ideal.span {N^2}) (primaryIdealGenerator K)=r)
+
+lemma mem_fullRaySector (N : Eis) (rows : Finset (Ideal Eis)) (r : Eis⧸Ideal.span {N^2}) (K : Ideal Eis) :
+    K∈fullRaySector N rows r ↔ K∈rows ∧ Ideal.Quotient.mk (Ideal.span {N^2}) (primaryIdealGenerator K)=r :=
+  Finset.mem_filter
+
+lemma sum_fullRaySectors {M : Type*} [AddCommMonoid M] (N : Eis)
+    [Fintype (Eis⧸Ideal.span {N^2})] (rows : Finset (Ideal Eis)) (f : Ideal Eis→M) :
+    (∑ r : Eis⧸Ideal.span {N^2}, ∑ K∈fullRaySector N rows r,f K)=∑ K∈rows,f K :=
+  Finset.sum_fiberwise rows (fun K => Ideal.Quotient.mk (Ideal.span {N^2}) (primaryIdealGenerator K)) f
+
+theorem full_ray_sector_energy (N : Eis) [Fintype (Eis⧸Ideal.span {N^2})]
+    (rows Pset : Finset (Ideal Eis)) (f : Ideal Eis→Ideal Eis→ℂ) (E : ℝ)
+    (hE : ∀ r p : Eis⧸Ideal.span {N^2},
+      (∑ K∈fullRaySector N rows r, ‖∑ P∈fullRaySector N Pset p,f K P‖^2)≤ E) :
+    (∑ K∈rows,‖∑ P∈Pset,f K P‖^2)≤(Fintype.card (Eis⧸Ideal.span {N^2}):ℝ)^3*E := by
+  rw [←sum_fullRaySectors N rows (fun K => ‖∑ P∈Pset,f K P‖^2)]
+  calc
+    _ ≤ ∑ r : Eis⧸Ideal.span {N^2}, (Fintype.card (Eis⧸Ideal.span {N^2}):ℝ)^2*E := by
+      apply Finset.sum_le_sum
+      intro r hr
+      have hh := weighted_finite_row_energy_uniform (Finset.univ : Finset (Eis⧸Ideal.span {N^2}))
+        (fullRaySector N rows r) (fun _ => (1:ℂ))
+        (fun p K => ∑ P∈fullRaySector N Pset p,f K P) E (fun p _ => hE r p)
+      simp only [one_mul,norm_one,Finset.sum_const,Finset.card_univ,nsmul_eq_mul,mul_one] at hh
+      have he : (∑ K∈fullRaySector N rows r, ‖∑ P∈Pset,f K P‖^2)=
+          ∑ K∈fullRaySector N rows r, ‖∑ p : Eis⧸Ideal.span {N^2},∑ P∈fullRaySector N Pset p,f K P‖^2 := by
+        apply Finset.sum_congr rfl
+        intro K hK
+        rw [sum_fullRaySectors]
+      rw [he]
+      exact hh
+    _ = _ := by simp only [Finset.sum_const,Finset.card_univ,nsmul_eq_mul];ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe u v
+variable {φ : Type u} {σ : Type v} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+lemma sector_arithmetic_prescribed (F : PrimeFamily φ) (rows Pset : Finset (Ideal Eis))
+    (S : Ideal Eis→PrimeFamily σ) (hrows : ∀ K∈rows,Admissible K)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property) (S P.val)).generator N a c mode)
+    (hcommon : ∀ (x y : SourcePair rows Pset),
+      (D x.val.1 x.val.2 x.property).fixedFactor=(D y.val.1 y.val.2 y.property).fixedFactor ∧
+      ∀ u m n b,actualCuspColumn (D x.val.1 x.val.2 x.property) s hc u m n b=
+        actualCuspColumn (D y.val.1 y.val.2 y.property) s hc u m n b)
+    (D0 : ControlledStratumArithmetic F.generator N a c mode) :
+    ∃ E : SectorArithmetic (N:=N) F rows Pset S hrows s hc,E.completion=D := by
+  by_cases hn : Nonempty (SourcePair rows Pset)
+  · let x0 : SourcePair rows Pset := Classical.choice hn
+    exact ⟨{
+      referenceIndex := φ⊕(PrimeIndex x0.val.1.val⊕σ)
+      referencePrimes := F.reflected x0.val.1.val (hrows x0.val.1.val x0.val.1.property) (S x0.val.2.val)
+      referenceArithmetic := D x0.val.1 x0.val.2 x0.property
+      completion := D
+      fixedFactor_eq := fun K P hp => (hcommon ⟨(K,P),hp⟩ x0).1
+      cuspColumn_eq := fun K P hp => (hcommon ⟨(K,P),hp⟩ x0).2
+    },rfl⟩
+  · let F0 : PrimeFamily (ULift.{v} φ) := ⟨fun x => F.ideal x.down,fun x => F.maximal x.down,fun x => F.good x.down⟩
+    let e : ULift.{v} φ ≃ φ := Equiv.ulift
+    let D0' := reindexControlled D0 e
+    exact ⟨{
+      referenceIndex := ULift.{v} φ
+      referencePrimes := F0
+      referenceArithmetic := D0'
+      completion := D
+      fixedFactor_eq := fun K P hp => (hn ⟨⟨(K,P),hp⟩⟩).elim
+      cuspColumn_eq := fun K P hp => (hn ⟨⟨(K,P),hp⟩⟩).elim
+    },rfl⟩
+
+theorem exists_global_sector_completion (F : PrimeFamily φ) (rows Pset : Finset (Ideal Eis))
+    (S : Ideal Eis→PrimeFamily σ) (hrows : ∀ K∈rows,Admissible K)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (hN : (9:Eis)*c∣N)
+    (hbase : if mode then lambda^2∣a-1 else lambda^2∣c-1)
+    (hac : IsCoprime a c) (hF : Pairwise (Function.onFun IsCoprime F.ideal))
+    (hNF : ∀ f,IsCoprime (Ideal.span {N}) (F.ideal f))
+    (hrowcop : ∀ K∈rows,(∀ f,IsCoprime (F.ideal f) K) ∧ IsCoprime (Ideal.span {N}) K)
+    (hprod : ∀ P∈Pset,(∏ i,(S P).ideal i)=P)
+    (hScop : ∀ P∈Pset,Pairwise (Function.onFun IsCoprime (F.sum (S P)).ideal))
+    (hSN : ∀ P∈Pset,∀ i,IsCoprime (Ideal.span {N}) ((S P).ideal i)) :
+    ∃ D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property) (S P.val)).generator N a c mode,
+    ∀ r p : Eis⧸Ideal.span {N^2},
+    ∃ E : SectorArithmetic (N:=N) F (fullRaySector N rows r) (fullRaySector N Pset p) S
+      (fun K hK => hrows K (Finset.mem_filter.mp hK).1) s hc,
+    ∀ (K : fullRaySector N rows r) (P : fullRaySector N Pset p) hp,
+      E.completion K P hp=D ⟨K.val,(Finset.mem_filter.mp K.property).1⟩
+        ⟨P.val,(Finset.mem_filter.mp P.property).1⟩ hp := by
+  obtain ⟨Dpair,κ,A,_,_,hκ,hA⟩ := exists_source_pair_templates F rows Pset S hrows hprod N a c mode s hc
+    hN hbase hac hF hNF hrowcop hScop hSN
+  let D := fun (K : rows) (P : Pset) (hp : IsCoprime K.val P.val) => Dpair ⟨(K,P),hp⟩
+  refine ⟨D,?_⟩
+  intro r p
+  let Ds := fun (K : fullRaySector N rows r) (P : fullRaySector N Pset p) (hp : IsCoprime K.val P.val) =>
+    D ⟨K.val,(Finset.mem_filter.mp K.property).1⟩ ⟨P.val,(Finset.mem_filter.mp P.property).1⟩ hp
+  have hh (x y : SourcePair (fullRaySector N rows r) (fullRaySector N Pset p)) :
+      (Ds x.val.1 x.val.2 x.property).fixedFactor=(Ds y.val.1 y.val.2 y.property).fixedFactor ∧
+      ∀ u m n b,actualCuspColumn (Ds x.val.1 x.val.2 x.property) s hc u m n b=
+        actualCuspColumn (Ds y.val.1 y.val.2 y.property) s hc u m n b := by
+    have hsector (x : SourcePair (fullRaySector N rows r) (fullRaySector N Pset p)) :
+        separateSector N (primaryIdealGenerator x.val.1.val) (primaryIdealGenerator x.val.2.val)=(r,p) :=
+      Prod.ext (Finset.mem_filter.mp x.val.1.property).2 (Finset.mem_filter.mp x.val.2.property).2
+    let lift (z : SourcePair (fullRaySector N rows r) (fullRaySector N Pset p)) :
+        SourcePair rows Pset :=
+      ⟨(⟨z.val.1.val, (Finset.mem_filter.mp z.val.1.property).1⟩,
+        ⟨z.val.2.val, (Finset.mem_filter.mp z.val.2.property).1⟩), z.property⟩
+    constructor
+    · dsimp only [Ds,D]
+      exact (hκ (lift x)).trans ((congrArg κ ((hsector x).trans (hsector y).symm)).trans (hκ (lift y)).symm)
+    · intro u m n b
+      dsimp only [Ds,D]
+      exact (hA (lift x) u m n b).trans
+        ((congrArg (fun q => A q u m n b) ((hsector x).trans (hsector y).symm)).trans
+          (hA (lift y) u m n b).symm)
+  obtain ⟨D0⟩ := F.exists_controlled N a c mode hc hN hbase hac hF hNF
+  obtain ⟨E,hE⟩ := sector_arithmetic_prescribed F (fullRaySector N rows r) (fullRaySector N Pset p) S
+    (fun K hK => hrows K (Finset.mem_filter.mp hK).1) s hc Ds hh D0
+  refine ⟨E,?_⟩
+  intro K P hp
+  rw [hE]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+lemma sum_subtype_dite {α : Type*} [Fintype α] (p : α→Prop) (f : ∀ x,p x→ℂ) :
+    (∑ x : {x // p x},f x.val x.property)=∑ x,if h:p x then f x h else 0 := by
+  have hh := Fintype.sum_subtype_add_sum_subtype p (fun x => if h:p x then f x h else 0)
+  have hz : (∑ x : {x // ¬p x},if h:p x.val then f x.val h else 0)=0 := by
+    apply Finset.sum_eq_zero
+    intro x hx
+    exact dif_neg x.property
+  rw [hz,add_zero] at hh
+  simpa only [Subtype.property,dif_pos] using hh
+
+def literalPairEntry (F : PrimeFamily φ) (rows Pset : Finset (Ideal Eis))
+    (S : Ideal Eis→PrimeFamily σ) (hrows : ∀ K∈rows,Admissible K) (jF : φ→ℕ)
+    (D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property) (S P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (θ X : ℝ) (r aw : Ideal Eis→ℂ) (K P : Ideal Eis) : ℂ :=
+  if hK:K∈rows then if hP:P∈Pset then if hp:IsCoprime K P then
+    r K*aw P*mixedReflectedValue (D ⟨K,hK⟩ ⟨P,hP⟩ hp) s
+      (F.reflected K (hrows K hK) (S P)).generator_ne_zero hc
+      (F.reflected K (hrows K hK) (S P)).generator_good (reflectedExponent jF)
+      (slotIndices φ (PrimeIndex K) σ) (CompletedHeight.normTwistedSource W θ) X
+  else 0 else 0 else 0
+
+lemma literalWholeRow_eq_pairs (F : PrimeFamily φ) (rows Pset : Finset (Ideal Eis))
+    (S : Ideal Eis→PrimeFamily σ) (hrows : ∀ K∈rows,Admissible K) (jF : φ→ℕ)
+    (D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property) (S P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (θ X : ℝ) (r aw : Ideal Eis→ℂ) (K : rows) :
+    literalWholeRow F K.val (hrows K.val K.property) S jF Pset (D K) s hc W θ X r aw=
+      ∑ P∈Pset,literalPairEntry F rows Pset S hrows jF D s hc W θ X r aw K.val P := by
+  let f := fun (P : Pset) (hp : IsCoprime K.val P.val) => r K.val*aw P.val*
+    mixedReflectedValue (D K P hp) s (F.reflected K.val (hrows K.val K.property) (S P.val)).generator_ne_zero hc
+      (F.reflected K.val (hrows K.val K.property) (S P.val)).generator_good (reflectedExponent jF)
+      (slotIndices φ (PrimeIndex K.val) σ) (CompletedHeight.normTwistedSource W θ) X
+  change (∑ P : {P : Pset // IsCoprime K.val P.val},f P.val P.property)=_
+  rw [sum_subtype_dite (fun P : Pset => IsCoprime K.val P.val) f,
+    ←Finset.sum_coe_sort Pset (literalPairEntry F rows Pset S hrows jF D s hc W θ X r aw K.val)]
+  apply Finset.sum_congr rfl
+  intro P hP
+  simp only [literalPairEntry,dif_pos K.property,dif_pos P.property,f]
+
+lemma literalPairEntry_restrict (F : PrimeFamily φ) (rows Pset rows' Pset' : Finset (Ideal Eis))
+    (hrow : rows'⊆rows) (hP : Pset'⊆Pset) (S : Ideal Eis→PrimeFamily σ)
+    (hrows : ∀ K∈rows,Admissible K) (jF : φ→ℕ)
+    (D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property) (S P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (E : SectorArithmetic (N:=N) F rows' Pset' S (fun K hK => hrows K (hrow hK)) s hc)
+    (hE : ∀ (K : rows') (P : Pset') hp,E.completion K P hp=D ⟨K.val,hrow K.property⟩ ⟨P.val,hP P.property⟩ hp)
+    (W : ℝ→ℂ) (θ X : ℝ) (r aw : Ideal Eis→ℂ) (K P : Ideal Eis) (hK : K∈rows') (hp : P∈Pset') :
+    literalPairEntry F rows' Pset' S (fun K hK => hrows K (hrow hK)) jF E.completion s hc W θ X r aw K P=
+      literalPairEntry F rows Pset S hrows jF D s hc W θ X r aw K P := by
+  simp only [literalPairEntry,dif_pos hK,dif_pos hp,dif_pos (hrow hK),dif_pos (hP hp)]
+  by_cases hcop : IsCoprime K P
+  · simp only [dif_pos hcop,hE]
+  · simp only [dif_neg hcop]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+lemma fullRaySector_subset (N : Eis) (rows : Finset (Ideal Eis)) (r : Eis⧸Ideal.span {N^2}) :
+    fullRaySector N rows r⊆rows := Finset.filter_subset _ _
+
+theorem literal_global_sector_energy [Fintype (Eis⧸Ideal.span {N^2})]
+    (F : PrimeFamily φ) (rows Pset : Finset (Ideal Eis))
+    (S : Ideal Eis→PrimeFamily σ) (hrows : ∀ K∈rows,Admissible K) (jF : φ→ℕ)
+    (D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property) (S P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (θ X : ℝ) (r aw : Ideal Eis→ℂ) (B : ℝ)
+    (hsector : ∀ r₀ p₀ : Eis⧸Ideal.span {N^2},
+      ∃ E : SectorArithmetic (N:=N) F (fullRaySector N rows r₀) (fullRaySector N Pset p₀) S
+        (fun K hK => hrows K (fullRaySector_subset N rows r₀ hK)) s hc,
+        (∀ (K : fullRaySector N rows r₀) (P : fullRaySector N Pset p₀) hp,
+          E.completion K P hp=D ⟨K.val,(fullRaySector_subset N rows r₀ K.property)⟩
+            ⟨P.val,(fullRaySector_subset N Pset p₀ P.property)⟩ hp) ∧
+        (∑ K : fullRaySector N rows r₀,‖literalWholeRow F K.val
+          (hrows K.val (fullRaySector_subset N rows r₀ K.property)) S jF (fullRaySector N Pset p₀)
+          (E.completion K) s hc W θ X r aw‖^2)≤ B) :
+    (∑ K : rows,‖literalWholeRow F K.val (hrows K.val K.property) S jF Pset
+      (D K) s hc W θ X r aw‖^2)≤(Fintype.card (Eis⧸Ideal.span {N^2}):ℝ)^3*B := by
+  let f := literalPairEntry F rows Pset S hrows jF D s hc W θ X r aw
+  have hs (r₀ p₀ : Eis⧸Ideal.span {N^2}) :
+      (∑ K∈fullRaySector N rows r₀,‖∑ P∈fullRaySector N Pset p₀,f K P‖^2)≤ B := by
+    obtain ⟨E,hE,hbound⟩ := hsector r₀ p₀
+    have he : (∑ K : fullRaySector N rows r₀,‖literalWholeRow F K.val
+          (hrows K.val (fullRaySector_subset N rows r₀ K.property)) S jF (fullRaySector N Pset p₀)
+          (E.completion K) s hc W θ X r aw‖^2)=
+        ∑ K∈fullRaySector N rows r₀,‖∑ P∈fullRaySector N Pset p₀,f K P‖^2 := by
+      let fl := literalPairEntry F (fullRaySector N rows r₀) (fullRaySector N Pset p₀) S
+        (fun K hK => hrows K (fullRaySector_subset N rows r₀ hK)) jF E.completion s hc W θ X r aw
+      calc
+        _ = ∑ K : fullRaySector N rows r₀,‖∑ P∈fullRaySector N Pset p₀,fl K.val P‖^2 := by
+          apply Finset.sum_congr rfl
+          intro K hK
+          apply congrArg (fun z : ℂ => ‖z‖^2)
+          exact literalWholeRow_eq_pairs F (fullRaySector N rows r₀) (fullRaySector N Pset p₀) S
+            (fun K hK => hrows K (fullRaySector_subset N rows r₀ hK)) jF E.completion s hc W θ X r aw K
+        _ = ∑ K∈fullRaySector N rows r₀,‖∑ P∈fullRaySector N Pset p₀,fl K P‖^2 :=
+          Finset.sum_coe_sort _ (fun K => ‖∑ P∈fullRaySector N Pset p₀,fl K P‖^2)
+        _ = _ := by
+          apply Finset.sum_congr rfl
+          intro K hK
+          apply congrArg (fun z : ℂ => ‖z‖^2)
+          apply Finset.sum_congr rfl
+          intro P hP
+          exact literalPairEntry_restrict F rows Pset (fullRaySector N rows r₀) (fullRaySector N Pset p₀)
+            (fullRaySector_subset N rows r₀) (fullRaySector_subset N Pset p₀) S hrows jF D s hc E hE W θ X r aw K P hK hP
+    rw [←he]
+    exact hbound
+  have hh := full_ray_sector_energy N rows Pset f B hs
+  have he : (∑ K : rows,‖literalWholeRow F K.val (hrows K.val K.property) S jF Pset
+      (D K) s hc W θ X r aw‖^2)=∑ K∈rows,‖∑ P∈Pset,f K P‖^2 := by
+    calc
+      _ = ∑ K : rows,‖∑ P∈Pset,f K.val P‖^2 := by
+        apply Finset.sum_congr rfl
+        intro K hK
+        exact congrArg (fun z : ℂ => ‖z‖^2) (literalWholeRow_eq_pairs F rows Pset S hrows jF D s hc W θ X r aw K)
+      _ = _ := Finset.sum_coe_sort rows (fun K => ‖∑ P∈Pset,f K P‖^2)
+  rw [he]
+  exact hh
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem original_global_full_budget_uniform_degree
+    (ε : ℝ) (hε : 0<ε) (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (ρ : ℝ) (hρ : 0<ρ) (η : ℝ) (hηpos : 0<η)
+    (κ δ Lscale Lpool : ℝ) (hκ : 0<κ) (hδL : 0≤δ+Lscale) (hLpool : 0≤ Lpool)
+    (Lcap saving : ℝ) (hδ : 0<δ) :
+    ∃ (degree : ℕ), ∀ {Nlevel a c₀ : Eis} {mode : Bool} [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c₀ mode)) (hc₀ : c₀≠0)
+    (_hNlevel : (9:Eis)*c₀∣Nlevel)
+    (_hbase : if mode then lambda^2∣a-1 else lambda^2∣c₀-1)
+    (_hac : IsCoprime a c₀),
+     ∃ (C Z₀ : ℝ), 0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ], ∀ (J I F B R Q₀ : Ideal Eis) (_hJ : J≠0) (_hI : I≠0) (_hF : F≠0) (_hB : B≠0) (_hR : R≠0),
+      rowPowerfulPart J=rowPowerfulPart I → rowMaskPart J (B*F*R)=rowMaskPart I (B*F*R) →
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot : ℝ),
+      Z₀≤ Z → 0< Ck → 0< CO → 0< CH → 0< Cf → 0< X → 0< QK → 0< QP →
+      (Ideal.absNorm I:ℝ)≤ Ck*Z^M →
+      Z^O₀/CO≤(Ideal.absNorm (rowPowerfulPart I):ℝ) →
+      Z^H/CH≤(Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ) →
+      (Ideal.absNorm F:ℝ)≤ Cf*Z^V →
+      Real.log (CH*Ck*CO)/Real.log Z≤η →
+      Real.log (widthConstant B Ck CO CH Cf)/Real.log Z≤η →
+      CanonicalMargins F₀ M (normWidth Z R) z₀ margin → F₀=N+V →
+      Nstar=N-3*hhat → V≤ d → hhat≤ d+η →
+      H=Real.logb Z QK → za=Real.logb Z (QP/2) → Nstar=Real.logb Z X →
+      0≤ M → 0≤ O₀ → 0≤ za → za≤ z₀ →
+      0< cstar → cstar/2≤ margin → d≤ cstar/200 →
+      η≤ cstar/1000 → δ+η≤ cstar/1000 → π≤ cstar/1000 →
+      QK≤ Z^Lrow → (QP/2)≤ Z^Lslot →
+      Real.logb Z 16≤η → ε*(Lrow+Lslot+2*(δ+Lscale+η))+η/2≤π →
+      X⁻¹≤ Z^Lcap → QK≤ Z^Lcap → QP≤ Z^Lcap → -saving≤ F₀-3*cstar/16-O₀/2 →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let j := fun b : A => completedLocalExponent J F b.val.val
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lcap →
+      (familyRawScale G s X QK QP)⁻¹≤ Z^Lscale →
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lpool → κ+ρ*Lpool≤ cstar/16 →
+    ∀ (rows Pset : Finset (Ideal Eis)) (S : Ideal Eis→PrimeFamily σ)
+      (hrows : ∀ K∈rows,Admissible K),
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ P∈Pset,(∏ b,(S P).ideal b)=P) →
+      (∀ P∈Pset,Pairwise (Function.onFun IsCoprime (G.sum (S P)).ideal)) →
+      (∀ P∈Pset,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (S P)).ideal b)) →
+      (∀ P∈Pset,∀ b,ringChar (Eis⧸(G.sum (S P)).ideal b)≠2) →
+    ∃ D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property) (S P.val)).generator Nlevel a c₀ mode,
+    ∀ (θ : ℝ) (r aw : Ideal Eis→ℂ),
+      1≤ QK → 2≤ QP →
+      (∀ K∈rows,QK/2≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤ QK) →
+      (∀ P∈Pset,CubicSieve.Admissible P ∧ QP/2≤(Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ)≤ QP) →
+      (∀ K∈rows,‖r K‖≤1) → (∀ P∈Pset,‖aw P‖≤1) →
+      (∑ K : rows,‖literalWholeRow G K.val (hrows K.val K.property) S j Pset
+        (D K) s hc₀ W θ X r aw‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2) := by
+  obtain ⟨degree,hu⟩ := original_sector_full_budget_uniform_degree
+    ε hε lo hi hlo W hWs hW ρ hρ η hηpos κ δ Lscale Lpool hκ hδL hLpool Lcap saving hδ
+  refine ⟨degree,?_⟩
+  intro Nlevel a c₀ mode _ s hc₀ hNlevel hbase hac
+  obtain ⟨C,Z₀,hC,hZ₀,henergy⟩ := hu (Nlevel:=Nlevel) (a:=a) (c₀:=c₀) (mode:=mode) s hc₀ hNlevel hbase hac
+  let q := (Fintype.card (Eis⧸Ideal.span {Nlevel^2}):ℝ)
+  have hq : 0≤ q := Nat.cast_nonneg _
+  refine ⟨q^3*C+1,Z₀,by positivity,hZ₀,?_⟩
+  intro σ _ J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    hZ hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hz hzcap hc hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+  dsimp only
+  intro hFcap hscap hpool hsmall rows Pset S hrows hGN hGchar hrowcop hprod hScop hSN hSchar
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  let j := fun b : A => completedLocalExponent J F b.val.val
+  have hpair := (poolPrimeFamily J (B*F*R) Q₀).restrict_pairwise (poolPrimeFamily_pairwise J (B*F*R) Q₀) A
+  obtain ⟨D,hD⟩ := exists_global_sector_completion G rows Pset S hrows s hc₀ hNlevel hbase hac hpair hGN
+    hrowcop hprod hScop (fun P hP b => hSN P hP (Sum.inr b))
+  refine ⟨D,?_⟩
+  intro θ r aw hqk hqp hKr hPr hr haw
+  have hzpos : 0< Z := lt_trans zero_lt_one (lt_of_lt_of_le hZ₀ hZ)
+  have hs := literal_global_sector_energy G rows Pset S hrows j D s hc₀ W θ X r aw
+    (C*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2)) (by
+      intro r₀ p₀
+      obtain ⟨E,hE⟩ := hD r₀ p₀
+      refine ⟨E,hE,?_⟩
+      exact henergy J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+        Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+        hZ hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+        heH heza heN hM hO hz hzcap hc hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+        hFcap hscap hpool hsmall (fullRaySector Nlevel rows r₀) (fullRaySector Nlevel Pset p₀) S
+        (fun K hK => hrows K (Finset.mem_filter.mp hK).1) E hGN hGchar
+        (fun K hK => hrowcop K (Finset.mem_filter.mp hK).1)
+        (fun P hP => hprod P (Finset.mem_filter.mp hP).1)
+        (fun P hP => hScop P (Finset.mem_filter.mp hP).1)
+        (fun P hP => hSN P (Finset.mem_filter.mp hP).1)
+        (fun P hP => hSchar P (Finset.mem_filter.mp hP).1)
+        θ r aw hqk hqp
+        (fun K hK => hKr K (Finset.mem_filter.mp hK).1)
+        (fun P hP => hPr P (Finset.mem_filter.mp hP).1)
+        (fun K hK => hr K (Finset.mem_filter.mp hK).1)
+        (fun P hP => haw P (Finset.mem_filter.mp hP).1))
+  apply hs.trans
+  change q^3*(C*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2))≤ _
+  have hp : 0≤(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2) := by positivity
+  nlinarith only [hp]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseMoment
+open scoped BigOperators Classical
+open CanonicalQuadraticSieve CompletedGauss
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def slotTupleProduct (p : ι → Ideal Eis) : Ideal Eis := ∏ i, p i
+
+theorem slotTupleProduct_injective_on
+    (L : ι → Finset (Ideal Eis)) (hL : Pairwise (fun i j => Disjoint (L i) (L j)))
+    (hp : ∀ i, ∀ P ∈ L i, Prime P) :
+    Set.InjOn (slotTupleProduct (ι := ι)) {p | ∀ i, p i ∈ L i} := by
+  intro p hpL q hqL he
+  funext i
+  change (∏ i, p i) = ∏ i, q i at he
+  have hdiv : p i ∣ ∏ j, q j := by
+    rw [← he]
+    exact Finset.dvd_prod_of_mem p (Finset.mem_univ i)
+  obtain ⟨j, hj, hd⟩ := ((hp i (p i) (hpL i)).dvd_finsetProd_iff q).mp hdiv
+  have hpq : p i = q j := associated_iff_eq.mp
+    ((hp i (p i) (hpL i)).associated_of_dvd (hp j (q j) (hqL j)) hd)
+  have hij : i = j := by
+    by_contra hne
+    exact Finset.disjoint_left.mp (hL hne) (hpL i) (hpq.symm ▸ hqL j)
+  simpa only [← hij] using hpq
+
+omit [DecidableEq ι] in
+theorem slotTupleProduct_admissible
+    (L : ι → Finset (Ideal Eis)) (hL : Pairwise (fun i j => Disjoint (L i) (L j)))
+    (hp : ∀ i, ∀ P ∈ L i, Prime P)
+    (hgen : ∀ i, ∀ P ∈ L i, primaryIdealGenerator P ≠ 0)
+    (p : ι → Ideal Eis) (hpL : ∀ i, p i ∈ L i) :
+    CubicSieve.Admissible (slotTupleProduct p) := by
+  constructor
+  · apply Finset.squarefree_prod_of_pairwise_isCoprime
+    · intro i hi j hj hij
+      have hpi := hp i (p i) (hpL i)
+      have hpj := hp j (p j) (hpL j)
+      let : (p i).IsMaximal := (Ideal.isPrime_of_prime hpi).isMaximal hpi.ne_zero
+      let : (p j).IsMaximal := (Ideal.isPrime_of_prime hpj).isMaximal hpj.ne_zero
+      apply (Ideal.isCoprime_of_isMaximal ?_).isRelPrime
+      intro he
+      exact Finset.disjoint_left.mp (hL hij) (hpL i) (he.symm ▸ hpL j)
+    · intro i hi
+      exact (hp i (p i) (hpL i)).squarefree
+  · change primaryIdealGeneratorHom (∏ i, p i) ≠ 0
+    rw [map_prod]
+    exact Finset.prod_ne_zero_iff.mpr (fun i _ => hgen i (p i) (hpL i))
+
+def slotProductCoefficient (tuples : Finset (ι → Ideal Eis))
+    (a : (ι → Ideal Eis) → ℂ) (P : Ideal Eis) : ℂ :=
+  ∑ p ∈ tuples, if slotTupleProduct p = P then a p else 0
+
+omit [DecidableEq ι] in
+theorem slotProductCoefficient_at_product
+    (tuples : Finset (ι → Ideal Eis))
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (ι → Ideal Eis)))
+    (a : (ι → Ideal Eis) → ℂ) (p : ι → Ideal Eis) (hp : p ∈ tuples) :
+    slotProductCoefficient tuples a (slotTupleProduct p) = a p := by
+  unfold slotProductCoefficient
+  rw [Finset.sum_eq_single p]
+  · simp
+  · intro q hq hqp
+    exact if_neg (fun he => hqp (hinj hq hp he))
+  · exact fun hn => (hn hp).elim
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+def tupleRepresentative (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (P : Ideal Eis) : σ→Ideal Eis :=
+  if h : ∃ p∈tuples, slotTupleProduct p=P then h.choose else hne.choose
+
+omit [DecidableEq σ] in
+lemma tupleRepresentative_mem (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (P : Ideal Eis) : tupleRepresentative tuples hne P∈tuples := by
+  unfold tupleRepresentative
+  split
+  next h => exact h.choose_spec.1
+  next h => exact hne.choose_spec
+
+omit [DecidableEq σ] in
+lemma tupleRepresentative_product (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (P : Ideal Eis) (hP : P∈tuples.image slotTupleProduct) :
+    slotTupleProduct (tupleRepresentative tuples hne P)=P := by
+  have h : ∃ p∈tuples, slotTupleProduct p=P := Finset.mem_image.mp hP
+  simp only [tupleRepresentative,dif_pos h]
+  exact h.choose_spec.2
+
+omit [DecidableEq σ] in
+lemma tupleRepresentative_at_product (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)))
+    (p : σ→Ideal Eis) (hp : p∈tuples) :
+    tupleRepresentative tuples hne (slotTupleProduct p)=p := by
+  exact hinj (tupleRepresentative_mem tuples hne _) hp
+    (tupleRepresentative_product tuples hne _ (Finset.mem_image.mpr ⟨p,hp,rfl⟩))
+
+def tuplePrimeFamily (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (hmax : ∀ p∈tuples, ∀ i, (p i).IsMaximal)
+    (hgood : ∀ p∈tuples, ∀ i, lambda∉p i) (P : Ideal Eis) : PrimeFamily σ where
+  ideal := tupleRepresentative tuples hne P
+  maximal := hmax _ (tupleRepresentative_mem tuples hne P)
+  good := hgood _ (tupleRepresentative_mem tuples hne P)
+
+omit [DecidableEq σ] in
+lemma tuplePrimeFamily_product (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (hmax : ∀ p∈tuples, ∀ i, (p i).IsMaximal)
+    (hgood : ∀ p∈tuples, ∀ i, lambda∉p i) (P : Ideal Eis)
+    (hP : P∈tuples.image slotTupleProduct) :
+    (∏ i, (tuplePrimeFamily tuples hne hmax hgood P).ideal i)=P :=
+  tupleRepresentative_product tuples hne P hP
+
+omit [DecidableEq σ] in
+lemma tuplePrimeFamily_at_product (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (hmax : ∀ p∈tuples, ∀ i, (p i).IsMaximal)
+    (hgood : ∀ p∈tuples, ∀ i, lambda∉p i)
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)))
+    (p : σ→Ideal Eis) (hp : p∈tuples) :
+    (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p)).ideal=p :=
+  tupleRepresentative_at_product tuples hne hinj p hp
+
+lemma tuple_product_injective (L : σ→Finset (Ideal Eis))
+    (hL : Pairwise (fun i j => Disjoint (L i) (L j)))
+    (hp : ∀ i, ∀ P∈L i, Prime P) (tuples : Finset (σ→Ideal Eis))
+    (hT : ∀ p∈tuples, ∀ i, p i∈L i) :
+    Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)) :=
+  (slotTupleProduct_injective_on L hL hp).mono hT
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+def slotChoiceSplit (L : σ→Finset (Ideal Eis)) (T : Finset σ) :
+    (∀ i, L i)≃(∀ i : T, L i.val)×(∀ i : {i // i∉T}, L i.val) :=
+  Equiv.piEquivPiSubtypeProd (fun i => i∈T) (fun i => L i)
+
+omit [Fintype σ] in
+lemma slotChoiceSplit_active (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (a : ∀ i : T, L i.val) (b : ∀ i : {i // i∉T}, L i.val) (i : T) :
+    (slotChoiceSplit L T).symm (a,b) i.val=a i := by
+  simp only [slotChoiceSplit,Equiv.piEquivPiSubtypeProd,Equiv.coe_fn_symm_mk,dif_pos i.property]
+
+omit [Fintype σ] in
+lemma slotChoiceSplit_inactive (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (a : ∀ i : T, L i.val) (b : ∀ i : {i // i∉T}, L i.val) (i : {i // i∉T}) :
+    (slotChoiceSplit L T).symm (a,b) i.val=b i := by
+  simp only [slotChoiceSplit,Equiv.piEquivPiSubtypeProd,Equiv.coe_fn_symm_mk,dif_neg i.property]
+
+lemma slot_choice_inactive_weight (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (p : ∀ i, L i) :
+    (∏ i∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (p i).val:ℂ)⁻¹)=
+      ∏ i : {i // i∉T}, (Ideal.absNorm ((slotChoiceSplit L T p).2 i).val:ℂ)⁻¹ := by
+  exact Finset.prod_subtype (Finset.univ\T) (fun i => by simp)
+    (fun i => (Ideal.absNorm (p i).val:ℂ)⁻¹)
+
+theorem sum_slot_choices (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (H : (∀ i, L i)→ℂ) :
+    (∑ p : ∀ i, L i, (∏ i∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (p i).val:ℂ)⁻¹)*H p)=
+    ∑ b : ∀ i : {i // i∉T}, L i.val,
+      (∏ i : {i // i∉T}, (Ideal.absNorm (b i).val:ℂ)⁻¹)*
+        ∑ a : ∀ i : T, L i.val, H ((slotChoiceSplit L T).symm (a,b)) := by
+  simp_rw [slot_choice_inactive_weight L T]
+  rw [← (slotChoiceSplit L T).symm.sum_comp]
+  simp only [Equiv.apply_symm_apply,Fintype.sum_prod_type]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro b hb
+  rw [Finset.mul_sum]
+
+lemma slot_choice_coprime_split (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (a : ∀ i : T, L i.val) (b : ∀ i : {i // i∉T}, L i.val) (K : Ideal Eis) :
+    IsCoprime K (∏ i, ((slotChoiceSplit L T).symm (a,b) i).val) ↔
+      IsCoprime K (∏ i : T, (a i).val) ∧ IsCoprime K (∏ i : {i // i∉T}, (b i).val) := by
+  simp only [IsCoprime.prod_right_iff,Finset.mem_univ,forall_const]
+  constructor
+  · intro h
+    constructor
+    · intro i
+      simpa only [slotChoiceSplit_active] using h i.val
+    · intro i
+      simpa only [slotChoiceSplit_inactive] using h i.val
+  · rintro ⟨ha,hb⟩ i
+    by_cases hi : i∈T
+    · rw [slotChoiceSplit_active L T a b ⟨i,hi⟩]
+      exact ha ⟨i,hi⟩
+    · rw [slotChoiceSplit_inactive L T a b ⟨i,hi⟩]
+      exact hb ⟨i,hi⟩
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ : Type*} [Fintype σ] [DecidableEq σ]
+
+omit [Fintype σ] in
+lemma slot_choice_fixed_split (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (a : ∀ i : T,L i.val) (b : ∀ i : {i // i∉T},L i.val) (F : φ→Ideal Eis) :
+    (∀ j i,((slotChoiceSplit L T).symm (a,b) i).val≠F j) ↔
+      (∀ j,∀ i : T,(a i).val≠F j) ∧ (∀ j,∀ i : {i // i∉T},(b i).val≠F j) := by
+  constructor
+  · intro h
+    constructor
+    · intro j i
+      simpa only [slotChoiceSplit_active] using h j i.val
+    · intro j i
+      simpa only [slotChoiceSplit_inactive] using h j i.val
+  · rintro ⟨ha,hb⟩ j i
+    by_cases hi : i∈T
+    · rw [slotChoiceSplit_active L T a b ⟨i,hi⟩]
+      exact ha j ⟨i,hi⟩
+    · rw [slotChoiceSplit_inactive L T a b ⟨i,hi⟩]
+      exact hb j ⟨i,hi⟩
+
+lemma slot_choice_mask_split (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (a : ∀ i : T,L i.val) (b : ∀ i : {i // i∉T},L i.val)
+    (F : φ→Ideal Eis) (K : Ideal Eis) :
+    (IsCoprime K (∏ i,((slotChoiceSplit L T).symm (a,b) i).val) ∧
+      ∀ j i,((slotChoiceSplit L T).symm (a,b) i).val≠F j) ↔
+    (IsCoprime K (∏ i : {i // i∉T},(b i).val) ∧ ∀ j,∀ i : {i // i∉T},(b i).val≠F j) ∧
+      (IsCoprime K (∏ i : T,(a i).val) ∧ ∀ j,∀ i : T,(a i).val≠F j) := by
+  rw [slot_choice_coprime_split,slot_choice_fixed_split]
+  tauto
+
+def fixedTupleWeight (F : φ→Ideal Eis) (a : σ→Ideal Eis) (w : ℂ) : ℂ :=
+  if ∀ j i,a i≠F j then w else 0
+
+omit [Fintype σ] [DecidableEq σ] in
+lemma fixedTupleWeight_norm (F : φ→Ideal Eis) (a : σ→Ideal Eis) (w : ℂ) :
+    ‖fixedTupleWeight F a w‖≤‖w‖ := by
+  unfold fixedTupleWeight
+  split
+  · exact le_rfl
+  · simp
+
+lemma split_masked_column (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (a : ∀ i : T,L i.val) (b : ∀ i : {i // i∉T},L i.val)
+    (F : φ→Ideal Eis) (K : Ideal Eis) (w v : ℂ) :
+    (if IsCoprime K (∏ i,((slotChoiceSplit L T).symm (a,b) i).val) ∧
+      ∀ j i,((slotChoiceSplit L T).symm (a,b) i).val≠F j then w*v else 0)=
+    if IsCoprime K (∏ i : {i // i∉T},(b i).val) ∧ ∀ j,∀ i : {i // i∉T},(b i).val≠F j then
+      (if IsCoprime K (∏ i : T,(a i).val) then fixedTupleWeight F (fun i : T => (a i).val) w*v else 0)
+    else 0 := by
+  simp only [slot_choice_mask_split]
+  simp only [fixedTupleWeight]
+  split_ifs <;> simp_all
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ : Type*} [Fintype σ] [DecidableEq σ]
+
+def supportedSlotChoices (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis) (K : Ideal Eis) :=
+  {p : ∀ i,L i // IsCoprime K (∏ i,(p i).val) ∧ ∀ j i,(p i).val≠F j}
+
+instance supportedSlotChoices_fintype (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis) (K : Ideal Eis) :
+    Fintype (supportedSlotChoices L F K) := inferInstanceAs (Fintype {_p : ∀ i,L i // _})
+
+def supportedSlotSplit (L : σ→Finset (Ideal Eis)) (T : Finset σ) (F : φ→Ideal Eis) (K : Ideal Eis) :
+    supportedSlotChoices L F K ≃
+      supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K ×
+        supportedSlotChoices (fun i : T => L i.val) F K where
+  toFun p :=
+    let q := slotChoiceSplit L T p.val
+    have h := (slot_choice_mask_split L T q.1 q.2 F K).mp (by simpa only [q,Prod.mk.eta,Equiv.symm_apply_apply] using p.property)
+    (⟨q.2,h.1⟩,⟨q.1,h.2⟩)
+  invFun q := ⟨(slotChoiceSplit L T).symm (q.2.val,q.1.val),
+    (slot_choice_mask_split L T q.2.val q.1.val F K).mpr ⟨q.1.property,q.2.property⟩⟩
+  left_inv p := by
+    apply Subtype.ext
+    exact (slotChoiceSplit L T).symm_apply_apply p.val
+  right_inv q := by
+    apply Prod.ext <;> apply Subtype.ext
+    · exact congrArg Prod.snd ((slotChoiceSplit L T).apply_symm_apply (q.2.val,q.1.val))
+    · exact congrArg Prod.fst ((slotChoiceSplit L T).apply_symm_apply (q.2.val,q.1.val))
+
+theorem sum_supported_slot_choices (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (F : φ→Ideal Eis) (K : Ideal Eis) (H : supportedSlotChoices L F K→ℂ) :
+    (∑ p : supportedSlotChoices L F K,
+      (∏ i∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (p.val i).val:ℂ)⁻¹)*H p)=
+    ∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K,
+      (∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*
+        ∑ a : supportedSlotChoices (fun i : T => L i.val) F K,
+          H ((supportedSlotSplit L T F K).symm (b,a)) := by
+  rw [←(supportedSlotSplit L T F K).symm.sum_comp]
+  rw [Fintype.sum_prod_type]
+  apply Finset.sum_congr rfl
+  intro b hb
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro a ha
+  congr 1
+  change (∏ i∈(Finset.univ:Finset σ)\T,
+    (Ideal.absNorm (((slotChoiceSplit L T).symm (a.val,b.val)) i).val:ℂ)⁻¹)=_
+  rw [slot_choice_inactive_weight,Equiv.apply_symm_apply]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+lemma slotProductCoefficient_norm (tuples : Finset (σ→Ideal Eis))
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)))
+    (aw : (σ→Ideal Eis)→ℂ) (haw : ∀ p∈tuples,‖aw p‖≤1)
+    (P : Ideal Eis) (hP : P∈tuples.image slotTupleProduct) :
+    ‖slotProductCoefficient tuples aw P‖≤1 := by
+  obtain ⟨p,hp,rfl⟩ := Finset.mem_image.mp hP
+  rw [slotProductCoefficient_at_product tuples hinj aw p hp]
+  exact haw p hp
+
+def activeTupleReflectedRow
+    (F : PrimeFamily φ) (rows : Finset (Ideal Eis))
+    (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+    (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+    (hrows : ∀ K∈rows,Admissible K) (jF : φ→ℕ)
+    (D : ∀ K : rows,∀ P : tuples.image slotTupleProduct,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property)
+        (tuplePrimeFamily tuples hne hmax hgood P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (θ X : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ) (K : rows) : ℂ :=
+    ∑ p : tuples,if hp:IsCoprime K.val (slotTupleProduct p.val) then
+      r K.val*aw p.val*mixedReflectedValue
+        (D K ⟨slotTupleProduct p.val,Finset.mem_image.mpr ⟨p.val,p.property,rfl⟩⟩ hp) s
+        (F.reflected K.val (hrows K.val K.property) (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val))).generator_ne_zero hc
+        (F.reflected K.val (hrows K.val K.property) (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val))).generator_good
+        (reflectedExponent jF) (slotIndices φ (PrimeIndex K.val) σ)
+        (CompletedHeight.normTwistedSource W θ) X else 0
+
+theorem literalWholeRow_eq_active_tuples
+    (F : PrimeFamily φ) (rows : Finset (Ideal Eis))
+    (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+    (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+    (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)))
+    (hrows : ∀ K∈rows,Admissible K) (jF : φ→ℕ)
+    (D : ∀ K : rows,∀ P : tuples.image slotTupleProduct,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (F.reflected K.val (hrows K.val K.property)
+        (tuplePrimeFamily tuples hne hmax hgood P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (θ X : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ) (K : rows) :
+    literalWholeRow F K.val (hrows K.val K.property) (tuplePrimeFamily tuples hne hmax hgood)
+      jF (tuples.image slotTupleProduct) (D K) s hc W θ X r (slotProductCoefficient tuples aw)=
+    ∑ p : tuples,if hp:IsCoprime K.val (slotTupleProduct p.val) then
+      r K.val*aw p.val*mixedReflectedValue
+        (D K ⟨slotTupleProduct p.val,Finset.mem_image.mpr ⟨p.val,p.property,rfl⟩⟩ hp) s
+        (F.reflected K.val (hrows K.val K.property) (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val))).generator_ne_zero hc
+        (F.reflected K.val (hrows K.val K.property) (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val))).generator_good
+        (reflectedExponent jF) (slotIndices φ (PrimeIndex K.val) σ)
+        (CompletedHeight.normTwistedSource W θ) X else 0 := by
+  rw [literalWholeRow_eq_pairs F rows _ _ hrows jF D s hc W θ X r _ K,Finset.sum_image hinj]
+  rw [←Finset.sum_coe_sort tuples]
+  apply Finset.sum_congr rfl
+  intro p hp
+  simp only [literalPairEntry,dif_pos K.property,
+    dif_pos (Finset.mem_image.mpr ⟨p.val,p.property,rfl⟩),
+    slotProductCoefficient_at_product tuples hinj aw p.val p.property]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+lemma PrimeFamily.eq_of_ideal_eq {ι : Type*} (P Q : PrimeFamily ι) (h : P.ideal=Q.ideal) : P=Q := by
+  cases P
+  cases Q
+  cases h
+  rfl
+
+def slotChoiceFamily (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+    (p : ∀ i,L i) : PrimeFamily σ where
+  ideal i := (p i).val
+  maximal i := hmax i _ (p i).property
+  good i := hgood i _ (p i).property
+
+omit [Fintype σ] in
+lemma slotChoiceFamily_active (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+    (T : Finset σ) (a : ∀ i : T,L i.val) (b : ∀ i : {i // i∉T},L i.val) :
+    (slotChoiceFamily L hmax hgood ((slotChoiceSplit L T).symm (a,b))).restrict T=
+      slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) a := by
+  apply PrimeFamily.eq_of_ideal_eq
+  funext i
+  exact congrArg Subtype.val (slotChoiceSplit_active L T a b i)
+
+lemma slot_coefficient_split (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (w : ∀ i,L i→ℂ) (a : ∀ i : T,L i.val) (b : ∀ i : {i // i∉T},L i.val) :
+    (∏ i,w i ((slotChoiceSplit L T).symm (a,b) i))=
+      (∏ i : T,w i.val (a i))*(∏ i : {i // i∉T},w i.val (b i)) := by
+  have he := Fintype.prod_subtype_mul_prod_subtype (fun i : σ => i∈T)
+    (fun i => w i ((slotChoiceSplit L T).symm (a,b) i))
+  simp only [slotChoiceSplit_active,slotChoiceSplit_inactive] at he
+  refine he.symm.trans ?_
+  congr 1
+  apply Finset.prod_congr (by ext; simp only [Finset.mem_univ])
+  intro i hi
+  rfl
+
+omit [DecidableEq σ] in
+lemma slot_coefficient_norm (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ)
+    (hw : ∀ i P,‖w i P‖≤1) (p : ∀ i,L i) : ‖∏ i,w i (p i)‖≤1 := by
+  rw [norm_prod]
+  exact Finset.prod_le_one (fun i _ => norm_nonneg _) (fun i _ => hw i (p i))
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ]
+variable (tuples : Finset (σ→Ideal Eis))
+    (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+    (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+
+def memberTupleFamily (p : tuples) : PrimeFamily σ where
+  ideal := p.val
+  maximal := hmax p.val p.property
+  good := hgood p.val p.property
+
+lemma tuplePrimeFamily_at_member (hne : tuples.Nonempty)
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis))) (p : tuples) :
+    tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val)=memberTupleFamily tuples hmax hgood p := by
+  apply PrimeFamily.eq_of_ideal_eq
+  exact tuplePrimeFamily_at_product tuples hne hmax hgood hinj p.val p.property
+
+variable {N a c : Eis} {mode : Bool}
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (hne : tuples.Nonempty)
+    (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)))
+    (D : ∀ P : tuples.image slotTupleProduct,IsCoprime K P.val→
+      ControlledStratumArithmetic (F.reflected K hK (tuplePrimeFamily tuples hne hmax hgood P.val)).generator N a c mode)
+
+def memberTupleControlled (p : tuples) (hp : IsCoprime K (slotTupleProduct p.val)) :
+    ControlledStratumArithmetic (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator N a c mode :=
+  castControlled (congrArg (fun S => (F.reflected K hK S).generator)
+    (tuplePrimeFamily_at_member tuples hmax hgood hne hinj p))
+    (D ⟨slotTupleProduct p.val,Finset.mem_image.mpr ⟨p.val,p.property,rfl⟩⟩ hp)
+
+lemma memberTupleControlled_value (p : tuples) (hp : IsCoprime K (slotTupleProduct p.val))
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (j : φ→ℕ) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue (memberTupleControlled tuples hmax hgood F K hK hne hinj D p hp) s
+      (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator_ne_zero hc
+      (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator_good
+      (reflectedExponent j) (slotIndices φ (PrimeIndex K) σ) W X=
+    mixedReflectedValue (D ⟨slotTupleProduct p.val,Finset.mem_image.mpr ⟨p.val,p.property,rfl⟩⟩ hp) s
+      (F.reflected K hK (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val))).generator_ne_zero hc
+      (F.reflected K hK (tuplePrimeFamily tuples hne hmax hgood (slotTupleProduct p.val))).generator_good
+      (reflectedExponent j) (slotIndices φ (PrimeIndex K) σ) W X :=
+  mixedReflectedValue_cast _ _ s _ _ hc _ _ _ _ W X
+
+def memberTupleRow
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (j : φ→ℕ) (W : ℝ→ℂ) (θ X : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ) : ℂ :=
+    ∑ p : tuples,if hp:IsCoprime K (slotTupleProduct p.val) then
+      r K*aw p.val*mixedReflectedValue (memberTupleControlled tuples hmax hgood F K hK hne hinj D p hp) s
+        (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator_ne_zero hc
+        (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator_good
+        (reflectedExponent j) (slotIndices φ (PrimeIndex K) σ) (CompletedHeight.normTwistedSource W θ) X else 0
+
+theorem literalWholeRow_eq_member_tuples
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (j : φ→ℕ) (W : ℝ→ℂ) (θ X : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ) :
+    literalWholeRow F K hK (tuplePrimeFamily tuples hne hmax hgood) j
+      (tuples.image slotTupleProduct) D s hc W θ X r (slotProductCoefficient tuples aw)=
+    ∑ p : tuples,if hp:IsCoprime K (slotTupleProduct p.val) then
+      r K*aw p.val*mixedReflectedValue (memberTupleControlled tuples hmax hgood F K hK hne hinj D p hp) s
+        (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator_ne_zero hc
+        (F.reflected K hK (memberTupleFamily tuples hmax hgood p)).generator_good
+        (reflectedExponent j) (slotIndices φ (PrimeIndex K) σ) (CompletedHeight.normTwistedSource W θ) X else 0 := by
+  let hr : ∀ k∈({K}:Finset (Ideal Eis)),Admissible k := fun k hk => (Finset.mem_singleton.mp hk).symm ▸ hK
+  let Ds : ∀ k : ({K}:Finset (Ideal Eis)),∀ P : tuples.image slotTupleProduct,IsCoprime k.val P.val→
+      ControlledStratumArithmetic (F.reflected k.val (hr k.val k.property)
+        (tuplePrimeFamily tuples hne hmax hgood P.val)).generator N a c mode := by
+    intro k
+    rcases k with ⟨k,hk⟩
+    have hh := Finset.mem_singleton.mp hk
+    subst k
+    exact D
+  have he := literalWholeRow_eq_active_tuples F {K} tuples hne hmax hgood hinj
+    hr j Ds s hc W θ X r aw ⟨K,Finset.mem_singleton_self K⟩
+  convert he using 1
+  apply Finset.sum_congr rfl
+  intro p hp
+  by_cases hk : IsCoprime K (slotTupleProduct p.val)
+  · simp only [dif_pos hk]
+    rw [memberTupleControlled_value]
+  · simp only [dif_neg hk]
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem original_member_tuple_full_budget_uniform_degree
+    (ε : ℝ) (hε : 0<ε) (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (ρ : ℝ) (hρ : 0<ρ) (η : ℝ) (hηpos : 0<η)
+    (κ δ Lscale Lpool : ℝ) (hκ : 0<κ) (hδL : 0≤δ+Lscale) (hLpool : 0≤ Lpool)
+    (Lcap saving : ℝ) (hδ : 0<δ) :
+    ∃ (degree : ℕ), ∀ {Nlevel a c₀ : Eis} {mode : Bool} [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c₀ mode)) (hc₀ : c₀≠0)
+    (_hNlevel : (9:Eis)*c₀∣Nlevel)
+    (_hbase : if mode then lambda^2∣a-1 else lambda^2∣c₀-1)
+    (_hac : IsCoprime a c₀),
+     ∃ (C Z₀ : ℝ), 0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ], ∀ (J I F B R Q₀ : Ideal Eis) (_hJ : J≠0) (_hI : I≠0) (_hF : F≠0) (_hB : B≠0) (_hR : R≠0),
+      rowPowerfulPart J=rowPowerfulPart I → rowMaskPart J (B*F*R)=rowMaskPart I (B*F*R) →
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot : ℝ),
+      Z₀≤ Z → 0< Ck → 0< CO → 0< CH → 0< Cf → 0< X → 0< QK → 0< QP →
+      (Ideal.absNorm I:ℝ)≤ Ck*Z^M →
+      Z^O₀/CO≤(Ideal.absNorm (rowPowerfulPart I):ℝ) →
+      Z^H/CH≤(Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ) →
+      (Ideal.absNorm F:ℝ)≤ Cf*Z^V →
+      Real.log (CH*Ck*CO)/Real.log Z≤η →
+      Real.log (widthConstant B Ck CO CH Cf)/Real.log Z≤η →
+      CanonicalMargins F₀ M (normWidth Z R) z₀ margin → F₀=N+V →
+      Nstar=N-3*hhat → V≤ d → hhat≤ d+η →
+      H=Real.logb Z QK → za=Real.logb Z (QP/2) → Nstar=Real.logb Z X →
+      0≤ M → 0≤ O₀ → 0≤ za → za≤ z₀ →
+      0< cstar → cstar/2≤ margin → d≤ cstar/200 →
+      η≤ cstar/1000 → δ+η≤ cstar/1000 → π≤ cstar/1000 →
+      QK≤ Z^Lrow → (QP/2)≤ Z^Lslot →
+      Real.logb Z 16≤η → ε*(Lrow+Lslot+2*(δ+Lscale+η))+η/2≤π →
+      X⁻¹≤ Z^Lcap → QK≤ Z^Lcap → QP≤ Z^Lcap → -saving≤ F₀-3*cstar/16-O₀/2 →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let j := fun b : A => completedLocalExponent J F b.val.val
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lcap →
+      (familyRawScale G s X QK QP)⁻¹≤ Z^Lscale →
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lpool → κ+ρ*Lpool≤ cstar/16 →
+    ∀ (rows : Finset (Ideal Eis)) (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+      (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+      (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+      (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis))),
+      let S := tuplePrimeFamily tuples hne hmax hgood
+      let Pset := tuples.image slotTupleProduct
+      ∀ (hrows : ∀ K∈rows,Admissible K),
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ P∈Pset,(∏ b,(S P).ideal b)=P) →
+      (∀ P∈Pset,Pairwise (Function.onFun IsCoprime (G.sum (S P)).ideal)) →
+      (∀ P∈Pset,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (S P)).ideal b)) →
+      (∀ P∈Pset,∀ b,ringChar (Eis⧸(G.sum (S P)).ideal b)≠2) →
+    ∃ D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property) (S P.val)).generator Nlevel a c₀ mode,
+    ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+      1≤ QK → 2≤ QP →
+      (∀ K∈rows,QK/2≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤ QK) →
+      (∀ P∈Pset,CubicSieve.Admissible P ∧ QP/2≤(Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ)≤ QP) →
+      (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+      (∑ K : rows,‖memberTupleRow tuples hmax hgood G K.val (hrows K.val K.property) hne hinj (D K) s hc₀ j W θ X r aw‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2) := by
+  obtain ⟨degree,hu⟩ := original_global_full_budget_uniform_degree
+    ε hε lo hi hlo W hWs hW ρ hρ η hηpos κ δ Lscale Lpool hκ hδL hLpool Lcap saving hδ
+  refine ⟨degree,?_⟩
+  intro Nlevel a c₀ mode _ s hc₀ hNlevel hbase hac
+  obtain ⟨C,Z₀,hC,hZ₀,henergy⟩ := hu (Nlevel:=Nlevel) (a:=a) (c₀:=c₀) (mode:=mode) s hc₀ hNlevel hbase hac
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro σ _ _ J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    hZ hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hz hzcap hc hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+  dsimp only
+  intro hFcap hscap hpool hsmall rows tuples hne hmax hgood hinj
+    hrows hGN hGchar hrowcop hprod hScop hSN hSchar
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  let j := fun b : A => completedLocalExponent J F b.val.val
+  obtain ⟨D,hD⟩ := henergy J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    hZ hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hz hzcap hc hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+    hFcap hscap hpool hsmall rows (tuples.image slotTupleProduct) (tuplePrimeFamily tuples hne hmax hgood)
+    hrows hGN hGchar hrowcop hprod hScop hSN hSchar
+  refine ⟨D,?_⟩
+  intro θ r aw hqk hqp hKr hPr hr haw
+  have he := hD θ r (slotProductCoefficient tuples aw) hqk hqp hKr hPr hr
+    (fun P hP => slotProductCoefficient_norm tuples hinj aw haw P hP)
+  convert he using 1
+  apply Finset.sum_congr rfl
+  intro K hK
+  congr 2
+  exact (literalWholeRow_eq_member_tuples tuples hmax hgood G K.val (hrows K.val K.property) hne hinj (D K) s hc₀ j W θ X r aw).symm
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem original_member_geometry_uniform_uniform_degree
+    (ε : ℝ) (hε : 0<ε) (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (ρ : ℝ) (hρ : 0<ρ) (η : ℝ) (hηpos : 0<η)
+    (κ δ Lscale Lpool : ℝ) (hκ : 0<κ) (hδL : 0≤δ+Lscale) (hLpool : 0≤ Lpool)
+    (Lcap saving : ℝ) (hδ : 0<δ) :
+    ∃ (degree : ℕ), ∀ {Nlevel : Eis}, ∀
+    {γ : Type*} [Fintype γ] (a c₀ : γ→Eis) (mode : γ→Bool)
+    [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c₀ i) (mode i))) (hc₀ : ∀ i,c₀ i≠0)
+    (_hNlevel : ∀ i,(9:Eis)*c₀ i∣Nlevel)
+    (_hbase : ∀ i,if mode i then lambda^2∣a i-1 else lambda^2∣c₀ i-1)
+    (_hac : ∀ i,IsCoprime (a i) (c₀ i)),
+    ∃ (C Z₀ : ℝ), 0< C ∧ 1< Z₀ ∧
+    ∀ i : γ,
+      let a := a i
+      let c₀ := c₀ i
+      let mode := mode i
+      let s := s i
+      let hc₀ := hc₀ i
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ], ∀ (J I F B R Q₀ : Ideal Eis) (_hJ : J≠0) (_hI : I≠0) (_hF : F≠0) (_hB : B≠0) (_hR : R≠0),
+      rowPowerfulPart J=rowPowerfulPart I → rowMaskPart J (B*F*R)=rowMaskPart I (B*F*R) →
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot : ℝ),
+      Z₀≤ Z → 0< Ck → 0< CO → 0< CH → 0< Cf → 0< X → 0< QK → 0< QP →
+      (Ideal.absNorm I:ℝ)≤ Ck*Z^M →
+      Z^O₀/CO≤(Ideal.absNorm (rowPowerfulPart I):ℝ) →
+      Z^H/CH≤(Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ) →
+      (Ideal.absNorm F:ℝ)≤ Cf*Z^V →
+      Real.log (CH*Ck*CO)/Real.log Z≤η →
+      Real.log (widthConstant B Ck CO CH Cf)/Real.log Z≤η →
+      CanonicalMargins F₀ M (normWidth Z R) z₀ margin → F₀=N+V →
+      Nstar=N-3*hhat → V≤ d → hhat≤ d+η →
+      H=Real.logb Z QK → za=Real.logb Z (QP/2) → Nstar=Real.logb Z X →
+      0≤ M → 0≤ O₀ → 0≤ za → za≤ z₀ →
+      0< cstar → cstar/2≤ margin → d≤ cstar/200 →
+      η≤ cstar/1000 → δ+η≤ cstar/1000 → π≤ cstar/1000 →
+      QK≤ Z^Lrow → (QP/2)≤ Z^Lslot →
+      Real.logb Z 16≤η → ε*(Lrow+Lslot+2*(δ+Lscale+η))+η/2≤π →
+      X⁻¹≤ Z^Lcap → QK≤ Z^Lcap → QP≤ Z^Lcap → -saving≤ F₀-3*cstar/16-O₀/2 →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let j := fun b : A => completedLocalExponent J F b.val.val
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lcap →
+      (familyRawScale G s X QK QP)⁻¹≤ Z^Lscale →
+      (Ideal.absNorm (∏ b,G.ideal b):ℝ)≤ Z^Lpool → κ+ρ*Lpool≤ cstar/16 →
+    ∀ (rows : Finset (Ideal Eis)) (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+      (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+      (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+      (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis))),
+      let S := tuplePrimeFamily tuples hne hmax hgood
+      let Pset := tuples.image slotTupleProduct
+      ∀ (hrows : ∀ K∈rows,Admissible K),
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ P∈Pset,(∏ b,(S P).ideal b)=P) →
+      (∀ P∈Pset,Pairwise (Function.onFun IsCoprime (G.sum (S P)).ideal)) →
+      (∀ P∈Pset,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (S P)).ideal b)) →
+      (∀ P∈Pset,∀ b,ringChar (Eis⧸(G.sum (S P)).ideal b)≠2) →
+    ∃ D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property) (S P.val)).generator Nlevel a c₀ mode,
+    ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+      1≤ QK → 2≤ QP →
+      (∀ K∈rows,QK/2≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤ QK) →
+      (∀ P∈Pset,CubicSieve.Admissible P ∧ QP/2≤(Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ)≤ QP) →
+      (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+      (∑ K : rows,‖memberTupleRow tuples hmax hgood G K.val (hrows K.val K.property) hne hinj (D K) s hc₀ j W θ X r aw‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(F₀-3*cstar/16-O₀/2) := by
+  obtain ⟨degree,hu⟩ := original_member_tuple_full_budget_uniform_degree
+    ε hε lo hi hlo W hWs hW ρ hρ η hηpos κ δ Lscale Lpool hκ hδL hLpool Lcap saving hδ
+  refine ⟨degree,?_⟩
+  intro Nlevel γ _ a c₀ mode _ s hc₀ hNlevel hbase hac
+  have hb (i : γ) := hu (Nlevel:=Nlevel) (a:=a i) (c₀:=c₀ i) (mode:=mode i)
+    (s i) (hc₀ i) (hNlevel i) (hbase i) (hac i)
+  choose C Z₀ hC hZ₀ henergy using hb
+  let degreeAll := degree
+  let CAll := (∑ i,C i)+1
+  let ZAll := (∑ i,|Z₀ i|)+2
+  have hc (i : γ) : C i≤ CAll := by
+    have hh : C i≤∑ j,C j := Finset.single_le_sum (fun j _ => (hC j).le) (Finset.mem_univ i)
+    dsimp only [CAll]
+    linarith
+  have hz (i : γ) : Z₀ i≤ ZAll := by
+    have hh : |Z₀ i|≤∑ j,|Z₀ j| := Finset.single_le_sum (fun j _ => abs_nonneg (Z₀ j)) (Finset.mem_univ i)
+    have hh' := le_abs_self (Z₀ i)
+    dsimp only [ZAll]
+    linarith
+  have hCA : 0< CAll := by
+    have hh : 0≤∑ i,C i := Finset.sum_nonneg (fun i _ => (hC i).le)
+    dsimp only [CAll]
+    linarith
+  have hZA : 1< ZAll := by
+    have hh : 0≤∑ i,|Z₀ i| := Finset.sum_nonneg (fun i _ => abs_nonneg _)
+    dsimp only [ZAll]
+    linarith
+  refine ⟨CAll,ZAll,hCA,hZA,?_⟩
+  intro i
+  dsimp only
+  intro σ _ _ J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    hZ hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hzwidth hzcap hcstar hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+    hFcap hscap hpool hsmall rows tuples hne hmax hgood hinj hrows hGN hGchar hrowcop hprod hScop hSN hSchar
+  obtain ⟨D,hD⟩ := henergy i J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z F₀ N V M z₀ margin cstar O₀ H za Nstar hhat d π Ck CO CH Cf X QK QP Lrow Lslot
+    ((hz i).trans hZ) hCk hCO hCH hCf hX hQK hQP hk hpow hrow hf hlogH hlogT hinv hF₀ hscale hV hh
+    heH heza heN hM hO hzwidth hzcap hcstar hmargin hd hη hτ hπ hrowcap hslotcap hconst hbudget hXi hKcap hPcap hexp
+    hFcap hscap hpool hsmall rows tuples hne hmax hgood hinj hrows hGN hGchar hrowcop hprod hScop hSN hSchar
+  refine ⟨D,?_⟩
+  intro θ r aw hqk hqp hKr hPr hr haw
+  apply (hD θ r aw hqk hqp hKr hPr hr haw).trans
+  have hZpos : 0< Z := lt_trans zero_lt_one (lt_of_lt_of_le hZA hZ)
+  have hheight : 1≤1+‖θ‖ := by linarith [norm_nonneg θ]
+  apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg hZpos.le _)
+  exact mul_le_mul (hc i) (le_refl _) (by positivity) hCA.le
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma familyRawScale_inverse {φ : Type*} [Fintype φ] {a c : Eis} {mode : Bool}
+    (F : PrimeFamily φ) (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (X QK QP : ℝ) :
+    (familyRawScale F s X QK QP)⁻¹=
+      (27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c}):ℝ)^2)*
+        (Ideal.absNorm (∏ i,F.ideal i):ℝ)^2*QK^2*QP^2*X⁻¹ := by
+  unfold familyRawScale actualKernelCoefficient fixedKernelCoefficient
+  simp only [ramifiedScale,pow_zero,map_mul,map_one,Nat.cast_mul,Nat.cast_one,one_pow,mul_one]
+  simp only [div_eq_mul_inv,mul_inv_rev,inv_inv,mul_pow]
+  ring
+
+lemma familyRawScale_inverse_cap {φ : Type*} [Fintype φ] {a c : Eis} {mode : Bool}
+    (F : PrimeFamily φ) (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (Z X QK QP Lcap : ℝ) (hZ : 0< Z) (hX : 0< X) (hK : 0≤ QK) (hP : 0≤ QP)
+    (hFcap : (Ideal.absNorm (∏ i,F.ideal i):ℝ)≤ Z^Lcap)
+    (hKcap : QK≤ Z^Lcap) (hPcap : QP≤ Z^Lcap) (hXcap : X⁻¹≤ Z^Lcap) :
+    (familyRawScale F s X QK QP)⁻¹≤
+      (27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c}):ℝ)^2)*Z^(7*Lcap) := by
+  rw [familyRawScale_inverse]
+  calc
+    _ ≤ (27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c}):ℝ)^2)*
+        (Z^Lcap)^2*(Z^Lcap)^2*(Z^Lcap)^2*Z^Lcap := by gcongr
+    _ = (27*(sourceCuspScale s.index)^2*(Ideal.absNorm (Ideal.span {c}):ℝ)^2)*(Z^Lcap)^7 := by ring
+    _ = _ := by
+      rw [←Real.rpow_mul_natCast hZ.le]
+      congr 2
+      ring
+
+theorem geometry_source_scale_cap {γ : Type*} [Fintype γ]
+    (a c : γ→Eis) (mode : γ→Bool)
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c i) (mode i))) :
+    ∃ Z₀ : ℝ,1< Z₀ ∧ ∀ i : γ,∀ {φ : Type*} [Fintype φ] (F : PrimeFamily φ),
+      ∀ Z X QK QP Lcap : ℝ,Z₀≤ Z → 0< X → 0≤ QK → 0≤ QP →
+      (Ideal.absNorm (∏ j,F.ideal j):ℝ)≤ Z^Lcap → QK≤ Z^Lcap → QP≤ Z^Lcap → X⁻¹≤ Z^Lcap →
+      (familyRawScale F (s i) X QK QP)⁻¹≤ Z^(7*Lcap+1) := by
+  let b := fun i => 27*(sourceCuspScale (s i).index)^2*(Ideal.absNorm (Ideal.span {c i}):ℝ)^2
+  let Z₀ := (∑ i,b i)+2
+  have hb : ∀ i,0≤ b i := fun i => by dsimp only [b];positivity
+  have hz : 1< Z₀ := by
+    have hh := Finset.sum_nonneg (fun i (_ : i∈Finset.univ) => hb i)
+    dsimp only [Z₀]
+    linarith
+  refine ⟨Z₀,hz,?_⟩
+  intro i φ _ F Z X QK QP Lcap hZ hX hK hP hFc hKc hPc hXc
+  have hzpos : 0< Z := lt_trans zero_lt_one (lt_of_lt_of_le hz hZ)
+  have hc : b i≤ Z := by
+    have hh : b i≤∑ j,b j := Finset.single_le_sum (fun j _ => hb j) (Finset.mem_univ i)
+    dsimp only [Z₀] at hZ
+    linarith
+  apply (familyRawScale_inverse_cap F (s i) Z X QK QP Lcap hzpos hX hK hP hFc hKc hPc hXc).trans
+  calc
+    _ ≤ Z*Z^(7*Lcap) := mul_le_mul_of_nonneg_right hc (Real.rpow_nonneg hzpos.le _)
+    _ = _ := by rw [Real.rpow_add hzpos,Real.rpow_one];ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma canonical_mask_norm_cap (B F R : Ideal Eis) (Z V Q L : ℝ)
+    (hZ : 1≤ Z) (hB : (Ideal.absNorm B:ℝ)≤ Z)
+    (hF : (Ideal.absNorm F:ℝ)≤ Z^V) (hR : (Ideal.absNorm R:ℝ)≤ Z^Q)
+    (hV : V≤ L) (hQ : Q≤ L) :
+    (Ideal.absNorm (B*F*R):ℝ)≤ Z^(2*L+1) := by
+  have hz : 0< Z := lt_of_lt_of_le zero_lt_one hZ
+  rw [map_mul,map_mul,Nat.cast_mul,Nat.cast_mul]
+  calc
+    _ ≤ Z*Z^V*Z^Q := mul_le_mul
+      (mul_le_mul hB hF (Nat.cast_nonneg _) hz.le) hR (Nat.cast_nonneg _) (by positivity)
+    _ = Z^(1+V+Q) := by rw [Real.rpow_add hz,Real.rpow_add hz,Real.rpow_one]
+    _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+
+theorem canonical_actual_arithmetic_caps (L : ℝ) (hL : 0≤ L)
+    (J I B F R Q₀ : Ideal Eis) (hJ : J≠0) (hI : I≠0) (hB : B≠0) (hF : F≠0) (hR : R≠0)
+    (hpower : rowPowerfulPart J=rowPowerfulPart I)
+    (hmask : rowMaskPart J (B*F*R)=rowMaskPart I (B*F*R))
+    (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+    (Z M V Q z N hhat QK QP : ℝ) (hZ : 2≤ Z)
+    (hBn : (Ideal.absNorm B:ℝ)≤ Z)
+    (hIn : (Ideal.absNorm I:ℝ)≤ Z^M)
+    (hFn : (Ideal.absNorm F:ℝ)≤ Z^V)
+    (hRn : (Ideal.absNorm R:ℝ)≤ Z^Q)
+    (hM : M≤ L) (hV : V≤ L) (hQ : Q≤ L) (hz : z≤ L)
+    (hN : 0≤ N) (hh : hhat≤ L)
+    (hK : QK≤2*Z^M) (hP : QP≤2*Z^z) :
+    (Ideal.absNorm (∏ b : A,((poolPrimeFamily J (B*F*R) Q₀).restrict A).ideal b):ℝ)≤ Z^(4*L+2) ∧
+      QK≤ Z^(4*L+2) ∧ QP≤ Z^(4*L+2) ∧ (Z^(N-3*hhat))⁻¹≤ Z^(4*L+2) := by
+  have hZ1 : 1≤ Z := by linarith
+  have hZp : 0< Z := by linarith
+  have hmaskn := canonical_mask_norm_cap B F R Z V Q L hZ1 hBn hFn hRn hV hQ
+  have hfrozen := original_pool_restricted_cap J I (B*F*R) Q₀ hJ hI
+    (mul_ne_zero (mul_ne_zero hB hF) hR) hpower hmask A Z M (2*L+1) hZp hIn hmaskn
+  refine ⟨hfrozen.trans (Real.rpow_le_rpow_of_exponent_le hZ1 (by linarith)),?_,?_,?_⟩
+  · calc
+      QK ≤ 2*Z^M := hK
+      _ ≤ Z*Z^M := mul_le_mul_of_nonneg_right hZ (Real.rpow_nonneg hZp.le _)
+      _ = Z^(M+1) := by rw [Real.rpow_add hZp,Real.rpow_one];ring
+      _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hZ1 (by linarith)
+  · calc
+      QP ≤ 2*Z^z := hP
+      _ ≤ Z*Z^z := mul_le_mul_of_nonneg_right hZ (Real.rpow_nonneg hZp.le _)
+      _ = Z^(z+1) := by rw [Real.rpow_add hZp,Real.rpow_one];ring
+      _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hZ1 (by linarith)
+  · rw [←Real.rpow_neg hZp.le]
+    exact Real.rpow_le_rpow_of_exponent_le hZ1 (by linarith)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open InverseMoment InverseTerminalWidths
+noncomputable section
+
+theorem canonical_reflection_parameters (L c η : ℝ)
+    (hL : 0≤ L) (hc : 0< c) (hη : 0<η) (hη1 : η≤1) (hηc : η≤ c/100000) :
+    ∃ ε ρ κ δ π : ℝ,0<ε ∧ 0<ρ ∧ 0<κ ∧ 0<δ ∧
+      0≤δ+(7*L+1) ∧ η≤ c/1000 ∧ δ+η≤ c/1000 ∧ π≤ c/1000 ∧
+      ε*(L+L+2*(δ+(7*L+1)+η))+η/2≤π ∧ κ+ρ*L≤ c/16 := by
+  let ε := c/(100000*(L+1))
+  let ρ := c/(64*(L+1))
+  let κ := c/64
+  refine ⟨ε,ρ,κ,η,c/1000,div_pos hc (by positivity),div_pos hc (by positivity),
+    div_pos hc (by norm_num),hη,by positivity,by linarith,by linarith,le_refl _,?_,?_⟩
+  · have hep : 0≤ε := (div_pos hc (by positivity : 0<100000*(L+1))).le
+    have hed : ε*(L+1)=c/100000 := by dsimp [ε];field_simp
+    have hb : L+L+2*(η+(7*L+1)+η)≤22*(L+1) := by linarith
+    have hh := mul_le_mul_of_nonneg_left hb hep
+    have he22 : ε*(22*(L+1))=22*(c/100000) := by calc
+      _ = 22*(ε*(L+1)) := by ring
+      _ = _ := by rw [hed]
+    rw [he22] at hh
+    linarith
+  · have hrp : 0≤ρ := (div_pos hc (by positivity : 0<64*(L+1))).le
+    have hrd : ρ*(L+1)=c/64 := by dsimp [ρ];field_simp
+    have hb := mul_le_mul_of_nonneg_left (show L≤ L+1 by linarith) hrp
+    dsimp only [κ]
+    rw [hrd] at hb
+    linarith
+
+lemma canonical_reflected_target_positive (F M Q z margin c O : ℝ)
+    (h : CanonicalMargins F M Q z margin) (hM : 0≤ M) (hQ : 0≤ Q) (hz : 0≤ z)
+    (hc : 0< c) (hm : c/2≤ margin) (hO : O≤ M) :
+    0< F-3*c/16-O/2 := by
+  obtain ⟨hfirst,hsecond⟩ := h
+  linarith
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+def originalResidualRows (rows : Finset (Ideal Eis)) (R Q : Ideal Eis) : Finset (Ideal Eis) :=
+  (representativeRowFiber rows R Q).image (fun I => rowResidualPart I Q)
+
+lemma originalResidualRows_reconstruct (rows : Finset (Ideal Eis)) (R Q : Ideal Eis)
+    (hrows : ∀ I∈rows, I≠0) (K : Ideal Eis) (hK : K∈originalResidualRows rows R Q) :
+    reconstructFiberRow R Q K∈representativeRowFiber rows R Q ∧
+      rowResidualPart (reconstructFiberRow R Q K) Q=K := by
+  obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hK
+  have he := reconstructFiberRow_of_original rows R Q I hI (hrows I (Finset.mem_filter.mp hI).1)
+  rw [he]
+  exact ⟨hI,rfl⟩
+
+lemma originalResidualRows_range (rows : Finset (Ideal Eis)) (R Q : Ideal Eis)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Q) (X : ℝ)
+    (hrows : ∀ I∈rows, I≠0 ∧ (Ideal.absNorm I:ℝ)≤ X)
+    (K : Ideal Eis) (hK : K∈originalResidualRows rows R Q) :
+    Admissible K ∧ (Ideal.absNorm K:ℝ)≤
+      X/((Ideal.absNorm (rowPowerfulPart R):ℝ)*(Ideal.absNorm (rowMaskPart R Q):ℝ)) := by
+  obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hK
+  have h := mem_idealRange.mp (completedRowFiber_residual_range rows Q (rowPowerfulPart R)
+    (rowMaskPart R Q) hbad X hrows I hI)
+  exact ⟨(CanonicalQuadraticSieve.admissible_iff_native _).mpr h.1, h.2⟩
+
+theorem original_fiber_sum_reindex {M : Type*} [AddCommMonoid M]
+    (rows : Finset (Ideal Eis)) (R Q : Ideal Eis)
+    (hrows : ∀ I∈rows, I≠0) (f : Ideal Eis→M) :
+    (∑ I∈representativeRowFiber rows R Q,f I)=
+      ∑ K∈originalResidualRows rows R Q,f (reconstructFiberRow R Q K) := by
+  rw [originalResidualRows,Finset.sum_image (representativeRowFiber_injective rows R Q hrows)]
+  apply Finset.sum_congr rfl
+  intro I hI
+  rw [reconstructFiberRow_of_original rows R Q I hI (hrows I (Finset.mem_filter.mp hI).1)]
+
+theorem original_fiber_energy_reindex (rows : Finset (Ideal Eis)) (R Q : Ideal Eis)
+    (hrows : ∀ I∈rows, I≠0) (f : Ideal Eis→ℂ) :
+    (∑ I∈representativeRowFiber rows R Q,‖f I‖^2)=
+      ∑ K∈originalResidualRows rows R Q,‖f (reconstructFiberRow R Q K)‖^2 :=
+  original_fiber_sum_reindex rows R Q hrows (fun I => ‖f I‖^2)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ : Type*} [Fintype σ] [DecidableEq σ]
+
+def fixedSlotTupleSet (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis) : Finset (σ→Ideal Eis) :=
+  (Fintype.piFinset L).filter fun p => ∀ j i,p i≠F j
+
+lemma mem_fixedSlotTupleSet (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis) (p : σ→Ideal Eis) :
+    p∈fixedSlotTupleSet L F ↔ (∀ i,p i∈L i) ∧ ∀ j i,p i≠F j := by
+  simp only [fixedSlotTupleSet,Finset.mem_filter,Fintype.mem_piFinset]
+
+lemma fixedSlotTupleSet_product_injective (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hL : Pairwise (fun i j => Disjoint (L i) (L j))) (hprime : ∀ i,∀ P∈L i,Prime P) :
+    Set.InjOn slotTupleProduct (↑(fixedSlotTupleSet L F) : Set (σ→Ideal Eis)) :=
+  (slotTupleProduct_injective_on L hL hprime).mono (fun p hp => (mem_fixedSlotTupleSet L F p).mp hp |>.1)
+
+def supportedSlotTupleEquiv (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis) (K : Ideal Eis) :
+    supportedSlotChoices L F K ≃ {p : fixedSlotTupleSet L F // IsCoprime K (slotTupleProduct p.val)} where
+  toFun p := ⟨⟨fun i => (p.val i).val,(mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p.val i).property,p.property.2⟩⟩,p.property.1⟩
+  invFun p := ⟨fun i => ⟨p.val.val i,((mem_fixedSlotTupleSet L F _).mp p.val.property).1 i⟩,
+    ⟨p.property,((mem_fixedSlotTupleSet L F _).mp p.val.property).2⟩⟩
+  left_inv p := by
+    apply Subtype.ext
+    funext i
+    rfl
+  right_inv p := rfl
+
+def supportedSlotProductEquiv (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hL : Pairwise (fun i j => Disjoint (L i) (L j))) (hprime : ∀ i,∀ P∈L i,Prime P)
+    (K : Ideal Eis) :
+    supportedSlotChoices L F K ≃
+      {P : (fixedSlotTupleSet L F).image slotTupleProduct // IsCoprime K P.val} := by
+  let f := fun p : supportedSlotChoices L F K =>
+    (⟨⟨slotTupleProduct (fun i => (p.val i).val),Finset.mem_image.mpr
+      ⟨fun i => (p.val i).val,(mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p.val i).property,p.property.2⟩,rfl⟩⟩,p.property.1⟩ :
+      {P : (fixedSlotTupleSet L F).image slotTupleProduct // IsCoprime K P.val})
+  apply Equiv.ofBijective f
+  constructor
+  · intro p q he
+    have hv := congrArg (fun P => P.val.val) he
+    have hh := fixedSlotTupleSet_product_injective L F hL hprime
+      ((mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p.val i).property,p.property.2⟩)
+      ((mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (q.val i).property,q.property.2⟩) hv
+    apply Subtype.ext
+    funext i
+    exact Subtype.ext (congrFun hh i)
+  · intro P
+    obtain ⟨p,hp,he⟩ := Finset.mem_image.mp P.val.property
+    let q : supportedSlotChoices L F K := ⟨fun i => ⟨p i,((mem_fixedSlotTupleSet L F p).mp hp).1 i⟩,
+      ⟨by change IsCoprime K (slotTupleProduct p);rw [he];exact P.property,((mem_fixedSlotTupleSet L F p).mp hp).2⟩⟩
+    refine ⟨q,?_⟩
+    apply Subtype.ext
+    exact Subtype.ext he
+
+lemma supportedSlotProductEquiv_apply (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hL : Pairwise (fun i j => Disjoint (L i) (L j))) (hprime : ∀ i,∀ P∈L i,Prime P)
+    (K : Ideal Eis) (p : supportedSlotChoices L F K) :
+    ((supportedSlotProductEquiv L F hL hprime K) p).val.val=∏ i,(p.val i).val := rfl
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+def activeTupleDyad (tuples : Finset (σ→Ideal Eis)) (H : ℝ)
+    (i : Fin (columnDyadicLength H+1)) : Finset (σ→Ideal Eis) :=
+  tuples.filter fun p => divisorDyadicLabel H (slotTupleProduct p)=i
+
+omit [DecidableEq σ] in
+lemma sum_activeTupleDyads {A : Type*} [AddCommMonoid A]
+    (tuples : Finset (σ→Ideal Eis)) (H : ℝ) (f : (σ→Ideal Eis)→A) :
+    (∑ p∈tuples,f p)=∑ i : Fin (columnDyadicLength H+1),∑ p∈activeTupleDyad tuples H i,f p := by
+  exact (Finset.sum_fiberwise tuples (fun p => divisorDyadicLabel H (slotTupleProduct p)) f).symm
+
+omit [DecidableEq σ] in
+lemma activeTupleDyad_bounds (tuples : Finset (σ→Ideal Eis)) (H : ℝ)
+    (hn : ∀ p∈tuples,1≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤ H)
+    (i : Fin (columnDyadicLength H+1)) (p : σ→Ideal Eis) (hp : p∈activeTupleDyad tuples H i) :
+    divisorDyadicScale i.val≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧
+      (Ideal.absNorm (slotTupleProduct p):ℝ)≤2*divisorDyadicScale i.val := by
+  obtain ⟨hpt,he⟩ := Finset.mem_filter.mp hp
+  have hh := divisorDyadicLabel_bounds H (slotTupleProduct p) (hn p hpt).1 (hn p hpt).2
+  rw [he] at hh
+  constructor
+  · exact max_le (hn p hpt).1 hh.1.le
+  · have ht : (2:ℝ)^i.val/2≤ divisorDyadicScale i.val := le_max_right _ _
+    linarith [hh.2]
+
+omit [DecidableEq σ] in
+lemma activeTupleDyad_scale_le (tuples : Finset (σ→Ideal Eis)) (H : ℝ)
+    (hn : ∀ p∈tuples,1≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤ H)
+    (i : Fin (columnDyadicLength H+1)) (hi : (activeTupleDyad tuples H i).Nonempty) :
+    divisorDyadicScale i.val≤ H := by
+  obtain ⟨p,hp⟩ := hi
+  exact (activeTupleDyad_bounds tuples H hn i p hp).1.trans (hn p (Finset.mem_filter.mp hp).1).2
+
+omit [DecidableEq σ] in
+lemma activeTupleDyad_width (tuples : Finset (σ→Ideal Eis)) (H Z z : ℝ)
+    (hZ : 1< Z) (hH : H≤ Z^z)
+    (hn : ∀ p∈tuples,1≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤ H)
+    (i : Fin (columnDyadicLength H+1)) (hi : (activeTupleDyad tuples H i).Nonempty) :
+    0≤ Real.logb Z (divisorDyadicScale i.val) ∧ Real.logb Z (divisorDyadicScale i.val)≤ z := by
+  have hs := divisorDyadicScale_ge_one i.val
+  have hp : 0< divisorDyadicScale i.val := lt_of_lt_of_le zero_lt_one hs
+  constructor
+  · have hh := Real.logb_le_logb_of_le hZ zero_lt_one hs
+    simpa only [Real.logb_one] using hh
+  · have hh := Real.logb_le_logb_of_le hZ hp ((activeTupleDyad_scale_le tuples H hn i hi).trans hH)
+    rwa [Real.logb_rpow (lt_trans zero_lt_one hZ) (ne_of_gt hZ)] at hh
+omit [DecidableEq σ] in
+lemma slotTupleProduct_norm_bound (L : σ→Finset (Ideal Eis)) (H : σ→ℝ)
+    (hzero : ∀ i,∀ P∈L i,P≠0) (hH : ∀ i,∀ P∈L i,(Ideal.absNorm P:ℝ)≤ H i)
+    (p : σ→Ideal Eis) (hp : ∀ i,p i∈L i) :
+    1≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤∏ i,H i := by
+  have hn : slotTupleProduct p≠0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hzero i _ (hp i))
+  refine ⟨descentIdealNorm_one_le hn,?_⟩
+  change (Ideal.absNorm (∏ i,p i):ℝ)≤ _
+  rw [map_prod,Nat.cast_prod]
+  exact Finset.prod_le_prod (fun i _ => Nat.cast_nonneg _) (fun i _ => hH i _ (hp i))
+
+omit [DecidableEq σ] in
+lemma activeTupleDyad_energy_scale (tuples : Finset (σ→Ideal Eis)) (H Z z : ℝ)
+    (hZ : 1< Z) (hH : H≤ Z^z)
+    (hn : ∀ p∈tuples,1≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤ H)
+    (i : Fin (columnDyadicLength H+1)) (hi : (activeTupleDyad tuples H i).Nonempty) :
+    2≤2*divisorDyadicScale i.val ∧
+      0≤ Real.logb Z ((2*divisorDyadicScale i.val)/2) ∧
+      Real.logb Z ((2*divisorDyadicScale i.val)/2)≤ z ∧
+      ∀ p∈activeTupleDyad tuples H i,
+        (2*divisorDyadicScale i.val)/2≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧
+          (Ideal.absNorm (slotTupleProduct p):ℝ)≤2*divisorDyadicScale i.val := by
+  have hw := activeTupleDyad_width tuples H Z z hZ hH hn i hi
+  have hs := divisorDyadicScale_ge_one i.val
+  rw [show (2*divisorDyadicScale i.val)/2=divisorDyadicScale i.val by ring]
+  exact ⟨by linarith,hw.1,hw.2,activeTupleDyad_bounds tuples H hn i⟩
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma original_residual_norm_bounds (rows : Finset (Ideal Eis)) (J Q : Ideal Eis)
+    (hbad : ∀ P∈fixedBadPrimes,P∣Q) (U : ℝ)
+    (hrows : ∀ I∈rows,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ U) :
+    ∀ K∈originalResidualRows rows J Q,
+      1≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤
+        U/((Ideal.absNorm (rowPowerfulPart J):ℝ)*(Ideal.absNorm (rowMaskPart J Q):ℝ)) := by
+  intro K hK
+  have hr := originalResidualRows_range rows J Q hbad U hrows K hK
+  exact ⟨descentIdealNorm_one_le hr.1.1,hr.2⟩
+
+theorem original_residual_cell_representative (rows : Finset (Ideal Eis)) (J Q : Ideal Eis)
+    (hbad : ∀ P∈fixedBadPrimes,P∣Q) (U : ℝ)
+    (hrows : ∀ I∈rows,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ U)
+    (H : ℝ) (hH : H=U/((Ideal.absNorm (rowPowerfulPart J):ℝ)*(Ideal.absNorm (rowMaskPart J Q):ℝ)))
+    (i : Fin (columnDyadicLength H+1))
+    (hi : (divisorDyadicBin (originalResidualRows rows J Q) H i).Nonempty) :
+    ∃ I∈rows,I≠0 ∧ rowPowerfulPart J=rowPowerfulPart I ∧ rowMaskPart J Q=rowMaskPart I Q ∧
+      (Ideal.absNorm I:ℝ)≤ U ∧
+      divisorDyadicScale i.val≤(Ideal.absNorm (rowResidualPart I Q):ℝ) ∧
+      (Ideal.absNorm (rowResidualPart I Q):ℝ)≤2*divisorDyadicScale i.val := by
+  obtain ⟨K,hK⟩ := hi
+  have hKT := (Finset.mem_filter.mp hK).1
+  have hr := originalResidualRows_reconstruct rows J Q (fun I hI => (hrows I hI).1) K hKT
+  obtain ⟨hI,hp,hm⟩ := Finset.mem_filter.mp hr.1
+  refine ⟨reconstructFiberRow J Q K,hI,(hrows _ hI).1,hp.symm,hm.symm,(hrows _ hI).2,?_⟩
+  rw [hr.2]
+  apply divisorDyadicBin_bounds _ H _ i K hK
+  intro D hD
+  rw [hH]
+  exact original_residual_norm_bounds rows J Q hbad U hrows D hD
+
+lemma original_residual_cell_scale_cap (rows : Finset (Ideal Eis)) (J Q : Ideal Eis)
+    (hbad : ∀ P∈fixedBadPrimes,P∣Q) (U H Z L : ℝ)
+    (hrows : ∀ I∈rows,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ U)
+    (hH : H=U/((Ideal.absNorm (rowPowerfulPart J):ℝ)*(Ideal.absNorm (rowMaskPart J Q):ℝ)))
+    (hZ : 2≤ Z) (hcap : H≤ Z^L)
+    (i : Fin (columnDyadicLength H+1))
+    (hi : (divisorDyadicBin (originalResidualRows rows J Q) H i).Nonempty) :
+    1≤2*divisorDyadicScale i.val ∧ 2*divisorDyadicScale i.val≤ Z^(L+1) := by
+  have hz : 0< Z := by linarith
+  have hs := divisorDyadicScale_ge_one i.val
+  have hh : divisorDyadicScale i.val≤ H := by
+    apply divisorDyadicBin_scale_le _ H _ i hi
+    intro D hD
+    rw [hH]
+    exact original_residual_norm_bounds rows J Q hbad U hrows D hD
+  refine ⟨by linarith,?_⟩
+  calc
+    _ ≤ Z*Z^L := mul_le_mul hZ (hh.trans hcap) (by linarith) hz.le
+    _ = _ := by rw [Real.rpow_add hz,Real.rpow_one];ring
+
+lemma dyadic_canonical_lower (Z QK : ℝ) (hZ : 1< Z) (hQK : 0< QK)
+    (K : Ideal Eis) (hK : QK/2≤(Ideal.absNorm K:ℝ)) :
+    Z^(Real.logb Z QK)/2≤(Ideal.absNorm K:ℝ) := by
+  rw [Real.rpow_logb (lt_trans zero_lt_one hZ) (ne_of_gt hZ) hQK]
+  exact hK
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_member_geometry_uniform_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ)
+    (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η) (hη1 : η≤1) (hηc : η≤ cstar/100000) :
+    ∃ (degree : ℕ), ∀ {Nlevel : Eis}, ∀
+    {γ : Type*} [Fintype γ] (a c₀ : γ→Eis) (mode : γ→Bool)
+    [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c₀ i) (mode i))) (hc₀ : ∀ i,c₀ i≠0)
+    (_hNlevel : ∀ i,(9:Eis)*c₀ i∣Nlevel)
+    (_hbase : ∀ i,if mode i then lambda^2∣a i-1 else lambda^2∣c₀ i-1)
+    (_hac : ∀ i,IsCoprime (a i) (c₀ i))
+    (B : Ideal Eis) (_hB : B≠0),
+    ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ i : γ,
+      let a := a i
+      let c₀ := c₀ i
+      let mode := mode i
+      let s := s i
+      let hc₀ := hc₀ i
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (J I F R Q₀ : Ideal Eis)
+      (_hJ : J≠0) (_hI : I≠0) (_hF : F≠0) (_hR : R≠0),
+      rowPowerfulPart J=rowPowerfulPart I → rowMaskPart J (B*F*R)=rowMaskPart I (B*F*R) →
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z N V M z₀ margin O₀ hhat d QK QP : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm I:ℝ)≤ Z^M → (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm R:ℝ)≤ Z^L →
+      0≤ O₀ → O₀≤ M → Z^O₀≤(Ideal.absNorm (rowPowerfulPart I):ℝ) →
+      QK/2≤(Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ) →
+      1≤ QK → QK≤2*Z^M → 2≤ QP → QP/2≤ Z^z₀ →
+      CanonicalMargins (N+V) M (normWidth Z R) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let j := fun b : A => completedLocalExponent J F b.val.val
+    ∀ (rows : Finset (Ideal Eis)) (tuples : Finset (σ→Ideal Eis)) (hne : tuples.Nonempty)
+      (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+      (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+      (hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis))),
+      let S := tuplePrimeFamily tuples hne hmax hgood
+      let Pset := tuples.image slotTupleProduct
+      ∀ (hrows : ∀ K∈rows,Admissible K),
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ P∈Pset,(∏ b,(S P).ideal b)=P) →
+      (∀ P∈Pset,Pairwise (Function.onFun IsCoprime (G.sum (S P)).ideal)) →
+      (∀ P∈Pset,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (S P)).ideal b)) →
+      (∀ P∈Pset,∀ b,ringChar (Eis⧸(G.sum (S P)).ideal b)≠2) →
+    ∃ D : ∀ K : rows,∀ P : Pset,IsCoprime K.val P.val→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property) (S P.val)).generator Nlevel a c₀ mode,
+    ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+      1≤ QK → 2≤ QP →
+      (∀ K∈rows,QK/2≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤ QK) →
+      (∀ P∈Pset,CubicSieve.Admissible P ∧ QP/2≤(Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ)≤ QP) →
+      (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+      (∑ K : rows,‖memberTupleRow tuples hmax hgood G K.val (hrows K.val K.property) hne hinj (D K) s hc₀ j W θ (Z^(N-3*hhat)) r aw‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(N+V-3*cstar/16-O₀/2) := by
+  let Lcap := 4*L+2
+  have hLc : 0≤ Lcap := by dsimp [Lcap];positivity
+  obtain ⟨ε,ρ,κ,δ,π,hε,hρ,hκ,hδ,hδL,hηsmall,hδη,hπ,hbudget,hsmall⟩ :=
+    canonical_reflection_parameters Lcap cstar η hLc hcstar hη hη1 hηc
+  obtain ⟨degree,hu⟩ := original_member_geometry_uniform_uniform_degree
+    ε hε lo hi hlo W hWs hW ρ hρ η hη κ δ (7*Lcap+1) Lcap hκ hδL hLc Lcap 1 hδ
+  refine ⟨degree,?_⟩
+  intro Nlevel γ _ a c₀ mode _ s hc₀ hNlevel hbase hac B hB
+  obtain ⟨C,Z₁,hC,hZ₁,henergy⟩ := hu a c₀ mode s hc₀ hNlevel hbase hac
+  obtain ⟨Z₂,hZ₂,hscale⟩ := geometry_source_scale_cap a c₀ mode s
+  obtain ⟨Z₃,hZ₃,hwidth⟩ := width_error_threshold B hB 1 1 2 1 η
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) hη
+  obtain ⟨Z₄,hZ₄,hlog⟩ := constant_log_error 16 η (by norm_num) hη
+  let Z₀ := max Z₁ (max Z₂ (max Z₃ (max Z₄ (max 2 (Ideal.absNorm B:ℝ)))))
+  have hz1 : Z₁≤ Z₀ := le_max_left _ _
+  have hz2 : Z₂≤ Z₀ := (le_max_left _ _).trans (le_max_right _ _)
+  have hz3 : Z₃≤ Z₀ := (le_max_left _ _).trans ((le_max_right _ _).trans (le_max_right _ _))
+  have hz4 : Z₄≤ Z₀ := (le_max_left _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans (le_max_right _ _)))
+  have hz5 : max 2 (Ideal.absNorm B:ℝ)≤ Z₀ :=
+    (le_max_right _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans (le_max_right _ _)))
+  refine ⟨C,Z₀,hC,hZ₁.trans_le hz1,?_⟩
+  intro i
+  dsimp only
+  intro σ _ _ J I F R Q₀ hJ hI hF hR hpower hmask A
+    Z N V M z₀ margin O₀ hhat d QK QP hZ hN hM hMc hVc hzc hhc
+    hIn hFn hRn hO hOM hOn hKr hK1 hKc hP2 hPc hinv hmargin hVd hhd hd
+  have hZ1 : 1< Z := lt_of_lt_of_le hZ₁ (hz1.trans hZ)
+  have hZp : 0< Z := lt_trans zero_lt_one hZ1
+  have hZ2 : 2≤ Z := (le_max_left _ _).trans (hz5.trans hZ)
+  have hBn : (Ideal.absNorm B:ℝ)≤ Z := (le_max_right _ _).trans (hz5.trans hZ)
+  have hKp : 0< QK := lt_of_lt_of_le zero_lt_one hK1
+  have hPp : 0< QP := by linarith
+  have hPc' : QP≤2*Z^z₀ := by linarith
+  obtain ⟨hFc,hKcap,hPcap,hXi⟩ := canonical_actual_arithmetic_caps L hL
+    J I B F R Q₀ hJ hI hB hF hR hpower hmask A
+    Z M V L z₀ N hhat QK QP hZ2 hBn hIn hFn hRn hMc hVc (le_refl _) hzc hN hhc hKc hPc'
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  have hXp : 0< Z^(N-3*hhat) := Real.rpow_pos_of_pos hZp _
+  have hsc := hscale i G Z (Z^(N-3*hhat)) QK QP Lcap (hz2.trans hZ)
+    hXp hKp.le hPp.le hFc hKcap hPcap hXi
+  have hw := hwidth Z (hz3.trans hZ)
+  have hza : 0≤ Real.logb Z (QP/2) := Real.logb_nonneg hZ1 (by linarith)
+  have hzac : Real.logb Z (QP/2)≤ z₀ := by
+    have he := Real.logb_le_logb_of_le hZ1 (by linarith : 0< QP/2) hPc
+    rwa [Real.logb_rpow hZp (ne_of_gt hZ1)] at he
+  have hzt : 0≤ z₀ := hza.trans hzac
+  have ht := canonical_reflected_target_positive (N+V) M (normWidth Z R) z₀ margin cstar O₀
+    hinv hM (normWidth_nonneg Z hZ1 R hR) hzt hcstar hmargin hOM
+  have hc := henergy i (σ:=σ) J I F B R Q₀ hJ hI hF hB hR hpower hmask A
+    Z (N+V) N V M z₀ margin cstar O₀ (Real.logb Z QK) (Real.logb Z (QP/2))
+    (N-3*hhat) hhat d π 1 1 2 1 (Z^(N-3*hhat)) QK QP Lcap Lcap
+    (hz1.trans hZ) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hXp hKp hPp
+    (by simpa using hIn) (by simpa using hOn) (dyadic_canonical_lower Z QK hZ1 hKp _ hKr)
+    (by simpa using hFn) hw.1 hw.2 hinv rfl rfl hVd hhd rfl rfl
+    (by rw [Real.logb_rpow hZp (ne_of_gt hZ1)]) hM hO hza hzac hcstar hmargin hd
+    hηsmall hδη hπ hKcap (by linarith : QP/2≤ Z^Lcap)
+    (hlog Z (hz4.trans hZ)) hbudget hXi hKcap hPcap (by linarith : -1≤ N+V-3*cstar/16-O₀/2)
+    hFc hsc hFc hsmall
+  exact hc
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] [DecidableEq σ] {N a c : Eis} {mode : Bool}
+variable (G : PrimeFamily φ) (rows : Finset (Ideal Eis)) (hrows : ∀ K∈rows,Admissible K)
+    (tuples : Finset (σ→Ideal Eis)) (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+    (hgood : ∀ p∈tuples,∀ i,lambda∉p i) (Hrow Hslot : ℝ)
+
+omit [DecidableEq σ] in
+lemma activeTupleDyad_subset (i : Fin (columnDyadicLength Hslot+1)) : activeTupleDyad tuples Hslot i⊆tuples :=
+  Finset.filter_subset _ _
+
+lemma divisorDyadicBin_subset (i : Fin (columnDyadicLength Hrow+1)) : divisorDyadicBin rows Hrow i⊆rows :=
+  Finset.filter_subset _ _
+
+variable (C : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+    ∀ K : divisorDyadicBin rows Hrow i,∀ p : activeTupleDyad tuples Hslot j,
+      IsCoprime K.val (slotTupleProduct p.val)→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+        (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator N a c mode)
+
+def dyadicTupleControlled (K : rows) (p : tuples) (hp : IsCoprime K.val (slotTupleProduct p.val)) :
+    ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property)
+      (memberTupleFamily tuples hmax hgood p)).generator N a c mode :=
+  C (divisorDyadicLabel Hrow K.val) (divisorDyadicLabel Hslot (slotTupleProduct p.val))
+    ⟨K.val,Finset.mem_filter.mpr ⟨K.property,rfl⟩⟩ ⟨p.val,Finset.mem_filter.mpr ⟨p.property,rfl⟩⟩ hp
+
+omit [DecidableEq σ] in
+lemma dyadicTupleControlled_at (i : Fin (columnDyadicLength Hrow+1)) (j : Fin (columnDyadicLength Hslot+1))
+    (K : divisorDyadicBin rows Hrow i) (p : activeTupleDyad tuples Hslot j)
+    (hp : IsCoprime K.val (slotTupleProduct p.val)) :
+    dyadicTupleControlled G rows hrows tuples hmax hgood Hrow Hslot C
+      ⟨K.val,divisorDyadicBin_subset rows Hrow i K.property⟩
+      ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩ hp=C i j K p hp := by
+  rcases K with ⟨K,hK⟩
+  rcases p with ⟨p,hpT⟩
+  have hi := (Finset.mem_filter.mp hK).2
+  have hj := (Finset.mem_filter.mp hpT).2
+  subst i
+  subst j
+  rfl
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+lemma inactive_choices_mass (L : σ→Finset (Ideal Eis)) (T : Finset σ) :
+    (∑ b : ∀ i : {i // i∉T}, L i.val,
+      ‖∏ i : {i // i∉T}, (Ideal.absNorm (b i).val:ℂ)⁻¹‖)=
+    ∏ i : {i // i∉T}, ∑ P∈L i.val, (Ideal.absNorm P:ℝ)⁻¹ := by
+  simp only [norm_prod,norm_inv,Complex.norm_natCast]
+  refine (Fintype.prod_sum (fun (i : {i // i∉T}) (P : L i.val) => (Ideal.absNorm P.val:ℝ)⁻¹)).symm.trans ?_
+  apply Finset.prod_congr rfl
+  intro i hi
+  exact Finset.sum_coe_sort (L i.val) (fun P => (Ideal.absNorm P:ℝ)⁻¹)
+
+lemma inactive_choices_mass_bound (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (H : σ→ℝ) (hzero : ∀ i, ∀ P∈L i, P≠0)
+    (hH : ∀ i, ∀ P∈L i, (Ideal.absNorm P:ℝ)≤ H i) :
+    (∑ b : ∀ i : {i // i∉T}, L i.val,
+      ‖∏ i : {i // i∉T}, (Ideal.absNorm (b i).val:ℂ)⁻¹‖)≤
+      ∏ i : {i // i∉T}, (2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ) := by
+  rw [inactive_choices_mass]
+  apply Finset.prod_le_prod
+  · intro i hi
+    positivity
+  · intro i hi
+    simp only [← one_div]
+    apply (finite_inverse_norm_sum (L i.val) (H i.val) (hzero i.val) (hH i.val)).trans
+    exact mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+
+theorem original_inactive_choices_energy {κ : Type*}
+    (L : σ→Finset (Ideal Eis)) (T : Finset σ) (rows : Finset κ)
+    (H : σ→ℝ) (hzero : ∀ i, ∀ P∈L i, P≠0)
+    (hH : ∀ i, ∀ P∈L i, (Ideal.absNorm P:ℝ)≤ H i)
+    (f : (∀ i, L i)→κ→ℂ) (E : ℝ) (hE : 0≤ E)
+    (hf : ∀ b : ∀ i : {i // i∉T}, L i.val,
+      (∑ k∈rows, ‖∑ a : ∀ i : T, L i.val, f ((slotChoiceSplit L T).symm (a,b)) k‖^2)≤ E) :
+    (∑ k∈rows, ‖∑ p : ∀ i, L i,
+      (∏ i∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (p i).val:ℂ)⁻¹)*f p k‖^2)≤
+    (∏ i : {i // i∉T}, (2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ))^2*E := by
+  simp_rw [sum_slot_choices L T]
+  apply (weighted_finite_row_energy_uniform Finset.univ rows
+    (fun b : ∀ i : {i // i∉T}, L i.val => ∏ i, (Ideal.absNorm (b i).val:ℂ)⁻¹)
+    (fun b k => ∑ a : ∀ i : T, L i.val, f ((slotChoiceSplit L T).symm (a,b)) k)
+    E (fun b hb => hf b)).trans
+  apply mul_le_mul_of_nonneg_right _ hE
+  exact pow_le_pow_left₀ (Finset.sum_nonneg (fun b hb => norm_nonneg _))
+    (inactive_choices_mass_bound L T H hzero hH) 2
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ : Type*} [Fintype σ] [DecidableEq σ]
+
+def inactiveRowSet (rows : Finset (Ideal Eis)) (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (F : φ→Ideal Eis) (b : ∀ i : {i // i∉T},L i.val) : Finset (Ideal Eis) :=
+  rows.filter fun K => IsCoprime K (∏ i : {i // i∉T},(b i).val) ∧ ∀ j i,(b i).val≠F j
+
+lemma subtype_zero_extension_energy {κ : Type*} [DecidableEq κ]
+    (rows small : Finset κ) (hs : small⊆rows) (f : small→ℂ) :
+    (∑ k∈rows,‖if hk:k∈small then f ⟨k,hk⟩ else 0‖^2)=∑ k : small,‖f k‖^2 := by
+  have he : (∑ k∈rows,‖if hk:k∈small then f ⟨k,hk⟩ else 0‖^2)=
+      ∑ k∈small,‖if hk:k∈small then f ⟨k,hk⟩ else 0‖^2 := by
+    symm
+    apply Finset.sum_subset hs
+    intro k hk hks
+    simp only [dif_neg hks,norm_zero,zero_pow (by decide : (2:ℕ)≠0)]
+  rw [he,←Finset.sum_coe_sort small]
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [dif_pos k.property]
+
+theorem original_inactive_restricted_energy
+    (rows : Finset (Ideal Eis)) (L : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (F : φ→Ideal Eis) (H : σ→ℝ)
+    (hzero : ∀ i,∀ P∈L i,P≠0) (hH : ∀ i,∀ P∈L i,(Ideal.absNorm P:ℝ)≤ H i)
+    (w : ∀ i,L i→ℂ) (hw : ∀ i P,‖w i P‖≤1)
+    (f : ∀ b : ∀ i : {i // i∉T},L i.val,inactiveRowSet rows L T F b→ℂ)
+    (E : ℝ) (hE : 0≤ E)
+    (hf : ∀ b,(∑ k : inactiveRowSet rows L T F b,‖f b k‖^2)≤ E) :
+    (∑ k∈rows,‖∑ b : ∀ i : {i // i∉T},L i.val,
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b i)))*
+        (if hk:k∈inactiveRowSet rows L T F b then f b ⟨k,hk⟩ else 0)‖^2)≤
+    (∏ i : {i // i∉T},(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ))^2*E := by
+  let wt := fun b : ∀ i : {i // i∉T},L i.val =>
+    (∏ i : {i // i∉T},(Ideal.absNorm (b i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b i))
+  let g := fun (b : ∀ i : {i // i∉T},L i.val) k =>
+    if hk:k∈inactiveRowSet rows L T F b then f b ⟨k,hk⟩ else 0
+  have hg (b) : (∑ k∈rows,‖g b k‖^2)≤ E := by
+    rw [show (∑ k∈rows,‖g b k‖^2)=∑ k : inactiveRowSet rows L T F b,‖f b k‖^2 from
+      subtype_zero_extension_energy rows _ (Finset.filter_subset _ _) (f b)]
+    exact hf b
+  have hm : (∑ b,‖wt b‖)≤∏ i : {i // i∉T},(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ) := by
+    apply (Finset.sum_le_sum (fun b hb => ?_)).trans (inactive_choices_mass_bound L T H hzero hH)
+    change ‖_*_‖≤ _
+    rw [norm_mul]
+    apply mul_le_of_le_one_right (norm_nonneg _)
+    exact slot_coefficient_norm (fun i : {i // i∉T} => L i.val) (fun i => w i.val) (fun i => hw i.val) b
+  apply (weighted_finite_row_energy_uniform Finset.univ rows wt g E (fun b hb => hg b)).trans
+  exact mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ (Finset.sum_nonneg (fun b _ => norm_nonneg _)) hm 2) hE
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma dependent_sum_filter_partition {α β A : Type*} [Fintype β] [DecidableEq β] [AddCommMonoid A]
+    (T : Finset α) (label : α→β) (f : T→A) :
+    (∑ p : T,f p)=∑ j : β,∑ p : T.filter (fun p => label p=j),f ⟨p.val,(Finset.mem_filter.mp p.property).1⟩ := by
+  let g : α→A := fun p => if hp:p∈T then f ⟨p,hp⟩ else 0
+  have h := Finset.sum_fiberwise T label g
+  calc
+    _ = ∑ p∈T,g p := by
+      symm
+      rw [←Finset.sum_coe_sort T]
+      apply Finset.sum_congr rfl
+      intro p hp
+      simp only [g,dif_pos p.property]
+    _ = ∑ j,∑ p∈T.filter (fun p => label p=j),g p := h.symm
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      rw [←Finset.sum_coe_sort]
+      apply Finset.sum_congr rfl
+      intro p hp
+      simp only [g,dif_pos (Finset.mem_filter.mp p.property).1]
+
+theorem dependent_partition_energy {α β ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq ι] [DecidableEq κ]
+    (rows : Finset α) (tuples : Finset β) (rowLabel : α→ι) (slotLabel : β→κ)
+    (f : rows→tuples→ℂ) :
+    (∑ k : rows,‖∑ p : tuples,f k p‖^2)≤
+      (Fintype.card κ:ℝ)*∑ i : ι,∑ j : κ,
+        ∑ k : rows.filter (fun k => rowLabel k=i),
+          ‖∑ p : tuples.filter (fun p => slotLabel p=j),
+            f ⟨k.val,(Finset.mem_filter.mp k.property).1⟩
+              ⟨p.val,(Finset.mem_filter.mp p.property).1⟩‖^2 := by
+  rw [dependent_sum_filter_partition rows rowLabel]
+  calc
+    _ ≤ ∑ i : ι,(Fintype.card κ:ℝ)*∑ j : κ,
+        ∑ k : rows.filter (fun k => rowLabel k=i),
+          ‖∑ p : tuples.filter (fun p => slotLabel p=j),
+            f ⟨k.val,(Finset.mem_filter.mp k.property).1⟩
+              ⟨p.val,(Finset.mem_filter.mp p.property).1⟩‖^2 := by
+      apply Finset.sum_le_sum
+      intro i hi
+      let g := fun (j : κ) (k : rows.filter (fun k => rowLabel k=i)) =>
+        ∑ p : tuples.filter (fun p => slotLabel p=j),
+          f ⟨k.val,(Finset.mem_filter.mp k.property).1⟩ ⟨p.val,(Finset.mem_filter.mp p.property).1⟩
+      have he := weighted_finite_row_energy (Finset.univ : Finset κ)
+        (Finset.univ : Finset (rows.filter (fun k => rowLabel k=i))) (fun _ => (1:ℂ)) g
+      simp only [one_mul,norm_one,Finset.sum_const,Finset.card_univ,nsmul_eq_mul,mul_one] at he
+      convert he using 1 <;> try rfl
+      apply Finset.sum_congr rfl
+      intro k hk
+      congr 2
+      exact dependent_sum_filter_partition tuples slotLabel _
+    _ = _ := by rw [Finset.mul_sum]
+
+variable {φ σ : Type*} [Fintype φ] [Fintype σ]
+variable {N a c : Eis} {mode : Bool}
+variable (G : PrimeFamily φ) (rows : Finset (Ideal Eis)) (hrows : ∀ K∈rows,Admissible K)
+    (tuples : Finset (σ→Ideal Eis)) (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+    (hgood : ∀ p∈tuples,∀ i,lambda∉p i) (Hrow Hslot : ℝ)
+variable (C : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+    ∀ K : divisorDyadicBin rows Hrow i,∀ p : activeTupleDyad tuples Hslot j,
+      IsCoprime K.val (slotTupleProduct p.val)→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+        (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator N a c mode)
+variable (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : φ→ℕ) (W : ℝ→ℂ) (θ X : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ)
+
+def dyadicPhysicalTerm (K : rows) (p : tuples) : ℂ :=
+  if hp:IsCoprime K.val (slotTupleProduct p.val) then
+    r K.val*aw p.val*mixedReflectedValue
+      (dyadicTupleControlled G rows hrows tuples hmax hgood Hrow Hslot C K p hp) s
+      (G.reflected K.val (hrows K.val K.property) (memberTupleFamily tuples hmax hgood p)).generator_ne_zero hc
+      (G.reflected K.val (hrows K.val K.property) (memberTupleFamily tuples hmax hgood p)).generator_good
+      (reflectedExponent jF) (slotIndices φ (PrimeIndex K.val) σ) (CompletedHeight.normTwistedSource W θ) X else 0
+
+lemma dyadicPhysicalTerm_at (i : Fin (columnDyadicLength Hrow+1))
+    (j : Fin (columnDyadicLength Hslot+1))
+    (K : divisorDyadicBin rows Hrow i) (p : activeTupleDyad tuples Hslot j) :
+    dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot C s hc jF W θ X r aw
+      ⟨K.val,divisorDyadicBin_subset rows Hrow i K.property⟩
+      ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩=
+    if hp:IsCoprime K.val (slotTupleProduct p.val) then
+      r K.val*aw p.val*mixedReflectedValue (C i j K p hp) s
+        (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+          (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator_ne_zero hc
+        (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+          (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator_good
+        (reflectedExponent jF) (slotIndices φ (PrimeIndex K.val) σ) (CompletedHeight.normTwistedSource W θ) X else 0 := by
+  unfold dyadicPhysicalTerm
+  split_ifs with hp
+  · rw [dyadicTupleControlled_at]
+  · rfl
+
+theorem dyadic_physical_energy (E : ℝ)
+    (hE : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+      (∑ K : rows.filter (fun K => divisorDyadicLabel Hrow K=i),
+        ‖∑ p : tuples.filter (fun p => divisorDyadicLabel Hslot (slotTupleProduct p)=j),
+          dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot C s hc jF W θ X r aw
+            ⟨K.val,(Finset.mem_filter.mp K.property).1⟩
+            ⟨p.val,(Finset.mem_filter.mp p.property).1⟩‖^2)≤ E) :
+    (∑ K : rows,‖∑ p : tuples,
+      dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot C s hc jF W θ X r aw K p‖^2)≤
+      (columnDyadicLength Hrow+1:ℝ)*(columnDyadicLength Hslot+1:ℝ)^2*E := by
+  have he := dependent_partition_energy rows tuples (divisorDyadicLabel Hrow)
+    (fun p => divisorDyadicLabel Hslot (slotTupleProduct p))
+    (dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot C s hc jF W θ X r aw)
+  apply he.trans
+  have hb := Finset.sum_le_sum (s:=Finset.univ) (fun i _ =>
+    Finset.sum_le_sum (s:=Finset.univ) (fun j _ => hE i j))
+  apply (mul_le_mul_of_nonneg_left hb (Nat.cast_nonneg (Fintype.card (Fin (columnDyadicLength Hslot+1))))).trans_eq
+  simp only [Finset.sum_const,Finset.card_univ,Fintype.card_fin,nsmul_eq_mul,Nat.cast_add,Nat.cast_one]
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ]
+variable {N a c : Eis} {mode : Bool}
+variable (G : PrimeFamily φ) (rows : Finset (Ideal Eis)) (hrows : ∀ K∈rows,Admissible K)
+    (tuples : Finset (σ→Ideal Eis)) (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+    (hgood : ∀ p∈tuples,∀ i,lambda∉p i) (Hrow Hslot : ℝ)
+
+abbrev CellCompletion (i : Fin (columnDyadicLength Hrow+1)) (j : Fin (columnDyadicLength Hslot+1)) :=
+    ∀ K : divisorDyadicBin rows Hrow i,∀ p : activeTupleDyad tuples Hslot j,
+      IsCoprime K.val (slotTupleProduct p.val)→
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+        (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator N a c mode
+
+variable (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : φ→ℕ) (W : ℝ→ℂ) (X : ℝ)
+
+def cellPhysicalTerm (i : Fin (columnDyadicLength Hrow+1)) (j : Fin (columnDyadicLength Hslot+1))
+    (D : CellCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G rows hrows tuples hmax hgood Hrow Hslot i j)
+    (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ)
+    (K : divisorDyadicBin rows Hrow i) (p : activeTupleDyad tuples Hslot j) : ℂ :=
+    if hp:IsCoprime K.val (slotTupleProduct p.val) then
+      r K.val*aw p.val*mixedReflectedValue (D K p hp) s
+        (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+          (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator_ne_zero hc
+        (G.reflected K.val (hrows K.val (divisorDyadicBin_subset rows Hrow i K.property))
+          (memberTupleFamily tuples hmax hgood ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩)).generator_good
+        (reflectedExponent jF) (slotIndices φ (PrimeIndex K.val) σ) (CompletedHeight.normTwistedSource W θ) X else 0
+
+theorem physical_dyad_selection_energy (E : ℝ→ℝ) (hE : ∀ θ,0≤ E θ)
+    (he : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+      (divisorDyadicBin rows Hrow i).Nonempty → (activeTupleDyad tuples Hslot j).Nonempty →
+      ∃ D : CellCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G rows hrows tuples hmax hgood Hrow Hslot i j,
+      ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+        (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+        (∑ K : divisorDyadicBin rows Hrow i,‖∑ p : activeTupleDyad tuples Hslot j,
+          cellPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot s hc jF W X i j D θ r aw K p‖^2)≤ E θ) :
+    ∃ D : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+      CellCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G rows hrows tuples hmax hgood Hrow Hslot i j,
+      ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+        (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+        (∑ K : rows,‖∑ p : tuples,
+          dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot D s hc jF W θ X r aw K p‖^2)≤
+          (columnDyadicLength Hrow+1:ℝ)*(columnDyadicLength Hslot+1:ℝ)^2*E θ := by
+  have hall : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+      ∃ D : CellCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G rows hrows tuples hmax hgood Hrow Hslot i j,
+      ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+        (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+        (∑ K : divisorDyadicBin rows Hrow i,‖∑ p : activeTupleDyad tuples Hslot j,
+          cellPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot s hc jF W X i j D θ r aw K p‖^2)≤ E θ := by
+    intro i j
+    by_cases hi : (divisorDyadicBin rows Hrow i).Nonempty
+    · by_cases hj : (activeTupleDyad tuples Hslot j).Nonempty
+      · exact he i j hi hj
+      · let D : CellCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G rows hrows tuples hmax hgood Hrow Hslot i j :=
+          fun K p hp => (hj ⟨p.val,p.property⟩).elim
+        refine ⟨D,?_⟩
+        intro θ r aw hr haw
+        have hzero : ∀ K : divisorDyadicBin rows Hrow i,
+            (∑ p : activeTupleDyad tuples Hslot j,
+              cellPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot s hc jF W X i j D θ r aw K p)=0 := by
+          intro K
+          apply Finset.sum_eq_zero
+          intro p hp
+          exact (hj ⟨p.val,p.property⟩).elim
+        simp_rw [hzero,norm_zero,zero_pow (by norm_num : (2:ℕ)≠0),Finset.sum_const_zero]
+        exact hE θ
+    · let D : CellCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G rows hrows tuples hmax hgood Hrow Hslot i j :=
+        fun K p hp => (hi ⟨K.val,K.property⟩).elim
+      refine ⟨D,?_⟩
+      intro θ r aw hr haw
+      have hzero : (∑ K : divisorDyadicBin rows Hrow i,‖∑ p : activeTupleDyad tuples Hslot j,
+          cellPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot s hc jF W X i j D θ r aw K p‖^2)=0 := by
+        apply Finset.sum_eq_zero
+        intro K hK
+        exact (hi ⟨K.val,K.property⟩).elim
+      rw [hzero]
+      exact hE θ
+  choose D hD using hall
+  refine ⟨D,?_⟩
+  intro θ r aw hr haw
+  apply dyadic_physical_energy G rows hrows tuples hmax hgood Hrow Hslot D s hc jF W θ X r aw (E θ)
+  intro i j
+  have hid : (∑ K : divisorDyadicBin rows Hrow i,‖∑ p : activeTupleDyad tuples Hslot j,
+      dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot D s hc jF W θ X r aw
+        ⟨K.val,divisorDyadicBin_subset rows Hrow i K.property⟩
+        ⟨p.val,activeTupleDyad_subset tuples Hslot j p.property⟩‖^2)=
+      ∑ K : divisorDyadicBin rows Hrow i,‖∑ p : activeTupleDyad tuples Hslot j,
+        cellPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot s hc jF W X i j (D i j) θ r aw K p‖^2 := by
+    apply Finset.sum_congr rfl
+    intro K hK
+    apply congrArg (fun z : ℂ => ‖z‖^2)
+    apply Finset.sum_congr rfl
+    intro p hp
+    exact dyadicPhysicalTerm_at G rows hrows tuples hmax hgood Hrow Hslot D s hc jF W θ X r aw i j K p
+  exact hid.trans_le (hD i j θ r aw hr haw)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_dyadic_geometry_uniform_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ)
+    (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η) (hη1 : η≤1) (hηc : η≤ cstar/100000) :
+    ∃ (degree : ℕ), ∀ {Nlevel : Eis}, ∀
+    {γ : Type*} [Fintype γ] (a c₀ : γ→Eis) (mode : γ→Bool)
+    [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c₀ i) (mode i))) (hc₀ : ∀ i,c₀ i≠0)
+    (_hNlevel : ∀ i,(9:Eis)*c₀ i∣Nlevel)
+    (_hbase : ∀ i,if mode i then lambda^2∣a i-1 else lambda^2∣c₀ i-1)
+    (_hac : ∀ i,IsCoprime (a i) (c₀ i))
+    (B : Ideal Eis) (_hB : B≠0),
+    ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ g : γ,∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (J F R Q₀ : Ideal Eis)
+      (_hJ : J≠0) (_hF : F≠0) (_hR : R≠0),
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z N V M z₀ margin O₀ hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm R:ℝ)≤ Z^L →
+      0≤ O₀ → O₀≤ M → Z^O₀≤(Ideal.absNorm (rowPowerfulPart J):ℝ) →
+      CanonicalMargins (N+V) M (normWidth Z R) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents rows : Finset (Ideal Eis)),
+      (∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      rows⊆originalResidualRows parents J (B*F*R) →
+      (∀ P∈fixedBadPrimes,P∣B*F*R) →
+      let Hrow := Z^M/((Ideal.absNorm (rowPowerfulPart J):ℝ)*(Ideal.absNorm (rowMaskPart J (B*F*R)):ℝ))
+      let Hslot := Z^z₀
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let jF := fun b : A => completedLocalExponent J F b.val.val
+    ∀ (tuples : Finset (σ→Ideal Eis))
+      (hmax : ∀ p∈tuples,∀ i,(p i).IsMaximal)
+      (hgood : ∀ p∈tuples,∀ i,lambda∉p i)
+      (_hinj : Set.InjOn slotTupleProduct (↑tuples : Set (σ→Ideal Eis)))
+      (hrows : ∀ K∈rows,Admissible K),
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ p : tuples,Pairwise (Function.onFun IsCoprime (G.sum (memberTupleFamily tuples hmax hgood p)).ideal)) →
+      (∀ p : tuples,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (memberTupleFamily tuples hmax hgood p)).ideal b)) →
+      (∀ p : tuples,∀ b,ringChar (Eis⧸(G.sum (memberTupleFamily tuples hmax hgood p)).ideal b)≠2) →
+      (∀ p∈tuples,CubicSieve.Admissible (slotTupleProduct p) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤ Hslot) →
+    ∃ D : ∀ i : Fin (columnDyadicLength Hrow+1),∀ j : Fin (columnDyadicLength Hslot+1),
+      CellCompletion (N:=Nlevel) (a:=a g) (c:=c₀ g) (mode:=mode g) G rows hrows tuples hmax hgood Hrow Hslot i j,
+    ∀ (θ : ℝ) (r : Ideal Eis→ℂ) (aw : (σ→Ideal Eis)→ℂ),
+      (∀ K∈rows,‖r K‖≤1) → (∀ p∈tuples,‖aw p‖≤1) →
+      (∑ K : rows,‖∑ p : tuples,
+        dyadicPhysicalTerm G rows hrows tuples hmax hgood Hrow Hslot D (s g) (hc₀ g) jF W θ (Z^(N-3*hhat)) r aw K p‖^2)≤
+        (columnDyadicLength Hrow+1:ℝ)*(columnDyadicLength Hslot+1:ℝ)^2*
+          (C*(1+‖θ‖)^degree*Z^(N+V-3*cstar/16-O₀/2)) := by
+  obtain ⟨degree,hu⟩ := canonical_member_geometry_uniform_uniform_degree lo hi hlo W hWs hW L cstar η hL hcstar hη hη1 hηc
+  refine ⟨degree,?_⟩
+  intro Nlevel γ _ a c₀ mode _ s hc₀ hNlevel hbase hac B hB
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu a c₀ mode s hc₀ hNlevel hbase hac B hB
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro g σ _ _ J F R Q₀ hJ hF hR A Z N V M z₀ margin O₀ hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hO hOM hOn hinv hmargin hVd hhd hd parents rows hparents hsub hbad
+  dsimp only
+  intro tuples hmax hgood hinj hrows hGN hGchar hrowcop hpair hPN hPchar hPnorm
+  let Hrow := Z^M/((Ideal.absNorm (rowPowerfulPart J):ℝ)*(Ideal.absNorm (rowMaskPart J (B*F*R)):ℝ))
+  let Hslot := Z^z₀
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  let jF := fun b : A => completedLocalExponent J F b.val.val
+  have hz : 1< Z := lt_of_lt_of_le hZ₀ hZ
+  have hzp : 0< Z := lt_trans zero_lt_one hz
+  have hrowNorm : ∀ K∈rows,1≤(Ideal.absNorm K:ℝ) ∧ (Ideal.absNorm K:ℝ)≤ Hrow :=
+    fun K hK => original_residual_norm_bounds parents J (B*F*R) hbad (Z^M) hparents K (hsub hK)
+  have htupleNorm : ∀ p∈tuples,1≤(Ideal.absNorm (slotTupleProduct p):ℝ) ∧
+      (Ideal.absNorm (slotTupleProduct p):ℝ)≤ Hslot := fun p hp =>
+    ⟨descentIdealNorm_one_le (primaryIdealGenerator_ne_zero_ideal _ (hPnorm p hp).1.2),(hPnorm p hp).2⟩
+  apply physical_dyad_selection_energy G rows hrows tuples hmax hgood Hrow Hslot
+    (s g) (hc₀ g) jF W (Z^(N-3*hhat)) (fun θ => C*(1+‖θ‖)^degree*Z^(N+V-3*cstar/16-O₀/2))
+    (fun θ => by positivity)
+  intro i j hi hj
+  let Rc := divisorDyadicBin rows Hrow i
+  let Tc := activeTupleDyad tuples Hslot j
+  let hm := fun p hp k => hmax p (activeTupleDyad_subset tuples Hslot j hp) k
+  let hg := fun p hp k => hgood p (activeTupleDyad_subset tuples Hslot j hp) k
+  have hTc : Tc.Nonempty := hj
+  have hRi : ∀ K∈Rc,Admissible K := fun K hK => hrows K (divisorDyadicBin_subset rows Hrow i hK)
+  have hti : Set.InjOn slotTupleProduct (↑Tc : Set (σ→Ideal Eis)) :=
+    hinj.mono (activeTupleDyad_subset tuples Hslot j)
+  have hKr := divisorDyadicBin_bounds rows Hrow hrowNorm i
+  have hPr := activeTupleDyad_bounds tuples Hslot htupleNorm j
+  obtain ⟨K,hK⟩ := hi
+  obtain ⟨I,hI,heI⟩ := Finset.mem_image.mp (hsub (divisorDyadicBin_subset rows Hrow i hK))
+  obtain ⟨hIp,hpow,hmask⟩ := Finset.mem_filter.mp hI
+  have hI0 := (hparents I hIp).1
+  have hIn := (hparents I hIp).2
+  have hKlower : (2*divisorDyadicScale i.val)/2≤(Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ) := by
+    rw [heI]
+    convert (hKr K hK).1 using 1 ; ring
+  have hKupper : 2*divisorDyadicScale i.val≤2*Z^M := by
+    have hres : (Ideal.absNorm (rowResidualPart I (B*F*R)):ℝ)≤(Ideal.absNorm I:ℝ) := by
+      rw [rowResidualPart_norm I (B*F*R) hI0]
+      apply div_le_self (Nat.cast_nonneg _)
+      exact one_le_mul_of_one_le_of_one_le
+        (descentIdealNorm_one_le (rowPowerfulPart_ne_zero I))
+        (descentIdealNorm_one_le (squarefreeMaskPart_ne_zero (rowSimplePart I) (B*F*R)))
+    have hs := hKlower.trans (hres.trans hIn)
+    linarith
+  have hPupper : (2*divisorDyadicScale j.val)/2≤ Z^z₀ := by
+    convert activeTupleDyad_scale_le tuples Hslot htupleNorm j hj using 1 ; dsimp [Hslot] ; ring
+  let S := tuplePrimeFamily Tc hTc hm hg
+  have hScop : ∀ P∈Tc.image slotTupleProduct,Pairwise (Function.onFun IsCoprime (G.sum (S P)).ideal) := by
+    intro P hP
+    exact hpair ⟨tupleRepresentative Tc hTc P,activeTupleDyad_subset tuples Hslot j (tupleRepresentative_mem Tc hTc P)⟩
+  have hSN : ∀ P∈Tc.image slotTupleProduct,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (S P)).ideal b) := by
+    intro P hP
+    exact hPN ⟨tupleRepresentative Tc hTc P,activeTupleDyad_subset tuples Hslot j (tupleRepresentative_mem Tc hTc P)⟩
+  have hSchar : ∀ P∈Tc.image slotTupleProduct,∀ b,ringChar (Eis⧸(G.sum (S P)).ideal b)≠2 := by
+    intro P hP
+    exact hPchar ⟨tupleRepresentative Tc hTc P,activeTupleDyad_subset tuples Hslot j (tupleRepresentative_mem Tc hTc P)⟩
+  obtain ⟨D,hD⟩ := he g J I F R Q₀ hJ hI0 hF hR hpow.symm hmask.symm A
+    Z N V M z₀ margin O₀ hhat d (2*divisorDyadicScale i.val) (2*divisorDyadicScale j.val)
+    hZ hN hM hMc hVc hzc hhc hIn hFn hRn hO hOM (by rw [hpow];exact hOn) hKlower
+    (by linarith [divisorDyadicScale_ge_one i.val]) hKupper
+    (by linarith [divisorDyadicScale_ge_one j.val]) hPupper hinv hmargin hVd hhd hd
+    Rc Tc hTc hm hg hti hRi hGN hGchar
+    (fun K hK => hrowcop K (divisorDyadicBin_subset rows Hrow i hK))
+    (tuplePrimeFamily_product Tc hTc hm hg) hScop hSN hSchar
+  let Dc : CellCompletion (N:=Nlevel) (a:=a g) (c:=c₀ g) (mode:=mode g)
+      G rows hrows tuples hmax hgood Hrow Hslot i j := fun K p hp =>
+    memberTupleControlled Tc hm hg G K.val (hRi K.val K.property) hTc hti (D K) p hp
+  refine ⟨Dc,?_⟩
+  intro θ r aw hr haw
+  have hb := hD θ r aw (by linarith [divisorDyadicScale_ge_one i.val])
+    (by linarith [divisorDyadicScale_ge_one j.val])
+    (fun K hK => by convert hKr K hK using 1 ; ring_nf)
+    (by
+      intro P hP
+      obtain ⟨p,hp,rfl⟩ := Finset.mem_image.mp hP
+      refine ⟨(hPnorm p (activeTupleDyad_subset tuples Hslot j hp)).1,?_⟩
+      convert hPr p hp using 1 ; ring_nf)
+    (fun K hK => hr K (divisorDyadicBin_subset rows Hrow i hK))
+    (fun p hp => haw p (activeTupleDyad_subset tuples Hslot j hp))
+  exact hb
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+
+lemma columnDyadicLength_mono_pos {A B : ℝ} (hA : 0< A) (hAB : A≤ B) :
+    columnDyadicLength A≤ columnDyadicLength B := by
+  apply Nat.ceil_mono
+  exact div_le_div_of_nonneg_right (Real.log_le_log hA hAB) (Real.log_nonneg (by norm_num))
+
+theorem actual_dyad_count_budget (L ε : ℝ) (hL : 0≤ L) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ Z Hrow Hslot : ℝ,1≤ Z → 0< Hrow → 0< Hslot →
+      Hrow≤ Z^L → Hslot≤ Z^L →
+      (columnDyadicLength Hrow+1:ℝ)*(columnDyadicLength Hslot+1:ℝ)^2≤ C*Z^ε := by
+  let a := ε/(3*(L+1))
+  have ha : 0< a := div_pos hε (by positivity)
+  let B := 2+1/(a*Real.log 2)
+  have hB : 0< B := by dsimp only [B];have := Real.log_pos (by norm_num : (1:ℝ)<2);positivity
+  refine ⟨B^3,by positivity,?_⟩
+  intro Z Hrow Hslot hZ hR hS hRc hSc
+  have hz : 0< Z := lt_of_lt_of_le zero_lt_one hZ
+  have hnorm := Real.one_le_rpow hZ hL
+  have hcount := columnDyadicLength_small_power a ha (Z^L) hnorm
+  have hr : (columnDyadicLength Hrow+1:ℝ)≤ B*(Z^L)^a := by
+    have hle : (columnDyadicLength Hrow+1:ℝ)≤(columnDyadicLength (Z^L)+1:ℝ) := by
+      exact_mod_cast Nat.add_le_add_right (columnDyadicLength_mono_pos hR hRc) 1
+    exact hle.trans hcount
+  have hs : (columnDyadicLength Hslot+1:ℝ)≤ B*(Z^L)^a := by
+    have hle : (columnDyadicLength Hslot+1:ℝ)≤(columnDyadicLength (Z^L)+1:ℝ) := by
+      exact_mod_cast Nat.add_le_add_right (columnDyadicLength_mono_pos hS hSc) 1
+    exact hle.trans hcount
+  have hexp : L*a*3≤ε := by
+    have he : a*(3*(L+1))=ε := by dsimp [a];field_simp
+    have hh : 0≤ a := ha.le
+    nlinarith
+  calc
+    _ ≤ (B*(Z^L)^a)*(B*(Z^L)^a)^2 := by gcongr
+    _ = B^3*((Z^L)^a)^3 := by ring
+    _ = B^3*Z^(L*a*3) := by
+      rw [←Real.rpow_mul hz.le]
+      have he := Real.rpow_mul_natCast hz.le (L*a) 3
+      norm_num only [Nat.cast_ofNat] at he
+      rw [he]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hZ hexp) (by positivity)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ τ : Type*} [Fintype σ] [DecidableEq σ] [Fintype τ]
+
+def fixedTupleFamily (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hne : (fixedSlotTupleSet L F).Nonempty)
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P) (P : Ideal Eis) : PrimeFamily σ :=
+  tuplePrimeFamily (fixedSlotTupleSet L F) hne
+    (fun p hp i => hmax i _ (((mem_fixedSlotTupleSet L F p).mp hp).1 i))
+    (fun p hp i => hgood i _ (((mem_fixedSlotTupleSet L F p).mp hp).1 i)) P
+
+lemma fixedTupleFamily_at_choice (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hne : (fixedSlotTupleSet L F).Nonempty)
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+    (hL : Pairwise (fun i j => Disjoint (L i) (L j))) (hprime : ∀ i,∀ P∈L i,Prime P)
+    (p : ∀ i,L i) (hp : ∀ j i,(p i).val≠F j) :
+    fixedTupleFamily L F hne hmax hgood (∏ i,(p i).val)=slotChoiceFamily L hmax hgood p := by
+  apply PrimeFamily.eq_of_ideal_eq
+  exact tuplePrimeFamily_at_product (fixedSlotTupleSet L F) hne _ _
+    (fixedSlotTupleSet_product_injective L F hL hprime) (fun i => (p i).val)
+    ((mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p i).property,hp⟩)
+
+def fixedTupleCoefficient (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ) (p : σ→Ideal Eis) : ℂ :=
+  if hp:∀ i,p i∈L i then ∏ i,w i ⟨p i,hp i⟩ else 0
+
+omit [DecidableEq σ] in
+lemma fixedTupleCoefficient_at (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ) (p : ∀ i,L i) :
+    fixedTupleCoefficient L w (fun i => (p i).val)=∏ i,w i (p i) := by
+  simp only [fixedTupleCoefficient,dif_pos (show ∀ i,(p i).val∈L i from fun i => (p i).property)]
+
+omit [DecidableEq σ] in
+lemma fixedTupleCoefficient_norm (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ)
+    (hw : ∀ i P,‖w i P‖≤1) (p : σ→Ideal Eis) : ‖fixedTupleCoefficient L w p‖≤1 := by
+  unfold fixedTupleCoefficient
+  split
+  · exact slot_coefficient_norm L w hw _
+  · simp
+
+variable {N a c : Eis} {mode : Bool}
+variable (G : PrimeFamily τ) (K : Ideal Eis) (hK : Admissible K)
+    (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hne : (fixedSlotTupleSet L F).Nonempty)
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+    (hL : Pairwise (fun i j => Disjoint (L i) (L j))) (hprime : ∀ i,∀ P∈L i,Prime P)
+    (D : ∀ P : (fixedSlotTupleSet L F).image slotTupleProduct,IsCoprime K P.val→
+      ControlledStratumArithmetic (G.reflected K hK (fixedTupleFamily L F hne hmax hgood P.val)).generator N a c mode)
+    (p : supportedSlotChoices L F K)
+
+def activeChoiceControlled :
+      ControlledStratumArithmetic (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator N a c mode :=
+  castControlled (congrArg (fun S => (G.reflected K hK S).generator)
+    (fixedTupleFamily_at_choice L F hne hmax hgood hL hprime p.val p.property.2))
+    (D ⟨∏ i,(p.val i).val,Finset.mem_image.mpr
+      ⟨fun i => (p.val i).val,(mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p.val i).property,p.property.2⟩,rfl⟩⟩ p.property.1)
+
+lemma activeChoiceControlled_value
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (j : τ→ℕ) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue (activeChoiceControlled G K hK L F hne hmax hgood hL hprime D p) s
+      (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator_ne_zero hc
+      (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator_good
+      (reflectedExponent j) (slotIndices τ (PrimeIndex K) σ) W X=
+    mixedReflectedValue (D ⟨∏ i,(p.val i).val,Finset.mem_image.mpr
+      ⟨fun i => (p.val i).val,(mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p.val i).property,p.property.2⟩,rfl⟩⟩ p.property.1) s
+      (G.reflected K hK (fixedTupleFamily L F hne hmax hgood (∏ i,(p.val i).val))).generator_ne_zero hc
+      (G.reflected K hK (fixedTupleFamily L F hne hmax hgood (∏ i,(p.val i).val))).generator_good
+      (reflectedExponent j) (slotIndices τ (PrimeIndex K) σ) W X := by
+  exact mixedReflectedValue_cast _ _ s _ _ hc _ _ _ _ W X
+
+theorem literalWholeRow_eq_original_choices
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (j : τ→ℕ) (W : ℝ→ℂ) (θ X : ℝ) (r : Ideal Eis→ℂ) (w : ∀ i,L i→ℂ) :
+    literalWholeRow G K hK (fixedTupleFamily L F hne hmax hgood) j
+      ((fixedSlotTupleSet L F).image slotTupleProduct) D s hc W θ X r
+      (slotProductCoefficient (fixedSlotTupleSet L F) (fixedTupleCoefficient L w))=
+    ∑ p : supportedSlotChoices L F K,r K*(∏ i,w i (p.val i))*
+      mixedReflectedValue (activeChoiceControlled G K hK L F hne hmax hgood hL hprime D p) s
+        (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator_ne_zero hc
+        (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator_good
+        (reflectedExponent j) (slotIndices τ (PrimeIndex K) σ) (CompletedHeight.normTwistedSource W θ) X := by
+  let e := supportedSlotProductEquiv L F hL hprime K
+  unfold literalWholeRow
+  rw [←e.sum_comp]
+  apply Finset.sum_congr rfl
+  intro p hp
+  rw [activeChoiceControlled_value G K hK L F hne hmax hgood hL hprime D p s hc j]
+  have hcft : slotProductCoefficient (fixedSlotTupleSet L F) (fixedTupleCoefficient L w)
+      (e p).val.val=∏ i,w i (p.val i) := by
+    change slotProductCoefficient (fixedSlotTupleSet L F) (fixedTupleCoefficient L w)
+      (slotTupleProduct (fun i => (p.val i).val))=_
+    rw [slotProductCoefficient_at_product (fixedSlotTupleSet L F)
+      (fixedSlotTupleSet_product_injective L F hL hprime) (fixedTupleCoefficient L w)
+      (fun i => (p.val i).val) ((mem_fixedSlotTupleSet L F _).mpr ⟨fun i => (p.val i).property,p.property.2⟩)]
+    exact fixedTupleCoefficient_at L w p.val
+  rw [hcft]
+  rfl
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ τ : Type*} [Fintype σ] [DecidableEq σ] [Fintype τ]
+variable (L : σ→Finset (Ideal Eis)) (F : φ→Ideal Eis)
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+abbrev originalTupleMax : ∀ p∈fixedSlotTupleSet L F,∀ i,(p i).IsMaximal :=
+  fun p hp i => hmax i _ (((mem_fixedSlotTupleSet L F p).mp hp).1 i)
+abbrev originalTupleGood : ∀ p∈fixedSlotTupleSet L F,∀ i,lambda∉p i :=
+  fun p hp i => hgood i _ (((mem_fixedSlotTupleSet L F p).mp hp).1 i)
+
+variable {N a c : Eis} {mode : Bool} (G : PrimeFamily τ) (K : Ideal Eis) (hK : Admissible K)
+variable (D : ∀ p : fixedSlotTupleSet L F,IsCoprime K (slotTupleProduct p.val)→
+    ControlledStratumArithmetic (G.reflected K hK
+      (memberTupleFamily (fixedSlotTupleSet L F) (originalTupleMax L F hmax) (originalTupleGood L F hgood) p)).generator N a c mode)
+
+def memberChoiceControlled (p : supportedSlotChoices L F K) :
+    ControlledStratumArithmetic (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator N a c mode :=
+  D ((supportedSlotTupleEquiv L F K) p).val ((supportedSlotTupleEquiv L F K) p).property
+
+theorem member_source_eq_original_choices
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : τ→ℕ) (W : ℝ→ℂ) (X : ℝ) (r : ℂ) (w : ∀ i,L i→ℂ) :
+    (∑ p : fixedSlotTupleSet L F,if hp:IsCoprime K (slotTupleProduct p.val) then
+      r*fixedTupleCoefficient L w p.val*mixedReflectedValue (D p hp) s
+        (G.reflected K hK (memberTupleFamily (fixedSlotTupleSet L F)
+          (originalTupleMax L F hmax) (originalTupleGood L F hgood) p)).generator_ne_zero hc
+        (G.reflected K hK (memberTupleFamily (fixedSlotTupleSet L F)
+          (originalTupleMax L F hmax) (originalTupleGood L F hgood) p)).generator_good
+        (reflectedExponent jF) (slotIndices τ (PrimeIndex K) σ) W X else 0)=
+    ∑ p : supportedSlotChoices L F K,r*(∏ i,w i (p.val i))*
+      mixedReflectedValue (memberChoiceControlled L F hmax hgood G K hK D p) s
+        (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator_ne_zero hc
+        (G.reflected K hK (slotChoiceFamily L hmax hgood p.val)).generator_good
+        (reflectedExponent jF) (slotIndices τ (PrimeIndex K) σ) W X := by
+  let e := supportedSlotTupleEquiv L F K
+  have he := sum_subtype_dite_decidable (fun p : fixedSlotTupleSet L F => IsCoprime K (slotTupleProduct p.val))
+    (fun p hp => r*fixedTupleCoefficient L w p.val*mixedReflectedValue (D p hp) s
+      (G.reflected K hK (memberTupleFamily (fixedSlotTupleSet L F)
+        (originalTupleMax L F hmax) (originalTupleGood L F hgood) p)).generator_ne_zero hc
+      (G.reflected K hK (memberTupleFamily (fixedSlotTupleSet L F)
+        (originalTupleMax L F hmax) (originalTupleGood L F hgood) p)).generator_good
+      (reflectedExponent jF) (slotIndices τ (PrimeIndex K) σ) W X)
+  rw [←he,←e.sum_comp]
+  apply Finset.sum_congr rfl
+  intro p hp
+  change r*fixedTupleCoefficient L w (fun i => (p.val i).val)*_=_
+  rw [fixedTupleCoefficient_at]
+  rfl
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_original_choice_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ)
+    (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η) (hη1 : η≤1) (hηc : η≤ cstar/100000) :
+    ∃ (degree : ℕ), ∀ {Nlevel : Eis}, ∀
+    {γ : Type*} [Fintype γ] (a c₀ : γ→Eis) (mode : γ→Bool)
+    [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c₀ i) (mode i))) (hc₀ : ∀ i,c₀ i≠0)
+    (_hNlevel : ∀ i,(9:Eis)*c₀ i∣Nlevel)
+    (_hbase : ∀ i,if mode i then lambda^2∣a i-1 else lambda^2∣c₀ i-1)
+    (_hac : ∀ i,IsCoprime (a i) (c₀ i))
+    (B : Ideal Eis) (_hB : B≠0),
+    ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ g : γ,∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (J F R Q₀ : Ideal Eis)
+      (_hJ : J≠0) (_hF : F≠0) (_hR : R≠0),
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z N V M z₀ margin O₀ hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm R:ℝ)≤ Z^L →
+      0≤ O₀ → O₀≤ M → Z^O₀≤(Ideal.absNorm (rowPowerfulPart J):ℝ) →
+      CanonicalMargins (N+V) M (normWidth Z R) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents rows : Finset (Ideal Eis)),
+      (∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      rows⊆originalResidualRows parents J (B*F*R) →
+      (∀ P∈fixedBadPrimes,P∣B*F*R) →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let jF := fun b : A => completedLocalExponent J F b.val.val
+    ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ)
+      (_hdis : Pairwise (fun i j => Disjoint (lists i) (lists j)))
+      (hmax : ∀ i,∀ P∈lists i,P.IsMaximal)
+      (hgood : ∀ i,∀ P∈lists i,lambda∉P)
+      (_hprime : ∀ i,∀ P∈lists i,Prime P)
+      (hrows : ∀ K∈rows,Admissible K),
+      (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ i,∀ P∈lists i,IsCoprime (Ideal.span {Nlevel}) P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+    ∃ D : ∀ K : rows,∀ p : supportedSlotChoices lists (poolPrimeFamily J (B*F*R) Q₀).ideal K.val,
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property)
+        (slotChoiceFamily lists hmax hgood p.val)).generator Nlevel (a g) (c₀ g) (mode g),
+    ∀ (θ : ℝ) (w : ∀ i,lists i→ℂ), (∀ i P,‖w i P‖≤1) →
+      (∑ K : rows,‖∑ p : supportedSlotChoices lists (poolPrimeFamily J (B*F*R) Q₀).ideal K.val,
+        (∏ i,w i (p.val i))*mixedReflectedValue (D K p) (s g)
+          (G.reflected K.val (hrows K.val K.property) (slotChoiceFamily lists hmax hgood p.val)).generator_ne_zero (hc₀ g)
+          (G.reflected K.val (hrows K.val K.property) (slotChoiceFamily lists hmax hgood p.val)).generator_good
+          (reflectedExponent jF) (slotIndices A (PrimeIndex K.val) σ)
+          (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(N+V-cstar/8-O₀/2) := by
+  obtain ⟨degree,hu⟩ := canonical_dyadic_geometry_uniform_uniform_degree lo hi hlo W hWs hW L cstar η hL hcstar hη hη1 hηc
+  refine ⟨degree,?_⟩
+  intro Nlevel γ _ a c₀ mode _ s hc₀ hNlevel hbase hac B hB
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu a c₀ mode s hc₀ hNlevel hbase hac B hB
+  obtain ⟨Cb,hCb,hbins⟩ := actual_dyad_count_budget L (cstar/32) hL (by positivity)
+  refine ⟨Cb*C,Z₀,mul_pos hCb hC,hZ₀,?_⟩
+  intro g σ _ _ J F R Q₀ hJ hF hR A Z N V M z₀ margin O₀ hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hO hOM hOn hinv hmargin hVd hhd hd parents rows hparents hsub hbad
+  dsimp only
+  intro lists H hdis hmax hgood hprime hrows hH hprod hGN hGchar hrowcop hLN hLchar
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  let FF := (poolPrimeFamily J (B*F*R) Q₀).ideal
+  let tuples := fixedSlotTupleSet lists FF
+  let hm := originalTupleMax lists FF hmax
+  let hg := originalTupleGood lists FF hgood
+  have htuples : ∀ p∈tuples,∀ i,p i∈lists i := fun p hp => ((mem_fixedSlotTupleSet lists FF p).mp hp).1
+  have hpair : ∀ p : tuples,Pairwise (Function.onFun IsCoprime (G.sum (memberTupleFamily tuples hm hg p)).ideal) := by
+    intro p
+    apply PrimeFamily.sum_pairwise G _ ((poolPrimeFamily J (B*F*R) Q₀).restrict_pairwise (poolPrimeFamily_pairwise J (B*F*R) Q₀) A)
+    · intro i j hij
+      apply Ideal.isCoprime_of_isMaximal
+      intro heq
+      change p.val i=p.val j at heq
+      exact Finset.disjoint_left.mp (hdis hij) (htuples p.val p.property i)
+        (heq.symm ▸ htuples p.val p.property j)
+    · intro f i
+      apply Ideal.isCoprime_of_isMaximal
+      exact (((mem_fixedSlotTupleSet lists FF p.val).mp p.property).2 f.val i).symm
+  have hPN : ∀ p : tuples,∀ b,IsCoprime (Ideal.span {Nlevel}) ((G.sum (memberTupleFamily tuples hm hg p)).ideal b) := by
+    intro p b
+    cases b with
+    | inl f => exact hGN f
+    | inr i => exact hLN i _ (htuples p.val p.property i)
+  have hPchar : ∀ p : tuples,∀ b,ringChar (Eis⧸(G.sum (memberTupleFamily tuples hm hg p)).ideal b)≠2 := by
+    intro p b
+    cases b with
+    | inl f => exact hGchar f
+    | inr i => exact hLchar i _ (htuples p.val p.property i)
+  have hPnorm : ∀ p∈tuples,CubicSieve.Admissible (slotTupleProduct p) ∧ (Ideal.absNorm (slotTupleProduct p):ℝ)≤ Z^z₀ := by
+    intro p hp
+    refine ⟨slotTupleProduct_admissible lists hdis hprime ?_ p (htuples p hp),?_⟩
+    · intro i P hPi
+      let : P.IsMaximal := hmax i P hPi
+      exact (primaryIdealPrime_eq_primaryIdealGenerator P).symm ▸ primaryIdealPrime_ne_zero P (hgood i P hPi)
+    · exact (slotTupleProduct_norm_bound lists H (fun i P hPi => (hprime i P hPi).ne_zero) hH p (htuples p hp)).2.trans hprod
+  let Hrow := Z^M/((Ideal.absNorm (rowPowerfulPart J):ℝ)*(Ideal.absNorm (rowMaskPart J (B*F*R)):ℝ))
+  let Hslot := Z^z₀
+  obtain ⟨Dc,hDc⟩ := he g J F R Q₀ hJ hF hR A Z N V M z₀ margin O₀ hhat d
+    hZ hN hM hMc hVc hzc hhc hFn hRn hO hOM hOn hinv hmargin hVd hhd hd
+    parents rows hparents hsub hbad tuples hm hg (fixedSlotTupleSet_product_injective lists FF hdis hprime)
+    hrows hGN hGchar hrowcop hpair hPN hPchar hPnorm
+  let D := fun (K : rows) (p : supportedSlotChoices lists FF K.val) =>
+    memberChoiceControlled lists FF hmax hgood G K.val (hrows K.val K.property)
+      (dyadicTupleControlled G rows hrows tuples hm hg Hrow Hslot Dc K) p
+  refine ⟨D,?_⟩
+  intro θ w hw
+  have hsource (K : rows) :
+      (∑ p : tuples,dyadicPhysicalTerm G rows hrows tuples hm hg Hrow Hslot Dc (s g) (hc₀ g)
+        (fun b : A => completedLocalExponent J F b.val.val) W θ (Z^(N-3*hhat)) (fun _ => 1)
+        (fixedTupleCoefficient lists w) K p)=
+      ∑ p : supportedSlotChoices lists FF K.val,(∏ i,w i (p.val i))*mixedReflectedValue (D K p) (s g)
+        (G.reflected K.val (hrows K.val K.property) (slotChoiceFamily lists hmax hgood p.val)).generator_ne_zero (hc₀ g)
+        (G.reflected K.val (hrows K.val K.property) (slotChoiceFamily lists hmax hgood p.val)).generator_good
+        (reflectedExponent (fun b : A => completedLocalExponent J F b.val.val)) (slotIndices A (PrimeIndex K.val) σ)
+        (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat)) := by
+    simpa only [dyadicPhysicalTerm,D,one_mul] using member_source_eq_original_choices lists FF hmax hgood G K.val
+      (hrows K.val K.property) (dyadicTupleControlled G rows hrows tuples hm hg Hrow Hslot Dc K)
+      (s g) (hc₀ g) (fun b : A => completedLocalExponent J F b.val.val)
+      (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat)) 1 w
+  have hb := hDc θ (fun _ => 1) (fixedTupleCoefficient lists w) (by simp) (fun p hp => fixedTupleCoefficient_norm lists w hw p)
+  have hid : (∑ K : rows,‖∑ p : tuples,dyadicPhysicalTerm G rows hrows tuples hm hg Hrow Hslot Dc
+      (s g) (hc₀ g) (fun b : A => completedLocalExponent J F b.val.val) W θ (Z^(N-3*hhat))
+      (fun _ => 1) (fixedTupleCoefficient lists w) K p‖^2)=
+      ∑ K : rows,‖∑ p : supportedSlotChoices lists FF K.val,(∏ i,w i (p.val i))*mixedReflectedValue (D K p) (s g)
+        (G.reflected K.val (hrows K.val K.property) (slotChoiceFamily lists hmax hgood p.val)).generator_ne_zero (hc₀ g)
+        (G.reflected K.val (hrows K.val K.property) (slotChoiceFamily lists hmax hgood p.val)).generator_good
+        (reflectedExponent (fun b : A => completedLocalExponent J F b.val.val)) (slotIndices A (PrimeIndex K.val) σ)
+        (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))‖^2 := by
+    apply Finset.sum_congr rfl
+    intro K hK
+    exact congrArg (fun z : ℂ => ‖z‖^2) (hsource K)
+  apply (hid.symm.trans_le hb).trans
+  have hz : 1< Z := lt_of_lt_of_le hZ₀ hZ
+  have hzpos : 0< Z := lt_trans zero_lt_one hz
+  have hp : (1:ℝ)≤ Ideal.absNorm (rowPowerfulPart J) := descentIdealNorm_one_le (rowPowerfulPart_ne_zero J)
+  have hm' : (1:ℝ)≤ Ideal.absNorm (rowMaskPart J (B*F*R)) :=
+    descentIdealNorm_one_le (squarefreeMaskPart_ne_zero (rowSimplePart J) (B*F*R))
+  have hRpos : 0< Hrow := by dsimp [Hrow];positivity
+  have hScap : Hslot≤ Z^L := Real.rpow_le_rpow_of_exponent_le hz.le hzc
+  have hRcap : Hrow≤ Z^L := by
+    exact (div_le_self (Real.rpow_nonneg hzpos.le _) (one_le_mul_of_one_le_of_one_le hp hm')).trans
+      (Real.rpow_le_rpow_of_exponent_le hz.le hMc)
+  have hcount := hbins Z Hrow Hslot hz.le hRpos (Real.rpow_pos_of_pos hzpos _) hRcap hScap
+  calc
+    _ ≤ (Cb*Z^(cstar/32))*(C*(1+‖θ‖)^degree*Z^(N+V-3*cstar/16-O₀/2)) :=
+      mul_le_mul_of_nonneg_right hcount (by positivity)
+    _ = (Cb*C)*(1+‖θ‖)^degree*Z^(cstar/32+(N+V-3*cstar/16-O₀/2)) := by
+      rw [Real.rpow_add hzpos];ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hz.le (by linarith)) (by positivity)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ : Type*} [Fintype σ] [DecidableEq σ]
+
+lemma supported_inactive_sum_eq (rows : Finset (Ideal Eis))
+    (L : σ→Finset (Ideal Eis)) (T : Finset σ) (F : φ→Ideal Eis)
+    (K : rows) (w : ∀ i,L i→ℂ)
+    (f : supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K.val→ℂ) :
+    (∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K.val,
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*f b)=
+    ∑ b : ∀ i : {i // i∉T},L i.val,
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b i)))*
+        (if hk:K.val∈inactiveRowSet rows L T F b then f ⟨b,(Finset.mem_filter.mp hk).2⟩ else 0) := by
+  let ok := fun b : ∀ i : {i // i∉T},L i.val =>
+    IsCoprime K.val (∏ i : {i // i∉T},(b i).val) ∧ ∀ j i,(b i).val≠F j
+  let wt := fun b : ∀ i : {i // i∉T},L i.val =>
+    (∏ i : {i // i∉T},(Ideal.absNorm (b i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b i))
+  have he := sum_subtype_dite_decidable ok (fun b hb => wt b*f ⟨b,hb⟩)
+  change (∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K.val,wt b.val*f b)=_
+  calc
+    _ = ∑ b,if hb:ok b then wt b*f ⟨b,hb⟩ else 0 := he
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro b hb
+      by_cases hc : ok b
+      · have hk : K.val∈inactiveRowSet rows L T F b := Finset.mem_filter.mpr ⟨K.property,hc⟩
+        simp only [dif_pos hc,dif_pos hk,wt]
+      · have hk : K.val∉inactiveRowSet rows L T F b := fun h => hc (Finset.mem_filter.mp h).2
+        simp only [dif_neg hc,dif_neg hk,mul_zero]
+
+theorem supported_inactive_source_energy (rows : Finset (Ideal Eis))
+    (L : σ→Finset (Ideal Eis)) (T : Finset σ) (F : φ→Ideal Eis) (H : σ→ℝ)
+    (hzero : ∀ i,∀ P∈L i,P≠0) (hH : ∀ i,∀ P∈L i,(Ideal.absNorm P:ℝ)≤ H i)
+    (w : ∀ i,L i→ℂ) (hw : ∀ i P,‖w i P‖≤1)
+    (f : ∀ K : rows,supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K.val→ℂ)
+    (E : ℝ) (hE : 0≤ E)
+    (hf : ∀ b : ∀ i : {i // i∉T},L i.val,
+      (∑ K : inactiveRowSet rows L T F b,
+        ‖f ⟨K.val,(Finset.mem_filter.mp K.property).1⟩ ⟨b,(Finset.mem_filter.mp K.property).2⟩‖^2)≤ E) :
+    (∑ K : rows,‖∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K.val,
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*f K b‖^2)≤
+    (∏ i : {i // i∉T},(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ))^2*E := by
+  let g := fun (b : ∀ i : {i // i∉T},L i.val) (K : inactiveRowSet rows L T F b) =>
+    f ⟨K.val,(Finset.mem_filter.mp K.property).1⟩ ⟨b,(Finset.mem_filter.mp K.property).2⟩
+  have he := original_inactive_restricted_energy rows L T F H hzero hH w hw g E hE hf
+  have hh : (∑ K : rows,‖∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) F K.val,
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*f K b‖^2)=
+      ∑ K∈rows,‖∑ b : ∀ i : {i // i∉T},L i.val,
+        ((∏ i : {i // i∉T},(Ideal.absNorm (b i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b i)))*
+          (if hk:K∈inactiveRowSet rows L T F b then g b ⟨K,hk⟩ else 0)‖^2 := by
+    rw [←Finset.sum_coe_sort rows]
+    apply Finset.sum_congr rfl
+    intro K hK
+    rw [supported_inactive_sum_eq rows L T F K w (f K)]
+  exact hh.trans_le he
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+variable {Nlevel : Eis}
+
+lemma inactiveRows_mem {σ φ : Type*} [Fintype σ] [DecidableEq σ]
+    (rows : Finset (Ideal Eis)) (lists : σ→Finset (Ideal Eis)) (T : Finset σ)
+    (FF : φ→Ideal Eis) (b : ∀ i : {i // i∉T},lists i.val) (K : Ideal Eis) :
+    K∈inactiveRowSet rows lists T FF b ↔ K∈rows ∧
+      IsCoprime K (∏ i : {i // i∉T},(b i).val) ∧ ∀ j i,(b i).val≠FF j := by
+  exact Finset.mem_filter
+
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_original_inactive_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ)
+    (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η) (hη1 : η≤1) (hηc : η≤ cstar/100000) :
+    ∃ (degree : ℕ), ∀ {Nlevel : Eis}, ∀
+    {γ : Type*} [Fintype γ] (a c₀ : γ→Eis) (mode : γ→Bool)
+    [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c₀ i) (mode i))) (hc₀ : ∀ i,c₀ i≠0)
+    (_hNlevel : ∀ i,(9:Eis)*c₀ i∣Nlevel)
+    (_hbase : ∀ i,if mode i then lambda^2∣a i-1 else lambda^2∣c₀ i-1)
+    (_hac : ∀ i,IsCoprime (a i) (c₀ i))
+    (B : Ideal Eis) (_hB : B≠0),
+    ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ g : γ,∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (J F R Q₀ : Ideal Eis)
+      (_hJ : J≠0) (_hF : F≠0) (_hR : R≠0),
+    ∀ (A : Finset (FreeReflection.pool J (B*F*R) Q₀))
+      (Z N V M z₀ margin O₀ hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm R:ℝ)≤ Z^L →
+      0≤ O₀ → O₀≤ M → Z^O₀≤(Ideal.absNorm (rowPowerfulPart J):ℝ) →
+      CanonicalMargins (N+V) M (normWidth Z R) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents rows : Finset (Ideal Eis)),
+      (∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      rows⊆originalResidualRows parents J (B*F*R) →
+      (∀ P∈fixedBadPrimes,P∣B*F*R) →
+      let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+      let jF := fun b : A => completedLocalExponent J F b.val.val
+    ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ)
+      (_hdis : Pairwise (fun i j => Disjoint (lists i) (lists j)))
+      (hmax : ∀ i,∀ P∈lists i,P.IsMaximal)
+      (hgood : ∀ i,∀ P∈lists i,lambda∉P)
+      (_hprime : ∀ i,∀ P∈lists i,Prime P)
+      (hrows : ∀ K∈rows,Admissible K),
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) (G.ideal f)) →
+      (∀ f,ringChar (Eis⧸G.ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime (G.ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ i,∀ P∈lists i,IsCoprime (Ideal.span {Nlevel}) P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+    ∀ T : Finset σ,
+    ∃ D : ∀ K : rows,
+      ∀ _b : supportedSlotChoices (fun i : {i // i∉T} => lists i.val) (poolPrimeFamily J (B*F*R) Q₀).ideal K.val,
+      ∀ p : supportedSlotChoices (fun i : T => lists i.val) (poolPrimeFamily J (B*F*R) Q₀).ideal K.val,
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property)
+        (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator
+          Nlevel (a g) (c₀ g) (mode g),
+    ∀ (θ : ℝ) (w : ∀ i,lists i→ℂ), (∀ i P,‖w i P‖≤1) →
+      (∑ K : rows,‖∑ b : supportedSlotChoices (fun i : {i // i∉T} => lists i.val)
+        (poolPrimeFamily J (B*F*R) Q₀).ideal K.val,
+        ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*
+        ∑ p : supportedSlotChoices (fun i : T => lists i.val) (poolPrimeFamily J (B*F*R) Q₀).ideal K.val,
+          (∏ i : T,w i.val (p.val i))*mixedReflectedValue (D K b p) (s g)
+          (G.reflected K.val (hrows K.val K.property)
+            (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator_ne_zero (hc₀ g)
+          (G.reflected K.val (hrows K.val K.property)
+            (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator_good
+          (reflectedExponent jF) (slotIndices A (PrimeIndex K.val) T)
+          (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))‖^2)≤
+        (∏ i : {i // i∉T},(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ))^2*
+          (C*(1+‖θ‖)^degree*Z^(N+V-cstar/8-O₀/2)) := by
+  obtain ⟨degree,hu⟩ := canonical_original_choice_energy_uniform_degree lo hi hlo W hWs hW L cstar η hL hcstar hη hη1 hηc
+  refine ⟨degree,?_⟩
+  intro Nlevel γ _ a c₀ mode _ s hc₀ hNlevel hbase hac B hB
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu a c₀ mode s hc₀ hNlevel hbase hac B hB
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro g σ _ _ J F R Q₀ hJ hF hR A Z N V M z₀ margin O₀ hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hO hOM hOn hinv hmargin hVd hhd hd parents rows hparents hsub hbad
+  dsimp only
+  intro lists H hdis hmax hgood hprime hrows hH1 hH hprod hGN hGchar hrowcop hLN hLchar T
+  let G := (poolPrimeFamily J (B*F*R) Q₀).restrict A
+  let FF := (poolPrimeFamily J (B*F*R) Q₀).ideal
+  let rowsb := fun b : ∀ i : {i // i∉T},lists i.val => inactiveRowSet rows lists T FF b
+  have hbsub (b : ∀ i : {i // i∉T},lists i.val) : rowsb b⊆rows := by
+    intro K hK
+    exact ((inactiveRows_mem rows lists T FF b K).mp hK).1
+  have hbr (b : ∀ i : {i // i∉T},lists i.val) : ∀ K∈rowsb b,Admissible K := fun K hK => hrows K (hbsub b hK)
+  have hdisT : Pairwise (fun i j : T => Disjoint (lists i.val) (lists j.val)) := by
+    intro i j hij
+    exact hdis (fun hv => hij (Subtype.ext hv))
+  have hpT : (∏ i : T,H i.val)≤ Z^z₀ := by
+    rw [Finset.prod_coe_sort]
+    apply le_trans _ hprod
+    exact Finset.prod_le_prod_of_subset_of_one_le (Finset.subset_univ T)
+      (fun i _ => zero_le_one.trans (hH1 i)) (fun i _ _ => hH1 i)
+  have hall := fun b : ∀ i : {i // i∉T},lists i.val =>
+    he g J F R Q₀ hJ hF hR A Z N V M z₀ margin O₀ hhat d
+      hZ hN hM hMc hVc hzc hhc hFn hRn hO hOM hOn hinv hmargin hVd hhd hd
+      parents (rowsb b) hparents ((hbsub b).trans hsub) hbad
+      (fun i : T => lists i.val) (fun i : T => H i.val) hdisT
+      (fun i => hmax i.val) (fun i => hgood i.val) (fun i => hprime i.val) (hbr b)
+      (fun i => hH i.val) hpT hGN hGchar (fun K hK => hrowcop K (hbsub b hK))
+      (fun i => hLN i.val) (fun i => hLchar i.val)
+  choose Db hDb using hall
+  let D := fun (K : rows)
+    (b : supportedSlotChoices (fun i : {i // i∉T} => lists i.val) FF K.val)
+    (p : supportedSlotChoices (fun i : T => lists i.val) FF K.val) =>
+      Db b.val ⟨K.val,(inactiveRows_mem rows lists T FF b.val K.val).mpr ⟨K.property,b.property⟩⟩ p
+  refine ⟨D,?_⟩
+  intro θ w hw
+  let f := fun (K : rows) (b : supportedSlotChoices (fun i : {i // i∉T} => lists i.val) FF K.val) =>
+    ∑ p : supportedSlotChoices (fun i : T => lists i.val) FF K.val,
+      (∏ i : T,w i.val (p.val i))*mixedReflectedValue (D K b p) (s g)
+      (G.reflected K.val (hrows K.val K.property)
+        (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator_ne_zero (hc₀ g)
+      (G.reflected K.val (hrows K.val K.property)
+        (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator_good
+      (reflectedExponent (fun b : A => completedLocalExponent J F b.val.val)) (slotIndices A (PrimeIndex K.val) T)
+      (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))
+  have hzpos : 0< Z := lt_trans zero_lt_one (lt_of_lt_of_le hZ₀ hZ)
+  apply supported_inactive_source_energy rows lists T FF H (fun i P hP => (hprime i P hP).ne_zero)
+    hH w hw f (C*(1+‖θ‖)^degree*Z^(N+V-cstar/8-O₀/2)) (by positivity)
+  intro b
+  exact hDb b θ (fun i : T => w i.val) (fun i P => hw i.val P)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ φ τ : Type*} [Fintype σ] [DecidableEq σ] [Fintype τ]
+variable {N a c : Eis} {mode : Bool}
+variable (G : PrimeFamily τ) (FF : φ→Ideal Eis) (rows : Finset (Ideal Eis)) (hrows : ∀ K∈rows,Admissible K)
+    (lists : σ→Finset (Ideal Eis)) (hmax : ∀ i,∀ P∈lists i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈lists i,lambda∉P) (T : Finset σ)
+
+abbrev OriginalSplitCompletion :=
+    ∀ K : rows,∀ _b : supportedSlotChoices (fun i : {i // i∉T} => lists i.val) FF K.val,
+      ∀ p : supportedSlotChoices (fun i : T => lists i.val) FF K.val,
+      ControlledStratumArithmetic (G.reflected K.val (hrows K.val K.property)
+        (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator N a c mode
+
+def originalInactivePhysical
+    (D : OriginalSplitCompletion (N:=N) (a:=a) (c:=c) (mode:=mode) G FF rows hrows lists hmax hgood T)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : τ→ℕ) (W : ℝ→ℂ) (X : ℝ) (w : ∀ i,lists i→ℂ) (K : rows) : ℂ :=
+    ∑ b : supportedSlotChoices (fun i : {i // i∉T} => lists i.val) FF K.val,
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*
+      ∑ p : supportedSlotChoices (fun i : T => lists i.val) FF K.val,
+        (∏ i : T,w i.val (p.val i))*mixedReflectedValue (D K b p) s
+        (G.reflected K.val (hrows K.val K.property)
+          (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator_ne_zero hc
+        (G.reflected K.val (hrows K.val K.property)
+          (slotChoiceFamily (fun i : T => lists i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator_good
+        (reflectedExponent jF) (slotIndices τ (PrimeIndex K.val) T) W X
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+
+lemma subtype_product_le_full {σ : Type*} [Fintype σ] (p : σ→Prop) [DecidablePred p]
+    (H : σ→ℝ) (hH : ∀ i,1≤ H i) :
+    (∏ i : {i // p i},H i.val)≤∏ i,H i := by
+  rw [←Finset.prod_subtype (Finset.univ.filter p) (by simp) H]
+  exact Finset.prod_le_prod_of_subset_of_one_le (Finset.filter_subset _ _)
+    (fun i _ => (zero_le_one.trans (hH i))) (fun i _ _ => hH i)
+
+theorem harmonic_product_small_power (rmax : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {σ : Type*} [Fintype σ] (H : σ→ℝ),
+      Fintype.card σ≤ rmax → (∀ i,1≤ H i) →
+      (∏ i,(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ))^2≤ C*(∏ i,H i)^ε := by
+  have hdiag := diagonalControl_nonneg sieveCutoff
+  let D := max 1 ((2*(1+diagonalControl sieveCutoff))*(2+1/((ε/2)*Real.log 2)))
+  have hD : 1≤ D := le_max_left _ _
+  refine ⟨D^(2*rmax),by positivity,?_⟩
+  intro σ _ H hcard hH
+  have hp : 0<∏ i,H i := Finset.prod_pos (fun i _ => lt_of_lt_of_le zero_lt_one (hH i))
+  have he (i : σ) : (2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ)≤ D*(H i)^(ε/2) := by
+    apply (mul_le_mul_of_nonneg_left (columnDyadicLength_small_power (ε/2) (by positivity) (H i) (hH i)) (by have hd := diagonalControl_nonneg sieveCutoff; positivity : (0:ℝ)≤(2*(1+diagonalControl sieveCutoff)))).trans
+    rw [←mul_assoc]
+    exact mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.rpow_nonneg (zero_le_one.trans (hH i)) _)
+  calc
+    _ ≤ (∏ i,D*(H i)^(ε/2))^2 := by
+      apply pow_le_pow_left₀ (Finset.prod_nonneg (fun i _ => by positivity))
+      exact Finset.prod_le_prod (fun i _ => by positivity) (fun i _ => he i)
+    _ = D^(2*Fintype.card σ)*(∏ i,H i)^ε := by
+      rw [Finset.prod_mul_distrib,Finset.prod_const,Finset.card_univ,
+        Real.finsetProd_rpow Finset.univ H (fun i _ => zero_le_one.trans (hH i)),mul_pow,←pow_mul,
+        ←Real.rpow_mul_natCast hp.le]
+      congr 1
+      · congr 1;omega
+      · congr 1;norm_num
+    _ ≤ _ := mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hD (Nat.mul_le_mul_left 2 hcard)) (Real.rpow_nonneg hp.le _)
+
+theorem inactive_product_small_power (rmax : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {σ : Type*} [Fintype σ] (T : Finset σ) (H : σ→ℝ),
+      Fintype.card σ≤ rmax → (∀ i,1≤ H i) →
+      (∏ i : {i // i∉T},(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i.val)+1:ℝ))^2≤ C*(∏ i,H i)^ε := by
+  obtain ⟨C,hC,hb⟩ := harmonic_product_small_power rmax ε hε
+  refine ⟨C,hC,?_⟩
+  intro σ _ T H hcard hH
+  apply (hb (fun i : {i // i∉T} => H i.val)
+    ((Fintype.card_subtype_le _).trans hcard) (fun i => hH i.val)).trans
+  apply mul_le_mul_of_nonneg_left _ hC.le
+  exact Real.rpow_le_rpow (Finset.prod_nonneg (fun i _ => zero_le_one.trans (hH i.val)))
+    (subtype_product_le_full (fun i => i∉T) H hH) hε.le
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+noncomputable section
+open CompletedGauss CanonicalRowCompletion InverseMoment
+local notation "Eis" => Eisenstein.O
+theorem original_pool_choice_count (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ, 0< C ∧ ∀ (R Q Q₀ : Ideal Eis), R≠0 → Q≠0 →
+      (Fintype.card (FreeReflection.pool R Q Q₀→Fin 6):ℝ)^2≤ C*(Ideal.absNorm (R*Q):ℝ)^ε := by
+  obtain ⟨C,hC,hbound⟩ := completed_branch_count_small_power ε hε
+  refine ⟨C,hC,?_⟩
+  intro R Q Q₀ hR hQ
+  let (P : FreeReflection.pool R Q Q₀) : P.val.IsMaximal := FreeReflection.pool_maximal R Q Q₀ P
+  have hh := hbound (R*Q) (mul_ne_zero hR hQ) (fun P : FreeReflection.pool R Q Q₀ => P.val)
+    Subtype.val_injective (FreeReflection.pool_divides R Q Q₀ hR hQ)
+  simpa only [Fintype.card_fun,Fintype.card_fin,Nat.cast_pow,Nat.cast_ofNat,← pow_mul,
+    Nat.mul_comm (Fintype.card (FreeReflection.pool R Q Q₀)) 2] using hh
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma bounded_row_multiplier_energy {κ : Type*} (rows : Finset κ) (r f : κ→ℂ)
+    (hr : ∀ k∈rows,‖r k‖≤1) :
+    (∑ k∈rows,‖r k*f k‖^2)≤∑ k∈rows,‖f k‖^2 := by
+  apply Finset.sum_le_sum
+  intro k hk
+  apply pow_le_pow_left₀ (norm_nonneg _)
+  rw [norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (hr k hk)
+
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma pool_subset_choices_small_power (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (J Q Q₀ : Ideal Eis),J≠0 → Q≠0 →
+      (Fintype.card (Finset (FreeReflection.pool J Q Q₀)):ℝ)^2≤ C*(Ideal.absNorm (J*Q):ℝ)^ε := by
+  obtain ⟨C,hC,hb⟩ := original_pool_choice_count ε hε
+  refine ⟨C,hC,?_⟩
+  intro J Q Q₀ hJ hQ
+  apply le_trans _ (hb J Q Q₀ hJ hQ)
+  simp only [Fintype.card_finset,Fintype.card_fun,Fintype.card_fin,Nat.cast_pow,Nat.cast_ofNat]
+  exact pow_le_pow_left₀ (by positivity) (pow_le_pow_left₀ (by norm_num) (by norm_num) _) _
+
+theorem original_source_cost {χ : Type*} [Fintype χ] (rmax : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {σ : Type*} [Fintype σ] (H : σ→ℝ),
+      Fintype.card σ≤ rmax → (∀ i,1≤ H i) →
+    ∀ (J Q Q₀ : Ideal Eis),J≠0 → Q≠0 →
+      (Fintype.card (χ×(Finset (FreeReflection.pool J Q Q₀)×Finset σ)):ℝ)^2*
+        (∏ i,(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ))^2≤
+      C*(Ideal.absNorm (J*Q):ℝ)^ε*(∏ i,H i)^ε := by
+  obtain ⟨Cp,hCp,hp⟩ := pool_subset_choices_small_power ε hε
+  obtain ⟨Ch,hCh,hh⟩ := harmonic_product_small_power rmax ε hε
+  let C := ((Fintype.card χ:ℝ)^2+1)*(2:ℝ)^(2*rmax)*Cp*Ch
+  refine ⟨C,by dsimp [C];positivity,?_⟩
+  intro σ _ H hcard hH J Q Q₀ hJ hQ
+  have hs : (Fintype.card (Finset σ):ℝ)^2≤(2:ℝ)^(2*rmax) := by
+    simp only [Fintype.card_finset,Nat.cast_pow,Nat.cast_ofNat,←pow_mul]
+    apply pow_le_pow_right₀ (by norm_num)
+    omega
+  have hcf : (Fintype.card χ:ℝ)^2≤(Fintype.card χ:ℝ)^2+1 := by linarith
+  have hprod : 0≤(∏ i,H i)^ε := Real.rpow_nonneg (Finset.prod_nonneg (fun i _ => zero_le_one.trans (hH i))) _
+  have hnp : 0≤(Ideal.absNorm (J*Q):ℝ)^ε := Real.rpow_nonneg (Nat.cast_nonneg _) _
+  calc
+    _ = (Fintype.card χ:ℝ)^2*(Fintype.card (Finset (FreeReflection.pool J Q Q₀)):ℝ)^2*
+        (Fintype.card (Finset σ):ℝ)^2*(∏ i,(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ))^2 := by
+      simp only [Fintype.card_prod,Nat.cast_mul,mul_pow];ring
+    _ ≤ ((Fintype.card χ:ℝ)^2+1)*(Cp*(Ideal.absNorm (J*Q):ℝ)^ε)*
+        (2:ℝ)^(2*rmax)*(Ch*(∏ i,H i)^ε) := by
+      gcongr
+      · exact hp J Q Q₀ hJ hQ
+      · exact hh H hcard hH
+    _ = _ := by dsimp [C];ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+theorem original_source_cost_budget {χ : Type*} [Fintype χ]
+    (rmax : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {σ : Type*} [Fintype σ] (H : σ→ℝ),
+      Fintype.card σ≤ rmax → (∀ i,1≤ H i) →
+    ∀ (J Q Q₀ : Ideal Eis),J≠0 → Q≠0 → ∀ (Z Lpool Lslot loss : ℝ),1< Z →
+      (Ideal.absNorm (J*Q):ℝ)≤ Z^Lpool → (∏ i,H i)≤ Z^Lslot → ε*(Lpool+Lslot)≤ loss →
+      (Fintype.card (χ×(Finset (FreeReflection.pool J Q Q₀)×Finset σ)):ℝ)^2*
+        (∏ i,(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ))^2≤ C*Z^loss := by
+  obtain ⟨C,hC,hb⟩ := original_source_cost (χ:=χ) rmax ε hε
+  refine ⟨C,hC,?_⟩
+  intro σ _ H hcard hH J Q Q₀ hJ hQ Z Lpool Lslot loss hZ hpool hslot hloss
+  have hz : 0< Z := lt_trans zero_lt_one hZ
+  apply (hb H hcard hH J Q Q₀ hJ hQ).trans
+  calc
+    _ ≤ C*(Z^Lpool)^ε*(Z^Lslot)^ε := by
+      have hp := Real.rpow_le_rpow (Nat.cast_nonneg (Ideal.absNorm (J*Q))) hpool hε.le
+      have hs := Real.rpow_le_rpow (Finset.prod_nonneg (fun i _ => zero_le_one.trans (hH i))) hslot hε.le
+      exact mul_le_mul (mul_le_mul_of_nonneg_left hp hC.le) hs
+        (Real.rpow_nonneg (Finset.prod_nonneg (fun i _ => zero_le_one.trans (hH i))) _) (by positivity)
+    _ = C*Z^(ε*(Lpool+Lslot)) := by
+      rw [←Real.rpow_mul hz.le,←Real.rpow_mul hz.le,mul_assoc,←Real.rpow_add hz]
+      congr 2
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hZ.le hloss) hC.le
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_original_frozen_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ)
+    (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η) (hη1 : η≤1) (hηc : η≤ cstar/100000) (rmax : ℕ) :
+    ∃ (degree : ℕ), ∀ {Nlevel : Eis}, ∀
+    {γ : Type*} [Fintype γ] (a c₀ : γ→Eis) (mode : γ→Bool)
+    [Fintype (Eis⧸Ideal.span {Nlevel^2})]
+    (s : ∀ i,FixedCuspShape (ControlledStratumArithmetic.fixedCusp (a i) (c₀ i) (mode i))) (hc₀ : ∀ i,c₀ i≠0)
+    (_hNlevel : ∀ i,(9:Eis)*c₀ i∣Nlevel)
+    (_hbase : ∀ i,if mode i then lambda^2∣a i-1 else lambda^2∣c₀ i-1)
+    (_hac : ∀ i,IsCoprime (a i) (c₀ i))
+    (B : Ideal Eis) (_hB : B≠0),
+    ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (J F R Q₀ : Ideal Eis)
+      (_hJ : J≠0) (_hF : F≠0) (_hR : R≠0),
+    ∀ (Z N V M z₀ margin O₀ hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm J:ℝ)≤ Z^M → (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm R:ℝ)≤ Z^L →
+      0≤ O₀ → O₀≤ M → Z^O₀≤(Ideal.absNorm (rowPowerfulPart J):ℝ) →
+      CanonicalMargins (N+V) M (normWidth Z R) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents rows : Finset (Ideal Eis)),
+      (∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      rows⊆originalResidualRows parents J (B*F*R) →
+      (∀ P∈fixedBadPrimes,P∣B*F*R) →
+    Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ)
+      (_hdis : Pairwise (fun i j => Disjoint (lists i) (lists j)))
+      (hmax : ∀ i,∀ P∈lists i,P.IsMaximal)
+      (hgood : ∀ i,∀ P∈lists i,lambda∉P)
+      (_hprime : ∀ i,∀ P∈lists i,Prime P)
+      (hrows : ∀ K∈rows,Admissible K),
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+      (∀ f,IsCoprime (Ideal.span {Nlevel}) ((poolPrimeFamily J (B*F*R) Q₀).ideal f)) →
+      (∀ f,ringChar (Eis⧸(poolPrimeFamily J (B*F*R) Q₀).ideal f)≠2) →
+      (∀ K∈rows,(∀ f,IsCoprime ((poolPrimeFamily J (B*F*R) Q₀).ideal f) K) ∧ IsCoprime (Ideal.span {Nlevel}) K) →
+      (∀ i,∀ P∈lists i,IsCoprime (Ideal.span {Nlevel}) P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+    ∃ D : ∀ g : γ,∀ A : Finset (FreeReflection.pool J (B*F*R) Q₀),∀ T : Finset σ,
+      OriginalSplitCompletion (N:=Nlevel) (a:=a g) (c:=c₀ g) (mode:=mode g)
+        ((poolPrimeFamily J (B*F*R) Q₀).restrict A) (poolPrimeFamily J (B*F*R) Q₀).ideal
+        rows hrows lists hmax hgood T,
+    ∀ (θ : ℝ) (w : ∀ i,lists i→ℂ) (scalar : γ → rows → ℂ),
+      (∀ i P,‖w i P‖≤1) → (∀ g K,‖scalar g K‖≤1) →
+      (∑ K : rows,‖thetaDerivativeScalar⁻¹*∑ g : γ,scalar g K*
+        ∑ A : Finset (FreeReflection.pool J (B*F*R) Q₀),frozenInactiveWeight J F (B*F*R) Q₀ A*
+          ∑ T : Finset σ,originalInactivePhysical
+            ((poolPrimeFamily J (B*F*R) Q₀).restrict A) (poolPrimeFamily J (B*F*R) Q₀).ideal
+            rows hrows lists hmax hgood T (D g A T) (s g) (hc₀ g)
+            (fun b : A => completedLocalExponent J F b.val.val)
+            (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat)) w K‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(N+V-cstar/16-O₀/2) := by
+  obtain ⟨degree,hu⟩ := canonical_original_inactive_energy_uniform_degree lo hi hlo W hWs hW L cstar η hL hcstar hη hη1 hηc
+  refine ⟨degree,?_⟩
+  intro Nlevel γ _ a c₀ mode _ s hc₀ hNlevel hbase hac B hB
+  obtain ⟨C,Z₁,hC,hZ₁,he⟩ := hu a c₀ mode s hc₀ hNlevel hbase hac B hB
+  let ε := cstar/(32*(4*L+2))
+  have hε : 0<ε := div_pos hcstar (by positivity)
+  obtain ⟨Cb,hCb,hcost⟩ := original_source_cost_budget (χ:=γ) rmax ε hε
+  let Z₀ := max Z₁ (Ideal.absNorm B:ℝ)
+  refine ⟨(‖thetaDerivativeScalar⁻¹‖^2+1)*Cb*C,Z₀,by positivity,hZ₁.trans_le (le_max_left _ _),?_⟩
+  intro σ _ _ J F R Q₀ hJ hF hR Z N V M z₀ margin O₀ hhat d hZ hN hM hMc hVc hzc hhc
+    hJn hFn hRn hO hOM hOn hinv hmargin hVd hhd hd parents rows hparents hsub hbad
+    hcard lists H hdis hmax hgood hprime hrows hH1 hH hprod hGN hGchar hrowcop hLN hLchar
+  have hz1 : Z₁≤ Z := (le_max_left _ _).trans hZ
+  have hz : 1< Z := lt_of_lt_of_le hZ₁ hz1
+  have hzp : 0< Z := lt_trans zero_lt_one hz
+  let FF := (poolPrimeFamily J (B*F*R) Q₀).ideal
+  have hall := fun (g : γ) (A : Finset (FreeReflection.pool J (B*F*R) Q₀)) (T : Finset σ) =>
+    he g J F R Q₀ hJ hF hR A Z N V M z₀ margin O₀ hhat d
+      hz1 hN hM hMc hVc hzc hhc hFn hRn hO hOM hOn hinv hmargin hVd hhd hd
+      parents rows hparents hsub hbad lists H hdis hmax hgood hprime hrows hH1 hH hprod
+      (fun f => hGN f.val) (fun f => hGchar f.val)
+      (fun K hK => ⟨fun f => (hrowcop K hK).1 f.val,(hrowcop K hK).2⟩) hLN hLchar T
+  choose D hD using hall
+  refine ⟨D,?_⟩
+  intro θ w scalar hw hscalar
+  have hdiag := diagonalControl_nonneg sieveCutoff
+  let energy := C*(1+‖θ‖)^degree*Z^(N+V-cstar/8-O₀/2)
+  let harm := (∏ i,(2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ))^2
+  let source := fun (g : γ) (A : Finset (FreeReflection.pool J (B*F*R) Q₀)) (T : Finset σ) (K : rows) =>
+    originalInactivePhysical ((poolPrimeFamily J (B*F*R) Q₀).restrict A) FF rows hrows lists hmax hgood T
+      (D g A T) (s g) (hc₀ g) (fun b : A => completedLocalExponent J F b.val.val)
+      (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat)) w K
+  have hs (g : γ) (A : Finset (FreeReflection.pool J (B*F*R) Q₀)) (T : Finset σ) :
+      (∑ K : rows,‖source g A T K‖^2)≤ harm*energy := by
+    apply (hD g A T θ w hw).trans
+    apply mul_le_mul_of_nonneg_right _ (by dsimp [energy];positivity)
+    apply pow_le_pow_left₀ (by positivity)
+    exact subtype_product_le_full (fun i => i∉T) (fun i => (2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (H i)+1:ℝ)) (fun i => by
+      have hn : (0:ℝ)≤ columnDyadicLength (H i) := Nat.cast_nonneg _
+      have hd := diagonalControl_nonneg sieveCutoff
+      nlinarith [mul_nonneg hd hn])
+  let Labels := γ×(Finset (FreeReflection.pool J (B*F*R) Q₀)×Finset σ)
+  let f := fun (b : Labels) (K : rows) => (scalar b.1 K*frozenInactiveWeight J F (B*F*R) Q₀ b.2.1)*source b.1 b.2.1 b.2.2 K
+  have hf (b : Labels) : (∑ K : rows,‖f b K‖^2)≤ harm*energy := by
+    apply (bounded_row_multiplier_energy Finset.univ _ _ (fun K hK => ?_)).trans (hs b.1 b.2.1 b.2.2)
+    rw [norm_mul]
+    exact (mul_le_mul (hscalar b.1 K) (frozenInactiveWeight_norm J F (B*F*R) Q₀ b.2.1)
+      (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+  have hfam := weighted_finite_row_energy_uniform (Finset.univ : Finset Labels) (Finset.univ : Finset rows)
+    (fun _ => (1:ℂ)) f (harm*energy) (fun b _ => hf b)
+  simp only [one_mul,norm_one,Finset.sum_const,Finset.card_univ,nsmul_eq_mul] at hfam
+  have hid (K : rows) : (∑ b : Labels,f b K)=∑ g : γ,scalar g K*
+      ∑ A : Finset (FreeReflection.pool J (B*F*R) Q₀),frozenInactiveWeight J F (B*F*R) Q₀ A*
+        ∑ T : Finset σ,source g A T K := by
+    simp only [Labels,f,Fintype.sum_prod_type,Finset.mul_sum,mul_assoc]
+  have hsource : (∑ K : rows,‖thetaDerivativeScalar⁻¹*∑ g : γ,scalar g K*
+      ∑ A : Finset (FreeReflection.pool J (B*F*R) Q₀),frozenInactiveWeight J F (B*F*R) Q₀ A*
+        ∑ T : Finset σ,source g A T K‖^2)≤
+      ‖thetaDerivativeScalar⁻¹‖^2*(Fintype.card Labels:ℝ)^2*harm*energy := by
+    simp_rw [←hid]
+    simp only [norm_mul,mul_pow,←Finset.mul_sum]
+    exact (mul_le_mul_of_nonneg_left hfam (sq_nonneg _)).trans_eq (by ring)
+  apply hsource.trans
+  have hBn : (Ideal.absNorm B:ℝ)≤ Z := (le_max_right _ _).trans hZ
+  have hmaskn := canonical_mask_norm_cap B F R Z V L L hz.le hBn hFn hRn hVc (le_refl _)
+  have hJn' : (Ideal.absNorm J:ℝ)≤ Z^L := hJn.trans (Real.rpow_le_rpow_of_exponent_le hz.le hMc)
+  have hpool : (Ideal.absNorm (J*(B*F*R)):ℝ)≤ Z^(3*L+1) := by
+    rw [map_mul,Nat.cast_mul]
+    calc
+      _ ≤ Z^L*Z^(2*L+1) := mul_le_mul hJn' hmaskn (Nat.cast_nonneg _) (Real.rpow_nonneg hzp.le _)
+      _ = _ := by rw [←Real.rpow_add hzp];congr 1;ring
+  have hbudget : ε*((3*L+1)+L)≤ cstar/32 := by
+    have heq : ε*(4*L+2)=cstar/32 := by dsimp [ε];field_simp
+    have hh := mul_le_mul_of_nonneg_left (show (3*L+1)+L≤4*L+2 by linarith) hε.le
+    rwa [heq] at hh
+  have hcst := hcost H hcard hH1 J (B*F*R) Q₀ hJ (mul_ne_zero (mul_ne_zero hB hF) hR)
+    Z (3*L+1) L (cstar/32) hz hpool
+    (hprod.trans (Real.rpow_le_rpow_of_exponent_le hz.le hzc)) hbudget
+  calc
+    _ = ‖thetaDerivativeScalar⁻¹‖^2*((Fintype.card Labels:ℝ)^2*harm)*energy := by ring
+    _ ≤ (‖thetaDerivativeScalar⁻¹‖^2+1)*(Cb*Z^(cstar/32))*energy := by
+      apply mul_le_mul_of_nonneg_right _ (by dsimp [energy];positivity)
+      exact mul_le_mul (by linarith) hcst (by dsimp [harm];positivity) (by positivity)
+    _ = ((‖thetaDerivativeScalar⁻¹‖^2+1)*Cb*C)*(1+‖θ‖)^degree*
+        Z^(cstar/32+(N+V-cstar/8-O₀/2)) := by
+      dsimp only [energy]
+      rw [Real.rpow_add hzp]
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hz.le (by linarith)) (by positivity)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open UniqueFactorizationMonoid
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CanonicalCoefficientClass
+def fixedBaseConductor (m : ℕ) : Ideal Eisenstein.O := Ideal.span {(m : Eisenstein.O)}*Ideal.span {(4 : Eisenstein.O)}
+
+lemma fixedBaseConductor_principal (m : ℕ) :
+    fixedBaseConductor m=Ideal.span {((4*m : ℕ) : Eisenstein.O)} := by
+  rw [fixedBaseConductor,Ideal.span_singleton_mul_span_singleton]
+  congr 1
+  push_cast
+  ring_nf
+
+lemma fixedBaseConductor_ne_zero (m : ℕ) (hm : m≠0) : fixedBaseConductor m≠0 := by
+  rw [fixedBaseConductor_principal]
+  change Ideal.span {((4*m : ℕ) : Eisenstein.O)}≠⊥
+  rw [ne_eq,Ideal.span_singleton_eq_bot]
+  exact_mod_cast Nat.mul_ne_zero (by decide : (4:ℕ)≠0) hm
+
+
+end CanonicalCoefficientClass
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open UniqueFactorizationMonoid
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CanonicalRowCompletion
+open CanonicalCoefficientClass
+def reflectionConductor (q:ℕ) : Eis := (2592*q:ℕ)
+
+def reflectionExcludedPrimes (q:ℕ) : Finset (Ideal Eis) :=
+  fixedBadPrimes ∪ (normalizedFactors (Ideal.span {reflectionConductor q})).toFinset
+
+lemma reflectionConductor_ne_zero (q:ℕ) (hq:q≠0) : reflectionConductor q≠0 := by
+  unfold reflectionConductor
+  exact_mod_cast Nat.mul_ne_zero (by decide : 2592≠0) hq
+
+lemma reflectionConductor_ideal (q:ℕ) :
+    Ideal.span {reflectionConductor q}=
+      Ideal.span {(9:Eis)}*(fixedBaseConductor q*Ideal.span {(72:Eis)}) := by
+  rw [fixedBaseConductor_principal,Ideal.span_singleton_mul_span_singleton,
+    Ideal.span_singleton_mul_span_singleton]
+  congr 1
+  unfold reflectionConductor
+  push_cast
+  ring_nf
+
+lemma reflectionExcludedPrimes_bad (q:ℕ) :
+    fixedBadPrimes⊆reflectionExcludedPrimes q := Finset.subset_union_left
+
+lemma reflectionExcludedPrimes_prime (q:ℕ) (P:Ideal Eis)
+    (hP:P∈reflectionExcludedPrimes q) : Prime P := by
+  rcases Finset.mem_union.mp hP with hbad | hgood
+  · exact fixedBadPrimes_prime P hbad
+  · exact prime_of_normalized_factor P (Multiset.mem_toFinset.mp hgood)
+
+
+lemma reflectionConductor_prime_mem (q:ℕ) (hq:q≠0) (P:Ideal Eis)
+    (hP:Prime P) (hd:P∣Ideal.span {reflectionConductor q}) :
+    P∈reflectionExcludedPrimes q := by
+  apply Finset.mem_union_right
+  apply Multiset.mem_toFinset.mpr
+  apply (Ideal.mem_normalizedFactors_iff (Ideal.span_singleton_eq_bot.not.mpr
+    (reflectionConductor_ne_zero q hq))).mpr
+  exact ⟨Ideal.isPrime_of_prime hP,Ideal.dvd_iff_le.mp hd⟩
+
+lemma reflectionExcludedGenerator_ne_zero (q:ℕ) :
+    excludedGenerator (reflectionExcludedPrimes q)≠0 := by
+  apply cubicIdealGenerator_ne_zero
+  exact Finset.prod_ne_zero_iff.mpr (fun P hP=>(reflectionExcludedPrimes_prime q P hP).ne_zero)
+
+lemma reflectionExcludedGenerator_bad (q:ℕ) :
+    lambda∣excludedGenerator (reflectionExcludedPrimes q) ∧
+      (2:Eis)∣excludedGenerator (reflectionExcludedPrimes q) := by
+  constructor
+  · apply Ideal.mem_span_singleton.mp
+    exact excludedGenerator_mem _ (reflectionExcludedPrimes_bad q (by simp [fixedBadPrimes, ramifiedIdeal, cubicTwoIdeal]))
+  · apply Ideal.mem_span_singleton.mp
+    exact excludedGenerator_mem _ (reflectionExcludedPrimes_bad q (by simp [fixedBadPrimes, ramifiedIdeal, cubicTwoIdeal]))
+
+lemma reflectionConductor_coprime_of_not_excluded (q:ℕ) (hq:q≠0)
+    (P:Ideal Eis) [P.IsMaximal] (hP:P∉reflectionExcludedPrimes q) :
+    IsCoprime (Ideal.span {reflectionConductor q}) P := by
+  apply Ideal.isCoprime_iff_sup_eq.mpr
+  by_contra ht
+  have he:P=Ideal.span {reflectionConductor q}⊔P:=
+    (show P.IsMaximal from inferInstance).eq_of_le ht le_sup_right
+  exact hP (reflectionConductor_prime_mem q hq P
+    (Ideal.prime_of_isPrime (NeZero.ne P) inferInstance)
+    (Ideal.dvd_iff_le.mpr (le_sup_left.trans he.symm.le)))
+
+lemma reflectionConductor_coprime_primary (q:ℕ) (hq:q≠0)
+    (p:Eis) [(Ideal.span {p}).IsMaximal]
+    (hp:Ideal.span {p}∉reflectionExcludedPrimes q) :
+    IsCoprime (reflectionConductor q) p :=
+  (Ideal.isCoprime_span_singleton_iff _ _).mp
+    (reflectionConductor_coprime_of_not_excluded q hq _ hp)
+
+
+end CanonicalRowCompletion
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open UniqueFactorizationMonoid
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CompletedGauss
+lemma prime_dvd_rowResidualPart_iff (I Q P:Ideal Eis) (hP:Prime P) :
+    P∣rowResidualPart I Q ↔ P∈normalizedFactors (rowSimplePart I) ∧ ¬P∣Q := by
+  have hm:=UniqueFactorizationMonoid.mem_normalizedFactors_iff
+    (squarefreeResidualPart_ne_zero (rowSimplePart I) Q) (p:=P)
+  simp only [hP,true_and] at hm
+  change P∣squarefreeResidualPart (rowSimplePart I) Q ↔ _
+  rw [←hm]
+  simp only [normalizedFactors_squarefreeResidualPart,Multiset.mem_filter]
+
+
+end CompletedGauss
+namespace CanonicalRowCompletion
+lemma excluded_prime_dvd_row_mask (q:ℕ) (m:Eis) (F P:Ideal Eis)
+    (hP:P∈reflectionExcludedPrimes q) :
+    P∣Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F := by
+  apply dvd_mul_of_dvd_left
+  apply Ideal.dvd_iff_le.mpr
+  apply Ideal.span_le.mpr
+  exact Set.singleton_subset_iff.mpr (P.mul_mem_left m (excludedGenerator_mem _ hP))
+
+lemma residual_prime_not_excluded (q:ℕ) (m:Eis) (F I P:Ideal Eis) (hP:Prime P)
+    (hres:P∣rowResidualPart I (Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F)) :
+    P∉reflectionExcludedPrimes q := by
+  intro hmem
+  have hn:¬P∣Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F:=
+    ((prime_dvd_rowResidualPart_iff _ _ P hP).mp hres).2
+  exact hn (excluded_prime_dvd_row_mask q m F P hmem)
+
+lemma residual_coprime_fixed_conductor (q:ℕ) (hq:q≠0) (m:Eis) (F I:Ideal Eis) :
+    IsCoprime (Ideal.span {reflectionConductor q})
+      (rowResidualPart I (Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F)) := by
+  have hr : IsRelPrime (Ideal.span {reflectionConductor q})
+      (rowResidualPart I (Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F)) := by
+    apply (isRelPrime_iff_no_prime_factors
+      (Ideal.span_singleton_eq_bot.not.mpr (reflectionConductor_ne_zero q hq))).mpr
+    intro P hfixed hres hP
+    exact residual_prime_not_excluded q m F I P hP hres
+      (reflectionConductor_prime_mem q hq P hP hfixed)
+  apply Ideal.isCoprime_iff_gcd.mpr
+  exact associated_iff_eq.mp (associated_one_iff_isUnit.mpr (gcd_isUnit_iff_isRelPrime.mpr hr))
+
+lemma reflection_row_mask_bad (q:ℕ) (m:Eis) (F:Ideal Eis) :
+    ∀P∈fixedBadPrimes,P∣Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F := by
+  intro P hP
+  exact excluded_prime_dvd_row_mask q m F P (reflectionExcludedPrimes_bad q hP)
+
+lemma residual_coprime_free_base (q:ℕ) (hq:q≠0) (m:Eis) (F I:Ideal Eis) :
+    IsCoprime (CanonicalCoefficientClass.fixedBaseConductor q*Ideal.span {(72:Eis)})
+      (rowResidualPart I (Ideal.span {m*excludedGenerator (reflectionExcludedPrimes q)}*F)) := by
+  have hc:=residual_coprime_fixed_conductor q hq m F I
+  rw [reflectionConductor_ideal] at hc
+  exact hc.of_isCoprime_of_dvd_left (dvd_mul_left _ (Ideal.span {(9:Eis)}))
+
+
+end CanonicalRowCompletion
+namespace CanonicalRowCompletion.ActualFiber
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CubicEisenstein
+
+def maskElement (q:ℕ) (m:Eis) : Eis := m*excludedGenerator (reflectionExcludedPrimes q)
+def maskIdeal (q:ℕ) (m:Eis) (F:Ideal Eis) : Ideal Eis := Ideal.span {maskElement q m}*F
+def freeConductor (q:ℕ) : Ideal Eis := CanonicalCoefficientClass.fixedBaseConductor q*Ideal.span {(72:Eis)}
+abbrev RowIndex (q:ℕ) (m:Eis) (rows:Finset (Ideal Eis)) (R F:Ideal Eis) :=
+  representativeRowFiber rows R (maskIdeal q m F)
+
+lemma maskElement_ne_zero (q:ℕ) (m:Eis) (hm:m≠0) : maskElement q m≠0 :=
+  mul_ne_zero hm (reflectionExcludedGenerator_ne_zero q)
+lemma maskIdeal_ne_zero (q:ℕ) (m:Eis) (hm:m≠0) (F:Ideal Eis) (hF:F≠0) : maskIdeal q m F≠0 :=
+  mul_ne_zero (Ideal.span_singleton_eq_bot.not.mpr (maskElement_ne_zero q m hm)) hF
+lemma mask_bad (q:ℕ) (m:Eis) (F:Ideal Eis) : ∀P∈fixedBadPrimes,P∣maskIdeal q m F :=
+  reflection_row_mask_bad q m F
+
+
+end CanonicalRowCompletion.ActualFiber
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open UniqueFactorizationMonoid
+open scoped BigOperators Classical
+local notation "Eis" => Eisenstein.O
+namespace CompletedGauss
+theorem powerfulBase_norm_bound (I : Ideal O) (hI : PowerfulIdeal I) (X : ℝ)
+    (hX : (Ideal.absNorm I:ℝ)≤ X) :
+    1≤(Ideal.absNorm (quadraticSquarefreePart I):ℝ) ∧
+    (Ideal.absNorm (quadraticSquarefreePart I):ℝ)≤ X ∧
+    (Ideal.absNorm (powerfulBase I):ℝ)≤ Real.sqrt X/(Ideal.absNorm (quadraticSquarefreePart I):ℝ) := by
+  have ha := (powerfulBase_spec I hI).1
+  have hb := (quadraticSquarefreePart_squarefree I).ne_zero
+  have ha1 : 1≤(Ideal.absNorm (powerfulBase I):ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun hz => ha (Ideal.absNorm_eq_zero_iff.mp hz))
+  have hb1 : 1≤(Ideal.absNorm (quadraticSquarefreePart I):ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun hz => hb (Ideal.absNorm_eq_zero_iff.mp hz))
+  have hnorm : (Ideal.absNorm (powerfulBase I):ℝ)^2*(Ideal.absNorm (quadraticSquarefreePart I):ℝ)^3=(Ideal.absNorm I:ℝ) := by
+    have h := congrArg (fun J : Ideal O => (Ideal.absNorm J:ℝ)) (powerfulBase_spec I hI).2
+    simpa only [map_mul,map_pow,Nat.cast_mul,Nat.cast_pow] using h
+  have hX0 : 0≤ X := (Nat.cast_nonneg _).trans hX
+  have hb2 : (Ideal.absNorm (quadraticSquarefreePart I):ℝ)≤(Ideal.absNorm (quadraticSquarefreePart I):ℝ)^3 := by
+    simpa only [pow_one] using pow_le_pow_right₀ hb1 (show (1:ℕ)≤3 by decide)
+  have hab : ((Ideal.absNorm (powerfulBase I):ℝ)*(Ideal.absNorm (quadraticSquarefreePart I):ℝ))^2≤ X := by
+    calc
+      _ = (Ideal.absNorm (powerfulBase I):ℝ)^2*(Ideal.absNorm (quadraticSquarefreePart I):ℝ)^2 := by ring
+      _ ≤ (Ideal.absNorm (powerfulBase I):ℝ)^2*(Ideal.absNorm (quadraticSquarefreePart I):ℝ)^3 :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hb1 (by decide)) (sq_nonneg _)
+      _ ≤ X := hnorm.trans_le hX
+  have hbX : (Ideal.absNorm (quadraticSquarefreePart I):ℝ)≤ X := by
+    calc
+      _ ≤ (Ideal.absNorm (quadraticSquarefreePart I):ℝ)^3 := hb2
+      _ ≤ (Ideal.absNorm (powerfulBase I):ℝ)^2*(Ideal.absNorm (quadraticSquarefreePart I):ℝ)^3 :=
+        le_mul_of_one_le_left (by positivity) (one_le_pow₀ ha1)
+      _ ≤ X := hnorm.trans_le hX
+  refine ⟨hb1,hbX,?_⟩
+  apply (le_div_iff₀ (by linarith : 0<(Ideal.absNorm (quadraticSquarefreePart I):ℝ))).mpr
+  nlinarith [Real.sq_sqrt hX0,Real.sqrt_nonneg X]
+
+theorem powerful_fiber_count (S : Finset (Ideal O)) (X : ℝ)
+    (hS : ∀I∈S,PowerfulIdeal I ∧ (Ideal.absNorm I:ℝ)≤ X)
+    (B : Ideal O) (hB : B∈S.image quadraticSquarefreePart) :
+    ((S.filter (fun I => quadraticSquarefreePart I=B)).card:ℝ)≤128*Real.sqrt X/(Ideal.absNorm B:ℝ) := by
+  obtain ⟨I,hI,hIB⟩ := Finset.mem_image.mp hB
+  have hi := hS I hI
+  have hnorm := powerfulBase_norm_bound I hi.1 X hi.2
+  rw [hIB] at hnorm
+  have hAb : 1≤(Ideal.absNorm (powerfulBase I):ℝ) := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun hz => (powerfulBase_spec I hi.1).1 (Ideal.absNorm_eq_zero_iff.mp hz))
+  have hscale : 1≤ Real.sqrt X/(Ideal.absNorm B:ℝ) := hAb.trans hnorm.2.2
+  let T := S.filter (fun I => quadraticSquarefreePart I=B)
+  have hinj : Set.InjOn powerfulBase T := by
+    intro J hJ lengthScale hL he
+    exact powerfulBase_injective_on_fiber J lengthScale (hS J (Finset.mem_filter.mp hJ).1).1
+      (hS lengthScale (Finset.mem_filter.mp hL).1).1
+      ((Finset.mem_filter.mp hJ).2.trans (Finset.mem_filter.mp hL).2.symm) he
+  have hcard : (T.image powerfulBase).card=T.card := Finset.card_image_iff.mpr hinj
+  have hcount := EisensteinLatticeCount.finite_ideal_count_real (T.image powerfulBase)
+    (Real.sqrt X/(Ideal.absNorm B:ℝ)) hscale (fun J hJ => by
+      obtain ⟨lengthScale,hL,rfl⟩ := Finset.mem_image.mp hJ
+      exact (powerfulBase_spec lengthScale (hS lengthScale (Finset.mem_filter.mp hL).1).1).1) (fun J hJ => by
+      obtain ⟨lengthScale,hL,rfl⟩ := Finset.mem_image.mp hJ
+      have hp := powerfulBase_norm_bound lengthScale (hS lengthScale (Finset.mem_filter.mp hL).1).1 X
+        (hS lengthScale (Finset.mem_filter.mp hL).1).2
+      simpa only [(Finset.mem_filter.mp hL).2] using hp.2.2)
+  rw [hcard] at hcount
+  simpa only [mul_div_assoc] using hcount
+
+theorem powerful_ideal_count_log (S : Finset (Ideal O)) (X : ℝ) (hX : 1≤ X)
+    (hS : ∀I∈S,PowerfulIdeal I ∧ (Ideal.absNorm I:ℝ)≤ X) :
+    (S.card:ℝ)≤32768*Real.sqrt X*(columnDyadicLength X+1:ℝ) := by
+  let B := S.image quadraticSquarefreePart
+  have hBn (J : Ideal O) (hJ : J∈B) : J≠0 ∧ (Ideal.absNorm J:ℝ)≤ X := by
+    obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hJ
+    exact ⟨(quadraticSquarefreePart_squarefree I).ne_zero,(powerfulBase_norm_bound I (hS I hI).1 X (hS I hI).2).2.1⟩
+  have he : (S.card:ℝ)=∑J∈B,((S.filter (fun I => quadraticSquarefreePart I=J)).card:ℝ) := by
+    calc
+      _ = ∑_I∈S,(1:ℝ) := by simp
+      _ = ∑J∈B,∑_I∈S.filter (fun I => quadraticSquarefreePart I=J),(1:ℝ) :=
+        (Finset.sum_fiberwise_of_maps_to (fun I hI => Finset.mem_image_of_mem quadraticSquarefreePart hI) _).symm
+      _ = _ := by simp
+  rw [he]
+  calc
+    _ ≤ ∑J∈B,128*Real.sqrt X/(Ideal.absNorm J:ℝ) := Finset.sum_le_sum (fun J hJ => powerful_fiber_count S X hS J hJ)
+    _ = (128*Real.sqrt X)*∑J∈B,1/(Ideal.absNorm J:ℝ) := by rw [Finset.mul_sum]; congr 1; ext J; ring
+    _ ≤ (128*Real.sqrt X)*(256*(columnDyadicLength X+1:ℝ)) :=
+      by
+        have hh := InverseMoment.descent_finite_inverse_norm_sum B X
+          (fun J hJ => (hBn J hJ).1) (fun J hJ => (hBn J hJ).2)
+        norm_num only [show (2 : ℝ)*128=256 by norm_num] at hh
+        exact mul_le_mul_of_nonneg_left hh (by positivity)
+    _ = _ := by ring
+
+theorem powerful_ideal_count (ε : ℝ) (hε : 0<ε) :
+    ∃C : ℝ,0< C ∧ ∀ (S : Finset (Ideal O)) (X : ℝ), 1≤ X →
+      (∀I∈S,PowerfulIdeal I ∧ (Ideal.absNorm I:ℝ)≤ X) →
+      (S.card:ℝ)≤ C*X^(1/2+ε) := by
+  let C := 32768*(2+1/(ε*Real.log 2))
+  have hC : 0< C := by have hl : 0< Real.log 2 := Real.log_pos (by norm_num); dsimp [C]; positivity
+  refine ⟨C,hC,?_⟩
+  intro S X hX hS
+  apply (powerful_ideal_count_log S X hX hS).trans
+  calc
+    _ ≤ 32768*Real.sqrt X*((2+1/(ε*Real.log 2))*X^ε) :=
+      mul_le_mul_of_nonneg_left (columnDyadicLength_small_power ε hε X hX) (by positivity)
+    _ = C*X^(1/2+ε) := by
+      rw [Real.rpow_add (by linarith : 0< X),←Real.sqrt_eq_rpow]
+      dsimp [C]
+      ring
+
+end CompletedGauss
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+local notation "Eis" => Eisenstein.O
+namespace CanonicalRowCompletion
+noncomputable def fiberGoodMaskRowData (rows:Finset (Ideal Eis)) (R F:Ideal Eis) (m:Eis)
+    (hm:m≠0) (hF:F≠0) (hrows:∀I∈rows,I≠0) (u:Eisˣ)
+    (I:representativeRowFiber rows R (Ideal.span {m}*F)) :
+    GoodMaskRowData m (cubicIdealGenerator F)
+      (u.val*cubicIdealGenerator I.val) :=
+  goodMaskRowData _ _ _ hm (cubicIdealGenerator_ne_zero F hF)
+    (mul_ne_zero u.ne_zero (cubicIdealGenerator_ne_zero I.val
+      (hrows I.val (Finset.mem_filter.mp I.property).1)))
+
+end CanonicalRowCompletion
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+
+variable (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+abbrev originalSlotChoices :=
+  {p : ∀ i,L i // ∀ P : FreePrimeIndex D.movingIdeal Q₀,∀ i,(p i).val≠P.val.val}
+
+def originalSlotSupportEquiv :
+    originalSlotChoices D Q₀ L ≃ supportedSlotChoices L ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)) where
+  toFun p := ⟨p.val,(original_slot_mask_iff D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+    (slotChoiceFamily L hmax hgood p.val)).mp p.property⟩
+  invFun p := ⟨p.val,(original_slot_mask_iff D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+    (slotChoiceFamily L hmax hgood p.val)).mpr p.property⟩
+  left_inv _p := rfl
+  right_inv _p := rfl
+
+def originalSlotSplit (T : Finset σ) : originalSlotChoices D Q₀ L ≃
+    supportedSlotChoices (fun i : {i // i∉T} => L i.val) ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)) ×
+      supportedSlotChoices (fun i : T => L i.val) ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)) :=
+  (originalSlotSupportEquiv D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood).trans
+    (supportedSlotSplit L T ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)))
+
+lemma originalSlotSplit_symm_val (T : Finset σ)
+    (b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)))
+    (a : supportedSlotChoices (fun i : T => L i.val) ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F))) :
+    ((originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T).symm (b,a)).val=
+      (slotChoiceSplit L T).symm (a.val,b.val) := rfl
+
+theorem original_supported_slot_sum (T : Finset σ)
+    (w : ∀ i,L i→ℂ) (H : originalSlotChoices D Q₀ L→ℂ) :
+    (∑ p : originalSlotChoices D Q₀ L,
+      (∏ i∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (p.val i).val:ℂ)⁻¹)*
+        (∏ i,w i (p.val i))*H p)=
+    ∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val) ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*
+      ∑ a : supportedSlotChoices (fun i : T => L i.val) ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+        (∏ i : T,w i.val (a.val i))*
+        H ((originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T).symm (b,a)) := by
+  rw [←(originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T).symm.sum_comp]
+  rw [Fintype.sum_prod_type]
+  apply Finset.sum_congr rfl
+  intro b hb
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro a ha
+  rw [originalSlotSplit_symm_val,slot_choice_inactive_weight,Equiv.apply_symm_apply,slot_coefficient_split]
+  ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+
+variable (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+lemma originalSplit_active_family (T : Finset σ) (p : originalSlotChoices D Q₀ L) :
+    (slotChoiceFamily L hmax hgood p.val).restrict T=
+      slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val)
+        ((originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T p).2.val) := by
+  let e := originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T
+  calc
+    _ = (slotChoiceFamily L hmax hgood (e.symm (e p)).val).restrict T :=
+      congrArg (fun q : originalSlotChoices D Q₀ L => (slotChoiceFamily L hmax hgood q.val).restrict T) (e.symm_apply_apply p).symm
+    _ = _ := by
+      rw [originalSlotSplit_symm_val,slotChoiceFamily_active]
+
+variable {τ : Type*} [Fintype τ] (Frozen : PrimeFamily τ) {N a c : Eis} {mode : Bool}
+variable (T : Finset σ)
+    (C : ∀ _b : supportedSlotChoices (fun i : {i // i∉T} => L i.val)
+        ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ∀ p : supportedSlotChoices (fun i : T => L i.val)
+        ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ControlledStratumArithmetic (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F))
+        (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator N a c mode)
+
+def originalSplitControlled (p : originalSlotChoices D Q₀ L) :
+    ControlledStratumArithmetic (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F))
+      (residualPart_admissible I (Ideal.span {m}*F) hbad)
+      ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator N a c mode :=
+  castControlled (congrArg (fun S => (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F))
+    (residualPart_admissible I (Ideal.span {m}*F) hbad) S).generator)
+    (originalSplit_active_family D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T p).symm)
+    (C (originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T p).1
+      (originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T p).2)
+
+lemma originalSplitControlled_value (p : originalSlotChoices D Q₀ L)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : τ→ℕ) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue
+      (originalSplitControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood Frozen T C p) s
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_ne_zero hc
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_good
+      (reflectedExponent jF) (slotIndices τ (PrimeIndex (rowResidualPart I (Ideal.span {m}*F))) T) W X=
+    let q := originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T p
+    mixedReflectedValue (C q.1 q.2) s
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) q.2.val)).generator_ne_zero hc
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) q.2.val)).generator_good
+      (reflectedExponent jF) (slotIndices τ (PrimeIndex (rowResidualPart I (Ideal.span {m}*F))) T) W X := by
+  exact mixedReflectedValue_cast _ _ s _ _ hc _ _ _ _ W X
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q₀ : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime Q₀ (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+
+variable (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+variable {τ : Type*} [Fintype τ] (Frozen : PrimeFamily τ) {N a c : Eis} {mode : Bool}
+variable (T : Finset σ)
+    (C : ∀ _b : supportedSlotChoices (fun i : {i // i∉T} => L i.val)
+        ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ∀ p : supportedSlotChoices (fun i : T => L i.val)
+        ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ControlledStratumArithmetic (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F))
+        (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator N a c mode)
+
+def originalSplitPhysical
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : τ→ℕ) (W : ℝ→ℂ) (X : ℝ)
+    (q : supportedSlotChoices (fun i : {i // i∉T} => L i.val)
+      ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F)) ×
+      supportedSlotChoices (fun i : T => L i.val)
+      ((poolPrimeFamily R (Ideal.span {m}*F) Q₀).ideal) (rowResidualPart I (Ideal.span {m}*F))) : ℂ :=
+  mixedReflectedValue (C q.1 q.2) s
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) q.2.val)).generator_ne_zero hc
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) q.2.val)).generator_good
+      (reflectedExponent jF) (slotIndices τ (PrimeIndex (rowResidualPart I (Ideal.span {m}*F))) T) W X
+lemma originalSplitControlled_physical (p : originalSlotChoices D Q₀ L)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (jF : τ→ℕ) (W : ℝ→ℂ) (X : ℝ) :
+    mixedReflectedValue
+      (originalSplitControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood Frozen T C p) s
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_ne_zero hc
+      (Frozen.reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+        ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_good
+      (reflectedExponent jF) (slotIndices τ (PrimeIndex (rowResidualPart I (Ideal.span {m}*F))) T) W X=
+    originalSplitPhysical R I F Q₀ hbad L hmax hgood Frozen T C s hc jF W X
+      (originalSlotSplit D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T p) := by
+  exact originalSplitControlled_value D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask
+    L hmax hgood Frozen T C p s hc jF W X
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime (Q*Ideal.span {(72:Eis)}) (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+theorem actual_marked_slot_split_reflection
+    (hS : ∀ p : ∀ i,L i,Pairwise (Function.onFun IsCoprime (slotChoiceFamily L hmax hgood p).ideal))
+    (hSodd : ∀ p : ∀ i,L i,∀ i,ringChar (Eis⧸(slotChoiceFamily L hmax hgood p).ideal i)≠2)
+    (Ψ : Eis→*ℂ) (hΨnorm : ∀ n,‖Ψ n‖≤1) (hQ : Q≠0)
+    (hΨperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤ Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)}))
+    (G : ∀ h : Eis⧸Ideal.span {c},FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h,(9:Eis)*(G h).c0∣N)
+    (hNp : ∀ p : ∀ i,L i,∀ i,IsCoprime (Ideal.span {N}) ((markedRowFamily D (slotChoiceFamily L hmax hgood p) Q).ideal i))
+    (C : ∀ p : originalSlotChoices D (Q*Ideal.span {(72:Eis)}) L,
+      ∀ h : Eis⧸Ideal.span {c},∀ A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+      ∀ T : Finset σ,ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad) ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator
+        N (G h).a0 (G h).c0 (G h).mode)
+    (w : ∀ i,L i→ℂ) (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0< lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0< X) :
+    (∑ p : ∀ i,L i,(∏ i,w i (p i))*markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ i,if (slotChoiceFamily L hmax hgood p).ideal i∣A then (1:ℂ) else 0))=
+    let physical := fun (h : Eis⧸Ideal.span {c})
+      (A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})))
+      (T : Finset σ) (p : originalSlotChoices D (Q*Ideal.span {(72:Eis)}) L) =>
+      mixedReflectedValue (C p h A T) (G h).shape
+            (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad) ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_ne_zero
+            (G h).denominator_ne_zero
+            (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad) ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_good
+            (reflectedExponent (fun b : A => completedLocalExponent R F b.val.val))
+            (slotIndices A (PrimeIndex (rowResidualPart I (Ideal.span {m}*F))) T) W X
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c},fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h*
+      ∑ A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+        frozenInactiveWeight R F (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)}) A*
+        ∑ T : Finset σ,
+          ∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val)
+            ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal)
+            (rowResidualPart I (Ideal.span {m}*F)),
+            ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*
+              ∑ a : supportedSlotChoices (fun i : T => L i.val)
+                ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal)
+                (rowResidualPart I (Ideal.span {m}*F)),
+                (∏ i : T,w i.val (a.val i))*physical h A T
+                  ((originalSlotSplit D R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T).symm (b,a)) := by
+  dsimp only
+  rw [actual_marked_tuple_reflection D R I F Q hR hI hF hm hf hz hbad hcop hpow hmask
+    (fun p : ∀ i,L i => slotChoiceFamily L hmax hgood p) hS hSodd Ψ hΨnorm hQ hΨperiod hmLam hm2
+    c hc hcQ G N hN hNp C (fun p => ∏ i,w i (p i)) W hWcompact lo hi hlo hsupp hW X hX]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro h hh
+  congr 1
+  apply Finset.sum_congr rfl
+  intro A hA
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro T hT
+  congr 1
+  have hs :=
+    (original_supported_slot_sum D R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask
+      L hmax hgood T w (fun p => mixedReflectedValue (C p h A T) (G h).shape
+            (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad) ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_ne_zero
+            (G h).denominator_ne_zero
+            (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad) ((slotChoiceFamily L hmax hgood p.val).restrict T)).generator_good
+            (reflectedExponent (fun b : A => completedLocalExponent R F b.val.val))
+            (slotIndices A (PrimeIndex (rowResidualPart I (Ideal.span {m}*F))) T) W X))
+  convert hs using 1
+  apply Finset.sum_congr rfl
+  intro p hp
+  congr 1
+  congr 1
+  apply Finset.prod_congr (by ext; simp only [Finset.mem_sdiff,Finset.mem_univ])
+  intro t ht
+  rfl
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+open UniqueFactorizationMonoid
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ] {m f z : Eis} (D : GoodMaskRowData m f z)
+variable (R I F Q : Ideal Eis) (hR : R≠0) (hI : I≠0) (hF : Squarefree F)
+    (hm : m≠0) (hf : Ideal.span {f}=F) (hz : Ideal.span {z}=I)
+    (hbad : ∀ P∈fixedBadPrimes, P∣Ideal.span {m}*F)
+    (hcop : IsCoprime (Q*Ideal.span {(72:Eis)}) (rowResidualPart I (Ideal.span {m}*F)))
+    (hpow : rowPowerfulPart R=rowPowerfulPart I)
+    (hmask : rowMaskPart R (Ideal.span {m}*F)=rowMaskPart I (Ideal.span {m}*F))
+variable (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+include hR hI hF hm hf hz hbad hcop hpow hmask
+
+theorem actual_marked_active_reflection
+    (hS : ∀ p : ∀ i,L i,Pairwise (Function.onFun IsCoprime (slotChoiceFamily L hmax hgood p).ideal))
+    (hSodd : ∀ p : ∀ i,L i,∀ i,ringChar (Eis⧸(slotChoiceFamily L hmax hgood p).ideal i)≠2)
+    (Ψ : Eis→*ℂ) (hΨnorm : ∀ n,‖Ψ n‖≤1) (hQ : Q≠0)
+    (hΨperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (c : Eis) (hc : c≠0) [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}≤ Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)}))
+    (G : ∀ h : Eis⧸Ideal.span {c},FixedFourierGeometry c h)
+    (N : Eis) (hN : ∀ h,(9:Eis)*(G h).c0∣N)
+    (hNp : ∀ p : ∀ i,L i,∀ i,IsCoprime (Ideal.span {N}) ((markedRowFamily D (slotChoiceFamily L hmax hgood p) Q).ideal i))
+    (C : ∀ h : Eis⧸Ideal.span {c},
+      ∀ A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+      ∀ T : Finset σ,
+      ∀ _b : supportedSlotChoices (fun i : {i // i∉T} => L i.val)
+        ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ∀ p : supportedSlotChoices (fun i : T => L i.val)
+        ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal) (rowResidualPart I (Ideal.span {m}*F)),
+      ControlledStratumArithmetic
+        (((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A).reflected
+          (rowResidualPart I (Ideal.span {m}*F)) (residualPart_admissible I (Ideal.span {m}*F) hbad)
+          (slotChoiceFamily (fun i : T => L i.val) (fun i => hmax i.val) (fun i => hgood i.val) p.val)).generator
+        N (G h).a0 (G h).c0 (G h).mode)
+    (w : ∀ i,L i→ℂ) (W : ℝ→ℂ) (hWcompact : HasCompactSupport W)
+    (lo hi : ℝ) (hlo : 0< lo) (hsupp : Function.support W⊆Set.Icc lo hi)
+    (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0< X) :
+    (∑ p : ∀ i,L i,(∏ i,w i (p i))*markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ i,if (slotChoiceFamily L hmax hgood p).ideal i∣A then (1:ℂ) else 0))=
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c},fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h*
+      ∑ A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+        frozenInactiveWeight R F (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)}) A*
+        ∑ T : Finset σ,
+          ∑ b : supportedSlotChoices (fun i : {i // i∉T} => L i.val)
+            ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal)
+            (rowResidualPart I (Ideal.span {m}*F)),
+            ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*
+              ∑ a : supportedSlotChoices (fun i : T => L i.val)
+                ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal)
+                (rowResidualPart I (Ideal.span {m}*F)),
+                (∏ i : T,w i.val (a.val i))*
+                  originalSplitPhysical R I F (Q*Ideal.span {(72:Eis)}) hbad L hmax hgood
+                    ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A)
+                    T (C h A T) (G h).shape (G h).denominator_ne_zero
+                    (fun b : A => completedLocalExponent R F b.val.val) W X (b,a) := by
+  let Call := fun (p : originalSlotChoices D (Q*Ideal.span {(72:Eis)}) L)
+    (h : Eis⧸Ideal.span {c})
+    (A : Finset (FreeReflection.pool R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)}))) (T : Finset σ) =>
+      originalSplitControlled D R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood
+        ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A) T (C h A T) p
+  rw [actual_marked_slot_split_reflection D R I F Q hR hI hF hm hf hz hbad hcop hpow hmask
+    L hmax hgood hS hSodd Ψ hΨnorm hQ hΨperiod hmLam hm2 c hc hcQ G N hN hNp Call
+    w W hWcompact lo hi hlo hsupp hW X hX]
+  dsimp only
+  apply congrArg (fun z : ℂ => thetaDerivativeScalar⁻¹*z)
+  apply Finset.sum_congr rfl
+  intro h hh
+  apply congrArg (fun z : ℂ => fixedThetaRowCoeff c hc (D.fixedFactor Ψ Q) h*z)
+  apply Finset.sum_congr rfl
+  intro A hA
+  apply congrArg (fun z : ℂ => frozenInactiveWeight R F (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)}) A*z)
+  apply Finset.sum_congr rfl
+  intro T hT
+  apply Finset.sum_congr rfl
+  intro b hb
+  apply congrArg (fun z : ℂ =>
+    ((∏ i : {i // i∉T},(Ideal.absNorm (b.val i).val:ℂ)⁻¹)*(∏ i : {i // i∉T},w i.val (b.val i)))*z)
+  apply Finset.sum_congr rfl
+  intro a ha
+  apply congrArg (fun z : ℂ => (∏ i : T,w i.val (a.val i))*z)
+  dsimp only [Call]
+  have hv := originalSplitControlled_physical D R I F (Q*Ideal.span {(72:Eis)})
+    hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood
+    ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A) T (C h A T)
+    ((originalSlotSplit D R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T).symm (b,a))
+    (G h).shape (G h).denominator_ne_zero (fun b : A => completedLocalExponent R F b.val.val) W X
+  exact hv.trans (congrArg
+    (originalSplitPhysical R I F (Q*Ideal.span {(72:Eis)}) hbad L hmax hgood
+      ((poolPrimeFamily R (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A) T (C h A T)
+      (G h).shape (G h).denominator_ne_zero (fun b : A => completedLocalExponent R F b.val.val) W X)
+    ((originalSlotSplit D R I F (Q*Ideal.span {(72:Eis)}) hR hI hF hm hf hz hbad hcop hpow hmask L hmax hgood T).apply_symm_apply (b,a)))
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open scoped ContDiff
+namespace CanonicalRowCompletion
+lemma normTwistedSource_contDiff (W:ℝ→ℂ) (a b:ℝ) (ha:0<a)
+    (hs:Function.support W⊆Set.Icc a b) (hW:ContDiff ℝ ∞ W) (t:ℝ) :
+    ContDiff ℝ ∞ (CompletedHeight.normTwistedSource W t) := by
+  have he:(CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t:ℝ→ℂ)=
+      CompletedHeight.normTwistedSource W t:=by
+    funext x
+    exact CompletedHeight.uniformTwistedSchwartz_apply W a b ha hs hW t x
+  rw [←he]
+  exact (CompletedHeight.uniformTwistedSchwartz W a b ha hs hW t).smooth ⊤
+
+
+end CanonicalRowCompletion
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+variable (parents : Finset (Ideal Eis)) (J F : Ideal Eis) (hJ : J≠0) (hF : Squarefree F)
+    (m : Eis) (hm : m≠0) (hparents : ∀ I∈parents,I≠0) (v : Eisˣ)
+    (hbad : ∀ P∈fixedBadPrimes,P∣Ideal.span {m}*F)
+
+def residualOriginalData (K : originalResidualRows parents J (Ideal.span {m}*F)) :
+    GoodMaskRowData m (cubicIdealGenerator F)
+      (v.val*cubicIdealGenerator (reconstructFiberRow J (Ideal.span {m}*F) K.val)) :=
+  fiberGoodMaskRowData parents J F m hm hF.ne_zero hparents v
+    ⟨reconstructFiberRow J (Ideal.span {m}*F) K.val,
+      (originalResidualRows_reconstruct parents J (Ideal.span {m}*F) hparents K.val K.property).1⟩
+
+variable (Q : Ideal Eis) (hQ : Q≠0) (c : Eis) (hc : c≠0)
+    [Fintype (Eis⧸Ideal.span {c})]
+    (hcQ : Ideal.span {c}=Ideal.span {(9:Eis)}*(Q*Ideal.span {(72:Eis)}))
+    (G : ∀ h : Eis⧸Ideal.span {c},FixedFourierGeometry c h)
+    (hcop : ∀ K∈originalResidualRows parents J (Ideal.span {m}*F),IsCoprime (Q*Ideal.span {(72:Eis)}) K)
+    (lists : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈lists i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈lists i,lambda∉P)
+    (hdis : Pairwise (fun i j => Disjoint (lists i) (lists j)))
+    (hodd : ∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2)
+    (hperiod : ∀ i,∀ P∈lists i,IsCoprime (Q*Ideal.span {(72:Eis)}) P)
+
+abbrev originalResidualAdmissible : ∀ K∈originalResidualRows parents J (Ideal.span {m}*F),Admissible K := by
+  intro K hK
+  obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hK
+  exact residualPart_admissible I _ hbad
+
+variable (D : ∀ h : Eis⧸Ideal.span {c},∀ A : Finset (FreeReflection.pool J (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+    ∀ T : Finset σ,OriginalSplitCompletion (N:=(9:Eis)*c) (a:=(G h).a0) (c:=(G h).c0) (mode:=(G h).mode)
+      ((poolPrimeFamily J (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A)
+      (poolPrimeFamily J (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal
+      (originalResidualRows parents J (Ideal.span {m}*F)) (originalResidualAdmissible parents J F m hbad)
+      lists hmax hgood T)
+
+include hJ hQ hcQ hcop hdis hodd hperiod
+
+theorem original_completed_residual_source
+    (Ψ : Eis→*ℂ) (hΨnorm : ∀ n,‖Ψ n‖≤1) (hΨperiod : CanonicalCoefficientClass.FactorsModulo Q Ψ)
+    (hmLam : lambda∣m) (hm2 : (2:Eis)∣m)
+    (W : ℝ→ℂ) (hWcompact : HasCompactSupport W) (lo hi : ℝ) (hlo : 0< lo)
+    (hsupp : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0< X)
+    (w : ∀ i,lists i→ℂ) (K : originalResidualRows parents J (Ideal.span {m}*F)) :
+    (∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+      (rowTwist Ψ m (cubicIdealGenerator F)
+        (v.val*cubicIdealGenerator (reconstructFiberRow J (Ideal.span {m}*F) K.val))) W X
+      (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0))=
+    thetaDerivativeScalar⁻¹*∑ h : Eis⧸Ideal.span {c},
+      fixedThetaRowCoeff c hc ((residualOriginalData parents J F hF m hm hparents v K).fixedFactor Ψ Q) h*
+        ∑ A : Finset (FreeReflection.pool J (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})),
+          frozenInactiveWeight J F (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)}) A*
+          ∑ T : Finset σ,originalInactivePhysical
+            ((poolPrimeFamily J (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).restrict A)
+            (poolPrimeFamily J (Ideal.span {m}*F) (Q*Ideal.span {(72:Eis)})).ideal
+            (originalResidualRows parents J (Ideal.span {m}*F)) (originalResidualAdmissible parents J F m hbad)
+            lists hmax hgood T (D h A T) (G h).shape (G h).denominator_ne_zero
+            (fun b : A => completedLocalExponent J F b.val.val) W X w K := by
+  rcases K with ⟨K,hK⟩
+  obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hK
+  have hI0 := hparents I (Finset.mem_filter.mp hI).1
+  have hrec := reconstructFiberRow_of_original parents J (Ideal.span {m}*F) I hI hI0
+  obtain ⟨hIp,hpow,hmask⟩ := Finset.mem_filter.mp hI
+  let K : originalResidualRows parents J (Ideal.span {m}*F) :=
+    ⟨rowResidualPart I (Ideal.span {m}*F),Finset.mem_image.mpr ⟨I,Finset.mem_filter.mpr ⟨hIp,hpow,hmask⟩,rfl⟩⟩
+  let D0 := residualOriginalData parents J F hF m hm hparents v K
+  have hz : Ideal.span {v.val*cubicIdealGenerator (reconstructFiberRow J (Ideal.span {m}*F) K.val)}=I := by
+    rw [Ideal.span_singleton_mul_left_unit v.isUnit,span_cubicIdealGenerator]
+    exact hrec
+  have hS : ∀ p : ∀ i,lists i,Pairwise (Function.onFun IsCoprime (slotChoiceFamily lists hmax hgood p).ideal) := by
+    intro p i j hij
+    apply Ideal.isCoprime_of_isMaximal
+    intro he
+    change (p i).val=(p j).val at he
+    exact Finset.disjoint_left.mp (hdis hij) (p i).property (he.symm ▸ (p j).property)
+  have he := actual_marked_active_reflection D0 J I F Q hJ hI0 hF hm
+    (span_cubicIdealGenerator F) hz hbad
+    (hcop K.val K.property) hpow.symm hmask.symm lists hmax hgood hS
+    (fun p i => hodd i _ (p i).property) Ψ hΨnorm hQ hΨperiod hmLam hm2 c hc hcQ.le G ((9:Eis)*c)
+    (fun h => mul_dvd_mul_left (9:Eis) (G h).denominator_dvd)
+    (fun p => markedRowFamily_period D0 (slotChoiceFamily lists hmax hgood p) Q
+      (fun i => hperiod i _ (p i).property) c hcQ)
+    (fun h A T b p => D h A T K b p)
+    w W hWcompact lo hi hlo hsupp hW X hX
+  exact he
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+lemma maximal_prime_level_coprime (P : Ideal Eis) (hP : P.IsMaximal)
+    (hg : lambda∉P) (Q₀ : Ideal Eis) (c : Eis)
+    (hc : Ideal.span {c}=Ideal.span {(9:Eis)}*Q₀) (hQ : IsCoprime Q₀ P) :
+    IsCoprime (Ideal.span {(9:Eis)*c}) P := by
+  let S : PrimeFamily Unit := ⟨fun _ => P,fun _ => hP,fun _ => hg⟩
+  exact S.level_coprime Q₀ c hc (fun _ => hQ) ()
+
+lemma original_powerful_norm_le (J : Ideal Eis) (hJ : J≠0) :
+    (Ideal.absNorm (rowPowerfulPart J):ℝ)≤(Ideal.absNorm J:ℝ) := by
+  have he := congrArg (fun I : Ideal Eis => (Ideal.absNorm I:ℝ)) (row_powerful_simple_product J hJ)
+  simp only [map_mul,Nat.cast_mul] at he
+  have hs := descentIdealNorm_one_le (rowSimplePart_ne_zero J)
+  have hp : (0:ℝ)≤ Ideal.absNorm (rowPowerfulPart J) := Nat.cast_nonneg _
+  nlinarith
+
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson CanonicalQuadraticSieve
+local notation "Eis" => Eisenstein.O
+namespace InverseReflectedPhase
+lemma residual_level_coprime (K Q₀ : Ideal Eis) (hK : Admissible K)
+    (c : Eis) (hc : Ideal.span {c}=Ideal.span {(9:Eis)}*Q₀) (hcop : IsCoprime Q₀ K) :
+    IsCoprime (Ideal.span {(9:Eis)*c}) K := by
+  rw [←PrimeFamily.residual_product K hK]
+  apply IsCoprime.prod_right_iff.mpr
+  intro i hi
+  exact (PrimeFamily.residual K hK).level_coprime Q₀ c hc
+    (fun i => hcop.of_isCoprime_of_dvd_right (PrimeFamily.residual_dvd K hK i)) i
+
+
+end InverseReflectedPhase
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_completed_fiber_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η)
+    (hη1 : η≤1) (hηc : η≤ cstar/100000) (rmax : ℕ) :
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (J F : Ideal Eis) (_hJ : J≠0) (_hF : Squarefree F)
+      (m : Eis) (_hm : m≠0) (Z N V M z₀ margin hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm J:ℝ)≤ Z^M → (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents : Finset (Ideal Eis)),(∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ),
+      Pairwise (fun i j => Disjoint (lists i) (lists j)) →
+      (∀ i,∀ P∈lists i,P.IsMaximal) →
+      (∀ i,∀ P∈lists i,lambda∉P) →
+      (∀ i,∀ P∈lists i,Prime P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀ i,∀ P∈lists i,P∉reflectionExcludedPrimes q) →
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀ n,‖Ψ n‖≤1) → CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (u : Eisˣ) (θ : ℝ) (w : ∀ i,lists i→ℂ),(∀ i P,‖w i P‖≤1) →
+      (∑ I∈representativeRowFiber parents J (ActualFiber.maskIdeal q m F),
+        ‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+          (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+            (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+          (Z^(N-3*hhat)) (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/16)*(Ideal.absNorm (rowPowerfulPart J):ℝ)^(-(1/2:ℝ)) := by
+  obtain ⟨degree,hu⟩ := canonical_original_frozen_energy_uniform_degree lo hi hlo W hWs hW
+    L cstar η hL hcstar hη hη1 hηc rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  let Q := CanonicalCoefficientClass.fixedBaseConductor q
+  have hQ : Q≠0 := CanonicalCoefficientClass.fixedBaseConductor_ne_zero q hq
+  let c := reflectionConductor q
+  have hc : c≠0 := reflectionConductor_ne_zero q hq
+  let : Finite (Eis⧸Ideal.span {c}) := Ring.HasFiniteQuotients.finiteQuotient (Ideal.span_singleton_eq_bot.not.mpr hc)
+  let : Fintype (Eis⧸Ideal.span {c}) := Fintype.ofFinite _
+  let : Finite (Eis⧸Ideal.span {((9:Eis)*c)^2}) :=
+    Ring.HasFiniteQuotients.finiteQuotient (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 2 (mul_ne_zero (by norm_num) hc)))
+  let : Fintype (Eis⧸Ideal.span {((9:Eis)*c)^2}) := Fintype.ofFinite _
+  let b := excludedGenerator (reflectionExcludedPrimes q)
+  let B : Ideal Eis := Ideal.span {b}
+  have hb : b≠0 := reflectionExcludedGenerator_ne_zero q
+  have hB : B≠0 := Ideal.span_singleton_eq_bot.not.mpr hb
+  let E := fixedFourierGeometry c hc
+  have hEc : ∀ h,(E h).c0≠0 := fun h => (E h).denominator_ne_zero
+  have hEN : ∀ h,(9:Eis)*(E h).c0∣(9:Eis)*c := fun h => mul_dvd_mul_left (9:Eis) (E h).denominator_dvd
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu
+    (fun h => (E h).a0) (fun h => (E h).c0) (fun h => (E h).mode)
+    (fun h => (E h).shape) hEc hEN (fun h => (E h).primary) (fun h => (E h).coprime) B hB
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro σ _ _ J F hJ hF m hm Z N V M z₀ margin hhat d hZ hN hM hMc hVc hzc hhc
+    hJn hFn hRn hinv hmargin hVd hhd hd parents hparents hcard lists H hdis hmax hgood hprime hodd hexcluded
+    hH1 hH hprod Ψ hΨnorm hΨperiod u θ w hw
+  let mfull := ActualFiber.maskElement q m
+  have hmfull : mfull≠0 := ActualFiber.maskElement_ne_zero q m hm
+  let mask := Ideal.span {mfull}*F
+  let Q₀ := Q*Ideal.span {(72:Eis)}
+  have hmask : mask=B*F*Ideal.span {m} := by
+    dsimp only [mask,mfull,ActualFiber.maskElement,B,b]
+    rw [←Ideal.span_singleton_mul_span_singleton]
+    ring
+  have hmask0 : mask≠0 := mul_ne_zero (Ideal.span_singleton_eq_bot.not.mpr hmfull) hF.ne_zero
+  have hbad : ∀ P∈fixedBadPrimes,P∣mask := ActualFiber.mask_bad q m F
+  let rows := originalResidualRows parents J mask
+  have hparents0 : ∀ I∈parents,I≠0 := fun I hI => (hparents I hI).1
+  let hrows : ∀ K∈rows,Admissible K := originalResidualAdmissible parents J F mfull hbad
+  have hcop : ∀ K∈rows,IsCoprime Q₀ K := by
+    intro K hK
+    obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hK
+    exact residual_coprime_free_base q hq m F I
+  have hcQ : Ideal.span {c}=Ideal.span {(9:Eis)}*Q₀ := reflectionConductor_ideal q
+  have hGN : ∀ f,IsCoprime (Ideal.span {(9:Eis)*c}) ((poolPrimeFamily J mask Q₀).ideal f) :=
+    (poolPrimeFamily J mask Q₀).level_coprime Q₀ c hcQ (poolPrimeFamily_period J mask Q₀)
+  have hrowcop : ∀ K∈rows,(∀ f,IsCoprime ((poolPrimeFamily J mask Q₀).ideal f) K) ∧ IsCoprime (Ideal.span {(9:Eis)*c}) K := by
+    intro K hK
+    refine ⟨?_,residual_level_coprime K Q₀ (hrows K hK) c hcQ (hcop K hK)⟩
+    obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hK
+    obtain ⟨hIp,hpow,hmask'⟩ := Finset.mem_filter.mp hI
+    exact poolPrimeFamily_fiber_row_coprime J I mask Q₀ hJ (hparents0 I hIp) hmask0 hpow.symm hmask'.symm
+  have hLP : ∀ i,∀ P∈lists i,IsCoprime Q₀ P := by
+    intro i P hP
+    let : P.IsMaximal := hmax i P hP
+    have hh := reflectionConductor_coprime_of_not_excluded q hq P (hexcluded i P hP)
+    rw [reflectionConductor_ideal] at hh
+    exact hh.of_isCoprime_of_dvd_left (dvd_mul_left _ (Ideal.span {(9:Eis)}))
+  have hLN : ∀ i,∀ P∈lists i,IsCoprime (Ideal.span {(9:Eis)*c}) P :=
+    fun i P hP => maximal_prime_level_coprime P (hmax i P hP) (hgood i P hP) Q₀ c hcQ (hLP i P hP)
+  have hz : 1< Z := lt_of_lt_of_le hZ₀ hZ
+  have hzp : 0< Z := lt_trans zero_lt_one hz
+  let O := normWidth Z (rowPowerfulPart J)
+  have hO : 0≤ O := normWidth_nonneg Z hz _ (rowPowerfulPart_ne_zero J)
+  have hPowPos : 0<(Ideal.absNorm (rowPowerfulPart J):ℝ) := by
+    have := descentIdealNorm_one_le (rowPowerfulPart_ne_zero J)
+    linarith
+  have hOM : O≤ M := by
+    have hh := Real.logb_le_logb_of_le hz hPowPos ((original_powerful_norm_le J hJ).trans hJn)
+    rwa [Real.logb_rpow hzp (ne_of_gt hz)] at hh
+  have hOn : Z^O≤(Ideal.absNorm (rowPowerfulPart J):ℝ) := by
+    dsimp [O,normWidth]
+    rw [Real.rpow_logb hzp (ne_of_gt hz) hPowPos]
+  have ha := he (σ:=σ) J F (Ideal.span {m}) Q₀ hJ hF.ne_zero (Ideal.span_singleton_eq_bot.not.mpr hm)
+  rw [←hmask] at ha
+  obtain ⟨D,hD⟩ := ha Z N V M z₀ margin O hhat d hZ hN hM hMc hVc hzc hhc
+    hJn hFn hRn hO hOM hOn hinv hmargin hVd hhd hd parents rows hparents (Finset.Subset.refl _) hbad
+    hcard lists H hdis hmax hgood hprime hrows hH1 hH hprod hGN (poolPrimeFamily_odd J mask Q₀)
+    hrowcop hLN hodd
+  let scalar := fun h (K : rows) => fixedThetaRowCoeff c hc
+    ((residualOriginalData parents J F hF mfull hmfull hparents0 u K).fixedFactor Ψ Q) h
+  have hscalar : ∀ h K,‖scalar h K‖≤1 := fun h K =>
+    (residualOriginalData parents J F hF mfull hmfull hparents0 u K).fixedCoefficient_norm Ψ Q hΨnorm c hc h
+  have henergy := hD θ w scalar hw hscalar
+  have hTw : ContDiff ℝ ∞ (CompletedHeight.normTwistedSource W θ) :=
+CanonicalRowCompletion.normTwistedSource_contDiff W lo hi hlo hWs hW θ
+  have hTs := (CompletedHeight.normTwistedSource_support W θ).trans hWs
+  have hTc : HasCompactSupport (CompletedHeight.normTwistedSource W θ) :=
+    HasCompactSupport.intro isCompact_Icc (fun x hx => by
+      by_contra hn
+      exact hx (hTs hn))
+  have hmLam : lambda∣mfull :=
+    ((reflectionExcludedGenerator_bad q).1).trans (dvd_mul_left _ m)
+  have hm2 : (2:Eis)∣mfull := ((reflectionExcludedGenerator_bad q).2).trans (dvd_mul_left _ m)
+  have hid (K : rows) := original_completed_residual_source parents J F hJ hF mfull hmfull hparents0 u hbad
+    Q hQ c hc hcQ E hcop lists hmax hgood hdis hodd hLP D Ψ hΨnorm hΨperiod hmLam hm2
+    (CompletedHeight.normTwistedSource W θ) hTc lo hi hlo hTs hTw (Z^(N-3*hhat)) (Real.rpow_pos_of_pos hzp _) w K
+  have hre := original_fiber_energy_reindex parents J (ActualFiber.maskIdeal q m F) hparents0
+    (fun I => ∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+      (rowTwist Ψ mfull (cubicIdealGenerator F)
+        (u.val*cubicIdealGenerator I))
+      (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))
+      (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0))
+  rw [hre]
+  have heq : (∑ K : rows,‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+      (rowTwist Ψ mfull (cubicIdealGenerator F)
+        (u.val*cubicIdealGenerator (reconstructFiberRow J mask K.val)))
+      (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))
+      (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0)‖^2)=
+      ∑ K : rows,‖thetaDerivativeScalar⁻¹*∑ h,scalar h K*
+        ∑ A : Finset (FreeReflection.pool J mask Q₀),frozenInactiveWeight J F mask Q₀ A*
+          ∑ T : Finset σ,originalInactivePhysical ((poolPrimeFamily J mask Q₀).restrict A)
+            (poolPrimeFamily J mask Q₀).ideal rows hrows lists hmax hgood T (D h A T) (E h).shape (E h).denominator_ne_zero
+            (fun b : A => completedLocalExponent J F b.val.val)
+            (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat)) w K‖^2 := by
+    apply Finset.sum_congr rfl
+    intro K hK
+    exact congrArg (fun z : ℂ => ‖z‖^2) (hid K)
+  have hbound := heq.trans_le henergy
+  have hp : Z^O=(Ideal.absNorm (rowPowerfulPart J):ℝ) := Real.rpow_logb hzp (ne_of_gt hz) hPowPos
+  have hR : C*(1+‖θ‖)^degree*Z^(N+V-cstar/16-O/2)=
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/16)*(Ideal.absNorm (rowPowerfulPart J):ℝ)^(-(1/2:ℝ)) := by
+    rw [show N+V-cstar/16-O/2=(N+V-cstar/16)+O*(-(1/2:ℝ)) by ring,
+      Real.rpow_add hzp,Real.rpow_mul hzp.le,hp]
+    ring
+  have hs := Finset.sum_coe_sort rows (fun K : Ideal Eis =>
+    ‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+      (rowTwist Ψ mfull (cubicIdealGenerator F)
+        (u.val*cubicIdealGenerator (reconstructFiberRow J mask K)))
+      (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat))
+      (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0)‖^2)
+  exact hs.symm.trans_le (hbound.trans_eq hR)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhasePowerfulBudget
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+local notation "O" => Eisenstein.O
+
+theorem powerful_half_norm_sum (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (S : Finset (Ideal O)) (X : ℝ),1≤ X →
+      (∀ I∈S,PowerfulIdeal I ∧ (Ideal.absNorm I:ℝ)≤ X) →
+      ∑ I∈S,(Ideal.absNorm I:ℝ)^(-1/2:ℝ) ≤ C*X^ε := by
+  let δ := ε/2
+  have hδ : 0<δ := by dsimp [δ];positivity
+  obtain ⟨D,hD,hcount⟩ := powerful_ideal_count δ hδ
+  let C := D*(2:ℝ)^(1/2+δ)*(2+1/(δ*Real.log 2))
+  have hl : 0< Real.log 2 := Real.log_pos (by norm_num)
+  refine ⟨C,by dsimp [C];positivity,?_⟩
+  intro S X hX hS
+  have hx : 0< X := zero_lt_one.trans_le hX
+  have hnorm (I : Ideal O) (hI : I∈S) :
+      1≤(Ideal.absNorm I:ℝ) ∧ (Ideal.absNorm I:ℝ)≤ X :=
+    ⟨descentIdealNorm_one_le (hS I hI).1.1,(hS I hI).2⟩
+  have hbin (j : Fin (columnDyadicLength X+1)) :
+      ∑ I∈divisorDyadicBin S X j,(Ideal.absNorm I:ℝ)^(-1/2:ℝ) ≤
+        D*(2:ℝ)^(1/2+δ)*X^δ := by
+    let R := divisorDyadicScale j.val
+    have hR : 1≤ R := divisorDyadicScale_ge_one _
+    have hr : 0< R := zero_lt_one.trans_le hR
+    by_cases he : (divisorDyadicBin S X j).Nonempty
+    · have hRX : R≤ X := divisorDyadicBin_scale_le S X hnorm j he
+      have hc : ((divisorDyadicBin S X j).card:ℝ) ≤ D*(2*R)^(1/2+δ) := by
+        apply hcount _ _ (by linarith)
+        intro I hI
+        exact ⟨(hS I (Finset.mem_filter.mp hI).1).1,
+          (divisorDyadicBin_bounds S X hnorm j I hI).2⟩
+      have hw (I : Ideal O) (hI : I∈divisorDyadicBin S X j) :
+          (Ideal.absNorm I:ℝ)^(-1/2:ℝ) ≤ R^(-1/2:ℝ) :=
+        Real.rpow_le_rpow_of_nonpos hr (divisorDyadicBin_bounds S X hnorm j I hI).1
+          (by norm_num)
+      calc
+        _ ≤ ((divisorDyadicBin S X j).card:ℝ)*R^(-1/2:ℝ) := by
+          apply (Finset.sum_le_sum hw).trans_eq
+          simp only [Finset.sum_const,nsmul_eq_mul]
+        _ ≤ (D*(2*R)^(1/2+δ))*R^(-1/2:ℝ) :=
+          mul_le_mul_of_nonneg_right hc (Real.rpow_nonneg hr.le _)
+        _ = (D*(2:ℝ)^(1/2+δ))*(R^(1/2+δ)*R^(-1/2:ℝ)) := by
+          rw [Real.mul_rpow (by norm_num) hr.le]
+          ring
+        _ = D*(2:ℝ)^(1/2+δ)*R^δ := by
+          rw [←Real.rpow_add hr]
+          congr 2
+          ring
+        _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow hr.le hRX hδ.le) (by positivity)
+    · rw [Finset.not_nonempty_iff_eq_empty.mp he,Finset.sum_empty]
+      positivity
+  rw [sum_divisorDyadicBins S X]
+  calc
+    _ ≤ ∑ _j : Fin (columnDyadicLength X+1),D*(2:ℝ)^(1/2+δ)*X^δ :=
+      Finset.sum_le_sum (fun j _=> hbin j)
+    _ = (columnDyadicLength X+1:ℝ)*(D*(2:ℝ)^(1/2+δ)*X^δ) := by simp
+    _ ≤ ((2+1/(δ*Real.log 2))*X^δ)*(D*(2:ℝ)^(1/2+δ)*X^δ) :=
+      mul_le_mul_of_nonneg_right (columnDyadicLength_small_power δ hδ X hX) (by positivity)
+    _ = C*X^ε := by
+      calc
+        _ = C*(X^δ*X^δ) := by dsimp [C];ring
+        _ = _ := by rw [←Real.rpow_add hx,show δ+δ=ε by dsimp [δ];ring]
+
+lemma rowPowerful_norm_le (I : Ideal O) (hI : I≠0) :
+    (Ideal.absNorm (rowPowerfulPart I):ℝ) ≤ Ideal.absNorm I := by
+  apply descentIdealNorm_le_of_dvd hI
+  exact ⟨rowSimplePart I,(row_powerful_simple_product I hI).symm⟩
+
+theorem row_mask_powerful_budget (L ε : ℝ) (hL : 0≤ L) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (Z : ℝ),2≤ Z → ∀ (S : Finset (Ideal O)) (Q : Ideal O),
+      (∀ I∈S,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^L) → Q≠0 → (Ideal.absNorm Q:ℝ)≤ Z^L →
+      ((S.image (fun I=> rowMaskPart I Q)).card:ℝ)*
+        (∑ A∈S.image rowPowerfulPart,(Ideal.absNorm A:ℝ)^(-1/2:ℝ)) ≤ C*Z^ε := by
+  let δ := ε/(2*(L+1))
+  have hδ : 0<δ := by dsimp [δ];positivity
+  obtain ⟨Cp,hCp,hpower⟩ := powerful_half_norm_sum δ hδ
+  obtain ⟨Cd,hCd,hdiv⟩ := IdealDivisorBound.ideal_divisor_small_power δ hδ
+  refine ⟨Cd*Cp,mul_pos hCd hCp,?_⟩
+  intro Z hZ S Q hS hQ hQN
+  have hz : 0< Z := by linarith
+  have hX : 1≤ Z^L := Real.one_le_rpow (by linarith) hL
+  have hp : (∑ A∈S.image rowPowerfulPart,(Ideal.absNorm A:ℝ)^(-1/2:ℝ)) ≤ Cp*(Z^L)^δ := by
+    apply hpower _ _ hX
+    intro A hA
+    obtain ⟨I,hI,rfl⟩ := Finset.mem_image.mp hA
+    exact ⟨rowPowerfulPart_powerful I,(rowPowerful_norm_le I (hS I hI).1).trans (hS I hI).2⟩
+  have hm : ((S.image (fun I=> rowMaskPart I Q)).card:ℝ) ≤ Cd*(Z^L)^δ :=
+    ((Nat.cast_le.mpr (rowMaskPart_image_card S Q hQ)).trans (hdiv Q hQ)).trans
+      (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) hQN hδ.le) hCd.le)
+  have he : L*(δ+δ) ≤ ε := by
+    have heq : δ*(2*(L+1))=ε := by dsimp [δ];field_simp
+    nlinarith
+  calc
+    _ ≤ (Cd*(Z^L)^δ)*(Cp*(Z^L)^δ) :=
+      mul_le_mul hm hp (Finset.sum_nonneg (fun A _=> Real.rpow_nonneg (Nat.cast_nonneg _) _)) (by positivity)
+    _ = (Cd*Cp)*((Z^L)^δ*(Z^L)^δ) := by ring
+    _ = (Cd*Cp)*Z^(L*(δ+δ)) := by
+      rw [←Real.rpow_add (Real.rpow_pos_of_pos hz L),←Real.rpow_mul hz.le]
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le (by linarith) he) (mul_pos hCd hCp).le
+
+end InverseReflectedPhasePowerfulBudget
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+theorem completed_representative_aggregation (L ε : ℝ) (hL : 0≤ L) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ (Z : ℝ),2≤ Z → ∀ (parents : Finset (Ideal Eis)) (Q : Ideal Eis),
+      (∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^L) → Q≠0 → (Ideal.absNorm Q:ℝ)≤ Z^L →
+      ∀ (E : ℝ) (f : Ideal Eis→ℝ),0≤ E →
+      (∀ J∈parents,(∑ I∈representativeRowFiber parents J Q,f I)≤
+        E*(Ideal.absNorm (rowPowerfulPart J):ℝ)^(-(1/2:ℝ))) →
+      (∑ I∈parents,f I)≤ C*Z^ε*E := by
+  obtain ⟨C,hC,hbudget⟩ := InverseReflectedPhasePowerfulBudget.row_mask_powerful_budget L ε hL hε
+  refine ⟨C,hC,?_⟩
+  intro Z hZ parents Q hparents hQ hQN E f hE hf
+  have hb := hbudget Z hZ parents Q hparents hQ hQN
+  simp only [neg_div] at hb
+  have hblocks (A T : Ideal Eis) : (∑ I∈completedRowFiber parents Q A T,f I)≤
+      E*(Ideal.absNorm A:ℝ)^(-(1/2:ℝ)) := by
+    by_cases he : (completedRowFiber parents Q A T).Nonempty
+    · obtain ⟨J,hJ⟩ := he
+      obtain ⟨hJS,hJA,hJT⟩ := Finset.mem_filter.mp hJ
+      have hh := hf J hJS
+      simpa only [representativeRowFiber,hJA,hJT] using hh
+    · rw [Finset.not_nonempty_iff_eq_empty.mp he,Finset.sum_empty]
+      exact mul_nonneg hE (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+  rw [←sum_completedRowFibers parents Q f]
+  calc
+    _ ≤ ∑ A∈parents.image rowPowerfulPart,∑ _T∈parents.image (fun I => rowMaskPart I Q),
+          E*(Ideal.absNorm A:ℝ)^(-(1/2:ℝ)) :=
+      Finset.sum_le_sum (fun A _ => Finset.sum_le_sum (fun T _ => hblocks A T))
+    _ = (((parents.image (fun I => rowMaskPart I Q)).card:ℝ)*
+          (∑ A∈parents.image rowPowerfulPart,(Ideal.absNorm A:ℝ)^(-(1/2:ℝ))))*E := by
+      simp only [Finset.sum_const,nsmul_eq_mul]
+      rw [Finset.mul_sum,Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro A hA
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_right hb hE
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_completed_rows_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η)
+    (hη1 : η≤1) (hηc : η≤ cstar/100000) (rmax : ℕ) :
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (F : Ideal Eis) (_hF : Squarefree F)
+      (m : Eis) (_hm : m≠0) (Z N V M z₀ margin hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents : Finset (Ideal Eis)),(∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ),
+      Pairwise (fun i j => Disjoint (lists i) (lists j)) →
+      (∀ i,∀ P∈lists i,P.IsMaximal) →
+      (∀ i,∀ P∈lists i,lambda∉P) →
+      (∀ i,∀ P∈lists i,Prime P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀ i,∀ P∈lists i,P∉reflectionExcludedPrimes q) →
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀ n,‖Ψ n‖≤1) → CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (u : Eisˣ) (θ : ℝ) (w : ∀ i,lists i→ℂ),(∀ i P,‖w i P‖≤1) →
+      (∑ I∈parents,
+        ‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+          (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+            (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+          (Z^(N-3*hhat)) (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/32) := by
+  obtain ⟨degree,hu⟩ := canonical_completed_fiber_energy_uniform_degree lo hi hlo W hWs hW
+    L cstar η hL hcstar hη hη1 hηc rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  obtain ⟨D,hD,ha⟩ := completed_representative_aggregation (2*L+1) (cstar/32) (by linarith) (by positivity)
+  let B : Ideal Eis := Ideal.span {excludedGenerator (reflectionExcludedPrimes q)}
+  let Z₁ := max Z₀ (max 2 (Ideal.absNorm B:ℝ))
+  refine ⟨D*C,Z₁,mul_pos hD hC,lt_of_lt_of_le hZ₀ (le_max_left _ _),?_⟩
+  intro σ _ _ F hF m hm Z N V M z₀ margin hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hinv hmargin hVd hhd hd parents hparents hcard lists H hdis hmax hgood hprime hodd hexcluded
+    hH1 hH hprod Ψ hΨnorm hΨperiod u θ w hw
+  have hZZ : Z₀≤ Z := (le_max_left _ _).trans hZ
+  have hZ2 : 2≤ Z := (le_trans (le_max_left _ _) (le_max_right _ _)).trans hZ
+  have hz : 0< Z := by linarith
+  have hz1 : 1≤ Z := by linarith
+  have hBn : (Ideal.absNorm B:ℝ)≤ Z := (le_trans (le_max_right _ _) (le_max_right _ _)).trans hZ
+  have hmask : ActualFiber.maskIdeal q m F=B*F*Ideal.span {m} := by
+    dsimp only [ActualFiber.maskIdeal,ActualFiber.maskElement,B]
+    rw [←Ideal.span_singleton_mul_span_singleton]
+    ring
+  have hmaskn : (Ideal.absNorm (ActualFiber.maskIdeal q m F):ℝ)≤ Z^(2*L+1) := by
+    rw [hmask]
+    exact canonical_mask_norm_cap B F (Ideal.span {m}) Z V L L hz1 hBn hFn hRn hVc le_rfl
+  have hparentn : ∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^(2*L+1) := by
+    intro I hI
+    exact ⟨(hparents I hI).1,(hparents I hI).2.trans
+      (Real.rpow_le_rpow_of_exponent_le hz1 (by linarith))⟩
+  have hh := ha Z hZ2 parents (ActualFiber.maskIdeal q m F) hparentn
+    (ActualFiber.maskIdeal_ne_zero q m hm F hF.ne_zero) hmaskn
+    (C*(1+‖θ‖)^degree*Z^(N+V-cstar/16))
+    (fun I => ‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+      (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+        (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+      (Z^(N-3*hhat)) (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0)‖^2)
+    (by positivity) (fun J hJ => he (σ:=σ) J F (hparents J hJ).1 hF m hm Z N V M z₀ margin hhat d
+      hZZ hN hM hMc hVc hzc hhc (hparents J hJ).2 hFn hRn hinv hmargin hVd hhd hd
+      parents hparents hcard lists H hdis hmax hgood hprime hodd hexcluded hH1 hH hprod
+      Ψ hΨnorm hΨperiod u θ w hw)
+  apply hh.trans_eq
+  calc
+    _ = (D*C)*(1+‖θ‖)^degree*(Z^(cstar/32)*Z^(N+V-cstar/16)) := by ring
+    _ = _ := by rw [←Real.rpow_add hz]; congr 2; ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma markedCompletedT_zero_punctured (Ψ : Eis→*ℂ) (m f z : Eis)
+    (P : Ideal Eis) (hP : Prime P) (hm : m∈P)
+    (W : ℝ→ℂ) (X : ℝ) (d : Ideal Eis→ℂ) (hd : ∀ A,¬P∣A → d A=0) :
+    markedCompletedT (rowTwist Ψ m f z) W X d=0 := by
+  have hz (I J : Ideal Eis) : CompletedGauss.summand (rowTwist Ψ m f z) W X I J*d (I*J^3)=0 := by
+    by_cases hdiv : P∣I*J^3
+    · rcases hP.dvd_mul.mp hdiv with hI|hJ
+      · have hz := CanonicalRowCompletion.columnWeight_zero_of_mask Ψ m f z hP hI hm
+        simp only [CompletedGauss.summand,hz,zero_div,zero_mul]
+      · have hz := cubeWeight_zero_of_prime_mask Ψ m f z hP (hP.dvd_of_dvd_pow hJ) hm
+        simp only [CompletedGauss.summand,hz,mul_zero,zero_mul]
+    · rw [hd _ hdiv,mul_zero]
+  simp only [markedCompletedT,hz,tsum_zero]
+
+lemma markedCompletedT_zero_punctured_slot {σ : Type*} [Fintype σ]
+    (S : PrimeFamily σ) (i : σ) (Ψ : Eis→*ℂ) (m f z : Eis) (hm : m∈S.ideal i)
+    (W : ℝ→ℂ) (X : ℝ) :
+    markedCompletedT (rowTwist Ψ m f z) W X
+      (fun A => ∏ j,if S.ideal j∣A then (1:ℂ) else 0)=0 := by
+  apply markedCompletedT_zero_punctured Ψ m f z (S.ideal i)
+    (Ideal.prime_of_isPrime (NeZero.ne (S.ideal i)) inferInstance) hm W X
+  intro A hA
+  exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hA)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve CanonicalRowCompletion InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+def punctureLists (lists : σ→Finset (Ideal Eis)) (S : Finset (Ideal Eis)) : σ→Finset (Ideal Eis) :=
+  fun i => (lists i).filter (fun P => P∉S)
+
+def punctureListLift (lists : σ→Finset (Ideal Eis)) (S : Finset (Ideal Eis))
+    (p : ∀ i,punctureLists lists S i) : ∀ i,lists i :=
+  fun i => ⟨(p i).val,(Finset.mem_filter.mp (p i).property).1⟩
+
+def punctureListEquiv (lists : σ→Finset (Ideal Eis)) (S : Finset (Ideal Eis)) :
+    (∀ i,punctureLists lists S i) ≃ {p : ∀ i,lists i // ∀ i,(p i).val∉S} where
+  toFun p := ⟨punctureListLift lists S p,fun i => (Finset.mem_filter.mp (p i).property).2⟩
+  invFun p i := ⟨(p.val i).val,Finset.mem_filter.mpr ⟨(p.val i).property,p.property i⟩⟩
+  left_inv _p := rfl
+  right_inv _p := rfl
+
+lemma sum_puncture_lists (lists : σ→Finset (Ideal Eis)) (S : Finset (Ideal Eis))
+    (f : (∀ i,lists i)→ℂ) (hz : ∀ p,(∃ i,(p i).val∈S) → f p=0) :
+    (∑ p : ∀ i,lists i,f p)=∑ p : ∀ i,punctureLists lists S i,f (punctureListLift lists S p) := by
+  have he := (punctureListEquiv lists S).sum_comp (fun p => f p.val)
+  have hs := sum_subtype_dite_decidable (fun p : ∀ i,lists i => ∀ i,(p i).val∉S) (fun p _ => f p)
+  calc
+    _ = ∑ p : ∀ i,lists i,if h:∀ i,(p i).val∉S then f p else 0 := by
+      apply Finset.sum_congr rfl
+      intro p hp
+      split_ifs with h
+      · rfl
+      · exact hz p (by simpa only [not_forall,not_not] using h)
+    _ = ∑ p : {p : ∀ i,lists i // ∀ i,(p i).val∉S},f p.val := hs.symm
+    _ = _ := he.symm
+
+theorem original_completed_puncture_lists (lists : σ→Finset (Ideal Eis))
+    (hprime : ∀ i,∀ P∈lists i,Prime P) (S : Finset (Ideal Eis))
+    (Ψ : Eis→*ℂ) (m f z : Eis) (W : ℝ→ℂ) (X : ℝ) (w : ∀ i,lists i→ℂ) :
+    (∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+      (rowTwist Ψ (m*excludedGenerator S) f z) W X
+      (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0))=
+    ∑ p : ∀ i,punctureLists lists S i,(∏ i,w i (punctureListLift lists S p i))*markedCompletedT
+      (rowTwist Ψ (m*excludedGenerator S) f z) W X
+      (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0) := by
+  apply sum_puncture_lists lists S
+  intro p hp
+  obtain ⟨i,hi⟩ := hp
+  have hm : m*excludedGenerator S∈(p i).val := (p i).val.mul_mem_left m (excludedGenerator_mem S hi)
+  have hz := markedCompletedT_zero_punctured Ψ (m*excludedGenerator S) f z (p i).val
+    (hprime i _ (p i).property) hm W X (fun A => ∏ j,if (p j).val∣A then (1:ℂ) else 0)
+    (fun A hA => Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hA))
+  exact mul_eq_zero_of_right _ hz
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_original_completed_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η)
+    (hη1 : η≤1) (hηc : η≤ cstar/100000) (rmax : ℕ) :
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (F : Ideal Eis) (_hF : Squarefree F)
+      (m : Eis) (_hm : m≠0) (Z N V M z₀ margin hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents : Finset (Ideal Eis)),(∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ),
+      Pairwise (fun i j => Disjoint (lists i) (lists j)) →
+      (∀ i,∀ P∈lists i,P.IsMaximal) →
+      (∀ i,∀ P∈lists i,lambda∉P) →
+      (∀ i,∀ P∈lists i,Prime P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀ n,‖Ψ n‖≤1) → CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (u : Eisˣ) (θ : ℝ) (w : ∀ i,lists i→ℂ),(∀ i P,‖w i P‖≤1) →
+      (∑ I∈parents,
+        ‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+          (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+            (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+          (Z^(N-3*hhat)) (fun A => ∏ i,if (p i).val∣A then (1:ℂ) else 0)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/32) := by
+  obtain ⟨degree,hu⟩ := canonical_completed_rows_energy_uniform_degree lo hi hlo W hWs hW
+    L cstar η hL hcstar hη hη1 hηc rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro σ _ _ F hF m hm Z N V M z₀ margin hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hinv hmargin hVd hhd hd parents hparents hcard lists H hdis hmax hgood hprime hodd
+    hH1 hH hprod Ψ hΨnorm hΨperiod u θ w hw
+  let S := reflectionExcludedPrimes q
+  let lists' := punctureLists lists S
+  have hsub (i : σ) : lists' i⊆lists i := Finset.filter_subset _ _
+  let w' : ∀ i,lists' i→ℂ := fun i P => w i ⟨P.val,hsub i P.property⟩
+  have hh := he (σ:=σ) F hF m hm Z N V M z₀ margin hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hinv hmargin hVd hhd hd parents hparents hcard lists' H
+    (fun i j hij => (hdis hij).mono (hsub i) (hsub j))
+    (fun i P hP => hmax i P (hsub i hP)) (fun i P hP => hgood i P (hsub i hP))
+    (fun i P hP => hprime i P (hsub i hP)) (fun i P hP => hodd i P (hsub i hP))
+    (fun i P hP => (Finset.mem_filter.mp hP).2) hH1 (fun i P hP => hH i P (hsub i hP)) hprod
+    Ψ hΨnorm hΨperiod u θ w' (fun i P => hw i ⟨P.val,hsub i P.property⟩)
+  apply le_trans (le_of_eq ?_) hh
+  apply Finset.sum_congr rfl
+  intro I hI
+  exact congrArg (fun z : ℂ => ‖z‖^2) (original_completed_puncture_lists lists hprime S Ψ m
+    (cubicIdealGenerator F) (u.val*cubicIdealGenerator I)
+    (CompletedHeight.normTwistedSource W θ) (Z^(N-3*hhat)) w)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma prime_dvd_cube_mul (P H A : Ideal Eis) (hP : Prime P) :
+    P∣H^3*A ↔ P∣H ∨ P∣A := by
+  constructor
+  · intro h
+    rcases hP.dvd_mul.mp h with h|h
+    · exact Or.inl (hP.dvd_of_dvd_pow h)
+    · exact Or.inr h
+  · rintro (h|h)
+    · exact dvd_mul_of_dvd_left (dvd_pow h (by decide : (3:ℕ)≠0)) A
+    · exact dvd_mul_of_dvd_right h _
+
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+def cubeActiveSlots (H : Ideal Eis) (S : PrimeFamily σ) : Finset σ :=
+  Finset.univ.filter (fun i => ¬S.ideal i∣H)
+
+omit [DecidableEq σ] in
+lemma cube_shifted_mark (H A : Ideal Eis) (S : PrimeFamily σ) :
+    (∏ i,if S.ideal i∣H^3*A then (1:ℂ) else 0)=
+      ∏ i∈cubeActiveSlots H S,if S.ideal i∣A then (1:ℂ) else 0 := by
+  rw [cubeActiveSlots,Finset.prod_filter]
+  apply Finset.prod_congr rfl
+  intro i hi
+  have hp : Prime (S.ideal i) := Ideal.prime_of_isPrime (NeZero.ne _) inferInstance
+  rw [prime_dvd_cube_mul _ H A hp]
+  by_cases hh : S.ideal i∣H
+  · simp only [hh,true_or,ite_true,not_true_eq_false,ite_false]
+  · simp only [hh,false_or,not_false_eq_true,ite_true]
+
+omit [DecidableEq σ] in
+lemma cube_shifted_mark_restrict (H A : Ideal Eis) (S : PrimeFamily σ) :
+    (∏ i,if S.ideal i∣H^3*A then (1:ℂ) else 0)=
+      ∏ i : cubeActiveSlots H S,if (S.restrict (cubeActiveSlots H S)).ideal i∣A then (1:ℂ) else 0 := by
+  rw [cube_shifted_mark]
+  symm
+  exact Finset.prod_coe_sort (cubeActiveSlots H S) (fun i => if S.ideal i∣A then (1:ℂ) else 0)
+
+omit [DecidableEq σ] in
+theorem markedCompletedT_cube_shift (Ψ : Eis→*ℂ) (W : ℝ→ℂ) (X : ℝ)
+    (H : Ideal Eis) (S : PrimeFamily σ) :
+    markedCompletedT Ψ W X (fun A => ∏ i,if S.ideal i∣H^3*A then (1:ℂ) else 0)=
+      markedCompletedT Ψ W X
+        (fun A => ∏ i : cubeActiveSlots H S,if (S.restrict (cubeActiveSlots H S)).ideal i∣A then (1:ℂ) else 0) := by
+  congr 1
+  funext A
+  exact cube_shifted_mark_restrict H A S
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+ def cubeDivList (H : Ideal Eis) (L : Finset (Ideal Eis)) : Finset (Ideal Eis) := L.filter (fun P => P∣H)
+ def cubeAwayList (H : Ideal Eis) (L : Finset (Ideal Eis)) : Finset (Ideal Eis) := L.filter (fun P => ¬P∣H)
+ def cubeChoiceActive (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) (p : ∀ i,L i) : Finset σ :=
+  Finset.univ.filter (fun i => ¬(p i).val∣H)
+
+abbrev CubeSlotChoices (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) :=
+  Σ T : Finset σ,(∀ i : {i // i∉T},cubeDivList H (L i.val))×(∀ i : T,cubeAwayList H (L i.val))
+
+def cubeChoicesJoin (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) (x : CubeSlotChoices H L) : ∀ i,L i :=
+  (slotChoiceSplit L x.1).symm
+    (fun i => ⟨(x.2.2 i).val,(Finset.mem_filter.mp (x.2.2 i).property).1⟩,
+     fun i => ⟨(x.2.1 i).val,(Finset.mem_filter.mp (x.2.1 i).property).1⟩)
+
+lemma cubeChoicesJoin_label (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) (x : CubeSlotChoices H L) :
+    cubeChoiceActive H L (cubeChoicesJoin H L x)=x.1 := by
+  rcases x with ⟨T,b,a⟩
+  ext i
+  simp only [cubeChoiceActive,Finset.mem_filter,Finset.mem_univ,true_and]
+  by_cases hi : i∈T
+  · have ha := (Finset.mem_filter.mp (a ⟨i,hi⟩).property).2
+    have he := slotChoiceSplit_active L T
+      (fun j => ⟨(a j).val,(Finset.mem_filter.mp (a j).property).1⟩)
+      (fun j => ⟨(b j).val,(Finset.mem_filter.mp (b j).property).1⟩) ⟨i,hi⟩
+    dsimp only [cubeChoicesJoin]
+    rw [he]
+    exact iff_of_true ha hi
+  · have hb := (Finset.mem_filter.mp (b ⟨i,hi⟩).property).2
+    have he := slotChoiceSplit_inactive L T
+      (fun j => ⟨(a j).val,(Finset.mem_filter.mp (a j).property).1⟩)
+      (fun j => ⟨(b j).val,(Finset.mem_filter.mp (b j).property).1⟩) ⟨i,hi⟩
+    dsimp only [cubeChoicesJoin]
+    rw [he]
+    exact iff_of_false (not_not_intro hb) hi
+
+lemma cubeChoicesJoin_injective (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) :
+    Function.Injective (cubeChoicesJoin H L) := by
+  rintro ⟨T,b,a⟩ ⟨U,d,c⟩ he
+  have ht := congrArg (cubeChoiceActive H L) he
+  rw [cubeChoicesJoin_label,cubeChoicesJoin_label] at ht
+  dsimp only at ht
+  subst U
+  apply congrArg (fun q => (⟨T,q⟩ : CubeSlotChoices H L))
+  have hx := congrArg (slotChoiceSplit L T) he
+  simp only [cubeChoicesJoin,Equiv.apply_symm_apply] at hx
+  apply Prod.ext
+  · funext i
+    apply Subtype.ext
+    exact congrArg (fun q => (q.2 i).val) hx
+  · funext i
+    apply Subtype.ext
+    exact congrArg (fun q => (q.1 i).val) hx
+
+lemma cubeChoicesJoin_surjective (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) :
+    Function.Surjective (cubeChoicesJoin H L) := by
+  intro p
+  let T := cubeChoiceActive H L p
+  let a : ∀ i : T,cubeAwayList H (L i.val) := fun i =>
+    ⟨(p i.val).val,Finset.mem_filter.mpr ⟨(p i.val).property,(Finset.mem_filter.mp i.property).2⟩⟩
+  have hd (i : {i // i∉T}) : (p i.val).val∣H := by
+    by_contra hi
+    exact i.property (Finset.mem_filter.mpr ⟨Finset.mem_univ _,hi⟩)
+  let b : ∀ i : {i // i∉T},cubeDivList H (L i.val) := fun i =>
+    ⟨(p i.val).val,Finset.mem_filter.mpr ⟨(p i.val).property,hd i⟩⟩
+  refine ⟨⟨T,b,a⟩,?_⟩
+  apply (slotChoiceSplit L T).injective
+  simp only [cubeChoicesJoin,Equiv.apply_symm_apply]
+  apply Prod.ext <;> funext i <;> apply Subtype.ext <;> rfl
+
+def cubeSlotChoiceEquiv (H : Ideal Eis) (L : σ→Finset (Ideal Eis)) :
+    CubeSlotChoices H L ≃ (∀ i,L i) :=
+  Equiv.ofBijective (cubeChoicesJoin H L) ⟨cubeChoicesJoin_injective H L,cubeChoicesJoin_surjective H L⟩
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+variable (H : Ideal Eis) (L : σ→Finset (Ideal Eis))
+    (hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+    (hgood : ∀ i,∀ P∈L i,lambda∉P)
+
+include hmax hgood in
+lemma cubeJoined_mark (x : CubeSlotChoices H L) (A : Ideal Eis) :
+    (∏ i,if (cubeChoicesJoin H L x i).val∣H^3*A then (1:ℂ) else 0)=
+      ∏ i : x.1,if (x.2.2 i).val∣A then (1:ℂ) else 0 := by
+  have hs := cube_shifted_mark H A (slotChoiceFamily L hmax hgood (cubeChoicesJoin H L x))
+  have hl : cubeActiveSlots H (slotChoiceFamily L hmax hgood (cubeChoicesJoin H L x))=x.1 :=
+    cubeChoicesJoin_label H L x
+  rw [hl] at hs
+  apply hs.trans
+  rw [←Finset.prod_coe_sort x.1]
+  apply Finset.prod_congr rfl
+  intro i hi
+  have he := slotChoiceSplit_active L x.1
+    (fun i => ⟨(x.2.2 i).val,(Finset.mem_filter.mp (x.2.2 i).property).1⟩)
+    (fun i => ⟨(x.2.1 i).val,(Finset.mem_filter.mp (x.2.1 i).property).1⟩) i
+  change (if ((slotChoiceSplit L x.1).symm _ i.val).val∣A then (1:ℂ) else 0)=_
+  rw [he]
+
+include hmax hgood in
+lemma cubeJoined_completed (x : CubeSlotChoices H L) (Ψ : Eis→*ℂ) (W : ℝ→ℂ) (X : ℝ) :
+    markedCompletedT Ψ W X
+      (fun A => ∏ i,if (cubeChoicesJoin H L x i).val∣H^3*A then (1:ℂ) else 0)=
+    markedCompletedT Ψ W X
+      (fun A => ∏ i : x.1,if (x.2.2 i).val∣A then (1:ℂ) else 0) := by
+  congr 1
+  funext A
+  exact cubeJoined_mark H L hmax hgood x A
+
+lemma cubeJoined_coefficient (x : CubeSlotChoices H L) (w : ∀ i,L i→ℂ) :
+    (∏ i,w i (cubeChoicesJoin H L x i))=
+      (∏ i : {i // i∉x.1},w i.val ⟨(x.2.1 i).val,(Finset.mem_filter.mp (x.2.1 i).property).1⟩)*
+      (∏ i : x.1,w i.val ⟨(x.2.2 i).val,(Finset.mem_filter.mp (x.2.2 i).property).1⟩) := by
+  exact (slot_coefficient_split L x.1 w _ _).trans (mul_comm _ _)
+
+def cubeAbsorbedCoefficient (w : ∀ i,L i→ℂ) (T : Finset σ) : ℂ :=
+  ∑ b : ∀ i : {i // i∉T},cubeDivList H (L i.val),
+    ∏ i : {i // i∉T},w i.val ⟨(b i).val,(Finset.mem_filter.mp (b i).property).1⟩
+
+lemma cubeAbsorbedCoefficient_product (w : ∀ i,L i→ℂ) (T : Finset σ) :
+    cubeAbsorbedCoefficient H L w T=
+      ∏ i : {i // i∉T},∑ P : cubeDivList H (L i.val),w i.val ⟨P.val,(Finset.mem_filter.mp P.property).1⟩ :=
+  (Fintype.prod_sum (fun (i : {i // i∉T}) (P : cubeDivList H (L i.val)) =>
+    w i.val ⟨P.val,(Finset.mem_filter.mp P.property).1⟩)).symm
+
+include hmax hgood
+
+theorem original_cube_shifted_tuple_source (w : ∀ i,L i→ℂ)
+    (Ψ : Eis→*ℂ) (W : ℝ→ℂ) (X : ℝ) :
+    (∑ p : ∀ i,L i,(∏ i,w i (p i))*markedCompletedT Ψ W X
+      (fun A => ∏ i,if (p i).val∣H^3*A then (1:ℂ) else 0))=
+    ∑ T : Finset σ,cubeAbsorbedCoefficient H L w T*
+      ∑ a : ∀ i : T,cubeAwayList H (L i.val),
+        (∏ i : T,w i.val ⟨(a i).val,(Finset.mem_filter.mp (a i).property).1⟩)*
+          markedCompletedT Ψ W X (fun A => ∏ i : T,if (a i).val∣A then (1:ℂ) else 0) := by
+  rw [←(cubeSlotChoiceEquiv H L).sum_comp]
+  change (∑ x : CubeSlotChoices H L,(∏ i,w i (cubeChoicesJoin H L x i))*
+    markedCompletedT Ψ W X (fun A => ∏ i,if (cubeChoicesJoin H L x i).val∣H^3*A then (1:ℂ) else 0))=_
+  simp_rw [cubeJoined_completed H L hmax hgood,cubeJoined_coefficient]
+  rw [Fintype.sum_sigma]
+  apply Finset.sum_congr rfl
+  intro T hT
+  rw [Fintype.sum_prod_type]
+  simp only [cubeAbsorbedCoefficient,Finset.sum_mul,Finset.mul_sum,mul_assoc]
+  rw [Finset.sum_comm]
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {σ : Type*} [Fintype σ] [DecidableEq σ]
+
+lemma cubeDivList_card (H : Ideal Eis) (hH : H≠0) (L : Finset (Ideal Eis)) :
+    (cubeDivList H L).card≤(idealDivisors H).card := by
+  apply Finset.card_le_card
+  intro P hP
+  exact (mem_idealDivisors hH).mpr (Finset.mem_filter.mp hP).2
+
+lemma cube_divisor_card_one (H : Ideal Eis) (hH : H≠0) :
+    (1:ℝ)≤(idealDivisors H).card := by
+  exact_mod_cast Finset.card_pos.mpr ⟨1,(mem_idealDivisors hH).mpr (one_dvd H)⟩
+
+lemma cubeAbsorbedCoefficient_norm (H : Ideal Eis) (hH : H≠0)
+    (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ)
+    (hw : ∀ i P,‖w i P‖≤1) (T : Finset σ) (rmax : ℕ)
+    (hr : Fintype.card σ≤ rmax) :
+    ‖cubeAbsorbedCoefficient H L w T‖≤((idealDivisors H).card:ℝ)^rmax := by
+  rw [cubeAbsorbedCoefficient_product,norm_prod]
+  calc
+    _ ≤ ∏ i : {i // i∉T},((idealDivisors H).card:ℝ) := by
+      apply Finset.prod_le_prod (fun i _ => norm_nonneg _)
+      intro i hi
+      calc
+        _ ≤ ∑ P : cubeDivList H (L i.val),‖w i.val ⟨P.val,(Finset.mem_filter.mp P.property).1⟩‖ := norm_sum_le _ _
+        _ ≤ ∑ _P : cubeDivList H (L i.val),(1:ℝ) := Finset.sum_le_sum (fun P _ => hw _ _)
+        _ = ((cubeDivList H (L i.val)).card:ℝ) := by simp
+        _ ≤ _ := Nat.cast_le.mpr (cubeDivList_card H hH _)
+    _ = ((idealDivisors H).card:ℝ)^(Fintype.card {i // i∉T}) := by simp
+    _ ≤ _ := pow_le_pow_right₀ (cube_divisor_card_one H hH)
+      ((Fintype.card_subtype_le _).trans hr)
+
+lemma cubeAbsorbedCoefficient_mass (H : Ideal Eis) (hH : H≠0)
+    (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ)
+    (hw : ∀ i P,‖w i P‖≤1) (rmax : ℕ) (hr : Fintype.card σ≤ rmax) :
+    (∑ T : Finset σ,‖cubeAbsorbedCoefficient H L w T‖)≤
+      (2:ℝ)^rmax*((idealDivisors H).card:ℝ)^rmax := by
+  calc
+    _ ≤ ∑ _T : Finset σ,((idealDivisors H).card:ℝ)^rmax :=
+      Finset.sum_le_sum (fun T _ => cubeAbsorbedCoefficient_norm H hH L w hw T rmax hr)
+    _ = (2:ℝ)^(Fintype.card σ)*((idealDivisors H).card:ℝ)^rmax := by
+      simp [Fintype.card_finset]
+    _ ≤ _ := mul_le_mul_of_nonneg_right (pow_le_pow_right₀ (by norm_num) hr) (by positivity)
+
+theorem cubeAbsorbedCoefficient_small_power (rmax : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {σ : Type*} [Fintype σ] [DecidableEq σ]
+      (H : Ideal Eis),H≠0 → ∀ (L : σ→Finset (Ideal Eis)) (w : ∀ i,L i→ℂ),
+      (∀ i P,‖w i P‖≤1) → Fintype.card σ≤ rmax →
+      (∑ T : Finset σ,‖cubeAbsorbedCoefficient H L w T‖)^2≤ C*(Ideal.absNorm H:ℝ)^ε := by
+  let δ : ℝ := ε/(2*rmax+1)
+  have hδ : 0<δ := div_pos hε (by positivity)
+  obtain ⟨D,hD,hd⟩ := IdealDivisorBound.ideal_divisor_small_power δ hδ
+  refine ⟨((2:ℝ)^rmax*D^rmax)^2,by positivity,?_⟩
+  intro σ _ _ H hH L w hw hr
+  have hn : (1:ℝ)≤ Ideal.absNorm H := by
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (fun h => hH (Ideal.absNorm_eq_zero_iff.mp h))
+  have hn0 : 0<(Ideal.absNorm H:ℝ) := lt_of_lt_of_le zero_lt_one hn
+  have hde : δ*(rmax:ℝ)*2≤ε := by
+    dsimp [δ]
+    have hp : (0:ℝ)<2*rmax+1 := by positivity
+    rw [div_mul_eq_mul_div,div_mul_eq_mul_div]
+    apply (div_le_iff₀ hp).mpr
+    nlinarith
+  calc
+    _ ≤ ((2:ℝ)^rmax*((idealDivisors H).card:ℝ)^rmax)^2 := by
+      exact pow_le_pow_left₀ (Finset.sum_nonneg (fun _ _ => norm_nonneg _))
+        (cubeAbsorbedCoefficient_mass H hH L w hw rmax hr) 2
+    _ ≤ ((2:ℝ)^rmax*(D*(Ideal.absNorm H:ℝ)^δ)^rmax)^2 := by gcongr; exact hd H hH
+    _ = ((2:ℝ)^rmax*D^rmax)^2*(Ideal.absNorm H:ℝ)^(δ*(rmax:ℝ)*2) := by
+      have he := Real.rpow_mul_natCast hn0.le (δ*(rmax:ℝ)) 2
+      norm_num only [Nat.cast_ofNat] at he
+      rw [he,Real.rpow_mul_natCast hn0.le δ rmax]
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hn hde) (by positivity)
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+theorem original_cube_shifted_tuple_energy (rmax : ℕ) (ε : ℝ) (hε : 0<ε) :
+    ∃ C : ℝ,0< C ∧ ∀ {σ κ : Type*} [Fintype σ] [DecidableEq σ]
+      (H : Ideal Eis),H≠0 → ∀ (L : σ→Finset (Ideal Eis))
+      (_hmax : ∀ i,∀ P∈L i,P.IsMaximal)
+      (_hgood : ∀ i,∀ P∈L i,lambda∉P)
+      (w : ∀ i,L i→ℂ), (∀ i P,‖w i P‖≤1) → Fintype.card σ≤ rmax →
+    ∀ (rows : Finset κ) (Ψ : κ→(Eis→*ℂ)) (W : ℝ→ℂ) (X E : ℝ),0≤ E →
+      (∀ T : Finset σ,
+        (∑ k∈rows,‖∑ a : ∀ i : T,cubeAwayList H (L i.val),
+          (∏ i : T,w i.val ⟨(a i).val,(Finset.mem_filter.mp (a i).property).1⟩)*
+            markedCompletedT (Ψ k) W X (fun A => ∏ i : T,if (a i).val∣A then (1:ℂ) else 0)‖^2)≤ E) →
+      (∑ k∈rows,‖∑ p : ∀ i,L i,(∏ i,w i (p i))*markedCompletedT (Ψ k) W X
+        (fun A => ∏ i,if (p i).val∣H^3*A then (1:ℂ) else 0)‖^2)≤
+      C*(Ideal.absNorm H:ℝ)^ε*E := by
+  obtain ⟨C,hC,hb⟩ := cubeAbsorbedCoefficient_small_power rmax ε hε
+  refine ⟨C,hC,?_⟩
+  intro σ κ _ _ H hH L hmax hgood w hw hr rows Ψ W X E hE he
+  simp_rw [original_cube_shifted_tuple_source H L hmax hgood w]
+  apply (weighted_finite_row_energy_uniform Finset.univ rows (cubeAbsorbedCoefficient H L w)
+    (fun T k => ∑ a : ∀ i : T,cubeAwayList H (L i.val),
+      (∏ i : T,w i.val ⟨(a i).val,(Finset.mem_filter.mp (a i).property).1⟩)*
+        markedCompletedT (Ψ k) W X (fun A => ∏ i : T,if (a i).val∣A then (1:ℂ) else 0)) E
+    (fun T _ => he T)).trans
+  exact mul_le_mul_of_nonneg_right (hb H hH L w hw hr) hE
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open SchwartzPlanePoisson.CanonicalQuadraticSieve (columnDyadicLength columnDyadicLength_small_power divisorDyadicLabel divisorDyadicLabel_bounds divisorDyadicScale divisorDyadicScale_ge_one divisorDyadicBin divisorDyadicBin_bounds sum_divisorDyadicBins)
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open Eisenstein CompletedGauss CompletedDyadic CanonicalQuadraticSieve CanonicalRowCompletion InverseTerminalWidths InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe v
+
+theorem canonical_cube_shifted_completed_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo)
+    (W : ℝ→ℂ) (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar η : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (hη : 0<η)
+    (hη1 : η≤1) (hηc : η≤ cstar/100000) (rmax : ℕ) :
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],∀ (F : Ideal Eis) (_hF : Squarefree F)
+      (m : Eis) (_hm : m≠0) (Z N V M z₀ margin hhat d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hhat≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hhat≤ d+η → d≤ cstar/200 →
+    ∀ (parents : Finset (Ideal Eis)),(∀ I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ),
+      Pairwise (fun i j => Disjoint (lists i) (lists j)) →
+      (∀ i,∀ P∈lists i,P.IsMaximal) →
+      (∀ i,∀ P∈lists i,lambda∉P) →
+      (∀ i,∀ P∈lists i,Prime P) →
+      (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀ n,‖Ψ n‖≤1) → CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (Hcube : Ideal Eis),Hcube≠0 → (Ideal.absNorm Hcube:ℝ)≤ Z^hhat →
+    ∀ (u : Eisˣ) (θ : ℝ) (w : ∀ i,lists i→ℂ),(∀ i P,‖w i P‖≤1) →
+      (∑ I∈parents,
+        ‖∑ p : ∀ i,lists i,(∏ i,w i (p i))*markedCompletedT
+          (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+            (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+          (Z^(N-3*hhat)) (fun A => ∏ i,if (p i).val∣Hcube^3*A then (1:ℂ) else 0)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/64) := by
+  obtain ⟨degree,hu⟩ := canonical_original_completed_energy_uniform_degree lo hi hlo W hWs hW
+    L cstar η hL hcstar hη hη1 hηc rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  let ε := cstar/(64*(L+1))
+  have hε : 0<ε := by dsimp [ε];positivity
+  obtain ⟨D,hD,hcube⟩ := original_cube_shifted_tuple_energy rmax ε hε
+  refine ⟨D*C,Z₀,mul_pos hD hC,hZ₀,?_⟩
+  intro σ _ _ F hF m hm Z N V M z₀ margin hhat d hZ hN hM hMc hVc hzc hhc
+    hFn hRn hinv hmargin hVd hhd hd parents hparents hcard lists H hdis hmax hgood hprime hodd
+    hH1 hH hprod Ψ hΨnorm hΨperiod Hcube hcube0 hcuben u θ w hw
+  have hz1 : 1≤ Z := (lt_of_lt_of_le hZ₀ hZ).le
+  have hz : 0< Z := lt_of_lt_of_le zero_lt_one hz1
+  have hremain (T : Finset σ) :
+      (∑ I∈parents,‖∑ a : ∀ i : T,cubeAwayList Hcube (lists i.val),
+        (∏ i : T,w i.val ⟨(a i).val,(Finset.mem_filter.mp (a i).property).1⟩)*
+          markedCompletedT (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+            (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+            (Z^(N-3*hhat)) (fun A => ∏ i : T,if (a i).val∣A then (1:ℂ) else 0)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/32) := by
+    have hsub (i : T) : cubeAwayList Hcube (lists i.val)⊆lists i.val := Finset.filter_subset _ _
+    have hcardT : Fintype.card T≤ rmax := by
+      rw [Fintype.card_coe]
+      exact (Finset.card_le_univ T).trans hcard
+    have hprodT : (∏ i : T,H i.val)≤ Z^z₀ := by
+      apply le_trans ?_ hprod
+      rw [Finset.prod_coe_sort]
+      exact Finset.prod_le_prod_of_subset_of_one_le (Finset.subset_univ T)
+        (fun i hi => (hH1 i).trans' (by norm_num)) (fun i hi hnot => hH1 i)
+    exact he (σ:=T) F hF m hm Z N V M z₀ margin hhat d hZ hN hM hMc hVc hzc hhc
+      hFn hRn hinv hmargin hVd hhd hd parents hparents hcardT
+      (fun i : T => cubeAwayList Hcube (lists i.val)) (fun i : T => H i.val)
+      (fun i j hij => (hdis (fun he => hij (Subtype.ext he))).mono (hsub i) (hsub j))
+      (fun i P hP => hmax i.val P (hsub i hP)) (fun i P hP => hgood i.val P (hsub i hP))
+      (fun i P hP => hprime i.val P (hsub i hP)) (fun i P hP => hodd i.val P (hsub i hP))
+      (fun i => hH1 i.val) (fun i P hP => hH i.val P (hsub i hP)) hprodT
+      Ψ hΨnorm hΨperiod u θ (fun i P => w i.val ⟨P.val,hsub i P.property⟩)
+      (fun i P => hw i.val ⟨P.val,hsub i P.property⟩)
+  have hh := hcube Hcube hcube0 lists hmax hgood w hw hcard parents
+    (fun I => rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+      (u.val*cubicIdealGenerator I)) (CompletedHeight.normTwistedSource W θ)
+    (Z^(N-3*hhat)) (C*(1+‖θ‖)^degree*Z^(N+V-cstar/32)) (by positivity) hremain
+  have hεcap : hhat*ε≤ cstar/64 := by
+    have hhε : ε*(64*(L+1))=cstar := by dsimp [ε];field_simp
+    nlinarith [mul_le_mul_of_nonneg_right hhc hε.le]
+  have hn : (Ideal.absNorm Hcube:ℝ)^ε≤ Z^(cstar/64) := by
+    apply (Real.rpow_le_rpow (Nat.cast_nonneg _) hcuben hε.le).trans
+    rw [←Real.rpow_mul hz.le]
+    exact Real.rpow_le_rpow_of_exponent_le hz1 hεcap
+  apply hh.trans
+  calc
+    _ ≤ D*Z^(cstar/64)*(C*(1+‖θ‖)^degree*Z^(N+V-cstar/32)) := by gcongr
+    _ = (D*C)*(1+‖θ‖)^degree*(Z^(cstar/64)*Z^(N+V-cstar/32)) := by ring
+    _ = _ := by rw [←Real.rpow_add hz];congr 2;ring
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+namespace InverseMoment
+open Eisenstein CompletedGauss CanonicalRowCompletion CanonicalQuadraticSieve
+open InverseTerminalWidths InverseReflectedPhase CompletedHeight
+local notation "Eis"=> Eisenstein.O
+universe u v
+
+theorem canonical_short_completed_energy_uniform_degree
+    (lo hi:ℝ) (hlo:0< lo) (W:ℝ→ℂ)
+    (hWs:Function.support W⊆Set.Icc lo hi) (hW:ContDiff ℝ ∞ W)
+    (L cstar eta:ℝ) (hL:0≤ L) (hcstar:0< cstar) (heta:0< eta)
+    (heta1:eta≤1) (hetac:eta≤ cstar/100000) (rmax:ℕ):
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀{σ:Type v} [Fintype σ] [DecidableEq σ],∀(F:Ideal Eis)(_hF:Squarefree F)
+      (m:Eis)(_hm:m≠0)(Z N V M z₀ margin hcut d:ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → hcut≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hcut≤ d+eta → d≤ cstar/200 →
+    ∀(parents:Finset (Ideal Eis)),(∀I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀(lists:σ→Finset (Ideal Eis))(H:σ→ℝ),
+      Pairwise (fun i j=> Disjoint (lists i) (lists j)) →
+      (∀i,∀P∈lists i,P.IsMaximal) →
+      (∀i,∀P∈lists i,lambda∉P) →
+      (∀i,∀P∈lists i,Prime P) → (∀i,∀P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀i,1≤ H i) → (∀i,∀P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏i,H i)≤ Z^z₀ →
+    ∀(Ψ:Eis→*ℂ),(∀n,‖Ψ n‖≤1) →
+      CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀(u:Eisˣ)(θ:ℝ)(w:∀i,lists i→ℂ),(∀i P,‖w i P‖≤1) →
+      (∑I∈parents,‖markedShortCompletedSum
+        (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+          (u.val*cubicIdealGenerator I)) (normTwistedSource W θ)
+        (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/64)*((2*(1+diagonalControl sieveCutoff))*(columnDyadicLength (Z^hcut)+1:ℝ))^2 := by
+  obtain ⟨degree,hu⟩ := canonical_cube_shifted_completed_energy_uniform_degree lo hi hlo W hWs hW L cstar eta hL hcstar heta heta1 hetac rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro σ _ _ F hF m hm Z N V M z₀ margin hcut d hZ hN hM hMc hVc hzc hcutc hFn hRn
+    hmargin hreserve hVd hcutd hd parents hparents hcard lists H hdis hmax hgood hprime hodd hH1 hH hprod
+    Ψ hΨ hperiod u θ w hw
+  have hZ1:1< Z:=lt_of_lt_of_le hZ₀ hZ
+  have hz:0< Z:=zero_lt_one.trans hZ1
+  have htw:HasCompactSupport (normTwistedSource W θ):=
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((normTwistedSource_support W θ).trans hWs)
+  have hcompleted (J:Ideal Eis) (hJ:J∈shortCubeRange (Z^hcut)):
+      (∑I∈parents,‖markedCompletedT
+        (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+          (u.val*cubicIdealGenerator I)) (normTwistedSource W θ)
+        (Z^N/(Ideal.absNorm J:ℝ)^3) (fun A=> tupleDivisibilityMark lists w (J^3*A))‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/64):=by
+    obtain ⟨hJ0,hJnorm⟩:=(mem_shortCubeRange _ J).mp hJ
+    have hn:0<(Ideal.absNorm J:ℝ):=by exact_mod_cast Nat.pos_of_ne_zero (fun hn=> hJ0 (Ideal.absNorm_eq_zero_iff.mp hn))
+    have hc:Real.logb Z (Ideal.absNorm J:ℝ)≤ hcut:=
+      (Real.logb_le_iff_le_rpow hZ1 hn).mpr hJnorm.le
+    have hjpow:(Ideal.absNorm J:ℝ)≤ Z^(Real.logb Z (Ideal.absNorm J:ℝ)):=by
+      rw [Real.rpow_logb hz (ne_of_gt hZ1) hn]
+    have h:=he F hF m hm Z N V M z₀ margin (Real.logb Z (Ideal.absNorm J:ℝ)) d
+      hZ hN hM hMc hVc hzc (hc.trans hcutc) hFn hRn hmargin hreserve hVd (hc.trans hcutd) hd
+      parents hparents hcard lists H hdis hmax hgood hprime hodd hH1 hH hprod Ψ hΨ hperiod J hJ0 hjpow u θ w hw
+    rw [short_cube_exact_scale Z N hZ1 J hJ0] at h
+    simpa only [completed_tuple_mark lists w _ _ htw _ (div_pos (Real.rpow_pos_of_pos hz _) (pow_pos hn _)) J] using h
+  have hh:=marked_short_completed_energy
+    (fun I:parents=> rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+      (u.val*cubicIdealGenerator I.val))
+    (fun I n=> rowTwist_norm Ψ hΨ _ _ _ n) (fun _=> tupleDivisibilityMark lists w)
+    (normTwistedSource W θ) (Z^N) (Z^hcut) (C*(1+‖θ‖)^degree*Z^(N+V-cstar/64))
+    (by positivity) (fun J hJ=> by
+      rw [Finset.sum_coe_sort parents (fun I:Ideal Eis=>‖markedCompletedT
+        (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+          (u.val*cubicIdealGenerator I)) (normTwistedSource W θ)
+        (Z^N/(Ideal.absNorm J:ℝ)^3) (fun A=> tupleDivisibilityMark lists w (J^3*A))‖^2)]
+      exact hcompleted J hJ)
+  rw [Finset.sum_coe_sort parents (fun I:Ideal Eis=>‖markedShortCompletedSum
+        (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+          (u.val*cubicIdealGenerator I)) (normTwistedSource W θ)
+        (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)] at hh
+  exact hh
+
+end InverseMoment
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+namespace InverseMoment
+open Eisenstein CompletedGauss CanonicalRowCompletion CanonicalQuadraticSieve
+open InverseTerminalWidths InverseReflectedPhase CompletedHeight
+local notation "Eis"=> Eisenstein.O
+universe u v
+
+theorem canonical_short_completed_power_energy_uniform_degree
+    (lo hi:ℝ) (hlo:0< lo) (W:ℝ→ℂ)
+    (hWs:Function.support W⊆Set.Icc lo hi) (hW:ContDiff ℝ ∞ W)
+    (L cstar eta:ℝ) (hL:0≤ L) (hcstar:0< cstar) (heta:0< eta)
+    (heta1:eta≤1) (hetac:eta≤ cstar/100000) (rmax:ℕ):
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀{σ:Type v} [Fintype σ] [DecidableEq σ],∀(F:Ideal Eis)(_hF:Squarefree F)
+      (m:Eis)(_hm:m≠0)(Z N V M z₀ margin hcut d:ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ M → M≤ L → V≤ L → z₀≤ L → 0≤ hcut → hcut≤ L →
+      (Ideal.absNorm F:ℝ)≤ Z^V → (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hcut≤ d+eta → d≤ cstar/200 →
+    ∀(parents:Finset (Ideal Eis)),(∀I∈parents,I≠0 ∧ (Ideal.absNorm I:ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀(lists:σ→Finset (Ideal Eis))(H:σ→ℝ),
+      Pairwise (fun i j=> Disjoint (lists i) (lists j)) →
+      (∀i,∀P∈lists i,P.IsMaximal) →
+      (∀i,∀P∈lists i,lambda∉P) →
+      (∀i,∀P∈lists i,Prime P) → (∀i,∀P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀i,1≤ H i) → (∀i,∀P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏i,H i)≤ Z^z₀ →
+    ∀(Ψ:Eis→*ℂ),(∀n,‖Ψ n‖≤1) →
+      CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀(u:Eisˣ)(θ:ℝ)(w:∀i,lists i→ℂ),(∀i P,‖w i P‖≤1) →
+      (∑I∈parents,‖markedShortCompletedSum
+        (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator F)
+          (u.val*cubicIdealGenerator I)) (normTwistedSource W θ)
+        (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)≤
+      C*(1+‖θ‖)^degree*Z^(N+V-cstar/128) := by
+  obtain ⟨degree,hu⟩ := canonical_short_completed_energy_uniform_degree lo hi hlo W hWs hW L cstar eta hL hcstar heta heta1 hetac rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  obtain ⟨B,hB,hbound⟩:=short_harmonic_small_power L (cstar/128) hL (by positivity)
+  refine ⟨C*B,Z₀,mul_pos hC hB,hZ₀,?_⟩
+  intro σ _ _ F hF m hm Z N V M z₀ margin hcut d hZ hN hM hMc hVc hzc hcut0 hcutc hFn hRn
+    hmargin hreserve hVd hcutd hd parents hparents hcard lists H hdis hmax hgood hprime hodd hH1 hH hprod
+    Ψ hΨ hperiod u θ w hw
+  have hz:0< Z:=zero_lt_one.trans (lt_of_lt_of_le hZ₀ hZ)
+  have hh:=he F hF m hm Z N V M z₀ margin hcut d hZ hN hM hMc hVc hzc hcutc hFn hRn
+    hmargin hreserve hVd hcutd hd parents hparents hcard lists H hdis hmax hgood hprime hodd hH1 hH hprod
+    Ψ hΨ hperiod u θ w hw
+  apply hh.trans
+  calc
+    _≤ C*(1+‖θ‖)^degree*Z^(N+V-cstar/64)*(B*Z^(cstar/128)):=
+      mul_le_mul_of_nonneg_left (hbound Z hcut (lt_of_lt_of_le hZ₀ hZ).le hcut0 hcutc) (by positivity)
+    _=(C*B)*(1+‖θ‖)^degree*Z^(N+V-cstar/128):=by
+      rw [show N+V-cstar/128=(N+V-cstar/64)+cstar/128 by ring,Real.rpow_add hz]
+      ring
+
+end InverseMoment
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+namespace InverseShortCanonicalNormalization
+open Eisenstein  CompletedGauss CanonicalRowCompletion
+open InverseMoment InverseReflectedPhase InverseTerminalWidths CompletedHeight
+local notation "Eis" => Eisenstein.O
+universe u v
+
+theorem canonical_short_normalized_generator_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo) (W : ℝ→ℂ)
+    (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar eta : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (heta : 0< eta)
+    (heta1 : eta≤1) (hetac : eta≤ cstar/100000) (rmax K : ℕ) :
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],
+    ∀ (m : Eis) (_hm : m≠0) (Z N V M z₀ margin hcut d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ V → 0≤ M → M≤ L → V≤ L → z₀≤ L → 0≤ hcut → hcut≤ L →
+      (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hcut≤ d+eta → d≤ cstar/200 →
+    ∀ (labels : Finset (Ideal Eis)),
+      (∀ f∈labels,Squarefree f ∧ (Ideal.absNorm f:ℝ)≤ Z^V) →
+    ∀ (labelGenerator : Ideal Eis→Eis),(∀ f∈labels,Ideal.span {labelGenerator f}=f) →
+    ∀ (T : Finset Eis),(∀ k∈T,k≠0 ∧ (Ideal.absNorm (Ideal.span {k}):ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ),
+      Pairwise (fun i j => Disjoint (lists i) (lists j)) →
+      (∀ i,∀ P∈lists i,P.IsMaximal) →
+      (∀ i,∀ P∈lists i,lambda∉P) →
+      (∀ i,∀ P∈lists i,Prime P) → (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀ n,‖Ψ n‖≤1) →
+      CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (θ : ℝ) (w : ∀ i,lists i→ℂ),(∀ i P,‖w i P‖≤1) →
+      (∑ f∈labels,secondLabelWeight K f * ∑ k∈T,
+        ‖((Z^(-(N+V)/2):ℝ):ℂ)*((Real.sqrt (Z^N):ℝ):ℂ)*markedShortCompletedSum
+          (rowTwist Ψ (ActualFiber.maskElement q m) (labelGenerator f) k)
+          (normTwistedSource W θ) (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(N+V-cstar/256) := by
+  let : Fintype Eisˣ := @Fintype.ofFinite _ cubic_units_finite
+  obtain ⟨degree,hu⟩ := canonical_short_completed_power_energy_uniform_degree lo hi hlo W hWs hW L cstar eta hL hcstar heta heta1 hetac rmax
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  obtain ⟨D,hD,hlabels⟩ := divisor_weight_sum K L (cstar/256) hL (by positivity)
+  refine ⟨D*(6*C),Z₀,by positivity,hZ₀,?_⟩
+  intro σ _ _ m hm Z N V M z₀ margin hcut d hZ hN hV hM hMc hVc hzc hcut0 hcutc
+    hRn hmargin hreserve hVd hcutd hd labels hlabelsN labelGenerator hlabelGenerator T hT hcard lists H hdis hmax hgood hprime hodd
+    hH1 hH hprod Ψ hΨ hperiod θ w hw
+  have hz1 : 1≤ Z := (lt_of_lt_of_le hZ₀ hZ).le
+  have hz : 0< Z := zero_lt_one.trans_le hz1
+  let rows := T.image (fun k => Ideal.span {k})
+  have hrows := CompletedUnitRows.image_span_nonzero_norm T (Z^M) hT
+  let E := C*(1+‖θ‖)^degree*Z^(N+V-cstar/128)
+  have hf (f : Ideal Eis) (hfl : f∈labels) :
+      (∑ k∈T,‖markedShortCompletedSum
+        (rowTwist Ψ (ActualFiber.maskElement q m) (labelGenerator f) k)
+        (normTwistedSource W θ) (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)≤6*E := by
+    let uf := CompletedUnitRows.rowUnit (labelGenerator f)
+    have hgf : labelGenerator f=uf.val*cubicIdealGenerator f :=
+      label_eq_rowUnit_generator f (hlabelsN f hfl).1.ne_zero (labelGenerator f) (hlabelGenerator f hfl)
+    apply (CompletedUnitRows.sum_elements_le_units T
+      (fun k => ‖markedShortCompletedSum
+        (rowTwist Ψ (ActualFiber.maskElement q m) (labelGenerator f) k)
+        (normTwistedSource W θ) (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)
+      (fun k => sq_nonneg _)).trans
+    have hb (u : Eisˣ) :
+        (∑ I∈rows,‖markedShortCompletedSum
+          (rowTwist Ψ (ActualFiber.maskElement q m) (labelGenerator f)
+            (u.val*cubicIdealGenerator I))
+          (normTwistedSource W θ) (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)≤ E := by
+      have hh := he f (hlabelsN f hfl).1 m hm Z N V M z₀ margin hcut d
+        hZ hN hM hMc hVc hzc hcut0 hcutc (hlabelsN f hfl).2 hRn hmargin hreserve hVd hcutd hd
+        rows hrows hcard lists H hdis hmax hgood hprime hodd hH1 hH hprod Ψ hΨ hperiod (uf^4*u) θ w hw
+      simpa only [hgf,rowTwist_label_transfer,Units.val_mul,Units.val_pow_eq_pow_val,E,mul_assoc] using hh
+    calc
+      _ ≤ ∑ _u : Eisˣ,E := Finset.sum_le_sum (fun u _ => hb u)
+      _ ≤ 6*E := by
+        simp only [Finset.sum_const,Finset.card_univ,nsmul_eq_mul]
+        apply mul_le_mul_of_nonneg_right _ (by dsimp only [E]; positivity)
+        exact_mod_cast EisensteinLatticeCount.card_units_le_six
+  have hl : (∑ f∈labels,secondLabelWeight K f)≤ D*Z^(V+cstar/256) :=
+    hlabels Z V hz1 hV hVc labels (fun f hfl => ⟨(hlabelsN f hfl).1.ne_zero,(hlabelsN f hfl).2⟩)
+  simp_rw [normalization_norm_sq Z N V hz,←Finset.mul_sum]
+  calc
+    _ ≤ ∑ f∈labels,secondLabelWeight K f*(Z^(-V)*(6*E)) := by
+      apply Finset.sum_le_sum
+      intro f hfl
+      apply mul_le_mul_of_nonneg_left _ (by unfold secondLabelWeight; positivity)
+      exact mul_le_mul_of_nonneg_left (hf f hfl) (Real.rpow_nonneg hz.le _)
+    _ = (∑ f∈labels,secondLabelWeight K f)*(Z^(-V)*(6*E)) := by rw [Finset.sum_mul]
+    _ ≤ (D*Z^(V+cstar/256))*(Z^(-V)*(6*E)) := mul_le_mul_of_nonneg_right hl (by dsimp [E]; positivity)
+    _ = (D*(6*C))*(1+‖θ‖)^degree*Z^(N+V-cstar/256) := by
+      dsimp only [E]
+      have hr : Z^(V+cstar/256)*Z^(-V)*Z^(N+V-cstar/128)=Z^(N+V-cstar/256) := by
+        rw [←Real.rpow_add hz,←Real.rpow_add hz]
+        congr 1
+        ring
+      calc
+        _ = (D*(6*C))*(1+‖θ‖)^degree*(Z^(V+cstar/256)*Z^(-V)*Z^(N+V-cstar/128)) := by ring
+        _ = _ := by rw [hr]
+
+end InverseShortCanonicalNormalization
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+namespace InverseShortCanonicalNormalization
+open Eisenstein  CompletedGauss CanonicalRowCompletion
+open InverseMoment InverseReflectedPhase InverseTerminalWidths CompletedHeight
+local notation "Eis" => Eisenstein.O
+universe u v
+
+theorem canonical_short_normalized_energy_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo) (W : ℝ→ℂ)
+    (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar eta : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (heta : 0< eta)
+    (heta1 : eta≤1) (hetac : eta≤ cstar/100000) (rmax K : ℕ) :
+    ∃ (degree : ℕ), ∀ (q : ℕ) (_hq : q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [Fintype σ] [DecidableEq σ],
+    ∀ (m : Eis) (_hm : m≠0) (Z N V M z₀ margin hcut d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ V → 0≤ M → M≤ L → V≤ L → z₀≤ L → 0≤ hcut → hcut≤ L →
+      (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hcut≤ d+eta → d≤ cstar/200 →
+    ∀ (labels : Finset (Ideal Eis)),
+      (∀ f∈labels,Squarefree f ∧ (Ideal.absNorm f:ℝ)≤ Z^V) →
+    ∀ (T : Finset Eis),(∀ k∈T,k≠0 ∧ (Ideal.absNorm (Ideal.span {k}):ℝ)≤ Z^M) →
+      Fintype.card σ≤ rmax → ∀ (lists : σ→Finset (Ideal Eis)) (H : σ→ℝ),
+      Pairwise (fun i j => Disjoint (lists i) (lists j)) →
+      (∀ i,∀ P∈lists i,P.IsMaximal) →
+      (∀ i,∀ P∈lists i,lambda∉P) →
+      (∀ i,∀ P∈lists i,Prime P) → (∀ i,∀ P∈lists i,ringChar (Eis⧸P)≠2) →
+      (∀ i,1≤ H i) → (∀ i,∀ P∈lists i,(Ideal.absNorm P:ℝ)≤ H i) → (∏ i,H i)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀ n,‖Ψ n‖≤1) →
+      CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (θ : ℝ) (w : ∀ i,lists i→ℂ),(∀ i P,‖w i P‖≤1) →
+      (∑ f∈labels,secondLabelWeight K f * ∑ k∈T,
+        ‖((Z^(-(N+V)/2):ℝ):ℂ)*((Real.sqrt (Z^N):ℝ):ℂ)*markedShortCompletedSum
+          (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator f) k)
+          (normTwistedSource W θ) (Z^N) (Z^hcut) (tupleDivisibilityMark lists w)‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(N+V-cstar/256) := by
+  obtain ⟨degree,hu⟩ := canonical_short_normalized_generator_energy_uniform_degree lo hi hlo W hWs hW L cstar eta hL hcstar heta heta1 hetac rmax K
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩ := hu q hq
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro σ _ _ m hm Z N V M z₀ margin hcut d hZ hN hV hM hMc hVc hzc hcut0 hcutc
+    hRn hmargin hreserve hVd hcutd hd labels hlabelsN T hT hcard lists H hdis hmax hgood hprime hodd
+    hH1 hH hprod Ψ hΨ hperiod θ w hw
+  exact he m hm Z N V M z₀ margin hcut d hZ hN hV hM hMc hVc hzc hcut0 hcutc hRn
+    hmargin hreserve hVd hcutd hd labels hlabelsN cubicIdealGenerator
+    (fun f _ => span_cubicIdealGenerator f) T hT hcard lists H hdis hmax hgood hprime hodd
+    hH1 hH hprod Ψ hΨ hperiod θ w hw
+
+end InverseShortCanonicalNormalization
+
+end
+
+
+noncomputable section
+open Eisenstein CubicJacobi CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+open SchwartzPlanePoisson.CanonicalQuadraticSieve
+open InverseInitialRayAttachment InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap ContDiff
+namespace InverseCanonicalShortAttachment
+open Eisenstein CompletedGauss CanonicalRowCompletion 
+open CanonicalQuadraticSieve InverseMoment InverseReflectedPhase InverseTerminalWidths CompletedHeight
+local notation "Eis"=> Eisenstein.O
+universe u v
+theorem actual_complete_short_finite_uniform_degree
+    (lo hi : ℝ) (hlo : 0< lo) (W : ℝ→ℂ)
+    (hWs : Function.support W⊆Set.Icc lo hi) (hW : ContDiff ℝ ∞ W)
+    (L cstar eta : ℝ) (hL : 0≤ L) (hcstar : 0< cstar) (heta : 0< eta)
+    (heta1 : eta≤1) (hetac : eta≤ cstar/100000) (rmax K : ℕ) :
+    ∃ (degree : ℕ), ∀ (q:ℕ)(_hq:q≠0), ∃ (C Z₀ : ℝ),0< C ∧ 1< Z₀ ∧
+    ∀ {σ : Type v} [DecidableEq σ],
+    ∀ (m : Eis),m≠0 → ∀ (Z N V M z₀ margin hcut d : ℝ),
+      Z₀≤ Z → 0≤ N → 0≤ V → 0≤ M → M≤ L → V≤ L → z₀≤ L → 0≤ hcut → hcut≤ L →
+      (Ideal.absNorm (Ideal.span {m}):ℝ)≤ Z^L →
+      CanonicalMargins (N+V) M (normWidth Z (Ideal.span {m})) z₀ margin → cstar/2≤ margin →
+      V≤ d → hcut≤ d+eta → d≤ cstar/200 →
+    ∀ (labels : Finset (Ideal Eis)),
+      (∀f∈labels,quadraticSupported f ∧ Squarefree f ∧ (Ideal.absNorm f:ℝ)≤ Z^V) →
+    ∀ (T : Finset Eis),(∀k∈T,k≠0 ∧ (Ideal.absNorm (Ideal.span {k}):ℝ)≤ Z^M) →
+    ∀ D : ℕ,hi*Z^N≤ D → ∀ slots : Finset σ,slots.card≤ rmax →
+    ∀ (lists : σ→Finset (primePool (CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q) D)))
+      (H : σ→ℝ),
+      (slots:Set σ).Pairwise (fun j k=> Disjoint (lists j) (lists k)) →
+      (∀j∈slots,1≤ H j) → (∀j∈slots,∀i∈lists j,(Ideal.absNorm i.val:ℝ)≤ H j) →
+      (∏j∈slots,H j)≤ Z^z₀ →
+    ∀ (Ψ : Eis→*ℂ),(∀n,‖Ψ n‖≤1) →
+      CanonicalCoefficientClass.FactorsModulo (CanonicalCoefficientClass.fixedBaseConductor q) Ψ →
+    ∀ (θ : ℝ)
+      (a : σ→primePool (CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q) D)→ℂ),
+      (∀j∈slots,∀i∈lists j,‖a j i‖≤1) →
+      let S:=reflectionExcludedPrimes q
+      let F:=CanonicalRowCompletion.outsideSquarefreeIdeals S D
+      let mark:=indexedIdealMark (fun i:primePool F=> i.val) slots lists a
+      Z^(-V)*(∑f∈labels,secondLabelWeight K f*∑k∈T,
+        ‖markedShortCompletedSum (rowTwist Ψ (m*excludedGenerator S) (cubicIdealGenerator f) k)
+          (normTwistedSource W θ) (Z^N) (Z^hcut) mark‖^2)≤
+        C*(1+‖θ‖)^degree*Z^(N+V-cstar/256) := by
+  obtain ⟨degree,hu⟩:=InverseShortCanonicalNormalization.canonical_short_normalized_energy_uniform_degree
+    lo hi hlo W hWs hW L cstar eta hL hcstar heta heta1 hetac rmax K
+  refine ⟨degree,?_⟩
+  intro q hq
+  obtain ⟨C,Z₀,hC,hZ₀,he⟩:=hu q hq
+  refine ⟨C,Z₀,hC,hZ₀,?_⟩
+  intro σ _ m hm Z N V M z₀ margin hcut d hZ hN hV hM hMc hVc hzc hcut0 hcutc
+    hRn hmargin hreserve hVd hcutd hd labels hlabels T hT D hD slots hcard lists H hdis hH1 hH hprod
+    Ψ hΨ hperiod θ a ha
+  dsimp only
+  let S:=reflectionExcludedPrimes q
+  let F:=CanonicalRowCompletion.outsideSquarefreeIdeals S D
+  have hF : ∀I∈F,quadraticIdealAdmissible I:=CanonicalRowCompletion.outsideSquarefree_admissible S D (reflectionExcludedPrimes_bad q)
+  let ilists:slots→Finset (Ideal Eis):=fun j=> idealLists F lists j.val
+  let iw:∀j,ilists j→ℂ:=fun j=> idealWeights F lists a j.val
+  have hp (j:slots) (P:Ideal Eis) (hP:P∈ilists j) := idealLists_prime_data F hF lists j.val P hP
+  have hcap : ∀j:slots,∀P∈ilists j,(Ideal.absNorm P:ℝ)≤ H j.val := by
+    intro j P hP
+    obtain ⟨i,hi,rfl⟩:=Finset.mem_image.mp hP
+    exact hH j.val j.property i hi
+  have hw : ∀j:slots,∀P:ilists j,‖iw j P‖≤1 := by
+    intro j P
+    obtain ⟨i,hi,hh⟩:=Finset.mem_image.mp P.property
+    change ‖transportCoeff F a j.val P.val‖≤1
+    rw [←hh,transportCoeff_val]
+    exact ha j.val j.property i hi
+  have henergy:=he (σ:=slots) m hm Z N V M z₀ margin hcut d hZ hN hV hM hMc hVc hzc hcut0 hcutc
+    hRn hmargin hreserve hVd hcutd hd labels (fun f hf=>(hlabels f hf).2) T hT (by simpa using hcard)
+    ilists (fun j:slots=> H j.val) (idealLists_disjoint F slots lists hdis)
+    (fun j P hP=>(hp j P hP).1) (fun j P hP=>(hp j P hP).2.1)
+    (fun j P hP=>(hp j P hP).2.2.1) (fun j P hP=>(hp j P hP).2.2.2)
+    (fun j=> hH1 j.val j.property) hcap (by simpa only [Finset.prod_coe_sort] using hprod)
+    Ψ hΨ hperiod θ iw hw
+  have hz:0< Z:=zero_lt_one.trans (lt_of_lt_of_le hZ₀ hZ)
+  have hn:‖((Z^(-(N+V)/2):ℝ):ℂ)*((Real.sqrt (Z^N):ℝ):ℂ)‖^2=Z^(-V) := by
+    rw [norm_mul,mul_pow,Complex.norm_real,Real.norm_eq_abs,
+      abs_of_pos (Real.rpow_pos_of_pos hz _),Complex.norm_real,Real.norm_eq_abs,
+      abs_of_nonneg (Real.sqrt_nonneg _),Real.sq_sqrt (Real.rpow_nonneg hz.le _),
+      ←Real.rpow_mul_natCast hz.le,←Real.rpow_add hz]
+    congr 1
+    ring
+  have hmark:indexedIdealMark (fun i:primePool F=> i.val) slots lists a=tupleDivisibilityMark ilists iw:=
+    funext (indexed_mark_eq_tuple F slots lists a)
+  rw [hmark]
+  change Z^(-V)*(∑f∈labels,secondLabelWeight K f*∑k∈T,
+    ‖markedShortCompletedSum (rowTwist Ψ (ActualFiber.maskElement q m) (cubicIdealGenerator f) k)
+      (normTwistedSource W θ) (Z^N) (Z^hcut) (tupleDivisibilityMark ilists iw)‖^2)≤ _
+  simp only [norm_mul,mul_pow] at henergy
+  have hn':‖((Z^(-(N+V)/2):ℝ):ℂ)‖^2*‖((Real.sqrt (Z^N):ℝ):ℂ)‖^2=Z^(-V):=by
+    simpa only [norm_mul,mul_pow] using hn
+  simp only [←mul_assoc,hn',←Finset.mul_sum] at henergy
+  convert henergy using 1
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intros
+  ring
+
+end InverseCanonicalShortAttachment
+
+end
+
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

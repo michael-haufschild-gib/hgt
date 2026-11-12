@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CausalExponentialLaplaceReflection
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CausalExponentialLaplaceReflection
 
 /-!
 # Laplace continuity on the closed right half-plane

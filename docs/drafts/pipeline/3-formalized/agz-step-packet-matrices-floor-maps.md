@@ -124,11 +124,14 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
   along divisibility of `R`, to the bottom of Weil's form on a window of length `log Q`, and by
   M21 by at most `C_Q²/(log R − E_Q − μ_R)` from `R` on.
 - An index theorem for the floor correspondences.
+- A positive trial vector with one sink (after the charge shift) on the windows of ratio two and
+  four: with M25 it would count one bound state there without the zeros.
 
 ## Log
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
 - 2026-11-12 — M9–M24 proved and formalized
+- 2026-11-12 — M25 proved and formalized
 
 ## The neutral part (M9, M10)
 
@@ -195,6 +198,9 @@ A supersolution cannot certify a window on which the neutral part has a negative
   its ground vector has one sign and is charged, at every block size
 - [x] M24 gluing: two forms with one negative square each, coupled through minus the product of
   their charges, have one negative square together iff `αβ ≥ 1`, two iff `αβ < 1`
+- [x] M25 a count of the bound states from the potential and the couplings: at most the sinks of
+  a positive trial vector; with a charge dominated by the couplings, at most one more than the
+  sinks of the shifted matrix; on a window, at most one more than the blocks with `V_j < −λJ`
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -381,6 +387,22 @@ its length has one sign, and then `Σσ_j` and `Σσ_j d(R+j)` have that sign (`
 *`αβ < 1`, `α, β < 0`:* `G(sa, tb) = αs² − 2αβst + βt²` has the determinant `αβ(1 − αβ) > 0`
 and `α < 0`: negative on a plane; and `G = A(x) + B(y) ≥ 0` where both charges vanish: exactly
 two.
+
+**M25.** `B` real symmetric with `B_ij ≤ 0` for `i ≠ j`, `v > 0`. Then
+`Σ σ_iσ_j B_ij − Σ_i (σ_i²/v_i)(Bv)_i = ½ Σ_{i,j} (−B_ij) v_i v_j (σ_i/v_i − σ_j/v_j)² ≥ 0`
+(the two orders of a pair add up to one square). So the form is `≥ 0` on the packets that vanish
+at the sinks `{i : (Bv)_i < 0}`, and the negative squares are at most the sinks. *With a charge:*
+if `B_ij + λ c_i c_j ≤ 0` off the diagonal, `B' = B + λ c ⊗ c` is of the same kind,
+`B'v = Bv + λ (c·v) c`, and the forms of `B` and `B'` agree where `c·σ = 0`: at most one more
+than the sinks of `B'`. *Windows:* `B = N` (neutral part), `v = c = 1`: `Nv = V`, `c·v = J`; the
+hypothesis is `λ ≤ w_{jl}`. Lean:
+`TheBoundStatesOfAWindowAreAtMostTheSinksOfAPositiveTrialVector` (`sum_div_mul_mulVec_le`,
+`hermNegIndex_le_card_sinks`, `hermNegIndex_le_one_add_card_sinks`,
+`hermNegIndex_neutralWindow_le_card_wells`,
+`hermNegIndex_neutralWindow_le_one_add_card_deepWells`,
+`hermNegIndex_neutralWindow_le_one_of_shallow`). The constant trial vector gives one bound state
+only on narrow windows (`V_j ≈ log(R/J) − 2`, `λJ ≈ ½ + J/4R`); a trial vector with one sink on a
+window of ratio two or four is not known.
 
 Lean: `…/TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged.lean`
 (`blockDegree_le_xLogXDiff`, `blockMatrix_neg_of_narrow`, `sum_kernel_abs_lt`,

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.WeightedCausalExponentialReflection
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.WeightedCausalExponentialReflection
 
 /-!
 # Real profiles for causal exponential reflection
