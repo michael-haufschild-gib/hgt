@@ -56,6 +56,9 @@ Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3
 | `TheCuspHeightsOfAPointAreSparse` | lattice points in a disc; at most `K/Y²` cusp cosets give a point height `≥ Y` (`card_cuspCosets_height_le`) | clean; olean built |
 | `TheThetaCoefficientsHaveTheHeckeBound` | one-coefficient Parseval bound; strip lintegral coordinates; `∫_{D_Γ}|θ_s|² < ∞` (L² residue + `levelSet ⊆` kernel set); unfolding bound on `[Y,2Y]`; `sourceCoefficient_hecke_bound` | clean; olean built |
 | `TheMellinTransformOfTheThetaSquareReadsItsDirichletSeries` | `|K_{1/3}(x)| ≤ Cx^{−1/3}e^{−x/2}`; `M(s)` holomorphic on Re s > 2/3, `M(4/3) ≠ 0`; `Σ_{h≠0}|ξ_h|^{−t}` (t > 2, ZLattice); `tsum_amplitude_mul_neg`; `integral_thetaSqRemainder` (Re s > 4) | clean; olean built |
+| `TheEisensteinPairingContinuesAcrossFourThirds` | `levelPairing` (u ↦ ∫_{D_Γ} G·u, CLM on L² of the kernel quotient via the measure-preserving pullback); `∫_{D_Γ}G·E(s) = ∫G·seed(s) + ⟨G,Corr(s)⟩` (Re s>4, Im s>0); correction pairing analytic off ℝ, `(s−4/3)⟨G,Corr⟩ = ⟨G,N(s)⟩`, N(4/3) = residue; seed term = Mellin of a₀(G) against χv^s | clean; olean built |
+| `TheThetaSquareHasARationalCuspSubtraction` | `cosetHeight_translate_le` (bottom-left c of x·g caps height at 1/(\|c\|²v)); `cuspSubtraction` H_S = c²Σ_q conj(E_1(r_q w∣f_S)); multiplier κ⁻¹; `cuspSubtraction_upper` (= c²f_S(v) above height 1/2); `setIntegral_levelSet_translate` | clean; olean built |
+| `TheRationalCuspSubtractionScatters` | strip-bounded functions pair with E(s) (absolute unfolding); unfolding of conj E_1(·∣f); constant terms of E(s), E(s)∘S (MMD); truncated identity; `integral_scatterPart`: Mellin(a₀(H) − \|P\|c²f) = c²Φ(s)·∫f v^{−1−s} (Re s>10/3), Φ = \|P\|(π/(s−1))φ + 3(π/(s−1))U | clean; olean built |
 | `TheConstantTermContinuesAcrossFourThirds` | `clearedScattering` = (s−4/3)φ(s) via zetaPoleFilled·L(χ₋₃)/Z₀; holomorphic on Re s>1; value r at 4/3; `dedekindZeta_residue_eq`; `clearedConstantTerm` (residue 3πr v^{2/3}); `hasDerivAt_clearedConstantTerm` (log term) | clean |
 
 ## Notes
@@ -67,6 +70,7 @@ Target: `D_s(w) = Σ_{h≠0} T_s(h)² N(h)^{−w}` has a double pole at `w = 2/3
 ## Conjecture ledger
 
 ## Log
+- 2026-11-12 — 2c–2e formalized (modules 10–12). Remaining: G = θ_s² − H bounded on H³ (reduction + three cusp classes; mod-3 residue of r_q c_j bottom-left ≠ 0), assembly with clearedScatterTotal = (π/(s−1))\|P\|·clearedScattering·(3·3^{3s−3}−1)/2 (value 12π\|P\|r at 4/3); polynomial cusp decay v^{−7/3} suffices (region 1 < Re s < 13/3).
 - 2026-11-12 — (2) started: 2a Hecke bound and 2b Mellin link formalized (modules 7–9); roadmap (2) rewritten around MMD's L² meromorphy (2c–2g).
 - 2026-11-12 — (1) arithmetic side done: RS for θ_s², cube factorization. Open in (1): ramified frequencies (no polynomial bound on T_s(λ^k·)), element-vs-ideal bookkeeping (±primary), bridge σ(A) ↔ CRF γ₂(A)² (cubicUnitGaussSum 1 a vs sexticGaussPow 2 a 1).
 - 2026-11-12 — created; README first draft; modules 1–4 clean (SQ1, SQ3 done; SQ2/SQ4 constant-term part done). Next: small-height asymptotics of A(v) = c²v^{4/3} + Σ a a (spectral side, renormalization) — needs E continued as a function with growth and the spectral expansion of θ² − c²E*.

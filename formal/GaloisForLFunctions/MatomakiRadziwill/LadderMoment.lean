@@ -151,7 +151,9 @@ theorem integral_normSq_blockQ_pow_mul_blockR_le {f : ℕ → ℂ} (hf : ∀ n, 
       calc S * (E - 1) ≤ S * (2 / H') := mul_le_mul_of_nonneg_left hE1 hS0.le
         _ = 2 * S / H' := by ring
     have h2 : (1 : ℝ) ≤ S / H' := by rw [le_div_iff₀ hH0]; linarith
-    linarith
+    calc (B.card : ℝ) ≤ S * (E - 1) + 1 := h
+      _ ≤ 2 * S / H' + S / H' := add_le_add h1 h2
+      _ = 3 * S / H' := by ring
   have hcardB2 : (B.card : ℝ) + ℓ * Bmax ≤ 3 * ℓ * S := by
     have hℓ' : (1 : ℝ) ≤ ℓ := by exact_mod_cast hℓ
     have h1 : 3 * S / H' ≤ S := by rw [div_le_iff₀ hH0]; nlinarith
@@ -169,9 +171,12 @@ theorem integral_normSq_blockQ_pow_mul_blockR_le {f : ℕ → ℂ} (hf : ∀ n, 
         ≤ (3 * S / H') ^ ℓ * (4 * lo) * (3 * ℓ * S) ^ ℓ := by
           gcongr
       _ = 4 * lo * (9 * ℓ * S / H') ^ ℓ * S ^ ℓ := by
-          rw [show (9 * ℓ * S / H') ^ ℓ * S ^ ℓ = (3 * S / H') ^ ℓ * (3 * ℓ * S) ^ ℓ by
-            rw [← mul_pow, ← mul_pow]; congr 1; ring]
-          ring
+          have e : (3 * S / H') ^ ℓ * (3 * ℓ * S) ^ ℓ = (9 * ℓ * S / H') ^ ℓ * S ^ ℓ := by
+            rw [← mul_pow, ← mul_pow]; congr 1; ring
+          calc (3 * S / H') ^ ℓ * (4 * lo) * (3 * ℓ * S) ^ ℓ
+              = 4 * lo * ((3 * S / H') ^ ℓ * (3 * ℓ * S) ^ ℓ) := by ring
+            _ = 4 * lo * ((9 * ℓ * S / H') ^ ℓ * S ^ ℓ) := by rw [e]
+            _ = 4 * lo * (9 * ℓ * S / H') ^ ℓ * S ^ ℓ := by ring
   have hfirst : 5 * Real.pi / 2 * W + 5 * Real.exp 1 / 2 * ((Bmax ^ ℓ * N : ℕ) : ℝ)
       ≤ 36 * 2 ^ ℓ * (S ^ ℓ * lo) := by
     have hpi : Real.pi ≤ 16 / 5 := by linarith [Real.pi_lt_d2]

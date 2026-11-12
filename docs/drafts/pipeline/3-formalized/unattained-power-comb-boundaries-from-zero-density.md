@@ -1,9 +1,9 @@
 # Unattained power-comb boundaries from zero density
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Target:** A82; exact ordinary convergence at a subcritical endpoint.
 - **Statement:** For `0<a<1/2`, `PowerCombTailConverges a` iff every zeta zero satisfies `Re ρ<1-a`.
-- **Status:** Necessity established. Complete sufficient direction written in Lean; dependency checks pending. Endpoint theorem not yet claimed or counted.
+- **Status:** Proved in Lean. Ordinary convergence at an unattained subcritical endpoint is settled.
 
 ## Mathematical connection
 
@@ -49,37 +49,17 @@ The exact finite identity is
 the limit to the literal comb. Necessity combines the established width
 bound with `powerCombTailConverges_excludes_boundary_zeros`.
 
-## Verified inputs
+## Lean
 
-`ZeroConfigurationGeometry`:
-- `TheRightSubstripsHaveSubunitMoments`;
-- `RightSubstripCutoffsHavePowerTails`;
-- `ThePrimeErrorHasAPowerSavingRightTrace`;
-- `TheRightSubstripTraceIsContinuous`;
-- `ThePrimeRightTraceHasAGlobalPowerRemainder`;
-- `TheRightSubstripTraceCanBeIntegrated`.
+Main theorem: `powerCombTailConverges_iff_forall_zero_re_lt` in
+`AbsoluteGeometryOfSpecZ/PowerCombConvergenceHasTheExactPointwiseBoundary.lean`.
 
-`AbsoluteGeometryOfSpecZ`:
-- `PowerTailWeightedPrimeAbel`;
-- `PowerTailPrimeErrorKeepsItsRightTrace`;
-- `PowerTailRiemannSumsAcrossJumps`;
-- `PowerTailRightRemaindersHaveConvergentMeshes`;
-- `PowerTailZetaMultiplierBound`;
-- `PowerTailZeroTraceIsAbsolutelySummable`;
-- `PowerTailZeroPrefixHasAUniformRemainder`;
-- `PowerTailZeroConvolutionModes`;
-- `PowerTailRightZeroCutoffs`;
-- `PowerTailRightZeroConvolutionTails`;
-- `PowerContactsSplitIntoRightTraceAndRemainder`;
-- `PowerTailRightTraceCutoffsHaveTheirLimit`.
-
-Required oleans and umbrella imports are present for these inputs.
-
-## Written chain awaiting checks
-
-All in `AbsoluteGeometryOfSpecZ`:
-- Full convolution limit: `TheRightZeroConvolutionHasItsLimit`.
-- Final classifier: `PowerCombConvergenceHasTheExactPointwiseBoundary`, theorem `powerCombTailConverges_iff_forall_zero_re_lt`.
+The dependency chain establishes density moments and exact finite cutoffs;
+the global prime and weighted Abel remainders; convergent inverse-coordinate
+meshes; summable zeta amplitudes; uniform finite zero modes; complete
+exterior convolution control; moving-cutoff limits; and the exact arithmetic
+contact identity. All required dependency oleans were checked individually.
+The final leaf passed `lake --old env lean`; umbrella imports are wired.
 
 The critical case `a=1/2` is excluded: the right-substrip density deficit
 vanishes there, and ordinary critical convergence is already disproved.

@@ -7,6 +7,10 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubeFrequenciesOfThe
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCuspHeightsOfAPointAreSparse
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaCoefficientsHaveTheHeckeBound
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheMellinTransformOfTheThetaSquareReadsItsDirichletSeries
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheEisensteinPairingContinuesAcrossFourThirds
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaSquareHasARationalCuspSubtraction
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRationalCuspSubtractionScatters
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRenormalizedThetaSquareIsBounded
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -20,5 +24,8 @@ and the Rankin–Selberg identity of `θ²` and of the projected `θ_s²` agains
 series; the factorization of the Dirichlet series of the squared theta coefficients through
 `ζ_K(3w − 1)`; the count of cusp cosets lifting a point to height `≥ Y`, and the Hecke bound
 `|T_s(h)| ≤ C(1 + |ξ_h|)` for the projected theta coefficients; the Mellin transform of the nonconstant part of the constant
-term of `θ_s²` as `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}`. See `SpectralTheoryOfTheCubicCover/README.md`.
+term of `θ_s²` as `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}`; the Eisenstein pairing split into a seed
+term and an `L²` correction with at most a simple pole at `4/3`; the rational cusp subtraction of
+`θ_s²` and the Mellin transform of its scattering; boundedness and square integrability of the
+renormalized `θ_s² − H`. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/

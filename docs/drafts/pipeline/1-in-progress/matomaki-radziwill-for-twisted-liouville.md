@@ -142,6 +142,11 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `RamareBlocks` | blocks `⌊H log p⌋`, cofactor ranges; interior `n` see every factorisation | compiled |
 | `RamareBlockError` | error coefficients `≤ 2/n`, vanish off boundary and squareful `n` | compiled |
 | `RamareBlockMVT` | step 2: `∫\|Σ_{n∈S} f(n)/n n^{2πiw} − Σ_p Σ_m a(p)c(m)(pm)^{2πiw}\|² ≤ (5πW/2+20eX)(4/X²)(10X/H+16X/P)` | compiled |
+| `LadderBlocks` | `pairPoly = Σ_v Q_v R_v`; pointwise Cauchy–Schwarz; `∫\|R_v\|² ≤ 10πW/lo + 40e` | compiled |
+| `LadderMoment` | `∫\|Q_u^ℓ R_v\|² ≤ 144(18ℓ/H')^ℓ` for `S = e^{u/H'} ≥ H' ≥ 3`, `S^ℓ lo ≥ W` | compiled |
+| `LadderScaleBounds` | `smallAt`; first step `∫1_small\|ΣQR\|² ≤ #VΣc²∫\|R\|²`; moment-trick step off the previous `smallAt` | compiled |
+| `LadderExceptional` | pure moments `∫\|Q_u\|^{2k} ≤ 144(18k/H')^k`; Markov measure of the exceptional set; `∫_E\|ΣQ*R*\|² ≤ #Vρ²Σ∫_E\|R*\|²` | compiled |
+| `LadderHM` | `∫_E\|R_v\|² ≤ (2π)^{-1} hmMassRecip(⌊4lo⌋, 2πW, 2π\|E\|)·4/lo` (corpus set-integral Halász–Montgomery) | compiled |
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery

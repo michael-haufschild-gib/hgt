@@ -83,7 +83,7 @@ private theorem integrable_shifted_gamma_of_bounded_truncations {F : ℝ → ℝ
       simp_rw [he]
       rw [integral_add hγS (hbS.mul_const C), integral_mul_const]
       dsimp only [lowGammaForm, S, b]
-      field_simp <;> ring
+      field_simp
     calc
       _ ≤ ∫ r in S, g r := setIntegral_mono_set hgS
         (Eventually.of_forall hgn) (Eventually.of_forall fun r hr => hsub hr)
@@ -108,10 +108,13 @@ theorem integrable_gamma_of_criticalHalfLineGroundState {W₀ : ℝ} {F : ℝ �
     dsimp only [B]
     linarith only [hh]
   have hg := integrable_shifted_gamma_of_bounded_truncations hF1 hF2 hB
-  have hb := _root_.RHTower.KernelStrip.integrable_norm_sq_paperFT
+  have hb : Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2) :=
+    _root_.RHTower.KernelStrip.integrable_norm_sq_paperFT
     (hF1.ofReal (𝕜 := ℂ)) (memLp_cx_of_integrable_sq hF1 hF2)
   apply (hg.sub (hb.mul_const (10 + Real.log 4))).congr
-  exact Eventually.of_forall fun r => by dsimp only; ring
+  exact Eventually.of_forall fun r => by
+    dsimp only [Pi.sub_apply, cx]
+    ring
 
 /-- The exact positive reference symbol is bounded by the Gamma weight
 and a constant; its logarithm has the same normalization as the causal factor. -/
@@ -133,7 +136,8 @@ theorem integrable_logarithmic_energy_of_criticalHalfLineGroundState
     Integrable (fun r : ℝ => positiveLogarithmicSymbol r * ‖paperFT (cx F) r‖ ^ 2) := by
   have hF1 := hF.2.1
   have hF2 := hF.2.2.1
-  have hb := _root_.RHTower.KernelStrip.integrable_norm_sq_paperFT
+  have hb : Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2) :=
+    _root_.RHTower.KernelStrip.integrable_norm_sq_paperFT
     (hF1.ofReal (𝕜 := ℂ)) (memLp_cx_of_integrable_sq hF1 hF2)
   have hmajor := (integrable_gamma_of_criticalHalfLineGroundState hF).add
     (hb.mul_const (11 + Real.log 4))
@@ -141,6 +145,7 @@ theorem integrable_logarithmic_energy_of_criticalHalfLineGroundState
     ((continuous_positiveLogarithmicSymbol.mul
       ((continuous_paperFT_cx hF1).norm.pow 2)).aestronglyMeasurable)
   refine Eventually.of_forall fun r => ?_
+  dsimp only [Pi.mul_apply, Pi.pow_apply, Pi.add_apply, cx]
   rw [Real.norm_eq_abs, abs_of_nonneg
     (mul_nonneg (zero_le_one.trans (one_le_positiveLogarithmicSymbol r)) (sq_nonneg _))]
   calc
@@ -172,7 +177,7 @@ theorem exists_causal_coordinates_of_criticalHalfLineGroundState
     rw [hF.2.2.2.2.2.1 (-t) (by linarith only [htneg]), Complex.ofReal_zero]
   have hfourier (ξ : ℝ) : 𝓕 g ξ = paperFT (cx F) ((2 * Real.pi * ξ : ℝ) : ℂ) := by
     have hh := paperFT_ofReal_eq_fourier g (-(2 * Real.pi) * ξ)
-    have harg : -(-(2 * Real.pi) * ξ) / (2 * Real.pi) = ξ := by field_simp <;> ring
+    have harg : -(-(2 * Real.pi) * ξ) / (2 * Real.pi) = ξ := by field_simp
     rw [harg] at hh
     rw [← hh]
     change paperFT (fun t => cx F (-t)) ((-(2 * Real.pi) * ξ : ℝ) : ℂ) = _
@@ -186,6 +191,7 @@ theorem exists_causal_coordinates_of_criticalHalfLineGroundState
       (show 2 * Real.pi ≠ 0 by positivity)
     apply hi.congr
     filter_upwards [GaloisForLFunctions.RHTower.coeFn_fourier_toLp hg1 hg2] with ξ hξ
+    change ((Lp.fourierTransformₗᵢ ℝ ℂ) u : ℝ → ℂ) ξ = 𝓕 g ξ at hξ
     rw [hξ, hfourier]
   obtain ⟨v, hv⟩ := (hasLogarithmicEnergy_iff_mem_range (⟨u, hhalf⟩ : LogarithmicHalfLineL2)).mp henergy
   refine ⟨v, ?_⟩

@@ -456,6 +456,46 @@ The actual coordinate relations, gluing group, and membership of `1/2`
 in `Δ` remain undetermined.
 [Integral zero motive](TheIntegralZeroMotive.lean).
 
+### Functional-equation descent and coefficient weight
+
+The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive
+relations. Retain coefficient weight by forming
+
+```
+R = ⟨(ρ,1) : ξ(ρ)=0⟩ℤ ⊆ ℂ×ℤ,
+D = {n∈ℤ : (0,n)∈R}.
+```
+
+Projection `R→Δ` is onto. Functional-equation reflection always acts on
+`R` by `(z,n)↦(n−z,n)`. The subgroup `D` records precisely the coefficient
+weights of relations with zero complex value. Embedded as integer values
+in `Δ`, it is the exact obstruction to descending reflection.
+
+The following conditions are equivalent:
+
+- `D=0`;
+- coefficient weight descends to a homomorphism `Δ→ℤ` sending every zero to one;
+- reflection of every zero extends to an additive automorphism of `Δ`;
+- `(1/2)ℤ ∩ iΓ = {0}`.
+
+The last condition isolates an additive obstruction inside the centered
+integer span. It requires less than excluding `i` from the entire centered
+field, which also contains products and quotients of zeros.
+
+There is an unconditional replacement: `Δ/D` carries reflection. It is
+universal among additive quotients admitting the specified action on every
+zero. A complex character `χ` of `Δ` admits a reflected character precisely
+when `χ(n)=1` for all `n∈D`. For the real-time exponential flow, this becomes
+
+```
+reflection of χᵤ exists  ⇔  u=0 or D=0.
+```
+
+Thus even one nonzero real-time character detects the entire descent
+obstruction. The actual subgroup `D` remains undetermined; the functional
+equation alone supplies its augmented lift, not its vanishing.
+[Reflection descent](TheDescentOfFunctionalEquationReflection.lean).
+
 ### Euclidean topology and arithmetic action
 
 Give `L` its inherited complex topology while keeping the Krull topology on

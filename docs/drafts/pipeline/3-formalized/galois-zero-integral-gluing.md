@@ -1,8 +1,8 @@
 # Integral gluing of the zero motive
 
 - **ID:** galois-zero-integral-gluing
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Questions:** Integer relations; character group of the zero motive.
 
 Let `Γ⊆ℂ` be the integer span of all centered spectral zeros, with their
@@ -10,9 +10,9 @@ actual additive relations. Conjugation preserves `Γ`. Let `Γ⁺` and `Γ⁻`
 be its real and imaginary subgroups, and let `T` and `B` be its real and
 imaginary coordinate images.
 
-## Target
+## Theorem
 
-Describe `Γ` integrally as a subgroup of `T×B`. Its two coordinate
+The group `Γ` embeds integrally in `T×B`. Its two coordinate
 projections are onto, but the coordinates need not split integrally.
 The exact gluing group is
 
@@ -20,18 +20,18 @@ The exact gluing group is
 Q = Γ/(Γ⁺+Γ⁻).
 ```
 
-Prove that `2Q=0`, identify `Q` with the quotient of either coordinate
-image by its pure-coordinate subgroup, and recover `Γ` as their fibre
-product over `Q`. Locate conjugation in this presentation. Prove that every complex multiplicative character of the centered group `Γ` extends to
+The group satisfies `2Q=0`. It is the quotient of either coordinate
+image by its pure-coordinate subgroup; `Γ` is their fibre product over `Q`.
+Every complex multiplicative character of the centered group `Γ` extends to
 `T×B`, with ambiguity exactly the characters of the gluing quotient.
-Construct the normalized exponential flow and its canonical lift into the
+The normalized exponential flow has a canonical lift into the
 ordinate and width character groups. Conjugation fixes the ordinate factor
 and inverts the width factor. The full source Galois group acts faithfully
 on `Γ` and fixes its ordinate projection.
 
 The original-zero relation group requires restoring the central half-weight.
-Let `Δ` be the integer span of the original zeros and `A=Δ+ℤ/2`. Prove
-`A=ℤ/2+iΓ`, that `A/Δ` is cyclic and killed by two, and that each original
+Let `Δ` be the integer span of the original zeros and `A=Δ+ℤ/2`. Then
+`A=ℤ/2+iΓ`, `A/Δ` is cyclic and killed by two, and each original
 character lifts to `A`. The raw exponential is the half-weight times the
 normalized centered flow.
 
@@ -62,3 +62,18 @@ value on this order-two generator.
 This determines the obstruction to integral coordinate splitting without
 assuming it vanishes. It does not determine the integer relations among
 ordinates, inside individual width classes, or the actual gluing rank.
+
+## Formalization
+
+`GaloisForLFunctions/GaloisTheoryOfZeros/TheIntegralZeroMotive.lean`:
+
+- `zeroRelationRepresentation_injective`, `zeroRelationReal_source_invariant`.
+- `zeroRelationGroup_full_gluing`, `zeroIntegralGluingEquiv`, `zeroIntegralGluing_two`.
+- `zeroMotiveRestriction_surjective`, `zeroMotiveRestriction_kernel_iff`, `zeroMotiveRestriction_kernel_two`.
+- `halfWeightedZeroGroup_eq`, `rawCentralGluing_cyclic`, `rawCentralGluing_two`.
+- `rawMotiveRestriction_surjective`, `rawMotive_extension_unique_from_half`, `rawMotive_half_square`.
+- `rawMotive_coordinate_factorization`, `centeredMotiveFlow_lift`, `rawZeroMotiveFlow_at_zero`.
+
+The centered, original and half-weight flows are additive homomorphisms in
+time. Final source check passed; 27 dependency audits use only `propext`,
+`Classical.choice`, `Quot.sound`.

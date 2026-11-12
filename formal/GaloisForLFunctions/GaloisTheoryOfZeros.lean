@@ -47,3 +47,4 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheIntegralZeroMotive
 
 Arithmetic symmetry, equations and descent of the full zero divisor.
 -/
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheDescentOfFunctionalEquationReflection

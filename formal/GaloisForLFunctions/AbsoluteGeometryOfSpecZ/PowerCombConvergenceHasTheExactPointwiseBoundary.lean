@@ -14,7 +14,7 @@ right band, and the complete harmonic zero convolution has its limit.
 
 noncomputable section
 
-open Complex Filter Topology
+open Complex Filter Topology Zeta23
 open _root_.RHTower
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ

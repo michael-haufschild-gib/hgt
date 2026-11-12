@@ -21,6 +21,8 @@
   the number of zeros right of the line
 - [x] V8 the contacts of a number ring are its point counts over the finite fields; the relative
   square of two number rings at finite scale
+- [x] V9 Artin's induction theorem: every virtual character of a finite group has a positive
+  multiple in the lattice of the monomial characters
   (classical; not in the corpus): the law for every Artin character
 
 ## Paper proof
@@ -99,6 +101,25 @@ scale has `([L:ℚ] − [K:ℚ])` jets, `(r₂(L) − r₂(K))` conjugate jets, 
 (d) The ring of integers of `ℚ` is `ℤ`, with one homomorphism to every ring: `N_m(p) = 1`. So
 over `ℤ` the contacts of a number ring are `(#Hom(O, 𝔽_{p^m}) − 1) log p`.
 
+**V9.** `G` finite, `R` its virtual characters with the integer pairing `⟨·,·⟩`, `μ_q` the
+characters induced from linear characters of subgroups, `q` in a finite set. Corpus: `θ ∈ R`
+with `⟨θ, μ_q⟩ = 0` for all `q` is zero (restriction to cyclic subgroups).
+
+(a) *A symmetric rational matrix `Γ` maps onto `(ker Γ)^⊥`.* `range Γ ∩ ker Γ = 0`: if
+`Γ(Γc) = 0` then `(Γc)·(Γc) = c·Γ(Γc) = 0`, so `Γc = 0`. With rank and nullity,
+`range Γ + ker Γ` is everything. Write `y = Γc + k`, `Γk = 0`. If `y ⟂ ker Γ`:
+`0 = k·y = k·Γc + k·k = (Γk)·c + k·k = k·k`, so `k = 0`.
+
+(b) `Γ_{qq'} = ⟨μ_q, μ_{q'}⟩`, `y_q = ⟨θ, μ_q⟩`. For rational `c` with `Γc = 0` take a common
+denominator `N` and `z = Nc` integral: `η = Σ z_q μ_q` has `⟨η, μ_{q'}⟩ = N(Γc)_{q'} = 0`, so
+`η = 0` and `N(c·y) = ⟨θ, η⟩ = 0`. By (a) `y = Γc`; with `z = Nc` integral,
+`⟨Σ z_q μ_q − Nθ, μ_{q'}⟩ = N(Γc)_{q'} − N y_{q'} = 0` for all `q'`, so `Nθ = Σ z_q μ_q`.
+
+The index of a virtual configuration counts points: where the net multiplicity is not zero
+right of the line, where it is negative on the line. So `n` copies of two families have the
+index of the families, and the index law of a character needs `nχ` in the monomial lattice
+only. The integral statement (Brauer) is needed for the function `L(s, χ)`, not for the index.
+
 ## Lean
 
 Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
@@ -112,10 +133,14 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 | V7 | `TheNeutralFormOfANumberRingHasTheIndexOfItsZetaFunctionPlusOne` | `heckeXi_trivialModulus_one_ne_zero`, `one_notMem_dedekindZeros`, `exists_le_negIndex_dedekind_sub_poleConfig_iff`, `forall_negIndex_dedekind_sub_poleConfig_le_one_iff` |
 | V8 | `TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields` | `ringHom_finiteField`, `kerEquivQuotientHom`, `primesOfNorm`, `fibrePointCount`, `idealContact_prime_pow`, `idealContact_eq_zero`, `natCard_ringHom_ker_eq`, `ker_mem_biUnion_primesOfNorm`, `natCard_ringHom_eq_fibrePointCount`, `idealContact_prime_pow_eq_natCard_ringHom`, `fibrePointCount_rat`, `ringForm_sub`, `relativeContact_prime_pow`, `relativeContact_rat_prime_pow`, `tendsto_relativeForm_add_relativeContact` |
 
+| V9 | `RHTower/Artin/ArtinMonomialRationalSpan` | `exists_mulVec_eq_of_orthogonal_ker`, `exists_int_multiple`, `exists_nsmul_mem_closure_range`, `finite_linearCharacter`, `exists_nsmul_mem_closure_monomial` |
+| V9 | `APowerOfAQuotientOfLFunctionsHasTheIndexOfTheQuotient` | `sum_extMult_power`, `virtualDefect_superposeFamily_power`, `exists_le_negIndex_power_iff` |
+
 ## Open
 
-- V6. With Brauer's theorem and reciprocity, `L(s, ρ)` of an Artin character is a quotient of
-  products of Hecke `L`-functions and the law reads: the index of `ρ` is the number of zeros and
+- V6. With reciprocity (the `L`-function of an induced linear character is a Hecke
+  `L`-function) and V9, a power of `L(s, ρ)` of an Artin character is a quotient of products of
+  Hecke `L`-functions; with Brauer's theorem `L(s, ρ)` itself is. The law reads: the index of `ρ` is the number of zeros and
   poles of `L(s, ρ)` right of the line plus the number of its poles on the line; Bézout for `ρ`
   is the Riemann hypothesis of `L(s, ρ)` with Artin's conjecture on the line.
 - The pairing at finite scale of a virtual character with members that are not trivial
@@ -123,4 +148,4 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
   the relative square of two number rings (V8).
 
 ## Log
-- 2026-11-12 — proved and formalized (V1–V5, V7, V8)
+- 2026-11-12 — proved and formalized (V1–V5, V7, V8, V9)

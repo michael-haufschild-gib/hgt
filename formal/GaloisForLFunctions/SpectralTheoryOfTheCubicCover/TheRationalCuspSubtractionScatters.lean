@@ -544,4 +544,338 @@ theorem integral_cuspSubtraction_trunc_mul_eisenstein (c : ℂ) {T : ℝ} (hT : 
   simp only [scatterTotal, f]
   ring
 
+/-! ### Removing the truncation -/
+
+/-- The constant term `a₀(F)(v) = ∫_P F(z + jv) dz`. -/
+def cuspConstantTerm (F : HyperbolicSpace → ℂ) (v : ℝ) : ℂ :=
+  ∫ z in periodDomain, F (cuspCoordinateLift (v, z))
+
+theorem cuspConstantTerm_measurable (F : HyperbolicSpace → ℂ) (hF : Measurable F) :
+    StronglyMeasurable (cuspConstantTerm F) :=
+  StronglyMeasurable.integral_prod_right'
+    (f := fun p : ℝ × ℂ => F (cuspCoordinateLift p)) (hF.comp cuspCoordinateLift_measurable).stronglyMeasurable
+
+theorem norm_cuspConstantTerm_le (F : HyperbolicSpace → ℂ) (v : ℝ) (hv : 0 < v) (C : ℝ)
+    (hC : ∀ z : ℂ, ‖F (upperPoint z v hv)‖ ≤ C) : ‖cuspConstantTerm F v‖ ≤ C * periodAreaReal := by
+  have hP : volume.real periodDomain = periodAreaReal := by
+    rw [Measure.real, periodDomain_volume, ENNReal.toReal_ofReal periodAreaReal_pos.le]
+  rw [cuspConstantTerm, ← hP]
+  refine norm_setIntegral_le_of_norm_le_const (by rw [periodDomain_volume]; exact ENNReal.ofReal_lt_top)
+    fun z _ => ?_
+  rw [cuspCoordinateLift_positive v z hv]
+  exact hC z
+
+/-- The scattering part `a₀(H_S)(v) − |P| c² f_S(v)` of the constant term. -/
+def scatterPart (c : ℂ) (S : Set ℝ) (v : ℝ) : ℂ :=
+  cuspConstantTerm (cuspSubtraction c S) v - periodArea * c ^ 2 * growthProfile S v
+
+theorem scatterPart_measurable (c : ℂ) (S : Set ℝ) (hS : MeasurableSet S) :
+    StronglyMeasurable (scatterPart c S) :=
+  (cuspConstantTerm_measurable _ (cuspSubtraction_measurable c S hS)).sub
+    (stronglyMeasurable_const.mul (growthProfile_measurable S hS).stronglyMeasurable)
+
+theorem scatterPart_high (c : ℂ) (S : Set ℝ) (hS : S ⊆ Set.Ici 2) (v : ℝ) (hv2 : 1 / 2 < v) :
+    scatterPart c S v = 0 := by
+  have hv : 0 < v := by linarith
+  have hP : volume.real periodDomain = periodAreaReal := by
+    rw [Measure.real, periodDomain_volume, ENNReal.toReal_ofReal periodAreaReal_pos.le]
+  rw [scatterPart, cuspConstantTerm]
+  have hc : ∀ z, cuspSubtraction c S (cuspCoordinateLift (v, z)) = c ^ 2 * growthProfile S v := fun z => by
+    rw [cuspCoordinateLift_positive v z hv, cuspSubtraction_upper c S hS z v hv hv2]
+  simp_rw [hc]
+  rw [setIntegral_const, hP, Complex.real_smul]
+  ring
+
+theorem norm_scatterPart_small (c : ℂ) (S : Set ℝ) (hS : S ⊆ Set.Ici 2) (v : ℝ) (hv : 0 < v)
+    (hv2 : v ≤ 1 / 2) :
+    ‖scatterPart c S v‖ ≤ ‖c‖ ^ 2 * (4 * (1 / v) ^ ((4 : ℝ) / 3)) * periodAreaReal := by
+  have hf : growthProfile S v = 0 :=
+    Set.indicator_of_notMem (fun h => by linarith [Set.mem_Ici.mp (hS h)]) _
+  rw [scatterPart, hf, mul_zero, sub_zero]
+  exact norm_cuspConstantTerm_le _ v hv _ fun z => norm_cuspSubtraction_small c S z v hv hv2
+
+theorem scatterPart_truncate (c : ℂ) {T : ℝ} (hT : 2 ≤ T) (v : ℝ) (hv : 0 < v) (hvT : 1 / T ≤ v) :
+    scatterPart c (Set.Icc 2 T) v = scatterPart c (Set.Ici 2) v := by
+  by_cases hv2 : v ≤ 1 / 2
+  · have hf : ∀ S : Set ℝ, S ⊆ Set.Ici 2 → growthProfile S v = 0 := fun S hS =>
+      Set.indicator_of_notMem (fun h => by linarith [Set.mem_Ici.mp (hS h)]) _
+    rw [scatterPart, scatterPart, hf _ (fun t ht => ht.1), hf _ le_rfl, cuspConstantTerm, cuspConstantTerm]
+    congr 1
+    refine setIntegral_congr_fun periodDomain_measurable fun z _ => ?_
+    rw [cuspCoordinateLift_positive v z hv, cuspSubtraction_truncate c hT z v hv hv2 hvT]
+  · rw [scatterPart_high c _ (fun t ht => ht.1) v (not_le.mp hv2),
+      scatterPart_high c _ le_rfl v (not_le.mp hv2)]
+
+/-- The Mellin integrand of the scattering part is integrable for `Re s > 10/3`. -/
+theorem integrableOn_scatterPart (c : ℂ) (S : Set ℝ) (hS : S ⊆ Set.Ici 2) (hSm : MeasurableSet S)
+    (s : ℂ) (hs : 10 / 3 < s.re) :
+    IntegrableOn (fun v : ℝ => (v : ℂ) ^ s * scatterPart c S v / (v : ℂ) ^ 3) (Set.Ioi 0) := by
+  set C := ‖c‖ ^ 2 * 4 * periodAreaReal
+  have hg : IntegrableOn (fun v : ℝ => C * v ^ (s.re - 13 / 3)) (Set.Ioc 0 (1 / 2)) := by
+    have := intervalIntegral.intervalIntegrable_rpow' (r := s.re - 13 / 3) (by linarith)
+      (a := 0) (b := 1 / 2)
+    exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)).mp this).const_mul C
+  have hm : AEStronglyMeasurable (fun v : ℝ => (v : ℂ) ^ s * scatterPart c S v / (v : ℂ) ^ 3)
+      (volume.restrict (Set.Ioc 0 (1 / 2))) :=
+    (((Complex.measurable_ofReal.pow_const s).mul (scatterPart_measurable c S hSm).measurable).div
+      (Complex.measurable_ofReal.pow_const 3)).aestronglyMeasurable
+  have h1 : IntegrableOn (fun v : ℝ => (v : ℂ) ^ s * scatterPart c S v / (v : ℂ) ^ 3)
+      (Set.Ioc 0 (1 / 2)) := by
+    refine hg.mono' hm (ae_restrict_of_forall_mem measurableSet_Ioc fun v hv => ?_)
+    have hv0 := hv.1
+    have hb := norm_scatterPart_small c S hS v hv0 hv.2
+    rw [norm_div, norm_mul, norm_pow, Complex.norm_cpow_eq_rpow_re_of_pos hv0, Complex.norm_real,
+      Real.norm_of_nonneg hv0.le]
+    have hpow : (1 / v) ^ ((4 : ℝ) / 3) = v ^ (-((4 : ℝ) / 3)) := by
+      rw [one_div, Real.inv_rpow hv0.le, Real.rpow_neg hv0.le]
+    rw [hpow] at hb
+    have he : v ^ s.re * (‖c‖ ^ 2 * (4 * v ^ (-((4 : ℝ) / 3))) * periodAreaReal) / v ^ 3 =
+        C * v ^ (s.re - 13 / 3) := by
+      rw [show s.re - 13 / 3 = s.re + (-((4 : ℝ) / 3)) - 3 by ring, Real.rpow_sub hv0,
+        Real.rpow_add hv0]
+      norm_cast
+      ring
+    calc v ^ s.re * ‖scatterPart c S v‖ / v ^ 3
+        ≤ v ^ s.re * (‖c‖ ^ 2 * (4 * v ^ (-((4 : ℝ) / 3))) * periodAreaReal) / v ^ 3 := by
+          gcongr
+      _ = C * v ^ (s.re - 13 / 3) := he
+  refine h1.of_forall_sdiff_eq_zero measurableSet_Ioi fun v hv => ?_
+  have hv2 : 1 / 2 < v := by
+    by_contra h
+    exact hv.2 ⟨hv.1, not_lt.mp h⟩
+  rw [scatterPart_high c S hS v hv2, mul_zero, zero_div]
+
+/-- The Mellin integrand of the full profile is integrable for `Re s > 4/3`. -/
+theorem integrableOn_growthProfile_full (s : ℂ) (hs : 4 / 3 < s.re) :
+    IntegrableOn (fun v : ℝ => growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3)
+      (Set.Ioi 0) := by
+  have hg : IntegrableOn (fun v : ℝ => v ^ ((1 : ℝ) / 3 - s.re)) (Set.Ioi 1) :=
+    integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
+  have hm : AEStronglyMeasurable (fun v : ℝ => growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3)
+      (volume.restrict (Set.Ioi 1)) :=
+    (((growthProfile_measurable _ measurableSet_Ici).mul (Complex.measurable_ofReal.pow_const _)).div
+      (Complex.measurable_ofReal.pow_const 3)).aestronglyMeasurable
+  have h1 : IntegrableOn (fun v : ℝ => growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3)
+      (Set.Ioi 1) := by
+    refine hg.mono' hm (ae_restrict_of_forall_mem measurableSet_Ioi fun v (hv : 1 < v) => ?_)
+    have hv0 : 0 < v := by linarith
+    rw [norm_div, norm_mul, norm_pow, Complex.norm_cpow_eq_rpow_re_of_pos hv0, Complex.norm_real,
+      Real.norm_of_nonneg hv0.le]
+    have hf := norm_growthProfile_le (Set.Ici 2) hv0.le
+    have he : v ^ ((4 : ℝ) / 3) * v ^ (2 - s).re / v ^ 3 = v ^ ((1 : ℝ) / 3 - s.re) := by
+      rw [Complex.sub_re, Complex.re_ofNat, show (1 : ℝ) / 3 - s.re = (4 : ℝ) / 3 + (2 - s.re) - 3 by ring]
+      conv_rhs => rw [Real.rpow_sub hv0, Real.rpow_add hv0]
+      norm_cast
+    calc ‖growthProfile (Set.Ici 2) v‖ * v ^ (2 - s).re / v ^ 3
+        ≤ v ^ ((4 : ℝ) / 3) * v ^ (2 - s).re / v ^ 3 := by gcongr
+      _ = _ := he
+  refine h1.of_forall_sdiff_eq_zero measurableSet_Ioi fun v hv => ?_
+  have hv1 : v ≤ 1 := not_lt.mp hv.2
+  rw [growthProfile, Set.indicator_of_notMem (fun h => by linarith [show (2 : ℝ) ≤ v from h]),
+    zero_mul, zero_div]
+
+/-- **The scattering of the rational cusp subtraction.** For `Re s > 10/3`:
+`∫_0^∞ v^s (a₀(H)(v) − |P| c² f(v)) v^{−3} dv = c² Φ(s) ∫_0^∞ f(v) v^{2−s} v^{−3} dv`. -/
+theorem integral_scatterPart (c : ℂ) (s : ℂ) (hs : 10 / 3 < s.re) :
+    ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s * scatterPart c (Set.Ici 2) v / (v : ℂ) ^ 3 =
+      c ^ 2 * scatterTotal s * ∫ v in Set.Ioi (0 : ℝ),
+        growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+  have hs2 : 2 < s.re := by linarith
+  set X := (∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s * scatterPart c (Set.Ici 2) v / (v : ℂ) ^ 3) -
+    c ^ 2 * scatterTotal s * ∫ v in Set.Ioi (0 : ℝ),
+      growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 with hX
+  suffices hX0 : X = 0 from sub_eq_zero.mp hX0
+  set A := 2 * (‖c‖ ^ 2 * 4 * periodAreaReal) / (s.re - 10 / 3)
+  set B := ‖c ^ 2 * scatterTotal s‖ / (s.re - 4 / 3)
+  -- the truncated identity in Mellin form
+  have htrunc : ∀ T : ℝ, 2 ≤ T →
+      ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s * scatterPart c (Set.Icc 2 T) v / (v : ℂ) ^ 3 =
+        c ^ 2 * scatterTotal s * ∫ v in Set.Ioi (0 : ℝ),
+          growthProfile (Set.Icc 2 T) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+    intro T hT
+    have hcpow : ∀ a : ℂ, ContinuousOn (fun v : ℝ => (v : ℂ) ^ a) (Set.Icc 2 T) := fun a v hv =>
+      ((continuousAt_cpow_const (Complex.ofReal_mem_slitPlane.mpr (by linarith [hv.1]))).comp
+        Complex.continuous_ofReal.continuousAt).continuousWithinAt
+    have hden : ContinuousOn (fun v : ℝ => (v : ℂ) ^ 3) (Set.Icc 2 T) :=
+      (Complex.continuous_ofReal.pow 3).continuousOn
+    have hne : ∀ v ∈ Set.Icc 2 T, (v : ℂ) ^ 3 ≠ 0 := fun v hv =>
+      pow_ne_zero 3 (Complex.ofReal_ne_zero.mpr (by linarith [hv.1]))
+    have I1 := integrableOn_scatterPart c (Set.Icc 2 T) (fun t ht => ht.1) measurableSet_Icc s hs
+    have I2 := growthProfile_mul_integrableOn T (fun v => periodArea * c ^ 2 * (v : ℂ) ^ s / (v : ℂ) ^ 3)
+      ((continuousOn_const.mul (hcpow s)).div hden hne)
+    have I3 := growthProfile_mul_integrableOn T (fun v => (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3)
+      ((hcpow (2 - s)).div hden hne)
+    have hint := integrableOn_unfolded_of_strip (cuspSubtraction c (Set.Icc 2 T))
+      (cuspSubtraction_measurable c _ measurableSet_Icc) (‖c‖ ^ 2 * (4 * T ^ ((4 : ℝ) / 3))) T
+      (by linarith) (fun z v hv => norm_cuspSubtraction_le c hT _ subset_rfl _) (fun z v hv hvT => by
+        rw [cuspSubtraction_upper c _ (fun t ht => ht.1) z v hv (by linarith), growthProfile,
+          Set.indicator_of_notMem (fun h => absurd h.2 (not_le.mpr hvT)), mul_zero]) s hs2
+    have hunf := integral_mul_hyperbolicEisenstein_eq_constantTerm (cuspSubtraction c (Set.Icc 2 T))
+      (cuspSubtraction_automorphy c _) s hint
+    rw [integral_cuspSubtraction_trunc_mul_eisenstein c hT s hs2] at hunf
+    have hsplit : ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
+          (∫ z in periodDomain, cuspSubtraction c (Set.Icc 2 T) (cuspCoordinateLift (v, z))) / (v : ℂ) ^ 3 =
+        (∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s * scatterPart c (Set.Icc 2 T) v / (v : ℂ) ^ 3) +
+          ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v *
+            (periodArea * c ^ 2 * (v : ℂ) ^ s / (v : ℂ) ^ 3) := by
+      rw [← integral_add I1 I2]
+      refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+      simp only [scatterPart, cuspConstantTerm]
+      ring
+    have hright : c ^ 2 * ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v *
+          (periodArea * (v : ℂ) ^ s + scatterTotal s * (v : ℂ) ^ (2 - s)) / (v : ℂ) ^ 3 =
+        (∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v *
+            (periodArea * c ^ 2 * (v : ℂ) ^ s / (v : ℂ) ^ 3)) +
+          c ^ 2 * scatterTotal s * ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v *
+            ((v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3) := by
+      rw [← integral_const_mul, ← integral_const_mul, ← integral_add I2 (I3.const_mul _)]
+      refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+      ring
+    rw [hsplit, hright] at hunf
+    have hfin : ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
+        ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v * ((v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3) :=
+      setIntegral_congr_fun measurableSet_Ioi fun v _ => mul_div_assoc _ _ _
+    rw [hfin]
+    linear_combination -hunf
+  -- the two error terms
+  have hσ1 : 0 < s.re - 10 / 3 := by linarith
+  have hσ2 : 0 < s.re - 4 / 3 := by linarith
+  set C' := ‖c‖ ^ 2 * 4 * periodAreaReal
+  have hbound : ∀ T : ℝ, 2 ≤ T → ‖X‖ ≤ 2 * C' / (s.re - 10 / 3) * T ^ (-(s.re - 10 / 3)) +
+      ‖c ^ 2 * scatterTotal s‖ / (s.re - 4 / 3) * T ^ (-(s.re - 4 / 3)) := by
+    intro T hT
+    have hT0 : 0 < T := by linarith
+    have hX : X = (∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
+          (scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v) / (v : ℂ) ^ 3) -
+        c ^ 2 * scatterTotal s * ∫ v in Set.Ioi (0 : ℝ),
+          (growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v) * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+      have J1 := integrableOn_scatterPart c (Set.Ici 2) le_rfl measurableSet_Ici s hs
+      have J2 := integrableOn_scatterPart c (Set.Icc 2 T) (fun t ht => ht.1) measurableSet_Icc s hs
+      have J3 := integrableOn_growthProfile_full s (by linarith)
+      have J4 : IntegrableOn (fun v : ℝ => growthProfile (Set.Icc 2 T) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3)
+          (Set.Ioi 0) := by
+        have := growthProfile_mul_integrableOn T (fun v => (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3)
+          ((ContinuousOn.div (fun v hv => ((continuousAt_cpow_const (Complex.ofReal_mem_slitPlane.mpr
+            (by linarith [hv.1]))).comp Complex.continuous_ofReal.continuousAt).continuousWithinAt)
+            (Complex.continuous_ofReal.pow 3).continuousOn fun v hv =>
+              pow_ne_zero 3 (Complex.ofReal_ne_zero.mpr (by linarith [hv.1]))))
+        exact this.congr_fun (fun v _ => (mul_div_assoc _ _ _).symm) measurableSet_Ioi
+      have e1 : ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
+          (scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v) / (v : ℂ) ^ 3 =
+          (∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s * scatterPart c (Set.Ici 2) v / (v : ℂ) ^ 3) -
+            ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s * scatterPart c (Set.Icc 2 T) v / (v : ℂ) ^ 3 := by
+        rw [← integral_sub J1 J2]
+        refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+        ring
+      have e2 : ∫ v in Set.Ioi (0 : ℝ),
+          (growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v) * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
+          (∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Ici 2) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3) -
+            ∫ v in Set.Ioi (0 : ℝ), growthProfile (Set.Icc 2 T) v * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+        rw [← integral_sub J3 J4]
+        refine setIntegral_congr_fun measurableSet_Ioi fun v _ => ?_
+        ring
+      rw [e1, e2, htrunc T hT, hX]
+      ring
+    -- first error term: supported on `(0, 1/T)`
+    have hb1 : ‖∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
+        (scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v) / (v : ℂ) ^ 3‖ ≤
+        2 * C' / (s.re - 10 / 3) * T ^ (-(s.re - 10 / 3)) := by
+      have hsub : ∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
+          (scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v) / (v : ℂ) ^ 3 =
+          ∫ v in Set.Ioc 0 (1 / T), (v : ℂ) ^ s *
+            (scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v) / (v : ℂ) ^ 3 := by
+        refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi Set.Ioc_subset_Ioi_self
+          fun v hv => ?_
+        have hv0 : 0 < v := hv.1
+        have hvT : 1 / T ≤ v := by
+          by_contra h
+          exact hv.2 ⟨hv0, (not_le.mp h).le⟩
+        rw [scatterPart_truncate c hT v hv0 hvT, sub_self, mul_zero, zero_div]
+      rw [hsub]
+      have hT2 : 1 / T ≤ 1 / 2 := by
+        apply div_le_div_of_nonneg_left zero_le_one (by norm_num) hT
+      have hgi : IntegrableOn (fun v : ℝ => 2 * C' * v ^ (s.re - 13 / 3)) (Set.Ioc 0 (1 / T)) := by
+        have := intervalIntegral.intervalIntegrable_rpow' (r := s.re - 13 / 3) (by linarith)
+          (a := 0) (b := 1 / T)
+        exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le (by positivity)).mp this).const_mul _
+      refine (norm_integral_le_of_norm_le hgi (ae_restrict_of_forall_mem measurableSet_Ioc
+        fun v hv => ?_)).trans (le_of_eq ?_)
+      · have hv0 := hv.1
+        have hv2 : v ≤ 1 / 2 := hv.2.trans hT2
+        have hb1' := norm_scatterPart_small c (Set.Ici 2) le_rfl v hv0 hv2
+        have hb2' := norm_scatterPart_small c (Set.Icc 2 T) (fun t ht => ht.1) v hv0 hv2
+        have hpow : (1 / v) ^ ((4 : ℝ) / 3) = v ^ (-((4 : ℝ) / 3)) := by
+          rw [one_div, Real.inv_rpow hv0.le, Real.rpow_neg hv0.le]
+        rw [hpow] at hb1' hb2'
+        rw [norm_div, norm_mul, norm_pow, Complex.norm_cpow_eq_rpow_re_of_pos hv0, Complex.norm_real,
+          Real.norm_of_nonneg hv0.le]
+        have htri := norm_sub_le (scatterPart c (Set.Ici 2) v) (scatterPart c (Set.Icc 2 T) v)
+        have he : v ^ s.re * (2 * (‖c‖ ^ 2 * (4 * v ^ (-((4 : ℝ) / 3))) * periodAreaReal)) / v ^ 3 =
+            2 * C' * v ^ (s.re - 13 / 3) := by
+          rw [show s.re - 13 / 3 = s.re + (-((4 : ℝ) / 3)) - 3 by ring, Real.rpow_sub hv0,
+            Real.rpow_add hv0]
+          norm_cast
+          ring
+        calc v ^ s.re * ‖scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v‖ / v ^ 3
+            ≤ v ^ s.re * (2 * (‖c‖ ^ 2 * (4 * v ^ (-((4 : ℝ) / 3))) * periodAreaReal)) / v ^ 3 := by
+              gcongr
+              linarith
+          _ = 2 * C' * v ^ (s.re - 13 / 3) := he
+      · rw [integral_const_mul, ← intervalIntegral.integral_of_le (by positivity),
+          integral_rpow (Or.inl (by linarith)), Real.zero_rpow (by linarith), sub_zero,
+          show s.re - 13 / 3 + 1 = s.re - 10 / 3 by ring, one_div, Real.inv_rpow hT0.le,
+          ← Real.rpow_neg hT0.le]
+        field_simp
+    -- second error term: supported on `(T, ∞)`
+    have hb2 : ‖∫ v in Set.Ioi (0 : ℝ),
+        (growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v) * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3‖ ≤
+        1 / (s.re - 4 / 3) * T ^ (-(s.re - 4 / 3)) := by
+      have hdiff : ∀ v, growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v =
+          (Set.Ioi T).indicator (fun v => ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ)) v := by
+        intro v
+        by_cases h2 : 2 ≤ v
+        · by_cases hT' : v ≤ T
+          · simp [growthProfile, Set.indicator, h2, hT', not_lt.mpr hT']
+          · simp [growthProfile, Set.indicator, h2, hT', lt_of_not_ge hT']
+        · have hnT : ¬T < v := fun h => h2 (by linarith)
+          simp [growthProfile, Set.indicator, h2, hnT]
+      have hsub : ∫ v in Set.Ioi (0 : ℝ),
+          (growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v) * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 =
+          ∫ v in Set.Ioi T,
+            (growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v) * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+        refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
+          (Set.Ioi_subset_Ioi hT0.le) fun v hv => ?_
+        rw [hdiff, Set.indicator_of_notMem hv.2, zero_mul, zero_div]
+      rw [hsub]
+      have hgi : IntegrableOn (fun v : ℝ => v ^ ((1 : ℝ) / 3 - s.re)) (Set.Ioi T) :=
+        integrableOn_Ioi_rpow_of_lt (by linarith) hT0
+      refine (norm_integral_le_of_norm_le hgi (ae_restrict_of_forall_mem measurableSet_Ioi
+        fun v (hv : T < v) => ?_)).trans (le_of_eq ?_)
+      · have hv0 : 0 < v := by linarith
+        rw [hdiff, Set.indicator_of_mem (show v ∈ Set.Ioi T from hv), norm_div, norm_mul, norm_pow,
+          Complex.norm_cpow_eq_rpow_re_of_pos hv0, Complex.norm_real, Complex.norm_real,
+          Real.norm_of_nonneg hv0.le, Real.norm_of_nonneg (Real.rpow_nonneg hv0.le _), Complex.sub_re,
+          Complex.re_ofNat, show (1 : ℝ) / 3 - s.re = (4 : ℝ) / 3 + (2 - s.re) - 3 by ring]
+        conv_rhs => rw [Real.rpow_sub hv0, Real.rpow_add hv0]
+        norm_cast
+      · rw [integral_Ioi_rpow_of_lt (by linarith) hT0, show (1 : ℝ) / 3 - s.re + 1 = -(s.re - 4 / 3) by ring]
+        field_simp
+    rw [hX]
+    calc ‖_ - _‖ ≤ ‖∫ v in Set.Ioi (0 : ℝ), (v : ℂ) ^ s *
+          (scatterPart c (Set.Ici 2) v - scatterPart c (Set.Icc 2 T) v) / (v : ℂ) ^ 3‖ +
+        ‖c ^ 2 * scatterTotal s‖ * ‖∫ v in Set.Ioi (0 : ℝ),
+          (growthProfile (Set.Ici 2) v - growthProfile (Set.Icc 2 T) v) * (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3‖ := by
+          rw [← norm_mul]
+          exact norm_sub_le _ _
+      _ ≤ 2 * C' / (s.re - 10 / 3) * T ^ (-(s.re - 10 / 3)) +
+          ‖c ^ 2 * scatterTotal s‖ * (1 / (s.re - 4 / 3) * T ^ (-(s.re - 4 / 3))) := by gcongr
+      _ = _ := by ring
+  have hlim : Tendsto (fun T : ℝ => 2 * C' / (s.re - 10 / 3) * T ^ (-(s.re - 10 / 3)) +
+      ‖c ^ 2 * scatterTotal s‖ / (s.re - 4 / 3) * T ^ (-(s.re - 4 / 3))) atTop (𝓝 0) := by
+    have h1 := (tendsto_rpow_neg_atTop hσ1).const_mul (2 * C' / (s.re - 10 / 3))
+    have h2 := (tendsto_rpow_neg_atTop hσ2).const_mul (‖c ^ 2 * scatterTotal s‖ / (s.re - 4 / 3))
+    simpa using h1.add h2
+  have hle : ‖X‖ ≤ 0 := ge_of_tendsto hlim ((eventually_ge_atTop 2).mono hbound)
+  exact norm_le_zero_iff.mp hle
+
 end GaloisForLFunctions.SpectralTheoryOfTheCubicCover

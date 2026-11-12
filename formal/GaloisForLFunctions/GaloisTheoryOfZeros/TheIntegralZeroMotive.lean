@@ -828,13 +828,33 @@ theorem rawMotive_coordinate_factorization (χ : RawZeroMotivePoint) :
   change α (rawZeroInclusion (rawZeroRelationRoot q)) = _
   rw [rawZeroInclusion_root,map_add,← hcenter,add_assoc]
 
+
+private def complexExponentialFlow {A : Type*} [AddGroup A]
+    (f : A →+ ℂ) : ℝ →+ (A →+ Additive ℂˣ) where
+  toFun u := complexExponentialCharacter ((complexScalarMap (u : ℂ)).comp f)
+  map_zero' := by
+    apply AddMonoidHom.ext
+    intro z
+    apply Additive.toMul.injective
+    apply Units.ext
+    change Complex.exp ((0 : ℂ)*f z) = 1
+    rw [zero_mul,Complex.exp_zero]
+  map_add' u v := by
+    apply AddMonoidHom.ext
+    intro z
+    apply Additive.toMul.injective
+    apply Units.ext
+    change Complex.exp (((u+v : ℝ) : ℂ)*f z) =
+      Complex.exp ((u : ℂ)*f z)*Complex.exp ((v : ℂ)*f z)
+    rw [Complex.ofReal_add,add_mul,Complex.exp_add]
+
 /-- The ordinary exponential flow on the original integral zero motive. -/
-def rawZeroMotiveFlow (u : ℝ) : RawZeroMotivePoint :=
-  complexExponentialCharacter ((complexScalarMap (u : ℂ)).comp rawZeroRelationGroup.subtype)
+def rawZeroMotiveFlow : ℝ →+ RawZeroMotivePoint :=
+  complexExponentialFlow rawZeroRelationGroup.subtype
 
 /-- Its canonical lift to the half-weight extension. -/
-def halfWeightedZeroMotiveFlow (u : ℝ) : HalfWeightedZeroMotivePoint :=
-  complexExponentialCharacter ((complexScalarMap (u : ℂ)).comp halfWeightedZeroGroup.subtype)
+def halfWeightedZeroMotiveFlow : ℝ →+ HalfWeightedZeroMotivePoint :=
+  complexExponentialFlow halfWeightedZeroGroup.subtype
 
 /-- The lifted exponential restricts to the original-zero flow. -/
 theorem rawMotiveFlow_lift (u : ℝ) :
@@ -895,3 +915,6 @@ end GaloisForLFunctions.GaloisTheoryOfZeros
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.rawMotive_coordinate_factorization
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.centeredMotiveFlow_lift
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.rawZeroMotiveFlow_at_zero
+
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.rawZeroMotiveFlow
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.halfWeightedZeroMotiveFlow

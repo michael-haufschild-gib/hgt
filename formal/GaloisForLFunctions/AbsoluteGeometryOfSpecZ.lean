@@ -114,6 +114,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightZeroCutoffs
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightZeroConvolutionTails
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactsSplitIntoRightTraceAndRemainder
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightTraceCutoffsHaveTheirLimit
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRightZeroConvolutionHasItsLimit
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombConvergenceHasTheExactPointwiseBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanProfile
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerTailJetMesh
@@ -197,6 +199,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheStepPacketMatricesOfARatio
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoWindowsCoupledThroughTheirChargesHoldOneBoundStateIffTheirSusceptibilitiesMultiplyToAtLeastOne
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.APowerOfAQuotientOfLFunctionsHasTheIndexOfTheQuotient
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -260,6 +263,7 @@ packets; and the coarse blocks of a ratio, which carry the index at every block 
 the margin of every refinement; and the contacts of a number ring as its point counts over the
 finite fields, with the relative square of two number rings at finite scale; the ground vector
 of the block matrix of a narrow window, of one sign and charged; and the gluing of two forms
-with one negative square each through the product of their charges. See
+with one negative square each through the product of their charges; and the index of a power
+of a quotient of `L`-functions, which is the index of the quotient. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/
