@@ -33,13 +33,17 @@ theorem coe_realUndampedCausalConvolution (b : ℝ) (F : ℝ → ℝ) :
   rw [hr] at hc
   funext u
   rw [← congrFun hc u]
-  apply Complex.ext <;> simp [cx, realUndampedCausalConvolution] <;> ring
+  apply Complex.ext
+  · simp [cx, realUndampedCausalConvolution]
+    ring
+  · simp [cx, realUndampedCausalConvolution]
 
 /-- A real profile's boundary zero is accompanied by its conjugate zero. -/
 theorem undamped_conjugate_laplace_zero (b : ℝ) {F : ℝ → ℝ}
     (hz : negativeHalfLineLaplace (cx F) (modulatedLaplaceRate 0 b) = 0) :
     negativeHalfLineLaplace (cx F) (modulatedLaplaceRate 0 (-b)) = 0 := by
   have hc := negativeHalfLineLaplace_real_conj F (modulatedLaplaceRate 0 b)
+  change negativeHalfLineLaplace (fun u => (F u : ℂ)) (modulatedLaplaceRate 0 b) = 0 at hz
   rw [conj_modulatedLaplaceRate, hz, map_zero] at hc
   exact hc
 
@@ -52,7 +56,8 @@ theorem paperFT_realUndampedCausalConvolution (b : ℝ) {F : ℝ → ℝ}
         paperFT (modulatedCausalConvolution 0 (-b) (cx F)) r) := by
   rw [coe_realUndampedCausalConvolution, paperFT_const_mul]
   congr 1
-  simpa only [one_smul, one_mul] using WeilSpectral.paperFT_add_smul_real hK hKneg 1 r
+  simpa only [one_smul, one_mul, Pi.add_def] using
+    WeilSpectral.paperFT_add_smul_real hK hKneg 1 r
 
 end GaloisForLFunctions.HTGeometry
 
@@ -64,7 +69,7 @@ from the original profile and cancellation of its boundary Laplace value. -/
 theorem CriticalHalfLineEnergyDomain.realUndampedCausalConvolution (b : ℝ)
     {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     (hz : negativeHalfLineLaplace (cx F) (modulatedLaplaceRate 0 b) = 0) :
-    CriticalHalfLineEnergyDomain (realUndampedCausalConvolution b F) := by
+    CriticalHalfLineEnergyDomain (HTGeometry.realUndampedCausalConvolution b F) := by
   have hm : Measurable (cx F) := Complex.continuous_ofReal.measurable.comp hF.meas
   have hf : Integrable (cx F) := hF.integrable.ofReal (𝕜 := ℂ)
   have hs : ∀ u, 0 ≤ u → cx F u = 0 := by
@@ -77,24 +82,31 @@ theorem CriticalHalfLineEnergyDomain.realUndampedCausalConvolution (b : ℝ)
   have hKw := memLp_weighted_modulatedCausalConvolution
     (a := 0) (x := 4 / Real.pi) (by positivity) b hF.memLp_weightedComplex
   have hHs := modulatedCausalConvolution_support_of_laplace_zero 0 b hs hz
-  have hHm : Measurable (realUndampedCausalConvolution b F) :=
+  have hHm : Measurable (HTGeometry.realUndampedCausalConvolution b F) :=
     Complex.continuous_re.measurable.comp hKm
-  refine ⟨hHm, hK1.re, ?_, ?_, ?_, ?_⟩
-  · have hi := (memLp_two_iff_integrable_sq_norm hK2.re.aestronglyMeasurable).mp hK2.re
-    simpa only [realUndampedCausalConvolution, Real.norm_eq_abs, sq_abs] using hi
-  · have hi := (memLp_two_iff_integrable_sq_norm hKw.re.aestronglyMeasurable).mp hKw.re
-    apply hi.congr
+  have hH1 : Integrable (HTGeometry.realUndampedCausalConvolution b F) := hK1.re
+  have hsq (u : ℝ) : HTGeometry.realUndampedCausalConvolution b F u ^ 2 ≤
+      ‖modulatedCausalConvolution 0 b (cx F) u‖ ^ 2 := by
+    change (modulatedCausalConvolution 0 b (cx F) u).re ^ 2 ≤ _
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    nlinarith only [sq_nonneg (modulatedCausalConvolution 0 b (cx F) u).im]
+  refine ⟨hHm, hH1, ?_, ?_, ?_, ?_⟩
+  · have hi := (memLp_two_iff_integrable_sq_norm hK2.aestronglyMeasurable).mp hK2
+    apply hi.mono' (hHm.aestronglyMeasurable.pow 2)
     refine Eventually.of_forall fun u => ?_
-    change ‖(causalLaplaceWeighted (4 / Real.pi)
-      (modulatedCausalConvolution 0 b (cx F)) u).re‖ ^ 2 =
-      realUndampedCausalConvolution b F u ^ 2 * Real.exp (-(8 * u))
-    unfold causalLaplaceWeighted realUndampedCausalConvolution
-    rw [← Complex.ofReal_neg, ← Complex.ofReal_exp]
-    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
-      sub_zero, Real.norm_eq_abs, sq_abs, mul_pow, ← Real.exp_nat_mul]
-    rw [show (2 : ℝ) * (-(Real.pi * (4 / Real.pi) * u)) = -(8 * u) by
-      field_simp [Real.pi_ne_zero]; ring]
-    ring
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    exact hsq u
+  · have hi := (memLp_two_iff_integrable_sq_norm hKw.aestronglyMeasurable).mp hKw
+    apply hi.mono' ((hHm.aestronglyMeasurable.pow 2).mul
+      (by fun_prop : Continuous (fun u : ℝ => Real.exp (-(8 * u)))).aestronglyMeasurable)
+    refine Eventually.of_forall fun u => ?_
+    change ‖HTGeometry.realUndampedCausalConvolution b F u ^ 2 * Real.exp (-(8 * u))‖ ≤
+      ‖causalLaplaceWeighted (4 / Real.pi) (modulatedCausalConvolution 0 b (cx F)) u‖ ^ 2
+    rw [Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le),
+      norm_sq_causalLaplaceWeighted,
+      show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp [Real.pi_ne_zero]; norm_num]
+    exact mul_le_mul_of_nonneg_right (hsq u) (Real.exp_pos _).le
   · intro u hu
     change (modulatedCausalConvolution 0 b (cx F) u).re = 0
     rw [hHs u hu, Complex.zero_re]
@@ -105,7 +117,7 @@ theorem CriticalHalfLineEnergyDomain.realUndampedCausalConvolution (b : ℝ)
       b hm hf hF.memLp_weightedComplex hs hz
     obtain ⟨N, hN⟩ := exists_linear_decay_paperFT_undampedCausalConvolution
       (-b) hm hf hF.memLp_weightedComplex hs hneg
-    apply integrable_gammaEnergy_of_linear_decay (continuous_paperFT_cx hK1.re)
+    apply integrable_gammaEnergy_of_linear_decay (continuous_paperFT_cx hH1)
       (M := (M + N) / 2)
     intro r
     rw [paperFT_realUndampedCausalConvolution b hK1 hKneg, norm_mul]

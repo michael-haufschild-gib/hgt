@@ -393,10 +393,9 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
   have hstep : ∀ x : ℝ, L / 2 ≤ x →
       144 * Real.exp 1 * 2 ^ 48 * x ^ 66 * Real.exp (-(152 / 100) * x) ≤ Real.exp (-x) :=
     fun x hx => hx₀ x (le_trans hx₀L hx)
-  set W' := max W (Real.exp 1) with hW'def
   have heX : Real.exp 1 ≤ X * Real.exp (-(L / 2)) := by
     rw [Real.exp_neg, ← div_eq_mul_inv, le_div_iff₀ (Real.exp_pos _)]; exact hXL
-  have hW'X : W' ≤ X * Real.exp (-(L / 2)) := max_le hWX heX
+  have hW'X : max W (Real.exp 1) ≤ X * Real.exp (-(L / 2)) := max_le hWX heX
   set T : ℝ := Real.log X ^ 19 / (2 * Real.pi) with hTdef
   have hT : 2 * Real.pi * T = Real.log X ^ 19 := by rw [hTdef]; field_simp
   have hT0 : 0 ≤ T := by
@@ -415,12 +414,13 @@ theorem exists_mean_square_liouville_le {ε : ℝ} (hε : 0 < ε) :
       have : 4 * Real.pi * |w| ≤ 4 * Real.pi * T := mul_le_mul_of_nonneg_left hwT (by positivity)
       linarith
     exact hlowF X hXN' hX1 w h4
-  have hlowInt := lowFreq_integral_le (W' := W') (continuous_logPoly _ _) hT0 hlowpt
+  have hlowInt := lowFreq_integral_le (F := fullPoly (twLiouville (1 : DirichletCharacter ℂ 1)) X)
+    (W' := max W (Real.exp 1)) (continuous_logPoly _ _) hT0 hlowpt
   have hsplit := integral_split_le (F := fullPoly (twLiouville (1 : DirichletCharacter ℂ 1)) X)
     (T := T) (continuous_logPoly _ _) (le_max_left W (Real.exp 1))
   have e : 2 * T * (8 * liouvilleRate K X) ^ 2
       = Real.log X ^ 19 / Real.pi * (8 * liouvilleRate K X) ^ 2 := by
-    rw [hTdef]; field_simp; ring
+    rw [hTdef]; field_simp
   linarith
 
 end

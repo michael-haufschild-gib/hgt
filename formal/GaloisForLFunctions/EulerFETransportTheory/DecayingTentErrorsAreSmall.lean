@@ -120,7 +120,7 @@ theorem abs_tentDefect_le_low {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Meas
       2 * h * (3 / (2 * Real.pi) * (∫ t, ‖f t‖) * (y - h) ^ (-(1 / 2 : ℝ))) := by
   set K := 3 / (2 * Real.pi) * (∫ t, ‖f t‖) * (y - h) ^ (-(1 / 2 : ℝ)) with hK
   have hK0 : 0 ≤ K := by
-    have := integral_nonneg (f := fun t => ‖f t‖) fun t => norm_nonneg _
+    have := integral_nonneg (μ := volume) (f := fun t => ‖f t‖) fun t => norm_nonneg _
     positivity
   have hpt : ∀ s ∈ Icc (-1 : ℝ) 1, |tentDefectKernel f h (y / h) ε s| ≤ h * K := by
     intro s hs
@@ -134,7 +134,7 @@ theorem abs_tentDefect_le_low {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Meas
     have hJ' : ‖defectLaplace f (tentPt h (y / h) ε s)‖ ≤ K := by
       refine hJ.trans (mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow_of_nonpos (by linarith) him (by norm_num)) ?_)
-      have := integral_nonneg (f := fun t => ‖f t‖) fun t => norm_nonneg _
+      have := integral_nonneg (μ := volume) (f := fun t => ‖f t‖) fun t => norm_nonneg _
       positivity
     have h1s : 0 ≤ 1 - |s| := by rw [sub_nonneg]; exact abs_le.mpr hs
     have h1s' : 1 - |s| ≤ 1 := by linarith [abs_nonneg s]
@@ -161,7 +161,7 @@ theorem abs_tentDefect_le_high {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Mea
       (h * ε + |y| + h) ^ (3 / 2 : ℝ)) := by
   set K := 3 / (2 * Real.pi) * (∫ t, ‖tentPrimitive f t‖) with hK
   have hK0 : 0 ≤ K := by
-    have := integral_nonneg (f := fun t => ‖tentPrimitive f t‖) fun t => norm_nonneg _
+    have := integral_nonneg (μ := volume) (f := fun t => ‖tentPrimitive f t‖) fun t => norm_nonneg _
     positivity
   set M := h * ε + |y| + h with hM
   have hM0 : 0 < M := by positivity
@@ -188,12 +188,164 @@ theorem abs_tentDefect_le_high {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Mea
   rw [tentDefect_eq hfm hfb hh hε y, abs_mul, abs_neg, abs_of_pos (by positivity),
     show 4 / h * (K * M ^ (3 / 2 : ℝ)) = 1 / h * (4 * (K * M ^ (3 / 2 : ℝ))) by ring]
   refine mul_le_mul_of_nonneg_left ((Complex.abs_re_le_norm _).trans ?_) (by positivity)
-  refine (norm_add_le _ _).trans ?_
-  refine (add_le_add_right (norm_sub_le _ _) _).trans ?_
-  rw [norm_mul, show ‖(2 : ℂ)‖ = 2 by norm_num]
   have h1 := hterm 1 (by norm_num)
   have h0 := hterm 0 (by norm_num)
   have hm := hterm (-1) (by norm_num)
+  set A := tentPt h (y / h) ε 1 ^ 2 * defectLaplace (tentPrimitive f) (tentPt h (y / h) ε 1)
+  set B := tentPt h (y / h) ε 0 ^ 2 * defectLaplace (tentPrimitive f) (tentPt h (y / h) ε 0)
+  set C := tentPt h (y / h) ε (-1) ^ 2 * defectLaplace (tentPrimitive f) (tentPt h (y / h) ε (-1))
+  have hAB := norm_sub_le A (2 * B)
+  have hABC := norm_add_le (A - 2 * B) C
+  have h2B : ‖2 * B‖ = 2 * ‖B‖ := by rw [norm_mul]; norm_num
   linarith
+
+/-! ## Mean squares -/
+
+/-- **The vertical Hardy bound**: for `f ∈ L²` and `σ > 0`, `∫ ‖J_f(σ + iw)‖² dw ≤ π⁻¹ ‖f‖₂²`. -/
+theorem integral_norm_sq_defectLaplace_vertical_le {f : ℝ → ℂ} (hf : MemLp f 2 volume) {σ : ℝ}
+    (hσ : 0 < σ) :
+    Integrable (fun w : ℝ => ‖defectLaplace f ((σ : ℂ) + (w : ℂ) * I)‖ ^ 2) ∧
+      ∫ w : ℝ, ‖defectLaplace f ((σ : ℂ) + (w : ℂ) * I)‖ ^ 2 ≤
+        Real.pi⁻¹ * ∫ t, ‖f t‖ ^ 2 := by
+  have hH := isHalfPlaneHardy_defectLaplace (hf.toLp f)
+  have hJ : ∀ z, defectLaplace ((hf.toLp f : DefectL2) : ℝ → ℂ) z = defectLaplace f z :=
+    fun z => defectLaplace_congr_ae hf.coeFn_toLp z
+  have hnorm : ‖hf.toLp f‖ ^ 2 = ∫ t, ‖f t‖ ^ 2 := by
+    rw [Lp_two_norm_sq_eq_integral]
+    exact integral_congr_ae (hf.coeFn_toLp.mono fun t ht => by simp only [ht])
+  set φ : ℝ → ℝ := fun w => ‖defectLaplace f ((σ : ℂ) + (w : ℂ) * I)‖ ^ 2 with hφ
+  have hray : ∀ ξ, ‖defectLaplace ((hf.toLp f : DefectL2) : ℝ → ℂ) (rayLine σ ξ)‖ ^ (2 : ℕ) =
+      φ (2 * Real.pi * ξ) := by
+    intro ξ
+    rw [hJ]
+    simp only [hφ, rayLine]
+  have hmem := hH.memLp σ hσ
+  have hint_ray : Integrable (fun ξ => φ (2 * Real.pi * ξ)) :=
+    ((memLp_two_iff_integrable_sq_norm hmem.1).mp hmem).congr
+      (Eventually.of_forall fun ξ => hray ξ)
+  have hpi : (2 * Real.pi) ≠ 0 := by positivity
+  have hint : Integrable φ := (integrable_comp_mul_left_iff φ hpi).mp hint_ray
+  refine ⟨hint, ?_⟩
+  have hb := hH.bound σ hσ
+  rw [integral_congr_ae (Eventually.of_forall hray), Measure.integral_comp_mul_left φ,
+    smul_eq_mul, abs_of_pos (by positivity), hnorm] at hb
+  have hpi0 := Real.pi_pos
+  have e : ∫ w, φ w = 2 * Real.pi * ((2 * Real.pi)⁻¹ * ∫ w, φ w) := by field_simp
+  rw [e]
+  calc 2 * Real.pi * ((2 * Real.pi)⁻¹ * ∫ w, φ w)
+      ≤ 2 * Real.pi * ((2 * Real.pi ^ 2)⁻¹ * ∫ t, ‖f t‖ ^ 2) := by gcongr
+    _ = Real.pi⁻¹ * ∫ t, ‖f t‖ ^ 2 := by field_simp
+
+theorem tentPt_div (h ε y s : ℝ) (hh : 0 < h) :
+    tentPt h (y / h) ε s = ((h * ε : ℝ) : ℂ) + ((y + h * s : ℝ) : ℂ) * I := by
+  rw [tentPt]
+  have : h * (y / h + s) = y + h * s := by field_simp
+  apply Complex.ext <;> simp [this]
+
+theorem tentDefectKernel_div (f : ℝ → ℂ) (h ε y s : ℝ) (hh : 0 < h) :
+    tentDefectKernel f h (y / h) ε s = h * (1 - |s|) *
+      (defectLaplace f (((h * ε : ℝ) : ℂ) + ((y + h * s : ℝ) : ℂ) * I)).re := by
+  change h * (1 - |s|) * (defectLaplace f (tentPt h (y / h) ε s)).re = _
+  rw [tentPt_div h ε y s hh]
+
+theorem continuous_tentDefect {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Measurable f)
+    (hfb : ∀ t, ‖f t‖ ≤ Cf * (1 + |t|) ^ N) {h ε : ℝ} (hh : 0 < h) (hε : 0 < ε) :
+    Continuous fun y => tentDefect f h y ε := by
+  have hJ := (differentiableOn_defectLaplace hfm.aestronglyMeasurable hfb).continuousOn
+  have hc : Continuous fun p : ℝ × ℝ => defectLaplace f
+      (((h * ε : ℝ) : ℂ) + ((p.1 + h * p.2 : ℝ) : ℂ) * I) :=
+    continuousOn_univ.mp <| hJ.comp (by fun_prop) fun p _ => by
+      show 0 < (((h * ε : ℝ) : ℂ) + ((p.1 + h * p.2 : ℝ) : ℂ) * I).re
+      simp; positivity
+  have hk : Continuous (uncurry fun y s => tentDefectKernel f h (y / h) ε s) := by
+    have e : (uncurry fun y s => tentDefectKernel f h (y / h) ε s) = fun p : ℝ × ℝ =>
+        h * (1 - |p.2|) * (defectLaplace f
+          (((h * ε : ℝ) : ℂ) + ((p.1 + h * p.2 : ℝ) : ℂ) * I)).re :=
+      funext fun p => tentDefectKernel_div f h ε p.1 p.2 hh
+    rw [e]
+    exact (by fun_prop : Continuous fun p : ℝ × ℝ => h * (1 - |p.2|)).mul
+      (Complex.continuous_re.comp hc)
+  exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hk (-1) 1
+
+/-- **Low-frequency mean square**: `∫_W^{W'} T² ≤ 4h² π⁻¹ ‖f‖₂²`. -/
+theorem integral_sq_tentDefect_le_low {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Measurable f)
+    (hfb : ∀ t, ‖f t‖ ≤ Cf * (1 + |t|) ^ N) (hf2 : MemLp f 2 volume) {h ε : ℝ} (hh : 0 < h)
+    (hε : 0 < ε) {W W' : ℝ} (hW : W ≤ W') :
+    ∫ y in W..W', tentDefect f h y ε ^ 2 ≤ 4 * h ^ 2 * (Real.pi⁻¹ * ∫ t, ‖f t‖ ^ 2) := by
+  obtain ⟨hVi, hV⟩ := integral_norm_sq_defectLaplace_vertical_le hf2 (mul_pos hh hε)
+  set V := ∫ t, ‖f t‖ ^ 2 with hVdef
+  have hJ := (differentiableOn_defectLaplace hfm.aestronglyMeasurable hfb).continuousOn
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : ℝ → ℝ → ℝ, ψ = fun y s => ‖defectLaplace f
+      (((h * ε : ℝ) : ℂ) + ((y + h * s : ℝ) : ℂ) * I)‖ := ⟨_, rfl⟩
+  have hψc : Continuous (uncurry ψ) := by
+    have : Continuous fun p : ℝ × ℝ => defectLaplace f
+        (((h * ε : ℝ) : ℂ) + ((p.1 + h * p.2 : ℝ) : ℂ) * I) :=
+      continuousOn_univ.mp <| hJ.comp (by fun_prop) fun p _ => by
+        show 0 < (((h * ε : ℝ) : ℂ) + ((p.1 + h * p.2 : ℝ) : ℂ) * I).re
+        simp; positivity
+    rw [hψ]
+    exact this.norm
+  -- pointwise: `T(y)² ≤ 2h² ∫_{-1}^{1} ψ(y, s)² ds`
+  have hpt : ∀ y, tentDefect f h y ε ^ 2 ≤ 2 * h ^ 2 * ∫ s in (-1 : ℝ)..1, ψ y s ^ 2 := by
+    intro y
+    have hc1 : Continuous fun s => ψ y s := hψc.comp (Continuous.prodMk_right y)
+    have habs : |tentDefect f h y ε| ≤ ∫ s in (-1 : ℝ)..1, h * ψ y s := by
+      refine (intervalIntegral.abs_integral_le_integral_abs (by norm_num)).trans
+        (intervalIntegral.integral_mono_on (by norm_num)
+          ((continuous_tentDefectKernel_of_poly hfm hfb hh hε _).abs.intervalIntegrable _ _)
+          ((continuous_const.mul hc1).intervalIntegrable _ _) fun s hs => ?_)
+      have h1s : 0 ≤ 1 - |s| := by rw [sub_nonneg]; exact abs_le.mpr hs
+      rw [tentDefectKernel_div f h ε y s hh, abs_mul, abs_of_nonneg (by positivity)]
+      calc h * (1 - |s|) * |(defectLaplace f (((h * ε : ℝ) : ℂ) +
+            ((y + h * s : ℝ) : ℂ) * I)).re| ≤ h * 1 * ψ y s := by
+            rw [hψ]
+            gcongr
+            · linarith [abs_nonneg s]
+            · exact Complex.abs_re_le_norm _
+        _ = h * ψ y s := by ring
+    have hc2 : Continuous fun s => h * ψ y s := continuous_const.mul hc1
+    have hcs := sq_intervalIntegral_mul_le (g := fun _ => (1 : ℝ)) (h := fun s => h * ψ y s)
+      (a := -1) (b := 1) (by norm_num) continuous_const hc2
+    simp only [one_mul, one_pow, intervalIntegral.integral_const, smul_eq_mul, mul_one] at hcs
+    have hsq : tentDefect f h y ε ^ 2 ≤ (∫ s in (-1 : ℝ)..1, h * ψ y s) ^ 2 := by
+      rw [← sq_abs]
+      exact pow_le_pow_left₀ (abs_nonneg _) habs 2
+    have e : ∫ s in (-1 : ℝ)..1, (h * ψ y s) ^ 2 = h ^ 2 * ∫ s in (-1 : ℝ)..1, ψ y s ^ 2 := by
+      rw [← intervalIntegral.integral_const_mul]
+      exact intervalIntegral.integral_congr fun s _ => by ring
+    rw [e] at hcs
+    norm_num at hcs
+    linarith
+  -- each row has energy at most `V`
+  have hrow : ∀ s, ∫ y in W..W', ψ y s ^ 2 ≤ Real.pi⁻¹ * V := by
+    intro s
+    have e := intervalIntegral.integral_comp_add_right
+      (fun w : ℝ => ‖defectLaplace f (((h * ε : ℝ) : ℂ) + (w : ℂ) * I)‖ ^ 2) (h * s) (a := W)
+      (b := W')
+    rw [show (fun y => ψ y s ^ 2) = fun y : ℝ =>
+      ‖defectLaplace f (((h * ε : ℝ) : ℂ) + ((y + h * s : ℝ) : ℂ) * I)‖ ^ 2 by
+        rw [hψ]; push_cast; rfl, e, intervalIntegral.integral_of_le (by linarith)]
+    refine (setIntegral_le_integral hVi (Eventually.of_forall fun w => by positivity)).trans ?_
+    exact hV
+  have hcont2 : Continuous (uncurry fun y s => ψ y s ^ 2) := hψc.pow 2
+  calc ∫ y in W..W', tentDefect f h y ε ^ 2
+      ≤ ∫ y in W..W', 2 * h ^ 2 * ∫ s in (-1 : ℝ)..1, ψ y s ^ 2 :=
+        intervalIntegral.integral_mono_on hW
+          (((continuous_tentDefect hfm hfb hh hε).pow 2).intervalIntegrable _ _)
+          ((continuous_const.mul
+            (intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hcont2 _ _))
+            |>.intervalIntegrable _ _) fun y _ => hpt y
+    _ = 2 * h ^ 2 * ∫ s in (-1 : ℝ)..1, ∫ y in W..W', ψ y s ^ 2 := by
+        rw [intervalIntegral.integral_const_mul,
+          intervalIntegral_integral_swap_of_continuous hcont2 hW (by norm_num)]
+    _ ≤ 2 * h ^ 2 * ∫ s in (-1 : ℝ)..1, Real.pi⁻¹ * V := by
+        gcongr
+        refine intervalIntegral.integral_mono_on (by norm_num) ?_ intervalIntegrable_const
+          fun s _ => hrow s
+        have hsw : Continuous (uncurry fun s y => ψ y s ^ 2) :=
+          hcont2.comp continuous_swap
+        exact (intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hsw W W')
+          |>.intervalIntegrable _ _
+    _ = 4 * h ^ 2 * (Real.pi⁻¹ * V) := by simp; ring
 
 end GaloisForLFunctions.EulerFETransportTheory

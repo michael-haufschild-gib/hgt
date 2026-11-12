@@ -153,14 +153,15 @@ theorem integral_normSq_window_le {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1
     linarith
   linarith
 
-/-- **Matomäki–Radziwiłł for `λχ` in additive short windows, `χ` non-principal.** -/
-theorem exists_short_sum_mean_square_twLiouville_le {q : ℕ} [NeZero q]
-    (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) {ε : ℝ} (hε : 0 < ε) :
+/-- **Additive short windows from the Dirichlet-polynomial mean square**, for any `|f| ≤ 1`. -/
+theorem exists_short_sum_mean_square_of {f : ℕ → ℂ} (hf : ∀ n, ‖f n‖ ≤ 1)
+    (hMS : ∀ ε : ℝ, 0 < ε → ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L → ∃ X₀ : ℝ, ∀ X : ℕ, X₀ ≤ (X : ℝ) →
+      ∀ W : ℝ, 0 ≤ W → W ≤ X * Real.exp (-(L / 2)) →
+        (∫ w in Icc (-W) W, ‖fullPoly f X w‖ ^ 2) ≤ ε)
+    {ε : ℝ} (hε : 0 < ε) :
     ∃ h₀ : ℕ, ∀ h : ℕ, h₀ ≤ h → ∃ X₀ : ℕ, ∀ X : ℕ, X₀ ≤ X →
-      ∑ k ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc (X + k) (X + k + h), twLiouville χ n‖ ^ 2
+      ∑ k ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc (X + k) (X + k + h), f n‖ ^ 2
         ≤ ε * (h : ℝ) ^ 2 * X := by
-  set f := twLiouville χ with hfdef
-  have hf : ∀ n, ‖f n‖ ≤ 1 := norm_twLiouville_le χ
   -- the number of blocks
   obtain ⟨N, hN⟩ := exists_nat_gt (48 / ε)
   have hN0 : (0 : ℝ) < N := lt_of_le_of_lt (by positivity) hN
@@ -169,7 +170,7 @@ theorem exists_short_sum_mean_square_twLiouville_le {q : ℕ} [NeZero q]
     exact_mod_cast this
   set εm : ℝ := ε / (768 * N) with hεm
   have hεm0 : 0 < εm := by positivity
-  obtain ⟨L₀, hL₀⟩ := exists_mean_square_twLiouville_le χ hχ hεm0
+  obtain ⟨L₀, hL₀⟩ := hMS εm hεm0
   refine ⟨⌈max (Real.exp L₀) (4 * (4644 * N + 12) / ε + 1)⌉₊, fun h hh₀ => ?_⟩
   have hhreal : max (Real.exp L₀) (4 * (4644 * N + 12) / ε + 1) ≤ h :=
     le_trans (Nat.le_ceil _) (by exact_mod_cast hh₀)
@@ -318,6 +319,15 @@ theorem exists_short_sum_mean_square_twLiouville_le {q : ℕ} [NeZero q]
     _ = (X : ℝ) * (3 * ((N : ℝ) * blockCostGC (h : ℝ) t 1 G)) := by ring
     _ ≤ (X : ℝ) * (ε * h ^ 2) := mul_le_mul_of_nonneg_left hI hX0.le
     _ = ε * (h : ℝ) ^ 2 * X := by ring
+
+/-- **Matomäki–Radziwiłł for `λχ` in additive short windows, `χ` non-principal.** -/
+theorem exists_short_sum_mean_square_twLiouville_le {q : ℕ} [NeZero q]
+    (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) {ε : ℝ} (hε : 0 < ε) :
+    ∃ h₀ : ℕ, ∀ h : ℕ, h₀ ≤ h → ∃ X₀ : ℕ, ∀ X : ℕ, X₀ ≤ X →
+      ∑ k ∈ Finset.range X, ‖∑ n ∈ Finset.Ioc (X + k) (X + k + h), twLiouville χ n‖ ^ 2
+        ≤ ε * (h : ℝ) ^ 2 * X :=
+  exists_short_sum_mean_square_of (norm_twLiouville_le χ)
+    (fun _ hε' => exists_mean_square_twLiouville_le χ hχ hε') hε
 
 end
 
