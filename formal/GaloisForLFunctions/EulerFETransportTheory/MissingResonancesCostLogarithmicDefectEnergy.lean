@@ -797,4 +797,264 @@ theorem sum_setIntegral_Icc_le {f : ℝ → ℝ} (hf : IntegrableOn f (Ioi 0))
     (Set.iUnion₂_subset fun k hk => hsub k hk))
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr using hf0 r hr
 
+/-- **Summing the windows.**  If the windows at `m = pk`, `1 ≤ k ≤ K`, are small in the sense
+of `setIntegral_window_ge` and `2pKθ ≤ 1`, the energy on the tilted ray is at least
+`A²/(128π² pθ) · H_K`. -/
+theorem harmonic_le_ray_energy {a : ℕ → ℂ}
+    (ha : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => ‖a (n + 1)‖ / ((n : ℝ) + 1) ^ σ)
+    {β : ℂ} {g : ℝ → ℂ} (hH : HamburgerStripDefect (coeffDirichlet a) β g)
+    {A C : ℝ} (hA : 0 < A) (hC : 0 ≤ C)
+    (hN : ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ A / (64 * Real.pi ^ 2) * n + C)
+    {p : ℕ} (hp : 1 ≤ p) (hres : ∀ k : ℕ, 1 ≤ k → a (p * k) = 0)
+    {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ ≤ 1 / 2) (K : ℕ) (hKθ : 2 * ((p * K : ℕ) : ℝ) * θ ≤ 1)
+    (hsmall : ∀ k : ℕ, 1 ≤ k → k ≤ K →
+      3 * Real.pi * (((p * k : ℕ) : ℝ) * θ) ≤ 1 / 8 ∧
+      7 * Real.pi / 3 * C ≤ A / (32 * Real.pi * (((p * k : ℕ) : ℝ) * θ)) ∧
+      16 / (3 * Real.pi) * ((p * k : ℕ) : ℝ) ^ 2 *
+          (∑' n : ℕ, ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) ≤
+        A / (32 * Real.pi * (((p * k : ℕ) : ℝ) * θ)) ∧
+      ‖β‖ * (4 / (3 * Real.pi) + 1) ≤ A / (32 * Real.pi * (((p * k : ℕ) : ℝ) * θ)))
+    (hint : IntegrableOn (fun r : ℝ => ‖defectLaplace g ((r : ℂ) * tiltDir θ)‖ ^ 2) (Ioi 0)) :
+    A ^ 2 / (128 * Real.pi ^ 2 * (p * θ)) * harmonic K ≤
+      ∫ r in Ioi (0 : ℝ), ‖defectLaplace g ((r : ℂ) * tiltDir θ)‖ ^ 2 := by
+  have hpi := Real.pi_pos
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp
+  obtain ⟨hcos78, hcos1⟩ := cos_bounds hθ0 hθ1
+  have hcpos : 0 < Real.cos θ := by linarith
+  set l : ℕ → ℝ := fun k => ((p * k : ℕ) : ℝ) / Real.cos θ - ((p * k : ℕ) : ℝ) * θ / 4 with hl
+  set u : ℕ → ℝ := fun k => ((p * k : ℕ) : ℝ) / Real.cos θ + ((p * k : ℕ) : ℝ) * θ / 4 with hu
+  -- each window
+  have hwin : ∀ k ∈ Finset.Icc 1 K, A ^ 2 / (128 * Real.pi ^ 2 * (p * θ)) * (k : ℝ)⁻¹ ≤
+      ∫ r in Icc (l k) (u k), ‖defectLaplace g ((r : ℂ) * tiltDir θ)‖ ^ 2 := by
+    intro k hk
+    obtain ⟨hk1, hkK⟩ := Finset.mem_Icc.mp hk
+    obtain ⟨h1, h2, h3, h4⟩ := hsmall k hk1 hkK
+    have hm : 1 ≤ p * k := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+    have h := setIntegral_window_ge ha hH hA hC hN hθ0 hθ1 hm (hres k hk1) h1 h2 h3 h4 hint
+    have hk1' : (1 : ℝ) ≤ k := by exact_mod_cast hk1
+    calc A ^ 2 / (128 * Real.pi ^ 2 * (p * θ)) * (k : ℝ)⁻¹ =
+          A ^ 2 / (128 * Real.pi ^ 2 * (((p * k : ℕ) : ℝ) * θ)) := by
+          push_cast; field_simp
+      _ ≤ _ := h
+  -- the windows are disjoint and lie in `(0, ∞)`
+  have hpos : ∀ k ∈ Finset.Icc 1 K, 0 < l k := by
+    intro k hk
+    obtain ⟨hk1, -⟩ := Finset.mem_Icc.mp hk
+    have hm : (1 : ℝ) ≤ ((p * k : ℕ) : ℝ) := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+    have : ((p * k : ℕ) : ℝ) ≤ ((p * k : ℕ) : ℝ) / Real.cos θ := by
+      rw [le_div_iff₀ hcpos]; nlinarith
+    simp only [hl]
+    nlinarith
+  have hdisj : ∀ k ∈ Finset.Icc 1 K, ∀ k' ∈ Finset.Icc 1 K, k < k' → u k < l k' := by
+    intro k hk k' hk' hkk'
+    obtain ⟨-, hkK⟩ := Finset.mem_Icc.mp hk
+    obtain ⟨-, hk'K⟩ := Finset.mem_Icc.mp hk'
+    have hgap : (1 : ℝ) ≤ ((p * k' : ℕ) : ℝ) - ((p * k : ℕ) : ℝ) := by
+      have : p * k + 1 ≤ p * k' := by nlinarith
+      have : ((p * k : ℕ) : ℝ) + 1 ≤ ((p * k' : ℕ) : ℝ) := by exact_mod_cast this
+      linarith
+    have hdiv : ((p * k' : ℕ) : ℝ) - ((p * k : ℕ) : ℝ) ≤
+        (((p * k' : ℕ) : ℝ) - ((p * k : ℕ) : ℝ)) / Real.cos θ := by
+      rw [le_div_iff₀ hcpos]; nlinarith
+    have hkθ : (((p * k : ℕ) : ℝ) + ((p * k' : ℕ) : ℝ)) * θ ≤ 1 := by
+      have e1 : ((p * k : ℕ) : ℝ) ≤ ((p * K : ℕ) : ℝ) := by exact_mod_cast Nat.mul_le_mul_left p hkK
+      have e2 : ((p * k' : ℕ) : ℝ) ≤ ((p * K : ℕ) : ℝ) := by
+        exact_mod_cast Nat.mul_le_mul_left p hk'K
+      nlinarith
+    have e : l k' - u k = (((p * k' : ℕ) : ℝ) - ((p * k : ℕ) : ℝ)) / Real.cos θ -
+        (((p * k : ℕ) : ℝ) + ((p * k' : ℕ) : ℝ)) * θ / 4 := by
+      simp only [hl, hu]; ring
+    linarith
+  have hsum := sum_setIntegral_Icc_le hint (fun r _ => by positivity) (Finset.Icc 1 K) l u
+    hpos hdisj
+  have hH' : (harmonic K : ℝ) = ∑ k ∈ Finset.Icc 1 K, (k : ℝ)⁻¹ := by
+    rw [harmonic_eq_sum_Icc]; push_cast; rfl
+  rw [hH', Finset.mul_sum]
+  exact (Finset.sum_le_sum hwin).trans hsum
+
+/-- **Theorem (logarithmic defect energy).**  Let `Z = Σ a_n n^{-s}` continue to the critical line
+in the Hamburger strip class with defect `g`, let `a_1 + ⋯ + a_n = A n + o(n)` with `A > 0`, and let
+`a_{pk} = 0` for all `k ≥ 1`.  Then for all large `T`,
+`∫ ‖g(t)‖² e^{-|t|/T} dt ≥ A²/(256πp) · T log T`. -/
+theorem integral_norm_sq_mul_exp_ge_of_missing_multiples {a : ℕ → ℂ}
+    (ha : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => ‖a (n + 1)‖ / ((n : ℝ) + 1) ^ σ)
+    {β : ℂ} {g : ℝ → ℂ} (hH : HamburgerStripDefect (coeffDirichlet a) β g)
+    {A : ℝ} (hA : 0 < A)
+    (hN : ∀ η : ℝ, 0 < η → ∃ C : ℝ, ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ η * n + C)
+    {p : ℕ} (hp : 1 ≤ p) (hres : ∀ k : ℕ, 1 ≤ k → a (p * k) = 0) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      A ^ 2 / (256 * Real.pi * p) * (T * Real.log T) ≤
+        ∫ t : ℝ, ‖g t‖ ^ 2 * Real.exp (-(|t| / T)) := by
+  have hpi := Real.pi_pos
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp
+  obtain ⟨-, -, -, -, -, -, -, hgm, Cg, Ng, hgb⟩ := id hH
+  set S : ℝ := ∑' n : ℕ, ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2 with hS
+  have hS0 : 0 ≤ S := tsum_nonneg fun n => by positivity
+  obtain ⟨C₀, hC₀⟩ := hN (A / (64 * Real.pi ^ 2)) (by positivity)
+  set C : ℝ := max C₀ 0 with hCdef
+  have hC : 0 ≤ C := le_max_right _ _
+  have hNC : ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ A / (64 * Real.pi ^ 2) * n + C :=
+    fun n => (hC₀ n).trans (by linarith [le_max_left C₀ 0])
+  -- the four smallness thresholds
+  set b₁ : ℝ := 1 / (24 * Real.pi) with hb₁
+  set b₂ : ℝ := 3 * A / (224 * Real.pi ^ 2 * (C + 1)) with hb₂
+  set b₃ : ℝ := 3 * A / (512 * (S + 1)) with hb₃
+  set b₄ : ℝ := A / (32 * Real.pi * (‖β‖ + 1) * (4 / (3 * Real.pi) + 1)) with hb₄
+  have hb₁0 : 0 < b₁ := by positivity
+  have hb₂0 : 0 < b₂ := by positivity
+  have hb₃0 : 0 < b₃ := by positivity
+  have hb₄0 : 0 < b₄ := by positivity
+  set ψ₀ : ℝ := min (min (1 / 2) (min b₁ b₂)) (min (min b₃ b₄) (1 / (p : ℝ) ^ 2)) with hψ₀
+  have hψ₀0 : 0 < ψ₀ := by positivity
+  refine ⟨1 / (4 * ψ₀ ^ 4), fun T hT => ?_⟩
+  have hT0 : 0 < T := lt_of_lt_of_le (by positivity) hT
+  set θ : ℝ := 1 / (4 * T) with hθ
+  have hθ0 : 0 < θ := by positivity
+  have hθψ₀ : θ ≤ ψ₀ ^ 4 := by
+    rw [hθ, div_le_iff₀ (by positivity)]
+    rw [le_div_iff₀ (by positivity)] at hT
+    nlinarith
+  set ψ : ℝ := θ ^ (1 / 4 : ℝ) with hψ
+  have hψ0 : 0 < ψ := Real.rpow_pos_of_pos hθ0 _
+  have hψ4 : ψ ^ 4 = θ := by
+    rw [hψ, ← Real.rpow_natCast, ← Real.rpow_mul hθ0.le]; norm_num
+  have hψle : ψ ≤ ψ₀ := by
+    rw [← pow_le_pow_iff_left₀ hψ0.le hψ₀0.le (by norm_num : (4 : ℕ) ≠ 0), hψ4]
+    exact hθψ₀
+  have hψ1 : ψ ≤ 1 / 2 := hψle.trans ((min_le_left _ _).trans (min_le_left _ _))
+  have hψb₁ : ψ ≤ b₁ := hψle.trans ((min_le_left _ _).trans ((min_le_right _ _).trans
+    (min_le_left _ _)))
+  have hψb₂ : ψ ≤ b₂ := hψle.trans ((min_le_left _ _).trans ((min_le_right _ _).trans
+    (min_le_right _ _)))
+  have hψb₃ : ψ ≤ b₃ := hψle.trans ((min_le_right _ _).trans ((min_le_left _ _).trans
+    (min_le_left _ _)))
+  have hψb₄ : ψ ≤ b₄ := hψle.trans ((min_le_right _ _).trans ((min_le_left _ _).trans
+    (min_le_right _ _)))
+  have hψp : ψ ≤ 1 / (p : ℝ) ^ 2 := hψle.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hθψ : θ ≤ ψ := by
+    rw [← hψ4]
+    calc ψ ^ 4 ≤ ψ ^ 1 := pow_le_pow_of_le_one hψ0.le (by linarith) (by norm_num)
+      _ = ψ := pow_one ψ
+  have hθ1 : θ ≤ 1 / 2 := hθψ.trans hψ1
+  -- the windows `m = pk ≤ 1/ψ`
+  set K : ℕ := ⌊1 / (p * ψ)⌋₊ with hK
+  have hpK : ((p * K : ℕ) : ℝ) * ψ ≤ 1 := by
+    have h := Nat.floor_le (show (0 : ℝ) ≤ 1 / (p * ψ) by positivity)
+    rw [← hK] at h
+    push_cast
+    calc (p : ℝ) * K * ψ = (p * ψ) * K := by ring
+      _ ≤ (p * ψ) * (1 / (p * ψ)) := by gcongr
+      _ = 1 := by field_simp
+  have hmψ : ∀ k : ℕ, k ≤ K → ((p * k : ℕ) : ℝ) * ψ ≤ 1 := by
+    intro k hk
+    have : ((p * k : ℕ) : ℝ) ≤ ((p * K : ℕ) : ℝ) := by exact_mod_cast Nat.mul_le_mul_left p hk
+    nlinarith
+  -- `mθ ≤ ψ` and `m³θ ≤ ψ`
+  have hμψ : ∀ k : ℕ, k ≤ K → ((p * k : ℕ) : ℝ) * θ ≤ ψ := by
+    intro k hk
+    have h := hmψ k hk
+    have hm0 : (0 : ℝ) ≤ ((p * k : ℕ) : ℝ) := Nat.cast_nonneg _
+    rw [← hψ4]
+    calc ((p * k : ℕ) : ℝ) * ψ ^ 4 = (((p * k : ℕ) : ℝ) * ψ) * ψ ^ 3 := by ring
+      _ ≤ 1 * ψ ^ 3 := by gcongr
+      _ ≤ ψ := by nlinarith [pow_le_one₀ hψ0.le (by linarith : ψ ≤ 1) (n := 2)]
+  have hm3ψ : ∀ k : ℕ, k ≤ K → ((p * k : ℕ) : ℝ) ^ 2 * (((p * k : ℕ) : ℝ) * θ) ≤ ψ := by
+    intro k hk
+    have h := hmψ k hk
+    have hm0 : (0 : ℝ) ≤ ((p * k : ℕ) : ℝ) * ψ := by positivity
+    rw [← hψ4]
+    calc ((p * k : ℕ) : ℝ) ^ 2 * (((p * k : ℕ) : ℝ) * ψ ^ 4) =
+          (((p * k : ℕ) : ℝ) * ψ) ^ 3 * ψ := by ring
+      _ ≤ 1 * ψ := by gcongr; exact pow_le_one₀ hm0 h
+      _ = ψ := one_mul ψ
+  have hsmall : ∀ k : ℕ, 1 ≤ k → k ≤ K →
+      3 * Real.pi * (((p * k : ℕ) : ℝ) * θ) ≤ 1 / 8 ∧
+      7 * Real.pi / 3 * C ≤ A / (32 * Real.pi * (((p * k : ℕ) : ℝ) * θ)) ∧
+      16 / (3 * Real.pi) * ((p * k : ℕ) : ℝ) ^ 2 * S ≤
+        A / (32 * Real.pi * (((p * k : ℕ) : ℝ) * θ)) ∧
+      ‖β‖ * (4 / (3 * Real.pi) + 1) ≤ A / (32 * Real.pi * (((p * k : ℕ) : ℝ) * θ)) := by
+    intro k hk1 hkK
+    have hm1 : (1 : ℝ) ≤ ((p * k : ℕ) : ℝ) := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+    set μ : ℝ := ((p * k : ℕ) : ℝ) * θ with hμ
+    have hμ0 : 0 < μ := by positivity
+    have hμψ' : μ ≤ ψ := hμψ k hkK
+    have hm3 : ((p * k : ℕ) : ℝ) ^ 2 * μ ≤ ψ := hm3ψ k hkK
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · have : μ ≤ 1 / (24 * Real.pi) := hμψ'.trans hψb₁
+      rw [le_div_iff₀ (by positivity)] at this
+      linarith
+    · rw [le_div_iff₀ (by positivity)]
+      have hμb : μ ≤ b₂ := hμψ'.trans hψb₂
+      rw [hb₂, le_div_iff₀ (by positivity)] at hμb
+      nlinarith
+    · rw [le_div_iff₀ (by positivity)]
+      have hb : ((p * k : ℕ) : ℝ) ^ 2 * μ ≤ b₃ := hm3.trans hψb₃
+      rw [hb₃, le_div_iff₀ (by positivity)] at hb
+      have e : 16 / (3 * Real.pi) * ((p * k : ℕ) : ℝ) ^ 2 * S * (32 * Real.pi * μ) =
+          512 / 3 * S * (((p * k : ℕ) : ℝ) ^ 2 * μ) := by field_simp; ring
+      rw [e]
+      nlinarith
+    · rw [le_div_iff₀ (by positivity)]
+      have hμb : μ ≤ b₄ := hμψ'.trans hψb₄
+      rw [hb₄, le_div_iff₀ (by positivity)] at hμb
+      nlinarith [norm_nonneg β]
+  have hKθ : 2 * ((p * K : ℕ) : ℝ) * θ ≤ 1 := by
+    have := hμψ K le_rfl
+    nlinarith
+  obtain ⟨hint, hray⟩ := ray_energy_le hgm.aestronglyMeasurable hgb hθ0 (by linarith)
+  have hsum := harmonic_le_ray_energy ha hH hA hC hNC hp
+    (fun k hk => hres k hk) hθ0 hθ1 K hKθ hsmall hint
+  -- `H_K ≥ log(K + 1) ≥ (1/8) log(1/θ)`
+  have hlogψ : Real.log (1 / θ) = 4 * Real.log (1 / ψ) := by
+    rw [← hψ4, one_div, one_div, Real.log_inv, Real.log_inv, Real.log_pow]; push_cast; ring
+  have hlogK : 1 / 2 * Real.log (1 / ψ) ≤ Real.log ((K : ℝ) + 1) := by
+    have hK1 : 1 / (p * ψ) ≤ (K : ℝ) + 1 := (Nat.lt_floor_add_one _).le
+    have hpψ : (p : ℝ) ^ 2 ≤ 1 / ψ := by
+      rw [le_div_iff₀ hψ0]
+      rw [le_div_iff₀ (by positivity)] at hψp
+      linarith
+    have hlogp : 2 * Real.log p ≤ Real.log (1 / ψ) := by
+      rw [← Real.log_pow]
+      exact Real.log_le_log (by positivity) (by exact_mod_cast hpψ)
+    have h1 : Real.log (1 / (p * ψ)) ≤ Real.log ((K : ℝ) + 1) :=
+      Real.log_le_log (by positivity) hK1
+    have h2 : Real.log (1 / (p * ψ)) = Real.log (1 / ψ) - Real.log p := by
+      rw [one_div, Real.log_inv, Real.log_mul (by positivity) hψ0.ne', one_div, Real.log_inv]
+      ring
+    linarith
+  have hharm : 1 / 8 * Real.log (1 / θ) ≤ (harmonic K : ℝ) := by
+    have := log_add_one_le_harmonic K
+    push_cast at this
+    rw [hlogψ]
+    linarith
+  -- assemble
+  have hθT : ∀ t : ℝ, Real.exp (-(4 * θ * |t|)) = Real.exp (-(|t| / T)) := by
+    intro t; rw [hθ]; congr 1; field_simp
+  simp only [hθT] at hray
+  have hlog4 : Real.log T ≤ Real.log (1 / θ) := by
+    rw [hθ, one_div_one_div]
+    exact Real.log_le_log hT0 (by linarith)
+  have hcoef : 0 ≤ A ^ 2 / (128 * Real.pi ^ 2 * (p * θ)) := by positivity
+  have hfinal : A ^ 2 / (128 * Real.pi ^ 2 * (p * θ)) * (1 / 8 * Real.log (1 / θ)) ≤
+      1 / Real.pi * ∫ t : ℝ, ‖g t‖ ^ 2 * Real.exp (-(|t| / T)) :=
+    (mul_le_mul_of_nonneg_left hharm hcoef).trans (hsum.trans hray)
+  have hlogT0 : 0 ≤ Real.log T := by
+    have : 1 ≤ T := by
+      refine le_trans ?_ hT
+      rw [le_div_iff₀ (by positivity)]
+      have h4 : ψ₀ ^ 4 ≤ (1 / 2) ^ 4 := pow_le_pow_left₀ hψ₀0.le
+        ((min_le_left _ _).trans (min_le_left _ _)) 4
+      nlinarith
+    exact Real.log_nonneg this
+  have e : A ^ 2 / (128 * Real.pi ^ 2 * (p * θ)) * (1 / 8 * Real.log (1 / θ)) =
+      1 / Real.pi * (A ^ 2 / (256 * Real.pi * p) * (T * Real.log (1 / θ))) := by
+    rw [hθ]; field_simp; ring
+  rw [e] at hfinal
+  have hfinal' := (mul_le_mul_iff_of_pos_left (by positivity : (0 : ℝ) < 1 / Real.pi)).mp hfinal
+  calc A ^ 2 / (256 * Real.pi * p) * (T * Real.log T)
+      ≤ A ^ 2 / (256 * Real.pi * p) * (T * Real.log (1 / θ)) := by gcongr
+    _ ≤ _ := hfinal'
+
 end GaloisForLFunctions.EulerFETransportTheory

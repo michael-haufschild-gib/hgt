@@ -152292,4 +152292,1984 @@ end InverseMoment
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+def actualRowPhaseExtension (F : PrimeFamily φ) (jF : φ → ℕ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (u : Eisˣ) (m : ℕ) (K : Ideal Eis) : ℂ :=
+  if hK : Admissible K then actualRowPhase F K hK jF s u m else 0
+
+def reflectedBranchHybridRow (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (S : Ideal Eis → PrimeFamily σ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (κ : ℂ) (A : Ideal Eis → Ideal Eis → ℂ) (u : Eisˣ) (m : ℕ)
+    (Pset nset bset : Finset (Ideal Eis)) (K : Ideal Eis) : ℂ :=
+  ((-1:ℂ)^(Fintype.card σ)*actualFrozenPhase F jF κ s u m*
+    actualRowPhaseExtension F jF s u m K)*
+    hybridRow Pset nset bset (fun P => actualSlotPhase F (S P) jF s u m)
+      (frozenBranchColumn F jF e A) K
+
+lemma hybridRow_frozenColumn (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (Pset nset bset : Finset (Ideal Eis))
+    (aP : Ideal Eis → ℂ) (K : Ideal Eis) :
+    hybridRow Pset nset bset aP (frozenBranchColumn F jF e A) K =
+      (frozenBranchScale F jF e:ℂ)*hybridRow Pset nset bset aP (normalizedFrozenColumn F jF e A) K := by
+  unfold hybridRow hybridInner
+  simp_rw [frozenBranchColumn_eq_normalized]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro P hP
+  apply Finset.sum_congr rfl
+  intro n hn
+  apply Finset.sum_congr rfl
+  intro b hb
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ ι : Type*} [Fintype φ] [Fintype σ] [Fintype ι]
+variable {N a c : Eis} {mode : Bool}
+
+theorem masked_actual_coefficient (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (P : Ideal Eis) (hprod : (∏ i, S.ideal i) = P) (jF : φ → ℕ)
+    (D : IsCoprime K P → ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (hcop : IsCoprime K P → Pairwise (Function.onFun IsCoprime (F.reflected K hK S).ideal))
+    (G0 : PrimeFamily ι) (D0 : ControlledStratumArithmetic G0.generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hκ : ∀ h, (D h).fixedFactor = D0.fixedFactor)
+    (hA : ∀ h u m n b, actualCuspColumn (D h) s hc u m n b = actualCuspColumn D0 s hc u m n b)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (hb : primaryIdealGenerator b ≠ 0) :
+    (if h : IsCoprime K P then actualMixedCoefficient F K hK S jF (D h) s hc u m n b else 0) =
+      ∑ e : φ → Fin 3,
+        ((-1:ℂ)^(Fintype.card σ)*actualFrozenPhase F jF D0.fixedFactor s u m*
+          actualRowPhaseExtension F jF s u m K)*
+        (actualSlotPhase F S jF s u m / (Real.sqrt (Ideal.absNorm P:ℝ):ℂ))*
+        (if IsCoprime K P then 1 else 0)*
+        (frozenBranchColumn F jF e (actualCuspColumn D0 s hc u m) n b*
+          canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (n*b))*inverseCubicKernel P n*
+          (if IsCoprime P b then 1 else 0)) := by
+  by_cases hKP : IsCoprime K P
+  · rw [dif_pos hKP]
+    have hh := actualMixedCoefficient_common_branches F K hK S jF (D hKP) s hc (hcop hKP)
+      D0.fixedFactor (actualCuspColumn D0 s hc) (hκ hKP) (hA hKP) u m n b hb
+    rw [hprod] at hh
+    rw [hh]
+    apply Finset.sum_congr rfl
+    intro e he
+    rw [actualRowPhaseExtension,dif_pos hK,frozenBranchColumn_eq_normalized]
+    simp only [if_pos hKP,div_eq_mul_inv]
+    ring
+  · simp only [dif_neg hKP,if_neg hKP,mul_zero,zero_mul,Finset.sum_const_zero]
+
+def actualPhysicalReflectedRow (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : Ideal Eis → PrimeFamily σ) (jF : φ → ℕ) (Pset nset bset : Finset (Ideal Eis))
+    (D : ∀ P : Pset, IsCoprime K P.val →
+      ControlledStratumArithmetic (F.reflected K hK (S P.val)).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (u : Eisˣ) (m : ℕ) : ℂ :=
+  ∑ P : Pset, ∑ n ∈ nset, ∑ b ∈ bset,
+    if h : IsCoprime K P.val then actualMixedCoefficient F K hK (S P.val) jF (D P h) s hc u m n b else 0
+
+theorem actualPhysicalReflectedRow_eq_branches (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : Ideal Eis → PrimeFamily σ) (jF : φ → ℕ) (Pset nset bset : Finset (Ideal Eis))
+    (hprod : ∀ P ∈ Pset, (∏ i, (S P).ideal i)=P)
+    (D : ∀ P : Pset, IsCoprime K P.val →
+      ControlledStratumArithmetic (F.reflected K hK (S P.val)).generator N a c mode)
+    (hcop : ∀ P : Pset, IsCoprime K P.val →
+      Pairwise (Function.onFun IsCoprime (F.reflected K hK (S P.val)).ideal))
+    (G0 : PrimeFamily ι) (D0 : ControlledStratumArithmetic G0.generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (hκ : ∀ P h, (D P h).fixedFactor = D0.fixedFactor)
+    (hA : ∀ P h u m n b, actualCuspColumn (D P h) s hc u m n b = actualCuspColumn D0 s hc u m n b)
+    (hb : ∀ b ∈ bset, primaryIdealGenerator b ≠ 0) (u : Eisˣ) (m : ℕ) :
+    actualPhysicalReflectedRow F K hK S jF Pset nset bset D s hc u m =
+      ∑ e : φ → Fin 3, reflectedBranchHybridRow F jF e S s D0.fixedFactor
+        (actualCuspColumn D0 s hc u m) u m Pset nset bset K := by
+  unfold actualPhysicalReflectedRow
+  have he (P : Pset) (n : Ideal Eis) (b : Ideal Eis) (hb' : b ∈ bset) :=
+    masked_actual_coefficient F K hK (S P.val) P.val (hprod P.val P.property) jF
+      (D P) (hcop P) G0 D0 s hc (hκ P) (hA P) u m n b (hb b hb')
+  simp_rw [reflectedBranchHybridRow,hybridRow,hybridInner,Finset.mul_sum]
+  conv_rhs => rw [Finset.sum_comm]
+  rw [← Finset.sum_coe_sort Pset]
+  apply Finset.sum_congr rfl
+  intro P hP
+  conv_rhs => rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro n hn
+  conv_rhs => rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro b hb'
+  rw [he P n b hb']
+  apply Finset.sum_congr rfl
+  intro e he'
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ : Type*} [Fintype φ]
+
+lemma frozenBranchColumn_divisibility (F : PrimeFamily φ)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal)) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (n b : Ideal Eis)
+    (hn : primaryIdealGenerator n ≠ 0) (hb : primaryIdealGenerator b ≠ 0)
+    (hz : frozenBranchColumn F jF e A n b ≠ 0) :
+    frozenExtracted F jF e 1 ∣ n ∧ frozenExtracted F jF e 2 ∣ b ∧
+      ∀ i, jF i=4 → e i=2 → primaryIdealGenerator n ∉ F.ideal i := by
+  have hcp : Pairwise (fun i k => IsCoprime (Ideal.span {F.generator i}) (Ideal.span {F.generator k})) := by
+    simpa only [PrimeFamily.generator_span] using hF
+  have hh := reflectedBranch_divisibility (fun i => Ideal.span {F.generator i}) F.generator_good hcp
+    jF e (primaryIdealGenerator n) (primaryIdealGenerator b) (mul_ne_zero_iff.mp hz).2
+  simpa only [frozenExtracted,(primaryIdealGenerator_spec n hn).1,(primaryIdealGenerator_spec b hb).1,
+    PrimeFamily.generator_span] using hh
+
+lemma frozenBranchColumn_zero_of_not_dvd (F : PrimeFamily φ)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal)) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (n b : Ideal Eis)
+    (hn : primaryIdealGenerator n ≠ 0) (hb : primaryIdealGenerator b ≠ 0)
+    (hz : ¬ frozenExtracted F jF e 1 ∣ n ∨ ¬ frozenExtracted F jF e 2 ∣ b) :
+    frozenBranchColumn F jF e A n b = 0 := by
+  by_contra hh
+  obtain ⟨hd1,hd2,_⟩ := frozenBranchColumn_divisibility F hF jF e A n b hn hb hh
+  exact hz.elim (fun h => h hd1) (fun h => h hd2)
+
+theorem frozenBranchColumn_dual_reindex (F : PrimeFamily φ)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal)) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A W : Ideal Eis → Ideal Eis → ℂ) (nset bset : Finset (Ideal Eis))
+    (hn : ∀ n ∈ nset, primaryIdealGenerator n ≠ 0) (hb : ∀ b ∈ bset, primaryIdealGenerator b ≠ 0) :
+    (∑ n ∈ nset, ∑ b ∈ bset, frozenBranchColumn F jF e A n b*W n b) =
+      ∑ n ∈ quotientSupport (frozenExtracted F jF e 1) nset,
+        ∑ b ∈ quotientSupport (frozenExtracted F jF e 2) bset,
+          frozenBranchColumn F jF e A ((frozenExtracted F jF e 1)*n) ((frozenExtracted F jF e 2)*b)*
+            W ((frozenExtracted F jF e 1)*n) ((frozenExtracted F jF e 2)*b) := by
+  classical
+  have hfilter :
+      (∑ n ∈ nset, ∑ b ∈ bset, frozenBranchColumn F jF e A n b*W n b) =
+      ∑ n ∈ nset with frozenExtracted F jF e 1 ∣ n,
+        ∑ b ∈ bset with frozenExtracted F jF e 2 ∣ b, frozenBranchColumn F jF e A n b*W n b := by
+    simp only [Finset.sum_filter]
+    apply Finset.sum_congr rfl
+    intro n hn'
+    by_cases hd1 : frozenExtracted F jF e 1 ∣ n
+    · rw [if_pos hd1]
+      apply Finset.sum_congr rfl
+      intro b hb'
+      by_cases hd2 : frozenExtracted F jF e 2 ∣ b
+      · rw [if_pos hd2]
+      · rw [if_neg hd2,frozenBranchColumn_zero_of_not_dvd F hF jF e A n b (hn n hn') (hb b hb') (Or.inr hd2),zero_mul]
+    · rw [if_neg hd1]
+      apply Finset.sum_eq_zero
+      intro b hb'
+      rw [frozenBranchColumn_zero_of_not_dvd F hF jF e A n b (hn n hn') (hb b hb') (Or.inl hd1),zero_mul]
+  rw [hfilter,sum_quotientSupport]
+  apply Finset.sum_congr rfl
+  intro n hn'
+  exact sum_quotientSupport _ _ _
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+def extractedRowFactor (D1 D2 K : Ideal Eis) : ℂ := canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (D1*D2))
+def extractedSlotFactor (D1 D2 P : Ideal Eis) : ℂ :=
+  inverseCubicKernel P D1 * (if IsCoprime P D2 then 1 else 0)
+
+lemma extractedRowFactor_norm_le_one (D1 D2 K : Ideal Eis) : ‖extractedRowFactor D1 D2 K‖ ≤ 1 := by
+  unfold extractedRowFactor canonicalQuadraticRowOfIdeal
+  split_ifs with hK
+  · exact canonicalQuadraticRow_norm_le_one ⟨K,hK⟩ _
+  · simp only [norm_zero,zero_le_one]
+
+lemma extractedSlotFactor_norm_le_one (D1 D2 P : Ideal Eis) : ‖extractedSlotFactor D1 D2 P‖ ≤ 1 := by
+  unfold extractedSlotFactor
+  split_ifs
+  · simpa only [mul_one] using inverseCubicKernel_norm_le_one P D1
+  · simp
+
+lemma coprime_product_mask (P D b : Ideal Eis) :
+    (if IsCoprime P (D*b) then (1:ℂ) else 0) =
+      (if IsCoprime P D then 1 else 0)*(if IsCoprime P b then 1 else 0) := by
+  by_cases hD : IsCoprime P D <;> by_cases hb : IsCoprime P b
+  · simp [hD,hb,hD.mul_right hb]
+  · have hn : ¬IsCoprime P (D*b) := fun h => hb (h.of_isCoprime_of_dvd_right (dvd_mul_left _ _))
+    simp [hD,hb,hn]
+  · have hn : ¬IsCoprime P (D*b) := fun h => hD (h.of_isCoprime_of_dvd_right (dvd_mul_right _ _))
+    simp [hD,hb,hn]
+  · have hn : ¬IsCoprime P (D*b) := fun h => hD (h.of_isCoprime_of_dvd_right (dvd_mul_right _ _))
+    simp [hD,hb,hn]
+
+theorem forced_dual_kernel_factor (D1 D2 K P n b : Ideal Eis)
+    (hK : Admissible K) (hP : primaryIdealGenerator P ≠ 0) :
+    canonicalQuadraticRowOfIdeal K (primaryIdealGenerator ((D1*n)*(D2*b)))*inverseCubicKernel P (D1*n)*
+      (if IsCoprime P (D2*b) then 1 else 0)*(if IsCoprime K P then 1 else 0) =
+      (extractedRowFactor D1 D2 K*extractedSlotFactor D1 D2 P)*
+        canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (n*b))*inverseCubicKernel P n*
+        (if IsCoprime P b then 1 else 0)*(if IsCoprime K P then 1 else 0) := by
+  rw [show (D1*n)*(D2*b)=(D1*D2)*(n*b) by ring,primaryIdealGenerator_mul,
+    canonicalQuadraticRowOfIdeal_mul K,inverseCubicKernel_mul_right P D1 n hP,
+    coprime_product_mask]
+  unfold extractedRowFactor extractedSlotFactor
+  ring
+
+def extractedFrozenColumn {φ : Type*} [Fintype φ] (F : PrimeFamily φ)
+    (jF : φ → ℕ) (e : φ → Fin 3) (A : Ideal Eis → Ideal Eis → ℂ) (n b : Ideal Eis) : ℂ :=
+  normalizedFrozenColumn F jF e A ((frozenExtracted F jF e 1)*n) ((frozenExtracted F jF e 2)*b)
+
+lemma extractedFrozenColumn_norm_le_one {φ : Type*} [Fintype φ] (F : PrimeFamily φ)
+    (jF : φ → ℕ) (e : φ → Fin 3) (A : Ideal Eis → Ideal Eis → ℂ)
+    (hA : ∀ n b, ‖A n b‖ ≤ 1) (n b : Ideal Eis) : ‖extractedFrozenColumn F jF e A n b‖ ≤ 1 :=
+  normalizedFrozenColumn_norm_le_one F jF e A hA _ _
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ : Type*} [Fintype φ]
+
+lemma hybridInner_frozen_dual_reindex (F : PrimeFamily φ)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal)) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (nset bset : Finset (Ideal Eis))
+    (hn : ∀ n ∈ nset, primaryIdealGenerator n ≠ 0) (hb : ∀ b ∈ bset, primaryIdealGenerator b ≠ 0)
+    (K P : Ideal Eis) :
+    hybridInner nset bset (frozenBranchColumn F jF e A) K P =
+      ∑ n ∈ quotientSupport (frozenExtracted F jF e 1) nset,
+        ∑ b ∈ quotientSupport (frozenExtracted F jF e 2) bset,
+          frozenBranchColumn F jF e A ((frozenExtracted F jF e 1)*n) ((frozenExtracted F jF e 2)*b)*
+            canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (((frozenExtracted F jF e 1)*n)*((frozenExtracted F jF e 2)*b)))*
+            inverseCubicKernel P ((frozenExtracted F jF e 1)*n)*
+            (if IsCoprime P ((frozenExtracted F jF e 2)*b) then 1 else 0) := by
+  simpa only [hybridInner,mul_assoc] using frozenBranchColumn_dual_reindex F hF jF e A
+    (fun n b => canonicalQuadraticRowOfIdeal K (primaryIdealGenerator (n*b))*inverseCubicKernel P n*(if IsCoprime P b then 1 else 0))
+    nset bset hn hb
+
+theorem hybridRow_frozen_extraction (F : PrimeFamily φ)
+    (hF : Pairwise (Function.onFun IsCoprime F.ideal)) (jF : φ → ℕ) (e : φ → Fin 3)
+    (A : Ideal Eis → Ideal Eis → ℂ) (nset bset Pset : Finset (Ideal Eis))
+    (hn : ∀ n ∈ nset, primaryIdealGenerator n ≠ 0) (hb : ∀ b ∈ bset, primaryIdealGenerator b ≠ 0)
+    (aP : Ideal Eis → ℂ) (K : Ideal Eis) (hK : Admissible K)
+    (hP : ∀ P ∈ Pset, primaryIdealGenerator P ≠ 0) :
+    hybridRow Pset nset bset aP (frozenBranchColumn F jF e A) K =
+      ((frozenBranchScale F jF e:ℂ)*extractedRowFactor (frozenExtracted F jF e 1) (frozenExtracted F jF e 2) K)*
+        hybridRow Pset (quotientSupport (frozenExtracted F jF e 1) nset)
+          (quotientSupport (frozenExtracted F jF e 2) bset)
+          (fun P => aP P*extractedSlotFactor (frozenExtracted F jF e 1) (frozenExtracted F jF e 2) P)
+          (extractedFrozenColumn F jF e A) K := by
+  unfold hybridRow
+  simp_rw [hybridInner_frozen_dual_reindex F hF jF e A nset bset hn hb]
+  simp only [hybridInner,Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro P hP'
+  apply Finset.sum_congr rfl
+  intro n hn'
+  apply Finset.sum_congr rfl
+  intro b hb'
+  rw [frozenBranchColumn_eq_normalized]
+  have hh := forced_dual_kernel_factor (frozenExtracted F jF e 1) (frozenExtracted F jF e 2)
+    K P n b hK (hP P hP')
+  have he := congrArg (fun z : ℂ => aP P/(Real.sqrt (Ideal.absNorm P:ℝ):ℂ)*
+    (frozenBranchScale F jF e:ℂ)*extractedFrozenColumn F jF e A n b*z) hh
+  convert he using 1 <;> simp only [extractedFrozenColumn,div_eq_mul_inv] <;> ring
+
+lemma quotientSupport_norm_div (D : Ideal Eis) (hD : D ≠ 0) (S : Finset (Ideal Eis)) (Y : ℝ)
+    (hS : ∀ I ∈ S, (Ideal.absNorm I:ℝ) ≤ Y) (J : Ideal Eis) (hJ : J ∈ quotientSupport D S) :
+    (Ideal.absNorm J:ℝ) ≤ Y/(Ideal.absNorm D:ℝ) := by
+  have hpos : (0:ℝ) < Ideal.absNorm D := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hD)
+  have hh := hS (D*J) ((mem_quotientSupport D J hD S).mp hJ)
+  rw [map_mul,Nat.cast_mul] at hh
+  exact (le_div_iff₀ hpos).mpr (by simpa only [mul_comm] using hh)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ ι : Type*} [Fintype φ] [Fintype ι] {N a c : Eis} {mode : Bool}
+
+def extractedDualScale (D : Ideal Eis) (Y : ℝ) : ℝ := max 1 (Y/(Ideal.absNorm D:ℝ))
+
+lemma actualCuspWeightedColumn_norm_le_one {ι : Type*} [Fintype ι]
+    (G0 : PrimeFamily ι) (D0 : ControlledStratumArithmetic G0.generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c ≠ 0)
+    (u : Eisˣ) (m : ℕ) (w : Ideal Eis → Ideal Eis → ℂ)
+    (hw : ∀ n b, ‖w n b‖ ≤ 1) (n b : Ideal Eis) :
+    ‖actualCuspColumn D0 s hc u m n b*w n b‖ ≤ 1 := by
+  rw [norm_mul]
+  exact (mul_le_of_le_one_left (norm_nonneg _) (actualCuspColumn_norm_le_one D0 s hc u m n b)).trans (hw n b)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+def weightedReflectedBranchHybridRow (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (S : Ideal Eis → PrimeFamily σ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (κ : ℂ) (A : Ideal Eis → Ideal Eis → ℂ)
+    (r aw : Ideal Eis → ℂ) (w : Ideal Eis → Ideal Eis → ℂ) (u : Eisˣ) (m : ℕ)
+    (Pset nset bset : Finset (Ideal Eis)) (K : Ideal Eis) : ℂ :=
+  ((-1:ℂ)^(Fintype.card σ)*actualFrozenPhase F jF κ s u m*
+    actualRowPhaseExtension F jF s u m K*r K)*
+    hybridRow Pset nset bset (fun P => actualSlotPhase F (S P) jF s u m*aw P)
+      (frozenBranchColumn F jF e (fun n b => A n b*w n b)) K
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open MeasureTheory Eisenstein CubicEisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {Ω φ σ : Type*} [MeasurableSpace Ω] [Fintype φ] [Fintype σ]
+variable {N a c : Eis} {mode : Bool}
+
+lemma weightedReflectedBranchHybridRow_aestronglyMeasurable
+    (μ : Measure Ω) (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+    (S : Ideal Eis → PrimeFamily σ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (κ : ℂ) (A : Ideal Eis → Ideal Eis → ℂ)
+    (r aw : Ω → Ideal Eis → ℂ) (w : Ω → Ideal Eis → Ideal Eis → ℂ)
+    (u : Eisˣ) (m : ℕ) (Pset nset bset : Finset (Ideal Eis)) (K : Ideal Eis)
+    (hr : AEStronglyMeasurable (fun t => r t K) μ)
+    (ha : ∀ P ∈ Pset, AEStronglyMeasurable (fun t => aw t P) μ)
+    (hw : ∀ n ∈ nset, ∀ b ∈ bset, AEStronglyMeasurable (fun t => w t n b) μ) :
+    AEStronglyMeasurable (fun t => weightedReflectedBranchHybridRow F jF e S s κ A
+      (r t) (aw t) (w t) u m Pset nset bset K) μ := by
+  unfold weightedReflectedBranchHybridRow
+  apply (hr.const_mul _).mul
+  unfold hybridRow
+  apply Finset.aestronglyMeasurable_fun_sum
+  intro P hP
+  simp only [div_eq_mul_inv]
+  apply (((ha P hP).const_mul _).mul_const _ |>.mul_const _).mul
+  unfold hybridInner
+  apply Finset.aestronglyMeasurable_fun_sum
+  intro n hn
+  apply Finset.aestronglyMeasurable_fun_sum
+  intro b hb
+  unfold frozenBranchColumn
+  exact (((((hw n hn b hb).const_mul _).mul_const _).mul_const _).mul_const _).mul_const _
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseMoment
+open scoped BigOperators Classical
+open MeasureTheory CanonicalQuadraticSieve CompletedGauss
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+theorem common_measure_energy {Ω κ : Type*} [MeasurableSpace Ω] [Fintype κ]
+    (μ : Measure Ω) (b : Ω → ℂ) (φ : κ → Ω → ℂ) (E : ℝ) (hE : 0 ≤ E)
+    (hb : Integrable (fun t => ‖b t‖) μ)
+    (hφ : ∀ k, Integrable (fun t => b t * φ k t) μ)
+    (hbound : ∀ t, (∑ k, ‖φ k t‖ ^ 2) ≤ E) :
+    (∑ k, ‖∫ t, b t * φ k t ∂μ‖ ^ 2) ≤ E * (∫ t, ‖b t‖ ∂μ) ^ 2 := by
+  let e := PiLp.continuousLinearEquiv 2 ℂ (fun _ : κ => ℂ)
+  let F : Ω → EuclideanSpace ℂ κ := fun t => e.symm (fun k => b t * φ k t)
+  have hF (t : Ω) : ‖F t‖ ≤ ‖b t‖ * Real.sqrt E := by
+    apply (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp
+    rw [EuclideanSpace.norm_sq_eq, mul_pow, Real.sq_sqrt hE]
+    change (∑ k, ‖b t * φ k t‖ ^ 2) ≤ ‖b t‖ ^ 2 * E
+    simp only [norm_mul, mul_pow, ← Finset.mul_sum]
+    exact mul_le_mul_of_nonneg_left (hbound t) (sq_nonneg _)
+  have he : (∫ t, F t ∂μ) = e.symm (fun k => ∫ t, b t * φ k t ∂μ) := by
+    rw [show F = (fun t => e.symm (fun k => b t * φ k t)) from rfl,
+      e.symm.integral_comp_comm]
+    congr 1
+    funext k
+    exact eval_integral hφ k
+  have hn : ‖e.symm (fun k => ∫ t, b t * φ k t ∂μ)‖ ≤
+      (∫ t, ‖b t‖ ∂μ) * Real.sqrt E := by
+    rw [← he, ← integral_mul_const]
+    exact norm_integral_le_of_norm_le (hb.mul_const _) (Filter.Eventually.of_forall hF)
+  have hs := pow_le_pow_left₀ (norm_nonneg _) hn 2
+  rw [EuclideanSpace.norm_sq_eq, mul_pow, Real.sq_sqrt hE] at hs
+  simpa [e, mul_comm] using hs
+
+end
+end InverseMoment
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection
+open scoped BigOperators Classical ContDiff
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open MeasureTheory Eisenstein CubicEisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+universe u v
+variable {Ω : Type*} [MeasurableSpace Ω] {N a c : Eis} {mode : Bool}
+
+theorem bounded_column_hybrid_energy_extracted_type_uniform (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {φ : Type u} [Fintype φ], ∀ X Y B L : ℝ, 1 ≤ X → 1 ≤ L →
+    ∀ (F : PrimeFamily φ), Pairwise (Function.onFun IsCoprime F.ideal) →
+    ∀ (jF : φ → ℕ) (e : φ → Fin 3) (A : Ideal Eis → Ideal Eis → ℂ),
+      (∀ n b, ‖A n b‖ ≤ 1) →
+    ∀ (rows nset bset Pset : Finset (Ideal Eis)) (aP : Ideal Eis → ℂ),
+      (∀ K ∈ rows, Admissible K ∧ (Ideal.absNorm K:ℝ) ≤ X) →
+      (∀ n ∈ nset, CubicSieve.Admissible n ∧ (Ideal.absNorm n:ℝ) ≤ Y) →
+      (∀ b ∈ bset, primaryIdealGenerator b ≠ 0 ∧ (Ideal.absNorm b:ℝ) ≤ B) →
+      (∀ P ∈ Pset, CubicSieve.Admissible P ∧ L ≤ (Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ) ≤ 2*L) →
+      (∀ P ∈ Pset, ‖aP P‖ ≤ 1) →
+      let Yq := extractedDualScale (frozenExtracted F jF e 1) Y
+      let Bq := extractedDualScale (frozenExtracted F jF e 2) B
+      (∑ K ∈ rows, ‖hybridRow Pset nset bset aP
+        (frozenBranchColumn F jF e A) K‖^2) ≤
+      (frozenBranchScale F jF e)^2*
+        (C*(X*Yq*Bq*L)^ε*(X+Yq*Bq)*Bq*(Yq+L+(Yq*L)^(2/3:ℝ))) := by
+  obtain ⟨C,hC,he⟩ := hybridRow_energy ε hε
+  refine ⟨C,hC,?_⟩
+  intro φ _ X Y B L hX hL F hF jF e A hA rows nset bset Pset aP hrows hn hb hP ha
+  let D1 := frozenExtracted F jF e 1
+  let D2 := frozenExtracted F jF e 2
+  let Yq := extractedDualScale D1 Y
+  let Bq := extractedDualScale D2 B
+  have hD1 : D1 ≠ 0 := frozenExtracted_ne_zero F jF e 1
+  have hD2 : D2 ≠ 0 := frozenExtracted_ne_zero F jF e 2
+  have hnq : ∀ n ∈ quotientSupport D1 nset, CubicSieve.Admissible n ∧ (Ideal.absNorm n:ℝ) ≤ Yq := by
+    intro n hn'
+    exact ⟨quotientSupport_cubic_admissible D1 hD1 nset (fun n h => (hn n h).1) n hn',
+      (quotientSupport_norm_div D1 hD1 nset Y (fun n h => (hn n h).2) n hn').trans (le_max_right _ _)⟩
+  have hbq : ∀ b ∈ quotientSupport D2 bset, primaryIdealGenerator b ≠ 0 ∧ (Ideal.absNorm b:ℝ) ≤ Bq := by
+    intro b hb'
+    have hsource := hb (D2*b) ((mem_quotientSupport D2 b hD2 bset).mp hb')
+    rw [primaryIdealGenerator_mul] at hsource
+    exact ⟨(mul_ne_zero_iff.mp hsource.1).2,
+      (quotientSupport_norm_div D2 hD2 bset B (fun b h => (hb b h).2) b hb').trans (le_max_right _ _)⟩
+  have hacoeff : ∀ P ∈ Pset, ‖aP P*extractedSlotFactor D1 D2 P‖ ≤ 1 := by
+    intro P hP'
+    rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (ha P hP')).trans (extractedSlotFactor_norm_le_one D1 D2 P)
+  have hcolumn : ∀ n b, ‖extractedFrozenColumn F jF e A n b‖ ≤ 1 :=
+    extractedFrozenColumn_norm_le_one F jF e A hA
+  have hh := he X Yq Bq L hX (le_max_left _ _) (le_max_left _ _) hL rows
+    (quotientSupport D1 nset) (quotientSupport D2 bset) Pset
+    (fun P => aP P*extractedSlotFactor D1 D2 P)
+    (extractedFrozenColumn F jF e A)
+    hrows hnq hbq hP hacoeff (fun n _ b _ => hcolumn n b)
+  apply le_trans (Finset.sum_le_sum (fun K hK => ?_))
+    ((by rw [← Finset.mul_sum]; exact mul_le_mul_of_nonneg_left hh (sq_nonneg _)) :
+      (∑ K ∈ rows, (frozenBranchScale F jF e)^2*
+        ‖hybridRow Pset (quotientSupport D1 nset) (quotientSupport D2 bset)
+          (fun P => aP P*extractedSlotFactor D1 D2 P)
+          (extractedFrozenColumn F jF e A) K‖^2) ≤ _)
+  rw [hybridRow_frozen_extraction F hF jF e _ nset bset Pset
+    (fun n h => (hn n h).1.2) (fun b h => (hb b h).1) aP K (hrows K hK).1
+    (fun P h => (hP P h).1.2)]
+  have hp := frozenBranchScale_pos F jF e
+  have hs := extractedRowFactor_norm_le_one D1 D2 K
+  have hs2 : ‖extractedRowFactor D1 D2 K‖^2 ≤ 1 := by
+    have h0 := norm_nonneg (extractedRowFactor D1 D2 K)
+    nlinarith
+  simp only [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hp,mul_pow]
+  change (frozenBranchScale F jF e)^2*‖extractedRowFactor D1 D2 K‖^2* _ ≤ _
+  calc
+    _ ≤ ((frozenBranchScale F jF e)^2*1)*_ := by gcongr
+    _ = _ := by rw [mul_one]
+
+theorem actual_weighted_reflected_branch_energy_type_uniform (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {φ : Type u} {σ : Type v} [Fintype φ] [Fintype σ], ∀ (X Y B L : ℝ), 1 ≤ X → 1 ≤ Y → 1 ≤ B → 1 ≤ L →
+    ∀ (F : PrimeFamily φ) (jF : φ → ℕ) (e : φ → Fin 3)
+      (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+      (hc : c ≠ 0), (9:Eis)*c ∣ N →
+      (if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) → IsCoprime a c →
+      Pairwise (Function.onFun IsCoprime F.ideal) →
+      (∀ f, IsCoprime (Ideal.span {N}) (F.ideal f)) →
+      (∀ f, ringChar (Eis ⧸ F.ideal f) ≠ 2) → (∀ f, jF f < 6) →
+    ∀ {ι : Type*} [Fintype ι] (G0 : PrimeFamily ι)
+      (D0 : ControlledStratumArithmetic G0.generator N a c mode)
+      (u : Eisˣ) (m : ℕ) (rows nset bset Pset : Finset (Ideal Eis))
+      (S : Ideal Eis → PrimeFamily σ)
+      (r aw : Ideal Eis → ℂ) (w : Ideal Eis → Ideal Eis → ℂ),
+      (∀ K ∈ rows, Admissible K ∧ (Ideal.absNorm K:ℝ) ≤ X) →
+      (∀ K ∈ rows, (∀ f, IsCoprime (F.ideal f) K) ∧ IsCoprime (Ideal.span {N}) K) →
+      (∀ P ∈ Pset, (∏ i, (S P).ideal i) = P) →
+      (∀ P ∈ Pset, Pairwise (Function.onFun IsCoprime (F.sum (S P)).ideal)) →
+      (∀ P ∈ Pset, ∀ i, IsCoprime (Ideal.span {N}) ((F.sum (S P)).ideal i)) →
+      (∀ P ∈ Pset, ∀ i, ringChar (Eis ⧸ (F.sum (S P)).ideal i) ≠ 2) →
+      (∀ n ∈ nset, CubicSieve.Admissible n ∧ (Ideal.absNorm n:ℝ) ≤ Y) →
+      (∀ b ∈ bset, primaryIdealGenerator b ≠ 0 ∧ (Ideal.absNorm b:ℝ) ≤ B) →
+      (∀ P ∈ Pset, CubicSieve.Admissible P ∧ L ≤ (Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ) ≤ 2*L) →
+      (∀ K ∈ rows, ‖r K‖ ≤ 1) → (∀ P ∈ Pset, ‖aw P‖ ≤ 1) → (∀ n b, ‖w n b‖ ≤ 1) →
+      let Yq := extractedDualScale (frozenExtracted F jF e 1) Y
+      let Bq := extractedDualScale (frozenExtracted F jF e 2) B
+      (∑ K ∈ rows, ‖weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+        (actualCuspColumn D0 s hc u m) r aw w u m Pset nset bset K‖^2) ≤
+      (frozenBranchScale F jF e)^2*
+        (C*(X*Yq*Bq*L)^ε*(X+Yq*Bq)*Bq*(Yq+L+(Yq*L)^(2/3:ℝ))) := by
+  obtain ⟨C,hC,he⟩ := bounded_column_hybrid_energy_extracted_type_uniform  ε hε
+  refine ⟨C,hC,?_⟩
+  intro φ σ _ _ X Y B L hX _hY _hB hL F jF e s hc hN hbase hac hF hNF hcharF hj
+    ι _ G0 D0 u m rows nset bset Pset S r aw w hrows hrowcop _hproducts hScop hSN hSchar hn hb hP hr haw hw
+  have hfrozen : ‖actualFrozenPhase F jF D0.fixedFactor s u m‖ ≤ 1 :=
+    actualFrozenPhase_norm_le_one F jF D0.fixedFactor (D0.fixedFactor_norm hN G0.generator_product_primary hbase).le
+      s hc hN hbase hac hF hNF hcharF hj u m
+  have hrow (K : Ideal Eis) (hK : K ∈ rows) : ‖actualRowPhaseExtension F jF s u m K‖ ≤ 1 := by
+    rw [actualRowPhaseExtension,dif_pos (hrows K hK).1]
+    exact actualRowPhase_norm_le_one F K (hrows K hK).1 jF s hc hN hbase hac hF
+      (hrowcop K hK).1 hNF (hrowcop K hK).2 hcharF u m
+  have hslot (P : Ideal Eis) (hP : P ∈ Pset) : ‖actualSlotPhase F (S P) jF s u m*aw P‖ ≤ 1 := by
+    rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _)
+      (two_block_phase_bounds F (S P) jF s hc hN hbase hac (hScop P hP) (hSN P hP) (hSchar P hP) u m).2).trans
+      (haw P hP)
+  have hcol := actualCuspWeightedColumn_norm_le_one G0 D0 s hc u m w hw
+  apply le_trans (Finset.sum_le_sum (fun K hK => ?_))
+    (he X Y B L hX hL F hF jF e (fun n b => actualCuspColumn D0 s hc u m n b*w n b) hcol
+      rows nset bset Pset (fun P => actualSlotPhase F (S P) jF s u m*aw P) hrows hn hb hP hslot)
+  have hphase : ‖(-1:ℂ)^(Fintype.card σ)*actualFrozenPhase F jF D0.fixedFactor s u m*
+      actualRowPhaseExtension F jF s u m K*r K‖ ≤ 1 := by
+    simp only [norm_mul,norm_pow,norm_neg,norm_one,one_pow,one_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _)
+      ((mul_le_of_le_one_left (norm_nonneg _) hfrozen).trans (hrow K hK))).trans (hr K hK)
+  have hphase0 := norm_nonneg ((-1:ℂ)^(Fintype.card σ)*actualFrozenPhase F jF D0.fixedFactor s u m*
+      actualRowPhaseExtension F jF s u m K*r K)
+  have hs : ‖(-1:ℂ)^(Fintype.card σ)*actualFrozenPhase F jF D0.fixedFactor s u m*
+      actualRowPhaseExtension F jF s u m K*r K‖^2 ≤ 1 := by nlinarith
+  rw [weightedReflectedBranchHybridRow,norm_mul,mul_pow]
+  exact (mul_le_mul_of_nonneg_right hs (sq_nonneg _)).trans_eq (one_mul _)
+
+theorem summed_actual_weighted_reflected_energy_type_uniform (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {φ : Type u} {σ : Type v} [Fintype φ] [Fintype σ], ∀ (X Y B L : ℝ), 1 ≤ X → 1 ≤ Y → 1 ≤ B → 1 ≤ L →
+    ∀ (F : PrimeFamily φ) (jF : φ → ℕ)
+      (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+      (hc : c ≠ 0), (9:Eis)*c ∣ N →
+      (if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) → IsCoprime a c →
+      Pairwise (Function.onFun IsCoprime F.ideal) →
+      (∀ f, IsCoprime (Ideal.span {N}) (F.ideal f)) →
+      (∀ f, ringChar (Eis ⧸ F.ideal f) ≠ 2) → (∀ f, jF f < 6) →
+    ∀ {ι : Type*} [Fintype ι] (G0 : PrimeFamily ι)
+      (D0 : ControlledStratumArithmetic G0.generator N a c mode)
+      (u : Eisˣ) (m : ℕ) (rows nset bset Pset : Finset (Ideal Eis))
+      (S : Ideal Eis → PrimeFamily σ)
+      (r aw : Ideal Eis → ℂ) (w : Ideal Eis → Ideal Eis → ℂ),
+      (∀ K ∈ rows, Admissible K ∧ (Ideal.absNorm K:ℝ) ≤ X) →
+      (∀ K ∈ rows, (∀ f, IsCoprime (F.ideal f) K) ∧ IsCoprime (Ideal.span {N}) K) →
+      (∀ P ∈ Pset, (∏ i, (S P).ideal i) = P) →
+      (∀ P ∈ Pset, Pairwise (Function.onFun IsCoprime (F.sum (S P)).ideal)) →
+      (∀ P ∈ Pset, ∀ i, IsCoprime (Ideal.span {N}) ((F.sum (S P)).ideal i)) →
+      (∀ P ∈ Pset, ∀ i, ringChar (Eis ⧸ (F.sum (S P)).ideal i) ≠ 2) →
+      (∀ n ∈ nset, CubicSieve.Admissible n ∧ (Ideal.absNorm n:ℝ) ≤ Y) →
+      (∀ b ∈ bset, primaryIdealGenerator b ≠ 0 ∧ (Ideal.absNorm b:ℝ) ≤ B) →
+      (∀ P ∈ Pset, CubicSieve.Admissible P ∧ L ≤ (Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ) ≤ 2*L) →
+      (∀ K ∈ rows, ‖r K‖ ≤ 1) → (∀ P ∈ Pset, ‖aw P‖ ≤ 1) → (∀ n b, ‖w n b‖ ≤ 1) →
+      (∑ K ∈ rows, ‖∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+        (actualCuspColumn D0 s hc u m) r aw w u m Pset nset bset K‖^2) ≤
+      (Fintype.card (φ→Fin 3):ℝ) * ∑ e : φ→Fin 3,
+        let Yq := extractedDualScale (frozenExtracted F jF e 1) Y
+        let Bq := extractedDualScale (frozenExtracted F jF e 2) B
+        (frozenBranchScale F jF e)^2*
+          (C*(X*Yq*Bq*L)^ε*(X+Yq*Bq)*Bq*(Yq+L+(Yq*L)^(2/3:ℝ))) := by
+  obtain ⟨C,hC,he⟩ := actual_weighted_reflected_branch_energy_type_uniform
+    (N := N) (a := a) (c := c) (mode := mode) ε hε
+  refine ⟨C,hC,?_⟩
+  intro φ σ _ _ X Y B L hX hY hB hL F jF s hc hN hbase hac hF hNF hcharF hj
+    ι _ G0 D0 u m rows nset bset Pset S r aw w hrows hrowcop hproducts hScop hSN hSchar hn hb hP hr haw hw
+  calc
+    _ ≤ ∑ K ∈ rows, (Fintype.card (φ→Fin 3):ℝ)*
+        ∑ e : φ→Fin 3, ‖weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+          (actualCuspColumn D0 s hc u m) r aw w u m Pset nset bset K‖^2 := by
+      apply Finset.sum_le_sum
+      intro K hK
+      simpa only [Finset.card_univ] using cover_norm_sum_sq_le_card Finset.univ
+        (fun e : φ→Fin 3 => weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+          (actualCuspColumn D0 s hc u m) r aw w u m Pset nset bset K)
+    _ = (Fintype.card (φ→Fin 3):ℝ)*∑ e : φ→Fin 3, ∑ K ∈ rows,
+        ‖weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+          (actualCuspColumn D0 s hc u m) r aw w u m Pset nset bset K‖^2 := by
+      rw [← Finset.mul_sum,Finset.sum_comm]
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
+      apply Finset.sum_le_sum
+      intro e he'
+      exact he X Y B L hX hY hB hL F jF e s hc hN hbase hac hF hNF hcharF hj
+        G0 D0 u m rows nset bset Pset S r aw w hrows hrowcop hproducts hScop hSN hSchar hn hb hP hr haw hw
+
+theorem integrated_summed_actual_reflected_energy_type_uniform (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {φ : Type u} {σ : Type v} [Fintype φ] [Fintype σ], ∀ (X Y B L : ℝ), 1 ≤ X → 1 ≤ Y → 1 ≤ B → 1 ≤ L →
+    ∀ (F : PrimeFamily φ) (jF : φ → ℕ)
+      (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+      (hc : c ≠ 0), (9:Eis)*c ∣ N →
+      (if mode then lambda^2 ∣ a-1 else lambda^2 ∣ c-1) → IsCoprime a c →
+      Pairwise (Function.onFun IsCoprime F.ideal) →
+      (∀ f, IsCoprime (Ideal.span {N}) (F.ideal f)) →
+      (∀ f, ringChar (Eis ⧸ F.ideal f) ≠ 2) → (∀ f, jF f < 6) →
+    ∀ {ι : Type*} [Fintype ι] (G0 : PrimeFamily ι)
+      (D0 : ControlledStratumArithmetic G0.generator N a c mode)
+      (u : Eisˣ) (m : ℕ) (rows nset bset Pset : Finset (Ideal Eis))
+      (S : Ideal Eis → PrimeFamily σ)
+      (μ : Measure Ω) (density : Ω → ℂ) (scalar : ℂ)
+      (r aw : Ω → Ideal Eis → ℂ) (w : Ω → Ideal Eis → Ideal Eis → ℂ),
+      (∀ K ∈ rows, Admissible K ∧ (Ideal.absNorm K:ℝ) ≤ X) →
+      (∀ K ∈ rows, (∀ f, IsCoprime (F.ideal f) K) ∧ IsCoprime (Ideal.span {N}) K) →
+      (∀ P ∈ Pset, (∏ i, (S P).ideal i) = P) →
+      (∀ P ∈ Pset, Pairwise (Function.onFun IsCoprime (F.sum (S P)).ideal)) →
+      (∀ P ∈ Pset, ∀ i, IsCoprime (Ideal.span {N}) ((F.sum (S P)).ideal i)) →
+      (∀ P ∈ Pset, ∀ i, ringChar (Eis ⧸ (F.sum (S P)).ideal i) ≠ 2) →
+      (∀ n ∈ nset, CubicSieve.Admissible n ∧ (Ideal.absNorm n:ℝ) ≤ Y) →
+      (∀ b ∈ bset, primaryIdealGenerator b ≠ 0 ∧ (Ideal.absNorm b:ℝ) ≤ B) →
+      (∀ P ∈ Pset, CubicSieve.Admissible P ∧ L ≤ (Ideal.absNorm P:ℝ) ∧ (Ideal.absNorm P:ℝ) ≤ 2*L) →
+      Integrable density μ →
+      (∀ K ∈ rows, AEStronglyMeasurable (fun t => r t K) μ) →
+      (∀ P ∈ Pset, AEStronglyMeasurable (fun t => aw t P) μ) →
+      (∀ n ∈ nset, ∀ b ∈ bset, AEStronglyMeasurable (fun t => w t n b) μ) →
+      (∀ t, ∀ K ∈ rows, ‖r t K‖ ≤ 1) → (∀ t, ∀ P ∈ Pset, ‖aw t P‖ ≤ 1) →
+      (∀ t n b, ‖w t n b‖ ≤ 1) →
+      (∑ K ∈ rows, ‖scalar * ∫ t, density t * (∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) (r t) (aw t) (w t) u m Pset nset bset K) ∂μ‖^2) ≤
+      ‖scalar‖^2*((Fintype.card (φ→Fin 3):ℝ)*∑ e : φ→Fin 3,
+          let Yq := extractedDualScale (frozenExtracted F jF e 1) Y
+          let Bq := extractedDualScale (frozenExtracted F jF e 2) B
+          (frozenBranchScale F jF e)^2*
+            (C*(X*Yq*Bq*L)^ε*(X+Yq*Bq)*Bq*(Yq+L+(Yq*L)^(2/3:ℝ))))*(∫ t, ‖density t‖ ∂μ)^2 := by
+  obtain ⟨C,hC,he⟩ := summed_actual_weighted_reflected_energy_type_uniform
+    (N := N) (a := a) (c := c) (mode := mode) ε hε
+  refine ⟨C,hC,?_⟩
+  intro φ σ _ _ X Y B L hX hY hB hL F jF s hc hN hbase hac hF hNF hcharF hj
+    ι _ G0 D0 u m rows nset bset Pset S μ density scalar r aw w
+    hrows hrowcop hproducts hScop hSN hSchar hn hb hP hdensity hrM hawM hwM hr haw hw
+  let E : ℝ := (Fintype.card (φ→Fin 3):ℝ)*∑ e : φ→Fin 3,
+          let Yq := extractedDualScale (frozenExtracted F jF e 1) Y
+          let Bq := extractedDualScale (frozenExtracted F jF e 2) B
+          (frozenBranchScale F jF e)^2*
+            (C*(X*Yq*Bq*L)^ε*(X+Yq*Bq)*Bq*(Yq+L+(Yq*L)^(2/3:ℝ)))
+  have hE : 0 ≤ E := by
+    dsimp only [E]
+    apply mul_nonneg (Nat.cast_nonneg _)
+    apply Finset.sum_nonneg
+    intro e he
+    have hYq : 0 ≤ extractedDualScale (frozenExtracted F jF e 1) Y := le_trans zero_le_one (le_max_left _ _)
+    have hBq : 0 ≤ extractedDualScale (frozenExtracted F jF e 2) B := le_trans zero_le_one (le_max_left _ _)
+    positivity
+  let ψ : rows → Ω → ℂ := fun K t => (∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) (r t) (aw t) (w t) u m Pset nset bset K.val)
+  have hbound (t : Ω) : (∑ K, ‖ψ K t‖^2) ≤ E := by
+    change (∑ K : rows, ‖(∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) (r t) (aw t) (w t) u m Pset nset bset K.val)‖^2) ≤ E
+    rw [Finset.sum_coe_sort rows (fun K : Ideal Eis => ‖(∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) (r t) (aw t) (w t) u m Pset nset bset K)‖^2)]
+    exact he X Y B L hX hY hB hL F jF s hc hN hbase hac hF hNF hcharF hj
+      G0 D0 u m rows nset bset Pset S (r t) (aw t) (w t)
+      hrows hrowcop hproducts hScop hSN hSchar hn hb hP (hr t) (haw t) (hw t)
+  have hψM (K : rows) : AEStronglyMeasurable (ψ K) μ := by
+    apply Finset.aestronglyMeasurable_fun_sum
+    intro e he
+    exact weightedReflectedBranchHybridRow_aestronglyMeasurable μ F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) r aw w u m Pset nset bset K.val
+      (hrM K.val K.property) hawM hwM
+  have hpoint (K : rows) (t : Ω) : ‖ψ K t‖ ≤ Real.sqrt E := by
+    apply (Real.le_sqrt (norm_nonneg _) hE).mpr
+    exact (Finset.single_le_sum (fun j _ => sq_nonneg ‖ψ j t‖) (Finset.mem_univ K)).trans (hbound t)
+  have hint (K : rows) : Integrable (fun t => density t*ψ K t) μ :=
+    hdensity.mul_bdd (hψM K) (Filter.Eventually.of_forall (hpoint K))
+  have hh := mul_le_mul_of_nonneg_left
+    (common_measure_energy μ density ψ E hE hdensity.norm hint hbound) (sq_nonneg ‖scalar‖)
+  have hsum : (∑ K : rows, ‖∫ t, density t*ψ K t ∂μ‖^2) =
+      ∑ K ∈ rows, ‖∫ t, density t*(∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) (r t) (aw t) (w t) u m Pset nset bset K) ∂μ‖^2 :=
+    Finset.sum_coe_sort rows (fun K : Ideal Eis =>
+      ‖∫ t, density t*(∑ e : φ→Fin 3, weightedReflectedBranchHybridRow F jF e S s D0.fixedFactor
+      (actualCuspColumn D0 s hc u m) (r t) (aw t) (w t) u m Pset nset bset K) ∂μ‖^2)
+  rw [hsum] at hh
+  simp only [norm_mul,mul_pow,← Finset.mul_sum]
+  simpa only [E,mul_assoc] using hh
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace JointLogSeparation
+theorem coupled_cutoff_active
+    {ι : Type*} [Fintype ι]
+    (W : ι → ℝ → ℂ) (V : ℝ → ℂ) (a y M : ι → ℝ)
+    (hwindow : ∀ j z, W j z ≠ 0 → |z| ≤ M j)
+    (hVone : ∀ s,
+      |s| ≤ ∑ j : ι, |a j| * M j → V s = 1)
+    (hprod : (∏ j : ι, W j (y j)) ≠ 0) :
+    V (∑ j : ι, a j * y j) = 1 := by
+  classical
+  apply hVone
+  calc
+    |∑ j : ι, a j * y j| ≤ ∑ j : ι, |a j * y j| :=
+      Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ j : ι, |a j| * M j := by
+      apply Finset.sum_le_sum
+      intro j hj
+      have hnonzero : W j (y j) ≠ 0 :=
+        (Finset.prod_ne_zero_iff.mp hprod) j (Finset.mem_univ j)
+      rw [abs_mul]
+      exact mul_le_mul_of_nonneg_left (hwindow j (y j) hnonzero) (abs_nonneg _)
+
+theorem exists_complex_smooth_cutoff_with_derivative_bounds
+    (T : ℝ) (K : ℕ) (hT : 0 ≤ T) :
+    ∃ (V : ℝ → ℂ) (CW : ℝ),
+      HasCompactSupport V ∧ ContDiff ℝ ∞ V ∧
+      (∀ s, |s| ≤ T → V s = 1) ∧
+      0 ≤ CW ∧
+      (∀ i ≤ K, ∀ y, ‖iteratedFDeriv ℝ i V y‖ ≤ CW) ∧
+      (∀ y,
+        (∃ i ≤ K, ‖iteratedFDeriv ℝ i V y‖ ≠ 0) →
+          Real.exp (-(T + 1)) ≤ Real.exp y ∧
+          Real.exp y ≤ Real.exp (T + 1) ∧ |y| ≤ T + 1) := by
+  obtain ⟨V, hVc, hVs, hVone, hVsupport, _⟩ :=
+    exists_complex_smooth_cutoff T hT
+  let g : SchwartzMap ℝ ℂ := hVc.toSchwartzMap hVs
+  let CW : ℝ := ∑ j ∈ Finset.range (K + 1), SchwartzMap.seminorm ℝ 0 j g
+  have hCW : 0 ≤ CW := by dsimp [CW]; positivity
+  have hVderiv (i : ℕ) (hi : i ≤ K) (y : ℝ) :
+      ‖iteratedFDeriv ℝ i V y‖ ≤ CW := by
+    apply (SchwartzMap.norm_iteratedFDeriv_le_seminorm ℝ g i y).trans
+    exact Finset.single_le_sum
+      (s := Finset.range (K + 1)) (f := fun j => SchwartzMap.seminorm ℝ 0 j g)
+      (fun j _ => by positivity) (Finset.mem_range.mpr (by omega))
+  refine ⟨V, CW, hVc, hVs, hVone, hCW, hVderiv, ?_⟩
+  intro y hy
+  obtain ⟨i, hi, hnonzero⟩ := hy
+  have hyderiv : y ∈ Function.support (iteratedFDeriv ℝ i V) := by
+    simpa [Function.mem_support] using hnonzero
+  have hysupport : y ∈ tsupport V :=
+    (support_iteratedFDeriv_subset i) hyderiv
+  have hyinterval := hVsupport hysupport
+  have hylower : -(T + 1) ≤ y := hyinterval.1
+  have hyupper : y ≤ T + 1 := hyinterval.2
+  constructor
+  · exact Real.exp_le_exp.mpr hylower
+  constructor
+  · exact Real.exp_le_exp.mpr hyupper
+  · exact abs_le.mpr ⟨hylower, hyupper⟩
+
+theorem schwartz_fourier_one_plus_integrable
+    (g : 𝓢(ℝ, ℂ)) (J : ℕ) :
+    Integrable (fun t : ℝ =>
+      (1 + ‖t‖) ^ J * ‖(𝓕 g) t‖) volume := by
+  let b := 𝓕 g
+  have hI0 : Integrable (fun t : ℝ => ‖b t‖) volume := by
+    simpa [b] using b.integrable_pow_mul volume 0
+  have hIJ : Integrable
+      (fun t : ℝ => ‖t‖ ^ J * ‖b t‖) volume :=
+    b.integrable_pow_mul volume J
+  have hR : Integrable
+      (fun t : ℝ => (2 : ℝ) ^ J *
+        (‖b t‖ + ‖t‖ ^ J * ‖b t‖)) volume :=
+    (hI0.add hIJ).const_mul _
+  have hpoint (t : ℝ) :
+      (1 + ‖t‖) ^ J * ‖b t‖ ≤
+        (2 : ℝ) ^ J * (‖b t‖ + ‖t‖ ^ J * ‖b t‖) := by
+    have hp := add_pow_le (show (0 : ℝ) ≤ 1 by norm_num)
+      (norm_nonneg t) J
+    have htwo : (2 : ℝ) ^ (J - 1) ≤ (2 : ℝ) ^ J :=
+      pow_le_pow_right₀ (by norm_num) (Nat.sub_le J 1)
+    calc
+      (1 + ‖t‖) ^ J * ‖b t‖ ≤
+          (2 : ℝ) ^ (J - 1) * (1 ^ J + ‖t‖ ^ J) * ‖b t‖ :=
+        mul_le_mul_of_nonneg_right hp (norm_nonneg _)
+      _ ≤ (2 : ℝ) ^ J * (1 ^ J + ‖t‖ ^ J) * ‖b t‖ := by
+        gcongr
+      _ = (2 : ℝ) ^ J * (‖b t‖ + ‖t‖ ^ J * ‖b t‖) := by
+        simp; ring
+  have hcont : Continuous
+      (fun t : ℝ => (1 + ‖t‖) ^ J * ‖b t‖) := by
+    fun_prop
+  exact hR.mono_nonneg hcont.aestronglyMeasurable
+    (Filter.Eventually.of_forall (by intro t; positivity))
+    (Filter.Eventually.of_forall hpoint)
+
+end JointLogSeparation
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace LocalLogFourier
+noncomputable def positiveLogProfile
+    (V F : ℝ → ℂ) (R : ℝ)
+    (hVc : HasCompactSupport V)
+    (hVs : ContDiff ℝ ∞ V)
+    (hFpos : ContDiffOn ℝ ∞ F (Set.Ioi 0))
+    (hR : 0 < R) : 𝓢(ℝ, ℂ) := by
+  let arg : ℝ → ℝ := fun s => R * Real.exp s
+  have harg : ContDiff ℝ ∞ arg := by
+    dsimp [arg]
+    fun_prop
+  have hargpos : ∀ s, arg s ∈ Set.Ioi (0 : ℝ) := by
+    intro s
+    exact mul_pos hR (Real.exp_pos _)
+  have hG : ContDiff ℝ ∞ (fun s => F (arg s)) := by
+    simpa only [Function.comp_def] using hFpos.comp_contDiff harg hargpos
+  have hH : ContDiff ℝ ∞ (fun s => V s * F (arg s)) := hVs.mul hG
+  have hc : HasCompactSupport (fun s => V s * F (arg s)) := hVc.mul_right
+  exact hc.toSchwartzMap hH
+
+@[simp] theorem positiveLogProfile_apply
+    (V F : ℝ → ℂ) (R s : ℝ)
+    (hVc : HasCompactSupport V)
+    (hVs : ContDiff ℝ ∞ V)
+    (hFpos : ContDiffOn ℝ ∞ F (Set.Ioi 0))
+    (hR : 0 < R) :
+    positiveLogProfile V F R hVc hVs hFpos hR s =
+      V s * F (R * Real.exp s) := rfl
+
+theorem positive_log_separation
+    (V F : ℝ → ℂ) (R s : ℝ)
+    (hVc : HasCompactSupport V)
+    (hVs : ContDiff ℝ ∞ V)
+    (hFpos : ContDiffOn ℝ ∞ F (Set.Ioi 0))
+    (hR : 0 < R) :
+    V s * F (R * Real.exp s) =
+      ∫ t : ℝ, Complex.exp (↑(2 * Real.pi * inner ℝ t s) * Complex.I) *
+        (𝓕 (positiveLogProfile V F R hVc hVs hFpos hR)) t := by
+  rw [← positiveLogProfile_apply V F R s hVc hVs hFpos hR]
+  let g := positiveLogProfile V F R hVc hVs hFpos hR
+  have he := (g.integrable.fourierInv_fourier_eq (v := s) (𝓕 g).integrable g.continuous.continuousAt).symm
+  simpa only [Real.fourierInv_eq', smul_eq_mul, ← SchwartzMap.fourier_coe] using he
+
+noncomputable def derivativeConstant (n : ℕ) (CW CF : ℝ) : ℝ :=
+  ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * CW * CF
+
+noncomputable def momentConstant (K : ℕ) (Lwin CW CF : ℝ) : ℝ :=
+  ∑ n ∈ Finset.range (K + 1),
+    (1 + Lwin ^ (volume : Measure ℝ).integrablePower) *
+      derivativeConstant n CW CF
+
+theorem derivativeConstant_nonneg (n : ℕ) (CW CF : ℝ)
+    (hCW : 0 ≤ CW) (hCF : 0 ≤ CF) :
+    0 ≤ derivativeConstant n CW CF := by
+  unfold derivativeConstant
+  positivity
+
+theorem momentConstant_nonneg (K : ℕ) (Lwin CW CF : ℝ)
+    (hL : 0 ≤ Lwin) (hCW : 0 ≤ CW) (hCF : 0 ≤ CF) :
+    0 ≤ momentConstant K Lwin CW CF := by
+  unfold momentConstant
+  apply Finset.sum_nonneg
+  intro n hn
+  exact mul_nonneg (by positivity)
+    (derivativeConstant_nonneg n CW CF hCW hCF)
+
+theorem momentConstant_dominates (K n : ℕ) (Lwin CW CF : ℝ)
+    (hL : 0 ≤ Lwin) (hCW : 0 ≤ CW) (hCF : 0 ≤ CF)
+    (hn : n ≤ K) :
+    (1 + Lwin ^ (volume : Measure ℝ).integrablePower) *
+      derivativeConstant n CW CF ≤ momentConstant K Lwin CW CF := by
+  unfold momentConstant
+  apply Finset.single_le_sum
+    (f := fun i : ℕ =>
+      (1 + Lwin ^ (volume : Measure ℝ).integrablePower) *
+        derivativeConstant i CW CF)
+    (a := n)
+  · intro i hi
+    exact mul_nonneg (by positivity)
+      (derivativeConstant_nonneg i CW CF hCW hCF)
+  · exact Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hn)
+
+theorem coupled_positive_log_separation
+    {ι : Type*} [Fintype ι]
+    (W : ι → ℝ → ℂ) (F V : ℝ → ℂ) (R : ℝ)
+    (a y : ι → ℝ)
+    (hVc : HasCompactSupport V)
+    (hVs : ContDiff ℝ ∞ V)
+    (hFpos : ContDiffOn ℝ ∞ F (Set.Ioi 0))
+    (hR : 0 < R)
+    (hactive : (∏ j : ι, W j (y j)) ≠ 0 →
+      V (∑ j : ι, a j * y j) = 1) :
+    (∏ j : ι, W j (y j)) *
+      F (R * Real.exp (∑ j : ι, a j * y j)) =
+      ∫ t : ℝ,
+        (∏ j : ι, W j (y j) *
+          kernelLogPhase t (a j * y j)) *
+          (𝓕 (positiveLogProfile V F R hVc hVs hFpos hR)) t := by
+  classical
+  let s : ℝ := ∑ j : ι, a j * y j
+  let P : ℂ := ∏ j : ι, W j (y j)
+  let b := 𝓕 (positiveLogProfile V F R hVc hVs hFpos hR)
+  have hsep : V s * F (R * Real.exp s) =
+      ∫ t : ℝ, kernelLogPhase t s * b t := by
+    calc
+      V s * F (R * Real.exp s) =
+          ∫ t : ℝ, Complex.exp
+            (↑(2 * Real.pi * inner ℝ t s) * Complex.I) * b t := by
+        simpa [b] using
+          (positive_log_separation V F R s hVc hVs hFpos hR)
+      _ = ∫ t : ℝ, kernelLogPhase t s * b t := by
+        apply integral_congr_ae
+        filter_upwards [] with t
+        congr 1
+        simp only [kernelLogPhase, Real.inner_apply]
+        congr 1
+        push_cast
+        ring
+  have hcut : P * F (R * Real.exp s) =
+      P * (V s * F (R * Real.exp s)) := by
+    by_cases hP : P = 0
+    · simp [hP]
+    · rw [hactive (by simpa [P, s] using hP)]
+      ring
+  calc
+    P * F (R * Real.exp s) = P * (V s * F (R * Real.exp s)) := hcut
+    _ = P * (∫ t : ℝ, kernelLogPhase t s * b t) := by rw [hsep]
+    _ = ∫ t : ℝ, P * (kernelLogPhase t s * b t) := by
+      rw [integral_const_mul]
+    _ = ∫ t : ℝ,
+          (∏ j : ι, W j (y j) * kernelLogPhase t (a j * y j)) * b t := by
+      apply integral_congr_ae
+      filter_upwards [] with t
+      rw [show kernelLogPhase t s =
+          ∏ j : ι, kernelLogPhase t (a j * y j) by
+        simpa [s] using kernelLogPhase_sum
+          (Finset.univ : Finset ι) t (fun j => a j * y j)]
+      rw [Finset.prod_mul_distrib]
+      simp only [P]
+      ring
+
+
+end LocalLogFourier
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseKernelSourceUniform
+
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+open MeasureTheory LocalLogFourier
+noncomputable section
+
+def smallScalar (R : ℝ) : ℝ := min 1 (R ^ (1/4 : ℝ))
+
+lemma smallScalar_pos {R : ℝ} (hR : 0 < R) : 0 < smallScalar R :=
+  lt_min zero_lt_one (Real.rpow_pos_of_pos hR _)
+
+def canonicalDensity (U : ℝ → ℂ) (V : 𝓢(ℝ, ℂ)) (R t : ℝ) : ℂ :=
+  ((smallScalar R : ℝ) : ℂ)⁻¹ *
+    (𝓕 (fun s : ℝ => U s * paperKernel V (R * Real.exp s))) t
+
+theorem paperKernel_window_source_bound (a b : ℝ) (ha : 0 < a) (K : ℕ) (L : ℝ) :
+    ∃ (S : Finset (ℕ × ℕ)) (C : ℝ), 0 < C ∧
+      ∀ V : 𝓢(ℝ, ℂ), Function.support (V : ℝ → ℂ) ⊆ Set.Icc a b →
+      ∀ R : ℝ, 0 < R → ∀ j ≤ K, ∀ s : ℝ, |s| ≤ L →
+      ‖eulerDeriv (paperKernel V) j (R * Real.exp s)‖ ≤
+        C * S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V * smallScalar R := by
+  choose orders c hc hb using fun j : Fin (K+1) =>
+    CompletedHeight.paperKernel_euler_source_power_decay a b ha 0 j.val
+  let S := Finset.univ.biUnion orders
+  let D := (∑ j : Fin (K+1), c j) + 1
+  let E := (Real.exp L) ^ (1/4 : ℝ)
+  have hD : 0 < D := by
+    have hh := Finset.sum_nonneg (fun j (_ : j ∈ (Finset.univ : Finset (Fin (K+1)))) => (hc j).le)
+    dsimp only [D]
+    linarith
+  have hE : 0 < E := Real.rpow_pos_of_pos (Real.exp_pos _) _
+  have hcD (j : Fin (K+1)) : c j ≤ D := by
+    have hh := Finset.single_le_sum
+      (fun q (_ : q ∈ (Finset.univ : Finset (Fin (K+1)))) => (hc q).le) (Finset.mem_univ j)
+    dsimp only [D]
+    linarith
+  refine ⟨S, D*(1+E), by positivity, ?_⟩
+  intro V hV R hR j hj s hs
+  let Q := S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V
+  have hQ : 0 ≤ Q := by dsimp only [Q]; positivity
+  let q : Fin (K+1) := ⟨j, Nat.lt_succ_iff.mpr hj⟩
+  have hsource : c q * (orders q).sup (schwartzSeminormFamily ℝ ℝ ℂ) V ≤ D*Q := by
+    have hsub : orders q ⊆ S := Finset.subset_biUnion_of_mem orders (Finset.mem_univ q)
+    exact mul_le_mul (hcD q) (Seminorm.le_def.mp (Finset.sup_mono hsub) V)
+      (by positivity) hD.le
+  have hsmall := (hb q V hV (R*Real.exp s) (mul_pos hR (Real.exp_pos _))).1
+  have hlarge := (hb q V hV (R*Real.exp s) (mul_pos hR (Real.exp_pos _))).2
+  have hsmall' : ‖eulerDeriv (paperKernel V) j (R*Real.exp s)‖ ≤
+      D*(1+E)*Q * R^(1/4 : ℝ) := by
+    have he : (Real.exp s)^(1/4 : ℝ) ≤ E :=
+      Real.rpow_le_rpow (by positivity) (Real.exp_le_exp.mpr ((le_abs_self s).trans hs)) (by norm_num)
+    rw [Real.mul_rpow hR.le (Real.exp_pos _).le] at hsmall
+    calc
+      _ ≤ (c q * (orders q).sup (schwartzSeminormFamily ℝ ℝ ℂ) V) *
+          (R^(1/4 : ℝ) * (Real.exp s)^(1/4 : ℝ)) := hsmall
+      _ ≤ (D*Q) * (R^(1/4 : ℝ) * E) := mul_le_mul hsource
+          (mul_le_mul_of_nonneg_left he (Real.rpow_nonneg hR.le _)) (by positivity) (by positivity)
+      _ ≤ _ := by nlinarith [mul_nonneg hQ (Real.rpow_nonneg hR.le (1/4 : ℝ))]
+  have hlarge' : ‖eulerDeriv (paperKernel V) j (R*Real.exp s)‖ ≤ D*(1+E)*Q := by
+    have hh : ‖eulerDeriv (paperKernel V) j (R*Real.exp s)‖ ≤ D*Q := by
+      apply (le_trans ?_ hsource)
+      simpa only [Nat.cast_zero, neg_zero, Real.rpow_zero, mul_one] using hlarge
+    exact hh.trans (by nlinarith [mul_nonneg (mul_nonneg hD.le hE.le) hQ])
+  change _ ≤ D*(1+E)*Q * min 1 (R^(1/4 : ℝ))
+  rw [mul_min_of_nonneg _ _ (by positivity : 0 ≤ D*(1+E)*Q), mul_one]
+  exact le_min hlarge' hsmall'
+
+private theorem localized_source_seminorm
+    (V F : ℝ → ℂ) (R L CW CF : ℝ) (n k : ℕ)
+    (hVc : HasCompactSupport V) (hVs : ContDiff ℝ ∞ V)
+    (hF : ContDiffOn ℝ ∞ F (Set.Ioi 0)) (hR : 0 < R)
+    (hL : 0 ≤ L) (hCW : 0 ≤ CW) (hCF : 0 ≤ CF)
+    (hVderiv : ∀ i ≤ n, ∀ s, ‖iteratedFDeriv ℝ i V s‖ ≤ CW)
+    (hwindow : ∀ s, (∃ i ≤ n, ‖iteratedFDeriv ℝ i V s‖ ≠ 0) → |s| ≤ L)
+    (hEuler : ∀ i ≤ n, ∀ s, |s| ≤ L → ‖eulerDeriv F i (R * Real.exp s)‖ ≤ CF) :
+    (SchwartzMap.seminorm ℝ k n) (positiveLogProfile V F R hVc hVs hF hR) ≤
+      L ^ k * derivativeConstant n CW CF := by
+  let g := positiveLogProfile V F R hVc hVs hF hR
+  let G : ℝ → ℂ := fun z => F (R * Real.exp z)
+  have hG : ContDiff ℝ ∞ G := by
+    apply hF.comp_contDiff (by fun_prop)
+    intro z
+    exact mul_pos hR (Real.exp_pos _)
+  have hgeq : (g : ℝ → ℂ) = fun z => V z * G z := by
+    funext z
+    exact positiveLogProfile_apply V F R z hVc hVs hF hR
+  have hD : 0 ≤ derivativeConstant n CW CF := derivativeConstant_nonneg _ _ _ hCW hCF
+  apply SchwartzMap.seminorm_le_bound' ℝ k n g (mul_nonneg (pow_nonneg hL _) hD)
+  intro s
+  have hprod := norm_iteratedFDeriv_mul_le hVs hG s (n := n) (by exact_mod_cast (le_top : (n : ℕ∞) ≤ ⊤))
+  by_cases hs : ∃ i ≤ n, ‖iteratedFDeriv ℝ i V s‖ ≠ 0
+  · have hwindow' := hwindow s hs
+    have hraw : ‖iteratedDeriv n g s‖ ≤ derivativeConstant n CW CF := by
+      rw [hgeq, ← norm_iteratedFDeriv_eq_norm_iteratedDeriv]
+      apply hprod.trans
+      unfold derivativeConstant
+      apply Finset.sum_le_sum
+      intro i hi
+      have hi' : i ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+      have hGi : ‖iteratedFDeriv ℝ (n - i) G s‖ ≤ CF := by
+        rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, show (G : ℝ → ℂ) = fun z => F (R * Real.exp z) from rfl,
+          iteratedDeriv_log_eq_euler]
+        exact hEuler (n - i) (Nat.sub_le _ _) s hwindow'
+      gcongr
+      exact hVderiv i hi' s
+    have hsk : ‖s‖ ^ k ≤ L ^ k := by simpa only [Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg s) hwindow' k
+    exact mul_le_mul hsk hraw (norm_nonneg _) (pow_nonneg hL _)
+  · have hz (i : ℕ) (hi : i ≤ n) : ‖iteratedFDeriv ℝ i V s‖ = 0 := by
+      by_contra hne
+      exact hs ⟨i, hi, hne⟩
+    have hsum : (∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i V s‖ *
+        ‖iteratedFDeriv ℝ (n - i) G s‖) = 0 := by
+      apply Finset.sum_eq_zero
+      intro i hi
+      rw [hz i (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))]
+      ring
+    have hgzero : ‖iteratedDeriv n g s‖ = 0 := by
+      rw [hgeq, ← norm_iteratedFDeriv_eq_norm_iteratedDeriv]
+      exact le_antisymm (hprod.trans_eq hsum) (norm_nonneg _)
+    rw [hgzero, mul_zero]
+    positivity
+
+theorem source_uniform_separation {ι : Type*} [Fintype ι]
+    (a b : ℝ) (ha : 0 < a)
+    (windows : ι → ℝ → ℂ) (slope M : ι → ℝ)
+    (hM : ∀ i, 0 ≤ M i) (hwindows : ∀ i y, windows i y ≠ 0 → |y| ≤ M i)
+    (J : ℕ) :
+    ∃ (U : ℝ → ℂ) (S : Finset (ℕ × ℕ)) (C : ℝ),
+      0 ≤ C ∧ HasCompactSupport U ∧ ContDiff ℝ ∞ U ∧
+      ∀ V : 𝓢(ℝ, ℂ), Function.support (V : ℝ → ℂ) ⊆ Set.Icc a b →
+      ∀ R : ℝ, 0 < R →
+      (∀ y : ι → ℝ,
+        (∏ i, windows i (y i)) * paperKernel V
+          (R * Real.exp (∑ i, slope i * y i)) =
+        (smallScalar R : ℂ) * ∫ t : ℝ,
+          (∏ i, windows i (y i) * kernelLogPhase t (slope i * y i)) *
+            canonicalDensity U V R t) ∧
+      Integrable (fun t : ℝ => (1 + ‖t‖)^J * ‖canonicalDensity U V R t‖) ∧
+      (∫ t : ℝ, (1 + ‖t‖)^J * ‖canonicalDensity U V R t‖) ≤
+        C * S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V ∧
+      (∀ t : ℝ, (1 + ‖t‖)^J * ‖canonicalDensity U V R t‖ ≤
+        C * S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V) := by
+  let T := ∑ i, |slope i| * M i
+  have hT : 0 ≤ T := Finset.sum_nonneg (fun i _ => mul_nonneg (abs_nonneg _) (hM i))
+  let K := J + (volume : Measure ℝ).integrablePower
+  let L := T+1
+  have hL : 0 ≤ L := by dsimp only [L]; linarith
+  obtain ⟨U, CW, hUc, hUs, hUone, hCW, hUderiv, hwindow⟩ :=
+    JointLogSeparation.exists_complex_smooth_cutoff_with_derivative_bounds T K hT
+  obtain ⟨S, CF, hCF, hkernel⟩ := paperKernel_window_source_bound a b ha K L
+  let P0 := momentConstant K L CW CF
+  let B0 := (2 : ℝ)^J * (JointLogSeparation.coefficientMomentBound 0 P0 +
+    JointLogSeparation.coefficientMomentBound J P0)
+  let B1 := JointLogSeparation.fourierPointBound J P0
+  have hP0 : 0 ≤ P0 := momentConstant_nonneg K L CW CF hL hCW hCF.le
+  have hB0 : 0 ≤ B0 := mul_nonneg (by positivity) (add_nonneg
+    (JointLogSeparation.coefficientMomentBound_nonneg 0 P0 hP0)
+    (JointLogSeparation.coefficientMomentBound_nonneg J P0 hP0))
+  have hB1 : 0 ≤ B1 := JointLogSeparation.fourierPointBound_nonneg J P0 hP0
+  refine ⟨U, S, B0+B1, add_nonneg hB0 hB1, hUc, hUs, ?_⟩
+  intro V hV R hR
+  let Q := S.sup (schwartzSeminormFamily ℝ ℝ ℂ) V
+  have hQ : 0 ≤ Q := by dsimp only [Q]; positivity
+  let m := smallScalar R
+  have hm : 0 < m := smallScalar_pos hR
+  have hF := paperKernel_compact_source_smooth V a b ha hV (V.smooth ⊤)
+  let g := positiveLogProfile U (paperKernel V) R hUc hUs hF hR
+  let B : 𝓢(ℝ, ℂ) := ((m : ℂ)⁻¹) • (𝓕 g)
+  have hcan (t : ℝ) : B t = canonicalDensity U V R t := by
+    rfl
+  have hnorm (t : ℝ) : ‖B t‖ = m⁻¹ * ‖(𝓕 g) t‖ := by
+    simp only [B, smul_apply, smul_eq_mul, norm_mul, norm_inv,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos hm]
+  have hP : 0 ≤ P0*Q := mul_nonneg hP0 hQ
+  have hsource (n : ℕ) (hn : n ≤ K) : m⁻¹ *
+      ((SchwartzMap.seminorm ℝ 0 n) g +
+        (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower n) g) ≤ P0*Q := by
+    have hsemi (k : ℕ) : (SchwartzMap.seminorm ℝ k n) g ≤
+        L^k * derivativeConstant n CW (CF*Q*m) := by
+      apply localized_source_seminorm U (paperKernel V)
+        R L CW (CF*Q*m) n k hUc hUs hF hR hL hCW (by positivity)
+      · intro i hi
+        exact hUderiv i (hi.trans hn)
+      · intro s hs
+        exact (hwindow s (by obtain ⟨i, hi, hz⟩ := hs; exact ⟨i, hi.trans hn, hz⟩)).2.2
+      · intro i hi s hs
+        exact hkernel V hV R hR i (hi.trans hn) s hs
+    have hd : derivativeConstant n CW (CF*Q*m) = derivativeConstant n CW CF * Q * m := by
+      simp only [derivativeConstant, Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi
+      ring
+    have hs : (SchwartzMap.seminorm ℝ 0 n) g +
+        (SchwartzMap.seminorm ℝ (volume : Measure ℝ).integrablePower n) g ≤ (P0*Q)*m := by
+      calc
+        _ ≤ L^0 * derivativeConstant n CW (CF*Q*m) +
+            L^(volume : Measure ℝ).integrablePower * derivativeConstant n CW (CF*Q*m) :=
+          add_le_add (hsemi 0) (hsemi _)
+        _ = ((1+L^(volume : Measure ℝ).integrablePower)*derivativeConstant n CW CF)*Q*m := by
+          rw [hd]
+          ring
+        _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+          (momentConstant_dominates K n L CW CF hL hCW hCF.le hn) hQ) hm.le
+    exact (mul_le_mul_of_nonneg_left hs (inv_nonneg.mpr hm.le)).trans_eq (by field_simp)
+  have hB0Q : (2 : ℝ)^J * (JointLogSeparation.coefficientMomentBound 0 (P0*Q) +
+      JointLogSeparation.coefficientMomentBound J (P0*Q)) = B0*Q := by
+    dsimp only [B0]
+    unfold JointLogSeparation.coefficientMomentBound
+    ring
+  have hB1Q : JointLogSeparation.fourierPointBound J (P0*Q) = B1*Q := by
+    dsimp only [B1]
+    unfold JointLogSeparation.fourierPointBound JointLogSeparation.fourierSeminormBound
+    ring
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro y
+    have hactive : (∏ i, windows i (y i)) ≠ 0 → U (∑ i, slope i*y i) = 1 :=
+      JointLogSeparation.coupled_cutoff_active windows U slope y M hwindows (by simpa [T] using hUone)
+    have hsep := coupled_positive_log_separation windows (paperKernel V)
+      U R slope y hUc hUs hF hR hactive
+    rw [hsep, ← integral_const_mul]
+    apply integral_congr_ae
+    filter_upwards with t
+    rw [← hcan]
+    dsimp only [B]
+    simp only [smul_apply, smul_eq_mul]
+    have hmC : (m : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hm.ne'
+    change _ = (m : ℂ)*_
+    field_simp
+    rfl
+  · simp_rw [← hcan, hnorm]
+    exact JointLogSeparation.schwartz_fourier_one_plus_integrable g J |>.const_mul m⁻¹ |>.congr
+      (Filter.Eventually.of_forall (fun t => by dsimp only; ring))
+  · simp_rw [← hcan, hnorm]
+    have hh := JointLogSeparation.uniform_fourier_one_plus_moment g J m⁻¹ (P0*Q)
+      (inv_nonneg.mpr hm.le) hP hsource
+    rw [hB0Q] at hh
+    have he : (∫ t : ℝ, (1+‖t‖)^J * (m⁻¹ * ‖(𝓕 g) t‖)) =
+        m⁻¹ * ∫ t : ℝ, (1+‖t‖)^J * ‖(𝓕 g) t‖ := by
+      simp_rw [← mul_assoc, mul_comm ((1+‖_‖)^J) m⁻¹, mul_assoc]
+      rw [integral_const_mul]
+    rw [he]
+    exact hh.trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hB1) hQ)
+  · intro t
+    rw [← hcan, hnorm]
+    have hh := JointLogSeparation.uniform_fourier_pointwise g J m⁻¹ (P0*Q)
+      (inv_nonneg.mpr hm.le) hP (fun i hi => hsource i (hi.trans (by dsimp only [K]; omega))) t
+    rw [hB1Q] at hh
+    have he : (1+‖t‖)^J*(m⁻¹*‖(𝓕 g) t‖) = m⁻¹*(1+‖t‖)^J*‖(𝓕 g) t‖ := by ring
+    rw [he]
+    exact hh.trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hB0) hQ)
+
+def twistedDensity (U W : ℝ → ℂ) (θ R t : ℝ) : ℂ :=
+  (smallScalar R : ℂ)⁻¹ *
+    (𝓕 (fun s : ℝ => U s * paperKernel
+      (Vstar (CompletedHeight.normTwistedSource W θ)) (R * Real.exp s))) t
+
+theorem normTwistedSource_uniform_separation {ι : Type*} [Fintype ι]
+    (a b : ℝ) (ha : 0 < a)
+    (windows : ι → ℝ → ℂ) (slope M : ι → ℝ)
+    (hM : ∀ i, 0 ≤ M i) (hwindows : ∀ i y, windows i y ≠ 0 → |y| ≤ M i)
+    (W : ℝ → ℂ) (hsupp : Function.support W ⊆ Set.Icc a b)
+    (hW : ContDiff ℝ ∞ W) (J : ℕ) :
+    ∃ (U : ℝ → ℂ) (n : ℕ) (C : ℝ),
+      0 ≤ C ∧ HasCompactSupport U ∧ ContDiff ℝ ∞ U ∧
+      ∀ θ R : ℝ, 0 < R →
+      (∀ y : ι → ℝ,
+        (∏ i, windows i (y i)) * paperKernel
+          (Vstar (CompletedHeight.normTwistedSource W θ))
+          (R * Real.exp (∑ i, slope i * y i)) =
+        (smallScalar R : ℂ) * ∫ t : ℝ,
+          (∏ i, windows i (y i) * kernelLogPhase t (slope i * y i)) *
+            twistedDensity U W θ R t) ∧
+      Integrable (fun t : ℝ => (1 + ‖t‖)^J * ‖twistedDensity U W θ R t‖) ∧
+      (∫ t : ℝ, (1 + ‖t‖)^J * ‖twistedDensity U W θ R t‖) ≤ C * (1 + ‖θ‖)^n ∧
+      (∀ t : ℝ, (1 + ‖t‖)^J * ‖twistedDensity U W θ R t‖ ≤ C * (1 + ‖θ‖)^n) := by
+  obtain ⟨U, orders, C, hC, hUc, hUs, hsep⟩ :=
+    source_uniform_separation a b ha windows slope M hM hwindows J
+  let V := CompletedHeight.vstarSchwartz W a b ha hsupp hW
+  have hV : Function.support (V : ℝ → ℂ) ⊆ Set.Icc a b :=
+    Vstar_support W a b hsupp
+  obtain ⟨G, hG, hbound⟩ := CompletedHeight.normTwistedSource_schwartz V a b ha hV
+  have hlink (θ : ℝ) : (G θ : ℝ → ℂ) =
+      Vstar (CompletedHeight.normTwistedSource W θ) := by
+    funext x
+    rw [hG θ x]
+    change kernelLogPhase θ (Real.log x)*((Real.sqrt x:ℂ)*W x) =
+      (Real.sqrt x:ℂ)*(kernelLogPhase θ (Real.log x)*W x)
+    ring
+  have hGs (θ : ℝ) : Function.support (G θ : ℝ → ℂ) ⊆ Set.Icc a b := by
+    intro x hx
+    change G θ x ≠ 0 at hx
+    rw [hG θ x] at hx
+    exact hV (CompletedHeight.normTwistedSource_support V θ hx)
+  obtain ⟨n, D, hD, hpoly⟩ := hbound orders
+  refine ⟨U, n, C*D, mul_nonneg hC hD.le, hUc, hUs, ?_⟩
+  intro θ R hR
+  have hcan : canonicalDensity U (G θ) R = twistedDensity U W θ R := by
+    unfold canonicalDensity twistedDensity
+    rw [hlink θ]
+  obtain ⟨heq, hi, hm, hp⟩ := hsep (G θ) (hGs θ) R hR
+  rw [hcan] at heq hi hm hp
+  rw [hlink θ] at heq
+  have hb : C * orders.sup (schwartzSeminormFamily ℝ ℝ ℂ) (G θ) ≤
+      C*D * (1+‖θ‖)^n :=
+    (mul_le_mul_of_nonneg_left (hpoly θ) hC).trans_eq (by ring)
+  exact ⟨heq, hi, hm.trans hb, fun t => (hp t).trans hb⟩
+
+theorem fourier_joint_stronglyMeasurable {α : Type*} [MeasurableSpace α]
+    (f : α → ℝ → ℂ) (hf : StronglyMeasurable (Function.uncurry f)) :
+    StronglyMeasurable (fun p : α × ℝ => (𝓕 (f p.1)) p.2) := by
+  simp_rw [Real.fourier_eq']
+  apply StronglyMeasurable.integral_prod_right
+  have he : Continuous (fun p : ℝ × ℝ =>
+      Complex.exp ((↑(-2 * Real.pi * inner ℝ p.1 p.2) : ℂ) * Complex.I)) := by
+    fun_prop
+  exact (he.stronglyMeasurable.comp_measurable
+    (measurable_snd.prodMk (measurable_snd.comp measurable_fst))).smul
+    (hf.comp_measurable ((measurable_fst.comp measurable_fst).prodMk measurable_snd))
+
+theorem paperKernel_joint_stronglyMeasurable {α : Type*} [MeasurableSpace α]
+    (a b : ℝ) (ha : 0 < a) (V : α → 𝓢(ℝ, ℂ))
+    (hV : ∀ θ, Function.support (V θ : ℝ → ℂ) ⊆ Set.Icc a b)
+    (hf : StronglyMeasurable (fun p : α × ℝ => V p.1 (Real.exp p.2))) :
+    StronglyMeasurable (fun p : α × Set.Ioi (0 : ℝ) =>
+      paperKernel (V p.1) p.2) := by
+  let f : α → ℝ → ℂ := fun θ s => V θ (Real.exp s)
+  let g : α → ℝ → ℂ := fun θ u => cubicKernelAxisMultiplier u * (𝓕 (f θ)) u
+  have hfF := fourier_joint_stronglyMeasurable f hf
+  have hg : StronglyMeasurable (Function.uncurry g) :=
+    (cubicKernelAxisMultiplier_continuous.stronglyMeasurable.comp_measurable
+      measurable_snd).mul hfF
+  have hgF := fourier_joint_stronglyMeasurable g hg
+  have harg : Measurable (fun p : α × Set.Ioi (0 : ℝ) =>
+      (p.1, Real.log (paperScale * (p.2 : ℝ)))) :=
+    measurable_fst.prodMk (Real.measurable_log.comp
+      (measurable_const.mul (measurable_subtype_coe.comp measurable_snd)))
+  convert hgF.comp_measurable harg using 1
+  funext p
+  let L := kernelLogSource (V p.1) a b ha (hV p.1) ((V p.1).smooth ⊤)
+  exact paperKernel_eq_logFourier (V p.1) L
+    (fun _ => rfl) p.2 p.2.property
+
+private theorem twistedDensity_measurable_of_profile
+    (U W : ℝ → ℂ) (R : ℝ)
+    (hprofile : StronglyMeasurable (fun p : ℝ × ℝ =>
+      U p.2 * paperKernel
+        (Vstar (CompletedHeight.normTwistedSource W p.1)) (R * Real.exp p.2))) :
+    StronglyMeasurable (fun p : ℝ × ℝ => twistedDensity U W p.1 R p.2) := by
+  unfold twistedDensity
+  exact stronglyMeasurable_const.mul (fourier_joint_stronglyMeasurable
+    (fun θ s => U s * paperKernel
+      (Vstar (CompletedHeight.normTwistedSource W θ)) (R * Real.exp s)) hprofile)
+
+private theorem exists_measurable_twisted_source
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W) :
+    ∃ G : ℝ → 𝓢(ℝ, ℂ),
+      (∀ θ, (G θ : ℝ → ℂ) = Vstar (CompletedHeight.normTwistedSource W θ)) ∧
+      (∀ θ, Function.support (G θ : ℝ → ℂ) ⊆ Set.Icc a b) ∧
+      StronglyMeasurable (fun p : ℝ × ℝ => G p.1 (Real.exp p.2)) := by
+  let V := CompletedHeight.vstarSchwartz W a b ha hsupp hW
+  have hV : Function.support (V : ℝ → ℂ) ⊆ Set.Icc a b :=
+    Vstar_support W a b hsupp
+  obtain ⟨G, hG, _⟩ := CompletedHeight.normTwistedSource_schwartz V a b ha hV
+  have hlink (θ : ℝ) : (G θ : ℝ → ℂ) =
+      Vstar (CompletedHeight.normTwistedSource W θ) := by
+    funext x
+    rw [hG θ x]
+    change kernelLogPhase θ (Real.log x)*((Real.sqrt x:ℂ)*W x) =
+      (Real.sqrt x:ℂ)*(kernelLogPhase θ (Real.log x)*W x)
+    ring
+  have hGs (θ : ℝ) : Function.support (G θ : ℝ → ℂ) ⊆ Set.Icc a b := by
+    intro x hx
+    change G θ x ≠ 0 at hx
+    rw [hG θ x] at hx
+    exact hV (CompletedHeight.normTwistedSource_support V θ hx)
+  have hf : StronglyMeasurable (fun p : ℝ × ℝ => G p.1 (Real.exp p.2)) := by
+    simp_rw [hG, CompletedHeight.normTwistedSource, Real.log_exp]
+    apply Continuous.stronglyMeasurable
+    unfold kernelLogPhase
+    exact (by fun_prop : Continuous (fun p : ℝ × ℝ =>
+      Complex.exp ((↑(2*Real.pi*p.1*p.2) : ℂ)*Complex.I))).mul
+      (V.continuous.comp (Real.continuous_exp.comp continuous_snd))
+  exact ⟨G, hlink, hGs, hf⟩
+
+theorem twistedDensity_joint_stronglyMeasurable
+    (U W : ℝ → ℂ) (hU : Measurable U)
+    (a b : ℝ) (ha : 0 < a) (hsupp : Function.support W ⊆ Set.Icc a b)
+    (hW : ContDiff ℝ ∞ W) (R : ℝ) (hR : 0 < R) :
+    StronglyMeasurable (fun p : ℝ × ℝ => twistedDensity U W p.1 R p.2) := by
+  obtain ⟨G, hlink, hGs, hf⟩ := exists_measurable_twisted_source W a b ha hsupp hW
+  have hkernel := paperKernel_joint_stronglyMeasurable a b ha G hGs hf
+  have harg : Measurable (fun p : ℝ × ℝ =>
+      (p.1, (⟨R * Real.exp p.2, mul_pos hR (Real.exp_pos _)⟩ : Set.Ioi (0 : ℝ)))) :=
+    measurable_fst.prodMk ((measurable_const.mul (Real.measurable_exp.comp measurable_snd)).subtype_mk)
+  have hcomposed := hkernel.comp_measurable harg
+  change StronglyMeasurable (fun p : ℝ × ℝ =>
+    paperKernel (G p.1) (R * Real.exp p.2)) at hcomposed
+  have hprofile : StronglyMeasurable (fun p : ℝ × ℝ =>
+      U p.2 * paperKernel
+        (Vstar (CompletedHeight.normTwistedSource W p.1)) (R*Real.exp p.2)) := by
+    have hprofileG : StronglyMeasurable (fun p : ℝ × ℝ =>
+        U p.2 * paperKernel (G p.1) (R * Real.exp p.2)) :=
+      (hU.stronglyMeasurable.comp_measurable measurable_snd).mul
+        hcomposed
+    convert hprofileG using 1
+    exact funext (fun p => congrArg
+      (fun V : ℝ → ℂ => U p.2 * paperKernel V (R * Real.exp p.2))
+      (hlink p.1).symm)
+  exact twistedDensity_measurable_of_profile U W R hprofile
+
+end
+end InverseKernelSourceUniform
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open Eisenstein CompletedGauss CanonicalQuadraticSieve
+noncomputable section
+local notation "Eis" => Eisenstein.O
+
+lemma PrimeFamily.product_span {ι : Type*} [Fintype ι] (G : PrimeFamily ι) :
+    Ideal.span {∏ i, G.generator i} = ∏ i, G.ideal i := by
+  have hf (T : Finset ι) : Ideal.span {∏ i ∈ T, G.generator i} = ∏ i ∈ T, G.ideal i := by
+    induction T using Finset.induction_on with
+    | empty => simp
+    | @insert i T hi ih =>
+      rw [Finset.prod_insert hi,Finset.prod_insert hi,← Ideal.span_singleton_mul_span_singleton,
+        G.generator_span,ih]
+  exact hf Finset.univ
+
+lemma reflected_conductor_norm {φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ) (c : Eis) :
+    (Ideal.absNorm (Ideal.span {c*∏ i, (F.reflected K hK S).generator i}):ℝ) =
+      (Ideal.absNorm (Ideal.span {c}*(∏ i, F.ideal i)):ℝ)*
+        (Ideal.absNorm K:ℝ)*(Ideal.absNorm (∏ i, S.ideal i):ℝ) := by
+  rw [← Ideal.span_singleton_mul_span_singleton,PrimeFamily.product_span,F.reflected_product]
+  simp only [map_mul,Nat.cast_mul]
+  ring
+
+def kernelSlope : Fin 4 → ℝ := ![-2,-2,1,3]
+def kernelLogCoordinates (QK QP Qn Qb k p n b : ℝ) : Fin 4 → ℝ :=
+  ![Real.log (k/QK),Real.log (p/QP),Real.log (n/Qn),Real.log (b/Qb)]
+def kernelCenter (C QK QP Qn Qb : ℝ) : ℝ := C*Qn*Qb^3/(QK^2*QP^2)
+
+lemma kernelLogCoordinates_exp (QK QP Qn Qb k p n b : ℝ)
+    (hQK : 0<QK) (hQP : 0<QP) (hQn : 0<Qn) (hQb : 0<Qb)
+    (hk : 0<k) (hp : 0<p) (hn : 0<n) (hb : 0<b) :
+    Real.exp (∑ i, kernelSlope i * kernelLogCoordinates QK QP Qn Qb k p n b i) =
+      (n/Qn)*(b/Qb)^3/((k/QK)^2*(p/QP)^2) := by
+  simp only [kernelSlope,kernelLogCoordinates,Fin.sum_univ_succ,Fin.isValue,
+    Matrix.cons_val_zero,Matrix.cons_val_succ,Fin.sum_univ_zero,add_zero,one_mul]
+  rw [show -2*Real.log (k/QK)+(-2*Real.log (p/QP)+(Real.log (n/Qn)+3*Real.log (b/Qb))) =
+    -(2*Real.log (k/QK)) + -(2*Real.log (p/QP)) + Real.log (n/Qn) + 3*Real.log (b/Qb) by ring]
+  simp only [Real.exp_add,Real.exp_neg]
+  rw [show (2:ℝ)=((2:ℕ):ℝ) by norm_num,show (3:ℝ)=((3:ℕ):ℝ) by norm_num,
+    Real.exp_nat_mul,Real.exp_nat_mul,Real.exp_nat_mul,
+    Real.exp_log (div_pos hk hQK),Real.exp_log (div_pos hp hQP),
+    Real.exp_log (div_pos hn hQn),Real.exp_log (div_pos hb hQb)]
+  simp only [div_eq_mul_inv,mul_inv_rev]
+  ring
+
+theorem actual_annular_kernel_identity (C QK QP Qn Qb k p n b : ℝ)
+    (hQK : 0<QK) (hQP : 0<QP) (hQn : 0<Qn) (hQb : 0<Qb)
+    (hk : 0<k) (hp : 0<p) (hn : 0<n) (hb : 0<b) :
+    C*n*b^3/(k^2*p^2) = kernelCenter C QK QP Qn Qb *
+      Real.exp (∑ i, kernelSlope i * kernelLogCoordinates QK QP Qn Qb k p n b i) := by
+  rw [kernelLogCoordinates_exp _ _ _ _ _ _ _ _ hQK hQP hQn hQb hk hp hn hb]
+  unfold kernelCenter
+  field_simp
+
+def fixedKernelCoefficient (X tau r : ℝ) (C D1 D2 : Ideal Eis) : ℝ :=
+  X/(27*tau^2*(Ideal.absNorm C:ℝ)^2)*r^3*
+    (Ideal.absNorm D1:ℝ)*(Ideal.absNorm D2:ℝ)^3
+
+lemma source_kernel_argument_factor {φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ)
+    (c : Eis) (X tau r : ℝ) (D1 D2 n b : Ideal Eis) :
+    (X/(27*tau^2*(Ideal.absNorm (Ideal.span {c*∏ i, (F.reflected K hK S).generator i}):ℝ)^2))*
+      r^3*(Ideal.absNorm (D1*n):ℝ)*(Ideal.absNorm (D2*b):ℝ)^3 =
+    fixedKernelCoefficient X tau r (Ideal.span {c}*(∏ i, F.ideal i)) D1 D2 *
+      (Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ)^3 /
+      ((Ideal.absNorm K:ℝ)^2*(Ideal.absNorm (∏ i, S.ideal i):ℝ)^2) := by
+  rw [reflected_conductor_norm]
+  simp only [fixedKernelCoefficient,map_mul,Nat.cast_mul,mul_pow,div_eq_mul_inv,mul_inv_rev]
+  ring
+
+theorem source_kernel_argument_annuli {φ σ : Type*} [Fintype φ] [Fintype σ]
+    (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K) (S : PrimeFamily σ)
+    (c : Eis) (X tau r : ℝ) (D1 D2 n b : Ideal Eis)
+    (hn : n≠0) (hb : b≠0) (QK QP Qn Qb : ℝ)
+    (hQK : 0<QK) (hQP : 0<QP) (hQn : 0<Qn) (hQb : 0<Qb) :
+    (X/(27*tau^2*(Ideal.absNorm (Ideal.span {c*∏ i, (F.reflected K hK S).generator i}):ℝ)^2))*
+      r^3*(Ideal.absNorm (D1*n):ℝ)*(Ideal.absNorm (D2*b):ℝ)^3 =
+    kernelCenter (fixedKernelCoefficient X tau r (Ideal.span {c}*(∏ i, F.ideal i)) D1 D2)
+      QK QP Qn Qb * Real.exp (∑ i, kernelSlope i *
+        kernelLogCoordinates QK QP Qn Qb (Ideal.absNorm K:ℝ)
+          (Ideal.absNorm (∏ i, S.ideal i):ℝ) (Ideal.absNorm n:ℝ) (Ideal.absNorm b:ℝ) i) := by
+  rw [source_kernel_argument_factor]
+  have hn0 (I : Ideal Eis) (hI : I≠0) : (0:ℝ)<Ideal.absNorm I := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  apply actual_annular_kernel_identity _ _ _ _ _ _ _ _ _ hQK hQP hQn hQb
+    (hn0 K hK.1) _ (hn0 n hn) (hn0 b hb)
+  apply hn0
+  exact Finset.prod_ne_zero_iff.mpr (fun i _ => NeZero.ne (S.ideal i))
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff SchwartzMap
+open MeasureTheory JointLogSeparation InverseKernelSourceUniform
+noncomputable section
+
+def kernelCoordinateWeight (w : ℝ→ℂ) (slope Q t q : ℝ) : ℂ :=
+  w (Real.log (q/Q))*kernelLogPhase t (slope*Real.log (q/Q))
+
+def kernelDualWeight (windows : Fin 4→ℝ→ℂ) (Qn Qb t n b : ℝ) : ℂ :=
+  kernelCoordinateWeight (windows 2) 1 Qn t n * kernelCoordinateWeight (windows 3) 3 Qb t b
+
+lemma kernelCoordinateWeight_norm (w : ℝ→ℂ) (slope Q t q : ℝ) :
+    ‖kernelCoordinateWeight w slope Q t q‖ = ‖w (Real.log (q/Q))‖ := by
+  simp only [kernelCoordinateWeight,norm_mul,kernelLogPhase_norm,mul_one]
+
+lemma kernelDualWeight_norm_le_one (windows : Fin 4→ℝ→ℂ)
+    (hw : ∀ i y, ‖windows i y‖≤1) (Qn Qb t n b : ℝ) :
+    ‖kernelDualWeight windows Qn Qb t n b‖≤1 := by
+  rw [kernelDualWeight,norm_mul,kernelCoordinateWeight_norm,kernelCoordinateWeight_norm]
+  exact (mul_le_of_le_one_left (norm_nonneg _) (hw _ _)).trans (hw _ _)
+
+lemma kernelCoordinateWeight_continuous (w : ℝ→ℂ) (slope Q q : ℝ) :
+    Continuous (fun t => kernelCoordinateWeight w slope Q t q) :=
+  (kernelLogPhase_continuous_left _).const_mul _
+
+lemma kernel_mode_separation (windows : Fin 4→ℝ→ℂ) (QK QP Qn Qb k p n b t : ℝ) :
+    (∏ i, windows i (kernelLogCoordinates QK QP Qn Qb k p n b i) *
+      kernelLogPhase t (kernelSlope i*kernelLogCoordinates QK QP Qn Qb k p n b i)) =
+    kernelCoordinateWeight (windows 0) (-2) QK t k *
+      kernelCoordinateWeight (windows 1) (-2) QP t p * kernelDualWeight windows Qn Qb t n b := by
+  simp only [kernelCoordinateWeight,kernelDualWeight,kernelSlope,kernelLogCoordinates,
+    Fin.prod_univ_succ,Matrix.cons_val_zero,Matrix.cons_val_succ,Fin.prod_univ_zero,mul_one]
+  simp only [Fin.succ,Fin.val_mk]
+  norm_num
+  simp only [show (⟨2, by decide⟩ : Fin 4) = 2 from rfl,
+    show (⟨3, by decide⟩ : Fin 4) = 3 from rfl]
+  ring
+
+theorem reflected_kernel_uniform_separation (a b : ℝ) (ha : 0<a)
+    (windows : Fin 4→ℝ→ℂ) (M : Fin 4→ℝ) (hM : ∀ i, 0≤M i)
+    (hwindows : ∀ i y, windows i y≠0 → |y|≤M i)
+    (W : ℝ→ℂ) (hWsupport : Function.support W ⊆ Set.Icc a b)
+    (hW : ContDiff ℝ ∞ W) (J : ℕ) :
+    ∃ (U : ℝ→ℂ) (degree : ℕ) (C₀ : ℝ), 0≤C₀ ∧
+      HasCompactSupport U ∧ ContDiff ℝ ∞ U ∧
+      ∀ θ C QK QP Qn Qb : ℝ, 0<C → 0<QK → 0<QP → 0<Qn → 0<Qb →
+      let R := kernelCenter C QK QP Qn Qb
+      (∀ k p n q : ℝ, 0<k → 0<p → 0<n → 0<q →
+        (∏ i, windows i (kernelLogCoordinates QK QP Qn Qb k p n q i)) *
+          paperKernel (Vstar (CompletedHeight.normTwistedSource W θ))
+            (C*n*q^3/(k^2*p^2)) =
+        (smallScalar R : ℂ) * ∫ t : ℝ,
+          (kernelCoordinateWeight (windows 0) (-2) QK t k *
+            kernelCoordinateWeight (windows 1) (-2) QP t p *
+            kernelDualWeight windows Qn Qb t n q) * twistedDensity U W θ R t) ∧
+      Integrable (fun t : ℝ => (1+‖t‖)^J*‖twistedDensity U W θ R t‖) ∧
+      (∫ t : ℝ, (1+‖t‖)^J*‖twistedDensity U W θ R t‖) ≤ C₀*(1+‖θ‖)^degree ∧
+      (∀ t : ℝ, (1+‖t‖)^J*‖twistedDensity U W θ R t‖ ≤ C₀*(1+‖θ‖)^degree) := by
+  obtain ⟨U,degree,C₀,hC₀,hUc,hUs,hsep⟩ := normTwistedSource_uniform_separation
+    a b ha windows kernelSlope M hM hwindows W hWsupport hW J
+  refine ⟨U,degree,C₀,hC₀,hUc,hUs,?_⟩
+  intro θ C QK QP Qn Qb hC hQK hQP hQn hQb
+  have hR : 0<kernelCenter C QK QP Qn Qb := by unfold kernelCenter; positivity
+  obtain ⟨he,hi,hm,hp⟩ := hsep θ _ hR
+  refine ⟨?_,hi,hm,hp⟩
+  intro k p n q hk hp hn hq
+  rw [actual_annular_kernel_identity C QK QP Qn Qb k p n q hQK hQP hQn hQb hk hp hn hq]
+  rw [he]
+  congr 1
+  apply integral_congr_ae
+  exact Filter.Eventually.of_forall (fun t => by dsimp only; rw [kernel_mode_separation])
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open MeasureTheory JointLogSeparation InverseKernelSourceUniform
+noncomputable section
+
+def reciprocalWindow (w : ℝ→ℂ) (α M : ℝ) (y : ℝ) : ℂ :=
+  (Real.exp (-α*M):ℂ)*(w y*(Real.exp (-α*y):ℂ))
+
+lemma reciprocalWindow_norm_le_one (w : ℝ→ℂ) (α M : ℝ) (hα : 0≤α)
+    (hw : ∀ y, ‖w y‖≤1) (hs : ∀ y, w y≠0 → -M≤y) (y : ℝ) :
+    ‖reciprocalWindow w α M y‖≤1 := by
+  by_cases hy : w y=0
+  · simp [reciprocalWindow,hy]
+  · have he : Real.exp (-α*M)*Real.exp (-α*y) ≤ 1 := by
+      rw [← Real.exp_add,← Real.exp_zero]
+      apply Real.exp_le_exp.mpr
+      nlinarith [mul_nonneg hα (show 0≤M+y by linarith [hs y hy])]
+    simp only [reciprocalWindow,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _)]
+    calc
+      _ ≤ Real.exp (-α*M)*(1*Real.exp (-α*y)) := by gcongr; exact hw y
+      _ ≤ 1 := by simpa only [one_mul] using he
+
+lemma reciprocalWindow_support (w : ℝ→ℂ) (α M y : ℝ) :
+    reciprocalWindow w α M y≠0 → w y≠0 := by
+  intro h hw
+  apply h
+  simp [reciprocalWindow,hw]
+
+lemma reciprocalWindow_reconstruct (w : ℝ→ℂ) (α M y : ℝ) :
+    w y*(Real.exp (-α*y):ℂ) =
+      (Real.exp (α*M):ℂ)*reciprocalWindow w α M y := by
+  unfold reciprocalWindow
+  rw [← mul_assoc,← Complex.ofReal_mul,← Real.exp_add]
+  simp
+
+lemma reciprocal_norm_log (Q q : ℝ) (hQ : 0<Q) (hq : 0<q) :
+    Real.exp (-(1/2:ℝ)*Real.log (q/Q)) = Real.sqrt Q/Real.sqrt q := by
+  rw [show -(1/2:ℝ)*Real.log (q/Q) = Real.log (q/Q)*(-(1/2:ℝ)) by ring,
+    ← Real.rpow_def_of_pos (div_pos hq hQ),Real.div_rpow hq.le hQ.le,
+    Real.rpow_neg hq.le,Real.rpow_neg hQ.le,← Real.sqrt_eq_rpow,← Real.sqrt_eq_rpow]
+  field_simp
+
+lemma reciprocal_cube_log (Q q : ℝ) (hQ : 0<Q) (hq : 0<q) :
+    Real.exp (-Real.log (q/Q)) = Q/q := by
+  rw [Real.exp_neg,Real.exp_log (div_pos hq hQ),inv_div]
+
+def reciprocalKernelWindows (windows : Fin 4→ℝ→ℂ) (M : Fin 4→ℝ) : Fin 4→ℝ→ℂ :=
+  ![windows 0,windows 1,reciprocalWindow (windows 2) (1/2) (M 2),
+    reciprocalWindow (windows 3) 1 (M 3)]
+
+lemma reciprocalKernelWindows_norm (windows : Fin 4→ℝ→ℂ) (M : Fin 4→ℝ)
+    (hw : ∀ i y, ‖windows i y‖≤1)
+    (hs : ∀ i y, windows i y≠0 → |y|≤M i) :
+    ∀ i y, ‖reciprocalKernelWindows windows M i y‖≤1 := by
+  intro i y
+  fin_cases i
+  · exact hw 0 y
+  · exact hw 1 y
+  · exact reciprocalWindow_norm_le_one _ _ _ (by norm_num) (hw 2)
+      (fun y hy => (abs_le.mp (hs 2 y hy)).1) y
+  · exact reciprocalWindow_norm_le_one _ _ _ (by norm_num) (hw 3)
+      (fun y hy => (abs_le.mp (hs 3 y hy)).1) y
+
+lemma reciprocalKernelWindows_support (windows : Fin 4→ℝ→ℂ) (M : Fin 4→ℝ)
+    (hs : ∀ i y, windows i y≠0 → |y|≤M i) :
+    ∀ i y, reciprocalKernelWindows windows M i y≠0 → |y|≤M i := by
+  intro i y hy
+  fin_cases i
+  · exact hs 0 y hy
+  · exact hs 1 y hy
+  · exact hs 2 y (reciprocalWindow_support _ _ _ _ hy)
+  · exact hs 3 y (reciprocalWindow_support _ _ _ _ hy)
+
+lemma reciprocal_window_product (windows : Fin 4→ℝ→ℂ) (M y : Fin 4→ℝ) :
+    (∏ i, windows i (y i)) *
+      ((Real.exp (-(1/2:ℝ)*y 2):ℂ)*(Real.exp (-y 3):ℂ)) =
+    (Real.exp (M 2/2+M 3):ℂ)*(∏ i, reciprocalKernelWindows windows M i (y i)) := by
+  have h2 := reciprocalWindow_reconstruct (windows 2) (1/2) (M 2) (y 2)
+  have h3 := reciprocalWindow_reconstruct (windows 3) 1 (M 3) (y 3)
+  have hp : (Real.exp (M 2/2+M 3):ℂ) =
+      (Real.exp ((1/2:ℝ)*M 2):ℂ)*(Real.exp (1*M 3):ℂ) := by
+    rw [← Complex.ofReal_mul,← Real.exp_add]
+    congr 2
+    ring
+  rw [hp]
+  simp only [reciprocalKernelWindows,Fin.prod_univ_succ,Matrix.cons_val_zero,
+    Matrix.cons_val_succ,Fin.prod_univ_zero,mul_one]
+  simp only [Fin.succ,Fin.val_mk]
+  simp only [one_mul,neg_one_mul] at h3 ⊢
+  change (windows 0 (y 0)*(windows 1 (y 1)*(windows 2 (y 2)*windows 3 (y 3)))) *
+    ((Real.exp (-(1/2:ℝ)*y 2):ℂ)*(Real.exp (-y 3):ℂ)) =
+    ((Real.exp ((1/2:ℝ)*M 2):ℂ)*(Real.exp (M 3):ℂ))*
+      (windows 0 (y 0)*(windows 1 (y 1)*
+        (reciprocalWindow (windows 2) (1/2) (M 2) (y 2)*
+         reciprocalWindow (windows 3) 1 (M 3) (y 3))))
+  calc
+    _ = windows 0 (y 0)*windows 1 (y 1)*
+      (windows 2 (y 2)*(Real.exp (-(1/2:ℝ)*y 2):ℂ))*
+      (windows 3 (y 3)*(Real.exp (-y 3):ℂ)) := by ring
+    _ = _ := by rw [h2,h3]; ring
+
+theorem reciprocal_source_window_identity (windows : Fin 4→ℝ→ℂ) (M : Fin 4→ℝ)
+    (QK QP Qn Qb k p n b r : ℝ) (hQn : 0<Qn) (hQb : 0<Qb)
+    (hn : 0<n) (hb : 0<b) (hr : 0<r) :
+    (∏ i, windows i (kernelLogCoordinates QK QP Qn Qb k p n b i)) /
+      ((r*Real.sqrt n*b:ℝ):ℂ) =
+    ((Real.exp (M 2/2+M 3)/(r*Real.sqrt Qn*Qb):ℝ):ℂ) *
+      (∏ i, reciprocalKernelWindows windows M i (kernelLogCoordinates QK QP Qn Qb k p n b i)) := by
+  have hp := reciprocal_window_product windows M (kernelLogCoordinates QK QP Qn Qb k p n b)
+  change (∏ i, windows i (kernelLogCoordinates QK QP Qn Qb k p n b i))*
+      ((Real.exp (-(1/2:ℝ)*Real.log (n/Qn)):ℂ)*(Real.exp (-Real.log (b/Qb)):ℂ)) = _ at hp
+  rw [reciprocal_norm_log Qn n hQn hn,reciprocal_cube_log Qb b hQb hb] at hp
+  have he := congrArg (fun z : ℂ => z/((r*Real.sqrt Qn*Qb:ℝ):ℂ)) hp
+  have hn0 := (Real.sqrt_pos.mpr hn).ne'
+  have hQn0 := (Real.sqrt_pos.mpr hQn).ne'
+  simp only [Complex.ofReal_mul,Complex.ofReal_div] at he ⊢
+  have hrC : (r:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hr.ne'
+  have hbC : (b:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hb.ne'
+  have hQbC : (Qb:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hQb.ne'
+  have hnC : (Real.sqrt n:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hn0
+  have hQnC : (Real.sqrt Qn:ℂ)≠0 := Complex.ofReal_ne_zero.mpr hQn0
+  convert he using 1 <;> field_simp
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open MeasureTheory JointLogSeparation InverseKernelSourceUniform
+noncomputable section
+
+lemma reflected_density_integrable (U W : ℝ→ℂ) (hU : Measurable U)
+    (a b : ℝ) (ha : 0<a) (hWs : Function.support W ⊆ Set.Icc a b)
+    (hW : ContDiff ℝ ∞ W) (θ R : ℝ) (hR : 0<R) (J : ℕ)
+    (hi : Integrable (fun t : ℝ => (1+‖t‖)^J*‖twistedDensity U W θ R t‖)) :
+    Integrable (twistedDensity U W θ R) := by
+  have hm := (twistedDensity_joint_stronglyMeasurable U W hU a b ha hWs hW R hR).comp_measurable
+    (measurable_const.prodMk measurable_id : Measurable (fun t : ℝ => (θ,t)))
+  apply hi.mono' hm.aestronglyMeasurable
+  apply Filter.Eventually.of_forall
+  intro t
+  exact le_mul_of_one_le_left (norm_nonneg _) (one_le_pow₀ (by linarith [norm_nonneg t]))
+
+lemma kernel_mode_integrable (density : ℝ→ℂ) (hi : Integrable density)
+    (windows : Fin 4→ℝ→ℂ) (QK QP Qn Qb k p n b : ℝ) :
+    Integrable (fun t : ℝ => density t *
+      (kernelCoordinateWeight (windows 0) (-2) QK t k *
+        kernelCoordinateWeight (windows 1) (-2) QP t p * kernelDualWeight windows Qn Qb t n b)) := by
+  have hc : Continuous (fun t : ℝ => kernelCoordinateWeight (windows 0) (-2) QK t k *
+      kernelCoordinateWeight (windows 1) (-2) QP t p * kernelDualWeight windows Qn Qb t n b) :=
+    ((kernelCoordinateWeight_continuous _ _ _ _).mul (kernelCoordinateWeight_continuous _ _ _ _)).mul
+      ((kernelCoordinateWeight_continuous _ _ _ _).mul (kernelCoordinateWeight_continuous _ _ _ _))
+  apply hi.mul_bdd (c := ‖windows 0 (Real.log (k/QK))‖*‖windows 1 (Real.log (p/QP))‖*
+    (‖windows 2 (Real.log (n/Qn))‖*‖windows 3 (Real.log (b/Qb))‖)) hc.aestronglyMeasurable
+  apply Filter.Eventually.of_forall
+  intro t
+  exact le_of_eq (by simp only [kernelDualWeight,norm_mul,kernelCoordinateWeight_norm])
+
+theorem kernel_finite_contraction {κ : Type*} (source : Finset κ) (coeff value : κ→ℂ)
+    (density : ℝ→ℂ) (hi : Integrable density) (scalar : ℂ)
+    (windows : Fin 4→ℝ→ℂ) (QK QP Qn Qb : ℝ) (k p n b : κ→ℝ)
+    (he : ∀ j ∈ source, value j = scalar*∫ t : ℝ,
+      (kernelCoordinateWeight (windows 0) (-2) QK t (k j)*
+        kernelCoordinateWeight (windows 1) (-2) QP t (p j)*
+        kernelDualWeight windows Qn Qb t (n j) (b j))*density t) :
+    (∑ j ∈ source, coeff j*value j) = scalar*∫ t : ℝ, density t*
+      ∑ j ∈ source, coeff j*(kernelCoordinateWeight (windows 0) (-2) QK t (k j)*
+        kernelCoordinateWeight (windows 1) (-2) QP t (p j)*
+        kernelDualWeight windows Qn Qb t (n j) (b j)) := by
+  have hint (j : κ) : Integrable (fun t : ℝ => density t*
+      (coeff j*(kernelCoordinateWeight (windows 0) (-2) QK t (k j)*
+        kernelCoordinateWeight (windows 1) (-2) QP t (p j)*
+        kernelDualWeight windows Qn Qb t (n j) (b j)))) := by
+    convert (kernel_mode_integrable density hi windows QK QP Qn Qb (k j) (p j) (n j) (b j)).const_mul (coeff j) using 1
+    funext t
+    ring
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum source (fun j _ => hint j),Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [he j hj]
+  rw [← mul_assoc,mul_comm (coeff j) scalar,mul_assoc]
+  apply congrArg (fun z : ℂ => scalar*z)
+  rw [← integral_const_mul]
+  apply integral_congr_ae
+  exact Filter.Eventually.of_forall (fun t => by dsimp only; ring)
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators ContDiff
+open MeasureTheory JointLogSeparation InverseKernelSourceUniform
+noncomputable section
+universe u
+
+theorem reflected_finite_source_uniform
+    (a b : ℝ) (ha : 0<a) (windows : Fin 4→ℝ→ℂ) (M : Fin 4→ℝ)
+    (hM : ∀ i, 0≤M i) (hwindows : ∀ i y, windows i y≠0 → |y|≤M i)
+    (W : ℝ→ℂ) (hWsupport : Function.support W ⊆ Set.Icc a b)
+    (hW : ContDiff ℝ ∞ W) (J : ℕ) :
+    ∃ (U : ℝ→ℂ) (degree : ℕ) (C₀ : ℝ), 0≤C₀ ∧
+      HasCompactSupport U ∧ ContDiff ℝ ∞ U ∧
+      ∀ θ C QK QP Qn Qb r : ℝ, 0<C → 0<QK → 0<QP → 0<Qn → 0<Qb → 0<r →
+      let R := kernelCenter C QK QP Qn Qb
+      (∀ {κ : Type u} (source : Finset κ) (coeff : κ→ℂ) (k p n q : κ→ℝ),
+        (∀ j ∈ source, 0<k j ∧ 0<p j ∧ 0<n j ∧ 0<q j) →
+        (∑ j ∈ source, coeff j *
+          ((∏ i, windows i (kernelLogCoordinates QK QP Qn Qb (k j) (p j) (n j) (q j) i)) /
+            ((r*Real.sqrt (n j)*q j:ℝ):ℂ) *
+            paperKernel (Vstar (CompletedHeight.normTwistedSource W θ))
+              (C*n j*(q j)^3/((k j)^2*(p j)^2)))) =
+        ((Real.exp (M 2/2+M 3)/(r*Real.sqrt Qn*Qb)*smallScalar R:ℝ):ℂ)*
+          ∫ t : ℝ, twistedDensity U W θ R t *
+            ∑ j ∈ source, coeff j *
+              (kernelCoordinateWeight (reciprocalKernelWindows windows M 0) (-2) QK t (k j)*
+                kernelCoordinateWeight (reciprocalKernelWindows windows M 1) (-2) QP t (p j)*
+                kernelDualWeight (reciprocalKernelWindows windows M) Qn Qb t (n j) (q j))) ∧
+      Integrable (twistedDensity U W θ R) ∧
+      Integrable (fun t : ℝ => (1+‖t‖)^J*‖twistedDensity U W θ R t‖) ∧
+      (∫ t : ℝ, (1+‖t‖)^J*‖twistedDensity U W θ R t‖) ≤ C₀*(1+‖θ‖)^degree ∧
+      (∀ t : ℝ, (1+‖t‖)^J*‖twistedDensity U W θ R t‖ ≤ C₀*(1+‖θ‖)^degree) := by
+  obtain ⟨U,degree,C₀,hC₀,hUc,hUs,hsep⟩ := reflected_kernel_uniform_separation
+    a b ha (reciprocalKernelWindows windows M) M hM
+      (reciprocalKernelWindows_support windows M hwindows) W hWsupport hW J
+  refine ⟨U,degree,C₀,hC₀,hUc,hUs,?_⟩
+  intro θ C QK QP Qn Qb r hC hQK hQP hQn hQb hr
+  obtain ⟨he,hi,hm,hp⟩ := hsep θ C QK QP Qn Qb hC hQK hQP hQn hQb
+  have hR : 0<kernelCenter C QK QP Qn Qb := by unfold kernelCenter; positivity
+  have hdi := reflected_density_integrable U W hUs.continuous.measurable
+    a b ha hWsupport hW θ _ hR J hi
+  refine ⟨?_,hdi,hi,hm,hp⟩
+  intro κ source coeff k p n q hn
+  apply kernel_finite_contraction source coeff _ _ hdi _
+    (reciprocalKernelWindows windows M) QK QP Qn Qb k p n q
+  intro j hj
+  rw [reciprocal_source_window_identity windows M QK QP Qn Qb
+    (k j) (p j) (n j) (q j) r hQn hQb (hn j hj).2.2.1 (hn j hj).2.2.2 hr]
+  rw [mul_assoc,he (k j) (p j) (n j) (q j) (hn j hj).1 (hn j hj).2.1 (hn j hj).2.2.1 (hn j hj).2.2.2,
+    Complex.ofReal_mul]
+  ring
+
+end
+end InverseReflectedPhase
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss
+open CanonicalRowCompletion SchwartzPlanePoisson NormalizedReflection JointLogSeparation MeasureTheory
+open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
+namespace InverseReflectedPhase
+open scoped Classical BigOperators
+open CompletedDyadic Eisenstein CubicEisenstein CompletedGauss CanonicalQuadraticSieve InverseMoment
+noncomputable section
+local notation "Eis" => Eisenstein.O
+variable {φ σ : Type*} [Fintype φ] [Fintype σ] {N a c : Eis} {mode : Bool}
+
+lemma fixedKernelCoefficient_pos (X tau r : ℝ) (C D1 D2 : Ideal Eis)
+    (hX : 0<X) (htau : 0<tau) (hr : 0<r) (hC : C≠0) (hD1 : D1≠0) (hD2 : D2≠0) :
+    0<fixedKernelCoefficient X tau r C D1 D2 := by
+  have hn (I : Ideal Eis) (hI : I≠0) : (0:ℝ)<Ideal.absNorm I := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI)
+  have hCn := hn C hC
+  have h1 := hn D1 hD1
+  have h2 := hn D2 hD2
+  unfold fixedKernelCoefficient
+  positivity
+
+def actualKernelCoefficient (F : PrimeFamily φ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (m : ℕ) (X : ℝ) : ℝ :=
+  fixedKernelCoefficient X (sourceCuspScale s.index) (ramifiedScale 1 completedRamifiedStep m)
+    (Ideal.span {c}*(∏ i, F.ideal i)) 1 1
+
+lemma actualKernelCoefficient_pos (F : PrimeFamily φ)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (hc : c≠0) (m : ℕ) (X : ℝ) (hX : 0<X) : 0<actualKernelCoefficient F s m X := by
+  apply fixedKernelCoefficient_pos _ _ _ _ _ _ hX (sourceCuspScale_pos _)
+    (ramifiedScale_pos _ _ (by norm_num) (lt_trans zero_lt_one completedRamifiedStep_gt_one) _) _ one_ne_zero one_ne_zero
+  apply mul_ne_zero
+  · exact Ideal.span_singleton_eq_bot.not.mpr hc
+  · exact Finset.prod_ne_zero_iff.mpr (fun i _ => NeZero.ne (F.ideal i))
+
+theorem actual_theta_kernel_argument (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode))
+    (m : ℕ) (X : ℝ) (n b : Ideal Eis) :
+    (X/(27*(sourceCuspScale s.index)^2*
+      (Ideal.absNorm (Ideal.span {c*∏ i, (F.reflected K hK S).generator i}):ℝ)^2))*
+      (ramifiedScale 1 completedRamifiedStep m)^3*(Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ)^3 =
+    actualKernelCoefficient F s m X*(Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ)^3/
+      ((Ideal.absNorm K:ℝ)^2*(Ideal.absNorm (∏ i, S.ideal i):ℝ)^2) := by
+  simpa only [one_mul,actualKernelCoefficient] using source_kernel_argument_factor F K hK S c
+    X (sourceCuspScale s.index) (ramifiedScale 1 completedRamifiedStep m) 1 1 n b
+
+def actualKernelSourceTerm (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ→ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (windows : Fin 4→ℝ→ℂ)
+    (QK QP Qn Qb : ℝ) (W : ℝ→ℂ) (θ X : ℝ) : ℂ :=
+  actualMixedCoefficient F K hK S jF D s hc u m n b *
+    ((∏ i, windows i (kernelLogCoordinates QK QP Qn Qb (Ideal.absNorm K:ℝ)
+      (Ideal.absNorm (∏ i, S.ideal i):ℝ) (Ideal.absNorm n:ℝ) (Ideal.absNorm b:ℝ) i)) /
+      ((ramifiedScale 1 completedRamifiedStep m*Real.sqrt (Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ):ℝ):ℂ) *
+      paperKernel (Vstar (CompletedHeight.normTwistedSource W θ))
+        ((X/(27*(sourceCuspScale s.index)^2*
+          (Ideal.absNorm (Ideal.span {c*∏ i, (F.reflected K hK S).generator i}):ℝ)^2))*
+          (ramifiedScale 1 completedRamifiedStep m)^3*(Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ)^3))
+
+theorem actualKernelSourceTerm_numeric (F : PrimeFamily φ) (K : Ideal Eis) (hK : Admissible K)
+    (S : PrimeFamily σ) (jF : φ→ℕ)
+    (D : ControlledStratumArithmetic (F.reflected K hK S).generator N a c mode)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (u : Eisˣ) (m : ℕ) (n b : Ideal Eis) (windows : Fin 4→ℝ→ℂ)
+    (QK QP Qn Qb : ℝ) (W : ℝ→ℂ) (θ X : ℝ) :
+    actualKernelSourceTerm F K hK S jF D s hc u m n b windows QK QP Qn Qb W θ X =
+    actualMixedCoefficient F K hK S jF D s hc u m n b *
+      ((∏ i, windows i (kernelLogCoordinates QK QP Qn Qb (Ideal.absNorm K:ℝ)
+        (Ideal.absNorm (∏ i, S.ideal i):ℝ) (Ideal.absNorm n:ℝ) (Ideal.absNorm b:ℝ) i)) /
+        ((ramifiedScale 1 completedRamifiedStep m*Real.sqrt (Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ):ℝ):ℂ) *
+        paperKernel (Vstar (CompletedHeight.normTwistedSource W θ))
+          (actualKernelCoefficient F s m X*(Ideal.absNorm n:ℝ)*(Ideal.absNorm b:ℝ)^3/
+            ((Ideal.absNorm K:ℝ)^2*(Ideal.absNorm (∏ i, S.ideal i):ℝ)^2))) := by
+  unfold actualKernelSourceTerm
+  rw [actual_theta_kernel_argument]
+
+end
+end InverseReflectedPhase
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
