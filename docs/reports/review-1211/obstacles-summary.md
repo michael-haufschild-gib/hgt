@@ -1,6 +1,6 @@
 # Obstacles summary — status quo
 
-Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: `dd55ee70d9` (2026-11-12). Fact log: `logs/review-1211-rev2-facts.md` (cited as "log §n").
+Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: `dd55ee70d9` (2026-11-12), working-tree sources included. Fact log: `logs/review-1211-rev2-facts.md` (cited as "log §n").
 
 **Evidence.** `[L*]` Lean statement read at the declaration for this report and recorded in the fact log; `[doc]` content of a module docstring whose theorem names were read but not every statement; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger; `[S]` module graded unfinished by the frontier map; `[card]` proved on the pipeline card `docs/drafts/pipeline/2-fully-proven/b186-critical-line-fe-defect-of-fake-zeros.md`, no Lean declaration; `[D]` deduction made here from `[L*]` statements, not a Lean theorem; `[C]` classical mathematics quoted from memory, not in the corpus; `[A]` assessment; `[X]` the external theorem cached in the repository (OpenAI, 30 September 2026), taken as proved: every Dirichlet `L`-function, ζ included, and every finite-order Hecke `L`-function over `ℚ(√−3)` is zero-free in `Re s>7/8`. The Lean graph proves `zetaZeroAbscissa ≤ 1` unconditionally and `beta ≤ 7/8` from a uniform continuation margin; the native steps of `[X]` are just work (A118). Sections 2.3–2.21 are interpretation and ideation: every untagged statement there is a proposal.
 
@@ -113,7 +113,7 @@ No bounded holomorphic Dirichlet constituent and no Wiener expansion of ξ has a
 RH through `exp(exp(C·a))` gives the sign on `[−a,a]` [L*]; `C` is not explicit. RH is verified through height 67 [F]. Positivity at aperture `a` confines every zero with `T₀≤|γ|≤2πe^a` to depth `<exp(−c log³|γ|)` [L*].
 
 ### 1.11 Law and point
-One pointwise theorem holds past the Vinogradov–Korobov region: no zero right of `7/8` [X]. Left of it every unconditional theorem on the zeros of ξ is in law: twisted moments below the square root and a positive proportion of critical zeros of odd multiplicity; `67.25%` simple critical zeros in the objects of `Zeta23` [L*]; the squared right-depth moment `o(V)` [KR]; adaptive clusters with complete exterior mass `≤¼` around every sufficiently high zero of depth `≥exp(−c log³(T/2π))` [L*]; short-interval mean squares of `λχ` for every nonprincipal `χ` [L*]. For the principal character the top-scale blocks are `≤(log X)^{−3}` on `(log X)^{19}≤2π|w|≤X` [L*]; the low frequencies carry the pole.
+One pointwise theorem holds past the Vinogradov–Korobov region: no zero right of `7/8` [X]. Left of it every unconditional theorem on the zeros of ξ is in law: twisted moments below the square root and a positive proportion of critical zeros of odd multiplicity; `67.25%` simple critical zeros in the objects of `Zeta23` [L*]; the squared right-depth moment `o(V)` [KR]; adaptive clusters with complete exterior mass `≤¼` around every sufficiently high zero of depth `≥exp(−c log³(T/2π))` [L*]; short-interval mean squares of `λχ` for every nonprincipal `χ` [L*]. For the principal character the top-scale blocks are `≤(log X)^{−3}` on `(log X)^{19}≤2π|w|≤X` [L*] and the twisted partial sums are `o(N)` for `2|τ|≤√N` [S]; the low-frequency mean square is not assembled.
 
 ### 1.12 Producers and receivers
 | Mechanism | What the corpus proves |
@@ -166,7 +166,7 @@ Difficulty is established where a known argument exists; `(unverified)` marks th
 ### The FE axis and the models
 | # | Task | Routes | Basis |
 |---|---|---|---|
-| A153 | Lean statements for Theorem II.1 (a defect `O(\|t\|^{−½+ε})` forces the rational primes among unweighted countable systems), Theorem II.3 (positive real weights: a fake with defect below any unbounded nondecreasing `Φ`), Corollary III.2 and the prime weights of II.2(b) | ZCG, BAG | [card]; `HamburgerStripDefect` |
+| A153 | Lean statements for Theorem II.1 (a defect `O(\|t\|^{−½+ε})` forces the rational primes among unweighted countable systems), Theorem II.3 (positive real weights: a fake with defect below any unbounded nondecreasing `Φ`) and Corollary III.2; the Euler weights of II.2(b) are `hasProd_signedPoly` [S] | ZCG, BAG | [card]; `HamburgerStripDefect` |
 | A155 | the order law at every multiple: divisibility by `k` of the order of a zero of the edit exponential above `k` times the count exponent, for `k≥3` (unverified) | ZCG | `even_order_of_count` (`k=2`) |
 | A157 | the count of the signed grouped edit by Perron's formula left of `½` (unverified) | ZCG, BAG | `sub_one_mul_zetaSeriesC_eq`, `differentiableOn_editCofactor` |
 | A144 | the tangent data of `μ` and `λ` under additive twists (unverified) | ZCG, MC | [F] |
@@ -193,7 +193,7 @@ A1 certified `RHVerifiedThrough T` past 67; A2, A3 numeric heights and first-win
 | # | Task | Basis |
 |---|---|---|
 | A18 | twisted second moments past the square root [C] | `θ<½` in Lean |
-| A147 | logarithmic two-point Chowla: for the principal character the low frequencies, the assembly of the ladder on a frequency set with Parseval, the transfer to `V(b/s,T)` [C] | `exists_short_sum_mean_square_twLiouville_le` (`χ≠1`), `exists_norm_blockQ_liouville_le`, `ladder_master_on`, `exists_scale_corr_close`, `exists_abs_avg_corr_le` |
+| A147 | logarithmic two-point Chowla: for the principal character the low-frequency mean square with reciprocal weights, the assembly of the ladder on a frequency set with Parseval, the transfer to `V(b/s,T)` [C] | `exists_short_sum_mean_square_twLiouville_le` (`χ≠1`), `exists_norm_blockQ_liouville_le`, `ladder_master_on`, `exists_norm_sum_liouvilleTwist_le` [S], `exists_scale_corr_close`, `exists_abs_avg_corr_le` |
 | A26 | Weyl asymptotic `N(Λ)∼Λ/12` [C] | `weyl_law_order` |
 | A33 | Fourier coefficients of the cubic residue at all heights [C] | [F] |
 | A41 | count law for every curve, first plane quartics [C] | hyperelliptic case [F] |
@@ -313,3 +313,491 @@ Further: A16, A20, A24, A28, A30, A42, A46, A54 (unverified).
 
 ### What a contradiction search may assume in world I
 `Θ≤7/8` [X]; an attained isolated top `β≤7/8`; `ψ(x)−x` attains `x^β` on every late window and at the primes [F]; quantized multiplicities [F]; normalizations of translates tend to zero [L*]; a nonzero Euler filter accelerates the horocycle rate [F]; the packet index is finite and positive [L*]; a two-sided edit with a count rate above the top removes the layer [L*] (`exists_isEdit_zero_free_of_finite_layer`); the critical half-line state exists and is unique [L*]. No contradiction comes from identities alone, positivity, Euler products over integer norms or the rational primes with multiplicities `0,1,2`, a count rate, the FE with Gamma factor and count, the FE up to an error of mean size `T^ε`, a regulator, or any statement in law [L*].
+
+## Validation tests for 2.4–2.8 and 2.21
+
+| Test | Requirement |
+|---|---|
+| T1 | implied by RH (or GRH for the family at hand) and implying neither RH nor AAL; or a method question implied by nothing about ζ's zeros. A half-plane below `7/8` satisfies T1 |
+| T2 | answered by proving or refuting a stated inequality, identity, existence or implication |
+| T3 | a named consequence for either answer |
+| T4 | not decided by a finite rung |
+| T5 | false on a corpus model, or calibrated on the models |
+| T6 | names an input not refuted in Lean |
+| T7 | moves a wall; not a shape answered in Lean |
+| T8 | not a named long-standing problem in disguise; a first step in corpus objects with one named obstacle |
+
+**No statement about the zeros of ζ below RH and AAL passes all tests as a door to the line.** The questions below were checked against the corpus by sentence queries (log §13, §14, §18, §21, §22, §24).
+
+## 2.4 Breakthrough question below RH and below the half-plane `7/8`: the long columns (B185)
+
+**Position.** The only producer of the corpus converts a law over a family of twists into a point by two estimates. Everything it does with squares is mapped and stops at `13/15`, then `5/6` (§1.6). Its floor bin is reduced in Lean to one object: the short columns cancel (`sum_pairColumn_eq_zero`), the short Gram is bounded (`norm_gramEntry_le`), the average row is target-free (`average_rowLocalSum`), and what remains are the long columns: first moments over the rows of the root numbers `G(u)γ₂(u)²` (`rowRootNumber_eq_thetaPhase_mul_sq`) against a dual column [L*]. The untwisted main term of these moments is a theorem: `Σ_I N(I)^{−w}τ(I)²=C̄²ζ_K(3w−1)·(squarefree sum)`, `M·D` has a double pole at `4/3`, and the twisted squarefree combination a simple pole [L*] (log §6, §22).
+
+**Question (B185).** *Is the first moment of `G(u)γ₂(u)²` over squarefree rows `u` of norm up to `U`, twisted by a dual column `n` of norm up to the row scale, equal to its main term plus `O(N(n)^A U^{R₀+ε})` with some `R₀<1`, uniformly in `n`? What is the least such `R₀`?*
+
+| Answer | Effect [D]: the half-plane `1−2/(3(6R₀−1))` of the signed-Gram curve at `n=6` (log §24) |
+|---|---|
+| any `R₀<1` | a half-plane below `13/15`: the first estimate of the producer that is not a square |
+| `R₀<5/6` | below the floor `5/6` of every Cauchy–Schwarz sieve |
+| `R₀=2/3` | `7/9` |
+| `R₀=½` (square-root remainder) | `2/3`: the uncoupled boundary of every `6r`-periodic pairing, the end of the class |
+| no saving uniformly in the column | the producer stops at `13/15` through its floor bin; every graded receiver keeps `[X]` as its only level |
+
+Every receiver of the scale moves with the answer: the rung, the level, the return bound, the ringdown rate, the tails, the critical-comb growth, the range `½<β₀<3/2−Θ` of the fakes with subpolynomial defect energy.
+
+**First step and obstacle.** A149 (the function-field floor bin, where the Kubota series is rational [C]) and A148 (the layers `m=0,1` and the target component of a twisted column; the rotated correlation reads only `m≥2` [L*]). Named obstacle: uniformity in the column. The corpus has neither a sextic metaplectic Eisenstein series nor a sextic large sieve, and every Cauchy–Schwarz row sieve stops at `5/6` [L*] (`two_le_of_sieve_threshold`).
+
+**Tests.** T1 passes (an estimate for Gauss sums; its consequence a half-plane below `7/8`). T2, T4, T6 pass. T3 named. T5 calibrated on the average row (target-free), on the short columns (incoherent) and on the untwisted main term (a double pole). T7 moves Π167, Π175. T8: the square-root form is a conjecture of Patterson type [C]; any power saving uniformly in the column is the question, with a first step in corpus objects.
+
+**Limit.** `2/3`. The question does not lead to the line.
+
+## 2.5 Breakthrough question for the search for a producer: a pairing whose frame reaches the line (B187)
+
+**Position.** The class of the one producer is closed by two theorems. In the budget of rows of conductor exponent two, square-root cancellation gives the twist exponent `(n−4)/(n−1)`, the half-plane `1−2/n` (`signedGram_phase_endpoints`), which is the line exactly at twist order `n=4`. In the frame, every `6r`-periodic Gauss pairing has local resonance norm `Q^{(4r−1)−6rs}`, uncoupled boundary `2/3` and coupled fixed point `(4r−1)/(6r−1)≥3/5` (`gauss_pairing_6r_thresholds`) [L*].
+
+**Pairing coordinates [D].** A pairing with local resonance norm `Q^{c−ks}` has uncoupled boundary `(c+1)/k` and coupled map `b↦(c+b)/k` with fixed point `c/(k−1)`. The uncoupled boundary is the line iff `c=k/2−1`; the fixed point is the line iff `c=(k−1)/2`. The Gauss pairings have `c=(2/3)k−1`: the period changes `k` and leaves the ratio `c/k→2/3`. The Möbius sign comes from Gauss sums of odd order [L*] (`exists_gaussSum_pow_orderOf_eq_of_odd`), and the sign-carrying designs of the corpus are `(κ,n)=(2,6),(3,4),(4,3)` with corners `8/9`, `25/28`, `49/54` [L*]/[F].
+
+**Question (B187).** *Is there an identity that writes the Möbius function through coefficients with a reflection whose local resonance norm `Q^{c−ks}` has `c/(k−1)<3/5` — in the best case `c≤(k−1)/2` — and whose rows have conductor exponent two with principal frequencies of order four? Or does every Möbius-signed pairing of Gauss and Jacobi sums have `c/k≥2/3−1/k`, so that the class ends at `3/5`?*
+
+| Answer | Effect |
+|---|---|
+| a pairing with fixed point `½` and a design with square-root endpoint `½` | a producer of the line by estimates: the remaining input is square-root cancellation in its bins |
+| a pairing with fixed point in `(½,3/5)` | the frame moves below `3/5`; its estimates and its tower are the next object |
+| `c/k≥2/3−1/k` for every Möbius-signed pairing | the Gauss-sum producers end at `3/5` (`2/3` by estimates of square-root size): RH needs a source of another kind |
+
+**First step and obstacle.** Classify the Möbius-signed products of Gauss and Jacobi sums over cyclotomic rings by `(c,k)` and `(κ,n)`: finite algebra in the objects of `exists_prod_jacobiSum_eq`, `exists_gaussSum_mul_gaussSum_eq` and `gauss_pairing_6r_thresholds`. Second model class [C]: Rankin–Selberg and symmetric-power towers, whose coupling maps are not of Gauss type. Named obstacle: the theta coefficients of covers of degree four and higher are not known explicitly [C], so the source identity of a design has to be proved before its exponents mean anything.
+
+**Tests.** T1: a producer question, implied by nothing about ζ's zeros. T2: an existence statement or a classification theorem. T3 named. T4 pass. T5 calibrated on the `6r` pairings (a theorem), on the three designs, on even order (parity instead of sign). T6, T7 (moves Π174, Π177) pass. T8 not a named problem; the first step is finite algebra in corpus objects.
+
+**Limit.** The coordinates are an exponent model: a pairing that reaches `½` in them needs its source identity, its estimates and its tower.
+
+## 2.6 If positivity, Weil positivity and spectral methods are excluded
+
+"Spectral" covers spectral theory of operators in every form, automorphic spectral theory included; "positivity" covers nonnegativity of forms, kernels, counts, coefficients and averaging measures. Kept: Fourier analysis, Poisson summation, exact identities of Gauss and Jacobi sums, reciprocity, mean values used as bounds, exponential sums, continuation and orders of zeros, integrality, recurrence, Galois theory, dominance in ultrametric fields.
+
+**What the constraint removes [A].** The positivity forms (all of Σ, with the index, the bound states and the critical state), Landau's theorem and with it the balance law of edits, the proofs of FE rigidity and of the Abel floors (positivity of Abel means), the large sieves, and the Eisenstein reflection of the theta row. **What survives [L*].** The receivers of the minimal face in absolute value; the Galois forms `L=K` ⇔ `H=B` ⇔ RH; the Goss dominance; the order law (a zero of an edit exponential above twice the count exponent has even order, `even_order_of_count`); the reciprocity identities of the probe; the filters and currents of world I [F].
+
+**Two facts that shape the question [D].**
+- `Σλ(n)Λ(n)n^{−s}=ζ′/ζ(s)−2ζ′/ζ(2s)` has in `Re s>½` the pole at `1` and poles exactly at the zeros of ζ: AAL is invariant under the Liouville twist, and the parity blindness of bilinear statements is no obstruction to AAL.
+- A sign-free argument for AAL has to pass the door of §1.3: it may not tolerate an FE error of mean size `T^ε`. Arguments built on the integers with multiplicity one — Type-I sums, which are exact geometric sums — use the count with a bounded remainder and pass: no fake of the corpus has a count exponent below half the real part of its layer.
+
+**Question (B145).** *Does the prime-weighted centred type-II current at a growing isolated mode, with both continuum corrections, cancel below the recovered residue?* Under ¬AAL filters recover the top residues, and the growing-order Gaussian current reduces to centred cofactors with a filtered error [F]; separated complete unweighted pairs decay faster than every power [F]. Open: the restricted prime-weighted cofactor sum; no declaration bounds it (log §22).
+
+| Answer | Effect |
+|---|---|
+| yes | AAL without a sign and without an operator; RH ⇔ ZAL |
+| a lower bound of the size of the residue | the Vaughan–Gaussian architecture does not exclude a finite layer: world I needs an input beyond exponential sums |
+
+**Tests.** T1 fails (AAL strength). T2, T3 pass. T5: the argument has to fail for two-sided edits with a finite layer — it can, through the actual Möbius coefficients and the exact count. T7 moves Π149. T8: a Type-II sum in the dark range [A].
+
+**Limit.** Under the constraint the step from AAL to RH is ZAL, a half-plane at every depth, and the corpus has no sign-free, non-spectral source of half-planes: its one producer uses squares and an Eisenstein reflection. **Under the constraint no question in the corpus opens the path to RH; B145 opens the half of it that world I is.**
+
+## 2.7 If RH is a physical phenomenon in AdS with a modular horizon
+
+**What is proved.** RH ⇔ every compact pulse rings down at the quarter rate; the pulse rate equals the horocycle rate [L*] (`riemannHypothesis_iff_pulse_ringdown`, `pulse_ringdown_iff_horocycle_rate`). The unfiltered horocycle exponent is `1−Θ/2`, filtered `1−Θ∞/2`; AAL ⇔ no Euler filter accelerates; every regulator has the count of its limit [F]. The cusp spectrum has the Weyl order `cΛ≤N(Λ)≤CΛ`; no Maass cusp form with `0<λ<3/16` exists on any congruence subgroup [L*] (`weyl_law_order`, `selberg_three_sixteenths_congruence`). The producer lives on a second horizon, the cubic cover of hyperbolic three-space: its theta-square series has a double pole at `4/3`, its corrections are Grössencharacter `L`-functions, and the coupling of the scalar channel to them is the map `b↦((4r−1)+b)/(6r)` [L*]. With `[X]`: the rate `1/16` [D].
+
+**Readings [D].**
+- *World I is ordinary ringdown and is removable*: a finite set of least-damped modes, removed by a filter of finite degree; a two-sided edit removes it from the primes [L*].
+- *The producer is a scattering experiment on a cover horizon*: the scalar channel couples to a tower of spinning channels, and the coupling has its fixed point at `3/5` or above at every period.
+- *The one arithmetic gap principle in Lean is for bound states*: Selberg's `3/16`, whose proof is arithmetic (Kloosterman sums and Weil's bound) [C].
+
+**Question (B188).** *Does the mechanism that gives `λ₁≥3/16` on congruence groups — the Kuznetsov formula with Weil's bound for Kloosterman sums — bound the scattering resonances of `SL₂(ℤ)\ℍ` away from the unitary axis: a resonance-free strip of any width, from the Kloosterman side, without a family of twists?*
+
+| Answer | Effect |
+|---|---|
+| a strip of width `δ>0` | a second producer of a half-plane, independent of the Gauss-sum class; `δ>1/16` is a half-plane below `7/8` |
+| no: the Kloosterman side sees the bound states and not the resonances | the arithmetic of the horizon bounds discrete spectrum only; the physical reading supplies receivers and the source comes from elsewhere |
+
+**What the corpus says about the candidates [KR].** Hölder dynamical realizations give a strip and the oscillation estimate fails on additive realizations; graph horizons with commuting Hecke operators and slow resonances exist; KMS positivity and modular conjugation do not select the line; scattering Schur contractivity is blind to the position of zeros. No declaration bounds a resonance-free strip from Kloosterman sums (log §22).
+
+**Tests.** T1 passes as a half-plane for `δ>1/16`. T2, T3 pass. T5: must fail for non-congruence groups and graph horizons with slow resonances; the `3/16` theorem does. T7 moves Γ226. T8: not a named problem in this form; first step in corpus objects (`RHTower/SelbergThreeSixteenths`) with one obstacle: the Eisenstein contribution to the Kuznetsov formula is weighted on the unitary axis, where the resonances are not [C].
+
+**Limit.** A rate is a half-plane; the quarter rate is RH and is not reached by a principle with a margin.
+
+## 2.8 If RH is a problem of topology or geometry
+
+**What is proved [L*].** The Morse index of the sign problem is a Maslov index: the crossing multiplicity along the aperture is a Lagrangian intersection number, the index is the number of crossings, the far end carries the zeros (log §14). The poles see a finite-dimensional part of the path, the polar Lagrangian; below the polar ground energy every crossing is charged. At finite scale the neutral part of a window is a potential plus a Dirichlet form on the blocks, RH is one bound state on every window, and two windows glue to one bound state iff the product of their susceptibilities is at least one (log §2). At the critical ratio a failure of RH is one function: the critical half-line state, unique up to sign, with a Laplace transform that has no zero in the open right half-plane (log §1).
+
+**Readings [D].**
+- *The sign problem has a two-dimensional shadow.* If the first crossing is charged, it is a crossing of the polar Lagrangian with the charge axis; a neutral null mode is invisible to the poles.
+- *Bound states glue through charges.* The index of a union is not the sum of the indices: two wells with one bound state each merge into one well with one bound state exactly when both are shallow against their charge coupling.
+- *The failure has a shape.* Uniqueness and the zero-free Laplace transform say that the critical state is an outer-type function on the half-line.
+
+**Question (B104).** *Is the critical half-line state charged: is `∫F·polarSourceProfile≠0`? Equivalently for the classification: does its third case (`R_polar=W₀` finite with a polar-orthogonal state) occur?*
+
+| Answer | Effect |
+|---|---|
+| charged whenever it exists | the classification loses its third case: RH, or `R_polar<W₀`. The polar channel of HF, SRT, AIP, ACS (atomic) and SC sees a failure strictly before the window threshold; a proof of RH on these routes reduces to polar payment at every ratio (B101) |
+| a polar-orthogonal critical state on a configuration model with ζ's archimedean data | a neutral critical state is invisible to the poles: polar payment cannot certify the first crossing, and those routes need a non-polar input |
+
+**First step and obstacle.** At finite scale the answer is yes on windows with `4J≤R`: a ground vector of the block matrix has one sign and both charges nonzero of one sign [L*] (`charges_mul_pos_of_blockMatrix_minimizer`). The step is the same statement on windows with `R≤J` and its passage to the half-line state through the refinement tower. Named obstacle: the reflection argument that removes Laplace zeros gains energy proportional to the real part of the zero and gains nothing on the imaginary axis; the undamped resolvent is in `L¹∩L²` there, and no statement excludes such a zero [L*] (log §1).
+
+**Tests.** T1 passes (method; not known to follow from RH, under which the state does not exist). T2, T3, T4 pass. T5 calibrated on narrow windows and on short apertures. T6 pass. T7 moves Σ135, Σ139, Σ181. T8 not a named problem.
+
+**Limit.** The answer does not decide RH; it decides whether the polar shadow is a complete invariant of the first crossing.
+
+## 2.9 New field for RH: reflection arithmetic
+
+**Does RH need a new field?** The fields that the mechanism classes call for exist as programmes and end at theorems (§1.12). The three cores share one input that no programme treats as its object: the reflection `s↦1−s`, and the corpus measures it [D]:
+- On the model side the reflection is the selector, and only as an identity up to a decaying error: fakes exist with defects of mean size `T^ε`, none with a decaying defect (§1.3).
+- On the producer side the reflection of the theta row needs a completion, and the completion couples the target to a tower whose fixed point is `≥3/5` at every period (§1.6).
+- On the sign side the archimedean term of every form is the Gamma factor of the reflection; the neutral part is the form of the zeros minus the poles [L*] (`exists_le_negIndex_sub_zeroGram_iff`).
+
+So the analytic uses of the functional equation with a remainder — approximate functional equations, convexity, zero counts, mollified moments — cannot separate ζ from a fake at the level of a finite layer, and the exact uses are few. A field whose object is the exact reflection is missing [A].
+
+| Aspect | Content |
+|---|---|
+| What it is about | Operations that keep the reflection exact (twisting, lifting, Rankin–Selberg, completion [C]) and operations that break it (truncation, mollification, sieving, editing), with the defect each one creates and the zeros that the defect admits |
+| What it is like | A quantitative converse theory. Hamburger's theorem says that the exact reflection identifies ζ; the field asks what each size of defect identifies, and which arithmetic constructions stay at defect zero |
+| Established [L*] | rigidity at `L¹`/`L²` defects; Abel floors for every coefficient difference; defect energy `≥cT log T` of fake edits; fakes at defect energy `T^{1+ε}` under `Θ<1`; bounded-defect fakes among signed weights; twin defects `2iζ·Im M`; the zero transfer `ρ↦6ρ−3`; the barrier of `6r`-periodic pairings. On the card: rigidity of unweighted systems at `O(\|t\|^{−½+ε})`; the fake pair as the image of the pole under `s↦s+1−ρ₀` |
+| Criteria | R1 a statement holds for ζ and fails for every fake of §1.3. R2 it states its defect budget; a budget of mean size `T^ε` is refuted. R3 it distinguishes completion from reflection. R4 it reproduces the Goss and Weil cases at defect zero. R5 a lower bound for a defect names what it sees: the deleted prime, the coefficient difference, or the zero |
+| Questions it must answer | B191 (the gap between `T log T` and `T^{1+ε}`; fakes at `β₀≥3/2−Θ`); a joint inequality between the count remainder and the defect that sees the depth (the card's Corollary III.2 shows that the defect alone does not); B187 (a pairing whose completion fixes the line); B180 (a reflection of the theta row without Eisenstein series) |
+| Tools | defect Laplace transforms and Abel means; Mellin–Plancherel on rays; grouped selections of primes with small discrepancy at every frequency; transfer maps of towers and their fixed points |
+| Objects | reflections, completions, defects, transfer maps, edits, twins |
+| Language | defect, defect energy, Abel floor, completion offset, transfer, rigidity radius |
+| Mechanisms | Built on EFT, APD, WZC, FCT, CRF. To discover: an operation on Möbius-signed families that reflects without completing, or the theorem that every reflection of such a family completes with fixed point above `½` |
+
+**Main conjecture [A].** Every reflection of a Möbius-signed family costs a completion whose coupled fixed point lies above `½`. **Milestones.** M1 the FE axis of edits (Lean, with A153). M2 B191. M3 the pairing coordinates of every sign-carrying design (B187). M4 a joint count–defect inequality.
+
+## 2.10 New field for AAL: the arithmetic of exceptional layers
+
+**Does AAL need a new field?** The receivers (FFA), the instruments (ELT) and the model theory over the rational primes (WZC) are built. They say what an argument for AAL may use: the reflection up to a decaying error, or the count below half the layer (§1.3). The layer–defect calculus that would have been the natural field is answered and gives no inequality in the depth alone: the lower bounds for the defect of a fake are those of its least deleted prime [L*]; [card]. What is missing is a theory of the object itself: a finite isolated layer of exceptional zeros [A].
+
+The nearest mathematics is the theory of exceptional eigenvalues [C]. A hyperbolic surface has finitely many eigenvalues below `¼`; they are a finite layer of off-line zeros of its Selberg zeta function, which has an Euler product and a functional equation. On general surfaces such layers exist; on congruence surfaces Selberg's conjecture says there are none, and what is proved (`3/16` in the corpus [L*]; better bounds by functorial lifts [C]) is proved by arithmetic: Kloosterman sums, Hecke operators, lifts. AAL is the statement of the same kind for ζ: no finite exceptional layer.
+
+| Aspect | Content |
+|---|---|
+| What it is about | Finite exceptional layers of zeta functions with an Euler product and a reflection: where they exist (Selberg zeta functions of surfaces with small eigenvalues, two-sided edits), where they are excluded (congruence surfaces down to `3/16`), and which arithmetic excludes them |
+| What it is like | The Selberg eigenvalue problem transported to ζ: gap principles that are all-or-nothing (no layer, or infinitely many zeros), proved by twisting and averaging over an arithmetic family and not by bounding one function |
+| Established | the atoms and their models; receivers and instruments of world I; removal of a finite layer by an edit [L*]; `selberg_three_sixteenths_congruence` [L*]; the FE axis [L*]; an Euler product over integer norms with a decaying FE defect is ζ [L*] |
+| Criteria | E1 false for a Selberg zeta function with a small eigenvalue and for every two-sided edit with a layer. E2 it uses the exact count or the reflection up to a decaying error. E3 it treats a layer with multiplicities. E4 its constants do not degenerate as the depth tends to zero. E5 it is a gap principle: its conclusion is "none or infinitely many" |
+| Questions it must answer | B157 (which structure of ζ that a Selberg zeta function lacks excludes a finite stratum); A120 (the finite stratum of a Selberg zeta function as a corpus model); B128 (does a finite layer of ζ replicate under a twisting operation?); A144 (tangent data under additive twists); B145 or B170; B183 |
+| Tools | Kloosterman sums and the Kuznetsov formula; additive and multiplicative twisting; Rankin–Selberg positivity on lifts [C]; filters and currents; edits as test objects |
+| Objects | layers, strata, twists, gaps, exceptional sets |
+| Language | exceptional layer, gap principle, replication, removal |
+| Mechanisms | Built on ELT, FFA, WZC, `RHTower/SelbergThreeSixteenths`. To discover: a twisting operation under which a finite layer of ζ has to reappear with a multiplicity that the exact count forbids |
+
+**Proof or falsification.** A proof is a gap principle that passes E1–E5. A falsification of AAL for ζ is a located finite layer; the corpus has no mechanism that forces one (§2.20). What can be falsified is each proposed principle, on the edits and on the surfaces with small eigenvalues. **Milestones.** M1 A120. M2 B157 as a theorem about one structure. M3 a replication law for one twist. M4 AAL.
+
+## 2.11 New field for RH without positivity: order arithmetic
+
+**Does a positivity-free, non-spectral RH need a new field?** Under the constraint (§2.6) the surviving mechanisms that act on zeros are orders and their parity, branch points of continuations, Galois actions on zeros, ultrametric dominance and exact evaluations of Gauss and Jacobi sums. Each exists in one programme; none is organized as a theory of zeros.
+
+| Aspect | Content |
+|---|---|
+| What it is about | Zeros through the algebra of their orders: parity of orders of Euler-product exponentials above multiples of the count exponent, branch points at `ρ/2`, `ρ/3`, …, the group of the zero field over the source field, Newton polygons in non-archimedean completions |
+| What it is like | The Goss proof as the model case: a Riemann hypothesis from dominance and simplicity of slopes, with no inequality between a sum and its terms |
+| Established [L*] | the order law at the multiple two (`even_order_of_count`); `L=K` ⇔ `H=B` ⇔ `K_even⊆ℝ` ⇔ RH; orbits in `{±δ}`; rational real parts have the orbit `{ρ,ρ̄}`; the reflection lifts iff `−1` is not a square; the Goss Riemann hypothesis; the sign law of Gauss sums |
+| Criteria | O1 no inequality between a form and its squares. O2 no operator spectrum. O3 a statement about orders, branchings or Galois actions. O4 it reproduces the Goss case. O5 it fails for every fake with an odd fake zero below twice its count exponent |
+| Questions it must answer | A155 (the order law at every multiple); B190 (orbits of zeros with irrational real part; an automorphism besides conjugation); a restriction forcing `H=B` from the prime traces; a non-archimedean completion of the zero field with fibrewise distinct norms; B145 |
+| Tools | Newton polygons over completions of the source field; parity and branching of continuations; Kummer theory of the width classes; exact Gauss-sum evaluations |
+| Objects | orders, branch points, zero fields, width classes, slopes |
+| Language | order, parity, branch, slope, descent |
+| Mechanisms | Built on GaloisTheoryOfZeros, SignFreePurityMechanisms, WZC, CRF. To discover: a valuation on the zero field that separates the zeros of each fibre |
+
+**Main conjecture [A].** The zero field of ζ carries a valuation, defined from the source traces, whose slopes separate every fibre. **Limit.** The conjecture is of RH strength; its first steps (the order law at higher multiples, slopes of single fibres) are below it.
+
+## 2.12 New field for RH as AdS physics: arithmetic horizon towers
+
+**Does it need a new field?** The modular horizon has its receivers (BHR, AHMH, HAT, CTH) and one cover horizon has its unfolding (STCC). The producer reads ζ through a tower of horizons: a cover, its theta, and the Grössencharacter channels coupled to the scalar. No programme treats a family of horizons and the maps between their resonance sets.
+
+| Aspect | Content |
+|---|---|
+| What it is about | Families of arithmetic horizons (congruence quotients, metaplectic covers of every degree), their scalar and spinning channels, the coupling maps between their resonance sets, and the arithmetic gap principles that each satisfies |
+| What it is like | Scattering theory of a tower: each horizon's resonances are the zeros of a family of `L`-functions, and completion couples the families by affine maps with computable fixed points |
+| Established [L*] | ringdown ⇔ strip; pulse rate = horocycle rate; the Weyl order of the cusp spectrum; Selberg `3/16`; the theta-square series of the cubic cover with its poles; the coupling maps `b↦((4r−1)+b)/(6r)` and their fixed points |
+| Criteria | H1 built from horizons and places, not from zeros. H2 false for non-arithmetic groups. H3 a rate with a margin is a half-plane; the quarter rate needs an equality case. H4 coupling maps are computed from completions, not postulated |
+| Questions it must answer | B188; B178; A26; the coupling maps of covers of every degree in the coordinates `(c,k)` of §2.5; a horizon whose coupling fixes the critical line (B187) |
+| Tools | Kuznetsov formula and Kloosterman sums; metaplectic Eisenstein series; Rankin–Selberg on covers; Euler filters |
+| Objects | horizons, covers, channels, coupling maps, rates |
+| Language | channel, coupling, fixed point, rate, gap |
+| Mechanisms | Built on BHR, AHMH, STCC, FCT, `RHTower/SelbergThreeSixteenths`. To discover: an arithmetic gap principle for resonances |
+
+**Main conjecture [A].** On congruence horizons the Kloosterman side bounds resonances as it bounds bound states. **Milestones.** M1 A148. M2 the coupling map of a second cover. M3 B188.
+
+## 2.13 New field for RH as topology or geometry: the gluing theory of windows
+
+**Does it need a new field?** The index theory of the aperture is built (Morse = Maslov, the polar Lagrangian). The finite object that RH is at finite scale has its first geometric theorems: the neutral part of a window is a potential plus a Dirichlet form, its bound states are counted by the sinks of a positive trial vector, and two windows glue through the product of their charges with an exact criterion [L*] (log §2). No programme treats the gluing itself: how the response of a union is computed from the responses of its parts, and what the primes contribute to it.
+
+| Aspect | Content |
+|---|---|
+| What it is about | Windows as wells with a charge channel: their bound states, their susceptibilities `u·A^{−1}u`, the response of a union in terms of the responses of its parts, the loss from the couplings that are not of charge type, and the behaviour of all of these under refinement of the blocks |
+| What it is like | Scattering by composition: Schur complements, inertia additivity and its failure (Wall's non-additivity of the signature [C]), capacity and Cheeger-type constants of weighted graphs, Bargmann-type counts of bound states [C] |
+| Established [L*] | one bound state ⇔ susceptibility product `≥1`, two if both are negative with product `<1`; the union holds at most the bound states of the glued model with lowered potentials, and at least those of the model with raised potentials [D]; index `≤1+` the number of blocks with potential below `−λJ`; narrow windows; one-sign charged ground vectors; exactly one bound state on ratio `≤103/50` at every block size; refinement transfer of margins |
+| Criteria | G1 counts bound states without the zeros. G2 the count is one on the certified windows. G3 a wrong contact weight, constant or tree length produces a second bound state. G4 the Liouville twist produces one above the trivial aperture. G5 stable under refinement. G6 the gluing criterion reproduces the certified unions |
+| Questions it must answer | B189 (the susceptibility product of adjacent windows); a composition law for susceptibilities under gluing; the rank of the coupling that carries the binding of two adjacent windows; the first ratio at which a second bound state could appear |
+| Tools | Schur complements along the charges; interlacing; M-matrix theory; the refinement tower; the contact Mellin calculus |
+| Objects | windows, blocks, potentials, couplings, charges, susceptibilities, bound states |
+| Language | well, bound state, susceptibility, gluing, excess coupling, refinement |
+| Mechanisms | Built on AGZ, HFP. To discover: a quantity that composes under gluing and that the primes keep on the side of one bound state |
+
+**Main conjecture.** Every window holds exactly one bound state (RH); in gluing form, the susceptibility product of the two halves of every window is at least one. **Milestones.** M1 A156. M2 B189 at ratio four. M3 a composition law. M4 every ratio (B152).
+
+## 2.14 A research programme to construct `𝔽₁`
+
+**Goal.** A geometry in which Spec ℤ has a square and the inequality of Castelnuovo and Severi on it is a theorem. The programme is AGZ with HFP; SA, FFA and WZC are its test benches.
+
+**What the corpus fixes [L*].**
+| Item | Theorem |
+|---|---|
+| the pairing | Bézout for the comb ⇔ RH with the weights `Λ`; a shift of the constant is admissible only downward; index = right zeros |
+| forced data | constant, contacts at their price, tree lengths; a contact altered and paid at its price is RH at every parameter |
+| number rings | ideals as degree points; index of every Dedekind zeta function; the neutral form has the index of the zeta function plus one; quotients count zeros and poles; `n` copies of a quotient have the index of the quotient; Dedekind's divisibility on the line as a no-negative-square condition |
+| a non-abelian extension | `ℚ(∛2,ω)`: the Artin character of degree two and `ζ_{ℚ(∛2)}` have their Hodge index |
+| characters | the Brauer elementary monomial characters generate the virtual characters of a finite group |
+| finite scale | RH ⇔ one negative square of the neutral part on every window; ratio `≤103/50`, narrow windows, first blocks, thin packets certified; refinement transfer |
+| gluing | two windows hold one bound state iff their susceptibilities multiply to at least one; unions are bounded by the glued model with lowered potentials |
+| the aperture | Morse = Maslov index; far end = zeros; polar Lagrangian; a single simple null mode on a short aperture |
+| tails | critical comb growth = width; Abel integrability ⇔ `a+w≤½`; convergence ⇔ every zero left of `1−a`; Laguerre tails = Li coefficients |
+| sections, points | the square counts linearly; the contacts of a number ring are its point counts over the finite fields |
+| counts of models | a count rate above the pair identifies nothing; an FE defect that decays identifies the rational primes |
+
+**What it would be like [D].** Spec ℤ over `𝔽₁` is a curve of infinite genus whose square is rigid and counts like a curve. Its Néron–Severi lattice at finite scale is a potential plus a Dirichlet form, its Hodge index is a bound-state count, and its pieces glue through two charges, the two poles. Its index along the aperture is a Maslov index with a two-dimensional polar shadow. Its zero width is the growth of one comb. What distinguishes ℤ from its imitations is the reflection as an identity and the exact count.
+
+**State of the constructions.**
+| Construction | Deliverable | State |
+|---|---|---|
+| I path | transport of the sign | closed: RH at every parameter |
+| II glued fibre | the comb form as a glued form | refuted for invariant gluings [KR]; data forced |
+| III Stepanov on the square | a small vanishing section | closed: an equality of ideals [F] |
+| IV towers and Galois extensions | index per character | Hecke characters, number rings, quotients and their powers, one non-abelian ring; Brauer induction proved; the reciprocity law open as work (A154) |
+| V own comb | Bézout for an own system | closed: fails |
+| VI count | quadratic count | linear; no definition without the form (B87) |
+| VII finite scale | the inequality in finite rank | equivalence; ratio `≤103/50`, narrow windows, first blocks certified; ratio four at every block size open (A146) |
+| VIII index as topology | index from the path | closed as Morse = Maslov; the far end carries the zeros |
+| IX tails | the width on the comb | closed: one sequence; Li coefficients on the same sequence |
+| X bound states | the Hodge index as a bound-state count | the gluing law, the sink count and the charged ground vector are theorems; the susceptibilities of actual windows are open (B189) |
+
+**Criteria.** C1 reproduces Weil and Stepanov for curves. C2 a count rate is not enough. C3 uses the reflection as an identity, or up to a decaying error. C4 uses the Euler product on the function. C5 sees the exact normalization. C6 infinite type. C7 the diagonal is the density of a comb. C8 positivity is derived. C9 selective only where a contact enters. C10 additive over the constituents of a number ring, zeros and poles counted. C11 nothing below the trivial aperture beyond the dominated box. C12 at finite scale it is the neutral-part index. C13 a statement at the point. C14 a quadratic count. C15 treats neutral null modes. C16 its comb grows at the rate of the width. C17 its pieces glue by the susceptibility criterion.
+
+**Questions.** 1 a quadratic count (B87, B169). 2 Bézout from a property (B149). 3 the gluing law on actual windows (B189). 4 the reciprocity law (A154). 5 the sign of `𝔚_4` at every block size (A146). 6 the charge of the critical state (B104).
+
+**Tools, objects, language.** Schur complements along the charges; the refinement tower; the index law for quotients and powers; contact Mellin calculus; induction theorems for characters. Objects: degree points, contacts, jets, blocks, charges, windows. Language: comb, Bézout, neutral part, bound state, susceptibility, aperture.
+
+**Order of work [A].** A156; B189 at ratio four; A154; A146.
+
+**Decisive test.** A construction whose Bézout holds for an edit with a finite layer, for a fake, for the Liouville twist at rung one, for a wrong constant, or along a path of squares, is wrong [L*].
+
+## 2.15 A research programme to close the route WD
+
+**Goal.** A bound `O_θ(T^K)` with one `K` and unbounded `θ` for the second moment of ζ times a Möbius mollifier of length `T^θ`, or the collision bound equivalent to it [F].
+
+**What the corpus fixes.**
+| Item | Statement | Evidence |
+|---|---|---|
+| receiver | RH ⇔ the mollified moment is subpolynomial; a cofinal bound with fixed `K` suffices | [F] |
+| depth | dyadic boundedness at `θ>1` confines high zeros to depth `<1/(2θ)+ε` | [L*] |
+| proved range | `θ<½` with displaced twisted moments; a positive proportion of critical zeros of odd multiplicity | [L*] |
+| necessary length | excess `K₀/log T` forces `log N≥log²T/(6K₀)−(4/3)log T` | [F]/[KR] |
+| blindness | Type-II norms sign-blind; finite relocation invisible to quadratic tests of length `o(T²)` | [KR] |
+| cameras | adaptive clusters with complete exterior mass `≤¼`; centred cameras with prime mean square `≤C·T·exp(−2b(y−c log T))` | [L*] |
+| short intervals | mean squares of `λχ` in intervals of bounded length for `χ≠1`; for `χ=1` the top-scale blocks above polylogarithmic frequencies, the ladder on a frequency set, twisted partial sums `o(N)` for `2\|τ\|≤√N` [S] | [L*] |
+
+**What it would be like [D].** A mean-value theory past the height, whose off-diagonal is a correlation of truncated Möbius divisor sums. On the scale a bounded dyadic moment at `θ` is the half-plane `½+1/(2θ)`: the route passes `7/8` at `θ=4/3` and reaches the line only cofinally. Below `3/5` the route competes with nothing: the frame of the producer ends there (§1.6).
+
+**Criteria.** W1 fails for `ζ(s)(1−cp^{−s})`, `c>√p`. W2 fails for a finite relocation (needs length beyond `T²`). W3 not a Type-II norm bound. W4 keeps the pole and the Barban–Vehov diagonal. W5 `K` independent of `θ`. W6 at `θ<4/3` it gives nothing `[X]` does not. W7 it fails for a two-sided edit with a finite layer, which changes the Möbius coefficients at infinitely many primes.
+
+**Questions.** 1 A18. 2 the collision form at `θ≥1`. 3 a power saving at one `θ>4/3` (below `7/8`); at `θ>5` it is below `3/5`, past the frame of the producer. 4 fixed `K` along `θ→∞` (B62). 5 the converse of the depth theorem. 6 A147, the correlation input.
+
+**Tools, objects, language.** Gallagher's transfer; the Selberg-integral dictionary; shifted correlations of sieve weights; the Levinson gate; the ladder and Parseval of MatomakiRadziwill and the prime-shift reduction of LogarithmicChowla. Objects: mollifiers, dyadic moments, collision charges, cameras. Language: length, depth, excess.
+
+**Milestones.** M1 `θ<½` (Lean). M2 a proportion on the line (Lean). M3 A18. M4 A147. M5 the collision dictionary at `θ≥1`. M6 a saving at one `θ>4/3`. M7 the cofinal bound.
+
+**Limit [A].** The cofinal bound is RH; every partial result is a level of the scale.
+
+## 2.16 A research programme to close the route ACS
+
+**Goal.** One negative square of the neutral part on every window; equivalently the comb sign, a mass floor on every ratio window, or subpolynomial growth of the critical comb.
+
+**What the corpus fixes.** The table of §2.14, and:
+| Item | Statement | Evidence |
+|---|---|---|
+| the minimal face | one inequality per prime on logarithmic windows | [L*] |
+| finite scale | neutral-part index ⇔ RH; uniform index bound `(Q−1)⌈e^{E_Q}⌉` at each ratio, `300000` at ratio four | [L*] |
+| bound states | index `≤1+#{blocks with potential <−λJ}`; narrow windows `16J≤R` from the potential `≥−½` and the couplings `≥1/(2J)` | [L*] |
+| gluing | exact criterion; lowered potentials | [L*] |
+| transfer | margins above one scale pass to every refinement | [L*] |
+| tails | critical comb growth = width; never convergent; Abel integrable ⇔ RH; Li coefficients as Laguerre tails | [L*] |
+
+**What it would be like [D].** Three tracks on one lattice. *Matrices*: the neutral part as a well with a charge channel, one bound state per window, glued ratio by ratio. *Index*: the aperture path and its polar shadow. *Tails*: the critical comb as the scale on one sequence.
+
+**Criteria.** Those of §2.14, and: S1 nothing about the contacts below ratio two. S2 a margin at each ratio, none uniform. S3 nothing on the tails at `a<1/8` beyond `[X]`. S4 the certified windows are reproduced, not reproved.
+
+**Questions.** 1 A146: ratios 4 and 7 at every block size, where the index is between `0` (RH) and `300000` (proved). 2 B189: the susceptibility product of the halves. 3 B149, B87, B169. 4 B104. 5 A154, A141.
+
+**Tools, objects, language.** As in §2.13 and §2.14.
+
+**Milestones.** M1 finite criteria (Lean). M2 ratio `≤103/50` and narrow windows (Lean). M3 the gluing law (Lean). M4 A156. M5 B189 at ratio four. M6 every ratio (B152).
+
+**Limit [A].** Each ratio is a finite-height statement; the uniform statement is RH.
+
+## 2.17 A research programme to close the route ZCG
+
+**Goal.** No positive-time collision of the heat flow; or the floor on a decisive sequence of prime windows; or ZAL, B13 and Landing.
+
+**What the corpus fixes.**
+| Item | Statement | Evidence |
+|---|---|---|
+| worlds | world I or world II, top `≤7/8` | [X]; [L*] |
+| world I receivers and instruments | unit gap, non-attainment, moments, filters, currents, quanta | [L*]/[F] |
+| world I models | every finite layer, the pair alone above the pair, an isolated pair above a tail, landing failure, sparse tails, layer removal, symmetric quartets — over the rational primes with a count rate | [L*] |
+| laws of the models | balance or real top; parity above twice the count exponent; count floor `13/30` | [L*] |
+| the FE axis | no fake with a decaying defect; fake edits at `T log T`; fakes at `T^{1+ε}` under `Θ<1`; the constants are those of the least deleted prime | [L*]; [card] |
+| the door | the reflection up to a decaying error, or a count below half the layer | [D] |
+| heat | RH ⇔ no collision; finitely many non-real zeros at positive times, infinitely many at negative times | [L*] |
+| cameras | adaptive clusters with complete exterior mass | [L*] |
+
+**What it would be like [D].** World I is a finite-dimensional problem with complete receivers and a complete model theory over the rational primes: it closes by one statement that uses the reflection to a decaying error, or the exact count, and that fails on every edit. World II is the scale and inherits the end of the producer.
+
+**Criteria.** Z1 a world-I statement fails on every edit with a finite layer and on the fakes. Z2 two-sided, or at every length. Z3 nothing below the logarithmic radius. Z4 a world-II statement is placed on the scale. Z5 a camera statement names the cluster size and gap. Z6 nothing in law used as a point. Z7 every statement states its FE defect budget; a budget of mean size `T^ε` is refuted by the fakes if `Θ<1`.
+
+**Questions.** 1 B145 or B170. 2 B191. 3 B183. 4 B141: not from an Euler product over the rational primes with a count rate (the isolated pair above a tail) [L*]. 5 B13 and Landing (B157, A120). 6 B59. 7 the half-planes of world II.
+
+**Tools, objects, language.** Filters, currents, quanta; two-sided and signed grouped edits with prescribed factors; the balance and order laws; defect Laplace transforms; adaptive cameras; the scale. Objects: layers, tails, edits, twins, defects. Language: world, atom, layer, fake, defect.
+
+**Milestones.** M1 receivers, instruments, models (Lean). M2 the FE axis (Lean; A153). M3 the weighted current for one quartet. M4 AAL. M5 ZAL through the scale. M6 Landing and B13.
+
+**Decisive test.** An argument for AAL that holds for a two-sided edit with a finite layer or for a fake is wrong.
+
+**Limit [A].** AAL and ZAL together are RH; the corpus has a receiver for each and a producer for neither below `7/8`.
+
+## 2.18 A research programme to close the route MC/JAS
+
+**Goal.** The signal bound `O(Z^b)` for every `b>½`; equivalently level one of the dressed aggregate.
+
+**What the corpus fixes.** §1.6 in full; producer rates are the Mertens level [L*]; bilinear norms are sign-blind [KR]; the prime kernel off the major arcs, short-interval mean squares of `λχ` and the reduction of logarithmic correlations to prime dilates [L*]; these give no half power [F].
+
+**What it would be like [D].**
+| Stage | Half-plane | Input | Kind |
+|---|---|---|---|
+| 0 | `7/8` native | A118 | just work |
+| 1 | `7/8→13/15` | row count of the binding bin (B174) | density estimate |
+| 2 | `13/15→5/6→7/9` | the long columns with a power saving (B185) | an estimate that is not a square |
+| 3 | `7/9→2/3` | square-root remainder in the long columns | Patterson type [C] |
+| 4 | `2/3→3/5` | estimates below square-root size on every level of the tower | beyond square root |
+| 5 | below `3/5` | a pairing outside the `6r`-periodic Gauss pairings (B187) | — |
+
+**Criteria.** J1 every estimate placed in the twist exponent. J2 a mean square containing the principal twists is not an input. J3 positive weights, even order, two row variables fail. J4 below `5/6` nothing is a square. J5 below `2/3` the family contains its corrections. J6 a source for the last stage has pairing coordinates with fixed point `½` and a design with square-root endpoint `½`.
+
+**Questions.** B174, B185, B187, B180; the coupling map of every completed probe; level one directly (B160).
+
+**Tools, objects, language.** The budget calculus; signed Gram forms; Poisson coefficients; sieves over cyclotomic rings; the theta-square series; the scale as a ruler. Objects: rows, columns, bins, root numbers, pairings, towers. Language: design, corner, floor bin, frame, fixed point.
+
+**Milestones.** M1 the native `7/8`. M2 a boundary below `7/8`. M3 B185 with any `R₀<1`. M4 below `5/6`. M5 B187.
+
+**Decisive test.** An estimate that holds for matched phases, or for a family with its principal twists counted as input, proves no half-plane.
+
+**Limit [A].** With every stage of the cubic probe completed the programme reaches `2/3` (`3/5` with estimates beyond square root), and no period of the Gauss pairings does better. It is the only programme that has produced a theorem about the zeros, and in its class it does not reach the line.
+
+## 2.19 A research programme for a Galois theory of the zeros
+
+**Goal.** Treat the zeros of ζ as the roots of equations over a field built from the primes, determine the group of these equations, and classify the permutations of the zeros that the group allows.
+
+**What the corpus fixes [L*]** (GaloisTheoryOfZeros, log §4, §21, §24).
+| Item | Theorem |
+|---|---|
+| the equations | for each ordinate the polynomial of the centred zeros with that ordinate has coefficients in the fibre source field `K`; the zero field `L` is algebraic and normal over `K` |
+| the criterion | `K` equals the field generated by the zeros iff RH; `K_even⊆ℝ` iff RH; over the prime trace field `B` the reflection field `H` equals `B` iff RH |
+| the group | conjugation is central; every orbit is finite; the action is not transitive; every critical zero is fixed; a source automorphism displaces a zero by less than one |
+| its shape | over the field of squared widths the group is the closed group of sign families that annihilate the square-class relations of the radicands `−δ_q²`: each element reflects the widths of a set of fibres |
+| the reflection | `ρ↦1−ρ` lifts to the Gaussian extension iff `−1` is not a square in `L` |
+| over the prime traces | an embedding fixing `B` sends a zero to a zero with centred real part `±` the original; an orbit meeting the line lies on it; a zero with rational real part has the orbit `{ρ,ρ̄}` |
+| transcendence | `p^ρ` and `r^ρ` both algebraic force `Re ρ∈ℚ`; `B` contains a transcendental element |
+| symmetries of the translations | maps commuting with the translations at 2 and 3 are diagonal; the only nonidentity pointed real symmetry is conjugation |
+| finite equations | Jensen discriminants are nonnegative; the folded nonreal census exhausts the off-line divisor; the generic centred polynomial of degree `d` has the full symmetric group |
+| absent | an automorphism other than conjugation; the orbit of a zero with irrational real part; the group of one Jensen polynomial of ξ; a monodromy group of the zeros along the heat flow; Frobenius or decomposition structure |
+
+**What it would be like [D].** A theory of signed permutations with two marked involutions.
+- *The model case [C].* The zeros of the zeta function of a curve of genus `g` over `𝔽_q` are the roots of one polynomial with integer coefficients. The functional equation pairs the roots, so the group lies in the group of signed permutations `(ℤ/2)^g⋊S_g`; for most curves it is the whole group. The Riemann hypothesis there is not a statement about the size of the group. It says that two involutions of the roots agree: complex conjugation and the reflection `α↦q/α`.
+- *For ζ.* The same two involutions act on the zeros: conjugation `c: ρ↦ρ̄` and the reflection `r: ρ↦1−ρ`. RH ⇔ `c=r` on the zeros ⇔ the involution `cr: ρ↦1−ρ̄`, which fixes the ordinate and reflects the width, is the identity. The corpus has built the sign part of the signed-permutation group: over `K` the group is a group of width reflections, and it is trivial iff RH. The permutation part is removed by the choice of the base field, which contains the ordinates.
+- *Three tiers of equations.* (1) Finite: Jensen polynomials, whose group is expected to be the full symmetric group and carries no information; the information is the cycle type of conjugation, `N_d/2` transpositions. (2) The zero field over `K`, `D`, `B`: an elementary abelian 2-group dual to the group of square classes of the radicands. (3) Monodromy: the zeros as functions of a complex parameter (heat time, a twist), with branch points at collisions and transpositions as local monodromy.
+
+**Criteria.** T1g the base field is defined from the primes or from complete fibres, never from single zeros. T2g every statement names its base field: over `K` the group is trivial iff RH, over a smaller field a large group is compatible with RH. T3g the classification names the classes of conjugation and of the reflection. T4g it reproduces the function-field case with its signed-permutation group. T5g a statement that forces `c=r` fails for the zero set of a two-sided edit with a fake pair, to which every construction of the theory applies as well. T6g a transitive action is excluded [L*]; nothing may assume one.
+
+**Questions it must answer.** 1 B190: the orbit of a zero with irrational real part under the embeddings fixing `B`; an automorphism of `L` besides conjugation. 2 Is `[L:K]` equal to one or infinite? A finite nontrivial degree is the Galois form of a finite stratum, so the statement contains B13. 3 Which square-class relations hold among the radicands `−δ_q²`: is the group, if nontrivial, the full product of signs? 4 The group of one Jensen polynomial of ξ over the field of its coefficients, and the class of conjugation in it. 5 The monodromy of the zeros of the heat family around a collision time, and the group it generates; RH ⇔ no multiple zero at a positive time [L*] (`riemannHypothesis_iff_forall_zeros_simple`). 6 A restriction, from the prime traces alone, that forces `H=B`.
+
+**Tools, objects, language.** Kummer theory of the width classes; the Artin–Schreier theory of real fields [C]; transcendence of prime powers; specialization and Hilbert irreducibility for the finite equations [C]; monodromy of analytic covers. Objects: source field, zero field, prime trace field, reflection field, fibres, widths, radicands, sign families. Language: orbit, width class, reflection kernel, lift.
+
+**Milestones.** M1 the zero field and its criteria (Lean). M2 the group of the Jensen polynomials of low degree. M3 the square-class relations of two fibres. M4 the monodromy group of the heat family near one collision. M5 the dichotomy `[L:K]∈{1,∞}`.
+
+**Limit [A].** Over the fields of the corpus the group is trivial exactly when RH holds, so determining the group is RH and classifying its permutations is classifying the failures of RH. The theory supplies a language and criteria; it supplies a route only through a restriction that the primes impose on the group, and the corpus has none.
+
+## 2.20 A research programme under the assumption that RH is false
+
+**Goal.** (a) A proof that RH fails. (b) A concrete counterexample, found without computation at the height of the zero.
+
+**What the corpus fixes.**
+| Item | Statement | Evidence |
+|---|---|---|
+| where a failure lives | a zero with `½<Re ρ≤7/8`; world I (a finite isolated top layer) or world II (a tail) | [X]; [L*] |
+| objects that exist iff RH fails | the critical half-line state at a finite `W₀`, unique up to sign, with the weak equation; an odd bound state; a defective hard-edge block; a point right of the line with `Re ξ′/ξ<0`; a negative definite Markov plane; an aperture with an empty feasible set; a window whose neutral part has two negative squares; a crossing along the aperture; a multiple zero of some `H_t`, `t>0` | [L*] (log §1, §14, §20) |
+| a failure repeats | negative paired Li indices in every window of some bounded length; in world I `ψ(x)−x` attains `x^β` on every late window and at the primes | [L*]; [F] |
+| zero ⇒ certificate | a zero of depth `δ` at height `γ₀` with no other off-line zero within `(A log γ₀)^κ`, `κ>1/(2δ)`, makes Weil's form negative on tests supported in `\|u\|≤κ log(A log γ₀)`; a zero within `1/V` of the top makes `μ(A)<0` for `A≥V/2+w` | [L*] (log §24) |
+| certificate ⇒ zero | a negative test at aperture `a` gives an off-line zero below `exp(exp(Ca))`; `C` is not explicit | [L*] |
+| returns | under `Θ≤b` a return of a heavy set of primes up to `y` at height `t` needs `log t≥c·y^{1−b}`; a system aligned with a height fails at every aperture above `log log T+log 2` | [L*] |
+| counts | at ratio four the block matrix has at most `300000` negative squares at every block size; RH says none | [L*] |
+| what is excluded | a failure below height 67; a failure on windows of ratio `≤103/50` or on narrow windows; a failure visible to a statement in law | [F]; [L*] |
+| models | every failure mode (a pair alone, a finite layer, a tail, no landing) is realized over the rational primes with a count rate, and under `Θ<1` with an FE defect of mean size `T^ε` | [L*] |
+
+**What it would be like [D].**
+- *A failure is a return.* An isolated off-line zero of depth `δ` at height `t` is visible in the primes up to `(A log t)^{2κ}`, `κ>1/(2δ)`: Weil's form at that height is negative on a test supported in `|u|≤κ log(A log t)`, and the prime side of that test reads prime powers up to `e^{2a}`. With `δ≤3/8` the rung is `κ>4/3`. By the return bound with `b=½`, RH allows heavy returns of the primes up to `y` only at heights with `log t≥c√y`; with `b=7/8` the unconditional range is `log t≥c·y^{1/8}`. So a disproof is an **anomalous return**: a height `t` at which a heavy set of the primes up to `y` returns although `log t<c√y`. The window for it is `(log t)^2≪y≪(log t)^8`. The pigeonhole principle gives returns only for `y` of order `log t·log log t` [C].
+- *A failure is a second bound state.* Two adjacent windows with one bound state each whose raised models have negative susceptibilities with product below one hold two bound states together (log §24), which RH forbids on windows with `R≤J`.
+- *A failure is one function.* The weak equation at the critical ratio is a linear equation with the actual primes; a unit solution on the half-line with nonpositive truncated forms exists iff RH fails.
+- *A concrete counterexample* in this setting is a triple: a height, an aperture and a test, with the negativity of a finite sum over the prime powers below `e^{2a}`; or a window, a block size and a vector. Its size is polylogarithmic in the height of the zero. The zero itself is then located only by a bound: below `exp(exp(Ca))` (A142). This is the form of Littlewood's theorem on `π(x)−li(x)` with Skewes' bound [C].
+
+**Criteria.** N1 the argument fails for the zeta functions that satisfy their Riemann hypothesis: curves over finite fields [C], the Goss zeta function [L*], the certified windows [L*]. N2 it uses what ℤ has and those cases lack: the archimedean place, infinite type, the absence of a Frobenius. N3 it is consistent with `[X]`, with the verified height, with the positive proportion on the line, and it says which world it produces. N4 its certificate states an aperture and, through A142, a height. N5 no statement in law is used as a point. N6 an existence proof by return has to beat the pigeonhole range by a square: it uses arithmetic relations among the `log p`, and the only relations are those of the integers.
+
+**Questions it must answer.** 1 Is there a rung `κ∈(1,4]` and a sequence of heights with a heavy return of the primes up to `(log t)^{2κ}`? 2 Explicit constants: `c` in the return bound at `b=½`, `C` in the verification rate (A142). 3 The raised-potential side of the gluing comparison as a Lean statement, and the susceptibilities of the first uncertified windows (A156). 4 Does the weak equation at a finite `W₀` have a solution; what do uniqueness and the zero-free Laplace transform force on it (B104)? 5 Which world: is a failure of ζ necessarily a tail (AAL), which would make every counterexample non-isolated and remove the ladder's certificate?
+
+**Tools, objects, language.** Diophantine approximation and the geometry of numbers for the prime phases; Ω-theorems [C]; the ladder; the gluing comparison in both directions; compactness at the critical ratio; edits as models of what a failure looks like in the primes. Objects: returns, certificates, failing apertures, critical states, second bound states. Language: anomalous return, rung, certificate, height bound.
+
+**Milestones.** M1 the explicit constants (A142 and the return bound). M2 the two-sided gluing comparison. M3 a return on a rung above one for a model system with the exact count, or the theorem that the exact count forbids it. M4 an anomalous return for the primes.
+
+**Assessment [A].** The corpus contains no mechanism that forces a zero off the line. Every exact form of "RH fails" is an existence statement, and every model that realizes a failure gives up the exact reflection. The verified height, the certified windows and the proved laws are all on the side of RH. The programme therefore yields, as it stands, three things: the list of objects that a failure would have to produce; the conversion between a zero and a certificate of polylogarithmic size; and a sharp description of the event to look for, a return of the primes beyond the pigeonhole range. Part (b) is possible only in the Skewes form: a certificate with an explicit bound for the height, and not a located zero.
+
+## 2.21 The one big question: do adjacent windows glue through their charges? (B189)
+
+**Where the question sits.** At finite scale RH is a count: the neutral part of every window `(R,R+J]`, `R≤J`, has one negative square. The count is certified where the window is close to dyadic (ratio between `2` and `103/50`, every block size) and where it is narrow (`16J≤R`). At ratio four the block matrix has between zero (RH) and `300000` (proved) negative squares at every block size [L*]. The induction step from a window to a larger one exists as linear algebra, and it reduces to two numbers: the susceptibilities of the two pieces [L*]. No statement gives these numbers for an actual window (log §14, §22).
+
+**What is in Lean [L*].**
+- Two symmetric matrices `A`, `B`, nonnegative on the kernels of charge vectors `u`, `v`, with `Aa=u`, `Bb=v`, `α=u·a`, `β=v·b<0`: the glued form `A(x)+B(y)−2(u·x)(v·y)` has exactly one negative square if `αβ≥1`, and exactly two if `α<0` and `αβ<1`.
+- For adjacent windows and charge vectors with `u_iv_j` at most the coupling of the blocks `i` and `j`, the neutral part of the union has at most the negative squares of the glued model whose potentials are lowered by the excess couplings.
+- A window whose couplings are all `≥λ` has at most one bound state more than its number of blocks with potential below `−λJ`; a window with `4J≤R` has a ground vector of one sign with both charges nonzero.
+
+**What follows [D].** With the potentials raised by the excess couplings the same comparison holds in the other direction (log §24). So the index of a union lies between the indices of two glued models, and each of those is decided by a susceptibility product: at most one bound state if the lowered product is `≥1`, at least two if the raised product is `<1` with both susceptibilities negative.
+
+**Question (B189).** *For the two halves `(R,2R]` and `(2R,4R]` of a window of ratio four, at every block size: are there charge vectors `u`, `v` below the couplings for which the lowered halves are nonnegative on the kernels of `u` and `v` and their susceptibilities multiply to at least one? In general: what is the largest susceptibility product of two adjacent certified windows over the admissible charge vectors, as a function of the ratio and the block size?*
+
+**Why this question.**
+- It is below RH, AAL and every half-plane. The conclusion at a fixed ratio — one bound state at ratio four — follows from RH and already from a finite verified height (A142). The question is whether the gluing mechanism proves it, and that is implied by nothing about the zeros.
+- It is the induction step of the Σ core in its smallest form: one inequality between two numbers per gluing, with every other part of the step proved.
+- Its first step (A156) is a computation in corpus objects on windows whose answer is known.
+
+**What an answer gives.**
+| Answer | Effect |
+|---|---|
+| yes at ratio four, with a margin uniform in the block size | the first finite-scale index outside the certified range that is proved from the potential and the couplings and not from the zeros. The same step applies to the next gluing, and RH becomes the statement that the margin does not close along the ratios: a recursion for one quantity |
+| yes at every block size, with a margin that tends to zero | the charge channel binds at finite resolution only: the limit of the step is the question of the charge of the critical state (B104) |
+| no for the lowered model, yes for the raised one | the bracket is not tight: the binding of the halves is carried by couplings beyond the product of the charges. The gluing law has to be extended from numbers to response matrices, and the rank of the coupling that carries the binding is the invariant to compute |
+| the raised product is below one with both susceptibilities negative, at some block size | two bound states at ratio four: RH fails, with a zero beyond the verified height (§2.20) |
+
+**First step and obstacle.** A156: the susceptibilities of the certified windows, and the criterion tested on unions whose index is known — two narrow windows whose union is narrow, and a dyadic window extended to ratio `103/50`. Named obstacle: the excess couplings. The contacts along the floor maps are not of product form, the lowering by the excess can destroy nonnegativity on the kernel, and the loss has to be bounded uniformly in the block size.
+
+**Tests.** T1: a method question; the fixed-ratio conclusion is implied by RH and is below it. T2: an inequality between two computable numbers for each window and block size. T3: named for each answer. T4: the lowered criterion is not decided by a verified height. T5: calibrated on the certified unions; the criterion has to fail where a second bound state exists (the Liouville twist above the trivial aperture, a wrong constant), and `hermNegIndex_glued_eq_two` says exactly when it does. T6: no bound for the susceptibility of an actual window or of a union is in the corpus. T7: moves Σ178, Σ176 and A146. T8: not a named problem; the first step is in corpus objects with one named obstacle.
+
+**Limit.** At each fixed ratio the conclusion is a finite-height statement, and uniformly over all ratios it is RH. One negative square of the neutral part on a window does not by itself give the sign of the block matrix on that window: the two indices differ by at most one [L*]. The question decides whether the induction on the ratio has a step of rank one.
+
+### Alternatives considered
+| Question | Effect | Verdict |
+|---|---|---|
+| The long columns (B185, §2.4) | the first non-square estimate; the half-plane moves toward `2/3` | the largest motion available on the scale; capped at `2/3` |
+| A pairing whose frame reaches the line (B187, §2.5) | a producer for the line, or the end of the Gauss-sum class at `3/5` | the producer question; its first step is a classification |
+| The charge of the critical state (B104, §2.8) | the polar shadow sees the first crossing | decides one channel of five routes; the limit case of B189 |
+| The defect gap (B191) | the exact order of the least defect energy of a fake | a model question on an axis whose two ends are theorems |
+| A fake below `√x` with a non-real top (B183) | the count door for world I | balanced edits only; a model question on the count axis |
+| The row count of the binding bin (B174) | `[13/15,7/8)` | a one-sided density estimate |
+| The weighted current (B145, §2.6) | AAL without a sign | AAL strength |
+| The congruence mechanism for resonances (B188, §2.7) | a second producer | no first step past the dictionary |
+| The orbits of the zero field (B190, §2.19) | a nontrivial permutation of zeros, or none | no restriction from the primes in the corpus |
+| An anomalous return (§2.20) | a disproof | no forcing mechanism |
+| The steps of `[X]` (A118), the reciprocity law (A154), the explicit verification rate (A142) | the half-plane, the Artin index and the window heights in the native graph | just work |

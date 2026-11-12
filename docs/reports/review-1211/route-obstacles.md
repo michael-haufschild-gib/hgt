@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** `dd55ee70d9` (2026-11-12). Fact log: `logs/review-1211-rev2-facts.md` (cited as "log §n"; every entry is a Lean statement read at its declaration). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** `dd55ee70d9` (2026-11-12), working-tree sources included. Fact log: `logs/review-1211-rev2-facts.md` (cited as "log §n"; every entry is a Lean statement read at its declaration). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. HJ is PA; the BSY criterion of FEL belongs to CTF; PCS, DR, PW-B are retired labels.
 
@@ -162,7 +162,7 @@ Established: RH ⇔ the Möbius-mollified second moment is subpolynomial; a cofi
 | | Obstacle | Strength |
 |---|---|---|
 | A18 | twisted moments past the square root [C] | — |
-| A147 | logarithmic two-point Chowla: for the principal character the low frequencies `\|τ\|<(log X)^{19}`, the assembly of the restricted ladder with Parseval, the transfer to `V(b/s,T)` [C] | — |
+| A147 | logarithmic two-point Chowla: for the principal character the low-frequency mean square `\|τ\|<(log X)^{19}` with reciprocal weights (twisted partial sums `o(N)` for `2\|τ\|≤√N` are written [S]), the assembly of the restricted ladder with Parseval, the transfer to `V(b/s,T)` [C] | — |
 | B57 | depth density `o(T)` (first moment) | sub |
 | B58–B61 | `D_win`; pointwise prime cost of the adaptive profile at its selected centres; Green moments at deep zeros; a detector past the last scale | sub |
 | B62, B66 | cofinal long moment; near-unit holomorphic budgets | RH |
@@ -214,8 +214,9 @@ Established:
 |---|---|---|
 | A120 | a finite nonempty stratum with both structures: Selberg zeta functions of surfaces with a small eigenvalue [C] | — |
 | A144 | tangent data under additive twists (unverified) | — |
-| A153 | Lean statements for the card's Theorems II.1, II.3, Corollary III.2 and the prime weights of II.2(b) | — |
+| A153 | Lean statements for the card's Theorems II.1, II.3 and Corollary III.2; the Euler weights of II.2(b) are `hasProd_signedPoly` [S] | — |
 | A157 | the Perron count of the signed grouped edit left of `½` (unverified) | — |
+| A155 | the order law at every multiple: divisibility by `k` of the order of a zero of the edit exponential above `k` times the count exponent, `k≥3` (unverified) | — |
 | B13, B138, B141 | finite stratum; landing; Deuring–Heilbronn for ζ | sub |
 | B83, B170 | AAL; non-attainment for ζ | sub / AAL |
 | B89, B112, B128 | bounded aligned return; FE into vertical transport; replication by another mechanism | sub |
@@ -339,7 +340,7 @@ Receiver statements follow the frontier map unless marked.
 
 ### MC — Möbius cancellation
 - **Path:** half-power Möbius cancellation → RH.
-- **Established:** damped critical energy, fixed-height prefixes, mollifier zero-freeness each characterize RH [F]; the coupled tower and its barrier at every period [L*]; short-interval mean squares of `λχ` for `χ≠1`; for `χ=1` the top-scale blocks above polylogarithmic frequencies and the ladder master inequality on a frequency set; logarithmic correlations of `λ` reduce to prime dilates with a bounded prime kernel off the major arcs [L*] (log §5, §17).
+- **Established:** damped critical energy, fixed-height prefixes, mollifier zero-freeness each characterize RH [F]; the coupled tower and its barrier at every period [L*]; short-interval mean squares of `λχ` for `χ≠1`; for `χ=1` the top-scale blocks above polylogarithmic frequencies, the ladder master inequality on a frequency set, and twisted partial sums `o(N)` for `2|τ|≤√N` [S]; logarithmic correlations of `λ` reduce to prime dilates with a bounded prime kernel off the major arcs [L*] (log §5, §17).
 - **(a)** A33, A46, A118, A147.
 - **(b)** B48, B50, B15, B106; B161; B174, B185, B187. RH needs a source other than the cubic probe [F]; [L*] (log §16).
 
@@ -359,7 +360,7 @@ Receiver statements follow the frontier map unless marked.
 ### ZCG — Zero-configuration geometry / heat descent / abscissa laws
 - **Path:** no positive-time collision → RH; or a decisive prime-window floor; or ZAL ∧ B13 ∧ Landing.
 - **Established:** collision exclusion ⇔ RH [L*]; blocks S3, S4, S8, S13; adaptive cameras with complete exterior mass [L*]; the model theory of world I over the rational primes and the FE axis [L*] (log §3, §9, §12, §18).
-- **(a)** A19, A120, A144, A153, A157.
+- **(a)** A19, A120, A144, A153, A155, A157.
 - **(b)** B24, B25, B47, B27, B124; B130; B145, B170; B13, B138, B141; B59; B183, B191.
 
 ### TG — Topological sub-unit gate
@@ -508,8 +509,8 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 | AGZ | forced data; exact index for number rings, one Artin character, virtual configurations, quotients and powers; contacts = point counts; finite-scale index law; certified ratio `≤103/50`, narrow windows, first blocks, thin packets; uniform index bound at each ratio; index law in the aperture; charged crossings; gluing law, lowered potentials, sink count, charged ground vectors; power and critical combs; Li coefficients as Laguerre tails [L*] | A146, A154, A156 | B104, B149, B169, B88, B87, B152, B189 |
 | AHD / CACT | thresholds; classification; the critical half-line state (weak equation, uniqueness, zero-free Laplace transform, causal coordinates); positivity below the eighth root [L*] | A9, A13 | B104, B123 |
 | HFP | mass floors on ratio windows [L*] | — | B152 |
-| WZC | two-sided edits: every finite layer, pair alone, tails, landing failure, sparse configurations, layer removal; balance, parity, count floor; floor `≥13/30`; twin defects; signed grouped edits; the frontier dichotomy [L*] | A153, A157 | B183, B191 |
-| EFT / APD / SPAL | FE rigidity with `L¹`/`L²` defects; Abel floors; `T log T` defect energy of fake edits; signed fakes with bounded defect; positive density of integer-norm fakes [L*] | A153 | B191 |
+| WZC | two-sided edits: every finite layer, pair alone, tails, landing failure, sparse configurations, layer removal; balance, parity, count floor; floor `≥13/30`; twin defects; signed grouped edits; the frontier dichotomy [L*] | A153, A155, A157 | B183, B191 |
+| EFT / APD / SPAL | FE rigidity with `L¹`/`L²` defects; Abel floors; `T log T` defect energy of fake edits; signed fakes with bounded defect; positive density of integer-norm fakes [L*]; Euler weights of the signed fake [S] | A153 | B191 |
 | CRF | short columns, short Gram, average row, completed pair Gram, root numbers [L*] | A149 | B185, B187 |
 | STCC | theta-square series: factorization over cube frequencies, double pole at `4/3`, rotated correlation, squarefree combination, three-divisible layer [L*] | A148 | B180 |
 | FCT | frame, coupled tower to `3/5`, zero transfer, barrier of `6r`-periodic pairings, budget, sign law [L*] | A118, A138 | B161, B174, B187 |
@@ -521,7 +522,7 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 | ELT | atoms; filters; growing-order reduction [F] | — | B141, B145, B138, B13 |
 | CTZ, IRP | no bounded or Wiener constituent; index semicontinuity [F] | — | B146 |
 | MZF / CDG | twisted moments; positive proportion; centred cameras; boundary exterior mass [L*] | A18 | B62, B57, B59 |
-| MatomakiRadziwill, LogarithmicChowla, PrimeExponentialSums | short-interval mean squares of `λχ`, `χ≠1`; Route T for ζ above polylogarithmic frequencies; ladder on a frequency set; prime-shift reduction; prime kernel off major arcs [L*] | A147 | — |
+| MatomakiRadziwill, LogarithmicChowla, PrimeExponentialSums | short-interval mean squares of `λχ`, `χ≠1`; Route T for ζ above polylogarithmic frequencies; ladder on a frequency set; prime-shift reduction; prime kernel off major arcs [L*]; twisted Liouville partial sums at low frequencies [S] | A147 | — |
 | ShortIntervalPrimesInProgressions | primes in `(x,x+x^θ]` in every class [L*] | — | — |
 | SignFreePurityMechanisms | Goss Riemann hypothesis [L*] | — | a norm for ξ |
 | HAT | clock; tower; unbounded critical inverse [F]/[KR] | A54 | B88, B117 |
