@@ -336,7 +336,7 @@ theorem card_ladderScale_le {L : ℝ} (hL : 2 ^ 20 ≤ L) {X : ℝ} (hX : Real.e
   unfold ladderScale
   split_ifs with hj
   · exact le_trans (card_primesIoc_exp_le _ _) (exp_seqB_le_X hL hX hj)
-  · simp only [card_empty, Nat.cast_zero]; linarith [Real.exp_pos 1]
+  · simp only [Finset.card_empty, Nat.cast_zero]; linarith [Real.exp_pos 1]
 
 theorem card_topScale_le {X : ℝ} (hX : Real.exp 1 ≤ X) : ((topScale X).card : ℝ) ≤ X := by
   have hX0 : 0 < X := lt_of_lt_of_le (Real.exp_pos 1) hX

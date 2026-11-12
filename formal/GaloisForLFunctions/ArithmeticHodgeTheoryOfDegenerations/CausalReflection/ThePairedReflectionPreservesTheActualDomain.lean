@@ -36,8 +36,10 @@ theorem CriticalHalfLineEnergyDomain.memLp_weightedComplex {F : ℝ → ℝ}
   apply (memLp_two_iff_integrable_sq_norm hm).mpr
   apply hF.exponential.congr
   refine Eventually.of_forall fun u => ?_
+  change F u ^ 2 * Real.exp (-(8 * u)) =
+    ‖causalLaplaceWeighted (4 / Real.pi) (cx F) u‖ ^ 2
   rw [norm_sq_causalLaplaceWeighted,
-    show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp]
+    show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp; norm_num]
   change F u ^ 2 * Real.exp (-(8 * u)) = ‖(F u : ℂ)‖ ^ 2 * Real.exp (-(8 * u))
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
@@ -81,14 +83,19 @@ theorem CriticalHalfLineEnergyDomain.realPairedCausalReflection {a : ℝ} (ha : 
     have hi := (memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mp hm
     apply hi.congr
     exact Eventually.of_forall fun u => by
+      dsimp only
       rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   · have hm := memLp_weighted_realPairedCausalReflection ha (add_pos ha (by positivity)) b
       hF.integrable hF.memLp_weightedComplex
     have hi := (memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mp hm
     apply hi.congr
     refine Eventually.of_forall fun u => ?_
+    change ‖causalLaplaceWeighted (4 / Real.pi)
+      (fun t => (realPairedCausalReflection a b F t : ℂ)) u‖ ^ 2 =
+      realPairedCausalReflection a b F u ^ 2 * Real.exp (-(8 * u))
     rw [norm_sq_causalLaplaceWeighted,
-      show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp]
+      show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp; norm_num]
+    dsimp only
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   · intro u hu
     rw [realPairedCausalReflection,

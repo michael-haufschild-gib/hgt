@@ -36,8 +36,10 @@ theorem weightedTwo_norm_of_halfLine_memLp {f : ℝ → ℂ}
   have h8 : Integrable (fun u => ‖f u‖ ^ 2 * Real.exp (-(8 * u))) := by
     apply hw.congr
     refine Eventually.of_forall fun u => ?_
+    change ‖causalLaplaceWeighted (4 / Real.pi) f u‖ ^ 2 =
+      ‖f u‖ ^ 2 * Real.exp (-(8 * u))
     rw [norm_sq_causalLaplaceWeighted,
-      show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp]
+      show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp; norm_num]
   exact (exponentialSourceMass_le_of_support (Y := 0) le_rfl
     hf2.aestronglyMeasurable.norm h2 h8 (Eventually.of_forall fun u hu => by
       rw [hs u hu.le, norm_zero])).1

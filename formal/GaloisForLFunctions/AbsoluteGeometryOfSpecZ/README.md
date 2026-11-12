@@ -690,10 +690,20 @@ potential has a closed form in `Δ(n) = (n+1) log(n+1) − n log n`,
 (`blockPotential_eq_of_window`), every coupling is at least `1/(2J)`, and for `16J ≤ R` the
 potential is at least `−½`: the count is one there, from the graph alone
 (`hermNegIndex_neutralWindow_le_one_of_narrow_count`). *Open:* a trial vector with one sink on
-the wider certified windows (the constant vector stops near `J ≈ R/4`, where the potential in
-the middle falls below the coupling), so that the count is one there and two for a wrong weight,
-constant or tree length; the gluing of two actual windows: a block and a far window couple by minus the product
-of their charges in the mean, and the difference is the fluctuation of the contacts; the first
+the wider certified windows (by an estimate that is not proved, the constant vector stops near
+`J ≈ R/4`, where the potential in the middle falls below the coupling), so that the count is
+one there and two for a wrong weight,
+constant or tree length. *Gluing of two adjacent windows (proved):* the neutral part of the
+union is the two neutral parts coupled by the weights `K` between their blocks; for charges
+with `u_i v_j ≤ K_ij` it is at least the product model of the two windows with potentials
+lowered by the excess `K − u ⊗ v`, so the union holds at most the bound states of that model
+(`hermNegIndex_neutralWindow_add_le_glued`), at most one if the lowered windows satisfy the
+gluing lemma with `αβ ≥ 1` (`hermNegIndex_coupled_le_one`), and without charges at most the
+bound states of the two windows with potentials lowered by their mutual couplings
+(`hermNegIndex_neutralWindow_add_le_add`). *Open:* charges for which the lowered windows of
+ratio two or four still have one bound state each and `αβ ≥ 1`: a block and a far window
+couple by minus the product of their charges in the mean, and the excess is the fluctuation
+of the contacts; the first
 window that could hold a second bound state.
 
 **The aperture path and charged ground states (question 6).** Weil's form restricted to the aperture `a` and shifted by

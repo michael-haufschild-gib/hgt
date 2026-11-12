@@ -131,7 +131,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
 - 2026-11-12 — M9–M24 proved and formalized
-- 2026-11-12 — M25, M26 proved and formalized
+- 2026-11-12 — M25, M26, M27 proved and formalized
 
 ## The neutral part (M9, M10)
 
@@ -203,6 +203,9 @@ A supersolution cannot certify a window on which the neutral part has a negative
   sinks of the shifted matrix; on a window, at most one more than the blocks with `V_j < −λJ`
 - [x] M26 the potential of a window with `J ≤ R` in closed form; couplings `≥ 1/(2J)`; for
   `16J ≤ R` the potential is `≥ −½` and the count of M25 is one
+- [x] M27 gluing of two adjacent windows: the union is two neutral parts coupled by the
+  weights; it holds at most the bound states of the product model with potentials lowered by
+  the excess of the couplings over the product of the charges
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -420,9 +423,25 @@ no sink, one bound state by M25. Lean:
 `OnANarrowWindowThePotentialIsShallowAndTheCountOfBoundStatesIsOne` (`xLogXStep`,
 `sum_range_succ_xLogXDiff`, `sum_range_xLogXDiff_add`, `blockPotential_eq_of_window`,
 `inv_two_mul_le_blockWeight`, `blockPotential_add_half_nonneg_of_narrow`,
-`hermNegIndex_neutralWindow_le_one_of_narrow_count`). With the constant trial vector the count
-stops near `J ≈ R/4`: in the middle `V ≈ log(2R/J) − γ − log 2π`, against `λJ ≈ ½`. A trial
-vector with one sink on a window of ratio two or four is not known.
+`hermNegIndex_neutralWindow_le_one_of_narrow_count`). Estimate, not proved: with the constant
+trial vector the count should stop near `J ≈ R/4`, since in the middle
+`V ≈ log(2R/J) − γ − log 2π`, against `λJ ≈ ½`. A trial vector with one sink on a window of
+ratio two or four is not known.
+
+**M27.** Forms `A`, `B`, couplings `K`, coupled form `G(x, y) = A(x) + B(y) − 2 Σ K_ij x_i y_j`.
+For charges with `u_i v_j ≤ K_ij` put `F = K − u ⊗ v ≥ 0`. Then
+`−2 Σ F_ij x_i y_j = Σ F_ij (x_i − y_j)² − Σ_i (F1)_i x_i² − Σ_j (Fᵀ1)_j y_j²`, so
+`G(x, y) ≥ A'(x) + B'(y) − 2(u·x)(v·y)` with `A' = A − diag(F1)`, `B' = B − diag(Fᵀ1)`: the
+product model (M24) of the forms with potentials lowered by the excess. A pointwise larger form
+has at most as many negative squares. So `ind G ≤ ind glued(A', B', u, v)`; `≤ 1` under the
+hypotheses of M24 for `A'`, `B'` with `αβ ≥ 1`; and with `u = v = 0`,
+`ind G ≤ ind(A − diag(K1)) + ind(B − diag(Kᵀ1))`. For the windows `(R, R+J₁]`,
+`(R+J₁, R+J₁+J₂]`: the neutral part of the union, reindexed by `Fin J₁ ⊕ Fin J₂`, is the
+coupled form of the two neutral parts with `K_ij = w(R+i, R+J₁+j) > 0`. Lean:
+`TwoCoupledWindowsHoldAtMostTheBoundStatesOfTheProductModelWithLoweredPotentials` (`coupled`,
+`bilin_glued_le_coupled`, `hermNegIndex_coupled_le_glued`, `hermNegIndex_coupled_le_one`,
+`hermNegIndex_coupled_le_add`, `neutralWindow_add_submatrix`,
+`hermNegIndex_neutralWindow_add_le_glued`, `hermNegIndex_neutralWindow_add_le_add`).
 
 Lean: `…/TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged.lean`
 (`blockDegree_le_xLogXDiff`, `blockMatrix_neg_of_narrow`, `sum_kernel_abs_lt`,

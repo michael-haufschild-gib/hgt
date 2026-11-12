@@ -83,11 +83,14 @@ theorem norm_rotatedRenormalized_high : ∃ C : ℝ, 0 ≤ C ∧ ∀ (z : ℂ) (
     rw [← sq, div_pow, h6, div_eq_mul_inv, ← Real.rpow_neg hv.le]
     exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hv1 (by norm_num)) (sq_nonneg _)
   have hc0 : 0 ≤ c := norm_nonneg _
+  have h1 : ‖thetaCoeff * X * (δ₁ + δ₂)‖ ≤ c * v ^ ((2 : ℝ) / 3) * (‖δ₁‖ + ‖δ₂‖) := by
+    rw [norm_mul (thetaCoeff * X) (δ₁ + δ₂), norm_mul thetaCoeff X, hpow]
+    exact mul_le_mul_of_nonneg_left (norm_add_le δ₁ δ₂) (by positivity)
   calc ‖thetaCoeff * X * (δ₁ + δ₂) + δ₁ * δ₂‖
-      ≤ c * v ^ ((2 : ℝ) / 3) * (‖δ₁‖ + ‖δ₂‖) + ‖δ₁‖ * ‖δ₂‖ := by
-        refine (norm_add_le _ _).trans ?_
-        rw [norm_mul, norm_mul, norm_mul, hpow]
-        exact add_le_add_right (mul_le_mul_of_nonneg_left (norm_add_le δ₁ δ₂) (by positivity)) _
+      ≤ ‖thetaCoeff * X * (δ₁ + δ₂)‖ + ‖δ₁ * δ₂‖ := norm_add_le _ _
+    _ ≤ c * v ^ ((2 : ℝ) / 3) * (‖δ₁‖ + ‖δ₂‖) + ‖δ₁‖ * ‖δ₂‖ := by
+        rw [norm_mul δ₁ δ₂]
+        linarith [h1]
     _ ≤ c * v ^ ((2 : ℝ) / 3) * (C₁ / v ^ 3 + C₁ / v ^ 3) + C₁ / v ^ 3 * (C₁ / v ^ 3) := by
         gcongr
     _ = 2 * c * (v ^ ((2 : ℝ) / 3) * (C₁ / v ^ 3)) + C₁ / v ^ 3 * (C₁ / v ^ 3) := by ring

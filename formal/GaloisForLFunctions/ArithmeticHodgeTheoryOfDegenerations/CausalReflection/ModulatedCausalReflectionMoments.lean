@@ -42,8 +42,15 @@ theorem negativeHalfLineLaplace_modulatedReflection_mul {a : ℝ} (ha : 0 < a)
       -negativeHalfLineLaplace f q +
         (2 * a : ℂ) * negativeHalfLineLaplace (modulatedCausalConvolution a b f) q := by
     change (∫ u, complexLaplaceWeighted q (modulatedCausalReflection a b f) u) = _
-    rw [hsplit, integral_add hq.neg (hKq.const_mul (2 * a : ℂ)), integral_neg, integral_const_mul]
-    rfl
+    rw [hsplit]
+    dsimp only
+    calc
+      _ = (∫ u, -complexLaplaceWeighted q f u) +
+          ∫ u, (2 * a : ℂ) * complexLaplaceWeighted q (modulatedCausalConvolution a b f) u :=
+        integral_add hq.neg (hKq.const_mul (2 * a : ℂ))
+      _ = _ := by
+        rw [integral_neg, integral_const_mul]
+        rfl
   have hfactor : (2 * a : ℂ) * (Real.pi : ℂ) - (modulatedLaplaceRate a b - q) =
       modulatedLaplaceRate a (-b) + q := by
     unfold modulatedLaplaceRate
@@ -65,6 +72,7 @@ theorem negativeHalfLineLaplace_real_conj (F : ℝ → ℝ) (z : ℂ) :
   unfold negativeHalfLineLaplace
   rw [← integral_conj]
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  dsimp only
   rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj, map_mul, Complex.conj_ofReal]
 
 /-- Reflection at one nonreal zero preserves the conjugate zero of real data. -/

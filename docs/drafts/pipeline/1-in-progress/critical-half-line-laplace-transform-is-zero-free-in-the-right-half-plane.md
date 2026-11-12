@@ -37,12 +37,12 @@ Verified:
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceMoments`: opposite-side complex resolvent moments.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceBoundary`: continuity across neutral decay and the unrestricted admitted moment law.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionCommutation`: Fourier multipliers and almost-everywhere commutation.
-
-Written, unchecked:
-
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionIsReal`: conjugate kernels, commuting conjugate reflections and the actual real representative.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexHalfLinePoleDomain`: both half-pole moments from the actual weighted square domain.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionMoments`: linear reflection law, preservation of the conjugate zero and paired half-line support.
+
+Written, unchecked:
+
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionPreservesPoleProduct`: the paired quadratic Laplace factor and reciprocal opposite real moments.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesTheActualDomain`: all six actual-domain fields, including Gamma integrability.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesArithmeticEnergy`: all translated correlations, the prime sum and the real pole term.

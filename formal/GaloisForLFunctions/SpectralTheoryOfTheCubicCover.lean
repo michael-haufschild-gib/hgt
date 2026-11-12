@@ -18,6 +18,10 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTwistedSquarefreeCom
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRotatedCorrelationsSeeOnlyTheThreeDivisibleLayer
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaFunctionHasALinearCuspSubtraction
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRotatedThetaProductHasATwoCuspSubtraction
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.PartialCuspSubtractionsScatter
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRotatedThetaProductReadsTheRotatedCorrelation
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRotatedCorrelationHasADoublePole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThreeDivisibleLayerHasASimplePole
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -37,5 +41,8 @@ term and an `L²` correction with at most a simple pole at `4/3`; the rational c
 renormalized `θ_s² − H`; the continuation of `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}` to
 `{1 < Re s < 13/3, Im s > 0}` and its double pole at `4/3` with leading coefficient `108π³r³`; the
 twisted multiplicativity of the theta coefficients across `h = u λ^m gen I`, the split of the squared
-series into twisted squarefree series times `Z₀(3s/2 − 1)`, and the simple pole of their combination. See `SpectralTheoryOfTheCubicCover/README.md`.
+series into twisted squarefree series times `Z₀(3s/2 − 1)`, and the simple pole of their combination; the
+linear cusp subtraction of `θ_s`, the rotation `R = diag(ω, ω²)` and the two-cusp renormalization of
+`θ_s(R·)θ_s(R⁻¹·)`, partial cusp subtractions, and the double pole of the rotated correlation
+`Σ T(ωh)T(h)|ξ_h|^{−s}` (leading coefficient `54π³r³`), which reads only the three-divisible layer. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/

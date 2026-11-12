@@ -819,6 +819,57 @@ line, remains open. The ground field is transcendental over `ℚ`, so these
 extensions are not asserted to be number fields.
 [Prime residue fields](ThePrimeResidueFieldsOfTheZeros.lean).
 
+### The prime reflection kernel and its lifting obstruction
+
+Let `H` be the compositum of every reflection-pair residue field inside `E`.
+It is normal over the complete prime-source trace field `B`. Restriction
+is continuous and surjective, with exact sequence
+
+```
+1 → Gal(E/H) → Gal(E/B) → Gal(H/B) → 1.
+```
+
+For every prime and actual zero, write
+
+```
+U_(p,ρ) = p^ρ + p^(1−ρ),
+d_(p,ρ) = p^ρ − p^(1−ρ),
+D_(p,ρ) = U_(p,ρ)² − 4p.
+```
+
+Then `d²=D∈H` and `p^ρ=(U+d)/2`. Thus these actual radicals generate all
+of `E/H`. Discard zero radicals and let `I` index the rest. The full kernel
+is isomorphic, with its Krull topology, to
+
+```
+{ ε∈{±1}^I : ∏_{i∈S} ε_i=1 whenever ∏_{i∈S} D_i is square in H },
+```
+
+where `S` ranges over every finite subset of `I`. This characterizes
+simultaneous signs on the infinite extension; it imposes every finite
+relation and proves global realization. The kernel is abelian of exponent
+two. At a fixed zero, products of two reflection differences already lie
+in its pair field, so changing the prime preserves the discriminant square
+class. Relations can still couple different pairs.
+
+Conjugation acts on the sign group by conjugating zero labels. It centralizes
+the whole orientation kernel exactly when `D_i D_conjugate(i)` is square in
+`H` for every nonzero radical. This tests its action on the kernel; centrality
+in the entire arithmetic group still requires control of the quotient.
+
+Functional reflection lifts to an automorphism of `E/B` exactly when every
+square product of nonzero discriminants has an even number of factors.
+This is the condition for uniform sign reversal to respect all relations.
+Whenever a lift exists, it is unique, central, nonidentity, and involutive.
+The parity condition itself remains unproved.
+
+Ordinary conjugation acts trivially on `H` exactly when all actual zeros
+are critical. Consequently an existing functional-reflection lift equals
+conjugation exactly under that same purity condition. A lift and purity
+are distinct arithmetic questions: the first concerns square-class parity,
+the second the conjugation action on the normal pair quotient.
+[Prime reflection Kummer theory](ThePrimeReflectionKernelOfTheZeros.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

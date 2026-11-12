@@ -39,5 +39,16 @@ a positive multiple of the sum of the two resolvent norms.
 - `criticalHalfLineMixedEnergy_groundState_eq_zero`: the actual finite-energy weak equation, without polar-threshold equality.
 - `memLp_weighted_modulatedCausalConvolution`: the shifted decay condition permits an undamped kernel with a positive exponential weight.
 - `RHTower.WeilHerglotz.continuous_gammaBracket`: local Gamma control near each cancelled Fourier pole.
+- `RHTower.integrable_expWeight_of_memLp_two`: reflected weighted L² data admit L¹ after removing part of the exponential weight.
+- `RHTower.WeilSpectral.abs_gammaBracket_le_sqrt`: linear Fourier decay makes the Gamma density integrable with a `(1+|r|)^(-3/2)` majorant; the domination proof occurs in `tendsto_archPoleEnergy_truncTest`.
+
+The neutral moment proof can use actual resolvent L¹ admission: approach
+the imaginary axis through positive real parts and apply the verified
+anti-causal moment formula. Away from the cancelled Fourier pole this gives
+the multiplier bound; near the pole, resolvent L¹ bounds its Fourier
+transform. Combining both bounds gives `O((1+|r|)^(-1))` decay and hence
+Gamma admission directly from the square-root Gamma bound.
 
 No proof or contribution is counted.
+
+Written, unchecked support: `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/GammaIntegrabilityFromLinearFourierDecay`.

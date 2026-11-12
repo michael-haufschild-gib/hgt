@@ -1,8 +1,8 @@
 # Prime reflection radicals and the global lifting obstruction
 
 - **ID:** galois-zero-prime-reflection-kummer
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Questions:** Infinite arithmetic sign kernel; field lift of functional reflection.
 
 ## Target
@@ -67,4 +67,31 @@ in `H`; this gives the kernel-centralization criterion.
 
 The parity condition is not established. No lift, realness of `H`, centrality
 of ordinary conjugation, or identification with the earlier contour fields
-is assumed. The paper proof is dependency-closed; Lean verification is pending.
+is assumed. Paper proof and Lean formalization are complete.
+
+## Lean declarations
+
+`ThePrimeReflectionKernelOfTheZeros.lean`:
+
+- `primeReflectionField_normal`, `primeReflectionRestriction_surjective`,
+  `primeReflectionRestriction_ker`, `primeReflectionKernelEmbedding_range`:
+  the exact arithmetic quotient and its full kernel.
+- `primeReflectionRadicals_adjoin_top`, `primeReflectionDifference_sq`:
+  the complete radical presentation and explicit discriminants.
+- `primeReflectionSignAction_unique_extension`, `primeReflectionSignEquiv`,
+  `primeReflectionSignHomeomorph`: all compatible signs are realized uniquely,
+  with the complete Krull topology.
+- `primeReflectionKernel_comm`, `primeReflectionKernel_square`: the kernel
+  is abelian of exponent two.
+- `primeReflectionRadicands_same_zero_square`: prime-choice independence.
+- `primeFunctionalReflection_unique_lift_iff`,
+  `primeFunctionalReflection_central`, `primeFunctionalReflection_ne_one`,
+  `primeFunctionalReflection_square`: exact parity obstruction and the lift's properties.
+- `primeReflectionSignAction_conjugate`,
+  `primeConjugation_centralizes_kernel_iff`: conjugation's exact kernel action
+  and its square-class obstruction.
+- `primeReflectionRestriction_conjugation_iff`,
+  `primeFunctionalReflection_eq_conjugation_iff`: the separate purity boundary.
+
+Repository-source compilation passed with `lake --old env lean`. All 33
+transitive axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.

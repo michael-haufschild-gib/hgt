@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 /-- Conjugation reverses the imaginary part of the physical rate. -/
 theorem conj_modulatedLaplaceRate (a b : ℝ) :
     (starRingEnd ℂ) (modulatedLaplaceRate a b) = modulatedLaplaceRate a (-b) := by
-  ext <;> simp [modulatedLaplaceRate] <;> ring
+  apply Complex.ext <;> simp [modulatedLaplaceRate] <;> ring
 
 /-- The literal causal kernel respects complex conjugation. -/
 theorem conj_complexRateCausalKernel (z : ℂ) (u : ℝ) :
@@ -64,9 +64,13 @@ theorem conj_modulatedCausalReflection (a b : ℝ) (f : ℝ → ℂ) :
     (fun u => (starRingEnd ℂ) (modulatedCausalReflection a b f u)) =
       modulatedCausalReflection a (-b) (fun u => (starRingEnd ℂ) (f u)) := by
   funext u
-  have hc : (starRingEnd ℂ) (2 * a : ℂ) = 2 * a := by simp
+  have hc : (starRingEnd ℂ) (2 * a : ℂ) = 2 * a := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
   have hk := congrFun (conj_modulatedCausalConvolution a b f) u
-  simp only [modulatedCausalReflection, map_add, map_neg, map_mul, hc, hk]
+  change (starRingEnd ℂ) (-f u + (2 * a : ℂ) * modulatedCausalConvolution a b f u) =
+    -(starRingEnd ℂ) (f u) + (2 * a : ℂ) *
+      modulatedCausalConvolution a (-b) (fun t => (starRingEnd ℂ) (f t)) u
+  rw [map_add, map_neg, map_mul, hc, hk]
 
 /-- Reflection at a complex rate followed by reflection at its conjugate. -/
 def pairedCausalReflection (a b : ℝ) (f : ℝ → ℂ) : ℝ → ℂ :=

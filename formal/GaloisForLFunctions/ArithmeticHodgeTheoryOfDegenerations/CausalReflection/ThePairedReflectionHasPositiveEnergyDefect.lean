@@ -20,8 +20,10 @@ private theorem integral_weighted_cx_sq (F : ℝ → ℝ) :
     (∫ u, ‖causalLaplaceWeighted (4 / Real.pi) (cx F) u‖ ^ 2) =
       ∫ u, F u ^ 2 * Real.exp (-(8 * u)) := by
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  change ‖causalLaplaceWeighted (4 / Real.pi) (cx F) u‖ ^ 2 =
+    F u ^ 2 * Real.exp (-(8 * u))
   rw [norm_sq_causalLaplaceWeighted,
-    show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp]
+    show 2 * Real.pi * (4 / Real.pi) = 8 by field_simp; norm_num]
   change ‖(F u : ℂ)‖ ^ 2 * Real.exp (-(8 * u)) = F u ^ 2 * Real.exp (-(8 * u))
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 

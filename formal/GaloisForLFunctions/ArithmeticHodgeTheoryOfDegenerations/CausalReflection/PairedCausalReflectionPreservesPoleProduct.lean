@@ -108,7 +108,7 @@ theorem pairedCausalReflection_laplace_pair {a : ℝ} (ha : 0 < a)
     (q := (s : ℂ)) (by simpa only [Complex.ofReal_re] using hs)
   have hminus := pairedCausalReflection_laplace_linear ha hb hF hF2 hF8 hFs hz
     (q := -(s : ℂ)) (by simpa only [Complex.neg_re, Complex.ofReal_re, abs_neg] using hs)
-  simp only [sub_neg_eq_add, add_neg_eq_sub] at hminus
+  simp only [sub_neg_eq_add, ← sub_eq_add_neg] at hminus
   change D * negativeHalfLineLaplace P (s : ℂ) = N * negativeHalfLineLaplace f (s : ℂ) at hplus
   change N * negativeHalfLineLaplace P (-(s : ℂ)) = D * negativeHalfLineLaplace f (-(s : ℂ)) at hminus
   have hzplus : modulatedLaplaceRate a b + (s : ℂ) ≠ 0 := by

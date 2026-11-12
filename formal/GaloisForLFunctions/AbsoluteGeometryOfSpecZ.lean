@@ -202,6 +202,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoWindowsCoupledThroughTheir
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.APowerOfAQuotientOfLFunctionsHasTheIndexOfTheQuotient
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBoundStatesOfAWindowAreAtMostTheSinksOfAPositiveTrialVector
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnANarrowWindowThePotentialIsShallowAndTheCountOfBoundStatesIsOne
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoCoupledWindowsHoldAtMostTheBoundStatesOfTheProductModelWithLoweredPotentials
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -269,5 +270,7 @@ with one negative square each through the product of their charges; and the inde
 of a quotient of `L`-functions, which is the index of the quotient; and a count of the bound
 states of a window by the sinks of a positive trial vector, from its potential and its
 couplings, with the closed form of the potential of a window without contacts and the count
-one on the narrow windows. See `AbsoluteGeometryOfSpecZ/README.md`.
+one on the narrow windows; and the gluing of two adjacent windows, whose union holds at most
+the bound states of the product model with potentials lowered by the excess of the couplings
+over the product of the charges. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

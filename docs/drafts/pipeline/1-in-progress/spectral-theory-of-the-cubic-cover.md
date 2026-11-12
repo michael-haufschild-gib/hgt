@@ -60,13 +60,17 @@ untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combin
   `lowRamifiedTransform` of the nine Patterson residues `U_{j,k} = unramifiedGaussResidue(ω^jλ^k)`, which the
   corpus does not determine. Rotations add relations but cannot isolate `ρ_{1,0}` (S_1) without U_{j,k} or the
   3-part (level 27).
-- T2b [in progress] spectral side for `F_R = θ_s(Rw)θ_s(R⁻¹w)`, R = diag(ω, ω²) (R³ = 1, SR = R⁻¹S):
-  linear subtraction `h = c Σ_q E_1(r_q w | 1_{≥2} v^{2/3})` (multiplier κ, rational-equivariant);
-  (i) F_R − h(R·)h(R⁻¹·) bounded by the product argument (θ_s − h = O(v^{−3}) rational / exp-small ramified);
-  (ii) pointwise `h(Rw)h(R⁻¹w) = c²[conj E_1(w|f) + conj E_1(Sw|f)]` (f = 1_{≥2}v^{4/3}): high cosets of Rw, R⁻¹w
-  are `RnR⁻¹, R⁻¹nR`, `κ(RnR⁻¹)κ(R⁻¹nR) = κ(n)²`; cross terms vanish since `(r_{q'} R r_q⁻¹)₁₀ = c₁ωa + d₁ω²c ≢ 0
-  mod 3` unless (q,q') ∈ {(1,1),(S,S)}; (iii) scattering = ∞ and S terms of Φ: leading coefficient
-  expected `(1+1)/4 · 108π³r³ = 54π³r³` for `M(s)C_ω(s)` (C_ω = C_{ω²}).
+- T2b/T3 [done] `(s−4/3)²M(s)C_ω(s) → 54π³r³` (`rotatedCorrelation_double_pole`): linear subtraction `h` of θ_s
+  (`TheThetaFunctionHasALinearCuspSubtraction`), `R = diag(ω,ω²)`, `h(Rw)h(R⁻¹w) = H_R` = two-cusp subtraction
+  (cusps ∞, 0), `G_R` bounded (`TheRotatedThetaProductHasATwoCuspSubtraction`), partial subtractions scatter with
+  `Φ_k = |P|(π/(s−1))φ + k(π/(s−1))U` (`PartialCuspSubtractionsScatter`), constant term + Mellin link
+  (`TheRotatedThetaProductReadsTheRotatedCorrelation`), assembly (`TheRotatedCorrelationHasADoublePole`).
+  Corollary (`TheThreeDivisibleLayerHasASimplePole`): `(s−4/3)M(s)Q₃(s) → 243π³r³/(2C̄²L(1,χ₋₃))` — the
+  three-divisible layer carries exactly half of Res Q. Relations now: Res Q = 2e₀ρ_{1,0} + R_D(≥2), Res Q₃ = Res Q/2;
+  S_1 still not separated (coefficients T(uλ^m), m ≥ 2, unknown).
+- Next candidates: (i) Hecke-at-9 correlation `θ_s(Aw)θ_s(A⁻¹w)`, `A = diag(λ,λ⁻¹)`: multiplier κ² on
+  Γ_A = Γ(3)∩{b,c ≡ 0 mod 9} (index 81), constant term `Σ T(h)T(9h·unit)`; links layer m to m+4; needs the
+  trace to Γ (81 cosets, cusp analysis); (ii) T4 below; (iii) the nine U_{j,k}.
 - T4 [λ-twists] level 9: `(λ/d)₃` is a character of Γ(3) trivial on Γ(9) but not a conjugate of κ by any
   element normalizing Γ(3); needs translates `θ_s(w + t)`, `t ∈ (1/3)O`. Rank question: do the available
   combinations determine all nine residues?
@@ -92,6 +96,12 @@ untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combin
 | `TheSquaredThetaSeriesSplitsIntoNineTwists` | `sourceCoefficient_twisted_mul`; `frequencySplit` (Oˣ×ℕ×GoodIdeal ≃ O∖0); `twistedPrimarySeries_eq` (P = C̄²Z₀(3w−1)S); `thetaSqDirichlet_eq_zeta_mul`; `_neg`, `_lambda_mod`; `sourceCoefficient_unit_mul_lambda`, `sourceCoefficient_unit_eq` | clean; olean built |
 | `TheTwistedSquarefreeCombinationHasASimplePole` | `clearedCubeZeta`; `completedCombination`; `twistedSquarefreeCombination_simple_pole` (residue 243π³r³/(C̄²L(1,χ₋₃))) | clean |
 | `TheRotatedCorrelationsSeeOnlyTheThreeDivisibleLayer` | `rotatedCorrelation`, `symbol_rotated_pair`, `rotatedCorrelation_eq_zeta_mul`, `rotatedLayerCoeff_zero/_one`, `rotatedCorrelation_eq_three_layer` | clean |
+| `TheThetaFunctionHasALinearCuspSubtraction` | `thinProfile`, `linearSubtraction` (multiplier κ, rational-equivariant), `thetaLinear`, `cusp_reduce`, `thetaLinear_bounds` (|θ_s−h|(1+v^{2/3}) ≤ B through every cusp) | clean; olean built |
+| `TheRotatedThetaProductHasATwoCuspSubtraction` | `rotation`, `complexCharacter_rotation_pair`, `rotatedThetaProduct` (multiplier κ⁻¹), `cutoff_rotation_mul`, `rotation_cross_zero` (mod 3), `thetaLinear_rotation_mul` (= `rotatedSubtraction`), `rotatedRenormalized_bounded`, `_memLp` | clean; olean built |
+| `PartialCuspSubtractionsScatter` | `partialSubtraction Q`, per-cusp unfolding, `integral_partialSubtraction_trunc_mul_eisenstein`, `integral_partialScatterPart` (Φ_k, k = |Q|−1) | clean; olean built |
+| `TheRotatedThetaProductReadsTheRotatedCorrelation` | `rotation_smul_upperPoint`, `integral_cuspCharacterSeries_mul` (bilinear Parseval), `cuspConstantTerm_rotatedThetaProduct`, `integral_besselRemainder` (general Mellin link), `besselDirichlet_rotatedCoeff` (= C_ω) | clean; olean built |
+| `TheRotatedCorrelationHasADoublePole` | `norm_rotatedRenormalized_high`, `integral_rotatedRenormalized_mul_eisenstein`, `clearedRotScatter` (6π\|P\|r at 4/3), `completedRotated`, **`rotatedCorrelation_double_pole`** (54π³r³) | clean; olean built |
+| `TheThreeDivisibleLayerHasASimplePole` | `threeLayerCombination`, `threeLayerCombination_simple_pole` (243π³r³/(2C̄²L(1,χ₋₃))) | clean |
 
 ## Notes
 **N1 [D] Mechanism of the double pole** (see CRF card N12): `E_{κ²}` constant term `v^s + φ(s)v^{2−s}`,
@@ -102,6 +112,7 @@ untwisted member is `Z₀(3w−1)·S` (CRF's squarefree series); D is one combin
 ## Conjecture ledger
 
 ## Log
+- 2026-11-12 — T2b/T3 formalized: rotated correlation double pole 54π³r³ (half of D), three-divisible layer simple pole; product trick (θ_s − h)(R·)θ_s(R⁻¹·) + h(R·)(θ_s − h)(R⁻¹·) avoids rotated cusp analysis.
 - 2026-11-12 — twisted layer T1, T1b, T2a formalized; ramified layer reduces to MMD's nine U_{j,k}; T2b (rotated renormalization) planned via the linear subtraction h.
 - 2026-11-12 — **SQ4 answered in Lean**: `thetaSqDirichlet_double_pole` (modules 13–15). Route: bounded renormalization G = θ_s² − H + MMD's L² correction (no pointwise continuation of E); double pole only from the explicit scattering of H. Open: SQ5 (element sum ↔ unramified squarefree series S; contour shift for complex T²), SQ7 (column twists θ·θ_n).
 - 2026-11-12 — 2c–2e formalized (modules 10–12). Remaining: G = θ_s² − H bounded on H³ (reduction + three cusp classes; mod-3 residue of r_q c_j bottom-left ≠ 0), assembly with clearedScatterTotal = (π/(s−1))\|P\|·clearedScattering·(3·3^{3s−3}−1)/2 (value 12π\|P\|r at 4/3); polynomial cusp decay v^{−7/3} suffices (region 1 < Re s < 13/3).
