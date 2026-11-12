@@ -40,8 +40,8 @@ Owner: `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`.
 2. `UndampedCausalFourierDecay`: verified.
 3. `TheUndampedRealResolventHasTheActualDomain`: verified.
 4. `SkewFourierPairsHaveZeroArithmeticMixedForm`: verified.
-5. `TheUndampedRealResolventIsSkewInFrequency`: verification running.
-6. `TheUndampedRealResolventCancelsThePoleForm`: drafted.
+5. `TheUndampedRealResolventIsSkewInFrequency`: verified.
+6. `TheUndampedRealResolventCancelsThePoleForm`: verification running.
 7. `TheCriticalHalfLineStateHasNoBoundaryLaplaceZero`: drafted; final unconditional theorem `riemannHypothesis_or_exists_closedRightHalfPlaneLaplaceZeroFree_criticalHalfLineGroundState`.
 
 No contribution counted before the entire chain and transitive axiom audit pass.

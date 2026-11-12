@@ -593,7 +593,8 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
     linarith
   -- the reserved blocks: the two preimages under the floor map of `2`
   obtain ⟨cont, hcont⟩ : ∃ cont : Fin (H + H) → Finset (Fin (4 * H)),
-      cont = fun i => Finset.univ.filter fun j : Fin (4 * H) => (j : ℕ) / 2 = (i : ℕ) :=
+      cont = fun i : Fin (H + H) =>
+        Finset.univ.filter fun j : Fin (4 * H) => (j : ℕ) / 2 = (i : ℕ) :=
     ⟨_, rfl⟩
   have hmem : ∀ (i : Fin (H + H)) (j : Fin (4 * H)), (j : ℕ) / 2 = (i : ℕ) → j ∈ cont i :=
     fun i j hj => by
@@ -647,10 +648,10 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
     linarith
   have hE1 := hE (Fin.castAdd H) fun a b h => Fin.ext (by
     have h' := congrArg Fin.val h
-    rwa [Fin.coe_castAdd, Fin.coe_castAdd] at h')
+    rwa [Fin.val_castAdd, Fin.val_castAdd] at h')
   have hE2 := hE (Fin.natAdd H) fun a b h => Fin.ext (by
     have h' := congrArg Fin.val h
-    rw [Fin.coe_natAdd, Fin.coe_natAdd] at h'
+    rw [Fin.val_natAdd, Fin.val_natAdd] at h'
     omega)
   -- the three numbers
   obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, c₀ = Real.eulerMascheroniConstant + Real.log (2 * Real.pi) :=
@@ -696,7 +697,7 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
     -- the vector of the plane is the step function with the values `s`, `t`
     have hx : (fun i : Fin (H + H) =>
         s * (if (i : ℕ) < H then (1 : ℝ) else 0) + t * (if (i : ℕ) < H then (0 : ℝ) else 1)) =
-          fun i => if (i : ℕ) < H then s else t := by
+          fun i : Fin (H + H) => if (i : ℕ) < H then s else t := by
       funext i
       split_ifs <;> ring
     have hN : bilin (neutralWindow Q (H + H) (H + H))
@@ -719,11 +720,11 @@ theorem lowered_lower_half_plane {H Q : ℕ} (hH : 64 ≤ H) (hQ : 2 ≤ Q) (u :
       congr 1
       · refine Finset.sum_congr rfl fun i _ => ?_
         rw [if_pos (show ((Fin.castAdd H i : Fin (H + H)) : ℕ) < H by
-          rw [Fin.coe_castAdd]
+          rw [Fin.val_castAdd]
           exact i.2)]
       · refine Finset.sum_congr rfl fun i _ => ?_
         rw [if_neg (show ¬((Fin.natAdd H i : Fin (H + H)) : ℕ) < H by
-          rw [Fin.coe_natAdd]
+          rw [Fin.val_natAdd]
           omega)]
     rw [hx, bilin_sub_diagonal]
     show bilin (neutralWindow Q (H + H) (H + H))

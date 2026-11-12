@@ -13,7 +13,7 @@ The arithmetic energy is translation invariant, while translating toward the end
 
 ## Remaining inputs
 
-1. Prove actual-domain translation admission, exact arithmetic-energy invariance, and the resulting absence of a support gap, including almost-everywhere representatives.
+1. Verify the drafted actual-domain translation law and endpoint-mass theorem. The exact energy change for `F(u+c)` is `alias(R) (exp(8c)-1) I₈(F)`. If mass in `(-d,0)` vanishes, truncate at `-d/2`, obtaining an equal almost-everywhere representative, then shift right by `d/2`. Its strictly negative full energy contradicts endpoint nonnegativity.
 2. Connect exponential integrability, closed-half-plane zero-freeness, and absence of a support gap to causal cyclicity. Corpus inner/outer factorization is available, but no applicable theorem eliminating a singular inner factor has yet been identified.
 
 `PoissonBoundaryPositivity.exists_poissonRepresentation` supplies a finite representing measure. Its `measureReal_Icc_eq_zero_of_radial_tendsto_zero` requires arbitrarily small bounds at **every** radius, not merely near the boundary; it cannot directly justify this step. A local boundary-convergence version remains to be proved.

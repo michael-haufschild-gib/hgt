@@ -23,7 +23,7 @@ private theorem real_resolvent_identity (β s p x : ℝ) (w : ℂ)
   have hi := congrArg Complex.im he
   simp only [Complex.mul_re, Complex.sub_re, Complex.sub_im, Complex.mul_im,
     Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
-    zero_mul, mul_zero, mul_one, sub_zero, zero_sub, add_zero] at hr hi
+    mul_zero, mul_one, sub_zero, zero_sub, add_zero] at hr hi
   have hrs := congrArg (fun y : ℝ => s * y) hr
   have hib := congrArg (fun y : ℝ => β * y) hi
   nlinarith only [hrs, hib]
@@ -39,7 +39,8 @@ theorem integral_realUndampedCausalConvolution_laplace (b s : ℝ) {F : ℝ → 
         (modulatedCausalConvolution 0 b (cx F)) u).re := by
       apply integral_congr_ae
       refine Eventually.of_forall fun u => ?_
-      unfold realUndampedCausalConvolution complexLaplaceWeighted
+      change (modulatedCausalConvolution 0 b (cx F) u).re * Real.exp (s * u) =
+        (Complex.exp ((s : ℂ) * (u : ℂ)) * modulatedCausalConvolution 0 b (cx F) u).re
       rw [← Complex.ofReal_mul, ← Complex.ofReal_exp]
       simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
       ring

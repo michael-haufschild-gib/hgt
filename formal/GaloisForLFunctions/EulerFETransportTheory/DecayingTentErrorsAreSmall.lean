@@ -349,4 +349,105 @@ theorem integral_sq_tentDefect_le_low {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hf
           |>.intervalIntegrable _ _
     _ = 4 * h ^ 2 * (Real.pi⁻¹ * V) := by simp; ring
 
+/-- **High-frequency mean square**: for `0 ≤ W ≤ W'`,
+`∫_W^{W'} T² ≤ 18 M⁴ h⁻² π⁻¹ ‖G‖₂²`, `M = hε + W' + h`, `G = tentPrimitive f`. -/
+theorem integral_sq_tentDefect_le_high {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Measurable f)
+    (hfb : ∀ t, ‖f t‖ ≤ Cf * (1 + |t|) ^ N) (hG2 : MemLp (tentPrimitive f) 2 volume) {h ε : ℝ}
+    (hh : 0 < h) (hε : 0 < ε) {W W' : ℝ} (hW0 : 0 ≤ W) (hW : W ≤ W') :
+    ∫ y in W..W', tentDefect f h y ε ^ 2 ≤ 18 * (h * ε + W' + h) ^ 4 / h ^ 2 *
+      (Real.pi⁻¹ * ∫ t, ‖tentPrimitive f t‖ ^ 2) := by
+  obtain ⟨hVi, hV⟩ := integral_norm_sq_defectLaplace_vertical_le hG2 (mul_pos hh hε)
+  set V := ∫ t, ‖tentPrimitive f t‖ ^ 2 with hVdef
+  set M := h * ε + W' + h with hM
+  have hM0 : 0 ≤ M := by have := hW0.trans hW; positivity
+  have hGm := measurable_tentPrimitive hfm
+  have hGb : ∀ t, ‖tentPrimitive f t‖ ≤ 4 / 3 * Cf * (1 + |t|) ^ N := fun t =>
+    (norm_tentPrimitive_le f t).trans (by rw [mul_assoc]; gcongr; exact hfb t)
+  have hJ := (differentiableOn_defectLaplace hGm.aestronglyMeasurable hGb).continuousOn
+  obtain ⟨φ, hφ⟩ : ∃ φ : ℝ → ℝ → ℝ, φ = fun σ y => ‖defectLaplace (tentPrimitive f)
+      (((h * ε : ℝ) : ℂ) + ((y + h * σ : ℝ) : ℂ) * I)‖ := ⟨_, rfl⟩
+  have hφc : ∀ σ, Continuous (φ σ) := by
+    intro σ
+    have : Continuous fun y : ℝ => defectLaplace (tentPrimitive f)
+        (((h * ε : ℝ) : ℂ) + ((y + h * σ : ℝ) : ℂ) * I) :=
+      continuousOn_univ.mp <| hJ.comp (by fun_prop) fun y _ => by
+        show 0 < (((h * ε : ℝ) : ℂ) + ((y + h * σ : ℝ) : ℂ) * I).re
+        simp; positivity
+    rw [hφ]
+    exact this.norm
+  -- each shifted row has energy at most `π⁻¹ V`
+  have hrow : ∀ σ, ∫ y in W..W', φ σ y ^ 2 ≤ Real.pi⁻¹ * V := by
+    intro σ
+    have e := intervalIntegral.integral_comp_add_right
+      (fun w : ℝ => ‖defectLaplace (tentPrimitive f) (((h * ε : ℝ) : ℂ) + (w : ℂ) * I)‖ ^ 2)
+      (h * σ) (a := W) (b := W')
+    rw [show (fun y => φ σ y ^ 2) = fun y : ℝ => ‖defectLaplace (tentPrimitive f)
+      (((h * ε : ℝ) : ℂ) + ((y + h * σ : ℝ) : ℂ) * I)‖ ^ 2 by rw [hφ], e,
+      intervalIntegral.integral_of_le (by linarith)]
+    exact (setIntegral_le_integral hVi (Eventually.of_forall fun w => by positivity)).trans hV
+  -- pointwise: `T² ≤ (6 M⁴ / h²)(φ₁² + φ₀² + φ₋₁²)` on `[W, W']`
+  have hpt : ∀ y ∈ Icc W W', tentDefect f h y ε ^ 2 ≤
+      6 * M ^ 4 / h ^ 2 * (φ 1 y ^ 2 + φ 0 y ^ 2 + φ (-1) y ^ 2) := by
+    intro y hy
+    have hterm : ∀ σ : ℝ, |σ| ≤ 1 → ‖tentPt h (y / h) ε σ ^ 2 *
+        defectLaplace (tentPrimitive f) (tentPt h (y / h) ε σ)‖ ≤ M ^ 2 * φ σ y := by
+      intro σ hσ
+      rw [norm_mul, norm_pow, tentPt_div h ε y σ hh, hφ]
+      gcongr
+      refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
+        Complex.ofReal_im, Complex.I_im, mul_one, sub_zero, add_zero, Complex.add_im,
+        Complex.mul_im, zero_add]
+      rw [abs_of_pos (by positivity), hM]
+      have := abs_add_le y (h * σ)
+      rw [abs_of_nonneg (hW0.trans hy.1), abs_mul, abs_of_pos hh] at this
+      nlinarith [hy.2]
+    rw [tentDefect_eq hfm hfb hh hε y]
+    have hA := hterm 1 (by norm_num)
+    have hB := hterm 0 (by norm_num)
+    have hC := hterm (-1) (by norm_num)
+    set A := tentPt h (y / h) ε 1 ^ 2 * defectLaplace (tentPrimitive f) (tentPt h (y / h) ε 1)
+    set B := tentPt h (y / h) ε 0 ^ 2 * defectLaplace (tentPrimitive f) (tentPt h (y / h) ε 0)
+    set C := tentPt h (y / h) ε (-1) ^ 2 *
+      defectLaplace (tentPrimitive f) (tentPt h (y / h) ε (-1))
+    have hre : |(A - 2 * B + C).re| ≤ M ^ 2 * (φ 1 y + 2 * φ 0 y + φ (-1) y) := by
+      refine (Complex.abs_re_le_norm _).trans ((norm_add_le _ _).trans ?_)
+      have h1 := norm_sub_le A (2 * B)
+      have h2 : ‖2 * B‖ = 2 * ‖B‖ := by rw [norm_mul]; norm_num
+      linarith
+    have hφ0 : ∀ σ, 0 ≤ φ σ y := fun σ => by rw [hφ]; positivity
+    have hcs : (φ 1 y + 2 * φ 0 y + φ (-1) y) ^ 2 ≤ 6 * (φ 1 y ^ 2 + φ 0 y ^ 2 + φ (-1) y ^ 2) := by
+      nlinarith [sq_nonneg (φ 1 y - φ 0 y), sq_nonneg (φ 0 y - φ (-1) y),
+        sq_nonneg (φ 1 y - φ (-1) y), sq_nonneg (φ 1 y - 2 * φ 0 y + φ (-1) y)]
+    have hsq : (-(1 / h) * (A - 2 * B + C).re) ^ 2 ≤
+        (1 / h) ^ 2 * (M ^ 2 * (φ 1 y + 2 * φ 0 y + φ (-1) y)) ^ 2 := by
+      rw [show (-(1 / h) * (A - 2 * B + C).re) ^ 2 = (1 / h) ^ 2 * |(A - 2 * B + C).re| ^ 2 by
+        rw [sq_abs]; ring]
+      gcongr
+    calc (-(1 / h) * (A - 2 * B + C).re) ^ 2
+        ≤ (1 / h) ^ 2 * (M ^ 2 * (φ 1 y + 2 * φ 0 y + φ (-1) y)) ^ 2 := hsq
+      _ = M ^ 4 / h ^ 2 * (φ 1 y + 2 * φ 0 y + φ (-1) y) ^ 2 := by ring
+      _ ≤ M ^ 4 / h ^ 2 * (6 * (φ 1 y ^ 2 + φ 0 y ^ 2 + φ (-1) y ^ 2)) := by gcongr
+      _ = _ := by ring
+  have hc : ∀ σ, Continuous fun y => φ σ y ^ 2 := fun σ => (hφc σ).pow 2
+  calc ∫ y in W..W', tentDefect f h y ε ^ 2
+      ≤ ∫ y in W..W', 6 * M ^ 4 / h ^ 2 * (φ 1 y ^ 2 + φ 0 y ^ 2 + φ (-1) y ^ 2) :=
+        intervalIntegral.integral_mono_on hW
+          (((continuous_tentDefect hfm hfb hh hε).pow 2).intervalIntegrable _ _)
+          ((continuous_const.mul (((hc 1).add (hc 0)).add (hc (-1)))).intervalIntegrable _ _) hpt
+    _ = 6 * M ^ 4 / h ^ 2 * ((∫ y in W..W', φ 1 y ^ 2) + (∫ y in W..W', φ 0 y ^ 2) +
+          ∫ y in W..W', φ (-1) y ^ 2) := by
+        have i1 : IntervalIntegrable (fun y => φ 1 y ^ 2 + φ 0 y ^ 2) volume W W' :=
+          ((hc 1).add (hc 0)).intervalIntegrable _ _
+        rw [intervalIntegral.integral_const_mul,
+          intervalIntegral.integral_add i1 ((hc (-1)).intervalIntegrable _ _),
+          intervalIntegral.integral_add ((hc 1).intervalIntegrable _ _)
+            ((hc 0).intervalIntegrable _ _)]
+    _ ≤ 6 * M ^ 4 / h ^ 2 * (Real.pi⁻¹ * V + Real.pi⁻¹ * V + Real.pi⁻¹ * V) := by
+        gcongr
+        · exact hrow 1
+        · exact hrow 0
+        · exact hrow (-1)
+    _ = 18 * M ^ 4 / h ^ 2 * (Real.pi⁻¹ * V) := by ring
+
 end GaloisForLFunctions.EulerFETransportTheory
