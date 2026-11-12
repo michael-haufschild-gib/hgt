@@ -70,6 +70,7 @@ theorem conjNormal_inv_conjNormal_inv (g : E) (a : A) :
 
 /-- The action of the group on the linear characters of a normal subgroup:
 `(g • χ)(a) = χ(g⁻¹ a g)`. -/
+@[reducible]
 def conjCharacterAction : MulAction E (LinearCharacter A) where
   smul g χ := χ.comp (MulAut.conjNormal g⁻¹ : A ≃* A).toMonoidHom
   one_smul χ := by
@@ -95,6 +96,7 @@ theorem conjCharacter_apply (g : E) (χ : LinearCharacter A) (a : A) :
 def isotypicProjector (χ : LinearCharacter A) : Module.End ℂ V :=
   (Nat.card A : ℂ)⁻¹ • ∑ a : A, ((χ a⁻¹ : ℂˣ) : ℂ) • ρ (a : E)
 
+omit [A.Normal] in
 /-- `ρ(b) e_χ = χ(b) e_χ` for `b` in `A`. -/
 theorem apply_mul_isotypicProjector (χ : LinearCharacter A) (b : A) :
     ρ (b : E) * isotypicProjector A ρ χ = ((χ b : ℂˣ) : ℂ) • isotypicProjector A ρ χ := by
@@ -112,6 +114,7 @@ theorem apply_mul_isotypicProjector (χ : LinearCharacter A) (b : A) :
     rfl
   rw [isotypicProjector, mul_smul_comm, hsum, smul_comm]
 
+omit [A.Normal] in
 /-- **Orthogonality**: `e_χ e_ψ = e_ψ` if `χ = ψ` and `0` otherwise. -/
 theorem isotypicProjector_mul (χ ψ : LinearCharacter A) :
     isotypicProjector A ρ χ * isotypicProjector A ρ ψ =
@@ -131,6 +134,7 @@ theorem isotypicProjector_mul (χ ψ : LinearCharacter A) :
   · rw [if_pos hχψ, if_pos hχψ, one_smul]
   · rw [if_neg hχψ, if_neg hχψ, zero_smul]
 
+omit [A.Normal] in
 /-- **Completeness**: `Σ_χ e_χ = 1`. -/
 theorem sum_isotypicProjector : ∑ χ : LinearCharacter A, isotypicProjector A ρ χ = 1 := by
   have hcard : (Nat.card A : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
@@ -145,6 +149,7 @@ theorem sum_isotypicProjector : ∑ χ : LinearCharacter A, isotypicProjector A 
   rw [← Finset.smul_sum, Finset.sum_comm, Finset.sum_congr rfl fun a _ => hterm a,
     Finset.sum_ite_eq', if_pos (Finset.mem_univ _), smul_smul, inv_mul_cancel₀ hcard, one_smul]
 
+omit [IsMulCommutative A] in
 /-- **Conjugation**: `ρ(g) e_χ ρ(g)⁻¹ = e_{g • χ}`. -/
 theorem apply_mul_isotypicProjector_mul_apply_inv (g : E) (χ : LinearCharacter A) :
     ρ g * isotypicProjector A ρ χ * ρ g⁻¹ = isotypicProjector A ρ (g • χ) := by
@@ -159,12 +164,14 @@ theorem apply_mul_isotypicProjector_mul_apply_inv (g : E) (χ : LinearCharacter 
   rw [conjCharacter_apply, conjNormal_inv_conjNormal_inv, MulAut.conjNormal_apply, map_mul,
     map_mul, mul_smul_comm, smul_mul_assoc]
 
+omit [IsMulCommutative A] in
 /-- `ρ(g) e_χ = e_{g • χ} ρ(g)`. -/
 theorem apply_mul_isotypicProjector_eq (g : E) (χ : LinearCharacter A) :
     ρ g * isotypicProjector A ρ χ = isotypicProjector A ρ (g • χ) * ρ g := by
   rw [← apply_mul_isotypicProjector_mul_apply_inv, mul_assoc, ← map_mul, inv_mul_cancel, map_one,
     mul_one]
 
+omit [A.Normal] in
 theorem isotypicProjector_idempotent (χ : LinearCharacter A) :
     isotypicProjector A ρ χ * isotypicProjector A ρ χ = isotypicProjector A ρ χ := by
   rw [isotypicProjector_mul, if_pos rfl]
@@ -177,6 +184,7 @@ variable [FiniteDimensional ℂ V]
 def isotypicTrace (χ : LinearCharacter A) (g : E) : ℂ :=
   LinearMap.trace ℂ V (ρ g * isotypicProjector A ρ χ)
 
+omit [A.Normal] [FiniteDimensional ℂ V] in
 /-- **The character is the sum of the functions `F_χ`.** -/
 theorem sum_isotypicTrace (g : E) :
     ∑ χ : LinearCharacter A, isotypicTrace A ρ χ g = ρ.character g := by
@@ -184,6 +192,7 @@ theorem sum_isotypicTrace (g : E) :
   rw [← map_sum, ← Finset.mul_sum, sum_isotypicProjector, mul_one]
   rfl
 
+omit [FiniteDimensional ℂ V] in
 /-- **`F_χ` vanishes off the stabilizer of `χ`.** -/
 theorem isotypicTrace_eq_zero {χ : LinearCharacter A} {g : E} (h : g • χ ≠ χ) :
     isotypicTrace A ρ χ g = 0 := by
@@ -200,6 +209,7 @@ theorem isotypicTrace_eq_zero {χ : LinearCharacter A} {g : E} (h : g • χ ≠
         LinearMap.trace_mul_comm ℂ _ _
     _ = 0 := by rw [mul_assoc, hzero, mul_zero, map_zero]
 
+omit [IsMulCommutative A] [FiniteDimensional ℂ V] in
 /-- `F_χ(x g x⁻¹) = F_{x⁻¹ • χ}(g)`. -/
 theorem isotypicTrace_conj (χ : LinearCharacter A) (x g : E) :
     isotypicTrace A ρ χ (x * g * x⁻¹) = isotypicTrace A ρ (x⁻¹ • χ) g := by
@@ -207,8 +217,8 @@ theorem isotypicTrace_conj (χ : LinearCharacter A) (x g : E) :
       ρ x * (ρ g * (ρ x⁻¹ * isotypicProjector A ρ χ)) := by simp only [mul_assoc]
   have e2 : ρ g * (ρ x⁻¹ * isotypicProjector A ρ χ * ρ x) =
       ρ g * (ρ x⁻¹ * isotypicProjector A ρ χ) * ρ x := by simp only [mul_assoc]
-  rw [isotypicTrace, isotypicTrace, ← apply_mul_isotypicProjector_mul_apply_inv, inv_inv, map_mul,
-    map_mul, e1, e2, LinearMap.trace_mul_comm]
+  rw [isotypicTrace, isotypicTrace, ← apply_mul_isotypicProjector_mul_apply_inv, inv_inv,
+    map_mul ρ (x * g) x⁻¹, map_mul ρ x g, e1, e2, LinearMap.trace_mul_comm]
 
 /-- **On the stabilizer of `χ` the function `F_χ` is a character**: the character of the
 stabilizer on the range of `e_χ`. -/

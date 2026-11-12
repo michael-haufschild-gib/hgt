@@ -56,10 +56,12 @@ private theorem poleLaplaceData {F : ℝ → ℝ} (hF : WeightedTwo F) :
   have hwm : causalLaplaceWeighted poleLaplaceRate (cx F) =
       fun u => ((F u * Real.exp (-u / 2) : ℝ) : ℂ) := by
     funext u
+    change causalLaplaceWeighted poleLaplaceRate (fun t => (F t : ℂ)) u = _
     rw [causalLaplaceWeighted_real_eq, hargm]
   have hwp : causalLaplaceWeighted (-poleLaplaceRate) (cx F) =
       fun u => ((F u * Real.exp (u / 2) : ℝ) : ℂ) := by
     funext u
+    change causalLaplaceWeighted (-poleLaplaceRate) (fun t => (F t : ℂ)) u = _
     rw [causalLaplaceWeighted_real_eq, hargp]
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [hwm]
@@ -106,8 +108,10 @@ theorem poleTerm_realCausalReflection {a : ℝ} (ha : 0 < a)
     rw [hF.support (-u) (by linarith only [hu]), Complex.ofReal_zero]
   have hi : Integrable (causalLaplaceWeighted (-a) (cx F)) := by
     have hh := (causalLaplaceWeighted_integrable ha.le href hcausal).comp_neg
-    simpa only [causalLaplaceWeighted, cx, mul_neg, neg_mul, neg_neg, Complex.ofReal_neg] using hh
+    change Integrable (fun u => Complex.exp (-(Real.pi * (-a) * u : ℝ)) * (F u : ℂ))
+    simpa only [causalLaplaceWeighted, mul_neg, neg_mul, neg_neg, Complex.ofReal_neg] using hh
   have hzc : causalLaplaceIntegral (-a) (cx F) = 0 := by
+    change causalLaplaceIntegral (-a) (fun u => (F u : ℂ)) = 0
     rw [causalLaplaceIntegral_real_eq]
     have he : (∫ u, F u * Real.exp (-(Real.pi * (-a) * u))) =
         ∫ u, Real.exp (Real.pi * a * u) * F u := by

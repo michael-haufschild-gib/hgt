@@ -645,6 +645,51 @@ is made. This classification does not identify conjugation with functional
 reflection or prove purity.
 [Maximal arithmetic quotient](TheMaximalArithmeticQuotientOfTheZeroMotive.lean).
 
+### The prime spectral field and its effective action
+
+Retaining every prime translation singles out the coefficient field
+
+```
+E = ℚ(p^z : p prime, z∈Δ) = ℚ(p^ρ : p prime, ξ(ρ)=0).
+```
+
+Integer relations add no generators beyond the original zero values:
+exponent sums and negatives give products and inverses. A scalar embedding
+lifts to a unique pointed map commuting with every prime exactly when,
+for each `z∈Δ`, there is one `φ(z)∈Δ` satisfying
+`σ(p^z)=p^(φ(z))` simultaneously at all primes. Two primes determine `φ`;
+the remaining primes impose additional compatibility conditions.
+
+Every such embedding preserves `E`. Two compatible embeddings induce the
+same exponent action exactly when they agree on `E`. Thus the scalar
+kernel invisible on exponents is precisely pointwise fixing of `E`.
+Compatible scalar automorphisms in both directions restrict to automorphisms
+of `E` and act by additive automorphisms of the full zero group.
+The effective action is faithful after this restriction.
+
+These actions fix more than the unit weight. Since rational constants are
+fixed, the joint spectrum of `φ(1)` is `(2,3)`, giving `φ(1)=1`. Clearing
+denominators then gives `φ(r)=r` for every `r∈R=Δ∩ℚ`. Consequently the field
+
+```
+E_rat = ℚ(p^r : p prime, r∈R)
+```
+
+is fixed pointwise by every compatible scalar embedding. It is real and
+algebraic over `ℚ` and is a proper subfield of `E`: otherwise every prime value would
+be algebraic, contrary to the three-prime theorem for an actual nonreal zero.
+The full spectral field therefore contains a transcendental element.
+
+Ordinary conjugation preserves the full prime spectrum and defines a
+nonidentity automorphism of `E`. For each actual zero, at least one of its
+values at two and three is nonreal; otherwise two-prime separation would
+make that zero real.
+
+The field uses actual prime-time values. Its mixed-prime polynomial relations,
+its spectral stabilizer, and its relation to the contour-trace source field
+remain open. No normality over `ℚ` or purity conclusion is asserted.
+[Prime spectral field](ThePrimeSpectralFieldOfTheZeros.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

@@ -12,6 +12,10 @@ Let `Δ` be the entire integer zero group and
 `p^ρ` for the actual zeros `ρ`, since integer exponent relations become
 products and inverses. Retain all prime translations.
 
+Compatibility means that, for each `z`, there is one common exponent `w`
+with `σ(p^z)=p^w` at every prime. It is exactly the condition for a unique
+pointed lift commuting with all prime translations.
+
 A scalar embedding compatible with every prime has a unique additive
 injection `φ:Δ→Δ`. It preserves `E`. Two such scalar embeddings have
 the same action on `Δ` exactly when they agree on `E`; in particular,
@@ -23,7 +27,7 @@ Every compatible embedding fixes `1∈Δ`, hence fixes `Δ∩ℚ` pointwise.
 Consequently it fixes the entire radical subfield
 `E_rat=ℚ(p^r : p prime, r∈Δ∩ℚ)` pointwise.
 Ordinary conjugation preserves the full prime spectrum and both fields,
-and acts nontrivially on `E`. The field `E_rat` is algebraic over `ℚ`,
+and acts nontrivially on `E`. The field `E_rat` is real and algebraic over `ℚ`,
 whereas `E` contains a transcendental element.
 
 ## Paper proof
@@ -50,7 +54,8 @@ two-prime separation would force `ρ=conjugate ρ`, a contradiction.
 Thus conjugation is nontrivial on the actual prime spectral field.
 
 Rational prime powers are algebraic, and algebraic elements form a
-subfield, so `E_rat` is algebraic. If all prime generators were algebraic,
+subfield, so `E_rat` is algebraic. Conjugation fixes it pointwise by the
+compatibility theorem, so it is real. If all prime generators were algebraic,
 the three-prime exponent theorem would make every actual zero rational,
 contradicting its nonzero imaginary part. Thus `E` is not algebraic.
 

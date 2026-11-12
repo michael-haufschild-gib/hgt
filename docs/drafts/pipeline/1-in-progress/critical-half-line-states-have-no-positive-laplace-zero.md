@@ -53,10 +53,10 @@ Verified:
 - `HTGeometry/RealCausalExponentialReflection`: literal real representatives, measurability, support, L¹ and weighted L² closure.
 - `HTGeometry/FourierModulusDeterminesActualCorrelation`: preservation of every literal translated correlation.
 - `HTGeometry/CausalExponentialLaplaceReflection`: causal/anti-causal moment laws, resonance-inclusive pole-product identity and actual resolvent injectivity.
+- AHT/`TheCausalReflectionPreservesPrimeAndGammaEnergy`: prime/Gamma invariance and every reflected-domain field.
 
 Written, unchecked:
 
-- AHT/`TheCausalReflectionPreservesPrimeAndGammaEnergy`: prime/Gamma invariance and every reflected-domain field.
 - AHT/`TheCausalReflectionPreservesThePoleProduct`: opposite pole-moment invariance, including resonance.
 - AHT/`TheCriticalHalfLineStateHasNoPositiveLaplaceZero`: exact full-form defect and actual-state nonvanishing.
 

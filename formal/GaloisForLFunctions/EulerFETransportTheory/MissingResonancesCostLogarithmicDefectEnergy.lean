@@ -530,6 +530,103 @@ theorem norm_hamburgerSeries_le_of_coeff_eq_zero {a : ℕ → ℂ}
 
 /-! ## A spike of the defect at a missing resonance -/
 
+/-- The Abel variable `w = e^{-2πu}` at a point `u` with `3μ/(2π) ≤ Re u ≤ 3μ/2` and
+`|Im u| ≤ μ/4`, `3πμ ≤ 1/8`: `‖w‖ ≥ 7/8`, `1 - ‖w‖ ≥ 3μ/2` and `‖1 - w‖ ≤ 7πμ/2`. -/
+theorem abelVariable_bounds {μ : ℝ} (hμ : 0 < μ) (hμ1 : 3 * Real.pi * μ ≤ 1 / 8) {u : ℂ}
+    (hx1 : 3 / (2 * Real.pi) * μ ≤ u.re) (hx2 : u.re ≤ 3 / 2 * μ) (hy : |u.im| ≤ μ / 4) :
+    7 / 8 ≤ ‖cexp (-(2 * Real.pi * u))‖ ∧ 3 / 2 * μ ≤ 1 - ‖cexp (-(2 * Real.pi * u))‖ ∧
+      ‖1 - cexp (-(2 * Real.pi * u))‖ ≤ 7 / 2 * Real.pi * μ := by
+  have hpi := Real.pi_pos
+  have hx0 : 0 < u.re := lt_of_lt_of_le (by positivity) hx1
+  have hwn : ‖cexp (-(2 * Real.pi * u))‖ = Real.exp (-(2 * Real.pi * u.re)) := by
+    rw [Complex.norm_exp]
+    congr 1
+    simp
+  have h2x : 2 * Real.pi * u.re ≤ 3 * Real.pi * μ := by nlinarith
+  refine ⟨?_, ?_, ?_⟩
+  · rw [hwn]
+    have := Real.add_one_le_exp (-(2 * Real.pi * u.re))
+    linarith
+  · rw [hwn]
+    have h := half_le_one_sub_exp_neg (u := 2 * Real.pi * u.re) (by positivity) (by linarith)
+    have : 3 / 2 * μ ≤ Real.pi * u.re := by
+      calc 3 / 2 * μ = Real.pi * (3 / (2 * Real.pi) * μ) := by field_simp
+        _ ≤ Real.pi * u.re := mul_le_mul_of_nonneg_left hx1 hpi.le
+    linarith
+  · have hun : ‖u‖ ≤ 7 / 4 * μ := by
+      have := Complex.norm_le_abs_re_add_abs_im u
+      rw [abs_of_pos hx0] at this
+      linarith
+    have h := norm_one_sub_cexp_neg_le (u := 2 * Real.pi * u) (by simp; positivity)
+    calc ‖1 - cexp (-(2 * Real.pi * u))‖ ≤ ‖2 * (Real.pi : ℂ) * u‖ := h
+      _ = 2 * Real.pi * ‖u‖ := by
+          rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hpi.le]; norm_num
+      _ ≤ 2 * Real.pi * (7 / 4 * μ) := by gcongr
+      _ = 7 / 2 * Real.pi * μ := by ring
+
+/-- **The exponential series near `i m`.**  Under the density bound
+`‖N_a(n) - A n‖ ≤ (A/64π²) n + C` and `(7π/3) C ≤ A/(32πμ)`, at every `τ` with
+`3μ/(2π) ≤ Re τ ≤ 3μ/2`, `|Im τ - m| ≤ μ/4` one has `‖F_a(τ)‖ ≥ 3A/(16πμ)`. -/
+theorem le_norm_expSeries_of_window {a : ℕ → ℂ} {A C : ℝ} (hA : 0 < A) (hC : 0 ≤ C)
+    (hN : ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ A / (64 * Real.pi ^ 2) * n + C)
+    {μ : ℝ} (hμ : 0 < μ) (hμ1 : 3 * Real.pi * μ ≤ 1 / 8)
+    (hRC : 7 * Real.pi / 3 * C ≤ A / (32 * Real.pi * μ)) (m : ℕ) {τ : ℂ}
+    (hx1 : 3 / (2 * Real.pi) * μ ≤ τ.re) (hx2 : τ.re ≤ 3 / 2 * μ)
+    (hy : |τ.im - m| ≤ μ / 4) :
+    3 * A / (16 * Real.pi * μ) ≤ ‖expSeries a τ‖ := by
+  have hpi := Real.pi_pos
+  have hper : expSeries a τ = expSeries a (τ - (m : ℂ) * I) := by
+    rw [← expSeries_add_nat_mul_I a (τ - (m : ℂ) * I) m, sub_add_cancel]
+  obtain ⟨hq78, h1q, h1w⟩ := abelVariable_bounds (u := τ - (m : ℂ) * I) hμ hμ1
+    (by simpa using hx1) (by simpa using hx2) (by simpa using hy)
+  set w : ℂ := cexp (-(2 * Real.pi * (τ - (m : ℂ) * I))) with hw
+  clear_value w
+  have hq1 : ‖w‖ < 1 := by linarith
+  have h1w0 : 0 < ‖1 - w‖ := by
+    refine norm_pos_iff.mpr fun h => ?_
+    have : w = 1 := by linear_combination -h
+    rw [this, norm_one] at hq1
+    exact lt_irrefl _ hq1
+  have hK : ∀ n, ‖coeffSum a n‖ ≤ (A / (64 * Real.pi ^ 2) + A + C) * ((n : ℝ) + 1) := by
+    intro n
+    have h1 := hN n
+    have h2 : ‖coeffSum a n‖ ≤ ‖coeffSum a n - A * n‖ + ‖(A : ℂ) * n‖ := by
+      have := norm_add_le (coeffSum a n - A * n) ((A : ℂ) * n)
+      simpa using this
+    have h3 : ‖(A : ℂ) * n‖ = A * n := by
+      rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hA.le, Complex.norm_natCast]
+    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have hη0 : 0 ≤ A / (64 * Real.pi ^ 2) := by positivity
+    nlinarith
+  have hRem := norm_tsum_remainder_le (a := a) (A := A) (by positivity) hC hN hq1
+  set Rs := ∑' n : ℕ, (coeffSum a (n + 1) - (A : ℂ) * ((n : ℂ) + 1)) * w ^ (n + 1) with hRs
+  have hF : expSeries a τ = (A : ℂ) * w / (1 - w) + (1 - w) * Rs := by
+    rw [hper, expSeries_eq_tsum_pow, ← hw, tsum_coeff_mul_pow_eq (A : ℂ) hK hq1]
+  have hmain : A / (4 * Real.pi * μ) ≤ ‖(A : ℂ) * w / (1 - w)‖ := by
+    rw [norm_div, norm_mul, Complex.norm_real, Real.norm_of_nonneg hA.le]
+    calc A / (4 * Real.pi * μ) = A * (7 / 8) / (7 / 2 * Real.pi * μ) := by field_simp; ring
+      _ ≤ A * ‖w‖ / ‖1 - w‖ := by gcongr
+  have hrem : ‖(1 - w) * Rs‖ ≤ A / (16 * Real.pi * μ) := by
+    rw [norm_mul]
+    have hq0 : 0 < 1 - ‖w‖ := by linarith
+    have hb : ‖Rs‖ ≤ A / (64 * Real.pi ^ 2) / (3 / 2 * μ) ^ 2 + C / (3 / 2 * μ) :=
+      hRem.trans (add_le_add (by gcongr) (by gcongr))
+    have e1 : 14 / 576 * (A / (Real.pi * μ)) ≤ A / (32 * Real.pi * μ) := by
+      rw [show A / (32 * Real.pi * μ) = 1 / 32 * (A / (Real.pi * μ)) by field_simp]
+      exact mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
+    calc ‖1 - w‖ * ‖Rs‖
+        ≤ 7 / 2 * Real.pi * μ * (A / (64 * Real.pi ^ 2) / (3 / 2 * μ) ^ 2 + C / (3 / 2 * μ)) :=
+          mul_le_mul h1w hb (norm_nonneg _) (by positivity)
+      _ = 14 / 576 * (A / (Real.pi * μ)) + 7 * Real.pi / 3 * C := by field_simp; ring
+      _ ≤ A / (32 * Real.pi * μ) + A / (32 * Real.pi * μ) := add_le_add e1 hRC
+      _ = A / (16 * Real.pi * μ) := by field_simp; ring
+  have htri := norm_sub_norm_le ((A : ℂ) * w / (1 - w)) (-((1 - w) * Rs))
+  rw [sub_neg_eq_add, norm_neg] at htri
+  have e2 : 3 * A / (16 * Real.pi * μ) = A / (4 * Real.pi * μ) - A / (16 * Real.pi * μ) := by
+    field_simp; ring
+  rw [hF, e2]
+  linarith only [htri, hmain, hrem]
+
 /-- **The spike.**  Let the coefficients have density `A > 0` with
 `‖N_a(n) - A n‖ ≤ (A/64π²) n + C`, let `a_m = 0`, and let `τ` lie in the window
 `3μ/(2π) ≤ Re τ ≤ 3μ/2`, `|Im τ - m| ≤ μ/4` with `μ` small in the stated sense.  Then
@@ -549,119 +646,23 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
     (hy : |τ.im - m| ≤ μ / 4) :
     A / (8 * Real.pi * μ) ≤ ‖defectLaplace g τ‖ := by
   have hpi := Real.pi_pos
-  have hpi3 := Real.pi_gt_three
   have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm
-  set ι : ℝ := A / (32 * Real.pi * μ) with hι
-  have hι0 : 0 < ι := by positivity
-  have hμs : μ ≤ 1 / (24 * Real.pi) := by
-    rw [le_div_iff₀ (by positivity)]; nlinarith
-  have hμs' : μ ≤ 1 / 64 := hμs.trans (by
-    rw [div_le_div_iff₀ (by positivity) (by norm_num)]; nlinarith)
-  set x := τ.re with hxdef
-  set y := τ.im with hydef
-  have hx0 : 0 < x := lt_of_lt_of_le (by positivity) hx1
+  have hμs : μ ≤ 1 / 64 := by nlinarith [Real.pi_gt_three]
+  have hx0 : 0 < τ.re := lt_of_lt_of_le (by positivity) hx1
   have hym := abs_le.mp hy
-  have hy0 : 0 ≤ y := by linarith
-  -- the shifted point `τ - i m`
-  set u : ℂ := τ - (m : ℂ) * I with hu
-  have hure : u.re = x := by simp [hu, hxdef]
-  have huim : u.im = y - m := by simp [hu, hydef]
-  have hun : ‖u‖ ≤ 7 / 4 * μ := by
-    have := Complex.norm_le_abs_re_add_abs_im u
-    rw [hure, huim, abs_of_pos hx0] at this
-    linarith
-  have hper : expSeries a τ = expSeries a u := by
-    rw [show τ = u + (m : ℂ) * I by rw [hu]; ring, expSeries_add_nat_mul_I]
-  -- Abel summation at `w = e^{-2πu}`
-  set w : ℂ := cexp (-(2 * Real.pi * u)) with hw
-  have hwn : ‖w‖ = Real.exp (-(2 * Real.pi * x)) := by
-    rw [hw, Complex.norm_exp]
-    congr 1
-    simp [hure]
-  have hq1 : ‖w‖ < 1 := by
-    rw [hwn]
-    have h : Real.exp (-(2 * Real.pi * x)) < Real.exp 0 := Real.exp_lt_exp.mpr (by nlinarith)
-    rwa [Real.exp_zero] at h
-  have hq78 : 7 / 8 ≤ ‖w‖ := by
-    rw [hwn]
-    have := Real.add_one_le_exp (-(2 * Real.pi * x))
-    nlinarith
-  have h1q : 3 / 2 * μ ≤ 1 - ‖w‖ := by
-    rw [hwn]
-    have h := half_le_one_sub_exp_neg (u := 2 * Real.pi * x) (by positivity) (by nlinarith)
-    have : 3 / 2 * μ ≤ Real.pi * x := by
-      have := mul_le_mul_of_nonneg_left hx1 hpi.le
-      calc 3 / 2 * μ = Real.pi * (3 / (2 * Real.pi) * μ) := by field_simp
-        _ ≤ Real.pi * x := this
-    linarith
-  have h1w : ‖1 - w‖ ≤ 7 / 2 * Real.pi * μ := by
-    have h := norm_one_sub_cexp_neg_le (u := 2 * Real.pi * u)
-      (by simp [hure]; positivity)
-    calc ‖1 - w‖ ≤ ‖2 * (Real.pi : ℂ) * u‖ := h
-      _ = 2 * Real.pi * ‖u‖ := by
-          rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hpi.le]; norm_num
-      _ ≤ 2 * Real.pi * (7 / 4 * μ) := by gcongr
-      _ = 7 / 2 * Real.pi * μ := by ring
-  have h1w0 : 0 < ‖1 - w‖ := by
-    refine norm_pos_iff.mpr fun h => ?_
-    have : w = 1 := by linear_combination -h
-    rw [this, norm_one] at hq1
-    exact lt_irrefl _ hq1
-  -- linear growth of the partial sums
-  have hK : ∀ n, ‖coeffSum a n‖ ≤ (A / (64 * Real.pi ^ 2) + A + C) * ((n : ℝ) + 1) := by
-    intro n
-    have h1 := hN n
-    have h2 : ‖coeffSum a n‖ ≤ ‖coeffSum a n - A * n‖ + ‖(A : ℂ) * n‖ := by
-      have := norm_add_le (coeffSum a n - A * n) ((A : ℂ) * n)
-      simpa using this
-    have h3 : ‖(A : ℂ) * n‖ = A * n := by
-      rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hA.le, Complex.norm_natCast]
-    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-    have hη0 : 0 ≤ A / (64 * Real.pi ^ 2) := by positivity
-    nlinarith
-  have hAbel := tsum_coeff_mul_pow_eq (a := a) (A : ℂ) hK hq1
-  have hRem := norm_tsum_remainder_le (a := a) (A := A) (by positivity) hC hN hq1
-  set Rs := ∑' n : ℕ, (coeffSum a (n + 1) - (A : ℂ) * ((n : ℂ) + 1)) * w ^ (n + 1) with hRs
-  have hF : expSeries a u = (A : ℂ) * w / (1 - w) + (1 - w) * Rs := by
-    rw [expSeries_eq_tsum_pow, ← hw, hAbel]
-  -- the main term is at least `8ι`
-  have hmain : 8 * ι ≤ ‖(A : ℂ) * w / (1 - w)‖ := by
-    rw [norm_div, norm_mul, Complex.norm_real, Real.norm_of_nonneg hA.le]
-    calc 8 * ι = A * (7 / 8) / (7 / 2 * Real.pi * μ) := by rw [hι]; field_simp; ring
-      _ ≤ A * ‖w‖ / ‖1 - w‖ := by
-          gcongr
-  -- the Abel remainder is at most `2ι`
-  have hrem : ‖(1 - w) * Rs‖ ≤ 2 * ι := by
-    rw [norm_mul]
-    have hq0 : 0 < 1 - ‖w‖ := by linarith
-    have hb : ‖Rs‖ ≤ A / (64 * Real.pi ^ 2) / (3 / 2 * μ) ^ 2 + C / (3 / 2 * μ) := by
-      refine hRem.trans (add_le_add ?_ ?_)
-      · gcongr
-      · gcongr
-    calc ‖1 - w‖ * ‖Rs‖
-        ≤ 7 / 2 * Real.pi * μ * (A / (64 * Real.pi ^ 2) / (3 / 2 * μ) ^ 2 + C / (3 / 2 * μ)) :=
-          mul_le_mul h1w hb (norm_nonneg _) (by positivity)
-      _ = 14 / 576 * (A / (Real.pi * μ)) + 7 * Real.pi / 3 * C := by
-          field_simp; ring
-      _ ≤ ι + ι := by
-          have e1 : 14 / 576 * (A / (Real.pi * μ)) ≤ ι := by
-            rw [hι, show A / (32 * Real.pi * μ) = 1 / 32 * (A / (Real.pi * μ)) by field_simp]
-            exact mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
-          exact add_le_add e1 hRC
-      _ = 2 * ι := by ring
-  -- the Hamburger series has no pole at `i m`
+  have hy0 : 0 ≤ τ.im := by linarith [hym.1]
+  have hF := le_norm_expSeries_of_window hA hC hN hμ hμ1 hRC m hx1 hx2 hy
   have hτn : ‖τ‖ ≤ 2 * m := by
     have := Complex.norm_le_abs_re_add_abs_im τ
-    rw [← hxdef, ← hydef, abs_of_pos hx0, abs_of_nonneg hy0] at this
+    rw [abs_of_pos hx0, abs_of_nonneg hy0] at this
     linarith [hym.2]
   have hL := norm_hamburgerSeries_le_of_coeff_eq_zero (by simpa using summable_sq_of_forall_rpow ha)
     hm ham hy0 (abs_le.mpr ⟨by linarith [hym.1], by linarith [hym.2]⟩) hτn
-  -- the polar terms
   have hτ34 : 3 / 4 ≤ ‖τ‖ := by
     have := Complex.abs_im_le_norm τ
-    rw [← hydef, abs_of_nonneg hy0] at this
-    linarith
-  have hpol : ‖β / (Real.pi * τ)‖ + ‖β‖ ≤ ι := by
+    rw [abs_of_nonneg hy0] at this
+    linarith [hym.1]
+  have hpol : ‖β / (Real.pi * τ)‖ + ‖β‖ ≤ A / (32 * Real.pi * μ) := by
     rw [norm_div, norm_mul, Complex.norm_real, Real.norm_of_nonneg hpi.le]
     have h1 : ‖β‖ / (Real.pi * ‖τ‖) ≤ ‖β‖ * (4 / (3 * Real.pi)) := by
       rw [div_le_iff₀ (by positivity)]
@@ -669,28 +670,131 @@ theorem le_norm_defectLaplace_of_window {a : ℕ → ℂ}
         field_simp
       rw [this]
       exact le_mul_of_one_le_right (norm_nonneg β) (by linarith)
-    linarith
-  -- assemble `J = L - F + β/(πτ) - β`
-  have hJ : defectLaplace g τ =
-      hamburgerSeries a τ - expSeries a τ + β / (Real.pi * τ) - β := by
-    rw [hamburgerSeries_eq_defect ha hH (by rw [← hxdef]; exact hx0)]
+    have e : ‖β‖ * (4 / (3 * Real.pi) + 1) = ‖β‖ * (4 / (3 * Real.pi)) + ‖β‖ := by ring
+    linarith only [h1, hβ, e]
+  -- `F_a = L_a - J_g + β/(πτ) - β`
+  have e : expSeries a τ = hamburgerSeries a τ - defectLaplace g τ +
+      β / (Real.pi * τ) - β := by
+    rw [hamburgerSeries_eq_defect ha hH hx0]
     ring
-  have hFn : 6 * ι ≤ ‖expSeries a τ‖ := by
-    rw [hper, hF]
-    have := norm_sub_norm_le ((A : ℂ) * w / (1 - w)) (-((1 - w) * Rs))
-    rw [sub_neg_eq_add, norm_neg] at this
-    linarith only [this, hmain, hrem]
-  have hfin : 6 * ι ≤ ‖defectLaplace g τ‖ + ‖hamburgerSeries a τ‖ +
-      (‖β / (Real.pi * τ)‖ + ‖β‖) := by
-    have e : expSeries a τ = hamburgerSeries a τ - defectLaplace g τ +
-        β / (Real.pi * τ) - β := by rw [hJ]; ring
-    have h1 := norm_sub_le (hamburgerSeries a τ - defectLaplace g τ + β / (Real.pi * τ)) β
-    have h2 := norm_add_le (hamburgerSeries a τ - defectLaplace g τ) (β / (Real.pi * τ))
-    have h3 := norm_sub_le (hamburgerSeries a τ) (defectLaplace g τ)
-    rw [← e] at h1
-    linarith only [h1, h2, h3, hFn]
-  have hgoal : A / (8 * Real.pi * μ) = 4 * ι := by rw [hι]; field_simp; ring
-  rw [hgoal]
-  linarith only [hfin, hL, hLS, hpol]
+  have h1 := norm_sub_le (hamburgerSeries a τ - defectLaplace g τ + β / (Real.pi * τ)) β
+  have h2 := norm_add_le (hamburgerSeries a τ - defectLaplace g τ) (β / (Real.pi * τ))
+  have h3 := norm_sub_le (hamburgerSeries a τ) (defectLaplace g τ)
+  rw [← e] at h1
+  have e2 : A / (8 * Real.pi * μ) =
+      3 * A / (16 * Real.pi * μ) - A / (32 * Real.pi * μ) - A / (32 * Real.pi * μ) := by
+    field_simp; ring
+  rw [e2]
+  linarith only [h1, h2, h3, hF, hL, hLS, hpol]
+
+/-! ## Windows on the tilted ray -/
+
+theorem cos_bounds {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ ≤ 1 / 2) :
+    7 / 8 ≤ Real.cos θ ∧ Real.cos θ ≤ 1 := by
+  refine ⟨?_, Real.cos_le_one θ⟩
+  have := Real.one_sub_sq_div_two_le_cos (x := θ)
+  nlinarith
+
+/-- **Windows on the tilted ray.**  For `0 < θ ≤ 1/2`, `m ≥ 1` and `|r - m/cos θ| ≤ mθ/4`, the
+point `τ = r e^{i(π/2-θ)}` has `3mθ/(2π) ≤ Re τ ≤ 3mθ/2` and `|Im τ - m| ≤ mθ/4`. -/
+theorem tiltDir_window {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ ≤ 1 / 2) {m : ℝ} (hm : 1 ≤ m) {r : ℝ}
+    (hr : |r - m / Real.cos θ| ≤ m * θ / 4) :
+    3 / (2 * Real.pi) * (m * θ) ≤ ((r : ℂ) * tiltDir θ).re ∧
+      ((r : ℂ) * tiltDir θ).re ≤ 3 / 2 * (m * θ) ∧
+      |((r : ℂ) * tiltDir θ).im - m| ≤ m * θ / 4 := by
+  have hpi := Real.pi_pos
+  have hpi3 := Real.pi_gt_three
+  obtain ⟨hcos78, hcos1⟩ := cos_bounds hθ0 hθ1
+  have hcpos : 0 < Real.cos θ := by linarith
+  have hsin1 : Real.sin θ ≤ θ := Real.sin_le hθ0.le
+  have hsin2 : 2 / Real.pi * θ ≤ Real.sin θ := Real.mul_le_sin hθ0.le (by linarith)
+  have hsin0 : 0 ≤ Real.sin θ := Real.sin_nonneg_of_nonneg_of_le_pi hθ0.le (by linarith)
+  have hmc1 : m ≤ m / Real.cos θ := by rw [le_div_iff₀ hcpos]; nlinarith
+  have hmc2 : m / Real.cos θ ≤ 8 / 7 * m := by rw [div_le_iff₀ hcpos]; nlinarith
+  have hmθ : m * θ ≤ m / 2 := by nlinarith
+  obtain ⟨hr1, hr2⟩ := abs_le.mp hr
+  have hrlo : 7 / 8 * m ≤ r := by linarith
+  have hrhi : r ≤ 3 / 2 * m := by linarith
+  rw [Complex.re_ofReal_mul, Complex.im_ofReal_mul, tiltDir_re, tiltDir_im]
+  refine ⟨?_, ?_, ?_⟩
+  · calc 3 / (2 * Real.pi) * (m * θ) ≤ 7 / 4 / Real.pi * (m * θ) := by
+          rw [show 3 / (2 * Real.pi) = 3 / 2 / Real.pi by field_simp]
+          exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right (by norm_num) hpi.le)
+            (by positivity)
+      _ = 7 / 8 * m * (2 / Real.pi * θ) := by ring
+      _ ≤ r * Real.sin θ := mul_le_mul hrlo hsin2 (by positivity) (by linarith)
+  · calc r * Real.sin θ ≤ 3 / 2 * m * θ := mul_le_mul hrhi hsin1 hsin0 (by positivity)
+      _ = 3 / 2 * (m * θ) := by ring
+  · have e : r * Real.cos θ - m = (r - m / Real.cos θ) * Real.cos θ := by field_simp
+    rw [e, abs_mul, abs_of_pos hcpos]
+    calc |r - m / Real.cos θ| * Real.cos θ ≤ m * θ / 4 * 1 :=
+          mul_le_mul hr hcos1 hcpos.le (by positivity)
+      _ = m * θ / 4 := by ring
+
+/-- The energy of one window: if `a_m = 0` and `μ = mθ` is small, the window
+`|r - m/cos θ| ≤ mθ/4` carries energy at least `A²/(128π² mθ)`. -/
+theorem setIntegral_window_ge {a : ℕ → ℂ}
+    (ha : ∀ σ : ℝ, 1 < σ → Summable fun n : ℕ => ‖a (n + 1)‖ / ((n : ℝ) + 1) ^ σ)
+    {β : ℂ} {g : ℝ → ℂ} (hH : HamburgerStripDefect (coeffDirichlet a) β g)
+    {A C : ℝ} (hA : 0 < A) (hC : 0 ≤ C)
+    (hN : ∀ n : ℕ, ‖coeffSum a n - A * n‖ ≤ A / (64 * Real.pi ^ 2) * n + C)
+    {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ ≤ 1 / 2) {m : ℕ} (hm : 1 ≤ m) (ham : a m = 0)
+    (hμ1 : 3 * Real.pi * (m * θ) ≤ 1 / 8)
+    (hRC : 7 * Real.pi / 3 * C ≤ A / (32 * Real.pi * (m * θ)))
+    (hLS : 16 / (3 * Real.pi) * m ^ 2 * (∑' n : ℕ, ‖a (n + 1)‖ / ((n + 1 : ℕ) : ℝ) ^ 2) ≤
+      A / (32 * Real.pi * (m * θ)))
+    (hβ : ‖β‖ * (4 / (3 * Real.pi) + 1) ≤ A / (32 * Real.pi * (m * θ)))
+    (hint : IntegrableOn (fun r : ℝ => ‖defectLaplace g ((r : ℂ) * tiltDir θ)‖ ^ 2) (Ioi 0)) :
+    A ^ 2 / (128 * Real.pi ^ 2 * (m * θ)) ≤
+      ∫ r in Icc ((m : ℝ) / Real.cos θ - m * θ / 4) (m / Real.cos θ + m * θ / 4),
+        ‖defectLaplace g ((r : ℂ) * tiltDir θ)‖ ^ 2 := by
+  have hpi := Real.pi_pos
+  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  have hμ : 0 < (m : ℝ) * θ := by positivity
+  obtain ⟨hcos78, hcos1⟩ := cos_bounds hθ0 hθ1
+  have hcpos : 0 < Real.cos θ := by linarith
+  have hmc1 : (m : ℝ) ≤ m / Real.cos θ := by rw [le_div_iff₀ hcpos]; nlinarith
+  have hsub : Icc ((m : ℝ) / Real.cos θ - m * θ / 4) (m / Real.cos θ + m * θ / 4) ⊆ Ioi 0 := by
+    intro r hr
+    have : (m : ℝ) * θ ≤ m / 2 := by nlinarith
+    exact lt_of_lt_of_le (by linarith) hr.1
+  have hpt : ∀ r ∈ Icc ((m : ℝ) / Real.cos θ - m * θ / 4) (m / Real.cos θ + m * θ / 4),
+      (A / (8 * Real.pi * (m * θ))) ^ 2 ≤ ‖defectLaplace g ((r : ℂ) * tiltDir θ)‖ ^ 2 := by
+    intro r hr
+    have hr' : |r - m / Real.cos θ| ≤ m * θ / 4 :=
+      abs_le.mpr ⟨by linarith [hr.1], by linarith [hr.2]⟩
+    obtain ⟨hx1, hx2, hy⟩ := tiltDir_window hθ0 hθ1 hm1 hr'
+    exact pow_le_pow_left₀ (by positivity)
+      (le_norm_defectLaplace_of_window ha hH hA hC hN hm ham hμ hμ1 hRC hLS hβ hx1 hx2 hy) 2
+  have hge := setIntegral_ge_of_const_le (μ := volume) measurableSet_Icc
+    (by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top) hpt (hint.mono_set hsub)
+  have hvol : volume.real (Icc ((m : ℝ) / Real.cos θ - m * θ / 4) (m / Real.cos θ + m * θ / 4)) =
+      m * θ / 2 := by
+    rw [measureReal_def, Real.volume_Icc, ENNReal.toReal_ofReal (by linarith)]
+    ring
+  rw [hvol, smul_eq_mul] at hge
+  calc A ^ 2 / (128 * Real.pi ^ 2 * (m * θ)) = m * θ / 2 * (A / (8 * Real.pi * (m * θ))) ^ 2 := by
+        field_simp; ring
+    _ ≤ _ := hge
+
+/-- Disjoint windows inside `(0, ∞)` carry at most the whole energy. -/
+theorem sum_setIntegral_Icc_le {f : ℝ → ℝ} (hf : IntegrableOn f (Ioi 0))
+    (hf0 : ∀ r, 0 < r → 0 ≤ f r) (s : Finset ℕ) (l u : ℕ → ℝ) (hl : ∀ k ∈ s, 0 < l k)
+    (hdisj : ∀ k ∈ s, ∀ k' ∈ s, k < k' → u k < l k') :
+    ∑ k ∈ s, ∫ r in Icc (l k) (u k), f r ≤ ∫ r in Ioi 0, f r := by
+  have hsub : ∀ k ∈ s, Icc (l k) (u k) ⊆ Ioi 0 := fun k hk r hr =>
+    lt_of_lt_of_le (hl k hk) hr.1
+  have hpair : (s : Set ℕ).Pairwise (Function.onFun Disjoint fun k => Icc (l k) (u k)) := by
+    intro k hk k' hk' hne
+    rcases lt_or_gt_of_ne hne with h | h
+    · exact Set.disjoint_left.mpr fun r hr hr' =>
+        absurd (hdisj k hk k' hk' h) (not_lt.mpr (hr'.1.trans hr.2))
+    · exact Set.disjoint_left.mpr fun r hr hr' =>
+        absurd (hdisj k' hk' k hk h) (not_lt.mpr (hr.1.trans hr'.2))
+  rw [← integral_biUnion_finset s (fun k _ => measurableSet_Icc) hpair
+    (fun k hk => hf.mono_set (hsub k hk))]
+  refine setIntegral_mono_set hf ?_ (HasSubset.Subset.eventuallyLE
+    (Set.iUnion₂_subset fun k hk => hsub k hk))
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr using hf0 r hr
 
 end GaloisForLFunctions.EulerFETransportTheory
