@@ -80,7 +80,7 @@ theorem sum_eq_sum_orbit_representatives {E : Type u} [Group E] [Fintype E] {X :
 /-! ### The functions induced from the stabilizers -/
 
 variable {E : Type u} [Group E] [Fintype E] (A : Subgroup E) [A.Normal] [IsMulCommutative A]
-  {V : Type w} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (ρ : Representation ℂ E V)
+  {V : Type w} [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ E V)
 
 /-- `m_χ = Ind_{T_χ}^E F_χ`: the function induced from the stabilizer of `χ`. -/
 def stabilizerInduced (χ : LinearCharacter A) : E → ℂ :=

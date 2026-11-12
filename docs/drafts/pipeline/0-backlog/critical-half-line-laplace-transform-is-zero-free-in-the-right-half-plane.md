@@ -30,5 +30,9 @@ Missing: modulated resolvent laws; preservation of the conjugate zero after
 the first reflection; real representative of the composed reflection;
 actual-domain closure and exact paired pole-product identity.
 
+At `Re z=1/2` the pole-weighted kernel has no exponential decay. The real
+resonance shortcut does not apply to a nonreal z; the pole law must pass
+through this case by continuity of the actual weighted Laplace moments.
+
 Zero-freeness alone is not an outer-factor theorem and does not establish
 the arithmetic polar charge.

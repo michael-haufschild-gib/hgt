@@ -1,8 +1,8 @@
 # The prime spectral field and the effective exponent action
 
 - **ID:** galois-zero-prime-spectral-field
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Questions:** Prime-value coefficient fields; faithful arithmetic action; rational relations.
 
 ## Target
@@ -38,7 +38,9 @@ injection `φ`. Commutation at every further prime is exactly
 Field closure shows that equality on every prime generator is equality
 on `E`. Conversely equality on `E` gives equality on both the two- and
 three-prime generators; their joint injectivity recovers equality of the
-exponent maps. The inverse-compatible case gives mutually inverse
+exponent maps. Conversely, pointwise fixing of `E` automatically gives
+full prime compatibility and trivial exponent action. The inverse-compatible
+case gives mutually inverse
 restrictions to `E`.
 
 Since `σ` fixes rational constants, the joint spectrum of `φ(1)` is
@@ -66,3 +68,21 @@ algebraic model of zeros. Its mixed-prime polynomial relations and its
 full arithmetic automorphism group remain undetermined. No equality
 with the contour-trace source field, purity, or normality over `ℚ` is
 claimed.
+
+## Formalization
+
+`GaloisForLFunctions/GaloisTheoryOfZeros/ThePrimeSpectralFieldOfTheZeros.lean`:
+
+- `primeSpectralField_eq_rootField`: original zeros generate the full coefficient field.
+- `allPrimeSpectrum_scalar_extension_iff`: exact pointed extension criterion for every prime.
+- `primeSpectralField_agreement_iff_exponents`: effective action determined by field restriction.
+- `primeSpectralField_fixed_iff_trivial_exponent_action`: exact invisible scalar kernel.
+- `primeSpectralFieldEquiv`, `allPrimeExponentEquiv`: compatible automorphism actions.
+- `allPrimeExponentHom_rational`: every actual rational exponent is fixed.
+- `allPrimeScalar_fixes_rationalField`: pointwise fixed radical subfield.
+- `rationalPrimeSpectralField_algebraic`, `rationalPrimeSpectralField_real`.
+- `primeSpectralField_has_transcendental`, `rationalPrimeSpectralField_ne_full`.
+- `primeSpectralConjugation_ne_id`: nontrivial ordinary conjugation on the actual field.
+
+Final direct source check passed without warnings. All 20 dependency audits
+use only `propext`, `Classical.choice`, `Quot.sound`.

@@ -13,6 +13,8 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRationalCuspSubtract
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRenormalizedThetaSquareIsBounded
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRenormalizedThetaSquareUnfolds
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquaredThetaSeriesHasADoublePole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquaredThetaSeriesSplitsIntoNineTwists
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTwistedSquarefreeCombinationHasASimplePole
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -30,5 +32,7 @@ term of `θ_s²` as `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}`; the Eisenstei
 term and an `L²` correction with at most a simple pole at `4/3`; the rational cusp subtraction of
 `θ_s²` and the Mellin transform of its scattering; boundedness and square integrability of the
 renormalized `θ_s² − H`; the continuation of `M(s) Σ_{h≠0} T_s(h)² (4π|ξ_h|)^{−s}` to
-`{1 < Re s < 13/3, Im s > 0}` and its double pole at `4/3` with leading coefficient `108π³r³`. See `SpectralTheoryOfTheCubicCover/README.md`.
+`{1 < Re s < 13/3, Im s > 0}` and its double pole at `4/3` with leading coefficient `108π³r³`; the
+twisted multiplicativity of the theta coefficients across `h = u λ^m gen I`, the split of the squared
+series into twisted squarefree series times `Z₀(3s/2 − 1)`, and the simple pole of their combination. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/
