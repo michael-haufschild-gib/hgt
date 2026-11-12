@@ -102,7 +102,7 @@ theorem rightShiftedZeroTerm_eq_mul {σ a b x : ℝ} (hx : 0 < x) (q : XiZeroCop
     rw [rightShiftedZeroTerm, rightShiftedZeroTerm, if_pos hq, if_pos hq,
       show (q.1 : ℂ) - ((a + 1 : ℝ) : ℂ) = (q.1 : ℂ) - (a : ℂ) - 1 by
         push_cast; ring,
-      Complex.cpow_sub _ _ hxne, Complex.cpow_one]
+      Complex.cpow_sub ((q.1 : ℂ) - (a : ℂ)) 1 hxne, Complex.cpow_one]
     field_simp <;> ring
   · simp only [rightShiftedZeroTerm, if_neg hq, mul_zero]
 
@@ -124,9 +124,9 @@ theorem rightShiftedZeroTrace_zero_eq_normalized {σ β x : ℝ} (hx : 0 < x) :
   intro q
   by_cases hq : σ ≤ (q.1 : ℂ).re
   · have hd := xiZeroCopy_ne_zero q
-    rw [rightShiftedZeroTerm, rightNormalizedZeroTerm, if_pos hq, if_pos hq,
-      Complex.ofReal_zero, sub_zero, sub_zero,
-      Complex.cpow_sub _ _ hxne, Complex.ofReal_cpow hx.le β]
+    simp only [rightShiftedZeroTerm, rightNormalizedZeroTerm, if_pos hq,
+      Complex.ofReal_zero, sub_zero]
+    rw [Complex.cpow_sub _ _ hxne, ← Complex.ofReal_cpow hx.le β]
     field_simp <;> ring
   · simp only [rightShiftedZeroTerm, rightNormalizedZeroTerm, if_neg hq, mul_zero]
 
@@ -145,7 +145,7 @@ theorem rightShiftedZeroTrace_eq_power_mul {σ a b x : ℝ} (hx : 0 < x) :
   · have hd := zero_sub_real_ne_zero q b
     rw [rightShiftedZeroTerm, rightShiftedZeroTerm, if_pos hq, if_pos hq,
       Complex.ofReal_zero, sub_zero, Complex.cpow_sub _ _ hxne,
-      Complex.ofReal_cpow hx.le a, Real.rpow_neg hx.le, Complex.ofReal_inv]
+      ← Complex.ofReal_cpow hx.le a, Real.rpow_neg hx.le, Complex.ofReal_inv]
     field_simp <;> ring
   · simp only [rightShiftedZeroTerm, if_neg hq, mul_zero]
 
@@ -154,7 +154,11 @@ theorem continuousOn_rightShiftedZeroTerm (σ a b : ℝ) (q : XiZeroCopy) :
   by_cases hq : σ ≤ (q.1 : ℂ).re
   · simp only [rightShiftedZeroTerm, if_pos hq]
     exact ((continuousOn_Ioi_cpow ((q.1 : ℂ) - (a : ℂ))).mono
-      (fun _ hx => zero_lt_one.trans_le hx)).div_const _
+      (show Ici (1 : ℝ) ⊆ Ioi (0 : ℝ) by
+        intro x hx
+        change 0 < x
+        have hh : (1 : ℝ) ≤ x := hx
+        linarith only [hh])).div_const _
   · simp only [rightShiftedZeroTerm, if_neg hq]
     exact continuousOn_const
 
@@ -163,19 +167,22 @@ theorem continuousOn_rightShiftedZeroTrace {σ a b : ℝ}
     (hσ : 1 / 2 < σ) (ha : 0 ≤ a) :
     ContinuousOn (rightShiftedZeroTrace σ a b) (Ici 1) := by
   have hd : ContinuousOn (rightShiftedZeroTrace σ (a + 1) b) (Ici 1) := by
-    apply continuousOn_tsum (u := rightSubstripOrdinateWeight σ)
+    apply continuousOn_tsum
+      (f := fun (q : XiZeroCopy) (x : ℝ) => rightShiftedZeroTerm σ (a + 1) b x q)
+      (u := rightSubstripOrdinateWeight σ)
     · exact fun q => continuousOn_rightShiftedZeroTerm σ (a + 1) b q
     · exact summable_rightSubstripOrdinateWeight hσ
     · intro q x hx
       exact norm_rightShiftedZeroTerm_le_weight (by linarith only [ha]) hx q
   have hm := Complex.continuous_ofReal.continuousOn.mul hd
   exact hm.congr (fun x hx => (rightShiftedZeroTrace_eq_mul
-    (zero_lt_one.trans_le hx)).symm)
+    (zero_lt_one.trans_le hx)))
 
 theorem intervalIntegrable_rightShiftedZeroTerm (σ a b : ℝ) (q : XiZeroCopy)
     {x : ℝ} (hx : 1 ≤ x) :
     IntervalIntegrable (fun t => rightShiftedZeroTerm σ a b t q) volume 1 x :=
-  ((continuousOn_rightShiftedZeroTerm σ a b q).mono (fun _ ht => ht.1)).intervalIntegrable_of_Icc hx
+  ((continuousOn_rightShiftedZeroTerm σ a b q).mono
+    (show Icc (1 : ℝ) x ⊆ Ici 1 from fun _ ht => ht.1)).intervalIntegrable_of_Icc hx
 
 /-- Uniform reciprocal domination pays the integral of each term's norm. -/
 theorem integral_norm_rightShiftedZeroTerm_le {σ a b x : ℝ}
@@ -278,10 +285,59 @@ theorem rightShiftedZeroTrace_abel {σ a x : ℝ}
       rw [integral_rightShiftedZeroTrace hσ ha1 hx,
         (hraw.mul_left ((x ^ (-a) : ℝ) : ℂ)).tsum_add (hI.mul_left (a : ℂ)),
         tsum_mul_left, tsum_mul_left]
+      rfl
     _ = ∑' q, (rightShiftedZeroTerm σ a a x q + rightShiftedZeroTerm σ 0 0 1 q -
         rightShiftedZeroTerm σ a a 1 q) :=
       tsum_congr (fun q => rightShiftedZeroTerm_abel σ a hx q)
     _ = _ := by
       rw [(hQ.add hraw1).tsum_sub hQ1, hQ.tsum_add hraw1]
+      rfl
+
+theorem integrableOn_rightShiftedZeroTrace {σ a b x : ℝ}
+    (hσ : 1 / 2 < σ) (ha : 0 ≤ a) (hx : 1 ≤ x) :
+    IntegrableOn (rightShiftedZeroTrace σ a b) (Ioc 1 x) := by
+  have hi : IntervalIntegrable (rightShiftedZeroTrace σ a b) volume 1 x :=
+    ((continuousOn_rightShiftedZeroTrace hσ ha).mono
+      (show Icc (1 : ℝ) x ⊆ Ici 1 from fun _ ht => ht.1)).intervalIntegrable_of_Icc hx
+  exact (intervalIntegrable_iff_integrableOn_Ioc_of_le hx).mp hi
+
+theorem rightShiftedZeroTrace_abelKernel_re {σ a t : ℝ} (ht : 1 ≤ t) :
+    (rightShiftedZeroTrace σ (a + 1) 0 t).re =
+      t ^ (-a - 1) * (rightShiftedZeroTrace σ 0 0 t).re := by
+  rw [rightShiftedZeroTrace_eq_power_mul (zero_lt_one.trans_le ht)]
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+    show -(a + 1) = -a - 1 by ring]
+
+/-- The real weighted trace kernel is genuinely integrable, with its
+integrability supplied by the complete complex trace. -/
+theorem integrableOn_real_weightedRightZeroTrace {σ a x : ℝ}
+    (hσ : 1 / 2 < σ) (ha : 0 ≤ a) (hx : 1 ≤ x) :
+    IntegrableOn (fun t => t ^ (-a - 1) * (rightShiftedZeroTrace σ 0 0 t).re) (Ioc 1 x) := by
+  have hi := integrableOn_rightShiftedZeroTrace (b := 0) hσ
+    (by linarith only [ha] : 0 ≤ a + 1) hx
+  have hir : IntegrableOn (fun t => (rightShiftedZeroTrace σ (a + 1) 0 t).re) (Ioc 1 x) := by
+    simpa only [IntegrableOn, RCLike.re_to_complex] using hi.re
+  exact hir.congr_fun (fun _ ht => rightShiftedZeroTrace_abelKernel_re ht.1.le) measurableSet_Ioc
+
+/-- Real-part Abel summation for the actual full trace, with its endpoint constant. -/
+theorem rightShiftedZeroTrace_abel_real {σ a x : ℝ}
+    (hσ : 1 / 2 < σ) (ha : 0 ≤ a) (hx : 1 ≤ x) :
+    x ^ (-a) * (rightShiftedZeroTrace σ 0 0 x).re +
+      a * (∫ t in Ioc (1 : ℝ) x, t ^ (-a - 1) * (rightShiftedZeroTrace σ 0 0 t).re) =
+      (rightShiftedZeroTrace σ a a x).re + (rightShiftedZeroTrace σ 0 0 1).re -
+        (rightShiftedZeroTrace σ a a 1).re := by
+  have hi := integrableOn_rightShiftedZeroTrace (b := 0) hσ
+    (by linarith only [ha] : 0 ≤ a + 1) hx
+  have hIr : (∫ t in Ioc (1 : ℝ) x, rightShiftedZeroTrace σ (a + 1) 0 t).re =
+      ∫ t in Ioc (1 : ℝ) x, t ^ (-a - 1) * (rightShiftedZeroTrace σ 0 0 t).re := by
+    calc
+      _ = ∫ t in Ioc (1 : ℝ) x, (rightShiftedZeroTrace σ (a + 1) 0 t).re := by
+        simpa only [RCLike.re_to_complex] using (integral_re hi).symm
+      _ = _ := setIntegral_congr_fun measurableSet_Ioc
+        (fun _ ht => rightShiftedZeroTrace_abelKernel_re ht.1.le)
+  have hh := congrArg Complex.re (rightShiftedZeroTrace_abel hσ ha hx)
+  simp only [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, sub_zero] at hh
+  rwa [hIr] at hh
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

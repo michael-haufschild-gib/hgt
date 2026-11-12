@@ -20,12 +20,17 @@ bounding abscissa. All multiplicity copies remain in the sum. -/
 theorem continuousOn_rightNormalizedZeroTrace {σ β : ℝ} (hσ : 1 / 2 < σ)
     (hβ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ β) :
     ContinuousOn (rightNormalizedZeroTrace σ β) (Ici 1) := by
-  apply continuousOn_tsum (u := rightSubstripTailWeight σ ∅)
+  apply continuousOn_tsum (f := fun (q : XiZeroCopy) (x : ℝ) => rightNormalizedZeroTerm σ β x q)
+    (u := rightSubstripTailWeight σ ∅)
   · intro q
     by_cases hq : σ ≤ (q.1 : ℂ).re
     · simp only [rightNormalizedZeroTerm, if_pos hq]
       exact ((continuousOn_Ioi_cpow ((q.1 : ℂ) - (β : ℂ))).mono
-        (fun _ hx => zero_lt_one.trans_le hx)).div_const _
+        (show Ici (1 : ℝ) ⊆ Ioi (0 : ℝ) by
+          intro x hx
+          change 0 < x
+          have hh : (1 : ℝ) ≤ x := hx
+          linarith only [hh])).div_const _
     · simp only [rightNormalizedZeroTerm, if_neg hq]
       exact continuousOn_const
   · exact summable_rightSubstripTailWeight hσ ∅

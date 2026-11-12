@@ -63,11 +63,12 @@ each to a named residual; a producer for AAL or ZAL is the success criterion.
 | `EveryConfigurationThatApproachesTheLineIsRealized` | Theorem G: `landingTarget`, `landingTail`, `IsLayerTwinOn`, `IsLandingTwin`; gluing of half-planes (`exists_glue`) |
 | `TheTailOfZetaBeyondACutoff` | `zetaCut N` (entire), `norm_zetaCut_le`, `cutTarget`, `lseriesHasSum_cutTarget`, the balanced cutoff `norm_zetaCut_sq_le` |
 | `ACountBelowTheDeletionExponentIsARealZero` | Theorem J: `countDefect`, `exists_continuation_of_count`, `differentiableOn_editRem_of_summable`, `zero_at_expo_minus_of_count`, `balance_or_zero_of_count`, `zero_of_delete_only_of_count` |
-| `AFakeZeroOnTheTopLineCostsLogarithmicDensity` | Theorem M: `primeSum`, `exists_log_le_primeSum_add`, `exists_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
+| `AFakeZeroOnTheTopLineCostsLogarithmicDensity` | Theorem M: `primeSum`, `exists_mul_log_le_primeSum_add_of_bound`, `exists_order_mul_log_le_primeSum_add`, `exists_half_of_sum`, `exists_order_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
 | `AFakeBelowItsTopIsBalancedOrHasARealTop` | `balance_or_real_top`, `balance_or_real_top_of_fake`: the B183 dichotomy below `√x` |
 | `TwinsContinuePastTheLine` | Theorem K: `IsFactorTwinOn c`, `isFactorTwinOn_gedit`, `isFactorTwinOn_edit`, `exists_continuation_not_symmetric`, `exists_isEdit_layerTwinOn` |
 | `InfinitelyManyStrictFakeZerosOnALine` | `ζ` is not identically zero on a vertical segment; heights chosen in `[(j+1)^A, (j+1)^A + 1]` off the zeros of `ζ`; an integer-norm fake with infinitely many strict fake zeros on a line |
 | `AFiniteLayerCanBeEditedAway` | Theorem L: `logDeriv_fun_inv`, `exists_isEdit_layer_removed`, `zero_iff_of_layer_removed`, `exists_isEdit_zero_free_of_finite_layer` |
+| `TheFloorOfPrimeEditsWithACountRate` | Theorem N: `PrimeEditDivisorOn c`, `exists_isEdit_zeros_zeta_and_quartet`, `exists_isEdit_zeros_symmetric_in_a_strip`, `hasModelAt_primeEditDivisorOn`, `le_floor_primeEditDivisorOn`, `le_floor_primeEditDivisor`, `le_floor_primeEditDivisorOn_third` |
 | `EverySparseConfigurationIsRealized` | `IsFactorTwin`, `isFactorTwin_gedit` (general: any target of size `k^{−η}` with a factor), `IsSparseConfig`, Theorem G′, vertical line and rising points |
 
 Module 2 holds the general greedy edit `gedit m` with the drift criterion (`abs_gdisc_le`,
@@ -342,10 +343,45 @@ right of `κ`; `P_T(σ) = Σ_{p∈T}p^{−σ}`.
    `|G(σ)| = |u e^{Q}|(σ) e^{P₊−P₋}` with both moduli bounded above and below, so `P₊ − P₋ = O(1)`
    and each of `P₊`, `P₋` is `≥ ½ log(1/(σ−κ)) − C`.
 3. `exists_half_log_le_primeSum_edit`: the greedy edit at a non-real `ρ`, `ζ(ρ) ≠ 0`.
+4. Order `m` (`exists_order_mul_log_le_primeSum_add`, `exists_order_half_log_le_primeSum`): `G`
+   is not identically zero (`G(2) = ζ(2)e^{…}`), so `G = (s−ρ)^m g`, `g(ρ) ≠ 0`, `m ≥ 1` the
+   analytic order; `|G(s)| ≤ (|g(ρ)|+1)|s−ρ|^m` and parts 1, 2 give
+   `P₊ + P₋ ≥ m log(1/(σ−κ)) − C`, and `(m/2) log(1/(σ−κ)) − C` for each side if `G(κ) ≠ 0`.
 
 Reading: the balance law on the logarithmic scale. With Theorem J: a deletion-heavy edit that
 beats its thickness has integer density `m`; a balanced edit with a non-real top has density at
 least `½` on each side. (The greedy edit has `2/π` on each side, heuristically.)
+
+## Theorem N (the floor of prime edits with a count rate) — in Lean
+Floor calculus of FloorFreeArithmetic: a mechanism is a property of zero configurations
+(`Zeta23.ZeroConfig`: carrier in the strip, closed under `ρ ↦ 1−ρ̄`, locally finite), its floor
+the infimum of the depths beyond which it excludes zeros. `PrimeEditDivisor Z`: there is an
+edit `e` with a count `Ax + O(x^β)`, `β < 1`, and a continuation `G` of `(s−1)ζ_B` to
+`Re s > ½` with `G(s) = 0 ⇔ s ∈ Z` there.
+- `primeEditDivisor_zetaZeroConfig`: the zeros of `ζ` (empty edit).
+- `hasModelAt_primeEditDivisor`: `0 < δ < 13/30`. Take `t ∈ [1,2]` with `ζ(½+δ+it) ≠ 0`,
+  `ρ = ½+δ+it`; `Z = zeros of ζ ∪ {ρ, 1−ρ̄} ∪ {ρ̄, 1−ρ}` (`addPair` twice). The pair twin at `ρ`
+  has `G = u · C(s−ρ)(s−ρ̄)e^{H}`: right of the line `G = 0 ⇔ ζ = 0 ∨ s = ρ ∨ s = ρ̄`, and the
+  reflections lie left of the line.
+- `le_floor_primeEditDivisor`: `floor ≥ 13/30`.
+
+Read on `Re s > c`, `c < ½` (`PrimeEditDivisorOn c`): the mechanism sees the strip
+`c < Re s < 1−c`, where a zero configuration is symmetric.
+- `exists_isEdit_zeros_zeta_and_quartet`: `δ + 1/15 < c`, `¼ + δ/2 < c ≤ ½`. Layer
+  `J = {ρ, 1−ρ̄}` if `c < ½ − δ`, else `{ρ}`; `exists_isEdit_layerTwinOn` with `b = ½ + δ`
+  (a layer may contain points left of the line). `G = u·C·L_J·e^{H}` on `Re s > c`: zeros =
+  zeros of `ζ` and the points of the quartet `ρ, ρ̄, 1−ρ̄, 1−ρ` in the half-plane.
+- `exists_isEdit_zeros_symmetric_in_a_strip`: `c < ½ − δ` ⇒ `G(s) = 0 ⇔ G(1−s̄) = 0` on
+  `c < Re s < 1−c` (the zeros of `ζ` and the quartet are closed under the reflection).
+- `le_floor_primeEditDivisorOn`: floor `≥ min(c − 1/15, 2c − ½)`; `13/30` at `c = ½`, `1/6` at
+  `c = 1/3`.
+
+Reading: the Euler product over the rational primes with multiplicities `0, 1, 2`, integer
+norms, a power saving in the count and the symmetry of the zeros in a strip about the line, as
+one mechanism of the floor calculus, exclude no zero of depth below these bounds. Symmetric
+zeros in a strip are not the functional equation: the identity has no model (Hamburger
+rigidity), the symmetry of the divisor has. The strip is limited by `c > Re ρ/2`: beyond it the
+prime-power remainder `Σ_k E(ks)/k` of the twin has a square-root branch point at `ρ/2`.
 
 ## Theorem K (twins continue past the line) — in Lean
 For a target `|m(k)| ≤ Ak^{−η}`, `0 < η < 1`, `m(0) = 0`, and `max(17/30 − η, (1−η)/2) < c ≤ 1`:
@@ -403,3 +439,7 @@ no edit law decides it: `NO PRODUCER`.
   (Theorem J′) in Lean (22 modules); README consolidated.
 - 2026-11-12 — Theorem M (logarithmic density of the edited primes at a top fake zero) in Lean
   (23 modules).
+- 2026-11-12 — Theorem M at order `m`; Theorem N (floor of prime edits with a count rate
+  `≥ 13/30`, bridge to the floor calculus) in Lean (24 modules).
+- 2026-11-12 — symmetric quartet in a strip (`PrimeEditDivisorOn c`, floor
+  `≥ min(c − 1/15, 2c − ½)`) in Lean, same module.

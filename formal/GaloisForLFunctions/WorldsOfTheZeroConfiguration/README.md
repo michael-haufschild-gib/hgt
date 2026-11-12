@@ -140,6 +140,8 @@ proofs.
 | Every sparse configuration, with a canonical product as factor: zeros on a vertical line, zeros rising to a line, infinitely many strict fake zeros | `IsSparseConfig.exists_isEdit_fake_sparse`, `exists_isEdit_zeros_on_a_vertical_line`, `exists_isEdit_zeros_rising_to_a_line`, `exists_isEdit_fake_with_strict_zeros_on_a_line` |
 | A finite layer edited away; in world I an edit with a larger zero-free half-plane than `ζ` | `exists_isEdit_layer_removed`, `exists_isEdit_zero_free_of_finite_layer` |
 | The pair twin is holomorphic on `Re s > Re ρ/2` apart from the pole, and its zeros are not symmetric about the line | `isFactorTwinOn_edit`, `exists_continuation_not_symmetric` |
+| Zeros symmetric about the line in a strip: for `δ < 1/6` the continuation to `Re s > 1/3` vanishes exactly at the zeros of `ζ` and at a quartet `ρ, ρ̄, 1−ρ̄, 1−ρ` of depth `δ` | `exists_isEdit_zeros_zeta_and_quartet`, `exists_isEdit_zeros_symmetric_in_a_strip` |
+| In the floor calculus: "prime edit with a count rate, read on `Re s > c`" has a model at every depth `δ < min(c − 1/15, 2c − 1/2)`; its floor is at least `13/30` for `c = ½` and `1/6` for `c = 1/3` | `hasModelAt_primeEditDivisorOn`, `le_floor_primeEditDivisorOn`, `le_floor_primeEditDivisor`, `le_floor_primeEditDivisorOn_third` |
 
 **Laws.** For every edit; `β` is a count exponent.
 
@@ -147,7 +149,7 @@ proofs.
 |---|---|
 | Thickness: a fake zero has `Re ρ ≤ max(κ₊, κ₋, ½)` | `BalanceLaw.re_le_of_fake_zero` |
 | Balance: a positive Euler factor does not continue across its real abscissa; no surplus of doubled primes; a surplus of deleted primes is a real zero at `κ₋`; no real zero ⇒ `κ₊ = κ₋` | `BalanceLaw.not_differentiableOn_exp_gdSeries`, `expo_plus_le`, `zero_at_expo_minus`, `balance` |
-| Logarithmic density: a fake zero on the line `Re s = κ` right of which the edit is summable costs `Σ_{p edited} p^{−σ} ≥ log(1/(σ−κ)) − C`; without a real zero at `κ`, each side at least `½ log(1/(σ−κ)) − C` (so for the greedy edit at a non-real `ρ`) | `BalanceLaw.exists_log_le_primeSum_add`, `exists_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
+| Logarithmic density: a fake zero of order `m` on the line `Re s = κ` right of which the edit is summable costs `Σ_{p edited} p^{−σ} ≥ m log(1/(σ−κ)) − C`; without a real zero at `κ`, each side at least `(m/2) log(1/(σ−κ)) − C` (so `½` each for the greedy edit at a non-real `ρ`) | `BalanceLaw.exists_order_mul_log_le_primeSum_add`, `exists_order_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
 | The count continues `(s−1)ζ_B` to `Re s > β`. If `β < max(κ₊, κ₋)` then `κ₊ = κ₋`, or `ζ_B` has a zero of an order `m ≥ 1` at `κ₋` and `Σ_{p deleted} p^{−σ} = m log(1/(σ−κ₋)) + O(1)` | `BalanceLaw.exists_continuation_of_count`, `balance_or_zero_of_count`, `exists_order_of_count` |
 | A fake below its top: if `β < Re ρ₀` for a fake zero `ρ₀` (always if `β ≤ ½`), then `κ₊ = κ₋`, or `ζ_B(κ₋) = 0` with `κ₋ > ½` at or right of every fake zero | `BalanceLaw.balance_or_real_top`, `balance_or_real_top_of_fake` |
 | Additions are paid in full: `κ₊ ≤ max(β, κ₋)`; an add-only edit has count exponent exactly `κ₊` | `CountFloor.expo_plus_le_max`, `expo_plus_le_of_add_only` |
@@ -169,6 +171,7 @@ proofs.
 | The bound `14/15` limits the real part of a fake zero | It limits the half-plane of the factorization: for `Re ρ ≤ b < 1` the layer is the exact zero set in `Re s > max(b − 13/30, b/2)` |
 | `ζ` has the largest zero-free half-plane among the systems over its primes | In world I it does not: the edit that removes the top layer has integer norms, a count rate and a larger zero-free half-plane. "No edit with a count rate beats `ζ`" implies AAL; it is a statement about `ζ`, not a law of edits |
 | A model can also carry the reflection | A discrete Beurling system with Riemann's functional equation is the rational primes (`ArithmeticPositiveDuality.beurlingSystem_rigidity_of_completed_functional_equation`). The zeros of a pair twin are not symmetric |
+| The symmetry of the zeros about the line is the functional equation | The edit of a quartet has zeros symmetric about the line in a strip `c < Re s < 1 − c`. What has no model is the functional equation as an identity |
 | The models say something about `ζ` | They are relative to `ζ`: they bound what the structures they keep can prove |
 | A count below `√x` follows from the discrepancy at frequency zero | It needs discrepancy at every frequency: the greedy edit gives `β > Re ρ > ½` |
 | A fake can have a count remainder below every power | Not a thin edit: `β > (1−θ)/(4(2−θ))`; below every power means exponent zero |
@@ -234,7 +237,7 @@ and the Perron analysis of its count; factors beyond absolute convergence of the
 | Neighbour | Interface |
 |---|---|
 | ZeroConfigurationGeometry | worlds, abscissa laws, cameras; WZC continues its route |
-| FloorFreeArithmetic | receivers of AAL, tangent data, finite strata under one structure |
+| FloorFreeArithmetic | receivers of AAL, tangent data, finite strata under one structure; the floor calculus, in which "prime edit with a count rate" (`PrimeEditDivisor`) is a mechanism with floor `≥ 13/30` |
 | ExceptionalLayerTheory | filters, currents, atoms, the Deuring–Heilbronn question |
 | SumProductArithmeticOfTheLogarithm | fakes: definition, deletions, the count remainder; WZC adds the two-sided class |
 | ArithmeticPositiveDuality | one-offs over natural norms and repeated primes, the firewall; Hamburger rigidity of Beurling systems under the reflection |
@@ -253,11 +256,12 @@ with a tail, and with zeros that approach the line:
 | reflection symmetry and temperedness; the functional equation with Gamma factor, order one and the zero count; no Euler product | symmetric configurations with any finite top layer; zeros off the line that approach it (model ladder of FloorFreeArithmetic and ZeroConfigurationGeometry) |
 | Euler product over the rational primes, multiplicities `0, 1, 2`, integer norms, count `Ax + O(x^β)` with `β` above the top | two-sided edits (this programme) |
 | Euler product, integer norms, count below the count floor | none among thin edits: no fake zero |
-| Euler product and reflection | none: the system is the rational primes (ArithmeticPositiveDuality) |
+| Euler product, integer norms, count rate, zeros symmetric about the line in a strip `c < Re s < 1 − c`, `c ≥ 1/3` | two-sided edits of a quartet, at every depth below `½ − c` (this programme) |
+| Euler product and the functional equation as an identity | none: the system is the rational primes (ArithmeticPositiveDuality) |
 
-So an argument for AAL, ZAL, B13 or Landing uses the Euler product together with the reflection,
-or the Euler product together with a count below the floor. An argument that uses one row of
-the first two holds for its models and is wrong.
+So an argument for AAL, ZAL, B13 or Landing uses the Euler product together with the functional
+equation as an identity, or the Euler product together with a count below the floor. An
+argument that uses one of the first three rows holds for its models and is wrong.
 
 ## 11. Success criteria
 

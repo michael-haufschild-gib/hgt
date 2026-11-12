@@ -65,7 +65,8 @@ theorem exists_power_bound_primeError_add_rightTrace {σ β : ℝ}
     norm_num at hh
     exact hh
   have hsplit : H * x ^ (7 / 8 : ℝ) = x := by
-    rw [H, ← Real.rpow_add hx0]
+    dsimp only [H]
+    rw [← Real.rpow_add hx0]
     norm_num
   have hHx : H ≤ x / 2 := by
     rw [le_div_iff₀ (by norm_num)]
@@ -78,7 +79,8 @@ theorem exists_power_bound_primeError_add_rightTrace {σ β : ℝ}
     calc
       _ ≤ (S * H ^ p) * H := mul_le_mul_of_nonneg_right hcard hH.le
       _ = S * (x ^ ((1 / 8 : ℝ) * p) * x ^ (1 / 8 : ℝ)) := by
-        rw [H, ← Real.rpow_mul hx0.le]
+        dsimp only [H]
+        rw [← Real.rpow_mul hx0.le]
         ring
       _ = S * x ^ ((p + 1) / 8) := by
         rw [← Real.rpow_add hx0]
@@ -91,7 +93,8 @@ theorem exists_power_bound_primeError_add_rightTrace {σ β : ℝ}
       _ ≤ x ^ β * (S * H ^ (p - 1)) :=
         mul_le_mul_of_nonneg_left htail (Real.rpow_nonneg hx0.le _)
       _ = S * (x ^ β * x ^ ((1 / 8 : ℝ) * (p - 1))) := by
-        rw [H, ← Real.rpow_mul hx0.le]
+        dsimp only [H]
+        rw [← Real.rpow_mul hx0.le]
         ring
       _ = S * x ^ (β + (p - 1) / 8) := by
         rw [← Real.rpow_add hx0]

@@ -281,6 +281,28 @@ odd block is known from these arguments, and even counts do not imply
 nonsplitting.
 [Arithmetic block characters and their fixed fields](TheArithmeticSignsOfTheZeroFibres.lean).
 
+The same descent obstruction governs every continuous quadratic character:
+
+```
+∃ continuous χ:Gal(L/K)→{±1}, χ(c_L)=−1
+  ⇔ the width restriction splits and some width is nonzero.
+```
+
+Every detecting character has a nonzero purely imaginary eigenradical
+`b∈L`, with `b²∈K`, `σ(b)=χ(σ)b`, and exact fixed field
+`L^ker χ=K(b)` of degree two. Its eigenradicals differ by source units.
+Closed-kernel Galois correspondence supplies `d` moved by conjugation;
+`b=d−c_L(d)` realizes the character. Dividing by any nonzero imaginary
+zero offset puts the ratio in `E`, recovering width-class descent.
+Conversely, descent constructs the radical `iδ/u` and its continuous sign
+character. Restriction and character value give both a group isomorphism
+and homeomorphism `Gal(L/K) ≅ Gal(E/K) × C₂`, with `c_L=(1,−1)`: the
+radical generates `L` over `E`, and conjugation adjusts the sign of any
+extended real-field automorphism. Nonsplitting therefore prevents every
+continuous quadratic character from detecting centered conjugation.
+Actual descent remains undecided.
+[Full quadratic detection criterion](TheQuadraticCharactersOfConjugation.lean).
+
 Functional-equation reflection on the original zeros lifts to a source-field
 automorphism precisely when `i∉L`, equivalently when `−1` is not a square
 in `L`; its lift `ι` is unique. Preservation of nonzero ordinates forces that

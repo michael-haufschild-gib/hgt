@@ -2,6 +2,8 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubicEisensteinSerie
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheIncompleteEisensteinSeriesReadsTheConstantTerm
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheConstantTermContinuesAcrossFourThirds
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquareOfTheCubicThetaUnfolds
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheSquareOfTheSourceThetaUnfolds
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubeFrequenciesOfTheThetaSquareFactorOut
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -11,5 +13,7 @@ unfolding of the incomplete and complete cubic Eisenstein series against functio
 `κ⁻¹`, the period strip as a strict fundamental set of the cusp stabilizer, and the pairing of a
 height profile with the constant term; the constant term of the cubic Eisenstein series continued
 across `4/3`, its residue and the logarithm in its Laurent coefficient; the constant term of `θ²`
-and the Rankin–Selberg identity of `θ²` against incomplete Eisenstein series. See `SpectralTheoryOfTheCubicCover/README.md`.
+and the Rankin–Selberg identity of `θ²` and of the projected `θ_s²` against incomplete Eisenstein
+series; the factorization of the Dirichlet series of the squared theta coefficients through
+`ζ_K(3w − 1)`. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/

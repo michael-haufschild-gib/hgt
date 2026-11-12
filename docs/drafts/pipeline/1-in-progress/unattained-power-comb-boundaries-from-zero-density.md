@@ -48,13 +48,18 @@ tail has exponent `β-(1-p)/8`, and the lower-strip term has exponent
 `σ+7(β-σ)/16`. All are strictly below β. Thus this moment would upgrade
 the existing prime trace to a power-saving remainder.
 
-`RHTower.DeletionMixedRefinement.norm_powerSumRemainder_le` supplies the
-uniform complex-prefix error
-`|s(s+1)|/(Re s+1) N^(-Re s-1)`, plus the half endpoint.
-Applied at `s=ρ+a`, it controls the finite zero convolution. For the omitted
-zeros, the normalized convolution is bounded by
-`(1+log N) Σ_(|γ|>Y)|γ|^-1`, using `Reρ≤β`; the same moment kills this tail.
-Choosing σ close enough to β should also absorb the zeta multiplier.
+`TransHorizonIncidenceMechanics.norm_cpowPartialSum_sub_le` gives
+`|Σ_(d≤N)d^-w − N^(1−w)/(1−w) − ζ(w)| ≤ partialSumRate(w) N^-Rew`.
+Its explicit rate is linear in `|Im w|` on `1/2≤Re w≤1`.
+At `w=ρ+a`, division by `ρ−a` cancels this growth. The resulting
+normalized error is at most `14/N` per retained zero, so the finite
+cutoff costs only `14 #F/N`. This uniform shifted-prefix bound is written
+in `PowerTailZeroPrefixHasAUniformRemainder`, unverified.
+
+The omitted normalized convolution costs
+`(1+log N) Σ_(|γ|>Y)|ρ−a|^-1`, using `Reρ≤β`.
+The subunit moment pays this tail at `Y=N^(1/8)`; the count bound also
+makes `#F/N` vanish. Summable contact amplitudes pay the omitted zeta trace.
 
 The remaining arithmetic remainder has exponent strictly below `1-2a`.
 Its convolution becomes a Riemann sum with an integrable power envelope.
@@ -80,13 +85,15 @@ cutoffs and bounds their full omitted reciprocal mass.
 `ThePrimeErrorHasAPowerSavingRightTrace` writes the resulting estimate
 `|ψ(x)−x+x^β Re rightTrace(σ,β,x)|≤C x^κ`, `σ<κ<β`, using
 `κ=max((p+1)/8, β+(p−1)/8, (β+σ)/2)`.
-Both are unverified. No gap below β is assumed.
+Both are Lean-verified, with required oleans and umbrella imports.
+No gap below β is assumed.
 
 `ThePrimeRightTraceHasAGlobalPowerRemainder` writes the same bound on all
 of `[1,∞)`. The initial interval costs a finite prime prefix and the full
 reciprocal zero mass. `TheRightSubstripTraceIsContinuous` gives continuity
 of the normalized trace on that half-line; together these supply relative
-measurability for weighted integration. Both await verification.
+measurability for weighted integration. Both are Lean-verified, with
+required oleans and umbrella imports.
 
 ## Uniform multiplier input
 
@@ -118,10 +125,18 @@ trace termwise. Since `σ<κ<β` and `σ>1/2>a`, its remainder becomes
 has convergent meshes and the trace is continuous. The existing cutoff
 criterion extends their difference through the reciprocal-integer jumps.
 
-`PowerTailWeightedPrimeAbel` writes the exact finite Abel identity for the
-literal weighted prime-deviation prefix; verification is pending.
-`PowerTailRiemannSumsAcrossJumps` is Lean-verified and wired into the umbrella:
-`riemannOn_arithmeticPowerProfile_sub_continuous` uses the existing cutoff
-criterion for an arithmetic staircase minus a continuous trace, without
-requiring either summand to be integrable separately. Termwise zero
-integration and the arithmetic contact-trace identity remain open.
+`PowerTailWeightedPrimeAbel` writes the exact finite Abel identity,
+weighted-kernel integrability, and the shifted power envelope.
+`TheRightSubstripTraceCanBeIntegrated` writes the complete complex and real
+Abel identities, including the constant `Qₐ(1)−Q₀(1)`.
+`PowerTailPrimeErrorKeepsItsRightTrace` writes the resulting exact arithmetic
+remainder and its bound `O(x^(κ−a))`. These await verification.
+
+`PowerTailRiemannSumsAcrossJumps` is Lean-verified:
+`riemannOn_arithmeticPowerProfile_sub_continuous` applies the cutoff
+criterion to a staircase minus a continuous trace, without separate
+integrability of either summand.
+`PowerTailRightRemaindersHaveConvergentMeshes` now writes its application:
+the normalized harmonic remainder tends to its inverse-coordinate integral.
+This integral need not vanish. Verification and the finite zero-convolution
+assembly remain open.

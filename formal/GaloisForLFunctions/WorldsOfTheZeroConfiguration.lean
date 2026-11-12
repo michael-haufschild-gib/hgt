@@ -21,6 +21,7 @@ import GaloisForLFunctions.WorldsOfTheZeroConfiguration.ACountBelowTheDeletionEx
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AFakeBelowItsTopIsBalancedOrHasARealTop
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TwinsContinuePastTheLine
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AFiniteLayerCanBeEditedAway
+import GaloisForLFunctions.WorldsOfTheZeroConfiguration.TheFloorOfPrimeEditsWithACountRate
 
 /-!
 # Worlds of the Zero Configuration
@@ -34,6 +35,7 @@ line, any sparse configuration (zeros on a vertical line, zeros rising to a line
 of every such model: the balance law of the doubled and the deleted primes,
 the count floor (the remainder of the count sees the edited primes through the large sieve),
 the count balance (additions are paid in full) and Landau's zero from the count (a count below
-the exponent of the deleted primes is balance or a real zero).  See
+the exponent of the deleted primes is balance or a real zero).  In the floor calculus the
+mechanism "prime edit with a count rate" has floor at least `13/30`.  See
 `WorldsOfTheZeroConfiguration/README.md`.
 -/

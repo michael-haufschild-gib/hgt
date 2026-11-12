@@ -32,6 +32,8 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheSourceNormsOfTheZeroWidthSquar
 
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheArithmeticSignsOfTheZeroFibres
 
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheQuadraticCharactersOfConjugation
+
 /-!
 # Galois theory of zeros
 

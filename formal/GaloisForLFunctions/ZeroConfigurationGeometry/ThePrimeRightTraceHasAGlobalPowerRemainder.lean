@@ -27,11 +27,14 @@ theorem aestronglyMeasurable_primeRightTraceRemainder
     (hβ : ∀ q : XiZeroCopy, (q.1 : ℂ).re ≤ β) :
     AEStronglyMeasurable (primeRightTraceRemainder σ β) (volume.restrict (Ici 1)) := by
   have hψ : Measurable Chebyshev.psi := by
-    have hh := (measurable_from_nat (f := fun N : ℕ =>
-      ∑ n ∈ Finset.Icc 0 N, ArithmeticFunction.vonMangoldt n)).comp Nat.measurable_floor
+    have hh : Measurable (fun x : ℝ =>
+        ∑ n ∈ Finset.Icc 0 ⌊x⌋₊, ArithmeticFunction.vonMangoldt n) :=
+      (measurable_from_nat (f := fun N : ℕ =>
+        ∑ n ∈ Finset.Icc 0 N, ArithmeticFunction.vonMangoldt n)).comp Nat.measurable_floor
     simpa only [Function.comp_def, ← Chebyshev.psi_eq_sum_Icc] using hh
-  have htrace := (continuousOn_rightNormalizedZeroTrace hσ hβ).aestronglyMeasurable
-    measurableSet_Ici
+  have htrace : AEStronglyMeasurable (rightNormalizedZeroTrace σ β)
+      (volume.restrict (Ici 1)) :=
+    (continuousOn_rightNormalizedZeroTrace hσ hβ).aestronglyMeasurable measurableSet_Ici
   exact (hψ.aestronglyMeasurable.sub measurable_id.aestronglyMeasurable).add
     ((measurable_id.pow_const β).aestronglyMeasurable.mul htrace.re)
 
