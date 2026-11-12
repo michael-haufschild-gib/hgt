@@ -49,32 +49,38 @@ theorem negativeHalfLineLaplace_causalConvolution_mul_of_re_eq {z q : ℂ}
   have hKs : ∀ u, 0 ≤ u → K u = 0 :=
     complexCausalConvolution_support_of_laplace_zero hi hz hs
   have hq : 0 ≤ q.re := by rw [heq]; exact hzpos.le
-  let qs : ℕ → ℂ := fun n => q + (((n + 1 : ℕ) : ℝ)⁻¹ : ℂ)
+  let qs : ℕ → ℂ := fun n => q + Complex.ofReal (((n + 1 : ℕ) : ℝ)⁻¹)
   have hseq : Tendsto qs atTop (𝓝 q) := by
     have hr : Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ)⁻¹) atTop (𝓝 0) :=
       (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1)).inv_tendsto_atTop
     have hc := Filter.Tendsto.comp (Complex.continuous_ofReal.tendsto 0) hr
-    simpa only [Complex.ofReal_zero, add_zero] using
+    simpa only [qs, Function.comp_apply, Complex.ofReal_zero, add_zero] using
       (tendsto_const_nhds (x := q)).add hc
   have hpos (n : ℕ) : 0 < ((n + 1 : ℕ) : ℝ)⁻¹ := by positivity
   have hqs (n : ℕ) : 0 ≤ (qs n).re := by
-    change 0 ≤ (q + (((n + 1 : ℕ) : ℝ)⁻¹ : ℂ)).re
+    change 0 ≤ (q + Complex.ofReal (((n + 1 : ℕ) : ℝ)⁻¹)).re
     simpa only [Complex.add_re, Complex.ofReal_re] using add_nonneg hq (hpos n).le
   have hwithin : Tendsto qs atTop (𝓝[{w : ℂ | 0 ≤ w.re}] q) :=
     tendsto_nhdsWithin_iff.mpr ⟨hseq, Eventually.of_forall hqs⟩
+  have hKL := Filter.Tendsto.comp
+    (show Tendsto (negativeHalfLineLaplace K) (𝓝[{w : ℂ | 0 ≤ w.re}] q)
+      (𝓝 (negativeHalfLineLaplace K q)) from continuousOn_negativeHalfLineLaplace hK hKs q hq)
+    hwithin
+  have hFL := Filter.Tendsto.comp
+    (show Tendsto (negativeHalfLineLaplace f) (𝓝[{w : ℂ | 0 ≤ w.re}] q)
+      (𝓝 (negativeHalfLineLaplace f q)) from continuousOn_negativeHalfLineLaplace hf hs q hq)
+    hwithin
   have hleft : Tendsto (fun n => (z - qs n) * negativeHalfLineLaplace K (qs n))
       atTop (𝓝 ((z - q) * negativeHalfLineLaplace K q)) :=
-    (tendsto_const_nhds.sub hseq).mul
-      (Filter.Tendsto.comp (continuousOn_negativeHalfLineLaplace hK hKs q hq) hwithin)
+    (tendsto_const_nhds.sub hseq).mul hKL
   have hright : Tendsto (fun n => (Real.pi : ℂ) * negativeHalfLineLaplace f (qs n))
       atTop (𝓝 ((Real.pi : ℂ) * negativeHalfLineLaplace f q)) :=
-    tendsto_const_nhds.mul
-      (Filter.Tendsto.comp (continuousOn_negativeHalfLineLaplace hf hs q hq) hwithin)
+    tendsto_const_nhds.mul hFL
   have hidentity (n : ℕ) :
       (z - qs n) * negativeHalfLineLaplace K (qs n) =
         (Real.pi : ℂ) * negativeHalfLineLaplace f (qs n) := by
     have hd : 0 < (qs n - z).re := by
-      change 0 < (q + (((n + 1 : ℕ) : ℝ)⁻¹ : ℂ) - z).re
+      change 0 < (q + Complex.ofReal (((n + 1 : ℕ) : ℝ)⁻¹) - z).re
       simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, heq]
       linarith only [hpos n]
     have hn : z - qs n ≠ 0 := by

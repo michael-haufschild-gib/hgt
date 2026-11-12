@@ -131,7 +131,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
 - 2026-11-12 — M9–M24 proved and formalized
-- 2026-11-12 — M25 proved and formalized
+- 2026-11-12 — M25, M26 proved and formalized
 
 ## The neutral part (M9, M10)
 
@@ -201,6 +201,8 @@ A supersolution cannot certify a window on which the neutral part has a negative
 - [x] M25 a count of the bound states from the potential and the couplings: at most the sinks of
   a positive trial vector; with a charge dominated by the couplings, at most one more than the
   sinks of the shifted matrix; on a window, at most one more than the blocks with `V_j < −λJ`
+- [x] M26 the potential of a window with `J ≤ R` in closed form; couplings `≥ 1/(2J)`; for
+  `16J ≤ R` the potential is `≥ −½` and the count of M25 is one
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -400,9 +402,27 @@ hypothesis is `λ ≤ w_{jl}`. Lean:
 `hermNegIndex_le_card_sinks`, `hermNegIndex_le_one_add_card_sinks`,
 `hermNegIndex_neutralWindow_le_card_wells`,
 `hermNegIndex_neutralWindow_le_one_add_card_deepWells`,
-`hermNegIndex_neutralWindow_le_one_of_shallow`). The constant trial vector gives one bound state
-only on narrow windows (`V_j ≈ log(R/J) − 2`, `λJ ≈ ½ + J/4R`); a trial vector with one sink on a
-window of ratio two or four is not known.
+`hermNegIndex_neutralWindow_le_one_of_shallow`).
+
+**M26.** `Δ(n) = (n+1) log(n+1) − n log n`, so `D(n) = Δ(n) − Δ(n−1)` for `n ≥ 1`, `Δ(0) = 0`,
+`Σ_{d=0}^{k} D(d) = Δ(k)` and `Σ_{i<K} D(m+i+1) = Δ(m+K) − Δ(m)`. For `J ≤ R` and blocks
+`a ≤ b` of the window, `b < 2a`, so `⌊b/k⌋ < a` for `k ≥ 2`: no contacts. Hence
+`N(a,b) = δ_{ab} ϱ(a) − ½(D(a+b+1) + D(|b−a|))` and, with `ϱ(a) = Δ(a) − γ − log 2π`,
+
+`V_j = Δ(R+j) − γ − log 2π − ½(Δ(2R+j+J) − Δ(2R+j)) − ½(Δ(j) + Δ(J−1−j))`
+
+(the differences `|l − j|` run over `0..j` on one side and `1..J−1−j` on the other). Bounds:
+`Δ(n) = log(n+1) + n log(1+1/n)` with `1 − 1/(n+1) ≤ n log(1+1/n) ≤ 1`. Couplings:
+`w ≥ ½ D(|b−a|) ≥ ½·1/(|b−a|+1) ≥ 1/(2J)`. For `16J ≤ R`: `log(R+j+1) ≥ 4 log 2 + log J`,
+`log(j+1), log(J−j) ≤ log J`, `Δ(2R+j+J) − Δ(2R+j) ≤ 1/32 + 1/33`, `γ < 2/3`, `log 2π < 2`, so
+`V_j ≥ 4 log 2 − 1/17 − 2/3 − 2 − 1/64 − 1/66 − 1 + 1 > −½`, and `λJ = ½` with `λ = 1/(2J)`:
+no sink, one bound state by M25. Lean:
+`OnANarrowWindowThePotentialIsShallowAndTheCountOfBoundStatesIsOne` (`xLogXStep`,
+`sum_range_succ_xLogXDiff`, `sum_range_xLogXDiff_add`, `blockPotential_eq_of_window`,
+`inv_two_mul_le_blockWeight`, `blockPotential_add_half_nonneg_of_narrow`,
+`hermNegIndex_neutralWindow_le_one_of_narrow_count`). With the constant trial vector the count
+stops near `J ≈ R/4`: in the middle `V ≈ log(2R/J) − γ − log 2π`, against `λJ ≈ ½`. A trial
+vector with one sink on a window of ratio two or four is not known.
 
 Lean: `…/TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged.lean`
 (`blockDegree_le_xLogXDiff`, `blockMatrix_neg_of_narrow`, `sum_kernel_abs_lt`,

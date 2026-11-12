@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** B104; complex factorization of the actual critical-state line.
 - **Statement:** Every actual critical half-line state F at a finite global window threshold has `∫ F(u) exp(zu) du ≠ 0` whenever `Re z>0`.
-- **Status:** Unproved. Positive-real-axis nonvanishing and uniqueness up to sign are verified. Complex-rate support and weighted energy are verified; complex moment laws remain unchecked.
+- **Status:** Unproved. Positive-real-axis nonvanishing and uniqueness up to sign are verified. Complex-rate support, weighted energy and the resonance-inclusive complex resolvent moment law are verified. The paired state theorem remains unchecked.
 
 ## Proposed connection
 
@@ -32,23 +32,25 @@ Verified:
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalExponentialReflection`: literal measurability, modulation, L¹/L² closure and resolvent conjugacy.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionEnergy`: unweighted/weighted L² closure, exact norm defect, Fourier modulus preservation and resolvent injectivity.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalLaplaceReflection`: complex rate and support preservation at one complex Laplace zero.
-
-Written, unchecked:
-
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceWeight`: complex kernel admission, exact kernel mass and stable-side moment law.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceDuality`: lower/upper Laplace tails and the anti-causal representation at a complex zero.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceMoments`: opposite-side complex resolvent moments.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexCausalLaplaceBoundary`: continuity across neutral decay and the unrestricted admitted moment law.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionCommutation`: Fourier multipliers and almost-everywhere commutation.
+
+Written, unchecked:
+
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionIsReal`: conjugate kernels, commuting conjugate reflections and the actual real representative.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ComplexHalfLinePoleDomain`: both half-pole moments from the actual weighted square domain.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ModulatedCausalReflectionMoments`: linear reflection law, preservation of the conjugate zero and paired half-line support.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/PairedCausalReflectionPreservesPoleProduct`: the paired quadratic Laplace factor and reciprocal opposite real moments.
 - `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesTheActualDomain`: all six actual-domain fields, including Gamma integrability.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionPreservesArithmeticEnergy`: all translated correlations, the prime sum and the real pole term.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ThePairedReflectionHasPositiveEnergyDefect`: the telescoped physical norm defect and exact full-form loss.
+- `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/TheCriticalHalfLineStateHasNoRightHalfPlaneLaplaceZero`: zero-energy vanishing, actual-state nonvanishing and the unconditional RH dichotomy.
 
-Missing: modulated resolvent laws; preservation of the conjugate zero after
-the first reflection; real representative of the composed reflection;
-actual-domain closure and exact paired pole-product identity.
+The remaining chain is written but unverified. No complex-state nonvanishing
+claim is established until its final leaf passes Lean.
 
 At `Re z=1/2` the pole-weighted kernel has no exponential decay. The real
 resonance shortcut does not apply to a nonreal z; the pole law must pass

@@ -22,6 +22,7 @@ theorem fourier_modulatedCausalReflection {a : ℝ} (ha : 0 < a) (b : ℝ)
   rw [modulatedCausalReflection_eq_conjugate, fourier_causalModulation,
     fourier_causalBlaschkeStep ha (integrable_causalModulation b hf),
     fourier_causalModulation, sub_neg_eq_add, add_sub_cancel_right]
+  simp only [Complex.ofReal_add]
 
 /-- Actual integrable reflections commute because their Fourier multipliers do. -/
 theorem modulatedCausalReflections_commute_ae {a c : ℝ} (ha : 0 < a) (hc : 0 < c)

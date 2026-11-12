@@ -72,6 +72,32 @@ theorem conj_modulatedCausalReflection (a b : ℝ) (f : ℝ → ℂ) :
 def pairedCausalReflection (a b : ℝ) (f : ℝ → ℂ) : ℝ → ℂ :=
   modulatedCausalReflection a (-b) (modulatedCausalReflection a b f)
 
+/-- The sum of the two actual weighted resolvent energies in a conjugate pair. -/
+def pairedCausalResolventEnergy (a b x : ℝ) (f : ℝ → ℂ) : ℝ :=
+  (∫ u, ‖_root_.RHTower.causalLaplaceWeighted x (modulatedCausalConvolution a b f) u‖ ^ 2) +
+    ∫ u, ‖_root_.RHTower.causalLaplaceWeighted x
+      (modulatedCausalConvolution a (-b) (modulatedCausalReflection a b f)) u‖ ^ 2
+
+theorem pairedCausalResolventEnergy_nonneg (a b x : ℝ) (f : ℝ → ℂ) :
+    0 ≤ pairedCausalResolventEnergy a b x f :=
+  add_nonneg (integral_nonneg fun _ => sq_nonneg _) (integral_nonneg fun _ => sq_nonneg _)
+
+/-- The two exact reflection defects add to the paired resolvent energy. -/
+theorem integral_weighted_pairedCausalReflection_energy {a x : ℝ} (hx : 0 < a + x)
+    (b : ℝ) {f : ℝ → ℂ}
+    (hf : MemLp (_root_.RHTower.causalLaplaceWeighted x f) 2 volume) :
+    (∫ u, ‖_root_.RHTower.causalLaplaceWeighted x f u‖ ^ 2) =
+      (∫ u, ‖_root_.RHTower.causalLaplaceWeighted x (pairedCausalReflection a b f) u‖ ^ 2) +
+        (4 * a * x) * pairedCausalResolventEnergy a b x f := by
+  have hfirst := integral_weighted_modulatedCausalReflection_energy hx b hf
+  have hsecond := integral_weighted_modulatedCausalReflection_energy hx (-b)
+    (memLp_weighted_modulatedCausalReflection hx b hf)
+  rw [hsecond] at hfirst
+  unfold pairedCausalReflection pairedCausalResolventEnergy
+  calc
+    _ = _ := hfirst
+    _ = _ := by ring
+
 /-- The conjugate pair preserves real integrable data almost everywhere. -/
 theorem conj_pairedCausalReflection_ae {a : ℝ} (ha : 0 < a) (b : ℝ)
     {f : ℝ → ℂ} (hf : Integrable f) (hreal : ∀ u, (starRingEnd ℂ) (f u) = f u) :

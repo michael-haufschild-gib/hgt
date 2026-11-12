@@ -19,7 +19,8 @@ open CriticalArithmeticCorrelationTheory ArithmeticCastelnuovoSeveri HTGeometry
   SpacingScaleHarmonicAnalysis CohomologyOfWindowsOfSpecZ WindowTowerOfSpecZ
   RenormalizedArithmeticPotentialTheory
 
-private theorem halfLineExpMass_eq_full {F : ℝ → ℝ}
+/-- Exact half-line support identifies restricted and full exponential mass. -/
+theorem halfLineExpMass_eq_full {F : ℝ → ℝ}
     (hF : ∀ u, 0 ≤ u → F u = 0) :
     (∫ u in Iio 0, F u ^ 2 * Real.exp (-(8 * u))) =
       ∫ u, F u ^ 2 * Real.exp (-(8 * u)) := by
@@ -31,7 +32,8 @@ private theorem halfLineExpMass_eq_full {F : ℝ → ℝ}
   · rw [indicator_of_notMem hu, hF u (le_of_not_gt hu)]
     simp
 
-private theorem criticalAliasCoefficient_positive {R : ℝ} (hR : 0 < R) :
+/-- The exponential-mass coefficient is positive at every positive threshold. -/
+theorem criticalAliasCoefficient_positive {R : ℝ} (hR : 0 < R) :
     0 < criticalAliasCoefficient R := by
   unfold criticalAliasCoefficient
   exact div_pos

@@ -1,8 +1,8 @@
 # Prime residue fields and functional-reflection pairs
 
 - **ID:** galois-zero-prime-residue-fields
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Questions:** Pointwise arithmetic fields; finite presentations of the full prime spectrum; conjugation and reflection.
 
 ## Target
@@ -69,3 +69,24 @@ No total-realness theorem for these fields, global lift of functional
 reflection, or purity assertion is assumed. Two- and three-prime presentations
 are relative to the complete mixed-trace base; they do not discard its other
 prime data. The statements concern every actual zero and the entire extension.
+
+## Lean declarations
+
+`ThePrimeResidueFieldsOfTheZeros.lean`:
+
+- `primeResidueField_fixing`, `primePairField_fixing`: exact stabilizers.
+- `primeResidueField_two_generators`, `primePairField_two_generators`: two-prime presentations.
+- `primeResidueField_single_iff`, `primePairField_single_iff`: sharp primitive-coordinate criteria.
+- `primeResidueField_one_of_two`, `primePairField_one_of_two`: at most one exceptional prime.
+- `primeResidueField_finite`, `primePairField_finite`: finite degree over the complete trace base.
+- `primeResidueField_reflection`, `primePairField_le_residue`: reflection and inclusion.
+- `primeResidueQuadratic_root`, `primeResidueOverPair_degree_le_two`: explicit quadratic equation and degree bound.
+- `primePairField_eq_residue_iff`, `primeResidueOverPair_degree_two_iff`: exact orbit obstruction.
+- `primePairField_real_iff`, `primePairField_real_part_iff`: chosen real place and maximal real part.
+- `primeResidueOverPair_degree_two_of_critical`: genuine quadratic degree on the critical line.
+- `primePairField_all_conjugates_real_iff`: the full arithmetic-orbit place criterion.
+- `primeTraceExtension_two_prime_families`: global generation of the infinite extension.
+
+Paper proof and Lean formalization are complete. Repository-source compilation
+passed with `lake --old env lean`; all 23 transitive axiom audits report only
+`propext`, `Classical.choice`, and `Quot.sound`.

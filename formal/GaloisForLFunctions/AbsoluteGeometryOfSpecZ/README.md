@@ -684,9 +684,15 @@ from `V` and `w`: for a positive trial vector `v` the bound states are at most t
 one more than the sinks of `N + λ c ⊗ c` (`hermNegIndex_le_card_sinks`,
 `hermNegIndex_le_one_add_card_sinks`); for `v = c = 1`, at most one more than the number of
 blocks with `V_j < −λJ`, `λ` a lower bound of the couplings
-(`hermNegIndex_neutralWindow_le_one_add_card_deepWells`). *Open:* a trial vector with one sink
-on the certified windows (the constant vector has one only on narrow windows), so that the
-count is one there and two for a wrong weight, constant or tree length; the gluing of two actual windows: a block and a far window couple by minus the product
+(`hermNegIndex_neutralWindow_le_one_add_card_deepWells`). On a window with `J ≤ R` the
+potential has a closed form in `Δ(n) = (n+1) log(n+1) − n log n`,
+`V_j = Δ(R+j) − γ − log 2π − ½(Δ(2R+j+J) − Δ(2R+j)) − ½(Δ(j) + Δ(J−1−j))`
+(`blockPotential_eq_of_window`), every coupling is at least `1/(2J)`, and for `16J ≤ R` the
+potential is at least `−½`: the count is one there, from the graph alone
+(`hermNegIndex_neutralWindow_le_one_of_narrow_count`). *Open:* a trial vector with one sink on
+the wider certified windows (the constant vector stops near `J ≈ R/4`, where the potential in
+the middle falls below the coupling), so that the count is one there and two for a wrong weight,
+constant or tree length; the gluing of two actual windows: a block and a far window couple by minus the product
 of their charges in the mean, and the difference is the fluctuation of the contacts; the first
 window that could hold a second bound state.
 

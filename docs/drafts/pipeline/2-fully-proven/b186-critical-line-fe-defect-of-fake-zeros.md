@@ -341,6 +341,17 @@ Referring to the three scenarios in `obstacles-summary.md:684–689` and Criteri
 
 ---
 
+## Lean status
+
+Formalized (compile clean, `formal/GaloisForLFunctions/`):
+- Def 1.1 = `EulerFETransportTheory.HamburgerStripDefect`.
+- Thm I.1(1): `SumProductArithmeticOfTheLogarithm.pos_density_of_integerNormFakeAt_lt_one` (A > 0, every integer-norm fake, β_c < 1); `EulerFETransportTheory.pole_eq_half_density` (β = A/2, any density A).
+- Thm I.1(2): `WorldsOfTheZeroConfiguration.FEDefect.exists_least_deleted_prime`, `intCoeff_editSystem_mul_eq_zero`.
+- Thm I.2: general `eventually_le_mul_abelMass_of_coeff_ne` (floor ‖a_{m₂}−a_{m₁}‖/(3(m₂+1))), `not_tendsto_zero_of_coeff_ne`, `not_le_rpow_neg_of_coeff_ne`; edits `FEDefect.editSystem_eventually_le_mul_abelMass`, `editSystem_defect_not_decaying` (no count-rate premise beyond β_c < 1, any deleted prime).
+- Thm I.3: general `integral_norm_sq_mul_exp_ge_of_missing_multiples` (needs only density A > 0, i.e. N(n) = An + o(n)), `not_le_sqrt_log_of_missing_multiples`, `not_bounded_of_missing_multiples`; edits `FEDefect.editSystem_fake_defect_energy`, `editSystem_fake_defect_not_le_sqrt_log`, `editSystem_fake_least_deleted_prime_energy`.
+
+Open: Lemma 1.2; Thm I.4; Thm II.1; Thm II.2; Thm II.3; Cor III.1; Cor III.2.
+
 ## 5. Lean 4 Formalization Blueprint
 
 Every theorem in §§1–4 maps directly onto existing corpus structures without new axioms or external assumptions. Suggested module layout under `formal/GaloisForLFunctions/`:

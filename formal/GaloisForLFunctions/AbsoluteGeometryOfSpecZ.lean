@@ -201,6 +201,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGroundVectorOfTheBlockMatr
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoWindowsCoupledThroughTheirChargesHoldOneBoundStateIffTheirSusceptibilitiesMultiplyToAtLeastOne
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.APowerOfAQuotientOfLFunctionsHasTheIndexOfTheQuotient
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBoundStatesOfAWindowAreAtMostTheSinksOfAPositiveTrialVector
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnANarrowWindowThePotentialIsShallowAndTheCountOfBoundStatesIsOne
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -267,5 +268,6 @@ of the block matrix of a narrow window, of one sign and charged; and the gluing 
 with one negative square each through the product of their charges; and the index of a power
 of a quotient of `L`-functions, which is the index of the quotient; and a count of the bound
 states of a window by the sinks of a positive trial vector, from its potential and its
-couplings. See `AbsoluteGeometryOfSpecZ/README.md`.
+couplings, with the closed form of the potential of a window without contacts and the count
+one on the narrow windows. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

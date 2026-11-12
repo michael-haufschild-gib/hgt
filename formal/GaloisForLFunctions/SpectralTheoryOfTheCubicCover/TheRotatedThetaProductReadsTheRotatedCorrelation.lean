@@ -117,32 +117,37 @@ theorem integral_cuspCharacterSeries_mul (a b : O → ℂ) (ha : Summable (fun h
 
 /-! ### The rotated Fourier series -/
 
-/-- Rotating the argument rotates the frequencies: `S_a(ε z) = S_{a(· ε⁻¹)}(z)` for `ε = ω^{±1}`. -/
-theorem cuspCharacterSeries_rotate (a : O → ℂ) (u : Oˣ) (z : ℂ) :
-    cuspCharacterSeries a (ringComplex (u : O) * z) = cuspCharacterSeries (fun k => a (k * u)) z := by
+/-- Rotating the argument rotates the frequencies: `S_a(u z) = S_{a(· w)}(z)` for `w u = 1`. -/
+theorem cuspCharacterSeries_rotate (a : O → ℂ) (u w : Oˣ) (hwu : (w : O) * u = 1) (z : ℂ) :
+    cuspCharacterSeries a (ringComplex (u : O) * z) = cuspCharacterSeries (fun k => a (k * w)) z := by
   unfold cuspCharacterSeries
-  rw [← (Units.mulRight u).tsum_eq]
+  rw [← (Units.mulRight w).tsum_eq]
   refine tsum_congr fun k => ?_
   simp only [Units.mulRight_apply]
-  rw [cuspFrequency_mul_right, mul_assoc]
+  rw [cuspFrequency_mul_right, mul_assoc, ← mul_assoc (ringComplex (w : O)), ← map_mul, hwu, map_one, one_mul]
 
 theorem cuspOmegaUnit_sq_val : ((cuspOmegaUnit ^ 2 : Oˣ) : O) = omega ^ 2 := by
   rw [Units.val_pow_eq_pow_val, cuspOmegaUnit_val]
 
-/-- `θ_s(R(z + jv)) = Σ_k b(v, kω²) e(ξ_k z)`. -/
+/-- `θ_s(R(z + jv)) = Σ_k b(v, kω) e(ξ_k z)`. -/
 theorem rotatedTheta_fourier (z : ℂ) (v : ℝ) (hv : 0 < v) :
     sourceTheta (integralComplexMatrix rotation • upperPoint z v hv) =
-      cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega ^ 2)) z := by
+      cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega)) z := by
   rw [rotation_smul_upperPoint, show sourceTheta = cubicSourceResidualFunction from rfl,
     cubicSourceResidualFunction_fourier_expansion, ← map_pow, ← cuspOmegaUnit_sq_val,
-    cuspCharacterSeries_rotate]
+    cuspCharacterSeries_rotate _ _ cuspOmegaUnit (by
+      rw [cuspOmegaUnit_sq_val, cuspOmegaUnit_val]; linear_combination omega_cube)]
+  simp only [cuspOmegaUnit_val]
 
-/-- `θ_s(R⁻¹(z + jv)) = Σ_k b(v, kω) e(ξ_k z)`. -/
+/-- `θ_s(R⁻¹(z + jv)) = Σ_k b(v, kω²) e(ξ_k z)`. -/
 theorem rotatedInvTheta_fourier (z : ℂ) (v : ℝ) (hv : 0 < v) :
     sourceTheta (integralComplexMatrix rotation⁻¹ • upperPoint z v hv) =
-      cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega)) z := by
+      cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega ^ 2)) z := by
   rw [rotation_inv_smul_upperPoint, show sourceTheta = cubicSourceResidualFunction from rfl,
-    cubicSourceResidualFunction_fourier_expansion, ← cuspOmegaUnit_val, cuspCharacterSeries_rotate]
+    cubicSourceResidualFunction_fourier_expansion, ← cuspOmegaUnit_val,
+    cuspCharacterSeries_rotate _ _ (cuspOmegaUnit ^ 2) (by
+      rw [cuspOmegaUnit_sq_val, cuspOmegaUnit_val]; linear_combination omega_cube)]
+  simp only [Units.val_pow_eq_pow_val, cuspOmegaUnit_val]
 
 theorem summable_amplitude_rotate (v : ℝ) (hv : 0 < v) (x : O) (hx : x ≠ 0) :
     Summable (fun k => ‖rationalSourceModeAmplitude v (k * x)‖) :=
@@ -168,35 +173,35 @@ theorem norm_cuspFrequency_mul_omega_pow (h : O) (n : ℕ) :
     ‖cuspFrequency (h * omega ^ n)‖ = ‖cuspFrequency h‖ := by
   rw [cuspFrequency_mul_right, norm_mul, map_pow, norm_pow, norm_ringComplex_omega, one_pow, mul_one]
 
-/-- `b(v, hω²) b(v, −hω) = T(hω²) T(hω) v² K_{1/3}(4π|ξ_h|v)²` for `h ≠ 0`. -/
+/-- `b(v, hω) b(v, −hω²) = T(hω²) T(hω) v² K_{1/3}(4π|ξ_h|v)²` for `h ≠ 0`. -/
 theorem rotatedAmplitude_mul (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
-    rationalSourceModeAmplitude v (h * omega ^ 2) * rationalSourceModeAmplitude v (-h * omega) =
+    rationalSourceModeAmplitude v (h * omega) * rationalSourceModeAmplitude v (-h * omega ^ 2) =
       rotatedCoeff h * ((v : ℂ) ^ 2 * besselSq (4 * Real.pi * ‖cuspFrequency h‖ * v)) := by
-  have h2 : h * omega ^ 2 ≠ 0 := mul_ne_zero hh (pow_ne_zero 2 omega_ne_zero')
-  have h1 : -h * omega ≠ 0 := mul_ne_zero (neg_ne_zero.mpr hh) omega_ne_zero'
-  rw [rationalSourceModeAmplitude_bessel v hv _ h2, rationalSourceModeAmplitude_bessel v hv _ h1,
-    norm_cuspFrequency_mul_omega_pow, neg_mul, rationalSourceResidualFourierCoefficient_neg,
-    cuspFrequency_neg, norm_neg, show h * omega = h * omega ^ 1 by rw [pow_one],
-    norm_cuspFrequency_mul_omega_pow, rotatedCoeff, besselSq, pow_one]
+  have h1 : h * omega ≠ 0 := mul_ne_zero hh omega_ne_zero'
+  have h2 : -h * omega ^ 2 ≠ 0 := mul_ne_zero (neg_ne_zero.mpr hh) (pow_ne_zero 2 omega_ne_zero')
+  rw [rationalSourceModeAmplitude_bessel v hv _ h1, rationalSourceModeAmplitude_bessel v hv _ h2, neg_mul,
+    rationalSourceResidualFourierCoefficient_neg, cuspFrequency_neg, norm_neg, norm_cuspFrequency_mul_omega_pow,
+    show h * omega = h * omega ^ 1 by rw [pow_one], norm_cuspFrequency_mul_omega_pow, rotatedCoeff, besselSq,
+    pow_one]
   ring
 
 /-- **The constant term of `F_R`.** `a₀(F_R)(v) = |P| (c² v^{4/3} + Σ_{h≠0} T(hω²)T(hω) v² K²)`. -/
 theorem cuspConstantTerm_rotatedThetaProduct (v : ℝ) (hv : 0 < v) :
     cuspConstantTerm rotatedThetaProduct v =
       periodArea * (thetaCoeff ^ 2 * ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ) + besselRemainder rotatedCoeff v) := by
-  have ha := summable_amplitude_rotate v hv _ (pow_ne_zero 2 omega_ne_zero')
-  have hb := summable_amplitude_rotate v hv _ omega_ne_zero'
+  have ha := summable_amplitude_rotate v hv _ omega_ne_zero'
+  have hb := summable_amplitude_rotate v hv _ (pow_ne_zero 2 omega_ne_zero')
   have hθ : ∀ z, rotatedThetaProduct (cuspCoordinateLift (v, z)) =
-      cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega ^ 2)) z *
-        cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega)) z := fun z => by
+      cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega)) z *
+        cuspCharacterSeries (fun k => rationalSourceModeAmplitude v (k * omega ^ 2)) z := fun z => by
     rw [cuspCoordinateLift_positive v z hv, rotatedThetaProduct, rotatedTheta_fourier, rotatedInvTheta_fourier]
   rw [cuspConstantTerm]
   simp_rw [hθ]
   rw [integral_cuspCharacterSeries_mul _ _ ha hb]
   congr 1
-  have hsum : Summable (fun h : O => rationalSourceModeAmplitude v (h * omega ^ 2) *
-      rationalSourceModeAmplitude v (-h * omega)) := by
-    refine Summable.of_norm_bounded (ha.mul_right (∑' k : O, ‖rationalSourceModeAmplitude v (k * omega)‖))
+  have hsum : Summable (fun h : O => rationalSourceModeAmplitude v (h * omega) *
+      rationalSourceModeAmplitude v (-h * omega ^ 2)) := by
+    refine Summable.of_norm_bounded (ha.mul_right (∑' k : O, ‖rationalSourceModeAmplitude v (k * omega ^ 2)‖))
       fun h => ?_
     rw [norm_mul]
     exact mul_le_mul_of_nonneg_left (hb.le_tsum (-h) fun k _ => norm_nonneg _) (norm_nonneg _)

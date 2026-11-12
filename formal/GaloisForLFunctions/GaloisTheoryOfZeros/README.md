@@ -771,6 +771,54 @@ power-trace field is a further arithmetic question.
 
 [Prime trace Galois group](ThePrimeTraceGaloisGroupOfTheZeros.lean).
 
+### Prime residue fields and reflection pairs
+
+Over the complete mixed-trace base `B`, each actual zero has two concrete
+arithmetic fields inside the normal spectral extension `E`:
+
+```
+F_ρ = B(p^ρ : p prime),
+H_ρ = B(p^ρ + p^(1−ρ) : p prime).
+```
+
+Any two distinct prime values generate `F_ρ`; any two distinct symmetric
+prime values generate `H_ρ`. More sharply, a single prime value generates
+`F_ρ` exactly when it is nonreal. A single symmetric coordinate generates
+`H_ρ` exactly when it is nonreal or `ρ` is critical. Each field therefore has
+a primitive generator among its coordinates at any two distinct primes. These are finite extensions of `B`, attached
+to every actual zero. Globally, two entire prime-coordinate families generate
+all of `E` over `B`. The base still contains every mixed prime-source trace.
+
+Their fixing subgroups are the stabilizer of `ρ` and the stabilizer of
+`{ρ,1−ρ}`, respectively. Two-prime injectivity gives the first assertion.
+For the second, equality of `p^z+p^(1−z)` leaves two possible prime values;
+three primes force two choices to agree. Absolute-height preservation
+then sharpens this to two primes: one exponential determines the real
+part, leaving only the zero and its conjugate at that height. A nonreal
+coordinate excludes the latter. Infinite Galois correspondence recovers
+the fields and the sharp generator criteria from these stabilizers.
+
+Reflection preserves `F_ρ`, and `H_ρ⊆F_ρ`. A prime coordinate distinguishing
+`ρ` from `1−ρ` generates `F_ρ/H_ρ` and satisfies
+
+```
+X² − (p^ρ+p^(1−ρ))X + p = 0.
+```
+
+Consequently `[F_ρ:H_ρ]≤2`. The degree is two exactly when some arithmetic
+automorphism exchanges `ρ` with `1−ρ`; otherwise the fields coincide.
+This decides the local extension from the arithmetic orbit without assuming
+a global field lift of functional reflection.
+
+In the chosen complex embedding, `H_ρ` is real exactly when `Re ρ=1/2`.
+In that case `H_ρ=F_ρ∩ℝ` and `F_ρ/H_ρ` is genuinely quadratic. Every
+arithmetic conjugate of `H_ρ` is real exactly when the whole arithmetic
+orbit of `ρ` lies on the critical line. These are exact place criteria;
+proving their universal realness, or arithmetic invariance of the critical
+line, remains open. The ground field is transcendental over `ℚ`, so these
+extensions are not asserted to be number fields.
+[Prime residue fields](ThePrimeResidueFieldsOfTheZeros.lean).
+
 ### Functional-equation descent and coefficient weight
 
 The permutation `ρ↦1−ρ` of zeros need not preserve their integer additive

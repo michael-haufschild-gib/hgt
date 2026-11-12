@@ -77,7 +77,8 @@ theorem complexCausalConvolution_eq_upper_laplace_of_zero {z : ℂ} {f : ℝ →
           (∫ u in Ioi y, Complex.exp (z * (u : ℂ)) * f u)) -
           (∫ u in Ioi y, Complex.exp (z * (u : ℂ)) * f u) := by ring
       _ = _ := by rw [hs', zero_sub]
-  rw [complexCausalConvolution_eq_partial_laplace, he, mul_neg, neg_mul]
+  rw [complexCausalConvolution_eq_partial_laplace, he]
+  ring
 
 /-- The reflected complex kernel integrates the upper Laplace tail. -/
 theorem reflectedComplexCausalConvolution_eq_partial_laplace (z : ℂ) (y : ℝ) (f : ℝ → ℂ) :
