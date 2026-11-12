@@ -107,13 +107,32 @@ Dirichlet with denominators `≤ N/K`, reduced to lowest terms: `β = m + a/q + 
 
 ### §7 (MR)
 
-`e(ub/s)` splits into residue classes mod `s`; a class `r` with `g = (r,s)` reduces by
-`λ(gm) = λ(g)λ(m)` and (L3) to a coprime class mod `s/g`, which is a combination of `λχ`,
-`χ mod s/g`. `λχ = Σ_{d²|·} χ(d)² μχ(·/d²)`: the terms `d ≤ D` are windows of length `T/d²`,
-the rest cost `1/D` by (L4). So (MR) follows from: for every fixed Dirichlet character `χ`,
-`limsup_X X^{-1} Σ_{X<n≤2X} |T^{-1}Σ_{n<m≤n+T} μ(m)χ(m)|² → 0` as `T → ∞` — Matomäki–Radziwiłł
-for `μχ`. Its non-generic input is a Vinogradov–Korobov-type zero-free region for `L(s, χ)`
-(twisted Weyl sums through the finite Fourier expansion of `χ`).
+Input (MR card, Lean): for `f = λχ`, `χ` a Dirichlet character mod `q ≥ 1` with `χ ≠ 1`, and for
+`f = λ`: for every `ε > 0` there is `h₀` such that for `h ≥ h₀` there is `X₀` with
+`Σ_{X≤k<2X} |S_f(k,h)|² ≤ εh²X` for `X ≥ X₀`, `S_f(k,h) = Σ_{k<m≤k+h} f(m)`.
+
+- (A1) *Dyadic control gives log-average control.* If `0 ≤ G ≤ B` and `Σ_{X≤k<2X} G(k) ≤ cX` for
+  `X ≥ X₀`, then `Σ_{n≤N} G(n)/n ≤ B(1 + log X₀) + c(log₂ N + 1)`, so `L(G) ≤ c/log 2`.
+- (A2) *Dilated windows.* For `g ≥ 1` and `T ≥ g` put `D(n) = |T^{-1} Σ_{u<T, g|n+u} f((n+u)/g)|²`. The
+  indices `m = (n+u)/g` run over `⌈n/g⌉ ≤ m ≤ ⌊(n+T−1)/g⌋`, which is `(κ(n), κ(n)+h]` with
+  `κ(n) = ⌈n/g⌉ − 1`, `h = ⌊T/g⌋`, up to one endpoint; so `T²D(n) ≤ 2|S_f(κ(n),h)|² + 2`. Each `k` has at
+  most `g` preimages under `κ`, and `κ([X, 2X)) ⊆ [Y, 2Y+1]`, `Y = ⌊(X−1)/g⌋`, so
+  `Σ_{X≤n<2X} T²D(n) ≤ 2g(εh²(Y+1) + 2h²) + 2X ≤ (4εh² + 2)X` for `X ≥ X₀'`. By (A1),
+  `L(D) ≤ (4εh² + 2)/(T² log 2) ≤ (4ε + 2/T²)/log 2`: `L(D) → 0` as `T → ∞`.
+- (A3) *Periodic twist.* `ψ(m) = e(mb/s)` has period `s`. Grouping `m = n+u` by `r = m mod s`,
+  `d = (r,s)`, `a = r/d` (a unit mod `q = s/d`): `1_{m≡r} λ(m) = λ(d) 1_{d|m} φ(q)^{-1} Σ_{χ mod q} χ̄(a) λχ(m/d)`
+  (orthogonality; both sides vanish when `m/d` is not a unit). So
+  `|Σ_{u<T} λ(n+u)e(ub/s)| ≤ Σ_{d|s} Σ_{χ mod s/d} |Σ_{u<T, d|n+u} λχ((n+u)/d)|`, and by Cauchy–Schwarz
+  (`Σ_{d|s} φ(s/d) = s` terms) `V(b/s,T) ≤ s Σ_{d|s} Σ_{χ mod s/d} L(D_{d,λχ})`.
+- (A4) *Principal characters.* `λχ₀(m) = Σ_{e|q} μ(e)λ(e) 1_{e|m} λ(m/e)`, so
+  `|Σ_{u<T, d|n+u} λχ₀((n+u)/d)|² ≤ τ(q) Σ_{e|q} |Σ_{u<T, de|n+u} λ((n+u)/(de))|²`.
+- (A5) By (A2) for `λχ` (`χ ≠ 1`) and for `λ`: `V(b/s,T) → 0` as `T → ∞` for every `b/s`.
+
+**Assembly.** Given `ε, η`, §5–§6 give `Q₀, W, k₁` with
+`|avg_{p∈𝐏_k} c(ph)| ≤ η + 4Σ_{s≤hQ₀}Σ_{b<s} V(b/s,T)` for `k ≥ k₁`, `4TW ≤ 2^k`; (A5) gives `T₀` with
+every `V(b/s,T) ≤ ε/(4(hQ₀)²)` for `T ≥ T₀`; §4 gives a good `k ≥ max(k₁, k₂)`, `2^{k₂} ≥ 4W(T₀+1)`, and
+`T = ⌊2^k/(4W)⌋`. So `|c(h)| ≤ 6ε + η + ε` for all `ε, η`: `c(h) = 0` for every `U`, and §0 gives the
+statement.
 
 ## Inputs and status
 
@@ -122,7 +141,7 @@ for `μχ`. Its non-generic input is a Vinogradov–Korobov-type zero-free regio
 | §0–§4 | limit functionals, entropy, decrement, Hoeffding, event inequality | — | **Lean** (`exists_scale_corr_close`) |
 | §5 | circle method, arc mass | — | **Lean** (`abs_avg_corr_le`) |
 | §6 (PRIME) | `|Σ_{N<p≤2N} e(pβ)| ≤ η #{p}` off the major arcs `q ≤ Q₀`, `|β − a/q| ≤ W/N` | Vaughan/Type II (`BezoutValuationIncidence.TheCentredPrimeRowIsMinorArcBelowTheDiagonal`), Siegel `RHTower.siegel_zero_free`, uniform region `RHTower.uniform_zero_free_region`, PNT with log-power error `RHTower.PrimeCells.exists_abs_theta_sub_le`, Ramanujan sum `Goldbach.norm_kloostermanSum_unit_zero_le`, `n ≤ 2φ(n)²` | **Lean** (`PrimeExponentialSums.exists_off_major_arcs`, `LogarithmicChowla.exists_norm_primeKernel_le`, `exists_abs_avg_corr_le`) |
-| §7 | MR for `μχ`, fixed `χ` | MR for `μ`: fibre form all `h → ∞` (`Sieve.MoebiusAveragedMeanSquareAllLengths`), integer start `ℓ ≥ log N` (`TwinPrime.eventually_dyadicMeanSquare_moebius_le_integerWindowRate`); VK for `ζ` (`Sieve.VinogradovKorobovZeroFree`) | open |
+| §7 | MR for `λχ` (MR card) and transfer (A1)–(A5) | MR for `χ ≠ 1`: `MatomakiRadziwill.exists_short_sum_mean_square_twLiouville_le` | open: MR for `λ`, transfer |
 
 ## Lean
 

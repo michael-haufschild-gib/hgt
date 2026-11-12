@@ -15,10 +15,11 @@ Folder: `formal/GaloisForLFunctions/MatomakiRadziwill/` (top level, umbrella `Ma
 |---|---|---|
 | V | Vinogradov–Korobov zero-free region for `L(s,χ)` | **Lean** (`LFunction_ne_zero_vinogradovKorobov`) |
 | RT | Route T for `χ`: `Σ_{p∈B} χ(p)p^{-it}` small for high blocks `B`, `\|t\| ≤ X` | **Lean** (`exists_twistedChebyshev_le`, `exists_primeBlock_le`) |
-| D | low frequencies: `sup_{\|t\|≤T₀} \|Σ_{n≤x} λχ(n)n^{-it}\| = o(x)` | open |
+| D | low frequencies for `λ`: `sup_{\|τ\|≤(log X)^{17}} \|Σ_{X<n≤4X} λ(n)n^{-1-iτ}\| ≪ e^{-c(log X)^{1/20}}` | open |
 | L | the ladder: Ramaré, mean value, large values, Halász–Montgomery, rough class | **Lean** for `χ ≠ 1` (`exists_mean_square_twLiouville_le`) |
 | P | Parseval: additive short windows from the Dirichlet-polynomial mean square | **Lean** for `χ ≠ 1` (`exists_short_sum_mean_square_twLiouville_le`) |
-| A | assembly for `λχ`; transfer to `V(b/s,T)` | open |
+| Λ | MR for `λ`: ζ Route T above `(log X)^{17}`, step D below, ladder on the high frequencies | open |
+| A | transfer to `V(b/s,T)` (A21 card §7) | open |
 
 ### V. Zero-free region for `L(s,χ)`
 
@@ -107,11 +108,41 @@ Notation: `f` completely multiplicative, `|f| ≤ 1`; `D(a;t) = Σ_n a_n n^{-1-i
 7. **Total.** For nonprincipal `χ`: `∫_{-T}^{T} |D(λχ 1_{(X,4X]}; t)|² ≤ ε(h) + o_X(1)`, `ε(h) → 0`. No
    separate low-frequency step: RT holds at every `|t| ≤ X`.
 
-**Principal characters.** `λχ₀(n) = Σ_{d | (n, r)} μ(d)λ(d)λ(n/d)`: windows of `λ` of length `h/d`.
-For `λ` the RT scale needs `Σ_{P<p≤P'} p^{-1-it} = (main ≤ 2/(|t| log P)) + O((log X)^{-A})` (ζ Route T,
-corpus `Sieve.VonMangoldtTwist*`), valid for `|t| ≥ T₀ = H_*(log X)^{2}`, and step **D** below
-`|t| ≤ T₀`: `sup_{|t| ≤ T₀} |Σ_{X<n≤4X} λ(n)n^{-1-it}| = o(T₀^{-1/2})` (PNT for `λ` with log-power
-saving at polylogarithmic heights).
+### Λ. MR for `λ` (the principal case)
+
+Statement: for every `ε > 0` there is `L₀` such that for `L ≥ L₀` there is `X₀` with
+`∫_{|w|≤W} |F(w)|² ≤ ε`, `F(w) = Σ_{X<n≤4X} λ(n)/n · n^{2πiw}`, for `X ≥ X₀`, `W ≤ X e^{-L/2}`.
+`λ = λχ₁` for the character `χ₁` mod 1, so the ladder (`ladder_master`, the concrete scales,
+`LadderNumerics*`) applies verbatim; only the top scale changes, because `Σ_p p^{-1-iτ}` has the
+pole of `ζ` at `τ = 0`. Split the frequencies at `T₁ = (log X)^{17}` (in `τ = 2πw`).
+
+1. **Low frequencies (step D).** `λ = Σ_{d²|n} μ(n/d²)`, so
+   `Σ_{n≤N} λ(n)n^{-iτ} = Σ_{d≤√N} d^{-2iτ} M(N/d², τ)`, `M(y, τ) = Σ_{m≤y} μ(m)m^{-iτ}`. The corpus
+   twisted Mertens bound `|M(y,τ)| ≤ K y e^{-(log y)^{1/20}}` for `|τ| ≤ y^{24}`, `y ≥ y₀`
+   (`Sieve.exists_norm_sum_moebiusTwist_le_rate_pow_twentyFour`) on `d ≤ N^{1/4}` and `|M| ≤ y` on
+   `d > N^{1/4}` give `|Σ_{n≤N} λ(n)n^{-iτ}| ≤ 2KN e^{-((log N)/2)^{1/20}} + 2N^{3/4}` for `|τ| ≤ N^{12}`.
+   Summation by parts on `(X, 4X]`: `|F(w)| ≤ 12 sup_{X≤N≤4X} |Σ_{n≤N} λ(n)n^{2πiw}|/N`, so
+   `∫_{2π|w|≤T₁} |F|² ≤ T₁ · O(e^{-2((log X)/2)^{1/20}}) → 0`.
+2. **High frequencies: ζ Route T.** The corpus contour bound
+   (`Sieve.exists_norm_partialSum_vonMangoldtTwist_routeT_le`): for `|τ| ≥ τ₀`, `e⁹ ≤ K`, `0 < H ≤ K`,
+   `|Σ_{n≤K} Λ(n)n^{-iτ}| ≤ C K (K/H)² [(log K)²/|τ| + (1/|τ| + log(3|τ|/2)/w(3|τ|/2+1))((3K)^{-w'} + |τ|^{-2})]
+   + H log(K+H)`, with zero-free width `w(γ) ≥ c (log γ)^{-9/10}(log log γ)^{-2}`
+   (`Sieve.routeTZeroFreeDelta_polylog_lower`) and `w' = min(δ, w)/2`. Take `H = K/(log X)^5`,
+   `T₁ ≤ |τ| ≤ X`, `log K ≥ (log X)^{0.93}`: the terms are `≤ K(log X)^{12}/T₁`,
+   `K(log X)^{14} e^{-c(log X)^{0.03}(log log X)^{-2}}`, `K(log X)^{14}/T₁²` and `2K(log X)^{-4}`, so
+   `|Σ_{n≤K} Λ(n)n^{-iτ}| ≤ K/(log X)^3` for large `X`. Abel against `1/(n log n)`
+   (`norm_sum_primeBlock_le` with `χ₁`): top blocks `‖Q_v(w)‖ ≤ (log X)^{-3}` for `T₁ ≤ 2π|w| ≤ X`.
+3. **Ladder off the low frequencies.** On `A = [−W, W] ∖ (−T₁/2π, T₁/2π)` the cover, Ramaré, the
+   first and moment steps are integrals of nonnegative functions over `A ⊆ [−W, W]`, bounded by the same
+   integrals over `[−W, W]`; the exceptional set needs the pointwise bound only on `A ∩ E`, and
+   Halász–Montgomery on `A ∩ E ⊆ E`. So `∫_A |F_S|²` has the bound of `ladder_master` (the same
+   right-hand side), and `∫_A |F − F_S|² ≤ ∫_{[−W,W]} |F − F_S|²`. With step 1:
+   `∫_{[−W,W]} |F|² ≤ o(1) + 2(ladder part) + 2(non-rough part) ≤ ε`.
+4. **Additive windows.** Parseval (P) applies to any `|f| ≤ 1` with the mean square above:
+   `Σ_{X≤m<2X} |Σ_{m<n≤m+h} λ(n)|² ≤ εh²X` for `h ≥ h₀`, `X ≥ X₀(h)`.
+
+Principal characters mod `q` are not needed separately: `λχ₀(n) = Σ_{e|q} μ(e)λ(e) 1_{e|n} λ(n/e)`
+reduces their windows to dilated windows of `λ` (transfer A, A21 card §7).
 
 ### P. Parseval
 

@@ -99,7 +99,10 @@ theorem posFiniteFactor_eq_exp (β γ : ℝ) (k₀ : ℕ) {s : ℂ} (hs : 1 < s.
         -(s + (1 - (starRingEnd ℂ) (zeroPt β γ))) := by ring
     have h1 := norm_natCast_cpow_le_half q.2.two_le hre1
     have h2 := norm_natCast_cpow_le_half q.2.two_le hre2
-    rw [e1, e2, hg, sub_eq_add_neg, Complex.exp_add, Complex.exp_neg, Complex.exp_neg,
+    have hgq : g q = -Complex.log (1 - ((q : ℕ) : ℂ) ^ (-(s + (1 - zeroPt β γ)))) +
+        -Complex.log (1 - ((q : ℕ) : ℂ) ^ (-(s + (1 - (starRingEnd ℂ) (zeroPt β γ))))) := by
+      simp only [hg]; ring
+    rw [e1, e2, hgq, Complex.exp_add, Complex.exp_neg, Complex.exp_neg,
       Complex.exp_log (one_sub_ne_zero_of_norm_lt (by linarith)),
       Complex.exp_log (one_sub_ne_zero_of_norm_lt (by linarith))]
   unfold posFiniteFactor
@@ -279,6 +282,10 @@ theorem pairLog_eq (β γ : ℝ) (k₀ : ℕ) (hβ : β < 1) {s : ℂ} (hs : 1 <
 
 /-! ## The factorization and the continuation -/
 
+theorem zetaResidueUnit_eq_of_ne {s : ℂ} (hs : s ≠ 1) :
+    zetaResidueUnit s = (s - 1) * riemannZeta s := by
+  simp [zetaResidueUnit, Function.update_of_ne hs]
+
 /-- The continued exponent `H₁ + Q + R`. -/
 def editExponent (α β γ : ℝ) (k₀ : ℕ) (s : ℂ) : ℂ :=
   editSeries α β γ k₀ s + editRem (sEdit α β γ k₀) s + pairRem β γ k₀ s
@@ -298,7 +305,7 @@ theorem sub_one_mul_zetaSeriesC_eq (hβ : β < 1) (γ : ℝ) (k₀ : ℕ) {s : �
     rw [pairLog_eq β γ k₀ hβ hs, editExponent, ← LSeries_add_pairLin_eq_editSeries hβ γ k₀ hs]
     ring
   rw [editSystem_zetaSeriesC (isEdit_sEdit α β γ k₀) hs, editCofactor,
-    posCofactor_eq_exp β γ k₀ hβ hs, zetaResidueUnit_of_ne hs1, hexp, Complex.exp_add]
+    posCofactor_eq_exp β γ k₀ hβ hs, zetaResidueUnit_eq_of_ne hs1, hexp, Complex.exp_add]
   ring
 
 theorem differentiableOn_editExponent (hα0 : 0 < α) (hα : α < 1) (hβ : β < 1) (γ : ℝ)
@@ -318,7 +325,7 @@ theorem differentiableOn_editCofactor (hα0 : 0 < α) (hα : α < 1) (hβ : β <
   intro s hs
   have hM : DifferentiableAt ℂ (posCofactor (2 ^ k₀ - 1) (zeroPt β γ)) s :=
     differentiableAt_posCofactor_of_re_gt γ hΘ hzf (2 ^ k₀ - 1) hs.2.2
-  exact (hM.differentiableWithinAt.mul ((differentiableOn_editExponent hα0 hα hβ γ hk₀).cexp
-    s ⟨hs.1, hs.2.1⟩))
+  exact (hM.differentiableWithinAt.mul (((differentiableOn_editExponent hα0 hα hβ γ hk₀).cexp.mono
+    fun _ h => ⟨h.1, h.2.1⟩) s hs))
 
 end GaloisForLFunctions.WorldsOfTheZeroConfiguration.SignedEdit
