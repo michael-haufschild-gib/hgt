@@ -109,6 +109,8 @@ theorem ae_eq_zero_of_criticalHalfLineFullEnergy_eq_zero_of_laplace_zero
   have hFczero := ae_eq_zero_of_causalExponentialConvolution_ae_zero ha
     (hd.integrable.ofReal (𝕜 := ℂ)) hKczero
   filter_upwards [hFczero] with u hu
+  change (F u : ℂ) = 0 at hu
+  change F u = 0
   exact_mod_cast hu
 
 /-- Every actual critical state has nonzero Laplace value at every positive real argument. -/

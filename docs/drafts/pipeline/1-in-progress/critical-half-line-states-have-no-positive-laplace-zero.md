@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** B104; a spectral substitute for positivity of the state.
 - **Statement:** At the finite global window threshold, every actual critical state F satisfies `L_F(s)=∫ F(u) exp(su) du ≠ 0` for every real `s>0`.
-- **Status:** Support, real representatives, weighted domain closure, exact energy defect and correlation preservation verified in Lean. Pole-product and final nonvanishing modules written; compilation incomplete. Not counted.
+- **Status:** Support, actual reflected domain, exact weighted norm defect, prime/Gamma invariance and pole-product invariance verified in Lean. Final nonvanishing module written; compilation incomplete. Not counted.
 
 ## Proposed argument
 
@@ -31,9 +31,8 @@ Assume `L_F(s)=0`. Put
    The nonvanishing resolvent multiplier then forces F to have zero norm,
    contradicting its defining unit norm.
 
-No classical derivative of the actual state is used. The remaining domain
-work must establish every admissibility field for H. No unproved regularity
-or factorization condition may enter the final ground-state theorem.
+No classical derivative of the actual state is used. Every admissibility
+field for H is verified from the actual energy domain.
 
 ## Lean inputs and status
 
@@ -54,11 +53,15 @@ Verified:
 - `HTGeometry/FourierModulusDeterminesActualCorrelation`: preservation of every literal translated correlation.
 - `HTGeometry/CausalExponentialLaplaceReflection`: causal/anti-causal moment laws, resonance-inclusive pole-product identity and actual resolvent injectivity.
 - AHT/`TheCausalReflectionPreservesPrimeAndGammaEnergy`: prime/Gamma invariance and every reflected-domain field.
+- AHT/`TheCausalReflectionPreservesThePoleProduct`: opposite pole-moment invariance, including resonance.
 
 Written, unchecked:
 
-- AHT/`TheCausalReflectionPreservesThePoleProduct`: opposite pole-moment invariance, including resonance.
 - AHT/`TheCriticalHalfLineStateHasNoPositiveLaplaceZero`: exact full-form defect and actual-state nonvanishing.
+
+The final module also targets the stronger zero-energy statement: a profile in
+the actual domain with zero full energy and one positive Laplace zero is
+zero almost everywhere. Unit norm then gives ground-state nonvanishing.
 
 The actual-state zero-energy and weak-equation framework is on the
 [causal-coordinate card](../3-formalized/critical-half-line-states-have-causal-logarithmic-coordinates.md).
