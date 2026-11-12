@@ -122272,4 +122272,10299 @@ theorem first_parent_full_second_source
 end
 end InverseMoment
 
+noncomputable section
+namespace InversePrioritySecondSource
+open Eisenstein SecondPassArithmetic FirstPassCubeLabels
+open InverseMoment InverseInitialArithmetic InverseFirstPriorityParents
+open InversePrincipalEnergy InverseSecondPrincipalCaller RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ κ : Type*} [DecidableEq ι] [DecidableEq σ] [DecidableEq κ]
+variable {Jo : ℕ} (p : ι→O) [∀ i,(Ideal.span {p i}).IsMaximal]
+
+def quotientSupport (y : SecondParentSource ι Jo) : Finset ι :=
+  Function.extend (sourceIdeal p) id (fun _=>∅) y.quotient
+
+theorem quotientSupport_parent (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (x : Source ι Jo) : quotientSupport p (parent p x)=x.quotientSupport :=
+  (sourceIdeal_injective p hinj).extend_apply _ _ _
+
+omit [DecidableEq σ] in
+theorem quotientSupport_attach (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (J : Finset σ) (q : Source ι Jo × ((∀ i∈J,ι)×(∀ i∈J,ι))) :
+    quotientSupport p (attach p J q)=q.1.quotientSupport :=
+  quotientSupport_parent p hinj q.1
+
+def residualLists (negative : Bool) (lists : σ→Finset ι)
+    (y : SecondParentSource ι Jo) (i : σ) : Finset ι :=
+  lists i \ (((if negative then y.cube.rightDivisor else y.cube.leftDivisor)∪y.firstCommon)∪
+    quotientSupport p y)
+
+omit [DecidableEq σ] in
+theorem residualLists_attach (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (q : Source ι Jo × ((∀ i∈J,ι)×(∀ i∈J,ι))) :
+    residualLists p negative lists (attach p J q)=
+      fun i=>lists i\extractedSupport negative q.1 := by
+  funext i
+  unfold residualLists
+  rw [quotientSupport_attach p hinj]
+  rfl
+
+omit [DecidableEq σ] [∀ i,(Ideal.span {p i}).IsMaximal] in
+theorem residualLists_disjoint (negative : Bool) (lists : σ→Finset ι)
+    (y : SecondParentSource ι Jo) (i : σ) :
+    Disjoint (residualLists p negative lists y i) (quotientSupport p y) := by
+  apply Finset.disjoint_left.mpr
+  intro q hq hd
+  exact (Finset.mem_sdiff.mp hq).2 (Finset.mem_union_right _ hd)
+
+theorem assigned_quotient (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (source : Finset (Source ι Jo)) (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (y : SecondParentSource ι (Jo+(J.card+J.card)))
+    (hy : y∈assignedParents p source negative J lists) :
+    y.quotient=sourceIdeal p (quotientSupport p y) := by
+  obtain ⟨x,hx,q,hq,rfl⟩ := (mem_assignedParents p source negative J lists y).mp hy
+  rw [quotientSupport_attach p hinj]
+  rfl
+
+def retainedPool (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) : Finset (MarkedSecondSource ι Jo 0) :=
+  attachedSecondFamily parents (fun y=>secondDyadicSector pool (secondVariableCutoff p y (R y))
+    residual (label y) j)
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+theorem mem_retainedPool (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) (x : MarkedSecondSource ι Jo 0) :
+    x∈retainedPool p pool parents R label residual j ↔
+      secondParentOf x∈parents ∧ x.second∈secondDyadicSector pool
+        (secondVariableCutoff p (secondParentOf x) (R (secondParentOf x))) residual
+        (label (secondParentOf x)) j := mem_attachedSecondFamily _ _ _
+
+theorem retainedPool_conditions (hp : ∀ i,p i≠0)
+    (source : Finset (Source ι Jo)) (hs : ∀ x∈source,SourceValid p x)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι) (pool : Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) :
+    ActualSecondSourceConditions p
+      (retainedPool p pool (assignedParents p source negative J lists) R label residual j) := by
+  apply assigned_family_conditions p hp source hs negative J lists
+  intro y hy x hx
+  exact (second_variable_original_support p y pool residual (R y) (label y) j x hx).2.1
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+theorem retainedPool_original_support
+    (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) (x : MarkedSecondSource ι Jo 0)
+    (hx : x∈retainedPool p pool parents R label residual j) :
+    x.second.sourceCommon⊆pool ∧ x.second.divisor⊆x.second.sourceCommon ∧
+    x.second.overlap⊆pool ∧ x.second.frequency∈nonzeroChildFrequencyBall
+      (actualSecondMultiplier p x) (R (secondParentOf x) x.second.sourceCommon x.second.divisor) := by
+  have hh := (mem_retainedPool p pool parents R label residual j x).mp hx
+  simpa only [attachSecondExpansion_recover] using
+    second_variable_original_support p (secondParentOf x) pool residual (R (secondParentOf x))
+      (label (secondParentOf x)) j x.second hh.2
+
+def attachOriginal (J : Finset σ)
+    (q : (Source ι Jo × ((∀ i∈J,ι)×(∀ i∈J,ι))) × SecondExpansionData ι) :
+    MarkedSecondSource ι (Jo+(J.card+J.card)) 0 :=
+  attachSecondExpansion (attach p J q.1) q.2
+
+omit [DecidableEq σ] in
+theorem attachOriginal_injective (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (J : Finset σ) : Function.Injective (attachOriginal p (Jo:=Jo) J) := by
+  intro q r he
+  apply Prod.ext
+  · apply attach_injective p hinj J
+    exact congrArg secondParentOf he
+  · exact congrArg MarkedSecondSource.second he
+
+theorem retainedPool_iff_original
+    (source : Finset (Source ι Jo)) (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (pool : Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0) :
+    x∈retainedPool p pool (assignedParents p source negative J lists) R label residual j ↔
+      ∃ s∈source,∃ q∈(J.pi (fun i=>lists i∩extractedSupport negative s))×ˢ
+        (J.pi (fun i=>lists i∩extractedSupport negative s)),
+        ∃ e∈secondDyadicSector pool (secondVariableCutoff p (attach p J (s,q)) (R (attach p J (s,q))))
+          residual (label (attach p J (s,q))) j,attachOriginal p J ((s,q),e)=x := by
+  constructor
+  · intro hx
+    obtain ⟨hy,he⟩ := (mem_retainedPool p _ _ _ _ _ _ x).mp hx
+    obtain ⟨s,hs,q,hq,ha⟩ := (mem_assignedParents p source negative J lists (secondParentOf x)).mp hy
+    refine ⟨s,hs,q,hq,x.second,?_,?_⟩
+    · simpa only [ha] using he
+    · unfold attachOriginal
+      rw [ha,attachSecondExpansion_recover]
+  · rintro ⟨s,hs,q,hq,e,he,rfl⟩
+    apply (mem_retainedPool p _ _ _ _ _ _ _).mpr
+    refine ⟨?_,he⟩
+    exact (mem_assignedParents p source negative J lists _).mpr ⟨s,hs,q,hq,rfl⟩
+
+omit [DecidableEq σ] in
+theorem attached_coefficient (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (J : Finset σ) (a : σ→ι→ℂ) (w : Source ι Jo→ℂ)
+    (q : Source ι Jo × ((∀ i∈J,ι)×(∀ i∈J,ι))) (e : SecondExpansionData ι) :
+    coefficient p J a w (secondParentOf (attachOriginal p J (q,e)))=
+      w q.1*pairedSlotWeight J J a a q.2 := coefficient_attach p hinj J a w q
+
+variable (hp : ∀ i,p i≠0)
+  (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+  (hg : ∀ i,lambda∉Ideal.span {p i})
+
+include hp hcop in
+theorem varying_lists_parent_family
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (parents : Finset (SecondParentSource ι Jo))
+    (source : SecondParentSource ι Jo→Finset (SecondExpansionData ι))
+    (hE : ∀ y∈parents,∀ x∈source y,x.divisor⊆x.sourceCommon)
+    (w : SecondParentSource ι Jo→ℂ) (pool : Finset ι) (Ψ : O→*ℂ) (m : O) (z : SecondRayIndex)
+    (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : SecondParentSource ι Jo→σ→Finset ι)
+    (a₁ a₂ : σ→ι→ℂ) (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (X Y : ℝ) :
+    (∑ y∈parents,w y*secondExpansionSource p hg pool Ψ
+      (secondParentPuncture p m y) (secondParentLabel p y) (secondParentDivisor p y) z (source y)
+      (fun U=>primeMark slots₁ (lists₁ y) a₁ U*W₁ (primeProductNorm p U/X))
+      (fun U=>primeMark slots₂ (lists₂ y) a₂ U*W₂ (primeProductNorm p U/X)) Φ Y) =
+    (Y:ℂ)*secondRayCoefficient z * ∑ x∈attachedSecondFamily parents source,
+      (w (secondParentOf x)*actualSecondSignedWeight p hg Ψ
+        (m*cubicIdealGenerator x.quotient) z x)*
+      actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m z)
+        slots₁ slots₂ (lists₁ (secondParentOf x)) (lists₂ (secondParentOf x)) a₁ a₂ W₁ W₂ Φ Y X := by
+  rw [sum_attachedSecondFamily]
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro y hy
+  rw [secondExpansionSource_attached p hp hg hinj hpr y (source y) (hE y hy)]
+  rw [Finset.sum_image (fun x hx z hz he=>attachSecondExpansion_injective y he)]
+  simp only [Finset.mul_sum,secondParentOf_attach]
+  apply Finset.sum_congr rfl
+  intro x hx
+  ring
+
+def parentPoisson (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (omega : ℝ→ℂ) (X t Y : ℝ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (y : SecondParentSource ι Jo) : ℂ :=
+  firstFreshSecondPoisson p hp hg hinj pool (quotientSupport p y) y.cube.support
+    (fun i=>y.cube.leftExponent i+y.cube.rightExponent i) y.cube.leftBit y.cube.rightBit negative
+    (if negative then r.1 else r.2) Ψ m
+    (primeMark (slots\J) (residualLists p negative lists y) a) omega X
+    (∏ i∈y.firstCommon,p i) (secondParentDivisor p y) core t Y
+
+theorem parentPoisson_attach (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (omega : ℝ→ℂ) (X t Y : ℝ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (q : Source ι Jo × ((∀ i∈J,ι)×(∀ i∈J,ι))) :
+    parentPoisson p hp hg hinj pool negative Ψ m slots J lists a omega X t Y r core (attach p J q)=
+      priorityPoisson p hp hg hinj pool q.1.cube q.1.firstCommon negative Ψ m
+        ((∏ i ∈ q.1.firstDivisor,p i))
+        slots J lists a omega X t Y r core q.1.quotientSupport := by
+  unfold parentPoisson
+  rw [quotientSupport_attach p hinj,residualLists_attach p hinj]
+  rfl
+
+def retainedRow (pool : Finset ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (V : ℝ→ℂ) (X Y : ℝ) (ray : SecondRayIndex) (x : MarkedSecondSource ι Jo 0) : ℂ :=
+  actualSecondSignedWeight p hg Ψ
+    (m*cubicIdealGenerator x.quotient) ray x *
+    actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m ray)
+      (slots\J) (slots\J) (residualLists p negative lists (secondParentOf x))
+      (residualLists p negative lists (secondParentOf x)) a a V V rowMajorant Y X
+
+include hcop in
+theorem parentPoisson_full [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (y : SecondParentSource ι Jo) (pool : Finset ι)
+    (hq : y.quotient=sourceIdeal p (quotientSupport p y))
+    (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ) :
+    let Ψ₀ := firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+    let V := principalWindow om lo hi hlo hs negative t
+    let H := markedRadial p (slots\J) (residualLists p negative lists y) a ∅ V X
+    let K := secondVariableCutoff p y R
+    parentPoisson p hp hg hinj pool negative Ψ m slots J lists a om X t Y r core y =
+      truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+        (secondParentLabel p y) (secondParentDivisor p y) H rowMajorant Y K +
+      (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+        (Y:ℂ)*secondRayCoefficient ray *
+          ∑ x∈(secondDyadicSector pool K residual label j).image (attachSecondExpansion y),
+            retainedRow p hg pool negative Ψ₀ m slots J lists a V X Y ray x) +
+      secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+        (secondParentLabel p y) (secondParentDivisor p y) H rowMajorant Y K := by
+  intro Ψ₀ V H K
+  have hsum : (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+      (Y:ℂ)*secondRayCoefficient ray *
+        ∑ x∈(secondDyadicSector pool K residual label j).image (attachSecondExpansion y),
+          actualSecondSignedWeight p hg Ψ₀
+            (m*cubicIdealGenerator x.quotient) ray x *
+          actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ₀ m ray)
+            (slots\J) (slots\J) (residualLists p negative lists y) (residualLists p negative lists y)
+            a a V V rowMajorant Y X) =
+    ∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+      (Y:ℂ)*secondRayCoefficient ray *
+        ∑ x∈(secondDyadicSector pool K residual label j).image (attachSecondExpansion y),
+          retainedRow p hg pool negative Ψ₀ m slots J lists a V X Y ray x := by
+    apply Finset.sum_congr rfl
+    intro ray hray
+    apply Finset.sum_congr rfl
+    intro residual hresidual
+    apply Finset.sum_congr rfl
+    intro j hj
+    apply congrArg ((Y:ℂ)*secondRayCoefficient ray * ·)
+    apply Finset.sum_congr rfl
+    intro x hx
+    obtain ⟨z,hz,rfl⟩ := Finset.mem_image.mp hx
+    rfl
+  have he := first_parent_full_second_source p hp hcop hg hinj hc hpr y pool (quotientSupport p y) hq
+    negative (if negative then r.1 else r.2) Ψ m (slots\J) (residualLists p negative lists y) a
+    (fun i _=>residualLists_disjoint p negative lists y i) om lo hi hlo hs X t Y hX hY core R label
+  exact he.trans (congrArg (fun z : ℂ=>truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+    (secondParentLabel p y) (secondParentDivisor p y) H rowMajorant Y K + z +
+    secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) H rowMajorant Y K) hsum)
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+
+theorem retained_sum
+    (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) (w : SecondParentSource ι Jo→ℂ)
+    (H : MarkedSecondSource ι Jo 0→ℂ) :
+    (∑ y∈parents,w y*∑ x∈(secondDyadicSector pool (secondVariableCutoff p y (R y))
+      residual (label y) j).image (attachSecondExpansion y),H x) =
+    ∑ x∈retainedPool p pool parents R label residual j,w (secondParentOf x)*H x := by
+  rw [retainedPool,sum_attachedSecondFamily]
+  apply Finset.sum_congr rfl
+  intro y hy
+  rw [Finset.sum_image (fun _ _ _ _ h=>attachSecondExpansion_injective y h),Finset.mul_sum]
+  rfl
+
+omit [DecidableEq ι] [DecidableEq κ] in
+private theorem commute_parent_sectors [Fintype κ]
+    (parents : Finset (SecondParentSource ι Jo)) (pool : Finset ι)
+    (H : SecondParentSource ι Jo→SecondRayIndex→Finset ι→κ→ℂ) :
+    (∑ y∈parents,∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,H y ray residual j) =
+    ∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,∑ y∈parents,H y ray residual j := by
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro ray hray
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro residual hresidual
+  rw [Finset.sum_comm]
+
+include hcop in
+theorem parent_family_full [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (parents : Finset (SecondParentSource ι Jo)) (pool : Finset ι)
+    (hq : ∀ y∈parents,y.quotient=sourceIdeal p (quotientSupport p y))
+    (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ) (w : SecondParentSource ι Jo→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ) :
+    let Ψ₀ := firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+    let V := principalWindow om lo hi hlo hs negative t
+    let H := fun y=>markedRadial p (slots\J) (residualLists p negative lists y) a ∅ V X
+    let K := fun y=>secondVariableCutoff p y (R y)
+    (∑ y∈parents,w y*parentPoisson p hp hg hinj pool negative Ψ m slots J lists a om X t Y r core y) =
+    (∑ y∈parents,w y*truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)) +
+    (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+      (Y:ℂ)*secondRayCoefficient ray *
+        ∑ x∈retainedPool p pool parents R label residual j,
+          w (secondParentOf x)*retainedRow p hg pool negative Ψ₀ m slots J lists a V X Y ray x) +
+    (∑ y∈parents,w y*secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)) := by
+  intro Ψ₀ V H K
+  have he : (∑ y∈parents,w y*parentPoisson p hp hg hinj pool negative Ψ m slots J lists a om X t Y r core y) =
+    ∑ y∈parents,w y*(truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y) +
+      (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+        (Y:ℂ)*secondRayCoefficient ray *
+          ∑ x∈(secondDyadicSector pool (K y) residual (label y) j).image (attachSecondExpansion y),
+            retainedRow p hg pool negative Ψ₀ m slots J lists a V X Y ray x) +
+      secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+        (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)) := by
+    apply Finset.sum_congr rfl
+    intro y hy
+    rw [parentPoisson_full p hp hcop hg hinj hc hpr y pool (hq y hy) negative Ψ m slots J lists a
+      om lo hi hlo hs X t Y hX hY r core (R y) (label y)]
+  rw [he]
+  simp only [mul_add,Finset.sum_add_distrib]
+  congr 1
+  congr 1
+  simp only [Finset.mul_sum]
+  rw [commute_parent_sectors]
+  apply Finset.sum_congr rfl
+  intro ray hray
+  apply Finset.sum_congr rfl
+  intro residual hresidual
+  apply Finset.sum_congr rfl
+  intro j hj
+  rw [retainedPool,sum_attachedSecondFamily]
+  apply Finset.sum_congr rfl
+  intro y hy
+  rw [Finset.sum_image (fun _ _ _ _ h=>attachSecondExpansion_injective y h)]
+  apply Finset.sum_congr rfl
+  intro x hx
+  simp only [secondParentOf_attach]
+  ring
+
+def fullSource [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (parents : Finset (SecondParentSource ι Jo)) (pool : Finset ι)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ) (w : SecondParentSource ι Jo→ℂ)
+    (V : 𝓢(ℝ,ℂ)) (X Y : ℝ)
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ) : ℂ :=
+  let H := fun y=>markedRadial p (slots\J) (residualLists p negative lists y) a ∅ V X
+  let K := fun y=>secondVariableCutoff p y (R y)
+  (∑ y∈parents,w y*truncatedSecondZero p hg pool Ψ (secondParentPuncture p m y)
+    (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)) +
+  (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+    (Y:ℂ)*secondRayCoefficient ray *
+      ∑ x∈retainedPool p pool parents R label residual j,
+        w (secondParentOf x)*retainedRow p hg pool negative Ψ m slots J lists a V X Y ray x) +
+  (∑ y∈parents,w y*secondSourceTail p hp hg pool Ψ (secondParentPuncture p m y)
+    (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y))
+
+include hcop in
+theorem first_priority_physical_source [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (negative : Bool)
+    (Ψ : O→*ℂ) (m : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (selector : Finset ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ) :
+    (∑ D∈pool.powerset,
+      priorityOuter p hg b negative Ψ m selector r core D *
+      ‖primeMark J lists a (((if negative then b.rightDivisor else b.leftDivisor)∪C)∪D)‖^2 *
+      (priorityPoisson p hp hg hinj pool b C negative Ψ m
+        ((∏ i ∈ E,p i))
+        slots J lists a om X t Y r core D).re) =
+    (fullSource p hp hg hinj
+      (assignedParents p (fixedSource pool b C E old) negative J lists) pool negative
+      (firstCoreTwist negative (if negative then r.1 else r.2) Ψ core) m slots J lists a
+      (coefficient p J a (fun x=>(priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)))
+      (principalWindow om lo hi hlo hs negative t) X Y R label).re := by
+  rw [first_priority_physical_slice p hp hg hinj]
+  have hfun (y : SecondParentSource ι (Jo+(J.card+J.card)))
+      (hy : y∈assignedParents p (fixedSource pool b C E old) negative J lists) :
+      parentFunction p (fun x=>priorityPoisson p hp hg hinj pool b C negative Ψ m
+        ((∏ i ∈ E,p i))
+        slots J lists a om X t Y r core x.quotientSupport) (forgetAppended y) =
+      parentPoisson p hp hg hinj pool negative Ψ m slots J lists a om X t Y r core y := by
+    obtain ⟨x,hx,q,hq,rfl⟩ := (mem_assignedParents p _ negative J lists y).mp hy
+    obtain ⟨D,hD,rfl⟩ := Finset.mem_image.mp hx
+    rw [forget_attach,parentFunction_parent p hinj,parentPoisson_attach p hp hg hinj]
+    rfl
+  have he := parent_family_full p hp hcop hg hinj hc hpr
+    (assignedParents p (fixedSource pool b C E old) negative J lists) pool
+    (fun y hy=>assigned_quotient p hinj _ negative J lists y hy)
+    negative Ψ m slots J lists a
+    (coefficient p J a (fun x=>(priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)))
+    om lo hi hlo hs X t Y hX hY r core R label
+  apply congrArg Complex.re
+  calc
+    _ = ∑ y∈assignedParents p (fixedSource pool b C E old) negative J lists,
+      coefficient p J a (fun x=>(priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)) y *
+        parentPoisson p hp hg hinj pool negative Ψ m slots J lists a om X t Y r core y := by
+          apply Finset.sum_congr rfl
+          intro y hy
+          rw [hfun y hy]
+    _ = _ := he
+
+include hp in
+
+theorem fixed_retained_conditions
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (hb : b.Admissible) (hC : Disjoint C b.support) (hE : E⊆C∪b.support)
+    (hold : ∀ D∈pool.powerset,∀ i,(old i).val∣sourceIdeal p b.support*sourceIdeal p C*sourceIdeal p D)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) :
+    ActualSecondSourceConditions p (retainedPool p pool
+      (assignedParents p (fixedSource pool b C E old) negative J lists) R label residual j) := by
+  apply retainedPool_conditions p hp
+  intro x hx
+  obtain ⟨D,hD,rfl⟩ := Finset.mem_image.mp hx
+  exact ⟨hb,hC,hE,hold D hD⟩
+
+end InversePrioritySecondSource
+
+end
+
+noncomputable section
+namespace InverseMomentWholePriorityPhysical
+open Eisenstein SecondPassArithmetic FirstPassCubeLabels
+open InverseMoment InverseInitialArithmetic InverseFirstPriorityParents
+open InverseMomentWholePriorityParents InversePrioritySecondSource
+open InversePrincipalEnergy InverseSecondPrincipalCaller RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ κ : Type*} [DecidableEq ι] [DecidableEq σ] [DecidableEq κ] [Fintype κ]
+variable {Jo : ℕ} (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+  (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+  (hg : ∀ i,lambda∉Ideal.span {p i})
+
+def fullPhysical (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (V : 𝓢(ℝ,ℂ)) (X Y : ℝ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ)
+    (y : SecondParentSource ι Jo) : ℂ :=
+  let Ψ₀ := firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+  let ll := fun i=>lists i\extra y.cube
+  let H := markedRadial p (slots\J) (residualLists p negative ll y) a ∅ V X
+  let K := secondVariableCutoff p y R
+  truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) H rowMajorant Y K +
+    (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+      (Y:ℂ)*secondRayCoefficient ray *
+        ∑ x∈(secondDyadicSector pool K residual label j).image (attachSecondExpansion y),
+          retainedRow p hg pool negative Ψ₀ m slots J ll a V X Y ray x) +
+    secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) H rowMajorant Y K
+
+include hcop in
+theorem whole_parent_full
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ)
+    (y : SecondParentSource ι Jo) (hq : y.quotient=sourceIdeal p (quotientSupport p y)) :
+    parentPoisson p hp hg hinj pool negative Ψ m slots J
+      (fun i=>lists i\extra y.cube) a om X t Y r core y =
+    fullPhysical p hp hg hinj extra pool negative Ψ m slots J lists a
+      (principalWindow om lo hi hlo hs negative t) X Y r core R label y :=
+  parentPoisson_full p hp hcop hg hinj hc hpr y pool hq negative Ψ m slots J
+    (fun i=>lists i\extra y.cube) a om lo hi hlo hs X t Y hX hY r core R label
+
+omit [DecidableEq σ] in
+theorem whole_residual_lists_attach
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (negative : Bool)
+    (J : Finset σ) (lists : σ→Finset ι)
+    (q : Source ι Jo×((∀ i∈J,ι)×(∀ i∈J,ι))) :
+    residualLists p negative (fun i=>lists i\extra (attach p J q).cube) (attach p J q)=
+      fun i=>lists i\wholeExtractedSupport (fun x=>extra x.cube) negative q.1 := by
+  rw [residualLists_attach p hinj]
+  funext i
+  ext k
+  simp only [Finset.mem_sdiff,wholeExtractedSupport,Finset.mem_union]
+  change (k ∈ lists i ∧ k ∉ extra q.1.cube) ∧ k ∉ extractedSupport negative q.1 ↔ _
+  tauto
+
+include hcop in
+theorem whole_signed_source_full
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (source : Finset (Source ι Jo)) (w : Source ι Jo→ℂ)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ) :
+    (∑ x∈source,w x*(‖primeMark J lists a
+      (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      parentPoisson p hp hg hinj pool negative Ψ m slots J
+        (fun i=>lists i\extra x.cube) a om X t Y r core (parent p x)) =
+    ∑ y∈wholeAssignedParents p (fun x=>extra x.cube) source negative J lists,
+      coefficient p J a w y *
+        fullPhysical p hp hg hinj extra pool negative Ψ m slots J lists a
+          (principalWindow om lo hi hlo hs negative t) X Y r core R label y := by
+  have he := wholePaired_parent_sq_sum p (fun x=>extra x.cube) hinj source negative J lists a w
+    (fun y=>parentPoisson p hp hg hinj pool negative Ψ m slots J
+      (fun i=>lists i\extra y.cube) a om X t Y r core y)
+  refine he.trans ?_
+  apply Finset.sum_congr rfl
+  intro y hy
+  obtain ⟨x,hx,q,hq,rfl⟩ :=
+    (mem_wholeAssignedParents p (fun x=>extra x.cube) source negative J lists y).mp hy
+  rw [forget_attach]
+  apply congrArg (coefficient p J a w (attach p J (x,q))* ·)
+  have hquot : (attach p J (x,q)).quotient=sourceIdeal p (quotientSupport p (attach p J (x,q))) := by
+    rw [quotientSupport_attach p hinj];rfl
+  exact whole_parent_full p hp hcop hg hinj hc hpr extra pool negative Ψ m slots J lists a
+    om lo hi hlo hs X t Y hX hY r core R label (attach p J (x,q)) hquot
+
+end InverseMomentWholePriorityPhysical
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def priorityLogWindow (om:𝓢(ℝ,ℂ)) (a b:ℝ) (ha:0<a)
+    (hs:Function.support om⊆Set.Icc a b) (negative:Bool):𝓢(ℝ,ℂ) :=
+  if negative then conjugateProfile (CanonicalCubeSeparation.sourceLogProfile om a b ha hs (om.smooth ⊤))
+  else CanonicalCubeSeparation.sourceLogProfile om a b ha hs (om.smooth ⊤)
+
+def priorityHeight (negative:Bool) (t:ℝ):ℝ := if negative then -t else t
+
+theorem priorityLogWindow_support (om:𝓢(ℝ,ℂ)) (a b:ℝ) (ha:0<a)
+    (hs:Function.support om⊆Set.Icc a b) (negative:Bool) :
+    Function.support (priorityLogWindow om a b ha hs negative)⊆
+      Set.Icc (-(|Real.log a|+|Real.log b|)) (|Real.log a|+|Real.log b|) := by
+  intro y hy
+  have hn:om (Real.exp y)≠0:=by
+    cases negative <;> simpa only [priorityLogWindow,Bool.false_eq_true,ite_true,ite_false,
+      conjugateProfile_apply,CanonicalCubeSeparation.sourceLogProfile_apply,Function.mem_support,star_ne_zero] using hy
+  have hh:=hs hn
+  have hlo:=Real.log_le_log ha hh.1
+  have hhi:=Real.log_le_log (Real.exp_pos y) hh.2
+  rw [Real.log_exp] at hlo hhi
+  constructor
+  · linarith [neg_abs_le (Real.log a),abs_nonneg (Real.log b)]
+  · linarith [le_abs_self (Real.log b),abs_nonneg (Real.log a)]
+
+theorem principalWindow_positiveSource (om:𝓢(ℝ,ℂ)) (a b:ℝ) (ha:0<a)
+    (hs:Function.support om⊆Set.Icc a b) (negative:Bool) (t x:ℝ) (hx:0<x) :
+    principalWindow om a b ha hs negative t x =
+      positiveSource (priorityLogWindow om a b ha hs negative) 1 (priorityHeight negative t) x := by
+  rw [principalWindow_apply]
+  cases negative <;> simp only [priorityLogWindow,priorityHeight,Bool.false_eq_true,ite_true,ite_false,
+    positiveSource,Real.log_one,add_zero,conjugateProfile_apply,CanonicalCubeSeparation.sourceLogProfile_apply,
+    Real.exp_log hx,normTwistedSource]
+
+theorem positiveSource_conjugate_one (g:𝓢(ℝ,ℂ)) (t x:ℝ) :
+    star (positiveSource (conjugateProfile g) 1 (-t) x)=positiveSource g 1 t x := by
+  simp only [positiveSource,Real.log_one,add_zero,conjugateProfile_apply,star_mul,star_star,
+    JointLogSeparation.kernelLogPhase_conjugate,neg_neg,mul_comm]
+
+theorem actualSecondProfileRow_congr_positive {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+    (pool:Finset ι) (x:SecondProfileData ι) (slots₁ slots₂:Finset σ)
+    (lists₁ lists₂:σ→Finset ι) (a₁ a₂:σ→ι→ℂ)
+    (W₁ W₂ V₁ V₂:ℝ→ℂ) (Φ:𝓢(ℝ,ℂ)) (Y X:ℝ) (hX:0<X)
+    (h₁:∀t,0<t→W₁ t=V₁ t) (h₂:∀t,0<t→W₂ t=V₂ t) :
+    actualSecondProfileRow p hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂ W₁ W₂ Φ Y X =
+      actualSecondProfileRow p hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂ V₁ V₂ Φ Y X := by
+  simp only [actualSecondProfileRow_eq_whole p hp hg]
+  apply Finset.sum_congr rfl
+  intro N hN
+  apply Finset.sum_congr rfl
+  intro M hM
+  congr 1
+  unfold secondNormProfile
+  have h0 : secondActualNorms p x N M 0 = primeProductNorm p x.common := rfl
+  have h2 : secondActualNorms p x N M 2 = primeProductNorm p x.overlap := rfl
+  have h4 : secondActualNorms p x N M 4 = primeProductNorm p N := rfl
+  have h5 : secondActualNorms p x N M 5 = primeProductNorm p M := rfl
+  rw [h0,h2,h4,h5]
+  dsimp only
+  rw [h₁ _ (div_pos (mul_pos (mul_pos (primeProductNorm_pos p hp _) (primeProductNorm_pos p hp _))
+      (primeProductNorm_pos p hp _)) hX),
+    h₂ _ (div_pos (mul_pos (mul_pos (primeProductNorm_pos p hp _) (primeProductNorm_pos p hp _))
+      (primeProductNorm_pos p hp _)) hX)]
+
+theorem actual_priority_profile_common {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+    (pool:Finset ι) (x:SecondProfileData ι) (slots₁ slots₂:Finset σ)
+    (lists₁ lists₂:σ→Finset ι) (a₁ a₂:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (negative:Bool) (t:ℝ) (Φ:𝓢(ℝ,ℂ)) (Y X:ℝ) (hX:0<X) :
+    let g:=priorityLogWindow om lo hi hlo hs negative
+    let θ:=priorityHeight negative t
+    actualSecondProfileRow p hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂
+      (principalWindow om lo hi hlo hs negative t) (principalWindow om lo hi hlo hs negative t) Φ Y X =
+      actualSecondProfileRow p hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂
+        (fun y=>star (positiveSource (conjugateProfile g) 1 (-θ) y)) (positiveSource g 1 θ) Φ Y X := by
+  intro g θ
+  apply actualSecondProfileRow_congr_positive p hp hcop hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    _ _ _ _ Φ Y X hX
+  · intro y hy
+    rw [positiveSource_conjugate_one]
+    exact principalWindow_positiveSource om lo hi hlo hs negative t y hy
+  · intro y hy
+    exact principalWindow_positiveSource om lo hi hlo hs negative t y hy
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMomentWholeRetainedSource
+open Eisenstein SecondPassArithmetic InverseMoment InverseInitialArithmetic
+open InverseFirstPriorityParents InversePrioritySecondSource InverseMomentWholePriorityParents
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ κ : Type*} [DecidableEq ι] [DecidableEq σ] [DecidableEq κ]
+variable {Jo : ℕ} (p : ι→O) [∀ i,(Ideal.span {p i}).IsMaximal]
+
+def deleted (extra : CubeCoordinates ι→Finset ι) (negative : Bool)
+    (x : MarkedSecondSource ι Jo 0) : Finset ι :=
+  extra x.cube∪(((if negative then x.cube.rightDivisor else x.cube.leftDivisor)∪x.firstCommon)∪
+    quotientSupport p (secondParentOf x))
+
+theorem retained_conditions (hp : ∀ i,p i≠0)
+    (extra : CubeCoordinates ι→Finset ι)
+    (source : Finset (Source ι Jo)) (hs : ∀ x∈source,SourceValid p x)
+    (hextra : ∀ x∈source,extra x.cube⊆x.cube.support)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι) (pool : Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) :
+    ActualSecondSourceConditions p
+      (retainedPool p pool (wholeAssignedParents p (fun x=>extra x.cube) source negative J lists)
+        R label residual j) := by
+  apply whole_assigned_family_conditions p hp (fun x=>extra x.cube) source hs hextra negative J lists
+  intro y hy x hx
+  exact (second_variable_original_support p y pool residual (R y) (label y) j x hx).2.1
+
+theorem retained_deleted_support
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι)
+    (source : Finset (Source ι Jo)) (hs : ∀ x∈source,SourceValid p x)
+    (hextra : ∀ x∈source,extra x.cube⊆x.cube.support)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι) (pool : Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx : x∈retainedPool p pool (wholeAssignedParents p (fun x=>extra x.cube) source negative J lists)
+      R label residual j) :
+    ∀ i∈deleted p extra negative x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal O)∣x.quotient := by
+  have hy := ((mem_retainedPool p pool _ R label residual j x).mp hx).1
+  obtain ⟨s,hs₀,q,hq,he⟩ := (mem_wholeAssignedParents p (fun x=>extra x.cube) source negative J lists _).mp hy
+  have hc : x.cube=s.cube := (congrArg SecondParentSource.cube he).symm
+  have hC : x.firstCommon=s.firstCommon := (congrArg SecondParentSource.firstCommon he).symm
+  have ht : x.quotient=sourceIdeal p s.quotientSupport := (congrArg SecondParentSource.quotient he).symm
+  have hqs : quotientSupport p (secondParentOf x)=s.quotientSupport := by
+    rw [←he,quotientSupport_attach p hinj]
+  intro i hi
+  change i∈extra x.cube∪(((if negative then x.cube.rightDivisor else x.cube.leftDivisor)∪x.firstCommon)∪
+    quotientSupport p (secondParentOf x)) at hi
+  rw [hc,hC,hqs] at hi
+  rcases Finset.mem_union.mp hi with hi|hi
+  · exact Or.inl (Finset.mem_union_left _ (hc.symm ▸ hextra s hs₀ hi))
+  · rcases Finset.mem_union.mp hi with hi|hi
+    · left
+      rw [hc,hC]
+      rcases Finset.mem_union.mp hi with hi|hi
+      · apply Finset.mem_union_left
+        cases negative <;> simp only [Bool.false_eq_true,ite_false,ite_true] at hi
+        · exact (hs s hs₀).admissible.1 hi
+        · exact (hs s hs₀).admissible.2 hi
+      · exact Finset.mem_union_right _ hi
+    · right
+      rw [ht]
+      exact source_prime_dvd p _ i hi
+
+theorem whole_coefficient_norm
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : Source ι Jo→Finset ι) (source : Finset (Source ι Jo))
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (a : σ→ι→ℂ) (w : Source ι Jo→ℂ) (B : ℝ)
+    (ha : ∀ i∈J,∀ k∈lists i,‖a i k‖≤1) (hw : ∀ x∈source,‖w x‖≤ B)
+    (y : SecondParentSource ι (Jo+(J.card+J.card)))
+    (hy : y∈wholeAssignedParents p extra source negative J lists) :
+    ‖coefficient p J a w y‖≤ B := by
+  obtain ⟨x,hx,q,hq,rfl⟩ := (mem_wholeAssignedParents p extra source negative J lists y).mp hy
+  rw [coefficient_attach p hinj,norm_mul]
+  exact (mul_le_of_le_one_right (norm_nonneg _) (pairedSlotWeight_norm_le_one J J lists lists a a
+    _ q hq ha ha)).trans (hw x hx)
+
+end InverseMomentWholeRetainedSource
+
+end
+
+noncomputable section
+namespace InverseSecondSourceBlocks
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson InverseSecondFibers InversePrioritySecondSource
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ κ : Type*} [DecidableEq ι] [DecidableEq σ] [DecidableEq κ]
+
+abbrev BlockIndex := Fin 4 → ℕ
+
+def outerNorms (p : ι → O) {Jo Jn : ℕ} (x : MarkedSecondSource ι Jo Jn) : Fin 4 → ℝ :=
+  ![primeProductNorm p x.second.sourceCommon, primeProductNorm p x.second.divisor,
+    primeProductNorm p x.second.overlap, ‖ringComplex x.second.frequency‖^2]
+
+theorem outerNorms_eq_actual (p : ι → O) [∀ i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn : ℕ} (x : MarkedSecondSource ι Jo Jn) (Ψ : O →* ℂ) (m : O)
+    (ray : SecondRayIndex) (N M : Finset ι) (i : Fin 4) :
+    outerNorms p x i = secondActualNorms p (secondInheritedProfile p x Ψ m ray) N M
+      (Fin.castLE (by decide : 4 ≤ 6) i) := by
+  fin_cases i <;> simp [outerNorms,secondActualNorms,secondInheritedProfile,
+    actualMarkedSecondProfileData,expansionProfileData,primeProductNorm]
+
+omit [DecidableEq ι] in
+theorem outerNorms_ge_one (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn : ℕ} (x : MarkedSecondSource ι Jo Jn) (hk : x.second.frequency ≠ 0) :
+    ∀ i,1 ≤ outerNorms p x i := by
+  intro i
+  fin_cases i
+  · exact primeProductNorm_ge_one p hp _
+  · exact primeProductNorm_ge_one p hp _
+  · exact primeProductNorm_ge_one p hp _
+  · exact element_norm_ge_one _ hk
+
+theorem frequency_ne_zero_of_gate (a : O) (R : ℝ) {k : O}
+    (hk : k ∈ nonzeroChildFrequencyBall a R) : k ≠ 0 :=
+  (Finset.mem_erase.mp hk).1
+
+theorem retained_frequency_ne_zero (p : ι → O) [∀ i,(Ideal.span {p i}).IsMaximal]
+    {Jo : ℕ} (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo → Finset ι → Finset ι → ℝ)
+    (label : SecondParentSource ι Jo → Finset ι → SecondExpansionData ι → κ)
+    (residual : Finset ι) (j : κ) (x : MarkedSecondSource ι Jo 0)
+    (hx : x ∈ retainedPool p pool parents R label residual j) : x.second.frequency ≠ 0 :=
+  frequency_ne_zero_of_gate _ _ (retainedPool_original_support p pool parents R label residual j x hx).2.2.2
+
+def dyadIndex (r : ℝ) : ℕ := ⌊Real.logb 2 r⌋₊
+def dyadScale (n : ℕ) : ℝ := 2^n
+
+theorem dyadScale_pos (n : ℕ) : 0 < dyadScale n := by unfold dyadScale; positivity
+
+theorem dyadIndex_bounds (r : ℝ) (hr : 1 ≤ r) :
+    dyadScale (dyadIndex r) ≤ r ∧ r < 2*dyadScale (dyadIndex r) := by
+  have hr0 : 0 < r := lt_of_lt_of_le zero_lt_one hr
+  have hlog : 0 ≤ Real.logb 2 r := Real.logb_nonneg (by norm_num) hr
+  constructor
+  · have h := (Real.le_logb_iff_rpow_le (by norm_num : (1:ℝ)<2) hr0).mp (Nat.floor_le hlog)
+    simpa only [dyadScale,dyadIndex,Real.rpow_natCast] using h
+  · have h := (Real.logb_lt_iff_lt_rpow (by norm_num : (1:ℝ)<2) hr0).mp
+      (Nat.lt_floor_add_one (Real.logb 2 r))
+    have ht : r < (2:ℝ)^(dyadIndex r+1) := by
+      rw [←Real.rpow_natCast]
+      simpa only [Nat.cast_add,Nat.cast_one,dyadIndex] using h
+    simpa only [dyadScale,pow_succ,mul_comm] using ht
+
+def index (p : ι → O) {Jo Jn : ℕ} (x : MarkedSecondSource ι Jo Jn) : BlockIndex :=
+  fun i => dyadIndex (outerNorms p x i)
+
+def keys (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn)) : Finset BlockIndex :=
+  source.image (index p)
+
+def cell (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    (d : BlockIndex) : Finset (MarkedSecondSource ι Jo Jn) := source.filter (fun x => index p x = d)
+
+omit [DecidableEq ι] in
+@[simp] theorem mem_cell (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    (d : BlockIndex) (x : MarkedSecondSource ι Jo Jn) :
+    x ∈ cell p source d ↔ x ∈ source ∧ index p x = d := Finset.mem_filter
+
+omit [DecidableEq ι] in
+theorem cell_subset (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    (d : BlockIndex) : cell p source d ⊆ source := Finset.filter_subset _ _
+
+omit [DecidableEq ι] in
+theorem cell_inherits (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    (d : BlockIndex) (P : MarkedSecondSource ι Jo Jn → Prop) (hP : ∀ x∈source,P x) :
+    ∀ x∈cell p source d,P x := fun x hx => hP x (cell_subset p source d hx)
+
+theorem cell_conditions (p : ι → O) [∀ i,(Ideal.span {p i}).IsMaximal] {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    (hs : ActualSecondSourceConditions p source) (d : BlockIndex) :
+    ActualSecondSourceConditions p (cell p source d) := ActualSecondSourceConditions.mono p hs (cell_subset p source d)
+
+omit [DecidableEq ι] in
+theorem mem_keys_iff (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    (d : BlockIndex) : d ∈ keys p source ↔ (cell p source d).Nonempty := by
+  simp only [keys,Finset.mem_image,Finset.nonempty_iff_ne_empty]
+  constructor
+  · rintro ⟨x,hx,he⟩
+    exact Finset.nonempty_iff_ne_empty.mp ⟨x,(mem_cell p source d x).mpr ⟨hx,he⟩⟩
+  · intro h
+    obtain ⟨x,hx⟩ := Finset.nonempty_iff_ne_empty.mpr h
+    exact ⟨x,(mem_cell p source d x).mp hx⟩
+
+omit [DecidableEq ι] in
+theorem cells_disjoint (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    {d e : BlockIndex} (h : d ≠ e) : Disjoint (cell p source d) (cell p source e) := by
+  apply Finset.disjoint_left.mpr
+  intro x hx hy
+  exact h (((mem_cell p source d x).mp hx).2.symm.trans ((mem_cell p source e x).mp hy).2)
+
+omit [DecidableEq ι] in
+theorem cell_ratios (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] {Jo Jn : ℕ}
+    (source : Finset (MarkedSecondSource ι Jo Jn)) (hk : ∀ x∈source,x.second.frequency ≠ 0)
+    (d : BlockIndex) (x : MarkedSecondSource ι Jo Jn) (hx : x∈cell p source d) (i : Fin 4) :
+    1 ≤ outerNorms p x i / dyadScale (d i) ∧ outerNorms p x i / dyadScale (d i) < 2 := by
+  obtain ⟨hxs,he⟩ := (mem_cell p source d x).mp hx
+  have hb := dyadIndex_bounds _ (outerNorms_ge_one p hp x (hk x hxs) i)
+  have hi : dyadIndex (outerNorms p x i) = d i := congrFun he i
+  rw [hi] at hb
+  exact ⟨(le_div_iff₀ (dyadScale_pos _)).mpr (by simpa using hb.1),
+    (div_lt_iff₀ (dyadScale_pos _)).mpr hb.2⟩
+
+omit [DecidableEq ι] in
+theorem sum_cells (p : ι → O) {Jo Jn : ℕ} (source : Finset (MarkedSecondSource ι Jo Jn))
+    {β : Type*} [AddCommMonoid β] (f : MarkedSecondSource ι Jo Jn → β) :
+    (∑ x∈source,f x) = ∑ d∈keys p source,∑ x∈cell p source d,f x := by
+  exact (Finset.sum_fiberwise_of_maps_to (fun x hx => Finset.mem_image_of_mem (index p) hx) f).symm
+
+def scales (d : BlockIndex) : Fin 4 → ℝ := fun i => dyadScale (d i)
+
+theorem actual_cell_ratios (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] {Jo Jn : ℕ}
+    (source : Finset (MarkedSecondSource ι Jo Jn)) (hk : ∀ x∈source,x.second.frequency ≠ 0)
+    (d : BlockIndex) (x : MarkedSecondSource ι Jo Jn) (hx : x∈cell p source d)
+    (Ψ : O →* ℂ) (m : O) (ray : SecondRayIndex) (N M : Finset ι) (i : Fin 4) :
+    1 ≤ secondActualNorms p (secondInheritedProfile p x Ψ m ray) N M
+      (Fin.castLE (by decide : 4 ≤ 6) i) / scales d i ∧
+    secondActualNorms p (secondInheritedProfile p x Ψ m ray) N M
+      (Fin.castLE (by decide : 4 ≤ 6) i) / scales d i < 2 := by
+  rw [←outerNorms_eq_actual p x Ψ m ray N M i]
+  exact cell_ratios p hp source hk d x hx i
+
+theorem physical_source_partition
+    (p : ι → O) (hp : ∀ i,p i ≠ 0) [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    {Jo : ℕ} (source : Finset (MarkedSecondSource ι Jo 0))
+    (pool : Finset ι) (Ψ : O →* ℂ) (m : O) (ray : SecondRayIndex)
+    (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : σ → Finset ι) (a₁ a₂ : σ → ι → ℂ)
+    (deleted₁ deleted₂ : MarkedSecondSource ι Jo 0 → Finset ι)
+    (w : MarkedSecondSource ι Jo 0 → ℂ) (W₁ W₂ : ℝ → ℂ) (Φ : 𝓢(ℝ,ℂ)) (Y X : ℝ) :
+    (Y:ℂ)*secondRayCoefficient ray *
+      (∑ x∈source,(w x * actualSecondSignedWeight p hg Ψ
+        (m*cubicIdealGenerator x.quotient) ray x) *
+        actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m ray)
+          slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x)
+          a₁ a₂ W₁ W₂ Φ Y X) =
+    ∑ d∈keys p source,(Y:ℂ)*secondRayCoefficient ray *
+      (∑ x∈cell p source d,(w x * actualSecondSignedWeight p hg Ψ
+        (m*cubicIdealGenerator x.quotient) ray x) *
+        actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m ray)
+          slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x)
+          a₁ a₂ W₁ W₂ Φ Y X) := by
+  rw [sum_cells p source]
+  exact Finset.mul_sum _ _ _
+
+def capBox (A : Fin 4 → ℝ) (Z : ℝ) : Finset BlockIndex :=
+  Fintype.piFinset (fun i => Finset.range (dyadIndex (Z^(A i))+1))
+
+omit [DecidableEq ι] in
+theorem keys_subset_capBox (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] {Jo Jn : ℕ}
+    (source : Finset (MarkedSecondSource ι Jo Jn)) (hk : ∀ x∈source,x.second.frequency ≠ 0)
+    (A : Fin 4 → ℝ) (Z : ℝ) (hcaps : ∀ x∈source,∀ i,outerNorms p x i ≤ Z^(A i)) :
+    keys p source ⊆ capBox A Z := by
+  intro d hd
+  obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hd
+  apply Fintype.mem_piFinset.mpr
+  intro i
+  apply Finset.mem_range.mpr
+  apply Nat.lt_succ_of_le
+  exact Nat.floor_mono (Real.logb_le_logb_of_le (by norm_num : (1:ℝ)<2)
+    (lt_of_lt_of_le zero_lt_one (outerNorms_ge_one p hp x (hk x hx) i)) (hcaps x hx i))
+
+omit [DecidableEq ι] in
+theorem keys_card_le_product (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] {Jo Jn : ℕ}
+    (source : Finset (MarkedSecondSource ι Jo Jn)) (hk : ∀ x∈source,x.second.frequency ≠ 0)
+    (A : Fin 4 → ℝ) (Z : ℝ) (hcaps : ∀ x∈source,∀ i,outerNorms p x i ≤ Z^(A i)) :
+    (keys p source).card ≤ ∏ i : Fin 4,(dyadIndex (Z^(A i))+1) := by
+  have h := Finset.card_le_card (keys_subset_capBox p hp source hk A Z hcaps)
+  simpa [capBox,Fintype.card_piFinset] using h
+
+def capConstant (A : Fin 4 → ℝ) : ℝ := (∑ i,A i)/Real.log 2
+
+theorem capConstant_nonneg (A : Fin 4 → ℝ) (hA : ∀ i,0 ≤ A i) :
+    0 ≤ capConstant A := by
+  unfold capConstant
+  exact div_nonneg (Finset.sum_nonneg (fun i _ => hA i)) (Real.log_pos (by norm_num)).le
+
+theorem cap_bin_bound (A : Fin 4 → ℝ) (hA : ∀ i,0 ≤ A i) (Z : ℝ) (hZ : 2 ≤ Z)
+    (i : Fin 4) : (dyadIndex (Z^(A i)) : ℝ)+1 ≤ 1+capConstant A*Real.log Z := by
+  have hZ0 : 0 < Z := by linarith
+  have hZi : 1 ≤ Z^(A i) := Real.one_le_rpow (by linarith) (hA i)
+  have hf := Nat.floor_le (Real.logb_nonneg (by norm_num : (1:ℝ)<2) hZi)
+  have hAi : A i ≤ ∑ j,A j := Finset.single_le_sum (fun j _ => hA j) (Finset.mem_univ i)
+  have hc := mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right hAi
+    (Real.log_pos (by norm_num : (1:ℝ)<2)).le) (Real.log_nonneg (by linarith : 1 ≤ Z))
+  dsimp [dyadIndex,capConstant]
+  calc
+    _ ≤ 1+Real.logb 2 (Z^(A i)) := by linarith
+    _ = 1+(A i/Real.log 2)*Real.log Z := by
+      rw [Real.logb_rpow_eq_mul_logb_of_pos hZ0,Real.logb]
+      ring
+    _ ≤ _ := by linarith
+
+omit [DecidableEq ι] in
+theorem keys_card_polynomial (A : Fin 4 → ℝ) (hA : ∀ i,0 ≤ A i) :
+    ∃ C : ℝ,0 ≤ C ∧ ∀ (p : ι → O) (_hp : ∀ i,p i ≠ 0)
+      [∀ i,(Ideal.span {p i}).IsMaximal] {Jo Jn : ℕ}
+      (source : Finset (MarkedSecondSource ι Jo Jn)) (Z : ℝ), 2 ≤ Z →
+      (∀ x∈source,x.second.frequency ≠ 0) →
+      (∀ x∈source,∀ i,outerNorms p x i ≤ Z^(A i)) →
+      ((keys p source).card : ℝ) ≤ (1+C*Real.log Z)^4 := by
+  refine ⟨capConstant A,capConstant_nonneg A hA,?_⟩
+  intro p hp _ Jo Jn source Z hZ hk hcaps
+  have h := keys_card_le_product p hp source hk A Z hcaps
+  have hr : ((keys p source).card:ℝ) ≤ ∏ i : Fin 4,((dyadIndex (Z^(A i)):ℝ)+1) := by
+    exact_mod_cast h
+  apply hr.trans
+  calc
+    _ ≤ ∏ _i : Fin 4,(1+capConstant A*Real.log Z) :=
+      Finset.prod_le_prod (fun _ _ => by positivity) (fun i _ => cap_bin_bound A hA Z hZ i)
+    _ = (1+capConstant A*Real.log Z)^4 := by simp
+
+omit [DecidableEq ι] in
+@[simp] theorem keys_empty (p : ι → O) (Jo Jn : ℕ) :
+    keys p (∅ : Finset (MarkedSecondSource ι Jo Jn)) = ∅ := by simp [keys]
+
+omit [DecidableEq ι] in
+@[simp] theorem cell_empty (p : ι → O) (Jo Jn : ℕ) (d : BlockIndex) :
+    cell p (∅ : Finset (MarkedSecondSource ι Jo Jn)) d = ∅ := by simp [cell]
+
+omit [DecidableEq ι] in
+theorem cell_empty_of_not_mem (p : ι → O) {Jo Jn : ℕ}
+    (source : Finset (MarkedSecondSource ι Jo Jn)) (d : BlockIndex) (hd : d ∉ keys p source) :
+    cell p source d = ∅ := by
+  exact Finset.not_nonempty_iff_eq_empty.mp (fun h => hd ((mem_keys_iff p source d).mpr h))
+
+theorem retained_cell_ratios (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] {Jo : ℕ}
+    (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo → Finset ι → Finset ι → ℝ)
+    (label : SecondParentSource ι Jo → Finset ι → SecondExpansionData ι → κ)
+    (residual : Finset ι) (j : κ) (d : BlockIndex) (x : MarkedSecondSource ι Jo 0)
+    (hx : x∈cell p (retainedPool p pool parents R label residual j) d)
+    (Ψ : O →* ℂ) (m : O) (ray : SecondRayIndex) (N M : Finset ι) (i : Fin 4) :
+    1 ≤ secondActualNorms p (secondInheritedProfile p x Ψ m ray) N M
+      (Fin.castLE (by decide : 4 ≤ 6) i)/scales d i ∧
+    secondActualNorms p (secondInheritedProfile p x Ψ m ray) N M
+      (Fin.castLE (by decide : 4 ≤ 6) i)/scales d i < 2 :=
+  actual_cell_ratios p hp _ (retained_frequency_ne_zero p pool parents R label residual j)
+    d x hx Ψ m ray N M i
+
+theorem retained_keys_card_polynomial (A : Fin 4 → ℝ) (hA : ∀ i,0 ≤ A i) :
+    ∃ C : ℝ,0 ≤ C ∧ ∀ (p : ι → O) (_hp : ∀ i,p i ≠ 0)
+      [∀ i,(Ideal.span {p i}).IsMaximal] {Jo : ℕ}
+      (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+      (R : SecondParentSource ι Jo → Finset ι → Finset ι → ℝ)
+      (label : SecondParentSource ι Jo → Finset ι → SecondExpansionData ι → κ)
+      (residual : Finset ι) (j : κ) (Z : ℝ), 2 ≤ Z →
+      (∀ x∈retainedPool p pool parents R label residual j,∀ i,outerNorms p x i ≤ Z^(A i)) →
+      ((keys p (retainedPool p pool parents R label residual j)).card:ℝ) ≤
+        (1+C*Real.log Z)^4 := by
+  obtain ⟨C,hC,h⟩ := keys_card_polynomial (ι:=ι) A hA
+  refine ⟨C,hC,?_⟩
+  intro p hp _ Jo pool parents R label residual j Z hZ hcaps
+  exact h p hp _ Z hZ (retained_frequency_ne_zero p pool parents R label residual j) hcaps
+
+end InverseSecondSourceBlocks
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def secondCellColumnExponent (Z X:ℝ) (d:BlockIndex):ℝ :=
+  Real.logb Z (X/(scales d 0*scales d 2))
+
+theorem second_cell_column_scale (Z X:ℝ) (d:BlockIndex) (hZ:1<Z) (hX:0<X) :
+    Z^(secondCellColumnExponent Z X d)=X/(scales d 0*scales d 2) := by
+  exact Real.rpow_logb (by linarith) (ne_of_gt hZ)
+    (div_pos hX (mul_pos (dyadScale_pos _) (dyadScale_pos _)))
+
+theorem second_cell_physical_scale (Z X:ℝ) (d:BlockIndex) (hZ:1<Z) (hX:0<X) :
+    scales d 0*scales d 2*Z^(secondCellColumnExponent Z X d)=X := by
+  rw [second_cell_column_scale Z X d hZ hX]
+  field_simp [scales,ne_of_gt (dyadScale_pos (d 0)),ne_of_gt (dyadScale_pos (d 2))]
+
+theorem second_cell_clipping_ratio (Z X b:ℝ) (d:BlockIndex) (hZ:1<Z) (hX:0<X)
+    (hb:1≤ b) (hsource:scales d 0*scales d 2≤ b*X) :
+    1≤ Z^(max 0 (secondCellColumnExponent Z X d)-secondCellColumnExponent Z X d) ∧
+    Z^(max 0 (secondCellColumnExponent Z X d)-secondCellColumnExponent Z X d)≤ b := by
+  let N:=secondCellColumnExponent Z X d
+  have hz:0<Z:=lt_trans zero_lt_one hZ
+  have hn:Z^N=X/(scales d 0*scales d 2):=second_cell_column_scale Z X d hZ hX
+  constructor
+  · exact Real.one_le_rpow hZ.le (sub_nonneg.mpr (le_max_right _ _))
+  · by_cases hN:0≤ N
+    · rw [max_eq_right hN,sub_self,Real.rpow_zero];exact hb
+    · have hN':N≤0:=le_of_not_ge hN
+      rw [max_eq_left hN',zero_sub,Real.rpow_neg hz.le,hn,inv_div]
+      exact (div_le_iff₀ hX).mpr hsource
+
+theorem actual_priority_cell_profile {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+    (pool:Finset ι) (x:SecondProfileData ι) (slots₁ slots₂:Finset σ)
+    (lists₁ lists₂:σ→Finset ι) (a₁ a₂:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (negative:Bool) (t:ℝ) (Φ:𝓢(ℝ,ℂ)) (Y X Z:ℝ) (hX:0<X) (hZ:1<Z) (d:BlockIndex) :
+    let g:=priorityLogWindow om lo hi hlo hs negative
+    let θ:=priorityHeight negative t
+    actualSecondProfileRow p hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂
+      (principalWindow om lo hi hlo hs negative t) (principalWindow om lo hi hlo hs negative t) Φ Y X =
+      actualSecondProfileRow p hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂
+        (fun y=>star (positiveSource (conjugateProfile g) 1 (-θ) y)) (positiveSource g 1 θ) Φ Y
+        (scales d 0*scales d 2*Z^(secondCellColumnExponent Z X d)) := by
+  rw [second_cell_physical_scale Z X d hZ hX]
+  exact actual_priority_profile_common p hp hcop hg pool x slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    om lo hi hlo hs negative t Φ Y X hX
+
+theorem actual_priority_cells {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+    {Jo:ℕ} (source:Finset (MarkedSecondSource ι Jo 0))
+    (pool:Finset ι) (Ψ:O→*ℂ) (m:O) (ray:SecondRayIndex)
+    (slots₁ slots₂:Finset σ) (lists₁ lists₂:σ→Finset ι) (a₁ a₂:σ→ι→ℂ)
+    (deleted₁ deleted₂:MarkedSecondSource ι Jo 0→Finset ι)
+    (w:MarkedSecondSource ι Jo 0→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (negative:Bool) (t:ℝ) (Φ:𝓢(ℝ,ℂ)) (Y X Z:ℝ) (hX:0<X) (hZ:1<Z) :
+    let g:=priorityLogWindow om lo hi hlo hs negative
+    let θ:=priorityHeight negative t
+    (Y:ℂ)*secondRayCoefficient ray *
+      (∑x∈source,(w x*actualSecondSignedWeight p hg Ψ
+        (m*cubicIdealGenerator x.quotient) ray x)*
+        actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m ray)
+          slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂
+          (principalWindow om lo hi hlo hs negative t) (principalWindow om lo hi hlo hs negative t) Φ Y X) =
+    ∑d∈keys p source,(Y:ℂ)*secondRayCoefficient ray *
+      (∑x∈cell p source d,(w x*actualSecondSignedWeight p hg Ψ
+        (m*cubicIdealGenerator x.quotient) ray x)*
+        actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m ray)
+          slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂
+          (fun y=>star (positiveSource (conjugateProfile g) 1 (-θ) y)) (positiveSource g 1 θ) Φ Y
+          (scales d 0*scales d 2*Z^(secondCellColumnExponent Z X d))) := by
+  intro g θ
+  refine (physical_source_partition p hp hcop hg source pool Ψ m ray slots₁ slots₂ lists₁ lists₂
+    a₁ a₂ deleted₁ deleted₂ w (principalWindow om lo hi hlo hs negative t)
+    (principalWindow om lo hi hlo hs negative t) Φ Y X).trans ?_
+  apply Finset.sum_congr rfl
+  intro d hd
+  apply congrArg ((Y : ℂ) * secondRayCoefficient ray * ·)
+  apply Finset.sum_congr rfl
+  intro x hx
+  exact congrArg ((w x * actualSecondSignedWeight p hg Ψ
+    (m * cubicIdealGenerator x.quotient) ray x) * ·)
+    (actual_priority_cell_profile p hp hcop hg pool (secondInheritedProfile p x Ψ m ray)
+      slots₁ slots₂ _ _ a₁ a₂ om lo hi hlo hs negative t Φ Y X Z hX hZ d)
+
+theorem actual_source_block_ratios {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn:ℕ} (source:Finset (MarkedSecondSource ι Jo Jn)) (d:BlockIndex)
+    (hcell:∀x∈source,index p x=d) (hk:∀x∈source,x.second.frequency≠0) :
+    ∀x∈source,∀i,InverseSecondChildWindows.actualOuterRatios p x
+      (scales d 0) (scales d 1) (scales d 2) (scales d 3) i∈Set.Icc 1 2 := by
+  intro x hx i
+  have hxcell:x∈cell p source d:=(mem_cell p source d x).mpr ⟨hx,hcell x hx⟩
+  have hr:=cell_ratios p hp source hk d x hxcell i
+  have he:InverseSecondChildWindows.actualOuterRatios p x
+      (scales d 0) (scales d 1) (scales d 2) (scales d 3) i=outerNorms p x i/scales d i := by
+    fin_cases i <;> simp [InverseSecondChildWindows.actualOuterRatios,outerNorms,
+      primeProductNorm]
+  rw [he]
+  exact ⟨hr.1,hr.2.le⟩
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+local instance : Fintype Eisˣ := @Fintype.ofFinite _ cubic_units_finite
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem actual_priority_cell_recursive
+    (om Φ:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (Aker J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C : ℝ,0 ≤ C ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (source : Finset (MarkedSecondSource ι Jo 0))
+    (_hs : ActualSecondSourceConditions p source) (d:InverseSecondSourceBlocks.BlockIndex)
+    (_hcell:∀x∈source,InverseSecondSourceBlocks.index p x=d),
+    ∀ (pool : Finset ι) (Ψ : Eis →* ℂ) (m : Eis) (z : SecondRayIndex)
+        (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : σ → Finset ι) (a₁ a₂ : σ → ι → ℂ)
+        (deleted₁ deleted₂ : MarkedSecondSource ι Jo 0→Finset ι)
+        (Y R L Z X Vlabel εchild : ℝ)
+        (ell Ractive j tcount gcount theta eta : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (w : MarkedSecondSource ι Jo 0 → ℂ)
+        (labels : Finset (Ideal Eis)) (A : ℝ),
+      (∀ x∈source,∀ i∈deleted₁ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ x∈source,∀ i∈deleted₂ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) R) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ x∈source,primeProductNorm p x.second.sourceCommon ≤ Z^(gcount+eta)) →
+      (∀ x∈source,Z^(theta-eta) ≤ primeProductNorm p x.second.divisor) →
+      (∀ a,‖Ψ a‖ ≤ 1) → (∀ x∈source,‖w x‖ ≤ 1) →
+      (∀ i∈slots₁,∀ q∈lists₁ i,‖a₁ i q‖ ≤ 1) →
+      (∀ i∈slots₂,∀ q∈lists₂ i,‖a₂ i q‖ ≤ 1) →
+      (∀ x∈source,(actualSecondChild p 1 1 x).2.1 ∈ labels) →
+      Jo ≤ 2*K → slots₁.card ≤ K → slots₂.card ≤ K → 0 ≤ A →
+      (∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈slots₁.powerset,∀ γ∈actualSecondTriples p 1 1 source,
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₁\J₁) lists₁ a₁
+          (labels.filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+Vlabel) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+Vlabel+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈slots₂.powerset,∀ γ∈actualSecondTriples p 1 1 source,
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₂\J₂) lists₂ a₂
+          (labels.filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+Vlabel) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+Vlabel+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      ‖(Y : ℂ)*secondRayCoefficient z *
+        (∑ x ∈ source,(w x*actualSecondSignedWeight p hg Ψ
+            (m*cubicIdealGenerator x.quotient) z x) *
+          actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m z)
+            slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂ (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t) Φ Y X)‖ ≤
+      (Real.exp (6*L)*‖(Y : ℂ)*secondRayCoefficient z*(((scales d 1)*(scales d 2)*(Z^(secondCellColumnExponent Z X d)) : ℝ):ℂ)⁻¹‖)*
+        (((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*(A*Z^(2*(max 0 (secondCellColumnExponent Z X d)+Vlabel)+εchild))*
+          Z^((ell+Ractive/2-j+tcount+gcount-theta+11*eta/2)*(1+εmass)))*
+          (C*((1+‖(-priorityHeight negative t)‖)^InverseClippingProfiles.momentOrder J *
+            (1+‖(priorityHeight negative t)‖)^InverseClippingProfiles.momentOrder J) /
+              (1+Y*(scales d 3)/((scales d 1)*(scales d 2)^2*(Z^(secondCellColumnExponent Z X d))^2))^Aker)) := by
+  let g:=priorityLogWindow om lo hi hlo hsupport negative
+  let mg:=|Real.log lo|+|Real.log hi|
+  have hm:0≤ mg:=add_nonneg (abs_nonneg _) (abs_nonneg _)
+  have hg:Function.support g⊆Set.Icc (-mg) mg:=priorityLogWindow_support om lo hi hlo hsupport negative
+  have hcg:Function.support (conjugateProfile g)⊆Set.Icc (-mg) mg:=by
+    intro x hx
+    apply hg
+    simpa only [Function.mem_support,conjugateProfile_apply,star_ne_zero] using hx
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,henergy⟩:=
+    actual_second_fixed_block_recursive (ι:=ι) (σ:=σ) (conjugateProfile g) g Φ mg mg 1
+      (fun _=>1) (fun _=>2) B₀ hm hm (le_refl 1) (fun _=>zero_lt_one)
+      (fun _=>by norm_num) hB₀ hcg hg Aker J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,?_⟩
+  intro p hp _ hcop hg₀ hpr hinj hc Jo source hs d hcell pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X Vlabel εchild ell Ractive j tcount gcount theta eta ρ t w labels A
+    hd₁ hd₂ hρ hL hZ hX hY hrows hcube₁ hcube₂ hactive hj hquot hcommon hdiv
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hleft hright
+  have hblock:=actual_source_block_ratios p hp source d hcell
+    (fun x hx=>frequency_ne_zero_of_gate _ _ (hrows x hx))
+  have he:=henergy p hp hcop hg₀ hpr hinj hc source hs pool Ψ m z
+    slots₁ slots₂ lists₁ lists₂ a₁ a₂ deleted₁ deleted₂
+    (scales d 0) (scales d 1) (scales d 2) (scales d 3) Y R L Z
+    (secondCellColumnExponent Z X d) Vlabel εchild ell Ractive j tcount gcount theta eta ρ
+    1 1 (-priorityHeight negative t) (priorityHeight negative t) w labels A
+    hd₁ hd₂ hρ (le_refl 1) (le_refl 1) (le_refl 1) (le_refl 1) hL (lt_trans zero_lt_one hZ)
+    (dyadScale_pos _) (dyadScale_pos _) (dyadScale_pos _) (dyadScale_pos _)
+    (Real.rpow_pos_of_pos (lt_trans zero_lt_one hZ) _) hY hrows hblock
+    hcube₁ hcube₂ hactive hj hquot hcommon hdiv hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hleft hright
+  rw [second_cell_physical_scale Z X d hZ hX] at he
+  refine le_trans (le_of_eq (congrArg (fun v : ℂ => ‖(Y : ℂ) * secondRayCoefficient z * v‖) ?_)) he
+  apply Finset.sum_congr rfl
+  intro x _hx
+  exact congrArg (fun v : ℂ => (w x * actualSecondSignedWeight p hg₀ Ψ
+    (m * cubicIdealGenerator x.quotient) z x) * v)
+    (actual_priority_profile_common p hp hcop hg₀ pool (secondInheritedProfile p x Ψ m z)
+      slots₁ slots₂ _ _ a₁ a₂ om lo hi hlo hsupport negative t Φ Y X hX)
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+
+theorem second_source_scalar_norm (Y E V X : ℝ)
+    (hY : 0<Y) (hE : 0<E) (hV : 0<V) (hX : 0<X) (a : ℂ) :
+    ‖(Y:ℂ)*a*((E*V*X:ℝ):ℂ)⁻¹‖ = ‖a‖*(Y/(E*V*X)) := by
+  rw [norm_mul,norm_mul,norm_inv,Complex.norm_real,Real.norm_eq_abs,
+    Complex.norm_real,Real.norm_eq_abs,abs_of_pos hY,abs_of_pos (by positivity : 0<E*V*X)]
+  ring
+
+theorem physical_block_rpow_budget
+    (Z : ℝ) (hZ : 1≤ Z) (M r ell V δ A B R j t g θ v η τ π ε εmass : ℝ)
+    (hclip : max 0 (secondFormalColumn r A B t g v)-secondFormalColumn r A B t g v≤6*η)
+    (hεmass : εmass*(secondCount ell R j t g θ+11*η/2)≤π) :
+    Z^(firstKappa M r ell V δ A B R) * Real.exp ((9/2:ℝ)*(η*Real.log Z)) *
+      (Z^(firstPhysicalHeight M r ell V δ B j+12*η+τ) /
+        (Z^θ*Z^v*Z^(secondFormalColumn r A B t g v)) * Real.exp (6*(η*Real.log Z))) *
+      Z^((secondCount ell R j t g θ+11*η/2)*(1+εmass)) *
+      Z^(2*(max 0 (secondFormalColumn r A B t g v)+secondFormalLabel B θ v j)+ε) ≤
+    Z^(r+3*ell+V+40*η+τ+π+ε) := by
+  have hZpos : 0<Z := lt_of_lt_of_le zero_lt_one hZ
+  rw [second_physical_scalar Z hZpos]
+  have hexp : Real.exp ((9/2:ℝ)*(η*Real.log Z))=Z^((9/2:ℝ)*η) := by
+    rw [Real.rpow_def_of_pos hZpos]
+    congr 1
+    ring
+  rw [hexp,←Real.rpow_add hZpos,←Real.rpow_add hZpos,←Real.rpow_add hZpos,←Real.rpow_add hZpos]
+  apply Real.rpow_le_rpow_of_exponent_le hZ
+  have hb := physical_step_energy_exponent M r ell V δ A B R j t g θ v η τ π ε
+    (max 0 (secondFormalColumn r A B t g v)-secondFormalColumn r A B t g v) hclip
+  nlinarith
+
+theorem physical_block_scalar_budget
+    (Z : ℝ) (hZ : 1≤ Z) (M r ell V δ A B R j t g θ v η τ π ε εmass : ℝ)
+    (ray : ℂ) (C : ℝ) (hC : 0≤ C)
+    (hclip : max 0 (secondFormalColumn r A B t g v)-secondFormalColumn r A B t g v≤6*η)
+    (hεmass : εmass*(secondCount ell R j t g θ+11*η/2)≤π) :
+    C * Z^(firstKappa M r ell V δ A B R) * Real.exp ((9/2:ℝ)*(η*Real.log Z)) *
+      (Real.exp (6*(η*Real.log Z)) *
+        ‖((Z^(firstPhysicalHeight M r ell V δ B j+12*η+τ):ℝ):ℂ)*ray*
+          ((Z^θ*Z^v*Z^(secondFormalColumn r A B t g v):ℝ):ℂ)⁻¹‖) *
+      Z^((secondCount ell R j t g θ+11*η/2)*(1+εmass)) *
+      Z^(2*(max 0 (secondFormalColumn r A B t g v)+secondFormalLabel B θ v j)+ε) ≤
+    C*‖ray‖*Z^(r+3*ell+V+40*η+τ+π+ε) := by
+  have hz : 0<Z := lt_of_lt_of_le zero_lt_one hZ
+  rw [second_source_scalar_norm _ _ _ _ (by positivity) (by positivity) (by positivity) (by positivity)]
+  have hh := mul_le_mul_of_nonneg_left
+    (physical_block_rpow_budget Z hZ M r ell V δ A B R j t g θ v η τ π ε εmass hclip hεmass)
+    (mul_nonneg hC (norm_nonneg ray))
+  convert hh using 1 <;> first | rfl | ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseInitialArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def secondCellExponent (Z:ℝ) (d:BlockIndex) (i:Fin 4):ℝ:=Real.logb Z (scales d i)
+
+theorem secondCellExponent_nonneg (Z:ℝ) (d:BlockIndex) (i:Fin 4) (hZ:1<Z):
+    0≤ secondCellExponent Z d i := by
+  apply Real.logb_nonneg hZ
+  exact one_le_pow₀ (by norm_num : (1:ℝ)≤2)
+
+theorem second_cell_scale_rpow (Z:ℝ) (d:BlockIndex) (i:Fin 4) (hZ:1<Z):
+    Z^(secondCellExponent Z d i)=scales d i :=
+  Real.rpow_logb (by linarith) (ne_of_gt hZ) (dyadScale_pos _)
+
+theorem second_cell_formal_column (Z r A B t:ℝ) (d:BlockIndex) (hZ:1<Z):
+    secondCellColumnExponent Z (Z^(r-A-B-t)) d=
+      secondFormalColumn r A B t (secondCellExponent Z d 0) (secondCellExponent Z d 2) := by
+  have hz:0<Z:=zero_lt_one.trans hZ
+  apply (Real.rpow_right_inj hz (ne_of_gt hZ)).mp
+  rw [second_cell_column_scale Z _ d hZ (Real.rpow_pos_of_pos hz _)]
+  rw [←second_cell_scale_rpow Z d 0 hZ,←second_cell_scale_rpow Z d 2 hZ,
+    ←Real.rpow_add hz,←Real.rpow_sub hz]
+  congr 1
+  unfold secondFormalColumn
+  ring
+
+theorem actual_second_child_label_norm {ι:Type*} [DecidableEq ι]
+    (p:ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn:ℕ} (x:MarkedSecondSource ι Jo Jn) (u v:Oˣ):
+    (Ideal.absNorm (actualSecondChild p u v x).2.1:ℝ)=
+      ‖ringComplex (jLabel p x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2*
+      primeProductNorm p x.firstCommon*primeProductNorm p x.second.divisor*
+      primeProductNorm p x.second.overlap := by
+  have hn(S:Finset ι):(Ideal.absNorm (sourceIdeal p S):ℝ)=primeProductNorm p S:=by
+    simpa only [sourceIdeal,primeProductNorm,map_prod] using
+      (ringComplex_norm_sq_eq_absNorm_span (∏i∈S,p i)).symm
+  change (Ideal.absNorm (Ideal.span {jLabel p x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit} *
+      sourceIdeal p x.firstCommon * sourceIdeal p x.second.divisor * sourceIdeal p x.second.overlap):ℝ)=_
+  simp only [map_mul,Nat.cast_mul,hn,←ringComplex_norm_sq_eq_absNorm_span]
+
+theorem actual_cell_child_label_bound {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn:ℕ} (source:Finset (MarkedSecondSource ι Jo Jn))
+    (hk:∀x∈source,x.second.frequency≠0) (d:BlockIndex)
+    (x:MarkedSecondSource ι Jo Jn) (hx:x∈cell p source d) (u v:Oˣ):
+    (Ideal.absNorm (actualSecondChild p u v x).2.1:ℝ)≤
+      4*‖ringComplex (jLabel p x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2*
+      primeProductNorm p x.firstCommon*scales d 1*scales d 2 := by
+  have hE:= (cell_ratios p hp source hk d x hx 1).2.le
+  have hV:= (cell_ratios p hp source hk d x hx 2).2.le
+  have he:primeProductNorm p x.second.divisor≤2*scales d 1:=
+    (div_le_iff₀ (dyadScale_pos _)).mp hE
+  have hv:primeProductNorm p x.second.overlap≤2*scales d 2:=
+    (div_le_iff₀ (dyadScale_pos _)).mp hV
+  rw [actual_second_child_label_norm]
+  calc
+    _ ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2*
+      primeProductNorm p x.firstCommon*(2*scales d 1)*(2*scales d 2) := by
+      have hc0 := (primeProductNorm_pos p hp x.firstCommon).le
+      have hv0 := (primeProductNorm_pos p hp x.second.overlap).le
+      have hs0 := (dyadScale_pos (d 1)).le
+      gcongr
+    _ = _ := by ring
+
+theorem actual_cell_child_label_power {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn:ℕ} (source:Finset (MarkedSecondSource ι Jo Jn))
+    (hk:∀x∈source,x.second.frequency≠0) (d:BlockIndex)
+    (x:MarkedSecondSource ι Jo Jn) (hx:x∈cell p source d) (u v:Oˣ)
+    (Z B j eta:ℝ) (hZ:1<Z) (hbin:2≤ Z^eta)
+    (hC:primeProductNorm p x.firstCommon≤ Z^(B+eta))
+    (hJ:‖ringComplex (jLabel p x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2≤ Z^(j+eta)) :
+    (Ideal.absNorm (actualSecondChild p u v x).2.1:ℝ)≤
+      Z^(secondFormalLabel B (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) := by
+  have hz:0<Z:=zero_lt_one.trans hZ
+  have hfour:(4:ℝ)≤ Z^(2*eta):=by
+    have hh:=mul_le_mul hbin hbin (by norm_num) (Real.rpow_nonneg hz.le _)
+    norm_num only [←Real.rpow_add hz,show eta+eta=2*eta by ring] at hh
+    exact hh
+  apply (actual_cell_child_label_bound p hp source hk d x hx u v).trans
+  calc
+    _≤ Z^(2*eta)*Z^(j+eta)*Z^(B+eta)*scales d 1*scales d 2:=by
+      have hc0:0≤ primeProductNorm p x.firstCommon:=(primeProductNorm_pos p hp _).le
+      have hs1:0≤ scales d 1:=(dyadScale_pos _).le
+      have hs2:0≤ scales d 2:=(dyadScale_pos _).le
+      gcongr
+    _= _:=by
+      rw [←second_cell_scale_rpow Z d 1 hZ,←second_cell_scale_rpow Z d 2 hZ,
+        ←Real.rpow_add hz,←Real.rpow_add hz,←Real.rpow_add hz,←Real.rpow_add hz]
+      congr 1
+      unfold secondFormalLabel
+      ring
+
+theorem second_cell_clipping_width (Z X b eta:ℝ) (d:BlockIndex)
+    (hZ:1<Z) (hX:0<X) (hb:1≤ b)
+    (hsource:scales d 0*scales d 2≤ b*X) (hthreshold:b≤ Z^(6*eta)) :
+    max 0 (secondCellColumnExponent Z X d)-secondCellColumnExponent Z X d≤6*eta := by
+  exact (Real.rpow_le_rpow_left_iff hZ).mp
+    ((second_cell_clipping_ratio Z X b d hZ hX hb hsource).2.trans hthreshold)
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+local instance : Fintype Eisˣ := @Fintype.ofFinite _ cubic_units_finite
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem actual_priority_source_moving_radius
+    (om Φ:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C : ℝ,0 ≤ C ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (source : Finset (MarkedSecondSource ι Jo 0))
+    (_hs : ActualSecondSourceConditions p source),
+    ∀ (pool : Finset ι) (Ψ : Eis →* ℂ) (m : Eis) (z : SecondRayIndex)
+        (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : σ → Finset ι) (a₁ a₂ : σ → ι → ℂ)
+        (deleted₁ deleted₂ : MarkedSecondSource ι Jo 0→Finset ι)
+        (Y:ℝ) (R:BlockIndex→ℝ) (L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (w : MarkedSecondSource ι Jo 0 → ℂ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀ x∈source,∀ i∈deleted₁ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ x∈source,∀ i∈deleted₂ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) (R (index p x))) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) → (∀ x∈source,‖w x‖ ≤ 1) →
+      (∀ i∈slots₁,∀ q∈lists₁ i,‖a₁ i q‖ ≤ 1) →
+      (∀ i∈slots₂,∀ q∈lists₂ i,‖a₂ i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo ≤ 2*K → slots₁.card ≤ K → slots₂.card ≤ K → 0 ≤ A →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈slots₁.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₁\J₁) lists₁ a₁
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈slots₂.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₂\J₂) lists₂ a₂
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      ‖(Y : ℂ)*secondRayCoefficient z *
+        (∑ x ∈ source,(w x*actualSecondSignedWeight p hg Ψ
+            (m*cubicIdealGenerator x.quotient) z x) *
+          actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m z)
+            slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂ (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t) Φ Y X)‖ ≤
+      ∑d∈keys p source,(Real.exp (6*L)*‖(Y : ℂ)*secondRayCoefficient z*(((scales d 1)*(scales d 2)*(Z^(secondCellColumnExponent Z X d)) : ℝ):ℂ)⁻¹‖)*
+        (((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*(A*Z^(2*(max 0 (secondCellColumnExponent Z X d)+(Vlabel d))+εchild))*
+          Z^((ell+Ractive/2-j+tcount+(secondCellExponent Z d 0)-(secondCellExponent Z d 1)+11*eta/2)*(1+εmass)))*
+          (C*((1+‖(-priorityHeight negative t)‖)^InverseClippingProfiles.momentOrder J *
+            (1+‖(priorityHeight negative t)‖)^InverseClippingProfiles.momentOrder J) /
+              (1+Y*(scales d 3)/((scales d 1)*(scales d 2)^2*(Z^(secondCellColumnExponent Z X d))^2))^0)) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,henergy⟩:=
+    actual_priority_cell_recursive (ι:=ι) (σ:=σ) om Φ lo hi hlo hsupport negative B₀ hB₀ 0 J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo source hs pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X εchild Vlabel ell Ractive j tcount eta ρ t w labels A
+    hd₁ hd₂ hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hleft hright
+  have hz:0<Z:=zero_lt_one.trans hZ
+  have hk:∀x∈source,x.second.frequency≠0:=fun x hx=>frequency_ne_zero_of_gate _ _ (hrows x hx)
+  rw [physical_source_partition p hp hcop hg source pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ w]
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro d hd
+  have hin : cell p source d⊆source:=cell_subset p source d
+  have hcommon:∀x∈cell p source d,primeProductNorm p x.second.sourceCommon≤ Z^(secondCellExponent Z d 0+eta):=by
+    intro x hx
+    have hr:primeProductNorm p x.second.sourceCommon≤2*scales d 0:=
+      (div_le_iff₀ (dyadScale_pos _)).mp (cell_ratios p hp source hk d x hx 0).2.le
+    apply hr.trans
+    rw [Real.rpow_add hz,second_cell_scale_rpow Z d 0 hZ]
+    simpa only [mul_comm] using mul_le_mul_of_nonneg_left hbin (show 0≤ scales d 0 from (dyadScale_pos _).le)
+  have hdiv:∀x∈cell p source d,Z^(secondCellExponent Z d 1-eta)≤ primeProductNorm p x.second.divisor:=by
+    intro x hx
+    have hr:scales d 1≤ primeProductNorm p x.second.divisor:=by
+      simpa [outerNorms,scales] using (le_div_iff₀ (dyadScale_pos _)).mp (cell_ratios p hp source hk d x hx 1).1
+    have hh:Z^(secondCellExponent Z d 1-eta)≤ Z^(secondCellExponent Z d 1):=
+      Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+    rw [second_cell_scale_rpow Z d 1 hZ] at hh
+    exact hh.trans hr
+  exact henergy p hp hcop hg hpr hinj hc (cell p source d) (cell_conditions p source hs d) d
+    (fun x hx=>(mem_cell p source d x).mp hx |>.2) pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y (R d) L Z X (Vlabel d) εchild ell Ractive j tcount
+    (secondCellExponent Z d 0) (secondCellExponent Z d 1) eta ρ t w (labels d) A
+    (fun x hx=>hd₁ x (hin hx)) (fun x hx=>hd₂ x (hin hx)) hρ hL hZ hX hY
+    (fun x hx=>by simpa only [(mem_cell p source d x).mp hx |>.2] using hrows x (hin hx)) (fun x hx=>hcube₁ x (hin hx)) (fun x hx=>hcube₂ x (hin hx))
+    (fun x hx=>hactive x (hin hx)) (fun x hx=>hj x (hin hx)) (fun x hx=>hquot x (hin hx))
+    hcommon hdiv hΨ (fun x hx=>hw x (hin hx)) ha₁ ha₂ (hlabels d hd) ho hslots₁ hslots₂ hA
+    (hleft d hd) (hright d hd)
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseSecondSourceBlocks
+
+theorem priority_cell_physical_budget
+    (Z:ℝ) (hZ:1<Z) (d:BlockIndex)
+    (M r ell V delta A B R j t eta tau pi eps epsmass b C:ℝ)
+    (ray:ℂ) (hC:0≤ C) (hb:1≤ b)
+    (hsource:scales d 0*scales d 2≤ b*Z^(r-A-B-t))
+    (hthreshold:b≤ Z^(6*eta))
+    (hmass:epsmass*(secondCount ell R j t (secondCellExponent Z d 0)
+      (secondCellExponent Z d 1)+11*eta/2)≤ pi) :
+    let N:=secondCellColumnExponent Z (Z^(r-A-B-t)) d
+    let Vchild:=secondFormalLabel B (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta
+    C*Z^(firstKappa M r ell V delta A B R)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))*
+      (Real.exp (6*(eta*Real.log Z))*
+        ‖((Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau):ℝ):ℂ)*ray*
+          ((scales d 1*scales d 2*Z^N:ℝ):ℂ)⁻¹‖)*
+      Z^((secondCount ell R j t (secondCellExponent Z d 0) (secondCellExponent Z d 1)+11*eta/2)*(1+epsmass))*
+      Z^(2*(max 0 N+Vchild)+eps)≤
+    C*‖ray‖*Z^(r+3*ell+V+48*eta+tau+pi+eps) := by
+  intro N Vchild
+  have hz:0<Z:=zero_lt_one.trans hZ
+  have hclip:=second_cell_clipping_width Z (Z^(r-A-B-t)) b eta d hZ
+    (Real.rpow_pos_of_pos hz _) hb hsource hthreshold
+  rw [second_cell_formal_column Z r A B t d hZ] at hclip
+  have he:=physical_block_scalar_budget Z hZ.le M r ell V delta A B R j t
+    (secondCellExponent Z d 0) (secondCellExponent Z d 1) (secondCellExponent Z d 2)
+    eta tau pi (eps+8*eta) epsmass ray C hC hclip hmass
+  dsimp only [N,Vchild]
+  rw [second_cell_formal_column Z r A B t d hZ]
+  rw [second_cell_scale_rpow Z d 1 hZ,second_cell_scale_rpow Z d 2 hZ] at he
+  convert he using 1 <;> congr 1 <;> ring_nf
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic InverseSecondSourceBlocks
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+
+def priorityCellScalar (Z Y L X ell Ractive j t eta eps epsmass B:ℝ) (ray:ℂ) (d:BlockIndex):ℝ :=
+  (Real.exp (6*L)*‖(Y:ℂ)*ray*((scales d 1*scales d 2*Z^(secondCellColumnExponent Z X d):ℝ):ℂ)⁻¹‖)*
+    Z^((secondCount ell Ractive j t (secondCellExponent Z d 0) (secondCellExponent Z d 1)+11*eta/2)*(1+epsmass))*
+    Z^(2*(max 0 (secondCellColumnExponent Z X d)+
+      (secondFormalLabel B (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta))+eps)
+
+theorem source_cell_joint_bound {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn:ℕ} (source:Finset (MarkedSecondSource ι Jo Jn)) (hk:∀x∈source,x.second.frequency≠0)
+    (b X:ℝ) (hgeom:∀x∈source,primeProductNorm p x.second.sourceCommon*
+      primeProductNorm p x.second.overlap≤ b*X) (d:BlockIndex) (hd:d∈keys p source):
+    scales d 0*scales d 2≤ b*X := by
+  obtain ⟨x,hx⟩:=(mem_keys_iff p source d).mp hd
+  have h0:scales d 0≤ primeProductNorm p x.second.sourceCommon:=by
+    simpa [outerNorms,scales] using (le_div_iff₀ (dyadScale_pos _)).mp (cell_ratios p hp source hk d x hx 0).1
+  have h2:scales d 2≤ primeProductNorm p x.second.overlap:=by
+    simpa [outerNorms,scales] using (le_div_iff₀ (dyadScale_pos _)).mp (cell_ratios p hp source hk d x hx 2).1
+  exact (mul_le_mul h0 h2 (dyadScale_pos _).le (primeProductNorm_pos p hp _).le).trans
+    (hgeom x (cell_subset p source d hx))
+
+theorem priority_source_scalar_budget (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) :
+    ∃ Cbin:ℝ,0≤ Cbin ∧ ∀ {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (_hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    {Jo Jn:ℕ} (source:Finset (MarkedSecondSource ι Jo Jn))
+    (Z M r ell V delta A B Ractive j t eta tau pi eps epsmass b C:ℝ)
+    (ray:ℂ), 2≤ Z → 0≤ C → 1≤ b → b≤ Z^(6*eta) →
+    (∀x∈source,x.second.frequency≠0) →
+    (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+    (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*Z^(r-A-B-t)) →
+    (∀d∈keys p source,epsmass*(secondCount ell Ractive j t (secondCellExponent Z d 0)
+      (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+    C*Z^(firstKappa M r ell V delta A B Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))*
+      (∑d∈keys p source,priorityCellScalar Z (Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau))
+        (eta*Real.log Z) (Z^(r-A-B-t)) ell Ractive j t eta eps epsmass B ray d) ≤
+    C*‖ray‖*(1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+eps) := by
+  refine ⟨capConstant caps,capConstant_nonneg caps hcaps,?_⟩
+  intro ι _ p hp _ Jo Jn source Z M r ell V delta A B Ractive j t eta tau pi eps epsmass b C
+    ray hZ hC hb hthreshold hk hnorm hgeom hmass
+  have hZ':1<Z:=lt_of_lt_of_le (by norm_num) hZ
+  have hz:0<Z:=zero_lt_one.trans hZ'
+  have hcard:((keys p source).card:ℝ)≤(1+capConstant caps*Real.log Z)^4:=by
+    have h:=keys_card_le_product p hp source hk caps Z hnorm
+    have hr:((keys p source).card:ℝ)≤∏i:Fin 4,((dyadIndex (Z^(caps i)):ℝ)+1):=by exact_mod_cast h
+    apply hr.trans
+    calc
+      _≤∏_i:Fin 4,(1+capConstant caps*Real.log Z):=
+        Finset.prod_le_prod (fun _ _=>by positivity) (fun i _=>cap_bin_bound caps hcaps Z hZ i)
+      _= _:=by simp
+  rw [Finset.mul_sum]
+  calc
+    _≤∑_d∈keys p source,C*‖ray‖*Z^(r+3*ell+V+48*eta+tau+pi+eps):=by
+      apply Finset.sum_le_sum
+      intro d hd
+      have he:=priority_cell_physical_budget Z hZ' d M r ell V delta A B Ractive j t eta tau pi eps epsmass b C
+        ray hC hb (source_cell_joint_bound p hp source hk b _ hgeom d hd) hthreshold (hmass d hd)
+      simpa only [priorityCellScalar,mul_assoc] using he
+    _= ((keys p source).card:ℝ)*(C*‖ray‖*Z^(r+3*ell+V+48*eta+tau+pi+eps)):=by simp
+    _≤ (1+capConstant caps*Real.log Z)^4*(C*‖ray‖*Z^(r+3*ell+V+48*eta+tau+pi+eps)):=
+      mul_le_mul_of_nonneg_right hcard (by positivity)
+    _= _:=by ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+local instance : Fintype Eisˣ := @Fintype.ofFinite _ cubic_units_finite
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem actual_priority_retained_moving_radius
+    (om Φ:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (source : Finset (MarkedSecondSource ι Jo 0))
+    (_hs : ActualSecondSourceConditions p source),
+    ∀ (pool : Finset ι) (Ψ : Eis →* ℂ) (m : Eis) (z : SecondRayIndex)
+        (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : σ → Finset ι) (a₁ a₂ : σ → ι → ℂ)
+        (deleted₁ deleted₂ : MarkedSecondSource ι Jo 0→Finset ι)
+        (Y:ℝ) (R:BlockIndex→ℝ) (L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (w : MarkedSecondSource ι Jo 0 → ℂ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀ x∈source,∀ i∈deleted₁ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ x∈source,∀ i∈deleted₂ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) (R (index p x))) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) → (∀ x∈source,‖w x‖ ≤ 1) →
+      (∀ i∈slots₁,∀ q∈lists₁ i,‖a₁ i q‖ ≤ 1) →
+      (∀ i∈slots₂,∀ q∈lists₂ i,‖a₂ i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo ≤ 2*K → slots₁.card ≤ K → slots₂.card ≤ K → 0 ≤ A →
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) →
+      X=Z^(r-Acol-Bfirst-tcount) → L=eta*Real.log Z →
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) →
+      2≤ Z → 1≤ b → b≤ Z^(6*eta) →
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) →
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈slots₁.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₁\J₁) lists₁ a₁
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈slots₂.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₂\J₂) lists₂ a₂
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      ‖(Y : ℂ)*secondRayCoefficient z *
+        (∑ x ∈ source,(w x*actualSecondSignedWeight p hg Ψ
+            (m*cubicIdealGenerator x.quotient) z x) *
+          actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m z)
+            slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂ (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t) Φ Y X)‖ ≤
+      C*A*‖secondRayCoefficient z‖*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,henergy⟩:=
+    actual_priority_source_moving_radius (ι:=ι) (σ:=σ) om Φ lo hi hlo hsupport negative B₀ hB₀ J K εmass hεmass
+  obtain ⟨Cbin,hCbin,hbudget⟩:=priority_source_scalar_budget caps hcaps
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,(Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^(2*K)*C,Cbin,by positivity,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo source hs pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b
+    ρ t w labels A hd₁ hd₂ hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have he:=henergy p hp hcop hg hpr hinj hc source hs pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X εchild Vlabel ell Ractive j tcount eta ρ t w labels A
+    hd₁ hd₂ hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hleft hright
+  let H:ℝ:=(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)
+  have hheight:(1+‖-priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J*
+      (1+‖priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J=H:=by
+    cases negative <;> simp [priorityHeight,H,two_mul,pow_add]
+  let D:ℝ:=(Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*A*C*H
+  have hD:0≤ D:=by dsimp [D,H];positivity
+  let S:ℝ:=∑d∈keys p source,priorityCellScalar Z Y L X ell Ractive j tcount eta εchild εmass Bfirst (secondRayCoefficient z) d
+  have hfactor:
+      (∑d∈keys p source,(Real.exp (6*L)*‖(Y:ℂ)*secondRayCoefficient z*
+          ((scales d 1*scales d 2*Z^(secondCellColumnExponent Z X d):ℝ):ℂ)⁻¹‖)*
+        (((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*(A*Z^(2*(max 0 (secondCellColumnExponent Z X d)+Vlabel d)+εchild))*
+          Z^((ell+Ractive/2-j+tcount+secondCellExponent Z d 0-secondCellExponent Z d 1+11*eta/2)*(1+εmass)))*
+          (C*((1+‖-priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J*
+            (1+‖priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J))))=D*S:=by
+    dsimp only [S]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro d hd
+    rw [hheight,hVe d]
+    dsimp only [D,priorityCellScalar,secondCount]
+    ring
+  simp only [pow_zero,div_one] at he
+  rw [hfactor] at he
+  have hbnd:=hbudget p hp source Z M r ell V delta Acol Bfirst Ractive j tcount eta tau pi εchild εmass b D
+    (secondRayCoefficient z) hZ2 hD hb hthreshold
+    (fun x hx=>frequency_ne_zero_of_gate _ _ (hrows x hx)) hnorm
+    (by simpa only [hXe] using hgeom) hmass
+  let P:=Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  have hP:0≤ P:=by dsimp [P];positivity
+  have hconst:D≤((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^(2*K)*C)*A*H:=by
+    have h1:(2:ℝ)^slots₁.card≤2^K:=pow_le_pow_right₀ (by norm_num) hslots₁
+    have h2:(2:ℝ)^slots₂.card≤2^K:=pow_le_pow_right₀ (by norm_num) hslots₂
+    calc
+      _≤(Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^K*(2:ℝ)^K*A*C*H:=by dsimp only [D];gcongr
+      _= _:=by rw [show 2*K=K+K by omega,pow_add];ring
+  calc
+    _≤ P*(D*S):=mul_le_mul_of_nonneg_left he hP
+    _≤ D*‖secondRayCoefficient z‖*(1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild):=by
+      convert hbnd using 1 ; dsimp only [P,S] ; rw [hYe,hXe,hLe] ; ring
+    _≤(((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^(2*K)*C)*A*H)*‖secondRayCoefficient z‖*(1+Cbin*Real.log Z)^4*
+        Z^(r+3*ell+V+48*eta+tau+pi+εchild):=by gcongr
+    _= _:=by dsimp only [H];ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseWholePriorityValidSource
+open Eisenstein SecondPassArithmetic FirstPassCubeLabels
+open InverseMoment InverseInitialArithmetic InverseFirstPriorityParents InversePrioritySecondSource
+open InverseMomentWholePriorityParents InverseMomentWholePriorityPhysical
+open RayFourExpansion InversePrincipalEnergy InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ κ : Type*} [DecidableEq ι] [DecidableEq σ] [DecidableEq κ]
+variable {Jo : ℕ}
+
+def activeFixedSource (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ) :
+    Finset (Source ι Jo) :=
+  (fixedSource pool b C E old).filter (fun x=>selector x.quotientSupport≠0)
+
+omit [DecidableEq ι] in
+theorem activeFixedSource_eq_image (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ) :
+    activeFixedSource pool b C E old selector=
+      (pool.powerset.filter (fun D=>selector D≠0)).image (fixedPoint b C E old) := by
+  rw [activeFixedSource,fixedSource,Finset.filter_image]
+  rfl
+
+omit [DecidableEq ι] in
+theorem mem_activeFixedSource (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ) (x : Source ι Jo) :
+    x∈activeFixedSource pool b C E old selector ↔
+      ∃ D∈pool.powerset,selector D≠0 ∧ fixedPoint b C E old D=x := by
+  rw [activeFixedSource_eq_image]
+  simp only [Finset.mem_image,Finset.mem_filter]
+  aesop
+
+omit [DecidableEq ι] in
+theorem sum_activeFixedSource {A : Type*} [AddCommMonoid A]
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ) (H : Source ι Jo→A) :
+    ∑ x∈activeFixedSource pool b C E old selector,H x=
+      ∑ D∈pool.powerset.filter (fun D=>selector D≠0),H (fixedPoint b C E old D) := by
+  rw [activeFixedSource_eq_image,Finset.sum_image (fun _ _ _ _ h=>fixedPoint_injective b C E old h)]
+
+variable (p : ι→O) [∀ i,(Ideal.span {p i}).IsMaximal]
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+
+theorem activeFixedSource_valid (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ)
+    (hb : b.Admissible) (hC : Disjoint C b.support) (hE : E⊆C∪b.support)
+    (hold : ∀ D∈pool.powerset,selector D≠0 → ∀ i,(old i).val∣
+      sourceIdeal p b.support*sourceIdeal p C*sourceIdeal p D) :
+    ∀ x∈activeFixedSource pool b C E old selector,SourceValid p x := by
+  intro x hx
+  obtain ⟨D,hD,hs,rfl⟩ := (mem_activeFixedSource pool b C E old selector x).mp hx
+  exact ⟨hb,hC,hE,hold D hD hs⟩
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+theorem activeFixedSource_extra (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ)
+    (extra : CubeCoordinates ι→Finset ι) (he : extra b⊆b.support) :
+    ∀ x∈activeFixedSource pool b C E old selector,extra x.cube⊆x.cube.support := by
+  intro x hx
+  obtain ⟨D,hD,hs,rfl⟩ := (mem_activeFixedSource pool b C E old selector x).mp hx
+  exact he
+
+theorem active_retained_conditions (hp : ∀ i,p i≠0)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ)
+    (hb : b.Admissible) (hC : Disjoint C b.support) (hE : E⊆C∪b.support)
+    (hold : ∀ D∈pool.powerset,selector D≠0 → ∀ i,(old i).val∣
+      sourceIdeal p b.support*sourceIdeal p C*sourceIdeal p D)
+    (extra : CubeCoordinates ι→Finset ι) (he : extra b⊆b.support)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) :
+    ActualSecondSourceConditions p
+      (retainedPool p pool (wholeAssignedParents p (fun x=>extra x.cube)
+        (activeFixedSource pool b C E old selector) negative J lists) R label residual j) :=
+  InverseMomentWholeRetainedSource.retained_conditions p hp extra _
+    (activeFixedSource_valid p pool b C E old selector hb hC hE hold)
+    (activeFixedSource_extra pool b C E old selector extra he) negative J lists pool R label residual j
+
+theorem active_retained_deleted_support
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (selector : Finset ι→ℂ)
+    (hb : b.Admissible) (hC : Disjoint C b.support) (hE : E⊆C∪b.support)
+    (hold : ∀ D∈pool.powerset,selector D≠0 → ∀ i,(old i).val∣
+      sourceIdeal p b.support*sourceIdeal p C*sourceIdeal p D)
+    (extra : CubeCoordinates ι→Finset ι) (he : extra b⊆b.support)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ)
+    (residual : Finset ι) (j : κ) (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx : x∈retainedPool p pool (wholeAssignedParents p (fun x=>extra x.cube)
+      (activeFixedSource pool b C E old selector) negative J lists) R label residual j) :
+    ∀ i∈InverseMomentWholeRetainedSource.deleted p extra negative x,
+      i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal O)∣x.quotient :=
+  InverseMomentWholeRetainedSource.retained_deleted_support p hinj extra _
+    (activeFixedSource_valid p pool b C E old selector hb hC hE hold)
+    (activeFixedSource_extra pool b C E old selector extra he) negative J lists pool R label residual j x hx
+
+variable (hp : ∀ i,p i≠0) (hg : ∀ i,lambda∉Ideal.span {p i})
+
+theorem priorityOuter_zero (b : CubeCoordinates ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (selector : Finset ι→ℂ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (D : Finset ι) (hD : selector D=0) : priorityOuter p hg b negative Ψ m selector r core D=0 := by
+  simp only [priorityOuter,hD,norm_zero,mul_zero,zero_mul]
+
+def wholePriorityPoisson (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E extra : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : ℝ→ℂ) (X t Y : ℝ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex) (D : Finset ι) : ℂ :=
+  firstFreshSecondPoisson p hp hg hinj pool D b.support
+    (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit negative
+    (if negative then r.1 else r.2) Ψ m
+    (fun U=>primeMark (slots\J)
+      (fun i=>lists i\((extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)) a U)
+    om X (∏ i∈C,p i) ((∏ i ∈ E,p i)) core t Y
+
+theorem parentPoisson_fixed_whole (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E extra D : Finset ι)
+    (old : Fin Jo→InverseInitialFibers.PrimeIdeal) (negative : Bool)
+    (Ψ : O→*ℂ) (m : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : ℝ→ℂ) (X t Y : ℝ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex) :
+    parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra) a om X t Y r core
+      (parent p (fixedPoint b C E old D)) =
+    wholePriorityPoisson p hp hg hinj pool b C E extra negative Ψ m slots J lists a om X t Y r core D := by
+  have hl : residualLists p negative (fun i=>lists i\extra)
+      (parent p (fixedPoint b C E old D)) =
+      (fun i=>lists i\((extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)) := by
+    funext i
+    unfold residualLists
+    rw [quotientSupport_parent p hinj]
+    change (lists i\extra)\(((if negative then b.rightDivisor else b.leftDivisor)∪C)∪D)=_
+    ext k
+    simp only [Finset.mem_sdiff,Finset.mem_union]
+    tauto
+  unfold parentPoisson wholePriorityPoisson
+  rw [quotientSupport_parent p hinj,hl]
+  rfl
+
+variable (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+
+include hcop in
+theorem whole_priority_complex_slice [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (extra : CubeCoordinates ι→Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots J : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (selector : Finset ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ) :
+    (∑ D∈pool.powerset,(priorityOuter p hg b negative Ψ m selector r core D:ℂ)*
+      (‖primeMark J lists a ((extra b∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)‖^2:ℝ)*
+      wholePriorityPoisson p hp hg hinj pool b C E (extra b) negative Ψ m slots J lists a om X t Y r core D) =
+    ∑ y∈wholeAssignedParents p (fun x=>extra x.cube) (activeFixedSource pool b C E old selector) negative J lists,
+      coefficient p J a (fun x=>(priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)) y *
+        fullPhysical p hp hg hinj extra pool negative Ψ m slots J lists a
+          (principalWindow om lo hi hlo hs negative t) X Y r core R label y := by
+  let H (D : Finset ι) : ℂ := (priorityOuter p hg b negative Ψ m selector r core D:ℂ)*
+    (‖primeMark J lists a ((extra b∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)‖^2:ℝ)*
+    wholePriorityPoisson p hp hg hinj pool b C E (extra b) negative Ψ m slots J lists a om X t Y r core D
+  have hfilter : ∑ D∈pool.powerset,H D=∑ D∈pool.powerset.filter (fun D=>selector D≠0),H D := by
+    rw [Finset.sum_filter]
+    apply Finset.sum_congr rfl
+    intro D hD
+    by_cases hn : selector D≠0
+    · rw [if_pos hn]
+    · have hz : selector D=0 := not_ne_iff.mp hn
+      simp only [if_neg hn,H,priorityOuter_zero p hg b negative Ψ m selector r core D hz,
+        Complex.ofReal_zero,zero_mul]
+  calc
+    _ = ∑ D∈pool.powerset.filter (fun D=>selector D≠0),H D := hfilter
+    _ = ∑ x∈activeFixedSource pool b C E old selector,
+        (priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)*
+        (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+        parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube) a om X t Y r core (parent p x) := by
+      rw [sum_activeFixedSource]
+      apply Finset.sum_congr rfl
+      intro D hD
+      rw [parentPoisson_fixed_whole p hp hg hinj]
+      simp only [H,fixedPoint,wholeExtractedSupport,extractedSupport,Finset.union_assoc]
+    _ = _ := whole_signed_source_full p hp hcop hg hinj hc hpr extra pool _ _ negative Ψ m slots J lists a
+      om lo hi hlo hs X t Y hX hY r core R label
+
+include hcop in
+theorem whole_priority_real_slice [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (extra : CubeCoordinates ι→Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots J : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (selector : Finset ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ) :
+    (∑ D∈pool.powerset,priorityOuter p hg b negative Ψ m selector r core D*
+      ‖primeMark J lists a ((extra b∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)‖^2*
+      (wholePriorityPoisson p hp hg hinj pool b C E (extra b) negative Ψ m slots J lists a om X t Y r core D).re) =
+    (∑ y∈wholeAssignedParents p (fun x=>extra x.cube) (activeFixedSource pool b C E old selector) negative J lists,
+      coefficient p J a (fun x=>(priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)) y *
+        fullPhysical p hp hg hinj extra pool negative Ψ m slots J lists a
+          (principalWindow om lo hi hlo hs negative t) X Y r core R label y).re := by
+  have h := congrArg Complex.re (whole_priority_complex_slice p hp hg hcop hinj hc hpr pool b C E
+    extra old negative Ψ m slots J lists a selector om lo hi hlo hs X t Y hX hY r core R label)
+  simpa only [Complex.re_sum,Complex.mul_re,Complex.mul_im,Complex.ofReal_re,
+    Complex.ofReal_im,mul_zero,zero_mul,sub_zero,add_zero] using h
+
+include hcop in
+theorem whole_priority_energy_reassembly [Fintype κ]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr : ∀ i,lambda^2∣p i-1)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C E : Finset ι)
+    (extra : CubeCoordinates ι→Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (selector : Finset ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ) :
+    firstWholePrioritySecondEnergy p hp hg hinj pool b C (extra b) negative Ψ m
+      ((∏ i ∈ E,p i)) slots lists a selector om X t Y =
+    firstCoreMassBound*(2:ℝ)^slots.card * ∑ r : RayCharacter×RayCharacter,
+      ∑ core : FirstCoreIndex,∑ J∈slots.powerset,
+        (∑ y∈wholeAssignedParents p (fun x=>extra x.cube) (activeFixedSource pool b C E old selector) negative J lists,
+          coefficient p J a (fun x=>(priorityOuter p hg b negative Ψ m selector r core x.quotientSupport:ℂ)) y *
+            fullPhysical p hp hg hinj extra pool negative Ψ m slots J lists a
+              (principalWindow om lo hi hlo hs negative t) X Y r core R label y).re := by
+  simp_rw [←whole_priority_real_slice p hp hg hcop hinj hc hpr pool b C E extra old negative Ψ m slots
+    _ lists a selector om lo hi hlo hs X t Y hX hY _ _ R label]
+  unfold firstWholePrioritySecondEnergy
+  dsimp only
+  congr 1
+  apply Finset.sum_congr rfl
+  intro r hr
+  simp only [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro core hcore
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro J hJ
+  apply Finset.sum_congr rfl
+  intro D hD
+  unfold priorityOuter wholePriorityPoisson
+  ring
+
+end InverseWholePriorityValidSource
+
+end
+
+noncomputable section
+namespace InverseWholePriorityRetainedSource
+open Eisenstein SecondPassArithmetic FirstPassCubeLabels
+open InverseMoment InverseInitialArithmetic InverseFirstPriorityParents InversePrioritySecondSource
+open InverseMomentWholePriorityParents InverseMomentWholePriorityPhysical
+open InverseWholePriorityValidSource RayFourExpansion InversePrincipalEnergy InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ κ : Type*} [DecidableEq ι] [DecidableEq σ] [DecidableEq κ]
+variable {Jo : ℕ} (p : ι→O) [∀ i,(Ideal.span {p i}).IsMaximal]
+
+def unifiedSource (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ) :
+    Finset (MarkedSecondSource ι Jo 0) :=
+  attachedSecondFamily parents (fun y=>secondExpansionPool pool
+    (fun G E=>(secondVariableCutoff p y (R y) G E).erase 0))
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+theorem mem_unifiedSource (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ) (x : MarkedSecondSource ι Jo 0) :
+    x∈unifiedSource p pool parents R ↔ secondParentOf x∈parents ∧
+      x.second.sourceCommon⊆pool ∧ x.second.divisor⊆x.second.sourceCommon ∧
+      x.second.overlap⊆pool ∧ x.second.frequency∈nonzeroChildFrequencyBall
+        (actualSecondMultiplier p x) (R (secondParentOf x) x.second.sourceCommon x.second.divisor) := by
+  rw [unifiedSource,mem_attachedSecondFamily,mem_secondExpansionPool]
+  rfl
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+theorem unified_frequency_ne_zero (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ) (x : MarkedSecondSource ι Jo 0)
+    (hx : x∈unifiedSource p pool parents R) : x.second.frequency≠0 :=
+  (Finset.mem_erase.mp ((mem_unifiedSource p pool parents R x).mp hx).2.2.2.2).1
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+
+theorem unified_mem_sector
+    (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (x : MarkedSecondSource ι Jo 0) (hx : x∈unifiedSource p pool parents R) :
+    x∈retainedPool p pool parents R label (x.second.sourceCommon\x.second.divisor)
+      (label (secondParentOf x) (x.second.sourceCommon\x.second.divisor) x.second) := by
+  obtain ⟨hy,hz⟩ := (mem_attachedSecondFamily _ _ x).mp hx
+  apply (mem_retainedPool p _ _ _ _ _ _ x).mpr
+  exact ⟨hy,Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨hz,rfl⟩,rfl⟩⟩
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+
+theorem sectors_sum [Fintype κ]
+    (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (H : MarkedSecondSource ι Jo 0→ℂ) :
+    (∑ residual∈pool.powerset,∑ j : κ,∑ x∈retainedPool p pool parents R label residual j,H x)=
+      ∑ x∈unifiedSource p pool parents R,H x := by
+  simp only [retainedPool,unifiedSource,sum_attachedSecondFamily]
+  rw [Finset.sum_comm]
+  conv_lhs => arg 2; ext j; rw [Finset.sum_comm]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro y hy
+  rw [Finset.sum_comm]
+  simp_rw [sum_secondDyadicSector]
+  exact sum_secondExpansionSector pool _ _
+
+omit [∀ i,(Ideal.span {p i}).IsMaximal] in
+
+theorem parent_retained_sum [Fintype κ]
+    (pool : Finset ι) (parents : Finset (SecondParentSource ι Jo))
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ)
+    (w : SecondParentSource ι Jo→ℂ) (H : MarkedSecondSource ι Jo 0→ℂ) :
+    (∑ y∈parents,w y*(∑ residual∈pool.powerset,∑ j : κ,
+      ∑ x∈(secondDyadicSector pool (secondVariableCutoff p y (R y)) residual (label y) j).image
+        (attachSecondExpansion y),H x)) =
+      ∑ x∈unifiedSource p pool parents R,w (secondParentOf x)*H x := by
+  simp_rw [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  conv_lhs => arg 2; ext residual; rw [Finset.sum_comm]
+  simp_rw [←Finset.mul_sum,retained_sum]
+  exact sectors_sum p pool parents R label _
+
+theorem unified_conditions (hp : ∀ i,p i≠0)
+    (extra : CubeCoordinates ι→Finset ι) (source : Finset (Source ι Jo))
+    (hs : ∀ x∈source,SourceValid p x) (he : ∀ x∈source,extra x.cube⊆x.cube.support)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι) (pool : Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ) :
+    ActualSecondSourceConditions p (unifiedSource p pool
+      (wholeAssignedParents p (fun x=>extra x.cube) source negative J lists) R) := by
+  apply whole_assigned_family_conditions p hp (fun x=>extra x.cube) source hs he negative J lists
+  intro y hy x hx
+  exact ((mem_secondExpansionPool _ _ x).mp hx).2.1
+
+theorem unified_deleted_support
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (source : Finset (Source ι Jo))
+    (hs : ∀ x∈source,SourceValid p x) (he : ∀ x∈source,extra x.cube⊆x.cube.support)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι) (pool : Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx : x∈unifiedSource p pool (wholeAssignedParents p (fun x=>extra x.cube)
+      source negative J lists) R) :
+    ∀ i∈InverseMomentWholeRetainedSource.deleted p extra negative x,
+      i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal O)∣x.quotient := by
+  exact InverseMomentWholeRetainedSource.retained_deleted_support p hinj extra source hs he
+    negative J lists pool R (fun _ _ _=>()) _ () x
+    (unified_mem_sector p pool _ R (fun _ _ _=>()) x hx)
+
+omit [DecidableEq σ] [∀ i,(Ideal.span {p i}).IsMaximal] in
+
+theorem deleted_lists (extra : CubeCoordinates ι→Finset ι) (negative : Bool)
+    (lists : σ→Finset ι) (x : MarkedSecondSource ι Jo 0) :
+    residualLists p negative (fun i=>lists i\extra x.cube) (secondParentOf x)=
+      fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x := by
+  funext i
+  ext k
+  simp only [residualLists,InverseMomentWholeRetainedSource.deleted,Finset.mem_sdiff,Finset.mem_union]
+  tauto
+
+def wholeRow (hp : ∀ i,p i≠0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg : ∀ i,lambda∉Ideal.span {p i})
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (V : ℝ→ℂ) (X Y : ℝ) (ray : SecondRayIndex) (x : MarkedSecondSource ι Jo 0) : ℂ :=
+  retainedRow p hg pool negative Ψ m slots J (fun i=>lists i\extra x.cube) a V X Y ray x
+
+theorem wholeRow_eq (hp : ∀ i,p i≠0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg : ∀ i,lambda∉Ideal.span {p i})
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (V : ℝ→ℂ) (X Y : ℝ) (ray : SecondRayIndex) (x : MarkedSecondSource ι Jo 0) :
+    wholeRow p hp hcop hg extra pool negative Ψ m slots J lists a V X Y ray x =
+      actualSecondSignedWeight p hg Ψ
+        (m*cubicIdealGenerator x.quotient) ray x *
+      actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m ray)
+        (slots\J) (slots\J)
+        (fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x)
+        (fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x)
+        a a V V rowMajorant Y X := by
+  unfold wholeRow retainedRow
+  rw [deleted_lists]
+
+theorem whole_retained_sum [Fintype κ] (hp : ∀ i,p i≠0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg : ∀ i,lambda∉Ideal.span {p i})
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (parents : Finset (SecondParentSource ι Jo)) (w : SecondParentSource ι Jo→ℂ)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots J : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (V : ℝ→ℂ) (X Y : ℝ)
+    (R : SecondParentSource ι Jo→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι Jo→Finset ι→SecondExpansionData ι→κ) :
+    (∑ y∈parents,w y*(∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+      (Y:ℂ)*secondRayCoefficient ray *
+        ∑ x∈(secondDyadicSector pool (secondVariableCutoff p y (R y)) residual (label y) j).image
+          (attachSecondExpansion y),
+          retainedRow p hg pool negative Ψ m slots J (fun i=>lists i\extra y.cube)
+            a V X Y ray x)) =
+    ∑ ray : SecondRayIndex,(Y:ℂ)*secondRayCoefficient ray *
+      ∑ x∈unifiedSource p pool parents R,w (secondParentOf x)*
+        wholeRow p hp hcop hg extra pool negative Ψ m slots J lists a V X Y ray x := by
+  have hrow (y : SecondParentSource ι Jo) (ray : SecondRayIndex) (residual : Finset ι) (j : κ) :
+      (∑ x∈(secondDyadicSector pool (secondVariableCutoff p y (R y)) residual (label y) j).image
+          (attachSecondExpansion y),
+          retainedRow p hg pool negative Ψ m slots J (fun i=>lists i\extra y.cube)
+            a V X Y ray x) =
+      ∑ x∈(secondDyadicSector pool (secondVariableCutoff p y (R y)) residual (label y) j).image
+          (attachSecondExpansion y),
+          wholeRow p hp hcop hg extra pool negative Ψ m slots J lists a V X Y ray x := by
+    apply Finset.sum_congr rfl
+    intro x hx
+    obtain ⟨z,hz,rfl⟩ := Finset.mem_image.mp hx
+    rfl
+  simp_rw [hrow,Finset.mul_sum]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro ray hray
+  simp_rw [←Finset.mul_sum]
+  simp_rw [mul_left_comm _ ((Y:ℂ)*secondRayCoefficient ray),←Finset.mul_sum]
+  congr 1
+  exact parent_retained_sum p pool parents R label w _
+
+def activeParents (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (b : CubeCoordinates ι) (C E : Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector : Finset ι→ℂ) (negative : Bool) (J : Finset σ) (lists : σ→Finset ι) :=
+  wholeAssignedParents p (fun x=>extra x.cube)
+    (activeFixedSource pool b C E old selector) negative J lists
+
+theorem active_conditions (hp : ∀ i,p i≠0)
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (b : CubeCoordinates ι) (C E : Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector : Finset ι→ℂ) (hb : b.Admissible) (hC : Disjoint C b.support) (hE : E⊆C∪b.support)
+    (hold : ∀ D∈pool.powerset,selector D≠0 → ∀ i,(old i).val∣
+      sourceIdeal p b.support*sourceIdeal p C*sourceIdeal p D)
+    (he : extra b⊆b.support) (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ) :
+    ActualSecondSourceConditions p (unifiedSource p pool
+      (activeParents p extra pool b C E old selector negative J lists) R) :=
+  unified_conditions p hp extra _ (activeFixedSource_valid p pool b C E old selector hb hC hE hold)
+    (activeFixedSource_extra pool b C E old selector extra he) negative J lists pool R
+
+theorem active_deleted_support
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (b : CubeCoordinates ι) (C E : Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector : Finset ι→ℂ) (hb : b.Admissible) (hC : Disjoint C b.support) (hE : E⊆C∪b.support)
+    (hold : ∀ D∈pool.powerset,selector D≠0 → ∀ i,(old i).val∣
+      sourceIdeal p b.support*sourceIdeal p C*sourceIdeal p D)
+    (he : extra b⊆b.support) (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx : x∈unifiedSource p pool (activeParents p extra pool b C E old selector negative J lists) R) :
+    ∀ i∈InverseMomentWholeRetainedSource.deleted p extra negative x,
+      i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal O)∣x.quotient :=
+  unified_deleted_support p hinj extra _
+    (activeFixedSource_valid p pool b C E old selector hb hC hE hold)
+    (activeFixedSource_extra pool b C E old selector extra he) negative J lists pool R x hx
+
+def coefficientBound : ℝ := 1 + (∑ χ : RayCharacter, ∑ η : RayCharacter, ‖crossCoeff χ η‖) * firstCoreMassBound
+
+theorem coefficientBound_pos : 0<coefficientBound := by
+  have hm := firstCoreMassBound_nonneg
+  unfold coefficientBound
+  positivity
+
+variable (hg : ∀ i,lambda∉Ideal.span {p i})
+
+theorem priorityOuter_norm (b : CubeCoordinates ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (selector : Finset ι→ℂ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex) (D : Finset ι)
+    (hselector : ‖selector D‖≤1) (hΨ : ‖Ψ (∏ i∈D,p i)‖≤1) :
+    ‖(priorityOuter p hg b negative Ψ m selector r core D:ℂ)‖≤ coefficientBound := by
+  let B : ℝ := ∑ χ : RayCharacter, ∑ η : RayCharacter, ‖crossCoeff χ η‖
+  have hB : 0 ≤ B := Finset.sum_nonneg (fun _ _ => Finset.sum_nonneg (fun _ _ => norm_nonneg _))
+  have hr : ‖crossCoeff r.1 r.2‖ ≤ B :=
+    (Finset.single_le_sum (fun j _ => norm_nonneg (crossCoeff r.1 j)) (Finset.mem_univ r.2)).trans
+      (Finset.single_le_sum (fun j _ => Finset.sum_nonneg (fun k _ => norm_nonneg (crossCoeff j k)))
+        (Finset.mem_univ r.1))
+  have hc : ‖firstCoreOuter p hg b.support (fun i => b.leftExponent i+b.rightExponent i)
+      b.leftBit b.rightBit negative Ψ m D core‖ ≤ firstCoreMassBound :=
+    (Finset.single_le_sum (fun c _ => norm_nonneg (firstCoreOuter p hg b.support
+      (fun i => b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit negative Ψ m D c))
+      (Finset.mem_univ core)).trans
+      (firstCoreOuter_mass p hg b.support _ b.leftBit b.rightBit negative Ψ m D hΨ)
+  rw [Complex.norm_real,Real.norm_of_nonneg (by unfold priorityOuter; positivity)]
+  unfold priorityOuter
+  have hh := mul_le_mul ((mul_le_of_le_one_right (norm_nonneg _) hselector).trans hr) hc
+    (norm_nonneg _) hB
+  exact hh.trans (le_add_of_nonneg_left zero_le_one)
+
+def sourceWeight (b : CubeCoordinates ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (selector : Finset ι→ℂ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (J : Finset σ) (a : σ→ι→ℂ) (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0) : ℂ :=
+  coefficient p J a (fun original=>(priorityOuter p hg b negative Ψ m selector r core
+    original.quotientSupport:ℂ)) (secondParentOf x)
+
+theorem sourceWeight_norm
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (b : CubeCoordinates ι) (C E : Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector : Finset ι→ℂ) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (ha : ∀ i∈J,∀ k∈lists i,‖a i k‖≤1)
+    (hselector : ∀ D∈pool.powerset,‖selector D‖≤1)
+    (hΨ : ∀ D∈pool.powerset,selector D≠0 → ‖Ψ (∏ i∈D,p i)‖≤1)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx : x∈unifiedSource p pool (activeParents p extra pool b C E old selector negative J lists) R) :
+    ‖sourceWeight p hg b negative Ψ m selector r core J a x‖≤ coefficientBound := by
+  apply InverseMomentWholeRetainedSource.whole_coefficient_norm p hinj (fun x=>extra x.cube)
+    (activeFixedSource pool b C E old selector) negative J lists a _ coefficientBound ha
+  · intro y hy
+    obtain ⟨D,hD,hs,rfl⟩ := (mem_activeFixedSource pool b C E old selector y).mp hy
+    exact priorityOuter_norm p hg b negative Ψ m selector r core D (hselector D hD) (hΨ D hD hs)
+  · exact ((mem_unifiedSource p pool _ R x).mp hx).1
+
+def normalizedWeight (b : CubeCoordinates ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (selector : Finset ι→ℂ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (J : Finset σ) (a : σ→ι→ℂ) (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0) : ℂ :=
+  sourceWeight p hg b negative Ψ m selector r core J a x/(coefficientBound:ℂ)
+
+theorem normalizedWeight_norm
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (b : CubeCoordinates ι) (C E : Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector : Finset ι→ℂ) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (ha : ∀ i∈J,∀ k∈lists i,‖a i k‖≤1)
+    (hselector : ∀ D∈pool.powerset,‖selector D‖≤1)
+    (hΨ : ∀ D∈pool.powerset,selector D≠0 → ‖Ψ (∏ i∈D,p i)‖≤1)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (x : MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx : x∈unifiedSource p pool (activeParents p extra pool b C E old selector negative J lists) R) :
+    ‖normalizedWeight p hg b negative Ψ m selector r core J a x‖≤1 := by
+  rw [normalizedWeight,norm_div,Complex.norm_real,Real.norm_of_nonneg coefficientBound_pos.le]
+  exact (div_le_one coefficientBound_pos).mpr
+    (sourceWeight_norm p hg hinj extra pool b C E old selector negative Ψ m r core J lists a
+      ha hselector hΨ R x hx)
+
+omit [DecidableEq σ] in
+
+theorem source_sum_normalized
+    (b : CubeCoordinates ι) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (selector : Finset ι→ℂ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (J : Finset σ) (a : σ→ι→ℂ) (source : Finset (MarkedSecondSource ι (Jo+(J.card+J.card)) 0))
+    (H : MarkedSecondSource ι (Jo+(J.card+J.card)) 0→ℂ) :
+    (∑ x∈source,sourceWeight p hg b negative Ψ m selector r core J a x*H x)=
+      (coefficientBound:ℂ)*∑ x∈source,normalizedWeight p hg b negative Ψ m selector r core J a x*H x := by
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro x hx
+  unfold normalizedWeight
+  have hc : (coefficientBound:ℂ)≠0 := by exact_mod_cast coefficientBound_pos.ne'
+  field_simp
+
+theorem fullPhysical_unified [Fintype κ] (hp : ∀ i,p i≠0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (parents : Finset (SecondParentSource ι Jo)) (w : SecondParentSource ι Jo→ℂ)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots J : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (V : 𝓢(ℝ,ℂ)) (X Y : ℝ)
+    (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (R : Finset ι→Finset ι→ℝ) (label : Finset ι→SecondExpansionData ι→κ) :
+    let Ψ₀ := firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+    let H := fun y : SecondParentSource ι Jo=>markedRadial p (slots\J)
+      (residualLists p negative (fun i=>lists i\extra y.cube) y) a ∅ V X
+    let K := fun y : SecondParentSource ι Jo=>secondVariableCutoff p y R
+    (∑ y∈parents,w y*fullPhysical p hp hg hinj extra pool negative Ψ m slots J lists a
+      V X Y r core R label y) =
+      (∑ y∈parents,w y*truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+        (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)) +
+      (∑ ray : SecondRayIndex,(Y:ℂ)*secondRayCoefficient ray *
+        ∑ x∈unifiedSource p pool parents (fun _=>R),w (secondParentOf x)*
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots J lists a V X Y ray x) +
+      (∑ y∈parents,w y*secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+        (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)) := by
+  intro Ψ₀ H K
+  simp only [fullPhysical,mul_add,Finset.sum_add_distrib]
+  rw [whole_retained_sum p hp hcop hg extra pool parents w negative Ψ₀ m slots J lists a
+    V X Y (fun _=>R) (fun _=>label)]
+
+theorem actual_retained_normalized [Fintype κ] (hp : ∀ i,p i≠0)
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι)
+    (b : CubeCoordinates ι) (C E : Finset ι) (old : Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector : Finset ι→ℂ) (negative : Bool) (Ψ : O→*ℂ) (m : O)
+    (r : RayCharacter×RayCharacter) (core : FirstCoreIndex)
+    (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (V : ℝ→ℂ) (X Y : ℝ)
+    (R : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (label : SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→SecondExpansionData ι→κ) :
+    let parents := activeParents p extra pool b C E old selector negative J lists
+    let Ψ₀ := firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+    (∑ y∈parents,
+      coefficient p J a (fun original=>(priorityOuter p hg b negative Ψ m selector r core
+        original.quotientSupport:ℂ)) y *
+      (∑ ray : SecondRayIndex,∑ residual∈pool.powerset,∑ j : κ,
+        (Y:ℂ)*secondRayCoefficient ray *
+          ∑ x∈(secondDyadicSector pool (secondVariableCutoff p y (R y)) residual (label y) j).image
+            (attachSecondExpansion y),
+            retainedRow p hg pool negative Ψ₀ m slots J (fun i=>lists i\extra y.cube)
+              a V X Y ray x)) =
+    (coefficientBound:ℂ)*(∑ ray : SecondRayIndex,(Y:ℂ)*secondRayCoefficient ray *
+      ∑ x∈unifiedSource p pool parents R,normalizedWeight p hg b negative Ψ m selector r core J a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots J lists a V X Y ray x) := by
+  intro parents Ψ₀
+  rw [whole_retained_sum p hp hcop hg extra pool parents _ negative Ψ₀ m slots J lists a V X Y R label]
+  change (∑ ray : SecondRayIndex,(Y:ℂ)*secondRayCoefficient ray *
+      ∑ x∈unifiedSource p pool parents R,sourceWeight p hg b negative Ψ m selector r core J a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots J lists a V X Y ray x)=_
+  simp_rw [source_sum_normalized]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro ray hray
+  ring
+
+end InverseWholePriorityRetainedSource
+
+end
+
+noncomputable section
+namespace InverseMoment
+open Eisenstein SecondPassArithmetic FirstPassCubeLabels RayFourExpansion
+open InverseFirstPriorityParents InverseMomentWholePriorityParents InverseWholePriorityRetainedSource
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ] {Jo:ℕ}
+variable (p:ι→O)[∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+def globalPriorityOuter (negative:Bool)(Ψ:O→*ℂ)(m:O)
+    (ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)(w:Source ι Jo→ℂ)(x:Source ι Jo):ℂ:=
+  w x*(priorityOuter p hg x.cube negative Ψ m (fun _=>1) ray core x.quotientSupport:ℂ)
+
+def globalPriorityWeight (negative:Bool)(Ψ:O→*ℂ)(m:O)
+    (ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)(w:Source ι Jo→ℂ)
+    (J:Finset σ)(a:σ→ι→ℂ)(x:MarkedSecondSource ι (Jo+(J.card+J.card)) 0):ℂ:=
+  coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w) (secondParentOf x)
+
+def normalizedGlobalPriorityWeight (negative:Bool)(Ψ:O→*ℂ)(m:O)
+    (ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)(w:Source ι Jo→ℂ)
+    (J:Finset σ)(a:σ→ι→ℂ)(x:MarkedSecondSource ι (Jo+(J.card+J.card)) 0):ℂ:=
+  globalPriorityWeight p hg negative Ψ m ray core w J a x/(coefficientBound:ℂ)
+
+theorem globalPriorityWeight_norm
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι)(original:Finset (Source ι Jo))(pool:Finset ι)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)
+    (w:Source ι Jo→ℂ)(hw:∀x∈original,‖w x‖≤1)(hΨ:∀u,‖Ψ u‖≤1)
+    (J:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)(ha:∀i∈J,∀k∈lists i,‖a i k‖≤1)
+    (R:SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (x:MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx:x∈unifiedSource p pool (wholeAssignedParents p (fun x=>extra x.cube) original negative J lists) R):
+    ‖globalPriorityWeight p hg negative Ψ m ray core w J a x‖≤ coefficientBound:=by
+  apply InverseMomentWholeRetainedSource.whole_coefficient_norm p hinj (fun x=>extra x.cube)
+    original negative J lists a _ coefficientBound ha
+  · intro y hy
+    rw [globalPriorityOuter,norm_mul]
+    have hn:=priorityOuter_norm p hg y.cube negative Ψ m (fun _=>1) ray core y.quotientSupport
+      (by simp) (hΨ _)
+    exact (mul_le_mul (hw y hy) hn (norm_nonneg _) zero_le_one).trans_eq (one_mul _)
+  · exact ((mem_unifiedSource p pool _ R x).mp hx).1
+
+theorem normalizedGlobalPriorityWeight_norm
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι)(original:Finset (Source ι Jo))(pool:Finset ι)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)
+    (w:Source ι Jo→ℂ)(hw:∀x∈original,‖w x‖≤1)(hΨ:∀u,‖Ψ u‖≤1)
+    (J:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)(ha:∀i∈J,∀k∈lists i,‖a i k‖≤1)
+    (R:SecondParentSource ι (Jo+(J.card+J.card))→Finset ι→Finset ι→ℝ)
+    (x:MarkedSecondSource ι (Jo+(J.card+J.card)) 0)
+    (hx:x∈unifiedSource p pool (wholeAssignedParents p (fun x=>extra x.cube) original negative J lists) R):
+    ‖normalizedGlobalPriorityWeight p hg negative Ψ m ray core w J a x‖≤1:=by
+  rw [normalizedGlobalPriorityWeight,norm_div,Complex.norm_real,Real.norm_of_nonneg coefficientBound_pos.le]
+  exact (div_le_one coefficientBound_pos).mpr
+    (globalPriorityWeight_norm p hg hinj extra original pool negative Ψ m ray core w hw hΨ J lists a ha R x hx)
+
+omit [DecidableEq σ] in
+theorem globalPriority_sum_normalized
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)
+    (w:Source ι Jo→ℂ)(J:Finset σ)(a:σ→ι→ℂ)
+    (source:Finset (MarkedSecondSource ι (Jo+(J.card+J.card)) 0))
+    (H:MarkedSecondSource ι (Jo+(J.card+J.card)) 0→ℂ):
+    (∑x∈source,globalPriorityWeight p hg negative Ψ m ray core w J a x*H x)=
+      (coefficientBound:ℂ)*∑x∈source,normalizedGlobalPriorityWeight p hg negative Ψ m ray core w J a x*H x:=by
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro x hx
+  unfold normalizedGlobalPriorityWeight
+  have hn:(coefficientBound:ℂ)≠0:=by exact_mod_cast coefficientBound_pos.ne'
+  field_simp
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers InverseInitialArithmetic
+open InverseWholePriorityRetainedSource RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem global_priority_retained_moving_radius
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (original:Finset (InverseFirstPriorityParents.Source ι Jo))
+    (_hvalid:∀x∈original,InverseFirstPriorityParents.SourceValid p x)
+    (_hextra:∀x∈original,extra x.cube⊆x.cube.support)
+    (w:InverseFirstPriorityParents.Source ι Jo→ℂ) (_hw:∀x∈original,‖w x‖≤1)
+    (Ψ:Eis→*ℂ) (m:Eis) (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (cutoff:SecondParentSource ι (Jo+(assigned.card+assigned.card))→Finset ι→Finset ι→ℝ)
+,
+    let source:=unifiedSource p pool
+      (InverseMomentWholePriorityParents.wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists) cutoff
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    ∀(z:SecondRayIndex)
+        (Y:ℝ) (R:BlockIndex→ℝ) (L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀i∈assigned,∀k∈lists i,‖a i k‖≤1) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) (R (index p x))) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo+(assigned.card+assigned.card) ≤ 2*K → (slots\assigned).card ≤ K → (slots\assigned).card ≤ K → 0 ≤ A →
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) →
+      X=Z^(r-Acol-Bfirst-tcount) → L=eta*Real.log Z →
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) →
+      2≤ Z → 1≤ b → b≤ Z^(6*eta) →
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) →
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₁) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₂) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      ‖(Y:ℂ)*secondRayCoefficient z *
+        ∑x∈source,globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x‖ ≤
+      C*A*‖secondRayCoefficient z‖*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,Cbin,hC,hCbin,he⟩:=
+    actual_priority_retained_moving_radius (ι:=ι) (σ:=σ) om rowMajorant lo hi hlo hsupport negative
+      caps hcaps B₀ hB₀ J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,coefficientBound*C,Cbin,mul_nonneg coefficientBound_pos.le hC,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo extra pool original hvalid hextra w hwOriginal
+    Ψ m ray core slots assigned lists a cutoff source Ψ₀ z
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A
+    haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+    ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have hsource:ActualSecondSourceConditions p source:=
+    unified_conditions p hp extra original hvalid hextra negative assigned lists pool cutoff
+  have hd:∀x∈source,∀i∈InverseMomentWholeRetainedSource.deleted p extra negative x,
+      i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient:=
+    unified_deleted_support p hinj extra original hvalid hextra negative assigned lists pool cutoff
+  have hw:∀x∈source,‖normalizedGlobalPriorityWeight p hg negative Ψ m ray core w assigned a x‖≤1:=
+    fun x hx=>normalizedGlobalPriorityWeight_norm p hg hinj extra original pool negative Ψ m ray core w hwOriginal hΨ
+      assigned lists a haassigned cutoff x hx
+  have hΨ₀:∀n,‖Ψ₀ n‖≤1:=fun n=>(firstCoreTwist_norm_le negative (if negative then ray.1 else ray.2)
+    Ψ core n).trans (hΨ n)
+  have he₀:=he p hp hcop hg hpr hinj hc source hsource pool Ψ₀ m z (slots\assigned) (slots\assigned)
+    lists lists a a (InverseMomentWholeRetainedSource.deleted p extra negative)
+    (InverseMomentWholeRetainedSource.deleted p extra negative)
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t
+    (normalizedGlobalPriorityWeight p hg negative Ψ m ray core w assigned a) labels A
+    hd hd hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ₀ hw
+    ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have hrow:∀x:MarkedSecondSource ι (Jo+(assigned.card+assigned.card)) 0,wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+      (principalWindow om lo hi hlo hsupport negative t) X Y z x=
+      actualSecondSignedWeight p hg Ψ₀ (m*cubicIdealGenerator x.quotient) z x*
+      actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ₀ m z)
+        (slots\assigned) (slots\assigned)
+        (fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x)
+        (fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x) a a
+        (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t)
+        rowMajorant Y X:=fun x=>wholeRow_eq p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a _ X Y z x
+  rw [globalPriority_sum_normalized p hg negative Ψ m ray core w assigned a source]
+  rw [show (Y:ℂ)*secondRayCoefficient z*((coefficientBound:ℂ)*
+      ∑x∈source,normalizedGlobalPriorityWeight p hg negative Ψ m ray core w assigned a x*
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+          (principalWindow om lo hi hlo hsupport negative t) X Y z x)=
+      (coefficientBound:ℂ)*((Y:ℂ)*secondRayCoefficient z*
+        ∑x∈source,normalizedGlobalPriorityWeight p hg negative Ψ m ray core w assigned a x*
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x) by ring]
+  rw [norm_mul,Complex.norm_real,Real.norm_of_nonneg coefficientBound_pos.le]
+  simp_rw [hrow,←mul_assoc]
+  convert mul_le_mul_of_nonneg_left he₀ coefficientBound_pos.le using 1 <;> first | rfl | ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open Eisenstein SecondPassArithmetic FirstPassCubeLabels RayFourExpansion
+open InverseFirstPriorityParents InverseMomentWholePriorityParents InverseWholePriorityRetainedSource
+open InverseMomentWholePriorityPhysical InversePrioritySecondSource InversePrincipalEnergy InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ] {Jo:ℕ}
+variable (p:ι→O)(hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+  (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem global_priority_physical_source
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (O⧸Ideal.span {p i})≠2)
+    (hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)(original:Finset (Source ι Jo))
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)
+    (w:Source ι Jo→ℂ)(slots J:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ))(lo hi:ℝ)(hlo:0<lo)(hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ)(hX:0<X)(hY:0<Y)(R:Finset ι→Finset ι→ℝ):
+    let parents:=wholeAssignedParents p (fun x=>extra x.cube) original negative J lists
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    let V:=principalWindow om lo hi hlo hs negative t
+    let H:=fun y:SecondParentSource ι (Jo+(J.card+J.card))=>markedRadial p (slots\J)
+      (residualLists p negative (fun i=>lists i\extra y.cube) y) a ∅ V X
+    let K:=fun y:SecondParentSource ι (Jo+(J.card+J.card))=>secondVariableCutoff p y R
+    let coeff:=coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w)
+    (∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube)
+        a om X t Y ray core (parent p x))=
+    (∑y∈parents,coeff y*truncatedSecondZero p hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y))+
+    (∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z*
+      ∑x∈unifiedSource p pool parents (fun _=>R),globalPriorityWeight p hg negative Ψ m ray core w J a x*
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots J lists a V X Y z x)+
+    (∑y∈parents,coeff y*secondSourceTail p hp hg pool Ψ₀ (secondParentPuncture p m y)
+      (secondParentLabel p y) (secondParentDivisor p y) (H y) rowMajorant Y (K y)):=by
+  intro parents Ψ₀ V H K coeff
+  rw [whole_signed_source_full p hp hcop hg hinj hc hpr extra pool original
+    (globalPriorityOuter p hg negative Ψ m ray core w) negative Ψ m slots J lists a
+    om lo hi hlo hs X t Y hX hY ray core R (fun _ _=>())]
+  exact fullPhysical_unified p hg hp hcop hinj extra pool parents coeff negative Ψ m slots J lists a
+    V X Y ray core R (fun _ _=>())
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseFirstPriorityParents
+variable {ι:Type*} [DecidableEq ι] {Jo:ℕ}
+def eraseFirstQuotient (x:Source ι Jo):Source ι Jo:= {x with quotientSupport:=∅}
+def fillFirstQuotient (x:Source ι Jo)(D:Finset ι):Source ι Jo:={x with quotientSupport:=D}
+omit [DecidableEq ι] in
+@[simp] theorem erase_fillFirstQuotient (x:Source ι Jo)(D:Finset ι):
+    eraseFirstQuotient (fillFirstQuotient x D)=eraseFirstQuotient x:=rfl
+omit [DecidableEq ι] in
+@[simp] theorem eraseFirstQuotient_eq (x:Source ι Jo)(hx:x.quotientSupport=∅):
+    eraseFirstQuotient x=x:=by cases x;simpa [eraseFirstQuotient] using hx.symm
+
+def globalParentSource (outer:Finset (Source ι Jo))(pool:Finset ι)
+    (selector:Source ι Jo→Finset ι→ℂ):Finset (Source ι Jo):=
+  outer.biUnion (fun x=>(pool.powerset.filter (fun D=>selector x D≠0)).image (fillFirstQuotient x))
+
+omit [DecidableEq ι] in
+theorem sum_globalParentSource {A:Type*}[AddCommMonoid A]
+    (outer:Finset (Source ι Jo))(pool:Finset ι)(selector:Source ι Jo→Finset ι→ℂ)
+    (houter:∀x∈outer,x.quotientSupport=∅)(H:Source ι Jo→A):
+    ∑x∈globalParentSource outer pool selector,H x=
+      ∑x∈outer,∑D∈pool.powerset.filter (fun D=>selector x D≠0),H (fillFirstQuotient x D):=by
+  unfold globalParentSource
+  rw [Finset.sum_biUnion]
+  · apply Finset.sum_congr rfl
+    intro x hx
+    exact Finset.sum_image (fun D hD E hE he=>congrArg Source.quotientSupport he)
+  · intro x hx y hy hxy
+    apply Finset.disjoint_left.mpr
+    intro z hz hz'
+    obtain ⟨D,hD,rfl⟩:=Finset.mem_image.mp hz
+    obtain ⟨E,hE,he⟩:=Finset.mem_image.mp hz'
+    have he':=congrArg eraseFirstQuotient he
+    simp only [erase_fillFirstQuotient,eraseFirstQuotient_eq _ (houter x hx),
+      eraseFirstQuotient_eq _ (houter y hy)] at he'
+    exact hxy he'.symm
+
+omit [DecidableEq ι] in
+theorem mem_globalParentSource
+    (outer:Finset (Source ι Jo))(pool:Finset ι)(selector:Source ι Jo→Finset ι→ℂ)
+    (houter:∀x∈outer,x.quotientSupport=∅)(x:Source ι Jo):
+    x∈globalParentSource outer pool selector ↔
+      eraseFirstQuotient x∈outer ∧ x.quotientSupport⊆pool ∧
+        selector (eraseFirstQuotient x) x.quotientSupport≠0:=by
+  constructor
+  · intro hx
+    obtain ⟨y,hy,hyx⟩:=Finset.mem_biUnion.mp hx
+    obtain ⟨D,hD,rfl⟩:=Finset.mem_image.mp hyx
+    simp only [erase_fillFirstQuotient,eraseFirstQuotient_eq _ (houter y hy)]
+    exact ⟨hy,Finset.mem_powerset.mp (Finset.mem_filter.mp hD).1,(Finset.mem_filter.mp hD).2⟩
+  · rintro ⟨hx,hD,hs⟩
+    apply Finset.mem_biUnion.mpr
+    refine ⟨eraseFirstQuotient x,hx,Finset.mem_image.mpr ⟨x.quotientSupport,?_,?_⟩⟩
+    · exact Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr hD,hs⟩
+    · cases x;rfl
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseFirstPriorityParents InverseMomentWholePriorityParents InverseWholePriorityValidSource
+open InversePrioritySecondSource
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι σ:Type*}[DecidableEq ι][DecidableEq σ]{Jo:ℕ}
+variable (p:ι→O)[∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem global_original_priority_slice
+    (outer:Finset (Source ι Jo))(pool:Finset ι)(selector:Source ι Jo→Finset ι→ℂ)
+    (houter:∀x∈outer,x.quotientSupport=∅)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)
+    (H:Source ι Jo→ℂ):
+    (∑x∈globalParentSource outer pool selector,
+      globalPriorityOuter p hg negative Ψ m ray core
+        (fun x=>(‖selector (eraseFirstQuotient x) x.quotientSupport‖:ℂ)) x*H x)=
+    ∑x∈outer,∑D∈pool.powerset,
+      (priorityOuter p hg x.cube negative Ψ m (selector x) ray core D:ℂ)*H (fillFirstQuotient x D):=by
+  rw [sum_globalParentSource outer pool selector houter]
+  apply Finset.sum_congr rfl
+  intro x hx
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro D hD
+  by_cases hs:selector x D≠0
+  · rw [if_pos hs]
+    simp only [globalPriorityOuter,erase_fillFirstQuotient,eraseFirstQuotient_eq _ (houter x hx)]
+    dsimp only [fillFirstQuotient,priorityOuter]
+    simp only [norm_one,mul_one,Complex.ofReal_mul]
+    ring
+  · rw [if_neg hs,priorityOuter_zero p hg x.cube negative Ψ m (selector x) ray core D (not_ne_iff.mp hs)]
+    simp
+
+theorem global_second_energy_source
+    (hp:∀i,p i≠0)(hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (outer:Finset (Source ι Jo))(pool:Finset ι)(selector:Source ι Jo→Finset ι→ℂ)
+    (houter:∀x∈outer,x.quotientSupport=∅)(extra:CubeCoordinates ι→Finset ι)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (om:ℝ→ℂ)(X t Y:ℝ):
+    (∑x∈outer,firstWholePrioritySecondEnergy p hp hg hinj pool x.cube x.firstCommon
+      (extra x.cube) negative Ψ m ((∏ i ∈ x.firstDivisor,p i))
+      slots lists a (selector x) om X t Y)=
+    firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+      (∑x∈globalParentSource outer pool selector,
+        globalPriorityOuter p hg negative Ψ m ray core
+          (fun x=>(‖selector (eraseFirstQuotient x) x.quotientSupport‖:ℂ)) x*
+        (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+        parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube)
+          a om X t Y ray core (parent p x)).re:=by
+  have hs (ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)(J:Finset σ):
+      (∑x∈globalParentSource outer pool selector,
+        globalPriorityOuter p hg negative Ψ m ray core
+          (fun x=>(‖selector (eraseFirstQuotient x) x.quotientSupport‖:ℂ)) x*
+        (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+        parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube)
+          a om X t Y ray core (parent p x))=
+      ∑x∈outer,∑D∈pool.powerset,(priorityOuter p hg x.cube negative Ψ m (selector x) ray core D:ℂ)*
+        (‖primeMark J lists a ((extra x.cube∪((if negative then x.cube.rightDivisor else x.cube.leftDivisor)∪x.firstCommon))∪D)‖^2:ℝ)*
+        wholePriorityPoisson p hp hg hinj pool x.cube x.firstCommon x.firstDivisor (extra x.cube)
+          negative Ψ m slots J lists a om X t Y ray core D:=by
+    simp_rw [mul_assoc]
+    rw [global_original_priority_slice p hg outer pool selector houter negative Ψ m ray core]
+    apply Finset.sum_congr rfl
+    intro x hx
+    apply Finset.sum_congr rfl
+    intro D hD
+    have hm : wholeExtractedSupport (fun x=>extra x.cube) negative (fillFirstQuotient x D)=
+        ((extra x.cube∪((if negative then x.cube.rightDivisor else x.cube.leftDivisor)∪x.firstCommon))∪D) := by
+      simp only [wholeExtractedSupport,extractedSupport,fillFirstQuotient,Finset.union_assoc]
+    rw [hm]
+    have hf : fillFirstQuotient x D = fixedPoint x.cube x.firstCommon x.firstDivisor x.oldAssigned D := by
+      cases x;rfl
+    rw [hf]
+    change (priorityOuter p hg x.cube negative Ψ m (selector x) ray core D:ℂ)*
+      ((‖primeMark J lists a ((extra x.cube∪((if negative then x.cube.rightDivisor else x.cube.leftDivisor)∪x.firstCommon))∪D)‖^2:ℝ)*
+        parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube)
+          a om X t Y ray core (parent p (fixedPoint x.cube x.firstCommon x.firstDivisor x.oldAssigned D))) = _
+    rw [parentPoisson_fixed_whole p hp hg hinj]
+  simp_rw [hs]
+  simp only [Complex.re_sum,Complex.mul_re,Complex.mul_im,Complex.ofReal_re,Complex.ofReal_im,mul_zero,zero_mul,sub_zero,add_zero]
+  unfold firstWholePrioritySecondEnergy
+  simp only [Finset.mul_sum,wholePriorityPoisson,priorityOuter]
+  rw [Finset.sum_comm (s:=outer)]
+  apply Finset.sum_congr rfl
+  intro ray hray
+  simp_rw [Finset.sum_comm (s:=pool.powerset) (t:=(Finset.univ : Finset FirstCoreIndex))]
+  rw [Finset.sum_comm (s:=outer)]
+  apply Finset.sum_congr rfl
+  intro core hcore
+  simp_rw [Finset.sum_comm (s:=pool.powerset) (t:=slots.powerset)]
+  rw [Finset.sum_comm (s:=outer)]
+  apply Finset.sum_congr rfl
+  intro J hJ
+  apply Finset.sum_congr rfl
+  intro x hx
+  apply Finset.sum_congr rfl
+  intro D hD
+  ring
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseFirstGlobalParents
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open RayFourExpansion InverseMoment
+open InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseWholePriorityValidSource InversePrioritySecondSource
+open InverseInitialArithmetic (sourceIdeal)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+
+def ofOriginal (k : FirstOriginalOuter ι) : Source ι 0 where
+  cube := k.1
+  firstCommon := k.2.1
+  firstDivisor := k.2.2
+  quotientSupport := ∅
+  oldAssigned := Fin.elim0
+
+def toOriginal (x : Source ι 0) : FirstOriginalOuter ι :=
+  ⟨x.cube,⟨x.firstCommon,x.firstDivisor⟩⟩
+
+omit [DecidableEq ι] in
+@[simp] theorem toOriginal_ofOriginal (k : FirstOriginalOuter ι) :
+    toOriginal (ofOriginal k)=k := by cases k with | mk b k => cases k; rfl
+
+omit [DecidableEq ι] in
+@[simp] theorem toOriginal_fill (x : Source ι 0) (D : Finset ι) :
+    toOriginal (fillFirstQuotient x D)=toOriginal x := rfl
+
+omit [DecidableEq ι] in
+theorem ofOriginal_injective : Function.Injective (ofOriginal (ι:=ι)) :=
+  Function.LeftInverse.injective toOriginal_ofOriginal
+
+omit [DecidableEq ι] in
+theorem ofOriginal_toOriginal (x : Source ι 0) :
+    ofOriginal (toOriginal x)=eraseFirstQuotient x := by
+  apply Source.ext <;> try rfl
+  exact funext (fun i=>Fin.elim0 i)
+
+omit [DecidableEq ι] in
+
+theorem fill_ofOriginal_injective : Function.Injective
+    (fun q : FirstOriginalOuter ι × Finset ι=>fillFirstQuotient (ofOriginal q.1) q.2) := by
+  intro x y h
+  apply Prod.ext
+  · simpa only [toOriginal_fill,toOriginal_ofOriginal] using congrArg toOriginal h
+  · exact congrArg Source.quotientSupport h
+
+def originalOuterSource (pool : Finset ι) (Q : Finset (ι→₀ℕ)) : Finset (Source ι 0) :=
+  (firstOriginalOuter pool Q).image ofOriginal
+
+theorem originalOuterSource_empty (pool : Finset ι) (Q : Finset (ι→₀ℕ)) :
+    ∀x∈originalOuterSource pool Q,x.quotientSupport=∅ := by
+  intro x hx
+  obtain ⟨k,hk,rfl⟩:=Finset.mem_image.mp hx
+  rfl
+
+theorem sum_originalOuterSource {A : Type*} [AddCommMonoid A]
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (H : Source ι 0→A) :
+    (∑x∈originalOuterSource pool Q,H x)=∑k∈firstOriginalOuter pool Q,H (ofOriginal k) := by
+  exact Finset.sum_image (fun _ _ _ _ h=>ofOriginal_injective h)
+
+def originalSelector (selector : FirstOriginalOuter ι→Finset ι→ℂ)
+    (x : Source ι 0) (D : Finset ι) : ℂ := selector (toOriginal x) D
+
+omit [DecidableEq ι] in
+@[simp] theorem originalSelector_ofOriginal (selector : FirstOriginalOuter ι→Finset ι→ℂ)
+    (k : FirstOriginalOuter ι) (D : Finset ι) :
+    originalSelector selector (ofOriginal k) D=selector k D := by
+  simp only [originalSelector,toOriginal_ofOriginal]
+
+omit [DecidableEq ι] in
+@[simp] theorem originalSelector_ofOriginal_fun (selector : FirstOriginalOuter ι→Finset ι→ℂ)
+    (k : FirstOriginalOuter ι) : originalSelector selector (ofOriginal k)=selector k :=
+  funext (originalSelector_ofOriginal selector k)
+
+def originalParentSource (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) : Finset (Source ι 0) :=
+  globalParentSource (originalOuterSource pool Q) pool (originalSelector selector)
+
+theorem mem_originalParentSource (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (x : Source ι 0) :
+    x∈originalParentSource pool Q selector ↔
+      ∃k∈firstOriginalOuter pool Q,∃D∈pool.powerset,
+        selector k D≠0 ∧ fillFirstQuotient (ofOriginal k) D=x := by
+  simp only [originalParentSource,globalParentSource,Finset.mem_biUnion,
+    originalOuterSource,Finset.mem_image,Finset.mem_filter]
+  constructor
+  · rintro ⟨y,⟨k,hk,rfl⟩,D,⟨hD,hs⟩,he⟩
+    exact ⟨k,hk,D,hD,by simpa using hs,he⟩
+  · rintro ⟨k,hk,D,hD,hs,he⟩
+    exact ⟨ofOriginal k,⟨k,hk,rfl⟩,D,⟨hD,by simpa using hs⟩,he⟩
+
+theorem original_fill_valid (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (k : FirstOriginalOuter ι) (hk : k∈firstOriginalOuter pool Q) (D : Finset ι) :
+    SourceValid p (fillFirstQuotient (ofOriginal k) D) := by
+  obtain ⟨hb,hC,hE⟩:=(mem_firstOriginalOuter pool Q k).mp hk
+  refine ⟨reopenedCubeFamily_admissible Q k.1 hb,?_,?_,?_⟩
+  · exact Finset.disjoint_left.mpr (fun i hi hiB=>
+      (Finset.mem_sdiff.mp (Finset.mem_powerset.mp hC hi)).2 hiB)
+  · exact (Finset.mem_powerset.mp hE).trans
+      (Finset.union_subset_union_right (Finset.filter_subset _ _))
+  · exact fun i=>Fin.elim0 i
+
+theorem originalParentSource_valid (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) :
+    ∀x∈originalParentSource pool Q selector,SourceValid p x := by
+  intro x hx
+  obtain ⟨k,hk,D,hD,hs,rfl⟩:=(mem_originalParentSource pool Q selector x).mp hx
+  exact original_fill_valid p pool Q k hk D
+
+theorem sum_originalParentSource {A : Type*} [AddCommMonoid A]
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (H : Source ι 0→A) :
+    (∑x∈originalParentSource pool Q selector,H x)=
+      ∑k∈firstOriginalOuter pool Q,∑D∈pool.powerset.filter (fun D=>selector k D≠0),
+        H (fillFirstQuotient (ofOriginal k) D) := by
+  rw [originalParentSource,sum_globalParentSource _ _ _ (originalOuterSource_empty pool Q),
+    sum_originalOuterSource]
+  simp only [originalSelector_ofOriginal]
+
+theorem signed_originalParentSource (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (H : Source ι 0→ℂ) :
+    (∑x∈originalParentSource pool Q selector,selector (toOriginal x) x.quotientSupport*H x)=
+      ∑k∈firstOriginalOuter pool Q,∑D∈pool.powerset,
+        selector k D*H (fillFirstQuotient (ofOriginal k) D) := by
+  rw [sum_originalParentSource]
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro D hD
+  by_cases hs:selector k D=0 <;> simp [toOriginal,ofOriginal,fillFirstQuotient,hs]
+
+theorem real_originalParentSource (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (H : Source ι 0→ℝ) :
+    (∑x∈originalParentSource pool Q selector,‖selector (toOriginal x) x.quotientSupport‖*H x)=
+      ∑k∈firstOriginalOuter pool Q,∑D∈pool.powerset,
+        ‖selector k D‖*H (fillFirstQuotient (ofOriginal k) D) := by
+  rw [sum_originalParentSource]
+  apply Finset.sum_congr rfl
+  intro k hk
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro D hD
+  by_cases hs:selector k D=0 <;> simp [toOriginal,ofOriginal,fillFirstQuotient,hs]
+
+theorem original_supports (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (hQ : ∀v∈Q,v.support⊆pool) (k : FirstOriginalOuter ι)
+    (hk : k∈firstOriginalOuter pool Q) :
+    k.1.leftExponent∈Q ∧ k.1.rightExponent∈Q ∧
+      k.1.support⊆pool ∧ k.2.1⊆pool ∧ k.2.2⊆pool := by
+  obtain ⟨hb,hC,hE⟩:=(mem_firstOriginalOuter pool Q k).mp hk
+  have hb' := (mem_reopenedCubeFamily Q k.1).mp hb
+  have hs := reopenedCubeFamily_support pool Q hQ k.1 hb
+  have hc : k.2.1⊆pool := (Finset.mem_powerset.mp hC).trans Finset.sdiff_subset
+  refine ⟨hb'.1,hb'.2.1,hs,hc,?_⟩
+  exact (Finset.mem_powerset.mp hE).trans (Finset.union_subset hc
+    ((Finset.filter_subset _ _).trans hs))
+
+variable (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+
+theorem original_principal_extra (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) :
+    ∀x∈originalParentSource pool Q selector,
+      cubePrincipalSupport x.cube.support x.cube.leftExponent x.cube.rightExponent
+        x.cube.leftBit x.cube.rightBit ⊆ x.cube.support := by
+  intro x hx
+  exact Finset.filter_subset _ _
+
+omit [DecidableEq ι] [∀i,(Ideal.span {p i}).IsMaximal] in
+
+theorem original_parent_data (k : FirstOriginalOuter ι) (D : Finset ι) :
+    (parent p (fillFirstQuotient (ofOriginal k) D)).cube=k.1 ∧
+    (parent p (fillFirstQuotient (ofOriginal k) D)).firstCommon=k.2.1 ∧
+    (parent p (fillFirstQuotient (ofOriginal k) D)).firstDivisor=k.2.2 ∧
+    (parent p (fillFirstQuotient (ofOriginal k) D)).quotient=sourceIdeal p D :=
+  ⟨rfl,rfl,rfl,rfl⟩
+
+theorem original_assigned_conditions (hp : ∀i,p i≠0)
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (expansion : SecondParentSource ι (0+(J.card+J.card))→Finset (SecondExpansionData ι))
+    (hE : ∀y∈assignedParents p (originalParentSource pool Q selector) negative J lists,
+      ∀x∈expansion y,x.divisor⊆x.sourceCommon) :
+    ActualSecondSourceConditions p (attachedSecondFamily
+      (assignedParents p (originalParentSource pool Q selector) negative J lists) expansion) :=
+  assigned_family_conditions p hp _ (originalParentSource_valid p pool Q selector)
+    negative J lists expansion hE
+
+theorem original_whole_assigned_conditions (hp : ∀i,p i≠0)
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ)
+    (negative : Bool) (J : Finset σ) (lists : σ→Finset ι)
+    (expansion : SecondParentSource ι (0+(J.card+J.card))→Finset (SecondExpansionData ι))
+    (hE : ∀y∈wholeAssignedParents p
+      (fun x=>cubePrincipalSupport x.cube.support x.cube.leftExponent x.cube.rightExponent
+        x.cube.leftBit x.cube.rightBit)
+      (originalParentSource pool Q selector) negative J lists,
+      ∀x∈expansion y,x.divisor⊆x.sourceCommon) :
+    ActualSecondSourceConditions p (attachedSecondFamily
+      (wholeAssignedParents p
+        (fun x=>cubePrincipalSupport x.cube.support x.cube.leftExponent x.cube.rightExponent
+          x.cube.leftBit x.cube.rightBit)
+        (originalParentSource pool Q selector) negative J lists) expansion) :=
+  whole_assigned_family_conditions p hp _ _ (originalParentSource_valid p pool Q selector)
+    (original_principal_extra pool Q selector) negative J lists expansion hE
+
+variable (hg : ∀i,lambda∉Ideal.span {p i})
+
+theorem original_priority_slice
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (ray : RayCharacter×RayCharacter)
+    (core : FirstCoreIndex) (H : Source ι 0→ℂ) :
+    (∑x∈originalParentSource pool Q selector,
+      globalPriorityOuter p hg negative Ψ m ray core
+        (fun x=>(‖selector (toOriginal x) x.quotientSupport‖:ℂ)) x*H x)=
+    ∑k∈firstOriginalOuter pool Q,∑D∈pool.powerset,
+      (priorityOuter p hg k.1 negative Ψ m (selector k) ray core D:ℂ)*
+        H (fillFirstQuotient (ofOriginal k) D) := by
+  have h:=global_original_priority_slice p hg (originalOuterSource pool Q) pool
+    (originalSelector selector) (originalOuterSource_empty pool Q) negative Ψ m ray core H
+  rw [sum_originalOuterSource] at h
+  simp only [originalSelector_ofOriginal_fun] at h
+  simpa only [originalParentSource,originalSelector,toOriginal,eraseFirstQuotient,ofOriginal] using h
+
+theorem original_second_energy_source
+    (hp : ∀i,p i≠0) (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (extra : CubeCoordinates ι→Finset ι)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (om : ℝ→ℂ) (X t Y : ℝ) :
+    (∑k∈firstOriginalOuter pool Q,
+      firstWholePrioritySecondEnergy p hp hg hinj pool k.1 k.2.1 (extra k.1)
+        negative Ψ m ((∏ i ∈ k.2.2,p i))
+        slots lists a (selector k) om X t Y)=
+    firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,
+      ∑J∈slots.powerset,(∑x∈originalParentSource pool Q selector,
+        globalPriorityOuter p hg negative Ψ m ray core
+          (fun x=>(‖selector (toOriginal x) x.quotientSupport‖:ℂ)) x*
+        (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+        parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube)
+          a om X t Y ray core (parent p x)).re := by
+  have h:=global_second_energy_source p hg hp hinj (originalOuterSource pool Q) pool
+    (originalSelector selector) (originalOuterSource_empty pool Q) extra negative Ψ m
+    slots lists a om X t Y
+  rw [sum_originalOuterSource] at h
+  simp only [originalSelector_ofOriginal_fun] at h
+  simpa only [originalParentSource,originalSelector,toOriginal,eraseFirstQuotient,ofOriginal] using h
+
+end InverseFirstGlobalParents
+
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+variable {ι κ : Type*} [DecidableEq ι]
+  (p : ι → Eis) [∀ i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i,lambda ∉ Ideal.span {p i})
+
+theorem first_family_integral_of_two_energies (source : Finset κ) (F : Finset ι)
+    (selector C₁ C₂ : κ → Finset ι → ℂ) (w : κ → ℂ)
+    (omega₁ omega₂ : ℝ → ℂ) (A₁ A₂ C R : κ → ℝ) (d h : κ → Eis)
+    (s : Fin 9 → ℝ) (density : Frequency × (Fin 9 → ℝ) → ℂ)
+    (J : ℕ) (B₁ B₂ : ℝ) (hB₁ : 0 ≤ B₁) (hB₂ : 0 ≤ B₂)
+    (hDensity : Integrable (fun z : Frequency × (Fin 9 → ℝ) =>
+      tripleHeight J z.1*coordinateHeight J z.2*‖density z‖))
+    (hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₁ w true omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) h ≤
+        B₁*(tripleHeight J z.1*coordinateHeight J z.2))
+    (hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₂ w false omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) h ≤
+        B₂*(tripleHeight J z.1*coordinateHeight J z.2)) :
+    ‖∫ z : Frequency × (Fin 9 → ℝ),density z *
+      firstFamilySeparatedRow p hg source F selector C₁ C₂ w omega₁ omega₂ A₁ A₂ C R d h s z‖ ≤
+    (Real.sqrt B₁*Real.sqrt B₂)*∫ z : Frequency × (Fin 9 → ℝ),tripleHeight J z.1*coordinateHeight J z.2*‖density z‖ := by
+  have hb (z : Frequency × (Fin 9 → ℝ)) :
+      ‖firstFamilySeparatedRow p hg source F selector C₁ C₂ w omega₁ omega₂ A₁ A₂ C R d h s z‖ ≤
+      (Real.sqrt B₁*Real.sqrt B₂)*(tripleHeight J z.1*coordinateHeight J z.2) := by
+    apply (first_family_cauchy p hg source F selector C₁ C₂ w omega₁ omega₂ A₁ A₂ C R d h s z).trans
+    have hh := mul_le_mul (Real.sqrt_le_sqrt (hleft z)) (Real.sqrt_le_sqrt (hright z))
+      (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    apply hh.trans_eq
+    rw [Real.sqrt_mul hB₁,Real.sqrt_mul hB₂]
+    calc
+      _=(Real.sqrt B₁*Real.sqrt B₂)*(Real.sqrt (tripleHeight J z.1*coordinateHeight J z.2))^2:=by ring
+      _= _:=by rw [Real.sq_sqrt];unfold tripleHeight coordinateHeight;positivity
+  calc
+    _ ≤ ∫ z : Frequency × (Fin 9 → ℝ),(Real.sqrt B₁*Real.sqrt B₂)*(tripleHeight J z.1*coordinateHeight J z.2*‖density z‖) := by
+      apply norm_integral_le_of_norm_le (hDensity.const_mul _)
+      filter_upwards with z
+      rw [norm_mul]
+      exact (mul_le_mul_of_nonneg_left (hb z) (norm_nonneg _)).trans_eq (by ring)
+    _ = _ := integral_const_mul _ _
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+variable {ι κ : Type*} [DecidableEq ι]
+  (p : ι → Eis) [∀ i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀ i,lambda ∉ Ideal.span {p i})
+
+theorem actual_first_family_two_energies (hp : ∀ i,p i ≠ 0)
+    (source : Finset κ) (F : Finset ι) (selector C₁ C₂ : κ → Finset ι → ℂ) (w : κ → ℂ)
+    (W₁ W₂ omega₁ omega₂ : ℝ → ℂ) (Φ : 𝓢(ℝ,ℂ)) (V : Fin 9 → ℝ → ℂ)
+    (A₁ A₂ C R : κ → ℝ) (K L : ℝ) (d h : κ → Eis) (s : Fin 9 → ℝ)
+    (hpos : ∀ x∈source,0 < A₁ x ∧ 0 < A₂ x ∧ 0 < C x ∧ 0 < R x ∧ d x ≠ 0 ∧ h x ≠ 0)
+    (hs : ∀ i,0 < s i) (density : Frequency × (Fin 9 → ℝ) → ℂ) (hDensity : Integrable density)
+    (hsep : ∀ y : Fin 9 → ℝ,
+      (Real.exp (-(9/2:ℝ)*L):ℂ)*firstPoissonProfile W₁ W₂ Φ V
+        (K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8)) y =
+      ∫ z : Frequency × (Fin 9 → ℝ),density z*
+        pureProfileMode firstLeftSlope firstRightSlope firstKernelSlope y z.1 z.2)
+    (homega₁ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      W₁ (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7)) ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) = 1)
+    (homega₂ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      W₂ (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8)) ≠ 0 →
+      omega₂ (primeProductNorm p j.2.2.2/s 8) = 1)
+    (hcut : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) ≠ 0 → omega₂ (primeProductNorm p j.2.2.2/s 8) ≠ 0 →
+      ∀ i,V i (firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j) s i) = 1)
+    (J : ℕ) (B₁ B₂ : ℝ) (hB₁ : 0 ≤ B₁) (hB₂ : 0 ≤ B₂)
+    (hWeighted : Integrable (fun z : Frequency × (Fin 9 → ℝ) =>
+      tripleHeight J z.1*coordinateHeight J z.2*‖density z‖))
+    (hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₁ w true omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) h ≤
+        B₁*(tripleHeight J z.1*coordinateHeight J z.2))
+    (hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₂ w false omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) h ≤
+        B₂*(tripleHeight J z.1*coordinateHeight J z.2)) :
+    ‖firstFamilyPhysicalRows p hg source F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s‖ ≤
+      (Real.exp ((9/2:ℝ)*L)/firstRootScale s)*
+        ((Real.sqrt B₁*Real.sqrt B₂)*∫ z : Frequency × (Fin 9 → ℝ),tripleHeight J z.1*coordinateHeight J z.2*‖density z‖) := by
+  have he := actual_first_balanced_family p hg hp source F selector C₁ C₂ w
+    W₁ W₂ omega₁ omega₂ Φ V A₁ A₂ C R K L d h s hpos hs density hDensity hsep homega₁ homega₂ hcut
+  have hb := first_family_integral_of_two_energies p hg source F selector C₁ C₂ w omega₁ omega₂ A₁ A₂ C R d h s
+    density J B₁ B₂ hB₁ hB₂ hWeighted hleft hright
+  have hn := congrArg norm he
+  conv_lhs at hn => rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _)]
+  conv_rhs at hn => rw [norm_mul,norm_inv,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (firstRootScale_pos s hs)]
+  have hexp : Real.exp ((9/2:ℝ)*L)*Real.exp (-(9/2:ℝ)*L) = 1 := by
+    rw [←Real.exp_add]
+    ring_nf
+    exact Real.exp_zero
+  have hn' := congrArg (fun a : ℝ => Real.exp ((9/2:ℝ)*L)*a) hn
+  rw [←mul_assoc,hexp,one_mul] at hn'
+  rw [←mul_assoc,←div_eq_mul_inv] at hn'
+  rw [hn']
+  exact mul_le_mul_of_nonneg_left hb (by have := firstRootScale_pos s hs; positivity)
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+open InverseMomentFirstProfileUniform InverseAmbientProfileTower
+variable {ι κ : Type*} [DecidableEq ι]
+theorem actual_first_moving_family_two_energies
+    (U₀ : Fin 9 → 𝓢(ℝ,ℂ)) (g₁ g₂ Φ : 𝓢(ℝ,ℂ))
+    (M₀ B₀ : Fin 9 → ℝ) (m₁ m₂ bcap : ℝ)
+    (hM : ∀ i,0 ≤ M₀ i) (hB₀ : ∀ i,0 ≤ B₀ i)
+    (hU : ∀ i,Function.support (U₀ i) ⊆ Set.Icc (-M₀ i) (M₀ i))
+    (hg₁ : Function.support g₁ ⊆ Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂ ⊆ Set.Icc (-m₂) m₂) (Aker J : ℕ) :
+    ∃ Cprofile : ℝ,0 ≤ Cprofile ∧ ∀ (p : ι → Eis) (_hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (source : Finset κ) (F : Finset ι) (selector C₁ C₂ : κ → Finset ι → ℂ) (w : κ → ℂ)
+    (omega₁ omega₂ : ℝ → ℂ) (ρ : Fin 9 → ℝ) (c₁ c₂ θ₁ θ₂ : ℝ)
+    (A₁ A₂ C R : κ → ℝ) (K L : ℝ) (_hK : 0 < K) (d h : κ → Eis) (s : Fin 9 → ℝ)
+    (_hpos : ∀ x∈source,0 < A₁ x ∧ 0 < A₂ x ∧ 0 < C x ∧ 0 < R x ∧ d x ≠ 0 ∧ h x ≠ 0)
+    (_hs : ∀ i,0 < s i)
+    (_hρ : ∀ i,|ρ i| ≤ B₀ i) (_hc₁ : 1 ≤ c₁) (_hc₂ : 1 ≤ c₂)
+    (_hc₁b : c₁ ≤ bcap) (_hc₂b : c₂ ≤ bcap) (_hL : 0 ≤ L)
+    (_homega₁ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      (positiveSource g₁ c₁ θ₁) (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7)) ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) = 1)
+    (_homega₂ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      (positiveSource g₂ c₂ θ₂) (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8)) ≠ 0 →
+      omega₂ (primeProductNorm p j.2.2.2/s 8) = 1)
+    (_hcut : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) ≠ 0 → omega₂ (primeProductNorm p j.2.2.2/s 8) ≠ 0 →
+      ∀ i,U₀ i ((firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j) s i)+ρ i) = 1)
+    (B₁ B₂ : ℝ) (_hB₁ : 0 ≤ B₁) (_hB₂ : 0 ≤ B₂)
+    (_hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₁ w true omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) h ≤
+        B₁*(tripleHeight J z.1*coordinateHeight J z.2))
+    (_hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₂ w false omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) h ≤
+        B₂*(tripleHeight J z.1*coordinateHeight J z.2)),
+    ‖firstFamilyPhysicalRows p hg source F selector C₁ C₂ w (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) Φ A₁ A₂ C R K d h s‖ ≤
+      (Real.exp ((9/2:ℝ)*L)/firstRootScale s)*
+        ((Real.sqrt B₁*Real.sqrt B₂)*(Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+          (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker)) := by
+  obtain ⟨Cprofile,hCprofile,hmeasure⟩ := InverseMomentFirstProfileUniform.first_profile_common_measure
+    U₀ g₁ g₂ Φ M₀ B₀ m₁ m₂ bcap hM hB₀ hU hg₁ hg₂ Aker J
+  refine ⟨Cprofile,hCprofile,?_⟩
+  intro p hp _ hg source F selector C₁ C₂ w omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂
+    A₁ A₂ C R K L hK d h s hpos hs hρ hc₁ hc₂ hc₁b hc₂b hL
+    homega₁ homega₂ hcut B₁ B₂ hB₁ hB₂ hleft hright
+  have hRad : 0 < K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8) := by
+    exact div_pos (mul_pos hK (hs 6))
+      (mul_pos (mul_pos (mul_pos (mul_pos (hs 3) (hs 4)) (sq_pos_of_pos (hs 5))) (hs 7)) (hs 8))
+  obtain ⟨b₃,hb₃⟩ := hmeasure (K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8)) hRad
+  obtain ⟨hsep,hWeighted,hMoment⟩ := hb₃ ρ c₁ c₂ θ₁ θ₂ L hρ hc₁ hc₂ hc₁b hc₂b hL
+  let g := fun i => rooted (U₀ i) (M₀ i) (InverseClippingProfiles.firstBalancedSlope i) (hU i)
+  let f₁ := rooted g₁ m₁ (-(1/2:ℝ)) hg₁
+  let f₂ := rooted g₂ m₂ (-(1/2:ℝ)) hg₂
+  let den := density g f₁ f₂ b₃ ρ c₁ c₂ θ₁ θ₂ L
+  have hden : Integrable den := first_balanced_density_integrable g f₁ f₂ b₃ ρ c₁ c₂ θ₁ θ₂ L
+  have he := actual_first_family_two_energies p hg hp source F selector C₁ C₂ w
+    (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) omega₁ omega₂ Φ (fun i y => U₀ i (y+ρ i))
+    A₁ A₂ C R K L d h s hpos hs den hden hsep homega₁ homega₂ hcut
+    J B₁ B₂ hB₁ hB₂ hWeighted hleft hright
+  have hd : (∫ z : Frequency × (Fin 9 → ℝ),tripleHeight J z.1*coordinateHeight J z.2*‖den z‖) ≤
+      Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+        (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+        (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker := by
+    apply (le_div_iff₀ (pow_pos (by linarith : 0 < 1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8)) Aker)).mpr
+    exact (mul_comm _ _).le.trans hMoment
+  exact he.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hd (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)))
+    (by have := firstRootScale_pos s hs; positivity))
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+open InverseMomentFirstProfileUniform InverseAmbientProfileTower
+variable {ι : Type*} [DecidableEq ι]
+theorem actual_first_retained_two_energies (ε : ℝ) (hε : 0<ε)
+    (U₀ : Fin 9 → 𝓢(ℝ,ℂ)) (g₁ g₂ Φ : 𝓢(ℝ,ℂ))
+    (M₀ B₀ : Fin 9 → ℝ) (m₁ m₂ bcap : ℝ)
+    (hM : ∀ i,0 ≤ M₀ i) (hB₀ : ∀ i,0 ≤ B₀ i)
+    (hU : ∀ i,Function.support (U₀ i) ⊆ Set.Icc (-M₀ i) (M₀ i))
+    (hg₁ : Function.support g₁ ⊆ Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂ ⊆ Set.Icc (-m₂) m₂) (Aker J : ℕ) :
+    ∃ Cprofile Kpush : ℝ,0 ≤ Cprofile ∧ 0<Kpush ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (_hc : ∀ i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (_hpr : ∀ i,lambda^2∣p i-1)
+    (F : Finset ι) (b : SecondPassArithmetic.CubeCoordinates ι) (common : Finset ι)
+    (Ψ₁ Ψ₂ : Eis→*ℂ) (mleft mright dd : Eis) (H₁ H₂ selector : Finset ι→ℂ)
+    (labels : Finset (Ideal Eis)) (a : Ideal Eis×Eis→ℂ) (Γ Y : ℝ)
+    (_hΨ₁ : ∀ u,‖Ψ₁ u‖≤1) (_hΨ₂ : ∀ u,‖Ψ₂ u‖≤1)
+    (_hΓ : 0≤Γ) (_hY : 0<Y)
+    (_hlabels : ∀ f∈labels,Squarefree f) (_hn : ∀ f∈labels,f≠0)
+    (_ha : ∀ x∈firstRetainedSource p labels b Y,‖a x‖≤Γ)
+    (omega₁ omega₂ : ℝ → ℂ) (ρ : Fin 9 → ℝ) (c₁ c₂ θ₁ θ₂ : ℝ)
+    (A₁ A₂ C R : Ideal Eis×Eis → ℝ) (K L : ℝ) (_hK : 0<K) (s : Fin 9→ℝ)
+    (_hs : ∀ i,0<s i),
+    let source := firstRetainedSource p labels b Y
+    let C₁ := firstCanonicalCoefficient p hg b common true Ψ₁ mleft dd H₁
+    let C₂ := firstCanonicalCoefficient p hg b common false Ψ₂ mright dd H₂
+    let w := retainedCubeWeight p hp hg b common Ψ₁ Ψ₂ mleft mright dd a
+    ∀ (_hpos : ∀ x∈source,0<A₁ x ∧ 0<A₂ x ∧ 0<C x ∧ 0<R x ∧ dd≠0 ∧ x.2≠0)
+    (_hρ : ∀ i,|ρ i| ≤ B₀ i) (_hc₁ : 1 ≤ c₁) (_hc₂ : 1 ≤ c₂)
+    (_hc₁b : c₁ ≤ bcap) (_hc₂b : c₂ ≤ bcap) (_hL : 0 ≤ L)
+    (_homega₁ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2 j ≠ 0 →
+      (positiveSource g₁ c₁ θ₁) (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7)) ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) = 1)
+    (_homega₂ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2 j ≠ 0 →
+      (positiveSource g₂ c₂ θ₂) (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8)) ≠ 0 →
+      omega₂ (primeProductNorm p j.2.2.2/s 8) = 1)
+    (_hcut : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2 j ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) ≠ 0 → omega₂ (primeProductNorm p j.2.2.2/s 8) ≠ 0 →
+      ∀ i,U₀ i ((firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) dd x.2 j) s i)+ρ i) = 1)
+    (B₁ B₂ : ℝ) (_hB₁ : 0 ≤ B₁) (_hB₂ : 0 ≤ B₂)
+    (_hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstCanonicalSecondEnergy p hp hg hinj F b common true Ψ₁ mleft dd H₁ selector omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) Y ≤
+        B₁*(tripleHeight J z.1*coordinateHeight J z.2))
+    (_hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstCanonicalSecondEnergy p hp hg hinj F b common false Ψ₂ mright dd H₂ selector omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) Y ≤
+        B₂*(tripleHeight J z.1*coordinateHeight J z.2)),
+    ‖firstFamilyPhysicalRows p hg source F (fun _=>selector) C₁ C₂ w (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) Φ A₁ A₂ C R K (fun _=>dd) Prod.snd s‖ ≤
+      (Real.exp ((9/2:ℝ)*L)/firstRootScale s)*
+        ((Γ*Kpush*Y^ε*(Real.sqrt B₁*Real.sqrt B₂))*(Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+          (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker)) := by
+  obtain ⟨Cprofile,hCprofile,hprofile⟩ := actual_first_moving_family_two_energies (ι := ι) (κ := Ideal Eis×Eis)
+    U₀ g₁ g₂ Φ M₀ B₀ m₁ m₂ bcap hM hB₀ hU hg₁ hg₂ Aker J
+  obtain ⟨Kpush,hKpush,hpush⟩ := first_retained_actual_second_energy ε hε
+  refine ⟨Cprofile,Kpush,hCprofile,hKpush,?_⟩
+  intro p hp _ hg hinj hcop hc hpr F b common Ψ₁ Ψ₂ mleft mright dd H₁ H₂ selector labels a Γ Y
+    hΨ₁ hΨ₂ hΓ hY hlabels hn ha omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂ A₁ A₂ C R K L hK s hs
+    source C₁ C₂ w hpos hρ hc₁ hc₂ hc₁b hc₂b hL homega₁ homega₂ hcut B₁ B₂ hB₁ hB₂ hleft hright
+  have hweight : 0≤Γ*Kpush*Y^ε := by positivity
+  have hroot:Real.sqrt (Γ*Kpush*Y^ε*B₁)*Real.sqrt (Γ*Kpush*Y^ε*B₂)=Γ*Kpush*Y^ε*(Real.sqrt B₁*Real.sqrt B₂):=by
+    rw [Real.sqrt_mul hweight,Real.sqrt_mul hweight]
+    calc
+      _=(Real.sqrt (Γ*Kpush*Y^ε))^2*(Real.sqrt B₁*Real.sqrt B₂):=by ring
+      _= _:=by rw [Real.sq_sqrt hweight]
+  rw [←hroot]
+  apply hprofile p hp hg source F (fun _=>selector) C₁ C₂ w omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂
+    A₁ A₂ C R K L hK (fun _=>dd) Prod.snd s hpos hs hρ hc₁ hc₂ hc₁b hc₂b hL
+    homega₁ homega₂ hcut (Γ*Kpush*Y^ε*B₁) (Γ*Kpush*Y^ε*B₂) (mul_nonneg hweight hB₁) (mul_nonneg hweight hB₂)
+  · intro z
+    have he := hpush p hp hinj hcop hg hc hpr F b common Ψ₁ Ψ₂ hΨ₁ hΨ₂ mleft mright dd
+      labels a Γ Y hΓ hY hlabels hn ha true H₁ selector omega₁ (s 7)
+      (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) (hs 7)
+    apply he.trans
+    simpa only [mul_assoc,ite_true,ite_false,Bool.false_eq_true] using mul_le_mul_of_nonneg_left (hleft z) hweight
+  · intro z
+    have he := hpush p hp hinj hcop hg hc hpr F b common Ψ₁ Ψ₂ hΨ₁ hΨ₂ mleft mright dd
+      labels a Γ Y hΓ hY hlabels hn ha false H₂ selector omega₂ (s 8)
+      (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) (hs 8)
+    apply he.trans
+    simpa only [mul_assoc,ite_true,ite_false,Bool.false_eq_true] using mul_le_mul_of_nonneg_left (hright z) hweight
+
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMomentFirstChildWindows
+open InverseMoment InverseMomentFirstProfileUniform
+open InverseSecondChildWindows
+
+theorem fresh_three_window (g : 𝓢(ℝ,ℂ)) (m bcap : ℝ)
+    (lo hi : Fin 3→ℝ) (hm : 0≤ m)
+    (hg : Function.support g⊆Set.Icc (-m) m)
+    (hlo : ∀i,0<lo i) (hhi : ∀i,lo i≤ hi i) :
+    ∃(w : 𝓢(ℝ,ℂ))(a b : ℝ),0<a ∧ a≤ b ∧ HasCompactSupport (w : ℝ→ℂ) ∧
+      tsupport (w : ℝ→ℂ)⊆Set.Icc a b ∧
+      ∀(c θ u v r n : ℝ),1≤ c → c≤ bcap →
+        u∈Set.Icc (lo 0) (hi 0) → v∈Set.Icc (lo 1) (hi 1) → r∈Set.Icc (lo 2) (hi 2) →
+        0<n → positiveSource g c θ (u*v*r*n)≠0 → w n=1 := by
+  let R := m+Real.log bcap
+  let a := Real.exp (-R)/(hi 0*hi 1*hi 2)
+  let b := Real.exp R/(lo 0*lo 1*lo 2)
+  have hhip (i : Fin 3) : 0<hi i := (hlo i).trans_le (hhi i)
+  have hh0 := hhip 0
+  have hh1 := hhip 1
+  have hh2 := hhip 2
+  have hl0 := hlo 0
+  have hl1 := hlo 1
+  have hl2 := hlo 2
+  have ha : 0<a := by dsimp [a];positivity
+  have hb : 0<b := by dsimp [b];positivity
+  obtain ⟨w,hwc,hwone,hws⟩ := InverseSecondChildWindows.positive_cutoff a (a+b+1) ha (by linarith)
+  refine ⟨w,a/2,a+b+2,half_pos ha,by linarith,hwc,by convert hws using 1; ring_nf,?_⟩
+  intro c θ u v r n hc hcb hu hv hr hn hnz
+  have hu0 := (hlo 0).trans_le hu.1
+  have hv0 := (hlo 1).trans_le hv.1
+  have hr0 := (hlo 2).trans_le hr.1
+  have hs := positiveSource_ratio_support g m bcap c θ (u*v*r*n) hm hg hc hcb (by positivity) hnz
+  have hnlo : a≤ n := by
+    apply (div_le_iff₀ (by positivity : 0<hi 0*hi 1*hi 2)).mpr
+    calc
+      _ ≤ u*v*r*n := hs.1
+      _ ≤ (hi 0*hi 1*hi 2)*n := mul_le_mul_of_nonneg_right
+        (mul_le_mul (mul_le_mul hu.2 hv.2 hv0.le (hhip 0).le) hr.2 hr0.le (by positivity)) hn.le
+      _ = _ := by ring
+  have hnhi : n≤ b := by
+    apply (le_div_iff₀ (by positivity : 0<lo 0*lo 1*lo 2)).mpr
+    calc
+      _ = (lo 0*lo 1*lo 2)*n := by ring
+      _ ≤ u*v*r*n := mul_le_mul_of_nonneg_right
+        (mul_le_mul (mul_le_mul hu.1 hv.1 (hlo 1).le hu0.le) hr.1 (hlo 2).le (by positivity)) hn.le
+      _ ≤ _ := hs.2
+  exact hwone n ⟨hnlo,by linarith⟩
+
+def outerIndex (i : Fin 7) : Fin 9 := i.castLE (by decide)
+
+theorem fixed_windows (g₁ g₂ : 𝓢(ℝ,ℂ)) (m₁ m₂ bcap : ℝ)
+    (lo hi : Fin 7→ℝ) (Bρ : Fin 9→ℝ)
+    (hm₁ : 0≤ m₁) (hm₂ : 0≤ m₂)
+    (hg₁ : Function.support g₁⊆Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂⊆Set.Icc (-m₂) m₂)
+    (hlo : ∀i,0<lo i) (hhi : ∀i,lo i≤ hi i) (hBρ : ∀i,0≤ Bρ i) :
+    ∃(w₁ w₂ : 𝓢(ℝ,ℂ))(U : Fin 9→𝓢(ℝ,ℂ))(M : Fin 9→ℝ)(a b : ℝ),
+      0<a ∧ a≤ b ∧ HasCompactSupport (w₁ : ℝ→ℂ) ∧ HasCompactSupport (w₂ : ℝ→ℂ) ∧
+      tsupport (w₁ : ℝ→ℂ)⊆Set.Icc a b ∧ tsupport (w₂ : ℝ→ℂ)⊆Set.Icc a b ∧
+      (∀i,0≤ M i) ∧ (∀i,HasCompactSupport (U i : ℝ→ℂ)) ∧
+      (∀i,Function.support (U i)⊆Set.Icc (-M i) (M i)) ∧
+      (∀(c θ u v r n : ℝ),1≤ c → c≤ bcap →
+        u∈Set.Icc (lo 0) (hi 0) → v∈Set.Icc (lo 2) (hi 2) → r∈Set.Icc (lo 5) (hi 5) →
+        0<n → positiveSource g₁ c θ (u*v*r*n)≠0 → w₁ n=1) ∧
+      (∀(c θ u v r n : ℝ),1≤ c → c≤ bcap →
+        u∈Set.Icc (lo 1) (hi 1) → v∈Set.Icc (lo 2) (hi 2) → r∈Set.Icc (lo 5) (hi 5) →
+        0<n → positiveSource g₂ c θ (u*v*r*n)≠0 → w₂ n=1) ∧
+      (∀(q ρ : Fin 9→ℝ),(∀i,|ρ i|≤ Bρ i) →
+        (∀i : Fin 7,q (outerIndex i)∈Set.Icc (lo i) (hi i)) →
+        w₁ (q 7)≠0 → w₂ (q 8)≠0 → ∀i,U i (Real.log (q i)+ρ i)=1) := by
+  let left : Fin 3→Fin 7 := ![0,2,5]
+  let right : Fin 3→Fin 7 := ![1,2,5]
+  obtain ⟨w₁,a₁,b₁,ha₁,hab₁,hwc₁,hws₁,hfresh₁⟩ := fresh_three_window g₁ m₁ bcap
+    (lo ∘ left) (hi ∘ left) hm₁ hg₁ (fun i=>hlo (left i)) (fun i=>hhi (left i))
+  obtain ⟨w₂,a₂,b₂,ha₂,hab₂,hwc₂,hws₂,hfresh₂⟩ := fresh_three_window g₂ m₂ bcap
+    (lo ∘ right) (hi ∘ right) hm₂ hg₂ (fun i=>hlo (right i)) (fun i=>hhi (right i))
+  let l : Fin 9→ℝ := ![lo 0,lo 1,lo 2,lo 3,lo 4,lo 5,lo 6,a₁,a₂]
+  let u : Fin 9→ℝ := ![hi 0,hi 1,hi 2,hi 3,hi 4,hi 5,hi 6,b₁,b₂]
+  have hl (i : Fin 9) : 0<l i := by
+    fin_cases i
+    · exact hlo 0
+    · exact hlo 1
+    · exact hlo 2
+    · exact hlo 3
+    · exact hlo 4
+    · exact hlo 5
+    · exact hlo 6
+    · exact ha₁
+    · exact ha₂
+  let H (i : Fin 9) := |Real.log (l i)|+|Real.log (u i)|+Bρ i
+  have hH (i : Fin 9) : 0≤ H i := by dsimp [H];exact add_nonneg (add_nonneg (abs_nonneg _) (abs_nonneg _)) (hBρ i)
+  choose V hVc hVs hVone hVsupport hVzero using
+    fun i : Fin 9=>JointLogSeparation.exists_complex_smooth_cutoff (H i) (hH i)
+  let U (i : Fin 9) : 𝓢(ℝ,ℂ) := (hVc i).toSchwartzMap (hVs i)
+  refine ⟨w₁,w₂,U,(fun i=>H i+1),min a₁ a₂,max b₁ b₂,lt_min ha₁ ha₂,
+    (min_le_left _ _).trans (hab₁.trans (le_max_left _ _)),hwc₁,hwc₂,?_,?_,
+    (fun i=>by linarith [hH i]),hVc,(fun i=>(subset_tsupport _).trans (hVsupport i)),hfresh₁,hfresh₂,?_⟩
+  · intro x hx
+    exact ⟨(min_le_left _ _).trans (hws₁ hx).1,(hws₁ hx).2.trans (le_max_left _ _)⟩
+  · intro x hx
+    exact ⟨(min_le_right _ _).trans (hws₂ hx).1,(hws₂ hx).2.trans (le_max_right _ _)⟩
+  · intro q ρ hρ hblock hw₁ hw₂ i
+    have hq (k : Fin 9) : q k∈Set.Icc (l k) (u k) := by
+      fin_cases k
+      · exact hblock 0
+      · exact hblock 1
+      · exact hblock 2
+      · exact hblock 3
+      · exact hblock 4
+      · exact hblock 5
+      · exact hblock 6
+      · exact hws₁ (subset_tsupport _ hw₁)
+      · exact hws₂ (subset_tsupport _ hw₂)
+    exact hVone i _ (translated_log_bound _ _ _ _ _ (hl i) (hq i) (hρ i))
+
+end InverseMomentFirstChildWindows
+end
+
+noncomputable section
+namespace InverseMomentFirstChildWindows
+open InverseMoment InverseMomentFirstProfileUniform Eisenstein
+open FirstPassCubeLabels RayFourExpansion
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def actualOuterRatios {ι : Type*} (p : ι→O) (A₁ A₂ C R : ℝ) (d h : O)
+    (j : FirstCommonIndex ι) (s : Fin 9→ℝ) (i : Fin 7) : ℝ :=
+  firstCommonNorms p A₁ A₂ C R d h j (outerIndex i)/s (outerIndex i)
+
+theorem actual_first_child_windows (g₁ g₂ : 𝓢(ℝ,ℂ)) (m₁ m₂ bcap : ℝ)
+    (lo hi : Fin 7→ℝ) (Bρ : Fin 9→ℝ)
+    (hm₁ : 0≤ m₁) (hm₂ : 0≤ m₂)
+    (hg₁ : Function.support g₁⊆Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂⊆Set.Icc (-m₂) m₂)
+    (hlo : ∀i,0<lo i) (hhi : ∀i,lo i≤ hi i) (hBρ : ∀i,0≤ Bρ i) :
+    ∃(w₁ w₂ : 𝓢(ℝ,ℂ))(U₀ : Fin 9→𝓢(ℝ,ℂ))(M₀ : Fin 9→ℝ)(a b : ℝ),
+      0<a ∧ a≤ b ∧ HasCompactSupport (w₁ : ℝ→ℂ) ∧ HasCompactSupport (w₂ : ℝ→ℂ) ∧
+      tsupport (w₁ : ℝ→ℂ)⊆Set.Icc a b ∧ tsupport (w₂ : ℝ→ℂ)⊆Set.Icc a b ∧
+      (∀i,0≤ M₀ i) ∧ (∀i,HasCompactSupport (U₀ i : ℝ→ℂ)) ∧
+      (∀i,Function.support (U₀ i)⊆Set.Icc (-M₀ i) (M₀ i)) ∧
+      ∀{ι κ : Type*}[DecidableEq ι][DecidableEq κ]
+      (p : ι→O)(_hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (source : Finset κ)(F : Finset ι)(selector C₁ C₂ : κ→Finset ι→ℂ)
+      (A₁ A₂ C R : κ→ℝ)(d h : κ→O)(s : Fin 9→ℝ)
+      (ρ : Fin 9→ℝ)(c₁ c₂ θ₁ θ₂ : ℝ),
+      (∀i,0<s i) → (∀i,|ρ i|≤ Bρ i) →
+      1≤ c₁ → c₁≤ bcap → 1≤ c₂ → c₂≤ bcap →
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        ∀i,actualOuterRatios p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j s i∈Set.Icc (lo i) (hi i)) →
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        positiveSource g₁ c₁ θ₁ (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7))≠0 →
+        w₁ (primeProductNorm p j.2.2.1/s 7)=1) ∧
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        positiveSource g₂ c₂ θ₂ (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8))≠0 →
+        w₂ (primeProductNorm p j.2.2.2/s 8)=1) ∧
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        w₁ (primeProductNorm p j.2.2.1/s 7)≠0 → w₂ (primeProductNorm p j.2.2.2/s 8)≠0 →
+        ∀i,U₀ i (firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j) s i+ρ i)=1) := by
+  obtain ⟨w₁,w₂,U,M,a,b,ha,hab,hwc₁,hwc₂,hws₁,hws₂,hM,hUc,hUs,hfresh₁,hfresh₂,hcut⟩ :=
+    fixed_windows g₁ g₂ m₁ m₂ bcap lo hi Bρ hm₁ hm₂ hg₁ hg₂ hlo hhi hBρ
+  refine ⟨w₁,w₂,U,M,a,b,ha,hab,hwc₁,hwc₂,hws₁,hws₂,hM,hUc,hUs,?_⟩
+  intro ι κ _ _ p hp _ hg source F selector C₁ C₂ A₁ A₂ C R d h s ρ c₁ c₂ θ₁ θ₂
+    hs hρ hc₁ hcb₁ hc₂ hcb₂ hblock
+  refine ⟨?_,?_,?_⟩
+  · intro x hx j hj hn hg₁n
+    apply hfresh₁ c₁ θ₁ (A₁ x/s 0) (C x/s 2) (primeProductNorm p j.2.1/s 5) _
+      hc₁ hcb₁ (hblock x hx j hj hn 0) (hblock x hx j hj hn 2) (hblock x hx j hj hn 5)
+      (div_pos (primeProductNorm_pos p hp _) (hs 7))
+    convert hg₁n using 2 ; ring
+  · intro x hx j hj hn hg₂n
+    apply hfresh₂ c₂ θ₂ (A₂ x/s 1) (C x/s 2) (primeProductNorm p j.2.1/s 5) _
+      hc₂ hcb₂ (hblock x hx j hj hn 1) (hblock x hx j hj hn 2) (hblock x hx j hj hn 5)
+      (div_pos (primeProductNorm_pos p hp _) (hs 8))
+    convert hg₂n using 2 ; ring
+  · intro x hx j hj hn hw₁ hw₂ i
+    exact hcut (fun i=>firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j i/s i)
+      ρ hρ (hblock x hx j hj hn) hw₁ hw₂ i
+
+end InverseMomentFirstChildWindows
+end
+
+noncomputable section
+namespace InverseMomentFirstChildWindows
+open InverseMoment Eisenstein FirstPassCubeLabels
+open InverseSecondSourceBlocks (dyadIndex dyadScale dyadScale_pos dyadIndex_bounds)
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+abbrev SourceIndex := Fin 6→ℕ
+
+def sourceNorms {κ : Type*} (A₁ A₂ C R : κ→ℝ) (d h : κ→O) (x : κ) : Fin 6→ℝ :=
+  ![A₁ x,A₂ x,C x,‖ringComplex (d x)‖^2,R x,‖ringComplex (h x)‖^2]
+
+def sourceIndex {κ : Type*} (q : κ→Fin 6→ℝ) (x : κ) : SourceIndex := fun i=>dyadIndex (q x i)
+def sourceKeys {κ : Type*} [DecidableEq κ] (q : κ→Fin 6→ℝ) (S : Finset κ) := S.image (sourceIndex q)
+def sourceCell {κ : Type*} [DecidableEq κ] (q : κ→Fin 6→ℝ) (S : Finset κ) (k : SourceIndex) :=
+  S.filter (fun x=>sourceIndex q x=k)
+
+def commonKeys {ι : Type*} [DecidableEq ι] (p : ι→O) (F : Finset ι) : Finset ℕ :=
+  F.powerset.image (fun D=>dyadIndex (primeProductNorm p D))
+
+def commonSelector {ι : Type*} [DecidableEq ι] (p : ι→O) (selector : Finset ι→ℂ) (l : ℕ) (D : Finset ι) : ℂ :=
+  if dyadIndex (primeProductNorm p D)=l then selector D else 0
+
+def rawScales (k : SourceIndex) (l : ℕ) (T₁ T₂ : ℝ) : Fin 9→ℝ :=
+  ![dyadScale (k 0),dyadScale (k 1),dyadScale (k 2),dyadScale (k 3),dyadScale (k 4),
+    dyadScale l,dyadScale (k 5),T₁,T₂]
+
+lemma rawScales_pos (k : SourceIndex) (l : ℕ) (T₁ T₂ : ℝ) (h₁ : 0<T₁) (h₂ : 0<T₂) :
+    ∀i,0<rawScales k l T₁ T₂ i := by
+  intro i
+  fin_cases i <;> first | exact dyadScale_pos _ | exact h₁ | exact h₂
+
+lemma sourceNorms_ge_one {κ : Type*} (A₁ A₂ C R : κ→ℝ) (d h : κ→O) (x : κ)
+    (hA₁ : 1≤ A₁ x) (hA₂ : 1≤ A₂ x) (hC : 1≤ C x) (hR : 1≤ R x)
+    (hd : d x≠0) (hh : h x≠0) : ∀i,1≤ sourceNorms A₁ A₂ C R d h x i := by
+  intro i
+  fin_cases i
+  · exact hA₁
+  · exact hA₂
+  · exact hC
+  · exact SecondPassArithmetic.element_norm_ge_one _ hd
+  · exact hR
+  · exact SecondPassArithmetic.element_norm_ge_one _ hh
+
+lemma sourceCell_ratios {κ : Type*} [DecidableEq κ] (q : κ→Fin 6→ℝ) (S : Finset κ)
+    (hq : ∀x∈S,∀i,1≤ q x i) (k : SourceIndex) (x : κ) (hx : x∈sourceCell q S k) (i : Fin 6) :
+    q x i/dyadScale (k i)∈Set.Icc 1 2 := by
+  obtain ⟨hxs,hindex⟩ := Finset.mem_filter.mp hx
+  have hh := dyadIndex_bounds (q x i) (hq x hxs i)
+  have he : dyadIndex (q x i)=k i := congrFun hindex i
+  rw [he] at hh
+  exact ⟨(le_div_iff₀ (dyadScale_pos _)).mpr (by simpa using hh.1),
+    (div_le_iff₀ (dyadScale_pos _)).mpr hh.2.le⟩
+
+theorem actual_original_cell_ratios {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (S : Finset κ) (selector C₁ C₂ : κ→Finset ι→ℂ)
+    (A₁ A₂ C R : κ→ℝ) (d h : κ→O)
+    (hq : ∀x∈S,∀i,1≤ sourceNorms A₁ A₂ C R d h x i)
+    (k : SourceIndex) (l : ℕ) (T₁ T₂ : ℝ) (x : κ)
+    (hx : x∈sourceCell (sourceNorms A₁ A₂ C R d h) S k) (j : FirstCommonIndex ι)
+    (hn : commonSelector p (selector x) l j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0) :
+    ∀i,actualOuterRatios p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j (rawScales k l T₁ T₂) i∈Set.Icc 1 2 := by
+  have hl : dyadIndex (primeProductNorm p j.2.1)=l := by
+    by_contra he
+    exact hn (by simp [commonSelector,he])
+  have hh := dyadIndex_bounds _ (SecondPassArithmetic.primeProductNorm_ge_one p hp j.2.1)
+  rw [hl] at hh
+  have hD : primeProductNorm p j.2.1/dyadScale l∈Set.Icc 1 2 :=
+    ⟨(le_div_iff₀ (dyadScale_pos _)).mpr (by simpa using hh.1),
+      (div_le_iff₀ (dyadScale_pos _)).mpr hh.2.le⟩
+  intro i
+  fin_cases i
+  · exact sourceCell_ratios _ S hq k x hx 0
+  · exact sourceCell_ratios _ S hq k x hx 1
+  · exact sourceCell_ratios _ S hq k x hx 2
+  · exact sourceCell_ratios _ S hq k x hx 3
+  · exact sourceCell_ratios _ S hq k x hx 4
+  · exact hD
+  · exact sourceCell_ratios _ S hq k x hx 5
+
+lemma sum_source_cells {κ β : Type*} [DecidableEq κ] [AddCommMonoid β]
+    (q : κ→Fin 6→ℝ) (S : Finset κ) (f : κ→β) :
+    (∑x∈S,f x)=∑k∈sourceKeys q S,∑x∈sourceCell q S k,f x := by
+  exact (Finset.sum_fiberwise_of_maps_to (fun x hx=>Finset.mem_image_of_mem (sourceIndex q) hx) f).symm
+
+lemma common_key_of_index {ι : Type*} [DecidableEq ι] (p : ι→O) (F : Finset ι)
+    (j : FirstCommonIndex ι) (hj : j∈firstCommonIndices F) :
+    dyadIndex (primeProductNorm p j.2.1)∈commonKeys p F := by
+  apply Finset.mem_image_of_mem
+  exact (Finset.mem_sigma.mp (Finset.mem_product.mp hj).2).1
+
+lemma sum_common_cells {ι : Type*} [DecidableEq ι] (p : ι→O) (F : Finset ι)
+    (selector : Finset ι→ℂ) (G : FirstCommonIndex ι→ℂ) :
+    (∑j∈firstCommonIndices F,selector j.2.1*G j)=
+      ∑l∈commonKeys p F,∑j∈firstCommonIndices F,commonSelector p selector l j.2.1*G j := by
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j hj
+  have hkey := common_key_of_index p F j hj
+  simp [commonSelector,ite_mul,hkey]
+
+theorem original_signed_partition {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (F : Finset ι) (S : Finset κ) (q : κ→Fin 6→ℝ)
+    (selector : κ→Finset ι→ℂ) (G : κ→FirstCommonIndex ι→ℂ) :
+    (∑x∈S,∑j∈firstCommonIndices F,selector x j.2.1*G x j)=
+      ∑k∈sourceKeys q S,∑l∈commonKeys p F,∑x∈sourceCell q S k,
+        ∑j∈firstCommonIndices F,commonSelector p (selector x) l j.2.1*G x j := by
+  rw [sum_source_cells q S]
+  apply Finset.sum_congr rfl
+  intro k hk
+  calc
+    _ = ∑x∈sourceCell q S k,∑l∈commonKeys p F,
+        ∑j∈firstCommonIndices F,commonSelector p (selector x) l j.2.1*G x j := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      exact sum_common_cells p F (selector x) (G x)
+    _ = _ := Finset.sum_comm
+
+end InverseMomentFirstChildWindows
+end
+
+noncomputable section
+namespace InverseMomentFirstChildWindows
+open InverseMoment Eisenstein FirstPassCubeLabels
+open InverseSecondSourceBlocks (dyadIndex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def liveCommonKeys {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (F : Finset ι) (S : Finset κ)
+    (selector : κ→Finset ι→ℂ) (G : κ→FirstCommonIndex ι→ℂ) : Finset ℕ :=
+  (((S×ˢfirstCommonIndices F).filter (fun x=>selector x.1 x.2.2.1*G x.1 x.2≠0)).image
+    (fun x=>dyadIndex (primeProductNorm p x.2.2.1)))
+
+lemma sum_live_common_cells {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (F : Finset ι) (S : Finset κ)
+    (selector : κ→Finset ι→ℂ) (G : κ→FirstCommonIndex ι→ℂ) (x : κ) (hx : x∈S) :
+    (∑j∈firstCommonIndices F,selector x j.2.1*G x j)=
+      ∑l∈liveCommonKeys p F S selector G,∑j∈firstCommonIndices F,commonSelector p (selector x) l j.2.1*G x j := by
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j hj
+  by_cases hz : selector x j.2.1*G x j=0
+  · rw [hz]
+    symm
+    apply Finset.sum_eq_zero
+    intro l hl
+    by_cases he : dyadIndex (primeProductNorm p j.2.1)=l
+    · simpa only [commonSelector,he,ite_true] using hz
+    · simp only [commonSelector,he,ite_false,zero_mul]
+  · have hkey : dyadIndex (primeProductNorm p j.2.1)∈liveCommonKeys p F S selector G := by
+      exact Finset.mem_image.mpr ⟨(x,j),
+        Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hx,hj⟩,hz⟩,rfl⟩
+    simp [commonSelector,ite_mul,hkey]
+
+theorem original_live_signed_partition {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (F : Finset ι) (S : Finset κ) (q : κ→Fin 6→ℝ)
+    (selector : κ→Finset ι→ℂ) (G : κ→FirstCommonIndex ι→ℂ) :
+    (∑x∈S,∑j∈firstCommonIndices F,selector x j.2.1*G x j)=
+      ∑k∈sourceKeys q S,∑l∈liveCommonKeys p F S selector G,∑x∈sourceCell q S k,
+        ∑j∈firstCommonIndices F,commonSelector p (selector x) l j.2.1*G x j := by
+  rw [sum_source_cells q S]
+  apply Finset.sum_congr rfl
+  intro k hk
+  calc
+    _ = ∑x∈sourceCell q S k,∑l∈liveCommonKeys p F S selector G,
+        ∑j∈firstCommonIndices F,commonSelector p (selector x) l j.2.1*G x j := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      exact sum_live_common_cells p F S selector G x (Finset.mem_filter.mp hx).1
+    _ = _ := Finset.sum_comm
+
+theorem liveCommonKeys_card {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (F : Finset ι) (S : Finset κ) (selector : κ→Finset ι→ℂ)
+    (G : κ→FirstCommonIndex ι→ℂ) (R : ℝ)
+    (hcap : ∀x∈S,∀j∈firstCommonIndices F,selector x j.2.1*G x j≠0 → primeProductNorm p j.2.1≤ R) :
+    (liveCommonKeys p F S selector G).card≤ dyadIndex R+1 := by
+  have hsub : liveCommonKeys p F S selector G⊆Finset.range (dyadIndex R+1) := by
+    intro l hl
+    obtain ⟨⟨x,j⟩,hmem,rfl⟩ := Finset.mem_image.mp hl
+    obtain ⟨hxj,hn⟩ := Finset.mem_filter.mp hmem
+    obtain ⟨hx,hj⟩ := Finset.mem_product.mp hxj
+    apply Finset.mem_range.mpr
+    apply Nat.lt_succ_of_le
+    exact Nat.floor_mono (Real.logb_le_logb_of_le (by norm_num : (1:ℝ)<2)
+      (primeProductNorm_pos p hp _) (hcap x hx j hj hn))
+  simpa only [Finset.card_range] using Finset.card_le_card hsub
+
+theorem original_live_norm_bound {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) (F : Finset ι) (S : Finset κ) (q : κ→Fin 6→ℝ)
+    (selector : κ→Finset ι→ℂ) (G : κ→FirstCommonIndex ι→ℂ) :
+    ‖∑x∈S,∑j∈firstCommonIndices F,selector x j.2.1*G x j‖≤
+      ∑k∈sourceKeys q S,∑l∈liveCommonKeys p F S selector G,
+        ‖∑x∈sourceCell q S k,∑j∈firstCommonIndices F,commonSelector p (selector x) l j.2.1*G x j‖ := by
+  rw [original_live_signed_partition p F S q selector G]
+  exact (norm_sum_le _ _).trans (Finset.sum_le_sum (fun k hk=>norm_sum_le _ _))
+
+end InverseMomentFirstChildWindows
+end
+
+noncomputable section
+namespace InverseMomentFirstChildWindows
+open InverseMoment InverseMomentFirstProfileUniform Eisenstein FirstPassCubeLabels
+open InverseSecondSourceBlocks (dyadScale dyadScale_pos)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def columnScales (k : SourceIndex) (l : ℕ) (X₁ X₂ : ℝ) : Fin 9→ℝ :=
+  rawScales k l (X₁/(dyadScale (k 0)*dyadScale (k 2)*dyadScale l))
+    (X₂/(dyadScale (k 1)*dyadScale (k 2)*dyadScale l))
+
+lemma columnScales_pos (k : SourceIndex) (l : ℕ) (X₁ X₂ : ℝ) (h₁ : 0<X₁) (h₂ : 0<X₂) :
+    ∀i,0<columnScales k l X₁ X₂ i := by
+  apply rawScales_pos
+  · exact div_pos h₁ (mul_pos (mul_pos (dyadScale_pos _) (dyadScale_pos _)) (dyadScale_pos _))
+  · exact div_pos h₂ (mul_pos (mul_pos (dyadScale_pos _) (dyadScale_pos _)) (dyadScale_pos _))
+
+lemma columnScales_left (k : SourceIndex) (l : ℕ) (X₁ X₂ : ℝ) :
+    let s := columnScales k l X₁ X₂
+    s 0*s 2*s 5*s 7=X₁ := by
+  dsimp [columnScales,rawScales]
+  exact mul_div_cancel₀ _ (mul_ne_zero (mul_ne_zero (dyadScale_pos _).ne' (dyadScale_pos _).ne') (dyadScale_pos _).ne')
+
+lemma columnScales_right (k : SourceIndex) (l : ℕ) (X₁ X₂ : ℝ) :
+    let s := columnScales k l X₁ X₂
+    s 1*s 2*s 5*s 8=X₂ := by
+  dsimp [columnScales,rawScales]
+  exact mul_div_cancel₀ _ (mul_ne_zero (mul_ne_zero (dyadScale_pos _).ne' (dyadScale_pos _).ne') (dyadScale_pos _).ne')
+
+lemma physical_scales_congr {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (source : Finset κ) (F : Finset ι) (selector C₁ C₂ : κ→Finset ι→ℂ) (w : κ→ℂ)
+    (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (A₁ A₂ C R : κ→ℝ) (K : ℝ)
+    (d h : κ→O) (s t : Fin 9→ℝ)
+    (hleft : s 0*s 2*s 5*s 7=t 0*t 2*t 5*t 7)
+    (hright : s 1*s 2*s 5*s 8=t 1*t 2*t 5*t 8) :
+    firstFamilyPhysicalRows p hg source F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s=
+      firstFamilyPhysicalRows p hg source F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h t := by
+  unfold firstFamilyPhysicalRows
+  rw [hleft,hright]
+
+theorem original_physical_partition {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (S : Finset κ) (F : Finset ι) (selector C₁ C₂ : κ→Finset ι→ℂ) (w : κ→ℂ)
+    (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (A₁ A₂ C R : κ→ℝ) (K : ℝ)
+    (d h : κ→O) (s : Fin 9→ℝ) :
+    firstFamilyPhysicalRows p hg S F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s=
+      ∑k∈sourceKeys (sourceNorms A₁ A₂ C R d h) S,∑l∈commonKeys p F,
+        firstFamilyPhysicalRows p hg (sourceCell (sourceNorms A₁ A₂ C R d h) S k) F
+          (fun x=>commonSelector p (selector x) l) C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s := by
+  let G (x : κ) (j : FirstCommonIndex ι) := w x*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j*
+    firstNormProfile (fun y=>W₁ (y/(s 0*s 2*s 5*s 7)))
+      (fun y=>W₂ (y/(s 1*s 2*s 5*s 8))) Φ (fun _ _=>1) K
+      (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j)
+  have rows (T : Finset κ) (sel : κ → Finset ι → ℂ) :
+      firstFamilyPhysicalRows p hg T F sel C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s =
+        ∑ x ∈ T, ∑ j ∈ firstCommonIndices F, sel x j.2.1 * G x j := by
+    unfold firstFamilyPhysicalRows firstBlockedPhysicalRows
+    apply Finset.sum_congr rfl
+    intro x hx
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j hj
+    dsimp only [G]
+    ring
+  have he := original_signed_partition p F S (sourceNorms A₁ A₂ C R d h) selector G
+  simpa only [rows] using he
+
+theorem original_physical_partition_raw {ι κ : Type*} [DecidableEq ι] [DecidableEq κ]
+    (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (S : Finset κ) (F : Finset ι) (selector C₁ C₂ : κ→Finset ι→ℂ) (w : κ→ℂ)
+    (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (A₁ A₂ C R : κ→ℝ) (K : ℝ)
+    (d h : κ→O) (s : Fin 9→ℝ) :
+    firstFamilyPhysicalRows p hg S F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s=
+      ∑k∈sourceKeys (sourceNorms A₁ A₂ C R d h) S,∑l∈commonKeys p F,
+        firstFamilyPhysicalRows p hg (sourceCell (sourceNorms A₁ A₂ C R d h) S k) F
+          (fun x=>commonSelector p (selector x) l) C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h
+          (columnScales k l (s 0*s 2*s 5*s 7) (s 1*s 2*s 5*s 8)) := by
+  rw [original_physical_partition p hg S F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s]
+  apply Finset.sum_congr rfl
+  intro k hk
+  apply Finset.sum_congr rfl
+  intro l hl
+  apply physical_scales_congr
+  · exact (columnScales_left k l _ _).symm
+  · exact (columnScales_right k l _ _).symm
+
+end InverseMomentFirstChildWindows
+end
+
+noncomputable section
+namespace InverseFirstGlobalCaps
+open InverseMoment InverseFirstGlobalParents InverseFirstPriorityParents
+open InverseMomentWholePriorityParents InverseMomentFirstChildWindows
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks (dyadIndex dyadScale dyadScale_pos dyadIndex_bounds)
+open Eisenstein (ringComplex)
+open InverseInitialArithmetic (sourceIdeal)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+
+def outerNorms (p : ι→O) (x : FirstOriginalOuter ι) : Fin 5→ℝ :=
+  ![‖ringComplex (aLabel p x.1.support x.1.rightBit)‖^2,
+    ‖ringComplex (aLabel p x.1.support x.1.leftBit)‖^2,
+    primeProductNorm p x.2.1,
+    ‖ringComplex ((∏ i ∈ x.2.2,p i))‖^2,
+    primeProductNorm p (cubeActiveSupport x.1.support
+      (fun i=>x.1.leftExponent i+x.1.rightExponent i) x.1.leftBit x.1.rightBit)]
+
+def outerGate (p : ι→O) (k : SourceIndex) (x : FirstOriginalOuter ι) : Prop :=
+  ∀i : Fin 5,dyadIndex (outerNorms p x i)=k i.castSucc
+
+def outerCell (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) :=
+  (firstOriginalOuter pool Q).filter (outerGate p k)
+
+def parentCell (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l : ℕ) :=
+  (originalParentSource pool Q (fun x=>commonSelector p (selector x) l)).filter
+    (fun x=>outerGate p k (toOriginal x))
+
+theorem mem_parentCell (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l : ℕ)
+    (x : Source ι 0) : x∈parentCell p pool Q selector k l ↔
+    ∃o∈outerCell p pool Q k,∃D∈pool.powerset,
+      commonSelector p (selector o) l D≠0 ∧ fillFirstQuotient (ofOriginal o) D=x := by
+  simp only [parentCell,outerCell,Finset.mem_filter,mem_originalParentSource]
+  constructor
+  · rintro ⟨⟨o,ho,D,hD,hs,rfl⟩,hg⟩
+    exact ⟨o,⟨ho,by simpa using hg⟩,D,hD,hs,rfl⟩
+  · rintro ⟨o,⟨ho,hg⟩,D,hD,hs,rfl⟩
+    exact ⟨⟨o,ho,D,hD,hs,rfl⟩,by simpa using hg⟩
+
+def originalNorms (p : ι→O) (x : Σ _ : FirstOriginalOuter ι,Ideal O×O) : Fin 6→ℝ :=
+  sourceNorms (fun y=>outerNorms p y.1 0) (fun y=>outerNorms p y.1 1)
+    (fun y=>outerNorms p y.1 2) (fun y=>outerNorms p y.1 4)
+    (fun y=>(∏ i ∈ y.1.2.2,p i))
+    (fun y=>y.2.2) x
+
+lemma originalNorms_outer (p : ι→O) (x : Σ _ : FirstOriginalOuter ι,Ideal O×O)
+    (i : Fin 5) : originalNorms p x i.castSucc=outerNorms p x.1 i := by
+  fin_cases i <;> rfl
+
+lemma originalNorms_frequency (p : ι→O) (x : Σ _ : FirstOriginalOuter ι,Ideal O×O) :
+    originalNorms p x 5=‖ringComplex x.2.2‖^2 := rfl
+
+theorem sourceCell_outer (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ) (k : SourceIndex)
+    (x : Σ _ : FirstOriginalOuter ι,Ideal O×O)
+    (hx : x∈sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y) k) :
+    x.1∈outerCell p pool Q k := by
+  obtain ⟨hs,hk⟩:=Finset.mem_filter.mp hx
+  refine Finset.mem_filter.mpr ⟨(Finset.mem_sigma.mp hs).1,?_⟩
+  intro i
+  simpa only [sourceIndex,originalNorms_outer] using congrFun hk i.castSucc
+
+variable (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma outerNorms_ge_one (x : FirstOriginalOuter ι) : ∀i,1≤ outerNorms p x i := by
+  intro i
+  fin_cases i
+  · exact SecondPassArithmetic.element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+  · exact SecondPassArithmetic.element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+  · exact primeProductNorm_ge_one p hp _
+  · change 1≤‖ringComplex ((∏ i ∈ x.2.2,p i))‖^2
+    change 1 ≤ primeProductNorm p _
+    exact primeProductNorm_ge_one p hp _
+  · exact primeProductNorm_ge_one p hp _
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma source_norms_ge_one (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ)
+    (x : Σ _ : FirstOriginalOuter ι,Ideal O×O)
+    (hx : x∈firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y) :
+    ∀i,1≤ originalNorms p x i := by
+  have hf:=((mem_firstRetainedSource p labels x.1.1 Y x.2).mp (Finset.mem_sigma.mp hx).2).2
+  have hn : x.2.2≠0 := (Finset.mem_erase.mp hf).1
+  intro i
+  fin_cases i
+  · exact outerNorms_ge_one p hp x.1 0
+  · exact outerNorms_ge_one p hp x.1 1
+  · exact outerNorms_ge_one p hp x.1 2
+  · exact outerNorms_ge_one p hp x.1 3
+  · exact outerNorms_ge_one p hp x.1 4
+  · exact SecondPassArithmetic.element_norm_ge_one _ hn
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+theorem sourceCell_frequency (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ) (k : SourceIndex)
+    (x : Σ _ : FirstOriginalOuter ι,Ideal O×O)
+    (hx : x∈sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y) k) :
+    dyadScale (k 5)≤‖ringComplex x.2.2‖^2 ∧
+      ‖ringComplex x.2.2‖^2≤2*dyadScale (k 5) := by
+  have h:=sourceCell_ratios (originalNorms p) _ (source_norms_ge_one p hp pool Q labels Y) k x hx 5
+  exact ⟨by simpa only [originalNorms_frequency,one_mul] using (le_div_iff₀ (dyadScale_pos _)).mp h.1,
+    by simpa only [originalNorms_frequency] using (div_le_iff₀ (dyadScale_pos _)).mp h.2⟩
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma outerGate_dyads (k : SourceIndex) (x : FirstOriginalOuter ι) (hx : outerGate p k x) :
+    ∀i : Fin 5,dyadScale (k i.castSucc)≤ outerNorms p x i ∧
+      outerNorms p x i≤2*dyadScale (k i.castSucc) := by
+  intro i
+  have h:=dyadIndex_bounds _ (outerNorms_ge_one p hp x i)
+  rw [hx i] at h
+  exact ⟨h.1,h.2.le⟩
+
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma commonSelector_norm (selector : Finset ι→ℂ) (l : ℕ) (D : Finset ι) :
+    ‖commonSelector p selector l D‖≤‖selector D‖ := by
+  unfold commonSelector
+  split_ifs <;> simp
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma live_common_dyads (selector : Finset ι→ℂ) (l : ℕ) (D : Finset ι)
+    (hlive : commonSelector p selector l D≠0) :
+    dyadScale l≤ primeProductNorm p D ∧ primeProductNorm p D≤2*dyadScale l := by
+  have he : dyadIndex (primeProductNorm p D)=l := by
+    by_contra h
+    exact hlive (by simp [commonSelector,h])
+  have h:=dyadIndex_bounds _ (primeProductNorm_ge_one p hp D)
+  rw [he] at h
+  exact ⟨h.1,h.2.le⟩
+
+omit [DecidableEq ι] [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma sourceIdeal_norm (D : Finset ι) : (Ideal.absNorm (sourceIdeal p D):ℝ)=primeProductNorm p D := by
+  simp only [sourceIdeal,←ringComplex_norm_sq_eq_absNorm_span,primeProductNorm]
+
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+
+theorem parentCell_cube_bounds (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l : ℕ)
+    (Z ell eta : ℝ)
+    (hQ : ∀v∈Q,‖ringComplex (primeProduct p v.support v)‖^2≤ Z^(ell+eta))
+    (x : Source ι 0) (hx : x∈parentCell p pool Q selector k l) :
+    ‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^(ell+eta) ∧
+    ‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^(ell+eta) := by
+  obtain ⟨o,ho,D,hD,hs,rfl⟩:=(mem_parentCell p pool Q selector k l x).mp hx
+  exact reopenedCubeFamily_cube_norms p Q _ hQ o.1
+    ((mem_firstOriginalOuter pool Q o).mp (Finset.mem_filter.mp ho).1).1
+
+def dyadicExponent (Z : ℝ) (n : ℕ) : ℝ := Real.logb Z (dyadScale n)
+
+lemma rpow_dyadicExponent (Z : ℝ) (hZ : 1<Z) (n : ℕ) :
+    Z^dyadicExponent Z n=dyadScale n :=
+  Real.rpow_logb (by linarith) (by linarith) (dyadScale_pos n)
+
+lemma dyad_power_bounds (Z eta q : ℝ) (hZ : 1<Z) (h2 : 2≤ Z^eta) (n : ℕ)
+    (hq : dyadScale n≤ q ∧ q≤2*dyadScale n) :
+    Z^dyadicExponent Z n≤ q ∧ q≤ Z^(dyadicExponent Z n+eta) := by
+  rw [Real.rpow_add (by linarith),rpow_dyadicExponent Z hZ]
+  refine ⟨hq.1,hq.2.trans ?_⟩
+  nlinarith [dyadScale_pos n]
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+theorem parentCell_norm_bounds (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l : ℕ)
+    (Z eta : ℝ) (hZ : 1<Z) (h2 : 2≤ Z^eta)
+    (x : Source ι 0) (hx : x∈parentCell p pool Q selector k l) :
+    (∀i : Fin 5,Z^dyadicExponent Z (k i.castSucc)≤ outerNorms p (toOriginal x) i ∧
+      outerNorms p (toOriginal x) i≤ Z^(dyadicExponent Z (k i.castSucc)+eta)) ∧
+    (Ideal.absNorm (parent p x).quotient:ℝ)=primeProductNorm p x.quotientSupport ∧
+    Z^dyadicExponent Z l≤(Ideal.absNorm (parent p x).quotient:ℝ) ∧
+    (Ideal.absNorm (parent p x).quotient:ℝ)≤ Z^(dyadicExponent Z l+eta) := by
+  obtain ⟨o,ho,D,hD,hs,rfl⟩:=(mem_parentCell p pool Q selector k l x).mp hx
+  have hg := outerGate_dyads p hp k o (Finset.mem_filter.mp ho).2
+  have hd := live_common_dyads p hp (selector o) l D hs
+  simp only [toOriginal_fill,toOriginal_ofOriginal]
+  refine ⟨fun i=>dyad_power_bounds Z eta _ hZ h2 _ (hg i),sourceIdeal_norm p D,?_⟩
+  change Z^dyadicExponent Z l≤(Ideal.absNorm (sourceIdeal p D):ℝ) ∧
+    (Ideal.absNorm (sourceIdeal p D):ℝ)≤ Z^(dyadicExponent Z l+eta)
+  rw [sourceIdeal_norm]
+  exact dyad_power_bounds Z eta _ hZ h2 l hd
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+theorem parentCell_ideal_bounds (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l : ℕ)
+    (Z eta : ℝ) (hZ : 1<Z) (h2 : 2≤ Z^eta)
+    (x : Source ι 0) (hx : x∈parentCell p pool Q selector k l) :
+    (Z^dyadicExponent Z (k 2)≤ primeProductNorm p x.firstCommon ∧
+      primeProductNorm p x.firstCommon≤ Z^(dyadicExponent Z (k 2)+eta)) ∧
+    (Z^dyadicExponent Z (k 3)≤(Ideal.absNorm (sourceIdeal p x.firstDivisor):ℝ) ∧
+      (Ideal.absNorm (sourceIdeal p x.firstDivisor):ℝ)≤ Z^(dyadicExponent Z (k 3)+eta)) ∧
+    (Z^dyadicExponent Z (k 4)≤(Ideal.absNorm (sourceIdeal p (cubeActiveSupport x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)):ℝ) ∧
+      (Ideal.absNorm (sourceIdeal p (cubeActiveSupport x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)):ℝ)
+        ≤ Z^(dyadicExponent Z (k 4)+eta)) := by
+  have h:=(parentCell_norm_bounds p hp pool Q selector k l Z eta hZ h2 x hx).1
+  refine ⟨h 2,?_,?_⟩
+  · simpa [sourceIdeal_norm,outerNorms,toOriginal,primeProductNorm] using h 3
+  · simpa [sourceIdeal_norm,outerNorms,toOriginal] using h 4
+
+def jNorm (p : ι→O) (x : FirstOriginalOuter ι) : ℝ :=
+  ‖ringComplex (jLabel p x.1.support (fun i=>x.1.leftExponent i+x.1.rightExponent i)
+    x.1.leftBit x.1.rightBit)‖^2
+
+def labelParentCell (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l j : ℕ) :=
+  (parentCell p pool Q selector k l).filter (fun x=>dyadIndex (jNorm p (toOriginal x))=j)
+
+include hp in
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+theorem labelParentCell_bounds (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (k : SourceIndex) (l j : ℕ)
+    (Z eta : ℝ) (hZ : 1<Z) (h2 : 2≤ Z^eta)
+    (x : Source ι 0) (hx : x∈labelParentCell p pool Q selector k l j) :
+    x∈parentCell p pool Q selector k l ∧
+    Z^dyadicExponent Z j≤ jNorm p (toOriginal x) ∧
+      jNorm p (toOriginal x)≤ Z^(dyadicExponent Z j+eta) := by
+  obtain ⟨hm,hj⟩:=Finset.mem_filter.mp hx
+  have hn : 1≤ jNorm p (toOriginal x) :=
+    SecondPassArithmetic.element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+  have hd:=dyadIndex_bounds _ hn
+  rw [hj] at hd
+  exact ⟨hm,dyad_power_bounds Z eta _ hZ h2 j ⟨hd.1,hd.2.le⟩⟩
+
+theorem raw_column_exponent (Z r : ℝ) (hZ : 1<Z) (a b c : ℕ) :
+    Z^r/(dyadScale a*dyadScale b*dyadScale c)=
+      Z^(r-dyadicExponent Z a-dyadicExponent Z b-dyadicExponent Z c) := by
+  simp only [Real.rpow_sub (show 0<Z by linarith),rpow_dyadicExponent Z hZ]
+  simp only [div_div]
+
+theorem columnScales_exponents (Z r : ℝ) (hZ : 1<Z) (k : SourceIndex) (l : ℕ) :
+    columnScales k l (Z^r) (Z^r)=rawScales k l
+      (Z^(r-dyadicExponent Z (k 0)-dyadicExponent Z (k 2)-dyadicExponent Z l))
+      (Z^(r-dyadicExponent Z (k 1)-dyadicExponent Z (k 2)-dyadicExponent Z l)) := by
+  simp only [columnScales,raw_column_exponent Z r hZ]
+
+theorem columnScales_products (Z r : ℝ) (k : SourceIndex) (l : ℕ) :
+    let s:=columnScales k l (Z^r) (Z^r)
+    s 0*s 2*s 5*s 7=Z^r ∧ s 1*s 2*s 5*s 8=Z^r :=
+  ⟨columnScales_left k l _ _,columnScales_right k l _ _⟩
+
+theorem sourceCell_parent (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ) (k : SourceIndex)
+    (selector : FirstOriginalOuter ι→Finset ι→ℂ) (l : ℕ)
+    (x : Σ _ : FirstOriginalOuter ι,Ideal O×O)
+    (hx : x∈sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y) k)
+    (D : Finset ι) (hD : D⊆pool) (hs : commonSelector p (selector x.1) l D≠0) :
+    fillFirstQuotient (ofOriginal x.1) D∈parentCell p pool Q selector k l :=
+  (mem_parentCell p pool Q selector k l _).mpr
+    ⟨x.1,sourceCell_outer p pool Q labels Y k x hx,D,Finset.mem_powerset.mpr hD,hs,rfl⟩
+
+theorem outerCell_eq_of_first_five (p : ι→O) (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (k k' : SourceIndex) (h : ∀i : Fin 5,k i.castSucc=k' i.castSucc) :
+    outerCell p pool Q k=outerCell p pool Q k' := by
+  ext x
+  simp only [outerCell, Finset.mem_filter, outerGate, h]
+
+omit [∀i,(Ideal.span {p i}).IsMaximal] in
+lemma live_selector_norm_le_one (selector : Finset ι→ℂ)
+    (hs : ∀D,‖selector D‖≤1) (l : ℕ) (D : Finset ι) :
+    ‖commonSelector p selector l D‖≤1 := (commonSelector_norm p selector l D).trans (hs D)
+
+include hp in
+
+theorem sourceCell_actual_ratios
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O)) (Y : ℝ)
+    (selector C₁ C₂ : (Σ _ : FirstOriginalOuter ι,Ideal O×O)→Finset ι→ℂ)
+    (k : SourceIndex) (l : ℕ) (T₁ T₂ : ℝ)
+    (x : Σ _ : FirstOriginalOuter ι,Ideal O×O)
+    (hx : x∈sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y) k)
+    (j : FirstCommonIndex ι)
+    (hn : commonSelector p (selector x) l j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j≠0) :
+    ∀i,actualOuterRatios p (outerNorms p x.1 0) (outerNorms p x.1 1)
+      (outerNorms p x.1 2) (outerNorms p x.1 4)
+      ((∏ i ∈ x.1.2.2,p i)) x.2.2 j (rawScales k l T₁ T₂) i∈Set.Icc 1 2 := by
+  exact actual_original_cell_ratios p hp hg _ selector C₁ C₂
+    (fun y=>outerNorms p y.1 0) (fun y=>outerNorms p y.1 1)
+    (fun y=>outerNorms p y.1 2) (fun y=>outerNorms p y.1 4)
+    (fun y=>(∏ i ∈ y.1.2.2,p i)) (fun y=>y.2.2)
+    (source_norms_ge_one p hp pool Q labels Y) k l T₁ T₂ x hx j hn
+
+end InverseFirstGlobalCaps
+
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open CompletedHeight
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+abbrev OriginalIndex (ι : Type*) := Σ _ : FirstOriginalOuter ι,Ideal O×O
+variable {ι : Type*} [DecidableEq ι]
+variable (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+
+def leftNorm (x : OriginalIndex ι) : ℝ := ‖ringComplex (aLabel p x.1.1.support x.1.1.rightBit)‖^2
+def rightNorm (x : OriginalIndex ι) : ℝ := ‖ringComplex (aLabel p x.1.1.support x.1.1.leftBit)‖^2
+def commonNorm (x : OriginalIndex ι) : ℝ := primeProductNorm p x.1.2.1
+def activeNorm (x : OriginalIndex ι) : ℝ := primeProductNorm p (cubeActiveSupport x.1.1.support
+  (fun i=>x.1.1.leftExponent i+x.1.1.rightExponent i) x.1.1.leftBit x.1.1.rightBit)
+def divisorElement (k : FirstOriginalOuter ι) : O := (∏ i ∈ k.2.2,p i)
+
+include hp in
+theorem original_source_positive (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ) :
+    ∀x∈firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun k=>k.1) Y,
+      0<leftNorm p x ∧ 0<rightNorm p x ∧ 0<commonNorm p x ∧ 0<activeNorm p x ∧
+      divisorElement p x.1≠0 ∧ x.2.2≠0 := by
+  intro x hx
+  have hm := (Finset.mem_sigma.mp hx).2
+  have hk := ((mem_firstRetainedSource p labels x.1.1 Y x.2).mp hm).2
+  refine ⟨?_,?_,primeProductNorm_pos p hp _,primeProductNorm_pos p hp _,?_,(Finset.mem_erase.mp hk).1⟩
+  · exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero
+      (primeProduct_ne_zero p hp _ _)))
+  · exact sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero
+      (primeProduct_ne_zero p hp _ _)))
+  · exact Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+
+include hp in
+theorem original_source_norms_ge_one (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ) :
+    ∀x∈firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun k=>k.1) Y,
+      ∀i,1≤ InverseMomentFirstChildWindows.sourceNorms (leftNorm p) (rightNorm p) (commonNorm p)
+        (activeNorm p) (fun x=>divisorElement p x.1) (fun x=>x.2.2) x i := by
+  intro x hx
+  have hh := original_source_positive p hp pool Q labels Y x hx
+  apply InverseMomentFirstChildWindows.sourceNorms_ge_one
+  · exact element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+  · exact element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+  · exact primeProductNorm_ge_one p hp _
+  · exact primeProductNorm_ge_one p hp _
+  · exact hh.2.2.2.2.1
+  · exact hh.2.2.2.2.2
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem original_weight_bound (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (β : Ideal O→(ι→₀ℕ)→ℂ)
+    (R : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ) (Γ Y : ℝ)
+    (hΓ : 0≤Γ) (hβ : ∀I∈labels,∀v∈Q,‖β I v‖≤Γ) :
+    ∀k∈firstOriginalOuter pool Q,∀x∈firstRetainedSource p labels k.1 Y,
+      ‖firstOriginalWeight p β R k x‖≤Γ^2 := by
+  intro k hk x hx
+  have hb := (mem_firstOriginalOuter pool Q k).mp hk
+  have hf := ((mem_firstRetainedSource p labels k.1 Y x).mp hx).1
+  exact (firstOriginalWeight_norm_le p β R k x).trans
+    (reopenedPairCoefficient_bound Q labels β Γ hΓ hβ k.1 hb.1 k.2.1 x.1 hf)
+
+theorem actual_old_profile (om : 𝓢(ℝ,ℂ)) (a b : ℝ) (ha : 0<a)
+    (hs : Function.support om⊆Set.Icc a b) (theta x : ℝ) (hx : 0<x) :
+    InverseMomentFirstProfileUniform.positiveSource (priorityLogWindow om a b ha hs false) 1 theta x=
+      normTwistedSource om theta x ∧
+    InverseMomentFirstProfileUniform.positiveSource (priorityLogWindow om a b ha hs true) 1 (-theta) x=
+      star (normTwistedSource om theta x) := by
+  constructor
+  · simp [InverseMomentFirstProfileUniform.positiveSource,priorityLogWindow,
+      CanonicalCubeSeparation.sourceLogProfile_apply,Real.exp_log hx,normTwistedSource]
+  · simp [InverseMomentFirstProfileUniform.positiveSource,priorityLogWindow,
+      SecondPassIntegration.conjugateProfile_apply,CanonicalCubeSeparation.sourceLogProfile_apply,
+      Real.exp_log hx,normTwistedSource,JointLogSeparation.kernelLogPhase_conjugate]
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open CompletedHeight
+open InverseMomentFirstProfileUniform
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι κ : Type*} [DecidableEq ι]
+variable (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+variable (hg : ∀i,lambda∉Ideal.span {p i})
+
+include hp in
+lemma physical_rows_congr_positive (F : Finset ι) (selector C₁ C₂ : Finset ι→ℂ)
+    (W₁ W₂ V₁ V₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (A₁ A₂ C R K : ℝ) (d h : O)
+    (hA₁ : 0<A₁) (hA₂ : 0<A₂) (hC : 0<C)
+    (h₁ : ∀x,0<x→W₁ x=V₁ x) (h₂ : ∀x,0<x→W₂ x=V₂ x) :
+    firstBlockedPhysicalRows p hg F selector C₁ C₂ W₁ W₂ Φ A₁ A₂ C R K d h=
+      firstBlockedPhysicalRows p hg F selector C₁ C₂ V₁ V₂ Φ A₁ A₂ C R K d h := by
+  unfold firstBlockedPhysicalRows
+  apply Finset.sum_congr rfl
+  intro j hj
+  have he₁ := h₁ (A₁*C*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1)
+    (mul_pos (mul_pos (mul_pos hA₁ hC) (primeProductNorm_pos p hp _)) (primeProductNorm_pos p hp _))
+  have he₂ := h₂ (A₂*C*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2)
+    (mul_pos (mul_pos (mul_pos hA₂ hC) (primeProductNorm_pos p hp _)) (primeProductNorm_pos p hp _))
+  simp [firstNormProfile,firstCommonNorms,he₁,he₂]
+
+include hp in
+lemma physical_family_congr_positive (S : Finset κ) (F : Finset ι)
+    (selector C₁ C₂ : κ→Finset ι→ℂ) (w : κ→ℂ)
+    (W₁ W₂ V₁ V₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (A₁ A₂ C R : κ→ℝ) (K : ℝ)
+    (d h : κ→O) (s : Fin 9→ℝ) (hs : ∀i,0<s i)
+    (hpos : ∀x∈S,0<A₁ x ∧ 0<A₂ x ∧ 0<C x)
+    (h₁ : ∀x,0<x→W₁ x=V₁ x) (h₂ : ∀x,0<x→W₂ x=V₂ x) :
+    firstFamilyPhysicalRows p hg S F selector C₁ C₂ w W₁ W₂ Φ A₁ A₂ C R K d h s=
+      firstFamilyPhysicalRows p hg S F selector C₁ C₂ w V₁ V₂ Φ A₁ A₂ C R K d h s := by
+  unfold firstFamilyPhysicalRows
+  apply Finset.sum_congr rfl
+  intro x hx
+  congr 1
+  exact physical_rows_congr_positive p hp hg F (selector x) (C₁ x) (C₂ x) _ _ _ _ Φ
+    (A₁ x) (A₂ x) (C x) (R x) K (d x) (h x) (hpos x hx).1 (hpos x hx).2.1 (hpos x hx).2.2
+    (fun y hy=>h₁ _ (div_pos hy (mul_pos (mul_pos (mul_pos (hs 0) (hs 2)) (hs 5)) (hs 7))))
+    (fun y hy=>h₂ _ (div_pos hy (mul_pos (mul_pos (mul_pos (hs 1) (hs 2)) (hs 5)) (hs 8))))
+
+include hp in
+
+theorem original_family_profiles (S : Finset κ) (F : Finset ι)
+    (selector C₁ C₂ : κ→Finset ι→ℂ) (w : κ→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (a b : ℝ) (ha : 0<a) (hsom : Function.support om⊆Set.Icc a b)
+    (Φ : 𝓢(ℝ,ℂ)) (A₁ A₂ C R : κ→ℝ) (K X theta : ℝ)
+    (d h : κ→O) (s : Fin 9→ℝ) (hs : ∀i,0<s i)
+    (hpos : ∀x∈S,0<A₁ x ∧ 0<A₂ x ∧ 0<C x)
+    (hX : 0<X) (hleft : s 0*s 2*s 5*s 7=X) (hright : s 1*s 2*s 5*s 8=X) :
+    firstFamilyPhysicalRows p hg S F selector C₁ C₂ w
+      (fun y=>star (normTwistedSource om theta ((s 0*s 2*s 5*s 7)*y/X)))
+      (fun y=>normTwistedSource om theta ((s 1*s 2*s 5*s 8)*y/X)) Φ A₁ A₂ C R K d h s=
+    firstFamilyPhysicalRows p hg S F selector C₁ C₂ w
+      (positiveSource (priorityLogWindow om a b ha hsom true) 1 (-theta))
+      (positiveSource (priorityLogWindow om a b ha hsom false) 1 theta) Φ A₁ A₂ C R K d h s := by
+  apply physical_family_congr_positive p hp hg S F selector C₁ C₂ w _ _ _ _ Φ A₁ A₂ C R K d h s hs hpos
+  · intro y hy
+    rw [hleft,mul_div_cancel_left₀ y (ne_of_gt hX)]
+    exact (actual_old_profile om a b ha hsom theta y hy).2.symm
+  · intro y hy
+    rw [hright,mul_div_cancel_left₀ y (ne_of_gt hX)]
+    exact (actual_old_profile om a b ha hsom theta y hy).1.symm
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open InverseMomentFirstChildWindows InverseSecondSourceBlocks
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+variable (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+
+def originalNorms (x : OriginalIndex ι) : Fin 6→ℝ :=
+  sourceNorms (leftNorm p) (rightNorm p) (commonNorm p) (activeNorm p)
+    (fun x=>divisorElement p x.1) (fun x=>x.2.2) x
+
+def originalOuterCell (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) :
+    Finset (FirstOriginalOuter ι) :=
+  (firstOriginalOuter pool Q).filter (fun x=>∀i:Fin 5,
+    dyadIndex (originalNorms p ⟨x,(1,1)⟩ i.castSucc)=k i.castSucc)
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma originalNorms_outer (x : OriginalIndex ι) (i : Fin 5) :
+    originalNorms p ⟨x.1,(1,1)⟩ i.castSucc=originalNorms p x i.castSucc := by
+  unfold originalNorms sourceNorms
+  fin_cases i <;> simp [Fin.castSucc,leftNorm,rightNorm,commonNorm,activeNorm]
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem original_cell_subset (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (Y : ℝ) (k : SourceIndex) :
+    sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y) k ⊆
+    firstGlobalRetainedSource p (originalOuterCell p pool Q k) (fun _=>labels) (fun x=>x.1) Y := by
+  intro x hx
+  obtain ⟨hxs,hk⟩ := Finset.mem_filter.mp hx
+  obtain ⟨ho,hf⟩ := Finset.mem_sigma.mp hxs
+  apply Finset.mem_sigma.mpr
+  refine ⟨Finset.mem_filter.mpr ⟨ho,?_⟩,hf⟩
+  intro i
+  rw [originalNorms_outer p x i]
+  exact congrFun hk i.castSucc
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma original_outer_cell_subset (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) :
+    originalOuterCell p pool Q k⊆firstOriginalOuter pool Q := Finset.filter_subset _ _
+
+theorem original_outer_cell_ratios (hp : ∀i,p i≠0)
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex)
+    (x : FirstOriginalOuter ι) (hx : x∈originalOuterCell p pool Q k) (i : Fin 5) :
+    originalNorms p ⟨x,(1,1)⟩ i.castSucc/dyadScale (k i.castSucc)∈Set.Icc 1 2 := by
+  have hnorm : ∀j:Fin 6,1≤ originalNorms p ⟨x,(1,1)⟩ j := by
+    apply sourceNorms_ge_one
+    · exact element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+    · exact element_norm_ge_one _ (primeProduct_ne_zero p hp _ _)
+    · exact primeProductNorm_ge_one p hp _
+    · exact primeProductNorm_ge_one p hp _
+    · exact Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+    · exact one_ne_zero
+  have hh := dyadIndex_bounds _ (hnorm i.castSucc)
+  rw [(Finset.mem_filter.mp hx).2 i] at hh
+  exact ⟨(le_div_iff₀ (dyadScale_pos _)).mpr (by simpa using hh.1),
+    (div_le_iff₀ (dyadScale_pos _)).mpr hh.2.le⟩
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open InverseMomentFirstChildWindows CompletedHeight
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+variable (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+variable (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+variable (hg : ∀i,lambda∉Ideal.span {p i})
+
+def coefficient (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ) (negative : Bool)
+    (x : OriginalIndex ι) : Finset ι→ℂ :=
+  firstCanonicalCoefficient p hg x.1.1 x.1.2.1 negative Ψ m (divisorElement p x.1)
+    (mark (if negative then x.1.1.rightExponent else x.1.1.leftExponent)) x.2
+
+def weight (β : Ideal O→(ι→₀ℕ)→ℂ)
+    (R : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ) (Ψ : O→*ℂ) (m : O)
+    (x : OriginalIndex ι) : ℂ :=
+  retainedCubeWeight p hp hg x.1.1 x.1.2.1 Ψ Ψ m m
+    (divisorElement p x.1) (firstOriginalWeight p β R x.1) x.2
+
+def sourceSummand (β : Ideal O→(ι→₀ℕ)→ℂ)
+    (R : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ) (Ψ : O→*ℂ) (m : O)
+    (mark : (ι→₀ℕ)→Finset ι→ℂ) (W : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (K : ℝ)
+    (x : OriginalIndex ι) (j : FirstCommonIndex ι) : ℂ :=
+  weight p hp hg β R Ψ m x *
+    firstCommonWeight p hg (coefficient p hg Ψ m mark true x)
+      (coefficient p hg Ψ m mark false x) x.2.2 j *
+    firstNormProfile (fun y=>star (W y)) W Φ (fun _ _=>1) K
+      (firstCommonNorms p (leftNorm p x) (rightNorm p x) (commonNorm p x) (activeNorm p x)
+        (divisorElement p x.1) x.2.2 j)
+
+theorem original_retained_sum (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (β : Ideal O→(ι→₀ℕ)→ℂ) (Ψ : O→*ℂ) (m : O)
+    (mark : (ι→₀ℕ)→Finset ι→ℂ) (W : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (K Y : ℝ)
+    (R : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ) (s : Fin 9→ℝ) (hs : ∀i,0<s i) :
+    originalRetainedFamily p hp hg pool Q labels β Ψ m mark W Φ K Y R s=
+      ∑x∈firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y,
+        ∑j∈firstCommonIndices pool,sourceSummand p hp hg β R Ψ m mark W Φ K x j := by
+  have hleft : s 0*s 2*s 5*s 7≠0 := ne_of_gt (mul_pos (mul_pos (mul_pos (hs 0) (hs 2)) (hs 5)) (hs 7))
+  have hright : s 1*s 2*s 5*s 8≠0 := ne_of_gt (mul_pos (mul_pos (mul_pos (hs 1) (hs 2)) (hs 5)) (hs 8))
+  simp only [originalRetainedFamily,firstFamilyPhysicalRows,firstBlockedPhysicalRows,
+    Finset.mul_sum,sourceSummand,weight,coefficient,leftNorm,rightNorm,commonNorm,activeNorm,divisorElement,
+    Bool.false_eq_true,ite_true,ite_false,one_mul]
+  apply Finset.sum_congr rfl
+  intro x hx
+  apply Finset.sum_congr rfl
+  intro j hj
+  simp only [firstNormProfile,mul_div_cancel₀ _ hleft,mul_div_cancel₀ _ hright]
+  ring
+
+theorem original_retained_cell_partition (pool : Finset ι) (Q : Finset (ι→₀ℕ))
+    (labels : Finset (Ideal O)) (β : Ideal O→(ι→₀ℕ)→ℂ) (Ψ : O→*ℂ) (m : O)
+    (mark : (ι→₀ℕ)→Finset ι→ℂ) (W : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (K Y : ℝ)
+    (R : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ) (s : Fin 9→ℝ) (hs : ∀i,0<s i) :
+    let source := firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y
+    let term := sourceSummand p hp hg β R Ψ m mark W Φ K
+    originalRetainedFamily p hp hg pool Q labels β Ψ m mark W Φ K Y R s=
+      ∑k∈sourceKeys (originalNorms p) source,∑l∈liveCommonKeys p pool source (fun _ _=>1) term,
+        ∑x∈sourceCell (originalNorms p) source k,∑j∈firstCommonIndices pool,
+          commonSelector p (fun _=>1) l j.2.1*term x j := by
+  intro source term
+  rw [original_retained_sum p hp hg pool Q labels β Ψ m mark W Φ K Y R s hs]
+  simpa only [one_mul] using original_live_signed_partition p pool source (originalNorms p) (fun _ _=>1) term
+
+end InverseMomentFirstOriginalProfile
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic SchwartzPlanePoisson
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem canonicalCubeOuter_norm_le_one_of_good
+    {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (b : CubeCoordinates ι) (C : Finset ι) (Ψ₁ Ψ₂ : O →* ℂ)
+    (hΨ₁ : ∀ u,‖Ψ₁ u‖ ≤ 1) (hΨ₂ : ∀ u,‖Ψ₂ u‖ ≤ 1) (m₁ m₂ f : O) :
+    ‖canonicalCubeOuter p hg b C Ψ₁ Ψ₂ m₁ m₂ f‖ ≤ 1 := by
+  have hsource (Ψ : O →* ℂ) (hΨ : ∀ u, ‖Ψ u‖ ≤ 1) (m f : O) (S : Finset ι) :
+      ‖canonicalSourceCoefficient p hg Ψ m f (fun _ => 1) S‖ ≤ 1 := by
+    have hm := primeCoprimeMask_norm_le_one p S m
+    have hr := primeSubsetRow_norm_le_one p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S f
+    simp only [canonicalSourceCoefficient,norm_mul,norm_pow,norm_one,mul_one,
+      secondColumnCoefficient_norm_one_of_good p hp hinj hg hc S,one_mul]
+    calc
+      ‖Ψ (∏ i ∈ S,p i)‖ * ‖primeCoprimeMask p S m‖ *
+          ‖primeSubsetRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) S f‖^4
+        ≤ 1 * 1 * 1^4 := by gcongr <;> exact hΨ _
+      _ = 1 := by norm_num
+  show ‖canonicalCubeOuter p hg b C Ψ₁ Ψ₂ m₁ m₂ f‖ ≤ 1
+  simp only [canonicalCubeOuter,norm_mul,norm_star]
+  exact (mul_le_mul (hsource Ψ₁ hΨ₁ _ _ _) (hsource Ψ₂ hΨ₂ _ _ _)
+    (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
+
+
+theorem canonicalCubeDualZero_norm_le_of_good
+    {ι : Type*} [DecidableEq ι] (p : ι → O) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal] (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀ i,ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C : Finset ι)
+    (Ψ₁ Ψ₂ : O→*ℂ) (hΨ₁ : ∀u,‖Ψ₁ u‖≤1) (hΨ₂ : ∀u,‖Ψ₂ u‖≤1)
+    (m₁ m₂ f : O) (H₁ H₂ : Finset ι→ℂ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
+    ‖canonicalCubeDualZero p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂ f H₁ H₂ W K‖≤
+      if cubeActiveSupport b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit=∅ then
+        ‖H₁ (b.rightDivisor∪C)‖*‖H₂ (b.leftDivisor∪C)‖*|K| *‖paperRadialFourier W 0‖ else 0 := by
+  have hout := canonicalCubeOuter_norm_le_one_of_good p hp hg hinj hc b C Ψ₁ Ψ₂ hΨ₁ hΨ₂ m₁ m₂ f
+  rw [canonicalCubeDualZero_eq_density p hp hg hinj]
+  split_ifs with hB
+  · let M := C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit
+    have hprod : (∏i∈M,(1-(1:ℂ)/Ideal.absNorm (Ideal.span {p i})))=
+        ((∏i∈M,(1-(1:ℝ)/Ideal.absNorm (Ideal.span {p i}))):ℝ) := by
+      simp only [Complex.ofReal_prod,Complex.ofReal_sub,Complex.ofReal_one,
+        Complex.ofReal_div,Complex.ofReal_natCast]
+    rw [show (C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit)=M from rfl,hprod]
+    simp only [norm_mul,norm_star,Complex.norm_real,Real.norm_eq_abs,
+      abs_of_nonneg (primeDensity_nonneg_le_one p M).1]
+    calc
+      _ ≤ 1*(‖H₁ (b.rightDivisor∪C)‖*‖H₂ (b.leftDivisor∪C)‖)*|K| *‖paperRadialFourier W 0‖*
+          ∏i∈M,(1-(1:ℝ)/Ideal.absNorm (Ideal.span {p i})) := by
+        exact mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_right
+                hout
+                (mul_nonneg (norm_nonneg _) (norm_nonneg _))) (abs_nonneg _)) (norm_nonneg _))
+          (primeDensity_nonneg_le_one p M).1
+      _ ≤ _ := by
+        simpa only [one_mul] using mul_le_of_le_one_right
+          (show 0≤(1*(‖H₁ (b.rightDivisor∪C)‖*‖H₂ (b.leftDivisor∪C)‖)*|K| *‖paperRadialFourier W 0‖) by positivity)
+          (primeDensity_nonneg_le_one p M).2
+  · simp
+
+theorem first_marked_zero_uniform (ε : ℝ) (hε : 0<ε) :
+    ∃ Cm : ℝ,0<Cm ∧ ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg : ∀ i,lambda∉Ideal.span {p i})
+      (_hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι) (C : Finset ι)
+      (Ψ₁ Ψ₂ : O→*ℂ),(∀ u,‖Ψ₁ u‖≤1) → (∀ u,‖Ψ₂ u‖≤1) →
+      ∀ (m₁ m₂ f : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ),
+      (slots : Set σ).PairwiseDisjoint lists → (∀ i∈slots,∀ k∈lists i,‖a i k‖≤1) →
+      ∀ (test₁ test₂ : Finset ι→ℂ) (W : 𝓢(ℝ,ℂ)) (G₁ G₂ L K : ℝ),0≤ G₁ → 0≤ G₂ → 0≤ L →
+      (∀ U,‖test₁ U‖≤ G₁) → (∀ U,‖test₂ U‖≤ G₂) →
+      (∀ U,test₁ U≠0 → primeProductNorm p U≤ L) →
+      (∀ U,test₂ U≠0 → primeProductNorm p U≤ L) →
+      ‖canonicalCubeDualZero p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂ f
+        (wholeMarkedTest slots lists a test₁) (wholeMarkedTest slots lists a test₂) W K‖ ≤
+      if cubeActiveSupport b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit=∅ then
+        (Cm*L^ε*G₁)*(Cm*L^ε*G₂) * |K| * ‖paperRadialFourier W 0‖ else 0 := by
+  obtain ⟨Cm,hCm,hmark⟩ := whole_marked_test_uniform ε hε
+  refine ⟨Cm,hCm,?_⟩
+  intro ι σ _ _ p hp _ hinj hcop hg hc pool b C Ψ₁ Ψ₂ hΨ₁ hΨ₂ m₁ m₂ f slots lists a hslots ha
+    test₁ test₂ W G₁ G₂ L K hG₁ hG₂ hL ht₁ ht₂ hs₁ hs₂
+  apply (canonicalCubeDualZero_norm_le_of_good p hp hg hinj hc pool b C Ψ₁ Ψ₂ hΨ₁ hΨ₂ m₁ m₂ f _ _ W K).trans
+  split_ifs
+  · exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+      (mul_le_mul (hmark p hp hcop slots lists a hslots ha test₁ G₁ L hG₁ hL ht₁ hs₁ _)
+        (hmark p hp hcop slots lists a hslots ha test₂ G₂ L hG₂ hL ht₂ hs₂ _)
+        (norm_nonneg _) (by positivity)) (abs_nonneg _)) (norm_nonneg _)
+  · exact le_rfl
+
+end
+end InverseMoment
+
+namespace InverseMoment
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem primeProductNorm_union_le_mul {ι : Type*} [DecidableEq ι]
+    (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal] (A U : Finset ι) :
+    primeProductNorm p (A∪U)≤ primeProductNorm p A*primeProductNorm p U := by
+  have he : A∪U=A∪(U\A) := by ext i;simp only [Finset.mem_union,Finset.mem_sdiff];tauto
+  rw [he,primeProductNorm_union p A (U\A) Finset.disjoint_sdiff]
+  exact mul_le_mul_of_nonneg_left (primeProductNorm_mono p hp Finset.sdiff_subset)
+    (primeProductNorm_pos p hp A).le
+
+theorem whole_cube_marked_test_uniform (ε : ℝ) (hε : 0<ε) :
+    ∃ Cm : ℝ,0<Cm ∧ ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (_hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ),
+      (slots : Set σ).PairwiseDisjoint lists → (∀ i∈slots,∀ k∈lists i,‖a i k‖≤1) →
+      ∀ (extra : Finset ι) (test : Finset ι→ℂ) (E G L : ℝ),0≤ E → 0≤ G → 0≤ L →
+      primeProductNorm p extra≤ E → (∀ U,‖test U‖≤ G) →
+      (∀ U,test U≠0→primeProductNorm p U≤ L) →
+      ∀ U,‖primeMark slots lists a (extra∪U)*test U‖≤ Cm*(E*L)^ε*G := by
+  obtain ⟨Cm,hCm,hmark⟩ := finite_primeMark_small_power ε hε
+  refine ⟨Cm,hCm,?_⟩
+  intro ι σ _ _ p hp _ hcop slots lists a hslots ha extra test E G L hE hG hL he hb hs U
+  by_cases hz : test U=0
+  · simp only [hz,mul_zero,norm_zero];positivity
+  have hnorm : primeProductNorm p (extra∪U)≤ E*L :=
+    (primeProductNorm_union_le_mul p hp extra U).trans
+      (mul_le_mul he (hs U hz) (primeProductNorm_pos p hp U).le hE)
+  have hnorm0 := (primeProductNorm_pos p hp (extra∪U)).le
+  rw [norm_mul]
+  calc
+    _ ≤ (Cm*(primeProductNorm p (extra∪U))^ε)*G :=
+      mul_le_mul (hmark p hp hcop slots lists a hslots ha _) (hb U) (norm_nonneg _) (by positivity)
+    _ ≤ _ := by gcongr
+
+theorem first_whole_cube_marked_zero_uniform (ε : ℝ) (hε : 0<ε) :
+    ∃ Cm : ℝ,0<Cm ∧ ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg : ∀ i,lambda∉Ideal.span {p i})
+      (_hc : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι) (C extra₁ extra₂ : Finset ι)
+      (Ψ₁ Ψ₂ : O→*ℂ),(∀ u,‖Ψ₁ u‖≤1) → (∀ u,‖Ψ₂ u‖≤1) →
+      ∀ (m₁ m₂ f : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ),
+      (slots : Set σ).PairwiseDisjoint lists → (∀ i∈slots,∀ k∈lists i,‖a i k‖≤1) →
+      ∀ (test₁ test₂ : Finset ι→ℂ) (W : 𝓢(ℝ,ℂ)) (E G₁ G₂ L K : ℝ),
+      0≤ E → 0≤ G₁ → 0≤ G₂ → 0≤ L → primeProductNorm p extra₁≤ E → primeProductNorm p extra₂≤ E →
+      (∀ U,‖test₁ U‖≤ G₁) → (∀ U,‖test₂ U‖≤ G₂) →
+      (∀ U,test₁ U≠0→primeProductNorm p U≤ L) → (∀ U,test₂ U≠0→primeProductNorm p U≤ L) →
+      ‖canonicalCubeDualZero p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂ f
+        (fun U=>primeMark slots lists a (extra₁∪U)*test₁ U)
+        (fun U=>primeMark slots lists a (extra₂∪U)*test₂ U) W K‖ ≤
+      if cubeActiveSupport b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit=∅ then
+        (Cm*(E*L)^ε*G₁)*(Cm*(E*L)^ε*G₂) * |K| * ‖SchwartzPlanePoisson.paperRadialFourier W 0‖ else 0 := by
+  obtain ⟨Cm,hCm,hmark⟩ := whole_cube_marked_test_uniform ε hε
+  refine ⟨Cm,hCm,?_⟩
+  intro ι σ _ _ p hp _ hinj hcop hg hc pool b C extra₁ extra₂ Ψ₁ Ψ₂ hΨ₁ hΨ₂
+    m₁ m₂ f slots lists a hslots ha test₁ test₂ W E G₁ G₂ L K hE hG₁ hG₂ hL he₁ he₂ hb₁ hb₂ hs₁ hs₂
+  apply (canonicalCubeDualZero_norm_le_of_good p hp hg hinj hc pool b C Ψ₁ Ψ₂ hΨ₁ hΨ₂ m₁ m₂ f _ _ W K).trans
+  split_ifs
+  · exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+      (mul_le_mul (hmark p hp hcop slots lists a hslots ha extra₁ test₁ E G₁ L hE hG₁ hL he₁ hb₁ hs₁ _)
+        (hmark p hp hcop slots lists a hslots ha extra₂ test₂ E G₂ L hE hG₂ hL he₂ hb₂ hs₂ _)
+        (norm_nonneg _) (by positivity)) (abs_nonneg _)) (norm_nonneg _)
+  · exact le_rfl
+
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic InverseInitialArithmetic
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀ i,p i≠0)
+
+include hp in
+theorem cube_whole_support_norm (b : CubeCoordinates ι) :
+    primeProductNorm p b.support≤
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2*
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2 := by
+  have hd := cubeRadical_span_dvd_product p b.support
+    (fun i=>b.leftExponent i+b.rightExponent i) b.support_pos
+  have hne : (Ideal.span {primeProduct p b.support (fun i=>b.leftExponent i+b.rightExponent i)}:Ideal O)≠0 :=
+    Ideal.span_singleton_eq_bot.not.mpr (primeProduct_ne_zero p hp _ _)
+  have hn := Nat.le_of_dvd (Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr hne))
+    (Ideal.absNorm_dvd_absNorm_of_le (Ideal.dvd_iff_le.mp hd))
+  have he : (Ideal.absNorm (sourceIdeal p b.support):ℝ)=primeProductNorm p b.support := by
+    simpa only [sourceIdeal,primeProductNorm,map_prod] using
+      (ringComplex_norm_sq_eq_absNorm_span (∏i∈b.support,p i)).symm
+  have hh : primeProductNorm p b.support≤
+      ‖ringComplex (primeProduct p b.support (fun i=>b.leftExponent i+b.rightExponent i))‖^2 := by
+    rw [ringComplex_norm_sq_eq_absNorm_span,←he]
+    exact_mod_cast hn
+  simpa only [primeProduct_add,map_mul,norm_mul,mul_pow] using hh
+
+include hp in
+theorem cube_whole_support_dyad (b : CubeCoordinates ι) (B : ℝ) (hB : 0≤ B)
+    (hl : ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ B)
+    (hr : ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ B) :
+    primeProductNorm p b.support≤ B^2 :=
+  (cube_whole_support_norm p hp b).trans ((mul_le_mul hl hr (sq_nonneg _) hB).trans_eq (pow_two B).symm)
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMomentFirstLiveCaps
+open InverseMoment InverseMomentFirstOriginalProfile Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+
+lemma factor_four_bound (a b c d L:ℝ)(ha:1≤ a)(hb:1≤ b)(hc:1≤ c)(hd:1≤ d)
+    (h:a*b*c*d≤ L): a≤ L ∧ b≤ L ∧ c≤ L ∧ d≤ L:=by
+  have ha0:0≤ a:=zero_le_one.trans ha
+  have hb0:0≤ b:=zero_le_one.trans hb
+  have hc0:0≤ c:=zero_le_one.trans hc
+  have hd0:0≤ d:=zero_le_one.trans hd
+  have hab:1≤ a*b:=ha.trans (le_mul_of_one_le_right ha0 hb)
+  have habc:1≤ a*b*c:=hab.trans (le_mul_of_one_le_right (mul_nonneg ha0 hb0) hc)
+  have habd:1≤ a*b*d:=hab.trans (le_mul_of_one_le_right (mul_nonneg ha0 hb0) hd)
+  have ha':a≤ a*b*c*d:=by
+    calc
+      a≤ a*b:=le_mul_of_one_le_right ha0 hb
+      _≤ a*b*c:=le_mul_of_one_le_right (mul_nonneg ha0 hb0) hc
+      _≤ a*b*c*d:=le_mul_of_one_le_right (mul_nonneg (mul_nonneg ha0 hb0) hc0) hd
+  have hb':b≤ a*b*c*d:=by
+    calc
+      b≤ a*b:=le_mul_of_one_le_left hb0 ha
+      _≤ a*b*c:=le_mul_of_one_le_right (mul_nonneg ha0 hb0) hc
+      _≤ a*b*c*d:=le_mul_of_one_le_right (mul_nonneg (mul_nonneg ha0 hb0) hc0) hd
+  have hc':c≤ a*b*c*d:=by
+    calc
+      c≤ a*b*c:=le_mul_of_one_le_left hc0 hab
+      _≤ a*b*c*d:=le_mul_of_one_le_right (mul_nonneg (mul_nonneg ha0 hb0) hc0) hd
+  exact ⟨ha'.trans h,hb'.trans h,hc'.trans h,(le_mul_of_one_le_left hd0 habc).trans h⟩
+
+theorem first_profile_live_factors (W:ℝ→ℂ)(Φ:𝓢(ℝ,ℂ))(K L:ℝ)(q:Fin 9→ℝ)
+    (hq:∀i,1≤ q i)(hW:∀x,W x≠0→x≤ L)
+    (hn:firstNormProfile (fun y=>star (W y)) W Φ (fun _ _=>1) K q≠0):
+    q 0≤ L ∧ q 1≤ L ∧ q 2≤ L ∧ q 5≤ L:=by
+  have h₁:W (q 0*q 2*q 5*q 7)≠0:=by
+    intro h
+    apply hn
+    simp [firstNormProfile,h]
+  have h₂:W (q 1*q 2*q 5*q 8)≠0:=by
+    intro h
+    apply hn
+    simp [firstNormProfile,h]
+  have hb₁:=factor_four_bound (q 0) (q 2) (q 5) (q 7) L (hq _) (hq _) (hq _) (hq _) (hW _ h₁)
+  have hb₂:=factor_four_bound (q 1) (q 2) (q 5) (q 8) L (hq _) (hq _) (hq _) (hq _) (hW _ h₂)
+  exact ⟨hb₁.1,hb₂.1,hb₁.2.1,hb₁.2.2.1⟩
+
+variable {ι:Type*}[DecidableEq ι]
+    (p:ι→O)(hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem original_live_profile_caps
+    (pool:Finset ι)(Q:Finset (ι→₀ℕ))(labels:Finset (Ideal O))(Y:ℝ)
+    (β:Ideal O→(ι→₀ℕ)→ℂ)(cutoff:CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Ψ:O→*ℂ)(m:O)(mark:(ι→₀ℕ)→Finset ι→ℂ)(W:ℝ→ℂ)(Φ:𝓢(ℝ,ℂ))(K L:ℝ)
+    (hW:∀y,W y≠0→y≤ L)(x:OriginalIndex ι)
+    (hx:x∈firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y)
+    (j:FirstCommonIndex ι)
+    (hn:sourceSummand p hp hg β cutoff Ψ m mark W Φ K x j≠0):
+    leftNorm p x≤ L ∧ rightNorm p x≤ L ∧ commonNorm p x≤ L ∧ primeProductNorm p j.2.1≤ L:=by
+  have hq:∀i,1≤ firstCommonNorms p (leftNorm p x) (rightNorm p x) (commonNorm p x) (activeNorm p x)
+      (divisorElement p x.1) x.2.2 j i:=by
+    have hs:=original_source_norms_ge_one p hp pool Q labels Y x hx
+    intro i
+    fin_cases i
+    · exact hs 0
+    · exact hs 1
+    · exact hs 2
+    · exact hs 3
+    · exact hs 4
+    · exact primeProductNorm_ge_one p hp _
+    · exact hs 5
+    · exact primeProductNorm_ge_one p hp _
+    · exact primeProductNorm_ge_one p hp _
+  have hprof:firstNormProfile (fun y=>star (W y)) W Φ (fun _ _=>1) K
+      (firstCommonNorms p (leftNorm p x) (rightNorm p x) (commonNorm p x) (activeNorm p x)
+        (divisorElement p x.1) x.2.2 j)≠0:=by
+    intro hz
+    exact hn (by unfold sourceSummand;rw [hz,mul_zero])
+  exact first_profile_live_factors W Φ K L _ hq hW hprof
+
+end InverseMomentFirstLiveCaps
+
+end
+
+noncomputable section
+namespace InverseMomentFirstLiveCaps
+open InverseMoment InverseMomentFirstOriginalProfile Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι:Type*}[DecidableEq ι]
+    (p:ι→O)(hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem original_live_norm_caps
+    (pool:Finset ι)(Q:Finset (ι→₀ℕ))(labels:Finset (Ideal O))(Y:ℝ)
+    (β:Ideal O→(ι→₀ℕ)→ℂ)(cutoff:CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Ψ:O→*ℂ)(m:O)(mark:(ι→₀ℕ)→Finset ι→ℂ)(W:ℝ→ℂ)(Φ:𝓢(ℝ,ℂ))(K L B:ℝ)
+    (hB:0≤ B)(hQ:∀v∈Q,‖ringComplex (primeProduct p v.support v)‖^2≤ B)
+    (hlabels:∀I∈labels,I≠0)(hW:∀y,W y≠0→y≤ L)(x:OriginalIndex ι)
+    (hx:x∈firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun o=>o.1) Y)
+    (j:FirstCommonIndex ι)
+    (hn:sourceSummand p hp hg β cutoff Ψ m mark W Φ K x j≠0):
+    (∀i:Fin 6,originalNorms p x i≤(![L,L,L,L*B^2,B^2,Y]:Fin 6→ℝ) i) ∧
+      primeProductNorm p j.2.1≤ L ∧ InverseFirstGlobalCaps.jNorm p x.1≤ B^2:=by
+  obtain ⟨ha₁,ha₂,hcommon,hquot⟩:=original_live_profile_caps p hp hg pool Q labels Y β cutoff Ψ m mark W Φ K L hW x hx j hn
+  obtain ⟨ho,hfreq⟩:=Finset.mem_sigma.mp hx
+  obtain ⟨hb,hC,hD⟩:=(mem_firstOriginalOuter pool Q x.1).mp ho
+  obtain ⟨hf,hrow⟩:=(mem_firstRetainedSource p labels x.1.1 Y x.2).mp hfreq
+  have hcube:=reopenedCubeFamily_cube_norms p Q B hQ x.1.1 hb
+  have hsup:=cube_whole_support_dyad p hp x.1.1 B hB hcube.1 hcube.2
+  have hdiv:primeProductNorm p x.1.2.2≤ L*B^2:=by
+    calc
+      _≤ primeProductNorm p (x.1.2.1∪cubePrincipalSupport x.1.1.support x.1.1.leftExponent
+          x.1.1.rightExponent x.1.1.leftBit x.1.1.rightBit):=
+        primeProductNorm_mono p hp (Finset.mem_powerset.mp hD)
+      _≤ primeProductNorm p x.1.2.1*primeProductNorm p x.1.1.support:=by
+        apply (primeProductNorm_union_le_mul p hp _ _).trans
+        exact mul_le_mul_of_nonneg_left (primeProductNorm_mono p hp (Finset.filter_subset _ _))
+          (primeProductNorm_pos p hp _).le
+      _≤ L*B^2:=mul_le_mul hcommon hsup (primeProductNorm_pos p hp _).le
+        ((primeProductNorm_pos p hp _).le.trans hcommon)
+  have hactive:activeNorm p x≤ B^2:=
+    (primeProductNorm_mono p hp (Finset.filter_subset _ _)).trans hsup
+  have hE:=firstPhysicalMultiplier_ne_zero p hp x.1.1.support x.1.1.leftExponent x.1.1.rightExponent
+    x.1.1.leftBit x.1.1.rightBit x.2.1 (hlabels _ hf)
+  have hh0:x.2.2≠0:=(Finset.mem_erase.mp hrow).1
+  have hh:=((mem_nonzeroChildFrequencyBall _ hE Y x.2.2).mp hrow).2
+  have hfreqnorm:‖ringComplex x.2.2‖^2≤ Y:=
+    (element_norm_le_of_dvd (mul_ne_zero hE hh0) (dvd_mul_left x.2.2 _)).trans hh
+  have hj:InverseFirstGlobalCaps.jNorm p x.1≤ B^2:=by
+    have hd:=jLabel_dvd_cube_product p x.1.1.support x.1.1.leftExponent x.1.1.rightExponent
+      x.1.1.leftBit x.1.1.rightBit x.1.1.support_pos
+    have hnorm:=element_norm_le_of_dvd
+      (mul_ne_zero (primeProduct_ne_zero p hp _ _) (primeProduct_ne_zero p hp _ _)) hd
+    simp only [map_mul,norm_mul,mul_pow] at hnorm
+    exact hnorm.trans ((mul_le_mul hcube.1 hcube.2 (sq_nonneg _) hB).trans_eq (pow_two B).symm)
+  refine ⟨?_,hquot,hj⟩
+  intro i
+  fin_cases i
+  · exact ha₁
+  · exact ha₂
+  · exact hcommon
+  · simpa [originalNorms,InverseMomentFirstChildWindows.sourceNorms,divisorElement,
+      primeProductNorm] using hdiv
+  · exact hactive
+  · exact hfreqnorm
+
+end InverseMomentFirstLiveCaps
+
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem first_whole_cube_canonical_tail (ε : ℝ) (hε : 0<ε) (order : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (Ct Cm : ℝ),0<Ct ∧ 0<Cm ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg : ∀ i,lambda∉Ideal.span {p i})
+      (_hchar : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι),b.Admissible →
+      ∀ (common divisor : Finset ι),Disjoint common b.support →
+      ∀ (f : Ideal O),f≠0 →
+      ∀ (Ψ₁ Ψ₂ : O→*ℂ),(∀ u,‖Ψ₁ u‖≤1) → (∀ u,‖Ψ₂ u‖≤1) →
+      ∀ (m₁ m₂ : O) (extra₁ extra₂ : Finset ι) (E : ℝ) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ),
+      0≤ E → primeProductNorm p extra₁≤ E → primeProductNorm p extra₂≤ E →
+      (slots : Set σ).PairwiseDisjoint lists → (∀ i∈slots,∀ k∈lists i,‖a i k‖≤1) →
+      ∀ (test₁ test₂ : Finset ι→ℂ) (W : 𝓢(ℝ,ℂ))
+      (G₁ G₂ Z M r ell V delta B j eta tau : ℝ),0≤ G₁ → 0≤ G₂ → 0<Z →
+      (∀ U,‖test₁ U‖≤ G₁) → (∀ U,‖test₂ U‖≤ G₂) →
+      (∀ U,test₁ U≠0 → primeProductNorm p U≤ Z^(r+eta)) →
+      (∀ U,test₂ U≠0 → primeProductNorm p U≤ Z^(r+eta)) →
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta) →
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta) →
+      (Ideal.absNorm f : ℝ)≤ Z^(V+eta) → primeProductNorm p divisor≤ Z^(delta+eta) →
+      Z^(B-eta)≤ primeProductNorm p common →
+      Z^(j-eta)≤‖ringComplex (jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+        b.leftBit b.rightBit)‖^2 →
+      let residualPool := pool\(b.support∪common)
+      let C₁ := canonicalCubeResidual p hg b common true Ψ₁ m₁ (cubicIdealGenerator f)
+        (fun U=>primeMark slots lists a (extra₁∪U)*test₁ U)
+      let C₂ := canonicalCubeResidual p hg b common false Ψ₂ m₂ (cubicIdealGenerator f)
+        (fun U=>primeMark slots lists a (extra₂∪U)*test₂ U)
+      let U₁ := Z^(r+eta)/(‖ringComplex (aLabel p b.support b.rightBit)‖^2*primeProductNorm p common)
+      let U₂ := Z^(r+eta)/(‖ringComplex (aLabel p b.support b.leftBit)‖^2*primeProductNorm p common)
+      let G₁' := Cm*(E*Z^(r+eta))^ε*G₁
+      let G₂' := Cm*(E*Z^(r+eta))^ε*G₂
+      let active := cubeActiveSupport b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit
+      let slow := Z^M/(primeProductNorm p divisor*primeProductNorm p active*U₁*U₂)
+      let T := childFrequencyBall (firstPhysicalMultiplier p b.support b.leftExponent b.rightExponent b.leftBit b.rightBit f)
+        (Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau))
+      ‖∑' h : {h : O // h∉T},actualFirstKernel p hp hg residualPool b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit C₁ C₂ W
+        (fun _=>1) (fun _=>1) 1 1 (Z^M)
+        ((∏ i ∈ divisor,p i)) h.val‖ ≤
+      ((1+diagonalControl sieveCutoff)*U₁)*((1+diagonalControl sieveCutoff)*U₂)*(G₁'*G₂'*Z^M)*
+        ((Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/((min 1 slow)^2*(1+Z^tau)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_first_physical_tail order
+  obtain ⟨Cm,hCm,hmark⟩ := whole_cube_marked_test_uniform ε hε
+  refine ⟨s,Ct,Cm,hCt,hCm,?_⟩
+  intro ι σ _ _ p hp _ hinj hcop hg hchar pool b hb common divisor hcommon f hf0 Ψ₁ Ψ₂ hΨ₁ hΨ₂
+    m₁ m₂ extra₁ extra₂ E slots lists a hE he₁ he₂ hslots ha test₁ test₂ W G₁ G₂ Z M r ell V delta B j eta tau hG₁ hG₂ hZ
+    htest₁ htest₂ hs₁ hs₂ hb₁ hb₂ hf hd hc hj residualPool C₁ C₂ U₁ U₂ G₁' G₂' active slow T
+  have hdis : Disjoint residualPool (b.support∪common) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hi2
+    exact (Finset.mem_sdiff.mp hi).2 hi2
+  apply htail p hp hinj hcop hg hchar residualPool b.support common divisor b.leftExponent b.rightExponent
+    b.leftBit b.rightBit b.support_pos (hdis.mono_right Finset.subset_union_left) f hf0 C₁ C₂ W
+    G₁' G₂' Z M r ell V delta B j eta tau (by dsimp [G₁']; positivity) (by dsimp [G₂']; positivity) hZ
+  · intro N hN
+    exact (canonical_residual_norm p hg b common true Ψ₁ hΨ₁ m₁ _ _ N).trans
+      (hmark p hp hcop slots lists a hslots ha extra₁ test₁ E G₁ (Z^(r+eta)) hE hG₁
+        (Real.rpow_pos_of_pos hZ _).le he₁ htest₁ hs₁ _)
+  · intro N hN
+    exact (canonical_residual_norm p hg b common false Ψ₂ hΨ₂ m₂ _ _ N).trans
+      (hmark p hp hcop slots lists a hslots ha extra₂ test₂ E G₂ (Z^(r+eta)) hE hG₂
+        (Real.rpow_pos_of_pos hZ _).le he₂ htest₂ hs₂ _)
+  · exact hb₁
+  · exact hb₂
+  · exact hf
+  · exact hd
+  · exact hc
+  · exact hj
+  · intro N hN hn
+    have ht := canonical_residual_test_nonzero p hg b common true Ψ₁ m₁
+      (cubicIdealGenerator f) _ N hn
+    have hn' := hs₁ _ (mul_ne_zero_iff.mp ht).2
+    have he := cube_whole_column_norm p b hb common N hcommon
+      (hdis.mono_left (Finset.mem_powerset.mp hN)) true
+    simp only [ite_true] at he
+    exact he ▸ hn'
+  · intro N hN hn
+    have ht := canonical_residual_test_nonzero p hg b common false Ψ₂ m₂
+      (cubicIdealGenerator f) _ N hn
+    have hn' := hs₂ _ (mul_ne_zero_iff.mp ht).2
+    have he := cube_whole_column_norm p b hb common N hcommon
+      (hdis.mono_left (Finset.mem_powerset.mp hN)) false
+    simp only [ite_false,Bool.false_eq_true] at he
+    exact he ▸ hn'
+
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+section
+variable {ι:Type*} [DecidableEq ι]
+  (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+def firstLocalPhysicalTail (pool:Finset ι) (b:CubeCoordinates ι) (C:Finset ι)
+    (Ψ₁ Ψ₂:O→*ℂ) (m₁ m₂ f:O) (H₁ H₂:Finset ι→ℂ) (W:𝓢(ℝ,ℂ))
+    (K:ℝ) (T:Finset ι→Finset O) (D:Finset ι):ℂ :=
+  ∑'h:{h:O // h∉T D},actualFirstKernel p hp hg (pool\(b.support∪C)) b.support
+    (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit
+    (canonicalCubeResidual p hg b C true Ψ₁ m₁ f H₁)
+    (canonicalCubeResidual p hg b C false Ψ₂ m₂ f H₂) W (fun _=>1) (fun _=>1) 1 1 K
+    ((∏ i ∈ D,p i)) h.val
+
+theorem cube_tail_support_test (pool:Finset ι) (b:CubeCoordinates ι) (C:Finset ι)
+    (Ψ₁ Ψ₂:O→*ℂ) (m₁ m₂ f:O) (H₁ H₂:Finset ι→ℂ) (W:𝓢(ℝ,ℂ))
+    (K L:ℝ) (T:Finset ι→Finset O)
+    (hs:∀U,H₁ U≠0→primeProductNorm p U≤ L) (hC:¬primeProductNorm p C≤ L) :
+    canonicalCubeDualTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂ f H₁ H₂ W K T=0 := by
+  have hz (U:Finset ι):H₁ ((b.rightDivisor∪C)∪U)=0:=by
+    by_contra h
+    exact hC ((primeProductNorm_mono p hp
+      (Finset.Subset.trans Finset.subset_union_right Finset.subset_union_left)).trans (hs _ h))
+  have hcoef (U:Finset ι):canonicalCubeResidual p hg b C true Ψ₁ m₁ f H₁ U=0:=by
+    simp only [canonicalCubeResidual,originalLabelColumn,multiplicativeCoreColumn,ite_true,hz,mul_zero,zero_mul]
+  simp only [canonicalCubeDualTail,actualFirstKernel,threeGaussRowFactor,hcoef,mul_zero,
+    star_zero,zero_mul,ite_self,Finset.sum_const_zero,tsum_zero]
+
+end
+
+theorem full_first_tail_from_local (ε:ℝ) (hε:0<ε) :
+    ∃Ctail:ℝ,0<Ctail ∧ ∀{ι:Type*} [DecidableEq ι]
+      (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (_hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hc:∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool:Finset ι) (bs:Finset (CubeCoordinates ι)) (labels:Finset (Ideal O))
+      (a:CubeCoordinates ι→Finset ι→Ideal O→ℂ) (Ψ₁ Ψ₂:O→*ℂ) (m₁ m₂:O)
+      (H₁ H₂:CubeCoordinates ι→Finset ι→ℂ) (W:𝓢(ℝ,ℂ)) (K B L F Γ E:ℝ)
+      (T:CubeCoordinates ι→Finset ι→Ideal O→Finset ι→Finset O),
+      1≤ B → 0<L → 1≤ F → 0≤Γ → 0≤ E →
+      (∀u,‖Ψ₁ u‖≤1) → (∀u,‖Ψ₂ u‖≤1) →
+      (∀b∈bs,b.Admissible) →
+      (∀b∈bs,‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ B) →
+      (∀b∈bs,‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ B) →
+      (∀I∈labels,I≠0) → (∀I∈labels,(Ideal.absNorm I:ℝ)≤ F) →
+      (∀b∈bs,∀C∈(pool\b.support).powerset,∀I∈labels,‖a b C I‖≤Γ) →
+      (∀b∈bs,∀U,H₁ b U≠0→primeProductNorm p U≤ L) →
+      (∀b∈bs,∀C∈boundedPrimeSupports p (pool\b.support) L,∀I∈labels,
+        ∀D∈(C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit).powerset,
+        ‖firstLocalPhysicalTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂
+          (cubicIdealGenerator I) (H₁ b) (H₂ b) W K (T b C I) D‖≤ E) →
+      ‖∑b∈bs,∑C∈(pool\b.support).powerset,∑I∈labels,a b C I*
+        canonicalCubeDualTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂
+          (cubicIdealGenerator I) (H₁ b) (H₂ b) W K (T b C I)‖≤
+        Ctail*B^(4+ε)*L^2*F*Γ*E := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  obtain ⟨Cb,hCb,hcount⟩:=cube_coordinates_parity_count ε hε
+  refine ⟨Cb*(1+diagonalControl sieveCutoff)^3,by positivity,?_⟩
+  intro ι _ p hp _ hinj hcop hg hc pool bs labels a Ψ₁ Ψ₂ m₁ m₂ H₁ H₂ W K B L F Γ E T
+    hB hL hF hΓ hE hΨ₁ hΨ₂ hadm hb₁ hb₂ hI0 hIF ha hs hlocal
+  have hBp:0<B:=zero_lt_one.trans_le hB
+  have hlabel:(labels.card:ℝ)≤(1+diagonalControl sieveCutoff)*F:=(finite_ideal_card_bound labels F hF hIF).trans (mul_le_mul_of_nonneg_right (by linarith) (zero_le_one.trans hF))
+  have hbcount:(bs.card:ℝ)≤ Cb*B^(1+ε)*B:=by
+    apply hcount p hp hinj bs B B hB hBp.le hadm hb₁ hb₂
+    intro b hb
+    have hn:primeProductNorm p (cubeActiveSupport b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)≤ B^2:=
+      (primeProductNorm_mono p hp (Finset.filter_subset _ _)).trans
+        (cube_whole_support_dyad p hp b B hBp.le (hb₁ b hb) (hb₂ b hb))
+    change ‖ringComplex (∏i∈cubeActiveSupport b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit,p i)‖^2≤ B^2 at hn
+    nlinarith [norm_nonneg (ringComplex (∏i∈cubeActiveSupport b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit,p i))]
+  let z (b:CubeCoordinates ι) (C:Finset ι) (I:Ideal O):ℂ:=
+    canonicalCubeDualTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂
+      (cubicIdealGenerator I) (H₁ b) (H₂ b) W K (T b C I)
+  have hblock (b:CubeCoordinates ι) (hb:b∈bs) (C:Finset ι)
+      (hC:C∈boundedPrimeSupports p (pool\b.support) L) (I:Ideal O) (hI:I∈labels):
+      ‖z b C I‖≤(1+diagonalControl sieveCutoff)*(L*B^2)*E:=by
+    have hCB:Disjoint C b.support:=Finset.disjoint_left.mpr (fun i hi hib=>
+      (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp (Finset.mem_filter.mp hC).1) hi)).2 hib)
+    dsimp only [z,canonicalCubeDualTail]
+    rw [norm_mul]
+    apply (mul_le_of_le_one_left (norm_nonneg _) (canonicalCubeOuter_norm_le_one_of_good p hp hg hinj hc b C
+      Ψ₁ Ψ₂ hΨ₁ hΨ₂ m₁ m₂ _)).trans
+    calc
+      _≤∑D∈(C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit).powerset,E:=by
+        apply (norm_sum_le _ _).trans
+        apply Finset.sum_le_sum
+        intro D hD
+        rw [norm_mul]
+        exact (mul_le_mul (sourceMobiusDivisor_norm_le_one p hp D)
+          (hlocal b hb C hC I hI D hD) (norm_nonneg _) zero_le_one).trans_eq (one_mul E)
+      _= ((C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit).powerset.card:ℝ)*E:=by simp
+      _≤_:=mul_le_mul_of_nonneg_right (cubeSourceDivisors_card p hp hinj b C B L hBp hL hCB
+        (hb₁ b hb) (hb₂ b hb) (Finset.mem_filter.mp hC).2) hE
+  have hcommon (b:CubeCoordinates ι) (hb:b∈bs):
+      ‖∑C∈(pool\b.support).powerset,∑I∈labels,a b C I*z b C I‖≤
+      ((1+diagonalControl sieveCutoff)*L)*((1+diagonalControl sieveCutoff)*F)*Γ*((1+diagonalControl sieveCutoff)*(L*B^2)*E):=by
+    have heq:(∑C∈(pool\b.support).powerset,∑I∈labels,a b C I*z b C I)=
+        ∑C∈boundedPrimeSupports p (pool\b.support) L,∑I∈labels,a b C I*z b C I:=by
+      symm
+      apply Finset.sum_subset (Finset.filter_subset _ _)
+      intro C hC hnot
+      have hn:¬primeProductNorm p C≤ L:=fun h=>hnot (Finset.mem_filter.mpr ⟨hC,h⟩)
+      apply Finset.sum_eq_zero
+      intro I hI
+      rw [show z b C I=0 from cube_tail_support_test p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂ _
+        (H₁ b) (H₂ b) W K L (T b C I) (hs b hb) hn,mul_zero]
+    rw [heq]
+    calc
+      _≤∑C∈boundedPrimeSupports p (pool\b.support) L,∑I∈labels,Γ*((1+diagonalControl sieveCutoff)*(L*B^2)*E):=by
+        apply (norm_sum_le _ _).trans
+        apply Finset.sum_le_sum
+        intro C hC
+        apply (norm_sum_le _ _).trans
+        apply Finset.sum_le_sum
+        intro I hI
+        rw [norm_mul]
+        exact mul_le_mul (ha b hb C (Finset.mem_filter.mp hC).1 I hI) (hblock b hb C hC I hI) (norm_nonneg _) hΓ
+      _= ((boundedPrimeSupports p (pool\b.support) L).card:ℝ)*(labels.card:ℝ)*Γ*((1+diagonalControl sieveCutoff)*(L*B^2)*E):=by simp;ring
+      _≤_:=by gcongr;exact boundedPrimeSupports_card_positive p hp hinj _ _ hL
+  change ‖∑b∈bs,∑C∈(pool\b.support).powerset,∑I∈labels,a b C I*z b C I‖≤_
+  calc
+    _≤∑b∈bs,((1+diagonalControl sieveCutoff)*L)*((1+diagonalControl sieveCutoff)*F)*Γ*((1+diagonalControl sieveCutoff)*(L*B^2)*E):=
+      (norm_sum_le _ _).trans (Finset.sum_le_sum hcommon)
+    _= (bs.card:ℝ)*(((1+diagonalControl sieveCutoff)*L)*((1+diagonalControl sieveCutoff)*F)*Γ*((1+diagonalControl sieveCutoff)*(L*B^2)*E)):=by simp
+    _≤(Cb*B^(1+ε)*B)*(((1+diagonalControl sieveCutoff)*L)*((1+diagonalControl sieveCutoff)*F)*Γ*((1+diagonalControl sieveCutoff)*(L*B^2)*E)):=by gcongr
+    _= _:=by
+      have he:B^(1+ε)*B*B^2=B^(4+ε):=by
+        calc
+          _=B^(1+ε)*B^(1:ℝ)*B^(2:ℝ):=by rw [Real.rpow_one,Real.rpow_two]
+          _=B^((1+ε)+1+2):=by rw [←Real.rpow_add hBp,←Real.rpow_add hBp]
+          _= _:=by congr 1;ring
+      calc
+        _=(Cb*(1+diagonalControl sieveCutoff)^3)*(B^(1+ε)*B*B^2)*L^2*F*Γ*E:=by ring
+        _= _:=by rw [he]
+
+end InverseMoment
+
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem first_canonical_marked_tail (ε : ℝ) (hε : 0<ε) (order : ℕ) :
+    ∃ (s : Finset (ℕ×ℕ)) (Ct Cm : ℝ),0<Ct ∧ 0<Cm ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg : ∀ i,lambda∉Ideal.span {p i})
+      (_hchar : ∀ i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι),b.Admissible →
+      ∀ (common divisor : Finset ι),Disjoint common b.support →
+      ∀ (f : Ideal O),f≠0 →
+      ∀ (Ψ₁ Ψ₂ : O→*ℂ),(∀ u,‖Ψ₁ u‖≤1) → (∀ u,‖Ψ₂ u‖≤1) →
+      ∀ (m₁ m₂ : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ),
+      (slots : Set σ).PairwiseDisjoint lists → (∀ i∈slots,∀ k∈lists i,‖a i k‖≤1) →
+      ∀ (test₁ test₂ : Finset ι→ℂ) (W : 𝓢(ℝ,ℂ))
+      (G₁ G₂ Z M r ell V delta B j eta tau : ℝ),0≤ G₁ → 0≤ G₂ → 0<Z →
+      (∀ U,‖test₁ U‖≤ G₁) → (∀ U,‖test₂ U‖≤ G₂) →
+      (∀ U,test₁ U≠0 → primeProductNorm p U≤ Z^(r+eta)) →
+      (∀ U,test₂ U≠0 → primeProductNorm p U≤ Z^(r+eta)) →
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta) →
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta) →
+      (Ideal.absNorm f : ℝ)≤ Z^(V+eta) → primeProductNorm p divisor≤ Z^(delta+eta) →
+      Z^(B-eta)≤ primeProductNorm p common →
+      Z^(j-eta)≤‖ringComplex (jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+        b.leftBit b.rightBit)‖^2 →
+      let residualPool := pool\(b.support∪common)
+      let C₁ := canonicalCubeResidual p hg b common true Ψ₁ m₁ (cubicIdealGenerator f)
+        (wholeMarkedTest slots lists a test₁)
+      let C₂ := canonicalCubeResidual p hg b common false Ψ₂ m₂ (cubicIdealGenerator f)
+        (wholeMarkedTest slots lists a test₂)
+      let U₁ := Z^(r+eta)/(‖ringComplex (aLabel p b.support b.rightBit)‖^2*primeProductNorm p common)
+      let U₂ := Z^(r+eta)/(‖ringComplex (aLabel p b.support b.leftBit)‖^2*primeProductNorm p common)
+      let G₁' := Cm*(Z^(r+eta))^ε*G₁
+      let G₂' := Cm*(Z^(r+eta))^ε*G₂
+      let active := cubeActiveSupport b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit
+      let slow := Z^M/(primeProductNorm p divisor*primeProductNorm p active*U₁*U₂)
+      let T := childFrequencyBall (firstPhysicalMultiplier p b.support b.leftExponent b.rightExponent b.leftBit b.rightBit f)
+        (Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau))
+      ‖∑' h : {h : O // h∉T},actualFirstKernel p hp hg residualPool b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit C₁ C₂ W
+        (fun _=>1) (fun _=>1) 1 1 (Z^M)
+        ((∏ i ∈ divisor,p i)) h.val‖ ≤
+      ((1+diagonalControl sieveCutoff)*U₁)*((1+diagonalControl sieveCutoff)*U₂)*(G₁'*G₂'*Z^M)*
+        ((Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)/((min 1 slow)^2*(1+Z^tau)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_first_physical_tail order
+  obtain ⟨Cm,hCm,hmark⟩ := whole_marked_test_uniform ε hε
+  refine ⟨s,Ct,Cm,hCt,hCm,?_⟩
+  intro ι σ _ _ p hp _ hinj hcop hg hchar pool b hb common divisor hcommon f hf0 Ψ₁ Ψ₂ hΨ₁ hΨ₂
+    m₁ m₂ slots lists a hslots ha test₁ test₂ W G₁ G₂ Z M r ell V delta B j eta tau hG₁ hG₂ hZ
+    htest₁ htest₂ hs₁ hs₂ hb₁ hb₂ hf hd hc hj residualPool C₁ C₂ U₁ U₂ G₁' G₂' active slow T
+  have hdis : Disjoint residualPool (b.support∪common) := by
+    apply Finset.disjoint_left.mpr
+    intro i hi hi2
+    exact (Finset.mem_sdiff.mp hi).2 hi2
+  apply htail p hp hinj hcop hg hchar residualPool b.support common divisor b.leftExponent b.rightExponent
+    b.leftBit b.rightBit b.support_pos (hdis.mono_right Finset.subset_union_left) f hf0 C₁ C₂ W
+    G₁' G₂' Z M r ell V delta B j eta tau (by dsimp [G₁']; positivity) (by dsimp [G₂']; positivity) hZ
+  · intro N hN
+    exact (canonical_residual_norm p hg b common true Ψ₁ hΨ₁ m₁ _ _ N).trans
+      (hmark p hp hcop slots lists a hslots ha test₁ G₁ (Z^(r+eta)) hG₁
+        (Real.rpow_pos_of_pos hZ _).le htest₁ hs₁ _)
+  · intro N hN
+    exact (canonical_residual_norm p hg b common false Ψ₂ hΨ₂ m₂ _ _ N).trans
+      (hmark p hp hcop slots lists a hslots ha test₂ G₂ (Z^(r+eta)) hG₂
+        (Real.rpow_pos_of_pos hZ _).le htest₂ hs₂ _)
+  · exact hb₁
+  · exact hb₂
+  · exact hf
+  · exact hd
+  · exact hc
+  · exact hj
+  · intro N hN hn
+    exact canonical_marked_residual_support p hg b hb common N hcommon
+      (hdis.mono_left (Finset.mem_powerset.mp hN)) true Ψ₁ m₁ _ slots lists a test₁ _ hs₁ hn
+  · intro N hN hn
+    exact canonical_marked_residual_support p hg b hb common N hcommon
+      (hdis.mono_left (Finset.mem_powerset.mp hN)) false Ψ₂ m₂ _ slots lists a test₂ _ hs₂ hn
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open SecondPassArithmetic
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+
+lemma first_tail_fixed_cap (K D E U₁ U₂ B G₁ G₂ P H : ℝ) (A : ℕ)
+    (hK : 0<K) (hD : 0<D) (hE : 0<E) (hU₁ : 0<U₁) (hU₂ : 0<U₂) (hB : 1≤ B)
+    (hG₁ : 0≤ G₁) (hG₂ : 0≤ G₂) (hP : 0≤ P) (hH : 0≤ H)
+    (hKb : K≤ B) (hKi : K⁻¹≤ B) (hDb : D≤ B) (hEb : E≤ B) (h₁ : U₁≤ B) (h₂ : U₂≤ B) :
+    ((1+diagonalControl sieveCutoff)*U₁)*((1+diagonalControl sieveCutoff)*U₂)*(G₁*G₂*K)*
+      (P/((min 1 (K/(D*E*U₁*U₂)))^2*(1+H)^A)) ≤
+    (4*(1+diagonalControl sieveCutoff)^2)*G₁*G₂*P*B^19/(1+H)^A := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  have hB0 : 0≤ B := zero_le_one.trans hB
+  have hB2 : B≤ B^2 := by nlinarith
+  have hB3 : B≤ B*B^2 := le_mul_of_one_le_right hB0 (one_le_pow₀ hB)
+  have hb := firstTail_scalar_bound K D E U₁ U₂ B B G₁ G₂ P H A hK hD hE hU₁ hU₂
+    hB0 hG₁ hG₂ hP hH (hDb.trans hB3) (hEb.trans hB2) h₁ h₂
+  have hscale : 1+B^3*B^4/K≤2*B^8 := by
+    calc
+      _ ≤ 1+B^3*B^4*B := by rw [div_eq_mul_inv]; gcongr
+      _ ≤ 2*B^8 := by have hh : 1≤ B^8 := one_le_pow₀ hB; nlinarith [hh]
+  apply hb.trans
+  apply div_le_div_of_nonneg_right _ (by positivity)
+  calc
+    _ ≤ ((1+diagonalControl sieveCutoff)*B)^2*(G₁*G₂*B)*P*(2*B^8)^2 := by gcongr
+    _ = _ := by ring
+
+theorem choose_first_tail_order (Lcap tau saving : ℝ) (hL : 0≤ Lcap) (htau : 0<tau) :
+    ∃ A : ℕ, ∀ (Z K D E U₁ U₂ G₁ G₂ P : ℝ),1≤ Z →
+      0<K → 0<D → 0<E → 0<U₁ → 0<U₂ → 0≤ G₁ → 0≤ G₂ → 0≤ P →
+      K≤ Z^Lcap → K⁻¹≤ Z^Lcap → D≤ Z^Lcap → E≤ Z^Lcap → U₁≤ Z^Lcap → U₂≤ Z^Lcap →
+      ((1+diagonalControl sieveCutoff)*U₁)*((1+diagonalControl sieveCutoff)*U₂)*(G₁*G₂*K)*
+        (P/((min 1 (K/(D*E*U₁*U₂)))^2*(1+Z^tau)^A)) ≤
+      (4*(1+diagonalControl sieveCutoff)^2)*G₁*G₂*P*Z^(-saving) := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  obtain ⟨A,hA⟩ := exists_nat_gt ((19*Lcap+saving)/tau)
+  refine ⟨A,?_⟩
+  intro Z K D E U₁ U₂ G₁ G₂ P hZ hK hD hE hU₁ hU₂ hG₁ hG₂ hP hKb hKi hDb hEb h₁ h₂
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have hb := first_tail_fixed_cap K D E U₁ U₂ (Z^Lcap) G₁ G₂ P (Z^tau) A
+    hK hD hE hU₁ hU₂ (Real.one_le_rpow hZ hL) hG₁ hG₂ hP
+    (Real.rpow_pos_of_pos hz _).le hKb hKi hDb hEb h₁ h₂
+  have hdecay : (Z^Lcap)^19/(1+Z^tau)^A≤ Z^(-saving) := by
+    calc
+      _ ≤ (Z^Lcap)^19/(Z^tau)^A := div_le_div_of_nonneg_left (by positivity)
+        (by positivity) (pow_le_pow_left₀ (by positivity) (by linarith) A)
+      _ = Z^(19*Lcap-tau*(A:ℝ)) := by
+        rw [←Real.rpow_mul_natCast hz.le,←Real.rpow_mul_natCast hz.le,←Real.rpow_sub hz]
+        congr 1
+        norm_num
+        ring
+      _ ≤ _ := by
+        apply Real.rpow_le_rpow_of_exponent_le hZ
+        have hh := (div_lt_iff₀ htau).mp hA
+        nlinarith
+  apply hb.trans
+  calc
+    _ = ((4*(1+diagonalControl sieveCutoff)^2)*G₁*G₂*P)*((Z^Lcap)^19/(1+Z^tau)^A) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hdecay (by positivity)
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} (p : ι→O) (hp : ∀i,p i≠0)
+
+include hp in
+theorem first_nonempty_column_center (U : Finset ι) (Z r eta : ℝ) (hZ : 1<Z)
+    (hU : primeProductNorm p U≤ Z^(r+eta)) : -eta≤ r := by
+  have hh : Z^(0:ℝ)≤ Z^(r+eta) := by
+    rw [Real.rpow_zero]
+    exact (primeProductNorm_ge_one p hp U).trans hU
+  have := (Real.rpow_le_rpow_left_iff hZ).mp hh
+  linarith
+
+variable [DecidableEq ι]
+
+include hp in
+
+theorem first_source_divisor_center (b : CubeCoordinates ι) (C D : Finset ι)
+    (hCB : Disjoint C b.support)
+    (hD : D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit)
+    (Z r ell delta eta : ℝ) (hZ : 1<Z)
+    (h1 : ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta))
+    (h2 : ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta))
+    (hC : primeProductNorm p C≤ Z^(r+eta))
+    (hd : Z^(delta-eta)≤ primeProductNorm p D) : delta≤ r+2*ell+4*eta := by
+  have hz : 0<Z := zero_lt_one.trans hZ
+  have hh := hd.trans (cubeSourceDivisor_norm_bound p hp b C D (Z^(ell+eta)) (Z^(r+eta))
+    (Real.rpow_pos_of_pos hz _).le (Real.rpow_pos_of_pos hz _).le hCB h1 h2 hC hD)
+  rw [←Real.rpow_mul_natCast hz.le,←Real.rpow_add hz] at hh
+  have := (Real.rpow_le_rpow_left_iff hZ).mp hh
+  norm_num at this
+  linarith
+
+include hp in
+theorem first_source_scalar_caps (b : CubeCoordinates ι) (C D : Finset ι)
+    (hCB : Disjoint C b.support)
+    (hD : D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit)
+    (Z M Mmax Fmax r ell V eta : ℝ) (hZ : 1≤ Z)
+    (hM : 0≤ M) (hMm : M≤ Mmax) (hF : 0≤ Fmax) (hell : 0≤ ell) (hV : 0≤ V)
+    (heta : 0≤ eta) (hr : -eta≤ r) (hwhole : r+3*ell+V≤ Fmax)
+    (h1 : ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta))
+    (h2 : ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta))
+    (hC : primeProductNorm p C≤ Z^(r+eta)) :
+    let cap := Mmax+Fmax+3*eta
+    Z^M≤ Z^cap ∧ (Z^M)⁻¹≤ Z^cap ∧ primeProductNorm p D≤ Z^cap ∧
+    primeProductNorm p (cubeActiveSupport b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)≤ Z^cap ∧
+    (∀ eps : ι→Bool,Z^(r+eta)/(‖ringComplex (aLabel p b.support eps)‖^2*primeProductNorm p C)≤ Z^cap) := by
+  dsimp only
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have hcap : 0≤ Mmax+Fmax+3*eta := by linarith
+  refine ⟨Real.rpow_le_rpow_of_exponent_le hZ (by linarith),?_,?_,?_,?_⟩
+  · calc
+      _ ≤ 1 := inv_le_one_of_one_le₀ (Real.one_le_rpow hZ hM)
+      _ ≤ _ := Real.one_le_rpow hZ hcap
+  · have hd := cubeSourceDivisor_norm_bound p hp b C D (Z^(ell+eta)) (Z^(r+eta))
+      (Real.rpow_pos_of_pos hz _).le (Real.rpow_pos_of_pos hz _).le hCB h1 h2 hC hD
+    apply hd.trans
+    rw [←Real.rpow_mul_natCast hz.le,←Real.rpow_add hz]
+    apply Real.rpow_le_rpow_of_exponent_le hZ
+    norm_num
+    linarith
+  · apply (primeProductNorm_mono p hp (Finset.filter_subset _ _)).trans
+    apply (cubeCoordinates_radical_bound p hp b (Z^(ell+eta)) (Real.rpow_pos_of_pos hz _).le h1 h2).trans
+    rw [←Real.rpow_mul_natCast hz.le]
+    apply Real.rpow_le_rpow_of_exponent_le hZ
+    norm_num
+    linarith
+  · intro eps
+    have ha := element_norm_ge_one (aLabel p b.support eps) (primeProduct_ne_zero p hp _ _)
+    have hc := primeProductNorm_ge_one p hp C
+    calc
+      _ ≤ Z^(r+eta) := div_le_self (Real.rpow_pos_of_pos hz _).le (one_le_mul_of_one_le_of_one_le ha hc)
+      _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem choose_actual_first_tail_order (Mmax Fmax eta tau saving : ℝ)
+    (hMm : 0≤ Mmax) (hFm : 0≤ Fmax) (heta : 0≤ eta) (htau : 0<tau) :
+    ∃ order : ℕ,∀ {ι : Type*} [DecidableEq ι]
+      (p : ι→O) (_hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (b : CubeCoordinates ι) (C D : Finset ι),Disjoint C b.support →
+      D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit →
+      ∀ (Z M r ell V G₁ G₂ P : ℝ),1≤ Z → 0≤ M → M≤ Mmax → 0≤ ell → 0≤ V → -eta≤ r →
+      r+3*ell+V≤ Fmax → 0≤ G₁ → 0≤ G₂ → 0≤ P →
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta) →
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta) →
+      primeProductNorm p C≤ Z^(r+eta) →
+      let U₁ := Z^(r+eta)/(‖ringComplex (aLabel p b.support b.rightBit)‖^2*primeProductNorm p C)
+      let U₂ := Z^(r+eta)/(‖ringComplex (aLabel p b.support b.leftBit)‖^2*primeProductNorm p C)
+      let active := cubeActiveSupport b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit
+      let slow := Z^M/(primeProductNorm p D*primeProductNorm p active*U₁*U₂)
+      ((1+diagonalControl sieveCutoff)*U₁)*((1+diagonalControl sieveCutoff)*U₂)*(G₁*G₂*Z^M)*(P/((min 1 slow)^2*(1+Z^tau)^order))≤
+        (4*(1+diagonalControl sieveCutoff)^2)*G₁*G₂*P*Z^(-saving) := by
+  obtain ⟨order,he⟩ := choose_first_tail_order (Mmax+Fmax+3*eta) tau saving (by linarith) htau
+  refine ⟨order,?_⟩
+  intro ι _ p hp _ b C D hCB hD Z M r ell V G₁ G₂ P hZ hM hMmax hell hV hr hwhole hG₁ hG₂ hP h1 h2 hC
+  dsimp only
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  obtain ⟨hk,hki,hd,ha,hu⟩ := first_source_scalar_caps p hp b C D hCB hD
+    Z M Mmax Fmax r ell V eta hZ hM hMmax hFm hell hV heta hr hwhole h1 h2 hC
+  have hapos (eps : ι→Bool) : 0<‖ringComplex (aLabel p b.support eps)‖^2 :=
+    SecondPassIntegration.elementNorm_pos _ (primeProduct_ne_zero p hp _ _)
+  exact he Z (Z^M) (primeProductNorm p D)
+    (primeProductNorm p (cubeActiveSupport b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit))
+    (Z^(r+eta)/(‖ringComplex (aLabel p b.support b.rightBit)‖^2*primeProductNorm p C))
+    (Z^(r+eta)/(‖ringComplex (aLabel p b.support b.leftBit)‖^2*primeProductNorm p C))
+    G₁ G₂ P hZ (Real.rpow_pos_of_pos hz _) (primeProductNorm_pos p hp _) (primeProductNorm_pos p hp _)
+    (div_pos (Real.rpow_pos_of_pos hz _) (mul_pos (hapos _) (primeProductNorm_pos p hp _)))
+    (div_pos (Real.rpow_pos_of_pos hz _) (mul_pos (hapos _) (primeProductNorm_pos p hp _)))
+    hG₁ hG₂ hP hk hki hd ha (hu _) (hu _)
+
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem first_whole_cube_rapid_physical_tail (ε:ℝ) (hε:0<ε)
+    (Mmax Fmax eta tau saving:ℝ) (hMm:0≤ Mmax) (hFm:0≤ Fmax)
+    (heta:0≤ eta) (htau:0<tau) :
+    ∃ (s:Finset (ℕ×ℕ)) (Ct Cm:ℝ),0<Ct ∧ 0<Cm ∧
+    ∀{ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+      (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (_hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hc:∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool:Finset ι) (b:CubeCoordinates ι) (C D extra₁ extra₂:Finset ι)
+      (f:Ideal O) (Ψ₁ Ψ₂:O→*ℂ) (m₁ m₂:O)
+      (slots:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+      (test₁ test₂:Finset ι→ℂ) (W:𝓢(ℝ,ℂ))
+      (E G₁ G₂ Z M r ell V B j:ℝ) (delta:Finset ι→ℝ),
+      b.Admissible → Disjoint C b.support →
+      D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit →
+      f≠0 → 0≤ E → 0≤ G₁ → 0≤ G₂ → 1≤ Z → 0≤ M → M≤ Mmax →
+      0≤ ell → 0≤ V → -eta≤ r → r+3*ell+V≤ Fmax →
+      primeProductNorm p C≤ Z^(r+eta) →
+      primeProductNorm p extra₁≤ E → primeProductNorm p extra₂≤ E →
+      (∀u,‖Ψ₁ u‖≤1) → (∀u,‖Ψ₂ u‖≤1) →
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      (∀U,‖test₁ U‖≤ G₁) → (∀U,‖test₂ U‖≤ G₂) →
+      (∀U,test₁ U≠0→primeProductNorm p U≤ Z^(r+eta)) →
+      (∀U,test₂ U≠0→primeProductNorm p U≤ Z^(r+eta)) →
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta) →
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta) →
+      (Ideal.absNorm f:ℝ)≤ Z^(V+eta) → primeProductNorm p D≤ Z^(delta D+eta) →
+      Z^(B-eta)≤ primeProductNorm p C →
+      Z^(j-eta)≤‖ringComplex (jLabel p b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2 →
+      ‖firstLocalPhysicalTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂
+        (cubicIdealGenerator f)
+        (fun U=>primeMark slots lists a (extra₁∪U)*test₁ U)
+        (fun U=>primeMark slots lists a (extra₂∪U)*test₂ U) W (Z^M)
+        (fun D=>childFrequencyBall (firstPhysicalMultiplier p b.support b.leftExponent
+          b.rightExponent b.leftBit b.rightBit f)
+          (Z^(firstPhysicalHeight M r ell V (delta D) B j+12*eta+tau))) D‖≤
+      (4*(1+diagonalControl sieveCutoff)^2)*(Cm*(E*Z^(r+eta))^ε*G₁)*(Cm*(E*Z^(r+eta))^ε*G₂)*
+        (Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*Z^(-saving) := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  obtain ⟨order,horder⟩:=choose_actual_first_tail_order Mmax Fmax eta tau saving hMm hFm heta htau
+  obtain ⟨s,Ct,Cm,hCt,hCm,htail⟩:=first_whole_cube_canonical_tail ε hε order
+  refine ⟨s,Ct,Cm,hCt,hCm,?_⟩
+  intro ι σ _ _ p hp _ hinj hcop hg hc pool b C D extra₁ extra₂ f Ψ₁ Ψ₂ m₁ m₂ slots lists a
+    test₁ test₂ W E G₁ G₂ Z M r ell V B j delta hb hCB hD hf hE hG₁ hG₂ hZ hM hMmax
+    hell hV hr hwhole hC he₁ he₂ hΨ₁ hΨ₂ hslots ha ht₁ ht₂ hs₁ hs₂ hb₁ hb₂ hF hdelta hBlo hj
+  have hz:0<Z:=zero_lt_one.trans_le hZ
+  have hlocal:=htail p hp hinj hcop hg hc pool b hb C D hCB f hf Ψ₁ Ψ₂ hΨ₁ hΨ₂
+    m₁ m₂ extra₁ extra₂ E slots lists a hE he₁ he₂ hslots ha test₁ test₂ W G₁ G₂ Z M r ell V
+    (delta D) B j eta tau hG₁ hG₂ hz ht₁ ht₂ hs₁ hs₂ hb₁ hb₂ hF hdelta hBlo hj
+  dsimp only at hlocal
+  apply hlocal.trans
+  exact horder p hp b C D hCB hD Z M r ell V
+    (Cm*(E*Z^(r+eta))^ε*G₁) (Cm*(E*Z^(r+eta))^ε*G₂)
+    (Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)
+    hZ hM hMmax hell hV hr hwhole (by positivity) (by positivity) (by positivity) hb₁ hb₂ hC
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def firstExactPhysicalCutoff {ι:Type*} [DecidableEq ι] (p:ι→O)
+    (b:CubeCoordinates ι) (C:Finset ι) (I:Ideal O) (Z M r ell V eta tau:ℝ) (D:Finset ι):Finset O :=
+  childFrequencyBall (firstPhysicalMultiplier p b.support b.leftExponent b.rightExponent b.leftBit b.rightBit I)
+    (Z^(firstPhysicalHeight M r ell V (Real.logb Z (primeProductNorm p D))
+      (Real.logb Z (primeProductNorm p C))
+      (Real.logb Z (‖ringComplex (jLabel p b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2))+12*eta+tau))
+
+theorem full_first_whole_marked_rapid_tail (Mmax Fmax eta tau saving:ℝ)
+    (hMm:0≤ Mmax) (hFm:0≤ Fmax) (heta:0≤ eta) (htau:0<tau) :
+    ∃(s:Finset (ℕ×ℕ)) (Ctail:ℝ),0<Ctail ∧
+    ∀{ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+      (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (_hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hc:∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool:Finset ι) (bs:Finset (CubeCoordinates ι)) (labels:Finset (Ideal O))
+      (a:CubeCoordinates ι→Finset ι→Ideal O→ℂ) (Ψ₁ Ψ₂:O→*ℂ) (m₁ m₂:O)
+      (slots:Finset σ) (lists:σ→Finset ι) (weights:σ→ι→ℂ)
+      (extra₁ extra₂:CubeCoordinates ι→Finset ι)
+      (test₁ test₂:CubeCoordinates ι→Finset ι→ℂ) (W:𝓢(ℝ,ℂ))
+      (Z M r ell V Γ G₁ G₂:ℝ),
+      1<Z → 0≤ M → M≤ Mmax → 0≤ ell → 0≤ V → -eta≤ r → r+3*ell+V≤ Fmax →
+      0≤Γ → 0≤ G₁ → 0≤ G₂ →
+      (∀u,‖Ψ₁ u‖≤1) → (∀u,‖Ψ₂ u‖≤1) →
+      (∀b∈bs,b.Admissible) →
+      (∀b∈bs,‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta)) →
+      (∀b∈bs,‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta)) →
+      (∀I∈labels,I≠0) → (∀I∈labels,(Ideal.absNorm I:ℝ)≤ Z^(V+eta)) →
+      (∀b∈bs,∀C∈(pool\b.support).powerset,∀I∈labels,‖a b C I‖≤Γ) →
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖weights i k‖≤1) →
+      (∀b∈bs,extra₁ b⊆b.support) → (∀b∈bs,extra₂ b⊆b.support) →
+      (∀b∈bs,∀U,‖test₁ b U‖≤ G₁) → (∀b∈bs,∀U,‖test₂ b U‖≤ G₂) →
+      (∀b∈bs,∀U,test₁ b U≠0→primeProductNorm p U≤ Z^(r+eta)) →
+      (∀b∈bs,∀U,test₂ b U≠0→primeProductNorm p U≤ Z^(r+eta)) →
+      ‖∑b∈bs,∑C∈(pool\b.support).powerset,∑I∈labels,a b C I*
+        canonicalCubeDualTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂
+          (cubicIdealGenerator I)
+          (fun U=>primeMark slots lists weights (extra₁ b∪U)*test₁ b U)
+          (fun U=>primeMark slots lists weights (extra₂ b∪U)*test₂ b U) W (Z^M)
+          (firstExactPhysicalCutoff p b C I Z M r ell V eta tau)‖≤
+      Ctail*Γ*G₁*G₂*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*Z^(-saving) := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  let saving':=saving+4*Fmax+14*eta
+  obtain ⟨s,Ct,Cm,hCt,hCm,hloc⟩:=first_whole_cube_rapid_physical_tail 1 (by norm_num)
+    Mmax Fmax eta tau saving' hMm hFm heta htau
+  obtain ⟨Ca,hCa,hagg⟩:=full_first_tail_from_local 1 (by norm_num)
+  refine ⟨s,Ca*(4*(1+diagonalControl sieveCutoff)^2)*Cm^2*Ct,by positivity,?_⟩
+  intro ι σ _ _ p hp _ hinj hcop hg hc pool bs labels a Ψ₁ Ψ₂ m₁ m₂ slots lists weights extra₁ extra₂
+    test₁ test₂ W Z M r ell V Γ G₁ G₂ hZ hM hMmax hell hV hr hwhole hΓ hG₁ hG₂ hΨ₁ hΨ₂
+    hadm hb₁ hb₂ hI0 hIF ha hslots hw he₁ he₂ ht₁ ht₂ hs₁ hs₂
+  have hz:0<Z:=zero_lt_one.trans hZ
+  let B:=Z^(ell+eta)
+  let L:=Z^(r+eta)
+  let E:=(4*(1+diagonalControl sieveCutoff)^2)*(Cm*(B^2*L)*G₁)*(Cm*(B^2*L)*G₂)*
+    (Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*Z^(-saving')
+  have hB:1≤ B:=Real.one_le_rpow hZ.le (by linarith)
+  have hL:0<L:=Real.rpow_pos_of_pos hz _
+  have hE:0≤ E:=by dsimp [E,B,L];positivity
+  have hextra (extra:CubeCoordinates ι→Finset ι) (he:∀b∈bs,extra b⊆b.support)
+      (b:CubeCoordinates ι) (hb:b∈bs):primeProductNorm p (extra b)≤ B^2:=
+    (primeProductNorm_mono p hp (he b hb)).trans
+      (cube_whole_support_dyad p hp b B (zero_le_one.trans hB) (hb₁ b hb) (hb₂ b hb))
+  have hlocal (b:CubeCoordinates ι) (hb:b∈bs) (C:Finset ι)
+      (hC:C∈boundedPrimeSupports p (pool\b.support) L) (I:Ideal O) (hI:I∈labels)
+      (D:Finset ι) (hD:D∈(C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit).powerset):
+      ‖firstLocalPhysicalTail p hp hg pool b C Ψ₁ Ψ₂ m₁ m₂ (cubicIdealGenerator I)
+        (fun U=>primeMark slots lists weights (extra₁ b∪U)*test₁ b U)
+        (fun U=>primeMark slots lists weights (extra₂ b∪U)*test₂ b U) W (Z^M)
+        (firstExactPhysicalCutoff p b C I Z M r ell V eta tau) D‖≤ E:=by
+    have hCB:Disjoint C b.support:=Finset.disjoint_left.mpr (fun i hi hib=>
+      (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp (Finset.mem_filter.mp hC).1) hi)).2 hib)
+    have hupper (x:ℝ) (hx:0<x):x≤ Z^(Real.logb Z x+eta):=by
+      conv_lhs=>rw [←Real.rpow_logb hz (ne_of_gt hZ) hx]
+      exact Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+    have hlower (x:ℝ) (hx:0<x):Z^(Real.logb Z x-eta)≤ x:=by
+      conv_rhs=>rw [←Real.rpow_logb hz (ne_of_gt hZ) hx]
+      exact Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+    have hjpos:0<‖ringComplex (jLabel p b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2:=
+      SecondPassIntegration.elementNorm_pos _ (primeProduct_ne_zero p hp _ _)
+    have he:=hloc p hp hinj hcop hg hc pool b C D (extra₁ b) (extra₂ b) I Ψ₁ Ψ₂ m₁ m₂
+      slots lists weights (test₁ b) (test₂ b) W (B^2) G₁ G₂ Z M r ell V
+      (Real.logb Z (primeProductNorm p C))
+      (Real.logb Z (‖ringComplex (jLabel p b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2))
+      (fun D=>Real.logb Z (primeProductNorm p D))
+      (hadm b hb) hCB (Finset.mem_powerset.mp hD) (hI0 I hI) (sq_nonneg _) hG₁ hG₂ hZ.le hM hMmax
+      hell hV hr hwhole (Finset.mem_filter.mp hC).2 (hextra extra₁ he₁ b hb) (hextra extra₂ he₂ b hb)
+      hΨ₁ hΨ₂ hslots hw (ht₁ b hb) (ht₂ b hb) (hs₁ b hb) (hs₂ b hb) (hb₁ b hb) (hb₂ b hb) (hIF I hI)
+      (hupper _ (primeProductNorm_pos p hp D)) (hlower _ (primeProductNorm_pos p hp C)) (hlower _ hjpos)
+    simpa only [firstLocalPhysicalTail,firstExactPhysicalCutoff,Real.rpow_one,E,L] using he
+  have he:=hagg p hp hinj hcop hg hc pool bs labels a Ψ₁ Ψ₂ m₁ m₂
+    (fun b U=>primeMark slots lists weights (extra₁ b∪U)*test₁ b U)
+    (fun b U=>primeMark slots lists weights (extra₂ b∪U)*test₂ b U) W (Z^M) B L (Z^(V+eta)) Γ E
+    (fun b C I=>firstExactPhysicalCutoff p b C I Z M r ell V eta tau)
+    hB hL (Real.one_le_rpow hZ.le (by linarith)) hΓ hE hΨ₁ hΨ₂ hadm hb₁ hb₂ hI0 hIF ha
+    (fun b hb U hU=>hs₁ b hb U (mul_ne_zero_iff.mp hU).2) hlocal
+  apply he.trans
+  have hexp:B^9*L^4*Z^(V+eta)*Z^(-saving')≤ Z^(-saving):=by
+    dsimp [B,L]
+    rw [←Real.rpow_mul_natCast hz.le,←Real.rpow_mul_natCast hz.le,
+      ←Real.rpow_add hz,←Real.rpow_add hz,←Real.rpow_add hz]
+    apply Real.rpow_le_rpow_of_exponent_le hZ.le
+    dsimp [saving']
+    norm_num
+    linarith
+  have hm:=mul_le_mul_of_nonneg_left hexp
+    (show 0≤ Ca*(4*(1+diagonalControl sieveCutoff)^2)*Cm^2*Ct*Γ*G₁*G₂*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) from by positivity)
+  convert hm using 1
+  · dsimp only [E]
+    norm_num
+    ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic InverseFirstGlobalCaps
+open InverseSecondSourceBlocks
+open Eisenstein (ringComplex)
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι:Type*}[DecidableEq ι]
+
+def firstDyadicExponent (Z x:ℝ):ℝ:=dyadicExponent Z (dyadIndex x)
+
+theorem first_dyadic_bounds (Z eta x:ℝ)(hZ:1<Z)(hbin:2≤ Z^eta)(hx:1≤ x):
+    0≤ firstDyadicExponent Z x ∧ Z^firstDyadicExponent Z x≤ x ∧ x≤ Z^(firstDyadicExponent Z x+eta):=by
+  have hd:=dyadIndex_bounds x hx
+  have he:=dyad_power_bounds Z eta x hZ hbin (dyadIndex x) ⟨hd.1,hd.2.le⟩
+  refine ⟨?_,he⟩
+  apply (Real.rpow_le_rpow_left_iff hZ).mp
+  rw [Real.rpow_zero,firstDyadicExponent,rpow_dyadicExponent Z hZ]
+  exact one_le_pow₀ (by norm_num : (1:ℝ)≤2)
+
+def firstDyadicRadius (p:ι→O)(b:CubeCoordinates ι)(C D:Finset ι)
+    (Z M r ell V eta tau:ℝ):ℝ:=
+  Z^(firstPhysicalHeight M r ell V (firstDyadicExponent Z (primeProductNorm p D))
+    (firstDyadicExponent Z (primeProductNorm p C))
+    (firstDyadicExponent Z (‖ringComplex (jLabel p b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2))+12*eta+tau)
+
+def firstDyadicPhysicalCutoff (p:ι→O)(b:CubeCoordinates ι)(C:Finset ι)(I:Ideal O)
+    (Z M r ell V eta tau:ℝ)(D:Finset ι):Finset O:=
+  childFrequencyBall (firstPhysicalMultiplier p b.support b.leftExponent b.rightExponent b.leftBit b.rightBit I)
+    (firstDyadicRadius p b C D Z M r ell V eta tau)
+
+theorem first_dyadic_radius_global_cap
+    (p:ι→O)(hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+    (b:CubeCoordinates ι)(C D:Finset ι)
+    (hD:D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit)
+    (Z M r ell V eta tau Fmax:ℝ)(hZ:1<Z)(hbin:2≤ Z^eta)(hM:0≤ M)
+    (hF:r+3*ell+V≤ Fmax)
+    (h₁:‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta))
+    (h₂:‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta)):
+    firstDyadicRadius p b C D Z M r ell V eta tau≤ Z^(2*Fmax+15*eta+tau):=by
+  have hz:0<Z:=zero_lt_one.trans hZ
+  have hC:=first_dyadic_bounds Z eta (primeProductNorm p C) hZ hbin (primeProductNorm_ge_one p hp C)
+  have hd:=first_dyadic_bounds Z eta (primeProductNorm p D) hZ hbin (primeProductNorm_ge_one p hp D)
+  have hj:=first_dyadic_bounds Z eta (‖ringComplex (jLabel p b.support
+    (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2) hZ hbin
+    (SecondPassArithmetic.element_norm_ge_one _ (primeProduct_ne_zero p hp _ _))
+  have hs:=cube_whole_support_dyad p hp b (Z^(ell+eta)) (Real.rpow_nonneg hz.le _) h₁ h₂
+  have hn:primeProductNorm p D≤ Z^(firstDyadicExponent Z (primeProductNorm p C)+2*ell+3*eta):=by
+    calc
+      _≤ primeProductNorm p (C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit):=
+        primeProductNorm_mono p hp hD
+      _≤ primeProductNorm p C*primeProductNorm p b.support:=
+        (primeProductNorm_union_le_mul p hp _ _).trans
+          (mul_le_mul_of_nonneg_left (primeProductNorm_mono p hp (Finset.filter_subset _ _)) (primeProductNorm_pos p hp _).le)
+      _≤ Z^(firstDyadicExponent Z (primeProductNorm p C)+eta)*(Z^(ell+eta))^2:=
+        mul_le_mul hC.2.2 hs (primeProductNorm_pos p hp _).le (Real.rpow_nonneg hz.le _)
+      _=_:=by
+        rw [←Real.rpow_natCast,←Real.rpow_mul hz.le,←Real.rpow_add hz]
+        congr 1
+        norm_num
+        ring
+  have hde:= (Real.rpow_le_rpow_left_iff hZ).mp (hd.2.1.trans hn)
+  unfold firstDyadicRadius firstPhysicalHeight
+  apply Real.rpow_le_rpow_of_exponent_le hZ.le
+  linarith [hC.1,hj.1]
+
+end InverseMoment
+
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+open InverseMomentFirstProfileUniform InverseAmbientProfileTower
+theorem actual_first_moving_family_two_energies_uniform
+    (U₀ : Fin 9 → 𝓢(ℝ,ℂ)) (g₁ g₂ Φ : 𝓢(ℝ,ℂ))
+    (M₀ B₀ : Fin 9 → ℝ) (m₁ m₂ bcap : ℝ)
+    (hM : ∀ i,0 ≤ M₀ i) (hB₀ : ∀ i,0 ≤ B₀ i)
+    (hU : ∀ i,Function.support (U₀ i) ⊆ Set.Icc (-M₀ i) (M₀ i))
+    (hg₁ : Function.support g₁ ⊆ Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂ ⊆ Set.Icc (-m₂) m₂) (Aker J : ℕ) :
+    ∃ Cprofile : ℝ,0 ≤ Cprofile ∧ ∀ {ι κ : Type*} [DecidableEq ι] (p : ι → Eis) (_hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (source : Finset κ) (F : Finset ι) (selector C₁ C₂ : κ → Finset ι → ℂ) (w : κ → ℂ)
+    (omega₁ omega₂ : ℝ → ℂ) (ρ : Fin 9 → ℝ) (c₁ c₂ θ₁ θ₂ : ℝ)
+    (A₁ A₂ C R : κ → ℝ) (K L : ℝ) (_hK : 0 < K) (d h : κ → Eis) (s : Fin 9 → ℝ)
+    (_hpos : ∀ x∈source,0 < A₁ x ∧ 0 < A₂ x ∧ 0 < C x ∧ 0 < R x ∧ d x ≠ 0 ∧ h x ≠ 0)
+    (_hs : ∀ i,0 < s i)
+    (_hρ : ∀ i,|ρ i| ≤ B₀ i) (_hc₁ : 1 ≤ c₁) (_hc₂ : 1 ≤ c₂)
+    (_hc₁b : c₁ ≤ bcap) (_hc₂b : c₂ ≤ bcap) (_hL : 0 ≤ L)
+    (_homega₁ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      (positiveSource g₁ c₁ θ₁) (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7)) ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) = 1)
+    (_homega₂ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      (positiveSource g₂ c₂ θ₂) (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8)) ≠ 0 →
+      omega₂ (primeProductNorm p j.2.2.2/s 8) = 1)
+    (_hcut : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) ≠ 0 → omega₂ (primeProductNorm p j.2.2.2/s 8) ≠ 0 →
+      ∀ i,U₀ i ((firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j) s i)+ρ i) = 1)
+    (B₁ B₂ : ℝ) (_hB₁ : 0 ≤ B₁) (_hB₂ : 0 ≤ B₂)
+    (_hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₁ w true omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) h ≤
+        B₁*(tripleHeight J z.1*coordinateHeight J z.2))
+    (_hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      firstFamilyEnergy p hg source F selector C₂ w false omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) h ≤
+        B₂*(tripleHeight J z.1*coordinateHeight J z.2)),
+    ‖firstFamilyPhysicalRows p hg source F selector C₁ C₂ w (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) Φ A₁ A₂ C R K d h s‖ ≤
+      (Real.exp ((9/2:ℝ)*L)/firstRootScale s)*
+        ((Real.sqrt B₁*Real.sqrt B₂)*(Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+          (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker)) := by
+  obtain ⟨Cprofile,hCprofile,hmeasure⟩ := InverseMomentFirstProfileUniform.first_profile_common_measure
+    U₀ g₁ g₂ Φ M₀ B₀ m₁ m₂ bcap hM hB₀ hU hg₁ hg₂ Aker J
+  refine ⟨Cprofile,hCprofile,?_⟩
+  intro ι κ _ p hp _ hg source F selector C₁ C₂ w omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂
+    A₁ A₂ C R K L hK d h s hpos hs hρ hc₁ hc₂ hc₁b hc₂b hL
+    homega₁ homega₂ hcut B₁ B₂ hB₁ hB₂ hleft hright
+  have hRad : 0 < K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8) := by
+    exact div_pos (mul_pos hK (hs 6))
+      (mul_pos (mul_pos (mul_pos (mul_pos (hs 3) (hs 4)) (sq_pos_of_pos (hs 5))) (hs 7)) (hs 8))
+  obtain ⟨b₃,hb₃⟩ := hmeasure (K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8)) hRad
+  obtain ⟨hsep,hWeighted,hMoment⟩ := hb₃ ρ c₁ c₂ θ₁ θ₂ L hρ hc₁ hc₂ hc₁b hc₂b hL
+  let g := fun i => rooted (U₀ i) (M₀ i) (InverseClippingProfiles.firstBalancedSlope i) (hU i)
+  let f₁ := rooted g₁ m₁ (-(1/2:ℝ)) hg₁
+  let f₂ := rooted g₂ m₂ (-(1/2:ℝ)) hg₂
+  let den := density g f₁ f₂ b₃ ρ c₁ c₂ θ₁ θ₂ L
+  have hden : Integrable den := first_balanced_density_integrable g f₁ f₂ b₃ ρ c₁ c₂ θ₁ θ₂ L
+  have he := actual_first_family_two_energies p hg hp source F selector C₁ C₂ w
+    (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) omega₁ omega₂ Φ (fun i y => U₀ i (y+ρ i))
+    A₁ A₂ C R K L d h s hpos hs den hden hsep homega₁ homega₂ hcut
+    J B₁ B₂ hB₁ hB₂ hWeighted hleft hright
+  have hd : (∫ z : Frequency × (Fin 9 → ℝ),tripleHeight J z.1*coordinateHeight J z.2*‖den z‖) ≤
+      Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+        (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+        (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker := by
+    apply (le_div_iff₀ (pow_pos (by linarith : 0 < 1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8)) Aker)).mpr
+    exact (mul_comm _ _).le.trans hMoment
+  exact he.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hd (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)))
+    (by have := firstRootScale_pos s hs; positivity))
+
+theorem first_global_retained_push_uniform (ε:ℝ)(hε:0<ε):
+    ∃ K:ℝ,0<K ∧ ∀ {ι κ:Type*} [DecidableEq ι] [DecidableEq κ] (p:ι→Eis)(hp:∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg:∀i,lambda∉Ideal.span {p i})
+    (_hc:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (_hpr:∀i,lambda^2∣p i-1)
+    (F:Finset ι)(outer:Finset κ)(cube:κ→CubeCoordinates ι)(common:κ→Finset ι)
+    (Ψ₁ Ψ₂:Eis→*ℂ)(m₁ m₂:Eis)(d:κ→Eis)
+    (labels:κ→Finset (Ideal Eis))(a:κ→Ideal Eis×Eis→ℂ)(Γ Y:ℝ),
+    (∀u,‖Ψ₁ u‖≤1)→(∀u,‖Ψ₂ u‖≤1)→0≤Γ→0<Y→
+    (∀k∈outer,∀f∈labels k,Squarefree f)→(∀k∈outer,∀f∈labels k,f≠0)→
+    (∀k∈outer,∀x∈firstRetainedSource p (labels k) (cube k) Y,‖a k x‖≤Γ)→
+    ∀(negative:Bool)(H selector:κ→Finset ι→ℂ)(omega:ℝ→ℂ)(X t:ℝ),0<X→
+    firstFamilyEnergy p hg (firstGlobalRetainedSource p outer labels cube Y) F
+      (fun x=>selector x.1)
+      (fun x=>firstCanonicalCoefficient p hg (cube x.1) (common x.1) negative
+        (if negative then Ψ₁ else Ψ₂) (if negative then m₁ else m₂) (d x.1) (H x.1) x.2)
+      (fun x=>retainedCubeWeight p hp hg (cube x.1) (common x.1) Ψ₁ Ψ₂ m₁ m₂
+        (d x.1) (a x.1) x.2)
+      negative omega X t (fun x=>x.2.2) ≤
+    Γ*K*Y^ε*∑k∈outer,firstCanonicalSecondEnergy p hp hg hinj F (cube k) (common k)
+      negative (if negative then Ψ₁ else Ψ₂) (if negative then m₁ else m₂) (d k)
+      (H k) (selector k) omega X t Y := by
+  obtain ⟨K,hK,hpush⟩:=first_retained_actual_second_energy ε hε
+  refine ⟨K,hK,?_⟩
+  intro ι κ _ _ p hp _ hinj hcop hg hc hpr F outer cube common Ψ₁ Ψ₂ m₁ m₂ d labels a Γ Y
+    hΨ₁ hΨ₂ hΓ hY hs hn ha negative H selector omega X t hX
+  simp only [firstFamilyEnergy,firstGlobalRetainedSource,Finset.sum_sigma]
+  rw [Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro k hk
+  exact hpush p hp hinj hcop hg hc hpr F (cube k) (common k) Ψ₁ Ψ₂ hΨ₁ hΨ₂ m₁ m₂
+    (d k) (labels k) (a k) Γ Y hΓ hY (hs k hk) (hn k hk) (ha k hk)
+    negative (H k) (selector k) omega X t hX
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+open InverseMomentFirstProfileUniform InverseAmbientProfileTower
+theorem actual_first_original_subset_two_energies (ε : ℝ) (hε : 0<ε)
+    (U₀ : Fin 9 → 𝓢(ℝ,ℂ)) (g₁ g₂ Φ : 𝓢(ℝ,ℂ))
+    (M₀ B₀ : Fin 9 → ℝ) (m₁ m₂ bcap : ℝ)
+    (hM : ∀ i,0 ≤ M₀ i) (hB₀ : ∀ i,0 ≤ B₀ i)
+    (hU : ∀ i,Function.support (U₀ i) ⊆ Set.Icc (-M₀ i) (M₀ i))
+    (hg₁ : Function.support g₁ ⊆ Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂ ⊆ Set.Icc (-m₂) m₂) (Aker J : ℕ) :
+    ∃ Cprofile Kpush : ℝ,0 ≤ Cprofile ∧ 0<Kpush ∧ ∀ {ι κ : Type*} [DecidableEq ι] [DecidableEq κ] (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (_hc : ∀ i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (_hpr : ∀ i,lambda^2∣p i-1)
+    (F : Finset ι) (outer:Finset κ) (b : κ→SecondPassArithmetic.CubeCoordinates ι) (common : κ→Finset ι)
+    (Ψ₁ Ψ₂ : Eis→*ℂ) (mleft mright : Eis) (dd:κ→Eis) (H₁ H₂ selector : κ→Finset ι→ℂ)
+    (labels : κ→Finset (Ideal Eis)) (a : κ→Ideal Eis×Eis→ℂ) (Γ Y : ℝ)
+    (_hΨ₁ : ∀ u,‖Ψ₁ u‖≤1) (_hΨ₂ : ∀ u,‖Ψ₂ u‖≤1)
+    (_hΓ : 0≤Γ) (_hY : 0<Y)
+    (_hlabels : ∀k∈outer,∀ f∈labels k,Squarefree f) (_hn : ∀k∈outer,∀ f∈labels k,f≠0)
+    (_ha : ∀k∈outer,∀ x∈firstRetainedSource p (labels k) (b k) Y,‖a k x‖≤Γ)
+    (omega₁ omega₂ : ℝ → ℂ) (ρ : Fin 9 → ℝ) (c₁ c₂ θ₁ θ₂ : ℝ)
+    (A₁ A₂ C R : (Σ _ : κ,Ideal Eis×Eis) → ℝ) (K L : ℝ) (_hK : 0<K) (s : Fin 9→ℝ)
+    (_hs : ∀ i,0<s i)
+    (selected : Finset (Σ _ : κ,Ideal Eis×Eis))
+    (_hselected : selected⊆firstGlobalRetainedSource p outer labels b Y),
+    let source := selected
+    let C₁ := fun x : (Σ _ : κ,Ideal Eis×Eis) => firstCanonicalCoefficient p hg (b x.1) (common x.1) true Ψ₁ mleft (dd x.1) (H₁ x.1) x.2
+    let C₂ := fun x : (Σ _ : κ,Ideal Eis×Eis) => firstCanonicalCoefficient p hg (b x.1) (common x.1) false Ψ₂ mright (dd x.1) (H₂ x.1) x.2
+    let w := fun x : (Σ _ : κ,Ideal Eis×Eis) => retainedCubeWeight p hp hg (b x.1) (common x.1) Ψ₁ Ψ₂ mleft mright (dd x.1) (a x.1) x.2
+    ∀ (_hpos : ∀ x∈source,0<A₁ x ∧ 0<A₂ x ∧ 0<C x ∧ 0<R x ∧ dd x.1≠0 ∧ x.2.2≠0)
+    (_hρ : ∀ i,|ρ i| ≤ B₀ i) (_hc₁ : 1 ≤ c₁) (_hc₂ : 1 ≤ c₂)
+    (_hc₁b : c₁ ≤ bcap) (_hc₂b : c₂ ≤ bcap) (_hL : 0 ≤ L)
+    (_homega₁ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x.1 j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j ≠ 0 →
+      (positiveSource g₁ c₁ θ₁) (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7)) ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) = 1)
+    (_homega₂ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x.1 j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j ≠ 0 →
+      (positiveSource g₂ c₂ θ₂) (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8)) ≠ 0 →
+      omega₂ (primeProductNorm p j.2.2.2/s 8) = 1)
+    (_hcut : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x.1 j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) ≠ 0 → omega₂ (primeProductNorm p j.2.2.2/s 8) ≠ 0 →
+      ∀ i,U₀ i ((firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (dd x.1) x.2.2 j) s i)+ρ i) = 1)
+    (B₁ B₂ : ℝ) (_hB₁ : 0 ≤ B₁) (_hB₂ : 0 ≤ B₂)
+    (_hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      (∑k∈outer,firstCanonicalSecondEnergy p hp hg hinj F (b k) (common k) true Ψ₁ mleft (dd k) (H₁ k) (selector k) omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) Y) ≤
+        B₁*(tripleHeight J z.1*coordinateHeight J z.2))
+    (_hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      (∑k∈outer,firstCanonicalSecondEnergy p hp hg hinj F (b k) (common k) false Ψ₂ mright (dd k) (H₂ k) (selector k) omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) Y) ≤
+        B₂*(tripleHeight J z.1*coordinateHeight J z.2)),
+    ‖firstFamilyPhysicalRows p hg source F (fun x=>selector x.1) C₁ C₂ w (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) Φ A₁ A₂ C R K (fun x=>dd x.1) (fun x=>x.2.2) s‖ ≤
+      (Real.exp ((9/2:ℝ)*L)/firstRootScale s)*
+        ((Γ*Kpush*Y^ε*(Real.sqrt B₁*Real.sqrt B₂))*(Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+          (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker)) := by
+  obtain ⟨Cprofile,hCprofile,hprofile⟩ := actual_first_moving_family_two_energies_uniform
+    U₀ g₁ g₂ Φ M₀ B₀ m₁ m₂ bcap hM hB₀ hU hg₁ hg₂ Aker J
+  obtain ⟨Kpush,hKpush,hpush⟩ := first_global_retained_push_uniform ε hε
+  refine ⟨Cprofile,Kpush,hCprofile,hKpush,?_⟩
+  intro ι κ _ _ p hp _ hg hinj hcop hc hpr F outer b common Ψ₁ Ψ₂ mleft mright dd H₁ H₂ selector labels a Γ Y
+    hΨ₁ hΨ₂ hΓ hY hlabels hn ha omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂ A₁ A₂ C R K L hK s hs selected hselected
+    source C₁ C₂ w hpos hρ hc₁ hc₂ hc₁b hc₂b hL homega₁ homega₂ hcut B₁ B₂ hB₁ hB₂ hleft hright
+  have hweight : 0≤Γ*Kpush*Y^ε := by positivity
+  have hroot:Real.sqrt (Γ*Kpush*Y^ε*B₁)*Real.sqrt (Γ*Kpush*Y^ε*B₂)=Γ*Kpush*Y^ε*(Real.sqrt B₁*Real.sqrt B₂):=by
+    rw [Real.sqrt_mul hweight,Real.sqrt_mul hweight]
+    calc
+      _=(Real.sqrt (Γ*Kpush*Y^ε))^2*(Real.sqrt B₁*Real.sqrt B₂):=by ring
+      _= _:=by rw [Real.sq_sqrt hweight]
+  rw [←hroot]
+  apply hprofile p hp hg source F (fun x=>selector x.1) C₁ C₂ w omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂
+    A₁ A₂ C R K L hK (fun x=>dd x.1) (fun x=>x.2.2) s hpos hs hρ hc₁ hc₂ hc₁b hc₂b hL
+    homega₁ homega₂ hcut (Γ*Kpush*Y^ε*B₁) (Γ*Kpush*Y^ε*B₂) (mul_nonneg hweight hB₁) (mul_nonneg hweight hB₂)
+  · intro z
+    have he := hpush p hp hinj hcop hg hc hpr F outer b common Ψ₁ Ψ₂ mleft mright dd
+      labels a Γ Y hΨ₁ hΨ₂ hΓ hY hlabels hn ha true H₁ selector omega₁ (s 7)
+      (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) (hs 7)
+    simp only [ite_true,] at he
+    have hm1 : firstFamilyEnergy p hg source F (fun x=>selector x.1) C₁ w true omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) (fun x=>x.2.2) ≤
+        firstFamilyEnergy p hg (firstGlobalRetainedSource p outer labels b Y) F
+        (fun x=>selector x.1) C₁ w true omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) (fun x=>x.2.2) := by
+      unfold firstFamilyEnergy
+      exact Finset.sum_le_sum_of_subset_of_nonneg hselected (fun x hx hn=>
+        mul_nonneg (norm_nonneg _) (firstBlockEnergy_nonneg p hg _ _ _ _ _ _ _ _))
+    apply (hm1.trans he).trans
+    simpa only [mul_assoc,ite_true,ite_false,Bool.false_eq_true] using mul_le_mul_of_nonneg_left (hleft z) hweight
+  · intro z
+    have he := hpush p hp hinj hcop hg hc hpr F outer b common Ψ₁ Ψ₂ mleft mright dd
+      labels a Γ Y hΨ₁ hΨ₂ hΓ hY hlabels hn ha false H₂ selector omega₂ (s 8)
+      (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) (hs 8)
+    simp only [ite_false,Bool.false_eq_true] at he
+    have hm2 : firstFamilyEnergy p hg source F (fun x=>selector x.1) C₂ w false omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) (fun x=>x.2.2) ≤
+        firstFamilyEnergy p hg (firstGlobalRetainedSource p outer labels b Y) F
+        (fun x=>selector x.1) C₂ w false omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) (fun x=>x.2.2) := by
+      unfold firstFamilyEnergy
+      exact Finset.sum_le_sum_of_subset_of_nonneg hselected (fun x hx hn=>
+        mul_nonneg (norm_nonneg _) (firstBlockEnergy_nonneg p hg _ _ _ _ _ _ _ _))
+    apply (hm2.trans he).trans
+    simpa only [mul_assoc,ite_true,ite_false,Bool.false_eq_true] using mul_le_mul_of_nonneg_left (hright z) hweight
+
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMoment
+open JointLogSeparation InverseAmbientProfileTower
+
+theorem first_left_height_budget (J:ℕ)(p:Ambient (Fin 9)):
+    (1+‖profileHeight firstLeftSlope firstRightSlope firstKernelSlope p.1 p.2 7‖)^J≤
+      tripleHeight J p.1*coordinateHeight J p.2:=by
+  have h:=pow_le_pow_left₀ (by positivity : 0≤1+‖inheritedLeft 7 p‖) (inheritedLeft_bound 7 p) J
+  rw [←ambientWeight_eq_pow] at h
+  simpa only [first_inherited_left_eq,ambientWeight,tripleHeight,coordinateHeight] using h
+
+theorem first_right_height_budget (J:ℕ)(p:Ambient (Fin 9)):
+    (1+‖profileHeight firstLeftSlope firstRightSlope firstKernelSlope p.1 p.2 8‖)^J≤
+      tripleHeight J p.1*coordinateHeight J p.2:=by
+  have h:=pow_le_pow_left₀ (by positivity : 0≤1+‖inheritedRight 8 p‖) (inheritedRight_bound 8 p) J
+  rw [←ambientWeight_eq_pow] at h
+  simpa only [first_inherited_right_eq,norm_neg,ambientWeight,tripleHeight,coordinateHeight] using h
+
+theorem first_unequal_prefactor (Z:ℝ)(hZ:0<Z)
+    (M r ell V delta A₁ A₂ B R t h eta:ℝ):
+    (Z^(-r-2*ell-V)*Z^M/firstRootScale
+      (fun i=>Z^(![A₁,A₂,B,delta,R,t,h,r-A₁-B-t,r-A₂-B-t] i)))*
+      Real.exp ((9/2:ℝ)*(eta*Real.log Z))*
+      (Real.sqrt ((Z^(firstKappa M r ell V delta A₁ B R)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))⁻¹)*
+       Real.sqrt ((Z^(firstKappa M r ell V delta A₂ B R)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))⁻¹))=1:=by
+  rw [first_physical_scalar Z hZ]
+  have he:Real.exp ((9/2:ℝ)*(eta*Real.log Z))=Z^((9/2:ℝ)*eta):=by
+    rw [Real.rpow_def_of_pos hZ];congr 1;ring
+  rw [he,←Real.rpow_add hZ,←Real.rpow_add hZ,←Real.rpow_add hZ]
+  rw [←Real.rpow_neg hZ.le,←Real.rpow_neg hZ.le,Real.sqrt_eq_rpow,Real.sqrt_eq_rpow,
+    ←Real.rpow_mul hZ.le,←Real.rpow_mul hZ.le,←Real.rpow_add hZ,←Real.rpow_add hZ]
+  convert Real.rpow_zero Z using 1
+  congr 1
+  ring
+end InverseMoment
+
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels RayFourExpansion
+open JointLogSeparation MeasureTheory
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+open InverseMomentFirstProfileUniform InverseAmbientProfileTower
+theorem actual_first_original_subset_physical_budget (ε : ℝ) (hε : 0<ε)
+    (U₀ : Fin 9 → 𝓢(ℝ,ℂ)) (g₁ g₂ Φ : 𝓢(ℝ,ℂ))
+    (M₀ B₀ : Fin 9 → ℝ) (m₁ m₂ bcap : ℝ)
+    (hM : ∀ i,0 ≤ M₀ i) (hB₀ : ∀ i,0 ≤ B₀ i)
+    (hU : ∀ i,Function.support (U₀ i) ⊆ Set.Icc (-M₀ i) (M₀ i))
+    (hg₁ : Function.support g₁ ⊆ Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂ ⊆ Set.Icc (-m₂) m₂) (Aker J : ℕ) :
+    ∃ Cprofile Kpush : ℝ,0 ≤ Cprofile ∧ 0<Kpush ∧ ∀ {ι κ : Type*} [DecidableEq ι] [DecidableEq κ] (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (_hc : ∀ i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (_hpr : ∀ i,lambda^2∣p i-1)
+    (F : Finset ι) (outer:Finset κ) (b : κ→SecondPassArithmetic.CubeCoordinates ι) (common : κ→Finset ι)
+    (Ψ₁ Ψ₂ : Eis→*ℂ) (mleft mright : Eis) (dd:κ→Eis) (H₁ H₂ selector : κ→Finset ι→ℂ)
+    (labels : κ→Finset (Ideal Eis)) (a : κ→Ideal Eis×Eis→ℂ) (Γ Y : ℝ)
+    (_hΨ₁ : ∀ u,‖Ψ₁ u‖≤1) (_hΨ₂ : ∀ u,‖Ψ₂ u‖≤1)
+    (_hΓ : 0≤Γ) (_hY : 0<Y)
+    (_hlabels : ∀k∈outer,∀ f∈labels k,Squarefree f) (_hn : ∀k∈outer,∀ f∈labels k,f≠0)
+    (_ha : ∀k∈outer,∀ x∈firstRetainedSource p (labels k) (b k) Y,‖a k x‖≤Γ)
+    (omega₁ omega₂ : ℝ → ℂ) (ρ : Fin 9 → ℝ) (c₁ c₂ θ₁ θ₂ : ℝ)
+    (A₁ A₂ C R : (Σ _ : κ,Ideal Eis×Eis) → ℝ) (K L : ℝ) (_hK : 0<K) (s : Fin 9→ℝ)
+    (_hs : ∀ i,0<s i)
+    (selected : Finset (Σ _ : κ,Ideal Eis×Eis))
+    (_hselected : selected⊆firstGlobalRetainedSource p outer labels b Y),
+    let source := selected
+    let C₁ := fun x : (Σ _ : κ,Ideal Eis×Eis) => firstCanonicalCoefficient p hg (b x.1) (common x.1) true Ψ₁ mleft (dd x.1) (H₁ x.1) x.2
+    let C₂ := fun x : (Σ _ : κ,Ideal Eis×Eis) => firstCanonicalCoefficient p hg (b x.1) (common x.1) false Ψ₂ mright (dd x.1) (H₂ x.1) x.2
+    let w := fun x : (Σ _ : κ,Ideal Eis×Eis) => retainedCubeWeight p hp hg (b x.1) (common x.1) Ψ₁ Ψ₂ mleft mright (dd x.1) (a x.1) x.2
+    ∀ (_hpos : ∀ x∈source,0<A₁ x ∧ 0<A₂ x ∧ 0<C x ∧ 0<R x ∧ dd x.1≠0 ∧ x.2.2≠0)
+    (_hρ : ∀ i,|ρ i| ≤ B₀ i) (_hc₁ : 1 ≤ c₁) (_hc₂ : 1 ≤ c₂)
+    (_hc₁b : c₁ ≤ bcap) (_hc₂b : c₂ ≤ bcap) (_hL : 0 ≤ L)
+    (_homega₁ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x.1 j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j ≠ 0 →
+      (positiveSource g₁ c₁ θ₁) (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7)) ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) = 1)
+    (_homega₂ : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x.1 j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j ≠ 0 →
+      (positiveSource g₂ c₂ θ₂) (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8)) ≠ 0 →
+      omega₂ (primeProductNorm p j.2.2.2/s 8) = 1)
+    (_hcut : ∀ x∈source,∀ j∈firstCommonIndices F,
+      selector x.1 j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) x.2.2 j ≠ 0 →
+      omega₁ (primeProductNorm p j.2.2.1/s 7) ≠ 0 → omega₂ (primeProductNorm p j.2.2.2/s 8) ≠ 0 →
+      ∀ i,U₀ i ((firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (dd x.1) x.2.2 j) s i)+ρ i) = 1)
+    (Benergy : ℝ) (_hBenergy : 0 ≤ Benergy)
+    (Z M r ell V delta aa₁ aa₂ bb rr tq hh eta:ℝ) (_hZ:0<Z)
+    (_hscale:s=fun i=>Z^(![aa₁,aa₂,bb,delta,rr,tq,hh,r-aa₁-bb-tq,r-aa₂-bb-tq] i))
+    (_hLe:L=eta*Real.log Z)
+    (_hleft : ∀ z : Frequency × (Fin 9 → ℝ),
+      (Z^(firstKappa M r ell V delta aa₁ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      (∑k∈outer,firstCanonicalSecondEnergy p hp hg hinj F (b k) (common k) true Ψ₁ mleft (dd k) (H₁ k) (selector k) omega₁ (s 7)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) Y) ≤
+        Benergy*(tripleHeight J z.1*coordinateHeight J z.2))
+    (_hright : ∀ z : Frequency × (Fin 9 → ℝ),
+      (Z^(firstKappa M r ell V delta aa₂ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      (∑k∈outer,firstCanonicalSecondEnergy p hp hg hinj F (b k) (common k) false Ψ₂ mright (dd k) (H₂ k) (selector k) omega₂ (s 8)
+        (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) Y) ≤
+        Benergy*(tripleHeight J z.1*coordinateHeight J z.2)),
+    (Z^(-r-2*ell-V)*Z^M)*‖firstFamilyPhysicalRows p hg source F (fun x=>selector x.1) C₁ C₂ w (positiveSource g₁ c₁ θ₁) (positiveSource g₂ c₂ θ₂) Φ A₁ A₂ C R K (fun x=>dd x.1) (fun x=>x.2.2) s‖ ≤
+      ((Γ*Kpush*Y^ε*Benergy)*(Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+          (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker)) := by
+  obtain ⟨Cprofile,Kpush,hCprofile,hKpush,he⟩:=actual_first_original_subset_two_energies ε hε
+    U₀ g₁ g₂ Φ M₀ B₀ m₁ m₂ bcap hM hB₀ hU hg₁ hg₂ Aker J
+  refine ⟨Cprofile,Kpush,hCprofile,hKpush,?_⟩
+  intro ι κ _ _ p hp _ hg hinj hcop hc hpr F outer b common Ψ₁ Ψ₂ mleft mright dd H₁ H₂ selector labels a Γ Y
+    hΨ₁ hΨ₂ hΓ hY hlabels hn ha omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂ A₁ A₂ C R K L hK s hs selected hselected
+    source C₁ C₂ w hpos hρ hc₁ hc₂ hc₁b hc₂b hL homega₁ homega₂ hcut Benergy hBenergy
+    Z M r ell V delta aa₁ aa₂ bb rr tq hh eta hZ hscale hLe hleft hright
+  let P₁:=Z^(firstKappa M r ell V delta aa₁ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  let P₂:=Z^(firstKappa M r ell V delta aa₂ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  have hp₁:0<P₁:=by dsimp [P₁];positivity
+  have hp₂:0<P₂:=by dsimp [P₂];positivity
+  have hb:=he p hp hg hinj hcop hc hpr F outer b common Ψ₁ Ψ₂ mleft mright dd H₁ H₂ selector labels a Γ Y
+    hΨ₁ hΨ₂ hΓ hY hlabels hn ha omega₁ omega₂ ρ c₁ c₂ θ₁ θ₂ A₁ A₂ C R K L hK s hs selected hselected
+    hpos hρ hc₁ hc₂ hc₁b hc₂b hL homega₁ homega₂ hcut (Benergy/P₁) (Benergy/P₂) (by positivity) (by positivity)
+    (by intro z;rw [div_mul_eq_mul_div];apply (le_div_iff₀ hp₁).mpr;simpa only [P₁,mul_assoc,mul_comm,mul_left_comm] using hleft z)
+    (by intro z;rw [div_mul_eq_mul_div];apply (le_div_iff₀ hp₂).mpr;simpa only [P₂,mul_assoc,mul_comm,mul_left_comm] using hright z)
+  have hroot:Real.sqrt (Benergy/P₁)*Real.sqrt (Benergy/P₂)=Benergy*(Real.sqrt P₁⁻¹*Real.sqrt P₂⁻¹):=by
+    simp only [div_eq_mul_inv,Real.sqrt_mul hBenergy]
+    calc
+      _=(Real.sqrt Benergy)^2*(Real.sqrt P₁⁻¹*Real.sqrt P₂⁻¹):=by ring
+      _= _:=by rw [Real.sq_sqrt hBenergy]
+  rw [hroot] at hb
+  have hcancel:(Z^(-r-2*ell-V)*Z^M/firstRootScale s)*Real.exp ((9/2:ℝ)*L)*
+      (Real.sqrt P₁⁻¹*Real.sqrt P₂⁻¹)=1:=by
+    rw [hscale,hLe]
+    exact first_unequal_prefactor Z hZ M r ell V delta aa₁ aa₂ bb rr tq hh eta
+  have hnorm:0≤ Z^(-r-2*ell-V)*Z^M:=by positivity
+  apply (mul_le_mul_of_nonneg_left hb hnorm).trans_eq
+  calc
+    _=((Z^(-r-2*ell-V)*Z^M/firstRootScale s)*Real.exp ((9/2:ℝ)*L)*
+      (Real.sqrt P₁⁻¹*Real.sqrt P₂⁻¹))*
+      ((Γ*Kpush*Y^ε*Benergy)*(Cprofile*((1+‖θ₁‖)^InverseClippingProfiles.momentOrder J *
+          (1+‖θ₂‖)^InverseClippingProfiles.momentOrder J) /
+          (1+K*s 6/(s 3*s 4*(s 5)^2*s 7*s 8))^Aker)):=by ring
+    _= _:=by rw [hcancel,one_mul]
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open InverseMomentFirstChildWindows InverseMomentFirstProfileUniform
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+theorem original_cell_windows (g₁ g₂ : 𝓢(ℝ,ℂ)) (m₁ m₂ bcap : ℝ)
+    (Bρ : Fin 9→ℝ)
+    (hm₁ : 0≤ m₁) (hm₂ : 0≤ m₂)
+    (hg₁ : Function.support g₁⊆Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂⊆Set.Icc (-m₂) m₂)
+    (hBρ : ∀i,0≤ Bρ i) :
+    ∃(w₁ w₂ : 𝓢(ℝ,ℂ))(U₀ : Fin 9→𝓢(ℝ,ℂ))(M₀ : Fin 9→ℝ)(a b : ℝ),
+      0<a ∧ a≤ b ∧ HasCompactSupport (w₁ : ℝ→ℂ) ∧ HasCompactSupport (w₂ : ℝ→ℂ) ∧
+      tsupport (w₁ : ℝ→ℂ)⊆Set.Icc a b ∧ tsupport (w₂ : ℝ→ℂ)⊆Set.Icc a b ∧
+      (∀i,0≤ M₀ i) ∧ (∀i,HasCompactSupport (U₀ i : ℝ→ℂ)) ∧
+      (∀i,Function.support (U₀ i)⊆Set.Icc (-M₀ i) (M₀ i)) ∧
+      ∀{ι : Type*}[DecidableEq ι]
+      (p : ι→O)(_hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O)) (Y : ℝ)
+      (C₁ C₂ : OriginalIndex ι→Finset ι→ℂ) (k : SourceIndex) (l : ℕ) (T₁ T₂ : ℝ)
+      (ρ : Fin 9→ℝ)(c₁ c₂ θ₁ θ₂ : ℝ),
+      0<T₁ → 0<T₂ → (∀i,|ρ i|≤ Bρ i) →
+      1≤ c₁ → c₁≤ bcap → 1≤ c₂ → c₂≤ bcap →
+      let source := sourceCell (originalNorms p)
+        (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y) k
+      let F := pool
+      let selector : OriginalIndex ι→Finset ι→ℂ := fun _=>commonSelector p (fun _=>1) l
+      let A₁ := leftNorm p
+      let A₂ := rightNorm p
+      let C := commonNorm p
+      let R := activeNorm p
+      let d := fun x : OriginalIndex ι=>divisorElement p x.1
+      let h := fun x : OriginalIndex ι=>x.2.2
+      let s := rawScales k l T₁ T₂
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        positiveSource g₁ c₁ θ₁ (A₁ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.1/(s 0*s 2*s 5*s 7))≠0 →
+        w₁ (primeProductNorm p j.2.2.1/s 7)=1) ∧
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        positiveSource g₂ c₂ θ₂ (A₂ x*C x*primeProductNorm p j.2.1*primeProductNorm p j.2.2.2/(s 1*s 2*s 5*s 8))≠0 →
+        w₂ (primeProductNorm p j.2.2.2/s 8)=1) ∧
+      (∀x∈source,∀j∈firstCommonIndices F,
+        selector x j.2.1*firstCommonWeight p hg (C₁ x) (C₂ x) (h x) j≠0 →
+        w₁ (primeProductNorm p j.2.2.1/s 7)≠0 → w₂ (primeProductNorm p j.2.2.2/s 8)≠0 →
+        ∀i,U₀ i (firstRelativeLog (firstCommonNorms p (A₁ x) (A₂ x) (C x) (R x) (d x) (h x) j) s i+ρ i)=1) := by
+  obtain ⟨w₁,w₂,U,M,a,b,ha,hab,hwc₁,hwc₂,hws₁,hws₂,hM,hUc,hUs,he⟩ :=
+    actual_first_child_windows g₁ g₂ m₁ m₂ bcap (fun _=>1) (fun _=>2) Bρ
+      hm₁ hm₂ hg₁ hg₂ (by intro i;norm_num) (by intro i;norm_num) hBρ
+  refine ⟨w₁,w₂,U,M,a,b,ha,hab,hwc₁,hwc₂,hws₁,hws₂,hM,hUc,hUs,?_⟩
+  intro ι _ p hp _ hg pool Q labels Y C₁ C₂ k l T₁ T₂ ρ c₁ c₂ θ₁ θ₂
+    hT₁ hT₂ hρ hc₁ hcb₁ hc₂ hcb₂ source F selector A₁ A₂ C R d h s
+  apply he p hp hg source F selector C₁ C₂ A₁ A₂ C R d h s ρ c₁ c₂ θ₁ θ₂
+    (rawScales_pos k l T₁ T₂ hT₁ hT₂) hρ hc₁ hcb₁ hc₂ hcb₂
+  intro x hx j hj hn
+  exact actual_original_cell_ratios p hp hg _ (fun _ _=>1) C₁ C₂
+    (leftNorm p) (rightNorm p) (commonNorm p) (activeNorm p)
+    (fun x=>divisorElement p x.1) (fun x=>x.2.2)
+    (original_source_norms_ge_one p hp pool Q labels Y) k l T₁ T₂ x hx j hn
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open InverseMomentFirstChildWindows InverseMomentFirstProfileUniform
+open InverseAmbientProfileTower JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+
+def originalChildEnergy (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) (l : ℕ)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ)
+    (omega : ℝ→ℂ) (T t Y : ℝ) : ℝ :=
+  ∑x∈originalOuterCell p pool Q k,
+    firstCanonicalSecondEnergy p hp hg hinj pool x.1 x.2.1 negative Ψ m (divisorElement p x)
+      (mark (if negative then x.1.rightExponent else x.1.leftExponent))
+      (commonSelector p (fun _=>1) l) omega T t Y
+
+def originalCellRows (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+    (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ)
+    (k : SourceIndex) (l : ℕ) (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (K Y : ℝ) (s : Fin 9→ℝ) : ℂ :=
+  firstFamilyPhysicalRows p hg
+    (sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y) k)
+    pool (fun _=>commonSelector p (fun _=>1) l)
+    (coefficient p hg Ψ m mark true) (coefficient p hg Ψ m mark false)
+    (weight p hp hg β cutoff Ψ m) W₁ W₂ Φ
+    (leftNorm p) (rightNorm p) (commonNorm p) (activeNorm p) K
+    (fun x=>divisorElement p x.1) (fun x=>x.2.2) s
+
+theorem original_cell_physical_budget (g₁ g₂ Φ : 𝓢(ℝ,ℂ)) (m₁ m₂ : ℝ)
+    (hm₁ : 0≤ m₁) (hm₂ : 0≤ m₂)
+    (hg₁ : Function.support g₁⊆Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂⊆Set.Icc (-m₂) m₂) :
+    ∃(omega₁ omega₂ : 𝓢(ℝ,ℂ))(lo hi : ℝ),0<lo ∧ lo≤ hi ∧
+      HasCompactSupport (omega₁ : ℝ→ℂ) ∧ HasCompactSupport (omega₂ : ℝ→ℂ) ∧
+      tsupport (omega₁ : ℝ→ℂ)⊆Set.Icc lo hi ∧ tsupport (omega₂ : ℝ→ℂ)⊆Set.Icc lo hi ∧
+    ∀(ε : ℝ),0<ε→∀(Aker J : ℕ),∃ Cprofile Kpush : ℝ,0≤ Cprofile ∧ 0<Kpush ∧
+    ∀{ι : Type*}[DecidableEq ι](p : ι→O)(hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (_hpr : ∀i,lambda^2∣p i-1)
+      (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+      (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+      (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ) (Γ Y : ℝ)
+      (_hΨ : ∀u,‖Ψ u‖≤1) (_hΓ : 0≤Γ) (_hY : 0<Y)
+      (_hsf : ∀I∈labels,Squarefree I) (_hn : ∀I∈labels,I≠0)
+      (_hβ : ∀I∈labels,∀v∈Q,‖β I v‖≤Γ)
+      (k : SourceIndex) (l : ℕ) (T₁ T₂ K theta L : ℝ)
+      (_hT₁ : 0<T₁) (_hT₂ : 0<T₂) (_hK : 0<K) (_hL : 0≤ L)
+      (Benergy Z M r ell V delta aa₁ aa₂ bb rr tq hh eta : ℝ)
+      (_hB : 0≤ Benergy) (_hZ : 0<Z)
+      (_hscale : rawScales k l T₁ T₂=fun i=>Z^(![aa₁,aa₂,bb,delta,rr,tq,hh,r-aa₁-bb-tq,r-aa₂-bb-tq] i))
+      (_hLe : L=eta*Real.log Z)
+      (_hleft : ∀z : Frequency×(Fin 9→ℝ),
+        (Z^(firstKappa M r ell V delta aa₁ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+          originalChildEnergy p hp hg hinj pool Q k l true Ψ m mark omega₁ T₁
+            (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) Y≤
+          Benergy*(tripleHeight J z.1*coordinateHeight J z.2))
+      (_hright : ∀z : Frequency×(Fin 9→ℝ),
+        (Z^(firstKappa M r ell V delta aa₂ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+          originalChildEnergy p hp hg hinj pool Q k l false Ψ m mark omega₂ T₂
+            (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) Y≤
+          Benergy*(tripleHeight J z.1*coordinateHeight J z.2)),
+      (Z^(-r-2*ell-V)*Z^M)*‖originalCellRows p hp hcop hg pool Q labels β cutoff Ψ m mark k l
+        (positiveSource g₁ 1 (-theta)) (positiveSource g₂ 1 theta) Φ K Y (rawScales k l T₁ T₂)‖≤
+        ((Γ^2*Kpush*Y^ε*Benergy)*(Cprofile*((1+‖-theta‖)^InverseClippingProfiles.momentOrder J*
+          (1+‖theta‖)^InverseClippingProfiles.momentOrder J)/
+          (1+K*(rawScales k l T₁ T₂) 6/((rawScales k l T₁ T₂) 3*(rawScales k l T₁ T₂) 4*
+            ((rawScales k l T₁ T₂) 5)^2*T₁*T₂))^Aker)) := by
+  obtain ⟨w₁,w₂,U,M₀,lo,hi,hlo,hlh,hw₁,hw₂,hs₁,hs₂,hM,hUc,hUs,hwin⟩ :=
+    original_cell_windows g₁ g₂ m₁ m₂ 1 (fun _=>0) hm₁ hm₂ hg₁ hg₂ (fun _=>le_rfl)
+  refine ⟨w₁,w₂,lo,hi,hlo,hlh,hw₁,hw₂,hs₁,hs₂,?_⟩
+  intro ε hε Aker J
+  obtain ⟨Cprofile,Kpush,hC,hKp,he⟩ := actual_first_original_subset_physical_budget
+    ε hε U g₁ g₂ Φ M₀ (fun _=>0) m₁ m₂ 1
+    hM (fun _=>le_rfl) hUs hg₁ hg₂ Aker J
+  refine ⟨Cprofile,Kpush,hC,hKp,?_⟩
+  intro ι _ p hp _ hg hinj hcop hc hpr pool Q labels β cutoff Ψ m mark Γ Y hΨ hΓ hY hsf hn hβ
+    k l T₁ T₂ K theta L hT₁ hT₂ hK hL Benergy Z M r ell V delta aa₁ aa₂ bb rr tq hh eta hB hZ hscale hLe hleft hright
+  let source := sourceCell (originalNorms p)
+    (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y) k
+  have hgates := hwin p hp hg pool Q labels Y (coefficient p hg Ψ m mark true)
+    (coefficient p hg Ψ m mark false) k l T₁ T₂ (fun _=>0) 1 1 (-theta) theta
+    hT₁ hT₂ (by intro i;simp) le_rfl le_rfl le_rfl le_rfl
+  have hb := he p hp hg hinj hcop hc hpr pool (originalOuterCell p pool Q k) (fun x=>x.1) (fun x=>x.2.1)
+    Ψ Ψ m m (divisorElement p) (fun x=>mark x.1.rightExponent) (fun x=>mark x.1.leftExponent)
+    (fun _=>commonSelector p (fun _=>1) l) (fun _=>labels) (firstOriginalWeight p β cutoff) (Γ^2) Y
+    hΨ hΨ (sq_nonneg _) hY (fun _ _=>hsf) (fun _ _=>hn)
+    (fun x hx=>original_weight_bound p pool Q labels β cutoff Γ Y hΓ hβ x (original_outer_cell_subset p pool Q k hx))
+    w₁ w₂ (fun _=>0) 1 1 (-theta) theta (leftNorm p) (rightNorm p) (commonNorm p) (activeNorm p)
+    K L hK (rawScales k l T₁ T₂) (rawScales_pos k l T₁ T₂ hT₁ hT₂)
+    source (original_cell_subset p pool Q labels Y k)
+    (fun x hx=>original_source_positive p hp pool Q labels Y x (Finset.mem_filter.mp hx).1)
+    (by intro i;simp) le_rfl le_rfl le_rfl le_rfl hL hgates.1 hgates.2.1 hgates.2.2
+    Benergy hB Z M r ell V delta aa₁ aa₂ bb rr tq hh eta hZ hscale hLe
+    (by simpa [originalChildEnergy,rawScales] using hleft)
+    (by simpa [originalChildEnergy,rawScales] using hright)
+  unfold originalCellRows
+  unfold InverseMomentFirstOriginalProfile.coefficient InverseMomentFirstOriginalProfile.weight
+  simpa [source,rawScales] using hb
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment InverseMomentFirstChildWindows Eisenstein
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι] (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma originalNorms_eq_caps : originalNorms p=InverseFirstGlobalCaps.originalNorms p := by
+  funext x i
+  fin_cases i <;> rfl
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma originalOuterCell_eq_caps (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) :
+    originalOuterCell p pool Q k=InverseFirstGlobalCaps.outerCell p pool Q k := by
+  unfold originalOuterCell InverseFirstGlobalCaps.outerCell InverseFirstGlobalCaps.outerGate
+  ext x
+  simp only [Finset.mem_filter,originalNorms_eq_caps,InverseFirstGlobalCaps.originalNorms_outer]
+
+lemma originalChildEnergy_eq_caps (hp : ∀i,p i≠0)
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) (l : ℕ)
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ)
+    (omega : ℝ→ℂ) (T t Y : ℝ) :
+    originalChildEnergy p hp hg hinj pool Q k l negative Ψ m mark omega T t Y=
+      ∑x∈InverseFirstGlobalCaps.outerCell p pool Q k,
+        firstCanonicalSecondEnergy p hp hg hinj pool x.1 x.2.1 negative Ψ m (divisorElement p x)
+          (mark (if negative then x.1.rightExponent else x.1.leftExponent))
+          (commonSelector p (fun _=>1) l) omega T t Y := by
+  rw [originalChildEnergy,originalOuterCell_eq_caps]
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open InverseMomentFirstChildWindows
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+variable (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+
+def refinedOuter (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex)
+    (gate : FirstOriginalOuter ι→Prop) : Finset (FirstOriginalOuter ι) :=
+  (originalOuterCell p pool Q k).filter gate
+
+def refinedSource (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+    (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Y : ℝ) (k : SourceIndex) (gate : FirstOriginalOuter ι→Prop) : Finset (OriginalIndex ι) :=
+  (sourceCell (originalNorms p)
+    (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y) k).filter
+      (fun x=>gate x.1 ∧ firstOriginalWeight p β cutoff x.1 x.2≠0)
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma refinedSource_subset (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+    (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Y : ℝ) (k : SourceIndex) (gate : FirstOriginalOuter ι→Prop) :
+    refinedSource p pool Q labels β cutoff Y k gate⊆sourceCell (originalNorms p)
+      (firstGlobalRetainedSource p (firstOriginalOuter pool Q) (fun _=>labels) (fun x=>x.1) Y) k :=
+  Finset.filter_subset _ _
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma original_weight_frequency (β : Ideal O→(ι→₀ℕ)→ℂ)
+    (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (x : OriginalIndex ι) (hx : firstOriginalWeight p β cutoff x.1 x.2≠0) :
+    x.2.2∈reopenedPhysicalCutoff p x.1.1 x.2.1 (cutoff x.1.1 x.1.2.1 x.2.1) x.1.2.2 := by
+  by_contra hh
+  exact hx (by simp [firstOriginalWeight,hh])
+
+theorem refined_source_radius (hp : ∀i,p i≠0)
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+    (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Ysource Ychild : ℝ) (k : SourceIndex) (gate : FirstOriginalOuter ι→Prop)
+    (hn : ∀I∈labels,I≠0)
+    (hcut : ∀x∈refinedOuter p pool Q k gate,∀I∈labels,cutoff x.1 x.2.1 I x.2.2≤ Ychild) :
+    refinedSource p pool Q labels β cutoff Ysource k gate⊆
+      firstGlobalRetainedSource p (refinedOuter p pool Q k gate) (fun _=>labels) (fun x=>x.1) Ychild := by
+  intro x hx
+  obtain ⟨hxcell,hgate,hweight⟩ := Finset.mem_filter.mp hx
+  have hxold := original_cell_subset p pool Q labels Ysource k hxcell
+  obtain ⟨ho,hf⟩ := Finset.mem_sigma.mp hxold
+  have hm := (mem_firstRetainedSource p labels x.1.1 Ysource x.2).mp hf
+  have houter : x.1∈refinedOuter p pool Q k gate := Finset.mem_filter.mpr ⟨ho,hgate⟩
+  have hE := firstPhysicalMultiplier_ne_zero p hp x.1.1.support x.1.1.leftExponent x.1.1.rightExponent
+    x.1.1.leftBit x.1.1.rightBit x.2.1 (hn x.2.1 hm.1)
+  apply Finset.mem_sigma.mpr
+  refine ⟨houter,(mem_firstRetainedSource p labels x.1.1 Ychild x.2).mpr ⟨hm.1,?_⟩⟩
+  apply Finset.mem_erase.mpr
+  refine ⟨(Finset.mem_erase.mp hm.2).1,?_⟩
+  apply (mem_childFrequencyBall _ hE Ychild x.2.2).mpr
+  exact ((mem_childFrequencyBall _ hE _ x.2.2).mp
+    (original_weight_frequency p β cutoff x hweight)).trans (hcut x.1 houter x.2.1 hm.1)
+
+def labelGate (j : ℕ) (x : FirstOriginalOuter ι) : Prop :=
+  InverseSecondSourceBlocks.dyadIndex (InverseFirstGlobalCaps.jNorm p x)=j
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+lemma refinedOuter_label (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) (j : ℕ) :
+    refinedOuter p pool Q k (labelGate p j)=
+      (InverseFirstGlobalCaps.outerCell p pool Q k).filter
+        (fun x=>InverseSecondSourceBlocks.dyadIndex (InverseFirstGlobalCaps.jNorm p x)=j) := by
+  rw [refinedOuter,originalOuterCell_eq_caps]
+  ext x
+  simp [labelGate]
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMomentFirstOriginalProfile
+open InverseMoment Eisenstein FirstPassCubeLabels SecondPassArithmetic
+open InverseMomentFirstChildWindows InverseMomentFirstProfileUniform
+open InverseAmbientProfileTower JointLogSeparation
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι]
+
+def refinedChildEnergy (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (k : SourceIndex) (l : ℕ)
+    (gate : FirstOriginalOuter ι→Prop) (negative : Bool) (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ)
+    (omega : ℝ→ℂ) (T t Y : ℝ) : ℝ :=
+  ∑x∈refinedOuter p pool Q k gate,
+    firstCanonicalSecondEnergy p hp hg hinj pool x.1 x.2.1 negative Ψ m (divisorElement p x)
+      (mark (if negative then x.1.rightExponent else x.1.leftExponent))
+      (commonSelector p (fun _=>1) l) omega T t Y
+
+def refinedCellRows (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hg : ∀i,lambda∉Ideal.span {p i})
+    (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+    (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+    (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ)
+    (k : SourceIndex) (l : ℕ) (gate : FirstOriginalOuter ι→Prop) (W₁ W₂ : ℝ→ℂ) (Φ : 𝓢(ℝ,ℂ)) (K Y : ℝ) (s : Fin 9→ℝ) : ℂ :=
+  firstFamilyPhysicalRows p hg
+    (refinedSource p pool Q labels β cutoff Y k gate)
+    pool (fun _=>commonSelector p (fun _=>1) l)
+    (coefficient p hg Ψ m mark true) (coefficient p hg Ψ m mark false)
+    (weight p hp hg β cutoff Ψ m) W₁ W₂ Φ
+    (leftNorm p) (rightNorm p) (commonNorm p) (activeNorm p) K
+    (fun x=>divisorElement p x.1) (fun x=>x.2.2) s
+
+theorem original_refined_cell_physical_budget (g₁ g₂ Φ : 𝓢(ℝ,ℂ)) (m₁ m₂ : ℝ)
+    (hm₁ : 0≤ m₁) (hm₂ : 0≤ m₂)
+    (hg₁ : Function.support g₁⊆Set.Icc (-m₁) m₁)
+    (hg₂ : Function.support g₂⊆Set.Icc (-m₂) m₂) :
+    ∃(omega₁ omega₂ : 𝓢(ℝ,ℂ))(lo hi : ℝ),0<lo ∧ lo≤ hi ∧
+      HasCompactSupport (omega₁ : ℝ→ℂ) ∧ HasCompactSupport (omega₂ : ℝ→ℂ) ∧
+      tsupport (omega₁ : ℝ→ℂ)⊆Set.Icc lo hi ∧ tsupport (omega₂ : ℝ→ℂ)⊆Set.Icc lo hi ∧
+    ∀(ε : ℝ),0<ε→∀(Aker J : ℕ),∃ Cprofile Kpush : ℝ,0≤ Cprofile ∧ 0<Kpush ∧
+    ∀{ι : Type*}[DecidableEq ι](p : ι→O)(hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (_hpr : ∀i,lambda^2∣p i-1)
+      (pool : Finset ι) (Q : Finset (ι→₀ℕ)) (labels : Finset (Ideal O))
+      (β : Ideal O→(ι→₀ℕ)→ℂ) (cutoff : CubeCoordinates ι→Finset ι→Ideal O→Finset ι→ℝ)
+      (Ψ : O→*ℂ) (m : O) (mark : (ι→₀ℕ)→Finset ι→ℂ) (Γ Ysource Y : ℝ)
+      (_hΨ : ∀u,‖Ψ u‖≤1) (_hΓ : 0≤Γ) (_hY : 0<Y)
+      (_hsf : ∀I∈labels,Squarefree I) (_hn : ∀I∈labels,I≠0)
+      (_hβ : ∀I∈labels,∀v∈Q,‖β I v‖≤Γ)
+      (k : SourceIndex) (l : ℕ) (gate : FirstOriginalOuter ι→Prop)
+      (_hcutoff : ∀x∈refinedOuter p pool Q k gate,∀I∈labels,cutoff x.1 x.2.1 I x.2.2≤ Y)
+      (T₁ T₂ K theta L : ℝ)
+      (_hT₁ : 0<T₁) (_hT₂ : 0<T₂) (_hK : 0<K) (_hL : 0≤ L)
+      (Benergy Z M r ell V delta aa₁ aa₂ bb rr tq hh eta : ℝ)
+      (_hB : 0≤ Benergy) (_hZ : 0<Z)
+      (_hscale : rawScales k l T₁ T₂=fun i=>Z^(![aa₁,aa₂,bb,delta,rr,tq,hh,r-aa₁-bb-tq,r-aa₂-bb-tq] i))
+      (_hLe : L=eta*Real.log Z)
+      (_hleft : ∀z : Frequency×(Fin 9→ℝ),
+        (Z^(firstKappa M r ell V delta aa₁ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+          refinedChildEnergy p hp hg hinj pool Q k l gate true Ψ m mark omega₁ T₁
+            (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 7) Y≤
+          Benergy*(tripleHeight J z.1*coordinateHeight J z.2))
+      (_hright : ∀z : Frequency×(Fin 9→ℝ),
+        (Z^(firstKappa M r ell V delta aa₂ bb rr)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+          refinedChildEnergy p hp hg hinj pool Q k l gate false Ψ m mark omega₂ T₂
+            (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z.1 z.2 8) Y≤
+          Benergy*(tripleHeight J z.1*coordinateHeight J z.2)),
+      (Z^(-r-2*ell-V)*Z^M)*‖refinedCellRows p hp hcop hg pool Q labels β cutoff Ψ m mark k l gate
+        (positiveSource g₁ 1 (-theta)) (positiveSource g₂ 1 theta) Φ K Ysource (rawScales k l T₁ T₂)‖≤
+        ((Γ^2*Kpush*Y^ε*Benergy)*(Cprofile*((1+‖-theta‖)^InverseClippingProfiles.momentOrder J*
+          (1+‖theta‖)^InverseClippingProfiles.momentOrder J)/
+          (1+K*(rawScales k l T₁ T₂) 6/((rawScales k l T₁ T₂) 3*(rawScales k l T₁ T₂) 4*
+            ((rawScales k l T₁ T₂) 5)^2*T₁*T₂))^Aker)) := by
+  obtain ⟨w₁,w₂,U,M₀,lo,hi,hlo,hlh,hw₁,hw₂,hs₁,hs₂,hM,hUc,hUs,hwin⟩ :=
+    original_cell_windows g₁ g₂ m₁ m₂ 1 (fun _=>0) hm₁ hm₂ hg₁ hg₂ (fun _=>le_rfl)
+  refine ⟨w₁,w₂,lo,hi,hlo,hlh,hw₁,hw₂,hs₁,hs₂,?_⟩
+  intro ε hε Aker J
+  obtain ⟨Cprofile,Kpush,hC,hKp,he⟩ := actual_first_original_subset_physical_budget
+    ε hε U g₁ g₂ Φ M₀ (fun _=>0) m₁ m₂ 1
+    hM (fun _=>le_rfl) hUs hg₁ hg₂ Aker J
+  refine ⟨Cprofile,Kpush,hC,hKp,?_⟩
+  intro ι _ p hp _ hg hinj hcop hc hpr pool Q labels β cutoff Ψ m mark Γ Ysource Y hΨ hΓ hY hsf hn hβ
+    k l gate hcutoff T₁ T₂ K theta L hT₁ hT₂ hK hL Benergy Z M r ell V delta aa₁ aa₂ bb rr tq hh eta hB hZ hscale hLe hleft hright
+  let source := refinedSource p pool Q labels β cutoff Ysource k gate
+  have hgates := hwin p hp hg pool Q labels Ysource (coefficient p hg Ψ m mark true)
+    (coefficient p hg Ψ m mark false) k l T₁ T₂ (fun _=>0) 1 1 (-theta) theta
+    hT₁ hT₂ (by intro i;simp) le_rfl le_rfl le_rfl le_rfl
+  have hb := he p hp hg hinj hcop hc hpr pool (refinedOuter p pool Q k gate) (fun x=>x.1) (fun x=>x.2.1)
+    Ψ Ψ m m (divisorElement p) (fun x=>mark x.1.rightExponent) (fun x=>mark x.1.leftExponent)
+    (fun _=>commonSelector p (fun _=>1) l) (fun _=>labels) (firstOriginalWeight p β cutoff) (Γ^2) Y
+    hΨ hΨ (sq_nonneg _) hY (fun _ _=>hsf) (fun _ _=>hn)
+    (fun x hx=>original_weight_bound p pool Q labels β cutoff Γ Y hΓ hβ x (original_outer_cell_subset p pool Q k (Finset.mem_filter.mp hx).1))
+    w₁ w₂ (fun _=>0) 1 1 (-theta) theta (leftNorm p) (rightNorm p) (commonNorm p) (activeNorm p)
+    K L hK (rawScales k l T₁ T₂) (rawScales_pos k l T₁ T₂ hT₁ hT₂)
+    source (refined_source_radius p hp pool Q labels β cutoff Ysource Y k gate hn hcutoff)
+    (fun x hx=>original_source_positive p hp pool Q labels Ysource x (Finset.mem_filter.mp (Finset.mem_filter.mp hx).1).1)
+    (by intro i;simp) le_rfl le_rfl le_rfl le_rfl hL
+    (fun x hx=>hgates.1 x (Finset.mem_filter.mp hx).1)
+    (fun x hx=>hgates.2.1 x (Finset.mem_filter.mp hx).1)
+    (fun x hx=>hgates.2.2 x (Finset.mem_filter.mp hx).1)
+    Benergy hB Z M r ell V delta aa₁ aa₂ bb rr tq hh eta hZ hscale hLe
+    (by simpa [refinedChildEnergy,rawScales] using hleft)
+    (by simpa [refinedChildEnergy,rawScales] using hright)
+  unfold refinedCellRows
+  unfold InverseMomentFirstOriginalProfile.coefficient InverseMomentFirstOriginalProfile.weight
+  simpa [source,rawScales] using hb
+
+end InverseMomentFirstOriginalProfile
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+local instance : Fintype Eisˣ := @Fintype.ofFinite _ cubic_units_finite
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem actual_priority_source_recursive
+    (om Φ:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C : ℝ,0 ≤ C ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (source : Finset (MarkedSecondSource ι Jo 0))
+    (_hs : ActualSecondSourceConditions p source),
+    ∀ (pool : Finset ι) (Ψ : Eis →* ℂ) (m : Eis) (z : SecondRayIndex)
+        (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : σ → Finset ι) (a₁ a₂ : σ → ι → ℂ)
+        (deleted₁ deleted₂ : MarkedSecondSource ι Jo 0→Finset ι)
+        (Y R L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (w : MarkedSecondSource ι Jo 0 → ℂ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀ x∈source,∀ i∈deleted₁ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ x∈source,∀ i∈deleted₂ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) R) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) → (∀ x∈source,‖w x‖ ≤ 1) →
+      (∀ i∈slots₁,∀ q∈lists₁ i,‖a₁ i q‖ ≤ 1) →
+      (∀ i∈slots₂,∀ q∈lists₂ i,‖a₂ i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo ≤ 2*K → slots₁.card ≤ K → slots₂.card ≤ K → 0 ≤ A →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈slots₁.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₁\J₁) lists₁ a₁
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈slots₂.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₂\J₂) lists₂ a₂
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      ‖(Y : ℂ)*secondRayCoefficient z *
+        (∑ x ∈ source,(w x*actualSecondSignedWeight p hg Ψ
+            (m*cubicIdealGenerator x.quotient) z x) *
+          actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m z)
+            slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂ (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t) Φ Y X)‖ ≤
+      ∑d∈keys p source,(Real.exp (6*L)*‖(Y : ℂ)*secondRayCoefficient z*(((scales d 1)*(scales d 2)*(Z^(secondCellColumnExponent Z X d)) : ℝ):ℂ)⁻¹‖)*
+        (((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*(A*Z^(2*(max 0 (secondCellColumnExponent Z X d)+(Vlabel d))+εchild))*
+          Z^((ell+Ractive/2-j+tcount+(secondCellExponent Z d 0)-(secondCellExponent Z d 1)+11*eta/2)*(1+εmass)))*
+          (C*((1+‖(-priorityHeight negative t)‖)^InverseClippingProfiles.momentOrder J *
+            (1+‖(priorityHeight negative t)‖)^InverseClippingProfiles.momentOrder J) /
+              (1+Y*(scales d 3)/((scales d 1)*(scales d 2)^2*(Z^(secondCellColumnExponent Z X d))^2))^0)) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,henergy⟩:=
+    actual_priority_cell_recursive (ι:=ι) (σ:=σ) om Φ lo hi hlo hsupport negative B₀ hB₀ 0 J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo source hs pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X εchild Vlabel ell Ractive j tcount eta ρ t w labels A
+    hd₁ hd₂ hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hleft hright
+  have hz:0<Z:=zero_lt_one.trans hZ
+  have hk:∀x∈source,x.second.frequency≠0:=fun x hx=>frequency_ne_zero_of_gate _ _ (hrows x hx)
+  rw [physical_source_partition p hp hcop hg source pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ w]
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro d hd
+  have hin : cell p source d⊆source:=cell_subset p source d
+  have hcommon:∀x∈cell p source d,primeProductNorm p x.second.sourceCommon≤ Z^(secondCellExponent Z d 0+eta):=by
+    intro x hx
+    have hr:primeProductNorm p x.second.sourceCommon≤2*scales d 0:=
+      (div_le_iff₀ (dyadScale_pos _)).mp (cell_ratios p hp source hk d x hx 0).2.le
+    apply hr.trans
+    rw [Real.rpow_add hz,second_cell_scale_rpow Z d 0 hZ]
+    simpa only [mul_comm] using mul_le_mul_of_nonneg_left hbin (show 0≤ scales d 0 from (dyadScale_pos _).le)
+  have hdiv:∀x∈cell p source d,Z^(secondCellExponent Z d 1-eta)≤ primeProductNorm p x.second.divisor:=by
+    intro x hx
+    have hr:scales d 1≤ primeProductNorm p x.second.divisor:=by
+      simpa [outerNorms,scales] using (le_div_iff₀ (dyadScale_pos _)).mp (cell_ratios p hp source hk d x hx 1).1
+    have hh:Z^(secondCellExponent Z d 1-eta)≤ Z^(secondCellExponent Z d 1):=
+      Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+    rw [second_cell_scale_rpow Z d 1 hZ] at hh
+    exact hh.trans hr
+  exact henergy p hp hcop hg hpr hinj hc (cell p source d) (cell_conditions p source hs d) d
+    (fun x hx=>(mem_cell p source d x).mp hx |>.2) pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X (Vlabel d) εchild ell Ractive j tcount
+    (secondCellExponent Z d 0) (secondCellExponent Z d 1) eta ρ t w (labels d) A
+    (fun x hx=>hd₁ x (hin hx)) (fun x hx=>hd₂ x (hin hx)) hρ hL hZ hX hY
+    (fun x hx=>hrows x (hin hx)) (fun x hx=>hcube₁ x (hin hx)) (fun x hx=>hcube₂ x (hin hx))
+    (fun x hx=>hactive x (hin hx)) (fun x hx=>hj x (hin hx)) (fun x hx=>hquot x (hin hx))
+    hcommon hdiv hΨ (fun x hx=>hw x (hin hx)) ha₁ ha₂ (hlabels d hd) ho hslots₁ hslots₂ hA
+    (hleft d hd) (hright d hd)
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+local instance : Fintype Eisˣ := @Fintype.ofFinite _ cubic_units_finite
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem actual_priority_retained_bound
+    (om Φ:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (source : Finset (MarkedSecondSource ι Jo 0))
+    (_hs : ActualSecondSourceConditions p source),
+    ∀ (pool : Finset ι) (Ψ : Eis →* ℂ) (m : Eis) (z : SecondRayIndex)
+        (slots₁ slots₂ : Finset σ) (lists₁ lists₂ : σ → Finset ι) (a₁ a₂ : σ → ι → ℂ)
+        (deleted₁ deleted₂ : MarkedSecondSource ι Jo 0→Finset ι)
+        (Y R L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (w : MarkedSecondSource ι Jo 0 → ℂ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀ x∈source,∀ i∈deleted₁ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ x∈source,∀ i∈deleted₂ x,i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) R) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) → (∀ x∈source,‖w x‖ ≤ 1) →
+      (∀ i∈slots₁,∀ q∈lists₁ i,‖a₁ i q‖ ≤ 1) →
+      (∀ i∈slots₂,∀ q∈lists₂ i,‖a₂ i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo ≤ 2*K → slots₁.card ≤ K → slots₂.card ≤ K → 0 ≤ A →
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) →
+      X=Z^(r-Acol-Bfirst-tcount) → L=eta*Real.log Z →
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) →
+      2≤ Z → 1≤ b → b≤ Z^(6*eta) →
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) →
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈slots₁.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₁\J₁) lists₁ a₁
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈slots₂.powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ z)
+          (actualSecondInheritedRadicalPuncture m γ) (slots₂\J₂) lists₂ a₂
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      ‖(Y : ℂ)*secondRayCoefficient z *
+        (∑ x ∈ source,(w x*actualSecondSignedWeight p hg Ψ
+            (m*cubicIdealGenerator x.quotient) z x) *
+          actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ m z)
+            slots₁ slots₂ (fun i=>lists₁ i\deleted₁ x) (fun i=>lists₂ i\deleted₂ x) a₁ a₂ (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t) Φ Y X)‖ ≤
+      C*A*‖secondRayCoefficient z‖*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,hC,henergy⟩:=
+    actual_priority_source_recursive (ι:=ι) (σ:=σ) om Φ lo hi hlo hsupport negative B₀ hB₀ J K εmass hεmass
+  obtain ⟨Cbin,hCbin,hbudget⟩:=priority_source_scalar_budget caps hcaps
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,(Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^(2*K)*C,Cbin,by positivity,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo source hs pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b
+    ρ t w labels A hd₁ hd₂ hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have he:=henergy p hp hcop hg hpr hinj hc source hs pool Ψ m z slots₁ slots₂ lists₁ lists₂ a₁ a₂
+    deleted₁ deleted₂ Y R L Z X εchild Vlabel ell Ractive j tcount eta ρ t w labels A
+    hd₁ hd₂ hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot
+    hΨ hw ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hleft hright
+  let H:ℝ:=(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)
+  have hheight:(1+‖-priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J*
+      (1+‖priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J=H:=by
+    cases negative <;> simp [priorityHeight,H,two_mul,pow_add]
+  let D:ℝ:=(Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*A*C*H
+  have hD:0≤ D:=by dsimp [D,H];positivity
+  let S:ℝ:=∑d∈keys p source,priorityCellScalar Z Y L X ell Ractive j tcount eta εchild εmass Bfirst (secondRayCoefficient z) d
+  have hfactor:
+      (∑d∈keys p source,(Real.exp (6*L)*‖(Y:ℂ)*secondRayCoefficient z*
+          ((scales d 1*scales d 2*Z^(secondCellColumnExponent Z X d):ℝ):ℂ)⁻¹‖)*
+        (((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^slots₁.card*(2:ℝ)^slots₂.card*(A*Z^(2*(max 0 (secondCellColumnExponent Z X d)+Vlabel d)+εchild))*
+          Z^((ell+Ractive/2-j+tcount+secondCellExponent Z d 0-secondCellExponent Z d 1+11*eta/2)*(1+εmass)))*
+          (C*((1+‖-priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J*
+            (1+‖priorityHeight negative t‖)^InverseClippingProfiles.momentOrder J))))=D*S:=by
+    dsimp only [S]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro d hd
+    rw [hheight,hVe d]
+    dsimp only [D,priorityCellScalar,secondCount]
+    ring
+  simp only [pow_zero,div_one] at he
+  rw [hfactor] at he
+  have hbnd:=hbudget p hp source Z M r ell V delta Acol Bfirst Ractive j tcount eta tau pi εchild εmass b D
+    (secondRayCoefficient z) hZ2 hD hb hthreshold
+    (fun x hx=>frequency_ne_zero_of_gate _ _ (hrows x hx)) hnorm
+    (by simpa only [hXe] using hgeom) hmass
+  have hs: C*0≤ C*0:=le_refl _
+  let P:=Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  have hP:0≤ P:=by dsimp [P];positivity
+  have hconst:D≤((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^(2*K)*C)*A*H:=by
+    have h1:(2:ℝ)^slots₁.card≤2^K:=pow_le_pow_right₀ (by norm_num) hslots₁
+    have h2:(2:ℝ)^slots₂.card≤2^K:=pow_le_pow_right₀ (by norm_num) hslots₂
+    calc
+      _≤(Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^K*(2:ℝ)^K*A*C*H:=by dsimp only [D];gcongr
+      _= _:=by rw [show 2*K=K+K by omega,pow_add];ring
+  calc
+    _≤ P*(D*S):=mul_le_mul_of_nonneg_left he hP
+    _≤ D*‖secondRayCoefficient z‖*(1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild):=by
+      convert hbnd using 1 ; dsimp only [P,S] ; rw [hYe,hXe,hLe] ; ring
+    _≤(((Fintype.card (Eisˣ × Eisˣ) : ℝ)*(2:ℝ)^(2*K)*C)*A*H)*‖secondRayCoefficient z‖*(1+Cbin*Real.log Z)^4*
+        Z^(r+3*ell+V+48*eta+tau+pi+εchild):=by gcongr
+    _= _:=by dsimp only [H];ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers InverseInitialArithmetic
+open InverseWholePriorityRetainedSource RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem whole_priority_retained_fixed_ray
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (cube:CubeCoordinates ι) (firstCommon firstDivisor:Finset ι)
+    (old:Fin Jo→InverseInitialFibers.PrimeIdeal) (selector:Finset ι→ℂ)
+    (Ψ:Eis→*ℂ) (m:Eis) (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (cutoff:SecondParentSource ι (Jo+(assigned.card+assigned.card))→Finset ι→Finset ι→ℝ)
+    (_hcube:cube.Admissible) (_hcommon:Disjoint firstCommon cube.support)
+    (_hdivisor:firstDivisor⊆firstCommon∪cube.support)
+    (_hold:∀D∈pool.powerset,selector D≠0 → ∀i,(old i).val∣
+      sourceIdeal p cube.support*sourceIdeal p firstCommon*sourceIdeal p D)
+    (_hextra:extra cube⊆cube.support),
+    let source:=unifiedSource p pool
+      (activeParents p extra pool cube firstCommon firstDivisor old selector negative assigned lists) cutoff
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    ∀(z:SecondRayIndex)
+        (Y R L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀D∈pool.powerset,‖selector D‖≤1) →
+      (∀i∈assigned,∀k∈lists i,‖a i k‖≤1) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) R) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo+(assigned.card+assigned.card) ≤ 2*K → (slots\assigned).card ≤ K → (slots\assigned).card ≤ K → 0 ≤ A →
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) →
+      X=Z^(r-Acol-Bfirst-tcount) → L=eta*Real.log Z →
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) →
+      2≤ Z → 1≤ b → b≤ Z^(6*eta) →
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) →
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₁) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₂) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      ‖(Y:ℂ)*secondRayCoefficient z *
+        ∑x∈source,sourceWeight p hg cube negative Ψ m selector ray core assigned a x *
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x‖ ≤
+      C*A*‖secondRayCoefficient z‖*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,Cbin,hC,hCbin,he⟩:=
+    actual_priority_retained_bound (ι:=ι) (σ:=σ) om rowMajorant lo hi hlo hsupport negative
+      caps hcaps B₀ hB₀ J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,coefficientBound*C,Cbin,mul_nonneg coefficientBound_pos.le hC,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo extra pool cube firstCommon firstDivisor old selector
+    Ψ m ray core slots assigned lists a cutoff hcube hcommon hdivisor hold hextra source Ψ₀ z
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A
+    hselector haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+    ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have hsource:ActualSecondSourceConditions p source:=
+    active_conditions p hp extra pool cube firstCommon firstDivisor old selector hcube hcommon hdivisor
+      hold hextra negative assigned lists cutoff
+  have hd:∀x∈source,∀i∈InverseMomentWholeRetainedSource.deleted p extra negative x,
+      i∈x.cube.support∪x.firstCommon ∨ (Ideal.span {p i}:Ideal Eis)∣x.quotient:=
+    active_deleted_support p hinj extra pool cube firstCommon firstDivisor old selector hcube hcommon
+      hdivisor hold hextra negative assigned lists cutoff
+  have hw:∀x∈source,‖normalizedWeight p hg cube negative Ψ m selector ray core assigned a x‖≤1:=
+    fun x hx=>normalizedWeight_norm p hg hinj extra pool cube firstCommon firstDivisor old selector
+      negative Ψ m ray core assigned lists a haassigned hselector (fun D hD hD0=>hΨ _) cutoff x hx
+  have hΨ₀:∀n,‖Ψ₀ n‖≤1:=fun n=>(firstCoreTwist_norm_le negative (if negative then ray.1 else ray.2)
+    Ψ core n).trans (hΨ n)
+  have he₀:=he p hp hcop hg hpr hinj hc source hsource pool Ψ₀ m z (slots\assigned) (slots\assigned)
+    lists lists a a (InverseMomentWholeRetainedSource.deleted p extra negative)
+    (InverseMomentWholeRetainedSource.deleted p extra negative)
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t
+    (normalizedWeight p hg cube negative Ψ m selector ray core assigned a) labels A
+    hd hd hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ₀ hw
+    ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have hrow:∀x:MarkedSecondSource ι (Jo+(assigned.card+assigned.card)) 0,wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+      (principalWindow om lo hi hlo hsupport negative t) X Y z x=
+      actualSecondSignedWeight p hg Ψ₀ (m*cubicIdealGenerator x.quotient) z x*
+      actualSecondProfileRow p hg pool (secondInheritedProfile p x Ψ₀ m z)
+        (slots\assigned) (slots\assigned)
+        (fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x)
+        (fun i=>lists i\InverseMomentWholeRetainedSource.deleted p extra negative x) a a
+        (principalWindow om lo hi hlo hsupport negative t) (principalWindow om lo hi hlo hsupport negative t)
+        rowMajorant Y X:=fun x=>wholeRow_eq p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a _ X Y z x
+  rw [source_sum_normalized p hg cube negative Ψ m selector ray core assigned a source]
+  rw [show (Y:ℂ)*secondRayCoefficient z*((coefficientBound:ℂ)*
+      ∑x∈source,normalizedWeight p hg cube negative Ψ m selector ray core assigned a x*
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+          (principalWindow om lo hi hlo hsupport negative t) X Y z x)=
+      (coefficientBound:ℂ)*((Y:ℂ)*secondRayCoefficient z*
+        ∑x∈source,normalizedWeight p hg cube negative Ψ m selector ray core assigned a x*
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x) by ring]
+  rw [norm_mul,Complex.norm_real,Real.norm_of_nonneg coefficientBound_pos.le]
+  simp_rw [hrow,←mul_assoc]
+  convert mul_le_mul_of_nonneg_left he₀ coefficientBound_pos.le using 1 <;> first | rfl | ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers InverseInitialArithmetic
+open InverseWholePriorityRetainedSource RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem whole_priority_retained_all_rays
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (cube:CubeCoordinates ι) (firstCommon firstDivisor:Finset ι)
+    (old:Fin Jo→InverseInitialFibers.PrimeIdeal) (selector:Finset ι→ℂ)
+    (Ψ:Eis→*ℂ) (m:Eis) (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (cutoff:SecondParentSource ι (Jo+(assigned.card+assigned.card))→Finset ι→Finset ι→ℝ)
+    (_hcube:cube.Admissible) (_hcommon:Disjoint firstCommon cube.support)
+    (_hdivisor:firstDivisor⊆firstCommon∪cube.support)
+    (_hold:∀D∈pool.powerset,selector D≠0 → ∀i,(old i).val∣
+      sourceIdeal p cube.support*sourceIdeal p firstCommon*sourceIdeal p D)
+    (_hextra:extra cube⊆cube.support),
+    let source:=unifiedSource p pool
+      (activeParents p extra pool cube firstCommon firstDivisor old selector negative assigned lists) cutoff
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    ∀
+        (Y R L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀D∈pool.powerset,‖selector D‖≤1) →
+      (∀i∈assigned,∀k∈lists i,‖a i k‖≤1) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) R) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo+(assigned.card+assigned.card) ≤ 2*K → (slots\assigned).card ≤ K → (slots\assigned).card ≤ K → 0 ≤ A →
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) →
+      X=Z^(r-Acol-Bfirst-tcount) → L=eta*Real.log Z →
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) →
+      2≤ Z → 1≤ b → b≤ Z^(6*eta) →
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) →
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+      (∀ z:SecondRayIndex,∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₁) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ z:SecondRayIndex,∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₂) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 R) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      ‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z *
+        ∑x∈source,sourceWeight p hg cube negative Ψ m selector ray core assigned a x *
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x‖ ≤
+      C*A*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,Cbin,hC,hCbin,he⟩:=
+    whole_priority_retained_fixed_ray (ι:=ι) (σ:=σ) om lo hi hlo hsupport negative
+      caps hcaps B₀ hB₀ J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C*(∑ z : SecondRayIndex, ‖secondRayCoefficient z‖),Cbin,by positivity,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo extra pool cube firstCommon firstDivisor old selector
+    Ψ m ray core slots assigned lists a cutoff hcube hcommon hdivisor hold hextra source Ψ₀
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A
+    hselector haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+    ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  let P:=Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  let H:= (1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*(1+Cbin*Real.log Z)^4*
+    Z^(r+3*ell+V+48*eta+tau+pi+εchild)
+  let S:SecondRayIndex→ℂ:=fun z=>(Y:ℂ)*secondRayCoefficient z *
+      ∑x∈source,sourceWeight p hg cube negative Ψ m selector ray core assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+          (principalWindow om lo hi hlo hsupport negative t) X Y z x
+  have hP:0≤ P:=by dsimp [P];positivity
+  have hH:0≤ H:=by dsimp [H];positivity
+  have hz (z:SecondRayIndex):P*‖S z‖≤ C*A*H*‖secondRayCoefficient z‖:=by
+    have h:=he p hp hcop hg hpr hinj hc extra pool cube firstCommon firstDivisor old selector
+      Ψ m ray core slots assigned lists a cutoff hcube hcommon hdivisor hold hextra z
+      Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A
+      hselector haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+      ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass
+      (hleft z) (hright z)
+    convert h using 1 ; dsimp only [P,S,H] ; ring
+  calc
+    _≤ P*∑z:SecondRayIndex,‖S z‖:=mul_le_mul_of_nonneg_left (norm_sum_le _ _) hP
+    _=∑z:SecondRayIndex,P*‖S z‖:=Finset.mul_sum _ _ _
+    _≤∑z:SecondRayIndex,C*A*H*‖secondRayCoefficient z‖:=Finset.sum_le_sum (fun z _=>hz z)
+    _=C*A*H*(∑z:SecondRayIndex,‖secondRayCoefficient z‖):=(Finset.mul_sum _ _ _).symm
+    _≤ C*A*H*(∑ z : SecondRayIndex, ‖secondRayCoefficient z‖):= le_refl _
+    _= _:=by dsimp [H];ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open SecondPassIntegration CompletedHeight InversePrincipalEnergy RayFourExpansion
+open InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+
+theorem first_retained_radius_one {ι : Type*} [DecidableEq ι]
+    (p : ι→Eis) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+    (labels : Finset (Ideal Eis)) (b : CubeCoordinates ι) (Y : ℝ)
+    (hlabels : ∀ f∈labels,f≠0) (hne : (firstRetainedSource p labels b Y).Nonempty) : 1≤ Y := by
+  obtain ⟨x,hx⟩ := hne
+  obtain ⟨hf,hk⟩ := (mem_firstRetainedSource p labels b Y x).mp hx
+  have hm : firstPhysicalMultiplier p b.support b.leftExponent b.rightExponent b.leftBit b.rightBit x.1≠0 := by
+    unfold firstPhysicalMultiplier
+    exact mul_ne_zero (pow_ne_zero _ (cubicIdealGenerator_ne_zero _ (hlabels _ hf)))
+      (primeProduct_ne_zero p hp _ _)
+  by_contra hy
+  rw [nonzeroChildFrequencyBall_empty _ hm Y (lt_of_not_ge hy)] at hk
+  exact Finset.notMem_empty _ hk
+
+theorem firstCore_variable_principal_energy (ε : ℝ) (hε : 0<ε) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ),0<C ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→Eis) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (slots : Finset σ) (lists : σ→Finset ι) (coeff : σ→ι→ℂ),
+      (slots : Set σ).PairwiseDisjoint lists →
+      (∀ i∈slots,∀ k∈lists i,‖coeff i k‖≤1) →
+      ∀ (F D B : Finset ι) (v : ι→ℕ) (ε₁ ε₂ : ι→Bool),
+      (∀ i∈slots,Disjoint (lists i) D) →
+      ∀ (negative : Bool) (χ : RayCharacter) (Ψ : Eis→*ℂ),
+      (∀ z,‖Ψ z‖≤1) → ∀ (m c d : Eis),d≠0 → ∀ (r : FirstCoreIndex)
+      (om W : 𝓢(ℝ,ℂ)) (a b : ℝ) (_ha : 0<a) (_hs : Function.support om⊆Set.Icc a b)
+      (M t X Y : ℝ) (R : Finset ι→Finset ι→ℝ),b≤ Real.exp M → 0<X → 1≤ Y → (∀ G E,0≤ R G E) →
+      let H := firstCoreTest (primeMark slots lists coeff) (fun u=>om (Real.exp u))
+        (columnLog p (primeProductNorm p D*X)) negative (-t) D
+      let Ψ₀ := firstCoreTwist negative χ Ψ r
+      let m₀ := (m*b0Label p B v ε₁ ε₂)*∏ i∈D,p i
+      let c₀ := c*jLabel p B v ε₁ ε₂
+      ‖truncatedSecondZero p hg F Ψ₀ m₀ c₀ d H W Y (fun G E=>secondPhysicalCutoff p d (R G E) G E)‖ +
+      ‖principalRestoration p hg hp F Ψ₀ m₀ c₀ d H W Y (fun G E=>secondPhysicalMask p d (R G E) G E)‖ ≤
+      C*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W * (SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        Y*(X*Real.exp M)^(1+ε) := by
+  obtain ⟨s,C,hC,hbound⟩ := marked_principal_energy ε hε
+  refine ⟨s,C,hC,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop slots lists coeff hslots hcoeff F D B v ε₁ ε₂ hD
+    negative χ Ψ hΨ m c d hd r om W a b ha hs M t X Y R hb hX hY hR H Ψ₀ m₀ c₀
+  let V := principalWindow om a b ha hs negative t
+  let H₀ := markedRadial p slots lists coeff ∅ V X
+  have he (U : Finset ι) : secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) Ψ₀ m₀ c₀ d H U=
+      secondInputCoefficient p (fun i => complexSexticChar (Ideal.span {p i}) (hg i)) Ψ₀ m₀ c₀ d H₀ U :=
+    firstCoreTest_coefficient p hp hg hinj slots lists coeff D U hD om a b ha hs negative X t hX Ψ₀
+      (m*b0Label p B v ε₁ ε₂) c₀ d
+  rw [zero_congr_input p hg F Ψ₀ m₀ c₀ d H H₀ he,
+    restoration_congr_input p hp hg hinj F Ψ₀ m₀ c₀ d H H₀ he]
+  have hz : ∀ G∈F.powerset,∀ E∈G.powerset,(0:Eis)∈secondPhysicalCutoff p d (R G E) G E := by
+    intro G hG E hE
+    exact zero_mem_childFrequencyBall _ (mul_ne_zero hd (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))) _ (hR G E)
+  have hbnd := hbound p hp hg hinj hcop slots lists coeff hslots hcoeff ∅ F Ψ₀
+    (fun z=>(firstCoreTwist_norm_le negative χ Ψ r z).trans (hΨ z)) m₀ c₀ d V W X M Y
+    hX hY (principalWindow_upper om a b ha hs M hb negative t)
+    (fun G E=>secondPhysicalCutoff p d (R G E) G E) hz
+    (fun G E=>secondPhysicalMask p d (R G E) G E)
+    (fun G _ E k=>secondPhysicalMask_norm_le_one p d (R G E.val) G E.val k.val)
+  simpa only [H₀,V,Finset.card_empty,pow_zero,mul_one,principalWindow_seminorm_zero] using hbnd
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+  (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+def wholePriorityPrincipalEnergy
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (pool:Finset ι) (b:CubeCoordinates ι) (C extra:Finset ι) (negative:Bool)
+    (Ψ:O→*ℂ) (m d:O) (slots:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (selector:Finset ι→ℂ) (om W:𝓢(ℝ,ℂ)) (X t Y:ℝ)
+    (R:Finset ι→Finset ι→Finset ι→ℝ) : ℝ :=
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+    (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+      ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+        b.leftBit b.rightBit negative Ψ m D core‖*
+      ∑J∈slots.powerset,‖primeMark J lists a (A∪D)‖^2*
+        (let H:=firstCoreTest (primeMark (slots\J) (fun i=>lists i\(A∪D)) a)
+          (fun u=>om (Real.exp u)) (columnLog p (primeProductNorm p D*X)) negative (-t) D
+         let Ψ₀:=firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+         let m₀:=(m*b0Label p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+           b.leftBit b.rightBit)*∏i∈D,p i
+         let c₀:=(∏i∈C,p i)*jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+           b.leftBit b.rightBit
+         ‖truncatedSecondZero p hg pool Ψ₀ m₀ c₀ d H W Y
+           (fun G E=>secondPhysicalCutoff p d (R D G E) G E)‖+
+         ‖principalRestoration p hg hp pool Ψ₀ m₀ c₀ d H W Y
+           (fun G E=>secondPhysicalMask p d (R D G E) G E)‖)
+
+theorem whole_priority_principal_bound (ε:ℝ) (hε:0<ε) :
+    ∃ (s:Finset (ℕ×ℕ)) (Cp:ℝ),0<Cp ∧
+    ∀ {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+      (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (pool:Finset ι) (b:CubeCoordinates ι) (C extra:Finset ι) (negative:Bool)
+      (Ψ:O→*ℂ) (m d:O) (slots:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+      (selector:Finset ι→ℂ) (om W:𝓢(ℝ,ℂ)) (lo hi:ℝ)
+      (_hlo:0<lo) (_hs:Function.support om⊆Set.Icc lo hi)
+      (M t X Y:ℝ) (R:Finset ι→Finset ι→Finset ι→ℝ),
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      (∀u,‖Ψ u‖≤1) → d≠0 → hi≤ Real.exp M → 0<X → 1≤ Y → (∀D G E,0≤ R D G E) →
+      wholePriorityPrincipalEnergy p hp hg hinj pool b C extra negative Ψ m d slots lists a selector om W X t Y R ≤
+        Cp*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+          Y*(X*Real.exp M)^(1+ε)*
+          (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p
+            ((extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D))^(2*ε)) := by
+  obtain ⟨s,Cp,hCp,hprinc⟩ := firstCore_variable_principal_energy ε hε
+  obtain ⟨Cm,hCm,hmark⟩ := finite_primeMark_small_power ε hε
+  refine ⟨s,max ((firstCoreMassBound^2*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖))*Cp*Cm^2) 1,zero_lt_one.trans_le (le_max_right _ _),?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop pool b C extra negative Ψ m d slots lists a selector om W lo hi hlo hs
+    M t X Y R hslots ha hΨ hd hhi hX hY hR
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  let P:=Cp*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*Y*(X*Real.exp M)^(1+ε)
+  have hP:0≤ P:=by dsimp [P];positivity
+  have hm (J:Finset σ) (hJ:J∈slots.powerset) (D:Finset ι) :
+      ‖primeMark J lists a (A∪D)‖^2≤ Cm^2*(primeProductNorm p (A∪D))^(2*ε) := by
+    have hj:=Finset.mem_powerset.mp hJ
+    have hh:=hmark p hp hcop J lists a (fun i hi j hj' hij=>hslots (hj hi) (hj hj') hij) (fun i hi=>ha i (hj hi)) (A∪D)
+    have he:((primeProductNorm p (A∪D))^ε)^2=(primeProductNorm p (A∪D))^(2*ε):=by
+      rw [←Real.rpow_natCast,←Real.rpow_mul (primeProductNorm_pos p hp _).le]
+      congr 1;ring
+    calc
+      _≤(Cm*(primeProductNorm p (A∪D))^ε)^2:=pow_le_pow_left₀ (norm_nonneg _) hh 2
+      _= _:=by rw [mul_pow,he]
+  have hn (D:Finset ι) : 0≤ primeProductNorm p (A∪D):=(primeProductNorm_pos p hp _).le
+  have hmass := firstCoreMassBound_nonneg
+  unfold wholePriorityPrincipalEnergy
+  dsimp only
+  have hinner (r:RayCharacter×RayCharacter) (D:Finset ι) (core:FirstCoreIndex) (J:Finset σ)
+      (hJ:J∈slots.powerset) := hprinc p hp hg hinj hcop (slots\J) (fun i=>lists i\(A∪D)) a
+    (residual_lists_pairwise slots J lists A D hslots) (residual_coeff_bound slots J lists a A D ha)
+    pool D b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit
+    (fun i _=>residual_lists_avoid lists A D i) negative (if negative then r.1 else r.2) Ψ hΨ
+    m (∏i∈C,p i) d hd core om W lo hi hlo hs M t X Y (R D) hhi hX hY (hR D)
+  change _≤_
+  calc
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+        ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+          b.leftBit b.rightBit negative Ψ m D core‖*
+        ((2:ℝ)^slots.card*(Cm^2*(primeProductNorm p (A∪D))^(2*ε)*P)) := by
+      gcongr with r hr D hD core hc
+      calc
+        _≤∑J∈slots.powerset,Cm^2*(primeProductNorm p (A∪D))^(2*ε)*P := by
+          apply Finset.sum_le_sum
+          intro J hJ
+          exact mul_le_mul (hm J hJ D) (hinner r D core J hJ) (by positivity) (mul_nonneg (sq_nonneg _) (Real.rpow_nonneg (hn D) _))
+        _= _:=by simp only [Finset.sum_const,Finset.card_powerset,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat]
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*
+        (firstCoreMassBound*((2:ℝ)^slots.card*(Cm^2*(primeProductNorm p (A∪D))^(2*ε)*P))) := by
+      gcongr with r hr D hD
+      rw [←Finset.sum_mul]
+      exact mul_le_mul_of_nonneg_right (firstCoreOuter_mass p hg b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit negative Ψ m D (hΨ _)) (mul_nonneg (pow_nonneg (by norm_num) _)
+          (mul_nonneg (mul_nonneg (sq_nonneg _) (Real.rpow_nonneg (hn D) _)) hP))
+    _= (firstCoreMassBound^2)*((2:ℝ)^slots.card)^2*Cm^2*P*
+      (∑r:RayCharacter×RayCharacter,‖crossCoeff r.1 r.2‖)*
+      (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^(2*ε)) := by
+      simp only [Finset.mul_sum,Finset.sum_mul]
+      rw [Finset.sum_comm (s:=pool.powerset)]
+      apply Finset.sum_congr rfl
+      intro r hr
+      apply Finset.sum_congr rfl
+      intro D hD
+      ring
+    _≤ (firstCoreMassBound^2)*((2:ℝ)^slots.card)^2*Cm^2*P*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖)*
+      (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^(2*ε)) := by
+      apply mul_le_mul_of_nonneg_right
+      · apply mul_le_mul_of_nonneg_left
+        · exact le_refl _
+        · positivity
+      · exact Finset.sum_nonneg (fun D hD=>mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (hn D) _))
+    _= ((firstCoreMassBound^2*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖))*Cp*Cm^2)*
+        (4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        Y*(X*Real.exp M)^(1+ε)*
+        (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^(2*ε)) := by
+      have he:((2:ℝ)^slots.card)^2=(4:ℝ)^slots.card:=by rw [←pow_mul,pow_mul'];norm_num
+      rw [he]
+      dsimp only [P,A]
+      ring
+    _≤ _ := by
+      have hY0 : 0 ≤ Y := zero_le_one.trans hY
+      have hsum : 0 ≤ ∑ D ∈ pool.powerset,
+          ‖selector D‖ * (primeProductNorm p (A ∪ D)) ^ (2 * ε) :=
+        Finset.sum_nonneg (fun D _ => mul_nonneg (norm_nonneg (selector D))
+          (Real.rpow_nonneg (hn D) (2 * ε)))
+      gcongr
+      exact le_max_left _ _
+
+end InverseMoment
+
+end
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open Eisenstein CompletedGauss FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem full_second_supported_tail (order : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (Ct : ℝ), 0 < Ct ∧
+    ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i})
+      (hinj : Function.Injective (fun i => Ideal.span {p i}))
+      (_hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+      (F : Finset ι) (Ψ : O →* ℂ) (_hΨ : ∀ a, ‖Ψ a‖ ≤ 1)
+      (m c d : O) (Hcol : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ))
+      (B Y H lengthScale : ℝ), 0 ≤ B → 0 < Y → 0 ≤ H → 1 ≤ lengthScale →
+      (∀ U, ‖Hcol U‖ ≤ B) →
+      (∀ U, Hcol U ≠ 0 → primeProductNorm p U ≤ lengthScale) →
+      ∀ K : Finset ι → Finset ι → Finset O,
+      (∀ G ∈ F.powerset, ∀ E : G.powerset,
+        ∀ S ∈ (F\G).powerset, ∀ T ∈ (F\G).powerset, Disjoint S T →
+        residualPairWeight p hg Ψ Ψ m c d (fun U => Hcol (G∪U)) (fun U => Hcol (G∪U)) S T ≠ 0 →
+        ∀ k : O, k ∉ K G E.val →
+          H ≤ (Y / (‖ringComplex ((∏ i ∈ E.val,p i))‖^2 *
+            ‖ringComplex (∏ i : ↥((T \ S) ∪ (S \ T)), p i.val)‖^2)) * ‖ringComplex k‖^2) →
+      ‖secondSourceTail p hp hg F Ψ m c d Hcol W Y K‖ ≤
+        ((1+diagonalControl sieveCutoff)*lengthScale)^4 * (B^2 *
+          (Y*(Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*
+            (1+lengthScale^3/Y)^2/(1+H)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_uniform_secondSourceTail_bound order
+  refine ⟨s,Ct,hCt,?_⟩
+  intro ι _ p hp _ hg hinj hc F Ψ hΨ m c d Hcol W B Y H lengthScale hB hY hH hL hcol hsupp K hK
+  have hbound := (htail p hp hg hinj F Ψ m c d Hcol W Y H hY hH K
+    (fun G hG E hE => hK G hG ⟨E,hE⟩)).trans
+    (secondSourceTailCost_bounded_test p hp hg hinj F Ψ hΨ m c d Hcol B Y H lengthScale
+      (Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W) order hB hY hH (by positivity) hL hcol hsupp)
+  apply hbound.trans
+  have hdc := diagonalControl_nonneg sieveCutoff
+  have hL0 : 0 ≤ lengthScale := zero_le_one.trans hL
+  gcongr
+  linarith
+
+def supportedSecondRadius (d : O) (lengthScale Y H : ℝ) : ℝ :=
+  childOuterRadius Y (‖ringComplex d‖^2 * lengthScale) lengthScale lengthScale lengthScale H
+
+lemma supportedSecondRadius_eq (d : O) (lengthScale Y H : ℝ) :
+    supportedSecondRadius d lengthScale Y H = ‖ringComplex d‖^2 * lengthScale^4 * H / Y := by
+  unfold supportedSecondRadius childOuterRadius
+  ring
+
+theorem full_second_child_supported_tail (order : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (Ct : ℝ), 0 < Ct ∧
+    ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i})
+      (hinj : Function.Injective (fun i => Ideal.span {p i}))
+      (_hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+      (F : Finset ι) (Ψ : O →* ℂ) (_hΨ : ∀ a, ‖Ψ a‖ ≤ 1)
+      (m c d : O) (_hd : d ≠ 0) (Hcol : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ))
+      (B Y H lengthScale R : ℝ), 0 ≤ B → 0 < Y → 0 ≤ H → 1 ≤ lengthScale →
+      (∀ U, ‖Hcol U‖ ≤ B) →
+      (∀ U, Hcol U ≠ 0 → primeProductNorm p U ≤ lengthScale) →
+      supportedSecondRadius d lengthScale Y H ≤ R →
+      ‖secondSourceTail p hp hg F Ψ m c d Hcol W Y
+        (fun _ E => childFrequencyBall
+          (d*(∏ i ∈ E,p i)) R)‖ ≤
+        ((1+diagonalControl sieveCutoff)*lengthScale)^4 * (B^2 *
+          (Y*(Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*
+            (1+lengthScale^3/Y)^2/(1+H)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_supported_tail order
+  refine ⟨s,Ct,hCt,?_⟩
+  intro ι _ p hp _ hg hinj hc F Ψ hΨ m c d hd Hcol W B Y H lengthScale R hB hY hH hL hcol hsupp hR
+  apply htail p hp hg hinj hc F Ψ hΨ m c d Hcol W B Y H lengthScale hB hY hH hL hcol hsupp
+  intro G hG E S hS T hT hST hw k hk
+  obtain ⟨hGS,hGT⟩ := residualPairWeight_test_ne_zero p hg Ψ Ψ m c d _ _ S T hw
+  have hGS' := hsupp (G ∪ S) hGS
+  have hGT' := hsupp (G ∪ T) hGT
+  have hGn := (primeProductNorm_mono p hp Finset.subset_union_left).trans hGS'
+  have hEn := (primeProductNorm_mono p hp (Finset.mem_powerset.mp E.property)).trans hGn
+  have hSn := (primeProductNorm_mono p hp Finset.subset_union_right).trans hGS'
+  have hTn := (primeProductNorm_mono p hp Finset.subset_union_right).trans hGT'
+  let e := (∏ i ∈ E.val,p i)
+  have he : e ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hde : d*e ≠ 0 := mul_ne_zero hd he
+  have hdN : 0 < ‖ringComplex d‖^2 := SecondPassIntegration.elementNorm_pos d hd
+  have hL0 : 0 < lengthScale := lt_of_lt_of_le zero_lt_one hL
+  have heN : ‖ringComplex e‖^2 ≤ lengthScale := by
+    simpa only [e,primeProductNorm] using hEn
+  have hdeN : ‖ringComplex (d*e)‖^2 ≤ ‖ringComplex d‖^2 * lengthScale := by
+    simp only [map_mul,norm_mul,mul_pow]
+    exact mul_le_mul_of_nonneg_left heN (sq_nonneg _)
+  apply childFrequencyBall_raw_tail p hp Y (‖ringComplex d‖^2*lengthScale)
+    lengthScale lengthScale lengthScale H hY (mul_pos hdN hL0) hL0 hL0 hL0 hH
+    (d*e) e hde he hdeN heN S T hST hSn hTn k
+  intro hsmall
+  apply hk
+  apply (mem_childFrequencyBall (d*e) hde R k).mpr
+  exact ((mem_childFrequencyBall (d*e) hde _ k).mp hsmall).trans hR
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open Eisenstein CompletedGauss FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem second_whole_column_denominator {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i,p i ≠ 0) [∀ i,(Ideal.span {p i}).IsMaximal] (G E S T : Finset ι)
+    (hEG : E ⊆ G) (hGS : Disjoint G S) (hGT : Disjoint G T)
+    (L : ℝ) (hL : 0 ≤ L)
+    (hS : primeProductNorm p (G ∪ S) ≤ L)
+    (hT : primeProductNorm p (G ∪ T) ≤ L) :
+    (primeProductNorm p E)^2 * (primeProductNorm p S * primeProductNorm p T) ≤ L^2 := by
+  have hE := primeProductNorm_mono p hp hEG
+  have hE0 := (primeProductNorm_pos p hp E).le
+  have hS0 := (primeProductNorm_pos p hp S).le
+  have hT0 := (primeProductNorm_pos p hp T).le
+  rw [primeProductNorm_union p G S hGS] at hS
+  rw [primeProductNorm_union p G T hGT] at hT
+  calc
+    _ ≤ (primeProductNorm p G)^2 * (primeProductNorm p S * primeProductNorm p T) :=
+      mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hE0 hE 2) (mul_nonneg hS0 hT0)
+    _ = (primeProductNorm p G * primeProductNorm p S) *
+      (primeProductNorm p G * primeProductNorm p T) := by ring
+    _ ≤ L*L := mul_le_mul hS hT (mul_nonneg (primeProductNorm_pos p hp G).le hT0) hL
+    _ = _ := by ring
+
+def wholeSecondRadius (d : O) (L Y H : ℝ) : ℝ := ‖ringComplex d‖^2 * L^2 * H / Y
+
+theorem full_second_whole_column_tail (order : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (Ct : ℝ), 0 < Ct ∧
+    ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i})
+      (hinj : Function.Injective (fun i => Ideal.span {p i}))
+      (_hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+      (F : Finset ι) (Ψ : O →* ℂ) (_hΨ : ∀ a, ‖Ψ a‖ ≤ 1)
+      (m c d : O) (_hd : d ≠ 0) (Hcol : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ))
+      (B Y H L R : ℝ), 0 ≤ B → 0 < Y → 0 ≤ H → 1 ≤ L →
+      (∀ U, ‖Hcol U‖ ≤ B) →
+      (∀ U, Hcol U ≠ 0 → primeProductNorm p U ≤ L) →
+      wholeSecondRadius d L Y H ≤ R →
+      ‖secondSourceTail p hp hg F Ψ m c d Hcol W Y
+        (fun _ E => childFrequencyBall
+          (d*(∏ i ∈ E,p i)) R)‖ ≤
+        ((1+diagonalControl sieveCutoff)*L)^4 * (B^2 *
+          (Y*(Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*
+            (1+L^3/Y)^2/(1+H)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_supported_tail order
+  refine ⟨s,Ct,hCt,?_⟩
+  intro ι _ p hp _ hg hinj hc F Ψ hΨ m c d hd Hcol W B Y H L R hB hY hH hL hcol hsupp hR
+  apply htail p hp hg hinj hc F Ψ hΨ m c d Hcol W B Y H L hB hY hH hL hcol hsupp
+  intro G hG E S hS T hT hST hw k hk
+  obtain ⟨hGS,hGT⟩ := residualPairWeight_test_ne_zero p hg Ψ Ψ m c d _ _ S T hw
+  have hdGS : Disjoint G S := Finset.disjoint_left.mpr (by
+    intro i hiG hiS
+    exact (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hS) hiS)).2 hiG)
+  have hdGT : Disjoint G T := Finset.disjoint_left.mpr (by
+    intro i hiG hiT
+    exact (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hT) hiT)).2 hiG)
+  have hden := second_whole_column_denominator p hp G E.val S T
+    (Finset.mem_powerset.mp E.property) hdGS hdGT L (zero_le_one.trans hL)
+    (hsupp _ hGS) (hsupp _ hGT)
+  let e := (∏ i ∈ E.val,p i)
+  have he : e ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hde := mul_ne_zero hd he
+  have hdN : 0 < ‖ringComplex d‖^2 := SecondPassIntegration.elementNorm_pos d hd
+  have heN : 0 < ‖ringComplex e‖^2 := SecondPassIntegration.elementNorm_pos e he
+  have henorm : ‖ringComplex e‖^2 = primeProductNorm p E.val :=
+    rfl
+  have hkR := (outside_childFrequencyBall (d*e) hde R k hk).le
+  have hR' : ‖ringComplex d‖^2 * L^2 * H ≤
+      Y * (‖ringComplex d‖^2 * ‖ringComplex e‖^2 * ‖ringComplex k‖^2) := by
+    have hh := (div_le_iff₀ hY).mp hR
+    have hh' := mul_le_mul_of_nonneg_right hkR hY.le
+    simp only [map_mul,norm_mul,mul_pow] at hh'
+    nlinarith
+  have hbound : H * (‖ringComplex e‖^2 *
+      (primeProductNorm p S * primeProductNorm p T)) ≤ Y*‖ringComplex k‖^2 := by
+    apply (mul_le_mul_iff_right₀ (mul_pos hdN heN)).mp
+    have hh := mul_le_mul_of_nonneg_left hden (mul_nonneg hdN.le hH)
+    rw [←henorm] at hh
+    nlinarith [hh,hR']
+  rw [active_norm_sq_disjoint p S T hST,div_mul_eq_mul_div]
+  apply (le_div_iff₀ (mul_pos heN (mul_pos (primeProductNorm_pos p hp S)
+    (primeProductNorm_pos p hp T)))).mpr
+  exact hbound
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open Eisenstein CompletedGauss FirstPassCubeLabels SecondPassArithmetic
+open InversePrincipalEnergy InverseSecondPrincipalCaller
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem marked_radial_uniform_bound (ε : ℝ) (hε : 0 < ε) :
+    ∃ Cm : ℝ, 0 < Cm ∧ ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι → O) (_hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+      (slots : Finset σ) (lists : σ → Finset ι) (a : σ → ι → ℂ),
+      (slots : Set σ).PairwiseDisjoint lists →
+      (∀ i ∈ slots, ∀ k ∈ lists i, ‖a i k‖ ≤ 1) →
+      ∀ (A : Finset ι) (V : 𝓢(ℝ,ℂ)) (X M : ℝ), 0 < X →
+      (∀ u, V u ≠ 0 → u ≤ Real.exp M) →
+      ∀ U, ‖markedRadial p slots lists a A V X U‖ ≤
+        (2:ℝ)^A.card * Cm * (X*Real.exp M)^ε * SchwartzMap.seminorm ℝ 0 0 V := by
+  obtain ⟨Cm,hCm,hmark⟩ := finite_primeMark_extracted_bound ε hε
+  refine ⟨Cm,hCm,?_⟩
+  intro ι σ _ _ p hp _ hcop slots lists a hslots ha A V X M hX hV U
+  by_cases hz : V (primeProductNorm p U/X) = 0
+  · simp only [markedRadial,hz,mul_zero,norm_zero]
+    positivity
+  · have hn : primeProductNorm p U ≤ X*Real.exp M := by
+      simpa only [mul_comm] using (div_le_iff₀ hX).mp (hV _ hz)
+    have hn0 : 0 ≤ primeProductNorm p U := (primeProductNorm_pos p hp U).le
+    rw [markedRadial,norm_mul]
+    apply (mul_le_mul (hmark p hp hcop slots lists a hslots ha A U)
+      (V.norm_le_seminorm ℝ _) (norm_nonneg _) (by positivity)).trans
+    gcongr
+
+theorem full_marked_second_tail (ε : ℝ) (hε : 0 < ε) (order : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (Ct Cm : ℝ), 0 < Ct ∧ 0 < Cm ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+      (hg : ∀ i, lambda ∉ Ideal.span {p i})
+      (hinj : Function.Injective (fun i => Ideal.span {p i}))
+      (_hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+      (F : Finset ι) (Ψ : O →* ℂ) (_hΨ : ∀ a, ‖Ψ a‖ ≤ 1)
+      (m c d : O) (_hd : d ≠ 0)
+      (slots : Finset σ) (lists : σ → Finset ι) (a : σ → ι → ℂ),
+      (slots : Set σ).PairwiseDisjoint lists →
+      (∀ i ∈ slots, ∀ k ∈ lists i, ‖a i k‖ ≤ 1) →
+      ∀ (A : Finset ι) (V W : 𝓢(ℝ,ℂ)) (X M Y H R : ℝ),
+      0 < X → 0 < Y → 0 ≤ H → 1 ≤ X*Real.exp M →
+      (∀ u, V u ≠ 0 → u ≤ Real.exp M) →
+      wholeSecondRadius d (X*Real.exp M) Y H ≤ R →
+      ‖secondSourceTail p hp hg F Ψ m c d (markedRadial p slots lists a A V X) W Y
+        (fun _ E => childFrequencyBall (d*(∏ i ∈ E,p i)) R)‖ ≤
+        ((1+diagonalControl sieveCutoff)*(X*Real.exp M))^4 *
+          (((2:ℝ)^A.card * Cm * (X*Real.exp M)^ε * SchwartzMap.seminorm ℝ 0 0 V)^2 *
+            (Y*(Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*
+              (1+(X*Real.exp M)^3/Y)^2/(1+H)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_whole_column_tail order
+  obtain ⟨Cm,hCm,hmark⟩ := marked_radial_uniform_bound ε hε
+  refine ⟨s,Ct,Cm,hCt,hCm,?_⟩
+  intro ι σ _ _ p hp _ hcop hg hinj hc F Ψ hΨ m c d hd slots lists a hslots ha A V W X M Y H R hX hY hH hL hV hR
+  apply htail p hp hg hinj hc F Ψ hΨ m c d hd (markedRadial p slots lists a A V X) W
+    _ Y H (X*Real.exp M) R (by positivity) hY hH hL
+  · exact hmark p hp hcop slots lists a hslots ha A V X M hX hV
+  · exact markedRadial_support p slots lists a A V X M hX hV
+  · exact hR
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open Eisenstein CompletedGauss FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem second_correlated_column_denominator {ι : Type*} [DecidableEq ι]
+    (p : ι → O) (hp : ∀ i,p i ≠ 0) [∀ i,(Ideal.span {p i}).IsMaximal]
+    (G E S T : Finset ι) (hGS : Disjoint G S) (hGT : Disjoint G T)
+    (L : ℝ) (hL : 0 ≤ L)
+    (hS : primeProductNorm p (G ∪ S) ≤ L)
+    (hT : primeProductNorm p (G ∪ T) ≤ L) :
+    (primeProductNorm p E)^2 * (primeProductNorm p S * primeProductNorm p T) ≤
+      (primeProductNorm p E/primeProductNorm p G)^2 * L^2 := by
+  have hG0 := (primeProductNorm_pos p hp G).ne'
+  have hbound := second_whole_column_denominator p hp G G S T Finset.Subset.rfl hGS hGT L hL hS hT
+  calc
+    _ = (primeProductNorm p E/primeProductNorm p G)^2 *
+      ((primeProductNorm p G)^2 * (primeProductNorm p S*primeProductNorm p T)) := by
+        field_simp
+    _ ≤ _ := mul_le_mul_of_nonneg_left hbound (sq_nonneg _)
+
+def correlatedSecondRadius {ι : Type*} [DecidableEq ι] (p : ι → O)
+    (d : O) (G E : Finset ι) (L Y H : ℝ) : ℝ :=
+  ‖ringComplex d‖^2 * (primeProductNorm p E/primeProductNorm p G)^2 * L^2 * H / Y
+
+theorem full_second_correlated_tail (order : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (Ct : ℝ), 0 < Ct ∧
+    ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
+      (hg : ∀ i, lambda ∉ Ideal.span {p i})
+      (hinj : Function.Injective (fun i => Ideal.span {p i}))
+      (_hc : ∀ i, ringChar (O ⧸ Ideal.span {p i}) ≠ 2)
+      (F : Finset ι) (Ψ : O →* ℂ) (_hΨ : ∀ a, ‖Ψ a‖ ≤ 1)
+      (m c d : O) (_hd : d ≠ 0) (Hcol : Finset ι → ℂ) (W : 𝓢(ℝ, ℂ))
+      (B Y H L : ℝ) (R : Finset ι → Finset ι → ℝ), 0 ≤ B → 0 < Y → 0 ≤ H → 1 ≤ L →
+      (∀ U, ‖Hcol U‖ ≤ B) →
+      (∀ U, Hcol U ≠ 0 → primeProductNorm p U ≤ L) →
+      (∀ G ∈ F.powerset, ∀ E : G.powerset,
+        correlatedSecondRadius p d G E.val L Y H ≤ R G E.val) →
+      ‖secondSourceTail p hp hg F Ψ m c d Hcol W Y
+        (fun G E => childFrequencyBall
+          (d*(∏ i ∈ E,p i)) (R G E))‖ ≤
+        ((1+diagonalControl sieveCutoff)*L)^4 * (B^2 *
+          (Y*(Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*
+            (1+L^3/Y)^2/(1+H)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_supported_tail order
+  refine ⟨s,Ct,hCt,?_⟩
+  intro ι _ p hp _ hg hinj hc F Ψ hΨ m c d hd Hcol W B Y H L R hB hY hH hL hcol hsupp hR
+  apply htail p hp hg hinj hc F Ψ hΨ m c d Hcol W B Y H L hB hY hH hL hcol hsupp
+  intro G hG E S hS T hT hST hw k hk
+  obtain ⟨hGS,hGT⟩ := residualPairWeight_test_ne_zero p hg Ψ Ψ m c d _ _ S T hw
+  have hdGS : Disjoint G S := Finset.disjoint_left.mpr (by
+    intro i hiG hiS
+    exact (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hS) hiS)).2 hiG)
+  have hdGT : Disjoint G T := Finset.disjoint_left.mpr (by
+    intro i hiG hiT
+    exact (Finset.mem_sdiff.mp ((Finset.mem_powerset.mp hT) hiT)).2 hiG)
+  have hden := second_correlated_column_denominator p hp G E.val S T hdGS hdGT L (zero_le_one.trans hL)
+    (hsupp _ hGS) (hsupp _ hGT)
+  let e := (∏ i ∈ E.val,p i)
+  have he : e ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  have hde := mul_ne_zero hd he
+  have hdN : 0 < ‖ringComplex d‖^2 := SecondPassIntegration.elementNorm_pos d hd
+  have heN : 0 < ‖ringComplex e‖^2 := SecondPassIntegration.elementNorm_pos e he
+  have henorm : ‖ringComplex e‖^2 = primeProductNorm p E.val :=
+    rfl
+  have hkR := (outside_childFrequencyBall (d*e) hde (R G E.val) k hk).le
+  have hR' : ‖ringComplex d‖^2 * (primeProductNorm p E.val/primeProductNorm p G)^2 * L^2 * H ≤
+      Y * (‖ringComplex d‖^2 * ‖ringComplex e‖^2 * ‖ringComplex k‖^2) := by
+    have hh := (div_le_iff₀ hY).mp (hR G hG E)
+    have hh' := mul_le_mul_of_nonneg_right hkR hY.le
+    simp only [map_mul,norm_mul,mul_pow] at hh'
+    nlinarith
+  have hbound : H * (‖ringComplex e‖^2 *
+      (primeProductNorm p S * primeProductNorm p T)) ≤ Y*‖ringComplex k‖^2 := by
+    apply (mul_le_mul_iff_right₀ (mul_pos hdN heN)).mp
+    have hh := mul_le_mul_of_nonneg_left hden (mul_nonneg hdN.le hH)
+    rw [←henorm] at hh
+    rw [←henorm] at hR'
+    nlinarith [hh,hR']
+  rw [active_norm_sq_disjoint p S T hST,div_mul_eq_mul_div]
+  apply (le_div_iff₀ (mul_pos heN (mul_pos (primeProductNorm_pos p hp S)
+    (primeProductNorm_pos p hp T)))).mpr
+  exact hbound
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem second_correlated_radius_bound {ι : Type*} [DecidableEq ι]
+    (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+    (d : O) (G E : Finset ι)
+    (Z delta theta g s Hc eta tau L : ℝ) (hZ : 0<Z) (hL0 : 0≤ L)
+    (hd : ‖ringComplex d‖^2≤ Z^(delta+eta))
+    (hE : primeProductNorm p E≤ Z^(theta+eta))
+    (hG : Z^(g-eta)≤ primeProductNorm p G)
+    (hL : L≤ Z^(s+4*eta)) :
+    correlatedSecondRadius p d G E L (Z^(Hc+12*eta+tau)) (Z^tau) ≤
+      Z^(2*(s-g)-Hc+delta+2*theta+eta) := by
+  have hratio : primeProductNorm p E/primeProductNorm p G ≤ Z^(theta-g+2*eta) := by
+    calc
+      _ ≤ Z^(theta+eta)/Z^(g-eta) := div_le_div₀
+        (Real.rpow_pos_of_pos hZ _).le hE (Real.rpow_pos_of_pos hZ _) hG
+      _ = _ := by rw [←Real.rpow_sub hZ]; congr 1; ring
+  have hratio0 : 0≤ primeProductNorm p E/primeProductNorm p G :=
+    div_nonneg (primeProductNorm_pos p hp E).le (primeProductNorm_pos p hp G).le
+  have hsq (x : ℝ) : (Z^x)^2=Z^(2*x) := by
+    rw [pow_two,←Real.rpow_add hZ]
+    congr 1
+    ring
+  calc
+    _ ≤ Z^(delta+eta)*(Z^(theta-g+2*eta))^2*(Z^(s+4*eta))^2*
+        Z^tau/Z^(Hc+12*eta+tau) := by
+      unfold correlatedSecondRadius
+      gcongr
+    _ = _ := by
+      rw [hsq,hsq,←Real.rpow_add hZ,←Real.rpow_add hZ,←Real.rpow_add hZ,←Real.rpow_sub hZ]
+      congr 1
+      ring
+
+theorem second_correlated_radius_childM {ι : Type*} [DecidableEq ι]
+    (p : ι→O) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+    (d : O) (G E : Finset ι)
+    (Z M r ell V delta A B j t g theta eta tau L : ℝ) (hZ : 0<Z) (hL0 : 0≤ L)
+    (hd : ‖ringComplex d‖^2≤ Z^(delta+eta))
+    (hE : primeProductNorm p E≤ Z^(theta+eta))
+    (hG : Z^(g-eta)≤ primeProductNorm p G)
+    (hL : L≤ Z^(r-A-B-t+4*eta)) :
+    correlatedSecondRadius p d G E L
+      (Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau)) (Z^tau) ≤
+      Z^(childM M ell A t g theta V j eta) := by
+  have hb := second_correlated_radius_bound p hp d G E Z delta theta g (r-A-B-t)
+    (firstPhysicalHeight M r ell V delta B j) eta tau L hZ hL0 hd hE hG hL
+  convert hb using 1; congr 1
+  unfold childM decrease firstPhysicalHeight
+  ring
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InversePrincipalEnergy InverseSecondPrincipalCaller
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis" => Eisenstein.O
+
+theorem first_fresh_canonical_error (ε : ℝ) (hε : 0<ε) (order : ℕ) :
+    ∃ (s : Finset (ℕ × ℕ)) (Ct Cm : ℝ), 0<Ct ∧ 0<Cm ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι → Eis) (hp : ∀ i,p i≠0) [∀ i,(Ideal.span {p i}).IsMaximal]
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg : ∀ i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hc : ∀ i,ringChar (Eis ⧸ Ideal.span {p i})≠2)
+      (F D Bset : Finset ι) (v : ι→ℕ) (ε₁ ε₂ : ι→Bool)
+      (negative : Bool) (χ : RayCharacter) (Ψ : Eis→*ℂ),
+      (∀ z,‖Ψ z‖≤1) → ∀ (m : Eis)
+      (slots : Finset σ) (lists : σ→Finset ι) (coeff : σ→ι→ℂ),
+      (slots : Set σ).PairwiseDisjoint lists →
+      (∀ i∈slots,∀ k∈lists i,‖coeff i k‖≤1) →
+      (∀ i∈slots,Disjoint (lists i) D) →
+      ∀ (om : 𝓢(ℝ,ℂ)) (a b : ℝ) (ha : 0<a) (hs : Function.support om⊆Set.Icc a b)
+      (X height Wbound Z M n ell V delta A B j t eta tau : ℝ),
+      0<X → 0<Z → 1≤ X*Real.exp Wbound → b≤ Real.exp Wbound →
+      X*Real.exp Wbound≤ Z^(n-A-B-t+4*eta) →
+      ∀ (c d : Eis), d≠0 → ‖ringComplex d‖^2≤ Z^(delta+eta) →
+      ∀ (r : FirstCoreIndex) (g theta : Finset ι→ℝ),
+      (∀ G∈F.powerset,Z^(g G-eta)≤ primeProductNorm p G) →
+      (∀ G∈F.powerset,∀ E : G.powerset,primeProductNorm p E.val≤ Z^(theta E.val+eta)) →
+      let Y := Z^(firstPhysicalHeight M n ell V delta B j+12*eta+tau)
+      let H := Z^tau
+      let H₀ := markedRadial p slots lists coeff ∅ (principalWindow om a b ha hs negative height) X
+      let Ψ₀ := firstCoreTwist negative χ Ψ r
+      let m₀ := (m*b0Label p Bset v ε₁ ε₂)*∏ i∈D,p i
+      let c₀ := c*jLabel p Bset v ε₁ ε₂
+      let K := fun (G E : Finset ι) => childFrequencyBall
+        (d*(∏ i ∈ E,p i))
+        (Z^(childM M ell A t (g G) (theta E) V j eta))
+      ‖firstFreshSecondPoisson p hp hg hinj F D Bset v ε₁ ε₂ negative χ Ψ m
+          (primeMark slots lists coeff) om X c d r height Y -
+        truncatedSecondSource p hp hg F Ψ₀ m₀ c₀ d H₀ rowMajorant Y K‖ ≤
+        ((1+diagonalControl sieveCutoff)*(X*Real.exp Wbound))^4 *
+          ((Cm*(X*Real.exp Wbound)^ε*SchwartzMap.seminorm ℝ 0 0 om)^2 *
+            (Y*(Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+              (1+(X*Real.exp Wbound)^3/Y)^2/(1+H)^order)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_correlated_tail order
+  obtain ⟨Cm,hCm,hmark⟩ := marked_radial_uniform_bound ε hε
+  refine ⟨s,Ct,Cm,hCt,hCm,?_⟩
+  intro ι σ _ _ p hp _ hcop hg hinj hc F D Bset v ε₁ ε₂ negative χ Ψ hΨ m
+    slots lists coeff hslots hcoeff hD om a b ha hs X height Wbound Z M n ell V delta A B j t eta tau
+    hX hZ hL hb hLscale c d hd hdN r g theta hgN heN Y H H₀ Ψ₀ m₀ c₀ K
+  have hY : 0<Y := Real.rpow_pos_of_pos hZ _
+  have hH : 0≤ H := (Real.rpow_pos_of_pos hZ _).le
+  have hid := first_fresh_radial_truncated p hp hg hinj hc F D Bset v ε₁ ε₂ negative χ Ψ m
+    slots lists coeff hD om a b ha hs X height Y hX hY c d r K
+  change _ = truncatedSecondSource p hp hg F Ψ₀ m₀ c₀ d H₀ rowMajorant Y K +
+    secondSourceTail p hp hg F Ψ₀ m₀ c₀ d H₀ rowMajorant Y K at hid
+  rw [hid,add_sub_cancel_left]
+  have hVsupp := principalWindow_upper om a b ha hs Wbound hb negative height
+  have hcoef := hmark p hp hcop slots lists coeff hslots hcoeff ∅
+    (principalWindow om a b ha hs negative height) X Wbound hX hVsupp
+  simp only [Finset.card_empty,pow_zero,one_mul,principalWindow_seminorm_zero] at hcoef
+  apply htail p hp hg hinj hc F Ψ₀
+    (fun z=>(firstCoreTwist_norm_le negative χ Ψ r z).trans (hΨ z))
+    m₀ c₀ d hd H₀ rowMajorant _ Y H (X*Real.exp Wbound)
+    (fun G E=>Z^(childM M ell A t (g G) (theta E) V j eta))
+    (by positivity) hY hH hL hcoef
+  · exact markedRadial_support p slots lists coeff ∅ _ X Wbound hX hVsupp
+  · intro G hG E
+    exact second_correlated_radius_childM p hp d G E.val Z M n ell V delta A B j t (g G)
+      (theta E.val) eta tau (X*Real.exp Wbound) hZ (zero_le_one.trans hL)
+      hdN (heN G hG E) (hgN G hG) hLscale
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+
+include hp in
+theorem first_source_height_bounds (b : CubeCoordinates ι) (C D : Finset ι)
+    (hCB : Disjoint C b.support)
+    (hD : D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit)
+    (Z M Mmax Fmax r ell V delta B j eta tau : ℝ) (hZ : 1<Z)
+    (hM : 0≤ M) (hMm : M≤ Mmax) (hell : 0≤ ell) (hV : 0≤ V)
+    (hdelta : 0≤ delta) (hB : 0≤ B) (hj : 0≤ j) (heta : 0≤ eta) (htau : 0≤ tau)
+    (hwhole : r+3*ell+V≤ Fmax)
+    (h1 : ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta))
+    (h2 : ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta))
+    (hC : primeProductNorm p C≤ Z^(r+eta))
+    (hc : Z^(B-eta)≤ primeProductNorm p C)
+    (hd : Z^(delta-eta)≤ primeProductNorm p D)
+    (hJ : Z^(j-eta)≤‖ringComplex (jLabel p b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2) :
+    -Mmax≤ firstPhysicalHeight M r ell V delta B j+12*eta+tau ∧
+    firstPhysicalHeight M r ell V delta B j+12*eta+tau≤3*Fmax+16*eta+tau := by
+  have hz : 0<Z := zero_lt_one.trans hZ
+  have hd' := first_source_divisor_center p hp b C D hCB hD Z r ell delta eta hZ h1 h2 hC hd
+  have hb' := (Real.rpow_le_rpow_left_iff hZ).mp (hc.trans hC)
+  have hj' := hJ.trans ((cube_label_norm_bounds p hp b.support b.leftExponent b.rightExponent
+    b.leftBit b.rightBit b.support_pos (Z^(ell+eta)) (Real.rpow_pos_of_pos hz _).le h1 h2).1)
+  rw [←Real.rpow_mul_natCast hz.le] at hj'
+  have hj'' := (Real.rpow_le_rpow_left_iff hZ).mp hj'
+  norm_num at hj''
+  unfold firstPhysicalHeight
+  constructor <;> linarith
+
+include hp in
+
+theorem second_source_scalar_caps (b : CubeCoordinates ι) (C D : Finset ι)
+    (hCB : Disjoint C b.support)
+    (hD : D⊆C∪cubePrincipalSupport b.support b.leftExponent b.rightExponent b.leftBit b.rightBit)
+    (Z M Mmax Fmax r ell V delta B j eta tau A t L : ℝ) (hZ : 1<Z)
+    (hM : 0≤ M) (hMm : M≤ Mmax) (hFm : 0≤ Fmax) (hell : 0≤ ell) (hV : 0≤ V)
+    (hdelta : 0≤ delta) (hB : 0≤ B) (hj : 0≤ j) (heta : 0≤ eta) (htau : 0≤ tau)
+    (hA : 0≤ A) (ht : 0≤ t) (hwhole : r+3*ell+V≤ Fmax)
+    (h1 : ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ Z^(ell+eta))
+    (h2 : ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ Z^(ell+eta))
+    (hC : primeProductNorm p C≤ Z^(r+eta))
+    (hc : Z^(B-eta)≤ primeProductNorm p C)
+    (hd : Z^(delta-eta)≤ primeProductNorm p D)
+    (hJ : Z^(j-eta)≤‖ringComplex (jLabel p b.support
+      (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit)‖^2)
+    (hL : L≤ Z^(r-A-B-t+4*eta)) :
+    let Y := Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau)
+    let cap := Mmax+3*Fmax+16*eta+tau
+    Y≤ Z^cap ∧ Y⁻¹≤ Z^cap ∧ L≤ Z^cap := by
+  dsimp only
+  have hz : 0<Z := zero_lt_one.trans hZ
+  obtain ⟨hlo,hhi⟩ := first_source_height_bounds p hp b C D hCB hD
+    Z M Mmax Fmax r ell V delta B j eta tau hZ hM hMm hell hV hdelta hB hj heta htau
+    hwhole h1 h2 hC hc hd hJ
+  refine ⟨Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith),?_,?_⟩
+  · rw [←Real.rpow_neg hz.le]
+    exact Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith)
+  · exact hL.trans (Real.rpow_le_rpow_of_exponent_le hZ.le (by linarith))
+
+end
+end InverseMoment
+
+namespace InverseMoment
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+
+lemma second_tail_fixed_cap (Y L cap B P H : ℝ) (order : ℕ)
+    (hY : 0<Y) (hL : 0≤ L) (hc : 1≤ cap) (_hB : 0≤ B) (hP : 0≤ P) (hH : 0≤ H)
+    (hy : Y≤ cap) (hyi : Y⁻¹≤ cap) (hl : L≤ cap) :
+    ((1+diagonalControl sieveCutoff)*L)^4*(B^2*(Y*P*(1+L^3/Y)^2/(1+H)^order))≤
+      (4*(1+diagonalControl sieveCutoff)^4)*B^2*P*cap^13/(1+H)^order := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  have hc0 : 0≤ cap := zero_le_one.trans hc
+  have hscale : 1+L^3/Y≤2*cap^4 := by
+    calc
+      _ ≤ 1+cap^3*cap := by rw [div_eq_mul_inv]; gcongr
+      _ ≤ _ := by have hh : 1≤ cap^4 := one_le_pow₀ hc; nlinarith
+  calc
+    _ = ((1+diagonalControl sieveCutoff)*L)^4*B^2*Y*P*(1+L^3/Y)^2/(1+H)^order := by ring
+    _ ≤ ((1+diagonalControl sieveCutoff)*cap)^4*B^2*cap*P*(2*cap^4)^2/(1+H)^order := by
+      apply div_le_div_of_nonneg_right _ (by positivity)
+      gcongr
+    _ = _ := by ring
+
+theorem choose_second_tail_order (Lcap tau saving : ℝ) (hL : 0≤ Lcap) (htau : 0<tau) :
+    ∃ order : ℕ,∀ Z Y L B P : ℝ,1≤ Z → 0<Y → 0≤ L → 0≤ B → 0≤ P →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → L≤ Z^Lcap →
+      ((1+diagonalControl sieveCutoff)*L)^4*(B^2*(Y*P*(1+L^3/Y)^2/(1+Z^tau)^order))≤
+        (4*(1+diagonalControl sieveCutoff)^4)*B^2*P*Z^(-saving) := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  obtain ⟨order,ho⟩ := exists_nat_gt ((13*Lcap+saving)/tau)
+  refine ⟨order,?_⟩
+  intro Z Y L B P hZ hY hL0 hB hP hy hyi hl
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have hb := second_tail_fixed_cap Y L (Z^Lcap) B P (Z^tau) order hY hL0
+    (Real.one_le_rpow hZ hL) hB hP (Real.rpow_pos_of_pos hz _).le hy hyi hl
+  have hdecay : (Z^Lcap)^13/(1+Z^tau)^order≤ Z^(-saving) := by
+    calc
+      _ ≤ (Z^Lcap)^13/(Z^tau)^order := div_le_div_of_nonneg_left (by positivity)
+        (by positivity) (pow_le_pow_left₀ (by positivity) (by linarith) order)
+      _ = Z^(13*Lcap-tau*(order:ℝ)) := by
+        rw [←Real.rpow_mul_natCast hz.le,←Real.rpow_mul_natCast hz.le,←Real.rpow_sub hz]
+        congr 1
+        norm_num
+        ring
+      _ ≤ _ := by
+        apply Real.rpow_le_rpow_of_exponent_le hZ
+        have hh := (div_lt_iff₀ htau).mp ho
+        nlinarith
+  apply hb.trans
+  calc
+    _ = ((4*(1+diagonalControl sieveCutoff)^4)*B^2*P)*((Z^Lcap)^13/(1+Z^tau)^order) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hdecay (by positivity)
+
+end
+end InverseMoment
+
+namespace InverseMoment
+open scoped BigOperators Classical SchwartzMap
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+noncomputable section
+open Eisenstein SchwartzPlanePoisson SecondPassArithmetic
+open InverseFirstRayAttachment
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem full_second_rapid_correlated_tail (Lcap tau saving : ℝ)
+    (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃ (s : Finset (ℕ×ℕ)) (C : ℝ),0<C ∧
+    ∀ {ι : Type*} [DecidableEq ι]
+      (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (F : Finset ι) (Ψ : O→*ℂ), (∀ a,‖Ψ a‖≤1) →
+      ∀ (m c d : O),d≠0 → ∀ (Hcol : Finset ι→ℂ) (W : 𝓢(ℝ,ℂ))
+      (Z B Y L : ℝ) (R : Finset ι→Finset ι→ℝ),
+      1≤ Z → 0≤ B → 0<Y → 1≤ L → Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → L≤ Z^Lcap →
+      (∀ U,‖Hcol U‖≤ B) → (∀ U,Hcol U≠0 → primeProductNorm p U≤ L) →
+      (∀ G∈F.powerset,∀ E : G.powerset,correlatedSecondRadius p d G E.val L Y (Z^tau)≤ R G E.val) →
+      ‖secondSourceTail p hp hg F Ψ m c d Hcol W Y
+        (fun G E=>childFrequencyBall (d*(∏ i ∈ E,p i)) (R G E))‖≤
+      C*B^2*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*Z^(-saving) := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  obtain ⟨order,horder⟩ := choose_second_tail_order Lcap tau saving hLcap htau
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_correlated_tail order
+  refine ⟨s,(4*(1+diagonalControl sieveCutoff)^4)*Ct,by positivity,?_⟩
+  intro ι _ p hp _ hg hinj hc F Ψ hΨ m c d hd Hcol W Z B Y L R hZ hB hY hL hy hyi hl hcol hsupp hR
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have he := htail p hp hg hinj hc F Ψ hΨ m c d hd Hcol W B Y (Z^tau) L R
+    hB hY (Real.rpow_pos_of_pos hz _).le hL hcol hsupp hR
+  apply he.trans
+  have hh := horder Z Y L B (Ct*s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)
+    hZ hY (zero_le_one.trans hL) hB (mul_nonneg hCt.le (apply_nonneg _ _)) hy hyi hl
+  convert hh using 1 <;> first | rfl | ring
+
+end
+end InverseMoment
+
+noncomputable section
+namespace InverseMoment
+open Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem first_selector_weighted_mass {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (pool A:Finset ι) (selector:Finset ι→ℂ) (E T S ε:ℝ)
+    (hE:0≤ E) (hT:0<T) (hS:0≤ S) (hε:0≤ε)
+    (hA:primeProductNorm p A≤ E)
+    (hselector:∀D∈pool.powerset,‖selector D‖≤ S)
+    (hsupport:∀D∈pool.powerset,selector D≠0→primeProductNorm p D≤ T) :
+    (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^ε)≤
+      (1+diagonalControl sieveCutoff)*T*S*(E*T)^ε := by
+  have hfilter:(∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^ε)=
+      ∑D∈boundedPrimeSupports p pool T,‖selector D‖*(primeProductNorm p (A∪D))^ε:=by
+    symm
+    apply Finset.sum_subset (Finset.filter_subset _ _)
+    intro D hD hnot
+    have hz:selector D=0:=by
+      by_contra h
+      exact hnot (Finset.mem_filter.mpr ⟨hD,hsupport D hD h⟩)
+    simp [hz]
+  rw [hfilter]
+  calc
+    _≤∑D∈boundedPrimeSupports p pool T,S*(E*T)^ε:=by
+      apply Finset.sum_le_sum
+      intro D hD
+      have hnorm:primeProductNorm p (A∪D)≤ E*T:=
+        (primeProductNorm_union_le_mul p hp A D).trans
+          (mul_le_mul hA (Finset.mem_filter.mp hD).2 (primeProductNorm_pos p hp D).le hE)
+      exact mul_le_mul (hselector D (Finset.mem_filter.mp hD).1)
+        (Real.rpow_le_rpow (primeProductNorm_pos p hp _).le hnorm hε)
+        (Real.rpow_nonneg (primeProductNorm_pos p hp _).le _) hS
+    _= ((boundedPrimeSupports p pool T).card:ℝ)*S*(E*T)^ε:=by simp;ring
+    _≤_:=mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (boundedPrimeSupports_card_positive p hp hinj pool T hT) hS)
+      (Real.rpow_nonneg (mul_nonneg hE hT.le) _)
+
+theorem first_whole_extracted_norm {ι:Type*} [DecidableEq ι]
+    (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+    (b:CubeCoordinates ι) (hb:b.Admissible) (C extra:Finset ι) (he:extra⊆b.support)
+    (negative:Bool) (B:ℝ) (hB:0≤ B)
+    (h₁:‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ B)
+    (h₂:‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ B) :
+    primeProductNorm p (extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))≤
+      B^2*primeProductNorm p C := by
+  have hbits:(if negative then b.rightDivisor else b.leftDivisor)⊆b.support:=by
+    cases negative
+    · exact hb.1
+    · exact hb.2
+  have hs:extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)⊆b.support∪C:=by
+    exact Finset.union_subset (he.trans Finset.subset_union_left)
+      (Finset.union_subset_union hbits (Finset.Subset.refl C))
+  apply (primeProductNorm_mono p hp hs).trans
+  apply (primeProductNorm_union_le_mul p hp b.support C).trans
+  exact mul_le_mul_of_nonneg_right (cubeCoordinates_radical_bound p hp b B hB h₁ h₂)
+    (primeProductNorm_pos p hp C).le
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseWholePriorityRapidTail
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseMoment InversePrincipalEnergy InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem marked_rapid_tail (Lcap tau saving : ℝ) (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃ (s : Finset (ℕ×ℕ)) (Ct : ℝ),0<Ct ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (F : Finset ι) (Ψ : O→*ℂ), (∀u,‖Ψ u‖≤1) →
+      ∀ (m c d : O),d≠0 → ∀ (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      ∀ (om W : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo)
+      (hs : Function.support om⊆Set.Icc lo hi) (negative : Bool) (height X M Y Z : ℝ)
+      (R : Finset ι→Finset ι→ℝ),
+      0<X → hi≤ Real.exp M → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀G∈F.powerset,∀E:G.powerset,
+        correlatedSecondRadius p d G E.val (X*Real.exp M) Y (Z^tau)≤ R G E.val) →
+      ‖secondSourceTail p hp hg F Ψ m c d
+        (markedRadial p slots lists a ∅ (principalWindow om lo hi hlo hs negative height) X) W Y
+        (fun G E=>childFrequencyBall (d*(∏ i ∈ E,p i)) (R G E))‖≤
+      Ct*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*(SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := full_second_rapid_correlated_tail Lcap tau (saving+Lcap) hLcap htau
+  obtain ⟨Cm,hCm,hmark⟩ := marked_radial_uniform_bound (1/2) (by norm_num)
+  refine ⟨s,Ct*Cm^2,by positivity,?_⟩
+  intro ι σ _ _ p hp _ hcop hg hinj hc F Ψ hΨ m c d hd slots lists a hslots ha
+    om W lo hi hlo hs negative height X M Y Z R hX hhi hZ hY hL hy hyi hl hR
+  let L:=X*Real.exp M
+  have hLpos : 0<L := mul_pos hX (Real.exp_pos _)
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have hv := principalWindow_upper om lo hi hlo hs M hhi negative height
+  have hm := hmark p hp hcop slots lists a hslots ha ∅
+    (principalWindow om lo hi hlo hs negative height) X M hX hv
+  simp only [Finset.card_empty,pow_zero,one_mul,principalWindow_seminorm_zero] at hm
+  have ht := htail p hp hg hinj hc F Ψ hΨ m c d hd _ W Z
+    (Cm*L^(1/2:ℝ)*SchwartzMap.seminorm ℝ 0 0 om) Y L R hZ (by positivity) hY hL hy hyi hl hm
+    (markedRadial_support p slots lists a ∅ _ X M hX hv) hR
+  have hp : (L^(1/2:ℝ))^2=L := by
+    rw [←Real.rpow_natCast,←Real.rpow_mul hLpos.le]
+    norm_num
+  have habsorb : L*Z^(-(saving+Lcap))≤ Z^(-saving) := by
+    calc
+      _≤ Z^Lcap*Z^(-(saving+Lcap)) := mul_le_mul_of_nonneg_right hl (by positivity)
+      _=Z^(-saving) := by rw [←Real.rpow_add hz];congr 1;ring
+  apply ht.trans
+  calc
+    _=(Ct*Cm^2*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        (L*Z^(-(saving+Lcap))) := by rw [mul_pow,mul_pow,hp];ring
+    _≤_ := by
+      exact mul_le_mul_of_nonneg_left habsorb (by positivity)
+
+variable {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+  (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀i,lambda∉Ideal.span {p i})
+
+def wholePriorityTailEnergy (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (b : CubeCoordinates ι) (C extra : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m d : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (selector : Finset ι→ℂ) (om W : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo)
+    (hs : Function.support om⊆Set.Icc lo hi) (X t Y : ℝ)
+    (R : Finset ι→Finset ι→Finset ι→ℝ) : ℝ :=
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+    (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+      ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+        b.leftBit b.rightBit negative Ψ m D core‖*
+      ∑J∈slots.powerset,‖primeMark J lists a (A∪D)‖^2*
+        ‖secondSourceTail p hp hg pool
+          (firstCoreTwist negative (if negative then r.1 else r.2) Ψ core)
+          ((m*b0Label p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+            b.leftBit b.rightBit)*∏i∈D,p i)
+          ((∏i∈C,p i)*jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+            b.leftBit b.rightBit) d
+          (markedRadial p (slots\J) (fun i=>lists i\(A∪D)) a ∅
+            (principalWindow om lo hi hlo hs negative t) X) W Y
+          (fun G E=>childFrequencyBall (d*(∏ i ∈ E,p i)) (R D G E))‖
+
+theorem whole_priority_tail_weighted (Lcap tau saving : ℝ) (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃ (s : Finset (ℕ×ℕ)) (Ct : ℝ),0<Ct ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι) (C extra : Finset ι) (negative : Bool)
+      (Ψ : O→*ℂ) (m d : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+      (selector : Finset ι→ℂ) (om W : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo)
+      (hs : Function.support om⊆Set.Icc lo hi) (M t X Y Z : ℝ)
+      (R : Finset ι→Finset ι→Finset ι→ℝ),
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      (∀u,‖Ψ u‖≤1) → d≠0 → hi≤ Real.exp M → 0<X → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀D∈pool.powerset,selector D≠0 → ∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p d G E.val (X*Real.exp M) Y (Z^tau)≤ R D G E.val) →
+      wholePriorityTailEnergy p hp hg hinj pool b C extra negative Ψ m d slots lists a
+        selector om W lo hi hlo hs X t Y R ≤
+      Ct*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        Z^(-saving)*(∑D∈pool.powerset,‖selector D‖*primeProductNorm p
+          ((extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := marked_rapid_tail Lcap tau saving hLcap htau
+  obtain ⟨Cm,hCm,hmark⟩ := finite_primeMark_small_power (1/2) (by norm_num)
+  refine ⟨s,max ((firstCoreMassBound^2*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖))*Ct*Cm^2) 1,zero_lt_one.trans_le (le_max_right _ _),?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop hc pool b C extra negative Ψ m d slots lists a selector
+    om W lo hi hlo hs M t X Y Z R hslots ha hΨ hd hhi hX hZ hY hL hy hyi hl hR
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  let P:=Ct*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W)*(SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving)
+  have hP : 0≤ P := by dsimp [P];positivity
+  have hn (D : Finset ι) : 0≤ primeProductNorm p (A∪D) := (primeProductNorm_pos p hp _).le
+  have hm (J : Finset σ) (hJ : J∈slots.powerset) (D : Finset ι) :
+      ‖primeMark J lists a (A∪D)‖^2≤ Cm^2*primeProductNorm p (A∪D) := by
+    have hj:=Finset.mem_powerset.mp hJ
+    have hh:=hmark p hp hcop J lists a (fun i hi j hj' hij=>hslots (hj hi) (hj hj') hij)
+      (fun i hi=>ha i (hj hi)) (A∪D)
+    have he : ((primeProductNorm p (A∪D))^(1/2:ℝ))^2=primeProductNorm p (A∪D) := by
+      rw [←Real.rpow_natCast,←Real.rpow_mul (hn D)]
+      norm_num
+    calc
+      _≤(Cm*(primeProductNorm p (A∪D))^(1/2:ℝ))^2 := pow_le_pow_left₀ (norm_nonneg _) hh 2
+      _=_ := by rw [mul_pow,he]
+  have hmass := firstCoreMassBound_nonneg
+  unfold wholePriorityTailEnergy
+  dsimp only
+  calc
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+        ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+          b.leftBit b.rightBit negative Ψ m D core‖*
+        ((2:ℝ)^slots.card*(Cm^2*primeProductNorm p (A∪D)*P)) := by
+      apply mul_le_mul_of_nonneg_left _ (by positivity)
+      apply Finset.sum_le_sum
+      intro r hr
+      apply Finset.sum_le_sum
+      intro D hD
+      by_cases hsel : selector D=0
+      · simp only [hsel,norm_zero,mul_zero,zero_mul,le_refl]
+      · apply mul_le_mul_of_nonneg_left _ (by positivity)
+        apply Finset.sum_le_sum
+        intro core hcore
+        apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+        calc
+          _≤∑J∈slots.powerset,Cm^2*primeProductNorm p (A∪D)*P := by
+            apply Finset.sum_le_sum
+            intro J hJ
+            have ht := htail p hp hcop hg hinj hc pool
+              (firstCoreTwist negative (if negative then r.1 else r.2) Ψ core)
+              (fun z=>(firstCoreTwist_norm_le negative _ Ψ core z).trans (hΨ z))
+              ((m*b0Label p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+                b.leftBit b.rightBit)*∏i∈D,p i)
+              ((∏i∈C,p i)*jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+                b.leftBit b.rightBit) d hd (slots\J) (fun i=>lists i\(A∪D)) a
+              (residual_lists_pairwise slots J lists A D hslots)
+              (residual_coeff_bound slots J lists a A D ha) om W lo hi hlo hs negative t X M Y Z (R D)
+              hX hhi hZ hY hL hy hyi hl (hR D hD hsel)
+            exact mul_le_mul (hm J hJ D) ht (norm_nonneg _) (mul_nonneg (sq_nonneg _) (hn D))
+          _=_ := by simp only [Finset.sum_const,Finset.card_powerset,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat]
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*
+        (firstCoreMassBound*((2:ℝ)^slots.card*(Cm^2*primeProductNorm p (A∪D)*P))) := by
+      gcongr with r hr D hD
+      rw [←Finset.sum_mul]
+      exact mul_le_mul_of_nonneg_right (firstCoreOuter_mass p hg b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit negative Ψ m D (hΨ _))
+        (mul_nonneg (pow_nonneg (by norm_num) _)
+          (mul_nonneg (mul_nonneg (sq_nonneg _) (hn D)) hP))
+    _=(firstCoreMassBound^2)*((2:ℝ)^slots.card)^2*Cm^2*P*
+      (∑r:RayCharacter×RayCharacter,‖crossCoeff r.1 r.2‖)*
+      (∑D∈pool.powerset,‖selector D‖*primeProductNorm p (A∪D)) := by
+      simp only [Finset.mul_sum,Finset.sum_mul]
+      rw [Finset.sum_comm (s:=pool.powerset)]
+      apply Finset.sum_congr rfl
+      intro r hr
+      apply Finset.sum_congr rfl
+      intro D hD
+      ring
+    _≤(firstCoreMassBound^2)*((2:ℝ)^slots.card)^2*Cm^2*P*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖)*
+      (∑D∈pool.powerset,‖selector D‖*primeProductNorm p (A∪D)) := by
+      apply mul_le_mul_of_nonneg_right
+      · apply mul_le_mul_of_nonneg_left
+        · exact le_refl _
+        · positivity
+      · exact Finset.sum_nonneg (fun D hD=>mul_nonneg (norm_nonneg _) (hn D))
+    _= ((firstCoreMassBound^2*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖))*Ct*Cm^2)*
+        (4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        Z^(-saving)*(∑D∈pool.powerset,‖selector D‖*primeProductNorm p (A∪D)) := by
+      have he : ((2:ℝ)^slots.card)^2=(4:ℝ)^slots.card := by rw [←pow_mul,pow_mul'];norm_num
+      rw [he]
+      dsimp only [P,A]
+      ring
+    _≤_ := by
+      have hsum : 0 ≤ ∑ D ∈ pool.powerset,
+          ‖selector D‖ * primeProductNorm p (A ∪ D) :=
+        Finset.sum_nonneg (fun D _ => mul_nonneg (norm_nonneg (selector D)) (hn D))
+      gcongr
+      exact le_max_left _ _
+
+theorem whole_priority_tail_bound (Lcap tau saving : ℝ) (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃ (s : Finset (ℕ×ℕ)) (Ct : ℝ),0<Ct ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι) (C extra : Finset ι) (negative : Bool)
+      (Ψ : O→*ℂ) (m d : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+      (selector : Finset ι→ℂ) (om W : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo)
+      (hs : Function.support om⊆Set.Icc lo hi) (M t X Y Z : ℝ)
+      (R : Finset ι→Finset ι→Finset ι→ℝ) (B T S : ℝ),
+      b.Admissible → extra⊆b.support → 0≤ B → 0<T → 0≤ S →
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ B →
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ B →
+      (∀D∈pool.powerset,‖selector D‖≤ S) →
+      (∀D∈pool.powerset,selector D≠0 → primeProductNorm p D≤ T) →
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      (∀u,‖Ψ u‖≤1) → d≠0 → hi≤ Real.exp M → 0<X → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀D∈pool.powerset,selector D≠0 → ∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p d G E.val (X*Real.exp M) Y (Z^tau)≤ R D G E.val) →
+      wholePriorityTailEnergy p hp hg hinj pool b C extra negative Ψ m d slots lists a
+        selector om W lo hi hlo hs X t Y R ≤
+      Ct*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        S*(B^2*primeProductNorm p C)*T^2*Z^(-saving) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := whole_priority_tail_weighted Lcap tau saving hLcap htau
+  have hdc := diagonalControl_nonneg sieveCutoff
+  refine ⟨s,(1+diagonalControl sieveCutoff)*Ct,by positivity,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop hc pool b C extra negative Ψ m d slots lists a selector
+    om W lo hi hlo hs M t X Y Z R B T S hb he hB hT hS hb₁ hb₂ hsel hsupp
+    hslots ha hΨ hd hhi hX hZ hY hL hy hyi hl hR
+  have hn := first_whole_extracted_norm p hp b hb C extra he negative B hB hb₁ hb₂
+  have hmass := first_selector_weighted_mass p hp hinj pool
+    (extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)) selector
+    (B^2*primeProductNorm p C) T S 1 (mul_nonneg (sq_nonneg _) (primeProductNorm_pos p hp C).le)
+    hT hS (by norm_num) hn hsel hsupp
+  simp only [Real.rpow_one] at hmass
+  have ht := htail p hp hg hinj hcop hc pool b C extra negative Ψ m d slots lists a selector
+    om W lo hi hlo hs M t X Y Z R hslots ha hΨ hd hhi hX hZ hY hL hy hyi hl hR
+  apply ht.trans
+  have hh := mul_le_mul_of_nonneg_left hmass
+    (show 0≤ Ct*(4:ℝ)^slots.card*
+      (s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*Z^(-saving) by positivity)
+  convert hh using 1
+  ring
+
+theorem whole_priority_tail_rapid (Lcap tau saving : ℝ) (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃ (s : Finset (ℕ×ℕ)) (Ct : ℝ),0<Ct ∧
+    ∀ {ι σ : Type*} [DecidableEq ι] [DecidableEq σ]
+      (p : ι→O) (hp : ∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (pool : Finset ι) (b : CubeCoordinates ι) (C extra : Finset ι) (negative : Bool)
+      (Ψ : O→*ℂ) (m d : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+      (selector : Finset ι→ℂ) (om W : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo)
+      (hs : Function.support om⊆Set.Icc lo hi) (M t X Y Z : ℝ)
+      (R : Finset ι→Finset ι→Finset ι→ℝ) (B T S : ℝ),
+      b.Admissible → extra⊆b.support → 0≤ B → 0<T → 0≤ S →
+      ‖ringComplex (primeProduct p b.support b.leftExponent)‖^2≤ B →
+      ‖ringComplex (primeProduct p b.support b.rightExponent)‖^2≤ B →
+      (∀D∈pool.powerset,‖selector D‖≤ S) →
+      (∀D∈pool.powerset,selector D≠0 → primeProductNorm p D≤ T) →
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      (∀u,‖Ψ u‖≤1) → d≠0 → hi≤ Real.exp M → 0<X → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀D∈pool.powerset,selector D≠0 → ∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p d G E.val (X*Real.exp M) Y (Z^tau)≤ R D G E.val) →
+      B^2*primeProductNorm p C≤ Z^Lcap → T≤ Z^Lcap →
+      wholePriorityTailEnergy p hp hg hinj pool b C extra negative Ψ m d slots lists a
+        selector om W lo hi hlo hs X t Y R ≤
+      Ct*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*
+        S*Z^(-saving) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := whole_priority_tail_bound Lcap tau (saving+3*Lcap) hLcap htau
+  refine ⟨s,Ct,hCt,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop hc pool b C extra negative Ψ m d slots lists a selector
+    om W lo hi hlo hs M t X Y Z R B T S hb he hB hT hS hb₁ hb₂ hsel hsupp
+    hslots ha hΨ hd hhi hX hZ hY hL hy hyi hl hR hEcap hTcap
+  have ht := htail p hp hg hinj hcop hc pool b C extra negative Ψ m d slots lists a selector
+    om W lo hi hlo hs M t X Y Z R B T S hb he hB hT hS hb₁ hb₂ hsel hsupp
+    hslots ha hΨ hd hhi hX hZ hY hL hy hyi hl hR
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have habsorb : (B^2*primeProductNorm p C)*T^2*Z^(-(saving+3*Lcap))≤ Z^(-saving) := by
+    calc
+      _≤ Z^Lcap*(Z^Lcap)^2*Z^(-(saving+3*Lcap)) := by gcongr
+      _=Z^(-saving) := by
+        rw [←Real.rpow_natCast,←Real.rpow_mul hz.le,←Real.rpow_add hz,←Real.rpow_add hz]
+        congr 1
+        ring
+  apply ht.trans
+  have hh := mul_le_mul_of_nonneg_left habsorb
+    (show 0≤ Ct*(4:ℝ)^slots.card*
+      (s.sup (schwartzSeminormFamily ℝ ℝ ℂ) W*(SchwartzMap.seminorm ℝ 0 0 om)^2)*S by positivity)
+  convert hh using 1
+  ring
+
+def wholeFreshError (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (pool : Finset ι) (b : CubeCoordinates ι) (C extra D : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m d : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (R : Finset ι→Finset ι→ℝ) (r : RayCharacter×RayCharacter) (core : FirstCoreIndex) : ℂ :=
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  let H:=markedRadial p (slots\J) (fun i=>lists i\(A∪D)) a ∅
+    (principalWindow om lo hi hlo hs negative t) X
+  let Ψ₀:=firstCoreTwist negative (if negative then r.1 else r.2) Ψ core
+  let m₀:=(m*b0Label p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+    b.leftBit b.rightBit)*∏i∈D,p i
+  let c₀:=(∏i∈C,p i)*jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit
+  firstFreshSecondPoisson p hp hg hinj pool D b.support (fun i=>b.leftExponent i+b.rightExponent i)
+    b.leftBit b.rightBit negative (if negative then r.1 else r.2) Ψ m
+    (primeMark (slots\J) (fun i=>lists i\(A∪D)) a) om X (∏i∈C,p i) d core t Y -
+  truncatedSecondSource p hp hg pool Ψ₀ m₀ c₀ d H rowMajorant Y
+    (fun G E=>childFrequencyBall (d*(∏ i ∈ E,p i)) (R G E))
+
+lemma wholeFreshError_eq_tail (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C extra D : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m d : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo) (hs : Function.support om⊆Set.Icc lo hi)
+    (X t Y : ℝ) (hX : 0<X) (hY : 0<Y) (R : Finset ι→Finset ι→ℝ)
+    (r : RayCharacter×RayCharacter) (core : FirstCoreIndex) :
+    wholeFreshError p hp hg hinj pool b C extra D negative Ψ m d slots J lists a
+      om lo hi hlo hs X t Y R r core =
+    let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+    secondSourceTail p hp hg pool (firstCoreTwist negative (if negative then r.1 else r.2) Ψ core)
+      ((m*b0Label p b.support (fun i=>b.leftExponent i+b.rightExponent i)
+        b.leftBit b.rightBit)*∏i∈D,p i)
+      ((∏i∈C,p i)*jLabel p b.support (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit) d
+      (markedRadial p (slots\J) (fun i=>lists i\(A∪D)) a ∅
+        (principalWindow om lo hi hlo hs negative t) X) rowMajorant Y
+      (fun G E=>childFrequencyBall (d*(∏ i ∈ E,p i)) (R G E)) := by
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  have he := first_fresh_radial_truncated p hp hg hinj hc pool D b.support
+    (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit negative
+    (if negative then r.1 else r.2) Ψ m (slots\J) (fun i=>lists i\(A∪D)) a
+    (fun i _=>residual_lists_avoid lists A D i) om lo hi hlo hs X t Y hX hY
+    (∏i∈C,p i) d core
+    (fun G E=>childFrequencyBall (d*(∏ i ∈ E,p i)) (R G E))
+  dsimp only at he
+  unfold wholeFreshError
+  dsimp only
+  rw [he,add_sub_cancel_left]
+
+theorem wholePriorityTailEnergy_eq_original_errors
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+    (pool : Finset ι) (b : CubeCoordinates ι) (C extra : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m d : O) (slots : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (selector : Finset ι→ℂ) (om : 𝓢(ℝ,ℂ)) (lo hi : ℝ) (hlo : 0<lo)
+    (hs : Function.support om⊆Set.Icc lo hi) (X t Y : ℝ) (hX : 0<X) (hY : 0<Y)
+    (R : Finset ι→Finset ι→Finset ι→ℝ) :
+    wholePriorityTailEnergy p hp hg hinj pool b C extra negative Ψ m d slots lists a selector
+      om rowMajorant lo hi hlo hs X t Y R =
+    let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+    firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+        ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+          b.leftBit b.rightBit negative Ψ m D core‖*
+        ∑J∈slots.powerset,‖primeMark J lists a (A∪D)‖^2*
+          ‖wholeFreshError p hp hg hinj pool b C extra D negative Ψ m d slots J lists a
+            om lo hi hlo hs X t Y (R D) r core‖ := by
+  simp_rw [wholeFreshError_eq_tail p hp hg hinj hc pool b C extra _ negative Ψ m d slots _
+    lists a om lo hi hlo hs X t Y hX hY]
+  rfl
+
+end InverseWholePriorityRapidTail
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseInitialArithmetic InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseWholePriorityValidSource InverseWholePriorityRetainedSource RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ] {Jo:ℕ}
+variable (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem whole_assigned_source_original
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (cube:CubeCoordinates ι) (C E:Finset ι) (old:Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector:Finset ι→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (H:SecondParentSource ι Jo→ℂ):
+    (∑y∈activeParents p extra pool cube C E old selector negative assigned lists,
+      coefficient p assigned a (fun x=>(priorityOuter p hg cube negative Ψ m selector ray core x.quotientSupport:ℂ)) y *
+        H (forgetAppended y))=
+    ∑D∈pool.powerset,(priorityOuter p hg cube negative Ψ m selector ray core D:ℂ)*
+      (‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2:ℝ)*
+      H (parent p (fixedPoint cube C E old D)) := by
+  rw [activeParents,←wholePaired_parent_sq_sum p (fun x=>extra x.cube) hinj,
+    sum_activeFixedSource]
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro D hD
+  by_cases hs:selector D≠0
+  · rw [if_pos hs]
+    simp only [fixedPoint,wholeExtractedSupport,extractedSupport,Finset.union_assoc]
+  · rw [if_neg hs,priorityOuter_zero p hg cube negative Ψ m selector ray core D (not_ne_iff.mp hs)]
+    simp
+
+theorem whole_assigned_source_norm
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (cube:CubeCoordinates ι) (C E:Finset ι) (old:Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector:Finset ι→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (H:SecondParentSource ι Jo→ℂ):
+    ‖∑y∈activeParents p extra pool cube C E old selector negative assigned lists,
+      coefficient p assigned a (fun x=>(priorityOuter p hg cube negative Ψ m selector ray core x.quotientSupport:ℂ)) y *
+        H (forgetAppended y)‖≤
+    ∑D∈pool.powerset,priorityOuter p hg cube negative Ψ m selector ray core D*
+      ‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2*
+      ‖H (parent p (fixedPoint cube C E old D))‖ := by
+  rw [whole_assigned_source_original p hg hinj]
+  apply (norm_sum_le _ _).trans
+  apply Finset.sum_le_sum
+  intro D hD
+  rw [norm_mul,norm_mul,Complex.norm_real,Complex.norm_real,
+    Real.norm_of_nonneg (by unfold priorityOuter;positivity),Real.norm_of_nonneg (sq_nonneg _)]
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseInitialArithmetic InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseWholePriorityValidSource InverseWholePriorityRetainedSource RayFourExpansion
+open InverseMomentWholePriorityPhysical InversePrioritySecondSource InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ] {Jo:ℕ}
+variable (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+def priorityZeroParent (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis) (slots assigned:Finset σ)
+    (lists:σ→Finset ι) (a:σ→ι→ℂ) (V:𝓢(ℝ,ℂ)) (X Y:ℝ)
+    (R:Finset ι→Finset ι→ℝ) (y:SecondParentSource ι Jo):ℂ:=
+  truncatedSecondZero p hg pool Ψ (secondParentPuncture p m y)
+    (secondParentLabel p y) (secondParentDivisor p y)
+    (InversePrincipalEnergy.markedRadial p (slots\assigned)
+      (residualLists p negative (fun i=>lists i\extra y.cube) y) a ∅ V X)
+    rowMajorant Y (secondVariableCutoff p y R)
+
+def priorityTailParent (hp:∀i,p i≠0) (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis) (slots assigned:Finset σ)
+    (lists:σ→Finset ι) (a:σ→ι→ℂ) (V:𝓢(ℝ,ℂ)) (X Y:ℝ)
+    (R:Finset ι→Finset ι→ℝ) (y:SecondParentSource ι Jo):ℂ:=
+  secondSourceTail p hp hg pool Ψ (secondParentPuncture p m y)
+    (secondParentLabel p y) (secondParentDivisor p y)
+    (InversePrincipalEnergy.markedRadial p (slots\assigned)
+      (residualLists p negative (fun i=>lists i\extra y.cube) y) a ∅ V X)
+    rowMajorant Y (secondVariableCutoff p y R)
+
+theorem whole_priority_signed_branches
+    (hp:∀i,p i≠0) (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (cube:CubeCoordinates ι) (C E:Finset ι) (old:Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector:Finset ι→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ) (hX:0<X) (hY:0<Y) (R:Finset ι→Finset ι→ℝ):
+    let V:=principalWindow om lo hi hlo hs negative t
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    let parents:=activeParents p extra pool cube C E old selector negative assigned lists
+    let source:=unifiedSource p pool parents (fun _=>R)
+    (∑D∈pool.powerset,(priorityOuter p hg cube negative Ψ m selector ray core D:ℂ)*
+      (‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2:ℝ)*
+      wholePriorityPoisson p hp hg hinj pool cube C E (extra cube) negative Ψ m slots assigned lists a om X t Y ray core D)=
+    (∑D∈pool.powerset,(priorityOuter p hg cube negative Ψ m selector ray core D:ℂ)*
+      (‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2:ℝ)*
+      priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p (fixedPoint cube C E old D)))+
+    (∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z * ∑x∈source,
+      sourceWeight p hg cube negative Ψ m selector ray core assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a V X Y z x)+
+    (∑D∈pool.powerset,(priorityOuter p hg cube negative Ψ m selector ray core D:ℂ)*
+      (‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2:ℝ)*
+      priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p (fixedPoint cube C E old D))) := by
+  intro V Ψ₀ parents source
+  rw [whole_priority_complex_slice p hp hg hcop hinj hc hpr pool cube C E extra old negative Ψ m
+    slots assigned lists a selector om lo hi hlo hs X t Y hX hY ray core R (fun _ _=>())]
+  rw [fullPhysical_unified p hg hp hcop hinj extra pool]
+  dsimp only
+  rw [←whole_assigned_source_original p hg hinj extra pool cube C E old selector negative Ψ m ray core assigned lists a
+      (priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R),
+    ←whole_assigned_source_original p hg hinj extra pool cube C E old selector negative Ψ m ray core assigned lists a
+      (priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R)]
+  rfl
+
+theorem whole_priority_slice_bound
+    (hp:∀i,p i≠0) (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (cube:CubeCoordinates ι) (C E:Finset ι) (old:Fin Jo→InverseInitialFibers.PrimeIdeal)
+    (selector:Finset ι→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ) (hX:0<X) (hY:0<Y) (R:Finset ι→Finset ι→ℝ):
+    let V:=principalWindow om lo hi hlo hs negative t
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    let parents:=activeParents p extra pool cube C E old selector negative assigned lists
+    let source:=unifiedSource p pool parents (fun _=>R)
+    ‖∑D∈pool.powerset,(priorityOuter p hg cube negative Ψ m selector ray core D:ℂ)*
+      (‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2:ℝ)*
+      wholePriorityPoisson p hp hg hinj pool cube C E (extra cube) negative Ψ m slots assigned lists a om X t Y ray core D‖≤
+    (∑D∈pool.powerset,priorityOuter p hg cube negative Ψ m selector ray core D*
+      ‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2*
+      ‖priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p (fixedPoint cube C E old D))‖)+
+    ‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z * ∑x∈source,
+      sourceWeight p hg cube negative Ψ m selector ray core assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a V X Y z x‖+
+    (∑D∈pool.powerset,priorityOuter p hg cube negative Ψ m selector ray core D*
+      ‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2*
+      ‖priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p (fixedPoint cube C E old D))‖) := by
+  intro V Ψ₀ parents source
+  rw [whole_priority_signed_branches p hg hp hcop hinj hc hpr extra pool cube C E old selector negative
+    Ψ m ray core slots assigned lists a om lo hi hlo hs X t Y hX hY R]
+  have hn (H:Finset ι→ℂ):
+      ‖∑D∈pool.powerset,(priorityOuter p hg cube negative Ψ m selector ray core D:ℂ)*
+        (‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2:ℝ)*H D‖≤
+      ∑D∈pool.powerset,priorityOuter p hg cube negative Ψ m selector ray core D*
+        ‖primeMark assigned lists a ((extra cube∪((if negative then cube.rightDivisor else cube.leftDivisor)∪C))∪D)‖^2*‖H D‖:=by
+    apply (norm_sum_le _ _).trans
+    apply Finset.sum_le_sum
+    intro D hD
+    rw [norm_mul,norm_mul,Complex.norm_real,Complex.norm_real,
+      Real.norm_of_nonneg (by unfold priorityOuter;positivity),Real.norm_of_nonneg (sq_nonneg _)]
+  exact (norm_add_le _ _).trans (add_le_add ((norm_add_le _ _).trans (add_le_add (hn _) (le_refl _))) (hn _))
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseInitialArithmetic InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseWholePriorityValidSource InverseWholePriorityRetainedSource RayFourExpansion
+open InverseMomentWholePriorityPhysical InversePrioritySecondSource InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ] {Jo:ℕ}
+variable (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem global_priority_signed_branches
+    (hp:∀i,p i≠0) (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (original:Finset (Source ι Jo)) (w:Source ι Jo→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ) (hX:0<X) (hY:0<Y) (R:Finset ι→Finset ι→ℝ):
+    let V:=principalWindow om lo hi hlo hs negative t
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    let parents:=wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists
+    let source:=unifiedSource p pool parents (fun _=>R)
+    (∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      parentPoisson p hp hg hinj pool negative Ψ m slots assigned (fun i=>lists i\extra x.cube) a om X t Y ray core (parent p x))=
+    (∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p x))+
+    (∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z * ∑x∈source,
+      globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a V X Y z x)+
+    (∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p x)) := by
+  intro V Ψ₀ parents source
+  rw [global_priority_physical_source p hp hcop hg hinj hc hpr extra pool original negative Ψ m ray core w
+    slots assigned lists a om lo hi hlo hs X t Y hX hY R]
+  rw [wholePaired_parent_sq_sum p (fun x=>extra x.cube) hinj original negative assigned lists a
+      (globalPriorityOuter p hg negative Ψ m ray core w)
+      (priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R),
+    wholePaired_parent_sq_sum p (fun x=>extra x.cube) hinj original negative assigned lists a
+      (globalPriorityOuter p hg negative Ψ m ray core w)
+      (priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R)]
+  rfl
+
+theorem global_priority_slice_bound
+    (hp:∀i,p i≠0) (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (original:Finset (Source ι Jo)) (w:Source ι Jo→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ) (hX:0<X) (hY:0<Y) (R:Finset ι→Finset ι→ℝ):
+    let V:=principalWindow om lo hi hlo hs negative t
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    let parents:=wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists
+    let source:=unifiedSource p pool parents (fun _=>R)
+    ‖∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      parentPoisson p hp hg hinj pool negative Ψ m slots assigned (fun i=>lists i\extra x.cube) a om X t Y ray core (parent p x)‖≤
+    (∑x∈original,‖globalPriorityOuter p hg negative Ψ m ray core w x‖*
+      ‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*
+      ‖priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p x)‖)+
+    ‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z * ∑x∈source,
+      globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a V X Y z x‖+
+    (∑x∈original,‖globalPriorityOuter p hg negative Ψ m ray core w x‖*
+      ‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*
+      ‖priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p x)‖) := by
+  intro V Ψ₀ parents source
+  rw [global_priority_signed_branches p hg hp hcop hinj hc hpr extra pool original w negative
+    Ψ m ray core slots assigned lists a om lo hi hlo hs X t Y hX hY R]
+  have hn (H:Source ι Jo→ℂ):
+      ‖∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+        (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*H x‖≤
+      ∑x∈original,‖globalPriorityOuter p hg negative Ψ m ray core w x‖*
+        ‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*‖H x‖:=by
+    apply (norm_sum_le _ _).trans
+    apply Finset.sum_le_sum
+    intro x hx
+    rw [norm_mul,norm_mul,Complex.norm_real,Real.norm_of_nonneg (sq_nonneg _)]
+  exact (norm_add_le _ _).trans (add_le_add ((norm_add_le _ _).trans (add_le_add (hn _) (le_refl _))) (hn _))
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMomentGlobalPrincipalMass
+open InverseMoment InverseFirstPriorityParents InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+abbrev Core (ι : Type*) := CubeCoordinates ι×Finset ι×Finset ι
+
+def core {ι : Type*} {Jo : ℕ} (x : Source ι Jo) : Core ι :=
+  (x.cube,x.firstCommon,x.quotientSupport)
+
+def divisorTarget {ι : Type*} [DecidableEq ι] (p : ι→O) (q : Core ι) : Ideal O :=
+  sourceIdeal p q.1.support*sourceIdeal p q.2.1*sourceIdeal p q.2.2
+
+lemma divisorTarget_ne_zero {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal] (q : Core ι) : divisorTarget p q≠0 :=
+  mul_ne_zero (mul_ne_zero (sourceIdeal_ne_zero p hp _) (sourceIdeal_ne_zero p hp _))
+    (sourceIdeal_ne_zero p hp _)
+
+lemma firstDivisor_dvd_target {ι : Type*} [DecidableEq ι] (p : ι→O)
+    [∀i,(Ideal.span {p i}).IsMaximal] {Jo : ℕ} (x : Source ι Jo) (hx : SourceValid p x) :
+    sourceIdeal p x.firstDivisor∣divisorTarget p (core x) := by
+  have hd := sourceIdeal_dvd p _ _ hx.first_divisor
+  rw [sourceIdeal_union p _ _ hx.common_disjoint] at hd
+  apply hd.trans
+  change sourceIdeal p x.firstCommon*sourceIdeal p x.cube.support∣
+    sourceIdeal p x.cube.support*sourceIdeal p x.firstCommon*sourceIdeal p x.quotientSupport
+  rw [mul_comm (sourceIdeal p x.firstCommon)]
+  exact dvd_mul_right _ _
+
+theorem core_fiber_card {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i})) {Jo : ℕ}
+    (S : Finset (Source ι Jo)) (q : Core ι)
+    (hS : ∀x∈S,SourceValid p x) (hq : ∀x∈S,core x=q) :
+    S.card≤(idealDivisors (divisorTarget p q)).card^(Jo+1) := by
+  let D := idealDivisors (divisorTarget p q)
+  have hD := divisorTarget_ne_zero p hp q
+  let encode (x : S) : D×(Fin Jo→D) :=
+    (⟨sourceIdeal p x.val.firstDivisor,(mem_idealDivisors hD).mpr (by
+      simpa only [hq x.val x.property] using firstDivisor_dvd_target p x.val (hS x.val x.property))⟩,
+      fun i=>⟨(x.val.oldAssigned i).val,(mem_idealDivisors hD).mpr (by
+        have hh := (hS x.val x.property).old_support i
+        change (x.val.oldAssigned i).val∣divisorTarget p (core x.val) at hh
+        simpa only [hq x.val x.property] using hh)⟩)
+  have hi : Function.Injective encode := by
+    intro x y he
+    have hk := (hq x.val x.property).trans (hq y.val y.property).symm
+    have hd : x.val.firstDivisor=y.val.firstDivisor :=
+      sourceIdeal_injective p hinj (congrArg (fun z=>z.1.val) he)
+    have ho : x.val.oldAssigned=y.val.oldAssigned := by
+      funext i
+      apply Subtype.ext
+      exact congrArg (fun z=>(z.2 i).val) he
+    apply Subtype.ext
+    exact Source.ext (congrArg Prod.fst hk) (congrArg (fun q=>q.2.1) hk) hd
+      (congrArg (fun q=>q.2.2) hk) ho
+  have hh := Fintype.card_le_of_injective encode hi
+  simpa only [Fintype.card_coe,Fintype.card_prod,Fintype.card_fun,Fintype.card_fin,D,pow_succ,mul_comm] using hh
+
+theorem core_fiber_small_power (Jmax : ℕ) (eps : ℝ) (heps : 0<eps) :
+    ∃C : ℝ,0<C ∧ ∀{ι : Type*}[DecidableEq ι](p : ι→O)(_hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (Jo : ℕ),Jo≤ Jmax → ∀(S : Finset (Source ι Jo))(q : Core ι),
+    (∀x∈S,SourceValid p x) → (∀x∈S,core x=q) →
+    (S.card:ℝ)≤ C*(Ideal.absNorm (divisorTarget p q):ℝ)^eps := by
+  obtain ⟨D,hD,hdiv⟩ := IdealDivisorBound.ideal_divisor_small_power
+    (eps/(Jmax+1)) (by positivity)
+  refine ⟨D^(Jmax+1),by positivity,?_⟩
+  intro ι _ p hp _ hinj Jo hJo S q hS hq
+  have h0 := divisorTarget_ne_zero p hp q
+  have hcard : S.card≤(idealDivisors (divisorTarget p q)).card^(Jmax+1) :=
+    (core_fiber_card p hp hinj S q hS hq).trans
+      (Nat.pow_le_pow_right (InverseInitialFibers.divisor_card_pos _ h0) (Nat.add_le_add_right hJo 1))
+  have hb := pow_le_pow_left₀ (Nat.cast_nonneg _) (hdiv _ h0) (Jmax+1)
+  apply (show (S.card:ℝ)≤((idealDivisors (divisorTarget p q)).card:ℝ)^(Jmax+1) by exact_mod_cast hcard).trans
+  apply hb.trans_eq
+  rw [mul_pow]
+  congr 1
+  rw [←Real.rpow_natCast,←Real.rpow_mul (Nat.cast_nonneg _)]
+  congr 1
+  push_cast
+  field_simp
+
+lemma divisorTarget_norm_bound {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal] (q : Core ι) (B V T : ℝ)
+    (hB : 0≤ B) (hV : 0≤ V) (_hT : 0≤ T)
+    (hb₁ : ‖ringComplex (primeProduct p q.1.support q.1.leftExponent)‖^2≤ B)
+    (hb₂ : ‖ringComplex (primeProduct p q.1.support q.1.rightExponent)‖^2≤ B)
+    (hC : primeProductNorm p q.2.1≤ V) (ht : primeProductNorm p q.2.2≤ T) :
+    (Ideal.absNorm (divisorTarget p q):ℝ)≤ B^2*V*T := by
+  unfold divisorTarget
+  simp only [map_mul,Nat.cast_mul,sourceIdeal,←ringComplex_norm_sq_eq_absNorm_span]
+  change primeProductNorm p q.1.support*primeProductNorm p q.2.1*primeProductNorm p q.2.2≤_
+  exact mul_le_mul (mul_le_mul (cubeCoordinates_radical_bound p hp q.1 B hB hb₁ hb₂)
+    hC (primeProductNorm_pos p hp _).le (sq_nonneg _)) ht (primeProductNorm_pos p hp _).le
+    (mul_nonneg (sq_nonneg _) hV)
+
+end InverseMomentGlobalPrincipalMass
+end
+
+noncomputable section
+namespace InverseMomentGlobalPrincipalMass
+open InverseMoment InverseFirstPriorityParents InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+lemma support_family_card {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (S : Finset (Finset ι)) (U : ℝ) (hU : 0<U) (hS : ∀A∈S,primeProductNorm p A≤ U) :
+    (S.card:ℝ)≤(1+diagonalControl sieveCutoff)*U := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  by_cases h1 : 1≤ U
+  · have hh := SchwartzPlanePoisson.finite_ideal_card_bound (S.image (sourceIdeal p)) U h1
+      (by
+        intro I hI
+        obtain ⟨A,hA,rfl⟩ := Finset.mem_image.mp hI
+        simpa only [sourceIdeal,←ringComplex_norm_sq_eq_absNorm_span,primeProductNorm] using hS A hA)
+    simpa only [Finset.card_image_of_injective S (sourceIdeal_injective p hinj)] using hh.trans (mul_le_mul_of_nonneg_right (show diagonalControl sieveCutoff ≤ 1+diagonalControl sieveCutoff by linarith) hU.le)
+
+  · have he : S=∅ := by
+      apply Finset.eq_empty_iff_forall_notMem.mpr
+      intro A hA
+      exact h1 ((primeProductNorm_ge_one p hp A).trans (hS A hA))
+    rw [he]
+    simp only [Finset.card_empty, Nat.cast_zero]
+    positivity
+
+theorem original_source_card (Jmax : ℕ) (eps : ℝ) (heps : 0<eps) :
+    ∃C : ℝ,0<C ∧ ∀{ι : Type*}[DecidableEq ι](p : ι→O)(_hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (Jo : ℕ),Jo≤ Jmax → ∀(S : Finset (Source ι Jo))(B H V T : ℝ),
+    1≤ B → 0≤ H → 0<V → 0<T → (∀x∈S,SourceValid p x) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ B) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ B) →
+    (∀x∈S,‖ringComplex (∏i∈cubeActiveSupport x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖≤ H) →
+    (∀x∈S,primeProductNorm p x.firstCommon≤ V) →
+    (∀x∈S,primeProductNorm p x.quotientSupport≤ T) →
+    (S.card:ℝ)≤ C*B^(1+eps)*H*V*T*(B^2*V*T)^eps := by
+  have hdc := diagonalControl_nonneg sieveCutoff
+  obtain ⟨Cf,hCf,hfiber⟩ := core_fiber_small_power Jmax eps heps
+  obtain ⟨Cb,hCb,hcube⟩ := cube_coordinates_parity_count eps heps
+  refine ⟨Cf*Cb*(1+diagonalControl sieveCutoff)^2,by positivity,?_⟩
+  intro ι _ p hp _ hinj Jo hJo S B H V T hB hH hV hT hS hleft hright hactive hcommon hquot
+  let Q := S.image core
+  let bs := S.image Source.cube
+  let cs := S.image Source.firstCommon
+  let ts := S.image Source.quotientSupport
+  have hbcount : (bs.card:ℝ)≤ Cb*B^(1+eps)*H := hcube p hp hinj bs B H hB hH
+    (by intro b hb;obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hb;exact (hS x hx).admissible)
+    (by intro b hb;obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hb;exact hleft x hx)
+    (by intro b hb;obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hb;exact hright x hx)
+    (by intro b hb;obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hb;exact hactive x hx)
+  have hccount : (cs.card:ℝ)≤(1+diagonalControl sieveCutoff)*V := support_family_card p hp hinj cs V hV
+    (by intro A hA;obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hA;exact hcommon x hx)
+  have htcount : (ts.card:ℝ)≤(1+diagonalControl sieveCutoff)*T := support_family_card p hp hinj ts T hT
+    (by intro A hA;obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hA;exact hquot x hx)
+  have hsub : Q⊆bs×ˢ(cs×ˢts) := by
+    intro q hq
+    obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hq
+    exact Finset.mem_product.mpr ⟨Finset.mem_image_of_mem _ hx,
+      Finset.mem_product.mpr ⟨Finset.mem_image_of_mem _ hx,Finset.mem_image_of_mem _ hx⟩⟩
+  have hQcard : (Q.card:ℝ)≤(Cb*B^(1+eps)*H)*((1+diagonalControl sieveCutoff)*V)*((1+diagonalControl sieveCutoff)*T) := by
+    have hh : (Q.card:ℝ)≤(bs.card:ℝ)*((cs.card:ℝ)*(ts.card:ℝ)) := by
+      exact_mod_cast (Finset.card_le_card hsub).trans_eq (by simp only [Finset.card_product])
+    apply hh.trans
+    calc
+      _ ≤ (Cb*B^(1+eps)*H)*(((1+diagonalControl sieveCutoff)*V)*((1+diagonalControl sieveCutoff)*T)) := by gcongr
+      _ = _ := by ring
+  have hF (q : Core ι) (hq : q∈Q) :
+      ((S.filter (fun x=>core x=q)).card:ℝ)≤ Cf*(B^2*V*T)^eps := by
+    have hf := hfiber p hp hinj Jo hJo (S.filter (fun x=>core x=q)) q
+      (fun x hx=>hS x (Finset.mem_filter.mp hx).1) (fun x hx=>(Finset.mem_filter.mp hx).2)
+    obtain ⟨x,hx,rfl⟩ := Finset.mem_image.mp hq
+    apply hf.trans
+    apply mul_le_mul_of_nonneg_left _ hCf.le
+    exact Real.rpow_le_rpow (Nat.cast_nonneg _)
+      (divisorTarget_norm_bound p hp (core x) B V T (zero_le_one.trans hB) hV.le hT.le
+        (hleft x hx) (hright x hx) (hcommon x hx) (hquot x hx)) heps.le
+  have he : (S.card:ℝ)=∑q∈Q,((S.filter (fun x=>core x=q)).card:ℝ) := by
+    calc
+      _ = ∑_x∈S,(1:ℝ) := by simp
+      _ = ∑q∈Q,∑_x∈S.filter (fun x=>core x=q),(1:ℝ) :=
+        (Finset.sum_fiberwise_of_maps_to (fun x hx=>Finset.mem_image_of_mem core hx) _).symm
+      _ = _ := by simp
+  rw [he]
+  calc
+    _ ≤ ∑_q∈Q,Cf*(B^2*V*T)^eps := Finset.sum_le_sum hF
+    _ = (Q.card:ℝ)*(Cf*(B^2*V*T)^eps) := by simp
+    _ ≤ ((Cb*B^(1+eps)*H)*((1+diagonalControl sieveCutoff)*V)*((1+diagonalControl sieveCutoff)*T))*(Cf*(B^2*V*T)^eps) :=
+      mul_le_mul_of_nonneg_right hQcard (by positivity)
+    _ = _ := by ring
+
+end InverseMomentGlobalPrincipalMass
+end
+
+noncomputable section
+namespace InverseMomentGlobalPrincipalMass
+open InverseMoment InverseFirstPriorityParents InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def principalSupport {ι : Type*} [DecidableEq ι] {Jo : ℕ}
+    (extra : CubeCoordinates ι→Finset ι) (negative : Bool) (x : Source ι Jo) : Finset ι :=
+  (extra x.cube∪((if negative then x.cube.rightDivisor else x.cube.leftDivisor)∪x.firstCommon))∪x.quotientSupport
+
+lemma principalSupport_norm {ι : Type*} [DecidableEq ι] (p : ι→O) (hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal] {Jo : ℕ}
+    (extra : CubeCoordinates ι→Finset ι) (negative : Bool) (x : Source ι Jo)
+    (hx : SourceValid p x) (hextra : extra x.cube⊆x.cube.support)
+    (B V T : ℝ) (hB : 0≤ B) (hV : 0≤ V)
+    (hb₁ : ‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ B)
+    (hb₂ : ‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ B)
+    (hC : primeProductNorm p x.firstCommon≤ V) (ht : primeProductNorm p x.quotientSupport≤ T) :
+    primeProductNorm p (principalSupport extra negative x)≤ B^2*V*T := by
+  have hh := first_whole_extracted_norm p hp x.cube hx.admissible x.firstCommon (extra x.cube)
+    hextra negative B hB hb₁ hb₂
+  unfold principalSupport
+  apply (primeProductNorm_union_le_mul p hp _ _).trans
+  exact mul_le_mul (hh.trans (mul_le_mul_of_nonneg_left hC (sq_nonneg _))) ht
+    (primeProductNorm_pos p hp _).le (mul_nonneg (sq_nonneg _) hV)
+
+theorem original_weighted_mass (Jmax : ℕ) (eps : ℝ) (heps : 0<eps) :
+    ∃C : ℝ,0<C ∧ ∀{ι : Type*}[DecidableEq ι](p : ι→O)(_hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (Jo : ℕ),Jo≤ Jmax → ∀(S : Finset (Source ι Jo))(B H V T a : ℝ),
+    1≤ B → 0≤ H → 0<V → 0<T → 0≤ a → (∀x∈S,SourceValid p x) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ B) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ B) →
+    (∀x∈S,‖ringComplex (∏i∈cubeActiveSupport x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖≤ H) →
+    (∀x∈S,primeProductNorm p x.firstCommon≤ V) →
+    (∀x∈S,primeProductNorm p x.quotientSupport≤ T) →
+    ∀(extra : CubeCoordinates ι→Finset ι)(negative : Bool),
+    (∀x∈S,extra x.cube⊆x.cube.support) →
+    (∑x∈S,(primeProductNorm p (principalSupport extra negative x))^a)≤
+      C*B^(1+eps)*H*V*T*(B^2*V*T)^(eps+a) := by
+  obtain ⟨C,hC,hcount⟩ := original_source_card Jmax eps heps
+  refine ⟨C,hC,?_⟩
+  intro ι _ p hp _ hinj Jo hJo S B H V T a hB hH hV hT ha hS hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  have hcard := hcount p hp hinj Jo hJo S B H V T hB hH hV hT hS hb₁ hb₂ hactive hcommon hquot
+  have hBp : 0<B := zero_lt_one.trans_le hB
+  calc
+    _ ≤ ∑_x∈S,(B^2*V*T)^a := Finset.sum_le_sum (fun x hx=>
+      Real.rpow_le_rpow (primeProductNorm_pos p hp _).le
+        (principalSupport_norm p hp extra negative x (hS x hx) (hextra x hx) B V T hBp.le hV.le
+          (hb₁ x hx) (hb₂ x hx) (hcommon x hx) (hquot x hx)) ha)
+    _ = (S.card:ℝ)*(B^2*V*T)^a := by simp
+    _ ≤ (C*B^(1+eps)*H*V*T*(B^2*V*T)^eps)*(B^2*V*T)^a :=
+      mul_le_mul_of_nonneg_right hcard (by positivity)
+    _ = _ := by rw [mul_assoc,←Real.rpow_add (by positivity : 0<B^2*V*T)]
+
+lemma weighted_mass_power (Z ell R Bfirst t eta eps a : ℝ) (hZ : 0<Z) :
+    (Z^(ell+eta))^(1+eps)*Z^((R+eta)/2)*Z^(Bfirst+eta)*Z^(t+eta)*
+      ((Z^(ell+eta))^2*Z^(Bfirst+eta)*Z^(t+eta))^(eps+a)=
+    Z^(ell+R/2+Bfirst+t+7*eta/2+eps*(3*ell+Bfirst+t+5*eta)+a*(2*ell+Bfirst+t+4*eta)) := by
+  rw [←Real.rpow_mul hZ.le,←Real.rpow_mul_natCast hZ.le]
+  repeat rw [←Real.rpow_add hZ]
+  rw [←Real.rpow_mul hZ.le,←Real.rpow_add hZ]
+  congr 1
+  norm_num
+  ring
+
+end InverseMomentGlobalPrincipalMass
+end
+
+noncomputable section
+namespace InverseMomentGlobalPrincipalMass
+open InverseMoment InverseFirstPriorityParents InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+lemma active_norm_of_square {ι : Type*} [DecidableEq ι] (p : ι→O)
+    (A : Finset ι) (Z R eta : ℝ) (hZ : 0<Z)
+    (hA : primeProductNorm p A≤ Z^(R+eta)) :
+    ‖ringComplex (∏i∈A,p i)‖≤ Z^((R+eta)/2) := by
+  apply (sq_le_sq₀ (norm_nonneg _) (Real.rpow_nonneg hZ.le _)).mp
+  have hh : (Z^((R+eta)/2))^2=Z^(R+eta) := by
+    rw [←Real.rpow_mul_natCast hZ.le]
+    congr 1
+    norm_num
+  rw [hh]
+  exact hA
+
+theorem original_weighted_source (Jmax : ℕ) (delta : ℝ) (hdelta : 0<delta) :
+    ∃C : ℝ,0<C ∧ ∀{ι : Type*}[DecidableEq ι](p : ι→O)(_hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (Jo : ℕ),Jo≤ Jmax → ∀(S : Finset (Source ι Jo))(Z ell R Bfirst t eta a loss : ℝ),
+    1≤ Z → 0≤ ell+eta → 0≤ a →
+    7*eta/2+delta*(3*ell+Bfirst+t+5*eta)+a*(2*ell+Bfirst+t+4*eta)≤ loss →
+    (∀x∈S,SourceValid p x) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^(ell+eta)) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^(ell+eta)) →
+    (∀x∈S,primeProductNorm p (cubeActiveSupport x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)≤ Z^(R+eta)) →
+    (∀x∈S,primeProductNorm p x.firstCommon≤ Z^(Bfirst+eta)) →
+    (∀x∈S,primeProductNorm p x.quotientSupport≤ Z^(t+eta)) →
+    ∀(extra : CubeCoordinates ι→Finset ι)(negative : Bool),
+    (∀x∈S,extra x.cube⊆x.cube.support) →
+    (∑x∈S,(primeProductNorm p (principalSupport extra negative x))^a)≤
+      C*Z^(ell+R/2+Bfirst+t+loss) := by
+  obtain ⟨C,hC,hraw⟩ := original_weighted_mass Jmax delta hdelta
+  refine ⟨C,hC,?_⟩
+  intro ι _ p hp _ hinj Jo hJo S Z ell R Bfirst t eta a loss hZ hell ha hloss hS hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  have hZp : 0<Z := zero_lt_one.trans_le hZ
+  have hh := hraw p hp hinj Jo hJo S (Z^(ell+eta)) (Z^((R+eta)/2))
+    (Z^(Bfirst+eta)) (Z^(t+eta)) a (Real.one_le_rpow hZ hell)
+    (Real.rpow_nonneg hZp.le _) (Real.rpow_pos_of_pos hZp _)
+    (Real.rpow_pos_of_pos hZp _) ha hS hb₁ hb₂
+    (fun x hx=>active_norm_of_square p _ Z R eta hZp (hactive x hx))
+    hcommon hquot extra negative hextra
+  apply hh.trans
+  calc
+    _ = C*( (Z^(ell+eta))^(1+delta)*Z^((R+eta)/2)*Z^(Bfirst+eta)*Z^(t+eta)*
+      ((Z^(ell+eta))^2*Z^(Bfirst+eta)*Z^(t+eta))^(delta+a)) := by ring
+    _ = C*Z^(ell+R/2+Bfirst+t+7*eta/2+delta*(3*ell+Bfirst+t+5*eta)+a*(2*ell+Bfirst+t+4*eta)) := by
+      rw [weighted_mass_power Z ell R Bfirst t eta delta a hZp]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hZ (by linarith)) hC.le
+
+end InverseMomentGlobalPrincipalMass
+end
+
+noncomputable section
+namespace InverseMomentGlobalPrincipalMass
+open InverseMoment InverseFirstPriorityParents InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+def physicalPrincipalFactor (Z M r ell V delta A B R j t eta tau eps window : ℝ) : ℝ :=
+  (Z^(firstKappa M r ell V delta A B R)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+    Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau)*
+    (Z^(r-A-B-t)*Real.exp window)^(1+eps)
+
+lemma principal_nominal_identity (M r ell V delta A B R j t : ℝ) :
+    firstKappa M r ell V delta A B R+firstPhysicalHeight M r ell V delta B j+
+      (r-A-B-t)+(ell+R/2+B+t)=r+3*ell+V-B-j := by
+  unfold firstKappa firstPhysicalHeight
+  ring
+
+lemma physical_principal_exact (Z M r ell V delta A B R j t eta tau eps window loss : ℝ)
+    (hZ : 0<Z) :
+    physicalPrincipalFactor Z M r ell V delta A B R j t eta tau eps window*
+      Z^(ell+R/2+B+t+loss)=
+    Real.exp (window*(1+eps))*
+      Z^(r+3*ell+V-B-j+(33/2:ℝ)*eta+tau+eps*(r-A-B-t)+loss) := by
+  have he : Real.exp ((9/2:ℝ)*(eta*Real.log Z))=Z^((9/2:ℝ)*eta) := by
+    rw [Real.rpow_def_of_pos hZ]
+    congr 1
+    ring
+  have hw : (Real.exp window)^(1+eps)=Real.exp (window*(1+eps)) := by
+    rw [Real.rpow_def_of_pos (Real.exp_pos _),Real.log_exp]
+  unfold physicalPrincipalFactor
+  rw [he,Real.mul_rpow (Real.rpow_nonneg hZ.le _) (Real.exp_pos _).le,
+    ←Real.rpow_mul hZ.le,hw]
+  have hx : r+3*ell+V-B-j+(33/2:ℝ)*eta+tau+eps*(r-A-B-t)+loss=
+    firstKappa M r ell V delta A B R+(9/2:ℝ)*eta+
+    (firstPhysicalHeight M r ell V delta B j+12*eta+tau)+
+    (r-A-B-t)*(1+eps)+(ell+R/2+B+t+loss) := by
+    unfold firstKappa firstPhysicalHeight
+    ring
+  rw [hx]
+  simp only [Real.rpow_add hZ]
+  ring
+
+theorem original_physical_weighted_source (Jmax : ℕ) (dsmall : ℝ) (hdsmall : 0<dsmall) :
+    ∃C : ℝ,0<C ∧ ∀{ι : Type*}[DecidableEq ι](p : ι→O)(_hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (Jo : ℕ),Jo≤ Jmax → ∀(S : Finset (Source ι Jo))
+    (Z M r ell V delta A B R j t eta tau eps window pi : ℝ),
+    1≤ Z → 0≤ ell+eta → 0≤ eps → 0≤ B → 0≤ j →
+    eps*(r-A-B-t)+7*eta/2+dsmall*(3*ell+B+t+5*eta)+2*eps*(2*ell+B+t+4*eta)≤ pi+eta/2 →
+    (∀x∈S,SourceValid p x) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^(ell+eta)) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^(ell+eta)) →
+    (∀x∈S,primeProductNorm p (cubeActiveSupport x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)≤ Z^(R+eta)) →
+    (∀x∈S,primeProductNorm p x.firstCommon≤ Z^(B+eta)) →
+    (∀x∈S,primeProductNorm p x.quotientSupport≤ Z^(t+eta)) →
+    ∀(extra : CubeCoordinates ι→Finset ι)(negative : Bool),
+    (∀x∈S,extra x.cube⊆x.cube.support) →
+    physicalPrincipalFactor Z M r ell V delta A B R j t eta tau eps window*
+      (∑x∈S,(primeProductNorm p (principalSupport extra negative x))^(2*eps))≤
+      C*Real.exp (window*(1+eps))*Z^(r+3*ell+V+17*eta+tau+pi) := by
+  obtain ⟨C,hC,hsource⟩ := original_weighted_source Jmax dsmall hdsmall
+  refine ⟨C,hC,?_⟩
+  intro ι _ p hp _ hinj Jo hJo S Z M r ell V delta A B R j t eta tau eps window pi hZ hell heps hB hj hcost hS hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  let loss := 7*eta/2+dsmall*(3*ell+B+t+5*eta)+2*eps*(2*ell+B+t+4*eta)
+  have hZp : 0<Z := zero_lt_one.trans_le hZ
+  have hh := hsource p hp hinj Jo hJo S Z ell R B t eta (2*eps) loss hZ hell
+    (by positivity) (le_refl _) hS hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  have hP : 0≤ physicalPrincipalFactor Z M r ell V delta A B R j t eta tau eps window := by
+    unfold physicalPrincipalFactor
+    positivity
+  calc
+    _ ≤ physicalPrincipalFactor Z M r ell V delta A B R j t eta tau eps window*
+      (C*Z^(ell+R/2+B+t+loss)) := mul_le_mul_of_nonneg_left hh hP
+    _ = C*(physicalPrincipalFactor Z M r ell V delta A B R j t eta tau eps window*
+      Z^(ell+R/2+B+t+loss)) := by ring
+    _ = C*(Real.exp (window*(1+eps))*
+      Z^(r+3*ell+V-B-j+(33/2:ℝ)*eta+tau+eps*(r-A-B-t)+loss)) := by
+      rw [physical_principal_exact Z M r ell V delta A B R j t eta tau eps window loss hZp]
+    _ ≤ _ := by
+      rw [←mul_assoc]
+      apply mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hZ _) (by positivity)
+      dsimp [loss]
+      linarith
+
+end InverseMomentGlobalPrincipalMass
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseFirstPriorityParents InverseMomentWholePriorityParents InverseWholePriorityRetainedSource
+open InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+
+theorem global_priority_weighted_branch (ε:ℝ)(hε:0<ε):
+    ∃Cb:ℝ,0<Cb ∧ ∀{ι σ:Type*}[DecidableEq ι][DecidableEq σ]
+      (p:ι→O)(_hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      {Jo:ℕ}(original:Finset (Source ι Jo))(extra:CubeCoordinates ι→Finset ι)
+      (negative:Bool)(Ψ:O→*ℂ)(m:O)(w:Source ι Jo→ℂ)
+      (slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)(B:ℝ),
+      (slots:Set σ).PairwiseDisjoint lists→(∀i∈slots,∀k∈lists i,‖a i k‖≤1)→
+      (∀u,‖Ψ u‖≤1)→(∀x∈original,‖w x‖≤1)→0≤ B→
+      ∀U:(RayCharacter×RayCharacter)→FirstCoreIndex→Finset σ→Source ι Jo→ℝ,
+      (∀r core J,J∈slots.powerset→∀x∈original,0≤ U r core J x)→
+      (∀r core J,J∈slots.powerset→∀x∈original,U r core J x≤ B)→
+      firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+        ∑x∈original,‖globalPriorityOuter p hg negative Ψ m r core w x‖*
+          ‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*U r core J x≤
+      Cb*(4:ℝ)^slots.card*B*
+        ∑x∈original,(primeProductNorm p (wholeExtractedSupport (fun x=>extra x.cube) negative x))^(2*ε):=by
+  obtain ⟨Cm,hCm,hmark⟩:=finite_primeMark_small_power ε hε
+  let Cr:ℝ:=Fintype.card (RayCharacter×RayCharacter)
+  let Cc:ℝ:=Fintype.card FirstCoreIndex
+  refine ⟨max (firstCoreMassBound*Cr*Cc*coefficientBound*Cm^2) 1,
+    zero_lt_one.trans_le (le_max_right _ _),?_⟩
+  have hmass := firstCoreMassBound_nonneg
+  intro ι σ _ _ p hp _ hg hcop Jo original extra negative Ψ m w slots lists a B hslots ha hΨ hw hB U hU0 hU
+  let N:=fun x:Source ι Jo=>(primeProductNorm p (wholeExtractedSupport (fun x=>extra x.cube) negative x))^(2*ε)
+  have hn(x:Source ι Jo):0≤ N x:=Real.rpow_nonneg (primeProductNorm_pos p hp _).le _
+  have hm(J:Finset σ)(hJ:J∈slots.powerset)(x:Source ι Jo):
+      ‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2≤ Cm^2*N x:=by
+    have hj:=Finset.mem_powerset.mp hJ
+    have hh:=hmark p hp hcop J lists a (fun i hi j hj' hij=>hslots (hj hi) (hj hj') hij)
+      (fun i hi=>ha i (hj hi)) (wholeExtractedSupport (fun x=>extra x.cube) negative x)
+    have he:((primeProductNorm p (wholeExtractedSupport (fun x=>extra x.cube) negative x))^ε)^2=N x:=by
+      dsimp [N]
+      rw [←Real.rpow_natCast,←Real.rpow_mul (primeProductNorm_pos p hp _).le]
+      congr 1;ring
+    exact (pow_le_pow_left₀ (norm_nonneg _) hh 2).trans_eq (by rw [mul_pow,he])
+  have hw'(r:RayCharacter×RayCharacter)(core:FirstCoreIndex)(x:Source ι Jo)(hx:x∈original):
+      ‖globalPriorityOuter p hg negative Ψ m r core w x‖≤ coefficientBound:=by
+    rw [globalPriorityOuter,norm_mul]
+    have ht:=priorityOuter_norm p hg x.cube negative Ψ m (fun _=>1) r core x.quotientSupport (by simp) (hΨ _)
+    exact (mul_le_mul (hw x hx) ht (norm_nonneg _) zero_le_one).trans_eq (one_mul _)
+  calc
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+        ∑x∈original,coefficientBound*(Cm^2*N x)*B:=by
+      apply mul_le_mul_of_nonneg_left _ (by positivity)
+      apply Finset.sum_le_sum
+      intro r hr
+      apply Finset.sum_le_sum
+      intro core hc
+      apply Finset.sum_le_sum
+      intro J hJ
+      apply Finset.sum_le_sum
+      intro x hx
+      exact mul_le_mul (mul_le_mul (hw' r core x hx) (hm J hJ x) (sq_nonneg _) coefficientBound_pos.le)
+        (hU r core J hJ x hx) (hU0 r core J hJ x hx) (mul_nonneg coefficientBound_pos.le (mul_nonneg (sq_nonneg Cm) (hn x)))
+    _= (firstCoreMassBound*Cr*Cc*coefficientBound*Cm^2)*(4:ℝ)^slots.card*B*
+        ∑x∈original,(primeProductNorm p (wholeExtractedSupport (fun x=>extra x.cube) negative x))^(2*ε):=by
+      have hsum:(∑x∈original,coefficientBound*(Cm^2*N x)*B)=
+          coefficientBound*Cm^2*B*∑x∈original,N x:=by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intros;ring
+      rw [hsum]
+      simp only [Finset.sum_const,Finset.card_univ,Finset.card_powerset,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat]
+      have he:((2:ℝ)^slots.card)^2=(4:ℝ)^slots.card:=by rw [←pow_mul,pow_mul'];norm_num
+      rw [←he]
+      dsimp only [Cr,Cc,N]
+      ring
+    _≤_ := by
+      have hsum : 0 ≤ ∑ x ∈ original,
+          (primeProductNorm p (wholeExtractedSupport (fun x=>extra x.cube) negative x))^(2*ε) :=
+        Finset.sum_nonneg (fun x _ => hn x)
+      gcongr
+      exact le_max_left _ _
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+
+theorem whole_priority_weighted_branch (ε:ℝ) (hε:0<ε):
+    ∃Cb:ℝ,0<Cb ∧ ∀{ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+      (p:ι→O) (_hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (pool:Finset ι) (b:CubeCoordinates ι) (C extra:Finset ι) (negative:Bool)
+      (Ψ:O→*ℂ) (m:O) (slots:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+      (selector:Finset ι→ℂ) (B:ℝ),
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) →
+      (∀u,‖Ψ u‖≤1) → 0≤ B →
+      ∀U:(RayCharacter×RayCharacter)→Finset ι→FirstCoreIndex→Finset σ→ℝ,
+      (∀r D core J,J∈slots.powerset → 0≤ U r D core J) →
+      (∀r D core J,J∈slots.powerset → U r D core J≤ B) →
+      firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+        (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+          ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+            b.leftBit b.rightBit negative Ψ m D core‖*
+          ∑J∈slots.powerset,‖primeMark J lists a
+            ((extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D)‖^2*U r D core J ≤
+      Cb*(4:ℝ)^slots.card*B*
+        (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p
+          ((extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C))∪D))^(2*ε)):=by
+  obtain ⟨Cm,hCm,hmark⟩:=finite_primeMark_small_power ε hε
+  refine ⟨max ((firstCoreMassBound^2*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖))*Cm^2) 1,zero_lt_one.trans_le (le_max_right _ _),?_⟩
+  have hmass := firstCoreMassBound_nonneg
+  intro ι σ _ _ p hp _ hg hcop pool b C extra negative Ψ m slots lists a selector B hslots ha hΨ hB U hU0 hU
+  let A:=extra∪((if negative then b.rightDivisor else b.leftDivisor)∪C)
+  have hm (J:Finset σ) (hJ:J∈slots.powerset) (D:Finset ι) :
+      ‖primeMark J lists a (A∪D)‖^2≤ Cm^2*(primeProductNorm p (A∪D))^(2*ε) := by
+    have hj:=Finset.mem_powerset.mp hJ
+    have hh:=hmark p hp hcop J lists a (fun i hi j hj' hij=>hslots (hj hi) (hj hj') hij) (fun i hi=>ha i (hj hi)) (A∪D)
+    have he:((primeProductNorm p (A∪D))^ε)^2=(primeProductNorm p (A∪D))^(2*ε):=by
+      rw [←Real.rpow_natCast,←Real.rpow_mul (primeProductNorm_pos p hp _).le]
+      congr 1;ring
+    calc
+      _≤(Cm*(primeProductNorm p (A∪D))^ε)^2:=pow_le_pow_left₀ (norm_nonneg _) hh 2
+      _= _:=by rw [mul_pow,he]
+  have hn (D:Finset ι) : 0≤ primeProductNorm p (A∪D):=(primeProductNorm_pos p hp _).le
+  calc
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*∑core:FirstCoreIndex,
+        ‖firstCoreOuter p hg b.support (fun i=>b.leftExponent i+b.rightExponent i)
+          b.leftBit b.rightBit negative Ψ m D core‖*
+        ((2:ℝ)^slots.card*(Cm^2*(primeProductNorm p (A∪D))^(2*ε)*B)) := by
+      gcongr with r hr D hD core hc
+      calc
+        _≤∑J∈slots.powerset,Cm^2*(primeProductNorm p (A∪D))^(2*ε)*B := by
+          apply Finset.sum_le_sum
+          intro J hJ
+          exact mul_le_mul (hm J hJ D) (hU r D core J hJ) (hU0 r D core J hJ) (mul_nonneg (sq_nonneg _) (Real.rpow_nonneg (hn D) _))
+        _= _:=by simp only [Finset.sum_const,Finset.card_powerset,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat]
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑r:RayCharacter×RayCharacter,∑D∈pool.powerset,
+      (‖crossCoeff r.1 r.2‖*‖selector D‖)*
+        (firstCoreMassBound*((2:ℝ)^slots.card*(Cm^2*(primeProductNorm p (A∪D))^(2*ε)*B))) := by
+      gcongr with r hr D hD
+      rw [←Finset.sum_mul]
+      exact mul_le_mul_of_nonneg_right (firstCoreOuter_mass p hg b.support
+        (fun i=>b.leftExponent i+b.rightExponent i) b.leftBit b.rightBit negative Ψ m D (hΨ _)) (mul_nonneg (pow_nonneg (by norm_num) _)
+          (mul_nonneg (mul_nonneg (sq_nonneg _) (Real.rpow_nonneg (hn D) _)) hB))
+    _= (firstCoreMassBound^2)*((2:ℝ)^slots.card)^2*Cm^2*B*
+      (∑r:RayCharacter×RayCharacter,‖crossCoeff r.1 r.2‖)*
+      (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^(2*ε)) := by
+      simp only [Finset.mul_sum,Finset.sum_mul]
+      rw [Finset.sum_comm (s:=pool.powerset)]
+      apply Finset.sum_congr rfl
+      intro r hr
+      apply Finset.sum_congr rfl
+      intro D hD
+      ring
+    _≤ (firstCoreMassBound^2)*((2:ℝ)^slots.card)^2*Cm^2*B*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖)*
+      (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^(2*ε)) := by
+      apply mul_le_mul_of_nonneg_right
+      · apply mul_le_mul_of_nonneg_left
+        · exact le_refl _
+        · positivity
+      · exact Finset.sum_nonneg (fun D hD=>mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (hn D) _))
+    _= ((firstCoreMassBound^2*(∑ r : RayCharacter × RayCharacter, ‖crossCoeff r.1 r.2‖))*Cm^2)*(4:ℝ)^slots.card*B*
+        (∑D∈pool.powerset,‖selector D‖*(primeProductNorm p (A∪D))^(2*ε)) := by
+      have he:((2:ℝ)^slots.card)^2=(4:ℝ)^slots.card:=by rw [←pow_mul,pow_mul'];norm_num
+      rw [he]
+      dsimp only [A]
+      ring
+    _≤_ := by
+      have hsum : 0 ≤ ∑ D ∈ pool.powerset,
+          ‖selector D‖*(primeProductNorm p (A∪D))^(2*ε) :=
+        Finset.sum_nonneg (fun D _ => mul_nonneg (norm_nonneg (selector D))
+          (Real.rpow_nonneg (hn D) (2*ε)))
+      gcongr
+      exact le_max_left _ _
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseSecondPrincipalCaller InversePrincipalEnergy InversePrioritySecondSource
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+  (p:ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+
+omit [DecidableEq σ] [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem parent_residual_lists_subset {Jo:ℕ} (extra:CubeCoordinates ι→Finset ι)
+    (negative:Bool) (lists:σ→Finset ι) (y:SecondParentSource ι Jo) (i:σ):
+    residualLists p negative (fun i=>lists i\extra y.cube) y i⊆lists i:=
+by
+  intro k hk
+  exact (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hk).1).1
+
+omit [∀ (i : ι), (Ideal.span {p i}).IsMaximal] in
+theorem parent_residual_lists_pairwise {Jo:ℕ} (extra:CubeCoordinates ι→Finset ι)
+    (negative:Bool) (slots assigned:Finset σ) (lists:σ→Finset ι) (y:SecondParentSource ι Jo)
+    (hslots:(slots:Set σ).PairwiseDisjoint lists):
+    ((slots\assigned:Finset σ):Set σ).PairwiseDisjoint (residualLists p negative (fun i=>lists i\extra y.cube) y):=by
+  intro i hi j hj hij
+  exact (hslots (Finset.mem_sdiff.mp hi).1 (Finset.mem_sdiff.mp hj).1 hij).mono
+    (parent_residual_lists_subset p extra negative lists y i)
+    (parent_residual_lists_subset p extra negative lists y j)
+
+theorem priority_zero_parent_uniform (ε:ℝ) (hε:0<ε):
+    ∃(s:Finset (ℕ×ℕ))(C:ℝ),0<C ∧
+    ∀{ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+      (p:ι→O) (_hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι) (negative:Bool)
+      (Ψ:O→*ℂ) (m:O) (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) → (∀u,‖Ψ u‖≤1) →
+    ∀(om:𝓢(ℝ,ℂ))(lo hi:ℝ)(hlo:0<lo)(hs:Function.support om⊆Set.Icc lo hi)
+      (X M Y t:ℝ)(R:Finset ι→Finset ι→ℝ),
+      0<X → hi≤ Real.exp M → 1≤ Y → (∀G E,0≤ R G E) →
+    ∀{Jo:ℕ}(y:SecondParentSource ι Jo),
+      ‖priorityZeroParent p hg extra pool negative Ψ m slots assigned lists a
+        (principalWindow om lo hi hlo hs negative t) X Y R y‖≤
+      C*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*(SchwartzMap.seminorm ℝ 0 0 om)^2*
+        Y*(X*Real.exp M)^(1+ε):=by
+  obtain ⟨s,C,hC,hbound⟩:=marked_principal_energy ε hε
+  refine ⟨s,C,hC,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop extra pool negative Ψ m slots assigned lists a hslots ha hΨ
+    om lo hi hlo hs X M Y t R hX hhi hY hR Jo y
+  have hpair:=parent_residual_lists_pairwise p extra negative slots assigned lists y hslots
+  have hcoeff:∀i∈slots\assigned,∀k∈residualLists p negative (fun i=>lists i\extra y.cube) y i,‖a i k‖≤1:=by
+    intro i hi k hk
+    exact ha i (Finset.mem_sdiff.mp hi).1 k (parent_residual_lists_subset p extra negative lists y i hk)
+  have hz:∀G∈pool.powerset,∀E∈G.powerset,(0:O)∈secondVariableCutoff p y R G E:=by
+    intro G hG E hE
+    exact zero_mem_childFrequencyBall _
+      (mul_ne_zero (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)) (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))) _ (hR G E)
+  have hb:=hbound p hp hg hinj hcop (slots\assigned)
+    (residualLists p negative (fun i=>lists i\extra y.cube) y) a hpair hcoeff ∅ pool Ψ hΨ
+    (secondParentPuncture p m y) (secondParentLabel p y) (secondParentDivisor p y)
+    (principalWindow om lo hi hlo hs negative t) rowMajorant X M Y hX hY
+    (principalWindow_upper om lo hi hlo hs M hhi negative t) (secondVariableCutoff p y R) hz
+    (fun _ _ _=>0) (by intros; simp)
+  have hb':‖priorityZeroParent p hg extra pool negative Ψ m slots assigned lists a
+      (principalWindow om lo hi hlo hs negative t) X Y R y‖≤_:=
+    (le_add_of_nonneg_right (norm_nonneg _)).trans hb
+  simpa only [Finset.card_empty,pow_zero,mul_one,principalWindow_seminorm_zero,mul_assoc] using hb'
+
+theorem priority_tail_parent_uniform (Lcap tau saving:ℝ)(hLcap:0≤ Lcap)(htau:0<tau):
+    ∃(s:Finset (ℕ×ℕ))(C:ℝ),0<C ∧
+    ∀{ι σ:Type*} [DecidableEq ι] [DecidableEq σ]
+      (p:ι→O) (hp:∀i,p i≠0) [∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc:∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι) (negative:Bool)
+      (Ψ:O→*ℂ) (m:O) (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists → (∀i∈slots,∀k∈lists i,‖a i k‖≤1) → (∀u,‖Ψ u‖≤1) →
+    ∀(om:𝓢(ℝ,ℂ))(lo hi:ℝ)(hlo:0<lo)(hs:Function.support om⊆Set.Icc lo hi)
+      (X M Y Z t:ℝ)(R:Finset ι→Finset ι→ℝ),
+      0<X → hi≤ Real.exp M → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+    ∀{Jo:ℕ}(y:SecondParentSource ι Jo),
+      (∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p (secondParentDivisor p y) G E.val (X*Real.exp M) Y (Z^tau)≤ R G E.val) →
+      ‖priorityTailParent p hg hp hinj extra pool negative Ψ m slots assigned lists a
+        (principalWindow om lo hi hlo hs negative t) X Y R y‖≤
+      C*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*(SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving):=by
+  obtain ⟨s,C,hC,hbound⟩:=InverseWholePriorityRapidTail.marked_rapid_tail Lcap tau saving hLcap htau
+  refine ⟨s,C,hC,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop hc extra pool negative Ψ m slots assigned lists a hslots ha hΨ
+    om lo hi hlo hs X M Y Z t R hX hhi hZ hY hscale hy hyi hx Jo y hR
+  have hpair:=parent_residual_lists_pairwise p extra negative slots assigned lists y hslots
+  have hcoeff:∀i∈slots\assigned,∀k∈residualLists p negative (fun i=>lists i\extra y.cube) y i,‖a i k‖≤1:=by
+    intro i hi k hk
+    exact ha i (Finset.mem_sdiff.mp hi).1 k (parent_residual_lists_subset p extra negative lists y i hk)
+  exact hbound p hp hcop hg hinj hc pool Ψ hΨ (secondParentPuncture p m y)
+    (secondParentLabel p y) (secondParentDivisor p y) (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
+    (slots\assigned) _ a hpair hcoeff om rowMajorant lo hi hlo hs negative t X M Y Z R
+    hX hhi hZ hY hscale hy hyi hx hR
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseSecondPrincipalCaller InversePrioritySecondSource InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι σ:Type*}[DecidableEq ι][DecidableEq σ]{Jo:ℕ}
+def globalPriorityZeroAggregate
+    (p:ι→O)[∀i,(Ideal.span {p i}).IsMaximal](hg:∀i,lambda∉Ideal.span {p i})
+    (extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)(original:Finset (Source ι Jo))(w:Source ι Jo→ℂ)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (V:𝓢(ℝ,ℂ))(X Y:ℝ)(R:Finset ι→Finset ι→ℝ):ℝ:=
+  firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+    ∑x∈original,‖globalPriorityOuter p hg negative Ψ m ray core w x‖*
+      ‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*
+      ‖priorityZeroParent p hg extra pool negative
+        (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core) m slots J lists a V X Y R (parent p x)‖
+
+theorem global_priority_zero_aggregate (ε:ℝ)(hε:0<ε):
+    ∃(s:Finset (ℕ×ℕ))(Czero:ℝ),0<Czero ∧
+    ∀{ι σ:Type*}[DecidableEq ι][DecidableEq σ]
+      (p:ι→O)(_hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      {Jo:ℕ}(extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)(original:Finset (Source ι Jo))(w:Source ι Jo→ℂ)
+      (negative:Bool)(Ψ:O→*ℂ)(m:O)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists→(∀i∈slots,∀k∈lists i,‖a i k‖≤1)→(∀u,‖Ψ u‖≤1)→
+      (∀x∈original,‖w x‖≤1)→
+    ∀(om:𝓢(ℝ,ℂ))(lo hi:ℝ)(hlo:0<lo)(hs:Function.support om⊆Set.Icc lo hi)
+      (X M Y t:ℝ)(R:Finset ι→Finset ι→ℝ),
+      0<X→hi≤ Real.exp M→1≤ Y→(∀G E,0≤ R G E)→
+      globalPriorityZeroAggregate p hg extra pool original w negative Ψ m slots lists a
+        (principalWindow om lo hi hlo hs negative t) X Y R≤
+      Czero*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+        (SchwartzMap.seminorm ℝ 0 0 om)^2*Y*(X*Real.exp M)^(1+ε)*
+        ∑x∈original,(primeProductNorm p (wholeExtractedSupport (fun x=>extra x.cube) negative x))^(2*ε):=by
+  obtain ⟨s,Cp,hCp,hprincipal⟩:=priority_zero_parent_uniform ε hε
+  obtain ⟨Cb,hCb,hmass⟩:=global_priority_weighted_branch ε hε
+  refine ⟨s,Cb*Cp,mul_pos hCb hCp,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop Jo extra pool original w negative Ψ m slots lists a
+    hslots ha hΨ hw om lo hi hlo hs X M Y t R hX hhi hY hR
+  let B:=Cp*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*(SchwartzMap.seminorm ℝ 0 0 om)^2*
+    Y*(X*Real.exp M)^(1+ε)
+  have hB:0≤ B:=by dsimp [B];positivity
+  have hh:=hmass p hp hg hcop original extra negative Ψ m w slots lists a B hslots ha hΨ hw hB
+    (fun ray core J x=>‖priorityZeroParent p hg extra pool negative
+      (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core) m slots J lists a
+      (principalWindow om lo hi hlo hs negative t) X Y R (parent p x)‖)
+    (by intros;positivity)
+    (fun ray core J hJ x hx=>hprincipal p hp hg hinj hcop extra pool negative
+      (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core) m slots J lists a hslots ha
+      (fun u=>(firstCoreTwist_norm_le negative _ Ψ core u).trans (hΨ u))
+      om lo hi hlo hs X M Y t R hX hhi hY hR (parent p x))
+  convert hh using 1 <;> dsimp only [globalPriorityZeroAggregate,B] ; ring
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseSecondPrincipalCaller InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseMomentGlobalPrincipalMass
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+
+theorem global_priority_zero_physical (ε:ℝ)(hε:0<ε)(Jmax:ℕ)(dsmall:ℝ)(hdsmall:0<dsmall):
+    ∃(s:Finset (ℕ×ℕ))(Czero:ℝ),0<Czero ∧
+    ∀{ι σ:Type*}[DecidableEq ι][DecidableEq σ]
+      (p:ι→O)(_hp:∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg:∀i,lambda∉Ideal.span {p i})
+      (_hinj:Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (Jo:ℕ),Jo≤ Jmax→∀(extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)
+      (original:Finset (Source ι Jo))(w:Source ι Jo→ℂ)(negative:Bool)(Ψ:O→*ℂ)(m:O)
+      (slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists→(∀i∈slots,∀k∈lists i,‖a i k‖≤1)→(∀u,‖Ψ u‖≤1)→
+      (∀x∈original,‖w x‖≤1)→
+    ∀(om:𝓢(ℝ,ℂ))(lo hi:ℝ)(hlo:0<lo)(hs:Function.support om⊆Set.Icc lo hi)
+      (Z M r ell V delta A B Ractive j t eta tau window pi height:ℝ)(R:Finset ι→Finset ι→ℝ),
+      1≤ Z→0≤ ell+eta→0≤ B→0≤ j→
+      ε*(r-A-B-t)+7*eta/2+dsmall*(3*ell+B+t+5*eta)+2*ε*(2*ell+B+t+4*eta)≤ pi+eta/2→
+      (∀x∈original,SourceValid p x)→
+      (∀x∈original,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^(ell+eta))→
+      (∀x∈original,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^(ell+eta))→
+      (∀x∈original,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)≤ Z^(Ractive+eta))→
+      (∀x∈original,primeProductNorm p x.firstCommon≤ Z^(B+eta))→
+      (∀x∈original,primeProductNorm p x.quotientSupport≤ Z^(t+eta))→
+      (∀x∈original,extra x.cube⊆x.cube.support)→
+      hi≤ Real.exp window→1≤ Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau)→(∀G E,0≤ R G E)→
+      (Z^(firstKappa M r ell V delta A B Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      globalPriorityZeroAggregate p hg extra pool original w negative Ψ m slots lists a
+        (principalWindow om lo hi hlo hs negative height) (Z^(r-A-B-t))
+        (Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau)) R≤
+      Czero*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+        (SchwartzMap.seminorm ℝ 0 0 om)^2*Real.exp (window*(1+ε))*
+        Z^(r+3*ell+V+17*eta+tau+pi):=by
+  obtain ⟨s,Cp,hCp,hprincipal⟩:=global_priority_zero_aggregate ε hε
+  obtain ⟨Cm,hCm,hmass⟩:=original_physical_weighted_source Jmax dsmall hdsmall
+  refine ⟨s,Cp*Cm,mul_pos hCp hCm,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop Jo hJo extra pool original w negative Ψ m slots lists a
+    hslots ha hΨ hw om lo hi hlo hs Z M r ell V delta A B Ractive j t eta tau window pi height R
+    hZ hell hB hj hcost hsource hc₁ hc₂ hactive hcommon hquot hextra hhi hY hR
+  have hz:0<Z:=zero_lt_one.trans_le hZ
+  let P:=Z^(firstKappa M r ell V delta A B Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  let Q:=Cp*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+    (SchwartzMap.seminorm ℝ 0 0 om)^2
+  have hP:0≤ P:=by dsimp [P];positivity
+  have hQ:0≤ Q:=by dsimp [Q];positivity
+  have he:=mul_le_mul_of_nonneg_left (hprincipal p hp hg hinj hcop extra pool original w negative Ψ m slots lists a
+    hslots ha hΨ hw om lo hi hlo hs (Z^(r-A-B-t)) window
+    (Z^(firstPhysicalHeight M r ell V delta B j+12*eta+tau)) height R (by positivity) hhi hY hR) hP
+  have hm:=hmass p hp hinj Jo hJo original Z M r ell V delta A B Ractive j t eta tau ε window pi
+    hZ hell hε.le hB hj hcost hsource hc₁ hc₂ hactive hcommon hquot extra negative hextra
+  have hsupp(x:Source ι Jo):wholeExtractedSupport (fun x=>extra x.cube) negative x=principalSupport extra negative x:=by
+    simp only [wholeExtractedSupport,extractedSupport,principalSupport,Finset.union_assoc]
+  simp_rw [hsupp] at he
+  apply he.trans
+  calc
+    _=Q*(physicalPrincipalFactor Z M r ell V delta A B Ractive j t eta tau ε window*
+      ∑x∈original,(primeProductNorm p (principalSupport extra negative x))^(2*ε)):=by
+      dsimp [Q,P,physicalPrincipalFactor];ring
+    _≤ Q*(Cm*Real.exp (window*(1+ε))*Z^(r+3*ell+V+17*eta+tau+pi)):=mul_le_mul_of_nonneg_left hm hQ
+    _= _:=by dsimp [Q];ring
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers InverseInitialArithmetic
+open InverseWholePriorityRetainedSource RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+theorem global_priority_retained_all_rays
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (original:Finset (InverseFirstPriorityParents.Source ι Jo))
+    (_hvalid:∀x∈original,InverseFirstPriorityParents.SourceValid p x)
+    (_hextra:∀x∈original,extra x.cube⊆x.cube.support)
+    (w:InverseFirstPriorityParents.Source ι Jo→ℂ) (_hw:∀x∈original,‖w x‖≤1)
+    (Ψ:Eis→*ℂ) (m:Eis) (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (cutoff:SecondParentSource ι (Jo+(assigned.card+assigned.card))→Finset ι→Finset ι→ℝ)
+,
+    let source:=unifiedSource p pool
+      (InverseMomentWholePriorityParents.wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists) cutoff
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    ∀
+        (Y:ℝ) (R:BlockIndex→ℝ) (L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (labels : BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      (∀i∈assigned,∀k∈lists i,‖a i k‖≤1) →
+      (∀ i,|ρ i| ≤ B₀ i) → 0 ≤ L →
+      1 < Z → 0 < X → 0 < Y → 0≤ eta → 2≤ Z^eta →
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) (R (index p x))) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) →
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) →
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) →
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) →
+      (∀ a,‖Ψ a‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) →
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels d) →
+      Jo+(assigned.card+assigned.card) ≤ 2*K → (slots\assigned).card ≤ K → (slots\assigned).card ≤ K → 0 ≤ A →
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) →
+      X=Z^(r-Acol-Bfirst-tcount) → L=eta*Real.log Z →
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) →
+      2≤ Z → 1≤ b → b≤ Z^(6*eta) →
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) →
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) →
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) →
+      (∀ z:SecondRayIndex,∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₁∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₁) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (∀ z:SecondRayIndex,∀ d∈keys p source,∀ t : Frequency × (Fin 6 → ℝ),∀ J₂∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₂) lists a
+          ((labels d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R d)) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+      ‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z *
+        ∑x∈source,globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+          wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x‖ ≤
+      C*A*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,Cbin,hC,hCbin,he⟩:=
+    global_priority_retained_moving_radius (ι:=ι) (σ:=σ) om lo hi hlo hsupport negative
+      caps hcaps B₀ hB₀ J K εmass hεmass
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C*(∑ z : SecondRayIndex, ‖secondRayCoefficient z‖),Cbin,by positivity,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo extra pool original hvalid hextra w hwOriginal
+    Ψ m ray core slots assigned lists a cutoff source Ψ₀
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A
+    haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+    ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  let P:=Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  let H:= (1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*(1+Cbin*Real.log Z)^4*
+    Z^(r+3*ell+V+48*eta+tau+pi+εchild)
+  let S:SecondRayIndex→ℂ:=fun z=>(Y:ℂ)*secondRayCoefficient z *
+      ∑x∈source,globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a
+          (principalWindow om lo hi hlo hsupport negative t) X Y z x
+  have hP:0≤ P:=by dsimp [P];positivity
+  have hH:0≤ H:=by dsimp [H];positivity
+  have hz (z:SecondRayIndex):P*‖S z‖≤ C*A*H*‖secondRayCoefficient z‖:=by
+    have h:=he p hp hcop hg hpr hinj hc extra pool original hvalid hextra w hwOriginal
+      Ψ m ray core slots assigned lists a cutoff z
+      Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A
+      haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+      ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass
+      (hleft z) (hright z)
+    convert h using 1 ; dsimp only [P,S,H] ; ring
+  calc
+    _≤ P*∑z:SecondRayIndex,‖S z‖:=mul_le_mul_of_nonneg_left (norm_sum_le _ _) hP
+    _=∑z:SecondRayIndex,P*‖S z‖:=Finset.mul_sum _ _ _
+    _≤∑z:SecondRayIndex,C*A*H*‖secondRayCoefficient z‖:=Finset.sum_le_sum (fun z _=>hz z)
+    _=C*A*H*(∑z:SecondRayIndex,‖secondRayCoefficient z‖):=(Finset.mul_sum _ _ _).symm
+    _≤ C*A*H*(∑ z : SecondRayIndex, ‖secondRayCoefficient z‖):= le_refl _
+    _= _:=by dsimp [H];ring
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseSecondSourceBlocks InverseSecondPrincipalCaller InverseSecondProfileUniform
+open CompletedHeight SecondPassIntegration JointLogSeparation
+open InverseInitialClippedColumns InverseSecondFibers InverseInitialArithmetic
+open InverseWholePriorityRetainedSource RayFourExpansion
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type} [DecidableEq ι] [DecidableEq σ]
+def globalPriorityRetainedAggregate
+    (p:ι→Eis)[∀i,(Ideal.span {p i}).IsMaximal]
+    (hg:∀i,lambda∉Ideal.span {p i})
+    (hp:∀i,p i≠0)(hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    {Jo:ℕ}(extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)
+    (original:Finset (InverseFirstPriorityParents.Source ι Jo))(w:InverseFirstPriorityParents.Source ι Jo→ℂ)
+    (negative:Bool)(Ψ:Eis→*ℂ)(m:Eis)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (V:𝓢(ℝ,ℂ))(X Y:ℝ)(R:Finset ι→Finset ι→ℝ):ℝ:=
+  firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+    ‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z*
+      ∑x∈unifiedSource p pool (InverseMomentWholePriorityParents.wholeAssignedParents p (fun x=>extra x.cube) original negative J lists) (fun _=>R),
+        globalPriorityWeight p hg negative Ψ m ray core w J a x*
+        wholeRow p hp hcop hg extra pool negative (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core)
+          m slots J lists a V X Y z x‖
+
+theorem global_priority_retained_aggregate
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo)
+    (hsupport:Function.support om⊆Set.Icc lo hi) (negative:Bool)
+    (caps:Fin 4→ℝ) (hcaps:∀i,0≤ caps i) (B₀:Fin 6→ℝ) (hB₀:∀i,0≤ B₀ i) (J K:ℕ) (εmass:ℝ) (hεmass:0<εmass) :
+    ∃ (omega₁ omega₂ : 𝓢(ℝ,ℂ)) (loFresh hiFresh : ℝ),
+      0<loFresh ∧ loFresh≤ hiFresh ∧ HasCompactSupport (omega₁:ℝ→ℂ) ∧ HasCompactSupport (omega₂:ℝ→ℂ) ∧
+      tsupport (omega₁:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧ tsupport (omega₂:ℝ→ℂ)⊆Set.Icc loFresh hiFresh ∧
+      ∃ C Cbin : ℝ,0 ≤ C ∧ 0≤ Cbin ∧ ∀ (p : ι → Eis) (hp : ∀ i,p i ≠ 0)
+    [∀ i,(Ideal.span {p i}).IsMaximal]
+    (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
+    (hg : ∀ i,lambda ∉ Ideal.span {p i})
+    (_hpr : ∀ i, lambda^2 ∣ p i-1)
+    (_hinj : Function.Injective (fun i => Ideal.span {p i}))
+    (_hc : ∀ i, ringChar (Eis ⧸ Ideal.span {p i}) ≠ 2)
+    {Jo : ℕ} (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (original:Finset (InverseFirstPriorityParents.Source ι Jo))
+    (_hvalid:∀x∈original,InverseFirstPriorityParents.SourceValid p x)
+    (_hextra:∀x∈original,extra x.cube⊆x.cube.support)
+    (w:InverseFirstPriorityParents.Source ι Jo→ℂ) (_hw:∀x∈original,‖w x‖≤1)
+    (Ψ:Eis→*ℂ) (m:Eis)
+    (slots:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (cutoff:Finset ι→Finset ι→ℝ)
+,
+    ∀
+        (Y:ℝ) (R:Finset σ→BlockIndex→ℝ) (L Z X εchild : ℝ) (Vlabel:BlockIndex→ℝ)
+        (ell Ractive j tcount eta : ℝ) (M r V delta Acol Bfirst tau pi b : ℝ) (ρ : Fin 6 → ℝ) (t : ℝ)
+        (labels : Finset σ→BlockIndex→Finset (Ideal Eis)) (A : ℝ),
+      slots.card≤ K → 0≤ A → (∀(ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)(assigned:Finset σ), assigned⊆slots →
+    let source:=unifiedSource p pool
+      (InverseMomentWholePriorityParents.wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists) (fun _=>cutoff);
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core;
+      (∀i∈assigned,∀k∈lists i,‖a i k‖≤1) ∧
+      (∀ i,|ρ i| ≤ B₀ i) ∧
+      0 ≤ L ∧
+      1 < Z ∧
+      0 < X ∧
+      0 < Y ∧
+      0≤ eta ∧
+      2≤ Z^eta ∧
+      (∀ x ∈ source,x.second.frequency ∈ nonzeroChildFrequencyBall (actualSecondMultiplier p x) (R assigned (index p x))) ∧
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2 ≤ Z^(ell+eta)) ∧
+      (∀ x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2 ≤ Z^(ell+eta)) ∧
+      (∀ x∈source,primeProductNorm p (cubeActiveSupport x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit) ≤ Z^(Ractive+eta)) ∧
+      (∀ x∈source,Z^(j-eta) ≤ ‖ringComplex (jLabel p x.cube.support
+        (fun i => x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit)‖^2) ∧
+      (∀ x∈source,(Ideal.absNorm x.quotient : ℝ) ≤ Z^(tcount+eta)) ∧
+      (∀ a,‖Ψ a‖ ≤ 1) ∧
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) ∧
+      (∀ i∈(slots\assigned),∀ q∈lists i,‖a i q‖ ≤ 1) ∧
+      (∀ d∈keys p source,∀ x∈cell p source d,(actualSecondChild p 1 1 x).2.1 ∈ labels assigned d) ∧
+      Jo+(assigned.card+assigned.card) ≤ 2*K ∧
+      (slots\assigned).card ≤ K ∧
+      (slots\assigned).card ≤ K ∧
+      0 ≤ A ∧
+      Y=Z^(firstPhysicalHeight M r ell V delta Bfirst j+12*eta+tau) ∧
+      X=Z^(r-Acol-Bfirst-tcount) ∧
+      L=eta*Real.log Z ∧
+      (∀d,Vlabel d=secondFormalLabel Bfirst (secondCellExponent Z d 1) (secondCellExponent Z d 2) j+4*eta) ∧
+      2≤ Z ∧
+      1≤ b ∧
+      b≤ Z^(6*eta) ∧
+      (∀x∈source,∀i,outerNorms p x i≤ Z^(caps i)) ∧
+      (∀x∈source,primeProductNorm p x.second.sourceCommon*primeProductNorm p x.second.overlap≤ b*X) ∧
+      (∀d∈keys p source,εmass*(secondCount ell Ractive j tcount (secondCellExponent Z d 0)
+        (secondCellExponent Z d 1)+11*eta/2)≤ pi) ∧
+      (∀ z:SecondRayIndex,∀ d∈keys p source,∀ t : Frequency × (Fin 6→ℝ),∀ J₁∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayMinus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₁) lists a
+          ((labels assigned d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R assigned d)) (secondLabelWeight K)
+          (clippedTest omega₁ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) (-(profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 4))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2)) ∧
+      (∀ z:SecondRayIndex,∀ d∈keys p source,∀ t : Frequency × (Fin 6→ℝ),∀ J₂∈(slots\assigned).powerset,∀ γ∈actualSecondTriples p 1 1 (cell p source d),
+        normalizedColumnEnergy p hg pool (secondRayPlus Ψ₀ z)
+          (actualSecondInheritedRadicalPuncture m γ) ((slots\assigned)\J₂) lists a
+          ((labels assigned d).filter Squarefree) (nonzeroChildFrequencyBall 1 (R assigned d)) (secondLabelWeight K)
+          (clippedTest omega₂ (Z^(max 0 (secondCellColumnExponent Z X d)-(secondCellColumnExponent Z X d))) ((profileHeight secondLeftSlope secondRightSlope secondKernelSlope t.1 t.2) 5))
+          (Z^(max 0 (secondCellColumnExponent Z X d))) Z (max 0 (secondCellColumnExponent Z X d)+(Vlabel d)) ≤
+          A*Z^(max 0 (secondCellColumnExponent Z X d)+(Vlabel d)+εchild)*(tripleHeight J t.1*coordinateHeight J t.2))) →
+      (Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*
+        globalPriorityRetainedAggregate p hg hp hcop extra pool original w
+          negative Ψ m slots lists a (principalWindow om lo hi hlo hsupport negative t) X Y cutoff ≤
+      C*A*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild) := by
+  obtain ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,C,Cbin,hC,hCbin,he⟩:=
+    global_priority_retained_all_rays (ι:=ι) (σ:=σ) om lo hi hlo hsupport negative
+      caps hcaps B₀ hB₀ J K εmass hεmass
+  have hmass := firstCoreMassBound_nonneg
+  let Ctot:=firstCoreMassBound*(4:ℝ)^K*(Fintype.card (RayCharacter×RayCharacter):ℝ)*
+    (Fintype.card FirstCoreIndex:ℝ)*C
+  refine ⟨omega₁,omega₂,af,bf,haf,hab,hc₁,hc₂,hs₁,hs₂,Ctot,Cbin,by dsimp [Ctot];positivity,hCbin,?_⟩
+  intro p hp _ hcop hg hpr hinj hc Jo extra pool original hvalid hextra w hwOriginal
+    Ψ m slots lists a cutoff
+    Y R L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t labels A hslots hA hdata
+  let P:=Z^(firstKappa M r ell V delta Acol Bfirst Ractive)*Real.exp ((9/2:ℝ)*(eta*Real.log Z))
+  let H:=C*A*(1+‖t‖)^(2*InverseClippingProfiles.momentOrder J)*
+        (1+Cbin*Real.log Z)^4*Z^(r+3*ell+V+48*eta+tau+pi+εchild)
+  have hb (ray:RayCharacter×RayCharacter)(core:FirstCoreIndex)(assigned:Finset σ)(ha:assigned⊆slots):
+    P*‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z *
+      ∑x∈unifiedSource p pool (InverseMomentWholePriorityParents.wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists) (fun _=>cutoff),
+        globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+          wholeRow p hp hcop hg extra pool negative
+            (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core) m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x‖≤ H:=by
+    obtain ⟨haassigned,hρ,hL,hZ,hX,hY,heta,hbin,hrows,hcube₁,hcube₂,hactive,hj,hquot,hΨ,
+      ha₁,ha₂,hlabels,ho,hslots₁,hslots₂,hA',hYe,hXe,hLe,hVe,hZ2,hb,hthreshold,hnorm,hgeom,hmass,hleft,hright⟩:=hdata ray core assigned ha
+    exact he p hp hcop hg hpr hinj hc extra pool original hvalid hextra w hwOriginal
+      Ψ m ray core slots assigned lists a (fun _=>cutoff)
+      Y (R assigned) L Z X εchild Vlabel ell Ractive j tcount eta M r V delta Acol Bfirst tau pi b ρ t (labels assigned) A
+      haassigned hρ hL hZ hX hY heta hbin hrows hcube₁ hcube₂ hactive hj hquot hΨ
+      ha₁ ha₂ hlabels ho hslots₁ hslots₂ hA' hYe hXe hLe hVe hZ2 hb hthreshold hnorm hgeom hmass hleft hright
+  have hZ:1<Z:=(hdata 1 1 ∅ (Finset.empty_subset _)).2.2.2.1
+  have hH:0≤ H:=by dsimp [H];positivity
+  have hpow:(4:ℝ)^slots.card≤4^K:=pow_le_pow_right₀ (by norm_num) hslots
+  let S:(RayCharacter×RayCharacter)→FirstCoreIndex→Finset σ→ℝ:=fun ray core assigned=>‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z *
+      ∑x∈unifiedSource p pool (InverseMomentWholePriorityParents.wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists) (fun _=>cutoff),
+        globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+          wholeRow p hp hcop hg extra pool negative
+            (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core) m slots assigned lists a
+            (principalWindow om lo hi hlo hsupport negative t) X Y z x‖
+  change ∀ray core assigned, assigned⊆slots → P*S ray core assigned≤ H at hb
+  change P*(firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑assigned∈slots.powerset,S ray core assigned)≤_
+  calc
+    _=firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑assigned∈slots.powerset,P*S ray core assigned:=by
+      simp only [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro ray hr
+      apply Finset.sum_congr rfl
+      intro core hc
+      apply Finset.sum_congr rfl
+      intro assigned ha
+      ring
+    _≤firstCoreMassBound*(2:ℝ)^slots.card*∑_ray:RayCharacter×RayCharacter,∑_core:FirstCoreIndex,∑_assigned∈slots.powerset,H:=by
+      apply mul_le_mul_of_nonneg_left _ (by positivity)
+      exact Finset.sum_le_sum fun ray _=>Finset.sum_le_sum fun core _=>Finset.sum_le_sum fun assigned ha=>hb ray core assigned (Finset.mem_powerset.mp ha)
+    _=firstCoreMassBound*(4:ℝ)^slots.card*(Fintype.card (RayCharacter×RayCharacter):ℝ)*(Fintype.card FirstCoreIndex:ℝ)*H:=by
+      simp only [Finset.sum_const,Finset.card_univ,Finset.card_powerset,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat]
+      rw [show (4:ℝ)^slots.card=(2:ℝ)^slots.card*(2:ℝ)^slots.card by rw [←mul_pow];norm_num]
+      ring
+    _≤firstCoreMassBound*(4:ℝ)^K*(Fintype.card (RayCharacter×RayCharacter):ℝ)*(Fintype.card FirstCoreIndex:ℝ)*H:=by gcongr
+    _= _:=by dsimp [Ctot,H];ring
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMomentGlobalPriorityTail
+open InverseMoment InverseFirstPriorityParents InverseInitialArithmetic
+open InverseMomentGlobalPrincipalMass
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem original_tail_mass (Jmax : ℕ) :
+    ∃C : ℝ,0<C ∧ ∀{ι : Type*}[DecidableEq ι](p : ι→O)(_hp : ∀i,p i≠0)
+    [∀i,(Ideal.span {p i}).IsMaximal]
+    (_hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (Jo : ℕ),Jo≤ Jmax → ∀(S : Finset (Source ι Jo))(Z L : ℝ),
+    1≤ Z → 0≤ L → (∀x∈S,SourceValid p x) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^L) →
+    (∀x∈S,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^L) →
+    (∀x∈S,‖ringComplex (∏i∈cubeActiveSupport x.cube.support
+      (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖≤ Z^L) →
+    (∀x∈S,primeProductNorm p x.firstCommon≤ Z^L) →
+    (∀x∈S,primeProductNorm p x.quotientSupport≤ Z^L) →
+    ∀(extra : CubeCoordinates ι→Finset ι)(negative : Bool),
+    (∀x∈S,extra x.cube⊆x.cube.support) →
+    (∑x∈S,primeProductNorm p (principalSupport extra negative x))≤ C*Z^(13*L) := by
+  obtain ⟨C,hC,hraw⟩ := original_weighted_mass Jmax 1 (by norm_num)
+  refine ⟨C,hC,?_⟩
+  intro ι _ p hp _ hinj Jo hJo S Z L hZ hL hS hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have hh := hraw p hp hinj Jo hJo S (Z^L) (Z^L) (Z^L) (Z^L) 1
+    (Real.one_le_rpow hZ hL) (by positivity) (by positivity) (by positivity)
+    (by norm_num) hS hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  simp only [Real.rpow_one] at hh
+  apply hh.trans_eq
+  have he : Z^(13*L)=(Z^L)^13 := by
+    rw [←Real.rpow_mul_natCast hz.le]
+    congr 1
+    norm_num
+    ring
+  rw [he]
+  norm_num
+  ring
+
+end InverseMomentGlobalPriorityTail
+end
+
+noncomputable section
+namespace InverseMomentGlobalPriorityTail
+open InverseMoment InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InversePrioritySecondSource InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+variable {ι σ : Type*} [DecidableEq ι] [DecidableEq σ] {Jo : ℕ}
+variable (p : ι→O) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg : ∀i,lambda∉Ideal.span {p i})
+
+lemma tail_forget (hp : ∀i,p i≠0) (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι) (negative : Bool)
+    (Ψ : O→*ℂ) (m : O) (slots J : Finset σ) (lists : σ→Finset ι) (a : σ→ι→ℂ)
+    (V : 𝓢(ℝ,ℂ)) (X Y : ℝ) (R : Finset ι→Finset ι→ℝ)
+    (y : SecondParentSource ι (Jo+(J.card+J.card))) :
+    priorityTailParent p hg hp hinj extra pool negative Ψ m slots J lists a V X Y R
+      (forgetAppended (Jo:=Jo) y)=
+    priorityTailParent p hg hp hinj extra pool negative Ψ m slots J lists a V X Y R y := rfl
+
+theorem original_paired_tail (hp : ∀i,p i≠0)
+    (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+    (extra : CubeCoordinates ι→Finset ι) (pool : Finset ι) (source : Finset (Source ι Jo))
+    (negative : Bool) (Ψ : O→*ℂ) (m : O) (slots J : Finset σ)
+    (lists : σ→Finset ι) (a : σ→ι→ℂ) (w : Source ι Jo→ℂ)
+    (V : 𝓢(ℝ,ℂ)) (X Y : ℝ) (R : Finset ι→Finset ι→ℝ) :
+    (∑y∈wholeAssignedParents p (fun x=>extra x.cube) source negative J lists,
+      coefficient p J a w y*priorityTailParent p hg hp hinj extra pool negative Ψ m slots J lists a V X Y R y)=
+    ∑x∈source,w x*(‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      priorityTailParent p hg hp hinj extra pool negative Ψ m slots J lists a V X Y R (parent p x) := by
+  rw [wholePaired_parent_sq_sum p (fun x=>extra x.cube) hinj]
+  simp only [tail_forget]
+
+end InverseMomentGlobalPriorityTail
+end
+
+noncomputable section
+namespace InverseMomentGlobalPriorityTail
+open InverseMoment InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseMomentGlobalPrincipalMass InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InversePrioritySecondSource InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseWholePriorityRetainedSource
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem global_parent_tail_rapid (Jmax : ℕ) (Lcap tau saving : ℝ)
+    (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃(s : Finset (ℕ×ℕ))(C : ℝ),0<C ∧
+    ∀{ι σ : Type*}[DecidableEq ι][DecidableEq σ]
+      (p : ι→O)(hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (Jo : ℕ),Jo≤ Jmax → ∀(extra : CubeCoordinates ι→Finset ι)(pool : Finset ι)
+      (source : Finset (Source ι Jo))(negative : Bool)(Ψ : O→*ℂ)(m : O)
+      (ray : RayCharacter×RayCharacter)(core : FirstCoreIndex)
+      (w : Source ι Jo→ℂ)(slots J : Finset σ)(lists : σ→Finset ι)(a : σ→ι→ℂ),
+      J⊆slots → (slots:Set σ).PairwiseDisjoint lists →
+      (∀i∈slots,∀k∈lists i,‖a i k‖≤1) → (∀u,‖Ψ u‖≤1) → (∀x∈source,‖w x‖≤1) →
+      ∀(om : 𝓢(ℝ,ℂ))(lo hi : ℝ)(hlo : 0<lo)(hs : Function.support om⊆Set.Icc lo hi)
+      (X M Y Z height : ℝ)(R : Finset ι→Finset ι→ℝ),
+      0<X → hi≤ Real.exp M → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀x∈source,SourceValid p x) → (∀x∈source,extra x.cube⊆x.cube.support) →
+      (∀x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^Lcap) →
+      (∀x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^Lcap) →
+      (∀x∈source,‖ringComplex (∏i∈cubeActiveSupport x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖≤ Z^Lcap) →
+      (∀x∈source,primeProductNorm p x.firstCommon≤ Z^Lcap) →
+      (∀x∈source,primeProductNorm p x.quotientSupport≤ Z^Lcap) →
+      (∀x∈source,∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p (secondParentDivisor p (parent p x)) G E.val
+          (X*Real.exp M) Y (Z^tau)≤ R G E.val) →
+      ‖∑y∈wholeAssignedParents p (fun x=>extra x.cube) source negative J lists,
+        coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w) y*
+        priorityTailParent p hg hp hinj extra pool negative
+          (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core)
+          m slots J lists a (principalWindow om lo hi hlo hs negative height) X Y R y‖≤
+      C*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+        (SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving) := by
+  obtain ⟨s,Ct,hCt,htail⟩ := priority_tail_parent_uniform Lcap tau (saving+13*Lcap) hLcap htau
+  obtain ⟨Cm,hCm,hmark⟩ := finite_primeMark_small_power (1/2) (by norm_num)
+  obtain ⟨Cs,hCs,hmass⟩ := original_tail_mass Jmax
+  have hCb : 0<coefficientBound := coefficientBound_pos
+  refine ⟨s,coefficientBound*Cm^2*Ct*Cs,by positivity,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop hc Jo hJo extra pool source negative Ψ m ray core w slots J lists a
+    hJ hslots ha hΨ hw om lo hi hlo hs X M Y Z height R hX hhi hZ hY hscale hy hyi hXcap
+    hsource hextra hb₁ hb₂ hactive hcommon hquot hR
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  let Ψ₀ := firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+  let V := principalWindow om lo hi hlo hs negative height
+  let Q := (s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*(SchwartzMap.seminorm ℝ 0 0 om)^2
+  let T := Ct*Q*Z^(-(saving+13*Lcap))
+  have hT : 0≤ T := by dsimp [T,Q];positivity
+  have hΨ₀ : ∀u,‖Ψ₀ u‖≤1 := fun u=>(firstCoreTwist_norm_le negative _ Ψ core u).trans (hΨ u)
+  have hout (x : Source ι Jo) (hx : x∈source) :
+      ‖globalPriorityOuter p hg negative Ψ m ray core w x‖≤ coefficientBound := by
+    rw [globalPriorityOuter,norm_mul]
+    exact (mul_le_mul (hw x hx)
+      (priorityOuter_norm p hg x.cube negative Ψ m (fun _=>1) ray core x.quotientSupport
+        (by simp) (hΨ _)) (norm_nonneg _) zero_le_one).trans_eq (one_mul _)
+  have hm (x : Source ι Jo) :
+      ‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2≤
+        Cm^2*primeProductNorm p (principalSupport extra negative x) := by
+    have hh := hmark p hp hcop J lists a
+      (fun i hi j hj hij=>hslots (hJ hi) (hJ hj) hij) (fun i hi=>ha i (hJ hi))
+      (principalSupport extra negative x)
+    have he : ((primeProductNorm p (principalSupport extra negative x))^(1/2:ℝ))^2=
+        primeProductNorm p (principalSupport extra negative x) := by
+      rw [←Real.rpow_natCast,←Real.rpow_mul (primeProductNorm_pos p hp _).le]
+      norm_num
+    have hsupp : wholeExtractedSupport (fun x=>extra x.cube) negative x=principalSupport extra negative x := by
+      simp only [wholeExtractedSupport,extractedSupport,principalSupport,Finset.union_assoc]
+    rw [hsupp]
+    exact (pow_le_pow_left₀ (norm_nonneg _) hh 2).trans_eq (by rw [mul_pow,he])
+  have ht (x : Source ι Jo) (hx : x∈source) :
+      ‖priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots J lists a V X Y R (parent p x)‖≤ T := by
+    simpa only [T,Q,mul_assoc] using htail p hp hg hinj hcop hc extra pool negative Ψ₀ m slots J lists a
+      hslots ha hΨ₀ om lo hi hlo hs X M Y Z height R hX hhi hZ hY hscale hy hyi hXcap
+      (parent p x) (hR x hx)
+  have hmass₀ := hmass p hp hinj Jo hJo source Z Lcap hZ hLcap hsource hb₁ hb₂ hactive hcommon hquot extra negative hextra
+  rw [original_paired_tail p hg hp hinj]
+  calc
+    _ ≤ ∑x∈source,‖globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots J lists a V X Y R (parent p x)‖ := norm_sum_le _ _
+    _ ≤ ∑x∈source,coefficientBound*(Cm^2*primeProductNorm p (principalSupport extra negative x))*T := by
+      apply Finset.sum_le_sum
+      intro x hx
+      rw [norm_mul,norm_mul,Complex.norm_real,Real.norm_of_nonneg (sq_nonneg _)]
+      exact mul_le_mul (mul_le_mul (hout x hx) (hm x) (sq_nonneg _) coefficientBound_pos.le)
+        (ht x hx) (norm_nonneg _)
+        (mul_nonneg hCb.le (mul_nonneg (sq_nonneg _) (primeProductNorm_pos p hp _).le))
+    _ = coefficientBound*Cm^2*T*(∑x∈source,primeProductNorm p (principalSupport extra negative x)) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intros
+      ring
+    _ ≤ coefficientBound*Cm^2*T*(Cs*Z^(13*Lcap)) :=
+      mul_le_mul_of_nonneg_left hmass₀ (by positivity)
+    _ = _ := by
+      have he : Z^(-(saving+13*Lcap))*Z^(13*Lcap)=Z^(-saving) := by
+        rw [←Real.rpow_add hz]
+        congr 1
+        ring
+      dsimp only [T,Q]
+      calc
+        _ = coefficientBound*Cm^2*Ct*Cs*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+          (SchwartzMap.seminorm ℝ 0 0 om)^2*(Z^(-(saving+13*Lcap))*Z^(13*Lcap)) := by ring
+        _ = _ := by rw [he]
+
+end InverseMomentGlobalPriorityTail
+end
+
+noncomputable section
+namespace InverseMomentGlobalPriorityTail
+open InverseMoment InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseMomentGlobalPrincipalMass InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InversePrioritySecondSource InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseWholePriorityRetainedSource
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem global_parent_tail_aggregate_rapid (Jmax : ℕ) (Lcap tau saving : ℝ)
+    (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃(s : Finset (ℕ×ℕ))(C : ℝ),0<C ∧
+    ∀{ι σ : Type*}[DecidableEq ι][DecidableEq σ]
+      (p : ι→O)(hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (Jo : ℕ),Jo≤ Jmax → ∀(extra : CubeCoordinates ι→Finset ι)(pool : Finset ι)
+      (source : Finset (Source ι Jo))(negative : Bool)(Ψ : O→*ℂ)(m : O)
+      (w : Source ι Jo→ℂ)(slots : Finset σ)(lists : σ→Finset ι)(a : σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists →
+      (∀i∈slots,∀k∈lists i,‖a i k‖≤1) → (∀u,‖Ψ u‖≤1) → (∀x∈source,‖w x‖≤1) →
+      ∀(om : 𝓢(ℝ,ℂ))(lo hi : ℝ)(hlo : 0<lo)(hs : Function.support om⊆Set.Icc lo hi)
+      (X M Y Z height : ℝ)(R : Finset ι→Finset ι→ℝ),
+      0<X → hi≤ Real.exp M → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀x∈source,SourceValid p x) → (∀x∈source,extra x.cube⊆x.cube.support) →
+      (∀x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^Lcap) →
+      (∀x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^Lcap) →
+      (∀x∈source,‖ringComplex (∏i∈cubeActiveSupport x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖≤ Z^Lcap) →
+      (∀x∈source,primeProductNorm p x.firstCommon≤ Z^Lcap) →
+      (∀x∈source,primeProductNorm p x.quotientSupport≤ Z^Lcap) →
+      (∀x∈source,∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p (secondParentDivisor p (parent p x)) G E.val
+          (X*Real.exp M) Y (Z^tau)≤ R G E.val) →
+      firstCoreMassBound*(2:ℝ)^slots.card*
+      (∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+        ‖∑y∈wholeAssignedParents p (fun x=>extra x.cube) source negative J lists,
+        coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w) y*
+        priorityTailParent p hg hp hinj extra pool negative
+          (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core)
+          m slots J lists a (principalWindow om lo hi hlo hs negative height) X Y R y‖)≤
+      C*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+        (SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving) := by
+  obtain ⟨s,C,hC,hbound⟩ := global_parent_tail_rapid Jmax Lcap tau saving hLcap htau
+  let N : ℝ := (Fintype.card (RayCharacter×RayCharacter):ℝ)*(Fintype.card FirstCoreIndex:ℝ)
+  have hN : 0<N := by dsimp [N];positivity
+  refine ⟨s,max (firstCoreMassBound*N*C) 1,zero_lt_one.trans_le (le_max_right _ _),?_⟩
+  have hmass := firstCoreMassBound_nonneg
+  intro ι σ _ _ p hp _ hg hinj hcop hc Jo hJo extra pool source negative Ψ m w slots lists a
+    hslots ha hΨ hw om lo hi hlo hs X M Y Z height R hX hhi hZ hY hscale hy hyi hXcap
+    hsource hextra hb₁ hb₂ hactive hcommon hquot hR
+  let B := C*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+    (SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving)
+  have hsum : (∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+      ‖∑y∈wholeAssignedParents p (fun x=>extra x.cube) source negative J lists,
+        coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w) y*
+        priorityTailParent p hg hp hinj extra pool negative
+          (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core)
+          m slots J lists a (principalWindow om lo hi hlo hs negative height) X Y R y‖)
+      ≤ N*(2:ℝ)^slots.card*B := by
+    calc
+      _ ≤ ∑_ray:RayCharacter×RayCharacter,∑_core:FirstCoreIndex,∑_J∈slots.powerset,B := by
+        apply Finset.sum_le_sum
+        intro ray hr
+        apply Finset.sum_le_sum
+        intro core hc₀
+        apply Finset.sum_le_sum
+        intro J hJ
+        exact hbound p hp hg hinj hcop hc Jo hJo extra pool source negative Ψ m ray core w slots J lists a
+          (Finset.mem_powerset.mp hJ) hslots ha hΨ hw om lo hi hlo hs X M Y Z height R
+          hX hhi hZ hY hscale hy hyi hXcap hsource hextra hb₁ hb₂ hactive hcommon hquot hR
+      _ = _ := by
+        simp only [Finset.sum_const,Finset.card_powerset,Finset.card_univ,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat]
+        dsimp [N]
+        ring
+  apply (mul_le_mul_of_nonneg_left hsum (by positivity : 0≤firstCoreMassBound*(2:ℝ)^slots.card)).trans
+  have he : ((2:ℝ)^slots.card)^2=(4:ℝ)^slots.card := by
+    rw [←pow_mul,pow_mul']
+    norm_num
+  dsimp [B]
+  calc
+    _ = firstCoreMassBound*N*C*((2:ℝ)^slots.card)^2*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+      (SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving) := by ring
+    _ ≤ _ := by
+      rw [he]
+      gcongr
+      exact le_max_left _ _
+
+end InverseMomentGlobalPriorityTail
+end
+
+noncomputable section
+namespace InverseMomentGlobalPriorityTail
+open InverseMoment InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseMomentGlobalPrincipalMass InverseInitialArithmetic
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InversePrioritySecondSource InverseSecondPrincipalCaller InversePrincipalEnergy
+open InverseWholePriorityRetainedSource
+open Eisenstein (ringComplex)
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O" => Eisenstein.O
+
+theorem global_physical_tail_rapid (Jmax : ℕ) (Lcap tau saving : ℝ)
+    (hLcap : 0≤ Lcap) (htau : 0<tau) :
+    ∃(s : Finset (ℕ×ℕ))(C : ℝ),0<C ∧
+    ∀{ι σ : Type*}[DecidableEq ι][DecidableEq σ]
+      (p : ι→O)(hp : ∀i,p i≠0)[∀i,(Ideal.span {p i}).IsMaximal]
+      (hg : ∀i,lambda∉Ideal.span {p i})
+      (hinj : Function.Injective (fun i=>Ideal.span {p i}))
+      (_hcop : Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+      (_hc : ∀i,ringChar (O⧸Ideal.span {p i})≠2)
+      (Jo : ℕ),Jo≤ Jmax → ∀(extra : CubeCoordinates ι→Finset ι)(pool : Finset ι)
+      (source : Finset (Source ι Jo))(negative : Bool)(Ψ : O→*ℂ)(m : O)
+      (w : Source ι Jo→ℂ)(slots : Finset σ)(lists : σ→Finset ι)(a : σ→ι→ℂ),
+      (slots:Set σ).PairwiseDisjoint lists →
+      (∀i∈slots,∀k∈lists i,‖a i k‖≤1) → (∀u,‖Ψ u‖≤1) → (∀x∈source,‖w x‖≤1) →
+      ∀(om : 𝓢(ℝ,ℂ))(lo hi : ℝ)(hlo : 0<lo)(hs : Function.support om⊆Set.Icc lo hi)
+      (X M Y Z height kappa eta : ℝ)(R : Finset ι→Finset ι→ℝ),
+      kappa+(9/2:ℝ)*eta≤ Lcap →
+      0<X → hi≤ Real.exp M → 1≤ Z → 0<Y → 1≤ X*Real.exp M →
+      Y≤ Z^Lcap → Y⁻¹≤ Z^Lcap → X*Real.exp M≤ Z^Lcap →
+      (∀x∈source,SourceValid p x) → (∀x∈source,extra x.cube⊆x.cube.support) →
+      (∀x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.leftExponent)‖^2≤ Z^Lcap) →
+      (∀x∈source,‖ringComplex (primeProduct p x.cube.support x.cube.rightExponent)‖^2≤ Z^Lcap) →
+      (∀x∈source,‖ringComplex (∏i∈cubeActiveSupport x.cube.support
+        (fun i=>x.cube.leftExponent i+x.cube.rightExponent i) x.cube.leftBit x.cube.rightBit,p i)‖≤ Z^Lcap) →
+      (∀x∈source,primeProductNorm p x.firstCommon≤ Z^Lcap) →
+      (∀x∈source,primeProductNorm p x.quotientSupport≤ Z^Lcap) →
+      (∀x∈source,∀G∈pool.powerset,∀E:G.powerset,
+        correlatedSecondRadius p (secondParentDivisor p (parent p x)) G E.val
+          (X*Real.exp M) Y (Z^tau)≤ R G E.val) →
+      (Z^kappa*Real.exp ((9/2:ℝ)*(eta*Real.log Z)))*(firstCoreMassBound*(2:ℝ)^slots.card*
+      (∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+        ‖∑y∈wholeAssignedParents p (fun x=>extra x.cube) source negative J lists,
+        coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w) y*
+        priorityTailParent p hg hp hinj extra pool negative
+          (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core)
+          m slots J lists a (principalWindow om lo hi hlo hs negative height) X Y R y‖))≤
+      C*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+        (SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-saving) := by
+  obtain ⟨s,C,hC,hbound⟩ := global_parent_tail_aggregate_rapid Jmax Lcap tau (saving+Lcap) hLcap htau
+  refine ⟨s,C,hC,?_⟩
+  intro ι σ _ _ p hp _ hg hinj hcop hc Jo hJo extra pool source negative Ψ m w slots lists a
+    hslots ha hΨ hw om lo hi hlo hs X M Y Z height kappa eta R hkappa hX hhi hZ hY hscale hy hyi hXcap
+    hsource hextra hb₁ hb₂ hactive hcommon hquot hR
+  have hz : 0<Z := zero_lt_one.trans_le hZ
+  have hh := hbound p hp hg hinj hcop hc Jo hJo extra pool source negative Ψ m w slots lists a
+    hslots ha hΨ hw om lo hi hlo hs X M Y Z height R hX hhi hZ hY hscale hy hyi hXcap
+    hsource hextra hb₁ hb₂ hactive hcommon hquot hR
+  have he : Z^kappa*Real.exp ((9/2:ℝ)*(eta*Real.log Z))=Z^(kappa+(9/2:ℝ)*eta) := by
+    rw [Real.rpow_add hz,Real.rpow_def_of_pos hz ((9/2:ℝ)*eta)]
+    congr 2
+    ring
+  have hP : Z^kappa*Real.exp ((9/2:ℝ)*(eta*Real.log Z))≤ Z^Lcap := by
+    rw [he]
+    exact Real.rpow_le_rpow_of_exponent_le hZ hkappa
+  apply (mul_le_mul_of_nonneg_left hh (by positivity)).trans
+  calc
+    _ ≤ Z^Lcap*(C*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+      (SchwartzMap.seminorm ℝ 0 0 om)^2*Z^(-(saving+Lcap))) :=
+      mul_le_mul_of_nonneg_right hP (by positivity)
+    _ = _ := by
+      have he₂ : Z^Lcap*Z^(-(saving+Lcap))=Z^(-saving) := by
+        rw [←Real.rpow_add hz]
+        congr 1
+        ring
+      calc
+        _ = C*(4:ℝ)^slots.card*(s.sup (schwartzSeminormFamily ℝ ℝ ℂ) rowMajorant)*
+          (SchwartzMap.seminorm ℝ 0 0 om)^2*(Z^Lcap*Z^(-(saving+Lcap))) := by ring
+        _ = _ := by rw [he₂]
+
+end InverseMomentGlobalPriorityTail
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic
+open InverseInitialArithmetic InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseWholePriorityValidSource InverseWholePriorityRetainedSource RayFourExpansion
+open InverseMomentWholePriorityPhysical InversePrioritySecondSource InverseSecondPrincipalCaller
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "Eis"=>Eisenstein.O
+variable {ι σ:Type*} [DecidableEq ι] [DecidableEq σ] {Jo:ℕ}
+variable (p:ι→Eis) [∀i,(Ideal.span {p i}).IsMaximal]
+  (hg:∀i,lambda∉Ideal.span {p i})
+
+theorem global_priority_slice_full_tail
+    (hp:∀i,p i≠0) (hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (Eis⧸Ideal.span {p i})≠2)
+    (hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι) (pool:Finset ι)
+    (original:Finset (Source ι Jo)) (w:Source ι Jo→ℂ) (negative:Bool) (Ψ:Eis→*ℂ) (m:Eis)
+    (ray:RayCharacter×RayCharacter) (core:FirstCoreIndex)
+    (slots assigned:Finset σ) (lists:σ→Finset ι) (a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ)) (lo hi:ℝ) (hlo:0<lo) (hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ) (hX:0<X) (hY:0<Y) (R:Finset ι→Finset ι→ℝ):
+    let V:=principalWindow om lo hi hlo hs negative t
+    let Ψ₀:=firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
+    let parents:=wholeAssignedParents p (fun x=>extra x.cube) original negative assigned lists
+    let source:=unifiedSource p pool parents (fun _=>R)
+    ‖∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      parentPoisson p hp hg hinj pool negative Ψ m slots assigned (fun i=>lists i\extra x.cube) a om X t Y ray core (parent p x)‖≤
+    (∑x∈original,‖globalPriorityOuter p hg negative Ψ m ray core w x‖*
+      ‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*
+      ‖priorityZeroParent p hg extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p x)‖)+
+    ‖∑z:SecondRayIndex,(Y:ℂ)*secondRayCoefficient z * ∑x∈source,
+      globalPriorityWeight p hg negative Ψ m ray core w assigned a x *
+        wholeRow p hp hcop hg extra pool negative Ψ₀ m slots assigned lists a V X Y z x‖+
+    ‖∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      priorityTailParent p hg hp hinj extra pool negative Ψ₀ m slots assigned lists a V X Y R (parent p x)‖ := by
+  intro V Ψ₀ parents source
+  rw [global_priority_signed_branches p hg hp hcop hinj hc hpr extra pool original w negative
+    Ψ m ray core slots assigned lists a om lo hi hlo hs X t Y hX hY R]
+  have hn (H:Source ι Jo→ℂ):
+      ‖∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+        (‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*H x‖≤
+      ∑x∈original,‖globalPriorityOuter p hg negative Ψ m ray core w x‖*
+        ‖primeMark assigned lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2*‖H x‖:=by
+    apply (norm_sum_le _ _).trans
+    apply Finset.sum_le_sum
+    intro x hx
+    rw [norm_mul,norm_mul,Complex.norm_real,Real.norm_of_nonneg (sq_nonneg _)]
+  exact (norm_add_le _ _).trans (add_le_add ((norm_add_le _ _).trans (add_le_add (hn _) (le_refl _))) (le_refl _))
+
+end InverseMoment
+
+end
+
+noncomputable section
+namespace InverseMoment
+open InverseInitialRayAttachment Eisenstein SchwartzPlanePoisson FirstPassCubeLabels SecondPassArithmetic RayFourExpansion
+open InverseSecondPrincipalCaller InversePrioritySecondSource InverseFirstPriorityParents InverseMomentWholePriorityParents
+open InverseWholePriorityRetainedSource InverseMomentGlobalPriorityTail
+open InverseInitialRayAttachment InverseFirstRayAttachment
+local notation "O"=>Eisenstein.O
+variable {ι σ:Type}[DecidableEq ι][DecidableEq σ]{Jo:ℕ}
+variable (p:ι→O)[∀i,(Ideal.span {p i}).IsMaximal](hg:∀i,lambda∉Ideal.span {p i})
+def globalPriorityOriginalEnergy (hp:∀i,p i≠0)(hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)(original:Finset (Source ι Jo))(w:Source ι Jo→ℂ)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (om:ℝ→ℂ)(X t Y:ℝ):ℝ:=
+  firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+    (∑x∈original,globalPriorityOuter p hg negative Ψ m ray core w x*
+      (‖primeMark J lists a (wholeExtractedSupport (fun x=>extra x.cube) negative x)‖^2:ℝ)*
+      parentPoisson p hp hg hinj pool negative Ψ m slots J (fun i=>lists i\extra x.cube)
+        a om X t Y ray core (parent p x)).re
+
+def globalPriorityTailAggregate (hp:∀i,p i≠0)(hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)(original:Finset (Source ι Jo))(w:Source ι Jo→ℂ)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (V:𝓢(ℝ,ℂ))(X Y:ℝ)(R:Finset ι→Finset ι→ℝ):ℝ:=
+  firstCoreMassBound*(2:ℝ)^slots.card*∑ray:RayCharacter×RayCharacter,∑core:FirstCoreIndex,∑J∈slots.powerset,
+    ‖∑y∈wholeAssignedParents p (fun x=>extra x.cube) original negative J lists,
+      coefficient p J a (globalPriorityOuter p hg negative Ψ m ray core w) y*
+      priorityTailParent p hg hp hinj extra pool negative
+        (firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core)
+        m slots J lists a V X Y R y‖
+
+theorem global_priority_three_branches
+    (hp:∀i,p i≠0)(hcop:Pairwise (Function.onFun IsCoprime (fun i=>Ideal.span {p i})))
+    (hinj:Function.Injective (fun i=>Ideal.span {p i}))
+    (hc:∀i,ringChar (O⧸Ideal.span {p i})≠2)(hpr:∀i,lambda^2∣p i-1)
+    (extra:CubeCoordinates ι→Finset ι)(pool:Finset ι)(original:Finset (Source ι Jo))(w:Source ι Jo→ℂ)
+    (negative:Bool)(Ψ:O→*ℂ)(m:O)(slots:Finset σ)(lists:σ→Finset ι)(a:σ→ι→ℂ)
+    (om:𝓢(ℝ,ℂ))(lo hi:ℝ)(hlo:0<lo)(hs:Function.support om⊆Set.Icc lo hi)
+    (X t Y:ℝ)(hX:0<X)(hY:0<Y)(R:Finset ι→Finset ι→ℝ):
+    let V:=principalWindow om lo hi hlo hs negative t;
+    globalPriorityOriginalEnergy p hg hp hinj extra pool original w negative Ψ m slots lists a om X t Y≤
+      globalPriorityZeroAggregate p hg extra pool original w negative Ψ m slots lists a V X Y R+
+      globalPriorityRetainedAggregate p hg hp hcop extra pool original w negative Ψ m slots lists a V X Y R+
+      globalPriorityTailAggregate p hg hp hinj extra pool original w negative Ψ m slots lists a V X Y R:=by
+  have hmass := firstCoreMassBound_nonneg
+  dsimp only
+  unfold globalPriorityOriginalEnergy globalPriorityZeroAggregate globalPriorityRetainedAggregate globalPriorityTailAggregate
+  rw [←mul_add,←mul_add]
+  simp only [←Finset.sum_add_distrib]
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  apply Finset.sum_le_sum
+  intro ray hray
+  apply Finset.sum_le_sum
+  intro core hcore
+  apply Finset.sum_le_sum
+  intro J hJ
+  have hb:=global_priority_slice_full_tail p hg hp hcop hinj hc hpr extra pool original w negative Ψ m
+    ray core slots J lists a om lo hi hlo hs X t Y hX hY R
+  dsimp only at hb
+  rw [original_paired_tail p hg hp hinj]
+  exact (Complex.re_le_norm _).trans hb
+end InverseMoment
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

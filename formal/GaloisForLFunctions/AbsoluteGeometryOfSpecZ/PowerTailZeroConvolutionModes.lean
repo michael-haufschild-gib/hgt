@@ -97,7 +97,8 @@ theorem powerTailZeroConvolutionMode_decomposition {a : ℝ} {N : ℕ} (hN : 1 �
           ((cpowPartialSum ((q.1 : ℂ) + (a : ℂ)) N -
             ((N : ℝ) : ℂ) ^ (1 - ((q.1 : ℂ) + (a : ℂ))) /
               (1 - ((q.1 : ℂ) + (a : ℂ))) - riemannZeta ((q.1 : ℂ) + (a : ℂ))) /
-            ((q.1 : ℂ) - (a : ℂ))) := by ring
+            ((q.1 : ℂ) - (a : ℂ))) := by
+      simp [div_eq_mul_inv] <;> ring
     _ = _ := by rw [hcancel]
 
 /-- Summing the normalized mode errors costs only the number of retained

@@ -40,6 +40,8 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheKummerRelationsOfTheZeroWidths
 
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheArithmeticClassesOfAdditiveZeroRelations
 
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheIntegralZeroMotive
+
 /-!
 # Galois theory of zeros
 

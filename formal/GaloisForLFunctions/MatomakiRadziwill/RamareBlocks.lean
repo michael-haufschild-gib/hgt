@@ -98,7 +98,7 @@ theorem mul_lt_of_mem_cof {rest : ℕ → Prop} [DecidablePred rest] {X : ℕ} {
       _ = 4 * X * Real.exp (1 / H) := by rw [← h, mul_one]
   push_cast
   rw [← hkey]
-  calc (p : ℝ) * m < Real.exp (((blk H p : ℝ) + 1) / H) * m := mul_lt_mul_of_pos_right hpe hm0
+  calc (p : ℝ) * m < Real.exp (((blk H p : ℝ) + 1) / H) * m := by nlinarith [hpe, hm0]
     _ ≤ Real.exp (((blk H p : ℝ) + 1) / H) * (4 * cofLo X H (blk H p)) :=
         mul_le_mul_of_nonneg_left hm.2.1 (Real.exp_pos _).le
 
@@ -125,9 +125,8 @@ theorem div_mem_cof {rest : ℕ → Prop} [DecidablePred rest] {Pr : Finset ℕ}
     rw [show ((blk H p : ℝ) + 1) / H = 1 / H + (blk H p : ℝ) / H by ring, Real.exp_add] at hstep
     have h1 : (X : ℝ) < Real.exp ((blk H p : ℝ) / H) * k := by
       have he1 := Real.exp_pos (1 / H)
-      have := (mul_lt_mul_left he1).mp (by linarith [hstep] :
-        Real.exp (1 / H) * X < Real.exp (1 / H) * (Real.exp ((blk H p : ℝ) / H) * k))
-      exact this
+      exact lt_of_mul_lt_mul_left (by linarith [hstep] :
+        Real.exp (1 / H) * X < Real.exp (1 / H) * (Real.exp ((blk H p : ℝ) / H) * k)) he1.le
     rw [cofLo, show -(blk H p : ℝ) / H = -((blk H p : ℝ) / H) by ring, Real.exp_neg]
     rw [← div_eq_mul_inv, div_lt_iff₀ he]
     linarith

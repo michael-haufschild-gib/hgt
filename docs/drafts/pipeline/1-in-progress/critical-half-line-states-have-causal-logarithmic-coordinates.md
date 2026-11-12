@@ -1,12 +1,12 @@
 # Critical half-line states have causal logarithmic coordinates
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Target:** B104; establish the form domain of the actual critical state.
 - **Statement:** Every `IsCriticalHalfLineGroundState W₀ F` has absolutely
   integrable full Gamma energy. The L² class of `t ↦ F(-t)` belongs to
   `HasLogarithmicEnergy`, hence to the range of `logarithmicCausalOperator`.
-- **Status:** Unproved. No polar-charge or weak Euler equation claimed.
+- **Status:** Full Gamma, logarithmic energy and causal-coordinate proofs written in Lean; unchecked. No polar-charge or weak Euler equation claimed.
 
 The ground-state definition bounds `lowGammaForm F T` uniformly for all
 large cutoffs. Put `C=10+log 4`. The proved global inequality
@@ -20,11 +20,12 @@ bounded positive window integrals. Apply
 constant term to obtain full Gamma integrability. No smoothness or compact
 support of F is required.
 
-The lower bound `log(2+|r|)≤gammaBracket(r)+10+log 4`, together with
-Plancherel, should then pay the actual logarithmic graph norm.
-Reflection matches the positive-half-line support and the Fourier sign.
-`hasLogarithmicEnergy_iff_mem_range` supplies the causal coordinates once
-that norm is finite.
+The exact reference symbol is `Ψ(r)=1+(1/2)log(1+r²)`, bounded by
+`1+log(2+|r|)≤1+gammaBracket(r)+C`. Thus Gamma integrability and Plancherel
+should pay its full graph norm. For `g(t)=F(-t)`, the Fourier convention is
+`𝓕g(ξ)=paperFT(F)(2πξ)`; the existing classical/L² Fourier bridge transfers
+this identity to the actual L² class. Reflection gives positive-half-line
+support. `hasLogarithmicEnergy_iff_mem_range` then supplies causal coordinates.
 
 Corpus inputs:
 - `ArithmeticHodgeTheoryOfDegenerations/HalfLinePolarThresholdAndGroundStateOrthogonality`:
@@ -38,3 +39,9 @@ Corpus inputs:
 The remaining B104 obstacle is the full variational equation and its
 relation to `exp(-u/2) terminalPolarKernel u`. Causal coordinates alone
 give no sign for the state or its polar pairing.
+
+Lean candidate: `ArithmeticHodgeTheoryOfDegenerations/TheCriticalHalfLineStateHasCausalCoordinates.lean`,
+with `integrable_gamma_of_criticalHalfLineGroundState`,
+`integrable_logarithmic_energy_of_criticalHalfLineGroundState`, and
+`exists_causal_coordinates_of_criticalHalfLineGroundState`.
+The existing ground-state dependency requires its first olean.

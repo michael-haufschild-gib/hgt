@@ -128,7 +128,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 ## Log
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
-- 2026-11-12 — M9–M22 proved and formalized
+- 2026-11-12 — M9–M24 proved and formalized
 
 ## The neutral part (M9, M10)
 
@@ -191,6 +191,10 @@ A supersolution cannot certify a window on which the neutral part has a negative
   `log R ≥ E_Q + C_Q²/ε + μ`
 - [x] M22 index: at most `J` negative squares on every refinement once `log R ≥ E_Q`; at most
   `(Q − 1)⌈e^{E_Q}⌉` at every block size
+- [x] M23 on a window `(R, R + J]` with `4J ≤ R` the block matrix is negative off the diagonal;
+  its ground vector has one sign and is charged, at every block size
+- [x] M24 gluing: two forms with one negative square each, coupled through minus the product of
+  their charges, have one negative square together iff `αβ ≥ 1`, two iff `αβ < 1`
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -357,6 +361,38 @@ Lean: `…/TheStepPacketMatricesOfARatioAreDecidedOnCoarseBlocks.lean` (`rowExce
 `hermNegIndex_blockWindow_mono`, `hermNegIndex_blockWindow_le_uniform`,
 `hermNegIndex_blockWindow_ratioFour_le`).
 
+**M23.** `D(n)` the second difference of `n log n`, `d(n) = log(1 + 1/n)`. *`D(n) ≥ d(n)`:*
+`D(n) − d(n) = n log((n+1)/n) − (n−1) log(n/(n−1))` for `n ≥ 2`, and
+`log((n+1)/n) = log((1/n)·1 + ((n−1)/n)·(n/(n−1))) ≥ ((n−1)/n) log(n/(n−1))` by concavity;
+`D(1) = 2 log 2 ≥ log 2`. *Entries:* for `R ≤ a < b < R + J`,
+`m(a, b) = d(a) + d(b) − J(a, b) − C(a, b)`, `C ≥ 0`,
+`J(a, b) = ½(D(a+b+1) + D(b−a)) ≥ ½ d(b−a) ≥ 1/(2(b−a+1)) ≥ 1/(2J)` and
+`d(a) + d(b) ≤ 1/a + 1/b < 2/R ≤ 1/(2J)` when `4J ≤ R`. So `m(a, b) < 0`. *Ground vector:* for
+a symmetric matrix that is negative off the diagonal, `|σ_j||σ_l| m_{jl} ≤ σ_jσ_l m_{jl}`
+termwise, strictly at a pair of entries of opposite signs; so a minimiser among the vectors of
+its length has one sign, and then `Σσ_j` and `Σσ_j d(R+j)` have that sign (`d > 0`).
+
+**M24.** `A`, `B` real symmetric, `A ≥ 0` on `u·x = 0`, `B ≥ 0` on `v·y = 0`, `Aa = u`, `Bb = v`,
+`α = u·a`, `β = v·b`. For `x₀ = cx − sa`: `A(x₀) = c²A(x) − 2cs(u·x) + s²α` (symmetry and
+`Aa = u`), and `u·x₀ = c(u·x) − sα`. Glued form `G(x, y) = A(x) + B(y) − 2(u·x)(v·y)`.
+*`αβ ≥ 1`, `β < 0`:* then `α < 0`. On the hyperplane `u·x = α t`, `t = v·y`: with
+`x₀ = x − ta` and `y₀ = βy − tb` (both without charge),
+`β²G = β²A(x₀) + B(y₀) + β(1 − αβ)t² ≥ 0`; so at most one negative square, and `G(a, 0) = α < 0`.
+*`αβ < 1`, `α, β < 0`:* `G(sa, tb) = αs² − 2αβst + βt²` has the determinant `αβ(1 − αβ) > 0`
+and `α < 0`: negative on a plane; and `G = A(x) + B(y) ≥ 0` where both charges vanish: exactly
+two.
+
+Lean: `…/TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged.lean`
+(`blockDegree_le_xLogXDiff`, `blockMatrix_neg_of_narrow`, `sum_kernel_abs_lt`,
+`kernel_minimizer_one_sign`, `blockMatrix_minimizer_one_sign`,
+`charges_mul_pos_of_blockMatrix_minimizer`);
+`…/TwoWindowsCoupledThroughTheirChargesHoldOneBoundStateIffTheirSusceptibilitiesMultiplyToAtLeastOne.lean`
+(`chargeOf`, `bilin_sub_smul`, `glued`, `bilin_glued`, `glued_nonneg_of_charge_eq`,
+`hermNegIndex_glued_eq_one`, `hermNegIndex_glued_eq_two`).
+
 Open: positivity of the block matrix on windows of ratio above `103/50` on all step packets,
 without RH; by M21 it is, with a margin, a statement about one matrix, at a scale `R` with
 `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀`. The constants `N₀`, `κ` of M19 are not explicit.
+The ground vector of the block matrix on windows with `4J > R`: the matrix has entries of both
+signs off the diagonal. The gluing of two actual windows: their coupling is minus the product
+of the charges only in the mean; the difference is the fluctuation of the contacts.

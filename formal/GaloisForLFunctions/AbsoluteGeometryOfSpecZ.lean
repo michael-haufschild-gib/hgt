@@ -109,6 +109,11 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightRemaindersHaveC
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZetaMultiplierBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZeroTraceIsAbsolutelySummable
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZeroPrefixHasAUniformRemainder
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZeroConvolutionModes
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightZeroCutoffs
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightZeroConvolutionTails
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactsSplitIntoRightTraceAndRemainder
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRightTraceCutoffsHaveTheirLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanProfile
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerTailJetMesh
@@ -190,6 +195,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralFormOfANumberRingHa
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBlockMatricesOfEveryRatioAreNonnegativeOnThinStepPackets
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheStepPacketMatricesOfARatioAreDecidedOnCoarseBlocks
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsOfANumberRingAreItsPointCountsOverTheFiniteFields
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoWindowsCoupledThroughTheirChargesHoldOneBoundStateIffTheirSusceptibilitiesMultiplyToAtLeastOne
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -251,6 +258,8 @@ index law at finite scale: the block matrices carry the zeros right of the line 
 part one square more, the pole; the sign of the block matrices of every ratio on thin step
 packets; and the coarse blocks of a ratio, which carry the index at every block size and decide
 the margin of every refinement; and the contacts of a number ring as its point counts over the
-finite fields, with the relative square of two number rings at finite scale. See
+finite fields, with the relative square of two number rings at finite scale; the ground vector
+of the block matrix of a narrow window, of one sign and charged; and the gluing of two forms
+with one negative square each through the product of their charges. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/

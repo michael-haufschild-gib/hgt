@@ -138,6 +138,10 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `TwistedChebyshevBound` | `‖Σ_{n≤N} χ(n)Λ(n)n^{-iτ}‖ ≤ N/(log X)^A`, `log N ≥ (log X)^θ` | compiled |
 | `PrimeBlockRouteT` | `‖Σ_{P<p≤2P} χ(p)p^{-1-iτ}‖ ≤ (log X)^{-A}` | compiled |
 | `LadderMeanValue` | moment computation `∫\|Q^ℓ C\|²` for arbitrary bounded prime coefficients | compiled |
+| `RamareDecomposition` | `ω_Pr`; `Σ_{p∣n} 1/(ω(n/p)+1) ≤ 1`, `= 1` if `ω(n) ≥ 1` and `p² ∤ n` | compiled |
+| `RamareBlocks` | blocks `⌊H log p⌋`, cofactor ranges; interior `n` see every factorisation | compiled |
+| `RamareBlockError` | error coefficients `≤ 2/n`, vanish off boundary and squareful `n` | compiled |
+| `RamareBlockMVT` | step 2: `∫\|Σ_{n∈S} f(n)/n n^{2πiw} − Σ_p Σ_m a(p)c(m)(pm)^{2πiw}\|² ≤ (5πW/2+20eX)(4/X²)(10X/H+16X/P)` | compiled |
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery

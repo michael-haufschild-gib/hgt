@@ -66,17 +66,19 @@ bound with `powerCombTailConverges_excludes_boundary_zeros`.
 - `PowerTailRightRemaindersHaveConvergentMeshes`;
 - `PowerTailZetaMultiplierBound`;
 - `PowerTailZeroTraceIsAbsolutelySummable`;
-- `PowerTailZeroPrefixHasAUniformRemainder`.
+- `PowerTailZeroPrefixHasAUniformRemainder`;
+- `PowerTailZeroConvolutionModes`;
+- `PowerTailRightZeroCutoffs`;
+- `PowerTailRightZeroConvolutionTails`;
+- `PowerContactsSplitIntoRightTraceAndRemainder`;
+- `PowerTailRightTraceCutoffsHaveTheirLimit`.
 
 Required oleans and umbrella imports are present for these inputs.
 
 ## Written chain awaiting checks
 
 All in `AbsoluteGeometryOfSpecZ`:
-- Finite modes: `PowerTailZeroConvolutionModes`.
-- Complete exterior: `PowerTailRightZeroCutoffs`, `PowerTailRightZeroConvolutionTails`.
-- Main-part limit: `PowerTailRightTraceCutoffsHaveTheirLimit`, `TheRightZeroConvolutionHasItsLimit`.
-- Arithmetic bridge: `PowerContactsSplitIntoRightTraceAndRemainder`.
+- Full convolution limit: `TheRightZeroConvolutionHasItsLimit`.
 - Final classifier: `PowerCombConvergenceHasTheExactPointwiseBoundary`, theorem `powerCombTailConverges_iff_forall_zero_re_lt`.
 
 The critical case `a=1/2` is excluded: the right-substrip density deficit

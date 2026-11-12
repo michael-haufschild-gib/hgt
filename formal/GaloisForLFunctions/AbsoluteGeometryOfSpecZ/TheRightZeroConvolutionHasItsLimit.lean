@@ -43,7 +43,7 @@ theorem exists_power_bound_rightZeroConvolution_sub_main {a σ : ℝ}
       2 * (1 + Real.log N) * (C * (N : ℝ) ^ (p - 1)) :=
     (norm_powerTailRightZeroConvolution_sub_finite_le ha ha1 hσ hβ hN F).trans
       (mul_le_mul_of_nonneg_left hc.2 (by positivity))
-  have hmode := norm_sum_powerTailZeroConvolutionMode_sub_main_le hN F
+  have hmode := norm_sum_powerTailZeroConvolutionMode_sub_main_le (a := a) hN F
     (fun q hq => ⟨by linarith only [hσ, hF q hq, ha],
       by linarith only [hβ q]⟩)
   rw [← powerTailFiniteRightZeroConvolution_eq_sum_modes a σ N F hF] at hmode

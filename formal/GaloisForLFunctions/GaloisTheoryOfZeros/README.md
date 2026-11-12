@@ -407,6 +407,55 @@ independence of the ordinates or widths.
 
 [Arithmetic classes of additive relations](TheArithmeticClassesOfAdditiveZeroRelations.lean).
 
+### Integral zero motive and its central weight
+
+Let `Γ` be the integer span of all centered zeros inside `L`. It retains
+exactly their additive relations. The full source Galois group acts
+faithfully on `Γ` and fixes its ordinate projection. Let `T,B⊆ℝ` be the
+ordinate and width images, and `Γ⁺,Γ⁻` the pure real and imaginary subgroups.
+
+The common coordinate gluing group is
+
+```
+Q = Γ/(Γ⁺+Γ⁻) ≅ T/T₀ ≅ B/B₀,
+```
+
+where `T₀` and `B₀` consist of coordinates realized with the other coordinate
+zero. The group `Γ` is exactly the fibre product of `T` and `B` over these
+identified quotients. Moreover `2Q=0`: the integral elements `z+conj(z)`
+and `z−conj(z)` separate `2z` into its real and imaginary parts.
+The gluing group can be infinite; its vanishing is not assumed.
+
+For a group `H`, write `H^∨=Hom(H,ℂˣ)`. Divisibility of `ℂˣ` gives the exact
+sequence of complex character groups
+
+```
+1 → Q^∨ → T^∨ × B^∨ → Γ^∨ → 1.
+```
+
+The kernel consists uniquely of opposite characters of the common gluing
+quotient and is killed by two. Conjugation fixes the ordinate character
+factor and inverts the width factor. The normalized exponential flow has
+the canonical lift `exp(iut) exp(−ub)`; prime time is `u=log p`.
+
+Centering requires an additional integral correction. For the integer span
+`Δ` of the original zeros `ρ`, functional-equation pairing gives `1∈Δ`, and
+
+```
+A = Δ + (1/2)ℤ = (1/2)ℤ + iΓ.
+```
+
+The quotient `A/Δ` is cyclic and killed by two. Every character of `Δ`
+extends to `A`; its extension is determined by its value `h` on `1/2`,
+with `h²=χ(1)`. Thus there are at most two central extensions. The canonical
+flow satisfies `exp(uρ)=exp(u/2) exp(iuw)` at every original zero.
+This restores the original motive without treating centering as an integral
+coordinate change.
+
+The actual coordinate relations, gluing group, and membership of `1/2`
+in `Δ` remain undetermined.
+[Integral zero motive](TheIntegralZeroMotive.lean).
+
 ### Euclidean topology and arithmetic action
 
 Give `L` its inherited complex topology while keeping the Krull topology on
