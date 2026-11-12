@@ -13,7 +13,7 @@ Folder: `formal/GaloisForLFunctions/MatomakiRadziwill/` (top level, umbrella `Ma
 
 | Phase | Content | Status |
 |---|---|---|
-| V | Vinogradov–Korobov zero-free region for `L(s,χ)` | open |
+| V | Vinogradov–Korobov zero-free region for `L(s,χ)` | **Lean** (`LFunction_ne_zero_vinogradovKorobov`) |
 | RT | Route T for `χ`: `Σ_{p∈B} χ(p)p^{-it}` small for high blocks `B`, `\|t\| ≤ X` | open |
 | D | low frequencies: `sup_{\|t\|≤T₀} \|Σ_{n≤x} λχ(n)n^{-it}\| = o(x)` | open |
 | L | the ladder: Ramaré, mean value, large values, Halász–Montgomery, rough class | open |
@@ -38,11 +38,15 @@ Folder: `formal/GaloisForLFunctions/MatomakiRadziwill/` (top level, umbrella `Ma
 
 ### RT. Route T for `χ`
 
-Partial summation of the explicit formula for `ψ(u,χ)` (A59, uniform constants) against `u^{-it}`:
-for `y ≤ y' ≤ 2y`, `|t| ≤ X`,
-`Σ_{y<n≤y'} χ(n)Λ(n)n^{-it} = −Σ_{|γ|≤T₁} (y'^{ρ−it} − y^{ρ−it})/(ρ − it) + O(·)`,
-and the zeros contribute `≪ y^{1−w(T₁)} log² T₁`. With `log y ≥ (log X)^{a}`, `a > 2/3`, the saving
-`exp(−(log X)^{a − 2/3 − ε})` beats every power of `log X`.
+`χ ≠ 1`, `|τ| ≤ 2X`, `x ∈ [y, 2y]`, `log y ≥ (log X)^{0.9}`. With `c_n = χ(n)Λ(n)n^{-iτ}`, truncated
+Perron at `σ₀ = 1 + 1/log x`, height `T₁ = (log X)^{A+3}` (`Sieve.norm_tsum_lt_sub_perron_integral_le`):
+`Σ_{n<x} c_n = (1/2π)∫_{−T₁}^{T₁} F(σ₀+it) x^{σ₀+it}/(σ₀+it) dt + O(x log²x / T₁)`,
+`F(s) = −L'/L(s+iτ, χ)`. `F` is analytic on `[1 − w/2, σ₀] × [−T₁, T₁]` (`w = ε(2X)`: no zeros there by
+`exists_LFunction_ne_zero_vinogradovKorobov_width` at heights `τ ± T₁`, and for low heights the fixed
+zero-free neighbourhood of `Re s = 1`); the rectangle theorem moves the segment to `Re s = 1 − w/2`,
+where `|F| ≤ B = C(log X)^{5/3}` (Landau's lemma with the growth bound and the zero-free disc). Then
+`|Σ_{n<x} c_n| ≤ x^{1−w/2} B log T₁ + x·B/T₁·(1/...) + O(x log² x/T₁)`, and `x^{−w/2} ≤ exp(−(log X)^{0.2})`.
+Differences `x = y, y'` give the blocks; partial summation against `1/(n log n)` gives `Σ_{p∈B} χ(p)p^{-1-iτ}`.
 
 ### L. Ladder (outline)
 
@@ -57,6 +61,13 @@ Halász–Montgomery for `R` (diagonal) times RT for the high-range `Q`.
 
 | Module | Content | Status |
 |---|---|---|
+| `ShiftedVinogradov` | `R(t,y,Q)` at real `y`; shift average for `(n+α)^{it}`; Vinogradov on dyadic blocks | compiled |
+| `ShiftedPhaseBlocks` | `k`-th derivative test from the start point `N+α`; weighted blocks; saving at the classical scale | compiled |
+| `HurwitzGrowth` | middle/large Hurwitz blocks; `‖Σ_{k≤K}(k+α)^{-σ-iτ}‖ ≤ C log τ`, `K ≤ 2τ²` | compiled |
+| `LFunctionGrowth` | residues of `[1,qT]`; `‖L(σ+iτ,χ)‖ ≤ (q³+56q+qC) log τ` | compiled |
+| `LFunctionThreeFourOne` | 3-4-1 for `−L'/L`; pole via `−ζ'/ζ`; `1/(1+1/δ) ≤ ‖L(1+δ+iy,ψ)‖ ≤ 1+1/δ` | compiled |
+| `LFunctionDLVP` | `4/(1+δ−β) ≤ 3/δ + 3A + (80/R)(log Φ + log(1+1/δ))` | compiled |
+| `LFunctionZeroFree` | disc growth for every `ψ` mod `q`; zero-free region, width `ε(γ)` | compiled |
 
 ## Log
 - 2026-11-12 — created; architecture after surveying the corpus μ-ladder (`Sieve.MoebiusHeadWindowAllLengths`, Route T via ζ).

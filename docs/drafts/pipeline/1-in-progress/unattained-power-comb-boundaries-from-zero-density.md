@@ -58,9 +58,9 @@ Choosing σ close enough to β should also absorb the zeta multiplier.
 
 The remaining arithmetic remainder has exponent strictly below `1-2a`.
 Its convolution becomes a Riemann sum with an integrable power envelope.
-The existing `tendsto_tailRiemannSum_of_powerBound` assumes continuity;
-the contact remainder has jumps at reciprocal integers. That extension,
-and the exact assembly remain unproved.
+The contact remainder has jumps at reciprocal integers. The needed
+cutoff extension is now Lean-verified in `PowerTailRiemannSumsAcrossJumps`;
+the exact arithmetic assembly remains unproved.
 
 ## Substrip moment input
 
@@ -71,7 +71,7 @@ The moment bounds the low count by `S Y^p` and the reciprocal tail by
 `S Y^(p−1)`, since each low atom costs at least `Y^-p` and each high
 reciprocal costs at most `Y^(p−1)|γ|^-p`.
 
-Lean input written, verification pending:
+Lean input verified; required olean and umbrella import present:
 `ZeroConfigurationGeometry/TheRightSubstripsHaveSubunitMoments`,
 `exists_rightSubstrip_power_tail_and_count`.
 
@@ -81,6 +81,12 @@ cutoffs and bounds their full omitted reciprocal mass.
 `|ψ(x)−x+x^β Re rightTrace(σ,β,x)|≤C x^κ`, `σ<κ<β`, using
 `κ=max((p+1)/8, β+(p−1)/8, (β+σ)/2)`.
 Both are unverified. No gap below β is assumed.
+
+`ThePrimeRightTraceHasAGlobalPowerRemainder` writes the same bound on all
+of `[1,∞)`. The initial interval costs a finite prime prefix and the full
+reciprocal zero mass. `TheRightSubstripTraceIsContinuous` gives continuity
+of the normalized trace on that half-line; together these supply relative
+measurability for weighted integration. Both await verification.
 
 ## Uniform multiplier input
 
@@ -108,6 +114,14 @@ For the missing weighted identity, finite Abel summation gives
 The compact reciprocal majorant permits integrating the retained zero
 trace termwise. Since `σ<κ<β` and `σ>1/2>a`, its remainder becomes
 `O(x^(κ-a))`. After harmonic convolution the mesh envelope is
-`t^(-(a+κ))`, with `a+κ<1`. Right meshes `ceil(Nt)/N≥t` preserve this
-integrable envelope, giving a dominated-convergence route through the
-reciprocal-integer jumps. Those two identities are not yet formalized.
+`t^(-(a+κ))`, with `a+κ<1`. On every positive cutoff the arithmetic part
+has convergent meshes and the trace is continuous. The existing cutoff
+criterion extends their difference through the reciprocal-integer jumps.
+
+`PowerTailWeightedPrimeAbel` writes the exact finite Abel identity for the
+literal weighted prime-deviation prefix; verification is pending.
+`PowerTailRiemannSumsAcrossJumps` is Lean-verified and wired into the umbrella:
+`riemannOn_arithmeticPowerProfile_sub_continuous` uses the existing cutoff
+criterion for an arithmetic staircase minus a continuous trace, without
+requiring either summand to be integrable separately. Termwise zero
+integration and the arithmetic contact-trace identity remain open.

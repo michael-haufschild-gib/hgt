@@ -27,7 +27,9 @@ theorem analyticAt_criticalPowerContactFactor :
       (differentiableAt_riemannZeta
         (by simpa only [mem_compl_iff, mem_singleton_iff] using hz)).differentiableWithinAt
     exact (hd.analyticOnNhd isOpen_compl_singleton) _ (by norm_num)
-  have hB := (hζan.deriv.neg.div hζan hζ).sub hζan
+  have hB : AnalyticAt ℂ
+      (fun z : ℂ => -deriv riemannZeta z / riemannZeta z - riemannZeta z)
+      (1 / 2) := (hζan.deriv.neg.div hζan hζ).sub hζan
   have hh : AnalyticAt ℂ
       (fun z : ℂ => -deriv riemannZeta z / riemannZeta z - riemannZeta z)
       ((fun s : ℂ => s + 1 / 2) 0) := by
@@ -66,7 +68,7 @@ theorem criticalPowerContactRegularPart_eq {s : ℂ} (hs : s ≠ 0) :
   have hd : s * dslope criticalPowerContactFactor 0 s =
       criticalPowerContactFactor s - criticalPowerContactFactor 0 := by
     simpa only [sub_zero, smul_eq_mul] using
-      (sub_smul_dslope criticalPowerContactFactor 0 s).symm
+      (sub_smul_dslope criticalPowerContactFactor 0 s)
   rw [criticalPowerContactRegularPart, _root_.RHTower.zetaResidueUnit,
     Function.update_of_ne hs1, add_sub_cancel_right,
     criticalPowerContactCoefficient_eq_realResidue, ← hd]

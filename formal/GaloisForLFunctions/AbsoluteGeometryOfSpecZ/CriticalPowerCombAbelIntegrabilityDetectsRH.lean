@@ -32,7 +32,7 @@ theorem not_logarithmicAbelIntegrable_criticalPowerComb_of_right_zero
     (by simpa using differentiableOn_criticalContactIntegral_of_abelIntegrable hc)
     (fun s hs => by simpa [criticalPowerContactFactor] using
       oneSidedStepMellin_criticalPowerContacts_initial hs) hzero
-  simpa using hre
+  linarith only [hre]
 
 /-- Every positive absolute logarithmic Abel integral of the critical
 literal comb exists exactly under RH. -/

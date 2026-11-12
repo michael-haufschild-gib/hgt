@@ -229,6 +229,58 @@ Completing the square supplies such a nonbase generator for every quadratic
 intermediate field. If all widths vanish, `L=K` instead.
 [Biquadratic classification](TheBiquadraticDiagramOfTheZeroField.lean).
 
+The quadratic width extension has an intrinsic arithmetic class. Every
+nonzero `δ_q²` represents the same `ω∈E×/(E×)²`; set `ω=1` when all
+widths vanish. Every automorphism of `E/K` fixes `ω`, and
+
+```
+ω=1 ⇔ F=E,
+Gal(F/K) → Gal(E/K) splits continuously ⇔ ω comes from K×/(K×)².
+```
+
+For a nonzero anchor, descent means `δ_q²=a u²`, with `a∈K×` and
+`u∈E×`. Fixing `δ_q/u` gives the continuous section. Conversely, the
+closed image of a section cuts out a quadratic field over `K`, disjoint
+from `E`; its square-root generator gives the descent witness. Infinite
+Galois correspondence controls this argument on the entire fields.
+Invariance is established, but actual descent remains open.
+[Global width square class and descent](TheDescentOfTheGlobalWidthSquareClass.lean).
+
+Source norms impose an arithmetic restriction on failure of descent. For a
+nonzero width put `d=δ_q²`, `D=K(d)`, and `n=[D:K]`. The exact identity is
+
+```
+[Norm_(D/K)(d)] = ω^n   in E×/(E×)².
+```
+
+Every embedding of `D` into `E` extends to a source automorphism of `E`,
+so all norm factors have class `ω`. An odd `n` therefore supplies an
+explicit source representative and a continuous section of the entire
+width restriction. Otherwise, failure of splitting forces every nonzero
+squared-width degree to be even and every signed-width degree to be
+divisible by four: `K(δ_q)/K(δ_q²)` is then quadratic. No actual source
+degree has been proved odd, and even degrees do not imply non-descent.
+[Source norms and degree obstructions](TheSourceNormsOfTheZeroWidthSquares.lean).
+
+Complete multiplicity blocks also produce arithmetic sign characters. For
+`B=B_(t,m)` and `r=#B`, define the source product and offset radical
+
+```
+a = ∏_(p∈B) δ_p² ∈ K×,     b = ∏_(p∈B) (w_p−conj(w_p))/2 ∈ L×.
+```
+
+Multiplying the independent pair signs gives a continuous character
+`χ_(t,m):Gal(L/K)→{±1}` with `σ(b)=χ_(t,m)(σ)b`,
+`b²=(−1)^r a`, and `χ_(t,m)(c_L)=(−1)^r`. Its kernel fixes exactly
+`K(b)`, an extension of degree one or two, and degree two for odd `r`.
+The complete product descends because every source automorphism permutes
+its squared-width factors. Its class is `[a]=ω^r`. Hence any odd block
+splits the entire width restriction continuously; nonsplitting forces even
+pair counts in every ordinate and analytic-multiplicity block. No actual
+odd block is known from these arguments, and even counts do not imply
+nonsplitting.
+[Arithmetic block characters and their fixed fields](TheArithmeticSignsOfTheZeroFibres.lean).
+
 Functional-equation reflection on the original zeros lifts to a source-field
 automorphism precisely when `i∉L`, equivalently when `−1` is not a square
 in `L`; its lift `ι` is unique. Preservation of nonzero ordinates forces that

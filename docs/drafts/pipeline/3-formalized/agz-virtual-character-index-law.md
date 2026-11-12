@@ -17,6 +17,8 @@
 - [x] V4 cancellation to a disjoint pair
 - [x] V5 the law; quotients of products; the relative square of two number rings
 - [ ] V6 Brauer's theorem and the identification of induced characters with Hecke characters
+- [x] V7 zeros minus poles: the neutral form of `ℤ` and of every number ring has index one plus
+  the number of zeros right of the line
   (classical; not in the corpus): the law for every Artin character
 
 ## Paper proof
@@ -56,6 +58,19 @@ tempered (dominated by `A`, `B`), disjoint, and `W_A − W_B = W_P − W_N` term
 **V5.** V1–V4. For families: the superposition has the sum of the multiplicities and the sum of
 the forms.
 
+**V7.** The configuration `B = {0, 1}` with multiplicity one is closed under `ρ ↦ 1 − ρ̄` and
+lies in the closed strip; `γ_0 = i/2`, `γ_1 = −i/2`, so
+`W_B(f, g) = h_f(i/2) conj h_g(−i/2) + h_f(−i/2) conj h_g(i/2)`, on a real packet twice the
+product of the two charges. For a tempered `A` with `1 ∉ A` (then `0 ∉ A`): the defect points
+of `A − B` are the points of `A` right of the line and the point `1` (net multiplicity `−1`);
+no point on the line has negative net multiplicity. By V5 the index of `W_A − W_B` is
+`1 + #{points of A right of the line}`, and it is `≤ 1` on every family iff `A` has no point
+right of the line. `1 ∉ A` for the zeros of `ζ` (`Re ρ < 1`). For a number field `K`: right of
+`1` the completed Dedekind zeta function with its poles cleared is
+`s (s − 1) · (discriminant factor) · (Gamma factor) · ζ_K(s)`; it is continuous, so its value
+at `1` is the limit from the right, `(discriminant factor)(1) · (Gamma factor)(1) · res`, and
+none of the three vanishes (class number formula).
+
 ## Lean
 
 Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
@@ -64,6 +79,9 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 |---|---|---|
 | V1–V5 | `TheIndexOfAVirtualConfigurationCountsItsZerosAndItsPoles` | `lineZeros`, `pairDefect`, `negIndex_sub_zeroGram_le` (V1); `pairUnion`, `temperedConfig_pairUnion`, `signOf`, `twist`, `norm_twist`, `twist_single`, `sub_W_eq_inner` (V2); `hermQuad_le_of_near_diag`, `exists_sub_zeroGram_negIndex_ge` (V3); `extMult`, `netPart`, `disjoint_netPart`, `temperedConfig_netPart`, `sub_W_eq_netPart`, `pairDefect_netPart` (V4); `virtualDefect`, `negIndex_sub_zeroGram_le_virtualDefect`, `exists_le_negIndex_sub_zeroGram_iff`, `forall_negIndex_sub_zeroGram_eq_zero_iff` (V5) |
 | V5 | `TheIndexOfAQuotientOfLFunctionsCountsItsZerosAndItsPoles` | `extMult_superposeFamily`, `exists_le_negIndex_quotient_iff`, `mem_virtualDefect_superposeFamily`, `exists_le_negIndex_relativeSquare_iff`, `forall_negIndex_relativeSquare_eq_zero_iff` |
+
+| V7 | `TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles` | `poleConfig`, `poleConfig_W`, `poleConfig_W_ofReal`, `virtualDefect_poleConfig`, `exists_le_negIndex_sub_poleConfig_iff`, `rightZeros_eq_empty_iff_forall_negIndex_sub_poleConfig_le_one`, `exists_le_negIndex_neutralGram_iff`, `riemannHypothesis_iff_forall_negIndex_neutralGram_le_one` |
+| V7 | `TheNeutralFormOfANumberRingHasTheIndexOfItsZetaFunctionPlusOne` | `heckeXi_trivialModulus_one_ne_zero`, `one_notMem_dedekindZeros`, `exists_le_negIndex_dedekind_sub_poleConfig_iff`, `forall_negIndex_dedekind_sub_poleConfig_le_one_iff` |
 
 ## Open
 
@@ -75,4 +93,4 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
   `Σ n_i Re Λ_{ψ_i}`): follows from the Hecke case by linearity; not stated.
 
 ## Log
-- 2026-11-12 — proved and formalized (V1–V5)
+- 2026-11-12 — proved and formalized (V1–V5, V7)

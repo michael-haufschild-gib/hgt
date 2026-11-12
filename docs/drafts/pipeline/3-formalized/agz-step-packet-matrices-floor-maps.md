@@ -127,7 +127,7 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 ## Log
 - 2026-11-11 — proved and formalized (M1–M5)
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
-- 2026-11-12 — M9–M16 proved and formalized
+- 2026-11-12 — M9–M19 proved and formalized
 
 ## The neutral part (M9, M10)
 
@@ -169,7 +169,7 @@ Lean: `…/TheGroundVectorOfTheNeutralPartHasOneSignAndIsCharged.lean` (`blockDe
 
 A supersolution cannot certify a window on which the neutral part has a negative square.
 
-## The signature of the neutral part (M12–M16)
+## The signature of the neutral part (M12–M19)
 
 - [x] M12 margin `1/5000` on every window of ratio at most `103/50`, at every block size
 - [x] M13 the neutral part is invariant under refinement; on the dyadic window it is negative
@@ -179,6 +179,11 @@ A supersolution cannot certify a window on which the neutral part has a negative
   the number of zeros right of the line; RH iff at most one negative square on smooth tests
 - [x] M16 finite scale: RH iff the neutral part of every window with `R ≤ J` has exactly one
   negative square
+- [x] M17 the pole adds one negative square: for every window there is a window `(1, 2M]` whose
+  neutral part has one negative square more than the block matrix of the first
+- [x] M18 index law at finite scale: block matrices `#{zeros right of the line}`, neutral part
+  one more
+- [x] M19 at every ratio the block matrices are nonnegative on thin step packets
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -209,7 +214,10 @@ squares of `W_A − W_B` is the number of points right of the line with differen
 multiplicities plus the points on the line where `B` exceeds `A`. For `A` the zeros and
 `B = {0, 1}`: the zeros right of the line and the point `1` (`0 < Re ρ < 1` for a zero; `0`
 is left of the line). So the index is `1 + #{zeros right of the line}`, and it is `≤ 1` on
-every family iff RH.
+every family iff RH. On smooth tests `W_ζ − W_poles` is the archimedean-minus-prime energy of
+the corpus (`markovEnergy`), and the criterion is its one-bound-state law
+(`RHTower.riemannHypothesis_iff_not_exists_negDef_markovPlane`); the count of the squares and
+the step-packet side (M12–M14, M16–M18) are what this card adds.
 
 Lean: `…/TheBlockMatricesOfShortWindowsArePositiveAtEveryBlockSize.lean`
 (`groundEnergy_mul_nested_mass_le_packetForm_of_log_lt`, `log_window_lt`,
@@ -221,8 +229,9 @@ Lean: `…/TheBlockMatricesOfShortWindowsArePositiveAtEveryBlockSize.lean`
 `hermNegIndex_neutralWindow_le_blockWindow_add_one`, `one_le_hermNegIndex_neutralWindow`,
 `hermNegIndex_neutralWindow_eq_one`, `hermNegIndex_neutralWindow_eq_one_of_riemannHypothesis`);
 `…/TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles.lean` (`poleConfig`, `poleConfig_W`,
-`poleConfig_W_ofReal`, `neutralForm`, `neutralForm_eq_re_sub`, `neutralForm_stepPacket`,
-`virtualDefect_zeta_poleConfig`, `exists_le_negIndex_neutralGram_iff`,
+`poleConfig_W_ofReal`, `neutralForm`, `neutralForm_eq_re_sub`, `neutralForm_eq_markovEnergy`,
+`neutralForm_stepPacket`,
+`virtualDefect_poleConfig`, `exists_le_negIndex_sub_poleConfig_iff`, `exists_le_negIndex_neutralGram_iff`,
 `riemannHypothesis_iff_forall_negIndex_neutralGram_le_one`).
 
 **M16.** Let `σ` be a step packet on the blocks of `(R, R + J]` with `m(σ) = N(σ) + 2c₀c₁ < 0`,
@@ -258,4 +267,52 @@ Lean: `…/TheNeutralPartOfABlockAndAFarWindowIsMinusTheProductOfTheirCharges.le
 `exists_two_le_hermNegIndex_neutralWindow`,
 `riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one`).
 
-Open: positivity of the block matrix on windows of ratio above `103/50` without RH.
+**M17.** For `x = (σ, t)`, `σ` on the blocks of `(R, R + J]`, put
+`Φ(x) = u₁(σ) − c₁(σ)u₂ − (c₀(σ)/ℓ)u₃ + t(u₂ + u₃)` on the blocks of `(1, 2M]` (the vectors of
+M16). `Φ` is linear: the refinement is linear in `σ`, and `c₁`, `c₀` are linear. By the Gram
+identity of M16, `N(Φx)` is an explicit function of `x`, `L`, `M`, and for each `x` it tends
+(first `M → ∞`, then `L → ∞`) to `m(σ) − 2ℓt²`, the form of `m ⊕ (−2ℓ)`. The Gram matrix `G`
+of `N` on the frame `Φ(e_a)` is symmetric, so it is the polarization of `x ↦ N(Φx)`:
+`G_{ab} = (q(e_a + e_b) − q(e_a) − q(e_b))/2`. Hence `G` converges entrywise to `m ⊕ (−2ℓ)`.
+The negative index is lower semicontinuous for entrywise convergence to a Hermitian matrix,
+`ind(m ⊕ (−2ℓ)) ≥ ind(m) + 1`, and a Gram matrix has at most the index of the form.
+
+**M18.** Block matrices. Upper bound: the form of the block matrix on block values is the form
+of the nested Gram matrix on the nested coefficients, and bounded packets have at most
+`#{zeros right of the line}` negative squares. Attainment: the robust index of the comb counts
+the zeros right of the line, and a robust negative direction of the comb survives the block
+means as a negative step packet (both HodgeTheoryOfAFixedPart), a linear map into the block
+values. Neutral part: `ind N ≤ ind m + 1` on one window (M14), and M17.
+
+Lean: `…/ThePoleAddsOneNegativeSquareToTheBlockMatrixOfAWindow.lean` (`bilin`, `polar`,
+`polar_bilin`, `tendsto_polar`, `hermNegIndex_gram_le`, `poleFrame`, `sum_poleFrame`,
+`poleGram`, `bilin_poleGram_eq`, `poleLimit`, `tendsto_bilin_poleGram`, `tendsto_frameLimit`,
+`exists_hermNegIndex_blockWindow_add_one_le`);
+`…/TheIndexOfTheNeutralPartIsOnePlusTheNumberOfZerosRightOfTheLine.lean`
+(`hermNegIndex_blockWindow_le_rightZeros`, `exists_le_hermNegIndex_blockWindow`,
+`exists_le_hermNegIndex_blockWindow_iff`, `exists_le_hermNegIndex_neutralWindow_iff`).
+
+**M19.** At block size `B`, on the blocks of `(B, (N+1)B]`, a step function is thin of width
+`c` if it vanishes off the blocks `nB + ρ`, `ρ < c`. Its packet, moved back by `log B`, is
+supported in `⋃_{n ≤ N} (log n, log n + log(1 + c/B)]`: the block `nB + ρ` is
+`(log(nB + ρ), log(nB + ρ + 1)]` and `(nB + c)/(nB) ≤ 1 + c/B`. Smoothing by a bump of radius
+`r` and moving right by `r` gives a `C²` test supported in
+`⋃ [log n, log n + log(1 + c/B) + 2r]`. Corpus (ArithmeticLorentzianGeometry): there are `N₀`
+and `κ > 0` such that for `N ≥ N₀` Weil's form is nonnegative on every `C²` test supported
+within `κ log(1 + 1/N)` to the right of the logarithms of the integers up to `N`. Weil's form
+is invariant under translation and continuous under smoothing on bounded packets of finite jump
+energy, so `𝔚_Q ≥ 0`, `Q ≥ N + 1`, on thin step packets with
+`log(1 + c/B) < κ log(1 + 1/N)`. A window of smaller ratio `K + 1` is covered by the zero
+extension to the ratio `max(N₀, K) + 1`; the form of a step packet does not depend on the
+cutoff beyond the ratio of its window (both values are the limit of the forms of the smoothed
+packets). So for every `K ≥ 1` there is `η > 0` with `𝔚_{K+1} ≥ 0` on the thin step packets of
+`(B, (K+1)B]`, `log(1 + c/B) < η`; `K = 3` is `𝔚_4`.
+
+Lean: `…/TheBlockMatricesOfEveryRatioAreNonnegativeOnThinStepPackets.lean` (`IsThinStep`,
+`exists_abs_lt_of_mollify_ne_zero`, `thin_block_bounds`,
+`exists_forall_packetForm_thin_stepPacket_nonneg`, `packetForm_stepPacket_eq_of_le`,
+`exists_forall_packetForm_thin_stepPacket_nonneg_ratio`,
+`exists_forall_sum_blockMatrix_thin_nonneg`).
+
+Open: positivity of the block matrix on windows of ratio above `103/50` on all step packets,
+without RH; the constants `N₀`, `κ` of M19 are not explicit.

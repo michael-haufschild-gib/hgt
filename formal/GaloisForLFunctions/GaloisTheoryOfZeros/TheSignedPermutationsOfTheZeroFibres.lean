@@ -346,6 +346,14 @@ def fibrePairEquiv (t : ℝ) (m : ℕ) :
   Equiv.ofBijective (fibrePairRoot t m)
     ⟨fibrePairRoot_injective t m,fibrePairRoot_surjective t m⟩
 
+/-- Positive sign selects the positive-imaginary representative of a conjugate pair. -/
+theorem fibrePairEquiv_pos (t : ℝ) (m : ℕ) (p : FibrePositivePairs t m) :
+    (fibrePairEquiv t m (p,1)).val = p.val := fibrePairRoot_pos t m p
+
+/-- Negative sign selects the conjugate of the positive-imaginary representative. -/
+theorem fibrePairEquiv_neg (t : ℝ) (m : ℕ) (p : FibrePositivePairs t m) :
+    (fibrePairEquiv t m (p,-1)).val = fibreConjugation t p.val := fibrePairRoot_neg t m p
+
 /-- The common sign flip corresponds to complex conjugation on each analytic block. -/
 theorem fibrePairEquiv_flip (t : ℝ) (m : ℕ) (p : FibrePositivePairs t m × ℤˣ) :
     (fibrePairEquiv t m (FibreSignedPerm.pairFlip _ p)).val =
@@ -397,7 +405,8 @@ def fibrePairPermutation (t : ℝ) (m : ℕ) :
     fibreDivisorSymmetries t →* Equiv.Perm (FibrePositivePairs t m × ℤˣ) :=
   (permutationTransport (fibrePairEquiv t m).symm).comp (fibreBlockAction t m)
 
-private theorem fibrePairPermutation_value (t : ℝ) (m : ℕ)
+/-- The permutation in pair coordinates reproduces the action on roots. -/
+theorem fibrePairPermutation_value (t : ℝ) (m : ℕ)
     (π : fibreDivisorSymmetries t) (p : FibrePositivePairs t m × ℤˣ) :
     (fibrePairEquiv t m (fibrePairPermutation t m π p)).val =
       π.val (fibrePairEquiv t m p).val := by

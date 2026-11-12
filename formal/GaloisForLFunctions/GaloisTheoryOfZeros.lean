@@ -26,6 +26,12 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheHeightTowerOfTheZeroField
 
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheSignedPermutationsOfTheZeroFibres
 
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheDescentOfTheGlobalWidthSquareClass
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheSourceNormsOfTheZeroWidthSquares
+
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheArithmeticSignsOfTheZeroFibres
+
 /-!
 # Galois theory of zeros
 

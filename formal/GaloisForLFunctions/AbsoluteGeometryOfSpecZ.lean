@@ -102,6 +102,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArithmeticGrowth
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailReferenceRemainder
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRiemannSums
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailRiemannSumsAcrossJumps
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanProfile
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailArchimedeanLimit
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerTailJetMesh
@@ -118,6 +119,10 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailPrefixQuantitativeFi
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerTailReferenceFinitePart
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerCombConvergencePaysHarmonicContacts
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactCoefficientIsTheRealResidue
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactSymbolIsRegularAtZero
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactAbelIntegrability
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactAbelMean
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerCombAbelIntegrabilityDetectsRH
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactMellin
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.CriticalPowerContactDirichletSymbol
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ContactSymbolsContinueAcrossZeros
@@ -173,6 +178,14 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartOfAWindowOfRati
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartIsWeilsFormOfTheZerosMinusThePoles
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralPartOfABlockAndAFarWindowIsMinusTheProductOfTheirCharges
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsOneNegativeSquareOfTheNeutralPartOfEveryWindow
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePoleAddsOneNegativeSquareToTheBlockMatrixOfAWindow
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheIndexOfTheNeutralPartIsOnePlusTheNumberOfZerosRightOfTheLine
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheNeutralFormOfANumberRingHasTheIndexOfItsZetaFunctionPlusOne
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBlockMatricesOfEveryRatioAreNonnegativeOnThinStepPackets
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombAbelIntegrabilityDetectsTheZeroWidth
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -225,8 +238,9 @@ path of positive forms; Weil's form on step packets as the product of the two ch
 potential and the Dirichlet form of the jets and the floor maps, with a neutral part that is
 Lorentzian on the first step packets; the margin of the block matrices of ratio at most
 `103/50` at every block size; the neutral part as Weil's form of the zeros minus the poles; and
-the Riemann hypothesis as one negative square of the neutral part of every window. See
+the Riemann hypothesis as one negative square of the neutral part of every window, with the
+index law at finite scale: the block matrices carry the zeros right of the line and the neutral
+part one square more, the pole; and the sign of the block matrices of every ratio on thin step
+packets. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability

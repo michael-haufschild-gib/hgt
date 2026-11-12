@@ -33,7 +33,7 @@ each to a named residual; a producer for AAL or ZAL is the success criterion.
 ## Questions and state
 | # | Question | State |
 |---|---|---|
-| Q2 | B183: integer norms, a count rate, one non-real pair of fake zeros and no real fake zero | Theorem A in Lean at every exponent `β > ½` (unconditional). Below `√x`: Theorem B, not done (needs a two-sided selection with discrepancy at every frequency and the Perron analysis of the corpus's deletion fakes with signed weights; conditional on a zero-free half-plane like `exists_integerNormFakeAt_lt_half_of_zeroFree`) |
+| Q2 | B183: integer norms, a count rate, one non-real pair of fake zeros and no real fake zero | Theorem A in Lean at every exponent `β > ½` (unconditional). Below `√x`: Theorem J′ in Lean (unbalanced edits have a real zero on top; only `κ₊ = κ₋` remains); the balanced case is Theorem B, not done (needs a two-sided selection with discrepancy at every frequency and the Perron analysis of the corpus's deletion fakes with signed weights; conditional on a zero-free half-plane like `exists_integerNormFakeAt_lt_half_of_zeroFree`) |
 | Q2′ | Which edits can have a non-real top | Balance law in Lean (Theorem C); at every height above the count exponent: Theorem J in Lean (a count below `max(κ₊, κ₋)` forces `κ₊ = κ₋` or `ζ_B(κ₋) = 0`) |
 | Q1 | B145 / B170: AAL | open; no producer |
 | Q3 | B141: `¬AAL ⇒ ZAL` | open for `ζ`; model side answered: Theorem D in Lean (an edit of the rational primes with a count rate, an isolated pair on top and an infinite tail that does not approach the line) |
@@ -63,6 +63,11 @@ each to a named residual; a producer for AAL or ZAL is the success criterion.
 | `EveryConfigurationThatApproachesTheLineIsRealized` | Theorem G: `landingTarget`, `landingTail`, `IsLayerTwinOn`, `IsLandingTwin`; gluing of half-planes (`exists_glue`) |
 | `TheTailOfZetaBeyondACutoff` | `zetaCut N` (entire), `norm_zetaCut_le`, `cutTarget`, `lseriesHasSum_cutTarget`, the balanced cutoff `norm_zetaCut_sq_le` |
 | `ACountBelowTheDeletionExponentIsARealZero` | Theorem J: `countDefect`, `exists_continuation_of_count`, `differentiableOn_editRem_of_summable`, `zero_at_expo_minus_of_count`, `balance_or_zero_of_count`, `zero_of_delete_only_of_count` |
+| `AFakeZeroOnTheTopLineCostsLogarithmicDensity` | Theorem M: `primeSum`, `exists_log_le_primeSum_add`, `exists_half_log_le_primeSum`, `exists_half_log_le_primeSum_edit` |
+| `AFakeBelowItsTopIsBalancedOrHasARealTop` | `balance_or_real_top`, `balance_or_real_top_of_fake`: the B183 dichotomy below `√x` |
+| `TwinsContinuePastTheLine` | Theorem K: `IsFactorTwinOn c`, `isFactorTwinOn_gedit`, `isFactorTwinOn_edit`, `exists_continuation_not_symmetric`, `exists_isEdit_layerTwinOn` |
+| `InfinitelyManyStrictFakeZerosOnALine` | `ζ` is not identically zero on a vertical segment; heights chosen in `[(j+1)^A, (j+1)^A + 1]` off the zeros of `ζ`; an integer-norm fake with infinitely many strict fake zeros on a line |
+| `AFiniteLayerCanBeEditedAway` | Theorem L: `logDeriv_fun_inv`, `exists_isEdit_layer_removed`, `zero_iff_of_layer_removed`, `exists_isEdit_zero_free_of_finite_layer` |
 | `EverySparseConfigurationIsRealized` | `IsFactorTwin`, `isFactorTwin_gedit` (general: any target of size `k^{−η}` with a factor), `IsSparseConfig`, Theorem G′, vertical line and rising points |
 
 Module 2 holds the general greedy edit `gedit m` with the drift criterion (`abs_gdisc_le`,
@@ -204,6 +209,20 @@ Upper bounds go through `M_u(y) = Σ_{d≤y} u(d)`: hyperbola gives `β ≤ θ/(
   smooth model (target mass on all integers) has super-polynomial growth at resonant heights;
   the edit, a sparse prime sum, does not inherit it.
 
+- Integer-matched targets (Theorems A, E, G, G′) have `exp E = C·L·e^{K}` with
+  `E ≈ −𝒵(s+1−ρ) − 𝒵(s+1−ρ̄)`, `𝒵(w) = Σ_{k≥2} k^{−w}/log k = ∫_w^∞(ζ−1)`. Left of `Re ρ` the
+  real part of `𝒵` takes values of the size of large values of `ζ` (`exp(c(log t)^{1−σ})`,
+  heuristically with both signs), so `e^{−𝒵}` is not polynomially bounded: these twins should
+  have count exponent exactly `Re ρ`. A count below `Re ρ` needs a prime-matched target (the
+  firewall `1/(ζ(s+1−ρ)ζ(s+1−ρ̄))`), hence a zero-free half-plane of `ζ`.
+- The corpus has the selection with square-root discrepancy at every frequency, one-sided:
+  `RHTower.BeurlingDeletion.exists_deletedPrimes` / `DeletionData α`
+  (`|Σ_{p≤x}(1_S(p) − p^{α−1})p^{−it}| ≤ Cx^{α/2}(log x+1)√log(|t|+2)`), and its Perron analysis
+  under a zero-free half-plane (`isIntegerNormFakeAt_keptPrimeSystem_of_deletionData`). The
+  two-sided analogue with means `−2 Re p^{ρ−1}` would give B183 below `√x` under the same
+  hypothesis; unconditionally it gives nothing below `Re ρ`.
+- By Theorem J′ only exactly balanced edits remain.
+
 ## Theorem G (every configuration that approaches the line) — in Lean
 `exists_isEdit_landingTwin`, `exists_isEdit_fake_with_landing`: `ρ_j = σ_j + iγ_j`, `σ_j` antitone,
 `½ < σ_j`, `σ_0 < 14/15`, `inf σ_j = ½`; no condition on `γ_j`; repetitions allowed. For every
@@ -291,15 +310,78 @@ Open: `β ≥ κ₋/2`? (delete-only: `N(x) = Σ_d μ_S(d)⌊x/d⌋`).
 4. `balance_or_zero_of_count`: `β < max(κ₊, κ₋)` ⇒ `κ₊ ≤ κ₋` (Theorem H) and (`κ₊ = κ₋` or
    `G(κ₋) = 0`). Delete-only: `β < κ₋` ⇒ `ζ_B(κ₋) = 0`.
 
+5. `exists_order_of_count` (integer density): under `max(κ₊, β) < κ₋ = κ`, `G` is analytic at
+   `κ`, not identically zero (`ζ_B(2) ≠ 0`), so `G = (s−κ)^m g`, `g(κ) ≠ 0`, `m ≥ 1`; with
+   `u(κ) ≠ 0` (corpus `RHTower.zetaResidueUnit_ofReal_ne_zero`, all `t > 0`) and `D₊`, `Q`
+   analytic at `κ`: `exp(−D₋(s)) = (s−κ)^m W(s)`, `W = g/(u e^{D₊+Q})`, for `Re s > κ` near `κ`.
+   On the real axis `Σ_{p deleted} p^{−σ} = m log(1/(σ−κ)) − log W(σ)`.
+
 Reading: an edit beats its thickness in the count only at balance or with Landau's zero; for
-delete-only edits "deletions are paid in full, or the deleted primes imitate a zero". Valid for
+delete-only edits "deletions are paid in full, or the deleted primes imitate a zero": they have
+the logarithmic density of `m` copies of the primes at scale `κ₋`, `m ∈ ℕ`, `m ≥ 1`. Valid for
 `κ₋ ≤ ½` too.
+
+## Theorem J′ (B183 dichotomy) — in Lean
+`balance_or_real_top`: count `Ax + O(x^β)`, a continuation `G` to `Re s > ½` with a fake zero
+`ρ₀`, `β < Re ρ₀`. Thickness: `Re ρ₀ ≤ max(κ₊, κ₋)`, so `β < max(κ₊, κ₋)`. Theorem H excludes
+`κ₊ > κ₋`. If `κ₊ < κ₋`: `κ₋ ≥ Re ρ₀ > ½`, the count continuation vanishes at `κ₋` (Theorem J) and
+agrees with `G` right of `max(β, ½)`; thickness bounds every fake zero by `κ₋`. So
+`κ₊ = κ₋`, or a real zero on top. `balance_or_real_top_of_fake`: every fake with `β ≤ ½`.
+
+Reading for B183: a fake below `√x` with a non-real top and no real zero exists only at exact
+balance of the two exponents. "If it does not exist, a count rate forces a real zero on top" is
+proved for all unbalanced edits.
+
+## Theorem M (a fake zero on the top line costs logarithmic density) — in Lean
+`G` a continuation to `Re s > ½`, `ρ` a zero with `ζ(ρ) ≠ 0`, `κ = Re ρ`, both sets summable
+right of `κ`; `P_T(σ) = Σ_{p∈T}p^{−σ}`.
+1. `exists_log_le_primeSum_add`: `P₊(σ) + P₋(σ) ≥ log(1/(σ−κ)) − C` as `σ ↓ κ`. At
+   `s = ρ + (σ−κ)`: `|G(s)| ≤ M(σ−κ)` (first-order zero), `G = u e^{Q} · e^{D₊−D₋}`,
+   `|u e^{Q}| ≥ c` near `ρ`, `Re(D₊−D₋)(s) ≥ −(P₊+P₋)(σ)`.
+2. `exists_half_log_le_primeSum`: if `G(κ) ≠ 0`, then on the real axis
+   `|G(σ)| = |u e^{Q}|(σ) e^{P₊−P₋}` with both moduli bounded above and below, so `P₊ − P₋ = O(1)`
+   and each of `P₊`, `P₋` is `≥ ½ log(1/(σ−κ)) − C`.
+3. `exists_half_log_le_primeSum_edit`: the greedy edit at a non-real `ρ`, `ζ(ρ) ≠ 0`.
+
+Reading: the balance law on the logarithmic scale. With Theorem J: a deletion-heavy edit that
+beats its thickness has integer density `m`; a balanced edit with a non-real top has density at
+least `½` on each side. (The greedy edit has `2/π` on each side, heuristically.)
+
+## Theorem K (twins continue past the line) — in Lean
+For a target `|m(k)| ≤ Ak^{−η}`, `0 < η < 1`, `m(0) = 0`, and `max(17/30 − η, (1−η)/2) < c ≤ 1`:
+if `L′/L = −Σ mk^{−s} − Φ₀` on `Re s > 1` with `Φ₀` holomorphic on `Re s > c`, then
+`(s−1)ζ_B = (s−1)ζ · C · L · e^{H}` with `H` holomorphic on `Re s > c` (`isFactorTwinOn_gedit`).
+Proof: prime window exponent `α` with `17/30 < α < 1`, `α − η ≤ c` gives discrepancy `O(n^c)`;
+the mass `O(n^{1−η})` makes the edit summable at `2c > 1 − η`, so `Q` is holomorphic on
+`Re s > c` (Theorem J, part 2).
+- Pair twin (`η = 1 − Re ρ`): `Re s > max(Re ρ − 13/30, Re ρ/2)`; contains the line for
+  `Re ρ < 14/15`.
+- `exists_continuation_not_symmetric`: `½ < Re ρ < 2/3`, `c = ½ − Re ρ/4 < 1 − Re ρ`:
+  `G(ρ) = 0`, `G(1−ρ̄) = u(1−ρ̄)·C·(1−2Re ρ)(1−2ρ̄)·e^{H} ≠ 0` if `ζ(1−ρ̄) ≠ 0`.
+- `exists_isEdit_layerTwinOn`: every finite layer with `Re ρ_j ≤ b < 1`.
+
+Reading: `ζ_B` of a pair twin is holomorphic on `Re s > Re ρ/2` apart from the pole; a count
+below `√x` fails for lack of a growth bound, not for a singularity. The twin has no reflection.
+
+## Theorem L (a finite layer can be edited away) — in Lean
+The greedy edit of `−layerTarget` is a twin with the factor `1/L` on `Re s > c`
+(`c > max(b − 13/30, b/2)`): `(s−1)ζ_B · L = (s−1)ζ · C e^{H}` (`exists_isEdit_layer_removed`;
+`(1/L)′/(1/L) = −L′/L`). For a continuation `G` of `(s−1)ζ_B` to `Re s > c`: `G·L = u·C e^{H}`
+there, so `ζ = 0` on the layer and off the layer `G = 0 ⇔ ζ = 0` (`zero_iff_of_layer_removed`).
+If `u = L·W` with `W` holomorphic and zero-free on `Re s > c` (the zeros of `ζ` right of `c` are
+exactly the layer), then `G = W·C e^{H}` is zero-free: an edit of the rational primes with a
+count rate and a larger zero-free half-plane than `ζ` (`exists_isEdit_zero_free_of_finite_layer`).
+
+Reading: world I ⇒ `ζ` is not extremal among its edits. "No edit with a count rate has a larger
+zero-free half-plane than `ζ`" ⇒ AAL (for tops below `1`); it is a statement relative to `ζ`, and
+no edit law decides it: `NO PRODUCER`.
 
 ## Next conjectures
 - C-a: a density law or a dense model: fake zeros of an edit with count exponent `β` in
   `Re s ≥ σ`, between `T^{2(1−σ)}` (realized without structure) and `T log T` (half-scale tail).
 - C-b: the count exponent of a pair twin (between the floor and `Re ρ`).
-- C-c: infinitely many strict fake zeros in the tail (zero count).
+- C-c: done for sparse tails (`exists_isEdit_fake_with_strict_zeros_on_a_line`); for the
+  half-scale tail of Theorem D it still needs a zero count.
 - C-d: a count floor for integer-norm systems that are not thin edits.
 
 ## Log
@@ -313,3 +395,11 @@ delete-only edits "deletions are paid in full, or the deleted primes imitate a z
 - 2026-11-12 — Theorem G′ (sparse configurations, canonical product; world II models) in Lean
   (17 modules).
 - 2026-11-12 — Theorem J (count continuation, Landau's zero from the count) in Lean (18 modules).
+- 2026-11-12 — Theorem K (twins continue past the line, no reflection, layers below 1) in Lean
+  (19 modules).
+- 2026-11-12 — Theorem L (a finite layer can be edited away) in Lean (20 modules).
+- 2026-11-12 — infinitely many strict fake zeros on a line in Lean (21 modules).
+- 2026-11-12 — integer density (`exists_order_of_count`) and the B183 dichotomy below `√x`
+  (Theorem J′) in Lean (22 modules); README consolidated.
+- 2026-11-12 — Theorem M (logarithmic density of the edited primes at a top fake zero) in Lean
+  (23 modules).

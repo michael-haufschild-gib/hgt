@@ -39,7 +39,7 @@ variable {ι : Type*}
 /-- The logarithmic derivative of the inverse of a function. -/
 theorem logDeriv_fun_inv {L : ℂ → ℂ} {s : ℂ} (h0 : L s ≠ 0) (hd : DifferentiableAt ℂ L s) :
     logDeriv (fun z => (L z)⁻¹) s = -logDeriv L s := by
-  have h := hd.hasDerivAt.inv h0
+  have h : HasDerivAt (fun z => (L z)⁻¹) (-deriv L s / L s ^ 2) s := hd.hasDerivAt.inv h0
   rw [logDeriv_apply, logDeriv_apply, h.deriv, div_div, pow_two, mul_assoc,
     mul_inv_cancel₀ h0, mul_one, neg_div]
 
@@ -101,12 +101,17 @@ theorem zero_iff_of_layer_removed {B : BeurlingSystem} (J : Finset ι) (ρ : ι 
     (hz1 : z ≠ 1) :
     (layerFactor J ρ z = 0 → riemannZeta z = 0) ∧
       (layerFactor J ρ z ≠ 0 → (G z = 0 ↔ riemannZeta z = 0)) := by
-  have heq := BalanceLaw.eqOn_halfPlane (c := c)
-    (hG.mul (differentiable_layerFactor J ρ).differentiableOn)
-    (differentiable_zetaResidueUnit.differentiableOn.mul
-      ((differentiableOn_const C).mul hH.cexp))
-    (fun s hs => by rw [hGeq s hs]; exact hfac s hs)
-    (show z ∈ {s : ℂ | c < s.re} from hz)
+  have heq : G z * layerFactor J ρ z = zetaResidueUnit z * (C * Complex.exp (H z)) :=
+    BalanceLaw.eqOn_halfPlane (c := c) (F₁ := fun s => G s * layerFactor J ρ s)
+      (F₂ := fun s => zetaResidueUnit s * (C * Complex.exp (H s)))
+      (hG.mul (differentiable_layerFactor J ρ).differentiableOn)
+      (differentiable_zetaResidueUnit.differentiableOn.mul
+        ((differentiableOn_const C).mul hH.cexp))
+      (fun s hs => by
+        show G s * layerFactor J ρ s = zetaResidueUnit s * (C * Complex.exp (H s))
+        rw [hGeq s hs]
+        exact hfac s hs)
+      (show z ∈ {s : ℂ | c < s.re} from hz)
   have hE : C * Complex.exp (H z) ≠ 0 := mul_ne_zero hC (Complex.exp_ne_zero _)
   have hu : zetaResidueUnit z = (z - 1) * riemannZeta z := zetaResidueUnit_of_ne hz1
   have hz1' : z - 1 ≠ 0 := sub_ne_zero.mpr hz1

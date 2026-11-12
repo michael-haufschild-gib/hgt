@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.AdditionsArePaidInFull
+import GaloisForLFunctions.RHTower.MertensSquareRootOmega
 
 /-!
 # A count below the exponent of the deleted primes is a real zero
@@ -16,6 +17,11 @@ The balance law of an edit was proved for a given continuation of `(s − 1) ζ_
   `max(κ₊, β) < κ₋`, the continuation vanishes at `κ₋`: right of `κ₋` it is
   `(s − 1) ζ(s) · exp(D₊ − D₋ + Q)`, and `exp D₋` does not continue across `κ₋` unless the
   continuation vanishes there.
+* **Integer density** (`exists_order_of_count`).  The zero has an order `m ≥ 1`, and
+  `exp(−Σ_{p deleted} p^{−s}) = (s − κ₋)^m W(s)` right of `κ₋` near `κ₋`, with `W` analytic and
+  nonzero at `κ₋`.  On the real axis: `Σ_{p deleted} p^{−σ} = m log(1/(σ − κ₋)) + O(1)`.  The
+  deleted primes of an edit whose count beats its thickness have the logarithmic density of `m`
+  copies of the primes at the scale `κ₋`.
 
 **Thickness beaten by the count** (`balance_or_zero_of_count`).  Let `β < max(κ₊, κ₋)`.  Then
 `κ₊ ≤ κ₋` (additions are paid in full), and either `κ₊ = κ₋` or `ζ_B` has a real zero at `κ₋`.
@@ -68,6 +74,22 @@ theorem norm_sum_countDefect_le {B : BeurlingSystem} (h : HasIntegerNorms B) (hd
   exact (hN _ hn1).trans (mul_le_mul_of_nonneg_left
     (Real.rpow_le_rpow (by linarith) (Nat.floor_le (by linarith)) hβ) hC)
 
+/-- A count `A x + O(x^β)` with `β ≤ 1` is linear. -/
+theorem hasLinearCounting_of_count {B : BeurlingSystem} {A C β : ℝ} (hβ1 : β ≤ 1)
+    (hN : ∀ x : ℝ, 1 ≤ x → |(B.countBall x : ℝ) - A * x| ≤ C * x ^ β) :
+    B.HasLinearCounting (|A| + C) := by
+  have hC : 0 ≤ C := by
+    have h1 := (abs_nonneg _).trans (hN 1 le_rfl)
+    rwa [Real.one_rpow, mul_one] at h1
+  intro X hX
+  have h1 := (abs_le.mp (hN X hX)).2
+  have h2 : X ^ β ≤ X := by
+    have h5 := Real.rpow_le_rpow_of_exponent_le hX hβ1
+    rwa [Real.rpow_one] at h5
+  have h3 : A * X ≤ |A| * X := mul_le_mul_of_nonneg_right (le_abs_self A) (by linarith)
+  have h4 : C * X ^ β ≤ C * X := mul_le_mul_of_nonneg_left h2 hC
+  linarith
+
 /-- **The count continues the zeta function.**  An integer-norm system with
 `N(x) = A x + O(x^β)`, `0 ≤ β ≤ 1`, has a holomorphic continuation of `(s − 1) ζ_B(s)` to
 `Re s > β`. -/
@@ -76,20 +98,9 @@ theorem exists_continuation_of_count {B : BeurlingSystem} (h : HasIntegerNorms B
     (hN : ∀ x : ℝ, 1 ≤ x → |(B.countBall x : ℝ) - A * x| ≤ C * x ^ β) :
     ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | β < s.re} ∧
       ∀ s : ℂ, 1 < s.re → G s = (s - 1) * B.zetaSeriesC s := by
-  have hC : 0 ≤ C := by
-    have h1 := (abs_nonneg _).trans (hN 1 le_rfl)
-    rwa [Real.one_rpow, mul_one] at h1
   have hc0 : countDefect B h A 0 = 0 := by simp [countDefect]
   have hgrow := norm_sum_countDefect_le h hd hβ hN
-  have hlin : B.HasLinearCounting (|A| + C) := by
-    intro X hX
-    have h1 := (abs_le.mp (hN X hX)).2
-    have h2 : X ^ β ≤ X := by
-      have h5 := Real.rpow_le_rpow_of_exponent_le hX hβ1
-      rwa [Real.rpow_one] at h5
-    have h3 : A * X ≤ |A| * X := mul_le_mul_of_nonneg_right (le_abs_self A) (by linarith)
-    have h4 : C * X ^ β ≤ C * X := mul_le_mul_of_nonneg_left h2 hC
-    linarith
+  have hlin := hasLinearCounting_of_count hβ1 hN
   refine ⟨fun s => (A : ℂ) * zetaResidueUnit s + (s - 1) * growthCont (countDefect B h A) β s,
     ?_, fun s hs => ?_⟩
   · exact ((differentiableOn_const _).mul differentiable_zetaResidueUnit.differentiableOn).add
@@ -156,15 +167,20 @@ theorem differentiableOn_editRem_of_summable {e : ℕ → ℤ} {θ : ℝ} (hθ :
 
 /-! ## Landau's zero from the count -/
 
-/-- **A count below the exponent of the deleted primes is a real zero.**  If an edit has count
-`A x + O(x^β)` and `max(κ₊, β) < κ₋`, the continuation of `(s − 1) ζ_B(s)` to `Re s > β` vanishes
-at `κ₋`. -/
-theorem zero_at_expo_minus_of_count {e : ℕ → ℤ} (he : IsEdit e) {A C β : ℝ} (hβ : 0 ≤ β)
+/-- **The zero at the exponent of the deleted primes and its order.**  If an edit has count
+`A x + O(x^β)` and `max(κ₊, β) < κ₋`, the continuation `G` of `(s − 1) ζ_B(s)` to `Re s > β`
+vanishes at `κ₋`, and there are `m ≥ 1` and `W`, analytic and nonzero at `κ₋`, with
+`exp(−Σ_{p deleted} p^{−s}) = (s − κ₋)^m W(s)` for `s` near `κ₋`, `Re s > κ₋`. -/
+theorem exists_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {A C β : ℝ} (hβ : 0 ≤ β)
     (hN : ∀ x : ℝ, 1 ≤ x → |((editSystem e).countBall x : ℝ) - A * x| ≤ C * x ^ β)
     (h : max (expo (plusSet e)) β < expo (minusSet e)) :
-    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | β < s.re} ∧
+    ∃ (G : ℂ → ℂ) (m : ℕ) (W : ℂ → ℂ), DifferentiableOn ℂ G {s : ℂ | β < s.re} ∧
       (∀ s : ℂ, 1 < s.re → G s = (s - 1) * (editSystem e).zetaSeriesC s) ∧
-      G ((expo (minusSet e) : ℝ) : ℂ) = 0 := by
+      G ((expo (minusSet e) : ℝ) : ℂ) = 0 ∧ 1 ≤ m ∧
+      AnalyticAt ℂ W ((expo (minusSet e) : ℝ) : ℂ) ∧ W ((expo (minusSet e) : ℝ) : ℂ) ≠ 0 ∧
+      ∀ᶠ s in 𝓝 ((expo (minusSet e) : ℝ) : ℂ), expo (minusSet e) < s.re →
+        cexp (-gdSeries (wt (minusSet e)) freq s) =
+          (s - ((expo (minusSet e) : ℝ) : ℂ)) ^ m * W s := by
   obtain ⟨κ, hκdef⟩ : ∃ κ : ℝ, κ = expo (minusSet e) := ⟨_, rfl⟩
   rw [← hκdef] at h ⊢
   have hκp : expo (plusSet e) < κ := lt_of_le_of_lt (le_max_left _ _) h
@@ -186,13 +202,89 @@ theorem zero_at_expo_minus_of_count {e : ℕ → ℤ} (he : IsEdit e) {A C β : 
   have hsubQ : {s : ℂ | c₀ < s.re} ⊆ {s : ℂ | 3 * κ / 2 / 2 < s.re} :=
     fun z (hz : c₀ < z.re) =>
       show 3 * κ / 2 / 2 < z.re from lt_of_le_of_lt (by rw [hc₀]; exact le_max_right _ _) hz
-  refine ⟨G, hG, hGeq, ?_⟩
-  exact zero_of_minus_heavy he (hG.mono hsubG) hGeq (hQ.mono hsubQ) hc₀κ hκ1
-    (κ' := (expo (plusSet e) + κ) / 2) (by linarith)
-    (summableAt_of_expo_lt (by linarith))
-    (fun σ hσ => summableAt_of_expo_lt (by rw [← hκdef]; exact hσ))
-    (fun σ hσ => not_summableAt_of_lt_expo (by rw [← hκdef]; exact hκ0)
-      (by rw [← hκdef]; exact hσ))
+  have hzero : G (κ : ℂ) = 0 :=
+    zero_of_minus_heavy he (hG.mono hsubG) hGeq (hQ.mono hsubQ) hc₀κ hκ1
+      (κ' := (expo (plusSet e) + κ) / 2) (by linarith)
+      (summableAt_of_expo_lt (by linarith))
+      (fun σ hσ => summableAt_of_expo_lt (by rw [← hκdef]; exact hσ))
+      (fun σ hσ => not_summableAt_of_lt_expo (by rw [← hκdef]; exact hκ0)
+        (by rw [← hκdef]; exact hσ))
+  -- `G` is analytic at `κ` and not identically zero
+  have hUo : IsOpen {s : ℂ | β < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hκmem : (κ : ℂ) ∈ {s : ℂ | β < s.re} := by
+    show β < (κ : ℂ).re
+    rw [Complex.ofReal_re]; exact hκβ
+  have hGan : AnalyticAt ℂ G (κ : ℂ) := hG.analyticAt (hUo.mem_nhds hκmem)
+  have hlin := hasLinearCounting_of_count (B := editSystem e) (by linarith : β ≤ 1) hN
+  have hnot : ¬ ∀ᶠ z in 𝓝 (κ : ℂ), G z = 0 := by
+    intro hev
+    have hglob := (hG.analyticOnNhd hUo).eqOn_zero_of_preconnected_of_eventuallyEq_zero
+      (convex_halfSpace_re_gt β).isPreconnected hκmem hev
+    have h2mem : (2 : ℂ) ∈ {s : ℂ | β < s.re} := by
+      show β < (2 : ℂ).re
+      rw [show (2 : ℂ).re = 2 by norm_num]
+      linarith
+    have h2 : G 2 = 0 := hglob h2mem
+    rw [hGeq 2 (by norm_num)] at h2
+    have h3 := BeurlingSystem.zetaSeriesC_ne_zero (isDiscrete_editSystem e) hlin (s := 2)
+      (by norm_num)
+    rcases mul_eq_zero.mp h2 with h4 | h4
+    · norm_num at h4
+    · exact h3 h4
+  obtain ⟨m, g, hgan, hg0, hgeq⟩ := hGan.exists_eventuallyEq_pow_smul_nonzero_iff.mpr hnot
+  have hm1 : 1 ≤ m := by
+    by_contra hm0
+    have hm0' : m = 0 := by omega
+    have hself := hgeq.self_of_nhds
+    rw [hm0', pow_zero, one_smul, hzero] at hself
+    exact hg0 hself.symm
+  -- the regular factor `(s − 1) ζ(s) · exp(D₊ + Q)` is analytic and nonzero at `κ`
+  have hDp : AnalyticAt ℂ (gdSeries (wt (plusSet e)) freq) (κ : ℂ) :=
+    (differentiableOn_gdSeries_wt (T := plusSet e) (c := (expo (plusSet e) + κ) / 2)
+      (fun σ hσ => summableAt_of_expo_lt (by linarith))).analyticAt
+      ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+        (show (expo (plusSet e) + κ) / 2 < (κ : ℂ).re by
+          rw [Complex.ofReal_re]; linarith))
+  have hQan : AnalyticAt ℂ (editRem e) (κ : ℂ) :=
+    hQ.analyticAt ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+      (show 3 * κ / 2 / 2 < (κ : ℂ).re by rw [Complex.ofReal_re]; linarith))
+  have hu0 : zetaResidueUnit (κ : ℂ) ≠ 0 := _root_.RHTower.zetaResidueUnit_ofReal_ne_zero hκ0
+  have hden : AnalyticAt ℂ (fun s => zetaResidueUnit s *
+      cexp (gdSeries (wt (plusSet e)) freq s + editRem e s)) (κ : ℂ) :=
+    (analyticAt_zetaResidueUnit _).mul (hDp.add hQan).cexp
+  have hden0 : zetaResidueUnit (κ : ℂ) *
+      cexp (gdSeries (wt (plusSet e)) freq (κ : ℂ) + editRem e (κ : ℂ)) ≠ 0 :=
+    mul_ne_zero hu0 (Complex.exp_ne_zero _)
+  refine ⟨G, m, fun s => g s / (zetaResidueUnit s *
+    cexp (gdSeries (wt (plusSet e)) freq s + editRem e s)), hG, hGeq, hzero, hm1,
+    hgan.div hden hden0, div_ne_zero hg0 hden0, ?_⟩
+  filter_upwards [hgeq, hden.continuousAt.eventually_ne hden0] with s hGs hne hre
+  have hne' : zetaResidueUnit s * cexp (gdSeries (wt (plusSet e)) freq s + editRem e s) ≠ 0 :=
+    hne
+  have hcont := continuation_eq he (hG.mono hsubG) hGeq (hQ.mono hsubQ) hc₀κ.le hκ1
+    (fun σ hσ => summableAt_of_expo_lt (lt_trans hκp hσ))
+    (fun σ hσ => summableAt_of_expo_lt (by rw [← hκdef]; exact hσ)) hre
+  have hsplit : cexp (gdSeries (wt (plusSet e)) freq s - gdSeries (wt (minusSet e)) freq s +
+      editRem e s) = cexp (-gdSeries (wt (minusSet e)) freq s) *
+        cexp (gdSeries (wt (plusSet e)) freq s + editRem e s) := by
+    rw [← Complex.exp_add]
+    congr 1
+    ring
+  have h5 : (s - (κ : ℂ)) ^ m * g s = G s := by rw [hGs, smul_eq_mul]
+  rw [← mul_div_assoc, eq_div_iff hne', h5, hcont, hsplit]
+  ring
+
+/-- **A count below the exponent of the deleted primes is a real zero.**  If an edit has count
+`A x + O(x^β)` and `max(κ₊, β) < κ₋`, the continuation of `(s − 1) ζ_B(s)` to `Re s > β` vanishes
+at `κ₋`. -/
+theorem zero_at_expo_minus_of_count {e : ℕ → ℤ} (he : IsEdit e) {A C β : ℝ} (hβ : 0 ≤ β)
+    (hN : ∀ x : ℝ, 1 ≤ x → |((editSystem e).countBall x : ℝ) - A * x| ≤ C * x ^ β)
+    (h : max (expo (plusSet e)) β < expo (minusSet e)) :
+    ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | β < s.re} ∧
+      (∀ s : ℂ, 1 < s.re → G s = (s - 1) * (editSystem e).zetaSeriesC s) ∧
+      G ((expo (minusSet e) : ℝ) : ℂ) = 0 := by
+  obtain ⟨G, -, -, hG, hGeq, hzero, -⟩ := exists_order_of_count he hβ hN h
+  exact ⟨G, hG, hGeq, hzero⟩
 
 /-- **Thickness beaten by the count is balance or a real zero.**  If the count exponent `β` of
 an edit is below `max(κ₊, κ₋)`, then `κ₊ = κ₋`, or `κ₊ < κ₋` and the continuation of

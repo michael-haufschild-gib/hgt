@@ -4,6 +4,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheMatrixOfAStepPacketIsTheMi
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHodgeDefectIsCyclic
 import GaloisForLFunctions.RHTower.WeilArchReLevyPoleForm
 import GaloisForLFunctions.SquareRootThreshold.ZetaSmallApertureHeightWindowPositivity
+import GaloisForLFunctions.RHTower.WeilMarkovOneBoundState
 
 /-!
 # The neutral part is Weil's form of the zeros minus the poles
@@ -14,7 +15,8 @@ is Weil's form of the two poles `s = 0` and `s = 1` of the completed zeta functi
 (`poleConfig`, `poleConfig_W_ofReal`). So the neutral part is the form of a divisor, the zeros
 minus the poles:
 
-* on smooth packets it is `W_ζ − W_poles` (`neutralForm_eq_re_sub`);
+* on smooth packets it is `W_ζ − W_poles` (`neutralForm_eq_re_sub`), the archimedean-minus-prime
+  energy `markovEnergy` (`neutralForm_eq_markovEnergy`);
 * on step packets it is the neutral part of the block matrix: density, jets and contacts
   (`neutralForm_stepPacket`).
 
@@ -23,10 +25,14 @@ pole `s = 1` is right of the line, so:
 
 * the largest number of negative squares of the neutral form on a family of tests is one plus
   the number of zeros right of the line (`exists_le_negIndex_neutralGram_iff`); one negative
-  square is always there (`exists_one_le_negIndex_neutralGram`);
+  square is always there (`exists_one_le_negIndex_neutralGram`); the same law holds for every
+  tempered configuration that does not contain the point `1`
+  (`exists_le_negIndex_sub_poleConfig_iff`);
 * the Riemann hypothesis holds iff the neutral form has at most one negative square on every
   family (`riemannHypothesis_iff_forall_negIndex_neutralGram_le_one`): the signature of an
-  intersection form on a surface.
+  intersection form on a surface. This is the one-bound-state law of the archimedean-minus-prime
+  energy (`RHTower.riemannHypothesis_iff_not_exists_negDef_markovPlane`), here with the count of
+  the squares.
 -/
 
 open Complex Matrix Finset MeasureTheory
@@ -97,6 +103,19 @@ theorem poleConfig_W_ofReal (f : ℝ → ℝ) :
   push_cast
   ring
 
+/-- The form of the poles is the pole term of Weil's functional. -/
+theorem poleConfig_W_eq_weilPoleTerm {f : ℝ → ℂ} (hf : Continuous f)
+    (hfc : HasCompactSupport f) :
+    poleConfig.W f f = _root_.RHTower.weilPoleTerm (EF.weilTest f f) := by
+  rw [poleConfig_W, _root_.RHTower.weilPoleTerm_weilTest_eq hf hfc]
+
+/-- **The form of the zeros minus the poles is the archimedean-minus-prime energy.** -/
+theorem re_W_sub_poleConfig_W_eq_markovEnergy {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) :
+    (zetaZeroConfig.W f f - poleConfig.W f f).re = _root_.RHTower.markovEnergy f := by
+  rw [_root_.RHTower.markovEnergy_eq_W_sub hf hfc, Complex.sub_re,
+    poleConfig_W_eq_weilPoleTerm hf.continuous hfc]
+
 /-! ### The neutral part of Weil's form of a packet -/
 
 /-- The neutral part of Weil's form of a packet: the form without the product of the two
@@ -122,6 +141,15 @@ theorem neutralForm_eq_re_sub {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : H
   rw [neutralForm, ← zeroSum_eq_packetForm hf hfc hQ, Complex.sub_re, poleConfig_W_ofReal,
     Complex.ofReal_re]
   rfl
+
+/-- On smooth packets the neutral part is the archimedean-minus-prime energy. -/
+theorem neutralForm_eq_markovEnergy {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {Q : ℕ}
+    (hQ : ∀ n : ℕ, Q < n → packetAutocorr f (Real.log n) = 0) :
+    neutralForm Q f = _root_.RHTower.markovEnergy fun u => (f u : ℂ) := by
+  rw [neutralForm_eq_re_sub hf hfc hQ,
+    re_W_sub_poleConfig_W_eq_markovEnergy (contDiff_ofReal_packet hf)
+      (hasCompactSupport_ofReal_packet hfc)]
 
 /-- The second charge of a step packet is the sum of its values. -/
 theorem integral_stepPacket_mul_exp {R : ℕ} (hR : 1 ≤ R) (J : ℕ) (σ : ℕ → ℝ) :
@@ -179,63 +207,99 @@ theorem extMult_poleConfig_of_notMem {ρ : ℂ} (h0 : ρ ≠ 0) (h1 : ρ ≠ 1) 
     extMult poleConfig ρ = 0 := by
   rw [extMult, if_neg fun h => (mem_poleConfig.mp h).elim h0 h1]
 
-/-- The point `1` is not a zero. -/
-theorem one_notMem_zetaZeroConfig : (1 : ℂ) ∉ zetaZeroConfig.carrier := fun h => by
-  have h' : IsNontrivialZero (1 : ℂ) := h
-  have h2 := h'.2.2
-  norm_num at h2
-
-theorem one_notMem_rightZeros : (1 : ℂ) ∉ rightZeros zetaZeroConfig :=
-  fun h => one_notMem_zetaZeroConfig h.1
-
-/-- **The defect points of the zeros minus the poles**: the zeros right of the line and the pole
-`s = 1`. -/
-theorem virtualDefect_zeta_poleConfig :
-    virtualDefect zetaZeroConfig poleConfig = insert 1 (rightZeros zetaZeroConfig) := by
+/-- **The defect points of a configuration minus the poles**: its points right of the line and
+the pole `s = 1`, if the configuration does not contain the point `1`. -/
+theorem virtualDefect_poleConfig (A : ZeroConfig) (h1 : (1 : ℂ) ∉ A.carrier) :
+    virtualDefect A poleConfig = insert 1 (rightZeros A) := by
   ext ρ
   constructor
   · rintro (⟨hre, hne⟩ | ⟨hre, hlt⟩)
-    · by_cases h1 : ρ = 1
-      · exact Or.inl h1
+    · by_cases hρ1 : ρ = 1
+      · exact Or.inl hρ1
       · refine Or.inr ⟨?_, hre⟩
         by_contra hmem
         apply hne
         have h0 : ρ ≠ 0 := by
           rintro rfl
           norm_num at hre
-        rw [extMult_poleConfig_of_notMem h0 h1, extMult, if_neg hmem]
+        rw [extMult_poleConfig_of_notMem h0 hρ1, extMult, if_neg hmem]
     · exfalso
       have h0 : ρ ≠ 0 := by
         rintro rfl
         norm_num at hre
-      have h1 : ρ ≠ 1 := by
+      have hρ1 : ρ ≠ 1 := by
         rintro rfl
         norm_num at hre
-      rw [extMult_poleConfig_of_notMem h0 h1] at hlt
+      rw [extMult_poleConfig_of_notMem h0 hρ1] at hlt
       exact Nat.not_lt_zero _ hlt
   · rintro (rfl | ⟨hmem, hre⟩)
     · refine Or.inl ⟨by norm_num, ?_⟩
-      rw [extMult_poleConfig_of_mem (Or.inr rfl), extMult, if_neg one_notMem_zetaZeroConfig]
+      rw [extMult_poleConfig_of_mem (Or.inr rfl), extMult, if_neg h1]
       exact zero_ne_one
     · refine Or.inl ⟨hre, ?_⟩
       have h0 : ρ ≠ 0 := by
         rintro rfl
         norm_num at hre
-      have h1 : ρ ≠ 1 := by
+      have hρ1 : ρ ≠ 1 := by
         rintro rfl
-        exact one_notMem_zetaZeroConfig hmem
-      rw [extMult_poleConfig_of_notMem h0 h1, extMult, if_pos hmem]
-      exact Nat.one_le_iff_ne_zero.mp (zetaZeroConfig.one_le_mult ρ hmem)
+        exact h1 hmem
+      rw [extMult_poleConfig_of_notMem h0 hρ1, extMult, if_pos hmem]
+      exact Nat.one_le_iff_ne_zero.mp (A.one_le_mult ρ hmem)
+
+/-- **The index law of a configuration minus the poles.** The form `W_A − W_poles` has `n`
+negative squares on some family of `n` tests iff `n` is at most one plus the number of points
+of `A` right of the line. -/
+theorem exists_le_negIndex_sub_poleConfig_iff (A : ZeroConfig) (hA : TemperedConfig A)
+    (h1 : (1 : ℂ) ∉ A.carrier) (n : ℕ) :
+    (∃ f : Fin n → ℝ → ℂ, (∀ i, ContDiff ℝ 2 (f i)) ∧ (∀ i, HasCompactSupport (f i)) ∧
+        n ≤ hermNegIndex (zeroGram A f - zeroGram poleConfig f)) ↔
+      (n : ℕ∞) ≤ (rightZeros A).encard + 1 := by
+  rw [exists_le_negIndex_sub_zeroGram_iff A poleConfig hA temperedConfig_poleConfig,
+    virtualDefect_poleConfig A h1, Set.encard_insert_of_notMem fun h => h1 h.1]
+
+/-- **A configuration has no point right of the line iff its form minus the form of the poles
+has at most one negative square** on every family of tests. -/
+theorem rightZeros_eq_empty_iff_forall_negIndex_sub_poleConfig_le_one (A : ZeroConfig)
+    (hA : TemperedConfig A) (h1 : (1 : ℂ) ∉ A.carrier) :
+    rightZeros A = ∅ ↔ ∀ (n : ℕ) (f : Fin n → ℝ → ℂ), (∀ i, ContDiff ℝ 2 (f i)) →
+      (∀ i, HasCompactSupport (f i)) →
+        hermNegIndex (zeroGram A f - zeroGram poleConfig f) ≤ 1 := by
+  constructor
+  · intro hempty n f hf hfc
+    have hle := negIndex_sub_zeroGram_le_virtualDefect A poleConfig hA temperedConfig_poleConfig
+      f hf hfc
+    rw [virtualDefect_poleConfig A h1, Set.encard_insert_of_notMem fun h => h1 h.1, hempty,
+      Set.encard_empty, zero_add] at hle
+    exact_mod_cast hle
+  · intro h
+    by_contra hne
+    -- a point right of the line and the pole give two negative squares
+    have h1' : (1 : ℕ∞) ≤ (rightZeros A).encard :=
+      Set.one_le_encard_iff_nonempty.mpr (Set.nonempty_iff_ne_empty.mpr hne)
+    have h11 : ((2 : ℕ) : ℕ∞) = 1 + 1 := by
+      rw [Nat.cast_ofNat]
+      exact one_add_one_eq_two.symm
+    have h2 : ((2 : ℕ) : ℕ∞) ≤ (rightZeros A).encard + 1 := by
+      rw [h11]
+      exact add_le_add h1' le_rfl
+    obtain ⟨f, hf, hfc, hn⟩ := (exists_le_negIndex_sub_poleConfig_iff A hA h1 2).mpr h2
+    have := h 2 f hf hfc
+    omega
+
+/-- The point `1` is not a zero of the zeta function. -/
+theorem one_notMem_zetaZeroConfig : (1 : ℂ) ∉ zetaZeroConfig.carrier := fun h => by
+  have h' : IsNontrivialZero (1 : ℂ) := h
+  have h2 := h'.2.2
+  norm_num at h2
 
 /-- **The index law of the neutral form.** It has `n` negative squares on some family of `n`
 tests iff `n` is at most one plus the number of zeros right of the line. -/
 theorem exists_le_negIndex_neutralGram_iff (n : ℕ) :
     (∃ f : Fin n → ℝ → ℂ, (∀ i, ContDiff ℝ 2 (f i)) ∧ (∀ i, HasCompactSupport (f i)) ∧
         n ≤ hermNegIndex (zeroGram zetaZeroConfig f - zeroGram poleConfig f)) ↔
-      (n : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard + 1 := by
-  rw [exists_le_negIndex_sub_zeroGram_iff zetaZeroConfig poleConfig temperedConfig_zetaZeroConfig
-    temperedConfig_poleConfig, virtualDefect_zeta_poleConfig,
-    Set.encard_insert_of_notMem one_notMem_rightZeros]
+      (n : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard + 1 :=
+  exists_le_negIndex_sub_poleConfig_iff zetaZeroConfig temperedConfig_zetaZeroConfig
+    one_notMem_zetaZeroConfig n
 
 /-- **The pole is one negative square of the neutral form.** -/
 theorem exists_one_le_negIndex_neutralGram :
@@ -251,27 +315,8 @@ theorem riemannHypothesis_iff_forall_negIndex_neutralGram_le_one :
     RiemannHypothesis ↔ ∀ (n : ℕ) (f : Fin n → ℝ → ℂ), (∀ i, ContDiff ℝ 2 (f i)) →
       (∀ i, HasCompactSupport (f i)) →
         hermNegIndex (zeroGram zetaZeroConfig f - zeroGram poleConfig f) ≤ 1 := by
-  constructor
-  · intro hRH n f hf hfc
-    have hle := negIndex_sub_zeroGram_le_virtualDefect zetaZeroConfig poleConfig
-      temperedConfig_zetaZeroConfig temperedConfig_poleConfig f hf hfc
-    rw [virtualDefect_zeta_poleConfig, Set.encard_insert_of_notMem one_notMem_rightZeros,
-      rightZeros_zeta_eq_empty_iff.mpr hRH, Set.encard_empty, zero_add] at hle
-    exact_mod_cast hle
-  · intro h
-    rw [← rightZeros_zeta_eq_empty_iff]
-    by_contra hne
-    -- a zero right of the line and the pole give two negative squares
-    have h1 : (1 : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard :=
-      Set.one_le_encard_iff_nonempty.mpr (Set.nonempty_iff_ne_empty.mpr hne)
-    have h11 : ((2 : ℕ) : ℕ∞) = 1 + 1 := by
-      rw [Nat.cast_ofNat]
-      exact one_add_one_eq_two.symm
-    have h2 : ((2 : ℕ) : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard + 1 := by
-      rw [h11]
-      exact add_le_add h1 le_rfl
-    obtain ⟨f, hf, hfc, hn⟩ := (exists_le_negIndex_neutralGram_iff 2).mpr h2
-    have := h 2 f hf hfc
-    omega
+  rw [← rightZeros_zeta_eq_empty_iff]
+  exact rightZeros_eq_empty_iff_forall_negIndex_sub_poleConfig_le_one zetaZeroConfig
+    temperedConfig_zetaZeroConfig one_notMem_zetaZeroConfig
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
