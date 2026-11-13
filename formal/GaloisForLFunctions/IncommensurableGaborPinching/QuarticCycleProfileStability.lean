@@ -184,7 +184,7 @@ theorem frequencyDensityLaw_interval_mass_sq_le {w : ℝ → ℝ}
       ENNReal.ofReal (∫ x, w x ^ 2) := by
     calc (∫⁻ x in Ioc a b, (ENNReal.ofReal (w x)) ^ 2)
         ≤ ∫⁻ x, (ENNReal.ofReal (w x)) ^ 2 :=
-          lintegral_mono_measure Measure.restrict_le_self
+          lintegral_mono' Measure.restrict_le_self le_rfl
       _ = ∫⁻ x, ENNReal.ofReal (w x ^ 2) := by
           apply lintegral_congr
           intro x
