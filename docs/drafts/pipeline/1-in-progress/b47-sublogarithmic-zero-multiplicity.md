@@ -21,6 +21,12 @@ High critical multiplicity does not force forward nonreal branches. The sign is 
 
 The existing positive survivor is a real-gap bound `g² ≤ (24/(m+1) + ε)t`: `CollisionsBlowUpToHermiteProfiles.blowup_forward`, `card_profileRoots`, `exists_zero_near_root_forward`, `exists_close_zeros_forward`. Its validity radius depends on the zero, with no lower bound reaching the horizon `t ≍ 1/log γ`. Even at that horizon, `m ≍ log γ` gives `g² ≍ 1/log²γ`, compatible with known spacing. A uniform gap-opening rate `ω(1/log γ)` near every initial collision would be new input.
 
+## Derivative cancellation and reciprocal integrability
+
+Low zeta jets give exact paired-eta moment cancellations (`pairedEtaLogLaplaceMoment_eq_zero_of_lt_multiplicity`). Positivity alone does not convert them into prime-phase alignment: `ArithmeticPositiveDuality.PositiveAnnihilator.exists_arbitrary_multiplicity_near_unit_mass` supplies positive Dirichlet polynomials with constant coefficient `1`, arbitrary zero order, and nonconstant mass arbitrarily close to `1`. Multiplying zeta by eta or finite Euler factors preserves the jets by Leibniz; an independent arithmetic constraint remains missing.
+
+A precise alternative target is local integrability of `|ζ(1/2+it)|^(−p(T))` on every high unit interval, with `p(T) log T → ∞`. At an order-`m` zero the exact integrability threshold is `mp(T)<1`. Off-line Blaschke removal preserves this boundary modulus (`TheDerivativeReadsTheBlaschkeFactor.exists_blaschke_quotient`), but supplies no reciprocal moment bound. For the formal coefficients of `ζ^(−α)`, the prime coefficients equal `−α`, so their critical square sum diverges for every `α>0`. Neither a deterministic coefficient-to-boundary transfer nor the required local reciprocal integrability has been proved.
+
 ## Gates
 
 - [x] Exact target and existing bounds identified.

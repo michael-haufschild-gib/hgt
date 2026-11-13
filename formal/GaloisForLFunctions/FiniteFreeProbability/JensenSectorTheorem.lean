@@ -256,6 +256,3 @@ theorem splits_diffOp_pairSymbol_iff {d : ℕ} (hd : 2 ≤ d) {ρ : ℂ} (hρ : 
 end
 
 end FiniteFreeProbability
-
-#print axioms FiniteFreeProbability.splits_diffOp_X_pow_of_sector
-#print axioms FiniteFreeProbability.splits_diffOp_pairSymbol_iff

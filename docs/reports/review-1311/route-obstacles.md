@@ -9,7 +9,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 **Evidence.**
 - `[L*]` Lean statement read at its declaration for this report and recorded in the fact log with file and line.
 - `[F]` stated by the [frontier map](../rh-current-frontier-map.md) at the checkpoint; `[KR]` stated by the [scoped-obstruction ledger](../rh-killed-routes.md). `[S]` a module the frontier map grades unfinished or unintegrated.
-- `[D]` deduction made here from `[L*]` statements (log §15, §16, §19, §21); not a Lean theorem. `[doc]` mechanism described in a module docstring whose statements were read. `[C]` classical mathematics, not in the corpus. `[A]` assessment.
+- `[D]` deduction made here from `[L*]` statements (log §15, §16, §19, §21, §22); not a Lean theorem. `[doc]` mechanism described in a module docstring whose statements were read. `[C]` classical mathematics, not in the corpus. `[A]` assessment.
 - `[X]` the half-plane `7/8`, taken as proved: every Dirichlet `L`-function, ζ included, and every Hecke `L`-function of the family over `ℚ(√−3)` is zero-free in `Re s>7/8`; so `Θ≤7/8`. It is an external theorem (OpenAI, 30 September 2026). In the Lean source it is stated without hypotheses (`riemannZeta_ne_zero_of_seven_eighths_lt_re`, `DirichletCharacter.LFunction_ne_zero_of_seven_eighths_lt_re`, `riemannZeta_zero_mem_quasiRH_strip`, `ProbeFinalAssemblyUnconditional.common_probe`; log §8). The frontier map grades this source `[S]`: a statement in source, not a verified theorem; validating the producer chain is just work (A118). Consequences of `[X]` on receivers are deductions `[D]`: no receiver is stated in Lean with the half-plane inserted (A138).
 
 **Strength.** RH; ≥qRH (implies a zero-free half-plane, Lindelöf or ZAL; open where it gives a half-plane below `7/8`); AAL; sub (implies neither a half-plane nor AAL); method; producer; indep.
@@ -206,7 +206,6 @@ Established: finite families of convergent linear laws cannot imply the count; p
 | A30, A33, A46 | best stencil exponent under RH; cubic residue coefficients; singular indices (unverified) | — |
 | B48–B54 | the deciding input at square-root precision and its classical faces | RH |
 | B55, B67 | polynomial stencil rate; parity at power saving | ≥qRH to RH |
-| B15 | pointwise savings past Vinogradov–Korobov in the Lean graph | sub |
 | B56 | `Θ<1⇒Θ=½`; with `[X]` it is RH | RH |
 | B106 | a correspondence on the orientation cover with bounded local indices | RH |
 
@@ -330,7 +329,7 @@ Established: §0 rows on the Hodge inequality, the certified range, the overlap 
 
 | | Obstacle | Strength |
 |---|---|---|
-| A162 | Lean statements of the second-eigenvalue floor `1/5000` at ratio `≤103/50`, the conditional-energy floor at the first overlap step, the `N`-orthogonal and Green forms of the overlap criterion, and the additive loss law below the binding energy of the middle [D4], [D10], [D11], [D21], [D22] | — |
+| A162 | Lean statements of the second-eigenvalue floor `1/5000` at ratio `≤103/50`, the conditional-energy floor at the first overlap step, the `N`-orthogonal and Green forms of the overlap criterion, the additive loss law below the binding energy of the middle, and a lower bound for that binding energy uniform in the block size [D4], [D10], [D11], [D21], [D22], [D26] | — |
 | A163 | the converse exponent law with a logarithm of the block size: width `≤θ` ⇒ step-packet floor `≥−CK^θ log K·log(KR+2)`; with `[X]` the exponent `3/8` on the initial windows [A2] (unverified) | — |
 | B198 | converse exponent law on all packets (S12) | method |
 | B152 | one bound state at every ratio and block size | RH |
@@ -374,7 +373,7 @@ Receiver statements follow the frontier map at the checkpoint unless marked `[L*
 - **Path:** half-power Möbius/Liouville cancellation → RH.
 - **Established:** damped critical energy, fixed-height subpolynomial prefixes, eventual mollifier zero-freeness each characterize RH; ¬AAL gives some Mertens power saving [F]; logarithmic two-point Chowla, short-window cancellation of `λ` and `λχ` [L*] (log §10); the coupled tower and its barrier [L*].
 - **(a)** A33, A46, A118.
-- **(b)** B48, B50, B15, B106; B161; B174, B185, B187. Logarithmic correlation decay supplies no half-power rate; the bootstrap of the probe cannot pass `3/5` [F]/[KR].
+- **(b)** B48, B50, B106; B161; B174, B185, B187. Logarithmic correlation decay supplies no half-power rate; the bootstrap of the probe cannot pass `3/5` [F]/[KR].
 
 ### SQF — Weighted squarefree count
 - **Path:** a one-sided `O_ε(t^{−¼−ε})` bound of `Σμ(n)²e^{−nt}−6/(π²t)` → RH. **Established:** either one-sided law ⇔ RH; `Ω_±(t^{−1/4})`; the `k`-free ladder detects the strip `Re s>1−1/k` [F].
@@ -403,7 +402,7 @@ Receiver statements follow the frontier map at the checkpoint unless marked `[L*
 - **Path:** complete arithmetic form `≥0` → Hodge index → RH.
 - **Established:** S1, S14.
 - **(a)** A9, A13, A141, A158, A161.
-- **(b)** B6, B101, B104, B123, B8, B41, B10, B87, B88, B149, B152, B192, B194. Stability and nonzero polar pairing do not exclude the charged case; exponential decay supplies neither the wall trace nor its flux law; `L²` cyclicity is not energy-norm density; `R→0` asymptotics do not settle the sign at `R→∞`; universal holomorphic multiplier domination fails [F]/[KR].
+- **(b)** B6, B101, B104, B123, B41, B87, B88, B149, B152, B192, B194. Stability and nonzero polar pairing do not exclude the charged case; exponential decay supplies neither the wall trace nor its flux law; `L²` cyclicity is not energy-norm density; `R→0` asymptotics do not settle the sign at `R→∞`; universal holomorphic multiplier domination fails [F]/[KR].
 
 ### HAT-C — Arithmetic-clock Green energy
 - **Path:** one clock, or one fixed scattering height → energy floor → `W≥0` on packets ⇔ RH.

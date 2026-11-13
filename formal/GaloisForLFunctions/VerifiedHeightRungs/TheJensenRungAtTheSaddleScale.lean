@@ -196,7 +196,3 @@ theorem exists_pair_beyond_rung {T : ℝ} (hT : 0 ≤ T) {d : ℕ} (hd : 4 * T ^
 end
 
 end GaloisForLFunctions.VerifiedHeightRungs
-
-#print axioms GaloisForLFunctions.VerifiedHeightRungs.jensenNonrealCount_eq_zero_of_rhVerifiedThrough_width
-#print axioms GaloisForLFunctions.VerifiedHeightRungs.jensenNonrealCount_eq_zero_of_le
-#print axioms GaloisForLFunctions.VerifiedHeightRungs.exists_pair_beyond_rung

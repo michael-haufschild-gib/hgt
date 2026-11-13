@@ -259,8 +259,8 @@ structure IsSignedLoop (ε : ℂ) (a : ℝ → ℂ) : Prop where
       1 / 4096 * ‖bulkTerm (a s)‖
 
 /-- **Signed loops of both signs exist**, as far out as wanted. -/
-theorem exists_isSignedLoop (σ₀ : ℝ) : ∃ a₊ a₋ : ℝ → ℂ,
-    IsSignedLoop 1 a₊ ∧ IsSignedLoop (-1) a₋ ∧ (∀ s, σ₀ ≤ (a₊ s).re) ∧ ∀ s, σ₀ ≤ (a₋ s).re := by
+theorem exists_isSignedLoop (σ₀ : ℝ) : ∃ ap am : ℝ → ℂ,
+    IsSignedLoop 1 ap ∧ IsSignedLoop (-1) am ∧ (∀ s, σ₀ ≤ (ap s).re) ∧ ∀ s, σ₀ ≤ (am s).re := by
   obtain ⟨σ₂, h51, hthr⟩ := exists_sign_threshold
   obtain ⟨a₁, ha, hf, hlo, hhi⟩ := exists_basePoint (max σ₂ (σ₀ + 1))
   have h1 : σ₂ ≤ a₁.re := (le_max_left _ _).trans ha
