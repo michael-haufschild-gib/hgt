@@ -62,8 +62,9 @@ Gamma form. No regularity theorem is verified yet.
 `CausalReflection/HalfLineGammaContractions.lean` proves the converse
 Lévy-domain bridge and closure under zero-preserving real contractions.
 Its final plain source audit passes with the standard three axioms; it is
-wired. Weighted barrier truncations require the additional admissibility
-argument below.
+wired. `ExponentialBarrierPositiveLevels` now also passes its final source
+and axiom audits: every nonnegative level above a positive-rate exponential
+barrier belongs to the actual domain.
 
 ## Exponential-barrier route
 
@@ -83,8 +84,9 @@ archimedean row mass with bounded cutoff readouts. For the half-line, the
 candidate barrier is `exp(u)`, with tests `(F-t exp(u))₊` and both signs of
 `F`. The forward prime row grows at most like `exp(-3u/2)` and should be
 absorbed by the actual potential `a exp(-8u)`. Admissibility of these tests
-and the complete weighted row inequality are open; the finite-aperture
-Riesz theorem does not supply them.
+is verified. The complete weighted row inequality and maximum-principle
+assembly are written but unaudited; the finite-aperture Riesz theorem does
+not supply them.
 
 For the barrier, the normalized prime row is
 `Σ_{n<exp(-u)}Λ(n)√n + Σ_n Λ(n)/n^(3/2)`; the first term is bounded by

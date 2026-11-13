@@ -34,7 +34,7 @@ theorem continuous_hpt {y : ℝ} (hy : 0 < y) : Continuous fun x : ℝ => hpt x 
   have h : (fun x : ℝ => (⟨x, y⟩ : ℂ)) = fun x : ℝ => (x : ℂ) + (y : ℂ) * Complex.I := by
     funext x; apply Complex.ext <;> simp
   have hc : Continuous fun x : ℝ => (⟨x, y⟩ : ℂ) := by rw [h]; fun_prop
-  exact hc.subtype_mk (fun _ => hy)
+  exact Continuous.subtype_mk (p := fun z : ℂ => 0 < z.im) hc (fun _ => hy)
 
 theorem pairU_eq_coords (z w : ℍ) :
     pairU z w = ((z.re - w.re) ^ 2 + (z.im - w.im) ^ 2) / (4 * z.im * w.im) := by

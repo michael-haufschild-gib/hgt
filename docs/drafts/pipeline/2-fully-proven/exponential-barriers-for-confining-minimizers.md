@@ -139,10 +139,14 @@ audit without warnings, with exactly the same three axioms. It is wired
 and has its required olean. Its exact exponential autocorrelation and
 translation defect prove Gamma integrability of every positive-rate barrier.
 
-Twelve further supporting modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+`ExponentialBarrierPositiveLevels` passes its final plain source audit
+without warnings, with the standard three axioms, and is wired with its
+required olean. `CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem`
+proves admissibility of every nonnegative level above a positive-rate barrier.
+
+Eleven further supporting modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
 await final source audits:
 
-- `ExponentialBarrierPositiveLevels`: admissibility of positive-level tests in the actual domain.
 - `HalfLineGammaMixedEnergy`: absolute integrability and the exact mixed Lévy identity.
 - `HalfLineExponentialBarrierJumps`: the integrated exponential correction for each mixed Gamma jump.
 - `ExponentialBarrierPrimeEdges`: the support-restricted diagonal comparison for each literal prime term.
@@ -161,7 +165,7 @@ the pointwise square bound after absorption of both forcing rows.
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. Two of sixteen supporting modules are audited and wired.
+also `L²`. Three of sixteen supporting modules are audited and wired.
 
 `ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
 negation invariance, the full-line weak row identity, vanishing of a high
