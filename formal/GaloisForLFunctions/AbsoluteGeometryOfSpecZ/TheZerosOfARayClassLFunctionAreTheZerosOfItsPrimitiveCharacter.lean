@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Artin.EveryRayClassCharacterIsInducedFromAPrimitiveCharacterOfItsConductor
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheZerosOfAHeckeLFunctionSatisfyWeilsExplicitFormula
+import GaloisForLFunctions.HeckeLFunctions.HeckeLFunctionsDoNotVanishOnTheLineReOne
 
 /-!
 # The zeros of a ray class `L`-function are the zeros of its primitive character
@@ -73,7 +74,8 @@ theorem differentiable_modulusEulerFactor (ψ : HeckeCharacter 𝔪) :
   show Differentiable ℂ fun s : ℂ => ∏ v ∈ (finite_primes_dvd 𝔪).toFinset,
     (1 - heckeValue (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ) v.asIdeal *
       (Ideal.absNorm v.asIdeal : ℂ) ^ (-s))
-  exact Differentiable.finset_prod fun v _ => differentiable_one_sub_mul_absNorm_cpow v _
+  exact Differentiable.finsetProd fun (v : HeightOneSpectrum (𝓞 K)) _ =>
+    differentiable_one_sub_mul_absNorm_cpow v _
 
 theorem modulusEulerFactor_ne_zero (ψ : HeckeCharacter 𝔪) {s : ℂ} (hs : 0 < s.re) :
     modulusEulerFactor 𝔪 ψ s ≠ 0 :=
@@ -141,13 +143,14 @@ theorem heckeLFunction_eq_zero_iff_heckeXi_primitiveHecke {ψ : HeckeCharacter �
 
 /-- **The zero configuration of a ray class character**: the zeros of the completion of its
 primitive character, with their orders. -/
-def rayClassZeros (ψ : HeckeCharacter 𝔪) : ZeroConfig :=
+def rayClassZeros (ψ : HeckeCharacter 𝔪) : Zeta23.ZeroConfig :=
   heckeZeros (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ)
     (heckeFiniteConductor_primitiveHecke 𝔪 ψ)
 
 theorem temperedConfig_rayClassZeros (ψ : HeckeCharacter 𝔪) :
     SquareRootThreshold.TemperedConfig (rayClassZeros 𝔪 ψ) :=
-  temperedConfig_heckeZeros _ _ _
+  temperedConfig_heckeZeros (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ)
+    (heckeFiniteConductor_primitiveHecke 𝔪 ψ)
 
 /-- The zeros of the configuration right of the critical line are the zeros of `L(s, ψ)`
 there. -/
@@ -158,11 +161,14 @@ theorem rightZeros_rayClassZeros {ψ : HeckeCharacter 𝔪} (hψ : ψ ≠ 1) :
   constructor
   · rintro ⟨hρ, hre⟩
     have hre' : 1 / 2 < ρ.re := hre
+    have hρ' : heckeXi (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ) ρ = 0 := hρ
     exact ⟨hre, (heckeLFunction_eq_zero_iff_heckeXi_primitiveHecke 𝔪 hψ
-      (by linarith)).mpr hρ⟩
+      (by linarith)).mpr hρ'⟩
   · rintro ⟨hre, hρ⟩
     have hre' : 1 / 2 < ρ.re := hre
-    exact ⟨(heckeLFunction_eq_zero_iff_heckeXi_primitiveHecke 𝔪 hψ (by linarith)).mp hρ, hre⟩
+    have hρ' : heckeXi (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ) ρ = 0 :=
+      (heckeLFunction_eq_zero_iff_heckeXi_primitiveHecke 𝔪 hψ (by linarith)).mp hρ
+    exact ⟨hρ', hre⟩
 
 /-- **The index law of a ray class character.** For a nontrivial ray class character `ψ`,
 primitive or not, Weil's form of its configuration has `n` negative squares on some family of
@@ -172,7 +178,8 @@ theorem exists_le_negIndex_rayClassGram_iff {ψ : HeckeCharacter 𝔪} (hψ : ψ
         n ≤ hermNegIndex (ArithmeticCastelnuovoSeveri.zeroGram (rayClassZeros 𝔪 ψ) f)) ↔
       (n : ℕ∞) ≤ {ρ : ℂ | 1 / 2 < ρ.re ∧ heckeLFunction 𝔪 ψ ρ = 0}.encard := by
   rw [← rightZeros_rayClassZeros 𝔪 hψ]
-  exact exists_le_negIndex_heckeGram_iff _ _ _ n
+  exact exists_le_negIndex_heckeGram_iff (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ)
+    (heckeFiniteConductor_primitiveHecke 𝔪 ψ) n
 
 /-- **Castelnuovo and Severi for a ray class character.** Weil's form of the configuration of
 a nontrivial ray class character `ψ` has no negative square on any family of tests iff
@@ -203,7 +210,8 @@ theorem forall_negIndex_rayClassGram_eq_zero_iff {ψ : HeckeCharacter 𝔪} (hψ
       rw [rightZeros_rayClassZeros 𝔪 hψ, hempty]
     have hzero := (forall_negIndex_heckeGram_eq_zero_iff (conductorModulus 𝔪 ψ)
       (primitiveHecke 𝔪 ψ) (heckeFiniteConductor_primitiveHecke 𝔪 ψ)).mpr
-      ((rightZeros_heckeZeros_eq_empty_iff _ _ _).mp hright) n f hf hfc
+      ((rightZeros_heckeZeros_eq_empty_iff (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ)
+        (heckeFiniteConductor_primitiveHecke 𝔪 ψ)).mp hright) n f hf hfc
     exact hne hzero
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

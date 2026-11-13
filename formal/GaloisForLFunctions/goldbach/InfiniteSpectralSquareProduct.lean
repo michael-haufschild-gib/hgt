@@ -90,7 +90,7 @@ theorem infiniteSpectralSquareProduct_reflect (μ : lp (fun _ : ι => ℝ) 2) (z
     infiniteSpectralSquareProduct μ (1 - z) = infiniteSpectralSquareProduct μ z := by
   simp only [infiniteSpectralSquareProduct, spectralSquareFactor_reflect]
 
-/-- Compact sets admit a common summable majorant for all spectral factors. -/
+/-- On compact sets, spectral factors have a common summable majorant. -/
 theorem infiniteSpectralSquareProduct_hasProdLocallyUniformlyOn
     (μ : lp (fun _ : ι => ℝ) 2) :
     HasProdLocallyUniformlyOn (fun i z => spectralSquareFactor (μ i) z)
@@ -254,7 +254,7 @@ theorem infiniteSpectralSquareProduct_eq_normalizedDet2
       spectralSquaredEigenvalue] using (infiniteSpectralSquareProduct_multipliable μ z).hasProd
   have he : HasProd (fun i => Complex.exp (spectralSquaredEigenvalue μ z i))
       (Complex.exp (∑' i, spectralSquaredEigenvalue μ z i)) := by
-    simpa only [Function.comp_apply] using hs.hasSum.cexp
+    simpa only [Function.comp_def] using! hs.hasSum.cexp
   have hprod := hp.mul he
   rw [spectralSquaredKernel, RHTower.entireDet2_diagMul_one_eq_tprod
     (spectralSquaredEigenvalue μ z) (summable_norm_sq_spectralSquaredEigenvalue μ z)

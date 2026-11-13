@@ -14,6 +14,7 @@ import GaloisForLFunctions.CompactHyperbolicSurfaces.CocompactGroups
 -/
 
 open Matrix UpperHalfPlane
+open scoped MatrixGroups
 
 namespace GaloisForLFunctions.CompactHyperbolicSurfaces
 
@@ -37,13 +38,13 @@ theorem isCong_mul {N : ℕ} {x y : Fin 4 → ℤ} (hx : IsCong N x) (hy : IsCon
   obtain ⟨v, rfl⟩ := hy
   refine ⟨u + v + (N : ℤ) • quatMul u v, ?_⟩
   funext k
-  fin_cases k <;> simp [quatMul, quatOne] <;> ring
+  fin_cases k <;> simp [quatMul, quatOne, Matrix.vecHead, Matrix.vecTail] <;> ring
 
 theorem isCong_conj {N : ℕ} {x : Fin 4 → ℤ} (hx : IsCong N x) : IsCong N (quatConj x) := by
   obtain ⟨u, rfl⟩ := hx
   refine ⟨quatConj u, ?_⟩
   funext k
-  fin_cases k <;> simp [quatConj, quatOne] <;> ring
+  fin_cases k <;> simp [quatConj, quatOne, Matrix.vecHead, Matrix.vecTail] <;> ring
 
 /-- **The congruence subgroup** `Γ(N) = {γ ∈ O¹ : γ ≡ 1 mod N}` of `SL(2, ℝ)`. -/
 def congGroup (N : ℕ) : Subgroup SL(2, ℝ) where
@@ -137,7 +138,8 @@ theorem finite_dist_congGroup (N : ℕ) (R : ℝ) :
       fin_cases i <;> fin_cases j <;> simp only [Fin.zero_eta, Fin.mk_one] <;> linarith
     exact Real.abs_le_sqrt hsq
   have hfin : ((fun n : Fin 4 → ℤ => fun k => (n k : ℝ)) ''
-      Set.Icc (fun _ => -⌈t⌉) (fun _ => ⌈t⌉)).Finite := (Set.finite_Icc _ _).image _
+      Set.univ.pi fun _ => Set.Icc (-⌈t⌉) ⌈t⌉).Finite :=
+    (Set.Finite.pi fun _ => Set.finite_Icc _ _).image _
   refine Set.Finite.of_finite_image
     (f := fun γ : congGroup N => quatCoeff ((γ : SL(2, ℝ)) : Matrix (Fin 2) (Fin 2) ℝ))
     (hfin.subset ?_) ?_
@@ -145,7 +147,7 @@ theorem finite_dist_congGroup (N : ℕ) (R : ℝ) :
     obtain ⟨x, -, -, hx⟩ := γ.2
     have hb := abs_coord_le_of_entries (x := x) (t := t) fun i j => by
       rw [← hx]; exact hbound γ hγ i j
-    refine ⟨x, ⟨fun k => ?_, fun k => ?_⟩, ?_⟩
+    refine ⟨x, fun k _ => ⟨?_, ?_⟩, ?_⟩
     · have h1 := (abs_le.mp (hb k)).1
       have h2 := Int.le_ceil t
       have : (-(⌈t⌉ : ℝ)) ≤ (x k : ℝ) := by linarith
@@ -199,7 +201,7 @@ theorem fixed_point_trace {g : SL(2, ℝ)} {z : ℍ} (h : g • z = z) :
   have him := congrArg Complex.im hc
   simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
     add_zero, Complex.add_re, Complex.mul_re, sub_zero, UpperHalfPlane.coe_im,
-    UpperHalfPlane.coe_re, mul_zero] at hre him
+    UpperHalfPlane.coe_re] at hre him
   -- `him : a y = (x)(c y) + y (c x + d)`, `hre : a x + b = x (c x + d) − y (c y)`
   have had : g 0 0 - g 1 1 = 2 * g 1 0 * z.re := by
     have : (g 0 0 - g 1 1 - 2 * g 1 0 * z.re) * z.im = 0 := by linear_combination him
@@ -215,7 +217,9 @@ theorem fixed_point_trace {g : SL(2, ℝ)} {z : ℍ} (h : g • z = z) :
     · rw [hc0] at had; linarith
   · right
     have hneg : (g 0 0 + g 1 1) ^ 2 - 4 = -4 * (g 1 0) ^ 2 * z.im ^ 2 := by
-      linear_combination had * had + (-4) * hdet + 4 * (g 1 0) * hb - 0
+      have e1 : (g 0 0 + g 1 1) ^ 2 - 4 = (g 0 0 - g 1 1) ^ 2 + 4 * (g 0 1 * g 1 0) := by
+        linear_combination 4 * hdet
+      rw [e1, had, hb]; ring
     have : 0 < (g 1 0) ^ 2 * z.im ^ 2 := by positivity
     linarith
 
@@ -254,9 +258,9 @@ theorem eq_one_of_smul_eq_congGroup {N : ℕ} (hN : 3 ≤ N) (γ : congGroup N) 
       exact_mod_cast this
     have hsq : x 0 ^ 2 = 1 := by rw [← hx1, nrd, e1, e2, e3]; ring
     have hx0' : x 0 = 1 := by
-      rcases sq_eq_one_iff_of_ne_zero (by intro h0; rw [h0] at hsq; simp at hsq) |>.mp hsq
-        with h' | h'
-      · exact h'
+      have hfac : (x 0 - 1) * (x 0 + 1) = 0 := by linear_combination hsq
+      rcases mul_eq_zero.mp hfac with h' | h'
+      · linarith
       · exfalso
         have hd : (N : ℤ) ∣ 2 := ⟨-u 0, by linarith⟩
         have := Int.le_of_dvd (by norm_num) hd

@@ -115,8 +115,9 @@ theorem exists_zero_of_alone {M : ℝ} (hγ : ContinuousOn γ (Icc 0 1))
     obtain ⟨ζ, -, -, hev⟩ := exists_local_family_of_simple hγ hd hxI hz
       (hedge x hxI z hz hdz) (hsimple x hxI z hz hdz)
     have hev' : ∀ᶠ s in 𝓝[>] x, complexHeat (γ s) (ζ (γ s)) = 0 ∧ d s (ζ (γ s)) < 0 := by
+      have hsub : Ioo x 1 ⊆ Icc (0 : ℝ) 1 := fun y hy => ⟨hx.1.trans hy.1.le, hy.2.le⟩
       rw [← nhdsWithin_Ioo_eq_nhdsGT hx.2]
-      exact hev.filter_mono (nhdsWithin_mono _ fun y hy => ⟨hx.1.trans hy.1.le, hy.2.le⟩)
+      exact hev.filter_mono (nhdsWithin_mono _ hsub)
     filter_upwards [hev'] with s hs
     exact ⟨ζ (γ s), hs.1, hs.2.le⟩
   exact fun s hs => hsub hs

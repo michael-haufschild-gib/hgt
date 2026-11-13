@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** `2d0ac6d11a` (2026-11-13), working-tree sources included. Fact log: `logs/review-1311-frontier-facts.md` (cited as "log §n"). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, openings, programmes, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** `6ac1fc78fa` (2026-11-13), working-tree sources included; frontier map and scoped-obstruction ledger at their checkpoint `2d0ac6d11a`. Fact log: `logs/review-1311-frontier-facts.md` (cited as "log §n"). Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, openings, programmes, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. HJ is PA; the BSY criterion of FEL belongs to CTF; PCS, DR, PW-B, HAT-G, ISC-polar are retired labels.
 
@@ -56,7 +56,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | `(log x)^{−1}Σ_{n≤x}λ(n)λ(n+h)/n→0` for every `h≥1`; short-interval mean squares of `λ` and `λχ` | [L*] (`tendsto_logAvg_liouville_shift`; log §10); [F] (MC) | logarithmic two-point Chowla and Matomäki–Radziwiłł are native |
 | Displaced twisted second moments for `θ<½`; a positive critical proportion at `θ=13/50`; simple-critical proportion `≥0.6725−ε` (imported `Zeta23` plus local input); cameras isolate exterior mass `≤¼` for zeros of depth `≥exp(−c log³(T/2π))` | [F] (MZF, census, ZCG; log §9) | the in-law half of the near-line picture is native |
 | `N_d=4Q_d`; `sup N_d` is the off-line multiplicity; `N_d≤300√(d log d)` for `log d≥6.1·10⁶`; at each degree finitely many shifts fail real-rootedness | [F] (LA) | the Jensen census counts quartets |
-| Every Artin Euler product is a product of integer powers of Hecke `L`-series of fixed fields of Brauer-elementary subgroups with finitely many Euler factors, on `Re s>1`; reciprocity for every linear character of an abelian extension; the Artin map is trivial on a ray and its kernel is the norm group; completed primitive Hecke `L`-functions are meromorphic with functional equation | [L*] (`exists_artinEulerProduct_eq_prod_zpow_heckeL`, `exists_artinEulerProduct_linearCharacter_eq_heckeL_mul`, `exists_rayPrincipal_le_ker_artinMap`, `exists_mulEquiv_quotient_normIdealGroup`, `meromorphic_heckeCompletedLFunction`; log §7, §12) | Artin `L`-functions are meromorphic quotients of Hecke `L`-functions natively; their index is a statement on Hecke zero configurations |
+| Every Artin Euler product is a product of integer powers of Hecke `L`-series of fixed fields of Brauer-elementary subgroups with finitely many Euler factors, on `Re s>1`; reciprocity for every linear character of an abelian extension; the Artin map is trivial on a ray and its kernel is the norm group; completed primitive Hecke `L`-functions are meromorphic with functional equation | [L*] (`exists_artinEulerProduct_eq_prod_zpow_heckeL`, `exists_artinEulerProduct_linearCharacter_eq_heckeL_mul`, `exists_rayPrincipal_le_ker_artinMap`, `exists_mulEquiv_quotient_normIdealGroup`, `meromorphic_heckeCompletedLFunction`; log §7, §12). Every ray class character is induced from the primitive character of its conductor; on `ℂ∖{1}` its `L`-function is that of the primitive character times the Euler factors at the modulus; Weil's form of a nontrivial ray class character has `n` negative squares on some family of `n` tests iff `L(s,ψ)` has `n` distinct zeros right of the line [L*] (`heckeLFunction_eq_primitiveHecke_mul`, `exists_le_negIndex_rayClassGram_iff`; log §18) | Artin `L`-functions are meromorphic quotients of Hecke `L`-functions natively; the index law holds for every ray class character, primitive or not |
 | No Maass cusp form with `0<λ<3/16` on a congruence subgroup; none in `(0,¼)` for `N≤25`; a weight-`½` eigenfunction at `3/16` | [L*] (`selberg_status`; log §10) | `3/16` is sharp for every argument whose inputs hold in weight `½` |
 | Zeros `≤1−2δ` ⇔ pulse decay `e^{−(δ−ε)τ}` for `0<δ≤¼`; pulse rate = horocycle rate | [L*] (`zeroFreeStrip_iff_pulse_ringdown`, `pulse_ringdown_iff_horocycle_rate`; log §10) | every ringdown rate is a zero-free strip; `[X]` is the rate `1/16` [D] |
 | Cocompact Fuchsian quotients: resolvent identity, discrete spectrum, Mercer expansion and trace `Σν_j=∫_FK(z,z)` of `T_a−T_b` | [L*] (`resOp_comp`, `resOp_specVec_eq`, `hasSum_nu`; log §8, §11) | the spectral side of a compact trace formula is native; no geometric side and no Selberg zeta function |
@@ -300,7 +300,7 @@ Established:
 |---|---|---|
 | A118 | validation of the producer and dependency chain of the hypothesis-free `7/8` assembly [S] | — |
 | A138 | corollaries of `Θ≤7/8` on the receivers as Lean statements: rung, return bound, ringdown rate `1/16`, comb growth `3/8`, `Λ_dBN≤9/128`, two-end rate `e^{3v/8}` [D5] | — |
-| A159 | converse exponent law: width `≤θ` ⇒ step-packet floor `≥−C_εK^{θ+ε}` and neutral margin `≤C_εK^{θ+ε}` (unverified); with `[X]` the first unconditional exponent `3/8+ε` at the matrices | — |
+| B198 | converse exponent law on all packets: does width `≤θ` give a step-packet floor `≥−C_εK^{θ+ε}` uniformly in the block size? It holds on the odd two-end states [L*] (`zetaZeroWidth_le_iff_twoEndOdd_rate`); a sum over the zeros loses the logarithm of the block size [A] | method |
 | A149 | the function-field calibration of the floor bin over `𝔽_q[T]`, `q≡1 mod 6` (unverified) | — |
 | B174 | the row count of the binding bin | a half-plane in `[13/15,7/8)` |
 | B185 | the long columns: a power saving in the first moment of the root numbers against a dual column, uniformly in the column | a half-plane in `(2/3,13/15)` |
@@ -330,7 +330,7 @@ Established: §0 rows on the Hodge inequality, the certified range, the overlap 
 | | Obstacle | Strength |
 |---|---|---|
 | A162 | Lean statements of the second-eigenvalue floor `1/5000` at ratio `≤103/50`, the conditional-energy floor at the first overlap step, and the `N`-orthogonal form of the overlap criterion [D4], [D10], [D11] | — |
-| A159 | converse exponent law (S12) | — |
+| B198 | converse exponent law on all packets (S12) | method |
 | B152 | one bound state at every ratio and block size | RH |
 | B192 | the first selective sign: one bound state of `(R,3R]` and `(R,4R]` at every block size; proved on packets and their dyadic dilates; middle-supported and unequal-child directions open | sub (finite-height at each ratio); method |
 | B194 | the contraction of the conditional coupling at the first overlap steps: `‖E₁^{−1/2}XE₂^{−1/2}‖≤1` for `a≤3R/100`, `b≤3(R+a)/50` (ratio `2.12`), then at ratios `2.25, 2.53, 3.21`; sufficient at the first step: `‖X‖≤1/5000` | sub; method |
@@ -506,8 +506,8 @@ Receiver statements follow the frontier map at the checkpoint unless marked `[L*
 ### ACS — Castelnuovo–Severi on the degree points
 - **Path:** the Hodge inequality on every window; a uniform lower margin of the window matrices; a bounded two-end family; subpolynomial critical-comb growth; or critical Abel integrability → RH.
 - **Established:** S14, S10; §0.
-- **(a)** A28, A41, A48, A141, A159, A162.
-- **(b)** B152, B192, B194, B195, B196, B149, B169, B88, B87; B130; B16. Gap−binding `≥−C` with one `C`, or `N(o_v)≥−C` at every separation, is the open estimate; cut-share and pole-capacity estimates use index `≤1`; a uniform positive margin is incompatible with RH; fixed-rank gluing, contact-only mixing and nonnegative self-pairings fail [F]/[KR].
+- **(a)** A28, A41, A48, A141, A162.
+- **(b)** B152, B192, B194, B195, B198, B196, B149, B169, B88, B87; B130; B16. Gap−binding `≥−C` with one `C`, or `N(o_v)≥−C` at every separation, is the open estimate; cut-share and pole-capacity estimates use index `≤1`; a uniform positive margin is incompatible with RH; fixed-rank gluing, contact-only mixing and nonnegative self-pairings fail [F]/[KR].
 
 ### ECP — Endpoint character positivity
 - **Path:** endpoint jets → class functions → PSD character Grams at every rank ⇔ RH. **Established:** column projections nonnegative; exterior Toeplitz minors through order 200; mixed shapes `(2,1)`, `(3,1)`, `(2,2)`, `(2,1,1)` paid [F] (log §9).
@@ -537,7 +537,7 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
 | AGZ | Hodge inequality form of RH; certified ratio `≤103/50`; first step packets and thin packets; uniform index bound at each ratio; index law in the aperture; gluing law and its rank kills; weakened and twisted contacts; packet and dilate at ratio three; self-pairing laws; power and critical combs; Laguerre tails [L*] | A162 | B152, B192, B196, B149, B169, B88, B87 |
-| MixingArithmeticOfTheFloorTrees | Doob chain criterion; gap `≤` binding `+c₀`; two-end binding at `√ρ`; pole capacity; overlap law; cut and share law; odd sector and two-end criteria; margin laws for forms and matrices; exponent laws; zero gap and zero curvature of the trees [L*] | A159, A162 | B194, B195, B16 |
+| MixingArithmeticOfTheFloorTrees | Doob chain criterion; gap `≤` binding `+c₀`; two-end binding at `√ρ`; pole capacity; overlap law; cut and share law; odd sector and two-end criteria; margin laws for forms and matrices; exponent laws; zero gap and zero curvature of the trees [L*] | A162 | B194, B195, B198, B16 |
 | AHD / AID / HTGeometry-HardyBoundary | thresholds; the half-line energy branch and the critical state; strong-confinement limits; coercivity; compact sublevels [L*]; barriers, collars, compact profiles [S] | A9, A13, A158, A161 | B104, B123 |
 | ALG | trickle-down from hyperbolic nonnegative links; Cayley ladder criterion [L*]/[F] | — | B196 (links with negative self-pairings) |
 | HFP | short windows do not see the contacts; Li coefficients as limits of comb tails [L*]/[F] | — | B152 |
@@ -549,7 +549,7 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 | GaloisTheoryOfZeros | Jensen equations; heat cover: transport, homotopy invariance, finite support, generation by turns, orbits = simple-join classes, real-time criteria [L*]; off-centre collisions [S] | A160 | B190, B197 |
 | RHTower/Heat | `Λ_dBN<1/8`; quadratic detection; restart law; finiteness of non-real zeros at positive times [L*] | A19, A138 | B24, B124 |
 | RHTower/Artin, HeckeLFunctions | Brauer induction; reciprocity for linear characters; kernel of the Artin map; Artin Euler products as Hecke products; completed Hecke `L`-functions [L*] | A141 | — |
-| CompactHyperbolicSurfaces | resolvent, spectrum, Mercer expansion, trace of `T_a−T_b` [L*] | A120 | B157 |
+| CompactHyperbolicSurfaces | resolvent, spectrum, Mercer expansion, trace of `T_a−T_b` for a cocompact group acting freely; the order `ℤ⟨1,i,j,ij⟩` of the division algebra `(2,3)_ℚ` in `M₂(ℝ)`, its congruence groups `Γ(N)` discrete and, for `N≥3`, acting freely [L*] (log §8, §11, §18) | A120 | B157 |
 | FFA | floors; receivers and kills of the off-scale kinds; tangent data under additive twists [L*]/[F] | — | B170–B173 |
 | SA | ladder; exceptional heights; Liouville twist beyond the trivial aperture [L*]/[KR] | A117 | B159, B156 |
 | ELT | growing-order reduction; restricted prime-weighted cofactor sum [F] | — | B141, B145, B138, B13 |
