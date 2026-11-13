@@ -1,11 +1,12 @@
 # A collision away from the centre exists at a forward time
 
 - **ID:** gtz-m4-off-centre-collision
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** review-1311 §2.19 question 1 (B193), milestone M4; programme card
   `gtz-galois-theory-of-zeros-programme.md`, open core item 6.
-- **Statement:** there are `τ`, `ζ` with `Re τ > 0`, `ζ ≠ 0`, `H_τ(ζ) = 0`, `H_τ'(ζ) = 0`.
+- **Statement:** for every `T` there are `τ`, `ζ` with `Re τ > max(T, 0)`, `ζ ≠ 0`, `H_τ(ζ) = 0`,
+  `H_τ'(ζ) = 0`.
 
 ## Goal
 
@@ -15,8 +16,8 @@ each other. Unconditional (no use of RH or of its negation).
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized
 
 ## Objects
 
@@ -50,9 +51,11 @@ Saddle parameter `a = σ + iη`, `δ = π/4 − η`:
    `|∫_0^∞ Φ(s+iη)e^{τ(s+iη)²+iz(s+iη)}ds − S₀(a)e^{iza}| ≤ leftErr(a) + e^{Re f(a) − Im(za)} saddleErr(a)`.
 5. (Model.) On `Ω(σ₀)`, `|ζ| ≤ 8`:
    `|H_{τ(a)}(ζ/a) − B₀(a) − 2S₀(a) cos ζ| ≤ Cσ⁵e^{−σ}(|B₀(a)| + |S₀(a)|)`.
-6. (Collision.) There are `τ`, `ζ ≠ 0` with `Re τ > 0`, `H_τ(ζ) = H_τ'(ζ) = 0`.
+6. (Collision.) For every `T` there are `τ`, `ζ ≠ 0` with `Re τ > max(T, 0)`,
+   `H_τ(ζ) = H_τ'(ζ) = 0`.
 7. (Exchange.) For every forward base time `b` off the branch times, `G₊(b)` contains an
-   element `σ` and a zero `z` with `σz ∉ {z, −z}`.
+   element `σ` and a zero `z` with `σz ∉ {z, −z}`. In particular `G₊(b)` does not preserve the
+   pairs.
 
 ## Proof
 
@@ -91,10 +94,11 @@ Saddle parameter `a = σ + iη`, `δ = π/4 − η`:
      `|Q(a₁)| = c₀e^{9σ}/|2a₁ − 1|`, `c₀ = 64π⁴/Φ(0)²`, and `|Log Q(a₁)| ≤ |log c₀| + 11σ + π`.
    - *Loop.* `ξ₀(s) = e^{iπs}/4`, `D₁ = f'(a₁) = P₁(2a₁ − 1)`,
      `a(s) = a₁ + h(s)`, `h(s) = (−Log Q(a₁) − 2 Log cos ξ₀(s))/(2D₁)`. Then `a(1) = a(0)`,
-     `|h| ≤ Mσe^{−2σ}`, `M = |log c₀| + 12`, `a(s) ∈ Ω(50)` for `σ` large. Exactly,
+     `|h| ≤ Me^{−2σ}`, `M = |log c₀| + 12`. With `K = (1+M)²σ⁴e^{−σ} ≤ 1/300000`:
+     `|h|σ ≤ K`, `πe^{2σ}(σ+1)|h|² ≤ K`, `a(s) ∈ Ω(50)`, `Re a(s) ≥ σ − 1`. Exactly,
      `f(a₁+h) − f(a₁) − D₁h = P₁[(e^{2h} − 1 − 2h)(a₁ − 1) + (e^{2h} − 1)h] =: P₁R(h)`, hence
      `Q(a(s)) cos² ξ₀(s) = e^{2P₁R(h) + 9h} (2a₁ − 1)/(2a₁ − 1 + 2h) = 1 + e₂(s)`,
-     `|e₂| ≤ 242 (1+M)²σ⁴e^{−σ} ≤ 1/4096` for `σ` large.
+     `|e₂| ≤ 70K ≤ 1/4096`.
    - *Sign.* `u(s) = 2S₀(a(s)) cos ξ₀(s)/B₀(a(s))` is continuous (`Re τ, Re λ > 0`) and
      `u² = 1 + e₂`, so `Re u` never vanishes: `|u − 1| ≤ |e₂|` for all `s`, or `|u + 1| ≤ |e₂|`
      for all `s`. Let `θ = π` in the first case, `θ = 2π` in the second: `sin θ = 0` and
@@ -113,31 +117,38 @@ Saddle parameter `a = σ + iη`, `δ = π/4 − η`:
      `m(s) = a(s)z(s) − θ − ξ₀(s)` is continuous with `|m(s)| ∉ [1/16, 1/8]`, `|m(0)| < 1/16`, so
      `|m(1)| < 1/16`. With `a(1) = a(0)`, `ξ₀(1) = −ξ₀(0) = −1/4`:
      `a(0)(z(1) − z₀) = −1/2 + m(1) − m(0) ≠ 0` and `a(0)(z(1) + z₀) = 2θ + m(1) + m(0) ≠ 0`.
-     Detector `exists_multipleZero_ne_zero_of_transports` with `D = {Re τ > 0}`.
+     Detector `exists_multipleZero_ne_zero_of_transports` with `D = {Re τ > max(T, 0)}`; the
+     loop lies in `D` because `Re τ(a) ≥ Re a` on `Ω(50)` and `Re a(s) ≥ T + 1`.
 7. 6 and `exists_mem_forwardMonodromy_moving_pair`.
 
 ## Consequence for the programme
 
 The sufficient condition "`G₊` preserves the pairs `{z, −z}`"
 (`riemannHypothesis_of_forwardMonodromy_preserves_pairs`) is false: the forward group is strictly
-larger than a group of sign changes. The collision found here is at a complex forward time
-close to the imaginary direction (`Re τ ≍ e^{2σ}/σ²`, `|τ| ≍ e^{2σ}/σ`); RH concerns collisions
-at real positive times.
+larger than a group of sign changes, and it is not commutative of exponent two by that route.
+The collisions found here are at complex forward times close to the imaginary direction
+(`Re τ ≍ e^{2σ}/σ²`, `|τ| ≍ e^{2σ}/σ`), at places `|ζ| ≍ 1/σ`, between the two zeros of
+`B₀ + 2S₀ cos(az)` near `az = θ ± ξ₀`; RH concerns collisions at real positive times. Not
+decided: which of `θ = π`, `θ = 2π` occurs (the sign of `2S₀/B₀` at the base point).
 
 ## Formalization
 
-Modules in `GaloisTheoryOfZeros/`:
+Modules in `GaloisTheoryOfZeros/`, all compiled, wired into the umbrella; axioms of theorems 6
+and 7: `propext`, `Classical.choice`, `Quot.sound`.
 
-| Module | Content | Status |
+| Module | Content | Lean |
 |---|---|---|
-| `TheHeatFamilyIsAnIntegralThroughTheOriginAndTheSaddle` | theorem 1 | compiled |
-| `TheGaussianAtTheSaddleOfTheKernel` | theorem 2 | compiled |
-| `TheSegmentThroughTheOriginIsAGaussianAtTheCentreValue` | theorem 3 | compiled |
-| `TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue` | theorem 4 | compiled |
-| `TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine` | theorem 5 | compiled |
-| `ALoopOfSaddlesTurnsTheSquaredRatioOfTheTwoTermsAroundOne` | theorem 6: ratio, base point, loop | in progress |
-| `ACollisionAwayFromTheCentreExistsAtAForwardTime` | theorems 6, 7 | in progress |
+| `TheHeatFamilyIsAnIntegralThroughTheOriginAndTheSaddle` | theorem 1 | `complexHeat_eq_kernelHalf_add`, `complexHeat_eq_corner` |
+| `TheGaussianAtTheSaddleOfTheKernel` | theorem 2 | `norm_integral_saddleIntegrand_sub_le` |
+| `TheSegmentThroughTheOriginIsAGaussianAtTheCentreValue` | theorem 3 | `exists_norm_bulkHalf_sub_le` |
+| `TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue` | theorem 4 | `norm_lineHalf_sub_le` |
+| `TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine` | theorem 5 | `exists_norm_complexHeat_sub_model_le`, `exists_forall_norm_complexHeat_sub_model_le` |
+| `ALoopOfSaddlesTurnsTheSquaredRatioOfTheTwoTermsAroundOne` | squared ratio, base point, loop | `two_mul_saddleTerm_sq`, `exists_basePoint`, `saddleRatioSq_add`, `loopSaddle_spec`, `exists_loopSaddle` |
+| `ACollisionAwayFromTheCentreExistsAtAForwardTime` | sign, annulus, centre, tracking; theorems 6, 7 | `norm_sub_le_or_norm_add_le`, `le_norm_of_mem_annulus`, `ne_zero_at_centre`, `IsModelLoop.exists_turn`, `IsModelLoop.exists_multipleZero`, `exists_forward_multipleZero_ne_zero`, `exists_mem_forwardMonodromy_moving_a_pair`, `not_forwardMonodromy_preserves_pairs` |
 
+Lean names: `f = saddlePhaseValue`, `P = saddleP`, `τ(a) = saddleTime`, `Q = saddleRatioSq`,
+`B₀ = bulkTerm`, `S₀ = saddleTerm`, `Ω(50) = SaddleRegion`, `ξ₀ = turnPoint`, `a(s) = loopSaddle`.
 
 ## Log
 - 2026-11-13 — created; paper proof written.
+- 2026-11-13 — formalized in seven modules; theorem 6 holds with `Re τ` arbitrarily large.

@@ -53,6 +53,26 @@ theorem primePairWeight_odd_character_identity (N : ℕ) :
     coprimePrimePairWeight_odd_character_identity]
   ring
 
+/-- Distinct prime representations are exactly strict deficit of the odd-character moment. -/
+theorem distinct_prime_pair_iff_odd_character_deficit (N : ℕ) :
+    (∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p ≠ q ∧ p + q = N + 2) ↔
+      2 * (∑ χ : DirichletCharacter ℂ (N + 2) with χ.Odd,
+        ‖unitCharacterSum (N + 1)
+          (fun u => (primeLogWeight (u : ZMod (N + 2)).val : ℂ)) χ‖ ^ 2) <
+        ((N + 2).totient : ℝ) *
+          ∑ u : (ZMod (N + 2))ˣ, primeLogWeight (u : ZMod (N + 2)).val ^ 2 := by
+  rw [← coprimePrimePairWeight_pos_iff]
+  have ht : 0 < ((N + 2).totient : ℝ) := by
+    exact_mod_cast Nat.totient_pos.mpr (by omega : 0 < N + 2)
+  have h := coprimePrimePairWeight_odd_character_identity N
+  constructor
+  · intro hp
+    have hm := mul_pos ht hp
+    linarith only [h, hm]
+  · intro hp
+    apply (mul_pos_iff_of_pos_left ht).mp
+    linarith only [h, hp]
+
 end
 
 end GaloisForLFunctions.Goldbach
