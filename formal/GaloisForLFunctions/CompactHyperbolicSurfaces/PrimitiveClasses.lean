@@ -32,6 +32,7 @@ theorem hypLen_pos {γ : Γ} (hγ : γ ≠ 1) : 0 < hypLen (γ : SL(2, ℝ)) := 
   have := Real.arcosh_pos this
   linarith
 
+omit hΓ in
 theorem primLen_le_hypLen {γ δ : Γ} (hδ : δ ≠ 1) (hc : δ * γ = γ * δ) :
     primLen γ ≤ hypLen (δ : SL(2, ℝ)) := by
   refine csInf_le ⟨0, ?_⟩ ⟨δ, hδ, hc, rfl⟩
@@ -67,8 +68,8 @@ theorem exists_root_lengths (γ : Γ) (hγ : γ ≠ 1) :
     at this
   rw [this, hlen₀]
 
-/-- Primitive elements are their own roots. -/
 omit hΓ in
+/-- Primitive elements are their own roots. -/
 theorem eq_root_of_primitive {γ γ₀ : Γ} {m : ℕ} (hγ : γ ≠ 1)
     (hprim : hypLen (γ : SL(2, ℝ)) = primLen γ) (hlen : hypLen (γ : SL(2, ℝ)) = m * hypLen (γ₀ : SL(2, ℝ)))
     (hp : primLen γ = hypLen (γ₀ : SL(2, ℝ))) : m = 1 := by
@@ -87,7 +88,7 @@ theorem zpow_eq_pm_one_of_primitive {g δ : Γ} {i : ℤ} (hδ : δ ≠ 1) (hδg
     (hlen : ∀ k : ℤ, hypLen ((g ^ k : Γ) : SL(2, ℝ)) = |k| * hypLen (g : SL(2, ℝ))) :
     i = 1 ∨ i = -1 := by
   have hc : g * δ = δ * g := by rw [hδg]; exact (Commute.zpow_right (Commute.refl g) i).eq
-  have hle := primLen_le_hypLen hΓ hhyp hg1 hc
+  have hle := primLen_le_hypLen hhyp hg1 hc
   rw [← hprim, hδg, hlen] at hle
   have hpos := hypLen_pos hhyp hg1
   have hi : |(i : ℝ)| ≤ 1 := by

@@ -1,4 +1,6 @@
 import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.LinearAlgebra.Trace
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
@@ -196,7 +198,38 @@ theorem splitBand_complementary_trace_pow (r c : ℝ) (n : ℕ) :
     rw [phase_conj_mul, phase_conj_mul]
   rw [hc, phase_conj_pow, Matrix.trace_mul_cycle, splitBandPhase_sq, one_mul]
 
+/-- Every member of the projection family has rank three. -/
+theorem splitBandProjection_rank {r c : ℝ} (h : r ^ 2 + c ^ 2 = 1/4) :
+    (splitBandProjection r c).rank = 3 := by
+  have hi : IsIdempotentElem (splitBandProjection r c).toLin' := by
+    change (splitBandProjection r c).toLin' ∘ₗ (splitBandProjection r c).toLin' = _
+    rw [← Matrix.toLin'_mul, splitBandProjection_sq h]
+  have ht := (LinearMap.IsIdempotentElem.isProj_range _ hi).trace
+  rw [Matrix.trace_toLin'_eq, splitBandProjection_trace] at ht
+  change (3 : ℝ) = ((splitBandProjection r c).rank : ℝ) at ht
+  exact_mod_cast ht.symm
+
+/-- The exact mixture uses the Hermitian compressions themselves. -/
+theorem splitBand_actual_mixture_second_fourth :
+    let E := splitBandProjection (Real.sqrt (1/5)) (Real.sqrt (1/20))
+    let F := splitBandProjection 0 (1/2)
+    (5/8:ℝ) * (((E * splitBandSource * E) ^ 2).trace / 3) +
+      (3/8:ℝ) * (((F * splitBandSource * F) ^ 2).trace / 3) = 1/12 ∧
+    (5/8:ℝ) * (((E * splitBandSource * E) ^ 4).trace / 3) +
+      (3/8:ℝ) * (((F * splitBandSource * F) ^ 4).trace / 3) = 1/60 := by
+  dsimp only
+  rw [splitBandCompression_trace_pow splitBandProjection_parameters.1,
+    splitBandCompression_trace_pow splitBandProjection_parameters.2,
+    splitBandCompression_trace_pow splitBandProjection_parameters.1,
+    splitBandCompression_trace_pow splitBandProjection_parameters.2]
+  exact splitBand_mixture_second_fourth
+
 end GaloisForLFunctions.IncommensurableGaborPinching
 
 #print axioms GaloisForLFunctions.IncommensurableGaborPinching.splitBand_mixture_second_fourth
 #print axioms GaloisForLFunctions.IncommensurableGaborPinching.splitBandCompression_trace_pow
+
+#print axioms GaloisForLFunctions.IncommensurableGaborPinching.splitBandProjection_rank
+#print axioms GaloisForLFunctions.IncommensurableGaborPinching.splitBand_complementary_trace_pow
+#print axioms GaloisForLFunctions.IncommensurableGaborPinching.splitBand_actual_mixture_second_fourth
+#print axioms GaloisForLFunctions.IncommensurableGaborPinching.splitBandSource_singleton_coordinates
