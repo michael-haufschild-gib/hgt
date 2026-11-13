@@ -168,6 +168,8 @@ negation invariance, the full-line weak row identity, vanishing of a high
 positive level, the two-sided envelope, and exponential square moments
 below order `15`. Its final existence theorem is
 `exists_exponentially_bounded_halfLineEnergyMinimizer`.
+The critical-state application is
+`riemannHypothesis_or_exists_exponentially_bounded_criticalState`.
 The complete prime and Gamma comparisons are also written
 but unaudited. No barrier theorem or contribution is counted yet.
 

@@ -156,49 +156,56 @@ theorem spreadTest_mul_eq_zero (hβs : ∀ v, 1 < |v| → β v = 0) {L : ℝ} (h
     rw [abs_sub_comm d u] at htri
     rw [spreadTest_eq_zero hβs hL (show L < |u - e| by linarith), mul_zero]
 
+/-- Pointwise, the square of three disjoint copies is the sum of their squares. -/
+theorem threeSpread_sq_eq (hβs : ∀ v, 1 < |v| → β v = 0) {L : ℝ} (hL : 0 < L)
+    (d c₀ c₁ c₂ u : ℝ) :
+    threeSpread β L d c₀ c₁ c₂ u ^ 2 =
+      (c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
+        c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 := by
+  have e3 : |d - (d + 3 * L)| = 3 * L := by
+    rw [show d - (d + 3 * L) = -(3 * L) by ring, abs_neg, abs_of_pos (by linarith)]
+  have e6 : |d - (d + 6 * L)| = 6 * L := by
+    rw [show d - (d + 6 * L) = -(6 * L) by ring, abs_neg, abs_of_pos (by linarith)]
+  have e36 : |d + 3 * L - (d + 6 * L)| = 3 * L := by
+    rw [show d + 3 * L - (d + 6 * L) = -(3 * L) by ring, abs_neg, abs_of_pos (by linarith)]
+  have h01 : spreadTest β L d u * spreadTest β L (d + 3 * L) u = 0 :=
+    spreadTest_mul_eq_zero hβs hL e3.ge u
+  have h02 : spreadTest β L d u * spreadTest β L (d + 6 * L) u = 0 :=
+    spreadTest_mul_eq_zero hβs hL (by rw [e6]; linarith) u
+  have h12 : spreadTest β L (d + 3 * L) u * spreadTest β L (d + 6 * L) u = 0 :=
+    spreadTest_mul_eq_zero hβs hL e36.ge u
+  unfold threeSpread
+  linear_combination (2 * c₀ * c₁) * h01 + (2 * c₀ * c₂) * h02 + (2 * c₁ * c₂) * h12
+
+theorem integrable_spreadTest_sq (hβ : ContDiff ℝ 2 β) (hβs : ∀ v, 1 < |v| → β v = 0) {L : ℝ}
+    (hL : 0 < L) (e : ℝ) : Integrable fun u => spreadTest β L e u ^ 2 := by
+  have hc : Continuous fun u => spreadTest β L e u ^ 2 :=
+    (contDiff_spreadTest hβ L e).continuous.pow 2
+  have hs : HasCompactSupport fun u => spreadTest β L e u ^ 2 :=
+    (hasCompactSupport_spreadTest hβs hL e).comp_left (g := fun x : ℝ => x ^ 2) (by norm_num)
+  exact hc.integrable_of_hasCompactSupport hs
+
+theorem integral_const_mul_spreadTest_sq (β : ℝ → ℝ) {L : ℝ} (hL : 0 < L) (c e : ℝ) :
+    ∫ u, c ^ 2 * spreadTest β L e u ^ 2 = c ^ 2 * (L * ∫ v, β v ^ 2) := by
+  rw [integral_const_mul, integral_spreadTest_sq β hL e]
+
 /-- **The mass of three copies is `Σ c_i² · L ∫ β²`.** -/
 theorem integral_threeSpread_sq (hβ : ContDiff ℝ 2 β) (hβs : ∀ v, 1 < |v| → β v = 0) {L : ℝ}
     (hL : 0 < L) (d c₀ c₁ c₂ : ℝ) :
     ∫ u, threeSpread β L d c₀ c₁ c₂ u ^ 2 =
       (c₀ ^ 2 + c₁ ^ 2 + c₂ ^ 2) * (L * ∫ v, β v ^ 2) := by
-  have hL3 : 0 < 3 * L := by linarith
-  have e3 : |d - (d + 3 * L)| = 3 * L := by
-    rw [show d - (d + 3 * L) = -(3 * L) by ring, abs_neg, abs_of_pos hL3]
-  have e6 : |d - (d + 6 * L)| = 6 * L := by
-    rw [show d - (d + 6 * L) = -(6 * L) by ring, abs_neg, abs_of_pos (by linarith)]
-  have e36 : |d + 3 * L - (d + 6 * L)| = 3 * L := by
-    rw [show d + 3 * L - (d + 6 * L) = -(3 * L) by ring, abs_neg, abs_of_pos hL3]
-  have h01 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d) (e := d + 3 * L) e3.ge
-  have h02 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d) (e := d + 6 * L)
-    (by rw [e6]; linarith)
-  have h12 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d + 3 * L) (e := d + 6 * L) e36.ge
-  have hpt : ∀ u, threeSpread β L d c₀ c₁ c₂ u ^ 2 =
-      (c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
-        c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 := fun u => by
-    have e : threeSpread β L d c₀ c₁ c₂ u ^ 2 =
-        c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 +
-          c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 +
-          2 * c₀ * c₁ * (spreadTest β L d u * spreadTest β L (d + 3 * L) u) +
-          2 * c₀ * c₂ * (spreadTest β L d u * spreadTest β L (d + 6 * L) u) +
-          2 * c₁ * c₂ * (spreadTest β L (d + 3 * L) u * spreadTest β L (d + 6 * L) u) := by
-      simp only [threeSpread]
-      ring
-    rw [e, h01 u, h02 u, h12 u]
-    ring
-  have hint : ∀ e, Integrable fun u => spreadTest β L e u ^ 2 := fun e =>
-    ((contDiff_spreadTest hβ L e).continuous.pow 2).integrable_of_hasCompactSupport
-      ((hasCompactSupport_spreadTest hβs hL e).comp_left (g := fun x : ℝ => x ^ 2) (by norm_num))
-  have i0 : Integrable fun u => c₀ ^ 2 * spreadTest β L d u ^ 2 := (hint d).const_mul _
+  have i0 : Integrable fun u => c₀ ^ 2 * spreadTest β L d u ^ 2 :=
+    (integrable_spreadTest_sq hβ hβs hL d).const_mul _
   have i1 : Integrable fun u => c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 :=
-    (hint _).const_mul _
+    (integrable_spreadTest_sq hβ hβs hL _).const_mul _
   have i2 : Integrable fun u => c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 :=
-    (hint _).const_mul _
+    (integrable_spreadTest_sq hβ hβs hL _).const_mul _
   have i01 : Integrable fun u =>
       c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 := i0.add i1
   have hsum : ∫ u, threeSpread β L d c₀ c₁ c₂ u ^ 2 =
       ∫ u, (c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
         c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 :=
-    integral_congr_ae (Filter.Eventually.of_forall hpt)
+    integral_congr_ae (Filter.Eventually.of_forall (threeSpread_sq_eq hβs hL d c₀ c₁ c₂))
   have hA : ∫ u, (c₀ ^ 2 * spreadTest β L d u ^ 2 +
         c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) + c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 =
       (∫ u, c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
@@ -206,10 +213,9 @@ theorem integral_threeSpread_sq (hβ : ContDiff ℝ 2 β) (hβs : ∀ v, 1 < |v|
   have hB : ∫ u, c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 =
       (∫ u, c₀ ^ 2 * spreadTest β L d u ^ 2) +
         ∫ u, c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 := integral_add i0 i1
-  have hc : ∀ (c e : ℝ), ∫ u, c ^ 2 * spreadTest β L e u ^ 2 = c ^ 2 * (L * ∫ v, β v ^ 2) :=
-    fun c e => (integral_const_mul (c ^ 2) fun u => spreadTest β L e u ^ 2).trans
-      (congrArg (c ^ 2 * ·) (integral_spreadTest_sq β hL e))
-  rw [hsum, hA, hB, hc c₀ d, hc c₁ (d + 3 * L), hc c₂ (d + 6 * L)]
+  rw [hsum, hA, hB, integral_const_mul_spreadTest_sq β hL c₀ d,
+    integral_const_mul_spreadTest_sq β hL c₁ (d + 3 * L),
+    integral_const_mul_spreadTest_sq β hL c₂ (d + 6 * L)]
   ring
 
 /-- The transform of three copies is the combination of their transforms. -/

@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ExponentialBarrierPoleComparison
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ExponentialBarrierPotential
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ExponentialBarrierGammaComparison
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CriticalHalfLineGroundEnergyDerivative
 
 /-!
 # Exponential comparison for confining half-line minimizers
@@ -14,10 +15,10 @@ of every order below fifteen.
 
 set_option autoImplicit false
 noncomputable section
-open MeasureTheory Filter Set
+open MeasureTheory Filter Set Zeta23
 open _root_.RHTower
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
-open CriticalArithmeticCorrelationTheory HTGeometry
+open CriticalArithmeticCorrelationTheory HTGeometry WindowTowerOfSpecZ
 
 /-- Negation preserves the normalized minimizing line. -/
 theorem IsHalfLineEnergyMinimizer.neg {R : ℝ} {F : ℝ → ℝ}
@@ -222,10 +223,39 @@ theorem exists_exponentially_bounded_halfLineEnergyMinimizer {R : ℝ} (hR : 0 <
   exact ⟨F, hF, fun _ hβ hβupper => hF.exists_exponential_barrier hR hβ hβupper,
     fun _ hb => hF.integrable_exponential_square hR hb⟩
 
+/-- The actual critical state inherits the confining envelopes and all square moments below fifteen. -/
+theorem criticalHalfLineGroundState_exponential_bounds {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    (∀ β : ℝ, 1 / 2 < β → β < 15 / 2 →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ u ∂volume, |F u| ≤ C * Real.exp (β * u)) ∧
+      ∀ b : ℝ, b < 15 → Integrable (fun u => F u ^ 2 * Real.exp (-(b * u))) := by
+  have hm : IsHalfLineEnergyMinimizer W₀ F :=
+    ⟨criticalHalfLineEnergyDomain_of_groundState hF, hF.2.2.2.1,
+      (criticalHalfLineFullEnergy_groundState_eq_zero hW ht hF).trans
+        (criticalHalfLineGroundEnergy_eq_zero hW ht hF).symm⟩
+  exact ⟨fun _ hβ hβupper => hm.exists_exponential_barrier hW hβ hβupper,
+    fun _ hb => hm.integrable_exponential_square hW hb⟩
+
+/-- Failure of RH supplies an actual critical state with the full exponential envelope bounds. -/
+theorem riemannHypothesis_or_exists_exponentially_bounded_criticalState :
+    RiemannHypothesis ∨ ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧
+      (∀ β : ℝ, 1 / 2 < β → β < 15 / 2 →
+        ∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ u ∂volume, |F u| ≤ C * Real.exp (β * u)) ∧
+      ∀ b : ℝ, b < 15 → Integrable (fun u => F u ^ 2 * Real.exp (-(b * u))) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F, hW, ht, hF⟩
+  · exact Or.inl hRH
+  · obtain ⟨he, hm⟩ := criticalHalfLineGroundState_exponential_bounds hW ht hF
+    exact Or.inr ⟨W₀, F, hW, ht, hF, he, hm⟩
+
 #print axioms IsHalfLineEnergyMinimizer.neg
 #print axioms IsHalfLineEnergyMinimizer.weakEquation_rows
 #print axioms IsHalfLineEnergyMinimizer.exists_exponential_upper_bound
 #print axioms IsHalfLineEnergyMinimizer.exists_exponential_barrier
 #print axioms IsHalfLineEnergyMinimizer.integrable_exponential_square
 #print axioms exists_exponentially_bounded_halfLineEnergyMinimizer
+#print axioms criticalHalfLineGroundState_exponential_bounds
+#print axioms riemannHypothesis_or_exists_exponentially_bounded_criticalState
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
