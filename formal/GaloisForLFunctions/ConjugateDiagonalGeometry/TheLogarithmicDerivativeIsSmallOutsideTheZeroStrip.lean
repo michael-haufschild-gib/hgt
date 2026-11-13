@@ -1,4 +1,4 @@
-import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.QuasiRiemannHypothesis
+import GaloisForLFunctions.MetaplecticMobiusDescent.WeightedCubicResidualFourierTests
 import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.ZetaLogDerivLineBound
 import GaloisForLFunctions.HTGeometry.ThreeCircles

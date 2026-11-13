@@ -15,7 +15,7 @@ identity term is `Σ_F D(u(z,z)) = |F| D(0)`; the rest is grouped by conjugacy c
 `𝒜D(ℓ) = e^{−(a−½)ℓ}/(2a−1) − e^{−(b−½)ℓ}/(2b−1)` divided by `2 sinh(ℓ/2)` (`lintegral_orbit_diffProfile`).
 -/
 
-open MeasureTheory Set UpperHalfPlane Real
+open MeasureTheory Set UpperHalfPlane Real Filter
 open scoped MatrixGroups ENNReal Pointwise
 
 namespace GaloisForLFunctions.CompactHyperbolicSurfaces
@@ -35,12 +35,11 @@ theorem geomWeight_nonneg {a b ℓ : ℝ} (ha : 1 / 2 < a) (hab : a ≤ b) (hℓ
   refine div_nonneg ?_ (by positivity)
   have h1 : exp (-((b - 1 / 2) * ℓ)) ≤ exp (-((a - 1 / 2) * ℓ)) :=
     Real.exp_le_exp.mpr (by nlinarith)
-  have h2 : 1 / (2 * b - 1) ≤ 1 / (2 * a - 1) :=
-    one_div_le_one_div_of_le (by linarith) (by linarith)
-  have h3 : exp (-((b - 1 / 2) * ℓ)) / (2 * b - 1) ≤ exp (-((a - 1 / 2) * ℓ)) / (2 * a - 1) := by
-    rw [div_eq_mul_one_div, div_eq_mul_one_div]
-    exact mul_le_mul h1 h2 (by have : (0:ℝ) < 2 * b - 1 := by linarith; positivity)
-      (exp_pos _).le
+  have h3 : exp (-((b - 1 / 2) * ℓ)) / (2 * b - 1) ≤ exp (-((a - 1 / 2) * ℓ)) / (2 * a - 1) :=
+    calc exp (-((b - 1 / 2) * ℓ)) / (2 * b - 1) ≤ exp (-((a - 1 / 2) * ℓ)) / (2 * b - 1) :=
+          div_le_div_of_nonneg_right h1 (by linarith)
+      _ ≤ exp (-((a - 1 / 2) * ℓ)) / (2 * a - 1) :=
+          div_le_div_of_nonneg_left (exp_pos _).le (by linarith) (by linarith)
   linarith
 
 theorem sinh_sq_half_eq {ℓ : ℝ} : sinh (ℓ / 2) ^ 2 = (exp ℓ - 1) ^ 2 / (4 * exp ℓ) := by
@@ -52,22 +51,24 @@ theorem sinh_sq_half_eq {ℓ : ℝ} : sinh (ℓ / 2) ^ 2 = (exp ℓ - 1) ^ 2 / (
 
 /-- **The orbital weight.**  `∫_ℝ D((N − 1)²/(4N)·(1 + t²)) dt = g_{a,b}(ℓ)` for `N = e^ℓ`. -/
 theorem lintegral_orbit_diffProfile {a b ℓ : ℝ} (ha : 1 / 2 < a) (hab : a ≤ b) (hℓ : 0 < ℓ) :
-    ∫⁻ t : ℝ, diffProfile a b ((exp ℓ - 1) ^ 2 / (4 * exp ℓ) * (1 + t ^ 2)) =
+    ∫⁻ t : ℝ, CompactQuotient.diffProfile a b ((exp ℓ - 1) ^ 2 / (4 * exp ℓ) * (1 + t ^ 2)) =
       ENNReal.ofReal (geomWeight a b ℓ) := by
   have hs : 0 < sinh (ℓ / 2) := Real.sinh_pos_iff.mpr (by linarith)
+  have h2s : 0 < 2 * sinh (ℓ / 2) := by positivity
   have habel := abelL_diffKernel ha hab ℓ
-  rw [abelL, lintegral_eq_ofReal_mul_lintegral_comp_mul _ (by positivity : 0 < 2 * sinh (ℓ / 2))]
-    at habel
-  have hint : ∫⁻ t : ℝ, diffProfile a b ((exp ℓ - 1) ^ 2 / (4 * exp ℓ) * (1 + t ^ 2)) =
-      ∫⁻ η : ℝ, ENNReal.ofReal (diffKernel a b ((2 * sinh (ℓ / 2) * η) ^ 2 / 4 +
-        sinh (ℓ / 2) ^ 2)) := by
+  rw [abs_of_pos hℓ] at habel
+  have hscale : abelL (fun u => ENNReal.ofReal (diffKernel a b u)) ℓ =
+      ENNReal.ofReal (2 * sinh (ℓ / 2)) * ∫⁻ t : ℝ,
+        CompactQuotient.diffProfile a b ((exp ℓ - 1) ^ 2 / (4 * exp ℓ) * (1 + t ^ 2)) := by
+    rw [abelL, lintegral_eq_ofReal_mul_lintegral_comp_mul _ h2s]
+    congr 1
     refine lintegral_congr fun t => ?_
-    rw [diffProfile, ← sinh_sq_half_eq]
+    rw [CompactQuotient.diffProfile, ← sinh_sq_half_eq]
     congr 2
     ring
-  rw [hint, geomWeight, abs_of_pos hℓ] at *
-  rw [ENNReal.ofReal_div_of_pos (by positivity), ← habel, mul_comm,
-    ENNReal.mul_div_cancel_right (by simp [hs]) ENNReal.ofReal_ne_top]
+  rw [hscale] at habel
+  rw [geomWeight, ENNReal.ofReal_div_of_pos h2s, ← habel, mul_comm,
+    ENNReal.mul_div_cancel_right (by simp [h2s]) ENNReal.ofReal_ne_top]
 
 namespace CompactQuotient
 
@@ -117,11 +118,11 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
   haveI := X.cocompactFree.countable
   have ha' : 1 / 2 < a := by linarith
   have hmeasD : Measurable (diffProfile a b) := measurable_diffProfile (by linarith) hab
-  set f : X.Γ → ℍ → ℝ≥0∞ := fun γ z => diffProfile a b (pairU z (((γ : X.Γ) : SL(2, ℝ)) • z))
-  have hfm : ∀ γ, Measurable (f γ) := fun γ =>
-    hmeasD.comp ((continuous_pairU.comp (continuous_id.prodMk (continuous_const_smul _))).measurable)
-  have hsplit : ∀ z, autK X.Γ (diffProfile a b) z z =
-      diffProfile a b 0 + ∑' γ : X.Γ, ite (γ = 1) 0 (f γ z) := by
+  have hfm : ∀ γ : X.Γ, Measurable fun z => diffProfile a b (pairU z (((γ : X.Γ) : SL(2, ℝ)) • z)) :=
+    fun γ => hmeasD.comp ((continuous_pairU.comp
+      (continuous_id.prodMk (continuous_const_smul _))).measurable)
+  have hsplit : ∀ z, autK X.Γ (diffProfile a b) z z = diffProfile a b 0 +
+      ∑' γ : X.Γ, ite (γ = 1) 0 (diffProfile a b (pairU z (((γ : X.Γ) : SL(2, ℝ)) • z))) := by
     intro z
     rw [autK, ENNReal.tsum_eq_add_tsum_ite (1 : X.Γ)]
     congr 1
@@ -134,8 +135,9 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
       · simp only [h, ite_true]; exact measurable_const.aemeasurable
       · simp only [h, ite_false]; exact (hfm γ).aemeasurable]
   congr 1
-  have hite : ∀ γ : X.Γ, ∫⁻ z in X.F, ite (γ = 1) 0 (f γ z) =
-      ite (γ = 1) 0 (∫⁻ z in X.F, f γ z) := by
+  have hite : ∀ γ : X.Γ, ∫⁻ z in X.F,
+      ite (γ = 1) 0 (diffProfile a b (pairU z (((γ : X.Γ) : SL(2, ℝ)) • z))) =
+      ite (γ = 1) 0 (∫⁻ z in X.F, diffProfile a b (pairU z (((γ : X.Γ) : SL(2, ℝ)) • z))) := by
     intro γ; by_cases h : γ = 1 <;> simp [h]
   simp_rw [hite]
   -- regroup by conjugacy classes
@@ -143,12 +145,13 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
     ENNReal.tsum_sigma', ENNReal.tsum_eq_add_tsum_ite (1 : ConjClasses X.Γ)]
   have h1 : ∑' γ : {γ : X.Γ // ConjClasses.mk γ = 1},
       ite ((Equiv.sigmaFiberEquiv ConjClasses.mk ⟨1, γ⟩ : X.Γ) = 1) 0
-        (∫⁻ z in X.F, f (Equiv.sigmaFiberEquiv ConjClasses.mk ⟨1, γ⟩) z) = 0 := by
+        (∫⁻ z in X.F, diffProfile a b (pairU z
+          (((Equiv.sigmaFiberEquiv ConjClasses.mk ⟨1, γ⟩ : X.Γ) : SL(2, ℝ)) • z))) = 0 := by
     refine ENNReal.tsum_eq_zero.mpr fun γ => ?_
     have : (γ : X.Γ) = 1 := by
-      have := γ.2
-      rw [← ConjClasses.mk_one, ConjClasses.mk_eq_mk_iff_isConj] at this
-      exact isConj_one_right.mp this.symm
+      have h : ConjClasses.mk (γ : X.Γ) = ConjClasses.mk 1 := γ.2
+      rw [ConjClasses.mk_eq_mk_iff_isConj] at h
+      exact isConj_one_right.mp h.symm
     simp [Equiv.sigmaFiberEquiv_apply, this]
   rw [h1, zero_add, ← tsum_subtype_eq_of_support_subset (s := {c | c ≠ 1})]
   swap
@@ -156,6 +159,7 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
     by_contra h
     simp only [mem_setOf_eq, not_not] at h
     simp [h] at hc
+  change ∑' c : {c : ConjClasses X.Γ // c ≠ 1}, _ = _
   refine tsum_congr fun c => ?_
   have hc : (c : ConjClasses X.Γ) ≠ 1 := c.2
   rw [if_neg hc]
