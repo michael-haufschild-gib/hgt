@@ -26,6 +26,7 @@ theorem compactPerturbedEnergy_sub_le (J : E →L[ℂ] F) (R : F →L[ℂ] F) (u
       (2 * ‖v‖ * ‖u - v‖ + ‖u - v‖ ^ 2) +
         ‖R‖ * (2 * ‖J v‖ * ‖J u - J v‖ + ‖J u - J v‖ ^ 2) := by
   have hn : |‖u‖ ^ 2 - ‖v‖ ^ 2| ≤ 2 * ‖v‖ * ‖u - v‖ + ‖u - v‖ ^ 2 := by
+    letI : InnerProductSpace ℝ E := InnerProductSpace.rclikeToReal ℂ E
     simpa only [← add_sub_assoc, add_sub_cancel_left] using
       RHTower.sq_norm_perturbation v (u - v)
   have he : compactPerturbedEnergy J R u - compactPerturbedEnergy J R v =

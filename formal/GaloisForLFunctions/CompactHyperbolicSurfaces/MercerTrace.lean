@@ -351,6 +351,7 @@ theorem tsum_ofReal_nu (hab : a < b) :
     _ = ∫⁻ z, ENNReal.ofReal (X.diffKer a b z z) ∂X.μ :=
         lintegral_congr fun z => X.tsum_enorm_normRep_sq ha hab z
 
+include ha in
 theorem continuous_diffKer_diag (hab : a < b) : Continuous fun z => X.diffKer a b z z := by
   have hd : Continuous fun z : ℍ => (z, z) := continuous_id.prodMk continuous_id
   exact (X.continuous_diffKer ha hab).comp hd
