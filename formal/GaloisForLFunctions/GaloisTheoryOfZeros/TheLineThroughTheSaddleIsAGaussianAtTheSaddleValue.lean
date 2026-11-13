@@ -251,14 +251,14 @@ def saddleP (a : ℂ) : ℂ := π * cexp (2 * a)
 def saddleTime (a : ℂ) : ℂ := saddleP a / a
 
 /-- The value `f(a) = πe^{2a}(a − 1)` of the phase at its saddle. -/
-def saddleValue (a : ℂ) : ℂ := saddleP a * (a - 1)
+def saddlePhaseValue (a : ℂ) : ℂ := saddleP a * (a - 1)
 
 /-- The amplitude `4π² e^{9a/2 + f(a) + iza}` of the line integral. -/
-def saddleAmp (a z : ℂ) : ℂ := 4 * (π : ℂ) ^ 2 * cexp (9 * a / 2 + saddleValue a + I * z * a)
+def saddleAmp (a z : ℂ) : ℂ := 4 * (π : ℂ) ^ 2 * cexp (9 * a / 2 + saddlePhaseValue a + I * z * a)
 
 /-- The saddle term `S₀(a) = 4π² e^{9a/2 + f(a)} (π/(2P − τ))^{1/2}`. -/
 def saddleTerm (a : ℂ) : ℂ :=
-  4 * (π : ℂ) ^ 2 * cexp (9 * a / 2 + saddleValue a) *
+  4 * (π : ℂ) ^ 2 * cexp (9 * a / 2 + saddlePhaseValue a) *
     ((π : ℂ) / (2 * saddleP a - saddleTime a)) ^ (1 / 2 : ℂ)
 
 theorem saddleP_re (a : ℂ) :
@@ -286,30 +286,30 @@ theorem saddleTime_mul {a : ℂ} (ha : a ≠ 0) : saddleTime a * a = saddleP a :
 /-- **The phase at its saddle.** `τ(a+v)² + iz(a+v) − πe^{2(a+v)} = f(a) + iza + izv + Pψ(v) + τv²`. -/
 theorem saddle_exponent_eq {a : ℂ} (ha : a ≠ 0) (z : ℂ) (v : ℝ) :
     saddleTime a * (a + v) ^ 2 + I * z * (a + v) - π * cexp (2 * (a + v)) =
-      (saddleValue a + I * z * a) +
+      (saddlePhaseValue a + I * z * a) +
         (I * z * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) + saddleTime a * (v : ℂ) ^ 2) := by
   have h := saddleTime_mul ha
   have he : cexp (2 * (a + v)) = cexp (2 * a) * cexp (2 * v) := by rw [mul_add, Complex.exp_add]
   have hψ : ((saddlePhase v : ℝ) : ℂ) = 1 + 2 * v - cexp (2 * v) := by simp [saddlePhase]
-  rw [he, hψ, saddleValue]
+  rw [he, hψ, saddlePhaseValue]
   rw [saddleP] at h ⊢
   linear_combination (a + 2 * v) * h
 
 /-- `τ(a − 1)² = f(a) − P + τ`: the value of the phase one unit to the left of the saddle. -/
 theorem saddleTime_mul_sub_one_sq {a : ℂ} (ha : a ≠ 0) :
-    saddleTime a * (a - 1) ^ 2 = saddleValue a - saddleP a + saddleTime a := by
+    saddleTime a * (a - 1) ^ 2 = saddlePhaseValue a - saddleP a + saddleTime a := by
   have h := saddleTime_mul ha
-  rw [saddleValue]
+  rw [saddlePhaseValue]
   linear_combination (a - 2) * h
 
 theorem norm_saddleAmp (a z : ℂ) :
     ‖saddleAmp a z‖ =
-      4 * π ^ 2 * Real.exp (9 * a.re / 2 + ((saddleValue a).re - (z * a).im)) := by
+      4 * π ^ 2 * Real.exp (9 * a.re / 2 + ((saddlePhaseValue a).re - (z * a).im)) := by
   have h1 : ‖(4 : ℂ) * (π : ℂ) ^ 2‖ = 4 * π ^ 2 := by
     rw [show (4 : ℂ) * (π : ℂ) ^ 2 = ((4 * π ^ 2 : ℝ) : ℂ) by simp, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos (by positivity)]
-  have h2 : (9 * a / 2 + saddleValue a + I * z * a).re =
-      9 * a.re / 2 + ((saddleValue a).re - (z * a).im) := by
+  have h2 : (9 * a / 2 + saddlePhaseValue a + I * z * a).re =
+      9 * a.re / 2 + ((saddlePhaseValue a).re - (z * a).im) := by
     have h3 : (9 * a / 2).re = 9 * a.re / 2 := by simp
     rw [mul_assoc I z a, Complex.add_re, Complex.add_re, Complex.I_mul_re, h3]
     ring
@@ -322,7 +322,7 @@ theorem kernelLead_mul_cexp_eq {a : ℂ} (ha : a ≠ 0) (z : ℂ) (v : ℝ) :
   have h := saddle_exponent_eq ha z v
   have e : 9 * (a + v) / 2 + -(π * cexp (2 * (a + v))) +
         (saddleTime a * (a + v) ^ 2 + I * z * (a + v)) =
-      (9 * a / 2 + saddleValue a + I * z * a) +
+      (9 * a / 2 + saddlePhaseValue a + I * z * a) +
         ((9 / 2 + I * z) * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
           saddleTime a * (v : ℂ) ^ 2) := by
     linear_combination h
@@ -332,11 +332,11 @@ theorem kernelLead_mul_cexp_eq {a : ℂ} (ha : a ≠ 0) (z : ℂ) (v : ℝ) :
         rw [kernelLead, Complex.exp_add (9 * (a + v) / 2 + -(π * cexp (2 * (a + v)))) _,
           Complex.exp_add (9 * (a + v) / 2) _]
         ring
-    _ = 4 * (π : ℂ) ^ 2 * cexp ((9 * a / 2 + saddleValue a + I * z * a) +
+    _ = 4 * (π : ℂ) ^ 2 * cexp ((9 * a / 2 + saddlePhaseValue a + I * z * a) +
           ((9 / 2 + I * z) * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
             saddleTime a * (v : ℂ) ^ 2)) := by rw [e]
     _ = saddleAmp a z * saddleIntegrand (saddleP a) (saddleTime a) (9 / 2 + I * z) v := by
-        rw [saddleAmp, saddleIntegrand, Complex.exp_add (9 * a / 2 + saddleValue a + I * z * a) _]
+        rw [saddleAmp, saddleIntegrand, Complex.exp_add (9 * a / 2 + saddlePhaseValue a + I * z * a) _]
         ring
 
 /-! ## The part of the line at the saddle -/
@@ -368,7 +368,7 @@ theorem norm_integral_Ioi_stripIntegrand_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (
     (hτ : 8 * (saddleTime a).re ≤ (saddleP a).re) (hz : ‖z‖ ≤ 1) :
     ‖(∫ s in Ioi (a.re - 1), stripIntegrand (saddleTime a) z (s + a.im * I)) -
         saddleAmp a z * ((π : ℂ) / (2 * saddleP a - saddleTime a)) ^ (1 / 2 : ℂ)‖ ≤
-      Real.exp ((saddleValue a).re - (z * a).im) * saddleErr a := by
+      Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a := by
   have hπ := Real.pi_pos
   have ha : a ≠ 0 := by
     intro h
@@ -404,7 +404,7 @@ theorem norm_integral_Ioi_stripIntegrand_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (
     simp only [hrest]
     ring
   set D : ℝ := leadConst a.im *
-    Real.exp (5 * a.re / 2 + ((saddleValue a).re - (z * a).im) + 4) with hD
+    Real.exp (5 * a.re / 2 + ((saddlePhaseValue a).re - (z * a).im) + 4) with hD
   have hD0 : 0 ≤ D := by positivity
   have hrestle : ∀ v ∈ Ioi (-1 : ℝ),
       ‖rest v‖ ≤ D * Real.exp (-((saddleP a).re / 4) * v ^ 2) := by
@@ -439,15 +439,15 @@ theorem norm_integral_Ioi_stripIntegrand_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (
     -- the modulus of the phase
     have hnorm_prod : ‖cexp (-(π * cexp (2 * (a + v))))‖ *
         ‖cexp (saddleTime a * (a + v) ^ 2 + I * z * (a + v))‖ =
-        Real.exp ((saddleValue a).re - (z * a).im +
+        Real.exp ((saddlePhaseValue a).re - (z * a).im +
           (I * z * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
             saddleTime a * (v : ℂ) ^ 2).re) := by
       have h := saddle_exponent_eq ha z v
       have e : -(π * cexp (2 * (a + v))) + (saddleTime a * (a + v) ^ 2 + I * z * (a + v)) =
-          (saddleValue a + I * z * a) + (I * z * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
+          (saddlePhaseValue a + I * z * a) + (I * z * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
             saddleTime a * (v : ℂ) ^ 2) := by linear_combination h
       rw [← norm_mul, ← Complex.exp_add, Complex.norm_exp, e, Complex.add_re,
-        Complex.add_re (saddleValue a), mul_assoc I z a, Complex.I_mul_re]
+        Complex.add_re (saddlePhaseValue a), mul_assoc I z a, Complex.I_mul_re]
       congr 1
     have hB : (I * z * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
         saddleTime a * (v : ℂ) ^ 2).re ≤ |v| - 7 / 8 * (saddleP a).re * v ^ 2 := by
@@ -481,11 +481,11 @@ theorem norm_integral_Ioi_stripIntegrand_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (
             ‖cexp (-(π * cexp (2 * (a + v))))‖ *
             ‖cexp (saddleTime a * (a + v) ^ 2 + I * z * (a + v))‖ :=
           mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
-      _ = leadConst a.im * Real.exp (5 * (a.re + v) / 2 + ((saddleValue a).re - (z * a).im +
+      _ = leadConst a.im * Real.exp (5 * (a.re + v) / 2 + ((saddlePhaseValue a).re - (z * a).im +
             (I * z * v + saddleP a * ((saddlePhase v : ℝ) : ℂ) +
               saddleTime a * (v : ℂ) ^ 2).re)) := by
           rw [hprod, hnorm_prod, ← Real.exp_add]
-      _ ≤ leadConst a.im * Real.exp (5 * a.re / 2 + ((saddleValue a).re - (z * a).im) + 4 +
+      _ ≤ leadConst a.im * Real.exp (5 * a.re / 2 + ((saddlePhaseValue a).re - (z * a).im) + 4 +
             -((saddleP a).re / 4) * v ^ 2) := by
           refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hC1
           nlinarith [mul_nonneg hp0.le (sq_nonneg v)]
@@ -531,10 +531,10 @@ theorem norm_integral_Ioi_stripIntegrand_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (
         (Eventually.of_forall fun v => mul_nonneg hD0 (Real.exp_pos _).le)
     exact h1.trans (h2.trans
       (mul_le_mul_of_nonneg_left (integral_exp_neg_quarter_mul_sq_le hp0) hD0))
-  have e1 : Real.exp (9 * a.re / 2 + ((saddleValue a).re - (z * a).im)) =
-      Real.exp (9 * a.re / 2) * Real.exp ((saddleValue a).re - (z * a).im) := Real.exp_add _ _
-  have e2 : Real.exp (5 * a.re / 2 + ((saddleValue a).re - (z * a).im) + 4) =
-      Real.exp (5 * a.re / 2) * Real.exp ((saddleValue a).re - (z * a).im) * Real.exp 4 := by
+  have e1 : Real.exp (9 * a.re / 2 + ((saddlePhaseValue a).re - (z * a).im)) =
+      Real.exp (9 * a.re / 2) * Real.exp ((saddlePhaseValue a).re - (z * a).im) := Real.exp_add _ _
+  have e2 : Real.exp (5 * a.re / 2 + ((saddlePhaseValue a).re - (z * a).im) + 4) =
+      Real.exp (5 * a.re / 2) * Real.exp ((saddlePhaseValue a).re - (z * a).im) * Real.exp 4 := by
     rw [Real.exp_add, Real.exp_add]
   rw [htrans, hsplit]
   calc ‖saddleAmp a z *
@@ -555,7 +555,7 @@ theorem norm_integral_Ioi_stripIntegrand_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (
           (64 * Real.exp 4 * (1 + ‖saddleP a‖ / (saddleP a).re) / (saddleP a).re) +
           D * (4 * (1 / Real.sqrt (saddleP a).re)) :=
         add_le_add (mul_le_mul_of_nonneg_left hlap (norm_nonneg _)) hrest_norm
-    _ = Real.exp ((saddleValue a).re - (z * a).im) * saddleErr a := by
+    _ = Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a := by
         rw [norm_saddleAmp, hD, e1, e2, saddleErr]
         ring
 
@@ -587,7 +587,7 @@ origin (`e^{−(Im a)² Re τ}`) and the point one unit before the saddle (`e^{R
 def leftErr (a : ℂ) : ℝ :=
   a.re * (stripConst a.im * Real.exp (a.re / 2) * Real.exp 8 *
     (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-      Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re)))
+      Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)))
 
 /-- **The line to the left of the saddle.** -/
 theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im) (hη : a.im < π / 4)
@@ -610,12 +610,12 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
     apply Complex.ext <;> simp
   have hend : (saddleTime a).re * (a.re - 1) ^ 2 + -(2 * (saddleTime a).im * a.im) * (a.re - 1) -
       a.im ^ 2 * (saddleTime a).re =
-        (saddleValue a).re - (saddleP a).re + (saddleTime a).re := by
+        (saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re := by
     rw [← hline (a.re - 1), ha1', saddleTime_mul_sub_one_sq ha]
     simp only [Complex.add_re, Complex.sub_re]
   set C : ℝ := stripConst a.im * Real.exp (a.re / 2) * Real.exp 8 *
     (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-      Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re)) with hC
+      Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)) with hC
   have hC0 : 0 ≤ C := by positivity
   have hbound : ∀ s ∈ Set.uIoc (0 : ℝ) (a.re - 1),
       ‖stripIntegrand (saddleTime a) z (s + a.im * I)‖ ≤ C := by
@@ -631,7 +631,7 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
     have hq := line_quadratic_le_max hτ (B := -(2 * (saddleTime a).im * a.im)) hs0.le hs1
     have hQ : (saddleTime a * ((s : ℂ) + a.im * I) ^ 2).re ≤
         max (-(a.im ^ 2 * (saddleTime a).re))
-          ((saddleValue a).re - (saddleP a).re + (saddleTime a).re) := by
+          ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re) := by
       rw [hline s, ← hend]
       rcases le_max_iff.mp hq with h | h
       · exact le_max_of_le_left (by linarith)
@@ -651,16 +651,16 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
     have hexp : Real.exp ((saddleTime a * ((s : ℂ) + a.im * I) ^ 2).re +
         (I * z * ((s : ℂ) + a.im * I)).re) ≤
         Real.exp 8 * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-          Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re)) := by
+          Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)) := by
       have h1 := Real.exp_le_exp.mpr hQ
       have h2 : Real.exp (max (-(a.im ^ 2 * (saddleTime a).re))
-            ((saddleValue a).re - (saddleP a).re + (saddleTime a).re)) ≤
+            ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)) ≤
           Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-            Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re) := by
+            Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re) := by
         have p1 := Real.exp_pos (-(a.im ^ 2 * (saddleTime a).re))
-        have p2 := Real.exp_pos ((saddleValue a).re - (saddleP a).re + (saddleTime a).re)
+        have p2 := Real.exp_pos ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)
         rcases max_cases (-(a.im ^ 2 * (saddleTime a).re))
-          ((saddleValue a).re - (saddleP a).re + (saddleTime a).re) with ⟨h, _⟩ | ⟨h, _⟩ <;>
+          ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re) with ⟨h, _⟩ | ⟨h, _⟩ <;>
           rw [h] <;> linarith
       rw [Real.exp_add, mul_comm]
       exact mul_le_mul (Real.exp_le_exp.mpr hosc) (h1.trans h2) (Real.exp_pos _).le
@@ -671,11 +671,11 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
             (I * z * ((s : ℂ) + a.im * I)).re)
         ≤ (stripConst a.im * Real.exp (s / 2)) *
             (Real.exp 8 * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-              Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re))) :=
+              Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re))) :=
           mul_le_mul hk hexp (Real.exp_pos _).le (by positivity)
       _ ≤ (stripConst a.im * Real.exp (a.re / 2)) *
             (Real.exp 8 * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-              Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re))) := by
+              Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re))) := by
           have h5 : Real.exp (s / 2) ≤ Real.exp (a.re / 2) := Real.exp_le_exp.mpr (by linarith)
           exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h5 hK) (by positivity)
       _ = C := by rw [hC]; ring
@@ -693,14 +693,14 @@ theorem norm_lineHalf_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im) 
     (hp : 18 ≤ (saddleP a).re) (hτ0 : 0 ≤ (saddleTime a).re)
     (hτ : 8 * (saddleTime a).re ≤ (saddleP a).re) (hz : ‖z‖ ≤ 1) (hza : ‖z‖ * a.re ≤ 8) :
     ‖lineHalf (saddleTime a) a.im z - saddleTerm a * cexp (I * z * a)‖ ≤
-      leftErr a + Real.exp ((saddleValue a).re - (z * a).im) * saddleErr a := by
+      leftErr a + Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a := by
   have hint := integrableOn_stripIntegrand_line (saddleTime a) z hη0 hη
   have hint1 : IntegrableOn (fun s : ℝ => stripIntegrand (saddleTime a) z (s + a.im * I))
       (Ioi (a.re - 1)) := hint.mono_set (Ioi_subset_Ioi (by linarith))
   have hsplit := intervalIntegral.integral_interval_add_Ioi hint hint1
   have hS : saddleTerm a * cexp (I * z * a) =
       saddleAmp a z * ((π : ℂ) / (2 * saddleP a - saddleTime a)) ^ (1 / 2 : ℂ) := by
-    rw [saddleTerm, saddleAmp, Complex.exp_add (9 * a / 2 + saddleValue a) _]
+    rw [saddleTerm, saddleAmp, Complex.exp_add (9 * a / 2 + saddlePhaseValue a) _]
     ring
   have h1 := norm_integral_left_le ha1 hη0 hη hτ0 hza
   have h2 := norm_integral_Ioi_stripIntegrand_sub_le ha1 hη0 hη hp hτ hz
@@ -712,7 +712,7 @@ theorem norm_lineHalf_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im) 
           ((∫ s in Ioi (a.re - 1), stripIntegrand (saddleTime a) z (s + a.im * I)) -
             saddleAmp a z * ((π : ℂ) / (2 * saddleP a - saddleTime a)) ^ (1 / 2 : ℂ))‖ := by
         congr 1; ring
-    _ ≤ leftErr a + Real.exp ((saddleValue a).re - (z * a).im) * saddleErr a :=
+    _ ≤ leftErr a + Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a :=
         (norm_add_le _ _).trans (add_le_add h1 h2)
 
 end

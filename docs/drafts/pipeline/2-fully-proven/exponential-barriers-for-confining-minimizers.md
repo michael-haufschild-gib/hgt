@@ -142,7 +142,6 @@ unless specified otherwise.
 - `HalfLineExponentialBarrierJumps`: integrated exponential correction bounding each mixed Gamma jump below.
 - `ExponentialBarrierPrimeEdges`: mixed-form symmetry and the support-restricted comparison for each prime term.
 - `ExponentialBarrierPrimeRows`: uniform finite forward-row bounds and complete backward-row summability.
-
 - `ExponentialBarrierPrimeComparison`: the integrated complete prime mixed-form comparison, passing from finite edge sums by actual-domain absolute summability.
 
 Seven supporting modules await final audits:

@@ -43,21 +43,18 @@ theorem SoftLogarithmicHalfLineDomain.toLp_sublevel_bounds {F : ℝ → ℝ}
       _ = ∫ u, ‖cx F u‖ ^ 2 := by
         apply integral_congr_ae
         filter_upwards [hv] with u hu
-        dsimp only
-        rw [hu]
+        exact congrArg (fun z : ℂ => ‖z‖ ^ 2) hu
       _ = 1 := hmc
   have hfirst : Integrable (fun u : ℝ => |u| * ‖v u‖ ^ 2) := by
     apply hF.integrable_absMoment.congr
     filter_upwards [hv] with u hu
-    dsimp only
-    rw [hu]
+    exact congrArg (fun z : ℂ => |u| * ‖z‖ ^ 2) hu.symm
   have hmoment : (∫ u, |u| * ‖v u‖ ^ 2) = criticalHalfLineFirstMoment F := by
     calc
       _ = ∫ u, |u| * ‖cx F u‖ ^ 2 := by
         apply integral_congr_ae
         filter_upwards [hv] with u hu
-        dsimp only
-        rw [hu]
+        exact congrArg (fun z : ℂ => |u| * ‖z‖ ^ 2) hu
       _ = _ := hF.integral_absMoment
   have hv1 : Integrable (v : ℝ → ℂ) := (hF.integrable.ofReal (𝕜 := ℂ)).congr hv.symm
   have hfourier : (fourierUnitary v : ℝ → ℂ) =ᵐ[volume] 𝓕 (cx F) := by

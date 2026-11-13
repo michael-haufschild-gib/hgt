@@ -353,7 +353,7 @@ theorem le_norm_bulkTerm (h : SaddleRegion a) :
 
 /-- `|S₀(a)| ≥ e^{7σ/2 + Re f(a)}`. -/
 theorem le_norm_saddleTerm (h : SaddleRegion a) :
-    Real.exp (7 * a.re / 2 + (saddleValue a).re) ≤ ‖saddleTerm a‖ := by
+    Real.exp (7 * a.re / 2 + (saddlePhaseValue a).re) ≤ ‖saddleTerm a‖ := by
   have hπ := Real.pi_gt_three
   have hE := Real.exp_pos (2 * a.re)
   have hlamre : 0 < (2 * saddleP a - saddleTime a).re := by
@@ -383,20 +383,20 @@ theorem le_norm_saddleTerm (h : SaddleRegion a) :
   have h1 : ‖(4 : ℂ) * (π : ℂ) ^ 2‖ = 4 * π ^ 2 := by
     rw [show (4 : ℂ) * (π : ℂ) ^ 2 = ((4 * π ^ 2 : ℝ) : ℂ) by simp, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos (by positivity)]
-  have h2 : (9 * a / 2 + saddleValue a).re = 9 * a.re / 2 + (saddleValue a).re := by
+  have h2 : (9 * a / 2 + saddlePhaseValue a).re = 9 * a.re / 2 + (saddlePhaseValue a).re := by
     have h3 : (9 * a / 2).re = 9 * a.re / 2 := by simp
     rw [Complex.add_re, h3]
-  have h4 : Real.exp (7 * a.re / 2 + (saddleValue a).re) =
-      Real.exp (9 * a.re / 2 + (saddleValue a).re) * Real.exp (-a.re) := by
+  have h4 : Real.exp (7 * a.re / 2 + (saddlePhaseValue a).re) =
+      Real.exp (9 * a.re / 2 + (saddlePhaseValue a).re) * Real.exp (-a.re) := by
     rw [← Real.exp_add]
     ring_nf
-  have hX := Real.exp_pos (9 * a.re / 2 + (saddleValue a).re)
+  have hX := Real.exp_pos (9 * a.re / 2 + (saddlePhaseValue a).re)
   rw [saddleTerm, norm_mul, norm_mul, h1, Complex.norm_exp, h2, norm_cpow_half, h4]
-  calc Real.exp (9 * a.re / 2 + (saddleValue a).re) * Real.exp (-a.re)
-      ≤ 4 * π ^ 2 * Real.exp (9 * a.re / 2 + (saddleValue a).re) * (Real.exp (-a.re) / 2) := by
+  calc Real.exp (9 * a.re / 2 + (saddlePhaseValue a).re) * Real.exp (-a.re)
+      ≤ 4 * π ^ 2 * Real.exp (9 * a.re / 2 + (saddlePhaseValue a).re) * (Real.exp (-a.re) / 2) := by
         have h5 : (0 : ℝ) ≤ 2 * π ^ 2 - 1 := by nlinarith
         nlinarith [mul_nonneg h5 (mul_pos hX (Real.exp_pos (-a.re))).le]
-    _ ≤ 4 * π ^ 2 * Real.exp (9 * a.re / 2 + (saddleValue a).re) *
+    _ ≤ 4 * π ^ 2 * Real.exp (9 * a.re / 2 + (saddlePhaseValue a).re) *
           Real.sqrt (π / ‖2 * saddleP a - saddleTime a‖) :=
         mul_le_mul_of_nonneg_left hsqrt (by positivity)
 
@@ -441,7 +441,7 @@ theorem bulk_error_le (h : SaddleRegion a) :
 /-- The error to the left of the saddle. -/
 theorem leftErr_le (h : SaddleRegion a) :
     leftErr a ≤ 324 * polyAbsBound riemannCuspPoly * Real.exp 8 * a.re ^ 4 *
-      Real.exp (a.re / 2) * (Real.exp (-(3 * a.re)) + Real.exp ((saddleValue a).re)) := by
+      Real.exp (a.re / 2) * (Real.exp (-(3 * a.re)) + Real.exp ((saddlePhaseValue a).re)) := by
   have hσ := h.re_pos
   have hB := polyAbsBound_nonneg riemannCuspPoly
   have hπ := Real.pi_gt_three
@@ -459,21 +459,21 @@ theorem leftErr_le (h : SaddleRegion a) :
     have h4 : 1 / 4 * (a.re ^ 2 / 4) ≤ a.im ^ 2 * (saddleTime a).re :=
       mul_le_mul h3 h2 (by positivity) (sq_nonneg _)
     nlinarith [mul_nonneg hσ.le (by linarith [h.1] : (0 : ℝ) ≤ a.re - 48)]
-  have h5 : Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re) ≤
-      Real.exp ((saddleValue a).re) :=
+  have h5 : Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re) ≤
+      Real.exp ((saddlePhaseValue a).re) :=
     Real.exp_le_exp.mpr (by linarith [h.time_re_le, h.P_re_ge])
   rw [leftErr]
   calc a.re * (stripConst a.im * Real.exp (a.re / 2) * Real.exp 8 *
         (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
-          Real.exp ((saddleValue a).re - (saddleP a).re + (saddleTime a).re)))
+          Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)))
       ≤ a.re * (324 * polyAbsBound riemannCuspPoly * a.re ^ 3 * Real.exp (a.re / 2) *
-          Real.exp 8 * (Real.exp (-(3 * a.re)) + Real.exp ((saddleValue a).re))) := by
+          Real.exp 8 * (Real.exp (-(3 * a.re)) + Real.exp ((saddlePhaseValue a).re))) := by
         refine mul_le_mul_of_nonneg_left ?_ hσ.le
         refine mul_le_mul ?_ (add_le_add h1 h5) (by positivity) (by positivity)
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_right hK (Real.exp_pos _).le) (Real.exp_pos _).le
     _ = 324 * polyAbsBound riemannCuspPoly * Real.exp 8 * a.re ^ 4 * Real.exp (a.re / 2) *
-          (Real.exp (-(3 * a.re)) + Real.exp ((saddleValue a).re)) := by ring
+          (Real.exp (-(3 * a.re)) + Real.exp ((saddlePhaseValue a).re)) := by ring
 
 /-- The error at the saddle. -/
 theorem saddleErr_le (h : SaddleRegion a) :
@@ -597,12 +597,12 @@ theorem exists_norm_complexHeat_sub_model_le :
   have hl2 := norm_lineHalf_sub_le h1σ hη0 hη h.P_re_ge hτ0.le h.time_re_le hz1' hzσ'
   have hSE0 := h.saddleErr_nonneg
   have him := abs_le.mp ((Complex.abs_im_le_norm ζ).trans hζ)
-  have hi1 : Real.exp ((saddleValue a).re - (ζ / a * a).im) ≤
-      Real.exp 8 * Real.exp ((saddleValue a).re) := by
+  have hi1 : Real.exp ((saddlePhaseValue a).re - (ζ / a * a).im) ≤
+      Real.exp 8 * Real.exp ((saddlePhaseValue a).re) := by
     rw [← Real.exp_add, hza]
     exact Real.exp_le_exp.mpr (by linarith [him.2])
-  have hi2 : Real.exp ((saddleValue a).re - (-(ζ / a) * a).im) ≤
-      Real.exp 8 * Real.exp ((saddleValue a).re) := by
+  have hi2 : Real.exp ((saddlePhaseValue a).re - (-(ζ / a) * a).im) ≤
+      Real.exp 8 * Real.exp ((saddlePhaseValue a).re) := by
     rw [← Real.exp_add, neg_mul, hza, Complex.neg_im]
     exact Real.exp_le_exp.mpr (by linarith [him.1])
   have hcos : 2 * saddleTerm a * Complex.cos ζ =
@@ -625,7 +625,7 @@ theorem exists_norm_complexHeat_sub_model_le :
   have htotal : ‖complexHeat (saddleTime a) (ζ / a) - bulkTerm a -
       2 * saddleTerm a * Complex.cos ζ‖ ≤
       2 * (Cb * ((1 + stripConst a.im) / (saddleTime a).re)) + 2 * leftErr a +
-        2 * (Real.exp 8 * Real.exp ((saddleValue a).re) * saddleErr a) := by
+        2 * (Real.exp 8 * Real.exp ((saddlePhaseValue a).re) * saddleErr a) := by
     rw [hdec]
     have h3 := (norm_add_le _ _).trans (add_le_add ((norm_add_le _ _).trans
       (add_le_add ((norm_add_le _ _).trans (add_le_add hb1 hb2)) hl1)) hl2)
@@ -638,7 +638,7 @@ theorem exists_norm_complexHeat_sub_model_le :
   set W : ℝ := a.re ^ 5 * Real.exp (-a.re) with hW
   have hW0 : 0 ≤ W := by positivity
   set bS : ℝ := Real.exp (-a.re) with hbS
-  set sS : ℝ := Real.exp (7 * a.re / 2 + (saddleValue a).re) with hsS
+  set sS : ℝ := Real.exp (7 * a.re / 2 + (saddlePhaseValue a).re) with hsS
   have hbS0 : 0 < bS := Real.exp_pos _
   have hsS0 : 0 < sS := Real.exp_pos _
   have hp45 : a.re ^ 4 ≤ a.re ^ 5 := pow_le_pow_right₀ h1σ (by norm_num)
@@ -646,7 +646,7 @@ theorem exists_norm_complexHeat_sub_model_le :
   have hWb : W * bS = a.re ^ 5 * Real.exp (-a.re + -a.re) := by
     rw [hW, hbS, Real.exp_add]
     ring
-  have hWs : W * sS = a.re ^ 5 * Real.exp (-a.re + (7 * a.re / 2 + (saddleValue a).re)) := by
+  have hWs : W * sS = a.re ^ 5 * Real.exp (-a.re + (7 * a.re / 2 + (saddlePhaseValue a).re)) := by
     rw [hW, hsS, hbS, Real.exp_add (-a.re), mul_assoc]
   -- the bulk error
   have hF1 : 2 * (Cb * ((1 + stripConst a.im) / (saddleTime a).re)) ≤
@@ -660,7 +660,7 @@ theorem exists_norm_complexHeat_sub_model_le :
   have hA1 : a.re ^ 4 * (Real.exp (a.re / 2) * Real.exp (-(3 * a.re))) ≤ W * bS := by
     rw [hWb, ← Real.exp_add]
     exact mul_le_mul hp45 (Real.exp_le_exp.mpr (by linarith)) (Real.exp_pos _).le (by positivity)
-  have hA2 : a.re ^ 4 * (Real.exp (a.re / 2) * Real.exp ((saddleValue a).re)) ≤ W * sS := by
+  have hA2 : a.re ^ 4 * (Real.exp (a.re / 2) * Real.exp ((saddlePhaseValue a).re)) ≤ W * sS := by
     rw [hWs, ← Real.exp_add]
     exact mul_le_mul hp45 (Real.exp_le_exp.mpr (by linarith)) (Real.exp_pos _).le (by positivity)
   have hF2 : 2 * leftErr a ≤ 648 * B * Real.exp 8 * (W * bS + W * sS) := by
@@ -668,30 +668,30 @@ theorem exists_norm_complexHeat_sub_model_le :
     have h2 : 0 ≤ 324 * B * Real.exp 8 := by positivity
     have h3 := mul_le_mul_of_nonneg_left (add_le_add hA1 hA2) h2
     have e : 324 * B * Real.exp 8 * a.re ^ 4 * Real.exp (a.re / 2) *
-        (Real.exp (-(3 * a.re)) + Real.exp ((saddleValue a).re)) =
+        (Real.exp (-(3 * a.re)) + Real.exp ((saddlePhaseValue a).re)) =
         324 * B * Real.exp 8 * (a.re ^ 4 * (Real.exp (a.re / 2) * Real.exp (-(3 * a.re))) +
-          a.re ^ 4 * (Real.exp (a.re / 2) * Real.exp ((saddleValue a).re))) := by ring
+          a.re ^ 4 * (Real.exp (a.re / 2) * Real.exp ((saddlePhaseValue a).re))) := by ring
     rw [e] at h1
     linarith
   -- the error at the saddle
-  have hF3 : 2 * (Real.exp 8 * Real.exp ((saddleValue a).re) * saddleErr a) ≤
+  have hF3 : 2 * (Real.exp 8 * Real.exp ((saddlePhaseValue a).re) * saddleErr a) ≤
       2 * Real.exp 12 * c₃ * (W * sS) := by
     have h1 := h.saddleErr_le
     have e12 : Real.exp 8 * Real.exp 4 = Real.exp 12 := by
       rw [← Real.exp_add]
       norm_num
-    have h2 : a.re ^ 2 * (Real.exp ((saddleValue a).re) * Real.exp (5 * a.re / 2)) ≤ W * sS := by
+    have h2 : a.re ^ 2 * (Real.exp ((saddlePhaseValue a).re) * Real.exp (5 * a.re / 2)) ≤ W * sS := by
       rw [hWs, ← Real.exp_add]
       exact mul_le_mul hp25 (Real.exp_le_exp.mpr (by linarith)) (Real.exp_pos _).le
         (by positivity)
-    have h3 : Real.exp 8 * Real.exp ((saddleValue a).re) * saddleErr a ≤
-        Real.exp 8 * Real.exp ((saddleValue a).re) *
+    have h3 : Real.exp 8 * Real.exp ((saddlePhaseValue a).re) * saddleErr a ≤
+        Real.exp 8 * Real.exp ((saddlePhaseValue a).re) *
           (c₃ * Real.exp 4 * a.re ^ 2 * Real.exp (5 * a.re / 2)) :=
       mul_le_mul_of_nonneg_left h1 (by positivity)
-    have e : Real.exp 8 * Real.exp ((saddleValue a).re) *
+    have e : Real.exp 8 * Real.exp ((saddlePhaseValue a).re) *
         (c₃ * Real.exp 4 * a.re ^ 2 * Real.exp (5 * a.re / 2)) =
         (Real.exp 8 * Real.exp 4) * c₃ *
-          (a.re ^ 2 * (Real.exp ((saddleValue a).re) * Real.exp (5 * a.re / 2))) := by ring
+          (a.re ^ 2 * (Real.exp ((saddlePhaseValue a).re) * Real.exp (5 * a.re / 2))) := by ring
     rw [e, e12] at h3
     have h4 := mul_le_mul_of_nonneg_left h2 (by positivity : 0 ≤ Real.exp 12 * c₃)
     linarith
@@ -714,7 +714,7 @@ theorem exists_norm_complexHeat_sub_model_le :
     linarith
   calc ‖complexHeat (saddleTime a) (ζ / a) - bulkTerm a - 2 * saddleTerm a * Complex.cos ζ‖
       ≤ 2 * (Cb * ((1 + stripConst a.im) / (saddleTime a).re)) + 2 * leftErr a +
-          2 * (Real.exp 8 * Real.exp ((saddleValue a).re) * saddleErr a) := htotal
+          2 * (Real.exp 8 * Real.exp ((saddlePhaseValue a).re) * saddleErr a) := htotal
     _ ≤ C₀ * (W * bS + W * sS) := by
         have g1 : 0 ≤ 6 * Cb * (1 + 324 * B) * (W * sS) := by positivity
         have g2 : 0 ≤ 2 * Real.exp 12 * c₃ * (W * bS) := by positivity

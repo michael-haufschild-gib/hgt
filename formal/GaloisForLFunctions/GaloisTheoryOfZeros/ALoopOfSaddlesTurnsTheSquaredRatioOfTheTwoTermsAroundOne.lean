@@ -16,7 +16,7 @@ where `2S₀ = ±B₀`. The square of the ratio has no square roots: since `2P �
   `Q(a₁ + h) = Q(a₁) e^{2D₁h} · e^{2P₁R(h) + 9h} (2a₁ − 1)/(2a₁ − 1 + 2h)`,
   `R(h) = (e^{2h} − 1 − 2h)(a₁ − 1) + (e^{2h} − 1)h`.
 * `loopSaddle a₁ s = a₁ + (−Log Q(a₁) − 2 Log cos ξ₀(s))/(2D₁)`, `ξ₀(s) = e^{iπs}/4`: a closed
-  loop of saddles, of size `O(σe^{−2σ})`.
+  loop of saddles, of size `O(e^{−2σ})`.
 * `exists_loopSaddle` (**the loop**): for a base point far out, the loop stays in the saddle
   region and `|Q(a(s)) cos² ξ₀(s) − 1| ≤ 1/4096`: the value `Q` turns once around `1`, and the
   zeros `ζ` of the model follow `±ξ₀(s)` modulo `π`.
@@ -35,7 +35,7 @@ set_option autoImplicit false
 
 /-- The square of the ratio `2S₀/B₀`: `Q(a) = −64π⁴ e^{9a + 2f(a)} / (Φ(0)²(2a − 1))`. -/
 def saddleRatioSq (a : ℂ) : ℂ :=
-  -(64 * (π : ℂ) ^ 4) * cexp (9 * a + 2 * saddleValue a) / (kernelC 0 ^ 2 * (2 * a - 1))
+  -(64 * (π : ℂ) ^ 4) * cexp (9 * a + 2 * saddlePhaseValue a) / (kernelC 0 ^ 2 * (2 * a - 1))
 
 theorem saddleP_ne_zero (a : ℂ) : saddleP a ≠ 0 :=
   mul_ne_zero (by exact_mod_cast Real.pi_ne_zero) (Complex.exp_ne_zero _)
@@ -56,7 +56,7 @@ theorem two_mul_saddleTerm_sq {a : ℂ} (ha : a ≠ 0) (ha2 : 2 * a - 1 ≠ 0) :
   have hΦ := kernelC_zero_ne_zero
   have hτ : saddleTime a ≠ 0 := div_ne_zero (saddleP_ne_zero a) ha
   have hπ : (π : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  have he : cexp (9 * a / 2 + saddleValue a) ^ 2 = cexp (9 * a + 2 * saddleValue a) := by
+  have he : cexp (9 * a / 2 + saddlePhaseValue a) ^ 2 = cexp (9 * a + 2 * saddlePhaseValue a) := by
     rw [sq, ← Complex.exp_add]
     congr 1
     ring
@@ -137,16 +137,16 @@ theorem norm_log_cos_turnPoint_le (s : ℝ) :
 
 /-! ## Base points -/
 
-theorem saddleValue_re (a : ℂ) : (saddleValue a).re =
+theorem saddlePhaseValue_re (a : ℂ) : (saddlePhaseValue a).re =
     π * Real.exp (2 * a.re) *
       (Real.cos (2 * a.im) * (a.re - 1) - Real.sin (2 * a.im) * a.im) := by
-  rw [saddleValue, Complex.mul_re, saddleP_re, saddleP_im, Complex.sub_re, Complex.sub_im,
+  rw [saddlePhaseValue, Complex.mul_re, saddleP_re, saddleP_im, Complex.sub_re, Complex.sub_im,
     Complex.one_re, Complex.one_im, sub_zero]
   ring
 
 /-- **Base points.** For every `σ₂` there is a saddle `a₁` with `Re a₁ ≥ σ₂`, `Re f(a₁) = 0` and
 `3/10 ≤ (π/4 − Im a₁) Re a₁ ≤ 7/10`: `a₁ = 1 + η cot 2δ + iη`, `η = π/4 − δ`, `δ` small. -/
-theorem exists_basePoint (σ₂ : ℝ) : ∃ a₁ : ℂ, σ₂ ≤ a₁.re ∧ (saddleValue a₁).re = 0 ∧
+theorem exists_basePoint (σ₂ : ℝ) : ∃ a₁ : ℂ, σ₂ ≤ a₁.re ∧ (saddlePhaseValue a₁).re = 0 ∧
     3 / 10 ≤ (π / 4 - a₁.im) * a₁.re ∧ (π / 4 - a₁.im) * a₁.re ≤ 7 / 10 := by
   have hπ3 := Real.pi_gt_d2
   have hπ4 := Real.pi_lt_d2
@@ -207,7 +207,7 @@ theorem exists_basePoint (σ₂ : ℝ) : ∃ a₁ : ℂ, σ₂ ≤ a₁.re ∧ (
   · show σ₂ ≤ 1 + X
     have h1 : δ * max σ₂ 1 ≤ δ * (1 + X) := by nlinarith
     exact (le_max_left _ _).trans (le_of_mul_le_mul_left h1 hδ0)
-  · rw [saddleValue_re]
+  · rw [saddlePhaseValue_re]
     have h2η : 2 * η = π / 2 - 2 * δ := by rw [hη]; ring
     show π * Real.exp (2 * (1 + X)) *
       (Real.cos (2 * η) * (1 + X - 1) - Real.sin (2 * η) * η) = 0
@@ -237,19 +237,19 @@ theorem saddleRatioSq_add {a₁ h : ℂ} (h1 : 2 * a₁ - 1 ≠ 0) (h2 : 2 * a�
   have hP : saddleP (a₁ + h) = saddleP a₁ * cexp (2 * h) := by
     rw [saddleP, saddleP, mul_add, Complex.exp_add]
     ring
-  have he : 9 * (a₁ + h) + 2 * saddleValue (a₁ + h) =
-      (9 * a₁ + 2 * saddleValue a₁) + 2 * (saddleP a₁ * (2 * a₁ - 1)) * h +
+  have he : 9 * (a₁ + h) + 2 * saddlePhaseValue (a₁ + h) =
+      (9 * a₁ + 2 * saddlePhaseValue a₁) + 2 * (saddleP a₁ * (2 * a₁ - 1)) * h +
         (2 * saddleP a₁ *
           ((cexp (2 * h) - 1 - 2 * h) * (a₁ - 1) + (cexp (2 * h) - 1) * h) + 9 * h) := by
-    rw [saddleValue, saddleValue, hP]
+    rw [saddlePhaseValue, saddlePhaseValue, hP]
     ring
-  have h2' : 2 * (a₁ + h) - 1 ≠ 0 := by
-    have e : 2 * (a₁ + h) - 1 = 2 * a₁ - 1 + 2 * h := by ring
-    rw [e]
-    exact h2
   have hden : 2 * (a₁ + h) - 1 = 2 * a₁ - 1 + 2 * h := by ring
+  have key : ∀ c E1 E2 E3 Φ u v : ℂ, Φ ≠ 0 → u ≠ 0 → v ≠ 0 →
+      c * (E1 * E2 * E3) / (Φ ^ 2 * v) = c * E1 / (Φ ^ 2 * u) * E2 * (E3 * (u / v)) := by
+    intro c E1 E2 E3 Φ u v hΦ hu hv
+    field_simp
   rw [saddleRatioSq, saddleRatioSq, he, Complex.exp_add, Complex.exp_add, hden]
-  field_simp
+  exact key _ _ _ _ _ _ _ hΦ h1 h2
 
 /-- The factor beyond the linear term of the phase is close to `1`. -/
 theorem norm_remainder_sub_one_le {a₁ h : ℂ} {K : ℝ} (hσ : 2 ≤ a₁.re) (him0 : 0 ≤ a₁.im)
@@ -343,42 +343,188 @@ theorem norm_remainder_sub_one_le {a₁ h : ℂ} {K : ℝ} (hσ : 2 ≤ a₁.re)
 
 /-! ## The loop of saddles -/
 
-/-- The loop of saddles around the saddle where `Q = 1`:
-`a(s) = a₁ + (−Log Q(a₁) − 2 Log cos ξ₀(s))/(2P₁(2a₁ − 1))`. -/
-def loopSaddle (a₁ : ℂ) (s : ℝ) : ℂ :=
-  a₁ + (-Complex.log (saddleRatioSq a₁) - 2 * Complex.log (Complex.cos (turnPoint s))) /
+/-- The shift of the loop: `h(s) = (−Log Q(a₁) − 2 Log cos ξ₀(s))/(2P₁(2a₁ − 1))`. -/
+def loopShift (a₁ : ℂ) (s : ℝ) : ℂ :=
+  (-Complex.log (saddleRatioSq a₁) - 2 * Complex.log (Complex.cos (turnPoint s))) /
     (2 * (saddleP a₁ * (2 * a₁ - 1)))
+
+/-- The loop of saddles around the saddle where `Q = 1`: `a(s) = a₁ + h(s)`. -/
+def loopSaddle (a₁ : ℂ) (s : ℝ) : ℂ := a₁ + loopShift a₁ s
 
 theorem continuous_loopSaddle (a₁ : ℂ) : Continuous (loopSaddle a₁) := by
   have h : Continuous fun s : ℝ => Complex.log (Complex.cos (turnPoint s)) :=
     (Complex.continuous_cos.comp continuous_turnPoint).clog cos_turnPoint_mem_slitPlane
-  unfold loopSaddle
+  unfold loopSaddle loopShift
   exact continuous_const.add ((continuous_const.sub (continuous_const.mul h)).div_const _)
 
 /-- The loop is closed: `ξ₀(1) = −ξ₀(0)` and the cosine is even. -/
 theorem loopSaddle_one (a₁ : ℂ) : loopSaddle a₁ 1 = loopSaddle a₁ 0 := by
-  rw [loopSaddle, loopSaddle, turnPoint_one, turnPoint_zero, Complex.cos_neg]
+  rw [loopSaddle, loopSaddle, loopShift, loopShift, turnPoint_one, turnPoint_zero,
+    Complex.cos_neg]
 
 /-- The constant of the size of the loop: `|log(64π⁴/Φ(0)²)| + 12`. -/
 def loopConst : ℝ := |Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2)| + 12
 
-/-- **The loop at a base point.** If `Re a₁ = σ ≥ 51`, `Re f(a₁) = 0`,
-`3/10 ≤ (π/4 − Im a₁)σ ≤ 7/10` and `(1 + M)²σ⁴e^{−σ} ≤ 1/300000`, then every point of the loop is
-in the saddle region, within `1` of `a₁`, and `|Q(a(s)) cos² ξ₀(s) − 1| ≤ 1/4096`. -/
-theorem loopSaddle_spec {a₁ : ℂ} (hσ : 51 ≤ a₁.re) (hf : (saddleValue a₁).re = 0)
-    (hlo : 3 / 10 ≤ (π / 4 - a₁.im) * a₁.re) (hhi : (π / 4 - a₁.im) * a₁.re ≤ 7 / 10)
-    (hK : (1 + loopConst) ^ 2 * a₁.re ^ 4 * Real.exp (-a₁.re) ≤ 1 / 300000) (s : ℝ) :
-    SaddleRegion (loopSaddle a₁ s) ∧ a₁.re - 1 ≤ (loopSaddle a₁ s).re ∧
-      ‖saddleRatioSq (loopSaddle a₁ s) * Complex.cos (turnPoint s) ^ 2 - 1‖ ≤ 1 / 4096 := by
-  have hπ3 := Real.pi_gt_d2
-  have hπ4 := Real.pi_lt_d2
-  have hπ0 := Real.pi_pos
-  have hσ0 : 0 < a₁.re := by linarith
-  have hM12 : 12 ≤ loopConst := by
+theorem twelve_le_loopConst : 12 ≤ loopConst := by
+  rw [loopConst]
+  linarith [abs_nonneg (Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2))]
+
+theorem norm_two_mul_sub_one_bounds {a₁ : ℂ} (hσ : 1 ≤ a₁.re) (him0 : 0 ≤ a₁.im)
+    (him1 : a₁.im ≤ 1) :
+    2 * a₁.re - 1 ≤ ‖2 * a₁ - 1‖ ∧ ‖2 * a₁ - 1‖ ≤ 2 * a₁.re + 1 := by
+  have hre2 : (2 * a₁ - 1).re = 2 * a₁.re - 1 := by simp
+  have him2 : (2 * a₁ - 1).im = 2 * a₁.im := by simp
+  constructor
+  · have h1 := Complex.re_le_norm (2 * a₁ - 1)
+    rwa [hre2] at h1
+  · refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
+    rw [hre2, him2, abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
+    linarith
+
+/-- At a saddle with `Re f = 0`: `|Q| = (64π⁴/Φ(0)²) e^{9σ}/|2a − 1|`. -/
+theorem norm_saddleRatioSq {a₁ : ℂ} (hf : (saddlePhaseValue a₁).re = 0) :
+    ‖saddleRatioSq a₁‖ =
+      64 * π ^ 4 / ‖kernelC 0‖ ^ 2 * Real.exp (9 * a₁.re) / ‖2 * a₁ - 1‖ := by
+  have h1 : ‖-(64 * (π : ℂ) ^ 4)‖ = 64 * π ^ 4 := by
+    rw [norm_neg, show (64 : ℂ) * (π : ℂ) ^ 4 = ((64 * π ^ 4 : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+  have h2 : (9 * a₁ + 2 * saddlePhaseValue a₁).re = 9 * a₁.re := by
+    have e1 : (9 * a₁).re = 9 * a₁.re := by simp
+    have e2 : (2 * saddlePhaseValue a₁).re = 2 * (saddlePhaseValue a₁).re := by simp
+    rw [Complex.add_re, e1, e2, hf]
+    ring
+  rw [saddleRatioSq, norm_div, norm_mul, norm_mul, norm_pow, h1, Complex.norm_exp, h2]
+  ring
+
+/-- `|Log Q(a₁)| ≤ |log(64π⁴/Φ(0)²)| + 11σ + π` at a saddle with `Re f = 0`. -/
+theorem norm_log_saddleRatioSq_le {a₁ : ℂ} (hσ : 1 ≤ a₁.re) (him0 : 0 ≤ a₁.im)
+    (him1 : a₁.im ≤ 1) (hf : (saddlePhaseValue a₁).re = 0) :
+    saddleRatioSq a₁ ≠ 0 ∧
+      ‖Complex.log (saddleRatioSq a₁)‖ ≤ loopConst - 12 + 11 * a₁.re + π := by
+  obtain ⟨hn_lo, hn_hi⟩ := norm_two_mul_sub_one_bounds hσ him0 him1
+  have hn0 : 0 < ‖2 * a₁ - 1‖ := lt_of_lt_of_le (by linarith) hn_lo
+  have hΦ : 0 < ‖kernelC 0‖ := norm_pos_iff.mpr kernelC_zero_ne_zero
+  have hc₀pos : 0 < 64 * π ^ 4 / ‖kernelC 0‖ ^ 2 := by positivity
+  have hQnorm := norm_saddleRatioSq hf
+  have hQne : saddleRatioSq a₁ ≠ 0 := by
+    rw [← norm_pos_iff, hQnorm]
+    exact div_pos (mul_pos hc₀pos (Real.exp_pos _)) hn0
+  refine ⟨hQne, ?_⟩
+  have hlogn : 0 ≤ Real.log ‖2 * a₁ - 1‖ := Real.log_nonneg (by linarith)
+  have hlogn2 : Real.log ‖2 * a₁ - 1‖ ≤ 2 * a₁.re := by
+    have h1 := Real.log_le_sub_one_of_pos hn0
+    linarith
+  have hlogQ : Real.log ‖saddleRatioSq a₁‖ =
+      Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2) + 9 * a₁.re - Real.log ‖2 * a₁ - 1‖ := by
+    rw [hQnorm, Real.log_div (mul_pos hc₀pos (Real.exp_pos _)).ne' hn0.ne',
+      Real.log_mul hc₀pos.ne' (Real.exp_pos _).ne', Real.log_exp]
+  refine (norm_log_le_abs_log_norm_add_abs_arg _).trans ?_
+  have h1 := Complex.abs_arg_le_pi (saddleRatioSq a₁)
+  have h2 : |Real.log ‖saddleRatioSq a₁‖| ≤
+      |Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2)| + 11 * a₁.re := by
+    rw [hlogQ, abs_le]
+    have h3 := neg_abs_le (Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2))
+    have h4 := le_abs_self (Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2))
+    constructor <;> linarith
+  have h5 : loopConst - 12 = |Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2)| := by
     rw [loopConst]
-    linarith [abs_nonneg (Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2))]
+    ring
+  linarith
+
+/-- The shift is of size `M e^{−2σ}`. -/
+theorem norm_loopShift_le {a₁ : ℂ} (hσ : 51 ≤ a₁.re) (him0 : 0 ≤ a₁.im) (him1 : a₁.im ≤ 1)
+    (hf : (saddlePhaseValue a₁).re = 0) (s : ℝ) :
+    ‖loopShift a₁ s‖ ≤ loopConst * Real.exp (-(2 * a₁.re)) := by
+  have hπ3 := Real.pi_gt_d2
+  have hπ0 := Real.pi_pos
+  have hM12 := twelve_le_loopConst
   have hM0 : 0 ≤ loopConst := by linarith
-  -- the imaginary part of the base point
+  obtain ⟨hn_lo, -⟩ := norm_two_mul_sub_one_bounds (by linarith : 1 ≤ a₁.re) him0 him1
+  have hn0 : 0 < ‖2 * a₁ - 1‖ := lt_of_lt_of_le (by linarith) hn_lo
+  have hlogQn := (norm_log_saddleRatioSq_le (by linarith : 1 ≤ a₁.re) him0 him1 hf).2
+  have hD : ‖2 * (saddleP a₁ * (2 * a₁ - 1))‖ =
+      2 * (π * Real.exp (2 * a₁.re) * ‖2 * a₁ - 1‖) := by
+    rw [norm_mul, norm_mul, norm_saddleP, Complex.norm_ofNat]
+  have hDpos : 0 < 2 * (π * Real.exp (2 * a₁.re) * ‖2 * a₁ - 1‖) :=
+    mul_pos two_pos (mul_pos (mul_pos hπ0 (Real.exp_pos _)) hn0)
+  have hnum : ‖-Complex.log (saddleRatioSq a₁) -
+      2 * Complex.log (Complex.cos (turnPoint s))‖ ≤ loopConst * a₁.re := by
+    have h1 := norm_log_cos_turnPoint_le s
+    have h2 := mul_nonneg (sub_nonneg.mpr hM12) (by linarith : (0 : ℝ) ≤ a₁.re - 1)
+    calc ‖-Complex.log (saddleRatioSq a₁) - 2 * Complex.log (Complex.cos (turnPoint s))‖
+        ≤ ‖-Complex.log (saddleRatioSq a₁)‖ +
+            ‖2 * Complex.log (Complex.cos (turnPoint s))‖ := norm_sub_le _ _
+      _ ≤ (loopConst - 12 + 11 * a₁.re + π) + 2 * (1 / 2) := by
+          rw [norm_neg, norm_mul, Complex.norm_ofNat]
+          linarith
+      _ ≤ loopConst * a₁.re := by linarith [Real.pi_lt_d2]
+  rw [loopShift, norm_div, hD, div_le_iff₀ hDpos]
+  have e : loopConst * Real.exp (-(2 * a₁.re)) *
+      (2 * (π * Real.exp (2 * a₁.re) * ‖2 * a₁ - 1‖)) =
+      2 * π * loopConst * ‖2 * a₁ - 1‖ *
+        (Real.exp (-(2 * a₁.re)) * Real.exp (2 * a₁.re)) := by ring
+  rw [e, SaddleRegion.exp_neg_two_mul_exp, mul_one]
+  refine hnum.trans ?_
+  have h1 : loopConst * a₁.re ≤ loopConst * ‖2 * a₁ - 1‖ :=
+    mul_le_mul_of_nonneg_left (by linarith) hM0
+  have h2 := mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * π - 1) (mul_nonneg hM0 hn0.le)
+  linarith
+
+/-- The size `t ≤ Me^{−2σ}` of the shift against the smallness parameter
+`K = (1 + M)²σ⁴e^{−σ}`: `tσ ≤ K` and `πe^{2σ}(σ + 1)t² ≤ K`. -/
+theorem loop_smallness {M σ t : ℝ} (hM : 0 ≤ M) (hσ : 51 ≤ σ) (ht0 : 0 ≤ t)
+    (ht : t ≤ M * Real.exp (-(2 * σ))) :
+    t * σ ≤ (1 + M) ^ 2 * σ ^ 4 * Real.exp (-σ) ∧
+      π * Real.exp (2 * σ) * (σ + 1) * t ^ 2 ≤ (1 + M) ^ 2 * σ ^ 4 * Real.exp (-σ) := by
+  have hσ0 : 0 < σ := by linarith
+  have hπ0 := Real.pi_pos
+  have hx0 : 0 < Real.exp (-σ) := Real.exp_pos _
+  have hx1 : Real.exp (-σ) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hx2 : Real.exp (-(2 * σ)) = Real.exp (-σ) * Real.exp (-σ) := by
+    rw [← Real.exp_add]
+    ring_nf
+  have hMM : M ≤ (1 + M) ^ 2 := by nlinarith [sq_nonneg M]
+  have hMM2 : M ^ 2 ≤ (1 + M) ^ 2 := by nlinarith [sq_nonneg M]
+  have hσ14 : σ ≤ σ ^ 4 := le_self_pow₀ (by linarith) (by norm_num)
+  have hπσ : π * (σ + 1) ≤ σ ^ 4 := by
+    have h3 : (8 : ℝ) ≤ σ ^ 3 :=
+      le_trans (by norm_num) (pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 51) hσ 3)
+    have e : σ ^ 4 = σ * σ ^ 3 := by ring
+    have h4 := mul_le_mul_of_nonneg_left h3 hσ0.le
+    have h5 : π * (σ + 1) ≤ 3.15 * (σ + 1) :=
+      mul_le_mul_of_nonneg_right Real.pi_lt_d2.le (by linarith)
+    rw [e]
+    linarith
+  constructor
+  · have hA : M * σ ≤ (1 + M) ^ 2 * σ ^ 4 := mul_le_mul hMM hσ14 hσ0.le (by positivity)
+    calc t * σ ≤ M * Real.exp (-(2 * σ)) * σ := mul_le_mul_of_nonneg_right ht hσ0.le
+      _ = M * σ * Real.exp (-σ) * Real.exp (-σ) := by rw [hx2]; ring
+      _ ≤ M * σ * Real.exp (-σ) * 1 := mul_le_mul_of_nonneg_left hx1 (by positivity)
+      _ ≤ (1 + M) ^ 2 * σ ^ 4 * Real.exp (-σ) * 1 :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hA hx0.le) zero_le_one
+      _ = (1 + M) ^ 2 * σ ^ 4 * Real.exp (-σ) := mul_one _
+  · have h1 : t ^ 2 ≤ (M * Real.exp (-(2 * σ))) ^ 2 := pow_le_pow_left₀ ht0 ht 2
+    have e : π * Real.exp (2 * σ) * (σ + 1) * (M * Real.exp (-(2 * σ))) ^ 2 =
+        π * (σ + 1) * M ^ 2 * Real.exp (-(2 * σ)) *
+          (Real.exp (-(2 * σ)) * Real.exp (2 * σ)) := by ring
+    have h3 : π * (σ + 1) * M ^ 2 ≤ σ ^ 4 * (1 + M) ^ 2 :=
+      mul_le_mul hπσ hMM2 (sq_nonneg _) (by positivity)
+    calc π * Real.exp (2 * σ) * (σ + 1) * t ^ 2
+        ≤ π * Real.exp (2 * σ) * (σ + 1) * (M * Real.exp (-(2 * σ))) ^ 2 :=
+          mul_le_mul_of_nonneg_left h1 (by positivity)
+      _ = π * (σ + 1) * M ^ 2 * (Real.exp (-σ) * Real.exp (-σ)) := by
+          rw [e, SaddleRegion.exp_neg_two_mul_exp, mul_one, hx2]
+      _ ≤ σ ^ 4 * (1 + M) ^ 2 * (Real.exp (-σ) * 1) :=
+          mul_le_mul h3 (mul_le_mul_of_nonneg_left hx1 hx0.le) (by positivity) (by positivity)
+      _ = (1 + M) ^ 2 * σ ^ 4 * Real.exp (-σ) := by ring
+
+/-- A small shift of a base point stays in the saddle region. -/
+theorem saddleRegion_add {a₁ h : ℂ} (hσ : 51 ≤ a₁.re)
+    (hlo : 3 / 10 ≤ (π / 4 - a₁.im) * a₁.re) (hhi : (π / 4 - a₁.im) * a₁.re ≤ 7 / 10)
+    (hh : ‖h‖ * a₁.re ≤ 1 / 300000) :
+    SaddleRegion (a₁ + h) ∧ a₁.re - 1 ≤ (a₁ + h).re := by
+  have hσ0 : 0 < a₁.re := by linarith
+  have hn := norm_nonneg h
   have hd0 : 0 < π / 4 - a₁.im := by
     by_contra hc
     push Not at hc
@@ -389,217 +535,105 @@ theorem loopSaddle_spec {a₁ : ℂ} (hσ : 51 ≤ a₁.re) (hf : (saddleValue a
     push Not at hc
     have h1 := mul_lt_mul_of_pos_right hc hσ0
     linarith
-  have him0 : 0 ≤ a₁.im := by linarith
-  have him1 : a₁.im ≤ 1 := by linarith
-  -- the norm of `2a₁ − 1`
-  have hre2 : (2 * a₁ - 1).re = 2 * a₁.re - 1 := by simp
-  have him2 : (2 * a₁ - 1).im = 2 * a₁.im := by simp
-  have hn_lo : 2 * a₁.re - 1 ≤ ‖2 * a₁ - 1‖ := by
-    have h1 := Complex.re_le_norm (2 * a₁ - 1)
-    rw [hre2] at h1
-    exact h1
-  have hn_hi : ‖2 * a₁ - 1‖ ≤ 2 * a₁.re + 1 := by
-    refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
-    rw [hre2, him2, abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
-    linarith
-  have hn0 : 0 < ‖2 * a₁ - 1‖ := lt_of_lt_of_le (by linarith) hn_lo
-  have h2a : 2 * a₁ - 1 ≠ 0 := norm_pos_iff.mp hn0
-  -- the size of `Q(a₁)`
-  have hΦ : 0 < ‖kernelC 0‖ := norm_pos_iff.mpr kernelC_zero_ne_zero
-  have hc₀pos : 0 < 64 * π ^ 4 / ‖kernelC 0‖ ^ 2 := by positivity
-  have hQnorm : ‖saddleRatioSq a₁‖ =
-      64 * π ^ 4 / ‖kernelC 0‖ ^ 2 * Real.exp (9 * a₁.re) / ‖2 * a₁ - 1‖ := by
-    have h1 : ‖-(64 * (π : ℂ) ^ 4)‖ = 64 * π ^ 4 := by
-      rw [norm_neg, show (64 : ℂ) * (π : ℂ) ^ 4 = ((64 * π ^ 4 : ℝ) : ℂ) by push_cast; ring,
-        Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
-    have h2 : (9 * a₁ + 2 * saddleValue a₁).re = 9 * a₁.re := by
-      have e1 : (9 * a₁).re = 9 * a₁.re := by simp
-      have e2 : (2 * saddleValue a₁).re = 2 * (saddleValue a₁).re := by simp
-      rw [Complex.add_re, e1, e2, hf]
-      ring
-    rw [saddleRatioSq, norm_div, norm_mul, norm_mul, norm_pow, h1, Complex.norm_exp, h2]
-    ring
-  have hQne : saddleRatioSq a₁ ≠ 0 := by
-    rw [← norm_pos_iff, hQnorm]
-    exact div_pos (mul_pos hc₀pos (Real.exp_pos _)) hn0
-  have hlogn : 0 ≤ Real.log ‖2 * a₁ - 1‖ := Real.log_nonneg (by linarith)
-  have hlogn2 : Real.log ‖2 * a₁ - 1‖ ≤ 2 * a₁.re := by
-    have h1 := Real.log_le_sub_one_of_pos hn0
-    linarith
-  have hlogQ : Real.log ‖saddleRatioSq a₁‖ =
-      Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2) + 9 * a₁.re - Real.log ‖2 * a₁ - 1‖ := by
-    rw [hQnorm, Real.log_div (mul_pos hc₀pos (Real.exp_pos _)).ne' hn0.ne',
-      Real.log_mul hc₀pos.ne' (Real.exp_pos _).ne', Real.log_exp]
-  have hlogQn : ‖Complex.log (saddleRatioSq a₁)‖ ≤ loopConst - 12 + 11 * a₁.re + π := by
-    refine (norm_log_le_abs_log_norm_add_abs_arg _).trans ?_
-    have h1 := Complex.abs_arg_le_pi (saddleRatioSq a₁)
-    have h2 : |Real.log ‖saddleRatioSq a₁‖| ≤
-        |Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2)| + 11 * a₁.re := by
-      rw [hlogQ, abs_le]
-      have h3 := neg_abs_le (Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2))
-      have h4 := le_abs_self (Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2))
-      constructor <;> linarith
-    have h5 : loopConst - 12 = |Real.log (64 * π ^ 4 / ‖kernelC 0‖ ^ 2)| := by
-      rw [loopConst]
-      ring
-    linarith
-  -- the shift
-  obtain ⟨h, hh⟩ : ∃ h : ℂ, h =
-      (-Complex.log (saddleRatioSq a₁) - 2 * Complex.log (Complex.cos (turnPoint s))) /
-        (2 * (saddleP a₁ * (2 * a₁ - 1))) := ⟨_, rfl⟩
-  have hloop : loopSaddle a₁ s = a₁ + h := by rw [loopSaddle, hh]
-  have hP0 := saddleP_ne_zero a₁
-  have hE : 0 < Real.exp (2 * a₁.re) := Real.exp_pos _
-  have hD : ‖2 * (saddleP a₁ * (2 * a₁ - 1))‖ =
-      2 * (π * Real.exp (2 * a₁.re) * ‖2 * a₁ - 1‖) := by
-    rw [norm_mul, norm_mul, norm_saddleP, Complex.norm_ofNat]
-  have hDpos : 0 < 2 * (π * Real.exp (2 * a₁.re) * ‖2 * a₁ - 1‖) :=
-    mul_pos two_pos (mul_pos (mul_pos hπ0 hE) hn0)
-  have hnum : ‖-Complex.log (saddleRatioSq a₁) -
-      2 * Complex.log (Complex.cos (turnPoint s))‖ ≤ loopConst * a₁.re := by
-    have h1 := norm_log_cos_turnPoint_le s
-    calc ‖-Complex.log (saddleRatioSq a₁) - 2 * Complex.log (Complex.cos (turnPoint s))‖
-        ≤ ‖-Complex.log (saddleRatioSq a₁)‖ +
-            ‖2 * Complex.log (Complex.cos (turnPoint s))‖ := norm_sub_le _ _
-      _ ≤ (loopConst - 12 + 11 * a₁.re + π) + 2 * (1 / 2) := by
-          rw [norm_neg, norm_mul, Complex.norm_ofNat]
-          linarith
-      _ ≤ loopConst * a₁.re := by
-          nlinarith [mul_nonneg (sub_nonneg.mpr hM12) (by linarith : (0 : ℝ) ≤ a₁.re - 1)]
-  have hhn : ‖h‖ ≤ loopConst * Real.exp (-(2 * a₁.re)) := by
-    rw [hh, norm_div, hD, div_le_iff₀ hDpos]
-    have e : loopConst * Real.exp (-(2 * a₁.re)) *
-        (2 * (π * Real.exp (2 * a₁.re) * ‖2 * a₁ - 1‖)) =
-        2 * π * loopConst * ‖2 * a₁ - 1‖ *
-          (Real.exp (-(2 * a₁.re)) * Real.exp (2 * a₁.re)) := by ring
-    rw [e, SaddleRegion.exp_neg_two_mul_exp, mul_one]
-    refine hnum.trans ?_
-    have h1 : loopConst * a₁.re ≤ loopConst * ‖2 * a₁ - 1‖ :=
-      mul_le_mul_of_nonneg_left (by linarith) hM0
-    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * π - 1) (mul_nonneg hM0 hn0.le)]
-  -- the smallness parameter
-  obtain ⟨K, hKdef⟩ : ∃ K : ℝ, K = (1 + loopConst) ^ 2 * a₁.re ^ 4 * Real.exp (-a₁.re) :=
-    ⟨_, rfl⟩
-  rw [← hKdef] at hK
-  have hx0 : 0 < Real.exp (-a₁.re) := Real.exp_pos _
-  have hx1 : Real.exp (-a₁.re) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have hx2 : Real.exp (-(2 * a₁.re)) = Real.exp (-a₁.re) * Real.exp (-a₁.re) := by
-    rw [← Real.exp_add]
-    ring_nf
-  have hMM : loopConst ≤ (1 + loopConst) ^ 2 := by nlinarith
-  have hMM2 : loopConst ^ 2 ≤ (1 + loopConst) ^ 2 := by nlinarith
-  have hσ14 : a₁.re ≤ a₁.re ^ 4 := le_self_pow₀ (by linarith) (by norm_num)
-  have h8σ : 8 * a₁.re ≤ a₁.re ^ 4 := by
-    have h3 : (8 : ℝ) ≤ a₁.re ^ 3 :=
-      le_trans (by norm_num) (pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 51) hσ 3)
-    have e : a₁.re ^ 4 = a₁.re * a₁.re ^ 3 := by ring
-    rw [e]
-    nlinarith [mul_le_mul_of_nonneg_left h3 hσ0.le]
-  have hk1 : loopConst * Real.exp (-(2 * a₁.re)) * a₁.re ≤ K := by
-    have hA : loopConst * a₁.re ≤ (1 + loopConst) ^ 2 * a₁.re ^ 4 :=
-      mul_le_mul hMM hσ14 hσ0.le (by positivity)
-    calc loopConst * Real.exp (-(2 * a₁.re)) * a₁.re
-        = loopConst * a₁.re * Real.exp (-a₁.re) * Real.exp (-a₁.re) := by rw [hx2]; ring
-      _ ≤ loopConst * a₁.re * Real.exp (-a₁.re) * 1 :=
-          mul_le_mul_of_nonneg_left hx1 (by positivity)
-      _ ≤ (1 + loopConst) ^ 2 * a₁.re ^ 4 * Real.exp (-a₁.re) * 1 :=
-          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hA hx0.le) zero_le_one
-      _ = K := by rw [hKdef, mul_one]
-  have hhσ : ‖h‖ * a₁.re ≤ K :=
-    (mul_le_mul_of_nonneg_right hhn hσ0.le).trans hk1
-  have hhK : ‖h‖ ≤ K := by
-    have h1 : ‖h‖ * 1 ≤ ‖h‖ * a₁.re := mul_le_mul_of_nonneg_left (by linarith) (norm_nonneg h)
-    linarith
-  have hk2 : π * Real.exp (2 * a₁.re) * (a₁.re + 1) * ‖h‖ ^ 2 ≤ K := by
-    have h1 : ‖h‖ ^ 2 ≤ (loopConst * Real.exp (-(2 * a₁.re))) ^ 2 :=
-      pow_le_pow_left₀ (norm_nonneg h) hhn 2
-    have e : π * Real.exp (2 * a₁.re) * (a₁.re + 1) *
-        (loopConst * Real.exp (-(2 * a₁.re))) ^ 2 =
-        π * (a₁.re + 1) * loopConst ^ 2 * Real.exp (-(2 * a₁.re)) *
-          (Real.exp (-(2 * a₁.re)) * Real.exp (2 * a₁.re)) := by ring
-    have h2 : π * (a₁.re + 1) ≤ a₁.re ^ 4 := by nlinarith
-    have h3 : π * (a₁.re + 1) * loopConst ^ 2 ≤ a₁.re ^ 4 * (1 + loopConst) ^ 2 :=
-      mul_le_mul h2 hMM2 (sq_nonneg _) (by positivity)
-    calc π * Real.exp (2 * a₁.re) * (a₁.re + 1) * ‖h‖ ^ 2
-        ≤ π * Real.exp (2 * a₁.re) * (a₁.re + 1) *
-            (loopConst * Real.exp (-(2 * a₁.re))) ^ 2 :=
-          mul_le_mul_of_nonneg_left h1 (by positivity)
-      _ = π * (a₁.re + 1) * loopConst ^ 2 * (Real.exp (-a₁.re) * Real.exp (-a₁.re)) := by
-          rw [e, SaddleRegion.exp_neg_two_mul_exp, mul_one, hx2]
-      _ ≤ a₁.re ^ 4 * (1 + loopConst) ^ 2 * (Real.exp (-a₁.re) * 1) :=
-          mul_le_mul h3 (mul_le_mul_of_nonneg_left hx1 hx0.le) (by positivity) (by positivity)
-      _ = K := by rw [hKdef]; ring
-  -- the loop stays in the saddle region
-  have hK0 : 0 ≤ K := (norm_nonneg h).trans hhK
-  have ht51 : ‖h‖ * 51 ≤ 1 / 300000 := by
-    have h1 : ‖h‖ * 51 ≤ ‖h‖ * a₁.re := mul_le_mul_of_nonneg_left hσ (norm_nonneg h)
-    linarith
+  have ht51 : ‖h‖ * 51 ≤ 1 / 300000 :=
+    (mul_le_mul_of_nonneg_left hσ hn).trans hh
   have hre := abs_le.mp (Complex.abs_re_le_norm h)
   have him := abs_le.mp (Complex.abs_im_le_norm h)
-  have hreg : SaddleRegion (a₁ + h) := by
-    have hn := norm_nonneg h
-    have hare : (a₁ + h).re = a₁.re + h.re := Complex.add_re _ _
-    have haim : (a₁ + h).im = a₁.im + h.im := Complex.add_im _ _
-    have hpos : 0 < a₁.re + h.re := by linarith [hre.1]
-    -- the products of the shift with the base point
-    have A1 : (π / 4 - a₁.im) * ‖h‖ ≤ 1 / 50 * ‖h‖ := mul_le_mul_of_nonneg_right hd1 hn
-    have A2 : -((π / 4 - a₁.im) * ‖h‖) ≤ (π / 4 - a₁.im) * h.re := by
-      have := mul_le_mul_of_nonneg_left hre.1 hd0.le
-      linarith
-    have A3 : (π / 4 - a₁.im) * h.re ≤ (π / 4 - a₁.im) * ‖h‖ :=
-      mul_le_mul_of_nonneg_left hre.2 hd0.le
-    have A4 : h.im * a₁.re ≤ ‖h‖ * a₁.re := mul_le_mul_of_nonneg_right him.2 hσ0.le
-    have A5 : -(‖h‖ * a₁.re) ≤ h.im * a₁.re := by
-      have := mul_le_mul_of_nonneg_right him.1 hσ0.le
-      linarith
-    have A6 : |h.im * h.re| ≤ ‖h‖ * ‖h‖ := by
-      rw [abs_mul]
-      exact mul_le_mul (Complex.abs_im_le_norm h) (Complex.abs_re_le_norm h) (abs_nonneg _) hn
-    have A7 : ‖h‖ * ‖h‖ ≤ ‖h‖ * 1 := mul_le_mul_of_nonneg_left (by linarith) hn
-    have A6' := abs_le.mp A6
-    have hprod : (π / 4 - (a₁.im + h.im)) * (a₁.re + h.re) =
-        (π / 4 - a₁.im) * a₁.re + (π / 4 - a₁.im) * h.re - h.im * a₁.re - h.im * h.re := by ring
-    refine ⟨?_, ?_, ?_⟩
-    · rw [hare]
-      linarith [hre.1]
-    · rw [hare, haim, div_le_iff₀ (by linarith)]
-      have h1 : 1 / 4 ≤ (π / 4 - (a₁.im + h.im)) * (a₁.re + h.re) := by
-        rw [hprod]
-        linarith [A6'.2]
-      linarith
-    · rw [hare, haim, le_div_iff₀ hpos, hprod]
-      linarith [A6'.1]
-  -- the squared ratio on the loop
-  have h2h : 2 * a₁ - 1 + 2 * h ≠ 0 := by
-    intro h0
-    have hre' : (2 * a₁ - 1 + 2 * h).re = 2 * a₁.re - 1 + 2 * h.re := by simp
-    rw [h0, Complex.zero_re] at hre'
+  have hare : (a₁ + h).re = a₁.re + h.re := Complex.add_re _ _
+  have haim : (a₁ + h).im = a₁.im + h.im := Complex.add_im _ _
+  have hpos : 0 < a₁.re + h.re := by linarith [hre.1]
+  -- the products of the shift with the base point
+  have A1 : (π / 4 - a₁.im) * ‖h‖ ≤ 1 / 50 * ‖h‖ := mul_le_mul_of_nonneg_right hd1 hn
+  have A2 : -((π / 4 - a₁.im) * ‖h‖) ≤ (π / 4 - a₁.im) * h.re := by
+    have := mul_le_mul_of_nonneg_left hre.1 hd0.le
+    linarith
+  have A3 : (π / 4 - a₁.im) * h.re ≤ (π / 4 - a₁.im) * ‖h‖ :=
+    mul_le_mul_of_nonneg_left hre.2 hd0.le
+  have A4 : h.im * a₁.re ≤ ‖h‖ * a₁.re := mul_le_mul_of_nonneg_right him.2 hσ0.le
+  have A5 : -(‖h‖ * a₁.re) ≤ h.im * a₁.re := by
+    have := mul_le_mul_of_nonneg_right him.1 hσ0.le
+    linarith
+  have A6 : |h.im * h.re| ≤ ‖h‖ * ‖h‖ := by
+    rw [abs_mul]
+    exact mul_le_mul (Complex.abs_im_le_norm h) (Complex.abs_re_le_norm h) (abs_nonneg _) hn
+  have A7 : ‖h‖ * ‖h‖ ≤ ‖h‖ * 1 := mul_le_mul_of_nonneg_left (by linarith) hn
+  have A6' := abs_le.mp A6
+  have hprod : (π / 4 - (a₁.im + h.im)) * (a₁.re + h.re) =
+      (π / 4 - a₁.im) * a₁.re + (π / 4 - a₁.im) * h.re - h.im * a₁.re - h.im * h.re := by ring
+  refine ⟨⟨?_, ?_, ?_⟩, ?_⟩
+  · rw [hare]
     linarith [hre.1]
+  · rw [hare, haim, div_le_iff₀ (by linarith)]
+    have h1 : 1 / 4 ≤ (π / 4 - (a₁.im + h.im)) * (a₁.re + h.re) := by
+      rw [hprod]
+      linarith [A6'.2]
+    linarith
+  · rw [hare, haim, le_div_iff₀ hpos, hprod]
+    linarith [A6'.1]
+  · rw [hare]
+    linarith [hre.1]
+
+/-- **The loop at a base point.** If `Re a₁ = σ ≥ 51`, `Re f(a₁) = 0`,
+`3/10 ≤ (π/4 − Im a₁)σ ≤ 7/10` and `(1 + M)²σ⁴e^{−σ} ≤ 1/300000`, then every point of the loop is
+in the saddle region, within `1` of `a₁`, and `|Q(a(s)) cos² ξ₀(s) − 1| ≤ 1/4096`. -/
+theorem loopSaddle_spec {a₁ : ℂ} (hσ : 51 ≤ a₁.re) (hf : (saddlePhaseValue a₁).re = 0)
+    (hlo : 3 / 10 ≤ (π / 4 - a₁.im) * a₁.re) (hhi : (π / 4 - a₁.im) * a₁.re ≤ 7 / 10)
+    (hK : (1 + loopConst) ^ 2 * a₁.re ^ 4 * Real.exp (-a₁.re) ≤ 1 / 300000) (s : ℝ) :
+    SaddleRegion (loopSaddle a₁ s) ∧ a₁.re - 1 ≤ (loopSaddle a₁ s).re ∧
+      ‖saddleRatioSq (loopSaddle a₁ s) * Complex.cos (turnPoint s) ^ 2 - 1‖ ≤ 1 / 4096 := by
+  have hπ3 := Real.pi_gt_d2
+  have hπ4 := Real.pi_lt_d2
+  have hσ0 : 0 < a₁.re := by linarith
+  have hM0 : 0 ≤ loopConst := by linarith [twelve_le_loopConst]
+  -- the imaginary part of the base point
+  have him1 : a₁.im ≤ 1 := by
+    by_contra hc
+    push Not at hc
+    have h1 := mul_nonpos_of_nonpos_of_nonneg (by linarith : π / 4 - a₁.im ≤ 0) hσ0.le
+    linarith
+  have him0 : 0 ≤ a₁.im := by
+    by_contra hc
+    push Not at hc
+    have h1 := mul_lt_mul_of_pos_right (by linarith : (1 / 50 : ℝ) < π / 4 - a₁.im) hσ0
+    linarith
+  have hhn := norm_loopShift_le hσ him0 him1 hf s
+  obtain ⟨hk1, hk2⟩ := loop_smallness hM0 hσ (norm_nonneg _) hhn
+  have hhK : ‖loopShift a₁ s‖ ≤ (1 + loopConst) ^ 2 * a₁.re ^ 4 * Real.exp (-a₁.re) := by
+    have h1 : ‖loopShift a₁ s‖ * 1 ≤ ‖loopShift a₁ s‖ * a₁.re :=
+      mul_le_mul_of_nonneg_left (by linarith) (norm_nonneg _)
+    linarith
+  obtain ⟨hreg, hre⟩ := saddleRegion_add (h := loopShift a₁ s) hσ hlo hhi (hk1.trans hK)
+  refine ⟨hreg, hre, ?_⟩
+  -- the squared ratio on the loop
+  obtain ⟨hn_lo, -⟩ := norm_two_mul_sub_one_bounds (by linarith : 1 ≤ a₁.re) him0 him1
+  have h2a : 2 * a₁ - 1 ≠ 0 :=
+    norm_pos_iff.mp (lt_of_lt_of_le (by linarith : (0 : ℝ) < 2 * a₁.re - 1) hn_lo)
+  have hQne := (norm_log_saddleRatioSq_le (by linarith : 1 ≤ a₁.re) him0 him1 hf).1
+  have h2h : 2 * a₁ - 1 + 2 * loopShift a₁ s ≠ 0 := by
+    intro h0
+    have hre' : (2 * a₁ - 1 + 2 * loopShift a₁ s).re =
+        2 * a₁.re - 1 + 2 * (loopShift a₁ s).re := by simp
+    rw [h0, Complex.zero_re] at hre'
+    have h3 := (abs_le.mp ((Complex.abs_re_le_norm (loopShift a₁ s)).trans hhK)).1
+    linarith
   have hcos0 := cos_turnPoint_ne_zero s
   have hD0 : 2 * (saddleP a₁ * (2 * a₁ - 1)) ≠ 0 :=
-    mul_ne_zero two_ne_zero (mul_ne_zero hP0 h2a)
-  have hexp : cexp (2 * (saddleP a₁ * (2 * a₁ - 1)) * h) =
+    mul_ne_zero two_ne_zero (mul_ne_zero (saddleP_ne_zero a₁) h2a)
+  have hexp : cexp (2 * (saddleP a₁ * (2 * a₁ - 1)) * loopShift a₁ s) =
       (saddleRatioSq a₁)⁻¹ * (Complex.cos (turnPoint s) ^ 2)⁻¹ := by
-    have e : 2 * (saddleP a₁ * (2 * a₁ - 1)) * h =
+    have e : 2 * (saddleP a₁ * (2 * a₁ - 1)) * loopShift a₁ s =
         -Complex.log (saddleRatioSq a₁) - 2 * Complex.log (Complex.cos (turnPoint s)) := by
-      rw [hh, mul_div_cancel₀ _ hD0]
+      rw [loopShift, mul_div_cancel₀ _ hD0]
     rw [e, Complex.exp_sub, Complex.exp_neg, Complex.exp_log hQne, two_mul, Complex.exp_add,
       Complex.exp_log hcos0, div_eq_mul_inv, sq]
-  have hX := norm_remainder_sub_one_le (a₁ := a₁) (h := h) (K := K) (by linarith) him0 him1
-    (by linarith) hhK hk2
-  have hQ : saddleRatioSq (a₁ + h) * Complex.cos (turnPoint s) ^ 2 =
-      cexp (2 * saddleP a₁ *
-          ((cexp (2 * h) - 1 - 2 * h) * (a₁ - 1) + (cexp (2 * h) - 1) * h) + 9 * h) *
-        ((2 * a₁ - 1) / (2 * a₁ - 1 + 2 * h)) := by
-    rw [saddleRatioSq_add h2a h2h, hexp]
-    have hc2 : Complex.cos (turnPoint s) ^ 2 ≠ 0 := pow_ne_zero 2 hcos0
+  have hX := norm_remainder_sub_one_le (a₁ := a₁) (h := loopShift a₁ s) (by linarith) him0 him1
+    (by linarith : (1 + loopConst) ^ 2 * a₁.re ^ 4 * Real.exp (-a₁.re) ≤ 1 / 17) hhK hk2
+  have key : ∀ Q C X : ℂ, Q ≠ 0 → C ≠ 0 → Q * (Q⁻¹ * C⁻¹) * X * C = X := by
+    intro Q C X hQ hC
     field_simp
-  rw [hloop]
-  refine ⟨hreg, ?_, ?_⟩
-  · rw [Complex.add_re]
-    linarith [hre.1]
-  · rw [hQ]
-    linarith
+  rw [loopSaddle, saddleRatioSq_add h2a h2h, hexp,
+    key _ _ _ hQne (pow_ne_zero 2 hcos0)]
+  linarith
 
 /-- The smallness of the loop holds far out. -/
 theorem exists_loop_threshold : ∃ σ₂ : ℝ, 51 ≤ σ₂ ∧ ∀ σ : ℝ, σ₂ ≤ σ →

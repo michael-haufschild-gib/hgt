@@ -15,12 +15,14 @@ For unit `L¹∩L²` profiles with first moment at most `M`, the verified bound 
 `X(ξ)=max(-log|ξ|,0)` and `T≥0`. The full negative part is integrable and
 at most `16+4M`.
 Choose the physical cutoff `H=exp(t/2)` in the window bound, then integrate
-the resulting spectral distribution tail. The resulting candidate coercivity
+the resulting spectral distribution tail. The resulting verified coercivity
 inequality is `Q(f)≥L₊(f)+4M(f)-16`, where `L₊` is positive logarithmic
 Fourier energy: split `L=L₊-L₋` and use `L₋≤16+4M` against the potential
-`8M`. `CausalReflection/SoftLogarithmicHalfLineCoercivity` contains the
-unchecked assembly and the resulting bounds on both nonnegative parts of
-every unit Rayleigh sublevel. The closed-domain passage remains open; the
+`8M`. `CausalReflection/SoftLogarithmicHalfLineCoercivity` proves the
+decomposition, coercivity, and bounds on both nonnegative parts of every
+unit Rayleigh sublevel. Its final plain source audit passes without warnings
+and with exactly the standard three axioms; it is wired.
+The closed-domain passage remains open; the
 unitary `L²` limit must allow profiles outside `L¹`.
 The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integrable real-valued version is `MeasureTheory.Integrable.integral_eq_integral_meas_lt`. Apply it to the measure with Fourier square density.
 
@@ -59,6 +61,14 @@ would transfer the uniform tail bound to the limit. Removing the caps
 would then pass the negative term without requiring an ordinary Fourier
 integral for the limit. These limit passages remain to be formalized.
 
+`HTGeometry.exists_subseq_ae_tendsto` supplies the almost-everywhere
+subsequence directly from complex `L²` convergence. Applying it in physical
+and unitary Fourier coordinates allows Fatou to preserve both positive
+moments and each negative-logarithmic tail bound. Bounded nonnegative
+weights define continuous quadratic forms through their square-root
+multipliers; the uniform tail bound then removes the negative-logarithm cap.
+This avoids any assumed `L¹` convergence of the limiting profile.
+
 The negative-logarithmic estimate has a homogeneous, adjustable form.
 Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff
 `H=c exp(t/2)`, with `c>0`, to obtain the candidate bound
@@ -93,6 +103,11 @@ Lévy density `exp(-h)/(2h)`. Dominated convergence would therefore give
 convergence in the positive logarithmic form norm. The first-moment term
 converges by physical domination, and the negative logarithmic term by the
 uniform tail estimate. No exponential moment of the limit is needed.
+
+Normalize the compact cutoffs after their `L²` norms approach one. Their
+first moments stay bounded, so the verified unit `L¹∩L²` negative-tail
+estimate applies throughout recovery. This removes the need for a separate
+Fourier-window estimate on arbitrary nonintegrable `L²` profiles.
 
 `suzukiFinitePartEnergy_absolute_split` identifies the loss under modulus with a positive cross-sign interaction for the exact `1/|x-y|` kernel. `suzukiFinitePartEnergy_absolute_lt_of_sign_change` proves strict loss on a bounded smooth core. `SuzukiLimitingLogClosedMarkov` transfers contractions to a closed form on a fixed interval.
 

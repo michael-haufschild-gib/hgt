@@ -91,7 +91,7 @@ theorem IsHalfLineEnergyMinimizer.exists_exponential_upper_bound {R : ℝ} (hR :
     hF.1.integrable_exponentialBarrier_primeRow (by linarith only [hβupper]) ht
   have hA : Integrable (fun u => A u * (F u * G u)) := by
     apply (((hpot.const_mul (criticalAliasCoefficient R)).add (hpair.const_mul k)).sub hrow).congr
-    exact Eventually.of_forall fun u => by dsimp only [A]; ring
+    exact Eventually.of_forall fun u => by dsimp only [A, Pi.add_apply, Pi.sub_apply]; ring
   have hAint : (∫ u, A u * (F u * G u)) =
       criticalAliasCoefficient R * (∫ u, F u * G u * Real.exp (-(8 * u))) +
         k * (∫ u, F u * G u) -
@@ -111,7 +111,7 @@ theorem IsHalfLineEnergyMinimizer.exists_exponential_upper_bound {R : ℝ} (hR :
           integral_const_mul, integral_const_mul]
   have hforce : Integrable (fun u => (D + P * Real.exp (-(u / 2))) * G u) := by
     apply ((hG.integrable.const_mul D).add (hG.integrable_polarExponential.const_mul P)).congr
-    exact Eventually.of_forall fun u => by dsimp only; ring
+    exact Eventually.of_forall fun u => by dsimp only [Pi.add_apply]; ring
   have hforceint : (∫ u, (D + P * Real.exp (-(u / 2))) * G u) =
       D * (∫ u, G u) + P * (∫ u, G u * Real.exp (-(u / 2))) := by
     calc

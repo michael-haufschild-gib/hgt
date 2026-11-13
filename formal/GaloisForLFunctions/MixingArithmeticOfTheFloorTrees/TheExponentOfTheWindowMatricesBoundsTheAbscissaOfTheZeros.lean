@@ -18,8 +18,8 @@ since the jets bind at most `5.4`, each floor tree adds at most `2 Λ(k)/√k` a
   **if `𝔚(σ) ≥ −C K^θ Σ σ²` with `θ < ½`, then every zero has `|Re ρ − ½| ≤ θ`**
   (`zetaZeroWidth_le_of_packetForm_stepPacket_ge`).
 
-The proof is the transfer of `AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis`
-at a fixed ratio: a lower bound `−D Σ σ²` on the step packets of ratio `3K + 1` passes to the comb
+The proof is the transfer of
+`AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis` at a fixed ratio: a lower bound `−D Σ σ²` on the step packets of ratio `3K + 1` passes to the comb
 and to the zeros on the samples of the antisymmetric state of the two ends at lag `v`, for
 `log K ≥ log 3 + 12 + v` (`two_re_lagStructure_le_of_packetForm_ge`). With `K ≍ e^v` the depth
 `D = C K^θ` grows like `e^{θ v}`, and the rate law of the antisymmetric state

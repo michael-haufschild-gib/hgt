@@ -1,8 +1,8 @@
 # B192: the two ends of the window of ratio three — a packet and its dilate by two are bound
 
 - **ID:** agz-b192-two-ends
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.21 (B192); programme `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ`
 - **Statement:** For every `r ≥ 1`, `Q ≥ 2` and every packet `σ` on the blocks of `(2r, 3r]`, the
   neutral part of the window `(2r, 6r]` on `z = σ − U₂σ` (`U₂σ` the refinement of `σ` on the
@@ -19,8 +19,8 @@ proof of B192 (see "What stays open").
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized: `sum_neutralBlock_twoEnds_ge`, `bilin_neutralWindow_lowerEnd_upperEnd_le`
 
 ## Proof
 
@@ -73,14 +73,27 @@ Trapezoid and chord: `r d(a) ≤ (r/2)(1/a + 1/(a+1)) ≤ (6 − ν)/12`. Numeri
 
 **5.** `N(z) ≥ (1/2500 + √2/40) Σσ² ≥ (1/30) Σσ²`.
 
+## Lean
+
+Module `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/APacketAndItsDilateByTwoAreBoundOnTheWindowOfRatioThree.lean`.
+
+| Step | Declaration |
+|---|---|
+| 1 the two ends | `twoEnds`, `endJet`, `neutralBlock_add_children`, `sum_neutralBlock_twoEnds` |
+| 2 odd sector | `sum_neutralBlock_twoEnds_odd` |
+| 3 `k ≥ 0` | `endKernel`, `endJet_le`, `endCoupling_cubic`, `endKernel_nonneg` |
+| 4 Schur test, row and column sums | `sum_sum_mul_le_of_nonneg`, `sum_endJet_row`, `sum_endJet_col`, `log_sub_log_le_xLogXStep_sub`, `endSums_real`, `sum_endKernel_add_le` |
+| 5 the margin | `sum_neutralBlock_twoEnds_ge` |
+| wells | `lowerEnd`, `upperEnd`, `bilin_neutralWindow_upperEnd`, `bilin_neutralWindow_lowerEnd_upperEnd_le`, `not_unbound_lowerEnd_upperEnd` |
+
 ## What stays open (B192 itself)
 
-- At infinite block size `N` is the compression of `Φ(D)`,
-  `Φ(t) = Re ψ(1/4 + it/2) − log π − √2 log 2 · cos(t log 2)`, to `L²[0, log 3]`. Its second
-  eigenvalue lies between the first two eigenvalues of Weil's form on packets with one vanishing
-  charge; a prolate estimate puts it near `10⁻³`. B192 is therefore of the strength of Weil
-  positivity at the aperture `½ log 3` (the open extension of the `181/500` certificate), and no
-  inequality with a margin of the size above reaches it.
+- B192 follows from the positivity of the block matrix of ratio three
+  (`hermNegIndex_neutralWindow_le_one_of_nonneg`): Weil positivity at the aperture `½ log 3`,
+  beyond the certified ratio `103/50`. Not proved, an estimate only: at infinite block size `N`
+  is the compression of `Φ(D)`, `Φ(t) = Re ψ(1/4 + it/2) − log π − √2 log 2 · cos(t log 2)`, to
+  `L²[0, log 3]`, and a prolate estimate puts its second eigenvalue near `10⁻³`; an inequality
+  with a margin of the size above does not reach it.
 - The even sector `τ = σ` holds the bound state. On charge-free `σ` it gives a necessary condition
   for B192: `W_A(σ) ≥ (log 2/√2) Σσ² + (1/√2) Σ σ_jσ_l K(j,l)` on the window of ratio `3/2`.
 - Not covered: packets with mass on the middle `(3r, 4r]` or with different values on the two
@@ -88,3 +101,4 @@ Trapezoid and chord: `r d(a) ≤ (r/2)(1/a + 1/(a+1)) ≤ (6 − ν)/12`. Numeri
 
 ## Log
 - 2026-11-13 — created in 1-in-progress with the paper proof
+- 2026-11-13 — formalized; moved to 3-formalized

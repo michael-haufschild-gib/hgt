@@ -7,8 +7,8 @@ import Mathlib.Analysis.Normed.Group.Tannery
 
 At infinite block size the margin of a window `[−L, L]` is the second eigenvalue of its neutral
 form. Its binding energy, the first eigenvalue, is at least of order `e^{L}` without hypothesis,
-carried by the poles. RH is a bounded margin (`riemannHypothesis_iff_margin_bddBelow`). A margin that sinks
-at a smaller exponential rate still confines the zeros:
+carried by the poles. RH is a bounded margin (`riemannHypothesis_iff_margin_bddBelow`). A margin
+that sinks at a smaller exponential rate still confines the zeros:
 
   **if the margin of `[−L, L]` is at least `−C e^{2θL}` with `θ < ½`, every zero has
   `|Re ρ − ½| ≤ θ`** (`zetaZeroWidth_le_of_marginRate`).
@@ -55,8 +55,8 @@ def MarginRate (C θ : ℝ) : Prop :=
 theorem re_lt_half_of_evenCoeff_ne_zero {b : ℝ → ℂ} {z : ℂ}
     (hz : evenCoeff zetaZeroConfig b z ≠ 0) : z.re < 1 / 2 := by
   rcases SquareRootThreshold.mem_of_evenCoeff_ne_zero hz with h | h
-  · have := (zetaZeroConfig.strip _ h).2; simp at this; linarith
-  · have := (zetaZeroConfig.strip _ h).2; simp at this; linarith
+  · obtain ⟨_, _, h1⟩ := id h; simp at h1; linarith
+  · obtain ⟨_, _, h1⟩ := id h; simp at h1; linarith
 
 /-- **`2 Re S(v) = o(e^{v/2})`**: every exponent of the lag structure has real part below `½`. -/
 theorem tendsto_two_re_lagStructure_mul_exp {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ}
@@ -111,11 +111,11 @@ theorem tendsto_two_re_lagStructure_mul_exp {b : ℝ → ℂ} (hb : ContDiff ℝ
     push_cast
     ring
   have hlim' : Tendsto (fun v : ℝ =>
-      ((2 * (lagStructure zetaZeroConfig b v).re * Real.exp (-(v / 2)) : ℝ) : ℂ)) atTop (𝓝 0) := by
-    simp only [hid]
-    exact hlim
+      ((2 * (lagStructure zetaZeroConfig b v).re * Real.exp (-(v / 2)) : ℝ) : ℂ)) atTop (𝓝 0) :=
+    hlim.congr fun v => (hid v).symm
   have h := (Complex.continuous_re.tendsto 0).comp hlim'
-  simpa using h
+  rw [Complex.zero_re] at h
+  exact h.congr fun v => Complex.ofReal_re _
 
 /-! ### The binding state of the two ends -/
 
@@ -178,12 +178,14 @@ theorem zeroSum_twoEndSpline (v : ℝ) :
 
 theorem integrable_mul_exp_of_vanishing {g : ℝ → ℝ} (hg : Continuous g) {L : ℝ}
     (hv : ∀ u, L < |u| → g u = 0) (s : ℝ) : Integrable fun u => g u * Real.exp (s * u) :=
-  (hg.mul (by fun_prop)).integrable_of_hasCompactSupport (hasCompactSupport_of_vanishing hv).mul_right
+  (hg.mul (by fun_prop)).integrable_of_hasCompactSupport
+    (hasCompactSupport_of_vanishing hv).mul_right
 
 /-- `∫ g(u + c) e^{s u} du = e^{−sc} ∫ g e^{s u}`. -/
 theorem integral_comp_add_mul_exp (g : ℝ → ℝ) (c s : ℝ) :
     ∫ u, g (u + c) * Real.exp (s * u) = Real.exp (-(s * c)) * ∫ u, g u * Real.exp (s * u) := by
-  have h := integral_add_right_eq_self (fun u => g u * Real.exp (s * u)) c
+  have h : ∫ u, g (u + c) * Real.exp (s * (u + c)) = ∫ u, g u * Real.exp (s * u) :=
+    integral_add_right_eq_self (fun u => g u * Real.exp (s * u)) c
   have e : (fun u => g (u + c) * Real.exp (s * u)) =
       fun u => Real.exp (-(s * c)) * (g (u + c) * Real.exp (s * (u + c))) := by
     funext u
@@ -240,10 +242,13 @@ theorem charges_twoEndSpline (v : ℝ) :
         (∫ u, spline (u + v / 2) * Real.exp (s * u)) +
           ∫ u, spline (u + -(v / 2)) * Real.exp (s * u) := by
     intro s
-    have h1 := integrable_mul_exp_of_vanishing
-      (contDiff_spline.continuous.comp (continuous_id.add continuous_const)) (hvt (v / 2)) s
-    have h2 := integrable_mul_exp_of_vanishing
-      (contDiff_spline.continuous.comp (continuous_id.add continuous_const)) (hvt (-(v / 2))) s
+    have h1 : Integrable fun u => spline (u + v / 2) * Real.exp (s * u) :=
+      integrable_mul_exp_of_vanishing (g := fun u => spline (u + v / 2))
+        (contDiff_spline.continuous.comp (continuous_id.add continuous_const)) (hvt (v / 2)) s
+    have h2 : Integrable fun u => spline (u + -(v / 2)) * Real.exp (s * u) :=
+      integrable_mul_exp_of_vanishing (g := fun u => spline (u + -(v / 2)))
+        (contDiff_spline.continuous.comp (continuous_id.add continuous_const))
+        (hvt (-(v / 2))) s
     rw [← integral_add h1 h2]
     congr 1
     funext u
@@ -278,10 +283,11 @@ theorem integral_twoEndSpline_sq_le (v : ℝ) :
     (hi.comp_add_right (v / 2)).const_mul 2
   have hi2 : Integrable fun u => 2 * spline (u + -(v / 2)) ^ 2 :=
     (hi.comp_add_right (-(v / 2))).const_mul 2
+  have hcx : Continuous fun u => twoEndSpline v u ^ 2 := (contDiff_twoEndSpline v).continuous.pow 2
   have hint : Integrable fun u => twoEndSpline v u ^ 2 :=
-    ((contDiff_twoEndSpline v).continuous.pow 2).integrable_of_hasCompactSupport
+    hcx.integrable_of_hasCompactSupport
       (hasCompactSupport_of_vanishing (L := 4 + |v| / 2)
-        fun u hu => by rw [twoEndSpline_eq_zero v hu]; ring)
+        fun u hu => by show twoEndSpline v u ^ 2 = 0; rw [twoEndSpline_eq_zero v hu]; ring)
   have h1 : ∫ u, (2 * spline (u + v / 2) ^ 2 + 2 * spline (u + -(v / 2)) ^ 2) =
       (∫ u, 2 * spline (u + v / 2) ^ 2) + ∫ u, 2 * spline (u + -(v / 2)) ^ 2 :=
     integral_add hi1 hi2
@@ -332,7 +338,8 @@ theorem neutralForm_even_add_odd_charged {e o : ℝ → ℝ} (he : ContDiff ℝ 
       ring
     rw [hr] at h
     exact h.symm
-  rw [packetForm_eq_weilQuad (hsmooth 1) (hvs 1) hQ, packetForm_eq_weilQuad (hsmooth (-1)) (hvs (-1)) hQ,
+  rw [packetForm_eq_weilQuad (hsmooth 1) (hvs 1) hQ,
+    packetForm_eq_weilQuad (hsmooth (-1)) (hvs (-1)) hQ,
     hexp 1, hexp (-1)] at hrefl
   have hP : ArithmeticCastelnuovoSeveri.weilPair e o = 0 := by linarith
   -- the odd packet carries no charge
@@ -410,7 +417,8 @@ theorem zetaZeroWidth_le_of_marginRate {C θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ 
     have e3 : (T0 * Real.exp (-(v / 2)) +
           2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
           4 * E * mU * Real.exp (-((1 / 2 - θ) * v))) * Real.exp (v / 2) =
-        T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re + 4 * E * mU * Real.exp (θ * v) := by
+        T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re +
+          4 * E * mU * Real.exp (θ * v) := by
       rw [← e2]
       linear_combination (T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re) * e1
     rw [e3] at hmul

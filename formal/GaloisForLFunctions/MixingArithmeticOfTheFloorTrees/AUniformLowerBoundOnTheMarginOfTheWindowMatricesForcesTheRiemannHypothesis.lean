@@ -17,7 +17,8 @@ i.e. iff the second eigenvalue of all window matrices is bounded below. In terms
 (`riemannHypothesis_iff_forall_doob_poincare_sub`): RH iff for some `C` the Poincaré constant of
 every window is at least its binding energy minus `C`. The windows `(1, 2M]` suffice
 (`riemannHypothesis_iff_initialWindow_margin_bddBelow`): they are the leading principal minors of
-one infinite matrix, and RH is the statement that its second eigenvalue is finite. Together with the bounded margin (`exists_doob_test_le`), RH says that the margin lies in `[0, c₀]`,
+one infinite matrix, and RH is the statement that its second eigenvalue is finite. Together with
+the bounded margin (`exists_doob_test_le`), RH says that the margin lies in `[0, c₀]`,
 and the margin is unbounded below as soon as it is negative somewhere.
 
 The proof runs in three steps.
@@ -191,21 +192,28 @@ theorem zeroSum_shiftedOdd (v : ℝ) :
   unfold neutralForm
   rw [charge_twoEndOdd v, zero_mul, mul_zero, sub_zero]
 
+theorem intervalIntegral_sq_le_integral {g : ℝ → ℝ} (hg : Continuous g)
+    (hgc : HasCompactSupport g) {b : ℝ} (hb : 0 ≤ b) :
+    ∫ u in (0 : ℝ)..b, g u ^ 2 ≤ ∫ u, g u ^ 2 := by
+  have hint : Integrable fun u => g u ^ 2 :=
+    (hg.pow 2).integrable_of_hasCompactSupport (hgc.comp_left (g := fun x : ℝ => x ^ 2)
+      (by norm_num))
+  rw [intervalIntegral.integral_of_le hb]
+  exact setIntegral_le_integral hint (Eventually.of_forall fun u => sq_nonneg (g u))
+
+theorem integral_comp_sub_sq (g : ℝ → ℝ) (c : ℝ) : ∫ u, g (u - c) ^ 2 = ∫ u, g u ^ 2 :=
+  integral_sub_right_eq_self (fun u => g u ^ 2) c
+
 theorem intervalIntegral_shiftedOdd_sq_le (v : ℝ) (K : ℕ) :
     ∫ u in (0 : ℝ)..Real.log (1 + ((3 * K : ℕ) : ℝ)), shiftedOdd v u ^ 2 ≤
       4 * ∫ u, poleFreeProfile u ^ 2 := by
   have hpos : (0 : ℝ) ≤ Real.log (1 + ((3 * K : ℕ) : ℝ)) :=
     Real.log_nonneg (by have : (0 : ℝ) ≤ ((3 * K : ℕ) : ℝ) := Nat.cast_nonneg _; linarith)
-  have hint : Integrable fun u => shiftedOdd v u ^ 2 :=
-    ((contDiff_shiftedOdd v).continuous.pow 2).integrable_of_hasCompactSupport
-      ((hasCompactSupport_shiftedOdd v).comp_left (g := fun x : ℝ => x ^ 2) (by norm_num))
-  rw [intervalIntegral.integral_of_le hpos]
-  calc ∫ u in Set.Ioc 0 (Real.log (1 + ((3 * K : ℕ) : ℝ))), shiftedOdd v u ^ 2
+  calc ∫ u in (0 : ℝ)..Real.log (1 + ((3 * K : ℕ) : ℝ)), shiftedOdd v u ^ 2
       ≤ ∫ u, shiftedOdd v u ^ 2 :=
-        setIntegral_le_integral hint (Eventually.of_forall fun u => sq_nonneg _)
-    _ = ∫ u, twoEndOdd v u ^ 2 := by
-        unfold shiftedOdd
-        exact integral_sub_right_eq_self (fun u => twoEndOdd v u ^ 2) (Real.log 3 + 6 + |v| / 2)
+        intervalIntegral_sq_le_integral (contDiff_shiftedOdd v).continuous
+          (hasCompactSupport_shiftedOdd v) hpos
+    _ = ∫ u, twoEndOdd v u ^ 2 := integral_comp_sub_sq (twoEndOdd v) (Real.log 3 + 6 + |v| / 2)
     _ ≤ 4 * ∫ u, poleFreeProfile u ^ 2 := integral_twoEndOdd_sq_le v
 
 /-! ### Step packets -/
@@ -325,19 +333,22 @@ theorem sum_probe_sq {R J L M : ℕ} (hR : 1 ≤ R) (hL : 2 ≤ L) (hLM : L * (R
 theorem sum_fin_neutralWindow_add_eq {M : ℕ} (hM : 1 ≤ M) (Q : ℕ) (C : ℝ) (Ψ : ℕ → ℝ) :
     ∑ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
         Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) *
-          (neutralWindow Q 1 (M + M - 1) + Matrix.diagonal fun _ => C) i j =
+          (neutralWindow Q 1 (M + M - 1) + Matrix.diagonal fun _ => C :
+            Matrix (Fin (M + M - 1)) (Fin (M + M - 1)) ℝ) i j =
       rectSum (neutralBlock Q) (Ico 1 (M + M)) (Ico 1 (M + M)) Ψ Ψ +
         C * ∑ b ∈ Ico 1 (M + M), Ψ b ^ 2 := by
   have hdiag : ∀ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
       Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) * (Matrix.diagonal (fun _ => C) i j) =
         C * Ψ (1 + (i : ℕ)) ^ 2 := fun i => by
-    rw [Finset.sum_eq_single i (fun j _ hj => by rw [Matrix.diagonal_apply_ne _ (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single i
+      (fun j _ hj => by rw [Matrix.diagonal_apply_ne _ (Ne.symm hj), mul_zero])
       (fun h => absurd (Finset.mem_univ i) h)]
     simp only [Matrix.diagonal_apply_eq]
     ring
   have hsplit : ∑ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
       Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) *
-        (neutralWindow Q 1 (M + M - 1) + Matrix.diagonal fun _ => C) i j =
+        (neutralWindow Q 1 (M + M - 1) + Matrix.diagonal fun _ => C :
+            Matrix (Fin (M + M - 1)) (Fin (M + M - 1)) ℝ) i j =
       ∑ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
           Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) * neutralWindow Q 1 (M + M - 1) i j +
         ∑ i : Fin (M + M - 1), C * Ψ (1 + (i : ℕ)) ^ 2 := by
@@ -462,7 +473,8 @@ theorem exists_two_le_hermNegIndex_neutralWindow_add {R J Q₀ : ℕ} (hR : 1 �
       (s * probe R J L M σ 1 (-c₁) (-κ) (1 + (i : ℕ)) + t * probe R J L M σ 0 1 1 (1 + (i : ℕ))) *
         (s * probe R J L M σ 1 (-c₁) (-κ) (1 + (j : ℕ)) +
           t * probe R J L M σ 0 1 1 (1 + (j : ℕ))) *
-        (neutralWindow (M + M) 1 (M + M - 1) + Matrix.diagonal fun _ => C) i j < 0
+        (neutralWindow (M + M) 1 (M + M - 1) + Matrix.diagonal fun _ => C :
+          Matrix (Fin (M + M - 1)) (Fin (M + M - 1)) ℝ) i j < 0
   simp only [hW]
   rw [sum_fin_neutralWindow_add_eq hM1 (M + M) C, probe_form hR hQ₀ σ hL1 hM1 hLM hQM c₁ κ s t,
     sum_probe_sq hR hL2 hLM σ s (t - s * c₁) (t - s * κ)]
@@ -521,7 +533,7 @@ theorem riemannHypothesis_iff_initialWindow_margin_bddBelow :
 
 /-! ### The Doob chains -/
 
-/-- Adding a constant to the Matrix.diagonal does not change the Dirichlet form of the Doob chain. -/
+/-- Adding a constant to the diagonal does not change the Dirichlet form of the Doob chain. -/
 theorem doobEnergy_add_diagonal {n : ℕ} (G : Matrix (Fin n) (Fin n) ℝ) (C : ℝ) (φ f : Fin n → ℝ) :
     doobEnergy (G + Matrix.diagonal fun _ => C) φ f = doobEnergy G φ f := by
   unfold doobEnergy doobConductance
@@ -541,23 +553,26 @@ theorem riemannHypothesis_iff_forall_doob_poincare_sub :
       ∀ φ : Fin J → ℝ, (∀ i, 0 < φ i) → ∀ lam : ℝ, neutralWindow Q R J *ᵥ φ = lam • φ →
         ∀ f : Fin J → ℝ, doobMean φ f = 0 →
           (-lam - C) * doobMass φ f ≤ doobEnergy (neutralWindow Q R J) φ f := by
-  -- the matrix `N + C` has the same off-Matrix.diagonal entries and the eigenvalue `λ + C` at `φ`
+  -- the matrix `N + C` has the same off-diagonal entries and the eigenvalue `λ + C` at `φ`
   have hshift : ∀ (Q R J : ℕ) (C : ℝ) (φ : Fin J → ℝ) (lam : ℝ),
       neutralWindow Q R J *ᵥ φ = lam • φ →
         (neutralWindow Q R J + Matrix.diagonal fun _ => C) *ᵥ φ = (lam + C) • φ := by
     intro Q R J C φ lam heig
     funext i
-    simp only [Matrix.add_mulVec, heig, Pi.add_apply, Matrix.mulVec_diagonal, Pi.smul_apply, smul_eq_mul]
+    simp only [Matrix.add_mulVec, heig, Pi.add_apply, Matrix.mulVec_diagonal, Pi.smul_apply,
+      smul_eq_mul]
     ring
   have hsymm : ∀ (Q R J : ℕ) (C : ℝ) (i j : Fin J),
-      (neutralWindow Q R J + Matrix.diagonal fun _ => C) i j =
-        (neutralWindow Q R J + Matrix.diagonal fun _ => C) j i := fun Q R J C i j => by
+      (neutralWindow Q R J + Matrix.diagonal fun _ => C : Matrix (Fin J) (Fin J) ℝ) i j =
+        (neutralWindow Q R J + Matrix.diagonal fun _ => C : Matrix (Fin J) (Fin J) ℝ) j i :=
+      fun Q R J C i j => by
     rw [Matrix.add_apply, Matrix.add_apply, neutralWindow_symm Q R J i j]
     by_cases hij : i = j
     · rw [hij]
     · rw [Matrix.diagonal_apply_ne _ hij, Matrix.diagonal_apply_ne _ (Ne.symm hij)]
   have hoff : ∀ (Q R J : ℕ) (C : ℝ) (i j : Fin J), i ≠ j →
-      (neutralWindow Q R J + Matrix.diagonal fun _ => C) i j ≤ 0 := fun Q R J C i j hij => by
+      (neutralWindow Q R J + Matrix.diagonal fun _ => C : Matrix (Fin J) (Fin J) ℝ) i j ≤ 0 :=
+      fun Q R J C i j hij => by
     rw [Matrix.add_apply, Matrix.diagonal_apply_ne _ hij, add_zero]
     exact (neutralWindow_neg_of_ne Q R hij).le
   rw [riemannHypothesis_iff_neutralWindow_margin_bddBelow]
