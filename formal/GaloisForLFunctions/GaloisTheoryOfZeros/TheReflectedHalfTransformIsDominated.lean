@@ -399,201 +399,238 @@ theorem norm_side_le_base (h : SlopeConfig t₀ T₀ κ τ s a) :
           (mul_nonneg (norm_nonneg _) (mul_nonneg hkap0.le (Real.exp_pos _).le))
     _ = _ := by ring
 
+/-- Between the base point and a point to its right, at height within `2T₀(1 + Re a)`, the slope
+of `ξ` is `a` up to `1 + v/(2(1 + Re a)²)`, `v` a bound for the horizontal distance. -/
+theorem norm_logDeriv_xi_sub_le_right (h : SlopeConfig t₀ T₀ κ τ s a) {w : ℂ} {v : ℝ}
+    (hre : (s + (κ : ℂ)).re ≤ w.re) (hre' : w.re - (s + (κ : ℂ)).re ≤ v)
+    (him : |w.im - (s + (κ : ℂ)).im| ≤ 2 * T₀ * (1 + a.re)) :
+    ‖logDeriv xi w - a‖ ≤ 1 + v / (2 * (1 + a.re) ^ 2) := by
+  have hS := h.norm_logDeriv_xi_sub_le hre him
+  have hN5 := h.five_le_one_add
+  have hN0 : 0 < 1 + a.re := by linarith
+  have hN2 : 25 ≤ (1 + a.re) ^ 2 := by nlinarith
+  have b1 : 4 / (1 + a.re) ^ 2 ≤ 4 / 25 :=
+    div_le_div_of_nonneg_left (by norm_num) (by norm_num) hN2
+  have b2 : (2 : ℝ) ^ (5 - w.re) / 12 ≤ 1 / 12 := by
+    have : (2 : ℝ) ^ (5 - w.re) ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by linarith [h.base_re])
+    linarith
+  have b3 := add_div_two_sq_le hN0 h.four_mul_le_one_add hre'
+  linarith
+
+/-- The integrand of the ray at the height of the saddle against the base point: the Gaussian is
+centred at `Re(2τa)`, and one comparison of two values of `ξ` runs from the base point to the
+point of the ray. -/
+theorem norm_ray_integrand_le_base (h : SlopeConfig t₀ T₀ κ τ s a) {u : ℝ} (hu : κ < u) :
+    ‖complexGauss τ (u + (2 * τ * a).im * I) * xi (s + (u + (2 * τ * a).im * I))‖ ≤
+      ‖xi (s + κ)‖ * (gaussHeight t₀ *
+        Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
+          2 / gaussRate t₀ T₀) *
+        Real.exp (-(gaussRate t₀ T₀ / 2) * (u - (2 * τ * a).re) ^ 2)) := by
+  obtain ⟨w₀, hw₀⟩ : ∃ w₀ : ℝ, w₀ = (2 * τ * a).re := ⟨_, rfl⟩
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = (2 * τ * a).im := ⟨_, rfl⟩
+  rw [← hw₀, ← hc]
+  have hsad : 2 * τ * a = w₀ + c * I := by
+    rw [hw₀, hc]
+    exact (Complex.re_add_im _).symm
+  have hτ := h.τ_re_pos
+  have hkap0 := gaussHeight_pos h.ht₀
+  have hnorm := h.norm_two_mul_le
+  have hw₀le : w₀ ≤ 2 * T₀ * (1 + a.re) := by
+    rw [hw₀]
+    exact (Complex.re_le_norm _).trans hnorm
+  have hcle : |c| ≤ 2 * T₀ * (1 + a.re) := by
+    rw [hc]
+    exact (Complex.abs_im_le_norm _).trans hnorm
+  have e5 : (s + (κ : ℂ)).re = s.re + κ := by rw [Complex.add_re, Complex.ofReal_re]
+  have e6 : (s + (κ : ℂ)).im = s.im := by rw [Complex.add_im, Complex.ofReal_im, add_zero]
+  have hbre := h.base_re
+  have hQ := re_saddle_mul hsad
+  have hN5 := h.five_le_one_add
+  have hq1 := gaussRate_le h.ht₀ h.hτt h.hτT
+  have hv0 : 0 < u - κ := sub_pos.2 hu
+  have hN2pos : 0 < 2 * (1 + a.re) ^ 2 := mul_pos two_pos (pow_pos (by linarith) 2)
+  have hη : 0 < 1 + (u - κ) / (2 * (1 + a.re) ^ 2) :=
+    add_pos_of_pos_of_nonneg one_pos (div_nonneg hv0.le hN2pos.le)
+  -- the slope between the base point and the point of the ray
+  have hseg : ∀ w' ∈ segment ℝ (s + (κ : ℂ)) (s + ((u : ℂ) + c * I)),
+      1 < w'.re ∧ ‖logDeriv xi w' - a‖ ≤ 1 + (u - κ) / (2 * (1 + a.re) ^ 2) := by
+    intro w' hw'
+    obtain ⟨θ, hθ0, hθ1, hre, him⟩ := re_im_of_mem_segment hw'
+    have e3 : (s + ((u : ℂ) + c * I)).re = s.re + u := by simp
+    have e4 : (s + ((u : ℂ) + c * I)).im = s.im + c := by simp
+    rw [e5, e3] at hre
+    rw [e6, e4] at him
+    have hre0 : w'.re - (s + (κ : ℂ)).re = θ * (u - κ) := by
+      rw [e5, hre]
+      ring
+    have hθv0 : 0 ≤ θ * (u - κ) := mul_nonneg hθ0 hv0.le
+    have hθv : θ * (u - κ) ≤ u - κ := mul_le_of_le_one_left hv0.le hθ1
+    have him1 : |w'.im - (s + (κ : ℂ)).im| ≤ 2 * T₀ * (1 + a.re) := by
+      have e : w'.im - (s + (κ : ℂ)).im = θ * c := by
+        rw [e6, him]
+        ring
+      rw [e, abs_mul, abs_of_nonneg hθ0]
+      exact (mul_le_of_le_one_left (abs_nonneg _) hθ1).trans hcle
+    have hre1 : (s + (κ : ℂ)).re ≤ w'.re := by linarith
+    exact ⟨by linarith, h.norm_logDeriv_xi_sub_le_right hre1 (by linarith) him1⟩
+  have hmain := norm_xi_le_mul_exp (p := s + (κ : ℂ)) (q := s + ((u : ℂ) + c * I)) (a := a)
+    hη hseg
+  have hd : s + ((u : ℂ) + c * I) - (s + (κ : ℂ)) = ((u - κ : ℝ) : ℂ) + c * I := by
+    push_cast
+    ring
+  rw [hd] at hmain
+  have hre : ((((u - κ : ℝ) : ℂ) + c * I) * a).re = (u - κ) * a.re - c * a.im := by
+    simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im]
+    ring
+  have hn : ‖((u - κ : ℝ) : ℂ) + c * I‖ ≤ (u - κ) + 2 * T₀ * (1 + a.re) := by
+    refine (norm_add_le _ _).trans ?_
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hv0, norm_mul, Complex.norm_I, mul_one,
+      Complex.norm_real, Real.norm_eq_abs]
+    linarith
+  -- the Gaussian at the height of the saddle
+  have hg : ‖complexGauss τ ((u : ℂ) + c * I)‖ ≤ gaussHeight t₀ *
+      Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re + gaussRate t₀ T₀ * (u - w₀) ^ 2)) := by
+    rw [norm_complexGauss hτ, re_sq_div_of_saddle hτ hsad u]
+    have q2 : gaussRate t₀ T₀ * (u - w₀) ^ 2 ≤ τ.re / (4 * ‖τ‖ ^ 2) * (u - w₀) ^ 2 :=
+      mul_le_mul_of_nonneg_right hq1 (sq_nonneg _)
+    calc Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re +
+            τ.re / (4 * ‖τ‖ ^ 2) * (u - w₀) ^ 2)) / Real.sqrt (4 * Real.pi * ‖τ‖)
+        = 1 / Real.sqrt (4 * Real.pi * ‖τ‖) *
+            Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re +
+              τ.re / (4 * ‖τ‖ ^ 2) * (u - w₀) ^ 2)) := by ring
+      _ ≤ _ := mul_le_mul (one_div_sqrt_le_gaussHeight h.ht₀ h.hτt)
+          (Real.exp_le_exp.2 (by linarith)) (Real.exp_pos _).le hkap0.le
+  -- the exponents
+  have haux := slope_mul_dist_le h.rate_pos hN5 h.four_mul_le_one_add h.four_le_rate_mul_sq
+    (by linarith [h.hκ] : (0 : ℝ) ≤ κ) hw₀le hu.le
+  have hηn : (1 + (u - κ) / (2 * (1 + a.re) ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖ ≤
+      (1 + (u - κ) / (2 * (1 + a.re) ^ 2)) * ((u - κ) + 2 * T₀ * (1 + a.re)) :=
+    mul_le_mul_of_nonneg_left hn hη.le
+  have hexp : -((τ * a ^ 2).re + (u - w₀) * a.re + gaussRate t₀ T₀ * (u - w₀) ^ 2) +
+      (((((u - κ : ℝ) : ℂ) + c * I) * a).re +
+        (1 + (u - κ) / (2 * (1 + a.re) ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖) ≤
+      ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
+        2 / gaussRate t₀ T₀) + -(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2 := by
+    rw [hre]
+    linarith
+  calc ‖complexGauss τ ((u : ℂ) + c * I) * xi (s + ((u : ℂ) + c * I))‖
+      = ‖complexGauss τ ((u : ℂ) + c * I)‖ * ‖xi (s + ((u : ℂ) + c * I))‖ := norm_mul _ _
+    _ ≤ gaussHeight t₀ *
+          Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re + gaussRate t₀ T₀ * (u - w₀) ^ 2)) *
+          (‖xi (s + (κ : ℂ))‖ * Real.exp (((((u - κ : ℝ) : ℂ) + c * I) * a).re +
+            (1 + (u - κ) / (2 * (1 + a.re) ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖)) :=
+        mul_le_mul hg hmain (norm_nonneg _) (mul_nonneg hkap0.le (Real.exp_pos _).le)
+    _ = ‖xi (s + (κ : ℂ))‖ * (gaussHeight t₀ *
+          Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re + gaussRate t₀ T₀ * (u - w₀) ^ 2) +
+            (((((u - κ : ℝ) : ℂ) + c * I) * a).re +
+              (1 + (u - κ) / (2 * (1 + a.re) ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖))) :=
+        mul_exp_mul_mul_exp _ _ _ _
+    _ ≤ ‖xi (s + (κ : ℂ))‖ * (gaussHeight t₀ *
+          Real.exp (((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
+            2 / gaussRate t₀ T₀) + -(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2)) :=
+        mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hexp) hkap0.le) (norm_nonneg _)
+    _ = _ := mul_mul_exp_add _ _ _ _
+
 /-- **The ray against the base point.** At the height of the saddle the ray from the corner is at
-most `κ₀ ‖ξ(s + κ)‖ e^{Re(τa²) − κ Re a + O(1 + Re a)} ∫ e^{−λv²/2} dv`, wherever the saddle lies:
-the Gaussian is centred at `Re(2τa)`, and the slope of `ξ` is `a` up to
-`1 + (u − κ)/(2(1 + Re a)²)` between the base point and the point of the ray above `u`. -/
+most `κ₀ ‖ξ(s + κ)‖ e^{Re(τa²) − κ Re a + O(1 + Re a)} ∫ e^{−λv²/2} dv`, wherever the saddle
+lies. -/
 theorem norm_ray_le_base (h : SlopeConfig t₀ T₀ κ τ s a) :
     ‖∫ u in Ioi κ, complexGauss τ (u + (2 * τ * a).im * I) *
         xi (s + (u + (2 * τ * a).im * I))‖ ≤
       ‖xi (s + κ)‖ * (gaussHeight t₀ *
         Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
           2 / gaussRate t₀ T₀) * ∫ v : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2)) := by
-  set w₀ : ℝ := (2 * τ * a).re with hw₀
-  set c : ℝ := (2 * τ * a).im with hc
-  have hsad : 2 * τ * a = w₀ + c * I := (Complex.re_add_im _).symm
-  have hτ := h.τ_re_pos
-  have hT0 := h.T₀_pos
-  have hκ := h.hκ
+  have hlam := h.rate_pos
   have hkap0 := gaussHeight_pos h.ht₀
-  have hnorm := h.norm_two_mul_le
-  have hw₀le : w₀ ≤ 2 * T₀ * (1 + a.re) := (Complex.re_le_norm _).trans hnorm
-  have hcle : |c| ≤ 2 * T₀ * (1 + a.re) := (Complex.abs_im_le_norm _).trans hnorm
-  have e5 : (s + (κ : ℂ)).re = s.re + κ := by rw [Complex.add_re, Complex.ofReal_re]
-  have e6 : (s + (κ : ℂ)).im = s.im := by rw [Complex.add_im, Complex.ofReal_im, add_zero]
-  have hbre := h.base_re
-  have hQ := re_saddle_mul hsad
-  have hN5 := h.five_le_one_add
-  have h4T := h.four_mul_le_one_add
-  have hlamN2 := h.four_le_rate_mul_sq
-  have hq1 := gaussRate_le h.ht₀ h.hτt h.hτT
-  obtain ⟨lam, hlamdef⟩ : ∃ lam : ℝ, lam = gaussRate t₀ T₀ := ⟨_, rfl⟩
-  have hlam : 0 < lam := by
-    rw [hlamdef]
-    exact h.rate_pos
-  obtain ⟨N, hNdef⟩ : ∃ N : ℝ, N = 1 + a.re := ⟨_, rfl⟩
-  rw [← hlamdef, ← hNdef] at hlamN2
-  rw [← hNdef] at hw₀le hcle hN5 h4T
-  rw [← hlamdef] at hq1
-  rw [← hlamdef, ← hNdef]
-  have hN0 : 0 < N := by linarith
-  have hNne : N ≠ 0 := hN0.ne'
-  have hN2 : 25 ≤ N ^ 2 := by nlinarith
-  have hN2pos : 0 < 2 * N ^ 2 := by positivity
+  obtain ⟨w₀, hw₀⟩ : ∃ w₀ : ℝ, w₀ = (2 * τ * a).re := ⟨_, rfl⟩
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = gaussHeight t₀ *
+      Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
+        2 / gaussRate t₀ T₀) := ⟨_, rfl⟩
+  have hK0 : 0 ≤ K := by
+    rw [hK]
+    exact mul_nonneg hkap0.le (Real.exp_pos _).le
   have hpt : ∀ u : ℝ, κ < u →
-      ‖complexGauss τ (u + c * I) * xi (s + (u + c * I))‖ ≤
-        ‖xi (s + κ)‖ * (gaussHeight t₀ *
-          Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * N + 4 * T₀ ^ 2 + 2 / lam) *
-            Real.exp (-(lam / 2) * (u - w₀) ^ 2)) := by
+      ‖complexGauss τ (u + (2 * τ * a).im * I) * xi (s + (u + (2 * τ * a).im * I))‖ ≤
+        ‖xi (s + κ)‖ * (K * Real.exp (-(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2)) := by
     intro u hu
-    have hv0 : 0 < u - κ := sub_pos.2 hu
-    have hη : 0 < 1 + (u - κ) / (2 * N ^ 2) :=
-      add_pos_of_pos_of_nonneg one_pos (div_nonneg hv0.le hN2pos.le)
-    -- the slope between the base point and the point of the ray
-    have hseg : ∀ w' ∈ segment ℝ (s + (κ : ℂ)) (s + ((u : ℂ) + c * I)),
-        1 < w'.re ∧ ‖logDeriv xi w' - a‖ ≤ 1 + (u - κ) / (2 * N ^ 2) := by
-      intro w' hw'
-      obtain ⟨θ, hθ0, hθ1, hre, him⟩ := re_im_of_mem_segment hw'
-      have e3 : (s + ((u : ℂ) + c * I)).re = s.re + u := by simp
-      have e4 : (s + ((u : ℂ) + c * I)).im = s.im + c := by simp
-      rw [e5, e3] at hre
-      rw [e6, e4] at him
-      have hre0 : w'.re - (s + (κ : ℂ)).re = θ * (u - κ) := by
-        rw [e5, hre]
-        ring
-      have hθv0 : 0 ≤ θ * (u - κ) := mul_nonneg hθ0 hv0.le
-      have hθv : θ * (u - κ) ≤ u - κ := mul_le_of_le_one_left hv0.le hθ1
-      have him1 : |w'.im - (s + (κ : ℂ)).im| ≤ 2 * T₀ * (1 + a.re) := by
-        have e : w'.im - (s + (κ : ℂ)).im = θ * c := by
-          rw [e6, him]
-          ring
-        rw [e, abs_mul, abs_of_nonneg hθ0, ← hNdef]
-        exact (mul_le_of_le_one_left (abs_nonneg _) hθ1).trans hcle
-      have hre1 : (s + (κ : ℂ)).re ≤ w'.re := by linarith
-      refine ⟨by linarith, ?_⟩
-      have hS := h.norm_logDeriv_xi_sub_le hre1 him1
-      rw [hre0, ← hNdef] at hS
-      have b1 : 4 / N ^ 2 ≤ 4 / 25 :=
-        div_le_div_of_nonneg_left (by norm_num) (by norm_num) hN2
-      have b2 : (2 : ℝ) ^ (5 - w'.re) / 12 ≤ 1 / 12 := by
-        have : (2 : ℝ) ^ (5 - w'.re) ≤ 1 :=
-          Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by linarith)
-        linarith
-      have b3 : (θ * (u - κ) + 2 * T₀ * N) / (2 * N ^ 2) ≤ (u - κ) / (2 * N ^ 2) + 1 / 4 := by
-        have hnum : θ * (u - κ) + 2 * T₀ * N ≤ (u - κ) + N ^ 2 / 2 := by
-          nlinarith [mul_nonneg hN0.le (sub_nonneg.2 h4T)]
-        have e : ((u - κ) + N ^ 2 / 2) / (2 * N ^ 2) = (u - κ) / (2 * N ^ 2) + 1 / 4 := by
-          field_simp
-          ring
-        rw [← e]
-        exact div_le_div_of_nonneg_right hnum hN2pos.le
-      linarith
-    have hmain := norm_xi_le_mul_exp (p := s + (κ : ℂ)) (q := s + ((u : ℂ) + c * I)) (a := a)
-      hη hseg
-    have hd : s + ((u : ℂ) + c * I) - (s + (κ : ℂ)) = ((u - κ : ℝ) : ℂ) + c * I := by
-      push_cast
-      ring
-    rw [hd] at hmain
-    have hre : ((((u - κ : ℝ) : ℂ) + c * I) * a).re = (u - κ) * a.re - c * a.im := by
-      simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.ofReal_re,
-        Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im]
-      ring
-    have hn : ‖((u - κ : ℝ) : ℂ) + c * I‖ ≤ (u - κ) + 2 * T₀ * N := by
-      refine (norm_add_le _ _).trans ?_
-      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hv0, norm_mul, Complex.norm_I, mul_one,
-        Complex.norm_real, Real.norm_eq_abs]
-      linarith
-    -- the Gaussian at the height of the saddle
-    have hg : ‖complexGauss τ ((u : ℂ) + c * I)‖ ≤ gaussHeight t₀ *
-        Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re + lam * (u - w₀) ^ 2)) := by
-      rw [norm_complexGauss hτ, re_sq_div_of_saddle hτ hsad u]
-      have q2 : lam * (u - w₀) ^ 2 ≤ τ.re / (4 * ‖τ‖ ^ 2) * (u - w₀) ^ 2 :=
-        mul_le_mul_of_nonneg_right hq1 (sq_nonneg _)
-      calc Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re +
-              τ.re / (4 * ‖τ‖ ^ 2) * (u - w₀) ^ 2)) / Real.sqrt (4 * Real.pi * ‖τ‖)
-          = 1 / Real.sqrt (4 * Real.pi * ‖τ‖) *
-              Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re +
-                τ.re / (4 * ‖τ‖ ^ 2) * (u - w₀) ^ 2)) := by ring
-        _ ≤ _ := mul_le_mul (one_div_sqrt_le_gaussHeight h.ht₀ h.hτt)
-            (Real.exp_le_exp.2 (by linarith)) (Real.exp_pos _).le hkap0.le
-    -- the exponents
-    have hvx : u - κ ≤ (u - w₀) + 2 * T₀ * N := by linarith
-    have hv2 : (u - κ) ^ 2 ≤ 2 * (u - w₀) ^ 2 + 8 * T₀ ^ 2 * N ^ 2 := by
-      have hT2 : 0 ≤ 8 * T₀ ^ 2 * N ^ 2 := by positivity
-      rcases le_total w₀ κ with hd0 | hd0
-      · nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ (u - w₀) - (u - κ))
-          (by linarith : (0 : ℝ) ≤ (u - w₀) + (u - κ)), sq_nonneg (u - w₀)]
-      · nlinarith [sq_nonneg ((u - w₀) - (w₀ - κ)),
-          mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * T₀ * N - (w₀ - κ))
-            (by linarith : (0 : ℝ) ≤ 2 * T₀ * N + (w₀ - κ))]
-    have hquad : (u - κ) ^ 2 / (2 * N ^ 2) ≤ lam / 4 * (u - w₀) ^ 2 + 4 * T₀ ^ 2 := by
-      rw [div_le_iff₀ hN2pos]
-      nlinarith [mul_nonneg (sub_nonneg.2 hlamN2) (sq_nonneg (u - w₀))]
-    have hlin : 5 / 4 * (u - w₀) ≤ lam / 4 * (u - w₀) ^ 2 + 2 / lam := by
-      have h1 := mul_le_quarter_sq_add_div hlam (5 / 4) (u - w₀)
-      have h2 : (5 / 4 : ℝ) ^ 2 / lam ≤ 2 / lam :=
-        div_le_div_of_nonneg_right (by norm_num) hlam.le
-      linarith
-    have hcross : (u - κ) / (2 * N ^ 2) * (2 * T₀ * N) ≤ (u - κ) / 4 := by
-      have e : (u - κ) / (2 * N ^ 2) * (2 * T₀ * N) = (u - κ) * T₀ / N := by
-        rw [div_mul_eq_mul_div, div_eq_div_iff hN2pos.ne' hNne]
-        ring
-      rw [e, div_le_iff₀ hN0]
-      nlinarith [mul_nonneg hv0.le (sub_nonneg.2 h4T)]
-    have hηn : (1 + (u - κ) / (2 * N ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖ ≤
-        5 / 4 * (u - κ) + 2 * T₀ * N + (u - κ) ^ 2 / (2 * N ^ 2) := by
-      have h1 := mul_le_mul_of_nonneg_left hn hη.le
-      have e : (1 + (u - κ) / (2 * N ^ 2)) * ((u - κ) + 2 * T₀ * N) =
-          (u - κ) + 2 * T₀ * N + (u - κ) ^ 2 / (2 * N ^ 2) +
-            (u - κ) / (2 * N ^ 2) * (2 * T₀ * N) := by ring
-      linarith
-    have hexp : -((τ * a ^ 2).re + (u - w₀) * a.re + lam * (u - w₀) ^ 2) +
-        (((((u - κ : ℝ) : ℂ) + c * I) * a).re +
-          (1 + (u - κ) / (2 * N ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖) ≤
-        ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * N + 4 * T₀ ^ 2 + 2 / lam) +
-          -(lam / 2) * (u - w₀) ^ 2 := by
-      rw [hre]
-      linarith
-    calc ‖complexGauss τ ((u : ℂ) + c * I) * xi (s + ((u : ℂ) + c * I))‖
-        = ‖complexGauss τ ((u : ℂ) + c * I)‖ * ‖xi (s + ((u : ℂ) + c * I))‖ := norm_mul _ _
-      _ ≤ gaussHeight t₀ *
-            Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re + lam * (u - w₀) ^ 2)) *
-            (‖xi (s + (κ : ℂ))‖ * Real.exp (((((u - κ : ℝ) : ℂ) + c * I) * a).re +
-              (1 + (u - κ) / (2 * N ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖)) :=
-          mul_le_mul hg hmain (norm_nonneg _) (mul_nonneg hkap0.le (Real.exp_pos _).le)
-      _ = ‖xi (s + (κ : ℂ))‖ * (gaussHeight t₀ *
-            Real.exp (-((τ * a ^ 2).re + (u - w₀) * a.re + lam * (u - w₀) ^ 2) +
-              (((((u - κ : ℝ) : ℂ) + c * I) * a).re +
-                (1 + (u - κ) / (2 * N ^ 2)) * ‖((u - κ : ℝ) : ℂ) + c * I‖))) :=
-          mul_exp_mul_mul_exp _ _ _ _
-      _ ≤ ‖xi (s + (κ : ℂ))‖ * (gaussHeight t₀ *
-            Real.exp (((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * N + 4 * T₀ ^ 2 + 2 / lam) +
-              -(lam / 2) * (u - w₀) ^ 2)) :=
-          mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hexp) hkap0.le) (norm_nonneg _)
-      _ = _ := mul_mul_exp_add _ _ _ _
-  -- integration over the ray
-  have hI : Integrable fun u : ℝ => Real.exp (-(lam / 2) * (u - w₀) ^ 2) :=
-    (integrable_exp_neg_mul_sq (by positivity : 0 < lam / 2)).comp_sub_right w₀
-  have hint : ∫ u : ℝ, Real.exp (-(lam / 2) * (u - w₀) ^ 2) =
-      ∫ v : ℝ, Real.exp (-(lam / 2) * v ^ 2) :=
-    integral_sub_right_eq_self (fun v : ℝ => Real.exp (-(lam / 2) * v ^ 2)) w₀
-  have hbi : Integrable fun u : ℝ => ‖xi (s + κ)‖ * (gaussHeight t₀ *
-      Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * N + 4 * T₀ ^ 2 + 2 / lam) *
-        Real.exp (-(lam / 2) * (u - w₀) ^ 2)) := (hI.const_mul _).const_mul _
-  calc ‖∫ u in Ioi κ, complexGauss τ (u + c * I) * xi (s + (u + c * I))‖
-      ≤ ∫ u in Ioi κ, ‖xi (s + κ)‖ * (gaussHeight t₀ *
-          Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * N + 4 * T₀ ^ 2 + 2 / lam) *
-            Real.exp (-(lam / 2) * (u - w₀) ^ 2)) :=
+    rw [hK, hw₀]
+    exact h.norm_ray_integrand_le_base hu
+  have hI : Integrable fun u : ℝ => Real.exp (-(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2) :=
+    (integrable_exp_neg_mul_sq (half_pos hlam)).comp_sub_right w₀
+  have hint : ∫ u : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2) =
+      ∫ v : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2) :=
+    integral_sub_right_eq_self (fun v : ℝ => Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2)) w₀
+  have hbi : Integrable fun u : ℝ => ‖xi (s + κ)‖ *
+      (K * Real.exp (-(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2)) := (hI.const_mul _).const_mul _
+  rw [← hK]
+  calc ‖∫ u in Ioi κ, complexGauss τ (u + (2 * τ * a).im * I) *
+          xi (s + (u + (2 * τ * a).im * I))‖
+      ≤ ∫ u in Ioi κ, ‖xi (s + κ)‖ *
+          (K * Real.exp (-(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2)) :=
         norm_integral_le_of_norm_le hbi.integrableOn
           ((ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun u hu => hpt u hu))
-    _ ≤ ∫ u, ‖xi (s + κ)‖ * (gaussHeight t₀ *
-          Real.exp ((τ * a ^ 2).re - κ * a.re + 9 / 2 * T₀ * N + 4 * T₀ ^ 2 + 2 / lam) *
-            Real.exp (-(lam / 2) * (u - w₀) ^ 2)) :=
+    _ ≤ ∫ u, ‖xi (s + κ)‖ * (K * Real.exp (-(gaussRate t₀ T₀ / 2) * (u - w₀) ^ 2)) :=
         setIntegral_le_integral hbi (Eventually.of_forall fun u =>
-          mul_nonneg (norm_nonneg _)
-            (mul_nonneg (mul_nonneg hkap0.le (Real.exp_pos _).le) (Real.exp_pos _).le))
+          mul_nonneg (norm_nonneg _) (mul_nonneg hK0 (Real.exp_pos _).le))
     _ = _ := by rw [integral_const_mul, integral_const_mul, hint]
+
+/-- **Side and ray against the base point.** Together the vertical side at the corner and the
+ray at the height of the saddle are at most
+`κ₀ ‖ξ(s + κ)‖ (2T₀N + ∫ e^{−λv²/2} dv) e^{max(Re(τa²) − κ Re a, 0) + O(N)}`, `N = 1 + Re a`. -/
+theorem norm_side_add_ray_le_base (h : SlopeConfig t₀ T₀ κ τ s a) :
+    ‖I * (∫ v in (0 : ℝ)..(2 * τ * a).im, complexGauss τ (κ + v * I) * xi (s + (κ + v * I))) +
+        ∫ u in Ioi κ, complexGauss τ (u + (2 * τ * a).im * I) *
+          xi (s + (u + (2 * τ * a).im * I))‖ ≤
+      ‖xi (s + κ)‖ * (gaussHeight t₀ *
+        (2 * T₀ * (1 + a.re) + ∫ v : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2)) *
+        Real.exp (max ((τ * a ^ 2).re - κ * a.re) 0 + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
+          2 / gaussRate t₀ T₀)) := by
+  have hT0 := h.T₀_pos
+  have hkap0 := gaussHeight_pos h.ht₀
+  have hside := h.norm_side_le_base
+  have hray := h.norm_ray_le_base
+  have hTN : 0 ≤ T₀ * (1 + a.re) := mul_nonneg hT0.le (by linarith [h.five_le_one_add])
+  have hl0 : 0 < 1 / gaussRate t₀ T₀ := one_div_pos.2 h.rate_pos
+  obtain ⟨I₂, hI₂⟩ : ∃ I₂ : ℝ, I₂ = ∫ v : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2) :=
+    ⟨_, rfl⟩
+  have hI0 : 0 ≤ I₂ := by
+    rw [hI₂]
+    exact integral_nonneg fun v => (Real.exp_pos _).le
+  obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = (τ * a ^ 2).re - κ * a.re := ⟨_, rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b : ℝ, b = ‖xi (s + κ)‖ := ⟨_, rfl⟩
+  have hb0 : 0 ≤ b := by
+    rw [hb]
+    exact norm_nonneg _
+  rw [← hQ, ← hb] at hside
+  rw [← hI₂, ← hQ, ← hb] at hray
+  rw [← hI₂, ← hQ, ← hb]
+  obtain ⟨E, hE⟩ : ∃ E : ℝ, E = max Q 0 + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 +
+      2 / gaussRate t₀ T₀ := ⟨_, rfl⟩
+  rw [← hE]
+  have hE1 : max Q 0 + 2 * T₀ * (1 + a.re) ≤ E := by
+    rw [hE]
+    have h1 := sq_nonneg T₀
+    have h2 : 2 / gaussRate t₀ T₀ = 2 * (1 / gaussRate t₀ T₀) := by ring
+    linarith
+  have hE2 : Q + 9 / 2 * T₀ * (1 + a.re) + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀ ≤ E := by
+    rw [hE]
+    linarith [le_max_left Q 0]
+  have hside' := hside.trans (mul_le_mul_of_nonneg_left
+    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hE1)
+      (mul_nonneg hkap0.le (by linarith))) hb0)
+  have hray' := hray.trans (mul_le_mul_of_nonneg_left
+    (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hE2) hkap0.le) hI0) hb0)
+  refine (norm_add_le _ _).trans ?_
+  rw [norm_mul, Complex.norm_I, one_mul]
+  have e : b * (gaussHeight t₀ * (2 * T₀ * (1 + a.re) + I₂) * Real.exp E) =
+      b * (gaussHeight t₀ * (2 * T₀ * (1 + a.re)) * Real.exp E) +
+        b * (gaussHeight t₀ * Real.exp E * I₂) := by ring
+  rw [e]
+  exact add_le_add hside' hray'
 
 end SlopeConfig
 
@@ -1060,18 +1097,15 @@ theorem SlopeConfig.norm_reflected_tail_le {t₀ T₀ : ℝ} {τ s a a' : ℂ}
         Real.exp (5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) *
         Real.exp (-(a'.re / 2))) := by
   have hT0 := h.T₀_pos
-  have hlam := h.rate_pos
   have hkap0 := gaussHeight_pos h.ht₀
   have hτ := h.τ_re_pos
   have hs' : 1 / 2 ≤ s.re := by linarith
   have ha' : a' = xiSlope (reflectedBase s) := h'.ha
-  have hside := h'.norm_side_le_base
-  have hray := h'.norm_ray_le_base
+  have hsum := h'.norm_side_add_ray_le_base
   have hb' : ‖xi (1 - s + ((s.re + 9 / 2 : ℝ) : ℂ))‖ ≤
       ‖xi (s + ((5 : ℝ) : ℂ))‖ * Real.exp (-(a'.re - 1) * (s.re - 1 / 2)) := by
-    have := norm_xi_reflectedBase_le hs'
-    rw [← ha'] at this
-    exact this
+    rw [ha']
+    exact norm_xi_reflectedBase_le hs'
   have hbase := h.norm_xi_base_le_of_re hκα
   have hαα' : a'.re ≤ a.re := by
     rw [ha', h.ha]
@@ -1079,67 +1113,32 @@ theorem SlopeConfig.norm_reflected_tail_le {t₀ T₀ : ℝ} {τ s a a' : ℂ}
   have hα'α : a.re ≤ a'.re + (s.re - 1 / 2) / 11 := by
     rw [ha', h.ha]
     exact xiSlope_base_re_le hs'
-  have hα'4 := h'.four_le_re
   have hα'thr := h'.four_le
   have hup := h'.re_mul_sq_le
   have hlow := h.re_mul_sq_ge
-  have hl0 : 0 < 1 / gaussRate t₀ T₀ := one_div_pos.2 hlam
+  have hl0 : 0 < 1 / gaussRate t₀ T₀ := one_div_pos.2 h.rate_pos
+  have hα'0 : 0 ≤ a'.re := by linarith
   have hsq : τ.re * a'.re ^ 2 ≤ τ.re * a.re ^ 2 :=
-    mul_le_mul_of_nonneg_left (by nlinarith) hτ.le
-  have hI0 : 0 ≤ ∫ v : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2) :=
-    integral_nonneg fun v => (Real.exp_pos _).le
+    mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hα'0 hαα' 2) hτ.le
   obtain ⟨I₂, hI₂⟩ : ∃ I₂ : ℝ, I₂ = ∫ v : ℝ, Real.exp (-(gaussRate t₀ T₀ / 2) * v ^ 2) :=
     ⟨_, rfl⟩
-  rw [← hI₂] at hI0 hray ⊢
+  have hI0 : 0 ≤ I₂ := by
+    rw [hI₂]
+    exact integral_nonneg fun v => (Real.exp_pos _).le
+  rw [← hI₂] at hsum ⊢
   obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = (τ * a' ^ 2).re - (s.re + 9 / 2) * a'.re := ⟨_, rfl⟩
-  rw [← hQ] at hside hray
+  rw [← hQ] at hsum
   have hmax : max Q 0 ≤ τ.re * a'.re ^ 2 + 2 * T₀ * a'.re := by
-    have h1 : 0 ≤ (s.re + 9 / 2) * a'.re := mul_nonneg (by linarith) (by linarith)
+    have h1 : 0 ≤ (s.re + 9 / 2) * a'.re := mul_nonneg (by linarith) hα'0
     have h2 := mul_nonneg hτ.le (sq_nonneg a'.re)
-    have h3 := mul_nonneg hT0.le (by linarith : (0 : ℝ) ≤ a'.re)
+    have h3 := mul_nonneg hT0.le hα'0
     refine max_le ?_ (by linarith)
     rw [hQ]
     linarith
   obtain ⟨M, hM⟩ : ∃ M : ℂ, M = xi (s + 2 * τ * a) * cexp (-(τ * a ^ 2)) := ⟨_, rfl⟩
   rw [← hM] at hbase ⊢
   obtain ⟨b, hb⟩ : ∃ b : ℝ, b = ‖xi (1 - s + ((s.re + 9 / 2 : ℝ) : ℂ))‖ := ⟨_, rfl⟩
-  rw [← hb] at hside hray hb'
-  have hb0 : 0 ≤ b := by
-    rw [hb]
-    exact norm_nonneg _
-  obtain ⟨E, hE⟩ : ∃ E : ℝ, E = max Q 0 + 9 / 2 * T₀ * (1 + a'.re) + 4 * T₀ ^ 2 +
-      2 / gaussRate t₀ T₀ := ⟨_, rfl⟩
-  have hTN : 0 ≤ T₀ * (1 + a'.re) := mul_nonneg hT0.le (by linarith)
-  have hE1 : max Q 0 + 2 * T₀ * (1 + a'.re) ≤ E := by
-    rw [hE]
-    have := sq_nonneg T₀
-    have : 2 / gaussRate t₀ T₀ = 2 * (1 / gaussRate t₀ T₀) := by ring
-    linarith
-  have hE2 : Q + 9 / 2 * T₀ * (1 + a'.re) + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀ ≤ E := by
-    rw [hE]
-    linarith [le_max_left Q 0]
-  -- side and ray against the reflected base point
-  have hside' : ‖∫ v in (0 : ℝ)..(2 * τ * a').im,
-      complexGauss τ (((s.re + 9 / 2 : ℝ) : ℂ) + v * I) *
-        xi (1 - s + (((s.re + 9 / 2 : ℝ) : ℂ) + v * I))‖ ≤
-      b * (gaussHeight t₀ * (2 * T₀ * (1 + a'.re)) * Real.exp E) :=
-    hside.trans (mul_le_mul_of_nonneg_left
-      (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hE1)
-        (mul_nonneg hkap0.le (by linarith))) hb0)
-  have hray' : ‖∫ u in Ioi (s.re + 9 / 2), complexGauss τ (u + (2 * τ * a').im * I) *
-      xi (1 - s + (u + (2 * τ * a').im * I))‖ ≤ b * (gaussHeight t₀ * Real.exp E * I₂) :=
-    hray.trans (mul_le_mul_of_nonneg_left
-      (mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hE2) hkap0.le) hI0) hb0)
-  have hsum : ‖I * (∫ v in (0 : ℝ)..(2 * τ * a').im,
-        complexGauss τ (((s.re + 9 / 2 : ℝ) : ℂ) + v * I) *
-          xi (1 - s + (((s.re + 9 / 2 : ℝ) : ℂ) + v * I))) +
-      ∫ u in Ioi (s.re + 9 / 2), complexGauss τ (u + (2 * τ * a').im * I) *
-        xi (1 - s + (u + (2 * τ * a').im * I))‖ ≤
-      b * (gaussHeight t₀ * (2 * T₀ * (1 + a'.re) + I₂) * Real.exp E) := by
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul, Complex.norm_I, one_mul]
-    linarith
+  rw [← hb] at hsum hb'
   -- the reflected base point against the saddle value
   have hbM : b ≤ ‖M‖ * Real.exp ((-(τ * a ^ 2).re + (5 + 2 * T₀) * a.re + (5 + 2 * T₀)) +
       -(a'.re - 1) * (s.re - 1 / 2)) := by
@@ -1149,75 +1148,26 @@ theorem SlopeConfig.norm_reflected_tail_le {t₀ T₀ : ℝ} {τ s a a' : ℂ}
           mul_le_mul_of_nonneg_right hbase (Real.exp_pos _).le
       _ = _ := by rw [mul_assoc, ← Real.exp_add]
   -- the exponents
-  have hexp : ((-(τ * a ^ 2).re + (5 + 2 * T₀) * a.re + (5 + 2 * T₀)) +
-      -(a'.re - 1) * (s.re - 1 / 2)) + E ≤
-      (5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) + -a'.re := by
-    rw [hE]
-    have hy0 : 0 ≤ s.re - 1 / 2 := by linarith
-    have p1 : a'.re / 2 ≤ a'.re - 1 - (5 + 4 * T₀) / 11 := by linarith
-    have p2 := mul_le_mul_of_nonneg_left p1 hy0
-    have p3 : (12 + 21 * T₀) * (a'.re / 2) ≤ (s.re - 1 / 2) * (a'.re / 2) :=
-      mul_le_mul_of_nonneg_right (by linarith) (by linarith)
-    have p4 : (5 + 4 * T₀) * a.re ≤ (5 + 4 * T₀) * (a'.re + (s.re - 1 / 2) / 11) :=
-      mul_le_mul_of_nonneg_left hα'α (by linarith)
+  have hexp := reflected_tail_exponent_le (L := 2 / gaussRate t₀ T₀) (R := (τ * a ^ 2).re)
+    (mQ := max Q 0) hT0 (by linarith : 4 + 4 * T₀ ≤ a'.re) hα'α
+    (by linarith : 12 + 21 * T₀ ≤ s.re - 1 / 2) (by linarith)
+  have hS0 : 0 ≤ 2 * T₀ * (1 + a'.re) + I₂ := by
+    have := mul_nonneg hT0.le (by linarith : (0 : ℝ) ≤ 1 + a'.re)
     linarith
-  have hN'exp : (1 + a'.re) * Real.exp (-(a'.re / 2)) ≤ 2 := by
-    have h1 := Real.add_one_le_exp (a'.re / 2)
-    have h2 : Real.exp (a'.re / 2) * Real.exp (-(a'.re / 2)) = 1 := by
-      rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
-    have h3 := Real.exp_pos (-(a'.re / 2))
-    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * Real.exp (a'.re / 2) - (1 + a'.re)) h3.le]
-  have hsplit : Real.exp ((5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) + -a'.re) =
-      Real.exp (5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) *
-        Real.exp (-(a'.re / 2)) * Real.exp (-(a'.re / 2)) := by
-    rw [← Real.exp_add, ← Real.exp_add]
-    congr 1
-    ring
   have hpre : (2 * T₀ * (1 + a'.re) + I₂) * Real.exp (-(a'.re / 2)) ≤ 2 * (2 * T₀ + I₂) := by
     have h1 : 2 * T₀ * (1 + a'.re) + I₂ ≤ (2 * T₀ + I₂) * (1 + a'.re) := by
-      nlinarith [mul_nonneg hI0 (by linarith : (0 : ℝ) ≤ a'.re)]
+      linarith [mul_nonneg hI0 hα'0]
     have h2 := mul_le_mul_of_nonneg_right h1 (Real.exp_pos (-(a'.re / 2))).le
-    have h3 := mul_le_mul_of_nonneg_left hN'exp (by linarith : (0 : ℝ) ≤ 2 * T₀ + I₂)
-    linarith
-  have hC0 := Real.exp_pos (5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀)
-  have he0 := Real.exp_pos (-(a'.re / 2))
-  calc ‖I * (∫ v in (0 : ℝ)..(2 * τ * a').im,
-          complexGauss τ (((s.re + 9 / 2 : ℝ) : ℂ) + v * I) *
-            xi (1 - s + (((s.re + 9 / 2 : ℝ) : ℂ) + v * I))) +
-        ∫ u in Ioi (s.re + 9 / 2), complexGauss τ (u + (2 * τ * a').im * I) *
-          xi (1 - s + (u + (2 * τ * a').im * I))‖
-      ≤ b * (gaussHeight t₀ * (2 * T₀ * (1 + a'.re) + I₂) * Real.exp E) := hsum
-    _ ≤ ‖M‖ * Real.exp ((-(τ * a ^ 2).re + (5 + 2 * T₀) * a.re + (5 + 2 * T₀)) +
-          -(a'.re - 1) * (s.re - 1 / 2)) *
-          (gaussHeight t₀ * (2 * T₀ * (1 + a'.re) + I₂) * Real.exp E) :=
-        mul_le_mul_of_nonneg_right hbM
-          (mul_nonneg (mul_nonneg hkap0.le (by linarith)) (Real.exp_pos _).le)
-    _ = ‖M‖ * (gaussHeight t₀ * (2 * T₀ * (1 + a'.re) + I₂) *
-          Real.exp (((-(τ * a ^ 2).re + (5 + 2 * T₀) * a.re + (5 + 2 * T₀)) +
-            -(a'.re - 1) * (s.re - 1 / 2)) + E)) := by
-        rw [mul_comm ‖M‖ (Real.exp _)]
-        rw [mul_comm ‖M‖ (gaussHeight t₀ * (2 * T₀ * (1 + a'.re) + I₂) * Real.exp _)]
-        rw [Real.exp_add ((-(τ * a ^ 2).re + (5 + 2 * T₀) * a.re + (5 + 2 * T₀)) +
-          -(a'.re - 1) * (s.re - 1 / 2)) E]
-        ring
-    _ ≤ ‖M‖ * (gaussHeight t₀ * (2 * T₀ * (1 + a'.re) + I₂) *
-          Real.exp ((5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) + -a'.re)) :=
-        mul_le_mul_of_nonneg_left
-          (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 hexp)
-            (mul_nonneg hkap0.le (by linarith))) (norm_nonneg _)
-    _ = ‖M‖ * (gaussHeight t₀ *
-          Real.exp (5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) *
-          Real.exp (-(a'.re / 2)) *
-          ((2 * T₀ * (1 + a'.re) + I₂) * Real.exp (-(a'.re / 2)))) := by
-        rw [hsplit]
-        ring
-    _ ≤ ‖M‖ * (gaussHeight t₀ *
-          Real.exp (5 + 15 / 2 * T₀ + 4 * T₀ ^ 2 + 2 / gaussRate t₀ T₀) *
-          Real.exp (-(a'.re / 2)) * (2 * (2 * T₀ + I₂))) :=
-        mul_le_mul_of_nonneg_left
-          (mul_le_mul_of_nonneg_left hpre
-            (mul_nonneg (mul_nonneg hkap0.le hC0.le) he0.le)) (norm_nonneg _)
-    _ = _ := by ring
+    have h3 := mul_le_mul_of_nonneg_left (one_add_mul_exp_neg_half_le a'.re)
+      (by linarith : (0 : ℝ) ≤ 2 * T₀ + I₂)
+    calc (2 * T₀ * (1 + a'.re) + I₂) * Real.exp (-(a'.re / 2))
+        ≤ (2 * T₀ + I₂) * (1 + a'.re) * Real.exp (-(a'.re / 2)) := h2
+      _ = (2 * T₀ + I₂) * ((1 + a'.re) * Real.exp (-(a'.re / 2))) := mul_assoc _ _ _
+      _ ≤ (2 * T₀ + I₂) * 2 := h3
+      _ = _ := mul_comm _ _
+  refine (reflected_tail_assembly hsum hbM (norm_nonneg M) hkap0.le hS0 hexp hpre).trans
+    (le_of_eq ?_)
+  ring
 
 /-! ## The reflected half line -/
 
@@ -1335,7 +1285,7 @@ theorem exists_norm_reflected_le {t₀ ε : ℝ} (T₀ : ℝ) (ht₀ : 0 < t₀)
       have hpos : 0 < 3 * KA / ε := div_pos (by linarith) hε
       have h2 : Real.exp (-((xiSlope (reflectedBase s)).re / 2)) ≤
           Real.exp (-Real.log (3 * KA / ε)) := Real.exp_le_exp.2 (by linarith)
-      rw [Real.exp_neg, Real.exp_log hpos, inv_div] at h2
+      rw [Real.exp_neg (Real.log (3 * KA / ε)), Real.exp_log hpos, inv_div] at h2
       exact h2
     have h2 : ‖I * (∫ v in (0 : ℝ)..(2 * τ * xiSlope (reflectedBase s)).im,
           complexGauss τ (((s.re + 9 / 2 : ℝ) : ℂ) + v * I) *
