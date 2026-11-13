@@ -16,6 +16,20 @@ open _root_.RHTower
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open CriticalArithmeticCorrelationTheory
 
+/-- The complete diagonal majorant is integrable up to exponential order eight. -/
+theorem CriticalHalfLineEnergyDomain.integrable_exponentialBarrier_primeRow {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {β t : ℝ}
+    (hβ8 : β + 1 / 2 ≤ 8) (ht : 0 ≤ t) :
+    Integrable (fun u =>
+      (6 * Real.exp (-((β + 1 / 2) * u)) + halfLineExponentialPrimeTail β) *
+        (F u * exponentialBarrierPositiveLevel β t F u)) := by
+  have he := hF.integrable_mul_exponentialBarrierPositiveLevel ht hβ8 β
+  have hm : Integrable (fun u => F u * exponentialBarrierPositiveLevel β t F u) := by
+    simpa only [zero_mul, neg_zero, Real.exp_zero, mul_one] using
+      hF.integrable_mul_exponentialBarrierPositiveLevel ht (show (0 : ℝ) ≤ 8 by norm_num) β
+  apply ((he.const_mul 6).add (hm.const_mul (halfLineExponentialPrimeTail β))).congr
+  exact Eventually.of_forall fun u => by dsimp only; ring
+
 /-- Every exponential positive level obeys the complete prime-row bound on the actual domain. -/
 theorem CriticalHalfLineEnergyDomain.primeMixedForm_exponentialBarrier_le {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {β t : ℝ}
@@ -27,11 +41,9 @@ theorem CriticalHalfLineEnergyDomain.primeMixedForm_exponentialBarrier_le {F : �
   have hβ0 : 0 < β := by linarith only [hβ]
   let G := exponentialBarrierPositiveLevel β t F
   let H : ℝ → ℝ := fun u => F u * G u
-  have hG := hF.exponentialBarrierPositiveLevel hβ0 ht
+  have hG := hF.exponentialBarrierPositiveLevel_mem hβ0 ht
   have hH : Integrable H := hF.memLp_real.integrable_mul hG.memLp_real
   have hH0 (u : ℝ) : 0 ≤ H u := hF.mul_exponentialBarrierPositiveLevel_nonneg ht β u
-  have hHe : Integrable (fun u => H u * Real.exp (-((β + 1 / 2) * u))) :=
-    hF.integrable_mul_exponentialBarrierPositiveLevel ht (by linarith only [hβ8]) β
   let A : ℕ → ℝ := fun n => vonMangoldtAtom n * Real.exp (β * Real.log (n : ℝ))
   let B : ℕ → ℝ := fun n => vonMangoldtAtom n * Real.exp (-(β * Real.log (n : ℝ)))
   let q : ℕ → ℝ → ℝ := fun n u =>
@@ -62,9 +74,8 @@ theorem CriticalHalfLineEnergyDomain.primeMixedForm_exponentialBarrier_le {F : �
     dsimp only [A, B]
     ring
   have hrow : Integrable (fun u =>
-      (6 * Real.exp (-((β + 1 / 2) * u)) + halfLineExponentialPrimeTail β) * H u) := by
-    apply ((hHe.const_mul 6).add (hH.const_mul (halfLineExponentialPrimeTail β))).congr
-    exact Eventually.of_forall fun u => by dsimp only; ring
+      (6 * Real.exp (-((β + 1 / 2) * u)) + halfLineExponentialPrimeTail β) * H u) :=
+    hF.integrable_exponentialBarrier_primeRow (by linarith only [hβ8]) ht
   unfold primeMixedForm
   apply (summable_primePairTerm hF.weighted hG.weighted).tsum_le_of_sum_le
   intro s

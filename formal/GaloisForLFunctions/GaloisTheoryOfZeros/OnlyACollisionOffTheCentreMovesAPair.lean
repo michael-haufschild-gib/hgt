@@ -24,7 +24,8 @@ collision; its turn exchanges `Z_ρ` with `Z_{−ρ} = −Z_ρ`.
 -/
 
 open Complex Set Metric Filter Topology
-open RHTower
+open RHTower RHTower.DeBruijn
+open GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
 
 namespace GaloisForLFunctions.GaloisTheoryOfZeros
 

@@ -133,7 +133,7 @@ theorem two_mul_sum_mul_sum_le {J : ℕ} (σ d : ℕ → ℝ) {D L q : ℝ} (hq 
     have e : ∀ j, (q * d j + 1 / q) ^ 2 = q ^ 2 * d j ^ 2 + 2 * d j + 1 / q ^ 2 := fun j => by
       calc (q * d j + 1 / q) ^ 2 = q ^ 2 * d j ^ 2 + 2 * d j * (q * (1 / q)) + (1 / q) ^ 2 := by
             ring
-        _ = q ^ 2 * d j ^ 2 + 2 * d j + 1 / q ^ 2 := by rw [hq1, one_div_pow]; ring
+        _ = q ^ 2 * d j ^ 2 + 2 * d j + 1 / q ^ 2 := by rw [hq1, _root_.one_div_pow]; ring
     simp only [e, Finset.sum_add_distrib, ← Finset.mul_sum, hL, Finset.sum_const,
       Finset.card_range, nsmul_eq_mul]
     ring

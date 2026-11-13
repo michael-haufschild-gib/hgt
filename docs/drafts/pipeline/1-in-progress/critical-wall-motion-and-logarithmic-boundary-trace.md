@@ -119,6 +119,16 @@ commutator would be both `L²` and bounded. This identifies the precise
 candidate Green forcing; transfer of the actual weak identity to the
 closed logarithmic form is still unproved.
 
+`TheWeilRieszVectorsLocalizeToTheLogarithmicHalfLine.logarithmicApertureLeftLocalized_solves`
+supplies a direct transfer template: test the original equation with the
+cutoff of an arbitrary half-line form-domain vector, then apply
+`logarithmicFullForm_cutoff_identity` and Green uniqueness. For the actual
+confining state this requires proving that the reflected real and imaginary
+parts of each compactly cut off logarithmic vector belong to the actual
+domain. Compact support supplies `L¹` and exponential mass; the Gamma/log
+domain comparison must supply the remaining condition. This avoids a
+separate passage from smooth tests once that inclusion is proved.
+
 ## Candidate wall-flux argument
 
 Assuming the preceding regularity steps have been proved, put
@@ -139,3 +149,8 @@ together with `E(T_hF-F)/h→8aW(F)`, would give the reverse inequality.
 At a general minimum the same argument uses `E-λ‖·‖₂²`.
 Admissibility of the sharp collar and both cross-kernel asymptotics remain
 to be proved; no flux identity or nonzero trace is claimed.
+
+For collar admissibility, the candidate jump bound is
+`∫|Δ_s(F·1_I)|²≤2∫|Δ_sF|²+4‖F‖∞²s` for `s>0` and an interval `I`.
+Its second term comes from the interval's symmetric difference, of measure
+at most `2s`; the finite first Lévy moment would finish the domain transfer.

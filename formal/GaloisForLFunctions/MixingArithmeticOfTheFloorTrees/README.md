@@ -5,7 +5,8 @@ Namespace `GaloisForLFunctions.MixingArithmeticOfTheFloorTrees`; umbrella
 [the review-1311 summary](../../../docs/reports/review-1311/obstacles-summary.md). Programme card:
 `docs/drafts/pipeline/1-in-progress/maft-mixing-arithmetic-of-the-floor-trees.md`.
 
-Every theorem named here is proved in Lean without hypothesis. **AGZ**, **LST**, … mark theorems of
+Every theorem named here is proved in Lean without added hypotheses; a theorem named
+`…_of_riemannHypothesis` takes RH as its stated antecedent. **AGZ**, **LST**, … mark theorems of
 other folders, **[C]** published mathematics not in the corpus, **open** a statement not proved.
 
 ## 1. Motivation
@@ -40,6 +41,9 @@ block size.
 | conditional energies, coupling | `overlapLeftEnergy`, `overlapRightEnergy`, `overlapCoupling` | Schur complements over the middle: `S₁`, `S₃`, `X = K − P₁ᵀ M⁻¹ P₂` |
 | test packets | `rootPacket`, `blockRange`, `windowPlane` | `a^{−1/2}`; an interval of blocks; the refined plane of the blocks `(2, 3]`, `(3, 4]` |
 | margin bound | `marginBound Q` | `c₀ = max(N(2,2), N(3,3)) + |N(2,3)|` |
+| ends of a long window | `bottomMass`, `topMass` | the mass on the blocks `a` with `K a < R + J`, and on the blocks `b ≥ KR` |
+| pole capacity | `poleCapacity R J` | `J/√(R(R + J)) + log ρ = √ρ − 1/√ρ + log ρ` |
+| spread copies | `spreadTest`, `threeSpread`, `planeTest`, `firstCharge` | `β((u − d)/L)`; three copies `3L` apart; the plane of vanishing first charge `A(f) = ∫ f e^{−u/2}` |
 | floor-tree component | `floorTreeComponent`, `componentIndicator` | the blocks `c, 2c, 2c + 1` of `(6r, 24r]`, `8r ≤ c < 9r` |
 | reflected packet | `reflectPacket` | `u ↦ g(c − u)` |
 
@@ -101,17 +105,40 @@ block size.
    `−λ ≤ 2√(J (log(R + J) − log R)/R)` (`neg_eigenvalue_le_of_riemannHypothesis`).
    **So the binding energy of a window of ratio `ρ` has the exact order `√ρ`, and all of it but
    `5.4` is created by the floor trees, chiefly by the long floor maps that join the two ends.**
+9. *The ground state at the two ends* (`sum_longMap_le`, `binding_le_short_add_long`,
+   `sq_binding_excess_le`): a floor map of `k ≥ K` joins a parent with `Ka < R + J` to a child
+   `b ≥ KR`, and the weighted Schur test bounds its contacts by `√k (bot/s + s·top)`. Hence
+   `(μ + A(0) − 2 S_{<K})² (Σ φ²)² ≤ 4 S_{≥K}² · bot(φ) · top(φ)`, `S_{<K}`, `S_{≥K}` the Chebyshev
+   sums `Σ Λ(k)/√k` below and above `K`: with `K = ρ/M` the ground state carries a fixed fraction of
+   its mass within the factor `M` of each end.
+10. *The pole capacity* (`blockDegree_le_inv_sqrt`, `two_mul_charges_le_poleCapacity`,
+    `binding_add_packetForm_le`): the neutral part is Weil's form minus the poles
+    `2 (Σ σ d)(Σ σ)`, and on unit mass the poles are at most `cap = √ρ − 1/√ρ + log ρ`
+    (`poleCapacity_eq_sinh`; `d_a ≤ 1/√(a(a + 1))` is `t ≤ sinh t`). So `μ Σ φ² + W(φ) ≤ cap Σ φ²`
+    without hypothesis: binding energy and Weil's form of the ground packet share the pole
+    capacity. Under RH `μ ≤ √ρ − 1/√ρ + log ρ` at every block size
+    (`neg_eigenvalue_le_poleCapacity_of_riemannHypothesis`), the sharp leading constant; a window
+    binding beyond its capacity carries an off-line zero (`not_riemannHypothesis_of_poleCapacity_lt`).
 
 **The margin.**
-9. *Bounded margin* (`exists_doob_test_le`): on every window `(2r, 2r + J]`, `J ≥ 2r`, the refined
+11. *Bounded margin* (`exists_doob_test_le`): on every window `(2r, 2r + J]`, `J ≥ 2r`, the refined
    plane of the blocks `(2, 3]`, `(3, 4]` carries the fixed form of these blocks; it meets the
    hyperplane orthogonal to `φ`, so some centred `f` has `E(f) ≤ (μ + c₀) Σ φ²f²`. The gap is at most
    the binding energy plus the absolute constant `c₀`. Under RH the Poincaré constant lies in
    `[μ, μ + c₀]` (`poincare_constant_mem_of_riemannHypothesis`): gap and binding energy, both of
    order `√ρ`, agree up to a bounded margin, and RH is the sign of that margin.
+12. *Under RH the margin tends to zero* (`exists_plane_neutralForm_le_of_riemannHypothesis`): at
+    infinite block size the neutral form is Weil's form of the zeros on the hyperplane `A = 0`,
+    hence nonnegative under RH (`neutralForm_nonneg_of_charge_eq_zero`). Three copies of a fixed
+    profile spread over the scale `L`, `3L` apart, have transforms `L β̂(Lγ)`; as every zero has
+    `|γ| ≥ 2`, their Weil form is `O(L^{−2})` times the coefficients while their mass is `L` times
+    them (`re_zetaW_threeSpread_le`, `integral_threeSpread_sq`). The first charge moves by `e^{−3L/2}`
+    from copy to copy, so `a(g₀ − E g₁) + b(g₁ − E g₂)` has `A = 0` (`firstCharge_planeTest`). On
+    this plane `0 ≤ N ≤ C L^{−3} · mass`: the margin of a window of length `8L` lies between `0`
+    and any `ε > 0` once `L` is large.
 
 **What the trees cannot do alone.**
-10. *Components* (`floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`,
+13. *Components* (`floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`,
     `poincare_component_of_le_one`): on `(6r, 24r]` only the trees of `2` and `3` act, and the
     blocks `c, 2c, 2c + 1`, `8r ≤ c < 9r`, form `r` components of the floor trees. The dilation
     process — the Doob chain without the jets — has no gap; on these indicators the Doob energy is
@@ -119,12 +146,14 @@ block size.
     a number proportional to the block size.
 
 **Infinite block size.**
-11. *The functional equation reflects every window* (`packetForm_reflect`, `neutralForm_reflect`):
+14. *The functional equation reflects every window* (`packetForm_reflect`, `neutralForm_reflect`):
     Weil's form depends on a packet only through its autocorrelation and the product of its
     degrees, both invariant under `u ↦ c − u`; with the translations (AGZ, `packetForm_translate`)
     the window form at infinite block size has the symmetry group of the line. The reflection of
     `[log R, log ρR]` is `x ↦ ρR²/x`; it does not preserve step packets, so it belongs to the limit
-    of the tower.
+    of the tower. The shallow floor maps, `log k` at least half the window, are selective
+    (`shallow_contact_selective`): they raise every packet with one node at the centre and lower
+    every packet of one sign.
 
 ## 5. Pillar theorems
 
@@ -135,6 +164,9 @@ block size.
 | Overlap gluing law; RH as the contraction of every conditional coupling | `hermNegIndex_neutralWindow_overlap_eq_one_iff`, `riemannHypothesis_iff_forall_overlap_contraction` |
 | Archimedean floor; Chebyshev ceiling of the binding energy | `le_eigenvalue_of_prime_free`, `le_eigenvalue_of_contacts` |
 | Binding energy of order `√ρ` from the two ends | `eigenvalue_le_twoEnds`, `psi_sub_psi_ge`, `eigenvalue_mul_harmonic_le` |
+| The ground state charges both ends | `sq_binding_excess_le` |
+| Binding energy and Weil's form share the pole capacity; under RH `μ ≤ √ρ − 1/√ρ + log ρ` | `binding_add_packetForm_le`, `neg_eigenvalue_le_poleCapacity_of_riemannHypothesis` |
+| Under RH the margin of a long window tends to zero | `exists_plane_neutralForm_le_of_riemannHypothesis` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components at ratio four | `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | Reflection symmetry at infinite block size | `packetForm_reflect`, `neutralForm_reflect` |
@@ -144,12 +176,12 @@ block size.
 | # | Question | Status |
 |---|---|---|
 | 1 | **B192**: one bound state of `(R, 3R]`, `(R, 4R]` at every block size from the true contacts of `2`, `3` | open; worked in AGZ. In MAFT terms: the conditional coupling of the overlap with dyadic middle `(3R/2, 2R]` is a contraction |
-| 2 | Which cut is the bottleneck | tool: the bottleneck criterion; at large ratio the binding sits on the two ends, so the cut between them carries the conductance of the long floor maps; the cut of a window of ratio three is open |
+| 2 | Which cut is the bottleneck | tool: the bottleneck criterion; at large ratio the ground state charges both ends (`sq_binding_excess_le`) and the cut between them carries the long floor maps; the cut of a window of ratio three is open |
 | 3 | Comparison of a window with its parts through the floor trees | answered by the overlap law: exact, of full rank, with the trees between the ends in `X` |
 | 4 | A curvature bound for the floor trees | open |
 | 5 | The gap of the dilation process | answered at ratio four: zero, with at least `r` components at block size `6r`; the mixing that RH needs on them comes from the jets |
-| 6 | Does the margin have a limit along the ratios | it is bounded above by `c₀` on every window; under RH it lies in `[0, c₀]` while gap and binding energy grow like `√ρ`; whether its limit is `0` is open |
-| 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends |
+| 6 | Does the margin have a limit along the ratios | at infinite block size and under RH: yes, `0` (`exists_plane_neutralForm_le_of_riemannHypothesis`); at finite block size it lies in `[0, c₀]` under RH; the limit at finite block size and whether a uniform lower bound forces RH are open |
+| 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
 | 8 | A recursion along doublings | answered in overlap form: a window reduces to two shorter parts and one contraction; the balanced split sends the ratio `ρ` to `2(1 + ρ)/3` and `3ρ/(1 + ρ)` |
 
 ## 7. Tools
@@ -174,6 +206,8 @@ quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm
 | The prime `2` decides every ratio | At large ratio the binding is carried by the long floor maps of integers of the size of the ratio |
 | A bounded number of test functions across a cut decides | The binding has rank proportional to the block size (AGZ); the components at ratio four are proportional to the block size |
 | Gap and binding energy are of different orders | Both are of order `√ρ` and differ by at most `c₀`: only the sign of a bounded margin is at stake |
+| RH leaves room: the margin is bounded away from zero | Under RH the margin of long windows tends to `0` at infinite block size; no argument can rest on a uniform positive margin |
+| The binding energy may reach the Chebyshev ceiling `4√ρ` | Under RH it is at most the pole capacity `√ρ − 1/√ρ + log ρ`; the trees reproduce the pole |
 | Gluing needs the positive cone | Through a dyadic middle the two-well inequality becomes a forward contraction on the whole space |
 | A Cheeger bound suffices | Cheeger loses a square, and the margin is bounded: only constants matter |
 | The reflection acts on step packets | It maps unit blocks to reciprocal blocks; it is a symmetry of the limit only |
@@ -182,10 +216,12 @@ quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm
 
 - The contraction of the conditional coupling at ratio three (B192) and at the balanced split of
   every ratio; norms of `X` against `S₁`, `S₃`.
-- The limit of the margin along the ratios; whether a uniform lower bound on the margin already
-  forces RH (an off-line zero should drive the margin of long windows to `−∞` at the rate
-  `e^{(β − 1/2) log ρ}`).
-- The ground state of a long window: concentration of `φ²` on the two ends.
+- The margin at finite block size: transfer of the limit `0` from infinite block size through the
+  tower; whether a uniform lower bound on the margin already forces RH (an off-line zero should
+  drive the margin of long windows to `−∞` at the rate `e^{(β − 1/2) log ρ}`).
+- The unconditional leading constant of the binding energy: the pole profile `e^{±u/2}` on the two
+  ends against the prime number theorem; the deficit `cap − μ` as a reading of the zeros.
+- The shape of the ground state between the two ends.
 - Curvature of the Doob chain; canonical paths through the long floor maps.
 - The parity sectors of the window form at infinite block size and the sign of the shallow floor
   maps on them.
@@ -205,7 +241,8 @@ quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm
 ## 11. Success criteria
 
 The field is developed when the Doob chain of every window is a Lean object with its inertia law
-(done); the scale of binding energy and gap is proved (done up to constants); the comparison of a
+(done); the scale of binding energy and gap is proved (done up to constants, and under RH the
+upper constant is the pole capacity); the comparison of a
 window with its parts is exact (done); cut, curvature and path methods are each either proved to
 give the gap or refuted by a theorem calibrated on twisted contacts; and the questions of §6 are
 answered or reduced to named estimates.

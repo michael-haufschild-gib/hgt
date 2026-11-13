@@ -73,7 +73,8 @@ theorem artinMapOutside_eq_one {S : Finset (HeightOneSpectrum (𝓞 K))}
     (h : I ∈ idealsSupportedOn (S : Set (HeightOneSpectrum (𝓞 K)))) :
     artinMapOutside K L G S I = 1 := by
   refine Subgroup.mem_bot.mp (primeValuesHom_mem ⊥ I fun v hv => ?_)
-  rw [if_pos (not_not.mp fun hS => hv (h v hS))]
+  have hvS : v ∈ S := not_not.mp fun hS => hv (h v hS)
+  rw [if_pos hvS]
   exact Subgroup.one_mem _
 
 /-- The Artin symbol outside `S` is the Artin symbol on the ideals prime to `S`. -/
@@ -170,7 +171,7 @@ theorem exists_rayPrincipal_le_ker_artinMap_of_forall_mem_zpowers {σ : G}
         (sUnits L G (primesAbove K L G S)).comap (baseIncl K L) := fun x hx =>
     ofMul_mem_of_artinMapOutside_eq_one K L G hσ S (q ^ (J + 1)) hSc hram hL hW
       (α := Additive.toMul x) (congrArg Additive.toMul (AddMonoidHom.mem_ker.mp hx))
-  have hdvd := card_dvd_index_norm_sup_congruence_sup_sUnits
+  have hdvd := card_dvd_index_norm_sup_congruence_sup_sUnits (K := K)
     (invariantDivisorsDescend_primesAbove S hram hK) hσ 0
   have hU := le_ker_of_ker_le_of_card_dvd_index _ hker (by
     rw [show Nat.card (Additive G) = Fintype.card G from Nat.card_eq_fintype_card (α := G)]

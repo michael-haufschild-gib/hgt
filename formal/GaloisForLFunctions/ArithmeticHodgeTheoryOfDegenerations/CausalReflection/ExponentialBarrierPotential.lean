@@ -59,5 +59,38 @@ theorem exists_exponentialBarrier_potentialDominance {a β : ℝ}
   simp only [mul_neg] at hb
   linarith only [hb, he, le_abs_self V]
 
+/-- A sufficiently large constant row makes both the square and barrier terms coercive. -/
+theorem exists_exponentialBarrier_diagonalCoercivity {a β : ℝ}
+    (ha : 0 < a) (hβ : 1 / 2 < β) (hβupper : β < 15 / 2) (V : ℝ) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ c : ℝ, B ≤ c → ∀ u : ℝ, u ≤ 0 →
+      1 ≤ a * Real.exp (-(8 * u)) + c -
+        (6 * Real.exp (-((β + 1 / 2) * u)) + V) ∧
+      1 + Real.exp (-(u / 2)) ≤
+        (a * Real.exp (-(8 * u)) + c -
+          (6 * Real.exp (-((β + 1 / 2) * u)) + V)) * Real.exp (β * u) := by
+  obtain ⟨B, hB, hb⟩ := exists_exponentialBarrier_potentialDominance ha hβ hβupper V
+  refine ⟨B, hB, ?_⟩
+  intro c hc u hu
+  have hrow : Real.exp (-(β * u)) + Real.exp (-((β + 1 / 2) * u)) ≤
+      a * Real.exp (-(8 * u)) + c -
+        (6 * Real.exp (-((β + 1 / 2) * u)) + V) := by
+    linarith only [hb u hu, hc]
+  have hβ0 : 0 ≤ β := by linarith only [hβ]
+  have hone : 1 ≤ Real.exp (-(β * u)) := by
+    rw [← Real.exp_zero]
+    exact Real.exp_le_exp.mpr (neg_nonneg.mpr (mul_nonpos_of_nonneg_of_nonpos hβ0 hu))
+  refine ⟨?_, ?_⟩
+  · exact hone.trans ((le_add_of_nonneg_right (Real.exp_pos _).le).trans hrow)
+  · have hcanc : Real.exp (-(β * u)) * Real.exp (β * u) = 1 := by
+      rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+    have hhalf : Real.exp (-((β + 1 / 2) * u)) * Real.exp (β * u) =
+        Real.exp (-(u / 2)) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    have hh := mul_le_mul_of_nonneg_right hrow (Real.exp_pos (β * u)).le
+    rwa [add_mul, hcanc, hhalf] at hh
+
 #print axioms exists_exponentialBarrier_potentialDominance
+#print axioms exists_exponentialBarrier_diagonalCoercivity
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

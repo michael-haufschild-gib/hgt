@@ -100,7 +100,7 @@ theorem CriticalHalfLineEnergyDomain.integrable_mul_exponentialBarrierPositiveLe
       simp only [zero_mul, zero_pow two_ne_zero, le_refl]
 
 /-- Positive-level exponential tests belong to the actual half-line energy domain. -/
-theorem CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel {F : ℝ → ℝ}
+theorem CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {β t : ℝ} (hβ : 0 < β) (ht : 0 ≤ t) :
     CriticalHalfLineEnergyDomain (exponentialBarrierPositiveLevel β t F) := by
   have hφm := measurable_negativeHalfLineExponentialBarrier β
@@ -152,5 +152,5 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel {F : ℝ �
       (negativeHalfLineExponentialBarrier_nonneg β u)))
   · exact integrable_gammaBracket_comp_contraction hUm hU1 hU2 hUγ hpos (by norm_num)
 
-#print axioms CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel
+#print axioms CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

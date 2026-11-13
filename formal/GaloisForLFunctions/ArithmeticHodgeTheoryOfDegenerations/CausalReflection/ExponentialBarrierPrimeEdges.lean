@@ -53,7 +53,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_supported_edge {F : ℝ 
       have hh : -h ≤ u := le_of_not_gt hu
       linarith only [hh]
     rw [indicator_of_notMem hu, hF.support _ huh,
-      (hF.exponentialBarrierPositiveLevel hβ ht).support _ huh]
+      (hF.exponentialBarrierPositiveLevel_mem hβ ht).support _ huh]
     simp only [mul_zero, zero_mul, add_zero, le_refl]
 
 /-- Integration of one supported edge gives one truncated and one complete diagonal row. -/
@@ -64,7 +64,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_correlation_row {F : ℝ
       Real.exp (β * h) * (∫ u in Iio (-h), F u * exponentialBarrierPositiveLevel β t F u) +
       Real.exp (-(β * h)) * (∫ u, F u * exponentialBarrierPositiveLevel β t F u) := by
   let G := exponentialBarrierPositiveLevel β t F
-  have hG := hF.exponentialBarrierPositiveLevel hβ ht
+  have hG := hF.exponentialBarrierPositiveLevel_mem hβ ht
   have hFG : Integrable (fun u => F u * G u) := hF.memLp_real.integrable_mul hG.memLp_real
   have hplus : Integrable (fun u => F u * G (u + h)) := hF.memLp_real.integrable_mul
     (hG.memLp_real.comp_measurePreserving (measurePreserving_add_right volume h))

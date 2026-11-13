@@ -134,10 +134,14 @@ passes its final plain source audit without warnings, with exactly
 olean exists. It proves both directions of the jump/Gamma domain bridge
 and closure under zero-preserving real contractions.
 
-Twelve further modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+`NegativeHalfLineExponentialBarrier` also passes its final plain source
+audit without warnings, with exactly the same three axioms. It is wired
+and has its required olean. Its exact exponential autocorrelation and
+translation defect prove Gamma integrability of every positive-rate barrier.
+
+Twelve further supporting modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
 await final source audits:
 
-- `NegativeHalfLineExponentialBarrier`: exact exponential autocorrelation, translation defect, and Gamma integrability.
 - `ExponentialBarrierPositiveLevels`: admissibility of positive-level tests in the actual domain.
 - `HalfLineGammaMixedEnergy`: absolute integrability and the exact mixed Lévy identity.
 - `HalfLineExponentialBarrierJumps`: the integrated exponential correction for each mixed Gamma jump.
@@ -147,19 +151,23 @@ await final source audits:
 - `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
 - `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
 - `HalfLineGammaLargeJumps`: the cutoff-kernel realization, both ordinary-mass row bounds, and the exact integrated large-jump identity and lower estimate.
-- `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential.
+- `ExponentialBarrierGammaComparison`: the exact split at a positive cutoff and the full Gamma lower bound, retaining the constant mass term.
+- `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential, giving the two diagonal coercivity inequalities.
 - `ExponentialBarrierPoleComparison`: both polar terms are bounded below by the test's half-exponential ordinary mass.
 
 The unchecked helper `HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra`
-proves the weighted row inequality and exact relative-jump decomposition.
+proves the weighted row inequality, exact relative-jump decomposition, and
+the pointwise square bound after absorption of both forcing rows.
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. One of fifteen supporting modules is audited and wired.
+also `L²`. Two of sixteen supporting modules are audited and wired.
 
-The full Gamma comparison and maximum-principle conclusion remain to be
-formalized. The complete prime comparison and large-jump Gamma estimate are written but unaudited. No barrier theorem or
-contribution is counted yet.
+`ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
+negation invariance, the full-line weak row identity, vanishing of a high
+positive level, the two-sided envelope, and exponential square moments
+below order `15`. The complete prime and Gamma comparisons are also written
+but unaudited. No barrier theorem or contribution is counted yet.
 
 ## Boundary implication and limit
 

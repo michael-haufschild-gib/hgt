@@ -49,7 +49,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_jump_lower {F : ℝ → 
         (exponentialBarrierPositiveLevel β t F u -
           exponentialBarrierPositiveLevel β t F (u + h)) := by
   let G := exponentialBarrierPositiveLevel β t F
-  have hG := hF.exponentialBarrierPositiveLevel hβ ht
+  have hG := hF.exponentialBarrierPositiveLevel_mem hβ ht
   have hFG : Integrable (fun u => F u * G u) := hF.memLp_real.integrable_mul hG.memLp_real
   have hshift : Integrable (fun u => F (u + h) * G (u + h)) :=
     hFG.comp_measurePreserving (measurePreserving_add_right volume h)

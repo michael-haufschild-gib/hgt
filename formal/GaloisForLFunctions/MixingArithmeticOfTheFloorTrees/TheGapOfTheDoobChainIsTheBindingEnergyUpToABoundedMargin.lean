@@ -98,13 +98,16 @@ theorem bilin_windowPlane {r J : ℕ} (hJ : r * 2 ≤ J) (Q : ℕ) (s t : ℝ) :
   have hext : ∀ j, extendFin (windowPlane r J s t) j =
       (if j < r * 2 then coarsePlane r s t j else 0) := by
     intro j
-    unfold extendFin windowPlane
-    split_ifs with h1 h2 h2 <;> first | rfl | (exfalso; omega)
+    by_cases hj : j < J
+    · simp only [extendFin, dif_pos hj, windowPlane, Fin.val_mk]
+    · have hj2 : ¬ j < r * 2 := by omega
+      simp only [extendFin, dif_neg hj, if_neg hj2]
   have hsub : range (r * 2) ⊆ range J := Finset.range_subset_range.mpr hJ
-  have h := sum_fin_windowMatrix_eq (neutralBlock Q) (r * 2) (windowPlane r J s t)
-  unfold bilin
-  rw [neutralWindow]
-  refine h.trans ?_
+  have h : bilin (neutralWindow Q (r * 2) J) (windowPlane r J s t) (windowPlane r J s t) =
+      ∑ j ∈ range J, ∑ l ∈ range J, extendFin (windowPlane r J s t) j *
+        extendFin (windowPlane r J s t) l * neutralBlock Q (r * 2 + j) (r * 2 + l) :=
+    sum_fin_windowMatrix_eq (neutralBlock Q) (r * 2) (windowPlane r J s t)
+  rw [h]
   simp only [hext]
   calc ∑ j ∈ range J, ∑ l ∈ range J, (if j < r * 2 then coarsePlane r s t j else 0) *
         (if l < r * 2 then coarsePlane r s t l else 0) * neutralBlock Q (r * 2 + j) (r * 2 + l)
@@ -147,7 +150,7 @@ theorem exists_windowPlane_orth (r J : ℕ) (φ : Fin J → ℝ) :
   by_cases hq : ∑ i, φ i * windowPlane r J 0 1 i = 0
   · exact ⟨0, 1, Or.inr one_ne_zero, hq⟩
   · refine ⟨∑ i, φ i * windowPlane r J 0 1 i, -∑ i, φ i * windowPlane r J 1 0 i, Or.inl hq, ?_⟩
-    rw [windowPlane_eq]
+    rw [windowPlane_eq r J (∑ i, φ i * windowPlane r J 0 1 i) (-∑ i, φ i * windowPlane r J 1 0 i)]
     simp only [mul_add, Finset.sum_add_distrib]
     have e1 : ∑ i, φ i * ((∑ i, φ i * windowPlane r J 0 1 i) * windowPlane r J 1 0 i) =
         (∑ i, φ i * windowPlane r J 0 1 i) * ∑ i, φ i * windowPlane r J 1 0 i := by
@@ -171,15 +174,19 @@ theorem exists_doob_test_le {Q r J : ℕ} (hr : 1 ≤ r) (hJ : r * 2 ≤ J) {φ 
   have hmassx := sum_windowPlane_sq hr hJ s t
   have hpos : 0 < s ^ 2 + t ^ 2 := by
     rcases hst with h | h
-    · have := sq_pos_of_ne_zero h; positivity
-    · have := sq_pos_of_ne_zero h; positivity
+    · have h2 := mul_pos (abs_pos.mpr h) (abs_pos.mpr h)
+      nlinarith [abs_mul_abs_self s, sq_nonneg t]
+    · have h2 := mul_pos (abs_pos.mpr h) (abs_pos.mpr h)
+      nlinarith [abs_mul_abs_self t, sq_nonneg s]
   have hmass : doobMass φ (fun i => windowPlane r J s t i / φ i) =
       ∑ i, windowPlane r J s t i ^ 2 :=
-    Finset.sum_congr rfl fun i _ => by field_simp [(hφ i).ne']
+    Finset.sum_congr rfl fun i _ => by
+      rw [div_pow, mul_div_cancel₀ _ (pow_ne_zero 2 (hφ i).ne')]
   refine ⟨fun i => windowPlane r J s t i / φ i, ?_, ?_, ?_⟩
   · unfold doobMean
     calc ∑ i, φ i ^ 2 * (windowPlane r J s t i / φ i) = ∑ i, φ i * windowPlane r J s t i :=
-          Finset.sum_congr rfl fun i _ => by field_simp [(hφ i).ne']; ring
+          Finset.sum_congr rfl fun i _ => by
+            rw [sq, mul_assoc, mul_div_cancel₀ _ (hφ i).ne']
       _ = 0 := horth
   · rw [hmass, hmassx]
     exact hpos
@@ -187,7 +194,7 @@ theorem exists_doob_test_le {Q r J : ℕ} (hr : 1 ≤ r) (hJ : r * 2 ≤ J) {φ 
         lam * doobMass φ (fun i => windowPlane r J s t i / φ i) +
           doobEnergy (neutralWindow Q (r * 2) J) φ (fun i => windowPlane r J s t i / φ i) := by
       have hx : (fun i => φ i * (windowPlane r J s t i / φ i)) = windowPlane r J s t :=
-        funext fun i => by field_simp [(hφ i).ne']
+        funext fun i => mul_div_cancel₀ _ (hφ i).ne'
       calc bilin (neutralWindow Q (r * 2) J) (windowPlane r J s t) (windowPlane r J s t) =
             bilin (neutralWindow Q (r * 2) J) (fun i => φ i * (windowPlane r J s t i / φ i))
               (fun i => φ i * (windowPlane r J s t i / φ i)) := by rw [hx]

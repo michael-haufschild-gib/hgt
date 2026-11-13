@@ -15,6 +15,11 @@ The concrete candidate bound, for unit profiles with first moment at most `M`, i
 Choose the physical cutoff `H=exp(t/2)` in the window bound, then integrate the resulting spectral distribution tail. At `T=0` this would give `Q(f)≥L₊(f)+4M(f)-16`, where `L₊` is positive logarithmic Fourier energy. Thus bounded limiting energy would control both confinement and high-frequency tails. The extension to the unitary `L²` Fourier transform must allow profiles outside `L¹`.
 The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integrable real-valued version is `MeasureTheory.Integrable.integral_eq_integral_meas_lt`. Apply it to the measure with Fourier square density.
 
+For the `L²` extension, split `f=P_Hf+(1-P_H)f` directly in the unitary
+Fourier space. Only the compact part needs an ordinary Fourier integral;
+Cauchy–Schwarz gives its `L¹` bound, while unitarity controls the far part.
+The existing spatial first-moment tail estimate is unchanged.
+
 `CriticalArithmeticCorrelationTheory.isCompact_closure_of_uniform_physical_and_fourier_tails` already supplies compactness from the two tails, without compact support. Its compact cutoff approximation uses `f-PQf=(f-Pf)+P(f-Qf)` and contractivity of the physical cutoff.
 
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
@@ -41,6 +46,15 @@ an actual off-support logarithmic-operator formula and modulus rigidity;
 neither has yet been transferred to the full half-line domain. No no-go is
 claimed, and the positive survivor to prove is attainment and uniqueness in
 the closed domain.
+
+An alternative could avoid modulus rigidity in this nonattainment step.
+Expanding the far-bump logarithmic kernel to every inverse power would
+force all signed moments of an exponentially decaying weak eigenfunction
+to vanish. `HTGeometry.ae_eq_zero_of_forall_moment_eq_zero` then supplies
+rigidity: use the finite measure `exp(-c|x|)dx` and density
+`F(x)exp(c|x|)`, choosing `c` below the available square-moment exponent.
+The off-support operator formula, all-order expansion, and exponentially
+small tail pairing still require proof; this is only an alternative route.
 
 Modulus rigidity may also pass through the actual Gamma form. Compress a
 trial profile, use the Lévy contraction inequality, then take the verified

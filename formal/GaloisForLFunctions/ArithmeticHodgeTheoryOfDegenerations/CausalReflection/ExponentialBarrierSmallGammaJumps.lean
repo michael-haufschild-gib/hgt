@@ -51,7 +51,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_smallGamma_lower {F : �
   let M : ℝ := ∫ u, F u * exponentialBarrierPositiveLevel β t F u
   have hM : 0 ≤ M := integral_nonneg fun u =>
     hF.mul_exponentialBarrierPositiveLevel_nonneg ht β u
-  have hj := integrableOn_halfLineGammaMixedJump hF (hF.exponentialBarrierPositiveLevel hβ ht)
+  have hj := integrableOn_halfLineGammaMixedJump hF (hF.exponentialBarrierPositiveLevel_mem hβ ht)
   have hi := CHMDDoobGraph.integrableOn_mul_archLevyDensity
   have hsubset : Ioc (0 : ℝ) δ ⊆ Ioi 0 := fun _ hh => hh.1
   have hrow : (∫ h in Ioc 0 δ, h * archLevyDensity h) ≤

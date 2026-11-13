@@ -16,20 +16,23 @@ state at ratio three and four) is worked by another agent: no ratio-three/four s
 - [x] overlap gluing law; RH ⇔ every conditional coupling contracts; refinement monotonicity — compiled
 - [x] binding lower bound from the root block (√ρ/log ρ); RH upper bound — compiled
 - [x] archimedean floor `A(0)` without trees; Chebyshev ceiling `2Σ Λ(k)/√k` — compiled
-- [ ] two-end lower bound (order √ρ) — written, compile pending
-- [ ] floor-tree components at ratio four (dilation process without gap) — compiling
+- [x] two-end lower bound (order √ρ) — compiled
+- [x] floor-tree components at ratio four (dilation process without gap) — compiled
+- [x] ground state charges both ends: `κ² m² ≤ 4 S_long² bot·top` — compiled
+- [x] pole capacity: `μ m + W(φ) ≤ cap·m`; RH ⇒ `μ ≤ √ρ − 1/√ρ + log ρ` — compiled
+- [ ] RH ⇒ margin → 0 at infinite block size (three spread copies, plane `A = 0`) — compiling
 - [ ] bounded margin `gap ≤ μ + c₀`; RH ⇒ Poincaré constant in `[μ, μ + c₀]` — written, compile pending
 - [ ] reflection symmetry at infinite block size; shallow-tree selectivity — written, compile pending
 
 ## Approach
 Folder `formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/`, umbrella
 `MixingArithmeticOfTheFloorTrees.lean`. Build on AGZ (`neutralWindow`, `neutralForm`,
-`packetForm`, refinement tower, two-well law), HTG inertia and Haynsworth, RHTower Lévy density.
+`packetForm`, refinement tower, two-well law), HTG inertia and Haynsworth, RHTower Lévy density,
+the zero sum `zetaZeroConfig.W` with `TemperedConfig` and `|γ| ≥ 2`.
 
-Open threads: margin bounded below ⇒ RH (expected: an off-line zero drives the margin of long
-windows to −∞ at rate `ρ^{β−1/2}`; needs a quantitative zero-side test on translates with
-vanishing charges); concentration of the ground state on the two ends; parity split of the index
-at infinite block size; quantitative overlap law.
+Open threads: margin at finite block size (transfer through the tower); margin bounded below ⇒
+RH; unconditional leading constant of μ (pole profile `e^{±u/2}` against PNT); shape of the
+ground state between the ends; quantitative overlap law.
 
 ## Log
-- 2026-11-13 — created; README drafted; modules 1–4 compiled
+- 2026-11-13 — created; README drafted; modules 1–6, 9, 10 compiled; module 11 written

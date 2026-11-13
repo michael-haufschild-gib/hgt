@@ -102,8 +102,9 @@ a collision `(τ₀, ζ)` of order `m`, `ρ` a root of the Hermite profile `Q_m`
 
 ## Open
 
-- Generation of `G₊` by the conjugates of the turns. With 8 it would give: `G₊` preserves
-  every pair iff no collision away from the centre exists at a forward time.
+- Generation of `G₊` by the conjugates of the turns, and with 8 the criterion "`G₊` preserves
+  every pair iff no collision away from the centre exists at a forward time": card
+  `galois-zero-turns-generate-the-forward-monodromy-group`.
 - A collision away from the centre at a forward time (B193). A statement that uses only the
   heat equation and the symmetry cannot give it: `(τ−τ₀)^{ν/2} f(z/√(τ−τ₀))`, `f` an even
   solution of `f'' − (y/2)f' + (ν/2)f = 0`, has the sheets `z² = ρ_j²(τ−τ₀)` and no collision
