@@ -215,6 +215,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombAbelIntegrabilityDetectsTheZeroWidth
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.APacketAndItsDilateByTwoAreBoundOnTheWindowOfRatioThree
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCouplingsOfAWindowAreNotMixedAreasAndTheIndexForcesLogarithmicSelfPairings
 
 /-!
 # Absolute geometry of `Spec â„¤`
@@ -290,6 +291,8 @@ potential and unbounded opposite-sign susceptibilities on narrow windows (`16J â
 dichotomy at ratio four: the halves `(R, 2R]` and `(2R, 4R]` glue through rank-one charges iff
 `R = 1`, while their raised model holds one bound state at every block size and rank-two charges
 glue `(2, 4]` and `(4, 8]`; and on the window `(2r, 6r]` of ratio three a packet on `(2r, 3r]`
-and its dilate by two on `(4r, 6r]`, which are bound at every block size. See
-`AbsoluteGeometryOfSpecZ/README.md`.
+and its dilate by two on `(4r, 6r]`, which are bound at every block size; and the realization
+of a window: its couplings are not mixed areas of planar convex bodies, and a pairing matrix with
+one positive square needs self-pairings of logarithmic depth in the number of blocks, which the
+windows attain. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

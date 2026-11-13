@@ -1,8 +1,8 @@
 # Realization of a window: the couplings are not mixed areas; the index forces logarithmic self-pairings
 
 - **ID:** agz-realization-self-pairings
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.13 (first question; milestone M1), §2.14; programme `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ` (README question 4)
 - **Statement:** Let `(R, R + J]`, `J ≤ R`, be a window and `G_d` the symmetric matrix with the
   neutral part `N(a, b)` off the diagonal and arbitrary self-pairings `d(a)` on it. If `G_d` has at
@@ -26,8 +26,8 @@ not an output.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized: `sum_selfPairing_ge_of_hermNegIndex_le_one`, `two_le_hermNegIndex_neg_of_couplings`, `sum_neutralBlock_self_le`
 
 ## Proof
 
@@ -89,7 +89,22 @@ dyadic, its neutral part is the completion by its own diagonal and has index `�
   bounded amount per block, by the jets and the index alone. A realization must consist of
   classes of negative self-pairing of logarithmic depth in the number of blocks (curves outside
   the nef cone), not of convex bodies.
-- **Status:** paper proof dependency-closed (steps 1–6); Lean: pending.
+- **Status:** paper proof dependency-closed (steps 1–6); formalized, see "Lean".
+
+## Lean
+
+Module `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheCouplingsOfAWindowAreNotMixedAreasAndTheIndexForcesLogarithmicSelfPairings.lean`
+(wired into the umbrella `AbsoluteGeometryOfSpecZ.lean`).
+
+| Step | Declaration |
+|---|---|
+| completion `G_d`, flat packet of a run | `neutralWithDiagonal`, `blockRun`, `bilin_windowMatrix_blockRun` |
+| 1 | `neutralBlock_le_neg_xLogXDiff`, `sum_sum_xLogXDiff_max_sub_min`, `sum_neutralWithDiagonal_run_le` |
+| 2 | `neg_two_div_le_neutralBlock`, `abs_sum_neutralWithDiagonal_runs_le` |
+| 3 | `sum_selfPairing_ge_of_hermNegIndex_le_one` |
+| 4 | `log_sub_two_le_of_hermNegIndex_le_one` |
+| 5 | `two_le_hermNegIndex_of_selfPairing_nonpos`, `two_le_hermNegIndex_neg_of_couplings` (matrix form) |
+| 6 | `neutralBlock_self_le`, `sum_neutralBlock_self_le`, `hermNegIndex_neutralWithDiagonal_self_le_one` |
 
 ## What stays open
 - A realization of the dyadic windows by curves (M1): which surface, and which classes of
@@ -100,3 +115,4 @@ dyadic, its neutral part is the completion by its own diagonal and has index `�
 
 ## Log
 - 2026-11-13 — created in 1-in-progress with the paper proof.
+- 2026-11-13 — formalized; the module compiles with `lake --old env lean`; moved to 3-formalized.
