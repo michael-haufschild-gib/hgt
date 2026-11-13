@@ -4,7 +4,7 @@
 - **Type:** CONJECTURE
 - **Target:** Review-1311 A158, B16, B17; attainment in the closed limiting domain and convergence of the rescaled profiles.
 - **Statement:** The closed half-line form with Fourier symbol `log|ξ|` and potential `8(-u)` has a unique unit minimizing line with a nonnegative representative. Rescaled actual confining minimizers converge in `L²` to this line.
-- **Status:** Unproved; not counted. The [universal soft logarithmic limit](../3-formalized/universal-soft-logarithmic-confinement-limit.md) is verified; compactness, domain recovery, and sign rigidity remain missing.
+- **Status:** Full statement unproved; not counted. The [universal soft logarithmic limit](../3-formalized/universal-soft-logarithmic-confinement-limit.md) and compact `L²` closure of every unit Rayleigh sublevel are verified. Closed-domain attainment, sign rigidity, and profile convergence remain open.
 
 ## Corpus connection
 
@@ -78,18 +78,19 @@ the limiting-domain passage remain unformalized.
 
 `CriticalArithmeticCorrelationTheory.isCompact_closure_of_uniform_physical_and_fourier_tails` already supplies compactness from the two tails, without compact support. Its compact cutoff approximation uses `f-PQf=(f-Pf)+P(f-Qf)` and contractivity of the physical cutoff.
 
-Coercivity suggests the stronger intermediate statement that every unit
-Rayleigh sublevel of the trial domain is relatively compact in `L²`.
+Every unit Rayleigh sublevel of the trial domain is relatively compact in `L²`.
 The physical cutoff error squared is at most `M/H`; the Fourier cutoff
 error squared is at most `L₊/log T`. The latter already has its exact
 unitary identity in
 `norm_sq_sub_fourierCutoff_central_eq_tailIntegral`. No exponential moment
 bound uniform over the sublevel is needed. `SoftLogarithmicSublevelCompactness`
-contains an unchecked assembly with its literal `L²` representatives; the
+proves `isCompact_closure_softLogarithmicRayleighSublevel` using the literal
+`L²` representatives. Its final plain source audit passes without warnings
+and with exactly the standard three axioms; it is wired. The
 general helper `HTGeometry/HardyBoundary/LogarithmicMomentCompactness`
 passes its final plain source audit without warnings and with exactly the
-standard three axioms; it is wired. The actual Rayleigh-sublevel assembly
-still awaits its audit. No compactness contribution is counted yet.
+standard three axioms; it is wired. These compactness results are not counted
+separately from the remaining attainment problem.
 
 The finite trial infimum supplies normalized trials with energies in
 `[μ,μ+1/(n+1)]`. They all lie in the sublevel `μ+1`; compactness would give

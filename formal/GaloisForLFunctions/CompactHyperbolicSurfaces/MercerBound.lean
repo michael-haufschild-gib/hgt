@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CompactHyperbolicSurfaces.MercerRepresentatives
+import GaloisForLFunctions.HTGeometry.SchurKernelComposition
 
 /-!
 # A uniform bound for the continuous eigenfunctions
@@ -290,6 +291,95 @@ theorem exists_rowEnergy_le {a : ℝ} (ha : 1 < a) : ∃ R : ℝ≥0∞, R < ∞
           have := Real.one_lt_cosh.mpr (dist_pos.mpr hne).ne'
           linarith
         exact hnear_sq _ hpos
+
+/-- `ν_j ≤ (b(b − 1) − a(a − 1)) μ_j²`. -/
+theorem nu_le_sq {a b : ℝ} (ha : 1 < a) (hab : a < b) (j : X.SpecIndex ha) :
+    X.nu ha (b := b) j ≤ (b * (b - 1) - a * (a - 1)) * X.specMu ha j ^ 2 := by
+  have hl := X.spectralParam_nonneg ha j
+  have hA : 0 < a * (a - 1) := by nlinarith
+  have hAB : a * (a - 1) < b * (b - 1) := by nlinarith
+  rw [nu_def, X.specMu_eq ha j]
+  set l := X.spectralParam ha j
+  have h1 : 0 < l + a * (a - 1) := by linarith
+  have h2 : l + a * (a - 1) ≤ l + b * (b - 1) := by linarith
+  calc 1 / (l + a * (a - 1)) - 1 / (l + b * (b - 1))
+      = (b * (b - 1) - a * (a - 1)) / ((l + a * (a - 1)) * (l + b * (b - 1))) := by
+        rw [div_sub_div _ _ h1.ne' (by linarith)]; ring
+    _ ≤ (b * (b - 1) - a * (a - 1)) / ((l + a * (a - 1)) * (l + a * (a - 1))) :=
+        div_le_div_of_nonneg_left (by linarith) (by positivity)
+          (mul_le_mul_of_nonneg_left h2 h1.le)
+    _ = (b * (b - 1) - a * (a - 1)) * (1 / (l + a * (a - 1))) ^ 2 := by ring
+
+/-- **Bessel's inequality for the continuous eigenfunctions.**
+`Σ_{j ∈ S} ν_j |ẽ_j(w)|² ≤ B` for every finite `S` and every `w`: almost everywhere
+`μ_j ẽ_j(w) = ⟨K_a(w, ·), e_j⟩`, the rows have energy at most `R`, and the bound passes from
+almost every `w` to every `w` by continuity and `Γ`-invariance. -/
+theorem exists_sum_nu_specRep_le {a b : ℝ} (ha : 1 < a) (hab : a < b) : ∃ B : ℝ,
+    ∀ (S : Finset (X.SpecIndex ha)) (w : ℍ),
+      ∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 ≤ B := by
+  obtain ⟨R, hR, hRle⟩ := X.exists_rowEnergy_le ha
+  set k := X.profileKernel (measurable_resKernel a) (lintegral_resKernel_mass_lt_top ha)
+  have hto : ∀ w ξ, k.toFun w ξ = ((autK X.Γ (resKernel a) w ξ).toReal : ℂ) := fun _ _ => rfl
+  have hrow : ∀ w, ∫⁻ ξ, ‖k.toFun w ξ‖ₑ ^ 2 ∂X.μ ≤ R := by
+    intro w
+    refine le_trans (lintegral_mono fun ξ => ?_) (hRle w)
+    rw [hto, ← ofReal_norm_eq_enorm, Complex.norm_real, Real.norm_of_nonneg ENNReal.toReal_nonneg]
+    exact pow_le_pow_left₀ bot_le ENNReal.ofReal_toReal_le 2
+  have hk2 : ∫⁻ y, ∫⁻ z, ‖k.toFun y z‖ₑ ^ 2 ∂X.μ ∂X.μ < ∞ := by
+    refine lt_of_le_of_lt (lintegral_mono hrow) ?_
+    rw [lintegral_const]
+    exact ENNReal.mul_lt_top hR (measure_lt_top _ _)
+  have hnorm : ∀ w, ‖k.rowVec w‖ ^ 2 ≤ R.toReal := by
+    intro w
+    have hw := lt_of_le_of_lt (hrow w) hR
+    rw [Lp.norm_def, eLpNorm_congr_ae (k.rowVec_coeFn hw), ← ENNReal.toReal_pow, eLpNorm_two_sq]
+    simp only [RCLike.enorm_conj]
+    exact ENNReal.toReal_mono hR.ne (hrow w)
+  have hC : 0 ≤ b * (b - 1) - a * (a - 1) := by nlinarith
+  have hon := orthonormal_eigenVec (X.isSymmetric_resOp ha)
+  refine ⟨(b * (b - 1) - a * (a - 1)) * R.toReal, fun S w => ?_⟩
+  have hae : ∀ᵐ w ∂X.μ, ∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 ≤
+      (b * (b - 1) - a * (a - 1)) * R.toReal := by
+    have hj : ∀ᵐ w ∂X.μ, ∀ j ∈ S, ((X.specMu ha j : ℝ) : ℂ) * X.specRep ha (b := b) j w =
+        ⟪k.rowVec w, X.specVec ha j⟫_ℂ := by
+      refine (eventually_all_finset S).mpr fun j _ => ?_
+      filter_upwards [k.op_apply_eq_inner_rowVec hk2 (X.specVec ha j),
+        Lp.coeFn_smul ((X.specMu ha j : ℝ) : ℂ) (X.specVec ha j), X.ae_eq_specRep ha hab j]
+        with w h1 h2 h3
+      have h1' := h1
+      rw [show k.op (X.specVec ha j) = X.resOp ha (X.specVec ha j) from rfl,
+        X.resOp_specVec ha j, h2, Pi.smul_apply, smul_eq_mul, h3] at h1'
+      exact h1'
+    filter_upwards [hj] with w hw
+    calc ∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2
+        ≤ ∑ j ∈ S, (b * (b - 1) - a * (a - 1)) * ‖⟪X.specVec ha j, k.rowVec w⟫_ℂ‖ ^ 2 := by
+          refine Finset.sum_le_sum fun j hjS => ?_
+          rw [norm_inner_symm (X.specVec ha j) (k.rowVec w), ← hw j hjS, norm_mul,
+            Complex.norm_real, Real.norm_eq_abs, abs_of_pos (X.specMu_pos ha j), mul_pow,
+            ← mul_assoc]
+          exact mul_le_mul_of_nonneg_right (X.nu_le_sq ha hab j) (sq_nonneg _)
+      _ = (b * (b - 1) - a * (a - 1)) * ∑ j ∈ S, ‖⟪X.specVec ha j, k.rowVec w⟫_ℂ‖ ^ 2 := by
+          rw [Finset.mul_sum]
+      _ ≤ (b * (b - 1) - a * (a - 1)) * R.toReal :=
+          mul_le_mul_of_nonneg_left (hon.sum_inner_products_le.trans (hnorm w)) hC
+  -- from almost every `w` to every `w`
+  have hfc : Continuous fun w => ∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 :=
+    continuous_finset_sum _ fun j _ =>
+      continuous_const.mul ((X.continuous_specRep ha hab j).norm.pow 2)
+  have hg := X.eq_zero_of_ae_eq_zero
+    (g := fun w => ((max (∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 -
+      (b * (b - 1) - a * (a - 1)) * R.toReal) 0 : ℝ) : ℂ))
+    (Complex.continuous_ofReal.comp ((hfc.sub continuous_const).max continuous_const))
+    (fun γ w => by simp only [X.specRep_smul ha hab])
+    (by
+      filter_upwards [hae] with w hw
+      show ((max _ 0 : ℝ) : ℂ) = 0
+      rw [max_eq_right (sub_nonpos.mpr hw), Complex.ofReal_zero])
+  have h0 : ((max (∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 -
+      (b * (b - 1) - a * (a - 1)) * R.toReal) 0 : ℝ) : ℂ) = 0 := congrFun hg w
+  rw [Complex.ofReal_eq_zero] at h0
+  linarith [le_max_left (∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 -
+      (b * (b - 1) - a * (a - 1)) * R.toReal) 0]
 
 end CompactQuotient
 

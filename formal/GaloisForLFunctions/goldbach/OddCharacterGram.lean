@@ -15,7 +15,7 @@ correlation, extending the scalar moment identity to mixed profiles.
 namespace GaloisForLFunctions.Goldbach
 
 open Finset Matrix
-open scoped Classical
+open scoped Classical ComplexOrder
 
 noncomputable section
 

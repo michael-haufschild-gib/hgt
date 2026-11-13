@@ -356,9 +356,7 @@ theorem integral_translate_mul_exp (f : ℝ → ℝ) (τ s : ℝ) :
   have h := integral_comp_add_mul_exp f (-τ) s
   rw [show -(s * -τ) = s * τ by ring] at h
   rw [← h]
-  congr 1
-  funext u
-  rw [sub_eq_add_neg]
+  rfl
 
 /-- The smooth neutral form is invariant under translation: the sum over the zeros is, and the
 two charges are multiplied by `e^{∓τ/2}`. -/
@@ -560,8 +558,164 @@ theorem sum_fin_neutralWindow_add_diag (Q R J : ℕ) (C : ℝ) (x : ℕ → ℝ)
 theorem blockMean_lin (N B J : ℕ) (a b : ℝ) (c e : ℕ → ℝ) (j : ℕ) :
     blockMean N B J (fun n => a * c n + b * e n) j =
       a * blockMean N B J c j + b * blockMean N B J e j := by
-  simp only [HodgeTheoryOfAFixedPart.blockMean, Finset.sum_add_distrib, ← Finset.mul_sum]
-  ring
+  unfold HodgeTheoryOfAFixedPart.blockMean
+  rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, add_div, mul_div_assoc,
+    mul_div_assoc]
+
+theorem exp_half_le_sq (v : ℝ) :
+    Real.exp (v / 2) ≤ (Real.exp (v / 4) + Real.exp (-(v / 4))) ^ 2 := by
+  have h1 : Real.exp (v / 2) = Real.exp (v / 4) ^ 2 := by
+    rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+  rw [h1]
+  have := Real.exp_pos (-(v / 4))
+  have := Real.exp_pos (v / 4)
+  nlinarith
+
+/-- **The binding state is eventually deeper than any margin of rate `θ < ½`.** -/
+theorem eventually_binding_deep {θ : ℝ} (hθ : θ < 1 / 2) (E : ℝ) :
+    ∀ᶠ v : ℝ in atTop,
+      2 * (lagStructure zetaZeroConfig (cx spline) 0).re +
+          2 * (lagStructure zetaZeroConfig (cx spline) v).re + E * Real.exp (θ * v) <
+        2 * splineCharge ^ 2 * Real.exp (v / 2) := by
+  obtain ⟨T0, hT0⟩ : ∃ S, S = 2 * (lagStructure zetaZeroConfig (cx spline) 0).re := ⟨_, rfl⟩
+  have hA2 : 0 < 2 * splineCharge ^ 2 := by
+    have := pow_pos (abs_pos.mpr splineCharge_ne_zero) 2
+    rw [_root_.sq_abs] at this
+    linarith
+  have h1 := tendsto_two_re_lagStructure_mul_exp contDiff_cx_spline cx_spline_support
+  have h2 : Tendsto (fun v : ℝ => Real.exp (-(v / 2))) atTop (𝓝 0) :=
+    Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.atTop_div_const (by norm_num))
+  have h3 : Tendsto (fun v : ℝ => Real.exp (-((1 / 2 - θ) * v))) atTop (𝓝 0) :=
+    Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.const_mul_atTop (by linarith))
+  have hF := ((h2.const_mul T0).add h1).add (h3.const_mul E)
+  simp only [mul_zero, add_zero] at hF
+  filter_upwards [hF.eventually (gt_mem_nhds hA2)] with v hv
+  have hv' : T0 * Real.exp (-(v / 2)) +
+      2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
+      E * Real.exp (-((1 / 2 - θ) * v)) < 2 * splineCharge ^ 2 := hv
+  have he : 0 < Real.exp (v / 2) := Real.exp_pos _
+  have e1 : Real.exp (-(v / 2)) * Real.exp (v / 2) = 1 := by
+    rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  have e2 : Real.exp (-((1 / 2 - θ) * v)) * Real.exp (v / 2) = Real.exp (θ * v) := by
+    rw [← Real.exp_add]; congr 1; ring
+  have hmul := mul_lt_mul_of_pos_right hv' he
+  have e3 : (T0 * Real.exp (-(v / 2)) +
+        2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
+        E * Real.exp (-((1 / 2 - θ) * v))) * Real.exp (v / 2) =
+      T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re + E * Real.exp (θ * v) := by
+    rw [← e2]
+    linear_combination (T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re) * e1
+  rw [e3, ← hT0] at hmul
+  linarith
+
+/-- **From the comb to the window matrix**: on the block averages of a divisor, scaled by `√B`,
+the window matrix is at most the neutral part of the comb plus `(ε + 15K/R + η)` times the norm,
+and the norm does not grow. -/
+theorem window_form_le_comb {K R B : ℕ} (hR : 1 ≤ R) (hB : 1 ≤ B) {ε η : ℝ} (hε : 0 < ε)
+    (hRlog : HodgeTheoryOfAFixedPart.crossConstant (3 * K + 1) ^ 2 / ε +
+      (3 + ((3 * K + 1 : ℕ) : ℝ) / 4 + 2 * HodgeTheoryOfAFixedPart.chebyshev (3 * K + 1) +
+        Real.log (4 * Real.pi)) ≤ Real.log R)
+    (hBB : ∀ σ : ℕ → ℝ,
+      |combNeutral (Ioc (R * B) (R * B + B * (3 * K * R)))
+          (fun n => σ (blockIndex (R * B) B n)) / B -
+        ∑ j ∈ range (3 * K * R), ∑ l ∈ range (3 * K * R),
+          σ j * σ l * neutralBlock (3 * K + 1) (R + j) (R + l)| ≤
+        η * ∑ j ∈ range (3 * K * R), σ j ^ 2)
+    (c : ℕ → ℝ) :
+    ∑ j ∈ range (3 * K * R), ∑ l ∈ range (3 * K * R),
+        (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) *
+          (Real.sqrt B * blockMean (R * B) B (3 * K * R) c l) *
+            neutralBlock (3 * K + 1) (R + j) (R + l) ≤
+      combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) c +
+        (ε + 5 * (3 * (K : ℝ) / R)) * ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), c n ^ 2 +
+          η * ∑ j ∈ range (3 * K * R), (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) ^ 2 ∧
+    ∑ j ∈ range (3 * K * R), (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) ^ 2 ≤
+      ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), c n ^ 2 := by
+  have hBpos : 0 < B := by omega
+  have hB0 : (0 : ℝ) < B := by exact_mod_cast hBpos
+  have hR0 : (0 : ℝ) < R := by exact_mod_cast (show 0 < R by omega)
+  have hsB : Real.sqrt B ^ 2 = B := Real.sq_sqrt hB0.le
+  have hBl := hBB (fun j => Real.sqrt B * blockMean (R * B) B (3 * K * R) c j)
+  rw [combNeutral_smul, hsB, mul_div_cancel_left₀ _ hB0.ne'] at hBl
+  have hRB : R ≤ R * B := Nat.le_mul_of_pos_right R hBpos
+  have hdiv : R * B / R = B := Nat.mul_div_cancel_left B (by omega)
+  have hμ := HodgeTheoryOfAFixedPart.log_sub_row_ge (M := B * (3 * K * R)) (Q := 3 * K + 1)
+    (by omega : 0 < R) hRB (le_of_eq (by ring))
+  rw [hdiv] at hμ
+  have hA := combNeutral_blockMean_le (N := R * B) (J := 3 * K * R) (Q := 3 * K + 1) hBpos
+    (Nat.le_mul_of_pos_left B (by omega)) (le_of_eq (by ring)) hε (by linarith only [hRlog, hμ]) c
+  have hKK : (B : ℝ) * ((B * (3 * K * R) : ℕ) : ℝ) / ((R * B : ℕ) : ℝ) ^ 2 = 3 * K / R := by
+    have hRBne : ((R * B : ℕ) : ℝ) ^ 2 ≠ 0 :=
+      pow_ne_zero 2 (by exact_mod_cast (Nat.mul_pos (by omega) hBpos).ne')
+    rw [div_eq_div_iff hRBne hR0.ne']
+    push_cast
+    ring
+  rw [hKK] at hA
+  have hxsq : ∑ j ∈ range (3 * K * R), (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) ^ 2 ≤
+      ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), c n ^ 2 := by
+    have h1 : ∑ j ∈ range (3 * K * R), (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) ^ 2 =
+        ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)),
+          blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n) ^ 2 := by
+      rw [sum_blockFunction_sq hBpos, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [mul_pow, hsB]
+    rw [h1]
+    exact HodgeTheoryOfAFixedPart.sum_blockMean_sq_le hBpos (R * B) (3 * K * R) c
+  refine ⟨?_, hxsq⟩
+  rw [abs_le] at hBl
+  linarith only [hBl.1, hA]
+
+/-- The arithmetic of the plane: if the smooth plane lies below `−δ` times the mass, the samples
+are within `e₀` of it and the losses are small, the window form on the plane is negative. -/
+theorem plane_endgame {s t δ e₀ D lam Mm Ng No mg mo cg co cs Xg Xo Xs Y : ℝ}
+    (hst : s ≠ 0 ∨ t ≠ 0) (hδ : 0 < δ) (he₀ : 0 < e₀) (hD : 0 ≤ D) (hlam : 0 ≤ lam)
+    (hg : Ng + D * mg ≤ -δ) (ho : No + D * mo ≤ -δ) (hmgM : mg ≤ Mm) (hmoM : mo ≤ Mm)
+    (hlamM : lam * Mm ≤ 3 * δ / 8) (he : 5 / 2 * e₀ * (1 + D + lam) ≤ δ / 4)
+    (hcg : |cg - Ng| ≤ e₀) (hco : |co - No| ≤ e₀) (hcs : |cs - (Ng + No)| ≤ e₀)
+    (hXg : |Xg - mg| ≤ e₀) (hXo : |Xo - mo| ≤ e₀) (hXs : |Xs - (mg + mo)| ≤ e₀)
+    (hY : Y ≤ (s ^ 2 * cg + s * t * (cs - cg - co) + t ^ 2 * co) +
+      (D + lam) * (s ^ 2 * Xg + s * t * (Xs - Xg - Xo) + t ^ 2 * Xo)) : Y < 0 := by
+  have hst2 : 2 * |s * t| ≤ s ^ 2 + t ^ 2 := by
+    rw [abs_mul]; nlinarith [sq_nonneg (|s| - |t|), sq_abs s, sq_abs t]
+  have hpos : 0 < s ^ 2 + t ^ 2 := by
+    rcases hst with h0 | h0
+    · have := pow_pos (abs_pos.mpr h0) 2; rw [_root_.sq_abs] at this; nlinarith [sq_nonneg t]
+    · have := pow_pos (abs_pos.mpr h0) 2; rw [_root_.sq_abs] at this; nlinarith [sq_nonneg s]
+  rw [abs_le] at hcg hco hcs hXg hXo hXs
+  have hb1 : |cs - cg - co| ≤ 3 * e₀ := by rw [abs_le]; constructor <;> linarith
+  have hb2 : |Xs - Xg - Xo| ≤ 3 * e₀ := by rw [abs_le]; constructor <;> linarith
+  have hc1 : s * t * (cs - cg - co) ≤ 3 * e₀ * |s * t| := by
+    calc s * t * (cs - cg - co) ≤ |s * t * (cs - cg - co)| := le_abs_self _
+      _ = |s * t| * |cs - cg - co| := abs_mul _ _
+      _ ≤ |s * t| * (3 * e₀) := mul_le_mul_of_nonneg_left hb1 (abs_nonneg _)
+      _ = 3 * e₀ * |s * t| := by ring
+  have hc2 : s * t * (Xs - Xg - Xo) ≤ 3 * e₀ * |s * t| := by
+    calc s * t * (Xs - Xg - Xo) ≤ |s * t * (Xs - Xg - Xo)| := le_abs_self _
+      _ = |s * t| * |Xs - Xg - Xo| := abs_mul _ _
+      _ ≤ |s * t| * (3 * e₀) := mul_le_mul_of_nonneg_left hb2 (abs_nonneg _)
+      _ = 3 * e₀ * |s * t| := by ring
+  have h3 := mul_le_mul_of_nonneg_left hst2 he₀.le
+  have hZ : s ^ 2 * cg + s * t * (cs - cg - co) + t ^ 2 * co ≤
+      s ^ 2 * Ng + t ^ 2 * No + 5 / 2 * e₀ * (s ^ 2 + t ^ 2) := by
+    have h1 := mul_le_mul_of_nonneg_left hcg.2 (sq_nonneg s)
+    have h2 := mul_le_mul_of_nonneg_left hco.2 (sq_nonneg t)
+    linarith
+  have hX : s ^ 2 * Xg + s * t * (Xs - Xg - Xo) + t ^ 2 * Xo ≤
+      s ^ 2 * mg + t ^ 2 * mo + 5 / 2 * e₀ * (s ^ 2 + t ^ 2) := by
+    have h1 := mul_le_mul_of_nonneg_left hXg.2 (sq_nonneg s)
+    have h2 := mul_le_mul_of_nonneg_left hXo.2 (sq_nonneg t)
+    linarith
+  have hDX := mul_le_mul_of_nonneg_left hX (by linarith : (0 : ℝ) ≤ D + lam)
+  have hg' := mul_le_mul_of_nonneg_left hg (sq_nonneg s)
+  have ho' := mul_le_mul_of_nonneg_left ho (sq_nonneg t)
+  have hlm : lam * (s ^ 2 * mg + t ^ 2 * mo) ≤ 3 * δ / 8 * (s ^ 2 + t ^ 2) := by
+    have h1 := mul_le_mul_of_nonneg_left hmgM (mul_nonneg hlam (sq_nonneg s))
+    have h2 := mul_le_mul_of_nonneg_left hmoM (mul_nonneg hlam (sq_nonneg t))
+    have h4 := mul_le_mul_of_nonneg_right hlamM hpos.le
+    linarith
+  have he' := mul_le_mul_of_nonneg_right he hpos.le
+  have hfin := mul_pos hδ hpos
+  linarith
 
 /-- **The margin of the window matrices at rate `θ < ½` confines the zeros**: if for every
 window `(R, (3K + 1)R]` the neutral part plus `C K^θ` has at most one negative square, every zero
@@ -575,50 +729,13 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
   -- constants
   obtain ⟨S0, hS0⟩ : ∃ S, S = 2 * (lagStructure zetaZeroConfig (cx poleFreeProfile) 0).re :=
     ⟨_, rfl⟩
-  obtain ⟨T0, hT0⟩ : ∃ S, S = 2 * (lagStructure zetaZeroConfig (cx spline) 0).re := ⟨_, rfl⟩
   obtain ⟨m₀, hm₀⟩ : ∃ m, m = ∫ u, poleFreeProfile u ^ 2 := ⟨_, rfl⟩
   obtain ⟨mU, hmU⟩ : ∃ m, m = ∫ u, spline u ^ 2 := ⟨_, rfl⟩
-  have hm₀0 : 0 ≤ m₀ := by rw [hm₀]; exact integral_nonneg fun u => sq_nonneg _
-  have hmU0 : 0 ≤ mU := by rw [hmU]; exact integral_nonneg fun u => sq_nonneg _
   obtain ⟨Bθ, hBθ⟩ : ∃ B, B = (2 * Real.exp (Real.log 3 + 12)) ^ θ := ⟨_, rfl⟩
   have hBθ0 : 0 ≤ Bθ := by rw [hBθ]; positivity
   obtain ⟨E, hE⟩ : ∃ E, E = |C| * Bθ := ⟨_, rfl⟩
   have hE0 : 0 ≤ E := by rw [hE]; positivity
-  have hA2 : 0 < 2 * splineCharge ^ 2 := by
-    have := pow_pos (abs_pos.mpr splineCharge_ne_zero) 2
-    rw [_root_.sq_abs] at this
-    linarith
-  -- the binding state is eventually deeper than the allowed margin
-  have hdeep : ∀ᶠ v : ℝ in atTop,
-      T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re + 4 * E * mU * Real.exp (θ * v) <
-        2 * splineCharge ^ 2 * Real.exp (v / 2) := by
-    have h1 := tendsto_two_re_lagStructure_mul_exp contDiff_cx_spline cx_spline_support
-    have h2 : Tendsto (fun v : ℝ => Real.exp (-(v / 2))) atTop (𝓝 0) :=
-      Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.atTop_div_const (by norm_num))
-    have h3 : Tendsto (fun v : ℝ => Real.exp (-((1 / 2 - θ) * v))) atTop (𝓝 0) :=
-      Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.const_mul_atTop (by linarith))
-    have hF := ((h2.const_mul T0).add h1).add (h3.const_mul (4 * E * mU))
-    simp only [mul_zero, add_zero] at hF
-    filter_upwards [hF.eventually (gt_mem_nhds hA2)] with v hv
-    have hv' : T0 * Real.exp (-(v / 2)) +
-        2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
-        4 * E * mU * Real.exp (-((1 / 2 - θ) * v)) < 2 * splineCharge ^ 2 := hv
-    have he : 0 < Real.exp (v / 2) := Real.exp_pos _
-    have e1 : Real.exp (-(v / 2)) * Real.exp (v / 2) = 1 := by
-      rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
-    have e2 : Real.exp (-((1 / 2 - θ) * v)) * Real.exp (v / 2) = Real.exp (θ * v) := by
-      rw [← Real.exp_add]; congr 1; ring
-    have hmul := mul_lt_mul_of_pos_right hv' he
-    have e3 : (T0 * Real.exp (-(v / 2)) +
-          2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
-          4 * E * mU * Real.exp (-((1 / 2 - θ) * v))) * Real.exp (v / 2) =
-        T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re +
-          4 * E * mU * Real.exp (θ * v) := by
-      rw [← e2]
-      linear_combination (T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re) * e1
-    rw [e3] at hmul
-    linarith
-  obtain ⟨V₁, hV₁⟩ := eventually_atTop.mp hdeep
+  obtain ⟨V₁, hV₁⟩ := eventually_atTop.mp (eventually_binding_deep hθ (4 * E * mU))
   refine zetaZeroWidth_le_of_eventually_lag_le hθ0 hθ (V := V₁) (E := 4 * E * m₀) fun v hv => ?_
   rw [← hS0]
   have hv0 : 0 ≤ v := (le_max_right _ _).trans hv
@@ -639,55 +756,55 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
               mul_comm v θ]
     rw [hD, hE, mul_assoc]
     exact mul_le_mul_of_nonneg_left hKθ (abs_nonneg C)
-  -- the smooth plane
+  have hCD : C * (K : ℝ) ^ θ ≤ D := by
+    rw [hD]; exact mul_le_mul_of_nonneg_right (le_abs_self C) (Real.rpow_nonneg hK0 θ)
+  -- the smooth plane: both entries below `−D` times the mass
   obtain ⟨hNg, hNo, hNs⟩ := smoothNeutral_plane v
   have hmass := integral_plane_sq v
-  have hmg : ∫ u, twoEndSpline v (u - stateShift v) ^ 2 ≤ 4 * mU := by
-    rw [integral_comp_sub_sq (twoEndSpline v) (stateShift v), hmU]
+  obtain ⟨Ng, hNgd⟩ : ∃ N, N = smoothNeutral (fun u => twoEndSpline v (u - stateShift v)) :=
+    ⟨_, rfl⟩
+  obtain ⟨No, hNod⟩ : ∃ N, N = smoothNeutral (shiftedOdd v) := ⟨_, rfl⟩
+  obtain ⟨mg, hmgd⟩ : ∃ m, m = ∫ u, twoEndSpline v (u - stateShift v) ^ 2 := ⟨_, rfl⟩
+  obtain ⟨mo, hmod⟩ : ∃ m, m = ∫ u, shiftedOdd v u ^ 2 := ⟨_, rfl⟩
+  have hmg : mg ≤ 4 * mU := by
+    rw [hmgd, integral_comp_sub_sq (twoEndSpline v) (stateShift v), hmU]
     exact integral_twoEndSpline_sq_le v
-  have hmo : ∫ u, shiftedOdd v u ^ 2 ≤ 4 * m₀ := by
+  have hmo : mo ≤ 4 * m₀ := by
+    rw [hmod]
     simp only [shiftedOdd_eq]
     rw [integral_comp_sub_sq (twoEndOdd v) (stateShift v), hm₀]
     exact integral_twoEndOdd_sq_le v
-  have hmg0 : 0 ≤ ∫ u, twoEndSpline v (u - stateShift v) ^ 2 :=
-    integral_nonneg fun u => sq_nonneg _
-  have hmo0 : 0 ≤ ∫ u, shiftedOdd v u ^ 2 := integral_nonneg fun u => sq_nonneg _
-  -- the two diagonal entries are below `−D` times the mass
-  have hcosh : Real.exp (v / 2) ≤ (Real.exp (v / 4) + Real.exp (-(v / 4))) ^ 2 := by
-    have h1 : Real.exp (v / 2) = Real.exp (v / 4) ^ 2 := by
-      rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
-    rw [h1]
-    have := Real.exp_pos (-(v / 4))
-    have := Real.exp_pos (v / 4)
-    nlinarith
-  obtain ⟨δg, hδg⟩ : ∃ δ, δ = -(smoothNeutral (fun u => twoEndSpline v (u - stateShift v)) +
-      D * ∫ u, twoEndSpline v (u - stateShift v) ^ 2) := ⟨_, rfl⟩
-  obtain ⟨δo, hδo⟩ : ∃ δ, δ = -(smoothNeutral (shiftedOdd v) + D * ∫ u, shiftedOdd v u ^ 2) :=
-    ⟨_, rfl⟩
-  have hδg0 : 0 < δg := by
+  have hmg0 : 0 ≤ mg := by rw [hmgd]; exact integral_nonneg fun u => sq_nonneg _
+  have hmo0 : 0 ≤ mo := by rw [hmod]; exact integral_nonneg fun u => sq_nonneg _
+  have hDmg : D * mg ≤ 4 * E * mU * Real.exp (θ * v) := by
+    have := mul_le_mul hDE hmg hmg0 (mul_nonneg hE0 (Real.exp_pos _).le)
+    linarith only [this]
+  have hDmo : D * mo ≤ 4 * E * m₀ * Real.exp (θ * v) := by
+    have := mul_le_mul hDE hmo hmo0 (mul_nonneg hE0 (Real.exp_pos _).le)
+    linarith only [this]
+  have hδg0 : 0 < -(Ng + D * mg) := by
     have h1 := hV₁ v hvV
-    have h2 := mul_le_mul_of_nonneg_left hcosh (sq_nonneg splineCharge)
-    have h3 : D * ∫ u, twoEndSpline v (u - stateShift v) ^ 2 ≤
-        4 * E * mU * Real.exp (θ * v) := by
-      have := mul_le_mul hDE hmg hmg0 (mul_nonneg hE0 (Real.exp_pos _).le)
-      linarith
-    rw [hδg, hNg, ← hT0]
-    nlinarith
-  have hδo0 : 0 < δo := by
-    have h3 : D * ∫ u, shiftedOdd v u ^ 2 ≤ 4 * E * m₀ * Real.exp (θ * v) := by
-      have := mul_le_mul hDE hmo hmo0 (mul_nonneg hE0 (Real.exp_pos _).le)
-      linarith
-    rw [hδo, hNo, ← hS0]
-    linarith
-  obtain ⟨δ, hδ⟩ : ∃ δ, δ = min δg δo := ⟨_, rfl⟩
+    have h2 := mul_le_mul_of_nonneg_left (exp_half_le_sq v) (sq_nonneg splineCharge)
+    have h4 : ((Real.exp (v / 4) + Real.exp (-(v / 4))) * splineCharge) ^ 2 =
+        splineCharge ^ 2 * (Real.exp (v / 4) + Real.exp (-(v / 4))) ^ 2 := by ring
+    rw [hNgd, hNg]
+    linarith only [h1, h2, h4, hDmg]
+  have hδo0 : 0 < -(No + D * mo) := by
+    rw [hNod, hNo, ← hS0]
+    linarith only [hcon, hDmo]
+  obtain ⟨δ, hδ⟩ : ∃ δ, δ = min (-(Ng + D * mg)) (-(No + D * mo)) := ⟨_, rfl⟩
   have hδ0 : 0 < δ := by rw [hδ]; exact lt_min hδg0 hδo0
-  have hδgδ : δ ≤ δg := by rw [hδ]; exact min_le_left _ _
-  have hδoδ : δ ≤ δo := by rw [hδ]; exact min_le_right _ _
-  obtain ⟨Mm, hMm⟩ : ∃ M, M = (∫ u, twoEndSpline v (u - stateShift v) ^ 2) +
-      (∫ u, shiftedOdd v u ^ 2) + 1 := ⟨_, rfl⟩
+  have hδg : Ng + D * mg ≤ -δ := by
+    have := min_le_left (-(Ng + D * mg)) (-(No + D * mo)); rw [← hδ] at this; linarith
+  have hδo : No + D * mo ≤ -δ := by
+    have := min_le_right (-(Ng + D * mg)) (-(No + D * mo)); rw [← hδ] at this; linarith
+  obtain ⟨Mm, hMm⟩ : ∃ M, M = mg + mo + 1 := ⟨_, rfl⟩
   have hMm1 : 1 ≤ Mm := by rw [hMm]; linarith
+  have hMm0 : Mm ≠ 0 := (by linarith : (0 : ℝ) < Mm).ne'
   obtain ⟨ε, hε⟩ : ∃ ε, ε = δ / (8 * Mm) := ⟨_, rfl⟩
   have hε0 : 0 < ε := by rw [hε]; positivity
+  have hεM : ε * Mm = δ / 8 := by
+    rw [hε, div_mul_eq_mul_div, mul_div_mul_right _ _ hMm0]
   -- the supports
   have hshift : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u →
       5 + |v| / 2 < |u - stateShift v| := fun u hu => by
@@ -705,11 +822,12 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     rw [hsg u hu, hso u hu, add_zero]
   have hcs : ∀ {f : ℝ → ℝ}, (∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) →
       HasCompactSupport f := fun {f} hf =>
-    HasCompactSupport.intro (isCompact_Icc (a := Real.log 3) (b := Real.log K)) fun u hu => hf u (by
-      rw [Set.mem_Icc, not_and_or, not_le, not_le] at hu
-      rcases hu with h1 | h1
-      · exact Or.inl h1.le
-      · exact Or.inr h1.le)
+    HasCompactSupport.intro (isCompact_Icc (a := Real.log 3) (b := Real.log K)) fun u hu =>
+      hf u (by
+        rw [Set.mem_Icc, not_and_or, not_le, not_le] at hu
+        rcases hu with h1 | h1
+        · exact Or.inl h1.le
+        · exact Or.inr h1.le)
   have hcg : ContDiff ℝ 2 fun u => twoEndSpline v (u - stateShift v) :=
     (contDiff_twoEndSpline v).comp (contDiff_id.sub contDiff_const)
   have hco : ContDiff ℝ 2 (shiftedOdd v) := contDiff_shiftedOdd v
@@ -726,18 +844,39 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     rw [Real.le_log_iff_exp_le hR0]
     calc Real.exp E₀ ≤ ⌈Real.exp E₀⌉₊ := Nat.le_ceil _
       _ ≤ R := by exact_mod_cast (show ⌈Real.exp E₀⌉₊ ≤ R by omega)
-  have hRK : 15 * (K : ℝ) / R ≤ δ / (8 * Mm) := by
+  rw [hE₀] at hRlog
+  have hRK : 15 * (K : ℝ) / R * Mm ≤ δ / 8 := by
     have h1 : 120 * (K : ℝ) * Mm / δ ≤ R := by
       calc 120 * (K : ℝ) * Mm / δ ≤ ⌈120 * (K : ℝ) * Mm / δ⌉₊ := Nat.le_ceil _
         _ ≤ R := by exact_mod_cast (show ⌈120 * (K : ℝ) * Mm / δ⌉₊ ≤ R by omega)
     rw [div_le_iff₀ hδ0] at h1
-    rw [div_le_div_iff₀ hR0 (by positivity)]
+    rw [div_mul_eq_mul_div, div_le_div_iff₀ hR0 (by norm_num)]
     linarith
   have hQR : R + 3 * K * R ≤ (3 * K + 1) * R := le_of_eq (by ring)
   obtain ⟨η, hη⟩ : ∃ η, η = δ / (8 * Mm) := ⟨_, rfl⟩
   have hη0 : 0 < η := by rw [hη]; positivity
-  have hBlock := eventually_abs_combNeutral_sub_le hR1 hQR hη0
+  have hηM : η * Mm = δ / 8 := by
+    rw [hη, div_mul_eq_mul_div, mul_div_mul_right _ _ hMm0]
+  obtain ⟨lam, hlam⟩ : ∃ l, l = ε + 5 * (3 * (K : ℝ) / R) + η := ⟨_, rfl⟩
+  have hlam0 : 0 ≤ lam := by rw [hlam]; positivity
+  have hlamM : lam * Mm ≤ 3 * δ / 8 := by
+    have e : lam * Mm = ε * Mm + 15 * (K : ℝ) / R * Mm + η * Mm := by rw [hlam]; ring
+    rw [e, hεM, hηM]
+    linarith only [hRK]
+  obtain ⟨e₀, he₀⟩ : ∃ e, e = δ / (10 * (1 + D + δ)) := ⟨_, rfl⟩
+  have he₀0 : 0 < e₀ := by rw [he₀]; positivity
+  have he₀b : 5 / 2 * e₀ * (1 + D + lam) ≤ δ / 4 := by
+    have hlamδ : lam ≤ δ := by
+      have : lam ≤ lam * Mm := le_mul_of_one_le_right hlam0 hMm1
+      linarith only [this, hlamM, hδ0]
+    have h1 : e₀ * (1 + D + δ) = δ / 10 := by
+      rw [he₀, div_mul_eq_mul_div,
+        mul_div_mul_right _ _ (ne_of_gt (by linarith : (0 : ℝ) < 1 + D + δ))]
+    have h2 : e₀ * (1 + D + lam) ≤ e₀ * (1 + D + δ) :=
+      mul_le_mul_of_nonneg_left (by linarith only [hlamδ]) he₀0.le
+    linarith only [h1, h2]
   -- the samples along the scales `RB`
+  have hBlock := eventually_abs_combNeutral_sub_le hR1 hQR hη0
   have htN : Tendsto (fun B : ℕ => R * B) atTop atTop :=
     tendsto_atTop_mono (fun B => Nat.le_mul_of_pos_left B (by omega)) tendsto_id
   have hw : ∀ B : ℕ, R * B + 3 * K * (R * B) = R * B + B * (3 * K * R) := fun B => by ring
@@ -755,8 +894,6 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     refine ((tendsto_sum_sq_sample hf.continuous hK1 hsf).comp htN).congr fun B => ?_
     show ∑ n ∈ Ioc (R * B) (R * B + 3 * K * (R * B)), sampleCoord f (R * B) n ^ 2 = _
     rw [hw B]
-  obtain ⟨e₀, he₀⟩ : ∃ e, e = δ / (10 * (1 + D + δ)) := ⟨_, rfl⟩
-  have he₀0 : 0 < e₀ := by rw [he₀]; positivity
   have hnear : ∀ {x : ℕ → ℝ} {l : ℝ}, Tendsto x atTop (𝓝 l) → ∀ᶠ B in atTop, |x B - l| ≤ e₀ :=
     fun {x l} hx => by
       filter_upwards [(Metric.tendsto_nhds.mp hx) e₀ he₀0] with B hB
@@ -766,9 +903,7 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     ((hnear (hlimN hco hso)).and ((hnear (hlimN hcsum hss)).and ((hnear (hlimM hcg hsg)).and
       ((hnear (hlimM hco hso)).and ((hnear (hlimM hcsum hss)).and
         (eventually_ge_atTop 1)))))))).exists
-  have hBpos : 0 < B := by omega
-  have hB0 : (0 : ℝ) < B := by exact_mod_cast hBpos
-  -- the plane on the window `(R, (3K + 1)R]`
+  -- the coordinates of the two states at this scale
   obtain ⟨cg, hcg'⟩ : ∃ c, c = sampleCoord (fun u => twoEndSpline v (u - stateShift v)) (R * B) :=
     ⟨_, rfl⟩
   obtain ⟨co, hco'⟩ : ∃ c, c = sampleCoord (shiftedOdd v) (R * B) := ⟨_, rfl⟩
@@ -778,198 +913,39 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     funext n
     simp only [HodgeTheoryOfAFixedPart.sampleCoord, degreeSample]
     ring
-  rw [← hcg'] at hg1 hg2
-  rw [← hco'] at ho1 ho2
-  rw [hcsum'] at hs1 hs2
-  rw [hNs] at hs1
-  rw [hmass] at hs2
+  rw [← hcg', ← hNgd] at hg1
+  rw [← hcg', ← hmgd] at hg2
+  rw [← hco', ← hNod] at ho1
+  rw [← hco', ← hmod] at ho2
+  rw [hcsum', hNs, ← hNgd, ← hNod] at hs1
+  rw [hcsum', hmass, ← hmgd, ← hmod] at hs2
+  beta_reduce at hs2
+  -- two negative squares of `N_W + C K^θ`
   refine absurd (h K R hK1 hR1) (not_le.mpr (lt_of_lt_of_le one_lt_two ?_))
   refine two_le_hermNegIndex_of_plane _
     (fun i : Fin (3 * K * R) => Real.sqrt B * blockMean (R * B) B (3 * K * R) cg (i : ℕ))
     (fun i : Fin (3 * K * R) => Real.sqrt B * blockMean (R * B) B (3 * K * R) co (i : ℕ))
     fun s t hst => ?_
-  -- the coordinates of the packet `s g + t o`
-  obtain ⟨c, hc⟩ : ∃ c : ℕ → ℝ, c = fun n => s * cg n + t * co n := ⟨_, rfl⟩
-  obtain ⟨x, hx⟩ : ∃ x : ℕ → ℝ, x = fun j => Real.sqrt B * blockMean (R * B) B (3 * K * R) c j :=
-    ⟨_, rfl⟩
   have hxlin : ∀ j : ℕ, s * (Real.sqrt B * blockMean (R * B) B (3 * K * R) cg j) +
-      t * (Real.sqrt B * blockMean (R * B) B (3 * K * R) co j) = x j := fun j => by
-    rw [hx, hc]
-    simp only
-    rw [blockMean_lin]
-    ring
+      t * (Real.sqrt B * blockMean (R * B) B (3 * K * R) co j) =
+        Real.sqrt B * blockMean (R * B) B (3 * K * R) (fun n => s * cg n + t * co n) j :=
+    fun j => by rw [blockMean_lin]; ring
   simp only [hxlin]
-  rw [sum_fin_neutralWindow_add_diag]
-  -- the window matrix against the comb, and the block averages against the samples
-  have hsB : Real.sqrt B ^ 2 = B := Real.sq_sqrt hB0.le
-  have hbf : (fun n => x (blockIndex (R * B) B n)) =
-      fun n => Real.sqrt B * blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n) := by
-    rw [hx]
-  have hBl := hBB x
-  rw [hbf, combNeutral_smul, hsB] at hBl
-  have hdivB : (B : ℝ) * combNeutral (Ioc (R * B) (R * B + B * (3 * K * R)))
-      (fun n => blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n)) / B =
-      combNeutral (Ioc (R * B) (R * B + B * (3 * K * R)))
-        (fun n => blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n)) := by
-    rw [mul_div_cancel_left₀ _ hB0.ne']
-  rw [hdivB] at hBl
-  have hRB : R ≤ R * B := Nat.le_mul_of_pos_right R hBpos
-  have hdiv : R * B / R = B := Nat.mul_div_cancel_left B (by omega)
-  have hμ := HodgeTheoryOfAFixedPart.log_sub_row_ge (M := B * (3 * K * R)) (Q := 3 * K + 1)
-    (by omega : 0 < R) hRB (le_of_eq (by ring))
-  rw [hdiv] at hμ
-  have hA := combNeutral_blockMean_le (N := R * B) (J := 3 * K * R) (Q := 3 * K + 1) hBpos
-    (Nat.le_mul_of_pos_left B (by omega)) (le_of_eq (by ring)) hε0 (by
-      have : HodgeTheoryOfAFixedPart.crossConstant (3 * K + 1) ^ 2 / ε ≤
-          Real.log R - (3 + ((3 * K + 1 : ℕ) : ℝ) / 4 +
-            2 * HodgeTheoryOfAFixedPart.chebyshev (3 * K + 1) + Real.log (4 * Real.pi)) := by
-        rw [hE₀] at hRlog; linarith
-      exact this.trans hμ) c
-  have hKK : (B : ℝ) * ((B * (3 * K * R) : ℕ) : ℝ) / ((R * B : ℕ) : ℝ) ^ 2 = 3 * K / R := by
-    have hRBne : ((R * B : ℕ) : ℝ) ^ 2 ≠ 0 :=
-      pow_ne_zero 2 (by exact_mod_cast (Nat.mul_pos (by omega) hBpos).ne')
-    rw [div_eq_div_iff hRBne hR0.ne']
-    push_cast
-    ring
-  rw [hKK] at hA
-  -- the norm of the coordinates
-  have hxsq : ∑ j ∈ range (3 * K * R), x j ^ 2 ≤
-      ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), c n ^ 2 := by
-    have h1 : ∑ j ∈ range (3 * K * R), x j ^ 2 =
-        ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)),
-          blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n) ^ 2 := by
-      rw [sum_blockFunction_sq hBpos, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      rw [hx]
-      show (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) ^ 2 = _
-      rw [mul_pow, hsB]
-    rw [h1]
-    exact HodgeTheoryOfAFixedPart.sum_blockMean_sq_le hBpos (R * B) (3 * K * R) c
-  have hx0 : 0 ≤ ∑ j ∈ range (3 * K * R), x j ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
-  obtain ⟨X, hX⟩ : ∃ X, X = ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), c n ^ 2 := ⟨_, rfl⟩
-  rw [← hX] at hA hxsq
-  have hX0 : 0 ≤ X := by rw [hX]; exact Finset.sum_nonneg fun _ _ => sq_nonneg _
-  -- the quadratic forms in `(s, t)`
-  have hcN : combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) c =
-      s ^ 2 * combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) cg +
-        s * t * (combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) (fun n => cg n + co n) -
-          combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) cg -
-            combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) co) +
-        t ^ 2 * combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) co := by
-    rw [hc]; exact combNeutral_lin _ s t cg co
-  have hXl : X = s ^ 2 * ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), cg n ^ 2 +
-      s * t * (∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), (cg n + co n) ^ 2 -
-        ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), cg n ^ 2 -
-          ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), co n ^ 2) +
-      t ^ 2 * ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), co n ^ 2 := by
-    rw [hX, hc]; exact sum_sq_lin _ s t cg co
-  -- the size of the errors
-  have hst2 : 2 * |s * t| ≤ s ^ 2 + t ^ 2 := by
-    rw [abs_mul]; nlinarith [sq_nonneg (|s| - |t|), sq_abs s, sq_abs t]
-  have hpos : 0 < s ^ 2 + t ^ 2 := by
-    rcases hst with h0 | h0
-    · have := pow_pos (abs_pos.mpr h0) 2; rw [_root_.sq_abs] at this; nlinarith [sq_nonneg t]
-    · have := pow_pos (abs_pos.mpr h0) 2; rw [_root_.sq_abs] at this; nlinarith [sq_nonneg s]
-  rw [abs_le] at hg1 ho1 hs1 hg2 ho2 hs2 hBl
-  have hcross1 : s * t * (combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) (fun n => cg n + co n) -
-      combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) cg -
-        combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) co) ≤
-      3 * e₀ * |s * t| := by
-    have hb : |combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) (fun n => cg n + co n) -
-        combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) cg -
-          combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) co| ≤ 3 * e₀ := by
-      rw [abs_le]; constructor <;> linarith
-    calc _ ≤ |s * t * _| := le_abs_self _
-      _ = |s * t| * |_| := abs_mul _ _
-      _ ≤ |s * t| * (3 * e₀) := mul_le_mul_of_nonneg_left hb (abs_nonneg _)
-      _ = 3 * e₀ * |s * t| := by ring
-  have hcross2 : s * t * (∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), (cg n + co n) ^ 2 -
-      ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), cg n ^ 2 -
-        ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), co n ^ 2) ≤ 3 * e₀ * |s * t| := by
-    have hb : |∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), (cg n + co n) ^ 2 -
-        ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), cg n ^ 2 -
-          ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)), co n ^ 2| ≤ 3 * e₀ := by
-      rw [abs_le]; constructor <;> linarith
-    calc _ ≤ |s * t * _| := le_abs_self _
-      _ = |s * t| * |_| := abs_mul _ _
-      _ ≤ |s * t| * (3 * e₀) := mul_le_mul_of_nonneg_left hb (abs_nonneg _)
-      _ = 3 * e₀ * |s * t| := by ring
-  -- the comparison chain
-  obtain ⟨Ng, hNgd⟩ : ∃ N, N = smoothNeutral (fun u => twoEndSpline v (u - stateShift v)) :=
-    ⟨_, rfl⟩
-  obtain ⟨No, hNod⟩ : ∃ N, N = smoothNeutral (shiftedOdd v) := ⟨_, rfl⟩
-  obtain ⟨mg, hmgd⟩ : ∃ m, m = ∫ u, twoEndSpline v (u - stateShift v) ^ 2 := ⟨_, rfl⟩
-  obtain ⟨mo, hmod⟩ : ∃ m, m = ∫ u, shiftedOdd v u ^ 2 := ⟨_, rfl⟩
-  rw [← hNgd] at hg1 hs1 hδg
-  rw [← hNod] at ho1 hs1 hδo
-  rw [← hmgd] at hg2 hs2 hδg hMm hmg0
-  rw [← hmod] at ho2 hs2 hδo hMm hmo0
-  have hCD : C * (K : ℝ) ^ θ ≤ D := by
-    rw [hD]; exact mul_le_mul_of_nonneg_right (le_abs_self C) (Real.rpow_nonneg hK0 θ)
-  obtain ⟨lam, hlam⟩ : ∃ l, l = ε + 5 * (3 * (K : ℝ) / R) + η := ⟨_, rfl⟩
-  have hlam0 : 0 ≤ lam := by rw [hlam]; positivity
-  have hlamM : lam * Mm ≤ 3 * δ / 8 := by
-    have hMm0 : Mm ≠ 0 := (by linarith : (0 : ℝ) < Mm).ne'
-    have h1 : 5 * (3 * (K : ℝ) / R) = 15 * (K : ℝ) / R := by ring
-    have h2 : δ / (8 * Mm) * Mm = δ / 8 := by
-      rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hMm0]
-    have hεM : ε * Mm = δ / 8 := by rw [hε]; exact h2
-    have hηM : η * Mm = δ / 8 := by rw [hη]; exact h2
-    have h3 := mul_le_mul_of_nonneg_right hRK (by linarith : (0 : ℝ) ≤ Mm)
-    rw [h2] at h3
-    rw [hlam, h1]
-    nlinarith
-  have hlamδ : lam ≤ δ := by
-    have : lam ≤ lam * Mm := le_mul_of_one_le_right hlam0 hMm1
-    linarith
-  have he₀b : 5 / 2 * e₀ * (1 + D + lam) ≤ δ / 4 := by
-    have h1 : e₀ * (1 + D + δ) = δ / 10 := by
-      rw [he₀, div_mul_eq_mul_div, mul_div_mul_right _ _ (ne_of_gt (by linarith : (0 : ℝ) < 1 + D + δ))]
-    have h2 : e₀ * (1 + D + lam) ≤ e₀ * (1 + D + δ) :=
-      mul_le_mul_of_nonneg_left (by linarith) he₀0.le
-    linarith
-  -- assemble: the form on the packet is below `−(3/8) δ (s² + t²)`
-  have hstep : ∑ j ∈ range (3 * K * R), ∑ l ∈ range (3 * K * R),
-        x j * x l * neutralBlock (3 * K + 1) (R + j) (R + l) +
-      C * (K : ℝ) ^ θ * ∑ j ∈ range (3 * K * R), x j ^ 2 ≤
-      combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) c + (D + lam) * X := by
-    have h1 := mul_le_mul_of_nonneg_right hCD hx0
-    have h2 := mul_le_mul_of_nonneg_left hxsq (by linarith : (0 : ℝ) ≤ η + D)
-    rw [hlam]
-    nlinarith [hBl.1, hBl.2, hA]
-  have hcNb : combNeutral (Ioc (R * B) (R * B + B * (3 * K * R))) c ≤
-      s ^ 2 * Ng + t ^ 2 * No + 5 / 2 * e₀ * (s ^ 2 + t ^ 2) := by
-    rw [hcN]
-    have h1 := mul_le_mul_of_nonneg_left hg1.2 (sq_nonneg s)
-    have h2 := mul_le_mul_of_nonneg_left ho1.2 (sq_nonneg t)
-    have h3 := mul_le_mul_of_nonneg_left hst2 he₀0.le
-    nlinarith [hcross1]
-  have hXb : X ≤ s ^ 2 * mg + t ^ 2 * mo + 5 / 2 * e₀ * (s ^ 2 + t ^ 2) := by
-    rw [hXl]
-    have h1 := mul_le_mul_of_nonneg_left hg2.2 (sq_nonneg s)
-    have h2 := mul_le_mul_of_nonneg_left ho2.2 (sq_nonneg t)
-    have h3 := mul_le_mul_of_nonneg_left hst2 he₀0.le
-    nlinarith [hcross2]
-  have hDX := mul_le_mul_of_nonneg_left hXb (by linarith : (0 : ℝ) ≤ D + lam)
-  have hg' : s ^ 2 * (Ng + D * mg) ≤ -(δ * s ^ 2) := by
-    have := mul_le_mul_of_nonneg_left (show Ng + D * mg ≤ -δ by linarith) (sq_nonneg s)
-    linarith
-  have ho' : t ^ 2 * (No + D * mo) ≤ -(δ * t ^ 2) := by
-    have := mul_le_mul_of_nonneg_left (show No + D * mo ≤ -δ by linarith) (sq_nonneg t)
-    linarith
-  have hlm : lam * (s ^ 2 * mg + t ^ 2 * mo) ≤ 3 * δ / 8 * (s ^ 2 + t ^ 2) := by
-    have h1 : s ^ 2 * mg + t ^ 2 * mo ≤ Mm * (s ^ 2 + t ^ 2) := by
-      have hmgM : mg ≤ Mm := by linarith
-      have hmoM : mo ≤ Mm := by linarith
-      nlinarith [mul_le_mul_of_nonneg_left hmgM (sq_nonneg s),
-        mul_le_mul_of_nonneg_left hmoM (sq_nonneg t)]
-    have h2 := mul_le_mul_of_nonneg_left h1 hlam0
-    have h3 := mul_le_mul_of_nonneg_right hlamM (by positivity : (0 : ℝ) ≤ s ^ 2 + t ^ 2)
-    nlinarith
-  have he' := mul_le_mul_of_nonneg_right he₀b (by positivity : (0 : ℝ) ≤ s ^ 2 + t ^ 2)
-  have hfin := mul_pos hδ0 hpos
-  nlinarith
-
-end GaloisForLFunctions.MixingArithmeticOfTheFloorTrees
+  rw [sum_fin_neutralWindow_add_diag (3 * K + 1) R (3 * K * R) (C * (K : ℝ) ^ θ)
+    (fun n => Real.sqrt B * blockMean (R * B) B (3 * K * R) (fun n => s * cg n + t * co n) n)]
+  obtain ⟨hT1, hT2⟩ := window_form_le_comb hR1 hB1 hε0 hRlog hBB (fun n => s * cg n + t * co n)
+  have hx0 : 0 ≤ ∑ j ∈ range (3 * K * R),
+      (Real.sqrt B * blockMean (R * B) B (3 * K * R) (fun n => s * cg n + t * co n) j) ^ 2 :=
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hcN := combNeutral_lin (Ioc (R * B) (R * B + B * (3 * K * R))) s t cg co
+  have hXl := sum_sq_lin (Ioc (R * B) (R * B + B * (3 * K * R))) s t cg co
+  refine plane_endgame (s := s) (t := t) hst hδ0 he₀0 hD0 hlam0 hδg hδo
+    (by linarith only [hMm, hmo0]) (by linarith only [hMm, hmg0]) hlamM he₀b hg1 ho1 hs1 hg2 ho2
+    hs2 ?_
+  rw [← hcN, ← hXl]
+  have h1 := mul_le_mul_of_nonneg_right hCD hx0
+  have h2 := mul_le_mul_of_nonneg_left hT2 (by linarith only [hη0, hD0] : (0 : ℝ) ≤ η + D)
+  rw [hlam]
+  linarith only [hT1, h1, h2]
 
 end GaloisForLFunctions.MixingArithmeticOfTheFloorTrees
