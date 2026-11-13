@@ -46,7 +46,8 @@ theorem weylRate_le_half {η : ℝ} (hη : 0 ≤ η) (hη6 : η ≤ 1 / 6) : wey
 `½ ≤ σ ≤ 1 + η`, `t ≥ 8` (`ρ = weylRate η`) and `‖ζ(s)‖ ≥ c > 0` on `Re s ≥ 3/2`, then for `X ≥ 16`,
 `0 ≤ w ≤ ½ + η` and `1 ≤ u ≤ X`:
 `‖F(w)‖ ≤ (2e⁶C/c) X^{ρ(½+η−w)} (X/2π)^{(w−u)/2} ‖F(u)‖`. -/
-theorem norm_xiLine_le_strip_weyl_of_bounds {η C c : ℝ} (hη : 0 < η) (hC : 0 ≤ C) (hc : 0 < c)
+theorem norm_xiLine_le_strip_weyl_of_bounds {η C c : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2)
+    (hC : 0 ≤ C) (hc : 0 < c)
     (hconv : ∀ σ t : ℝ, 1 / 2 ≤ σ → σ ≤ 1 + η → 8 ≤ t →
       ‖riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖
         ≤ C * t ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)))
@@ -161,7 +162,7 @@ theorem exists_norm_xiLine_le_strip_weyl {η : ℝ} (hη : 0 < η) (hη2 : η �
   obtain ⟨C, hC, hconv⟩ := exists_norm_riemannZeta_le_subconvex hη hη2
   obtain ⟨c, hc, hlow⟩ := exists_norm_riemannZeta_ge_three_halves
   exact ⟨2 * Real.exp 6 * C / c, by positivity, fun X w u hX hw0 hwη hu1 huX =>
-    norm_xiLine_le_strip_weyl_of_bounds hη hC.le hc hconv hlow hX hw0 hwη hu1 huX⟩
+    norm_xiLine_le_strip_weyl_of_bounds hη hη2 hC.le hc hconv hlow hX hw0 hwη hu1 huX⟩
 
 /-! ## The strip terms -/
 

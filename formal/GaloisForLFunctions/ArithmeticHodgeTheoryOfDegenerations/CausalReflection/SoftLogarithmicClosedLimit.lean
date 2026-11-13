@@ -117,6 +117,7 @@ theorem closedSoftLogarithmic_limit_of_trials
           max (Real.log |u|) 0 * ‖fourierUnitary v u‖ ^ 2 := by funext u; ring
     rw [he, integral_add (hd.moment.const_mul 8) hpos, integral_const_mul]
   have hb := hsum.2
+  dsimp only [Pi.mul_apply] at hb
   rw [hi] at hb
   rw [hd.energy_eq_parts]
   linarith only [hb]

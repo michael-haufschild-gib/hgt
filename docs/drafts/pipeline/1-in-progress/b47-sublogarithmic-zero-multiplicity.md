@@ -27,6 +27,8 @@ Low zeta jets give exact paired-eta moment cancellations (`pairedEtaLogLaplaceMo
 
 A precise alternative target is local integrability of `|ζ(1/2+it)|^(−p(T))` on every high unit interval, with `p(T) log T → ∞`. At an order-`m` zero the exact integrability threshold is `mp(T)<1`. Off-line Blaschke removal preserves this boundary modulus (`TheDerivativeReadsTheBlaschkeFactor.exists_blaschke_quotient`), but supplies no reciprocal moment bound. For the formal coefficients of `ζ^(−α)`, the prime coefficients equal `−α`, so their critical square sum diverges for every `α>0`. Neither a deterministic coefficient-to-boundary transfer nor the required local reciprocal integrability has been proved.
 
+The exact arithmetic receiver criterion is `TransHorizonIncidenceMechanics.receiverBounded_logPowerCosine_iff_all`: the weight `d^(−1/2) cos(γ log d)(log d)^k` has bounded energy precisely when all zeta jets through `k` vanish. Its centered prefix is `A_c(n)=−Σ_{d≤n}c(d){n/d}−nΣ_{d>n}c(d)/d`, and its energy is `Σ A_c(n)²/[n(n+1)]`. Polynomial localization at one finite arithmetic scale supplies only finite energy; every finitely supported weight already has bounded receiver. A contradiction requires a quantitative lower bound across growing scales, with the polynomial normalization and its bounded-energy constant controlled. That lower bound remains unproved.
+
 ## Gates
 
 - [x] Exact target and existing bounds identified.

@@ -52,15 +52,14 @@ theorem frameLog_eq {σ δ : SL(2, ℝ)} {M : ℝ} {hM : 0 < M}
 theorem inFrame_of_commute {σ γ δ : SL(2, ℝ)} {N : ℝ} {hN : 0 < N} (hN1 : N ≠ 1)
     (hγ : γ = σ * dilSL N hN * σ⁻¹ ∨ γ = -(σ * dilSL N hN * σ⁻¹)) (h : δ * γ = γ * δ) :
     InFrame σ δ := by
-  have hc : (σ⁻¹ * δ * σ) * dilSL N hN = dilSL N hN * (σ⁻¹ * δ * σ) := by
+  have h' : δ * (σ * dilSL N hN * σ⁻¹) = (σ * dilSL N hN * σ⁻¹) * δ := by
     rcases hγ with rfl | rfl
-    · have e : σ⁻¹ * (δ * (σ * dilSL N hN * σ⁻¹)) * σ =
-          σ⁻¹ * ((σ * dilSL N hN * σ⁻¹) * δ) * σ := by rw [h]
-      simpa only [mul_assoc, inv_mul_cancel_left, mul_inv_cancel_left] using e
-    · have e : σ⁻¹ * (δ * -(σ * dilSL N hN * σ⁻¹)) * σ =
-          σ⁻¹ * (-(σ * dilSL N hN * σ⁻¹) * δ) * σ := by rw [h]
-      simp only [mul_neg, neg_mul, neg_inj] at e
-      simpa only [mul_assoc, inv_mul_cancel_left, mul_inv_cancel_left] using e
+    · exact h
+    · simpa only [mul_neg, neg_mul, neg_inj] using h
+  have hc : (σ⁻¹ * δ * σ) * dilSL N hN = dilSL N hN * (σ⁻¹ * δ * σ) :=
+    calc (σ⁻¹ * δ * σ) * dilSL N hN = σ⁻¹ * (δ * (σ * dilSL N hN * σ⁻¹)) * σ := by group
+      _ = σ⁻¹ * ((σ * dilSL N hN * σ⁻¹) * δ) * σ := by rw [h']
+      _ = dilSL N hN * (σ⁻¹ * δ * σ) := by group
   obtain ⟨M, hM, hx⟩ := eq_dilSL_of_commute hN hN1 hc
   exact ⟨M, hM, hx⟩
 
@@ -262,21 +261,22 @@ theorem exists_primitive_root (γ : Γ) (hγ : γ ≠ 1) :
       rw [hcomm]
       constructor
       · rintro ⟨k, rfl⟩; exact ⟨-k, by rw [zpow_neg, inv_zpow, inv_inv]⟩
-      · rintro ⟨k, rfl⟩; exact ⟨-k, by rw [inv_zpow', neg_neg]⟩
-    · have hinv : σ⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * σ = (dilSL M₀ hM₀)⁻¹ ∨
-          σ⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * σ = -(dilSL M₀ hM₀)⁻¹ := by
-        have e : σ⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * σ = (σ⁻¹ * ((g₀ : Γ) : SL(2, ℝ)) * σ)⁻¹ := by
-          simp only [Subgroup.coe_inv]; group
+      · rintro ⟨k, rfl⟩; exact ⟨-k, by rw [inv_zpow']⟩
+    · show ((g₀ : Γ) : SL(2, ℝ))⁻¹ = _ ∨ ((g₀ : Γ) : SL(2, ℝ))⁻¹ = _
+      have hinv : σ⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * σ = (dilSL M₀ hM₀)⁻¹ ∨
+          σ⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * σ = -(dilSL M₀ hM₀)⁻¹ := by
+        have e : σ⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * σ = (σ⁻¹ * ((g₀ : Γ) : SL(2, ℝ)) * σ)⁻¹ := by
+          group
         rw [e]
         rcases hx₀ with h | h <;> rw [h]
         · left; rfl
         · right; rw [neg_inv]
-      have hf : (σ * flipSL)⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * (σ * flipSL) =
-          flipSL⁻¹ * (σ⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * σ) * flipSL := by group
+      have hf : (σ * flipSL)⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * (σ * flipSL) =
+          flipSL⁻¹ * (σ⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * σ) * flipSL := by group
       subst hM₀eq
-      have key : (σ * flipSL)⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * (σ * flipSL) =
+      have key : (σ * flipSL)⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * (σ * flipSL) =
             dilSL (Real.exp ℓ₀) (Real.exp_pos _) ∨
-          (σ * flipSL)⁻¹ * ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * (σ * flipSL) =
+          (σ * flipSL)⁻¹ * ((g₀ : Γ) : SL(2, ℝ))⁻¹ * (σ * flipSL) =
             -dilSL (Real.exp ℓ₀) (Real.exp_pos _) := by
         rw [hf]
         have e2 : flipSL⁻¹ * (dilSL (Real.exp ℓ₀) (Real.exp_pos _))⁻¹ * flipSL =
@@ -287,12 +287,12 @@ theorem exists_primitive_root (γ : Γ) (hγ : γ ≠ 1) :
         · right; rw [mul_neg, neg_mul, e2]
       rcases key with h | h
       · left
-        calc ((g₀ : Γ)⁻¹ : SL(2, ℝ)) = (σ * flipSL) * ((σ * flipSL)⁻¹ *
-            ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * (σ * flipSL)) * (σ * flipSL)⁻¹ := by group
+        calc ((g₀ : Γ) : SL(2, ℝ))⁻¹ = (σ * flipSL) * ((σ * flipSL)⁻¹ *
+            ((g₀ : Γ) : SL(2, ℝ))⁻¹ * (σ * flipSL)) * (σ * flipSL)⁻¹ := by group
           _ = _ := by rw [h]
       · right
-        calc ((g₀ : Γ)⁻¹ : SL(2, ℝ)) = (σ * flipSL) * ((σ * flipSL)⁻¹ *
-            ((g₀ : Γ)⁻¹ : SL(2, ℝ)) * (σ * flipSL)) * (σ * flipSL)⁻¹ := by group
+        calc ((g₀ : Γ) : SL(2, ℝ))⁻¹ = (σ * flipSL) * ((σ * flipSL)⁻¹ *
+            ((g₀ : Γ) : SL(2, ℝ))⁻¹ * (σ * flipSL)) * (σ * flipSL)⁻¹ := by group
           _ = _ := by rw [h, mul_neg, neg_mul]
   · refine ⟨σ, (g₀ : Γ), ℓ₀, m₀.toNat, hℓ₀pos, by omega, ?_, hcomm, hrecon _ hx₀⟩
     rw [← zpow_natCast, Int.toNat_of_nonneg (by omega), hγeq]
