@@ -43,12 +43,14 @@ theorem softLogarithmicHalfLineDomain_of_compact_positiveLogarithm
     exact (integrableOn_iff_integrable_of_support_subset hsupport).mp hi
   have hc2 : MemLp (cx F) 2 volume := by
     apply (memLp_two_iff_integrable_sq_norm (hF1.ofReal (𝕜 := ℂ)).aestronglyMeasurable).mpr
-    simpa only [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hsq
+    apply hsq.congr
+    exact Eventually.of_forall fun u => by
+      change F u ^ 2 = ‖(F u : ℂ)‖ ^ 2
+      rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   refine ⟨hmeas, hF1, hsq, hright, ⟨1, zero_lt_one, ?_⟩, ?_⟩
   · have hm : Measurable (fun u => F u ^ 2 * Real.exp (-(1 * u))) := by fun_prop
     apply (hsq.const_mul (Real.exp H)).mono' hm.aestronglyMeasurable
     exact Eventually.of_forall fun u => by
-      dsimp only
       rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
       by_cases hu : u ≤ -H
       · rw [hleft u hu, zero_pow two_ne_zero, zero_mul, mul_zero]

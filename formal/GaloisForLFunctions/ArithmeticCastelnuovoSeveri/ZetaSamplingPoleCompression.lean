@@ -528,7 +528,7 @@ theorem normalizedPoleQuadratic_uniformly_small {P : Params} (hP : P.Valid) {ε 
         have hs : 0 < Real.sqrt T := Real.sqrt_pos.2 hT0
         have hs2 := Real.sq_sqrt hT0.le
         field_simp
-        nlinarith only [hs2]
+        rw [hs2]
   refine (abs_normalizedPoleQuadratic_le_sqrt_div hP hwL hT0 c).trans ?_
   exact mul_le_mul_of_nonneg_right (hcoeff.trans (hT₂ T ht₂).le) (by positivity)
 

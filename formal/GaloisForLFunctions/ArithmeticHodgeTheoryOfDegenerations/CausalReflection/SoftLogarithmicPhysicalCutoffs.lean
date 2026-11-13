@@ -140,7 +140,11 @@ theorem ClosedSoftLogarithmicHalfLineDomain.cutoff_trial {v : SoninL2}
     (Lp.memLp (softLogarithmicCutoffVector n v)).congr hrep
   have hsq : Integrable (fun u => softLogarithmicCutoffProfile n v u ^ 2) := by
     have hi := hc2.integrable_norm_pow (by norm_num)
-    simpa only [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hi
+    apply hi.congr
+    exact Eventually.of_forall fun u => by
+      change ‖(softLogarithmicCutoffProfile n v u : ℂ)‖ ^ 2 =
+        softLogarithmicCutoffProfile n v u ^ 2
+      rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   have hf2 : MemLp (softLogarithmicCutoffProfile n v) 2 volume := by
     apply (memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mpr
     simpa only [Real.norm_eq_abs, sq_abs] using hsq

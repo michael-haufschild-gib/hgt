@@ -13,7 +13,7 @@ open Complex Set Filter Topology MeasureTheory
 
 namespace GaloisForLFunctions.SquareRootThreshold
 
-open GaloisForLFunctions.HTGeometry RHTower RHTower.Sieve
+open GaloisForLFunctions.HTGeometry _root_.RHTower _root_.RHTower.Sieve
 
 noncomputable section
 
@@ -65,7 +65,7 @@ theorem multiplicity_mul_sechStripWeight_le_rectangle
   have himres := congrArg Complex.im hres
   simp only [Complex.mul_im, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     Complex.I_re, Complex.I_im, Complex.natCast_re, Complex.natCast_im,
-    Complex.sum_re, Complex.sum_im, zero_mul, mul_zero, zero_add, add_zero,
+    map_sum, zero_mul, mul_zero, zero_add, add_zero,
     mul_one, sub_zero] at himres
   rw [himres, mul_div_cancel_left₀ _ (by positivity : (2 * Real.pi : ℝ) ≠ 0)]
   exact hsum

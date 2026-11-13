@@ -22,7 +22,6 @@ private theorem mass_of_real_L2_representative {F : ℝ → ℝ} {v : SoninL2}
   rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq volume]
   apply integral_congr_ae
   filter_upwards [hv] with u hu
-  dsimp only
   rw [hu]
   change F u ^ 2 = ‖(F u : ℂ)‖ ^ 2
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
@@ -57,15 +56,16 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
   let c : ℕ → ℝ := fun n => ‖g n‖⁻¹
   let F : ℕ → ℝ → ℝ := fun n u => c n * p n u
   let U : ℕ → SoninL2 := fun n => (c n : ℂ) • g n
+  have hglarge (n : ℕ) : (1 / 2 : ℝ) < ‖g n‖ := hN (n + N) (by omega)
   have hgpos (n : ℕ) : 0 < ‖g n‖ :=
-    (by norm_num : (0 : ℝ) < 1 / 2).trans (hN (n + N) (by omega))
+    (by norm_num : (0 : ℝ) < 1 / 2).trans (hglarge n)
   have hc0 (n : ℕ) : 0 ≤ c n := inv_nonneg.mpr (norm_nonneg (g n))
   have hc2 (n : ℕ) : c n ^ 2 ≤ 4 := by
     have hb : c n ≤ 2 := by
       change ‖g n‖⁻¹ ≤ 2
       rw [← one_div]
       apply (div_le_iff₀ (hgpos n)).mpr
-      linarith only [hN (n + N) (by omega)]
+      linarith only [hglarge n]
     nlinarith only [hc0 n, hb]
   have hgp : Tendsto g atTop (𝓝 v) :=
     (tendsto_softLogarithmicCutoffVector v).comp (tendsto_add_atTop_nat N)
@@ -127,7 +127,6 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
     rw [← integral_const_mul]
     apply integral_congr_ae
     filter_upwards [hcoe] with ξ hξ
-    dsimp only
     rw [hξ]
     dsimp only [Pi.smul_apply, smul_eq_mul]
     rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]

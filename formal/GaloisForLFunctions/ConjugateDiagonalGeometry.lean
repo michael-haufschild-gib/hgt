@@ -1,3 +1,4 @@
+import GaloisForLFunctions.ConjugateDiagonalGeometry.LogarithmicConvolution
 import GaloisForLFunctions.ConjugateDiagonalGeometry.DefectKernel
 import GaloisForLFunctions.ConjugateDiagonalGeometry.ZetaDepthDistribution
 import GaloisForLFunctions.ConjugateDiagonalGeometry.TwoScaleDepthRigidity

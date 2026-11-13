@@ -35,4 +35,15 @@ The fibre estimate would also give the uniform envelope `m(β+iγ)/log|γ| ≤ (
 - [ ] Formalize the unconditional weighted fibre theorem and critical specialization.
 - [ ] Check new modules and audit transitive axioms.
 
-No new Lean theorem is claimed. B47 still requires the coefficient to tend to zero.
+## Lean results
+
+`SquareRootThreshold/SechStripKernel.lean` proves strip positivity, exponential decay,
+vertical real mass `2a`, and weighted integrability.
+`ConjugateDiagonalGeometry/LogarithmicConvolution.lean` proves preservation of an
+all-height logarithmic asymptotic under convolution with an integrable first moment.
+Both pass Lean and use only `propext`, `Classical.choice`, `Quot.sound`.
+
+The fixed-line drafts depend on `Detector/QuasiRiemannHypothesis.lean`; its split
+import closure lacks compiled dependencies. The existing consolidated artifact
+does not export the required theorem. The fixed-line drafts and final fibre
+estimate are not certified. B47 still requires the coefficient to tend to zero.

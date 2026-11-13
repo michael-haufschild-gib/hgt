@@ -1,8 +1,8 @@
 # The zero configuration of an Artin character: index law and orders
 
 - **ID:** agz-artin-configuration-orders
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.14 (question 5); open items of
   `3-formalized/agz-ray-class-characters-at-their-conductors.md`
 - **Statement:** (A) A linear character `χ ≠ 1` of a Galois group of number fields has a
@@ -25,8 +25,8 @@ not claimed: (B) counts the poles.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized: `eq_one_of_forall_artinSymbol_eq_one`, `exists_zeroConfig_linearCharacter`, `analyticOrderNatAt_heckePoleCleared`, `exists_le_negIndex_combination_iff`, `exists_virtualConfig_artin`
 
 ## Proof
 
@@ -122,6 +122,19 @@ With B2 and `1 ∉ Z_q`: the form `Σ_q n_q W_{Z_q}` has `m` negative squares on
 there are at least `m` points `s₀` with `Re s₀ > 1/2`, `s₀ ≠ 1`, `ord A ≠ ord B`, or
 `Re s₀ = 1/2`, `ord A < ord B`. ∎
 
+## Lean
+
+| Step | Declaration | Module |
+|---|---|---|
+| A1 | `eq_one_of_forall_artinSymbol_eq_one_of_comm`, `eq_one_of_forall_artinSymbol_eq_one` | `RHTower/Artin/ALinearCharacterWithTrivialArtinSymbolsAtAlmostAllPrimesIsTrivial.lean` |
+| A2 | `heckeCharacter_ne_one_of_artinSymbol`, `exists_primitive_heckeCharacter_ne_one_artinSymbol` | same |
+| A3 | `eulerFactorQuotient`, `rightZeros_heckeZeros_eq_of_eq_mul_eulerFactorQuotient`, `exists_heckeZeros_linearCharacter`, `exists_zeroConfig_linearCharacter` | `AbsoluteGeometryOfSpecZ/TheIndexLawOfALinearArtinCharacterHoldsOnItsOwnLFunction.lean` |
+| B1 | `heckePoleCleared`, `completionFactor_mul_heckePoleCleared`, `heckeXi_one_mul_gamma_inv`, `heckeXi_one_ne_zero`, `heckePoleCleared_eq_primitiveHecke_mul`, `one_notMem_rayClassZeros`, `analyticOrderNatAt_heckePoleCleared` | `AbsoluteGeometryOfSpecZ/TheOrdersOfARayClassLFunctionAreTheMultiplicitiesOfItsConfiguration.lean` |
+| B2 | `netMult`, `combinationDefect`, `virtualDefect_repeated`, `exists_le_negIndex_combination_iff` | `AbsoluteGeometryOfSpecZ/TheIndexOfAnIntegerCombinationOfConfigurationsCountsItsNetMultiplicities.lean` |
+| B3 | `analyticOrderNatAt_sub_eq_sum_of_eq_mul_prod_zpow`, `analyticOrderNatAt_sub_eq_sum_sub_of_cleared`, `brauerHeckeCleared`, `analyticOrderNatAt_sub_artin_of_brauerHecke`, `exists_virtualConfig_artin` | `AbsoluteGeometryOfSpecZ/TheOrdersOfAnArtinLFunctionAreTheNetMultiplicitiesOfItsVirtualConfiguration.lean` |
+
+In Lean the order at `1` is `−p` with `p = Σ_{q : ψ_q = 1} n_q`.
+
 ## What stays open
 
 - The conductor–ramification theorem (card `agz-conductor-ramification`): with it the finite
@@ -130,3 +143,4 @@ there are at least `m` points `s₀` with `Re s₀ > 1/2`, `s₀ ≠ 1`, `ord A 
 
 ## Log
 - 2026-11-13 — created in 1-in-progress with the paper proof
+- 2026-11-14 — formalized; moved to 3-formalized

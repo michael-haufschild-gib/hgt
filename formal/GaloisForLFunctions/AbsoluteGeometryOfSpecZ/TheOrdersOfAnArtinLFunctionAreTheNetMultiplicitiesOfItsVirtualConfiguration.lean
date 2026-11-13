@@ -248,7 +248,11 @@ theorem analyticOrderNatAt_sub_eq_sum_sub_of_cleared {ι : Type*}
   by_cases h1 : z = 1
   · rw [if_pos h1, if_pos h1, mul_one, mul_one, mul_one, Nat.cast_add, Nat.cast_add, hab]
     ring
-  · rw [if_neg h1, if_neg h1, mul_zero, mul_zero, add_zero, add_zero, sub_zero]
+  · simp only [if_neg h1, mul_zero, add_zero, sub_zero]
+
+/-- A point outside a configuration has multiplicity zero. -/
+theorem extMult_of_notMem {Z : ZeroConfig} {ρ : ℂ} (h : ρ ∉ Z.carrier) : extMult Z ρ = 0 :=
+  if_neg h
 
 /-- **Orders through configurations.** In the situation of
 `analyticOrderNatAt_sub_eq_sum_sub_of_cleared`, let `ord_z G_q = m_{Z_q}(z) + [z = 1](1 − p_q)`
@@ -273,8 +277,7 @@ theorem analyticOrderNatAt_sub_of_configurations {ι : Type*} (n : ι →₀ ℤ
     rw [if_pos rfl, if_pos rfl, mul_one, Finsupp.sum, Finsupp.sum, ← Finset.sum_sub_distrib,
       ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun q _ => ?_
-    have h0 : extMult (Z q) 1 = 0 := by rw [extMult, if_neg (h1 q)]
-    rw [hord q 1 hz, if_pos rfl, h0, Nat.cast_zero]
+    rw [hord q 1 hz, if_pos rfl, extMult_of_notMem (h1 q), Nat.cast_zero]
     ring
   · rw [if_neg h, if_neg h, mul_zero, sub_zero, netMult]
     exact Finsupp.sum_congr fun q _ => by rw [hord q z hz, if_neg h, add_zero]
@@ -291,7 +294,8 @@ theorem combinationDefect_eq_of_orders {ι : Type*} (n : ι →₀ ℤ) (Z : ι 
   have hnet1 : netMult n Z 1 = 0 := by
     rw [netMult]
     refine Finset.sum_eq_zero fun q _ => ?_
-    rw [extMult, if_neg (h1 q), Nat.cast_zero, mul_zero]
+    show n q * ((extMult (Z q) 1 : ℕ) : ℤ) = 0
+    rw [extMult_of_notMem (h1 q), Nat.cast_zero, mul_zero]
   have hhalf : ∀ w : ℂ, w.re = 1 / 2 → w ≠ 1 := by
     rintro w hw rfl
     rw [Complex.one_re] at hw
