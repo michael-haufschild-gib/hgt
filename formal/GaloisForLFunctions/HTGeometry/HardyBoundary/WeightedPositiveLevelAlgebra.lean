@@ -22,7 +22,6 @@ theorem barrier_mul_truncPos {p : ℝ} (hp : 0 < p) (t x : ℝ) :
       exact (le_div_iff₀ hp).mpr (by linarith only [h])
     rw [max_eq_left h, max_eq_left hh]
     field_simp [hp.ne']
-    ring
   · have hx : x - t * p ≤ 0 := (lt_of_not_ge h).le
     have hh : x / p - t ≤ 0 := by
       apply sub_nonpos.mpr

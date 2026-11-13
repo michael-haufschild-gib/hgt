@@ -152,7 +152,21 @@ At a general minimum the same argument uses `E-λ‖·‖₂²`.
 Admissibility of the sharp collar and both cross-kernel asymptotics remain
 to be proved; no flux identity or nonzero trace is claimed.
 
-For collar admissibility, the candidate jump bound is
-`∫|Δ_s(F·1_I)|²≤2∫|Δ_sF|²+4‖F‖∞²s` for `s>0` and an interval `I`.
-Its second term comes from the interval's symmetric difference, of measure
-at most `2s`; the finite first Lévy moment would finish the domain transfer.
+The existing density bounds suggest the useful reduction
+`|ω(s)-1/(2s)|≤1/2` for `s>0`: combine
+`two_mul_archLevyDensity_le_inv_add_half` with
+`ω(s)≥exp(-s)/(2s)≥1/(2s)-1/2`.
+Its cross-pairing error is at most
+`(1/2)‖B_h‖₁‖F-B_h‖₁`, hence would be `o(h)` under the normalized trace.
+The remaining asymptotic is then for the literal inverse-distance kernel;
+this reduction still needs Lean formalization.
+
+For collar admissibility, `CHMDSharpSpatialCut.integrable_stationaryJump_indicator_Iio`
+already preserves the full stationary jump domain under sharp half-line
+cuts for every measurable `L²` source. Its proof uses the bounded singular
+crossing operator, without a boundedness premise. The audited two-way
+Gamma/jump bridge should transfer this directly to the actual domain;
+subtracting two half-line cuts gives the terminal collar. Only the
+iterated/product-integral identification and actual-domain assembly remain.
+`SharpRestrictionPreservesTheCompleteComplexWeilDomain.hasLogarithmicEnergy_intervalRestriction`
+provides a second route after a compact Lipschitz localization.

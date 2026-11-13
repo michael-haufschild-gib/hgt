@@ -25,7 +25,7 @@ open GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- The point `x + iy` of `ℍ`. -/
-def hpt (x : ℝ) {y : ℝ} (hy : 0 < y) : ℍ := UpperHalfPlane.mk ⟨x, y⟩ hy
+def hpt (x : ℝ) {y : ℝ} (hy : 0 < y) : ℍ := ⟨⟨x, y⟩, hy⟩
 
 @[simp] theorem hpt_re (x : ℝ) {y : ℝ} (hy : 0 < y) : (hpt x hy).re = x := rfl
 @[simp] theorem hpt_im (x : ℝ) {y : ℝ} (hy : 0 < y) : (hpt x hy).im = y := rfl
@@ -33,8 +33,10 @@ def hpt (x : ℝ) {y : ℝ} (hy : 0 < y) : ℍ := UpperHalfPlane.mk ⟨x, y⟩ h
 theorem continuous_hpt {y : ℝ} (hy : 0 < y) : Continuous fun x : ℝ => hpt x hy := by
   have h : (fun x : ℝ => (⟨x, y⟩ : ℂ)) = fun x : ℝ => (x : ℂ) + (y : ℂ) * Complex.I := by
     funext x; apply Complex.ext <;> simp
-  have hc : Continuous fun x : ℝ => (⟨x, y⟩ : ℂ) := by rw [h]; fun_prop
-  exact Continuous.subtype_mk (p := fun z : ℂ => 0 < z.im) hc (fun _ => hy)
+  have hc : Continuous fun x : ℝ => ((hpt x hy : ℍ) : ℂ) := by
+    show Continuous fun x : ℝ => (⟨x, y⟩ : ℂ)
+    rw [h]; fun_prop
+  exact UpperHalfPlane.isOpenEmbedding_coe.isInducing.continuous_iff.mpr hc
 
 theorem pairU_eq_coords (z w : ℍ) :
     pairU z w = ((z.re - w.re) ^ 2 + (z.im - w.im) ^ 2) / (4 * z.im * w.im) := by

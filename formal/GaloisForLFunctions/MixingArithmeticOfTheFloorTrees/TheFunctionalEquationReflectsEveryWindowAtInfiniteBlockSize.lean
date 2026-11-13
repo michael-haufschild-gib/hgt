@@ -112,7 +112,7 @@ theorem neutralForm_reflect (Q : ℕ) (c : ℝ) (g : ℝ → ℝ) :
   rw [packetForm_reflect, integral_reflect_mul_exp_neg, integral_reflect_mul_exp]
   generalize (∫ u, g u * Real.exp (-u / 2)) = A
   generalize (∫ u, g u * Real.exp (u / 2)) = B
-  linear_combination (2 * A * B) * he
+  linear_combination (-2 * A * B) * he
 
 /-- The reflection about the centre of the window `[a, b]` keeps the window. -/
 theorem reflectPacket_support {a b : ℝ} {g : ℝ → ℝ} (hg : ∀ u, u < a ∨ b < u → g u = 0) :

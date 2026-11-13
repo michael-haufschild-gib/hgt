@@ -150,110 +150,6 @@ theorem volume_closedBall_pos (z : ℍ) {r : ℝ} (hr : 0 < r) : 0 < volume (clo
 theorem volume_closedBall_lt_top (z : ℍ) (r : ℝ) : volume (closedBall z r) < ∞ :=
   (isCompact_closedBall z r).measure_lt_top
 
-namespace IsCocompactFree
-
-variable {Γ : Subgroup SL(2, ℝ)} (hΓ : IsCocompactFree Γ)
-include hΓ
-
-/-- **Orbit counting.**  There is `C` with `#{γ : u(z, γw) ≤ U} ≤ C (1 + U)` for all `z, w ∈ ℍ`
-and `U ≥ 0`; these sets are finite. -/
-theorem exists_card_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (z w : ℍ) (U : ℝ), 0 ≤ U →
-    {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w) ≤ U}.Finite ∧
-      ({γ : Γ | pairU z ((γ : SL(2, ℝ)) • w) ≤ U}.ncard : ℝ) ≤ C * (1 + U) := by
-  obtain ⟨K, hK, hKcov⟩ := hΓ.exists_compact
-  obtain ⟨ε, hε, -, hεK⟩ := hΓ.exists_dist_smul_ge hK
-  set ρ := ε / 3 with hρ
-  have hρ0 : 0 < ρ := by positivity
-  set v := (volume (closedBall I ρ)).toReal with hv
-  have hvpos : 0 < v := ENNReal.toReal_pos (volume_closedBall_pos I hρ0).ne'
-    (volume_closedBall_lt_top I ρ).ne
-  refine ⟨64 * Real.exp ρ / v, by positivity, fun z w U hU => ?_⟩
-  set R := Real.arcosh (1 + 2 * U) with hR
-  have hR0 : 0 ≤ R := Real.arcosh_nonneg (by linarith)
-  have hcoshR : Real.cosh R = 1 + 2 * U := Real.cosh_arcosh (by linarith)
-  have hset : ∀ w' : ℍ, {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U} =
-      {γ : Γ | dist z ((γ : SL(2, ℝ)) • w') ≤ R} := by
-    intro w'; ext γ
-    rw [mem_setOf_eq, mem_setOf_eq, dist_le_iff_pairU_le hR0, hcoshR]
-    constructor <;> intro h <;> linarith
-  -- reduce to `w ∈ K`
-  obtain ⟨δ, hδ⟩ := hKcov w
-  set w' := (δ : SL(2, ℝ)) • w with hw'
-  have himage : {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w) ≤ U} =
-      (· * δ) '' {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U} := by
-    ext γ
-    constructor
-    · intro h
-      refine ⟨γ * δ⁻¹, ?_, by simp⟩
-      show pairU z (((γ * δ⁻¹ : Γ) : SL(2, ℝ)) • w') ≤ U
-      rw [hw', Subgroup.coe_mul, mul_smul, Subgroup.coe_inv, inv_smul_smul]
-      exact h
-    · rintro ⟨γ', hγ', rfl⟩
-      show pairU z (((γ' * δ : Γ) : SL(2, ℝ)) • w) ≤ U
-      rw [Subgroup.coe_mul, mul_smul]
-      exact hγ'
-  have hfin : {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U}.Finite := by
-    rw [hset]
-    refine (hΓ.finite_near (isBounded_singleton (x := z)) (isBounded_singleton (x := w')) R).subset ?_
-    intro γ hγ
-    exact ⟨z, rfl, w', rfl, hγ⟩
-  rw [himage]
-  refine ⟨hfin.image _, ?_⟩
-  rw [ncard_image_of_injective _ (mul_left_injective δ)]
-  -- disjoint balls around the orbit points
-  set S := hfin.toFinset
-  have hdisj : (S : Set Γ).PairwiseDisjoint fun γ => closedBall ((γ : SL(2, ℝ)) • w') ρ := by
-    intro γ₁ _ γ₂ _ hne
-    refine Set.disjoint_left.mpr fun ξ h₁ h₂ => ?_
-    have hne' : γ₁⁻¹ * γ₂ ≠ 1 := fun h => hne (by
-      rw [← mul_left_cancel_iff (a := γ₁⁻¹), inv_mul_cancel, h])
-    have hlow := hεK w' hδ (γ₁⁻¹ * γ₂) hne'
-    have heq : dist w' (((γ₁⁻¹ * γ₂ : Γ) : SL(2, ℝ)) • w') =
-        dist ((γ₁ : SL(2, ℝ)) • w') ((γ₂ : SL(2, ℝ)) • w') := by
-      rw [← dist_smul (γ₁ : SL(2, ℝ)), Subgroup.coe_mul, mul_smul, Subgroup.coe_inv,
-        smul_inv_smul]
-    rw [heq] at hlow
-    have := dist_triangle_right ((γ₁ : SL(2, ℝ)) • w') ((γ₂ : SL(2, ℝ)) • w') ξ
-    rw [mem_closedBall] at h₁ h₂
-    linarith
-  have hsub : (⋃ γ ∈ S, closedBall ((γ : SL(2, ℝ)) • w') ρ) ⊆ closedBall z (R + ρ) := by
-    intro ξ hξ
-    obtain ⟨γ, hγ, hξγ⟩ := mem_iUnion₂.mp hξ
-    have hγ' : dist z ((γ : SL(2, ℝ)) • w') ≤ R := by
-      have := hfin.mem_toFinset.mp hγ
-      rw [hset] at this; exact this
-    rw [mem_closedBall] at hξγ ⊢
-    have := dist_triangle ξ ((γ : SL(2, ℝ)) • w') z
-    rw [dist_comm ((γ : SL(2, ℝ)) • w') z] at this
-    linarith
-  have hmeas : volume (⋃ γ ∈ S, closedBall ((γ : SL(2, ℝ)) • w') ρ) =
-      ∑ γ ∈ S, volume (closedBall ((γ : SL(2, ℝ)) • w') ρ) :=
-    measure_biUnion_finset hdisj fun _ _ => measurableSet_closedBall
-  have hball : ∀ γ ∈ S, volume (closedBall ((γ : SL(2, ℝ)) • w') ρ) = volume (closedBall I ρ) :=
-    fun γ _ => volume_closedBall_eq _ _
-  rw [Finset.sum_congr rfl hball, Finset.sum_const, nsmul_eq_mul] at hmeas
-  have hle : (S.card : ℝ≥0∞) * volume (closedBall I ρ) ≤
-      ENNReal.ofReal (16 * (Real.cosh (R + ρ) - 1)) :=
-    hmeas ▸ (measure_mono hsub).trans (volume_closedBall_le z (by positivity))
-  have hle' : (S.card : ℝ) * v ≤ 16 * (Real.cosh (R + ρ) - 1) := by
-    have h2 := ENNReal.toReal_mono ENNReal.ofReal_ne_top hle
-    rw [ENNReal.toReal_mul, ENNReal.toReal_natCast,
-      ENNReal.toReal_ofReal (by have := Real.one_le_cosh (R + ρ); linarith)] at h2
-    exact h2
-  have hcosh : Real.cosh (R + ρ) ≤ Real.exp ρ * (2 * (1 + 2 * U)) := by
-    calc Real.cosh (R + ρ) ≤ Real.exp (R + ρ) := Real.cosh_le_exp_abs.trans
-          (by rw [abs_of_nonneg (by positivity)])
-      _ = Real.exp ρ * Real.exp R := by rw [Real.exp_add, mul_comm]
-      _ ≤ Real.exp ρ * (2 * Real.cosh R) := by
-          refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
-          rw [Real.cosh_eq]; linarith [Real.exp_pos (-R)]
-      _ = Real.exp ρ * (2 * (1 + 2 * U)) := by rw [hcoshR]
-  have hncard : ({γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U}.ncard : ℝ) = S.card := by
-    rw [ncard_eq_toFinset_card _ hfin]
-  rw [hncard, div_mul_eq_mul_div, le_div_iff₀ hvpos]
-  have hexp := Real.exp_pos ρ
-  nlinarith
-
 /-! ### A fundamental domain -/
 
 /-- The lexicographic key `(Re z, Im z)`. -/
@@ -285,13 +181,123 @@ def lexDomain (Γ : Subgroup SL(2, ℝ)) (K : Set ℍ) : Set ℍ :=
 
 theorem lexDomain_subset (Γ : Subgroup SL(2, ℝ)) (K : Set ℍ) : lexDomain Γ K ⊆ K := fun _ h => h.1
 
+namespace IsCocompactFree
+
+variable {Γ : Subgroup SL(2, ℝ)} (hΓ : IsCocompactFree Γ)
+include hΓ
+
+/-- **Orbit counting.**  There is `C` with `#{γ : u(z, γw) ≤ U} ≤ C (1 + U)` for all `z, w ∈ ℍ`
+and `U ≥ 0`; these sets are finite. -/
+theorem exists_card_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (z w : ℍ) (U : ℝ), 0 ≤ U →
+    {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w) ≤ U}.Finite ∧
+      ({γ : Γ | pairU z ((γ : SL(2, ℝ)) • w) ≤ U}.ncard : ℝ) ≤ C * (1 + U) := by
+  obtain ⟨K, hK, hKcov⟩ := hΓ.exists_compact
+  obtain ⟨ε, hε, -, hεK⟩ := hΓ.exists_dist_smul_ge hK
+  set ρ := ε / 3 with hρ
+  have hρ0 : 0 < ρ := by positivity
+  set v := (volume (closedBall I ρ)).toReal with hv
+  have hvpos : 0 < v := ENNReal.toReal_pos (volume_closedBall_pos I hρ0).ne'
+    (volume_closedBall_lt_top I ρ).ne
+  refine ⟨64 * Real.exp ρ / v, by positivity, fun z w U hU => ?_⟩
+  set R := 2 * Real.arsinh (Real.sqrt U) with hR
+  have hR0 : 0 ≤ R := by
+    have : 0 ≤ Real.arsinh (Real.sqrt U) := Real.arsinh_nonneg_iff.mpr (Real.sqrt_nonneg U)
+    linarith
+  have hcoshR : Real.cosh R = 1 + 2 * U := by
+    rw [hR, Real.cosh_two_mul, Real.cosh_sq, Real.sinh_arsinh, Real.sq_sqrt hU]; ring
+  have hset : ∀ w' : ℍ, {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U} =
+      {γ : Γ | dist z ((γ : SL(2, ℝ)) • w') ≤ R} := by
+    intro w'; ext γ
+    rw [mem_setOf_eq, mem_setOf_eq, dist_le_iff_pairU_le hR0, hcoshR]
+    constructor <;> intro h <;> linarith
+  -- reduce to `w ∈ K`
+  obtain ⟨δ, hδ⟩ := hKcov w
+  set w' := (δ : SL(2, ℝ)) • w with hw'
+  have himage : {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w) ≤ U} =
+      (· * δ) '' {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U} := by
+    ext γ
+    constructor
+    · intro h
+      refine ⟨γ * δ⁻¹, ?_, by simp⟩
+      show pairU z (((γ * δ⁻¹ : Γ) : SL(2, ℝ)) • w') ≤ U
+      rw [hw', Subgroup.coe_mul, mul_smul, Subgroup.coe_inv, inv_smul_smul]
+      exact h
+    · rintro ⟨γ', hγ', rfl⟩
+      show pairU z (((γ' * δ : Γ) : SL(2, ℝ)) • w) ≤ U
+      rw [Subgroup.coe_mul, mul_smul]
+      exact hγ'
+  have hfin : {γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U}.Finite := by
+    rw [hset]
+    refine (hΓ.finite_near (Bornology.isBounded_singleton (x := z)) (Bornology.isBounded_singleton (x := w')) R).subset ?_
+    intro γ hγ
+    exact ⟨z, rfl, w', rfl, hγ⟩
+  rw [himage]
+  refine ⟨hfin.image _, ?_⟩
+  rw [ncard_image_of_injective _ (mul_left_injective δ)]
+  -- disjoint balls around the orbit points
+  set S := hfin.toFinset
+  have hdisj : (S : Set Γ).PairwiseDisjoint fun γ => closedBall ((γ : SL(2, ℝ)) • w') ρ := by
+    intro γ₁ _ γ₂ _ hne
+    refine Set.disjoint_left.mpr fun ξ h₁ h₂ => ?_
+    have hne' : γ₁⁻¹ * γ₂ ≠ 1 := fun h => hne (by
+      rw [← mul_left_cancel_iff (a := γ₁⁻¹), inv_mul_cancel, h])
+    have hlow := hεK w' hδ (γ₁⁻¹ * γ₂) hne'
+    have heq : dist w' (((γ₁⁻¹ * γ₂ : Γ) : SL(2, ℝ)) • w') =
+        dist ((γ₁ : SL(2, ℝ)) • w') ((γ₂ : SL(2, ℝ)) • w') := by
+      rw [← dist_smul (γ₁ : SL(2, ℝ)), Subgroup.coe_mul, mul_smul, Subgroup.coe_inv,
+        smul_inv_smul]
+    rw [heq] at hlow
+    have := dist_triangle_right ((γ₁ : SL(2, ℝ)) • w') ((γ₂ : SL(2, ℝ)) • w') ξ
+    rw [dist_comm ((γ₁ : SL(2, ℝ)) • w') ξ, dist_comm ((γ₂ : SL(2, ℝ)) • w') ξ] at this
+    rw [mem_closedBall] at h₁ h₂
+    linarith
+  have hsub : (⋃ γ ∈ S, closedBall ((γ : SL(2, ℝ)) • w') ρ) ⊆ closedBall z (R + ρ) := by
+    intro ξ hξ
+    obtain ⟨γ, hγ, hξγ⟩ := mem_iUnion₂.mp hξ
+    have hγ' : dist z ((γ : SL(2, ℝ)) • w') ≤ R := by
+      have := hfin.mem_toFinset.mp hγ
+      rw [hset] at this; exact this
+    rw [mem_closedBall] at hξγ ⊢
+    have := dist_triangle ξ ((γ : SL(2, ℝ)) • w') z
+    rw [dist_comm ((γ : SL(2, ℝ)) • w') z] at this
+    linarith
+  have hmeas : volume (⋃ γ ∈ S, closedBall ((γ : SL(2, ℝ)) • w') ρ) =
+      ∑ γ ∈ S, volume (closedBall ((γ : SL(2, ℝ)) • w') ρ) :=
+    measure_biUnion_finset hdisj fun _ _ => measurableSet_closedBall
+  have hball : ∀ γ ∈ S, volume (closedBall ((γ : SL(2, ℝ)) • w') ρ) = volume (closedBall I ρ) :=
+    fun γ _ => volume_closedBall_eq _ _
+  rw [Finset.sum_congr rfl hball, Finset.sum_const, nsmul_eq_mul] at hmeas
+  have hle : (S.card : ℝ≥0∞) * volume (closedBall I ρ) ≤
+      ENNReal.ofReal (16 * (Real.cosh (R + ρ) - 1)) :=
+    hmeas ▸ (measure_mono hsub).trans (volume_closedBall_le z (by positivity))
+  have hle' : (S.card : ℝ) * v ≤ 16 * (Real.cosh (R + ρ) - 1) := by
+    have h2 := ENNReal.toReal_mono ENNReal.ofReal_ne_top hle
+    rw [ENNReal.toReal_mul, ENNReal.toReal_natCast,
+      ENNReal.toReal_ofReal (by have := Real.one_le_cosh (R + ρ); linarith)] at h2
+    exact h2
+  have hcosh : Real.cosh (R + ρ) ≤ Real.exp ρ * (2 * (1 + 2 * U)) := by
+    calc Real.cosh (R + ρ) ≤ Real.exp (R + ρ) := by
+          rw [Real.cosh_eq]
+          have := Real.exp_le_exp.mpr (show -(R + ρ) ≤ R + ρ by linarith)
+          linarith
+      _ = Real.exp ρ * Real.exp R := by rw [Real.exp_add, mul_comm]
+      _ ≤ Real.exp ρ * (2 * Real.cosh R) := by
+          refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
+          rw [Real.cosh_eq]; linarith [Real.exp_pos (-R)]
+      _ = Real.exp ρ * (2 * (1 + 2 * U)) := by rw [hcoshR]
+  have hncard : ({γ : Γ | pairU z ((γ : SL(2, ℝ)) • w') ≤ U}.ncard : ℝ) = S.card := by
+    rw [ncard_eq_toFinset_card _ hfin]
+  rw [hncard, div_mul_eq_mul_div, le_div_iff₀ hvpos]
+  have hexp := Real.exp_pos ρ
+  nlinarith
+
 /-- **A fundamental domain.**  For a compact `K` meeting every orbit, the lexicographically least
 orbit points in `K` form a measurable set meeting each orbit exactly once. -/
 theorem existsUnique_smul_mem_lexDomain {K : Set ℍ} (hK : IsCompact K)
     (hKcov : ∀ z : ℍ, ∃ γ : Γ, (γ : SL(2, ℝ)) • z ∈ K) (x : ℍ) :
     ∃! γ : Γ, γ • x ∈ lexDomain Γ K := by
   have hS : {γ : Γ | (γ : SL(2, ℝ)) • x ∈ K}.Finite := by
-    refine (hΓ.finite_near hK.isBounded (isBounded_singleton (x := x)) 0).subset ?_
+    refine (hΓ.finite_near hK.isBounded (Bornology.isBounded_singleton (x := x)) 0).subset ?_
     intro γ hγ
     exact ⟨_, hγ, x, rfl, by simp⟩
   obtain ⟨γ₁, hγ₁⟩ := hKcov x

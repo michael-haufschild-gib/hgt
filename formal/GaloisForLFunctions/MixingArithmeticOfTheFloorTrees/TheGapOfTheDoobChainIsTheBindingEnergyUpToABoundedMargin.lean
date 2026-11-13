@@ -99,7 +99,7 @@ theorem bilin_windowPlane {r J : ℕ} (hJ : r * 2 ≤ J) (Q : ℕ) (s t : ℝ) :
       (if j < r * 2 then coarsePlane r s t j else 0) := by
     intro j
     by_cases hj : j < J
-    · simp only [extendFin, dif_pos hj, windowPlane, Fin.val_mk]
+    · simp only [extendFin, dif_pos hj, windowPlane]
     · have hj2 : ¬ j < r * 2 := by omega
       simp only [extendFin, dif_neg hj, if_neg hj2]
   have hsub : range (r * 2) ⊆ range J := Finset.range_subset_range.mpr hJ
@@ -142,7 +142,18 @@ theorem windowPlane_eq (r J : ℕ) (s t : ℝ) :
     windowPlane r J s t = fun i => s * windowPlane r J 1 0 i + t * windowPlane r J 0 1 i := by
   funext i
   unfold windowPlane coarsePlane refineStep
-  split_ifs <;> ring
+  by_cases h : (i : ℕ) < r * 2
+  · simp only [if_pos h]
+    by_cases h0 : (i : ℕ) / r = 0
+    · simp only [if_pos h0]
+      ring
+    · by_cases h1 : (i : ℕ) / r = 1
+      · simp only [if_neg h0, if_pos h1]
+        ring
+      · simp only [if_neg h0, if_neg h1]
+        ring
+  · simp only [if_neg h]
+    ring
 
 /-- Some point of the plane is orthogonal to a given vector. -/
 theorem exists_windowPlane_orth (r J : ℕ) (φ : Fin J → ℝ) :
