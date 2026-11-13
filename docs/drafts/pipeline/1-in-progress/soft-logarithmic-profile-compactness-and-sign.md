@@ -96,6 +96,10 @@ The finite trial infimum supplies normalized trials with energies in
 a strongly convergent subsequence with unit limit. This provides a direct
 minimizing sequence for closed-domain attainment, independently of the
 rescaled actual minimizers. The subsequence assembly remains unverified.
+The verified uniform rescaled-energy limit also places every sufficiently
+confined actual minimizer in this same sublevel. Its whole `L²` family,
+over all such strengths and all minimizing representatives, would therefore
+have compact closure. This application remains unverified.
 
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
 

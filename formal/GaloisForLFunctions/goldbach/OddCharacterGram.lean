@@ -59,7 +59,7 @@ theorem oddCharacterGram_apply (N : ℕ) {ι : Type*}
   rw [Matrix.mul_apply]
   change (∑ χ : {χ : DirichletCharacter ℂ (N + 1) // χ.Odd},
     unitCharacterSum N (w i) χ.val * star (unitCharacterSum N (w j) χ.val)) = _
-  simpa only [Finset.univ_subtype] using
+  simpa only [Finset.subtype_univ] using
     (Finset.sum_subtype_eq_sum_filter
       (s := (Finset.univ : Finset (DirichletCharacter ℂ (N + 1))))
       (p := fun χ => χ.Odd)
