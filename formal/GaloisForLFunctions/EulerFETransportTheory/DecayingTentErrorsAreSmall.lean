@@ -83,6 +83,7 @@ theorem defectLaplace_add {f₁ f₂ : ℝ → ℂ} {C₁ C₂ : ℝ} {N₁ N₂
   simp only [Pi.add_apply]
   ring
 
+/-- The tent defect is additive in polynomially bounded defects. -/
 theorem tentDefect_add {f₁ f₂ : ℝ → ℂ} {C₁ C₂ : ℝ} {N₁ N₂ : ℕ} (hm₁ : Measurable f₁)
     (hm₂ : Measurable f₂) (hb₁ : ∀ t, ‖f₁ t‖ ≤ C₁ * (1 + |t|) ^ N₁)
     (hb₂ : ∀ t, ‖f₂ t‖ ≤ C₂ * (1 + |t|) ^ N₂) {h ε : ℝ} (hh : 0 < h) (hε : 0 < ε) (y : ℝ) :
@@ -248,6 +249,7 @@ theorem tentDefectKernel_div (f : ℝ → ℂ) (h ε y s : ℝ) (hh : 0 < h) :
   change h * (1 - |s|) * (defectLaplace f (tentPt h (y / h) ε s)).re = _
   rw [tentPt_div h ε y s hh]
 
+/-- `y ↦ tentDefect f h y ε` is continuous for a measurable, polynomially bounded `f`. -/
 theorem continuous_tentDefect {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (hfm : Measurable f)
     (hfb : ∀ t, ‖f t‖ ≤ Cf * (1 + |t|) ^ N) {h ε : ℝ} (hh : 0 < h) (hε : 0 < ε) :
     Continuous fun y => tentDefect f h y ε := by
@@ -452,6 +454,7 @@ theorem integral_sq_tentDefect_le_high {f : ℝ → ℂ} {Cf : ℝ} {N : ℕ} (h
 
 /-! ## Decaying defects: the frequency split -/
 
+/-- The factor `(3/2 + 2it)(1/2 + 2it)` is at least `(3/16)(1 + |t|)²` in norm. -/
 theorem three_sixteenths_le_norm_tentFactor (t : ℝ) :
     3 / 16 * (1 + |t|) ^ 2 ≤ ‖tentFactor t‖ := by
   rw [tentFactor, norm_mul]
@@ -522,6 +525,7 @@ theorem norm_tentPrimitive_highPart_le {g : ℝ → ℂ} {C a : ℝ}
     ‖tentPrimitive (highPart R g) t‖ ≤ 16 / 3 * C * R ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) := by
   have hC : 0 ≤ C * (1 + |t|) ^ (-a) := (norm_nonneg _).trans (hgd t)
   have hpos : 0 < 1 + |t| := by positivity
+  have hC0 : 0 ≤ C := nonneg_of_mul_nonneg_left hC (by positivity)
   have hF := three_sixteenths_le_norm_tentFactor t
   have hFpos : 0 < ‖tentFactor t‖ := norm_pos_iff.mpr (tentFactor_ne_zero t)
   unfold tentPrimitive highPart
@@ -534,11 +538,6 @@ theorem norm_tentPrimitive_highPart_le {g : ℝ → ℂ} {C a : ℝ}
         (1 + |t|) ^ (2 : ℝ) := by
       rw [← Real.rpow_add hpos, ← Real.rpow_add hpos]; ring_nf
     have hsq : (1 + |t|) ^ (2 : ℝ) = (1 + |t|) ^ 2 := by norm_cast
-    have hC0 : 0 ≤ C := by
-      by_contra hneg
-      push Not at hneg
-      have : C * (1 + |t|) ^ (-a) < 0 := mul_neg_of_neg_of_pos hneg (by positivity)
-      linarith
     calc ‖g t‖ ≤ C * (1 + |t|) ^ (-a) := hgd t
       _ = C * ((1 + |t|) ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) * (1 + |t|) ^ 2) := by
           rw [hsplit, hsq]
@@ -547,11 +546,6 @@ theorem norm_tentPrimitive_highPart_le {g : ℝ → ℂ} {C a : ℝ}
           linarith
       _ = 16 / 3 * C * R ^ (-q) * (1 + |t|) ^ (-(2 + a - q)) * ‖tentFactor t‖ := by ring
   · rw [indicator_of_notMem ht, zero_div, norm_zero]
-    have hC0 : 0 ≤ C := by
-      by_contra hneg
-      push Not at hneg
-      have : C * (1 + |t|) ^ (-a) < 0 := mul_neg_of_neg_of_pos hneg (by positivity)
-      linarith
     positivity
 
 theorem integrable_one_add_abs_rpow_neg {r : ℝ} (hr : 1 < r) :
@@ -824,6 +818,8 @@ theorem integral_sq_tentDefect_lowPart_le {g : ℝ → ℂ} (hgm : Measurable g)
     (fun t => (norm_lowPart_le R g t).trans (poly_of_decay ha.le hgd t)) hm hh hε hW).trans ?_
   gcongr
 
+/-- **High-frequency energy.**  The tent defect of the part `|t| > R` of a defect
+`O((1 + |t|)^{-a})` has `∫_W^{W'} E² ≪ R^{-(3+a)}`, with the explicit constant below. -/
 theorem integral_sq_tentDefect_highPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
     (ha : 0 < a) (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R h ε W W' : ℝ} (hR : 0 < R)
     (hh : 0 < h) (hε : 0 < ε) (hW0 : 0 ≤ W) (hW : W ≤ W') :

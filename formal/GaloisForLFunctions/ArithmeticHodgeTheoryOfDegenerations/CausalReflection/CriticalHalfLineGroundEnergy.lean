@@ -75,30 +75,21 @@ theorem criticalHalfLineGroundEnergy_mul_mass_le {R : ℝ} (hR : 0 < R) {G : ℝ
       _ = _ := by rw [hcm, one_mul]
   exact hmul.trans_eq he
 
-/-- At a finite global threshold the homogeneous variational bound also covers zero-mass profiles. -/
+/-- Coercivity extends the homogeneous variational bound to zero-mass profiles. -/
 theorem criticalHalfLineGroundEnergy_mul_mass_le_all
-    {W₀ R : ℝ} (hW : 0 < W₀) (hR : 0 < R)
-    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {R : ℝ} (hR : 0 < R)
     {G : ℝ → ℝ} (hG : CriticalHalfLineEnergyDomain G) :
     criticalHalfLineGroundEnergy R * (∫ u, G u ^ 2) ≤ criticalHalfLineFullEnergy R G := by
   by_cases hm : 0 < ∫ u, G u ^ 2
   · exact criticalHalfLineGroundEnergy_mul_mass_le hR hG hm
   have hm0 : (∫ u, G u ^ 2) = 0 :=
     le_antisymm (le_of_not_gt hm) (integral_nonneg fun u => sq_nonneg _)
-  have hae := (integral_eq_zero_iff_of_nonneg_ae
-    (Eventually.of_forall fun u => sq_nonneg (G u)) hG.sq).mp hm0
-  have hw0 : (∫ u, G u ^ 2 * Real.exp (-(8 * u))) = 0 := by
-    calc
-      _ = ∫ _u : ℝ, (0 : ℝ) := by
-        apply integral_congr_ae
-        filter_upwards [hae] with u hu
-        change G u ^ 2 = 0 at hu
-        change G u ^ 2 * Real.exp (-(8 * u)) = 0
-        rw [hu, zero_mul]
-      _ = 0 := by simp
-  rw [hm0, mul_zero, criticalHalfLineFullEnergy_change_ratio R W₀ hG,
-    hw0, mul_zero, add_zero]
-  exact criticalHalfLineFullEnergy_nonneg_at_windowThreshold hW ht hG
+  obtain ⟨B, _, hbound⟩ := criticalHalfLineFullEnergy_coercive_remainder hR
+  have h := hbound hG
+  rw [hm0, mul_zero, add_zero] at h
+  rw [hm0, mul_zero]
+  exact (mul_nonneg (half_pos (criticalAliasCoefficient_positive hR)).le
+    (integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)).trans h
 
 /-- The critical state gives the linear upper tangent of the variational floor. -/
 theorem criticalHalfLineGroundEnergy_le_critical_tangent
@@ -208,6 +199,27 @@ theorem criticalHalfLine_exponential_mass_neutral_decomposition {W₀ : ℝ} {F 
     sub_add_cancel _ _
   simpa only [heq] using h
 
+private theorem tangent_lower_algebra {E E₀ η w m n q c γ : ℝ}
+    (hγ : 0 < γ) (hw : 0 ≤ w) (hm : 0 ≤ m) (hn : 0 ≤ n)
+    (hmn : m ≤ n) (hmass : m = 1 - c ^ 2)
+    (he₀ : γ * n ≤ E₀) (he : E = E₀ + η * (n + 2 * c * q + (1 - m) * w))
+    (hsmall : |η| * (1 + w) ≤ γ / 2)
+    (hpos : 0 ≤ n + 2 * (2 * η * c / γ) * q + (2 * η * c / γ) ^ 2 * w) :
+    η * w - (2 * w / γ) * η ^ 2 ≤ E := by
+  have hc : c ^ 2 ≤ 1 := by linarith only [hmass, hm]
+  have hC : 0 ≤ 2 * w / γ := by positivity
+  have hy := mul_nonneg (half_pos hγ).le hpos
+  have hid : γ / 2 * (n + 2 * (2 * η * c / γ) * q + (2 * η * c / γ) ^ 2 * w) =
+      γ / 2 * n + 2 * η * c * q + (2 * w / γ) * η ^ 2 * c ^ 2 := by
+    field_simp [hγ.ne']
+  rw [hid] at hy
+  have h1 := mul_le_mul_of_nonneg_right (neg_abs_le η) hn
+  have h2 := mul_le_mul_of_nonneg_right (le_abs_self η) (mul_nonneg hw hm)
+  have h3 := mul_le_mul_of_nonneg_left hmn (mul_nonneg (abs_nonneg η) hw)
+  have h4 := mul_le_mul_of_nonneg_right hsmall hn
+  have h5 := mul_le_mul_of_nonneg_left hc (mul_nonneg hC (sq_nonneg η))
+  nlinarith only [he, he₀, hy, h1, h2, h3, h4, h5]
+
 /-- The transverse gap bounds the loss below the critical tangent by a quadratic error. -/
 theorem criticalHalfLineFullEnergy_ge_critical_tangent
     {W₀ : ℝ} (hW : 0 < W₀)
@@ -238,7 +250,6 @@ theorem criticalHalfLineFullEnergy_ge_critical_tangent
   have hn0 : 0 ≤ n := integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
   have hmn : m ≤ n := hdN.square_mass_le_exponential_mass
   have hmass : m = 1 - c ^ 2 := criticalHalfLineNeutralPart_square_mass hF hG hm
-  have hc : c ^ 2 ≤ 1 := by linarith only [hm0, hmass]
   have hc' : c ^ 2 = 1 - m := by linarith only [hmass]
   have he0 : γ * n ≤ criticalHalfLineFullEnergy W₀ G := hgap hG
   have hdecomp : (∫ u, G u ^ 2 * Real.exp (-(8 * u))) = n + 2 * c * q + c ^ 2 * w :=
@@ -254,20 +265,10 @@ theorem criticalHalfLineFullEnergy_ge_critical_tangent
     integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
   rw [criticalHalfLine_exponential_mass_add_const_mul hdN hdF] at hpos
   change 0 ≤ n + 2 * (2 * η * c / γ) * q + (2 * η * c / γ) ^ 2 * w at hpos
-  have hy := mul_nonneg (half_pos hγ).le hpos
-  have hid : γ / 2 * (n + 2 * (2 * η * c / γ) * q + (2 * η * c / γ) ^ 2 * w) =
-      γ / 2 * n + 2 * η * c * q + (2 * w / γ) * η ^ 2 * c ^ 2 := by
-    field_simp [hγ.ne']
-  rw [hid] at hy
-  have h1 := mul_le_mul_of_nonneg_right (neg_abs_le η) hn0
-  have h2 := mul_le_mul_of_nonneg_right (le_abs_self η) (mul_nonneg hw hm0)
-  have h3 := mul_le_mul_of_nonneg_left hmn (mul_nonneg (abs_nonneg η) hw)
-  have h4 := mul_le_mul_of_nonneg_right hsmall' hn0
-  have h5 := mul_le_mul_of_nonneg_left hc (mul_nonneg hC (sq_nonneg η))
   change η * w - (2 * w / γ) * η ^ 2 ≤ criticalHalfLineFullEnergy R G
   change criticalHalfLineFullEnergy R G =
     criticalHalfLineFullEnergy W₀ G + η * (n + 2 * c * q + (1 - m) * w) at he
-  nlinarith only [he, he0, hy, h1, h2, h3, h4, h5]
+  exact tangent_lower_algebra hγ hw hm0 hn0 hmn hmass he0 he hsmall' hpos
 
 /-- The variational floor has a quadratic remainder in the confinement coefficient. -/
 theorem criticalHalfLineGroundEnergy_quadratic_tangent

@@ -119,6 +119,8 @@ theorem summable_editRem_majorant (hα0 : 0 < α) (hα : α < 1) (γ : ℝ) (k�
       (1 - (2 : ℝ) ^ (-a))⁻¹ / 2 :=
   (((summable_abs_sEdit_rpow hα0 hα γ k₀ (θ := 2 * a) (by linarith)).subtype _).mul_right _).div_const _
 
+/-- The Euler remainder `r(z) = -log(1 - z) - z` at `z = p^{-w}`, `Re w ≥ a > 0`:
+`‖e(p) r(p^{-w})‖ ≤ |e(p)| p^{-2a} (1 - 2^{-a})^{-1}/2`. -/
 theorem norm_sEdit_mul_logRem_le (γ : ℝ) (k₀ : ℕ) (p : Nat.Primes) {a : ℝ} (ha : 0 < a) {w : ℂ}
     (hw : a ≤ w.re) :
     ‖(sEdit α β γ k₀ p : ℂ) * logRem (((p : ℕ) : ℂ) ^ (-w))‖ ≤

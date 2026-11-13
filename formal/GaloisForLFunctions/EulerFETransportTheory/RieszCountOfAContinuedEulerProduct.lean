@@ -1,5 +1,6 @@
 import GaloisForLFunctions.EulerFETransportTheory.TheMellinTransformOfAContinuousEulerProduct
 import GaloisForLFunctions.HTGeometry.VerticalStripContourShift
+import GaloisForLFunctions.EulerFETransportTheory.DecayingTentErrorsAreSmall
 
 /-!
 # The count of a measure whose Mellin transform continues past `Re s = 1/2`
@@ -62,7 +63,8 @@ theorem mellin_rieszKernel {s : ℂ} (hs : 0 < s.re) :
       rw [hzero, add_zero]
       refine setIntegral_congr_fun measurableSet_Ioc fun u hu => ?_
       rw [rieszKernel, if_pos hu.2, smul_eq_mul]
-    · refine IntegrableOn.congr_fun (f := fun u : ℝ => (u : ℂ) ^ (s - 1) * (((1 - u) ^ 2 / 2 : ℝ) : ℂ))
+    · refine IntegrableOn.congr_fun
+        (f := fun u : ℝ => (u : ℂ) ^ (s - 1) * (((1 - u) ^ 2 / 2 : ℝ) : ℂ))
         ?_ (fun u hu => by rw [rieszKernel, if_pos hu.2, smul_eq_mul]) measurableSet_Ioc
       have hi : IntervalIntegrable (fun u : ℝ => (u : ℂ) ^ (s - 1)) volume 0 1 :=
         intervalIntegral.intervalIntegrable_cpow' (by simp; linarith)
@@ -118,7 +120,8 @@ theorem rieszMellin_denom_ne_zero {s : ℂ} (hs : 0 < s.re) : s * (s + 1) * (s +
       simp at this
       linarith
 
-theorem differentiableAt_rieszMellin {s : ℂ} (hs : 0 < s.re) : DifferentiableAt ℂ rieszMellin s := by
+theorem differentiableAt_rieszMellin {s : ℂ} (hs : 0 < s.re) :
+    DifferentiableAt ℂ rieszMellin s := by
   unfold rieszMellin
   exact (differentiableAt_const _).div (by fun_prop) (rieszMellin_denom_ne_zero hs)
 
@@ -126,11 +129,6 @@ theorem continuous_rieszMellin_line {σ : ℝ} (hσ : 0 < σ) :
     Continuous fun τ : ℝ => rieszMellin ((σ : ℂ) + (τ : ℂ) * I) :=
   continuous_iff_continuousAt.mpr fun _ =>
     (differentiableAt_rieszMellin (by simpa using hσ)).continuousAt.comp (by fun_prop)
-
-theorem integrable_rpow_neg_one_add_abs {r : ℝ} (hr : 1 < r) :
-    Integrable fun t : ℝ => (1 + |t|) ^ (-r) := by
-  have h := integrable_one_add_norm (E := ℝ) (μ := volume) (r := r) (by simpa using hr)
-  simpa [Real.norm_eq_abs] using h
 
 /-- On `Re s ≥ 2/5` the cubic kernel decays: `‖M(σ + iτ)‖ ≤ 20 (1 + |τ|)^{-3}`. -/
 theorem norm_rieszMellin_le {σ : ℝ} (hσ : 2 / 5 ≤ σ) (τ : ℝ) :
@@ -204,7 +202,7 @@ theorem rieszKernel_eq_mellinInv {y : ℝ} (hy : 0 < y) :
     rw [heq]
     have hc : Continuous fun τ : ℝ => rieszMellin (((2 : ℝ) : ℂ) + (τ : ℂ) * I) :=
       continuous_rieszMellin_line (by norm_num)
-    refine ((integrable_rpow_neg_one_add_abs (r := 3) (by norm_num)).const_mul 20).mono'
+    refine ((integrable_one_add_abs_rpow_neg (r := 3) (by norm_num)).const_mul 20).mono'
       hc.aestronglyMeasurable (Eventually.of_forall fun τ => ?_)
     exact norm_rieszMellin_le (σ := 2) (by norm_num) τ
   have h := mellinInv_mellin_eq 2 (fun u => (rieszKernel u : ℂ)) hy hconv hvert
@@ -248,7 +246,7 @@ theorem integral_rieszKernel_eq {ν : Measure ℝ} [SFinite ν] (hsupp : ν (Iio
     have hmaj : Integrable (fun z : ℝ × ℝ => (x ^ 2 * (1 / z.1 ^ 2)) *
         (20 * (1 + |z.2|) ^ (-(3 : ℝ)))) (ν.prod volume) :=
       Integrable.mul_prod (hmom.const_mul (x ^ 2))
-        ((integrable_rpow_neg_one_add_abs (r := 3) (by norm_num)).const_mul 20)
+        ((integrable_one_add_abs_rpow_neg (r := 3) (by norm_num)).const_mul 20)
     refine hmaj.mono' ?_ ?_
     · have hm1 : Measurable fun z : ℝ × ℝ => ((z.1 / x : ℝ) : ℂ) ^
           (-((2 : ℂ) + (z.2 : ℂ) * I)) :=
@@ -337,8 +335,8 @@ theorem integral_rieszKernel_volume {x : ℝ} (hx : 1 ≤ x) :
 
 /-! ## The difference quotient -/
 
-/-- On the strip `2/5 ≤ Re s ≤ 2` the difference quotient `H = (G - G(1))/(s - 1)` grows at most like
-`(1 + |Im s|)^{1/2}`. -/
+/-- On the strip `2/5 ≤ Re s ≤ 2` the difference quotient `H = (G - G(1))/(s - 1)` grows at most
+like `(1 + |Im s|)^{1/2}`. -/
 theorem exists_norm_dslope_le {G : ℂ → ℂ} {σ₁ : ℝ} (hσ₁ : σ₁ < 2 / 5)
     (hG : DifferentiableOn ℂ G {s : ℂ | σ₁ < s.re}) {C : ℝ}
     (hGb : ∀ s : ℂ, 2 / 5 ≤ s.re → s.re ≤ 2 → ‖G s‖ ≤ C * (1 + |s.im|) ^ (3 / 2 : ℝ)) :
@@ -388,7 +386,8 @@ theorem exists_norm_dslope_le {G : ℂ → ℂ} {σ₁ : ℝ} (hσ₁ : σ₁ < 
 
 /-! ## The contour shift -/
 
-/-- The integrand `Φ(s) = x^s M(s) H(s)` on the strip: `‖Φ(σ + iτ)‖ ≤ 20 C_H x^σ (1 + |τ|)^{-5/2}`. -/
+/-- The integrand `Φ(s) = x^s M(s) H(s)` on the strip:
+`‖Φ(σ + iτ)‖ ≤ 20 C_H x^σ (1 + |τ|)^{-5/2}`. -/
 theorem norm_cpow_mul_rieszMellin_le {H : ℂ → ℂ} {CH : ℝ}
     (hH : ∀ s : ℂ, 2 / 5 ≤ s.re → s.re ≤ 2 → ‖H s‖ ≤ CH * (1 + |s.im|) ^ (1 / 2 : ℝ))
     {x : ℝ} (hx : 0 < x) {σ : ℝ} (hσ1 : 2 / 5 ≤ σ) (hσ2 : σ ≤ 2) (τ : ℝ) :
@@ -422,7 +421,7 @@ theorem exists_norm_rieszMean_sub_le {ν : Measure ℝ} [SFinite ν] (hsupp : ν
   have hopen : IsOpen {s : ℂ | σ₁ < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have hHd : DifferentiableOn ℂ (dslope G 1) {s : ℂ | σ₁ < s.re} :=
     (differentiableOn_dslope (hopen.mem_nhds (by show σ₁ < (1 : ℂ).re; simp; linarith))).mpr hG
-  have hI := integrable_rpow_neg_one_add_abs (r := 5 / 2) (by norm_num)
+  have hI := integrable_one_add_abs_rpow_neg (r := 5 / 2) (by norm_num)
   set I₅ := ∫ τ : ℝ, (1 + |τ|) ^ (-(5 / 2 : ℝ)) with hI₅
   have hI₅0 : 0 ≤ I₅ := integral_nonneg fun τ => by positivity
   refine ⟨1 / (2 * Real.pi) * (20 * CH * I₅), by positivity, fun x hx => ?_⟩
@@ -522,7 +521,8 @@ theorem exists_norm_rieszMean_sub_le {ν : Measure ℝ} [SFinite ν] (hsupp : ν
         _ = 20 * x ^ (2 : ℝ) * (1 + |τ|) ^ (-(3 : ℝ)) := by ring
         _ ≤ 20 * x ^ (2 : ℝ) * (1 + |τ|) ^ (-(5 / 2 : ℝ)) :=
           mul_le_mul_of_nonneg_left h3' (by positivity)
-  have hint2 : Integrable fun τ : ℝ => Φ (((2 : ℝ) : ℂ) + (τ : ℝ) * I) := hline 2 (by norm_num) le_rfl
+  have hint2 : Integrable fun τ : ℝ => Φ (((2 : ℝ) : ℂ) + (τ : ℝ) * I) :=
+    hline 2 (by norm_num) le_rfl
   -- assemble
   have hν := integral_rieszKernel_eq hsupp hmom hx0
   have hν₁ := integral_rieszKernel_eq (ν := volume.restrict (Ioi (1 : ℝ)))
@@ -535,7 +535,8 @@ theorem exists_norm_rieszMean_sub_le {ν : Measure ℝ} [SFinite ν] (hsupp : ν
     rw [hν, hν₁, ← hshift, integral_congr_ae (Eventually.of_forall hZ),
       integral_add hint1 hint2, integral_const_mul]
     ring
-  have hbound : ‖∫ τ : ℝ, Φ (((2 / 5 : ℝ) : ℂ) + (τ : ℝ) * I)‖ ≤ 20 * CH * x ^ (2 / 5 : ℝ) * I₅ := by
+  have hbound :
+      ‖∫ τ : ℝ, Φ (((2 / 5 : ℝ) : ℂ) + (τ : ℝ) * I)‖ ≤ 20 * CH * x ^ (2 / 5 : ℝ) * I₅ := by
     calc ‖∫ τ : ℝ, Φ (((2 / 5 : ℝ) : ℂ) + (τ : ℝ) * I)‖
         ≤ ∫ τ : ℝ, 20 * CH * x ^ (2 / 5 : ℝ) * (1 + |τ|) ^ (-(5 / 2 : ℝ)) :=
           norm_integral_le_of_norm_le (hI.const_mul _) (Eventually.of_forall fun τ =>
@@ -561,7 +562,8 @@ theorem exists_norm_rieszMean_sub_le {ν : Measure ℝ} [SFinite ν] (hsupp : ν
 /-- The truncated square `(y - u)₊²/2`. -/
 def rieszSq (y u : ℝ) : ℝ := max (y - u) 0 ^ 2 / 2
 
-theorem sq_mul_rieszKernel {x : ℝ} (hx : 0 < x) (u : ℝ) : x ^ 2 * rieszKernel (u / x) = rieszSq x u := by
+theorem sq_mul_rieszKernel {x : ℝ} (hx : 0 < x) (u : ℝ) :
+    x ^ 2 * rieszKernel (u / x) = rieszSq x u := by
   rw [rieszKernel, rieszSq]
   split_ifs with h
   · rw [div_le_one hx] at h
@@ -574,6 +576,7 @@ theorem sq_mul_rieszKernel {x : ℝ} (hx : 0 < x) (u : ℝ) : x ^ 2 * rieszKerne
 theorem continuous_rieszSq (y : ℝ) : Continuous (rieszSq y) := by
   unfold rieszSq; fun_prop
 
+/-- Domination by the moment: `(y - u)₊²/2 ≤ (y⁴/2) u⁻²` for `u ≥ 1`. -/
 theorem rieszSq_le {y u : ℝ} (hu : 1 ≤ u) : rieszSq y u ≤ y ^ 4 / 2 * (1 / u ^ 2) := by
   have hu0 : 0 < u := by linarith
   rw [rieszSq]
@@ -613,6 +616,7 @@ theorem measure_Iic_eq {ν : Measure ℝ} (hsupp : ν (Iio 1) = 0) (y : ℝ) :
     _ ≤ ν (Iio 1) + ν (Icc 1 y) := measure_union_le _ _
     _ = ν (Icc 1 y) := by rw [hsupp, zero_add]
 
+/-- `1_{(-∞, y]}` is `ν`-integrable: `ν[1, y] < ∞` from the moment, and `ν` lives on `[1, ∞)`. -/
 theorem integrable_indicator_Iic {ν : Measure ℝ} (hsupp : ν (Iio 1) = 0)
     (hmom : Integrable (fun u : ℝ => 1 / u ^ 2) ν) (y c : ℝ) :
     Integrable ((Iic y).indicator fun _ => c) ν := by
@@ -652,7 +656,8 @@ theorem indicator_le_rieszSq_secondDiff {y h : ℝ} (hh : 0 < h) (u : ℝ) :
       max_eq_right (by linarith), max_eq_right (by linarith), max_eq_right (by linarith)]
     norm_num
 
-/-- Integrated B-spline bounds: `h² N(y - h) ≤ Δ²_h S(y) ≤ h² N(y + h)`, `S(y) = ∫ (y - u)₊²/2 dν`. -/
+/-- Integrated B-spline bounds: `h² N(y - h) ≤ Δ²_h S(y) ≤ h² N(y + h)`,
+`S(y) = ∫ (y - u)₊²/2 dν`. -/
 theorem secondDiff_bounds {ν : Measure ℝ} (hsupp : ν (Iio 1) = 0)
     (hmom : Integrable (fun u : ℝ => 1 / u ^ 2) ν) {y h : ℝ} (hh : 0 < h) :
     h ^ 2 * ν.real (Iic (y - h)) ≤

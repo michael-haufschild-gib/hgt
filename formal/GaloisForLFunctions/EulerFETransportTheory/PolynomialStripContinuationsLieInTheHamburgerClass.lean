@@ -40,6 +40,7 @@ def stripDefect (G : ℂ → ℂ) (t : ℝ) : ℂ :=
         Complex.Gammaℝ ((1 / 2 : ℂ) + (2 * t : ℝ) * I) *
       (G (1 - ((1 / 2 : ℂ) + (2 * t : ℝ) * I)) / (1 - ((1 / 2 : ℂ) + (2 * t : ℝ) * I) - 1))
 
+/-- `Γ_ℝ(s) = π^{-s/2} Γ(s/2)` is holomorphic on `Re s > 0`. -/
 theorem differentiableAt_Gammaℝ_of_re_pos {s : ℂ} (hs : 0 < s.re) :
     DifferentiableAt ℂ Complex.Gammaℝ s := by
   have hΓ : DifferentiableAt ℂ Complex.Gamma (s / 2) := by
@@ -64,6 +65,7 @@ theorem stripRemainder_eq (G : ℂ → ℂ) {s : ℂ} (hs : s ≠ 1) :
   field_simp
   ring
 
+/-- On the critical line `|Γ_ℝ(1 - s)| = |Γ_ℝ(s)|`, since `1 - s = s̄` there. -/
 theorem norm_Gammaℝ_one_sub_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
     ‖Complex.Gammaℝ (1 - s)‖ = ‖Complex.Gammaℝ s‖ := by
   have hc : 1 - s = (starRingEnd ℂ) s := by

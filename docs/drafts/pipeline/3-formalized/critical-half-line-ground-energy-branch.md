@@ -1,19 +1,19 @@
 # The ground-energy branch through the half-line threshold
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (formalized)
 - **Target:** B16, B17; variation and stability of the actual half-line ground energy.
 - **Statement:** Near a finite global threshold, the unit-mass infimum of the actual full energy is attained on a unique state line and is differentiable at the threshold. Its derivative is the derivative of `criticalAliasCoefficient` times the critical state's eighth-exponential mass.
 
 ## Corpus connection
 
-The transverse exponential gap controls every component orthogonal to the critical state. The exact parameter dependence is `E_R(G)=E_W₀(G)+(a(R)-a(W₀))W(G)`. Strong compactness and smooth recovery already handle normalized low-energy sequences. Together these may give an actual local ground-energy branch, beyond the zero-energy classification at one parameter.
+The transverse exponential gap controls every component orthogonal to the critical state. The exact parameter dependence is `E_R(G)=E_W₀(G)+(a(R)-a(W₀))W(G)`. Strong compactness and smooth recovery handle normalized low-energy sequences. Together these give an actual local ground-energy branch, beyond the zero-energy classification at one parameter.
 
 ## Paper proof
 
 Write `m(G)=∫G²`, `W(G)=∫G²exp(-8u)`, `a(R)=criticalAliasCoefficient R`, and `E_R` for the actual full form. Fix a normalized critical state `F` at the finite global threshold `W₀`. Put `w=W(F)`. The transverse gap supplies `γ>0` with `E_W₀(N)≥γW(N)` whenever `∫FN=0`.
 
-**Attainment.** For every `R>0`, coercivity bounds the unit-mass energy range below, and `F` makes it nonempty. Choose unit profiles `G_n` with `E_R(G_n)→λ(R)`, its infimum. One-sided recovery gives smooth terminal-window profiles `H_n` with `m(H_n)≤1`, `∫(H_n-G_n)²→0`, bounded `W(H_n)`, and `limsup E_R(H_n)≤λ(R)`. Their masses tend to one. Homogeneity gives `E_R(H_n)≥λ(R)m(H_n)` once the mass is positive, so their energies converge to `λ(R)`.
+**Attainment.** For every `R>0`, coercivity bounds the unit-mass energy range below. The reflected tilted spline `u↦tiltedUnitSpline(-u)` is a `C²` test supported in `[-1,0]` with positive square mass; normalizing it makes the unit-domain range nonempty independently of any finite threshold. Choose unit profiles `G_n` with `E_R(G_n)→λ(R)`, its infimum. One-sided recovery gives smooth terminal-window profiles `H_n` with `m(H_n)≤1`, `∫(H_n-G_n)²→0`, bounded `W(H_n)`, and `limsup E_R(H_n)≤λ(R)`. Their masses tend to one. Homogeneity gives `E_R(H_n)≥λ(R)m(H_n)` once the mass is positive, so their energies converge to `λ(R)`.
 
 The Weil forms of `H_n` are bounded above. Strong compactness yields a subsequence with L² and L¹ limit `H`, mass one, finite exponential mass, and negative support. Weighted interpolation passes the prime and pole terms to the limit. Every fixed Gamma truncation converges. Fatou for the exponential mass gives
 
@@ -49,12 +49,16 @@ But `λ(R)≤|η|w<γ-|η|` when `|η|(1+w)<γ`, a contradiction. The normalized
 
 `(γ-2|η|)W(N)≤3|η|w`.
 
-Hence `W(N)→0`, `m(N)→0`, and `c²=1-m(N)→1`. Thus `W(H-F)→0` as `R→W₀`. In particular the polar pairing converges along this choice of signs, because it is continuous in the weaker exponential source norm.
+If `|η|≤γ/4`, this gives `W(N)≤6w|η|/γ`. Choose `σ∈{±1}` with `σc=|c|`. Since `c²≤1`, `(c-σ)²≤1-c²=m(N)≤W(N)`. The weighted square inequality then gives the quantitative bound
+
+`W(H-σF)≤2W(N)+2(c-σ)²w≤12w(1+w)|η|/γ`.
+
+Thus `W(H-σF)→0` as `R→W₀`. Put `J=∫(exp(-|u|)polarSourceProfile(u))²`. For a negative-support domain profile `D`, the source mass satisfies `S(D)≤m(D)+W(D)≤2W(D)`. Weighted Cauchy–Schwarz therefore gives `|P(H)-σP(F)|²≤2J W(H-σF)`, proving quantitative polar continuity with the same sign choice.
 
 All finite-threshold assumptions are supplied by the existing unconditional RH-or-critical-state dichotomy. No operator realization or differentiability is assumed. Polar nonvanishing and the logarithmic boundary trace remain separate questions.
 
 ## Lean status
 
-Formalization in progress in `CausalReflection/CriticalHalfLineEnergyBranch.lean`, supported by `CriticalHalfLineGroundEnergy` and `CriticalHalfLineVariationalCompactness`; not counted.
+The unconditional theorem `riemannHypothesis_or_exists_differentiable_criticalHalfLineGroundEnergy` and all supporting modules passed final plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`. `CriticalHalfLineEnergyBranch` proves attainment at every positive ratio and local simplicity; `CriticalHalfLineGroundEnergy` proves the quadratic tangent; `CriticalHalfLineGroundEnergyDerivative` proves differentiability; `CriticalHalfLineGroundStateStability` proves quantitative weighted and polar stability. The compactness input and `HTGeometry.QuadraticTangentRemainder` are audited. All modules are wired into their umbrellas.
 
 `CriticalArithmeticCorrelationTheory.integrable_gamma_of_L1_limit_bounded_archForm` is Lean verified: bounded square mass and Gamma energy pass full Gamma integrability to an L¹ limit. Its plain source audit uses exactly `propext`, `Classical.choice`, and `Quot.sound`. The limit domain is therefore derived rather than assumed.

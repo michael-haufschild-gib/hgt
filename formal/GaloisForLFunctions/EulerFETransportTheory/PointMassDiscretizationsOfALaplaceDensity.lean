@@ -31,7 +31,8 @@ namespace GaloisForLFunctions.EulerFETransportTheory.Discretization
 
 /-! ## The prime measure of a real-weighted Euler product -/
 
-/-- The prime-power measure `Σ_{i, r ≥ 1} (w_i / r) δ_{e^{r u_i}}` of `Π_i (1 - e^{-s u_i})^{-w_i}`. -/
+/-- The prime-power measure `Σ_{i, r ≥ 1} (w_i / r) δ_{e^{r u_i}}` of the Euler product
+`Π_i (1 - e^{-s u_i})^{-w_i}`. -/
 def eulerPrimeMeasure {ι : Type*} (u w : ι → ℝ) : Measure ℝ :=
   Measure.sum fun p : ι × ℕ =>
     ENNReal.ofReal (w p.1 / ((p.2 : ℝ) + 1)) • Measure.dirac (Real.exp (((p.2 : ℝ) + 1) * u p.1))
@@ -67,6 +68,7 @@ theorem integrable_eulerPrimeMeasure {ι : Type*} [Countable ι] {u w : ι → �
   rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (by
     have := hw p.1; positivity), smul_eq_mul]
 
+/-- `∫ f dP = Σ_{i,r} (w_i/r) f(e^{r u_i})` for `P`-integrable `f`. -/
 theorem integral_eulerPrimeMeasure {ι : Type*} [Countable ι] {u w : ι → ℝ}
     (hw : ∀ i, 0 ≤ w i) {f : ℝ → ℂ} (hint : Integrable f (eulerPrimeMeasure u w)) :
     ∫ y, f y ∂(eulerPrimeMeasure u w) = ∑' p : ι × ℕ,
@@ -154,7 +156,8 @@ theorem sum_cellWeight (hM : ∀ m, 1 ≤ M m) (m : ℕ) :
 
 theorem integral_block_le (m : ℕ) :
     ∫ y in (u₀ + m)..(u₀ + m + 1), π y ≤ Real.exp (u₀ + m + 1) := by
-  calc ∫ y in (u₀ + m)..(u₀ + m + 1), π y ≤ ∫ _y in (u₀ + m)..(u₀ + m + 1), Real.exp (u₀ + m + 1) := by
+  calc ∫ y in (u₀ + m)..(u₀ + m + 1), π y
+      ≤ ∫ _y in (u₀ + m)..(u₀ + m + 1), Real.exp (u₀ + m + 1) := by
         refine intervalIntegral.integral_mono_on (by linarith)
           (intervalIntegrable_density hπm hπ0 hπle _ _) intervalIntegrable_const fun y hy => ?_
         refine (hπle y).trans ?_
@@ -346,6 +349,8 @@ theorem norm_integral_cell_le {a b : ℝ} (hab : a ≤ b) {g : ℝ → ℂ} {K :
   exact mul_le_mul_of_nonneg_right (hg y ⟨hy.1.le, hy.2⟩) (hπ0 y)
 
 omit hπm hπ0 hπle in
+/-- On the cell `I_{m,j}`, `e^{-r Re(s) a} ≤ e^{-r σ₀ (u₀ + m)}` at its left node `a`,
+`Re s ≥ σ₀`. -/
 theorem exp_cell_le (hu₀ : 0 ≤ u₀) {σ₀ : ℝ} (hσ₀ : 0 ≤ σ₀) {s : ℂ} (hs : σ₀ ≤ s.re) (i : Cell M)
     (n : ℕ) :
     Real.exp (-((((n : ℂ) + 1) * s).re * node u₀ M i.1 i.2)) ≤
@@ -420,6 +425,7 @@ theorem norm_cellTerm_le_fine (hu₀ : 0 ≤ u₀) {σ₀ : ℝ} (hσ₀ : 0 ≤
         mul_le_mul_of_nonneg_left h3 (by positivity)
 
 include hu in
+/-- Crude bound summed over prime powers: `‖Σ_r cell error‖ ≤ 4 w_i e^{-σ₀(u₀+m)}`. -/
 theorem norm_tsum_cellTerm_le (hu₀ : 0 ≤ u₀) {σ₀ : ℝ} (hσ₀ : 0 ≤ σ₀) (hσu : 1 ≤ σ₀ * u₀)
     {s : ℂ} (hs : σ₀ ≤ s.re) (i : Cell M) :
     ‖∑' n, cellTerm u₀ M π u i n s‖ ≤
@@ -433,6 +439,7 @@ theorem norm_tsum_cellTerm_le (hu₀ : 0 ≤ u₀) {σ₀ : ℝ} (hσ₀ : 0 ≤
   linarith
 
 include hu in
+/-- Fine bound summed over prime powers: `‖Σ_r cell error‖ ≤ 2 (‖s‖/M_m) w_i e^{-σ₀(u₀+m)}`. -/
 theorem norm_tsum_cellTerm_le_fine (hu₀ : 0 ≤ u₀) {σ₀ : ℝ} (hσ₀ : 0 ≤ σ₀) (hσu : 1 ≤ σ₀ * u₀)
     {s : ℂ} (hs : σ₀ ≤ s.re) (i : Cell M) :
     ‖∑' n, cellTerm u₀ M π u i n s‖ ≤
@@ -469,6 +476,8 @@ theorem norm_blockError_le_fine (hu₀ : 0 ≤ u₀) {σ₀ : ℝ} (hσ₀ : 0 �
 
 /-! ## Holomorphy -/
 
+/-- Each cell error is entire: an exponential minus the Laplace transform of `π` on a compact
+cell. -/
 theorem differentiable_cellTerm (hu₀ : 0 ≤ u₀) (i : Cell M) (n : ℕ) :
     Differentiable ℂ (cellTerm u₀ M π u i n) := by
   have hab := node_le_succ (M := M) u₀ i.1 i.2
@@ -593,6 +602,8 @@ theorem density_eq_zero {y : ℝ} (hy : y ∉ Ici u₀) : π y = 0 := by
   rw [indicator_of_notMem hy] at h
   exact le_antisymm h (hπ0 y)
 
+/-- `e^{-zy} π(y)` is integrable on `ℝ` for `Re z > 1`, dominated by
+`1_{[u₀,∞)} e^{-(Re z - 1)y}`. -/
 theorem integrable_cexp_mul_density {z : ℂ} (hz : 1 < z.re) :
     Integrable fun y : ℝ => cexp (-(z * y)) * (π y : ℂ) := by
   refine (MobiusInverted.integrable_indicator_exp_neg (u₀ := u₀) (by linarith : 0 < z.re - 1)).mono'
@@ -735,7 +746,8 @@ theorem measureDirichlet_eulerPrimeMeasure (hu₀ : 3 ≤ u₀) {s : ℂ} (hs : 
   have hS : Summable S := Summable.of_norm_bounded hβ hSb
   -- the Dirichlet transform is the atom series
   have hP : measureDirichlet (eulerPrimeMeasure u (cellWeight u₀ M π)) s = ∑' p, T p := by
-    have hint : Integrable (fun x : ℝ => (x : ℂ) ^ (-s)) (eulerPrimeMeasure u (cellWeight u₀ M π)) :=
+    have hint :
+        Integrable (fun x : ℝ => (x : ℂ) ^ (-s)) (eulerPrimeMeasure u (cellWeight u₀ M π)) :=
       integrable_eulerPrimeMeasure hw (hT.norm.congr fun p => by
         rw [hTn, ofReal_exp_cpow_neg, Complex.norm_exp]
         congr 2
@@ -778,6 +790,7 @@ theorem measureDirichlet_eulerPrimeMeasure (hu₀ : 3 ≤ u₀) {s : ℂ} (hs : 
   ring
 
 include hM in
+/-- Cell masses are positive when `π > 0` on `[u₀, ∞)`. -/
 theorem cellWeight_pos (hπpos : ∀ y, u₀ ≤ y → 0 < π y) (i : Cell M) :
     0 < cellWeight u₀ M π i := by
   have hlen := node_succ_sub (M := M) u₀ i.1 i.2
@@ -830,6 +843,7 @@ theorem cellTerm_one (i : Cell M) (n : ℕ) :
   ring_nf
 
 omit hπm hπ0 hπle in
+/-- `E(1)` is real: every cell error at `s = 1` is real. -/
 theorem exists_discretizationError_one_eq :
     ∃ e : ℝ, discretizationError u₀ M π u 1 = e := by
   refine ⟨∑' m : ℕ, ∑ j : Fin (M m), ∑' n : ℕ, (1 / ((n : ℝ) + 1) *

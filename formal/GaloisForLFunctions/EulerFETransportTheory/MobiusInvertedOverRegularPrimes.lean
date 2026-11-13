@@ -116,7 +116,8 @@ theorem cutDensity_le {μ ν γ : ℝ} (hμ0 : 0 < μ) (hμ2 : μ < 1 / 2)
 
 /-- The `d`-th term `μ(d+1) (d+1)⁻² w̃(y/(d+1))`. -/
 def invTerm (μ ν γ : ℝ) (d : ℕ) (y : ℝ) : ℝ :=
-  (ArithmeticFunction.moebius (d + 1) : ℝ) / ((d : ℝ) + 1) ^ 2 * cutDensity μ ν γ (y / ((d : ℝ) + 1))
+  (ArithmeticFunction.moebius (d + 1) : ℝ) / ((d : ℝ) + 1) ^ 2 *
+    cutDensity μ ν γ (y / ((d : ℝ) + 1))
 
 /-- The Möbius-inverted density `π₀(y) = Σ_{d ≥ 1} μ(d) d⁻² w̃(y/d)`. -/
 def invertedDensity (μ ν γ y : ℝ) : ℝ := ∑' d : ℕ, invTerm μ ν γ d y
@@ -180,7 +181,8 @@ theorem abs_invTerm_succ_le {μ ν γ : ℝ} (hμ0 : 0 < μ) (hμ2 : μ < 1 / 2)
     |invTerm μ ν γ (d + 1) y| ≤ 5 / 4 * (Real.exp (y / 2) / y) := by
   have hu := twenty_lt_cutPoint hμ0 hμ2
   have hy0 : 0 < y := by linarith
-  have hd2 : (2 : ℝ) ≤ ((d + 1 : ℕ) : ℝ) + 1 := by push_cast; linarith [(d.cast_nonneg : (0 : ℝ) ≤ d)]
+  have hd2 : (2 : ℝ) ≤ ((d + 1 : ℕ) : ℝ) + 1 := by
+    push_cast; linarith [(d.cast_nonneg : (0 : ℝ) ≤ d)]
   set D : ℝ := ((d + 1 : ℕ) : ℝ) + 1 with hD
   have hD0 : 0 < D := by linarith
   rw [invTerm, ← hD, abs_mul, abs_div, abs_of_pos (by positivity : (0 : ℝ) < D ^ 2)]
@@ -269,6 +271,7 @@ theorem invertedDensity_pos {μ ν γ : ℝ} (hμ0 : 0 < μ) (hμ2 : μ < 1 / 2)
   have hy0 : 0 < y := by linarith [twenty_lt_cutPoint hμ0 hμ2]
   exact lt_of_lt_of_le (by positivity) (invertedDensity_bounds hμ0 hμ2 hp₁ hp₂ h4 hy).1
 
+/-- The crude envelope `π₀(y) ≤ 1_{[u₀,∞)}(y) e^y`. -/
 theorem invertedDensity_le_exp {μ ν γ : ℝ} (hμ0 : 0 < μ) (hμ2 : μ < 1 / 2)
     (hp₁ : 0 < 3 * μ - 1 - ν) (hp₂ : 0 < 3 * μ - 1 + ν) (h4 : 0 < 4 * μ - 1) (y : ℝ) :
     invertedDensity μ ν γ y ≤ (Ici (cutPoint μ)).indicator Real.exp y := by
@@ -548,6 +551,8 @@ theorem laplace_cutDensity_eq_tsum {μ ν γ : ℝ} (hμ0 : 0 < μ) (hμ2 : μ <
 def headLaplace (μ ν γ : ℝ) (s : ℂ) : ℂ :=
   ∫ v in Ioc 0 (cutPoint μ), cexp (-s * v) * (primeDensity μ ν γ v : ℂ)
 
+/-- `e^{-sv} w(v)` is integrable on `(0, ∞)` for `Re s > 1`: it is a sum of three Frullani
+integrands. -/
 theorem integrableOn_laplace_primeDensity {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν)
     (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {s : ℂ} (hs : 1 < s.re) :
     IntegrableOn (fun v : ℝ => cexp (-(s * v)) * (primeDensity μ ν γ v : ℂ)) (Ioi 0) := by
@@ -567,6 +572,8 @@ theorem integrableOn_laplace_primeDensity {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ 
       (GaloisForLFunctions.HTGeometry.integrableOn_frullani hh hq))).congr_fun
     (fun t ht => (cexp_mul_primeDensity μ ν γ s ht).symm) measurableSet_Ioi
 
+/-- `w` is integrable on the head `(0, u₀]`: multiply the integrable `e^{-2v} w(v)` by the bounded
+`e^{2v}`. -/
 theorem integrableOn_primeDensity_head {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν)
     (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) :
     IntegrableOn (fun v : ℝ => (primeDensity μ ν γ v : ℂ)) (Ioc 0 (cutPoint μ)) := by

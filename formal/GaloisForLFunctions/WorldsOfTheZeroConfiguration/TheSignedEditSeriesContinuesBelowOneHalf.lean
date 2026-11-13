@@ -171,6 +171,7 @@ def blockMajorant (α σ₀ : ℝ) (k₀ : ℕ) (L : ℝ) (k : ℕ) : ℝ :=
   26 * Real.sqrt L * (((k + k₀ : ℕ) : ℝ) + 1) * ((2 : ℝ) ^ (α / 2 - σ₀)) ^ (k + k₀) +
     2 * ((2 : ℝ) ^ (-σ₀)) ^ (k + k₀)
 
+/-- The block majorant is summable when `σ₀ > α/2` and `σ₀ > 0`. -/
 theorem summable_blockMajorant {σ₀ : ℝ} (hσ₀ : α / 2 < σ₀) (hσ₀0 : 0 < σ₀) (k₀ : ℕ) (L : ℝ) :
     Summable (blockMajorant α σ₀ k₀ L) := by
   have hr : (2 : ℝ) ^ (α / 2 - σ₀) < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
@@ -306,6 +307,7 @@ theorem exists_norm_editSeries_le (hα0 : 0 < α) (hα : α < 1) (hβ : β < 1) 
 def primeTerm (α β γ : ℝ) (k₀ : ℕ) (s : ℂ) (n : ℕ) : ℂ :=
   if n.Prime ∧ 2 ^ k₀ ≤ n then target α β γ k₀ n * (n : ℂ) ^ (-s) else 0
 
+/-- The target coefficients `e(p) + 2p^{β-1} cos(γ log p)` are bounded by `3`. -/
 theorem norm_target_le (hβ : β ≤ 1) (γ : ℝ) (k₀ : ℕ) {n : ℕ} (hn : 1 ≤ n) :
     ‖target α β γ k₀ n‖ ≤ 3 := by
   unfold target
@@ -320,6 +322,7 @@ theorem norm_target_le (hβ : β ≤ 1) (γ : ℝ) (k₀ : ℕ) {n : ℕ} (hn : 
     nlinarith [Real.rpow_nonneg (Nat.cast_nonneg n) (β - 1), abs_nonneg (Real.cos (γ * Real.log n))]
   linarith
 
+/-- The prime sum `Σ c(p) p^{-s}` converges absolutely on `Re s > 1`. -/
 theorem summable_primeTerm (hβ : β ≤ 1) (γ : ℝ) (k₀ : ℕ) {s : ℂ} (hs : 1 < s.re) :
     Summable (primeTerm α β γ k₀ s) := by
   have hmaj : Summable fun n : ℕ => 3 * ((n : ℝ) ^ s.re)⁻¹ :=

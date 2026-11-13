@@ -511,6 +511,7 @@ theorem hasSum_eulerWeight_neg_log {W : ℕ → ℝ} (hW0 : W 0 = 0) {C a : ℝ}
   rw [hcol.tsum_eq]
   exact hsum.hasSum.prod_fiberwise hrow
 
+/-- The signed prime-power weights grow at most geometrically: `|r W_r| ≤ 2 (2^{3/4})^r`. -/
 theorem abs_mul_signedWeight_le (γ₀ : ℝ) (r : ℕ) :
     |(r : ℝ) * signedWeight γ₀ r| ≤ 2 * ((2 : ℝ) ^ (3 / 4 : ℝ)) ^ r := by
   rcases Nat.eq_zero_or_pos r with rfl | hr

@@ -10,7 +10,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 - `[L*]` Lean statement read at the declaration for this report and recorded in the fact log.
 - `[doc]` content of a module docstring whose theorem names were read but not every statement.
 - `[F]` stated by the [frontier map](../rh-current-frontier-map.md); `[KR]` stated by the [scoped-obstruction ledger](../rh-killed-routes.md). `[S]` a module the frontier map grades unfinished or unintegrated.
-- `[card]` proved on the pipeline card `docs/drafts/pipeline/2-fully-proven/b186-critical-line-fe-defect-of-fake-zeros.md`; no Lean declaration.
+- `[card]` proved on the pipeline card `docs/drafts/pipeline/3-formalized/b186-critical-line-fe-defect-of-fake-zeros.md`; no Lean declaration.
 - `[D]` deduction made here from `[L*]` statements; not a Lean theorem. `[C]` classical mathematics quoted from memory, not in the corpus. `[A]` assessment.
 - `[X]` the external theorem cached in the repository (OpenAI, 30 September 2026), taken as proved: every Dirichlet `L`-function, ζ included, and every finite-order Hecke `L`-function over `ℚ(√−3)` is zero-free in `Re s>7/8`; so `Θ≤7/8`. The Lean graph proves `zetaZeroAbscissa ≤ 1` unconditionally (`RHTower/ZetaZeroAbscissa.zetaZeroAbscissa_le_one`) and `beta ≤ 7/8` from a uniform continuation margin (`beta_le_seven_eighths_of_uniform_margin`, log §16); the native steps of `[X]` are just work (A118). **Natively** refers to the Lean graph.
 

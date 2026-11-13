@@ -249,13 +249,15 @@ theorem complexGauss_conj {τ : ℂ} (hτ : 0 < τ.re) (w : ℂ) :
     rw [h', abs_of_pos Real.pi_pos] at h
     linarith [Real.pi_pos]
   have hc := Complex.conj_cpow (4 * Real.pi * τ) (1 / 2 : ℂ) harg
-  have h12 : starRingEnd ℂ (1 / 2 : ℂ) = 1 / 2 := by simp
+  have h2' : starRingEnd ℂ (2 : ℂ) = 2 := map_ofNat _ 2
+  have h4' : starRingEnd ℂ (4 : ℂ) = 4 := map_ofNat _ 4
+  have h12 : starRingEnd ℂ (1 / 2 : ℂ) = 1 / 2 := by simp [h2']
   have h4 : starRingEnd ℂ (4 * Real.pi * τ : ℂ) = 4 * Real.pi * starRingEnd ℂ τ := by
-    simp [Complex.conj_ofReal]
+    simp [h4', Complex.conj_ofReal]
   rw [h12, h4] at hc
   rw [complexGauss, complexGauss, map_div₀, ← Complex.exp_conj, hc]
   congr 2
-  simp
+  simp [h4']
 
 theorem continuous_complexGauss_mul_xi (τ s : ℂ) (h : ℝ) :
     Continuous fun u : ℝ => complexGauss τ (u + h * I) * xi (s + (u + h * I)) := by
@@ -282,7 +284,7 @@ theorem exists_norm_complexGauss_eq_mul_gaussDensity {τ : ℂ} (hτ : 0 < τ.re
   rw [norm_complexGauss_ofReal hτ, gaussDensity]
   have e : -(τ.re / (4 * ‖τ‖ ^ 2)) * u ^ 2 = -(u ^ 2 / (4 * (‖τ‖ ^ 2 / τ.re))) := by
     field_simp
-  rw [e, div_mul_eq_mul_div, one_mul, ← mul_assoc, div_mul_cancel₀ _ hp.ne', one_div,
+  rw [e, div_mul_eq_mul_div, mul_div_assoc, mul_div_cancel_left₀ _ hp.ne', one_div,
     inv_mul_eq_div]
 
 theorem integrable_complexGaussProduct {τ : ℂ} (hτ : 0 < τ.re) (z : ℂ) :
@@ -390,7 +392,6 @@ theorem halfHeat_neg_eq_conj {τ : ℂ} (hτ : 0 < τ.re) (z : ℂ) :
   have hτ' : 0 < (starRingEnd ℂ τ).re := by simpa using hτ
   rw [halfHeat, halfHeat, ← integral_conj]
   refine setIntegral_congr_fun measurableSet_Ioi fun u _ => ?_
-  simp only
   rw [map_mul, complexGauss_conj hτ', Complex.conj_conj, Complex.conj_ofReal, ← xi_conj]
   congr 2
   apply Complex.ext <;> simp
@@ -470,7 +471,7 @@ theorem exists_norm_complexGauss_mul_xi_le {τ : ℂ} (hτ : 0 < τ.re) (s : ℂ
     norm_complexGauss_le hτ w
   have h3 : ‖s + w‖ ^ 2 ≤ 3 * (‖s‖ ^ 2 + w.re ^ 2 + w.im ^ 2) := by
     have ha : ‖s + w‖ ≤ ‖s‖ + (|w.re| + |w.im|) :=
-      (norm_add_le _ _).trans (add_le_add_left (Complex.norm_le_abs_re_add_abs_im w) _)
+      (norm_add_le _ _).trans (add_le_add le_rfl (Complex.norm_le_abs_re_add_abs_im w))
     have hb : (‖s‖ + (|w.re| + |w.im|)) ^ 2 ≤ 3 * (‖s‖ ^ 2 + w.re ^ 2 + w.im ^ 2) := by
       nlinarith [sq_nonneg (‖s‖ - |w.re|), sq_nonneg (‖s‖ - |w.im|),
         sq_nonneg (|w.re| - |w.im|), sq_abs w.re, sq_abs w.im]
@@ -493,6 +494,19 @@ theorem exists_norm_complexGauss_mul_xi_le {τ : ℂ} (hτ : 0 < τ.re) (s : ℂ
         rw [Real.exp_add]
         ring
 
+/-- On every horizontal line `g_τ(w) ξ(s + w)` is integrable. -/
+theorem integrable_complexGauss_mul_xi_line {τ : ℂ} (hτ : 0 < τ.re) (s : ℂ) (h : ℝ) :
+    Integrable fun u : ℝ => complexGauss τ (u + h * I) * xi (s + (u + h * I)) := by
+  have hn : 0 < ‖τ‖ := norm_pos_iff.2 (ne_zero_of_re_pos hτ)
+  obtain ⟨A, -, hA⟩ := exists_norm_complexGauss_mul_xi_le hτ s |h|
+  refine ((integrable_exp_neg_mul_sq
+    (by positivity : 0 < τ.re / (16 * ‖τ‖ ^ 2))).const_mul A).mono'
+    (continuous_complexGauss_mul_xi τ s h).aestronglyMeasurable (Eventually.of_forall fun u => ?_)
+  have e : ((u : ℂ) + h * I).re = u := by simp
+  have := hA (u + h * I) (by simp)
+  rw [e] at this
+  exact this
+
 /-- **Corner shift.** The ray `[u₂, ∞)` may be moved to the height `c`, at the cost of the
 vertical side at `u₂`. -/
 theorem integral_Ioi_complexGauss_mul_xi_eq_corner {τ : ℂ} (hτ : 0 < τ.re) (s : ℂ) (u₂ c : ℝ) :
@@ -514,8 +528,10 @@ theorem integral_Ioi_complexGauss_mul_xi_eq_corner {τ : ℂ} (hτ : 0 < τ.re) 
     intro h hh
     refine ((integrable_exp_neg_mul_sq hlam0).const_mul A).mono'
       (continuous_complexGauss_mul_xi τ s h).aestronglyMeasurable (Eventually.of_forall fun u => ?_)
+    have e : ((u : ℂ) + h * I).re = u := by simp
     have := hA (u + h * I) (by simpa using hh)
-    simpa using this
+    rw [e] at this
+    exact this
   have hint0 : Integrable fun u : ℝ => f u := by
     have := hint 0 (by simp)
     simpa using this
@@ -553,8 +569,10 @@ theorem integral_Ioi_complexGauss_mul_xi_eq_corner {τ : ℂ} (hτ : 0 < τ.re) 
         · rw [uIoc_of_ge h] at hy
           rw [abs_of_nonpos hy.2, abs_of_nonpos h]
           linarith [hy.1]
+      have e : ((N : ℂ) + y * I).re = N := by simp
       have := hA (N + y * I) (by simpa using hy')
-      simpa using this
+      rw [e] at this
+      exact this
     have hz : Tendsto (fun N : ℝ => A * Real.exp (-lam * N ^ 2) * |c - 0|) atTop (𝓝 0) := by
       have h1 : Tendsto (fun N : ℝ => -lam * N ^ 2) atTop atBot := by
         have h0 : Tendsto (fun N : ℝ => lam * N ^ 2) atTop atTop :=
@@ -573,19 +591,30 @@ theorem integral_Ioi_complexGauss_mul_xi_eq_corner {τ : ℂ} (hτ : 0 < τ.re) 
   rw [sub_zero] at hfin
   exact hfin
 
-/-- **The half transform through a corner.** For every corner `u₂` and height `c`,
-`𝒜(τ, z)` is the sum of the unshifted piece on `[0, u₂]`, the vertical side at `u₂` and the ray
-at height `c`. -/
+/-- **The half line through a corner.** For every corner `u₂` and height `c`, the integral over
+the half line is the sum of the unshifted piece on `[0, u₂]`, the vertical side at `u₂` and the
+ray at height `c`. -/
+theorem integral_Ioi_zero_complexGauss_mul_xi_eq_corner {τ : ℂ} (hτ : 0 < τ.re) (s : ℂ)
+    (u₂ c : ℝ) :
+    ∫ u in Ioi (0 : ℝ), complexGauss τ u * xi (s + u) =
+      (∫ u in (0 : ℝ)..u₂, complexGauss τ u * xi (s + u)) +
+        I * (∫ v in (0 : ℝ)..c, complexGauss τ (u₂ + v * I) * xi (s + (u₂ + v * I))) +
+        ∫ u in Ioi u₂, complexGauss τ (u + c * I) * xi (s + (u + c * I)) := by
+  have hfi : Integrable fun u : ℝ => complexGauss τ u * xi (s + u) := by
+    have h := integrable_complexGauss_mul_xi_line hτ s 0
+    simpa using h
+  rw [← intervalIntegral.integral_interval_add_Ioi (a := 0) (b := u₂) hfi.integrableOn
+    hfi.integrableOn, integral_Ioi_complexGauss_mul_xi_eq_corner hτ s u₂ c]
+  ring
+
+/-- **The half transform through a corner.** -/
 theorem halfHeat_eq_corner {τ : ℂ} (hτ : 0 < τ.re) (z : ℂ) (u₂ c : ℝ) :
     halfHeat τ z =
       (∫ u in (0 : ℝ)..u₂, complexGauss τ u * xi (1 / 2 + I * z + u)) +
         I * (∫ v in (0 : ℝ)..c,
           complexGauss τ (u₂ + v * I) * xi (1 / 2 + I * z + (u₂ + v * I))) +
-        ∫ u in Ioi u₂, complexGauss τ (u + c * I) * xi (1 / 2 + I * z + (u + c * I)) := by
-  have hfi := integrable_complexGauss_mul_xi hτ z
-  rw [halfHeat, ← intervalIntegral.integral_interval_add_Ioi (a := 0) (b := u₂) hfi.integrableOn
-    hfi.integrableOn, integral_Ioi_complexGauss_mul_xi_eq_corner hτ (1 / 2 + I * z) u₂ c]
-  ring
+        ∫ u in Ioi u₂, complexGauss τ (u + c * I) * xi (1 / 2 + I * z + (u + c * I)) :=
+  integral_Ioi_zero_complexGauss_mul_xi_eq_corner hτ (1 / 2 + I * z) u₂ c
 
 end
 

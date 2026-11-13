@@ -562,6 +562,72 @@ theorem exists_norm_xi_le_strip :
           have h1 : 0 ≤ Real.exp (Y * (Real.log (|X| + Y + 6) / 2 + 5)) * ‖xi s5‖ := by positivity
           nlinarith
 
+/-! ## The slope relative to a base point -/
+
+/-- A point of the right half-plane, to the right of `Re b − κ`, whose height differs from that of
+`b` by at most `h`, has modulus at least `‖b‖/2 − h − κ`. -/
+theorem le_norm_of_near_base {b w : ℂ} {κ h : ℝ} (hb : 0 ≤ b.re) (hκ : 0 ≤ κ)
+    (hwκ : b.re - κ ≤ w.re) (him : |w.im - b.im| ≤ h) : ‖b‖ / 2 - h - κ ≤ ‖w‖ := by
+  have hbn : ‖b‖ ≤ |b.re| + |b.im| := Complex.norm_le_abs_re_add_abs_im b
+  have hc : 0 ≤ h := (abs_nonneg _).trans him
+  rcases le_or_gt (‖b‖ / 2) |b.im| with h | h
+  · have h1 : |b.im| - |w.im| ≤ |w.im - b.im| := by
+      rw [abs_sub_comm]
+      exact abs_sub_abs_le_abs_sub b.im w.im
+    have h2 := Complex.abs_im_le_norm w
+    linarith
+  · have h1 : ‖b‖ / 2 < b.re := by
+      rw [abs_of_nonneg hb] at hbn
+      linarith
+    have h2 := Complex.re_le_norm w
+    linarith
+
+/-- The slope at such a point differs from the slope at `b` by at most `‖w − b‖/(2m)`,
+`m ≤ ‖b‖/2 − h − κ`. -/
+theorem norm_xiSlope_sub_base_le {b w : ℂ} {κ h m : ℝ} (hb : 0 < b.re) (hw : 0 < w.re)
+    (hκ : 0 ≤ κ) (hwκ : b.re - κ ≤ w.re) (him : |w.im - b.im| ≤ h) (hm : 0 < m)
+    (hm' : m ≤ ‖b‖ / 2 - h - κ) : ‖xiSlope w - xiSlope b‖ ≤ ‖w - b‖ / (2 * m) := by
+  refine norm_xiSlope_sub_le hm fun w' hw' => ?_
+  rw [segment_eq_image'] at hw'
+  obtain ⟨θ, ⟨hθ0, hθ1⟩, rfl⟩ := hw'
+  have hre : (b + θ • (w - b)).re = (1 - θ) * b.re + θ * w.re := by
+    simp
+    ring
+  have him' : (b + θ • (w - b)).im - b.im = θ * (w.im - b.im) := by simp
+  have h1θ : 0 ≤ 1 - θ := by linarith
+  have hpos : 0 < (1 - θ) * b.re + θ * w.re := by
+    have hμ : 0 < min b.re w.re := lt_min hb hw
+    have e1 := mul_le_mul_of_nonneg_left (min_le_left b.re w.re) h1θ
+    have e2 := mul_le_mul_of_nonneg_left (min_le_right b.re w.re) hθ0
+    have e3 : (1 - θ) * min b.re w.re + θ * min b.re w.re = min b.re w.re := by ring
+    linarith
+  have hright : b.re - κ ≤ (1 - θ) * b.re + θ * w.re := by
+    have e1 := mul_le_mul_of_nonneg_left (by linarith : b.re - κ ≤ b.re) h1θ
+    have e2 := mul_le_mul_of_nonneg_left hwκ hθ0
+    have e3 : (1 - θ) * (b.re - κ) + θ * (b.re - κ) = b.re - κ := by ring
+    linarith
+  have hheight : |(b + θ • (w - b)).im - b.im| ≤ h := by
+    rw [him', abs_mul, abs_of_nonneg hθ0]
+    exact (mul_le_of_le_one_left (abs_nonneg _) hθ1).trans him
+  exact ⟨by rw [hre]; exact hpos,
+    hm'.trans (le_norm_of_near_base hb.le hκ (by rw [hre]; exact hright) hheight)⟩
+
+/-- **The slope relative to a base point.** For `Re w ≥ 5`, `Re w ≥ Re b − κ`,
+`|Im w − Im b| ≤ h` and `0 < m ≤ ‖b‖/2 − h − κ`,
+`‖ξ'/ξ(w) − xiSlope b‖ ≤ 4/m + 2^{5 − Re w}/12 + ‖w − b‖/(2m)`. -/
+theorem norm_logDeriv_xi_sub_xiSlope_base_le {b w : ℂ} {κ h m : ℝ} (hb : 0 < b.re)
+    (hw : 5 ≤ w.re) (hκ : 0 ≤ κ) (hwκ : b.re - κ ≤ w.re) (him : |w.im - b.im| ≤ h) (hm : 0 < m)
+    (hm' : m ≤ ‖b‖ / 2 - h - κ) :
+    ‖logDeriv xi w - xiSlope b‖ ≤ 4 / m + (2 : ℝ) ^ (5 - w.re) / 12 + ‖w - b‖ / (2 * m) := by
+  have h1 := norm_logDeriv_xi_sub_xiSlope_le hw
+  have h2 := norm_xiSlope_sub_base_le hb (by linarith) hκ hwκ him hm hm'
+  have h3 : m ≤ ‖w‖ := hm'.trans (le_norm_of_near_base hb.le hκ hwκ him)
+  have h4 : 4 / ‖w‖ ≤ 4 / m := div_le_div_of_nonneg_left (by norm_num) hm h3
+  calc ‖logDeriv xi w - xiSlope b‖
+      = ‖(logDeriv xi w - xiSlope w) + (xiSlope w - xiSlope b)‖ := by ring_nf
+    _ ≤ ‖logDeriv xi w - xiSlope w‖ + ‖xiSlope w - xiSlope b‖ := norm_add_le _ _
+    _ ≤ _ := by linarith
+
 end
 
 end RHTower

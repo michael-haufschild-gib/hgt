@@ -30,6 +30,7 @@ namespace GaloisForLFunctions.EulerFETransportTheory
 
 /-! ## Radial residues of a decaying defect -/
 
+/-- A defect `O((1 + |t|)^{-a})`, `a > 0`, has `δ · abelMass g δ → 0` as `δ → 0⁺`. -/
 theorem tendsto_mul_abelMass_of_decay {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ} (ha : 0 < a)
     (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) :
     Tendsto (fun δ => δ * abelMass g δ) (𝓝[>] 0) (𝓝 0) := by
@@ -173,6 +174,8 @@ theorem tendsto_mul_freqDual_of_residueFree {a lam : ℕ → ℝ}
   field_simp
   ring
 
+/-- **The Abel mean at frequency `0`.**  Under the theta relation with a residue-free defect,
+`ε Σ a_n e^{-2πλ_n ε} → β/π` as `ε → 0⁺`. -/
 theorem tendsto_abelCos_zero_of_residueFree {a lam : ℕ → ℝ}
     (ha0 : ∀ n, 0 ≤ a n) (hlam : ∀ n, 1 ≤ lam n)
     (ha : Summable fun n => a n / lam n ^ 2) {β : ℝ} (hgm : Measurable g)

@@ -49,6 +49,7 @@ theorem unitTent_floor_add_one (x : ℝ) : unitTent ((⌊x⌋ + 1 : ℤ) : ℝ) 
   rw [max_eq_right (by linarith)]
   ring
 
+/-- The unit tent at `j` vanishes at `x` unless `j ∈ {⌊x⌋, ⌊x⌋ + 1}`. -/
 theorem unitTent_eq_zero_of_ne {x : ℝ} {j : ℤ} (hj : j ≠ ⌊x⌋) (hj1 : j ≠ ⌊x⌋ + 1) :
     unitTent (j : ℝ) x = 0 := by
   have h0 := Int.floor_le x
@@ -192,6 +193,7 @@ theorem integral_unitTent_defectLine (g : ℝ → ℂ) {w ε : ℝ} (hw : 0 < w)
   have e2 : w * (c / w + u) = c + w * u := by field_simp
   rw [tentDefectKernel_div g w (ε / w) c u hw, defectLine, e1, e2]
 
+/-- A rescaled unit tent times a continuous function is integrable (compact support). -/
 theorem integrable_unitTent_mul {φ : ℝ → ℝ} (hφ : Continuous φ) {w : ℝ} (hw : 0 < w) (n : ℝ) :
     Integrable fun s => unitTent n (s / w) * φ s := by
   refine ((continuous_unitTent n).comp (continuous_id.div_const w) |>.mul hφ)
@@ -387,7 +389,7 @@ theorem tentDefect_one_zero_eq {g : ℝ → ℂ} {Cg : ℝ} {N₀ : ℕ} (hgm : 
     fun m M hM => integrable_gridHat_mul hφc hM hδ
   have iS : Integrable fun s => ∑ j ∈ Finset.Icc (-(N : ℤ)) N,
       fejerGridCoeff N R j * (gridHat j 1 (s / δ) * φ s) :=
-    integrable_finset_sum _ fun (j : ℤ) _ =>
+    integrable_finsetSum _ fun (j : ℤ) _ =>
       (i1 (j : ℝ) one_pos).const_mul (fejerGridCoeff N R j)
   have iE : Integrable fun s => R / N * (gridHat (N - R) R (s / δ) * φ s +
       gridHat (-(N - R)) R (s / δ) * φ s) := ((i1 _ hR0).add (i1 _ hR0)).const_mul _
@@ -409,7 +411,7 @@ theorem tentDefect_one_zero_eq {g : ℝ → ℂ} {Cg : ℝ} {N₀ : ℕ} (hgm : 
   have iEE : Integrable fun s => gridHat (N - R) R (s / δ) * φ s +
       gridHat (-(N - R)) R (s / δ) * φ s := (i1 _ hR0).add (i1 _ hR0)
   rw [integral_congr_ae (Eventually.of_forall hpt), integral_sub iSEO iO1,
-    integral_add iSE iO2, integral_add iS iE, integral_finset_sum _
+    integral_add iSE iO2, integral_add iS iE, integral_finsetSum _
       fun (j : ℤ) _ => (i1 (j : ℝ) one_pos).const_mul (fejerGridCoeff N R j), integral_const_mul,
     integral_const_mul,
     integral_const_mul, integral_add (i1 _ hR0) (i1 _ hR0)]

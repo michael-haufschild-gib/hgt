@@ -63,6 +63,7 @@ theorem sgnCos_mul_sWeight (β γ : ℝ) (p : ℕ) :
   · have : Real.cos (γ * Real.log p) = 0 := le_antisymm (not_lt.mp h1) (not_lt.mp h2)
     rw [this]; simp
 
+/-- On the dyadic block `p ≥ 2^k` the selection weight is at most `2 · 2^{k(β - 1)}`. -/
 theorem sWeight_le (hβ : β < 1) (γ : ℝ) {k p : ℕ} (hp : 2 ^ k ≤ p) :
     sWeight β γ p ≤ 2 * (2 : ℝ) ^ ((k : ℝ) * (β - 1)) := by
   have h2k : (0 : ℝ) < 2 ^ k := by positivity
@@ -307,6 +308,7 @@ theorem isEdit_sEdit (α β γ : ℝ) (k₀ : ℕ) : IsEdit (sEdit α β γ k₀
     · exact sgnCos_mem γ p
     · simp
 
+/-- A block prime is selected exactly when it is the chosen prime of its group. -/
 theorem mem_selected_iff {γ : ℝ} {k₀ k p : ℕ} (hp : p ∈ blockPrimes k) :
     p ∈ selected α β γ k₀ ↔ sGood α β γ k₀ k ⟨blockIdx α k p, blockIdx_lt hp⟩ = p := by
   constructor

@@ -210,6 +210,8 @@ theorem cos_term_eq (β γ : ℝ) {n : ℕ} (hn : 0 < n) (s : ℂ) :
   push_cast
   ring
 
+/-- The linear pair terms `p^{-(s + 1 - ρ₀)} + p^{-(s + 1 - ρ̄₀)}` over primes `p ≥ 2^{k₀}` are
+summable on `Re s > 1`. -/
 theorem summable_pairLin (β γ : ℝ) (k₀ : ℕ) (hβ : β < 1) {s : ℂ} (hs : 1 < s.re) :
     Summable fun n : ℕ => if n.Prime ∧ 2 ^ k₀ ≤ n then
       (n : ℂ) ^ (-(s + (1 - zeroPt β γ))) +

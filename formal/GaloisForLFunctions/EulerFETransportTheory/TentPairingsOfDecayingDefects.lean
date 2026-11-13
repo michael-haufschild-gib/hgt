@@ -27,6 +27,7 @@ namespace GaloisForLFunctions.EulerFETransportTheory
 
 /-! ## The tent identity for polynomially bounded defects -/
 
+/-- The tent-defect kernel of a measurable, polynomially bounded defect is continuous. -/
 theorem continuous_tentDefectKernel_of_poly {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (hgm : Measurable g)
     (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N) {h ε : ℝ} (hh : 0 < h) (hε : 0 < ε) (n : ℝ) :
     Continuous (tentDefectKernel g h n ε) := by
@@ -214,7 +215,6 @@ theorem integral_tent_mul_cpow {h ε : ℝ} (hh : 0 < h) (hε : 0 < ε) (n : ℝ
     mul_ne_zero ha (pow_ne_zero 2 (mul_ne_zero (by exact_mod_cast hh.ne') I_ne_zero))
   rw [eq_div_iff hK, ← key, ← intervalIntegral.integral_mul_const]
   refine intervalIntegral.integral_congr fun s _ => ?_
-  beta_reduce
   ring
 
 /-- The coefficient `c(t)` of the kernel `k(2t, τ) = c(t) τ^{-1/2 + 2it}`. -/

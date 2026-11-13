@@ -251,9 +251,9 @@ theorem editSystem_fake_defect_not_le_sqrt_log {e : ℕ → ℤ} {β_c A C : ℝ
   exact ⟨fun c hc t₁ => not_le_sqrt_log_of_missing_multiples hsum hH' hA hN hp.one_lt.le hres hc t₁,
     fun M => not_bounded_of_missing_multiples hsum hH' hA hN hp.one_lt.le hres M⟩
 
-/-- **The card's form.**  Every fake edit with count rate `β_c < 1` continuing in the Hamburger
-strip class has a least deleted prime `p₀`, density `A = 2β > 0`, and
-`∫ ‖g‖² e^{-|t|/T} ≥ A²/(256πp₀) T log T` for large `T`. -/
+/-- **Least deleted prime and log energy.**  Every fake edit with count rate `β_c < 1`
+continuing in the Hamburger strip class has a least deleted prime `p₀`, density `A = 2β > 0`,
+and `∫ ‖g‖² e^{-|t|/T} ≥ A²/(256πp₀) T log T` for large `T`. -/
 theorem editSystem_fake_least_deleted_prime_energy {e : ℕ → ℤ} {β_c A C : ℝ} (hβc : β_c < 1)
     (hf : IsIntegerNormFakeAt (editSystem e) β_c)
     (hcount : ∀ x : ℝ, 1 ≤ x → |((editSystem e).countBall x : ℝ) - A * x| ≤ C * x ^ β_c)

@@ -198,6 +198,7 @@ theorem exists_norm_editCofactor_le (hα0 : 0 < α) (hα : α < 1) (hβ0 : 0 ≤
 
 /-! ## Polynomial growth of `(s - 1) ζ(s)` on the Hamburger strip -/
 
+/-- `(s - 1) ζ(s)` is polynomially bounded on the strip `1/2 ≤ Re s ≤ 3/2`. -/
 theorem exists_norm_zetaResidueUnit_strip_le :
     ∃ C : ℝ, ∃ N : ℕ, 0 ≤ C ∧ ∀ s : ℂ, 1 / 2 ≤ s.re → s.re ≤ 3 / 2 →
       ‖zetaResidueUnit s‖ ≤ C * (1 + |s.im|) ^ N := by
@@ -622,8 +623,8 @@ def IsSubpolynomialDefectFake (e : ℕ → ℤ) (ρ₀ : ℂ) (β_c : ℝ) : Pro
       (∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
         ‖stripDefect G t‖ ≤ C * (1 + |t|) ^ (1 / 6 + ε))
 
-/-- The signed grouped edit with `α = (β₀ + β_c)/2` and any `k₀ ≥ 1/(α - β₀)` has all the conclusions
-of Theorem I.4(B). -/
+/-- The signed grouped edit with `α = (β₀ + β_c)/2` and any `k₀ ≥ 1/(α - β₀)` has all the
+conclusions of Theorem I.4(B). -/
 theorem isSubpolynomialDefectFake_sEdit {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 < β₀)
     (hβ₀Θ : β₀ < 3 / 2 - zetaZeroAbscissa) (hζ : riemannZeta (zeroPt β₀ γ₀) ≠ 0)
     (hβc : β₀ < β_c) (hβc1 : β_c < 1) {k₀ : ℕ}

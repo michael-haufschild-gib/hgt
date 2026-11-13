@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Tactic.Ring
 
 /-!
 # Differentiation through a quadratic remainder

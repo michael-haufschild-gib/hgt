@@ -6,9 +6,10 @@ import GaloisForLFunctions.EulerFETransportTheory.PolynomialStripContinuationsLi
 # Arbitrarily slow FE defects of positive-weighted Beurling systems
 
 **Theorem II.3** (`exists_positiveWeighted_beurling_slow_defect`).  Let `Φ → ∞`, `μ < 1/2`,
-`0 < ν < 3μ - 1` (so `μ > 1/3`) and `γ ∈ ℝ`.  There is a countable family of generators `p_i = e^{u_i} ≥ e^{10}`,
-locally finite, with `ℚ`-independent logarithms and positive real weights `w_i`, whose Euler
-product `ζ_P(s) = Π_i (1 - p_i^{-s})^{-w_i}` (absolutely convergent on `Re s > 1`)
+`0 < ν < 3μ - 1` (so `μ > 1/3`) and `γ ∈ ℝ`.  There is a countable family of generators
+`p_i = e^{u_i} ≥ e^{10}`, locally finite, with `ℚ`-independent logarithms and positive real
+weights `w_i`, whose Euler product `ζ_P(s) = Π_i (1 - p_i^{-s})^{-w_i}` (absolutely convergent
+on `Re s > 1`)
 
 * continues to `Re s > 1/3` as `G(s)/(s - 1)`, `G` holomorphic, `G(1) = A > 0`, with zeros at
   `1 - μ ± iγ`;
@@ -54,6 +55,7 @@ theorem sub_one_mul_overRegularZeta {μ ν γ : ℝ} (hp₁ : 0 < 3 * μ - 1 - �
   rw [overRegularZeta, contG]
   field_simp
 
+/-- `G_c` is holomorphic on `Re s > 1/3`: the poles `-p₁, -p₂` lie to the left of `0`. -/
 theorem differentiableOn_contG {μ ν γ : ℝ} (hp₁ : 0 < 3 * μ - 1 - ν) (hp₂ : 0 < 3 * μ - 1 + ν) :
     DifferentiableOn ℂ (contG μ ν γ) {s : ℂ | 1 / 3 < s.re} := by
   intro s hs
@@ -277,6 +279,7 @@ theorem u_pos (i : Cell M) (hu : ∀ i : Cell M,
   linarith [(hu i).1, (i.1.cast_nonneg : (0 : ℝ) ≤ i.1)]
 
 include hM hu in
+/-- `G = G_c e^{-I₀ + E}` is holomorphic on `Re s > 1/3`. -/
 theorem differentiableOn_theG (hMbig : ∀ m : ℕ, Real.exp (cutPoint μ + m) ≤ M m) :
     DifferentiableOn ℂ (theG μ ν γ M u) {s : ℂ | 1 / 3 < s.re} := by
   have hμ0 : 0 < μ := by linarith
@@ -300,7 +303,8 @@ theorem euler_identity {s : ℂ} (hs : 1 < s.re) :
       (measureDirichlet (primeMeasure μ ν γ M u) s) ∧
     measureDirichlet (beurlingIntegerMeasure (primeMeasure μ ν γ M u)) s =
       cexp (measureDirichlet (primeMeasure μ ν γ M u) s) ∧
-    theG μ ν γ M u s = (s - 1) * measureDirichlet (beurlingIntegerMeasure (primeMeasure μ ν γ M u)) s := by
+    theG μ ν γ M u s =
+      (s - 1) * measureDirichlet (beurlingIntegerMeasure (primeMeasure μ ν γ M u)) s := by
   have hμ0 : 0 < μ := by linarith
   have hp₁ : 0 < 3 * μ - 1 - ν := by linarith
   have hp₂ : 0 < 3 * μ - 1 + ν := by linarith
@@ -416,7 +420,8 @@ theorem exists_height_bound {T : ℕ → ℝ} (hT0 : 1 ≤ T 0) (hTstep : ∀ k,
       (Real.exp (-(2 / 5 * (cutPoint μ + m))) * blockMass μ ν γ m) ≤ M m)
     {τ : ℝ} (hτ : T 0 ≤ τ) :
     ∃ k, T k ≤ τ ∧ ∀ s : ℂ, 2 / 5 ≤ s.re → s.re ≤ 2 → |s.im| = τ →
-      ‖cexp (-headLaplace μ ν γ s + discretizationError (cutPoint μ) M (invertedDensity μ ν γ) u s)‖ ≤
+      ‖cexp (-headLaplace μ ν γ s +
+          discretizationError (cutPoint μ) M (invertedDensity μ ν γ) u s)‖ ≤
         levelX μ ν γ k / (8 * contConst γ) := by
   classical
   have hμ0 : 0 < μ := by linarith
@@ -447,6 +452,7 @@ theorem exists_height_bound {T : ℕ → ℝ} (hT0 : 1 ≤ T 0) (hTstep : ∀ k,
   linarith
 
 include hM hu in
+/-- **Below `T_0`**: on `|Im s| < T_0`, `‖e^{-I₀ + E}‖ ≤ e^{I₀(0) + 1/4}`. -/
 theorem norm_cexp_le_low {T : ℕ → ℝ} (hTstep : ∀ k, T k + 1 ≤ T (k + 1))
     (hMfine : ∀ m : ℕ, 2 ^ (m + 4) * (2 + 2 * T m) *
       (Real.exp (-(2 / 5 * (cutPoint μ + m))) * blockMass μ ν γ m) ≤ M m)
@@ -554,11 +560,12 @@ theorem norm_stripDefect_le (G : ℂ → ℂ) (t : ℝ) :
   refine (norm_sub_le _ _).trans ?_
   rw [norm_mul, hχ, one_mul]
 
-/-- **Theorem II.3.**  For every `Φ → ∞` and every `μ < 1/2`, `0 < ν < 3μ - 1` (so `μ > 1/3`), `γ ∈ ℝ` there
-is a countable positive-weighted Beurling system with `ℚ`-independent generator logarithms
-`u_i ≥ 10`, whose Euler product `ζ_P = Π_i (1 - e^{-s u_i})^{-w_i}` continues to `Re s > 1/3` as
-`G(s)/(s - 1)` (`G(1) = A > 0`, zeros `1 - μ ± iγ`), has integer count `A x + O(x^{4/5})`, and lies
-in the Hamburger strip class with critical-line defect `‖g(t)‖ ≤ Φ(|t|)` for `|t| ≥ T₀`. -/
+/-- **Theorem II.3.**  For every `Φ → ∞` and every `μ < 1/2`, `0 < ν < 3μ - 1` (so `μ > 1/3`),
+`γ ∈ ℝ` there is a countable positive-weighted Beurling system with `ℚ`-independent generator
+logarithms `u_i ≥ 10`, whose Euler product `ζ_P = Π_i (1 - e^{-s u_i})^{-w_i}` continues to
+`Re s > 1/3` as `G(s)/(s - 1)` (`G(1) = A > 0`, zeros `1 - μ ± iγ`), has integer count
+`A x + O(x^{4/5})`, and lies in the Hamburger strip class with critical-line defect
+`‖g(t)‖ ≤ Φ(|t|)` for `|t| ≥ T₀`. -/
 theorem exists_positiveWeighted_beurling_slow_defect {Φ : ℝ → ℝ} (hΦ : Tendsto Φ atTop atTop)
     {μ ν γ : ℝ} (hμ2 : μ < 1 / 2) (hν0 : 0 < ν) (hν : ν < 3 * μ - 1) :
     ∃ (ι : Type) (_ : Countable ι) (u w : ι → ℝ),
@@ -647,7 +654,8 @@ theorem exists_positiveWeighted_beurling_slow_defect {Φ : ℝ → ℝ} (hΦ : T
   obtain ⟨A, hA0, hA⟩ := exists_theG_one_eq (γ := γ) hμ2 hν0 hν (M := M) (u := u)
   replace hA : G 1 = A := hA
   -- the count
-  obtain ⟨K, -, hcount⟩ := exists_abs_count_sub_le hsupp hmom (σ₁ := 1 / 3) (by norm_num) hGd hGZ hGb
+  obtain ⟨K, -, hcount⟩ :=
+    exists_abs_count_sub_le hsupp hmom (σ₁ := 1 / 3) (by norm_num) hGd hGZ hGb
   have hGre : (G 1).re = A := by rw [hA]; simp
   -- the Hamburger strip class
   have hstrip : ∀ s ∈ HTGeometry.verticalStrip (1 / 2) (3 / 2), 2 / 5 ≤ s.re ∧ s.re ≤ 2 := by
@@ -672,7 +680,8 @@ theorem exists_positiveWeighted_beurling_slow_defect {Φ : ℝ → ℝ} (hΦ : T
       (fun y hy => invertedDensity_pos hμ0 hμ2 hp₁ hp₂ h4 hy) i, ?_, hli,
     A, K, T 0, G, hA0, fun s hs => ⟨(euler_identity (γ := γ) hμ2 hν0 hν hM hu' hs).1,
       (euler_identity (γ := γ) hμ2 hν0 hν hM hu' hs).2.1⟩, hGd, hGZ, hA,
-    (theG_zero (μ := μ) (ν := ν) (γ := γ) (M := M) (u := u)).1, (theG_zero (μ := μ) (ν := ν) (γ := γ) (M := M) (u := u)).2,
+    (theG_zero (μ := μ) (ν := ν) (γ := γ) (M := M) (u := u)).1,
+    (theG_zero (μ := μ) (ν := ν) (γ := γ) (M := M) (u := u)).2,
     fun x hx => by rw [← hGre]; exact hcount x hx, hHam, fun t ht => ?_⟩
   · -- local finiteness
     intro X

@@ -71,6 +71,8 @@ theorem integral_norm_sq_rayMellinData (f : ℝ → ℂ) (σ : ℝ) :
   norm_num
   ring
 
+/-- Inverse Mellin transform on `Re s = 1/2` of data given along the critical line:
+`(1/2π) ∫ f(t) y^{s_t - 1} dt` with `s_t = linePt (2t)`. -/
 theorem mellinInv_rayMellinData (f : ℝ → ℂ) (y : ℝ) :
     mellinInv (1 / 2) (rayMellinData f) y =
       ((1 / (2 * Real.pi) : ℝ) : ℂ) *
@@ -126,6 +128,7 @@ theorem defectLaplace_ofReal_mul (g : ℝ → ℂ) {z : ℂ} (hz : 0 < z.re) {r 
 
 /-! ## The kernel on a tilted ray -/
 
+/-- `|sin(π/4 + iy)|² = (e^{2y} + e^{-2y})/4`. -/
 theorem norm_sin_quarter_sq (y : ℝ) :
     ‖Complex.sin (((Real.pi / 4 : ℝ) : ℂ) + (y : ℂ) * I)‖ ^ 2 =
       (Real.exp (2 * y) + Real.exp (-(2 * y))) / 4 := by

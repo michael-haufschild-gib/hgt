@@ -112,7 +112,7 @@ theorem IsFactorTwinOn.stripDefect_eq {c : ℝ} (hc : c < 1 / 2) {B : BeurlingSy
     rw [zetaResidueUnit_of_ne hs1]
     field_simp [sub_ne_zero.mpr hs1]
   · have hc1 : 1 - s = (starRingEnd ℂ) s := by
-      apply Complex.ext <;> simp [hs] <;> norm_num
+      apply Complex.ext <;> norm_num [hs]
     rw [hc1]
     exact hsym s (by rw [hs]; linarith)
 
