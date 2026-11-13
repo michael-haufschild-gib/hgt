@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ExponentialBarrierPositiveLevels
-import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.WeightedPositiveLevelAlgebra
+import GaloisForLFunctions.HTGeometry.HardyBoundary.WeightedPositiveLevelAlgebra
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.HalfLineGammaMixedEnergy
 
 /-!
@@ -15,6 +15,7 @@ noncomputable section
 open MeasureTheory Filter Set Topology
 open _root_.RHTower
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
+open HTGeometry
 
 /-- The exponential change of unknown controls every translated mixed edge. -/
 theorem CriticalHalfLineEnergyDomain.exponentialBarrier_edge_lower {F : ℝ → ℝ}

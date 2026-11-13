@@ -113,9 +113,8 @@ theorem lassosIn_union {D C₁ C₂ : Set ℂ} {N : Subgroup (Equiv.Perm (Fibre 
     hδ.fibreEquiv_join hθ.reverse d0 d1 r0 r1 hδ' e0 e1,
     hθ.fibreEquiv_reverse θ0 θ1 hθ.reverse r0 r1] at this
   rw [mem_tailComap]
-  convert this using 2
-  ext q
-  simp
+  convert this using 1
+  exact Equiv.ext fun q => by simp
 
 /-! ## Paths inside a convex region -/
 
@@ -220,8 +219,8 @@ theorem convex_halfPlane (v : ℂ) (c : ℝ) : Convex ℝ (halfPlane v c) := by
   have h2 : 0 ≤ t * (y.re * v.re + y.im * v.im - c) := mul_nonneg ht (sub_pos.2 hy).le
   rcases hs.eq_or_lt with h0 | hspos
   · have ht1 : t = 1 := by linarith
-    rw [← h0, ht1] at key
-    linarith [sub_pos.2 hy]
+    rw [← h0, ht1]
+    simpa only [zero_mul, zero_add, one_mul] using hy
   · linarith [mul_pos hspos (sub_pos.2 hx)]
 
 theorem isOpen_halfPlane (v : ℂ) (c : ℝ) : IsOpen (halfPlane v c) :=
@@ -266,20 +265,26 @@ theorem turnPath_eq (p : ℂ) (r s : ℝ) :
   push_cast
   ring
 
+theorem turnPath_re (p : ℂ) (r s : ℝ) :
+    (turnPath p r s).re = p.re + r ^ 2 * Real.cos (2 * Real.pi * s) := by
+  rw [turnPath_eq]
+  simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+    Complex.I_im, mul_zero, zero_mul, sub_zero, add_zero]
+
+theorem turnPath_im (p : ℂ) (r s : ℝ) :
+    (turnPath p r s).im = p.im + r ^ 2 * Real.sin (2 * Real.pi * s) := by
+  rw [turnPath_eq]
+  simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+    Complex.I_im, add_zero, mul_one, mul_zero]
+
 theorem turnPath_mem_sector {p : ℂ} {r : ℝ} (hr : 0 < r) {θ s : ℝ}
     (h : 0 < Real.cos (2 * Real.pi * s - θ)) : turnPath p r s ∈ sector p θ := by
-  have hre : (turnPath p r s).re = p.re + r ^ 2 * Real.cos (2 * Real.pi * s) := by
-    rw [turnPath_eq]
-    simp
-  have him : (turnPath p r s).im = p.im + r ^ 2 * Real.sin (2 * Real.pi * s) := by
-    rw [turnPath_eq]
-    simp
   show p.re * Real.cos θ + p.im * Real.sin θ <
     (turnPath p r s).re * Real.cos θ + (turnPath p r s).im * Real.sin θ
-  rw [hre, him]
+  rw [turnPath_re, turnPath_im]
   have := mul_pos (pow_pos hr 2) h
   rw [Real.cos_sub] at this
-  nlinarith [this]
+  linarith
 
 theorem turnPath_mem_sector_one {p : ℂ} {r : ℝ} (hr : 0 < r) {s : ℝ}
     (hs : s ∈ Icc (0 : ℝ) (1 / 3)) : turnPath p r s ∈ sector p (Real.pi / 3) :=
@@ -432,9 +437,8 @@ theorem lassosIn_of_one_branchTime {D C : Set ℂ} {N : Subgroup (Equiv.Perm (Fi
         rw [hl.fibreEquiv_join hξ l0 l1 ξ0 ξ1 hη₁ a0 a1,
           hrr.reverse.fibreEquiv_join hξ v0 v1 ξ0 ξ1 hη₂ b0 b1,
           hrr.fibreEquiv_reverse c0 c1 hrr.reverse v0 v1]
-        convert this using 2
-        ext q
-        simp
+        convert this using 1
+        exact Equiv.ext fun q => by simp
   have hUS := lassosIn_union ((hSopen _).union (hSopen _)) (hSopen _)
     (union_subset (hSD _) (hSD _)) (hSD _) hU (hSL _) hc₁
     (joinedIn_of_convex (hSconv _) (hSopen _) (hSpos _) (hSfin _) hx₀3 hx₀b) hJ
@@ -455,40 +459,41 @@ theorem lassosIn_of_two_branchTimes {D C : Set ℂ} {N : Subgroup (Equiv.Perm (F
       (C' ∩ branchTimes).ncard < (C ∩ branchTimes).ncard → LassosIn D C' b N) :
     LassosIn D C b N := by
   -- the functional `φ τ = ⟨τ, p₂ − p₁⟩` separates the two branch times
-  have hφ : ∀ τ : ℂ, τ.re * (p₂ - p₁).re + τ.im * (p₂ - p₁).im =
-      τ.re * (p₂.re - p₁.re) + τ.im * (p₂.im - p₁.im) := fun τ => by
-    rw [Complex.sub_re, Complex.sub_im]
-  have hnorm : 0 < (p₂.re - p₁.re) ^ 2 + (p₂.im - p₁.im) ^ 2 := by
-    by_contra hcon
-    have h0 : (p₂.re - p₁.re) ^ 2 + (p₂.im - p₁.im) ^ 2 = 0 :=
-      le_antisymm (not_lt.1 hcon) (by positivity)
-    have hre : p₂.re - p₁.re = 0 := by nlinarith [sq_nonneg (p₂.re - p₁.re),
-      sq_nonneg (p₂.im - p₁.im)]
-    have him : p₂.im - p₁.im = 0 := by nlinarith [sq_nonneg (p₂.re - p₁.re),
-      sq_nonneg (p₂.im - p₁.im)]
-    exact hne (Complex.ext (by linarith) (by linarith))
-  set φ : ℂ → ℝ := fun τ => τ.re * (p₂.re - p₁.re) + τ.im * (p₂.im - p₁.im) with hφdef
+  obtain ⟨φ, hφdef⟩ : ∃ φ : ℂ → ℝ, ∀ τ : ℂ,
+      φ τ = τ.re * (p₂.re - p₁.re) + τ.im * (p₂.im - p₁.im) := ⟨_, fun _ => rfl⟩
   have hφ12 : φ p₁ < φ p₂ := by
-    have : φ p₂ - φ p₁ = (p₂.re - p₁.re) ^ 2 + (p₂.im - p₁.im) ^ 2 := by
-      simp only [hφdef]
+    have hsq : φ p₂ - φ p₁ = (p₂.re - p₁.re) ^ 2 + (p₂.im - p₁.im) ^ 2 := by
+      rw [hφdef, hφdef]
       ring
-    linarith
+    have hnn : 0 ≤ (p₂.re - p₁.re) ^ 2 + (p₂.im - p₁.im) ^ 2 := by positivity
+    rcases hnn.eq_or_lt with h0 | hlt
+    · exfalso
+      have hre : (p₂.re - p₁.re) ^ 2 = 0 := by
+        linarith [sq_nonneg (p₂.re - p₁.re), sq_nonneg (p₂.im - p₁.im)]
+      have him : (p₂.im - p₁.im) ^ 2 = 0 := by
+        linarith [sq_nonneg (p₂.re - p₁.re), sq_nonneg (p₂.im - p₁.im)]
+      exact hne (Complex.ext (by linarith [(pow_eq_zero_iff two_ne_zero).1 hre])
+        (by linarith [(pow_eq_zero_iff two_ne_zero).1 him]))
+    · linarith
   -- a level between the two values that no branch time of `C` takes, and a strip around it
   have hFfin : (φ '' (C ∩ branchTimes)).Finite := hfin.image φ
   obtain ⟨c, hcI, hcF⟩ := (Ioo_infinite hφ12).exists_notMem_finite hFfin
   obtain ⟨ε, hε, hballε⟩ := Metric.isOpen_iff.1 hFfin.isClosed.isOpen_compl c hcF
   have hstrip : ∀ τ ∈ C, τ ∈ branchTimes → c - ε < φ τ → φ τ < c + ε → False := by
     intro τ hτ hbr hlo hhi
-    refine hballε (x := φ τ) ?_ (mem_image_of_mem _ ⟨hτ, hbr⟩)
-    rw [mem_ball, Real.dist_eq, abs_lt]
-    constructor <;> linarith
+    have hmemb : φ τ ∈ ball c ε := by
+      rw [mem_ball, Real.dist_eq, abs_lt]
+      constructor <;> linarith
+    exact hballε hmemb (mem_image_of_mem _ ⟨hτ, hbr⟩)
   -- the two sides
   have hmem₁ : ∀ τ, τ ∈ halfPlane (-(p₂ - p₁)) (-(c + ε)) ↔ φ τ < c + ε := fun τ => by
+    rw [hφdef]
     simp only [halfPlane, mem_setOf_eq, Complex.neg_re, Complex.neg_im, Complex.sub_re,
-      Complex.sub_im, hφdef]
+      Complex.sub_im]
     constructor <;> intro h <;> linarith
   have hmem₂ : ∀ τ, τ ∈ halfPlane (p₂ - p₁) (c - ε) ↔ c - ε < φ τ := fun τ => by
-    simp only [halfPlane, mem_setOf_eq, Complex.sub_re, Complex.sub_im, hφdef]
+    rw [hφdef]
+    simp only [halfPlane, mem_setOf_eq, Complex.sub_re, Complex.sub_im]
   have hlt₁ : ((C ∩ halfPlane (-(p₂ - p₁)) (-(c + ε))) ∩ branchTimes).ncard <
       (C ∩ branchTimes).ncard := by
     refine Set.ncard_lt_ncard ⟨fun τ hτ => ⟨hτ.1.1, hτ.2⟩, fun hsub => ?_⟩ hfin
@@ -510,12 +515,11 @@ theorem lassosIn_of_two_branchTimes {D C : Set ℂ} {N : Subgroup (Equiv.Perm (F
   obtain ⟨x₀, hx₀C, hx₀φ⟩ : ∃ x₀ ∈ C, φ x₀ = c := by
     refine ⟨p₁ + ((c - φ p₁) / (φ p₂ - φ p₁)) • (p₂ - p₁), hC.add_smul_sub_mem h₁.1 h₂.1
       ⟨div_nonneg (sub_nonneg.2 hcI.1.le) hden.le, (div_le_one hden).2 (by linarith [hcI.2])⟩, ?_⟩
-    have hval : φ (p₁ + ((c - φ p₁) / (φ p₂ - φ p₁)) • (p₂ - p₁)) =
-        φ p₁ + (c - φ p₁) / (φ p₂ - φ p₁) * (φ p₂ - φ p₁) := by
+    have hlin : ∀ t : ℝ, φ (p₁ + t • (p₂ - p₁)) = φ p₁ + t * (φ p₂ - φ p₁) := fun t => by
       simp only [hφdef, Complex.add_re, Complex.add_im, Complex.smul_re, Complex.smul_im,
         Complex.sub_re, Complex.sub_im, smul_eq_mul]
       ring
-    rw [hval, div_mul_cancel₀ _ hden.ne']
+    rw [hlin, div_mul_cancel₀ _ hden.ne']
     ring
   have hx₀1 : x₀ ∈ C ∩ halfPlane (-(p₂ - p₁)) (-(c + ε)) :=
     ⟨hx₀C, (hmem₁ x₀).2 (by linarith)⟩
@@ -542,7 +546,7 @@ theorem lassosIn_of_two_branchTimes {D C : Set ℂ} {N : Subgroup (Equiv.Perm (F
 /-- Around every branch time of `D` there are arbitrarily small turns whose lassos with tail
 inside `D` have their transports in `N`. -/
 def TurnsIn (D : Set ℂ) (b : ℂ) (N : Subgroup (Equiv.Perm (Fibre b))) : Prop :=
-  ∀ p ∈ D, p ∈ branchTimes → ∀ ε > 0, ∃ r, 0 < r ∧ r < ε ∧
+  ∀ p ∈ D, p ∈ branchTimes → ∀ ε > (0 : ℝ), ∃ r : ℝ, 0 < r ∧ r < ε ∧
     ∀ (δ : ℝ → ℂ) (hδ : IsForwardPath δ) (d0 : δ 0 = b) (d1 : δ 1 = p + (r : ℂ) ^ 2),
       (∀ s ∈ Icc (0 : ℝ) 1, δ s ∈ D) → ∀ hT : IsForwardPath (turnPath p r),
         hT.fibreEquiv (turnPath_zero p r) (turnPath_one p r) ∈ tailComap hδ d0 d1 N
@@ -556,18 +560,19 @@ theorem lassosIn_of_turnsIn {D : Set ℂ} {N : Subgroup (Equiv.Perm (Fibre b))}
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     intro C hC hCo hCD hpos hfin hcard
-    rcases Nat.lt_or_ge 1 n with hn | hn
-    · obtain ⟨p₁, h₁, p₂, h₂, hne⟩ := (Set.one_lt_ncard hfin).1 (hcard ▸ hn)
+    subst hcard
+    rcases Nat.lt_or_ge 1 (C ∩ branchTimes).ncard with hn | hn
+    · obtain ⟨p₁, h₁, p₂, h₂, hne⟩ := (Set.one_lt_ncard hfin).1 hn
       exact lassosIn_of_two_branchTimes hC hCo hCD hpos hfin h₁ h₂ hne
-        fun C' hC' hCo' hsub hlt => ih _ (hcard ▸ hlt) C' hC' hCo' (hsub.trans hCD)
+        fun C' hC' hCo' hsub hlt => ih _ hlt C' hC' hCo' (hsub.trans hCD)
           (fun τ hτ => hpos τ (hsub hτ)) (hfin.subset fun τ hτ => ⟨hsub hτ.1, hτ.2⟩) rfl
     · rcases Nat.le_one_iff_eq_zero_or_eq_one.1 hn with h0 | h1
-      · have hempty := (Set.ncard_eq_zero hfin).1 (hcard.trans h0)
+      · have hempty := (Set.ncard_eq_zero hfin).1 h0
         refine lassosIn_of_convex hC hpos (fun τ hτ hbr => ?_) N
         have : τ ∈ C ∩ branchTimes := ⟨hτ, hbr⟩
         rw [hempty] at this
-        exact this
-      · obtain ⟨p, hp⟩ := Set.ncard_eq_one.1 (hcard.trans h1)
+        exact (Set.mem_empty_iff_false τ).1 this
+      · obtain ⟨p, hp⟩ := Set.ncard_eq_one.1 h1
         have hpC : p ∈ C ∩ branchTimes := by
           rw [hp]
           exact mem_singleton p
@@ -579,7 +584,7 @@ theorem lassosIn_of_turnsIn {D : Set ℂ} {N : Subgroup (Equiv.Perm (Fibre b))}
           (fun τ hτ => hρC ?_) hturn
         · have : τ ∈ C ∩ branchTimes := ⟨hτ, hbr⟩
           rw [hp] at this
-          exact this
+          exact mem_singleton_iff.1 this
         · rw [mem_closedBall] at hτ
           rw [mem_ball]
           nlinarith [mul_pos hr (sub_pos.2 hr1)]
@@ -595,7 +600,7 @@ theorem loopsIn_of_turnsIn {D : Set ℂ} (hD : Convex ℝ D) (hDo : IsOpen D)
   -- a bounded convex part of `D` around the loop, away from the imaginary axis
   obtain ⟨s₀, hs₀, hmin⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.2 zero_le_one)
     (Complex.continuous_re.comp_continuousOn hγ.continuousOn)
-  obtain ⟨T, hTb⟩ := isCompact_Icc.exists_bound_of_continuousOn' hγ.continuousOn
+  obtain ⟨T, hTb⟩ := isCompact_Icc.exists_bound_of_continuousOn hγ.continuousOn
   have ht₀ : 0 < (γ s₀).re / 2 := half_pos (hγ.re_pos s₀ hs₀)
   have hmemH : ∀ τ : ℂ, τ ∈ halfPlane 1 ((γ s₀).re / 2) ↔ (γ s₀).re / 2 < τ.re := fun τ => by
     simp [halfPlane]
@@ -619,7 +624,7 @@ theorem loopsIn_of_turnsIn {D : Set ℂ} (hD : Convex ℝ D) (hDo : IsOpen D)
   have hc := IsForwardPath.const (τ := b) (g0 ▸ hγ.re_pos 0 h00) (g0 ▸ hγ.simple 0 h00)
   have := hL (fun _ => b) hc rfl b rfl (fun _ _ => hbD) γ hγ g0 g1 hγC
   rw [mem_tailComap] at this
-  convert this using 2
+  convert this using 1
   refine Equiv.ext fun q => Subtype.ext ?_
   have e : hc.fibreEquiv rfl rfl q = q := Subtype.ext (hc.fibreEquiv_const_apply rfl rfl q)
   rw [Equiv.trans_apply, Equiv.trans_apply, hc.fibreEquiv_const_symm_apply, e]
@@ -648,12 +653,14 @@ theorem forwardMonodromy_eq_closure_turnLassos (hb₀ : 0 < b.re) (hb : b ∉ br
     exact Subgroup.subset_closure ⟨p, ε / 2, δ, hδ, d0, d1, hT, hpb, rfl⟩
   · rw [Subgroup.closure_le]
     rintro σ ⟨p, r, δ, hδ, d0, d1, hT, -, rfl⟩
+    rw [SetLike.mem_coe, mem_forwardMonodromy]
     have r0 : pathRev δ 0 = p + (r : ℂ) ^ 2 := (pathRev_zero δ).trans d1
     have r1 : pathRev δ 1 = b := (pathRev_one δ).trans d0
     have hδT := hδ.join hT (d1.trans (turnPath_zero p r).symm)
     have hloop := hδT.join hδ.reverse (((pathJoin_one _ _).trans (turnPath_one p r)).trans r0.symm)
     refine ⟨_, hloop, (pathJoin_zero _ _).trans ((pathJoin_zero _ _).trans d0),
       (pathJoin_one _ _).trans r1, fun q => ?_⟩
+    rw [Equiv.trans_apply, Equiv.trans_apply]
     refine ((hδ.transports_fibreEquiv d0 d1 q).trans
       (hT.transports_fibreEquiv (turnPath_zero p r) (turnPath_one p r) _)).trans ?_
     have := (hδ.transports_fibreEquiv d0 d1 ((hδ.fibreEquiv d0 d1).symm

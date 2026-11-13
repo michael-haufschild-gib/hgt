@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.CompactKernelL2Convolution
 
-/-!+# Translation kernels against square-integrable profiles
+/-!
+# Translation kernels against square-integrable profiles
 
 A product-measure square majorant justifies Fubini without pointwise bounds
 on either profile. A square-integrable kernel then bounds its pairing with

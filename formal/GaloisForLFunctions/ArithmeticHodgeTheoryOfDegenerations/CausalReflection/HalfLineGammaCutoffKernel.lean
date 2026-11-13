@@ -25,7 +25,7 @@ theorem integrableOn_sq_archLevyDensity {δ : ℝ} (hδ : 0 < δ) :
   refine (hi.const_mul ((1 - Real.exp (-2 * δ))⁻¹ ^ 2)).mono'
     (measurable_archLevyDensity.pow_const 2).aestronglyMeasurable ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-  rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+  rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (archLevyDensity h))]
   have hb := pow_le_pow_left₀ (archLevyDensity_pos (hδ.trans hh)).le
     (archLevyDensity_le_of_le hδ hh.le) 2
   have he : Real.exp (-(1 / 2 : ℝ) * h) ^ 2 = Real.exp (-h) := by

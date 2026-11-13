@@ -24,7 +24,9 @@ theorem primePairTerm_symm (F G : ℝ → ℝ) (n : ℕ) :
         (integral_add_right_eq_self (fun u => F u * G (u - s)) s).symm
       _ = _ := by
         apply integral_congr_ae
-        exact Eventually.of_forall fun u => by rw [add_sub_cancel_right, mul_comm]
+        exact Eventually.of_forall fun u => by
+          dsimp only
+          rw [add_sub_cancel_right, mul_comm]
   have hplus := hlag (-Real.log (n : ℝ))
   simp only [sub_neg_eq_add, ← sub_eq_add_neg] at hplus
   unfold primePairTerm

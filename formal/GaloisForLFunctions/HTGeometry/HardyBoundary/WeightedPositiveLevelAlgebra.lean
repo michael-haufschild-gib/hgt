@@ -10,8 +10,7 @@ while an exact difference identity separates the Gamma jump correction.
 
 set_option autoImplicit false
 noncomputable section
-namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
-open HTGeometry
+namespace GaloisForLFunctions.HTGeometry
 
 /-- A positive barrier commutes with truncation after dividing by its value. -/
 theorem barrier_mul_truncPos {p : ℝ} (hp : 0 < p) (t x : ℝ) :
@@ -67,6 +66,30 @@ theorem weighted_positiveLevel_jump_lower {p q : ℝ} (hp : 0 < p) (hq : 0 < q)
     (sq_nonneg _).trans (sub_mul_truncPos_sub_ge t (x / p) (y / q))
   exact le_add_of_nonneg_left (mul_nonneg (mul_pos hp hq).le hmono)
 
+/-- A coercive diagonal absorbs two nonnegative forcing rows above a common positive level. -/
+theorem weighted_positiveLevel_coercivity {A p q D P t : ℝ}
+    (hA : 1 ≤ A) (hAp : 1 + q ≤ A * p) (hq : 0 ≤ q)
+    (ht : 0 ≤ t) (hD : D ≤ t) (hP : P ≤ t) (x : ℝ) :
+    max (x - t * p) 0 ^ 2 ≤
+      A * (x * max (x - t * p) 0) - (D + P * q) * max (x - t * p) 0 := by
+  have hg : 0 ≤ max (x - t * p) 0 := le_max_right _ _
+  have he : x * max (x - t * p) 0 =
+      max (x - t * p) 0 ^ 2 + t * p * max (x - t * p) 0 := by
+    by_cases hx : 0 ≤ x - t * p
+    · rw [max_eq_left hx]
+      ring
+    · rw [max_eq_right (lt_of_not_ge hx).le]
+      ring
+  have hforce : D + P * q ≤ A * p * t := by
+    have hpq := mul_le_mul_of_nonneg_right hP hq
+    have hap := mul_le_mul_of_nonneg_right hAp ht
+    nlinarith only [hD, hpq, hap]
+  have hsquare := mul_nonneg (sub_nonneg.mpr hA) (sq_nonneg (max (x - t * p) 0))
+  have hrow := mul_le_mul_of_nonneg_right hforce hg
+  rw [he]
+  nlinarith only [hsquare, hrow]
+
 #print axioms weighted_positiveLevel_row
 #print axioms weighted_positiveLevel_jump_lower
-end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
+#print axioms weighted_positiveLevel_coercivity
+end GaloisForLFunctions.HTGeometry

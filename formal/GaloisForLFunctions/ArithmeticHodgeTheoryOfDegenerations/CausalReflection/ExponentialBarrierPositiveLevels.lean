@@ -139,11 +139,12 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel {F : ℝ �
     rw [Real.norm_eq_abs, abs_of_nonneg (hb u).1, Real.norm_eq_abs]
     exact (hb u).2
   · refine hF.sq.mono' (hGm.pow_const 2).aestronglyMeasurable (Eventually.of_forall fun u => ?_)
-    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (exponentialBarrierPositiveLevel β t F u))]
     exact hsq u
   · refine hF.exponential.mono' ((hGm.pow_const 2).mul (by fun_prop)).aestronglyMeasurable
       (Eventually.of_forall fun u => ?_)
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg
+      (sq_nonneg (exponentialBarrierPositiveLevel β t F u)) (Real.exp_pos _).le)]
     exact mul_le_mul_of_nonneg_right (hsq u) (Real.exp_pos _).le
   · intro u hu
     rw [exponentialBarrierPositiveLevel, hF.support u hu, zero_sub]

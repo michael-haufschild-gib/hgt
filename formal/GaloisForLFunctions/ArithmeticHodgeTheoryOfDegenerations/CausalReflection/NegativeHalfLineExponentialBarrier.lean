@@ -60,8 +60,9 @@ private theorem exponentialBarrier_product {β h : ℝ} (hh : 0 ≤ h) :
       (Iic (-h)).indicator (fun u => Real.exp (β * h) * Real.exp ((2 * β) * u)) := by
   funext u
   by_cases hu : u ∈ Iic (-h)
-  · have hu0 : u ∈ Iic (0 : ℝ) := by change u ≤ 0; linarith only [hu, hh]
-    have huh : u + h ∈ Iic (0 : ℝ) := by change u + h ≤ 0; linarith only [hu]
+  · have hule : u ≤ -h := hu
+    have hu0 : u ∈ Iic (0 : ℝ) := by change u ≤ 0; linarith only [hule, hh]
+    have huh : u + h ∈ Iic (0 : ℝ) := by change u + h ≤ 0; linarith only [hule]
     simp only [negativeHalfLineExponentialBarrier, indicator_of_mem hu,
       indicator_of_mem hu0, indicator_of_mem huh]
     rw [← Real.exp_add, ← Real.exp_add]
@@ -69,9 +70,10 @@ private theorem exponentialBarrier_product {β h : ℝ} (hh : 0 ≤ h) :
     ring
   · have huh : u + h ∉ Iic (0 : ℝ) := by
       intro hzero
+      have hle : u + h ≤ 0 := hzero
       apply hu
       change u ≤ -h
-      linarith only [hzero]
+      linarith only [hle]
     simp only [negativeHalfLineExponentialBarrier, indicator_of_notMem hu,
       indicator_of_notMem huh, mul_zero]
 
@@ -100,7 +102,6 @@ theorem translation_defect_negativeHalfLineExponentialBarrier {β h : ℝ}
       AutocorrelationKrein.autocorr_zero_eq, integral_sq_negativeHalfLineExponentialBarrier hβ,
       autocorr_negativeHalfLineExponentialBarrier hβ hh]
     field_simp [hβ.ne']
-    ring
   refine ⟨he, ?_⟩
   rw [he]
   apply (div_le_iff₀ hβ).mpr

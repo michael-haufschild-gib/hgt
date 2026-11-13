@@ -40,8 +40,30 @@ non-Ramanujan graph, a "virtual curve") has a finite stratum only modulo the per
    terms)`, entire continuation, zeros with multiplicities, the functional equation from the
    symmetry of the identity term.
 
+## Step 1 in detail: an explicit cocompact group (paper)
+`B = (2, 3)_ℚ` is a division algebra: `x₀² − 2x₁² − 3x₂² + 6x₃² = 0` in integers forces `3 | x₀, x₁`
+(squares mod 3), then `3 | x₂, x₃`: infinite descent. `ι(i) = diag(√2, −√2)`, `ι(j) = [[0,3],[1,0]]`
+embeds `B ⊗ ℝ ≅ M₂(ℝ)` with `nrd = det`. `O = ℤ⟨1, i, j, ij⟩`, `Γ = O¹ = {x ∈ O : nrd x = 1}`.
+- *Discrete*: `ι(O)` is a lattice in `M₂(ℝ) ≅ ℝ⁴`.
+- *Cocompact* (no Mahler): for `z = g·i`, Minkowski gives `x ∈ O ∖ 0` with `‖g⁻¹ι(x)‖² ≤ C`
+  (Frobenius norm; `covol(g⁻¹ι(O)) = covol(ι(O))`). Anisotropy gives `1 ≤ |nrd x| ≤ C/2`. For each
+  `n`, the elements of norm `n` fall into finitely many `O¹`-orbits under left multiplication:
+  `x′ ≡ x mod nO` and `nrd x = nrd x′ = n` give `x′x⁻¹ = x′x̄/n ∈ O` of norm 1. With a finite set `R`
+  of representatives, `x = γ r`, so `‖g⁻¹γ‖ ≤ C max_R ‖r⁻¹‖`, i.e. `d(γ·i, z) ≤ R₀`: every point is
+  within a fixed distance of the orbit `Γ·i`, so the Dirichlet domain at `i` is compact.
+- *Torsion-free subgroup*: `Γ(5) = {γ ≡ 1 mod 5O}`; a torsion element has `trd ∈ {0, ±1, ±2}`,
+  `≡ 2 mod 5` forces `trd = 2`, so `γ − 1` is nilpotent, hence `0` in a division algebra.
+- *Crux*: a nonzero homomorphism `Γ(5) → ℤ` (needed for the cyclic covers with `λ₁ → 0`). Candidates:
+  Eichler periods of a nonzero weight-2 form (`γ ↦ ∫_{z₀}^{γz₀} f dz`; zero periods force `f = 0`),
+  or `H₁ = Γ^{ab}` with `χ(X) < 0` from Gauss–Bonnet. Given `χ̃`, an equivariant Lipschitz
+  `θ(z) = Σ_γ ψ(γ⁻¹z) χ̃(γ)` (Γ-partition of unity `ψ`) gives the test function `e^{2πiθ/n}` on
+  `Γ_n = ker(χ̃ mod n)`, orthogonal to constants, with Rayleigh quotient `O(1/n²)`.
+
 ## Status
-Not started in Lean. Corpus inputs located: point-pair mean value and integral principle
+Not started in Lean. The vendored `DifferentialGeometry.Analysis.Spectral.Scalar` (built oleans:
+`EigenBasis`, `Spectrum`, `Enumeration`) gives the eigenbasis and discrete spectrum of the Laplacian
+on a compact boundaryless Riemannian manifold; using it needs `Γ\ℍ` as a smooth manifold with the
+hyperbolic metric. Corpus inputs located: point-pair mean value and integral principle
 (`HyperbolicRotationMean`, `HyperbolicPointPair`), Selberg transforms and the test-field eigenvalue
 criterion for `Γ_N` (`RepPointPairSmallEigenCriterion`, `NonvacuousSmallEigenvalue`), the Mayer
 determinant and geodesic Euler product for the modular surface (`GaussMayerGeodesicProduct`), trace

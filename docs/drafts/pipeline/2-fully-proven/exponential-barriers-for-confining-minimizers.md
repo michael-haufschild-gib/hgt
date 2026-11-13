@@ -134,12 +134,11 @@ passes its final plain source audit without warnings, with exactly
 olean exists. It proves both directions of the jump/Gamma domain bridge
 and closure under zero-preserving real contractions.
 
-Thirteen further modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+Twelve further modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
 await final source audits:
 
 - `NegativeHalfLineExponentialBarrier`: exact exponential autocorrelation, translation defect, and Gamma integrability.
 - `ExponentialBarrierPositiveLevels`: admissibility of positive-level tests in the actual domain.
-- `WeightedPositiveLevelAlgebra`: the weighted row inequality and exact relative-jump decomposition.
 - `HalfLineGammaMixedEnergy`: absolute integrability and the exact mixed Lévy identity.
 - `HalfLineExponentialBarrierJumps`: the integrated exponential correction for each mixed Gamma jump.
 - `ExponentialBarrierPrimeEdges`: the support-restricted diagonal comparison for each literal prime term.
@@ -151,6 +150,8 @@ await final source audits:
 - `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential.
 - `ExponentialBarrierPoleComparison`: both polar terms are bounded below by the test's half-exponential ordinary mass.
 
+The unchecked helper `HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra`
+proves the weighted row inequality and exact relative-jump decomposition.
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
