@@ -135,6 +135,13 @@ almost-everywhere bounds and this summable majorant should justify both
 the local boundedness and the integral/series interchange. Neither
 realization is formalized yet.
 
+The same envelope would place the backward series, set to zero on
+`[0,∞)`, in both `L¹` and `L²` on the whole line:
+`|B_F(u)|≤C exp(βu) halfLineExponentialPrimeTail(β)` for `u<0`.
+Its summands have summable `L¹` norms by this majorant. Thus the integral
+interchange can be obtained before localization; localization is needed
+to remove the forward row and control the growing confining potential.
+
 `TheWeilRieszVectorsLocalizeToTheLogarithmicHalfLine.logarithmicApertureLeftLocalized_solves`
 supplies a direct transfer template: test the original equation with the
 cutoff of an arbitrary half-line form-domain vector, then apply

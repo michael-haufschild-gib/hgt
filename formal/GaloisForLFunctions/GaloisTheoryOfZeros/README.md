@@ -49,9 +49,10 @@ two involutions `c` and `r`. There are three tiers.
      carries a zero out of its pair (an *exchange*);
    - conjugation is the *word* of the turns around the real branch times.
 
-   The turns generate `G₊`, so the first two items describe the whole group: it preserves
-   every pair if and only if no collision away from the centre exists at a forward time, and
-   it is then a commutative group of sign flips. That such a collision exists is not proved.
+   The turns generate `G₊`, so the first two items describe the whole group. Both parts are
+   present: centre times give sign flips, and collisions away from the centre exist at forward
+   times of arbitrarily large real part, so `G₊` contains exchanges and is not a group of sign
+   flips. These collisions are at nonreal times; RH concerns the positive real axis.
 
 ## Objects
 
@@ -183,6 +184,18 @@ finitely many zeros).
   a subgroup, and a turn around a time whose collisions are all central lies in it. A loop in
   a convex region whose transport is outside this subgroup therefore encloses a collision
   away from the centre.
+- **Two terms at a saddle time.** For `τ = πe^{2a}/a` with `Re a` large and `Im a` just below
+  `π/4`, the integral of `H_τ` is moved to the corner path through `0` and through the saddle
+  `a` of `τx² − πe^{2x}`. The segment through `0` gives a constant `B₀` (the Gaussian at the
+  centre value of `Φ`), the line through `a` gives `S₀e^{iza}` (the Gaussian at the saddle),
+  and `H_τ(ζ/a) = B₀ + 2S₀ cos ζ` up to a relative error that is a power of `1/‖τ‖`. The zeros
+  near the centre are those of a cosine plus a constant; they collide where `2S₀ = ±B₀`.
+- **A loop of saddles.** `(2S₀/B₀)²` is an explicit function `Q(a)` without square roots.
+  A loop `a(s)` on which `Q(a(s)) cos² ξ₀(s) ≈ 1`, `ξ₀(s) = e^{iπs}/4`, keeps a zero of `H`
+  near `θ + ξ₀(s)` in the variable `ζ = az`, `θ ∈ {π, 2π}`, and returns it near `θ − ξ₀(0)`:
+  the zero is carried out of its pair, and the subgroup detector gives the collision. The
+  sign of `2S₀ cos ξ₀/B₀` is constant on the loop because a continuous square root of a
+  function near `1` cannot change sign.
 - **Symmetric functions of a fibre.** Each `H_τ` has order one with logarithmic type, hence a
   genus-one product over its zeros. Dividing the partial fraction of `H_τ'/H_τ` by `z` and
   letting `z → 0` gives the sum of the inverse squares of the zeros as `−H_τ''(0)/H_τ(0)`,
@@ -383,6 +396,12 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   `−z`. So a loop inside a convex region that carries a zero out of its pair certifies a
   multiple zero `ζ ≠ 0` at a time of the region. `G₊` preserves every pair if and only if no
   multiple zero `ζ ≠ 0` exists at a forward time; it is then commutative of exponent two.
+- *A collision away from the centre exists.* For `Re a ≥ 50` and
+  `1/(4 Re a) ≤ π/4 − Im a ≤ 1/Re a`, at the time `τ = πe^{2a}/a` and for `‖ζ‖ ≤ 8`:
+  `‖H_τ(ζ/a) − B₀(a) − 2S₀(a) cos ζ‖ ≤ C (Re a)⁵ e^{−Re a}(‖B₀(a)‖ + ‖S₀(a)‖)`. For every `T`
+  there are a time `τ` with `Re τ > T` and a place `ζ ≠ 0` with `H_τ(ζ) = H_τ'(ζ) = 0`. At
+  every forward base time off the branch times, `G₊` contains an element that carries a zero
+  `z` to a zero other than `±z`: the forward monodromy group does not preserve the pairs.
 - *Real branch times.* If a segment of real times from `a < 0` to `b > 0` contains no branch
   time, then infinitely many nonreal zeros of `H_a` escape along it. So every real
   neighbourhood of the time `0` contains a branch time, or zeros escape along real times
@@ -423,7 +442,14 @@ collisions.
 [the turn on the whole fibre](TheTurnAroundABranchTimeMovesOnlyTheSheetsOfItsCollisions.lean),
 [gluing](TheMonodromyOverAUnionOfTwoRegionsComesFromTheRegions.lean),
 [generation](TheTurnsGenerateTheForwardMonodromyGroup.lean),
-[pairs](OnlyACollisionOffTheCentreMovesAPair.lean))
+[pairs](OnlyACollisionOffTheCentreMovesAPair.lean),
+[corner path](TheHeatFamilyIsAnIntegralThroughTheOriginAndTheSaddle.lean),
+[Gaussian at the saddle](TheGaussianAtTheSaddleOfTheKernel.lean),
+[bulk term](TheSegmentThroughTheOriginIsAGaussianAtTheCentreValue.lean),
+[saddle term](TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue.lean),
+[two-term model](TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine.lean),
+[loop of saddles](ALoopOfSaddlesTurnsTheSquaredRatioOfTheTwoTermsAroundOne.lean),
+[collision away from the centre](ACollisionAwayFromTheCentreExistsAtAForwardTime.lean))
 
 ## Criteria
 
@@ -441,8 +467,8 @@ collisions.
 ## Questions
 
 1. **The forward monodromy group (B193).** Is there a collision away from the centre at a
-   forward time? Is `G₊` transitive on the pairs `{z, −z}`, and is it the full group of
-   restricted signed permutations?
+   forward time? (Yes.) Is `G₊` transitive on the pairs `{z, −z}`, and is it the full group
+   of restricted signed permutations?
 
    Settled: `G₊(τ)` is defined, a group of signed permutations of the pairs, the same up to
    conjugation at every base time; `cr ∈ G₊(t)` at real `t > 0`, trivial for all `t` iff RH;
@@ -452,16 +478,18 @@ collisions.
    the path; every element moves finitely many zeros, and `r` is not an element; a turn moves
    only the sheets of the collisions at its time; the turns generate `G₊`; `G₊` preserves
    every pair if and only if no collision away from the centre exists at a forward time, and
-   a loop in a convex region that moves a zero out of its pair certifies one in the region.
+   a loop in a convex region that moves a zero out of its pair certifies one in the region;
+   such collisions exist at forward times of arbitrarily large real part, so `G₊` contains
+   exchanges, does not preserve the pairs, and the squared zeros are not single-valued
+   functions of the forward time.
 
-   The three possible answers. *No collision away from the centre:* RH, and more than RH,
-   since RH excludes such collisions on the positive real axis only; `G₊` is then a
-   commutative group of sign flips and the squared zeros are single-valued functions of the
-   forward time. *Exchanges exist and the
-   group is transitive or full:* the cover is in the position of a generic curve over a finite
-   field, and the remaining problem is the word of conjugation, not the group. *Exchanges
-   exist and the group is intransitive:* the orbits are a partition of the pairs that is
-   defined without a sign.
+   The two remaining answers. *The group is transitive or full:* the cover is in the position
+   of a generic curve over a finite field, and the remaining problem is the word of
+   conjugation, not the group. *The group is intransitive:* the orbits are a partition of the
+   pairs that is defined without a sign. The model at a saddle time shows the mechanism of
+   the first answer: where `2S₀ = −B₀` the zeros near `ζ = 2πk ± ξ` collide for every `k`
+   (`k = 0` is the centre), where `2S₀ = B₀` those near `ζ = π + 2πk ± ξ`, and the two
+   families of exchanges link neighbouring zeros along the whole chain.
 2. **Independence of the moments.** Are the normalized moments `μ₂/μ₀, …, μ₂ₙ/μ₀` of `Φ`
    algebraically independent at each degree? This decides the group of every Jensen equation:
    it is `C₂ ≀ S_n` over the field of the coefficients unless the moments satisfy a polynomial
@@ -485,7 +513,7 @@ collisions.
 | M1 | the zero field and its criteria | formalized |
 | M2 | the Jensen dichotomy: full group or dependent moments | formalized |
 | M3 | the forward monodromy group with the turns and conjugation as elements | formalized |
-| M4 | a collision away from the centre at a forward time | open |
+| M4 | a collision away from the centre at a forward time | formalized |
 | M5 | independence of the moments at low degree | open |
 | M6 | the dichotomy for the degree over `K` | open |
 
@@ -495,7 +523,9 @@ Kummer theory of the width classes; descent of square classes; the Artin–Schre
 real fields (orderings of the base fields and the conjugations they define); transcendence of
 prime powers; specialization and genericity for the finite equations; transport along paths
 of times, with its homotopy invariance; Hermite blow-ups; words of local monodromies; gluing
-of the monodromy over open regions; subgroups as detectors of collisions. A tool
+of the monodromy over open regions; subgroups as detectors of collisions; saddle-point
+asymptotics of the heat family at complex times of large modulus, with the minimum-modulus
+principle to place zeros and continuity to follow them. A tool
 belongs here when it is applied to one of the six questions.
 
 ## Traps
@@ -524,7 +554,12 @@ belongs here when it is applied to one of the six questions.
 - The monodromy of a cover is taken over complex parameters. Real-time statements about
   collisions describe conjugation, not the monodromy group.
 - A collision at the centre is not a failure of RH. It happens at a nonreal time and realizes
-  `r`. Only a collision at a positive real time contradicts RH.
+  `r`. Only a collision at a positive real time contradicts RH. Collisions away from the
+  centre exist at nonreal forward times; "`G₊` preserves the pairs" is false and is not a
+  form of RH.
+- The ratio `2S₀/B₀` of the two terms involves two square roots. Statements about its sign
+  go through the square `Q` and a continuity argument, or through a fixed branch on a region
+  where the radicands have positive real part.
 - The heat cover has infinitely many sheets and is not proper over the time plane. The local
   theory gives uniqueness of lifts and continuation up to escape; that no zero leaves every
   compact set along a compact path of times is a theorem only for `Re τ > 0`.
@@ -544,11 +579,13 @@ belongs here when it is applied to one of the six questions.
 - The orbit of a zero with irrational real part: `{ρ, ρ̄}` or the full quartet.
 - Algebraic relations among the normalized moments `μ₂ₙ/μ₀`, which decide whether a Jensen
   equation is generic.
-- A collision away from the centre at a forward time. The central branch times are the zeros
-  of one function of the time, the centre value; for the others no such function is known. A
-  discriminant for a finite set of sheets would be one. It is enough to find one loop in a
-  convex region that carries a zero out of its pair; the heat equation and the symmetry do
-  not give one, the kernel `Φ` has to enter.
+- The collisions away from the centre as a set. The central branch times are the zeros of one
+  function of the time, the centre value; for the others no such function is known. The
+  known ones lie near the times with `2S₀ = ±B₀`, in the direction of the imaginary axis.
+  Which sign occurs on a given loop of saddles, and loops for a prescribed sign.
+- The two-term model on the whole range `0 ≤ Im a < π/4`, down to the real saddles, where the
+  time is real, the zeros are real and ordered, and the model is a pure cosine: this connects
+  the exchanges near the centre with every zero of a real fibre.
 - A centre time at which the central collision is double and no other collision happens:
   there the turn is the sign flip of one pair.
 - `cr` as the word of the turns around the real branch times between a real time and `1/8`.
