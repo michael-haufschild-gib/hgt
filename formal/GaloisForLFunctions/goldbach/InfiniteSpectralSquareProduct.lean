@@ -1,5 +1,6 @@
 import GaloisForLFunctions.goldbach.SpectralSquareProduct
 import GaloisForLFunctions.HTGeometry.LpDiagonalMultiplier
+import GaloisForLFunctions.HTGeometry.LpDiagonalOperator
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 import Mathlib.Analysis.Complex.LocallyUniformLimit
@@ -89,11 +90,14 @@ theorem infiniteSpectralSquareProduct_hasProdLocallyUniformlyOn
     (μ : lp (fun _ : ι => ℝ) 2) :
     HasProdLocallyUniformlyOn (fun i z => spectralSquareFactor (μ i) z)
       (infiniteSpectralSquareProduct μ) Set.univ := by
-  simp only [infiniteSpectralSquareProduct, spectralSquareFactor_eq, sub_eq_add_neg]
   apply hasProdLocallyUniformlyOn_of_forall_compact isOpen_univ
   intro K _ hK
+  change HasProdUniformlyOn (fun i z => spectralSquareFactor (μ i) z)
+    (fun z => infiniteSpectralSquareProduct μ z) K
+  simp only [infiniteSpectralSquareProduct, spectralSquareFactor_eq, sub_eq_add_neg]
   obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
-  refine Summable.hasProdUniformlyOn_one_add hK
+  refine Summable.hasProdUniformlyOn_one_add
+    (f := fun i z => -(4 * (μ i : ℂ) ^ 2 * z * (1 - z))) hK
     ((spectral_sq_summable μ).mul_left (4 * max R 0 * (1 + max R 0)))
     (.of_forall fun i z hz => ?_) (fun i => by fun_prop)
   have hzR : ‖z‖ ≤ max R 0 :=
@@ -108,12 +112,16 @@ theorem infiniteSpectralSquareProduct_hasProdLocallyUniformlyOn
 theorem infiniteSpectralSquareProduct_differentiable (μ : lp (fun _ : ι => ℝ) 2) :
     Differentiable ℂ (infiniteSpectralSquareProduct μ) := by
   rw [← differentiableOn_univ]
+  have hf (i : ι) : DifferentiableOn ℂ (fun z => spectralSquareFactor (μ i) z) Set.univ := by
+    have he : (fun z => spectralSquareFactor (μ i) z) =
+        (fun z => 1 - 4 * (μ i : ℂ) ^ 2 * z * (1 - z)) :=
+      funext (spectralSquareFactor_eq (μ i))
+    rw [he]
+    fun_prop
   exact (infiniteSpectralSquareProduct_hasProdLocallyUniformlyOn μ).differentiableOn
     (.of_forall fun s => by
       simpa only [Finset.prod_fn] using
-        DifferentiableOn.finsetProd (fun i (_ : i ∈ s) => by
-          simp only [spectralSquareFactor_eq]
-          fun_prop)) isOpen_univ
+        DifferentiableOn.finsetProd (fun i (_ : i ∈ s) => hf i)) isOpen_univ
 
 private theorem spectral_coordinate_bound (μ : lp (fun _ : ι => ℝ) 2) (i : ι) :
     ‖(μ i : ℂ)‖ ≤ ‖μ‖ := by
@@ -123,6 +131,42 @@ private theorem spectral_coordinate_bound (μ : lp (fun _ : ι => ℝ) 2) (i : �
 def spectralDiagonalOperator (μ : lp (fun _ : ι => ℝ) 2) :
     lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2 :=
   lpDiagonalCLM (fun i => (μ i : ℂ)) (norm_nonneg μ) (spectral_coordinate_bound μ)
+
+/-- The real diagonal makes the operator symmetric for the complex inner product. -/
+theorem spectralDiagonalOperator_inner (μ : lp (fun _ : ι => ℝ) 2)
+    (f g : lp (fun _ : ι => ℂ) 2) :
+    inner ℂ (spectralDiagonalOperator μ f) g = inner ℂ f (spectralDiagonalOperator μ g) := by
+  rw [lp.inner_eq_tsum, lp.inner_eq_tsum]
+  apply tsum_congr
+  intro i
+  simp only [spectralDiagonalOperator, lpDiagonalCLM_apply, RCLike.inner_apply,
+    map_mul, Complex.conj_ofReal]
+  ring
+
+private theorem spectral_complex_sq_summable (μ : lp (fun _ : ι => ℝ) 2) :
+    Summable (fun i => ‖(μ i : ℂ)‖ ^ 2) := by
+  simpa only [Complex.norm_real, Real.norm_eq_abs, sq_abs] using spectral_sq_summable μ
+
+private theorem spectralDiagonalOperator_eq_diagOp [DecidableEq ι]
+    (μ : lp (fun _ : ι => ℝ) 2) :
+    spectralDiagonalOperator μ =
+      HilbertSchmidt.diagOp (fun i => (μ i : ℂ)) (spectral_complex_sq_summable μ) := by
+  ext f i
+  exact (HilbertSchmidt.diagOp_apply _ _ f i).symm
+
+/-- Square summability supplies the Hilbert--Schmidt property without an extra premise. -/
+theorem spectralDiagonalOperator_isHilbertSchmidt (μ : lp (fun _ : ι => ℝ) 2) :
+    (spectralDiagonalOperator μ).IsHilbertSchmidt := by
+  classical
+  rw [spectralDiagonalOperator_eq_diagOp]
+  exact HilbertSchmidt.isHilbertSchmidt_diagOp _ _
+
+/-- The Hilbert--Schmidt energy is the sum of the squared real spectral values. -/
+theorem hsNormSq_spectralDiagonalOperator (μ : lp (fun _ : ι => ℝ) 2) :
+    ContinuousLinearMap.hsNormSq (spectralDiagonalOperator μ) = ∑' i, μ i ^ 2 := by
+  classical
+  rw [spectralDiagonalOperator_eq_diagOp, HilbertSchmidt.hsNormSq_diagOp]
+  simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
 /-- The spectral bound is exactly contractivity of the diagonal operator. -/
 theorem norm_spectralDiagonalOperator_le_one_iff (μ : lp (fun _ : ι => ℝ) 2) :

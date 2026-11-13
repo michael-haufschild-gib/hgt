@@ -603,7 +603,7 @@ index as a homotopy invariant of the aperture path, a Morse index and a Maslov i
 and is not produced by the invariance.
 
 **Order of work.** The first selective sign at ratio three (question 1); a realization on the
-dyadic windows (question 4).
+dyadic windows by classes of negative self-pairing (question 4).
 
 **The decisive test.** A construction whose Bézout holds for an edit with a finite layer, for
 a fake, for the Liouville twist or a weakened contact of `2` at ratio three, for a wrong

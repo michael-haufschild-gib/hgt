@@ -42,6 +42,7 @@ theorem continuous_tsum_mul_of_bounded {ι Y : Type*} [TopologicalSpace Y] {c : 
     {g : ι → Y → ℂ} (hc : Summable fun j => ‖c j‖ ^ 2) (hg : ∀ j, Continuous (g j)) {B : ℝ}
     (hB : ∀ (S : Finset ι) (y : Y), ∑ j ∈ S, ‖g j y‖ ^ 2 ≤ B) :
     Continuous fun y => ∑' j, c j * g j y := by
+  classical
   have hsum : ∀ y, Summable fun j => c j * g j y := fun y =>
     summable_mul_of_sq hc (summable_of_sum_le (fun j => sq_nonneg _) fun S => hB S y)
   refine TendstoUniformly.continuous (F := fun (S : Finset ι) y => ∑ j ∈ S, c j * g j y)
@@ -180,6 +181,7 @@ theorem mercerKer_smul_right (hab : a < b) (z : ℍ) (γ : X.Γ) (w : ℍ) :
 
 /-! ### The rows of `K` and their eigen-expansion -/
 
+include ha in
 theorem memLp_kerRow (hab : a < b) (z : ℍ) :
     MemLp (fun w => ((X.diffKer a b z w : ℝ) : ℂ)) 2 X.μ := by
   obtain ⟨B, -, hB⟩ := X.exists_diffKer_le ha hab
