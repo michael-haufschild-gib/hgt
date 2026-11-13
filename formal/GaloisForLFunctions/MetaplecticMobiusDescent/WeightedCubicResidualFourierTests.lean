@@ -273810,13 +273810,13 @@ theorem common_energy_reference_powers (N:ℕ)(a b ε:ℝ)(ha:0< a)(hb:1≤ b)(h
       intro j hj
       ring
     _ = Cb*(∏i,s.M i)^2*∑j,
-        ((τ.modulus.absNorm:ℝ)*(volume s/(C.absNorm:ℝ))^2*Z^allowance)*
-          normalizedPower b (volume s) (C.absNorm:ℝ) (τ.modulus.absNorm:ℝ)
+        ((τ.modulus.absNorm:ℝ)*(CenteredMomentAmplificationChildInput.volume s/(C.absNorm:ℝ))^2*Z^allowance)*
+          normalizedPower b (CenteredMomentAmplificationChildInput.volume s) (C.absNorm:ℝ) (τ.modulus.absNorm:ℝ)
             Z allowance ε (E j) N (α j):=by
       congr 1
       apply Finset.sum_congr rfl
       intro j hj
-      exact (reference_power_identity b (volume s) (C.absNorm:ℝ) (τ.modulus.absNorm:ℝ)
+      exact (reference_power_identity b (CenteredMomentAmplificationChildInput.volume s) (C.absNorm:ℝ) (τ.modulus.absNorm:ℝ)
         Z allowance ε (E j) N (α j) (zero_lt_one.trans_le hb) hV hNC hq hZ).symm
     _ = _:=by rw [←Finset.mul_sum];ring
 

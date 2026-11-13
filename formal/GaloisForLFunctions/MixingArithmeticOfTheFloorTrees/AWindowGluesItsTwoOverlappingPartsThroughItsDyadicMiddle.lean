@@ -97,6 +97,7 @@ theorem dotProduct_fromBlocks_mulVec (S₁ : Matrix α α ℝ) (X : Matrix α β
     rw [Matrix.mulVec_transpose, dotProduct_comm, ← Matrix.dotProduct_mulVec]]
   ring
 
+omit [DecidableEq α] [DecidableEq β] in
 /-- **A two-block form with nonnegative diagonal blocks is nonnegative iff its off-diagonal
 block is a contraction between them.** -/
 theorem forall_fromBlocks_nonneg_iff {S₁ : Matrix α α ℝ} {X : Matrix α β ℝ}
@@ -148,6 +149,7 @@ def overlapWhole (M : Matrix μ μ ℝ) (P₁ : Matrix μ α ℝ) (P₂ : Matrix
     Matrix (μ ⊕ (α ⊕ β)) (μ ⊕ (α ⊕ β)) ℝ :=
   fromBlocks M (joinColumns P₁ P₂) (joinColumns P₁ P₂)ᵀ (fromBlocks N₁ K Kᵀ N₂)
 
+omit [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] in
 /-- The Schur complement over the middle is the two conditional energies and the conditional
 coupling. -/
 theorem fromBlocks_sub_joinColumns {M : Matrix μ μ ℝ} (hM : ∀ i j, M i j = M j i)
@@ -329,7 +331,7 @@ theorem neutralWindow_submatrix_leftPartEquiv (Q R a : ℕ) :
         (posMatrix (neutralBlock Q) (leftPos R a) (leftPos R a)) := by
   have hpos : ∀ x, R + (leftPartEquiv a (R + a) x : ℕ) =
       Sum.elim (middlePos R a) (leftPos R a) x := by
-    rintro (m | i) <;> simp [leftPartEquiv, middlePos, leftPos] <;> omega
+    rintro (m | i) <;> (simp [leftPartEquiv, middlePos, leftPos]; omega)
   have hW : (neutralWindow Q R (a + (R + a))).submatrix (leftPartEquiv a (R + a))
       (leftPartEquiv a (R + a)) =
       posMatrix (neutralBlock Q) (Sum.elim (middlePos R a) (leftPos R a))
@@ -349,7 +351,7 @@ theorem neutralWindow_submatrix_rightPart (Q R a b : ℕ) :
         (posMatrix (neutralBlock Q) (rightPos R a b) (rightPos R a b)) := by
   have hpos : ∀ x : Fin (R + a) ⊕ Fin b, R + a + (finSumFinEquiv x : ℕ) =
       Sum.elim (middlePos R a) (rightPos R a b) x := by
-    rintro (m | j) <;> simp [middlePos, rightPos] <;> omega
+    rintro (m | j) <;> (simp [middlePos, rightPos]; omega)
   have hW : (neutralWindow Q (R + a) ((R + a) + b)).submatrix finSumFinEquiv finSumFinEquiv =
       posMatrix (neutralBlock Q) (Sum.elim (middlePos R a) (rightPos R a b))
         (Sum.elim (middlePos R a) (rightPos R a b)) := by

@@ -56,7 +56,7 @@ theorem doobCut_eq {G : Matrix ι ι ℝ} {φ : ι → ℝ} {lam : ℝ} (heig : 
       if i ∈ S ∧ j ∈ Sᶜ then -doobConductance G φ i j else 0 := fun i j => by
     unfold restrictTo doobConductance
     by_cases hi : i ∈ S <;> by_cases hj : j ∈ S <;>
-      simp [hi, hj, Finset.mem_compl] <;> ring
+      (simp [hi, hj, Finset.mem_compl]; ring)
   have hcross : ∑ i, ∑ j, restrictTo φ S i * restrictTo φ Sᶜ j * G i j = -doobCut G φ S := by
     simp only [hterm, sum_sum_ite_and]
     unfold doobCut

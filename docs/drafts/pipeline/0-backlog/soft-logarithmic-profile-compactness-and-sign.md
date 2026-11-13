@@ -20,6 +20,24 @@ Fourier space. Only the compact part needs an ordinary Fourier integral;
 Cauchy–Schwarz gives its `L¹` bound, while unitarity controls the far part.
 The existing spatial first-moment tail estimate is unchanged.
 
+Closed attainment can instead start with rescaled actual minimizers from
+`universal_softLogarithmic_confinement_limit`. They already lie in `L¹`,
+their limiting energies approach `μ`, and their first moments approach
+`1/8`. The existing Fourier-window estimate therefore applies to the whole
+approximating sequence. Uniform negative-logarithmic tails, positive-log
+coercivity, and physical tightness would give an `L²` limit. Fatou controls
+its positive logarithmic energy and first moment; uniform integrability
+passes the negative logarithmic term. Compact cutoff recovery then proves
+the reverse variational inequality. This route does not require a separate
+window theorem for arbitrary nonintegrable `L²` profiles before compactness.
+
+The negative-logarithmic estimate has a homogeneous, adjustable form.
+Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff
+`H=c exp(t/2)`, with `c>0`, to obtain the candidate bound
+`L₋(f)≤16cm+4M/c`. Thus the negative logarithmic part should have arbitrarily
+small relative bound against the physical first moment. These bounds and
+the limiting-domain passage remain unformalized.
+
 `CriticalArithmeticCorrelationTheory.isCompact_closure_of_uniform_physical_and_fourier_tails` already supplies compactness from the two tails, without compact support. Its compact cutoff approximation uses `f-PQf=(f-Pf)+P(f-Qf)` and contractivity of the physical cutoff.
 
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.

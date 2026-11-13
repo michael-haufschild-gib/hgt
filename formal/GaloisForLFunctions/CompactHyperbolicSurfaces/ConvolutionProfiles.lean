@@ -79,9 +79,10 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
   set ζ : ℂ := 1 + Complex.I * y * W
   set η : ℂ := W - Complex.I * y
   by_cases hζ : ζ = 0
-  · refine ⟨rotSL 0 1 (by norm_num : (0:ℝ) ^ 2 + 1 ^ 2 = 1), rotSL_smul_I _, ?_⟩
+  · have h01 : (0:ℝ) ^ 2 + 1 ^ 2 = 1 := by norm_num
+    refine ⟨rotSL 0 1 h01, rotSL_smul_I h01, ?_⟩
     apply UpperHalfPlane.ext
-    rw [coe_rotSL_smul, div_eq_iff (rotSL_den_ne_zero _ _)]
+    rw [coe_rotSL_smul, div_eq_iff (rotSL_den_ne_zero h01 _)]
     show ((0 : ℝ) * ((⟨0, y⟩ : ℂ)) + ((1 : ℝ) : ℂ)) = W * (-((1 : ℝ) : ℂ) * (⟨0, y⟩ : ℂ) + ((0 : ℝ) : ℂ))
     have hpt : (⟨0, y⟩ : ℂ) = Complex.I * y := by apply Complex.ext <;> simp
     rw [hpt]
@@ -111,9 +112,9 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
     have hn2 : n ^ 2 = 1 + r ^ 2 := Real.sq_sqrt (by positivity)
     have hαβ : (1 / n) ^ 2 + (r / n) ^ 2 = 1 := by
       rw [div_pow, div_pow, ← add_div, one_pow, hn2]; field_simp
-    refine ⟨rotSL (1 / n) (r / n) hαβ, rotSL_smul_I _, ?_⟩
+    refine ⟨rotSL (1 / n) (r / n) hαβ, rotSL_smul_I hαβ, ?_⟩
     apply UpperHalfPlane.ext
-    rw [coe_rotSL_smul, div_eq_iff (rotSL_den_ne_zero _ _)]
+    rw [coe_rotSL_smul, div_eq_iff (rotSL_den_ne_zero hαβ _)]
     have hpt : ((hpt 0 hy : ℍ) : ℂ) = Complex.I * y := by
       show (⟨0, y⟩ : ℂ) = _; apply Complex.ext <;> simp
     rw [hpt]
@@ -121,7 +122,7 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
     push_cast
     field_simp
     simp only [η, ζ] at hηr
-    linear_combination (-2 : ℂ) * hηr
+    linear_combination (-1 : ℂ) * hηr
 
 /-- The height `Y(u) = 1 + 2u + 2√(u(u + 1))` (with `u⁺`) of the point `iY` at `u`-distance `u` from `i`. -/
 def axisY (u : ℝ) : ℝ := 1 + 2 * max u 0 + 2 * Real.sqrt (max u 0 * (max u 0 + 1))
