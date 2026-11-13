@@ -35,16 +35,18 @@ theorem softLogarithmicCutoff_abs_le (n : ℕ) (u : ℝ) : |softLogarithmicCutof
 theorem softLogarithmicCutoff_lipschitz (n : ℕ) (x y : ℝ) :
     |softLogarithmicCutoff n x - softLogarithmicCutoff n y| ≤ |x - y| := by
   have ha : (0 : ℝ) < (n : ℝ) + 2 := by positivity
+  have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have hc : (2 : ℝ) / ((n : ℝ) + 2) ≤ 1 :=
-    (div_le_one ha).mpr (by linarith only [Nat.cast_nonneg n])
+    (div_le_one ha).mpr (by linarith only [hn])
   have h := logarithmicEndpointCutoff_lipschitz ha (-x) (-y)
   rw [show -x - -y = -(x - y) by ring, abs_neg] at h
   exact h.trans ((mul_le_mul_of_nonneg_right hc (abs_nonneg (x - y))).trans_eq (one_mul _))
 
 theorem softLogarithmicCutoff_eq_zero (n : ℕ) {u : ℝ}
     (hu : u ≤ -(2 * ((n : ℝ) + 2))) : softLogarithmicCutoff n u = 0 := by
+  have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   apply logarithmicEndpointCutoff_eq_zero (by positivity : (0 : ℝ) < (n : ℝ) + 2)
-  linarith only [hu, Nat.cast_nonneg n]
+  linarith only [hu, hn]
 
 theorem tendsto_softLogarithmicCutoff (u : ℝ) :
     Tendsto (fun n => softLogarithmicCutoff n u) atTop (𝓝 1) := by
@@ -81,7 +83,8 @@ theorem ClosedSoftLogarithmicHalfLineDomain.realProfile_ae {v : SoninL2}
     (hv : ClosedSoftLogarithmicHalfLineDomain v) :
     cx (softLogarithmicRealProfile v) =ᵐ[volume] (v : ℝ → ℂ) := by
   filter_upwards [hv.real, hv.support] with u hu hs
-  change ((Iio (0 : ℝ)).indicator (fun u => (v u).re) u : ℂ) = v u
+  change (softLogarithmicRealProfile v u : ℂ) = v u
+  unfold softLogarithmicRealProfile
   by_cases hn : u ∈ Iio (0 : ℝ)
   · rw [Set.indicator_of_mem hn]
     apply Complex.ext
@@ -136,8 +139,9 @@ theorem ClosedSoftLogarithmicHalfLineDomain.cutoff_trial {v : SoninL2}
   have hrep := hv.cutoff_representative n
   have hm : Measurable (softLogarithmicCutoffProfile n v) :=
     (continuous_softLogarithmicCutoff n).measurable.mul (measurable_softLogarithmicRealProfile v)
-  have hc2 : MemLp (cx (softLogarithmicCutoffProfile n v)) 2 volume :=
-    (Lp.memLp (softLogarithmicCutoffVector n v)).congr hrep
+  have hV2 : MemLp (softLogarithmicCutoffVector n v : ℝ → ℂ) 2 volume :=
+    Lp.memLp (softLogarithmicCutoffVector n v)
+  have hc2 : MemLp (cx (softLogarithmicCutoffProfile n v)) 2 volume := hV2.congr hrep
   have hsq : Integrable (fun u => softLogarithmicCutoffProfile n v u ^ 2) := by
     have hi := hc2.integrable_norm_pow (by norm_num)
     apply hi.congr

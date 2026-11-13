@@ -132,7 +132,7 @@ private theorem tendsto_inv_sinh :
 
 private theorem tendsto_cosh_div_sinh :
     Tendsto (fun x : ℝ => Real.cosh x / Real.sinh x) atTop (𝓝 1) := by
-  have h := tendsto_const_nhds.add
+  have h := (tendsto_const_nhds (x := (1 : ℝ))).add
     (Real.tendsto_exp_neg_atTop_nhds_zero.mul tendsto_inv_sinh)
   simp only [mul_zero, add_zero] at h
   apply h.congr'
@@ -140,8 +140,7 @@ private theorem tendsto_cosh_div_sinh :
   have hs : 0 < Real.sinh x := lt_of_lt_of_le (by positivity)
     (GaloisForLFunctions.HTGeometry.exp_div_four_le_sinh hx)
   rw [Real.cosh_eq, Real.sinh_eq] at *
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- The inverse diagonal overlap vanishes at large real depth. -/
 theorem tendsto_inv_reflectedDiagonal :
@@ -154,13 +153,14 @@ theorem tendsto_reflectedMixedOverlap_div_diagonal (θ : ℝ) :
     Tendsto (fun x : ℝ => reflectedMixedOverlap x θ / (reflectedDiagonal x : ℂ))
       atTop (𝓝 ((Real.cos θ : ℂ) + (Real.sin θ : ℂ) * I)) := by
   have hc : Tendsto (fun x : ℝ => ((Real.cosh x / Real.sinh x : ℝ) : ℂ)) atTop (𝓝 1) := by
-    simpa only [Complex.ofReal_one] using
+    simpa only [Function.comp_def, Complex.ofReal_one] using
       Complex.continuous_ofReal.continuousAt.tendsto.comp tendsto_cosh_div_sinh
   have ht : Tendsto (fun x : ℝ => ((θ / x : ℝ) : ℂ)) atTop (𝓝 0) := by
-    simpa only [Complex.ofReal_zero] using Complex.continuous_ofReal.continuousAt.tendsto.comp
+    simpa only [Function.comp_def, id_eq, Complex.ofReal_zero] using Complex.continuous_ofReal.continuousAt.tendsto.comp
       ((tendsto_id : Tendsto (fun x : ℝ => x) atTop atTop).const_div_atTop θ)
-  have hh := (tendsto_const_nhds.add ((hc.mul_const (Real.sin θ : ℂ)).mul_const I)).div
-    (tendsto_const_nhds.add (ht.mul_const I)) (by norm_num : (1 : ℂ) + 0 * I ≠ 0)
+  have hh := ((tendsto_const_nhds (x := (Real.cos θ : ℂ))).add
+    ((hc.mul_const (Real.sin θ : ℂ)).mul_const I)).div
+    ((tendsto_const_nhds (x := (1 : ℂ))).add (ht.mul_const I)) (by norm_num : (1 : ℂ) + 0 * I ≠ 0)
   simp only [one_mul, zero_mul, add_zero, div_one] at hh
   apply hh.congr'
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
@@ -179,8 +179,7 @@ theorem tendsto_reflectedMixedOverlap_div_diagonal (θ : ℝ) :
     ← Complex.ofReal_sinh, ← Complex.ofReal_cosh,
     ← Complex.ofReal_cos, ← Complex.ofReal_sin]
   push_cast
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- Exact normalized cubic expression in terms of normalized overlaps. -/
 private theorem reflected_cubic_normalized {g : ℝ} (hg : g ≠ 0) (h : ℝ) (f : ℂ) :
@@ -189,8 +188,7 @@ private theorem reflected_cubic_normalized {g : ℝ} (hg : g ≠ 0) (h : ℝ) (f
         ((f / (g : ℂ)) ^ 2).re + 2 * h * (f / (g : ℂ)).re) := by
   rw [reflectedEvaluation_cubic_trace, div_pow, ← Complex.ofReal_pow,
     Complex.div_ofReal_re, Complex.div_ofReal_re]
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- The normalized cubic trace has an explicit, potentially negative limit. -/
 theorem tendsto_reflectedEvaluation_cubic (θ : ℝ) :
@@ -204,7 +202,7 @@ theorem tendsto_reflectedEvaluation_cubic (θ : ℝ) :
   have hfr2 := Complex.continuous_re.continuousAt.tendsto.comp (hf.pow 2)
   have hg := tendsto_inv_reflectedDiagonal.pow 2
   have hlim := (hg.const_mul 4).add
-    ((tendsto_const_nhds.add ((hg.const_mul ((Real.sin θ / θ) ^ 2)).add
+    (((tendsto_const_nhds (x := (1 : ℝ))).add ((hg.const_mul ((Real.sin θ / θ) ^ 2)).add
       (hfr2.add (hfr.const_mul (2 * (Real.sin θ / θ)))))).const_mul 12)
   have hvalue : 4 * (0 : ℝ) ^ 2 + 12 * (1 +
       ((Real.sin θ / θ) ^ 2 * 0 ^ 2 +
@@ -232,6 +230,78 @@ theorem exists_negative_reflectedEvaluation_cubic :
   have he := (tendsto_reflectedEvaluation_cubic θ).eventually (Iio_mem_nhds hn)
   obtain ⟨x, hx, hneg⟩ := (he.and (eventually_gt_atTop (0 : ℝ))).exists
   refine ⟨x, θ, hneg, hθ, ?_⟩
-  exact (div_neg_iff.mp hx).resolve_right (by positivity)
+  rcases div_neg_iff.mp hx with h | h
+  · exact False.elim ((sq_nonneg _).not_gt h.2)
+  · exact h.1
+
+/-- Two heights, each carrying the two reflected real depths. -/
+def reflectedExponentialParameters (x θ : ℝ) : Fin 4 → ℂ :=
+  ![(x : ℂ)/2 + (θ : ℂ)*I/2, -(x : ℂ)/2 + (θ : ℂ)*I/2,
+    (x : ℂ)/2 - (θ : ℂ)*I/2, -(x : ℂ)/2 - (θ : ℂ)*I/2]
+
+/-- The literal integral Gram matrix of the four exponential evaluations. -/
+def exponentialEvaluationGram (x θ : ℝ) : Matrix (Fin 4) (Fin 4) ℂ :=
+  fun i j => exponentialOverlap (conj (reflectedExponentialParameters x θ i) +
+    reflectedExponentialParameters x θ j)
+
+/-- Every Gram entry is an actual exponential inner product on `[-1,1]`. -/
+theorem exponentialEvaluationGram_eq_integral (x θ : ℝ) (i j : Fin 4) :
+    exponentialEvaluationGram x θ i j =
+      (∫ u : ℝ in -1..1,
+        conj (Complex.exp (reflectedExponentialParameters x θ i * u)) *
+          Complex.exp (reflectedExponentialParameters x θ j * u)) / 2 :=
+  exponentialOverlap_eq_evaluation_inner _ _
+
+/-- The closed Gram formula is realized by the literal evaluation vectors. -/
+theorem exponentialEvaluationGram_eq {x θ : ℝ} (hx : 0 < x) (hθ : 0 < θ) :
+    exponentialEvaluationGram x θ = reflectedEvaluationGram (reflectedDiagonal x)
+      (Real.sin θ / θ) (reflectedMixedOverlap x θ) := by
+  have hxc : (x : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hx.ne'
+  have hθc : (θ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hθ.ne'
+  have hd : exponentialOverlap (x : ℂ) = (reflectedDiagonal x : ℂ) := by
+    rw [exponentialOverlap, if_neg hxc, ← Complex.ofReal_sinh, reflectedDiagonal,
+      Complex.ofReal_div]
+  have hh : exponentialOverlap ((θ : ℂ) * I) = ((Real.sin θ / θ : ℝ) : ℂ) := by
+    rw [exponentialOverlap, if_neg (mul_ne_zero hθc I_ne_zero),
+      Complex.sinh_mul_I, ← Complex.ofReal_sin, Complex.ofReal_div]
+    field_simp
+  have hden : (x : ℂ) + (θ : ℂ) * I ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    norm_num at hre
+    exact hx.ne' hre
+  have hf : exponentialOverlap ((x : ℂ) + (θ : ℂ) * I) = reflectedMixedOverlap x θ := by
+    rw [exponentialOverlap, if_neg hden]
+    rfl
+  have hc : exponentialOverlap ((x : ℂ) - (θ : ℂ) * I) = conj (reflectedMixedOverlap x θ) := by
+    have he : (x : ℂ) - (θ : ℂ) * I = conj ((x : ℂ) + (θ : ℂ) * I) := by simp [sub_eq_add_neg]
+    rw [he, exponentialOverlap_conj, hf]
+  have hn : exponentialOverlap (-(x : ℂ) - (θ : ℂ) * I) = reflectedMixedOverlap x θ := by
+    rw [show -(x : ℂ) - (θ : ℂ) * I = -((x : ℂ) + (θ : ℂ) * I) by ring,
+      exponentialOverlap_neg, hf]
+  have hnc : exponentialOverlap (-(x : ℂ) + (θ : ℂ) * I) = conj (reflectedMixedOverlap x θ) := by
+    rw [show -(x : ℂ) + (θ : ℂ) * I = -((x : ℂ) - (θ : ℂ) * I) by ring,
+      exponentialOverlap_neg, hc]
+  have hargs (i j : Fin 4) : conj (reflectedExponentialParameters x θ i) +
+      reflectedExponentialParameters x θ j =
+      (!![(x : ℂ), 0, (x : ℂ) - (θ : ℂ)*I, -(θ : ℂ)*I;
+          0, -(x : ℂ), -(θ : ℂ)*I, -(x : ℂ) - (θ : ℂ)*I;
+          (x : ℂ) + (θ : ℂ)*I, (θ : ℂ)*I, (x : ℂ), 0;
+          (θ : ℂ)*I, -(x : ℂ) + (θ : ℂ)*I, 0, -(x : ℂ)] : Matrix (Fin 4) (Fin 4) ℂ) i j := by
+    fin_cases i <;> fin_cases j <;>
+      norm_num [reflectedExponentialParameters, map_add, map_sub, map_div₀, map_mul, map_ofNat] <;> ring
+  ext i j
+  rw [exponentialEvaluationGram, hargs]
+  fin_cases i <;> fin_cases j <;>
+    simp [reflectedEvaluationGram, hd, hh, hf, hc, hn, hnc, neg_mul]
+
+/-- Cubic positivity fails for two actual reflected exponential-evaluation pairs. -/
+theorem exists_negative_exponentialEvaluation_cubic :
+    ∃ x θ : ℝ, 0 < x ∧ 0 < θ ∧
+      (((reflectedPairSwap * exponentialEvaluationGram x θ) ^ 3).trace).re < 0 := by
+  obtain ⟨x, θ, hx, hθ, hn⟩ := exists_negative_reflectedEvaluation_cubic
+  exact ⟨x, θ, hx, hθ, by rw [exponentialEvaluationGram_eq hx hθ]; exact hn⟩
 
 end GaloisForLFunctions.IncommensurableGaborPinching
+
+#print axioms GaloisForLFunctions.IncommensurableGaborPinching.exists_negative_exponentialEvaluation_cubic

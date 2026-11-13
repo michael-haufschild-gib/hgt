@@ -61,11 +61,20 @@ theorem sum_multiplicity_mul_sechStripWeight_le_rectangle
     intro w hw _
     exact mul_nonneg (Nat.cast_nonneg _) (sechStripWeight_re_pos ha
       (hsub (mem_zetaResidueUnitClosedRectangleZeros.mp hw).1)).le
+  have hsr : (∑ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂,
+      ((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * sechStripWeight a T w).re =
+      ∑ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂,
+        ((analyticOrderAt zetaResidueUnit w).toNat : ℝ) * (sechStripWeight a T w).re := by
+    have hh := map_sum Complex.reCLM
+      (fun w => ((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * sechStripWeight a T w)
+      (zetaResidueUnitClosedRectangleZeros z₁ z₂)
+    change (∑ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂,
+      ((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * sechStripWeight a T w).re =
+      ∑ w ∈ zetaResidueUnitClosedRectangleZeros z₁ z₂,
+        (((analyticOrderAt zetaResidueUnit w).toNat : ℂ) * sechStripWeight a T w).re at hh
+    simpa only [Complex.mul_re, Complex.natCast_re, Complex.natCast_im, zero_mul, sub_zero] using hh
   have himres := congrArg Complex.im hres
-  simp only [Complex.mul_im, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.I_re, Complex.I_im, Complex.natCast_re, Complex.natCast_im,
-    map_sum, zero_mul, mul_zero, zero_add, add_zero,
-    mul_one, sub_zero] at himres
+  norm_num [Complex.mul_im, Complex.mul_re, hsr] at himres
   rw [himres, mul_div_cancel_left₀ _ (by positivity : (2 * Real.pi : ℝ) ≠ 0)]
   exact hsum
 

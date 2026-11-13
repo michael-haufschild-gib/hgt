@@ -80,7 +80,23 @@ unconditional boundedness of either fourth moment is asserted.
 
 - [x] Full-line paper estimates; no fourth-moment assumption.
 - [x] Narrow corpus search: existing source identities and diagonal estimates; no matching operator-tail or fourth-decoupling theorem found.
-- [ ] Concrete Lean sampling estimate and full-line pole bound.
+- [ ] Concrete Lean sampling estimate and full-line pole bound: estimates pass; final vanishing corollary has one corrected algebraic step awaiting its source check.
 - [ ] Concrete Lean archimedean normalized-fourth approximation.
 - [ ] Direct source checks and transitive axiom audit.
 - [ ] Prime centered fourth upper bound; remains unproved.
+
+## Formalized matrix estimates
+
+`ArithmeticCastelnuovoSeveri/FourthTracePerturbation.lean` proves the displayed
+second-moment perturbation inequality (`norm_trace_fourth_perturbation_normalized`).
+It also proves the fourth-moment perturbation bound
+`|tr((P+Q)⁴−P⁴)| ≤ D(4a³b+6a²b²+4ab³+b⁴)` when the two Hermitian
+fourth energies are at most `Da⁴` and `Db⁴`
+(`norm_trace_fourth_perturbation_le_fourth`). This supplies the matrix estimate
+for bounded-fourth-moment transfer. The exact centered polynomial identity and
+finite positive-spectrum edge-defect estimate are formalized in the same module.
+Its three main perturbation theorems pass Lean with only
+`propext`, `Classical.choice`, `Quot.sound`.
+
+The actual archimedean matrix approximation and the prime/pole asymptotic
+application remain unformalized; the matrix estimates alone do not assert them.

@@ -82,6 +82,7 @@ theorem eq_root_of_primitive {γ γ₀ : Γ} {m : ℕ} (hγ : γ ≠ 1)
     exact this
   exact_mod_cast this
 
+omit hΓ in
 /-- In a cyclic centralizer, a primitive element is a generator up to inverse. -/
 theorem zpow_eq_pm_one_of_primitive {g δ : Γ} {i : ℤ} (hδ : δ ≠ 1) (hδg : δ = g ^ i)
     (hprim : hypLen (δ : SL(2, ℝ)) = primLen δ) (hg1 : g ≠ 1)
@@ -141,8 +142,8 @@ theorem isConj_of_isConj_pow {γ₀ γ₁ : Γ} {m n : ℕ} (hm : 0 < m) (hn : 0
   obtain ⟨g, hg1, hC, hlen, hinf, -⟩ := hypLen_zpow_root hΓ hhyp hγ1
   obtain ⟨i, hi⟩ := (hC γ₀').mp (by rw [← hpow]; exact (Commute.pow_right (Commute.refl _) m).eq)
   obtain ⟨j, hj⟩ := (hC γ₁).mp (Commute.pow_right (Commute.refl _) n).eq
-  have hi' := zpow_eq_pm_one_of_primitive hΓ hhyp hγ₀'1 hi hp₀' hg1 hlen
-  have hj' := zpow_eq_pm_one_of_primitive hΓ hhyp h₁ hj hp₁ hg1 hlen
+  have hi' := zpow_eq_pm_one_of_primitive hhyp hγ₀'1 hi hp₀' hg1 hlen
+  have hj' := zpow_eq_pm_one_of_primitive hhyp h₁ hj hp₁ hg1 hlen
   have hij : i * m = j * n := by
     have e : g ^ (i * m - j * n) = 1 := by
       rw [zpow_sub, zpow_mul, zpow_mul, ← hi, ← hj, zpow_natCast, zpow_natCast, hpow,
@@ -321,7 +322,7 @@ theorem classPrimLen_primPow (p : X.PClass × ℕ) :
     obtain ⟨i, hi⟩ := (hC' g).mp (Commute.pow_right (Commute.refl g) _).eq
     have hgprim : hypLen (g : SL(2, ℝ)) = primLen g := by rw [← hgm, hprim, hgm]
     have hg1 : g ≠ 1 := by rw [← hgm]; exact hne
-    rcases zpow_eq_pm_one_of_primitive X.cocompactFree hhyp hg1 hi hgprim hg'1 hlen' with
+    rcases zpow_eq_pm_one_of_primitive hhyp hg1 hi hgprim hg'1 hlen' with
       rfl | rfl
     · obtain ⟨k, hk⟩ := (hC' δ).mp h
       exact ⟨k, by rw [hk, hi, zpow_one]⟩

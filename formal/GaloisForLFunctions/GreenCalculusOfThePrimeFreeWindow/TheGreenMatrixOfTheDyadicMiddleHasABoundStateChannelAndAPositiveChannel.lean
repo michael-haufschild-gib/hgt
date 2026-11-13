@@ -78,7 +78,8 @@ theorem dot_perp (h : OneBoundState M φ μ c) (x : ι → ℝ) : φ ⬝ᵥ perp
 theorem perp_dot_perp (h : OneBoundState M φ μ c) (x : ι → ℝ) :
     perp φ x ⬝ᵥ perp φ x = x ⬝ᵥ x - (φ ⬝ᵥ x) ^ 2 := by
   have h1 : perp φ x ⬝ᵥ perp φ x = x ⬝ᵥ perp φ x - (φ ⬝ᵥ x) * (φ ⬝ᵥ perp φ x) := by
-    conv_lhs => rw [perp, sub_dotProduct, smul_dotProduct, smul_eq_mul]
+    change (x - (φ ⬝ᵥ x) • φ) ⬝ᵥ perp φ x = _
+    rw [sub_dotProduct, smul_dotProduct, smul_eq_mul]
   rw [h1, h.dot_perp, mul_zero, sub_zero, perp, dotProduct_sub, dotProduct_smul, smul_eq_mul,
     dotProduct_comm x φ]
   ring
@@ -142,6 +143,8 @@ theorem inv_mulVec_ground (h : OneBoundState M φ μ c) : M⁻¹ *ᵥ φ = (-(1 
 
 end OneBoundState
 
+variable [DecidableEq ι]
+
 /-- **The positive channel** of a matrix with one bound state: its inverse with the bound-state
 channel `−φφᵀ/μ` removed. -/
 def positiveChannel (M : Matrix ι ι ℝ) (φ : ι → ℝ) (μ : ℝ) : Matrix ι ι ℝ :=
@@ -152,7 +155,7 @@ theorem positiveChannel_mulVec (M : Matrix ι ι ℝ) (φ : ι → ℝ) (μ : �
   rw [positiveChannel, Matrix.add_mulVec, Matrix.smul_mulVec, Matrix.vecMulVec_mulVec, smul_smul]
   rfl
 
-variable [DecidableEq ι] {M : Matrix ι ι ℝ} {φ : ι → ℝ} {μ c : ℝ}
+variable {M : Matrix ι ι ℝ} {φ : ι → ℝ} {μ c : ℝ}
 
 /-- The positive channel does not see the ground vector. -/
 theorem positiveChannel_mulVec_ground (h : OneBoundState M φ μ c) :
@@ -212,14 +215,13 @@ theorem positiveChannel_le (h : OneBoundState M φ μ c) (w : ι → ℝ) :
     simp only [dotProduct]
     have := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ z (OneBoundState.perp φ w)
     simpa only [sq] using this
-  rw [h.perp_dot_perp w] at hcs
+  have hn : 0 ≤ OneBoundState.perp φ w ⬝ᵥ OneBoundState.perp φ w :=
+    dotProduct_self_star_nonneg (v := OneBoundState.perp φ w)
+  rw [h.perp_dot_perp w] at hcs hn
   rw [hQ] at hfloor ⊢
   set q := z ⬝ᵥ OneBoundState.perp φ w
   set n := w ⬝ᵥ w - (φ ⬝ᵥ w) ^ 2
   have hc := h.floor_pos
-  have hn : 0 ≤ n := by
-    rw [← h.perp_dot_perp w]
-    exact dotProduct_self_star_nonneg (v := OneBoundState.perp φ w)
   have hzz : 0 ≤ z ⬝ᵥ z := dotProduct_self_star_nonneg (v := z)
   rw [one_div, inv_mul_eq_div, le_div_iff₀ hc]
   by_contra hlt
@@ -244,6 +246,7 @@ theorem schur_form_eq_channels (h : OneBoundState M φ μ c) (P : Matrix ι κ �
   field_simp
   ring
 
+omit [DecidableEq ι] in
 /-- **A floor on a hyperplane is a floor on the orthogonal complement of the ground vector.**
 If `φ` is an eigenvector of eigenvalue `−μ ≤ 0` and the form is at least `c ≥ 0` on the kernel
 of a functional that does not vanish at `φ`, it is at least `c` on the orthogonal complement of
@@ -268,7 +271,7 @@ theorem floor_orthogonal_of_floor_hyperplane (hM : ∀ i j, M i j = M j i) (hμ 
   have hform : (α • φ + β • z) ⬝ᵥ (M *ᵥ (α • φ + β • z)) =
       -μ * α ^ 2 * (φ ⬝ᵥ φ) + β ^ 2 * (z ⬝ᵥ (M *ᵥ z)) := by
     simp only [Matrix.mulVec_add, Matrix.mulVec_smul, heig, add_dotProduct, dotProduct_add,
-      smul_dotProduct, dotProduct_smul, smul_eq_mul, hz, hzφ, hφMz]
+      smul_dotProduct, dotProduct_smul, smul_eq_mul, hzφ, hφMz]
     ring
   rw [hnorm, hform] at hf
   have hφφ : 0 ≤ φ ⬝ᵥ φ := dotProduct_self_star_nonneg (v := φ)
@@ -336,7 +339,7 @@ theorem neutralBlock_one_one_eq (Q : ℕ) :
   rw [neutralBlock, blockMatrix_self le_rfl, blockJet, Nat.sub_self, xLogXDiff_zero, blockDensity,
     xLogXDiff, show 1 + 1 + 1 + 1 = 4 by norm_num, show 1 + 1 + 1 - 1 = 2 by norm_num,
     show 1 + 1 + 1 = 3 by norm_num, h1, h3, h4, show xLogX 2 = 2 * Real.log 2 from h2,
-    show xLogX (1 + 1) = 2 * Real.log 2 from h2, log_two_pi]
+    log_two_pi]
   ring
 
 /-- **The flat packet of a dyadic window binds more than one unit.** -/
