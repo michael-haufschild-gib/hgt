@@ -306,7 +306,9 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
     simp only [hRdef, hPdef]
     rw [hGeq s hs, editSystem_zetaSeriesC he hs, editRem_eq_sum_add he hk hs,
       zetaResidueUnit_of_ne hs1, hFeq s hs, hprod]
-    linear_combination ((s - 1) * riemannZeta s) ^ N * hexp
+    -- `s − 1` as an atom, so that `ring` distributes the power over the product
+    generalize s - 1 = t
+    linear_combination (t * riemannZeta s) ^ N * hexp
   have hon := eqOn_halfPlane (c := c) (F₁ := fun s => G s ^ N) (F₂ := R) (hGc.pow N) hR hagree
   -- orders at `s₁`
   have hGan : AnalyticAt ℂ G s₁ := hGc.analyticAt (hUo.mem_nhds hs₁)
@@ -484,5 +486,155 @@ theorem dvd_order_of_count_of_ne_zero {e : ℕ → ℤ} (he : IsEdit e) {θ : �
       sum_eq_zero fun j hj => by rw [hn0 j hj, mul_zero], add_zero]
   rw [hsum, ← Nat.mul_factorial_pred (by omega : k ≠ 0), mul_comm k] at hlaw
   exact Nat.dvd_of_mul_dvd_mul_left (Nat.factorial_pos _) hlaw
+
+/-! ## Multiple twins -/
+
+/-- The target `M · (−2 Re k^{ρ−1})` of an `M`-fold zero pair has Dirichlet series
+`−M (ζ(s + 1 − ρ) + ζ(s + 1 − ρ̄))`. -/
+theorem lseriesHasSum_mul_target {ρ s : ℂ} (hs : ρ.re < s.re) (M : ℕ) :
+    LSeriesHasSum (fun k : ℕ => (((M : ℝ) * target ρ k : ℝ) : ℂ)) s
+      ((M : ℂ) * -(riemannZeta (s - (ρ - 1)) + riemannZeta (s - ((starRingEnd ℂ) ρ - 1)))) := by
+  have h := (lseriesHasSum_target hs).mul_left (M : ℂ)
+  have hfun : LSeries.term (fun k : ℕ => (((M : ℝ) * target ρ k : ℝ) : ℂ)) s =
+      fun n => (M : ℂ) * LSeries.term (fun k : ℕ => (target ρ k : ℂ)) s n := by
+    funext n
+    rcases eq_or_ne n 0 with rfl | hn
+    · simp
+    · rw [LSeries.term_of_ne_zero hn, LSeries.term_of_ne_zero hn]
+      push_cast
+      ring
+  show HasSum (LSeries.term _ s) _
+  rw [hfun]
+  exact h
+
+/-- **An `M`-fold twin pays `Re ρ/p` in the count for every prime `p ∤ M`.**  For a non-real
+`ρ` with `1/2 < Re ρ` and `Re ρ (1 − 1/p) < 13/30`, every count exponent `β` of the greedy edit
+of the target `M · (−2 Re k^{ρ−1})` has `β ≥ Re ρ/p`.  Its exponential is
+`C ((s − ρ)(s − ρ̄))^M e^{K}` on a half-plane containing `ρ/p`, with a zero of order `M` at `ρ`. -/
+theorem re_div_le_of_count_multiple_edit {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (him : ρ.im ≠ 0) {M : ℕ}
+    {p : ℕ} (hp : p.Prime) (hpM : ¬ p ∣ M) (hρp : ρ.re * (1 - 1 / p) < 13 / 30) {A C β : ℝ}
+    (hβ : 0 ≤ β)
+    (hN : ∀ x : ℝ, 1 ≤ x → |((editSystem (gedit fun k => (M : ℝ) * target ρ k)).countBall x : ℝ) -
+      A * x| ≤ C * x ^ β) :
+    ρ.re / p ≤ β := by
+  by_contra hlt
+  have hβρ : β < ρ.re / p := not_le.mp hlt
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+  have hρ0 : 0 < ρ.re := by linarith
+  have hinv : 1 / (p : ℝ) ≤ 1 / 2 := one_div_le_one_div_of_le (by norm_num) hp2
+  have hρ1 : ρ.re < 13 / 15 := by nlinarith
+  have hρp' : ρ.re - 13 / 30 < ρ.re / p := by
+    have : ρ.re / p = ρ.re * (1 / p) := by ring
+    rw [this]; nlinarith
+  have hρdiv : ρ.re / p < ρ.re := div_lt_self hρ0 (by linarith)
+  -- a half-plane `Re s > c₀` with `Re ρ − 13/30 < c₀ < Re ρ/p`
+  obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, c₀ = (ρ.re - 13 / 30 + ρ.re / p) / 2 := ⟨_, rfl⟩
+  have hc₀1 : ρ.re - 13 / 30 < c₀ := by rw [hc₀]; linarith
+  have hc₀2 : c₀ < ρ.re / p := by rw [hc₀]; linarith
+  have hc₀0 : 0 < c₀ := by linarith
+  -- the discrepancy of the greedy edit is `O(n^{c₀})`
+  obtain ⟨α, hα⟩ : ∃ α : ℝ, α = (17 / 30 + (c₀ + (1 - ρ.re))) / 2 := ⟨_, rfl⟩
+  have hα0 : 17 / 30 < α := by rw [hα]; linarith
+  have hα1 : α < 1 := by rw [hα]; linarith
+  have hαc : α - (1 - ρ.re) ≤ c₀ := by rw [hα]; linarith
+  obtain ⟨X, -, hwin⟩ := RHTower.exists_theta_window_lower_seventeenThirtieths hα0 hα1
+  set m : ℕ → ℝ := fun k => (M : ℝ) * target ρ k with hmdef
+  have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
+  have hm : ∀ k : ℕ, 1 ≤ k → |m k| ≤ 2 * M * (k : ℝ) ^ (-(1 - ρ.re)) := fun k hk => by
+    have h := abs_target_le ρ hk
+    rw [show ρ.re - 1 = -(1 - ρ.re) by ring] at h
+    simp only [hmdef, abs_mul, abs_of_nonneg hM0]
+    nlinarith
+  obtain ⟨K₀, hK₀, hdisc⟩ := exists_abs_gdisc_le_rpow_of_abs_le (m := m) (A := 2 * M)
+    (η := 1 - ρ.re) (c := c₀) (by positivity) (by linarith) (by linarith) hm hα1 hc₀0 hαc hwin
+  have hsumm : ∀ s : ℂ, 1 < s.re → LSeriesSummable (fun k => (m k : ℂ)) s := by
+    intro s hs
+    refine LSeriesSummable_of_le_const_mul_rpow (x := 1 - (1 - ρ.re)) (by linarith)
+      ⟨2 * M, fun n hn => ?_⟩
+    show ‖((m n : ℝ) : ℂ)‖ ≤ _
+    rw [Complex.norm_real, Real.norm_eq_abs, show 1 - (1 - ρ.re) - 1 = -(1 - ρ.re) by ring]
+    exact hm n (Nat.one_le_iff_ne_zero.mpr hn)
+  have hm0 : m 0 = 0 := by simp only [hmdef, target_zero (by linarith), mul_zero]
+  set ρc : ℂ := (starRingEnd ℂ) ρ with hρc
+  have hL : ∀ s : ℂ, 1 < s.re →
+      ((s - ρ) * (s - ρc)) ^ M ≠ 0 ∧
+        DifferentiableAt ℂ (fun z : ℂ => ((z - ρ) * (z - ρc)) ^ M) s ∧
+        logDeriv (fun z : ℂ => ((z - ρ) * (z - ρc)) ^ M) s =
+          -LSeries (fun k => (m k : ℂ)) s -
+            (M : ℂ) * (zetaRegular (s - (ρ - 1)) + zetaRegular (s - (ρc - 1))) := by
+    intro s hs
+    obtain ⟨hne, hd, hld⟩ := logDeriv_pair_eq (ρ := ρ) (s := s) (by linarith) hs
+    have hLm := (lseriesHasSum_mul_target (ρ := ρ) (s := s) (by linarith) M).LSeries_eq
+    have hLt := (lseriesHasSum_target (ρ := ρ) (s := s) (by linarith)).LSeries_eq
+    refine ⟨pow_ne_zero M hne, hd.pow M, ?_⟩
+    rw [logDeriv_fun_pow hd M, hld, hLt]
+    simp only [hmdef]
+    rw [hLm]
+    ring
+  obtain ⟨C₁, K, hC₁, hK, hfac⟩ := exists_exp_geditSeries_eq (m := m) hm0 hK₀ hc₀0
+    (by linarith) hdisc hsumm (L := fun s => ((s - ρ) * (s - ρc)) ^ M)
+    (Φ₀ := fun s => (M : ℂ) * (zetaRegular (s - (ρ - 1)) + zetaRegular (s - (ρc - 1))))
+    ((differentiable_const _).mul
+      ((differentiable_zetaRegular.comp (differentiable_id.sub_const _)).add
+        (differentiable_zetaRegular.comp (differentiable_id.sub_const _)))).differentiableOn hL
+  -- the continuation of the edit exponential and its zero of order `M` at `ρ`
+  obtain ⟨F, hFdef⟩ : ∃ F : ℂ → ℂ,
+      F = fun s => C₁ * ((s - ρ) * (s - ρc)) ^ M * Complex.exp (K s) := ⟨_, rfl⟩
+  have hU₀ : IsOpen {s : ℂ | c₀ < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hF : DifferentiableOn ℂ F {s : ℂ | c₀ < s.re} := by
+    rw [hFdef]
+    exact ((differentiableOn_const C₁).mul (((differentiableOn_id.sub_const ρ).mul
+      (differentiableOn_id.sub_const _)).pow M)).mul hK.cexp
+  have hFeq : ∀ s : ℂ, 1 < s.re →
+      F s = Complex.exp (LSeries (fun k => (gedit m k : ℂ)) s) := fun s hs => by
+    rw [hFdef]
+    exact (hfac s hs).symm
+  have hρmem : ρ ∈ {s : ℂ | c₀ < s.re} := show c₀ < ρ.re by linarith
+  have hfan : AnalyticAt ℂ (fun s : ℂ => C₁ * (s - ρc) ^ M * Complex.exp (K s)) ρ := by
+    have hd : DifferentiableOn ℂ (fun s : ℂ => C₁ * (s - ρc) ^ M * Complex.exp (K s))
+        {s : ℂ | c₀ < s.re} :=
+      ((differentiableOn_const C₁).mul ((differentiableOn_id.sub_const _).pow M)).mul hK.cexp
+    exact hd.analyticAt (hU₀.mem_nhds hρmem)
+  have hne : ρ - ρc ≠ 0 := by
+    intro h
+    have h' := congrArg Complex.im h
+    rw [Complex.sub_im, hρc, Complex.conj_im, Complex.zero_im] at h'
+    exact him (by linarith)
+  have hord : analyticOrderAt F ρ = (M : ℕ∞) := by
+    refine (hF.analyticAt (hU₀.mem_nhds hρmem)).analyticOrderAt_eq_natCast.mpr
+      ⟨_, hfan, mul_ne_zero (mul_ne_zero hC₁ (pow_ne_zero M hne)) (Complex.exp_ne_zero _),
+        Filter.Eventually.of_forall fun s => ?_⟩
+    rw [hFdef]
+    show C₁ * ((s - ρ) * (s - ρc)) ^ M * Complex.exp (K s) =
+      (s - ρ) ^ M • (C₁ * (s - ρc) ^ M * Complex.exp (K s))
+    rw [smul_eq_mul, mul_pow]
+    ring
+  -- the edit is summable at `θ = Re ρ (1 + 1/(2p))`, and `θ/(p+1) < Re ρ/p`
+  obtain ⟨θ, hθ⟩ : ∃ θ : ℝ, θ = ρ.re * (1 + 1 / (2 * p)) := ⟨_, rfl⟩
+  have hθρ : ρ.re < θ := by
+    rw [hθ]
+    have : 0 < 1 / (2 * (p : ℝ)) := by positivity
+    nlinarith
+  have hS : Summable fun k : ℕ => |(gedit m k : ℝ)| * (k : ℝ) ^ (-θ) :=
+    summable_abs_gedit_rpow (m := m) hρ0.le (K := M * (2 / ρ.re)) (by positivity)
+      (fun n _ => by
+        have h := sum_abs_target_le hρ0 (by linarith) n
+        calc ∑ k ∈ Finset.Ioc 0 n, |m k| = M * ∑ k ∈ Finset.Ioc 0 n, |target ρ k| := by
+              rw [Finset.mul_sum]
+              refine Finset.sum_congr rfl fun k _ => ?_
+              simp only [hmdef, abs_mul, abs_of_nonneg hM0]
+          _ ≤ M * (2 / ρ.re * (n : ℝ) ^ ρ.re) := mul_le_mul_of_nonneg_left h hM0
+          _ = M * (2 / ρ.re) * (n : ℝ) ^ ρ.re := by ring) hθρ
+  have hpθ : (p : ℝ) * (θ / (p + 1)) < ρ.re := by
+    have hpθ' : (p : ℝ) * θ = ρ.re * p + ρ.re / 2 := by
+      rw [hθ]; field_simp; ring
+    rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+    nlinarith
+  have hdvd := prime_dvd_order_of_count (isEdit_gedit m) (θ := θ) (by linarith) hS hβ
+    (by linarith) hN hF hFeq hp hord
+    (by have := (lt_div_iff₀ hp0).mp hβρ; linarith)
+    (by have := (lt_div_iff₀ hp0).mp hc₀2; linarith) hpθ
+  exact hpM hdvd
 
 end GaloisForLFunctions.WorldsOfTheZeroConfiguration.BalanceLaw

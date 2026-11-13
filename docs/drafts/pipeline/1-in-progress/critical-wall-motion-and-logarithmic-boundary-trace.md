@@ -15,7 +15,12 @@ The exact decomposition `gammaHardyPhaseRate_eq_log_reference` isolates the loga
 
 ## Question
 
-Does a canonical Green representative of the actual critical L² class have a normalized logarithmic boundary trace whose squared magnitude equals its wall-energy derivative? The principal Gamma-symbol normalization must be checked before fixing the trace constant. A positive answer would replace mere endpoint support by a nonzero quantitative boundary invariant.
+Does a canonical Green representative have a normalized logarithmic boundary trace
+`c=lim_{x↓0}sqrt(log(1/x))F(-x)` satisfying `c²=8a(R)W(F)` at every
+confining minimum? The literal density `archLevyDensity(t)=exp(-t/2)/(1-exp(-2t))`
+has leading term `1/(2t)`, consistent with this constant. The identity is a
+conjecture; a positive answer would replace endpoint support by a nonzero
+quantitative boundary invariant.
 
 The statement must use a canonical representative or an essential trace. `IsCriticalHalfLineGroundState` assumes measurability and integral conditions, so null-set changes on the negative half-line can destroy a literal pointwise limit.
 
@@ -87,3 +92,19 @@ remaining bridge identifies the terminally localized actual weak equation,
 including its prime and confining terms, with the existing Green inverse.
 The boundary coefficient's magnitude and polar identification would still
 remain open.
+
+## Candidate wall-flux argument
+
+Assuming the preceding regularity steps have been proved, put
+`B_h=F·1_{[-h,0]}`. The weak equation and the jump-kernel cross term suggest
+`E(B_h)/h→c²` at the critical ratio: the kernel `1/(2|u-v|)` pairs the
+terminal trace with the adjacent logarithmic tail. The prime and polar
+cross terms would be `o(h)` under the exponential barrier bound.
+
+The sharp wall floor applied to `F-B_h` would then give `c²≥8aW(F)`.
+The same cross-kernel asymptotic predicts
+`E(T_hF,B_h)/h→-c²`. Cauchy–Schwarz for the nonnegative critical form,
+together with `E(T_hF-F)/h→8aW(F)`, would give the reverse inequality.
+At a general minimum the same argument uses `E-λ‖·‖₂²`.
+Admissibility of the sharp collar and both cross-kernel asymptotics remain
+to be proved; no flux identity or nonzero trace is claimed.

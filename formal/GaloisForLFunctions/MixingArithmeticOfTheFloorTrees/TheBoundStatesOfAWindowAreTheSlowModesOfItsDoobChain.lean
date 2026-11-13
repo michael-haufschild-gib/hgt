@@ -65,7 +65,7 @@ theorem doobConductance_comm {G : Matrix ι ι ℝ} (hG : ∀ i j, G i j = G j i
   ring
 
 theorem doobMass_nonneg (φ f : ι → ℝ) : 0 ≤ doobMass φ f :=
-  Finset.sum_nonneg fun i _ => mul_nonneg (sq_nonneg _) (sq_nonneg _)
+  Finset.sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (sq_nonneg _)
 
 /-- The Dirichlet form is nonnegative when the entries off the diagonal are `≤ 0`. -/
 theorem doobEnergy_nonneg {G : Matrix ι ι ℝ} (hoff : ∀ i j, i ≠ j → G i j ≤ 0) {φ : ι → ℝ}
@@ -159,7 +159,7 @@ theorem mulVec_eq_zero_of_dotProduct_eq_zero {M : Matrix ι ι ℝ} (hM : ∀ i 
     ring
   have hle : 0 ≤ -(S ^ 2 * (q + 2)) := e ▸ mul_nonneg (sq_nonneg _) h0
   have hS0 : S = 0 := by nlinarith [sq_nonneg S]
-  exact Matrix.dotProduct_self_eq_zero.mp (hS.trans hS0)
+  exact dotProduct_self_eq_zero.mp (hS.trans hS0)
 
 /-- Against a matrix with entries `≤ 0` off the diagonal the modulus does not raise the form. -/
 theorem bilin_abs_le {G : Matrix ι ι ℝ} (hoff : ∀ i j, i ≠ j → G i j ≤ 0) (v : ι → ℝ) :
@@ -191,7 +191,7 @@ theorem exists_pos_eigenvector [DecidableEq ι] [Nonempty ι] {G : Matrix ι ι 
       rw [real_inner_comm]
       exact inner_toLp_eigenvector hB σ i
     have hself : ⟪(WithLp.toLp 2 σ : EuclideanSpace ℝ ι), WithLp.toLp 2 σ⟫ = ∑ k, σ k ^ 2 := by
-      simp [PiLp.inner_apply, sq]
+      rw [real_inner_self_eq_norm_sq, EuclideanSpace.real_norm_sq_eq]
     simp only [inner_toLp_eigenvector hB, h', hself] at h
     rw [← h]
     exact Finset.sum_congr rfl fun i _ => sq _
@@ -205,7 +205,7 @@ theorem exists_pos_eigenvector [DecidableEq ι] [Nonempty ι] {G : Matrix ι ι 
   set w : ι → ℝ := fun k => |v k|
   have hww : ∑ k, w k ^ 2 = 1 := by
     rw [← hvv]
-    exact Finset.sum_congr rfl fun k _ => by simp only [w, sq_abs, sq]
+    exact Finset.sum_congr rfl fun k _ => by simp only [w]; rw [sq_abs, sq]
   -- the modulus is a minimizer, hence an eigenvector
   have hform : w ⬝ᵥ (G *ᵥ w) = lam * ∑ k, w k ^ 2 := by
     refine le_antisymm ?_ (hray w)
@@ -216,18 +216,18 @@ theorem exists_pos_eigenvector [DecidableEq ι] [Nonempty ι] {G : Matrix ι ι 
   set M : Matrix ι ι ℝ := G - lam • (1 : Matrix ι ι ℝ)
   have hMv : ∀ σ : ι → ℝ, σ ⬝ᵥ (M *ᵥ σ) = σ ⬝ᵥ (G *ᵥ σ) - lam * ∑ k, σ k ^ 2 := by
     intro σ
-    simp only [M, Matrix.sub_mulVec, Matrix.smul_mulVec_assoc, Matrix.one_mulVec, dotProduct_sub,
+    simp only [M, Matrix.sub_mulVec, Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_sub,
       dotProduct_smul, smul_eq_mul]
     rw [show σ ⬝ᵥ σ = ∑ k, σ k ^ 2 from Finset.sum_congr rfl fun k _ => (sq _).symm]
   have hMsym : ∀ i j, M i j = M j i := fun i j => by
     by_cases h : i = j
     · rw [h]
-    · simp [M, Matrix.one_apply, h, Ne.symm h, hG i j]
+    · simp [M, h, Ne.symm h, hG i j]
   have hMw : M *ᵥ w = 0 := mulVec_eq_zero_of_dotProduct_eq_zero hMsym
     (fun σ => by rw [hMv]; linarith [hray σ]) (by rw [hMv, hform]; ring)
   have hGw : G *ᵥ w = lam • w := by
     have h := hMw
-    simp only [M, Matrix.sub_mulVec, Matrix.smul_mulVec_assoc, Matrix.one_mulVec] at h
+    simp only [M, Matrix.sub_mulVec, Matrix.smul_mulVec, Matrix.one_mulVec] at h
     exact sub_eq_zero.mp h
   -- positivity from the eigenvalue equation
   refine ⟨w, fun i => ?_, lam, hGw⟩
@@ -344,13 +344,15 @@ theorem doobEnergy_indicator_sub {G : Matrix ι ι ℝ} (hG : ∀ i j, G i j = G
   have hsq : ∀ i j, ((if i ∈ S then (1 : ℝ) else 0) - c - ((if j ∈ S then 1 else 0) - c)) ^ 2 =
       (if i ∈ S ∧ j ∈ Sᶜ then 1 else 0) + (if i ∈ Sᶜ ∧ j ∈ S then 1 else 0) := by
     intro i j
-    by_cases hi : i ∈ S <;> by_cases hj : j ∈ S <;> simp [hi, hj]
+    by_cases hi : i ∈ S <;> by_cases hj : j ∈ S <;>
+      simp only [hi, hj, Finset.mem_compl, not_true_eq_false, not_false_eq_true, and_self,
+        and_true, and_false, true_and, false_and, if_true, if_false] <;> ring
   have hsplit : ∀ i j, doobConductance G φ i j *
       ((if i ∈ S then (1 : ℝ) else 0) - c - ((if j ∈ S then 1 else 0) - c)) ^ 2 =
       (if i ∈ S ∧ j ∈ Sᶜ then doobConductance G φ i j else 0) +
         (if i ∈ Sᶜ ∧ j ∈ S then doobConductance G φ i j else 0) := by
     intro i j
-    rw [hsq, mul_add, mul_ite, mul_ite, mul_one, mul_zero, mul_one, mul_zero]
+    simp only [hsq, mul_add, mul_ite, mul_one, mul_zero]
   have hswap : ∑ i ∈ Sᶜ, ∑ j ∈ S, doobConductance G φ i j = doobCut G φ S := by
     unfold doobCut
     rw [Finset.sum_comm]

@@ -56,12 +56,14 @@ def frobeniusPowerGroup (H : Subgroup Γ) : Subgroup (FractionalIdeal (𝓞 K)�
   Subgroup.closure {I | ∃ (v : HeightOneSpectrum (𝓞 K)) (g : ℕ), (N : 𝓞 K) ∉ v.asIdeal ∧
     frobeniusElement K M Γ v ^ g ∈ H ∧ I = idealUnit v.ne_bot ^ g}
 
+omit [NeZero N] in
 theorem frobeniusPowerGroup_mono {H H' : Subgroup Γ} (h : H ≤ H') :
     frobeniusPowerGroup K M N H ≤ frobeniusPowerGroup K M N H' :=
   Subgroup.closure_mono (by
     rintro _ ⟨v, g, hv, hg, rfl⟩
     exact ⟨v, g, hv, h hg, rfl⟩)
 
+omit [NumberField K] [NeZero N] in
 /-- A prime of the fixed field that does not divide `N` lies over a prime that does not divide
 `N`. -/
 theorem natCast_notMem_under (E : Type u) [Field E] [NumberField E] [Algebra K E]
@@ -83,6 +85,7 @@ variable (hur : ∀ v : HeightOneSpectrum (𝓞 K), (N : 𝓞 K) ∉ v.asIdeal �
 
 include hur
 
+omit [NeZero N] in
 /-- The Artin map sends `D_H` into `H`. -/
 theorem artinMap_mem_of_mem_frobeniusPowerGroup (H : Subgroup Γ)
     {I : (FractionalIdeal (𝓞 K)⁰ K)ˣ} (hI : I ∈ frobeniusPowerGroup K M N H) :
@@ -169,16 +172,27 @@ theorem mem_rayPrincipal_sup_frobeniusPowerGroup {m : ℕ} [NeZero m] {ζ : 𝓞
   have hmap := Subgroup.mem_map_of_mem
     (idealNormHom K (FixedPoints.intermediateField H : IntermediateField K M)) hC
   rw [Subgroup.map_sup] at hmap
-  refine sup_le_sup (Subgroup.map_le_iff_le_comap.mpr fun J hJ =>
-    idealNormHom_mem_rayPrincipal K _ N hJ) ?_ hmap
+  -- the norm maps the ray into the ray
+  have h1 : (rayPrincipal
+      (normModulus (FixedPoints.intermediateField H : IntermediateField K M) N)).map
+        (idealNormHom K (FixedPoints.intermediateField H : IntermediateField K M)) ≤
+      rayPrincipal (normModulus K N) := by
+    rintro _ ⟨J, hJ, rfl⟩
+    exact idealNormHom_mem_rayPrincipal K _ N hJ
   -- the norm of a prime with Frobenius element in `Λ ∩ H`
-  rw [Subgroup.map_le_iff_le_comap, frobeniusPrimeGroup, Subgroup.closure_le]
-  rintro _ ⟨w, hw, hwΛ, rfl⟩
-  rw [SetLike.mem_coe, Subgroup.mem_comap, idealNormHom_idealUnit_prime]
-  have hNw := natCast_notMem_under K N _ hw
-  refine Subgroup.subset_closure ⟨w.under (𝓞 K), w.asIdeal.inertiaDeg (𝓞 K), hNw, ?_, rfl⟩
-  rw [← map_frobeniusElement_eq_pow K (FixedPoints.intermediateField H : IntermediateField K M)
-    M H.subtype (fun _ _ => rfl) w (hur _ hNw)]
-  exact Subgroup.mem_subgroupOf.mp hwΛ
+  have h2 : (frobeniusPrimeGroup (FixedPoints.intermediateField H : IntermediateField K M) M N
+      (Λ.subgroupOf H)).map
+        (idealNormHom K (FixedPoints.intermediateField H : IntermediateField K M)) ≤
+      frobeniusPowerGroup K M N Λ := by
+    rw [Subgroup.map_le_iff_le_comap, frobeniusPrimeGroup, Subgroup.closure_le]
+    rintro _ ⟨w, hw, hwΛ, rfl⟩
+    rw [SetLike.mem_coe, Subgroup.mem_comap, idealNormHom_idealUnit_prime]
+    have hNw := natCast_notMem_under K N _ hw
+    refine Subgroup.subset_closure ⟨w.under (𝓞 K), w.asIdeal.inertiaDeg (𝓞 K), hNw, ?_, rfl⟩
+    rw [← map_frobeniusElement_eq_pow K
+      (FixedPoints.intermediateField H : IntermediateField K M) M H.subtype (fun _ _ => rfl) w
+      (hur _ hNw)]
+    exact Subgroup.mem_subgroupOf.mp hwΛ
+  exact sup_le_sup h1 h2 hmap
 
 end GaloisForLFunctions
