@@ -74,7 +74,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_correlation_row {F : ℝ
   have hind : Integrable ((Iio (-h)).indicator (fun u => F u * G u)) :=
     hFG.integrableOn.integrable_indicator measurableSet_Iio
   have hshift : Integrable (fun u => F (u + h) * G (u + h)) :=
-    hFG.comp_measurePreserving (measurePreserving_add_right volume h)
+    (measurePreserving_add_right volume h).integrable_comp_of_integrable hFG
   have hi := integral_mono (hplus.add hback)
     ((hind.const_mul (Real.exp (β * h))).add (hshift.const_mul (Real.exp (-(β * h)))))
     (fun u => hF.exponentialBarrier_supported_edge hβ ht u h)
@@ -93,6 +93,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_correlation_row {F : ℝ
     rw [integral_add (hind.const_mul _) (hshift.const_mul _), integral_const_mul,
       integral_const_mul, integral_indicator measurableSet_Iio,
       integral_add_right_eq_self (fun u => F u * G u) h]
+  simp only [Pi.add_apply] at hi
   rw [hl, hr] at hi
   exact hi
 

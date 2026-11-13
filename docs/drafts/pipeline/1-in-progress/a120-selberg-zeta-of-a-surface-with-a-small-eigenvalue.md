@@ -70,14 +70,16 @@ embeds `B ⊗ ℝ ≅ M₂(ℝ)` with `nrd = det`. `O = ℤ⟨1, i, j, ij⟩`, `
   `Γ_n = ker(χ̃ mod n)`, orthogonal to constants, with Rayleigh quotient `O(1/n²)`.
 
 ## Status
-Not started in Lean. The vendored `DifferentialGeometry.Analysis.Spectral.Scalar` (built oleans:
-`EigenBasis`, `Spectrum`, `Enumeration`) gives the eigenbasis and discrete spectrum of the Laplacian
-on a compact boundaryless Riemannian manifold; using it needs `Γ\ℍ` as a smooth manifold with the
-hyperbolic metric. Corpus inputs located: point-pair mean value and integral principle
-(`HyperbolicRotationMean`, `HyperbolicPointPair`), Selberg transforms and the test-field eigenvalue
-criterion for `Γ_N` (`RepPointPairSmallEigenCriterion`, `NonvacuousSmallEigenvalue`), the Mayer
-determinant and geodesic Euler product for the modular surface (`GaussMayerGeodesicProduct`), trace
-and Hilbert–Schmidt infrastructure in `HTGeometry`.
+Lean (folder `CompactHyperbolicSurfaces/`, compiled):
+- `HorocyclicSlices`: Abel transform `abelL`, slices, weighted masses, convolution slices, ball volumes.
+- `CocompactGroups`: `IsCocompactFree`, orbit counting `exists_card_le`, fundamental domain
+  `exists_isFundamentalDomain`.
+- `ResolventKernels`, `ResolventKernelBounds`: `resKernel`, `abelL_resKernel`, decay `u^{−s}`, local
+  `u^{−¼}`, difference kernel `diffKernel` (continuous, `abelL_diffKernel`).
+- `ConvolutionProfiles`: radiality of `convK`, `abelL_convProfile`, Abel inversion `ae_eq_of_abelL_eq`.
+- `ResolventIdentity`: `convK_resKernel_ae` (`k_s ⋆ k_a = D_{a,s}/(s(s−1) − a(a−1))` a.e.).
+Next: operators `T_s` on `L²(F)`, spectral parametrization, Mercer trace, trace formula, zeta,
+explicit group and walls, small eigenvalue.
 
 ## Log
 - 2026-11-13 — created; route analysis (compact surface needed; cusped and periodic models fail the

@@ -13,12 +13,12 @@ At its saddle `a` (`τ a = π e^{2a}`), the leading phase of the heat family is
 This module evaluates the integral over the real line of `v`, where `ψ` is real: the modulus of
 the integrand is a Gaussian of rate `≈ Re P`, although `P` itself may be almost imaginary.
 
-* `saddlePhase_le_neg_sq`: `ψ(v) ≤ −v²` for `v ≥ −1/2`; `abs_saddlePhase_add_le`:
+* `saddlePhase_le_neg_sq`: `ψ(v) ≤ −v²` for `v ≥ −1`; `abs_saddlePhase_add_le`:
   `|ψ(v) + 2v²| ≤ 8|v|³e^{2|v|}`.
 * `norm_cexp_sub_cexp_le`: `|e^{w₁} − e^{w₂}| ≤ e^{max Re}|w₁ − w₂|`.
 * `norm_integral_saddleIntegrand_sub_le` (**Laplace**): for `Re P ≥ 18`, `8 Re τ ≤ Re P`,
   `|κ| ≤ 6`,
-  `|∫_{−1/2}^∞ e^{κv + Pψ(v) + τv²} dv − (π/(2P − τ))^{1/2}| ≤ 64e⁴(1 + |P|/Re P)/Re P`.
+  `|∫_{−1}^∞ e^{κv + Pψ(v) + τv²} dv − (π/(2P − τ))^{1/2}| ≤ 64e⁴(1 + |P|/Re P)/Re P`.
   The error is of the order `|P|/(Re P)²` against the main term of the order `|P|^{−1/2}`.
 -/
 
@@ -40,24 +40,14 @@ theorem continuous_saddlePhase : Continuous saddlePhase := by
   unfold saddlePhase
   fun_prop
 
-/-- `ψ(v) ≤ −v²` for `v ≥ −1/2`. -/
-theorem saddlePhase_le_neg_sq {v : ℝ} (hv : -(1 / 2) ≤ v) : saddlePhase v ≤ -v ^ 2 := by
+/-- `ψ(v) ≤ −v²` for `v ≥ −1`: there `(1 + v)² ≤ e^{2v}`. -/
+theorem saddlePhase_le_neg_sq {v : ℝ} (hv : -1 ≤ v) : saddlePhase v ≤ -v ^ 2 := by
   unfold saddlePhase
-  rcases le_total 0 v with h | h
-  · have h1 := Real.quadratic_le_exp_of_nonneg (x := 2 * v) (by linarith)
-    nlinarith [sq_nonneg v]
-  · have hx : |2 * v| ≤ 1 := by
-      rw [abs_le]
-      constructor <;> linarith
-    have hb := Real.exp_bound hx (n := 3) (by norm_num)
-    have hsum : ∑ m ∈ Finset.range 3, (2 * v) ^ m / (m.factorial : ℝ) =
-        1 + 2 * v + (2 * v) ^ 2 / 2 := by
-      simp [Finset.sum_range_succ, Nat.factorial]
-    have hc : ((Nat.succ 3 : ℕ) : ℝ) / (((Nat.factorial 3 : ℕ) : ℝ) * ((3 : ℕ) : ℝ)) = 2 / 9 := by
-      norm_num [Nat.factorial]
-    rw [hsum, hc, abs_of_nonpos (by linarith : 2 * v ≤ 0)] at hb
-    have h1 := (abs_le.mp hb).1
-    nlinarith [sq_nonneg v, mul_nonneg (sq_nonneg v) (by linarith : (0 : ℝ) ≤ 1 + 16 / 9 * v)]
+  have h := mul_self_le_mul_self (by linarith : (0 : ℝ) ≤ 1 + v)
+    (by linarith [Real.add_one_le_exp v] : 1 + v ≤ Real.exp v)
+  have e : Real.exp (2 * v) = Real.exp v * Real.exp v := by rw [← Real.exp_add]; ring_nf
+  rw [e]
+  nlinarith
 
 /-- `|ψ(v) + 2v²| ≤ 8|v|³e^{2|v|}`: the cubic remainder of the phase. -/
 theorem abs_saddlePhase_add_le (v : ℝ) :
@@ -160,9 +150,9 @@ theorem continuous_saddleIntegrand (P τ κ : ℂ) : Continuous (saddleIntegrand
   unfold saddleIntegrand
   fun_prop
 
-/-- On `v ≥ −1/2` the real part of `Pψ(v) + τv²` is at most `−(7/8) Re P · v²`. -/
+/-- On `v ≥ −1` the real part of `Pψ(v) + τv²` is at most `−(7/8) Re P · v²`. -/
 theorem re_saddle_exponent_le {P τ : ℂ} (hp : 0 ≤ P.re) (hτ : 8 * τ.re ≤ P.re) {v : ℝ}
-    (hv : -(1 / 2) ≤ v) :
+    (hv : -1 ≤ v) :
     (P * ((saddlePhase v : ℝ) : ℂ) + τ * (v : ℂ) ^ 2).re ≤ -(7 / 8 * P.re * v ^ 2) := by
   have e : τ * (v : ℂ) ^ 2 = τ * ((v ^ 2 : ℝ) : ℂ) := by push_cast; ring
   rw [Complex.add_re, Complex.re_mul_ofReal, e, Complex.re_mul_ofReal]
@@ -170,10 +160,10 @@ theorem re_saddle_exponent_le {P τ : ℂ} (hp : 0 ≤ P.re) (hτ : 8 * τ.re �
   have h2 := mul_le_mul_of_nonneg_right hτ (sq_nonneg v)
   linarith
 
-/-- **Pointwise comparison with the Gaussian.** On `v ≥ −1/2`,
+/-- **Pointwise comparison with the Gaussian.** On `v ≥ −1`,
 `|e^{κv+Pψ(v)+τv²} − e^{−(2P−τ)v²}| ≤ e⁴(6p^{−1/2} + 16|P|p^{−3/2}) e^{−(p/4)v²}`, `p = Re P`. -/
 theorem norm_saddleIntegrand_sub_gaussian_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
-    (hτ : 8 * τ.re ≤ P.re) (hκ : ‖κ‖ ≤ 6) {v : ℝ} (hv : -(1 / 2) ≤ v) :
+    (hτ : 8 * τ.re ≤ P.re) (hκ : ‖κ‖ ≤ 6) {v : ℝ} (hv : -1 ≤ v) :
     ‖saddleIntegrand P τ κ v - cexp (-(2 * P - τ) * (v : ℂ) ^ 2)‖ ≤
       Real.exp 4 * (6 * (1 / Real.sqrt P.re) + 16 * ‖P‖ * (1 / Real.sqrt P.re) ^ 3) *
         Real.exp (-(P.re / 4) * v ^ 2) := by
@@ -254,11 +244,48 @@ theorem norm_saddleIntegrand_sub_gaussian_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
 
 /-! ## The Laplace evaluation -/
 
+/-- `∫ e^{−(p/4)v²} dv ≤ 4 p^{−1/2}`. -/
+theorem integral_exp_neg_quarter_mul_sq_le {p : ℝ} (hp : 0 < p) :
+    ∫ v : ℝ, Real.exp (-(p / 4) * v ^ 2) ≤ 4 * (1 / Real.sqrt p) := by
+  rw [integral_gaussian (p / 4), Real.sqrt_le_iff]
+  refine ⟨by positivity, ?_⟩
+  have h4 := Real.pi_le_four
+  rw [mul_pow, div_pow, one_pow, Real.sq_sqrt hp.le, div_le_iff₀ (by positivity)]
+  have : (4 : ℝ) ^ 2 * (1 / p) * (p / 4) = 4 := by field_simp
+  linarith
+
+/-- The integrand at the saddle is integrable on `v ≥ −1`. -/
+theorem integrableOn_saddleIntegrand {P τ κ : ℂ} (hp : 18 ≤ P.re) (hτ : 8 * τ.re ≤ P.re)
+    (hκ : ‖κ‖ ≤ 6) : IntegrableOn (saddleIntegrand P τ κ) (Ioi (-1 : ℝ)) := by
+  have hp0 : 0 < P.re := by linarith
+  have hlam0 : 0 < (2 * P - τ).re := by
+    simp only [Complex.sub_re, Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul,
+      sub_zero]
+    linarith
+  have hGi : Integrable fun v : ℝ => cexp (-(2 * P - τ) * (v : ℂ) ^ 2) :=
+    integrable_cexp_neg_mul_sq hlam0
+  have hgi : Integrable fun v : ℝ => Real.exp (-(P.re / 4) * v ^ 2) :=
+    integrable_exp_neg_mul_sq (by positivity)
+  have hdom : Integrable fun v : ℝ =>
+      Real.exp 4 * (6 * (1 / Real.sqrt P.re) + 16 * ‖P‖ * (1 / Real.sqrt P.re) ^ 3) *
+        Real.exp (-(P.re / 4) * v ^ 2) + ‖cexp (-(2 * P - τ) * (v : ℂ) ^ 2)‖ :=
+    (hgi.const_mul _).add hGi.norm
+  refine Integrable.mono' hdom.integrableOn
+    (continuous_saddleIntegrand P τ κ).aestronglyMeasurable ?_
+  refine (ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun v hv => ?_)
+  have h1 := norm_saddleIntegrand_sub_gaussian_le hp hτ hκ (le_of_lt hv)
+  calc ‖saddleIntegrand P τ κ v‖
+      = ‖(saddleIntegrand P τ κ v - cexp (-(2 * P - τ) * (v : ℂ) ^ 2)) +
+          cexp (-(2 * P - τ) * (v : ℂ) ^ 2)‖ := by rw [sub_add_cancel]
+    _ ≤ ‖saddleIntegrand P τ κ v - cexp (-(2 * P - τ) * (v : ℂ) ^ 2)‖ +
+          ‖cexp (-(2 * P - τ) * (v : ℂ) ^ 2)‖ := norm_add_le _ _
+    _ ≤ _ := by linarith
+
 /-- **The Gaussian at the saddle.** For `Re P ≥ 18`, `8 Re τ ≤ Re P` and `|κ| ≤ 6`,
-`∫_{−1/2}^∞ e^{κv + Pψ(v) + τv²} dv = (π/(2P − τ))^{1/2} + O((1 + |P|/Re P)/Re P)`. -/
+`∫_{−1}^∞ e^{κv + Pψ(v) + τv²} dv = (π/(2P − τ))^{1/2} + O((1 + |P|/Re P)/Re P)`. -/
 theorem norm_integral_saddleIntegrand_sub_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
     (hτ : 8 * τ.re ≤ P.re) (hκ : ‖κ‖ ≤ 6) :
-    ‖(∫ v in Ioi (-(1 / 2) : ℝ), saddleIntegrand P τ κ v) -
+    ‖(∫ v in Ioi (-1 : ℝ), saddleIntegrand P τ κ v) -
         ((π : ℂ) / (2 * P - τ)) ^ (1 / 2 : ℂ)‖ ≤
       64 * Real.exp 4 * (1 + ‖P‖ / P.re) / P.re := by
   set p := P.re with hpdef
@@ -287,14 +314,13 @@ theorem norm_integral_saddleIntegrand_sub_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
   set g : ℝ → ℝ := fun v => Real.exp (-(p / 4) * v ^ 2) with hg
   have hgi : Integrable g := integrable_exp_neg_mul_sq (by positivity)
   have hg0 : ∀ v, 0 ≤ g v := fun v => (Real.exp_pos _).le
-  have hgint : ∫ v, g v = Real.sqrt (π / (p / 4)) := integral_gaussian (p / 4)
   -- the two pointwise bounds
-  have hEG : ∀ v ∈ Ioi (-(1 / 2) : ℝ), ‖E v - G v‖ ≤ c₁ * g v := fun v hv =>
+  have hEG : ∀ v ∈ Ioi (-1 : ℝ), ‖E v - G v‖ ≤ c₁ * g v := fun v hv =>
     norm_saddleIntegrand_sub_gaussian_le hp hτ hκ (le_of_lt hv)
-  have hGtail : ∀ v ∈ Iic (-(1 / 2) : ℝ), ‖G v‖ ≤ c₂ * g v := by
+  have hGtail : ∀ v ∈ Iic (-1 : ℝ), ‖G v‖ ≤ c₂ * g v := by
     intro v hv
-    have hv2 : 1 / 4 ≤ v ^ 2 := by
-      have : v ≤ -(1 / 2) := hv
+    have hv2 : 1 ≤ v ^ 2 := by
+      have : v ≤ -1 := hv
       nlinarith
     have e : -lam * (v : ℂ) ^ 2 = (-lam) * ((v ^ 2 : ℝ) : ℂ) := by push_cast; ring
     have h1 : ‖G v‖ = Real.exp (-(lam.re * v ^ 2)) := by
@@ -314,63 +340,50 @@ theorem norm_integral_saddleIntegrand_sub_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
         ≤ Real.exp (-(5 * p / 32) + -(p / 4) * v ^ 2) := by
           refine Real.exp_le_exp.mpr ?_
           rw [hlamre]
+          have h3 := mul_le_mul_of_nonneg_right hτ (sq_nonneg v)
+          have h4 := mul_nonneg hp0.le (sub_nonneg.mpr hv2)
           nlinarith [mul_nonneg hp0.le (sq_nonneg v)]
       _ = Real.exp (-(5 * p / 32)) * g v := by rw [Real.exp_add]
       _ ≤ c₂ * g v := mul_le_mul_of_nonneg_right h2 (hg0 v)
   -- integrability of the integrand at the saddle
-  have hEi : IntegrableOn E (Ioi (-(1 / 2) : ℝ)) := by
-    have hdom : Integrable fun v => c₁ * g v + ‖G v‖ := (hgi.const_mul c₁).add hGi.norm
-    refine Integrable.mono' hdom.integrableOn
-      (continuous_saddleIntegrand P τ κ).aestronglyMeasurable ?_
-    refine (ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun v hv => ?_)
-    have h1 := hEG v hv
-    calc ‖E v‖ = ‖(E v - G v) + G v‖ := by rw [sub_add_cancel]
-      _ ≤ ‖E v - G v‖ + ‖G v‖ := norm_add_le _ _
-      _ ≤ c₁ * g v + ‖G v‖ := by linarith
+  have hEi : IntegrableOn E (Ioi (-1 : ℝ)) := integrableOn_saddleIntegrand hp hτ hκ
   -- the difference as two integrals
   have hsplit : (∫ v, G v) =
-      (∫ v in Iic (-(1 / 2) : ℝ), G v) + ∫ v in Ioi (-(1 / 2) : ℝ), G v := by
-    have h := integral_add_compl (measurableSet_Iic (a := (-(1 / 2) : ℝ))) hGi
+      (∫ v in Iic (-1 : ℝ), G v) + ∫ v in Ioi (-1 : ℝ), G v := by
+    have h := integral_add_compl (measurableSet_Iic (a := (-1 : ℝ))) hGi
     rw [compl_Iic] at h
     exact h.symm
   have hgauss : ((π : ℂ) / lam) ^ (1 / 2 : ℂ) = ∫ v, G v :=
     (integral_gaussian_complex hlam0).symm
-  have hdiff : (∫ v in Ioi (-(1 / 2) : ℝ), E v) - ((π : ℂ) / lam) ^ (1 / 2 : ℂ) =
-      (∫ v in Ioi (-(1 / 2) : ℝ), (E v - G v)) - ∫ v in Iic (-(1 / 2) : ℝ), G v := by
+  have hdiff : (∫ v in Ioi (-1 : ℝ), E v) - ((π : ℂ) / lam) ^ (1 / 2 : ℂ) =
+      (∫ v in Ioi (-1 : ℝ), (E v - G v)) - ∫ v in Iic (-1 : ℝ), G v := by
     rw [hgauss, hsplit, integral_sub hEi hGi.integrableOn]
     ring
-  have hI1 : ‖∫ v in Ioi (-(1 / 2) : ℝ), (E v - G v)‖ ≤ c₁ * ∫ v, g v := by
-    have h1 : ‖∫ v in Ioi (-(1 / 2) : ℝ), (E v - G v)‖ ≤
-        ∫ v in Ioi (-(1 / 2) : ℝ), c₁ * g v :=
+  have hI1 : ‖∫ v in Ioi (-1 : ℝ), (E v - G v)‖ ≤ c₁ * ∫ v, g v := by
+    have h1 : ‖∫ v in Ioi (-1 : ℝ), (E v - G v)‖ ≤
+        ∫ v in Ioi (-1 : ℝ), c₁ * g v :=
       norm_integral_le_of_norm_le (hgi.const_mul c₁).integrableOn
         ((ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall hEG))
-    have h2 : (∫ v in Ioi (-(1 / 2) : ℝ), c₁ * g v) ≤ c₁ * ∫ v, g v := by
+    have h2 : (∫ v in Ioi (-1 : ℝ), c₁ * g v) ≤ c₁ * ∫ v, g v := by
       rw [← integral_const_mul]
       exact setIntegral_le_integral (hgi.const_mul c₁)
         (Eventually.of_forall fun v => mul_nonneg hc₁0 (hg0 v))
     exact h1.trans h2
-  have hI2 : ‖∫ v in Iic (-(1 / 2) : ℝ), G v‖ ≤ c₂ * ∫ v, g v := by
-    have h1 : ‖∫ v in Iic (-(1 / 2) : ℝ), G v‖ ≤ ∫ v in Iic (-(1 / 2) : ℝ), c₂ * g v :=
+  have hI2 : ‖∫ v in Iic (-1 : ℝ), G v‖ ≤ c₂ * ∫ v, g v := by
+    have h1 : ‖∫ v in Iic (-1 : ℝ), G v‖ ≤ ∫ v in Iic (-1 : ℝ), c₂ * g v :=
       norm_integral_le_of_norm_le (hgi.const_mul c₂).integrableOn
         ((ae_restrict_iff' measurableSet_Iic).2 (Eventually.of_forall hGtail))
-    have h2 : (∫ v in Iic (-(1 / 2) : ℝ), c₂ * g v) ≤ c₂ * ∫ v, g v := by
+    have h2 : (∫ v in Iic (-1 : ℝ), c₂ * g v) ≤ c₂ * ∫ v, g v := by
       rw [← integral_const_mul]
       exact setIntegral_le_integral (hgi.const_mul c₂)
         (Eventually.of_forall fun v => mul_nonneg hc₂0 (hg0 v))
     exact h1.trans h2
   -- the Gaussian mass
-  have hmass : ∫ v, g v ≤ 4 * u := by
-    rw [hgint, Real.sqrt_le_iff]
-    refine ⟨by positivity, ?_⟩
-    have h4 := Real.pi_le_four
-    rw [mul_pow, hu2]
-    rw [div_le_iff₀ (by positivity)]
-    have : (4 : ℝ) ^ 2 * (1 / p) * (p / 4) = 4 := by field_simp
-    linarith
+  have hmass : ∫ v, g v ≤ 4 * u := integral_exp_neg_quarter_mul_sq_le hp0
   have hmass0 : 0 ≤ ∫ v, g v := integral_nonneg hg0
   have hE4 : 1 ≤ Real.exp 4 := Real.one_le_exp (by norm_num)
   rw [hdiff]
-  calc ‖(∫ v in Ioi (-(1 / 2) : ℝ), (E v - G v)) - ∫ v in Iic (-(1 / 2) : ℝ), G v‖
+  calc ‖(∫ v in Ioi (-1 : ℝ), (E v - G v)) - ∫ v in Iic (-1 : ℝ), G v‖
       ≤ c₁ * (∫ v, g v) + c₂ * (∫ v, g v) := (norm_sub_le _ _).trans (add_le_add hI1 hI2)
     _ ≤ (c₁ + c₂) * (4 * u) := by
         rw [← add_mul]

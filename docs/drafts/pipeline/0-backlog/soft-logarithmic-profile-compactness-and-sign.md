@@ -24,8 +24,10 @@ Closed attainment can instead start with rescaled actual minimizers from
 `universal_softLogarithmic_confinement_limit`. They already lie in `L¹`,
 their limiting energies approach `μ`, and their first moments approach
 `1/8`. The existing Fourier-window estimate therefore applies to the whole
-approximating sequence. Uniform negative-logarithmic tails, positive-log
-coercivity, and physical tightness would give an `L²` limit. Fatou controls
+approximating sequence. Uniform negative-logarithmic tails bound the
+negative part; the known energy and first-moment limits then bound the
+positive logarithmic part. These bounds and physical tightness would give
+an `L²` limit. Fatou controls
 its positive logarithmic energy and first moment; uniform integrability
 passes the negative logarithmic term. Compact cutoff recovery then proves
 the reverse variational inequality. This route does not require a separate

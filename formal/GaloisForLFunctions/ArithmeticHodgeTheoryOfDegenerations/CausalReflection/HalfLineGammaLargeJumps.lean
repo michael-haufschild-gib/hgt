@@ -132,7 +132,7 @@ theorem halfLineGammaMixedJump_eq_rows {F G : ℝ → ℝ}
   have hg := hG.memLp_real.comp_measurePreserving (measurePreserving_add_right volume h)
   have hFG : Integrable (fun u => F u * G u) := hF.memLp_real.integrable_mul hG.memLp_real
   have hs : Integrable (fun u => F (u + h) * G (u + h)) :=
-    hFG.comp_measurePreserving (measurePreserving_add_right volume h)
+    (measurePreserving_add_right volume h).integrable_comp_of_integrable hFG
   have hc : Integrable (fun u => F u * G (u + h)) := hF.memLp_real.integrable_mul hg
   have hd : Integrable (fun u => F (u + h) * G u) := hf.integrable_mul hG.memLp_real
   have hec : (∫ u, F u * G (u + h)) = ∫ u, F (u - h) * G u := by

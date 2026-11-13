@@ -169,6 +169,20 @@ Green identity rather than a new singular-kernel asymptotic. Passing from
 the localized Green profile back to the actual state still requires
 controlling the separated-support and arithmetic remainders.
 
+`norm_logarithmicGreenRepresentative_sub_le` gives the stronger pointwise
+edge expansion `|U(x)-cV(x)|≤2‖f‖∞V(x)²` for bounded Green forcing, where
+`c=R_f(0)` and `V` is the logarithmic renewal mass.
+`norm_logarithmicBackwardConvolution_sub_le` supplies the accompanying
+right-hand readout modulus `|R_f(x)-R_f(0)|≤2‖f‖∞V(x)`.
+These estimates already accept essential forcing bounds. Thus identifying
+the localized Green equation would supply a quantitative boundary expansion,
+not merely existence of its normalized trace.
+`continuousAt_logarithmicBackwardConvolution_of_ae_locally_bounded`
+already gives two-sided continuity at zero from an essential local bound
+and `L²` forcing, covering the left-hand argument in the shifted identity.
+The remaining obligations are the actual-state Green identification and
+transfer of collar energies.
+
 The existing density bounds suggest the useful reduction
 `|ω(s)-1/(2s)|≤1/2` for `s>0`: combine
 `two_mul_archLevyDensity_le_inv_add_half` with

@@ -52,7 +52,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_jump_lower {F : ℝ → 
   have hG := hF.exponentialBarrierPositiveLevel_mem hβ ht
   have hFG : Integrable (fun u => F u * G u) := hF.memLp_real.integrable_mul hG.memLp_real
   have hshift : Integrable (fun u => F (u + h) * G (u + h)) :=
-    hFG.comp_measurePreserving (measurePreserving_add_right volume h)
+    (measurePreserving_add_right volume h).integrable_comp_of_integrable hFG
   have hdiff : Integrable (fun u => (F u - F (u + h)) * (G u - G (u + h))) :=
     (hF.memLp_real.sub
       (hF.memLp_real.comp_measurePreserving (measurePreserving_add_right volume h))).integrable_mul
@@ -68,6 +68,7 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_jump_lower {F : ℝ → 
     rw [integral_add (hFG.const_mul _) (hshift.const_mul _), integral_const_mul,
       integral_const_mul, integral_add_right_eq_self (fun u => F u * G u) h]
     ring
+  simp only [Pi.add_apply] at hi
   rw [he] at hi
   exact hi
 

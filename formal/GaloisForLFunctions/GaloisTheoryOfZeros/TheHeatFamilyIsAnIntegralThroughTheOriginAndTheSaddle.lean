@@ -187,6 +187,21 @@ theorem continuous_stripIntegrand_line (τ z : ℂ) {h : ℝ} (hh : |h| < π / 4
   unfold stripIntegrand
   fun_prop
 
+/-- The integrand is integrable along the horizontal rays of the strip. -/
+theorem integrableOn_stripIntegrand_line (τ z : ℂ) {h : ℝ} (h0 : 0 ≤ h) (hh : h < π / 4) :
+    IntegrableOn (fun s : ℝ => stripIntegrand τ z (s + h * I)) (Ioi 0) := by
+  obtain ⟨M, -, hM⟩ := exists_norm_stripIntegrand_le τ z hh
+  have hdom : IntegrableOn (fun s : ℝ => M * Real.exp (-s)) (Ioi 0) :=
+    (integrableOn_exp_neg_Ioi 0).const_mul M
+  refine Integrable.mono' hdom (continuous_stripIntegrand_line τ z
+    (by rw [abs_of_nonneg h0]; exact hh)).aestronglyMeasurable ?_
+  refine (ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun s hs => ?_)
+  have hre : ((s : ℂ) + h * I).re = s := by simp
+  have him : ((s : ℂ) + h * I).im = h := by simp
+  have h2 := hM (s + h * I) (by rw [hre]; exact (mem_Ioi.mp hs).le)
+    (by rw [him, abs_of_nonneg h0])
+  rwa [hre] at h2
+
 /-! ## The corner -/
 
 /-- **Corner shift.** The half line `[0, ∞)` may be moved to the height `η < π/4` of the strip,
@@ -207,16 +222,8 @@ theorem integral_Ioi_stripIntegrand_eq_corner (τ z : ℂ) {η : ℝ} (hη0 : 0 
   have hre : ∀ s h : ℝ, ((s : ℂ) + h * I).re = s := fun s h => by simp
   have him : ∀ s h : ℝ, ((s : ℂ) + h * I).im = h := fun s h => by simp
   -- the horizontal rays of height at most `η`
-  have hint : ∀ h : ℝ, 0 ≤ h → h ≤ η → IntegrableOn (fun s : ℝ => f (s + h * I)) (Ioi 0) := by
-    intro h h0 h1
-    have hdom : IntegrableOn (fun s : ℝ => M * Real.exp (-s)) (Ioi 0) :=
-      (integrableOn_exp_neg_Ioi 0).const_mul M
-    refine Integrable.mono' hdom (continuous_stripIntegrand_line τ z
-      (by rw [abs_of_nonneg h0]; linarith)).aestronglyMeasurable ?_
-    refine (ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun s hs => ?_)
-    have h2 := hM (s + h * I) (by rw [hre]; exact (mem_Ioi.mp hs).le)
-      (by rw [him, abs_of_nonneg h0]; exact h1)
-    rwa [hre] at h2
+  have hint : ∀ h : ℝ, 0 ≤ h → h ≤ η → IntegrableOn (fun s : ℝ => f (s + h * I)) (Ioi 0) :=
+    fun h h0 h1 => integrableOn_stripIntegrand_line τ z h0 (lt_of_le_of_lt h1 hη)
   have hint0 : IntegrableOn (fun s : ℝ => f s) (Ioi 0) := by
     have h := hint 0 le_rfl hη0
     simpa using h
