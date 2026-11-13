@@ -57,22 +57,22 @@ theorem balancedProductResidueCount_character (q : ℕ+) (k : ℕ)
 theorem productResidueCount_odd_character_moment (N : ℕ) :
     (∑ χ : DirichletCharacter ℂ (N + 1) with χ.Odd,
       ‖unitCharacterSum N
-        (fun u => (productResidueCount ⟨N + 1, Nat.succ_pos N⟩ u : ℂ)) χ‖ ^ 2) = 0 := by
+        (fun u => (productResidueCount ⟨N + 1, Nat.succ_pos N⟩ (u : ZMod (N + 1)) : ℂ)) χ‖ ^ 2) = 0 := by
   have h := four_mul_odd_moment_eq_reflection_defect N
-    (fun u => (productResidueCount ⟨N + 1, Nat.succ_pos N⟩ u : ℝ))
+    (fun u => (productResidueCount ⟨N + 1, Nat.succ_pos N⟩ (u : ZMod (N + 1)) : ℝ))
   simp only [Units.val_neg, productResidueCount_neg, sub_self, zero_pow two_ne_zero,
-    sum_const_zero, mul_zero, Nat.cast_ofNat] at h
+    sum_const_zero, mul_zero] at h
   exact (mul_eq_zero.mp h).resolve_left (by norm_num)
 
 /-- The same annihilation holds for every complete balanced product block. -/
 theorem balancedProductResidueCount_odd_character_moment (N k : ℕ) :
     (∑ χ : DirichletCharacter ℂ (N + 1) with χ.Odd,
       ‖unitCharacterSum N
-        (fun u => (balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k u : ℂ)) χ‖ ^ 2) = 0 := by
+        (fun u => (balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k (u : ZMod (N + 1)) : ℂ)) χ‖ ^ 2) = 0 := by
   have h := four_mul_odd_moment_eq_reflection_defect N
-    (fun u => (balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k u : ℝ))
+    (fun u => (balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k (u : ZMod (N + 1)) : ℝ))
   simp only [Units.val_neg, balancedProductResidueCount_neg, sub_self, zero_pow two_ne_zero,
-    sum_const_zero, mul_zero, Nat.cast_ofNat] at h
+    sum_const_zero, mul_zero] at h
   exact (mul_eq_zero.mp h).resolve_left (by norm_num)
 
 end
