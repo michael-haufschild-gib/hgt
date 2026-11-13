@@ -12,7 +12,7 @@ two sine factors and one cosine factor.
 
 namespace GaloisForLFunctions.Goldbach
 
-open Complex
+open _root_.Complex
 
 noncomputable section
 

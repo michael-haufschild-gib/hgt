@@ -34,7 +34,7 @@ variable {K : Type*} [Field K] [NumberField K] (𝔪 : Modulus K)
 /-! ### The divisor modulus and the map of ray class groups -/
 
 /-- The modulus `J 𝔪∞` for an ideal `J ⊇ 𝔪₀`. -/
-def divisorModulus (J : Ideal (𝓞 K)) (hJ : 𝔪.fin ≤ J) : Modulus K :=
+@[reducible] def divisorModulus (J : Ideal (𝓞 K)) (hJ : 𝔪.fin ≤ J) : Modulus K :=
   ⟨J, fun h => 𝔪.fin_ne_bot (le_bot_iff.mp (h ▸ hJ)), 𝔪.inf⟩
 
 variable {J : Ideal (𝓞 K)} (hJ : 𝔪.fin ≤ J)
@@ -56,6 +56,7 @@ theorem idealGroup_le_divisorModulus :
 def residueReduction : (𝓞 K ⧸ 𝔪.fin)ˣ →* (𝓞 K ⧸ (divisorModulus 𝔪 J hJ).fin)ˣ :=
   Units.map (Ideal.Quotient.factor hJ).toMonoidHom
 
+omit [NumberField K] in
 theorem coe_residueReduction (u : (𝓞 K ⧸ 𝔪.fin)ˣ) :
     (residueReduction 𝔪 hJ u : 𝓞 K ⧸ (divisorModulus 𝔪 J hJ).fin) =
       Ideal.Quotient.factor hJ (u : 𝓞 K ⧸ 𝔪.fin) := rfl
@@ -150,8 +151,8 @@ theorem rayClassReduction_surjective : Function.Surjective (rayClassReduction �
     rw [MonoidHom.mem_ker, map_mul, map_inv, hδγ, mul_inv_cancel]
   have hcls := ker_rayHom_le (divisorModulus 𝔪 J hJ) hmem
   rw [MonoidHom.mem_ker, map_mul, map_inv, mul_inv_eq_one] at hcls
-  refine ⟨d * rayClassOfElt 𝔪 δ, ?_⟩
-  rw [map_mul, rayClassReduction_rayClassOfElt, hcls, hγ, mul_comm, inv_mul_cancel_right]
+  refine ⟨rayClassOfElt 𝔪 δ * d, ?_⟩
+  rw [map_mul, rayClassReduction_rayClassOfElt, hcls, hγ, inv_mul_cancel_right]
 
 /-! ### Descent of characters -/
 
@@ -167,12 +168,14 @@ theorem ker_rayClassReduction_le (ψ : HeckeCharacter 𝔪)
       idealGroup (divisorModulus 𝔪 J hJ)) : RayClassGroup (divisorModulus 𝔪 J hJ)) = 1 :=
     MonoidHom.mem_ker.mp hc
   have hI : (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ) ∈ rayPrincipal (divisorModulus 𝔪 J hJ) :=
-    Subgroup.mem_subgroupOf.mp ((QuotientGroup.eq_one_iff _).mp h1)
+    Subgroup.mem_subgroupOf.mp ((QuotientGroup.eq_one_iff
+      (Subgroup.inclusion (idealGroup_le_divisorModulus 𝔪 hJ) I)).mp h1)
   obtain ⟨_, ⟨β, hβ, rfl⟩, hβI⟩ := hI
+  have hβI' : toPrincipalIdeal (𝓞 K) K (β : Kˣ) = I := hβI
   have hβm : (β : Kˣ) ∈ primeToUnits 𝔪 :=
-    (toPrincipalIdeal_mem_idealGroup_iff 𝔪 _).mp (by rw [hβI]; exact I.2)
+    (toPrincipalIdeal_mem_idealGroup_iff 𝔪 _).mp (by rw [hβI']; exact I.2)
   have hcls : rayClass 𝔪 I = rayClassOfElt 𝔪 ⟨β, hβm⟩ :=
-    congrArg (rayClass 𝔪) (Subtype.ext hβI.symm)
+    congrArg (rayClass 𝔪) (Subtype.ext hβI'.symm)
   -- residue modulo `J` and signs of `β` are trivial
   have h2 : (residueReduction 𝔪 hJ (rayHom 𝔪 ⟨β, hβm⟩).1, (rayHom 𝔪 ⟨β, hβm⟩).2) = 1 :=
     (rayHom_divisorModulus 𝔪 hJ ⟨β, hβm⟩).symm.trans hβ
@@ -198,11 +201,11 @@ theorem descendHecke_apply (c : RayClassGroup 𝔪) :
 theorem descendHecke_eq_one_iff : descendHecke 𝔪 hJ ψ hψ = 1 ↔ ψ = 1 := by
   constructor
   · intro h
-    ext c
+    refine MonoidHom.ext fun c => ?_
     rw [← descendHecke_apply 𝔪 hJ ψ hψ c, h]
     rfl
   · intro h
-    ext c
+    refine MonoidHom.ext fun c => ?_
     obtain ⟨d, rfl⟩ := rayClassReduction_surjective 𝔪 hJ c
     rw [descendHecke_apply, h]
     rfl
@@ -238,8 +241,9 @@ theorem rayClassReduction_fullRayResidueClass (g : (𝓞 K ⧸ 𝔪.fin)ˣ × (�
     rayClassReduction 𝔪 hJ (fullRayResidueClass 𝔪 g) =
       fullRayResidueClass (divisorModulus 𝔪 J hJ) (residueReduction 𝔪 hJ g.1, g.2) := by
   obtain ⟨α, rfl⟩ := rayHom_surjective 𝔪 g
-  rw [fullRayResidueClass_rayHom, rayClassReduction_rayClassOfElt, ← rayHom_divisorModulus,
-    fullRayResidueClass_rayHom]
+  rw [fullRayResidueClass_rayHom, rayClassReduction_rayClassOfElt]
+  exact (fullRayResidueClass_rayHom (divisorModulus 𝔪 J hJ) _).symm.trans
+    (congrArg (fullRayResidueClass (divisorModulus 𝔪 J hJ)) (rayHom_divisorModulus 𝔪 hJ α))
 
 /-- **The finite part of `ψ'`**: `χ'_f ∘ π = χ_f`. -/
 theorem finiteResidueCharacter_descendHecke (u : (𝓞 K ⧸ 𝔪.fin)ˣ) :

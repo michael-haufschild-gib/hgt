@@ -63,9 +63,12 @@ obtain `Q(v)=μ`.
 
 ## Lean status
 
-Coercivity and compactness of every unit trial Rayleigh sublevel are
-verified and integrated. Strong minimizing-sequence extraction, weighted
-Fatou, continuity under uniform tails, closed-domain identification, and
-cutoff recovery are being formalized. Attainment remains unverified.
+Coercivity, compactness of every unit trial Rayleigh sublevel, and a
+strongly convergent unit minimizing sequence are verified and integrated.
+The entire sufficiently confined rescaled minimizing family also has
+compact closure. `SoftLogarithmicCompactProfiles` passes its final plain
+source audit with exactly the standard three axioms. Weighted Fatou,
+continuity under uniform tails, closed-domain identification, and cutoff
+recovery are being formalized. Attainment remains unverified.
 Uniqueness and sign rigidity are separate open statements in
 [the profile card](../1-in-progress/soft-logarithmic-profile-compactness-and-sign.md).

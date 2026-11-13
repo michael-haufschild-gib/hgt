@@ -96,14 +96,15 @@ standard three axioms; it is wired. These compactness results are not counted
 separately from the remaining attainment problem.
 
 The finite trial infimum supplies normalized trials with energies in
-`[μ,μ+1/(n+1)]`. They all lie in the sublevel `μ+1`; compactness would give
-a strongly convergent subsequence with unit limit. This provides a direct
-minimizing sequence for closed-domain attainment, independently of the
-rescaled actual minimizers. The subsequence assembly remains unverified.
-The verified uniform rescaled-energy limit also places every sufficiently
-confined actual minimizer in this same sublevel. Its whole `L²` family,
-over all such strengths and all minimizing representatives, would therefore
-have compact closure. This application remains unverified.
+`[μ,μ+1/(n+1)]`. Compactness of the sublevel `μ+1` gives a strongly
+convergent minimizing sequence with unit limit. The uniform rescaled-energy
+limit also places every sufficiently confined actual minimizer in this
+same sublevel; the entire family has compact `L²` closure.
+`SoftLogarithmicCompactProfiles` proves both unconditional statements:
+`exists_softLogarithmic_strong_minimizingSequence` and
+`exists_isCompact_closure_rescaledConfiningMinimizerFamily`. Its final plain
+source audit passes without warnings, with exactly the standard three
+axioms; it is integrated. Neither theorem identifies the limit's energy.
 
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
 
