@@ -153,17 +153,3 @@ theorem finiteSpectralSquareProduct_reflect {ι : Type*} [Fintype ι]
 end
 
 end GaloisForLFunctions.Goldbach
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_eq
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_reflect
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_center
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_zero
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_zero_location
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_critical_iff
-#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct
-#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_eq_zero_iff
-#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_critical_iff
-#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_reflect
-#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_zero_mem_strip

@@ -77,9 +77,3 @@ theorem distinct_prime_pair_iff_odd_character_deficit (N : ℕ) :
 end
 
 end GaloisForLFunctions.Goldbach
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.Goldbach.coprimePrimePairWeight_eq_unit_correlation
-#print axioms GaloisForLFunctions.Goldbach.coprimePrimePairWeight_odd_character_identity
-#print axioms GaloisForLFunctions.Goldbach.primePairWeight_odd_character_identity
-#print axioms GaloisForLFunctions.Goldbach.distinct_prime_pair_iff_odd_character_deficit

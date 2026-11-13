@@ -80,9 +80,3 @@ theorem re_ccmRestrictedWeilForm_difference_le (a : RHTower.SuzukiPositiveApertu
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.compactPerturbedEnergy_sub_le
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.compactPerturbedEnergy_sub_le_source
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.compactPerturbedEnergy_operator_sub_le
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.re_ccmRestrictedWeilForm_difference_le

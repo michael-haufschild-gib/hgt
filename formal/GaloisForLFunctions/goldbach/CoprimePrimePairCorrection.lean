@@ -108,9 +108,3 @@ theorem coprimePrimePairWeight_pos_iff (N : ℕ) :
 end
 
 end GaloisForLFunctions.Goldbach
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.Goldbach.coprimePrimePairWeight
-#print axioms GaloisForLFunctions.Goldbach.primeLogWeight_mul_coprime_decomposition
-#print axioms GaloisForLFunctions.Goldbach.primePairWeight_eq_coprime_add_diagonal
-#print axioms GaloisForLFunctions.Goldbach.coprimePrimePairWeight_pos_iff

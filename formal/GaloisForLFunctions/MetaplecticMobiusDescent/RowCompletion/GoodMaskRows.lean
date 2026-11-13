@@ -971,6 +971,115 @@ theorem freePrimeRow_eq_primary_family (I Q : Ideal O) (hI : quadraticSupported 
 
 end CanonicalRowCompletion
 
+namespace CompletedGauss
+open Eisenstein SchwartzPlanePoisson
+open scoped BigOperators Classical
+
+lemma completedT_congr_primary (Ψ Φ : O→*ℂ)
+    (h : ∀n : O,lambda^2∣n-1→Ψ n=Φ n) (W : ℝ→ℂ) (X : ℝ) :
+    completedT Ψ W X=completedT Φ W X := by
+  unfold completedT
+  apply tsum_congr
+  intro p
+  rw [completedMellinCoefficient,completedMellinCoefficient,
+    h _ (primaryIdealGenerator_spec p.1.val p.1.property.2).2,
+    h _ (primaryIdealGenerator_spec p.2.val p.2.property).2]
+
+end CompletedGauss
+
+namespace CanonicalRowCompletion
+open Eisenstein SchwartzPlanePoisson CompletedGauss
+open scoped BigOperators Classical
+
+def periodicQuotientHom (c : O) (Ψ : O→*ℂ)
+    (hΨ : ∀x y : O,x-y∈Ideal.span {c}→Ψ x=Ψ y) : (O⧸Ideal.span {c})→*ℂ where
+  toFun x := Ψ (qrep x)
+  map_one' := by
+    have h := hΨ (qrep (1:O⧸Ideal.span {c})) 1
+      (Ideal.Quotient.eq.mp (by rw [mk_qrep,map_one]))
+    exact h.trans Ψ.map_one
+  map_mul' x y := by
+    have h := hΨ (qrep (x*y)) (qrep x*qrep y)
+      (Ideal.Quotient.eq.mp (by rw [mk_qrep,map_mul,mk_qrep,mk_qrep]))
+    exact h.trans (Ψ.map_mul _ _)
+
+lemma periodicQuotientHom_mk (c : O) (Ψ : O→*ℂ)
+    (hΨ : ∀x y : O,x-y∈Ideal.span {c}→Ψ x=Ψ y) (n : O) :
+    periodicQuotientHom c Ψ hΨ (Ideal.Quotient.mk (Ideal.span {c}) n)=Ψ n :=
+  hΨ _ _ (Ideal.Quotient.eq.mp (mk_qrep _))
+
+lemma periodicQuotientHom_comp (c : O) (Ψ : O→*ℂ)
+    (hΨ : ∀x y : O,x-y∈Ideal.span {c}→Ψ x=Ψ y) :
+    (periodicQuotientHom c Ψ hΨ).comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom=Ψ := by
+  ext n
+  exact periodicQuotientHom_mk c Ψ hΨ n
+
+lemma periodicQuotientHom_norm (c : O) (Ψ : O→*ℂ)
+    (hΨ : ∀x y : O,x-y∈Ideal.span {c}→Ψ x=Ψ y) (hn : ∀n,‖Ψ n‖≤1)
+    (x : O⧸Ideal.span {c}) : ‖periodicQuotientHom c Ψ hΨ x‖≤1 := hn (qrep x)
+
+namespace GoodMaskRowData
+variable {m f z : O} (D : GoodMaskRowData m f z)
+
+theorem completedT_eq_fixedFactor (Ψ : O→*ℂ) (Q : Ideal O)
+    (hmLam : lambda∣m) (hm2 : (2:O)∣m) (W : ℝ→ℂ) (X : ℝ) :
+    completedT (rowTwist Ψ m f z) W X=
+      completedT (D.fixedFactor Ψ Q*freePrimeRow D.movingIdeal D.movingSupported
+        (Q*Ideal.span {(72:O)})) W X :=
+  completedT_congr_primary _ _ (D.row_primary Ψ Q hmLam hm2) W X
+
+end GoodMaskRowData
+end CanonicalRowCompletion
+
+namespace CanonicalRowCompletion
+open Eisenstein SchwartzPlanePoisson CompletedGauss UniqueFactorizationMonoid
+open scoped BigOperators Classical
+
+namespace GoodMaskRowData
+variable {m f z : O} (D : GoodMaskRowData m f z)
+
+def fixedQuotient (Ψ : O→*ℂ) (Q : Ideal O) (c : O)
+    (hc : Ideal.span {c}=Q*Ideal.span {(72:O)})
+    (hΨ : ∀x y : O,x-y∈Q→Ψ x=Ψ y) : (O⧸Ideal.span {c})→*ℂ :=
+  periodicQuotientHom c (D.fixedFactor Ψ Q)
+    (fun x y hxy => D.fixedFactor_periodic Ψ Q hΨ x y (by rwa [←hc]))
+
+lemma fixedQuotient_comp (Ψ : O→*ℂ) (Q : Ideal O) (c : O)
+    (hc : Ideal.span {c}=Q*Ideal.span {(72:O)})
+    (hΨ : ∀x y : O,x-y∈Q→Ψ x=Ψ y) :
+    (D.fixedQuotient Ψ Q c hc hΨ).comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom=
+      D.fixedFactor Ψ Q := periodicQuotientHom_comp _ _ _
+
+lemma fixedQuotient_norm (Ψ : O→*ℂ) (Q : Ideal O) (c : O)
+    (hc : Ideal.span {c}=Q*Ideal.span {(72:O)})
+    (hΨ : ∀x y : O,x-y∈Q→Ψ x=Ψ y) (hn : ∀n,‖Ψ n‖≤1) (x : O⧸Ideal.span {c}) :
+    ‖D.fixedQuotient Ψ Q c hc hΨ x‖≤1 := D.fixedFactor_norm Ψ Q hn (qrep x)
+
+/-- Completed arithmetic rows have exactly the primary prime-family form required by reflection. -/
+theorem completedT_eq_primary_family (Ψ : O→*ℂ) (Q : Ideal O) (c : O)
+    (hc : Ideal.span {c}=Q*Ideal.span {(72:O)})
+    (hΨ : ∀x y : O,x-y∈Q→Ψ x=Ψ y)
+    (hmLam : lambda∣m) (hm2 : (2:O)∣m) (W : ℝ→ℂ) (X : ℝ) :
+    letI : ∀P : FreePrimeIndex D.movingIdeal (Ideal.span {c}),
+        (Ideal.span {freePrimaryPrime D.movingIdeal (Ideal.span {c}) P}:Ideal O).IsMaximal :=
+      freePrimaryPrime_maximal D.movingIdeal (Ideal.span {c}) D.movingSupported
+    completedT (rowTwist Ψ m f z) W X=
+      completedT ((D.fixedQuotient Ψ Q c hc hΨ).comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom*
+        primeCuspRowCharacter (freePrimaryPrime D.movingIdeal (Ideal.span {c}))
+          (fun P => complexSexticChar (Ideal.span {freePrimaryPrime D.movingIdeal (Ideal.span {c}) P})
+            (freePrimaryPrime_good D.movingIdeal (Ideal.span {c}) D.movingSupported P)^
+              ((normalizedFactors D.movingIdeal).count P.val.val%6))) W X := by
+  letI : ∀P : FreePrimeIndex D.movingIdeal (Ideal.span {c}),
+      (Ideal.span {freePrimaryPrime D.movingIdeal (Ideal.span {c}) P}:Ideal O).IsMaximal :=
+    freePrimaryPrime_maximal D.movingIdeal (Ideal.span {c}) D.movingSupported
+  have hrow : freePrimeRow D.movingIdeal D.movingSupported (Q*Ideal.span {(72:O)})=
+      freePrimeRow D.movingIdeal D.movingSupported (Ideal.span {c}) := by rw [hc]
+  rw [D.completedT_eq_fixedFactor Ψ Q hmLam hm2 W X,hrow,
+    freePrimeRow_eq_primary_family,D.fixedQuotient_comp]
+
+end GoodMaskRowData
+end CanonicalRowCompletion
+
 namespace CanonicalRowCompletion
 open Eisenstein SchwartzPlanePoisson CompletedGauss UniqueFactorizationMonoid
 open scoped BigOperators Classical SchwartzMap ContDiff

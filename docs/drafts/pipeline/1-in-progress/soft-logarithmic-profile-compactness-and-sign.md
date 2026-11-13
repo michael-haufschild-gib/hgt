@@ -82,6 +82,12 @@ continuity for bounded weights, passage through uniform weighted tails,
 and moment convergence from vanishing weighted error. Applying these
 lemmas to the actual signed energy and proving recovery remain open.
 
+`SoftLogarithmicClosedDomain` is audited and integrated with the standard
+three axioms. It defines the literal finite-energy half-line domain in
+complex `L²`, with almost-everywhere reality and support. Trial
+representatives retain their energy. No exponential moment of the closed
+profile is required.
+
 The negative-logarithmic estimate has a homogeneous, adjustable form.
 Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff
 `H=c exp(t/2)`, with `c>0`, to obtain the candidate bound
@@ -143,7 +149,7 @@ Fourier-window estimate on arbitrary nonintegrable `L²` profiles.
 
 ## Missing bridges
 
-1. Construct the closed soft half-line domain; derive the two uniform tails and cutoff recovery. Compact physical cutoffs with finite logarithmic energy already belong to the trial class; smoothness is unnecessary for comparing its infimum. Do not assume that the limiting minimizer has an exponential moment.
+1. Pass signed energy to the strong limit and prove cutoff recovery in the constructed closed domain. Compact physical cutoffs with finite logarithmic energy already belong to the trial class; smoothness is unnecessary for comparing its infimum. Do not assume that the limiting minimizer has an exponential moment.
 2. Transfer the exact logarithmic modulus identity from bounded cores to this domain; prove strict loss for two nonzero sign parts.
 3. Use rescaled near-minimality from the universal confinement limit to obtain convergence to the unique minimizing line.
 
@@ -160,13 +166,31 @@ rigidity. The derivative identity remains unformalized. The dominated
 Laplace-derivative proof in `LaplaceTransformMomentDerivative` supplies a
 mechanism using a smaller exponential rate.
 
-For a closed minimizer with a Laplace zero, trial recovery suggests a more
-direct test: cancel each trial's small Laplace value by a compact test
-profile and normalize. The corrected trials should still approach `μ`.
-Reflection would lower their energies by a fixed positive amount if the
-limiting causal resolvent is nonzero. This requires continuity of the
-resolvent in `L²`, an energy bound for the small correction, and the trial
-first-moment defect identity. None of these new bridges is claimed here.
+The weighted identity already applies to arbitrary complex `L²` inputs
+(`integral_weighted_causalBlaschkeStep_energy`). For a causal profile with
+a Laplace zero, use damping `x<0`, then let `x↑0`. Nonnegative difference
+quotients should first bound the reflected first moment by the original
+one, then identify their difference as `(2a/π)‖K‖₂²`. This avoids any
+exponential moment of a closed profile. `causalExponential_op_fourier`
+provides the nonvanishing resolvent multiplier, hence injectivity and
+Fourier-modulus preservation for the reflection. The moment-limit and
+closed-domain bridges remain unformalized.
+
+For nonnegative `w,q`, the quotient `(1-exp(-tw))q/t` lies between zero
+and `wq` and tends pointwise to `wq` as `t↓0`. Dominated convergence
+recovers a finite first moment; Fatou first supplies finiteness if the
+quotient integrals are uniformly bounded. This applies to the reflected
+profile before its first-moment integrability is known. The elementary
+exponential slope proof in `HilbertMetric/GaussianJetPositivity` supplies
+the pointwise limit; the integral bridge is drafted, not audited.
+
+More precisely, for `0<t<a` let `W_t(G)=∫exp(2πtu)|G(u)|²du` and
+`A_t(G)=(‖G‖₂²-W_t(G))/t`. Equal ordinary masses and the exact reflection
+identity give `A_t(F)=A_t(H)+4aW_t(K)`. Hence
+`A_t(H)≤2πM(F)`. Fatou yields `M(H)<∞`; dominated convergence then gives
+`2πM(F)=2πM(H)+4a‖K‖₂²`. Fourier-modulus preservation would yield
+`Q(F)-Q(H)=(16a/π)‖K‖₂²`. Injectivity of the resolvent makes this strict
+for nonzero `F`, excluding a Laplace zero of a unit ground state.
 
 ## Stronger questions exposed by the domain distinction
 

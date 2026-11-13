@@ -110,18 +110,3 @@ theorem signedBetaGammaFactorMero_reflection :
 end
 
 end GaloisForLFunctions.Goldbach
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor_twice
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor_neg
-#print axioms GaloisForLFunctions.Goldbach.norm_signedBetaGammaFactor_axis
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor_axis_mul_norm
-#print axioms GaloisForLFunctions.Goldbach.measurable_signedBetaGammaFactor_axis
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaPhase
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaUnitary
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaUnitary_ae
-#print axioms GaloisForLFunctions.Goldbach.norm_signedBetaGammaUnitary
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactorMero
-#print axioms GaloisForLFunctions.Goldbach.hypertranscendentalOver_signedBetaGammaFactorMero
-#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactorMero_reflection

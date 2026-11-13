@@ -69,10 +69,3 @@ theorem norm_operator_quadratic_sub_operator_le (T S : E →L[𝕜] E) (u v : E)
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.norm_operator_pairing_le
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.operator_quadratic_add_sub
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.norm_operator_quadratic_add_sub_le
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.norm_operator_quadratic_sub_le
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.norm_operator_quadratic_sub_operator_le

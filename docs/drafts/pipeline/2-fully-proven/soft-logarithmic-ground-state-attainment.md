@@ -74,7 +74,9 @@ lemma preserves a bound on the sum of two weighted energies.
 `HTGeometry/HardyBoundary/WeightedL2MomentContinuity` is also audited and
 integrated with those axioms: bounded moments are continuous, uniform
 tails remove the cap, and vanishing weighted error gives convergence of
-moments. Closed-domain identification and cutoff recovery are being
-formalized. Attainment remains unverified.
+moments. `SoftLogarithmicClosedDomain` passes its final plain source audit
+with those axioms and is integrated: trial representatives lie in the
+literal finite-energy domain and retain their energy. Signed-energy
+closure and cutoff recovery remain unverified, as does attainment.
 Uniqueness and sign rigidity are separate open statements in
 [the profile card](../1-in-progress/soft-logarithmic-profile-compactness-and-sign.md).

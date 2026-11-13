@@ -20,7 +20,7 @@ Transversal to the three cores:
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides. A localized zero side (U-Π) lets a crude bound decide and leaves the prime side at square-root precision. U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ among systems with its local structures, and the position of its zeros. The scale interpolates between the first two; conjugation of the zeros is a monodromy of one cover.
 
-Corpus checkpoint: `065c78c2b5` (2026-11-13), working-tree sources included; the frontier map at the same checkpoint; fact log `logs/review-1311-frontier-facts.md` (cited as "log §n"). Evidence: `[L*]` Lean statement read at the declaration or in the search result and recorded in the fact log; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` unfinished per the frontier map; `[D]` deduction (log §15, §16); `[C]` classical; `[A]` assessment; `[X]` the half-plane `Θ≤7/8`, taken as proved; in the Lean source a statement without hypotheses, graded `[S]` by the frontier map: validation of its dependency chain is just work (A118); its consequences on receivers are `[D]`. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: `065c78c2b5` (2026-11-13), working-tree sources included; the frontier map at the same checkpoint; fact log `logs/review-1311-frontier-facts.md` (cited as "log §n"). Evidence: `[L*]` Lean statement read at the declaration or in the search result and recorded in the fact log; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` unfinished per the frontier map; `[D]` deduction (log §15, §16, §19, §21); `[C]` classical; `[A]` assessment; `[X]` the half-plane `Θ≤7/8`, taken as proved; in the Lean source a statement without hypotheses, graded `[S]` by the frontier map: validation of its dependency chain is just work (A118); its consequences on receivers are `[D]`. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport carries an estimate from one route to another. Section 3 separates the two.
 
@@ -98,7 +98,7 @@ Corpus checkpoint: `065c78c2b5` (2026-11-13), working-tree sources included; the
 | narrow, `16J≤R` | neutral index zero | AGZ [F] |
 | `4J≤R` | a ground vector of the block matrix has one sign and is charged | AGZ [L*] |
 | `R≤J`, `50J≤53R`, every block size | exactly one bound state; second eigenvalue `≥1/5000` | AGZ [L*]; [D4] |
-| ratio `2.12` (first overlap step: `a≤3R/100`, `b≤3(R+a)/50`) | both parts certified; conditional energies `⪰1/5000`; the conditional coupling open (B194) | MAFT [L*]; [D10] |
+| ratio `2.12` (first overlap step: `a≤3R/100`, `b≤3(R+a)/50`) | both parts certified; the middle prime-free; conditional energies `⪰1/5000`; the conditional coupling open (B194); the sign also from a certificate at aperture `0.3762` (A140) | MAFT [L*]; [D10], [D18], [D20] |
 | ratios `2.25, 2.53, 3.21` | the next overlap steps [D1] | open |
 | ratio three | packet and dilate bound: `N(σ,0,−U₂σ)≥Σσ²/30`; index `≥2` under the Liouville twist; middle-supported and unequal-child directions open (B192) | AGZ [L*]/[KR] |
 | ratio four | margins on the first step packets; index `≤300000` at every block size; index `≥2` for multipliers `ω₂,ω₃∈[−5/2,19/40]`; contact graph disconnected | AGZ, MAFT [L*]/[KR] |
@@ -114,7 +114,7 @@ Corpus checkpoint: `065c78c2b5` (2026-11-13), working-tree sources included; the
 | `A<log 2` | the form is archimedean plus pole | CWS [L*] |
 | `a≤181/500` (ratio `103/50`) | floor `1/5000` for all tests | SPTL [L*] |
 | the dilation tower `a_k` | floors `1/(20000·2^k)`; frozen: `a_k<0.3621` | AIP [L*]; [KR] `frozen-weil-floor-tower` |
-| `0.3621<a<½log 3` | only the prime 2 acts; the sign is open from `a≈0.3762` (the first overlap step) | [D14], [D15] |
+| `0.3621<a<½log 3` | only the prime 2 acts, as `c₂` times a reflection of the two slivers; no certificate (A140); the first overlap step ends at `a≈0.3762` (B194) | [D14], [D15], [D24] |
 | every aperture | index = Σ nullities below = number of crossings | AGZ [L*] |
 | the trivial aperture `log log q+o(1)` | the Liouville system fails beyond it | SA [L*] |
 | `a≥1` | sign on `[−a,a]` from verification to `exp(exp(Ca))` | VHR [L*] |
@@ -243,7 +243,7 @@ Corpus checkpoint: `065c78c2b5` (2026-11-13), working-tree sources included; the
 | world-I inputs | B13, B138, B141, B145, B128, B170, B191 | a statement using unit multiplicities with the reflection, or the exact count |
 | producers of RH strength | B87, B146, B149, B169, B114, B117, B171, B160, B152, B196 | a positive, index-one or level-one statement built without the zeros |
 | producers of a half-plane | `[X]`; B161 via B174, B185; B187; B178, B188; B195 | two estimates for one completed sum; a rate from the horizon; an exponent at the matrices |
-| method questions on the Σ core | B104, B192, B194, B198 | the critical state; the first selective sign; the first overlap step; the converse exponent law |
+| method questions on the Σ core | B104, B192, B194, B198 | the critical state; the selective sign at ratio three and four; the first overlap step; the converse exponent law uniformly in the block size |
 | method questions on the Γ core | B190, B191, B197 | orbits of zeros; bounded defects; transitivity |
 
 ### 3.3 Classes
@@ -450,7 +450,7 @@ Core problem: the two involutions of the zeros, reflection `ρ↦1−ρ̄` and c
 | a finite object | the neutral part of every window; certified at ratio `≤103/50` with second eigenvalue `≥1/5000` [L*]; [D4] | the sign at every ratio (B152) |
 | an induction step | the overlap law at full rank; conditional energies `⪰1/5000` at the first step [L*]; [D10] | the bound on the conditional coupling (B194) |
 | a loss law | margin and exponent receivers; baseline `½` [L*] | a loss per step weaker than squaring (B195) |
-| a first selective case | packet and dilate bound at ratio three; weakened contacts fail [L*]/[KR] | middle-supported and unequal-child directions (B192) |
+| a selective case | the certified sign at aperture `181/500`, false for the Liouville twist; packet and dilate bound at ratio three; weakened contacts fail [L*]/[KR] | a certificate above `½log 3` (A140); middle-supported and unequal-child directions (B192) |
 | a mixing mechanism | Poincaré form of index one; cut and share law [L*] | a gap estimate using contacts and jets together; curvature and contacts alone are excluded |
 | a topological count | Morse = Maslov [L*] | no crossing (RH) |
 | an object to contradict | the critical half-line state: unique, outer, cyclic, stable; compact sublevels; exponential bounds [F]/[L*]/[S] | identification with the Green solution; wall trace and flux law (B104) |

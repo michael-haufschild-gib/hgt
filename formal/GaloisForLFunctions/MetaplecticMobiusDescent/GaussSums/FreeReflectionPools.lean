@@ -191,22 +191,6 @@ theorem cusp_coefficient_normalization (m n b : ℝ) (hn : 0<n) (hb : 0<b) :
 end CompletedGauss
 
 namespace CompletedGauss
-open Eisenstein SchwartzPlanePoisson
-open scoped BigOperators Classical
-
-lemma completedT_congr_primary (Ψ Φ : O→*ℂ)
-    (h : ∀n : O,lambda^2∣n-1→Ψ n=Φ n) (W : ℝ→ℂ) (X : ℝ) :
-    completedT Ψ W X=completedT Φ W X := by
-  unfold completedT
-  apply tsum_congr
-  intro p
-  rw [completedMellinCoefficient,completedMellinCoefficient,
-    h _ (primaryIdealGenerator_spec p.1.val p.1.property.2).2,
-    h _ (primaryIdealGenerator_spec p.2.val p.2.property).2]
-
-end CompletedGauss
-
-namespace CompletedGauss
 open Eisenstein SchwartzPlanePoisson CanonicalRowCompletion UniqueFactorizationMonoid
 open scoped BigOperators Classical
 

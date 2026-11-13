@@ -70,7 +70,8 @@ embeds `B ⊗ ℝ ≅ M₂(ℝ)` with `nrd = det`. `O = ℤ⟨1, i, j, ij⟩`, `
   `Γ_n = ker(χ̃ mod n)`, orthogonal to constants, with Rayleigh quotient `O(1/n²)`.
 
 ## Status
-Lean (folder `CompactHyperbolicSurfaces/`, compiled):
+Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.lean`, wired into
+`MainTheorems.lean`; all compiled, headline axioms `propext, Classical.choice, Quot.sound`):
 - `HorocyclicSlices`: Abel transform `abelL`, slices, weighted masses, convolution slices, ball volumes.
 - `CocompactGroups`: `IsCocompactFree`, orbit counting `exists_card_le`, fundamental domain
   `exists_isFundamentalDomain`.
@@ -82,9 +83,22 @@ Lean (folder `CompactHyperbolicSurfaces/`, compiled):
 - `ResolventOperators`, `ResolventOperatorIdentity`, `ResolventCompactness`: `CompactQuotient`,
   `resOp` (self-adjoint, `‖T_s‖ ≤ 1/(s(s−1))`), `resOp_comp` (`T_sT_a = c⁻¹(T_a − T_s)`),
   `resOp_comm`, `isCompactOperator_resOp`.
-Next: spectral parametrization, Mercer trace, trace formula, zeta,
-explicit group and walls, small eigenvalue.
+- `ResolventSpectrum`: eigenbasis `specVec`, `spectralParam ≥ 0`, `resOp_specVec_eq`
+  (`T_s e_j = e_j/(λ_j + s(s−1))`), completeness `resOp_eq_zero_of_orthogonal`.
+- `MercerRepresentatives`, `MercerBound`, `MercerTrace`: continuous Γ-invariant representatives,
+  row energy and Bessel bound `exists_sum_nu_specRep_le`, Mercer `diffKer_eq_mercerKer`, trace
+  `hasSum_nu` (`Σ_j ν_j = ∫_F K(z, z)`), `Countable SpecIndex`.
+- `QuaternionOrder`, `QuaternionGroup`, `QuaternionCocompact` (Step 1 for every `N ≥ 3`, not only
+  `N = 5`): anisotropy `eq_zero_of_nrd_eq_zero`, `congGroup N`, `finite_dist_congGroup`,
+  `eq_one_of_smul_eq_congGroup`, Minkowski `exists_short` (covolume `det_latBasis = 24`),
+  `exists_congGroup_mul_of_quatKey_eq`, `isCocompactFree_congGroup`,
+  `exists_compactQuotient_congGroup`.
+
+Open: conjugacy classes and orbital integrals (trace formula), Selberg zeta and functional
+equation, the homomorphism `Γ(N) → ℤ` (crux of Step 1), small eigenvalue on the cyclic covers,
+assembly.
 
 ## Log
 - 2026-11-13 — created; route analysis (compact surface needed; cusped and periodic models fail the
   finite-stratum requirement); plan written.
+- 2026-11-13 — Mercer trace and Step 1 (explicit cocompact free group) formalized; paused by user.

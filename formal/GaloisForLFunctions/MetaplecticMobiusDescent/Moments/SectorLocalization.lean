@@ -2,7 +2,7 @@
 Sector localization adapted from OpenAI's formalization, Apache-2.0.
 See LICENSE and NOTICE in the parent directory for source attribution.
 -/
-import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.FixedFourierGeometry
+import GaloisForLFunctions.MetaplecticMobiusDescent.CubicSieve.FirstCoreRayAttachment
 
 /-!
 # Sector localization

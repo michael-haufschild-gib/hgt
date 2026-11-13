@@ -137,13 +137,6 @@ theorem norm_log_cos_turnPoint_le (s : ℝ) :
 
 /-! ## Base points -/
 
-theorem saddlePhaseValue_re (a : ℂ) : (saddlePhaseValue a).re =
-    π * Real.exp (2 * a.re) *
-      (Real.cos (2 * a.im) * (a.re - 1) - Real.sin (2 * a.im) * a.im) := by
-  rw [saddlePhaseValue, Complex.mul_re, saddleP_re, saddleP_im, Complex.sub_re, Complex.sub_im,
-    Complex.one_re, Complex.one_im, sub_zero]
-  ring
-
 /-- **Base points.** For every `σ₂` there is a saddle `a₁` with `Re a₁ ≥ σ₂`, `Re f(a₁) = 0` and
 `3/10 ≤ (π/4 − Im a₁) Re a₁ ≤ 7/10`: `a₁ = 1 + η cot 2δ + iη`, `η = π/4 − δ`, `δ` small. -/
 theorem exists_basePoint (σ₂ : ℝ) : ∃ a₁ : ℂ, σ₂ ≤ a₁.re ∧ (saddlePhaseValue a₁).re = 0 ∧

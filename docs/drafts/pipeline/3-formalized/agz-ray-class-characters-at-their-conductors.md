@@ -1,29 +1,32 @@
 # Ray class characters at their conductors: an Artin character has a zero configuration
 
 - **ID:** agz-conductor-descent
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.14 (question 5, construction IV); programme `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ` (README question 5: "the ray class characters at their conductors, so that an Artin character has a zero configuration")
 - **Statement:** Every ray class character `ψ` modulo `𝔪 = 𝔪₀ 𝔪∞` of a number field is `ψ' ∘ r`
   for exactly one character `ψ'` modulo `𝔫 = 𝔣(ψ) 𝔪∞`, `r : Cl_𝔪 → Cl_𝔫` the canonical surjection;
   `ψ'` is primitive, `ψ'(𝔞) = ψ(𝔞)` on the ideals prime to `𝔪₀`, and
   `L(s, ψ) = L(s, ψ') Π_{v | 𝔪₀} (1 − ψ'(v) N v^{−s})` on `ℂ ∖ {1}`. Hence the zeros of `L(s, ψ)`,
   `ψ ≠ 1`, in `Re s > 0` are the zeros of the completion of `ψ'`, and the index law holds for every
-  ray class character and for every linear character of a Galois group.
+  nontrivial ray class character in the zeros of its own `L`-function. The Artin symbols of a
+  linear character of a Galois group are the values of a primitive ray class character outside
+  finitely many primes.
 
 ## Goal
 
 The index law (`exists_le_negIndex_heckeGram_iff`) and the explicit formula are proved for
 primitive characters. The reciprocity law produces a character modulo `(c) ∞` with no control of
-its conductor. The descent removes the hypothesis: each ray class character, and so each linear
-Artin character, gets the zero configuration of its primitive character.
+its conductor. The descent removes the hypothesis: each ray class character gets the zero
+configuration of its primitive character, and the character of a linear Artin character can be
+taken primitive.
 
 Not a statement on the position of the zeros.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized: `primitiveHecke`, `heckeFiniteConductor_primitiveHecke`, `heckeLFunction_eq_primitiveHecke_mul`, `exists_le_negIndex_rayClassGram_iff`, `exists_primitive_heckeCharacter_artinSymbol`
 
 ## Proof
 
@@ -70,7 +73,22 @@ With `ψ'` the primitive character of `ψ`: `(χ, v) = ψ'(v)` for `v ∤ c`, an
 
   `L(s, χ) = L(s, ψ') Π_{v | c} (1 − ψ'(v) N v^{−s}) (1 − (χ, v) N v^{−s})^{−1}`. ∎
 
+## Lean
+
+| Step | Declaration | Module |
+|---|---|---|
+| 1 | `divisorModulus`, `rayHom_divisorModulus`, `rayClassReduction` | `RHTower/Artin/EveryRayClassCharacterIsInducedFromAPrimitiveCharacterOfItsConductor.lean` |
+| 2 | `rayClassReduction_surjective` | same |
+| 3 | `ker_rayClassReduction_le`, `descendHecke`, `descendHecke_apply`, `descendHecke_eq_one_iff` | same |
+| 4 | `finiteResidueCharacter_descendHecke`, `primitiveHecke`, `heckeFiniteConductor_primitiveHecke` | same |
+| 5 | `heckeValue_descendHecke`, `heckeValue_primitiveHecke_prime`, `heckeL_eq_heckeL_primitiveHecke_mul` | same |
+| 6 | `heckeLFunction_eq_primitiveHecke_mul`, `heckeLFunction_eq_zero_iff_heckeXi_primitiveHecke`, `rayClassZeros`, `rightZeros_rayClassZeros`, `exists_le_negIndex_rayClassGram_iff`, `forall_negIndex_rayClassGram_eq_zero_iff` | `AbsoluteGeometryOfSpecZ/TheZerosOfARayClassLFunctionAreTheZerosOfItsPrimitiveCharacter.lean` |
+| 7 | `exists_primitive_heckeCharacter_artinSymbol` | `RHTower/Artin/TheArtinSymbolsOfALinearCharacterAreTheValuesOfAPrimitiveRayClassCharacter.lean` |
+
 ## What stays open
+
+- `χ ≠ 1 ⇒ ψ' ≠ 1` for the character of a linear Artin character (the Artin map is onto), and
+  with it the index law of a linear Artin character on a continuation of its Euler product.
 
 - The conductor–ramification theorem: `𝔣(ψ')` is divisible exactly by the primes ramified for
   `χ`, and `(χ, v) = ψ'(v)` at every prime. With it the finite product in step 7 is `1`.
@@ -78,3 +96,4 @@ With `ψ'` the primitive character of `ψ`: `(χ, v) = ψ'(v)` for `v ∤ c`, an
 
 ## Log
 - 2026-11-13 — created in 1-in-progress with the paper proof
+- 2026-11-13 — formalized (three modules, each one clean compile), moved to 3-formalized

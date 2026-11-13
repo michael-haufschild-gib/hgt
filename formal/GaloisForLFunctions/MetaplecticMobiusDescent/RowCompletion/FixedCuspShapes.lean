@@ -152,75 +152,6 @@ local notation "Eis" => Eisenstein.O
 namespace FixedCuspShape
 variable {H:SL(2,Eis)} (s:FixedCuspShape H)
 
-def amplitude (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ℂ :=
-  fixedConjugateCuspArray s.index u m I J*
-    angularFactor (fixedCuspArrayIndex u m I J)*
-    tracePhase (-cuspFrequency (fixedCuspArrayIndex u m I J)*
-      ringComplex (s.upper 0 0*s.upper 0 1)/(sourceCuspScale s.index:ℂ))
-
-lemma amplitude_norm (u:Eisˣ) (m:ℕ) (I J:Ideal Eis) : ‖s.amplitude u m I J‖≤1 := by
-  by_cases he:fixedCuspArrayEligible I J
-  · rw [amplitude,norm_mul,norm_mul,tracePhase_norm,
-      norm_angularFactor _ (fixedCuspArrayIndex_ne_zero u m I J he.2.1 he.2.2),mul_one,mul_one]
-    exact fixedConjugateCuspArray_norm_le_one _ _ _ _ _
-  · simp only [amplitude,fixedConjugateCuspArray,
-      fixedCuspArray_zero_of_ineligible _ _ _ _ _ he,star_zero,zero_mul,norm_zero]
-    norm_num
-
-theorem smoothedKernel_fixed_shape (g:rationalExtension) (hc:((g:SL(2,Eis))*H) 1 0≠0)
-    (W:ℝ→ℂ) (X:ℝ) :
-    (s.datum g hc).smoothedKernel W X=
-      (fixedRadialCoefficientScalar*((s.datum g hc).multiplier*
-        (‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^2:ℝ)))*
-      ∑'p:ThetaFullIndex,
-        ((s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val*
-          tracePhase (cuspFrequency (thetaFullFrequency p)*
-            ringComplex (s.upper 0 0)^2*
-            (ringComplex (((g:SL(2,Eis))*H) 1 1)/ringComplex (((g:SL(2,Eis))*H) 1 0))/
-            (sourceCuspScale s.index:ℂ)))/
-          ((ramifiedScale 1 completedRamifiedStep p.2.1*
-            Real.sqrt (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ):ℝ):ℂ))*
-        paperKernel (Vstar W)
-          ((X/(27*(sourceCuspScale s.index)^2*‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^4))*
-            (ramifiedScale 1 completedRamifiedStep p.2.1)^3*
-            (Ideal.absNorm p.2.2.1.val:ℝ)*(Ideal.absNorm p.2.2.2.val:ℝ)^3) := by
-  rw [(s.datum g hc).smoothedKernel_fixed_array,s.datum_heightScale]
-  have hi:(s.datum g hc).index=s.index:=rfl
-  simp only [hi,←pow_mul,show (2:ℕ)*2=4 by norm_num]
-  congr 1
-  apply tsum_congr
-  intro p
-  have hp:=s.datum_additive_phase g hc (cuspFrequency (thetaFullFrequency p))
-    (sourceCuspScale s.index:ℂ)
-  rw [show -cuspFrequency (thetaFullFrequency p)*
-      ((s.datum g hc).dualPoint/(sourceCuspScale s.index:ℂ))=
-      -cuspFrequency (thetaFullFrequency p)*(s.datum g hc).dualPoint/(sourceCuspScale s.index:ℂ) by ring,hp]
-  unfold amplitude
-  rw [←thetaFullFrequency_eq_fixedCuspArrayIndex]
-  ring
-
-lemma smoothed_row_factor (g:rationalExtension) (hc:((g:SL(2,Eis))*H) 1 0≠0) :
-    (s.datum g hc).multiplier*((s.datum g hc).heightScale:ℂ)=
-      -star (extendedComplexCharacter g)*
-        (star (extendedComplexCharacter s.gamma)*ringComplex (s.upper 0 0)^2)*
-        ((‖ringComplex (((g:SL(2,Eis))*H) 1 0)‖^2:ℝ):ℂ)/
-        ringComplex (((g:SL(2,Eis))*H) 1 0)^2 := by
-  rw [s.datum_multiplier,s.datum_heightScale]
-  push_cast
-  ring
-
-end FixedCuspShape
-end
-
-noncomputable section
-open CubicJacobi CubicKubota CubicRamified RationalSource
-open Eisenstein CompletedGauss CompletedDyadic
-open MeasureTheory
-open scoped BigOperators Classical MatrixGroups Matrix ContDiff
-local notation "Eis" => Eisenstein.O
-namespace FixedCuspShape
-variable {H:SL(2,Eis)} (s:FixedCuspShape H)
-
 lemma amplitude_source_nonzero (p:ThetaFullIndex)
     (hp:s.amplitude p.1 p.2.1 p.2.2.1.val p.2.2.2.val≠0) :
     sourceCuspCoefficient s.index (thetaFullFrequency p)≠0 := by
@@ -375,48 +306,6 @@ lemma stratumShapeFactor_norm (c:Eis) (hc:c≠0) : ‖s.stratumShapeFactor c‖=
     Complex.norm_real,Real.norm_of_nonneg (Nat.cast_nonneg _),
     ←ringComplex_norm_sq_eq_absNorm_span]
   exact div_self hn
-
-end FixedCuspShape
-end
-
-noncomputable section
-open CubicJacobi CubicKubota CubicRamified RationalSource
-open Eisenstein CompletedGauss
-open scoped BigOperators Classical MatrixGroups
-local notation "Eis" => Eisenstein.O
-lemma norm_angularFactor_le_one (h:Eis) : ‖angularFactor h‖≤1 := by
-  by_cases hh:h=0
-  · simp only [hh,angularFactor,map_zero,norm_zero,Complex.ofReal_zero,div_zero]
-    norm_num
-  · exact (norm_angularFactor h hh).le
-
-namespace FixedCuspShape
-variable {H:SL(2,Eis)} (s:FixedCuspShape H)
-
-def reflectionStaticPhase (c0:Eis) (hc0:c0≠0)
-    (v:Eis⧸Ideal.span {traceLambda^3*c0})
-    (dualNumerator:ℕ→Ideal Eis→Ideal Eis→Eis) (u:Eisˣ)
-    (m:ℕ) (I J:Ideal Eis) : ℂ :=
-  angularFactor (fixedCuspArrayIndex u m I J)*
-    tracePhase (-cuspFrequency (fixedCuspArrayIndex u m I J)*
-      ringComplex (s.upper 0 0*s.upper 0 1)/(sourceCuspScale s.index:ℂ))*
-    cuspResiduePhase c0 hc0 v (dualNumerator m I J)
-
-lemma reflectionStaticPhase_norm_le_one (c0:Eis) (hc0:c0≠0)
-    (v:Eis⧸Ideal.span {traceLambda^3*c0})
-    (dualNumerator:ℕ→Ideal Eis→Ideal Eis→Eis) (u:Eisˣ)
-    (m:ℕ) (I J:Ideal Eis) : ‖s.reflectionStaticPhase c0 hc0 v dualNumerator u m I J‖≤1 := by
-  simp only [reflectionStaticPhase,norm_mul,tracePhase_norm,cuspResiduePhase_norm,mul_one]
-  exact norm_angularFactor_le_one _
-
-lemma fixedCuspArrayWithPhase_reflectionStaticPhase (c0:Eis) (hc0:c0≠0)
-    (v:Eis⧸Ideal.span {traceLambda^3*c0})
-    (dualNumerator:ℕ→Ideal Eis→Ideal Eis→Eis) (u:Eisˣ)
-    (m:ℕ) (I J:Ideal Eis) :
-    fixedCuspArrayWithPhase s.index u (s.reflectionStaticPhase c0 hc0 v dualNumerator u) m I J=
-      s.amplitude u m I J*cuspResiduePhase c0 hc0 v (dualNumerator m I J) := by
-  unfold fixedCuspArrayWithPhase reflectionStaticPhase amplitude
-  ring
 
 end FixedCuspShape
 end

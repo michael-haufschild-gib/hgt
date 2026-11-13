@@ -83,13 +83,3 @@ theorem stripEdgeOperator_fourier_energy (a : ℝ) (f : Lp ℂ 2 (volume : Measu
 
 end
 end GaloisForLFunctions.Goldbach
-
--- Temporary dependency audit.
-#print axioms GaloisForLFunctions.Goldbach.stripEdgeSymbol
-#print axioms GaloisForLFunctions.Goldbach.norm_sq_stripEdgeSymbol
-#print axioms GaloisForLFunctions.Goldbach.stripEdgeSymbol_partition
-#print axioms GaloisForLFunctions.Goldbach.norm_stripEdgeSymbol_le_one
-#print axioms GaloisForLFunctions.Goldbach.continuous_stripEdgeSymbol
-#print axioms GaloisForLFunctions.Goldbach.stripEdgeOperator
-#print axioms GaloisForLFunctions.Goldbach.stripEdgeOperator_energy
-#print axioms GaloisForLFunctions.Goldbach.stripEdgeOperator_fourier_energy
