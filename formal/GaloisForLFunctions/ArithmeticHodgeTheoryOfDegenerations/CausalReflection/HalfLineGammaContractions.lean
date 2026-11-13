@@ -1,0 +1,116 @@
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ConfiningGammaSymbol
+
+/-!
+# Contractions in the actual half-line Gamma domain
+
+Finite physical jump energy recovers full Gamma integrability by the
+extended Lévy–Plancherel identity. A real contraction fixing zero therefore
+preserves the actual half-line domain, including its exponential weight.
+-/
+
+set_option autoImplicit false
+noncomputable section
+open MeasureTheory Filter Set Topology Zeta23
+open _root_.RHTower
+open scoped FourierTransform
+namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
+open ArithmeticCastelnuovoSeveri
+
+/-- Finite jump energy recovers the literal Gamma domain for an `L¹ ∩ L²` profile. -/
+theorem integrable_gammaBracket_of_levyIntegrand {F : ℝ → ℝ}
+    (hF1 : Integrable F) (hF2 : MemLp F 2 volume)
+    (hJ : IntegrableOn
+      (fun h : ℝ => archLevyDensity h * ∫ u, (F u - F (u + h)) ^ 2) (Ioi 0)) :
+    Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r) := by
+  have hc1 : Integrable (cx F) := hF1.ofReal (𝕜 := ℂ)
+  have hc2 : MemLp (cx F) 2 volume := by
+    apply (memLp_two_iff_integrable_sq_norm hc1.aestronglyMeasurable).mpr
+    have hi := (memLp_two_iff_integrable_sq_norm hF2.aestronglyMeasurable).mp hF2
+    simpa only [cx, Complex.norm_real] using hi
+  have hft := RHTower.integrable_norm_sq_fourier (f := cx F) hc1 hc2
+  have hnn : ∀ ξ : ℝ, 0 ≤
+      2 * (gammaHardyPhaseRate (2 * Real.pi * ξ) - gammaHardyPhaseRate 0) *
+        ‖𝓕 (cx F) ξ‖ ^ 2 := fun ξ =>
+    mul_nonneg (mul_nonneg (by norm_num)
+      (sub_nonneg.mpr (gammaHardyPhaseRate_zero_le_levy _))) (sq_nonneg _)
+  have hsymbol : Integrable (fun ξ : ℝ =>
+      2 * (gammaHardyPhaseRate (2 * Real.pi * ξ) - gammaHardyPhaseRate 0) *
+        ‖𝓕 (cx F) ξ‖ ^ 2) := by
+    refine ⟨?_, ?_⟩
+    · have hs : Continuous (fun ξ : ℝ =>
+          2 * (gammaHardyPhaseRate (2 * Real.pi * ξ) - gammaHardyPhaseRate 0)) :=
+        ((continuous_gammaHardyPhaseRate.comp
+          (continuous_const.mul continuous_id)).sub continuous_const).const_mul 2
+      exact hs.aestronglyMeasurable.mul hft.aestronglyMeasurable
+    · rw [hasFiniteIntegral_iff_ofReal (Eventually.of_forall hnn)]
+      have he := lintegral_archSymbol_mul_normSq_fourier hc1 hc2
+      change (∫⁻ ξ, ENNReal.ofReal
+        (2 * (gammaHardyPhaseRate (2 * Real.pi * ξ) - gammaHardyPhaseRate 0) *
+          ‖𝓕 (cx F) ξ‖ ^ 2)) < ⊤
+      rw [he, lintegral_levy_eq F]
+      exact (hasFiniteIntegral_iff_ofReal (levyIntegrand_nonneg F)).mp hJ.2
+  apply integrable_gammaBracket_of_confiningGammaSymbol
+  apply (hsymbol.add (hft.const_mul (2 * gammaHardyPhaseRate 0))).congr
+  exact Eventually.of_forall fun ξ => by
+    simp only [Pi.add_apply, confiningGammaSymbol]
+    ring
+
+/-- A zero-preserving contraction preserves every condition of the actual domain. -/
+theorem CriticalHalfLineEnergyDomain.comp_contraction {F T : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) (hT : LipschitzWith 1 T) (hT0 : T 0 = 0) :
+    CriticalHalfLineEnergyDomain (T ∘ F) := by
+  have hm : Measurable (T ∘ F) := hT.continuous.measurable.comp hF.meas
+  have hdiff (u v : ℝ) : |T (F u) - T (F v)| ≤ |F u - F v| := by
+    simpa only [NNReal.coe_one, one_mul, Real.norm_eq_abs] using hT.norm_sub_le (F u) (F v)
+  have hb (u : ℝ) : |T (F u)| ≤ |F u| := by
+    simpa only [hT0, sub_zero, NNReal.coe_one, one_mul, Real.norm_eq_abs]
+      using hT.norm_sub_le (F u) 0
+  have hsq (u : ℝ) : T (F u) ^ 2 ≤ F u ^ 2 := by
+    have hh := mul_nonneg (sub_nonneg.mpr (hb u))
+      (add_nonneg (abs_nonneg (F u)) (abs_nonneg (T (F u))))
+    nlinarith only [hh, sq_abs (F u), sq_abs (T (F u))]
+  have hi : Integrable (T ∘ F) := hF.integrable.norm.mono' hm.aestronglyMeasurable
+    (Eventually.of_forall fun u => by simpa only [Function.comp_apply, Real.norm_eq_abs] using hb u)
+  have hi2 : Integrable (fun u => (T (F u)) ^ 2) :=
+    hF.sq.mono' (hm.pow_const 2).aestronglyMeasurable (Eventually.of_forall fun u => by
+      simpa only [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)] using hsq u)
+  have hL2 : MemLp (T ∘ F) 2 volume := by
+    apply (memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mpr
+    simpa only [Function.comp_apply, Real.norm_eq_abs, sq_abs] using hi2
+  have hj : IntegrableOn
+      (fun h : ℝ => archLevyDensity h * ∫ u, (T (F u) - T (F (u + h))) ^ 2) (Ioi 0) := by
+    have hjm : Measurable (fun p : ℝ × ℝ => (T (F p.2) - T (F (p.2 + p.1))) ^ 2) := by
+      have ht := hT.continuous.measurable
+      have hf := hF.meas
+      fun_prop
+    refine hF.integrableOn_levyIntegrand.mono'
+      (measurable_archLevyDensity.aestronglyMeasurable.mul
+        hjm.stronglyMeasurable.integral_prod_right'.aestronglyMeasurable) ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (archLevyDensity_pos hh).le
+      (integral_nonneg fun u => sq_nonneg _))]
+    apply mul_le_mul_of_nonneg_left _ (archLevyDensity_pos hh).le
+    have hd2 := hL2.sub (hL2.comp_measurePreserving (measurePreserving_add_right volume h))
+    have hf2 := hF.memLp_real.sub
+      (hF.memLp_real.comp_measurePreserving (measurePreserving_add_right volume h))
+    have hdi := (memLp_two_iff_integrable_sq_norm hd2.aestronglyMeasurable).mp hd2
+    have hfi := (memLp_two_iff_integrable_sq_norm hf2.aestronglyMeasurable).mp hf2
+    simp only [Pi.sub_apply, Function.comp_apply, Real.norm_eq_abs, sq_abs] at hdi hfi
+    apply integral_mono hdi hfi
+    intro u
+    have hd := hdiff u (u + h)
+    have hp := mul_nonneg (sub_nonneg.mpr hd)
+      (add_nonneg (abs_nonneg (F u - F (u + h)))
+        (abs_nonneg (T (F u) - T (F (u + h)))))
+    nlinarith only [hp, sq_abs (F u - F (u + h)), sq_abs (T (F u) - T (F (u + h)))]
+  refine ⟨hm, hi, hi2, ?_, ?_, integrable_gammaBracket_of_levyIntegrand hi hL2 hj⟩
+  · refine hF.exponential.mono' ((hm.pow_const 2).mul (by fun_prop)).aestronglyMeasurable ?_
+    exact Eventually.of_forall fun u => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
+      exact mul_le_mul_of_nonneg_right (hsq u) (Real.exp_pos _).le
+  · intro u hu
+    simp only [Function.comp_apply, hF.support u hu, hT0]
+
+#print axioms integrable_gammaBracket_of_levyIntegrand
+#print axioms CriticalHalfLineEnergyDomain.comp_contraction
+end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

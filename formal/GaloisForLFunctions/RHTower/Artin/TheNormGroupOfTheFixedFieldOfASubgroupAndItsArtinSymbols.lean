@@ -72,6 +72,7 @@ theorem natCast_notMem_under (E : Type u) [Field E] [NumberField E] [Algebra K E
   have h' : algebraMap (𝓞 K) (𝓞 E) (N : 𝓞 K) ∈ w.asIdeal := h
   rwa [map_natCast] at h')
 
+omit [NumberField K] in
 /-- A prime in the support of an ideal prime to `N` lies over a prime that does not divide
 `N`. -/
 theorem natCast_notMem_under_of_count_ne_zero (E : Type u) [Field E] [NumberField E]

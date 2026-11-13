@@ -59,6 +59,11 @@ Source: `CausalReflection/ConfiningHalfLineWeakEquation.lean`.
 proofs of the shifted translation identity and absorption retaining the
 Gamma form. No regularity theorem is verified yet.
 
+`CausalReflection/HalfLineGammaContractions.lean` contains an unchecked
+converse Lévy-domain proof and closure under zero-preserving real
+contractions. Weighted barrier truncations require the additional
+admissibility argument below.
+
 ## Weighted truncation conjecture
 
 Every actual confining minimizer may satisfy `|F(u)|≤C exp(u)` almost

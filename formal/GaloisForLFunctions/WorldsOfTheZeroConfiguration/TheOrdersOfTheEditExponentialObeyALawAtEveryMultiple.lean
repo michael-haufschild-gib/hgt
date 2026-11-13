@@ -562,7 +562,7 @@ theorem re_div_le_of_count_multiple_edit {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (him :
         DifferentiableAt ℂ (fun z : ℂ => ((z - ρ) * (z - ρc)) ^ M) s ∧
         logDeriv (fun z : ℂ => ((z - ρ) * (z - ρc)) ^ M) s =
           -LSeries (fun k => (m k : ℂ)) s -
-            (M : ℂ) * (zetaRegular (s - (ρ - 1)) + zetaRegular (s - (ρc - 1))) := by
+            (M : ℂ) * (PrimeEdits.zetaRegular (s - (ρ - 1)) + PrimeEdits.zetaRegular (s - (ρc - 1))) := by
     intro s hs
     obtain ⟨hne, hd, hld⟩ := logDeriv_pair_eq (ρ := ρ) (s := s) (by linarith) hs
     have hLm := (lseriesHasSum_mul_target (ρ := ρ) (s := s) (by linarith) M).LSeries_eq
@@ -574,10 +574,10 @@ theorem re_div_le_of_count_multiple_edit {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (him :
     ring
   obtain ⟨C₁, K, hC₁, hK, hfac⟩ := exists_exp_geditSeries_eq (m := m) hm0 hK₀ hc₀0
     (by linarith) hdisc hsumm (L := fun s => ((s - ρ) * (s - ρc)) ^ M)
-    (Φ₀ := fun s => (M : ℂ) * (zetaRegular (s - (ρ - 1)) + zetaRegular (s - (ρc - 1))))
+    (Φ₀ := fun s => (M : ℂ) * (PrimeEdits.zetaRegular (s - (ρ - 1)) + PrimeEdits.zetaRegular (s - (ρc - 1))))
     ((differentiable_const _).mul
-      ((differentiable_zetaRegular.comp (differentiable_id.sub_const _)).add
-        (differentiable_zetaRegular.comp (differentiable_id.sub_const _)))).differentiableOn hL
+      ((PrimeEdits.differentiable_zetaRegular.comp (differentiable_id.sub_const _)).add
+        (PrimeEdits.differentiable_zetaRegular.comp (differentiable_id.sub_const _)))).differentiableOn hL
   -- the continuation of the edit exponential and its zero of order `M` at `ρ`
   obtain ⟨F, hFdef⟩ : ∃ F : ℂ → ℂ,
       F = fun s => C₁ * ((s - ρ) * (s - ρc)) ^ M * Complex.exp (K s) := ⟨_, rfl⟩
