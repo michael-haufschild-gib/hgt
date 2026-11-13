@@ -1,6 +1,7 @@
 import GaloisForLFunctions.goldbach.SpectralSquareProduct
 import GaloisForLFunctions.HTGeometry.LpDiagonalMultiplier
 import GaloisForLFunctions.HTGeometry.LpDiagonalOperator
+import GaloisForLFunctions.RHTower.PrimeIndexedRVMSourceUnitaryNoGo
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 import Mathlib.Analysis.Complex.LocallyUniformLimit
@@ -13,12 +14,16 @@ locally uniformly convergent entire product. Absolute summability of the
 factor errors rules out extra zeros from the infinite limit. Consequently
 the critical-line criterion remains exactly the coordinatewise spectral
 bound, without any finite-rank restriction.
+
+The associated diagonal operator is symmetric and Hilbert--Schmidt. The
+product equals the existing entire regularized determinant of its scaled
+squared spectrum, after removing the exponential trace correction.
 -/
 
 namespace GaloisForLFunctions.Goldbach
 
 open Filter Set
-open scoped Topology
+open scoped Topology Classical
 
 noncomputable section
 
@@ -169,6 +174,12 @@ theorem hsNormSq_spectralDiagonalOperator (μ : lp (fun _ : ι => ℝ) 2) :
   rw [spectralDiagonalOperator_eq_diagOp, HilbertSchmidt.hsNormSq_diagOp]
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
+/-- The operator trace of the square is the complex squared-spectrum sum. -/
+theorem opTrace_square_spectralDiagonalOperator (μ : lp (fun _ : ι => ℝ) 2) :
+    ContinuousLinearMap.opTrace (spectralDiagonalOperator μ ∘L spectralDiagonalOperator μ) =
+      ∑' i, (μ i : ℂ) ^ 2 := by
+  simp only [spectralDiagonalOperator_eq_diagOp, HilbertSchmidt.opTrace_diagOp_comp, pow_two]
+
 /-- The spectral bound is exactly contractivity of the diagonal operator. -/
 theorem norm_spectralDiagonalOperator_le_one_iff (μ : lp (fun _ : ι => ℝ) 2) :
     ‖spectralDiagonalOperator μ‖ ≤ 1 ↔ ∀ i, μ i ^ 2 ≤ 1 := by
@@ -198,6 +209,58 @@ theorem infiniteSpectralSquareProduct_critical_iff_operator_norm
       ‖spectralDiagonalOperator μ‖ ≤ 1 := by
   rw [infiniteSpectralSquareProduct_critical_iff, norm_spectralDiagonalOperator_le_one_iff]
 
+/-- The scaled squared spectrum appearing in the Fredholm determinant. -/
+def spectralSquaredEigenvalue (μ : lp (fun _ : ι => ℝ) 2) (z : ℂ) (i : ι) : ℂ :=
+  4 * (μ i : ℂ) ^ 2 * z * (1 - z)
+
+private theorem summable_norm_spectralSquaredEigenvalue
+    (μ : lp (fun _ : ι => ℝ) 2) (z : ℂ) :
+    Summable (fun i => ‖spectralSquaredEigenvalue μ z i‖) := by
+  simpa only [spectralSquaredEigenvalue, norm_neg] using summable_spectral_error μ z
+
+private theorem summable_norm_sq_spectralSquaredEigenvalue
+    (μ : lp (fun _ : ι => ℝ) 2) (z : ℂ) :
+    Summable (fun i => ‖spectralSquaredEigenvalue μ z i‖ ^ 2) := by
+  have hb (i : ι) : ‖spectralSquaredEigenvalue μ z i‖ ≤
+      4 * ‖μ‖ ^ 2 * ‖z‖ * ‖1 - z‖ := by
+    simp only [spectralSquaredEigenvalue, norm_mul, norm_pow,
+      show ‖(4 : ℂ)‖ = (4 : ℝ) by norm_num]
+    gcongr
+    exact spectral_coordinate_bound μ i
+  exact ((summable_norm_spectralSquaredEigenvalue μ z).mul_left
+    (4 * ‖μ‖ ^ 2 * ‖z‖ * ‖1 - z‖)).of_nonneg_of_le (fun i => sq_nonneg _) fun i => by
+      simpa only [pow_two] using
+        mul_le_mul_of_nonneg_right (hb i) (norm_nonneg (spectralSquaredEigenvalue μ z i))
+
+/-- The literal diagonal kernel of the scaled squared spectrum. -/
+def spectralSquaredKernel (μ : lp (fun _ : ι => ℝ) 2) (z : ℂ) : ι × ι → ℂ :=
+  HilbertSchmidt.diagMul (spectralSquaredEigenvalue μ z)
+
+/-- The squared spectral kernel belongs to the existing Hilbert--Schmidt determinant domain. -/
+theorem spectralSquaredKernel_isHS (μ : lp (fun _ : ι => ℝ) 2) (z : ℂ) :
+    HilbertSchmidt.IsHS (spectralSquaredKernel μ z) :=
+  HilbertSchmidt.isHS_diagMul_of_summable (summable_norm_sq_spectralSquaredEigenvalue μ z)
+
+/-- The spectral product is the existing regularized determinant with its trace correction removed. -/
+theorem infiniteSpectralSquareProduct_eq_normalizedDet2
+    (μ : lp (fun _ : ι => ℝ) 2) (z : ℂ) :
+    infiniteSpectralSquareProduct μ z =
+      GaloisForLFunctions.HTGeometry.entireDet2 (spectralSquaredKernel μ z) 1 *
+        Complex.exp (-(∑' i, spectralSquaredEigenvalue μ z i)) := by
+  have hs := (summable_norm_spectralSquaredEigenvalue μ z).of_norm
+  have hp : HasProd (fun i => 1 - spectralSquaredEigenvalue μ z i)
+      (infiniteSpectralSquareProduct μ z) := by
+    simpa only [infiniteSpectralSquareProduct, spectralSquareFactor_eq,
+      spectralSquaredEigenvalue] using (infiniteSpectralSquareProduct_multipliable μ z).hasProd
+  have he : HasProd (fun i => Complex.exp (spectralSquaredEigenvalue μ z i))
+      (Complex.exp (∑' i, spectralSquaredEigenvalue μ z i)) := by
+    simpa only [Function.comp_apply] using hs.hasSum.cexp
+  have hprod := hp.mul he
+  rw [spectralSquaredKernel, RHTower.entireDet2_diagMul_one_eq_tprod
+    (spectralSquaredEigenvalue μ z) (summable_norm_sq_spectralSquaredEigenvalue μ z)
+    hprod.multipliable, hprod.tprod_eq, mul_assoc, ← Complex.exp_add, add_neg_cancel,
+    Complex.exp_zero, mul_one]
+
 end
 
 end GaloisForLFunctions.Goldbach
@@ -214,5 +277,10 @@ end GaloisForLFunctions.Goldbach
 #print axioms GaloisForLFunctions.Goldbach.spectralDiagonalOperator_inner
 #print axioms GaloisForLFunctions.Goldbach.spectralDiagonalOperator_isHilbertSchmidt
 #print axioms GaloisForLFunctions.Goldbach.hsNormSq_spectralDiagonalOperator
+#print axioms GaloisForLFunctions.Goldbach.opTrace_square_spectralDiagonalOperator
 #print axioms GaloisForLFunctions.Goldbach.norm_spectralDiagonalOperator_le_one_iff
 #print axioms GaloisForLFunctions.Goldbach.infiniteSpectralSquareProduct_critical_iff_operator_norm
+#print axioms GaloisForLFunctions.Goldbach.spectralSquaredEigenvalue
+#print axioms GaloisForLFunctions.Goldbach.spectralSquaredKernel
+#print axioms GaloisForLFunctions.Goldbach.spectralSquaredKernel_isHS
+#print axioms GaloisForLFunctions.Goldbach.infiniteSpectralSquareProduct_eq_normalizedDet2

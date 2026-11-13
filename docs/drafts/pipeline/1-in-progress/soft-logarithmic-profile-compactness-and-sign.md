@@ -72,6 +72,13 @@ weights define continuous quadratic forms through their square-root
 multipliers; the uniform tail bound then removes the negative-logarithm cap.
 This avoids any assumed `L¹` convergence of the limiting profile.
 
+`HTGeometry/HardyBoundary/WeightedL2Fatou` verifies preservation of a
+convergent upper bound on a nonnegative weighted square moment, including
+the sum of two moments under separate strong `L²` limits. All four
+declarations pass final plain source audits with the standard three axioms;
+the module is integrated. The actual signed-energy limit still needs the
+negative-part continuity and recovery arguments.
+
 The negative-logarithmic estimate has a homogeneous, adjustable form.
 Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff
 `H=c exp(t/2)`, with `c>0`, to obtain the candidate bound

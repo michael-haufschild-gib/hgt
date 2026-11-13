@@ -71,7 +71,8 @@ theorem isClosed_setOf_exists_zero_inter_Icc {M : ℝ} (hγ : ContinuousOn γ (I
     ContinuousOn.prodMk (hγ.comp continuousOn_fst fun p hp => hp.1) continuousOn_snd
   have hf₁ : ContinuousOn (fun p : ℝ × ℂ => complexHeat (γ p.1) p.2)
       (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : ℂ) M) :=
-    continuous_complexHeat.comp_continuousOn hpairc
+    Continuous.comp_continuousOn (g := fun q : ℂ × ℂ => complexHeat q.1 q.2)
+      (f := fun p : ℝ × ℂ => (γ p.1, p.2)) continuous_complexHeat hpairc
   have hf₂ : ContinuousOn (fun p : ℝ × ℂ => d p.1 p.2)
       (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : ℂ) M) :=
     hd.mono (prod_mono subset_rfl (subset_univ _))
