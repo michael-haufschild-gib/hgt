@@ -1,14 +1,24 @@
 # The reciprocity law for linear characters
 
 - **ID:** agz-artin-reciprocity
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (classical; not in the corpus, not in Mathlib)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean; classical, not in Mathlib)
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.14 question 5 (A154)
 - **Statement:** Let `L/K` be a Galois extension of number fields with group `G` and `χ` a linear
   character of `G`. There are a modulus `𝔪` of `K` and a ray class character `ψ` modulo `𝔪` with
   `(χ, v) = ψ(v)` for every prime `v ∤ 𝔪`. Then
   `L(s, χ, L/K) = L(s, ψ) · Π_{v | 𝔪} (1 − (χ, v) N(v)^{-s})^{-1}` for `Re s > 1`
-  (`artinEulerProduct_linearCharacter_eq_heckeL_mul`).
+  (`exists_artinEulerProduct_linearCharacter_eq_heckeL_mul`, with `𝔪 = (c) ∞`).
+
+  For abelian `L/K` there is `c ≥ 1` divisible by the ramified primes with: the Artin map is
+  trivial on the ray modulo `𝔪 = (c) ∞` (`exists_rayPrincipal_le_ker_artinMap`); its kernel on
+  `I^𝔪` is the norm group `H_𝔪 = I^𝔪 ∩ P_𝔪 N(I_L)`, `[I^𝔪 : H_𝔪] = [L : K]`, and it induces
+  `I^𝔪 / H_𝔪 ≅ G` (`exists_mulEquiv_quotient_normIdealGroup`).
+
+  For every representation `ρ` of `G`: `L(s, ρ, L/K) = Π_q Λ_q(s)^{n_q}` for `Re s > 1`, over
+  finitely many Brauer pairs `q = (E, χ)`, with
+  `Λ_q(s) = L(s, ψ_q) · Π_{v | c_q} (1 − (χ, v) N(v)^{-s})^{-1}` for a ray class character `ψ_q`
+  of the fixed field of `E` (`exists_artinEulerProduct_eq_prod_zpow_heckeL`).
 
 ## Goal
 The last input of A154. Every Artin Euler product is a product of integer powers of Euler
@@ -18,8 +28,14 @@ Hecke `L`-series up to finitely many Euler factors, and the index law of virtual
 applies to every Artin character.
 
 ## Status
-Proved and formalized for characters that factor through the cyclotomic character of a root of
-unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global class field theory.
+Formalized without added hypotheses (axioms `propext`, `Classical.choice`, `Quot.sound`).
+Modules in `RHTower/Artin/`: `IdealsArePrincipalUpToADescentSetOfPrimes`,
+`TheArtinMapOfACyclicExtensionIsTrivialOnARay`, `TheReciprocityLawForLinearCharacters`,
+`TheArtinMapOfAnAbelianExtensionIsTrivialOnARay`, `TheKernelOfTheArtinMapIsTheNormGroup`,
+`EveryArtinEulerProductIsAProductOfHeckeLSeries`.
+
+Not done: the characters `ψ` are not reduced to their conductors, so the zero configuration
+`heckeZeros` (defined for primitive characters) is not attached to an Artin character.
 
 ## Gates
 - [x] cyclotomic characters (`agz-cyclotomic-reciprocity-law`)
@@ -89,7 +105,15 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
     (`RHTower/Artin/FrobeniusElementsRestrictToASubextension`)
   - [x] G6g crossing: `v ≡ 𝔟^{d_v}` modulo `P_c N` for the primes `v` of `𝔞`, `(v, L/K) = σ^{d_v}`
     (`idealUnit_div_zpow_mem_rayPrincipal_sup_frobeniusPowerGroup`)
-- [ ] G7 the reciprocity law for cyclic `L/K`, and for every linear character by G1
+- [x] G7 the reciprocity law for cyclic `L/K`
+  (`exists_rayPrincipal_le_ker_artinMap_of_forall_mem_zpowers`), and for every linear character
+  through the cyclic quotient `G / ker χ` and G1 (`exists_heckeCharacter_artinSymbol`,
+  `restrictHom_fixedPoints_eq_mk`)
+- [x] G8 abelian `L/K`: the Artin symbol restricts to subextensions (`restrictHom_artinMap`);
+  characters separate the elements of `G`, so the Artin map is trivial on a ray
+  (`exists_rayPrincipal_le_ker_artinMap`); with G2, G3 (`artinMap_idealNormHom`) and G4
+  (`index_normIdealGroup_le`) the kernel is the norm group (`ker_artinMap_comp_subtype`)
+- [x] G9 Brauer assembly (`exists_artinEulerProduct_eq_prod_zpow_heckeL`)
 
 ## Approach
 
@@ -197,3 +221,4 @@ then `f_L(v) | g`). With `𝔟^n ∈ N_{L/K}` and `n | Σ a_v d_v`: `𝔞 ∈ P_
 - 2026-11-13 — G6b formalized; G6 restated over `K` with two-layer towers. Order of work of
   review-1311 §2.14: after B192 at ratio three and the realization on the dyadic windows
 - 2026-11-13 — G6 formalized (G6a, G6c–G6g). Open: G7
+- 2026-11-13 — G7, G8, G9 formalized; card moved to 3-formalized

@@ -79,7 +79,7 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
   set ζ : ℂ := 1 + Complex.I * y * W
   set η : ℂ := W - Complex.I * y
   by_cases hζ : ζ = 0
-  · refine ⟨rotSL 0 1 (by norm_num), rotSL_smul_I _, ?_⟩
+  · refine ⟨rotSL 0 1 (by norm_num : (0:ℝ) ^ 2 + 1 ^ 2 = 1), rotSL_smul_I _, ?_⟩
     apply UpperHalfPlane.ext
     rw [coe_rotSL_smul, div_eq_iff (rotSL_den_ne_zero _ _)]
     show ((0 : ℝ) * ((⟨0, y⟩ : ℂ)) + ((1 : ℝ) : ℂ)) = W * (-((1 : ℝ) : ℂ) * (⟨0, y⟩ : ℂ) + ((0 : ℝ) : ℂ))
@@ -97,16 +97,15 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
           have : W.re = w.re := rfl
           have : W.im = w.im := rfl
           nlinarith [hkey]
+      have hcz : (starRingEnd ℂ) ζ ≠ 0 := (map_ne_zero _).mpr hζ
       have : q = η * (starRingEnd ℂ) ζ / ((Complex.normSq ζ : ℝ) : ℂ) := by
         rw [Complex.normSq_eq_conj_mul_self, show q = η / ζ from rfl]
         field_simp
-        push_cast
-        ring
       rw [this, hη, Complex.div_ofReal_im]
       simp
     set r : ℝ := q.re
     have hq : q = r := Complex.ext (by simp [r]) (by simp [hqim])
-    have hηr : η = r * ζ := by rw [← hq]; field_simp [q]
+    have hηr : η = r * ζ := by rw [← hq]; exact (div_mul_cancel₀ η hζ).symm
     set n : ℝ := Real.sqrt (1 + r ^ 2)
     have hn : 0 < n := Real.sqrt_pos.mpr (by positivity)
     have hn2 : n ^ 2 = 1 + r ^ 2 := Real.sq_sqrt (by positivity)
@@ -122,7 +121,7 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
     push_cast
     field_simp
     simp only [η, ζ] at hηr
-    linear_combination hηr
+    linear_combination (-2 : ℂ) * hηr
 
 /-- The height `Y(u) = 1 + 2u + 2√(u(u + 1))` (with `u⁺`) of the point `iY` at `u`-distance `u` from `i`. -/
 def axisY (u : ℝ) : ℝ := 1 + 2 * max u 0 + 2 * Real.sqrt (max u 0 * (max u 0 + 1))
@@ -308,13 +307,13 @@ theorem ae_eq_of_abelL_eq {κ κ' : ℝ → ℝ≥0∞} (hκ : Measurable κ) (h
       exact hfin'
     have hext : μ.withDensity κ = μ.withDensity κ' := by
       refine ext_of_generate_finite (range Ioi)
-        (BorelSpace.measurable_eq.trans borel_eq_generateFrom_Ioi) isPiSystem_Ioi ?_ ?_
+        (BorelSpace.measurable_eq.trans (borel_eq_generateFrom_Ioi ℝ)) isPiSystem_Ioi ?_ ?_
       · rintro _ ⟨v, rfl⟩
         rw [withDensity_apply _ measurableSet_Ioi, withDensity_apply _ measurableSet_Ioi,
           Measure.restrict_restrict measurableSet_Ioi, Ioi_inter_Ioi]
         exact htail _ (le_trans hv₀.le (le_sup_right))
       · rw [withDensity_apply _ MeasurableSet.univ, withDensity_apply _ MeasurableSet.univ,
-          Measure.restrict_univ, Measure.restrict_univ]
+          Measure.restrict_univ]
         exact htail v₀ hv₀.le
     refine ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite hκ hκ' fun t ht _ => ?_
     rw [← withDensity_apply _ ht, ← withDensity_apply _ ht, hext]
@@ -366,10 +365,10 @@ theorem volume_setOf_sq_add_mem (c : ℝ) {N : Set ℝ} (hN : MeasurableSet N) (
     · exfalso
       rw [ENNReal.ofReal_eq_zero, abs_of_pos (by linarith)] at h
       linarith
-    · simp only [indicator_apply, Pi.one_apply, Pi.zero_apply] at h ⊢
-      by_cases hS : η ∈ S
-      · exact absurd h (by simp [φ, show η ^ 2 / 4 + c ∈ N from hS])
-      · simp [hS]
+    · have hS : η ∉ S := fun hS => by
+        rw [indicator_of_mem (show φ η ∈ N from hS)] at h
+        exact one_ne_zero h
+      exact indicator_of_notMem hS _
   have hneg : S ∩ Iio 0 = (fun η => -1 * η) ⁻¹' (S ∩ Ioi 0) := by
     ext η
     simp only [mem_inter_iff, mem_preimage, mem_Iio, mem_Ioi, S, mem_setOf_eq]
