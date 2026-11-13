@@ -67,30 +67,32 @@ theorem existsUnique_mem_annulus {σ g : SL(2, ℝ)} {ℓ₀ : ℝ} (hℓ₀ : 0
         k * ℓ₀ + Real.log ‖((σ⁻¹ • w : ℍ) : ℂ)‖ < ℓ₀ := by
     intro k
     have hv : 0 < ‖((σ⁻¹ • w : ℍ) : ℂ)‖ := norm_pos_iff.mpr (UpperHalfPlane.ne_zero _)
-    rw [smul_frame (zpow_frame hg k), Set.mem_smul_set_iff_inv_smul_mem, ← mul_smul, ← mul_smul,
+    rw [smul_frame (zpow_frame hg k), Set.mem_smul_set_iff_inv_smul_mem, ← mul_smul,
       show σ⁻¹ * (σ * dilSL (Real.exp (k * ℓ₀)) (Real.exp_pos _) * σ⁻¹) =
         dilSL (Real.exp (k * ℓ₀)) (Real.exp_pos _) * σ⁻¹ by group, mul_smul]
     simp only [dilAnnulus, mem_setOf_eq, coe_dilSL_smul, norm_mul, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    have he : Real.exp (k * ℓ₀) * ‖((σ⁻¹ • w : ℍ) : ℂ)‖ =
+        Real.exp (k * ℓ₀ + Real.log ‖((σ⁻¹ • w : ℍ) : ℂ)‖) := by
+      rw [Real.exp_add, Real.exp_log hv]
     have hl1 : (1 ≤ Real.exp (k * ℓ₀) * ‖((σ⁻¹ • w : ℍ) : ℂ)‖) ↔
         0 ≤ k * ℓ₀ + Real.log ‖((σ⁻¹ • w : ℍ) : ℂ)‖ := by
-      rw [← Real.exp_log hv, ← Real.exp_add, Real.one_le_exp_iff]
+      rw [he, Real.one_le_exp_iff]
     have hl2 : (Real.exp (k * ℓ₀) * ‖((σ⁻¹ • w : ℍ) : ℂ)‖ < Real.exp ℓ₀) ↔
         k * ℓ₀ + Real.log ‖((σ⁻¹ • w : ℍ) : ℂ)‖ < ℓ₀ := by
-      rw [← Real.exp_log hv, ← Real.exp_add, Real.exp_lt_exp]
+      rw [he, Real.exp_lt_exp]
     rw [hl1, hl2]
   set L := Real.log ‖((σ⁻¹ • w : ℍ) : ℂ)‖
   refine ⟨⌈-L / ℓ₀⌉, (hmem _).mpr ⟨?_, ?_⟩, fun k hk => ?_⟩
-  · have := Int.le_ceil (-L / ℓ₀)
-    rw [div_le_iff₀ hℓ₀] at this; linarith
-  · have := Int.ceil_lt_add_one (-L / ℓ₀)
-    rw [lt_div_iff₀ hℓ₀ |>.symm.trans (by rfl)] at this
-    have h2 : (⌈-L / ℓ₀⌉ : ℝ) - 1 < -L / ℓ₀ := by linarith
-    rw [lt_div_iff₀ hℓ₀] at h2; linarith
+  · have h := mul_le_mul_of_nonneg_right (Int.le_ceil (-L / ℓ₀)) hℓ₀.le
+    rw [div_mul_cancel₀ _ hℓ₀.ne'] at h; linarith
+  · have h := mul_lt_mul_of_pos_right (Int.ceil_lt_add_one (-L / ℓ₀)) hℓ₀
+    rw [add_mul, div_mul_cancel₀ _ hℓ₀.ne', one_mul] at h; linarith
   · obtain ⟨h1, h2⟩ := (hmem k).mp hk
+    symm
     rw [Int.ceil_eq_iff]
     constructor
-    · rw [lt_div_iff₀ hℓ₀]; push_cast; linarith
+    · rw [lt_div_iff₀ hℓ₀]; linarith
     · rw [div_le_iff₀ hℓ₀]; linarith
 
 theorem tsum_indicator_annulus {σ g : SL(2, ℝ)} {ℓ₀ : ℝ} (hℓ₀ : 0 < ℓ₀)
@@ -157,8 +159,7 @@ theorem primLen_eq {γ γ₀ : Γ} {σ : SL(2, ℝ)} {ℓ₀ : ℝ} (hℓ₀ : 0
     obtain ⟨k, rfl⟩ := (hC δ).mp hδc
     have hk : k ≠ 0 := by rintro rfl; exact hδ1 (zpow_zero _)
     rw [hlen]
-    have : (1 : ℝ) ≤ |(k : ℝ)| := by
-      rw [← Int.cast_abs]; exact_mod_cast Int.one_le_abs hk
+    have : (1 : ℝ) ≤ ((|k| : ℤ) : ℝ) := by exact_mod_cast Int.one_le_abs hk
     nlinarith
 
 /-! ### The class sum -/
@@ -188,6 +189,7 @@ theorem tsum_isConj_lintegral (hhyp : ∀ γ : X.Γ, γ ≠ 1 → 2 < |trSL γ|)
   have hγSL : (γ : SL(2, ℝ)) = (γ₀ : SL(2, ℝ)) ^ (m : ℤ) := by
     rw [hγm, Subgroup.coe_pow, zpow_natCast]
   rw [← hγSL] at hfγ
+  simp only [Int.cast_natCast] at hfγ
   have hlenγ : hypLen (γ : SL(2, ℝ)) = m * ℓ₀ := by
     rw [hypLen_conj_dilSL _ σ hfγ, Real.log_exp, abs_of_pos (by positivity)]
   rw [primLen_eq hℓ₀ hC hf, hlenγ]
@@ -195,14 +197,12 @@ theorem tsum_isConj_lintegral (hhyp : ∀ γ : X.Γ, γ ≠ 1 → 2 < |trSL γ|)
   have hRHS : ∫⁻ w in A, k (pairU w ((γ : SL(2, ℝ)) • w)) =
       ENNReal.ofReal ℓ₀ * ∫⁻ t : ℝ, k ((Real.exp (m * ℓ₀) - 1) ^ 2 / (4 * Real.exp (m * ℓ₀)) *
         (1 + t ^ 2)) := by
-    have h := lintegral_smul_annulus_pairU_conj hk (Real.exp_pos ((m : ℤ) * ℓ₀))
-      (Real.one_lt_exp_iff_pos.mpr hℓ₀) σ
+    have h := lintegral_smul_annulus_pairU_conj hk (Real.exp_pos ((m : ℝ) * ℓ₀))
+      (Real.one_lt_exp_iff.mpr hℓ₀) σ
     rw [Real.log_exp] at h
     rw [← h]
     refine setLIntegral_congr_fun hAmeas fun w _ => ?_
     rw [smul_frame hfγ]
-    push_cast
-    rfl
   rw [← hRHS]
   -- unfold the fundamental domain
   have hunf : ∫⁻ w in A, k (pairU w ((γ : SL(2, ℝ)) • w)) =
@@ -212,13 +212,14 @@ theorem tsum_isConj_lintegral (hhyp : ∀ γ : X.Γ, γ ≠ 1 → 2 < |trSL γ|)
     rw [← (Equiv.inv X.Γ).tsum_eq]
     refine tsum_congr fun δ => setLIntegral_congr_fun X.measurableSet_F fun z _ => ?_
     simp only [Equiv.inv_apply, inv_inv]
+    rw [show δ • z = ((δ : X.Γ) : SL(2, ℝ)) • z from rfl]
     by_cases hz : (((δ : X.Γ) : SL(2, ℝ)) • z) ∈ A
     · rw [indicator_of_mem hz, indicator_of_mem hz, one_mul]
       congr 1
-      rw [← pairU_smul ((δ : SL(2, ℝ)))⁻¹, Subgroup.smul_def, inv_smul_smul, ← mul_smul,
-        ← mul_smul]
-      congr 2
-      simp only [Subgroup.coe_mul, Subgroup.coe_inv, mul_assoc]
+      rw [show (((δ⁻¹ * γ * δ : X.Γ)) : SL(2, ℝ)) =
+          ((δ : X.Γ) : SL(2, ℝ))⁻¹ * (γ : SL(2, ℝ)) * ((δ : X.Γ) : SL(2, ℝ)) by
+          simp only [Subgroup.coe_mul, Subgroup.coe_inv],
+        mul_smul, mul_smul, ← pairU_smul ((δ : X.Γ) : SL(2, ℝ)) z, smul_inv_smul]
     · rw [indicator_of_notMem hz, indicator_of_notMem hz, zero_mul]
   rw [hunf]
   -- regroup by the conjugate `δ⁻¹γδ`
@@ -235,7 +236,7 @@ theorem tsum_isConj_lintegral (hhyp : ∀ γ : X.Γ, γ ≠ 1 → 2 < |trSL γ|)
   refine setLIntegral_congr_fun X.measurableSet_F fun z _ => ?_
   -- the fibre over `γ'` is `⟨γ₀⟩δ₁`
   obtain ⟨c, hc⟩ := isConj_iff.mp γ'.2
-  set δ₁ : X.Γ := c⁻¹
+  obtain ⟨δ₁, rfl⟩ : ∃ d : X.Γ, c = d⁻¹ := ⟨c⁻¹, (inv_inv c).symm⟩
   have hδ₁ : δ₁⁻¹ * γ * δ₁ = γ' := by rw [← hc]; group
   have hfib : ∀ δ : X.Γ, φ δ = γ' ↔ ∃ j : ℤ, δ = γ₀ ^ j * δ₁ := by
     intro δ
@@ -243,8 +244,8 @@ theorem tsum_isConj_lintegral (hhyp : ∀ γ : X.Γ, γ ≠ 1 → 2 < |trSL γ|)
     · intro h
       have h' : δ⁻¹ * γ * δ = δ₁⁻¹ * γ * δ₁ := by rw [hδ₁]; exact congrArg Subtype.val h
       obtain ⟨j, hj⟩ := (hC (δ * δ₁⁻¹)).mp (by
-        calc δ * δ₁⁻¹ * γ = δ * (δ⁻¹ * γ * δ) * δ₁⁻¹ := by group
-          _ = δ * (δ₁⁻¹ * γ * δ₁) * δ₁⁻¹ := by rw [h']
+        calc δ * δ₁⁻¹ * γ = δ * (δ₁⁻¹ * γ * δ₁) * δ₁⁻¹ := by group
+          _ = δ * (δ⁻¹ * γ * δ) * δ₁⁻¹ := by rw [← h']
           _ = γ * (δ * δ₁⁻¹) := by group)
       exact ⟨j, by rw [← hj]; group⟩
     · rintro ⟨j, rfl⟩
