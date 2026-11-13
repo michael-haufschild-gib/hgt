@@ -74,44 +74,224 @@ theorem exists_resKernel_le_rpow_eighth {s : ℝ} (hs : 1 / 2 < s) :
         rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
         congr 1; ring
 
-/-- The near part `k_s · 1_{u ≤ 1}` is square integrable on `ℍ`. -/
-theorem lintegral_resKernel_near_sq_lt_top {s : ℝ} (hs : 1 / 2 < s) :
-    ∫⁻ w : ℍ, ((Iic (1 : ℝ)).indicator (resKernel s) (pairU I w)) ^ 2 < ∞ := by
-  obtain ⟨C, hC0, hC⟩ := exists_resKernel_le_rpow_eighth hs
-  set f : ℝ → ℝ≥0∞ := fun u => ((Iic (1 : ℝ)).indicator (resKernel s) u) ^ 2
-  have hf : Measurable f := ((measurable_resKernel s).indicator measurableSet_Iic).pow_const 2
-  rw [show (fun w : ℍ => ((Iic (1 : ℝ)).indicator (resKernel s) (pairU I w)) ^ 2) =
-    fun w => f (pairU I w) from rfl, lintegral_pairU_I hf]
-  -- the Abel transform of `f` is bounded and supported in `|τ| ≤ T`
-  set T : ℝ := 2 * Real.arsinh 1
-  have habel : ∀ τ, abelL f τ ≤ (Icc (-T) T).indicator
-      (fun _ => ENNReal.ofReal (C ^ 2) * ∫⁻ η in Icc (-2 : ℝ) 2,
-        ENNReal.ofReal ((η ^ 2 / 4) ^ (-(1 / 4 : ℝ)))) τ := by
-    intro τ
-    by_cases hτ : τ ∈ Icc (-T) T
-    · rw [indicator_of_mem hτ, abelL, ← lintegral_indicator measurableSet_Icc,
-        ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-      refine lintegral_mono fun η => ?_
-      simp only [f]
-      by_cases hu : η ^ 2 / 4 + Real.sinh (τ / 2) ^ 2 ≤ 1
-      · have hη : η ∈ Icc (-2 : ℝ) 2 := by
-          have : η ^ 2 ≤ 4 := by nlinarith [sq_nonneg (Real.sinh (τ / 2))]
-          have h1 := Real.abs_le_sqrt this
-          rw [show Real.sqrt 4 = 2 by rw [show (4:ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]] at h1
-          exact abs_le.mp h1
-        rw [indicator_of_mem (show η ^ 2 / 4 + Real.sinh (τ / 2) ^ 2 ∈ Iic (1 : ℝ) from hu),
-          indicator_of_mem hη]
-        by_cases hη0 : η = 0
-        · -- a single point: bound by the trivial value
-          subst hη0
-          simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_div,
-            Real.zero_rpow (by norm_num : (-(1 / 4 : ℝ)) ≠ 0)]
-          sorry
-        · sorry
-      · rw [indicator_of_notMem (show η ^ 2 / 4 + Real.sinh (τ / 2) ^ 2 ∉ Iic (1 : ℝ) from hu)]
-        simp
-    · sorry
-  sorry
+/-- The singular profile `u ↦ u^{−¼}` on `(0, 1]`. -/
+def quarterProfile (u : ℝ) : ℝ := if 0 < u ∧ u ≤ 1 then u ^ (-(1 / 4 : ℝ)) else 0
+
+theorem quarterProfile_nonneg (u : ℝ) : 0 ≤ quarterProfile u := by
+  unfold quarterProfile; split_ifs with h
+  · exact Real.rpow_nonneg h.1.le _
+  · exact le_rfl
+
+theorem measurable_quarterProfile : Measurable quarterProfile := by
+  unfold quarterProfile
+  refine Measurable.ite ?_ (by fun_prop) measurable_const
+  exact (measurableSet_lt measurable_const measurable_id).inter (measurableSet_le measurable_id
+    measurable_const)
+
+/-- **Layer cake.**  `∫_ℍ u(i, w)^{−¼} 1_{u ≤ 1} dμ(w) < ∞`. -/
+theorem lintegral_quarterProfile_lt_top :
+    ∫⁻ w : ℍ, ENNReal.ofReal (quarterProfile (pairU I w)) < ∞ := by
+  have hm : Measurable fun w : ℍ => quarterProfile (pairU I w) :=
+    measurable_quarterProfile.comp (continuous_pairU.comp
+      (continuous_const.prodMk continuous_id)).measurable
+  rw [lintegral_eq_lintegral_meas_lt _ (Eventually.of_forall fun w => quarterProfile_nonneg _)
+    hm.aemeasurable]
+  have hb : ∀ t ∈ Ioi (0 : ℝ), volume {w : ℍ | t < quarterProfile (pairU I w)} ≤
+      ENNReal.ofReal (32 * min 1 (t ^ (-(4 : ℝ)))) := by
+    intro t ht
+    have ht0 : 0 < t := ht
+    have hmin : 0 ≤ min 1 (t ^ (-(4 : ℝ))) := le_min zero_le_one (by positivity)
+    refine (measure_mono fun w hw => ?_).trans (volume_pairU_I_le hmin)
+    simp only [mem_setOf_eq] at hw ⊢
+    unfold quarterProfile at hw
+    split_ifs at hw with h
+    · refine le_min h.2 ?_
+      have hu : 0 < pairU I w := h.1
+      -- `t < u^{−¼}` gives `u < t^{−4}`
+      have h2 : pairU I w = (pairU I w ^ (-(1 / 4 : ℝ))) ^ (-(4 : ℝ)) := by
+        rw [← Real.rpow_mul hu.le]; norm_num
+      rw [h2]
+      exact (Real.rpow_le_rpow_of_nonpos ht0 hw.le (by norm_num))
+    · exact absurd hw (not_lt.mpr ht0.le)
+  refine lt_of_le_of_lt (setLIntegral_mono' measurableSet_Ioi hb) ?_
+  have hsplit : ∀ t ∈ Ioi (0 : ℝ), ENNReal.ofReal (32 * min 1 (t ^ (-(4 : ℝ)))) ≤
+      (Ioc (0 : ℝ) 1).indicator (fun _ => ENNReal.ofReal 32) t +
+        (Ioi (1 : ℝ)).indicator (fun t => ENNReal.ofReal (32 * t ^ (-(4 : ℝ)))) t := by
+    intro t ht
+    have ht0 : 0 < t := ht
+    rcases le_or_gt t 1 with h | h
+    · rw [indicator_of_mem (show t ∈ Ioc (0 : ℝ) 1 from ⟨ht0, h⟩)]
+      exact le_add_right (ENNReal.ofReal_le_ofReal (by
+        have := min_le_left (1 : ℝ) (t ^ (-(4 : ℝ))); linarith))
+    · rw [indicator_of_mem (show t ∈ Ioi (1 : ℝ) from h)]
+      exact le_add_left (ENNReal.ofReal_le_ofReal (by
+        have := min_le_right (1 : ℝ) (t ^ (-(4 : ℝ))); nlinarith))
+  refine lt_of_le_of_lt (setLIntegral_mono' measurableSet_Ioi hsplit) ?_
+  rw [lintegral_add_left' ((measurable_const.indicator measurableSet_Ioc).aemeasurable)]
+  refine ENNReal.add_lt_top.mpr ⟨?_, ?_⟩
+  · refine lt_of_le_of_lt (setLIntegral_le_lintegral _ _) ?_
+    rw [lintegral_indicator_const measurableSet_Ioc, Real.volume_Ioc]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
+  · refine lt_of_le_of_lt (setLIntegral_le_lintegral _ _) ?_
+    rw [lintegral_indicator measurableSet_Ioi]
+    exact ((integrableOn_Ioi_rpow_of_lt (by norm_num) one_pos).const_mul 32).lintegral_lt_top
+
+/-- `(Σ_s f)² ≤ 2 |s| Σ_s f²`. -/
+theorem sq_sum_le_two_card_mul {ι : Type*} (s : Finset ι) (f : ι → ℝ≥0∞) :
+    (∑ i ∈ s, f i) ^ 2 ≤ 2 * s.card * ∑ i ∈ s, f i ^ 2 := by
+  have hpair : ∀ x y : ℝ≥0∞, x * y ≤ x ^ 2 + y ^ 2 := by
+    intro x y
+    calc x * y ≤ max x y * max x y := mul_le_mul' (le_max_left _ _) (le_max_right _ _)
+      _ = max (x ^ 2) (y ^ 2) := by
+          rcases le_total x y with h | h
+          · rw [max_eq_right h, max_eq_right (pow_le_pow_left₀ bot_le h 2), sq]
+          · rw [max_eq_left h, max_eq_left (pow_le_pow_left₀ bot_le h 2), sq]
+      _ ≤ x ^ 2 + y ^ 2 := max_le le_self_add le_add_self
+  calc (∑ i ∈ s, f i) ^ 2 = ∑ i ∈ s, ∑ j ∈ s, f i * f j := by rw [sq, Finset.sum_mul_sum]
+    _ ≤ ∑ i ∈ s, ∑ j ∈ s, (f i ^ 2 + f j ^ 2) :=
+        Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => hpair _ _
+    _ = 2 * s.card * ∑ i ∈ s, f i ^ 2 := by
+        simp only [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul]
+        rw [← Finset.mul_sum]
+        ring
+
+theorem add_sq_le_four (x y : ℝ≥0∞) : (x + y) ^ 2 ≤ 4 * (x ^ 2 + y ^ 2) := by
+  calc (x + y) ^ 2 ≤ (2 * max x y) ^ 2 := by
+        refine pow_le_pow_left₀ bot_le ?_ 2
+        rw [two_mul]; exact add_le_add (le_max_left _ _) (le_max_right _ _)
+    _ = 4 * (max x y) ^ 2 := by rw [mul_pow]; norm_num
+    _ ≤ 4 * (x ^ 2 + y ^ 2) := by
+        refine mul_le_mul_right ?_ _
+        rcases le_total x y with h | h
+        · rw [max_eq_right h]; exact le_add_self
+        · rw [max_eq_left h]; exact le_self_add
+
+/-- The near part `k_a · 1_{u ≤ 1}`. -/
+def nearRes (a : ℝ) : ℝ → ℝ≥0∞ := (Iic (1 : ℝ)).indicator (resKernel a)
+
+/-- The far part `k_a · 1_{u > 1}`. -/
+def farRes (a : ℝ) : ℝ → ℝ≥0∞ := (Ioi (1 : ℝ)).indicator (resKernel a)
+
+namespace CompactQuotient
+
+variable (X : CompactQuotient)
+
+/-- **Uniform row energy of `K_a`.** -/
+theorem exists_rowEnergy_le {a : ℝ} (ha : 1 < a) : ∃ R : ℝ≥0∞, R < ∞ ∧ ∀ w : ℍ,
+    ∫⁻ ξ in X.F, (autK X.Γ (resKernel a) w ξ) ^ 2 ≤ R := by
+  have ha' : 1 / 2 < a := by linarith
+  obtain ⟨C₈, hC₈, hC₈le⟩ := exists_resKernel_le_rpow_eighth ha'
+  obtain ⟨C₁, hC₁, hC₁le⟩ := exists_resKernel_le_rpow_neg ha'
+  obtain ⟨M, hM, hMle⟩ := X.cocompactFree.exists_autK_le ha
+  obtain ⟨Ccnt, hCcnt, hcount⟩ := X.cocompactFree.exists_card_le
+  have hsplit : ∀ u, resKernel a u = nearRes a u + farRes a u := by
+    intro u
+    rw [nearRes, farRes]
+    rcases le_or_gt u 1 with h | h
+    · rw [indicator_of_mem (show u ∈ Iic (1 : ℝ) from h),
+        indicator_of_notMem (show u ∉ Ioi (1 : ℝ) from not_lt.mpr h), add_zero]
+    · rw [indicator_of_notMem (show u ∉ Iic (1 : ℝ) from not_le.mpr h),
+        indicator_of_mem (show u ∈ Ioi (1 : ℝ) from h), zero_add]
+  have hfar : ∀ u, 0 ≤ u → farRes a u ≤ ENNReal.ofReal (C₁ * 2 ^ a * (1 + u) ^ (-a)) := by
+    intro u hu
+    rw [farRes]
+    by_cases h : 1 < u
+    · rw [indicator_of_mem (show u ∈ Ioi (1 : ℝ) from h)]
+      refine (hC₁le u (by linarith)).trans (ENNReal.ofReal_le_ofReal ?_)
+      have h3 := Real.rpow_le_rpow_of_nonpos (by linarith : (0:ℝ) < 1 + u)
+        (show 1 + u ≤ 2 * u by linarith) (show -a ≤ 0 by linarith)
+      rw [Real.mul_rpow (by norm_num) (by linarith)] at h3
+      have h4 : (2 : ℝ) ^ a * 2 ^ (-a) = 1 := by rw [← Real.rpow_add (by norm_num)]; simp
+      calc C₁ * u ^ (-a) = C₁ * 2 ^ a * (2 ^ (-a) * u ^ (-a)) := by
+            rw [mul_assoc C₁, ← mul_assoc (2 ^ a), h4, one_mul]
+        _ ≤ C₁ * 2 ^ a * (1 + u) ^ (-a) := mul_le_mul_of_nonneg_left h3 (by positivity)
+    · rw [indicator_of_notMem (show u ∉ Ioi (1 : ℝ) from h)]; exact bot_le
+  have hnear_sq : ∀ u, 0 < u → nearRes a u ^ 2 ≤
+      ENNReal.ofReal (C₈ ^ 2) * ENNReal.ofReal (quarterProfile u) := by
+    intro u hu
+    rw [nearRes]
+    by_cases h : u ≤ 1
+    · rw [indicator_of_mem (show u ∈ Iic (1 : ℝ) from h)]
+      have h1 := hC₈le u hu
+      calc resKernel a u ^ 2 ≤ ENNReal.ofReal (C₈ * u ^ (-(1 / 8 : ℝ))) ^ 2 :=
+            pow_le_pow_left₀ bot_le h1 2
+        _ = ENNReal.ofReal (C₈ ^ 2) * ENNReal.ofReal (quarterProfile u) := by
+            rw [← ENNReal.ofReal_pow (by positivity), ← ENNReal.ofReal_mul (by positivity)]
+            congr 1
+            have hq : (u ^ (-(1 / 8 : ℝ))) ^ 2 = u ^ (-(1 / 4 : ℝ)) := by
+              rw [← Real.rpow_natCast, ← Real.rpow_mul hu.le]; norm_num
+            unfold quarterProfile
+            rw [if_pos ⟨hu, h⟩, mul_pow, hq]
+    · rw [indicator_of_notMem (show u ∉ Iic (1 : ℝ) from h)]; simp
+  set L := ∫⁻ w : ℍ, ENNReal.ofReal (quarterProfile (pairU I w))
+  have hL : L < ∞ := lintegral_quarterProfile_lt_top
+  set N₀ : ℝ≥0∞ := ENNReal.ofReal (Ccnt * 2)
+  refine ⟨4 * (2 * N₀ * (ENNReal.ofReal (C₈ ^ 2) * L) +
+      (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2 * volume X.F), ?_, fun w => ?_⟩
+  · refine ENNReal.mul_lt_top (by norm_num) (ENNReal.add_lt_top.mpr ⟨?_, ?_⟩)
+    · exact ENNReal.mul_lt_top (ENNReal.mul_lt_top (by norm_num) ENNReal.ofReal_lt_top)
+        (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hL)
+    · exact ENNReal.mul_lt_top (ENNReal.pow_lt_top (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hM))
+        X.volume_F_lt_top
+  -- pointwise split of the kernel
+  have hpt : ∀ ξ : ℍ, (autK X.Γ (resKernel a) w ξ) ^ 2 ≤
+      4 * (2 * N₀ * autK X.Γ (fun u => nearRes a u ^ 2) w ξ + (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2) := by
+    intro ξ
+    have hsum : autK X.Γ (resKernel a) w ξ = autK X.Γ (nearRes a) w ξ + autK X.Γ (farRes a) w ξ := by
+      rw [autK, autK, autK, ← ENNReal.tsum_add]; exact tsum_congr fun γ => hsplit _
+    have hF : autK X.Γ (farRes a) w ξ ≤ ENNReal.ofReal (C₁ * 2 ^ a) * M := hMle hfar w ξ
+    obtain ⟨hfin, hcard⟩ := hcount w ξ 1 zero_le_one
+    set S := {γ : X.Γ | pairU w ((γ : SL(2, ℝ)) • ξ) ≤ 1}
+    have hnear_eq : autK X.Γ (nearRes a) w ξ = ∑ γ ∈ hfin.toFinset, nearRes a (pairU w ((γ : SL(2, ℝ)) • ξ)) := by
+      rw [autK]
+      refine tsum_eq_sum fun γ hγ => ?_
+      have : ¬ pairU w ((γ : SL(2, ℝ)) • ξ) ≤ 1 := fun h => hγ (hfin.mem_toFinset.mpr h)
+      rw [nearRes]
+      exact indicator_of_notMem (show pairU w ((γ : SL(2, ℝ)) • ξ) ∉ Iic (1 : ℝ) from this) _
+    have hnear_sq_eq : ∑ γ ∈ hfin.toFinset, nearRes a (pairU w ((γ : SL(2, ℝ)) • ξ)) ^ 2 =
+        autK X.Γ (fun u => nearRes a u ^ 2) w ξ := by
+      rw [autK]
+      refine (tsum_eq_sum fun γ hγ => ?_).symm
+      have : ¬ pairU w ((γ : SL(2, ℝ)) • ξ) ≤ 1 := fun h => hγ (hfin.mem_toFinset.mpr h)
+      rw [nearRes, indicator_of_notMem (show pairU w ((γ : SL(2, ℝ)) • ξ) ∉ Iic (1 : ℝ) from this)]
+      simp
+    have hcardle : (hfin.toFinset.card : ℝ≥0∞) ≤ N₀ := by
+      rw [← Set.ncard_eq_toFinset_card S hfin, ← ENNReal.ofReal_natCast]
+      refine ENNReal.ofReal_le_ofReal ?_
+      calc (S.ncard : ℝ) ≤ Ccnt * (1 + 1) := hcard
+        _ = Ccnt * 2 := by ring
+    have hN : (autK X.Γ (nearRes a) w ξ) ^ 2 ≤ 2 * N₀ * autK X.Γ (fun u => nearRes a u ^ 2) w ξ := by
+      rw [hnear_eq, ← hnear_sq_eq]
+      refine (sq_sum_le_two_card_mul _ _).trans ?_
+      exact mul_le_mul_left (mul_le_mul_right hcardle _) _
+    rw [hsum]
+    refine (add_sq_le_four _ _).trans (mul_le_mul_right (add_le_add hN ?_) _)
+    exact pow_le_pow_left₀ bot_le hF 2
+  calc ∫⁻ ξ in X.F, (autK X.Γ (resKernel a) w ξ) ^ 2
+      ≤ ∫⁻ ξ in X.F, 4 * (2 * N₀ * autK X.Γ (fun u => nearRes a u ^ 2) w ξ +
+          (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2) := lintegral_mono hpt
+    _ = 4 * (2 * N₀ * ∫⁻ ξ in X.F, autK X.Γ (fun u => nearRes a u ^ 2) w ξ +
+          (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2 * volume X.F) := by
+        rw [lintegral_const_mul' _ _ (by norm_num), lintegral_add_right _ measurable_const,
+          lintegral_const_mul' _ _ (ENNReal.mul_ne_top (by norm_num) ENNReal.ofReal_ne_top),
+          setLIntegral_const, mul_comm ((ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2)]
+    _ ≤ 4 * (2 * N₀ * (ENNReal.ofReal (C₈ ^ 2) * L) +
+          (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2 * volume X.F) := by
+        refine mul_le_mul_right (add_le_add (mul_le_mul_left ?_ _) le_rfl) _
+        have hmeas : Measurable fun u => nearRes a u ^ 2 :=
+          ((measurable_resKernel a).indicator measurableSet_Iic).pow_const 2
+        rw [setLIntegral_autK X.isFundamentalDomain hmeas, lintegral_pairU_eq_I,
+          ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+        refine lintegral_mono_ae ?_
+        filter_upwards [measure_eq_zero_iff_ae_notMem.mp (volume_singleton I)] with ξ hξ
+        have hne : I ≠ ξ := fun h => hξ (by rw [h]; rfl)
+        have hpos : 0 < pairU I ξ := by
+          rw [pairU_eq_cosh]
+          have := Real.one_lt_cosh.mpr (dist_pos.mpr hne).ne'
+          linarith
+        exact hnear_sq _ hpos
+
+end CompactQuotient
 
 end
 

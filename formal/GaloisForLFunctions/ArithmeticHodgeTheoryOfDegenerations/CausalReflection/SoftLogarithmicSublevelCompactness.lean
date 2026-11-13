@@ -25,16 +25,14 @@ def softLogarithmicRayleighSublevel (E : ℝ) : Set SoninL2 :=
       v = hF.memLp_complex.toLp (cx F)}
 
 /-- Literal physical and Fourier moments transfer to the L² representative of a trial. -/
-theorem SoftLogarithmicHalfLineDomain.toLp_sublevel_bounds {F : ℝ → ℝ}
+theorem SoftLogarithmicHalfLineDomain.sublevel_bounds_of_L2_representative {F : ℝ → ℝ}
     (hF : SoftLogarithmicHalfLineDomain F) (hm : (∫ u, F u ^ 2) = 1)
-    {E : ℝ} (hE : softLogarithmicHalfLineEnergy F ≤ E) :
-    let v : SoninL2 := hF.memLp_complex.toLp (cx F)
+    {E : ℝ} (hE : softLogarithmicHalfLineEnergy F ≤ E)
+    (v : SoninL2) (hv : (v : ℝ → ℂ) =ᵐ[volume] cx F) :
     ‖v‖ ≤ 1 ∧
       (Integrable (fun u : ℝ => |u| * ‖v u‖ ^ 2) ∧
         (∫ u, |u| * ‖v u‖ ^ 2) ≤ (E + 16) / 4) ∧
       (Integrable (suzukiHlogDensity v) ∧ suzukiHlogMoment v ≤ E + 17) := by
-  let v : SoninL2 := hF.memLp_complex.toLp (cx F)
-  have hv : (v : ℝ → ℂ) =ᵐ[volume] cx F := hF.memLp_complex.coeFn_toLp
   have hmc : (∫ u, ‖cx F u‖ ^ 2) = 1 := by
     simpa only [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hm
   have hnorm : ‖v‖ ^ 2 = 1 := by
@@ -61,7 +59,7 @@ theorem SoftLogarithmicHalfLineDomain.toLp_sublevel_bounds {F : ℝ → ℝ}
     have he := coeFn_fourierTransform_eq_fourierIntegral v hv1
     change (fourierUnitary v : ℝ → ℂ) =ᵐ[volume] 𝓕 (v : ℝ → ℂ) at he
     exact he.trans (Eventually.of_forall fun ξ => Real.fourier_congr_ae hv ξ)
-  have hplain := RHTower.integrable_norm_sq_fourier (hF.integrable.ofReal (𝕜 := ℂ))
+  have hplain := RHTower.integrable_norm_sq_fourier (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
     hF.memLp_complex
   have hpositive := hF.integrable_positiveLogarithm
   have hparts : suzukiHlogDensity v =ᵐ[volume]
@@ -79,7 +77,7 @@ theorem SoftLogarithmicHalfLineDomain.toLp_sublevel_bounds {F : ℝ → ℝ}
       _ = (∫ ξ, ‖𝓕 (cx F) ξ‖ ^ 2) +
           ∫ ξ, max (Real.log |ξ|) 0 * ‖𝓕 (cx F) ξ‖ ^ 2 := integral_add hplain hpositive
       _ = _ := by
-        rw [RHTower.integral_norm_sq_fourier_eq (hF.integrable.ofReal (𝕜 := ℂ))
+        rw [RHTower.integral_norm_sq_fourier_eq (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
           hF.memLp_complex, hmc]
   obtain ⟨hphysical, hspectral⟩ := hF.sublevel_bounds hm hE
   refine ⟨?_, ⟨hfirst, ?_⟩, ⟨hlog, ?_⟩⟩
@@ -94,13 +92,22 @@ theorem isCompact_closure_softLogarithmicRayleighSublevel (E : ℝ) :
     IsCompact (closure (softLogarithmicRayleighSublevel E)) := by
   apply isCompact_closure_of_firstMoment_and_logMoment
     (softLogarithmicRayleighSublevel E) (B := 1) (M := (E + 16) / 4) (L := E + 17)
-  · rintro v ⟨F, hF, hm, hE, rfl⟩
-    exact (hF.toLp_sublevel_bounds hm hE).1
-  · rintro v ⟨F, hF, hm, hE, rfl⟩
-    exact (hF.toLp_sublevel_bounds hm hE).2.1
-  · rintro v ⟨F, hF, hm, hE, rfl⟩
-    exact (hF.toLp_sublevel_bounds hm hE).2.2
+  · rintro v ⟨F, hF, hm, hE, he⟩
+    have hv : (v : ℝ → ℂ) =ᵐ[volume] cx F := by
+      rw [he]
+      exact hF.memLp_complex.coeFn_toLp
+    exact (hF.sublevel_bounds_of_L2_representative hm hE v hv).1
+  · rintro v ⟨F, hF, hm, hE, he⟩
+    have hv : (v : ℝ → ℂ) =ᵐ[volume] cx F := by
+      rw [he]
+      exact hF.memLp_complex.coeFn_toLp
+    exact (hF.sublevel_bounds_of_L2_representative hm hE v hv).2.1
+  · rintro v ⟨F, hF, hm, hE, he⟩
+    have hv : (v : ℝ → ℂ) =ᵐ[volume] cx F := by
+      rw [he]
+      exact hF.memLp_complex.coeFn_toLp
+    exact (hF.sublevel_bounds_of_L2_representative hm hE v hv).2.2
 
-#print axioms SoftLogarithmicHalfLineDomain.toLp_sublevel_bounds
+#print axioms SoftLogarithmicHalfLineDomain.sublevel_bounds_of_L2_representative
 #print axioms isCompact_closure_softLogarithmicRayleighSublevel
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

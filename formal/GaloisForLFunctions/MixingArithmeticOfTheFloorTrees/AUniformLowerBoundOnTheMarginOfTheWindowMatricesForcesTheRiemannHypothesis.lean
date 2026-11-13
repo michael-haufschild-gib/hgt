@@ -195,9 +195,9 @@ theorem zeroSum_shiftedOdd (v : ℝ) :
 theorem intervalIntegral_sq_le_integral {g : ℝ → ℝ} (hg : Continuous g)
     (hgc : HasCompactSupport g) {b : ℝ} (hb : 0 ≤ b) :
     ∫ u in (0 : ℝ)..b, g u ^ 2 ≤ ∫ u, g u ^ 2 := by
+  have hc2 : Continuous fun u => g u ^ 2 := hg.pow 2
   have hint : Integrable fun u => g u ^ 2 :=
-    (hg.pow 2).integrable_of_hasCompactSupport (hgc.comp_left (g := fun x : ℝ => x ^ 2)
-      (by norm_num))
+    hc2.integrable_of_hasCompactSupport (hgc.comp_left (g := fun x : ℝ => x ^ 2) (by norm_num))
   rw [intervalIntegral.integral_of_le hb]
   exact setIntegral_le_integral hint (Eventually.of_forall fun u => sq_nonneg (g u))
 

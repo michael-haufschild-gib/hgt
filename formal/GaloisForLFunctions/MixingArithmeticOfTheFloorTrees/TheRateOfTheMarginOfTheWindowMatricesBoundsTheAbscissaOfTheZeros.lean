@@ -112,8 +112,8 @@ theorem sum_sq_lin (S : Finset ℕ) (a b : ℝ) (c e : ℕ → ℝ) :
 
 theorem combNeutral_smul (S : Finset ℕ) (t : ℝ) (c : ℕ → ℝ) :
     combNeutral S (fun n => t * c n) = t ^ 2 * combNeutral S c := by
-  have h := combNeutral_lin S t 0 c (fun _ => 0)
-  simp only [zero_mul, add_zero, mul_zero] at h
+  have h := combNeutral_lin S t 0 c c
+  simp only [zero_mul, add_zero, mul_zero, sq] at h
   rw [h]
   ring
 
@@ -185,7 +185,7 @@ theorem eventually_abs_combNeutral_sub_le {R J Q : ℕ} (hR : 1 ≤ R) (hQ : R +
   obtain ⟨δ, hδ⟩ : ∃ δ : ℝ, δ = η / (4 * ((J : ℝ) + 1)) := ⟨_, rfl⟩
   have hδ0 : 0 < δ := by rw [hδ]; positivity
   have hδJ : δ * (4 * ((J : ℝ) + 1)) = η := by
-    rw [hδ]; field_simp
+    rw [hδ]; exact div_mul_cancel₀ η (by positivity)
   have hharm : ∀ᶠ B : ℕ in atTop, ∀ j ∈ range J,
       |harm (R * B + B * j + B) - harm (R * B + B * j) - blockDegree (R + j)| ≤ δ := by
     rw [Filter.eventually_all_finset]
@@ -381,7 +381,8 @@ theorem smoothNeutral_translate {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) {L : �
       (Real.lt_log_iff_exp_lt (by exact_mod_cast (show 0 < n by omega))).mpr hn'
     exact packetAutocorr_eq_zero_of_vanishing_off hvt (by linarith)
   have hz : zeroSum (fun u => f (u - τ)) = zeroSum f := by
-    rw [zeroSum_eq_packetForm (hf.comp (contDiff_id.sub contDiff_const)) hct hQt,
+    rw [zeroSum_eq_packetForm (f := fun u => f (u - τ)) (hf.comp (contDiff_id.sub contDiff_const))
+      hct hQt,
       packetForm_translate,
       ← zeroSum_eq_packetForm hf (hasCompactSupport_of_vanishing hv)
         (packetAutocorr_log_eq_zero_of_vanishing hv hQ)]
@@ -465,8 +466,8 @@ theorem smoothNeutral_plane (v : ℝ) :
   refine ⟨hx.trans hx0, ?_, ?_⟩
   · rw [shiftedOdd_eq, hy, hy0]
   · have e : (fun u => twoEndSpline v (u - stateShift v) + shiftedOdd v u) =
-        fun u => (fun u => twoEndSpline v u + 1 * twoEndOdd v u) (u - stateShift v) := by
-      funext u; rw [shiftedOdd_eq]; ring
+        fun u => twoEndSpline v (u - stateShift v) + 1 * twoEndOdd v (u - stateShift v) := by
+      funext u; simp only [shiftedOdd_eq]; ring
     rw [e, hs, hs0, ← hx, ← hy, ← shiftedOdd_eq]
 
 /-- The masses of the smooth plane. -/
@@ -477,7 +478,7 @@ theorem integral_plane_sq (v : ℝ) :
     (contDiff_twoEndOdd v).continuous (vanishing_twoEndSpline v) (twoEndSpline_neg v)
     (twoEndOdd_neg v) 1 1
   simp only [one_mul, one_pow] at h
-  rw [shiftedOdd_eq]
+  simp only [shiftedOdd_eq]
   rw [integral_comp_sub_sq (fun u => twoEndSpline v u + twoEndOdd v u) (stateShift v),
     integral_comp_sub_sq (twoEndSpline v) (stateShift v),
     integral_comp_sub_sq (twoEndOdd v) (stateShift v), h]
@@ -645,7 +646,8 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     rw [integral_comp_sub_sq (twoEndSpline v) (stateShift v), hmU]
     exact integral_twoEndSpline_sq_le v
   have hmo : ∫ u, shiftedOdd v u ^ 2 ≤ 4 * m₀ := by
-    rw [shiftedOdd_eq, integral_comp_sub_sq (twoEndOdd v) (stateShift v), hm₀]
+    simp only [shiftedOdd_eq]
+    rw [integral_comp_sub_sq (twoEndOdd v) (stateShift v), hm₀]
     exact integral_twoEndOdd_sq_le v
   have hmg0 : 0 ≤ ∫ u, twoEndSpline v (u - stateShift v) ^ 2 :=
     integral_nonneg fun u => sq_nonneg _
@@ -803,13 +805,13 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
   have hbf : (fun n => x (blockIndex (R * B) B n)) =
       fun n => Real.sqrt B * blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n) := by
     rw [hx]
-  have hBl := hB1 x
+  have hBl := hBB x
   rw [hbf, combNeutral_smul, hsB] at hBl
   have hdivB : (B : ℝ) * combNeutral (Ioc (R * B) (R * B + B * (3 * K * R)))
       (fun n => blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n)) / B =
       combNeutral (Ioc (R * B) (R * B + B * (3 * K * R)))
         (fun n => blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n)) := by
-    rw [mul_div_assoc, mul_div_cancel_left₀ _ hB0.ne']
+    rw [mul_div_cancel_left₀ _ hB0.ne']
   rw [hdivB] at hBl
   have hRB : R ≤ R * B := Nat.le_mul_of_pos_right R hBpos
   have hdiv : R * B / R = B := Nat.mul_div_cancel_left B (by omega)
@@ -824,8 +826,10 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
         rw [hE₀] at hRlog; linarith
       exact this.trans hμ) c
   have hKK : (B : ℝ) * ((B * (3 * K * R) : ℕ) : ℝ) / ((R * B : ℕ) : ℝ) ^ 2 = 3 * K / R := by
+    have hRBne : ((R * B : ℕ) : ℝ) ^ 2 ≠ 0 :=
+      pow_ne_zero 2 (by exact_mod_cast (Nat.mul_pos (by omega) hBpos).ne')
+    rw [div_eq_div_iff hRBne hR0.ne']
     push_cast
-    field_simp
     ring
   rw [hKK] at hA
   -- the norm of the coordinates
@@ -834,8 +838,10 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
     have h1 : ∑ j ∈ range (3 * K * R), x j ^ 2 =
         ∑ n ∈ Ioc (R * B) (R * B + B * (3 * K * R)),
           blockMean (R * B) B (3 * K * R) c (blockIndex (R * B) B n) ^ 2 := by
-      rw [sum_blockFunction_sq hBpos, Finset.mul_sum, hx]
+      rw [sum_blockFunction_sq hBpos, Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
+      rw [hx]
+      show (Real.sqrt B * blockMean (R * B) B (3 * K * R) c j) ^ 2 = _
       rw [mul_pow, hsB]
     rw [h1]
     exact HodgeTheoryOfAFixedPart.sum_blockMean_sq_le hBpos (R * B) (3 * K * R) c
@@ -903,15 +909,22 @@ theorem zetaZeroWidth_le_of_neutralWindow_marginRate {θ C : ℝ} (hθ0 : 0 ≤ 
   obtain ⟨lam, hlam⟩ : ∃ l, l = ε + 5 * (3 * (K : ℝ) / R) + η := ⟨_, rfl⟩
   have hlam0 : 0 ≤ lam := by rw [hlam]; positivity
   have hlamM : lam * Mm ≤ 3 * δ / 8 := by
+    have hMm0 : Mm ≠ 0 := (by linarith : (0 : ℝ) < Mm).ne'
     have h1 : 5 * (3 * (K : ℝ) / R) = 15 * (K : ℝ) / R := by ring
-    have h2 : δ / (8 * Mm) * Mm = δ / 8 := by field_simp
+    have h2 : δ / (8 * Mm) * Mm = δ / 8 := by
+      rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hMm0]
+    have hεM : ε * Mm = δ / 8 := by rw [hε]; exact h2
+    have hηM : η * Mm = δ / 8 := by rw [hη]; exact h2
+    have h3 := mul_le_mul_of_nonneg_right hRK (by linarith : (0 : ℝ) ≤ Mm)
+    rw [h2] at h3
     rw [hlam, h1]
-    nlinarith [mul_le_mul_of_nonneg_right hRK (by linarith : (0 : ℝ) ≤ Mm), hε, hη]
+    nlinarith
   have hlamδ : lam ≤ δ := by
     have : lam ≤ lam * Mm := le_mul_of_one_le_right hlam0 hMm1
     linarith
   have he₀b : 5 / 2 * e₀ * (1 + D + lam) ≤ δ / 4 := by
-    have h1 : e₀ * (1 + D + δ) = δ / 10 := by rw [he₀]; field_simp
+    have h1 : e₀ * (1 + D + δ) = δ / 10 := by
+      rw [he₀, div_mul_eq_mul_div, mul_div_mul_right _ _ (ne_of_gt (by linarith : (0 : ℝ) < 1 + D + δ))]
     have h2 : e₀ * (1 + D + lam) ≤ e₀ * (1 + D + δ) :=
       mul_le_mul_of_nonneg_left (by linarith) he₀0.le
     linarith

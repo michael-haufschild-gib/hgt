@@ -86,8 +86,16 @@ unitary identity in
 `norm_sq_sub_fourierCutoff_central_eq_tailIntegral`. No exponential moment
 bound uniform over the sublevel is needed. `SoftLogarithmicSublevelCompactness`
 contains an unchecked assembly with its literal `L²` representatives; the
-general moment-to-compactness helper is still being formalized. No compactness
-theorem is counted yet.
+general helper `HTGeometry/HardyBoundary/LogarithmicMomentCompactness`
+passes its final plain source audit without warnings and with exactly the
+standard three axioms; it is wired. The actual Rayleigh-sublevel assembly
+still awaits its audit. No compactness contribution is counted yet.
+
+The finite trial infimum supplies normalized trials with energies in
+`[μ,μ+1/(n+1)]`. They all lie in the sublevel `μ+1`; compactness would give
+a strongly convergent subsequence with unit limit. This provides a direct
+minimizing sequence for closed-domain attainment, independently of the
+rescaled actual minimizers. The subsequence assembly remains unverified.
 
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
 

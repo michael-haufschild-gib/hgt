@@ -129,7 +129,9 @@ theorem sum_norm_sq_unitCharacterSum (N : ℕ) (w : (ZMod (N + 1))ˣ → ℂ) :
       ((N + 1).totient : ℝ) * ∑ a, ‖w a‖ ^ 2 := by
   have h := sum_unitCharacterSum_mul_star N w w
   simp only [show ∀ z : ℂ, z * star z = ((‖z‖ ^ 2 : ℝ) : ℂ) from
-    fun z => by rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]] at h
+    fun z => by
+      change z * (starRingEnd ℂ) z = _
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]] at h
   exact_mod_cast h
 
 /-- The odd-character moment of a real profile is its diagonal-reflection gap. -/
@@ -141,10 +143,26 @@ theorem twice_sum_odd_norm_sq_unitCharacterSum (N : ℕ)
           ((∑ a, w a ^ 2) - ∑ a, w (-a) * w a) := by
   have h := twice_sum_odd_unitCharacterSum_mul_star N
     (fun a => (w a : ℂ)) (fun a => (w a : ℂ))
-  simp only [show ∀ z : ℂ, z * star z = ((‖z‖ ^ 2 : ℝ) : ℂ) from
-    fun z => by rw [Complex.mul_conj, Complex.normSq_eq_norm_sq],
-    Complex.star_def, Complex.conj_ofReal, ← Complex.ofReal_mul,
-    ← Complex.ofReal_pow, ← Complex.ofReal_sum] at h
+  simp only [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq] at h
+  simp only [Complex.conj_ofReal, ← Complex.ofReal_mul,
+    Complex.norm_real, Real.norm_eq_abs, sq_abs, ← Complex.ofReal_sum] at h
   exact_mod_cast h
+
+/-- Four times the odd-character moment equals the totient times the reflection defect. -/
+theorem four_mul_odd_moment_eq_reflection_defect (N : ℕ)
+    (w : (ZMod (N + 1))ˣ → ℝ) :
+    4 * (∑ χ : DirichletCharacter ℂ (N + 1) with χ.Odd,
+      ‖unitCharacterSum N (fun a => (w a : ℂ)) χ‖ ^ 2) =
+        ((N + 1).totient : ℝ) * ∑ a, (w a - w (-a)) ^ 2 := by
+  have hn : (∑ a, w (-a) ^ 2) = ∑ a, w a ^ 2 :=
+    Fintype.sum_equiv (Equiv.neg _) _ _ (fun _ => rfl)
+  have he : (∑ a, (w a - w (-a)) ^ 2) =
+      2 * ((∑ a, w a ^ 2) - ∑ a, w (-a) * w a) := by
+    simp_rw [show ∀ a, (w a - w (-a)) ^ 2 =
+      w a ^ 2 + w (-a) ^ 2 - 2 * (w (-a) * w a) from fun a => by ring]
+    rw [sum_sub_distrib, sum_add_distrib, ← mul_sum, hn]
+    ring
+  rw [he]
+  linear_combination 2 * twice_sum_odd_norm_sq_unitCharacterSum N w
 
 end GaloisForLFunctions.Goldbach
