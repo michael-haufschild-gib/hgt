@@ -60,22 +60,28 @@ theorem SoftLogarithmicHalfLineDomain.archForm_unitaryDilation {F : ℝ → ℝ}
   have hscale : (∫ ξ, confiningGammaSymbol ξ *
       ‖𝓕 (cx (unitaryRealDilation a F)) ξ‖ ^ 2) =
       ∫ ξ, confiningGammaSymbol (a * ξ) * ‖𝓕 (cx F) ξ‖ ^ 2 := by
-    simpa only [cx] using
-      integral_weighted_fourier_sq_unitaryRealDilation ha0 F confiningGammaSymbol
+    exact integral_weighted_fourier_sq_unitaryRealDilation ha0 F confiningGammaSymbol
   rw [archForm_eq_integral_confiningGammaSymbol, hscale]
   calc
     _ = ∫ ξ, (Real.log |ξ| * ‖𝓕 (cx F) ξ‖ ^ 2 + Real.log a * ‖𝓕 (cx F) ξ‖ ^ 2) +
         confiningGammaError a ξ * ‖𝓕 (cx F) ξ‖ ^ 2 := by
       apply integral_congr_ae
       exact Eventually.of_forall fun ξ => by dsimp only [confiningGammaError]; ring
+    _ = (∫ ξ, Real.log |ξ| * ‖𝓕 (cx F) ξ‖ ^ 2 + Real.log a * ‖𝓕 (cx F) ξ‖ ^ 2) +
+        ∫ ξ, confiningGammaError a ξ * ‖𝓕 (cx F) ξ‖ ^ 2 :=
+      integral_add (hF.integrable_signedLogarithm.add (hm.const_mul (Real.log a))) he
+    _ = ((∫ ξ, Real.log |ξ| * ‖𝓕 (cx F) ξ‖ ^ 2) +
+        ∫ ξ, Real.log a * ‖𝓕 (cx F) ξ‖ ^ 2) +
+        ∫ ξ, confiningGammaError a ξ * ‖𝓕 (cx F) ξ‖ ^ 2 := by
+      exact congrArg (fun x : ℝ => x + confiningGammaErrorForm a (cx F))
+        (integral_add hF.integrable_signedLogarithm (hm.const_mul (Real.log a)))
     _ = _ := by
-      rw [integral_add (hF.integrable_signedLogarithm.add (hm.const_mul (Real.log a))) he,
-        integral_add hF.integrable_signedLogarithm (hm.const_mul (Real.log a)),
-        integral_const_mul,
+      rw [integral_const_mul,
         RHTower.integral_norm_sq_fourier_eq
           (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ)) hF.memLp_complex]
       simp only [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs,
         logarithmicFourierEnergy, confiningGammaErrorForm]
+      rfl
 
 theorem SoftLogarithmicHalfLineDomain.tendsto_exponentialDefect {F : ℝ → ℝ}
     (hF : SoftLogarithmicHalfLineDomain F) :

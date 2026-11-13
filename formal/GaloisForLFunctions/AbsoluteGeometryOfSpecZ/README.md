@@ -2,12 +2,14 @@
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`.
 Specification: §2.14 of
-[the review-1211 summary](../../../docs/reports/review-1211/obstacles-summary.md). Paper proofs:
+[the review-1311 summary](../../../docs/reports/review-1311/obstacles-summary.md). Paper proofs:
 `docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`.
 
 The programme is this folder together with
 [`HodgeTheoryOfAFixedPart`](../HodgeTheoryOfAFixedPart/README.md), which holds the pairing on
-real divisors at finite scale and the index of the finite comb. Its test benches are
+real divisors at finite scale and the index of the finite comb, and
+[`ArithmeticLorentzianGeometry`](../ArithmeticLorentzianGeometry/README.md), which holds the
+Lorentzian criteria. Its test benches are
 [`SelectiveArithmetic`](../SelectiveArithmetic/README.md) (weight systems with a conductor),
 [`FloorFreeArithmetic`](../FloorFreeArithmetic/README.md) (finite layers, certificates) and
 [`WorldsOfTheZeroConfiguration`](../WorldsOfTheZeroConfiguration/README.md) (models over the
@@ -35,6 +37,11 @@ the complementary carry, the payment of the contacts) or a receiver. Two familie
 through that of `ℤ` are monotone with a base point that needs no hypothesis: the length of the
 tree of `2`, and at every prime a contact paid at its price (§7, construction I). On both the
 square of `ℤ` is the hardest member.
+
+At finite scale the inequality is the Hodge index inequality on the positive packets of a
+window (§2.6). It is a theorem where the window is narrow or close to dyadic, and there it holds
+for every sign twin and uses no prime. The first window on which a prime has to give the sign
+has the ratio three (§9, question 1).
 
 ## 2. The picture
 
@@ -141,9 +148,13 @@ Each clause is a reading of theorems of §6.
    and for the Artin character of degree two of the cube roots of two. For a virtual character,
    a quotient of `L`-functions, it counts zeros and poles: every point right of the line with
    net multiplicity not zero, and every pole on the line. At finite scale the lattice is a
-   weighted graph with a potential: the blocks of a window, joined by the jets and by the floor
-   maps. Its Hodge index is a count of bound states: RH says that the well of every window
-   holds exactly one (§2.6).
+   weighted graph with a potential: it is spanned by the blocks of a window, and two blocks
+   meet positively, through the jets and the floor maps. The correspondences are the graphs of
+   the division maps `b ↦ ⌊b/k⌋`, the transposes of the multiplication maps, with the weights
+   `Λ(k)/k`; for a curve their place is taken by the graphs of the Frobenius powers. Its Hodge
+   index is a count of bound states: RH says that the well of every window holds exactly one
+   (§2.6). Its pieces are held together by the correspondences of `2` and `3`, at full rank: no
+   finite number of charges replaces the binding.
 5. Its sections count like a curve, not like a surface: the volume over the gluing index, with
    no quadratic term.
 6. Its index is a Morse index of the aperture and a Maslov index with a two-dimensional polar
@@ -515,16 +526,16 @@ Each construction asks for a property that is an inequality and has a kill condi
 
 | | Deliverable | Kill condition | State |
 |---|---|---|---|
-| I | a path on the comb lattice: the inequality at a base point and a transport that is not RH | every candidate has transport equivalent to RH | closed. Dilation, overlap flow, coupling Laplacian: equivalent to RH (corpus). The length of the tree of `2` is monotone on packets shorter than `log 4`; odd trees fail. The path of the price is monotone at every `n₀ ≥ 2` and is RH at every parameter |
-| II | the archimedean fibre glued to the trees so that the glued form is the comb form | every gluing is the pairing itself or fails | invariant gluings have a constant diagonal; along the comb every free parameter is forced (§2.4) |
-| III | Stepanov on the planar square: a small section vanishing on a window | the forced value is the product of the contact ideals and is attained | closed: `planarValues_eq_prod` |
-| IV | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters, the character of degree two of `X³ − 2`, and for every virtual character of Hecke characters (zeros and poles), with the contacts of a number ring as its point counts. Brauer's induction theorem is proved (`brauer_induction`); Artin's Euler product is invariant under induction, and every Artin Euler product is a product of integer powers of Euler products of linear characters over fixed fields (`exists_artinEulerProduct_eq_prod_zpow_abelian`); the reciprocity law holds for cyclotomic characters (`artinEulerProduct_cyclotomic_eq_heckeL_mul`). Open as work: the reciprocity law for a general linear character (A154) |
-| V | Bézout for an integer-norm system on its own comb | the jets of the comb are not those of the system | closed for the squares: `exists_packet_squarePairing_gt` |
-| VI | a count: natural numbers with a quadratic Tate limit | no definition without the form | the count on the object is linear (split norm; volume over the gluing index); counts on the surviving prime rays exist iff RH (corpus). Open: a definition without the form |
-| VII | finite scale: the inequality in finite rank | the finite statement is the inequality at its length | closed as an equivalence with explicit errors; the matrices are those of the floor maps; `𝔚_4` and `𝔚_7` are positive with a margin on unit blocks; every window of ratio at most `103/50` has the margin `1/5000` at every block size; the neutral part is the form of the zeros minus the poles, and RH is its signature, on smooth tests and on the windows at finite scale; the margin of a ratio at every block size is decided by one matrix, at a scale `R` with `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀`. Open: ratio above `103/50` at every block size; first all blocks at the ratio four, where the index is between `0` and `300000` (A146) |
-| VIII | the index as a topological invariant: index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | closed as Morse = Maslov. The index is a Morse index: the sum of the nullities of the conjugate apertures, at every energy; the near end is zero and the far end is the number of zeros right of the line. The symplectic structure exists and is defined from the places: the index is the number of crossings of the aperture conormals with the graph of Weil's operator, and it is the same along every monotone path in the (aperture, energy) plane. The invariant does not fix its own value: index zero is RH |
-| IX | the width on the tails | the growth of the tail is the zero-free half-plane | closed as an equivalence on one sequence (`powerCombTailGrowth_iff_zeroHalfPlane`) |
-| X | bound states: the Hodge index as the number of bound states of the floor-map graph of a window, and the count of a union from the responses of its parts | the count is the index: one on the certified windows, and a wrong weight, constant or tree length gives a second | the potential and the Dirichlet form with positive weights, the sink count, the charged ground vector, the refinement tower and the gluing law for a coupling that is exactly the product of two charges are theorems. At ratio four no lowered model of rank below `H/600` counts one bound state: the binding sits in the contacts of the floor map of `2`. A wrong weight or constant gives a second bound state at every block size: without the contact of `2` on every window of ratio `≥ 3`, with the contacts of `2`, `3` below `19/40` of their weight on every window of ratio `≥ 4`. The exact law keeps the contacts and lives on the positive cone: a second bound state is two positive packets without a common block whose coupling (the jets and contacts between them) is below the geometric mean of their depths, or a bound state with a node. Open: that inequality beyond ratio `103/50` (B189); the count one at the true weights |
+| I path | a path on the comb lattice: the inequality at a base point and a transport that is not RH | every candidate has transport equivalent to RH | closed. Dilation, overlap flow, coupling Laplacian: equivalent to RH (corpus). The length of the tree of `2` is monotone on packets shorter than `log 4`; odd trees fail. The path of the price is monotone at every `n₀ ≥ 2` and is RH at every parameter |
+| II glued fibre | the archimedean fibre glued to the trees so that the glued form is the comb form | every gluing is the pairing itself or fails | invariant gluings have a constant diagonal; along the comb every free parameter is forced (§2.4) |
+| III Stepanov on the square | a small section vanishing on a window | the forced value is the product of the contact ideals and is attained | closed: `planarValues_eq_prod` |
+| IV towers and characters | the index law per character on squares of towers, class fields and Galois extensions | the form of `ζ` has weight `1/[K:ℚ]`, `1/h` | closed for Hecke characters, class characters, quotients and powers (zeros and poles), with the contacts of a number ring as its point counts. Every Artin Euler product is a product of integer powers of Euler products of linear characters over fixed fields (`brauer_induction`, `exists_artinEulerProduct_eq_prod_zpow_abelian`); the reciprocity law holds for cyclotomic characters (`artinEulerProduct_cyclotomic_eq_heckeL_mul`). Work: the reciprocity law for a general linear character (question 5) |
+| V count | natural numbers with a quadratic Tate limit | no definition without the form | the count on the object is linear (split norm; volume over the gluing index); counts on the surviving prime rays exist iff RH (corpus). Open: a definition without the form (B87) |
+| VI finite scale | the inequality in finite rank | the finite statement is the inequality at its length | an equivalence with explicit errors; the matrices are those of the floor maps; RH is the Hodge index inequality on positive packets without a common block. Certified: ratio at most `103/50` at every block size, narrow windows, the first blocks of ratio four and seven. Open: the first selective ratio (question 1) |
+| VII index as topology | index zero from the ends of the aperture path | the invariant is the index and its far end carries the zeros | closed as Morse = Maslov: the index is the number of crossings of the aperture conormals with the graph of Weil's operator, the same along every monotone path in the (aperture, energy) plane. The invariant does not fix its own value: index zero is RH |
+| VIII tails | the width on the tails | the growth of the tail is the zero-free half-plane | closed as an equivalence on one sequence (`powerCombTailGrowth_iff_zeroHalfPlane`) |
+| IX gluing | an induction on the ratio: the bound states of a union from its parts | the step needs data of rank proportional to the block size | the gluing law is a theorem (`hermNegIndex_gluedMatrix_response`, `hermNegIndex_glued_eq_one`). Through one pair of charges the halves of a window of ratio four glue only on unit blocks; through every model of rank `r` with `600(r + 1) ≤ H` they do not (`two_le_hermNegIndex_lowered_model_of_rank`): the step has full rank |
+| X realization | for each window a configuration, curves on a surface or planar convex bodies, with one member for each block and the pairing `−N` | with a weakened or twisted contact of `2` or `3` the index is two, and no configuration exists | not attempted (question 4) |
 
 **The path at `2`.** A tree of `p` glued with the edge length `ℓ` has the contacts `ℓ` along
 the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)`. On packets of length at
@@ -545,44 +556,44 @@ RH. So a path at an odd prime exists when the counterterm moves at the price of 
 it does not exist when the counterterm follows the product formula.
 
 The constructions that fixed the object (Frobenius lifts, carries, the surface, the
-archimedean fibre, a second dimension, number rings, curves) are closed; their survivors are
-the pillars of §6.
+archimedean fibre, a second dimension, number rings, curves, an integer-norm system on its own
+comb) are closed; their survivors are the pillars of §6.
 
 ## 8. Criteria
 
 A construction is read against seventeen criteria; the pairing of the degree points meets each
-except C14 and C17, which are open.
+except C14, which is open.
 
 | # | Criterion | Reading |
 |---|---|---|
 | C1 | reproduces Weil and Stepanov for curves | point counts are effective elements; on the comb `q^ℤ` the pairing is a Toeplitz form whose sign is purity |
-| C2 | counts alone are not enough, and a count rate is not enough | the golden datum is effective, has the functional equation, and is not pure; fakes have a count with a power saving and a zero that `ζ` lacks (test bench) |
-| C3 | uses the functional equation as an identity | every weight but `Λ` fails; edits with a finite layer fail; the Liouville twist fails at the first rung |
+| C2 | a count rate is not enough | the golden datum is effective, has the functional equation, and is not pure; fakes have a count with a power saving and a zero that `ζ` lacks (test bench) |
+| C3 | uses unit multiplicity with the reflection, up to a decaying error | every weight but `Λ` fails; edits with a finite layer fail; the Liouville twist fails at the first rung |
 | C4 | uses the Euler product on the function | a reversed contact fails |
 | C5 | sees the exact normalization | `Λ(k)/√k`, the constant `2π`, the scale, the conductor are forced |
 | C6 | infinite type | a finite fibre forces a contact that is not Weil's |
 | C7 | the diagonal is the density of a comb, with discriminant and conductor | every other counterterm leaves a term of the size of the mass |
 | C8 | positivity is derived, and not from a section count | on the tower and on the planar square the count is an identity; in aligned boxes it is the volume over the gluing index |
-| C9 | selective only where a contact enters; no margin | below the first contact every weight passes; on packets of degree zero there is no gap |
+| C9 | selective exactly where a contact enters: blind below ratio two, false at ratio three for a weakened or twisted contact of `2` | no floor map joins two blocks of ratio below two (`floorGraph_eq_zero`); a weight of `2` in `[−4, 0]`, the Liouville twist among them, gives two bound states on every window of ratio `≥ 3` (`two_le_hermNegIndex_reweighted_of_ratio_three`, `two_le_hermNegIndex_liouville`); on packets of degree zero there is no gap |
 | C10 | additive over the constituents of a number ring, zeros and poles counted | the twisted parts have no pole plane and separate exact indices; a quotient of `L`-functions has the index of its zeros and poles |
 | C11 | below the trivial aperture it proves nothing that the dominated box does not have | up to `log log q − o(1)` every system with contacts bounded by `Λ` is positive |
-| C12 | at finite scale it is the index of the neutral part | on block-constant divisors the form tends to Weil's form of the step packet with an explicit error; RH iff the neutral part of every window has exactly one negative square |
+| C12 | at finite scale it is the Hodge inequality on positive packets | on block-constant divisors the form tends to Weil's form of the step packet with an explicit error; RH iff the neutral part of every window has exactly one negative square, iff positive packets without a common block obey `N(x, x) N(y, y) ≤ N(x, y)²` (`riemannHypothesis_iff_forall_wells_bound`) |
 | C13 | it is a statement at the point: no deformation of the square transports it | every path through the square of `ℤ` is RH at each parameter |
 | C14 | a quadratic count | the counts on the object are linear |
 | C15 | treats neutral null modes | the index is the sum of the nullities below (`negativeRank_eq_sum_nullity`); the polar Lagrangian sees the charged null modes only |
 | C16 | its comb grows at the rate of the width | `powerCombTailGrowth_iff_zeroHalfPlane` |
-| C17 | its pieces glue by the susceptibility criterion | proved for a coupling that is the product of two charges (`hermNegIndex_glued_eq_one`, `hermNegIndex_glued_eq_two`); for the halves of a window of ratio four no product of charges and no lowered model of rank below `H/600` counts one bound state; the exact criterion is the Hodge index inequality on positive packets without a common block (question 3) |
+| C17 | its pieces bind at full rank; no finite number of charges replaces the binding | for a coupling that is the product of two charges the law is `αβ ≥ 1` (`hermNegIndex_glued_eq_one`, `hermNegIndex_glued_eq_two`); for the halves of a window of ratio four no product of charges and no lowered model of rank below `H/600` counts one bound state (`two_le_hermNegIndex_lowered_model_of_rank`) |
 
 ## 9. Questions, order of work, decisive test
 
 | # | Question | State |
 |---|---|---|
-| 1 | a count quadratic in the divisor, with the pairing as its Tate limit | Open. On the object every count is linear: the split norm on two graphs, the volume over the gluing index in a box. A count with values in `ℕ` and the integer probes as Tate limit exists iff RH (corpus) |
-| 2 | Bézout from a property of the object | RH. Every structure found is an identity or a receiver; weights, constant, scale, tree lengths and prices admit no deformation |
-| 3 | the gluing law on actual windows (B189): the bound states of a union from its parts, first for the halves `(R, 2R]`, `(2R, 4R]` of a window of ratio four | The neutral part of a window is a potential plus the Dirichlet form of a graph with positive weights on the jets and the floor maps; RH iff every window with `R ≤ J` holds exactly one bound state (`riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one`), and one is proved at ratio at most `103/50` at every block size. For a coupling that is exactly a product of charges the law is `αβ ≥ 1` (`hermNegIndex_glued_eq_one`, `hermNegIndex_glued_eq_two`). The union of two adjacent windows is their neutral parts coupled by the weights `K` between their blocks; for every model coupling `M` and all weights it holds at most the bound states of the two windows coupled by `M`, with potentials lowered by the distance `\|K − M\|` (`hermNegIndex_neutralWindow_add_le_lowered`). At ratio four no such model of small rank counts one bound state: for a product of charges below the couplings the lowered lower half has two negative squares once `H ≥ 64` (`two_le_hermNegIndex_glued_lowered_ratio_four`), and for every model of rank `r`, of any signs, with `600(r + 1) ≤ H` one lowered half has two (`two_le_hermNegIndex_lowered_model_of_rank`). The binding is carried by the contacts of the floor map of `2`, which between a quarter and the quarter above it are `log 2` times the identity: its rank grows with the block size. The forms with the contact of `k` reweighted by `ω(k)` are again a tower under refinement (`sum_reweightedNeutral_refine`), and the jets alone do not bind: a weight of `2` in `[−4, 0]` (no primes, the Liouville twist) gives two bound states on every window of ratio `≥ 3` (`two_le_hermNegIndex_reweighted_of_ratio_three`), weights of `2`, `3` in `[−5/2, 19/40]` on every window of ratio `≥ 4` (`two_le_hermNegIndex_weakened_contacts`), and Weil's form with both weights `≤ 7/12` or both `≥ 9/8` is negative on the halves of `(R, 4R]` (`exists_reweightedPacketForm_neg`). The exact law: the neutral part has negative entries off the diagonal, and such a matrix has two negative squares iff two nonnegative vectors without a common index, one of them negative, have `N(x, y)² < N(x, x) N(y, y)` (`two_le_hermNegIndex_iff_exists_unbound_wells`), iff an eigenvector with negative eigenvalue takes both signs (`two_le_hermNegIndex_iff_exists_sign_changing_bound_state`). So RH iff positive step packets without a common block obey the Hodge index inequality on every window (`riemannHypothesis_iff_forall_wells_bound`), iff no bound state of a window has a node (`riemannHypothesis_iff_forall_bound_state_one_sign`). Open: the inequality on a family of pairs that exhausts the cone beyond ratio `103/50`; the first window that could hold a second bound state |
-| 4 | the reciprocity law (A154): the `L`-function of an induced linear character as a Hecke `L`-function | The index law of a virtual character is proved: for a quotient of products of Hecke `L`-functions the index is the number of zeros and poles right of the line plus the number of poles on it (`exists_le_negIndex_quotient_iff`), and a power of a quotient has the index of the quotient (`exists_le_negIndex_power_iff`); so Bézout for an Artin character is the Riemann hypothesis of its `L`-function together with Artin's conjecture on the line. Brauer's induction theorem holds in the corpus (`brauer_induction`, `RHTower/Artin`; rational form `exists_nsmul_mem_closure_monomial`), and for the index law the rational theorem suffices. Proved for one character that is not abelian (degree two, monomial); the contacts of a number ring are its point counts over the finite fields (`idealContact_prime_pow_eq_natCard_ringHom`, `tendsto_relativeForm_add_relativeContact`). Artin's Euler product is invariant under induction (`numberFieldFinitePlaceArtinEulerReciprocalProduct_induced`), so every Artin Euler product is a product of integer powers of Euler products of linear characters over fixed fields (`exists_artinEulerProduct_eq_prod_zpow_abelian`). A linear character that factors through a cyclotomic character has the Hecke `L`-series of a norm residue character modulo `(m)∞`, up to the Euler factors at `m` (`artinEulerProduct_cyclotomic_eq_heckeL_mul`); this covers every linear character of `Gal(K(ζ_m)/K)`. Open (classical, not in the corpus): the reciprocity law for a general linear character (class field theory) |
-| 5 | the sign of `𝔚_4` at every block size (A146) | `𝔚_4 ≥ 1/20` on the three blocks of `(1, 4]` and `≥ 1/100` on the six blocks of `(2, 8]`; `𝔚_7 ≥ 1/100` on the six blocks of `(1, 7]`. At every block size: the matrices of ratio at most `103/50` are at least `1/5000` (`sum_blockMatrix_ge_of_short`); the matrices of every ratio are nonnegative on thin step packets (`exists_forall_packetForm_thin_stepPacket_nonneg_ratio`); a margin `μ₀` above a scale `R` with `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀` is a margin `μ₀/2` on every refinement (`packetForm_refined_ge_half_of_margin`); `𝔚_4` has at most `300000` negative squares (`hermNegIndex_blockWindow_ratioFour_le`). Open: no negative square at every block size, by certified margins up to the transfer threshold or by a sharper transfer |
-| 6 | charged ground states (B104) | Nullity = charged nullity + neutral nullity, and the charged null modes are the crossings of the polar Lagrangian with the charge axis. A null mode at an energy below the pole-vanishing ground energy `μ₀(a)` is charged, and the ground modes at `a` are all charged iff `μ(a) < μ₀(a)` (`neutralNullity_groundEnergy_eq_zero_iff`). Proved for every aperture up to `½(log 2 + 1/50)` at energies below `1/20`. At finite scale the ground vector of the neutral part has one sign and is charged; the block matrix adds the product of the charges, which favours charges of opposite sign. On a window `(R, R + J]` with `4J ≤ R` the jets win: the block matrix is negative off the diagonal, and at every block size its ground vector has one sign and is charged (`blockMatrix_neg_of_narrow`, `charges_mul_pos_of_blockMatrix_minimizer`). Open: whether `μ(a) = μ₀(a)` can occur; first, the ground vector of the block matrix on windows of ratio above `5/4`, where the matrix has entries of both signs |
+| 1 | the first selective sign (B192): one bound state of `(R, 3R]`, then of `(R, 4R]`, at every block size, by an argument that uses the floor trees of `2` and `3` at their true weights. As a step: for nonnegative packets `x` on `(R, 2R]`, `y` on `(2R, 4R]` with `N(x, x) < 0`, is `N(x, y)² ≥ N(x, x) N(y, y)` | Open. The two halves hold one bound state each at every block size (`hermNegIndex_neutralWindow_eq_one`). A second bound state is a pair of positive packets without a common block that violates the inequality, or a bound state with a node (`two_le_hermNegIndex_iff_exists_unbound_wells`, `two_le_hermNegIndex_iff_exists_sign_changing_bound_state`). On the packets constant on the halves the inequality holds with the true contacts and fails without them (`bilin_reweightedNeutral_halves`, `bilin_neutralWindow_halves_pos`). It is false for a weight of `2` in `[−4, 0]` at ratio three and for weights of `2`, `3` in `[−5/2, 19/40]` at ratio four. No model coupling of rank below `H/600` carries the binding. The index at ratio four is at most `300000` (`hermNegIndex_blockWindow_ratioFour_le`); the transfer along the tower starts at `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀` and does not reach the question |
+| 2 | a count quadratic in the divisor, with the pairing as its Tate limit (B87, B169) | Open. On the object every count is linear: the split norm on two graphs, the volume over the gluing index in a box. A count with values in `ℕ` and the integer probes as Tate limit exists iff RH (corpus) |
+| 3 | Bézout from a property of the object (B149) | RH. Every structure found is an identity or a receiver; weights, constant, scale, tree lengths and prices admit no deformation |
+| 4 | a realization of the certified windows: for each window a configuration with one member for each block whose pairing is `−N`, built from the potential, the jets and the contacts, compatible with refinement, with the two charges as pairings with two fixed classes; first the dyadic windows | Not attempted. Known constraints: the pairing of two blocks is positive and the self-pairing of a block of a fine window is negative; narrow windows are negative definite (`hermNegIndex_neutralWindow_eq_zero_of_narrow`); with a weakened or twisted contact of `2` or `3` the index is two, so no configuration with a Hodge index theorem exists there |
+| 5 | the reciprocity law (A154): the Euler product of a linear character of a Galois group is a Hecke `L`-series up to finitely many factors | With it the index law of virtual Hecke characters (`exists_le_negIndex_quotient_iff`, `exists_le_negIndex_power_iff`) applies to every Artin character, by the abelian product form (`exists_artinEulerProduct_eq_prod_zpow_abelian`). Proved: cyclotomic characters (`artinEulerProduct_cyclotomic_eq_heckeL_mul`); invariance under inflation; the Artin map on ideals, its surjectivity and its triviality on norms; the count of classes killed by the primes of degree one (`card_le_finrank_of_forall_degreeOne_eq_one`); the second inequality for cyclic extensions in unit form (`card_dvd_index_norm_sup_congruence_sup_sUnits`); Frobenius elements and Artin maps in a tower (`map_artinMap_eq_artinMap_idealNormHom`), and norms of ray elements (`norm_mem_rayGroup`). Work: Artin's lemma (crossing with a cyclotomic extension), the triviality of the Artin map on a ray, abelian groups through cyclic quotients |
+| 6 | the charge of the critical state (B104) | Nullity = charged nullity + neutral nullity, and the charged null modes are the crossings of the polar Lagrangian with the charge axis. A null mode at an energy below the pole-vanishing ground energy `μ₀(a)` is charged, and the ground modes at `a` are all charged iff `μ(a) < μ₀(a)` (`neutralNullity_groundEnergy_eq_zero_iff`). Proved for every aperture up to `½(log 2 + 1/50)` at energies below `1/20`; on a window `(R, R + J]` with `4J ≤ R` the ground vector of the block matrix has one sign and is charged at every block size (`charges_mul_pos_of_blockMatrix_minimizer`). Open: whether `μ(a) = μ₀(a)` can occur |
 
 Settled, and now part of §6: the limit matrices at finite scale and the converse; Hecke
 characters, ideals as degree points and a ring that is not abelian; the Li ladder on the
@@ -591,18 +602,17 @@ index as a homotopy invariant of the aperture path, a Morse index and a Maslov i
 (`negativeRank_eq_sum_apertureCrossing`, `null_modes_along_two_paths`), whose value zero is RH
 and is not produced by the invariance.
 
-**Order of work.** The susceptibilities of the certified windows and the gluing criterion on
-unions whose index is known (A156); the two halves of a window of ratio four (B189); the
-reciprocity law (A154); the sign of `𝔚_4` at every block size (A146).
+**Order of work.** The first selective sign at ratio three (question 1); a realization on the
+dyadic windows (question 4); the reciprocity law (question 5).
 
 **The decisive test.** A construction whose Bézout holds for an edit with a finite layer, for
-a fake, for the Liouville twist at the first rung of the conductor ladder, for a wrong
+a fake, for the Liouville twist or a weakened contact of `2` at ratio three, for a wrong
 constant, or along a path of squares, is wrong. On the comb of the integers the pairing rejects
 each: Bézout for a weight is RH and the weight `Λ` (`combBezout_iff`), so the contacts of any
 other system fail; a counterterm lowered by a positive constant fails (`combBezoutShift_iff`);
 a contact changed without its price fails (`combBezoutWith_contactAt_iff`), and with its price
 it is RH at every parameter; the Liouville twist fails just above the trivial aperture (test
-bench). The test for a wrong constant is meant with the contacts fixed: wrong contacts with a
+bench) and on every window of ratio three (`two_le_hermNegIndex_liouville`). The test for a wrong constant is meant with the contacts fixed: wrong contacts with a
 larger counterterm pass, under RH, from the supremum of their symbol on.
 
 ## 10. Traps
@@ -652,7 +662,7 @@ larger counterterm pass, under RH, from the supremum of their symbol on.
 
 ## 11. Open problems and research topics
 
-**The step-packet matrices (question 5, A146).** RH holds iff for all `K, R` the matrix of Weil's form
+**The step-packet matrices (question 1).** RH holds iff for all `K, R` the matrix of Weil's form
 on the step packets of the `3KR` blocks of `(R, (3K+1)R]` is nonnegative. Its entries are
 elementary: `2 log(b/a)(b − a)`, the closed form of the jets on flat packets, and the overlaps
 `(b/k − a)⁺` with the weights `Λ(k)`, `k ≤ 3K + 1`. The comb at block size `B` is within an
@@ -667,14 +677,14 @@ the zeros minus the poles, has one negative square, on smooth tests and on every
 `R ≤ J` at finite scale; at every ratio the matrices are nonnegative on thin step packets; the
 margins of a tower decrease by at most `C_Q²/(log R − E_Q − μ)` from the scale `R` on, and the
 index at a ratio is bounded at every block size.
-*Open (A146):* the windows of ratio four and seven on finer blocks (matrices
+*Open:* the windows of ratio four and seven on finer blocks (matrices
 of size `3R` and `6R`, whose margins decrease along divisibility to the bottom of Weil's form
 on the window). The transfer starts where `log R > E_Q`; below that scale the sign is one finite
 statement per block size. A sharper transfer, with the cross term bounded by the jumps of the
 coarse vector in place of its norm, is not proved. Whether the cone of step packets has a
 description in which the entries are positive term by term.
 
-**Bound states of the floor-map graph (question 3).** On a window the neutral part is
+**Bound states of the floor-map graph (question 1).** On a window the neutral part is
 `Σ V_j σ_j² + ½ Σ w_{jl}(σ_j − σ_l)²`, a discrete Schrödinger operator: the vertices are the
 blocks, the edges the jets (every pair) and the graphs of the floor maps, the weights `w > 0`,
 the potential `V` the row sums. *Proved:* the decomposition; a ground vector has one sign and is
@@ -713,7 +723,7 @@ product models (`hermNegIndex_coupled_le_gluedMatrix`, `hermNegIndex_gluedMatrix
 model (`hermNegIndex_neutralWindow_add_le_glued`), at most one if the lowered windows satisfy the
 gluing lemma with `αβ ≥ 1` (`hermNegIndex_coupled_le_one`), and without charges at most the
 bound states of the two windows with potentials lowered by their mutual couplings
-(`hermNegIndex_neutralWindow_add_le_add`). *At ratio four (proved, B189, A156):* for `Q ≥ 3` and
+(`hermNegIndex_neutralWindow_add_le_add`). *At ratio four (proved):* for `Q ≥ 3` and
 every `R ≥ 1`, the raised model at zero charge holds `0` bound states on `(R, 2R]` and `1` on
 `(2R, 4R]`, giving `1` on their union (`hermNegIndex_glued_raised_zero_eq_one`); the lowered
 halves `(R, 2R]` and `(2R, 4R]` glue through rank-one charges iff `R = 1`
@@ -784,7 +794,7 @@ the differential equation of the two lines in the aperture (a Hamiltonian) beyon
 conjugate aperture; whether the even and the odd line cross the charge axis at different
 apertures.
 
-**A property of the object (question 2).** A one-parameter family of squares through that of `ℤ` which ends at
+**A property of the object (question 3).** A one-parameter family of squares through that of `ℤ` which ends at
 a square where the inequality is known and along which the inequality can be transported; or
 a group with a doubling on which the defect is a canonical height. *Proved:* two monotone
 paths with base points, the tree of `2` below the length `log 4` and the price of a contact at
@@ -794,7 +804,7 @@ threshold without a certificate, that is a lower bound for `inf Z(f)/E(f)` over 
 a length; the least constant that makes a contact a square at a given length (it is below the
 price and tends to it); a path that moves the archimedean fibre.
 
-**Number rings and Artin characters (question 4, A150).** Two ideals of one norm are one point of the comb of norms, and
+**Number rings and Artin characters (question 5).** Two ideals of one norm are one point of the comb of norms, and
 the square of a number ring is seen through the contacts `Σ_{N𝔭^k = n} log N𝔭`. *Proved* for
 every number field and every primitive ray class character `ψ`: the explicit formula, the
 tempered configuration of the zeros, the exact index, and the pairing at finite scale. The jets
@@ -821,14 +831,13 @@ By Brauer's induction theorem (`brauer_induction`) every character of a finite g
 integer combination of characters induced from linear characters of elementary subgroups; a
 power of a quotient has the index of the quotient, so the index law of an Artin character needs
 only the rational form (Artin's theorem) and reciprocity.
-*Open:* the identification of the `L`-function of an induced linear character with a Hecke
-`L`-function: the invariance of Artin's Euler product under induction and the reciprocity law
-(classical, not in the corpus); the
+Artin's Euler product is invariant under induction.
+*Open:* the reciprocity law for a general linear character (classical, not in the corpus); the
 zeros of the completion as zeros of a continuation of `ζ_K` itself; small discriminants on short packets (below
 `(128π)^{r₁+r₂−1}(4π)^{r₂}` the places do not pay for themselves); the units of a real
 quadratic ring.
 
-**A count (question 1).** Natural numbers on the rays of `Γ_1 + Γ_p`, defined without the form,
+**A count (question 2).** Natural numbers on the rays of `Γ_1 + Γ_p`, defined without the form,
 whose Tate limit is the pairing. *Proved:* the count of residues on two graphs is the split
 norm; the count of sections in a box, on two graphs and on the first `N`, is the volume over
 the gluing index, an identity on boxes aligned with the index; on the tower and on the planar

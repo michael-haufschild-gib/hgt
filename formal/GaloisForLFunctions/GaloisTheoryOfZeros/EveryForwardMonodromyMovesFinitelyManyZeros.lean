@@ -159,7 +159,8 @@ theorem exists_forall_transports_self_of_far {t₀ : ℝ} (T₀ : ℝ) (ht₀ : 
       (fun s' hs' s'' hs'' hd => hmodc u hu s' (hsub hs') s'' (hsub hs'') hd)
       (by rw [hz0]; linarith [le_max_left R₁ R₂]) s hs
     have h2 := norm_sub_norm_le (z 0) (z s)
-    rw [norm_sub_rev, hz0] at h2
+    rw [norm_sub_rev] at h2
+    rw [hz0] at h h2
     show max R₁ R₂ ≤ ‖z s‖
     linarith
   have hK : IsClosed {z : ℂ | max R₁ R₂ ≤ ‖z‖} := isClosed_le continuous_const continuous_norm

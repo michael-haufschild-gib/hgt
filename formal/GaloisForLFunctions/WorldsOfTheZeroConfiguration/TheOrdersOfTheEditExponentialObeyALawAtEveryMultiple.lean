@@ -56,8 +56,9 @@ theorem norm_logRemOf_le (k : ℕ) {z : ℂ} (hz : ‖z‖ < 1) :
   have hrange : range (k + 1) = insert 0 (Icc 1 k) := by
     ext j; simp only [mem_range, mem_insert, mem_Icc]; omega
   have hT : Complex.logTaylor (k + 1) (-z) = -∑ i ∈ Icc 1 k, z ^ i / i := by
-    rw [Complex.logTaylor, hrange, sum_insert (by simp), ← sum_neg_distrib]
-    simp only [CharP.cast_eq_zero, div_zero, zero_add]
+    simp only [Complex.logTaylor]
+    rw [hrange, sum_insert (by simp), ← sum_neg_distrib]
+    simp only [Nat.cast_zero, div_zero, zero_add]
     refine sum_congr rfl fun i _ => ?_
     rw [neg_pow z, ← mul_assoc, ← pow_add, show i + 1 + i = 2 * i + 1 by ring,
       (odd_two_mul_add_one i).neg_one_pow]
@@ -68,7 +69,9 @@ theorem norm_logRemOf_le (k : ℕ) {z : ℂ} (hz : ‖z‖ < 1) :
 /-- `r_{k+1}(z) = r_2(z) − Σ_{i=2}^{k} z^i/i` for `k ≥ 1`. -/
 theorem logRemOf_eq {k : ℕ} (hk : 1 ≤ k) (z : ℂ) :
     logRemOf k z = logRem z - ∑ i ∈ Icc 2 k, z ^ i / i := by
-  rw [logRemOf, logRem, ← Nat.Icc_insert_succ_left hk, sum_insert (by simp)]
+  have hI : Icc 1 k = insert 1 (Icc 2 k) := by
+    ext j; simp only [mem_Icc, mem_insert]; omega
+  rw [logRemOf, logRem, hI, sum_insert (by simp)]
   simp only [pow_one, Nat.cast_one, div_one]
   ring
 
@@ -133,9 +136,8 @@ theorem differentiableOn_editRemOf {k : ℕ} (hk : 1 ≤ k) {e : ℕ → ℤ} {�
     have h5 := mul_le_mul hzk h2 (inv_nonneg.mpr h1.le)
       (Real.rpow_nonneg (Nat.cast_nonneg ((p : ℕ))) (-θ))
     have h6 : ‖logRemOf k (((p : ℕ) : ℂ) ^ (-w))‖ ≤
-        ((p : ℕ) : ℝ) ^ (-θ) * (1 - (2 : ℝ) ^ (-(θ / (k + 1))))⁻¹ / (k + 1) := by
-      refine h.trans ?_
-      gcongr
+        ((p : ℕ) : ℝ) ^ (-θ) * (1 - (2 : ℝ) ^ (-(θ / (k + 1))))⁻¹ / (k + 1) :=
+      h.trans (div_le_div_of_nonneg_right h5 hk1.le)
     rw [norm_mul, Complex.norm_intCast]
     calc |(e p : ℝ)| * ‖logRemOf k (((p : ℕ) : ℂ) ^ (-w))‖
         ≤ |(e p : ℝ)| * (((p : ℕ) : ℝ) ^ (-θ) * (1 - (2 : ℝ) ^ (-(θ / (k + 1))))⁻¹ / (k + 1)) :=
@@ -151,22 +153,26 @@ theorem editRem_eq_sum_add {e : ℕ → ℤ} (he : IsEdit e) {k : ℕ} (hk : 1 �
   have hjre : ∀ j ∈ Icc 2 k, 1 < ((j : ℂ) * s).re := fun j hj => by
     have hj2 : (2 : ℝ) ≤ j := by exact_mod_cast (mem_Icc.mp hj).1
     have hre : ((j : ℂ) * s).re = j * s.re := by simp
-    rw [hre]; nlinarith
-  have hA : ∀ j ∈ Icc 2 k, Summable fun p : Nat.Primes =>
-      (e p : ℂ) * ((p : ℕ) : ℂ) ^ (-((j : ℂ) * s)) / j := fun j hj => by
+    have := mul_le_mul_of_nonneg_right hj2 (by linarith : (0 : ℝ) ≤ s.re)
+    rw [hre]; linarith
+  -- the series `Σ_p e(p) p^{−js}/j = E(js)/j`
+  have hEj : ∀ j ∈ Icc 2 k, HasSum (fun p : Nat.Primes =>
+      (e p : ℂ) * ((p : ℕ) : ℂ) ^ (-((j : ℂ) * s)) / j)
+      (LSeries (fun n => (e n : ℂ)) ((j : ℂ) * s) / j) := fun j hj => by
     have hprime : Summable fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ (-((j : ℂ) * s).re) :=
       (Real.summable_nat_rpow.mpr (show -((j : ℂ) * s).re < -1 by linarith [hjre j hj])).subtype _
-    refine (Summable.of_norm_bounded hprime fun p => ?_).div_const _
-    rw [norm_mul, norm_natCast_cpow_neg _ p.2.pos]
-    exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg _) _) (he.norm_le_one p)
+    have hsum : Summable fun p : Nat.Primes => (e p : ℂ) * ((p : ℕ) : ℂ) ^ (-((j : ℂ) * s)) :=
+      Summable.of_norm_bounded hprime fun p => by
+        rw [norm_mul, norm_natCast_cpow_neg _ p.2.pos]
+        exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg _) _) (he.norm_le_one p)
+    have hL : ∑' p : Nat.Primes, (e p : ℂ) * ((p : ℕ) : ℂ) ^ (-((j : ℂ) * s)) =
+        LSeries (fun n => (e n : ℂ)) ((j : ℂ) * s) :=
+      tsum_primes_eq_LSeries (fun n => (e n : ℂ)) (fun n hn => by simp [he.prime n hn]) _
+    rw [← hL]
+    exact hsum.hasSum.div_const _
   have hB : Summable fun p : Nat.Primes => (e p : ℂ) * logRem (((p : ℕ) : ℂ) ^ (-s)) :=
     Summable.of_norm_bounded (summable_editMaj (a := 1) (by norm_num)) fun p =>
       norm_edit_mul_logRem_le he p (by norm_num) hs.le
-  have hE : ∀ j ∈ Icc 2 k, ∑' p : Nat.Primes, (e p : ℂ) * ((p : ℕ) : ℂ) ^ (-((j : ℂ) * s)) / j =
-      LSeries (fun n => (e n : ℂ)) (j * s) / j := fun j _ => by
-    rw [tsum_div_const]
-    congr 1
-    exact tsum_primes_eq_LSeries (fun n => (e n : ℂ)) (fun n hn => by simp [he.prime n hn]) _
   have hterm : ∀ p : Nat.Primes, (e p : ℂ) * logRemOf k (((p : ℕ) : ℂ) ^ (-s)) =
       (e p : ℂ) * logRem (((p : ℕ) : ℂ) ^ (-s)) -
         ∑ j ∈ Icc 2 k, (e p : ℂ) * ((p : ℕ) : ℂ) ^ (-((j : ℂ) * s)) / j := fun p => by
@@ -175,8 +181,15 @@ theorem editRem_eq_sum_add {e : ℕ → ℤ} (he : IsEdit e) {k : ℕ} (hk : 1 �
     refine sum_congr rfl fun j _ => ?_
     rw [← Complex.cpow_nat_mul, show (j : ℂ) * -s = -((j : ℂ) * s) by ring]
     ring
-  rw [editRemOf, tsum_congr hterm, hB.tsum_sub (summable_sum hA), Summable.tsum_finsetSum hA,
-    sum_congr rfl hE, editRem]
+  have hQ : editRemOf k e s =
+      editRem e s - ∑ j ∈ Icc 2 k, LSeries (fun n => (e n : ℂ)) ((j : ℂ) * s) / j := by
+    refine HasSum.tsum_eq ?_
+    have h := hB.hasSum.sub (hasSum_sum hEj)
+    rw [editRem]
+    convert h using 1
+    funext p
+    exact hterm p
+  rw [hQ]
   ring
 
 /-! ## Orders -/
@@ -210,7 +223,7 @@ theorem analyticOrderAt_comp_mul {F : ℂ → ℂ} {j : ℂ} (hj : j ≠ 0) (s�
 `exp(a + Σ_j b_j/j + q)^N = exp(a)^N exp(q)^N Π_j exp(b_j)^{N/j}`. -/
 theorem exp_pow_eq_prod {N : ℕ} {t : Finset ℕ} (ht : ∀ j ∈ t, j ≠ 0 ∧ j ∣ N) (a q : ℂ)
     (b : ℕ → ℂ) :
-    cexp (a + ∑ j ∈ t, b j / j + q) ^ N =
+    cexp (a + (∑ j ∈ t, b j / j + q)) ^ N =
       cexp a ^ N * cexp q ^ N * ∏ j ∈ t, cexp (b j) ^ (N / j) := by
   simp only [← Complex.exp_nat_mul, ← Complex.exp_sum, ← Complex.exp_add]
   congr 1
@@ -218,7 +231,7 @@ theorem exp_pow_eq_prod {N : ℕ} {t : Finset ℕ} (ht : ∀ j ∈ t, j ≠ 0 �
   have hterm : ∀ j ∈ t, (N : ℂ) * (b j / j) = ((N / j : ℕ) : ℂ) * b j := fun j hj => by
     have hj0 : (j : ℂ) ≠ 0 := by exact_mod_cast (ht j hj).1
     rw [Nat.cast_div (ht j hj).2 hj0]
-    field_simp
+    ring
   rw [sum_congr rfl hterm]
   ring
 
@@ -236,8 +249,7 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
     {n : ℕ → ℕ} (hn : ∀ j ∈ Icc 2 k, analyticOrderAt F (j * s₁) = n j) :
     k.factorial ∣ ∑ j ∈ Icc 2 k, k.factorial / j * n j := by
   rcases Nat.lt_or_ge k 1 with hk | hk
-  · rw [show Icc 2 k = ∅ by ext j; simp only [mem_Icc, Finset.notMem_empty, iff_false]; omega,
-      sum_empty]
+  · rw [Finset.Icc_eq_empty (by omega), sum_empty]
     exact dvd_zero _
   set N := k.factorial with hNdef
   obtain ⟨G, hG, hGeq⟩ := exists_continuation_of_count (hasIntegerNorms_editSystem e)
@@ -255,7 +267,8 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
   have hjre : ∀ j ∈ Icc 2 k, ∀ s : ℂ, c < s.re → c₀ < ((j : ℂ) * s).re := fun j hj s hs => by
     have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast (le_trans (by norm_num) (mem_Icc.mp hj).1)
     have hre : ((j : ℂ) * s).re = j * s.re := by simp
-    rw [hre]; nlinarith
+    have := mul_le_mul_of_nonneg_right hj1 (hc0.trans hs).le
+    rw [hre]; linarith
   have hGc : DifferentiableOn ℂ G {s : ℂ | c < s.re} :=
     hG.mono fun s (hs : c < s.re) => show β < s.re from lt_of_le_of_lt hcβ hs
   have hFc : DifferentiableOn ℂ F {s : ℂ | c < s.re} :=
@@ -270,7 +283,8 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
     (differentiable_zetaResidueUnit.differentiableOn.mul hFc).mul hQc.cexp
   set R : ℂ → ℂ := fun s => P s ^ N * ∏ j ∈ Icc 2 k, F ((j : ℂ) * s) ^ (N / j) with hRdef
   have hR : DifferentiableOn ℂ R {s : ℂ | c < s.re} :=
-    (hP.pow N).mul (DifferentiableOn.finsetProd fun j hj => (hFj j hj).pow _)
+    (hP.pow N).mul (DifferentiableOn.fun_finsetProd
+      (f := fun j s => F ((j : ℂ) * s) ^ (N / j)) fun j hj => (hFj j hj).pow _)
   -- the identity on `Re s > 1`
   have hdiv : ∀ j ∈ Icc 2 k, j ≠ 0 ∧ j ∣ N := fun j hj =>
     ⟨by have := (mem_Icc.mp hj).1; omega,
@@ -283,35 +297,46 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
       refine hFeq _ ?_
       have hj2 : (2 : ℝ) ≤ j := by exact_mod_cast (mem_Icc.mp hj).1
       have hre : ((j : ℂ) * s).re = j * s.re := by simp
-      rw [hre]; nlinarith
-    rw [hGeq s hs, editSystem_zetaSeriesC he hs, editRem_eq_sum_add he hk hs, ← add_assoc,
-      zetaResidueUnit_of_ne hs1] at *
-    simp only [hRdef, hPdef, hFeq s hs, prod_congr rfl fun j hj => by rw [hFjs j hj],
-      zetaResidueUnit_of_ne hs1]
-    rw [mul_pow, exp_pow_eq_prod hdiv]
-    ring
+      have := mul_le_mul_of_nonneg_right hj2 (by linarith : (0 : ℝ) ≤ s.re)
+      rw [hre]; linarith
+    have hprod : ∏ j ∈ Icc 2 k, F ((j : ℂ) * s) ^ (N / j) =
+        ∏ j ∈ Icc 2 k, Complex.exp (LSeries (fun n => (e n : ℂ)) ((j : ℂ) * s)) ^ (N / j) :=
+      prod_congr rfl fun j hj => by rw [hFjs j hj]
+    have hexp := exp_pow_eq_prod hdiv (LSeries (fun n => (e n : ℂ)) s) (editRemOf k e s)
+      (fun j => LSeries (fun n => (e n : ℂ)) ((j : ℂ) * s))
+    simp only [hRdef, hPdef]
+    rw [hGeq s hs, editSystem_zetaSeriesC he hs, editRem_eq_sum_add he hk hs,
+      zetaResidueUnit_of_ne hs1, hFeq s hs, hprod]
+    linear_combination ((s - 1) * riemannZeta s) ^ N * hexp
   have hon := eqOn_halfPlane (c := c) (F₁ := fun s => G s ^ N) (F₂ := R) (hGc.pow N) hR hagree
   -- orders at `s₁`
   have hGan : AnalyticAt ℂ G s₁ := hGc.analyticAt (hUo.mem_nhds hs₁)
   have hPan : AnalyticAt ℂ P s₁ := hP.analyticAt (hUo.mem_nhds hs₁)
   have hFjan : ∀ j ∈ Icc 2 k, AnalyticAt ℂ (fun s : ℂ => F ((j : ℂ) * s)) s₁ := fun j hj =>
     (hFj j hj).analyticAt (hUo.mem_nhds hs₁)
+  have hPpow : AnalyticAt ℂ (P ^ N) s₁ := hPan.pow N
+  have hFjpow : ∀ j ∈ Icc 2 k,
+      AnalyticAt ℂ ((fun s : ℂ => F ((j : ℂ) * s)) ^ (N / j)) s₁ := fun j hj =>
+    (hFjan j hj).pow _
   have hordL : analyticOrderAt (G ^ N) s₁ = N • analyticOrderAt G s₁ := analyticOrderAt_pow hGan N
   have hordR : analyticOrderAt R s₁ =
       N • analyticOrderAt P s₁ + ∑ j ∈ Icc 2 k, (N / j) • (n j : ℕ∞) := by
     have hRfun : R = P ^ N * ∏ j ∈ Icc 2 k, (fun s : ℂ => F ((j : ℂ) * s)) ^ (N / j) := by
       funext s
       simp only [hRdef, Pi.mul_apply, Pi.pow_apply, Finset.prod_apply]
-    rw [hRfun, analyticOrderAt_mul (hPan.pow N)
-      (Finset.analyticAt_prod _ fun j hj => (hFjan j hj).pow _), analyticOrderAt_pow hPan,
-      analyticOrderAt_prod_eq_sum _ _ fun j hj => (hFjan j hj).pow _]
+    rw [hRfun, analyticOrderAt_mul hPpow (Finset.analyticAt_prod _ hFjpow),
+      analyticOrderAt_pow hPan, analyticOrderAt_prod_eq_sum _ _ hFjpow]
     congr 1
     refine sum_congr rfl fun j hj => ?_
     rw [analyticOrderAt_pow (hFjan j hj),
       analyticOrderAt_comp_mul (by exact_mod_cast (hdiv j hj).1) s₁, hn j hj]
   have hev : (G ^ N) =ᶠ[𝓝 s₁] R :=
-    eventually_of_mem (hUo.mem_nhds hs₁) fun s hs => by simpa using hon hs
-  have hord := (analyticOrderAt_congr hev).symm.trans hordL |>.symm.trans hordR
+    eventuallyEq_of_mem (hUo.mem_nhds hs₁) fun s hs => by
+      show G s ^ N = R s
+      exact hon hs
+  have hord : N • analyticOrderAt G s₁ =
+      N • analyticOrderAt P s₁ + ∑ j ∈ Icc 2 k, (N / j) • (n j : ℕ∞) :=
+    hordL.symm.trans ((analyticOrderAt_congr hev).trans hordR)
   -- the order of `G` is finite: `G(2) ≠ 0` on the connected half-plane `Re s > β`
   have hUβ : IsOpen {s : ℂ | β < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have h2re : (2 : ℂ).re = 2 := by norm_num
@@ -323,20 +348,22 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
     (hG.analyticOnNhd hUβ).analyticOrderAt_ne_top_of_isPreconnected
       (convex_halfSpace_re_gt β).isPreconnected (show β < (2 : ℂ).re by rw [h2re]; linarith)
       (show β < s₁.re from h1)
-      (by rw [analyticOrderAt_eq_zero.mpr (Or.inr hG2)]; exact ENat.zero_ne_top)
+      (by rw [analyticOrderAt_eq_zero.mpr (Or.inr hG2)]; simp)
   obtain ⟨a, ha⟩ := ENat.ne_top_iff_exists.mp hGfin
   have hN0 : N ≠ 0 := Nat.factorial_ne_zero k
+  have hcast : ∀ x y : ℕ, x • (y : ℕ∞) = ((x * y : ℕ) : ℕ∞) := fun x y => by
+    rw [nsmul_eq_mul, Nat.cast_mul]
   have hPfin : analyticOrderAt P s₁ ≠ ⊤ := by
     intro htop
-    rw [htop, ← ha, nsmul_eq_mul, ENat.mul_top (by exact_mod_cast hN0), ENat.top_add] at hord
-    exact ENat.coe_ne_top _ (by rw [← hord]; push_cast; rfl)
+    have htopN : N • (⊤ : ℕ∞) = ⊤ := by
+      rw [nsmul_eq_mul, ENat.mul_top (by exact_mod_cast hN0)]
+    rw [← ha, htop, htopN, top_add, hcast] at hord
+    exact ENat.coe_ne_top _ hord
   obtain ⟨b, hb⟩ := ENat.ne_top_iff_exists.mp hPfin
   rw [← ha, ← hb] at hord
-  have hnat : N * a = N * b + ∑ j ∈ Icc 2 k, N / j * n j := by
-    have h' : ((N * a : ℕ) : ℕ∞) = ((N * b + ∑ j ∈ Icc 2 k, N / j * n j : ℕ) : ℕ∞) := by
-      push_cast
-      simpa [nsmul_eq_mul] using hord
-    exact_mod_cast h'
+  simp only [hcast] at hord
+  rw [← Nat.cast_sum, ← Nat.cast_add] at hord
+  have hnat : N * a = N * b + ∑ j ∈ Icc 2 k, N / j * n j := by exact_mod_cast hord
   exact (Nat.dvd_add_right (dvd_mul_right N b)).mp (hnat ▸ dvd_mul_right N a)
 
 /-! ## Consequences -/
@@ -356,7 +383,7 @@ theorem analyticOrderAt_ne_top_of_continuation {e : ℕ → ℤ} {c₀ : ℝ} {F
   exact (hF.analyticOnNhd hU).analyticOrderAt_ne_top_of_isPreconnected
     (convex_halfSpace_re_gt c₀).isPreconnected
     (show c₀ < w.re by rw [hwre]; linarith [le_max_left c₀ 1]) hz
-    (by rw [analyticOrderAt_eq_zero.mpr (Or.inr hw0)]; exact ENat.zero_ne_top)
+    (by rw [analyticOrderAt_eq_zero.mpr (Or.inr hw0)]; simp)
 
 /-- **Zeros beyond `p` times the count exponent have order divisible by `p`.**  Let an edit be
 summable at `θ`, have count `A x + O(x^β)`, and let `F` continue the edit exponential to
@@ -383,19 +410,23 @@ theorem prime_dvd_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ : ℝ} (h
   have hn : ∀ j ∈ Icc 2 p, analyticOrderAt F (j * s₁) = n j := fun j hj => by
     have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast (le_trans (by norm_num) (mem_Icc.mp hj).1)
     have hjre : c₀ < ((j : ℂ) * s₁).re := by
-      have : ((j : ℂ) * s₁).re = j * s₁.re := by simp
-      rw [this]; nlinarith
+      have hre' : ((j : ℂ) * s₁).re = j * s₁.re := by simp
+      have := mul_le_mul_of_nonneg_right hj1 hs₁0.le
+      rw [hre']; linarith
     exact (ENat.coe_toNat (analyticOrderAt_ne_top_of_continuation hF hFeq hjre)).symm
   have hnp : n p = m := by
     have : (p : ℂ) * s₁ = ρ := by rw [hs₁]; field_simp
     simp only [hndef, this, hm, ENat.toNat_coe]
-  have hlaw := factorial_dvd_sum_order_of_count he hθ hS hβ hβ1 hN hF hFeq p hs₁β hs₁c
-    (by exact_mod_cast hs₁θ) hn
+  have hlaw := factorial_dvd_sum_order_of_count he hθ hS hβ hβ1 hN hF hFeq p hs₁β hs₁c hs₁θ hn
   -- modulo `p` only the term `j = p` survives
+  have hfp : p.factorial / p = (p - 1).factorial := by
+    rw [← Nat.mul_factorial_pred hp.pos, Nat.mul_div_cancel_left _ hp.pos]
+  have hI : Icc 2 p = insert p (Ico 2 p) := by
+    have := hp.two_le
+    ext j; simp only [mem_Icc, mem_insert, mem_Ico]; omega
   have hsplit : ∑ j ∈ Icc 2 p, p.factorial / j * n j =
-      ∑ j ∈ Ico 2 p, p.factorial / j * n j + (p - 1).factorial * m := by
-    rw [← Nat.Ico_succ_right, sum_Ico_succ_top hp.two_le, hnp,
-      ← Nat.mul_factorial_pred hp.pos, Nat.mul_div_cancel_left _ hp.pos]
+      (p - 1).factorial * m + ∑ j ∈ Ico 2 p, p.factorial / j * n j := by
+    rw [hI, sum_insert (by simp), hnp, hfp]
   have hlow : p ∣ ∑ j ∈ Ico 2 p, p.factorial / j * n j := by
     refine dvd_sum fun j hj => dvd_mul_of_dvd_left ?_ _
     obtain ⟨hj2, hjp⟩ := mem_Ico.mp hj
@@ -404,9 +435,10 @@ theorem prime_dvd_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ : ℝ} (h
     exact dvd_mul_right _ _
   have htop : p ∣ (p - 1).factorial * m := by
     rw [hsplit] at hlaw
-    exact (Nat.dvd_add_right hlow).mp ((dvd_factorial hp.pos le_rfl).trans hlaw)
+    exact (Nat.dvd_add_left hlow).mp ((Nat.dvd_factorial hp.pos le_rfl).trans hlaw)
   rcases (Nat.Prime.dvd_mul hp).mp htop with h | h
-  · exact absurd ((Nat.Prime.dvd_factorial hp).mp h) (by omega)
+  · have h2 := hp.two_le
+    exact absurd ((Nat.Prime.dvd_factorial hp).mp h) (by omega)
   · exact h
 
 /-- **Isolated multiples.**  If `F` has no zero at `jρ/k` for `2 ≤ j < k`, a zero `ρ` with

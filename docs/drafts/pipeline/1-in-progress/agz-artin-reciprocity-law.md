@@ -3,7 +3,7 @@
 - **ID:** agz-artin-reciprocity
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (classical; not in the corpus, not in Mathlib)
-- **Source:** docs/reports/review-1211/obstacles-summary.md §2.14 question 4 (A154)
+- **Source:** docs/reports/review-1311/obstacles-summary.md §2.14 question 5 (A154)
 - **Statement:** Let `L/K` be a Galois extension of number fields with group `G` and `χ` a linear
   character of `G`. There are a modulus `𝔪` of `K` and a ray class character `ψ` modulo `𝔪` with
   `(χ, v) = ψ(v)` for every prime `v ∤ 𝔪`. Then

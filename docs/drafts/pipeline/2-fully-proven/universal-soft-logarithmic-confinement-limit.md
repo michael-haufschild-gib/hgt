@@ -2,7 +2,7 @@
 
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Target:** B16, B17; identify the limiting variational problem behind the confining margin.
+- **Target:** B16, B17; identify the limiting variational problem behind the confining margin. Review-1311 A158 identifies this written closure for verification; limiting-profile attainment remains separate.
 - **Statement:** After subtracting `a+log a`, the actual ground energy converges to a fixed half-line logarithmic variational floor. Rescaled minimizers approach this floor, with `a(W-1)→1` and `a∫(-u)F(u)²du→1/8`.
 - **Status:** Paper proof below; Lean formalization in progress. Not counted.
 

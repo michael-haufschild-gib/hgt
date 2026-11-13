@@ -27,3 +27,29 @@ The statement must use a canonical representative or an essential trace. `IsCrit
 4. Determine whether this readout is the polar source pairing or a distinct boundary channel. Existing L² cyclicity alone does not identify it.
 
 Sources: `ArithmeticHodgeTheoryOfDegenerations/TheCriticalHalfLineStateHasCausalCoordinates.lean`, `CanonicalSystemOfTheWindowTower/TheHalfLineLogarithmicFormHasItsActualInverse.lean`, `CanonicalSystemOfTheWindowTower/TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues.lean`, and `CausalReflection/CriticalCausalEnergyTranslation.lean`.
+
+## Intermediate regularity conjecture
+
+The exact translation-energy law may give a quantitative Fourier tail:
+`∫_{|ξ|≥T}|Fourier(F)(ξ)|²dξ≤C/(T log T)` for large `T`.
+This would imply every fractional Sobolev order below `1/2`, beyond the
+existing logarithmic form-domain statement. No endpoint trace follows from
+this bound alone.
+
+Proposed bridge: retain both the logarithmic Fourier weight and half the
+exponential potential in the arithmetic absorption estimate. Apply it to
+`F(·+h)-F`, whose full energy is `O(h)`. A low/high frequency split should
+absorb the negative ordinary-mass term and give
+`‖F(·+h)-F‖₂²≤Ch/log(1/h)`. Averaging the Fourier translation multiplier
+over `0<h<1/T` then detects the entire frequency tail. The estimate and its
+Sobolev consequences remain unproved in Lean.
+
+The arbitrary-ratio weak equation suggests the same bound for every
+confining minimizer: for `Δ_hF=F(·+h)-F`, it should give
+`E_R(Δ_hF)-λ(R)‖Δ_hF‖₂²=a(R)(exp(8h)-1)W(F)`.
+The extra ordinary-mass term can enter the same absorption estimate.
+Source: `CausalReflection/ConfiningHalfLineWeakEquation.lean`.
+
+`CausalReflection/ConfiningHalfLineTranslationEnergy.lean` contains unchecked
+proofs of the shifted translation identity and absorption retaining the
+Gamma form. No regularity theorem is verified yet.
