@@ -41,13 +41,17 @@ This would imply every fractional Sobolev order below `1/2`, beyond the
 existing logarithmic form-domain statement. No endpoint trace follows from
 this bound alone.
 
-Proposed bridge: retain both the logarithmic Fourier weight and half the
-exponential potential in the arithmetic absorption estimate. Apply it to
-`F(·+h)-F`, whose full energy is `O(h)`. A low/high frequency split should
-absorb the negative ordinary-mass term and give
-`‖F(·+h)-F‖₂²≤Ch/log(1/h)`. Averaging the Fourier translation multiplier
-over `0<h<1/T` then detects the entire frequency tail. The estimate and its
-Sobolev consequences remain unproved in Lean.
+Proposed bridge: retain the Gamma form in the arithmetic absorption
+estimate and apply it to `Δ_hF=F(·+h)-F`, whose shifted full energy is
+`O(h)`. Choose one fixed frequency cutoff above the resulting ordinary-mass
+coefficient. Below that cutoff the translation multiplier costs `O(h²)`;
+above it the growing Gamma symbol absorbs the mass coefficient. This should
+give both `‖Δ_hF‖₂²=O(h)` and positive logarithmic energy `O(h)`.
+Averaging the latter over `0<h<1/T` detects all frequencies `|ξ|≥T`
+with weight at least a constant times `log T`, giving the proposed
+`C/(T log T)` tail. This avoids a separate variable-cutoff estimate for
+`‖Δ_hF‖₂²`. The tail bound and its Sobolev consequences remain unproved
+in Lean.
 
 The arbitrary-ratio weak equation suggests the same bound for every
 confining minimizer: for `Δ_hF=F(·+h)-F`, it should give
@@ -120,6 +124,16 @@ summable barrier row. The other localized terms and the existing cutoff
 commutator would be both `L²` and bounded. This identifies the precise
 candidate Green forcing; transfer of the actual weak identity to the
 closed logarithmic form is still unproved.
+
+The local prime pairing has a precise candidate realization. For an
+actual-domain test `G` supported in `(-L,0)`, with `L<log 2`, symmetry and
+terminal support should give
+`primeMixedForm(F,G)=∫G(u)Σ_n vonMangoldtAtom(n)F(u-log n)du`.
+An envelope `|F(u)|≤C exp(βu)`, `β>1/2`, dominates the backward series by
+`C exp(βu) halfLineExponentialPrimeTail(β)`. Countably many translated
+almost-everywhere bounds and this summable majorant should justify both
+the local boundedness and the integral/series interchange. Neither
+realization is formalized yet.
 
 `TheWeilRieszVectorsLocalizeToTheLogarithmicHalfLine.logarithmicApertureLeftLocalized_solves`
 supplies a direct transfer template: test the original equation with the

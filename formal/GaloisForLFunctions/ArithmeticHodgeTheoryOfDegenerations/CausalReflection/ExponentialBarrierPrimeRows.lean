@@ -44,7 +44,7 @@ theorem exponentialBarrier_prime_backward_coefficient {n : ℕ} (hn : 2 ≤ n) (
 /-- The backward exponential prime row has finite total mass for every rate above one half. -/
 theorem summable_exponentialBarrier_prime_backward {β : ℝ} (hβ : 1 / 2 < β) :
     Summable (fun n : ℕ => vonMangoldtAtom n * Real.exp (-(β * Real.log (n : ℝ)))) := by
-  have hs := summable_vonMangoldt_div_rpow (show 1 < β + 1 / 2 by linarith only [hβ])
+  have hs := _root_.summable_vonMangoldt_div_rpow (show 1 < β + 1 / 2 by linarith only [hβ])
   apply hs.congr
   intro n
   by_cases hn : 2 ≤ n
@@ -117,7 +117,7 @@ theorem sum_exponentialBarrier_prime_forward_le {β : ℝ} (hβ : 1 / 2 ≤ β)
         exact exponentialBarrier_prime_forward_coefficient hn β
       · have hl : ¬ Real.log (n : ℝ) < -u := by linarith only [hu]
         rw [if_neg hu, if_neg (fun h => hl h.2)]
-    · simp only [hn, false_and, if_false, vonMangoldtAtom, if_neg hn, zero_mul,
+    · simp only [hn, false_and, if_false, vonMangoldtAtom, zero_mul,
         ite_self]
   rw [he]
   have hrow := sum_weighted_log_cutoff_le_psi (sub_nonneg.mpr hβ) s (-u)

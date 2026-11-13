@@ -331,7 +331,8 @@ theorem neutralWindow_submatrix_leftPartEquiv (Q R a : ℕ) :
         (posMatrix (neutralBlock Q) (leftPos R a) (leftPos R a)) := by
   have hpos : ∀ x, R + (leftPartEquiv a (R + a) x : ℕ) =
       Sum.elim (middlePos R a) (leftPos R a) x := by
-    rintro (m | i) <;> (simp [leftPartEquiv, middlePos, leftPos]; omega)
+    rintro (m | i) <;> simp [leftPartEquiv, middlePos, leftPos]
+    omega
   have hW : (neutralWindow Q R (a + (R + a))).submatrix (leftPartEquiv a (R + a))
       (leftPartEquiv a (R + a)) =
       posMatrix (neutralBlock Q) (Sum.elim (middlePos R a) (leftPos R a))
@@ -351,7 +352,8 @@ theorem neutralWindow_submatrix_rightPart (Q R a b : ℕ) :
         (posMatrix (neutralBlock Q) (rightPos R a b) (rightPos R a b)) := by
   have hpos : ∀ x : Fin (R + a) ⊕ Fin b, R + a + (finSumFinEquiv x : ℕ) =
       Sum.elim (middlePos R a) (rightPos R a b) x := by
-    rintro (m | j) <;> (simp [middlePos, rightPos]; omega)
+    rintro (m | j) <;> simp [middlePos, rightPos]
+    omega
   have hW : (neutralWindow Q (R + a) ((R + a) + b)).submatrix finSumFinEquiv finSumFinEquiv =
       posMatrix (neutralBlock Q) (Sum.elim (middlePos R a) (rightPos R a b))
         (Sum.elim (middlePos R a) (rightPos R a b)) := by

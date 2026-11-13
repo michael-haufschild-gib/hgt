@@ -8,12 +8,31 @@
 
 ## Corpus connection
 
-`FourierFirstMomentWindow` excludes spectral concentration at zero under a bounded physical first moment. Optimizing its cutoff should also control the negative logarithmic Fourier tail. Positive logarithmic Fourier energy and physical confinement would then give compactness.
+`FourierFirstMomentWindow` excludes spectral concentration at zero under a bounded physical first moment. Its optimized cutoff now also controls the negative logarithmic Fourier tail. Positive logarithmic Fourier energy and physical confinement would then give compactness.
 
-The concrete candidate bound, for unit profiles with first moment at most `M`, is
-`∫_{|ξ|≤exp(-T)}(-log|ξ|)|Fourier(f)|²≤(8+2M)(T+2)exp(-T/2)` for `T≥0`.
-Choose the physical cutoff `H=exp(t/2)` in the window bound, then integrate the resulting spectral distribution tail. At `T=0` this would give `Q(f)≥L₊(f)+4M(f)-16`, where `L₊` is positive logarithmic Fourier energy. Thus bounded limiting energy would control both confinement and high-frequency tails. The extension to the unitary `L²` Fourier transform must allow profiles outside `L¹`.
+For unit `L¹∩L²` profiles with first moment at most `M`, the verified bound is
+`∫_{X>T}X|Fourier(f)|²≤(8+2M)(T+2)exp(-T/2)`, where
+`X(ξ)=max(-log|ξ|,0)` and `T≥0`. The full negative part is integrable and
+at most `16+4M`.
+Choose the physical cutoff `H=exp(t/2)` in the window bound, then integrate
+the resulting spectral distribution tail. The resulting candidate coercivity
+inequality is `Q(f)≥L₊(f)+4M(f)-16`, where `L₊` is positive logarithmic
+Fourier energy: split `L=L₊-L₋` and use `L₋≤16+4M` against the potential
+`8M`. `CausalReflection/SoftLogarithmicHalfLineCoercivity` contains the
+unchecked assembly and the resulting bounds on both nonnegative parts of
+every unit Rayleigh sublevel. The closed-domain passage remains open; the
+unitary `L²` limit must allow profiles outside `L¹`.
 The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integrable real-valued version is `MeasureTheory.Integrable.integral_eq_integral_meas_lt`. Apply it to the measure with Fourier square density.
+
+`HTGeometry/HardyBoundary/ExponentialDistributionTails` verifies the general
+layer-cake step: `ν{X>t}≤C exp(-t/2)` gives
+`∫_{X>T}X dν≤C(T+2)exp(-T/2)` for `T≥0`.
+Both declarations pass final plain source audits with exactly the standard
+three axioms and are wired. `FourierNegativeLogarithmicTail` also passes its
+final plain source audit without warnings and with exactly those axioms;
+all six declarations are wired. It proves the superlevel estimate, extended
+and real tail bounds, integrability, and the full negative-part bound.
+These supporting estimates are not counted as a separate contribution.
 
 For the `L²` extension, split `f=P_Hf+(1-P_H)f` directly in the unitary
 Fourier space. Only the compact part needs an ordinary Fourier integral;
@@ -33,6 +52,13 @@ passes the negative logarithmic term. Compact cutoff recovery then proves
 the reverse variational inequality. This route does not require a separate
 window theorem for arbitrary nonintegrable `L²` profiles before compactness.
 
+`HTGeometry.fourierMulCLM` realizes every capped negative-logarithm symbol
+as a bounded operator on complex `L²`; continuity of its quadratic pairing
+handles each fixed cap. An almost-everywhere Fourier subsequence and Fatou
+would transfer the uniform tail bound to the limit. Removing the caps
+would then pass the negative term without requiring an ordinary Fourier
+integral for the limit. These limit passages remain to be formalized.
+
 The negative-logarithmic estimate has a homogeneous, adjustable form.
 Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff
 `H=c exp(t/2)`, with `c>0`, to obtain the candidate bound
@@ -42,7 +68,26 @@ the limiting-domain passage remain unformalized.
 
 `CriticalArithmeticCorrelationTheory.isCompact_closure_of_uniform_physical_and_fourier_tails` already supplies compactness from the two tails, without compact support. Its compact cutoff approximation uses `f-PQf=(f-Pf)+P(f-Qf)` and contractivity of the physical cutoff.
 
+Coercivity suggests the stronger intermediate statement that every unit
+Rayleigh sublevel of the trial domain is relatively compact in `L²`.
+The physical cutoff error squared is at most `M/H`; the Fourier cutoff
+error squared is at most `L₊/log T`. The latter already has its exact
+unitary identity in
+`norm_sq_sub_fourierCutoff_central_eq_tailIntegral`. No exponential moment
+bound uniform over the sublevel is needed. This compactness statement
+remains unformalized.
+
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
+
+For recovery choose cutoffs equal to one on `[-N,0]`, zero below `-2N`,
+bounded by one, and with Lipschitz constant at most one. The error
+`(1-χ_N)f` tends to zero in `L²`; at each fixed shift its translation
+defect tends to zero. The existing loss inequality bounds its squared
+defect by `2‖T_hf-f‖²+2h²‖f‖²`. This is integrable against the reference
+Lévy density `exp(-h)/(2h)`. Dominated convergence would therefore give
+convergence in the positive logarithmic form norm. The first-moment term
+converges by physical domination, and the negative logarithmic term by the
+uniform tail estimate. No exponential moment of the limit is needed.
 
 `suzukiFinitePartEnergy_absolute_split` identifies the loss under modulus with a positive cross-sign interaction for the exact `1/|x-y|` kernel. `suzukiFinitePartEnergy_absolute_lt_of_sign_change` proves strict loss on a bounded smooth core. `SuzukiLimitingLogClosedMarkov` transfers contractions to a closed form on a fixed interval.
 

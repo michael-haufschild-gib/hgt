@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CompactHyperbolicSurfaces.CocompactGroups
+import Mathlib.MeasureTheory.Constructions.Polish.Basic
 
 /-!
 # Automorphic kernels on a cocompact quotient
@@ -35,27 +36,33 @@ variable {Γ}
 theorem autK_smul_right (k : ℝ → ℝ≥0∞) (z w : ℍ) (δ : Γ) :
     autK Γ k z ((δ : SL(2, ℝ)) • w) = autK Γ k z w := by
   unfold autK
-  rw [← (Equiv.mulRight δ).tsum_eq]
-  refine tsum_congr fun γ => ?_
-  simp only [Equiv.coe_mulRight, Subgroup.coe_mul, mul_smul]
+  have h : ∀ γ : Γ, k (pairU z ((γ : SL(2, ℝ)) • (δ : SL(2, ℝ)) • w)) =
+      k (pairU z (((γ * δ : Γ) : SL(2, ℝ)) • w)) := by
+    intro γ; rw [Subgroup.coe_mul, mul_smul]
+  simp_rw [h]
+  exact (Equiv.mulRight δ).tsum_eq (fun γ : Γ => k (pairU z ((γ : SL(2, ℝ)) • w)))
 
 theorem autK_smul_left (k : ℝ → ℝ≥0∞) (z w : ℍ) (δ : Γ) :
     autK Γ k ((δ : SL(2, ℝ)) • z) w = autK Γ k z w := by
   unfold autK
-  rw [← (Equiv.mulLeft δ).tsum_eq]
-  refine tsum_congr fun γ => ?_
-  simp only [Equiv.coe_mulLeft, Subgroup.coe_mul, mul_smul, pairU_smul]
+  have h : ∀ γ : Γ, k (pairU ((δ : SL(2, ℝ)) • z) ((γ : SL(2, ℝ)) • w)) =
+      k (pairU z (((δ⁻¹ * γ : Γ) : SL(2, ℝ)) • w)) := by
+    intro γ; rw [pairU_smul_left, Subgroup.coe_mul, mul_smul, Subgroup.coe_inv]
+  simp_rw [h]
+  exact (Equiv.mulLeft δ⁻¹).tsum_eq (fun γ : Γ => k (pairU z ((γ : SL(2, ℝ)) • w)))
 
 theorem autK_comm (k : ℝ → ℝ≥0∞) (z w : ℍ) : autK Γ k z w = autK Γ k w z := by
   unfold autK
-  rw [← (Equiv.inv Γ).tsum_eq]
-  refine tsum_congr fun γ => ?_
-  simp only [Equiv.inv_apply, Subgroup.coe_inv]
-  rw [pairU_comm, pairU_smul_left, inv_inv]
+  have h : ∀ γ : Γ, k (pairU z ((γ : SL(2, ℝ)) • w)) =
+      k (pairU w (((γ⁻¹ : Γ) : SL(2, ℝ)) • z)) := by
+    intro γ
+    rw [pairU_comm, Subgroup.coe_inv, ← inv_inv (γ : SL(2, ℝ)), pairU_smul_left, inv_inv]
+  simp_rw [h]
+  exact (Equiv.inv Γ).tsum_eq (fun γ : Γ => k (pairU w ((γ : SL(2, ℝ)) • z)))
 
 theorem measurable_autK [Countable Γ] {k : ℝ → ℝ≥0∞} (hk : Measurable k) :
     Measurable (Function.uncurry (autK Γ k)) := by
-  refine Measurable.ennreal_tsum fun γ => hk.comp ?_
+  refine Measurable.tsum fun γ => hk.comp ?_
   exact (continuous_pairU.comp (continuous_fst.prodMk
     ((continuous_const_smul ((γ : SL(2, ℝ)))).comp continuous_snd))).measurable
 
@@ -63,7 +70,8 @@ theorem measurable_autK [Countable Γ] {k : ℝ → ℝ≥0∞} (hk : Measurable
 theorem setLIntegral_autK [Countable Γ] {F : Set ℍ} (hF : IsFundamentalDomain Γ F volume)
     {k : ℝ → ℝ≥0∞} (hk : Measurable k) (z : ℍ) :
     ∫⁻ w in F, autK Γ k z w = ∫⁻ w, k (pairU z w) := by
-  rw [hF.lintegral_eq_tsum'' (fun w => k (pairU z w)), autK, lintegral_tsum]
+  unfold autK
+  rw [hF.lintegral_eq_tsum'' (fun w => k (pairU z w)), lintegral_tsum]
   · rfl
   · intro γ
     exact (hk.comp (continuous_pairU.comp (continuous_const.prodMk
@@ -83,6 +91,17 @@ theorem rpow_neg_le_tsum {x σ : ℝ} (hx : 1 ≤ x) (hσ : 0 ≤ σ) :
   rw [indicator_of_mem (show j ∈ {j : ℕ | x < 2 ^ (j + 1)} from hj2)]
   exact ENNReal.ofReal_le_ofReal
     (Real.rpow_le_rpow_of_nonpos (by positivity) hj1 (by linarith))
+
+theorem dyadic_identity (C σ : ℝ) (j : ℕ) :
+    C * (1 + ((2 : ℝ) ^ (j + 1) - 1)) * ((2 : ℝ) ^ j) ^ (-σ) = 2 * C * ((2 : ℝ) ^ (1 - σ)) ^ j := by
+  have h2 : (2 : ℝ) ^ j = Real.exp (j * Real.log 2) := by
+    rw [← Real.exp_log (pow_pos two_pos j), Real.log_pow]
+  rw [show 1 + ((2 : ℝ) ^ (j + 1) - 1) = 2 * 2 ^ j by ring,
+    Real.rpow_def_of_pos (pow_pos two_pos j), Real.rpow_def_of_pos two_pos, ← Real.exp_nat_mul,
+    Real.log_pow, h2, mul_assoc, mul_assoc, ← Real.exp_add]
+  rw [show (2 : ℝ) * C * Real.exp (j * (Real.log 2 * (1 - σ))) =
+    C * (2 * Real.exp (j * (Real.log 2 * (1 - σ)))) by ring]
+  congr 3; ring
 
 namespace IsCocompactFree
 
@@ -104,14 +123,16 @@ theorem exists_tsum_rpow_le {σ : ℝ} (hσ : 1 < σ) : ∃ M : ℝ≥0∞, M < 
   have hpt : ∀ γ : Γ, ENNReal.ofReal ((1 + pairU z ((γ : SL(2, ℝ)) • w)) ^ (-σ)) ≤
       ∑' j : ℕ, (S j).indicator (fun _ => ENNReal.ofReal (((2 : ℝ) ^ j) ^ (-σ))) γ := by
     intro γ
-    refine (rpow_neg_le_tsum (by linarith [pairU_nonneg z ((γ : SL(2, ℝ)) • w)])
-      (by linarith)).trans (ENNReal.tsum_le_tsum fun j => ?_)
+    refine (rpow_neg_le_tsum (x := 1 + pairU z ((γ : SL(2, ℝ)) • w)) (σ := σ)
+      (by linarith [pairU_nonneg z ((γ : SL(2, ℝ)) • w)]) (by linarith)).trans
+      (ENNReal.tsum_le_tsum fun j => ?_)
     by_cases h : 1 + pairU z ((γ : SL(2, ℝ)) • w) < 2 ^ (j + 1)
     · rw [indicator_of_mem (show j ∈ {j : ℕ | 1 + pairU z ((γ : SL(2, ℝ)) • w) < 2 ^ (j + 1)}
-        from h), indicator_of_mem (show γ ∈ S j by show _ ≤ _; linarith)]
+        from h), indicator_of_mem (show γ ∈ S j from
+        (show pairU z ((γ : SL(2, ℝ)) • w) ≤ 2 ^ (j + 1) - 1 by linarith))]
     · rw [indicator_of_notMem (show j ∉ {j : ℕ | 1 + pairU z ((γ : SL(2, ℝ)) • w) < 2 ^ (j + 1)}
         from h)]
-      exact zero_le
+      exact bot_le
   have hcount : ∀ j : ℕ, ∑' γ : Γ, (S j).indicator
       (fun _ => ENNReal.ofReal (((2 : ℝ) ^ j) ^ (-σ))) γ ≤
       ENNReal.ofReal (2 * C) * ENNReal.ofReal q ^ j := by
@@ -125,19 +146,10 @@ theorem exists_tsum_rpow_le {σ : ℝ} (hσ : 1 < σ) : ∃ M : ℝ≥0∞, M < 
       rw [← ENNReal.ofReal_natCast]; exact ENNReal.ofReal_le_ofReal hcard
     calc ((S j).ncard : ℝ≥0∞) * ENNReal.ofReal (((2 : ℝ) ^ j) ^ (-σ))
         ≤ ENNReal.ofReal (C * (1 + (2 ^ (j + 1) - 1))) * ENNReal.ofReal (((2 : ℝ) ^ j) ^ (-σ)) :=
-          mul_le_mul_right' h1 _
+          mul_le_mul_left h1 _
       _ = ENNReal.ofReal (2 * C) * ENNReal.ofReal q ^ j := by
           rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_pow hq0,
-            ← ENNReal.ofReal_mul (by positivity)]
-          congr 1
-          rw [hqdef, ← Real.rpow_natCast, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num),
-            ← Real.rpow_mul (by norm_num)]
-          have : (2 : ℝ) ^ (j + 1 : ℕ) = 2 * 2 ^ (j : ℝ) := by
-            rw [pow_succ, Real.rpow_natCast]; ring
-          rw [show (1 + (2 ^ (j + 1) - 1) : ℝ) = 2 ^ (j + 1 : ℕ) by ring, this]
-          rw [show (2 : ℝ) * C * 2 ^ ((1 - σ) * (j : ℝ)) =
-            C * (2 * (2 ^ (j : ℝ) * 2 ^ ((j : ℝ) * -σ))) by
-              rw [← Real.rpow_add (by norm_num)]; ring_nf]
+            ← ENNReal.ofReal_mul (by positivity), dyadic_identity]
   calc ∑' γ : Γ, ENNReal.ofReal ((1 + pairU z ((γ : SL(2, ℝ)) • w)) ^ (-σ))
       ≤ ∑' γ : Γ, ∑' j : ℕ, (S j).indicator
           (fun _ => ENNReal.ofReal (((2 : ℝ) ^ j) ^ (-σ))) γ := ENNReal.tsum_le_tsum hpt
@@ -242,7 +254,7 @@ theorem exists_autK_le {σ : ℝ} (hσ : 1 < σ) : ∃ M : ℝ≥0∞, M < ∞ �
           exact zero_le
     _ = ENNReal.ofReal C * ∑' γ : Γ, ENNReal.ofReal ((1 + pairU z ((γ : SL(2, ℝ)) • w)) ^ (-σ)) :=
         ENNReal.tsum_mul_left
-    _ ≤ ENNReal.ofReal C * M := mul_le_mul_left' (hle z w) _
+    _ ≤ ENNReal.ofReal C * M := mul_le_mul_right (hle z w) _
 
 end IsCocompactFree
 

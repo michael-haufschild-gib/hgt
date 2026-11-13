@@ -6,8 +6,9 @@ Namespace `GaloisForLFunctions.MixingArithmeticOfTheFloorTrees`; umbrella
 `docs/drafts/pipeline/1-in-progress/maft-mixing-arithmetic-of-the-floor-trees.md`.
 
 Every theorem named here is proved in Lean without added hypotheses; a theorem named
-`…_of_riemannHypothesis` takes RH as its stated antecedent. **AGZ**, **LST**, … mark theorems of
-other folders, **[C]** published mathematics not in the corpus, **open** a statement not proved.
+`…_of_riemannHypothesis` takes RH as its stated antecedent and serves only as calibration: it
+tells what a proof must produce, not how. **AGZ**, **LST**, … mark theorems of other folders,
+**[C]** published mathematics not in the corpus, **open** a statement not proved.
 
 ## 1. Motivation
 
@@ -47,6 +48,10 @@ block size.
 | floor-tree component | `floorTreeComponent`, `componentIndicator` | the blocks `c, 2c, 2c + 1` of `(R, R + J]` with `R ≤ c`, `R + J ≤ 3c`, `2c + 1 < 3R` |
 | restricted ground state | `restrictTo` | `φ_S`, the ground vector on a set `S` of blocks and `0` off it |
 | reflected packet | `reflectPacket` | `u ↦ g(c − u)` |
+| pole-free profile | `poleFreeProfile` | `f₀ = U − κ(U(· + 1) + U(· − 1))`, `U` the cubic B-spline, `κ = 1/(2 cosh ½)`: even, both charges zero, it sees every zero off the line |
+| states of the two ends | `twoEndOdd`, `twoEndEven` | `f₀(u + v/2) ∓ f₀(u − v/2)`: antisymmetric and symmetric copies at distance `v` |
+| lag structure | `lagStructure` (SRT) | `S(v) = W(f₀, f₀(· − v))`, the zeros seen through the profile at lag `v` |
+| margin bounded below | `MarginBoundedBelow C` | every plane of smooth packets on a window contains a nonzero packet with `N ≥ −C · mass` |
 
 ## 3. Language
 
@@ -58,6 +63,8 @@ block size.
 - The **pole capacity** of a window is the largest value of the pole term on packets of unit mass.
 - The **even** and **odd sectors** are the packets symmetric and antisymmetric under the reflection
   about the centre of the window (infinite block size).
+- A lower bound is **self-improving** if any constant in it forces the sharp constant: a bounded
+  margin forces a nonnegative one.
 - The **parts** of a window are two overlapping windows that share a dyadic middle; the
   **conditional coupling** of the two ends is their coupling after the middle is eliminated.
 - The **ends** of a long window are its first and last dyadic windows.
@@ -132,8 +139,8 @@ block size.
    the binding energy plus the absolute constant `c₀`. Under RH the Poincaré constant lies in
    `[μ, μ + c₀]` (`poincare_constant_mem_of_riemannHypothesis`): gap and binding energy, both of
    order `√ρ`, agree up to a bounded margin, and RH is the sign of that margin.
-12. *Under RH the margin tends to zero* (`exists_plane_neutralForm_le_of_riemannHypothesis`): at
-    infinite block size the neutral form is Weil's form of the zeros on the hyperplane `A = 0`,
+12. *Calibration: under RH the margin tends to zero* (`exists_plane_neutralForm_le_of_riemannHypothesis`):
+    at infinite block size the neutral form is Weil's form of the zeros on the hyperplane `A = 0`,
     hence nonnegative under RH (`neutralForm_nonneg_of_charge_eq_zero`). Three copies of a fixed
     profile spread over the scale `L`, `3L` apart, have transforms `L β̂(Lγ)`; as every zero has
     `|γ| ≥ 2`, their Weil form is `O(L^{−2})` times the coefficients while their mass is `L` times
@@ -179,6 +186,36 @@ block size.
     state live in the even sector, where the pole term is a negative square of rank one, and the
     second bound state that RH excludes is odd.
 
+**Self-improvement.**
+17. *Landau from both sides* (`riemannHypothesis_of_lagStructure_le`,
+    `riemannHypothesis_of_le_lagStructure`): the profile `f₀` sees every zero off the line, so a
+    one-sided bound on its lag structure `S(v)`, from above or from below, forces RH. On the two
+    states of the ends the neutral form is `N(f₀(· + v/2) ∓ f₀(· − v/2)) = 2 Re S(0) ∓ 2 Re S(v)`
+    (`neutralForm_twoEndOdd`, `neutralForm_twoEndEven`), at mass at most `4 ∫ f₀²`. Hence **the
+    odd sector is unbound iff it is bounded below by some multiple of the mass**
+    (`riemannHypothesis_iff_odd_sector_bddBelow`), and the rate at which the odd states of the
+    two ends sink measures the zeros: for `0 ≤ θ < ½`, every zero has `|Re ρ − ½| ≤ θ` iff
+    `N(o_v) ≥ −C e^{θ v}` for all `v ≥ 0` (`zetaZeroWidth_le_iff_twoEndOdd_rate`).
+18. *The margin self-improves* (`riemannHypothesis_iff_margin_bddBelow`): without RH, `S` is
+    unbounded above and below, so the antisymmetric state at one lag and the symmetric state at
+    another are both as deep as we like. They are odd and even about the same centre, hence
+    orthogonal for the neutral form (`neutralForm_even_add_odd`: the reflection fixes the form and
+    sends `e + t o` to `e − t o`) and for the mass; their plane lies below any multiple of the mass.
+    **RH iff the margins of all windows are bounded below**: a second bound state is either absent
+    or of unbounded depth.
+19. *At finite block size* (`riemannHypothesis_iff_neutralWindow_margin_bddBelow`): RH iff for
+    some `C` every window matrix `N_W + C` with `R ≤ J` has one negative square, i.e. iff the
+    Poincaré constant of every Doob chain is at least its binding energy minus `C`. A lower
+    bound on the step packets passes to the comb, to all divisors through the block averages, and
+    to the zeros on the samples of the translated odd state
+    (`riemannHypothesis_iff_packetForm_stepPacket_bddBelow`); a step packet below `−C` times its
+    mass gives, on a window `(1, 2M]`, the plane of AGZ (refinement, far window, block one) on
+    which `N + C` is negative (`exists_two_le_hermNegIndex_neutralWindow_add`). The windows
+    `(1, 2M]` suffice (`riemannHypothesis_iff_initialWindow_margin_bddBelow`); they are the leading
+    principal minors of one infinite matrix, and **RH is the finiteness of its second eigenvalue**.
+    With the bounded margin (mechanism 11) the margin of the window matrices lies in `[0, c₀]`
+    under RH and is unbounded below otherwise.
+
 ## 5. Pillar theorems
 
 | Pillar | Lean |
@@ -189,9 +226,12 @@ block size.
 | Archimedean floor; Chebyshev ceiling of the binding energy | `le_eigenvalue_of_prime_free`, `le_eigenvalue_of_contacts` |
 | Binding energy of order `√ρ` from the two ends | `eigenvalue_le_twoEnds`, `psi_sub_psi_ge`, `eigenvalue_mul_harmonic_le` |
 | The ground state charges both ends | `sq_binding_excess_le` |
-| Binding energy and Weil's form share the pole capacity; under RH `μ ≤ √ρ − 1/√ρ + log ρ` | `binding_add_packetForm_le`, `neg_eigenvalue_le_poleCapacity_of_riemannHypothesis` |
-| Under RH the margin of a long window tends to zero | `exists_plane_neutralForm_le_of_riemannHypothesis` |
+| Binding energy and Weil's form share the pole capacity; calibration: under RH `μ ≤ √ρ − 1/√ρ + log ρ` | `binding_add_packetForm_le`, `neg_eigenvalue_le_poleCapacity_of_riemannHypothesis` |
+| Calibration: under RH the margin of a long window tends to zero | `exists_plane_neutralForm_le_of_riemannHypothesis` |
 | RH iff the odd sector of every window carries no bound state | `riemannHypothesis_iff_forall_odd_neutralForm_nonneg` |
+| The odd sector self-improves; its rate is the abscissa of the zeros | `riemannHypothesis_iff_odd_sector_bddBelow`, `zetaZeroWidth_le_iff_twoEndOdd_rate` |
+| RH iff the margins are bounded below, at infinite and at finite block size; the windows `(1, 2M]` suffice | `riemannHypothesis_iff_margin_bddBelow`, `riemannHypothesis_iff_neutralWindow_margin_bddBelow`, `riemannHypothesis_iff_initialWindow_margin_bddBelow` |
+| RH iff Weil's form on step packets is bounded below by a multiple of the mass | `riemannHypothesis_iff_packetForm_stepPacket_bddBelow` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
@@ -206,7 +246,7 @@ block size.
 | 3 | Comparison of a window with its parts through the floor trees | answered by the overlap law: exact, of full rank, with the trees between the ends in `X` |
 | 4 | A curvature bound for the floor trees | open |
 | 5 | The gap of the dilation process | answered below ratio `9/2`: zero, with a number of components of three blocks proportional to the block size; the mixing that RH needs on them comes from the jets; from ratio `9/2` on these components disappear and the gap is open |
-| 6 | Does the margin have a limit along the ratios | at infinite block size and under RH: yes, `0` (`exists_plane_neutralForm_le_of_riemannHypothesis`); at finite block size it lies in `[0, c₀]` under RH; the limit at finite block size and whether a uniform lower bound forces RH are open |
+| 6 | Does the margin have a limit along the ratios; does a uniform lower bound force RH | a uniform lower bound forces RH, at infinite block size (`riemannHypothesis_iff_margin_bddBelow`) and for the window matrices (`riemannHypothesis_iff_neutralWindow_margin_bddBelow`); calibration: under RH the margin lies in `[0, c₀]` and tends to `0` at infinite block size; the limit at finite block size is open |
 | 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
 | 8 | A recursion along doublings | answered in overlap form: a window reduces to two shorter parts and one contraction; the balanced split sends the ratio `ρ` to `2(1 + ρ)/3` and `3ρ/(1 + ρ)` |
 
@@ -219,7 +259,9 @@ the neutral index; the archimedean floor through the Lévy representation; the w
 for floor maps; the root and two-end packets with Chebyshev's bounds; the refined coarse plane;
 floor-tree components; the long-map Schur test between bottom and top; the pole capacity through
 `t ≤ sinh t`; the cut law; reflection of packets and the parity split; spread copies of a profile
-and the zero sum under RH with `|γ| ≥ 2`.
+and the zero sum under RH with `|γ| ≥ 2`; the pole-free profile and the states of the two ends;
+Landau's argument from both sides on a lag structure; the transfer of a fixed lower bound from
+step packets through the comb to the zeros; the plane of AGZ with the mass.
 
 **To build.** The Doob chain at infinite block size as an operator; canonical paths and comparison of
 Dirichlet forms across the dyadic cuts; transfer of infinite-block-size statements to large block
@@ -239,15 +281,21 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 | The binding energy may reach the Chebyshev ceiling `4√ρ` | Under RH it is at most the pole capacity `√ρ − 1/√ρ + log ρ`; the trees reproduce the pole |
 | Gluing needs the positive cone | Through a dyadic middle the two-well inequality becomes a forward contraction on the whole space |
 | A Cheeger bound suffices | Cheeger loses a square, and the margin is bounded: only constants matter |
+| The Poincaré inequality must be proved with the sharp constant | An additive loss is free: gap `≥ μ − C` for one `C` and all windows forces gap `≥ μ` |
+| A deep second bound state can be confined to a few windows | The margin self-improves: a second bound state of one window forces second bound states of unbounded depth |
 | The reflection acts on step packets | It maps unit blocks to reciprocal blocks; it is a symmetry of the limit only |
 
 ## 9. Open research topics
 
 - The contraction of the conditional coupling at ratio three (B192) and at the balanced split of
   every ratio; norms of `X` against `S₁`, `S₃`.
-- The margin at finite block size: transfer of the limit `0` from infinite block size through the
-  tower; whether a uniform lower bound on the margin already forces RH (an off-line zero should
-  drive the margin of long windows to `−∞` at the rate `e^{(β − 1/2) log ρ}`).
+- The rate of the margin at finite block size: whether `margin ≥ −C ρ^θ` forces `Θ ≤ ½ + θ`, as
+  the odd states of the two ends do at infinite block size (the trivial bound `margin ≥ −μ ≳ −√ρ`
+  is the trivial `Θ ≤ 1`). The plane of AGZ lives on windows of unbounded ratio, so the rate needs
+  a construction inside windows of ratio comparable to the lag.
+- Strategies with an additive loss: a comparison or path argument that proves gap `≥ μ − C`
+  suffices; which of the known losses (the margin bound `c₀`, the archimedean floor `5.4`, the
+  overlap contraction) are additive.
 - The unconditional leading constant of the binding energy: the pole profile `e^{±u/2}` on the two
   ends against the prime number theorem; the deficit `cap − μ` as a reading of the zeros.
 - The shape of the ground state between the two ends.
@@ -266,7 +314,9 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 | SelectivePositivityAndThresholdLaws (SPTL) | parity sectors and the selective refutation below `103/50` |
 | LatticeSectionTheory (LST) | the regional logarithmic spectrum of the jets |
 | RHTower | the Lévy density and the constant `A(0)` of the archimedean form; the odd and even pole-weight windows (`WeilParityPoleWeightWindows`), of which the odd-sector law is the case `β = 0`; the zeros have ordinate at least `2` |
-| SquareRootThreshold (SRT) | tempered zero configurations; RH as the critical-line property of the zero configuration |
+| SquareRootThreshold (SRT) | tempered zero configurations; RH as the critical-line property of the zero configuration; lag structures, two-bump tests and Landau's argument from above |
+| SurfaceOfSpecZ | Landau's argument from below on the lag structure |
+| HodgeTheoryOfAFixedPart (HFP) | the comb at finite scale: samples of packets, block averages, the limit to the zeros |
 | ArithmeticOrientationGeometry (AOG) | one generic orbit decides RH; the negative index of Weil Gram matrices on translates counts the zeros right of the line, the natural route to a converse of the vanishing margin |
 
 ## 11. Success criteria

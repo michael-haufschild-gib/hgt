@@ -149,11 +149,19 @@ warnings, with the standard three axioms, and is wired with its required
 olean. It proves absolute integrability of mixed jumps and their exact
 Gamma identity, retaining the constant mass offset.
 
-Ten further supporting modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+`HalfLineExponentialBarrierJumps` passes its final plain source audit
+without warnings, with the standard three axioms, and is wired with its
+required olean. It proves the exact integrated exponential correction
+bounding each mixed Gamma jump from below.
+
+`ExponentialBarrierPrimeEdges` passes its final plain source audit without
+warnings, with the standard three axioms, and is wired with its required
+olean. It proves prime mixed-form symmetry and the support-restricted
+diagonal comparison for each literal prime term.
+
+Eight further supporting modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
 await final source audits:
 
-- `HalfLineExponentialBarrierJumps`: the integrated exponential correction for each mixed Gamma jump.
-- `ExponentialBarrierPrimeEdges`: the support-restricted diagonal comparison for each literal prime term.
 - `ExponentialBarrierPrimeRows`: a Chebyshev bound for every finite forward row and convergence of the complete backward row.
 - `ExponentialBarrierPrimeComparison`: the integrated complete prime mixed-form comparison, passing from finite edge sums by actual-domain absolute summability.
 - `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
@@ -171,7 +179,7 @@ absorption of both forcing rows.
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. Five of sixteen supporting modules are audited and wired.
+also `L²`. Seven of sixteen supporting modules are audited and wired.
 
 `ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
 negation invariance, the full-line weak row identity, vanishing of a high
