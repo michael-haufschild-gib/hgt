@@ -46,10 +46,12 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
     `H¹(G, W) = 0`; then `Π_{ω ⊂ S} |G_ω|` divides `[K^× : (K ∩ W) N(L^×)]`
     - [x] G5d1 permutation modules: `H¹(G, ℤ^X) = 0`, `|Ĥ⁰(G, ℤ^X)| = Π_ω |G_ω|`
       (`agz-norm-index-of-s-units`)
-    - [ ] G5d2 lattice filtration `Λ_j` of a normal basis, groups `W_k = 1 + Λ_k`
-    - [ ] G5d3 `H¹(G, W_k) = 0`
-    - [ ] G5d4 `[L^{(S)} : W_k] < ∞`
-    - [ ] G5d5 `Π_{ω ⊂ S} |G_ω|` divides `[K^× : (K ∩ W_k) N(L^×)]`
+    - [x] G5d2 lattice filtration `Λ_j` of a normal basis, groups `W_k = 1 + Λ_k`
+      (`congruenceSubgroup`, `RHTower/Artin/CongruenceSubgroupsOfANormalBasisLattice`)
+    - [x] G5d3 `H¹(G, W_k) = 0` (`exists_mem_congruenceSubgroup_actionDiff_eq`)
+    - [x] G5d4 `[L^{(S)} : W_k] < ∞` (`relIndex_congruenceSubgroup_ker_divMap_ne_zero`)
+    - [x] G5d5 `[K^× : (K ∩ W_k) N(L^×)] = Π_{ω ⊂ S} |G_ω| · h_g(L^×/W_k)`
+      (`relIndex_range_actionNorm_sup_range_baseIncl`)
     - [ ] G5d6 signs: the factor `Π_{ω ⊂ X} |G_ω| = 2^ρ`
   - [ ] G5e assembly
 - [ ] G6 `ker Θ_S ⊂ K_{𝔪,1} N(L^×) K_S` for cyclic `L/K` (crossing with cyclotomic extensions)
@@ -95,16 +97,19 @@ number), so with G5b and G5d1: `n · h_f(L_S) = Π_{ω ⊂ X} |G_ω| · Π_{ω �
   a `G`-stable subgroup `C` and `a ∈ C`, `(τ − 1) a ∈ (σ − 1) C`. So `a ∈ Λ_k` with
   `Tr a ∈ Λ_{k+1}` is `(σ − 1) b + Λ_{k+1}` with `b ∈ Λ_k`. For `x = 1 + a ∈ W_k` of norm one,
   `Tr a ∈ Λ_{k+1}`, and `x · z/σz ∈ W_{k+1}` for `z = 1 + b`.
-- *Loss.* For `u ∈ W_M` of norm one and `c₀ = θ / Tr θ`, the resolvent
-  `z = Σ_i u σu ⋯ σ^{i−1}u · σ^i c₀` satisfies `u σz = z` and `z − 1 ∈ Λ_{M−c''}`.
+- *Loss.* For `u = σy/y ∈ W_M` (Hilbert 90), `τy/y ∈ W_M` for all `τ`. With `c₀` of trace one
+  the average `z = Σ_τ (τy/y) τc₀` has `z − 1 = Σ_τ (τy/y − 1) τc₀ ∈ Λ_{M−c''}` and
+  `zy = Tr(y c₀) ∈ K`, so `u = σ(z⁻¹)/z⁻¹`.
 - `H¹(G, W_k) = 0`: descend through the layers to level `M = k + c''`, then apply the loss step.
-- *Finiteness.* For `x` integral at `S` choose `d ∈ 𝓞_K`, `d ≡ 1 mod w^J` (`w ∈ S`), `dx ∈ 𝓞_L`
-  (Chinese remainder theorem in `𝓞_L`, then the norm). With an integral basis `𝓞_L ⊂ Λ_{−c₁}`,
-  so `x ∈ Λ_{−c₁}`, `x − dx ∈ Λ_{J−c₁}`, and `𝓞_L / N₀ 𝓞_L` is finite: `[L^{(S)} : W_k] < ∞`,
-  `L^{(S)}` the elements with `v_w = 0` on `S`.
-- *Index.* `A' = L^× / W_k`. By `H¹(G, W_k) = 0` and Hilbert 90, `(A')^G` is the image of `K^×`:
+- *Finiteness.* `O_{j+c} ⊂ Λ_j`: the coordinate of `y` at `τθ` is `Tr(y d_τ)` for the dual
+  basis of the trace form. For `x` integral at `S` choose `y ∈ 𝓞_L`, `y ≡ 1 mod w^J` (`w ∈ S`),
+  divisible by the denominator of `x` (Chinese remainder theorem): `xy ∈ 𝓞_L`,
+  `x − xy ∈ O_J`. Elements of `L^{(S)}` (`v_w = 0` on `S`) whose approximations agree modulo
+  `w^J`, `w ∈ S`, differ by a factor in `1 + O_J ⊂ W_k`; `𝓞_L / w^J` is finite.
+- *Index.* `A' = L^× / W_k`. By `H¹(G, W_k) = 0` and Hilbert 90, `f⁻¹ W_k = K^× W_k`:
   `h_f(A') = [K^× : (K ∩ W_k) N(L^×)]`. The valuations `A' → ℤ^S` have finite kernel
   `L^{(S)} / W_k` and image of finite index, so `h_f(A') = Π_{ω ⊂ S} |G_ω| · h_g(A')` (G5d1).
+  No finiteness of `h_g(A')` is used; it follows in G5e from `[K^× : U] < ∞`.
 - *Signs.* For an orbit `ω ⊂ X` with `|G_ω| = 2` the place `w ∈ ω` is complex over a real place
   of `K`; norms are positive there, and `K ∩ W_k` contains elements of every sign pattern.
 
@@ -126,4 +131,4 @@ for `LF_i/F_i`). Choose `𝔟` in the compositum `F` with `ω_{LF/F}(𝔟)|_L = 
 
 ## Log
 - 2026-11-13 — created; cyclotomic case formalized and moved to its own card
-- 2026-11-13 — G5a–G5c, G5d1 formalized
+- 2026-11-13 — G5a–G5c, G5d1–G5d5 formalized

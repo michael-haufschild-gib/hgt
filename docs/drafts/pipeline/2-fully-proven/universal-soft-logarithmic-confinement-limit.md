@@ -82,12 +82,11 @@ The elementary bounds `1-1/b≤log b≤b-1` put the limiting lower bound above `
 
 ## Lean status
 
-`HalfLineConfinementTail` proves the weighted-tail estimate and `8M(F)≤W(F)-m(F)`; its plain source audit passes with exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Six modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
 
-`WeightedSourceTruncation` proves closure of the weighted source domain under measurable indicators and identifies both retained and discarded masses. Its plain source audit has the same three axioms. Both modules are wired.
+- `HalfLineConfinementTail`: weighted-tail control and `8M(F)≤W(F)-m(F)`.
+- `WeightedSourceTruncation`, `WeightedSourceLocalizedPairing`: indicator closure, exact restricted masses, and localized weighted Cauchy–Schwarz.
+- `HalfLineTerminalTruncation`, `HalfLineConfinementPoleDecay`: uniform disappearance of the full prime-and-pole remainder as unit-profile excess tends to zero (`exists_arithmeticRemainder_small_of_excess`).
+- `FourierFirstMomentWindow`: bounded physical first moment excludes uniform spectral concentration at zero.
 
-`WeightedSourceLocalizedPairing` proves the restricted dual-kernel Cauchy–Schwarz bound. `HalfLineTerminalTruncation` proves weighted terminal concentration and uniform disappearance of the full prime form. Both have kernel-checked oleans with the standard three axioms; plain source audits remain.
-
-`HalfLineConfinementPoleDecay` proves uniform disappearance of the complete prime-and-pole remainder on normalized actual-domain profiles (`exists_arithmeticRemainder_small_of_excess`). Its plain source audit passes with the standard three axioms; the module is wired.
-
-First-moment Fourier-window control is being formalized. The dilation-stable logarithmic domain, uniform spectral comparison, and final variational and virial limits remain. Not counted.
+The Gamma-symbol comparison passes its prototype check. The dilation-stable logarithmic domain, uniform spectral comparison, and final variational and virial limits have draft Lean proofs awaiting verification. Not counted.

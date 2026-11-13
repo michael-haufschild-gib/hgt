@@ -350073,4 +350073,3601 @@ end
 
 end
 
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open MeasureTheory Set Filter Complex
+namespace Continuation
+
+theorem vertical_integral_eq_of_shifted_polynomial_gaussian_bound (F : ℂ→ℂ)
+    {a b C : ℝ} (q : ℝ) (n : ℕ) (hab : a≤ b)
+    (hhol : DifferentiableOn ℂ F {s : ℂ | a≤ s.re ∧ s.re≤ b})
+    (hbound : ∀x∈Icc a b,∀t : ℝ,
+      ‖F ((x:ℂ)+t*I)‖≤ C*polynomialGaussian n (t+q)) :
+    (∫t : ℝ,F ((a:ℂ)+t*I))=∫t : ℝ,F ((b:ℂ)+t*I) := by
+  let G : ℂ→ℂ := fun s=> F (s-(q:ℂ)*I)
+  have hg : DifferentiableOn ℂ G {s : ℂ | a≤ s.re ∧ s.re≤ b} := by
+    apply hhol.comp (differentiable_id.sub_const ((q:ℂ)*I)).differentiableOn
+    intro s hs
+    simpa using hs
+  have hbnd (x : ℝ) (hx : x∈Icc a b) (t : ℝ) :
+      ‖G ((x:ℂ)+t*I)‖≤ C*polynomialGaussian n t := by
+    have heq : (x:ℂ)+t*I-(q:ℂ)*I=(x:ℂ)+(t-q)*I := by ring
+    simpa only [G,heq,sub_add_cancel,Complex.ofReal_sub] using hbound x hx (t-q)
+  have hi := vertical_integral_eq_of_polynomial_gaussian_bound G n hab hg hbnd
+  have heq (x : ℝ) : (∫t : ℝ,G ((x:ℂ)+t*I))=∫t : ℝ,F ((x:ℂ)+t*I) := by
+    have hg' : (fun t : ℝ=> G ((x:ℂ)+t*I))=(fun t : ℝ=> F ((x:ℂ)+(t+(-q))*I)) := by
+      funext t
+      dsimp [G]
+      congr 1
+      ring
+    rw [hg']
+    simpa only [Complex.ofReal_add,Complex.ofReal_neg] using
+      (integral_add_right_eq_self (fun t : ℝ=> F ((x:ℂ)+t*I)) (-q) (μ:=volume))
+  simpa only [heq] using hi
+
+lemma shifted_height_two (t q : ℝ) :
+    (3+|t|)^2≤2*(3+|q|)^2*(1+|t+q|^2) := by
+  have ht : |t|≤|t+q|+|q| := by
+    calc
+      |t|=|(t+q)+(-q)| := by ring_nf
+      _ ≤ |t+q|+|-q| := abs_add_le _ _
+      _ = _ := by rw [abs_neg]
+  have hq : 0≤|q| := abs_nonneg _
+  have hu : 0≤|t+q| := abs_nonneg _
+  have hb : (3+|t|)^2≤(3+|q|+|t+q|)^2 := by
+    exact pow_le_pow_left₀ (by positivity) (by linarith) 2
+  have hs := sq_nonneg ((3+|q|)-|t+q|)
+  have hm : 0≤((3+|q|)^2-1)*|t+q|^2 := mul_nonneg (by nlinarith) (sq_nonneg _)
+  nlinarith
+
+end Continuation
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators
+open MeasureTheory Set
+namespace ProbeHighRowFamily
+open ProbePhysical ProbeMellinBoundary
+
+lemma two_height_bound (t v w : ℝ) :
+    (3+|t|)^2*(3+|w|)^2≤81*jointHeight t v w^4 := by
+  have ht : 3+|t|≤3*jointHeight t v w := by
+    unfold jointHeight
+    linarith [abs_nonneg t,abs_nonneg v,abs_nonneg w]
+  have hw : 3+|w|≤3*jointHeight t v w := by
+    unfold jointHeight
+    linarith [abs_nonneg t,abs_nonneg v,abs_nonneg w]
+  calc
+    _ ≤ (3*jointHeight t v w)^2*(3*jointHeight t v w)^2 := by gcongr
+    _ = _ := by ring
+
+theorem source_profile_integral_bound (W0 W1 : SchwartzMap ℝ ℂ)
+    (a0 b0 a1 b1 : ℝ) (ha0 : 0< a0) (ha1 : 0< a1)
+    (hW0 : Function.support W0⊆Icc a0 b0) (hW1 : Function.support W1⊆Icc a1 b1)
+    (slo shi zlo zhi wlo whi : ℝ) (hzlo : 0< zlo) :
+    ∃C : ℝ,0< C ∧ ∀σ∈Icc slo shi,∀r∈Icc zlo zhi,∀υ∈Icc wlo whi,
+      ∀X Y Z : ℝ,0< X → 0< Y → 0< Z → ∀A : ℝ,0≤ A → ∀F : HeightSpace→ℝ,
+      AEStronglyMeasurable F heightMeasure → (∀p,0≤ F p) →
+      (∀p,F p≤ A*(3+|p.1.1|)^2*(3+|p.2|)^2) →
+      Integrable (fun p=>‖sourceMellinWeight W0 W1 X Y Z
+        ((σ:ℂ)+p.1.1*Complex.I) ((υ:ℂ)+p.2*Complex.I) ((r:ℂ)+p.1.2*Complex.I)‖*F p) heightMeasure ∧
+      (∫p,‖sourceMellinWeight W0 W1 X Y Z
+        ((σ:ℂ)+p.1.1*Complex.I) ((υ:ℂ)+p.2*Complex.I) ((r:ℂ)+p.1.2*Complex.I)‖*F p ∂heightMeasure)
+        ≤ C*A*(X^(1/2-r)*Z^(σ+r-1)*Y^(υ-1)) := by
+  obtain ⟨D,hD,hM⟩ := profile_uniform_moments W0 W1 a0 b0 a1 b1 ha0 ha1 hW0 hW1
+    slo shi zlo zhi wlo whi hzlo 4
+  refine ⟨81*D,by positivity,?_⟩
+  intro σ hσ r hr υ hυ X Y Z hX hY hZ A hA F hF hF0 hFb
+  let E : ℝ := X^(1/2-r)*Z^(σ+r-1)*Y^(υ-1)
+  have hE : 0≤ E := by dsimp [E];positivity
+  let M : HeightSpace→ℝ := fun p=> jointHeight p.1.1 p.1.2 p.2^4*‖onLines W0 W1 σ r υ p‖
+  have hMi : Integrable M heightMeasure := (hM σ hσ r hr υ hυ).1
+  have hMb : (∫p,M p ∂heightMeasure)≤ D := (hM σ hσ r hr υ hυ).2
+  let f : HeightSpace→ℝ := fun p=>‖sourceMellinWeight W0 W1 X Y Z
+    ((σ:ℂ)+p.1.1*Complex.I) ((υ:ℂ)+p.2*Complex.I) ((r:ℂ)+p.1.2*Complex.I)‖*F p
+  have hfm : AEStronglyMeasurable f heightMeasure :=
+    (sourceMellinWeight_initial_continuous W0 W1 a1 b1 ha1 hW1 X Y Z hX hY hZ
+      σ r υ (hzlo.trans_le hr.1)).norm.aestronglyMeasurable.mul hF
+  have hf0 (p : HeightSpace) : 0≤ f p := mul_nonneg (norm_nonneg _) (hF0 p)
+  have hfb (p : HeightSpace) : f p≤(E*A*81)*M p := by
+    have h1 := (hFb p).trans (by
+      simpa only [mul_assoc] using mul_le_mul_of_nonneg_left (two_height_bound p.1.1 p.1.2 p.2) hA)
+    have hs : ‖sourceMellinWeight W0 W1 X Y Z ((σ:ℂ)+p.1.1*Complex.I)
+        ((υ:ℂ)+p.2*Complex.I) ((r:ℂ)+p.1.2*Complex.I)‖=E*‖onLines W0 W1 σ r υ p‖ := by
+      rw [sourceMellinWeight_eq_scale,norm_mul,sourceScale_norm X Y Z hX hY hZ]
+      simp [E,onLines]
+    dsimp only [f]
+    rw [hs]
+    calc
+      _ ≤ (E*‖onLines W0 W1 σ r υ p‖)*(A*(81*jointHeight p.1.1 p.1.2 p.2^4)) :=
+        mul_le_mul_of_nonneg_left h1 (mul_nonneg hE (norm_nonneg _))
+      _ = _ := by dsimp [M];ring
+  have hfi : Integrable f heightMeasure := (hMi.const_mul (E*A*81)).mono' hfm
+    (Filter.Eventually.of_forall fun p=> by rw [Real.norm_eq_abs,abs_of_nonneg (hf0 p)];exact hfb p)
+  refine ⟨hfi,?_⟩
+  calc
+    (∫p,f p ∂heightMeasure) ≤ ∫p,(E*A*81)*M p ∂heightMeasure :=
+      integral_mono hfi (hMi.const_mul _) hfb
+    _ = (E*A*81)*(∫p,M p ∂heightMeasure) := integral_const_mul _ _
+    _ ≤ (E*A*81)*D := mul_le_mul_of_nonneg_left hMb (by positivity)
+    _ = _ := by ring
+
+end ProbeHighRowFamily
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePhysical
+open Eisenstein CanonicalRowCompletion CanonicalQuadraticSieve CubicEisenstein
+open CompletedGauss  GaussianShiftedPartition CenteredMomentCommonSupport
+open CenteredMomentSupportedCorrelation  ProbePrimePower ProbeLocal ProbeEuler
+local notation "O" => Eisenstein.O
+
+lemma finite_fourier_unit_scale {R : Type*} [CommRing R] [Fintype R]
+    (F : R → ℂ) (ψ : AddChar R ℂ) (u : Rˣ) (c : ℂ) (hc : c ≠ 0)
+    (hF : ∀ x, F ((u : R) * x) = c * F x) (H : R) :
+    (∑ x, F x * ψ (((u : R) * H) * x)) = c⁻¹ * ∑ x, F x * ψ (H*x) := by
+  have he : (∑ x, F x * ψ (H*x)) = c * ∑ x, F x * ψ (((u : R)*H)*x) := by
+    rw [← Equiv.sum_comp u.mulLeft (fun x => F x * ψ (H*x))]
+    simp only [Units.mulLeft_apply, hF, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro x hx
+    rw [show H*((u : R)*x) = ((u : R)*H)*x by ring]
+    ring
+  rw [he, ← mul_assoc, inv_mul_cancel₀ hc, one_mul]
+
+theorem barePhysicalFourier_unit_frequency (A s : O)
+    (hA : Supported (Ideal.span {A})) (hs : Supported (Ideal.span {s}))
+    (b H : O) (hcop : IsCoprime b (A*s)) :
+    barePhysicalFourier A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA)
+        (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs) (b*H) =
+      ((idealRowHom b (Ideal.span {A}))⁻¹ * idealRowHom b (Ideal.span {s})) *
+        barePhysicalFourier A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA)
+          (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs) H := by
+  have hAs := mul_ne_zero (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs)
+  let := finiteEisensteinQuotientOfNonzero hAs
+  let : Fintype (Residue (A*s)) := Fintype.ofFinite _
+  let u := residueUnit (A*s) b hcop.symm
+  have hcA := idealRowHom_ne_zero_of_coprime A b hA hcop.of_mul_right_left.symm
+  have hcs := idealRowHom_ne_zero_of_coprime s b hs hcop.of_mul_right_right.symm
+  have hF (x : Residue (A*s)) :
+      movingQuotient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs) ((u : Residue (A*s))*x) =
+        (idealRowHom b (Ideal.span {A}) * (idealRowHom b (Ideal.span {s}))⁻¹) *
+          movingQuotient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs) x := by
+    exact movingQuotient_unit_scale A s hs b hcop.of_mul_right_right x
+  have he := finite_fourier_unit_scale (movingQuotient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs))
+    (primitiveTrace (A*s) hAs) u _ (mul_ne_zero hcA (inv_ne_zero hcs)) hF
+    (Ideal.Quotient.mk _ H)
+  unfold barePhysicalFourier elementFourier
+  simp only [tsum_fintype]
+  change (∑ x, movingQuotient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs) x *
+    primitiveTrace (A*s) hAs (Ideal.Quotient.mk _ (b*H)*x)) =
+      _ * ∑ x, movingQuotient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs) x *
+        primitiveTrace (A*s) hAs (Ideal.Quotient.mk _ H*x)
+  simpa only [u, residueUnit_coe, map_mul, mul_inv_rev, inv_inv, mul_comm] using he
+
+theorem bareCongruenceCoefficient_unit_frequency (A s : O)
+    (hA : Supported (Ideal.span {A})) (hs : Supported (Ideal.span {s}))
+    (b H : O) (hcop : IsCoprime b (A*s)) :
+    bareCongruenceCoefficient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) (b*H) =
+      ((idealRowHom b (Ideal.span {A}))⁻¹ * idealRowHom b (Ideal.span {s})) *
+        bareCongruenceCoefficient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) H := by
+  have he := barePhysicalFourier_unit_frequency A s hA hs b H hcop
+  simp only [barePhysicalFourier_eq] at he
+  have hn : (Ideal.absNorm (Ideal.span {s}) : ℂ) ≠ 0 := by
+    exact_mod_cast Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr (CenteredMomentSupportedCorrelation.supported_element_ne_zero s hs))
+  apply mul_left_cancel₀ hn
+  rw [he]
+  ring
+
+lemma idealRowHom_norm_one_of_coprime (s b : O)
+    (hs : Supported (Ideal.span {s})) (hcop : IsCoprime b s) :
+    ‖idealRowHom b (Ideal.span {s})‖ = 1 := by
+  have h6 := idealRowHom_sixth_mask b (Ideal.span {s}) ((supported_iff_native _).mp hs)
+  rw [idealRowHom_argument_pow _ _ _ ((supported_iff_native _).mp hs).1,
+    if_pos ((Ideal.isCoprime_span_singleton_iff s b).mpr hcop.symm)] at h6
+  exact Complex.norm_eq_one_of_pow_eq_one h6 (by decide : (6 : ℕ) ≠ 0)
+
+theorem bareCongruenceCoefficient_unit_frequency_norm (A s : O)
+    (hA : Supported (Ideal.span {A})) (hs : Supported (Ideal.span {s}))
+    (b H : O) (hcop : IsCoprime b (A*s)) :
+    ‖bareCongruenceCoefficient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) (b*H)‖ =
+      ‖bareCongruenceCoefficient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) H‖ := by
+  rw [bareCongruenceCoefficient_unit_frequency A s hA hs b H hcop,
+    norm_mul, norm_mul, norm_inv,
+    idealRowHom_norm_one_of_coprime A b hA hcop.of_mul_right_left,
+    idealRowHom_norm_one_of_coprime s b hs hcop.of_mul_right_right,
+    inv_one, one_mul, one_mul]
+
+theorem bareCongruenceCoefficient_unit_frequency_eq_zero_iff (A s : O)
+    (hA : Supported (Ideal.span {A})) (hs : Supported (Ideal.span {s}))
+    (b H : O) (hcop : IsCoprime b (A*s)) :
+    bareCongruenceCoefficient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) (b*H) = 0 ↔
+      bareCongruenceCoefficient A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) H = 0 := by
+  rw [← norm_eq_zero, bareCongruenceCoefficient_unit_frequency_norm A s hA hs b H hcop,
+    norm_eq_zero]
+
+lemma supported_element_power (p : O) (hs : Supported (Ideal.span {p})) (n : ℕ) :
+    Supported (Ideal.span {p^n}) := by
+  rw [← Ideal.span_singleton_pow]
+  exact supported_pow hs n
+
+lemma idealRowHom_prime_power_value (p b : O) [(Ideal.span {p} : Ideal O).IsMaximal]
+    (hg : lambda ∉ Ideal.span {p}) (n : ℕ) :
+    idealRowHom b (Ideal.span {p^n}) =
+      (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^n := by
+  rw [← Ideal.span_singleton_pow, map_pow, idealRowHom_prime _ _ hg]
+
+lemma complexSexticChar_unit_power_ne_zero (p b : O) [(Ideal.span {p} : Ideal O).IsMaximal]
+    (hg : lambda ∉ Ideal.span {p}) (hcop : IsCoprime b p) (t : ℕ) :
+    (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^t ≠ 0 := by
+  apply pow_ne_zero
+  exact (complexSexticChar (Ideal.span {p}) hg).apply_ne_zero_iff.mpr
+    ((isUnit_quotient_span_iff p b).mpr hcop.symm)
+
+theorem bareCongruenceCoefficient_prime_power_unit_frequency (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal] (hs : Supported (Ideal.span {p}))
+    (hg : lambda ∉ Ideal.span {p}) (b : O) (hcop : IsCoprime b p) (t k j : ℕ) :
+    bareCongruenceCoefficient (p^t) (p^k) (pow_ne_zero _ hp.ne_zero) (b*p^j) =
+      ((complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^k /
+        (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^t) *
+          bareCongruenceCoefficient (p^t) (p^k) (pow_ne_zero _ hp.ne_zero) (p^j) := by
+  have he := bareCongruenceCoefficient_unit_frequency (p^t) (p^k)
+    (supported_element_power p hs t) (supported_element_power p hs k) b (p^j)
+    (hcop.pow_right.mul_right hcop.pow_right)
+  simpa only [idealRowHom_prime_power_value p b hg, div_eq_mul_inv, mul_comm] using he
+
+theorem bareCongruenceCoefficient_all_prime_powers_unit (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal] (hs : Supported (Ideal.span {p}))
+    (hg : lambda ∉ Ideal.span {p}) (b : O) (hcop : IsCoprime b p) (t k j : ℕ) :
+    bareCongruenceCoefficient (p^t) (p^k) (pow_ne_zero _ hp.ne_zero) (b*p^j) =
+      ((complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^k /
+        (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^t) *
+          sourceScalar p hp hg t k j := by
+  rw [bareCongruenceCoefficient_prime_power_unit_frequency p hp hs hg b hcop t k j,
+    bareCongruenceCoefficient_all_prime_powers p hp hg t k j]
+
+theorem barePhysicalFourier_all_prime_powers_unit (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal] (hs : Supported (Ideal.span {p}))
+    (hg : lambda ∉ Ideal.span {p}) (b : O) (hcop : IsCoprime b p) (t k j : ℕ) :
+    barePhysicalFourier (p^t) (p^k) (pow_ne_zero _ hp.ne_zero)
+        (pow_ne_zero _ hp.ne_zero) (b*p^j) =
+      (Ideal.absNorm (Ideal.span {p^k}) : ℂ) *
+        (((complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^k /
+          (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^t) *
+            sourceScalar p hp hg t k j) := by
+  rw [barePhysicalFourier_eq,
+    bareCongruenceCoefficient_all_prime_powers_unit p hp hs hg b hcop t k j]
+
+theorem bareCongruenceCoefficient_all_prime_powers_unit_norm (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal] (hs : Supported (Ideal.span {p}))
+    (hg : lambda ∉ Ideal.span {p}) (b : O) (hcop : IsCoprime b p) (t k j : ℕ) :
+    ‖bareCongruenceCoefficient (p^t) (p^k) (pow_ne_zero _ hp.ne_zero) (b*p^j)‖ =
+      ‖sourceScalar p hp hg t k j‖ := by
+  have he := bareCongruenceCoefficient_unit_frequency_norm (p^t) (p^k)
+    (supported_element_power p hs t) (supported_element_power p hs k) b (p^j)
+    (hcop.pow_right.mul_right hcop.pow_right)
+  rw [bareCongruenceCoefficient_all_prime_powers p hp hg t k j] at he
+  exact he
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace ProbePrimePower
+open Eisenstein CompletedGauss 
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p} : Ideal O).IsMaximal]
+  (hg : lambda ∉ Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p}) ≠ 2)
+include hc
+
+theorem row_even_kzero (r m j : ℕ) (hj : j<6) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) (6*r+5) 0 (j+6*m) =
+      if r+1≤ m then
+        (Ideal.absNorm (Ideal.span {p}):ℂ)^(6*r+5)*((Ideal.absNorm (Ideal.span {p}):ℂ)-1)
+      else if j=5 ∧ m=r then -(Ideal.absNorm (Ideal.span {p}):ℂ)^(6*r+5) else 0 := by
+  rw [positiveScalar_kzero,complexSexticChar_primePowerGauss_at_pow p hp hg hc,
+    if_pos (by omega : 6∣6*r+5+1)]
+  by_cases hm : r+1≤ m
+  · rw [if_pos hm,if_pos (by omega),if_pos (by omega),pow_succ]
+    ring
+  · rw [if_neg hm,if_neg (by omega)]
+    by_cases hb : j=5 ∧ m=r
+    · rw [if_pos hb,if_pos (by omega),zero_sub]
+    · rw [if_neg hb,if_neg (by omega),sub_self]
+
+theorem row_nonprincipal_kzero (r m j d : ℕ) (hj : j<6) (hd : d<5) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) (6*r+d) 0 (j+6*m) =
+      if j=d ∧ m=r then
+        (Ideal.absNorm (Ideal.span {p}):ℂ)^(6*r+d)*
+          primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg^(d+1)) 1
+      else 0 := by
+  rw [positiveScalar_kzero,complexSexticChar_primePowerGauss_at_pow p hp hg hc,
+    if_neg (by omega : ¬6∣6*r+d+1)]
+  rw [show 6*r+d+1=6*r+(d+1) by omega,complexSexticChar_pow_six_mul_add _ hg hc]
+  have he : j+6*m=6*r+d ↔ j=d ∧ m=r := by omega
+  simp only [he]
+
+theorem row_squarefree_kone (r m j : ℕ) (hj : j<6) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) (6*r) 1 (j+6*m) =
+      ((complexSexticChar (Ideal.span {p}) hg (-1))⁻¹ *
+        primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 1) *
+        (if 6*r+1< j+6*m then
+          (Ideal.absNorm (Ideal.span {p}):ℂ)^(6*r)*((Ideal.absNorm (Ideal.span {p}):ℂ)-1)
+        else if j=1 ∧ m=r then -(Ideal.absNorm (Ideal.span {p}):ℂ)^(6*r) else 0) := by
+  rw [positiveScalar_actual_table p hp hg hc,if_neg (by decide : (1:ℕ)≠0)]
+  by_cases hpos : 1≤ j+6*m
+  · rw [if_pos ⟨rfl,hpos⟩,gaussValuationTable,if_pos (by omega : 6∣6*r)]
+    congr 1
+    by_cases hb : 6*r+1< j+6*m
+    · rw [if_pos hb,if_pos (by omega),if_pos (by omega),pow_succ]
+      ring
+    · rw [if_neg hb,if_neg (by omega)]
+      by_cases he : j=1 ∧ m=r
+      · rw [if_pos he,if_pos (by omega),zero_sub]
+      · rw [if_neg he,if_neg (by omega),sub_self]
+  · rw [if_neg (by omega),if_neg (by omega),if_neg (by omega),mul_zero]
+
+theorem row_nonprincipal_kone (r m j d : ℕ) (hj : j<6) (hd0 : 0< d) (hd : d<5) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) (6*r+d) 1 (j+6*m) =
+      if j=d+1 ∧ m=r then
+        ((complexSexticChar (Ideal.span {p}) hg (-1))⁻¹ *
+          primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 1) *
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(6*r+d)*
+            primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg^d) 1)
+      else 0 := by
+  rw [positiveScalar_actual_table p hp hg hc,if_neg (by decide : (1:ℕ)≠0)]
+  by_cases hpos : 1≤ j+6*m
+  · rw [if_pos ⟨rfl,hpos⟩,gaussValuationTable,if_neg (by omega : ¬6∣6*r+d),
+      complexSexticChar_pow_six_mul_add _ hg hc]
+    by_cases he : j=d+1 ∧ m=r
+    · rw [if_pos he,if_pos (by omega)]
+    · rw [if_neg he,if_neg (by omega),mul_zero]
+  · rw [if_neg (by omega),if_neg (by omega)]
+
+end ProbePrimePower
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+
+lemma localCubePhase_step_two (C omega : ℂ) (hC : C^2=omega) (ho : omega^2=1)
+    (e l k : ℕ) : localCubePhase C omega e (l+2) k=localCubePhase C omega e l k := by
+  have hchoose : (l+2).choose 2=l.choose 2+2*l+1 := by
+    rw [show l+2=(l+1)+1 by omega,Nat.choose_succ_succ,Nat.choose_one_right,
+      Nat.choose_succ_succ,Nat.choose_one_right]
+    change l+1+(l+l.choose 2)=l.choose 2+2*l+1
+    omega
+  unfold localCubePhase
+  rw [pow_add C l 2,hC,hchoose]
+  have he : (e+3*(l+2))*k+e*(l+2)+(l.choose 2+2*l+1)=
+      ((e+3*l)*k+e*l+l.choose 2)+(2*(3*k+e+l)+1) := by ring
+  have ht : omega^(2*(3*k+e+l)+1)=omega := by
+    rw [pow_add,pow_mul omega 2,ho,one_pow,pow_one,one_mul]
+  rw [he,pow_add omega _ (2*(3*k+e+l)+1),ht]
+  calc
+    _ = C^l*omega^((e+3*l)*k+e*l+l.choose 2)*omega^2 := by ring
+    _ = _ := by rw [ho,mul_one]
+
+theorem weightedScalar_step_two (Q eta a G1 C omega X W V scalar : ℂ)
+    (hQ : Q≠0) (hC : C^2=omega) (ho : omega^2=1) (e l k m : ℕ) :
+    weightedScalar Q eta a G1 C omega X W V (Q^6*scalar) e (l+2) k (m+1)=
+      evenRatio Q a X V*weightedScalar Q eta a G1 C omega X W V scalar e l k m := by
+  unfold weightedScalar evenRatio
+  rw [localCubePhase_step_two C omega hC ho]
+  rw [pow_add (a*X^3/Q) l 2,pow_succ V m]
+  have hbase : (a*X^3/Q)^2*Q^6=a^2*Q^4*X^6 := by
+    field_simp
+  linear_combination (-eta*X/G1)^e*(a*X^3/Q)^l*localCubePhase C omega e l k*scalar*W^k*V^m*V*hbase
+
+def rowWeightedScalar (Q eta a G1 C omega X W V rho scalar : ℂ) (e l k m : ℕ) : ℂ :=
+  (rho^k/rho^(e+3*l))*weightedScalar Q eta a G1 C omega X W V scalar e l k m
+
+lemma rowWeightedScalar_zero (Q eta a G1 C omega X W V rho : ℂ) (e l k m : ℕ) :
+    rowWeightedScalar Q eta a G1 C omega X W V rho 0 e l k m=0 := by
+  rw [rowWeightedScalar,weightedScalar_zero,mul_zero]
+
+theorem rowWeightedScalar_parameters (Q eta a G1 C omega X W V rho scalar : ℂ)
+    (e l k m : ℕ) :
+    rowWeightedScalar Q eta a G1 C omega X W V rho scalar e l k m=
+      weightedScalar Q (eta/rho) (a/rho^3) G1 C omega X (rho*W) V scalar e l k m := by
+  unfold rowWeightedScalar weightedScalar
+  simp only [pow_add,pow_mul,mul_pow,div_eq_mul_inv,mul_inv_rev,inv_pow]
+  ring
+
+theorem evenRatio_unit (Q a X V rho : ℂ) (hρ : rho^6=1) :
+    evenRatio Q (a/rho^3) X V=evenRatio Q a X V := by
+  unfold evenRatio
+  rw [div_pow,←pow_mul,show 3*2=6 by decide,hρ,div_one]
+
+theorem rowWeightedScalar_step_two (Q eta a G1 C omega X W V rho scalar : ℂ)
+    (hQ : Q≠0) (hC : C^2=omega) (ho : omega^2=1) (hρ : rho^6=1) (e l k m : ℕ) :
+    rowWeightedScalar Q eta a G1 C omega X W V rho (Q^6*scalar) e (l+2) k (m+1)=
+      evenRatio Q a X V*rowWeightedScalar Q eta a G1 C omega X W V rho scalar e l k m := by
+  rw [rowWeightedScalar_parameters,rowWeightedScalar_parameters,
+    weightedScalar_step_two Q (eta/rho) (a/rho^3) G1 C omega X (rho*W) V scalar hQ hC ho,
+    evenRatio_unit Q a X V rho hρ]
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbePrimePower
+open Eisenstein CompletedGauss 
+local notation "O" => Eisenstein.O
+
+lemma gaussValuationTable_step_six (Q G : ℂ) (r n j : ℕ) :
+    gaussValuationTable Q G (r+6) (n+6) (j+6)=Q^6*gaussValuationTable Q G r n j := by
+  have hd : 6∣r+6 ↔ 6∣r := by omega
+  have hle : n+6+1≤ j+6 ↔ n+1≤ j := by omega
+  have hle' : n+6≤ j+6 ↔ n≤ j := by omega
+  have he : j+6=n+6 ↔ j=n := by omega
+  simp only [gaussValuationTable,hd,hle,hle',he]
+  split_ifs <;> simp [pow_add] <;> ring
+
+theorem positiveScalar_step_six (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal]
+    (hg : lambda ∉ Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p}) ≠ 2)
+    (n k j : ℕ) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) (n+6) k (j+6)=
+      (Ideal.absNorm (Ideal.span {p}):ℂ)^6*
+        positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n k j := by
+  rw [positiveScalar_actual_table p hp hg hc,positiveScalar_actual_table p hp hg hc]
+  have hp6 (a : ℕ) : complexSexticChar (Ideal.span {p}) hg^(a+6)=
+      complexSexticChar (Ideal.span {p}) hg^a := by
+    rw [pow_add,complexSexticChar_six _ hg hc,mul_one]
+  by_cases hk : k=0
+  · simp only [hk,ite_true]
+    rw [show n+6+1=(n+1)+6 by omega,hp6,gaussValuationTable_step_six]
+  · simp only [if_neg hk]
+    by_cases hk1 : k=1
+    · subst k
+      by_cases hj : 1≤ j
+      · rw [if_pos ⟨rfl,by omega⟩,if_pos ⟨rfl,hj⟩,hp6,
+          show j+6-1=(j-1)+6 by omega,gaussValuationTable_step_six]
+        ring
+      · have hz : j=0 := by omega
+        subst j
+        simp only [show (1:ℕ)≤0+6 by omega,show ¬(1:ℕ)≤0 by omega,
+          and_true,and_false,ite_true,ite_false,mul_zero]
+        simp only [gaussValuationTable]
+        split_ifs <;> simp_all ; omega
+    · rw [if_neg (by omega),if_neg (by omega),mul_zero]
+
+theorem positiveScalar_zero_below (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal]
+    (hg : lambda ∉ Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p}) ≠ 2)
+    (n k j : ℕ) (hj : j< n) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n k j=0 := by
+  rw [positiveScalar_actual_table p hp hg hc]
+  split_ifs with hk hk1
+  · simp only [gaussValuationTable]
+    split_ifs <;> simp_all <;> omega
+  · have hbelow : j-1< n := by omega
+    have hz : gaussValuationTable (Ideal.absNorm (Ideal.span {p}))
+        (primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg^n) 1) n n (j-1)=0 := by
+      simp only [gaussValuationTable]
+      split_ifs <;> simp_all <;> omega
+    rw [hz,mul_zero]
+  · rfl
+
+end ProbePrimePower
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p} : Ideal O).IsMaximal]
+  (hg : lambda ∉ Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p}) ≠ 2)
+
+def rowMarkedTerm (eta a X W V rho : ℂ) (j e l k m : ℕ) : ℂ :=
+  if e+3*l=0 then 0 else
+    rowWeightedScalar (Ideal.absNorm (Ideal.span {p})) eta a
+      (primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 1)
+      (star (localGamma p hp.ne_zero hg 3)) (complexSexticChar (Ideal.span {p}) hg (-1)) X W V rho
+      (positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) (e+3*l-1) k (j+6*m)) e l k m
+
+include hc in
+theorem rowMarkedTerm_step (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (j e l k m : ℕ) (ht : 0< e+3*l) :
+    rowMarkedTerm p hp hg eta a X W V rho j e (l+2) k (m+1)=
+      evenRatio (Ideal.absNorm (Ideal.span {p})) a X V *
+        rowMarkedTerm p hp hg eta a X W V rho j e l k m := by
+  unfold rowMarkedTerm
+  rw [if_neg (by omega),if_neg (by omega),
+    show e+3*(l+2)-1=(e+3*l-1)+6 by omega,
+    show j+6*(m+1)=(j+6*m)+6 by omega,
+    positiveScalar_step_six p hp hg hc]
+  exact rowWeightedScalar_step_two _ _ _ _ _ _ _ _ _ _ _ (primeNorm_ne_zero p hp)
+    (localGamma_conjugate_three_sq p hp hg hc) (complexSexticChar_neg_one_sq _ hg) hρ e l k m
+
+theorem rowMarkedTerm_higher_outer (eta a X W V rho : ℂ) (j e l k m : ℕ) :
+    rowMarkedTerm p hp hg eta a X W V rho j e l (k+2) m=0 := by
+  unfold rowMarkedTerm
+  split_ifs
+  · rfl
+  · rw [positiveScalar_kge_two p hp,rowWeightedScalar_zero]
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePhysical
+open Eisenstein CompletedGauss CanonicalRowCompletion CanonicalQuadraticSieve
+open  CubicEisenstein
+local notation "O" => Eisenstein.O
+local notation "Id" => Ideal O
+
+theorem bareSourceCoefficient_product_row_frequency (η : HeckeFamily.Character) (u : O) (I J : Ideal O)
+    (hI : CubicSieve.Admissible I) (hJ : CubicSieve.Admissible J)
+    (hIJ : CubicSieve.Admissible (I*J)) (hIJcop : IsCoprime I J)
+    (n m s r : O)
+    (hc : Supported (Ideal.span {primaryIdealGenerator I})) (hd : Supported (Ideal.span {primaryIdealGenerator J}))
+    (hn : Supported (Ideal.span {n})) (hm : Supported (Ideal.span {m}))
+    (hs : Supported (Ideal.span {s})) (hr : Supported (Ideal.span {r}))
+    (hpc : lambda^2∣primaryIdealGenerator I-1) (hpd : lambda^2∣primaryIdealGenerator J-1)
+    (hpn : lambda^2∣n-1) (hpm : lambda^2∣m-1)
+    (hps : lambda^2∣s-1) (hpr : lambda^2∣r-1)
+    (hcop : IsCoprime ((primaryIdealGenerator I*n^3)*s) ((primaryIdealGenerator J*m^3)*r)) (a b : O)
+    (hba : IsCoprime b ((primaryIdealGenerator I*n^3)*s))
+    (hab : IsCoprime a ((primaryIdealGenerator J*m^3)*r)) :
+    let A := primaryIdealGenerator I*n^3
+    let B := primaryIdealGenerator J*m^3
+    let hA := CenteredMomentSupportedCorrelation.supported_element_ne_zero A (supported_completed _ _ hc hn)
+    let hB := CenteredMomentSupportedCorrelation.supported_element_ne_zero B (supported_completed _ _ hd hm)
+    bareSourceCoefficient η (I*J) hIJ.2 (A*B) (s*r) (mul_ne_zero hA hB) (u*(a*b)^6) =
+      bareSourceCoefficient η I hI.2 A s hA (u*a^6) * bareSourceCoefficient η J hJ.2 B r hB (u*b^6) := by
+  have he := bareSourceCoefficient_product η I J hI hJ hIJ hIJcop n m s r
+    hc hd hn hm hs hr hpc hpd hpn hpm hps hpr hcop (u*(a*b)^6)
+  dsimp only at he ⊢
+  have hi := bareSourceCoefficient_sixth_frequency η I hI.2 (primaryIdealGenerator I*n^3) s
+    (supported_completed _ _ hc hn) hs b (u*a^6) hba
+  have hj := bareSourceCoefficient_sixth_frequency η J hJ.2 (primaryIdealGenerator J*m^3) r
+    (supported_completed _ _ hd hm) hr a (u*b^6) hab
+  rw [show b^6*(u*a^6)=u*(a*b)^6 by ring] at hi
+  rw [show a^6*(u*b^6)=u*(a*b)^6 by ring] at hj
+  rw [hi,hj] at he
+  exact he
+
+theorem bareIdealHighCoefficient_row_mul (η : HeckeFamily.Character) (u : O)
+    (I J K L I' J' K' L' : Id)
+    (hcop : IsCoprime (I*J*K*L) (I'*J'*K'*L')) :
+    bareIdealHighCoefficient η u (I*I') (J*J') (K*K') (L*L') =
+      bareIdealHighCoefficient η u I J K L * bareIdealHighCoefficient η u I' J' K' L' := by
+  have hII := hcop.mono (first_block_dvd I J K L) (first_block_dvd I' J' K' L')
+  by_cases h : highSupport I J K L ∧ highSupport I' J' K' L'
+  · have hprod := (highSupport_mul I J K L I' J' K' L' hII).mpr h
+    rcases h with ⟨h,h'⟩
+    have hsA := (supported_mul_iff (I*J^3) K).mpr
+      ⟨(supported_mul_iff I (J^3)).mpr ⟨h.2.1,supported_pow h.2.2.1 3⟩,h.2.2.2.1⟩
+    have hsB := (supported_mul_iff (I'*J'^3) K').mpr
+      ⟨(supported_mul_iff I' (J'^3)).mpr ⟨h'.2.1,supported_pow h'.2.2.1 3⟩,h'.2.2.2.1⟩
+    have hc3 : IsCoprime ((I*J*K*L)^3) ((I'*J'*K'*L')^3) := hcop.pow_left.pow_right
+    have hab := primaryIdealGenerator_coprime _ _ hsA hsB
+      (hc3.mono (completed_block_dvd_cube I J K L) (completed_block_dvd_cube I' J' K' L'))
+    have hba := primaryIdealGenerator_coprime _ _ h'.2.2.2.2 hsA
+      (hcop.symm.pow_right.mono (last_block_dvd I' J' K' L') (completed_block_dvd_cube I J K L))
+    have hab' := primaryIdealGenerator_coprime _ _ h.2.2.2.2 hsB
+      (hcop.pow_right.mono (last_block_dvd I J K L) (completed_block_dvd_cube I' J' K' L'))
+    simp only [primaryIdealGenerator_mul,primaryIdealGenerator_pow] at hab hba hab'
+    have he := bareSourceCoefficient_product_row_frequency η u I I'
+      ⟨h.1,supported_primaryIdealGenerator_ne_zero I h.2.1⟩
+      ⟨h'.1,supported_primaryIdealGenerator_ne_zero I' h'.2.1⟩
+      ⟨hprod.1,supported_primaryIdealGenerator_ne_zero (I*I') hprod.2.1⟩ hII
+      (primaryIdealGenerator J) (primaryIdealGenerator J') (primaryIdealGenerator K) (primaryIdealGenerator K')
+      ((supported_span_primaryIdealGenerator_iff I).mpr h.2.1)
+      ((supported_span_primaryIdealGenerator_iff I').mpr h'.2.1)
+      ((supported_span_primaryIdealGenerator_iff J).mpr h.2.2.1)
+      ((supported_span_primaryIdealGenerator_iff J').mpr h'.2.2.1)
+      ((supported_span_primaryIdealGenerator_iff K).mpr h.2.2.2.1)
+      ((supported_span_primaryIdealGenerator_iff K').mpr h'.2.2.2.1)
+      (primaryIdealGenerator_spec I (supported_primaryIdealGenerator_ne_zero I h.2.1)).2
+      (primaryIdealGenerator_spec I' (supported_primaryIdealGenerator_ne_zero I' h'.2.1)).2
+      (primaryIdealGenerator_spec J (supported_primaryIdealGenerator_ne_zero J h.2.2.1)).2
+      (primaryIdealGenerator_spec J' (supported_primaryIdealGenerator_ne_zero J' h'.2.2.1)).2
+      (primaryIdealGenerator_spec K (supported_primaryIdealGenerator_ne_zero K h.2.2.2.1)).2
+      (primaryIdealGenerator_spec K' (supported_primaryIdealGenerator_ne_zero K' h'.2.2.2.1)).2
+      hab (primaryIdealGenerator L) (primaryIdealGenerator L') hba hab'
+    unfold highSupport at hprod h h'
+    unfold bareIdealHighCoefficient
+    rw [dif_pos hprod,dif_pos h,dif_pos h']
+    simp only [primaryIdealGenerator_mul]
+    dsimp only at he
+    convert he using 1 <;> first | rfl | ring
+  · have hprod := mt (highSupport_mul I J K L I' J' K' L' hII).mp h
+    unfold highSupport at hprod
+    unfold bareIdealHighCoefficient
+    rw [dif_neg hprod]
+    by_cases hi : highSupport I J K L
+    · have hj : ¬highSupport I' J' K' L' := fun hj=> h ⟨hi,hj⟩
+      unfold highSupport at hj
+      rw [dif_neg hj,mul_zero]
+    · unfold highSupport at hi
+      rw [dif_neg hi,zero_mul]
+
+theorem bareIdealHighSummand_row_mul (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (I J K L I' J' K' L' : Id)
+    (hcop : IsCoprime (I*J*K*L) (I'*J'*K'*L')) :
+    bareIdealHighSummand η u x w z (I*I') (J*J') (K*K') (L*L') =
+      bareIdealHighSummand η u x w z I J K L * bareIdealHighSummand η u x w z I' J' K' L' := by
+  unfold bareIdealHighSummand
+  rw [bareIdealHighCoefficient_row_mul η u I J K L I' J' K' L' hcop,
+    fullIdealWeight_mul,fullIdealWeight_mul,fullIdealWeight_mul,fullIdealWeight_mul]
+  ring
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePhysical
+open Eisenstein CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss
+open CubicEisenstein ProbePhase  
+local notation "O" => Eisenstein.O
+local notation "Id" => Ideal O
+
+@[simp] theorem bareIdealHighCoefficient_row_one (η : HeckeFamily.Character) (u : O) :
+    bareIdealHighCoefficient η u 1 1 1 1=1 := by
+  have hs := CenteredMomentAddedZero.supported_one_ideal
+  have hg : Squarefree (1:Ideal O) ∧ Supported 1 ∧ Supported 1 ∧ Supported 1 ∧ Supported 1 :=
+    ⟨squarefree_one,hs,hs,hs,hs⟩
+  unfold bareIdealHighCoefficient
+  rw [dif_pos hg]
+  simp only [primaryIdealGenerator_one,one_pow,mul_one]
+  unfold bareSourceCoefficient correctedFiniteCoefficient reciprocityCoefficient
+  rw [gaussTwo_one,ProbePhase.G_one,angularFactor_one]
+  have ho := odd_of_supported (1:O) (by
+    rw [Ideal.span_singleton_one,←Ideal.one_eq_top];exact hs)
+  rw [reciprocitySign_one_left (1:O) ho,
+    bareCongruenceCoefficient_inner_one 1 one_ne_zero,outerQuotient_mk]
+  simp only [map_one,star_one,one_mul,Ideal.span_singleton_one,←Ideal.one_eq_top]
+
+@[simp] theorem bareIdealHighSummand_row_one (η : HeckeFamily.Character) (u : O) (x w z : ℂ) :
+    bareIdealHighSummand η u x w z 1 1 1 1=1 := by
+  have hw (t : ℂ) : fullIdealWeight t (1:Ideal O)=1 := (IdealEuler.normWeight t).map_one
+  simp only [bareIdealHighSummand,bareIdealHighCoefficient_row_one,hw,one_mul]
+
+theorem bareIdealHighSeries_row_hasProd (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    HasProd (fun P : PrimeIdeal=>∑' b : HighValuation,
+      bareIdealHighSummand η u x w z (P.val^b.1.1) (P.val^b.1.2) (P.val^b.2.1) (P.val^b.2.2))
+      (bareIdealHighSeries η u x w z) := by
+  apply highArray_hasProd (fun a : HighIdeal=> bareIdealHighSummand η u x w z a.1.1 a.1.2 a.2.1 a.2.2)
+  · exact bareIdealHighSummand_row_one η u x w z
+  · intro a b hc
+    exact bareIdealHighSummand_row_mul η u x w z _ _ _ _ _ _ _ _ hc
+  · intro a ha
+    have hs := bareIdealHighSummand_support η u x w z a.1.1 a.1.2 a.2.1 a.2.2 ha
+    exact ⟨hs.2.1.1,hs.2.2.1.1,hs.2.2.2.1.1,hs.2.2.2.2.1⟩
+  · exact (bareIdealHighSummand_summable η u x w z hx hw hz).norm
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePhysical
+open Eisenstein
+local notation "O" => Eisenstein.O
+local notation "Id" => Ideal O
+
+theorem excludedIdealHighSeries_row_hasProd (S : Finset Id) (hS : ∀P∈S,Prime P)
+    (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    HasProd (fun P : PrimeIdeal=>∑' b : HighValuation,
+      markedIdealHighSummand S 1 η u x w z (P.val^b.1.1) (P.val^b.1.2) (P.val^b.2.1) (P.val^b.2.2))
+      (markedIdealHighSeries S 1 η u x w z) := by
+  apply highArray_hasProd (fun a : HighIdeal=> markedIdealHighSummand S 1 η u x w z a.1.1 a.1.2 a.2.1 a.2.2)
+  · simp only [Prod.fst_one,Prod.snd_one,markedIdealHighSummand,
+      highIdealMask_unmarked_one S hS,bareIdealHighSummand_row_one,one_mul]
+  · intro a b hc
+    simp only [Prod.fst_mul,Prod.snd_mul,markedIdealHighSummand,
+      highIdealMask_unmarked_mul S hS a b,
+      bareIdealHighSummand_row_mul η u x w z _ _ _ _ _ _ _ _ hc]
+    ring
+  · intro a ha
+    have hh : bareIdealHighSummand η u x w z a.1.1 a.1.2 a.2.1 a.2.2≠0 :=
+      (mul_ne_zero_iff.mp ha).2
+    have hs := bareIdealHighSummand_support η u x w z a.1.1 a.1.2 a.2.1 a.2.2 hh
+    exact ⟨hs.2.1.1,hs.2.2.1.1,hs.2.2.2.1.1,hs.2.2.2.2.1⟩
+  · exact (markedIdealHighSummand_summable S 1 η u x w z hx hw hz).norm
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePhysical
+open Eisenstein
+local notation "O" => Eisenstein.O
+local notation "Id" => Ideal O
+
+def rowHighPrimeTerm (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (P : PrimeIdeal) (b : HighValuation) : ℂ :=
+  bareIdealHighSummand η u x w z (P.val^b.1.1) (P.val^b.1.2) (P.val^b.2.1) (P.val^b.2.2)
+
+def idealRowHighLocalFactor (η : HeckeFamily.Character) (u : O) (P : Id) (x w z : ℂ) : ℂ :=
+  ∑ e : Fin 2, ∑' l : ℕ, ∑' k : ℕ, ∑' m : ℕ,
+    bareIdealHighSummand η u x w z (P^e.val) (P^l) (P^k) (P^m)
+
+lemma rowHighPrimeTerm_summable_norm (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) (P : PrimeIdeal) :
+    Summable (fun b : HighValuation=>‖rowHighPrimeTerm η u x w z P b‖) := by
+  have hs := ((bareIdealHighSummand_summable η u x w z hx hw hz).norm.comp_injective
+    highIdeals_injective).comp_injective (Finsupp.single_injective P)
+  simpa only [Function.comp_def,highIdeals_single,rowHighPrimeTerm] using hs
+
+lemma rowHighPrimeTerm_zero_of_two_le (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (P : PrimeIdeal) (e l k m : ℕ) (he : 2≤ e) :
+    rowHighPrimeTerm η u x w z P ((e,l),(k,m))=0 := by
+  by_contra hn
+  have hs := bareIdealHighSummand_support η u x w z (P.val^e) (P.val^l) (P.val^k) (P.val^m) hn
+  have hc := hs.1.eq_zero_or_one_of_pow_of_not_isUnit P.property.not_unit
+  omega
+
+theorem rowHighPrimeTerm_tsum_eq_localFactor (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) (P : PrimeIdeal) :
+    (∑' b : HighValuation,rowHighPrimeTerm η u x w z P b)=
+      idealRowHighLocalFactor η u P.val x w z := by
+  have hs := (rowHighPrimeTerm_summable_norm η u x w z hx hw hz P).of_norm
+  rw [hs.tsum_prod,hs.prod.tsum_prod]
+  have he (e l : ℕ) :
+      (∑' b : ℕ×ℕ, rowHighPrimeTerm η u x w z P ((e,l),b))=
+        ∑' k,∑' m,rowHighPrimeTerm η u x w z P ((e,l),(k,m)) :=
+    (hs.prod_factor (e,l)).tsum_prod
+  simp_rw [he]
+  rw [tsum_eq_sum (s:=Finset.range 2) (fun e he=> by
+    have hh : 2≤ e := Nat.le_of_not_gt (by simpa only [Finset.mem_range] using he)
+    simp only [rowHighPrimeTerm_zero_of_two_le η u x w z P e _ _ _ hh,tsum_zero]),
+    ←Fin.sum_univ_eq_sum_range]
+  rfl
+
+theorem bareIdealHighSeries_row_hasProd_localFactor (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    HasProd (fun P : PrimeIdeal=> idealRowHighLocalFactor η u P.val x w z)
+      (bareIdealHighSeries η u x w z) := by
+  have h := bareIdealHighSeries_row_hasProd η u x w z hx hw hz
+  change HasProd (fun P : PrimeIdeal=>∑' b : HighValuation,rowHighPrimeTerm η u x w z P b) _ at h
+  simpa only [rowHighPrimeTerm_tsum_eq_localFactor η u x w z hx hw hz] using h
+
+theorem excludedRowHighLocalFactor (S : Finset Id) (hS : ∀P∈S,Prime P)
+    (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) (P : PrimeIdeal) :
+    (∑' b : HighValuation,markedIdealHighSummand S 1 η u x w z
+      (P.val^b.1.1) (P.val^b.1.2) (P.val^b.2.1) (P.val^b.2.2)) =
+      if P.val∈S then 1 else idealRowHighLocalFactor η u P.val x w z := by
+  by_cases hP : P.val∈S
+  · rw [if_pos hP]
+    have he (b : HighValuation) : markedIdealHighSummand S 1 η u x w z
+        (P.val^b.1.1) (P.val^b.1.2) (P.val^b.2.1) (P.val^b.2.2)=if b=0 then 1 else 0 := by
+      rw [markedIdealHighSummand,highIdealMask_prime_inside S hS P hP b]
+      by_cases hb : b=0
+      · subst b
+        simp only [Prod.fst_zero,Prod.snd_zero,pow_zero,bareIdealHighSummand_row_one,mul_one]
+      · simp only [if_neg hb,zero_mul]
+    simp only [he,tsum_ite_eq]
+  · rw [if_neg hP]
+    simp only [markedIdealHighSummand,highIdealMask_prime_outside S hS P hP,one_mul]
+    exact rowHighPrimeTerm_tsum_eq_localFactor η u x w z hx hw hz P
+
+theorem excludedIdealHighSeries_row_hasProd_outside (S : Finset Id) (hS : ∀P∈S,Prime P)
+    (η : HeckeFamily.Character) (u : O) (x w z : ℂ)
+    (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    HasProd (fun P : {P : PrimeIdeal // P.val∉S}=> idealRowHighLocalFactor η u P.val.val x w z)
+      (markedIdealHighSeries S 1 η u x w z) := by
+  have h := excludedIdealHighSeries_row_hasProd S hS η u x w z hx hw hz
+  simp only [excludedRowHighLocalFactor S hS η u x w z hx hw hz] at h
+  apply (hasProd_subtype_iff_mulIndicator
+    (s:={P : PrimeIdeal | P.val∉S})
+    (f:=fun P : PrimeIdeal=> idealRowHighLocalFactor η u P.val x w z)).mpr
+  convert h using 1
+  funext P
+  simp only [Set.mulIndicator,Set.mem_setOf_eq]
+  split_ifs <;> simp_all
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+
+def sourceRowTerm (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p}) (eta a rho x w z : ℂ) (j e l k m : ℕ) : ℂ :=
+  (rho^k/rho^(e+3*l))*sourceWeightedScalar (Ideal.absNorm (Ideal.span {p})) eta a
+    (localGamma p hp.ne_zero hg 1) (star (localGamma p hp.ne_zero hg 3))
+    (complexSexticChar (Ideal.span {p}) hg (-1)) x w z
+    (sourceScalar p hp hg (e+3*l) k (j+6*m)) e l k m
+
+theorem sourceRowTerm_pos (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p}) (eta a rho x w z : ℂ) (j e l k m : ℕ)
+    (ht : e+3*l≠0) :
+    sourceRowTerm p hp hg eta a rho x w z j e l k m=
+      rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+        ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+        rho j e l k m := by
+  unfold sourceRowTerm
+  rw [sourceWeightedScalar_actual p hp hg]
+  simp only [rowMarkedTerm,rowWeightedScalar,sourceScalar,if_neg ht,coordV,Complex.ofReal_natCast]
+
+end ProbeEuler
+namespace ProbePhysical
+open Eisenstein CompletedGauss CanonicalRowCompletion CanonicalQuadraticSieve
+open  CubicEisenstein ProbePhase ProbeEuler ProbePrimePower ProbeRow
+local notation "O" => Eisenstein.O
+
+theorem bareSourceCoefficient_unit_frequency (η : HeckeFamily.Character)
+    (I : Ideal O) (hI : primaryIdealGenerator I≠0) (A s : O)
+    (hA : Supported (Ideal.span {A})) (hs : Supported (Ideal.span {s}))
+    (b H : O) (hcop : IsCoprime b (A*s)) :
+    bareSourceCoefficient η I hI A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) (b*H)=
+      ((idealRowHom b (Ideal.span {A}))⁻¹*idealRowHom b (Ideal.span {s}))*
+        bareSourceCoefficient η I hI A s (CenteredMomentSupportedCorrelation.supported_element_ne_zero A hA) H := by
+  unfold bareSourceCoefficient correctedFiniteCoefficient reciprocityCoefficient
+  rw [bareCongruenceCoefficient_unit_frequency A s hA hs b H hcop]
+  ring
+
+theorem bareSourceCoefficient_row_prime_formula (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hchar : ringChar (O ⧸ Ideal.span {p})≠2) (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (b : O) (hb : IsCoprime b p)
+    (e l k j : ℕ) (he : e≤1) (hI : primaryIdealGenerator (Ideal.span {p^e})≠0) :
+    bareSourceCoefficient η (Ideal.span {p^e}) hI (p^(e+3*l)) (p^k)
+      (pow_ne_zero _ hp.ne_zero) (b*p^j)=
+    ((complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^k /
+      (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^(e+3*l)) *
+    ((-1:ℂ)^e * ((localGamma p hp.ne_zero hg 1)⁻¹)^e * (targetMonoid η p)^e *
+      (star (CompletedGauss.angularFactor p)^3 * (targetMonoid η p)^3 *
+        star (localGamma p hp.ne_zero hg 3))^l *
+      (complexSexticChar (Ideal.span {p}) hg (-1))^((e+3*l)*k+e*l+l.choose 2) *
+      sourceScalar p hp hg (e+3*l) k j) := by
+  rw [bareSourceCoefficient_unit_frequency η _ hI _ _
+    (supported_element_power p hs _) (supported_element_power p hs _) b _
+    (hb.pow_right.mul_right hb.pow_right),
+    bareSourceCoefficient_prime_formula η p hp hg hchar hprimary hs e l k j he hI,
+    idealRowHom_prime_power_value p b hg,idealRowHom_prime_power_value p b hg]
+  simp only [div_eq_mul_inv]
+  ac_rfl
+
+theorem bareSourceCoefficient_row_weighted_prime (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hchar : ringChar (O ⧸ Ideal.span {p})≠2) (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (b : O) (hb : IsCoprime b p) (j e l k m : ℕ) (he : e≤1)
+    (hI : primaryIdealGenerator (Ideal.span {p^e})≠0) (x w z : ℂ) :
+    bareSourceCoefficient η (Ideal.span {p^e}) hI (p^(e+3*l)) (p^k)
+      (pow_ne_zero _ hp.ne_zero) (b*p^(j+6*m)) *
+      (Ideal.absNorm (Ideal.span {p}):ℂ)^(-(x+1/2)*(e:ℂ)-(1+3*x)*(l:ℂ)-w*(k:ℂ)-6*z*(m:ℂ)) =
+    sourceRowTerm p hp hg (targetMonoid η p) (actualACube η p)
+      (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)) x w z j e l k m := by
+  rw [bareSourceCoefficient_row_prime_formula η p hp hg hchar hprimary hs b hb e l k (j+6*m) he hI]
+  unfold sourceRowTerm sourceWeightedScalar
+  simp only [zpow_neg,zpow_natCast,←inv_pow,Complex.ofReal_natCast]
+  have hpdiag := source_signed_phase
+    (actualACube η p*star (localGamma p hp.ne_zero hg 3))
+    (complexSexticChar (Ideal.span {p}) hg (-1)) (complexSexticChar_neg_one_sq _ hg) e l k
+  simp only [localCubePhase] at hpdiag
+  have ha : actualACube η p=
+      star (CompletedGauss.angularFactor p)^3*(targetMonoid η p)^3 := rfl
+  rw [ha] at hpdiag ⊢
+  linear_combination -((complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^k /
+      (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^(e+3*l)) *
+    ((-1:ℂ)^e*((localGamma p hp.ne_zero hg 1)⁻¹)^e*(targetMonoid η p)^e) *
+    sourceScalar p hp hg (e+3*l) k (j+6*m) *
+    (Ideal.absNorm (Ideal.span {p}):ℂ)^(-(x+1/2)*(e:ℂ)-(1+3*x)*(l:ℂ)-w*(k:ℂ)-6*z*(m:ℂ)) * hpdiag
+
+theorem bareIdealHighCoefficient_row_at_prime (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (u : O) (e l k m : ℕ) (he : e≤1) :
+    bareIdealHighCoefficient η u ((Ideal.span {p})^e) ((Ideal.span {p})^l)
+      ((Ideal.span {p})^k) ((Ideal.span {p})^m) =
+    bareSourceCoefficient η (Ideal.span {p^e})
+      (by rw [← Ideal.span_singleton_pow,primaryIdealGenerator_prime_power p hp.ne_zero hprimary e];
+          exact pow_ne_zero _ hp.ne_zero)
+      (p^(e+3*l)) (p^k) (pow_ne_zero _ hp.ne_zero) (u*p^(6*m)) := by
+  have hguard : Squarefree ((Ideal.span {p})^e) ∧ Supported ((Ideal.span {p})^e) ∧
+      Supported ((Ideal.span {p})^l) ∧ Supported ((Ideal.span {p})^k) ∧ Supported ((Ideal.span {p})^m) :=
+    ⟨prime_power_small_squarefree p hp e he,supported_pow hs e,supported_pow hs l,supported_pow hs k,supported_pow hs m⟩
+  unfold bareIdealHighCoefficient
+  rw [dif_pos hguard]
+  simp only [primaryIdealGenerator_prime_power p hp.ne_zero hprimary]
+  have hA : p^e*(p^l)^3=p^(e+3*l) := by rw [←pow_mul,Nat.mul_comm l 3,←pow_add]
+  have hH : (p^m)^6=p^(6*m) := by rw [←pow_mul,Nat.mul_comm m 6]
+  simp only [hA,hH,Ideal.span_singleton_pow]
+
+theorem bareIdealHighSummand_row_at_prime (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hchar : ringChar (O ⧸ Ideal.span {p})≠2) (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (b : O) (hb : IsCoprime b p)
+    (j e l k m : ℕ) (he : e≤1) (x w z : ℂ) :
+    bareIdealHighSummand η (b*p^j) x w z ((Ideal.span {p})^e) ((Ideal.span {p})^l)
+      ((Ideal.span {p})^k) ((Ideal.span {p})^m)=
+      sourceRowTerm p hp hg (targetMonoid η p) (actualACube η p)
+        (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)) x w z j e l k m := by
+  unfold bareIdealHighSummand
+  rw [bareIdealHighCoefficient_row_at_prime η p hp hprimary hs (b*p^j) e l k m he]
+  rw [show b*p^j*p^(6*m)=b*p^(j+6*m) by rw [pow_add]; ring]
+  have hw := prime_spectral_weights p hp.ne_zero e l k m x w z
+  simp only [mul_assoc] at hw ⊢
+  rw [hw]
+  simpa only [mul_assoc] using
+    bareSourceCoefficient_row_weighted_prime η p hp hg hchar hprimary hs b hb j e l k m he _ x w z
+
+theorem idealRowHighLocalFactor_eq_source (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hchar : ringChar (O ⧸ Ideal.span {p})≠2) (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (b : O) (hb : IsCoprime b p) (j : ℕ) (x w z : ℂ) :
+    idealRowHighLocalFactor η (b*p^j) (Ideal.span {p}) x w z=
+      ∑ e : Fin 2,∑' l,∑' k,∑' m,sourceRowTerm p hp hg (targetMonoid η p) (actualACube η p)
+        (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)) x w z j e.val l k m := by
+  unfold idealRowHighLocalFactor
+  apply Finset.sum_congr rfl
+  intro e he
+  apply tsum_congr
+  intro l
+  apply tsum_congr
+  intro k
+  apply tsum_congr
+  intro m
+  exact bareIdealHighSummand_row_at_prime η p hp hg hchar hprimary hs b hb j e.val l k m (by omega) x w z
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace ProbeHighRowFamily
+open HeckeFamily HeckeInverseAmplification UniqueFactorizationMonoid
+
+def unitPart (u : FreeRow) (p : O) (hp : Prime p) : O :=
+  Classical.choose ((FiniteMultiplicity.of_prime_left hp u.property.1).exists_eq_pow_mul_and_not_dvd)
+
+theorem unitPart_spec (u : FreeRow) (p : O) (hp : Prime p) :
+    u.val=p^(multiplicity p u.val)*unitPart u p hp ∧ ¬p∣unitPart u p hp :=
+  Classical.choose_spec ((FiniteMultiplicity.of_prime_left hp u.property.1).exists_eq_pow_mul_and_not_dvd)
+
+theorem unitPart_coprime (u : FreeRow) (p : O) (hp : Prime p) : IsCoprime (unitPart u p hp) p :=
+  (hp.irreducible.coprime_iff_not_dvd.mpr (unitPart_spec u p hp).2).symm
+
+theorem unitPart_ne_zero (u : FreeRow) (p : O) (hp : Prime p) : unitPart u p hp≠0 := by
+  intro he
+  have hu := (unitPart_spec u p hp).1
+  rw [he,mul_zero] at hu
+  exact u.property.1 hu
+
+theorem multiplicity_lt_six (u : FreeRow) (p : O) (hp : Prime p) : multiplicity p u.val<6 := by
+  let P : Ideal O := Ideal.span {p}
+  have hP0 : P≠0 := Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero
+  have hP : Prime P := Ideal.prime_of_isPrime hP0 (Ideal.isPrime_span_singleton_of_prime hp)
+  have hb : (Ideal.span {unitPart u p hp}:Ideal O)≠0 :=
+    Ideal.span_singleton_eq_bot.not.mpr (unitPart_ne_zero u p hp)
+  have he : (Ideal.span {u.val}:Ideal O)=P^(multiplicity p u.val)*Ideal.span {unitPart u p hp} := by
+    conv_lhs => rw [(unitPart_spec u p hp).1]
+    rw [←Ideal.span_singleton_mul_span_singleton,←Ideal.span_singleton_pow]
+  have hf := u.property.2 P
+  rw [he,normalizedFactors_mul (pow_ne_zero _ hP0) hb,normalizedFactors_pow,
+    normalizedFactors_irreducible hP.irreducible] at hf
+  simp only [normalize_eq,Multiset.count_add,Multiset.count_nsmul,
+    Multiset.count_singleton_self,mul_one] at hf
+  omega
+
+theorem canonical_decomposition (u : FreeRow) (p : O) (hp : Prime p) :
+    u.val=unitPart u p hp*p^(multiplicity p u.val) ∧
+      IsCoprime (unitPart u p hp) p ∧ multiplicity p u.val<6 := by
+  exact ⟨(unitPart_spec u p hp).1.trans (mul_comm _ _),unitPart_coprime u p hp,
+    multiplicity_lt_six u p hp⟩
+
+theorem idealRowHighLocalFactor_canonical (η : Character) (u : FreeRow) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p})
+    (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+    (hprimary : lambda^2∣p-1)
+    (hs : CanonicalQuadraticSieve.Supported (Ideal.span {p})) (x w z : ℂ) :
+    ProbePhysical.idealRowHighLocalFactor η u.val (Ideal.span {p}) x w z=
+      ∑ e : Fin 2,∑' l,∑' k,∑' m,
+        ProbeEuler.sourceRowTerm p hp hg (ProbeRow.targetMonoid η p) (ProbeEuler.actualACube η p)
+          (complexSexticChar (Ideal.span {p}) hg
+            (Ideal.Quotient.mk _ (unitPart u p hp))) x w z (multiplicity p u.val) e.val l k m := by
+  conv_lhs => rw [(canonical_decomposition u p hp).1]
+  exact ProbePhysical.idealRowHighLocalFactor_eq_source η p hp hg hc hprimary hs
+    (unitPart u p hp) (unitPart_coprime u p hp) (multiplicity p u.val) x w z
+
+end ProbeHighRowFamily
+
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ComplexConjugate
+namespace ProbeHighRowFamily
+open HeckeFamily HeckeInverseAmplification HeckeRowClosure CanonicalRowCompletion
+open CanonicalQuadraticSieve ProbePhysical
+local notation "O" => Eisenstein.O
+
+def rowMaskElement : O := 2*lambda
+
+theorem rowMaskElement_ne_zero : rowMaskElement≠0 :=
+  mul_ne_zero (by norm_num) residue_lambda_prime.ne_zero
+
+def rawRow (u : FreeRow) : Character := Classical.choose
+  (exists_row_character_with_conductor (fixedSourcePrincipal ∅ (by simp)) rowMaskElement 1 u.val
+    rowMaskElement_ne_zero one_ne_zero u.property.1 (dvd_mul_left _ _) (dvd_mul_right _ _))
+
+theorem rawRow_coeff (u : FreeRow) (I : Ideal O) :
+    idealCoeff (rawRow u) I=idealCoeff (fixedSourcePrincipal ∅ (by simp)) I*
+      idealRowHom (rowMaskElement^6*u.val) I := by
+  have he := (Classical.choose_spec
+    (exists_row_character_with_conductor (fixedSourcePrincipal ∅ (by simp)) rowMaskElement 1 u.val
+      rowMaskElement_ne_zero one_ne_zero u.property.1 (dvd_mul_left _ _) (dvd_mul_right _ _))).2
+  simpa only [one_pow,mul_one] using idealCoeff_eq_row _ (rawRow u) rowMaskElement 1 u.val he I
+
+theorem outside_good_coprime (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : fixedBadPrimes⊆S) (P : HeckeIdealSeries.PrimeIdeal) (hP : P.val∉S) :
+    lambda∉P.val ∧ IsCoprime P.val (Ideal.span {rowMaskElement}) := by
+  let : P.val.IsMaximal := (Ideal.isPrime_of_prime P.property).isMaximal P.property.ne_zero
+  have hn : P.val∉fixedBadPrimes := fun hh => hP (hbad hh)
+  have hg := (prime_good_iff_not_bad P.val).mpr hn
+  refine ⟨hg.1,?_⟩
+  have hc := (prime_coprime_fixedProduct S hS P).mpr hP
+  rw [IsCoprime.prod_right_iff] at hc
+  have hLam : Ideal.span {lambda}∈S := hbad (Finset.mem_insert_self _ _)
+  have h2 : Ideal.span {(2 : O)}∈S := hbad (by simp [fixedBadPrimes,ramifiedIdeal,cubicTwoIdeal,Ideal.span_singleton_neg])
+  unfold rowMaskElement
+  rw [←Ideal.span_singleton_mul_span_singleton]
+  exact (hc _ h2).mul_right (hc _ hLam)
+
+theorem rawRow_prime_outside (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : fixedBadPrimes⊆S) (u : FreeRow) (P : HeckeIdealSeries.PrimeIdeal) (hP : P.val∉S) :
+    idealCoeff (rawRow u) P.val=idealRowHom u.val P.val := by
+  let : P.val.IsMaximal := (Ideal.isPrime_of_prime P.property).isMaximal P.property.ne_zero
+  obtain ⟨hg,hc⟩ := outside_good_coprime S hS hbad P hP
+  rw [rawRow_coeff,fixedSourcePrincipal_prime]
+  rw [if_neg (by simp),one_mul]
+  rw [idealRowHom_argument_mul,idealRowHom_prime_sixth_mask rowMaskElement P.val hg,
+    if_pos hc,one_mul]
+
+def rowCharacter (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P) (u : FreeRow) : Character :=
+  (rawRow u).excludePrimes S hS
+
+def sourceRowCoeff (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P) (u : FreeRow) : Ideal O→*₀ℂ where
+  toFun I := highExclusion S hS I*idealRowHom u.val I
+  map_zero' := by rw [(idealRowHom u.val).map_zero, mul_zero]
+  map_one' := by rw [map_one,map_one,mul_one]
+  map_mul' I J := by simp only [map_mul]; ring
+
+theorem hom_eq_of_primes (f g : Ideal O→*₀ℂ) (h : ∀P : HeckeIdealSeries.PrimeIdeal,f P.val=g P.val) : f=g := by
+  ext I
+  by_cases hI : I=0
+  · subst I; rw [map_zero,map_zero]
+  have hf := congrArg (fun F : Ideal O→*₀ℂ => F I) (IdealEuler.primeValueHom_eq f)
+  have hg := congrArg (fun F : Ideal O→*₀ℂ => F I) (IdealEuler.primeValueHom_eq g)
+  rw [←hf,←hg]
+  change (if I=0 then 0 else ((UniqueFactorizationMonoid.normalizedFactors I).map f).prod)=
+    (if I=0 then 0 else ((UniqueFactorizationMonoid.normalizedFactors I).map g).prod)
+  rw [if_neg hI,if_neg hI]
+  congr 1
+  apply Multiset.map_congr rfl
+  intro P hP
+  exact h ⟨P,UniqueFactorizationMonoid.prime_of_normalized_factor P hP⟩
+
+theorem rowCharacter_coeff (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : fixedBadPrimes⊆S) (u : FreeRow) (I : Ideal O) :
+    idealCoeff (rowCharacter S hS u) I=highExclusion S hS I*idealRowHom u.val I := by
+  have he : idealCoeff (rowCharacter S hS u)=sourceRowCoeff S hS u := by
+    apply hom_eq_of_primes
+    intro P
+    change idealCoeff ((rawRow u).excludePrimes S hS) P.val=
+      highExclusion S hS P.val*idealRowHom u.val P.val
+    rw [excludedTarget_prime,highExclusion_prime]
+    by_cases hP : P.val∈S
+    · simp only [if_pos hP,zero_mul]
+    · simp only [if_neg hP,one_mul]
+      exact rawRow_prime_outside S hS hbad u P hP
+  exact congrArg (fun F : Ideal O→*₀ℂ => F I) he
+
+theorem target_inverseRow_coeff (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : fixedBadPrimes⊆S) (η : Character) (u : FreeRow) (P : HeckeIdealSeries.PrimeIdeal) :
+    idealCoeff ((η.product (rawRow u).inverse).excludePrimes S hS) P.val=
+      if P.val∈S then 0 else idealCoeff η P.val*starRingEnd ℂ (idealRowHom u.val P.val) := by
+  rw [excludedTarget_prime,idealCoeff_product,idealCoeff_inverse_conj]
+  by_cases hP : P.val∈S
+  · simp only [if_pos hP]
+  · rw [if_neg hP,if_neg hP,rawRow_prime_outside S hS hbad u P hP]
+
+end ProbeHighRowFamily
+
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators ComplexConjugate
+namespace ProbeHighRowFamily
+open HeckeFamily HeckeInverseAmplification ProbePhysical CanonicalRowCompletion
+local notation "O" => Eisenstein.O
+
+def targetRow (η : Character) (u : FreeRow) : Character := η.product (rawRow u).inverse
+
+theorem rowCharacter_hasProd (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : CanonicalRowCompletion.fixedBadPrimes⊆S) (u : FreeRow)
+    (s : ℂ) (hs : 1< s.re) :
+    HasProd (fun P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S} =>
+      (1-idealRowHom u.val P.val.val*fullIdealWeight s P.val.val)⁻¹)
+      (LFunction (rowCharacter S hS u) s) := by
+  apply LFunction_hasProd_outside (rowCharacter S hS u) S (idealRowHom u.val) _ s hs
+  intro P
+  rw [rowCharacter_coeff S hS hbad,highExclusion_prime]
+  split_ifs <;> simp only [zero_mul,one_mul]
+
+theorem targetRow_hasProd (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : CanonicalRowCompletion.fixedBadPrimes⊆S) (η : Character) (u : FreeRow)
+    (s : ℂ) (hs : 1< s.re) :
+    HasProd (fun P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S} =>
+      (1-idealCoeff η P.val.val*starRingEnd ℂ (idealRowHom u.val P.val.val)*
+        fullIdealWeight s P.val.val)⁻¹)
+      (LFunction ((targetRow η u).excludePrimes S hS) s) :=
+  LFunction_hasProd_outside _ S (fun P => idealCoeff η P*starRingEnd ℂ (idealRowHom u.val P))
+    (target_inverseRow_coeff S hS hbad η u) s hs
+
+def localCorrection (η : Character) (u : FreeRow) (P : HeckeIdealSeries.PrimeIdeal) (x w z : ℂ) : ℂ :=
+  idealRowHighLocalFactor η u.val P.val x w z *
+    (1-fullIdealWeight (6*z) P.val)*
+    (1-idealRowHom u.val P.val*fullIdealWeight w P.val)/
+    (1-idealCoeff η P.val*starRingEnd ℂ (idealRowHom u.val P.val)*fullIdealWeight x P.val)
+
+def globalCorrection (S : Finset (Ideal O)) (η : Character) (u : FreeRow) (x w z : ℂ) : ℂ :=
+  ∏' P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S},localCorrection η u P.val x w z
+
+theorem localCorrection_hasProd (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : CanonicalRowCompletion.fixedBadPrimes⊆S) (η : Character) (u : FreeRow)
+    (x w z : ℂ) (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    HasProd (fun P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S} => localCorrection η u P.val x w z)
+      (markedIdealHighSeries S 1 η u.val x w z *
+        (LFunction (fixedSourcePrincipal S hS) (6*z))⁻¹ * (LFunction (rowCharacter S hS u) w)⁻¹ *
+          LFunction ((targetRow η u).excludePrimes S hS) x) := by
+  have hx1 : 1< x.re := by linarith
+  have hw1 : 1< w.re := by linarith
+  have hz1 : 1<(6*z).re := by norm_num [Complex.mul_re]; linarith
+  have hF := excludedIdealHighSeries_row_hasProd_outside S hS η u.val x w z hx hw hz
+  have hZ : HasProd (fun P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S} =>
+      ((1-fullIdealWeight (6*z) P.val.val)⁻¹)⁻¹)
+      (LFunction (fixedSourcePrincipal S hS) (6*z))⁻¹ := by
+    have h := fixedSourcePrincipal_hasProd S hS (6*z) hz1
+    rw [HasProd] at h ⊢
+    simpa only [Finset.prod_inv_distrib] using
+      h.inv₀ (LFunction_ne_zero_of_one_lt_re (fixedSourcePrincipal S hS) hz1)
+  have hW : HasProd (fun P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S} =>
+      ((1-idealRowHom u.val P.val.val*fullIdealWeight w P.val.val)⁻¹)⁻¹)
+      (LFunction (rowCharacter S hS u) w)⁻¹ := by
+    have h := rowCharacter_hasProd S hS hbad u w hw1
+    rw [HasProd] at h ⊢
+    simpa only [Finset.prod_inv_distrib] using
+      h.inv₀ (LFunction_ne_zero_of_one_lt_re (rowCharacter S hS u) hw1)
+  have hD := targetRow_hasProd S hS hbad η u x hx1
+  have he := ((hF.mul hZ).mul hW).mul hD
+  simpa only [localCorrection,inv_inv,div_eq_mul_inv] using he
+
+theorem globalCorrection_multipliable (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : CanonicalRowCompletion.fixedBadPrimes⊆S) (η : Character) (u : FreeRow)
+    (x w z : ℂ) (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    Multipliable (fun P : {P : HeckeIdealSeries.PrimeIdeal // P.val∉S} => localCorrection η u P.val x w z) :=
+  (localCorrection_hasProd S hS hbad η u x w z hx hw hz).multipliable
+
+theorem high_L_factorization (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (hbad : CanonicalRowCompletion.fixedBadPrimes⊆S) (η : Character) (u : FreeRow)
+    (x w z : ℂ) (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    markedIdealHighSeries S 1 η u.val x w z=
+      LFunction (fixedSourcePrincipal S hS) (6*z) * LFunction (rowCharacter S hS u) w /
+        LFunction ((targetRow η u).excludePrimes S hS) x * globalCorrection S η u x w z := by
+  have hx1 : 1< x.re := by linarith
+  have hw1 : 1< w.re := by linarith
+  have hz1 : 1<(6*z).re := by norm_num [Complex.mul_re]; linarith
+  have hZ := LFunction_ne_zero_of_one_lt_re (fixedSourcePrincipal S hS) hz1
+  have hW := LFunction_ne_zero_of_one_lt_re (rowCharacter S hS u) hw1
+  have hD := LFunction_ne_zero_of_one_lt_re ((targetRow η u).excludePrimes S hS) hx1
+  rw [globalCorrection,(localCorrection_hasProd S hS hbad η u x w z hx hw hz).tprod_eq]
+  field_simp
+
+end ProbeHighRowFamily
+
+end
+
+end
+
+noncomputable section
+open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeHighRowFamily
+open HeckeFamily HeckeInverseAmplification HeckeRowClosure ProbePhysical
+local notation "O" => Eisenstein.O
+
+def conductorConstant : ℕ :=
+  (Ideal.span {rowMaskElement}:Ideal O).absNorm*(Ideal.span {(72 : O)}:Ideal O).absNorm
+
+theorem rawRow_conductor (u : FreeRow) :
+    (rawRow u).modulus.absNorm≤ conductorConstant*(Ideal.span {u.val}:Ideal O).absNorm := by
+  have hb := (Classical.choose_spec
+    (exists_row_character_with_conductor (fixedSourcePrincipal ∅ (by simp)) rowMaskElement 1 u.val
+      rowMaskElement_ne_zero one_ne_zero u.property.1 (dvd_mul_left _ _) (dvd_mul_right _ _))).1
+  change (rawRow u).modulus.absNorm≤ _ at hb
+  simpa [rowConductorBound,conductorConstant,fixedSourcePrincipal,HeckeRayFamily.character,
+    Character.ofResidue] using hb
+
+theorem rowCharacter_conductor (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P) (u : FreeRow) :
+    (rowCharacter S hS u).modulus.absNorm≤
+      conductorConstant*(Ideal.span {u.val}:Ideal O).absNorm*(∏P∈S,P).absNorm := by
+  change ((rawRow u).modulus*(∏P∈S,P)).absNorm≤ _
+  rw [map_mul]
+  exact Nat.mul_le_mul_right _ (rawRow_conductor u)
+
+theorem targetRow_conductor (η : Character) (u : FreeRow) :
+    (targetRow η u).modulus.absNorm≤η.modulus.absNorm*conductorConstant*(Ideal.span {u.val}:Ideal O).absNorm := by
+  let : Finite (O ⧸ η.modulus) := Ring.HasFiniteQuotients.finiteQuotient η.modulus_ne_bot
+  let : Finite (O ⧸ (rawRow u).modulus) := Ring.HasFiniteQuotients.finiteQuotient (rawRow u).modulus_ne_bot
+  change (η.modulus⊓(rawRow u).modulus).absNorm≤ _
+  calc
+    _ ≤ η.modulus.absNorm*(rawRow u).modulus.absNorm :=
+      FiniteConductor.absNorm_inf_le_mul _ _
+    _ ≤ _ := by simpa only [mul_assoc] using Nat.mul_le_mul_left η.modulus.absNorm (rawRow_conductor u)
+
+theorem targetRow_excluded_conductor (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
+    (η : Character) (u : FreeRow) :
+    ((targetRow η u).excludePrimes S hS).modulus.absNorm≤
+      η.modulus.absNorm*conductorConstant*(Ideal.span {u.val}:Ideal O).absNorm*(∏P∈S,P).absNorm := by
+  change ((targetRow η u).modulus*(∏P∈S,P)).absNorm≤ _
+  rw [map_mul]
+  exact Nat.mul_le_mul_right _ (targetRow_conductor η u)
+
+end ProbeHighRowFamily
+
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped BigOperators
+namespace ProbeEuler
+
+theorem diagonal_recurrence_eq (f : ℕ→ℕ→ℂ) (R : ℂ)
+    (hstep : ∀ r m,f (r+1) (m+1)=R*f r m) (hz : ∀ r,f (r+1) 0=0) :
+    ∀ r m,f r m=if r≤ m then R^r*f 0 (m-r) else 0 := by
+  intro r
+  induction r with
+  | zero => intro m; simp
+  | succ r ih =>
+    intro m
+    cases m with
+    | zero => simp [hz]
+    | succ m =>
+      rw [hstep,ih]
+      by_cases h : r≤ m
+      · simp only [h,ite_true,Nat.succ_le_succ_iff,Nat.succ_sub_succ_eq_sub,pow_succ]
+        ring
+      · simp only [h,ite_false,Nat.succ_le_succ_iff,mul_zero]
+
+theorem diagonal_recurrence_inner_hasSum (f : ℕ→ℕ→ℂ) (R : ℂ)
+    (hstep : ∀ r m,f (r+1) (m+1)=R*f r m) (hz : ∀ r,f (r+1) 0=0)
+    (hs : Summable (f 0)) (r : ℕ) : HasSum (f r) (R^r*∑' m,f 0 m) := by
+  have he := diagonal_recurrence_eq f R hstep hz
+  have htail : HasSum (fun m=> f r (m+r)) (R^r*∑' m,f 0 m) := by
+    apply (hs.hasSum.mul_left (R^r)).congr_fun
+    intro m
+    rw [he,if_pos (Nat.le_add_left r m),Nat.add_sub_cancel]
+  have hzero : (∑ m∈Finset.range r,f r m)=0 := by
+    apply Finset.sum_eq_zero
+    intro m hm
+    rw [he,if_neg (by have := Finset.mem_range.mp hm; omega)]
+  simpa only [hzero,zero_add] using htail.sum_range_add
+
+theorem diagonal_recurrence_hasSum (f : ℕ→ℕ→ℂ) (R : ℂ)
+    (hstep : ∀ r m,f (r+1) (m+1)=R*f r m) (hz : ∀ r,f (r+1) 0=0)
+    (hs : Summable (f 0)) (hR : ‖R‖<1) :
+    HasSum (fun r=>∑' m,f r m) ((∑' m,f 0 m)/(1-R)) := by
+  have he (r : ℕ) := (diagonal_recurrence_inner_hasSum f R hstep hz hs r).tsum_eq
+  have hg : HasSum (fun r=> R^r*(∑' m,f 0 m)) ((∑' m,f 0 m)/(1-R)) := by
+    simpa only [div_eq_mul_inv,mul_comm] using
+      (hasSum_geometric_of_norm_lt_one hR).mul_right (∑' m,f 0 m)
+  exact hg.congr_fun he
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePrimePower
+open Eisenstein CompletedGauss 
+local notation "O" => Eisenstein.O
+
+lemma geometric_indicator_summable (V A : ℂ) (hV : ‖V‖<1) (p : ℕ→Prop) :
+    Summable (fun m=>(if p m then A else 0)*V^m) := by
+  apply (((hasSum_geometric_of_norm_lt_one hV).summable.mul_left A).indicator {m | p m}).congr
+  intro m
+  by_cases hm : p m <;> simp [hm]
+
+lemma gaussValuationTable_geometric_summable (Q G V : ℂ) (hV : ‖V‖<1)
+    (r n : ℕ) (j : ℕ→ℕ) :
+    Summable (fun m=> gaussValuationTable Q G r n (j m)*V^m) := by
+  by_cases hr : 6∣r
+  · have ha := geometric_indicator_summable V (Q^(n+1)) hV (fun m=> n+1≤ j m)
+    have hb := geometric_indicator_summable V (Q^n) hV (fun m=> n≤ j m)
+    apply (ha.sub hb).congr
+    intro m
+    simp only [gaussValuationTable,if_pos hr,sub_mul]
+    split_ifs <;> rfl
+  · apply (geometric_indicator_summable V (Q^n*G) hV (fun m=> j m=n)).congr
+    intro m
+    simp only [gaussValuationTable,if_neg hr]
+    split_ifs <;> rfl
+
+theorem positiveScalar_geometric_summable (p : O) (hp : Prime p)
+    [(Ideal.span {p} : Ideal O).IsMaximal]
+    (hg : lambda ∉ Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p}) ≠ 2)
+    (n k : ℕ) (j : ℕ→ℕ) (V : ℂ) (hV : ‖V‖<1) :
+    Summable (fun m=> positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n k (j m)*V^m) := by
+  simp only [positiveScalar_actual_table p hp hg hc]
+  by_cases hk : k=0
+  · simp only [if_pos hk]
+    exact gaussValuationTable_geometric_summable _ _ V hV (n+1) n j
+  · simp only [if_neg hk]
+    have hs := (gaussValuationTable_geometric_summable (Ideal.absNorm (Ideal.span {p}))
+      (primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg^n) 1) V hV n n (fun m=> j m-1)).mul_left
+      (((complexSexticChar (Ideal.span {p}) hg (-1))⁻¹)*primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 1)
+    apply (hs.indicator {m | k=1 ∧ 1≤ j m}).congr
+    intro m
+    by_cases hm : k=1 ∧ 1≤ j m <;> simp [hm,mul_assoc]
+
+end ProbePrimePower
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p} : Ideal O).IsMaximal]
+  (hg : lambda ∉ Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p}) ≠ 2)
+include hc
+
+theorem rowMarkedTerm_frequency_summable (eta a X W V rho : ℂ) (hV : ‖V‖<1)
+    (j e l k : ℕ) : Summable (fun m=> rowMarkedTerm p hp hg eta a X W V rho j e l k m) := by
+  by_cases ht : e+3*l=0
+  · simp only [rowMarkedTerm,if_pos ht,summable_zero]
+  · simp only [rowMarkedTerm,if_neg ht,rowWeightedScalar,weightedScalar]
+    have hs := ProbePrimePower.positiveScalar_geometric_summable p hp hg hc (e+3*l-1) k (fun m=> j+6*m) V hV
+    apply (hs.mul_left ((rho^k/rho^(e+3*l)) *
+      ((-eta*X/primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 1)^e *
+        (a*X^3/(Ideal.absNorm (Ideal.span {p}):ℂ))^l *
+        localCubePhase (star (localGamma p hp.ne_zero hg 3))
+          (complexSexticChar (Ideal.span {p}) hg (-1)) e l k) *W^k)).congr
+    intro m
+    ring
+
+theorem rowMarkedTerm_zero_lower_edge (eta a X W V rho : ℂ)
+    (j e l k : ℕ) (hj : j<6) (ht : 0< e+3*l) :
+    rowMarkedTerm p hp hg eta a X W V rho j e (l+2) k 0=0 := by
+  unfold rowMarkedTerm
+  rw [if_neg (by omega),positiveScalar_zero_below p hp hg hc _ _ _ (by omega),
+    rowWeightedScalar_zero]
+
+theorem rowMarkedFamily_hasSum (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (hV : ‖V‖<1) (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a X V‖<1)
+    (j e l k : ℕ) (hj : j<6) (ht : 0< e+3*l) :
+    HasSum (fun r=>∑' m,rowMarkedTerm p hp hg eta a X W V rho j e (l+2*r) k m)
+      ((∑' m,rowMarkedTerm p hp hg eta a X W V rho j e l k m)/
+        (1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+  apply diagonal_recurrence_hasSum
+  · intro r m
+    rw [show l+2*(r+1)=(l+2*r)+2 by omega]
+    exact rowMarkedTerm_step p hp hg hc eta a X W V rho hρ j e (l+2*r) k m (by omega)
+  · intro r
+    rw [show l+2*(r+1)=(l+2*r)+2 by omega]
+    exact rowMarkedTerm_zero_lower_edge p hp hg hc eta a X W V rho j e (l+2*r) k hj (by omega)
+  · simpa only [mul_zero,add_zero] using rowMarkedTerm_frequency_summable p hp hg hc eta a X W V rho hV j e l k
+  · exact hR
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+def rowInner (eta a X W V rho : ℂ) (j e l : ℕ) : ℂ :=
+  ∑' k, ∑' m,rowMarkedTerm p hp hg eta a X W V rho j e l k m
+
+def rowMarkedSeries (eta a X W V rho : ℂ) (j : ℕ) : ℂ :=
+  ∑ e : Fin 2, ∑' l,rowInner p hp hg eta a X W V rho j e.val l
+
+lemma rowInner_two (eta a X W V rho : ℂ) (j e l : ℕ) :
+    rowInner p hp hg eta a X W V rho j e l=
+      (∑' m,rowMarkedTerm p hp hg eta a X W V rho j e l 0 m)+
+      (∑' m,rowMarkedTerm p hp hg eta a X W V rho j e l 1 m) := by
+  apply tsum_two_of_rest_zero
+  intro k
+  simp only [rowMarkedTerm_higher_outer,tsum_zero]
+
+@[simp] lemma rowInner_zero (eta a X W V rho : ℂ) (j : ℕ) :
+    rowInner p hp hg eta a X W V rho j 0 0=0 := by
+  simp only [rowInner,rowMarkedTerm,mul_zero,add_zero,ite_true,tsum_zero]
+
+include hc in
+theorem rowInner_family_hasSum (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (hV : ‖V‖<1) (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a X V‖<1)
+    (j e l : ℕ) (hj : j<6) (ht : 0< e+3*l) :
+    HasSum (fun r=> rowInner p hp hg eta a X W V rho j e (l+2*r))
+      (rowInner p hp hg eta a X W V rho j e l/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+  have h0 := rowMarkedFamily_hasSum p hp hg hc eta a X W V rho hρ hV hR j e l 0 hj ht
+  have h1 := rowMarkedFamily_hasSum p hp hg hc eta a X W V rho hρ hV hR j e l 1 hj ht
+  convert h0.add h1 using 1
+  · funext r
+    exact rowInner_two p hp hg eta a X W V rho j e (l+2*r)
+  · rw [rowInner_two,add_div]
+
+include hc in
+
+theorem rowMarkedSeries_four_families (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (hV : ‖V‖<1) (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a X V‖<1)
+    (j : ℕ) (hj : j<6) :
+    rowMarkedSeries p hp hg eta a X W V rho j=
+      (rowInner p hp hg eta a X W V rho j 0 2+
+       rowInner p hp hg eta a X W V rho j 1 0+
+       rowInner p hp hg eta a X W V rho j 0 1+
+       rowInner p hp hg eta a X W V rho j 1 1)/
+        (1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V) := by
+  have h02 := rowInner_family_hasSum p hp hg hc eta a X W V rho hρ hV hR j 0 2 hj (by omega)
+  have h10 := rowInner_family_hasSum p hp hg hc eta a X W V rho hρ hV hR j 1 0 hj (by omega)
+  have h01 := rowInner_family_hasSum p hp hg hc eta a X W V rho hρ hV hR j 0 1 hj (by omega)
+  have h11 := rowInner_family_hasSum p hp hg hc eta a X W V rho hρ hV hR j 1 1 hj (by omega)
+  have he0 : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 0 (2*r))
+      (rowInner p hp hg eta a X W V rho j 0 2/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+    have hshift : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 0 (2*(r+1)))
+        (rowInner p hp hg eta a X W V rho j 0 2/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+      convert h02 using 1
+      funext r
+      congr 1
+      omega
+    have h := hshift.sum_range_add (f:=fun r=> rowInner p hp hg eta a X W V rho j 0 (2*r)) (k:=1)
+    simpa only [Finset.sum_range_one,mul_zero,rowInner_zero,zero_add] using h
+  have he1 : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 1 (2*r))
+      (rowInner p hp hg eta a X W V rho j 1 0/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+    simpa only [zero_add] using h10
+  have ho0 : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 0 (2*r+1))
+      (rowInner p hp hg eta a X W V rho j 0 1/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+    simpa only [Nat.add_comm 1] using h01
+  have ho1 : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 1 (2*r+1))
+      (rowInner p hp hg eta a X W V rho j 1 1/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+    simpa only [Nat.add_comm 1] using h11
+  unfold rowMarkedSeries
+  simp only [Fin.sum_univ_two,Fin.val_zero,Fin.val_one]
+  rw [(he0.even_add_odd ho0).tsum_eq,(he1.even_add_odd ho1).tsum_eq]
+  ring
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePrimePower
+open Eisenstein CompletedGauss 
+local notation "O" => Eisenstein.O
+
+lemma gaussValuationTable_above (Q G : ℂ) (r n j : ℕ) (hj : n+1≤ j) :
+    gaussValuationTable Q G r n j=if 6∣r then Q^(n+1)-Q^n else 0 := by
+  unfold gaussValuationTable
+  by_cases hd : 6∣r
+  · rw [if_pos hd,if_pos hd,if_pos hj,if_pos (by omega)]
+  · rw [if_neg hd,if_neg hd,if_neg (by omega)]
+
+theorem positiveScalar_stable_large (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hc : ringChar (O ⧸ Ideal.span {p})≠2) (n k j j' : ℕ)
+    (hj : n+1< j) (hj' : n+1< j') :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n k j=
+      positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n k j' := by
+  simp only [positiveScalar_actual_table p hp hg hc,
+    show 1≤ j by omega,show 1≤ j' by omega,and_true,
+    gaussValuationTable_above _ _ _ n j (by omega),
+    gaussValuationTable_above _ _ _ n j' (by omega),
+    gaussValuationTable_above _ _ _ n (j-1) (by omega),
+    gaussValuationTable_above _ _ _ n (j'-1) (by omega)]
+
+end ProbePrimePower
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+include hc
+
+theorem rowMarkedTerm_base_tail (eta a X W V rho : ℂ)
+    (j e l k m : ℕ) (ht : 0< e+3*l) (ht6 : e+3*l≤6) :
+    rowMarkedTerm p hp hg eta a X W V rho j e l k (m+2)=
+      rowMarkedTerm p hp hg eta a X W V rho j e l k 2*V^m := by
+  unfold rowMarkedTerm
+  rw [if_neg (by omega),if_neg (by omega),
+    ProbePrimePower.positiveScalar_stable_large p hp hg hc (e+3*l-1) k (j+6*(m+2)) (j+6*2) (by omega) (by omega)]
+  unfold rowWeightedScalar weightedScalar
+  rw [pow_add V m 2]
+  ring
+
+theorem rowInner_base_rational (eta a X W V rho : ℂ) (hV : ‖V‖<1)
+    (j e l : ℕ) (ht : 0< e+3*l) (ht6 : e+3*l≤6) :
+    rowInner p hp hg eta a X W V rho j e l=
+      ∑ k : Fin 2,
+        (rowMarkedTerm p hp hg eta a X W V rho j e l k.val 0+
+         rowMarkedTerm p hp hg eta a X W V rho j e l k.val 1+
+         rowMarkedTerm p hp hg eta a X W V rho j e l k.val 2/(1-V)) := by
+  have hsum (k : ℕ) : (∑' m,rowMarkedTerm p hp hg eta a X W V rho j e l k m)=
+      rowMarkedTerm p hp hg eta a X W V rho j e l k 0+
+      rowMarkedTerm p hp hg eta a X W V rho j e l k 1+
+      rowMarkedTerm p hp hg eta a X W V rho j e l k 2/(1-V) := by
+    have ht' : HasSum (fun m=> rowMarkedTerm p hp hg eta a X W V rho j e l k (m+2))
+        (rowMarkedTerm p hp hg eta a X W V rho j e l k 2/(1-V)) := by
+      have hgeo := (hasSum_geometric_of_norm_lt_one hV).mul_left (rowMarkedTerm p hp hg eta a X W V rho j e l k 2)
+      rw [←div_eq_mul_inv] at hgeo
+      exact hgeo.congr_fun fun m =>
+        rowMarkedTerm_base_tail p hp hg hc eta a X W V rho j e l k m ht ht6
+    have h := ht'.sum_range_add (f:=fun m=> rowMarkedTerm p hp hg eta a X W V rho j e l k m) (k:=2)
+    simpa only [Finset.sum_range_succ,Finset.sum_range_zero,zero_add] using h.tsum_eq
+  rw [rowInner_two,hsum 0,hsum 1]
+  simp only [Fin.sum_univ_two,Fin.val_zero,Fin.val_one]
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p})
+
+def rowZeroIndexTerm (χ : MulChar (O ⧸ Ideal.span {p}) ℂ) (W V : ℂ) (j k m : ℕ) : ℂ :=
+  (if k=0 then 1 else (χ^k) (Ideal.Quotient.mk _ (p^(j+6*m))))*W^k*V^m
+
+theorem sourceRowTerm_zero (eta a rho x w z : ℂ) (j k m : ℕ) :
+    sourceRowTerm p hp hg eta a rho x w z j 0 0 k m=
+      rowZeroIndexTerm p (complexSexticChar (Ideal.span {p}) hg)
+        (rho*((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)))
+        (coordV (Ideal.absNorm (Ideal.span {p})) z) j k m := by
+  unfold sourceRowTerm
+  rw [sourceWeightedScalar_actual p hp hg]
+  simp only [rowZeroIndexTerm,sourceScalar,weightedScalar,localCubePhase,
+    coordV,Complex.ofReal_natCast,mul_zero,add_zero,pow_zero,one_mul,mul_one,
+    zero_mul,Nat.choose_zero_succ,ite_true,div_one,mul_pow]
+  ring
+
+omit [(Ideal.span {p}).IsMaximal] in
+lemma rowZeroIndex_zero (χ : MulChar (O ⧸ Ideal.span {p}) ℂ) (W V : ℂ)
+    (j : ℕ) (hV : ‖V‖<1) :
+    HasSum (fun m=> rowZeroIndexTerm p χ W V j 0 m) (1/(1-V)) := by
+  simpa only [rowZeroIndexTerm,ite_true,pow_zero,one_mul,one_div] using
+    hasSum_geometric_of_norm_lt_one hV
+
+include hp in
+theorem rowZeroIndex_pos_ramified (χ : MulChar (O ⧸ Ideal.span {p}) ℂ) (W V : ℂ)
+    (j k m : ℕ) (hj : j≠0) (hk : k≠0) : rowZeroIndexTerm p χ W V j k m=0 := by
+  rw [rowZeroIndexTerm,if_neg hk,zero_index_scalar p hp χ k (j+6*m) hk,
+    if_neg (by omega),zero_mul,zero_mul]
+
+include hp in
+theorem rowZeroIndexSeries_eq (χ : MulChar (O ⧸ Ideal.span {p}) ℂ) (W V : ℂ)
+    (j : ℕ) (hW : ‖W‖<1) (hV : ‖V‖<1) :
+    (∑' k,∑' m,rowZeroIndexTerm p χ W V j k m)=
+      1/(1-V)+(if j=0 then W/(1-W) else 0) := by
+  by_cases hj : j=0
+  · subst j
+    simp only [rowZeroIndexTerm,zero_add,ite_true]
+    exact zeroIndexSeries_eq p hp χ W V hW hV
+  · rw [if_neg hj,add_zero]
+    rw [tsum_eq_single 0]
+    · exact (rowZeroIndex_zero p χ W V j hV).tsum_eq
+    · intro k hk
+      simp only [rowZeroIndex_pos_ramified p hp χ W V j k _ hj hk,tsum_zero]
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+def rowBaseFinite (eta a X W V rho : ℂ) (j e l : ℕ) : ℂ :=
+  ∑ k : Fin 2,
+    (rowMarkedTerm p hp hg eta a X W V rho j e l k.val 0+
+     rowMarkedTerm p hp hg eta a X W V rho j e l k.val 1+
+     rowMarkedTerm p hp hg eta a X W V rho j e l k.val 2/(1-V))
+
+def rowClosedMarked (eta a X W V rho : ℂ) (j : ℕ) : ℂ :=
+  (rowBaseFinite p hp hg eta a X W V rho j 0 2+
+   rowBaseFinite p hp hg eta a X W V rho j 1 0+
+   rowBaseFinite p hp hg eta a X W V rho j 0 1+
+   rowBaseFinite p hp hg eta a X W V rho j 1 1)/
+    (1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)
+
+include hc in
+theorem rowMarkedSeries_eq_closed (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (hV : ‖V‖<1) (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a X V‖<1)
+    (j : ℕ) (hj : j<6) :
+    rowMarkedSeries p hp hg eta a X W V rho j=rowClosedMarked p hp hg eta a X W V rho j := by
+  rw [rowMarkedSeries_four_families p hp hg hc eta a X W V rho hρ hV hR j hj]
+  unfold rowClosedMarked rowBaseFinite
+  rw [rowInner_base_rational p hp hg hc eta a X W V rho hV j 0 2 (by omega) (by omega),
+    rowInner_base_rational p hp hg hc eta a X W V rho hV j 1 0 (by omega) (by omega),
+    rowInner_base_rational p hp hg hc eta a X W V rho hV j 0 1 (by omega) (by omega),
+    rowInner_base_rational p hp hg hc eta a X W V rho hV j 1 1 (by omega) (by omega)]
+
+include hc in
+lemma rowInner_zero_squarefree_summable (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (hV : ‖V‖<1) (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a X V‖<1)
+    (j : ℕ) (hj : j<6) : Summable (fun l=> rowInner p hp hg eta a X W V rho j 0 l) := by
+  have h02 := rowInner_family_hasSum p hp hg hc eta a X W V rho hρ hV hR j 0 2 hj (by omega)
+  have h01 := rowInner_family_hasSum p hp hg hc eta a X W V rho hρ hV hR j 0 1 hj (by omega)
+  have hs : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 0 (2*(r+1)))
+      (rowInner p hp hg eta a X W V rho j 0 2/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+    convert h02 using 1
+    funext r
+    congr 1
+    omega
+  have he := hs.sum_range_add (f:=fun r=> rowInner p hp hg eta a X W V rho j 0 (2*r)) (k:=1)
+  have ho : HasSum (fun r=> rowInner p hp hg eta a X W V rho j 0 (2*r+1))
+      (rowInner p hp hg eta a X W V rho j 0 1/(1-evenRatio (Ideal.absNorm (Ideal.span {p})) a X V)) := by
+    simpa only [Nat.add_comm 1] using h01
+  exact (he.even_add_odd ho).summable
+
+def sourceRowSeries (eta a rho x w z : ℂ) (j : ℕ) : ℂ :=
+  ∑ e : Fin 2,∑' l,∑' k,∑' m,sourceRowTerm p hp hg eta a rho x w z j e.val l k m
+
+include hc in
+
+theorem sourceRowSeries_eq_closed (eta a rho x w z : ℂ) (hρ : rho^6=1)
+    (hV : ‖coordV (Ideal.absNorm (Ideal.span {p})) z‖<1)
+    (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x)) (coordV (Ideal.absNorm (Ideal.span {p})) z)‖<1)
+    (hW : ‖rho*((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w))‖<1) (j : ℕ) (hj : j<6) :
+    sourceRowSeries p hp hg eta a rho x w z j=
+      1/(1-coordV (Ideal.absNorm (Ideal.span {p})) z)+
+      (if j=0 then (rho*((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)))/
+        (1-rho*((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w))) else 0)+
+      rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+        ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j := by
+  let X : ℂ := (Ideal.absNorm (Ideal.span {p}):ℂ)^(-x)
+  let W : ℂ := (Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)
+  let V : ℂ := coordV (Ideal.absNorm (Ideal.span {p})) z
+  let Z0 := 1/(1-V)+(if j=0 then rho*W/(1-rho*W) else 0)
+  have he0 (l : ℕ) : (∑' k,∑' m,sourceRowTerm p hp hg eta a rho x w z j 0 l k m)=
+      rowInner p hp hg eta a X W V rho j 0 l+(if l=0 then Z0 else 0) := by
+    by_cases hl : l=0
+    · subst l
+      simp only [sourceRowTerm_zero,rowInner_zero,ite_true,zero_add]
+      exact rowZeroIndexSeries_eq p hp (complexSexticChar (Ideal.span {p}) hg) (rho*W) V j hW hV
+    · rw [if_neg hl,add_zero]
+      apply tsum_congr
+      intro k
+      apply tsum_congr
+      intro m
+      exact sourceRowTerm_pos p hp hg eta a rho x w z j 0 l k m (by omega)
+  have he1 (l : ℕ) : (∑' k,∑' m,sourceRowTerm p hp hg eta a rho x w z j 1 l k m)=
+      rowInner p hp hg eta a X W V rho j 1 l := by
+    apply tsum_congr
+    intro k
+    apply tsum_congr
+    intro m
+    exact sourceRowTerm_pos p hp hg eta a rho x w z j 1 l k m (by omega)
+  have hs := rowInner_zero_squarefree_summable p hp hg hc eta a X W V rho hρ hV hR j hj
+  have hc' := rowMarkedSeries_eq_closed p hp hg hc eta a X W V rho hρ hV hR j hj
+  unfold rowMarkedSeries at hc'
+  simp only [Fin.sum_univ_two,Fin.val_zero,Fin.val_one] at hc'
+  unfold sourceRowSeries
+  simp only [Fin.sum_univ_two,Fin.val_zero,Fin.val_one,he0,he1]
+  rw [hs.tsum_add (hasSum_ite_eq 0 Z0).summable,tsum_ite_eq]
+  change _=Z0+rowClosedMarked p hp hg eta a X W V rho j
+  rw [←hc']
+  ring
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePhysical
+open Eisenstein CompletedGauss  ProbePrimePower ProbeEuler
+open CanonicalQuadraticSieve CanonicalRowCompletion ProbeRow CubicEisenstein
+local notation "O" => Eisenstein.O
+
+theorem complexSexticChar_unit_six (p b : O) [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+    (hb : IsCoprime b p) :
+    (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b))^6=1 := by
+  have h := congrArg (fun χ : MulChar (O ⧸ Ideal.span {p}) ℂ =>
+    χ (Ideal.Quotient.mk _ b)) (complexSexticChar_six _ hg hc)
+  simpa only [MulChar.pow_apply' _ (by decide : (6:ℕ)≠0),
+    MulChar.one_apply ((isUnit_quotient_span_iff p b).mpr hb.symm)] using h
+
+theorem idealRowHighLocalFactor_eq_closed (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hc : ringChar (O ⧸ Ideal.span {p})≠2) (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (b : O) (hb : IsCoprime b p)
+    (j : ℕ) (hj : j<6) (x w z : ℂ)
+    (hV : ‖coordV (Ideal.absNorm (Ideal.span {p})) z‖<1)
+    (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) (actualACube η p)
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x)) (coordV (Ideal.absNorm (Ideal.span {p})) z)‖<1)
+    (hW : ‖complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)*
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w))‖<1) :
+    idealRowHighLocalFactor η (b*p^j) (Ideal.span {p}) x w z=
+      1/(1-coordV (Ideal.absNorm (Ideal.span {p})) z)+
+      (if j=0 then
+        (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)*
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)))/
+        (1-complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)*
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w))) else 0)+
+      rowClosedMarked p hp hg (targetMonoid η p) (actualACube η p)
+        ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+        ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+        (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)) j := by
+  rw [idealRowHighLocalFactor_eq_source η p hp hg hc hprimary hs b hb j x w z]
+  exact sourceRowSeries_eq_closed p hp hg hc _ _ _ x w z
+    (complexSexticChar_unit_six p b hg hc hb) hV hR hW j hj
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+lemma rowMarkedTerm_unramified (eta a X W V rho : ℂ) (e l k m : ℕ) :
+    rowMarkedTerm p hp hg eta a X W V rho 0 e l k m=
+      principalMarkedTerm p hp hg (eta/rho) (a/rho^3) X (rho*W) V e l k m := by
+  unfold rowMarkedTerm principalMarkedTerm
+  split_ifs
+  · rfl
+  · simp only [zero_add,rowWeightedScalar_parameters]
+
+lemma rowMarkedSeries_unramified (eta a X W V rho : ℂ) :
+    rowMarkedSeries p hp hg eta a X W V rho 0=
+      principalMarkedSeries p hp hg (eta/rho) (a/rho^3) X (rho*W) V := by
+  unfold rowMarkedSeries principalMarkedSeries rowInner principalInner
+  apply Finset.sum_congr rfl
+  intro e he
+  apply tsum_congr
+  intro l
+  apply tsum_congr
+  intro k
+  apply tsum_congr
+  intro m
+  exact rowMarkedTerm_unramified p hp hg eta a X W V rho e.val l k m
+
+include hc in
+lemma rowClosedMarked_unramified (eta a X W V rho : ℂ) (hρ : rho^6=1)
+    (hV : ‖V‖<1) (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a X V‖<1) :
+    rowClosedMarked p hp hg eta a X W V rho 0=
+      markedFactor (evenRatio (Ideal.absNorm (Ideal.span {p})) a X V) V
+        (Ideal.absNorm (Ideal.span {p}):ℂ)⁻¹
+        (eta*((Ideal.absNorm (Ideal.span {p}):ℂ)-1)*X*W)
+        (-(eta/rho)*X+(rho*W)*evenRatio (Ideal.absNorm (Ideal.span {p})) a X V) 1 := by
+  have hn : rho≠0 := by intro h; simp [h] at hρ
+  rw [←rowMarkedSeries_eq_closed p hp hg hc eta a X W V rho hρ hV hR 0 (by decide),
+    rowMarkedSeries_unramified p hp hg,
+    principalMarkedSeries_eq p hp hg hc _ _ _ _ _ hV
+      (by simpa only [evenRatio_unit _ _ _ _ _ hρ] using hR),
+    evenRatio_unit _ _ _ _ _ hρ]
+  congr 1
+  field_simp
+
+include hc in
+
+theorem sourceRowSeries_unramified_euler (eta a rho x w z : ℂ) (hρ : rho^6=1)
+    (hV : ‖coordV (Ideal.absNorm (Ideal.span {p})) z‖<1)
+    (hR : ‖coordR (Ideal.absNorm (Ideal.span {p})) (a^2) x z‖<1)
+    (hW : ‖coordW (Ideal.absNorm (Ideal.span {p})) rho w‖<1)
+    (hD : 1-coordD (Ideal.absNorm (Ideal.span {p})) eta rho x≠0) :
+    let Q : ℝ := Ideal.absNorm (Ideal.span {p})
+    sourceRowSeries p hp hg eta a rho x w z 0=
+      (1-coordD Q eta rho x)/((1-coordV Q z)*(1-coordW Q rho w))*
+        unramifiedClosed Q (a^2) eta rho x w z := by
+  dsimp only
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))
+  have hr := evenRatio_eq_coordR (Ideal.absNorm (Ideal.span {p}):ℝ) hQ a x z
+  simp only [Complex.ofReal_natCast] at hr
+  have hr' : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x)) (coordV (Ideal.absNorm (Ideal.span {p})) z)‖<1 := by
+    rw [hr]; exact hR
+  rw [sourceRowSeries_eq_closed p hp hg hc eta a rho x w z hρ hV hr' hW 0 (by decide)]
+  rw [rowClosedMarked_unramified p hp hg hc _ _ _ _ _ _ hρ hV hr',hr]
+  have hk := coordK_eq_geometric (Ideal.absNorm (Ideal.span {p}):ℝ) hQ eta x w
+  simp only [Complex.ofReal_natCast] at hk
+  rw [←hk]
+  have hinv : rho⁻¹=star rho := Complex.inv_eq_conj (Complex.norm_eq_one_of_pow_eq_one hρ (by decide))
+  have hv := one_sub_ne_zero_of_norm_lt_one _ hV
+  have hw := one_sub_ne_zero_of_norm_lt_one _ hW
+  simp only [ite_true,div_eq_mul_inv,hinv]
+  unfold unramifiedClosed ProbeLocal.continuedCorrection
+  dsimp only
+  simp only [coordW,coordD,Complex.ofReal_natCast] at hD hw ⊢
+  field_simp [hD,hv,hw]
+  ; ring
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbePhysical
+open Eisenstein CanonicalQuadraticSieve CanonicalRowCompletion CompletedGauss
+open ProbeEuler ProbeRow  ProbePrimePower
+local notation "O" => Eisenstein.O
+
+lemma row_initial_geometric (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hc : ringChar (O ⧸ Ideal.span {p})≠2) (b : O) (hb : IsCoprime b p)
+    (x w z : ℂ) (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    let Q : ℝ := Ideal.absNorm (Ideal.span {p})
+    let rho := complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)
+    ‖coordV Q z‖<1 ∧ ‖coordR Q ((actualACube η p)^2) x z‖<1 ∧
+      ‖coordW Q rho w‖<1 ∧ ‖coordD Q (targetMonoid η p) rho x‖<1 := by
+  dsimp only
+  have hP : Prime (Ideal.span {p}:Ideal O) := (Ideal.prime_span_singleton_iff).mpr hp
+  have hQ2 : (2:ℝ)≤ Ideal.absNorm (Ideal.span {p}) := by
+    exact_mod_cast HeckeIdealSeries.prime_norm_two_le ⟨_,hP⟩
+  have hQ0 : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by linarith
+  have hQ1 : (1:ℝ)< Ideal.absNorm (Ideal.span {p}) := by linarith
+  have hn : ‖complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)‖≤1 :=
+    (Complex.norm_eq_one_of_pow_eq_one (complexSexticChar_unit_six p b hg hc hb) (by decide)).le
+  refine ⟨?_,?_,?_,?_⟩
+  · rw [coordV_norm _ hQ0]
+    exact Real.rpow_lt_one_of_one_lt_of_neg hQ1 (by linarith)
+  · rw [actualACube_sq]
+    apply (coordR_norm_le _ hQ0 _ x z (actualAPhase_norm_le_one η p)).trans_lt
+    exact Real.rpow_lt_one_of_one_lt_of_neg hQ1 (by linarith)
+  · apply (coordW_norm_le _ hQ0 _ w hn).trans_lt
+    exact Real.rpow_lt_one_of_one_lt_of_neg hQ1 (by linarith)
+  · apply (coordD_norm_le _ hQ0 _ _ x (targetMonoid_norm_le_one η p) hn).trans_lt
+    exact Real.rpow_lt_one_of_one_lt_of_neg hQ1 (by linarith)
+
+theorem idealRowHighLocalFactor_unramified (η : HeckeFamily.Character) (p : O) (hp : Prime p)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hc : ringChar (O ⧸ Ideal.span {p})≠2) (hprimary : lambda^2∣p-1)
+    (hs : Supported (Ideal.span {p})) (b : O) (hb : IsCoprime b p)
+    (x w z : ℂ) (hx : 3/2< x.re) (hw : 2< w.re) (hz : 1/6< z.re) :
+    let Q : ℝ := Ideal.absNorm (Ideal.span {p})
+    let rho := complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ b)
+    idealRowHighLocalFactor η b (Ideal.span {p}) x w z=
+      (1-coordD Q (targetMonoid η p) rho x)/((1-coordV Q z)*(1-coordW Q rho w))*
+        unramifiedClosed Q (actualAPhase η p) (targetMonoid η p) rho x w z := by
+  have hd := row_initial_geometric η p hp hg hc b hb x w z hx hw hz
+  dsimp only at hd ⊢
+  have he := idealRowHighLocalFactor_eq_source η p hp hg hc hprimary hs b hb 0 x w z
+  simp only [pow_zero,mul_one] at he
+  rw [he]
+  simpa only [actualACube_sq,ProbeEuler.sourceRowSeries] using
+    sourceRowSeries_unramified_euler p hp hg hc (targetMonoid η p) (actualACube η p)
+      _ x w z (complexSexticChar_unit_six p b hg hc hb) hd.1 hd.2.1 hd.2.2.1
+      (one_sub_ne_zero_of_norm_lt_one _ hd.2.2.2)
+
+end ProbePhysical
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePrimePower
+open Eisenstein CompletedGauss  CubicEisenstein 
+local notation "O" => Eisenstein.O
+
+lemma primeGauss_norm_le (p : O) (hp : p≠0)
+    (χ : MulChar (O ⧸ Ideal.span {p}) ℂ) (h : O) :
+    ‖primeGauss p hp χ h‖≤(Ideal.absNorm (Ideal.span {p}):ℝ) := by
+  let := finiteEisensteinQuotientOfNonzero hp
+  let : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  rw [primeGauss,tsum_fintype]
+  calc
+    _ ≤ ∑ x : O ⧸ Ideal.span {p},‖χ x*primitiveTrace p hp (Ideal.Quotient.mk _ h*x)‖ := norm_sum_le _ _
+    _ ≤ ∑ _x : O ⧸ Ideal.span {p},(1:ℝ) := Finset.sum_le_sum fun x _=> by
+      rw [norm_mul,(primitiveTrace p hp).norm_apply,mul_one]
+      exact FiniteRayExpansion.norm_char_le_one χ x
+    _ = _ := by simp [Ideal.absNorm_apply,Submodule.cardQuot_apply,Nat.card_eq_fintype_card]
+
+lemma primeGauss_actual_norm (p : O) (hp : p≠0) [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2) :
+    ‖primeGauss p hp (complexSexticChar (Ideal.span {p}) hg) 1‖=
+      Real.sqrt (Ideal.absNorm (Ideal.span {p}):ℝ) := by
+  let : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  let : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  have hn := localGamma_norm_one p hp hg hc 1 (by decide) (by decide)
+  simp only [localGamma,pow_one,norm_div,Complex.norm_real,
+    Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _)] at hn
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr hp))
+  exact (div_eq_one_iff_eq (Real.sqrt_pos.mpr hQ).ne').mp hn
+
+lemma gaussValuationTable_norm_le (Q : ℝ) (hQ : 1≤ Q) (G : ℂ) (hG : ‖G‖≤ Q)
+    (r n j : ℕ) : ‖gaussValuationTable (Q:ℂ) G r n j‖≤2*Q^(n+1) := by
+  have hQ0 : 0≤ Q := by linarith
+  have hn : Q^n≤ Q^(n+1) := by simpa only [pow_succ] using
+    (le_mul_of_one_le_right (pow_nonneg hQ0 n) hQ)
+  have hpow (a : ℕ) : ‖(Q:ℂ)^a‖=Q^a := by simp [norm_pow,abs_of_nonneg hQ0]
+  have hi (a : ℕ) : ‖(if a≤ j then (Q:ℂ)^a else 0)‖≤ Q^a := by
+    split_ifs
+    · exact (hpow a).le
+    · simpa only [norm_zero] using pow_nonneg hQ0 a
+  unfold gaussValuationTable
+  by_cases hr : 6∣r
+  · rw [if_pos hr]
+    exact (norm_sub_le _ _).trans ((add_le_add (hi (n+1)) (hi n)).trans (by linarith))
+  · rw [if_neg hr]
+    by_cases hj : j=n
+    · rw [if_pos hj,norm_mul,hpow]
+      calc
+        _ ≤ Q^n*Q := mul_le_mul_of_nonneg_left hG (pow_nonneg hQ0 n)
+        _ ≤ 2*Q^(n+1) := by rw [←pow_succ];nlinarith [pow_nonneg hQ0 (n+1)]
+    · rw [if_neg hj,norm_zero]
+      positivity
+
+lemma positiveScalar_norm_le (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+    (n k j : ℕ) (hk : k≤1) :
+    ‖positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n k j‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(n+1)*
+        (Real.sqrt (Ideal.absNorm (Ideal.span {p}):ℝ))^k := by
+  have hP : Prime (Ideal.span {p}:Ideal O) := Ideal.prime_span_singleton_iff.mpr hp
+  have hQ : (1:ℝ)≤ Ideal.absNorm (Ideal.span {p}) := by
+    have hh := HeckeIdealSeries.prime_norm_two_le ⟨_,hP⟩
+    change 2≤ Ideal.absNorm (Ideal.span {p}) at hh
+    exact_mod_cast (by omega : 1≤ Ideal.absNorm (Ideal.span {p}))
+  have ht (r j : ℕ) := gaussValuationTable_norm_le (Ideal.absNorm (Ideal.span {p}):ℝ) hQ
+    (primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg^r) 1)
+    (primeGauss_norm_le p hp.ne_zero _ _) r n j
+  have ho : ‖complexSexticChar (Ideal.span {p}) hg (-1)‖=1 :=
+    Complex.norm_eq_one_of_pow_eq_one (complexSexticChar_neg_one_sq _ hg) (by decide)
+  rw [positiveScalar_actual_table p hp hg hc]
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+  · simpa only [ite_true,pow_zero,mul_one,Complex.ofReal_natCast] using ht (n+1) j
+  · simp only [Nat.one_ne_zero,ite_false,true_and]
+    split_ifs
+    · rw [norm_mul,norm_mul,norm_inv,ho,inv_one,one_mul,primeGauss_actual_norm p hp.ne_zero hg hc]
+      simpa only [pow_one,mul_comm,Complex.ofReal_natCast] using
+        mul_le_mul_of_nonneg_left (ht n (j-1)) (Real.sqrt_nonneg (Ideal.absNorm (Ideal.span {p}):ℝ))
+    · simp only [norm_zero,pow_one]
+      positivity
+
+end ProbePrimePower
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+
+lemma sourceWeightedScalar_norm_le (Q : ℝ) (hQ : 0< Q)
+    (eta a gamma C omega x w z scalar : ℂ) (heta : ‖eta‖≤1) (ha : ‖a‖≤1)
+    (hgamma : ‖gamma‖=1) (hC : ‖C‖=1) (ho : ‖omega‖=1) (e l k m : ℕ) :
+    ‖sourceWeightedScalar Q eta a gamma C omega x w z scalar e l k m‖≤
+      ‖scalar‖*Q^(-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)) := by
+  let coeff : ℂ := (-1:ℂ)^e*gamma^(-(e:ℤ))*eta^e*(a*C)^l*
+    omega^((((e+3*l)*k:ℕ):ℤ)-(e*l+l.choose 2:ℕ))
+  have hn : ‖coeff‖≤1 := by
+    simp only [coeff,norm_mul,norm_pow,norm_zpow,hgamma,hC,ho,norm_neg,norm_one,
+      one_pow,one_zpow,mul_one,one_mul]
+    exact (mul_le_of_le_one_left (by positivity) (pow_le_one₀ (norm_nonneg _) heta)).trans (pow_le_one₀ (norm_nonneg _) ha)
+  change ‖coeff*scalar*(Q:ℂ)^_‖≤ _
+  rw [norm_mul,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos hQ]
+  have he : (-(x+1/2)*(e:ℂ)-(1+3*x)*(l:ℂ)-w*(k:ℂ)-6*z*(m:ℂ)).re=
+      -(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ) := by simp
+  rw [he]
+  exact mul_le_mul_of_nonneg_right (mul_le_of_le_one_left (norm_nonneg _) hn) (by positivity)
+
+lemma scalar_spectral_power (Q x w z : ℝ) (hQ : 0< Q) (e l k m : ℕ) :
+    (2*Q^(e+3*l)*(Real.sqrt Q)^k)*
+      Q^(-(x+1/2)*(e:ℝ)-(1+3*x)*(l:ℝ)-w*(k:ℝ)-6*z*(m:ℝ))=
+      2*Q^((1/2-x)*(e:ℝ)+(2-3*x)*(l:ℝ)+(1/2-w)*(k:ℝ)-6*z*(m:ℝ)) := by
+  rw [Real.sqrt_eq_rpow,←Real.rpow_mul_natCast hQ.le,←Real.rpow_natCast Q (e+3*l)]
+  rw [mul_assoc 2,←Real.rpow_add hQ,mul_assoc 2,←Real.rpow_add hQ]
+  congr 1
+  push_cast
+  ring_nf
+
+theorem sourceRowTerm_norm_le (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+    (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+    (eta a rho x w z : ℂ) (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (j e l k m : ℕ) (ht : 0< e+3*l) (hk : k≤1) :
+    ‖sourceRowTerm p hp hg eta a rho x w z j e l k m‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^((1/2-x.re)*(e:ℝ)+(2-3*x.re)*(l:ℝ)+
+        (1/2-w.re)*(k:ℝ)-6*z.re*(m:ℝ)) := by
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))
+  have hrho := Complex.norm_eq_one_of_pow_eq_one hρ (by decide : (6:ℕ)≠0)
+  rw [sourceRowTerm,norm_mul,norm_div,norm_pow,norm_pow,hrho,one_pow,one_pow,div_self (by norm_num : (1:ℝ)≠0),one_mul]
+  apply (sourceWeightedScalar_norm_le _ hQ eta a _ _ _ x w z _ heta ha
+    (localGamma_norm_one p hp.ne_zero hg hc 1 (by decide) (by decide))
+    (by rw [norm_star];exact localGamma_norm_one p hp.ne_zero hg hc 3 (by decide) (by decide))
+    (Complex.norm_eq_one_of_pow_eq_one (complexSexticChar_neg_one_sq _ hg) (by decide)) e l k m).trans
+  have hs := positiveScalar_norm_le p hp hg hc (e+3*l-1) k (j+6*m) hk
+  rw [show e+3*l-1+1=e+3*l by omega] at hs
+  rw [sourceScalar,if_neg (by omega)]
+  exact (mul_le_mul_of_nonneg_right hs (by positivity)).trans_eq
+    (scalar_spectral_power _ x.re w.re z.re hQ e l k m)
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+include hc in
+lemma rowMarkedTerm_second_region (eta a rho x w z : ℂ)
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (19/20:ℝ)≤ w.re) (hz : (33/200:ℝ)≤ z.re)
+    (j e l k m : ℕ) (ht : 0< e+3*l) (hk : k≤1) :
+    ‖rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+      rho j e l k m‖≤2 := by
+  rw [←sourceRowTerm_pos p hp hg eta a rho x w z j e l k m (by omega)]
+  apply (sourceRowTerm_norm_le p hp hg hc eta a rho x w z heta ha hρ j e l k m ht hk).trans
+  have hP : Prime (Ideal.span {p}:Ideal O) := Ideal.prime_span_singleton_iff.mpr hp
+  have hQ1 : (1:ℝ)≤ Ideal.absNorm (Ideal.span {p}) := by
+    have hh := HeckeIdealSeries.prime_norm_two_le ⟨_,hP⟩
+    change 2≤ Ideal.absNorm (Ideal.span {p}) at hh
+    exact_mod_cast (by omega : 1≤ Ideal.absNorm (Ideal.span {p}))
+  have he : (1/2-x.re)*(e:ℝ)+(2-3*x.re)*(l:ℝ)+(1/2-w.re)*(k:ℝ)-6*z.re*(m:ℝ)≤0 := by
+    have h1 := mul_nonpos_of_nonpos_of_nonneg (show 1/2-x.re≤0 by linarith) (Nat.cast_nonneg e : (0:ℝ)≤ _)
+    have h2 := mul_nonpos_of_nonpos_of_nonneg (show 2-3*x.re≤0 by linarith) (Nat.cast_nonneg l : (0:ℝ)≤ _)
+    have h3 := mul_nonpos_of_nonpos_of_nonneg (show 1/2-w.re≤0 by linarith) (Nat.cast_nonneg k : (0:ℝ)≤ _)
+    have h4 : 0≤6*z.re*(m:ℝ) := by positivity
+    linarith
+  have hh := Real.rpow_le_one_of_one_le_of_nonpos hQ1 he
+  linarith
+
+lemma second_region_V_half (Q : ℝ) (hQ : 4≤ Q) (z : ℂ) (hz : (33/200:ℝ)≤ z.re) :
+    ‖coordV Q z‖≤1/2 := by
+  rw [coordV_norm Q (by linarith)]
+  exact rpow_le_half Q _ hQ (by linarith)
+
+lemma second_region_R_half (Q : ℝ) (hQ : 4≤ Q) (a x z : ℂ) (ha : ‖a‖≤1)
+    (hx : (7/8:ℝ)≤ x.re) (hz : (33/200:ℝ)≤ z.re) :
+    ‖evenRatio Q a ((Q:ℂ)^(-x)) (coordV Q z)‖≤1/2 := by
+  rw [evenRatio_eq_coordR Q (by linarith)]
+  apply (coordR_norm_le Q (by linarith) (a^2) x z (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha)).trans
+  exact rpow_le_half Q _ hQ (by linarith)
+
+include hc in
+lemma rowBaseFinite_second_region (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (19/20:ℝ)≤ w.re) (hz : (33/200:ℝ)≤ z.re)
+    (j e l : ℕ) (ht : 0< e+3*l) :
+    ‖rowBaseFinite p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+      rho j e l‖≤16 := by
+  have hv := ProbeLocal.inv_one_sub_norm_le_two _ (second_region_V_half _ hQ z hz)
+  have ht' (k : Fin 2) (m : ℕ) := rowMarkedTerm_second_region p hp hg hc eta a rho x w z heta ha hρ hx hw hz
+    j e l k.val m ht (by omega)
+  unfold rowBaseFinite
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _k : Fin 2,(8:ℝ) := by
+      apply Finset.sum_le_sum
+      intro k hk
+      apply (norm_add_le _ _).trans
+      have hab := (norm_add_le _ _).trans (add_le_add (ht' k 0) (ht' k 1))
+      have hd : ‖rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+          rho j e l k.val 2/(1-coordV (Ideal.absNorm (Ideal.span {p})) z)‖≤4 := by
+        rw [div_eq_mul_inv,norm_mul]
+        exact (mul_le_mul (ht' k 2) hv (norm_nonneg _) (by norm_num)).trans_eq (by norm_num)
+      linarith
+    _ = _ := by norm_num
+
+include hc in
+theorem rowClosedMarked_second_region (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (19/20:ℝ)≤ w.re) (hz : (33/200:ℝ)≤ z.re) (j : ℕ) :
+    ‖rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j‖≤128 := by
+  have h02 := rowBaseFinite_second_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 0 2 (by omega)
+  have h10 := rowBaseFinite_second_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 1 0 (by omega)
+  have h01 := rowBaseFinite_second_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 0 1 (by omega)
+  have h11 := rowBaseFinite_second_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 1 1 (by omega)
+  have hr := ProbeLocal.inv_one_sub_norm_le_two _ (second_region_R_half _ hQ a x z ha hx hz)
+  simp only [Complex.ofReal_natCast] at hr
+  unfold rowClosedMarked
+  rw [div_eq_mul_inv,norm_mul]
+  apply (mul_le_mul_of_nonneg_right
+    ((norm_add_le _ _).trans (add_le_add
+      ((norm_add_le _ _).trans (add_le_add
+        ((norm_add_le _ _).trans (add_le_add h02 h10)) h01)) h11)) (norm_nonneg _)).trans
+  nlinarith
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+def ramifiedClosed (eta a rho x w z : ℂ) (j : ℕ) : ℂ :=
+  1+(1-coordV (Ideal.absNorm (Ideal.span {p})) z)*
+    rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j
+
+include hc in
+theorem ramifiedClosed_bound (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (19/20:ℝ)≤ w.re) (hz : (33/200:ℝ)≤ z.re) (j : ℕ) :
+    ‖ramifiedClosed p hp hg eta a rho x w z j‖≤193 := by
+  have hb := rowClosedMarked_second_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j
+  have hv := second_region_V_half _ hQ z hz
+  have hs := norm_sub_le (1:ℂ) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+  simp only [norm_one] at hs
+  unfold ramifiedClosed
+  apply (norm_add_le _ _).trans
+  rw [norm_one,norm_mul]
+  have hm := mul_le_mul (show ‖1-coordV (Ideal.absNorm (Ideal.span {p})) z‖≤3/2 by linarith)
+    hb (norm_nonneg _) (by norm_num : (0:ℝ)≤3/2)
+  linarith
+
+include hc in
+
+theorem sourceRowSeries_ramified (eta a rho x w z : ℂ) (hρ : rho^6=1)
+    (hV : ‖coordV (Ideal.absNorm (Ideal.span {p})) z‖<1)
+    (hR : ‖evenRatio (Ideal.absNorm (Ideal.span {p})) a
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x)) (coordV (Ideal.absNorm (Ideal.span {p})) z)‖<1)
+    (hW : ‖rho*((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w))‖<1)
+    (j : ℕ) (hj0 : j≠0) (hj : j<6) :
+    sourceRowSeries p hp hg eta a rho x w z j*(1-coordV (Ideal.absNorm (Ideal.span {p})) z)=
+      ramifiedClosed p hp hg eta a rho x w z j := by
+  rw [sourceRowSeries_eq_closed p hp hg hc eta a rho x w z hρ hV hR hW j hj,if_neg hj0,add_zero]
+  unfold ramifiedClosed
+  have hn := one_sub_ne_zero_of_norm_lt_one _ hV
+  field_simp
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p})
+
+lemma rowMarkedTerm_differentiableAt (eta a rho : ℂ) (X W V : ℂ→ℂ) (t : ℂ)
+    (hX : DifferentiableAt ℂ X t) (hW : DifferentiableAt ℂ W t) (hV : DifferentiableAt ℂ V t)
+    (j e l k m : ℕ) :
+    DifferentiableAt ℂ (fun s=> rowMarkedTerm p hp hg eta a (X s) (W s) (V s) rho j e l k m) t := by
+  unfold rowMarkedTerm
+  split_ifs
+  · fun_prop
+  · unfold rowWeightedScalar weightedScalar
+    fun_prop
+
+lemma rowBaseFinite_differentiableAt (eta a rho : ℂ) (X W V : ℂ→ℂ) (t : ℂ)
+    (hX : DifferentiableAt ℂ X t) (hW : DifferentiableAt ℂ W t) (hV : DifferentiableAt ℂ V t)
+    (hv : 1-V t≠0) (j e l : ℕ) :
+    DifferentiableAt ℂ (fun s=> rowBaseFinite p hp hg eta a (X s) (W s) (V s) rho j e l) t := by
+  have hd (k m : ℕ) := rowMarkedTerm_differentiableAt p hp hg eta a rho X W V t hX hW hV j e l k m
+  unfold rowBaseFinite
+  fun_prop (disch := assumption)
+
+lemma rowClosedMarked_differentiableAt (eta a rho : ℂ) (X W V : ℂ→ℂ) (t : ℂ)
+    (hX : DifferentiableAt ℂ X t) (hW : DifferentiableAt ℂ W t) (hV : DifferentiableAt ℂ V t)
+    (hv : 1-V t≠0) (hr : 1-evenRatio (Ideal.absNorm (Ideal.span {p})) a (X t) (V t)≠0) (j : ℕ) :
+    DifferentiableAt ℂ (fun s=> rowClosedMarked p hp hg eta a (X s) (W s) (V s) rho j) t := by
+  have hd (e l : ℕ) := rowBaseFinite_differentiableAt p hp hg eta a rho X W V t hX hW hV hv j e l
+  have hR : DifferentiableAt ℂ (fun s=> evenRatio (Ideal.absNorm (Ideal.span {p})) a (X s) (V s)) t := by
+    unfold evenRatio
+    fun_prop
+  unfold rowClosedMarked
+  fun_prop (disch := assumption)
+
+lemma ramifiedClosed_differentiableAt (eta a rho : ℂ) (X W Z : ℂ→ℂ) (t : ℂ)
+    (hX : DifferentiableAt ℂ X t) (hW : DifferentiableAt ℂ W t) (hZ : DifferentiableAt ℂ Z t)
+    (hv : 1-coordV (Ideal.absNorm (Ideal.span {p})) (Z t)≠0)
+    (hr : 1-coordR (Ideal.absNorm (Ideal.span {p})) (a^2) (X t) (Z t)≠0) (j : ℕ) :
+    DifferentiableAt ℂ (fun s=> ramifiedClosed p hp hg eta a rho (X s) (W s) (Z s) j) t := by
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))
+  have hcx : DifferentiableAt ℂ (fun s=>(Ideal.absNorm (Ideal.span {p}):ℂ)^(-X s)) t := by
+    exact hX.neg.const_cpow (Or.inl (by exact_mod_cast hQ.ne'))
+  have hcw : DifferentiableAt ℂ (fun s=>(Ideal.absNorm (Ideal.span {p}):ℂ)^(-W s)) t := by
+    exact hW.neg.const_cpow (Or.inl (by exact_mod_cast hQ.ne'))
+  have hcv := (coordV_differentiable _ hQ).differentiableAt.comp t hZ
+  change DifferentiableAt ℂ (fun s=> coordV (Ideal.absNorm (Ideal.span {p})) (Z s)) t at hcv
+  have hr' := evenRatio_eq_coordR (Ideal.absNorm (Ideal.span {p}):ℝ) hQ a (X t) (Z t)
+  simp only [Complex.ofReal_natCast] at hr'
+  have hd := rowClosedMarked_differentiableAt p hp hg eta a rho _ _ _ t hcx hcw hcv hv
+    (by rw [hr'];exact hr) j
+  unfold ramifiedClosed
+  fun_prop
+
+lemma ramifiedClosed_analytic_x (eta a rho w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (ha : ‖a‖≤1) (hz : (4/25:ℝ)≤ z.re) (j : ℕ) :
+    AnalyticOnNhd ℂ (fun x=> ramifiedClosed p hp hg eta a rho x w z j) {x : ℂ|7/8< x.re} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt continuous_const Complex.continuous_re)
+  intro x hx
+  have hd := open_region_denominators _ (a^2) 0 0 x z hQ
+    (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha) (by norm_num) (by norm_num) hx.le hz
+  exact (ramifiedClosed_differentiableAt p hp hg eta a rho id (fun _=> w) (fun _=> z) x
+    differentiableAt_id (differentiableAt_const w) (differentiableAt_const z) hd.2.1 hd.1 j).differentiableWithinAt
+
+lemma ramifiedClosed_analytic_w (eta a rho x z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (ha : ‖a‖≤1)
+    (hx : (7/8:ℝ)≤ x.re) (hz : (4/25:ℝ)≤ z.re) (j : ℕ) :
+    Differentiable ℂ (fun w=> ramifiedClosed p hp hg eta a rho x w z j) := by
+  intro w
+  have hd := open_region_denominators _ (a^2) 0 0 x z hQ
+    (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha) (by norm_num) (by norm_num) hx hz
+  exact ramifiedClosed_differentiableAt p hp hg eta a rho (fun _=> x) id (fun _=> z) w
+    (differentiableAt_const x) differentiableAt_id (differentiableAt_const z) hd.2.1 hd.1 j
+
+lemma ramifiedClosed_analytic_z (eta a rho x w : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (ha : ‖a‖≤1) (hx : (7/8:ℝ)≤ x.re) (j : ℕ) :
+    AnalyticOnNhd ℂ (fun z=> ramifiedClosed p hp hg eta a rho x w z j) {z : ℂ|4/25< z.re} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt continuous_const Complex.continuous_re)
+  intro z hz
+  have hd := open_region_denominators _ (a^2) 0 0 x z hQ
+    (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha) (by norm_num) (by norm_num) hx hz.le
+  exact (ramifiedClosed_differentiableAt p hp hg eta a rho (fun _=> x) (fun _=> w) id z
+    (differentiableAt_const x) (differentiableAt_const w) differentiableAt_id hd.2.1 hd.1 j).differentiableWithinAt
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+
+lemma first_open_region_denominators (Q : ℝ) (A eta v x z : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (he : ‖eta‖≤1) (hv : ‖v‖≤1)
+    (hx : 1/2≤ x.re) (hz : 1/3≤ z.re) :
+    1-coordR Q A x z≠0 ∧ 1-coordV Q z≠0 ∧ 1-coordD Q eta v x≠0 := by
+  have hQ0 : 0< Q := by linarith
+  have hQ1 : 1≤ Q := by linarith
+  have hR : ‖coordR Q A x z‖≤1/2 := by
+    apply (coordR_norm_le Q hQ0 A x z hA).trans
+    apply rpow_le_half Q _ hQ
+    linarith
+  have hV : ‖coordV Q z‖≤1/2 := by
+    rw [coordV_norm Q hQ0]
+    apply rpow_le_half Q _ hQ
+    linarith
+  have hD : ‖coordD Q eta v x‖≤1/2 := by
+    apply (coordD_norm_le Q hQ0 eta v x he hv).trans
+    apply rpow_le_half Q _ hQ
+    linarith
+  exact ⟨ProbeLocal.one_sub_ne_zero_of_norm_le_half _ hR,
+    ProbeLocal.one_sub_ne_zero_of_norm_le_half _ hV,ProbeLocal.one_sub_ne_zero_of_norm_le_half _ hD⟩
+
+theorem unramifiedClosed_first_analytic_x (Q : ℝ) (A eta v w z : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (he : ‖eta‖≤1) (hv : ‖v‖≤1) (hz : 1/3≤ z.re) :
+    AnalyticOnNhd ℂ (fun x=> unramifiedClosed Q A eta v x w z) {x : ℂ|1/2< x.re} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt continuous_const Complex.continuous_re)
+  intro x hx
+  have hd := first_open_region_denominators Q A eta v x z hQ hA he hv hx.le hz
+  exact (unramifiedClosed_differentiableAt Q (by linarith) A eta v x w z hd.1 hd.2.1 hd.2.2).differentiableWithinAt
+
+theorem unramifiedClosed_first_analytic_w (Q : ℝ) (A eta v x z : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (he : ‖eta‖≤1) (hv : ‖v‖≤1)
+    (hx : 1/2≤ x.re) (hz : 1/3≤ z.re) :
+    AnalyticOnNhd ℂ (fun w=> unramifiedClosed Q A eta v x w z) (Set.univ : Set ℂ) := by
+  apply DifferentiableOn.analyticOnNhd _ isOpen_univ
+  intro w hw
+  have hd := first_open_region_denominators Q A eta v x z hQ hA he hv hx hz
+  exact (unramifiedClosed_differentiableAt_w Q (by linarith) A eta v x w z hd.1 hd.2.1 hd.2.2).differentiableWithinAt
+
+theorem unramifiedClosed_first_analytic_z (Q : ℝ) (A eta v x w : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (he : ‖eta‖≤1) (hv : ‖v‖≤1) (hx : 1/2≤ x.re) :
+    AnalyticOnNhd ℂ (fun z=> unramifiedClosed Q A eta v x w z) {z : ℂ|1/3< z.re} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt continuous_const Complex.continuous_re)
+  intro z hz
+  have hd := first_open_region_denominators Q A eta v x z hQ hA he hv hx hz.le
+  exact (unramifiedClosed_differentiableAt_z Q (by linarith) A eta v x w z hd.1 hd.2.1 hd.2.2).differentiableWithinAt
+
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p})
+
+lemma ramifiedClosed_first_analytic_x (eta a rho w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (ha : ‖a‖≤1) (hz : (1/3:ℝ)≤ z.re) (j : ℕ) :
+    AnalyticOnNhd ℂ (fun x=> ramifiedClosed p hp hg eta a rho x w z j) {x : ℂ|1/2< x.re} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt continuous_const Complex.continuous_re)
+  intro x hx
+  have hd := first_open_region_denominators _ (a^2) 0 0 x z hQ
+    (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha) (by norm_num) (by norm_num) hx.le hz
+  exact (ramifiedClosed_differentiableAt p hp hg eta a rho id (fun _=> w) (fun _=> z) x
+    differentiableAt_id (differentiableAt_const w) (differentiableAt_const z) hd.2.1 hd.1 j).differentiableWithinAt
+
+lemma ramifiedClosed_first_analytic_w (eta a rho x z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (ha : ‖a‖≤1)
+    (hx : (1/2:ℝ)≤ x.re) (hz : (1/3:ℝ)≤ z.re) (j : ℕ) :
+    Differentiable ℂ (fun w=> ramifiedClosed p hp hg eta a rho x w z j) := by
+  intro w
+  have hd := first_open_region_denominators _ (a^2) 0 0 x z hQ
+    (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha) (by norm_num) (by norm_num) hx hz
+  exact ramifiedClosed_differentiableAt p hp hg eta a rho (fun _=> x) id (fun _=> z) w
+    (differentiableAt_const x) differentiableAt_id (differentiableAt_const z) hd.2.1 hd.1 j
+
+lemma ramifiedClosed_first_analytic_z (eta a rho x w : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (ha : ‖a‖≤1) (hx : (1/2:ℝ)≤ x.re) (j : ℕ) :
+    AnalyticOnNhd ℂ (fun z=> ramifiedClosed p hp hg eta a rho x w z j) {z : ℂ|1/3< z.re} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt continuous_const Complex.continuous_re)
+  intro z hz
+  have hd := first_open_region_denominators _ (a^2) 0 0 x z hQ
+    (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha) (by norm_num) (by norm_num) hx hz.le
+  exact (ramifiedClosed_differentiableAt p hp hg eta a rho (fun _=> x) (fun _=> w) id z
+    (differentiableAt_const x) (differentiableAt_const w) differentiableAt_id hd.2.1 hd.1 j).differentiableWithinAt
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbePrimePower
+open Eisenstein CompletedGauss  CubicEisenstein
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+include hc in
+lemma primeGauss_actual_pow_norm (r : ℕ) (hr : r≠0) (hr6 : r<6) :
+    ‖primeGauss p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg^r) 1‖=
+      Real.sqrt (Ideal.absNorm (Ideal.span {p}):ℝ) := by
+  let : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  let : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  have hn := localGamma_norm_one p hp.ne_zero hg hc r hr hr6
+  simp only [localGamma,norm_div,Complex.norm_real,
+    Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _)] at hn
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by
+    exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+      (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))
+  exact (div_eq_one_iff_eq (Real.sqrt_pos.mpr hQ).ne').mp hn
+
+include hc in
+lemma nonprincipal_kzero_norm (n j : ℕ) (hn : n<5) :
+    ‖positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n 0 j‖≤
+      (Ideal.absNorm (Ideal.span {p}):ℝ)^n*Real.sqrt (Ideal.absNorm (Ideal.span {p}):ℝ) := by
+  rw [positiveScalar_kzero,complexSexticChar_primePowerGauss_at_pow p hp hg hc,
+    if_neg (by omega : ¬6∣n+1)]
+  split_ifs
+  · rw [norm_mul,norm_pow,Complex.norm_natCast,primeGauss_actual_pow_norm p hp hg hc (n+1) (by omega) (by omega)]
+  · simp only [norm_zero]
+    positivity
+
+include hc in
+lemma nonprincipal_kone_norm (n j : ℕ) (hn : 0< n) (hn6 : n<6) :
+    ‖positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) n 1 j‖≤
+      (Ideal.absNorm (Ideal.span {p}):ℝ)^(n+1) := by
+  rw [positiveScalar_actual_table p hp hg hc,if_neg (by decide : (1:ℕ)≠0)]
+  by_cases hj : 1≤ j
+  · rw [if_pos ⟨rfl,hj⟩,gaussValuationTable,if_neg (by omega : ¬6∣n)]
+    split_ifs
+    · rw [norm_mul,norm_mul,norm_inv,
+        Complex.norm_eq_one_of_pow_eq_one (complexSexticChar_neg_one_sq _ hg) (by decide),inv_one,one_mul,
+        primeGauss_actual_norm p hp.ne_zero hg hc,norm_mul,norm_pow,Complex.norm_natCast,
+        primeGauss_actual_pow_norm p hp hg hc n (by omega) hn6]
+      have hsq := Real.sq_sqrt (Nat.cast_nonneg (Ideal.absNorm (Ideal.span {p})) : (0:ℝ)≤ _)
+      rw [pow_succ]
+      apply le_of_eq
+      calc
+        _ = (Ideal.absNorm (Ideal.span {p}):ℝ)^n*(Real.sqrt (Ideal.absNorm (Ideal.span {p}):ℝ))^2 := by ring
+        _ = _ := by rw [hsq]
+    · simp only [mul_zero,norm_zero]
+      positivity
+  · rw [if_neg (by omega),norm_zero]
+    positivity
+
+include hc in
+lemma even_base_kzero_norm (m j : ℕ) (hj : j<6) :
+    ‖positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 5 0 (j+6*m)‖≤
+      if m=0 then (Ideal.absNorm (Ideal.span {p}):ℝ)^5 else (Ideal.absNorm (Ideal.span {p}):ℝ)^6 := by
+  have he := row_even_kzero p hp hg hc 0 m j hj
+  norm_num only [Nat.mul_zero,zero_add] at he
+  rw [he]
+  by_cases hm : m=0
+  · subst m
+    norm_num only [Nat.reduceLeDiff,ite_false,ite_true,and_true]
+    split_ifs <;> simp [norm_pow]
+  · rw [if_pos (by omega),if_neg hm,norm_mul,norm_pow,Complex.norm_natCast]
+    have hQ1 : (1:ℝ)≤ Ideal.absNorm (Ideal.span {p}) := by
+      have hh := HeckeIdealSeries.prime_norm_two_le
+        ⟨Ideal.span {p},Ideal.prime_span_singleton_iff.mpr hp⟩
+      change 2≤ Ideal.absNorm (Ideal.span {p}) at hh
+      exact_mod_cast (by omega : 1≤ Ideal.absNorm (Ideal.span {p}))
+    have hsub : ‖(Ideal.absNorm (Ideal.span {p}):ℂ)-1‖=(Ideal.absNorm (Ideal.span {p}):ℝ)-1 := by
+      rw [←Complex.ofReal_natCast,←Complex.ofReal_one,←Complex.ofReal_sub,Complex.norm_real,
+        Real.norm_eq_abs,abs_of_nonneg (by linarith)]
+    rw [hsub,show (Ideal.absNorm (Ideal.span {p}):ℝ)^6=(Ideal.absNorm (Ideal.span {p}):ℝ)^5*(Ideal.absNorm (Ideal.span {p}):ℝ) by ring]
+    exact mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+include hc in
+lemma even_base_kone_zero (j : ℕ) (hj : j<6) :
+    positiveScalar p hp.ne_zero (complexSexticChar (Ideal.span {p}) hg) 5 1 j=0 := by
+  rw [positiveScalar_actual_table p hp hg hc,if_neg (by decide : (1:ℕ)≠0)]
+  by_cases hj1 : 1≤ j
+  · rw [if_pos ⟨rfl,hj1⟩,gaussValuationTable,if_neg (by decide : ¬6∣5),
+      if_neg (by omega : j-1≠5),mul_zero]
+  · rw [if_neg (by omega)]
+
+end ProbePrimePower
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+lemma pow_mul_sqrt (Q : ℝ) (hQ : 0< Q) (n : ℕ) : Q^n*Real.sqrt Q=Q^((n:ℝ)+1/2) := by
+  rw [Real.rpow_add hQ,Real.rpow_natCast,Real.sqrt_eq_rpow]
+
+include hc in
+lemma sourceRowTerm_norm_from_scalar (eta a rho x w z : ℂ)
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (j e l k m : ℕ) (nu : ℝ)
+    (hs : ‖sourceScalar p hp hg (e+3*l) k (j+6*m)‖≤2*(Ideal.absNorm (Ideal.span {p}):ℝ)^nu)
+    (he : nu-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)≤0) :
+    ‖sourceRowTerm p hp hg eta a rho x w z j e l k m‖≤2 := by
+  have hP : Prime (Ideal.span {p}:Ideal O) := Ideal.prime_span_singleton_iff.mpr hp
+  have hQ2 : (2:ℝ)≤ Ideal.absNorm (Ideal.span {p}) := by exact_mod_cast HeckeIdealSeries.prime_norm_two_le ⟨_,hP⟩
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by linarith
+  have hrho := Complex.norm_eq_one_of_pow_eq_one hρ (by decide : (6:ℕ)≠0)
+  rw [sourceRowTerm,norm_mul,norm_div,norm_pow,norm_pow,hrho,one_pow,one_pow,div_self (by norm_num : (1:ℝ)≠0),one_mul]
+  apply (sourceWeightedScalar_norm_le _ hQ eta a _ _ _ x w z _ heta ha
+    (localGamma_norm_one p hp.ne_zero hg hc 1 (by decide) (by decide))
+    (by rw [norm_star];exact localGamma_norm_one p hp.ne_zero hg hc 3 (by decide) (by decide))
+    (Complex.norm_eq_one_of_pow_eq_one (complexSexticChar_neg_one_sq _ hg) (by decide)) e l k m).trans
+  calc
+    _ ≤ (2*(Ideal.absNorm (Ideal.span {p}):ℝ)^nu)*
+      (Ideal.absNorm (Ideal.span {p}):ℝ)^(-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)) :=
+      mul_le_mul_of_nonneg_right hs (by positivity)
+    _ = 2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(nu-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)) := by
+      rw [mul_assoc,←Real.rpow_add hQ]
+      congr 2
+      ring
+    _ ≤ 2 := by
+      have hh := Real.rpow_le_one_of_one_le_of_nonpos (show (1:ℝ)≤ Ideal.absNorm (Ideal.span {p}) by linarith) he
+      linarith
+
+/-- Norm exponent for the four nonzero base positions of the marked local series. -/
+private def sourceBaseExponent (e l k m : ℕ) : ℝ :=
+  if e=0 ∧ l=2 then if m=0 then 5 else 6
+  else if e=1 ∧ l=0 then 1/2+(k:ℝ)
+  else (e:ℝ)+5/2+(k:ℝ)/2
+
+private lemma sourceBase_le_twice (v : ℝ) (hv : 0≤v) : v≤2*v := by
+  linarith only [hv]
+
+include hp in
+private lemma sourceBase_norm_pos : (0:ℝ)<Ideal.absNorm (Ideal.span {p}) := by
+  exact_mod_cast Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
+    (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))
+
+include hc in
+private lemma sourceBase_kzero (n J : ℕ) (hn : n<5) :
+    ‖sourceScalar p hp hg (n+1) 0 J‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^((n:ℝ)+1/2) := by
+  rw [sourceScalar,if_neg (by omega : n+1≠0),Nat.add_sub_cancel]
+  have hQ := sourceBase_norm_pos p hp
+  have hs := nonprincipal_kzero_norm p hp hg hc n J hn
+  rw [pow_mul_sqrt _ hQ] at hs
+  exact hs.trans (sourceBase_le_twice _ (Real.rpow_nonneg hQ.le _))
+
+include hc in
+private lemma sourceBase_kone (n J : ℕ) (hn : 0<n) (hn6 : n<6) :
+    ‖sourceScalar p hp hg (n+1) 1 J‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^((n+1:ℕ):ℝ) := by
+  rw [sourceScalar,if_neg (by omega : n+1≠0),Nat.add_sub_cancel,Real.rpow_natCast]
+  exact (nonprincipal_kone_norm p hp hg hc n J hn hn6).trans
+    (sourceBase_le_twice _ (pow_nonneg (Nat.cast_nonneg _) _))
+
+include hc in
+private lemma sourceBase_principal_kone (J : ℕ) :
+    ‖sourceScalar p hp hg 1 1 J‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(3/2:ℝ) := by
+  rw [sourceScalar,if_neg (by decide : (1:ℕ)≠0)]
+  simp only [Nat.reduceSub]
+  have hs := positiveScalar_norm_le p hp hg hc 0 1 J (by decide)
+  simp only [Nat.zero_add,pow_one] at hs
+  have he : (Ideal.absNorm (Ideal.span {p}):ℝ)*Real.sqrt (Ideal.absNorm (Ideal.span {p}):ℝ)=
+      (Ideal.absNorm (Ideal.span {p}):ℝ)^(3/2:ℝ) := by
+    have ht := pow_mul_sqrt _ (sourceBase_norm_pos p hp) 1
+    norm_num only [Nat.cast_one,pow_one] at ht
+    exact ht
+  simpa only [mul_assoc,he] using hs
+
+include hc in
+private lemma sourceBase_even (j k m : ℕ) (hj : j<6) (hk : k≤1) :
+    ‖sourceScalar p hp hg 6 k (j+6*m)‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(if m=0 then (5:ℝ) else 6) := by
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+  · have hs := even_base_kzero_norm p hp hg hc m j hj
+    rw [sourceScalar,if_neg (by decide : (6:ℕ)≠0)]
+    simp only [Nat.reduceSub]
+    by_cases hm : m=0
+    · rw [if_pos hm] at hs ⊢
+      simpa only [Real.rpow_ofNat] using
+        hs.trans (sourceBase_le_twice _ (pow_nonneg (Nat.cast_nonneg _) 5))
+    · rw [if_neg hm] at hs ⊢
+      simpa only [Real.rpow_ofNat] using
+        hs.trans (sourceBase_le_twice _ (pow_nonneg (Nat.cast_nonneg _) 6))
+  · by_cases hm : m=0
+    · subst m
+      simp only [sourceScalar,Nat.reduceEqDiff,ite_false,Nat.reduceSub,mul_zero,add_zero,
+        even_base_kone_zero p hp hg hc j hj,norm_zero,ite_true]
+      positivity
+    · rw [if_neg hm]
+      simpa only [Nat.reduceAdd,Nat.cast_ofNat] using
+        sourceBase_kone p hp hg hc 5 (j+6*m) (by decide) (by decide)
+
+include hc in
+private lemma sourceBase_scalar_bound (j e l k m : ℕ) (hj : j<6) (hk : k≤1)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    ‖sourceScalar p hp hg (e+3*l) k (j+6*m)‖≤
+      2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(sourceBaseExponent e l k m) := by
+  rcases hf with ⟨rfl,rfl⟩|⟨rfl,rfl⟩|⟨rfl,rfl⟩|⟨rfl,rfl⟩
+  · simpa [sourceBaseExponent] using sourceBase_even p hp hg hc j k m hj hk
+  · rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+    · have hs := sourceBase_kzero p hp hg hc 0 (j+6*m) (by decide)
+      norm_num [sourceBaseExponent] at hs ⊢
+      exact hs
+    · have hs := sourceBase_principal_kone p hp hg hc (j+6*m)
+      norm_num [sourceBaseExponent] at hs ⊢
+      exact hs
+  · rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+    · have hs := sourceBase_kzero p hp hg hc 2 (j+6*m) (by decide)
+      norm_num [sourceBaseExponent] at hs ⊢
+      exact hs
+    · have hs := sourceBase_kone p hp hg hc 2 (j+6*m) (by decide) (by decide)
+      norm_num [sourceBaseExponent] at hs ⊢
+      exact hs
+  · rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+    · have hs := sourceBase_kzero p hp hg hc 3 (j+6*m) (by decide)
+      norm_num [sourceBaseExponent] at hs ⊢
+      exact hs
+    · have hs := sourceBase_kone p hp hg hc 3 (j+6*m) (by decide) (by decide)
+      norm_num [sourceBaseExponent] at hs ⊢
+      exact hs
+
+private lemma sourceBase_first_exponent (X W Z : ℝ)
+    (hx : 51/100≤X) (hw : -(1/100)≤W) (hz : 17/50≤Z) (hxw : 1≤X+W)
+    (e l k m : ℕ) (hk : k≤1)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    sourceBaseExponent e l k m-(X+1/2)*(e:ℝ)-(1+3*X)*(l:ℝ)-W*(k:ℝ)-6*Z*(m:ℝ)≤0 := by
+  have hzm : 0≤6*Z*(m:ℝ) := by positivity
+  have hzm1 (hm : m≠0) : 6*Z≤6*Z*(m:ℝ) := by
+    have hm1 : (1:ℝ)≤ m := by exact_mod_cast (by omega : 1≤ m)
+    have hzpos : 0≤6*Z := by linarith only [hz]
+    nlinarith only [mul_nonneg hzpos (sub_nonneg.mpr hm1)]
+  rcases hf with ⟨rfl,rfl⟩|⟨rfl,rfl⟩|⟨rfl,rfl⟩|⟨rfl,rfl⟩
+  all_goals rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+  all_goals by_cases hm : m=0
+  all_goals norm_num [sourceBaseExponent,hm]
+  all_goals first
+    | linarith only [hx,hw,hz,hxw,hzm]
+    | linarith only [hx,hw,hz,hxw,hzm,hzm1 hm]
+
+
+include hc in
+theorem sourceRowTerm_first_base (eta a rho x w z : ℂ)
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (51/100:ℝ)≤ x.re) (_hw : -(1/100:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re)
+    (hxw : 1≤ x.re+w.re) (j e l k m : ℕ) (hj : j<6) (hk : k≤1)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    ‖sourceRowTerm p hp hg eta a rho x w z j e l k m‖≤2 := by
+  apply sourceRowTerm_norm_from_scalar p hp hg hc eta a rho x w z heta ha hρ
+    j e l k m (sourceBaseExponent e l k m)
+  · exact sourceBase_scalar_bound p hp hg hc j e l k m hj hk hf
+  · exact sourceBase_first_exponent x.re w.re z.re hx _hw hz hxw e l k m hk hf
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open CenteredMomentFourier Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+lemma first_region_V_half (Q : ℝ) (hQ : 4≤ Q) (z : ℂ) (hz : (17/50:ℝ)≤ z.re) :
+    ‖coordV Q z‖≤1/2 := by
+  rw [coordV_norm Q (by linarith)]
+  exact rpow_le_half Q _ hQ (by linarith)
+
+lemma first_region_R_half (Q : ℝ) (hQ : 4≤ Q) (a x z : ℂ) (ha : ‖a‖≤1)
+    (hx : (51/100:ℝ)≤ x.re) (hz : (17/50:ℝ)≤ z.re) :
+    ‖evenRatio Q a ((Q:ℂ)^(-x)) (coordV Q z)‖≤1/2 := by
+  rw [evenRatio_eq_coordR Q (by linarith)]
+  apply (coordR_norm_le Q (by linarith) (a^2) x z (by simpa only [norm_pow] using pow_le_one₀ (norm_nonneg a) ha)).trans
+  exact rpow_le_half Q _ hQ (by linarith)
+
+include hc in
+lemma rowBaseFinite_first_region (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (51/100:ℝ)≤ x.re) (hw : -(1/100:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re)
+    (hxw : 1≤ x.re+w.re) (j e l : ℕ) (hj : j<6)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    ‖rowBaseFinite p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+      rho j e l‖≤16 := by
+  have hv := ProbeLocal.inv_one_sub_norm_le_two _ (first_region_V_half _ hQ z hz)
+  have ht' (k : Fin 2) (m : ℕ) :
+      ‖rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+        ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+        rho j e l k.val m‖≤2 := by
+    have ht : e+3*l≠0 := by rcases hf with h|h|h|h <;> omega
+    rw [←sourceRowTerm_pos p hp hg eta a rho x w z j e l k.val m ht]
+    exact sourceRowTerm_first_base p hp hg hc eta a rho x w z heta ha hρ hx hw hz hxw
+      j e l k.val m hj (by omega) hf
+  unfold rowBaseFinite
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _k : Fin 2,(8:ℝ) := by
+      apply Finset.sum_le_sum
+      intro k hk
+      apply (norm_add_le _ _).trans
+      have hab := (norm_add_le _ _).trans (add_le_add (ht' k 0) (ht' k 1))
+      have hd : ‖rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+          rho j e l k.val 2/(1-coordV (Ideal.absNorm (Ideal.span {p})) z)‖≤4 := by
+        rw [div_eq_mul_inv,norm_mul]
+        exact (mul_le_mul (ht' k 2) hv (norm_nonneg _) (by norm_num)).trans_eq (by norm_num)
+      linarith
+    _ = _ := by norm_num
+
+include hc in
+theorem rowClosedMarked_first_region (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (51/100:ℝ)≤ x.re) (hw : -(1/100:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) (hxw : 1≤ x.re+w.re) (j : ℕ) (hj : j<6) :
+    ‖rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j‖≤128 := by
+  have h02 := rowBaseFinite_first_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz hxw j 0 2 hj (by omega)
+  have h10 := rowBaseFinite_first_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz hxw j 1 0 hj (by omega)
+  have h01 := rowBaseFinite_first_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz hxw j 0 1 hj (by omega)
+  have h11 := rowBaseFinite_first_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz hxw j 1 1 hj (by omega)
+  have hr := ProbeLocal.inv_one_sub_norm_le_two _ (first_region_R_half _ hQ a x z ha hx hz)
+  simp only [Complex.ofReal_natCast] at hr
+  unfold rowClosedMarked
+  rw [div_eq_mul_inv,norm_mul]
+  apply (mul_le_mul_of_nonneg_right
+    ((norm_add_le _ _).trans (add_le_add
+      ((norm_add_le _ _).trans (add_le_add
+        ((norm_add_le _ _).trans (add_le_add h02 h10)) h01)) h11)) (norm_nonneg _)).trans
+  nlinarith
+
+include hc in
+theorem ramifiedClosed_first_region_bound (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (51/100:ℝ)≤ x.re) (hw : -(1/100:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) (hxw : 1≤ x.re+w.re) (j : ℕ) (hj : j<6) :
+    ‖ramifiedClosed p hp hg eta a rho x w z j‖≤193 := by
+  have hb := rowClosedMarked_first_region p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz hxw j hj
+  have hv := first_region_V_half _ hQ z hz
+  have hs := norm_sub_le (1:ℂ) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+  simp only [norm_one] at hs
+  unfold ramifiedClosed
+  apply (norm_add_le _ _).trans
+  rw [norm_one,norm_mul]
+  have hm := mul_le_mul (show ‖1-coordV (Ideal.absNorm (Ideal.span {p})) z‖≤3/2 by linarith)
+    hb (norm_nonneg _) (by norm_num : (0:ℝ)≤3/2)
+  linarith
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+
+theorem unramifiedClosed_first_region_bound (Q : ℝ) (A eta v x w z : ℂ) (eps : ℝ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (heta : ‖eta‖≤1) (hv : ‖v‖≤1)
+    (heps : 0< eps) (hx : (51/100:ℝ)≤ x.re) (hz : (17/50:ℝ)≤ z.re)
+    (hw : -(1/100:ℝ)≤ w.re) (hxw : 1+eps≤ x.re+w.re) :
+    ‖unramifiedClosed Q A eta v x w z-1‖≤240*Q^(-1-min eps (1/50:ℝ)) := by
+  have hQ0 : 0< Q := by linarith
+  have hQ1 : 1≤ Q := by linarith
+  let V := coordV Q z
+  let R := coordR Q A x z
+  let W := coordW Q v w
+  let D := coordD Q eta v x
+  let K := coordK Q eta x w
+  let L := Q^(1/100:ℝ)
+  let E := Q^(-(109/100:ℝ))
+  let T := Q^(-1-min eps (1/50:ℝ))
+  have hL1 : 1≤ L := Real.one_le_rpow hQ1 (by norm_num)
+  have hT : 0≤ T := Real.rpow_nonneg hQ0.le _
+  have hV : ‖V‖≤ Q^(-(51/25:ℝ)) := by
+    rw [show V=coordV Q z from rfl,coordV_norm Q hQ0]
+    exact Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith)
+  have hR : ‖R‖≤ Q^(-(11/10:ℝ)) :=
+    (coordR_norm_le Q hQ0 A x z hA).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hW : ‖W‖≤ L :=
+    (coordW_norm_le Q hQ0 v w hv).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hD : ‖D‖≤ Q^(-(51/100:ℝ)) :=
+    (coordD_norm_le Q hQ0 eta v x heta hv).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hK : ‖K‖≤ Q^(-eps) :=
+    (coordK_norm_le Q hQ1 eta x w heta).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hVh : ‖V‖≤1/2 := hV.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hRh : ‖R‖≤1/2 := hR.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hDh : ‖D‖≤1/2 := hD.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hqi : ‖(Q:ℂ)⁻¹‖≤1 := by
+    rw [norm_inv,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hQ0,←one_div]
+    exact (div_le_one hQ0).mpr hQ1
+  have hprod (a b aa bb c : ℝ) (ha : 0≤ a) (hb : 0≤ b)
+      (haa : a≤ Q^aa) (hbb : b≤ Q^bb) (hc : aa+bb≤ c) : a*b≤ Q^c := by
+    calc
+      a*b≤ Q^aa*Q^bb := mul_le_mul haa hbb hb (Real.rpow_nonneg hQ0.le _)
+      _=Q^(aa+bb) := (Real.rpow_add hQ0 _ _).symm
+      _≤ Q^c := Real.rpow_le_rpow_of_exponent_le hQ1 hc
+  have hRL : ‖R‖*L≤ E := hprod _ _ _ _ _ (norm_nonneg _) (by positivity) hR le_rfl (by norm_num)
+  have hKV : ‖K‖*‖V‖≤ E := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) hK hV (by linarith)
+  have hRW : ‖R‖*(1+‖W‖)≤2*E := by
+    calc
+      _≤‖R‖*(2*L) := mul_le_mul_of_nonneg_left (by linarith) (norm_nonneg _)
+      _≤2*E := by nlinarith
+  let P := markedFactor R V (Q:ℂ)⁻¹ K (-D+W*R) 1
+  have hPE : ‖P+D‖≤28*E := by
+    have hh := ProbeLocal.unramified_marked_error_bound R V (Q:ℂ)⁻¹ K W D hRh hVh hqi hDh
+    dsimp only [P]
+    nlinarith
+  have hEL : E*L≤ T := hprod _ _ _ _ _ (by positivity) (by positivity) le_rfl le_rfl
+    (by have := min_le_right eps (1/50:ℝ);linarith)
+  have hWE : (1+‖W‖)*‖P+D‖≤56*T := by
+    calc
+      _≤(2*L)*(28*E) := mul_le_mul (by linarith) hPE (norm_nonneg _) (by positivity)
+      _≤56*T := by nlinarith
+  have hDV : ‖D‖*‖V‖≤ T := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) hD hV
+    (by have := min_le_right eps (1/50:ℝ);linarith)
+  have hVW : ‖V‖*‖W‖≤ T := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) hV hW
+    (by have := min_le_right eps (1/50:ℝ);linarith)
+  have hDW : ‖D‖*‖W‖≤ T := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _)
+    (coordD_norm_le Q hQ0 eta v x heta hv) (coordW_norm_le Q hQ0 v w hv)
+    (by have := min_le_left eps (1/50:ℝ);linarith)
+  have hDVW : ‖D‖*‖V‖*‖W‖≤ T := by
+    calc
+      _ = (‖D‖*‖W‖)*‖V‖ := by ring
+      _ ≤ ‖D‖*‖W‖ := mul_le_of_le_one_right (by positivity) (by linarith)
+      _ ≤ T := hDW
+  have hh := ProbeLocal.continuedCorrection_defect_bound V W D P hVh hDh
+  change ‖ProbeLocal.continuedCorrection V W D P-1‖≤240*T
+  nlinarith
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+
+theorem unramifiedClosed_first_neighborhood_bound (Q : ℝ) (A eta v x w z : ℂ) (eps : ℝ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (heta : ‖eta‖≤1) (hv : ‖v‖≤1)
+    (heps : 0< eps) (hx : (101/200:ℝ)≤ x.re) (hz : (27/80:ℝ)≤ z.re)
+    (hw : -(3/200:ℝ)≤ w.re) (hxw : 1+eps≤ x.re+w.re) :
+    ‖unramifiedClosed Q A eta v x w z-1‖≤240*Q^(-1-min eps (1/50:ℝ)) := by
+  have hQ0 : 0< Q := by linarith
+  have hQ1 : 1≤ Q := by linarith
+  let V := coordV Q z
+  let R := coordR Q A x z
+  let W := coordW Q v w
+  let D := coordD Q eta v x
+  let K := coordK Q eta x w
+  let L := Q^(3/200:ℝ)
+  let E := Q^(-(26/25:ℝ))
+  let T := Q^(-1-min eps (1/50:ℝ))
+  have hL1 : 1≤ L := Real.one_le_rpow hQ1 (by norm_num)
+  have hT : 0≤ T := Real.rpow_nonneg hQ0.le _
+  have hV : ‖V‖≤ Q^(-(81/40:ℝ)) := by
+    rw [show V=coordV Q z from rfl,coordV_norm Q hQ0]
+    exact Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith)
+  have hR : ‖R‖≤ Q^(-(211/200:ℝ)) :=
+    (coordR_norm_le Q hQ0 A x z hA).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hW : ‖W‖≤ L :=
+    (coordW_norm_le Q hQ0 v w hv).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hD : ‖D‖≤ Q^(-(101/200:ℝ)) :=
+    (coordD_norm_le Q hQ0 eta v x heta hv).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hK : ‖K‖≤ Q^(-eps) :=
+    (coordK_norm_le Q hQ1 eta x w heta).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
+  have hVh : ‖V‖≤1/2 := hV.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hRh : ‖R‖≤1/2 := hR.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hDh : ‖D‖≤1/2 := hD.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hqi : ‖(Q:ℂ)⁻¹‖≤1 := by
+    rw [norm_inv,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hQ0,←one_div]
+    exact (div_le_one hQ0).mpr hQ1
+  have hprod (a b aa bb c : ℝ) (ha : 0≤ a) (hb : 0≤ b)
+      (haa : a≤ Q^aa) (hbb : b≤ Q^bb) (hc : aa+bb≤ c) : a*b≤ Q^c := by
+    calc
+      a*b≤ Q^aa*Q^bb := mul_le_mul haa hbb hb (Real.rpow_nonneg hQ0.le _)
+      _=Q^(aa+bb) := (Real.rpow_add hQ0 _ _).symm
+      _≤ Q^c := Real.rpow_le_rpow_of_exponent_le hQ1 hc
+  have hRL : ‖R‖*L≤ E := hprod _ _ _ _ _ (norm_nonneg _) (by positivity) hR le_rfl (by norm_num)
+  have hKV : ‖K‖*‖V‖≤ E := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) hK hV (by linarith)
+  have hRW : ‖R‖*(1+‖W‖)≤2*E := by
+    calc
+      _≤‖R‖*(2*L) := mul_le_mul_of_nonneg_left (by linarith) (norm_nonneg _)
+      _≤2*E := by nlinarith
+  let P := markedFactor R V (Q:ℂ)⁻¹ K (-D+W*R) 1
+  have hPE : ‖P+D‖≤28*E := by
+    have hh := ProbeLocal.unramified_marked_error_bound R V (Q:ℂ)⁻¹ K W D hRh hVh hqi hDh
+    dsimp only [P]
+    nlinarith
+  have hEL : E*L≤ T := hprod _ _ _ _ _ (by positivity) (by positivity) le_rfl le_rfl
+    (by have := min_le_right eps (1/50:ℝ);linarith)
+  have hWE : (1+‖W‖)*‖P+D‖≤56*T := by
+    calc
+      _≤(2*L)*(28*E) := mul_le_mul (by linarith) hPE (norm_nonneg _) (by positivity)
+      _≤56*T := by nlinarith
+  have hDV : ‖D‖*‖V‖≤ T := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) hD hV
+    (by have := min_le_right eps (1/50:ℝ);linarith)
+  have hVW : ‖V‖*‖W‖≤ T := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) hV hW
+    (by have := min_le_right eps (1/50:ℝ);linarith)
+  have hDW : ‖D‖*‖W‖≤ T := hprod _ _ _ _ _ (norm_nonneg _) (norm_nonneg _)
+    (coordD_norm_le Q hQ0 eta v x heta hv) (coordW_norm_le Q hQ0 v w hv)
+    (by have := min_le_left eps (1/50:ℝ);linarith)
+  have hDVW : ‖D‖*‖V‖*‖W‖≤ T := by
+    calc
+      _ = (‖D‖*‖W‖)*‖V‖ := by ring
+      _ ≤ ‖D‖*‖W‖ := mul_le_of_le_one_right (by positivity) (by linarith)
+      _ ≤ T := hDW
+  have hh := ProbeLocal.continuedCorrection_defect_bound V W D P hVh hDh
+  change ‖ProbeLocal.continuedCorrection V W D P-1‖≤240*T
+  nlinarith
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+include hc in
+lemma sourceRowTerm_norm_from_scalar_power (eta a rho x w z : ℂ)
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (j e l k m : ℕ) (nu B : ℝ)
+    (hs : ‖sourceScalar p hp hg (e+3*l) k (j+6*m)‖≤2*(Ideal.absNorm (Ideal.span {p}):ℝ)^nu)
+    (he : nu-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)≤ B) :
+    ‖sourceRowTerm p hp hg eta a rho x w z j e l k m‖≤2*(Ideal.absNorm (Ideal.span {p}):ℝ)^B := by
+  have hP : Prime (Ideal.span {p}:Ideal O) := Ideal.prime_span_singleton_iff.mpr hp
+  have hQ2 : (2:ℝ)≤ Ideal.absNorm (Ideal.span {p}) := by exact_mod_cast HeckeIdealSeries.prime_norm_two_le ⟨_,hP⟩
+  have hQ : (0:ℝ)< Ideal.absNorm (Ideal.span {p}) := by linarith
+  have hrho := Complex.norm_eq_one_of_pow_eq_one hρ (by decide : (6:ℕ)≠0)
+  rw [sourceRowTerm,norm_mul,norm_div,norm_pow,norm_pow,hrho,one_pow,one_pow,div_self (by norm_num : (1:ℝ)≠0),one_mul]
+  apply (sourceWeightedScalar_norm_le _ hQ eta a _ _ _ x w z _ heta ha
+    (localGamma_norm_one p hp.ne_zero hg hc 1 (by decide) (by decide))
+    (by rw [norm_star];exact localGamma_norm_one p hp.ne_zero hg hc 3 (by decide) (by decide))
+    (Complex.norm_eq_one_of_pow_eq_one (complexSexticChar_neg_one_sq _ hg) (by decide)) e l k m).trans
+  calc
+    _ ≤ (2*(Ideal.absNorm (Ideal.span {p}):ℝ)^nu)*
+      (Ideal.absNorm (Ideal.span {p}):ℝ)^(-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)) :=
+      mul_le_mul_of_nonneg_right hs (by positivity)
+    _ = 2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(nu-(x.re+1/2)*(e:ℝ)-(1+3*x.re)*(l:ℝ)-w.re*(k:ℝ)-6*z.re*(m:ℝ)) := by
+      rw [mul_assoc,←Real.rpow_add hQ]
+      congr 2
+      ring
+    _ ≤ 2*(Ideal.absNorm (Ideal.span {p}):ℝ)^B := by
+      apply mul_le_mul_of_nonneg_left _ (by norm_num)
+      exact Real.rpow_le_rpow_of_exponent_le (show (1:ℝ)≤ Ideal.absNorm (Ideal.span {p}) by linarith) he
+
+private lemma sourceBase_selected_exponent (X W Z : ℝ)
+    (hx : 7/8≤X) (hw : 1/2≤W) (hz : 17/50≤Z)
+    (e l k m : ℕ) (hk : k≤1)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    sourceBaseExponent e l k m-(X+1/2)*(e:ℝ)-(1+3*X)*(l:ℝ)-W*(k:ℝ)-6*Z*(m:ℝ)≤
+      -X+max (1-W) 0 := by
+  have hb0 : (0:ℝ)≤ max (1-W) 0 := le_max_right _ _
+  have hb1 : 1-W≤ max (1-W) 0 := le_max_left _ _
+  have hzm : 0≤6*Z*(m:ℝ) := by positivity
+  rcases hf with ⟨rfl,rfl⟩|⟨rfl,rfl⟩|⟨rfl,rfl⟩|⟨rfl,rfl⟩
+  all_goals rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hk with rfl|rfl
+  all_goals by_cases hm : m=0
+  all_goals norm_num only [sourceBaseExponent,hm,Nat.cast_zero,Nat.cast_one,Nat.cast_ofNat,
+    Nat.reduceEqDiff,and_true,and_false,ite_true,ite_false,zero_mul,one_mul,mul_zero,mul_one,
+    sub_zero,add_zero,zero_add]
+  all_goals linarith only [hx,hw,hz,hb0,hb1,hzm]
+
+
+include hc in
+theorem sourceRowTerm_selected_base (eta a rho x w z : ℂ)
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (_hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re)
+    (j e l k m : ℕ) (hj : j<6) (hk : k≤1)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    ‖sourceRowTerm p hp hg eta a rho x w z j e l k m‖≤2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by
+  apply sourceRowTerm_norm_from_scalar_power p hp hg hc eta a rho x w z heta ha hρ
+    j e l k m (sourceBaseExponent e l k m) (-x.re+max (1-w.re) 0)
+  · exact sourceBase_scalar_bound p hp hg hc j e l k m hj hk hf
+  · exact sourceBase_selected_exponent x.re w.re z.re hx _hw hz e l k m hk hf
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+open scoped Classical BigOperators
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+include hc in
+lemma rowBaseFinite_selected_bound (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re)
+    (j e l : ℕ) (hj : j<6)
+    (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
+    ‖rowBaseFinite p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+      rho j e l‖≤16*(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by
+  have hpow : 0≤(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by positivity
+  have hv := ProbeLocal.inv_one_sub_norm_le_two _ (first_region_V_half _ hQ z hz)
+  have ht' (k : Fin 2) (m : ℕ) :
+      ‖rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+        ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+        rho j e l k.val m‖≤2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by
+    have ht : e+3*l≠0 := by rcases hf with h|h|h|h <;> omega
+    rw [←sourceRowTerm_pos p hp hg eta a rho x w z j e l k.val m ht]
+    exact sourceRowTerm_selected_base p hp hg hc eta a rho x w z heta ha hρ hx hw hz
+      j e l k.val m hj (by omega) hf
+  unfold rowBaseFinite
+  apply (norm_sum_le _ _).trans
+  calc
+    _ ≤ ∑ _k : Fin 2,8*(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by
+      apply Finset.sum_le_sum
+      intro k hk
+      apply (norm_add_le _ _).trans
+      have hab := (norm_add_le _ _).trans (add_le_add (ht' k 0) (ht' k 1))
+      have hd : ‖rowMarkedTerm p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+          rho j e l k.val 2/(1-coordV (Ideal.absNorm (Ideal.span {p})) z)‖≤4*(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by
+        rw [div_eq_mul_inv,norm_mul]
+        exact (mul_le_mul (ht' k 2) hv (norm_nonneg _) (by positivity)).trans_eq (by ring)
+      linarith
+    _ = _ := by simp;ring
+
+include hc in
+theorem rowClosedMarked_selected_bound (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) (j : ℕ) (hj : j<6) :
+    ‖rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j‖≤128*(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by
+  have hpow : 0≤(Ideal.absNorm (Ideal.span {p}):ℝ)^(-x.re+max (1-w.re) 0) := by positivity
+  have h02 := rowBaseFinite_selected_bound p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 0 2 hj (by omega)
+  have h10 := rowBaseFinite_selected_bound p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 1 0 hj (by omega)
+  have h01 := rowBaseFinite_selected_bound p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 0 1 hj (by omega)
+  have h11 := rowBaseFinite_selected_bound p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j 1 1 hj (by omega)
+  have hr := ProbeLocal.inv_one_sub_norm_le_two _ (first_region_R_half _ hQ a x z ha (by linarith) hz)
+  simp only [Complex.ofReal_natCast] at hr
+  unfold rowClosedMarked
+  rw [div_eq_mul_inv,norm_mul]
+  apply (mul_le_mul_of_nonneg_right
+    ((norm_add_le _ _).trans (add_le_add
+      ((norm_add_le _ _).trans (add_le_add
+        ((norm_add_le _ _).trans (add_le_add h02 h10)) h01)) h11)) (norm_nonneg _)).trans
+  nlinarith
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+variable (p : O) (hp : Prime p) [(Ideal.span {p}:Ideal O).IsMaximal]
+  (hg : lambda∉Ideal.span {p}) (hc : ringChar (O ⧸ Ideal.span {p})≠2)
+
+def ramifiedSelected (eta a rho x w z : ℂ) (j : ℕ) : ℂ :=
+  star eta*(Ideal.absNorm (Ideal.span {p}):ℂ)^x*(1-coordV (Ideal.absNorm (Ideal.span {p})) z)*
+    rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+      ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j -
+    (Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)*ramifiedClosed p hp hg eta a rho x w z j
+
+lemma ramifiedSelected_eq_replacement (eta a rho x w z : ℂ) (j : ℕ) :
+    ramifiedSelected p hp hg eta a rho x w z j =
+      ProbeLocal.compensatedReplacement (coordV (Ideal.absNorm (Ideal.span {p})) z) 0 0
+        (rowClosedMarked p hp hg eta a ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-x))
+          ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) (coordV (Ideal.absNorm (Ideal.span {p})) z) rho j)
+        (star eta*(Ideal.absNorm (Ideal.span {p}):ℂ)^x) ((Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)) := by
+  rw [ProbeLocal.continued_ramified_compensation]
+  simp only [ramifiedSelected,ramifiedClosed,ProbeLocal.continuedCorrection,mul_zero,sub_zero,mul_one,div_one]
+
+include hc in
+theorem ramifiedSelected_bound (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) (j : ℕ) (hj : j<6) :
+    ‖ramifiedSelected p hp hg eta a rho x w z j‖≤385*(Ideal.absNorm (Ideal.span {p}):ℝ)^(max (1-w.re) 0) := by
+  let Q : ℝ := Ideal.absNorm (Ideal.span {p})
+  let B : ℝ := max (1-w.re) 0
+  have hQ0 : 0< Q := by dsimp [Q];linarith
+  have hQ1 : 1≤ Q := by dsimp [Q];linarith
+  have hB0 : 0≤ B := le_max_right _ _
+  have hM := rowClosedMarked_selected_bound p hp hg hc eta a rho x w z hQ heta ha hρ hx hw hz j hj
+  have hH := ramifiedClosed_first_region_bound p hp hg hc eta a rho x w z hQ heta ha hρ
+    (by linarith) (by linarith) hz (by linarith) j hj
+  have hV := first_region_V_half _ hQ z hz
+  have h1V : ‖1-coordV (Ideal.absNorm (Ideal.span {p})) z‖≤3/2 := by
+    have hh := norm_sub_le (1:ℂ) (coordV (Ideal.absNorm (Ideal.span {p})) z)
+    simp only [norm_one] at hh
+    linarith
+  have hphase : ‖star eta*(Ideal.absNorm (Ideal.span {p}):ℂ)^x‖≤ Q^x.re := by
+    change ‖star eta*(Q:ℂ)^x‖≤ Q^x.re
+    rw [norm_mul,norm_star,Complex.norm_cpow_eq_rpow_re_of_pos hQ0]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg hQ0.le _) heta
+  have hq : ‖(Ideal.absNorm (Ideal.span {p}):ℂ)^(-w)‖≤ Q^B := by
+    change ‖(Q:ℂ)^(-w)‖≤ Q^B
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hQ0,Complex.neg_re]
+    exact Real.rpow_le_rpow_of_exponent_le hQ1 (by dsimp [B];linarith)
+  have he : Q^x.re*Q^(-x.re+B)=Q^B := by rw [←Real.rpow_add hQ0];congr 1;ring
+  unfold ramifiedSelected
+  apply (norm_sub_le _ _).trans
+  simp only [norm_mul] at hphase ⊢
+  calc
+    _ ≤ (Q^x.re*(3/2))*(128*Q^(-x.re+B))+Q^B*193 := by
+      gcongr
+    _ = 385*Q^B := by nlinarith [he]
+
+include hc in
+theorem ramifiedSelected_small_bound (eta a rho x z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hz : (17/50:ℝ)≤ z.re) (t : ℝ) (j : ℕ) (hj : j<6) :
+    ‖ramifiedSelected p hp hg eta a rho x ((1/2:ℂ)+t*Complex.I) z j‖≤
+      385*(Ideal.absNorm (Ideal.span {p}):ℝ)^(1/2:ℝ) := by
+  have hh := ramifiedSelected_bound p hp hg hc eta a rho x ((1/2:ℂ)+t*Complex.I) z hQ heta ha hρ hx
+    (by norm_num [Complex.mul_re]) hz j hj
+  norm_num [Complex.mul_re] at hh ⊢
+  exact hh
+
+include hc in
+theorem ramifiedSelected_large_bound (eta a rho x w z : ℂ)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p}))
+    (heta : ‖eta‖≤1) (ha : ‖a‖≤1) (hρ : rho^6=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : 1≤ w.re) (hz : (17/50:ℝ)≤ z.re) (j : ℕ) (hj : j<6) :
+    ‖ramifiedSelected p hp hg eta a rho x w z j‖≤385 := by
+  have hh := ramifiedSelected_bound p hp hg hc eta a rho x w z hQ heta ha hρ hx (by linarith) hz j hj
+  simpa only [max_eq_right (by linarith : 1-w.re≤0),Real.rpow_zero,mul_one] using hh
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeLocal
+theorem compensated_phase_error_bound (V W D P B q vInv : ℂ) (T : ℝ)
+    (_hT : 0 ≤ T) (hV : ‖V‖ ≤ 1 / 2) (hW : ‖W‖ ≤ 1)
+    (hD : ‖D‖ ≤ 1 / 2) (hq : ‖q‖ ≤ 1)
+    (hVT : ‖V‖ ≤ T) (hDT : ‖D‖ ≤ T)
+    (hE : ‖P + D‖ ≤ 28 * T) (hBE : ‖B‖ * ‖P + D‖ ≤ 28 * T)
+    (hv : ‖vInv‖≤1) (hBD : B * D = vInv) (hWq : vInv*W = q) :
+    ‖compensatedReplacement V W D P B q + continuedCorrection V W D P*vInv‖ ≤ 720 * T := by
+  have h1V : ‖1 - V‖ ≤ 2 := by
+    have := norm_sub_le (1 : ℂ) V
+    simp only [norm_one] at this
+    linarith
+  have h1W : ‖1 - W‖ ≤ 2 := by
+    have := norm_sub_le (1 : ℂ) W
+    simp only [norm_one] at this
+    linarith
+  have h1q : ‖vInv - q‖ ≤ 2 := by
+    have := norm_sub_le vInv q
+    linarith
+  have hiV := inv_one_sub_norm_le_two V hV
+  have hiD := inv_one_sub_norm_le_two D hD
+  have hfac : ‖(1 - V) * (1 - W) / (1 - D)‖ ≤ 8 := by
+    rw [div_eq_mul_inv, norm_mul, norm_mul]
+    calc
+      ‖1 - V‖ * ‖1 - W‖ * ‖(1 - D)⁻¹‖ ≤ (2 : ℝ) * 2 * 2 := by gcongr
+      _ = 8 := by norm_num
+  have hleft : ‖(vInv - q) * (V / (1 - V) - D)‖ ≤ 6 * T := by
+    calc
+      _ = ‖vInv - q‖ * ‖V / (1 - V) - D‖ := norm_mul _ _
+      _ ≤ 2 * (‖V‖ * 2 + ‖D‖) := by
+        gcongr
+        calc
+          _ ≤ ‖V / (1 - V)‖ + ‖D‖ := norm_sub_le _ _
+          _ ≤ _ := by rw [div_eq_mul_inv, norm_mul]; gcongr
+      _ ≤ 6 * T := by linarith
+  have hright : ‖(B + vInv - q) * (P + D)‖ ≤ 84 * T := by
+    have hc : ‖B + vInv - q‖ ≤ ‖B‖ + 2 := by
+      calc
+        _ = ‖B + (vInv - q)‖ := by congr 1; ring
+        _ ≤ ‖B‖ + ‖vInv - q‖ := norm_add_le _ _
+        _ ≤ _ := by linarith
+    calc
+      _ = ‖B + vInv - q‖ * ‖P + D‖ := norm_mul _ _
+      _ ≤ (‖B‖ + 2) * ‖P + D‖ := mul_le_mul_of_nonneg_right hc (norm_nonneg _)
+      _ ≤ 84 * T := by nlinarith
+  have hid := continued_normalized_cancellation V W D P B q vInv
+    (one_sub_ne_zero_of_norm_le_half V hV) (one_sub_ne_zero_of_norm_le_half D hD)
+    hBD hWq
+  rw [hid, norm_mul]
+  calc
+    _ ≤ 8 * (‖(vInv - q) * (V / (1 - V) - D)‖ + ‖(B + vInv - q) * (P + D)‖) := by
+      gcongr
+      exact norm_add_le _ _
+    _ ≤ 720 * T := by linarith
+
+end ProbeLocal
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+open ProbeLocal
+
+def unramifiedMarked (Q : ℝ) (A eta v x w z : ℂ) : ℂ :=
+  markedFactor (coordR Q A x z) (coordV Q z) (Q:ℂ)⁻¹ (coordK Q eta x w)
+    (-coordD Q eta v x+coordW Q v w*coordR Q A x z) 1
+
+lemma unramifiedMarked_selected_error (Q : ℝ) (A eta v x w z : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (heta : ‖eta‖≤1) (hv : ‖v‖≤1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) :
+    ‖unramifiedMarked Q A eta v x w z+coordD Q eta v x‖≤28 ∧
+    ‖star eta*(Q:ℂ)^x‖*‖unramifiedMarked Q A eta v x w z+coordD Q eta v x‖≤28 := by
+  have hQ0 : 0< Q := by linarith
+  have hQ1 : 1≤ Q := by linarith
+  let R := coordR Q A x z
+  let V := coordV Q z
+  let W := coordW Q v w
+  let D := coordD Q eta v x
+  let K := coordK Q eta x w
+  let B := star eta*(Q:ℂ)^x
+  have hR : ‖R‖≤ Q^(4-6*x.re-6*z.re) := coordR_norm_le Q hQ0 A x z hA
+  have hV : ‖V‖=Q^(-6*z.re) := coordV_norm Q hQ0 z
+  have hD : ‖D‖≤ Q^(-x.re) := coordD_norm_le Q hQ0 eta v x heta hv
+  have hW : ‖W‖≤1 := (coordW_norm_le Q hQ0 v w hv).trans
+    (Real.rpow_le_one_of_one_le_of_nonpos hQ1 (by linarith))
+  have hK : ‖K‖≤ Q^(1-x.re-w.re) := coordK_norm_le Q hQ1 eta x w heta
+  have hB : ‖B‖≤ Q^x.re := by
+    dsimp only [B]
+    rw [norm_mul,norm_star,Complex.norm_cpow_eq_rpow_re_of_pos hQ0]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg hQ0.le _) heta
+  have hRh : ‖R‖≤1/2 := hR.trans (rpow_le_half Q _ hQ (by linarith))
+  have hVh : ‖V‖≤1/2 := by rw [hV];exact rpow_le_half Q _ hQ (by linarith)
+  have hDh : ‖D‖≤1/2 := hD.trans (rpow_le_half Q _ hQ (by linarith))
+  have hqi : ‖(Q:ℂ)⁻¹‖≤1 := by
+    rw [norm_inv,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hQ0,←one_div]
+    exact (div_le_one hQ0).mpr hQ1
+  have hprod (a b aa bb : ℝ) (ha : 0≤ a) (hb : 0≤ b)
+      (haa : a≤ Q^aa) (hbb : b≤ Q^bb) (he : aa+bb≤0) : a*b≤1 := by
+    calc
+      a*b≤ Q^aa*Q^bb := mul_le_mul haa hbb hb (Real.rpow_nonneg hQ0.le _)
+      _=Q^(aa+bb) := (Real.rpow_add hQ0 _ _).symm
+      _≤1 := Real.rpow_le_one_of_one_le_of_nonpos hQ1 he
+  have hKV : ‖K‖*‖V‖≤1 := hprod _ _ _ _ (norm_nonneg _) (norm_nonneg _) hK hV.le (by linarith)
+  have hBR : ‖B‖*‖R‖≤1 := hprod _ _ _ _ (norm_nonneg _) (norm_nonneg _) hB hR (by linarith)
+  have hKV' : ‖K‖*‖V‖≤ Q^(1-x.re-w.re-6*z.re) := by
+    calc
+      _≤ Q^(1-x.re-w.re)*Q^(-6*z.re) := mul_le_mul hK hV.le (norm_nonneg _) (Real.rpow_nonneg hQ0.le _)
+      _=_ := by rw [←Real.rpow_add hQ0];congr 1;ring
+  have hBKV : ‖B‖*(‖K‖*‖V‖)≤1 := hprod _ _ _ _ (norm_nonneg _) (by positivity) hB hKV' (by linarith)
+  have hE := unramified_marked_error_bound R V (Q:ℂ)⁻¹ K W D hRh hVh hqi hDh
+  change ‖unramifiedMarked Q A eta v x w z+D‖≤ _ at hE
+  have hE' : ‖unramifiedMarked Q A eta v x w z+D‖≤24*‖R‖+4*(‖K‖*‖V‖) := by
+    apply hE.trans
+    nlinarith [mul_le_mul_of_nonneg_left hW (norm_nonneg R)]
+  constructor
+  · change ‖unramifiedMarked Q A eta v x w z+D‖≤28
+    linarith
+  · have hh := mul_le_mul_of_nonneg_left hE' (norm_nonneg B)
+    change ‖B‖*‖unramifiedMarked Q A eta v x w z+D‖≤28
+    nlinarith
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+open ProbeLocal
+
+def unramifiedSelected (Q : ℝ) (A eta v x w z : ℂ) : ℂ :=
+  compensatedReplacement (coordV Q z) (coordW Q v w) (coordD Q eta v x)
+    (unramifiedMarked Q A eta v x w z) (star eta*(Q:ℂ)^x) ((Q:ℂ)^(-w))
+
+lemma selected_phase_identities (Q : ℝ) (eta v x w : ℂ)
+    (hQ : 0< Q) (heta : ‖eta‖=1) (hv : ‖v‖=1) :
+    (star eta*(Q:ℂ)^x)*coordD Q eta v x=star v ∧
+      star v*coordW Q v w=(Q:ℂ)^(-w) := by
+  have hQ0 : (Q:ℂ)≠0 := by exact_mod_cast hQ.ne'
+  constructor
+  · unfold coordD
+    calc
+      _=(star eta*eta)*((Q:ℂ)^x*(Q:ℂ)^(-x))*star v := by ring
+      _=star v := by rw [PrincipalSlotEstimate.unit_phase_inverse eta heta,←Complex.cpow_add _ _ hQ0];simp
+  · unfold coordW
+    rw [←mul_assoc,PrincipalSlotEstimate.unit_phase_inverse v hv,one_mul]
+
+lemma unramifiedSelected_error_bound (Q : ℝ) (A eta v x w z : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (heta : ‖eta‖=1) (hv : ‖v‖=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) :
+    ‖unramifiedSelected Q A eta v x w z+unramifiedClosed Q A eta v x w z*star v‖≤720 := by
+  have hQ0 : 0< Q := by linarith
+  have hQ1 : 1≤ Q := by linarith
+  have hV : ‖coordV Q z‖≤1/2 := by
+    rw [coordV_norm Q hQ0]
+    exact rpow_le_half Q _ hQ (by linarith)
+  have hD : ‖coordD Q eta v x‖≤1/2 :=
+    (coordD_norm_le Q hQ0 eta v x heta.le hv.le).trans (rpow_le_half Q _ hQ (by linarith))
+  have hW : ‖coordW Q v w‖≤1 :=
+    (coordW_norm_le Q hQ0 v w hv.le).trans (Real.rpow_le_one_of_one_le_of_nonpos hQ1 (by linarith))
+  have hq : ‖(Q:ℂ)^(-w)‖≤1 := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hQ0,Complex.neg_re]
+    exact Real.rpow_le_one_of_one_le_of_nonpos hQ1 (by linarith)
+  have he := unramifiedMarked_selected_error Q A eta v x w z hQ hA heta.le hv.le hx hw hz
+  have hi := selected_phase_identities Q eta v x w hQ0 heta hv
+  have hh := compensated_phase_error_bound (coordV Q z) (coordW Q v w) (coordD Q eta v x)
+    (unramifiedMarked Q A eta v x w z) (star eta*(Q:ℂ)^x) ((Q:ℂ)^(-w)) (star v) 1
+    (by norm_num) hV hW hD hq (by linarith) (by linarith)
+    (by simpa using he.1) (by simpa using he.2) (by rw [norm_star,hv]) hi.1 hi.2
+  simpa only [mul_one,unramifiedSelected,unramifiedClosed,unramifiedMarked] using hh
+
+lemma unramifiedSelected_bound (Q : ℝ) (A eta v x w z : ℂ)
+    (hQ : 4≤ Q) (hA : ‖A‖≤1) (heta : ‖eta‖=1) (hv : ‖v‖=1)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) :
+    ‖unramifiedSelected Q A eta v x w z‖≤961 := by
+  have hd := unramifiedClosed_first_region_bound Q A eta v x w z (1/4) hQ hA heta.le hv.le
+    (by norm_num) (by linarith) hz (by linarith) (by linarith)
+  have hpow : Q^(-1-min (1/4:ℝ) (1/50))≤1 :=
+    Real.rpow_le_one_of_one_le_of_nonpos (by linarith) (by norm_num)
+  have hH : ‖unramifiedClosed Q A eta v x w z‖≤241 := by
+    have hh := norm_add_le (unramifiedClosed Q A eta v x w z-1) (1:ℂ)
+    rw [sub_add_cancel,norm_one] at hh
+    nlinarith
+  have he := unramifiedSelected_error_bound Q A eta v x w z hQ hA heta hv hx hw hz
+  have hh := norm_sub_le
+    (unramifiedSelected Q A eta v x w z+unramifiedClosed Q A eta v x w z*star v)
+    (unramifiedClosed Q A eta v x w z*star v)
+  rw [add_sub_cancel_right,norm_mul,norm_star,hv,mul_one] at hh
+  linarith
+
+lemma unramifiedSelected_zero (Q : ℝ) (v x w z : ℂ) :
+    unramifiedSelected Q 0 0 v x w z= -(Q:ℂ)^(-w)*(1-coordV Q z*coordW Q v w) := by
+  simp only [unramifiedSelected,unramifiedMarked,coordR,coordD,coordK,zero_mul,
+    neg_zero,add_zero,markedFactor,zero_sub,sub_zero,div_one,mul_zero,
+    star_zero,compensatedReplacement]
+  ring
+
+lemma unramifiedSelected_zero_bound (Q : ℝ) (v x w z : ℂ)
+    (hQ : 4≤ Q) (hv : ‖v‖≤1) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) :
+    ‖unramifiedSelected Q 0 0 v x w z‖≤2 := by
+  have hQ0 : 0< Q := by linarith
+  have hQ1 : 1≤ Q := by linarith
+  have hV : ‖coordV Q z‖≤1 := by
+    rw [coordV_norm Q hQ0]
+    exact Real.rpow_le_one_of_one_le_of_nonpos hQ1 (by linarith)
+  have hW : ‖coordW Q v w‖≤1 :=
+    (coordW_norm_le Q hQ0 v w hv).trans (Real.rpow_le_one_of_one_le_of_nonpos hQ1 (by linarith))
+  have hq : ‖(Q:ℂ)^(-w)‖≤1 := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hQ0,Complex.neg_re]
+    exact Real.rpow_le_one_of_one_le_of_nonpos hQ1 (by linarith)
+  rw [unramifiedSelected_zero,norm_mul,norm_neg]
+  have ht := norm_sub_le (1:ℂ) (coordV Q z*coordW Q v w)
+  rw [norm_one,norm_mul] at ht
+  have hp : ‖coordV Q z‖*‖coordW Q v w‖≤1 := by nlinarith [norm_nonneg (coordV Q z)]
+  nlinarith [norm_nonneg (1-coordV Q z*coordW Q v w)]
+
+end ProbeEuler
+end
+
+end
+
+noncomputable section
+open Eisenstein CubicJacobi CubicRamified CompletedGauss CanonicalRowCompletion SchwartzPlanePoisson
+
+
+noncomputable section
+namespace ProbeEuler
+open Eisenstein CompletedGauss  ProbePrimePower
+local notation "O" => Eisenstein.O
+
+lemma elementCoeff_zero_or_norm_one (eta : HeckeFamily.Character) (p : O) :
+    HeckeFamily.elementCoeff eta p=0 ∨ ‖HeckeFamily.elementCoeff eta p‖=1 := by
+  by_cases h : HeckeFamily.elementCoeff eta p=0
+  · exact Or.inl h
+  · right
+    exact PrincipalSlotEstimate.actual_target_norm eta p
+      (eta.residue.apply_ne_zero_iff.mp h)
+
+def actualUnramifiedSelected (eta : HeckeFamily.Character) (p u : O)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p}) (x w z : ℂ) : ℂ :=
+  unramifiedSelected (Ideal.absNorm (Ideal.span {p})) (actualAPhase eta p)
+    (HeckeFamily.elementCoeff eta p)
+    (complexSexticChar (Ideal.span {p}) hg (Ideal.Quotient.mk _ u)) x w z
+
+theorem actualUnramifiedSelected_bound (eta : HeckeFamily.Character) (p u : O)
+    [(Ideal.span {p}:Ideal O).IsMaximal] (hg : lambda∉Ideal.span {p})
+    (hc : ringChar (O ⧸ Ideal.span {p})≠2) (hu : IsCoprime u p)
+    (hQ : (4:ℝ)≤ Ideal.absNorm (Ideal.span {p})) (x w z : ℂ)
+    (hx : (7/8:ℝ)≤ x.re) (hw : (1/2:ℝ)≤ w.re) (hz : (17/50:ℝ)≤ z.re) :
+    ‖actualUnramifiedSelected eta p u hg x w z‖≤961 := by
+  have hv := Complex.norm_eq_one_of_pow_eq_one (ProbePhysical.complexSexticChar_unit_six p u hg hc hu) (by decide : (6:ℕ)≠0)
+  unfold actualUnramifiedSelected
+  rcases elementCoeff_zero_or_norm_one eta p with heta|heta
+  · have hA : actualAPhase eta p=0 := by simp [actualAPhase,heta]
+    rw [heta,hA]
+    exact (unramifiedSelected_zero_bound _ _ x w z hQ hv.le hw hz).trans (by norm_num)
+  · exact unramifiedSelected_bound _ _ _ _ x w z hQ (actualAPhase_norm_le_one eta p) heta hv hx hw hz
+
+end ProbeEuler
+end
+
+end
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

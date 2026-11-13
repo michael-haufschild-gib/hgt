@@ -15,7 +15,7 @@
 | Q2 | `[L:K] ∈ {1,∞}` | open; contains B13 |
 | Q3 | square-class relations among the radicands `−δ_q²` | open; ordering conjugations see the relations modulo sums of squares (module O1) |
 | Q4 | group of one Jensen polynomial over its coefficient field | reduced (modules G1–G4): the group is `C₂ ≀ S_n` or `μ₂/μ₀, …, μ₂ₙ/μ₀` are algebraically dependent over `ℚ`; the independence is a transcendence statement outside the programme |
-| Q5 | monodromy of the heat family at a collision, group generated, relation to conjugation | local part answered; branch points exist; global group open (below) |
+| Q5 | monodromy of the heat family at a collision, group generated, relation to conjugation | local part answered; branch points exist; over forward times the cover is tame (no escape, lifting, transport bijective, branch times discrete); the group generated is open (below) |
 | Q6 | a restriction from the prime traces forcing `H = B` | open; equivalent to RH |
 
 ## Tier 3: the heat cover (Q5)
@@ -33,22 +33,25 @@
 | `AZeroContinuesAlongAPathOfTimesUntilItEscapes` | chart of a simple zero; uniqueness of lifts; transport injective; a zero lifts along the whole path or escapes at a finite parameter | `3-formalized/galois-zero-continuation-until-escape.md` |
 | `RealBranchTimesAccumulateAtTheTimeOfXiUnlessZerosEscape` | conjugate lifts; nonreal zeros stay nonreal without a collision; no branch time in `[a, b]`, `a < 0 < b` ⇒ infinitely many nonreal zeros escape; `0 ∈ closure` of the real branch times or escape; RH form | `3-formalized/galois-zero-real-branch-times-accumulate-at-time-zero.md` |
 | `TheSignBranchPointsLieInTheForwardHalfPlane` | `Im c(τ)` has the sign of `Im τ` for `Re τ ≤ 0`; `c` maps the backward half-plane into the slit plane; every centre time has `Re τ > 0`; `√c` single-valued over backward times | `3-formalized/galois-zero-sign-branch-points-forward-half-plane.md` |
+| `RHTower/XiSlopeInTheRightHalfPlane`, `TheHeatFamilyAtForwardTimesIsAComplexGaussianAverageOfXi`, `TheGaussianConcentratesAtTheSaddlePoint`, `TheHalfTransformIsXiAtTheSaddlePoint`, `TheReflectedHalfTransformIsDominated`, `TheHalfTransformIsLocallyAnExponential` | slope of ξ in `Re s ≥ 5`; `H_τ = 𝒜(τ,z) + 𝒜(τ,−z)`; `𝒜 = ξ(s + 2τa)e^{−τa²}(1+o(1))` at the saddle; far zeros in the strip `|Im z| < 12 + 21T₀`; `𝒜` locally `M₀e^{ia₀Δz + a₀²Δτ}` | `3-formalized/galois-zero-forward-tameness-of-the-heat-cover.md` |
+| `FarZerosAtForwardTimesAreSimple` | two-exponential model near a far point of the strip; phase lock `‖e^Φ − 1‖ ≤ ε` at two zeros; drift bounded; far zeros simple | same |
+| `NoZeroEscapesOverForwardTimes` | trap; no escape over `Re τ > 0`; every zero lifts along paths off the branch times; transport is a bijection of fibres; multiple zeros closed; finitely many branch times in a box | same |
 
 Open core of Q5 (the group generated):
 
-1. *Non-escape.* By the continuation alternative, lifting along a path fails only if the
-   modulus of the lift tends to infinity. Needed: no zero escapes over a compact set of
-   times. Heuristic (two saddles of the Gaussian average of ξ): for `Re τ > 0` the far zeros
-   lie near `Im z = −(π/2) Im τ · sgn(Re z)`, are simple, and drift with velocity
-   `dz/dτ → −π/2 · sgn(Re z)`; a proof needs the two-term asymptotics with derivative
-   control, uniformly on compact sets of forward times. For `Re τ ≤ 0` there is no gain from
-   the Gaussian and the statement is of the strength of zero-spacing results for ζ.
+1. *Non-escape.* Proved for `Re τ > 0` (card `galois-zero-forward-tameness-of-the-heat-cover`).
+   For `Re τ ≤ 0` there is no gain from the Gaussian and the statement is of the strength of
+   zero-spacing results for ζ.
 2. *Collisions away from the centre.* A real collision at a positive time exists iff RH
    fails. Real branch times exist in every neighbourhood of the time `0`, or zeros escape
    there. None is known at a nonreal time. Not shown: that the real branch time is a collision
    at a real place (needs continuation through collisions at nonreal places).
 3. *Irreducibility* of the cover (transitivity of the monodromy on the zeros of one time).
-4. *Accumulation* of branch times at finite times; simplicity of the zeros of `c`.
+4. *Accumulation* of branch times: none at a forward time (finitely many in a box); open on
+   `Re τ ≤ 0`. Simplicity of the zeros of `c`.
+5. *The group over forward times.* Transports along loops in `{Re τ > 0}` off the branch times
+   are permutations of a fibre. Not yet a theorem: that they form a group commuting with
+   `z ↦ −z`, depend only on the homotopy class, and contain the sign flips at the centre times.
 
 ## Tier 1: finite equations (Q4)
 
@@ -105,3 +108,5 @@ extensions).
 - 2026-11-12 — card created; README restructured to the §2.19 frame; Q5 paper proof written.
 - 2026-11-13 — heat cover in complex time: six modules; generic folded group, fundamental
   theorem, specialization, Jensen equations; orderings of `D`; README updated.
+- 2026-11-13 — forward tameness formalized (eight modules): no escape over `Re τ > 0`,
+  lifting, bijective transport, discrete branch times.
