@@ -215,6 +215,15 @@ block size.
     principal minors of one infinite matrix, and **RH is the finiteness of its second eigenvalue**.
     With the bounded margin (mechanism 11) the margin of the window matrices lies in `[0, c₀]`
     under RH and is unbounded below otherwise.
+20. *The exponent is the abscissa* (`exists_packetForm_stepPacket_ge_sqrt`,
+    `zetaZeroWidth_le_of_packetForm_stepPacket_ge`): on the step packets of a window of ratio
+    `3K + 1`, Weil's form is at least `−C √K` times the mass without hypothesis (the jets bind at
+    most `5.4`, the trees at most `2 Σ_{k ≤ ρ} Λ(k)/√k ≤ 68 √K`, the pole term is at least
+    `−2√K` by weighted Cauchy–Schwarz). A bound `−C K^θ` with `θ < ½` forces `|Re ρ − ½| ≤ θ`
+    for every zero: the transfer of mechanism 19 at one ratio controls the lag structure at the
+    lags `v ≲ log K` (`two_re_lagStructure_le_of_packetForm_ge`), and the rate law of the
+    antisymmetric state reads the growth `e^{θ v}`. The trivial exponent `½` is the trivial strip,
+    a power saving `ρ^{½ − δ}` is the quasi-Riemann hypothesis, RH is a bounded loss.
 
 ## 5. Pillar theorems
 
@@ -232,6 +241,7 @@ block size.
 | The odd sector self-improves; its rate is the abscissa of the zeros | `riemannHypothesis_iff_odd_sector_bddBelow`, `zetaZeroWidth_le_iff_twoEndOdd_rate` |
 | RH iff the margins are bounded below, at infinite and at finite block size; the windows `(1, 2M]` suffice | `riemannHypothesis_iff_margin_bddBelow`, `riemannHypothesis_iff_neutralWindow_margin_bddBelow`, `riemannHypothesis_iff_initialWindow_margin_bddBelow` |
 | RH iff Weil's form on step packets is bounded below by a multiple of the mass | `riemannHypothesis_iff_packetForm_stepPacket_bddBelow` |
+| The trivial exponent `½` of the window matrices; a saving in the exponent is a zero-free strip | `exists_packetForm_stepPacket_ge_sqrt`, `zetaZeroWidth_le_of_packetForm_stepPacket_ge` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
@@ -249,6 +259,7 @@ block size.
 | 6 | Does the margin have a limit along the ratios; does a uniform lower bound force RH | a uniform lower bound forces RH, at infinite block size (`riemannHypothesis_iff_margin_bddBelow`) and for the window matrices (`riemannHypothesis_iff_neutralWindow_margin_bddBelow`); calibration: under RH the margin lies in `[0, c₀]` and tends to `0` at infinite block size; the limit at finite block size is open |
 | 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
 | 8 | A recursion along doublings | answered in overlap form: a window reduces to two shorter parts and one contraction; the balanced split sends the ratio `ρ` to `2(1 + ρ)/3` and `3ρ/(1 + ρ)` |
+| 9 | Which exponent `θ` in `𝔚 ≥ −C ρ^θ` on the step packets of ratio `ρ` is true | `θ = ½` unconditionally (`exists_packetForm_stepPacket_ge_sqrt`); `θ < ½` implies the zero-free strip `|Re ρ − ½| ≤ θ` (`zetaZeroWidth_le_of_packetForm_stepPacket_ge`); RH is the bound with `θ = 0`; any `θ < ½` is open |
 
 ## 7. Tools
 
@@ -289,10 +300,10 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 
 - The contraction of the conditional coupling at ratio three (B192) and at the balanced split of
   every ratio; norms of `X` against `S₁`, `S₃`.
-- The rate of the margin at finite block size: whether `margin ≥ −C ρ^θ` forces `Θ ≤ ½ + θ`, as
-  the odd states of the two ends do at infinite block size (the trivial bound `margin ≥ −μ ≳ −√ρ`
-  is the trivial `Θ ≤ 1`). The plane of AGZ lives on windows of unbounded ratio, so the rate needs
-  a construction inside windows of ratio comparable to the lag.
+- The converse of the exponent law: whether `|Re ρ − ½| ≤ θ` gives `𝔚 ≥ −C ρ^θ` on the step
+  packets of ratio `ρ`; and the exponent of the margin of `N` itself, which the plane of AGZ does
+  not see (it lives on windows of unbounded ratio): a construction of two deep bound states
+  inside a window of ratio comparable to the lag.
 - Strategies with an additive loss: a comparison or path argument that proves gap `≥ μ − C`
   suffices; which of the known losses (the margin bound `c₀`, the archimedean floor `5.4`, the
   overlap contraction) are additive.

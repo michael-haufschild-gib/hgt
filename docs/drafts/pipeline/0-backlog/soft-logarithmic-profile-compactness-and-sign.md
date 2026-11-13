@@ -80,9 +80,12 @@ remains unformalized.
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
 
 For recovery choose cutoffs equal to one on `[-N,0]`, zero below `-2N`,
-bounded by one, and with Lipschitz constant at most one. The error
+bounded by one, and with Lipschitz constant at most one. For `N≥2`, the
+existing choice `χ_N(u)=logarithmicEndpointCutoff N (-u)` has these properties.
+The error
 `(1-χ_N)f` tends to zero in `L²`; at each fixed shift its translation
-defect tends to zero. The existing loss inequality bounds its squared
+defect tends to zero by the unitary bound `‖T_hg-g‖≤2‖g‖`. Thus dominated
+convergence is needed only in the shift variable. The existing loss inequality bounds its squared
 defect by `2‖T_hf-f‖²+2h²‖f‖²`. This is integrable against the reference
 Lévy density `exp(-h)/(2h)`. Dominated convergence would therefore give
 convergence in the positive logarithmic form norm. The first-moment term

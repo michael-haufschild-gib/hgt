@@ -128,58 +128,31 @@ the two-sided bound. Given `b<15`, choose
 
 ## Lean status
 
-`ArithmeticHodgeTheoryOfDegenerations/CausalReflection/HalfLineGammaContractions`
-passes its final plain source audit without warnings, with exactly
-`propext`, `Classical.choice`, and `Quot.sound`. It is wired; its required
-olean exists. It proves both directions of the jump/Gamma domain bridge
-and closure under zero-preserving real contractions.
+**Eight of sixteen supporting modules are audited.** All pass final plain
+source checks without warnings, depend exactly on `propext`,
+`Classical.choice`, and `Quot.sound`, are wired, and have required oleans.
+Paths are under `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+unless specified otherwise.
 
-`NegativeHalfLineExponentialBarrier` also passes its final plain source
-audit without warnings, with exactly the same three axioms. It is wired
-and has its required olean. Its exact exponential autocorrelation and
-translation defect prove Gamma integrability of every positive-rate barrier.
+- `HalfLineGammaContractions`: two-way jump/Gamma domain bridge and closure under real contractions fixing zero.
+- `NegativeHalfLineExponentialBarrier`: exact autocorrelation, translation defect, and Gamma integrability of positive-rate barriers.
+- `ExponentialBarrierPositiveLevels`: actual-domain admission of nonnegative levels (`exponentialBarrierPositiveLevel_mem`).
+- `HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra`: weighted edge inequality, relative-jump decomposition, and pointwise square coercivity.
+- `HalfLineGammaMixedEnergy`: absolute mixed-jump integrability and the exact Gamma identity, including its mass offset.
+- `HalfLineExponentialBarrierJumps`: integrated exponential correction bounding each mixed Gamma jump below.
+- `ExponentialBarrierPrimeEdges`: mixed-form symmetry and the support-restricted comparison for each prime term.
+- `ExponentialBarrierPrimeRows`: uniform finite forward-row bounds and complete backward-row summability.
 
-`ExponentialBarrierPositiveLevels` passes its final plain source audit
-without warnings, with the standard three axioms, and is wired with its
-required olean. `CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem`
-proves admissibility of every nonnegative level above a positive-rate barrier.
+Eight supporting modules await final audits:
 
-`HalfLineGammaMixedEnergy` passes its final plain source audit without
-warnings, with the standard three axioms, and is wired with its required
-olean. It proves absolute integrability of mixed jumps and their exact
-Gamma identity, retaining the constant mass offset.
-
-`HalfLineExponentialBarrierJumps` passes its final plain source audit
-without warnings, with the standard three axioms, and is wired with its
-required olean. It proves the exact integrated exponential correction
-bounding each mixed Gamma jump from below.
-
-`ExponentialBarrierPrimeEdges` passes its final plain source audit without
-warnings, with the standard three axioms, and is wired with its required
-olean. It proves prime mixed-form symmetry and the support-restricted
-diagonal comparison for each literal prime term.
-
-Eight further supporting modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
-await final source audits:
-
-- `ExponentialBarrierPrimeRows`: a Chebyshev bound for every finite forward row and convergence of the complete backward row.
 - `ExponentialBarrierPrimeComparison`: the integrated complete prime mixed-form comparison, passing from finite edge sums by actual-domain absolute summability.
 - `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
 - `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
+- `HTGeometry/HardyBoundary/TranslationKernelPairing`: Fubini for an integrable kernel against measurable `L²` profiles, and an ordinary-mass bound when the kernel is also `L²`.
 - `HalfLineGammaLargeJumps`: the cutoff-kernel realization, both ordinary-mass row bounds, and the exact integrated large-jump identity and lower estimate.
 - `ExponentialBarrierGammaComparison`: the exact split at a positive cutoff and the full Gamma lower bound, retaining the constant mass term.
 - `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential, giving the two diagonal coercivity inequalities.
 - `ExponentialBarrierPoleComparison`: both polar terms are bounded below by the test's half-exponential ordinary mass.
-
-`HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra` passes its final
-plain source audit without warnings, with the standard three axioms. It is
-wired and has its required olean. It proves the weighted row inequality,
-exact relative-jump decomposition, and pointwise square bound after
-absorption of both forcing rows.
-The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
-justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
-`L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. Seven of sixteen supporting modules are audited and wired.
 
 `ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
 negation invariance, the full-line weak row identity, vanishing of a high

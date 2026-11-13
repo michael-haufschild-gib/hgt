@@ -99,14 +99,13 @@ theorem neutralForm_smul (Q : ℕ) (c : ℝ) (g : ℝ → ℝ) :
     unfold levyJump
     rw [hA, hA]
     ring
-  rw [neutralForm_eq, neutralForm_eq]
-  simp only [hA, hJ]
-  rw [integral_const_mul, Finset.mul_sum]
   have e : ∑ k ∈ Finset.Icc 2 Q, contactWeight k * (c ^ 2 * packetAutocorr g (Real.log k)) =
       c ^ 2 * ∑ k ∈ Finset.Icc 2 Q, contactWeight k * packetAutocorr g (Real.log k) := by
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun k _ => by ring
-  rw [e]
+  rw [neutralForm_eq, neutralForm_eq]
+  simp only [hA, hJ]
+  rw [integral_const_mul, e]
   ring
 
 /-! ### The even and the odd part are orthogonal -/
@@ -171,21 +170,29 @@ theorem integral_even_mul_odd {e o : ℝ → ℝ} (heven : ∀ u, e (-u) = e u)
 theorem integral_even_add_odd_sq {e o : ℝ → ℝ} (he : Continuous e) (ho : Continuous o) {L : ℝ}
     (hv : ∀ u, L < |u| → e u = 0 ∧ o u = 0) (heven : ∀ u, e (-u) = e u)
     (hodd : ∀ u, o (-u) = -o u) (a b : ℝ) :
-    ∫ u, (a * e u + b * o u) ^ 2 = a ^ 2 * ∫ u, e u ^ 2 + b ^ 2 * ∫ u, o u ^ 2 := by
+    ∫ u, (a * e u + b * o u) ^ 2 = a ^ 2 * (∫ u, e u ^ 2) + b ^ 2 * ∫ u, o u ^ 2 := by
   have hint : ∀ f : ℝ → ℝ, Continuous f → (∀ u, L < |u| → f u = 0) → Integrable f :=
     fun f hf hfv => hf.integrable_of_hasCompactSupport (hasCompactSupport_of_vanishing hfv)
   have hv2 : ∀ u, L < |u| → e u ^ 2 = 0 := fun u hu => by rw [(hv u hu).1]; ring
   have hv3 : ∀ u, L < |u| → o u ^ 2 = 0 := fun u hu => by rw [(hv u hu).2]; ring
   have hv4 : ∀ u, L < |u| → e u * o u = 0 := fun u hu => by rw [(hv u hu).1]; ring
-  have i1 := hint _ (he.pow 2) hv2
-  have i2 := hint _ (ho.pow 2) hv3
-  have i3 := hint _ (he.mul ho) hv4
+  have i1 : Integrable fun u => a ^ 2 * e u ^ 2 :=
+    (hint (fun u => e u ^ 2) (he.pow 2) hv2).const_mul _
+  have i2 : Integrable fun u => b ^ 2 * o u ^ 2 :=
+    (hint (fun u => o u ^ 2) (ho.pow 2) hv3).const_mul _
+  have i3 : Integrable fun u => 2 * a * b * (e u * o u) :=
+    (hint (fun u => e u * o u) (he.mul ho) hv4).const_mul _
   have e1 : (fun u => (a * e u + b * o u) ^ 2) =
       fun u => a ^ 2 * e u ^ 2 + (2 * a * b * (e u * o u) + b ^ 2 * o u ^ 2) := by
     funext u; ring
-  rw [e1, integral_add (i1.const_mul _) ((i3.const_mul _).add (i2.const_mul _)),
-    integral_add (i3.const_mul _) (i2.const_mul _), integral_const_mul, integral_const_mul,
-    integral_const_mul, integral_even_mul_odd heven hodd]
+  have h1 : ∫ u, (a ^ 2 * e u ^ 2 + (2 * a * b * (e u * o u) + b ^ 2 * o u ^ 2)) =
+      (∫ u, a ^ 2 * e u ^ 2) + ∫ u, (2 * a * b * (e u * o u) + b ^ 2 * o u ^ 2) :=
+    integral_add i1 (i3.add i2)
+  have h2 : ∫ u, (2 * a * b * (e u * o u) + b ^ 2 * o u ^ 2) =
+      (∫ u, 2 * a * b * (e u * o u)) + ∫ u, b ^ 2 * o u ^ 2 :=
+    integral_add i3 i2
+  rw [e1, h1, h2, integral_const_mul, integral_const_mul, integral_const_mul,
+    integral_even_mul_odd heven hodd]
   ring
 
 /-! ### The theorem -/
@@ -299,9 +306,9 @@ theorem riemannHypothesis_iff_margin_bddBelow :
       · have := pow_pos (abs_pos.mpr h) 2
         rw [sq_abs] at this
         nlinarith [sq_nonneg a]
-    have hCa : -(C * (a ^ 2 * ∫ u, twoEndEven V u ^ 2 + b ^ 2 * ∫ u, twoEndOdd v u ^ 2)) ≥
-        -(|C| * (a ^ 2 * ∫ u, twoEndEven V u ^ 2 + b ^ 2 * ∫ u, twoEndOdd v u ^ 2)) := by
-      have hnn : 0 ≤ a ^ 2 * ∫ u, twoEndEven V u ^ 2 + b ^ 2 * ∫ u, twoEndOdd v u ^ 2 :=
+    have hCa : -(C * (a ^ 2 * (∫ u, twoEndEven V u ^ 2) + b ^ 2 * ∫ u, twoEndOdd v u ^ 2)) ≥
+        -(|C| * (a ^ 2 * (∫ u, twoEndEven V u ^ 2) + b ^ 2 * ∫ u, twoEndOdd v u ^ 2)) := by
+      have hnn : 0 ≤ a ^ 2 * (∫ u, twoEndEven V u ^ 2) + b ^ 2 * ∫ u, twoEndOdd v u ^ 2 :=
         add_nonneg (mul_nonneg (sq_nonneg a) hmE0) (mul_nonneg (sq_nonneg b) hmO0)
       nlinarith [le_abs_self C]
     linarith [mul_le_mul_of_nonneg_left hE (sq_nonneg a),

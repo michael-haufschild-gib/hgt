@@ -68,16 +68,21 @@ theorem neg_two_sqrt_mul_le_two_mul_charges {K R : ℕ} (hK : 1 ≤ K) (hR : 1 �
     exact Real.log_nonneg ((one_le_div hR0).mpr (by exact_mod_cast (by omega : R ≤ R + 3 * K * R)))
   have hsum : ∑ j ∈ range (3 * K * R), -blockDegree (R + j) = -L := by
     rw [Finset.sum_neg_distrib, sum_blockDegree_window, hL, Real.log_div hRJ.ne' hR0.ne']
-  have h := two_mul_sum_mul_sum_le (J := 3 * K * R) σ (fun j => -blockDegree (R + j)) hq hD hsum
+  have h : 2 * ((∑ j ∈ range (3 * K * R), σ j * -blockDegree (R + j)) *
+        ∑ j ∈ range (3 * K * R), σ j) ≤
+      (Real.sqrt (R * Real.sqrt K) ^ 2 * (1 / (R : ℝ)) + 2 * -L +
+        ((3 * K * R : ℕ) : ℝ) / Real.sqrt (R * Real.sqrt K) ^ 2) / 2 *
+        ∑ j ∈ range (3 * K * R), σ j ^ 2 :=
+    two_mul_sum_mul_sum_le (J := 3 * K * R) σ (fun j => -blockDegree (R + j)) hq hD hsum
   rw [hq2] at h
   have hneg : ∑ j ∈ range (3 * K * R), σ j * -blockDegree (R + j) =
       -∑ j ∈ range (3 * K * R), σ j * blockDegree (R + j) := by
     rw [← Finset.sum_neg_distrib]
     exact Finset.sum_congr rfl fun j _ => by ring
   have e1 : (R : ℝ) * Real.sqrt K * (1 / (R : ℝ)) = Real.sqrt K := by
-    field_simp
+    rw [mul_comm (R : ℝ) _, mul_assoc, mul_one_div_cancel hR0.ne', mul_one]
   have e2 : ((3 * K * R : ℕ) : ℝ) / (R * Real.sqrt K) = 3 * Real.sqrt K := by
-    rw [div_eq_iff (by positivity)]
+    rw [div_eq_iff (mul_pos hR0 hsK).ne']
     push_cast
     rw [show (3 : ℝ) * Real.sqrt K * (R * Real.sqrt K) = 3 * R * (Real.sqrt K * Real.sqrt K) by
       ring, Real.mul_self_sqrt hK0.le]
@@ -216,8 +221,9 @@ theorem zetaZeroWidth_le_of_packetForm_stepPacket_ge {θ C : ℝ} (hθ0 : 0 ≤ 
   have h2 : (|C| * (K : ℝ) ^ θ + 1 + 1) * (4 * m₀) ≤
       (|C| * B + 1 + 1) * (4 * m₀) * Real.exp (θ * v) := by
     have h3 : |C| * (K : ℝ) ^ θ + 1 + 1 ≤ (|C| * B + 1 + 1) * Real.exp (θ * v) := by
-      nlinarith [mul_nonneg (abs_nonneg C) hB0]
-    nlinarith
+      linarith
+    have h4 := mul_le_mul_of_nonneg_right h3 (by linarith : (0 : ℝ) ≤ 4 * m₀)
+    linarith
   linarith
 
 end GaloisForLFunctions.MixingArithmeticOfTheFloorTrees

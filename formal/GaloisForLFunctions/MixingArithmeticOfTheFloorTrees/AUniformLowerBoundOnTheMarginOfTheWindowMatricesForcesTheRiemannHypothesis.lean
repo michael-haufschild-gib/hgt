@@ -203,8 +203,9 @@ theorem intervalIntegral_shiftedOdd_sq_le (v : ℝ) (K : ℕ) :
   calc ∫ u in Set.Ioc 0 (Real.log (1 + ((3 * K : ℕ) : ℝ))), shiftedOdd v u ^ 2
       ≤ ∫ u, shiftedOdd v u ^ 2 :=
         setIntegral_le_integral hint (Eventually.of_forall fun u => sq_nonneg _)
-    _ = ∫ u, twoEndOdd v u ^ 2 :=
-        integral_sub_right_eq_self (fun u => twoEndOdd v u ^ 2) _
+    _ = ∫ u, twoEndOdd v u ^ 2 := by
+        unfold shiftedOdd
+        exact integral_sub_right_eq_self (fun u => twoEndOdd v u ^ 2) (Real.log 3 + 6 + |v| / 2)
     _ ≤ 4 * ∫ u, poleFreeProfile u ^ 2 := integral_twoEndOdd_sq_le v
 
 /-! ### Step packets -/
@@ -324,19 +325,19 @@ theorem sum_probe_sq {R J L M : ℕ} (hR : 1 ≤ R) (hL : 2 ≤ L) (hLM : L * (R
 theorem sum_fin_neutralWindow_add_eq {M : ℕ} (hM : 1 ≤ M) (Q : ℕ) (C : ℝ) (Ψ : ℕ → ℝ) :
     ∑ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
         Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) *
-          (neutralWindow Q 1 (M + M - 1) + diagonal fun _ => C) i j =
+          (neutralWindow Q 1 (M + M - 1) + Matrix.diagonal fun _ => C) i j =
       rectSum (neutralBlock Q) (Ico 1 (M + M)) (Ico 1 (M + M)) Ψ Ψ +
         C * ∑ b ∈ Ico 1 (M + M), Ψ b ^ 2 := by
   have hdiag : ∀ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
-      Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) * (diagonal (fun _ => C) i j) =
+      Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) * (Matrix.diagonal (fun _ => C) i j) =
         C * Ψ (1 + (i : ℕ)) ^ 2 := fun i => by
-    rw [Finset.sum_eq_single i (fun j _ hj => by rw [diagonal_apply_ne _ (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single i (fun j _ hj => by rw [Matrix.diagonal_apply_ne _ (Ne.symm hj), mul_zero])
       (fun h => absurd (Finset.mem_univ i) h)]
-    simp only [diagonal_apply_eq]
+    simp only [Matrix.diagonal_apply_eq]
     ring
   have hsplit : ∑ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
       Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) *
-        (neutralWindow Q 1 (M + M - 1) + diagonal fun _ => C) i j =
+        (neutralWindow Q 1 (M + M - 1) + Matrix.diagonal fun _ => C) i j =
       ∑ i : Fin (M + M - 1), ∑ j : Fin (M + M - 1),
           Ψ (1 + (i : ℕ)) * Ψ (1 + (j : ℕ)) * neutralWindow Q 1 (M + M - 1) i j +
         ∑ i : Fin (M + M - 1), C * Ψ (1 + (i : ℕ)) ^ 2 := by
@@ -359,7 +360,7 @@ theorem exists_two_le_hermNegIndex_neutralWindow_add {R J Q₀ : ℕ} (hR : 1 �
       ∑ j ∈ range J, ∑ l ∈ range J, σ j * σ l * neutralBlock Q₀ (R + j) (R + l) +
         C * ∑ j ∈ range J, σ j ^ 2 < 0) :
     ∃ M : ℕ, 1 ≤ M ∧ 2 ≤ hermNegIndex
-      ((neutralWindow (M + M) 1 (M + M - 1) + diagonal fun _ => C).map (↑) :
+      ((neutralWindow (M + M) 1 (M + M - 1) + Matrix.diagonal fun _ => C).map (↑) :
         Matrix (Fin (M + M - 1)) (Fin (M + M - 1)) ℂ) := by
   obtain ⟨c₁, hc₁⟩ : ∃ x, x = ∑ j ∈ range J, σ j := ⟨_, rfl⟩
   obtain ⟨c₀, hc₀⟩ : ∃ x, x = ∑ j ∈ range J, σ j * blockDegree (R + j) := ⟨_, rfl⟩
@@ -461,7 +462,7 @@ theorem exists_two_le_hermNegIndex_neutralWindow_add {R J Q₀ : ℕ} (hR : 1 �
       (s * probe R J L M σ 1 (-c₁) (-κ) (1 + (i : ℕ)) + t * probe R J L M σ 0 1 1 (1 + (i : ℕ))) *
         (s * probe R J L M σ 1 (-c₁) (-κ) (1 + (j : ℕ)) +
           t * probe R J L M σ 0 1 1 (1 + (j : ℕ))) *
-        (neutralWindow (M + M) 1 (M + M - 1) + diagonal fun _ => C) i j < 0
+        (neutralWindow (M + M) 1 (M + M - 1) + Matrix.diagonal fun _ => C) i j < 0
   simp only [hW]
   rw [sum_fin_neutralWindow_add_eq hM1 (M + M) C, probe_form hR hQ₀ σ hL1 hM1 hLM hQM c₁ κ s t,
     sum_probe_sq hR hL2 hLM σ s (t - s * c₁) (t - s * κ)]
@@ -472,7 +473,7 @@ theorem exists_two_le_hermNegIndex_neutralWindow_add {R J Q₀ : ℕ} (hR : 1 �
 /-- A uniform lower bound on the margins of the windows `(1, 2M]` forces RH. -/
 theorem riemannHypothesis_of_initialWindow_margin_bddBelow {C : ℝ}
     (hC : ∀ M : ℕ, 1 ≤ M →
-      hermNegIndex ((neutralWindow (M + M) 1 (M + M - 1) + diagonal fun _ => C).map (↑) :
+      hermNegIndex ((neutralWindow (M + M) 1 (M + M - 1) + Matrix.diagonal fun _ => C).map (↑) :
         Matrix (Fin (M + M - 1)) (Fin (M + M - 1)) ℂ) ≤ 1) :
     RiemannHypothesis := by
   by_contra hRH
@@ -491,13 +492,13 @@ theorem riemannHypothesis_of_initialWindow_margin_bddBelow {C : ℝ}
 part of every window `(R, R + J]` with `R ≤ J`, plus `C`, has at most one negative square. -/
 theorem riemannHypothesis_iff_neutralWindow_margin_bddBelow :
     RiemannHypothesis ↔ ∃ C : ℝ, ∀ Q R J : ℕ, 1 ≤ R → R ≤ J → R + J ≤ Q * R →
-      hermNegIndex ((neutralWindow Q R J + diagonal fun _ => C).map (↑) :
+      hermNegIndex ((neutralWindow Q R J + Matrix.diagonal fun _ => C).map (↑) :
         Matrix (Fin J) (Fin J) ℂ) ≤ 1 := by
   constructor
   · intro hRH
     refine ⟨0, fun Q R J hR hRJ hQ => ?_⟩
-    have e : (neutralWindow Q R J + diagonal fun _ => (0 : ℝ)) = neutralWindow Q R J := by
-      rw [diagonal_zero, add_zero]
+    have e : (neutralWindow Q R J + Matrix.diagonal fun _ => (0 : ℝ)) = neutralWindow Q R J := by
+      rw [Matrix.diagonal_zero, add_zero]
     rw [e]
     exact (hermNegIndex_neutralWindow_eq_one_of_riemannHypothesis hRH hR hRJ hQ).le
   · rintro ⟨C, hC⟩
@@ -509,7 +510,7 @@ matrix (`neutralBlock_eq_of_le`), so these windows are the leading principal min
 matrix: RH iff its second eigenvalue is finite. -/
 theorem riemannHypothesis_iff_initialWindow_margin_bddBelow :
     RiemannHypothesis ↔ ∃ C : ℝ, ∀ M : ℕ, 1 ≤ M →
-      hermNegIndex ((neutralWindow (M + M) 1 (M + M - 1) + diagonal fun _ => C).map (↑) :
+      hermNegIndex ((neutralWindow (M + M) 1 (M + M - 1) + Matrix.diagonal fun _ => C).map (↑) :
         Matrix (Fin (M + M - 1)) (Fin (M + M - 1)) ℂ) ≤ 1 := by
   constructor
   · intro hRH
@@ -520,16 +521,16 @@ theorem riemannHypothesis_iff_initialWindow_margin_bddBelow :
 
 /-! ### The Doob chains -/
 
-/-- Adding a constant to the diagonal does not change the Dirichlet form of the Doob chain. -/
+/-- Adding a constant to the Matrix.diagonal does not change the Dirichlet form of the Doob chain. -/
 theorem doobEnergy_add_diagonal {n : ℕ} (G : Matrix (Fin n) (Fin n) ℝ) (C : ℝ) (φ f : Fin n → ℝ) :
-    doobEnergy (G + diagonal fun _ => C) φ f = doobEnergy G φ f := by
+    doobEnergy (G + Matrix.diagonal fun _ => C) φ f = doobEnergy G φ f := by
   unfold doobEnergy doobConductance
   congr 1
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   by_cases hij : i = j
   · subst hij
     ring
-  · rw [Matrix.add_apply, diagonal_apply_ne _ hij, add_zero]
+  · rw [Matrix.add_apply, Matrix.diagonal_apply_ne _ hij, add_zero]
 
 /-- **RH iff the Poincaré inequality of every Doob chain holds up to a fixed additive loss**: for
 some `C`, on every window `(R, R + J]` with `R ≤ J`, the Doob chain at a positive eigenvector
@@ -540,24 +541,24 @@ theorem riemannHypothesis_iff_forall_doob_poincare_sub :
       ∀ φ : Fin J → ℝ, (∀ i, 0 < φ i) → ∀ lam : ℝ, neutralWindow Q R J *ᵥ φ = lam • φ →
         ∀ f : Fin J → ℝ, doobMean φ f = 0 →
           (-lam - C) * doobMass φ f ≤ doobEnergy (neutralWindow Q R J) φ f := by
-  -- the matrix `N + C` has the same off-diagonal entries and the eigenvalue `λ + C` at `φ`
+  -- the matrix `N + C` has the same off-Matrix.diagonal entries and the eigenvalue `λ + C` at `φ`
   have hshift : ∀ (Q R J : ℕ) (C : ℝ) (φ : Fin J → ℝ) (lam : ℝ),
       neutralWindow Q R J *ᵥ φ = lam • φ →
-        (neutralWindow Q R J + diagonal fun _ => C) *ᵥ φ = (lam + C) • φ := by
+        (neutralWindow Q R J + Matrix.diagonal fun _ => C) *ᵥ φ = (lam + C) • φ := by
     intro Q R J C φ lam heig
     funext i
-    simp only [Matrix.add_mulVec, heig, Pi.add_apply, mulVec_diagonal, Pi.smul_apply, smul_eq_mul]
+    simp only [Matrix.add_mulVec, heig, Pi.add_apply, Matrix.mulVec_diagonal, Pi.smul_apply, smul_eq_mul]
     ring
   have hsymm : ∀ (Q R J : ℕ) (C : ℝ) (i j : Fin J),
-      (neutralWindow Q R J + diagonal fun _ => C) i j =
-        (neutralWindow Q R J + diagonal fun _ => C) j i := fun Q R J C i j => by
+      (neutralWindow Q R J + Matrix.diagonal fun _ => C) i j =
+        (neutralWindow Q R J + Matrix.diagonal fun _ => C) j i := fun Q R J C i j => by
     rw [Matrix.add_apply, Matrix.add_apply, neutralWindow_symm Q R J i j]
     by_cases hij : i = j
     · rw [hij]
-    · rw [diagonal_apply_ne _ hij, diagonal_apply_ne _ (Ne.symm hij)]
+    · rw [Matrix.diagonal_apply_ne _ hij, Matrix.diagonal_apply_ne _ (Ne.symm hij)]
   have hoff : ∀ (Q R J : ℕ) (C : ℝ) (i j : Fin J), i ≠ j →
-      (neutralWindow Q R J + diagonal fun _ => C) i j ≤ 0 := fun Q R J C i j hij => by
-    rw [Matrix.add_apply, diagonal_apply_ne _ hij, add_zero]
+      (neutralWindow Q R J + Matrix.diagonal fun _ => C) i j ≤ 0 := fun Q R J C i j hij => by
+    rw [Matrix.add_apply, Matrix.diagonal_apply_ne _ hij, add_zero]
     exact (neutralWindow_neg_of_ne Q R hij).le
   rw [riemannHypothesis_iff_neutralWindow_margin_bddBelow]
   constructor

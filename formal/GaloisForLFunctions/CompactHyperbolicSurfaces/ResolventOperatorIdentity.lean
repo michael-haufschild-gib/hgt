@@ -303,11 +303,11 @@ theorem op_diffProfileScaled :
     (X.profileKernel (measurable_diffProfile ha has)
       (lintegral_diffProfile_mass_lt_top ha has)).op_coeFn f,
     Lp.coeFn_smul (((1 / (s * (s - 1) - a * (a - 1)) : ℝ) : ℂ)) (X.diffOp ha has f)] with z h1 h2 h3
-  rw [ContinuousLinearMap.smul_apply, h3, Pi.smul_apply, diffOp, h2, h1, apply, apply, smul_eq_mul,
+  rw [smul_apply, h3, Pi.smul_apply, diffOp, h2, h1, apply, apply, smul_eq_mul,
     ← integral_const_mul]
   refine integral_congr_ae (Eventually.of_forall fun w => ?_)
   simp only [profileKernel_toFun]
-  rw [autK_diffProfileScaled ha has, ENNReal.toReal_mul, ENNReal.toReal_ofReal (one_div_pos.mpr hc).le]
+  rw [X.autK_diffProfileScaled ha has, ENNReal.toReal_mul, ENNReal.toReal_ofReal (one_div_pos.mpr hc).le]
   push_cast
   ring
 
