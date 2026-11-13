@@ -379,7 +379,8 @@ theorem two_le_hermNegIndex_neg_of_couplings {Q R J : ℕ} (hR : 24 ≤ R) (hJ :
       have h : R + (i : ℕ) - R < J := by
         have := i.2
         omega
-      have e : (⟨R + (i : ℕ) - R, h⟩ : Fin J) = i := Fin.ext Nat.add_sub_cancel_left
+      have e : (⟨R + (i : ℕ) - R, h⟩ : Fin J) = i :=
+        Fin.ext (Nat.add_sub_cancel_left R (i : ℕ))
       rw [if_pos rfl]
       show -M i i =
         if h : R + (i : ℕ) - R < J then -M ⟨R + (i : ℕ) - R, h⟩ ⟨R + (i : ℕ) - R, h⟩ else 0

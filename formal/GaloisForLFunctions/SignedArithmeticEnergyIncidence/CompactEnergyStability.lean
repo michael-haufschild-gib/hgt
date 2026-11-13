@@ -56,7 +56,7 @@ theorem compactPerturbedEnergy_operator_sub_le
       ‖R - S‖ * ‖J u‖ ^ 2 := by
   have he : compactPerturbedEnergy J R u - compactPerturbedEnergy J S u =
       (inner ℂ ((R - S) (J u)) (J u)).re := by
-    simp only [compactPerturbedEnergy, ContinuousLinearMap.sub_apply,
+    simp only [compactPerturbedEnergy, sub_apply,
       inner_sub_left, Complex.sub_re]
     ring
   rw [he]

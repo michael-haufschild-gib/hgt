@@ -60,9 +60,14 @@ theorem productResidueCount_odd_character_moment (N : ℕ) :
         (fun u => (productResidueCount ⟨N + 1, Nat.succ_pos N⟩ (u : ZMod (N + 1)) : ℂ)) χ‖ ^ 2) = 0 := by
   have h := four_mul_odd_moment_eq_reflection_defect N
     (fun u => (productResidueCount ⟨N + 1, Nat.succ_pos N⟩ (u : ZMod (N + 1)) : ℝ))
-  simp only [Units.val_neg, productResidueCount_neg, sub_self, zero_pow two_ne_zero,
+  have hn (u : (ZMod (N + 1))ˣ) :
+      productResidueCount ⟨N + 1, Nat.succ_pos N⟩ (-(u : ZMod (N + 1))) =
+        productResidueCount ⟨N + 1, Nat.succ_pos N⟩ (u : ZMod (N + 1)) :=
+    productResidueCount_neg ⟨N + 1, Nat.succ_pos N⟩ _
+  simp only [Units.val_neg, hn, sub_self, zero_pow two_ne_zero,
     sum_const_zero, mul_zero] at h
-  exact (mul_eq_zero.mp h).resolve_left (by norm_num)
+  simpa only [Complex.ofReal_natCast] using
+    (mul_eq_zero.mp h).resolve_left (by norm_num : (4 : ℝ) ≠ 0)
 
 /-- The same annihilation holds for every complete balanced product block. -/
 theorem balancedProductResidueCount_odd_character_moment (N k : ℕ) :
@@ -71,9 +76,14 @@ theorem balancedProductResidueCount_odd_character_moment (N k : ℕ) :
         (fun u => (balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k (u : ZMod (N + 1)) : ℂ)) χ‖ ^ 2) = 0 := by
   have h := four_mul_odd_moment_eq_reflection_defect N
     (fun u => (balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k (u : ZMod (N + 1)) : ℝ))
-  simp only [Units.val_neg, balancedProductResidueCount_neg, sub_self, zero_pow two_ne_zero,
+  have hn (u : (ZMod (N + 1))ˣ) :
+      balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k (-(u : ZMod (N + 1))) =
+        balancedProductResidueCount ⟨N + 1, Nat.succ_pos N⟩ k (u : ZMod (N + 1)) :=
+    balancedProductResidueCount_neg ⟨N + 1, Nat.succ_pos N⟩ k _
+  simp only [Units.val_neg, hn, sub_self, zero_pow two_ne_zero,
     sum_const_zero, mul_zero] at h
-  exact (mul_eq_zero.mp h).resolve_left (by norm_num)
+  simpa only [Complex.ofReal_natCast] using
+    (mul_eq_zero.mp h).resolve_left (by norm_num : (4 : ℝ) ≠ 0)
 
 end
 
