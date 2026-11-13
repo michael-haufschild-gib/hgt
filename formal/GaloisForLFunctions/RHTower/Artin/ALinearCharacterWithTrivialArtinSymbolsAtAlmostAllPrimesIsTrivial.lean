@@ -65,6 +65,18 @@ end Abelian
 variable (K L : Type u) {G : Type u} [Field K] [NumberField K] [Field L] [NumberField L]
   [Algebra K L] [Group G] [Fintype G] [MulSemiringAction G L] [IsGaloisGroup G K L]
 
+/-- An Artin symbol is `0` or a root of unity: `|(χ, v)| ≤ 1`. -/
+theorem norm_artinSymbol_le_one (χ : LinearCharacter G) (v : HeightOneSpectrum (𝓞 K)) :
+    ‖artinSymbol K L χ v‖ ≤ 1 := by
+  haveI := v.isMaximal
+  obtain ⟨Q, hQmax, hQover⟩ :=
+    Ideal.exists_maximal_ideal_liesOver_of_isIntegral (S := 𝓞 L) v.asIdeal
+  rw [artinSymbol_eq_frobeniusValue K L χ v Q, frobeniusValue]
+  split_ifs
+  · exact (norm_char_eq_one χ _).le
+  · rw [norm_zero]
+    exact zero_le_one
+
 /-- **A linear character with trivial Artin symbols at almost all primes is trivial.** -/
 theorem eq_one_of_forall_artinSymbol_eq_one (χ : LinearCharacter G) {B : ℕ}
     (h : ∀ v : HeightOneSpectrum (𝓞 K), B < Ideal.absNorm v.asIdeal →

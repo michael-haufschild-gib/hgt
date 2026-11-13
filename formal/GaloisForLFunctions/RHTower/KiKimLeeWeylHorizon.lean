@@ -42,15 +42,19 @@ theorem weylRate_le_half {η : ℝ} (hη : 0 ≤ η) (hη6 : η ≤ 1 / 6) : wey
 
 /-! ## The strip comparison from Weyl's bound -/
 
-/-- **Strip comparison, Weyl form.** For `0 < η ≤ ½`, `X ≥ 16`, `0 ≤ w ≤ ½ + η` and `1 ≤ u ≤ X`:
-`‖F(w)‖ ≤ K X^{ρ(½+η−w)} (X/2π)^{(w−u)/2} ‖F(u)‖` with `ρ = weylRate η`. -/
-theorem exists_norm_xiLine_le_strip_weyl {η : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) :
-    ∃ K : ℝ, 0 < K ∧ ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + η → 1 ≤ u → u ≤ X →
-      ‖xiLine X w‖ ≤
-        K * X ^ (weylRate η * (1 / 2 + η - w)) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖ := by
-  obtain ⟨C, hC, hconv⟩ := exists_norm_riemannZeta_le_subconvex hη hη2
-  obtain ⟨c, hc, hlow⟩ := exists_norm_riemannZeta_ge_three_halves
-  refine ⟨2 * Real.exp 6 * C / c, by positivity, fun X w u hX hw0 hwη hu1 huX => ?_⟩
+/-- **Strip comparison, Weyl form, with its constant.** If `‖ζ(σ+it)‖ ≤ C t^{ρ(1+η−σ)}` on
+`½ ≤ σ ≤ 1 + η`, `t ≥ 8` (`ρ = weylRate η`) and `‖ζ(s)‖ ≥ c > 0` on `Re s ≥ 3/2`, then for `X ≥ 16`,
+`0 ≤ w ≤ ½ + η` and `1 ≤ u ≤ X`:
+`‖F(w)‖ ≤ (2e⁶C/c) X^{ρ(½+η−w)} (X/2π)^{(w−u)/2} ‖F(u)‖`. -/
+theorem norm_xiLine_le_strip_weyl_of_bounds {η C c : ℝ} (hη : 0 < η) (hC : 0 ≤ C) (hc : 0 < c)
+    (hconv : ∀ σ t : ℝ, 1 / 2 ≤ σ → σ ≤ 1 + η → 8 ≤ t →
+      ‖riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖
+        ≤ C * t ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)))
+    (hlow : ∀ s : ℂ, 3 / 2 ≤ s.re → c ≤ ‖riemannZeta s‖)
+    {X w u : ℝ} (hX : 16 ≤ X) (hw0 : 0 ≤ w) (hwη : w ≤ 1 / 2 + η) (hu1 : 1 ≤ u) (huX : u ≤ X) :
+    ‖xiLine X w‖ ≤
+      2 * Real.exp 6 * C / c * X ^ (weylRate η * (1 / 2 + η - w)) *
+        (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖ := by
   have hX0 : 0 < X := by linarith
   have hu0 : 0 ≤ u := by linarith
   rw [norm_xiLine_eq_factors hX0 hw0, norm_xiLine_eq_factors hX0 hu0]
@@ -147,6 +151,17 @@ theorem exists_norm_xiLine_le_strip_weyl {η : ℝ} (hη : 0 < η) (hη2 : η �
           (X / (2 * Real.pi)) ^ ((w - u) / 2) *
           (Pu * Real.pi ^ (-((u + 1 / 2) / 2)) * Gu * Zu) := by
         field_simp
+
+/-- **Strip comparison, Weyl form.** For `0 < η ≤ ½`, `X ≥ 16`, `0 ≤ w ≤ ½ + η` and `1 ≤ u ≤ X`:
+`‖F(w)‖ ≤ K X^{ρ(½+η−w)} (X/2π)^{(w−u)/2} ‖F(u)‖` with `ρ = weylRate η`. -/
+theorem exists_norm_xiLine_le_strip_weyl {η : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) :
+    ∃ K : ℝ, 0 < K ∧ ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + η → 1 ≤ u → u ≤ X →
+      ‖xiLine X w‖ ≤
+        K * X ^ (weylRate η * (1 / 2 + η - w)) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖ := by
+  obtain ⟨C, hC, hconv⟩ := exists_norm_riemannZeta_le_subconvex hη hη2
+  obtain ⟨c, hc, hlow⟩ := exists_norm_riemannZeta_ge_three_halves
+  exact ⟨2 * Real.exp 6 * C / c, by positivity, fun X w u hX hw0 hwη hu1 huX =>
+    norm_xiLine_le_strip_weyl_of_bounds hη hC.le hc hconv hlow hX hw0 hwη hu1 huX⟩
 
 /-! ## The strip terms -/
 
@@ -644,38 +659,76 @@ theorem exists_weyl_params {c₀ : ℝ} (hc₀ : 3 / 2 < c₀) :
     _ ≤ c * (2 * ρ) * ((2 - 2 * ρ) * c - 2 * (1 + η)) := by
         apply mul_le_mul_of_nonneg_left hmc; nlinarith
 
-/-- **The heat horizon at `3/2`.** For every `ε > 0` there is `X₀` such that for all `0 < t ≤ 1/8`,
-every zero `z` of `H_t` with `|Re z| ≥ X₀` and `|Re z| ≥ 2π e^{(3/2 + ε)/t}` is real. -/
-theorem riemannHeat_zeros_real_weyl {ε : ℝ} (hε : 0 < ε) :
-    ∃ X₀ : ℝ, ∀ t : ℝ, 0 < t → t ≤ 1 / 8 → ∀ z : ℂ, riemannHeat t z = 0 → X₀ ≤ |z.re| →
-      2 * Real.pi * Real.exp ((3 / 2 + ε) / t) ≤ |z.re| → z.im = 0 := by
-  set c₀ := 3 / 2 + ε with hc₀def
-  obtain ⟨η, m, hη, hη4, hη6, hm, hmc, hc₀, hδ⟩ := exists_weyl_params (c₀ := c₀) (by linarith)
-  obtain ⟨K, hKpos, hK⟩ := exists_norm_xiLine_le_strip_weyl hη (by linarith)
-  obtain ⟨α₀, hα₀⟩ := eventually_atTop.mp
-    (eventually_sharp_errors_small (c₀ := c₀) (K := K) (b := 9 / 2 * (1 / η + 3)) hη hm hδ)
-  refine ⟨2 * Real.pi * Real.exp (2 * max α₀ 160), fun t ht ht8 z hz hX₀ hXc => ?_⟩
+/-- **The Weyl horizon with its height.** Under the hypotheses of `re_slope_pos_weyl_window`, for
+`0 < t ≤ 1/8` every zero `z` of `H_t` with `|Re z| ≥ 2π e^{2 max(α₀, 160)}` and
+`|Re z| ≥ 2π e^{c₀/t}` is real and simple. -/
+theorem riemannHeat_zeros_real_simple_weyl_of_params {c₀ η m K α₀ : ℝ} (hη : 0 < η) (hη4 : η ≤ 1 / 4)
+    (hη6 : η ≤ 1 / 6) (hm : 0 < m)
+    (hmc : ∀ c : ℝ, c₀ ≤ c → m ≤ c ^ 2 * (2 * weylRate η) * (2 - 2 * weylRate η) -
+      2 * c * (2 * weylRate η) * (1 + η))
+    (hc₀ : 3 / 2 ≤ c₀)
+    (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + η → 1 ≤ u → u ≤ X →
+      ‖xiLine X w‖ ≤
+        K * X ^ (weylRate η * (1 / 2 + η - w)) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
+    (hK0 : 0 ≤ K)
+    (hα₀ : ∀ α ≥ α₀, 160 ≤ α ∧ 20 * (1 / η + 3) ^ 2 ≤ α ∧
+      Real.exp (-(α / 2) * (3 / 4 * c₀ - 1 - η)) + Real.exp (-α ^ 2 + 1) +
+        2 * (1 / η + 3) * Real.sqrt (20 / α) * Real.exp 4 +
+        24 * Real.pi * K * α ^ 2 * Real.exp (-(m / 80) * α) +
+        Real.exp (9 / 2 * (1 / η + 3)) *
+          (12 * Real.exp 1 * α * Real.exp (-(15 / 8) * α ^ 2 + 20 * α + 164)) ≤ 1 / 5 ∧
+      2 * (24 * Real.pi * K * α ^ 2 * Real.exp (-(m / 80) * α)) +
+        Real.exp (9 / 2 * (1 / η + 3)) *
+          (12 * Real.exp 1 * α * Real.exp (-(15 / 8) * α ^ 2 + 20 * α + 164) +
+            2 * α * Real.exp (-((α ^ 2 - 1 / 2) ^ 2 * α / 80) +
+              (α ^ 2 + 1 / 2) * (α + 1 / 8) + 20 * α)) +
+        (1 / η + 3) * (1 + 2 * (1 / η + 3) * Real.sqrt (20 / α) * Real.exp 4) <
+        18 / 25 * α)
+    {t : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) {z : ℂ} (hz : riemannHeat t z = 0)
+    (hX₀ : 2 * Real.pi * Real.exp (2 * max α₀ 160) ≤ |z.re|)
+    (hXc : 2 * Real.pi * Real.exp (c₀ / t) ≤ |z.re|) :
+    z.im = 0 ∧ deriv (riemannHeat t) z ≠ 0 := by
   have hnz : ∀ {X y : ℝ}, 2 * Real.pi * Real.exp (2 * max α₀ 160) ≤ X →
       2 * Real.pi * Real.exp (c₀ / t) ≤ X → y ≠ 0 → |y| ≤ 1 / 2 →
       riemannHeat t ((X : ℂ) + I * y) ≠ 0 := fun hX hXc' hy0 hy =>
-    riemannHeat_ne_zero_weyl hη hη4 hη6 hm hmc hc₀ hK hKpos.le hα₀ ht ht8 hX hXc' hy0 hy
-  have him := riemannHeat_zeros_im_sq_le ht hz
-  have him2 : z.im ^ 2 ≤ 1 / 4 := him.trans (max_le (by linarith) (by norm_num))
-  have him' : |z.im| ≤ 1 / 2 := by
-    rw [← sq_le_sq₀ (abs_nonneg _) (by norm_num), sq_abs]; linarith
-  by_contra hne
+    riemannHeat_ne_zero_weyl hη hη4 hη6 hm hmc hc₀ hK hK0 hα₀ ht ht8 hX hXc' hy0 hy
+  have hsimple : ∀ x : ℝ, 2 * Real.pi * Real.exp (2 * max α₀ 160) ≤ x →
+      2 * Real.pi * Real.exp (c₀ / t) ≤ x → riemannHeat t x = 0 →
+        deriv (riemannHeat t) x ≠ 0 := fun x hx hxc hzx =>
+    deriv_riemannHeat_ne_zero_of_re_slope_pos_zero ht
+      (re_slope_pos_weyl_window hη hη4 hη6 hm hmc hc₀ hK hK0 hα₀ ht ht8 hx hxc 0 (by simp)) hzx
+  -- reality
+  have hreal : z.im = 0 := by
+    have him := riemannHeat_zeros_im_sq_le ht hz
+    have him2 : z.im ^ 2 ≤ 1 / 4 := him.trans (max_le (by linarith) (by norm_num))
+    have him' : |z.im| ≤ 1 / 2 := by
+      rw [← sq_le_sq₀ (abs_nonneg _) (by norm_num), sq_abs]; linarith
+    by_contra hne
+    rcases le_or_gt 0 z.re with h0 | h0
+    · rw [abs_of_nonneg h0] at hX₀ hXc
+      apply hnz hX₀ hXc hne him'
+      rw [← hz]
+      congr 1
+      apply Complex.ext <;> simp
+    · rw [abs_of_neg h0] at hX₀ hXc
+      apply hnz (X := (-z).re) (by simpa using hX₀) (by simpa using hXc)
+        (y := (-z).im) (by simpa using hne) (by simpa using him')
+      rw [← hz, ← riemannHeat_neg ht.le]
+      congr 1
+      apply Complex.ext <;> simp
+  -- simplicity
+  refine ⟨hreal, ?_⟩
+  have hzre : z = ((z.re : ℝ) : ℂ) := by apply Complex.ext <;> simp [hreal]
   rcases le_or_gt 0 z.re with h0 | h0
   · rw [abs_of_nonneg h0] at hX₀ hXc
-    apply hnz hX₀ hXc hne him'
-    rw [← hz]
-    congr 1
-    apply Complex.ext <;> simp
+    rw [hzre]
+    exact hsimple z.re hX₀ hXc (by rw [← hzre]; exact hz)
   · rw [abs_of_neg h0] at hX₀ hXc
-    apply hnz (X := (-z).re) (by simpa using hX₀) (by simpa using hXc)
-      (y := (-z).im) (by simpa using hne) (by simpa using him')
-    rw [← hz, ← riemannHeat_neg ht.le]
-    congr 1
-    apply Complex.ext <;> simp
+    have hz' : riemannHeat t ((-z.re : ℝ) : ℂ) = 0 := by
+      rw [ofReal_neg, riemannHeat_neg ht.le, ← hzre]; exact hz
+    have := hsimple (-z.re) hX₀ hXc hz'
+    rw [ofReal_neg, deriv_riemannHeat_neg ht.le, ← hzre] at this
+    exact fun h => this (by rw [h, neg_zero])
 
 /-- **The heat horizon at `3/2`, real and simple.** For every `ε > 0` there is `X₀` such that for all
 `0 < t ≤ 1/8`, every zero `z` of `H_t` with `|Re z| ≥ X₀` and `|Re z| ≥ 2π e^{(3/2 + ε)/t}` is real
@@ -684,33 +737,22 @@ theorem riemannHeat_zeros_real_simple_weyl {ε : ℝ} (hε : 0 < ε) :
     ∃ X₀ : ℝ, ∀ t : ℝ, 0 < t → t ≤ 1 / 8 → ∀ z : ℂ, riemannHeat t z = 0 → X₀ ≤ |z.re| →
       2 * Real.pi * Real.exp ((3 / 2 + ε) / t) ≤ |z.re| →
         z.im = 0 ∧ deriv (riemannHeat t) z ≠ 0 := by
-  set c₀ := 3 / 2 + ε with hc₀def
-  obtain ⟨X₁, hX₁⟩ := riemannHeat_zeros_real_weyl hε
-  obtain ⟨η, m, hη, hη4, hη6, hm, hmc, hc₀, hδ⟩ := exists_weyl_params (c₀ := c₀) (by linarith)
+  obtain ⟨η, m, hη, hη4, hη6, hm, hmc, hc₀, hδ⟩ :=
+    exists_weyl_params (c₀ := 3 / 2 + ε) (by linarith)
   obtain ⟨K, hKpos, hK⟩ := exists_norm_xiLine_le_strip_weyl hη (by linarith)
   obtain ⟨α₀, hα₀⟩ := eventually_atTop.mp
-    (eventually_sharp_errors_small (c₀ := c₀) (K := K) (b := 9 / 2 * (1 / η + 3)) hη hm hδ)
-  refine ⟨max X₁ (2 * Real.pi * Real.exp (2 * max α₀ 160)),
-    fun t ht ht8 z hz hX₀ hXc => ?_⟩
-  have hreal : z.im = 0 := hX₁ t ht ht8 z hz ((le_max_left _ _).trans hX₀) hXc
-  refine ⟨hreal, ?_⟩
-  have hX₂ : 2 * Real.pi * Real.exp (2 * max α₀ 160) ≤ |z.re| := (le_max_right _ _).trans hX₀
-  have hsimple : ∀ x : ℝ, 2 * Real.pi * Real.exp (2 * max α₀ 160) ≤ x →
-      2 * Real.pi * Real.exp (c₀ / t) ≤ x → riemannHeat t x = 0 →
-        deriv (riemannHeat t) x ≠ 0 := fun x hx hxc hzx =>
-    deriv_riemannHeat_ne_zero_of_re_slope_pos_zero ht
-      (re_slope_pos_weyl_window hη hη4 hη6 hm hmc hc₀ hK hKpos.le hα₀ ht ht8 hx hxc 0 (by simp)) hzx
-  have hzre : z = ((z.re : ℝ) : ℂ) := by apply Complex.ext <;> simp [hreal]
-  rcases le_or_gt 0 z.re with h0 | h0
-  · rw [abs_of_nonneg h0] at hX₂ hXc
-    rw [hzre]
-    exact hsimple z.re hX₂ hXc (by rw [← hzre]; exact hz)
-  · rw [abs_of_neg h0] at hX₂ hXc
-    have hz' : riemannHeat t ((-z.re : ℝ) : ℂ) = 0 := by
-      rw [ofReal_neg, riemannHeat_neg ht.le, ← hzre]; exact hz
-    have := hsimple (-z.re) hX₂ hXc hz'
-    rw [ofReal_neg, deriv_riemannHeat_neg ht.le, ← hzre] at this
-    exact fun h => this (by rw [h, neg_zero])
+    (eventually_sharp_errors_small (c₀ := 3 / 2 + ε) (K := K) (b := 9 / 2 * (1 / η + 3)) hη hm hδ)
+  exact ⟨2 * Real.pi * Real.exp (2 * max α₀ 160), fun t ht ht8 z hz hX₀ hXc =>
+    riemannHeat_zeros_real_simple_weyl_of_params hη hη4 hη6 hm hmc hc₀ hK hKpos.le hα₀ ht ht8 hz
+      hX₀ hXc⟩
+
+/-- **The heat horizon at `3/2`.** For every `ε > 0` there is `X₀` such that for all `0 < t ≤ 1/8`,
+every zero `z` of `H_t` with `|Re z| ≥ X₀` and `|Re z| ≥ 2π e^{(3/2 + ε)/t}` is real. -/
+theorem riemannHeat_zeros_real_weyl {ε : ℝ} (hε : 0 < ε) :
+    ∃ X₀ : ℝ, ∀ t : ℝ, 0 < t → t ≤ 1 / 8 → ∀ z : ℂ, riemannHeat t z = 0 → X₀ ≤ |z.re| →
+      2 * Real.pi * Real.exp ((3 / 2 + ε) / t) ≤ |z.re| → z.im = 0 := by
+  obtain ⟨X₀, h⟩ := riemannHeat_zeros_real_simple_weyl hε
+  exact ⟨X₀, fun t ht ht8 z hz hX₀ hXc => (h t ht ht8 z hz hX₀ hXc).1⟩
 
 
 end

@@ -11,7 +11,7 @@ is followed by Lean formalization; its assembly remains unverified.
 
 ## Corpus connection
 
-`FourierFirstMomentWindow` excludes spectral concentration at zero under a bounded physical first moment. Its optimized cutoff now also controls the negative logarithmic Fourier tail. Positive logarithmic Fourier energy and physical confinement would then give compactness.
+`FourierFirstMomentWindow` excludes spectral concentration at zero under a bounded physical first moment. Its optimized cutoff controls the negative logarithmic Fourier tail. Positive logarithmic Fourier energy and physical confinement give compactness.
 
 For unit `L¹∩L²` profiles with first moment at most `M`, the verified bound is
 `∫_{X>T}X|Fourier(f)|²≤(8+2M)(T+2)exp(-T/2)`, where
@@ -60,9 +60,9 @@ window theorem for arbitrary nonintegrable `L²` profiles before compactness.
 `HTGeometry.fourierMulCLM` realizes every capped negative-logarithm symbol
 as a bounded operator on complex `L²`; continuity of its quadratic pairing
 handles each fixed cap. An almost-everywhere Fourier subsequence and Fatou
-would transfer the uniform tail bound to the limit. Removing the caps
-would then pass the negative term without requiring an ordinary Fourier
-integral for the limit. These limit passages remain to be formalized.
+transfer the uniform tail bound to the limit. Removing the caps passes
+the negative term without requiring an ordinary Fourier integral for the
+limit. These passages are verified in `SoftLogarithmicNegativePartContinuity`.
 
 `HTGeometry.exists_subseq_ae_tendsto` supplies the almost-everywhere
 subsequence directly from complex `L²` convergence. Applying it in physical
@@ -80,7 +80,10 @@ the module is integrated. `WeightedL2MomentContinuity` also passes its final
 plain source audit with those axioms and is integrated. It proves
 continuity for bounded weights, passage through uniform weighted tails,
 and moment convergence from vanishing weighted error. Applying these
-lemmas to the actual signed energy and proving recovery remain open.
+lemmas to the joint signed energy and proving recovery remain open.
+`SoftLogarithmicNegativePartContinuity` is now audited and integrated with
+the standard three axioms: bounded physical first moments give convergence
+of the negative Fourier logarithmic energy along strong limits of unit trials.
 
 `SoftLogarithmicClosedDomain` is audited and integrated with the standard
 three axioms. It defines the literal finite-energy half-line domain in

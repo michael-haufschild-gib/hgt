@@ -34,7 +34,7 @@ theorem closedSoftLogarithmic_limit_of_trials
   have hneg := negativeLog_integral_tendsto_of_softLogarithmic_trials hF hm hV hconv hM
   have hphysical (n : ℕ) :=
     ((hF n).sublevel_bounds_of_L2_representative (hm n) (hbound n) (V n) (hV n)).2.1
-  have hvphysical := weighted_norm_sq_of_L2_limit hconv measurable_abs abs_nonneg
+  have hvphysical := HTGeometry.weighted_norm_sq_of_L2_limit hconv measurable_abs abs_nonneg
     (fun n => (hphysical n).1) tendsto_const_nhds (fun n => (hphysical n).2)
   have hposm : Measurable (fun ξ : ℝ => max (Real.log |ξ|) 0) := by fun_prop
   have hseqi (n : ℕ) : Integrable (fun u : ℝ =>
@@ -54,7 +54,7 @@ theorem closedSoftLogarithmic_limit_of_trials
     have he := (hD n).energy_eq_parts
     rw [(hF n).closedEnergy_eq (hV n)] at he
     linarith only [he]
-  have hsum := weighted_norm_sq_add_of_L2_limits hconv
+  have hsum := HTGeometry.weighted_norm_sq_add_of_L2_limits hconv
     ((fourierUnitary.continuous.tendsto v).comp hconv)
     (measurable_const.mul measurable_abs) hposm
     (fun u => mul_nonneg (by norm_num : (0 : ℝ) ≤ 8) (abs_nonneg u))
@@ -70,7 +70,7 @@ theorem closedSoftLogarithmic_limit_of_trials
       have hn : 0 ≤ (8 * |u|) * ‖v u‖ ^ 2 :=
         mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 8) (abs_nonneg u)) (sq_nonneg _)
       linarith only [hn]
-  obtain ⟨s, _, hae⟩ := exists_subseq_ae_tendsto hconv
+  obtain ⟨s, _, hae⟩ := HTGeometry.exists_subseq_ae_tendsto hconv
   have hrep : ∀ᵐ u, ∀ n, V (s n) u = cx (F (s n)) u := by
     rw [ae_all_iff]
     exact fun n => hV (s n)

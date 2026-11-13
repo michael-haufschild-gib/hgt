@@ -87,16 +87,18 @@ theorem norm_subconvexWeight (A B t₀ : ℝ) (z : ℂ) :
   · simp [sq, Complex.mul_re, Complex.sub_re, Complex.sub_im]
   · simp [Complex.mul_re]
 
-/-- **The interpolated subconvex bound.**  For `0 < η ≤ 1/2` there is `C > 0` with
-`‖ζ(σ+it)‖ ≤ C t^{(1/6+η)(1+η−σ)/(1/2+η)}` whenever `1/2 ≤ σ ≤ 1+η` and `t ≥ 8`. -/
-theorem exists_norm_riemannZeta_le_subconvex {η : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) :
-    ∃ C : ℝ, 0 < C ∧ ∀ σ t : ℝ, 1 / 2 ≤ σ → σ ≤ 1 + η → 8 ≤ t →
-      ‖riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖
-        ≤ C * t ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)) := by
-  obtain ⟨K₀, hK₀⟩ := (isCompact_closedBall (0 : ℂ) 10).exists_bound_of_continuousOn
-    (differentiable_zetaEntire.continuous.continuousOn (s := Metric.closedBall (0 : ℂ) 10))
-  obtain ⟨K, hK⟩ : ∃ K, K = max K₀ 0 := ⟨_, rfl⟩
-  have hK0 : 0 ≤ K := hK ▸ le_max_right _ _
+/-- **The interpolated subconvex bound with its constant.**  Let `0 < η ≤ 1/2` and let `K` bound
+`‖(s−1)ζ(s)‖` on the segment `s = ½ + iy`, `|y| ≤ 8`.  Then for `1/2 ≤ σ ≤ 1+η` and `t ≥ 8`,
+`‖ζ(σ+it)‖ ≤ C t^{(1/6+η)(1+η−σ)/(1/2+η)}` with
+`C = max (K e^{1/4}) (max (16800 e^{1/4}/η) (4(1+1/η)e^{9/4}))`. -/
+theorem norm_riemannZeta_le_subconvex_of_segment {η K : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2)
+    (hK0 : 0 ≤ K)
+    (hKseg : ∀ y : ℝ, |y| ≤ 8 → ‖zetaEntire (((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I)‖ ≤ K)
+    {σ t₀ : ℝ} (hσ1 : 1 / 2 ≤ σ) (hσ2 : σ ≤ 1 + η) (ht₀ : 8 ≤ t₀) :
+    ‖riemannZeta ((σ : ℂ) + (t₀ : ℂ) * I)‖
+      ≤ max (K * Real.exp (1 / 4))
+          (max (8400 / η * Real.exp (1 / 4) * 2) (4 * (1 + 1 / η) * Real.exp (9 / 4)))
+        * t₀ ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)) := by
   obtain ⟨p, hp⟩ : ∃ p : ℝ, p = 7 / 6 + η := ⟨_, rfl⟩
   obtain ⟨B, hB⟩ : ∃ B : ℝ, B = (p - 1) / (1 / 2 + η) := ⟨_, rfl⟩
   obtain ⟨A, hA⟩ : ∃ A : ℝ, A = p + B / 2 := ⟨_, rfl⟩
@@ -107,9 +109,7 @@ theorem exists_norm_riemannZeta_le_subconvex {η : ℝ} (hη : 0 < η) (hη2 : �
   obtain ⟨CL, hCL⟩ : ∃ CL, CL = 8400 / η * Real.exp (1 / 4) * 2 := ⟨_, rfl⟩
   obtain ⟨CR, hCR⟩ : ∃ CR, CR = 4 * (1 + 1 / η) * Real.exp (9 / 4) := ⟨_, rfl⟩
   obtain ⟨C₁, hC₁⟩ : ∃ C₁, C₁ = max (K * Real.exp (1 / 4)) (max CL CR) := ⟨_, rfl⟩
-  have hC₁0 : 0 ≤ C₁ := by rw [hC₁]; exact le_max_of_le_left (by positivity)
-  refine ⟨C₁ + 1, by linarith, ?_⟩
-  intro σ t₀ hσ1 hσ2 ht₀
+  rw [← hCL, ← hCR, ← hC₁]
   have ht₀0 : 0 < t₀ := by linarith
   have hlog0 : 0 ≤ Real.log t₀ := Real.log_nonneg (by linarith)
   set F : ℂ → ℂ := fun z => zetaEntire z * subconvexWeight A B t₀ z with hFdef
@@ -174,15 +174,7 @@ theorem exists_norm_riemannZeta_le_subconvex {η : ℝ} (hη : 0 < η) (hη2 : �
       congr 1; ring
     rw [hFn, hWl, hz']
     rcases le_or_gt |y| 8 with hsmall | hbig
-    · have hball : ((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I ∈ Metric.closedBall (0 : ℂ) 10 := by
-        rw [Metric.mem_closedBall, dist_zero_right]
-        refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
-        simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-          Complex.ofReal_im, Complex.I_im, Complex.add_im, Complex.mul_im]
-        simp only [mul_zero, sub_zero, mul_one, add_zero, zero_add]
-        norm_num; linarith
-      have hG : ‖zetaEntire (((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I)‖ ≤ K :=
-        (hK₀ _ hball).trans (hK ▸ le_max_left _ _)
+    · have hG : ‖zetaEntire (((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I)‖ ≤ K := hKseg y hsmall
       have hw2 : Real.exp (-(y - t₀) ^ 2) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
       have hw3 : t₀ ^ (-p) ≤ 1 :=
         Real.rpow_le_one_of_one_le_of_nonpos (by linarith) (by rw [hp]; linarith)
@@ -302,10 +294,39 @@ theorem exists_norm_riemannZeta_le_subconvex {η : ℝ} (hη : 0 < η) (hη2 : �
   have hsub : C₁ * t₀ ^ (A - B * σ) / t₀ = C₁ * t₀ ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)) := by
     rw [mul_div_assoc, ← Real.rpow_sub_one ht₀0.ne', hexp]
   rw [hsub] at hζ
-  calc ‖riemannZeta ((σ : ℂ) + (t₀ : ℂ) * I)‖
-      ≤ C₁ * t₀ ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)) := hζ
-    _ ≤ (C₁ + 1) * t₀ ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)) := by
-        gcongr; linarith
+  exact hζ
+
+/-- **The interpolated subconvex bound.**  For `0 < η ≤ 1/2` there is `C > 0` with
+`‖ζ(σ+it)‖ ≤ C t^{(1/6+η)(1+η−σ)/(1/2+η)}` whenever `1/2 ≤ σ ≤ 1+η` and `t ≥ 8`. -/
+theorem exists_norm_riemannZeta_le_subconvex {η : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ t : ℝ, 1 / 2 ≤ σ → σ ≤ 1 + η → 8 ≤ t →
+      ‖riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖
+        ≤ C * t ^ ((1 / 6 + η) * (1 + η - σ) / (1 / 2 + η)) := by
+  -- the segment constant from compactness
+  obtain ⟨K₀, hK₀⟩ := (isCompact_closedBall (0 : ℂ) 10).exists_bound_of_continuousOn
+    (differentiable_zetaEntire.continuous.continuousOn (s := Metric.closedBall (0 : ℂ) 10))
+  have hseg : ∀ y : ℝ, |y| ≤ 8 →
+      ‖zetaEntire (((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I)‖ ≤ max K₀ 0 := by
+    intro y hsmall
+    have hball : ((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I ∈ Metric.closedBall (0 : ℂ) 10 := by
+      rw [Metric.mem_closedBall, dist_zero_right]
+      refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+        Complex.ofReal_im, Complex.I_im, Complex.add_im, Complex.mul_im]
+      simp only [mul_zero, sub_zero, mul_one, add_zero, zero_add]
+      norm_num; linarith
+    exact (hK₀ _ hball).trans (le_max_left _ _)
+  obtain ⟨C₁, hC₁⟩ : ∃ C₁, C₁ = max (max K₀ 0 * Real.exp (1 / 4))
+      (max (8400 / η * Real.exp (1 / 4) * 2) (4 * (1 + 1 / η) * Real.exp (9 / 4))) := ⟨_, rfl⟩
+  have hC₁0 : 0 ≤ C₁ := by
+    rw [hC₁]
+    exact le_max_of_le_left (mul_nonneg (le_max_right _ _) (Real.exp_pos _).le)
+  refine ⟨C₁ + 1, by linarith, fun σ t hσ1 hσ2 ht => ?_⟩
+  have h := norm_riemannZeta_le_subconvex_of_segment hη hη2 (le_max_right K₀ 0) hseg hσ1 hσ2 ht
+  rw [← hC₁] at h
+  refine h.trans ?_
+  gcongr
+  linarith
 
 end
 

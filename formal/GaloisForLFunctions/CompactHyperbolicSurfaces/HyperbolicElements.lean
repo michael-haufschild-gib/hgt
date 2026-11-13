@@ -132,8 +132,7 @@ theorem exists_mul_eq_mul_dilSL {g : SL(2, ℝ)} (ht : 2 < trSL g) :
         simp [Matrix.mul_apply, Fin.sum_univ_two, dilSL_apply, hsq, hc]
       all_goals first
         | ring1
-        | (rw [hd])
-        | linear_combination (g 1 1 - g 0 0) * hd
+        | (rw [hd]; ring1)
   · obtain ⟨l, hldef⟩ : ∃ l : ℝ, l = (g 0 0 + g 1 1 + √((g 0 0 + g 1 1) ^ 2 - 4)) / 2 :=
       ⟨_, rfl⟩
     have hD : 0 < √((g 0 0 + g 1 1) ^ 2 - 4) := Real.sqrt_pos.mpr (by nlinarith)
