@@ -130,6 +130,14 @@ the heat cover at a collision).
   the disc stays on the graph. So lifts of a path of times are unique, a lift extends beyond
   every parameter it reaches, and a lift that stays bounded along a sequence of parameters
   converges to a zero and continues through it. Only escape to infinity ends a lift.
+- **Two saddles at forward times.** For `Re τ > 0` the family is a complex Gaussian average of
+  ξ over a horizontal line, the sum of two half transforms. Each half transform is ξ at a
+  saddle point far to the right, where `ξ'/ξ` is the slope `½ log(s/2π)` up to a small error,
+  so near a far place it is one exponential in the place and the time, and the family is a sum
+  of two exponentials with frequencies `a` and `−b`. Its far zeros lie in a horizontal strip,
+  are spaced by `2π/(a + b)`, and move with the time at the bounded velocity `i(a − b)`. The
+  phase between the two exponentials is locked near `2πiℤ` at the zeros, which traps a
+  continuous family of zeros in a disc while the time moves a fixed small distance.
 - **The census of nonreal zeros across the time `0`.** At a negative real time there are
   infinitely many nonreal zeros, at a positive real time finitely many. Along real times
   conjugation maps lifts to lifts, and a lift that becomes real meets its conjugate, so without
@@ -297,6 +305,12 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   and a zero either lifts along the whole path or its lift exists on `[0, b)` with modulus
   tending to infinity at `b`; the two cases exclude each other. A loop permutes exactly the
   zeros that escape neither along it nor along its inverse.
+- *Forward tameness.* Over a box `{t₀ ≤ Re τ, ‖τ‖ ≤ T₀}`, `t₀ > 0`, the zeros of large modulus
+  lie in the strip `|Im z| < 12 + 21T₀` and are simple, and the box contains finitely many
+  branch times. No zero escapes along a path of times in `Re τ > 0`. Along a path of forward
+  times that avoids the branch times every zero lifts, and transport is a bijection between
+  the fibres over the two ends; along a loop it is a permutation of the fibre. The multiple
+  zeros form a closed discrete subset of `ℂ²`.
 - *Real branch times.* If a segment of real times from `a < 0` to `b > 0` contains no branch
   time, then infinitely many nonreal zeros of `H_a` escape along it. So every real
   neighbourhood of the time `0` contains a branch time, or zeros escape along real times
@@ -322,7 +336,13 @@ collisions.
 [fibre trace](TheTraceOfAFibreOfTheHeatCover.lean),
 [position of the centre times](TheSignBranchPointsLieInTheForwardHalfPlane.lean),
 [continuation](AZeroContinuesAlongAPathOfTimesUntilItEscapes.lean),
-[real branch times](RealBranchTimesAccumulateAtTheTimeOfXiUnlessZerosEscape.lean))
+[real branch times](RealBranchTimesAccumulateAtTheTimeOfXiUnlessZerosEscape.lean),
+[Gaussian average](TheHeatFamilyAtForwardTimesIsAComplexGaussianAverageOfXi.lean),
+[saddle value](TheHalfTransformIsXiAtTheSaddlePoint.lean),
+[strip](TheReflectedHalfTransformIsDominated.lean),
+[local exponential](TheHalfTransformIsLocallyAnExponential.lean),
+[far zeros](FarZerosAtForwardTimesAreSimple.lean),
+[no escape](NoZeroEscapesOverForwardTimes.lean))
 
 ## Criteria
 
@@ -356,11 +376,12 @@ collisions.
    Hermite reflection, of order two; it is `r` at a collision at the centre and `c` before a
    real collision. Branch points exist: infinitely many nonreal centre times; a real positive
    one exists iff RH fails; real branch times exist in every neighbourhood of the time `0`
-   unless zeros escape there. The generators of the group are known. Beyond one collision the
-   group is defined on the zeros that do not escape: a zero continues along a path of times
-   uniquely until its modulus tends to infinity. The global group is thereby reduced to an
-   analytic statement, that no zero of the family escapes over a compact set of times, and to
-   the collisions away from the centre.
+   unless zeros escape there. The generators of the group are known. Over the forward
+   half-plane `Re τ > 0` no zero escapes, the branch times are discrete, and every loop off
+   the branch times permutes the whole fibre: the monodromy of the cover is defined there.
+   Open: the group these permutations generate, which depends on the collisions away from
+   the centre at nonreal times; and the times with `Re τ ≤ 0`, where a zero continues
+   uniquely only until its modulus tends to infinity.
 6. **Purity.** A restriction, from the prime traces alone, that forces `H = B`.
 
 ## Tools
@@ -392,11 +413,15 @@ one of the six questions.
 - A collision at the centre is not a failure of RH. It happens at a nonreal time and realizes
   `r`. Only a collision at a positive real time contradicts RH.
 - The heat cover has infinitely many sheets and is not proper over the time plane. The local
-  theory gives uniqueness of lifts and continuation up to escape; it does not exclude that a
-  zero leaves every compact set along a compact path of times.
-- The branch times are not discrete in the time plane unless zeros escape: the time `0` is a
-  limit of real branch times or zeros escape near it. Far zeros at times with `Re τ ≤ 0` are
-  as hard to control as the zeros of ζ.
+  theory gives uniqueness of lifts and continuation up to escape; that no zero leaves every
+  compact set along a compact path of times is a theorem only for `Re τ > 0`.
+- The branch times are discrete in the forward half-plane, not in the time plane unless zeros
+  escape: the time `0` is a limit of real branch times or zeros escape near it. Far zeros at
+  times with `Re τ ≤ 0` are as hard to control as the zeros of ζ.
+- Barriers do not prove non-escape: over a set of times with interior a far zero sweeps a
+  region larger than the spacing of the zeros, so no circle is free of zeros for all times.
+  The family varies on the time scale `1/log²‖z‖`; only the phase between the two exponentials
+  is stable.
 
 ## Open research topics
 
@@ -406,11 +431,11 @@ one of the six questions.
 - The orbit of a zero with irrational real part: `{ρ, ρ̄}` or the full quartet.
 - Algebraic relations among the normalized moments `μ₂ₙ/μ₀`, which decide whether a Jensen
   equation is generic.
-- The global monodromy group of the heat cover. Open in this order: non-escape of zeros over
-  compact sets of times (first over forward times `Re τ > 0`, where the family is a complex
-  Gaussian average of ξ over a region in which ζ is close to `1`); collisions away from the
-  centre at nonreal times; irreducibility of the cover; accumulation of the branch times at
-  finite times.
+- The monodromy group of the heat cover over the forward half-plane: the group generated by
+  the transports along loops, its position in the signed permutations of the fibre, and
+  whether it moves a pair of zeros to another pair, which needs a collision away from the
+  centre at a nonreal forward time. Irreducibility of the cover.
+- Non-escape and accumulation of branch times at times with `Re τ ≤ 0`.
 - Simplicity of the zeros of the centre value (all central collisions double), and the
   position of the centre times inside the forward half-plane.
 - Whether the squared widths and their pairwise products are sums of squares in `D`. Orderings

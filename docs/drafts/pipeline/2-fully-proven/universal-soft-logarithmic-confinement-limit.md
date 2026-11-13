@@ -82,11 +82,14 @@ The elementary bounds `1-1/b≤log b≤b-1` put the limiting lower bound above `
 
 ## Lean status
 
-Six modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
+Nine modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
 
 - `HalfLineConfinementTail`: weighted-tail control and `8M(F)≤W(F)-m(F)`.
 - `WeightedSourceTruncation`, `WeightedSourceLocalizedPairing`: indicator closure, exact restricted masses, and localized weighted Cauchy–Schwarz.
 - `HalfLineTerminalTruncation`, `HalfLineConfinementPoleDecay`: uniform disappearance of the full prime-and-pole remainder as unit-profile excess tends to zero (`exists_arithmeticRemainder_small_of_excess`).
 - `FourierFirstMomentWindow`: bounded physical first moment excludes uniform spectral concentration at zero.
+- `ConfiningGammaSymbol`: exact logarithmic normalization, global lower bound, uniform dilation majorant, and transfer of Gamma integrability between Fourier normalizations.
+- `UnitaryRealDilation`: mass preservation, first-moment scaling, and weighted physical/Fourier changes of variables with integrability transfer.
+- `LogarithmicFourierDomain`: integrability of the logarithmic singularity at zero and two-way comparison with logarithmically growing symbols.
 
-The Gamma-symbol comparison passes its prototype check. The dilation-stable logarithmic domain, uniform spectral comparison, and final variational and virial limits have draft Lean proofs awaiting verification. Not counted.
+The dilation-stable logarithmic domain, integrated spectral comparison, and final variational and virial limits have draft Lean proofs awaiting verification. Not counted.

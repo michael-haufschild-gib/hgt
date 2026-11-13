@@ -190,6 +190,8 @@ theorem exists_confiningGammaError_bound :
     · linarith only [hσ.1, hlogz, abs_nonneg (Real.log |ξ|)]
     · linarith only [hσ.2, hlogx, neg_abs_le (Real.log |ξ|)]
 
+#print axioms archForm_eq_integral_confiningGammaSymbol
+#print axioms CriticalHalfLineEnergyDomain.integrable_confiningGammaSymbol
 #print axioms exists_confiningGammaSymbol_log_tail
 #print axioms confiningGammaSymbol_lower
 #print axioms exists_confiningGammaSymbol_log_bound
