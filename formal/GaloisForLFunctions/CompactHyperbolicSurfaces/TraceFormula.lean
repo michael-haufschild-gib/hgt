@@ -67,8 +67,9 @@ theorem lintegral_orbit_diffProfile {a b ℓ : ℝ} (ha : 1 / 2 < a) (hab : a �
     congr 2
     ring
   rw [hscale] at habel
-  rw [geomWeight, ENNReal.ofReal_div_of_pos h2s, ← habel, mul_comm,
-    ENNReal.mul_div_cancel_right (by simp [h2s]) ENNReal.ofReal_ne_top]
+  rw [geomWeight, ENNReal.ofReal_div_of_pos h2s, ← habel,
+    mul_comm (ENNReal.ofReal (2 * sinh (ℓ / 2))),
+    ENNReal.mul_div_cancel_right (ENNReal.ofReal_pos.mpr h2s).ne' ENNReal.ofReal_ne_top]
 
 namespace CompactQuotient
 
@@ -115,6 +116,7 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
       volume X.F * ENNReal.ofReal (diffKernel a b 0) +
         ∑' c : {c : ConjClasses X.Γ // c ≠ 1},
           ENNReal.ofReal (X.classPrimLen c) * ENNReal.ofReal (geomWeight a b (X.classLen c)) := by
+  classical
   haveI := X.cocompactFree.countable
   have ha' : 1 / 2 < a := by linarith
   have hmeasD : Measurable (diffProfile a b) := measurable_diffProfile (by linarith) hab
@@ -126,8 +128,9 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
     intro z
     rw [autK, ENNReal.tsum_eq_add_tsum_ite (1 : X.Γ)]
     congr 1
-    simp only [OneMemClass.coe_one, one_smul, pairU, dist_self]
-    norm_num
+    · simp only [OneMemClass.coe_one, one_smul, pairU, dist_self]
+      norm_num
+    · exact tsum_congr fun γ => by split_ifs <;> rfl
   simp_rw [hsplit]
   rw [lintegral_add_left measurable_const, setLIntegral_const, mul_comm,
     lintegral_tsum fun γ => by
@@ -142,43 +145,47 @@ theorem lintegral_autK_diag {a b : ℝ} (ha : 1 < a) (hab : a < b) :
   simp_rw [hite]
   -- regroup by conjugacy classes
   rw [← (Equiv.sigmaFiberEquiv (ConjClasses.mk : X.Γ → ConjClasses X.Γ)).tsum_eq,
-    ENNReal.tsum_sigma', ENNReal.tsum_eq_add_tsum_ite (1 : ConjClasses X.Γ)]
-  have h1 : ∑' γ : {γ : X.Γ // ConjClasses.mk γ = 1},
-      ite ((Equiv.sigmaFiberEquiv ConjClasses.mk ⟨1, γ⟩ : X.Γ) = 1) 0
-        (∫⁻ z in X.F, diffProfile a b (pairU z
-          (((Equiv.sigmaFiberEquiv ConjClasses.mk ⟨1, γ⟩ : X.Γ) : SL(2, ℝ)) • z))) = 0 := by
-    refine ENNReal.tsum_eq_zero.mpr fun γ => ?_
-    have : (γ : X.Γ) = 1 := by
-      have h : ConjClasses.mk (γ : X.Γ) = ConjClasses.mk 1 := γ.2
-      rw [ConjClasses.mk_eq_mk_iff_isConj] at h
-      exact isConj_one_right.mp h.symm
-    simp [Equiv.sigmaFiberEquiv_apply, this]
-  rw [h1, zero_add, ← tsum_subtype_eq_of_support_subset (s := {c | c ≠ 1})]
-  swap
-  · intro c hc
-    by_contra h
-    simp only [mem_setOf_eq, not_not] at h
-    simp [h] at hc
-  change ∑' c : {c : ConjClasses X.Γ // c ≠ 1}, _ = _
-  refine tsum_congr fun c => ?_
-  have hc : (c : ConjClasses X.Γ) ≠ 1 := c.2
-  rw [if_neg hc]
-  have hne : ∀ γ : {γ : X.Γ // ConjClasses.mk γ = c}, (γ : X.Γ) ≠ 1 := by
-    intro γ h
-    apply hc
-    rw [← γ.2, h]
-    rfl
+    ENNReal.tsum_sigma']
   simp only [Equiv.sigmaFiberEquiv_apply]
-  simp_rw [fun γ : {γ : X.Γ // ConjClasses.mk γ = c} => if_neg (hne γ)]
-  -- the fibre of `c` is the conjugacy class of its representative
-  let e : {γ : X.Γ // IsConj (X.classRep c) γ} ≃ {γ : X.Γ // ConjClasses.mk γ = c} :=
-    Equiv.subtypeEquivRight fun γ => by
-      rw [← ConjClasses.mk_eq_mk_iff_isConj, X.mk_classRep, eq_comm]
-  rw [← e.tsum_eq]
-  simp only [e, Equiv.subtypeEquivRight_apply_coe]
-  rw [tsum_isConj_lintegral X hhyp _ (X.classRep_ne_one hc) hmeasD,
-    lintegral_orbit_diffProfile ha' hab.le (X.classLen_pos hhyp hc)]
-  rfl
+  have hH : ∀ c : ConjClasses X.Γ, ∑' γ : {γ : X.Γ // ConjClasses.mk γ = c},
+      ite ((γ : X.Γ) = 1) 0
+        (∫⁻ z in X.F, diffProfile a b (pairU z ((((γ : X.Γ)) : SL(2, ℝ)) • z))) =
+      ite (c = 1) 0 (ENNReal.ofReal (X.classPrimLen c) *
+        ENNReal.ofReal (geomWeight a b (X.classLen c))) := by
+    intro c
+    by_cases hc : c = 1
+    · rw [if_pos hc]
+      refine ENNReal.tsum_eq_zero.mpr fun γ => ?_
+      have : (γ : X.Γ) = 1 := by
+        have h : ConjClasses.mk (γ : X.Γ) = ConjClasses.mk 1 := γ.2.trans hc
+        rw [ConjClasses.mk_eq_mk_iff_isConj] at h
+        exact isConj_one_right.mp h.symm
+      rw [if_pos this]
+    · rw [if_neg hc]
+      have hne : ∀ γ : {γ : X.Γ // ConjClasses.mk γ = c}, (γ : X.Γ) ≠ 1 := by
+        intro γ h
+        apply hc
+        rw [← γ.2, h]
+        rfl
+      rw [tsum_congr fun γ : {γ : X.Γ // ConjClasses.mk γ = c} => if_neg (hne γ)]
+      -- the fibre of `c` is the conjugacy class of its representative
+      let e : {γ : X.Γ // IsConj (X.classRep c) γ} ≃ {γ : X.Γ // ConjClasses.mk γ = c} :=
+        Equiv.subtypeEquivRight fun γ => by
+          rw [← ConjClasses.mk_eq_mk_iff_isConj, X.mk_classRep, eq_comm]
+      rw [← e.tsum_eq]
+      simp only [e, Equiv.subtypeEquivRight_apply_coe]
+      rw [tsum_isConj_lintegral X hhyp _ (X.classRep_ne_one hc) hmeasD,
+        show hypLen ((X.classRep c : X.Γ) : SL(2, ℝ)) = X.classLen c from rfl,
+        lintegral_orbit_diffProfile ha' hab.le (X.classLen_pos hhyp hc)]
+      rfl
+  rw [tsum_congr hH]
+  have hsupp : (Function.support fun c : ConjClasses X.Γ => ite (c = 1) (0 : ℝ≥0∞)
+      (ENNReal.ofReal (X.classPrimLen c) * ENNReal.ofReal (geomWeight a b (X.classLen c)))) ⊆
+      {c | c ≠ 1} := by
+    intro c hc h
+    simp [h] at hc
+  rw [← tsum_subtype_eq_of_support_subset hsupp]
+  exact tsum_congr fun c => if_neg c.2
 
 /-- **The trace formula.**  `Σ_j ν_j = |F| D(0) + Σ_{[γ] ≠ 1} ℓ₀ g_{a,b}(ℓ)`, the class series
 converging. -/
@@ -224,7 +231,7 @@ theorem trace_formula {a b : ℝ} (ha : 1 < a) (hab : a < b) :
     lintegral_congr fun z => (X.autK_diffProfile_eq ha hab z z).symm
   rw [hcongr, hL, ENNReal.toReal_add (ENNReal.mul_ne_top X.volume_F_lt_top.ne
       ENNReal.ofReal_ne_top) hclass_fin, ENNReal.toReal_mul, ENNReal.toReal_ofReal
-      (diffKernel_nonneg ha' hab.le 0),
+      (diffKernel_nonneg hab.le 0),
     ENNReal.tsum_toReal_eq fun _ => ENNReal.ofReal_ne_top]
   congr 1
   exact tsum_congr fun c => ENNReal.toReal_ofReal (hnn c)

@@ -40,6 +40,8 @@ theorem SoftLogarithmicHalfLineDomain.const_mul {F : ℝ → ℝ}
     exact Eventually.of_forall fun u => by dsimp only; ring
   · apply (hF.logarithmic.const_mul (c ^ 2)).congr
     exact Eventually.of_forall fun ξ => by
+      change c ^ 2 * (|Real.log (|ξ|)| * ‖𝓕 (cx F) ξ‖ ^ 2) =
+        |Real.log (|ξ|)| * ‖𝓕 (cx (fun u => c * F u)) ξ‖ ^ 2
       rw [fourier_cx_const_mul, norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
       ring
 
@@ -68,6 +70,8 @@ theorem softLogarithmicHalfLineEnergy_const_mul (c : ℝ) (F : ℝ → ℝ) :
     rw [← integral_const_mul]
     apply integral_congr_ae
     exact Eventually.of_forall fun ξ => by
+      change Real.log |ξ| * ‖𝓕 (cx (fun u => c * F u)) ξ‖ ^ 2 =
+        c ^ 2 * (Real.log |ξ| * ‖𝓕 (cx F) ξ‖ ^ 2)
       rw [fourier_cx_const_mul, norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
       ring
   rw [softLogarithmicHalfLineEnergy, softLogarithmicHalfLineEnergy,

@@ -22,6 +22,7 @@ private theorem mass_of_real_L2_representative {F : ℝ → ℝ} {v : SoninL2}
   rw [_root_.HTGeometry.norm_l2_sq_eq_integral_norm_sq volume]
   apply integral_congr_ae
   filter_upwards [hv] with u hu
+  dsimp only
   rw [hu]
   change F u ^ 2 = ‖(F u : ℂ)‖ ^ 2
   rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
@@ -126,6 +127,7 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
     rw [← integral_const_mul]
     apply integral_congr_ae
     filter_upwards [hcoe] with ξ hξ
+    dsimp only
     rw [hξ]
     dsimp only [Pi.smul_apply, smul_eq_mul]
     rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]

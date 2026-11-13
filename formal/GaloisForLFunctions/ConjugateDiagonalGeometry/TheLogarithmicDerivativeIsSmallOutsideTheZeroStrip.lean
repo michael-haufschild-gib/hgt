@@ -1,4 +1,4 @@
-import GaloisForLFunctions.MetaplecticMobiusDescent.WeightedCubicResidualFourierTests
+import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.QuasiRiemannHypothesis
 import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.ZetaLogDerivLineBound
 import GaloisForLFunctions.HTGeometry.ThreeCircles
@@ -65,13 +65,13 @@ private theorem exists_logDeriv_disk_log_bound {r : ℝ}
   have htlo : |t| - r ≤ |z.im| := by
     have h : |t| ≤ |z.im - t| + |z.im| := by
       calc |t| = |(t - z.im) + z.im| := by ring_nf
-        _ ≤ |t - z.im| + |z.im| := abs_add _ _
+        _ ≤ |t - z.im| + |z.im| := abs_add_le _ _
         _ = |z.im - t| + |z.im| := by rw [abs_sub_comm t z.im]
     linarith only [h, himdiff]
   have hthi : |z.im| ≤ |t| + r := by
     have h : |z.im| ≤ |z.im - t| + |t| := by
       calc |z.im| = |(z.im - t) + t| := by ring_nf
-        _ ≤ |z.im - t| + |t| := abs_add _ _
+        _ ≤ |z.im - t| + |t| := abs_add_le _ _
     linarith only [h, himdiff]
   have ht0 : 0 < |t| := by linarith only [ht]
   have hz0 : 0 < |z.im| := by linarith only [htlo, ht, hr]
@@ -106,7 +106,7 @@ private theorem exists_logDeriv_disk_log_bound {r : ℝ}
     exact (hbz.trans hq).trans (by
       have := mul_nonneg (by norm_num : (0 : ℝ) ≤ 2048) (by linarith : 0 ≤ Real.log |t|)
       nlinarith only [this])
-  · have hbz := norm_logDeriv_zeta_right_le
+  · have hbz := norm_logDeriv_zeta_right_le (z := z)
       (by linarith only [hzright]) (by linarith only [hrehi, hr])
     have hK0 : 0 ≤ 2 * C / (1 / 4 - r) := by positivity
     have hx := mul_nonneg hK0 (show 0 ≤ Real.log |t| by linarith only [htlog])
@@ -136,7 +136,8 @@ private theorem differentiableOn_logDeriv_zeta_disk {t : ℝ} (ht : 8 ≤ |t|) :
     rw [he] at hr
     have hd := mem_ball_iff_norm.mp hz
     linarith only [(abs_le.mp hr).1, hd]
-  simpa only [logDeriv_apply] using (hdiff.deriv isOpen_ball).div hdiff hzfree
+  change DifferentiableOn ℂ (fun z => deriv riemannZeta z / riemannZeta z) _
+  exact (hdiff.deriv isOpen_ball).div hdiff hzfree
 
 /-- Three circles turn the zero-free strip into a power saving in the logarithm. -/
 theorem exists_logDeriv_zeta_log_power_bound {σ : ℝ}
@@ -223,7 +224,7 @@ theorem exists_logDeriv_zeta_le_epsilon_log {σ ε : ℝ}
           rw [Real.rpow_one]
           ring
       _ = K * (Real.log |t|) ^ (-(1 - θ) + 1) := by rw [← Real.rpow_add hx]
-      _ = K * (Real.log |t|) ^ θ := by congr 2 <;> ring
+      _ = K * (Real.log |t|) ^ θ := by congr 2; ring
   have hmul := mul_le_mul_of_nonneg_right hsmall.le hx.le
   rw [heq] at hmul
   exact (hb t ht8).trans hmul

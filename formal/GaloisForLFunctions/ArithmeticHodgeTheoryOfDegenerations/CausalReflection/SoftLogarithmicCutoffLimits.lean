@@ -73,6 +73,7 @@ theorem softLogarithmicCutoffVector_firstMoment (n : ℕ) (v : SoninL2) :
     (continuous_softLogarithmicCutoff n).measurable zero_le_one
       (softLogarithmicCutoff_abs_le n) v] with u hu
   change softLogarithmicCutoffVector n v u = (softLogarithmicCutoff n u : ℂ) * v u at hu
+  dsimp only
   rw [hu, norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
   ring
 
@@ -102,6 +103,7 @@ theorem ClosedSoftLogarithmicHalfLineDomain.cutoff_firstMoment_tendsto {v : Soni
       ‖|u| * softLogarithmicCutoff n u ^ 2 * ‖v u‖ ^ 2‖ ≤ |u| * ‖v u‖ ^ 2 := by
     apply Eventually.of_forall
     intro u
+    dsimp only
     rw [Real.norm_of_nonneg (mul_nonneg (mul_nonneg (abs_nonneg u) (sq_nonneg _)) (sq_nonneg _))]
     simpa only [mul_one] using mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left (softLogarithmicCutoff_sq_le_one n u) (abs_nonneg u))
@@ -142,6 +144,7 @@ theorem ClosedSoftLogarithmicHalfLineDomain.cutoff_positiveEnergy_tendsto {v : S
       (fourierUnitary (softLogarithmicCutoffVector n v))
     rw [← hmap] at hcoeff
     filter_upwards [hcoeff] with ξ hξ
+    dsimp only
     rw [hξ]
     dsimp only [Pi.sub_apply]
     exact congrArg (fun r : ℝ => max (Real.log |ξ|) 0 * r ^ 2)

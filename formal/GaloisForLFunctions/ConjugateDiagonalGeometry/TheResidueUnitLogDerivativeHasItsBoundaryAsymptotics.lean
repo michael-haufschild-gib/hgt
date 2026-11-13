@@ -150,7 +150,7 @@ theorem exists_logDeriv_residueUnit_left_add_log_le_epsilon_log {σ ε : ℝ}
   have heq : logDeriv zetaResidueUnit s + (Real.log |t| : ℂ) =
       (logDeriv zetaChi s + (Real.log |t| : ℂ)) -
         logDeriv riemannZeta (1 - s) + (s - 1)⁻¹ := by
-    linear_combination hG - hfe + hchi
+    linear_combination hG + hfe - hchi
   have hreflect : 1 - s = ((1 - σ : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I := by
     dsimp [s]
     push_cast

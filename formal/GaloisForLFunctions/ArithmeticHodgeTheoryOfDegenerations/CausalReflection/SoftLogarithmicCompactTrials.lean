@@ -48,6 +48,7 @@ theorem softLogarithmicHalfLineDomain_of_compact_positiveLogarithm
   · have hm : Measurable (fun u => F u ^ 2 * Real.exp (-(1 * u))) := by fun_prop
     apply (hsq.const_mul (Real.exp H)).mono' hm.aestronglyMeasurable
     exact Eventually.of_forall fun u => by
+      dsimp only
       rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
       by_cases hu : u ≤ -H
       · rw [hleft u hu, zero_pow two_ne_zero, zero_mul, mul_zero]

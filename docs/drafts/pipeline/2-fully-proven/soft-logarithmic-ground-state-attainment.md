@@ -63,30 +63,29 @@ obtain `Q(v)=μ`.
 
 ## Lean status
 
-Coercivity, compactness of every unit trial Rayleigh sublevel, and a
-strongly convergent unit minimizing sequence are verified and integrated.
-The entire sufficiently confined rescaled minimizing family also has
-compact closure. `SoftLogarithmicCompactProfiles` passes its final plain
-source audit with exactly the standard three axioms. The four weighted
-Fatou lemmas in `HTGeometry/HardyBoundary/WeightedL2Fatou` also pass final
-plain source audits with exactly those axioms and are integrated; the joint
-lemma preserves a bound on the sum of two weighted energies.
-`HTGeometry/HardyBoundary/WeightedL2MomentContinuity` is also audited and
-integrated with those axioms: bounded moments are continuous, uniform
-tails remove the cap, and vanishing weighted error gives convergence of
-moments. `SoftLogarithmicClosedDomain` passes its final plain source audit
-with those axioms and is integrated: trial representatives lie in the
-literal finite-energy domain and retain their energy.
-`SoftLogarithmicNegativePartContinuity` is also audited and integrated with
-those axioms: bounded physical first moments make negative logarithmic
-Fourier energy continuous along strong limits of normalized trials.
-`SoftLogarithmicClosedLimit` also passes its final plain source audit with
-those axioms and is integrated. Joint Fatou and negative-part continuity
-give a unit finite-energy limit with `Q≤μ`
-(`exists_closedSoftLogarithmic_unit_below_floor`). Cutoff recovery and the
-reverse variational inequality remain unverified, as does attainment.
-`HTGeometry/HardyBoundary/LogarithmicWeightComparison` is audited and
-integrated with the standard three axioms: positive logarithmic energy
-and reference jump energy have the same domain on `L²`.
+Verified and integrated, with final source audits using only `propext`,
+`Classical.choice`, and `Quot.sound`:
+
+- Coercivity and compact closure of every unit trial Rayleigh sublevel; a
+  strongly convergent unit minimizing sequence and compact closure of the
+  sufficiently confined rescaled minimizing family (`SoftLogarithmicCompactProfiles`).
+- Weighted Fatou, continuity under uniform tails, and continuity under
+  vanishing weighted error (`HardyBoundary/WeightedL2Fatou`,
+  `HardyBoundary/WeightedL2MomentContinuity`).
+- Literal closed-domain admission of trials and preservation of energy
+  (`SoftLogarithmicClosedDomain`).
+- Continuity of the negative Fourier logarithmic energy along strong unit
+  trial limits with bounded first moments (`SoftLogarithmicNegativePartContinuity`).
+- A unit finite-energy limit with `Q≤μ`
+  (`exists_closedSoftLogarithmic_unit_below_floor` in `SoftLogarithmicClosedLimit`).
+- Equivalence of the positive logarithmic and reference jump domains;
+  vanishing positive energy under bounded Lipschitz cutoffs tending to zero
+  (`HardyBoundary/LogarithmicWeightComparison`,
+  `HardyBoundary/LogarithmicCutoffConvergence`).
+
+Unit trial recovery, the reverse variational inequality, and attainment
+remain unverified. Application modules lie in
+`ArithmeticHodgeTheoryOfDegenerations/CausalReflection`; generic helpers
+lie in `HTGeometry/HardyBoundary`.
 Uniqueness and sign rigidity are separate open statements in
 [the profile card](../1-in-progress/soft-logarithmic-profile-compactness-and-sign.md).
