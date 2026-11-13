@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DirichletSimultaneousApproximation
 import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.Tactic.DefEqTransformations
+import Mathlib.Algebra.BigOperators.Ring.Finset
 
 /-!
 # The floor trees have curvature zero

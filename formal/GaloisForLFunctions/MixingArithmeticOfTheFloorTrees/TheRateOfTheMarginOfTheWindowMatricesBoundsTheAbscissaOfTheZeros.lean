@@ -605,7 +605,8 @@ theorem eventually_binding_deep {θ : ℝ} (hθ : θ < 1 / 2) (E : ℝ) :
       T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re + E * Real.exp (θ * v) := by
     rw [← e2]
     linear_combination (T0 + 2 * (lagStructure zetaZeroConfig (cx spline) v).re) * e1
-  rw [e3, ← hT0] at hmul
+  rw [e3] at hmul
+  rw [← hT0]
   linarith
 
 /-- **From the comb to the window matrix**: on the block averages of a divisor, scaled by `√B`,

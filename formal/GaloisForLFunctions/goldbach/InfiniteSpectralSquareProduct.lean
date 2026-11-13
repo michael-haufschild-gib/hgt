@@ -1,4 +1,5 @@
 import GaloisForLFunctions.goldbach.SpectralSquareProduct
+import GaloisForLFunctions.HTGeometry.LpDiagonalMultiplier
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 import Mathlib.Analysis.Complex.LocallyUniformLimit
@@ -113,6 +114,44 @@ theorem infiniteSpectralSquareProduct_differentiable (μ : lp (fun _ : ι => ℝ
         DifferentiableOn.finsetProd (fun i (_ : i ∈ s) => by
           simp only [spectralSquareFactor_eq]
           fun_prop)) isOpen_univ
+
+private theorem spectral_coordinate_bound (μ : lp (fun _ : ι => ℝ) 2) (i : ι) :
+    ‖(μ i : ℂ)‖ ≤ ‖μ‖ := by
+  simpa only [Complex.norm_real] using lp.norm_apply_le_norm (by norm_num) μ i
+
+/-- The actual bounded diagonal operator with the given real square-summable spectrum. -/
+def spectralDiagonalOperator (μ : lp (fun _ : ι => ℝ) 2) :
+    lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2 :=
+  lpDiagonalCLM (fun i => (μ i : ℂ)) (norm_nonneg μ) (spectral_coordinate_bound μ)
+
+/-- The spectral bound is exactly contractivity of the diagonal operator. -/
+theorem norm_spectralDiagonalOperator_le_one_iff (μ : lp (fun _ : ι => ℝ) 2) :
+    ‖spectralDiagonalOperator μ‖ ≤ 1 ↔ ∀ i, μ i ^ 2 ≤ 1 := by
+  classical
+  constructor
+  · intro h i
+    have hi := (spectralDiagonalOperator μ).le_opNorm (lp.single 2 i (1 : ℂ))
+    rw [spectralDiagonalOperator, lpDiagonalCLM_single,
+      lp.norm_single (by norm_num), lp.norm_single (by norm_num), norm_one, mul_one,
+      Complex.norm_real, Real.norm_eq_abs] at hi
+    exact (sq_le_one_iff_abs_le_one _).mpr (hi.trans h)
+  · intro h
+    have hb (i : ι) : ‖(μ i : ℂ)‖ ≤ 1 := by
+      simpa only [Complex.norm_real, Real.norm_eq_abs] using
+        (sq_le_one_iff_abs_le_one _).mp (h i)
+    have he : spectralDiagonalOperator μ =
+        lpDiagonalCLM (fun i => (μ i : ℂ)) (by norm_num : (0 : ℝ) ≤ 1) hb := by
+      ext f i
+      rfl
+    rw [he]
+    exact norm_lpDiagonalCLM_le _ _ _
+
+/-- Critical-line zeros are equivalent to a norm bound on an actual operator. -/
+theorem infiniteSpectralSquareProduct_critical_iff_operator_norm
+    (μ : lp (fun _ : ι => ℝ) 2) :
+    (∀ z : ℂ, infiniteSpectralSquareProduct μ z = 0 → z.re = 1 / 2) ↔
+      ‖spectralDiagonalOperator μ‖ ≤ 1 := by
+  rw [infiniteSpectralSquareProduct_critical_iff, norm_spectralDiagonalOperator_le_one_iff]
 
 end
 

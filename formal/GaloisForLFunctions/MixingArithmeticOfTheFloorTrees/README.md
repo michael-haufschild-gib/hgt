@@ -252,6 +252,13 @@ block size.
     quarter of the mass as variance (`dilationVar_cos_ge`). The returns are the frequencies where
     `Σ_{k ≤ Q} Λ(k) k^{it}` is near its maximum `ψ(Q)`: there the gap of the Doob chain of a long
     window must come from the jets.
+24. *Curvature zero* (`gammaTwo_eq`, `gammaTwo_nonneg`, `not_curvature_pos`): the dilation
+    process is a translation-invariant jump process (jumps `±log k` at the rates `Λ(k)`,
+    `Λ(k)/k`), so its carré du champ and its iterate are sums of squares of first and second
+    differences, `Γ₂(f) = ¼ Σ_{i,j} w_i w_j (Δ_iΔ_j f)²`, the cross terms cancelling under the
+    exchange of the two jumps. Hence `CD(0, ∞)` holds, and no `CD(κ, ∞)` with `κ > 0`: on a wave
+    plus a linear function at a common return, `Γ ≥ (log 2)³/8` while `Γ₂ = O(η⁴)`. The best
+    curvature bound for the floor trees is `0`; Bakry–Émery gives no gap from the trees.
 
 ## 5. Pillar theorems
 
@@ -272,6 +279,7 @@ block size.
 | The trivial exponent `½` of the window matrices; a saving in the exponent is a zero-free strip | `exists_packetForm_stepPacket_ge_sqrt`, `zetaZeroWidth_le_of_packetForm_stepPacket_ge` |
 | A margin of rate `θ < ½` is a zero-free strip, at infinite and at finite block size | `zetaZeroWidth_le_of_marginRate`, `zetaZeroWidth_le_of_neutralWindow_marginRate` |
 | The dilation process on `(1, Q]` has no gap, for every `Q` | `dilationForm_le_of_no_gap` |
+| The curvature of the floor trees is exactly zero | `gammaTwo_nonneg`, `not_curvature_pos` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
@@ -284,7 +292,7 @@ block size.
 | 1 | **B192**: one bound state of `(R, 3R]`, `(R, 4R]` at every block size from the true contacts of `2`, `3` | open; worked in AGZ. In MAFT terms: the conditional coupling of the overlap with dyadic middle `(3R/2, 2R]` is a contraction |
 | 2 | Which cut is the bottleneck | exact criterion: `S` is a bottleneck iff its part binds more than its share `μ π(S)/π(W)` (`doobCut_bottleneck_iff`); under RH no part does; at large ratio the ground state charges both ends (`sq_binding_excess_le`); the cut of a window of ratio three is open |
 | 3 | Comparison of a window with its parts through the floor trees | answered by the overlap law: exact, of full rank, with the trees between the ends in `X` |
-| 4 | A curvature bound for the floor trees | open |
+| 4 | A curvature bound for the floor trees with the weights `Λ(k)/k` | answered at infinite block size: the curvature is exactly `0`; `CD(0, ∞)` holds (`gammaTwo_nonneg`) and `CD(κ, ∞)` fails for every `κ > 0` (`not_curvature_pos`); a curvature argument must use the jets |
 | 5 | The gap of the dilation process on `(1, Q]` | answered: zero for every `Q` at infinite block size, at the common returns of the rotations `t log k` (`dilationForm_le_of_no_gap`); at finite block size zero below ratio `9/2`, where the trees split into components of three blocks; the mixing RH needs comes from the jets, at the frequencies where `Σ Λ(k) k^{it}` peaks |
 | 6 | Does the margin have a limit along the ratios; does a uniform lower bound force RH | a uniform lower bound forces RH, at infinite block size (`riemannHypothesis_iff_margin_bddBelow`) and for the window matrices (`riemannHypothesis_iff_neutralWindow_margin_bddBelow`); calibration: under RH the margin lies in `[0, c₀]` and tends to `0` at infinite block size; the limit at finite block size is open |
 | 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
@@ -321,6 +329,7 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 | RH leaves room: the margin is bounded away from zero | Under RH the margin of long windows tends to `0` at infinite block size; no argument can rest on a uniform positive margin |
 | The binding energy may reach the Chebyshev ceiling `4√ρ` | Under RH it is at most the pole capacity `√ρ − 1/√ρ + log ρ`; the trees reproduce the pole |
 | Gluing needs the positive cone | Through a dyadic middle the two-well inequality becomes a forward contraction on the whole space |
+| A Bakry–Émery bound for the floor trees gives the gap | Their curvature is exactly `0`; positive curvature fails at the common returns of `t log k` |
 | A Cheeger bound suffices | Cheeger loses a square, and the margin is bounded: only constants matter |
 | The Poincaré inequality must be proved with the sharp constant | An additive loss is free: gap `≥ μ − C` for one `C` and all windows forces gap `≥ μ` |
 | A deep second bound state can be confined to a few windows | The margin self-improves: a second bound state of one window forces second bound states of unbounded depth |

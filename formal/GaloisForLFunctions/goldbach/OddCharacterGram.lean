@@ -1,4 +1,5 @@
 import GaloisForLFunctions.goldbach.OddCharacterProjection
+import GaloisForLFunctions.goldbach.ReducedResidueAntidiagonal
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.Rank
 
@@ -48,6 +49,31 @@ theorem oddCharacterGram_rank_le (N : ℕ) {ι : Type*} [Fintype ι]
       Fintype.card {χ : DirichletCharacter ℂ (N + 1) // χ.Odd} := by
   rw [oddCharacterGram_rank]
   exact Matrix.rank_le_card_width _
+
+/-- For a modulus greater than two, exactly half its characters are odd. -/
+theorem twice_card_oddCharacters (N : ℕ) :
+    2 * Fintype.card {χ : DirichletCharacter ℂ (N + 3) // χ.Odd} =
+      (N + 3).totient := by
+  letI : Fact (1 < N + 3) := ⟨by omega⟩
+  have hne : -(1 : (ZMod (N + 3))ˣ) ≠ 1 := by
+    intro he
+    have hs := unit_val_add_neg_val (N + 1) (1 : (ZMod (N + 3))ˣ)
+    rw [he] at hs
+    simp only [Units.val_one, ZMod.val_one] at hs
+    omega
+  have h := twice_sum_odd_unitCharacter_mul_star (N + 2) 1 1
+  simp only [Units.val_one, map_one, star_one, mul_one, if_pos rfl,
+    if_neg hne, sub_zero, sum_const, nsmul_eq_mul, mul_one] at h
+  rw [Fintype.card_subtype]
+  exact_mod_cast h
+
+/-- The odd-character Gram rank is at most half the totient. -/
+theorem oddCharacterGram_rank_le_totient_div_two (N : ℕ) {ι : Type*} [Fintype ι]
+    (w : ι → (ZMod (N + 3))ˣ → ℂ) :
+    (oddCharacterGram (N + 2) w).rank ≤ (N + 3).totient / 2 := by
+  have hc := twice_card_oddCharacters N
+  have hr := oddCharacterGram_rank_le (N + 2) w
+  omega
 
 /-- Matrix entries are the filtered mixed character moments. -/
 theorem oddCharacterGram_apply (N : ℕ) {ι : Type*}

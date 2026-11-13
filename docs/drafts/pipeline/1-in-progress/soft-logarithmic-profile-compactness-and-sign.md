@@ -132,6 +132,16 @@ Fourier-window estimate on arbitrary nonintegrable `L²` profiles.
 
 The limiting domain may be larger than the union of positive exponential domains used for trial functions. Attainment in that trial class is not part of the conjecture.
 
+An alternative uniqueness route uses causal reflection. The verified
+`realCausalReflection_weighted_energy` preserves mass and gives exact
+exponential-mass loss. Its derivative at zero suggests
+`M(F)-M(H)=(2a/π)∫K²`, with `H` the reflected profile and `K` its causal
+resolvent. Fourier modulus preservation would then give strict soft-energy
+loss at a positive real Laplace zero. The existing Laplace-ratio argument
+would imply uniqueness of the minimizing line without first proving sign
+rigidity. Extension of this identity to the closed first-moment domain is
+unproved; no uniqueness conclusion follows yet.
+
 ## Stronger questions exposed by the domain distinction
 
 The original exponential-moment trial class may have no minimizer. The
