@@ -75,8 +75,10 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
   have hcsp : Tendsto (fun n => c n ^ 2) atTop (𝓝 (1 : ℝ)) := by
     simpa only [one_pow] using hcp.pow 2
   have hcc : Tendsto (fun n => (c n : ℂ)) atTop (𝓝 (1 : ℂ)) := by
-    simpa only [Complex.ofReal_one, Function.comp_apply] using
+    have h : Tendsto (fun n => Complex.ofReal (c n)) atTop
+        (𝓝 (Complex.ofReal 1)) :=
       (Complex.continuous_ofReal.tendsto 1).comp hcp
+    exact h
   have hUp : Tendsto U atTop (𝓝 v) := by
     simpa only [one_smul] using hcc.smul hgp
   have hp (n : ℕ) : SoftLogarithmicHalfLineDomain (p n) := hv.cutoff_trial (n + N)
