@@ -63,8 +63,7 @@ theorem rotSL_den_ne_zero {α β : ℝ} (h : α ^ 2 + β ^ 2 = 1) (z : ℍ) :
 theorem rotSL_smul_I {α β : ℝ} (h : α ^ 2 + β ^ 2 = 1) : rotSL α β h • I = I := by
   apply UpperHalfPlane.ext
   rw [coe_rotSL_smul, div_eq_iff (rotSL_den_ne_zero h I), UpperHalfPlane.coe_I]
-  have : (α : ℂ) ^ 2 + (β : ℂ) ^ 2 = 1 := by exact_mod_cast h
-  linear_combination (-(Complex.I) * β + α - α) * 0 + 0 * this + β * Complex.I_sq
+  linear_combination (β : ℂ) * Complex.I_sq
 
 /-- **Rotations act transitively on hyperbolic circles about `i`.** -/
 theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
@@ -76,7 +75,7 @@ theorem exists_rotSL_smul {y : ℝ} (hy : 0 < y) (w : ℍ)
     simp only [hpt_re, hpt_im] at hw
     rw [div_eq_div_iff (by positivity) (by positivity)] at hw
     nlinarith [hw]
-  set W : ℂ := w
+  set W : ℂ := (w : ℂ)
   set ζ : ℂ := 1 + Complex.I * y * W
   set η : ℂ := W - Complex.I * y
   by_cases hζ : ζ = 0
@@ -155,10 +154,9 @@ theorem convK_eq_convProfile (k k' : ℝ → ℝ≥0∞) (z w : ℍ) :
   have hu0 : 0 ≤ pairU z w := pairU_nonneg z w
   obtain ⟨r, hrI, hrp⟩ := exists_rotSL_smul (axisY_pos (pairU z w)) (g • w)
     (by rw [hu, pairU_I_axisY hu0])
-  rw [← hrp, ← convK_smul k k' r⁻¹, ← hrI]
-  simp only [inv_smul_smul]
-  rw [hrI]
-  rfl
+  calc convK k k' I (g • w) = convK k k' (r • I) (r • hpt 0 (axisY_pos (pairU z w))) := by
+        rw [hrI, hrp]
+    _ = convProfile k k' (pairU z w) := convK_smul k k' r I _
 
 theorem measurable_convProfile {k k' : ℝ → ℝ≥0∞} (hk : Measurable k) (hk' : Measurable k') :
     Measurable (convProfile k k') := by
@@ -167,7 +165,7 @@ theorem measurable_convProfile {k k' : ℝ → ℝ≥0∞} (hk : Measurable k) (
       funext u; show (⟨0, axisY u⟩ : ℂ) = _; apply Complex.ext <;> simp
     refine UpperHalfPlane.isOpenEmbedding_coe.isInducing.continuous_iff.mpr ?_
     show Continuous fun u : ℝ => ((hpt 0 (axisY_pos u) : ℍ) : ℂ)
-    rw [this]; fun_prop
+    rw [this]; exact continuous_const.mul (Complex.continuous_ofReal.comp continuous_axisY)
   have hj : Measurable fun p : ℝ × ℍ => k (pairU I p.2) * k' (pairU p.2 (hpt 0 (axisY_pos p.1))) :=
     (hk.comp (continuous_pairU.comp (continuous_const.prodMk continuous_snd)).measurable).mul
       (hk'.comp (continuous_pairU.comp (continuous_snd.prodMk (hc.comp continuous_fst))).measurable)
@@ -218,15 +216,16 @@ theorem lintegral_tail_abel {κ : ℝ → ℝ≥0∞} (hκ : Measurable κ) (v :
       ∫⁻ u : ℝ, (Ioi (v + η ^ 2 / 4)).indicator
         (fun u => κ u * ENNReal.ofReal (Real.sqrt (u - v - η ^ 2 / 4))⁻¹) u := by
     intro η
-    rw [← lintegral_add_right_eq_self _ (η ^ 2 / 4)]
-    refine lintegral_congr fun u => ?_
+    rw [← lintegral_add_right_eq_self (fun u => (Ioi (v + η ^ 2 / 4)).indicator
+      (fun u => κ u * ENNReal.ofReal (Real.sqrt (u - v - η ^ 2 / 4))⁻¹) u) (η ^ 2 / 4)]
+    refine lintegral_congr fun c => ?_
     simp only [indicator_apply, mem_Ioi, m]
-    by_cases hu : v < u - η ^ 2 / 4
-    · rw [if_pos hu, if_pos (by linarith)]
-      congr 2
-      · ring_nf
-      · ring_nf
-    · rw [if_neg hu, if_neg (by intro h; exact hu (by linarith))]
+    by_cases hc : v < c
+    · rw [if_pos hc, if_pos (by linarith)]
+      congr 1
+      · rw [add_comm]
+      · rw [show c + η ^ 2 / 4 - v - η ^ 2 / 4 = c - v by ring]
+    · rw [if_neg hc, if_neg (by intro h; exact hc (by linarith))]
   simp_rw [e2]
   have hK : Measurable fun p : ℝ × ℝ => (Ioi (v + p.1 ^ 2 / 4)).indicator
       (fun u => κ u * ENNReal.ofReal (Real.sqrt (u - v - p.1 ^ 2 / 4))⁻¹) p.2 := by
@@ -308,7 +307,7 @@ theorem ae_eq_of_abelL_eq {κ κ' : ℝ → ℝ≥0∞} (hκ : Measurable κ) (h
       rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
       exact hfin'
     have hext : μ.withDensity κ = μ.withDensity κ' := by
-      refine Measure.ext_of_generate_finite (range Ioi)
+      refine ext_of_generate_finite (range Ioi)
         (BorelSpace.measurable_eq.trans borel_eq_generateFrom_Ioi) isPiSystem_Ioi ?_ ?_
       · rintro _ ⟨v, rfl⟩
         rw [withDensity_apply _ measurableSet_Ioi, withDensity_apply _ measurableSet_Ioi,
@@ -353,13 +352,13 @@ theorem volume_setOf_sq_add_mem (c : ℝ) {N : Set ℝ} (hN : MeasurableSet N) (
     have h1 := lintegral_image_eq_lintegral_abs_deriv_mul measurableSet_Ioi hd hinj
       (N.indicator (1 : ℝ → ℝ≥0∞))
     have h2 : ∫⁻ x in φ '' Ioi 0, N.indicator (1 : ℝ → ℝ≥0∞) x = 0 := by
-      refine le_antisymm ((setLIntegral_le_lintegral _ _).trans ?_) (zero_le _)
+      refine le_antisymm ((setLIntegral_le_lintegral _ _).trans ?_) bot_le
       rw [lintegral_indicator_one hN, h0]
     rw [h2] at h1
     have h3 : ∀ᵐ η ∂(volume.restrict (Ioi (0 : ℝ))),
         ENNReal.ofReal |η / 2| * N.indicator (1 : ℝ → ℝ≥0∞) (φ η) = 0 :=
       (lintegral_eq_zero_iff (by fun_prop)).mp h1.symm
-    rw [inter_comm, ← Measure.restrict_apply hSm, ← lintegral_indicator_one hSm]
+    rw [← Measure.restrict_apply hSm, ← lintegral_indicator_one hSm]
     refine lintegral_eq_zero_of_ae_eq_zero ?_
     filter_upwards [h3, ae_restrict_mem measurableSet_Ioi] with η hη hη0
     have hη0' : (0:ℝ) < η := hη0
@@ -385,7 +384,7 @@ theorem volume_setOf_sq_add_mem (c : ℝ) {N : Set ℝ} (hN : MeasurableSet N) (
     · exact Or.inl (Or.inr ⟨hη, h⟩)
     · exact Or.inr h
     · exact Or.inl (Or.inl ⟨hη, h⟩)
-  refine le_antisymm ((measure_mono hsub).trans ?_) (zero_le _)
+  refine le_antisymm ((measure_mono hsub).trans ?_) bot_le
   refine (measure_union_le _ _).trans ?_
   rw [Real.volume_singleton, add_zero]
   exact (measure_union_le _ _).trans (by rw [hpos, hneg0, add_zero])
@@ -409,7 +408,7 @@ theorem volume_pairU_preimage_eq_zero (z : ℍ) {N : Set ℝ} (hN : MeasurableSe
   rw [← lintegral_indicator_one (measurableSet_pairU_mem I hN)]
   have : (fun w : ℍ => {w : ℍ | pairU I w ∈ N}.indicator 1 w) =
       fun w => N.indicator (1 : ℝ → ℝ≥0∞) (pairU I w) := by
-    funext w; simp only [indicator_apply, mem_setOf_eq, Pi.one_apply]
+    funext w; by_cases hw : pairU I w ∈ N <;> simp [hw]
   rw [this, lintegral_pairU_I hk]
   refine lintegral_eq_zero_of_ae_eq_zero (Eventually.of_forall fun τ => ?_)
   have habel : abelL (N.indicator (1 : ℝ → ℝ≥0∞)) τ = 0 := by
@@ -418,12 +417,9 @@ theorem volume_pairU_preimage_eq_zero (z : ℍ) {N : Set ℝ} (hN : MeasurableSe
     rw [abelL, ← volume_setOf_sq_add_mem (Real.sinh (τ / 2) ^ 2) hN h0,
       ← lintegral_indicator_one hm]
     refine lintegral_congr fun η => ?_
-    simp only [indicator_apply, mem_setOf_eq, Pi.one_apply]
+    by_cases hη : η ^ 2 / 4 + Real.sinh (τ / 2) ^ 2 ∈ N <;> simp [hη]
   simp only [habel, mul_zero, Pi.zero_apply]
 
-end
-
-end GaloisForLFunctions.CompactHyperbolicSurfaces
 end
 
 end GaloisForLFunctions.CompactHyperbolicSurfaces

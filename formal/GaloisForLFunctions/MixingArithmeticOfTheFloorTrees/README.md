@@ -53,7 +53,11 @@ block size.
 - A **bound state** is a negative square of `N_W`; the **binding energy** is `−λ`; the **gap** is the
   least nonzero rate of the Doob chain; the **margin** is gap minus binding energy, the second
   eigenvalue of `N_W`.
-- A **bottleneck** is a cut whose conductance is small against `μ π(S) π(Sᶜ)/π`.
+- A **bottleneck** is a cut whose conductance is small against `μ π(S) π(Sᶜ)/π`; the **share** of a
+  set `S` of blocks is `μ π(S)/π(W)`, the part of the binding energy its weight entitles it to.
+- The **pole capacity** of a window is the largest value of the pole term on packets of unit mass.
+- The **even** and **odd sectors** are the packets symmetric and antisymmetric under the reflection
+  about the centre of the window (infinite block size).
 - The **parts** of a window are two overlapping windows that share a dyadic middle; the
   **conditional coupling** of the two ends is their coupling after the middle is eliminated.
 - The **ends** of a long window are its first and last dyadic windows.
@@ -166,6 +170,14 @@ block size.
     of the tower. The shallow floor maps, `log k` at least half the window, are selective
     (`shallow_contact_selective`): they raise every packet with one node at the centre and lower
     every packet of one sign.
+16. *The odd sector* (`neutralForm_of_odd`, `riemannHypothesis_iff_forall_odd_neutralForm_nonneg`):
+    the reflection splits the window form into an even and an odd sector. On a packet odd about
+    the centre the charges satisfy `B = −e^{c/2} A` (`integral_mul_exp_of_odd`), so the pole term
+    is the square `+2 e^{c/2} A²` and `N = W + 2 e^{c/2} A²`. Under RH the odd sector carries no
+    bound state; without RH an odd pole-free packet of negative Weil form exists (RHTower). So
+    **RH iff the odd sector of every window is unbound**: the binding energy and the one bound
+    state live in the even sector, where the pole term is a negative square of rank one, and the
+    second bound state that RH excludes is odd.
 
 ## 5. Pillar theorems
 
@@ -179,6 +191,7 @@ block size.
 | The ground state charges both ends | `sq_binding_excess_le` |
 | Binding energy and Weil's form share the pole capacity; under RH `μ ≤ √ρ − 1/√ρ + log ρ` | `binding_add_packetForm_le`, `neg_eigenvalue_le_poleCapacity_of_riemannHypothesis` |
 | Under RH the margin of a long window tends to zero | `exists_plane_neutralForm_le_of_riemannHypothesis` |
+| RH iff the odd sector of every window carries no bound state | `riemannHypothesis_iff_forall_odd_neutralForm_nonneg` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
@@ -204,11 +217,14 @@ bottleneck forms of one bound state; real Haynsworth additivity for block matric
 couplings; the overlap decomposition of a window with its reindexing; refinement monotonicity of
 the neutral index; the archimedean floor through the Lévy representation; the weighted Schur test
 for floor maps; the root and two-end packets with Chebyshev's bounds; the refined coarse plane;
-floor-tree components; reflection of packets.
+floor-tree components; the long-map Schur test between bottom and top; the pole capacity through
+`t ≤ sinh t`; the cut law; reflection of packets and the parity split; spread copies of a profile
+and the zero sum under RH with `|γ| ≥ 2`.
 
 **To build.** The Doob chain at infinite block size as an operator; canonical paths and comparison of
-Dirichlet forms across the dyadic cuts; a parity decomposition of the index at infinite block size;
-quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
+Dirichlet forms across the dyadic cuts; transfer of infinite-block-size statements to large block
+sizes through the smoothing of step packets (AGZ, `tendsto_packetForm_mollify`); quantitative
+versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 
 ## 8. Traps
 
@@ -236,8 +252,8 @@ quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm
   ends against the prime number theorem; the deficit `cap − μ` as a reading of the zeros.
 - The shape of the ground state between the two ends.
 - Curvature of the Doob chain; canonical paths through the long floor maps.
-- The parity sectors of the window form at infinite block size and the sign of the shallow floor
-  maps on them.
+- The odd sector at finite block size: the reflection does not preserve step packets, so the
+  parity split holds only in the limit of the tower; which floor maps decide the odd sector.
 
 ## 10. Context
 
@@ -249,7 +265,9 @@ quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm
 | SelectiveArithmetic (SA), HodgeTheoryOfAFixedPart (HFP) | selective weights; the pairing at finite scale |
 | SelectivePositivityAndThresholdLaws (SPTL) | parity sectors and the selective refutation below `103/50` |
 | LatticeSectionTheory (LST) | the regional logarithmic spectrum of the jets |
-| RHTower | the Lévy density and the constant `A(0)` of the archimedean form |
+| RHTower | the Lévy density and the constant `A(0)` of the archimedean form; the odd and even pole-weight windows (`WeilParityPoleWeightWindows`), of which the odd-sector law is the case `β = 0`; the zeros have ordinate at least `2` |
+| SquareRootThreshold (SRT) | tempered zero configurations; RH as the critical-line property of the zero configuration |
+| ArithmeticOrientationGeometry (AOG) | one generic orbit decides RH; the negative index of Weil Gram matrices on translates counts the zeros right of the line, the natural route to a converse of the vanishing margin |
 
 ## 11. Success criteria
 

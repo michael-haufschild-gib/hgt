@@ -79,17 +79,20 @@ theorem abs_saddlePhase_add_le (v : ℝ) :
 theorem norm_cexp_sub_cexp_le (w₁ w₂ : ℂ) :
     ‖cexp w₁ - cexp w₂‖ ≤ Real.exp (max w₁.re w₂.re) * ‖w₁ - w₂‖ := by
   have hs : Convex ℝ {w : ℂ | w.re ≤ max w₁.re w₂.re} := convex_halfSpace_re_le _
+  have m₁ : w₁ ∈ {w : ℂ | w.re ≤ max w₁.re w₂.re} := by
+    rw [Set.mem_setOf_eq]; exact le_max_left _ _
+  have m₂ : w₂ ∈ {w : ℂ | w.re ≤ max w₁.re w₂.re} := by
+    rw [Set.mem_setOf_eq]; exact le_max_right _ _
   refine hs.norm_image_sub_le_of_norm_deriv_le (f := cexp)
-    (fun w _ => Complex.differentiableAt_exp) (fun w hw => ?_) (le_max_right _ _)
-    (le_max_left _ _)
+    (fun w _ => Complex.differentiableAt_exp) (fun w hw => ?_) m₂ m₁
   rw [Complex.deriv_exp, Complex.norm_exp]
   exact Real.exp_le_exp.mpr hw
 
-theorem le_exp_sq_half {t : ℝ} (ht : 0 ≤ t) : t ≤ Real.exp (t ^ 2 / 2) := by
+theorem le_exp_sq_half (t : ℝ) : t ≤ Real.exp (t ^ 2 / 2) := by
   have h := Real.add_one_le_exp (t ^ 2 / 2)
   nlinarith [sq_nonneg (t - 1)]
 
-theorem pow_three_le_two_mul_exp_sq_half {t : ℝ} (ht : 0 ≤ t) :
+theorem pow_three_le_two_mul_exp_sq_half (t : ℝ) :
     t ^ 3 ≤ 2 * Real.exp (t ^ 2 / 2) := by
   have h := Real.quadratic_le_exp_of_nonneg (x := t ^ 2 / 2) (by positivity)
   nlinarith [mul_nonneg (sq_nonneg t) (sq_nonneg (t / 2 - 1))]
@@ -98,7 +101,7 @@ theorem pow_three_le_two_mul_exp_sq_half {t : ℝ} (ht : 0 ≤ t) :
 theorem abs_mul_exp_neg_le {p : ℝ} (hp : 0 < p) (v : ℝ) :
     |v| * Real.exp (-(p / 2 * v ^ 2)) ≤ 1 / Real.sqrt p := by
   have hr : 0 < Real.sqrt p := Real.sqrt_pos.mpr hp
-  have h := le_exp_sq_half (by positivity : (0 : ℝ) ≤ Real.sqrt p * |v|)
+  have h := le_exp_sq_half (Real.sqrt p * |v|)
   have e : (Real.sqrt p * |v|) ^ 2 / 2 = p / 2 * v ^ 2 := by
     rw [mul_pow, Real.sq_sqrt hp.le, sq_abs]
     ring
@@ -115,7 +118,7 @@ theorem abs_mul_exp_neg_le {p : ℝ} (hp : 0 < p) (v : ℝ) :
 theorem abs_pow_three_mul_exp_neg_le {p : ℝ} (hp : 0 < p) (v : ℝ) :
     |v| ^ 3 * Real.exp (-(p / 2 * v ^ 2)) ≤ 2 * (1 / Real.sqrt p) ^ 3 := by
   have hr : 0 < Real.sqrt p := Real.sqrt_pos.mpr hp
-  have h := pow_three_le_two_mul_exp_sq_half (by positivity : (0 : ℝ) ≤ Real.sqrt p * |v|)
+  have h := pow_three_le_two_mul_exp_sq_half (Real.sqrt p * |v|)
   have e : (Real.sqrt p * |v|) ^ 2 / 2 = p / 2 * v ^ 2 := by
     rw [mul_pow, Real.sq_sqrt hp.le, sq_abs]
     ring
@@ -136,8 +139,9 @@ theorem exp_mul_exp_neg_le {p : ℝ} (hp : 18 ≤ p) (v : ℝ) :
   have hp0 : 0 < p := by linarith
   rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
   refine Real.exp_le_exp.mpr ?_
+  have e : (p * |v|) ^ 2 = p ^ 2 * v ^ 2 := by rw [mul_pow, sq_abs]
   have h1 : 6 * |v| * p ≤ p * (p / 8 * v ^ 2 + 4) := by
-    nlinarith [sq_nonneg (p * |v| - 24), sq_abs v]
+    nlinarith [sq_nonneg (p * |v| - 24)]
   have h2 : 6 * |v| ≤ p / 8 * v ^ 2 + 4 := by
     by_contra hcon
     push Not at hcon
@@ -271,6 +275,7 @@ theorem norm_integral_saddleIntegrand_sub_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
     rw [hlam]
     simp only [Complex.sub_re, Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul,
       sub_zero]
+    rw [hpdef]
   have hlam0 : 0 < lam.re := by rw [hlamre]; linarith
   set E : ℝ → ℂ := saddleIntegrand P τ κ with hE
   set G : ℝ → ℂ := fun v => cexp (-lam * (v : ℂ) ^ 2) with hG
@@ -339,19 +344,19 @@ theorem norm_integral_saddleIntegrand_sub_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
         ∫ v in Ioi (-(1 / 2) : ℝ), c₁ * g v :=
       norm_integral_le_of_norm_le (hgi.const_mul c₁).integrableOn
         ((ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall hEG))
-    have h2 : (∫ v in Ioi (-(1 / 2) : ℝ), c₁ * g v) ≤ ∫ v, c₁ * g v :=
-      setIntegral_le_integral (hgi.const_mul c₁)
+    have h2 : (∫ v in Ioi (-(1 / 2) : ℝ), c₁ * g v) ≤ c₁ * ∫ v, g v := by
+      rw [← integral_const_mul]
+      exact setIntegral_le_integral (hgi.const_mul c₁)
         (Eventually.of_forall fun v => mul_nonneg hc₁0 (hg0 v))
-    rw [integral_const_mul] at h2
     exact h1.trans h2
   have hI2 : ‖∫ v in Iic (-(1 / 2) : ℝ), G v‖ ≤ c₂ * ∫ v, g v := by
     have h1 : ‖∫ v in Iic (-(1 / 2) : ℝ), G v‖ ≤ ∫ v in Iic (-(1 / 2) : ℝ), c₂ * g v :=
       norm_integral_le_of_norm_le (hgi.const_mul c₂).integrableOn
         ((ae_restrict_iff' measurableSet_Iic).2 (Eventually.of_forall hGtail))
-    have h2 : (∫ v in Iic (-(1 / 2) : ℝ), c₂ * g v) ≤ ∫ v, c₂ * g v :=
-      setIntegral_le_integral (hgi.const_mul c₂)
+    have h2 : (∫ v in Iic (-(1 / 2) : ℝ), c₂ * g v) ≤ c₂ * ∫ v, g v := by
+      rw [← integral_const_mul]
+      exact setIntegral_le_integral (hgi.const_mul c₂)
         (Eventually.of_forall fun v => mul_nonneg hc₂0 (hg0 v))
-    rw [integral_const_mul] at h2
     exact h1.trans h2
   -- the Gaussian mass
   have hmass : ∫ v, g v ≤ 4 * u := by
@@ -366,7 +371,7 @@ theorem norm_integral_saddleIntegrand_sub_le {P τ κ : ℂ} (hp : 18 ≤ P.re)
   have hE4 : 1 ≤ Real.exp 4 := Real.one_le_exp (by norm_num)
   rw [hdiff]
   calc ‖(∫ v in Ioi (-(1 / 2) : ℝ), (E v - G v)) - ∫ v in Iic (-(1 / 2) : ℝ), G v‖
-      ≤ c₁ * ∫ v, g v + c₂ * ∫ v, g v := (norm_sub_le _ _).trans (add_le_add hI1 hI2)
+      ≤ c₁ * (∫ v, g v) + c₂ * (∫ v, g v) := (norm_sub_le _ _).trans (add_le_add hI1 hI2)
     _ ≤ (c₁ + c₂) * (4 * u) := by
         rw [← add_mul]
         exact mul_le_mul_of_nonneg_left hmass (add_nonneg hc₁0 hc₂0)

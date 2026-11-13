@@ -9,6 +9,7 @@ import GaloisForLFunctions.RHTower.WeilLevyHarmonicDoublingPairCoupling
 Removing a positive neighborhood of zero makes the Lévy kernel square
 integrable. Its action on an L² profile is bounded by Cauchy–Schwarz, while
 its total row mass becomes arbitrarily large as the cutoff approaches zero.
+The difference from the inverse-distance singularity is uniformly bounded.
 -/
 
 set_option autoImplicit false

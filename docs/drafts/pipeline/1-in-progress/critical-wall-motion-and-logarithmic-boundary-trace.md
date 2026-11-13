@@ -131,6 +131,13 @@ domain. Compact support supplies `L¹` and exponential mass; the Gamma/log
 domain comparison must supply the remaining condition. This avoids a
 separate passage from smooth tests once that inclusion is proved.
 
+`RHTower.exists_aperture_graph_pair_preserving_weil` supplies real and
+imaginary CHMD graph lifts of every complete complex aperture vector.
+Together with the graph's stationary jump domain and the two-way Gamma
+bridge, these lifts give a concrete route to the required real test
+coordinates; literal representatives and Fourier-pairing transfer still
+need to be identified.
+
 ## Candidate wall-flux argument
 
 Assuming the preceding regularity steps have been proved, put
@@ -169,8 +176,8 @@ The existing density bounds suggest the useful reduction
 Its cross-pairing error is at most
 `(1/2)‖B_h‖₁‖F-B_h‖₁`, hence would be `o(h)` under the normalized trace.
 The remaining asymptotic is then for the literal inverse-distance kernel.
-`HalfLineGammaCutoffKernel.abs_archLevyDensity_sub_inverse_le` contains the
-unchecked scalar bound; its cross-pairing application remains unformalized.
+`abs_archLevyDensity_sub_inverse_le` in `HalfLineGammaCutoffKernel` contains
+the unchecked scalar bound; its cross-pairing application remains unformalized.
 
 For collar admissibility, `RHTower.integrable_stationaryJump_indicator_Iio`
 in `CHMDSharpSpatialCut`
