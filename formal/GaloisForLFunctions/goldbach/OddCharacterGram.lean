@@ -62,7 +62,7 @@ theorem twice_card_oddCharacters (N : ℕ) :
     simp only [Units.val_one, ZMod.val_one] at hs
     omega
   have h := twice_sum_odd_unitCharacter_mul_star (N + 2) 1 1
-  simp only [Units.val_one, map_one, star_one, mul_one, if_pos rfl,
+  simp only [Units.val_one, map_one, star_one, mul_one,
     if_neg hne, sub_zero, sum_const, nsmul_eq_mul, mul_one] at h
   rw [Fintype.card_subtype]
   exact_mod_cast h
@@ -71,8 +71,11 @@ theorem twice_card_oddCharacters (N : ℕ) :
 theorem oddCharacterGram_rank_le_totient_div_two (N : ℕ) {ι : Type*} [Fintype ι]
     (w : ι → (ZMod (N + 3))ˣ → ℂ) :
     (oddCharacterGram (N + 2) w).rank ≤ (N + 3).totient / 2 := by
-  have hc := twice_card_oddCharacters N
-  have hr := oddCharacterGram_rank_le (N + 2) w
+  have hr : (oddCharacterGram (N + 2) w).rank ≤
+      Fintype.card {χ : DirichletCharacter ℂ (N + 3) // χ.Odd} :=
+    oddCharacterGram_rank_le (N + 2) w
+  refine hr.trans_eq ?_
+  rw [← twice_card_oddCharacters N]
   omega
 
 /-- Matrix entries are the filtered mixed character moments. -/

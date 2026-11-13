@@ -152,7 +152,8 @@ private theorem spectralDiagonalOperator_eq_diagOp [DecidableEq ι]
     spectralDiagonalOperator μ =
       HilbertSchmidt.diagOp (fun i => (μ i : ℂ)) (spectral_complex_sq_summable μ) := by
   ext f i
-  exact (HilbertSchmidt.diagOp_apply _ _ f i).symm
+  rw [HilbertSchmidt.diagOp_apply]
+  rfl
 
 /-- Square summability supplies the Hilbert--Schmidt property without an extra premise. -/
 theorem spectralDiagonalOperator_isHilbertSchmidt (μ : lp (fun _ : ι => ℝ) 2) :
