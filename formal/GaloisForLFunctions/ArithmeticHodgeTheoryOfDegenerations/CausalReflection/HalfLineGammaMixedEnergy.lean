@@ -41,9 +41,12 @@ private theorem jump_square_sum {F G : ℝ → ℝ}
           (G u - G (u + h)) ^ 2 := by
       apply integral_congr_ae
       exact Eventually.of_forall fun u => by ring
+    _ = (∫ u, (F u - F (u + h)) ^ 2 +
+        2 * ((F u - F (u + h)) * (G u - G (u + h)))) +
+          ∫ u, (G u - G (u + h)) ^ 2 :=
+      integral_add (hff.add (hfg.const_mul 2)) hgg
     _ = _ := by
-      rw [integral_add (hff.add (hfg.const_mul 2)) hgg,
-        integral_add hff (hfg.const_mul 2), integral_const_mul]
+      rw [integral_add hff (hfg.const_mul 2), integral_const_mul]
 
 private theorem halfLineGammaMixedJump_eq {F G : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) (hG : CriticalHalfLineEnergyDomain G) (h : ℝ) :
@@ -71,11 +74,23 @@ theorem integral_halfLineGammaMixedJump {F G : ℝ → ℝ}
   have hsum : CriticalHalfLineEnergyDomain (fun u => F u + G u) := by
     simpa only [one_mul] using hF.add_const_mul hG 1
   simp_rw [halfLineGammaMixedJump_eq hF hG]
-  rw [integral_div,
-    integral_sub (hsum.integrableOn_levyIntegrand.sub hF.integrableOn_levyIntegrand)
-      hG.integrableOn_levyIntegrand,
-    integral_sub hsum.integrableOn_levyIntegrand hF.integrableOn_levyIntegrand]
-  rfl
+  rw [integral_div]
+  congr 1
+  calc
+    _ = (∫ h in Ioi 0,
+        (archLevyDensity h * ∫ u, ((F u + G u) - (F (u + h) + G (u + h))) ^ 2) -
+          archLevyDensity h * ∫ u, (F u - F (u + h)) ^ 2) -
+        ∫ h in Ioi 0, archLevyDensity h * ∫ u, (G u - G (u + h)) ^ 2 :=
+      integral_sub (hsum.integrableOn_levyIntegrand.sub hF.integrableOn_levyIntegrand)
+        hG.integrableOn_levyIntegrand
+    _ = ((∫ h in Ioi 0, archLevyDensity h *
+        ∫ u, ((F u + G u) - (F (u + h) + G (u + h))) ^ 2) -
+        ∫ h in Ioi 0, archLevyDensity h * ∫ u, (F u - F (u + h)) ^ 2) -
+        ∫ h in Ioi 0, archLevyDensity h * ∫ u, (G u - G (u + h)) ^ 2 :=
+      congrArg (fun z => z - ∫ h in Ioi 0, archLevyDensity h *
+        ∫ u, (G u - G (u + h)) ^ 2)
+        (integral_sub hsum.integrableOn_levyIntegrand hF.integrableOn_levyIntegrand)
+    _ = _ := rfl
 
 /-- Polarization retains the complete Gamma symbol and its exact mass offset. -/
 theorem gammaMixedForm_eq_halfLineGammaMixedJump {F G : ℝ → ℝ}
