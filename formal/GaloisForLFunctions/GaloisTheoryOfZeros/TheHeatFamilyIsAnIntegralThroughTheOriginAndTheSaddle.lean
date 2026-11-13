@@ -25,6 +25,7 @@ stationary point `x = 0` of `e^{τx²}`, and the line at the height `η` passes 
 
 open Complex MeasureTheory Filter Topology Set
 open RHTower RHTower.DeBruijn RHTower.KernelStrip
+open scoped Real Interval
 
 namespace GaloisForLFunctions.GaloisTheoryOfZeros
 

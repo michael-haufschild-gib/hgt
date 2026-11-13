@@ -44,7 +44,8 @@ block size.
 | ends of a long window | `bottomMass`, `topMass` | the mass on the blocks `a` with `K a < R + J`, and on the blocks `b ≥ KR` |
 | pole capacity | `poleCapacity R J` | `J/√(R(R + J)) + log ρ = √ρ − 1/√ρ + log ρ` |
 | spread copies | `spreadTest`, `threeSpread`, `planeTest`, `firstCharge` | `β((u − d)/L)`; three copies `3L` apart; the plane of vanishing first charge `A(f) = ∫ f e^{−u/2}` |
-| floor-tree component | `floorTreeComponent`, `componentIndicator` | the blocks `c, 2c, 2c + 1` of `(6r, 24r]`, `8r ≤ c < 9r` |
+| floor-tree component | `floorTreeComponent`, `componentIndicator` | the blocks `c, 2c, 2c + 1` of `(R, R + J]` with `R ≤ c`, `R + J ≤ 3c`, `2c + 1 < 3R` |
+| restricted ground state | `restrictTo` | `φ_S`, the ground vector on a set `S` of blocks and `0` off it |
 | reflected packet | `reflectPacket` | `u ↦ g(c − u)` |
 
 ## 3. Language
@@ -139,14 +140,25 @@ block size.
 
 **What the trees cannot do alone.**
 13. *Components* (`floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`,
-    `poincare_component_of_le_one`): on `(6r, 24r]` only the trees of `2` and `3` act, and the
-    blocks `c, 2c, 2c + 1`, `8r ≤ c < 9r`, form `r` components of the floor trees. The dilation
-    process — the Doob chain without the jets — has no gap; on these indicators the Doob energy is
-    that of the jets alone, and one bound state at ratio four forces the jets to bind `r` components,
-    a number proportional to the block size.
+    `poincare_component_of_le_one`): if `R ≤ c`, `R + J ≤ 3c` and `2c + 1 < 3R`, the parent `c`
+    has no parent and no child under `k ≥ 3` in `(R, R + J]`, and its children `2c, 2c + 1` have no
+    other parent and no child: the three blocks form a component of the floor trees. Such `c` exist
+    for every ratio below `9/2`, about `(7R − 2J)/6` of them (`r` of them on `(6r, 24r]`,
+    `component_ratio_four`). The dilation process — the Doob chain without the jets — has no gap
+    below ratio `9/2`; on these indicators the Doob energy is that of the jets alone, and one bound
+    state forces the jets to bind a number of components proportional to the block size.
+
+**Cuts.**
+14. *The cut law* (`doobCut_eq`, `doobCut_bottleneck_iff`): summing the eigenvalue equation over
+    `S`, the conductance of a cut is `C(S) = μ π(S) + N(φ_S, φ_S)`: the binding the part receives
+    from the window minus the binding it holds. So `S` is a bottleneck iff
+    `−N(φ_S, φ_S)/π(S) > μ π(S)/π(W)`, i.e. iff the part binds its piece of the ground state more
+    strongly than its share of the binding energy. With one bound state no part does
+    (`share_law_of_hermNegIndex_le_one`), so under RH every set of blocks of every window holds at
+    most its share (`share_law_of_riemannHypothesis`).
 
 **Infinite block size.**
-14. *The functional equation reflects every window* (`packetForm_reflect`, `neutralForm_reflect`):
+15. *The functional equation reflects every window* (`packetForm_reflect`, `neutralForm_reflect`):
     Weil's form depends on a packet only through its autocorrelation and the product of its
     degrees, both invariant under `u ↦ c − u`; with the translations (AGZ, `packetForm_translate`)
     the window form at infinite block size has the symmetry group of the line. The reflection of
@@ -168,7 +180,8 @@ block size.
 | Binding energy and Weil's form share the pole capacity; under RH `μ ≤ √ρ − 1/√ρ + log ρ` | `binding_add_packetForm_le`, `neg_eigenvalue_le_poleCapacity_of_riemannHypothesis` |
 | Under RH the margin of a long window tends to zero | `exists_plane_neutralForm_le_of_riemannHypothesis` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
-| Floor-tree components at ratio four | `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
+| Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
+| The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
 | Reflection symmetry at infinite block size | `packetForm_reflect`, `neutralForm_reflect` |
 
 ## 6. Questions
@@ -176,10 +189,10 @@ block size.
 | # | Question | Status |
 |---|---|---|
 | 1 | **B192**: one bound state of `(R, 3R]`, `(R, 4R]` at every block size from the true contacts of `2`, `3` | open; worked in AGZ. In MAFT terms: the conditional coupling of the overlap with dyadic middle `(3R/2, 2R]` is a contraction |
-| 2 | Which cut is the bottleneck | tool: the bottleneck criterion; at large ratio the ground state charges both ends (`sq_binding_excess_le`) and the cut between them carries the long floor maps; the cut of a window of ratio three is open |
+| 2 | Which cut is the bottleneck | exact criterion: `S` is a bottleneck iff its part binds more than its share `μ π(S)/π(W)` (`doobCut_bottleneck_iff`); under RH no part does; at large ratio the ground state charges both ends (`sq_binding_excess_le`); the cut of a window of ratio three is open |
 | 3 | Comparison of a window with its parts through the floor trees | answered by the overlap law: exact, of full rank, with the trees between the ends in `X` |
 | 4 | A curvature bound for the floor trees | open |
-| 5 | The gap of the dilation process | answered at ratio four: zero, with at least `r` components at block size `6r`; the mixing that RH needs on them comes from the jets |
+| 5 | The gap of the dilation process | answered below ratio `9/2`: zero, with a number of components of three blocks proportional to the block size; the mixing that RH needs on them comes from the jets; from ratio `9/2` on these components disappear and the gap is open |
 | 6 | Does the margin have a limit along the ratios | at infinite block size and under RH: yes, `0` (`exists_plane_neutralForm_le_of_riemannHypothesis`); at finite block size it lies in `[0, c₀]` under RH; the limit at finite block size and whether a uniform lower bound forces RH are open |
 | 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
 | 8 | A recursion along doublings | answered in overlap form: a window reduces to two shorter parts and one contraction; the balanced split sends the ratio `ρ` to `2(1 + ρ)/3` and `3ρ/(1 + ρ)` |
@@ -201,10 +214,10 @@ quantitative versions of the overlap law (margins of `S₁`, `S₃` and the norm
 
 | Trap | Truth |
 |---|---|
-| The floor trees mix by themselves | At ratio four they split into components of three blocks; the dilation process has no gap |
+| The floor trees mix by themselves | Below ratio `9/2` they split into components of three blocks; the dilation process has no gap |
 | The jets carry the binding | Without the trees the binding energy is at most `γ + π/2 + log 8π`; with them it grows like `√ρ` |
 | The prime `2` decides every ratio | At large ratio the binding is carried by the long floor maps of integers of the size of the ratio |
-| A bounded number of test functions across a cut decides | The binding has rank proportional to the block size (AGZ); the components at ratio four are proportional to the block size |
+| A bounded number of test functions across a cut decides | The binding has rank proportional to the block size (AGZ); the components below ratio `9/2` are proportional to the block size |
 | Gap and binding energy are of different orders | Both are of order `√ρ` and differ by at most `c₀`: only the sign of a bounded margin is at stake |
 | RH leaves room: the margin is bounded away from zero | Under RH the margin of long windows tends to `0` at infinite block size; no argument can rest on a uniform positive margin |
 | The binding energy may reach the Chebyshev ceiling `4√ρ` | Under RH it is at most the pole capacity `√ρ − 1/√ρ + log ρ`; the trees reproduce the pole |

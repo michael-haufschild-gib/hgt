@@ -152,6 +152,16 @@ At a general minimum the same argument uses `E-λ‖·‖₂²`.
 Admissibility of the sharp collar and both cross-kernel asymptotics remain
 to be proved; no flux identity or nonzero trace is claimed.
 
+For the shifted cross term, the corpus already gives
+`halfLineForm_shift_green_cut`: for `U=G_log f` and
+`B_h=U·1_[0,h)`, the logarithmic mixed form is exactly
+`-∫_[0,h) conj(R_f(p-h))R_f(p) dp`, where `R_f` is backward causal
+convolution. Continuity of that readout at zero would give the limit
+`-|R_f(0)|²` after division by `h`. Thus this term can use the existing
+Green identity rather than a new singular-kernel asymptotic. Passing from
+the localized Green profile back to the actual state still requires
+controlling the separated-support and arithmetic remainders.
+
 The existing density bounds suggest the useful reduction
 `|ω(s)-1/(2s)|≤1/2` for `s>0`: combine
 `two_mul_archLevyDensity_le_inv_add_half` with
