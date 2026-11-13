@@ -166,7 +166,7 @@ theorem IsForwardPath.arcEquiv_self (hγ : IsForwardPath γ) {a : ℝ} (ha : a �
 /-- The transport along the part from `b` to `a` inverts the transport from `a` to `b`. -/
 theorem IsForwardPath.arcEquiv_symm (hγ : IsForwardPath γ) {a b : ℝ} (ha : a ∈ Icc (0 : ℝ) 1)
     (hb : b ∈ Icc (0 : ℝ) 1) : (hγ.arcEquiv ha hb).symm = hγ.arcEquiv hb ha := by
-  rw [Equiv.symm_eq_iff_trans_eq_refl, ← hγ.arcEquiv_trans hb ha hb, hγ.arcEquiv_self]
+  rw [Equiv.symm_eq_iff_trans_eq_refl, ← hγ.arcEquiv_trans ha hb ha, hγ.arcEquiv_self]
 
 /-- The value of the transport along a whole path, in terms of its parts. -/
 theorem IsForwardPath.fibreEquiv_val_eq_arcEquiv (hγ : IsForwardPath γ) {τ' : ℂ}
@@ -176,6 +176,25 @@ theorem IsForwardPath.fibreEquiv_val_eq_arcEquiv (hγ : IsForwardPath γ) {τ' :
   obtain ⟨z, hz, hza⟩ := hγ.exists_isZeroLift_through ⟨le_rfl, zero_le_one⟩ p.2
   rw [hγ.arcEquiv_eq _ _ hz p hza]
   exact hγ.transports_unique (hγ.transports_fibreEquiv rfl h1 p) ⟨z, hz, hza, rfl⟩
+
+/-- The transport along a path is the composition of the transports along its two parts. -/
+theorem IsForwardPath.fibreEquiv_cut (hγ : IsForwardPath γ) {c : ℝ} (hc : c ∈ Icc (0 : ℝ) 1)
+    {τ τ' τ'' : ℂ} (h0 : γ 0 = τ) (h1 : γ 1 = τ'') (hl : IsForwardPath (subPath γ 0 c))
+    (l0 : subPath γ 0 c 0 = τ) (l1 : subPath γ 0 c 1 = τ') (hr : IsForwardPath (subPath γ c 1))
+    (r0 : subPath γ c 1 0 = τ') (r1 : subPath γ c 1 1 = τ'') :
+    hγ.fibreEquiv h0 h1 = (hl.fibreEquiv l0 l1).trans (hr.fibreEquiv r0 r1) := by
+  have h00 : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨le_rfl, zero_le_one⟩
+  have h11 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+  refine Equiv.ext fun q => hγ.fibreEquiv_eq h0 h1 ?_
+  obtain ⟨z, hz, hz0⟩ := hγ.exists_isZeroLift_through h00 (w := q.1) (by rw [h0]; exact q.2)
+  have e1 : (hl.fibreEquiv l0 l1 q).1 = z c :=
+    hl.transports_unique (hl.transports_fibreEquiv l0 l1 q)
+      (by rw [← hz0]; exact hz.transports_subPath h00 hc)
+  have e2 : (hr.fibreEquiv r0 r1 (hl.fibreEquiv l0 l1 q)).1 = z 1 :=
+    hr.transports_unique (hr.transports_fibreEquiv r0 r1 _)
+      (by rw [e1]; exact hz.transports_subPath hc h11)
+  rw [Equiv.trans_apply, e2]
+  exact ⟨z, hz, hz0, rfl⟩
 
 /-! ## Paths inside a region -/
 

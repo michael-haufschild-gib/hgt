@@ -48,6 +48,7 @@ theorem integral_weighted_translation_pairing {K F G : ℝ → ℝ}
     _ = ∫ h, ∫ u, K h * F (u - h) * G u := by
       apply integral_congr_ae
       exact Eventually.of_forall fun h => by
+        dsimp only
         rw [← integral_const_mul]
         apply integral_congr_ae
         exact Eventually.of_forall fun u => (mul_assoc _ _ _).symm
@@ -55,7 +56,10 @@ theorem integral_weighted_translation_pairing {K F G : ℝ → ℝ}
       integral_integral_swap (integrable_weighted_translation_pairing hK hKm hK0 hFm hGm hF2 hG2)
     _ = _ := by
       apply integral_congr_ae
-      exact Eventually.of_forall fun u => by rw [integral_mul_const]; rfl
+      exact Eventually.of_forall fun u => by
+        dsimp only
+        rw [integral_mul_const]
+        rfl
 
 /-- L² kernel control turns a translated mixed pairing into an ordinary-mass bound. -/
 theorem integral_weighted_translation_pairing_le {K F G : ℝ → ℝ}
@@ -74,6 +78,7 @@ theorem integral_weighted_translation_pairing_le {K F G : ℝ → ℝ}
   have hi : Integrable (fun u => lineConvolution K F u * G u) := by
     refine (hG1.norm.const_mul D).mono' (hm.mul hGm.stronglyMeasurable).aestronglyMeasurable ?_
     exact Eventually.of_forall fun u => by
+      dsimp only
       rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs]
       exact mul_le_mul_of_nonneg_right (hb u) (abs_nonneg _)
   rw [integral_weighted_translation_pairing hK hKm hK0 hFm hGm hF2 hG2,
@@ -98,6 +103,7 @@ theorem integral_weighted_forward_pairing_le {K F G : ℝ → ℝ}
       _ = _ := by
         apply integral_congr_ae
         exact Eventually.of_forall fun u => by
+          dsimp only
           rw [neg_neg, show -(-u - h) = u + h by ring]
   have hh := integral_weighted_translation_pairing_le
     (F := fun u => F (-u)) (G := fun u => G (-u))

@@ -46,8 +46,8 @@ Modulus rigidity may also pass through the actual Gamma form. Compress a
 trial profile, use the Lévy contraction inequality, then take the verified
 Gamma/logarithm limit. Opposite-sign mass on two separated bounded sets
 gives a fixed positive jump loss under this rescaling, so strictness should
-survive the limit. The new `HalfLineGammaContractions` draft supplies the
-needed nonlinear-domain bridge once audited.
+survive the limit. The audited `HalfLineGammaContractions` module supplies
+the needed nonlinear-domain bridge.
 
 If closed attainment and cutoff recovery hold, dilation of a limiting
 minimizer forces its first moment to be `1/8`. Together with the universal

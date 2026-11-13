@@ -53,6 +53,10 @@ def liouvilleRamanujanFactor (q : ℕ) (s : ℂ) : ℂ :=
   ∑ x ∈ q.divisorsAntidiagonal,
     (μ x.1 : ℂ) * x.2 * (liouvilleC x.2 * (x.2 : ℂ) ^ (-s))
 
+theorem snd_pos_of_mem {q : ℕ} {x : ℕ × ℕ} (hx : x ∈ q.divisorsAntidiagonal) : 0 < x.2 := by
+  obtain ⟨h1, h2⟩ := Nat.mem_divisorsAntidiagonal.mp hx
+  exact Nat.pos_of_ne_zero fun h => h2 (by rw [← h1, h, mul_zero])
+
 /-- `μ(em) = μ(e) · 1_e(m) μ(m)` with `1_e` the trivial character modulo `e`. -/
 theorem moebius_mul_eq {e : ℕ} [NeZero e] (m : ℕ) :
     (μ (e * m) : ℂ) = (μ e : ℂ) * ((1 : DirichletCharacter ℂ e) m * (μ m : ℂ)) := by
@@ -87,7 +91,7 @@ theorem LSeries_dvd_eq {e : ℕ} (he : 0 < e) {f g : ℕ → ℂ} (hf : ∀ n, �
         rw [Complex.cpow_ne_zero_iff]; left; exact_mod_cast he.ne'
       rw [LSeries.term_of_ne_zero hem, LSeries.term_of_ne_zero hm, hfg, Nat.cast_mul,
         Complex.natCast_mul_natCast_cpow, Complex.cpow_neg]
-      field_simp
+      ring
   unfold LSeries
   rw [← (mul_right_injective₀ he.ne').tsum_eq hsupp]
   simp only [hterm]
@@ -102,7 +106,8 @@ theorem LSeries_moebius_dvd {e : ℕ} (he : 0 < e) {s : ℂ} (hs : 1 < s.re) :
   have hs1 : s ≠ 1 := fun h => by rw [h] at hs; simp at hs
   have hχ : LSeries (↗(1 : DirichletCharacter ℂ e) * ↗μ) s = eulerInv e s / riemannZeta s := by
     have h := DirichletCharacter.LSeries.mul_mu_eq_one (1 : DirichletCharacter ℂ e) hs
-    rw [← DirichletCharacter.LFunction_eq_LSeries _ hs, HalfWeight.LFunction_one_eq e hs1] at h
+    rw [← DirichletCharacter.LFunction_eq_LSeries _ hs,
+      GaloisForLFunctions.RHTower.HalfWeight.LFunction_one_eq e hs1] at h
     rw [eq_inv_of_mul_eq_one_right h, mul_inv, eulerInv, div_eq_mul_inv, mul_comm]
   rw [LSeries_dvd_eq he (g := ↗(1 : DirichletCharacter ℂ e) * ↗μ)
     (fun n hn => by simp [hn]) (μ e : ℂ) (fun m => by
@@ -138,14 +143,17 @@ theorem norm_moebius_le_one (n : ℕ) : ‖(μ n : ℂ)‖ ≤ 1 := by
   rw [Complex.norm_intCast]; exact_mod_cast ArithmeticFunction.abs_moebius_le_one
 
 theorem norm_liouvilleC_le_one (n : ℕ) : ‖liouvilleC n‖ ≤ 1 := by
-  rw [liouvilleC_apply, Complex.norm_intCast]
-  rcases ArithmeticFunction.liouville_eq_one_or_neg_one (n := n) with h | h <;> simp [h]
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · rw [liouvilleC_apply, ArithmeticFunction.liouville_apply hn]
+    push_cast
+    rw [norm_pow, norm_neg, norm_one, one_pow]
 
 /-- **The Ramanujan twist of `μ`**: `Σ μ(n) c_q(n) n^{−s} = R_q(s)/ζ(s)` on `Re s > 1`. -/
 theorem LSeries_moebius_mul_ramanujanSum {q : ℕ} (hq : 0 < q) {s : ℂ} (hs : 1 < s.re) :
     LSeries (fun n => (μ n : ℂ) * ramanujanSum q n) s = ramanujanFactor q s / riemannZeta s := by
   have hx2 : ∀ x ∈ q.divisorsAntidiagonal, 0 < x.2 := fun x hx =>
-    Nat.pos_of_ne_zero (Nat.ne_zero_of_mem_divisorsAntidiagonal_right hx)
+    snd_pos_of_mem hx
   have hsumm : ∀ x ∈ q.divisorsAntidiagonal, LSeriesSummable
       (fun n => ((μ x.1 : ℂ) * x.2) * (if x.2 ∣ n then (μ n : ℂ) else 0)) s := fun x _ =>
     lseriesSummable_of_bounded (B := ‖(μ x.1 : ℂ) * x.2‖) (fun n => by
@@ -154,7 +162,7 @@ theorem LSeries_moebius_mul_ramanujanSum {q : ℕ} (hq : 0 < q) {s : ℂ} (hs : 
       split_ifs
       · exact norm_moebius_le_one n
       · simp) hs
-  rw [mul_ramanujanSum_eq hq, LSeries_sum hsumm]
+  rw [mul_ramanujanSum_eq hq (fun n => (μ n : ℂ)), LSeries_sum hsumm]
   have hterm : ∀ x ∈ q.divisorsAntidiagonal,
       LSeries (fun n => ((μ x.1 : ℂ) * x.2) * (if x.2 ∣ n then (μ n : ℂ) else 0)) s =
         (μ x.1 : ℂ) * x.2 * ((μ x.2 : ℂ) * (x.2 : ℂ) ^ (-s) * eulerInv x.2 s) / riemannZeta s := by
@@ -171,7 +179,7 @@ theorem LSeries_liouville_mul_ramanujanSum {q : ℕ} (hq : 0 < q) {s : ℂ} (hs 
     LSeries (fun n => liouvilleC n * ramanujanSum q n) s =
       liouvilleRamanujanFactor q s * (riemannZeta (2 * s) / riemannZeta s) := by
   have hx2 : ∀ x ∈ q.divisorsAntidiagonal, 0 < x.2 := fun x hx =>
-    Nat.pos_of_ne_zero (Nat.ne_zero_of_mem_divisorsAntidiagonal_right hx)
+    snd_pos_of_mem hx
   have hsumm : ∀ x ∈ q.divisorsAntidiagonal, LSeriesSummable
       (fun n => ((μ x.1 : ℂ) * x.2) * (if x.2 ∣ n then liouvilleC n else 0)) s := fun x _ =>
     lseriesSummable_of_bounded (B := ‖(μ x.1 : ℂ) * x.2‖) (fun n => by
@@ -180,7 +188,7 @@ theorem LSeries_liouville_mul_ramanujanSum {q : ℕ} (hq : 0 < q) {s : ℂ} (hs 
       split_ifs
       · exact norm_liouvilleC_le_one n
       · simp) hs
-  rw [mul_ramanujanSum_eq hq, LSeries_sum hsumm]
+  rw [mul_ramanujanSum_eq hq (fun n => liouvilleC n), LSeries_sum hsumm]
   have hterm : ∀ x ∈ q.divisorsAntidiagonal,
       LSeries (fun n => ((μ x.1 : ℂ) * x.2) * (if x.2 ∣ n then liouvilleC n else 0)) s =
         (μ x.1 : ℂ) * x.2 * (liouvilleC x.2 * (x.2 : ℂ) ^ (-s)) *
@@ -221,7 +229,7 @@ theorem differentiableAt_ramanujanFactor (q : ℕ) {s : ℂ} (hs : 0 < s.re) :
     DifferentiableAt ℂ (ramanujanFactor q) s := by
   unfold ramanujanFactor
   refine DifferentiableAt.fun_sum fun x hx => ?_
-  have hx0 : (x.2 : ℂ) ≠ 0 := by exact_mod_cast Nat.ne_zero_of_mem_divisorsAntidiagonal_right hx
+  have hx0 : (x.2 : ℂ) ≠ 0 := by exact_mod_cast (snd_pos_of_mem hx).ne'
   exact (((differentiableAt_id.neg.const_cpow (Or.inl hx0)).const_mul _).mul
     (differentiableAt_eulerInv x.2 hs)).const_mul _
 
@@ -230,7 +238,7 @@ theorem differentiable_liouvilleRamanujanFactor (q : ℕ) :
   intro s
   unfold liouvilleRamanujanFactor
   refine DifferentiableAt.fun_sum fun x hx => ?_
-  have hx0 : (x.2 : ℂ) ≠ 0 := by exact_mod_cast Nat.ne_zero_of_mem_divisorsAntidiagonal_right hx
+  have hx0 : (x.2 : ℂ) ≠ 0 := by exact_mod_cast (snd_pos_of_mem hx).ne'
   exact ((differentiableAt_id.neg.const_cpow (Or.inl hx0)).const_mul _).const_mul _
 
 /-- `|Π_{p|e} (1 − p^{−s})⁻¹| ≤ (1 − 2^{−1/2})^{−ω(e)}` on `Re s ≥ 1/2`. -/
@@ -264,14 +272,14 @@ theorem exists_norm_ramanujanFactor_le (q : ℕ) :
       have : (2 : ℝ) ^ (-(1 / 2 : ℝ)) < 1 :=
         Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by norm_num)
       linarith)
-    exact Finset.sum_nonneg fun x _ => by positivity
+    exact Finset.sum_nonneg fun x _ => mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hc0 _)
   unfold ramanujanFactor
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun x hx => ?_)
-  have hx1 : 1 ≤ x.2 := Nat.one_le_iff_ne_zero.mpr (Nat.ne_zero_of_mem_divisorsAntidiagonal_right hx)
+  have hx1 : 1 ≤ x.2 := snd_pos_of_mem hx
   have hcpow : ‖(x.2 : ℂ) ^ (-s)‖ ≤ 1 := by
     rw [Complex.norm_natCast_cpow_of_pos (by omega), Complex.neg_re]
     exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hx1) (by linarith)
-  rw [norm_mul, norm_mul, norm_mul, norm_mul, Complex.norm_natCast]
+  simp only [norm_mul, Complex.norm_natCast]
   have h1 := norm_moebius_le_one x.1
   have h2 := norm_moebius_le_one x.2
   have h3 := norm_eulerInv_le x.2 hs
@@ -285,11 +293,11 @@ theorem norm_liouvilleRamanujanFactor_le (q : ℕ) {s : ℂ} (hs : 0 ≤ s.re) :
     ‖liouvilleRamanujanFactor q s‖ ≤ ∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ) := by
   unfold liouvilleRamanujanFactor
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun x hx => ?_)
-  have hx1 : 1 ≤ x.2 := Nat.one_le_iff_ne_zero.mpr (Nat.ne_zero_of_mem_divisorsAntidiagonal_right hx)
+  have hx1 : 1 ≤ x.2 := snd_pos_of_mem hx
   have hcpow : ‖(x.2 : ℂ) ^ (-s)‖ ≤ 1 := by
     rw [Complex.norm_natCast_cpow_of_pos (by omega), Complex.neg_re]
     exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hx1) (by linarith)
-  rw [norm_mul, norm_mul, norm_mul, Complex.norm_natCast]
+  simp only [norm_mul, Complex.norm_natCast]
   have h1 := norm_moebius_le_one x.1
   have h2 := norm_liouvilleC_le_one x.2
   calc ‖(μ x.1 : ℂ)‖ * (x.2 : ℝ) * (‖liouvilleC x.2‖ * ‖(x.2 : ℂ) ^ (-s)‖)
@@ -301,7 +309,7 @@ theorem norm_liouvilleRamanujanFactor_le (q : ℕ) {s : ℂ} (hs : 0 ≤ s.re) :
 /-- **The window sum of a kernel with bounded Dirichlet coefficients.**  If on `Re s = 2` the world
 kernel is `e^{(s−c)²} L(a, s)` with `|a(n)| ≤ B`, its signal at `Z` is the Gaussian window sum
 `Σ_n a(n) e^{c(log Z − log n) − (log Z − log n)²/4}/(2√π)`. -/
-theorem signal_eq_tsum_of_LSeries (c : ℝ) {A : ℂ → ℂ} {a : ℕ → ℂ} {B : ℝ}
+theorem signal_eq_tsum_of_LSeries (c : ℝ) {A : ℂ → ℂ} {a : ℕ → ℂ} {B : ℝ} (ha0 : a 0 = 0)
     (hB : ∀ n, ‖a n‖ ≤ B)
     (hA : ∀ s : ℂ, s.re = 2 → worldKernel c A s = cexp ((s - c) ^ 2) * LSeries a s)
     {Z : ℝ} (hZ : 0 < Z) :
@@ -381,7 +389,7 @@ theorem signal_eq_tsum_of_LSeries (c : ℝ) {A : ℂ → ℂ} {a : ℕ → ℂ} 
   rw [integral_congr_ae (Eventually.of_forall hsum), ← hswap, ← tsum_mul_left]
   refine tsum_congr fun n => ?_
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [F]
+  · simp [F, ha0]
   · have hFn : (F n) = fun t : ℝ => a n * (cexp (((Real.log Z - Real.log n : ℝ) : ℂ) *
         (((2 : ℝ) : ℂ) + (t : ℂ) * I)) * cexp ((((2 : ℝ) : ℂ) + (t : ℂ) * I - c) ^ 2)) := by
       funext t
@@ -436,17 +444,18 @@ theorem signal_ramanujanKernel_eq_tsum (c : ℝ) {q : ℕ} (hq : 0 < q) {Z : ℝ
       ∑' n : ℕ, (μ n : ℂ) * ramanujanSum q n * ((Real.exp (c * (Real.log Z - Real.log n) -
         (Real.log Z - Real.log n) ^ 2 / 4) / (2 * Real.sqrt Real.pi) : ℝ) : ℂ) := by
   refine signal_eq_tsum_of_LSeries c (B := ∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ))
-    (fun n => ?_) (fun s hs => ?_) hZ
+    (by simp) (fun n => ?_) (fun s hs => ?_) hZ
   · rw [norm_mul]
-    exact mul_le_of_le_one_left (norm_nonneg _) (norm_moebius_le_one n) |>.trans'
-      (mul_le_mul_of_nonneg_left (norm_ramanujanSum_le hq n) (norm_nonneg _)) |>.trans
-      (by rw [← one_mul (∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ))]
-          exact mul_le_mul_of_nonneg_right (norm_moebius_le_one n)
-            (Finset.sum_nonneg fun x _ => Nat.cast_nonneg _))
+    calc ‖(μ n : ℂ)‖ * ‖ramanujanSum q n‖ ≤ 1 * ∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ) :=
+          mul_le_mul (norm_moebius_le_one n) (norm_ramanujanSum_le hq n) (norm_nonneg _)
+            zero_le_one
+      _ = _ := one_mul _
   · have hs1 : s ≠ 1 := fun h => by rw [h] at hs; norm_num at hs
+    have hζ := riemannZeta_ne_zero_of_one_lt_re (show 1 < s.re by rw [hs]; norm_num)
+    have hs10 := sub_ne_zero.mpr hs1
     rw [LSeries_moebius_mul_ramanujanSum hq (by rw [hs]; norm_num), worldKernel,
       ramanujanNumerator, zetaEntire_eq hs1]
-    field_simp [sub_ne_zero.mpr hs1]
+    field_simp
 
 /-- **The Ramanujan-twisted Liouville window sum** is the signal of the world kernel of
 `A^λ_q`. -/
@@ -456,16 +465,18 @@ theorem signal_liouvilleRamanujanKernel_eq_tsum (c : ℝ) {q : ℕ} (hq : 0 < q)
       ∑' n : ℕ, liouvilleC n * ramanujanSum q n * ((Real.exp (c * (Real.log Z - Real.log n) -
         (Real.log Z - Real.log n) ^ 2 / 4) / (2 * Real.sqrt Real.pi) : ℝ) : ℂ) := by
   refine signal_eq_tsum_of_LSeries c (B := ∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ))
-    (fun n => ?_) (fun s hs => ?_) hZ
+    (by simp) (fun n => ?_) (fun s hs => ?_) hZ
   · rw [norm_mul]
     calc ‖liouvilleC n‖ * ‖ramanujanSum q n‖ ≤ 1 * ∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ) :=
           mul_le_mul (norm_liouvilleC_le_one n) (norm_ramanujanSum_le hq n) (norm_nonneg _)
             zero_le_one
       _ = _ := one_mul _
   · have hs1 : s ≠ 1 := fun h => by rw [h] at hs; norm_num at hs
+    have hζ := riemannZeta_ne_zero_of_one_lt_re (show 1 < s.re by rw [hs]; norm_num)
+    have hs10 := sub_ne_zero.mpr hs1
     rw [LSeries_liouville_mul_ramanujanSum hq (by rw [hs]; norm_num), worldKernel,
       liouvilleRamanujanNumerator, liouvilleNumerator, zetaEntire_eq hs1]
-    field_simp [sub_ne_zero.mpr hs1]
+    field_simp
 
 /-! ## The tangent data -/
 
@@ -522,7 +533,8 @@ theorem tangentDatum_liouvilleRamanujanTwist
   rw [norm_mul]
   calc ‖liouvilleNumerator s‖ * ‖liouvilleRamanujanFactor q s‖
       ≤ ((1 + 1 / (2 * σ - 1)) * (2 + |s.im|)) * ∑ x ∈ q.divisorsAntidiagonal, (x.2 : ℝ) :=
-        mul_le_mul hL hR (norm_nonneg _) (by positivity)
+        mul_le_mul hL hR (norm_nonneg _)
+          (mul_nonneg (add_nonneg zero_le_one (one_div_nonneg.mpr (by linarith))) (by positivity))
     _ = _ := by ring
 
 /-- **The residue numerators of the Ramanujan twists.**  With `(s − 1)ζ(s) = (s − ρ)^m g(s)` at a
@@ -537,5 +549,10 @@ theorem ramanujanNumerator_div_eq (c : ℝ) (q : ℕ) (g : ℂ → ℂ) :
   refine ⟨funext fun s => ?_, funext fun s => ?_⟩
   · unfold ramanujanNumerator mobiusNumerator; ring
   · unfold liouvilleRamanujanNumerator liouvilleNumerator mobiusNumerator; ring
+
+#print axioms tangentDatum_ramanujanTwist
+#print axioms tangentDatum_liouvilleRamanujanTwist
+#print axioms signal_liouvilleRamanujanKernel_eq_tsum
+#print axioms signal_ramanujanKernel_eq_tsum
 
 end GaloisForLFunctions.FloorFreeArithmetic

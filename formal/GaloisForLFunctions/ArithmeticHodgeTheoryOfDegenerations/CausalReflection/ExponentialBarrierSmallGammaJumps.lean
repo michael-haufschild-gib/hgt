@@ -47,14 +47,14 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_smallGamma_lower {F : �
     (hβ : 0 < β) (ht : 0 ≤ t) (hδ1 : δ ≤ 1) :
     -halfLineBarrierSmallJumpConstant β *
       (∫ u, F u * exponentialBarrierPositiveLevel β t F u) ≤
-      ∫ h in Ioo 0 δ, halfLineGammaMixedJump F (exponentialBarrierPositiveLevel β t F) h := by
+      ∫ h in Ioc 0 δ, halfLineGammaMixedJump F (exponentialBarrierPositiveLevel β t F) h := by
   let M : ℝ := ∫ u, F u * exponentialBarrierPositiveLevel β t F u
   have hM : 0 ≤ M := integral_nonneg fun u =>
     hF.mul_exponentialBarrierPositiveLevel_nonneg ht β u
   have hj := integrableOn_halfLineGammaMixedJump hF (hF.exponentialBarrierPositiveLevel hβ ht)
   have hi := CHMDDoobGraph.integrableOn_mul_archLevyDensity
-  have hsubset : Ioo (0 : ℝ) δ ⊆ Ioi 0 := fun _ hh => hh.1
-  have hrow : (∫ h in Ioo 0 δ, h * archLevyDensity h) ≤
+  have hsubset : Ioc (0 : ℝ) δ ⊆ Ioi 0 := fun _ hh => hh.1
+  have hrow : (∫ h in Ioc 0 δ, h * archLevyDensity h) ≤
       ∫ h in Ioi 0, h * archLevyDensity h := by
     apply setIntegral_mono_set hi
       ((ae_restrict_mem measurableSet_Ioi).mono fun h hh =>
@@ -63,17 +63,17 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrier_smallGamma_lower {F : �
   have hk : 0 ≤ β * Real.exp β * M := mul_nonneg (mul_nonneg hβ.le (Real.exp_pos _).le) hM
   have hscaled := mul_le_mul_of_nonneg_left hrow hk
   calc
-    _ ≤ -(β * Real.exp β * M) * (∫ h in Ioo 0 δ, h * archLevyDensity h) := by
+    _ ≤ -(β * Real.exp β * M) * (∫ h in Ioc 0 δ, h * archLevyDensity h) := by
       dsimp only [halfLineBarrierSmallJumpConstant, M] at hscaled ⊢
       nlinarith only [hscaled]
-    _ = ∫ h in Ioo 0 δ, -(β * Real.exp β * M) * (h * archLevyDensity h) :=
+    _ = ∫ h in Ioc 0 δ, -(β * Real.exp β * M) * (h * archLevyDensity h) :=
       (integral_const_mul _ _).symm
     _ ≤ _ := by
       apply integral_mono_ae ((hi.mono_set hsubset).const_mul _) (hj.mono_set hsubset)
-      filter_upwards [ae_restrict_mem measurableSet_Ioo] with h hh
+      filter_upwards [ae_restrict_mem measurableSet_Ioc] with h hh
       have hlo := hF.exponentialBarrier_levyJump_lower hβ ht hh.1
       have hc := (exponentialBarrier_jump_correction_bound hβ.le hh.1.le
-        (hh.2.le.trans hδ1)).2
+        (hh.2.trans hδ1)).2
       have hw := mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_right hc (archLevyDensity_pos hh.1).le) hM
       change archLevyDensity h * (2 - Real.exp (β * h) - Real.exp (-(β * h))) * M ≤ _ at hlo

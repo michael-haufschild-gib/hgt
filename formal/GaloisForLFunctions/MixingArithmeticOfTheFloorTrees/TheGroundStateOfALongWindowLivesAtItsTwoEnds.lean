@@ -47,7 +47,7 @@ def topMass (K R J : ℕ) (σ : ℕ → ℝ) : ℝ :=
 
 /-- **A long floor map joins the bottom to the top.** For `k ≥ K` its contact form is at most
 `√k (bot/s + s·top)` for every `s > 0`: weighted Schur test with weight `√k s` on the edges. -/
-theorem sum_longMap_le {R J K k : ℕ} (hk : 2 ≤ k) (hKk : K ≤ k) (σ : ℕ → ℝ)
+theorem sum_longMap_le {R J K k : ℕ} (hR : 1 ≤ R) (hk : 2 ≤ k) (hKk : K ≤ k) (σ : ℕ → ℝ)
     {s : ℝ} (hs : 0 < s) :
     ∑ j ∈ range J, ∑ l ∈ range J, σ j * σ l *
         (if max (R + j) (R + l) / k = min (R + j) (R + l) then (1 : ℝ) else 0) ≤
@@ -184,7 +184,9 @@ theorem sum_contact_le_short_long {R : ℕ} (hR : 1 ≤ R) (Q J K : ℕ) (σ : �
       ∑ k ∈ Icc 2 Q, ((if k < K then 2 * ((Λ k : ℝ) / Real.sqrt k) * ∑ j ∈ range J, σ j ^ 2
           else 0) + (if K ≤ k then (Λ k : ℝ) / Real.sqrt k *
             (bottomMass K R J σ / s + s * topMass K R J σ) else 0)) := by
-    rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.sum_mul, Finset.sum_mul]
+    rw [Finset.sum_add_distrib,
+      Finset.mul_sum (Icc 2 Q) (fun k => if k < K then (Λ k : ℝ) / Real.sqrt k else 0) 2,
+      Finset.sum_mul, Finset.sum_mul]
     congr 1
     · exact Finset.sum_congr rfl fun k _ => by split_ifs <;> ring
     · exact Finset.sum_congr rfl fun k _ => by split_ifs <;> ring
@@ -216,7 +218,7 @@ theorem sum_contact_le_short_long {R : ℕ} (hR : 1 ≤ R) (Q J K : ℕ) (σ : �
       _ = 2 * ((Λ k : ℝ) / k * Real.sqrt k) * ∑ j ∈ range J, σ j ^ 2 := by ring
       _ = _ := by rw [hdiv]
   · rw [if_neg hkK, if_pos (show K ≤ k by omega), zero_add]
-    have h := sum_longMap_le (R := R) (J := J) hk2 (show K ≤ k by omega) σ hs
+    have h := sum_longMap_le (J := J) hR hk2 (show K ≤ k by omega) σ hs
     calc (Λ k : ℝ) / k * ∑ j ∈ range J, ∑ l ∈ range J, σ j * σ l *
           (if max (R + j) (R + l) / k = min (R + j) (R + l) then (1 : ℝ) else 0)
         ≤ (Λ k : ℝ) / k * (Real.sqrt k * (bottomMass K R J σ / s + s * topMass K R J σ)) :=
@@ -293,7 +295,7 @@ theorem sq_binding_excess_le {Q R J K : ℕ} (hR : 1 ≤ R) {φ : Fin J → ℝ}
         (∑ j ∈ range J, extendFin φ j ^ 2) ^ 2 ≤
       4 * (∑ k ∈ Icc 2 Q, if K ≤ k then (Λ k : ℝ) / Real.sqrt k else 0) ^ 2 *
         (bottomMass K R J (extendFin φ) * topMass K R J (extendFin φ)) :=
-  sq_le_of_le_weighted hκ (Finset.sum_nonneg fun j _ => sq_nonneg _) hbot htop
+  sq_le_of_le_weighted hκ (Finset.sum_nonneg fun _ _ => sq_nonneg _) hbot htop
     (binding_le_short_add_long (K := K) hR heig (Real.sqrt_pos.mpr (div_pos hbot htop)))
 
 end GaloisForLFunctions.MixingArithmeticOfTheFloorTrees

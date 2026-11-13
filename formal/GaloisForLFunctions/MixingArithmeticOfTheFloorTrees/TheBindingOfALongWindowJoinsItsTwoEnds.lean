@@ -148,12 +148,9 @@ theorem sum_twoEnds_floorContact_ge {m R Q : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) 
       ∑ k ∈ Icc 2 Q, (Λ k : ℝ) / k * ∑ i ∈ range (10 * m * R), ∑ j ∈ range R,
         (if (10 * m * R + i) / k = R + j then (1 : ℝ) else 0) := by
     simp only [floorContact, Finset.mul_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [Finset.sum_comm]
-    exact Finset.sum_congr rfl fun k _ => by split_ifs <;> ring
+    rw [Finset.sum_comm, Finset.sum_congr rfl fun i _ => Finset.sum_comm, Finset.sum_comm]
+    exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ =>
+      Finset.sum_congr rfl fun j _ => by split_ifs <;> ring
   rw [hexp]
   have hsub : Icc (6 * m) (15 * m) ⊆ Icc 2 Q := Finset.Icc_subset_Icc (by omega) hQ
   refine le_trans ?_ (Finset.sum_le_sum_of_subset_of_nonneg hsub fun k hk _ => by
@@ -178,10 +175,10 @@ theorem sum_twoEnds_floorContact_ge {m R Q : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) 
           nlinarith
       _ ≤ _ := mul_le_mul_of_nonneg_left hcount (div_nonneg hΛ hk0.le)
   refine le_trans ?_ (Finset.sum_le_sum hterm)
-  rw [← Finset.sum_mul, mul_comm]
+  rw [← Finset.sum_mul]
   have hpsi := psi_sub_psi_le_sum_Icc (6 * m) (15 * m) (by omega)
   have hR' : (0 : ℝ) ≤ 2 * R / 15 := by positivity
-  exact mul_le_mul_of_nonneg_left hpsi hR'
+  exact (mul_le_mul_of_nonneg_left hpsi hR').trans_eq (mul_comm _ _)
 
 /-! ### The packet on the two ends -/
 
@@ -209,8 +206,9 @@ theorem sum_twoEnds_neutralBlock_le {m R Q : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) 
   rw [sum_comb_form (fun j l => neutralBlock Q (R + j) (R + l))
     (fun a b => neutralBlock_comm Q _ _)]
   -- the first end
-  have hAA : ∑ j ∈ range ((20 * m - 1) * R), ∑ l ∈ range ((20 * m - 1) * R), firstBlocks R j * firstBlocks R l *
-      neutralBlock Q (R + j) (R + l) = R * neutralBlock Q 1 1 := by
+  have hAA : ∑ j ∈ range ((20 * m - 1) * R), ∑ l ∈ range ((20 * m - 1) * R),
+      firstBlocks R j * firstBlocks R l * neutralBlock Q (R + j) (R + l) =
+        R * neutralBlock Q 1 1 := by
     rw [← sum_neutralBlock_dyadic Q hR]
     have h1 : ∀ j, ∑ l ∈ range ((20 * m - 1) * R), firstBlocks R j * firstBlocks R l *
         neutralBlock Q (R + j) (R + l) =
@@ -279,12 +277,15 @@ theorem sum_twoEnds_neutralBlock_le {m R Q : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) 
     push_cast
     field_simp
   have hτ0 : 0 ≤ (1 / Real.sqrt (10 * m)) := by positivity
-  have hτform : 2 * (1 / Real.sqrt (10 * m)) * (2 * R / 15 * (ψ ((15 * m : ℕ) : ℝ) - ψ ((6 * m : ℕ) : ℝ))) =
+  have hτform : 2 * (1 / Real.sqrt (10 * m)) *
+      (2 * R / 15 * (ψ ((15 * m : ℕ) : ℝ) - ψ ((6 * m : ℕ) : ℝ))) =
       4 * R / (15 * Real.sqrt (10 * m)) * (ψ ((15 * m : ℕ) : ℝ) - ψ ((6 * m : ℕ) : ℝ)) := by
     field_simp
     ring
-  have hcross' := mul_le_mul_of_nonneg_left hcross (by positivity : (0 : ℝ) ≤ 2 * (1 / Real.sqrt (10 * m)))
-  have e : (1 / Real.sqrt (10 * m)) ^ 2 * (((10 * m * R : ℕ) : ℝ) * neutralBlock Q 1 1) = R * neutralBlock Q 1 1 := by
+  have hcross' := mul_le_mul_of_nonneg_left hcross
+    (by positivity : (0 : ℝ) ≤ 2 * (1 / Real.sqrt (10 * m)))
+  have e : (1 / Real.sqrt (10 * m)) ^ 2 * (((10 * m * R : ℕ) : ℝ) * neutralBlock Q 1 1) =
+      R * neutralBlock Q 1 1 := by
     rw [← mul_assoc, hτ2]
   rw [e]
   nlinarith [hcross', hτform]
@@ -292,8 +293,8 @@ theorem sum_twoEnds_neutralBlock_le {m R Q : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) 
 /-- The mass of the packet on the two ends is `2R`. -/
 theorem sum_twoEnds_sq {m R : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) :
     ∑ j ∈ range ((20 * m - 1) * R),
-        (firstBlocks R j + 1 / Real.sqrt (10 * m) * blockRange ((10 * m - 1) * R) (10 * m * R) j) ^ 2 =
-      2 * R := by
+        (firstBlocks R j + 1 / Real.sqrt (10 * m) *
+          blockRange ((10 * m - 1) * R) (10 * m * R) j) ^ 2 = 2 * (R : ℝ) := by
   have hdisj : ∀ j, firstBlocks R j * blockRange ((10 * m - 1) * R) (10 * m * R) j = 0 := by
     intro j
     simp only [firstBlocks, blockRange]
@@ -328,16 +329,17 @@ theorem sum_twoEnds_sq {m R : ℕ} (hm : 1 ≤ m) (hR : 1 ≤ R) :
           (1 / Real.sqrt (10 * m)) ^ 2 * blockRange ((10 * m - 1) * R) (10 * m * R) j ^ 2 := by
           ring
       _ = _ := by rw [hsq1, hsq2, h]; ring
-  simp only [hexp, Finset.sum_add_distrib, ← Finset.mul_sum]
-  rw [sum_range_firstBlocks_mul hJ, sum_blockRange_mul hsJ]
-  simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
   have hm' : (0 : ℝ) < 10 * m := by
     have : (0 : ℝ) < m := by exact_mod_cast hm
     linarith
-  rw [div_pow, one_pow, Real.sq_sqrt hm'.le]
-  push_cast
-  field_simp
-  ring
+  have hτ2 : (1 / Real.sqrt (10 * m)) ^ 2 * ((10 * m * R : ℕ) : ℝ) = R := by
+    simp only [div_pow, one_pow, Real.sq_sqrt hm'.le]
+    push_cast
+    field_simp
+  simp only [hexp, Finset.sum_add_distrib, ← Finset.mul_sum]
+  rw [sum_range_firstBlocks_mul hJ, sum_blockRange_mul hsJ]
+  simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
+  linarith [hτ2]
 
 /-- **The binding energy of a window of ratio `20m` is at least the depth of a dyadic window plus
 `(2/(15√(10m))) (ψ(15m) − ψ(6m))`**, at every block size. -/

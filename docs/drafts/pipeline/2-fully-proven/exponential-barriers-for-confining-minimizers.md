@@ -128,10 +128,15 @@ the two-sided bound. Given `b<15`, choose
 
 ## Lean status
 
-Twelve modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
-contain unchecked proofs:
+`ArithmeticHodgeTheoryOfDegenerations/CausalReflection/HalfLineGammaContractions`
+passes its final plain source audit without warnings, with exactly
+`propext`, `Classical.choice`, and `Quot.sound`. It is wired; its required
+olean exists. It proves both directions of the jump/Gamma domain bridge
+and closure under zero-preserving real contractions.
 
-- `HalfLineGammaContractions`: the two-way jump/Gamma domain bridge and contraction closure.
+Twelve further modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+await final source audits:
+
 - `NegativeHalfLineExponentialBarrier`: exact exponential autocorrelation, translation defect, and Gamma integrability.
 - `ExponentialBarrierPositiveLevels`: admissibility of positive-level tests in the actual domain.
 - `WeightedPositiveLevelAlgebra`: the weighted row inequality and exact relative-jump decomposition.
@@ -139,19 +144,20 @@ contain unchecked proofs:
 - `HalfLineExponentialBarrierJumps`: the integrated exponential correction for each mixed Gamma jump.
 - `ExponentialBarrierPrimeEdges`: the support-restricted diagonal comparison for each literal prime term.
 - `ExponentialBarrierPrimeRows`: a Chebyshev bound for every finite forward row and convergence of the complete backward row.
+- `ExponentialBarrierPrimeComparison`: the integrated complete prime mixed-form comparison, passing from finite edge sums by actual-domain absolute summability.
 - `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
 - `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
-- `HalfLineGammaLargeJumps`: the cutoff-kernel realization and ordinary-mass bounds for both mixed rows; the assembled large-jump estimate remains unwritten.
+- `HalfLineGammaLargeJumps`: the cutoff-kernel realization, both ordinary-mass row bounds, and the exact integrated large-jump identity and lower estimate.
 - `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential.
 
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. Thirteen supporting drafts are present in total.
+also `L²`. One of fourteen supporting modules is audited and wired.
 
-The integrated complete prime-row comparison, large-jump Gamma estimate, and
-maximum-principle conclusion remain to be formalized. None of these modules
-is audited or counted yet.
+The full Gamma comparison and maximum-principle conclusion remain to be
+formalized. The complete prime comparison and large-jump Gamma estimate are written but unaudited. No barrier theorem or
+contribution is counted yet.
 
 ## Boundary implication and limit
 
