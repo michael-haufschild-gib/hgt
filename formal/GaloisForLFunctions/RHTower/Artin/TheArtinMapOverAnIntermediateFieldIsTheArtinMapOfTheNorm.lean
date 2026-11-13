@@ -86,10 +86,11 @@ theorem primeValuesHom_idealUnit (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ) :
   refine Units.ext ?_
   have hfin : Function.HasFiniteMulSupport fun v : HeightOneSpectrum (𝓞 K) =>
       idealUnit v.ne_bot ^ count K v (I : FractionalIdeal (𝓞 K)⁰ K) :=
-    finite_mulSupport_zpow_count _ I
+    finite_mulSupport_zpow_count (fun v : HeightOneSpectrum (𝓞 K) => idealUnit v.ne_bot)
+      (I : FractionalIdeal (𝓞 K)⁰ K)
   rw [primeValuesHom_apply, ← Units.coeHom_apply, map_finprod _ hfin]
   simp only [Units.coeHom_apply, Units.val_zpow_eq_zpow_val, coe_idealUnit]
-  exact finprod_heightOneSpectrum_factorization' I.ne_zero
+  exact finprod_heightOneSpectrum_factorization' K I.ne_zero
 
 /-- A homomorphism on the fractional ideals is given by its values on the primes. -/
 theorem eq_primeValuesHom (f : (FractionalIdeal (𝓞 K)⁰ K)ˣ →* A) :
@@ -184,7 +185,7 @@ theorem inertiaDeg_eq_one_of_absNorm_eq (w : HeightOneSpectrum (𝓞 E))
   have h2 := two_le_absNorm_of_isPrime (w.under (𝓞 K)).isPrime (w.under (𝓞 K)).ne_bot
   have hpow := absNorm_eq_absNorm_under_pow_inertiaDeg (K := K) w
   rw [h] at hpow
-  exact Nat.pow_right_injective h2 (by rw [pow_one]; exact hpow.symm)
+  exact Nat.pow_right_injective h2 (by beta_reduce; rw [pow_one]; exact hpow.symm)
 
 end Norm
 
@@ -273,6 +274,8 @@ variable [CommGroup H] [Fintype H] [MulSemiringAction H M] [IsGaloisGroup H E M]
 
 include hj
 
+omit [NumberField K] [NumberField E] [NumberField M] [Fintype Γ] [IsGaloisGroup Γ K M]
+  [Fintype H] in
 /-- **A prime of `E` above a prime of `K` unramified in `M` is unramified in `M`.** -/
 theorem isUnramifiedPrime_of_under (w : HeightOneSpectrum (𝓞 E))
     (hv : IsUnramifiedPrime K M Γ (w.under (𝓞 K))) : IsUnramifiedPrime E M H w := by

@@ -6,7 +6,7 @@ The 38 live formulations and 12 candidates are faces of three core problems: **U
 - **One matrix at finite scale.** The step-packet matrix of every window is the product of its two charges plus a neutral part; the neutral part is a potential plus the Dirichlet form of a graph whose weights are the jets and the floor-map contacts `Λ(k)/k`. RH ⇔ on every window two disjointly supported nonnegative packets, one of negative energy, satisfy `N(x,x)N(y,y)≤N(x,y)²` ⇔ every bound state has one sign [L*].
 - **One binding.** A window of ratio three or four holds one bound state only through the true contacts of 2 and 3: weakened or Liouville-twisted contacts leave two. The coupling of the two halves of a window has rank proportional to the block size: one pair of charges glues them only at block size one, and no model of bounded rank does at large block size [L*].
 - **One path.** The index of the restricted Weil form at an aperture is the number of crossings below it; the crossing multiplicity is a Lagrangian intersection number; the supremum is the number of right zeros; RH ⇔ no crossing [L*].
-- **One cover.** The zeros of the heat family form a cover of the time plane. Over forward times it is tame: no zero escapes, branch times are finite on boxes, transport is a bijection. Complex conjugation of the zeros over a positive real time is a monodromy of this cover; RH ⇔ it is the identity ⇔ no branch time is real and positive [L*].
+- **One cover.** The zeros of the heat family form a cover of the time plane. Over forward times it is tame: no zero escapes, branch times are finite on boxes, transport is a bijection. Every forward branch time acts by a nontrivial monodromy, the reflection of its Hermite sheets; a central one carries some zero `z≠0` to `−z`, so the group is not trivial. Complex conjugation of the zeros over a positive real time is a monodromy of this cover; RH ⇔ it is the identity ⇔ no branch time is real and positive; RH holds if every monodromy preserves every pair [L*].
 - **One scale.** Saving `γ`, rung `κ`, depth `δ`, mollifier `θ`, level `σ`, signal exponent `b`, twist exponent, critical-comb growth, relaxation rate: one number [L*]; [D]. `b=7/8` is `[X]`; the open part is `½<b<7/8`.
 
 Transversal to the three cores:
@@ -19,7 +19,7 @@ Transversal to the three cores:
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides. A localized zero side (U-Π) lets a crude bound decide and leaves the prime side at square-root precision. U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ among systems with its local structures, and the position of its zeros. The scale interpolates between the first two; the two involutions of the zeros, reflection and conjugation, are monodromies of one cover.
 
-Corpus checkpoint: `772d9abbd1` (2026-11-13), working-tree sources included; fact log `logs/review-1311-status-quo-facts.md` (cited as "log §n"). Evidence: `[L*]` Lean statement read at the declaration and recorded in the fact log; `[doc]` module docstring; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` unfinished per the frontier map; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the external theorem `Θ≤7/8`, taken as proved, its native steps just work (A118). Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: `fdc9cfc40f` (2026-11-13), working-tree sources included; fact log `logs/review-1311-status-quo-facts.md` (cited as "log §n"). Evidence: `[L*]` Lean statement read at the declaration and recorded in the fact log; `[doc]` module docstring; `[F]`, `[KR]` stated by the frontier map and the scoped-obstruction ledger at the checkpoint; `[S]` unfinished per the frontier map; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the half-plane `Θ≤7/8`, taken as proved; in the Lean source a statement without hypotheses (`riemannZeta_ne_zero_of_seven_eighths_lt_re`, `riemannZeta_zero_mem_quasiRH_strip`; statements and final assembly read, log §4.14), graded `[S]` by the frontier map: validation of its dependency chain is just work (A118); its consequences on receivers are `[D]`. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport carries an estimate from one route to another. Section 3 separates the two.
 
@@ -39,7 +39,7 @@ Corpus checkpoint: `772d9abbd1` (2026-11-13), working-tree sources included; fac
 - **One rigidity [L*].** Unit multiplicities with a defect `O((1+|t|)^{−a})`, `a>0`, are the rational primes; real-weighted fakes on the integers have an Abel floor; a fake edit has defect energy `≥cT log T`; an odd zero of an edit exponential needs a count exponent of at least half its real part.
 - **One count for every regulator [L*]/[F].** A Green–Weil floor gives RH; the tower quotient has a unit gap iff RH; a contact altered and paid at its price is RH at every parameter.
 - **One critical curve, one critical state [L*].** RH, or `R_polar<W₀`, or `R_polar=W₀` with polar-orthogonal states; the energy branch is attained, unique, strictly concave; the critical state is outer and cyclic.
-- **One cover [L*].** Branch times; Hermite sheets at collisions; transport over forward times; the forward monodromy group commuting with `z↦−z`; conjugation as a monodromy; RH ⇔ no positive real branch time.
+- **One cover [L*].** Branch times; Hermite sheets at collisions; transport over forward times; the forward monodromy group commuting with `z↦−z`; the turn around a branch time as a nontrivial element, exchanging some `z≠0` with `−z` at a centre time; transport by homotopy class; conjugation as a monodromy; RH ⇔ no positive real branch time; a pair-preserving group ⇒ RH.
 - **One horizon [L*].** RH ⇔ the quarter ringdown rate; pulse rate = horocycle rate; Weyl order; `λ₁≥3/16` on congruence groups, attained by the theta function in weight `½`.
 - **One source [X]; [L*]; [D].** Two estimates give `Re s>7/8`; the class ends at `2/3` (estimates) and at `(4r−1)/(6r−1)≥3/5` (frame, every period).
 - **One field [L*].** The centred zeros generate a field normal over the field of complete-fibre traces; `K_even⊆ℝ` ⇔ reflection field = prime trace field ⇔ RH; the Jensen equations have the full signed-permutation group or their moments are dependent.
@@ -145,7 +145,7 @@ Corpus checkpoint: `772d9abbd1` (2026-11-13), working-tree sources included; fac
 | `0` (ζ) | real branch times accumulate, or infinitely many nonreal zeros escape across `0` | GaloisTheoryOfZeros [L*] |
 | positive real | finitely many nonreal zeros; RH ⇔ no branch time here; conjugation is a forward monodromy at non-branch times | GaloisTheoryOfZeros [L*] |
 | `1/8` | all zeros real | GaloisTheoryOfZeros [L*] |
-| forward, nonreal | the central branch times: infinitely many, none real; local monodromy = the reflection of the functional equation | GaloisTheoryOfZeros [L*]/[doc] |
+| forward, nonreal | the central branch times: infinitely many, none real; the turn around one carries a zero `z` to `−z`: the reflection of the functional equation | GaloisTheoryOfZeros [L*] |
 | forward boxes | far zeros simple; finitely many branch times; no escape; bijective transport | GaloisTheoryOfZeros [L*] |
 
 ### 2.7 Conversions from law to point
@@ -159,7 +159,7 @@ Corpus checkpoint: `772d9abbd1` (2026-11-13), working-tree sources included; fac
 | budget overflow | long mollifiers [L*] | needs length past the height |
 | power sums in cameras | adaptive clusters [L*] | in law; pointwise prime cost open |
 | a bounded-below height | Néron–Tate [C] | sections count linearly [L*] |
-| a family with monodromy | Deligne [C] | fixed part [F]; the heat cover has a monodromy group containing conjugation, with no restriction known [L*] |
+| a family with monodromy | Deligne [C] | fixed part [F]; the heat cover has a nontrivial monodromy group containing conjugation and an element exchanging some `z≠0` with `−z`; pair-preserving ⇒ RH; no restriction on the group is proved [L*]; triviality of the group refuted [KR] |
 | ultrametric dominance | Goss [L*] | no norm for ξ [F] |
 | the FE with the Euler product | rigidity at any decay among unit multiplicities [L*] | identifies ζ; says nothing about the zeros of ζ |
 | the rightmost zero of a family against its twists | `Re s>7/8` [X] | reach `2/3`, frame `≥3/5` at every period [L*]; [D] |
@@ -182,7 +182,7 @@ Corpus checkpoint: `772d9abbd1` (2026-11-13), working-tree sources included; fac
 | deformation | price paths; the heat cover | RH at every parameter [L*]; RH ⇔ no positive real branch time [L*] |
 | Weil's bound feeding parity | the cube identity with sieves | `[X]`; class end `2/3`, frame `≥3/5` |
 | the zeta function as a polynomial | the critical comb | growth = width [L*] |
-| Frobenius acting on the roots | the forward monodromy group acting on the zeros of `H_τ` | a group containing conjugation [L*]; its structure open (B193) |
+| Frobenius acting on the roots | the forward monodromy group acting on the zeros of `H_τ` | a group containing conjugation and, from every centre time, an element exchanging some `z≠0` with `−z` [L*]; exchanges, generators, transitivity open (B193) |
 
 ### 2.9 Off the scale
 | Kind | Receiver | Kill | Anchor |
@@ -288,7 +288,7 @@ Corpus checkpoint: `772d9abbd1` (2026-11-13), working-tree sources included; fac
 | C36 models | one-structure models; two-sided edits; signed and positive weights | every route | every finite datum realized; slow defects among positive weights [L*] |
 | C38 zero field | group over the source field; prime trace and reflection fields; Jensen equations; orderings | LA, ZCG | trivial ⇔ RH; full group or dependent moments [L*] |
 | C40 objects of a failure | critical state, odd bound state, defective block, Markov plane, empty aperture, sign-changing bound state, positive real branch time | every Σ route | each exists ⇔ RH fails [L*] |
-| C43 monodromy of the heat cover | transport, forward monodromy, conjugation | ZCG, LA | conjugation ∈ forward monodromy; trivial ⇔ RH [L*] |
+| C43 monodromy of the heat cover | transport, forward monodromy, turns around branch times, conjugation | ZCG, LA | conjugation ∈ forward monodromy; trivial ⇔ RH; every forward branch time acts nontrivially; pair-preserving group ⇒ RH; transport depends only on the homotopy class [L*]; triviality of the group refuted [KR] |
 
 C1, C2, C7, C9, C28, C31, C34, C37, C39, C41 and C42 are dictionaries of one form: C9 on prime samples, C28 on finite matrices, C39 and C41 on their unions, C42 as its two regimes, C31 graded by mass, C34 along the aperture, C37 on one sequence. C32, C33, C37 and the rates of C20 are the same scale. C10, C11, C16 are the Mertens level and C33 is its only producer class. C17–C19 with C35 and C36 are one programme on the exceptional coordinate, whose door is C19. C21–C23 and C28 are one programme on the count and the diagonal. C3 and C40 are the Σ core read from the side of a failure. C4, C38 and C43 are one programme on the zeros as a set with symmetries: a field, a cover, a group.
 
@@ -300,7 +300,7 @@ C1, C2, C7, C9, C28, C31, C34, C37, C39, C41 and C42 are dictionaries of one for
 | ALG → ACS, HF | Metzler dichotomy; trickle-down [doc] | hyperbolic links of an actual window |
 | VHR → window routes | verified height ⇒ window sign at `exp(exp(Ca))`; explicit `windowHeight` [L*] | verification at every height; a height within reach |
 | SA → RW, HF, ACS, WD | sizes below rung one; one exchange theorem; three rungs under a half-plane [L*] | a saving past rung one |
-| FCT, CRF, STCC, MMD → JAS, MC, S3 | frame, coupled tower, barrier at every period, budget, coherence, root numbers, theta-square poles, conditional receiver at `7/8` [L*] | the two estimates; the long columns; a pairing outside the class |
+| FCT, CRF, STCC, MMD → JAS, MC, S3 | frame, coupled tower, barrier at every period, budget, coherence, root numbers, theta-square poles [L*]; the half-plane `7/8` stated without hypotheses in source [S] | the two estimates; the long columns; a pairing outside the class |
 | [X] → every graded receiver | the level `7/8` [D] | a level below `7/8` |
 | MZF, CDG, IGP → WD, ZCG | moments below the square root; positive proportion; runs of simple zeros; adaptive cameras [L*] | length past the square root; pointwise prime cost |
 | MatomakiRadziwill, LogarithmicChowla → MC, WD | short-interval mean squares; logarithmic two-point Chowla [L*] | a rate; half power |
@@ -310,7 +310,7 @@ C1, C2, C7, C9, C28, C31, C34, C37, C39, C41 and C42 are dictionaries of one for
 | ELT → ZCG, BAG | filters; growing-order reduction [F] | the prime-weighted current |
 | WZC, FFA, SPAL, APD, EFT → ZCG, BAG | models for every structure set short of the door; rigidity at any decay [L*] | a statement at the door that sees a layer |
 | BHR, RHTower → PM | exponents read `Θ`, `Θ∞` [F]; `3/16` and its sharpness [L*] | a rate from the horizon |
-| GaloisTheoryOfZeros → LA, ZCG | quartet exhaustion; zero field; heat cover with forward monodromy; conjugation as a monodromy [L*] | a restriction forcing triviality; control at `τ→0` |
+| GaloisTheoryOfZeros → LA, ZCG | quartet exhaustion; zero field; heat cover with forward monodromy; local monodromies as group elements; conjugation as a monodromy; pair-preserving group ⇒ RH [L*] | a restriction forcing triviality; control at `τ→0` |
 | RHTower/Artin → ACS, HF | Brauer induction; abelian product form; cyclotomic reciprocity [L*] | general reciprocity |
 | SignFreePurityMechanisms → ZCG | Goss by dominance [L*] | a norm for ξ |
 
@@ -332,7 +332,7 @@ Core problem: binding. Every two positive packets without common blocks, one of 
 
 ## 5. U-Π — precision and production
 
-Core problem: square-root precision of one smoothed prime count; in scale form a saving of the contacts; in signal form a power saving of one smoothed Möbius sum. One producer class exists: completed sums of Gauss-sum coefficients over the twists of ζ, with a reflection, two estimates and a correction. It has produced `7/8` [X]. Its estimates reach `2/3` with square-root cancellation; its frame couples the target to a tower of Grössencharacter families with fixed point `3/5`, and no period of the Gauss pairings has a lower one [L*]; [D]. In law the picture is native: short-interval mean squares of `λ`, logarithmic two-point Chowla, twisted moments below the square root [L*]. None of these carries a rate at half power.
+Core problem: square-root precision of one smoothed prime count; in scale form a saving of the contacts; in signal form a power saving of one smoothed Möbius sum. One producer class exists: completed sums of Gauss-sum coefficients over the twists of ζ, with a reflection, two estimates and a correction. It has produced `7/8` [X]; in the Lean source the statement carries no hypothesis; validation of its chain is work (A118) [S]. Its estimates reach `2/3` with square-root cancellation; its frame couples the target to a tower of Grössencharacter families with fixed point `3/5`, and no period of the Gauss pairings has a lower one [L*]; [D]. In law the picture is native: short-interval mean squares of `λ`, logarithmic two-point Chowla, twisted moments below the square root [L*]. None of these carries a rate at half power.
 
 | Face | Routes / programmes | Reduction |
 |---|---|---|
@@ -381,7 +381,7 @@ Core problem: the two involutions of the zeros, reflection `ρ↦1−ρ̄` and c
 | Π ∩ Γ: families | the correction is an `L`-function of a second family; the zero transfer `ρ↦6ρ−3` | FCT [L*] |
 | Π ∩ Γ: horizon | exponents `1−Θ/2`, `1−Θ∞/2` [F]; the theta function at `3/16` in weight `½`, the cubic theta in the producer | BHR, RHTower, STCC [L*]/[F] |
 | Π ∩ Γ: the count | a count rate above the pair says nothing; edits model every layer | WZC [L*] |
-| Γ ∩ Γ: two involutions | reflection = local monodromy at central collisions; conjugation = a forward monodromy; both commute with `z↦−z` | GaloisTheoryOfZeros [L*]/[doc] |
+| Γ ∩ Γ: two involutions | reflection = local monodromy at central collisions; conjugation = a forward monodromy; both commute with `z↦−z` | GaloisTheoryOfZeros [L*] |
 | Γ ∩ Γ: affine coincidences | halving pairs; the pairs `(ρ,6ρ−3)` | [KR]; [L*] |
 
 ## 8. Route → core map
@@ -433,11 +433,11 @@ Core problem: the two involutions of the zeros, reflection `ρ↦1−ρ̄` and c
 | a first selective case | weakened and twisted contacts fail at ratio three and four [L*] | the sign there with the true contacts, from the contacts (B192) |
 | a topological count | Morse = Maslov; polar shadow [L*] | no crossing (RH); the charge of the first crossing (B104) |
 | an object to contradict | the critical half-line state: unique, outer, cyclic, stable [L*] | its charge; a Green or boundary-trace identity (B104) |
-| a half-plane | `7/8` [X]; in Lean a conditional receiver; the class reaches `2/3`, frame `≥3/5` at every period [L*]; [D] | A118; B174; B185; B187 |
+| a half-plane | `7/8` [X], stated without hypotheses in source [S]; the class reaches `2/3`, frame `≥3/5` at every period [L*]; [D] | A118; B174; B185; B187 |
 | a step to the line | level one ⇔ RH; transfer ⇔ RH [L*]/[F] | a statement off the scale or a source outside the class |
 | the two worlds | receivers; models for every structure set short of the door; rigidity at any decay [L*] | a statement at the door that sees a layer (B170, B145); B183; B191 |
 | a uniformity source | moments; short-interval mean squares; logarithmic Chowla; tensor criterion [L*] | none by averaging |
-| a Frobenius substitute | one prime [F]; the forward monodromy group [L*] | a restriction on the group (B193) |
+| a Frobenius substitute | one prime [F]; the forward monodromy group with its turns [L*] | an exchange, and a restriction on the group (B193) |
 | a surface | forced data, number rings, quotients, Artin Euler products, finite-scale matrix [L*] | one property that is an inequality (B149, B169); general reciprocity (A154) |
 | a deformation | paths, mass, regulators; the heat cover, tame over forward times [L*]/[F] | control at the time of ζ; a family with a sign or a gap before the limit |
 | a producer | one class, ended at `2/3` and at `≥3/5` for every period | a pairing outside the class (B187); a rate from the horizon with an input that fails in weight `½` (B188) |

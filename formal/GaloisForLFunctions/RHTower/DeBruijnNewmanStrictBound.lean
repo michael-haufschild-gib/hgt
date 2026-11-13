@@ -77,17 +77,11 @@ theorem norm_riemannHeat_le_rpow {t : ℝ} (ht : 0 ≤ t) :
     mul_le_mul_of_nonneg_left hlog (by positivity)
   linarith
 
-/-- **`H_t` has a real zero** for every `t > 0`. Otherwise its zeros, all non-real, would be finitely
-many, so `H_t = P(z) c e^{Bz}` with a polynomial `P`, which does not tend to `0` along the real
-axis in the direction of `Re B`. -/
-theorem exists_riemannHeat_real_zero {t : ℝ} (ht : 0 < t) : ∃ x : ℝ, riemannHeat t x = 0 := by
-  by_contra hno
-  simp only [not_exists] at hno
-  have hfin : {z : ℂ | riemannHeat t z = 0}.Finite := by
-    refine (riemannHeat_nonreal_zeros_finite ht).subset fun z hz => ⟨hz, fun him => ?_⟩
-    apply hno z.re
-    rw [← show (z.re : ℂ) = z from Complex.ext (by simp) (by simp [him])] at hz
-    exact hz
+/-- **`H_t` has infinitely many zeros** for every `t > 0`. Otherwise `H_t = P(z) c e^{Bz}` with a
+polynomial `P`, which does not tend to `0` along the real axis in the direction of `Re B`. -/
+theorem riemannHeat_zeros_infinite {t : ℝ} (ht : 0 < t) :
+    {z : ℂ | riemannHeat t z = 0}.Infinite := by
+  intro hfin
   obtain ⟨C, hC, hgrow⟩ := norm_riemannHeat_le_rpow ht.le
   obtain ⟨T, m, c, B, hc, hform, -⟩ := exists_finiteDivisorFactor_mul_exp_of_finite_zeroSet
     (differentiable_riemannHeat ht.le) (by norm_num) (by norm_num) hC hgrow hfin
@@ -118,6 +112,17 @@ theorem exists_riemannHeat_real_zero {t : ℝ} (ht : 0 < t) : ∃ x : ℝ, riema
       have hx0 : x < 0 := by linarith
       exact hlow x (by rw [abs_of_neg hx0]; linarith) (by nlinarith))
     linarith
+
+/-- **`H_t` has a real zero** for every `t > 0`: it has infinitely many zeros, and only finitely
+many of them are not real. -/
+theorem exists_riemannHeat_real_zero {t : ℝ} (ht : 0 < t) : ∃ x : ℝ, riemannHeat t x = 0 := by
+  by_contra hno
+  simp only [not_exists] at hno
+  refine riemannHeat_zeros_infinite ht
+    ((riemannHeat_nonreal_zeros_finite ht).subset fun z hz => ⟨hz, fun him => ?_⟩)
+  apply hno z.re
+  rw [← show (z.re : ℂ) = z from Complex.ext (by simp) (by simp [him])] at hz
+  exact hz
 
 /-! ## Restarting de Bruijn's theorem -/
 

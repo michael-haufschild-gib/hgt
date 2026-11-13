@@ -45,13 +45,13 @@ theorem confiningExponentialSlope_bound {β a t : ℝ} (hβ : 0 < β) (ha : 0 < 
     nlinarith only [h]
   have hvt : 8 * t / a ≤ β * t / 2 := by
     have h := mul_le_mul_of_nonneg_right hratio ht
-    convert h using 1 <;> ring
+    simpa only [div_mul_eq_mul_div] using h
   refine ⟨mul_nonneg ha.le (sub_nonneg.mpr (Real.one_le_exp hv)), ?_⟩
   have hlinear : 8 * t ≤ (16 / β) * Real.exp (β * t / 2) := by
     have he := Real.add_one_le_exp (β * t / 2)
     have hh : 8 * t * β ≤ 16 * Real.exp (β * t / 2) := by nlinarith only [he]
     have hh' := (le_div_iff₀ hβ).mpr hh
-    convert hh' using 1 <;> ring
+    simpa only [div_mul_eq_mul_div] using hh'
   calc
     _ ≤ a * ((8 * t / a) * Real.exp (8 * t / a)) :=
       mul_le_mul_of_nonneg_left FiniteFreeProbability.exp_sub_one_le_mul_exp ha.le
@@ -60,7 +60,7 @@ theorem confiningExponentialSlope_bound {β a t : ℝ} (hβ : 0 < β) (ha : 0 < 
       mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hvt) (by positivity)
     _ ≤ ((16 / β) * Real.exp (β * t / 2)) * Real.exp (β * t / 2) :=
       mul_le_mul_of_nonneg_right hlinear (Real.exp_pos _).le
-    _ = _ := by rw [mul_assoc, ← Real.exp_add]; congr 2 <;> ring
+    _ = _ := by rw [mul_assoc, ← Real.exp_add]; congr 2; ring
 
 /-- Fixed exponentially controlled profiles have the linear limiting potential. -/
 theorem SoftLogarithmicHalfLineDomain.tendsto_potentialIntegral {F : ℝ → ℝ}
@@ -104,8 +104,6 @@ theorem SoftLogarithmicHalfLineDomain.tendsto_scaled_exponentialDefect {F : ℝ 
       atTop (𝓝 (8 * criticalHalfLineFirstMoment F)) := by
   apply hF.tendsto_potentialIntegral.congr'
   filter_upwards [hF.eventually_actual_dilation, eventually_gt_atTop (0 : ℝ)] with a hd ha
-  change (∫ u, a * (Real.exp (8 * (-u) / a) - 1) * F u ^ 2) =
-    a * criticalHalfLineExponentialDefect (unitaryRealDilation a F)
   rw [← hd.integral_exponential_defect]
   have he : (∫ u, unitaryRealDilation a F u ^ 2 * (Real.exp (-(8 * u)) - 1)) =
       ∫ u, (Real.exp (-(8 * (u / a))) - 1) * F u ^ 2 := by
@@ -117,6 +115,8 @@ theorem SoftLogarithmicHalfLineDomain.tendsto_scaled_exponentialDefect {F : ℝ 
   rw [he, ← integral_const_mul]
   apply integral_congr_ae
   exact Eventually.of_forall fun u => by
+    change a * (Real.exp (8 * (-u) / a) - 1) * F u ^ 2 =
+      a * ((Real.exp (-(8 * (u / a))) - 1) * F u ^ 2)
     have he : 8 * (-u) / a = -(8 * (u / a)) := by ring
     rw [he]
     ring

@@ -57,8 +57,12 @@ theorem SoftLogarithmicHalfLineDomain.archForm_unitaryDilation {F : ℝ → ℝ}
     (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ)) hF.memLp_complex
   have he := integrable_confiningGammaError (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
     hF.memLp_complex hF.logarithmic ha
-  rw [archForm_eq_integral_confiningGammaSymbol,
-    integral_weighted_fourier_sq_unitaryRealDilation ha0 F confiningGammaSymbol]
+  have hscale : (∫ ξ, confiningGammaSymbol ξ *
+      ‖𝓕 (cx (unitaryRealDilation a F)) ξ‖ ^ 2) =
+      ∫ ξ, confiningGammaSymbol (a * ξ) * ‖𝓕 (cx F) ξ‖ ^ 2 := by
+    simpa only [cx] using
+      integral_weighted_fourier_sq_unitaryRealDilation ha0 F confiningGammaSymbol
+  rw [archForm_eq_integral_confiningGammaSymbol, hscale]
   calc
     _ = ∫ ξ, (Real.log |ξ| * ‖𝓕 (cx F) ξ‖ ^ 2 + Real.log a * ‖𝓕 (cx F) ξ‖ ^ 2) +
         confiningGammaError a ξ * ‖𝓕 (cx F) ξ‖ ^ 2 := by
@@ -114,10 +118,6 @@ theorem SoftLogarithmicHalfLineDomain.tendsto_renormalized_trialEnergy {F : ℝ 
   rw [hl] at h
   apply h.congr'
   filter_upwards [hF.eventually_actual_dilation, eventually_ge_atTop (1 : ℝ)] with a hda ha1
-  change ((logarithmicFourierEnergy F +
-    a * criticalHalfLineExponentialDefect (unitaryRealDilation a F)) +
-    confiningGammaErrorForm a (cx F)) + criticalHalfLineArithmeticRemainder (unitaryRealDilation a F) =
-    criticalHalfLineFullEnergy (confiningHalfLineRatio a) (unitaryRealDilation a F) - a - Real.log a
   have ha0 := zero_lt_one.trans_le ha1
   have harch := hF.archForm_unitaryDilation ha1
   rw [hm, mul_one] at harch

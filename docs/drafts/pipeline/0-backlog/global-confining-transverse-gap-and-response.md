@@ -3,7 +3,7 @@
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Target:** B16, B17; variation of the attained confining ground energy.
-- **Statement:** At every positive ratio, energy shifted by its attained floor has a positive eighth-exponential gap transverse to its unique minimizing line. The ground energy is continuously differentiable, with derivative `-a(R)W(F_R)/R`, and the minimizing line varies continuously in the eighth-exponential norm.
+- **Statement:** At every positive ratio, energy shifted by its attained floor has a positive eighth-exponential gap transverse to its unique minimizing line. The ground energy is continuously differentiable, with derivative `-a(R)W(F_R)/R`. Locally, its derivative and minimizing line are Lipschitz, the latter in the eighth-exponential norm up to sign.
 - **Status:** Unproved; not counted. The corpus proves the corresponding local branch at a finite critical threshold, and global uniqueness and strict concavity separately.
 
 ## Corpus connection
@@ -17,5 +17,7 @@ Subtracting the attained floor times ordinary square mass makes the form nonnega
 1. Compactness and orthogonality for sequences minimizing the shifted form at an arbitrary positive ratio.
 2. Weighted coercivity of its transverse part, using the minimizer's weak equation to remove the ground direction.
 3. Local quadratic tangent bounds and weighted convergence at every ratio; continuity of the derivative follows from convergence of the weighted masses.
+
+For the stronger local modulus, affine comparison gives `Q_a(G)≤(b-a)(W(F)-W(G))` for unit minimizers at strengths `a,b`. The transverse gap controls the sign-aligned distance by `Q_a(G)`, while weighted Cauchy–Schwarz controls `|W(F)-W(G)|` by that distance on bounded-mass neighborhoods. Closing these two inequalities should improve square-root continuity to a Lipschitz bound, also for the polar pairing. This step is unproved in Lean.
 
 No new control of the critical polar charge follows without further input.

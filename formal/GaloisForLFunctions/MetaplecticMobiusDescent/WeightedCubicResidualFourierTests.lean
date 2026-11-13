@@ -100012,7 +100012,7 @@ theorem valid_tuple_small_power (J : ℕ) (ε : ℝ) (hε : 0 < ε) :
   have hJr : 0 < (J+1 : ℝ) := by positivity
   obtain ⟨C, hC, hb⟩ := IdealDivisorBound.ideal_divisor_small_power
     (ε/(J+1)) (div_pos hε hJr)
-  refine ⟨C^(J+1), by positivity, ?_⟩
+  refine ⟨C ^ (J+1), by positivity, ?_⟩
   intro T t f k ht hf hT
   have htf : t*f ≠ 0 := mul_ne_zero ht hf
   have hsub : idealDivisors f ⊆ idealDivisors (t*f) := by
@@ -102914,7 +102914,7 @@ theorem ideal_divisor_power_small (j : ℕ) (ε : ℝ) (hε : 0 < ε) :
       ((idealDivisors I).card : ℝ)^j ≤ C*(Ideal.absNorm I : ℝ)^ε := by
   have hj : 0 < (j+1 : ℝ) := by positivity
   obtain ⟨C,hC,hb⟩ := IdealDivisorBound.ideal_divisor_small_power (ε/(j+1)) (div_pos hε hj)
-  refine ⟨C^(j+1), by positivity, ?_⟩
+  refine ⟨C ^ (j+1), by positivity, ?_⟩
   intro I hI
   have hcard : (1 : ℝ) ≤ (idealDivisors I).card := by
     exact_mod_cast InverseInitialFibers.divisor_card_pos I hI
@@ -102922,7 +102922,7 @@ theorem ideal_divisor_power_small (j : ℕ) (ε : ℝ) (hε : 0 < ε) :
     _ ≤ ((idealDivisors I).card : ℝ)^(j+1) := pow_le_pow_right₀ hcard (by omega)
     _ ≤ (C*(Ideal.absNorm I : ℝ)^(ε/(j+1)))^(j+1) :=
       pow_le_pow_left₀ (by positivity) (hb I hI) _
-    _ = C^(j+1)*(Ideal.absNorm I : ℝ)^ε := by
+    _ = C ^ (j+1)*(Ideal.absNorm I : ℝ)^ε := by
       rw [mul_pow]
       congr 1
       rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]
@@ -106022,7 +106022,7 @@ lemma supported_mul_iff (I J:Ideal O) : Supported (I*J) ↔ Supported I ∧ Supp
     intro P hP
     exact hP.elim (hI'.2 P) (hJ'.2 P)
 
-lemma supported_pow {I:Ideal O} (hI:Supported I) (k:ℕ) : Supported (I^k) := by
+lemma supported_pow {I:Ideal O} (hI:Supported I) (k:ℕ) : Supported (I ^ k) := by
   induction k with
   | zero =>
     refine ⟨by simp,?_⟩
@@ -106229,7 +106229,7 @@ theorem valid_tuple_card_le {Jo Jn : ℕ} (T : Finset (SecondTuple Jo Jn))
     Fintype.card_fun, Fintype.card_fin, Nat.mul_assoc] using Fintype.card_le_of_injective encode hi
 
 lemma divisor_card_sq_le (I : Ideal O) (hI : I ≠ 0) :
-    (idealDivisors (I^2)).card ≤ (idealDivisors I).card^2 := by
+    (idealDivisors (I ^ 2)).card ≤ (idealDivisors I).card^2 := by
   simpa only [pow_two] using divisor_card_mul_le I I hI hI
 
 theorem valid_tuple_card_le_separated {Jo Jn : ℕ} (T : Finset (SecondTuple Jo Jn))
@@ -155994,16 +155994,16 @@ theorem annular_kernel_threshold (Z T tau C r QK QP Qn Qb kn kb D1 D2 : ℝ)
     (hK : 0<QK) (hP : 0<QP) (hn : 0<Qn) (hb : 0<Qb)
     (hkn : 0<kn) (hkb : 0<kb) (h1 : 0<D1) (h2 : 0<D2) :
     Real.logb Z (kn*Qn/D1)+3*Real.logb Z (kb*Qb/D2)+3*Real.logb Z r-
-      Real.logb Z (kernelCenter (T/(27*tau^2*C^2)*r^3) QK QP Qn Qb) =
-    Real.logb Z (27*tau^2*C^2*QK^2*QP^2*kn*kb^3/(T*D1*D2^3)) := by
-  have hR : 0<kernelCenter (T/(27*tau^2*C^2)*r^3) QK QP Qn Qb := by
+      Real.logb Z (kernelCenter (T/(27*tau^2*C ^ 2)*r^3) QK QP Qn Qb) =
+    Real.logb Z (27*tau^2*C ^ 2*QK^2*QP^2*kn*kb^3/(T*D1*D2^3)) := by
+  have hR : 0<kernelCenter (T/(27*tau^2*C ^ 2)*r^3) QK QP Qn Qb := by
     unfold kernelCenter
     positivity
   have hv : 0<kn*Qn/D1 := by positivity
   have hl : 0<kb*Qb/D2 := by positivity
   have heq : (kn*Qn/D1)*(kb*Qb/D2)^3*r^3 /
-      kernelCenter (T/(27*tau^2*C^2)*r^3) QK QP Qn Qb =
-      27*tau^2*C^2*QK^2*QP^2*kn*kb^3/(T*D1*D2^3) := by
+      kernelCenter (T/(27*tau^2*C ^ 2)*r^3) QK QP Qn Qb =
+      27*tau^2*C ^ 2*QK^2*QP^2*kn*kb^3/(T*D1*D2^3) := by
     unfold kernelCenter
     field_simp
   rw [← heq,Real.logb_div (by positivity) hR.ne',
@@ -158667,7 +158667,7 @@ theorem branch_count_small_power (ε : ℝ) (hε : 0<ε) :
       Pairwise (Function.onFun IsCoprime F.ideal) →
       (Fintype.card (ι→Fin 3):ℝ)^2≤ C*(Ideal.absNorm (∏ i,F.ideal i):ℝ)^ε := by
   obtain ⟨C,hC,hb⟩ := CompletedGauss.prime_support_subsets_bound (ε/4) (by positivity)
-  refine ⟨C^4,by positivity,?_⟩
+  refine ⟨C ^ 4,by positivity,?_⟩
   intro ι _ F hF
   have hI : (∏ i,F.ideal i)≠0 := Finset.prod_ne_zero_iff.mpr (fun i _ => NeZero.ne (F.ideal i))
   have hnorm : (0:ℝ)< Ideal.absNorm (∏ i,F.ideal i) := by
@@ -158683,7 +158683,7 @@ theorem branch_count_small_power (ε : ℝ) (hε : 0<ε) :
       rw [← pow_mul,Nat.mul_comm,pow_mul]; norm_num
     _ ≤ (C*(Ideal.absNorm (∏ i,F.ideal i):ℝ)^(ε/4))^4 :=
       pow_le_pow_left₀ (by positivity) hh _
-    _ = C^4*(Ideal.absNorm (∏ i,F.ideal i):ℝ)^ε := by
+    _ = C ^ 4*(Ideal.absNorm (∏ i,F.ideal i):ℝ)^ε := by
       rw [mul_pow,← Real.rpow_mul_natCast hnorm.le]
       congr 2
       norm_num
@@ -170617,7 +170617,7 @@ theorem reopening_twisted_moment_squared (W:ℝ→ℂ)(a b:ℝ)(ha:0< a)
         ((normTwistedSource_support W theta).trans hs) hT ξ‖*(1+|ξ|)^J)^2≤
       C*(1+‖theta‖)^(2*(J+(volume:Measure ℝ).integrablePower)) :=by
   obtain ⟨C,hC,he⟩:=reopening_twisted_moment W a b ha hs hW J
-  refine ⟨C^2,sq_nonneg _,?_⟩
+  refine ⟨C ^ 2,sq_nonneg _,?_⟩
   intro theta hT
   have hh:=pow_le_pow_left₀ (integral_nonneg (fun ξ=> by positivity)) (he theta hT) 2
   simpa only [mul_pow,←pow_mul,Nat.mul_comm] using hh
@@ -175853,7 +175853,7 @@ theorem correlated_scale_lower (Y C d v n₁ n₂ L : ℝ)
     (hY : 0< Y) (hC : 0< C) (hd : 0< d) (hv : 0< v)
     (hn₁ : 0< n₁) (hn₂ : 0< n₂) (hL : 0< L)
     (h₁ : C*v*n₁≤ L) (h₂ : C*v*n₂≤ L) :
-    Y*C^2/(d*L^2) ≤ Y/(d*v^2*n₁*n₂) := by
+    Y*C ^ 2/(d*L^2) ≤ Y/(d*v^2*n₁*n₂) := by
   apply (div_le_div_iff₀ (by positivity) (by positivity)).mpr
   have hh := mul_le_mul h₁ h₂ (by positivity) hL.le
   nlinarith [mul_le_mul_of_nonneg_left hh (show 0≤ Y*d by positivity)]
@@ -175897,9 +175897,9 @@ theorem actual_radial_center_lower
       congr 1
       unfold radialCenter
       ring
-    _ ≤ Z^m*C^2*hnorm/(d*L^2) := by
+    _ ≤ Z^m*C ^ 2*hnorm/(d*L^2) := by
       gcongr
-    _ = (Z^m*C^2/(d*L^2))*hnorm := by ring
+    _ = (Z^m*C ^ 2/(d*L^2))*hnorm := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_right hscale hh
 
 theorem high_radial_block_tail_gate
@@ -176593,8 +176593,8 @@ theorem actual_annulus_radial_lower
     _ = Z^m*(Z^B/4)^2*(Z^H/4)/(Z^θ*(b*Z^D)^2) := by
       rw [←he]
       ring
-    _ ≤ Z^m*C^2*hnorm/(d*(b*Z^D)^2) := by gcongr
-    _ = (Z^m*C^2/(d*(b*Z^D)^2))*hnorm := by ring
+    _ ≤ Z^m*C ^ 2*hnorm/(d*(b*Z^D)^2) := by gcongr
+    _ = (Z^m*C ^ 2/(d*(b*Z^D)^2))*hnorm := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_right hscale hh
 
 theorem actual_annulus_high_gate
@@ -182310,7 +182310,7 @@ theorem ofResidue_primeTriple (M : Ideal O) [Finite (O ⧸ M)]
       ofResidue M ψ hψ P.val = ψ q := by
     change value M ψ P.val = _
     have hP : P.val ≠ ⊥ := P.property.ne_zero
-    simp only [value, hP, ite_false, q]
+    simp only [IdealCharacter.value, hP, ite_false, q]
   rw [hv, hv, hv]
   by_cases hq : IsUnit q
   · right
@@ -182475,7 +182475,7 @@ theorem quadratic_normFiber_nonneg (M : Ideal O) (χ : MulChar (O ⧸ M) ℂ)
   intro P hP
   change value M χ P = 0 ∨ value M χ P = 1 ∨ value M χ P = -1
   have hP0 : P ≠ ⊥ := hP.ne_zero
-  simp only [value, hP0, ite_false]
+  simp only [IdealCharacter.value, hP0, ite_false]
   exact MulChar.isQuadratic_iff_sq_eq_one.mpr hquad _
 
 theorem mulFiber_character_sum (a : Ideal O →*₀ ℂ) (B : Ideal O) (hB : B ≠ 0) :
@@ -184135,7 +184135,7 @@ theorem one_time_losses (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<
   constructor
   · unfold exceptional
     nlinarith
-  · unfold diagonal
+  · unfold CenteredMomentSuccessorPaidParameters.diagonal
     nlinarith
 
 lemma mesh_lt_prime_width (M B κ ε:ℝ)(hM:0≤ M)(hB:0≤ B)(hκ:0≤κ)(hε:0<ε):
@@ -184470,7 +184470,7 @@ lemma final_range_large (M B L ε:ℝ)(hM:0≤ M)(hB:0≤ B):
     20≤ range M B L (count M ε):=by
   have hh:=range_mono M B L hM hB (show 1≤ count M ε from count_pos M ε)
   have hm:1≤ max 1 L:=le_max_left _ _
-  simp only [range,step] at hh
+  simp only [CenteredMomentEnergyWidthRanges.range,step] at hh
   linarith
 lemma readyBudget_le_schedule (M B L ε A P:ℝ)(hM:0≤ M)(hB:0≤ B)
     (hA:A≤2*range M B L (count M ε)+M+1)(hP:P≤ B):
@@ -184511,7 +184511,7 @@ lemma child_support (a b M ε:ℝ)(k:ℕ)(hk:k< count M ε):
 lemma child_length (M B L ε:ℝ)(k:ℕ)(hk:k< count M ε):
     lengthAt M B L ε k=step M B (lengthAt M B L ε (k+1)):=by
   have he:remaining M ε k=remaining M ε (k+1)+1:=by unfold remaining;omega
-  simp only [lengthAt,he,range]
+  simp only [lengthAt,he,CenteredMomentEnergyWidthRanges.range]
 
 
 end CenteredMomentEnergyWidthInduction
@@ -188922,7 +188922,7 @@ theorem constant_pow_primeSupport_bound (K ε : ℝ) (hK : 0 ≤ K) (hε : 0 < �
     linarith [le_max_left K 1]
   obtain ⟨C, hC, hbound⟩ := CompletedGauss.prime_support_subsets_bound
     (ε/(n : ℝ)) (div_pos hε hn0)
-  refine ⟨C^n, by positivity, ?_⟩
+  refine ⟨C ^ n, by positivity, ?_⟩
   intro M hM
   calc
     _ ≤ ((2 : ℝ)^n)^(primeSupport M).card :=
@@ -188931,7 +188931,7 @@ theorem constant_pow_primeSupport_bound (K ε : ℝ) (hK : 0 ≤ K) (hε : 0 < �
       rw [← pow_mul, ← pow_mul, Nat.mul_comm]
     _ ≤ (C*(M.absNorm : ℝ)^(ε/(n : ℝ)))^n :=
       pow_le_pow_left₀ (by positivity) (hbound M hM) n
-    _ = C^n*(M.absNorm : ℝ)^ε := by
+    _ = C ^ n*(M.absNorm : ℝ)^ε := by
       rw [mul_pow, ← Real.rpow_mul_natCast (by positivity), div_mul_cancel₀ _ hn0.ne']
 
 def localBound (σ : ℝ) : ℝ := (1-(2 : ℝ)^(-σ))⁻¹
@@ -189011,22 +189011,22 @@ theorem factors_subpower_bound (σ ε : ℝ) (hσ : 0 < σ) (hε : 0 < ε) :
 def radical (M : Ideal O) : Ideal O :=
   HeckeIdealSeries.primeProduct (HeckeIdealSeries.primeSet M)
 
-theorem radical_ne_zero (M : Ideal O) : radical M ≠ 0 :=
+theorem radical_ne_zero (M : Ideal O) : HeckeDeletionBounds.radical M ≠ 0 :=
   HeckeIdealSeries.primeProduct_ne_zero _
 
 theorem factors_radical (M : Ideal O) (ψ : Character) (s : ℂ) :
-    HeckeFiniteDeletion.factors (radical M) ψ s = HeckeFiniteDeletion.factors M ψ s := by
-  unfold HeckeFiniteDeletion.factors radical
+    HeckeFiniteDeletion.factors (HeckeDeletionBounds.radical M) ψ s = HeckeFiniteDeletion.factors M ψ s := by
+  unfold HeckeFiniteDeletion.factors HeckeDeletionBounds.radical
   rw [HeckeIdealSeries.primeSet_primeProduct]
 
 theorem factors_radical_subpower_bound (σ ε : ℝ) (hσ : 0 < σ) (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧ ∀ (M : Ideal O) (ψ : Character) (s : ℂ),
       σ ≤ s.re → ‖HeckeFiniteDeletion.factors M ψ s‖ +
-        ‖(HeckeFiniteDeletion.factors M ψ s)⁻¹‖ ≤ C*((radical M).absNorm : ℝ)^ε := by
+        ‖(HeckeFiniteDeletion.factors M ψ s)⁻¹‖ ≤ C*((HeckeDeletionBounds.radical M).absNorm : ℝ)^ε := by
   obtain ⟨C, hC, hb⟩ := factors_subpower_bound σ ε hσ hε
   refine ⟨C, hC, ?_⟩
   intro M ψ s hs
-  simpa only [factors_radical] using hb (radical M) (radical_ne_zero M) ψ s hs
+  simpa only [factors_radical] using hb (HeckeDeletionBounds.radical M) (radical_ne_zero M) ψ s hs
 
 theorem factor_bound_any_re {N : ℝ} (hN : 2 ≤ N) {a s : ℂ} (ha : ‖a‖ ≤ 1) :
     ‖EulerFactors.factor N a s‖ ≤ 2*N^(max (-s.re) 0) := by
@@ -189045,7 +189045,7 @@ theorem factor_bound_any_re {N : ℝ} (hN : 2 ≤ N) {a s : ℂ} (ha : ‖a‖ �
 theorem factors_bound_any_re (M : Ideal O) (ψ : Character) (s : ℂ) :
     ‖HeckeFiniteDeletion.factors M ψ s‖ ≤
       (2 : ℝ)^(HeckeIdealSeries.primeSet M).card *
-        ((radical M).absNorm : ℝ)^(max (-s.re) 0) := by
+        ((HeckeDeletionBounds.radical M).absNorm : ℝ)^(max (-s.re) 0) := by
   unfold HeckeFiniteDeletion.factors EulerFactors.deletedProduct
   rw [norm_prod]
   calc
@@ -189058,7 +189058,7 @@ theorem factors_bound_any_re (M : Ideal O) (ψ : Character) (s : ℂ) :
     _ = _ := by
       rw [Finset.prod_mul_distrib, Finset.prod_const,
         Real.finsetProd_rpow _ _ (fun _ _ => by positivity)]
-      simp only [radical, HeckeIdealSeries.primeProduct, map_prod, Nat.cast_prod]
+      simp only [HeckeDeletionBounds.radical, HeckeIdealSeries.primeProduct, map_prod, Nat.cast_prod]
 
 theorem primeSet_card (M : Ideal O) :
     (HeckeIdealSeries.primeSet M).card =
@@ -189071,19 +189071,19 @@ theorem primeSet_card (M : Ideal O) :
 theorem factors_any_re_subpower_bound (ε : ℝ) (hε : 0 < ε) :
     ∃ C : ℝ, 0 < C ∧ ∀ (M : Ideal O) (ψ : Character) (s : ℂ),
       ‖HeckeFiniteDeletion.factors M ψ s‖ ≤
-        C*((radical M).absNorm : ℝ)^(max (-s.re) 0 + ε) := by
+        C*((HeckeDeletionBounds.radical M).absNorm : ℝ)^(max (-s.re) 0 + ε) := by
   obtain ⟨C, hC, hb⟩ := CompletedGauss.prime_support_subsets_bound ε hε
   refine ⟨C, hC, ?_⟩
   intro M ψ s
-  have hR : 0 < ((radical M).absNorm : ℝ) := by
+  have hR : 0 < ((HeckeDeletionBounds.radical M).absNorm : ℝ) := by
     exact_mod_cast Nat.pos_iff_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero M))
-  have hc : (2 : ℝ)^(HeckeIdealSeries.primeSet M).card ≤ C*((radical M).absNorm : ℝ)^ε := by
-    have h := hb (radical M) (radical_ne_zero M)
-    rw [← primeSet_card, radical, HeckeIdealSeries.primeSet_primeProduct] at h
+  have hc : (2 : ℝ)^(HeckeIdealSeries.primeSet M).card ≤ C*((HeckeDeletionBounds.radical M).absNorm : ℝ)^ε := by
+    have h := hb (HeckeDeletionBounds.radical M) (radical_ne_zero M)
+    rw [← primeSet_card, HeckeDeletionBounds.radical, HeckeIdealSeries.primeSet_primeProduct] at h
     exact h
   apply (factors_bound_any_re M ψ s).trans
   calc
-    _ ≤ (C*((radical M).absNorm : ℝ)^ε)*((radical M).absNorm : ℝ)^(max (-s.re) 0) :=
+    _ ≤ (C*((HeckeDeletionBounds.radical M).absNorm : ℝ)^ε)*((HeckeDeletionBounds.radical M).absNorm : ℝ)^(max (-s.re) 0) :=
       mul_le_mul_of_nonneg_right hc (Real.rpow_nonneg hR.le _)
     _ = _ := by rw [Real.rpow_add hR]; ring
 
@@ -189123,7 +189123,7 @@ theorem exists_primitive_reciprocal_reduction (σ ε : ℝ) (hσ : 0 < σ) (hε 
         (∀ I : Ideal O, idealCoeff χ I =
           if IsCoprime I χ.modulus then idealCoeff ψ I else 0) ∧
         ∀ s : ℂ, σ ≤ s.re →
-          ‖reciprocal χ s‖ ≤ C*((radical χ.modulus).absNorm : ℝ)^ε * ‖reciprocal ψ s‖ := by
+          ‖reciprocal χ s‖ ≤ C*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε * ‖reciprocal ψ s‖ := by
   obtain ⟨C, hC, hb⟩ := factors_radical_subpower_bound σ ε hσ hε
   refine ⟨C, hC, ?_⟩
   intro χ
@@ -189132,7 +189132,7 @@ theorem exists_primitive_reciprocal_reduction (σ ε : ℝ) (hσ : 0 < σ) (hε 
   intro s hs
   rw [reciprocal_eq_of_mask χ ψ hm (hσ.trans_le hs), norm_mul]
   have hf := hb χ.modulus ψ s hs
-  have hfb : ‖(factors χ.modulus ψ s)⁻¹‖ ≤ C*((radical χ.modulus).absNorm : ℝ)^ε := by
+  have hfb : ‖(factors χ.modulus ψ s)⁻¹‖ ≤ C*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε := by
     linarith [norm_nonneg (factors χ.modulus ψ s)]
   simpa only [mul_comm] using mul_le_mul_of_nonneg_left hfb (norm_nonneg (reciprocal ψ s))
 
@@ -189249,7 +189249,7 @@ namespace HeckeReciprocalGrowth
 open HeckeFamily HeckeLogarithmic HeckeDeletionBounds
 
 def presentationComplexity (χ : Character) (t : ℝ) : ℝ :=
-  ((radical χ.modulus).absNorm : ℝ)*complexity χ t
+  ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)*complexity χ t
 
 theorem reciprocal_subpower (e ε : ℝ)
     (he : 0< e) (he' : e<1/1000) (hε : 0<ε) :
@@ -189268,12 +189268,12 @@ theorem reciprocal_subpower (e ε : ℝ)
     gcongr
   have hc0 : 0 ≤ complexity ψ s.im :=
     (Real.exp_pos 1).le.trans (complexity_ge_exp ψ s.im)
-  have hr0 : 0 ≤ ((radical χ.modulus).absNorm : ℝ) := by positivity
+  have hr0 : 0 ≤ ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by positivity
   apply (hr s hs).trans
   calc
-    _ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε * (Dp*(complexity ψ s.im)^ε) :=
+    _ ≤ Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε * (Dp*(complexity ψ s.im)^ε) :=
       mul_le_mul_of_nonneg_left (hpbound ψ hp s hs) (by positivity)
-    _ = (Cd*Dp)*(((radical χ.modulus).absNorm : ℝ)*complexity ψ s.im)^ε := by
+    _ = (Cd*Dp)*(((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)*complexity ψ s.im)^ε := by
       rw [Real.mul_rpow hr0 hc0]
       ring
     _ ≤ _ := mul_le_mul_of_nonneg_left
@@ -189292,7 +189292,7 @@ theorem polynomial_reciprocal_bound (χ : Character) (a : ℝ)
     change e ≤ (a-HeckeZeroSupremum.beta)/16 at hh
     linarith
   obtain ⟨C,hC,hbound⟩ := reciprocal_subpower e 1 he he' (by norm_num)
-  let K : ℝ := C*((radical χ.modulus).absNorm : ℝ)*(2*(χ.modulus.absNorm : ℝ))
+  let K : ℝ := C*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)*(2*(χ.modulus.absNorm : ℝ))
   have hK : 0 ≤ K := by dsimp [K]; positivity
   refine ⟨18*K, by positivity, ?_⟩
   intro s hs
@@ -189649,26 +189649,26 @@ theorem original_disk_control (e ε : ℝ)
       (LFunction ψ z)⁻¹*(factors χ.modulus ψ z)⁻¹ := by
     rw [HeckeDeletionReciprocal.reciprocal_eq_of_mask χ ψ hmask hzpos]
     simp only [HeckeReciprocal.reciprocal, if_neg hψ]
-  have hdel1 : ‖factors χ.modulus ψ z‖ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε := by
+  have hdel1 : ‖factors χ.modulus ψ z‖ ≤ Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε := by
     linarith [norm_nonneg ((factors χ.modulus ψ z)⁻¹)]
-  have hdel2 : ‖(factors χ.modulus ψ z)⁻¹‖ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε := by
+  have hdel2 : ‖(factors χ.modulus ψ z)⁻¹‖ ≤ Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε := by
     linarith [norm_nonneg (factors χ.modulus ψ z)]
   have hQ : complexity ψ t ≤ complexity χ t := by
     unfold complexity
     have hn' : (ψ.modulus.absNorm : ℝ) ≤ χ.modulus.absNorm := by exact_mod_cast hn
     gcongr
   have hc0 : 0 ≤ complexity ψ t := (Real.exp_pos 1).le.trans (complexity_ge_exp ψ t)
-  have hr0 : 0 ≤ ((radical χ.modulus).absNorm : ℝ) := by positivity
+  have hr0 : 0 ≤ ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by positivity
   rw [hL,hR,norm_mul,norm_mul]
   calc
     _ ≤ (‖LFunction ψ z‖+‖(LFunction ψ z)⁻¹‖)*
-        (Cd*((radical χ.modulus).absNorm : ℝ)^ε) := by
+        (Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε) := by
       have h1 := mul_le_mul_of_nonneg_left hdel1 (norm_nonneg (LFunction ψ z))
       have h2 := mul_le_mul_of_nonneg_left hdel2 (norm_nonneg ((LFunction ψ z)⁻¹))
       nlinarith
-    _ ≤ (Dp*(complexity ψ t)^ε)*(Cd*((radical χ.modulus).absNorm : ℝ)^ε) :=
+    _ ≤ (Dp*(complexity ψ t)^ε)*(Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε) :=
       mul_le_mul_of_nonneg_right hbound (by positivity)
-    _ = (Dp*Cd)*(((radical χ.modulus).absNorm : ℝ)*complexity ψ t)^ε := by
+    _ = (Dp*Cd)*(((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)*complexity ψ t)^ε := by
       rw [Real.mul_rpow hr0 hc0]
       ring
     _ ≤ _ := mul_le_mul_of_nonneg_left
@@ -190132,7 +190132,7 @@ open Complex Set
 namespace HeckeDyadic
 open HeckeFamily HeckeReciprocalGrowth HeckeDeletionBounds HeckeDyadicReflection
 
-theorem radical_norm_ge_one (M : Ideal O) : 1≤((radical M).absNorm : ℝ) := by
+theorem radical_norm_ge_one (M : Ideal O) : 1≤((HeckeDeletionBounds.radical M).absNorm : ℝ) := by
   exact_mod_cast Nat.one_le_iff_ne_zero.mpr
     (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero M))
 
@@ -190144,7 +190144,7 @@ theorem buffered_reflected_line_control (e ε : ℝ)
       HeckeDetectorZeros.zeroMaximum χ hχ (3*(i+1 : ℕ)*T)< a+2*e →
       ∀ (j : ι) (s : ℂ), s.re=1-a-6*e → |s.im|≤(3*i+2 : ℕ)*T →
       ‖LFunction (χ j) s‖≤ C*((χ j).modulus.absNorm : ℝ)^(a-1/2+6*e)*
-        ((radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε)*
+        ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε)*
         (3+(3*i+2 : ℕ)*T)^2*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε := by
   obtain ⟨Cg,hCg,hreflect⟩ := original_reflected_subpower ε hε
   obtain ⟨Cb,hCb,hrect⟩ := buffered_rectangle_control e ε he he' hε
@@ -190160,17 +190160,17 @@ theorem buffered_reflected_line_control (e ε : ℝ)
   have href := hreflect (χ j) (hχ j) s (by rw [hs]; linarith) (by rw [hs]; linarith)
   have hexp : 1/2-s.re=a-1/2+6*e := by rw [hs]; ring
   rw [hexp] at href
-  have hR : ((radical (χ j).modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)≤
-      ((radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε) := by
+  have hR : ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)≤
+      ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε) := by
     apply Real.rpow_le_rpow_of_exponent_le (radical_norm_ge_one _)
     have hm : max (-s.re) 0≤6*e := max_le (by rw [hs]; linarith) (by positivity)
     linarith
   calc
     _ ≤ Cg*((χ j).modulus.absNorm : ℝ)^(a-1/2+6*e)*
-        ((radical (χ j).modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)*
+        ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ)^(max (-s.re) 0+2*ε)*
         (3+|s.im|)^2*‖LFunction (χ j) (1-conj s)‖ := href
     _ ≤ Cg*((χ j).modulus.absNorm : ℝ)^(a-1/2+6*e)*
-        ((radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε)*
+        ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ)^(6*e+2*ε)*
         (3+(3*i+2 : ℕ)*T)^2*(Cb*(presentationComplexity (χ j) ((3*i+2 : ℕ)*T))^ε) := by
       gcongr
     _ = _ := by ring
@@ -190179,7 +190179,7 @@ theorem original_upper_strip (ε : ℝ) (hε : 0<ε) :
     ∃ C : ℝ, 0< C ∧ ∀ χ : Character, χ.residue≠1 → ∀ s : ℂ,
       -(1/10 : ℝ)≤ s.re →
       ‖LFunction χ s‖≤ C*(χ.modulus.absNorm : ℝ)^(3/5 : ℝ)*
-        ((radical χ.modulus).absNorm : ℝ)^(1/10+ε)*(3+|s.im|)^2 := by
+        ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(1/10+ε)*(3+|s.im|)^2 := by
   obtain ⟨Cd,hCd,hdel⟩ := factors_any_re_subpower_bound ε hε
   refine ⟨(1+HeckeLogarithmicInput.uniformConstant)*Cd,
     mul_pos (by linarith [HeckeLogarithmicInput.uniformConstant_nonneg]) hCd,?_⟩
@@ -190191,7 +190191,7 @@ theorem original_upper_strip (ε : ℝ) (hε : 0<ε) :
   have hQ' : (ψ.modulus.absNorm : ℝ)^(3/5 : ℝ)≤(χ.modulus.absNorm : ℝ)^(3/5 : ℝ) :=
     Real.rpow_le_rpow (by positivity) (by exact_mod_cast hQ) (by norm_num)
   have hd : ‖HeckeFiniteDeletion.factors χ.modulus ψ s‖≤
-      Cd*((radical χ.modulus).absNorm : ℝ)^(1/10+ε) := by
+      Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(1/10+ε) := by
     apply (hdel χ.modulus ψ s).trans
     apply mul_le_mul_of_nonneg_left _ hCd.le
     apply Real.rpow_le_rpow_of_exponent_le (radical_norm_ge_one _)
@@ -190201,10 +190201,10 @@ theorem original_upper_strip (ε : ℝ) (hε : 0<ε) :
   rw [LFunction_eq_of_mask_entire χ ψ hχ hmask,norm_mul]
   calc
     _ ≤ (HeckeLogarithmicInput.uniformConstant*(ψ.modulus.absNorm : ℝ)^(3/5 : ℝ)*(3+|s.im|)^2)*
-        (Cd*((radical χ.modulus).absNorm : ℝ)^(1/10+ε)) :=
+        (Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(1/10+ε)) :=
       mul_le_mul hg hd (norm_nonneg _) (by positivity)
     _ ≤ ((1+HeckeLogarithmicInput.uniformConstant)*(χ.modulus.absNorm : ℝ)^(3/5 : ℝ)*(3+|s.im|)^2)*
-        (Cd*((radical χ.modulus).absNorm : ℝ)^(1/10+ε)) := by
+        (Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(1/10+ε)) := by
       gcongr
       linarith
     _ = _ := by ring
@@ -190241,7 +190241,7 @@ theorem reflected_polynomial_bound (e ε : ℝ)
         (1+|t|)^(n+2)*‖mellin W ((x : ℂ)+t*I)‖≤ Cn) →
       let H := (3*i+2 : ℕ)*T
       let Q := ((χ j).modulus.absNorm : ℝ)
-      let R := ((radical (χ j).modulus).absNorm : ℝ)
+      let R := ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ)
       let Kg := Cg*Q^(3/5 : ℝ)*R^(1/10+ε)*(3+H)^2
       let Kr := Cr*Q^(a-1/2+6*e)*R^(6*e+2*ε)*(3+H)^2*
         (presentationComplexity (χ j) H)^ε
@@ -190257,7 +190257,7 @@ theorem reflected_polynomial_bound (e ε : ℝ)
   dsimp only
   let H : ℝ := (3*i+2 : ℕ)*T
   let Q : ℝ := (χ j).modulus.absNorm
-  let R : ℝ := (radical (χ j).modulus).absNorm
+  let R : ℝ := (HeckeDeletionBounds.radical (χ j).modulus).absNorm
   let Kg := Cg*Q^(3/5 : ℝ)*R^(1/10+ε)*(3+H)^2
   let Kr := Cr*Q^(a-1/2+6*e)*R^(6*e+2*ε)*(3+H)^2*
     (presentationComplexity (χ j) H)^ε
@@ -190311,13 +190311,13 @@ open scoped Classical
 namespace HeckeDyadic
 open HeckeFamily HeckeDeletionBounds HeckeReciprocalGrowth HeckeLogarithmic
 
-theorem radical_dvd (M : Ideal O) (hM : M≠0) : radical M∣M := by
-  unfold radical HeckeIdealSeries.primeProduct
+theorem radical_dvd (M : Ideal O) (hM : M≠0) : HeckeDeletionBounds.radical M∣M := by
+  unfold HeckeDeletionBounds.radical HeckeIdealSeries.primeProduct
   rw [HeckeIdealSeries.prod_primeSet M (fun J : Ideal O => J)]
   exact support_product_dvd hM (Finset.Subset.refl _)
 
 theorem radical_norm_le_modulus (χ : Character) :
-    ((radical χ.modulus).absNorm : ℝ)≤χ.modulus.absNorm := by
+    ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)≤χ.modulus.absNorm := by
   exact_mod_cast Nat.le_of_dvd (Nat.pos_iff_ne_zero.mpr
     (Ideal.absNorm_eq_zero_iff.not.mpr χ.modulus_ne_bot))
     (map_dvd Ideal.absNorm (radical_dvd χ.modulus χ.modulus_ne_bot))
@@ -190335,7 +190335,7 @@ theorem presentationComplexity_le_of_modulus_le (χ : Character) (U H : ℝ)
 theorem reflected_conductor_cost (χ : Character) (U a e ε : ℝ)
     (hQ : (χ.modulus.absNorm : ℝ)≤ U) (ha : 1/2≤ a) (he : 0≤ e) (hε : 0≤ε) :
     (χ.modulus.absNorm : ℝ)^(a-1/2+6*e)*
-      ((radical χ.modulus).absNorm : ℝ)^(6*e+2*ε)≤ U^(a-1/2+12*e+2*ε) := by
+      ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(6*e+2*ε)≤ U^(a-1/2+12*e+2*ε) := by
   have hU : 0< U := lt_of_lt_of_le zero_lt_one
     ((HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ)
   have hR := (radical_norm_le_modulus χ).trans hQ
@@ -190483,7 +190483,7 @@ theorem reflected_central_cost (χ : Character) (U H a e ε η m : ℝ)
     (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (ha : 1/2≤ a)
     (he : 0≤ e) (hε : 0≤ε) (hε' : ε≤1) (hheight : (3+H)^4≤ U^η) :
     (χ.modulus.absNorm : ℝ)^(a-1/2+6*e)*
-      ((radical χ.modulus).absNorm : ℝ)^(6*e+2*ε)*(3+H)^2*
+      ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(6*e+2*ε)*(3+H)^2*
       (presentationComplexity χ H)^ε*(U^m)^(1/2-a-6*e)≤
       2*U^((a-1/2)*(1-m)+6*e*(2-m)+4*ε+η) := by
   have hU : 0< U := lt_of_lt_of_le zero_lt_one ((HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ)
@@ -190522,7 +190522,7 @@ theorem reflected_external_cost (χ : Character) (U H κ η r R : ℝ)
     (hQ : (χ.modulus.absNorm : ℝ)≤ U) (hH : 0≤ H) (hκ : 0≤κ) (hκ' : κ≤1)
     (hr : 0≤ r) (hrR : r≤ R) (hheight : (3+H)^4≤ U^η) :
     (U^r)^(3/2 : ℝ)*(χ.modulus.absNorm : ℝ)^(3/5 : ℝ)*
-      ((radical χ.modulus).absNorm : ℝ)^(1/10+κ)*(3+H)^2≤ U^(2*R+2+η) := by
+      ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^(1/10+κ)*(3+H)^2≤ U^(2*R+2+η) := by
   have hU : 1≤ U := (HeckeLogarithmicInput.modulus_norm_ge_one χ).trans hQ
   have hUp : 0< U := lt_of_lt_of_le zero_lt_one hU
   have hR := (radical_norm_le_modulus χ).trans hQ
@@ -197291,7 +197291,7 @@ theorem allocation_mass_small_power (N : ℕ) (hN : 0 < N) (ε : ℝ) (hε : 0 <
   have hNr : (0:ℝ) < N := by exact_mod_cast hN
   obtain ⟨C,hC,hb⟩ := CompletedGauss.prime_support_subsets_bound
     (ε/N) (div_pos hε hNr)
-  refine ⟨C^N,pow_pos hC _,?_⟩
+  refine ⟨C ^ N,pow_pos hC _,?_⟩
   intro D hD s hs v
   have hn : 0 ≤ (Ideal.absNorm D:ℝ) := Nat.cast_nonneg _
   calc
@@ -197300,7 +197300,7 @@ theorem allocation_mass_small_power (N : ℕ) (hN : 0 < N) (ε : ℝ) (hε : 0 <
     _ ≤ ((2:ℝ)^(primeSupport D).card)^s.card := by exact_mod_cast allocation_card_bound D s
     _ ≤ ((2:ℝ)^(primeSupport D).card)^N := pow_le_pow_right₀ (one_le_pow₀ (by norm_num)) hs
     _ ≤ (C*(Ideal.absNorm D:ℝ)^(ε/N))^N := pow_le_pow_left₀ (by positivity) (hb D hD) N
-    _ = C^N*(Ideal.absNorm D:ℝ)^ε := by
+    _ = C ^ N*(Ideal.absNorm D:ℝ)^ε := by
       rw [mul_pow,← Real.rpow_mul_natCast hn]
       congr 2
       field_simp
@@ -198178,14 +198178,14 @@ theorem allocation_card_small_power (N : ℕ) (hN : 0 < N) (ε : ℝ) (hε : 0 <
   have hNr : (0:ℝ) < N := by exact_mod_cast hN
   obtain ⟨C,hC,hb⟩ := CompletedGauss.prime_support_subsets_bound
     (ε/N) (div_pos hε hNr)
-  refine ⟨C^N,pow_pos hC _,?_⟩
+  refine ⟨C ^ N,pow_pos hC _,?_⟩
   intro D hD s hs
   have hn : 0 ≤ (Ideal.absNorm D:ℝ) := Nat.cast_nonneg _
   calc
     _ ≤ ((2:ℝ)^(primeSupport D).card)^s.card := by exact_mod_cast allocation_card_bound D s
     _ ≤ ((2:ℝ)^(primeSupport D).card)^N := pow_le_pow_right₀ (one_le_pow₀ (by norm_num)) hs
     _ ≤ (C*(Ideal.absNorm D:ℝ)^(ε/N))^N := pow_le_pow_left₀ (by positivity) (hb D hD) N
-    _ = C^N*(Ideal.absNorm D:ℝ)^ε := by
+    _ = C ^ N*(Ideal.absNorm D:ℝ)^ε := by
       rw [mul_pow,← Real.rpow_mul_natCast hn]
       congr 2
       field_simp
@@ -204012,7 +204012,7 @@ local notation "O"=> Eisenstein.O
         ((S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁)*
          (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*(3+|t|)^8*Z^(m+q+4*ρ):=by
   obtain ⟨S,C,hC,hpoly⟩:=global_polynomial_bound a b ha
-  refine ⟨S,C^4,pow_pos hC _,?_⟩
+  refine ⟨S,C ^ 4,pow_pos hC _,?_⟩
   intro W₁ W₂ hs₁ hs₂ η mask A r χ hχ hrow Z m q ρ Cscale t X₁ X₂ hZ hm hq hCs hscale hfloor hX₁ hX₂ hmod
   let B₁:=S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁
   let B₂:=S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂
@@ -204021,7 +204021,7 @@ local notation "O"=> Eisenstein.O
   let V:=3+|t|
   let Q:=Cscale*Z^(m+q)
   have hQ:0≤ Q:=mul_nonneg hCs (Real.rpow_nonneg (zero_le_one.trans hZ) _)
-  let B:=C^2*(B₁*B₂)*Q^2*V^4
+  let B:=C ^ 2*(B₁*B₂)*Q^2*V^4
   have hB:0≤ B:=by dsimp [B]; positivity
   have hpoint (z:O)(hz:r.keep z):‖zeroRow η mask A z t W₁ W₂ X₁ X₂‖≤ B:=by
     rw [zero_row_norm η (χ z) mask A z (hrow z hz) W₁ W₂ a b ha hs₁ hs₂
@@ -204045,7 +204045,7 @@ local notation "O"=> Eisenstein.O
   have hd:=diagonalControl_nonneg r.profile
   apply hb.trans
   calc
-    _=(C^4*Cscale^4*diagonalControl r.profile*(B₁*B₂)^2*V^8)*(Z^m*(Z^(m+q))^4):=by
+    _=(C ^ 4*Cscale^4*diagonalControl r.profile*(B₁*B₂)^2*V^8)*(Z^m*(Z^(m+q))^4):=by
       dsimp [B,Q]; ring
     _≤ _:=mul_le_mul_of_nonneg_left hp (by positivity)
 
@@ -206575,7 +206575,7 @@ lemma weight_mul (I J : Ideal O) : weight (I*J) = weight I * weight J := by
   simp only [weight, map_mul, Nat.cast_mul, Real.sqrt_mul (Nat.cast_nonneg _), mul_inv_rev]
   ring
 lemma weight_one : weight (1 : Ideal O) = 1 := by simp [weight]
-lemma weight_pow (I : Ideal O) (n : ℕ) : weight (I^n) = weight I ^ n := by
+lemma weight_pow (I : Ideal O) (n : ℕ) : weight (I ^ n) = weight I ^ n := by
   induction n with
   | zero => simpa only [pow_zero] using weight_one
   | succ n ih => rw [pow_succ,weight_mul,ih,pow_succ]
@@ -208253,7 +208253,7 @@ theorem actual_masked_reflection_energy (ε : ℝ) (hε : 0<ε) :
       (∑i,‖∑'a,(mask i a*signedWeight (η i) (ηi i) (S i) (B i) a)*f i a‖^2) ≤
         C*R^ε*E := by
   obtain ⟨C,hC,hb⟩ := uniform_signed_mass (ε/2) (by positivity)
-  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨C ^ 2,sq_pos_of_pos hC,?_⟩
   intro ι _ S hS η ηi B hB R E hR hcap mask f hmask hselection
   have hR0 : 0≤ R := by linarith
   let M := C*R^(ε/2)
@@ -208663,7 +208663,7 @@ theorem actual_original_energy_to_retained (a b xi saving L Cscale ε : ℝ)
   refine ⟨n,?_⟩
   intro W hs hW
   obtain ⟨C,hC,hb⟩ := hn W hs hW
-  refine ⟨2*C^2,by positivity,?_⟩
+  refine ⟨2*C ^ 2,by positivity,?_⟩
   intro ι _ χ hχ
   choose ψ G hp hnψ hG hcap happrox using fun i=> hb (χ i) (hχ i)
   refine ⟨ψ,fun i=>⟨hp i,hnψ i,hcap i⟩,?_⟩
@@ -208696,7 +208696,7 @@ theorem actual_original_energy_to_retained (a b xi saving L Cscale ε : ℝ)
     nlinarith
   have hh := Finset.sum_le_sum (fun i (_ : i∈(Finset.univ : Finset ι))=> hpoint i)
   simp only [Finset.sum_add_distrib,←Finset.mul_sum] at hh
-  have hBeq : B^2*2=(2*C^2)*Rcap^(2*ε)*(1+T)^(2*n)*Z^(-2*saving) := by
+  have hBeq : B^2*2=(2*C ^ 2)*Rcap^(2*ε)*(1+T)^(2*n)*Z^(-2*saving) := by
     have hr0 : 0≤ Rcap := by linarith
     have hz0 : 0≤ Z := by linarith
     have hr : (Rcap^ε)^2=Rcap^(2*ε) := by
@@ -209434,13 +209434,13 @@ local notation "O"=> Eisenstein.O
          (S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂))^2*R^4*
         (3+|freq₁|)^4*(3+|freq₂|)^4:=by
   obtain ⟨S,C,hC,hg⟩:=global_positive_scale a b ha
-  refine ⟨S,C^4,pow_pos hC _,?_⟩
+  refine ⟨S,C ^ 4,pow_pos hC _,?_⟩
   intro W₁ W₂ hs₁ hs₂ χ r R X₁ X₂ freq₁ freq₂ hR hX₁ hX₂ hχ hmod
   let B₁:=S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₁
   let B₂:=S.sup (schwartzSeminormFamily ℝ ℝ ℂ) W₂
   have hB₁:0≤ B₁:=apply_nonneg _ _
   have hB₂:0≤ B₂:=apply_nonneg _ _
-  let B:=C^2*(B₁*B₂)*R^2*(3+|freq₁|)^2*(3+|freq₂|)^2
+  let B:=C ^ 2*(B₁*B₂)*R^2*(3+|freq₁|)^2*(3+|freq₂|)^2
   have hB:0≤ B:=by dsimp [B];positivity
   have hp (z:O)(hz:r.keep z):
       ‖polynomial (χ z) false W₁ X₁ 0 freq₁*polynomial (χ z) false W₂ X₂ 0 freq₂‖≤ B:=by
@@ -219500,7 +219500,7 @@ theorem supported_power_pair_count (a ε : ℝ) (ha : 0 < a) (hε : 0 < ε) :
       (∀ v ∈ S,(Ideal.absNorm v.1:ℝ) ≤ X ∧ (Ideal.absNorm v.2:ℝ) ≤ Y) →
       (S.card:ℝ) ≤ C*X^a*Y^a*(Ideal.absNorm Q:ℝ)^ε := by
   obtain ⟨C,hC,hcount⟩ := supported_power_count a (ε/2) ha (by positivity)
-  refine ⟨C^2,pow_pos hC _,?_⟩
+  refine ⟨C ^ 2,pow_pos hC _,?_⟩
   intro Q hQ S hS hs X Y hX hY hN
   have hfst : ((S.image Prod.fst).card:ℝ) ≤ C*X^a*(Ideal.absNorm Q:ℝ)^(ε/2) := by
     refine hcount Q hQ _ ?_ ?_ X hX ?_
@@ -219534,7 +219534,7 @@ theorem supported_power_pair_count (a ε : ℝ) (ha : 0 < a) (hε : 0 < ε) :
       exact_mod_cast (Finset.card_le_card hin).trans_eq (Finset.card_product _ _)
     _ ≤ (C*X^a*(Ideal.absNorm Q:ℝ)^(ε/2))*(C*Y^a*(Ideal.absNorm Q:ℝ)^(ε/2)) :=
       mul_le_mul hfst hsnd (Nat.cast_nonneg _) (by positivity)
-    _ = C^2*X^a*Y^a*((Ideal.absNorm Q:ℝ)^(ε/2)*(Ideal.absNorm Q:ℝ)^(ε/2)) := by ring
+    _ = C ^ 2*X^a*Y^a*((Ideal.absNorm Q:ℝ)^(ε/2)*(Ideal.absNorm Q:ℝ)^(ε/2)) := by ring
     _ = _ := by rw [← Real.rpow_add hn]; congr 2; ring
 
 end CenteredMomentRankinSubset
@@ -223998,7 +223998,7 @@ theorem actual_shared_energy {α : Type*} [DecidableEq α]
         ∏j∈F,naturalSlot ((χ i).excludePrimes R hR) (pool i j) (β i j) (P i j)‖^2)≤
         C*(Ideal.absNorm (∏I∈R,I):ℝ)^ε*E := by
   obtain ⟨C,hC,hmass⟩:=uniform_mass_subpower F b M hM (ε/2) (by positivity)
-  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨C ^ 2,sq_pos_of_pos hC,?_⟩
   intro ι _ R hR χ W₁ W₂ X₁ X₂ pool β P hX₁ hX₂ hp hP hβ hs E hE he
   let κ := {D : Finset (Ideal O) // D∈R.powerset} ×
     {D : Finset (Ideal O) // D∈R.powerset} × {J : Finset α // J∈F.powerset}
@@ -225463,7 +225463,7 @@ theorem actual_original_energy_to_retained (xi saving L Cscale ε : ℝ)
             2*(∑i,‖retainedSchwartz (χ i) (ψ i) (W i) (X i) (Z^(xi/2))*P i‖^2)+
             C*Rcap^(2*ε)*D^2*Z^(-2*saving)*(∑i,‖P i‖^2) := by
   obtain ⟨H,C,hC,hb⟩ := actual_original_approximation xi saving L Cscale ε hxi hscale hε
-  refine ⟨H,2*C^2,by positivity,?_⟩
+  refine ⟨H,2*C ^ 2,by positivity,?_⟩
   intro ι _ χ hχ
   choose ψ G hp hnψ hG hcap happrox using fun i=> hb (χ i) (hχ i)
   refine ⟨ψ,fun i=>⟨hp i,hnψ i,hcap i⟩,?_⟩
@@ -225496,7 +225496,7 @@ theorem actual_original_energy_to_retained (xi saving L Cscale ε : ℝ)
     nlinarith
   have hh := Finset.sum_le_sum (fun i (_ : i∈(Finset.univ : Finset ι))=> hpoint i)
   simp only [Finset.sum_add_distrib,←Finset.mul_sum] at hh
-  have hBeq : B^2*2=(2*C^2)*Rcap^(2*ε)*D^2*Z^(-2*saving) := by
+  have hBeq : B^2*2=(2*C ^ 2)*Rcap^(2*ε)*D^2*Z^(-2*saving) := by
     have hr0 : 0≤ Rcap := by linarith
     have hz0 : 0≤ Z := by linarith
     have hr : (Rcap^ε)^2=Rcap^(2*ε) := by
@@ -234407,7 +234407,7 @@ theorem paired_amplitude_source_control (lo hi ε B:ℝ) (hlo:0< lo) (hhi:0≤ h
   refine ⟨J,R,hR,?_⟩
   intro Q hQ
   obtain ⟨C,hC,hbound⟩:=hJ Q hQ
-  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨C ^ 2,sq_pos_of_pos hC,?_⟩
   intro ι κ _ _ _ _ s v p q Z r hZ z hs hv D a b
   have hpoint (α:Type u) [Fintype α] [DecidableEq α] (s:Data α)(p:Profiles lo hi)
       (hs:ProfileAdmissible s p Q Z B r z)(a:Allocation D (Finset.univ:Finset (α⊕Fin 2))):
@@ -235952,7 +235952,7 @@ theorem actual_paired_asymmetric (lo hi ε B:ℝ) (hlo:0< lo) (hhi:0≤ hi) (hε
   refine ⟨J,R,hR,?_⟩
   intro Q hQ
   obtain ⟨C,hC,hbound⟩:=hJ Q hQ
-  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨C ^ 2,sq_pos_of_pos hC,?_⟩
   intro ι κ _ _ _ _ s v p q Z r rRight hZ z hs hv D a b
   have hpoint (α:Type u) [Fintype α] [DecidableEq α] (s:Data α)(p:Profiles lo hi)(r0:ℝ)
       (hs:ProfileAdmissible s p Q Z B r0 z)(a:Allocation D (Finset.univ:Finset (α⊕Fin 2))):
@@ -244451,7 +244451,7 @@ theorem factor_logDeriv_norm {σ N : ℝ} (hσ : 0 < σ) (hN : 2 ≤ N)
 theorem factors_logDeriv_norm (σ : ℝ) (hσ : 0 < σ) (M : Ideal O)
     (ψ : Character) {s : ℂ} (hs : σ ≤ s.re) :
     ‖logDeriv (HeckeFiniteDeletion.factors M ψ) s‖ ≤
-      localBound σ * Real.log ((radical M).absNorm : ℝ) := by
+      localBound σ * Real.log ((HeckeDeletionBounds.radical M).absNorm : ℝ) := by
   have hp0 (P : HeckeIdealSeries.PrimeIdeal) : 0 < (P.val.absNorm : ℝ) := by
     have h := HeckeIdealSeries.prime_norm_two_le P
     exact_mod_cast (by omega : 0 < P.val.absNorm)
@@ -244473,9 +244473,9 @@ theorem factors_logDeriv_norm (σ : ℝ) (hσ : 0 < σ) (M : Ideal O)
       apply Finset.sum_le_sum
       intro P _
       exact factor_logDeriv_norm hσ (hp2 P) (idealCoeff_norm_le_one ψ P.val) hs
-    _ = localBound σ * Real.log ((radical M).absNorm : ℝ) := by
+    _ = localBound σ * Real.log ((HeckeDeletionBounds.radical M).absNorm : ℝ) := by
       rw [← Finset.mul_sum, ← Real.log_prod (fun P _ => (hp0 P).ne')]
-      simp only [radical, HeckeIdealSeries.primeProduct, map_prod, Nat.cast_prod]
+      simp only [HeckeDeletionBounds.radical, HeckeIdealSeries.primeProduct, map_prod, Nat.cast_prod]
 
 end HeckeDeletionDerivative
 
@@ -244842,7 +244842,7 @@ theorem original_disk_control (e : ℝ) (he : 0< e) (he' : e<1/1000) :
       (∀ z ∈ ball ((2 : ℂ)+t*Complex.I) (2-a-2*e), LFunction χ z ≠ 0) →
       ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-8*e),
         ‖logDeriv (LFunction χ) z‖ ≤ B*Real.log (complexity χ t) +
-          localBound (1/2)*Real.log ((radical χ.modulus).absNorm : ℝ) := by
+          localBound (1/2)*Real.log ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by
   obtain ⟨Dp,B,_,hB,hprimitive⟩ := HeckeLogarithmicActual.disk_control e 1 he he' (by norm_num)
   refine ⟨B,hB,?_⟩
   intro χ hχ a t ha ha' hzero z hz
@@ -244885,7 +244885,7 @@ theorem buffered_original_control (e : ℝ) (he : 0< e) (he' : e<1/1000) :
       ∀ (j : ι) (t : ℝ), |t| ≤ (3*i+2 : ℕ)*T →
       ∀ z ∈ closedBall ((2 : ℂ)+t*Complex.I) (2-a-8*e),
         ‖logDeriv (LFunction (χ j)) z‖ ≤ B*Real.log (complexity (χ j) t) +
-          localBound (1/2)*Real.log ((radical (χ j).modulus).absNorm : ℝ) := by
+          localBound (1/2)*Real.log ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ) := by
   obtain ⟨B,hB,hbound⟩ := original_disk_control e he he'
   refine ⟨B,hB,?_⟩
   intro ι _ χ hχ T a i hT ha ha' hmax j t ht z hz
@@ -244904,7 +244904,7 @@ theorem buffered_rectangle_control (e : ℝ)
       LFunction (χ j) z≠0 ∧
       ‖logDeriv (LFunction (χ j)) z‖≤
         B*Real.log (complexity (χ j) ((3*i+2 : ℕ)*T)) +
-          localBound (1/2)*Real.log ((radical (χ j).modulus).absNorm : ℝ) := by
+          localBound (1/2)*Real.log ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ) := by
   obtain ⟨B,hB,hbound⟩ := buffered_original_control e he he'
   refine ⟨B,hB,?_⟩
   intro ι _ χ hχ T a i hT ha ha' hmax j z hzl hzr hzi
@@ -245073,12 +245073,12 @@ namespace HeckePrimeDyadic
 open HeckeFamily HeckeDyadic HeckeLogarithmic HeckeDeletionBounds
 
 def binCost (B : ℝ) (χ : Character) (H : ℝ) : ℝ :=
-  B*Real.log (complexity χ H) + localBound (1/2)*Real.log ((radical χ.modulus).absNorm : ℝ)
+  B*Real.log (complexity χ H) + localBound (1/2)*Real.log ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)
 
 theorem binCost_nonneg {B : ℝ} (hB : 0≤ B) (χ : Character) (H : ℝ) : 0≤ binCost B χ H := by
   have hc : 1≤ complexity χ H :=
     (Real.one_le_exp (by norm_num : (0 : ℝ)≤1)).trans (complexity_ge_exp χ H)
-  have hr : (1 : ℝ)≤(radical χ.modulus).absNorm := by
+  have hr : (1 : ℝ)≤(HeckeDeletionBounds.radical χ.modulus).absNorm := by
     exact_mod_cast Nat.one_le_iff_ne_zero.mpr
       (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero χ.modulus))
   exact add_nonneg (mul_nonneg hB (Real.log_nonneg hc))
@@ -245149,7 +245149,7 @@ theorem binCost_le_log (χ : Character) (B U H η : ℝ)
     rw [Real.log_mul (by norm_num) (Real.rpow_pos_of_pos hUp _).ne', Real.log_rpow hUp]
     have h2 := Real.log_le_log (by norm_num : (0 : ℝ)<2) hU
     nlinarith
-  have hrad : 0<((radical χ.modulus).absNorm : ℝ) := by
+  have hrad : 0<((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by
     exact_mod_cast Nat.pos_iff_ne_zero.mpr
       (Ideal.absNorm_eq_zero_iff.not.mpr (radical_ne_zero χ.modulus))
   have hrlog := Real.log_le_log hrad ((radical_norm_le_modulus χ).trans hQ)
@@ -246089,7 +246089,7 @@ theorem ray_prime_global_squared (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
         C*(Z^d)^(κ*r+2*ε) := by
   obtain ⟨C,hC,hbound⟩ := ray_prime_bin_bound M H hH W A B hA hWs hW
     R dmax τ ε e slack η σmin σmax hR hdmax hτ hε he he' hslack hη hbudget
-  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨C ^ 2,sq_pos_of_pos hC,?_⟩
   intro Z d hZ hd hdmax hU hT χ hn i r σ freq hr hrR hσ hσmax hlarge hQ hf ht
   have hmax := zeroMaximum_le_beta (twistedFamily M H hH χ) hn
     (3*(i+1:ℕ)*Z^τ) hbeta
@@ -246102,8 +246102,8 @@ theorem ray_prime_global_squared (W : ℝ→ℂ) (A B : ℝ) (hA : 0< A)
     ring
   calc
     _≤(C*(Z^d)^((beta-1/2)*r+ε))^2 := pow_le_pow_left₀ (norm_nonneg _) hb 2
-    _=C^2*(Z^d)^(2*((beta-1/2)*r+ε)) := by rw [mul_pow,hp]
-    _≤ C^2*(Z^d)^(κ*r+2*ε) := mul_le_mul_of_nonneg_left
+    _=C ^ 2*(Z^d)^(2*((beta-1/2)*r+ε)) := by rw [mul_pow,hp]
+    _≤ C ^ 2*(Z^d)^(κ*r+2*ε) := mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow_of_exponent_le (by linarith : 1≤ Z^d)
         (by nlinarith [mul_le_mul_of_nonneg_right hκ hr])) (sq_nonneg _)
 
@@ -246632,7 +246632,7 @@ theorem internal_exceptional_count (η η₀ : Character) (Q : Ideal O)
     (hDnorm : Z^(F/2)≤(D.absNorm:ℝ))
     (hN : ∀z∈rows,((Ideal.span {z}).absNorm:ℝ)≤ C*Z^M) :
     ((rows.filter (fun z=> FixedInducingRow η (internalQ Q η₀) m A z)).card:ℝ)≤
-      768*(6:ℝ)^(normalizedFactors (internalQ Q η₀)).toFinset.card*C^(1/6:ℝ)*Z^((M-2*F)/6) := by
+      768*(6:ℝ)^(normalizedFactors (internalQ Q η₀)).toFinset.card*C ^ (1/6:ℝ)*Z^((M-2*F)/6) := by
   apply fixed_support_exceptional_count η (internalQ Q η₀) (internalQ_ne_zero Q hQ0 η₀)
     (internalQ_ne_top Q hQ η₀) (inf_le_left.trans hQ72) m A hm hA hmLam hm2
     (rows.filter (fun z=> FixedInducingRow η (internalQ Q η₀) m A z))
@@ -249391,16 +249391,16 @@ variable {ι:Type*}[Fintype ι][DecidableEq ι]
 
 omit [DecidableEq ι] in
 lemma slot_product_le (s:Input ι)(N:ℕ)(C:ℝ)(hC:1≤ C)
-    (hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C): (∏i,s.M i)≤ C^N := by
+    (hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C): (∏i,s.M i)≤ C ^ N := by
   calc
     _≤∏_i:ι,C:=Finset.prod_le_prod (fun i _=>(s.M_ge_one i).trans' zero_le_one) (fun i _=> hM i)
-    _=C^(Fintype.card ι):=by simp
-    _≤ C^N:=pow_le_pow_right₀ hC hN
+    _=C ^ (Fintype.card ι):=by simp
+    _≤ C ^ N:=pow_le_pow_right₀ hC hN
 
 omit [DecidableEq ι] in
 lemma plain_control_le {a b:ℝ}(s:Input ι)(p:Profiles a b)(S:Finset (ℕ×ℕ))
     (N:ℕ)(C:ℝ)(hC:1≤ C)(hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C):
-    plainControl s (p.profile 0) (p.profile 1)≤ C^N*p.control (insert (0,0) S) := by
+    plainControl s (p.profile 0) (p.profile 1)≤ C ^ N*p.control (insert (0,0) S) := by
   have h0 (i:Fin 2):SchwartzMap.seminorm ℝ 0 0 (p.profile i)≤
       sourceControl (insert (0,0) S) (p.profile i):=
     Seminorm.le_finset_sup_apply (p:=schwartzSeminormFamily ℝ ℝ ℂ)
@@ -249413,7 +249413,7 @@ lemma plain_control_le {a b:ℝ}(s:Input ι)(p:Profiles a b)(S:Finset (ℕ×ℕ)
 omit [DecidableEq ι] in
 lemma plain_control_sq_le {a b:ℝ}(s:Input ι)(p:Profiles a b)(S:Finset (ℕ×ℕ))
     (N:ℕ)(C:ℝ)(hC:1≤ C)(hN:Fintype.card ι≤ N)(hM:∀i,s.M i≤ C):
-    (plainControl s (p.profile 0) (p.profile 1))^2≤ C^(2*N)*(p.control (insert (0,0) S))^2 := by
+    (plainControl s (p.profile 0) (p.profile 1))^2≤ C ^ (2*N)*(p.control (insert (0,0) S))^2 := by
   have hh:=pow_le_pow_left₀ (plainControl_nonneg _ _ _) (plain_control_le s p S N C hC hN hM) 2
   simpa only [mul_pow,←pow_mul,Nat.mul_comm N 2] using hh
 
@@ -262214,7 +262214,7 @@ theorem actual_relative_capacity_removal {ι:Type*}[Fintype ι][DecidableEq ι]
   obtain ⟨degree,C,hC,hbound⟩:=relative_slots_uniform M H hH W a b ha hWs hW
     Lmod Lslot loss lo hi κ hLm hLs hloss hbeta hκ
   have hκpos:0<κ:=by linarith
-  refine ⟨degree*N,C^N,pow_pos (zero_lt_one.trans_le hC) _,?_⟩
+  refine ⟨degree*N,C ^ N,pow_pos (zero_lt_one.trans_le hC) _,?_⟩
   intro ν
   obtain ⟨Z₀,hZ₀,hbound⟩:=hbound ν
   refine ⟨Z₀,hZ₀,?_⟩
@@ -262253,7 +262253,7 @@ theorem actual_relative_capacity_removal {ι:Type*}[Fintype ι][DecidableEq ι]
     exact pow_le_pow_right₀ hB hcard
   have hcostZ:Z^(κ*∑i∈R,w i)≤ Z^(excess/6+κ*mesh):=
     Real.rpow_le_rpow_of_exponent_le hZ1 hcost
-  have hsplit:B^N=C^N*(1+|t|+V)^(degree*N)*Z^(loss*(N:ℝ)):=by
+  have hsplit:B^N=C ^ N*(1+|t|+V)^(degree*N)*Z^(loss*(N:ℝ)):=by
     dsimp [B]
     rw [mul_pow,mul_pow,←pow_mul,←Real.rpow_natCast (Z^loss) N,←Real.rpow_mul hZp.le]
   have hlossN:loss*(N:ℝ)≤ε:=by
@@ -262263,7 +262263,7 @@ theorem actual_relative_capacity_removal {ι:Type*}[Fintype ι][DecidableEq ι]
     nlinarith [hloss.le]
   calc
     _≤ B^N*Z^(excess/6+κ*mesh):=mul_le_mul hpow hcostZ (Real.rpow_nonneg hZp.le _) (by positivity)
-    _=C^N*(1+|t|+V)^(degree*N)*Z^(loss*(N:ℝ)+(excess/6+κ*mesh)):=by
+    _=C ^ N*(1+|t|+V)^(degree*N)*Z^(loss*(N:ℝ)+(excess/6+κ*mesh)):=by
       rw [hsplit,mul_assoc,←Real.rpow_add hZp]
     _≤ _:=mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow_of_exponent_le hZ1 (by linarith)) (by positivity)
@@ -263480,7 +263480,7 @@ theorem retained_pair_control (a b:ℝ)(ha:0< a)(S:Finset (ℕ×ℕ)):
       (retainedPair a b ha p U hU t).control S≤
         C*p.control T*(1+‖t‖)^(2*n):=by
   obtain ⟨n,T,C,hC,hbound⟩:=plain_profile_source_control a b ha S
-  refine ⟨n,T,C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨n,T,C ^ 2,sq_pos_of_pos hC,?_⟩
   intro p U hU t
   have h₀:=hbound (p.profile 0) (p.support 0) (U 0) (hU 0) t
   have h₁:=hbound (p.profile 1) (p.support 1) (U 1) (hU 1) t
@@ -273755,7 +273755,7 @@ local notation "O"=> Eisenstein.O
 local instance {κ:Type*}:DecidableEq κ:=Classical.decEq _
 
 def normalizedPower (b V C q Z allowance ε E:ℝ)(N:ℕ)(α:ℝ):ℝ:=
-  C^ε*(b^N)^α*E/q*(V/C)^(α-1)*Z^(-allowance)
+  C ^ ε*(b^N)^α*E/q*(V/C)^(α-1)*Z^(-allowance)
 
 lemma normalizedPower_nonneg (b V C q Z allowance ε E:ℝ)(N:ℕ)(α:ℝ)
     (hb:0≤ b)(hV:0≤ V)(hC:0≤ C)(hq:0≤ q)(hZ:0≤ Z)(hE:0≤ E):
@@ -273766,7 +273766,7 @@ lemma normalizedPower_nonneg (b V C q Z allowance ε E:ℝ)(N:ℕ)(α:ℝ)
 lemma reference_power_identity (b V C q Z allowance ε E:ℝ)(N:ℕ)(α:ℝ)
     (hb:0< b)(hV:0< V)(hC:0< C)(hq:0< q)(hZ:0< Z):
     (q*(V/C)^2*Z^allowance)*normalizedPower b V C q Z allowance ε E N α=
-      C^(ε-1)*V*E*(b^N*V/C)^α:=by
+      C ^ (ε-1)*V*E*(b^N*V/C)^α:=by
   have hx:0< V/C:=div_pos hV hC
   have hbN:0< b^N:=pow_pos hb N
   have hprod:Z^allowance*Z^(-allowance)=1:=by
@@ -275233,7 +275233,7 @@ theorem source_normalized_identity (P:Finset (Ideal O))(mainFactor b V C q Z all
     (hV:0< V)(hC:0< C)(hq:0< q)(hZ:0< Z):
     ∀j,CenteredMomentFirstCommonReferencePower.normalizedPower b V C q Z allowance eps
         (sourceCoefficients P mainFactor amain aerror alpha j) N (alpha j)=
-      C^eps*(b^N)^(alpha j)*averagedCoefficients P mainFactor (fun _=>1)
+      C ^ eps*(b^N)^(alpha j)*averagedCoefficients P mainFactor (fun _=>1)
         (fun j=>(V/C)*amain j*(V/C)^(alpha j)/reference q V C Z allowance)
         (fun p i χ j=>(V/C)*localErrorCost p (errorIndex i)*aerror p i χ j*
           (V/C/(normValue p)^(errorIndex i+1))^(alpha j)/reference q V C Z allowance) j := by
@@ -275243,7 +275243,7 @@ theorem source_normalized_identity (P:Finset (Ideal O))(mainFactor b V C q Z all
   have hden:reference q V C Z allowance≠0:=by unfold reference;positivity
   have he:CenteredMomentFirstCommonReferencePower.normalizedPower b V C q Z allowance eps
       (sourceCoefficients P mainFactor amain aerror alpha j) N (alpha j)=
-      C^eps*(b^N)^(alpha j)*((V/C)*sourceCoefficients P mainFactor amain aerror alpha j*
+      C ^ eps*(b^N)^(alpha j)*((V/C)*sourceCoefficients P mainFactor amain aerror alpha j*
         (V/C)^(alpha j)/reference q V C Z allowance):=by
     unfold CenteredMomentFirstCommonReferencePower.normalizedPower reference
     rw [Real.rpow_sub hx,Real.rpow_one,Real.rpow_neg hZ.le]
@@ -275321,7 +275321,7 @@ theorem actual_power_reference_identity (P:Finset (Ideal O))(mainFactor b V C q 
       H j*errorPowers p (errorIndex i+1) q Z (Kerror p i χ) deficit paid saving (rerror p i χ) j;
     ∀j,CenteredMomentFirstCommonReferencePower.normalizedPower b V C q Z allowance eps
       (sourceCoefficients P mainFactor amain aerror alpha j) N (alpha j)=
-      C^eps*(b^N)^(alpha j)*averagedCoefficients P mainFactor H
+      C ^ eps*(b^N)^(alpha j)*averagedCoefficients P mainFactor H
         (mainCores q V C Z allowance Kmain ell deficit paid eps saving rmain)
         (fun p i χ=> errorCores p (errorIndex i+1) q V C Z allowance (Kerror p i χ)
           deficit paid eps saving (rerror p i χ)) j := by
@@ -291934,7 +291934,7 @@ theorem independent_profile_control (a b:ℝ)(ha:0< a)(S:Finset (ℕ×ℕ)):
       (independentProfiles ha W₁ W₂ hs₁ hs₂ t₁ t₂).control S≤
         C*(sourceControl T W₁*sourceControl T W₂)*(1+‖t₁‖+‖t₂‖)^(2*n):=by
   obtain ⟨n,T,C,hC,hc⟩:=normPowerProfile_source_control a b ha S
-  refine ⟨n,T,C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨n,T,C ^ 2,sq_pos_of_pos hC,?_⟩
   intro W₁ W₂ hs₁ hs₂ t₁ t₂
   have h₁:=hc W₁ hs₁ t₁
   have h₂:=hc W₂ hs₂ t₂
@@ -292630,7 +292630,7 @@ theorem original_energy_weighted_deletion (bslot M:α→ℝ)(hM:∀i,0≤ M i)
         s.radial.keep s.radial.profile s.radial.scale ≤ C*(s.puncture.radical.absNorm:ℝ)^ε*E:=by
   obtain ⟨C,hC,hmass⟩:=CenteredMomentEnergyReferenceDeletionBudget.weighted_uniform_mass_subpower
     (Finset.univ:Finset α) bslot M (fun i _=> hM i) (ε/2) (by positivity)
-  refine ⟨C^2,sq_pos_of_pos hC,?_⟩
+  refine ⟨C ^ 2,sq_pos_of_pos hC,?_⟩
   intro Z Bmask bΦ a b s W₁ W₂ ha hb hs₁ hs₂ pool β P t X₁ X₂ E p hp hP hβ hs hX₁ hX₂ hE hple hchildren
   let R:=CubicEisenstein.primeSupport s.puncture
   have hR:∀I∈R,Prime I:=CenteredMomentNaturalRowSource.support_prime s.puncture
@@ -306551,10 +306551,10 @@ open HeckeDetectorFrequency
 lemma logarithmic_cost_eventually (C ε : ℝ) (hε : 0<ε) :
     ∀ᶠ U : ℝ in atTop, (C*(Real.logb 2 U)^2)^2≤ U^ε := by
   have ht := (logb_square_div_rpow_tendsto (ε/2) (by linarith)).pow 2
-  have ht' := ht.const_mul (C^2)
+  have ht' := ht.const_mul (C ^ 2)
   have hbound : ∀ᶠ U : ℝ in atTop,
-      C^2*((Real.logb 2 U)^2/U^(ε/2))^2≤1 := by
-    have hh : Tendsto (fun U : ℝ => C^2*((Real.logb 2 U)^2/U^(ε/2))^2)
+      C ^ 2*((Real.logb 2 U)^2/U^(ε/2))^2≤1 := by
+    have hh : Tendsto (fun U : ℝ => C ^ 2*((Real.logb 2 U)^2/U^(ε/2))^2)
         atTop (𝓝 0) := by simpa using ht'
     exact (tendsto_order.mp hh).2 1 (by norm_num) |>.mono (fun _ h => h.le)
   filter_upwards [hbound,eventually_gt_atTop (0 : ℝ)] with U hb hU
@@ -306564,7 +306564,7 @@ lemma logarithmic_cost_eventually (C ε : ℝ) (hε : 0<ε) :
     norm_num
   rw [div_pow, he] at hb
   have hh := (div_le_iff₀ (Real.rpow_pos_of_pos hU ε)).mp
-    (show C^2*((Real.logb 2 U)^2)^2/U^ε≤1 by simpa only [mul_div_assoc] using hb)
+    (show C ^ 2*((Real.logb 2 U)^2)^2/U^ε≤1 by simpa only [mul_div_assoc] using hb)
   simpa only [one_mul,mul_one,mul_pow] using hh
 
 lemma normalized_product_lower (U r m σ a ε K A B : ℝ)
@@ -323802,9 +323802,9 @@ theorem lowGramExceptional_count (ε : ℝ) (hε : 0<ε) :
       (∀z∈F,(Ideal.absNorm (Ideal.span {z}):ℝ)≤ H)→
       (F.card:ℝ)≤ C*(Ideal.absNorm G:ℝ)^ε*H^(1/6:ℝ) := by
   obtain ⟨C,hC,hb⟩ := CompletedGauss.prime_support_subsets_bound (ε/3) (by positivity)
-  refine ⟨768*C^3,by positivity,?_⟩
+  refine ⟨768*C ^ 3,by positivity,?_⟩
   intro G hG F H hH hF hres hN
-  have hp : (6:ℝ)^(primeSupport G).card≤ C^3*(Ideal.absNorm G:ℝ)^ε := by
+  have hp : (6:ℝ)^(primeSupport G).card≤ C ^ 3*(Ideal.absNorm G:ℝ)^ε := by
     calc
       _ ≤ ((2:ℝ)^3)^(primeSupport G).card := pow_le_pow_left₀ (by norm_num) (by norm_num) _
       _ = ((2:ℝ)^(primeSupport G).card)^3 := by rw [←pow_mul,←pow_mul,Nat.mul_comm]
@@ -323815,7 +323815,7 @@ theorem lowGramExceptional_count (ε : ℝ) (hε : 0<ε) :
         norm_num
   apply (lowGramExceptional_raw_count F G H hH hF hres hN).trans
   calc
-    _ ≤ 768*(C^3*(Ideal.absNorm G:ℝ)^ε)*H^(1/6:ℝ) := by gcongr
+    _ ≤ 768*(C ^ 3*(Ideal.absNorm G:ℝ)^ε)*H^(1/6:ℝ) := by gcongr
     _ = _ := by ring
 
 end ProbePhysical
@@ -324173,7 +324173,7 @@ lemma gram_ideal_term_bound (δ Λ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1)
     (hΛ : 0 < Λ) (A : ℕ) (hA : 1 ≤ A) (I J : SupportedIdeal) :
     gramIdealNorm I ^ (-2:ℝ) * gramIdealNorm J ^ (-2:ℝ) *
       min 1 ((gramIdealNorm I*gramIdealNorm J/Λ)^A) ≤
-      Λ^(-1+δ) * (gramIdealNorm I^(-1-δ) * gramIdealNorm J^(-1-δ)) := by
+      Λ^(-1+δ) * (gramIdealNorm I ^ (-1-δ) * gramIdealNorm J^(-1-δ)) := by
   have hi := gramIdealNorm_pos I
   have hj := gramIdealNorm_pos J
   have ha : (1-δ:ℝ) ≤ A := by
@@ -324184,7 +324184,7 @@ lemma gram_ideal_term_bound (δ Λ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1)
   apply (mul_le_mul_of_nonneg_left hm (by positivity)).trans_eq
   rw [Real.div_rpow (by positivity) hΛ.le,Real.mul_rpow hi.le hj.le,
     div_eq_mul_inv,← Real.rpow_neg hΛ.le]
-  have hi' : gramIdealNorm I^(-2:ℝ)*gramIdealNorm I^(1-δ)=gramIdealNorm I^(-1-δ) := by
+  have hi' : gramIdealNorm I ^ (-2:ℝ)*gramIdealNorm I ^ (1-δ)=gramIdealNorm I ^ (-1-δ) := by
     rw [←Real.rpow_add hi]
     congr 1
     ring
@@ -324194,7 +324194,7 @@ lemma gram_ideal_term_bound (δ Λ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1)
     ring
   rw [show -(1-δ) = -1+δ by ring]
   calc
-    _ = Λ^(-1+δ)*((gramIdealNorm I^(-2:ℝ)*gramIdealNorm I^(1-δ))*
+    _ = Λ^(-1+δ)*((gramIdealNorm I ^ (-2:ℝ)*gramIdealNorm I ^ (1-δ))*
         (gramIdealNorm J^(-2:ℝ)*gramIdealNorm J^(1-δ))) := by ring
     _ = _ := by rw [hi',hj']
 
@@ -324202,10 +324202,10 @@ lemma gram_ideal_term_bound (δ Λ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1)
 theorem gram_supported_double_sum (δ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1) :
     ∃ K : ℝ, 0 < K ∧ ∀ (A : ℕ), 1 ≤ A → ∀ (Λ : ℝ), 0 < Λ →
       ∀ (F G : Finset SupportedIdeal),
-      (∑ I ∈ F, ∑ J ∈ G, gramIdealNorm I^(-2:ℝ) * gramIdealNorm J^(-2:ℝ) *
+      (∑ I ∈ F, ∑ J ∈ G, gramIdealNorm I ^ (-2:ℝ) * gramIdealNorm J^(-2:ℝ) *
         min 1 ((gramIdealNorm I*gramIdealNorm J/Λ)^A)) ≤ K*Λ^(-1+δ) := by
   obtain ⟨C,hC,hb⟩ := supportedIdeal_rpow_finite_bound (-1-δ) (by linarith)
-  refine ⟨C^2, by positivity, ?_⟩
+  refine ⟨C ^ 2, by positivity, ?_⟩
   intro A hA Λ hΛ F G
   have hF := hb F
   have hG := hb G
@@ -324213,14 +324213,14 @@ theorem gram_supported_double_sum (δ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1) :
     Finset.sum_nonneg (fun J _ => Real.rpow_nonneg (gramIdealNorm_pos J).le _)
   calc
     _ ≤ ∑ I ∈ F, ∑ J ∈ G, Λ^(-1+δ)*
-        (gramIdealNorm I^(-1-δ)*gramIdealNorm J^(-1-δ)) :=
+        (gramIdealNorm I ^ (-1-δ)*gramIdealNorm J^(-1-δ)) :=
       Finset.sum_le_sum (fun I _ => Finset.sum_le_sum
         (fun J _ => gram_ideal_term_bound δ Λ hδ hδ1 hΛ A hA I J))
-    _ = Λ^(-1+δ)*((∑ I ∈ F, gramIdealNorm I^(-1-δ))*
+    _ = Λ^(-1+δ)*((∑ I ∈ F, gramIdealNorm I ^ (-1-δ))*
         (∑ J ∈ G, gramIdealNorm J^(-1-δ))) := by
       simp only [Finset.mul_sum,Finset.sum_mul]
       rw [Finset.sum_comm]
-    _ ≤ Λ^(-1+δ)*C^2 := by
+    _ ≤ Λ^(-1+δ)*C ^ 2 := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       simpa only [pow_two] using mul_le_mul hF hG hGn hC.le
     _ = _ := by ring
@@ -324228,7 +324228,7 @@ theorem gram_supported_double_sum (δ : ℝ) (hδ : 0 < δ) (hδ1 : δ < 1) :
 theorem gram_supported_exceptional_sum (ε : ℝ) (_hε : 0 ≤ ε) (hε1 : ε < 1/6) :
     ∃ K : ℝ, 0 < K ∧ ∀ (F G : Finset SupportedIdeal),
       (∑ I ∈ F, ∑ J ∈ G,
-        gramIdealNorm I^(-7/6+ε:ℝ)*gramIdealNorm J^(-2:ℝ)) ≤ K := by
+        gramIdealNorm I ^ (-7/6+ε:ℝ)*gramIdealNorm J^(-2:ℝ)) ≤ K := by
   obtain ⟨C,hC,hb⟩ := supportedIdeal_rpow_finite_bound (-7/6+ε) (by linarith)
   obtain ⟨D,hD,hd⟩ := supportedIdeal_rpow_finite_bound (-2) (by norm_num)
   refine ⟨C*D, by positivity, ?_⟩
@@ -324272,7 +324272,7 @@ lemma supported_nonexceptional_prefactor (C D : SupportedIdeal) (F P Y Q : ℝ)
     (hF : 0< F) (hP : 0< P) (hY : 0< Y) (A : ℕ) :
     (Q/Y^3)*gramIdealNorm C*(Y/(gramIdealNorm C*gramIdealNorm D))^2*(P/gramIdealNorm C)*
       min 1 ((F*gramIdealNorm C*(P/gramIdealNorm C)/(Y/(gramIdealNorm C*gramIdealNorm D)))^A)=
-      (Q/Y)*P*(gramIdealNorm C^(-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
+      (Q/Y)*P*(gramIdealNorm C ^ (-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
         min 1 ((gramIdealNorm C*gramIdealNorm D/(Y/(F*P)))^A)) :=
   nonexceptional_prefactor _ _ _ _ _ _ (gramIdealNorm_pos C) (gramIdealNorm_pos D) hF hP hY A
 
@@ -324280,7 +324280,7 @@ lemma supported_exceptional_prefactor (C D : SupportedIdeal) (F P Y Q ε : ℝ)
     (hF : 0< F) (hP : 0< P) (hY : 0< Y) :
     (Q/Y^3)*gramIdealNorm C*(Y/(gramIdealNorm C*gramIdealNorm D))^2*
       (F*gramIdealNorm C)^ε*(P/gramIdealNorm C)^(1/6:ℝ)=
-      (Q/Y)*F^ε*P^(1/6:ℝ)*(gramIdealNorm C^(-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) :=
+      (Q/Y)*F^ε*P^(1/6:ℝ)*(gramIdealNorm C ^ (-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) :=
   exceptional_prefactor _ _ _ _ _ _ _ (gramIdealNorm_pos C) (gramIdealNorm_pos D) hF hP hY
 
 end ProbeGramCommon
@@ -324346,7 +324346,7 @@ theorem canonical_nonexceptional_ideal_sum (δ : ℝ) (hδ : 0<δ) (hδ1 : δ<1)
   let B := K*H₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) U*(1+|v|)^J*(Q/Y)*P
   have hB : 0≤ B := by dsimp [B];positivity
   have ht (C D : SupportedIdeal) (hC : C∈F) (hD : D∈G) :
-      (Q/Y^3)*‖V C D‖≤ B*(gramIdealNorm C^(-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
+      (Q/Y^3)*‖V C D‖≤ B*(gramIdealNorm C ^ (-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
         min 1 ((gramIdealNorm C*gramIdealNorm D/(Y/(M*P)))^A)) := by
     have hc := gramIdealNorm_pos C
     have hd := gramIdealNorm_pos D
@@ -324364,9 +324364,9 @@ theorem canonical_nonexceptional_ideal_sum (δ : ℝ) (hδ : 0<δ) (hδ1 : δ<1)
       _=_ := by rw [supported_nonexceptional_prefactor C D M P Y Q hM hP hY A];dsimp [B];ring
   calc
     _≤∑C∈F,∑D∈G,(Q/Y^3)*‖V C D‖ := normalized_double_sum_bound F G α V hα _ (by positivity)
-    _≤∑C∈F,∑D∈G,B*(gramIdealNorm C^(-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
+    _≤∑C∈F,∑D∈G,B*(gramIdealNorm C ^ (-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
         min 1 ((gramIdealNorm C*gramIdealNorm D/(Y/(M*P)))^A)) := Finset.sum_le_sum (fun C hC=> Finset.sum_le_sum (fun D hD=> ht C D hC hD))
-    _=B*(∑C∈F,∑D∈G,gramIdealNorm C^(-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
+    _=B*(∑C∈F,∑D∈G,gramIdealNorm C ^ (-2:ℝ)*gramIdealNorm D^(-2:ℝ)*
         min 1 ((gramIdealNorm C*gramIdealNorm D/(Y/(M*P)))^A)) := by simp only [Finset.mul_sum]
     _≤ B*(L*(Y/(M*P))^(-1+δ)) := mul_le_mul_of_nonneg_left (hideal A (by omega) _ (by positivity) F G) hB
     _=_ := by dsimp [B,M];ring
@@ -324399,7 +324399,7 @@ theorem canonical_exceptional_ideal_sum (ε : ℝ) (hε : 0<ε) (hε1 : ε<1/6)
   let B := K*H₀.sup (schwartzSeminormFamily ℝ ℝ ℂ) U*(Q/Y)*M^ε*P^(1/6:ℝ)
   have hB : 0≤ B := by dsimp [B];positivity
   have ht (C D : SupportedIdeal) (hC : C∈F) (hD : D∈G) :
-      (Q/Y^3)*‖V C D‖≤ B*(gramIdealNorm C^(-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) := by
+      (Q/Y^3)*‖V C D‖≤ B*(gramIdealNorm C ^ (-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) := by
     have hc := gramIdealNorm_pos C
     have hd := gramIdealNorm_pos D
     have hh := hfreq W hcompact hs hW U S hS σ C (E C D) (hE C hC D hD) (primaryIdealGenerator D.val) v
@@ -324414,9 +324414,9 @@ theorem canonical_exceptional_ideal_sum (ε : ℝ) (hε : 0<ε) (hε1 : ε<1/6)
       _=_ := by rw [supported_exceptional_prefactor C D M P Y Q ε hM hP hY];dsimp [B];ring
   calc
     _≤∑C∈F,∑D∈G,(Q/Y^3)*‖V C D‖ := normalized_double_sum_bound F G α V hα _ (by positivity)
-    _≤∑C∈F,∑D∈G,B*(gramIdealNorm C^(-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) :=
+    _≤∑C∈F,∑D∈G,B*(gramIdealNorm C ^ (-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) :=
       Finset.sum_le_sum (fun C hC=> Finset.sum_le_sum (fun D hD=> ht C D hC hD))
-    _=B*(∑C∈F,∑D∈G,gramIdealNorm C^(-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) := by simp only [Finset.mul_sum]
+    _=B*(∑C∈F,∑D∈G,gramIdealNorm C ^ (-7/6+ε:ℝ)*gramIdealNorm D^(-2:ℝ)) := by simp only [Finset.mul_sum]
     _≤ B*L := mul_le_mul_of_nonneg_left (hideal F G) hB
     _=_ := by dsimp [B,M];ring
 
@@ -328425,7 +328425,7 @@ lemma canonical_slot_inverse_square : ∃C : ℝ,0< C ∧
     apply Subtype.ext
     exact congrArg (fun I : SupportedIdeal=> I.val) h
   have he : (∑a : canonicalSlotSupport T,elementNorm a.val^(-2:ℝ))=
-      ∑I∈Finset.univ.image f,ProbeGramCommon.gramIdealNorm I^(-2:ℝ) := by
+      ∑I∈Finset.univ.image f,ProbeGramCommon.gramIdealNorm I ^ (-2:ℝ) := by
     rw [Finset.sum_image (fun P _ Q _ h=> hf h)]
     have hh := (canonicalSlotEquiv T hT).sum_comp (fun a=> elementNorm a.val^(-2:ℝ))
     rw [←hh]
@@ -335614,9 +335614,9 @@ lemma even_diagonal_exponent (r : ℕ) : r + (2*r).choose 2 = 2*r*r := by
     ring
 
 def localCubePhase (C omega : ℂ) (e l k : ℕ) : ℂ :=
-  C^l * omega^((e+3*l)*k+e*l+l.choose 2)
+  C ^ l * omega^((e+3*l)*k+e*l+l.choose 2)
 
-theorem localCubePhase_even (C omega : ℂ) (hC : C^2=omega) (ho : omega^2=1)
+theorem localCubePhase_even (C omega : ℂ) (hC : C ^ 2=omega) (ho : omega^2=1)
     (e r k : ℕ) : localCubePhase C omega e (2*r) k = omega^(e*k) := by
   unfold localCubePhase
   rw [pow_mul C 2 r, hC, ← pow_add]
@@ -335636,7 +335636,7 @@ lemma weightedScalar_zero (Q eta a G1 C omega X W V : ℂ) (e l k m : ℕ) :
 def evenRatio (Q a X V : ℂ) : ℂ := a^2*Q^4*X^6*V
 
 lemma weighted_squarefree_boundary (Q eta a G1 C omega X W V : ℂ)
-    (hQ : Q ≠ 0) (hG : G1 ≠ 0) (hC : C^2=omega) (ho : omega^2=1) (r : ℕ) :
+    (hQ : Q ≠ 0) (hG : G1 ≠ 0) (hC : C ^ 2=omega) (ho : omega^2=1) (r : ℕ) :
     weightedScalar Q eta a G1 C omega X W V (Q^(6*r)*G1) 1 (2*r) 0 r =
       evenRatio Q a X V ^ r * (-eta*X) := by
   unfold weightedScalar
@@ -335648,7 +335648,7 @@ lemma weighted_squarefree_boundary (Q eta a G1 C omega X W V : ℂ)
   ring
 
 lemma weighted_even_bulk (Q eta a G1 C omega X W V : ℂ)
-    (hQ : Q ≠ 0) (hC : C^2=omega) (ho : omega^2=1) (r d : ℕ) :
+    (hQ : Q ≠ 0) (hC : C ^ 2=omega) (ho : omega^2=1) (r d : ℕ) :
     weightedScalar Q eta a G1 C omega X W V (Q^(6*r+5)*(Q-1))
       0 (2*r+2) 0 (r+1+d) =
       evenRatio Q a X V ^ r * (evenRatio Q a X V*(1-Q⁻¹)*V^d) := by
@@ -335661,7 +335661,7 @@ lemma weighted_even_bulk (Q eta a G1 C omega X W V : ℂ)
   ring
 
 lemma weighted_even_kone (Q eta a G1 C omega X W V : ℂ)
-    (hQ : Q ≠ 0) (hC : C^2=omega) (ho : omega^2=1) (r : ℕ) :
+    (hQ : Q ≠ 0) (hC : C ^ 2=omega) (ho : omega^2=1) (r : ℕ) :
     weightedScalar Q eta a G1 C omega X W V (Q^(6*r+6))
       0 (2*r+2) 1 (r+1) = evenRatio Q a X V ^ r * (W*evenRatio Q a X V) := by
   unfold weightedScalar
@@ -335673,7 +335673,7 @@ lemma weighted_even_kone (Q eta a G1 C omega X W V : ℂ)
   ring
 
 lemma weighted_squarefree_bulk (Q eta a G1 C omega X W V : ℂ)
-    (hQ : Q ≠ 0) (hG : G1 ≠ 0) (hC : C^2=omega) (ho : omega^2=1) (r d : ℕ) :
+    (hQ : Q ≠ 0) (hG : G1 ≠ 0) (hC : C ^ 2=omega) (ho : omega^2=1) (r d : ℕ) :
     weightedScalar Q eta a G1 C omega X W V
       ((omega⁻¹*G1)*(Q^(6*r)*(Q-1))) 1 (2*r) 1 (r+1+d) =
       evenRatio Q a X V ^ r * (-eta*(Q-1)*X*W*V^(d+1)) := by
@@ -336208,7 +336208,7 @@ lemma signed_diagonal_phase (omega : ℂ) (ho : omega^2=1) (e l k : ℕ) :
   omega
 
 lemma source_signed_phase (C omega : ℂ) (ho : omega^2=1) (e l k : ℕ) :
-    C^l * omega^((((e+3*l)*k:ℕ):ℤ)-(e*l+l.choose 2:ℕ)) =
+    C ^ l * omega^((((e+3*l)*k:ℕ):ℤ)-(e*l+l.choose 2:ℕ)) =
       localCubePhase C omega e l k := by
   have hn : omega≠0 := by intro h; simp [h] at ho
   rw [sub_eq_add_neg, zpow_add₀ hn, signed_diagonal_phase omega ho]
@@ -337012,7 +337012,7 @@ lemma primaryIdealGenerator_coprime (I J : Id) (hI : Supported I) (hJ : Supporte
     CenteredMomentSourceRow.primary_span_supported J hJ]
 
 lemma completed_block_dvd_cube (I J K L : Id) : I*J^3*K ∣ (I*J*K*L)^3 := by
-  refine ⟨I^2*K^2*L^3,?_⟩
+  refine ⟨I ^ 2*K^2*L^3,?_⟩
   ring
 
 lemma first_block_dvd (I J K L : Id) : I ∣ I*J*K*L := by
@@ -337183,7 +337183,7 @@ lemma primeValuations_mul (I J : Id) (hI : I≠0) (hJ : J≠0) :
     simp [Ne.symm h,hv]
 
 lemma primeValuations_pow (I : Id) (n : ℕ) :
-    primeValuations (I^n)=n • primeValuations I := by
+    primeValuations (I ^ n)=n • primeValuations I := by
   ext P
   simp only [primeValuations_apply,normalizedFactors_pow,Multiset.count_nsmul,
     Finsupp.coe_smul,Pi.smul_apply,smul_eq_mul]
@@ -337533,7 +337533,7 @@ theorem bareIdealHighCoefficient_at_prime (η : HeckeFamily.Character) (p : O) (
   simp only [hA,hH,Ideal.span_singleton_pow]
 
 lemma fullIdealWeight_power (s : ℂ) (I : Ideal O) (n : ℕ) :
-    fullIdealWeight s (I^n)=fullIdealWeight s I^n := (IdealEuler.normWeight s).map_pow I n
+    fullIdealWeight s (I ^ n)=fullIdealWeight s I ^ n := (IdealEuler.normWeight s).map_pow I n
 
 lemma prime_spectral_weights (p : O) (hp : p≠0) (e l k m : ℕ) (x w z : ℂ) :
     fullIdealWeight (x+1/2) ((Ideal.span {p})^e) *
@@ -350461,7 +350461,7 @@ open CubicSieve CenteredMomentFourier Eisenstein CubicJacobi CubicRamified Compl
 noncomputable section
 namespace ProbeEuler
 
-lemma localCubePhase_step_two (C omega : ℂ) (hC : C^2=omega) (ho : omega^2=1)
+lemma localCubePhase_step_two (C omega : ℂ) (hC : C ^ 2=omega) (ho : omega^2=1)
     (e l k : ℕ) : localCubePhase C omega e (l+2) k=localCubePhase C omega e l k := by
   have hchoose : (l+2).choose 2=l.choose 2+2*l+1 := by
     rw [show l+2=(l+1)+1 by omega,Nat.choose_succ_succ,Nat.choose_one_right,
@@ -350476,11 +350476,11 @@ lemma localCubePhase_step_two (C omega : ℂ) (hC : C^2=omega) (ho : omega^2=1)
     rw [pow_add,pow_mul omega 2,ho,one_pow,pow_one,one_mul]
   rw [he,pow_add omega _ (2*(3*k+e+l)+1),ht]
   calc
-    _ = C^l*omega^((e+3*l)*k+e*l+l.choose 2)*omega^2 := by ring
+    _ = C ^ l*omega^((e+3*l)*k+e*l+l.choose 2)*omega^2 := by ring
     _ = _ := by rw [ho,mul_one]
 
 theorem weightedScalar_step_two (Q eta a G1 C omega X W V scalar : ℂ)
-    (hQ : Q≠0) (hC : C^2=omega) (ho : omega^2=1) (e l k m : ℕ) :
+    (hQ : Q≠0) (hC : C ^ 2=omega) (ho : omega^2=1) (e l k m : ℕ) :
     weightedScalar Q eta a G1 C omega X W V (Q^6*scalar) e (l+2) k (m+1)=
       evenRatio Q a X V*weightedScalar Q eta a G1 C omega X W V scalar e l k m := by
   unfold weightedScalar evenRatio
@@ -350511,7 +350511,7 @@ theorem evenRatio_unit (Q a X V rho : ℂ) (hρ : rho^6=1) :
   rw [div_pow,←pow_mul,show 3*2=6 by decide,hρ,div_one]
 
 theorem rowWeightedScalar_step_two (Q eta a G1 C omega X W V rho scalar : ℂ)
-    (hQ : Q≠0) (hC : C^2=omega) (ho : omega^2=1) (hρ : rho^6=1) (e l k m : ℕ) :
+    (hQ : Q≠0) (hC : C ^ 2=omega) (ho : omega^2=1) (hρ : rho^6=1) (e l k m : ℕ) :
     rowWeightedScalar Q eta a G1 C omega X W V rho (Q^6*scalar) e (l+2) k (m+1)=
       evenRatio Q a X V*rowWeightedScalar Q eta a G1 C omega X W V rho scalar e l k m := by
   rw [rowWeightedScalar_parameters,rowWeightedScalar_parameters,
@@ -356971,7 +356971,7 @@ theorem continued_selected_tuple_bound (K : ℕ) (eps a b r B : ℝ) (heps : 0< 
   let d : ℝ := eps/((K:ℝ)+1)
   have hd : 0< d := div_pos heps (by positivity)
   obtain ⟨C,hC,hmain⟩ := continued_selected_slot_bound d a b r B hd ha hb hr hB
-  refine ⟨C^K,pow_pos hC K,?_⟩
+  refine ⟨C ^ K,pow_pos hC K,?_⟩
   intro η u T hT Y hY W hWS hWB x w z hx hw hz
   let N : ℝ := ((Ideal.span {u.val}:Ideal O).absNorm:ℝ)
   have hN : 1≤ N := by
@@ -356989,7 +356989,7 @@ theorem continued_selected_tuple_bound (K : ℕ) (eps a b r B : ℝ) (heps : 0< 
     W i ((P.val.val.absNorm:ℝ)/Y i)*(P.val.val.absNorm:ℂ)^(z-1)*
       continuedCompensatedLocal η u P.val (hT i P.val P.property).1 x w z
         (star (idealCoeff η P.val.val)*(P.val.val.absNorm:ℂ)^x) ((P.val.val.absNorm:ℂ)^(-w))
-  change (∑P:(∀i,T i),‖∏i,F i (P i)‖)≤ C^K*N^eps*∏i,(Y i)^r
+  change (∑P:(∀i,T i),‖∏i,F i (P i)‖)≤ C ^ K*N^eps*∏i,(Y i)^r
   simp_rw [norm_prod]
   rw [←Fintype.prod_sum (fun i P=>‖F i P‖)]
   calc
@@ -356997,9 +356997,9 @@ theorem continued_selected_tuple_bound (K : ℕ) (eps a b r B : ℝ) (heps : 0< 
       apply Finset.prod_le_prod
       · intro i _; exact Finset.sum_nonneg fun _ _=> norm_nonneg _
       · intro i _; exact hmain η u (T i) (hT i) (Y i) (hY i) (W i) (hWS i) (hWB i) x w z hx hw hz
-    _ = C^K*(N^d)^K*∏i:Fin K,(Y i)^r := by
+    _ = C ^ K*(N^d)^K*∏i:Fin K,(Y i)^r := by
       simp only [Finset.prod_mul_distrib,Finset.prod_const,Finset.card_univ,Fintype.card_fin]
-    _ ≤ C^K*N^eps*∏i:Fin K,(Y i)^r := by
+    _ ≤ C ^ K*N^eps*∏i:Fin K,(Y i)^r := by
       exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpow (by positivity))
         (Finset.prod_nonneg fun i _=> Real.rpow_nonneg (by linarith [hY i]) _)
 
@@ -362047,26 +362047,26 @@ theorem original_regular_disk_control (e ε : ℝ)
       HeckeReciprocal.reciprocal ψ z*(factors χ.modulus ψ z)⁻¹ :=
     HeckeDeletionReciprocal.reciprocal_eq_of_mask χ ψ hmask hzpos
   have hrec := reciprocal_norm_le_regular_inverse_on_positive ψ hzpos (hzeroψ z hz2)
-  have hdel1 : ‖factors χ.modulus ψ z‖ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε := by
+  have hdel1 : ‖factors χ.modulus ψ z‖ ≤ Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε := by
     linarith [norm_nonneg ((factors χ.modulus ψ z)⁻¹)]
-  have hdel2 : ‖(factors χ.modulus ψ z)⁻¹‖ ≤ Cd*((radical χ.modulus).absNorm : ℝ)^ε := by
+  have hdel2 : ‖(factors χ.modulus ψ z)⁻¹‖ ≤ Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε := by
     linarith [norm_nonneg (factors χ.modulus ψ z)]
   have hQ : complexity ψ t ≤ complexity χ t := by
     unfold complexity
     have hn' : (ψ.modulus.absNorm : ℝ) ≤ χ.modulus.absNorm := by exact_mod_cast hn
     gcongr
   have hc0 : 0 ≤ complexity ψ t := (Real.exp_pos 1).le.trans (complexity_ge_exp ψ t)
-  have hr0 : 0 ≤ ((radical χ.modulus).absNorm : ℝ) := by positivity
+  have hr0 : 0 ≤ ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by positivity
   rw [hL,hR,norm_mul,norm_mul]
   calc
     _ ≤ (‖regular ψ z‖+‖(regular ψ z)⁻¹‖)*
-        (Cd*((radical χ.modulus).absNorm : ℝ)^ε) := by
+        (Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε) := by
       have h1 := mul_le_mul_of_nonneg_left hdel1 (norm_nonneg (regular ψ z))
       have h2 := mul_le_mul hrec hdel2 (norm_nonneg _) (norm_nonneg _)
       nlinarith
-    _ ≤ (Dp*(complexity ψ t)^ε)*(Cd*((radical χ.modulus).absNorm : ℝ)^ε) :=
+    _ ≤ (Dp*(complexity ψ t)^ε)*(Cd*((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)^ε) :=
       mul_le_mul_of_nonneg_right hbound (by positivity)
-    _ = (Dp*Cd)*(((radical χ.modulus).absNorm : ℝ)*complexity ψ t)^ε := by
+    _ = (Dp*Cd)*(((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ)*complexity ψ t)^ε := by
       rw [Real.mul_rpow hr0 hc0]
       ring
     _ ≤ _ := mul_le_mul_of_nonneg_left
@@ -362668,15 +362668,15 @@ lemma original_row_conductor_le (S : Finset (Ideal O))
 
 lemma original_row_deletion_radical_le (S : Finset (Ideal O))
     (hS : ∀ P ∈ S, Prime P) (u : FreeRow) :
-    ((radical (rowCharacter S hS u).modulus).absNorm : ℝ) ≤
+    ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm : ℝ) ≤
       (fixedConductorConstant S : ℝ) * (Ideal.span {u.val} : Ideal O).absNorm :=
   by
     let χ := rowCharacter S hS u
-    have hd : radical χ.modulus ∣ χ.modulus := by
-      unfold radical HeckeIdealSeries.primeProduct
+    have hd : HeckeDeletionBounds.radical χ.modulus ∣ χ.modulus := by
+      unfold HeckeDeletionBounds.radical HeckeIdealSeries.primeProduct
       rw [HeckeIdealSeries.prod_primeSet χ.modulus (fun J : Ideal O => J)]
       exact support_product_dvd χ.modulus_ne_bot (Finset.Subset.refl _)
-    have hn : ((radical χ.modulus).absNorm : ℝ) ≤ χ.modulus.absNorm := by
+    have hn : ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) ≤ χ.modulus.absNorm := by
       exact_mod_cast Nat.le_of_dvd (Nat.pos_iff_ne_zero.mpr
         (Ideal.absNorm_eq_zero_iff.not.mpr χ.modulus_ne_bot)) (map_dvd Ideal.absNorm hd)
     exact hn.trans (original_row_conductor_le S hS u)
@@ -362756,27 +362756,27 @@ theorem central_deletion_bound (ε : ℝ) (hε : 0 < ε) :
       0 < e → 51/100 ≤ a → a ≤ 1 →
       ∀ w : ℂ, w.re = 1-a-6*e →
       ‖factors χ.modulus ψ w‖ * ‖(factors χ.modulus ψ (1-conj w))⁻¹‖ ≤
-        C * ((radical χ.modulus).absNorm : ℝ) ^ (6*e+2*ε) := by
+        C * ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) ^ (6*e+2*ε) := by
   obtain ⟨Cl, hCl, hl⟩ := factors_any_re_subpower_bound ε hε
   obtain ⟨Cr, hCr, hr⟩ := factors_radical_subpower_bound (1/2) ε (by norm_num) hε
   refine ⟨Cl*Cr, mul_pos hCl hCr, ?_⟩
   intro χ ψ a e he ha ha1 w hw
   have hR := HeckeDyadic.radical_norm_ge_one χ.modulus
-  have hR0 : 0 < ((radical χ.modulus).absNorm : ℝ) := by linarith
+  have hR0 : 0 < ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) := by linarith
   have hleft : ‖factors χ.modulus ψ w‖ ≤
-      Cl * ((radical χ.modulus).absNorm : ℝ) ^ (6*e+ε) := by
+      Cl * ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) ^ (6*e+ε) := by
     apply (hl χ.modulus ψ w).trans
     apply mul_le_mul_of_nonneg_left _ hCl.le
     apply Real.rpow_le_rpow_of_exponent_le hR
     have hm : max (-w.re) 0 ≤ 6*e := max_le (by rw [hw]; linarith) (by positivity)
     linarith
   have hright : ‖(factors χ.modulus ψ (1-conj w))⁻¹‖ ≤
-      Cr * ((radical χ.modulus).absNorm : ℝ) ^ ε := by
+      Cr * ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) ^ ε := by
     exact (le_add_of_nonneg_left (norm_nonneg _)).trans
       (hr χ.modulus ψ (1-conj w) (by simp; linarith))
   calc
-    _ ≤ (Cl * ((radical χ.modulus).absNorm : ℝ) ^ (6*e+ε)) *
-        (Cr * ((radical χ.modulus).absNorm : ℝ) ^ ε) :=
+    _ ≤ (Cl * ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) ^ (6*e+ε)) *
+        (Cr * ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) ^ ε) :=
       mul_le_mul hleft hright (norm_nonneg _) (by positivity)
     _ = _ := by
       rw [mul_mul_mul_comm, ← Real.rpow_add hR0]
@@ -362794,7 +362794,7 @@ theorem buffered_same_primitive_reflected (e ε : ℝ)
         if IsCoprime I (χ j).modulus then idealCoeff ψ I else 0) →
       ∀ w : ℂ, w.re = 1-a-6*e → |w.im| ≤ (3*i+2 : ℕ)*B →
       ‖LFunction (χ j) w‖ ≤ C * (ψ.modulus.absNorm : ℝ) ^ (a-1/2+6*e) *
-        ((radical (χ j).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
+        ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
         (3+(3*i+2 : ℕ)*B)^2 *
         (presentationComplexity (χ j) ((3*i+2 : ℕ)*B)) ^ ε := by
   obtain ⟨Cg, hCg, hg⟩ := HeckeDyadicReflection.original_reflected_bound
@@ -362816,7 +362816,7 @@ theorem buffered_same_primitive_reflected (e ε : ℝ)
         (‖factors (χ j).modulus ψ w‖ * ‖(factors (χ j).modulus ψ (1-conj w))⁻¹‖) := hr
     _ ≤ Cg * (ψ.modulus.absNorm : ℝ) ^ (a-1/2+6*e) * (3+(3*i+2 : ℕ)*B)^2 *
         (Cb * (presentationComplexity (χ j) ((3*i+2 : ℕ)*B)) ^ ε) *
-        (Cd * ((radical (χ j).modulus).absNorm : ℝ) ^ (6*e+2*ε)) := by
+        (Cd * ((HeckeDeletionBounds.radical (χ j).modulus).absNorm : ℝ) ^ (6*e+2*ε)) := by
       gcongr
     _ = _ := by ring
 
@@ -362845,7 +362845,7 @@ theorem source_calibrated_reflected_allocation (e ε : ℝ)
               C * (((fixedConductorConstant S : ℝ) *
                 (Ideal.span {u.val} : Ideal O).absNorm) ^ (a-1/2+6*e) *
                 ∏ j, ((P j).absNorm : ℝ) ^ (-(1/2 : ℝ))) *
-                ((radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
+                ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
                 (3+(3*i+2 : ℕ)*B)^2 *
                 (presentationComplexity (rowCharacter S hS u) ((3*i+2 : ℕ)*B)) ^ ε := by
   obtain ⟨C, hC, hb⟩ := buffered_same_primitive_reflected e ε he he' hε
@@ -362881,17 +362881,17 @@ theorem source_calibrated_reflected_allocation (e ε : ℝ)
       Finset.prod_nonneg (fun j _ => Real.rpow_nonneg (by positivity) _)
     calc
       _ ≤ (C * (ψ.modulus.absNorm : ℝ) ^ (a-1/2+6*e) *
-          ((radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
+          ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
           (3+(3*i+2 : ℕ)*B)^2 *
           (presentationComplexity (rowCharacter S hS u) ((3*i+2 : ℕ)*B)) ^ ε) *
           ∏ j, ((P j).absNorm : ℝ) ^ (-w.re) :=
         mul_le_mul_of_nonneg_right (hweighted.trans hL) hprod0
-      _ = (C * ((radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
+      _ = (C * ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
           (3+(3*i+2 : ℕ)*B)^2 *
           (presentationComplexity (rowCharacter S hS u) ((3*i+2 : ℕ)*B)) ^ ε) *
           ((ψ.modulus.absNorm : ℝ) ^ (a-1/2+6*e) *
           ∏ j, ((P j).absNorm : ℝ) ^ (-w.re)) := by ring
-      _ ≤ (C * ((radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
+      _ ≤ (C * ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
           (3+(3*i+2 : ℕ)*B)^2 *
           (presentationComplexity (rowCharacter S hS u) ((3*i+2 : ℕ)*B)) ^ ε) *
           ((((fixedConductorConstant S : ℝ) * (Ideal.span {u.val} : Ideal O).absNorm) ^
@@ -362924,7 +362924,7 @@ theorem source_actual_valuation_reflection (e ε : ℝ)
               C * (((fixedConductorConstant S : ℝ) *
                 (Ideal.span {u.val} : Ideal O).absNorm) ^ (a-1/2+6*e) *
                 ∏ j, ((P j).absNorm : ℝ) ^ (-(1/2 : ℝ))) *
-                ((radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
+                ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm : ℝ) ^ (6*e+2*ε) *
                 (3+(3*i+2 : ℕ)*B)^2 *
                 (presentationComplexity (rowCharacter S hS u) ((3*i+2 : ℕ)*B)) ^ ε := by
   obtain ⟨C, hC, hb⟩ := source_calibrated_reflected_allocation e ε he he' hε
@@ -362959,7 +362959,7 @@ local notation "O" => Eisenstein.O
 def rowCost (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P) (u : FreeRow)
     (a e eps T : ℝ) : ℝ :=
   ((ProbeRowRadicalConductor.fixedConductorConstant S:ℝ)*(Ideal.span {u.val}:Ideal O).absNorm)^(a-1/2+6*e)*
-    ((radical (rowCharacter S hS u).modulus).absNorm:ℝ)^(6*e+2*eps)*
+    ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm:ℝ)^(6*e+2*eps)*
     (3+T)^2*(presentationComplexity (rowCharacter S hS u) T)^eps
 
 lemma rowCost_nonneg (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P) (u : FreeRow)
@@ -363218,7 +363218,7 @@ theorem central_rowCost_bound (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
   have hL : 0< L := by dsimp [L];linarith
   have hA : 0≤ A := by dsimp [A];linarith
   have hR : 0≤ R := by dsimp [R];positivity
-  have hrad : ((radical (rowCharacter S hS u).modulus).absNorm:ℝ)≤ N :=
+  have hrad : ((HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm:ℝ)≤ N :=
     original_row_deletion_radical_le S hS u
   have hq : ((rowCharacter S hS u).modulus.absNorm:ℝ)≤ N := original_row_conductor_le S hS u
   have hc : presentationComplexity (rowCharacter S hS u) H≤2*N^2*L^2 := by
@@ -363229,7 +363229,7 @@ theorem central_rowCost_bound (S : Finset (Ideal O)) (hS : ∀P∈S,Prime P)
         apply mul_le_mul hrad _ (by positivity) hN.le
         exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hq (by norm_num)) (sq_nonneg L)
       _ = _ := by ring
-  have hrpow := Real.rpow_le_rpow (show (0:ℝ)≤(radical (rowCharacter S hS u).modulus).absNorm by positivity) hrad hR
+  have hrpow := Real.rpow_le_rpow (show (0:ℝ)≤(HeckeDeletionBounds.radical (rowCharacter S hS u).modulus).absNorm by positivity) hrad hR
   have hcpow := Real.rpow_le_rpow (show 0≤ presentationComplexity (rowCharacter S hS u) H by
     unfold presentationComplexity HeckeLogarithmic.complexity;positivity) hc heps.le
   have hbound : rowCost S hS u a e eps H≤ N^A*N^R*L^2*(2*N^2*L^2)^eps := by
@@ -363272,11 +363272,11 @@ local notation "O" => Eisenstein.O
 
 lemma presentationComplexity_norm_bound (χ : Character) (H : ℝ) :
     presentationComplexity χ H≤2*(χ.modulus.absNorm:ℝ)^2*(3+|H|)^2 := by
-  have hd : radical χ.modulus∣χ.modulus := by
-    unfold radical HeckeIdealSeries.primeProduct
+  have hd : HeckeDeletionBounds.radical χ.modulus∣χ.modulus := by
+    unfold HeckeDeletionBounds.radical HeckeIdealSeries.primeProduct
     rw [HeckeIdealSeries.prod_primeSet χ.modulus (fun J : Ideal O=> J)]
     exact support_product_dvd χ.modulus_ne_bot (Finset.Subset.refl _)
-  have hn : ((radical χ.modulus).absNorm:ℝ)≤χ.modulus.absNorm := by
+  have hn : ((HeckeDeletionBounds.radical χ.modulus).absNorm:ℝ)≤χ.modulus.absNorm := by
     exact_mod_cast Nat.le_of_dvd (Nat.pos_iff_ne_zero.mpr
       (Ideal.absNorm_eq_zero_iff.not.mpr χ.modulus_ne_bot)) (map_dvd Ideal.absNorm hd)
   unfold presentationComplexity HeckeLogarithmic.complexity
@@ -376850,7 +376850,7 @@ theorem polynomial_measure_energy (g:𝓢(ℝ,ℂ))(J:ℕ) :
       (∀t,(∑k,‖φ k t‖^2)≤ E*((1+‖t‖)^J)^2)→
       (∑k,‖∫t:ℝ,density g xj t*φ k t‖^2)≤ C*E := by
   obtain ⟨C,hC,hint⟩ := density_moment g J
-  refine ⟨C^2,sq_nonneg _,?_⟩
+  refine ⟨C ^ 2,sq_nonneg _,?_⟩
   intro κ inst xj φ E hE hφ hbound
   let h : ℝ→ℝ := fun t=>(1+‖t‖)^J
   have hp (t:ℝ) : 0< h t := by dsimp [h];positivity
@@ -376905,7 +376905,7 @@ theorem twisted_polynomial_measure_energy (g:𝓢(ℝ,ℂ))(J:ℕ) :
       (∀t,(∑k,‖φ k t‖^2)≤ E*((1+‖t‖)^J)^2)→
       (∑k,‖∫t:ℝ,density (frequencyTwist g θ) xj t*φ k t‖^2)≤ C*E*(1+‖θ‖)^(2*(J+(volume:Measure ℝ).integrablePower)) := by
   obtain ⟨C,hC,hboundMoment⟩ := frequencyTwist_fourier_moment J g
-  refine ⟨C^2,sq_nonneg _,?_⟩
+  refine ⟨C ^ 2,sq_nonneg _,?_⟩
   intro θ κ inst xj φ E hE hφ hbound
   have hint:=JointLogSeparation.schwartz_fourier_one_plus_integrable (frequencyTwist g θ) J
   let h : ℝ→ℝ := fun t=>(1+‖t‖)^J
@@ -381571,7 +381571,7 @@ theorem paired_control (S:Finset (ℕ×ℕ)):
       ∀σ∈Set.Icc (0:ℝ) 1,∀t:ℝ,
       (detectorProfiles reverse j k σ t).control S ^2≤ C*(1+‖t‖)^J:=by
   obtain ⟨J,C,hC,h⟩:=detectorSchwartz_uniform S
-  refine ⟨4*J,C^4,by positivity,?_⟩
+  refine ⟨4*J,C ^ 4,by positivity,?_⟩
   intro reverse j k hjk σ hσ t
   have hj:=h reverse j (by omega) σ hσ t
   have hk:=h reverse k (by omega) σ hσ t
@@ -381582,7 +381582,7 @@ theorem paired_control (S:Finset (ℕ×ℕ)):
   have hs:=pow_le_pow_left₀ (Profiles.control_nonneg _ _) hp 2
   calc
     _≤((C*(1+‖t‖)^J)^2)^2:=hs
-    _=C^4*(1+‖t‖)^(4*J):=by
+    _=C ^ 4*(1+‖t‖)^(4*J):=by
       rw [←pow_mul,mul_pow,←pow_mul]
       congr 2 ; omega
 

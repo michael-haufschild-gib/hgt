@@ -59,10 +59,24 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
       `RHTower/Artin/NormsArePositiveAtTheRamifiedRealPlaces`)
   - [x] G5e assembly: `[K^× : U] = n · h_g(L^×/W_k) · [K_S ∩ V₁ : N L_S]`
     (`dvd_index_sup_of_relIndex`)
-- [ ] G6 `ker Θ_S ⊂ K_{𝔪,1} N(L^×) K_S` for cyclic `L/K` (crossing with cyclotomic extensions)
-  - [ ] G6a kernel for extensions inside `F(ζ_m)`: `ker ω = P_𝔫 N` for every multiple `𝔫` of `m ∞`
-  - [ ] G6b transfer: `ω_{L/K}(N_{F/K} 𝔟) = ω_{LF/F}(𝔟)|_L`
-  - [ ] G6c auxiliary fields (orders modulo `m`; fixed fields in `L(ζ_m)`)
+- [ ] G6 the kernel of the Artin map lies in `P_c N` for cyclic `L/K` (crossing with cyclotomic
+  extensions)
+  - [x] G6b towers `K ⊂ E ⊂ M`, `M/K` abelian with group `Γ ⊃ H`: `Frob_w = Frob_v^{f(w|v)}`,
+    `(𝔅, M/E) = (N_{E/K} 𝔅, M/K)`, `f(w|v) | g` if `Frob_v^g` fixes `E`, and then `v^g` is a norm
+    from `E`; `N_{E/K}` maps the ray modulo `(N) ∞` of `E` into that of `K`
+    (`map_frobeniusElement_eq_pow`, `map_artinMap_eq_artinMap_idealNormHom`,
+    `inertiaDeg_under_dvd_of_pow_smul_eq`, `exists_idealNormHom_pow_eq_idealUnit_pow`,
+    `norm_mem_rayGroup`, `idealNormHom_mem_rayPrincipal`)
+  - [ ] G6a kernel inside a cyclotomic extension: `M/E` abelian with group `H`, the cyclotomic
+    character of `ζ_m ∈ M` injective on `H`, `Λ' ≤ H`, `m | N`. An ideal `𝔅` prime to `N` with
+    `(𝔅, M/E) ∈ Λ'` lies in `P_{(N)∞} · ⟨𝔔 ∤ N : Frob_𝔔 ∈ Λ'⟩`
+  - [ ] G6c the same over `K`: for `H ≤ Γ` with injective cyclotomic character and `Λ ≤ Γ`,
+    `D_H ∩ ω_Γ^{-1}(Λ) ⊂ P_{(N)∞} · D_Λ` with `D_H = ⟨v^g : Frob_v^g ∈ H⟩`; and `ω_Γ(D_H) = H`
+  - [ ] G6d the auxiliary modulus: a prime `p ∉ T` with `n | ord_p(a)`; `m` and `b` with
+    `a_v^x b^y ≡ 1 (m) ⇒ n | x, n | y` for the norms `a_v` of the primes of `𝔞`
+  - [ ] G6e `Φ_m` is irreducible over `L` for `m` prime to a finite set of primes
+  - [ ] G6f `M = L(ζ_m)`: `Γ ↪ G × (ℤ/m)^×`, and `ρ = (σ, b) ∈ Γ`
+  - [ ] G6g crossing: `v ≡ 𝔟^{d_v}` modulo `P_c N` for the primes `v` of `𝔞`, `(v, L/K) = σ^{d_v}`
 - [ ] G7 the reciprocity law for cyclic `L/K`, and for every linear character by G1
 
 ## Approach
@@ -129,18 +143,43 @@ number), so with G5b and G5d1: `n · h_f(L_S) = Π_{ω ⊂ X} |G_ω| · Π_{ω �
 `[K^× : U] = n · h_g · [K_S ∩ V₁ : N L_S]`. No finiteness is assumed: the identities hold with
 the value `0` for an infinite index.
 
-**G6.** Let `α ∈ ker Θ_S`, `𝔞 = Π 𝔭_i^{a_i}` its divisor outside `S`, `ω(𝔭_i) = σ^{d_i}`. For each
-`i` take `m_i` (prime to `S`, to the `𝔭_j` and to each other) with `n | ord_{m_i}(N𝔭_i)` and
-`τ_i` of order divisible by `n` with `⟨τ_i⟩ ∩ ⟨N𝔭_i⟩ = 1` modulo `m_i`, and `F_i` the fixed
-field of `⟨(σ^{d_i}, N𝔭_i), (σ, τ_i)⟩` in `L(ζ_{m_i})`: `𝔭_i` splits completely in `F_i`,
-`L ∩ F_i = K`, `L F_i ⊂ F_i(ζ_{m_i})`. With `𝔫 = 𝔪 · m_1 ⋯ m_r · ∞`: over `F_i` the kernel of
-`ω_{LF_i/F_i}` on ideals prime to `𝔫` is `P_𝔫 N` (G6a: cyclotomic reciprocity, G2, G3, and G4
-for `LF_i/F_i`). Choose `𝔟` in the compositum `F` with `ω_{LF/F}(𝔟)|_L = σ`; then
-`𝔠_i = 𝔓_i · N_{F/F_i}(𝔟)^{−d_i}` (`𝔓_i | 𝔭_i` in `F_i`) lies in that kernel (G6b), so
-`N_{F_i/K} 𝔠_i ∈ P_𝔫 N ⊂ P_𝔪 N`; and `Σ a_i d_i ≡ 0 (n)` makes the remaining power of
-`N_{F/K} 𝔟` a norm from `L`. Hence `𝔞 = (γ) N_{L/K}(𝔄)`, `γ ∈ K_{𝔪,1}`; by (c),
-`𝔄` is the divisor outside `S` of some `y ∈ L^×`, and `α / (γ N y) ∈ K_S`.
+**G6.** Statement: `c ≥ 1` divisible by the ramified primes, `𝔞` prime to `c` with
+`(𝔞, L/K) = 1`; then `𝔞 ∈ P_{(c)∞} · N_{L/K}`. All towers have two layers: a base, the fixed
+field `E_H` of a subgroup `H` of `Γ = Gal(M/K)`, and `M`.
+
+*Modulus.* Let `a_v = N v` for the primes `v` of `𝔞`, `(v, L/K) = σ^{d_v}`. For `a ≥ 2`, `n ≥ 1`
+and a finite set `T` there is a prime `p ∉ T`, `p ∤ a`, with `n | ord_p(a)`: with `n' = nℓ` not a
+prime power and `k = Π_{t ∈ T ∪ primes(n'), t ∤ a} (t − 1)`, `Φ_{n'}(a^k) ≡ Φ_{n'}(1) = 1` modulo
+each such `t`, and a prime factor `p` of `Φ_{n'}(a^k) > 1` has `ord_p(a^k) = n'`. Take `P₀` with
+`n | P₀ − 1` and `g` of order divisible by `n` modulo `P₀`, then `P_v` with
+`lcm(n, ord_{P₀}(a_v)) | ord_{P_v}(a_v)`; `m = P₀ · Π P_v` (distinct values), `b ≡ g (P₀)`,
+`b ≡ 1 (P_v)`. Then `a_v^x b^y ≡ 1 (m)` forces `n | x` and `n | y`.
+
+*Irreducibility.* `L` has finitely many subfields, and `ℚ(ζ_m) ∩ ℚ(ζ_{m'}) = ℚ` for coprime
+`m, m'`; so `L ∩ ℚ(ζ_m) = ℚ` and `Φ_m` is irreducible over `L` for `m` prime to a finite set of
+primes. Then `Gal(L(ζ_m)/L) = (ℤ/m)^×`, `Γ ↪ G × (ℤ/m)^×`, and `ρ = (σ, b) ∈ Γ`.
+
+*Fields.* `φ_v = Frob_v(M/K) = (σ^{d_v}, a_v)`, `H_v = ⟨φ_v, ρ⟩`. The cyclotomic character is
+injective on `H_v`: `a_v^x b^y = 1` gives `n | x, y`, so `σ^{d_v x + y} = 1`.
+
+*Norm groups over `K`.* `D_H = ⟨v^g : v ∤ N, Frob_v^g ∈ H⟩`. By G6b it is the group of norms
+from `E_H` of ideals prime to `N`, and `ω_Γ(D_H) = H` by G2 over `E_H`. If the cyclotomic
+character is injective on `H`, then `D_H ∩ ω_Γ^{-1}(Λ) ⊂ P_{(N)∞}(K) · D_Λ` (G6c): lift to `E_H`,
+apply G6a, take norms. G6a: the quotient of the ray class group modulo `(N) ∞` of `E` by the
+primes with Frobenius in `Λ'` has order at most `[E_{Λ'} : E] = [H : Λ']` by G4 (a prime of
+degree one of `E_{Λ'}` has Frobenius in `Λ'`), and it maps onto `H/Λ'` by cyclotomic reciprocity
+and G2.
+
+*Crossing.* Take `𝔟 ∈ D_{⟨ρ⟩}` with `ω_Γ(𝔟) = ρ`. For each `v`: `v 𝔟^{−d_v} ∈ D_{H_v}` has symbol
+in `Λ = Gal(M/L)`, so it lies in `P_{(N)∞} · D_Λ`, and `D_Λ ⊂ N_{L/K}` (if `Frob_v(L/K)^g = 1`
+then `f_L(v) | g`). With `𝔟^n ∈ N_{L/K}` and `n | Σ a_v d_v`: `𝔞 ∈ P_{(c)∞} · N_{L/K}`.
+
+**G7.** Choose `S₀` closed under residue characteristic, `c` a power of `Π_{S₀} N v`, so that
+`γ ≡ 1 mod^× c` totally positive lies in `W_k ∩ P`. `PrincipalOutside` turns `𝔞 = (γ) N(𝔄)` into
+`α ∈ γ · N(L^×) · K_S`.
 
 ## Log
 - 2026-11-13 — created; cyclotomic case formalized and moved to its own card
 - 2026-11-13 — G5 formalized (G5a–G5e)
+- 2026-11-13 — G6b formalized; G6 restated over `K` with two-layer towers. Order of work of
+  review-1311 §2.14: after B192 at ratio three and the realization on the dyadic windows

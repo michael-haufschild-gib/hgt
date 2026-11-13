@@ -17,11 +17,13 @@ The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integr
 
 `CriticalArithmeticCorrelationTheory.isCompact_closure_of_uniform_physical_and_fourier_tails` already supplies compactness from the two tails, without compact support. Its compact cutoff approximation uses `f-PQf=(f-Pf)+P(f-Qf)` and contractivity of the physical cutoff.
 
+`CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
+
 `suzukiFinitePartEnergy_absolute_split` identifies the loss under modulus with a positive cross-sign interaction for the exact `1/|x-y|` kernel. `suzukiFinitePartEnergy_absolute_lt_of_sign_change` proves strict loss on a bounded smooth core. `SuzukiLimitingLogClosedMarkov` transfers contractions to a closed form on a fixed interval.
 
 ## Missing bridges
 
-1. Construct the closed soft half-line domain and prove compactness and compact-core recovery. Compact physical cutoffs with finite logarithmic energy already belong to the trial class; smoothness is unnecessary for comparing its infimum. Do not assume that the limiting minimizer has an exponential moment.
+1. Construct the closed soft half-line domain; derive the two uniform tails and cutoff recovery. Compact physical cutoffs with finite logarithmic energy already belong to the trial class; smoothness is unnecessary for comparing its infimum. Do not assume that the limiting minimizer has an exponential moment.
 2. Transfer the exact logarithmic modulus identity from bounded cores to this domain; prove strict loss for two nonzero sign parts.
 3. Use rescaled near-minimality from the universal confinement limit to obtain convergence to the unique minimizing line.
 

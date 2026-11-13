@@ -13,32 +13,44 @@ The same two involutions act on the zeros of ζ: `c : ρ ↦ ρ̄` and `r : ρ �
 `c = r` on the zeros; equivalently `cr : ρ ↦ 1 − ρ̄`, which keeps the ordinate and reflects
 the width, is the identity.
 
-The programme treats the zeros of ζ as the roots of equations over fields built from the
-primes, determines the groups of these equations, and classifies the permutations of the zeros
-that these groups allow. It asks for a restriction, imposed by the primes on these groups,
-that identifies `c` with `r`.
+The programme treats the zeros of ζ in two ways: as the roots of equations over fields built
+from the primes, and as the sheets of a cover. It determines the groups, and it classifies the
+permutations of the zeros that these groups allow. It asks for a restriction, imposed by the
+primes or by the branch divisor of the cover, that identifies `c` with `r`.
 
-**Limit.** Over every base field constructed so far the group is trivial exactly when RH
-holds. Determining the group is then RH, and classifying its permutations is classifying the
-failures of RH. The theory supplies a language, exact criteria and rigidity theorems. It
-supplies a route only through a restriction that the primes impose on a group, and no such
-restriction is known.
+**Limit.** Over the fields of the programme the group is trivial exactly when RH holds, and on
+the cover conjugation is the trivial element exactly when RH holds. The theory supplies a
+language, criteria and one exact form of RH that uses no sign: the triviality of one element of
+a monodromy group. It supplies a route only through a restriction that the primes or the
+branch divisor impose on that element, and no such restriction is known.
 
-## Three tiers of equations
+## A theory of signed permutations with two marked involutions
+
+Every group of the programme acts on the zeros by signed permutations of pairs, and carries the
+two involutions `c` and `r`. There are three tiers.
 
 1. **Finite equations.** The centred Jensen polynomials `P_d` of `Ξ`. Negation symmetry folds
-   them, `P₂ₙ = Eₙ(X²)`, so their groups lie in the signed permutations of `n` pairs, and the
-   generic folded equation has the whole group `C₂ ≀ S_n`. The information is the cycle type
-   of conjugation: `N_d/2` transpositions, where `N_d` is the number of nonreal roots.
-2. **The zero field.** All zeros at once, over a base field that is defined from complete
-   fibres or from the primes. Over these bases the group is abelian of exponent two up to a
-   permutation part that the base field removes.
-3. **Monodromy.** The zeros as functions of a complex parameter. The parameter of this
-   programme is the heat time `τ` of the de Bruijn–Newman family `H_τ`, taken complex. The
-   zeros form a cover of the time plane; its branch points are the collisions. Both
-   involutions act on the cover: `r` as the deck map `z ↦ −z`, and `c` as the antiholomorphic
-   map `(τ, z) ↦ (τ̄, z̄)`. Each is realized as a local monodromy: `r` at the collisions at the
-   centre `z = 0`, `c` at the collisions at real times and real places.
+   them, `P₂ₙ = Eₙ(X²)`, so their groups lie in the signed permutations of `n` pairs. The
+   group is the whole group `C₂ ≀ S_n` unless the moments of `Φ` are dependent. The
+   information is the cycle type of conjugation: `N_d/2` transpositions, where `N_d` is the
+   number of nonreal roots.
+2. **Fields.** All zeros at once, over a base field that is defined from complete fibres or
+   from the primes. Over the field of complete-fibre traces the group is a group of width
+   reflections, trivial iff RH.
+3. **The cover.** The zeros as functions of the complex heat time `τ` of the de Bruijn–Newman
+   family `H_τ`. The zeros form a cover of the time plane; its branch points are the
+   collisions. `r` is the deck map `z ↦ −z`, and `c` is the antiholomorphic map
+   `(τ, z) ↦ (τ̄, z̄)`. Over the forward half-plane `Re τ > 0` the cover has a monodromy group
+   `G₊`, a group of signed permutations of the pairs `{z, −z}`:
+   - the *sign part* comes from the collisions at the centre `z = 0`, where the functional
+     equation is the local monodromy: a turn around a centre time carries a zero to its
+     negative (a *sign flip*);
+   - the *permutation part* comes from the collisions away from the centre: a turn around one
+     carries a zero out of its pair (an *exchange*);
+   - conjugation is the *word* of the turns around the real branch times.
+
+   The first two are theorems as existence statements. That the turns generate `G₊`, and that
+   a collision away from the centre exists at a forward time, are not proved.
 
 ## Objects
 
@@ -71,7 +83,10 @@ ordinate, `δ = ½ − Re ρ` the width. Conjugation of `w` is `cr`; negation of
 Language: *orbit* (of a zero under a group), *width class* (the square class of a radicand),
 *reflection kernel* (the group over the field that forgets the orientation of reflection
 pairs), *lift* (of `r` or `cr` to a field automorphism), *branch* and *local monodromy* (of
-the heat cover at a collision).
+the heat cover at a collision), *turn* (the transport along a small circle around a branch
+time), *sign flip* (`z ↦ −z` on one pair), *exchange* (an element that carries a pair to a
+different pair), *word* (a product of turns), *restricted* signed permutation (one that moves
+finitely many zeros).
 
 ## Mechanisms
 
@@ -323,6 +338,12 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   time it is an element of `G₊`. A turn around a centre time exchanges a zero with its
   negative; a turn around a collision away from the centre carries a zero out of its pair.
   If `G₊` preserves every pair `{z, −z}`, RH holds.
+- *Homotopy invariance.* The simple zeros form a separated local homeomorphism over the
+  times. Lifts through simple zeros of a family of paths with fixed ends end at one zero; the
+  paths may cross branch times. So transport depends only on the homotopy class of the
+  forward path off the branch times, a loop in a convex set of forward times without branch
+  times transports every zero to itself, and `G₊` is a quotient of the fundamental group of
+  the forward half-plane without the branch times.
 - *Real branch times.* If a segment of real times from `a < 0` to `b > 0` contains no branch
   time, then infinitely many nonreal zeros of `H_a` escape along it. So every real
   neighbourhood of the time `0` contains a branch time, or zeros escape along real times
@@ -357,58 +378,75 @@ collisions.
 [no escape](NoZeroEscapesOverForwardTimes.lean),
 [forward monodromy group](TheTransportsOverForwardTimesFormAGroup.lean),
 [conjugation](ConjugationOfTheZerosIsAMonodromyOfTheHeatCover.lean),
-[turns](TheTurnAroundAForwardBranchTimeIsANontrivialForwardMonodromy.lean))
+[turns](TheTurnAroundAForwardBranchTimeIsANontrivialForwardMonodromy.lean),
+[homotopy invariance](TheTransportOfAZeroDependsOnlyOnTheHomotopyClass.lean))
 
 ## Criteria
 
-- **T1g** The base field is defined from the primes or from complete fibres, never from
-  single zeros.
-- **T2g** Every statement names its base field. Over `K` the group is trivial iff RH; over a
-  smaller field a large group is compatible with RH.
-- **T3g** A classification names the classes of `c` and of `r`.
-- **T4g** The theory reproduces the function-field case with its signed-permutation group.
-- **T5g** A statement that forces `c = r` must fail for the zero set of a two-sided edit of
-  the primes with a fake pair, to which every construction of the theory applies as well.
-- **T6g** A transitive action is excluded; nothing may assume one.
+- **Q1** The base field is defined from the primes or from complete fibres, never from
+  single zeros. The base of the cover is a named region of times.
+- **Q2** Every statement names its base. Over `K` the group is trivial iff RH; over a smaller
+  field or on the cover a large group is compatible with RH.
+- **Q3** A classification names the classes of conjugation and of the reflection.
+- **Q4** The theory reproduces the curve case with its signed-permutation group.
+- **Q5** A statement that forces the two involutions to agree must fail for a configuration
+  with a quartet: the zero set of a two-sided edit of the primes with a fake pair, or a heat
+  family with a quartet, to which every construction of the theory applies as well.
+- **Q6** A transitive action on the zeros over `K` is excluded; nothing may assume one.
 
 ## Questions
 
-1. **Orbits (B190).** The orbit of a zero with irrational real part under the embeddings
-   that fix `B`; an automorphism of a zero field besides conjugation. Over `D`: an ordering in
-   which two squared widths have different signs gives one, and such an ordering exists iff
-   some product `δ_q²δ_r²` is not a sum of squares in `D`.
-2. **Degree.** Is `[L:K]` one or infinite? A finite nontrivial degree is the Galois form of a
+1. **The forward monodromy group (B193).** Is there a collision away from the centre at a
+   forward time? Do the turns generate `G₊`? Is `G₊` transitive on the pairs `{z, −z}`, and
+   is it the full group of restricted signed permutations?
+
+   Settled: `G₊(τ)` is defined, a group of signed permutations of the pairs, the same up to
+   conjugation at every base time; `cr ∈ G₊(t)` at real `t > 0`, trivial for all `t` iff RH;
+   the turn around every forward branch time is an element `≠ 1`; a centre time gives a sign
+   flip of some pair; a collision away from the centre gives an element that moves a pair; a
+   group that preserves every pair gives RH; transport depends only on the homotopy class of
+   the path.
+
+   The three possible answers. *No collision away from the centre:* RH, and more than RH,
+   since RH excludes such collisions on the positive real axis only. *Exchanges exist and the
+   group is transitive or full:* the cover is in the position of a generic curve over a finite
+   field, and the remaining problem is the word of conjugation, not the group. *Exchanges
+   exist and the group is intransitive:* the orbits are a partition of the pairs that is
+   defined without a sign.
+2. **Independence of the moments.** Are the normalized moments `μ₂/μ₀, …, μ₂ₙ/μ₀` of `Φ`
+   algebraically independent at each degree? This decides the group of every Jensen equation:
+   it is `C₂ ≀ S_n` over the field of the coefficients unless the moments satisfy a polynomial
+   relation over `ℚ`. Already whether `μ₂/μ₀` is a square in `K_J` is not known.
+3. **Orbits (B190).** The orbit of a zero with irrational real part under the embeddings
+   that fix `B`: `{ρ, ρ̄}` or the full quartet. An automorphism of a zero field besides
+   conjugation.
+4. **Degree.** Is `[L:K]` one or infinite? A finite nontrivial degree is the Galois form of a
    finite stratum.
-3. **Relations.** Which square-class relations hold among the radicands `−δ_q²`? Is the
-   group, if nontrivial, the full product of signs?
-4. **Finite equations.** The group of one Jensen polynomial of ξ over the field of its
-   coefficients, and the class of conjugation in it. Reduced: the group is `C₂ ≀ S_n` unless
-   the normalized moments `μ₂/μ₀, …, μ₂ₙ/μ₀` satisfy a polynomial relation over `ℚ`. Their
-   algebraic independence is a transcendence statement on the Riemann kernel; already whether
-   `μ₂/μ₀` is a square in `K_J` is not known.
-5. **Monodromy.** The monodromy of the zeros of the heat family around a collision time, the
-   group it generates, and its relation to conjugation. The local part is answered: the
-   Hermite reflection, of order two; it is `r` at a collision at the centre and `c` before a
-   real collision. Branch points exist: infinitely many nonreal centre times; a real positive
-   one exists iff RH fails; real branch times exist in every neighbourhood of the time `0`
-   unless zeros escape there. The generators of the group are known. Over the forward
-   half-plane `Re τ > 0` no zero escapes, the branch times are discrete, and every loop off
-   the branch times permutes the whole fibre: the forward monodromy group `G₊(τ)` is defined.
-   Its relation to the two involutions is settled: `r` commutes with `G₊`, and `cr` is an
-   element of `G₊(t)` at real `t > 0`, trivial for all `t` iff RH. The Hermite reflection of
-   every forward branch point is an element; the group is not trivial; if it preserves every
-   pair `{z, −z}` then RH holds. Open: whether the Hermite reflections generate `G₊`, the
-   converse for collisions at nonreal times, the support of an element; and the times with
-   `Re τ ≤ 0`, where a zero continues uniquely only until its modulus tends to infinity.
-6. **Purity.** A restriction, from the prime traces alone, that forces `H = B`.
+5. **Sums of squares.** Is every squared width a sum of squares in `D`? This holds iff every
+   ordering of `D` induces complex conjugation. An ordering in which two squared widths have
+   different signs gives an automorphism other than conjugation, and such an ordering exists
+   iff some product `δ_q²δ_r²` is not a sum of squares in `D`.
+6. **A restriction.** A restriction, from the prime traces or from the branch divisor, that
+   forces the two involutions to agree: `H = B` over the fields, `cr = 1` on the cover.
+
+## Milestones
+
+| | Milestone | State |
+|---|---|---|
+| M1 | the zero field and its criteria | formalized |
+| M2 | the Jensen dichotomy: full group or dependent moments | formalized |
+| M3 | the forward monodromy group with the turns and conjugation as elements | formalized |
+| M4 | a collision away from the centre at a forward time | open |
+| M5 | independence of the moments at low degree | open |
+| M6 | the dichotomy for the degree over `K` | open |
 
 ## Tools
 
 Kummer theory of the width classes; descent of square classes; the Artin–Schreier theory of
 real fields (orderings of the base fields and the conjugations they define); transcendence of
-prime powers; specialization and genericity for the finite equations; monodromy of analytic
-covers (branches, local groups, real structure). A tool belongs here when it is applied to
-one of the six questions.
+prime powers; specialization and genericity for the finite equations; transport along paths
+of times, with its homotopy invariance; Hermite blow-ups; words of local monodromies. A tool
+belongs here when it is applied to one of the six questions.
 
 ## Traps
 
@@ -421,6 +459,13 @@ one of the six questions.
 - Centrality of conjugation does not give purity: it holds over `K` unconditionally.
 - A large group does not contradict RH and a small group does not prove it; the statement is
   always the position of `c` relative to `r`.
+- Membership of conjugation in `G₊` and its commutation with the reflection do not make it
+  trivial. Triviality of the whole group `G₊` is false: every centre time gives a sign flip.
+- A statement on the cover that uses no feature of `Φ` cannot produce an exchange. The family
+  `(τ − τ₀)^{ν/2} f(z/√(τ − τ₀))`, `f` an even solution of Weber's equation, solves the same
+  heat equation, has infinitely many sheets `z² = ρ_j²(τ − τ₀)`, and no collision away from
+  the centre; for a polynomial this is the Hermite case, the only one with a single centre
+  time.
 - Trace positivity of the reflection is Weil's criterion; renaming it proves nothing.
 - A finite window, a bounded degree or finitely many prime times does not replace a theorem
   on the whole divisor without a proved uniform passage.
@@ -449,11 +494,18 @@ one of the six questions.
 - The orbit of a zero with irrational real part: `{ρ, ρ̄}` or the full quartet.
 - Algebraic relations among the normalized moments `μ₂ₙ/μ₀`, which decide whether a Jensen
   equation is generic.
-- The forward monodromy group `G₊`: homotopy invariance of the transport; generation by the
-  Hermite reflections of the forward branch times; `cr` as the product of the reflections of
-  the real branch times; finiteness of the support of an element; a collision away from the
-  centre at a nonreal forward time. Irreducibility of the cover.
-- Non-escape and accumulation of branch times at times with `Re τ ≤ 0`.
+- A collision away from the centre at a forward time. The central branch times are the zeros
+  of one function of the time, the centre value; for the others no such function is known. A
+  discriminant for a finite set of sheets would be one.
+- The turn as a permutation of the whole fibre: which zeros it fixes; whether the turn around
+  a simple central collision is the sign flip of one pair.
+- The support of an element of `G₊`: is the group a group of restricted signed permutations?
+- Generation of `G₊` by the conjugates of the turns; `cr` as the word of the turns around the
+  real branch times between a real time and `1/8`.
+- Transitivity of `G₊` on the pairs (irreducibility of the cover of pairs); the full group.
+- Whether conjugation is determined inside `G₊` by its commutation relations.
+- Non-escape and accumulation of branch times at times with `Re τ ≤ 0`; control of transport
+  as `τ → 0`.
 - Simplicity of the zeros of the centre value (all central collisions double), and the
   position of the centre times inside the forward half-plane.
 - Whether the squared widths and their pairwise products are sums of squares in `D`. Orderings
@@ -474,11 +526,12 @@ groups, the lifts of the two involutions, and the monodromy reading of collision
 
 ## Contribution and success criteria
 
-A contribution answers one of the six questions, builds a tool and applies it to one of
-them, or classifies an obstruction together with its strongest positive survivor. It concerns
-the whole divisor, the whole family, or a generic object that calibrates them, and it names
-its base field. It passes T1g–T6g. New terminology, isolated finite examples, constants, and
-restatements of known criteria for RH do not qualify.
+A contribution answers one of the six questions, reaches a milestone, builds a tool and
+applies it to one of the questions, or classifies an obstruction together with its strongest
+positive survivor. It concerns the whole divisor, the whole family, or a generic object that
+calibrates them, and it names its base: a field, or a region of times. It passes Q1–Q6. New
+terminology, isolated finite examples, constants, and restatements of known criteria for RH
+do not qualify.
 
 Every claim is a Lean theorem without added premises. Modules live in this directory and are
 imported by `../GaloisTheoryOfZeros.lean`.
