@@ -308,7 +308,8 @@ theorem nu_le_sq {a b : ℝ} (ha : 1 < a) (hab : a < b) (j : X.SpecIndex ha) :
     _ ≤ (b * (b - 1) - a * (a - 1)) / ((l + a * (a - 1)) * (l + a * (a - 1))) :=
         div_le_div_of_nonneg_left (by linarith) (by positivity)
           (mul_le_mul_of_nonneg_left h2 h1.le)
-    _ = (b * (b - 1) - a * (a - 1)) * (1 / (l + a * (a - 1))) ^ 2 := by ring
+    _ = (b * (b - 1) - a * (a - 1)) * (1 / (l + a * (a - 1))) ^ 2 := by
+        rw [one_div, inv_pow, ← div_eq_mul_inv, sq]
 
 /-- **Bessel's inequality for the continuous eigenfunctions.**
 `Σ_{j ∈ S} ν_j |ẽ_j(w)|² ≤ B` for every finite `S` and every `w`: almost everywhere
@@ -323,7 +324,7 @@ theorem exists_sum_nu_specRep_le {a b : ℝ} (ha : 1 < a) (hab : a < b) : ∃ B 
   have hrow : ∀ w, ∫⁻ ξ, ‖k.toFun w ξ‖ₑ ^ 2 ∂X.μ ≤ R := by
     intro w
     refine le_trans (lintegral_mono fun ξ => ?_) (hRle w)
-    rw [hto, ← ofReal_norm_eq_enorm, Complex.norm_real, Real.norm_of_nonneg ENNReal.toReal_nonneg]
+    rw [hto, ← ofReal_norm, Complex.norm_real, Real.norm_of_nonneg ENNReal.toReal_nonneg]
     exact pow_le_pow_left₀ bot_le ENNReal.ofReal_toReal_le 2
   have hk2 : ∫⁻ y, ∫⁻ z, ‖k.toFun y z‖ₑ ^ 2 ∂X.μ ∂X.μ < ∞ := by
     refine lt_of_le_of_lt (lintegral_mono hrow) ?_
@@ -361,10 +362,10 @@ theorem exists_sum_nu_specRep_le {a b : ℝ} (ha : 1 < a) (hab : a < b) : ∃ B 
       _ = (b * (b - 1) - a * (a - 1)) * ∑ j ∈ S, ‖⟪X.specVec ha j, k.rowVec w⟫_ℂ‖ ^ 2 := by
           rw [Finset.mul_sum]
       _ ≤ (b * (b - 1) - a * (a - 1)) * R.toReal :=
-          mul_le_mul_of_nonneg_left (hon.sum_inner_products_le.trans (hnorm w)) hC
+          mul_le_mul_of_nonneg_left ((Orthonormal.sum_inner_products_le (k.rowVec w) hon).trans (hnorm w)) hC
   -- from almost every `w` to every `w`
   have hfc : Continuous fun w => ∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 :=
-    continuous_finset_sum _ fun j _ =>
+    continuous_finsetSum _ fun j _ =>
       continuous_const.mul ((X.continuous_specRep ha hab j).norm.pow 2)
   have hg := X.eq_zero_of_ae_eq_zero
     (g := fun w => ((max (∑ j ∈ S, X.nu ha (b := b) j * ‖X.specRep ha (b := b) j w‖ ^ 2 -
