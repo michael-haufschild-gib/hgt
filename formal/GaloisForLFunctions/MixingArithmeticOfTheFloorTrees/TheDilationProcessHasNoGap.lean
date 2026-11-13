@@ -3,6 +3,7 @@ import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!
 # The dilation process has no gap
@@ -65,15 +66,15 @@ theorem integral_cos_mul_exp (s L : ℝ) :
       (fun u => Real.exp u * (Real.cos (s * u) + s * Real.sin (s * u)) / (1 + s ^ 2))
       (Real.cos (s * u) * Real.exp u) u := by
     intro u
-    have h1 : HasDerivAt (fun u => Real.cos (s * u)) (-Real.sin (s * u) * s) u := by
-      simpa using (Real.hasDerivAt_cos (s * u)).comp u ((hasDerivAt_id u).const_mul s)
-    have h2 : HasDerivAt (fun u => Real.sin (s * u)) (Real.cos (s * u) * s) u := by
-      simpa using (Real.hasDerivAt_sin (s * u)).comp u ((hasDerivAt_id u).const_mul s)
+    have hl : HasDerivAt (fun u : ℝ => s * u) s u := by
+      simpa using (hasDerivAt_id' u).const_mul s
+    have h1 : HasDerivAt (fun u => Real.cos (s * u)) (-Real.sin (s * u) * s) u := hl.cos
+    have h2 : HasDerivAt (fun u => Real.sin (s * u)) (Real.cos (s * u) * s) u := hl.sin
     have h3 := ((Real.hasDerivAt_exp u).mul (h1.add (h2.const_mul s))).div_const (1 + s ^ 2)
     convert h3 using 1
-    field_simp
+    rw [eq_div_iff hs]
     ring
-  rw [integral_eq_sub_of_hasDerivAt (fun u _ => hF u)
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hF u)
     ((by fun_prop : Continuous fun u => Real.cos (s * u) * Real.exp u).intervalIntegrable _ _)]
   simp only [mul_zero, Real.cos_zero, Real.sin_zero, Real.exp_zero, one_mul, add_zero]
   field_simp
@@ -133,7 +134,8 @@ theorem dilationVar_cos_ge {Q : ℕ} (hQ : 2 ≤ Q) {t : ℝ} (ht : 64 * (Q : �
       funext u
       rw [Real.cos_sq, show 2 * (t * u) = 2 * t * u by ring]
       ring
-    rw [e, integral_add, integral_div, integral_div, hmass]
+    rw [e, intervalIntegral.integral_add, intervalIntegral.integral_div,
+      intervalIntegral.integral_div, hmass]
     · exact (Real.continuous_exp.div_const 2).intervalIntegrable _ _
     · exact ((by fun_prop : Continuous fun u => Real.cos ((2 * t) * u) * Real.exp u).div_const
         2).intervalIntegrable _ _
@@ -211,7 +213,8 @@ theorem dilationForm_cos_le {Q : ℕ} {t η : ℝ}
             ((by fun_prop : Continuous fun u => η ^ 2 * Real.exp u).intervalIntegrable _ _)
             fun u _ => hpt u
       _ = η ^ 2 * ((Q : ℝ) / k - 1) := by
-          rw [integral_const_mul, integral_exp, Real.exp_log (div_pos (by linarith) hk0),
+          rw [intervalIntegral.integral_const_mul, integral_exp,
+            Real.exp_log (div_pos (by linarith) hk0),
             Real.exp_zero]
   have hQk1 : (Q : ℝ) / k - 1 ≤ Q := by
     have : (Q : ℝ) / k ≤ Q := div_le_self (by linarith) (by exact_mod_cast (show 1 ≤ k by omega))
@@ -256,12 +259,10 @@ theorem dilationForm_le_of_no_gap {Q : ℕ} (hQ : 2 ≤ Q) {ε : ℝ} (hε : 0 <
   have hT₀n : T₀ ≤ n * T₀ := le_mul_of_one_le_left hT₀0.le (by exact_mod_cast hn1)
   have h64 : 64 * (Q : ℝ) ≤ n * T₀ := by
     have := le_max_right T (64 * (Q : ℝ))
-    rw [hT₀] at hT₀n
     linarith
   have hV := dilationVar_cos_ge hQ h64
   refine ⟨n * T₀, ?_, by linarith, ?_⟩
   · have := le_max_left T (64 * (Q : ℝ))
-    rw [hT₀] at hT₀n
     linarith
   -- at the return no floor map moves the wave
   have hret : ∀ k ∈ Icc 2 Q, ∃ m : ℤ, |n * T₀ * Real.log k - m * (2 * π)| ≤ 2 * π / N := by
