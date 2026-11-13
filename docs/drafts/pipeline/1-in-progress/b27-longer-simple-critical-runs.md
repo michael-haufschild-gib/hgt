@@ -46,6 +46,28 @@ give leading terms at scale `T log²T`. For a divisor of bounded multiplicity,
 the full collision diagonal has scale `T log T`, below that normalization.
 No sign theorem for the remaining connected terms is supplied.
 
+### Cubic trace obstruction in the actual evaluation geometry
+
+In `L²([-1,1],du/2)`, put `v_{ε,η}(u)=exp((εa+iηγ)u)` and
+`Q=∑_{η=±1}(v_{+,η}v_{−,η}*+v_{−,η}v_{+,η}*)`. These are two
+reflected exponential-evaluation pairs. With
+`g=sinh(2a)/(2a)`, `h=sin(2γ)/(2γ)` and
+`f=sinh(2a+2iγ)/(2a+2iγ)`, rank-one expansion gives
+
+\[
+\operatorname{tr}Q^3=4+12\bigl(g^2+h^2+\Re(f^2)+2gh\Re f\bigr),\qquad
+\lim_{a\to\infty}\frac{\operatorname{tr}Q^3}{g^2}
+=24\cos(2\gamma)\bigl(\cos(2\gamma)+h\bigr).
+\]
+
+The limit is negative when `2γ` lies just above `π/2`. Thus cross-height
+interference defeats cubic positivity even for genuine sinc evaluation vectors.
+For Fourier bandwidth `[-L/2,L/2]`, the physical depth is `2a/L` and the
+two heights are `T±2γ/L`; fixed sufficiently large `a` fits the critical strip
+for all sufficiently large `L`. This is a prescribed divisor configuration,
+not an assertion about ζ zeros. Formula and sign argument are paper-only;
+no new run theorem or Lean theorem is claimed.
+
 ## Gates
 
 - [x] Exact target and existing theorem located.
