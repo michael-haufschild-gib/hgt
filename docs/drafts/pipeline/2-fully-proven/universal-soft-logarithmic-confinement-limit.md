@@ -82,14 +82,17 @@ The elementary bounds `1-1/b≤log b≤b-1` put the limiting lower bound above `
 
 ## Lean status
 
-Nine modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
+Twelve modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
 
 - `HalfLineConfinementTail`: weighted-tail control and `8M(F)≤W(F)-m(F)`.
 - `WeightedSourceTruncation`, `WeightedSourceLocalizedPairing`: indicator closure, exact restricted masses, and localized weighted Cauchy–Schwarz.
 - `HalfLineTerminalTruncation`, `HalfLineConfinementPoleDecay`: uniform disappearance of the full prime-and-pole remainder as unit-profile excess tends to zero (`exists_arithmeticRemainder_small_of_excess`).
-- `FourierFirstMomentWindow`: bounded physical first moment excludes uniform spectral concentration at zero.
+- `HTGeometry/HardyBoundary/FourierFirstMomentWindow`: bounded physical first moment excludes uniform spectral concentration at zero.
 - `ConfiningGammaSymbol`: exact logarithmic normalization, global lower bound, uniform dilation majorant, and transfer of Gamma integrability between Fourier normalizations.
-- `UnitaryRealDilation`: mass preservation, first-moment scaling, and weighted physical/Fourier changes of variables with integrability transfer.
-- `LogarithmicFourierDomain`: integrability of the logarithmic singularity at zero and two-way comparison with logarithmically growing symbols.
+- `ConfiningGammaSpectralLimit`: vanishing integrated remainder on fixed logarithmic profiles and uniform lower comparison under a bounded first moment.
+- `HTGeometry/HardyBoundary/UnitaryRealDilation`: mass preservation, first-moment scaling, and weighted physical/Fourier changes of variables with integrability transfer.
+- `HTGeometry/HardyBoundary/LogarithmicFourierDomain`: integrability of the logarithmic singularity at zero and two-way comparison with logarithmically growing symbols.
+- `HTGeometry/HardyBoundary/LogarithmicFourierDilation`: absolute logarithmic domain invariance and the exact signed-energy scaling law.
+- `SoftLogarithmicHalfLineDomain`: actual-domain inclusion, invariance under positive dilation, and eventual recovery of the actual Gamma domain after compression.
 
-The dilation-stable logarithmic domain, integrated spectral comparison, and final variational and virial limits have draft Lean proofs awaiting verification. Not counted.
+Remaining modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`: `ConfiningPotentialLimit`, `ConfiningFixedTrialLimit`, `ConfiningLogarithmicFloor`, `ConfiningRescaledEnergy`, `ConfiningLogarithmicLimit`, and `ConfiningVirialLimit`. Their proofs and source audits remain pending. Not counted.

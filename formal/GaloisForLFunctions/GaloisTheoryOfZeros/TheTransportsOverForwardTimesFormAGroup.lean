@@ -17,6 +17,11 @@ So the transports along the forward loops based at a time `τ` form a group of p
 the zeros of `H_τ`, the *forward monodromy group* `forwardMonodromy τ`, and every element of it
 commutes with the reflection `z ↦ −z` of the fibre (`forwardMonodromy_commute_fibreNeg`): the
 group consists of signed permutations of the pairs `{z, −z}`.
+
+Any two forward times off the branch times are joined by a forward path
+(`exists_isForwardPath`), and the transport along such a path conjugates the group at one end
+onto the group at the other (`IsForwardPath.map_forwardMonodromy`). The group is therefore an
+invariant of the heat cover (`nonempty_mulEquiv_forwardMonodromy`).
 -/
 
 open Complex Set
@@ -223,6 +228,198 @@ theorem forwardMonodromy_commute_fibreNeg {τ : ℂ} {hτ : 0 < τ.re} {hb : τ 
   obtain ⟨γ, h, -, -, ht⟩ := hσ
   refine Equiv.ext fun p => Subtype.ext ?_
   exact h.transports_unique (ht (fibreNeg τ p)) (ht p).neg
+
+/-! ## Forward times off the branch times are joined by forward paths -/
+
+/-- The arc from `τ` to `τ'` bent sideways by `η`. -/
+def arcPath (τ τ' : ℂ) (η : ℝ) (s : ℝ) : ℂ :=
+  τ + (τ' - τ) * ((s : ℂ) + I * ((η * (s * (1 - s)) : ℝ) : ℂ))
+
+theorem arcPath_zero (τ τ' : ℂ) (η : ℝ) : arcPath τ τ' η 0 = τ := by simp [arcPath]
+
+theorem arcPath_one (τ τ' : ℂ) (η : ℝ) : arcPath τ τ' η 1 = τ' := by simp [arcPath]
+
+theorem continuous_arcPath (τ τ' : ℂ) (η : ℝ) : Continuous (arcPath τ τ' η) := by
+  show Continuous fun s : ℝ => τ + (τ' - τ) * ((s : ℂ) + I * ((η * (s * (1 - s)) : ℝ) : ℂ))
+  fun_prop
+
+/-- Arcs with the same two ends meet only at equal parameters and equal heights. -/
+theorem arcPath_inj {τ τ' : ℂ} (hne : τ ≠ τ') {η η' s s' : ℝ}
+    (h : arcPath τ τ' η s = arcPath τ τ' η' s') :
+    s = s' ∧ η * (s * (1 - s)) = η' * (s' * (1 - s')) := by
+  unfold arcPath at h
+  have hw := mul_left_cancel₀ (sub_ne_zero.2 (Ne.symm hne)) (add_left_cancel h)
+  have hre := congrArg Complex.re hw
+  have him := congrArg Complex.im hw
+  simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
+    Complex.I_mul_re, Complex.I_mul_im, neg_zero, add_zero, zero_add] at hre him
+  exact ⟨hre, him⟩
+
+/-- A low arc between two forward times stays in a box of forward times. -/
+theorem arcPath_mem_box {τ τ' : ℂ} {η s m₀ : ℝ} (hτ : m₀ ≤ τ.re) (hτ' : m₀ ≤ τ'.re)
+    (hη0 : 0 ≤ η) (hη : η * ‖τ' - τ‖ ≤ m₀ / 2) (hs : s ∈ Icc (0 : ℝ) 1) :
+    m₀ / 2 ≤ (arcPath τ τ' η s).re ∧ ‖arcPath τ τ' η s‖ ≤ ‖τ‖ + ‖τ'‖ + m₀ / 2 := by
+  have hs1 : 0 ≤ 1 - s := by linarith [hs.2]
+  have hc0 : 0 ≤ s * (1 - s) := mul_nonneg hs.1 hs1
+  have hc1 : s * (1 - s) ≤ 1 := by
+    have := mul_le_mul hs.2 (by linarith [hs.1] : 1 - s ≤ 1) hs1 zero_le_one
+    linarith
+  obtain ⟨E, hE⟩ : ∃ E : ℂ, E = I * ((η * (s * (1 - s)) : ℝ) : ℂ) * (τ' - τ) := ⟨_, rfl⟩
+  obtain ⟨A, hA⟩ : ∃ A : ℂ, A = ((1 - s : ℝ) : ℂ) * τ + (s : ℂ) * τ' := ⟨_, rfl⟩
+  have heq : arcPath τ τ' η s = A + E := by
+    rw [hA, hE, arcPath]
+    push_cast
+    ring
+  have hEn : ‖E‖ ≤ m₀ / 2 := by
+    rw [hE, norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg hη0 hc0)]
+    have h1 : η * (s * (1 - s)) ≤ η := by
+      have := mul_le_mul_of_nonneg_left hc1 hη0
+      linarith
+    have := mul_le_mul_of_nonneg_right h1 (norm_nonneg (τ' - τ))
+    linarith
+  have hAre : m₀ ≤ A.re := by
+    have h1 : A.re = (1 - s) * τ.re + s * τ'.re := by
+      rw [hA]
+      simp
+    rw [h1]
+    exact le_convexCombo hs.1 hs.2 hτ hτ'
+  have hAn : ‖A‖ ≤ ‖τ‖ + ‖τ'‖ := by
+    have h1 : ‖A‖ ≤ (1 - s) * ‖τ‖ + s * ‖τ'‖ := by
+      rw [hA]
+      refine (norm_add_le _ _).trans (le_of_eq ?_)
+      rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+        Real.norm_eq_abs, abs_of_nonneg hs1, abs_of_nonneg hs.1]
+    have h2 := mul_le_of_le_one_left (norm_nonneg τ) (by linarith [hs.1] : 1 - s ≤ 1)
+    have h3 := mul_le_of_le_one_left (norm_nonneg τ') hs.2
+    linarith
+  rw [heq]
+  refine ⟨?_, (norm_add_le _ _).trans (by linarith)⟩
+  rw [Complex.add_re]
+  have h1 := neg_abs_le E.re
+  have h2 := Complex.abs_re_le_norm E
+  linarith
+
+/-- **Two forward times off the branch times are joined by a forward path.** The arcs between
+them meet only at their ends, and a box of forward times contains finitely many branch times,
+so some arc avoids them all. -/
+theorem exists_isForwardPath {τ τ' : ℂ} (hτ : 0 < τ.re) (hτ' : 0 < τ'.re)
+    (hb : τ ∉ branchTimes) (hb' : τ' ∉ branchTimes) :
+    ∃ γ, IsForwardPath γ ∧ γ 0 = τ ∧ γ 1 = τ' := by
+  rcases eq_or_ne τ τ' with rfl | hne
+  · exact ⟨fun _ => τ, IsForwardPath.const hτ hb, rfl, rfl⟩
+  obtain ⟨m₀, hm₀, hm, hm'⟩ : ∃ m₀ : ℝ, 0 < m₀ ∧ m₀ ≤ τ.re ∧ m₀ ≤ τ'.re :=
+    ⟨min τ.re τ'.re, lt_min hτ hτ', min_le_left _ _, min_le_right _ _⟩
+  have hdn : 0 < ‖τ' - τ‖ := norm_pos_iff.2 (sub_ne_zero.2 (Ne.symm hne))
+  obtain ⟨η₀, hη₀, hη₀d⟩ : ∃ η₀ : ℝ, 0 < η₀ ∧ η₀ * ‖τ' - τ‖ ≤ m₀ / 2 :=
+    ⟨m₀ / 2 / ‖τ' - τ‖, by positivity, by rw [div_mul_cancel₀ _ hdn.ne']⟩
+  have hbox : ∀ η ∈ Ioc (0 : ℝ) η₀, ∀ s ∈ Icc (0 : ℝ) 1,
+      m₀ / 2 ≤ (arcPath τ τ' η s).re ∧ ‖arcPath τ τ' η s‖ ≤ ‖τ‖ + ‖τ'‖ + m₀ / 2 :=
+    fun η hη s hs => arcPath_mem_box hm hm' hη.1.le
+      ((mul_le_mul_of_nonneg_right hη.2 (norm_nonneg _)).trans hη₀d) hs
+  have hfin := finite_branchTimes_box (t₀ := m₀ / 2) (‖τ‖ + ‖τ'‖ + m₀ / 2) (half_pos hm₀)
+  have hex : ∃ η ∈ Ioc (0 : ℝ) η₀, ∀ s ∈ Icc (0 : ℝ) 1, arcPath τ τ' η s ∉ branchTimes := by
+    by_contra hcon
+    push Not at hcon
+    choose! σ hσ using hcon
+    have hmaps : MapsTo (fun η => arcPath τ τ' η (σ η)) (Ioc (0 : ℝ) η₀)
+        {x : ℂ | x ∈ branchTimes ∧ m₀ / 2 ≤ x.re ∧ ‖x‖ ≤ ‖τ‖ + ‖τ'‖ + m₀ / 2} :=
+      fun η hη => ⟨(hσ η hη).2, hbox η hη _ (hσ η hη).1⟩
+    have hinj : InjOn (fun η => arcPath τ τ' η (σ η)) (Ioc (0 : ℝ) η₀) := by
+      intro η hη η' _ hff
+      obtain ⟨hs, hc⟩ := arcPath_inj hne hff
+      rw [← hs] at hc
+      have h2 : (η - η') * (σ η * (1 - σ η)) = 0 := by linear_combination hc
+      rcases mul_eq_zero.1 h2 with h | h
+      · linarith
+      · exfalso
+        have hmem := (hσ η hη).2
+        rcases mul_eq_zero.1 h with h0 | h1
+        · rw [h0, arcPath_zero] at hmem
+          exact hb hmem
+        · rw [show σ η = 1 by linarith, arcPath_one] at hmem
+          exact hb' hmem
+    exact Set.infinite_of_injOn_mapsTo hinj hmaps (Ioc_infinite hη₀) hfin
+  obtain ⟨η, hη, hgood⟩ := hex
+  exact ⟨arcPath τ τ' η, ⟨(continuous_arcPath τ τ' η).continuousOn,
+    fun s hs => (half_pos hm₀).trans_le (hbox η hη s hs).1, hgood⟩,
+    arcPath_zero τ τ' η, arcPath_one τ τ' η⟩
+
+/-! ## The group does not depend on the base time -/
+
+/-- The start of a transport is determined by its end. -/
+theorem IsForwardPath.transports_injective {γ : ℝ → ℂ} (hγ : IsForwardPath γ) {z₀ z₀' z₁ : ℂ}
+    (h : Transports γ z₀ z₁) (h' : Transports γ z₀' z₁) : z₀ = z₀' :=
+  hγ.reverse.transports_unique h.symm h'.symm
+
+/-- The transport along a forward path from `τ` to `τ'` is a bijection of the fibres. -/
+theorem IsForwardPath.exists_fibreEquiv {γ : ℝ → ℂ} (hγ : IsForwardPath γ) {τ τ' : ℂ}
+    (h0 : γ 0 = τ) (h1 : γ 1 = τ') :
+    ∃ e : {z : ℂ // complexHeat τ z = 0} ≃ {z : ℂ // complexHeat τ' z = 0},
+      ∀ p, Transports γ p.1 (e p).1 := by
+  subst h0 h1
+  exact exists_transport_equiv hγ.continuousOn hγ.re_pos hγ.simple
+
+/-- Every forward loop based at `τ` defines an element of the forward monodromy group. -/
+theorem IsForwardPath.exists_mem_forwardMonodromy {γ : ℝ → ℂ} (hγ : IsForwardPath γ) {τ : ℂ}
+    {hτ : 0 < τ.re} {hb : τ ∉ branchTimes} (h0 : γ 0 = τ) (h1 : γ 1 = τ) :
+    ∃ σ ∈ forwardMonodromy τ hτ hb, ∀ p, Transports γ p.1 (σ p).1 := by
+  obtain ⟨e, he⟩ := hγ.exists_fibreEquiv h0 h1
+  exact ⟨e, ⟨γ, hγ, h0, h1, he⟩, he⟩
+
+/-- Conjugation by the transport along a forward path carries the group at the start of the
+path into the group at its end. -/
+theorem IsForwardPath.permCongr_mem_forwardMonodromy {γ : ℝ → ℂ} (hγ : IsForwardPath γ)
+    {τ τ' : ℂ} {hτ : 0 < τ.re} {hb : τ ∉ branchTimes} {hτ' : 0 < τ'.re} {hb' : τ' ∉ branchTimes}
+    (h0 : γ 0 = τ) (h1 : γ 1 = τ')
+    {e : {z : ℂ // complexHeat τ z = 0} ≃ {z : ℂ // complexHeat τ' z = 0}}
+    (he : ∀ p, Transports γ p.1 (e p).1) {σ : Equiv.Perm {z : ℂ // complexHeat τ z = 0}}
+    (hσ : σ ∈ forwardMonodromy τ hτ hb) : e.permCongr σ ∈ forwardMonodromy τ' hτ' hb' := by
+  obtain ⟨β, hβ, hβ0, hβ1, hT⟩ := hσ
+  refine ⟨pathJoin (pathRev γ) (pathJoin β γ),
+    hγ.reverse.join (hβ.join hγ (hβ1.trans h0.symm)) ?_, ?_, ?_, fun p => ?_⟩
+  · rw [pathRev_one, pathJoin_zero, h0, hβ0]
+  · rw [pathJoin_zero, pathRev_zero, h1]
+  · rw [pathJoin_one, pathJoin_one, h1]
+  · rw [Equiv.permCongr_apply]
+    have h3 : Transports (pathRev γ) p.1 (e.symm p).1 := by
+      have := (he (e.symm p)).symm
+      rwa [Equiv.apply_symm_apply] at this
+    exact h3.trans ((hT (e.symm p)).trans (he (σ (e.symm p))))
+
+/-- **The forward monodromy groups at two base times are conjugate.** The transport along a
+forward path from `τ` to `τ'` conjugates the group at `τ` onto the group at `τ'`. -/
+theorem IsForwardPath.map_forwardMonodromy {γ : ℝ → ℂ} (hγ : IsForwardPath γ)
+    {τ τ' : ℂ} {hτ : 0 < τ.re} {hb : τ ∉ branchTimes} {hτ' : 0 < τ'.re} {hb' : τ' ∉ branchTimes}
+    (h0 : γ 0 = τ) (h1 : γ 1 = τ')
+    {e : {z : ℂ // complexHeat τ z = 0} ≃ {z : ℂ // complexHeat τ' z = 0}}
+    (he : ∀ p, Transports γ p.1 (e p).1) :
+    (forwardMonodromy τ hτ hb).map
+        (e.permCongrHom : Equiv.Perm {z : ℂ // complexHeat τ z = 0} →* _) =
+      forwardMonodromy τ' hτ' hb' := by
+  ext σ'
+  rw [Subgroup.mem_map]
+  constructor
+  · rintro ⟨σ, hσ, rfl⟩
+    exact hγ.permCongr_mem_forwardMonodromy h0 h1 he hσ
+  · intro hσ'
+    have he' : ∀ p, Transports (pathRev γ) p.1 (e.symm p).1 := fun p => by
+      have := (he (e.symm p)).symm
+      rwa [Equiv.apply_symm_apply] at this
+    refine ⟨e.symm.permCongr σ', hγ.reverse.permCongr_mem_forwardMonodromy
+      (by rw [pathRev_zero, h1]) (by rw [pathRev_one, h0]) he' hσ', ?_⟩
+    show e.permCongr (e.symm.permCongr σ') = σ'
+    rw [← Equiv.permCongr_symm, Equiv.apply_symm_apply]
+
+/-- **The forward monodromy group is an invariant of the heat cover.** Its isomorphism class
+does not depend on the base time. -/
+theorem nonempty_mulEquiv_forwardMonodromy {τ τ' : ℂ} (hτ : 0 < τ.re) (hb : τ ∉ branchTimes)
+    (hτ' : 0 < τ'.re) (hb' : τ' ∉ branchTimes) :
+    Nonempty (forwardMonodromy τ hτ hb ≃* forwardMonodromy τ' hτ' hb') := by
+  obtain ⟨γ, hγ, h0, h1⟩ := exists_isForwardPath hτ hτ' hb hb'
+  obtain ⟨e, he⟩ := hγ.exists_fibreEquiv h0 h1
+  exact ⟨(e.permCongrHom.subgroupMap (forwardMonodromy τ hτ hb)).trans
+    (MulEquiv.subgroupCongr (hγ.map_forwardMonodromy h0 h1 he))⟩
 
 end
 

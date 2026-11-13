@@ -18,7 +18,9 @@ determines what the local theory gives for the continuation of a zero along a pa
   (`EscapesAlong`): it lifts on a half-open interval `[0, b)` and its modulus tends to infinity as
   the parameter tends to `b` (`exists_isZeroLift_or_escape`). There is no third case: a lift that
   stays bounded along a sequence of parameters converges to a simple zero and enters its chart.
-  The two cases exclude each other (`IsZeroLift.not_escapesAlong`).
+  The two cases exclude each other (`IsZeroLift.not_escapesAlong`). The relative form
+  (`exists_isZeroLift_or_escape_of_mem`) needs simple zeros only in a closed set of places in
+  which the lifts of `z₀` stay; its path may cross branch times.
 
 The transport along a loop is therefore a permutation of exactly those zeros that do not escape
 along the loop or along its inverse. The monodromy group of the heat cover over a set of times is
@@ -279,11 +281,17 @@ theorem IsZeroLift.not_escapesAlong {z : ℝ → ℂ} (hγ : ContinuousOn γ (Ic
   rw [he] at this
   linarith
 
-/-- **A zero continues along a path of times until it escapes.** Let `γ` be a path of times that
-avoids the branch times and `z₀` a zero of `H_{γ(0)}`. Either `z₀` lifts along the whole path, or
-it lifts on a half-open interval `[0, b)` and the modulus of the lift tends to infinity at `b`. -/
-theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
-    (hsimple : ∀ s ∈ Icc (0 : ℝ) 1, γ s ∉ branchTimes) {z₀ : ℂ}
+/-- **A zero continues along a path of times until it escapes: the relative form.** Let `K` be
+a closed set of places such that the zeros of the family along `γ` that lie in `K` are simple and
+every continuous family of zeros that starts at `z₀` stays in `K`. Either `z₀` lifts along the
+whole path, or it lifts on a half-open interval `[0, b)` and the modulus of the lift tends to
+infinity at `b`. The path may cross branch times. -/
+theorem exists_isZeroLift_or_escape_of_mem (hγ : ContinuousOn γ (Icc 0 1)) {K : Set ℂ}
+    (hK : IsClosed K)
+    (hsimple : ∀ s ∈ Icc (0 : ℝ) 1, ∀ z ∈ K, complexHeat (γ s) z = 0 →
+      deriv (complexHeat (γ s)) z ≠ 0) {z₀ : ℂ}
+    (hstay : ∀ b ∈ Icc (0 : ℝ) 1, ∀ z, IsZeroLift γ b z → z 0 = z₀ →
+      ∀ s ∈ Icc (0 : ℝ) b, z s ∈ K)
     (h0 : complexHeat (γ 0) z₀ = 0) :
     (∃ z, IsZeroLift γ 1 z ∧ z 0 = z₀) ∨ EscapesAlong γ z₀ := by
   by_cases h1 : ∃ z, IsZeroLift γ 1 z ∧ z 0 = z₀
@@ -300,10 +308,9 @@ theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
   have hSbdd : BddAbove S := ⟨1, fun b hb => ((hSdef b).1 hb).1.2⟩
   have hb01 : sSup S ∈ Icc (0 : ℝ) 1 :=
     ⟨le_csSup hSbdd hS0, csSup_le ⟨0, hS0⟩ fun x hx => ((hSdef x).1 hx).1.2⟩
-  have hsim : ∀ {b₁ : ℝ} {z : ℝ → ℂ}, b₁ ≤ 1 → IsZeroLift γ b₁ z → ∀ s ∈ Icc (0 : ℝ) b₁,
-      deriv (complexHeat (γ s)) (z s) ≠ 0 := fun hb₁ hz s hs =>
-    deriv_complexHeat_ne_zero_of_not_mem_branchTimes (hsimple s ⟨hs.1, hs.2.trans hb₁⟩)
-      (hz.zero s hs)
+  have hsim : ∀ {b₁ : ℝ} {z : ℝ → ℂ}, 0 ≤ b₁ → b₁ ≤ 1 → IsZeroLift γ b₁ z → z 0 = z₀ →
+      ∀ s ∈ Icc (0 : ℝ) b₁, deriv (complexHeat (γ s)) (z s) ≠ 0 := fun hb₀ hb₁ hz hz0 s hs =>
+    hsimple s ⟨hs.1, hs.2.trans hb₁⟩ _ (hstay _ ⟨hb₀, hb₁⟩ _ hz hz0 s hs) (hz.zero s hs)
   -- the supremum is not attained
   have hbS : sSup S ∉ S := by
     intro hbS
@@ -311,7 +318,7 @@ theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
     rcases eq_or_lt_of_le hb01.2 with hb1 | hb1
     · exact h1 ⟨z, hb1 ▸ hz, hz0⟩
     · obtain ⟨b', hb', z', hz', hz'0⟩ := hz.exists_extension hγ hb01.1 hb1
-        (hsim hb01.2 hz _ ⟨hb01.1, le_rfl⟩)
+        (hsim hb01.1 hb01.2 hz hz0 _ ⟨hb01.1, le_rfl⟩)
       have hb'S : b' ∈ S := (hSdef b').2
         ⟨⟨hb01.1.trans hb'.1.le, hb'.2⟩, z', hz', hz'0.trans hz0⟩
       exact absurd (le_csSup hSbdd hb'S) (not_le.2 hb'.1)
@@ -334,7 +341,7 @@ theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
     have hZs : Z s = (hlt s hsb.1 hsb.2).choose s := dif_pos hsb
     rw [hZs]
     exact IsZeroLift.eqOn (hγ.mono (Icc_subset_Icc_right hs1)) hc (hw.mono hs.2)
-      (hc0.trans hw0.symm) (hsim hs1 hc) ⟨hs.1, le_rfl⟩
+      (hc0.trans hw0.symm) (hsim hs.1 hs1 hc hc0) ⟨hs.1, le_rfl⟩
   have hZc : ContinuousOn Z (Ico 0 (sSup S)) := by
     intro s hs
     obtain ⟨b₁, hsb₁, hb₁b⟩ := exists_between hs.2
@@ -374,8 +381,16 @@ theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
     obtain ⟨s, hsb, hsa, hsI⟩ :=
       ((hcl _ hpb).and_eventually ((hγb.eventually hpa).and hIco)).exists
     exact hprod hsa hsb (hZzero s hsI)
+  -- the cluster point lies in `K`, since the lift stays there
+  have hzsK : zs ∈ K := by
+    by_contra hnot
+    obtain ⟨s, hsK, hsI⟩ := ((hcl _ (hK.isOpen_compl.mem_nhds hnot)).and_eventually hIco).exists
+    obtain ⟨w, hw, hw0⟩ := hlt s hsI.1 hsI.2
+    have hws := hstay s ⟨hsI.1, hsI.2.le.trans hb01.2⟩ w hw hw0 s ⟨hsI.1, le_rfl⟩
+    rw [← hZ hsI.2 hw hw0 ⟨hsI.1, le_rfl⟩] at hws
+    exact hsK hws
   obtain ⟨δ, hδ, ρ, hρ, ζ, hζc, -, hchart⟩ := exists_zero_chart hzs
-    (deriv_complexHeat_ne_zero_of_not_mem_branchTimes (hsimple _ hb01) hzs)
+    (hsimple _ hb01 zs hzsK hzs)
   obtain ⟨ε, hε, hεball⟩ := Metric.continuousWithinAt_iff.1 (hγ _ hb01) δ hδ
   have hIoo : ∀ᶠ s in 𝓝[<] sSup S, s ∈ Ioo (max 0 (sSup S - ε)) (sSup S) :=
     Ioo_mem_nhdsLT (max_lt hbpos (by linarith))
@@ -407,6 +422,17 @@ theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
   refine hbS ((hSdef _).2 ⟨hb01, _, hlift, ?_⟩)
   show (if (0 : ℝ) ≤ s₁ then Z 0 else ζ (γ 0)) = z₀
   rw [if_pos hs₁0.le, hZ0]
+
+/-- **A zero continues along a path of times until it escapes.** Let `γ` be a path of times that
+avoids the branch times and `z₀` a zero of `H_{γ(0)}`. Either `z₀` lifts along the whole path, or
+it lifts on a half-open interval `[0, b)` and the modulus of the lift tends to infinity at `b`. -/
+theorem exists_isZeroLift_or_escape (hγ : ContinuousOn γ (Icc 0 1))
+    (hsimple : ∀ s ∈ Icc (0 : ℝ) 1, γ s ∉ branchTimes) {z₀ : ℂ}
+    (h0 : complexHeat (γ 0) z₀ = 0) :
+    (∃ z, IsZeroLift γ 1 z ∧ z 0 = z₀) ∨ EscapesAlong γ z₀ :=
+  exists_isZeroLift_or_escape_of_mem hγ isClosed_univ
+    (fun s hs _ _ hz => deriv_complexHeat_ne_zero_of_not_mem_branchTimes (hsimple s hs) hz)
+    (fun _ _ _ _ _ _ _ => mem_univ _) h0
 
 end
 

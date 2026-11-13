@@ -133,6 +133,7 @@ variable (K : Type*) {L : Type*} [Field K] [Field L] [NumberField K] [NumberFiel
 
 attribute [local instance] infinitePlaceMulAction
 
+omit [NumberField K] [NumberField L] [Fintype G] in
 /-- Conjugate places of `L` lie above the same place of `K`. -/
 theorem comap_infinitePlace_smul (τ : G) (w : InfinitePlace L) :
     (τ • w).comap (algebraMap K L) = w.comap (algebraMap K L) :=
@@ -156,12 +157,16 @@ theorem card_stabilizer_infinitePlace (w : InfinitePlace L) :
   exact Nat.card_congr
     ((IsGaloisGroup.mulEquivAlgEquiv G K L).toEquiv.subtypeEquiv fun _ => Iff.rfl)
 
+omit [NumberField K] [NumberField L] [Fintype G] in
 /-- The chosen place of the orbit of `w` lies above the same place of `K` as `w`. -/
 theorem comap_out_mk (w : InfinitePlace L) :
     (Quotient.mk'' w : MulAction.orbitRel.Quotient G (InfinitePlace L)).out.comap
       (algebraMap K L) = w.comap (algebraMap K L) := by
-  obtain ⟨τ, hτ⟩ := mem_orbit_out (G := G) w
-  rw [← hτ, comap_infinitePlace_smul]
+  obtain ⟨τ, hτ⟩ := MulAction.mem_orbit_iff.mp (mem_orbit_out (G := G) w)
+  have h := comap_infinitePlace_smul K G τ
+    (Quotient.mk'' w : MulAction.orbitRel.Quotient G (InfinitePlace L)).out
+  rw [hτ] at h
+  exact h.symm
 
 /-- The orbits of `G` on the infinite places of `L` are the infinite places of `K`. -/
 def infinitePlaceOrbitEquiv :
@@ -170,7 +175,8 @@ def infinitePlaceOrbitEquiv :
       obtain ⟨τ, hτ⟩ := exists_infinitePlace_smul_eq K G h
       have e : (Quotient.mk'' ω.out : MulAction.orbitRel.Quotient G (InfinitePlace L)) =
           Quotient.mk'' ω'.out :=
-        Quotient.sound' (MulAction.orbitRel_apply.mpr ⟨τ⁻¹, by rw [← hτ, inv_smul_smul]⟩)
+        Quotient.sound' (MulAction.orbitRel_apply.mpr
+          (MulAction.mem_orbit_iff.mpr ⟨τ⁻¹, by rw [← hτ, inv_smul_smul]⟩))
       rwa [Quotient.out_eq', Quotient.out_eq'] at e,
     fun v => by
       haveI := IsGaloisGroup.finiteDimensional G K L
@@ -202,6 +208,7 @@ section Positivity
 variable {K L : Type*} [Field K] [Field L] [NumberField K] [NumberField L] [Algebra K L]
   (G : Type*) [Group G] [Fintype G] [MulSemiringAction G L] [IsGaloisGroup G K L]
 
+omit [NumberField K] [NumberField L] in
 /-- **Norms are positive at the ramified places**: if a complex place of `L` lies above the real
 place `v` of `K`, then `Π_τ τx` is positive at `v`. -/
 theorem embedding_of_isReal_pos_of_eq_prod_smul {v : InfinitePlace K} (hv : v.IsReal)
@@ -246,6 +253,7 @@ theorem embedding_of_isReal_pos_of_eq_prod_smul {v : InfinitePlace K} (hv : v.Is
 
 variable (K L)
 
+omit [NumberField K] [NumberField L] in
 /-- A ramified place of `K` is real. -/
 theorem isReal_of_not_isUnramifiedIn {v : InfinitePlace K} (h : ¬ v.IsUnramifiedIn L) :
     v.IsReal := by
@@ -260,6 +268,7 @@ def ramifiedSign : Kˣ →* ({v : InfinitePlace K // ¬ v.IsUnramifiedIn L} → 
     Pi.evalMonoidHom (fun _ : {w : InfinitePlace K // w.IsReal} => ℤˣ)
       ⟨v.1, isReal_of_not_isUnramifiedIn K L v.2⟩).comp (HeckeLFunctions.signAt K)
 
+omit [NumberField K] [NumberField L] in
 theorem ramifiedSign_apply (α : Kˣ) (v : {v : InfinitePlace K // ¬ v.IsUnramifiedIn L}) :
     ramifiedSign K L α v =
       if 0 < embedding_of_isReal (isReal_of_not_isUnramifiedIn K L v.2) (α : K) then 1 else -1 :=
@@ -271,6 +280,7 @@ def positiveAtRamified : AddSubgroup (Additive Kˣ) :=
 
 variable {K L}
 
+omit [NumberField K] [NumberField L] in
 /-- Norms from `L` are positive at the ramified places. -/
 theorem ramifiedSign_eq_one_of_eq_prod_smul {α : Kˣ} {x : L} (hx : x ≠ 0)
     (h : algebraMap K L (α : K) = ∏ τ : G, τ • x) : ramifiedSign K L α = 1 := by
@@ -278,6 +288,7 @@ theorem ramifiedSign_eq_one_of_eq_prod_smul {α : Kˣ} {x : L} (hx : x ≠ 0)
   rw [ramifiedSign_apply, if_pos (embedding_of_isReal_pos_of_eq_prod_smul G _ v.2 hx h)]
   rfl
 
+omit [NumberField L] in
 variable (L) in
 /-- Every sign pattern at the ramified places is attained by some `1 + N γ`, `γ ∈ 𝓞_K`. -/
 theorem exists_ramifiedSign_eq {N : ℕ} (hN : N ≠ 0)
@@ -317,17 +328,21 @@ attribute [local instance] primeMulAction infinitePlaceMulAction
 
 variable {S : SubMulAction G (HeightOneSpectrum (𝓞 L))} [Fintype S]
 
+omit [Fintype G] in
 /-- A positive integer all of whose multiples in `𝓞_L` have level `J` at `S`. -/
 theorem exists_natCast_mul_mem_level (J : ℕ) : ∃ N : ℕ, N ≠ 0 ∧
     ∀ r : 𝓞 L, algebraMap (𝓞 L) L ((N : 𝓞 L) * r) ∈ level L G S (J : ℤ) := by
-  refine ⟨∏ w : S, (Ideal.absNorm w.1.asIdeal) ^ J, Finset.prod_ne_zero_iff.mpr fun w _ =>
-    pow_ne_zero _ fun h => w.1.ne_bot (Ideal.absNorm_eq_zero_iff.mp h), fun r =>
-    algebraMap_mem_level_of_mem_pow fun w hw => Ideal.mul_mem_right _ _ ?_⟩
-  obtain ⟨c, hc⟩ : (Ideal.absNorm w.asIdeal) ^ J ∣ ∏ w : S, (Ideal.absNorm w.1.asIdeal) ^ J :=
-    Finset.dvd_prod_of_mem (fun w : S => (Ideal.absNorm w.1.asIdeal) ^ J)
+  have hN : ∀ w : S, Ideal.absNorm w.1.asIdeal ^ J ≠ 0 := fun w =>
+    pow_ne_zero _ fun h => w.1.ne_bot (Ideal.absNorm_eq_zero_iff.mp h)
+  have hmem : ∀ w ∈ S, ((∏ w : S, Ideal.absNorm w.1.asIdeal ^ J : ℕ) : 𝓞 L) ∈ w.asIdeal ^ J := by
+    intro w hw
+    have hdvd := Finset.dvd_prod_of_mem (fun w : S => Ideal.absNorm w.1.asIdeal ^ J)
       (Finset.mem_univ (⟨w, hw⟩ : S))
-  rw [hc, Nat.cast_mul, Nat.cast_pow]
-  exact Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (Ideal.absNorm_mem _) J)
+    obtain ⟨c, hc⟩ := hdvd
+    rw [hc, Nat.cast_mul, Nat.cast_pow]
+    exact Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (Ideal.absNorm_mem w.asIdeal) J)
+  exact ⟨_, Finset.prod_ne_zero_iff.mpr fun w _ => hN w, fun r =>
+    algebraMap_mem_level_of_mem_pow fun w hw => Ideal.mul_mem_right _ _ (hmem w hw)⟩
 
 /-- **The index of the positive elements**: with `P` the elements of `K^×` positive at the
 ramified places and `W_k` a congruence subgroup,

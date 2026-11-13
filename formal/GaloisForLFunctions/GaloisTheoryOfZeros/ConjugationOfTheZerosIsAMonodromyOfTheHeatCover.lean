@@ -14,11 +14,10 @@ fibre of the heat cover. This file places them relative to the forward monodromy
   `t'` over which all zeros are real. Transport along `γ` followed by the reversed conjugate
   path carries every zero `z₀` of `H_t` to `z̄₀` (`transports_conj_loop`): the conjugate path
   transports `z̄₀` to the conjugate of the real end point, which is the end point itself.
-  Two real times off the branch times are joined by a forward path
-  (`exists_isForwardPath_ofReal`: an arc through the upper half-plane that misses the finitely
-  many branch times of a box), and all zeros are real at the time `1/8`. Hence the conjugation
-  `fibreConj t` of the fibre over a positive real time `t`, not a branch time, is an element
-  of the forward monodromy group (`fibreConj_mem_forwardMonodromy`).
+  Two forward times off the branch times are joined by a forward path, and all zeros are real
+  at the time `1/8`. Hence the conjugation `fibreConj t` of the fibre over a positive real
+  time `t`, not a branch time, is an element of the forward monodromy group
+  (`fibreConj_mem_forwardMonodromy`).
 * **The Riemann hypothesis** says that this element is the identity at every positive real time
   off the branch times (`riemannHypothesis_iff_fibreConj_eq_one`).
 -/
@@ -87,95 +86,6 @@ theorem transports_conj_loop {γ : ℝ → ℂ} {t t' : ℝ} (hγ : IsForwardPat
   rw [hz₁] at h2
   exact hT.trans h2
 
-/-! ## Real times are joined by forward paths -/
-
-/-- An arc from the real time `t` to the real time `t'` through the upper half-plane. -/
-def arcPath (t t' η : ℝ) (s : ℝ) : ℂ :=
-  (((1 - s) * t + s * t' : ℝ) : ℂ) + I * ((η * (s * (1 - s)) : ℝ) : ℂ)
-
-theorem arcPath_re (t t' η s : ℝ) : (arcPath t t' η s).re = (1 - s) * t + s * t' := by
-  simp [arcPath]
-
-theorem arcPath_im (t t' η s : ℝ) : (arcPath t t' η s).im = η * (s * (1 - s)) := by
-  simp [arcPath]
-
-theorem arcPath_zero (t t' η : ℝ) : arcPath t t' η 0 = t := by simp [arcPath]
-
-theorem arcPath_one (t t' η : ℝ) : arcPath t t' η 1 = t' := by simp [arcPath]
-
-theorem continuous_arcPath (t t' η : ℝ) : Continuous (arcPath t t' η) := by
-  show Continuous fun s : ℝ =>
-    (((1 - s) * t + s * t' : ℝ) : ℂ) + I * ((η * (s * (1 - s)) : ℝ) : ℂ)
-  fun_prop
-
-/-- An arc of height at most one between positive real times lies in a box of forward times. -/
-theorem arcPath_mem_box {t t' η s : ℝ} (ht : 0 < t) (ht' : 0 < t') (hη : η ∈ Ioc (0 : ℝ) 1)
-    (hs : s ∈ Icc (0 : ℝ) 1) :
-    min t t' ≤ (arcPath t t' η s).re ∧ ‖arcPath t t' η s‖ ≤ max t t' + 1 := by
-  have h1 : min t t' ≤ (1 - s) * t + s * t' :=
-    le_convexCombo hs.1 hs.2 (min_le_left _ _) (min_le_right _ _)
-  have h2 : (1 - s) * t + s * t' ≤ max t t' :=
-    convexCombo_le hs.1 hs.2 (le_max_left _ _) (le_max_right _ _)
-  have h3 : 0 ≤ s * (1 - s) := mul_nonneg hs.1 (by linarith [hs.2])
-  have h4 : s * (1 - s) ≤ 1 := by
-    have := mul_le_mul hs.2 (by linarith [hs.1] : 1 - s ≤ 1) (by linarith [hs.2]) zero_le_one
-    linarith
-  have h5 : η * (s * (1 - s)) ≤ 1 := by
-    have := mul_le_mul hη.2 h4 h3 zero_le_one
-    linarith
-  have h6 : 0 ≤ η * (s * (1 - s)) := mul_nonneg hη.1.le h3
-  have hmin := lt_min ht ht'
-  refine ⟨by rw [arcPath_re]; exact h1, ?_⟩
-  have := Complex.norm_le_abs_re_add_abs_im (arcPath t t' η s)
-  rw [arcPath_re, arcPath_im, abs_of_nonneg (by linarith), abs_of_nonneg h6] at this
-  linarith
-
-/-- **Two positive real times off the branch times are joined by a forward path.** The arcs
-of different heights meet only at their ends, and a box contains finitely many branch times, so
-some arc avoids them. -/
-theorem exists_isForwardPath_ofReal {t t' : ℝ} (ht : 0 < t) (ht' : 0 < t')
-    (hb : (t : ℂ) ∉ branchTimes) (hb' : (t' : ℂ) ∉ branchTimes) :
-    ∃ γ, IsForwardPath γ ∧ γ 0 = t ∧ γ 1 = t' := by
-  rcases eq_or_ne t t' with rfl | hne
-  · exact ⟨fun _ => (t : ℂ), IsForwardPath.const (by rw [Complex.ofReal_re]; exact ht) hb,
-      rfl, rfl⟩
-  have hfin := finite_branchTimes_box (t₀ := min t t') (max t t' + 1) (lt_min ht ht')
-  have hex : ∃ η ∈ Ioc (0 : ℝ) 1, ∀ s ∈ Icc (0 : ℝ) 1, arcPath t t' η s ∉ branchTimes := by
-    by_contra hcon
-    push_neg at hcon
-    choose! σ hσ using hcon
-    have hmaps : MapsTo (fun η => arcPath t t' η (σ η)) (Ioc (0 : ℝ) 1)
-        {τ : ℂ | τ ∈ branchTimes ∧ min t t' ≤ τ.re ∧ ‖τ‖ ≤ max t t' + 1} :=
-      fun η hη => ⟨(hσ η hη).2, arcPath_mem_box ht ht' hη (hσ η hη).1⟩
-    have hinj : InjOn (fun η => arcPath t t' η (σ η)) (Ioc (0 : ℝ) 1) := by
-      intro η hη η' _ hff
-      have hff' : arcPath t t' η (σ η) = arcPath t t' η' (σ η') := hff
-      have hre := congrArg Complex.re hff'
-      have him := congrArg Complex.im hff'
-      rw [arcPath_re, arcPath_re] at hre
-      rw [arcPath_im, arcPath_im] at him
-      have hσeq : σ η' = σ η := by
-        have h1 : (σ η - σ η') * (t' - t) = 0 := by linear_combination hre
-        rcases mul_eq_zero.1 h1 with h | h
-        · linarith
-        · exact absurd (by linarith) hne
-      rw [hσeq] at him
-      have h2 : (η - η') * (σ η * (1 - σ η)) = 0 := by linear_combination him
-      rcases mul_eq_zero.1 h2 with h | h
-      · linarith
-      · exfalso
-        have hmem := (hσ η hη).2
-        rcases mul_eq_zero.1 h with h0 | h1
-        · rw [h0, arcPath_zero] at hmem
-          exact hb hmem
-        · rw [show σ η = 1 by linarith, arcPath_one] at hmem
-          exact hb' hmem
-    exact Set.infinite_of_injOn_mapsTo hinj hmaps (Ioc_infinite zero_lt_one) hfin
-  obtain ⟨η, hη, hgood⟩ := hex
-  exact ⟨arcPath t t' η, ⟨(continuous_arcPath t t' η).continuousOn,
-    fun s hs => (lt_min ht ht').trans_le (arcPath_mem_box ht ht' hη hs).1, hgood⟩,
-    arcPath_zero t t' η, arcPath_one t t' η⟩
-
 /-! ## Conjugation in the forward monodromy group -/
 
 /-- A real time `t ≥ 1/8` is not a branch time: all zeros of `H_t` are simple. -/
@@ -192,7 +102,8 @@ theorem ofReal_not_mem_branchTimes_of_eighth_le {t : ℝ} (ht : 1 / 8 ≤ t) :
 the conjugation `z ↦ z̄` of the zeros of `H_t` is the transport along a loop of forward times. -/
 theorem fibreConj_mem_forwardMonodromy {t : ℝ} (ht : 0 < t) (hb : (t : ℂ) ∉ branchTimes) :
     fibreConj t ∈ forwardMonodromy (t : ℂ) (by rw [Complex.ofReal_re]; exact ht) hb := by
-  obtain ⟨γ, hγ, h0, h1⟩ := exists_isForwardPath_ofReal ht (by norm_num : (0 : ℝ) < 1 / 8) hb
+  obtain ⟨γ, hγ, h0, h1⟩ := exists_isForwardPath (τ := (t : ℂ)) (τ' := ((1 / 8 : ℝ) : ℂ))
+    (by rw [Complex.ofReal_re]; exact ht) (by rw [Complex.ofReal_re]; norm_num) hb
     (ofReal_not_mem_branchTimes_of_eighth_le le_rfl)
   have hreal : ∀ z : ℂ, complexHeat ((1 / 8 : ℝ) : ℂ) z = 0 → z.im = 0 := fun z hz => by
     rw [complexHeat_ofReal] at hz
@@ -223,7 +134,7 @@ theorem riemannHypothesis_iff_fibreConj_eq_one :
     obtain ⟨t, ht, htb⟩ : ∃ t ∈ Icc (newmanConstant / 4) (newmanConstant / 2),
         (t : ℂ) ∉ branchTimes := by
       by_contra hall
-      push_neg at hall
+      push Not at hall
       have hfin := finite_branchTimes_box (t₀ := newmanConstant / 4) (newmanConstant / 2)
         (by linarith)
       have hsub : Complex.ofReal '' Icc (newmanConstant / 4) (newmanConstant / 2) ⊆

@@ -33,8 +33,10 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
   `L`-series (`agz-artin-map-on-ideals`)
 - [x] G4 first inequality: `[I^𝔪 : P_𝔪 N(I_L^𝔪)] ≤ [L:K]`, for every finite `L/K`
   (`agz-norm-index-inequality`, from the Mertens bounds of the ray class characters)
-- [ ] G5 second inequality for cyclic `L/K`: `[K^× : K_{𝔪,1} N(L^×) K_S] ≥ [L : K]` for a
-  suitable `(S, 𝔪)`
+- [x] G5 second inequality for cyclic `L/K`: `[L : K]` divides
+  `[K^× : N(L^×) · (K^× ∩ W_k ∩ P) · K_S]`, `P` the elements positive at the ramified places
+  (`card_dvd_index_norm_sup_congruence_sup_sUnits`,
+  `RHTower/Artin/TheDegreeDividesTheNormIndexOfACyclicExtension`)
   - [x] G5a index calculus of a pair of endomorphisms `f g = g f = 0` (Herbrand quotient)
     (`agz-herbrand-quotient-of-units`)
   - [x] G5b units: `n · h_f(E_L) · h_g(ℤ^X) = h_f(ℤ^X) · h_g(E_L)`, `X` the infinite places of `L`
@@ -42,7 +44,7 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
   - [x] G5c `S`-units: `n · [K_S : N L_S] = Π_ω |G_ω|` (orbits on `X` and on `S`), from
     `H¹(G, L_S) = 0`; such `S` exist above every finite set of primes of `K`
     (`agz-norm-index-of-s-units`)
-  - [ ] G5d semi-local norm index: a `G`-stable congruence subgroup `W ⊂ L^×` at `S` with
+  - [x] G5d semi-local norm index: a `G`-stable congruence subgroup `W ⊂ L^×` at `S` with
     `H¹(G, W) = 0`; then `Π_{ω ⊂ S} |G_ω|` divides `[K^× : (K ∩ W) N(L^×)]`
     - [x] G5d1 permutation modules: `H¹(G, ℤ^X) = 0`, `|Ĥ⁰(G, ℤ^X)| = Π_ω |G_ω|`
       (`agz-norm-index-of-s-units`)
@@ -52,8 +54,11 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
     - [x] G5d4 `[L^{(S)} : W_k] < ∞` (`relIndex_congruenceSubgroup_ker_divMap_ne_zero`)
     - [x] G5d5 `[K^× : (K ∩ W_k) N(L^×)] = Π_{ω ⊂ S} |G_ω| · h_g(L^×/W_k)`
       (`relIndex_range_actionNorm_sup_range_baseIncl`)
-    - [ ] G5d6 signs: the factor `Π_{ω ⊂ X} |G_ω| = 2^ρ`
-  - [ ] G5e assembly
+    - [x] G5d6 signs: `[N L^× (K ∩ W_k) : N L^× (K ∩ W_k ∩ P)] = Π_{ω ⊂ X} |G_ω| = 2^ρ`
+      (`relIndex_norm_sup_congruence_inf_positive`, `prod_card_stabilizer_infinitePlace`,
+      `RHTower/Artin/NormsArePositiveAtTheRamifiedRealPlaces`)
+  - [x] G5e assembly: `[K^× : U] = n · h_g(L^×/W_k) · [K_S ∩ V₁ : N L_S]`
+    (`dvd_index_sup_of_relIndex`)
 - [ ] G6 `ker Θ_S ⊂ K_{𝔪,1} N(L^×) K_S` for cyclic `L/K` (crossing with cyclotomic extensions)
   - [ ] G6a kernel for extensions inside `F(ζ_m)`: `ker ω = P_𝔫 N` for every multiple `𝔫` of `m ∞`
   - [ ] G6b transfer: `ω_{L/K}(N_{F/K} 𝔟) = ω_{LF/F}(𝔟)|_L`
@@ -110,12 +115,19 @@ number), so with G5b and G5d1: `n · h_f(L_S) = Π_{ω ⊂ X} |G_ω| · Π_{ω �
   `h_f(A') = [K^× : (K ∩ W_k) N(L^×)]`. The valuations `A' → ℤ^S` have finite kernel
   `L^{(S)} / W_k` and image of finite index, so `h_f(A') = Π_{ω ⊂ S} |G_ω| · h_g(A')` (G5d1).
   No finiteness of `h_g(A')` is used; it follows in G5e from `[K^× : U] < ∞`.
-- *Signs.* For an orbit `ω ⊂ X` with `|G_ω| = 2` the place `w ∈ ω` is complex over a real place
-  of `K`; norms are positive there, and `K ∩ W_k` contains elements of every sign pattern.
+- *Signs.* The orbits on `X` are the infinite places of `K`; `|G_ω| = 2` exactly at the `ρ`
+  places `v` with a complex place `w = |ψ|` above a real one. There complex conjugation on `ψ(L)`
+  is an involution `c ∈ G`, `ψ(τx) ψ(cτx) = |ψ(τx)|²`, so norms are positive at `v`. For `N ≥ 1`
+  every sign pattern at the real places is attained by some `1 + Nγ`, `γ ∈ 𝓞_K` (weak
+  approximation, then a denominator is cleared), and `1 + Nγ ∈ W_k` for `N` a high power of the
+  norms of the primes of `S`. With `P` the elements positive at the `ρ` places:
+  `[N L^× (K ∩ W_k) : N L^× (K ∩ W_k ∩ P)] = 2^ρ`.
 
-**G5e.** `V = K_{𝔪,1} N(L^×) ⊂ (K ∩ W_k)_+ N(L^×)`, so `Π_{ω ⊂ X ⊔ S} |G_ω|` divides
-`[K^× : V] = [K^× : U] · [U : V]`, and `[U : V] = [K_S : K_S ∩ V]` divides
-`[K_S : N L_S] = Π_ω |G_ω| / n`.
+**G5e.** `V₀ = N(L^×)(K ∩ W_k)`, `V₁ = N(L^×)(K ∩ W_k ∩ P)`, `U = V₁ K_S`. Then
+`[K^× : V₁] = Π_S h_g · 2^ρ = [K^× : U] · [K_S : K_S ∩ V₁]` and
+`n · [K_S : K_S ∩ V₁] · [K_S ∩ V₁ : N L_S] = 2^ρ Π_S`, hence
+`[K^× : U] = n · h_g · [K_S ∩ V₁ : N L_S]`. No finiteness is assumed: the identities hold with
+the value `0` for an infinite index.
 
 **G6.** Let `α ∈ ker Θ_S`, `𝔞 = Π 𝔭_i^{a_i}` its divisor outside `S`, `ω(𝔭_i) = σ^{d_i}`. For each
 `i` take `m_i` (prime to `S`, to the `𝔭_j` and to each other) with `n | ord_{m_i}(N𝔭_i)` and
@@ -131,4 +143,4 @@ for `LF_i/F_i`). Choose `𝔟` in the compositum `F` with `ω_{LF/F}(𝔟)|_L = 
 
 ## Log
 - 2026-11-13 — created; cyclotomic case formalized and moved to its own card
-- 2026-11-13 — G5a–G5c, G5d1–G5d5 formalized
+- 2026-11-13 — G5 formalized (G5a–G5e)
