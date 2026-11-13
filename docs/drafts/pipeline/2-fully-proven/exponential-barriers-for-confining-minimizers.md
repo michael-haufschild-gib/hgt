@@ -166,7 +166,9 @@ also `L²`. Two of sixteen supporting modules are audited and wired.
 `ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
 negation invariance, the full-line weak row identity, vanishing of a high
 positive level, the two-sided envelope, and exponential square moments
-below order `15`. The complete prime and Gamma comparisons are also written
+below order `15`. Its final existence theorem is
+`exists_exponentially_bounded_halfLineEnergyMinimizer`.
+The complete prime and Gamma comparisons are also written
 but unaudited. No barrier theorem or contribution is counted yet.
 
 ## Boundary implication and limit

@@ -18,27 +18,37 @@ of `φ(s)` in `Re s < ½`; for congruence groups these are `ρ/2` for the zeros 
 many zeros off the line. A finite stratum needs a compact surface. A periodic model (Ihara zeta of a
 non-Ramanujan graph, a "virtual curve") has a finite stratum only modulo the period `2πi/log q`.
 
-## Plan (dependency order)
-1. **Surface.** An explicit cocompact torsion-free `Γ ⊂ SL(2, ℝ)` with a compact fundamental set
-   `K ⊂ ℍ` (every orbit meets `K`) and discreteness. Candidates: the unit group of a maximal order
-   of an indefinite division quaternion algebra over `ℚ` (discreteness from integrality,
-   compactness from anisotropy + Minkowski), passing to a torsion-free congruence subgroup; or the
-   regular-octagon genus-2 group (Poincaré polygon theorem).
-2. **Spectral theory.** For compactly supported `C^∞` point-pair profiles `k`, the automorphic kernel
-   `K(z, w) = Σ_γ k(u(z, γw))` is continuous on `X × X`; `L_k` is a compact self-adjoint
-   (Hilbert–Schmidt) operator on `L²(X)` (corpus: `HTGeometry` Hilbert–Schmidt and trace machinery,
-   `RHTower/HyperbolicPointPair` point-pair principle, `RepPointPair*`). Joint eigenbasis of the
-   commuting `L_k`; eigenfunctions are Laplace eigenfunctions with `L_k u = h(r) u` (Selberg
-   transform); the spectrum `λ_j = ¼ + r_j²` is discrete with `λ_j → ∞`.
-3. **Trace formula.** `Σ_j h(r_j) = |X|/(4π) ∫ h(r) r tanh(πr) dr + Σ_{γ} ℓ(γ₀) g(ℓ(γ))/(2 sinh(ℓ(γ)/2))`
-   for `g` smooth compactly supported, via `tr L_{k₁} L_{k₂} = ∫_X K(z, z)` and hyperbolic orbital
-   integrals; then for the resolvent test functions by approximation.
-4. **Small eigenvalue.** A cyclic cover `X_n → X` along a non-separating closed geodesic has
-   `λ₁(X_n) → 0` (test function constant on `n − 1` sheets, linear across one collar; min–max).
-5. **Selberg zeta.** Euler product convergence on `Re s > 1` (prime geodesic count from the trace
-   formula), `Z′/Z(s)/(2s−1) − Z′/Z(a)/(2a−1) = Σ_j [1/(λ_j − s(1−s)) − 1/(λ_j − a(1−a))] + (identity
-   terms)`, entire continuation, zeros with multiplicities, the functional equation from the
-   symmetry of the identity term.
+## Route (no Laplacian)
+The spectrum is read off the resolvent operators alone. For real `s > 1` let
+`k_s(u) = (1/4π) ∫_u^∞ ρ(w)^{2s−1} (w(1+w))^{−½} (w−u)^{−½} dw`, `ρ(w) = √(1+w) − √w` (the Green
+function `Q_{s−1}(1+2u)/2π`, defined as an inverse Abel transform). Then
+- *Abel transform:* `𝒜k_s(x) = e^{−(s−½)|x|}/(2s−1)` (Fubini and `∫_v^w (w−u)^{−½}(u−v)^{−½} du = π`).
+- *Resolvent identity:* `k_s ⋆ k_a = (k_a − k_s)/(s(s−1) − a(a−1))` as point-pair kernels: the Abel
+  transform turns `⋆` on `ℍ` into convolution on `ℝ` (horocycle slices), exponentials convolve
+  explicitly, and `𝒜` is injective (`𝒜𝒜k(v) = π∫_v^∞ k`).
+- *Operators:* on a cocompact free `Γ`, `T_s = L_{k_s}` is Hilbert–Schmidt on `L²(F)`, self-adjoint,
+  `T_s T_a = (T_a − T_s)/(s(s−1) − a(a−1))`. An eigenvector of `T_a` with eigenvalue `μ ≠ 0` has
+  `T_s e = e/(λ + s(s−1))`, `λ := 1/μ − a(a−1)`; boundedness of every `T_s` (`s > 1`) forces `λ ≥ 0`.
+- *Trace:* `K_a − K_s` (`s > a`) is continuous and positive, so Mercer gives
+  `Σ_j (h_a − h_s)(λ_j) = vol·(k_a − k_s)(0) + Σ_{[γ]} ℓ₀ (𝒜k_a − 𝒜k_s)(ℓ)/(2 sinh(ℓ/2))`, i.e.
+  `Φ(s)/(2s−1) = Φ(a)/(2a−1) + vol·(k_a−k_s)(0) − Σ_j (h_a − h_s)(λ_j)`, `Φ = Z′/Z`,
+  `(k_a − k_s)(0) = (1/2π) Σ_k (1/(s+k) − 1/(a+k))`.
+- *Zeta:* the right side continues `Φ` meromorphically with simple poles of residue `m_j` at
+  `s(s−1) = −λ_j`; `Z = s(s−1)·Π_{λ_j>0}(1 + s(s−1)/λ_j)e^{−s(s−1)/λ_j}·e^{H(s)}` on `Re s > 0`,
+  `H` a primitive of the holomorphic rest; `Z(1−s)/Z(s) = exp(vol ∫_0^{s−½} v tan πv dv)` from
+  `Σ_k (1/(s+k) − 1/(1−s+k)) = π cot πs`.
+- *Small eigenvalue:* on `Γ_n = {χ ∈ 2nℤ}` the test field `e^{2πiθ/2n}` has
+  `⟨T_a F, F⟩ ≥ (m_a − C/n²)‖F‖²`, `m_a = 1/(a(a−1))`; the top eigenvalue of `T_a` on `1^⊥` then
+  exceeds `1/(a(a−1)+¼)`, i.e. `λ < ¼`; `k_a > 0` gives ergodicity, so `λ > 0`.
+
+## Modules (folder `CompactHyperbolicSurfaces/`)
+1. cocompact free groups: counting `#{γ : u(z,γw) ≤ R} ≤ C(1+R)`, fundamental set, unfolding;
+2. the quaternion group `Γ(23) ⊂ O¹`, `O = {[[α, 3β],[β′, α′]] : α, β ∈ ℤ[√2]}`: discrete, cocompact
+   (Minkowski), free;
+3. walls and `χ : Γ(23) → ℤ` with `χ(u₀) = ±2`;
+4. resolvent kernels and Abel calculus; 5. operators, resolvent identity, spectrum;
+6. Mercer trace; 7. conjugacy classes, orbital integrals, trace formula; 8. Selberg zeta;
+9. small eigenvalue on `Γ_n`; 10. assembly.
 
 ## Step 1 in detail: an explicit cocompact group (paper)
 `B = (2, 3)_ℚ` is a division algebra: `x₀² − 2x₁² − 3x₂² + 6x₃² = 0` in integers forces `3 | x₀, x₁`

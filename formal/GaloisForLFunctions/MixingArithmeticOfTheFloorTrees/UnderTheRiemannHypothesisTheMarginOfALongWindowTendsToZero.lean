@@ -162,16 +162,18 @@ theorem integral_threeSpread_sq (hβ : ContDiff ℝ 2 β) (hβs : ∀ v, 1 < |v|
     ∫ u, threeSpread β L d c₀ c₁ c₂ u ^ 2 =
       (c₀ ^ 2 + c₁ ^ 2 + c₂ ^ 2) * (L * ∫ v, β v ^ 2) := by
   have hL3 : 0 < 3 * L := by linarith
-  have h01 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d) (e := d + 3 * L)
-    (show |d - (d + 3 * L)| = 3 * L by
-      rw [show d - (d + 3 * L) = -(3 * L) by ring, abs_neg, abs_of_pos hL3]).ge
+  have e3 : |d - (d + 3 * L)| = 3 * L := by
+    rw [show d - (d + 3 * L) = -(3 * L) by ring, abs_neg, abs_of_pos hL3]
+  have e6 : |d - (d + 6 * L)| = 6 * L := by
+    rw [show d - (d + 6 * L) = -(6 * L) by ring, abs_neg, abs_of_pos (by linarith)]
+  have e36 : |d + 3 * L - (d + 6 * L)| = 3 * L := by
+    rw [show d + 3 * L - (d + 6 * L) = -(3 * L) by ring, abs_neg, abs_of_pos hL3]
+  have h01 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d) (e := d + 3 * L) e3.ge
   have h02 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d) (e := d + 6 * L)
-    (by rw [show d - (d + 6 * L) = -(6 * L) by ring, abs_neg, abs_of_pos (by linarith)]; linarith)
-  have h12 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d + 3 * L) (e := d + 6 * L)
-    (show |d + 3 * L - (d + 6 * L)| = 3 * L by
-      rw [show d + 3 * L - (d + 6 * L) = -(3 * L) by ring, abs_neg, abs_of_pos hL3]).ge
+    (by rw [e6]; linarith)
+  have h12 := spreadTest_mul_eq_zero (β := β) hβs hL (d := d + 3 * L) (e := d + 6 * L) e36.ge
   have hpt : ∀ u, threeSpread β L d c₀ c₁ c₂ u ^ 2 =
-      c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 +
+      (c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
         c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 := fun u => by
     have e : threeSpread β L d c₀ c₁ c₂ u ^ 2 =
         c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 +
@@ -193,10 +195,21 @@ theorem integral_threeSpread_sq (hβ : ContDiff ℝ 2 β) (hβs : ∀ v, 1 < |v|
     (hint _).const_mul _
   have i01 : Integrable fun u =>
       c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 := i0.add i1
-  simp only [hpt]
-  rw [integral_add i01 i2, integral_add i0 i1, integral_const_mul, integral_const_mul,
-    integral_const_mul, integral_spreadTest_sq β hL, integral_spreadTest_sq β hL,
-    integral_spreadTest_sq β hL]
+  have hsum : ∫ u, threeSpread β L d c₀ c₁ c₂ u ^ 2 =
+      ∫ u, (c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
+        c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 :=
+    integral_congr_ae (Filter.Eventually.of_forall hpt)
+  have hA : ∫ u, (c₀ ^ 2 * spreadTest β L d u ^ 2 +
+        c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) + c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 =
+      (∫ u, c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2) +
+        ∫ u, c₂ ^ 2 * spreadTest β L (d + 6 * L) u ^ 2 := integral_add i01 i2
+  have hB : ∫ u, c₀ ^ 2 * spreadTest β L d u ^ 2 + c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 =
+      (∫ u, c₀ ^ 2 * spreadTest β L d u ^ 2) +
+        ∫ u, c₁ ^ 2 * spreadTest β L (d + 3 * L) u ^ 2 := integral_add i0 i1
+  have hc : ∀ (c e : ℝ), ∫ u, c ^ 2 * spreadTest β L e u ^ 2 = c ^ 2 * (L * ∫ v, β v ^ 2) :=
+    fun c e => (integral_const_mul (c ^ 2) fun u => spreadTest β L e u ^ 2).trans
+      (congrArg (c ^ 2 * ·) (integral_spreadTest_sq β hL e))
+  rw [hsum, hA, hB, hc c₀ d, hc c₁ (d + 3 * L), hc c₂ (d + 6 * L)]
   ring
 
 /-- The transform of three copies is the combination of their transforms. -/
@@ -338,9 +351,7 @@ theorem re_zetaW_threeSpread_le (hRH : RiemannHypothesis) (hβ : ContDiff ℝ 2 
     _ = 3 * (c₀ ^ 2 + c₁ ^ 2 + c₂ ^ 2) * N ^ 2 / L ^ 2 / (1 + r ^ 2) := by
         have hLne : L ≠ 0 := hL0.ne'
         have hr0 : (1 + r ^ 2) ≠ 0 := by positivity
-        first
-          | (field_simp; ring)
-          | field_simp
+        field_simp
 
 /-! ### The plane of vanishing first charge -/
 

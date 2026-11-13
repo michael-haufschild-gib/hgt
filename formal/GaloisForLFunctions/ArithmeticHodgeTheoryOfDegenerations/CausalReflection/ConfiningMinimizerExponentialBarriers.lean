@@ -212,7 +212,7 @@ theorem IsHalfLineEnergyMinimizer.integrable_exponential_square {R : ℝ} (hR : 
   · rw [hF.1.support u (lt_of_not_ge hu0).le, zero_pow two_ne_zero, zero_mul,
       negativeHalfLineExponentialBarrier, indicator_of_notMem hu0, mul_zero]
 
-/-- Every positive confinement has an actual normalized minimizer with all sub-fifteen square moments. -/
+/-- Every positive confinement has a normalized minimizer with square moments of every order below fifteen. -/
 theorem exists_exponentially_bounded_halfLineEnergyMinimizer {R : ℝ} (hR : 0 < R) :
     ∃ F : ℝ → ℝ, IsHalfLineEnergyMinimizer R F ∧
       (∀ β : ℝ, 1 / 2 < β → β < 15 / 2 →

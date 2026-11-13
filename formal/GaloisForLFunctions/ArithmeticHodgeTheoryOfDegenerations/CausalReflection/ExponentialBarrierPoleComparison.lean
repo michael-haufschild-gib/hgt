@@ -68,11 +68,11 @@ theorem halfLine_polarMixedForm_lower (F : ℝ → ℝ) {G : ℝ → ℝ}
   have h₁ : |2 * coshHalfMoment F * coshHalfMoment G| ≤
       2 * |coshHalfMoment F| * (∫ u, G u * Real.exp (-(u / 2))) := by
     simpa only [abs_mul, abs_of_pos htwo] using
-      mul_le_mul_of_nonneg_left hc (mul_nonneg htwo.le (abs_nonneg _))
+      mul_le_mul_of_nonneg_left hc (mul_nonneg htwo.le (abs_nonneg (coshHalfMoment F)))
   have h₂ : |2 * sinhHalfMoment F * sinhHalfMoment G| ≤
       2 * |sinhHalfMoment F| * (∫ u, G u * Real.exp (-(u / 2))) := by
     simpa only [abs_mul, abs_of_pos htwo] using
-      mul_le_mul_of_nonneg_left hs (mul_nonneg htwo.le (abs_nonneg _))
+      mul_le_mul_of_nonneg_left hs (mul_nonneg htwo.le (abs_nonneg (sinhHalfMoment F)))
   have hsum := (abs_sub (2 * coshHalfMoment F * coshHalfMoment G)
     (2 * sinhHalfMoment F * sinhHalfMoment G)).trans (add_le_add h₁ h₂)
   calc

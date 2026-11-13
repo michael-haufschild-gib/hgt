@@ -129,12 +129,16 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem {F : �
     simpa only [Real.dist_eq, NNReal.coe_one, one_mul] using abs_max_sub_max_le_abs x y 0
   have hGm : Measurable (exponentialBarrierPositiveLevel β t F) :=
     hUm.max measurable_const
+  have hGγ := integrable_gammaBracket_comp_contraction
+    (F := U) (T := fun x : ℝ => max x 0) hUm hU1 hU2 hUγ hpos (by norm_num)
+  have hcomp : (fun x : ℝ => max x 0) ∘ U = exponentialBarrierPositiveLevel β t F := rfl
+  rw [hcomp] at hGγ
   have hb := exponentialBarrierPositiveLevel_le_abs ht β F
   have hsq (u : ℝ) : exponentialBarrierPositiveLevel β t F u ^ 2 ≤ F u ^ 2 := by
     have hh := mul_nonneg (sub_nonneg.mpr (hb u).2)
-      (add_nonneg (abs_nonneg _) (hb u).1)
+      (add_nonneg (abs_nonneg (F u)) (hb u).1)
     nlinarith only [hh, sq_abs (F u)]
-  refine ⟨hGm, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨hGm, ?_, ?_, ?_, ?_, hGγ⟩
   · refine hF.integrable.norm.mono' hGm.aestronglyMeasurable (Eventually.of_forall fun u => ?_)
     rw [Real.norm_eq_abs, abs_of_nonneg (hb u).1, Real.norm_eq_abs]
     exact (hb u).2
@@ -150,7 +154,6 @@ theorem CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem {F : �
     rw [exponentialBarrierPositiveLevel, hF.support u hu, zero_sub]
     exact max_eq_right (neg_nonpos.mpr (mul_nonneg ht
       (negativeHalfLineExponentialBarrier_nonneg β u)))
-  · exact integrable_gammaBracket_comp_contraction hUm hU1 hU2 hUγ hpos (by norm_num)
 
 #print axioms CriticalHalfLineEnergyDomain.exponentialBarrierPositiveLevel_mem
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
