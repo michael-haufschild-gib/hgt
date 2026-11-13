@@ -27,7 +27,7 @@ reductions "X ⇒ RH" with X weaker than the known equivalents.
 - [x] margin rate `θ < ½` ⇒ zero width `≤ θ`, at infinite and at finite block size
 - [x] dilation process on `(1, Q]` has no gap, for every `Q`
 - [x] curvature of the floor trees is exactly zero (`CD(0,∞)`, no `CD(κ,∞)` with `κ > 0`)
-- [ ] README rewritten as a foundational document (mechanisms grouped by idea, not by module)
+- [x] foundational README
 
 ## Approach
 Folder `formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/`, umbrella

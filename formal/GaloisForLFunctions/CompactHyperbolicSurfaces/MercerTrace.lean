@@ -355,7 +355,7 @@ include ha in
 theorem continuous_diffKer_diag (hab : a < b) : Continuous fun z => X.diffKer a b z z := by
   have h := (X.continuous_diffKer ha hab).comp (continuous_id.prodMk continuous_id :
     Continuous fun z : ℍ => (z, z))
-  simpa only [Function.comp_def] using h
+  simpa only [Function.comp_def, id] using h
 
 /-- **The trace of `P = T_a − T_b`.**  `Σ_j ν_j = ∫_F K(z, z) dz`. -/
 theorem hasSum_nu (hab : a < b) :

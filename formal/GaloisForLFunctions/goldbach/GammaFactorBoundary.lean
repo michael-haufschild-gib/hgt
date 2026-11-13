@@ -36,7 +36,7 @@ theorem signedBetaGammaFactor_twice (t : ℂ) :
 /-- Reflection in the argument inverts the scalar quotient, including its totalized values. -/
 theorem signedBetaGammaFactor_neg (s : ℂ) :
     signedBetaGammaFactor (-s) = (signedBetaGammaFactor s)⁻¹ := by
-  simp only [signedBetaGammaFactor, sub_neg_eq_add, add_neg_eq_sub, inv_div]
+  simp only [signedBetaGammaFactor, sub_neg_eq_add, ← sub_eq_add_neg, inv_div]
 
 /-- The Gamma quotient is unimodular on the entire imaginary axis. -/
 theorem norm_signedBetaGammaFactor_axis (t : ℝ) :
@@ -59,8 +59,11 @@ theorem signedBetaGammaFactor_axis_mul_norm (t : ℝ) (z : ℂ) :
 theorem measurable_signedBetaGammaFactor_axis :
     Measurable (fun t : ℝ => signedBetaGammaFactor ((t : ℂ) * I)) := by
   have hg : Measurable Complex.Gamma := by
-    simpa only [reciprocalGammaEntire, inv_inv] using
-      contDiff_reciprocalGammaEntire.continuous.measurable.inv
+    have he : (fun z : ℂ => (reciprocalGammaEntire z)⁻¹) = Complex.Gamma := by
+      funext z
+      simp only [reciprocalGammaEntire, inv_inv]
+    rw [← he]
+    exact contDiff_reciprocalGammaEntire.continuous.measurable.inv
   exact (hg.comp (by fun_prop)).div (hg.comp (by fun_prop))
 
 /-- The literal signed-Beta factor gives a phase for every measure on the real axis. -/
