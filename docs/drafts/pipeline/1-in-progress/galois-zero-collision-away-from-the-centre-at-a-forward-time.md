@@ -41,11 +41,13 @@ Saddle parameter `a = σ + iη`, `δ = π/4 − η`:
    `H_τ(z) = h(τ,z) + h(τ,−z)` and
    `h(τ,z) = i∫_0^η Φ(iv) e^{−τv² − zv} dv + ∫_0^∞ Φ(s+iη) e^{τ(s+iη)² + iz(s+iη)} ds`.
 2. (Laplace.) Let `P, τ, κ ∈ ℂ`, `p = Re P ≥ 18`, `0 ≤ 8 Re τ ≤ p`, `|κ| ≤ 6`, `λ = 2P − τ`. Then
-   `|∫_{−1/2}^∞ e^{κv + Pψ(v) + τv²} dv − (π/λ)^{1/2}| ≤ C(1 + |P|/p)/p`, `C` absolute.
-3. (Bulk.) On `Ω(σ₀)`, `|z| ≤ 1`:
-   `|i∫_0^η Φ(iv)e^{−τv²−zv}dv − B₀(a)/2| ≤ C σ⁵ e^{−2σ}`.
-4. (Saddle.) On `Ω(σ₀)`, `|z||a| ≤ 8`:
-   `|∫_0^∞ Φ(s+iη)e^{τ(s+iη)²+iz(s+iη)}ds − S₀(a)e^{iza}| ≤ Cσ⁵e^{−σ}(|S₀(a)| + |B₀(a)|)`.
+   `|∫_{−1}^∞ e^{κv + Pψ(v) + τv²} dv − (π/λ)^{1/2}| ≤ 64e⁴(1 + |P|/p)/p`.
+3. (Bulk.) For `Re τ > 0`, `1/2 ≤ η < π/4`, `|z| ≤ 1`:
+   `|i∫_0^η Φ(iv)e^{−τv²−zv}dv − (iΦ(0)/2)(π/τ)^{1/2}| ≤ C(1 + K_η)/Re τ`, `K_η` the constant of
+   the strip bound `|Φ(x)| ≤ K_η e^{Re x/2}` on `|Im x| ≤ η`, `Re x ≥ 0`.
+4. (Saddle.) For `Re a ≥ 1`, `0 ≤ Im a < π/4`, `p ≥ 18`, `0 ≤ 8 Re τ ≤ p`, `|z| ≤ 1`,
+   `|z| Re a ≤ 8`:
+   `|∫_0^∞ Φ(s+iη)e^{τ(s+iη)²+iz(s+iη)}ds − S₀(a)e^{iza}| ≤ leftErr(a) + e^{Re f(a) − Im(za)} saddleErr(a)`.
 5. (Model.) On `Ω(σ₀)`, `|ζ| ≤ 8`:
    `|H_{τ(a)}(ζ/a) − B₀(a) − 2S₀(a) cos ζ| ≤ Cσ⁵e^{−σ}(|B₀(a)| + |S₀(a)|)`.
 6. (Collision.) There are `τ`, `ζ ≠ 0` with `Re τ > 0`, `H_τ(ζ) = H_τ'(ζ) = 0`.
@@ -57,62 +59,85 @@ Saddle parameter `a = σ + iη`, `δ = π/4 − η`:
 1. `Φ` is even, so `∫_{−∞}^0 = h(τ,−z)`. Cauchy on the rectangle `[0,N] × [0,η]` for
    `F(x) = Φ(x)e^{τx²+izx}`; on the strip `|Φ(x)| ≤ K e^{Re x/2} e^{−a' e^{2 Re x}}`,
    `a' = (π/2)cos 2η`, so the side at `N` tends to `0` and both rays converge.
-2. For `v ≥ −1/2`: `ψ(v) ≤ −(4/3)v²`, so `Re(Pψ(v) + τv²) ≤ −pv²`, and `Re(−λv²) ≤ −pv²`.
-   `Pψ(v) + τv² + λv² = Pψ₃(v)`, `ψ₃(v) = 1 + 2v + 2v² − e^{2v}`, `|ψ₃(v)| ≤ 16|v|³e^{2|v|}`.
-   With `|e^{w₁} − e^{w₂}| ≤ |w₁ − w₂| e^{max Re}` and `|e^{κv} − 1| ≤ 6|v|e^{6|v|}`:
-   `|e^{κv+Pψ+τv²} − e^{−λv²}| ≤ (6|v|e^{6|v|} + 16|P||v|³e^{2|v|}) e^{−pv²}`. Integrate
-   (`e^{6|v|}e^{−pv²/2} ≤ e`); the Gaussian tail `∫_{−∞}^{−1/2}` is `≤ 1/p`;
-   `∫_ℝ e^{−λv²} = (π/λ)^{1/2}`.
-3. `iΦ(0)∫_0^∞ e^{−τv²}dv = B₀/2`. On `[0,η]`: `|Φ(iv)| ≤ K_η ≤ Cσ³` (term bound with
-   `a' ≥ π/(8σ)`), and `|Φ(iv) − Φ(0)| ≤ Lv` with `L ≤ C(1 + K_η)` (Cauchy estimate on
-   `|x| ≤ 1/2`, trivial bound beyond). So `|Φ(iv)e^{−zv} − Φ(0)| ≤ C(L + 1)v`,
-   `∫_0^∞ v e^{−Re τ v²} = 1/(2 Re τ)`, tail `∫_η^∞ ≤ 1/Re τ`, and `Re τ ≥ 2e^{2σ}/σ²`.
-4. `x = a + v`, `v ≥ −σ`; `|e^{iz(a+v)}| ≤ e^{9}e^{|v|}`.
-   - *Right part* `v ≥ −1/2`. `T₁ = 4π²e^{9x/2}e^{−πe^{2x}} + (low)`. The leading part is
-     `4π²e^{9a/2+f(a)+iza} ∫_{−1/2}^∞ e^{κv+Pψ(v)+τv²}dv`, `κ = 9/2 + iz`; apply 2
-     (`|P|/p ≤ 4σ`, `|(π/λ)^{1/2}| ≥ e^{−σ}/√3`). The low part has modulus
-     `≤ C e^{5σ/2} e^{5|v|/2} e^{Re f(a) − pv²}`. For `n ≥ 2`: `|T_n(x)| ≤ K e^{s/2}e^{−(p/2)n²e^{2v}}`
-     and `|e^{τx²}| = e^{Re f(a) + pψ(v) + Re τ v² + pe^{2v}}`, and `−(p/2)(n²−2)e^{2v} ≤ −pn/(2e)`.
-   - *Left part* `s = Re x ∈ [0, σ − 1/2]`. `|Φ(x)| ≤ K_η e^{σ/2} e^{−(p/2)e^{2v}}`.
-     On `[0, σ−1]`: `Re τx² = Re τ(s² − η²) − 2 Im τ·sη` is a convex quadratic in `s`, so
-     `|e^{τx²}| ≤ max(e^{−η² Re τ}, e^{Re f(a) − p + Re τ})`. On `v ∈ [−1, −1/2]`:
-     `Re f(a) + p(1 + 2v − e^{2v}/2) + Re τ v² ≤ Re f(a) − p/20`.
-   - `e^{−η² Re τ}σK_η e^{σ/2} ≤ e^{−σ}|B₀|` and `e^{−p/20}σK_ηe^{σ/2} ≤ e^{−σ}·e^{9σ/2}e^{−σ}` for
-     `σ ≥ σ₀`.
-5. 1, 3, 4 at `±z`, `z = ζ/a`.
-6. Let `g(δ) = (σ−1) sin 2δ − (π/4 − δ) cos 2δ`, so `Re f(a) = πe^{2σ}g(δ)`; `g(1/(3σ)) < 0 <
-   g(1/(2σ))`, hence `a₁ = σ + i(π/4 − δ₁)` with `Re f(a₁) = 0`, `δ₁ ∈ [1/(3σ), 1/(2σ)]`. Then
-   `1 ≤ |q(a₁)| ≤ e^{5σ}`. Let `ω = −Log q(a₁)`, `ϱ = 1/4`, `ξ₀(s) = ϱe^{iπs}`,
-   `ϖ(s) = −Log cos ξ₀(s)` and
-   `a(s) = a₁ + (ω + ϖ(s))/f'(a₁)`, `f'(a₁) = P(a₁)(2a₁ − 1)`. Then `a(1) = a(0)`,
-   `|a(s) − a₁| ≤ Cσe^{−2σ}/σ`, `a(s) ∈ Ω`, and
-   `f(a₁+h) − f(a₁) − f'(a₁)h = P₁[(e^{2h} − 1 − 2h)(a₁ − 1) + (e^{2h} − 1)h]`, so
-   `q(a(s)) = (1 + ε₃(s))/cos ξ₀(s)`, `|ε₃| ≤ Cσ²e^{−2σ}` (the square roots vary by a relative
-   `O(|h|)`: `|w^{1/2} − w₁^{1/2}| ≤ √2|w − w₁|/|w₁|^{1/2}` for `Re w₁ ≥ 0`).
-   `F_s(ζ) = H_{τ(a(s))}(ζ/a(s))/B₀(a(s))`; by 5, `|F_s(ζ) − 1 − q(a(s)) cos ζ| ≤ ε` on
-   `|ζ| ≤ 8`. With `ζ = π + ξ`:
-   `1 − q cos ξ = [2 sin((ξ+ξ₀)/2) sin((ξ−ξ₀)/2) − ε₃ cos ξ]/cos ξ₀`.
-   - `|F_s(π + ξ)| > 0` for `ϱ/4 ≤ |ξ − ξ₀(s)| ≤ ϱ/2`; `|F_s(π + ξ₀(s))| ≤ 2ε`;
-     `|F_s(0)| ≥ 1`.
-   - `γ(s) = τ(a(s))` is a closed path of forward times with `H_{γ(s)}(0) ≠ 0`. If some `γ(s)`
-     is a branch time, its multiple zero is not `0`: done. Otherwise `γ` is a forward loop.
-     `H_{γ(0)}` has a zero `z₀` with `|a(0)z₀ − π − ϱ| < ϱ/4` (minimum modulus on the disc).
-     Its lift `z(s)` has `d(s) = |a(s)z(s) − π − ξ₀(s)| ∉ [ϱ/4, ϱ/2]`, `d` continuous,
-     `d(0) < ϱ/4`, so `d(1) < ϱ/4`: `a(0)z(1)` is within `ϱ/4` of `π − ϱ`. Hence
-     `z(1) ≠ z₀` and `z(1) ≠ −z₀`. Detector `exists_multipleZero_ne_zero_of_transports` with
-     `D = {Re τ > 0}`.
-7. 6 and `forwardMonodromy_preserves_pairs_iff`.
+2. For `v ≥ −1`: `ψ(v) ≤ −v²`, so with `8 Re τ ≤ p`, `Re(Pψ(v) + τv²) ≤ −(7/8)pv²`, and
+   `Re(−λv²) ≤ −(7/8)pv²`. `Pψ(v) + τv² + λv² = P(ψ(v) + 2v²)`, `|ψ(v) + 2v²| ≤ 8|v|³e^{2|v|}`.
+   With `|e^{w₁} − e^{w₂}| ≤ |w₁ − w₂| e^{max Re}`:
+   `|e^{κv+Pψ+τv²} − e^{−λv²}| ≤ (6|v| + 8|P||v|³) e^{6|v|} e^{−(7/8)pv²}`, and
+   `e^{6|v|}e^{−(7/8)pv²} ≤ e⁴ e^{−(p/2)v²} e^{−(p/4)v²}` for `p ≥ 18`. Integrate; the Gaussian
+   tail `∫_{−∞}^{−1}` is `≤ 1/p`; `∫_ℝ e^{−λv²} = (π/λ)^{1/2}`.
+3. `iΦ(0)∫_0^∞ e^{−τv²}dv = (iΦ(0)/2)(π/τ)^{1/2}`. On `[0,η]`: `|Φ(iv)| ≤ K_η`, and
+   `|Φ(x) − Φ(0)| ≤ L|x|` on `|x| ≤ 1/2` (mean value on the disc). So
+   `|Φ(iv)e^{−zv} − Φ(0)| ≤ C(1 + K_η)v`, `∫_0^∞ v e^{−Re τ v²} = 1/(2 Re τ)`, tail
+   `∫_η^∞ e^{−Re τ v²} ≤ 1/(η Re τ)`.
+4. `x = a + v`.
+   - *Kernel.* For `Re x ≥ 0`, `(π/2)cos(2 Im x)e^{2 Re x} ≥ 1`:
+     `|Φ(x) − 4π²e^{9x/2}e^{−πe^{2x}}| ≤ (2B + K)e^{5 Re x/2}|e^{−πe^{2x}}|`: the lower terms of
+     `T₁` (`R(w) − 4π²w²` has degree one), and for `n ≥ 2` the term bound with `(m+2)² ≥ 2 + (m+1)`
+     and a geometric series of ratio `≤ 1/2`.
+   - *Right part* `v ≥ −1`. The leading part is `4π²e^{9a/2+f(a)+iza} ∫_{−1}^∞ e^{κv+Pψ(v)+τv²}dv`,
+     `κ = 9/2 + iz`; apply 2. The remainder has modulus
+     `≤ C e^{5σ/2} e^{Re f(a) − Im(za)} e⁴ e^{−(p/4)v²}`, and `∫_ℝ e^{−(p/4)v²} ≤ 4/√p`.
+   - *Left part* `s = Re x ∈ [0, σ − 1]`. `|Φ(x)| ≤ K_η e^{σ/2}`; `Re τx² = Re τ(s² − η²) −
+     2 Im τ·sη` is a convex quadratic in `s`, so `|e^{τx²}| ≤ e^{−η² Re τ} + e^{Re f(a) − p + Re τ}`
+     (`τ(a−1)² = f(a) − P + τ`); `|e^{izx}| ≤ e⁸`.
+5. 1, 3, 4 at `±z`, `z = ζ/a`. On `Ω(50)`: `η ≥ 1/2`, `cos 2η = sin 2δ ∈ [1/(4σ), 2/σ]`,
+   `sin 2η ≥ 1/2`, `πe^{2σ} ≤ 4σp`, `p ≥ 18`, `πe^{2σ}/(8σ²) ≤ Re τ ≤ p/8`, `|τ| ≤ πe^{2σ}`,
+   `K_η ≤ 324Bσ³`, `η² Re τ ≥ 3σ`, `|B₀| ≥ |Φ(0)|e^{−σ}`, `|S₀| ≥ e^{7σ/2 + Re f(a)}`. Hence the
+   three errors are `≤ Cσ⁵e^{−σ}(|B₀| + |S₀|)`.
+6. *The squared ratio.* `λ = τ(2a − 1)`, so
+   `(2S₀)² = Q(a) B₀²`, `Q(a) = −64π⁴ e^{9a + 2f(a)} / (Φ(0)²(2a − 1))`: no square roots.
+   - *Base point.* For `0 < δ ≤ 1/100` let `η = π/4 − δ`, `a₁ = 1 + η cot 2δ + iη`. Then
+     `Re f(a₁) = πe^{2σ}[(σ−1) sin 2δ − η cos 2δ] = 0` and `3/10 ≤ δσ ≤ 7/10`. So
+     `|Q(a₁)| = c₀e^{9σ}/|2a₁ − 1|`, `c₀ = 64π⁴/Φ(0)²`, and `|Log Q(a₁)| ≤ |log c₀| + 11σ + π`.
+   - *Loop.* `ξ₀(s) = e^{iπs}/4`, `D₁ = f'(a₁) = P₁(2a₁ − 1)`,
+     `a(s) = a₁ + h(s)`, `h(s) = (−Log Q(a₁) − 2 Log cos ξ₀(s))/(2D₁)`. Then `a(1) = a(0)`,
+     `|h| ≤ Mσe^{−2σ}`, `M = |log c₀| + 12`, `a(s) ∈ Ω(50)` for `σ` large. Exactly,
+     `f(a₁+h) − f(a₁) − D₁h = P₁[(e^{2h} − 1 − 2h)(a₁ − 1) + (e^{2h} − 1)h] =: P₁R(h)`, hence
+     `Q(a(s)) cos² ξ₀(s) = e^{2P₁R(h) + 9h} (2a₁ − 1)/(2a₁ − 1 + 2h) = 1 + e₂(s)`,
+     `|e₂| ≤ 242 (1+M)²σ⁴e^{−σ} ≤ 1/4096` for `σ` large.
+   - *Sign.* `u(s) = 2S₀(a(s)) cos ξ₀(s)/B₀(a(s))` is continuous (`Re τ, Re λ > 0`) and
+     `u² = 1 + e₂`, so `Re u` never vanishes: `|u − 1| ≤ |e₂|` for all `s`, or `|u + 1| ≤ |e₂|`
+     for all `s`. Let `θ = π` in the first case, `θ = 2π` in the second: `sin θ = 0` and
+     `|2S₀ cos θ cos ξ₀ + B₀| ≤ |B₀|/4096` for all `s`.
+   - *Model*, relative error `1/16384`, and `|S₀| ≤ |B₀|` (from `|Q| ≤ 4`):
+     `|H_{τ(a(s))}(ζ/a(s)) − B₀ − 2S₀ cos ζ| ≤ |B₀|/8192`, `|ζ| ≤ 8`. With `ζ = θ + ξ`:
+     `(B₀ + 2S₀ cos θ cos ξ) cos ξ₀ = B₀(cos ξ₀ − cos ξ) + (2S₀ cos θ cos ξ₀ + B₀) cos ξ`,
+     `cos ξ₀ − cos ξ = 2 sin((ξ+ξ₀)/2) sin((ξ−ξ₀)/2)`, `|sin w| ≥ |w|/2` on `|w| ≤ 1`.
+     - annulus `1/16 ≤ |ξ − ξ₀(s)| ≤ 1/8`: `|H| ≥ (9/8192)|B₀|`;
+     - centre `ξ = ξ₀(s)`: `|H| ≤ (3/8192)|B₀|`;
+     - `ζ = 0`: `(B₀+2S₀)(B₀−2S₀) = B₀²(1 − Q)`, `(1 − Q)cos² ξ₀ = −sin² ξ₀ − e₂`, so
+       `|B₀ + 2S₀| ≥ (21/8192)|B₀|` and `H_{τ(a(s))}(0) ≠ 0`.
+   - *Tracking.* `γ(s) = τ(a(s))` is a closed path of forward times. If some `γ(s)` is a branch
+     time, its multiple zero is not `0`: done. Otherwise `γ` is a forward loop. `H_{γ(0)}` has a
+     zero `z₀` with `|a(0)z₀ − θ − ξ₀(0)| < 1/16` (minimum modulus). For its lift `z(s)`,
+     `m(s) = a(s)z(s) − θ − ξ₀(s)` is continuous with `|m(s)| ∉ [1/16, 1/8]`, `|m(0)| < 1/16`, so
+     `|m(1)| < 1/16`. With `a(1) = a(0)`, `ξ₀(1) = −ξ₀(0) = −1/4`:
+     `a(0)(z(1) − z₀) = −1/2 + m(1) − m(0) ≠ 0` and `a(0)(z(1) + z₀) = 2θ + m(1) + m(0) ≠ 0`.
+     Detector `exists_multipleZero_ne_zero_of_transports` with `D = {Re τ > 0}`.
+7. 6 and `exists_mem_forwardMonodromy_moving_pair`.
+
+## Consequence for the programme
+
+The sufficient condition "`G₊` preserves the pairs `{z, −z}`"
+(`riemannHypothesis_of_forwardMonodromy_preserves_pairs`) is false: the forward group is strictly
+larger than a group of sign changes. The collision found here is at a complex forward time
+close to the imaginary direction (`Re τ ≍ e^{2σ}/σ²`, `|τ| ≍ e^{2σ}/σ`); RH concerns collisions
+at real positive times.
 
 ## Formalization
 
-Planned modules in `GaloisTheoryOfZeros/`:
+Modules in `GaloisTheoryOfZeros/`:
 
 | Module | Content | Status |
 |---|---|---|
-| `TheHeatFamilyIsAnIntegralThroughTheOriginAndTheSaddle` | theorem 1 | not started |
-| `TheGaussianAtTheSaddleOfTheKernel` | theorem 2 | not started |
-| `TheBulkAndTheSaddleTermOfTheHeatFamily` | theorems 3, 4, 5 | not started |
-| `ACollisionAwayFromTheCentreExistsAtAForwardTime` | theorems 6, 7 | not started |
+| `TheHeatFamilyIsAnIntegralThroughTheOriginAndTheSaddle` | theorem 1 | compiled |
+| `TheGaussianAtTheSaddleOfTheKernel` | theorem 2 | compiled |
+| `TheSegmentThroughTheOriginIsAGaussianAtTheCentreValue` | theorem 3 | compiled |
+| `TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue` | theorem 4 | compiled |
+| `TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine` | theorem 5 | compiled |
+| `ALoopOfSaddlesTurnsTheSquaredRatioOfTheTwoTermsAroundOne` | theorem 6: ratio, base point, loop | in progress |
+| `ACollisionAwayFromTheCentreExistsAtAForwardTime` | theorems 6, 7 | in progress |
+
 
 ## Log
 - 2026-11-13 — created; paper proof written.

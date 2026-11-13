@@ -53,8 +53,8 @@ theorem isCompactOperator_of_comp_self {H : Type*} [NormedAddCommGroup H] [Inner
   have hT2v : ‖(T ∘L T) v‖ < ε ^ 2 / 2 := by
     rw [map_sub, hgy y hy, ← dist_eq_norm]; exact hxy
   have hsq : ‖T v‖ ^ 2 ≤ ‖(T ∘L T) v‖ * ‖v‖ := by
-    have h1 : ‖T v‖ ^ 2 = RCLike.re (inner ℂ (T v) (T v)) := by
-      rw [← inner_self_eq_norm_sq]
+    have h1 : ‖T v‖ ^ 2 = RCLike.re (inner ℂ (T v) (T v)) :=
+      (inner_self_eq_norm_sq (𝕜 := ℂ) (T v)).symm
     have h2 : inner ℂ (T v) (T v) = inner ℂ ((T ∘L T) v) v := by
       rw [ContinuousLinearMap.comp_apply]; exact (hT.isSymmetric (T v) v).symm
     rw [h1, h2]

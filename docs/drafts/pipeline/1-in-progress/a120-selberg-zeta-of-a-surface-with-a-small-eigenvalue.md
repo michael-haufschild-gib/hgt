@@ -78,7 +78,11 @@ Lean (folder `CompactHyperbolicSurfaces/`, compiled):
   `u^{−¼}`, difference kernel `diffKernel` (continuous, `abelL_diffKernel`).
 - `ConvolutionProfiles`: radiality of `convK`, `abelL_convProfile`, Abel inversion `ae_eq_of_abelL_eq`.
 - `ResolventIdentity`: `convK_resKernel_ae` (`k_s ⋆ k_a = D_{a,s}/(s(s−1) − a(a−1))` a.e.).
-Next: operators `T_s` on `L²(F)`, spectral parametrization, Mercer trace, trace formula, zeta,
+- `AutomorphicKernels`: `autK`, unfolding, `exists_tsum_rpow_le`, `continuous_autR`.
+- `ResolventOperators`, `ResolventOperatorIdentity`, `ResolventCompactness`: `CompactQuotient`,
+  `resOp` (self-adjoint, `‖T_s‖ ≤ 1/(s(s−1))`), `resOp_comp` (`T_sT_a = c⁻¹(T_a − T_s)`),
+  `resOp_comm`, `isCompactOperator_resOp`.
+Next: spectral parametrization, Mercer trace, trace formula, zeta,
 explicit group and walls, small eigenvalue.
 
 ## Log

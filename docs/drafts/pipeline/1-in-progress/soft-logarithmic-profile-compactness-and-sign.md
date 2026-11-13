@@ -1,6 +1,6 @@
 # Soft logarithmic profile compactness and sign rigidity
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Target:** Review-1311 A158, B16, B17; attainment in the closed limiting domain and convergence of the rescaled profiles.
 - **Statement:** The closed half-line form with Fourier symbol `log|ξ|` and potential `8(-u)` has a unique unit minimizing line with a nonnegative representative. Rescaled actual confining minimizers converge in `L²` to this line.
@@ -74,8 +74,10 @@ The physical cutoff error squared is at most `M/H`; the Fourier cutoff
 error squared is at most `L₊/log T`. The latter already has its exact
 unitary identity in
 `norm_sq_sub_fourierCutoff_central_eq_tailIntegral`. No exponential moment
-bound uniform over the sublevel is needed. This compactness statement
-remains unformalized.
+bound uniform over the sublevel is needed. `SoftLogarithmicSublevelCompactness`
+contains an unchecked assembly with its literal `L²` representatives; the
+general moment-to-compactness helper is still being formalized. No compactness
+theorem is counted yet.
 
 `CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
 

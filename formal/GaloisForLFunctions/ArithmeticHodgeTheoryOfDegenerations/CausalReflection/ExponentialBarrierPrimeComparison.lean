@@ -28,7 +28,7 @@ theorem CriticalHalfLineEnergyDomain.integrable_exponentialBarrier_primeRow {F :
     simpa only [zero_mul, neg_zero, Real.exp_zero, mul_one] using
       hF.integrable_mul_exponentialBarrierPositiveLevel ht (show (0 : ℝ) ≤ 8 by norm_num) β
   apply ((he.const_mul 6).add (hm.const_mul (halfLineExponentialPrimeTail β))).congr
-  exact Eventually.of_forall fun u => by dsimp only; ring
+  exact Eventually.of_forall fun u => by dsimp only [Pi.add_apply]; ring
 
 /-- Every exponential positive level obeys the complete prime-row bound on the actual domain. -/
 theorem CriticalHalfLineEnergyDomain.primeMixedForm_exponentialBarrier_le {F : ℝ → ℝ}
@@ -85,6 +85,7 @@ theorem CriticalHalfLineEnergyDomain.primeMixedForm_exponentialBarrier_le {F : �
     _ ≤ _ := by
       apply integral_mono (integrable_finsetSum s (fun n _ => hq n)) hrow
       intro u
+      dsimp only
       have he : (∑ n ∈ s, q n u) =
           (∑ n ∈ s, if u < -Real.log (n : ℝ) then A n else 0) * H u +
             (∑ n ∈ s, B n) * H u := by
@@ -96,8 +97,9 @@ theorem CriticalHalfLineEnergyDomain.primeMixedForm_exponentialBarrier_le {F : �
               apply Finset.sum_congr rfl
               intro n _
               by_cases hu : u < -Real.log (n : ℝ)
-              · simp only [indicator_of_mem hu, if_pos hu]
-              · simp only [indicator_of_notMem hu, if_neg hu, mul_zero, zero_mul]
+              · rw [indicator_of_mem (s := Iio (-Real.log (n : ℝ))) hu, if_pos hu]
+              · simp only [indicator_of_notMem (s := Iio (-Real.log (n : ℝ))) hu,
+                  if_neg hu, mul_zero, zero_mul]
             _ = _ := (Finset.sum_mul s _ _).symm
         · exact (Finset.sum_mul s _ _).symm
       rw [he]
