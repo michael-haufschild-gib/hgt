@@ -1,8 +1,9 @@
 # The order law of the edit exponential at every multiple
 
 - **ID:** A155
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Lean:** `WorldsOfTheZeroConfiguration/TheOrdersOfTheEditExponentialObeyALawAtEveryMultiple.lean`
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.1 "Models and laws of world I", A155
 - **Statement:** for an edit with count `Ax + O(x^β)`, summable at `θ`, whose exponential `e^{E}`
   continues to `F` on `Re s > c₀`, the orders `n(z) = ord_z F` satisfy
@@ -11,6 +12,18 @@
 ## Goal
 `even_order_of_count` is the case `k = 2`. The law at every `k` says which zero orders of the edit
 exponential a count rate allows, and so what a count below `x^{Re ρ/k}` costs.
+
+## Lean
+| Statement | Declaration (namespace `WorldsOfTheZeroConfiguration.BalanceLaw`) |
+|---|---|
+| remainder `r_{k+1}`, bound, `Q_{k+1}` holomorphic on `Re s > θ/(k+1)` | `logRemOf`, `norm_logRemOf_le`, `editRemOf`, `differentiableOn_editRemOf` |
+| Euler product to order `k` | `editRem_eq_sum_add` |
+| Theorem 1 | `factorial_dvd_sum_order_of_count` |
+| Corollary 2 | `prime_dvd_order_of_count` |
+| Corollary 3 | `dvd_order_of_count_of_ne_zero` |
+| Theorem 5 | `re_div_le_of_count_multiple_edit` (with `lseriesHasSum_mul_target`) |
+
+Axioms of the headline theorems: `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Setting
 `e : ℕ → ℤ` an edit (signs on the primes), `E(s) = Σ_p e(p)p^{−s}`, `Σ_k |e(k)|k^{−θ} < ∞`,
@@ -92,3 +105,4 @@ a contradiction. ∎
 
 ## Log
 - 2026-11-13 — created; Theorems 1, 5 and Corollaries 2–4 proved on paper.
+- 2026-11-13 — formalized (Corollary 4 is the contrapositive of Corollary 2, not a separate declaration).

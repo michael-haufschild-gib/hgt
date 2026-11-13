@@ -16,6 +16,35 @@ open scoped FourierTransform
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open ArithmeticCastelnuovoSeveri
 
+/-- Gamma integrability gives finite jump energy without a support or exponential-mass premise. -/
+theorem integrableOn_levyIntegrand_of_gammaBracket {F : ℝ → ℝ}
+    (hFm : Measurable F) (hF1 : Integrable F) (hF2 : MemLp F 2 volume)
+    (hγ : Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r)) :
+    IntegrableOn
+      (fun h : ℝ => archLevyDensity h * ∫ u, (F u - F (u + h)) ^ 2) (Ioi 0) := by
+  have hc1 : Integrable (cx F) := hF1.ofReal (𝕜 := ℂ)
+  have hc2 : MemLp (cx F) 2 volume := by
+    apply (memLp_two_iff_integrable_sq_norm hc1.aestronglyMeasurable).mpr
+    have hi := (memLp_two_iff_integrable_sq_norm hF2.aestronglyMeasurable).mp hF2
+    simpa only [cx, Complex.norm_real] using hi
+  have hs : Integrable (fun ξ : ℝ =>
+      gammaHardyPhaseRate (2 * Real.pi * ξ) * ‖𝓕 (cx F) ξ‖ ^ 2) := by
+    have hh := (hγ.comp_mul_left' (R := -(2 * Real.pi))
+      (neg_ne_zero.mpr (mul_ne_zero (by norm_num) Real.pi_ne_zero))).div_const 2
+    refine hh.congr (Eventually.of_forall fun ξ => ?_)
+    simp only
+    rw [fourier_eq_paperFT_neg_two_pi_mul, WeilLevyPole.gammaBracket_eq_two_mul_gammaHardyPhaseRate,
+      show -(2 * Real.pi) * ξ = -(2 * Real.pi * ξ) by ring, gammaHardyPhaseRate_neg]
+    ring
+  have hfinite := lintegral_archLevyDirichlet_ne_top hc1 hc2 hs
+  rw [lintegral_levy_eq F] at hfinite
+  have hjm : Measurable (fun p : ℝ × ℝ => (F p.2 - F (p.2 + p.1)) ^ 2) := by
+    fun_prop
+  refine ⟨measurable_archLevyDensity.aestronglyMeasurable.mul
+    hjm.stronglyMeasurable.integral_prod_right'.aestronglyMeasurable, ?_⟩
+  rw [hasFiniteIntegral_iff_ofReal (levyIntegrand_nonneg F)]
+  exact lt_top_iff_ne_top.mpr hfinite
+
 /-- Finite jump energy recovers the literal Gamma domain for an `L¹ ∩ L²` profile. -/
 theorem integrable_gammaBracket_of_levyIntegrand {F : ℝ → ℝ}
     (hF1 : Integrable F) (hF2 : MemLp F 2 volume)
@@ -55,13 +84,67 @@ theorem integrable_gammaBracket_of_levyIntegrand {F : ℝ → ℝ}
     simp only [Pi.add_apply, confiningGammaSymbol]
     ring
 
+/-- Contractions preserve finite jump energy without any confining-weight hypothesis. -/
+theorem integrableOn_levyIntegrand_comp_contraction {F T : ℝ → ℝ}
+    (hFm : Measurable F) (hF2 : MemLp F 2 volume)
+    (hFJ : IntegrableOn
+      (fun h : ℝ => archLevyDensity h * ∫ u, (F u - F (u + h)) ^ 2) (Ioi 0))
+    (hT : LipschitzWith 1 T) (hT0 : T 0 = 0) :
+    IntegrableOn
+      (fun h : ℝ => archLevyDensity h * ∫ u, (T (F u) - T (F (u + h))) ^ 2) (Ioi 0) := by
+  have hm : Measurable (T ∘ F) := hT.continuous.measurable.comp hFm
+  have hL2 : MemLp (T ∘ F) 2 volume := by
+    apply hF2.mono hm.aestronglyMeasurable
+    exact Eventually.of_forall fun u => by
+      simpa only [Function.comp_apply, hT0, sub_zero, NNReal.coe_one, one_mul]
+        using hT.norm_sub_le (F u) 0
+  have hdiff (u v : ℝ) : |T (F u) - T (F v)| ≤ |F u - F v| := by
+    simpa only [NNReal.coe_one, one_mul, Real.norm_eq_abs] using hT.norm_sub_le (F u) (F v)
+  have hjm : Measurable (fun p : ℝ × ℝ => (T (F p.2) - T (F (p.2 + p.1))) ^ 2) := by
+    have ht := hT.continuous.measurable
+    fun_prop
+  refine hFJ.mono'
+    (measurable_archLevyDensity.aestronglyMeasurable.mul
+      hjm.stronglyMeasurable.integral_prod_right'.aestronglyMeasurable) ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
+  rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (archLevyDensity_pos hh).le
+    (integral_nonneg fun u => sq_nonneg _))]
+  apply mul_le_mul_of_nonneg_left _ (archLevyDensity_pos hh).le
+  have hd2 := hL2.sub (hL2.comp_measurePreserving (measurePreserving_add_right volume h))
+  have hf2 := hF2.sub (hF2.comp_measurePreserving (measurePreserving_add_right volume h))
+  have hdi := (memLp_two_iff_integrable_sq_norm hd2.aestronglyMeasurable).mp hd2
+  have hfi := (memLp_two_iff_integrable_sq_norm hf2.aestronglyMeasurable).mp hf2
+  simp only [Pi.sub_apply, Function.comp_apply, Real.norm_eq_abs, sq_abs] at hdi hfi
+  apply integral_mono hdi hfi
+  intro u
+  have hd := hdiff u (u + h)
+  have hp := mul_nonneg (sub_nonneg.mpr hd)
+    (add_nonneg (abs_nonneg (F u - F (u + h)))
+      (abs_nonneg (T (F u) - T (F (u + h)))))
+  nlinarith only [hp, sq_abs (F u - F (u + h)), sq_abs (T (F u) - T (F (u + h)))]
+
+/-- The full Gamma domain is closed under real contractions fixing zero. -/
+theorem integrable_gammaBracket_comp_contraction {F T : ℝ → ℝ}
+    (hFm : Measurable F) (hF1 : Integrable F) (hF2 : MemLp F 2 volume)
+    (hγ : Integrable (fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r))
+    (hT : LipschitzWith 1 T) (hT0 : T 0 = 0) :
+    Integrable (fun r : ℝ => ‖paperFT (cx (T ∘ F)) r‖ ^ 2 * EF.gammaBracket r) := by
+  have hm : Measurable (T ∘ F) := hT.continuous.measurable.comp hFm
+  have hb : ∀ᵐ u ∂volume, ‖(T ∘ F) u‖ ≤ ‖F u‖ :=
+    Eventually.of_forall fun u => by
+      simpa only [Function.comp_apply, hT0, sub_zero, NNReal.coe_one, one_mul]
+        using hT.norm_sub_le (F u) 0
+  have hi := hF1.norm.mono' hm.aestronglyMeasurable hb
+  have hL2 := hF2.mono hm.aestronglyMeasurable hb
+  exact integrable_gammaBracket_of_levyIntegrand hi hL2
+    (integrableOn_levyIntegrand_comp_contraction hFm hF2
+      (integrableOn_levyIntegrand_of_gammaBracket hFm hF1 hF2 hγ) hT hT0)
+
 /-- A zero-preserving contraction preserves every condition of the actual domain. -/
 theorem CriticalHalfLineEnergyDomain.comp_contraction {F T : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) (hT : LipschitzWith 1 T) (hT0 : T 0 = 0) :
     CriticalHalfLineEnergyDomain (T ∘ F) := by
   have hm : Measurable (T ∘ F) := hT.continuous.measurable.comp hF.meas
-  have hdiff (u v : ℝ) : |T (F u) - T (F v)| ≤ |F u - F v| := by
-    simpa only [NNReal.coe_one, one_mul, Real.norm_eq_abs] using hT.norm_sub_le (F u) (F v)
   have hb (u : ℝ) : |T (F u)| ≤ |F u| := by
     simpa only [hT0, sub_zero, NNReal.coe_one, one_mul, Real.norm_eq_abs]
       using hT.norm_sub_le (F u) 0
@@ -77,32 +160,8 @@ theorem CriticalHalfLineEnergyDomain.comp_contraction {F T : ℝ → ℝ}
   have hL2 : MemLp (T ∘ F) 2 volume := by
     apply (memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mpr
     simpa only [Function.comp_apply, Real.norm_eq_abs, sq_abs] using hi2
-  have hj : IntegrableOn
-      (fun h : ℝ => archLevyDensity h * ∫ u, (T (F u) - T (F (u + h))) ^ 2) (Ioi 0) := by
-    have hjm : Measurable (fun p : ℝ × ℝ => (T (F p.2) - T (F (p.2 + p.1))) ^ 2) := by
-      have ht := hT.continuous.measurable
-      have hf := hF.meas
-      fun_prop
-    refine hF.integrableOn_levyIntegrand.mono'
-      (measurable_archLevyDensity.aestronglyMeasurable.mul
-        hjm.stronglyMeasurable.integral_prod_right'.aestronglyMeasurable) ?_
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with h hh
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (archLevyDensity_pos hh).le
-      (integral_nonneg fun u => sq_nonneg _))]
-    apply mul_le_mul_of_nonneg_left _ (archLevyDensity_pos hh).le
-    have hd2 := hL2.sub (hL2.comp_measurePreserving (measurePreserving_add_right volume h))
-    have hf2 := hF.memLp_real.sub
-      (hF.memLp_real.comp_measurePreserving (measurePreserving_add_right volume h))
-    have hdi := (memLp_two_iff_integrable_sq_norm hd2.aestronglyMeasurable).mp hd2
-    have hfi := (memLp_two_iff_integrable_sq_norm hf2.aestronglyMeasurable).mp hf2
-    simp only [Pi.sub_apply, Function.comp_apply, Real.norm_eq_abs, sq_abs] at hdi hfi
-    apply integral_mono hdi hfi
-    intro u
-    have hd := hdiff u (u + h)
-    have hp := mul_nonneg (sub_nonneg.mpr hd)
-      (add_nonneg (abs_nonneg (F u - F (u + h)))
-        (abs_nonneg (T (F u) - T (F (u + h)))))
-    nlinarith only [hp, sq_abs (F u - F (u + h)), sq_abs (T (F u) - T (F (u + h)))]
+  have hj := integrableOn_levyIntegrand_comp_contraction hF.meas hF.memLp_real
+    hF.integrableOn_levyIntegrand hT hT0
   refine ⟨hm, hi, hi2, ?_, ?_, integrable_gammaBracket_of_levyIntegrand hi hL2 hj⟩
   · refine hF.exponential.mono' ((hm.pow_const 2).mul (by fun_prop)).aestronglyMeasurable ?_
     exact Eventually.of_forall fun u => by
@@ -112,5 +171,6 @@ theorem CriticalHalfLineEnergyDomain.comp_contraction {F T : ℝ → ℝ}
     simp only [Function.comp_apply, hF.support u hu, hT0]
 
 #print axioms integrable_gammaBracket_of_levyIntegrand
+#print axioms integrable_gammaBracket_comp_contraction
 #print axioms CriticalHalfLineEnergyDomain.comp_contraction
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -25,7 +25,8 @@ the turn on the whole fibre, for all small radii.
 -/
 
 open Complex Filter Topology Set Metric
-open RHTower GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
+open RHTower RHTower.DeBruijn
+open GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
 
 namespace GaloisForLFunctions.GaloisTheoryOfZeros
 
@@ -37,11 +38,11 @@ variable {τ₀ : ℂ}
 /-! ## Small radii -/
 
 theorem eventually_nhdsGT_of_exists_Ioo {P : ℝ → Prop}
-    (h : ∃ ε > 0, ∀ r ∈ Ioo (0 : ℝ) ε, P r) : ∀ᶠ r in 𝓝[>] (0 : ℝ), P r := by
+    (h : ∃ ε > 0, ∀ r ∈ Ioo (0 : ℝ) ε, P r) : ∀ᶠ r : ℝ in 𝓝[>] 0, P r := by
   obtain ⟨ε, hε, h⟩ := h
   exact eventually_of_mem (Ioo_mem_nhdsGT hε) h
 
-theorem exists_Ioo_of_eventually_nhdsGT {P : ℝ → Prop} (h : ∀ᶠ r in 𝓝[>] (0 : ℝ), P r) :
+theorem exists_Ioo_of_eventually_nhdsGT {P : ℝ → Prop} (h : ∀ᶠ r : ℝ in 𝓝[>] 0, P r) :
     ∃ ε > 0, ∀ r ∈ Ioo (0 : ℝ) ε, P r := by
   obtain ⟨u, hu, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 h
   exact ⟨u, hu, fun r hr => hsub hr⟩
@@ -87,7 +88,7 @@ theorem transports_self_of_section {U : Set ℂ} (hU : Convex ℝ U) {f : ℂ �
 
 /-- **The far zeros return under small turns.** -/
 theorem eventually_turn_transports_self_of_far (hτ₀ : 0 < τ₀.re) :
-    ∃ R : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 → R ≤ ‖z‖ →
+    ∃ R : ℝ, ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 → R ≤ ‖z‖ →
       Transports (turnPath τ₀ r) z z := by
   obtain ⟨R, hR⟩ := exists_forall_transports_self_of_far (t₀ := τ₀.re / 2) (‖τ₀‖ + 1)
     (half_pos hτ₀) (N := 1) one_pos
@@ -116,7 +117,7 @@ theorem eventually_turn_transports_self_of_far (hτ₀ : 0 < τ₀.re) :
 /-- **Near a simple zero of `H_τ₀` the turn fixes every zero.** -/
 theorem eventually_turn_transports_self_of_simple {ζ : ℂ} (h0 : complexHeat τ₀ ζ = 0)
     (h1 : deriv (complexHeat τ₀) ζ ≠ 0) :
-    ∃ ρ > 0, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
+    ∃ ρ > 0, ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
       Transports (turnPath τ₀ r) z z := by
   obtain ⟨W, hW, hτW, ρ, hρ, f, hf, -, hchart⟩ := exists_simple_zero_chart h0 h1
   obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hW τ₀ hτW
@@ -141,12 +142,12 @@ theorem eventually_turn_transports_self_of_simple {ζ : ℂ} (h0 : complexHeat �
 zeros of `H_{τ₀+r²}` in a fixed disc around `ζ` are the sheets `Z_ρ(r)`, and the turn carries
 `Z_ρ(r)` to `Z_{−ρ}(r)`. -/
 theorem eventually_turn_transports_sheets {ζ : ℂ} {m : ℕ} (hc : IsCollision τ₀ ζ m) :
-    ∃ ρ > 0, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
+    ∃ ρ > 0, ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
       ∃ ρ' : ℂ, heatModelFwd m ρ' = 0 ∧ z = collisionZero τ₀ ζ m ρ' r ∧
         Transports (turnPath τ₀ r) z (collisionZero τ₀ ζ m (-ρ') r) := by
   obtain ⟨ρ, hρ, -, hev⟩ := exists_ball_zeros_eq_sheets hc
   refine ⟨ρ, hρ, ?_⟩
-  have h1 : ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 ↔
+  have h1 : ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 ↔
       ∃ ρ' : ℂ, heatModelFwd m ρ' = 0 ∧ z = collisionZero τ₀ ζ m ρ' r :=
     eventually_nhdsGT_of_exists_Ioo (exists_forall_Ioo_of_eventually
       (P := fun s : ℂ => ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + s ^ 2) z = 0 ↔
@@ -161,7 +162,7 @@ theorem eventually_turn_transports_sheets {ζ : ℂ} {m : ℕ} (hc : IsCollision
       exact heatModelFwd_eq_zero_iff
     rw [hset]
     exact (Finset.finite_toSet _).image _
-  have h2 : ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ ρ' ∈ {ρ' : ℂ | heatModelFwd m ρ' = 0},
+  have h2 : ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ ρ' ∈ {ρ' : ℂ | heatModelFwd m ρ' = 0},
       Transports (turnPath τ₀ r) (collisionZero τ₀ ζ m ρ' r) (collisionZero τ₀ ζ m (-ρ') r) :=
     (eventually_all_finite hfin).2 fun ρ' hρ' =>
       eventually_nhdsGT_of_exists_Ioo (hc.exists_transports_turn hρ')
@@ -181,7 +182,7 @@ def TurnAction (τ₀ : ℂ) (r : ℝ) (z : ℂ) : Prop :=
         Transports (turnPath τ₀ r) z (collisionZero τ₀ ζ m (-ρ) r)
 
 theorem exists_ball_eventually_turnAction {ζ : ℂ} (h0 : complexHeat τ₀ ζ = 0) :
-    ∃ ρ > 0, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
+    ∃ ρ > 0, ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
       TurnAction τ₀ r z := by
   by_cases h1 : deriv (complexHeat τ₀) ζ = 0
   · obtain ⟨m, hm, hc⟩ := exists_isCollision_two_le h0 h1
@@ -196,10 +197,10 @@ theorem exists_ball_eventually_turnAction {ζ : ℂ} (h0 : complexHeat τ₀ ζ 
 `r²` around `τ₀` fixes every zero of `H_{τ₀+r²}` that is not a sheet of a collision of order
 `≥ 2` at the time `τ₀`, and carries each such sheet `Z_ρ(r)` to `Z_{−ρ}(r)`. -/
 theorem eventually_turnAction (hτ₀ : 0 < τ₀.re) :
-    ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
+    ∀ᶠ r : ℝ in 𝓝[>] 0, ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 →
       TurnAction τ₀ r z := by
   obtain ⟨R, hfar⟩ := eventually_turn_transports_self_of_far hτ₀
-  have hloc : ∀ ζ : ℂ, ∃ ρ > 0, complexHeat τ₀ ζ = 0 → ∀ᶠ r in 𝓝[>] (0 : ℝ),
+  have hloc : ∀ ζ : ℂ, ∃ ρ > 0, complexHeat τ₀ ζ = 0 → ∀ᶠ r : ℝ in 𝓝[>] 0,
       ∀ z ∈ ball ζ ρ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 → TurnAction τ₀ r z := by
     intro ζ
     by_cases h0 : complexHeat τ₀ ζ = 0
@@ -245,7 +246,7 @@ a double zero at the centre and no other multiple zero. For all small `r` the tu
 zero `w ≠ 0` of `H_{τ₀+r²}` with `−w` and fixes every other zero. -/
 theorem eventually_turn_flip (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0 2)
     (honly : ∀ ζ : ℂ, complexHeat τ₀ ζ = 0 → deriv (complexHeat τ₀) ζ = 0 → ζ = 0) :
-    ∀ᶠ r in 𝓝[>] (0 : ℝ), ∃ w : ℂ, w ≠ 0 ∧ complexHeat (τ₀ + (r : ℂ) ^ 2) w = 0 ∧
+    ∀ᶠ r : ℝ in 𝓝[>] 0, ∃ w : ℂ, w ≠ 0 ∧ complexHeat (τ₀ + (r : ℂ) ^ 2) w = 0 ∧
       Transports (turnPath τ₀ r) w (-w) ∧ Transports (turnPath τ₀ r) (-w) w ∧
         ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 → z ≠ w → z ≠ -w →
           Transports (turnPath τ₀ r) z z := by
@@ -271,7 +272,7 @@ theorem eventually_turn_flip (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0
     · exact two_ne_zero h3
     · exact hs2.ne' (Complex.ofReal_eq_zero.1 h3)
   -- at the centre the opposite sheet is the negative sheet
-  have hrefl : ∀ᶠ r in 𝓝[>] (0 : ℝ), -collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r =
+  have hrefl : ∀ᶠ r : ℝ in 𝓝[>] 0, -collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r =
       collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) r := by
     have h := collisionZero_reflect hcen hρ₊
     rw [neg_zero] at h
@@ -279,7 +280,7 @@ theorem eventually_turn_flip (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0
       (P := fun s : ℂ => -collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) s =
         collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) s)
       (h.filter_mono nhdsWithin_le_nhds))
-  have hdist : ∀ᶠ r in 𝓝[>] (0 : ℝ), collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r ≠
+  have hdist : ∀ᶠ r : ℝ in 𝓝[>] 0, collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r ≠
       collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) r :=
     eventually_nhdsGT_of_exists_Ioo (exists_forall_Ioo_of_eventually
       (P := fun s : ℂ => collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) s ≠

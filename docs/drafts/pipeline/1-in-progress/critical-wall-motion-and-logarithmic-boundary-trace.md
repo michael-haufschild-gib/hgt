@@ -64,10 +64,15 @@ converse Lévy-domain proof and closure under zero-preserving real
 contractions. Weighted barrier truncations require the additional
 admissibility argument below.
 
-## Weighted truncation conjecture
+## Exponential-barrier route
 
-Every actual confining minimizer may satisfy `|F(u)|≤C exp(u)` almost
-everywhere on the negative half-line. This would bound the complete prime
+[Exponential barriers](../2-fully-proven/exponential-barriers-for-confining-minimizers.md)
+has a paper argument for `|F(u)|≤Cβ exp(βu)` whenever `1/2<β<15/2`,
+and hence all exponential square moments of order below `15`. Lean
+formalization is in progress; the argument is not counted as a proof until
+that audit passes.
+
+In particular, `|F(u)|≤C exp(u)` on the negative half-line would bound the complete prime
 forcing near the terminal endpoint, since its backward translates then
 carry the summable weight `Λ(n)/n^(3/2)`.
 

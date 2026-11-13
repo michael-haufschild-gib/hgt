@@ -27,6 +27,11 @@ Proof: compare orders at `s₁` of both sides of the identity above.
 **Isolated multiples** (`dvd_order_of_count_of_ne_zero`).  If `F(jρ/k) ≠ 0` for `2 ≤ j < k`, then
 `k ∣ ord_ρ F` for `Re ρ > k · max(β, c₀, θ/(k+1))`.
 
+**Multiple twins** (`re_div_le_of_count_multiple_edit`).  The greedy edit of the target
+`M · (−2 Re k^{ρ−1})` has exponential `C ((s − ρ)(s − ρ̄))^M e^{K}`, a zero of order `M` at `ρ`.
+For a prime `p ∤ M` with `Re ρ (1 − 1/p) < 13/30` its count exponent is at least `Re ρ/p`: the
+double twin, invisible to `k = 2`, pays `Re ρ/3`.
+
 The case `k = 2` is `even_order_of_count`.
 -/
 
@@ -628,7 +633,7 @@ theorem re_div_le_of_count_multiple_edit {ρ : ℂ} (hρ : 1 / 2 < ρ.re) (him :
           _ = M * (2 / ρ.re) * (n : ℝ) ^ ρ.re := by ring) hθρ
   have hpθ : (p : ℝ) * (θ / (p + 1)) < ρ.re := by
     have hpθ' : (p : ℝ) * θ = ρ.re * p + ρ.re / 2 := by
-      rw [hθ]; field_simp; ring
+      rw [hθ]; field_simp
     rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
     nlinarith
   have hdvd := prime_dvd_order_of_count (isEdit_gedit m) (θ := θ) (by linarith) hS hβ
