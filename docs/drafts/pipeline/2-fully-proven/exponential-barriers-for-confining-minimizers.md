@@ -115,7 +115,7 @@ Since `ρδ→∞` as `δ↓0`, choose `δ` so that
 
 `Aδ(u)≥exp(-βu)+exp(-(β+1/2)u)≥1` for `u≤0`.
 
-Now choose `t>max(Dδ,P)`. The identity for `FG` gives pointwise
+Now choose `t=Dδ+P`, so `t≥Dδ,P`. The identity for `FG` gives pointwise
 
 `Aδ FG-(Dδ+P exp(-u/2))G≥G²`.
 
