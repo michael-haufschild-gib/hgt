@@ -33,61 +33,97 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
   `L`-series (`agz-artin-map-on-ideals`)
 - [x] G4 first inequality: `[I^𝔪 : P_𝔪 N(I_L^𝔪)] ≤ [L:K]`, for every finite `L/K`
   (`agz-norm-index-inequality`, from the Mertens bounds of the ray class characters)
-- [ ] G5 second inequality for cyclic `L/K`: `[I^𝔪 : P_𝔪 N(I_L^𝔪)] ≥ [L : K]` for a suitable `𝔪`
+- [ ] G5 second inequality for cyclic `L/K`: `[K^× : K_{𝔪,1} N(L^×) K_S] ≥ [L : K]` for a
+  suitable `(S, 𝔪)`
   - [x] G5a index calculus of a pair of endomorphisms `f g = g f = 0` (Herbrand quotient)
     (`agz-herbrand-quotient-of-units`)
-  - [x] G5b units: `n · [E_K : N E_L] ≤ 2^ρ · |H¹(G, E_L)|`, `ρ` the number of real places of
-    `K` that ramify (`agz-herbrand-quotient-of-units`)
-  - [ ] G5c `S`-units: `n · [K_S : N L_S] ≤ 2^ρ Π_{v ∈ S} n_v`, from `H¹(G, L_S) = 0`
-  - [ ] G5d local norm index: `[K^× : K(v^j) N(L^×)] ≥ e_v f_v` for `j` large
-  - [ ] G5e approximation and assembly
-- [ ] G6 `ker ω ⊂ P_𝔪 N(I_L^𝔪)` for cyclic `L/K` (crossing with cyclotomic extensions)
-  - [ ] G6a kernel for extensions inside `K(ζ_m)`: `ker ω = P_𝔪 N`
+  - [x] G5b units: `n · h_f(E_L) · h_g(ℤ^X) = h_f(ℤ^X) · h_g(E_L)`, `X` the infinite places of `L`
+    (`agz-herbrand-quotient-of-units`)
+  - [x] G5c `S`-units: `n · [K_S : N L_S] = Π_ω |G_ω|` (orbits on `X` and on `S`), from
+    `H¹(G, L_S) = 0`; such `S` exist above every finite set of primes of `K`
+    (`agz-norm-index-of-s-units`)
+  - [ ] G5d semi-local norm index: a `G`-stable congruence subgroup `W ⊂ L^×` at `S` with
+    `H¹(G, W) = 0`; then `Π_{ω ⊂ S} |G_ω|` divides `[K^× : (K ∩ W) N(L^×)]`
+    - [x] G5d1 permutation modules: `H¹(G, ℤ^X) = 0`, `|Ĥ⁰(G, ℤ^X)| = Π_ω |G_ω|`
+      (`agz-norm-index-of-s-units`)
+    - [ ] G5d2 lattice filtration `Λ_j` of a normal basis, groups `W_k = 1 + Λ_k`
+    - [ ] G5d3 `H¹(G, W_k) = 0`
+    - [ ] G5d4 `[L^{(S)} : W_k] < ∞`
+    - [ ] G5d5 `Π_{ω ⊂ S} |G_ω|` divides `[K^× : (K ∩ W_k) N(L^×)]`
+    - [ ] G5d6 signs: the factor `Π_{ω ⊂ X} |G_ω| = 2^ρ`
+  - [ ] G5e assembly
+- [ ] G6 `ker Θ_S ⊂ K_{𝔪,1} N(L^×) K_S` for cyclic `L/K` (crossing with cyclotomic extensions)
+  - [ ] G6a kernel for extensions inside `F(ζ_m)`: `ker ω = P_𝔫 N` for every multiple `𝔫` of `m ∞`
   - [ ] G6b transfer: `ω_{L/K}(N_{F/K} 𝔟) = ω_{LF/F}(𝔟)|_L`
-  - [ ] G6c auxiliary fields (orders modulo primes; fixed fields in `L(ζ_m)`)
+  - [ ] G6c auxiliary fields (orders modulo `m`; fixed fields in `L(ζ_m)`)
 - [ ] G7 the reciprocity law for cyclic `L/K`, and for every linear character by G1
 
 ## Approach
 
-`L/K` cyclic of degree `n`, `G = ⟨σ⟩`, `ω` the Artin map on `I^𝔪`, `N = N_{L/K}(I_L^𝔪)`.
-Known: `N ⊂ ker ω`, `[I^𝔪 : ker ω] = n` (G2, G3), `[I^𝔪 : P_𝔪 N] ≤ n` (G4).
+`L/K` cyclic of degree `n`, `G = ⟨σ⟩`, `f = σ − 1`, `g = N = Σ_τ τ`, `h_f(A) = [ker f : im g]`,
+`h_g(A) = [ker g : im f]`.
 
-**G7 from G5, G6.** `ker ω ⊂ P_𝔪 N` (G6) and `[I^𝔪 : P_𝔪 N] ≥ n = [I^𝔪 : ker ω]` (G5) give
-`ker ω = P_𝔪 N ⊃ P_𝔪`. A linear character of a Galois group factors through a cyclic quotient;
+**Setting (G5c).** `S_K` a finite set of primes of `K`, `S` the primes of `L` above, with
+(a) `L/K` unramified outside `S_K`; (b) every prime `v ∉ S_K` of `K` is principal up to `S_K`:
+`v_v(c) = 1`, `v_{v'}(c) = 0` for `v' ∉ S_K ∪ {v}`; (c) the same for `L` and `S`. Such `S_K` exist
+above every finite set (ramified primes divide the different; primes dividing integral
+representatives of the ideal classes). Put `K_S`, `L_S` for the `S`-units and
+`Θ_S(α) = Π_{v ∉ S_K} Frob_v^{v_v(α)}`, a homomorphism `K^× → G`.
+
+- `N(L^×) K_S ⊂ ker Θ_S` (G3) and `Θ_S` is onto (G2 and (b)): `[K^× : ker Θ_S] = n`.
+- `α ≡ 1 mod 𝔪`, `𝔪` supported on `S_K`, gives `Θ_S(α) = ω((α))`. So the reciprocity law is
+  `K_{𝔪,1} ⊂ ker Θ_S`.
+
+**G7 from G5, G6.** With `U = K_{𝔪,1} N(L^×) K_S`: `ker Θ_S ⊂ U` (G6), `[K^× : U] ≥ n` (G5), so
+`U = ker Θ_S ⊃ K_{𝔪,1}`. A linear character of a Galois group factors through a cyclic quotient;
 G1 transports the statement.
 
-**G5.** For endomorphisms `f, g` of an abelian group `A` with `f g = g f = 0` put
-`h_f(A) = [ker f : im g]`. For a stable subgroup `A'` with quotient `A''`:
-`h_f(A) · δ = h_f(A') · h_f(A'')`, `δ = [gA ∩ A' : gA'] · [fA ∩ A' : fA']`, symmetric in `f, g`.
-Hence `q = h_f / h_g` is multiplicative, `q = 1` on finite groups (G5a). With `f = σ − 1`,
-`g = 1 + σ + … + σ^{n−1}`: `h_f = |Ĥ⁰|`, `h_g = |Ĥ¹|`.
+**G5c.** `H¹(G, L_S) = 0`: an `S`-unit of norm one is `σy/y` (Hilbert 90); the divisor of `y`
+outside `S` is invariant, so by (a), (b) it is the divisor outside `S` of some `c ∈ K^×`, and
+`y/c ∈ L_S`. The valuations `L_S → ℤ^S` have kernel `E_L` and image of finite index (class
+number), so with G5b and G5d1: `n · h_f(L_S) = Π_{ω ⊂ X} |G_ω| · Π_{ω ⊂ S} |G_ω|`.
 
-Let `S` be a finite set of primes of `K` containing the ramified ones and generating the class
-groups of `K` and of `L` (with the primes above), `𝔪 = Π_{v ∈ S} v^j · (ramified real places)`,
-`U = K_{𝔪,1} N(L^×)`. Then `I^𝔪 / P_𝔪 N ≅ K^× / U K_S` and
-`[K^× : U K_S] = [K^× : U] / [K_S : K_S ∩ U] ≥ [K^× : U] / [K_S : N(L_S)]`.
-- `[K_S : N(L_S)] = h_f(L_S) = q(L_S) h_g(L_S) = 2^ρ Π_{v ∈ S} n_v / n`, `n_v = e_v f_v` (G5c):
-  `H¹(G, L_S) = 0` by Hilbert 90 (an invariant ideal prime to `S` comes from `K`, and is
-  principal up to `S`); `q(L_S) = q(E_L) Π_{v ∈ S} n_v` from the valuations
-  `L_S / E_L ↪ ⊕_{w | S} ℤ` with finite cokernel and `q(ℤ[G/G_v]) = n_v`.
-- `q(E_L) = 2^ρ / n` (G5b): for each infinite place `w` of `L` a unit `η_w` with `|η_w|_{w'} < 1`
-  for `w' ≠ w`, chosen `G`-equivariantly; the `η_w` generate a subgroup of finite index with
-  one relation, `0 → ℤ → ⊕_{v | ∞} ℤ[G/G_v] → W → 0`.
-- `[K^× : U] ≥ 2^ρ Π_{v ∈ S} e_v f_v` (G5d, G5e): approximation reduces to one prime; the
-  valuation gives `f_v`; for the units, with a normal basis `θ` and `V_k = 1 + v^k 𝓞_K[G]θ`:
-  `H¹(V_k / V_M) = 0` for all `M ≥ k` (induced graded pieces), the finite module `U / V_k` has
-  `h_f = h_g`, and `σϖ/ϖ` has order `≥ e_v` in `H¹(U / V_M)` (`ϖ` of valuation one above `v`;
-  an element invariant modulo a deep unit is close to `K`, by the trace).
+**G5d.** `S` any `G`-stable finite set of primes of `L`, `O_j = {y ∈ L : v_w(y) ≥ j, w ∈ S}`,
+`R_j = K ∩ O_j`. Take `θ` with `(τθ)_τ` a basis of `L/K` and
+`Λ_j = {Σ_τ a_τ τθ : a_τ ∈ R_j}`. Then `Λ_j` is `G`-stable, `R_i Λ_j ⊂ Λ_{i+j}`,
+`Λ_i Λ_j ⊂ Λ_{i+j−c}` (`c` from the products `τθ · τ'θ`), every element of `L` lies in some
+`Λ_{−c'}`.
+- *Groups.* For `k ≥ k₀`, `W_k = {x ≠ 0 : x − 1 ∈ Λ_k}` is a `G`-stable group: products by
+  `Λ_k Λ_k ⊂ Λ_k`; `x⁻¹ = Π_{τ ≠ 1} τx / N(x)` and `N(x) ∈ 1 + R_1` is invertible in `1 + R_j`
+  inside `K`, where valuations are multiplicative. `v_w(x) = 0` for `x ∈ W_k`, `w ∈ S`.
+- *Layers.* `a = Σ_τ a_τ τθ = Σ_τ (τ − 1)(a_τ θ) + s θ`, `s = Σ_τ a_τ`, and `Tr a = s · Tr θ`. For
+  a `G`-stable subgroup `C` and `a ∈ C`, `(τ − 1) a ∈ (σ − 1) C`. So `a ∈ Λ_k` with
+  `Tr a ∈ Λ_{k+1}` is `(σ − 1) b + Λ_{k+1}` with `b ∈ Λ_k`. For `x = 1 + a ∈ W_k` of norm one,
+  `Tr a ∈ Λ_{k+1}`, and `x · z/σz ∈ W_{k+1}` for `z = 1 + b`.
+- *Loss.* For `u ∈ W_M` of norm one and `c₀ = θ / Tr θ`, the resolvent
+  `z = Σ_i u σu ⋯ σ^{i−1}u · σ^i c₀` satisfies `u σz = z` and `z − 1 ∈ Λ_{M−c''}`.
+- `H¹(G, W_k) = 0`: descend through the layers to level `M = k + c''`, then apply the loss step.
+- *Finiteness.* For `x` integral at `S` choose `d ∈ 𝓞_K`, `d ≡ 1 mod w^J` (`w ∈ S`), `dx ∈ 𝓞_L`
+  (Chinese remainder theorem in `𝓞_L`, then the norm). With an integral basis `𝓞_L ⊂ Λ_{−c₁}`,
+  so `x ∈ Λ_{−c₁}`, `x − dx ∈ Λ_{J−c₁}`, and `𝓞_L / N₀ 𝓞_L` is finite: `[L^{(S)} : W_k] < ∞`,
+  `L^{(S)}` the elements with `v_w = 0` on `S`.
+- *Index.* `A' = L^× / W_k`. By `H¹(G, W_k) = 0` and Hilbert 90, `(A')^G` is the image of `K^×`:
+  `h_f(A') = [K^× : (K ∩ W_k) N(L^×)]`. The valuations `A' → ℤ^S` have finite kernel
+  `L^{(S)} / W_k` and image of finite index, so `h_f(A') = Π_{ω ⊂ S} |G_ω| · h_g(A')` (G5d1).
+- *Signs.* For an orbit `ω ⊂ X` with `|G_ω| = 2` the place `w ∈ ω` is complex over a real place
+  of `K`; norms are positive there, and `K ∩ W_k` contains elements of every sign pattern.
 
-**G6.** Let `F/K` be finite with `LF ⊂ F(ζ_m)`. Then `ker ω_{LF/F} = P N_{LF/F}` (G6a: G1, G2, G3
-and G4 for `LF/F`) and restriction `Gal(LF/F) → G` is injective, so
-`N_{F/K}(𝔟) ∈ ker ω_{L/K} ⇒ N_{F/K}(𝔟) ∈ P_𝔪 N` (G6b). For admissible `F` (`L ∩ F = K`) this gives
-`θ_F : G → I^𝔪 / P_𝔪 N` with `[N_{F/K} 𝔟] = θ_F(ω(N_{F/K} 𝔟))`. For a prime `𝔭` with
-`ω(𝔭) = σ^d` take `m` with `n | ord_m(N𝔭)` and `τ` of order divisible by `n` independent of
-`N𝔭` modulo `m`, and `F` the fixed field of `⟨(σ^d, N𝔭), (σ, τ)⟩` in `L(ζ_m)`: `𝔭` splits
-completely in `F` and `F` is admissible. Two admissible fields are compared through a third one
-built from a prime `ℓ ≡ 1 (n)` unramified in both; so `θ_F = θ` does not depend on `F` and
-`[𝔞] = θ(ω(𝔞))` for all `𝔞` (G6c).
+**G5e.** `V = K_{𝔪,1} N(L^×) ⊂ (K ∩ W_k)_+ N(L^×)`, so `Π_{ω ⊂ X ⊔ S} |G_ω|` divides
+`[K^× : V] = [K^× : U] · [U : V]`, and `[U : V] = [K_S : K_S ∩ V]` divides
+`[K_S : N L_S] = Π_ω |G_ω| / n`.
+
+**G6.** Let `α ∈ ker Θ_S`, `𝔞 = Π 𝔭_i^{a_i}` its divisor outside `S`, `ω(𝔭_i) = σ^{d_i}`. For each
+`i` take `m_i` (prime to `S`, to the `𝔭_j` and to each other) with `n | ord_{m_i}(N𝔭_i)` and
+`τ_i` of order divisible by `n` with `⟨τ_i⟩ ∩ ⟨N𝔭_i⟩ = 1` modulo `m_i`, and `F_i` the fixed
+field of `⟨(σ^{d_i}, N𝔭_i), (σ, τ_i)⟩` in `L(ζ_{m_i})`: `𝔭_i` splits completely in `F_i`,
+`L ∩ F_i = K`, `L F_i ⊂ F_i(ζ_{m_i})`. With `𝔫 = 𝔪 · m_1 ⋯ m_r · ∞`: over `F_i` the kernel of
+`ω_{LF_i/F_i}` on ideals prime to `𝔫` is `P_𝔫 N` (G6a: cyclotomic reciprocity, G2, G3, and G4
+for `LF_i/F_i`). Choose `𝔟` in the compositum `F` with `ω_{LF/F}(𝔟)|_L = σ`; then
+`𝔠_i = 𝔓_i · N_{F/F_i}(𝔟)^{−d_i}` (`𝔓_i | 𝔭_i` in `F_i`) lies in that kernel (G6b), so
+`N_{F_i/K} 𝔠_i ∈ P_𝔫 N ⊂ P_𝔪 N`; and `Σ a_i d_i ≡ 0 (n)` makes the remaining power of
+`N_{F/K} 𝔟` a norm from `L`. Hence `𝔞 = (γ) N_{L/K}(𝔄)`, `γ ∈ K_{𝔪,1}`; by (c),
+`𝔄` is the divisor outside `S` of some `y ∈ L^×`, and `α / (γ N y) ∈ K_S`.
 
 ## Log
 - 2026-11-13 — created; cyclotomic case formalized and moved to its own card
+- 2026-11-13 — G5a–G5c, G5d1 formalized

@@ -104,7 +104,48 @@ theorem CriticalHalfLineEnergyDomain.prime_bound_by_excess {F : ℝ → ℝ}
     (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) vonMangoldtThreeHalvesMass_nonneg)
   exact hp.trans (hscale.trans_eq (by ring))
 
+/-- A single prime-free cut gives uniform disappearance of the complete prime form. -/
+theorem exists_primeSum_small_of_excess {ε : ℝ} (hε : 0 < ε) :
+    ∃ d : ℝ, 0 < d ∧ ∀ {F : ℝ → ℝ}, CriticalHalfLineEnergyDomain F →
+      (∫ u, F u ^ 2) = 1 → criticalHalfLineExponentialDefect F ≤ d →
+        |primeSum F| < ε := by
+  let C : ℝ := 4 * Real.sqrt 2 * vonMangoldtThreeHalvesMass
+  let c : ℝ := 1 - Real.exp (-(8 * (1 / 2 : ℝ)))
+  let r : ℝ := ε / (2 * (C + 1))
+  have hC : 0 ≤ C := by
+    dsimp only [C]
+    exact mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))
+      vonMangoldtThreeHalvesMass_nonneg
+  have hc : 0 < c := by
+    apply sub_pos.mpr
+    apply Real.exp_lt_one_iff.mpr
+    norm_num
+  have hr : 0 < r := div_pos hε (by positivity)
+  refine ⟨min 1 (c * r ^ 2), lt_min zero_lt_one (mul_pos hc (sq_pos_of_pos hr)), ?_⟩
+  intro F hF hm hd
+  have hd1 := hd.trans (min_le_left _ _)
+  have hδ : 0 ≤ criticalHalfLineExponentialDefect F :=
+    (hF.exponential_defect_pos (by rw [hm]; exact zero_lt_one)).le
+  have hq : 0 ≤ criticalHalfLineExponentialDefect F / c := div_nonneg hδ hc.le
+  have hqle : criticalHalfLineExponentialDefect F / c ≤ r ^ 2 := by
+    apply (div_le_iff₀ hc).mpr
+    simpa only [mul_comm] using hd.trans (min_le_right _ _)
+  have hroot : Real.sqrt (criticalHalfLineExponentialDefect F / c) ≤ r := by
+    have hs := Real.sq_sqrt hq
+    nlinarith only [hs, hqle, Real.sqrt_nonneg (criticalHalfLineExponentialDefect F / c), hr]
+  have hCr : C * r ≤ ε / 2 := by
+    dsimp only [r]
+    rw [← mul_div_assoc]
+    apply (div_le_iff₀ (by positivity : 0 < 2 * (C + 1))).mpr
+    nlinarith only [hε]
+  have hp := hF.prime_bound_by_excess hm hd1 (by norm_num : (0 : ℝ) < 1 / 2)
+    one_div_two_lt_log_two
+  change |primeSum F| ≤ C * Real.sqrt (criticalHalfLineExponentialDefect F / c) at hp
+  have hb := hp.trans ((mul_le_mul_of_nonneg_left hroot hC).trans hCr)
+  linarith only [hb, hε]
+
 #print axioms CriticalHalfLineEnergyDomain.terminalCut_error_le
 #print axioms CriticalHalfLineEnergyDomain.prime_bound_by_excess
+#print axioms exists_primeSum_small_of_excess
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

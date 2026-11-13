@@ -86,4 +86,8 @@ The elementary bounds `1-1/b≤log b≤b-1` put the limiting lower bound above `
 
 `WeightedSourceTruncation` proves closure of the weighted source domain under measurable indicators and identifies both retained and discarded masses. Its plain source audit has the same three axioms. Both modules are wired.
 
-Terminal truncation, uniform prime/pole disappearance, and first-moment Fourier-window control are being formalized. The dilation-stable logarithmic domain, uniform spectral comparison, and final variational and virial limits remain. Not counted.
+`WeightedSourceLocalizedPairing` proves the restricted dual-kernel Cauchy–Schwarz bound. `HalfLineTerminalTruncation` proves weighted terminal concentration and uniform disappearance of the full prime form. Both have kernel-checked oleans with the standard three axioms; plain source audits remain.
+
+`HalfLineConfinementPoleDecay` proves uniform disappearance of the complete prime-and-pole remainder on normalized actual-domain profiles (`exists_arithmeticRemainder_small_of_excess`). Its plain source audit passes with the standard three axioms; the module is wired.
+
+First-moment Fourier-window control is being formalized. The dilation-stable logarithmic domain, uniform spectral comparison, and final variational and virial limits remain. Not counted.

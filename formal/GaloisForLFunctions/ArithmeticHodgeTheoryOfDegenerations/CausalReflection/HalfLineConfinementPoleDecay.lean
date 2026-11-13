@@ -98,7 +98,45 @@ theorem exists_kernel_pairing_sq_small_of_excess {k : ℝ → ℝ}
   dsimp only [h] at hbound
   linarith only [hbound, hfar, hε]
 
+/-- The prime and pole terms left after removing Gamma energy and confinement. -/
+def criticalHalfLineArithmeticRemainder (F : ℝ → ℝ) : ℝ :=
+  -primeSum F + 2 * coshHalfMoment F ^ 2 - 2 * sinhHalfMoment F ^ 2
+
+theorem criticalHalfLineFullEnergy_eq_arch_add_remainder (R : ℝ) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) :
+    criticalHalfLineFullEnergy R F = archForm F +
+      criticalAliasCoefficient R * (∫ u, F u ^ 2 * Real.exp (-(8 * u))) +
+        criticalHalfLineArithmeticRemainder F := by
+  unfold criticalHalfLineFullEnergy criticalHalfLineArithmeticRemainder
+  rw [halfLineExpMass_eq_full hF.support]
+  ring
+
+/-- Terminal concentration removes the complete arithmetic remainder uniformly. -/
+theorem exists_arithmeticRemainder_small_of_excess {ε : ℝ} (hε : 0 < ε) :
+    ∃ d : ℝ, 0 < d ∧ ∀ {F : ℝ → ℝ}, CriticalHalfLineEnergyDomain F →
+      (∫ u, F u ^ 2) = 1 → criticalHalfLineExponentialDefect F ≤ d →
+        |criticalHalfLineArithmeticRemainder F| < ε := by
+  have he : 0 < ε / 8 := div_pos hε (by norm_num)
+  obtain ⟨dp, hdp, hp⟩ := exists_primeSum_small_of_excess he
+  obtain ⟨dc, hdc, hc⟩ := exists_kernel_pairing_sq_small_of_excess
+    (Real.continuous_cosh.comp (continuous_id.div_const 2)) abs_cosh_half_le_exp he
+  obtain ⟨ds, hds, hs⟩ := exists_kernel_pairing_sq_small_of_excess
+    (Real.continuous_sinh.comp (continuous_id.div_const 2)) abs_sinh_half_le_exp he
+  refine ⟨min dp (min dc ds), lt_min hdp (lt_min hdc hds), ?_⟩
+  intro F hF hm hd
+  have hpF := hp hF hm (hd.trans (min_le_left _ _))
+  have hcF := hc hF hm (hd.trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have hsF := hs hF hm (hd.trans ((min_le_right _ _).trans (min_le_right _ _)))
+  change coshHalfMoment F ^ 2 < ε / 8 at hcF
+  change sinhHalfMoment F ^ 2 < ε / 8 at hsF
+  apply abs_lt.mpr
+  dsimp only [criticalHalfLineArithmeticRemainder]
+  constructor
+  · nlinarith only [hpF, hsF, le_abs_self (primeSum F), sq_nonneg (coshHalfMoment F), hε]
+  · nlinarith only [hpF, hcF, neg_abs_le (primeSum F), sq_nonneg (sinhHalfMoment F), hε]
+
 #print axioms CriticalHalfLineEnergyDomain.kernel_pairing_sq_le_excess
 #print axioms exists_kernel_pairing_sq_small_of_excess
+#print axioms exists_arithmeticRemainder_small_of_excess
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
