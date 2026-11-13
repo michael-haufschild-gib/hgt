@@ -6,6 +6,9 @@
 - **Statement:** The closed half-line form with Fourier symbol `log|ξ|` and potential `8(-u)` has a unique unit minimizing line with a nonnegative representative. Rescaled actual confining minimizers converge in `L²` to this line.
 - **Status:** Full statement unproved; not counted. The [universal soft logarithmic limit](../3-formalized/universal-soft-logarithmic-confinement-limit.md) and compact `L²` closure of every unit Rayleigh sublevel are verified. Closed-domain attainment, sign rigidity, and profile convergence remain open.
 
+The [closed-attainment paper proof](../2-fully-proven/soft-logarithmic-ground-state-attainment.md)
+is followed by Lean formalization; its assembly remains unverified.
+
 ## Corpus connection
 
 `FourierFirstMomentWindow` excludes spectral concentration at zero under a bounded physical first moment. Its optimized cutoff now also controls the negative logarithmic Fourier tail. Positive logarithmic Fourier energy and physical confinement would then give compactness.
@@ -116,6 +119,9 @@ Lévy density `exp(-h)/(2h)`. Dominated convergence would therefore give
 convergence in the positive logarithmic form norm. The first-moment term
 converges by physical domination, and the negative logarithmic term by the
 uniform tail estimate. No exponential moment of the limit is needed.
+
+`MeasureTheory.tendsto_lpBoundedMulCLM_apply` supplies the strong cutoff
+convergence directly from the bounded pointwise multipliers.
 
 Normalize the compact cutoffs after their `L²` norms approach one. Their
 first moments stay bounded, so the verified unit `L¹∩L²` negative-tail

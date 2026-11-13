@@ -18,8 +18,8 @@ the integrand `4π²e^{9a/2 + f(a) + iza} e^{κv + Pψ(v) + τv²}`, `κ = 9/2 +
   `4π²e^{9a/2+f(a)+iza}(π/(2P − τ))^{1/2}` up to the Laplace error and the remainder of the kernel.
 * `norm_integral_left_le`: on `0 ≤ Re x ≤ Re a − 1` the function `Re(τx²)` is a convex quadratic,
   so the integrand is at most its values at the two ends.
-* `norm_lineHalf_sub_le` (**saddle term**): the line integral is `S₀(a)e^{iza}` up to
-  `leftErr a + e^{Re f(a) − Im(za)} saddleErr a`.
+* `norm_lineHalf_sub_le` (**saddle term**): for `|z| Re a ≤ R` the line integral is `S₀(a)e^{iza}`
+  up to `leftErr R a + e^{Re f(a) − Im(za)} saddleErr a`.
 -/
 
 open Complex MeasureTheory Filter Topology Set
@@ -582,18 +582,19 @@ theorem line_quadratic_le_max {A B : ℝ} (hA : 0 ≤ A) {s s₁ : ℝ} (hs0 : 0
     have h1 : A * s + B ≤ A * s₁ + B := by nlinarith [mul_le_mul_of_nonneg_left hs hA]
     nlinarith [mul_le_mul hs h1 h (hs0.trans hs)]
 
-/-- The error of the line integral to the left of the saddle: the larger of the two ends, the
-origin (`e^{−(Im a)² Re τ}`) and the point one unit before the saddle (`e^{Re f − Re P + Re τ}`). -/
-def leftErr (a : ℂ) : ℝ :=
-  a.re * (stripConst a.im * Real.exp (a.re / 2) * Real.exp 8 *
+/-- The error of the line integral to the left of the saddle for `|z| Re a ≤ R`: the larger of the
+two ends, the origin (`e^{−(Im a)² Re τ}`) and the point one unit before the saddle
+(`e^{Re f − Re P + Re τ}`). -/
+def leftErr (R : ℝ) (a : ℂ) : ℝ :=
+  a.re * (stripConst a.im * Real.exp (a.re / 2) * Real.exp R *
     (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
       Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)))
 
 /-- **The line to the left of the saddle.** -/
-theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im) (hη : a.im < π / 4)
-    (hτ : 0 ≤ (saddleTime a).re) (hz : ‖z‖ * a.re ≤ 8) :
+theorem norm_integral_left_le {a z : ℂ} {R : ℝ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
+    (hη : a.im < π / 4) (hτ : 0 ≤ (saddleTime a).re) (hz : ‖z‖ * a.re ≤ R) :
     ‖∫ s in (0 : ℝ)..(a.re - 1), stripIntegrand (saddleTime a) z (s + a.im * I)‖ ≤
-      leftErr a := by
+      leftErr R a := by
   have hπ := Real.pi_lt_d2
   have ha : a ≠ 0 := by
     intro h
@@ -613,7 +614,7 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
         (saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re := by
     rw [← hline (a.re - 1), ha1', saddleTime_mul_sub_one_sq ha]
     simp only [Complex.add_re, Complex.sub_re]
-  set C : ℝ := stripConst a.im * Real.exp (a.re / 2) * Real.exp 8 *
+  set C : ℝ := stripConst a.im * Real.exp (a.re / 2) * Real.exp R *
     (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
       Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)) with hC
   have hC0 : 0 ≤ C := by positivity
@@ -637,7 +638,7 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
       · exact le_max_of_le_left (by linarith)
       · exact le_max_of_le_right (by linarith)
     -- the oscillating factor
-    have hosc : (I * z * ((s : ℂ) + a.im * I)).re ≤ 8 := by
+    have hosc : (I * z * ((s : ℂ) + a.im * I)).re ≤ R := by
       rw [mul_assoc, Complex.I_mul_re]
       have h1 : -(z * ((s : ℂ) + a.im * I)).im ≤ ‖z * ((s : ℂ) + a.im * I)‖ :=
         (neg_le_abs _).trans (Complex.abs_im_le_norm _)
@@ -650,7 +651,7 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
       linarith
     have hexp : Real.exp ((saddleTime a * ((s : ℂ) + a.im * I) ^ 2).re +
         (I * z * ((s : ℂ) + a.im * I)).re) ≤
-        Real.exp 8 * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
+        Real.exp R * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
           Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re)) := by
       have h1 := Real.exp_le_exp.mpr hQ
       have h2 : Real.exp (max (-(a.im ^ 2 * (saddleTime a).re))
@@ -670,11 +671,11 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
           Real.exp ((saddleTime a * ((s : ℂ) + a.im * I) ^ 2).re +
             (I * z * ((s : ℂ) + a.im * I)).re)
         ≤ (stripConst a.im * Real.exp (s / 2)) *
-            (Real.exp 8 * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
+            (Real.exp R * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
               Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re))) :=
           mul_le_mul hk hexp (Real.exp_pos _).le (by positivity)
       _ ≤ (stripConst a.im * Real.exp (a.re / 2)) *
-            (Real.exp 8 * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
+            (Real.exp R * (Real.exp (-(a.im ^ 2 * (saddleTime a).re)) +
               Real.exp ((saddlePhaseValue a).re - (saddleP a).re + (saddleTime a).re))) := by
           have h5 : Real.exp (s / 2) ≤ Real.exp (a.re / 2) := Real.exp_le_exp.mpr (by linarith)
           exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h5 hK) (by positivity)
@@ -687,13 +688,13 @@ theorem norm_integral_left_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
 /-! ## The saddle term -/
 
 /-- **The saddle term.** For `Re a ≥ 1`, `0 ≤ Im a < π/4`, `Re P ≥ 18`, `0 ≤ 8 Re τ ≤ Re P`,
-`|z| ≤ 1` and `|z| Re a ≤ 8`, the line integral through the saddle is `S₀(a)e^{iza}` up to
-`leftErr a + e^{Re f(a) − Im(za)} saddleErr a`. -/
-theorem norm_lineHalf_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im) (hη : a.im < π / 4)
-    (hp : 18 ≤ (saddleP a).re) (hτ0 : 0 ≤ (saddleTime a).re)
-    (hτ : 8 * (saddleTime a).re ≤ (saddleP a).re) (hz : ‖z‖ ≤ 1) (hza : ‖z‖ * a.re ≤ 8) :
+`|z| ≤ 1` and `|z| Re a ≤ R`, the line integral through the saddle is `S₀(a)e^{iza}` up to
+`leftErr R a + e^{Re f(a) − Im(za)} saddleErr a`. -/
+theorem norm_lineHalf_sub_le {a z : ℂ} {R : ℝ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im)
+    (hη : a.im < π / 4) (hp : 18 ≤ (saddleP a).re) (hτ0 : 0 ≤ (saddleTime a).re)
+    (hτ : 8 * (saddleTime a).re ≤ (saddleP a).re) (hz : ‖z‖ ≤ 1) (hza : ‖z‖ * a.re ≤ R) :
     ‖lineHalf (saddleTime a) a.im z - saddleTerm a * cexp (I * z * a)‖ ≤
-      leftErr a + Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a := by
+      leftErr R a + Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a := by
   have hint := integrableOn_stripIntegrand_line (saddleTime a) z hη0 hη
   have hint1 : IntegrableOn (fun s : ℝ => stripIntegrand (saddleTime a) z (s + a.im * I))
       (Ioi (a.re - 1)) := hint.mono_set (Ioi_subset_Ioi (by linarith))
@@ -712,7 +713,7 @@ theorem norm_lineHalf_sub_le {a z : ℂ} (ha1 : 1 ≤ a.re) (hη0 : 0 ≤ a.im) 
           ((∫ s in Ioi (a.re - 1), stripIntegrand (saddleTime a) z (s + a.im * I)) -
             saddleAmp a z * ((π : ℂ) / (2 * saddleP a - saddleTime a)) ^ (1 / 2 : ℂ))‖ := by
         congr 1; ring
-    _ ≤ leftErr a + Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a :=
+    _ ≤ leftErr R a + Real.exp ((saddlePhaseValue a).re - (z * a).im) * saddleErr a :=
         (norm_add_le _ _).trans (add_le_add h1 h2)
 
 end

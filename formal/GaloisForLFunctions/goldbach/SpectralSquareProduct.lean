@@ -102,6 +102,24 @@ theorem spectralSquareFactor_critical_iff (μ : ℝ) :
     have hx := sq_eq_zero_iff.mp ((mul_eq_zero.mp hp).resolve_left (pow_ne_zero 2 hm))
     linarith only [hx]
 
+/-- Every spectral zero is strictly inside the unit strip, at arbitrary spectral scale. -/
+theorem spectralSquareFactor_zero_mem_strip (μ : ℝ) (z : ℂ)
+    (hz : spectralSquareFactor μ z = 0) : 0 < z.re ∧ z.re < 1 := by
+  rcases spectralSquareFactor_zero_location μ z hz with hx | hy
+  · rw [hx]
+    norm_num
+  have hm := spectralSquareFactor_root_nonzero μ z hz
+  have hp : 0 < 4 * μ ^ 2 := mul_pos (by norm_num) (sq_pos_of_ne_zero hm)
+  have hr := iharaBlock_re_eq_zero (4 * μ ^ 2) (4 * μ ^ 2) z hz
+  rw [hy] at hr
+  have he : (4 * μ ^ 2) * (z.re * (1 - z.re)) = 1 := by nlinarith only [hr]
+  have hx : 0 < z.re * (1 - z.re) :=
+    ((mul_pos_iff.mp (show 0 < (4 * μ ^ 2) * (z.re * (1 - z.re)) by rw [he]; norm_num)).resolve_right
+      (fun hn => not_lt_of_ge hp.le hn.1)).2
+  constructor
+  · nlinarith only [hx, sq_nonneg z.re]
+  · nlinarith only [hx, sq_nonneg (z.re - 1)]
+
 /-- A finite spectral function, allowing zero eigenvalues and an empty spectrum. -/
 def finiteSpectralSquareProduct {ι : Type*} [Fintype ι] (μ : ι → ℝ) (z : ℂ) : ℂ :=
   ∏ i, spectralSquareFactor (μ i) z
@@ -135,3 +153,16 @@ theorem finiteSpectralSquareProduct_reflect {ι : Type*} [Fintype ι]
 end
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_eq
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_reflect
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_center
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_zero
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_zero_location
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_critical_iff
+#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct
+#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_eq_zero_iff
+#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_critical_iff
+#print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_reflect

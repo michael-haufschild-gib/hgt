@@ -65,3 +65,7 @@ theorem sum_units_eq_coprime_antidiagonal (N : ℕ) (F : ℕ → ℕ → ℝ) :
 end
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.unit_val_add_neg_val
+#print axioms GaloisForLFunctions.Goldbach.sum_units_eq_coprime_antidiagonal

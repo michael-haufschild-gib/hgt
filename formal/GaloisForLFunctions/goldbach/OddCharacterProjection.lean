@@ -166,3 +166,15 @@ theorem four_mul_odd_moment_eq_reflection_defect (N : ℕ)
   linear_combination 2 * twice_sum_odd_norm_sq_unitCharacterSum N w
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.unitCharacterSum
+#print axioms GaloisForLFunctions.Goldbach.sum_unitCharacter_mul_star
+#print axioms GaloisForLFunctions.Goldbach.twice_sum_odd_unitCharacter_mul_star
+#print axioms GaloisForLFunctions.Goldbach.sum_unitCharacterSum_mul_star
+#print axioms GaloisForLFunctions.Goldbach.unitCharacterSum_neg
+#print axioms GaloisForLFunctions.Goldbach.sum_parity_unitCharacterSum_mul_star
+#print axioms GaloisForLFunctions.Goldbach.twice_sum_odd_unitCharacterSum_mul_star
+#print axioms GaloisForLFunctions.Goldbach.sum_norm_sq_unitCharacterSum
+#print axioms GaloisForLFunctions.Goldbach.twice_sum_odd_norm_sq_unitCharacterSum
+#print axioms GaloisForLFunctions.Goldbach.four_mul_odd_moment_eq_reflection_defect

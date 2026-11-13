@@ -102,3 +102,14 @@ theorem twice_oddCharacterGram_eq_reflection_gap (N : ℕ) {ι : Type*}
 end
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterFeatures
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterGram
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_posSemidef
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_rank
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_rank_le
+#print axioms GaloisForLFunctions.Goldbach.twice_card_oddCharacters
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_rank_le_totient_div_two
+#print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_apply
+#print axioms GaloisForLFunctions.Goldbach.twice_oddCharacterGram_eq_reflection_gap

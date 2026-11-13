@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaReflectionRatioClock
+import GaloisForLFunctions.RHTower.UnitModulusL2Multiplier
 
 /-!
 # The signed-Beta Gamma factor as a reflection clock
@@ -54,6 +55,38 @@ theorem signedBetaGammaFactor_axis_mul_norm (t : ℝ) (z : ℂ) :
     ‖signedBetaGammaFactor ((t : ℂ) * I) * z‖ = ‖z‖ := by
   rw [norm_mul, norm_signedBetaGammaFactor_axis, one_mul]
 
+/-- The Gamma phase is measurable on the whole imaginary axis. -/
+theorem measurable_signedBetaGammaFactor_axis :
+    Measurable (fun t : ℝ => signedBetaGammaFactor ((t : ℂ) * I)) := by
+  have hg : Measurable Complex.Gamma := by
+    simpa only [reciprocalGammaEntire, inv_inv] using
+      contDiff_reciprocalGammaEntire.continuous.measurable.inv
+  exact (hg.comp (by fun_prop)).div (hg.comp (by fun_prop))
+
+/-- The literal signed-Beta factor gives a phase for every measure on the real axis. -/
+def signedBetaGammaPhase (ν : MeasureTheory.Measure ℝ) :
+    RHTower.UnitModulusL2Phase ℝ ν where
+  toFun t := signedBetaGammaFactor ((t : ℂ) * I)
+  aestronglyMeasurable := measurable_signedBetaGammaFactor_axis.aestronglyMeasurable
+  norm_eq_one := Filter.Eventually.of_forall norm_signedBetaGammaFactor_axis
+
+/-- Multiplication by the signed-Beta factor is an onto isometry of the spectral `L²` space. -/
+def signedBetaGammaUnitary (ν : MeasureTheory.Measure ℝ) :
+    MeasureTheory.Lp ℂ 2 ν ≃ₗᵢ[ℂ] MeasureTheory.Lp ℂ 2 ν :=
+  (signedBetaGammaPhase ν).mulUnitary
+
+/-- The unitary acts by the literal Gamma quotient almost everywhere. -/
+theorem signedBetaGammaUnitary_ae (ν : MeasureTheory.Measure ℝ)
+    (f : MeasureTheory.Lp ℂ 2 ν) :
+    signedBetaGammaUnitary ν f =ᵐ[ν]
+      fun t => signedBetaGammaFactor ((t : ℂ) * I) * f t :=
+  (signedBetaGammaPhase ν).mulUnitary_ae f
+
+/-- Every spectral `L²` norm is preserved by the Gamma factor. -/
+theorem norm_signedBetaGammaUnitary (ν : MeasureTheory.Measure ℝ)
+    (f : MeasureTheory.Lp ℂ 2 ν) : ‖signedBetaGammaUnitary ν f‖ = ‖f‖ :=
+  (signedBetaGammaUnitary ν).norm_map f
+
 /-- The global meromorphic element representing `X₁(2t)`. -/
 def signedBetaGammaFactorMero : meroField Set.univ := gammaReflectionRatioMero (3 / 4)
 
@@ -74,3 +107,18 @@ theorem signedBetaGammaFactorMero_reflection :
 end
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor_twice
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor_neg
+#print axioms GaloisForLFunctions.Goldbach.norm_signedBetaGammaFactor_axis
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactor_axis_mul_norm
+#print axioms GaloisForLFunctions.Goldbach.measurable_signedBetaGammaFactor_axis
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaPhase
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaUnitary
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaUnitary_ae
+#print axioms GaloisForLFunctions.Goldbach.norm_signedBetaGammaUnitary
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactorMero
+#print axioms GaloisForLFunctions.Goldbach.hypertranscendentalOver_signedBetaGammaFactorMero
+#print axioms GaloisForLFunctions.Goldbach.signedBetaGammaFactorMero_reflection

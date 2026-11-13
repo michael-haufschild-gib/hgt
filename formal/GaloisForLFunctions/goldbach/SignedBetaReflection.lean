@@ -89,3 +89,11 @@ theorem signedBetaReflectionCore_eq_zero_iff (r t : ℂ) :
 end
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.signedBetaReflectionCore
+#print axioms GaloisForLFunctions.Goldbach.signedBetaReflectionCore_eq_sine_sum
+#print axioms GaloisForLFunctions.Goldbach.signedBetaReflectionCore_factorization
+#print axioms GaloisForLFunctions.Goldbach.signedBetaReflectionCore_differentiable_left
+#print axioms GaloisForLFunctions.Goldbach.signedBetaReflectionCore_differentiable_right
+#print axioms GaloisForLFunctions.Goldbach.signedBetaReflectionCore_eq_zero_iff

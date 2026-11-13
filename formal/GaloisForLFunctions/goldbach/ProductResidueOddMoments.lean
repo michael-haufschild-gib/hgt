@@ -88,3 +88,11 @@ theorem balancedProductResidueCount_odd_character_moment (N k : ℕ) :
 end
 
 end GaloisForLFunctions.Goldbach
+
+-- Temporary dependency audit.
+#print axioms GaloisForLFunctions.Goldbach.productResidueCount_neg
+#print axioms GaloisForLFunctions.Goldbach.balancedProductResidueCount_neg
+#print axioms GaloisForLFunctions.Goldbach.productResidueCount_character
+#print axioms GaloisForLFunctions.Goldbach.balancedProductResidueCount_character
+#print axioms GaloisForLFunctions.Goldbach.productResidueCount_odd_character_moment
+#print axioms GaloisForLFunctions.Goldbach.balancedProductResidueCount_odd_character_moment
