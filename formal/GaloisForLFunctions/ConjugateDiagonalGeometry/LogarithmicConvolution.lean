@@ -92,7 +92,8 @@ theorem log_height_translate_ratio_le {T u : ℝ} (hT : 2 ≤ |T|) :
   calc Real.log (2 + |T + u|) / Real.log |T|
       ≤ (2 * Real.log |T| + |u|) / Real.log |T| :=
         div_le_div_of_nonneg_right hb (hl2.le.trans hlT)
-    _ = 2 + |u| / Real.log |T| := by field_simp [(hl2.trans_le hlT).ne']
+    _ = 2 + |u| / Real.log |T| := by
+      rw [add_div, mul_div_cancel_right₀ _ (hl2.trans_le hlT).ne']
     _ ≤ 2 + |u| / Real.log 2 := by
       exact add_le_add_right (div_le_div_of_nonneg_left (abs_nonneg u) hl2 hlT) 2
 
