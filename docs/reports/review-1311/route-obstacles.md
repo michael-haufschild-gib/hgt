@@ -102,14 +102,14 @@ Established:
 - `0<R_PD=R_PSD=R_polar=R_halfline≤W=R_prim=R_high=inf_A windowThreshold(A)`, each infinite iff RH [F]; `polarPaymentCriticalThreshold=⊤ ⇔ RH` [L*]; three-way classification: RH, or `R_polar<W`, or `R_polar=W` finite with every critical state orthogonal to the polar source [L*] (log §4.2).
 - The half-line energy branch: at every `R>0` an attained unit-mass minimizer, unique up to sign, with Laplace transform zero-free on `Re z>0`; the floor strictly concave in `t=1/R`; the eighth-exponential mass of the minimizers strictly decreasing in `t` [L*] (log §4.2).
 - At the critical ratio `W₀`: floor zero; derivative `−a(W₀)∫F²e^{−8u}/W₀`; weighted and polar stability (distance² and the square of the polar pairing difference are `≤C|a(R)−a(W₀)|`); Laplace transform nonzero on `Re z≥0`; outer multiplier; cyclic under causal translations; positive mass on every terminal interval; a charged state gives `R_polar<W₀`; polar residual bounded by the critical energy [L*] (log §4.2).
-- Strong confinement, `a=a(R)→∞`: `|λ(R)−a−log a|≤K` and `c≤a·δ_R≤C` [L*] (log §4.2); the Gamma symbol has a logarithmic tail with bounded remainder and a lower bound `−(10+log 4)`; the Gamma error form tends to zero on each logarithmic-domain profile and is bounded below uniformly on unit profiles with bounded first moment [L*] (log §4.13). Written closure [S] (statements read, log §4.14): `λ(R)−a−log a→μ`, the infimum of the limiting form (logarithmic Fourier energy plus `8∫(−u)F²` on a dilation-stable logarithmic domain); `a·δ_R→1`; `a·∫(−u)F²→1/8`, uniformly over the minimizers (`universal_softLogarithmic_confinement_limit`). `μ` is an infimum: attainment by a limiting state and convergence of the rescaled profiles are open [F].
+- Strong confinement, `a=a(R)→∞`: `λ(R)−a−log a→μ`, the infimum of logarithmic Fourier energy plus `8∫(−u)F²` on a dilation-stable logarithmic domain; rescaled minimizers approach this floor, `a·δ_R→1`, and `a·∫(−u)F²→1/8`, uniformly over the minimizers [L*] (`universal_softLogarithmic_confinement_limit`; [completed proof and Lean audit](../../drafts/pipeline/3-formalized/universal-soft-logarithmic-confinement-limit.md)). The Gamma-symbol normalization, first-moment spectral bound, and vanishing arithmetic remainder supply the matching variational limits. Attainment of `μ` and convergence to a limiting profile remain open.
 - The complete tilted-spline matrix is positive definite for every exponent below `1/8` eventually [L*] (log §4.9).
 - On the aperture side: below the polar ground energy the index is the number of charged crossings; on windows with `4J≤R` a ground vector of the block matrix is charged [L*] (log §4.10).
 
 | | Obstacle | Strength |
 |---|---|---|
 | A9, A13 | constants of the eighth-root horizon; near-gcd charges (unverified) | — |
-| A158 | verification and integration of the written strong-confinement closure [S]; attainment of the limiting infimum and convergence of the rescaled profiles (unverified) | — |
+| A158 | attainment of the limiting infimum and convergence of the rescaled profiles (unverified); the energy, excess, and width limits are verified and integrated | — |
 | B6, B101 | full-space sign at every critical multiple; polar payment at every ratio | RH |
 | B104 | whether the critical half-line state is charged; first step a Green or boundary-trace identity linking the motion of the wall to the charge | method |
 | B123 | correlated arithmetic pairings dominating the depleted kernel | method |
@@ -384,7 +384,7 @@ Receiver statements follow the frontier map at the checkpoint unless marked `[L*
 
 ### HF — Hodge / complete cells
 - **Path:** complete arithmetic form `≥0` → Hodge index → RH.
-- **Established:** S1, S10; the critical half-line energy branch (attainment, uniqueness, concavity, derivative, stability, outer, cyclic, strong-confinement bounds) [L*] (log §4.2); the strong-confinement limit written [S] (log §4.14); RH ⇔ the Hodge inequality on positive packets without common blocks [L*]; exact index for number rings, quotients and powers [L*].
+- **Established:** S1, S10; the critical half-line energy branch (attainment, uniqueness, concavity, derivative, stability, outer, cyclic) and the universal strong-confinement energy, excess, and width limits [L*]; RH ⇔ the Hodge inequality on positive packets without common blocks [L*]; exact index for number rings, quotients and powers [L*].
 - **(a)** A9, A13, A141, A154, A158.
 - **(b)** B6, B101, B104, B123, B8, B41, B10, B87, B88, B149, B152, B192. Stability does not determine the polar pairing of the state; cyclicity in `L²` is not density in the energy norm; the strong-confinement regime `R→0` does not settle the sign at `R→∞` [F].
 
@@ -522,7 +522,7 @@ Each needs its source-to-receiver step (B81). Dormant pending a source mechanism
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
 | AGZ | forced data; exact index for number rings, quotients and powers; Hodge inequality form of RH; certified ratio `≤103/50`, narrow windows positive definite, first blocks; uniform index bound at each ratio; index law in the aperture; charged crossings; gluing law, brackets, response matrices; rank law of the binding; weakened and twisted contacts; power and critical combs; Li coefficients as Laguerre tails [L*] | A154 | B104, B149, B169, B88, B87, B152, B192 |
-| AHD / CACT / HTGeometry-HardyBoundary | thresholds; classification; the half-line energy branch and the critical state (uniqueness, concavity, derivative, stability, outer, cyclic, terminal mass, strong-confinement bounds); positivity below the eighth root [L*]; the strong-confinement limit with its floor, excess and width scales written [S] | A9, A13, A158 | B104, B123 |
+| AHD / CACT / HTGeometry-HardyBoundary | thresholds; classification; the half-line energy branch and the critical state (uniqueness, concavity, derivative, stability, outer, cyclic, terminal mass); positivity below the eighth root; the universal strong-confinement floor, excess and width limits [L*] | A9, A13, A158 | B104, B123 |
 | ALG | Metzler Hodge index theorem; trickle-down; twist-blind atomic hyperbolicity; Cayley ladder criterion [doc] | — | B192 (the hyperbolic regime with the true contacts) |
 | HFP | mass floors on ratio windows; short windows do not see the contacts [L*] | — | B152 |
 | WZC | two-sided edits; balance, parity, count floor; floor `≥13/30`; twin defects; the frontier dichotomy; the scenario table of world I [L*] | A155, A157 | B183, B191 |

@@ -41,7 +41,7 @@ two involutions `c` and `r`. There are three tiers.
    family `H_τ`. The zeros form a cover of the time plane; its branch points are the
    collisions. `r` is the deck map `z ↦ −z`, and `c` is the antiholomorphic map
    `(τ, z) ↦ (τ̄, z̄)`. Over the forward half-plane `Re τ > 0` the cover has a monodromy group
-   `G₊`, a group of signed permutations of the pairs `{z, −z}`:
+   `G₊`, a group of restricted signed permutations of the pairs `{z, −z}`:
    - the *sign part* comes from the collisions at the centre `z = 0`, where the functional
      equation is the local monodromy: a turn around a centre time carries a zero to its
      negative (a *sign flip*);
@@ -162,6 +162,15 @@ finitely many zeros).
   `Φ(√u)/√u`, positive and decreasing because the Riemann kernel decreases on `[0, ∞)`. The
   sine transform of a decreasing function is positive, so at a time with `Re τ ≤ 0` the
   imaginary part of `c(τ)` has the sign of `Im τ`.
+- **Far zeros return.** Along a path of times in a box, the trap applies step by step: a zero
+  that starts far enough out stays far out, where every zero is simple. So a far zero has a
+  lift through simple zeros along every loop of the straight contraction of a loop, also where
+  the contraction crosses branch times, and homotopy invariance returns it to itself.
+- **Three regions of a turn.** For a small circle around a time `τ₀` the fibre splits into the
+  far zeros, the zeros near a simple zero of `H_τ₀`, and the sheets of the collisions at `τ₀`.
+  The first two are values of continuous families of simple zeros over a disc of times and
+  return; the sheets are reflected. Finiteness of the zeros of `H_τ₀` in a disc makes one
+  radius serve the whole fibre.
 - **Symmetric functions of a fibre.** Each `H_τ` has order one with logarithmic type, hence a
   genus-one product over its zeros. Dividing the partial fraction of `H_τ'/H_τ` by `z` and
   letting `z → 0` gives the sum of the inverse squares of the zeros as `−H_τ''(0)/H_τ(0)`,
@@ -344,6 +353,15 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   forward path off the branch times, a loop in a convex set of forward times without branch
   times transports every zero to itself, and `G₊` is a quotient of the fundamental group of
   the forward half-plane without the branch times.
+- *Finite support.* Every element of `G₊(τ)` moves finitely many zeros: for a box of times and
+  a modulus of continuity there is a radius beyond which every loop fixes every zero. Every
+  fibre over a forward time off the branch times is infinite, so the reflection `r` is not an
+  element of `G₊(τ)`.
+- *The turn on the whole fibre.* For every forward time `τ₀` and every small `r`, the turn
+  around `τ₀` fixes every zero of `H_{τ₀+r²}` that is not a sheet of a collision of order at
+  least two at `τ₀`, and reflects the sheets. At a centre time whose central collision is
+  double and is the only collision, the turn is the sign flip of one pair, and `G₊` at every
+  base time contains the sign flip of exactly one pair.
 - *Real branch times.* If a segment of real times from `a < 0` to `b > 0` contains no branch
   time, then infinitely many nonreal zeros of `H_a` escape along it. So every real
   neighbourhood of the time `0` contains a branch time, or zeros escape along real times
@@ -379,7 +397,9 @@ collisions.
 [forward monodromy group](TheTransportsOverForwardTimesFormAGroup.lean),
 [conjugation](ConjugationOfTheZerosIsAMonodromyOfTheHeatCover.lean),
 [turns](TheTurnAroundAForwardBranchTimeIsANontrivialForwardMonodromy.lean),
-[homotopy invariance](TheTransportOfAZeroDependsOnlyOnTheHomotopyClass.lean))
+[homotopy invariance](TheTransportOfAZeroDependsOnlyOnTheHomotopyClass.lean),
+[finite support](EveryForwardMonodromyMovesFinitelyManyZeros.lean),
+[the turn on the whole fibre](TheTurnAroundABranchTimeMovesOnlyTheSheetsOfItsCollisions.lean))
 
 ## Criteria
 
@@ -405,7 +425,8 @@ collisions.
    the turn around every forward branch time is an element `≠ 1`; a centre time gives a sign
    flip of some pair; a collision away from the centre gives an element that moves a pair; a
    group that preserves every pair gives RH; transport depends only on the homotopy class of
-   the path.
+   the path; every element moves finitely many zeros, and `r` is not an element; a turn moves
+   only the sheets of the collisions at its time.
 
    The three possible answers. *No collision away from the centre:* RH, and more than RH,
    since RH excludes such collisions on the positive real axis only. *Exchanges exist and the
@@ -497,9 +518,8 @@ belongs here when it is applied to one of the six questions.
 - A collision away from the centre at a forward time. The central branch times are the zeros
   of one function of the time, the centre value; for the others no such function is known. A
   discriminant for a finite set of sheets would be one.
-- The turn as a permutation of the whole fibre: which zeros it fixes; whether the turn around
-  a simple central collision is the sign flip of one pair.
-- The support of an element of `G₊`: is the group a group of restricted signed permutations?
+- A centre time at which the central collision is double and no other collision happens:
+  there the turn is the sign flip of one pair.
 - Generation of `G₊` by the conjugates of the turns; `cr` as the word of the turns around the
   real branch times between a real time and `1/8`.
 - Transitivity of `G₊` on the pairs (irreducibility of the cover of pairs); the full group.

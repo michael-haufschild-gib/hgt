@@ -119,3 +119,4 @@ import GaloisForLFunctions.FloorFreeArithmetic
 import GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration
+import GaloisForLFunctions.MixingArithmeticOfTheFloorTrees

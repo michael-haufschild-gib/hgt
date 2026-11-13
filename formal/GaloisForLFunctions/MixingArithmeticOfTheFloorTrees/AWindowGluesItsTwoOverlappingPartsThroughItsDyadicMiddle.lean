@@ -1,6 +1,7 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoCoupledWindowsAreBracketedByLoweredAndRaisedPotentialsAndGluedThroughResponseMatrices
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheStepPacketMatricesOfARatioAreDecidedOnCoarseBlocks
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsOneNegativeSquareOfTheNeutralPartOfEveryWindow
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OneBoundStateIsTheHodgeIndexInequalityOnPositivePacketsWithoutCommonBlocks
 import GaloisForLFunctions.HTGeometry.ExponentialKernelAlternatingInertia
 
 /-!
@@ -66,8 +67,9 @@ theorem hermNegIndex_fromBlocks_transpose {A : Matrix μ μ ℝ} (hA : ∀ i j, 
   ext i j
   simp only [Matrix.sub_apply, Matrix.map_apply, Matrix.mul_apply, Matrix.conjTranspose_apply,
     Matrix.transpose_apply, Complex.ofReal_sub, Complex.ofReal_sum, Complex.ofReal_mul,
-    RCLike.star_def, Complex.star_def, Complex.conj_ofReal]
+    RCLike.star_def, Complex.conj_ofReal]
 
+omit [DecidableEq κ] in
 /-- A real matrix has no negative square iff its quadratic form is nonnegative. -/
 theorem hermNegIndex_eq_zero_iff_forall {S : Matrix κ κ ℝ} :
     hermNegIndex (S.map (↑) : Matrix κ κ ℂ) = 0 ↔ ∀ x : κ → ℝ, 0 ≤ x ⬝ᵥ (S *ᵥ x) := by
@@ -83,6 +85,7 @@ theorem hermNegIndex_eq_zero_iff_forall {S : Matrix κ κ ℝ} :
         exact add_nonneg (h _) (h _)
     simpa using h0
 
+omit [DecidableEq α] [DecidableEq β] in
 /-- The quadratic form of a symmetric two-block matrix. -/
 theorem dotProduct_fromBlocks_mulVec (S₁ : Matrix α α ℝ) (X : Matrix α β ℝ)
     (S₃ : Matrix β β ℝ) (u : α → ℝ) (v : β → ℝ) :
@@ -129,6 +132,7 @@ theorem forall_fromBlocks_nonneg_iff {S₁ : Matrix α α ℝ} {X : Matrix α β
 def joinColumns (P₁ : Matrix μ α ℝ) (P₂ : Matrix μ β ℝ) : Matrix μ (α ⊕ β) ℝ :=
   Matrix.of fun m x => Sum.elim (P₁ m) (P₂ m) x
 
+omit [Fintype α] [Fintype β] [DecidableEq μ] [DecidableEq α] [DecidableEq β] in
 theorem joinColumns_transpose_mul_mul (P₁ : Matrix μ α ℝ) (P₂ : Matrix μ β ℝ)
     (M : Matrix μ μ ℝ) :
     (joinColumns P₁ P₂)ᵀ * M * joinColumns P₁ P₂ =
@@ -162,10 +166,15 @@ theorem fromBlocks_sub_joinColumns {M : Matrix μ μ ℝ} (hM : ∀ i j, M i j =
   rcases x with i | i <;> rcases y with j | j <;>
     simp [Matrix.sub_apply, Matrix.transpose_apply]
 
+omit [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] in
 theorem fromBlocks_symm {N₁ : Matrix α α ℝ} (h₁ : ∀ i j, N₁ i j = N₁ j i) (K : Matrix α β ℝ)
     {N₂ : Matrix β β ℝ} (h₂ : ∀ i j, N₂ i j = N₂ j i) (x y : α ⊕ β) :
     fromBlocks N₁ K Kᵀ N₂ x y = fromBlocks N₁ K Kᵀ N₂ y x := by
-  rcases x with i | i <;> rcases y with j | j <;> simp [h₁ i j, h₂ i j]
+  rcases x with i | i <;> rcases y with j | j
+  · exact h₁ i j
+  · rfl
+  · rfl
+  · exact h₂ i j
 
 /-- **The overlap gluing law.** If the middle is invertible, the whole holds as many negative
 squares as the middle iff each part does and the conditional coupling is a contraction between
@@ -401,17 +410,21 @@ theorem isUnit_neutralWindow_dyadic {Q D : ℕ} (hD : 1 ≤ D) (hQ : 2 ≤ Q) :
     ring
   have hw1 : w ⬝ᵥ (N *ᵥ one) = 0 := by rw [hsym, hw0, dotProduct_zero]
   have hzz : (w - t • one) ⬝ᵥ (N *ᵥ (w - t • one)) = t ^ 2 * (one ⬝ᵥ (N *ᵥ one)) := by
-    simp only [Matrix.mulVec_sub, Matrix.mulVec_smul, hw0, sub_dotProduct, dotProduct_sub,
-      dotProduct_smul, smul_dotProduct, hw1, dotProduct_zero, smul_eq_mul, zero_sub,
-      dotProduct_neg, smul_zero]
+    simp only [Matrix.mulVec_sub, Matrix.mulVec_smul, hw0, sub_dotProduct,
+      dotProduct_neg, dotProduct_smul, smul_dotProduct, hw1, smul_eq_mul, zero_sub]
     ring
   have h1 := hpos (w - t • one) hz0
   rw [hzz] at h1
   have hsq : 0 ≤ ∑ i, (w - t • one) i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
-  have ht0 : t = 0 := by nlinarith [sq_nonneg t]
-  have hs : ∑ i, (w - t • one) i ^ 2 = 0 := by
-    rw [ht0] at h1
+  have ht2 : t ^ 2 = 0 := by
+    by_contra hne
+    have hpos2 : 0 < t ^ 2 := lt_of_le_of_ne (sq_nonneg t) (Ne.symm hne)
+    have := mul_neg_of_pos_of_neg hpos2 hone
     nlinarith
+  have hs : ∑ i, (w - t • one) i ^ 2 = 0 := by
+    rw [ht2, zero_mul] at h1
+    linarith
+  have ht0 : t = 0 := (pow_eq_zero_iff two_ne_zero).mp ht2
   funext i
   have hi := (Finset.sum_eq_zero_iff_of_nonneg fun i _ => sq_nonneg ((w - t • one) i)).mp hs i
     (Finset.mem_univ i)
@@ -470,7 +483,7 @@ theorem sum_neutralBlock_complexRefine {R m : ℕ} (hR : 1 ≤ R) (hm : 1 ≤ m)
     intro n hn
     have hn' := Finset.mem_range.mp hn
     rw [extendFin, dif_pos hn', refineStep]
-    simp only [complexRefine, LinearMap.coe_mk, AddHom.coe_mk, Fin.val_mk]
+    simp only [complexRefine, LinearMap.coe_mk, AddHom.coe_mk]
     rw [hdiv]
     congr 1
     simp only [complexExtend, LinearMap.coe_mk, AddHom.coe_mk, extendFin]

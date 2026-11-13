@@ -32,7 +32,7 @@ private theorem lower_scaled_secant {a b : ℝ} (ha : 0 < a) (hb : 1 < b)
 
 private theorem positive_secant_denominator {b : ℝ} (hb : 1 < b) : 0 < 1 - 1 / b := by
   have hb0 := zero_lt_one.trans hb
-  have he : 1 - 1 / b = (b - 1) / b := by field_simp [hb0.ne'] <;> ring
+  have he : 1 - 1 / b = (b - 1) / b := by field_simp [hb0.ne']
   rw [he]
   exact div_pos (sub_pos.mpr hb) hb0
 
@@ -62,11 +62,11 @@ private theorem logarithmic_secant_bounds {b : ℝ} (hb : 1 < b) :
   have hhi := Real.log_le_sub_one_of_pos hb0
   constructor
   · apply (le_div_iff₀ (sub_pos.mpr hb)).mpr
-    have he : (1 / b) * (b - 1) = 1 - 1 / b := by field_simp [hb0.ne'] <;> ring
+    have he : (1 / b) * (b - 1) = 1 - 1 / b := by field_simp [hb0.ne']
     rw [he]
     simpa only [one_div] using (show 1 - b⁻¹ ≤ Real.log b by linarith only [hlo])
   · apply (div_le_iff₀ (positive_secant_denominator hb)).mpr
-    have he : b * (1 - 1 / b) = b - 1 := by field_simp [hb0.ne'] <;> ring
+    have he : b * (1 - 1 / b) = b - 1 := by field_simp [hb0.ne']
     rw [he]
     exact hhi
 
@@ -81,7 +81,7 @@ theorem exists_minimizer_scaled_excess_near_one {ε : ℝ} (hε : 0 < ε) :
   have hscale : Tendsto (fun a : ℝ => b * a) atTop atTop :=
     tendsto_id.const_mul_atTop hb0
   have hdivide : Tendsto (fun a : ℝ => a / b) atTop atTop := by
-    simpa only [div_eq_mul_inv, mul_comm] using
+    simpa only [id_eq, div_eq_mul_inv, mul_comm] using
       (tendsto_id.const_mul_atTop (inv_pos.mpr hb0))
   have hc : Tendsto (fun _ : ℝ => Real.log b) atTop (𝓝 (Real.log b)) := tendsto_const_nhds
   have hl := ((hc.add (tendsto_renormalizedConfiningGroundEnergy.comp hscale)).sub
@@ -97,6 +97,7 @@ theorem exists_minimizer_scaled_excess_near_one {ε : ℝ} (hε : 0 < ε) :
   have ha0 := zero_lt_one.trans_le ((le_max_left _ _).trans ha)
   obtain ⟨hlclose, huclose⟩ := hA a ((le_max_right _ _).trans ha)
   rw [Real.dist_eq] at hlclose huclose
+  dsimp only [Function.comp_apply] at hlclose huclose
   have hlower := lower_scaled_secant ha0 hb hF
   have hupper := upper_scaled_secant ha0 hb hF
   obtain ⟨hloglo, hloghi⟩ := logarithmic_secant_bounds hb

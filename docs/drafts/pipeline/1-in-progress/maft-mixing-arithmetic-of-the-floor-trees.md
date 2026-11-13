@@ -8,27 +8,28 @@
 
 ## Goal
 Develop the Doob chains of the windows as objects: inertia law, cuts, scale of binding energy and
-gap, dilation limit, comparison and curvature methods. B192 itself (one bound state at ratio three
-and four) is worked by another agent: do not prove ratio-three/four sign statements here.
+gap, comparison with parts, dilation limit, components of the floor trees. B192 itself (one bound
+state at ratio three and four) is worked by another agent: no ratio-three/four sign proofs here.
 
 ## Gates
-- [ ] M1 Poincaré form: inertia of `N_W` = slow modes of the Doob chain; one bound state ⇔ gap ≥ μ
-- [ ] cut criterion (bottleneck below binding energy ⇒ second bound state)
-- [ ] scale law: binding energy ≍ √ρ (lower bound unconditional; RH upper bound 2(ρ−1)/√ρ)
-- [ ] dilation limit: translation/reflection invariance of the window form at infinite block size
-- [ ] floor-tree components; jets-only mixing rate
-- [ ] curvature / Cheeger / canonical-path verdicts calibrated on twisted contacts
-- [ ] recursion along doublings (M4)
+- [x] M1 Poincaré form, RH ⇔ Poincaré of every Doob chain; bottleneck criterion — compiled
+- [x] overlap gluing law; RH ⇔ every conditional coupling contracts; refinement monotonicity — compiled
+- [x] binding lower bound from the root block (√ρ/log ρ); RH upper bound — compiled
+- [x] archimedean floor `A(0)` without trees; Chebyshev ceiling `2Σ Λ(k)/√k` — compiled
+- [ ] two-end lower bound (order √ρ) — written, compile pending
+- [ ] floor-tree components at ratio four (dilation process without gap) — compiling
+- [ ] bounded margin `gap ≤ μ + c₀`; RH ⇒ Poincaré constant in `[μ, μ + c₀]` — written, compile pending
+- [ ] reflection symmetry at infinite block size; shallow-tree selectivity — written, compile pending
 
 ## Approach
-Lean folder `formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/`, umbrella
-`MixingArithmeticOfTheFloorTrees.lean`. Build on AGZ (`neutralWindow`, `blockWeight`,
-`sum_sum_mul_eq_doob`, `packetForm`), HTG inertia (`hermNegIndex`, `haynsworth_negIndex`),
-LST regional log spectrum, SPTL parity sectors.
+Folder `formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/`, umbrella
+`MixingArithmeticOfTheFloorTrees.lean`. Build on AGZ (`neutralWindow`, `neutralForm`,
+`packetForm`, refinement tower, two-well law), HTG inertia and Haynsworth, RHTower Lévy density.
 
-Scale computation (paper, to formalize): flat-in-log packet `f = x^{−1/2}/√L` on `(1, ρ]` gives
-contact energy `−(2/L) Σ_{k≤ρ} Λ(k) k^{−1/2} log(ρ/k) ≈ −8√ρ/L`, archimedean part `O(1)`.
-Under RH `N ≥ −2c₀c₁ ≥ −2((ρ−1)/√ρ)‖f‖²`. Middle-cut floor-tree conductance ≈ `4√ρ`.
+Open threads: margin bounded below ⇒ RH (expected: an off-line zero drives the margin of long
+windows to −∞ at rate `ρ^{β−1/2}`; needs a quantitative zero-side test on translates with
+vanishing charges); concentration of the ground state on the two ends; parity split of the index
+at infinite block size; quantitative overlap law.
 
 ## Log
-- 2026-11-13 — created; README first draft written
+- 2026-11-13 — created; README drafted; modules 1–4 compiled

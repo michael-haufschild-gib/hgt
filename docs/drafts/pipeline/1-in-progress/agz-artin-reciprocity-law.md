@@ -59,24 +59,36 @@ unity in `L` (`agz-cyclotomic-reciprocity-law`). The general case is global clas
       `RHTower/Artin/NormsArePositiveAtTheRamifiedRealPlaces`)
   - [x] G5e assembly: `[K^× : U] = n · h_g(L^×/W_k) · [K_S ∩ V₁ : N L_S]`
     (`dvd_index_sup_of_relIndex`)
-- [ ] G6 the kernel of the Artin map lies in `P_c N` for cyclic `L/K` (crossing with cyclotomic
-  extensions)
+- [x] G6 the kernel of the Artin map lies in `P_c N` for cyclic `L/K` (crossing with cyclotomic
+  extensions): `mem_rayPrincipal_sup_range_idealNormHom_of_artinMap_eq_one`
+  (`RHTower/Artin/IdealsWithTrivialArtinSymbolInACyclicExtensionAreNormsModuloARay`)
   - [x] G6b towers `K ⊂ E ⊂ M`, `M/K` abelian with group `Γ ⊃ H`: `Frob_w = Frob_v^{f(w|v)}`,
     `(𝔅, M/E) = (N_{E/K} 𝔅, M/K)`, `f(w|v) | g` if `Frob_v^g` fixes `E`, and then `v^g` is a norm
     from `E`; `N_{E/K}` maps the ray modulo `(N) ∞` of `E` into that of `K`
     (`map_frobeniusElement_eq_pow`, `map_artinMap_eq_artinMap_idealNormHom`,
     `inertiaDeg_under_dvd_of_pow_smul_eq`, `exists_idealNormHom_pow_eq_idealUnit_pow`,
     `norm_mem_rayGroup`, `idealNormHom_mem_rayPrincipal`)
-  - [ ] G6a kernel inside a cyclotomic extension: `M/E` abelian with group `H`, the cyclotomic
+  - [x] G6a kernel inside a cyclotomic extension: `M/E` abelian with group `H`, the cyclotomic
     character of `ζ_m ∈ M` injective on `H`, `Λ' ≤ H`, `m | N`. An ideal `𝔅` prime to `N` with
     `(𝔅, M/E) ∈ Λ'` lies in `P_{(N)∞} · ⟨𝔔 ∤ N : Frob_𝔔 ∈ Λ'⟩`
-  - [ ] G6c the same over `K`: for `H ≤ Γ` with injective cyclotomic character and `Λ ≤ Γ`,
+    (`mem_rayPrincipal_sup_frobeniusPrimeGroup`,
+    `RHTower/Artin/IdealsWithArtinSymbolInASubgroupOfACyclotomicExtension`)
+  - [x] G6c the same over `K`: for `H ≤ Γ` with injective cyclotomic character and `Λ ≤ Γ`,
     `D_H ∩ ω_Γ^{-1}(Λ) ⊂ P_{(N)∞} · D_Λ` with `D_H = ⟨v^g : Frob_v^g ∈ H⟩`; and `ω_Γ(D_H) = H`
-  - [ ] G6d the auxiliary modulus: a prime `p ∉ T` with `n | ord_p(a)`; `m` and `b` with
+    (`mem_rayPrincipal_sup_frobeniusPowerGroup`, `exists_mem_frobeniusPowerGroup_artinMap_eq`,
+    `RHTower/Artin/TheNormGroupOfTheFixedFieldOfASubgroupAndItsArtinSymbols`)
+  - [x] G6d the auxiliary modulus: a prime `p ∉ T` with `n | ord_p(a)`; `m` and `b` with
     `a_v^x b^y ≡ 1 (m) ⇒ n | x, n | y` for the norms `a_v` of the primes of `𝔞`
-  - [ ] G6e `Φ_m` is irreducible over `L` for `m` prime to a finite set of primes
-  - [ ] G6f `M = L(ζ_m)`: `Γ ↪ G × (ℤ/m)^×`, and `ρ = (σ, b) ∈ Γ`
-  - [ ] G6g crossing: `v ≡ 𝔟^{d_v}` modulo `P_c N` for the primes `v` of `𝔞`, `(v, L/K) = σ^{d_v}`
+    (`exists_modulus_unit_forall_zpow_mul_zpow`, `RHTower/Artin/ModuliWithIndependentResidueClasses`)
+  - [x] G6e `Φ_m` is irreducible over `L` for `m` prime to a fixed modulus
+    (`exists_forall_coprime_irreducible_cyclotomic`,
+    `RHTower/Artin/CyclotomicPolynomialsAreIrreducibleOverANumberFieldAwayFromAFixedModulus`)
+  - [x] G6f `M = L(ζ_m)`: `Γ ≅ G × (ℤ/m)^×`, and `ρ = (σ, b) ∈ Γ` (`exists_cyclotomic_crossing`,
+    `RHTower/Artin/TheCrossingOfAGaloisExtensionWithACyclotomicExtension`); restriction of
+    Frobenius elements and of inertia, `D_Λ ⊂ N_{L/K}`, `D_H^n ⊂ D_Λ`
+    (`RHTower/Artin/FrobeniusElementsRestrictToASubextension`)
+  - [x] G6g crossing: `v ≡ 𝔟^{d_v}` modulo `P_c N` for the primes `v` of `𝔞`, `(v, L/K) = σ^{d_v}`
+    (`idealUnit_div_zpow_mem_rayPrincipal_sup_frobeniusPowerGroup`)
 - [ ] G7 the reciprocity law for cyclic `L/K`, and for every linear character by G1
 
 ## Approach
@@ -153,11 +165,12 @@ prime power and `k = Π_{t ∈ T ∪ primes(n'), t ∤ a} (t − 1)`, `Φ_{n'}(a
 each such `t`, and a prime factor `p` of `Φ_{n'}(a^k) > 1` has `ord_p(a^k) = n'`. Take `P₀` with
 `n | P₀ − 1` and `g` of order divisible by `n` modulo `P₀`, then `P_v` with
 `lcm(n, ord_{P₀}(a_v)) | ord_{P_v}(a_v)`; `m = P₀ · Π P_v` (distinct values), `b ≡ g (P₀)`,
-`b ≡ 1 (P_v)`. Then `a_v^x b^y ≡ 1 (m)` forces `n | x` and `n | y`.
+`b ≡ 1 (P_v)`. Then `a_v^x b^y ≡ 1 (m)` forces `n | x` and `n | y`. (In Lean: `g = 2`, `P₀` with
+`n | ord_{P₀}(2)`, and `n (P₀ − 1) | ord_{P_a}(a)`.)
 
-*Irreducibility.* `L` has finitely many subfields, and `ℚ(ζ_m) ∩ ℚ(ζ_{m'}) = ℚ` for coprime
-`m, m'`; so `L ∩ ℚ(ζ_m) = ℚ` and `Φ_m` is irreducible over `L` for `m` prime to a finite set of
-primes. Then `Gal(L(ζ_m)/L) = (ℤ/m)^×`, `Γ ↪ G × (ℤ/m)^×`, and `ρ = (σ, b) ∈ Γ`.
+*Irreducibility.* Put `e(m) = φ(m) / [L(ζ_m) : L]`, bounded by `[L : ℚ]`, and take `m₀` with
+`e(m₀)` maximal. For `m` prime to `m₀`: `e(m₀ m) ≥ e(m₀) e(m)` (`L(ζ_{m₀ m})` is the compositum)
+and `e(m₀ m) ≤ e(m₀)`, so `e(m) = 1`: `Φ_m` is irreducible over `L` for `m` prime to `m₀`. Then `Gal(L(ζ_m)/L) = (ℤ/m)^×`, `Γ ↪ G × (ℤ/m)^×`, and `ρ = (σ, b) ∈ Γ`.
 
 *Fields.* `φ_v = Frob_v(M/K) = (σ^{d_v}, a_v)`, `H_v = ⟨φ_v, ρ⟩`. The cyclotomic character is
 injective on `H_v`: `a_v^x b^y = 1` gives `n | x, y`, so `σ^{d_v x + y} = 1`.
@@ -183,3 +196,4 @@ then `f_L(v) | g`). With `𝔟^n ∈ N_{L/K}` and `n | Σ a_v d_v`: `𝔞 ∈ P_
 - 2026-11-13 — G5 formalized (G5a–G5e)
 - 2026-11-13 — G6b formalized; G6 restated over `K` with two-layer towers. Order of work of
   review-1311 §2.14: after B192 at ratio three and the realization on the dyadic windows
+- 2026-11-13 — G6 formalized (G6a, G6c–G6g). Open: G7

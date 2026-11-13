@@ -83,8 +83,8 @@ and monotonicity show, after integrating with `v=u+h`,
 All terms for fixed `h` are integrable by `L²` Cauchy–Schwarz and
 translation invariance. The mixed jump integrand is absolutely integrable
 against `ω(h)dh` by Cauchy–Schwarz in the product jump measure. Also
-`Cβ=∫₀¹(exp(βh)+exp(-βh)-2)ω(h)dh<∞`, since the parenthesis is
-`O(h²)` and the first displacement moment is finite. Thus jumps below
+`Cβ=∫₀¹(exp(βh)+exp(-βh)-2)ω(h)dh<∞`: on `0<h<1`, the parenthesis lies
+between zero and `β exp(β)h`, and the first displacement moment is finite. Thus jumps below
 any `0<δ<1` contribute at least `-Cβ∫FG`.
 
 **The large Gamma jumps.** Put
@@ -128,11 +128,30 @@ the two-sided bound. Given `b<15`, choose
 
 ## Lean status
 
-`CausalReflection/HalfLineGammaContractions.lean` contains unchecked proofs
-of recovery of Gamma integrability from finite jump energy, contraction
-closure of jump energy, and contraction closure of the actual domain.
-Exponential barrier admissibility, the complete prime-row comparison, and
-the maximum-principle conclusion remain to be formalized and audited.
+Twelve modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+contain unchecked proofs:
+
+- `HalfLineGammaContractions`: the two-way jump/Gamma domain bridge and contraction closure.
+- `NegativeHalfLineExponentialBarrier`: exact exponential autocorrelation, translation defect, and Gamma integrability.
+- `ExponentialBarrierPositiveLevels`: admissibility of positive-level tests in the actual domain.
+- `WeightedPositiveLevelAlgebra`: the weighted row inequality and exact relative-jump decomposition.
+- `HalfLineGammaMixedEnergy`: absolute integrability and the exact mixed Lévy identity.
+- `HalfLineExponentialBarrierJumps`: the integrated exponential correction for each mixed Gamma jump.
+- `ExponentialBarrierPrimeEdges`: the support-restricted diagonal comparison for each literal prime term.
+- `ExponentialBarrierPrimeRows`: a Chebyshev bound for every finite forward row and convergence of the complete backward row.
+- `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
+- `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
+- `HalfLineGammaLargeJumps`: the cutoff-kernel realization and ordinary-mass bounds for both mixed rows; the assembled large-jump estimate remains unwritten.
+- `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential.
+
+The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
+justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
+`L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
+also `L²`. Thirteen supporting drafts are present in total.
+
+The integrated complete prime-row comparison, large-jump Gamma estimate, and
+maximum-principle conclusion remain to be formalized. None of these modules
+is audited or counted yet.
 
 ## Boundary implication and limit
 
@@ -144,3 +163,11 @@ needed for a localized Green equation. Identifying that equation, its
 normalized trace, and the trace's relationship to the polar source remain
 separate obligations. The argument does not show that `exp(-8u)F` is
 globally `L²`.
+
+No sharpness at moment order `15` is claimed. The corpus identity
+`ArithmeticIncidencePositivity.primeShift_sub_polarDensity_eq_chebyshev`
+cancels the leading prime and two-pole densities on smooth compact tests;
+their residue is the two-pole Chebyshev defect. Separate absolute row
+bounds cannot establish a nonzero leading tail for the actual minimizer.
+Extending that compensated identity to its measurable weak equation is a
+different obligation.

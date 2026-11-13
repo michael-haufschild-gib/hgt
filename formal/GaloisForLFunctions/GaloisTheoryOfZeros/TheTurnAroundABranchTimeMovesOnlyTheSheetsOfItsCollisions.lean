@@ -241,62 +241,45 @@ theorem exists_forall_turnAction (hτ₀ : 0 < τ₀.re) :
 
 /-! ## A simple central collision -/
 
-/-- **The turn around a simple central collision is the sign flip of one pair.** Let `H_τ₀` have
-a double zero at the centre and no other multiple zero. For all small `r` the turn exchanges one
-zero `w ≠ 0` of `H_{τ₀+r²}` with `−w` and fixes every other zero. -/
-theorem eventually_turn_flip (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0 2)
-    (honly : ∀ ζ : ℂ, complexHeat τ₀ ζ = 0 → deriv (complexHeat τ₀) ζ = 0 → ζ = 0) :
+/-- The turn around a double central collision that is the only collision at its time, for a
+profile of order two with the roots `±ρ₀`. -/
+theorem eventually_turn_flip_of_roots (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0 2)
+    (honly : ∀ ζ : ℂ, complexHeat τ₀ ζ = 0 → deriv (complexHeat τ₀) ζ = 0 → ζ = 0) {ρ₀ : ℂ}
+    (hρp : heatModelFwd 2 ρ₀ = 0) (hρn : heatModelFwd 2 (-ρ₀) = 0)
+    (hroots : ∀ ρ' : ℂ, heatModelFwd 2 ρ' = 0 → ρ' = ρ₀ ∨ ρ' = -ρ₀) (hne : ρ₀ ≠ -ρ₀) :
     ∀ᶠ r : ℝ in 𝓝[>] 0, ∃ w : ℂ, w ≠ 0 ∧ complexHeat (τ₀ + (r : ℂ) ^ 2) w = 0 ∧
       Transports (turnPath τ₀ r) w (-w) ∧ Transports (turnPath τ₀ r) (-w) w ∧
         ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 → z ≠ w → z ≠ -w →
           Transports (turnPath τ₀ r) z z := by
-  have hs2 : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.2 two_pos
-  -- the two roots `±√2` of the profile of order two
-  have hρ₊ : heatModelFwd 2 ((Real.sqrt 2 : ℝ) : ℂ) = 0 :=
-    heatModelFwd_eq_zero_iff.2 ⟨Real.sqrt 2, by rw [profileRoots_two]; simp, rfl⟩
-  have hρ₋ : heatModelFwd 2 (-((Real.sqrt 2 : ℝ) : ℂ)) = 0 :=
-    heatModelFwd_eq_zero_iff.2
-      ⟨-Real.sqrt 2, by rw [profileRoots_two]; simp, Complex.ofReal_neg _⟩
-  have hroots : ∀ ρ' : ℂ, heatModelFwd 2 ρ' = 0 →
-      ρ' = ((Real.sqrt 2 : ℝ) : ℂ) ∨ ρ' = -((Real.sqrt 2 : ℝ) : ℂ) := by
-    intro ρ' h
-    obtain ⟨x, hx, rfl⟩ := heatModelFwd_eq_zero_iff.1 h
-    rw [profileRoots_two, Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl
-    · exact Or.inl rfl
-    · exact Or.inr (Complex.ofReal_neg _)
-  have hne : ((Real.sqrt 2 : ℝ) : ℂ) ≠ -((Real.sqrt 2 : ℝ) : ℂ) := by
-    intro h
-    have h2 : (2 : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) = 0 := by linear_combination h
-    rcases mul_eq_zero.1 h2 with h3 | h3
-    · exact two_ne_zero h3
-    · exact hs2.ne' (Complex.ofReal_eq_zero.1 h3)
+  -- the two sheets
+  obtain ⟨Zp, hZp⟩ : ∃ Zp : ℂ → ℂ, Zp = collisionZero τ₀ 0 2 ρ₀ := ⟨_, rfl⟩
+  obtain ⟨Zn, hZn⟩ : ∃ Zn : ℂ → ℂ, Zn = collisionZero τ₀ 0 2 (-ρ₀) := ⟨_, rfl⟩
   -- at the centre the opposite sheet is the negative sheet
-  have hrefl : ∀ᶠ r : ℝ in 𝓝[>] 0, -collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r =
-      collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) r := by
-    have h := collisionZero_reflect hcen hρ₊
-    rw [neg_zero] at h
+  have hrefl : ∀ᶠ r : ℝ in 𝓝[>] 0, -Zp r = Zn r := by
+    have h := collisionZero_reflect hcen hρp
+    rw [neg_zero, ← hZp, ← hZn] at h
     exact eventually_nhdsGT_of_exists_Ioo (exists_forall_Ioo_of_eventually
-      (P := fun s : ℂ => -collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) s =
-        collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) s)
-      (h.filter_mono nhdsWithin_le_nhds))
-  have hdist : ∀ᶠ r : ℝ in 𝓝[>] 0, collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r ≠
-      collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) r :=
-    eventually_nhdsGT_of_exists_Ioo (exists_forall_Ioo_of_eventually
-      (P := fun s : ℂ => collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) s ≠
-        collisionZero τ₀ 0 2 (-((Real.sqrt 2 : ℝ) : ℂ)) s)
-      (collisionZero_ne hcen hρ₊ hρ₋ hne))
-  have ht₊ := eventually_nhdsGT_of_exists_Ioo (hcen.exists_transports_turn hρ₊)
-  have ht₋ := eventually_nhdsGT_of_exists_Ioo (hcen.exists_transports_turn hρ₋)
-  filter_upwards [eventually_turnAction hτ₀, hrefl, hdist, ht₊, ht₋] with r hact hr1 hr2 hr3 hr4
-  rw [neg_neg, ← hr1] at hr4
-  rw [← hr1] at hr2 hr3
-  refine ⟨collisionZero τ₀ 0 2 ((Real.sqrt 2 : ℝ) : ℂ) r, fun hw => hr2 ?_, ?_, hr3, hr4,
-    fun z hz hzw hzw' => ?_⟩
+      (P := fun s : ℂ => -Zp s = Zn s) (h.filter_mono nhdsWithin_le_nhds))
+  have hdist : ∀ᶠ r : ℝ in 𝓝[>] 0, Zp r ≠ Zn r := by
+    have h := collisionZero_ne hcen hρp hρn hne
+    rw [← hZp, ← hZn] at h
+    exact eventually_nhdsGT_of_exists_Ioo (exists_forall_Ioo_of_eventually
+      (P := fun s : ℂ => Zp s ≠ Zn s) h)
+  have htp : ∀ᶠ r : ℝ in 𝓝[>] 0, Transports (turnPath τ₀ r) (Zp r) (Zn r) := by
+    have h := hcen.exists_transports_turn hρp
+    rw [← hZp, ← hZn] at h
+    exact eventually_nhdsGT_of_exists_Ioo h
+  have htn : ∀ᶠ r : ℝ in 𝓝[>] 0, Transports (turnPath τ₀ r) (Zn r) (Zp r) := by
+    have h := hcen.exists_transports_turn hρn
+    rw [neg_neg, ← hZp, ← hZn] at h
+    exact eventually_nhdsGT_of_exists_Ioo h
+  filter_upwards [eventually_turnAction hτ₀, hrefl, hdist, htp, htn] with r hact hr1 hr2 hr3 hr4
+  rw [← hr1] at hr2 hr3 hr4
+  refine ⟨Zp r, fun hw => hr2 ?_, ?_, hr3, hr4, fun z hz hzw hzw' => ?_⟩
   · rw [hw, neg_zero]
   · have h := hr3.zero_left
     rwa [turnPath_zero] at h
-  · rcases hact z hz with h | ⟨ζ, m, ρ', -, hc, hρ', hzeq, -⟩
+  · rcases hact z hz with h | ⟨ζ, m, ρ', hm, hc, hρ', hzeq, -⟩
     · exact h
     · exfalso
       have hζ : ζ = 0 := honly ζ
@@ -310,8 +293,38 @@ theorem eventually_turn_flip (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0
         exact_mod_cast h2
       subst hm2
       rcases hroots ρ' hρ' with rfl | rfl
-      · exact hzw hzeq
-      · exact hzw' (hzeq.trans hr1.symm)
+      · rw [← hZp] at hzeq
+        exact hzw hzeq
+      · rw [← hZn] at hzeq
+        exact hzw' (hzeq.trans hr1.symm)
+
+/-- **The turn around a simple central collision is the sign flip of one pair.** Let `H_τ₀` have
+a double zero at the centre and no other multiple zero. For all small `r` the turn exchanges one
+zero `w ≠ 0` of `H_{τ₀+r²}` with `−w` and fixes every other zero. -/
+theorem eventually_turn_flip (hτ₀ : 0 < τ₀.re) (hcen : IsCollision τ₀ 0 2)
+    (honly : ∀ ζ : ℂ, complexHeat τ₀ ζ = 0 → deriv (complexHeat τ₀) ζ = 0 → ζ = 0) :
+    ∀ᶠ r : ℝ in 𝓝[>] 0, ∃ w : ℂ, w ≠ 0 ∧ complexHeat (τ₀ + (r : ℂ) ^ 2) w = 0 ∧
+      Transports (turnPath τ₀ r) w (-w) ∧ Transports (turnPath τ₀ r) (-w) w ∧
+        ∀ z : ℂ, complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 → z ≠ w → z ≠ -w →
+          Transports (turnPath τ₀ r) z z := by
+  -- the profile of order two has the roots `±√2`
+  obtain ⟨x, hx0, hx⟩ : ∃ x : ℝ, x ≠ 0 ∧ profileRoots 2 = {x, -x} :=
+    ⟨Real.sqrt 2, (Real.sqrt_pos.2 two_pos).ne', profileRoots_two⟩
+  refine eventually_turn_flip_of_roots hτ₀ hcen honly (ρ₀ := (x : ℂ))
+    (heatModelFwd_eq_zero_iff.2 ⟨x, by rw [hx]; exact Finset.mem_insert_self _ _, rfl⟩)
+    (heatModelFwd_eq_zero_iff.2 ⟨-x, by
+      rw [hx]
+      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _), Complex.ofReal_neg _⟩)
+    (fun ρ' h => ?_) fun h => ?_
+  · obtain ⟨y, hy, rfl⟩ := heatModelFwd_eq_zero_iff.1 h
+    rw [hx, Finset.mem_insert, Finset.mem_singleton] at hy
+    rcases hy with rfl | rfl
+    · exact Or.inl rfl
+    · exact Or.inr (Complex.ofReal_neg _)
+  · have h2 : (2 : ℂ) * (x : ℂ) = 0 := by linear_combination h
+    rcases mul_eq_zero.1 h2 with h3 | h3
+    · exact two_ne_zero h3
+    · exact hx0 (Complex.ofReal_eq_zero.1 h3)
 
 /-- **The sign flip of one pair is a forward monodromy.** If at some forward time `τ₀` the family
 has a double zero at the centre and no other multiple zero, then at every base time the forward
@@ -329,7 +342,7 @@ theorem exists_mem_forwardMonodromy_flip_one_pair (hτ₀ : 0 < τ₀.re) (hcen 
     ⟨min r₁ r₂ / 2, ⟨by positivity, by linarith [min_le_left r₁ r₂]⟩,
       ⟨by positivity, by linarith [min_le_right r₁ r₂]⟩⟩
   have hγ := hfwd r hrI₁
-  obtain ⟨w, hw0, hwz, hT₊, -, hfix⟩ := hflip r hrI₂
+  obtain ⟨w, hw0, hwz, hTp, -, hfix⟩ := hflip r hrI₂
   obtain ⟨δ, hδ, hδ0, hδ1, σ, hσ, hact⟩ :=
     hγ.exists_mem_forwardMonodromy_of_loop (by rw [turnPath_one, turnPath_zero]) hτ hb
   -- `p` is the transport of `w` to the base time
@@ -348,23 +361,22 @@ theorem exists_mem_forwardMonodromy_flip_one_pair (hτ₀ : 0 < τ₀.re) (hcen 
     have h2 : w = -w := hδ.transports_injective hz₁ h1
     have h3 : (2 : ℂ) * w = 0 := by linear_combination h2
     exact (mul_eq_zero.1 h3).resolve_left two_ne_zero
-  · exact hδ.transports_unique (hact w (-w) hT₊ ⟨z₁, hz₁0⟩ hz₁) hz₁.neg
+  · exact hδ.transports_unique (hact w (-w) hTp ⟨z₁, hz₁0⟩ hz₁) hz₁.neg
   · -- every other zero of the base fibre comes from a zero that the turn fixes
-    have hzq : Transports δ (e.symm q).1 q.1 := by
+    obtain ⟨z, hzq⟩ : ∃ z : ℂ, Transports δ z q.1 := by
       have h := he (e.symm q)
-      rwa [e.apply_symm_apply] at h
-    have hz0 : complexHeat (τ₀ + (r : ℂ) ^ 2) (e.symm q).1 = 0 := by
-      have h := (e.symm q).2
+      rw [e.apply_symm_apply] at h
+      exact ⟨_, h⟩
+    have hz0 : complexHeat (τ₀ + (r : ℂ) ^ 2) z = 0 := by
+      have h := hzq.zero_left
       rwa [hδ0, turnPath_zero] at h
-    have hzw : (e.symm q).1 ≠ w := by
-      intro h
-      rw [h] at hzq
+    have hzw : z ≠ w := by
+      rintro rfl
       exact hq (Subtype.ext (hδ.transports_unique hzq hz₁))
-    have hzw' : (e.symm q).1 ≠ -w := by
-      intro h
-      rw [h] at hzq
+    have hzw' : z ≠ -w := by
+      rintro rfl
       exact hq' (Subtype.ext (hδ.transports_unique hzq hz₁.neg))
-    exact Subtype.ext (hδ.transports_unique (hact _ _ (hfix _ hz0 hzw hzw') q hzq) hzq)
+    exact Subtype.ext (hδ.transports_unique (hact z z (hfix z hz0 hzw hzw') q hzq) hzq)
 
 end
 

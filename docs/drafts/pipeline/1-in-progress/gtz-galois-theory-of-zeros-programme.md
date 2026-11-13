@@ -1,9 +1,9 @@
-# Galois theory of the zeros — programme card (review-1211 §2.19)
+# Galois theory of the zeros — programme card (review-1311 §2.19)
 
 - **ID:** gtz-programme
 - **Stage:** 1-in-progress
 - **Type:** programme
-- **Source:** `docs/reports/review-1211/obstacles-summary.md` §2.19
+- **Source:** `docs/reports/review-1311/obstacles-summary.md` §2.19 (question numbers and milestones of that section; §2.6 for B193)
 - **Lean:** `formal/GaloisForLFunctions/GaloisTheoryOfZeros/` (umbrella `GaloisTheoryOfZeros.lean`)
 - **README:** `formal/GaloisForLFunctions/GaloisTheoryOfZeros/README.md`
 
@@ -11,14 +11,16 @@
 
 | # | Question | Status |
 |---|---|---|
-| Q1 | orbit of a zero with irrational real part over `B`; an automorphism besides conjugation | open; orbit lies in the quartet; rational real part settled; over `D` reduced to sums of squares (module O1) |
-| Q2 | `[L:K] ∈ {1,∞}` | open; contains B13 |
-| Q3 | square-class relations among the radicands `−δ_q²` | open; ordering conjugations see the relations modulo sums of squares (module O1) |
-| Q4 | group of one Jensen polynomial over its coefficient field | reduced (modules G1–G4): the group is `C₂ ≀ S_n` or `μ₂/μ₀, …, μ₂ₙ/μ₀` are algebraically dependent over `ℚ`; the independence is a transcendence statement outside the programme |
-| Q5 | monodromy of the heat family at a collision, group generated, relation to conjugation | local part answered; branch points exist; over forward times the cover is tame (no escape, lifting, transport bijective, branch times discrete); the forward monodromy group `G₊(τ)` is defined, independent of `τ` up to conjugation, commutes with `r`, contains `cr` over real times (RH ⇔ `cr = 1` there), contains the Hermite reflection of every forward branch point, contains a sign change of one pair, and preserves all pairs only if RH; generation and support open (below) |
-| Q6 | a restriction from the prime traces forcing `H = B` | open; equivalent to RH |
+| 1 | B193: a collision away from the centre at a forward time; generators of `G₊`; transitivity on the pairs | `G₊(τ)` defined, the same up to conjugation at every base time, commutes with `r`, contains `cr` over real times (RH ⇔ `cr = 1`), contains the turn around every forward branch time, a sign flip of some pair, and preserves all pairs only if RH; transport by homotopy class; every element moves finitely many zeros, `r ∉ G₊`; the turn fixes every zero that is not a sheet of a collision at its time. Open: the collision (M4), generation, transitivity |
+| 2 | algebraic independence of the normalized moments of `Φ` at each degree | reduced (modules G1–G4): the group of the Jensen equation of degree `2n` is `C₂ ≀ S_n` or `μ₂/μ₀, …, μ₂ₙ/μ₀` are algebraically dependent over `ℚ`; independence open (M5) |
+| 3 | B190: orbit of a zero with irrational real part over `B` | open; orbit lies in the quartet; rational real part settled |
+| 4 | `[L:K] ∈ {1,∞}` | open (M6); contains B13 |
+| 5 | every squared width a sum of squares in `D` | open; equivalent to: every ordering of `D` induces complex conjugation (module O1) |
+| 6 | a restriction from the prime traces or the branch divisor forcing the two involutions to agree | open; equivalent to RH in both forms |
 
-## Tier 3: the heat cover (Q5)
+Milestones: M1, M2, M3 formalized; M4, M5, M6 open.
+
+## Tier 3: the heat cover (question 1)
 
 `H_τ(z) = ∫ Φ(x) e^{τx²} e^{izx} dx`, complex `τ`. Cover `X = {H_τ(z) = 0} ⊂ ℂ²`.
 
@@ -40,7 +42,11 @@
 | `ConjugationOfTheZerosIsAMonodromyOfTheHeatCover` | `T_{γ·γ̄⁻¹}(z) = z̄` when the end fibre is real; real times joined by forward arcs; `cr ∈ G₊(t)`; RH ⇔ `cr = 1` over all real `t > 0` off the branch times | same |
 | `TheTurnAroundAForwardBranchTimeIsANontrivialForwardMonodromy` | the circle around a forward collision transports `Z_ρ` to `Z_{−ρ}`, twice the circle is the identity on the sheets; a loop acts at every base time; every forward branch time gives an element `≠ 1`; a sign change `z ↔ −z` exists; `G₊ ≠ 1`; a collision off the centre moves a pair; all pairs preserved ⇒ RH | same |
 
-Open core of Q5 (the group generated):
+| `TheTransportOfAZeroDependsOnlyOnTheHomotopyClass` | simple zeros form a separated local homeomorphism over the times; lifts through simple zeros of a homotopy with fixed ends end at one zero (paths may cross branch times); transport by homotopy class; no monodromy over convex branch-free sets | `3-formalized/galois-zero-forward-monodromy-homotopy-support-and-turns.md` |
+| `EveryForwardMonodromyMovesFinitelyManyZeros` | trap along a whole path; far zeros return along every loop in a box; every element of `G₊` has finite support; fibres infinite; `r ∉ G₊` | same |
+| `TheTurnAroundABranchTimeMovesOnlyTheSheetsOfItsCollisions` | the turn fixes every zero that is not a sheet of a collision at its time and reflects the sheets; at a double central collision that is alone at its time the turn is the sign flip of one pair | same |
+
+Open core of question 1:
 
 1. *Non-escape.* Proved for `Re τ > 0` (card `galois-zero-forward-tameness-of-the-heat-cover`).
    For `Re τ ≤ 0` there is no gain from the Gaussian and the statement is of the strength of
@@ -52,16 +58,26 @@ Open core of Q5 (the group generated):
 3. *Irreducibility* of the cover (transitivity of the monodromy on the zeros of one time).
 4. *Accumulation* of branch times: none at a forward time (finitely many in a box); open on
    `Re τ ≤ 0`. Simplicity of the zeros of `c`.
-5. *The group over forward times.* `G₊(τ)` is a group of signed permutations of the pairs
-   `{z, −z}`, the same up to conjugation at every base time. It contains `cr` at real base
-   times, the Hermite reflection of every forward branch point, and a sign change of one pair.
-   It preserves all pairs only if RH. Not yet theorems: transport depends only on the homotopy
-   class; `G₊` is generated by the conjugates of the Hermite reflections; every element moves
-   finitely many zeros (then `r ∉ G₊`); `cr` is the product of the reflections of the real
-   branch times in `(t, 1/8)`; no collision off the centre at a nonreal forward time (then
-   `G₊` preserves all pairs iff RH).
+5. *The group over forward times.* `G₊(τ)` is a group of restricted signed permutations of
+   the pairs `{z, −z}`, the same up to conjugation at every base time, a quotient of the
+   fundamental group of the forward half-plane without the branch times. It contains `cr` at
+   real base times, the turn around every forward branch time, and a sign flip of some pair;
+   it does not contain `r`. It preserves all pairs only if RH. The turn is known on the whole
+   fibre. Not yet theorems:
+   - `G₊` is generated by the conjugates of the turns (then: `G₊` preserves all pairs iff no
+     collision away from the centre exists at a forward time);
+   - `cr` is the word of the turns around the real branch times in `(t, 1/8)`;
+   - a collision away from the centre at a forward time (M4);
+   - transitivity on the pairs.
+6. *Route to M4.* A loop whose transport moves a zero inside a compact region whose boundary
+   carries no zero forces a multiple zero in the region (homotopy invariance through simple
+   zeros). Expected place: near a centre time of large modulus, where for `|z| ≲ 1/log|τ|`
+   the family is `c(τ) − 4S(τ) sin²(x(τ)z/2)` up to a small relative error (`S` the saddle
+   term, `x(τ) ≈ ¼ log τ` the saddle). A loop around the centre time on which `c/S` winds once
+   exchanges the two zeros near `x z = 2π`. Needs: uniform saddle-point asymptotics of `H_τ`
+   for `|τ| → ∞` near the imaginary direction. Not started.
 
-## Tier 1: finite equations (Q4)
+## Tier 1: finite equations (question 2)
 
 | Module | Content |
 |---|---|
@@ -72,10 +88,10 @@ Open core of Q5 (the group generated):
 
 Card for G2–G4: `3-formalized/galois-zero-folded-specialization-jensen-equations.md`.
 
-Not done for Q4: the class of complex conjugation inside the group of a Jensen equation as a
+Not done for question 2: the class of complex conjugation inside the group of a Jensen equation as a
 signed permutation (needs the restriction of conjugation to a splitting field inside `ℂ`).
 
-## Tier 2: orderings (Q1, Q3)
+## Tier 2: orderings (questions 3, 5)
 
 | Module | Content | Card |
 |---|---|---|
@@ -108,6 +124,14 @@ extensions).
   Picard's theorem they would move by one similarity. Needs lifting and Picard; neither is
   available.
 
+- *An exchange follows from the heat equation and the symmetry.* False: the family
+  `(τ−τ₀)^{ν/2} f(z/√(τ−τ₀))`, `f` an even solution of `f'' − (y/2)f' + (ν/2)f = 0`, has the
+  sheets `z² = ρ_j²(τ−τ₀)` and no collision off the centre; for polynomials this is the Hermite
+  family, and a degree count of the discriminant in `z²` (`n(n−1)` against `Σ k_i(k_i−1)` at
+  the centre times) shows that every polynomial family with two distinct centre times has a
+  collision off the centre. For `Φ` the proof must use the kernel. Polynomial intuition also
+  fails for the position: a real-rooted polynomial has its centre times in `Re τ < 0`, the
+  family of `Ξ` has them in `Re τ > 0`.
 - *Barriers.* Circles or vertical lines free of zeros for all times of a compact set cannot
   exist when the set has interior: each far zero sweeps a region of diameter about
   `(π/2)·diam`, larger than the spacing. Non-escape needs the local asymptotics.
@@ -120,3 +144,4 @@ extensions).
   lifting, bijective transport, discrete branch times.
 - 2026-11-13 — forward monodromy group; conjugation `cr` is an element; RH ⇔ `cr = 1`.
 - 2026-11-13 — base-time independence; Hermite reflections are elements of `G₊`; `G₊ ≠ 1`; pairs preserved ⇒ RH.
+- 2026-11-13 — review-1311 frame adopted (questions renumbered, milestones); homotopy invariance; finite support and `r ∉ G₊`; the turn on the whole fibre.

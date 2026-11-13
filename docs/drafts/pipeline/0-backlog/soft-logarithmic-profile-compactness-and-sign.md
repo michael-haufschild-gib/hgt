@@ -2,9 +2,9 @@
 
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
-- **Target:** B16, B17; signed ground states and the shape behind the confining margin.
+- **Target:** Review-1311 A158, B16, B17; attainment in the closed limiting domain and convergence of the rescaled profiles.
 - **Statement:** The closed half-line form with Fourier symbol `log|ξ|` and potential `8(-u)` has a unique unit minimizing line with a nonnegative representative. Rescaled actual confining minimizers converge in `L²` to this line.
-- **Status:** Unproved; not counted. The universal soft logarithmic limit is a prerequisite still undergoing Lean verification.
+- **Status:** Unproved; not counted. The [universal soft logarithmic limit](../3-formalized/universal-soft-logarithmic-confinement-limit.md) is verified; compactness, domain recovery, and sign rigidity remain missing.
 
 ## Corpus connection
 
@@ -28,3 +28,29 @@ The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integr
 3. Use rescaled near-minimality from the universal confinement limit to obtain convergence to the unique minimizing line.
 
 The limiting domain may be larger than the union of positive exponential domains used for trial functions. Attainment in that trial class is not part of the conjecture.
+
+## Stronger questions exposed by the domain distinction
+
+The original exponential-moment trial class may have no minimizer. The
+finite-part `1/|x-y|` interaction suggests an algebraic tail for the closed
+ground state. A proposed contradiction to exponential decay tests its weak
+equation against a nonnegative compact bump translated far into the half-line:
+the distant interaction with fixed positive mass is of order `-1/x`, while
+the local linear-potential pairing would decay exponentially. This requires
+an actual off-support logarithmic-operator formula and modulus rigidity;
+neither has yet been transferred to the full half-line domain. No no-go is
+claimed, and the positive survivor to prove is attainment and uniqueness in
+the closed domain.
+
+Modulus rigidity may also pass through the actual Gamma form. Compress a
+trial profile, use the Lévy contraction inequality, then take the verified
+Gamma/logarithm limit. Opposite-sign mass on two separated bounded sets
+gives a fixed positive jump loss under this rescaling, so strictness should
+survive the limit. The new `HalfLineGammaContractions` draft supplies the
+needed nonlinear-domain bridge once audited.
+
+If closed attainment and cutoff recovery hold, dilation of a limiting
+minimizer forces its first moment to be `1/8`. Together with the universal
+actual-moment limit, compactness should upgrade convergence to both the
+first-moment weighted norm and the positive logarithmic Fourier norm. These
+stronger convergence claims remain conjectures.

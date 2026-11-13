@@ -98,7 +98,7 @@ theorem exists_minimizer_remainder_lower {ε : ℝ} (hε : 0 < ε) :
   rw [hstrength] at hCa
   have hδ : criticalHalfLineExponentialDefect F ≤ d := by
     have hh := (div_le_iff₀ hd).mp hCd
-    exact (mul_le_mul_left ha0).mp (hCa.trans (by simpa only [mul_comm] using hh))
+    exact (mul_le_mul_iff_right₀ ha0).mp (hCa.trans hh)
   have hA := (abs_lt.mp (harith hF.1 hF.2.1 hδ)).1
   have hg := hF.1.rescaled_softLogarithmic ha0
   have hm : (∫ u, ‖cx (rescaledConfiningProfile a F) u‖ ^ 2) = 1 := by

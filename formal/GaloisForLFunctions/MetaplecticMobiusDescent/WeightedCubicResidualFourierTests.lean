@@ -213380,7 +213380,7 @@ theorem section_deriv_smooth (F : (ℝ × ℝ) → ℝ → ℂ)
   have hFp : ContDiff ℝ ∞
       (Function.uncurry (fun p : (ℝ × ℝ) × ℝ => F p.1)) :=
     hF.comp (contDiff_fst.fst.prodMk contDiff_snd)
-  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ ∞)
+  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ (∞ : ℕ∞ω))
   simpa only [deriv] using hd.clm_apply (contDiff_const (c := (1 : ℝ)))
 
 theorem section_iteratedDeriv_smooth (F : (ℝ × ℝ) → ℝ → ℂ)
@@ -235572,7 +235572,7 @@ def commonScalar (s:Input ι)(C R:Ideal O)(B:actualAllocations s.pools C):ℂ:=
 omit [DecidableEq ι] in
 theorem common_volume (s:Input ι)(C R:Ideal O)(B:actualAllocations s.pools C):
     volume (commonData s C R B)=remainingRaw B.val (s.X₁*s.X₂) s.P:=by
-  dsimp only [volume,commonData,remainingRaw,plainNorm]
+  dsimp only [CenteredMomentExceptionalAmplitudePair.volume,commonData,remainingRaw,plainNorm]
   ring
 
 theorem source_normalized (s:Input ι)(C:Ideal O)(hC:Supported C)(R seed L:Ideal O)
@@ -236359,7 +236359,7 @@ theorem shifted_mass {lo hi:ℝ} (R:Finset (ℕ×ℕ))
       (slotControl_nonneg v.toData)) (Real.sqrt_nonneg (volume s.toData)))
       (Real.sqrt_nonneg (volume v.toData))
   convert hs using 1 <;>
-    first | rfl | (simp only [profileMass,withHeight,slotControl,volume,mass,mul_pow]; ring)
+    first | rfl | (simp only [profileMass,withHeight,slotControl,CenteredMomentExceptionalAmplitudePair.volume,mass,mul_pow]; ring)
 end CenteredMomentFiniteProfileExceptionalCommon
 
 end
@@ -245297,7 +245297,7 @@ theorem section_deriv_smooth (F : E → ℝ → ℂ)
   have hFp : ContDiff ℝ ∞
       (Function.uncurry (fun p : E × ℝ => F p.1)) :=
     hF.comp (contDiff_fst.fst.prodMk contDiff_snd)
-  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ ∞)
+  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ (∞ : ℕ∞ω))
   simpa only [deriv] using hd.clm_apply (contDiff_const (c := (1 : ℝ)))
 
 theorem section_iteratedDeriv_smooth (F : E → ℝ → ℂ)
@@ -248028,7 +248028,7 @@ theorem certified_terminal (W:ℝ→ℂ)(bslot a b radial Bmask L lo hi Mcap κ 
   filter_upwards [hcert] with Z hZ
   have hz:=hZ.2.1
   have hp:=hZ.2.2
-  simp only [lowerAt,lengthAt,remaining,Nat.sub_self,CenteredMomentEnergyProfiles.lower,range] at hz hp
+  simp only [lowerAt,lengthAt,remaining,Nat.sub_self,CenteredMomentEnergyProfiles.lower,CenteredMomentEnergyWidthRanges.range] at hz hp
   have hterminal:=bandWidth_terminal Mcap Bs ε hMcap hBs hε
   change bandWidth Mcap (finalSourceCap Mcap Bmask L ε) ε (count Mcap ε)=Mcap at hterminal
   rw [hterminal] at hz hp
@@ -249232,7 +249232,7 @@ lemma postmask_length_le (Z X D:ℝ)(hZ:1< Z)(hD:1≤ D):
 theorem input_volume_log (s:Input ι)(Z:ℝ):
     Real.logb Z (volume s)=Real.logb Z s.X₁+Real.logb Z s.X₂+
       ∑i,Real.logb Z (s.P i) := by
-  rw [volume,Real.logb_mul (mul_pos s.X₁_pos s.X₂_pos).ne'
+  rw [CenteredMomentAmplificationChildInput.volume,Real.logb_mul (mul_pos s.X₁_pos s.X₂_pos).ne'
     (Finset.prod_pos (fun i _=> s.P_pos i)).ne',
     Real.logb_mul s.X₁_pos.ne' s.X₂_pos.ne',
     Real.logb_prod _ _ (fun i _=>(s.P_pos i).ne')]
@@ -249959,7 +249959,7 @@ theorem input_mass (hi:ι→ℝ)(whi:ℝ)(hhi:∀i,0≤ hi i)(hwhi:0≤ whi)
   rw [he₁,he₂]
   change (∑I∈_,‖finiteColumnCoefficient _ _ I‖)≤ _
   apply (hc.trans hm).trans_eq
-  simp only [map_one,Nat.cast_one,one_mul,div_one,plainControl,volume]
+  simp only [map_one,Nat.cast_one,one_mul,div_one,plainControl,CenteredMomentExceptionalAmplitudePair.volume]
   ring
 
 omit [DecidableEq ι] in
@@ -249986,7 +249986,7 @@ lemma input_column_bound (hi:ι→ℝ)(whi:ℝ)
     (fun x hx=>(hs₁ hx).2) (fun x hx=>(hs₂ hx).2) v hv0
   rw [hvI] at hp
   apply hp.2.trans_eq
-  simp only [map_one,Nat.cast_one,one_mul,div_one,volume]
+  simp only [map_one,Nat.cast_one,one_mul,div_one,CenteredMomentExceptionalAmplitudePair.volume]
   ring
 
 lemma kernel_inverse_cap (HN Z B Tsec:ℝ)(hZ:1≤ Z)(hB:0≤ B)(hT:0< Tsec)(hcap:Tsec≤ Z^B):
@@ -250191,7 +250191,7 @@ theorem first_input_zero_bound (hi:ι→ℝ)(wlo whi ε:ℝ)
     simp only [map_one,Nat.cast_one,one_mul,div_one]
     change (∏i,hi i)*whi*whi*(s.X₁*s.X₂)*(∏i,s.P i)≤ _
     have hh:0≤ V:=hV.le
-    dsimp [L,V,volume] at *
+    dsimp [L,V,CenteredMomentExceptionalAmplitudePair.volume] at *
     nlinarith
   rw [hc]
   by_cases hsmall:L*V<1
@@ -253514,7 +253514,7 @@ theorem literal_four_budget (M Bcap Bcommon κ ε:ℝ)
     linarith
   · dsimp [exceptional] at hone
     linarith [hone.1]
-  · dsimp [diagonal] at hdiag
+  · dsimp [CenteredMomentSuccessorPaidParameters.diagonal] at hdiag
     linarith [hdiag.2]
   · linarith
 
@@ -256671,7 +256671,7 @@ lemma input_radius_cap {ι:Type*}[Fintype ι][DecidableEq ι]
     (hV:volume s.toData≤ Z^B):sourceRadius s≤ Z^(B+1) := by
   have hVol:0< volume s.toData:=volume_pos s.toData
   have he:sourceRadius s=(∏i,s.hi i)*s.b₁*s.b₂*volume s.toData:=by
-    unfold sourceRadius volume;ring
+    unfold sourceRadius CenteredMomentExceptionalAmplitudePair.volume;ring
   rw [he]
   have hprod:|∏i,s.hi i|≤∏i,hi i:=by
     rw [Finset.abs_prod]
@@ -256914,7 +256914,7 @@ theorem original_column_lower {ι:Type*}[Fintype ι][DecidableEq ι]
     one_ne_zero one_ne_zero rfl s.same_product (fun i x hx=>(s.support i hx).1)
     hs₁ hs₂ (Fintype.piFinset s.pools) I (by
       simpa only [CenteredMomentOriginalCommonHarmonic.coefficient] using hn)
-  simpa only [map_one,Nat.cast_one,mul_one,div_one,volume,mul_assoc] using hh
+  simpa only [map_one,Nat.cast_one,mul_one,div_one,CenteredMomentExceptionalAmplitudePair.volume,mul_assoc] using hh
 
 lemma log_window_upper (N H M:ℝ)(hN:0< N)(hH:0< H)
     (hlog:|Real.log (N/H)|≤ M):N≤ Real.exp M*H := by
@@ -261209,7 +261209,7 @@ theorem actual_reference_block (W:𝓢(ℝ,ℂ)) (decay J₁ J₂:ℕ)
           (∑i:Fin 4,∑j:Fin 4,windowBudget J₁ s.t (refL*EL i)*windowBudget J₂ s.t (refR*ER j))) := by ring
       _ ≤ _ := by
         convert hmul using 1 <;>
-          (try dsimp [refL,refR,V,volume,CenteredMomentExceptionalAmplitudePair.volume]) <;>
+          (try dsimp [refL,refR,V,CenteredMomentAmplificationChildInput.volume,CenteredMomentExceptionalAmplitudePair.volume]) <;>
           (first | rfl | ring)
 
 end CenteredMomentFirstReferenceBlock
@@ -273365,7 +273365,7 @@ lemma normalized_child_mask (s : Input ι) (C R T seed : Ideal O)
         (original (child s C (R*T) B τ t) ((R*T)*C) seed).columns :=
     (child_columns s C R seed B τ t).1.symm.trans (child_columns s C (R*T) seed B τ t).1
   have hvolume : volume (child s C R B τ t) = volume (child s C (R*T) B τ t) := by
-    simp only [volume, child, commonData]
+    simp only [CenteredMomentAmplificationChildInput.volume, child, commonData]
   unfold childNormalizedGaussSource normalizedGaussSource
   rw [child_input_combined_mask, hcolumns, hvolume, child_character, child_height]
 
@@ -273403,7 +273403,7 @@ lemma commonEnergy_real (D : OriginalData ι) (C : Ideal O) (hC : Supported C)
 
 lemma original_rawVolume (s : Input ι) (R seed : Ideal O) :
     CenteredMomentFirstAllocationGaussEnergy.rawVolume (original s R seed)=volume s := by
-  simp [CenteredMomentFirstAllocationGaussEnergy.rawVolume,original,volume]
+  simp [CenteredMomentFirstAllocationGaussEnergy.rawVolume,original,CenteredMomentAmplificationChildInput.volume]
 
 lemma allocated_input_columns (s : Input ι) (C R seed L : Ideal O)
     (B : actualAllocations s.pools C) (τ : Character) (t : ℝ) :
@@ -273419,7 +273419,7 @@ lemma allocated_input_volume (s : Input ι) (C R seed L : Ideal O)
     CenteredMomentFirstAllocationGaussEnergy.rawVolume (allocatedData (original s R seed) C L B)=
       volume (child s C R B τ t) := by
   simp only [CenteredMomentFirstAllocationGaussEnergy.rawVolume,allocatedData,original,
-    volume,child,commonData,one_mul,div_mul_div_comm]
+    CenteredMomentAmplificationChildInput.volume,child,commonData,one_mul,div_mul_div_comm]
 
 lemma allocated_input_energy (s : Input ι) (C R seed L : Ideal O)
     (B : actualAllocations s.pools C) (τ : Character) (t : ℝ) (W : 𝓢(ℝ,ℂ)) (K : ℝ) :
@@ -273803,8 +273803,8 @@ theorem common_energy_reference_powers (N:ℕ)(a b ε:ℝ)(ha:0< a)(hb:1≤ b)(h
   have hh':=(div_le_iff₀ hV).mp hh
   apply hh'.trans_eq
   calc
-    _ = Cb*(∏i,s.M i)^2*∑j,(C.absNorm:ℝ)^(ε-1)*volume s*E j*
-        (b^N*volume s/(C.absNorm:ℝ))^(α j):=by
+    _ = Cb*(∏i,s.M i)^2*∑j,(C.absNorm:ℝ)^(ε-1)*CenteredMomentAmplificationChildInput.volume s*E j*
+        (b^N*CenteredMomentAmplificationChildInput.volume s/(C.absNorm:ℝ))^(α j):=by
       simp only [Finset.mul_sum,Finset.sum_mul]
       apply Finset.sum_congr rfl
       intro j hj
@@ -275897,7 +275897,7 @@ theorem paired_core_budget (s:Input ι) (C D:Ideal O) (hC:Supported C) (hD:Suppo
     exact mul_nonneg (mul_nonneg (mul_nonneg hCe (Real.rpow_nonneg hZ _)) (profileCost_nonneg s)) (volume_pos s.toData).le
   have he (G:Ideal O) (E:ℝ):core s G Ce Z δ E=
       (Ce*Z^δ*profileCost s*volume s.toData)*E/(G.absNorm:ℝ):=by
-    unfold core volume
+    unfold core CenteredMomentExceptionalAmplitudePair.volume
     ring
   rw [he C E₁,he D E₂]
   simp only [windowBudget,pow_add]
@@ -276636,7 +276636,7 @@ lemma coefficient_map (e : α≃β) (s : Input α) (R seed : Ideal O) :
   rfl
 
 lemma volume_map (e : α≃β) (s : Input α) : volume (reindex e s)=volume s := by
-  simp only [volume,reindex,e.symm.prod_comp]
+  simp only [CenteredMomentAmplificationChildInput.volume,reindex,e.symm.prod_comp]
 
 lemma controls_map (e : α≃β) (s : Input α) :
     (∏i,(reindex e s).M i)=(∏i,s.M i) ∧
@@ -277484,7 +277484,7 @@ theorem actual_second_zero (N:ℕ)(ε:ℝ)(hε:0<ε):
     s.X₁ s.X₂ s.Y₁ s.Y₂ (s.X₁*s.X₂) 1 1 seed s.P_pos s.X₁_pos s.X₂_pos s.Y₁_pos s.Y₂_pos
     one_ne_zero one_ne_zero hseed rfl s.same_product (Fintype.piFinset s.pools)).2 κ
   have hV:=volume_pos s.toData
-  simpa only [map_one,Nat.cast_one,mul_one,div_one,coefficient,volume,norm_mul,norm_div,
+  simpa only [map_one,Nat.cast_one,mul_one,div_one,coefficient,CenteredMomentExceptionalAmplitudePair.volume,norm_mul,norm_div,
     Complex.norm_real,Real.norm_eq_abs,abs_of_pos hV,abs_of_pos s.X₁_pos,abs_of_pos s.X₂_pos,
     abs_of_pos (Finset.prod_pos (fun i _=> s.P_pos i)),mul_div_assoc,div_mul_eq_mul_div] using hh
 

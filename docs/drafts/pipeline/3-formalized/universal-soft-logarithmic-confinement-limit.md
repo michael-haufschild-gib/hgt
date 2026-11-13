@@ -1,10 +1,10 @@
 # Universal soft logarithmic confinement limit
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Target:** B16, B17; identify the limiting variational problem behind the confining margin. Review-1311 A158 identifies this written closure for verification; limiting-profile attainment remains separate.
 - **Statement:** After subtracting `a+log a`, the actual ground energy converges to a fixed half-line logarithmic variational floor. Rescaled minimizers approach this floor, with `a(W-1)→1` and `a∫(-u)F(u)²du→1/8`.
-- **Status:** Paper proof below; Lean formalization in progress. Not counted.
+- **Status:** Complete. All eighteen supporting modules pass final plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired. Counted as one contribution. Limiting-profile attainment and polar charge remain open.
 
 ## Corpus connection
 
@@ -82,7 +82,7 @@ The elementary bounds `1-1/b≤log b≤b-1` put the limiting lower bound above `
 
 ## Lean status
 
-Fifteen modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
+Eighteen modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
 
 - `HalfLineConfinementTail`: weighted-tail control and `8M(F)≤W(F)-m(F)`.
 - `WeightedSourceTruncation`, `WeightedSourceLocalizedPairing`: indicator closure, exact restricted masses, and localized weighted Cauchy–Schwarz.
@@ -97,5 +97,9 @@ Fifteen modules pass plain source audits with exactly `propext`, `Classical.choi
 - `ConfiningPotentialLimit`: compression linearizes the exponential excess to eight times the physical first moment, by an exponential-moment majorant.
 - `ConfiningFixedTrialLimit`: exact dilated Gamma decomposition and convergence of every fixed unit trial's renormalized full energy to the logarithmic-plus-linear form.
 - `ConfiningLogarithmicFloor`: the limiting Rayleigh set is nonempty and bounded below; fixed trials give the uniform eventual upper comparison with its infimum.
+- `ConfiningRescaledEnergy`: exact minimizing energy decomposition, nonnegative potential error, and a uniform lower bound tending to zero for the combined spectral and arithmetic remainder.
+- `ConfiningLogarithmicLimit`: convergence of the renormalized ground energy to the universal floor, with uniform vanishing of both logarithmic energy excess and potential-linearization error for all minimizers.
 
-Remaining modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`: `ConfiningRescaledEnergy`, `ConfiningLogarithmicLimit`, and `ConfiningVirialLimit`. Their proofs and source audits remain pending. Not counted.
+- `ConfiningVirialLimit`: affine secants force `a(W-1)→1`; the potential error then gives scaled first moment `1/8`. `universal_softLogarithmic_confinement_limit` assembles all four uniform conclusions.
+
+The final theorem has no added analytic premises. Its plain source audit is warning-free. No olean is generated for the final module because no written leaf imports it.

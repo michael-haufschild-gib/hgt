@@ -103,6 +103,21 @@ including its prime and confining terms, with the existing Green inverse.
 The boundary coefficient's magnitude and polar identification would still
 remain open.
 
+The exact normalization is
+`Gamma=A_log+(archLogScalar-1)I-archLogConvolution`, with
+`A_log` having symbol `1+(1/2)log(1+r²)`. For the reflected profile
+`u(x)=F(-x)`, the proposed localized forcing is
+
+`χ[(λ-a exp(8x)-archLogScalar+1)u+Prime(u)-Pole(u)+archLogConvolution(u)]
+ +[A_log,χ]u`.
+
+Choose `χ=1` near zero, supported below `log 2`. The outward prime shifts
+then vanish on its support, while the inward shifts are bounded by the
+summable barrier row. The other localized terms and the existing cutoff
+commutator would be both `L²` and bounded. This identifies the precise
+candidate Green forcing; transfer of the actual weak identity to the
+closed logarithmic form is still unproved.
+
 ## Candidate wall-flux argument
 
 Assuming the preceding regularity steps have been proved, put
@@ -110,6 +125,11 @@ Assuming the preceding regularity steps have been proved, put
 `E(B_h)/h→c²` at the critical ratio: the kernel `1/(2|u-v|)` pairs the
 terminal trace with the adjacent logarithmic tail. The prime and polar
 cross terms would be `o(h)` under the exponential barrier bound.
+
+For `Q=E-λ‖·‖₂²`, admissibility of the collar gives the exact reduction
+`Q(B_h)=-Q(F-B_h,B_h)`. The two profiles on the right have disjoint support.
+Thus this argument needs a cross-kernel asymptotic, rather than an estimate
+of the possibly rough internal jump energy from the trace alone.
 
 The sharp wall floor applied to `F-B_h` would then give `c²≥8aW(F)`.
 The same cross-kernel asymptotic predicts
