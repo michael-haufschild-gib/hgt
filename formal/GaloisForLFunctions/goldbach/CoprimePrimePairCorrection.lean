@@ -52,7 +52,7 @@ private theorem diagonal_primePairWeight (N : ℕ) :
       have hneq : p.1 ≠ p.2 := by
         intro he
         apply hne
-        apply Prod.ext <;> simp only [Prod.fst, Prod.snd] <;> omega
+        apply Prod.ext <;> omega
       exact if_neg hneq
     · exact fun h => False.elim (h hm)
   · rw [if_neg hN]
@@ -66,6 +66,7 @@ theorem primePairWeight_eq_coprime_add_diagonal (N : ℕ) :
     primePairWeight N = coprimePrimePairWeight N +
       if N % 2 = 0 then primeLogWeight (N / 2) ^ 2 else 0 := by
   rw [← diagonal_primePairWeight, coprimePrimePairWeight, ← sum_add_distrib]
+  unfold primePairWeight additivePairWeight
   apply sum_congr rfl
   intro p hp
   have hN := mem_antidiagonal.mp hp
@@ -85,10 +86,10 @@ theorem coprimePrimePairWeight_pos_iff (N : ℕ) :
   · rintro ⟨⟨p,q⟩, hpq, h⟩
     have hs := mem_antidiagonal.mp hpq
     split_ifs at h with hc
-    · have hp : 0 < primeLogWeight p :=
-        (mul_pos_iff_of_nonneg (primeLogWeight_nonneg p) (primeLogWeight_nonneg q)).mp h |>.1
-      have hq : 0 < primeLogWeight q :=
-        (mul_pos_iff_of_nonneg (primeLogWeight_nonneg p) (primeLogWeight_nonneg q)).mp h |>.2
+    · have hpos := (mul_pos_iff.mp h).resolve_right
+        (fun hn => (not_lt_of_ge (primeLogWeight_nonneg p)) hn.1)
+      have hp : 0 < primeLogWeight p := hpos.1
+      have hq : 0 < primeLogWeight q := hpos.2
       have hprime := (primeLogWeight_pos_iff p).mp hp
       refine ⟨p,q,hprime,(primeLogWeight_pos_iff q).mp hq,?_,hs⟩
       intro he

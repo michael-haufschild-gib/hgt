@@ -233,6 +233,25 @@ block size.
     has `Re ρ < 1` (`tendsto_two_re_lagStructure_mul_exp`). Parity diagonalizes the plane also
     with charges (`neutralForm_even_add_odd_charged`). In Doob terms: a Poincaré inequality
     `gap ≥ μ − C ρ^θ` with loss `ρ^θ = o(μ)` is a zero-free strip.
+22. *The rate at finite block size* (`zetaZeroWidth_le_of_neutralWindow_marginRate`): if
+    `N_W + C K^θ` has one negative square on every window of ratio `3K + 1`, `θ < ½`, every zero
+    has `|Re ρ − ½| ≤ θ`. The plane of mechanism 21 is carried to the window matrices through
+    the comb by three one-sided bounds valid on all divisors at once: the samples of a packet
+    (`tendsto_combNeutral_sample`), the block averages, which raise the neutral part `−D·D` of the
+    comb by at most `(ε + 15K/R)` times the norm (`combNeutral_blockMean_le`), and the block
+    functions, whose neutral part per point of a block tends to the window matrix uniformly
+    (`eventually_abs_combNeutral_sub_le`). Both forms are quadratic on the plane
+    (`combNeutral_lin`), so the limits are uniform on it.
+
+**The trees alone.**
+23. *The dilation process has no gap* (`dilationForm_le_of_no_gap`): at infinite block size the
+    floor trees are the dilation process on `(1, Q]`, `x → kx` at the rate `Λ(k)` and back at
+    `Λ(k)/k`, reversible for `dx`. For every `Q` it has no spectral gap, at arbitrarily high
+    frequencies: at a common return of the rotations `t log k`, `k ≤ Q`, to `2πℤ` (Dirichlet's
+    simultaneous approximation) the wave `cos(t log x)` is moved by no floor map, while it keeps a
+    quarter of the mass as variance (`dilationVar_cos_ge`). The returns are the frequencies where
+    `Σ_{k ≤ Q} Λ(k) k^{it}` is near its maximum `ψ(Q)`: there the gap of the Doob chain of a long
+    window must come from the jets.
 
 ## 5. Pillar theorems
 
@@ -251,7 +270,8 @@ block size.
 | RH iff the margins are bounded below, at infinite and at finite block size; the windows `(1, 2M]` suffice | `riemannHypothesis_iff_margin_bddBelow`, `riemannHypothesis_iff_neutralWindow_margin_bddBelow`, `riemannHypothesis_iff_initialWindow_margin_bddBelow` |
 | RH iff Weil's form on step packets is bounded below by a multiple of the mass | `riemannHypothesis_iff_packetForm_stepPacket_bddBelow` |
 | The trivial exponent `½` of the window matrices; a saving in the exponent is a zero-free strip | `exists_packetForm_stepPacket_ge_sqrt`, `zetaZeroWidth_le_of_packetForm_stepPacket_ge` |
-| A margin of exponential rate `θ < ½` is a zero-free strip (infinite block size) | `zetaZeroWidth_le_of_marginRate` |
+| A margin of rate `θ < ½` is a zero-free strip, at infinite and at finite block size | `zetaZeroWidth_le_of_marginRate`, `zetaZeroWidth_le_of_neutralWindow_marginRate` |
+| The dilation process on `(1, Q]` has no gap, for every `Q` | `dilationForm_le_of_no_gap` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
@@ -265,11 +285,11 @@ block size.
 | 2 | Which cut is the bottleneck | exact criterion: `S` is a bottleneck iff its part binds more than its share `μ π(S)/π(W)` (`doobCut_bottleneck_iff`); under RH no part does; at large ratio the ground state charges both ends (`sq_binding_excess_le`); the cut of a window of ratio three is open |
 | 3 | Comparison of a window with its parts through the floor trees | answered by the overlap law: exact, of full rank, with the trees between the ends in `X` |
 | 4 | A curvature bound for the floor trees | open |
-| 5 | The gap of the dilation process | answered below ratio `9/2`: zero, with a number of components of three blocks proportional to the block size; the mixing that RH needs on them comes from the jets; from ratio `9/2` on these components disappear and the gap is open |
+| 5 | The gap of the dilation process on `(1, Q]` | answered: zero for every `Q` at infinite block size, at the common returns of the rotations `t log k` (`dilationForm_le_of_no_gap`); at finite block size zero below ratio `9/2`, where the trees split into components of three blocks; the mixing RH needs comes from the jets, at the frequencies where `Σ Λ(k) k^{it}` peaks |
 | 6 | Does the margin have a limit along the ratios; does a uniform lower bound force RH | a uniform lower bound forces RH, at infinite block size (`riemannHypothesis_iff_margin_bddBelow`) and for the window matrices (`riemannHypothesis_iff_neutralWindow_margin_bddBelow`); calibration: under RH the margin lies in `[0, c₀]` and tends to `0` at infinite block size; the limit at finite block size is open |
 | 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
 | 8 | A recursion along doublings | answered in overlap form: a window reduces to two shorter parts and one contraction; the balanced split sends the ratio `ρ` to `2(1 + ρ)/3` and `3ρ/(1 + ρ)` |
-| 9 | Which exponent `θ` in `𝔚 ≥ −C ρ^θ` on the step packets of ratio `ρ`, or in a margin `−C ρ^θ`, is true | `θ = ½` for `𝔚` unconditionally (`exists_packetForm_stepPacket_ge_sqrt`); `θ < ½` implies the zero-free strip `|Re ρ − ½| ≤ θ`, for `𝔚` on step packets (`zetaZeroWidth_le_of_packetForm_stepPacket_ge`) and for the margin at infinite block size (`zetaZeroWidth_le_of_marginRate`); RH is `θ = 0`; any `θ < ½` is open |
+| 9 | Which exponent `θ` in `𝔚 ≥ −C ρ^θ` on the step packets of ratio `ρ`, or in a margin `−C ρ^θ`, is true | `θ = ½` for `𝔚` unconditionally (`exists_packetForm_stepPacket_ge_sqrt`); `θ < ½` implies the zero-free strip `|Re ρ − ½| ≤ θ`, for `𝔚` on step packets (`zetaZeroWidth_le_of_packetForm_stepPacket_ge`) and for the margin at infinite and at finite block size (`zetaZeroWidth_le_of_marginRate`, `zetaZeroWidth_le_of_neutralWindow_marginRate`); RH is `θ = 0`; any `θ < ½` is open |
 
 ## 7. Tools
 
@@ -293,7 +313,7 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 
 | Trap | Truth |
 |---|---|
-| The floor trees mix by themselves | Below ratio `9/2` they split into components of three blocks; the dilation process has no gap |
+| The floor trees mix by themselves | Below ratio `9/2` they split into components of three blocks; at infinite block size the dilation process has no gap for any `Q`: the waves at the common returns of `t log k` are fixed by every floor map |
 | The jets carry the binding | Without the trees the binding energy is at most `γ + π/2 + log 8π`; with them it grows like `√ρ` |
 | The prime `2` decides every ratio | At large ratio the binding is carried by the long floor maps of integers of the size of the ratio |
 | A bounded number of test functions across a cut decides | The binding has rank proportional to the block size (AGZ); the components below ratio `9/2` are proportional to the block size |
@@ -312,10 +332,9 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
   every ratio; norms of `X` against `S₁`, `S₃`.
 - The converse of the exponent laws: whether `|Re ρ − ½| ≤ θ` gives `𝔚 ≥ −C ρ^θ` on the step
   packets of ratio `ρ`, or a margin `−C ρ^θ`.
-- The rate of the margin at finite block size: the plane of the binding state and the
-  antisymmetric state transferred to the window matrices (the plane of AGZ lives on windows of
-  unbounded ratio and does not see the rate); the block averages of the comb give the needed
-  one-sided bound.
+- The jets at the returns: a lower bound for the Doob energy of the jets on the waves
+  `cos(t log x)` at the frequencies where the floor trees do not mix, against the binding
+  energy; the finite-block-size gap of the dilation process from ratio `9/2` on.
 - Strategies with an additive loss: a comparison or path argument that proves gap `≥ μ − C`
   suffices; which of the known losses (the margin bound `c₀`, the archimedean floor `5.4`, the
   overlap contraction) are additive.

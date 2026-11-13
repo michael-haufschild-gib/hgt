@@ -149,7 +149,8 @@ theorem dilationVar_cos_ge {Q : ℕ} (hQ : 2 ≤ Q) {t : ℝ} (ht : 64 * (Q : �
   have hsmall2 : 4 * (Q : ℝ) / (2 * t) ≤ 1 / 16 := by
     rw [div_le_div_iff₀ (by linarith) (by norm_num)]
     linarith
-  unfold dilationVar
+  show ((Q : ℝ) - 1) / 4 ≤ (∫ u in (0 : ℝ)..Real.log Q, Real.cos (t * u) ^ 2 * Real.exp u) -
+    (∫ u in (0 : ℝ)..Real.log Q, Real.cos (t * u) * Real.exp u) ^ 2 / ((Q : ℝ) - 1)
   rw [hsq]
   obtain ⟨I1, hI1⟩ : ∃ I, I = ∫ u in (0 : ℝ)..Real.log Q, Real.cos (t * u) * Real.exp u := ⟨_, rfl⟩
   obtain ⟨I2, hI2⟩ : ∃ I, I = ∫ u in (0 : ℝ)..Real.log Q, Real.cos ((2 * t) * u) * Real.exp u :=
@@ -173,7 +174,8 @@ theorem dilationVar_cos_ge {Q : ℕ} (hQ : 2 ≤ Q) {t : ℝ} (ht : 64 * (Q : �
 theorem dilationForm_cos_le {Q : ℕ} {t η : ℝ}
     (hret : ∀ k ∈ Icc 2 Q, ∃ m : ℤ, |t * Real.log k - m * (2 * π)| ≤ η) :
     dilationForm Q (fun u => Real.cos (t * u)) ≤ η ^ 2 * Q * ∑ k ∈ Icc 2 Q, Λ k := by
-  unfold dilationForm
+  show ∑ k ∈ Icc 2 Q, Λ k * ∫ u in (0 : ℝ)..Real.log ((Q : ℝ) / k),
+      (Real.cos (t * u) - Real.cos (t * (u + Real.log k))) ^ 2 * Real.exp u ≤ _
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun k hk => ?_
   obtain ⟨m, hm⟩ := hret k hk
@@ -228,84 +230,74 @@ theorem dilationForm_le_of_no_gap {Q : ℕ} (hQ : 2 ≤ Q) {ε : ℝ} (hε : 0 <
     ∃ t : ℝ, T ≤ t ∧ 0 < dilationVar Q (fun u => Real.cos (t * u)) ∧
       dilationForm Q (fun u => Real.cos (t * u)) ≤
         ε * dilationVar Q (fun u => Real.cos (t * u)) := by
-  have hQ1 : (1 : ℝ) ≤ (Q : ℝ) - 1 := by
-    have : (2 : ℝ) ≤ Q := by exact_mod_cast hQ
-    linarith
+  have hQ2 : (2 : ℝ) ≤ Q := by exact_mod_cast hQ
+  have hQ1 : (1 : ℝ) ≤ (Q : ℝ) - 1 := by linarith
+  have hQ0 : (0 : ℝ) < Q := by linarith
   obtain ⟨S, hS⟩ : ∃ S, S = ∑ k ∈ Icc 2 Q, Λ k := ⟨_, rfl⟩
   have hS0 : 0 ≤ S := by
     rw [hS]; exact Finset.sum_nonneg fun _ _ => ArithmeticFunction.vonMangoldt_nonneg
+  have hpi : 0 < 2 * π := by positivity
   -- the precision of the common return
-  obtain ⟨N, hN⟩ := exists_nat_gt (2 * π * Real.sqrt (4 * Q * (S + 1) / ε))
-  have hN1 : 1 ≤ N := by
-    have : 0 < 2 * π * Real.sqrt (4 * Q * (S + 1) / ε) := by
-      have : 0 < 4 * (Q : ℝ) * (S + 1) / ε := by
-        have : (0 : ℝ) < Q := by linarith
-        positivity
-      positivity
-    exact_mod_cast (show 0 < N by exact_mod_cast this.trans hN)
+  obtain ⟨X, hX⟩ : ∃ X : ℝ, X = 4 * Q * (S + 1) / ε := ⟨_, rfl⟩
+  have hX0 : 0 < X := by
+    rw [hX]; exact div_pos (mul_pos (mul_pos (by norm_num) hQ0) (by linarith)) hε
+  have hsq0 : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX0
+  obtain ⟨N, hN⟩ := exists_nat_gt (2 * π * Real.sqrt X)
+  have hN0 : (0 : ℝ) < N := (mul_pos hpi hsq0).trans hN
+  have hN1 : 1 ≤ N := (by exact_mod_cast hN0 : 0 < N)
+  -- a frequency scale above `T` and `64 Q`
   obtain ⟨T₀, hT₀⟩ : ∃ T₀ : ℝ, T₀ = max T (64 * Q) + 1 := ⟨_, rfl⟩
   have hT₀0 : 0 < T₀ := by
-    rw [hT₀]; have := le_max_right T (64 * (Q : ℝ)); have : (0 : ℝ) ≤ 64 * Q := by positivity
+    rw [hT₀]
+    have := le_max_right T (64 * (Q : ℝ))
     linarith
   obtain ⟨n, hn1, -, hn⟩ := HTGeometry.exists_dirichlet_simultaneous
     (ι := Icc 2 Q) (fun k => T₀ * Real.log (k : ℕ) / (2 * π)) N hN1
-  refine ⟨n * T₀, ?_, ?_, ?_⟩
-  · have : T₀ ≤ n * T₀ := le_mul_of_one_le_left hT₀0.le (by exact_mod_cast hn1)
-    rw [hT₀] at this ⊢
-    linarith [le_max_left T (64 * (Q : ℝ))]
-  · have h64 : 64 * (Q : ℝ) ≤ n * T₀ := by
-      have : T₀ ≤ n * T₀ := le_mul_of_one_le_left hT₀0.le (by exact_mod_cast hn1)
-      rw [hT₀] at this
-      linarith [le_max_right T (64 * (Q : ℝ))]
-    have := dilationVar_cos_ge hQ h64
+  have hT₀n : T₀ ≤ n * T₀ := le_mul_of_one_le_left hT₀0.le (by exact_mod_cast hn1)
+  have h64 : 64 * (Q : ℝ) ≤ n * T₀ := by
+    have := le_max_right T (64 * (Q : ℝ))
+    rw [hT₀] at hT₀n
     linarith
-  · -- the returns
-    have hpi : 0 < 2 * π := by positivity
-    have hret : ∀ k ∈ Icc 2 Q, ∃ m : ℤ, |n * T₀ * Real.log k - m * (2 * π)| ≤ 2 * π / N := by
-      intro k hk
-      obtain ⟨m, hm⟩ := hn ⟨k, hk⟩
-      refine ⟨m, ?_⟩
-      have e : n * T₀ * Real.log k - m * (2 * π) =
-          2 * π * ((n : ℝ) * (T₀ * Real.log (k : ℕ) / (2 * π)) - m) := by
-        field_simp
-      rw [e, abs_mul, abs_of_pos hpi]
-      have := mul_le_mul_of_nonneg_left hm.le hpi.le
-      calc 2 * π * |(n : ℝ) * (T₀ * Real.log (k : ℕ) / (2 * π)) - m| ≤ 2 * π * (1 / N) := this
-        _ = 2 * π / N := by ring
-    have hE := dilationForm_cos_le hret
-    rw [← hS] at hE
-    have h64 : 64 * (Q : ℝ) ≤ n * T₀ := by
-      have : T₀ ≤ n * T₀ := le_mul_of_one_le_left hT₀0.le (by exact_mod_cast hn1)
-      rw [hT₀] at this
-      linarith [le_max_right T (64 * (Q : ℝ))]
-    have hV := dilationVar_cos_ge hQ h64
-    -- `(2π/N)² Q S ≤ ε (Q − 1)/4`
-    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
-    have hηN : 2 * π / N ≤ 1 / Real.sqrt (4 * Q * (S + 1) / ε) := by
-      have hsq0 : 0 < Real.sqrt (4 * Q * (S + 1) / ε) := by
-        apply Real.sqrt_pos.mpr
-        have : (0 : ℝ) < Q := by linarith
-        positivity
-      rw [div_le_div_iff₀ hN0 hsq0]
-      linarith
-    have hη2 : (2 * π / N) ^ 2 ≤ ε / (4 * Q * (S + 1)) := by
-      have h0 : 0 ≤ 2 * π / N := by positivity
-      have h1 := pow_le_pow_left₀ h0 hηN 2
-      rw [div_pow, one_pow, Real.sq_sqrt (by
-        have : (0 : ℝ) < Q := by linarith
-        positivity)] at h1
-      rw [one_div_div] at h1
-      exact h1
-    have hQ0 : (0 : ℝ) < Q := by linarith
-    have hfin : (2 * π / N) ^ 2 * Q * S ≤ ε * (((Q : ℝ) - 1) / 4) := by
-      have h1 := mul_le_mul_of_nonneg_right hη2 (mul_nonneg hQ0.le hS0)
-      have h2 : ε / (4 * Q * (S + 1)) * (Q * S) ≤ ε / 4 := by
-        rw [div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
-        nlinarith [mul_pos hε hQ0]
-      nlinarith
-    calc dilationForm Q (fun u => Real.cos (n * T₀ * u)) ≤ (2 * π / N) ^ 2 * Q * S := hE
-      _ ≤ ε * (((Q : ℝ) - 1) / 4) := hfin
-      _ ≤ ε * dilationVar Q (fun u => Real.cos (n * T₀ * u)) :=
-          mul_le_mul_of_nonneg_left hV hε.le
+  have hV := dilationVar_cos_ge hQ h64
+  refine ⟨n * T₀, ?_, by linarith, ?_⟩
+  · have := le_max_left T (64 * (Q : ℝ))
+    rw [hT₀] at hT₀n
+    linarith
+  -- at the return no floor map moves the wave
+  have hret : ∀ k ∈ Icc 2 Q, ∃ m : ℤ, |n * T₀ * Real.log k - m * (2 * π)| ≤ 2 * π / N := by
+    intro k hk
+    obtain ⟨m, hm⟩ := hn ⟨k, hk⟩
+    refine ⟨m, ?_⟩
+    have e : n * T₀ * Real.log k - m * (2 * π) =
+        2 * π * ((n : ℝ) * (T₀ * Real.log (k : ℕ) / (2 * π)) - m) := by
+      have h := div_mul_cancel₀ (T₀ * Real.log (k : ℕ)) hpi.ne'
+      linear_combination (-(n : ℝ)) * h
+    rw [e, abs_mul, abs_of_pos hpi]
+    have := mul_le_mul_of_nonneg_left hm.le hpi.le
+    calc 2 * π * |(n : ℝ) * (T₀ * Real.log (k : ℕ) / (2 * π)) - m| ≤ 2 * π * (1 / N) := this
+      _ = 2 * π / N := by ring
+  have hE := dilationForm_cos_le hret
+  rw [← hS] at hE
+  -- `(2π/N)² Q S ≤ ε (Q − 1)/4`
+  have hηN : 2 * π / N ≤ 1 / Real.sqrt X := by
+    rw [div_le_div_iff₀ hN0 hsq0]
+    linarith
+  have hη2 : (2 * π / N) ^ 2 ≤ ε / (4 * Q * (S + 1)) := by
+    have h1 : (2 * π / N) ^ 2 ≤ (1 / Real.sqrt X) ^ 2 :=
+      pow_le_pow_left₀ (by positivity) hηN 2
+    have h2 : (1 / Real.sqrt X) ^ 2 = ε / (4 * Q * (S + 1)) := by
+      rw [div_pow, one_pow, Real.sq_sqrt hX0.le, hX, one_div_div]
+    exact h1.trans (le_of_eq h2)
+  have hfin : (2 * π / N) ^ 2 * Q * S ≤ ε * (((Q : ℝ) - 1) / 4) := by
+    have h1 := mul_le_mul_of_nonneg_right hη2 (mul_nonneg hQ0.le hS0)
+    have h2 : ε / (4 * Q * (S + 1)) * (Q * S) ≤ ε / 4 := by
+      rw [div_mul_eq_mul_div, div_le_div_iff₀ (mul_pos (mul_pos (by norm_num) hQ0)
+        (by linarith)) (by norm_num)]
+      nlinarith [mul_pos hε hQ0]
+    nlinarith
+  calc dilationForm Q (fun u => Real.cos (n * T₀ * u)) ≤ (2 * π / N) ^ 2 * Q * S := hE
+    _ ≤ ε * (((Q : ℝ) - 1) / 4) := hfin
+    _ ≤ ε * dilationVar Q (fun u => Real.cos (n * T₀ * u)) :=
+        mul_le_mul_of_nonneg_left hV hε.le
 
 end GaloisForLFunctions.MixingArithmeticOfTheFloorTrees

@@ -23,6 +23,7 @@ theorem coprimePrimePairWeight_eq_unit_correlation (N : ℕ) :
       ∑ u : (ZMod (N + 2))ˣ,
         primeLogWeight ((-u : (ZMod (N + 2))ˣ) : ZMod (N + 2)).val *
           primeLogWeight (u : ZMod (N + 2)).val := by
+  unfold coprimePrimePairWeight
   rw [← sum_units_eq_coprime_antidiagonal N
     (fun p q => primeLogWeight p * primeLogWeight q)]
   exact sum_congr rfl fun u _ => mul_comm _ _
