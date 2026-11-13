@@ -1,7 +1,7 @@
 # Logarithmic two-point Chowla
 
 - **ID:** A21 (review-1111 §2.1, classical inputs)
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / FORMALIZATION PROGRAMME
 - **Statement:** for every integer `h ≥ 1`, `(1/log x) Σ_{n ≤ x} λ(n)λ(n+h)/n → 0`.
 
@@ -141,7 +141,7 @@ statement.
 | §0–§4 | limit functionals, entropy, decrement, Hoeffding, event inequality | — | **Lean** (`exists_scale_corr_close`) |
 | §5 | circle method, arc mass | — | **Lean** (`abs_avg_corr_le`) |
 | §6 (PRIME) | `|Σ_{N<p≤2N} e(pβ)| ≤ η #{p}` off the major arcs `q ≤ Q₀`, `|β − a/q| ≤ W/N` | Vaughan/Type II (`BezoutValuationIncidence.TheCentredPrimeRowIsMinorArcBelowTheDiagonal`), Siegel `RHTower.siegel_zero_free`, uniform region `RHTower.uniform_zero_free_region`, PNT with log-power error `RHTower.PrimeCells.exists_abs_theta_sub_le`, Ramanujan sum `Goldbach.norm_kloostermanSum_unit_zero_le`, `n ≤ 2φ(n)²` | **Lean** (`PrimeExponentialSums.exists_off_major_arcs`, `LogarithmicChowla.exists_norm_primeKernel_le`, `exists_abs_avg_corr_le`) |
-| §7 | MR for `λχ` (MR card) and transfer (A1)–(A5) | MR for `χ ≠ 1`: `MatomakiRadziwill.exists_short_sum_mean_square_twLiouville_le` | open: MR for `λ`, transfer |
+| §7 | MR for `λχ` (MR card) and transfer (A1)–(A5) | `MatomakiRadziwill.exists_short_sum_mean_square_twLiouville_le`, `…_liouville_le` | **Lean** (`tendsto_twistVar_zero`) |
 
 ## Lean
 
@@ -161,6 +161,11 @@ Folder `formal/GaloisForLFunctions/LogarithmicChowla/`, umbrella `LogarithmicCho
 | `CircleMethod` | `|avg c(ph) − R⁻¹Σ F(r) Re K(hr/R)| ≤ 2^{k+1}h/M` | compiled |
 | `CircleBound` | minor/major split, covering by arcs, `M → ∞`: `abs_avg_corr_le` | compiled |
 | `PrimeKernelBound` | (PRIME) for `K_k`; circle bound with (PRIME): `exists_abs_avg_corr_le` | compiled |
+| `DilatedWindows` | (A1) dyadic → `L(G) ≤ 3c`; (A2) `L(\|T^{-1}Σ_{n≤Dm<n+T} f(m)\|²) → 0` from dyadic short windows | compiled |
+| `TwistTransfer` | (A3) residue classes mod `s`, `m ≡ r ⟺ g\|m ∧ m/g ≡ a (q)`, character orthogonality | compiled |
+| `TwistVarVanishes` | (A4) principal characters through Möbius and dilated windows of `λ`; (A2) as limits | compiled |
+| `TwistVarLimit` | (A5) **`tendsto_twistVar_zero`**: `V(b/s, T) → 0` | compiled |
+| `LogarithmicChowlaTheorem` | `corr_eq_zero`; **`tendsto_logAvg_liouville_shift`** (axioms: propext, choice, Quot.sound) | compiled |
 
 Folder `formal/GaloisForLFunctions/PrimeExponentialSums/`, umbrella `PrimeExponentialSums.lean`.
 

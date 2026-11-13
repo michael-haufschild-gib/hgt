@@ -793,7 +793,7 @@ theorem sum_setIntegral_Icc_le {f : ℝ → ℝ} (hf : IntegrableOn f (Ioi 0))
         absurd (hdisj k' hk' k hk h) (not_lt.mpr (hr.1.trans hr'.2))
   rw [← integral_biUnion_finset s (fun k _ => measurableSet_Icc) hpair
     (fun k hk => hf.mono_set (hsub k hk))]
-  refine setIntegral_mono_set hf ?_ (HasSubset.Subset.eventuallyLE
+  refine setIntegral_mono_set hf ?_ (LE.le.eventuallyLE
     (Set.iUnion₂_subset fun k hk => hsub k hk))
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr using hf0 r hr
 
@@ -875,7 +875,7 @@ theorem harmonic_le_ray_energy {a : ℕ → ℂ}
 
 /-- The four smallness conditions of a window from `μ ≤ ψ`, `M² μ ≤ ψ` and four thresholds
 on `ψ`. -/
-theorem window_conditions {A C S B μ ψ M : ℝ} (hA : 0 < A) (hC : 0 ≤ C) (hS : 0 ≤ S)
+theorem window_conditions {A C S B μ ψ M : ℝ} (_hA : 0 < A) (hC : 0 ≤ C) (hS : 0 ≤ S)
     (hB : 0 ≤ B) (hμ : 0 < μ) (hμψ : μ ≤ ψ) (hm3 : M ^ 2 * μ ≤ ψ)
     (h1 : ψ ≤ 1 / (24 * Real.pi)) (h2 : ψ ≤ 3 * A / (224 * Real.pi ^ 2 * (C + 1)))
     (h3 : ψ ≤ 3 * A / (512 * (S + 1)))

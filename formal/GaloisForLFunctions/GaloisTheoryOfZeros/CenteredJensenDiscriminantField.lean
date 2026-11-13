@@ -70,6 +70,15 @@ theorem evenCenteredQuotient_coeff_mem (n j : ℕ) :
   · rw [coeff_eq_zero_of_natDegree_lt (by rw [evenCenteredQuotient_natDegree]; omega)]
     exact normalizedMomentField.zero_mem
 
+/-- The coefficients of the even quotient equation are signed binomial multiples of the
+normalized moments: `[Y^j] E_n = (−1)^{n−j} C(2n, 2(n−j)) μ_{2(n−j)}/μ₀`. -/
+theorem evenCenteredQuotient_coeff (n j : ℕ) (hj : j ≤ n) :
+    (evenCenteredQuotient n).coeff j =
+      (-1)^(n-j) * (((2*n).descFactorial (2*(n-j)) : ℝ) / ((2*(n-j)).factorial : ℝ)) *
+        normalizedEvenMoment (n-j) := by
+  rw [evenCenteredQuotient, squareQuotient, coeff_contract (by decide : 2 ≠ 0)]
+  exact centered_even_coeff (2*n) (j*2) (n-j) (by omega) (by omega)
+
 /-- Every odd quotient coefficient descends to the same field. -/
 theorem oddCenteredQuotient_coeff_mem (n j : ℕ) :
     (oddCenteredQuotient n).coeff j ∈ normalizedMomentField := by

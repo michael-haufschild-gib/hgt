@@ -1,30 +1,36 @@
 import GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.CollisionsBlowUpToHermiteProfiles
 import GaloisForLFunctions.RHTower.OddWeilFunctionRigidity
 import GaloisForLFunctions.HTGeometry.PolydiscAnalytic
+import GaloisForLFunctions.HTGeometry.FourierUniquenessL1
 
 /-!
 # The heat cover of the zeros and its blow-up at a collision
 
 The zeros of the heat family `H_τ(z) = ∫ Φ(x) e^{τx²} e^{izx} dx` form a cover of the plane of
-complex times `τ`. Its branch points are the collisions: pairs `(t, z₀)` with `z₀` a multiple zero
-of `H_t`. This module resolves a collision of order `m` at a real time `t ≥ 0`.
+complex times `τ`. Its branch points are the collisions: pairs `(τ₀, z₀)` with `z₀` a multiple zero
+of `H_τ₀`. This module resolves a collision of order `m` at an arbitrary complex time.
 
-On the double cover `τ = t + s²` and at the parabolic scale `z = z₀ + s y`,
+On the double cover `τ = τ₀ + s²` and at the parabolic scale `z = z₀ + s y`,
 
-`H_{t+s²}(z₀ + s y) = s^m G(s, y)`,
+`H_{τ₀+s²}(z₀ + s y) = s^m G(s, y)`,
 
-where `G` is analytic on `ℂ²` and `G(0, y) = (a/m!) Q_m(y)`, with `a = H_t^{(m)}(z₀)` and
+where `G` is analytic on `ℂ²` and `G(0, y) = (a/m!) Q_m(y)`, with `a = H_τ₀^{(m)}(z₀)` and
 `Q_m = e^{−D²} y^m` the Hermite profile. The proof expands the kernel. With `X = ix` and
 `u = sX(y − sX)`, write `e^u = Σ_{n<m} u^n/n! + u^m e_m(u)`. The moments
-`∫ Φ e^{tx²} e^{iz₀x} X^k` are the derivatives `H_t^{(k)}(z₀)`, which vanish for `k < m`, so every
-surviving term carries the factor `s^m`.
+`∫ Φ e^{τ₀x²} e^{iz₀x} X^k` are the derivatives `H_τ₀^{(k)}(z₀)`, which vanish for `k < m`, so every
+surviving term carries the factor `s^m`. At `s = 0` only the moment of order `m` remains, with the
+coefficients of `Q_m`.
 
 * `complexHeat`, `complexHeat_ofReal`, `complexHeat_neg`, `complexHeat_conj`: the family at complex
-  time and its two symmetries; `analyticAt_complexHeat`: it is analytic in time and place.
+  time and its two symmetries; `analyticAt_complexHeat`: it is analytic in time and place;
+  `exists_complexHeat_ne_zero`: at no time does it vanish identically.
+* `iteratedDeriv_complexHeat`: the derivatives in the place are the moments of the weight.
 * `collisionBlowup`, `complexHeat_blowup`: the function `G` and the factorization.
 * `analyticAt_collisionBlowup`, `collisionBlowup_zero`: analyticity and the profile at `s = 0`.
-* `collisionBlowup_neg`, `collisionBlowup_conj`: the deck symmetry `G(−s, −y) = (−1)^m G(s, y)` of
-  the double cover, and the real structure at a real centre.
+* `collisionBlowup_neg`: the deck symmetry `G(−s, −y) = (−1)^m G(s, y)` of the double cover.
+* `collisionBlowup_conj`, `collisionBlowup_reflect`: conjugation carries the blow-up at `(τ₀, z₀)`
+  to the blow-up at `(conj τ₀, conj z₀)`, and the reflection `z ↦ −z` carries the blow-up at `z₀`
+  to the blow-up at `−z₀`.
 -/
 
 open Complex MeasureTheory Filter Topology Set Metric
@@ -146,9 +152,41 @@ theorem norm_expQuot_le (k : ℕ) (u : ℂ) : ‖expQuot k u‖ ≤ Real.exp ‖
 
 /-! ## The heat family at complex time -/
 
+/-- The weight `Φ(x) e^{τx²}` of the family at the complex time `τ`. -/
+def complexWeight (τ : ℂ) (x : ℝ) : ℂ := (riemannKernelReal x : ℂ) * cexp (τ * (x : ℂ) ^ 2)
+
 /-- The heat family `H_τ(z) = ∫ Φ(x) e^{τx²} e^{izx} dx` at complex time `τ`. -/
 def complexHeat (τ z : ℂ) : ℂ :=
   ∫ x : ℝ, (riemannKernelReal x : ℂ) * cexp (τ * (x : ℂ) ^ 2 + I * z * x)
+
+theorem continuous_complexWeight (τ : ℂ) : Continuous (complexWeight τ) := by
+  have h := continuous_riemannKernelReal
+  unfold complexWeight
+  fun_prop
+
+theorem complexWeight_neg (τ : ℂ) (x : ℝ) : complexWeight τ (-x) = complexWeight τ x := by
+  simp only [complexWeight, riemannKernel_superExp.even x, Complex.ofReal_neg, neg_sq]
+
+theorem complexWeight_conj (τ : ℂ) (x : ℝ) :
+    starRingEnd ℂ (complexWeight τ x) = complexWeight (starRingEnd ℂ τ) x := by
+  simp only [complexWeight, map_mul, map_pow, Complex.conj_ofReal, ← Complex.exp_conj]
+
+/-- `|Φ(x) e^{τx²}| = Φ(x) e^{Re τ · x²}` is at most the weight at the real time `‖τ‖`. -/
+theorem norm_complexWeight_le (τ : ℂ) (x : ℝ) : ‖complexWeight τ x‖ ≤ ‖heatWeight ‖τ‖ x‖ := by
+  have hpos := riemannKernelReal_pos x
+  rw [complexWeight, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hpos, heatWeight,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_pos (mul_pos hpos (Real.exp_pos _)),
+    Complex.norm_exp]
+  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ((Complex.re_le_norm _).trans ?_)) hpos.le
+  rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+
+theorem complexHeat_eq_expTransform (τ : ℂ) : complexHeat τ = expTransform (complexWeight τ) := by
+  funext z
+  rw [complexHeat, expTransform]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [complexWeight]
+  rw [Complex.exp_add]
+  ring
 
 /-- At a real time the family is the de Bruijn–Newman deformation. -/
 theorem complexHeat_ofReal (t : ℝ) (z : ℂ) : complexHeat t z = riemannHeat t z := by
@@ -219,33 +257,134 @@ theorem differentiable_complexHeat (τ : ℂ) : Differentiable ℂ (complexHeat 
   (analyticAt_complexHeat (τ, z)).differentiableAt.comp z
     (by fun_prop : DifferentiableAt ℂ (fun z : ℂ => (τ, z)) z)
 
+/-! ## Moments -/
+
+theorem integrable_norm_complexWeight_mul_pow (τ : ℂ) (n : ℕ) (c : ℝ) :
+    Integrable fun x : ℝ => ‖complexWeight τ x * (I * x) ^ n‖ * Real.exp (c * |x|) := by
+  refine (integrable_pow_mul_heatWeight (norm_nonneg τ) n c).mono'
+    (((continuous_complexWeight τ).mul (by fun_prop)).norm.mul
+      (by fun_prop)).aestronglyMeasurable (Eventually.of_forall fun x => ?_)
+  have h := norm_complexWeight_le τ x
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), norm_mul, norm_pow, norm_mul,
+    Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
+  calc ‖complexWeight τ x‖ * |x| ^ n * Real.exp (c * |x|)
+      ≤ ‖heatWeight ‖τ‖ x‖ * |x| ^ n * Real.exp (c * |x|) := by gcongr
+    _ = |x| ^ n * ‖heatWeight ‖τ‖ x‖ * Real.exp (c * |x|) := by ring
+
+/-- `H_τ^{(n)}(z) = ∫ Φ(x) e^{τx²} (ix)^n e^{izx} dx`. -/
+theorem iteratedDeriv_complexHeat (τ : ℂ) (n : ℕ) :
+    iteratedDeriv n (complexHeat τ) = expTransform fun x => complexWeight τ x * (I * x) ^ n := by
+  induction n with
+  | zero => simp [complexHeat_eq_expTransform]
+  | succ n ih =>
+    rw [iteratedDeriv_succ, ih]
+    funext z
+    have hc : Continuous fun x : ℝ => complexWeight τ x * (I * x) ^ n := by
+      have := continuous_complexWeight τ
+      fun_prop
+    rw [(hasDerivAt_expTransform hc (integrable_norm_complexWeight_mul_pow τ n) z).deriv]
+    congr 1
+    funext x
+    ring
+
+theorem integrable_complexWeight_mul_pow_mul_exp (τ : ℂ) (n : ℕ) (z : ℂ) :
+    Integrable fun x : ℝ => complexWeight τ x * (I * x) ^ n * cexp (I * z * x) := by
+  refine (integrable_norm_complexWeight_mul_pow τ n |z.im|).mono'
+    (((continuous_complexWeight τ).mul (by fun_prop)).mul (by fun_prop)).aestronglyMeasurable
+    (Eventually.of_forall fun x => ?_)
+  rw [norm_mul]
+  gcongr
+  exact norm_exp_I_mul_le z x
+
+/-- The derivatives of the even function `H_τ` at `−z`. -/
+theorem iteratedDeriv_complexHeat_neg (τ : ℂ) (n : ℕ) (z : ℂ) :
+    iteratedDeriv n (complexHeat τ) (-z) = (-1) ^ n * iteratedDeriv n (complexHeat τ) z := by
+  have h := integral_neg_eq_self
+    (fun x : ℝ => complexWeight τ x * (I * x) ^ n * cexp (I * (-z) * x)) volume
+  simp only [iteratedDeriv_complexHeat, expTransform]
+  rw [← h, ← integral_const_mul]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [complexWeight_neg, Complex.ofReal_neg]
+  rw [show I * -z * -(x : ℂ) = I * z * x by ring, show I * -(x : ℂ) = -(I * x) by ring, neg_pow]
+  ring
+
+/-- The derivatives at the conjugate time and place. -/
+theorem iteratedDeriv_complexHeat_conj (τ : ℂ) (n : ℕ) (z : ℂ) :
+    iteratedDeriv n (complexHeat (starRingEnd ℂ τ)) (starRingEnd ℂ z) =
+      starRingEnd ℂ (iteratedDeriv n (complexHeat τ) z) := by
+  have h := integral_neg_eq_self (fun x : ℝ =>
+    complexWeight (starRingEnd ℂ τ) x * (I * x) ^ n * cexp (I * starRingEnd ℂ z * x)) volume
+  simp only [iteratedDeriv_complexHeat, expTransform]
+  rw [← h, ← integral_conj]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [complexWeight_neg, Complex.ofReal_neg, map_mul, map_pow, complexWeight_conj,
+    Complex.conj_ofReal, ← Complex.exp_conj, Complex.conj_I]
+  rw [show I * starRingEnd ℂ z * -(x : ℂ) = -I * starRingEnd ℂ z * x by ring,
+    show I * -(x : ℂ) = -I * x by ring]
+
+/-! ## The family never vanishes identically -/
+
+/-- **At no complex time does the family vanish identically**: the weight `Φ e^{τx²}` is a nonzero
+integrable function, and the family is its Fourier transform. -/
+theorem exists_complexHeat_ne_zero (τ : ℂ) : ∃ z, complexHeat τ z ≠ 0 := by
+  by_contra hall
+  simp only [not_exists, not_not] at hall
+  have hint : Integrable (complexWeight τ) := by
+    have h := integrable_complexWeight_mul_pow_mul_exp τ 0 0
+    simpa using h
+  have hzero : complexWeight τ =ᵐ[volume] 0 :=
+    HTGeometry.ae_eq_zero_of_fourierIntegral_eq_zero hint fun ξ => by
+      have h := hall (-(2 * Real.pi * ξ))
+      rw [complexHeat_eq_expTransform, expTransform] at h
+      rw [Real.fourier_real_eq_integral_exp_smul, ← h]
+      congr 1
+      funext v
+      rw [smul_eq_mul, mul_comm]
+      congr 2
+      push_cast
+      ring
+  have h0 : complexWeight τ = 0 :=
+    ((continuous_complexWeight τ).ae_eq_iff_eq volume continuous_const).mp hzero
+  have h1 := congrFun h0 0
+  simp only [complexWeight, Pi.zero_apply, mul_eq_zero, Complex.ofReal_eq_zero,
+    Complex.exp_ne_zero, or_false] at h1
+  exact (riemannKernelReal_pos 0).ne' h1
+
+/-- Every zero of the family has finite order. -/
+theorem analyticOrderAt_complexHeat_ne_top (τ z : ℂ) : analyticOrderAt (complexHeat τ) z ≠ ⊤ := by
+  obtain ⟨z₁, hz₁⟩ := exists_complexHeat_ne_zero τ
+  intro htop
+  exact hz₁ (((differentiable_complexHeat τ).differentiableOn.analyticOnNhd
+    isOpen_univ).eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_univ (mem_univ z)
+    (analyticOrderAt_eq_top.mp htop) (mem_univ z₁))
+
 /-! ## The remainder kernel -/
 
-/-- The remainder kernel of the blow-up at `(t, z₀)` in the parameters `p = (s, y)`:
-`Φ(x) e^{tx²} e^{iz₀x} X^m (y − sX)^m e_m(sX(y − sX))` with `X = ix`. -/
-def blowupKernel (t : ℝ) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) (x : ℝ) : ℂ :=
-  heatWeight t x * cexp (I * z₀ * x) *
+/-- The remainder kernel of the blow-up at `(τ₀, z₀)` in the parameters `p = (s, y)`:
+`Φ(x) e^{τ₀x²} e^{iz₀x} X^m (y − sX)^m e_m(sX(y − sX))` with `X = ix`. -/
+def blowupKernel (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) (x : ℝ) : ℂ :=
+  complexWeight τ₀ x * cexp (I * z₀ * x) *
     ((I * x) ^ m * (p.2 - p.1 * (I * x)) ^ m * expQuot m (p.1 * (I * x) * (p.2 - p.1 * (I * x))))
 
-theorem continuous_blowupKernel (t : ℝ) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
-    Continuous fun x : ℝ => blowupKernel t z₀ m p x := by
-  have h1 := continuous_heatWeight t
+theorem continuous_blowupKernel (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
+    Continuous fun x : ℝ => blowupKernel τ₀ z₀ m p x := by
+  have h1 := continuous_complexWeight τ₀
   have h2 := (differentiable_expQuot m).continuous
   unfold blowupKernel
   fun_prop
 
-theorem differentiable_blowupKernel (t : ℝ) (z₀ : ℂ) (m : ℕ) (x : ℝ) :
-    Differentiable ℂ fun p : ℂ × ℂ => blowupKernel t z₀ m p x := by
+theorem differentiable_blowupKernel (τ₀ z₀ : ℂ) (m : ℕ) (x : ℝ) :
+    Differentiable ℂ fun p : ℂ × ℂ => blowupKernel τ₀ z₀ m p x := by
   have h := differentiable_expQuot m
   unfold blowupKernel
   fun_prop
 
-/-- The kernel is dominated, on the parameter ball of radius `R`, by a heat weight at the later time
-`t + R²` against a polynomial and an exponential. -/
-theorem norm_blowupKernel_le (t : ℝ) (z₀ : ℂ) (m : ℕ) {R : ℝ} {p : ℂ × ℂ} (hp : ‖p‖ ≤ R)
-    (x : ℝ) :
-    ‖blowupKernel t z₀ m p x‖ ≤
-      R ^ m * (|x| ^ m * ‖heatWeight (t + R ^ 2) x‖ * Real.exp ((|z₀.im| + R ^ 2 + m) * |x|)) := by
+/-- The kernel is dominated, on the parameter ball of radius `R`, by a heat weight at the real time
+`‖τ₀‖ + R²` against a polynomial and an exponential. -/
+theorem norm_blowupKernel_le (τ₀ z₀ : ℂ) (m : ℕ) {R : ℝ} {p : ℂ × ℂ} (hp : ‖p‖ ≤ R) (x : ℝ) :
+    ‖blowupKernel τ₀ z₀ m p x‖ ≤
+      R ^ m * (|x| ^ m * ‖heatWeight (‖τ₀‖ + R ^ 2) x‖ *
+        Real.exp ((|z₀.im| + R ^ 2 + m) * |x|)) := by
   have hR : 0 ≤ R := (norm_nonneg p).trans hp
   have h1 : ‖p.1‖ ≤ R := (norm_fst_le p).trans hp
   have h2 : ‖p.2‖ ≤ R := (norm_snd_le p).trans hp
@@ -267,12 +406,13 @@ theorem norm_blowupKernel_le (t : ℝ) (z₀ : ℂ) (m : ℕ) {R : ℝ} {p : ℂ
     rw [← Real.exp_add]
     exact (norm_expQuot_le m _).trans (Real.exp_le_exp.mpr hu)
   have hW := norm_exp_I_mul_le z₀ x
-  have hh : ‖heatWeight (t + R ^ 2) x‖ = ‖heatWeight t x‖ * Real.exp (R ^ 2 * x ^ 2) := by
+  have hcw := norm_complexWeight_le τ₀ x
+  have hh : ‖heatWeight (‖τ₀‖ + R ^ 2) x‖ = ‖heatWeight ‖τ₀‖ x‖ * Real.exp (R ^ 2 * x ^ 2) := by
     rw [heatWeight_add, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
   rw [blowupKernel, norm_mul, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow, hX, hh]
-  calc ‖heatWeight t x‖ * ‖cexp (I * z₀ * x)‖ * (|x| ^ m * ‖p.2 - p.1 * (I * x)‖ ^ m *
+  calc ‖complexWeight τ₀ x‖ * ‖cexp (I * z₀ * x)‖ * (|x| ^ m * ‖p.2 - p.1 * (I * x)‖ ^ m *
         ‖expQuot m (p.1 * (I * x) * (p.2 - p.1 * (I * x)))‖)
-      ≤ ‖heatWeight t x‖ * Real.exp (|z₀.im| * |x|) * (|x| ^ m * (R * Real.exp |x|) ^ m *
+      ≤ ‖heatWeight ‖τ₀‖ x‖ * Real.exp (|z₀.im| * |x|) * (|x| ^ m * (R * Real.exp |x|) ^ m *
         (Real.exp (R ^ 2 * |x|) * Real.exp (R ^ 2 * x ^ 2))) := by gcongr
     _ = _ := by
         rw [mul_pow, ← Real.exp_nat_mul,
@@ -280,64 +420,65 @@ theorem norm_blowupKernel_le (t : ℝ) (z₀ : ℂ) (m : ℕ) {R : ℝ} {p : ℂ
           Real.exp_add, Real.exp_add]
         ring
 
-theorem integrable_blowupMajorant {t : ℝ} (ht : 0 ≤ t) (z₀ : ℂ) (m : ℕ) (R : ℝ) :
+theorem integrable_blowupMajorant (τ₀ z₀ : ℂ) (m : ℕ) (R : ℝ) :
     Integrable fun x : ℝ =>
-      R ^ m * (|x| ^ m * ‖heatWeight (t + R ^ 2) x‖ * Real.exp ((|z₀.im| + R ^ 2 + m) * |x|)) :=
+      R ^ m * (|x| ^ m * ‖heatWeight (‖τ₀‖ + R ^ 2) x‖ *
+        Real.exp ((|z₀.im| + R ^ 2 + m) * |x|)) :=
   (integrable_pow_mul_heatWeight (by positivity) m _).const_mul _
 
-theorem integrable_blowupKernel {t : ℝ} (ht : 0 ≤ t) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
-    Integrable fun x : ℝ => blowupKernel t z₀ m p x :=
-  (integrable_blowupMajorant ht z₀ m ‖p‖).mono'
-    (continuous_blowupKernel t z₀ m p).aestronglyMeasurable
-    (Eventually.of_forall fun x => norm_blowupKernel_le t z₀ m le_rfl x)
+theorem integrable_blowupKernel (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
+    Integrable fun x : ℝ => blowupKernel τ₀ z₀ m p x :=
+  (integrable_blowupMajorant τ₀ z₀ m ‖p‖).mono'
+    (continuous_blowupKernel τ₀ z₀ m p).aestronglyMeasurable
+    (Eventually.of_forall fun x => norm_blowupKernel_le τ₀ z₀ m le_rfl x)
 
 /-! ## The blow-up function -/
 
 /-- The integral part of the blow-up. -/
-def blowupRemainder (t : ℝ) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) : ℂ :=
-  ∫ x : ℝ, blowupKernel t z₀ m p x
+def blowupRemainder (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) : ℂ :=
+  ∫ x : ℝ, blowupKernel τ₀ z₀ m p x
 
 /-- The polynomial part of the blow-up: the terms of order `n < m` of the exponential series,
-`Σ_j (−1)^j C(n,j)/n! · y^{n−j} s^{n+j−m} H_t^{(n+j)}(z₀)`. -/
-def blowupJet (t : ℝ) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) : ℂ :=
+`Σ_j (−1)^j C(n,j)/n! · y^{n−j} s^{n+j−m} H_τ₀^{(n+j)}(z₀)`. -/
+def blowupJet (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) : ℂ :=
   ∑ n ∈ Finset.range m, ∑ j ∈ Finset.range (n + 1),
     (-1 : ℂ) ^ j * (n.choose j : ℂ) / (n.factorial : ℂ) * p.2 ^ (n - j) * p.1 ^ (n + j - m) *
-      iteratedDeriv (n + j) (riemannHeat t) z₀
+      iteratedDeriv (n + j) (complexHeat τ₀) z₀
 
-/-- The blown-up heat family `G(s, y)` at `(t, z₀)`: for `s ≠ 0` it is
-`H_{t+s²}(z₀ + s y) / s^m` (`complexHeat_blowup`). -/
-def collisionBlowup (t : ℝ) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) : ℂ :=
-  blowupJet t z₀ m p + blowupRemainder t z₀ m p
+/-- The blown-up heat family `G(s, y)` at `(τ₀, z₀)`: for `s ≠ 0` it is
+`H_{τ₀+s²}(z₀ + s y) / s^m` (`complexHeat_blowup`). -/
+def collisionBlowup (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) : ℂ :=
+  blowupJet τ₀ z₀ m p + blowupRemainder τ₀ z₀ m p
 
-theorem analyticAt_blowupRemainder {t : ℝ} (ht : 0 ≤ t) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
-    AnalyticAt ℂ (blowupRemainder t z₀ m) p :=
-  analyticAt_integral_of_dominated (K := blowupKernel t z₀ m) (differentiable_blowupKernel t z₀ m)
-    (fun p => (continuous_blowupKernel t z₀ m p).aestronglyMeasurable)
-    (fun R => ⟨_, integrable_blowupMajorant ht z₀ m R,
-      fun _ hp x => norm_blowupKernel_le t z₀ m hp x⟩) p
+theorem analyticAt_blowupRemainder (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
+    AnalyticAt ℂ (blowupRemainder τ₀ z₀ m) p :=
+  analyticAt_integral_of_dominated (K := blowupKernel τ₀ z₀ m)
+    (differentiable_blowupKernel τ₀ z₀ m)
+    (fun p => (continuous_blowupKernel τ₀ z₀ m p).aestronglyMeasurable)
+    (fun R => ⟨_, integrable_blowupMajorant τ₀ z₀ m R,
+      fun _ hp x => norm_blowupKernel_le τ₀ z₀ m hp x⟩) p
 
 /-- **The blow-up is analytic on `ℂ²`.** -/
-theorem analyticAt_collisionBlowup {t : ℝ} (ht : 0 ≤ t) (z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
-    AnalyticAt ℂ (collisionBlowup t z₀ m) p := by
-  have hjet : Differentiable ℂ fun p : ℂ × ℂ => blowupJet t z₀ m p := by
+theorem analyticAt_collisionBlowup (τ₀ z₀ : ℂ) (m : ℕ) (p : ℂ × ℂ) :
+    AnalyticAt ℂ (collisionBlowup τ₀ z₀ m) p := by
+  have hjet : Differentiable ℂ fun p : ℂ × ℂ => blowupJet τ₀ z₀ m p := by
     unfold blowupJet
     fun_prop
   exact (analyticAt_of_continuous_of_lines hjet.continuous
     (fun q v => hjet.comp (by fun_prop : Differentiable ℂ fun z : ℂ => q + z • v)) p).add
-    (analyticAt_blowupRemainder ht z₀ m p)
+    (analyticAt_blowupRemainder τ₀ z₀ m p)
 
-theorem continuous_collisionBlowup {t : ℝ} (ht : 0 ≤ t) (z₀ : ℂ) (m : ℕ) :
-    Continuous (collisionBlowup t z₀ m) :=
-  continuous_iff_continuousAt.mpr fun p => (analyticAt_collisionBlowup ht z₀ m p).continuousAt
+theorem continuous_collisionBlowup (τ₀ z₀ : ℂ) (m : ℕ) : Continuous (collisionBlowup τ₀ z₀ m) :=
+  continuous_iff_continuousAt.mpr fun p => (analyticAt_collisionBlowup τ₀ z₀ m p).continuousAt
 
 /-- The kernel expansion: the exponential of `u = sX(y − sX)` splits into moments of order `n + j`
 and the remainder, which carries `s^m`. -/
-private theorem kernel_expansion (t : ℝ) (z₀ : ℂ) (m : ℕ) (s y : ℂ) (x : ℝ) :
-    heatWeight t x * cexp (I * z₀ * x) * cexp (s * (I * x) * (y - s * (I * x))) =
+private theorem kernel_expansion (τ₀ z₀ : ℂ) (m : ℕ) (s y : ℂ) (x : ℝ) :
+    complexWeight τ₀ x * cexp (I * z₀ * x) * cexp (s * (I * x) * (y - s * (I * x))) =
       ∑ n ∈ Finset.range m, ∑ j ∈ Finset.range (n + 1),
         (s ^ n * (-s) ^ j * y ^ (n - j) * (n.choose j : ℂ) / (n.factorial : ℂ)) *
-          (heatWeight t x * (I * x) ^ (n + j) * cexp (I * z₀ * x)) +
-      s ^ m * blowupKernel t z₀ m (s, y) x := by
+          (complexWeight τ₀ x * (I * x) ^ (n + j) * cexp (I * z₀ * x)) +
+      s ^ m * blowupKernel τ₀ z₀ m (s, y) x := by
   rw [exp_eq_sum_add_expQuot m (s * (I * x) * (y - s * (I * x))), mul_add, Finset.mul_sum]
   congr 1
   · refine Finset.sum_congr rfl fun n _ => ?_
@@ -356,44 +497,45 @@ private theorem kernel_expansion (t : ℝ) (z₀ : ℂ) (m : ℕ) (s y : ℂ) (x
     rw [hu]
     ring
 
-/-- **The blow-up of a collision.** If the derivatives of `H_t` of order `< m` vanish at `z₀`, then
-`H_{t+s²}(z₀ + s y) = s^m G(s, y)` for all complex `s` and `y`. -/
-theorem complexHeat_blowup {t : ℝ} (ht : 0 ≤ t) {z₀ : ℂ} {m : ℕ}
-    (hvan : ∀ i < m, iteratedDeriv i (riemannHeat t) z₀ = 0) (s y : ℂ) :
-    complexHeat (t + s ^ 2) (z₀ + s * y) = s ^ m * collisionBlowup t z₀ m (s, y) := by
-  have hmom : ∀ k : ℕ, ∫ x : ℝ, heatWeight t x * (I * x) ^ k * cexp (I * z₀ * x) =
-      iteratedDeriv k (riemannHeat t) z₀ := fun k => by
-    rw [iteratedDeriv_riemannHeat ht k]
+/-- **The blow-up of a collision.** If the derivatives of `H_τ₀` of order `< m` vanish at `z₀`,
+then `H_{τ₀+s²}(z₀ + s y) = s^m G(s, y)` for all complex `s` and `y`. -/
+theorem complexHeat_blowup {τ₀ z₀ : ℂ} {m : ℕ}
+    (hvan : ∀ i < m, iteratedDeriv i (complexHeat τ₀) z₀ = 0) (s y : ℂ) :
+    complexHeat (τ₀ + s ^ 2) (z₀ + s * y) = s ^ m * collisionBlowup τ₀ z₀ m (s, y) := by
+  have hmom : ∀ k : ℕ, ∫ x : ℝ, complexWeight τ₀ x * (I * x) ^ k * cexp (I * z₀ * x) =
+      iteratedDeriv k (complexHeat τ₀) z₀ := fun k => by
+    rw [iteratedDeriv_complexHeat τ₀ k]
     rfl
-  have hint : ∀ k : ℕ, Integrable fun x : ℝ => heatWeight t x * (I * x) ^ k * cexp (I * z₀ * x) :=
-    fun k => integrable_heatWeight_mul_pow_mul_exp ht k z₀
+  have hint : ∀ k : ℕ,
+      Integrable fun x : ℝ => complexWeight τ₀ x * (I * x) ^ k * cexp (I * z₀ * x) :=
+    fun k => integrable_complexWeight_mul_pow_mul_exp τ₀ k z₀
   have hterm : ∀ n ∈ Finset.range m, Integrable fun x : ℝ => ∑ j ∈ Finset.range (n + 1),
       (s ^ n * (-s) ^ j * y ^ (n - j) * (n.choose j : ℂ) / (n.factorial : ℂ)) *
-        (heatWeight t x * (I * x) ^ (n + j) * cexp (I * z₀ * x)) :=
+        (complexWeight τ₀ x * (I * x) ^ (n + j) * cexp (I * z₀ * x)) :=
     fun n _ => integrable_finsetSum _ fun j _ => (hint (n + j)).const_mul _
-  calc complexHeat (t + s ^ 2) (z₀ + s * y)
-      = ∫ x : ℝ, heatWeight t x * cexp (I * z₀ * x) * cexp (s * (I * x) * (y - s * (I * x))) := by
+  calc complexHeat (τ₀ + s ^ 2) (z₀ + s * y)
+      = ∫ x : ℝ, complexWeight τ₀ x * cexp (I * z₀ * x) *
+          cexp (s * (I * x) * (y - s * (I * x))) := by
         refine integral_congr_ae (Eventually.of_forall fun x => ?_)
         dsimp only
-        rw [show ((t : ℂ) + s ^ 2) * (x : ℂ) ^ 2 + I * (z₀ + s * y) * x =
-            (t : ℂ) * (x : ℂ) ^ 2 + I * z₀ * x + s * (I * x) * (y - s * (I * x)) by
+        rw [show (τ₀ + s ^ 2) * (x : ℂ) ^ 2 + I * (z₀ + s * y) * x =
+            τ₀ * (x : ℂ) ^ 2 + I * z₀ * x + s * (I * x) * (y - s * (I * x)) by
           linear_combination (s ^ 2 * (x : ℂ) ^ 2) * Complex.I_sq, Complex.exp_add, Complex.exp_add]
-        simp only [heatWeight]
-        push_cast
+        simp only [complexWeight]
         ring
     _ = ∑ n ∈ Finset.range m, ∑ j ∈ Finset.range (n + 1),
           (s ^ n * (-s) ^ j * y ^ (n - j) * (n.choose j : ℂ) / (n.factorial : ℂ)) *
-            iteratedDeriv (n + j) (riemannHeat t) z₀ + s ^ m * blowupRemainder t z₀ m (s, y) := by
-        simp_rw [kernel_expansion t z₀ m s y]
+            iteratedDeriv (n + j) (complexHeat τ₀) z₀ + s ^ m * blowupRemainder τ₀ z₀ m (s, y) := by
+        simp_rw [kernel_expansion τ₀ z₀ m s y]
         rw [integral_add (integrable_finsetSum _ hterm)
-          ((integrable_blowupKernel ht z₀ m (s, y)).const_mul _),
+          ((integrable_blowupKernel τ₀ z₀ m (s, y)).const_mul _),
           integral_finsetSum _ hterm, integral_const_mul, blowupRemainder]
         congr 1
         refine Finset.sum_congr rfl fun n _ => ?_
         rw [integral_finsetSum _ fun j _ => (hint (n + j)).const_mul _]
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [integral_const_mul, hmom]
-    _ = s ^ m * collisionBlowup t z₀ m (s, y) := by
+    _ = s ^ m * collisionBlowup τ₀ z₀ m (s, y) := by
         rw [collisionBlowup, blowupJet, mul_add, Finset.mul_sum]
         congr 1
         refine Finset.sum_congr rfl fun n _ => ?_
@@ -407,84 +549,151 @@ theorem complexHeat_blowup {t : ℝ} (ht : 0 ≤ t) {z₀ : ℂ} {m : ℕ}
             ring
           linear_combination
             (y ^ (n - j) * (n.choose j : ℂ) / (n.factorial : ℂ) *
-              iteratedDeriv (n + j) (riemannHeat t) z₀) * hs
+              iteratedDeriv (n + j) (complexHeat τ₀) z₀) * hs
 
-/-- **The Hermite profile.** At `s = 0` the blow-up is `(a/m!) Q_m` with `a = H_t^{(m)}(z₀)`. -/
-theorem collisionBlowup_zero {t : ℝ} (ht : 0 ≤ t) {z₀ : ℂ} {m : ℕ}
-    (hvan : ∀ i < m, iteratedDeriv i (riemannHeat t) z₀ = 0) (y : ℂ) :
-    collisionBlowup t z₀ m (0, y) =
-      iteratedDeriv m (riemannHeat t) z₀ / (m.factorial : ℂ) * heatModelFwd m y := by
-  obtain ⟨C, q₀, hq₀, hmodel⟩ :=
-    exists_norm_riemannHeat_sub_heatModelFwd_le ht hvan (norm_nonneg y)
-  set c := iteratedDeriv m (riemannHeat t) z₀ / (m.factorial : ℂ) * heatModelFwd m y with hc
-  have hG := continuous_collisionBlowup ht z₀ m
-  -- for real `q > 0` the factorization turns the forward model into `‖G(q, y) − c‖ ≤ |C| q`
-  have hbound : ∀ᶠ q : ℝ in 𝓝[>] 0, ‖collisionBlowup t z₀ m ((q : ℂ), y) - c‖ ≤ |C| * q := by
-    filter_upwards [Ioc_mem_nhdsGT hq₀] with q hq
-    have h := hmodel q hq.1.le hq.2 y le_rfl
-    rw [← complexHeat_ofReal,
-      show ((t + q ^ 2 : ℝ) : ℂ) = (t : ℂ) + (q : ℂ) ^ 2 by push_cast; ring,
-      complexHeat_blowup ht hvan] at h
-    have e : (q : ℂ) ^ m * collisionBlowup t z₀ m ((q : ℂ), y) -
-        iteratedDeriv m (riemannHeat t) z₀ / (m.factorial : ℂ) * (q : ℂ) ^ m * heatModelFwd m y =
-        (q : ℂ) ^ m * (collisionBlowup t z₀ m ((q : ℂ), y) - c) := by
-      rw [hc]
+/-- **The Hermite profile.** At `s = 0` the blow-up is `(a/m!) Q_m` with `a = H_τ₀^{(m)}(z₀)`:
+the integral part gives `a y^m/m!`, and in the polynomial part only the terms with `n + j = m`
+survive, with the coefficient `(−1)^j/(j!(m−2j)!)`. -/
+theorem collisionBlowup_zero {τ₀ z₀ : ℂ} {m : ℕ}
+    (hvan : ∀ i < m, iteratedDeriv i (complexHeat τ₀) z₀ = 0) (y : ℂ) :
+    collisionBlowup τ₀ z₀ m (0, y) =
+      iteratedDeriv m (complexHeat τ₀) z₀ / (m.factorial : ℂ) * heatModelFwd m y := by
+  have hrem : blowupRemainder τ₀ z₀ m (0, y) =
+      y ^ m / (m.factorial : ℂ) * iteratedDeriv m (complexHeat τ₀) z₀ := by
+    have hk : ∀ x : ℝ, blowupKernel τ₀ z₀ m (0, y) x =
+        y ^ m / (m.factorial : ℂ) * (complexWeight τ₀ x * (I * x) ^ m * cexp (I * z₀ * x)) := by
+      intro x
+      simp only [blowupKernel, zero_mul, sub_zero, expQuot_zero]
       ring
-    rw [e, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hq.1, pow_succ] at h
-    have hCq : C * (q ^ m * q) ≤ q ^ m * (|C| * q) := by
-      have := mul_le_mul_of_nonneg_right (le_abs_self C)
-        (mul_nonneg (pow_nonneg hq.1.le m) hq.1.le)
-      linarith
-    exact le_of_mul_le_mul_left (h.trans hCq) (pow_pos hq.1 m)
-  have hcq : Continuous fun q : ℝ => ‖collisionBlowup t z₀ m ((q : ℂ), y) - c‖ := by fun_prop
-  have hcont := (hcq.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
-  simp only [Complex.ofReal_zero] at hcont
-  have hc0 : Continuous fun q : ℝ => |C| * q := by fun_prop
-  have hlim := (hc0.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
-  simp only [mul_zero] at hlim
-  exact sub_eq_zero.mp (norm_le_zero_iff.mp (le_of_tendsto_of_tendsto hcont hlim hbound))
+    rw [blowupRemainder, iteratedDeriv_complexHeat, expTransform]
+    simp_rw [hk]
+    rw [integral_const_mul]
+  -- in the polynomial part the inner sum reduces to the term `j = m − n`
+  have hjet : blowupJet τ₀ z₀ m (0, y) = ∑ n ∈ Finset.range m,
+      (-1 : ℂ) ^ (m - n) * (n.choose (m - n) : ℂ) / (n.factorial : ℂ) * y ^ (n - (m - n)) *
+        iteratedDeriv m (complexHeat τ₀) z₀ := by
+    rw [blowupJet]
+    refine Finset.sum_congr rfl fun n hn => ?_
+    have hn' : n < m := Finset.mem_range.mp hn
+    rw [Finset.sum_eq_single (m - n)]
+    · dsimp only
+      rw [show n + (m - n) - m = 0 by omega, pow_zero, mul_one, show n + (m - n) = m by omega]
+    · intro j _ hjne
+      dsimp only
+      rcases lt_or_gt_of_ne (show n + j ≠ m by omega) with h | h
+      · rw [hvan _ h, mul_zero]
+      · rw [zero_pow (by omega), mul_zero, zero_mul]
+    · intro hnot
+      have h0 : n.choose (m - n) = 0 :=
+        Nat.choose_eq_zero_of_lt (by simp only [Finset.mem_range, not_lt] at hnot; omega)
+      rw [h0]
+      simp
+  -- the surviving terms, indexed by `k = m − n − 1`
+  have hsum : ∑ n ∈ Finset.range m,
+      (-1 : ℂ) ^ (m - n) * (n.choose (m - n) : ℂ) / (n.factorial : ℂ) * y ^ (n - (m - n)) *
+        iteratedDeriv m (complexHeat τ₀) z₀ =
+      ∑ k ∈ Finset.range (m / 2),
+        (-1 : ℂ) ^ (k + 1) / (((k + 1).factorial : ℂ) * ((m - 2 * (k + 1)).factorial : ℂ)) *
+          y ^ (m - 2 * (k + 1)) * iteratedDeriv m (complexHeat τ₀) z₀ := by
+    rw [← Finset.sum_range_reflect _ m]
+    have hsub : Finset.range (m / 2) ⊆ Finset.range m := by
+      intro k hk
+      simp only [Finset.mem_range] at hk ⊢
+      omega
+    rw [← Finset.sum_subset hsub fun k hk hk' => by
+      simp only [Finset.mem_range] at hk hk'
+      have h0 : (m - 1 - k).choose (m - (m - 1 - k)) = 0 := Nat.choose_eq_zero_of_lt (by omega)
+      rw [h0]
+      simp]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    have hk' : 2 * (k + 1) ≤ m := by
+      have := Finset.mem_range.mp hk
+      omega
+    have hc := Nat.cast_choose ℂ (show k + 1 ≤ m - 1 - k by omega)
+    have hN : ((m - 1 - k).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+    have hK : ((k + 1).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+    have hM : ((m - 2 * (k + 1)).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+    rw [show m - (m - 1 - k) = k + 1 by omega, show m - 1 - k - (k + 1) = m - 2 * (k + 1) by omega,
+      hc, show m - 1 - k - (k + 1) = m - 2 * (k + 1) by omega]
+    field_simp
+  have hk0 : (m.factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero m
+  rw [collisionBlowup, hjet, hrem, hsum, heatModelFwd, Finset.sum_range_succ', mul_add,
+    Finset.mul_sum]
+  congr 1
+  · refine Finset.sum_congr rfl fun k hk => ?_
+    have hK : ((k + 1).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+    have hM : ((m - 2 * (k + 1)).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+    field_simp
+  · simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, one_mul, mul_zero, Nat.sub_zero]
+    field_simp
 
-/-! ## The two symmetries of the blow-up -/
+/-! ## The symmetries of the blow-up -/
 
-/-- **The deck symmetry.** `G(−s, −y) = (−1)^m G(s, y)`: the two square roots of `τ − t` describe
+/-- **The deck symmetry.** `G(−s, −y) = (−1)^m G(s, y)`: the two square roots of `τ − τ₀` describe
 the same zeros. -/
-theorem collisionBlowup_neg {t : ℝ} (ht : 0 ≤ t) {z₀ : ℂ} {m : ℕ}
-    (hvan : ∀ i < m, iteratedDeriv i (riemannHeat t) z₀ = 0) (s y : ℂ) :
-    collisionBlowup t z₀ m (-s, -y) = (-1) ^ m * collisionBlowup t z₀ m (s, y) := by
-  have hG := continuous_collisionBlowup ht z₀ m
-  have hfun : (fun s : ℂ => collisionBlowup t z₀ m (-s, -y)) =
-      fun s : ℂ => (-1) ^ m * collisionBlowup t z₀ m (s, y) := by
+theorem collisionBlowup_neg {τ₀ z₀ : ℂ} {m : ℕ}
+    (hvan : ∀ i < m, iteratedDeriv i (complexHeat τ₀) z₀ = 0) (s y : ℂ) :
+    collisionBlowup τ₀ z₀ m (-s, -y) = (-1) ^ m * collisionBlowup τ₀ z₀ m (s, y) := by
+  have hG := continuous_collisionBlowup τ₀ z₀ m
+  have hfun : (fun s : ℂ => collisionBlowup τ₀ z₀ m (-s, -y)) =
+      fun s : ℂ => (-1) ^ m * collisionBlowup τ₀ z₀ m (s, y) := by
     refine Continuous.ext_on (dense_compl_singleton (0 : ℂ)) (by fun_prop) (by fun_prop)
       fun s hs => ?_
     have hs0 : s ≠ 0 := hs
-    have h1 := complexHeat_blowup ht hvan s y
-    have h2 := complexHeat_blowup ht hvan (-s) (-y)
+    have h1 := complexHeat_blowup hvan s y
+    have h2 := complexHeat_blowup hvan (-s) (-y)
     rw [show (-s) ^ 2 = s ^ 2 by ring, show -s * -y = s * y by ring, h1, neg_pow] at h2
     have hm : (-1 : ℂ) ^ m * (-1) ^ m = 1 := by
       rw [← mul_pow]
       norm_num
-    show collisionBlowup t z₀ m (-s, -y) = (-1) ^ m * collisionBlowup t z₀ m (s, y)
+    show collisionBlowup τ₀ z₀ m (-s, -y) = (-1) ^ m * collisionBlowup τ₀ z₀ m (s, y)
     apply mul_left_cancel₀ (pow_ne_zero m hs0)
-    linear_combination (-((-1 : ℂ) ^ m)) * h2 - (s ^ m * collisionBlowup t z₀ m (-s, -y)) * hm
+    linear_combination (-((-1 : ℂ) ^ m)) * h2 - (s ^ m * collisionBlowup τ₀ z₀ m (-s, -y)) * hm
   exact congrFun hfun s
 
-/-- **The real structure.** At a real centre, `conj G(s, y) = G(conj s, conj y)`. -/
-theorem collisionBlowup_conj {t : ℝ} (ht : 0 ≤ t) {x₀ : ℝ} {m : ℕ}
-    (hvan : ∀ i < m, iteratedDeriv i (riemannHeat t) x₀ = 0) (s y : ℂ) :
-    starRingEnd ℂ (collisionBlowup t x₀ m (s, y)) =
-      collisionBlowup t x₀ m (starRingEnd ℂ s, starRingEnd ℂ y) := by
-  have hG := continuous_collisionBlowup ht (x₀ : ℂ) m
-  have hfun : (fun s : ℂ => starRingEnd ℂ (collisionBlowup t x₀ m (s, y))) =
-      fun s : ℂ => collisionBlowup t x₀ m (starRingEnd ℂ s, starRingEnd ℂ y) := by
+/-- **Conjugation.** The conjugate of the blow-up at `(τ₀, z₀)` is the blow-up at the conjugate
+time and place: `conj G_{τ₀,z₀}(s, y) = G_{conj τ₀, conj z₀}(conj s, conj y)`. -/
+theorem collisionBlowup_conj {τ₀ z₀ : ℂ} {m : ℕ}
+    (hvan : ∀ i < m, iteratedDeriv i (complexHeat τ₀) z₀ = 0) (s y : ℂ) :
+    starRingEnd ℂ (collisionBlowup τ₀ z₀ m (s, y)) =
+      collisionBlowup (starRingEnd ℂ τ₀) (starRingEnd ℂ z₀) m
+        (starRingEnd ℂ s, starRingEnd ℂ y) := by
+  have hvan' : ∀ i < m,
+      iteratedDeriv i (complexHeat (starRingEnd ℂ τ₀)) (starRingEnd ℂ z₀) = 0 := fun i hi => by
+    rw [iteratedDeriv_complexHeat_conj, hvan i hi, map_zero]
+  have hG := continuous_collisionBlowup τ₀ z₀ m
+  have hG' := continuous_collisionBlowup (starRingEnd ℂ τ₀) (starRingEnd ℂ z₀) m
+  have hfun : (fun s : ℂ => starRingEnd ℂ (collisionBlowup τ₀ z₀ m (s, y))) =
+      fun s : ℂ => collisionBlowup (starRingEnd ℂ τ₀) (starRingEnd ℂ z₀) m
+        (starRingEnd ℂ s, starRingEnd ℂ y) := by
     refine Continuous.ext_on (dense_compl_singleton (0 : ℂ))
       (Complex.continuous_conj.comp (hG.comp (continuous_id.prodMk continuous_const)))
-      (hG.comp (Complex.continuous_conj.prodMk continuous_const)) fun s hs => ?_
+      (hG'.comp (Complex.continuous_conj.prodMk continuous_const)) fun s hs => ?_
     have hs0 : s ≠ 0 := hs
-    have h1 := congrArg (starRingEnd ℂ) (complexHeat_blowup ht hvan s y)
+    have h1 := congrArg (starRingEnd ℂ) (complexHeat_blowup hvan s y)
     rw [complexHeat_conj] at h1
-    simp only [map_add, map_mul, map_pow, Complex.conj_ofReal] at h1
-    rw [complexHeat_blowup ht hvan (starRingEnd ℂ s) (starRingEnd ℂ y)] at h1
+    simp only [map_add, map_mul, map_pow] at h1
+    rw [complexHeat_blowup hvan' (starRingEnd ℂ s) (starRingEnd ℂ y)] at h1
     exact (mul_left_cancel₀ (pow_ne_zero m ((map_ne_zero _).mpr hs0)) h1).symm
+  exact congrFun hfun s
+
+/-- **Reflection.** The blow-up at `−z₀` is the blow-up at `z₀` with `y ↦ −y`. -/
+theorem collisionBlowup_reflect {τ₀ z₀ : ℂ} {m : ℕ}
+    (hvan : ∀ i < m, iteratedDeriv i (complexHeat τ₀) z₀ = 0) (s y : ℂ) :
+    collisionBlowup τ₀ (-z₀) m (s, y) = collisionBlowup τ₀ z₀ m (s, -y) := by
+  have hvan' : ∀ i < m, iteratedDeriv i (complexHeat τ₀) (-z₀) = 0 := fun i hi => by
+    rw [iteratedDeriv_complexHeat_neg, hvan i hi, mul_zero]
+  have hG := continuous_collisionBlowup τ₀ z₀ m
+  have hG' := continuous_collisionBlowup τ₀ (-z₀) m
+  have hfun : (fun s : ℂ => collisionBlowup τ₀ (-z₀) m (s, y)) =
+      fun s : ℂ => collisionBlowup τ₀ z₀ m (s, -y) := by
+    refine Continuous.ext_on (dense_compl_singleton (0 : ℂ)) (by fun_prop) (by fun_prop)
+      fun s hs => ?_
+    have hs0 : s ≠ 0 := hs
+    have h1 := complexHeat_blowup hvan' s y
+    have h2 := complexHeat_blowup hvan s (-y)
+    rw [show z₀ + s * -y = -(-z₀ + s * y) by ring, complexHeat_neg, h1] at h2
+    exact mul_left_cancel₀ (pow_ne_zero m hs0) h2
   exact congrFun hfun s
 
 end

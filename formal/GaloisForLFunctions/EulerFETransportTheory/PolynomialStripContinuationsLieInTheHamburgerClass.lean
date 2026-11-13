@@ -67,7 +67,7 @@ theorem stripRemainder_eq (G : ℂ → ℂ) {s : ℂ} (hs : s ≠ 1) :
 theorem norm_Gammaℝ_one_sub_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
     ‖Complex.Gammaℝ (1 - s)‖ = ‖Complex.Gammaℝ s‖ := by
   have hc : 1 - s = (starRingEnd ℂ) s := by
-    apply Complex.ext <;> simp [hs] <;> norm_num
+    apply Complex.ext <;> norm_num [hs]
   have hpi := Real.pi_pos
   rw [hc, Complex.Gammaℝ_def, Complex.Gammaℝ_def, norm_mul, norm_mul,
     Complex.norm_cpow_eq_rpow_re_of_pos hpi, Complex.norm_cpow_eq_rpow_re_of_pos hpi,
@@ -336,7 +336,7 @@ theorem stripDefect_eq_of_factor {G M : ℂ → ℂ}
     linear_combination (starRingEnd ℂ) (M s) * hFE
   rw [hzeta]
   have him : M s - (starRingEnd ℂ) (M s) = 2 * I * ((M s).im : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp; ring
   linear_combination riemannZeta s * him
 
 end GaloisForLFunctions.EulerFETransportTheory

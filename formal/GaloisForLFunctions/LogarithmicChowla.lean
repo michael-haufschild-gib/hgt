@@ -10,11 +10,16 @@ import GaloisForLFunctions.LogarithmicChowla.ArcMass
 import GaloisForLFunctions.LogarithmicChowla.CircleMethod
 import GaloisForLFunctions.LogarithmicChowla.CircleBound
 import GaloisForLFunctions.LogarithmicChowla.PrimeKernelBound
+import GaloisForLFunctions.LogarithmicChowla.DilatedWindows
+import GaloisForLFunctions.LogarithmicChowla.TwistTransfer
+import GaloisForLFunctions.LogarithmicChowla.TwistVarVanishes
+import GaloisForLFunctions.LogarithmicChowla.TwistVarLimit
+import GaloisForLFunctions.LogarithmicChowla.LogarithmicChowlaTheorem
 
 /-!
 # Logarithmic two-point Chowla
 
-Toward `(1/log x) Σ_{n ≤ x} λ(n)λ(n+h)/n → 0`. Correlations are read through limit functionals
+`(1/log x) Σ_{n ≤ x} λ(n)λ(n+h)/n → 0` for every `h ≥ 1` (`tendsto_logAvg_liouville_shift`). Correlations are read through limit functionals
 `L_U` of logarithmic averages along ultrafilters (`LimitFunctional`), which are exactly shift
 invariant and dilation covariant.
 
@@ -28,4 +33,10 @@ invariant and dilation covariant.
 * **(PRIME)** (`PrimeKernelBound`): the prime kernel is small off the major arcs
   (`PrimeExponentialSums.exists_off_major_arcs`), so `|avg_p c(ph)| ≤ η + 4 Σ V(b/s, T)` for all large
   scales `k` and `T ≤ 2^k/(4W)`.
+* **(MR)** (`DilatedWindows`, `TwistTransfer`, `TwistVarVanishes`, `TwistVarLimit`): `V(b/s, T) → 0`.
+  The twist `e(mb/s)` splits into residue classes, each class into characters mod `s/(r, s)` acting
+  on dilated windows; non-principal characters use Matomäki–Radziwiłł for `λχ`, the principal ones
+  reduce through Möbius to dilated windows of `λ` (`MatomakiRadziwill`); dyadic short-window bounds
+  give logarithmic-average bounds.
+* **Assembly** (`LogarithmicChowlaTheorem`): `c(h) = 0` for every `U`.
 -/

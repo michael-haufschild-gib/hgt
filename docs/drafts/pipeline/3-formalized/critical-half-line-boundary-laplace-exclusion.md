@@ -1,13 +1,13 @@
 # Critical half-line boundary Laplace exclusion
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean verification incomplete)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Target:** B104, `review-1211/obstacles-summary.md` §2.2.
 - **Statement:** Every actual critical half-line state has nonzero Laplace transform on the imaginary axis.
 
 ## Proof
 
-**[PROVED HERE; pending complete Lean verification]** Suppose the actual state F has a Laplace zero at `iβ`, where `β=2πb`. Set `K=C_{0,b}F` and `H=Re K`.
+**[PROVED HERE; Lean verified]** Suppose the actual state F has a Laplace zero at `iβ`, where `β=2πb`. Set `K=C_{0,b}F` and `H=Re K`.
 
 Cancellation of the Laplace coefficient removes K's positive-half-line tail. Weighting by `exp(-4u)` changes its kernel to an exponentially decaying convolution, so the existing weighted L² theorem applies. Negative support then gives ordinary L² and, by weighted Cauchy–Schwarz, L¹. The same statements hold at the conjugate zero `-iβ`.
 
@@ -42,8 +42,8 @@ Owner: `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`.
 4. `SkewFourierPairsHaveZeroArithmeticMixedForm`: verified.
 5. `TheUndampedRealResolventIsSkewInFrequency`: verified.
 6. `TheUndampedRealResolventCancelsThePoleForm`: verified.
-7. `TheCriticalHalfLineStateHasNoBoundaryLaplaceZero`: drafted; final unconditional theorem `riemannHypothesis_or_exists_closedRightHalfPlaneLaplaceZeroFree_criticalHalfLineGroundState`.
+7. `TheCriticalHalfLineStateHasNoBoundaryLaplaceZero`: verified; final unconditional theorem `riemannHypothesis_or_exists_closedRightHalfPlaneLaplaceZeroFree_criticalHalfLineGroundState`.
 
-No contribution counted before the entire chain and transitive axiom audit pass.
+Final check: `lake --old env lean GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/TheCriticalHalfLineStateHasNoBoundaryLaplaceZero.lean` passed. Transitive `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`. All seven modules are wired into the umbrella. The whole chain is one mathematical contribution.
 
 Existing inputs: `UndampedCausalResolventBasicDomain`, `CausalResolventMixedEnergy`, `GammaIntegrabilityFromLinearFourierDecay`, and `TheCriticalHalfLineStateSatisfiesTheWeakEquation`. No new analytic premise is permitted in the final statement.

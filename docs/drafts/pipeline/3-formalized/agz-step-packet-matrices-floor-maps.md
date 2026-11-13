@@ -132,6 +132,9 @@ Folder `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/`.
 - 2026-11-12 — M6 (tower) and M7 (`R = 2`, ratio four) proved and formalized
 - 2026-11-12 — M9–M24 proved and formalized
 - 2026-11-12 — M25, M26, M27 proved and formalized
+- 2026-11-12 — M28, M29 proved and formalized (B189 at ratio four: lowered models)
+- 2026-11-13 — M30 proved and formalized (reweighted contacts: tower, second bound state at ratio three and four)
+- 2026-11-13 — M31 proved and formalized (two-well and nodal criteria; RH as the Hodge index inequality on the positive cone)
 
 ## The neutral part (M9, M10)
 
@@ -206,6 +209,25 @@ A supersolution cannot certify a window on which the neutral part has a negative
 - [x] M27 gluing of two adjacent windows: the union is two neutral parts coupled by the
   weights; it holds at most the bound states of the product model with potentials lowered by
   the excess of the couplings over the product of the charges
+- [x] M28 at ratio four the product model does not count one bound state: for `H ≥ 64` and all
+  charges below the couplings of `(2H, 4H]` and `(4H, 8H]` the lowered lower half has two
+  negative squares
+- [x] M29 the rank of the binding at ratio four: for every model coupling of rank `r` with
+  `600(r + 1) ≤ H`, of any signs, and all weights, one of the two lowered halves has two
+  negative squares
+- [x] M30 reweighted contacts (criteria G3, G4 at every block size): the form with the contact
+  of `k` weighted by `ω(k)` is a combination of Weil's forms of the cutoffs, so its block matrix
+  and its neutral part form a tower; a weight of `2` in `[−4, 0]` (no primes, Liouville) gives
+  two bound states on every window of ratio `≥ 3`; weights of `2`, `3` in `[−5/2, 19/40]` give
+  two on every window of ratio `≥ 4`; the constant raised by `2/5` gives two at ratio four;
+  Weil's form with weights of `2`, `3` both `≤ 7/12` or both `≥ 9/8` is negative on the halves
+  of `(R, 4R]`
+- [x] M31 the exact gluing law on the positive cone: a symmetric matrix with entries `≤ 0` off
+  the diagonal has two negative squares iff two nonnegative vectors `x`, `y` without a common
+  index have `N(x, x) < 0` and `N(x, y)² < N(x, x) N(y, y)`; with negative entries, iff an
+  eigenvector with negative eigenvalue takes both signs. RH iff on every window with `R ≤ J`
+  positive step packets without a common block satisfy `N(x, x) N(y, y) ≤ N(x, y)²`
+  (`N(x, x) < 0`), iff every bound state of every such window has one sign
 
 **M12.** Weil's form is `≥ (1/5000)‖f‖²` on `C²` tests supported in an interval of length
 `181/250` (corpus: the ground energy of the aperture `181/500` is `≥ 1/5000`). Smoothing a
@@ -443,6 +465,149 @@ coupled form of the two neutral parts with `K_ij = w(R+i, R+J₁+j) > 0`. Lean:
 `hermNegIndex_coupled_le_add`, `neutralWindow_add_submatrix`,
 `hermNegIndex_neutralWindow_add_le_glued`, `hermNegIndex_neutralWindow_add_le_add`).
 
+**M28.** Halves `(2H, 4H]`, `(4H, 8H]`, `K_ij = w(2H+i, 4H+j) > 0`, `Q ≥ 2`, `H ≥ 64`.
+(a) *A product of charges carries no contacts.* Let `K ≥ 0` have row sums `≤ ρ` and let each
+`i` reserve a set `cont i` of columns, disjoint for different `i`. If `u_i v_j ≤ K_ij`, then for
+every set `S` of rows `Σ_{i∈S} (K1 − u (v·1))_i ≥ Σ_{i∈S} Σ_{j∈cont i} K_ij − ρ`: with `P` the
+sum of the positive parts of `v` and `p_i` its part on `cont i`, a positive `u_i` is `≤ ρ/P`
+(sum `u_i v_j ≤ K_ij` over `v_j > 0`), so `u_i (v·1) ≤ Σ_{j∉cont i} K_ij + ρ p_i/P`, and
+`Σ p_i ≤ P`. (b) The block `a` meets `2a`, `2a+1` with the weight `Λ(2)/2` each, so the
+reserved couplings are `≥ log 2` per block; a row of `K` adds up to
+`≤ ρ = ½ log(12H) + 1 + log 6`. (c) On the constant packets of the quarters `(2H, 3H]`,
+`(3H, 4H]` the neutral part of `(2H, 4H]` is `−a₁H`, `−a₂H` with pairing `cH`:
+`a₁ = c₀ − 5 log 5 + 9 log 2 ≈ 0.603`, `a₂ = c₀ − 7 log 7 + 7 log 2 + 6 log 3 ≈ 0.234`,
+`c = (12 log 3 + 10 log 2 − 5 log 5 − 7 log 7)/2 ≈ −0.777`, `c₀ = γ + log 2π` (closed form of
+the window values at multiples of `H`). Lowering by `H log 2 − ρ` on each quarter gives
+diagonal values below `−1.02H`, `−0.65H`, whose product exceeds `c²H²`: the lowered lower half
+is negative definite on a plane, so it has two negative squares, it is negative on a vector
+without charge, and the product model has at least two negative squares. Lean:
+`TheTwoHalvesOfAWindowOfRatioFourDoNotGlueThroughAProductOfCharges`
+(`sum_contacts_sub_le_sum_excessLeft`, `two_le_hermNegIndex_of_two_vectors`,
+`sum_neutralBlock_window`, `sum_neutralBlock_lower_quarter`, `sum_neutralBlock_upper_quarter`,
+`sum_neutralBlock_cross_quarters`, `sum_range_blockWeight_le`, `log_two_div_two_le_blockWeight`,
+`two_le_hermNegIndex_lowered_lower_half`, `exists_chargeless_negative_lowered_lower_half`,
+`two_le_hermNegIndex_glued_lowered_ratio_four`).
+
+**M29.** Same halves. For any model coupling `M` and weights `t_ij > 0`,
+`2|K_ij − M_ij||x_i y_j| ≤ |K_ij − M_ij|(t_ij x_i² + y_j²/t_ij)`, so the coupled form is at least
+the form coupled by `M` of `A − diag L`, `B − diag R`, `L_i = Σ_j |K − M|_ij t_ij`,
+`R_j = Σ_i |K − M|_ij/t_ij`; a lowered model with one negative square would count one bound
+state of the union (for `M = u ⊗ v ≤ K`, `t = 1` this is M27). **Claim:** if `M = Σ_{k<r} p_k ⊗ q_k`
+and `600(r + 1) ≤ H`, then `A − diag L` or `B − diag R` has two negative squares, for all `t`.
+Proof. Suppose both have at most one. (i) By M28(c) applied to `(2H, 4H]` and to `(4H, 8H]`
+(quarters of size `2H`), with `X_q`, `Y_q` the sums of `L`, `R` over the quarter `q = 1, 2` of
+the lower and of the upper half: `(a₁H + X₁)(a₂H + X₂) ≤ c²H²`,
+`(2a₁H + Y₁)(2a₂H + Y₂) ≤ 4c²H²`. (ii) With `G_q = Σ |K − M|` over the lower quarter `q` times
+the upper quarter `q`, Cauchy–Schwarz gives `G_q² ≤ X_q Y_q`. (iii) If `G₁², G₂² > 2e²`,
+`e = 77H/200`, then `X_q + Y_q/2 > 2e`, `(a_q H + X_q)(a_q H + Y_q/2) ≥ (a_q H + e)²`, and the
+product of the two criteria gives `(a₁H + e)(a₂H + e) ≤ c²H²`, false since
+`0.9877 · 0.6189 > 0.7769²`. So `G_q ≤ (109/200)H` for one `q`. (iv) Between the lower quarter
+`q` (blocks `a`) and the upper quarter `q` (blocks `b`, `a < b < 3a`, `b − a ≥ H`) the couplings
+are the jets, `≤ 2/H`, plus `(log 2)/2` if `⌊b/2⌋ = a`. Summing columns over the two preimages
+`2a'`, `2a'+1` turns `K` into `log 2 · 1 + (jets ≤ 4/H)` and `M` into a matrix `D` of rank `≤ r`.
+(v) A matrix of rank `r` on `n` indices has `Σ_{ij} |D_ij − λδ_ij| ≥ λ(n − r)`: a set of rows
+with `Σ_j |D_ij − λδ_ij| < λ` is diagonally dominant, hence independent, hence of size `≤ r`.
+Applied on the `64` residue classes of the indices, where the jets add up to `≤ H/16 + 4`:
+`log 2 · (H − 64r) ≤ G_q + H/16 + 4`. With (iii): `0.6931(H − 64r) ≤ 0.6075H + 4`, false for
+`H ≥ 600(r + 1)`. ∎ So a coupling that carries the binding of the two halves at ratio four has
+rank `≥ H/600 − 1`; the constant is not optimized. Lean:
+`TheBindingOfTheTwoHalvesOfAWindowOfRatioFourHasRankProportionalToTheBlockSize`
+(`loweringLeft`, `loweringRight`, `bilin_lowered_le_coupled`, `hermNegIndex_coupled_le_lowered`,
+`hermNegIndex_neutralWindow_add_le_lowered`, `sq_sum_abs_le_lowering`,
+`card_le_of_rank_of_diagonally_dominant`, `mul_card_sub_le_sum_abs_sub_diagonal`,
+`mul_sub_le_sum_abs_on_residue_classes`, `mul_le_sq_of_hermNegIndex_lowered_le_one`,
+`abs_blockWeight_pair_sub_le`, `log_two_mul_sub_le_quarter`, `lowerQuarterDepth`,
+`upperQuarterDepth`, `quarterPairing`, `mul_le_sq_of_hermNegIndex_lowered_dyadic_le_one`,
+`two_le_hermNegIndex_lowered_half_of_rank`, `two_le_hermNegIndex_lowered_model_of_rank`).
+
+**M30.** For `ω : ℕ → ℝ` let `𝔚^ω_Q(g) = 𝔚_Q(g) + 2 Σ_{2≤k≤Q} (1 − ω(k)) (Λ(k)/√k) h_g(log k)`:
+Weil's form with the contact of `k` weighted by `ω(k)` (`ω ≡ 1` true, `ω ≡ 0` no primes,
+`ω(p^m) = (−1)^m` Liouville).
+(a) `𝔚_{k−1}(g) − 𝔚_k(g) = 2 (Λ(k)/√k) h_g(log k)`. On a step packet, by M2 at the cutoffs
+`k − 1` and `k`, this is `Σ σ_j σ_l Γ_k(R+j, R+l)` with `Γ_k(a, b) = Λ(k)/k` if
+`⌊max(a,b)/k⌋ = min(a,b)` and `0` otherwise: the graph of the floor map of `k`. So `𝔚^ω_Q` on
+step packets is the form of `M^ω = M_Q + Σ_k (1 − ω(k)) Γ_k`, with neutral part
+`N^ω = N_Q + Σ_k (1 − ω(k)) Γ_k`; for `a < b`, `N^ω_{ab} = −jet(a, b) − Σ_k ω(k) Γ_k(a, b)`.
+(b) Tower. `Γ_k = N_{k−1} − N_k`, and `N_Q`, `M_Q` are invariant under refinement at every
+cutoff (M6, M9). So `Γ_k`, `N^ω`, `M^ω` are invariant under refinement.
+(c) First blocks, `Q ≥ 3`. `N^ω_{11} = −D`, `D = γ + log 2π + 3 log 2 − 3 log 3`;
+`N^ω_{22} + 2N^ω_{23} + N^ω_{33} = −2D` (the dyadic window `(2, 4]`; no floor map joins blocks
+of ratio below two); `N^ω_{12} + N^ω_{13} = −(J + K_ω)` with
+`J = jet(1,2) + jet(1,3) = 6 log 3 − 2 log 2 − (5/2) log 5` and
+`K_ω = ω(2) log 2 + ω(3)(log 3)/3`: the floor map of `2` sends the blocks `2`, `3` to `1`, that
+of `3` sends `3` to `1`, no other does. On `σ = (s, t, t)`:
+`N^ω = −(D s² + 2(J + K_ω) s t + 2D t²)`, and by (b) the same on the packets with the values
+`s/√R` on `(R, 2R]`, `t/√R` on `(2R, 4R]`. Two negative squares if `(J + K_ω)² < 2D²`.
+Numbers: `D ∈ (1.195, 1.2)`, `J ∈ (1.1817, 1.1818)`, `log 2 + (log 3)/3 ∈ (1.0593, 1.0594)`.
+True weights: `J + K = 2.241 > √2 D`; the form is positive on `(1, −1, −1)`:
+`2(J + K) − 3D > 0`.
+(d) Ratio three, `Q ≥ 2`. On `σ = (s, t)` on the blocks `1`, `2`:
+`N^ω = −(D s² + 2(j₁₂ + ω(2)(log 2)/2) s t + D₂ t²)`,
+`j₁₂ = (5 log 5 − 14 log 2 + 3 log 3)/2 ∈ (0.8194, 0.8195)`,
+`D₂ = γ + log 2π + 9 log 2 − 5 log 5 > 0.6027`. For `ω(2) ∈ [−4, 0]`:
+`|j₁₂ + ω(2)(log 2)/2| < 0.8195` and `0.8195² < 1.195 · 0.6027`. So `(R, 3R]` has two negative
+squares, and so has every `(R, R + J]`, `J ≥ 2R` (principal submatrix). No other weight enters.
+At the true weight `1.166² > D D₂`.
+(e) Ratio four. `ω(2), ω(3) ∈ [−5/2, 19/40]`: `|J + K_ω| < 1.6855`, `1.6855² ≤ 2 · 1.195²`.
+Constant raised by `δ` (density of every block lowered by `δ`): the refinement keeps `Σ σ²`,
+so the form on the plane is `−((D + δ) s² + 2(J + K) s t + 2(D + δ) t²)`; for `δ ≥ 2/5`,
+`2.2412² ≤ 2 · 1.595²`.
+(f) Weil's form. Adding the charges `2(Σσ)(Σσ_j d_j) = 2 log 2 (s + 2t)(s + t)`:
+`𝔚^ω = A s² + 2B s t + 2A t²`, `A = 2 log 2 − D ∈ (0.186, 0.1913)`, `B = 3 log 2 − J − K_ω`.
+At `(s, t) = (−B, A)` the value is `A(2A² − B²)`, negative if `B² > 2A²`. Weights `≤ 7/12`:
+`B > 0.2796`; weights `≥ 9/8`: `B < −0.2796`; and `2 · 0.1913² ≤ 0.2796²`. At the true weights
+`B = −0.1617`, `B² < 2A²`. ∎ Lean:
+`WeakenedOrTwistedContactsGiveASecondBoundStateOnWindowsOfRatioThreeAndFour` (`floorGraph`,
+`blockMatrix_pred_sub`, `packetForm_pred_sub`, `contact_stepPacket_eq_sum_floorGraph`,
+`sum_floorGraph_refine`, `reweightedNeutral`, `reweightedBlock`, `reweightedPacketForm`,
+`reweightedPacketForm_eq`, `reweightedPacketForm_stepPacket`, `sum_reweightedNeutral_refine`,
+`sum_reweightedBlock_refine`, `reweightedPacketForm_stepPacket_refine`,
+`hermNegIndex_windowMatrix_mono`, `dyadicDepth`, `thirdDepth`, `halvesJet`, `halvesContact`,
+`dyadicMargin`, `sum_reweightedNeutral_two_blocks`, `sum_reweightedNeutral_three_blocks`,
+`bilin_reweightedNeutral_ratio_three`, `bilin_reweightedNeutral_halves`,
+`two_le_hermNegIndex_reweighted_ratio_three`,
+`two_le_hermNegIndex_reweighted_lowered_ratio_four`,
+`two_le_hermNegIndex_reweighted_of_ratio_three`, `two_le_hermNegIndex_liouville`,
+`two_le_hermNegIndex_weakened_contacts`, `two_le_hermNegIndex_raised_constant`,
+`bilin_neutralWindow_halves_pos`, `reweightedPacketForm_halves`,
+`exists_reweightedPacketForm_neg_of_sq_lt`, `exists_reweightedPacketForm_neg`).
+
+**M31.** `G` real symmetric with `G_ij ≤ 0` for `i ≠ j`; `G(x, y) = Σ x_i y_j G_ij`.
+(a) If `G(x, x) < 0` and `G(x, y)² < G(x, x) G(y, y)`, the binary form `G(sx + ty)` is negative
+definite: two negative squares (no sign condition used).
+(b) In an orthonormal eigenbasis `G(σ, σ) = Σ_i λ_i ⟨σ, ψ_i⟩²`, nonnegative on the vectors
+orthogonal to the `ψ_i` with `λ_i < 0`; by the Pontryagin lemma the negative squares are at most
+the negative eigenvalues. So two negative squares give orthonormal eigenvectors `u`, `v` with
+eigenvalues `a, b < 0`.
+(c) An eigenvector `ψ`, `Gψ = λψ`, `λ < 0`, with both signs: `p = ψ⁺`, `n = ψ⁻`, `ψ = p − n`,
+`p_k n_k = 0`. Pairing the equation with `p` and `n`: `G(p, p) − c = λ|p|²`,
+`c − G(n, n) = −λ|n|²`, `c = G(p, n) ≤ 0` (no common index). Then `G(p, p) < 0` and
+`G(p, p) G(n, n) − c² = λc(|p|² + |n|²) + λ²|p|²|n|² > 0`.
+(d) Otherwise `x = ±u ≥ 0`, `y = ±v ≥ 0` with `Σ x_k y_k = 0`, hence no common index;
+`G(x, x) = a`, `G(y, y) = b`, `G(x, y) = b Σ x_k y_k = 0`, and `0 < ab`.
+(e) If `G_ij < 0` for `i ≠ j`, case (d) does not occur: at `k₀` with `y_{k₀} > 0` one has
+`x_{k₀} = 0`, so row `k₀` of `Gx = ax` reads `Σ_j G_{k₀j} x_j = 0`, while every term is `≤ 0` and
+one is negative (`x ≠ 0`). With (c): two negative squares iff a bound state takes both signs.
+(f) Windows. `N_ab < 0` off the diagonal (M9), at least one negative square for `R ≤ J` (M14),
+RH iff exactly one (M16). For `x`, `y ≥ 0` without a common block `−N(x, y)` is the sum of the
+jets and contacts between their blocks, weighted by `x_a y_b`, and
+`N(x + y) = N(x) + N(y) + 2N(x, y)`. ∎ Lean:
+`OneBoundStateIsTheHodgeIndexInequalityOnPositivePacketsWithoutCommonBlocks` (`bilin_swap`,
+`bilin_comb`, `bilin_eigen`, `bilin_nonpos_of_disjoint`, `two_le_hermNegIndex_of_unbound_pair`,
+`positiveWell`, `negativeWell`, `exists_unbound_wells_of_eigenvector`,
+`exists_unbound_wells_of_two_eigenvectors`,
+`exists_sign_changing_eigenvector_of_two_eigenvectors`, `dotProduct_mulVec_eq_sum_eigen`,
+`hermNegIndex_le_card_neg_eigenvalues`, `exists_two_bound_states_of_two_le_hermNegIndex`,
+`two_le_hermNegIndex_iff_exists_unbound_wells`, `hermNegIndex_le_one_iff_forall_wells_bound`,
+`two_le_hermNegIndex_iff_exists_sign_changing_bound_state`, `neutralWindow_symm`,
+`neutralWindow_neg_of_ne`, `bilin_neutralWindow_nonpos_of_disjoint`,
+`two_le_hermNegIndex_neutralWindow_iff_exists_unbound_wells`,
+`two_le_hermNegIndex_neutralWindow_iff_exists_sign_changing_bound_state`,
+`hermNegIndex_neutralWindow_eq_one_iff_forall_wells_bound`,
+`hermNegIndex_neutralWindow_eq_one_iff_forall_bound_state_one_sign`,
+`riemannHypothesis_iff_forall_wells_bound`,
+`riemannHypothesis_iff_forall_bound_state_one_sign`).
+
 Lean: `…/TheGroundVectorOfTheBlockMatrixOfANarrowWindowHasOneSignAndIsCharged.lean`
 (`blockDegree_le_xLogXDiff`, `blockMatrix_neg_of_narrow`, `sum_kernel_abs_lt`,
 `kernel_minimizer_one_sign`, `blockMatrix_minimizer_one_sign`,
@@ -455,5 +620,15 @@ Open: positivity of the block matrix on windows of ratio above `103/50` on all s
 without RH; by M21 it is, with a margin, a statement about one matrix, at a scale `R` with
 `log R ≥ E_Q + 2C_Q²/μ₀ + μ₀`. The constants `N₀`, `κ` of M19 are not explicit.
 The ground vector of the block matrix on windows with `4J > R`: the matrix has entries of both
-signs off the diagonal. The gluing of two actual windows: their coupling is minus the product
-of the charges only in the mean; the difference is the fluctuation of the contacts.
+signs off the diagonal. The gluing of two actual windows: by M28, M29 no lowered model of rank
+below `H/600` counts one bound state of a window of ratio four; open is an exact law in which
+the contacts are kept (response matrices of full rank, or the refinement tower, where the
+contacts of the floor map of `2` are `log 2` times the identity). By M30 the jets alone do not bind
+the halves: without the contact of `2` there are two bound states from ratio three on, and on
+the halves of `(R, 4R]` the form is nonnegative only for a common weight of `2`, `3` between
+`7/12` and `9/8`. Open: the count one at the true weights on the windows of ratio three and
+four at every block size, and the interval of admissible weights as the ratio grows (it
+shrinks to the true weight if and only if RH holds and the weights are forced). By M31 the
+exact law is the inequality `N(x, x) N(y, y) ≤ N(x, y)²` on positive packets without a common
+block; open is to prove it beyond ratio `103/50` for one family of pairs that exhausts the cone
+(the two parts of the second eigenvector: a bound on where its node lies).

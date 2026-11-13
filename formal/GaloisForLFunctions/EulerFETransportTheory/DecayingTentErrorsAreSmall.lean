@@ -791,7 +791,7 @@ theorem exists_abs_tentDefect_le_smallWidth {g : ℝ → ℂ} (hgm : Measurable 
   rw [lowPart_add_highPart] at hsplit
   have hlow := abs_tentDefect_lowPart_le hgm ha hgd hR0.le hh hη hy hε
   have hhigh := abs_tentDefect_highPart_le hgm ha hgd hR0 hh hh1 (by linarith) hy2 hε hε1
-  rw [← hq, ← hI₁] at hhigh
+  rw [← hI₁, ← hq] at hhigh
   -- exponent bookkeeping
   have hhR : h * R ≤ h ^ ρ := by
     rw [hRdef, ← Real.rpow_one_add' hh.le (by linarith)]
@@ -801,17 +801,130 @@ theorem exists_abs_tentDefect_le_smallWidth {g : ℝ → ℂ} (hgm : Measurable 
     exact Real.rpow_le_rpow_of_exponent_ge hh hh1
       (by rw [hρ]; linarith [min_le_right (1 - κ) (κ * q - 1)])
   have hlow' : |tentDefect (lowPart R g) h y ε| ≤ cL * η ^ (-(1 / 2 : ℝ)) * h ^ ρ := by
-    refine hlow.trans (le_of_eq_of_le (by rw [hcL]; ring) ?_)
-    · exact cL * η ^ (-(1 / 2 : ℝ)) * (h * R)
-    · exact mul_le_mul_of_nonneg_left hhR (by positivity)
+    calc |tentDefect (lowPart R g) h y ε| ≤ _ := hlow
+      _ = cL * η ^ (-(1 / 2 : ℝ)) * (h * R) := by rw [hcL]; ring
+      _ ≤ cL * η ^ (-(1 / 2 : ℝ)) * h ^ ρ := mul_le_mul_of_nonneg_left hhR (by positivity)
   have hhigh' : |tentDefect (highPart R g) h y ε| ≤ cH * h ^ ρ := by
-    refine hhigh.trans (le_of_eq_of_le (by rw [hcH]; ring) ?_)
-    · exact cH * (R ^ (-q) / h)
-    · exact mul_le_mul_of_nonneg_left hRq hcH0
+    calc |tentDefect (highPart R g) h y ε| ≤ _ := hhigh
+      _ = cH * (R ^ (-q) / h) := by rw [hcH]; ring
+      _ ≤ cH * h ^ ρ := mul_le_mul_of_nonneg_left hRq hcH0
   have hηpos : 0 ≤ η ^ (-(1 / 2 : ℝ)) := by positivity
   have hhρ : 0 ≤ h ^ ρ := by positivity
   rw [hsplit]
   refine (abs_add_le _ _).trans ((add_le_add hlow' hhigh').trans ?_)
   nlinarith [mul_nonneg hcL0 hhρ, mul_nonneg hcH0 hhρ, mul_nonneg (mul_nonneg hcH0 hηpos) hhρ]
+
+theorem integral_sq_tentDefect_lowPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
+    (ha : 0 < a) (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R h ε W W' : ℝ} (hR : 0 ≤ R)
+    (hh : 0 < h) (hε : 0 < ε) (hW : W ≤ W') :
+    ∫ y in W..W', tentDefect (lowPart R g) h y ε ^ 2 ≤
+      4 * h ^ 2 * (Real.pi⁻¹ * (2 * R * C ^ 2)) := by
+  obtain ⟨hm, hn⟩ := integral_norm_sq_lowPart_le hgm ha.le hgd hR
+  refine (integral_sq_tentDefect_le_low (measurable_lowPart hgm R)
+    (fun t => (norm_lowPart_le R g t).trans (poly_of_decay ha.le hgd t)) hm hh hε hW).trans ?_
+  gcongr
+
+theorem integral_sq_tentDefect_highPart_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
+    (ha : 0 < a) (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {R h ε W W' : ℝ} (hR : 0 < R)
+    (hh : 0 < h) (hε : 0 < ε) (hW0 : 0 ≤ W) (hW : W ≤ W') :
+    ∫ y in W..W', tentDefect (highPart R g) h y ε ^ 2 ≤
+      18 * (h * ε + W' + h) ^ 4 / h ^ 2 * (Real.pi⁻¹ *
+        ((16 / 3 * C * R ^ (-((3 + a) / 2))) ^ 2 * ∫ t : ℝ, (1 + |t|) ^ (-(1 + a)))) := by
+  obtain ⟨hm, hn⟩ := integral_norm_sq_tentPrimitive_highPart_le hgm hgd (q := (3 + a) / 2)
+    (by linarith) hR (by linarith)
+  have he : 2 * (2 + a - (3 + a) / 2) = 1 + a := by ring
+  rw [he] at hn
+  refine (integral_sq_tentDefect_le_high (measurable_highPart hgm R)
+    (fun t => (norm_highPart_le R g t).trans (poly_of_decay ha.le hgd t)) hm hh hε hW0 hW).trans ?_
+  gcongr
+
+/-- **Dyadic shells**: for a fixed width `h ≤ 1` there are `K` and `α < 1` with
+`∫_W^{2W} T_ε(h, y)² dy ≤ K W^α` for all `W ≥ 1` and `0 < ε ≤ 1`.  Split at `|t| = (W/h)^κ`:
+the low part costs `h² (W/h)^κ`, the high part `W⁴ h⁻² (W/h)^{-κ(3 + a)}`. -/
+theorem exists_integral_sq_tentDefect_shell_le {g : ℝ → ℂ} (hgm : Measurable g) {C a : ℝ}
+    (ha : 0 < a) (hgd : ∀ t, ‖g t‖ ≤ C * (1 + |t|) ^ (-a)) {h : ℝ} (hh : 0 < h) (hh1 : h ≤ 1) :
+    ∃ K α : ℝ, α < 1 ∧ ∀ W ε : ℝ, 1 ≤ W → 0 < ε → ε ≤ 1 →
+      ∫ y in W..2 * W, tentDefect g h y ε ^ 2 ≤ K * W ^ α := by
+  have hC := nonneg_of_decay hgd
+  obtain ⟨κ, hκ⟩ : ∃ κ : ℝ, κ = (1 + 3 / (3 + a)) / 2 := ⟨_, rfl⟩
+  have h3a : 3 / (3 + a) < 1 := by rw [div_lt_one (by linarith)]; linarith
+  have hκ1 : κ < 1 := by rw [hκ]; linarith
+  have hκ0 : 0 < κ := by rw [hκ]; positivity
+  have hκa : 3 < κ * (3 + a) := by
+    rw [hκ, div_mul_eq_mul_div, add_mul, div_mul_cancel₀ _ (by linarith), lt_div_iff₀
+      (by norm_num)]
+    linarith
+  obtain ⟨α, hα⟩ : ∃ α : ℝ, α = max κ (4 - κ * (3 + a)) := ⟨_, rfl⟩
+  have hα1 : α < 1 := by rw [hα]; exact max_lt hκ1 (by linarith)
+  obtain ⟨I₂, hI₂⟩ : ∃ I₂ : ℝ, I₂ = ∫ t : ℝ, (1 + |t|) ^ (-(1 + a)) := ⟨_, rfl⟩
+  have hI₂0 : 0 ≤ I₂ := by rw [hI₂]; exact integral_nonneg fun t => by positivity
+  obtain ⟨c₁, hc₁⟩ : ∃ c₁ : ℝ, c₁ = 2 * (4 * h ^ 2 * (Real.pi⁻¹ * (2 * C ^ 2))) * h ^ (-κ) :=
+    ⟨_, rfl⟩
+  obtain ⟨c₂, hc₂⟩ : ∃ c₂ : ℝ, c₂ = 2 * (18 * 4 ^ 4 / h ^ 2 * (Real.pi⁻¹ *
+      ((16 / 3 * C) ^ 2 * I₂))) * h ^ (κ * (3 + a)) := ⟨_, rfl⟩
+  have hc₁0 : 0 ≤ c₁ := by rw [hc₁]; positivity
+  have hc₂0 : 0 ≤ c₂ := by rw [hc₂]; positivity
+  refine ⟨c₁ + c₂, α, hα1, fun W ε hW hε hε1 => ?_⟩
+  have hW0 : 0 < W := by linarith
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, R = (W / h) ^ κ := ⟨_, rfl⟩
+  have hR0 : 0 < R := by rw [hR]; positivity
+  have hsplit := tentDefect_add (measurable_lowPart hgm R) (measurable_highPart hgm R)
+    (fun t => (norm_lowPart_le R g t).trans (poly_of_decay ha.le hgd t))
+    (fun t => (norm_highPart_le R g t).trans (poly_of_decay ha.le hgd t)) hh hε
+  simp only [lowPart_add_highPart] at hsplit
+  have hcL := continuous_tentDefect (measurable_lowPart hgm R)
+    (fun t => (norm_lowPart_le R g t).trans (poly_of_decay ha.le hgd t)) hh hε
+  have hcH := continuous_tentDefect (measurable_highPart hgm R)
+    (fun t => (norm_highPart_le R g t).trans (poly_of_decay ha.le hgd t)) hh hε
+  have hlow := integral_sq_tentDefect_lowPart_le hgm ha hgd hR0.le hh hε (W := W) (W' := 2 * W)
+    (by linarith)
+  have hhigh := integral_sq_tentDefect_highPart_le hgm ha hgd hR0 hh hε (W := W) (W' := 2 * W)
+    hW0.le (by linarith)
+  rw [← hI₂] at hhigh
+  -- `(x + y)² ≤ 2x² + 2y²`
+  have hsum : ∫ y in W..2 * W, tentDefect g h y ε ^ 2 ≤
+      2 * (∫ y in W..2 * W, tentDefect (lowPart R g) h y ε ^ 2) +
+        2 * ∫ y in W..2 * W, tentDefect (highPart R g) h y ε ^ 2 := by
+    have i1 : IntervalIntegrable (fun y => 2 * tentDefect (lowPart R g) h y ε ^ 2) volume W
+        (2 * W) := (continuous_const.mul (hcL.pow 2)).intervalIntegrable _ _
+    have i2 : IntervalIntegrable (fun y => 2 * tentDefect (highPart R g) h y ε ^ 2) volume W
+        (2 * W) := (continuous_const.mul (hcH.pow 2)).intervalIntegrable _ _
+    have i3 : IntervalIntegrable (fun y => 2 * tentDefect (lowPart R g) h y ε ^ 2 +
+        2 * tentDefect (highPart R g) h y ε ^ 2) volume W (2 * W) := i1.add i2
+    have i0 : IntervalIntegrable (fun y => tentDefect g h y ε ^ 2) volume W (2 * W) :=
+      ((continuous_tentDefect hgm (poly_of_decay ha.le hgd) hh hε).pow 2).intervalIntegrable _ _
+    rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul,
+      ← intervalIntegral.integral_add i1 i2]
+    refine intervalIntegral.integral_mono_on (by linarith) i0 i3 fun y _ => ?_
+    rw [hsplit y]
+    nlinarith [sq_nonneg (tentDefect (lowPart R g) h y ε - tentDefect (highPart R g) h y ε)]
+  -- exponent bookkeeping
+  have hRW : R = W ^ κ * h ^ (-κ) := by
+    rw [hR, Real.div_rpow hW0.le hh.le, Real.rpow_neg hh.le, div_eq_mul_inv]
+  have hRq : (R ^ (-((3 + a) / 2))) ^ 2 = W ^ (-(κ * (3 + a))) * h ^ (κ * (3 + a)) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hR0.le, hR, ← Real.rpow_mul (by positivity),
+      Real.div_rpow hW0.le hh.le, div_eq_mul_inv, ← Real.rpow_neg hh.le]
+    push_cast
+    ring_nf
+  have hM : h * ε + 2 * W + h ≤ 4 * W := by nlinarith
+  have hWk : W ^ κ ≤ W ^ α := Real.rpow_le_rpow_of_exponent_le hW (by rw [hα]; exact le_max_left _ _)
+  have hW4 : W ^ 4 * W ^ (-(κ * (3 + a))) ≤ W ^ α := by
+    rw [← Real.rpow_natCast, ← Real.rpow_add hW0]
+    exact Real.rpow_le_rpow_of_exponent_le hW (by rw [hα]; push_cast; exact le_max_right _ _)
+  have hlow' : 2 * ∫ y in W..2 * W, tentDefect (lowPart R g) h y ε ^ 2 ≤ c₁ * W ^ α := by
+    calc 2 * ∫ y in W..2 * W, tentDefect (lowPart R g) h y ε ^ 2
+        ≤ 2 * (4 * h ^ 2 * (Real.pi⁻¹ * (2 * R * C ^ 2))) := by gcongr
+      _ = c₁ * W ^ κ := by rw [hc₁, hRW]; ring
+      _ ≤ c₁ * W ^ α := mul_le_mul_of_nonneg_left hWk hc₁0
+  have hhigh' : 2 * ∫ y in W..2 * W, tentDefect (highPart R g) h y ε ^ 2 ≤ c₂ * W ^ α := by
+    calc 2 * ∫ y in W..2 * W, tentDefect (highPart R g) h y ε ^ 2
+        ≤ 2 * (18 * (h * ε + 2 * W + h) ^ 4 / h ^ 2 * (Real.pi⁻¹ *
+            ((16 / 3 * C * R ^ (-((3 + a) / 2))) ^ 2 * I₂))) := by gcongr
+      _ ≤ 2 * (18 * (4 * W) ^ 4 / h ^ 2 * (Real.pi⁻¹ *
+            ((16 / 3 * C * R ^ (-((3 + a) / 2))) ^ 2 * I₂))) := by gcongr
+      _ = c₂ * (W ^ 4 * W ^ (-(κ * (3 + a)))) := by
+          rw [hc₂, mul_pow (16 / 3 * C), hRq]; ring
+      _ ≤ c₂ * W ^ α := mul_le_mul_of_nonneg_left hW4 hc₂0
+  linarith
 
 end GaloisForLFunctions.EulerFETransportTheory

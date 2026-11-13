@@ -40,6 +40,11 @@ import GaloisForLFunctions.MatomakiRadziwill.LadderBound
 import GaloisForLFunctions.MatomakiRadziwill.LadderMeanSquare
 import GaloisForLFunctions.MatomakiRadziwill.ParsevalWindows
 import GaloisForLFunctions.MatomakiRadziwill.ParsevalMeanSquare
+import GaloisForLFunctions.MatomakiRadziwill.ZetaRouteT
+import GaloisForLFunctions.MatomakiRadziwill.LadderMasterOn
+import GaloisForLFunctions.MatomakiRadziwill.LiouvilleLowFrequency
+import GaloisForLFunctions.MatomakiRadziwill.LiouvilleMeanSquare
+import GaloisForLFunctions.MatomakiRadziwill.LiouvilleShortSums
 
 /-!
 # Matomäki–Radziwiłł for twisted Liouville functions
@@ -77,4 +82,9 @@ Toward the mean square of short sums of `λχ`, `χ` a Dirichlet character of fi
   dyadic frequency tail, the passage from `f(n)/n` to `f(n)`, and the corpus block transfer give
   `Σ_{X ≤ m < 2X} |Σ_{m<n≤m+h} λχ(n)|² ≤ ε h² X` for `h ≥ h₀(ε)`, `X ≥ X₀(h)`
   (`exists_short_sum_mean_square_twLiouville_le`).
+* **`λ` itself** (`ZetaRouteT`, `LadderMasterOn`, `LiouvilleLowFrequency`, `LiouvilleMeanSquare`,
+  `LiouvilleShortSums`): Route T for `ζ` above `(log X)^{19}` from the corpus contour bound with its
+  pole term; below, `λ = μ * 1_□` and the corpus twisted Mertens bound; the ladder runs on the high
+  frequencies only.  `Σ_{X ≤ m < 2X} |Σ_{m<n≤m+h} λ(n)|² ≤ ε h² X`
+  (`exists_short_sum_mean_square_liouville_le`).
 -/

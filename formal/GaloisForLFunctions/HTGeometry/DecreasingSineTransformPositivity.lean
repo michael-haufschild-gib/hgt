@@ -8,6 +8,9 @@ If `f` is continuous, integrable on `(0, ∞)` and strictly decreasing on `[0, �
 second half-period is the first shifted by `P/2` with the sign of the sine reversed, so the period
 integral is `∫_{kP}^{kP+P/2} (f(t) - f(t + P/2)) sin(yt) dt ≥ 0`, strictly positive for `k = 0`;
 the partial sums increase to the improper integral.
+
+`integral_Ioi_mul_sin_pos_of_strictAntiOn_Ioi` is the same statement for a function that is only
+strictly decreasing on `(0, ∞)`, possibly unbounded at `0` and not continuous.
 -/
 
 open Set MeasureTheory Filter Topology
@@ -98,5 +101,94 @@ theorem integral_mul_sin_pos_of_strictAntiOn {f : ℝ → ℝ} (hf : Continuous 
   calc I 0 = ∑ k ∈ Finset.range 1, I k := by simp
     _ ≤ ∑ k ∈ Finset.range n, I k :=
         Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono hn) fun k _ _ => hIk k
+
+/-- **Positivity of sine transforms of decreasing functions, without continuity.** If `g` is
+strictly decreasing on `(0, ∞)` and `g(t) sin(yt)` is integrable there, then
+`∫₀^∞ g(t) sin(yt) dt > 0` for `y > 0`; `g` may be unbounded at `0`. The negative part of the
+sine is its positive part shifted by `h = π/y`, and it vanishes on `(0, h]`, so the integral is
+`∫₀^∞ (g(t) − g(t + h)) sin⁺(yt) dt`. -/
+theorem integral_Ioi_mul_sin_pos_of_strictAntiOn_Ioi {g : ℝ → ℝ}
+    (hanti : StrictAntiOn g (Ioi 0)) {y : ℝ} (hy : 0 < y)
+    (hint : IntegrableOn (fun t => g t * Real.sin (y * t)) (Ioi 0)) :
+    0 < ∫ t in Ioi 0, g t * Real.sin (y * t) := by
+  set h := Real.pi / y with hh
+  have hh0 : 0 < h := by positivity
+  have hyh : y * h = Real.pi := by rw [hh]; field_simp
+  have hsinm : Measurable fun t : ℝ => Real.sin (y * t) := by fun_prop
+  have hpos : MeasurableSet {t : ℝ | 0 < Real.sin (y * t)} :=
+    measurableSet_lt measurable_const hsinm
+  have hneg : MeasurableSet {t : ℝ | Real.sin (y * t) < 0} :=
+    measurableSet_lt hsinm measurable_const
+  -- the parts of the integrand on the positive and the negative lobes of the sine
+  have hP : IntegrableOn (fun t => g t * max (Real.sin (y * t)) 0) (Ioi 0) := by
+    have h1 := hint.indicator hpos
+    refine h1.congr_fun (fun t _ => ?_) measurableSet_Ioi
+    by_cases hs : 0 < Real.sin (y * t)
+    · rw [indicator_of_mem (by exact hs), max_eq_left hs.le]
+    · rw [indicator_of_notMem (by exact hs), max_eq_right (not_lt.mp hs), mul_zero]
+  have hN : IntegrableOn (fun t => g t * max (-Real.sin (y * t)) 0) (Ioi 0) := by
+    have h1 := hint.neg.indicator hneg
+    refine h1.congr_fun (fun t _ => ?_) measurableSet_Ioi
+    by_cases hs : Real.sin (y * t) < 0
+    · rw [indicator_of_mem (by exact hs), max_eq_left (by linarith)]
+      simp only [Pi.neg_apply]
+      ring
+    · rw [indicator_of_notMem (by exact hs), max_eq_right (by linarith [not_lt.mp hs]), mul_zero]
+  -- the negative part lives on `(h, ∞)` and is the shifted positive part
+  have hNzero : ∀ t ∈ Ioi (0 : ℝ) \ Ioi h, g t * max (-Real.sin (y * t)) 0 = 0 := by
+    intro t ht
+    have ht0 : 0 < t := ht.1
+    have hth : t ≤ h := not_lt.mp ht.2
+    have hs : 0 ≤ Real.sin (y * t) := Real.sin_nonneg_of_nonneg_of_le_pi (by positivity)
+      (by rw [← hyh]; exact mul_le_mul_of_nonneg_left hth hy.le)
+    rw [max_eq_right (by linarith), mul_zero]
+  have hpre : (fun t : ℝ => t + h) ⁻¹' Ioi h = Ioi 0 := by
+    ext t
+    simp
+  have hshiftfun : ∀ t : ℝ, g (t + h) * max (-Real.sin (y * (t + h))) 0 =
+      g (t + h) * max (Real.sin (y * t)) 0 := by
+    intro t
+    rw [show y * (t + h) = y * t + Real.pi by rw [mul_add, hyh], Real.sin_add_pi, neg_neg]
+  have hQ : IntegrableOn (fun t => g (t + h) * max (Real.sin (y * t)) 0) (Ioi 0) := by
+    have h1 := ((measurePreserving_add_right volume h).integrableOn_comp_preimage
+      (measurableEmbedding_addRight h)).2 (hN.mono_set (Ioi_subset_Ioi hh0.le))
+    rw [hpre] at h1
+    exact h1.congr_fun (fun t _ => hshiftfun t) measurableSet_Ioi
+  have hNQ : ∫ t in Ioi 0, g t * max (-Real.sin (y * t)) 0 =
+      ∫ t in Ioi 0, g (t + h) * max (Real.sin (y * t)) 0 := by
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
+      (Ioi_subset_Ioi hh0.le) hNzero,
+      ← (measurePreserving_add_right volume h).setIntegral_preimage_emb
+        (measurableEmbedding_addRight h) (fun t => g t * max (-Real.sin (y * t)) 0) (Ioi h), hpre]
+    exact setIntegral_congr_fun measurableSet_Ioi fun t _ => hshiftfun t
+  -- assemble
+  have hsplit : ∫ t in Ioi 0, g t * Real.sin (y * t) =
+      ∫ t in Ioi 0, (g t - g (t + h)) * max (Real.sin (y * t)) 0 := by
+    have e1 : ∀ t : ℝ, g t * Real.sin (y * t) =
+        g t * max (Real.sin (y * t)) 0 - g t * max (-Real.sin (y * t)) 0 := by
+      intro t
+      rcases le_total 0 (Real.sin (y * t)) with hs | hs
+      · rw [max_eq_left hs, max_eq_right (by linarith)]; ring
+      · rw [max_eq_right hs, max_eq_left (by linarith)]; ring
+    simp only [e1]
+    rw [integral_sub hP hN, hNQ, ← integral_sub hP hQ]
+    exact setIntegral_congr_fun measurableSet_Ioi fun t _ => by ring
+  rw [hsplit, setIntegral_pos_iff_support_of_nonneg_ae
+    ((ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun t ht => ?_))
+    ((hP.sub hQ).congr_fun (fun t _ => by simp only [Pi.sub_apply]; ring) measurableSet_Ioi)]
+  · refine lt_of_lt_of_le ?_ (measure_mono (?_ : Ioo 0 h ⊆ _))
+    · rw [Real.volume_Ioo, sub_zero]
+      exact ENNReal.ofReal_pos.2 hh0
+    · intro t ht
+      have hs : 0 < Real.sin (y * t) := Real.sin_pos_of_pos_of_lt_pi (mul_pos hy ht.1)
+        (by rw [← hyh]; exact mul_lt_mul_of_pos_left ht.2 hy)
+      have hg : g (t + h) < g t := hanti (mem_Ioi.2 ht.1) (mem_Ioi.2 (by linarith [ht.1]))
+        (by linarith)
+      refine ⟨?_, ht.1⟩
+      rw [Function.mem_support, max_eq_left hs.le]
+      exact (mul_pos (sub_pos.2 hg) hs).ne'
+  · have ht0 : 0 < t := ht
+    have hg : g (t + h) < g t := hanti (mem_Ioi.2 ht0) (mem_Ioi.2 (by linarith)) (by linarith)
+    exact mul_nonneg (sub_pos.2 hg).le (le_max_right _ _)
 
 end GaloisForLFunctions.HTGeometry

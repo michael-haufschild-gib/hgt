@@ -161,12 +161,10 @@ theorem classSum_eq {r s : ℕ} (hs : 1 ≤ s) (hr : r < s) (n T : ℕ) :
         * ∑ χ : DirichletCharacter ℂ q, χ ((a : ℕ) : ZMod q)⁻¹
           * twLiouville χ ((n + u) / g) := by
     intro u _
-    rw [div_eq_mul_inv, mul_sum, mul_sum, mul_sum]
-    refine sum_congr rfl fun χ _ => ?_
-    rw [twLiouville]
+    simp only [twLiouville, div_eq_mul_inv, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun χ _ => ?_
     ring
-  refine (Finset.sum_congr rfl e).trans ?_
-  rw [← mul_sum, sum_comm]
+  rw [Finset.sum_congr rfl e, ← Finset.mul_sum, Finset.sum_comm]
   congr 1
   refine sum_congr rfl fun χ _ => ?_
   rw [← mul_sum, sum_filter_dvd_eq_dilWin _ hg0]

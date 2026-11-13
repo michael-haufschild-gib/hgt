@@ -204,6 +204,12 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBoundStatesOfAWindowAreAtM
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnANarrowWindowThePotentialIsShallowAndTheCountOfBoundStatesIsOne
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoCoupledWindowsHoldAtMostTheBoundStatesOfTheProductModelWithLoweredPotentials
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTwoHalvesOfAWindowOfRatioFourDoNotGlueThroughAProductOfCharges
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheBindingOfTheTwoHalvesOfAWindowOfRatioFourHasRankProportionalToTheBlockSize
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeakenedOrTwistedContactsGiveASecondBoundStateOnWindowsOfRatioThreeAndFour
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OneBoundStateIsTheHodgeIndexInequalityOnPositivePacketsWithoutCommonBlocks
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoCoupledWindowsAreBracketedByLoweredAndRaisedPotentialsAndGluedThroughResponseMatrices
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnANarrowWindowThePotentialIsPositiveAndThereAreNoBoundStates
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHalvesOfAWindowOfRatioFourGlueThroughTheirChargesOnlyOnUnitBlocks
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerCombsHaveTheirAbelLimitAtTheBoundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerContactAbelIntegrability
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.HolomorphicContactSymbolsExcludeInteriorZeros
@@ -273,5 +279,15 @@ states of a window by the sinks of a positive trial vector, from its potential a
 couplings, with the closed form of the potential of a window without contacts and the count
 one on the narrow windows; and the gluing of two adjacent windows, whose union holds at most
 the bound states of the product model with potentials lowered by the excess of the couplings
-over the product of the charges. See `AbsoluteGeometryOfSpecZ/README.md`.
+over the product of the charges; and the forms with reweighted contacts, a tower under
+refinement on which weakened or twisted contacts give a second bound state on the windows of
+ratio three and four at every block size; and the count of bound states decided on the positive
+cone: a second bound state is two positive packets without a common block whose coupling is
+below the geometric mean of their depths, or a bound state that takes both signs; and the
+two-sided potential brackets and response-matrix inertia law for multi-charge gluing, positive
+potential and unbounded opposite-sign susceptibilities on narrow windows (`16J ≤ R`), and the
+dichotomy at ratio four: the halves `(R, 2R]` and `(2R, 4R]` glue through rank-one charges iff
+`R = 1`, while their raised model holds one bound state at every block size and rank-two charges
+glue `(2, 4]` and `(4, 8]`. See
+`AbsoluteGeometryOfSpecZ/README.md`.
 -/

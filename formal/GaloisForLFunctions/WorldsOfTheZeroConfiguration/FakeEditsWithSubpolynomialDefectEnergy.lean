@@ -622,13 +622,13 @@ def IsSubpolynomialDefectFake (e : ℕ → ℤ) (ρ₀ : ℂ) (β_c : ℝ) : Pro
       (∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
         ‖stripDefect G t‖ ≤ C * (1 + |t|) ^ (1 / 6 + ε))
 
-/-- **Theorem I.4(B).**  For `1/2 < β₀ < 3/2 - Θ` (`Θ = zetaZeroAbscissa`), `ζ(β₀ + iγ₀) ≠ 0` and
-`β₀ < β_c < 1`, the signed grouped edit with `α = (β₀ + β_c)/2` and `k₀ ≥ 1/(α - β₀)` is a fake with
-subpolynomial defect energy. -/
-theorem exists_subpolynomialDefectFake {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 < β₀)
+/-- The signed grouped edit with `α = (β₀ + β_c)/2` and any `k₀ ≥ 1/(α - β₀)` has all the conclusions
+of Theorem I.4(B). -/
+theorem isSubpolynomialDefectFake_sEdit {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 < β₀)
     (hβ₀Θ : β₀ < 3 / 2 - zetaZeroAbscissa) (hζ : riemannZeta (zeroPt β₀ γ₀) ≠ 0)
-    (hβc : β₀ < β_c) (hβc1 : β_c < 1) :
-    ∃ e : ℕ → ℤ, IsSubpolynomialDefectFake e (zeroPt β₀ γ₀) β_c := by
+    (hβc : β₀ < β_c) (hβc1 : β_c < 1) {k₀ : ℕ}
+    (hk₀ : 1 ≤ (k₀ : ℝ) * ((β₀ + β_c) / 2 - β₀)) :
+    IsSubpolynomialDefectFake (sEdit ((β₀ + β_c) / 2) β₀ γ₀ k₀) (zeroPt β₀ γ₀) β_c := by
   have hΘ := half_le_zetaZeroAbscissa
   have hΘ1 := zetaZeroAbscissa_le_one
   have hzf : ∀ z : ℂ, zetaZeroAbscissa < z.re → riemannZeta z ≠ 0 :=
@@ -639,16 +639,10 @@ theorem exists_subpolynomialDefectFake {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 
   set α : ℝ := (β₀ + β_c) / 2 with hαdef
   have hα0 : 0 < α := by rw [hαdef]; linarith
   have hα1 : α < 1 := by rw [hαdef]; linarith
-  have hαβ : 0 < α - β₀ := by rw [hαdef]; linarith
   have hαc : α < β_c := by rw [hαdef]; linarith
-  set k₀ : ℕ := ⌈1 / (α - β₀)⌉₊ with hk₀def
-  have hk₀ : 1 ≤ (k₀ : ℝ) * (α - β₀) := by
-    have := Nat.le_ceil (1 / (α - β₀))
-    rw [← hk₀def, div_le_iff₀ hαβ] at this
-    exact this
   have hfake := isIntegerNormFakeAt_editSystem_sEdit hα0 hα1 hβ₀ hβ1 γ₀ hk₀ hΘ hzf hΘβ hζ hαc hβc1
   obtain ⟨-, -, -, ⟨A, C, -, hC⟩, -⟩ := id hfake
-  refine ⟨sEdit α β₀ γ₀ k₀, isEdit_sEdit α β₀ γ₀ k₀, hfake,
+  refine ⟨isEdit_sEdit α β₀ γ₀ k₀, hfake,
     ⟨A, C, pos_density_of_integerNormFakeAt_lt_one hfake hβc1 hC, hC⟩, editG α β₀ γ₀ k₀,
     contAbscissa α β₀ zetaZeroAbscissa, contAbscissa_lt_half hα1 hβ1 hΘβ,
     differentiableOn_editG hα0 hα1 hβ1 γ₀ hk₀ hΘ hzf, fun s hs => editG_eq hβ1 γ₀ k₀ hs,
@@ -665,6 +659,38 @@ theorem exists_subpolynomialDefectFake {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 
   calc (2 * T)⁻¹ * ∫ t in (-T)..T, ‖stripDefect (editG α β₀ γ₀ k₀) t‖ ^ 2
       ≤ (2 * T)⁻¹ * (C' * T ^ (1 + ε)) := by gcongr; exact hL T hT
     _ = C' / 2 * T ^ ε := by rw [hTp]; field_simp
+
+/-- **Theorem I.4(B), with the edit beyond any prescribed bound.**  For `1/2 < β₀ < 3/2 - Θ`
+(`Θ = zetaZeroAbscissa`), `ζ(β₀ + iγ₀) ≠ 0`, `β₀ < β_c < 1` and every `P`, there is a fake edit with
+subpolynomial defect energy that edits no prime `≤ P`. -/
+theorem exists_subpolynomialDefectFake_beyond {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 < β₀)
+    (hβ₀Θ : β₀ < 3 / 2 - zetaZeroAbscissa) (hζ : riemannZeta (zeroPt β₀ γ₀) ≠ 0)
+    (hβc : β₀ < β_c) (hβc1 : β_c < 1) (P : ℕ) :
+    ∃ e : ℕ → ℤ, IsSubpolynomialDefectFake e (zeroPt β₀ γ₀) β_c ∧ ∀ n, e n ≠ 0 → P < n := by
+  have hαβ : 0 < (β₀ + β_c) / 2 - β₀ := by linarith
+  set k₀ : ℕ := max ⌈1 / ((β₀ + β_c) / 2 - β₀)⌉₊ P with hk₀def
+  have hk₀ : 1 ≤ (k₀ : ℝ) * ((β₀ + β_c) / 2 - β₀) := by
+    have h1 := Nat.le_ceil (1 / ((β₀ + β_c) / 2 - β₀))
+    have h2 : ((⌈1 / ((β₀ + β_c) / 2 - β₀)⌉₊ : ℕ) : ℝ) ≤ k₀ := by
+      exact_mod_cast le_max_left _ _
+    rw [div_le_iff₀ hαβ] at h1
+    nlinarith
+  refine ⟨_, isSubpolynomialDefectFake_sEdit hβ₀ hβ₀Θ hζ hβc hβc1 hk₀, fun n hn => ?_⟩
+  by_contra hle
+  push Not at hle
+  have hlt : n < 2 ^ k₀ := lt_of_le_of_lt hle (lt_of_le_of_lt (le_max_right _ _)
+    (Nat.lt_two_pow_self))
+  by_cases hp : n.Prime
+  · exact hn (sEdit_eq_zero_of_lt γ₀ hlt)
+  · exact hn ((isEdit_sEdit _ _ _ _).prime n hp)
+
+/-- **Theorem I.4(B).** -/
+theorem exists_subpolynomialDefectFake {β₀ γ₀ β_c : ℝ} (hβ₀ : 1 / 2 < β₀)
+    (hβ₀Θ : β₀ < 3 / 2 - zetaZeroAbscissa) (hζ : riemannZeta (zeroPt β₀ γ₀) ≠ 0)
+    (hβc : β₀ < β_c) (hβc1 : β_c < 1) :
+    ∃ e : ℕ → ℤ, IsSubpolynomialDefectFake e (zeroPt β₀ γ₀) β_c :=
+  let ⟨e, he, _⟩ := exists_subpolynomialDefectFake_beyond hβ₀ hβ₀Θ hζ hβc hβc1 0
+  ⟨e, he⟩
 
 /-- **Theorem I.4 (the frontier dichotomy).**  Unconditionally, either `Θ = 1` and the asymptotic
 abscissa law holds, or `Θ < 1` and every admissible `(ρ₀, β_c)` carries a fake edit with

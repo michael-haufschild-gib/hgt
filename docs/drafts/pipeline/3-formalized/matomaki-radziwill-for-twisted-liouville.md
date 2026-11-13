@@ -15,11 +15,11 @@ Folder: `formal/GaloisForLFunctions/MatomakiRadziwill/` (top level, umbrella `Ma
 |---|---|---|
 | V | Vinogradov–Korobov zero-free region for `L(s,χ)` | **Lean** (`LFunction_ne_zero_vinogradovKorobov`) |
 | RT | Route T for `χ`: `Σ_{p∈B} χ(p)p^{-it}` small for high blocks `B`, `\|t\| ≤ X` | **Lean** (`exists_twistedChebyshev_le`, `exists_primeBlock_le`) |
-| D | low frequencies for `λ`: `sup_{\|τ\|≤(log X)^{17}} \|Σ_{X<n≤4X} λ(n)n^{-1-iτ}\| ≪ e^{-c(log X)^{1/20}}` | open |
+| D | low frequencies for `λ`: `sup_{\|τ\|≤(log X)^{19}} \|Σ_{X<n≤4X} λ(n)n^{-1-iτ}\| ≪ e^{-c(log X)^{1/20}}` | **Lean** (`exists_lowFreq_bound`) |
 | L | the ladder: Ramaré, mean value, large values, Halász–Montgomery, rough class | **Lean** for `χ ≠ 1` (`exists_mean_square_twLiouville_le`) |
 | P | Parseval: additive short windows from the Dirichlet-polynomial mean square | **Lean** for `χ ≠ 1` (`exists_short_sum_mean_square_twLiouville_le`) |
-| Λ | MR for `λ`: ζ Route T above `(log X)^{17}`, step D below, ladder on the high frequencies | open |
-| A | transfer to `V(b/s,T)` (A21 card §7) | open |
+| Λ | MR for `λ`: ζ Route T above `(log X)^{19}`, step D below, ladder on the high frequencies | **Lean** (`exists_short_sum_mean_square_liouville_le`) |
+| A | transfer to `V(b/s,T)` (A21 card §7) | **Lean** (`LogarithmicChowla.tendsto_twistVar_zero`) |
 
 ### V. Zero-free region for `L(s,χ)`
 
@@ -114,7 +114,7 @@ Statement: for every `ε > 0` there is `L₀` such that for `L ≥ L₀` there i
 `∫_{|w|≤W} |F(w)|² ≤ ε`, `F(w) = Σ_{X<n≤4X} λ(n)/n · n^{2πiw}`, for `X ≥ X₀`, `W ≤ X e^{-L/2}`.
 `λ = λχ₁` for the character `χ₁` mod 1, so the ladder (`ladder_master`, the concrete scales,
 `LadderNumerics*`) applies verbatim; only the top scale changes, because `Σ_p p^{-1-iτ}` has the
-pole of `ζ` at `τ = 0`. Split the frequencies at `T₁ = (log X)^{17}` (in `τ = 2πw`).
+pole of `ζ` at `τ = 0`. Split the frequencies at `T₁ = (log X)^{19}` (in `τ = 2πw`).
 
 1. **Low frequencies (step D).** `λ = Σ_{d²|n} μ(n/d²)`, so
    `Σ_{n≤N} λ(n)n^{-iτ} = Σ_{d≤√N} d^{-2iτ} M(N/d², τ)`, `M(y, τ) = Σ_{m≤y} μ(m)m^{-iτ}`. The corpus
@@ -127,11 +127,12 @@ pole of `ζ` at `τ = 0`. Split the frequencies at `T₁ = (log X)^{17}` (in `τ
    (`Sieve.exists_norm_partialSum_vonMangoldtTwist_routeT_le`): for `|τ| ≥ τ₀`, `e⁹ ≤ K`, `0 < H ≤ K`,
    `|Σ_{n≤K} Λ(n)n^{-iτ}| ≤ C K (K/H)² [(log K)²/|τ| + (1/|τ| + log(3|τ|/2)/w(3|τ|/2+1))((3K)^{-w'} + |τ|^{-2})]
    + H log(K+H)`, with zero-free width `w(γ) ≥ c (log γ)^{-9/10}(log log γ)^{-2}`
-   (`Sieve.routeTZeroFreeDelta_polylog_lower`) and `w' = min(δ, w)/2`. Take `H = K/(log X)^5`,
-   `T₁ ≤ |τ| ≤ X`, `log K ≥ (log X)^{0.93}`: the terms are `≤ K(log X)^{12}/T₁`,
-   `K(log X)^{14} e^{-c(log X)^{0.03}(log log X)^{-2}}`, `K(log X)^{14}/T₁²` and `2K(log X)^{-4}`, so
-   `|Σ_{n≤K} Λ(n)n^{-iτ}| ≤ K/(log X)^3` for large `X`. Abel against `1/(n log n)`
-   (`norm_sum_primeBlock_le` with `χ₁`): top blocks `‖Q_v(w)‖ ≤ (log X)^{-3}` for `T₁ ≤ 2π|w| ≤ X`.
+   (`Sieve.routeTZeroFreeDelta_polylog_lower`) and `w' = min(δ, w)/2`. Take `H = K/(log X)^6`,
+   `T₁ ≤ |τ| ≤ X`, `log K ≥ (log X)^{0.92}`: the terms are `≤ K(log X)^{14}/T₁`,
+   `K(log X)^{16} e^{-c(log X)^{0.02}(log log X)^{-2}}`, `K(log X)^{16}/T₁²` and `2K(log X)^{-5}`, so
+   `|Σ_{n≤K} Λ(n)n^{-iτ}| ≤ K/(log X)^4` for large `X`. Abel against `1/(n log n)`
+   (`norm_sum_primeBlock_le` with `χ₁`): top blocks `‖Q_v(w)‖ ≤ (log X)^{-3}` for `T₁ ≤ 2π|w| ≤ X`
+   (`log P ≥ (log X)^{0.92}`, from `log ⌊e^{(log X)^{0.93}}⌋ ≥ (log X)^{0.93} − 1`).
 3. **Ladder off the low frequencies.** On `A = [−W, W] ∖ (−T₁/2π, T₁/2π)` the cover, Ramaré, the
    first and moment steps are integrals of nonnegative functions over `A ⊆ [−W, W]`, bounded by the same
    integrals over `[−W, W]`; the exceptional set needs the pointwise bound only on `A ∩ E`, and
@@ -198,9 +199,13 @@ Multiplicative windows `g(x) = Σ_{x<n≤(1+δ)x} b_n`, `δ = h/X`: Mellin–Pla
 | `LadderMeanSquare` | `L`-part `O(1/log L)`, `X`-part `O(1/log log X)`; **`exists_mean_square_twLiouville_le`**: `∫_{\|w\|≤W}\|Σ_{X<n≤4X} λχ(n)/n·n^{2πiw}\|² ≤ ε` for `L ≥ L₀`, `X ≥ X₀(L)`, `W ≤ Xe^{-L/2}`, `χ ≠ 1` (axioms: propext, choice, Quot.sound) | compiled |
 | `ParsevalWindows` | dyadic shells: `∫_{\|w\|>W}\|K_δ\|²\|P\|² ≤ E(4/W + M/W²)`; `∫_ℝ\|window\|² ≤ δ²∫_{\|w\|≤W}\|P\|² + E(4/W + M/W²)`; raw windows `≤ 32X²·(f(n)/n windows) + 2((4X(e^δ−1)+1)δ)²(log 4 + δ)` | compiled |
 | `ParsevalMeanSquare` | windows `log(1+h/Y)` `≤ 32h²ε' + 768h + 6`; **`exists_short_sum_mean_square_twLiouville_le`**: `Σ_{X≤m<2X}\|Σ_{m<n≤m+h} λχ(n)\|² ≤ εh²X` for `h ≥ h₀`, `X ≥ X₀(h)`, `χ ≠ 1` (corpus `Sieve.sum_normSq_window_le_bound`, `N` blocks of ratio `1+1/N`; axioms: propext, choice, Quot.sound) | compiled |
+| `ZetaRouteT` | `Λ(n)n^{-iτ}` sums `≤ K/(log X)^4` for `(log X)^{19} ≤ \|τ\| ≤ X`, `log K ≥ (log X)^{0.92}` (corpus contour bound, zero-free width `≥ c(log γ)^{-0.9}(log log γ)^{-2}`); ζ prime blocks; top blocks of `λ` `≤ (log X)^{-3}` | compiled |
+| `LadderMasterOn` | master inequality integrated over any measurable `A ⊆ [−W, W]`, top-scale bound needed on `A` only | compiled |
+| `LiouvilleLowFrequency` | `λ = μ * 1_□`; `\|Σ_{n≤N} λ(n)n^{-iτ}\| ≤ 2KNe^{-((log N)/4)^{1/20}} + 4N^{3/4}` for `2\|τ\| ≤ √N` (corpus twisted Mertens) | compiled |
+| `LiouvilleMeanSquare` | summation by parts, low-frequency limit; ladder on `[−W,W] ∖ (−T,T)`; **`exists_mean_square_liouville_le`** | compiled |
+| `LiouvilleShortSums` | **`exists_short_sum_mean_square_liouville_le`**: `Σ_{X≤m<2X}\|Σ_{m<n≤m+h} λ(n)\|² ≤ εh²X` (axioms: propext, choice, Quot.sound) | compiled |
 
-Remaining for (MR) for `λχ`: principal characters (no paper proof yet: step D and the ζ Route T scale
-with the pole), transfer (A) to `V(b/s, T)` (A21 card §7).
+All phases are in Lean; the transfer (A) is on the A21 card.
 
 Corpus inputs for the ladder: MVT over index families `Sieve.integral_normSq_sum_unitLogPhase_le`;
 coincidence count `Sieve.sum_card_coincidences_le`; set-integral Halász–Montgomery

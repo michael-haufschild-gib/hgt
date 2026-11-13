@@ -24,6 +24,8 @@ negative index from below (`hermNegIndex_glued_le_coupled`).
   `hermNegIndex (gluedMatrix A B U V) + hermNegIndex 𝒜 = hermNegIndex A + hermNegIndex B + hermNegIndex (𝒜⁻¹ − ℬ)`.
 -/
 
+attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
+
 open Finset Matrix
 open GaloisForLFunctions.HTGeometry
 
@@ -444,8 +446,6 @@ end SignAndMaximum
 
 section MultiCharge
 
-local attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
-
 variable {ι₁ ι₂ ρ : Type*} [Fintype ι₁] [Fintype ι₂] [Fintype ρ]
   [DecidableEq ι₁] [DecidableEq ι₂] [DecidableEq ρ]
 
@@ -503,6 +503,7 @@ theorem bilin_gluedMatrix_le_coupled (A : Matrix ι₁ ι₁ ℝ) (B : Matrix ι
   rw [gluedMatrix, bilin_coupled, bilin_coupled, bilin_sub_diagonal, bilin_sub_diagonal, h1, h2]
   linarith
 
+omit [DecidableEq ρ] in
 /-- **Multi-charge upper bound on the negative index.** -/
 theorem hermNegIndex_coupled_le_gluedMatrix (A : Matrix ι₁ ι₁ ℝ) (B : Matrix ι₂ ι₂ ℝ)
     (K : ι₁ → ι₂ → ℝ) (U : Matrix ι₁ ρ ℝ) (V : Matrix ι₂ ρ ℝ)
@@ -548,6 +549,7 @@ theorem bilin_coupled_le_gluedMatrix_raised (A : Matrix ι₁ ι₁ ℝ) (B : Ma
   rw [gluedMatrix, bilin_coupled, bilin_coupled, bilin_add_diagonal, bilin_add_diagonal, h1, h2]
   linarith
 
+omit [DecidableEq ρ] in
 /-- **Multi-charge lower bound on the negative index.** -/
 theorem hermNegIndex_gluedMatrix_le_coupled (A : Matrix ι₁ ι₁ ℝ) (B : Matrix ι₂ ι₂ ℝ)
     (K : ι₁ → ι₂ → ℝ) (U : Matrix ι₁ ρ ℝ) (V : Matrix ι₂ ρ ℝ)
@@ -607,13 +609,14 @@ theorem map_ofReal_nonsing_inv {ι : Type*} [Fintype ι] [DecidableEq ι]
       simp [Matrix.mul_apply]
     rw [hm, Matrix.mul_nonsing_inv M hdetR]
     ext i j
-    by_cases hij : i = j <;> simp [hij]
+    by_cases hij : i = j <;> simp [hij, Matrix.one_apply]
   calc ((M⁻¹).map (↑) : Matrix ι ι ℂ)
       = (M.map (↑) : Matrix ι ι ℂ)⁻¹ *
           ((M.map (↑) : Matrix ι ι ℂ) * ((M⁻¹).map (↑) : Matrix ι ι ℂ)) := by
         rw [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hdetC, Matrix.one_mul]
     _ = (M.map (↑) : Matrix ι ι ℂ)⁻¹ := by rw [hmul, Matrix.mul_one]
 
+omit [DecidableEq ρ] in
 /-- **Schur-complement inertia of `gluedMatrix`.** For invertible `A`, gluing through `U Vᵀ`
 reduces to `A` and the perturbed second window `B − V (Uᵀ A⁻¹ U) Vᵀ`. -/
 theorem hermNegIndex_gluedMatrix_schur {A : Matrix ι₁ ι₁ ℝ} {B : Matrix ι₂ ι₂ ℝ}
@@ -623,29 +626,24 @@ theorem hermNegIndex_gluedMatrix_schur {A : Matrix ι₁ ι₁ ℝ} {B : Matrix 
       hermNegIndex (A.map (↑) : Matrix ι₁ ι₁ ℂ) +
         hermNegIndex ((B - V * responseMatrix A U * Vᵀ).map (↑) : Matrix ι₂ ι₂ ℂ) := by
   let C12 : Matrix ι₁ ι₂ ℂ := (-(U * Vᵀ)).map (↑)
-  have hC12h : C12ᴴ = (-(V * Uᵀ)).map (↑) := by
+  have hC12h : (C12ᴴ : Matrix ι₂ ι₁ ℂ) = (-(V * Uᵀ)).map (↑) := by
     ext j i
     simp [C12, Matrix.mul_apply, mul_comm]
   have hblocks : ((gluedMatrix A B U V).map (↑) : Matrix (ι₁ ⊕ ι₂) (ι₁ ⊕ ι₂) ℂ) =
       fromBlocks (A.map (↑)) C12 C12ᴴ (B.map (↑)) := by
     rw [hC12h]
     ext (i | i) (j | j) <;> simp [gluedMatrix, coupled, C12, Matrix.mul_apply, mul_comm]
-  have hschur : (B.map (↑) : Matrix ι₂ ι₂ ℂ) - C12ᴴ * (A.map (↑))⁻¹ * C12 =
-      (B - V * responseMatrix A U * Vᵀ).map (↑) := by
-    rw [hC12h, ← map_ofReal_nonsing_inv hAu]
-    have hm : ∀ {α β γ : Type*} [Fintype β] (X : Matrix α β ℝ) (Y : Matrix β γ ℝ),
-        (X.map (↑) : Matrix α β ℂ) * (Y.map (↑) : Matrix β γ ℂ) = (X * Y).map (↑) := by
-      intro α β γ _ X Y
-      ext a c
-      simp [Matrix.mul_apply]
-    change (B.map (↑) : Matrix ι₂ ι₂ ℂ) -
-        ((-(V * Uᵀ)).map (↑) * (A⁻¹).map (↑)) * (-(U * Vᵀ)).map (↑) = _
-    rw [hm, hm, show (B.map (↑) : Matrix ι₂ ι₂ ℂ) - ((-(V * Uᵀ) * A⁻¹ * -(U * Vᵀ)).map (↑)) =
-      (B - (-(V * Uᵀ) * A⁻¹ * -(U * Vᵀ))).map (↑) by ext; simp]
-    congr 2
-    simp only [responseMatrix, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.mul_assoc]
   rw [hblocks, haynsworth_negIndex (isUnit_map_ofReal hAu) (isHermitian_map_ofReal hA) C12
-    (isHermitian_map_ofReal hB), hschur]
+    (isHermitian_map_ofReal hB)]
+  congr 2
+  rw [hC12h, ← map_ofReal_nonsing_inv hAu]
+  trans ((B - (-(V * Uᵀ) * A⁻¹ * -(U * Vᵀ))).map (↑) : Matrix ι₂ ι₂ ℂ)
+  · ext j m
+    simp only [C12, Matrix.sub_apply, Matrix.map_apply, Matrix.mul_apply,
+      Complex.ofReal_sub, Complex.ofReal_sum, Complex.ofReal_mul]
+  · have heqM : -(V * Uᵀ) * A⁻¹ * -(U * Vᵀ) = V * responseMatrix A U * Vᵀ := by
+      simp only [responseMatrix, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.mul_assoc]
+    rw [heqM]
 
 /-- **Multi-charge response-matrix gluing law.** When `A`, `B`, and the left response matrix
 `𝒜 = Uᵀ A⁻¹ U` are invertible,
@@ -660,39 +658,46 @@ theorem hermNegIndex_gluedMatrix_response {A : Matrix ι₁ ι₁ ℝ} {B : Matr
       hermNegIndex (A.map (↑) : Matrix ι₁ ι₁ ℂ) +
         hermNegIndex (B.map (↑) : Matrix ι₂ ι₂ ℂ) +
         hermNegIndex (((responseMatrix A U)⁻¹ - responseMatrix B V).map (↑) : Matrix ρ ρ ℂ) := by
-  set R₁ : Matrix ρ ρ ℝ := responseMatrix A U
-  set R₂ : Matrix ρ ρ ℝ := responseMatrix B V
-  have hR₁s : ∀ k l, R₁ k l = R₁ l k := responseMatrix_symm hA U
-  have hR₁inv_s : ∀ k l, (R₁⁻¹) k l = (R₁⁻¹) l k := by
-    have hRt : R₁ᵀ = R₁ := Matrix.ext fun k l => hR₁s l k
-    have hinv : (R₁⁻¹)ᵀ = R₁⁻¹ := by rw [Matrix.transpose_nonsing_inv, hRt]
+  have hR₁s : ∀ k l, responseMatrix A U k l = responseMatrix A U l k := responseMatrix_symm hA U
+  have hR₁inv_s : ∀ k l, ((responseMatrix A U)⁻¹) k l = ((responseMatrix A U)⁻¹) l k := by
+    have hRt : (responseMatrix A U)ᵀ = responseMatrix A U := Matrix.ext fun k l => hR₁s l k
+    have hinv : ((responseMatrix A U)⁻¹)ᵀ = (responseMatrix A U)⁻¹ := by
+      rw [Matrix.transpose_nonsing_inv, hRt]
     exact fun k l => congrFun (congrFun hinv l) k
-  have hdetR : IsUnit R₁.det := (Matrix.isUnit_iff_isUnit_det R₁).mp hRu
-  have hR₁inv_u : IsUnit R₁⁻¹ :=
-    ⟨⟨R₁⁻¹, R₁, Matrix.nonsing_inv_mul R₁ hdetR, Matrix.mul_nonsing_inv R₁ hdetR⟩, rfl⟩
-  -- compare `gluedMatrix R₁⁻¹ B (-I) V` in both block orders
+  have hdetR : IsUnit (responseMatrix A U).det :=
+    (Matrix.isUnit_iff_isUnit_det (responseMatrix A U)).mp hRu
+  have hR₁inv_u : IsUnit (responseMatrix A U)⁻¹ :=
+    ⟨⟨(responseMatrix A U)⁻¹, responseMatrix A U,
+      Matrix.nonsing_inv_mul (responseMatrix A U) hdetR,
+      Matrix.mul_nonsing_inv (responseMatrix A U) hdetR⟩, rfl⟩
   let Iρ : Matrix ρ ρ ℝ := 1
   have hleft := hermNegIndex_gluedMatrix_schur hR₁inv_s hB hR₁inv_u (-Iρ) V
-  have hrespI : V * responseMatrix R₁⁻¹ (-Iρ) * Vᵀ = V * R₁ * Vᵀ := by
-    have hinv2 : (R₁⁻¹)⁻¹ = R₁ := Matrix.nonsing_inv_nonsing_inv R₁ hdetR
-    simp [responseMatrix, Iρ, hinv2]
-  rw [hrespI, map_ofReal_nonsing_inv (M := R₁) hRu,
-    hermNegIndex_nonsing_inv (isUnit_map_ofReal (M := R₁) hRu) (isHermitian_map_ofReal hR₁s)]
+  have hrespI : V * responseMatrix (responseMatrix A U)⁻¹ (-Iρ) * Vᵀ =
+      V * responseMatrix A U * Vᵀ := by
+    have hinv2 : ((responseMatrix A U)⁻¹)⁻¹ = responseMatrix A U :=
+      Matrix.nonsing_inv_nonsing_inv (responseMatrix A U) hdetR
+    have hr : responseMatrix (responseMatrix A U)⁻¹ (-Iρ) = ((responseMatrix A U)⁻¹)⁻¹ := by
+      simp [responseMatrix, Iρ]
+    rw [hr, hinv2]
+  rw [hrespI, map_ofReal_nonsing_inv (M := responseMatrix A U) hRu,
+    hermNegIndex_nonsing_inv (isUnit_map_ofReal (M := responseMatrix A U) hRu)
+      (isHermitian_map_ofReal hR₁s)]
     at hleft
-  -- swap the two blocks via `Equiv.sumComm`
-  have hswap : ((gluedMatrix B R₁⁻¹ V (-Iρ)).map (↑) : Matrix (ι₂ ⊕ ρ) (ι₂ ⊕ ρ) ℂ).submatrix
+  have hswap : ((gluedMatrix B (responseMatrix A U)⁻¹ V (-Iρ)).map (↑) :
+      Matrix (ι₂ ⊕ ρ) (ι₂ ⊕ ρ) ℂ).submatrix
       (Equiv.sumComm ρ ι₂) (Equiv.sumComm ρ ι₂) =
-        ((gluedMatrix R₁⁻¹ B (-Iρ) V).map (↑) : Matrix (ρ ⊕ ι₂) (ρ ⊕ ι₂) ℂ) := by
+        ((gluedMatrix (responseMatrix A U)⁻¹ B (-Iρ) V).map (↑) : Matrix (ρ ⊕ ι₂) (ρ ⊕ ι₂) ℂ) := by
     ext (k | j) (l | m) <;> simp [gluedMatrix, coupled, mul_comm]
   have hright := hermNegIndex_gluedMatrix_schur hB hR₁inv_s hBu V (-Iρ)
-  have hrespB : (-Iρ) * responseMatrix B V * (-Iρ)ᵀ = R₂ := by
-    simp [Iρ, R₂]
+  have hrespB : (-Iρ) * responseMatrix B V * (-Iρ)ᵀ = responseMatrix B V := by
+    simp [Iρ]
   rw [hrespB] at hright
-  have heq : hermNegIndex ((gluedMatrix R₁⁻¹ B (-Iρ) V).map (↑) : Matrix (ρ ⊕ ι₂) (ρ ⊕ ι₂) ℂ) =
-      hermNegIndex ((gluedMatrix B R₁⁻¹ V (-Iρ)).map (↑) : Matrix (ι₂ ⊕ ρ) (ι₂ ⊕ ρ) ℂ) := by
+  have heq : hermNegIndex ((gluedMatrix (responseMatrix A U)⁻¹ B (-Iρ) V).map (↑) :
+      Matrix (ρ ⊕ ι₂) (ρ ⊕ ι₂) ℂ) =
+      hermNegIndex ((gluedMatrix B (responseMatrix A U)⁻¹ V (-Iρ)).map (↑) :
+        Matrix (ι₂ ⊕ ρ) (ι₂ ⊕ ρ) ℂ) := by
     rw [← hswap, hermNegIndex_submatrix_equiv]
   have hmain := hermNegIndex_gluedMatrix_schur hA hB hAu U V
-  dsimp only [R₁, R₂] at hleft hright heq
   omega
 
 end MultiCharge

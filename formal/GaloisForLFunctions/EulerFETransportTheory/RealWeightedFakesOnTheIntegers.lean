@@ -139,8 +139,7 @@ theorem coeffDirichlet_signedCoeff (γ₀ : ℝ) (s : ℂ) :
   set ρ := signedZero γ₀
   have h2 : (2 : ℂ) ≠ 0 := two_ne_zero
   rw [coeffDirichlet, tsum_eq_sum (s := {0, 1, 3}) fun n hn => ?_]
-  · simp only [Finset.mem_insert, Finset.mem_singleton, Finset.sum_insert, Finset.sum_singleton,
-      signedCoeff]
+  · simp only [signedCoeff]
     norm_num
     have h4 : (4 : ℂ) ^ s = (2 : ℂ) ^ s * (2 : ℂ) ^ s := by
       rw [← Complex.cpow_add _ _ h2, Complex.cpow_def_of_ne_zero (by norm_num : (4 : ℂ) ≠ 0),
