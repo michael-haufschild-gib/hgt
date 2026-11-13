@@ -80,7 +80,13 @@ literal finite-energy domain and retain their energy.
 `SoftLogarithmicNegativePartContinuity` is also audited and integrated with
 those axioms: bounded physical first moments make negative logarithmic
 Fourier energy continuous along strong limits of normalized trials.
-Joint signed-energy closure and cutoff recovery remain unverified, as does
-attainment.
+`SoftLogarithmicClosedLimit` also passes its final plain source audit with
+those axioms and is integrated. Joint Fatou and negative-part continuity
+give a unit finite-energy limit with `Q≤μ`
+(`exists_closedSoftLogarithmic_unit_below_floor`). Cutoff recovery and the
+reverse variational inequality remain unverified, as does attainment.
+`HTGeometry/HardyBoundary/LogarithmicWeightComparison` is audited and
+integrated with the standard three axioms: positive logarithmic energy
+and reference jump energy have the same domain on `L²`.
 Uniqueness and sign rigidity are separate open statements in
 [the profile card](../1-in-progress/soft-logarithmic-profile-compactness-and-sign.md).

@@ -29,6 +29,10 @@ A precise alternative target is local integrability of `|ζ(1/2+it)|^(−p(T))` 
 
 The exact arithmetic receiver criterion is `TransHorizonIncidenceMechanics.receiverBounded_logPowerCosine_iff_all`: the weight `d^(−1/2) cos(γ log d)(log d)^k` has bounded energy precisely when all zeta jets through `k` vanish. Its centered prefix is `A_c(n)=−Σ_{d≤n}c(d){n/d}−nΣ_{d>n}c(d)/d`, and its energy is `Σ A_c(n)²/[n(n+1)]`. Polynomial localization at one finite arithmetic scale supplies only finite energy; every finitely supported weight already has bounded receiver. A contradiction requires a quantitative lower bound across growing scales, with the polynomial normalization and its bounded-energy constant controlled. That lower bound remains unproved.
 
+## Positive strip test
+
+The corpus theorem `riemannZeta_zero_mem_quasiRH_strip` places nontrivial zeros in `[1/8,7/8]`. A new candidate improvement is `m(1/2+iγ) ≤ (3/(8π)+ε)log|γ|`, through `K_a(z)=sech(πz/(2a))`, `a>3/8`. Its real part is positive on `|Im z|<a`, and its real integral is `2a`. The sharper candidate weights each zero on the horizontal fibre by `sec(π(Reρ−1/2)/(2a))`. The fixed-line sublogarithmic logarithmic derivative and the weighted contour identity still require formalization; see `zeta-sech-strip-multiplicity.md`. This does not close the sublogarithmic target.
+
 ## Gates
 
 - [x] Exact target and existing bounds identified.

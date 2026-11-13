@@ -25,8 +25,8 @@ Fourier energy: split `L=L₊-L₋` and use `L₋≤16+4M` against the potential
 decomposition, coercivity, and bounds on both nonnegative parts of every
 unit Rayleigh sublevel. Its final plain source audit passes without warnings
 and with exactly the standard three axioms; it is wired.
-The closed-domain passage remains open; the
-unitary `L²` limit must allow profiles outside `L¹`.
+The closed-domain limit allows profiles outside `L¹`; compact trial
+recovery remains open.
 The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integrable real-valued version is `MeasureTheory.Integrable.integral_eq_integral_meas_lt`. Apply it to the measure with Fourier square density.
 
 `HTGeometry/HardyBoundary/ExponentialDistributionTails` verifies the general
@@ -80,10 +80,13 @@ the module is integrated. `WeightedL2MomentContinuity` also passes its final
 plain source audit with those axioms and is integrated. It proves
 continuity for bounded weights, passage through uniform weighted tails,
 and moment convergence from vanishing weighted error. Applying these
-lemmas to the joint signed energy and proving recovery remain open.
+lemmas to the joint signed energy is now verified; recovery remains open.
 `SoftLogarithmicNegativePartContinuity` is now audited and integrated with
 the standard three axioms: bounded physical first moments give convergence
 of the negative Fourier logarithmic energy along strong limits of unit trials.
+`SoftLogarithmicClosedLimit` is audited and integrated with those axioms:
+joint Fatou gives a unit finite-energy limit with `Q≤μ`. The reverse
+inequality still needs compact trial recovery.
 
 `SoftLogarithmicClosedDomain` is audited and integrated with the standard
 three axioms. It defines the literal finite-energy half-line domain in
@@ -95,8 +98,8 @@ The negative-logarithmic estimate has a homogeneous, adjustable form.
 Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff
 `H=c exp(t/2)`, with `c>0`, to obtain the candidate bound
 `L₋(f)≤16cm+4M/c`. Thus the negative logarithmic part should have arbitrarily
-small relative bound against the physical first moment. These bounds and
-the limiting-domain passage remain unformalized.
+small relative bound against the physical first moment. These adjustable
+bounds remain unformalized.
 
 `CriticalArithmeticCorrelationTheory.isCompact_closure_of_uniform_physical_and_fourier_tails` already supplies compactness from the two tails, without compact support. Its compact cutoff approximation uses `f-PQf=(f-Pf)+P(f-Qf)` and contractivity of the physical cutoff.
 

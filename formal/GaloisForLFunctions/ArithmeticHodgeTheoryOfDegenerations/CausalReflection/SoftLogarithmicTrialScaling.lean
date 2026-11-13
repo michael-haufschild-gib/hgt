@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ConfiningFixedTrialLimit
+import GaloisForLFunctions.HTGeometry.L2ConvolutionFourierMultiplier
 
 /-!
 # Real scaling of soft logarithmic trials
@@ -19,10 +20,11 @@ open HTGeometry CriticalArithmeticCorrelationTheory ArithmeticCastelnuovoSeveri
 
 private theorem fourier_cx_const_mul (c : ℝ) (F : ℝ → ℝ) (ξ : ℝ) :
     𝓕 (cx (fun u => c * F u)) ξ = (c : ℂ) * 𝓕 (cx F) ξ := by
-  have he : cx (fun u => c * F u) = (c : ℂ) • cx F := by
+  have he : cx (fun u => c * F u) = fun u => (c : ℂ) * cx F u := by
     funext u
-    simp only [cx, Pi.smul_apply, smul_eq_mul, Complex.ofReal_mul]
-  rw [he, FourierTransform.fourier_smul, Pi.smul_apply, smul_eq_mul]
+    exact Complex.ofReal_mul c (F u)
+  rw [he]
+  exact HTGeometry.fourier_const_mul_apply (c : ℂ) (cx F) ξ
 
 /-- The trial domain is stable under real scalar multiplication. -/
 theorem SoftLogarithmicHalfLineDomain.const_mul {F : ℝ → ℝ}

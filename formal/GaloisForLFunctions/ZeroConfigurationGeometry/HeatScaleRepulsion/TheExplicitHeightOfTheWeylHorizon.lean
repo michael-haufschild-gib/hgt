@@ -136,7 +136,7 @@ theorem norm_riemannZeta_le_subconvex_explicit {η : ℝ} (hη : 0 < η) (hη2 :
   have he14 := Real.exp_pos (1 / 4)
   refine max_le ?_ (max_le (le_of_eq (by ring)) ?_)
   · -- the segment
-    have : (362 : ℝ) ≤ 16800 / η := by rw [div_eq_mul_one_div]; linarith
+    have : (362 : ℝ) ≤ 16800 / η := by rw [div_eq_mul_one_div (16800 : ℝ) η]; linarith
     exact mul_le_mul_of_nonneg_right this he14.le
   · -- the right edge: `4(1 + 1/η)e^{9/4} ≤ 72 e^{1/4}/η`
     have he : Real.exp (9 / 4) = Real.exp 2 * Real.exp (1 / 4) := by
@@ -144,7 +144,7 @@ theorem norm_riemannZeta_le_subconvex_explicit {η : ℝ} (hη : 0 < η) (hη2 :
     have h1 : (1 + 1 / η) * Real.exp 2 ≤ 2 * (1 / η) * 9 :=
       mul_le_mul (by linarith) exp_two_le (Real.exp_pos 2).le (by linarith)
     have h2 : 4 * ((1 + 1 / η) * Real.exp 2) ≤ 16800 / η := by
-      rw [div_eq_mul_one_div]; linarith
+      rw [div_eq_mul_one_div (16800 : ℝ) η]; linarith
     calc 4 * (1 + 1 / η) * Real.exp (9 / 4)
         = 4 * ((1 + 1 / η) * Real.exp 2) * Real.exp (1 / 4) := by rw [he]; ring
       _ ≤ 16800 / η * Real.exp (1 / 4) := mul_le_mul_of_nonneg_right h2 he14.le
@@ -181,6 +181,99 @@ private theorem exp_le_one_div_of_add_le {E N : ℝ} (hN : 0 < N) (h : E + N ≤
   calc Real.exp E * N ≤ Real.exp E * (Real.exp E)⁻¹ := mul_le_mul_of_nonneg_left h1 hpos.le
     _ = 1 := mul_inv_cancel₀ hpos.ne'
 
+/-- The model error: `2A√(20/α)e⁴ ≤ 1/25` once `α ≥ 50000 A² e⁸`. -/
+private theorem model_error_le {A α : ℝ} (hA : 0 < A) (hα : 0 < α)
+    (h3 : 50000 * A ^ 2 * Real.exp 8 ≤ α) :
+    2 * A * Real.sqrt (20 / α) * Real.exp 4 ≤ 1 / 25 := by
+  have he4 : 0 < Real.exp 4 := Real.exp_pos 4
+  have he8 : Real.exp 4 ^ 2 = Real.exp 8 := by
+    rw [← Real.exp_nat_mul]; norm_num
+  have hsq : Real.sqrt (20 / α) ≤ 1 / (50 * A * Real.exp 4) := by
+    rw [Real.sqrt_le_iff]
+    refine ⟨by positivity, ?_⟩
+    rw [div_pow, one_pow, mul_pow, mul_pow, he8, div_le_div_iff₀ hα (by positivity)]
+    linarith only [h3]
+  calc 2 * A * Real.sqrt (20 / α) * Real.exp 4
+      ≤ 2 * A * (1 / (50 * A * Real.exp 4)) * Real.exp 4 := by gcongr
+    _ = 1 / 25 := by field_simp; norm_num
+
+/-- The strip error: `24πKα²e^{−qα} ≤ 1/25` once `α ≥ 3600πK/q³`, from `e^{−x} ≤ 6/x³`. -/
+private theorem strip_error_le {q K α : ℝ} (hq : 0 < q) (hK : 0 ≤ K) (hα : 0 < α)
+    (h4 : 3600 * Real.pi * K / q ^ 3 ≤ α) :
+    24 * Real.pi * K * α ^ 2 * Real.exp (-q * α) ≤ 1 / 25 := by
+  have hx0 : 0 < q * α := by positivity
+  have hexp : (q * α) ^ 3 / 6 ≤ Real.exp (q * α) := by
+    have := Real.pow_div_factorial_le_exp (q * α) hx0.le 3
+    norm_num [Nat.factorial] at this
+    exact this
+  have hinv : Real.exp (-q * α) ≤ 6 / (q * α) ^ 3 := by
+    rw [show -q * α = -(q * α) by ring, Real.exp_neg, inv_eq_one_div,
+      div_le_div_iff₀ (Real.exp_pos _) (by positivity)]
+    linarith only [hexp]
+  have h4' : 3600 * Real.pi * K ≤ α * q ^ 3 := by
+    rwa [div_le_iff₀ (by positivity)] at h4
+  have hπK : 0 ≤ 24 * Real.pi * K * α ^ 2 :=
+    mul_nonneg (mul_nonneg (by positivity) hK) (by positivity)
+  calc 24 * Real.pi * K * α ^ 2 * Real.exp (-q * α)
+      ≤ 24 * Real.pi * K * α ^ 2 * (6 / (q * α) ^ 3) := mul_le_mul_of_nonneg_left hinv hπK
+    _ = 144 * Real.pi * K / (q ^ 3 * α) := by field_simp; ring
+    _ ≤ 1 / 25 := by
+        rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+        linarith only [h4']
+
+/-- The far-region error. -/
+private theorem far_error_le {A α : ℝ} (hαA : 150000 * A ≤ α) (hα : 450000 ≤ α) :
+    Real.exp (9 / 2 * A) *
+      (12 * Real.exp 1 * α * Real.exp (-(15 / 8) * α ^ 2 + 20 * α + 164)) ≤ 1 / 25 := by
+  obtain ⟨P, hP⟩ : ∃ P : ℝ, P = -(15 / 8) * α ^ 2 + 20 * α + 164 := ⟨_, rfl⟩
+  rw [← hP]
+  have hα2 : 450000 * α ≤ α ^ 2 := by nlinarith only [hα]
+  have hαexp : α ≤ Real.exp α := by linarith only [Real.add_one_le_exp α]
+  have h300 : Real.exp (9 / 2 * A + 1 + α + P) ≤ 1 / 300 :=
+    exp_le_one_div_of_add_le (by norm_num) (by rw [hP]; linarith only [hαA, hα, hα2])
+  calc Real.exp (9 / 2 * A) * (12 * Real.exp 1 * α * Real.exp P)
+      ≤ Real.exp (9 / 2 * A) * (12 * Real.exp 1 * Real.exp α * Real.exp P) := by gcongr
+    _ = 12 * Real.exp (9 / 2 * A + 1 + α + P) := by
+        rw [Real.exp_add, Real.exp_add, Real.exp_add]; ring
+    _ ≤ 12 * (1 / 300) := by gcongr
+    _ = 1 / 25 := by norm_num
+
+/-- The quintic Gaussian exponent of the boundary value is at most `−α² − α` for `α ≥ 100`. -/
+private theorem boundary_exponent_le {α : ℝ} (hα : 100 ≤ α) :
+    -((α ^ 2 - 1 / 2) ^ 2 * α / 80) + (α ^ 2 + 1 / 2) * (α + 1 / 8) + 20 * α + α ≤ -α ^ 2 := by
+  have hα0 : 0 ≤ α := by linarith only [hα]
+  have ha2 : α ^ 2 / 2 ≤ α ^ 2 - 1 / 2 := by nlinarith only [hα]
+  have hsq : (α ^ 2 / 2) ^ 2 ≤ (α ^ 2 - 1 / 2) ^ 2 :=
+    pow_le_pow_left₀ (by positivity) ha2 2
+  have h5 : α ^ 5 / 320 ≤ (α ^ 2 - 1 / 2) ^ 2 * α / 80 := by
+    have := mul_le_mul_of_nonneg_right hsq hα0
+    nlinarith only [this]
+  have h3 : (α ^ 2 + 1 / 2) * (α + 1 / 8) ≤ 4 * α ^ 3 := by nlinarith only [hα]
+  have h6 : 4 * α ^ 3 + 21 * α + α ^ 2 ≤ α ^ 5 / 320 := by
+    have hα2 : 10000 ≤ α ^ 2 := by nlinarith only [hα]
+    have hα3 : 0 ≤ α ^ 3 := by positivity
+    nlinarith only [mul_le_mul_of_nonneg_left hα2 hα3, hα, hα2]
+  linarith only [h5, h3, h6]
+
+/-- The boundary error. -/
+private theorem boundary_error_le {A α : ℝ} (hαA : 150000 * A ≤ α) (hα : 450000 ≤ α) :
+    Real.exp (9 / 2 * A) * (2 * α * Real.exp (-((α ^ 2 - 1 / 2) ^ 2 * α / 80) +
+      (α ^ 2 + 1 / 2) * (α + 1 / 8) + 20 * α)) ≤ 1 / 25 := by
+  have hpoly := boundary_exponent_le (α := α) (by linarith only [hα])
+  obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = -((α ^ 2 - 1 / 2) ^ 2 * α / 80) +
+    (α ^ 2 + 1 / 2) * (α + 1 / 8) + 20 * α := ⟨_, rfl⟩
+  rw [← hQ] at hpoly ⊢
+  have hα2 : 450000 * α ≤ α ^ 2 := by nlinarith only [hα]
+  have hαexp : α ≤ Real.exp α := by linarith only [Real.add_one_le_exp α]
+  have h50 : Real.exp (9 / 2 * A + α + Q) ≤ 1 / 50 :=
+    exp_le_one_div_of_add_le (by norm_num) (by linarith only [hαA, hα, hα2, hpoly])
+  calc Real.exp (9 / 2 * A) * (2 * α * Real.exp Q)
+      ≤ Real.exp (9 / 2 * A) * (2 * Real.exp α * Real.exp Q) := by gcongr
+    _ = 2 * Real.exp (9 / 2 * A + α + Q) := by
+        rw [Real.exp_add, Real.exp_add]; ring
+    _ ≤ 2 * (1 / 50) := by gcongr
+    _ = 1 / 25 := by norm_num
+
 /-- **The Gaussian error sums above an explicit slope.** With `A = 1/η + 3`, both error sums of
 the Weyl window argument are small for every `α ≥ max(50000 A² e⁸, 3600πK/(m/80)³)`: each of the
 six decaying terms is at most `1/25`. -/
@@ -205,105 +298,33 @@ theorem weyl_errors_small {c₀ η m K α : ℝ} (hη : 0 < η) (hm : 0 < m) (hK
   rw [← hA] at h3 ⊢
   have hA3 : 3 ≤ A := by
     have : 0 < 1 / η := by positivity
-    rw [hA]; linarith
-  have hA0 : 0 < A := by linarith
+    rw [hA]; linarith only [this]
+  have hA0 : 0 < A := by linarith only [hA3]
   -- sizes of `α`
   have hαA2 : 50000 * A ^ 2 ≤ α :=
     (le_mul_of_one_le_right (by positivity) (Real.one_le_exp (by norm_num))).trans h3
-  have hαA : 150000 * A ≤ α := by nlinarith
-  have hα450 : 450000 ≤ α := by linarith
-  have hα0 : 0 < α := by linarith
-  have hα2 : 450000 * α ≤ α ^ 2 := by nlinarith
-  have hαexp : α ≤ Real.exp α := by linarith [Real.add_one_le_exp α]
-  -- the lower tail
+  have hαA : 150000 * A ≤ α := by nlinarith only [hαA2, hA3]
+  have hα450 : 450000 ≤ α := by linarith only [hαA, hA3]
+  have hα0 : 0 < α := by linarith only [hα450]
+  -- the six terms
   have T1 : Real.exp (-(α / 2) * (3 / 4 * c₀ - 1 - η)) ≤ 1 / 25 := by
     refine exp_le_one_div_of_add_le (by norm_num) ?_
-    nlinarith [mul_nonneg (sub_nonneg.2 hα450) (sub_nonneg.2 hδ)]
+    have h := mul_le_mul (show (225000 : ℝ) ≤ α / 2 by linarith only [hα450]) hδ
+      (by norm_num) (by linarith only [hα0])
+    linarith only [h]
   have T2 : Real.exp (-α ^ 2 + 1) ≤ 1 / 25 :=
-    exp_le_one_div_of_add_le (by norm_num) (by linarith)
-  -- the model error: `√(20/α) ≤ 1/(50 A e⁴)`
-  have T3 : 2 * A * Real.sqrt (20 / α) * Real.exp 4 ≤ 1 / 25 := by
-    have he4 : 0 < Real.exp 4 := Real.exp_pos 4
-    have he8 : Real.exp 4 ^ 2 = Real.exp 8 := by
-      rw [← Real.exp_nat_mul]; norm_num
-    have hsq : Real.sqrt (20 / α) ≤ 1 / (50 * A * Real.exp 4) := by
-      rw [Real.sqrt_le_iff]
-      refine ⟨by positivity, ?_⟩
-      rw [div_pow, one_pow, mul_pow, mul_pow, he8, div_le_div_iff₀ hα0 (by positivity)]
-      linarith
-    calc 2 * A * Real.sqrt (20 / α) * Real.exp 4
-        ≤ 2 * A * (1 / (50 * A * Real.exp 4)) * Real.exp 4 := by gcongr
-      _ = 1 / 25 := by field_simp; norm_num
-  -- the strip: `e^{−x} ≤ 6/x³` at `x = (m/80)α`
-  have T4 : 24 * Real.pi * K * α ^ 2 * Real.exp (-(m / 80) * α) ≤ 1 / 25 := by
-    obtain ⟨q, hq⟩ : ∃ q : ℝ, q = m / 80 := ⟨_, rfl⟩
-    rw [← hq] at h4 ⊢
-    have hq0 : 0 < q := by rw [hq]; positivity
-    have hx0 : 0 < q * α := by positivity
-    have hexp : (q * α) ^ 3 / 6 ≤ Real.exp (q * α) := by
-      have := Real.pow_div_factorial_le_exp (q * α) hx0.le 3
-      norm_num [Nat.factorial] at this
-      exact this
-    have hinv : Real.exp (-q * α) ≤ 6 / (q * α) ^ 3 := by
-      rw [show -q * α = -(q * α) by ring, Real.exp_neg, inv_eq_one_div,
-        div_le_div_iff₀ (Real.exp_pos _) (by positivity)]
-      linarith
-    have h4' : 3600 * Real.pi * K ≤ α * q ^ 3 := by
-      rwa [div_le_iff₀ (by positivity)] at h4
-    have hπK : 0 ≤ 24 * Real.pi * K * α ^ 2 :=
-      mul_nonneg (mul_nonneg (by positivity) hK) (by positivity)
-    calc 24 * Real.pi * K * α ^ 2 * Real.exp (-q * α)
-        ≤ 24 * Real.pi * K * α ^ 2 * (6 / (q * α) ^ 3) := mul_le_mul_of_nonneg_left hinv hπK
-      _ = 144 * Real.pi * K / (q ^ 3 * α) := by field_simp; ring
-      _ ≤ 1 / 25 := by
-          rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-          linarith
-  -- the far region
-  have T5 : Real.exp (9 / 2 * A) *
-      (12 * Real.exp 1 * α * Real.exp (-(15 / 8) * α ^ 2 + 20 * α + 164)) ≤ 1 / 25 := by
-    obtain ⟨P, hP⟩ : ∃ P : ℝ, P = -(15 / 8) * α ^ 2 + 20 * α + 164 := ⟨_, rfl⟩
-    rw [← hP]
-    have h300 : Real.exp (9 / 2 * A + 1 + α + P) ≤ 1 / 300 :=
-      exp_le_one_div_of_add_le (by norm_num) (by rw [hP]; linarith)
-    calc Real.exp (9 / 2 * A) * (12 * Real.exp 1 * α * Real.exp P)
-        ≤ Real.exp (9 / 2 * A) * (12 * Real.exp 1 * Real.exp α * Real.exp P) := by gcongr
-      _ = 12 * Real.exp (9 / 2 * A + 1 + α + P) := by
-          rw [Real.exp_add, Real.exp_add, Real.exp_add]; ring
-      _ ≤ 12 * (1 / 300) := by gcongr
-      _ = 1 / 25 := by norm_num
-  -- the boundary value: the quintic exponent is at most `−α² − α`
-  have T6 : Real.exp (9 / 2 * A) * (2 * α * Real.exp (-((α ^ 2 - 1 / 2) ^ 2 * α / 80) +
-      (α ^ 2 + 1 / 2) * (α + 1 / 8) + 20 * α)) ≤ 1 / 25 := by
-    obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = -((α ^ 2 - 1 / 2) ^ 2 * α / 80) +
-      (α ^ 2 + 1 / 2) * (α + 1 / 8) + 20 * α := ⟨_, rfl⟩
-    rw [← hQ]
-    have hpoly : Q + α ≤ -α ^ 2 := by
-      have ha2 : α ^ 2 / 2 ≤ α ^ 2 - 1 / 2 := by nlinarith
-      have hsq : (α ^ 2 / 2) ^ 2 ≤ (α ^ 2 - 1 / 2) ^ 2 := by
-        have : 0 ≤ α ^ 2 / 2 := by positivity
-        nlinarith
-      have h5 : α ^ 5 / 320 ≤ (α ^ 2 - 1 / 2) ^ 2 * α / 80 := by
-        have := mul_le_mul_of_nonneg_right hsq hα0.le
-        nlinarith
-      have h3' : (α ^ 2 + 1 / 2) * (α + 1 / 8) ≤ 4 * α ^ 3 := by nlinarith
-      have h6 : 4 * α ^ 3 + 21 * α + α ^ 2 ≤ α ^ 5 / 320 := by
-        have hα2' : 10000 ≤ α ^ 2 := by nlinarith
-        have hα3 : 0 ≤ α ^ 3 := by positivity
-        nlinarith [mul_le_mul_of_nonneg_left hα2' hα3]
-      rw [hQ]; linarith
-    have h50 : Real.exp (9 / 2 * A + α + Q) ≤ 1 / 50 :=
-      exp_le_one_div_of_add_le (by norm_num) (by linarith)
-    calc Real.exp (9 / 2 * A) * (2 * α * Real.exp Q)
-        ≤ Real.exp (9 / 2 * A) * (2 * Real.exp α * Real.exp Q) := by gcongr
-      _ = 2 * Real.exp (9 / 2 * A + α + Q) := by
-          rw [Real.exp_add, Real.exp_add]; ring
-      _ ≤ 2 * (1 / 50) := by gcongr
-      _ = 1 / 25 := by norm_num
-  refine ⟨by linarith, by linarith, by linarith, ?_⟩
-  have h3' : A * (1 + 2 * A * Real.sqrt (20 / α) * Real.exp 4) ≤ A * (1 + 1 / 25) := by
-    gcongr
+    exp_le_one_div_of_add_le (by norm_num) (by nlinarith only [hα450])
+  have T3 := model_error_le hA0 hα0 h3
+  have T4 := strip_error_le (q := m / 80) (by positivity) hK hα0 h4
+  have T5 := far_error_le hαA hα450
+  have T6 := boundary_error_le hαA hα450
+  refine ⟨by linarith only [hα450], by linarith only [hαA2, sq_nonneg A],
+    by linarith only [T1, T2, T3, T4, T5],
+    ?_⟩
+  have h3' : A * (1 + 2 * A * Real.sqrt (20 / α) * Real.exp 4) ≤ A * (1 + 1 / 25) :=
+    mul_le_mul_of_nonneg_left (by linarith only [T3]) hA0.le
   rw [mul_add (Real.exp (9 / 2 * A))]
-  linarith
+  linarith only [T4, T5, T6, h3', hαA, hα450]
 
 /-! ## The height -/
 

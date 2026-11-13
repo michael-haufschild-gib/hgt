@@ -110,7 +110,8 @@ theorem two_mul_tail_mass_pow_four_le_quarticCycleLeakage
     2 * ε ^ 4 ≤ quarticCycleLeakage μ := by
   have h := two_mul_tail_product_sq_le_quarticCycleLeakage μ hab
   rw [ha, hb] at h
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 /-- Small leakage places the central quantile mass inside a half-length interval. -/
 theorem exists_short_interval_mass_of_quarticCycleLeakage_lt
@@ -192,7 +193,7 @@ theorem frequencyDensityLaw_interval_mass_sq_le {w : ℝ → ℝ}
       _ = ENNReal.ofReal (∫ x, w x ^ 2) :=
           (ofReal_integral_eq_lintegral_ofReal hw2
             (Filter.Eventually.of_forall fun x => sq_nonneg (w x))).symm
-  have hfull := hcs.trans (mul_le_mul_left' hglobal _)
+  have hfull := hcs.trans (mul_le_mul' le_rfl hglobal)
   rw [Measure.restrict_apply_univ, Real.volume_Ioc,
     ← ofReal_integral_eq_lintegral_ofReal hw.integrableOn
       (Filter.Eventually.of_forall hw0)] at hfull
@@ -364,7 +365,7 @@ theorem quarticCycleLeakage_eq_zero_iff
       simp only [ν, R, I, measureReal_prod_prod, ha, one_mul]
     have hdist : ∀ x ∈ I, ∀ y ∈ I, |x - y| ≤ 1 / 2 := by
       intro x hx y hy
-      exact abs_sub_le_iff.mpr ⟨by linarith [hx.1, hy.2], by linarith [hy.1, hx.2]⟩
+      exact abs_sub_le_iff.mpr ⟨by linarith [hx.2, hy.1], by linarith [hy.2, hx.1]⟩
     have hsub : {u | 2 < quarticCycleVariation u} ⊆ Rᶜ := by
       intro u hu hmem
       have h1 := hdist _ hmem.1.1 _ hmem.1.2
@@ -376,7 +377,93 @@ theorem quarticCycleLeakage_eq_zero_iff
     have hle := measureReal_mono (μ := ν) hsub
     rw [measureReal_compl hRm, hR] at hle
     simp only [measureReal_def, measure_univ, ENNReal.toReal_one, sub_self] at hle
-    exact le_antisymm hle (quarticCycleLeakage_nonneg μ)
+    apply le_antisymm _ (quarticCycleLeakage_nonneg μ)
+    simpa only [quarticCycleLeakage, measureReal_def, ν] using hle
+
+private theorem integral_halfInterval_indicator_const (a c : ℝ) :
+    (∫ x, (Ioc a (a + 1 / 2)).indicator (fun _ : ℝ => c) x) = c / 2 := by
+  rw [integral_indicator measurableSet_Ioc, setIntegral_const, smul_eq_mul,
+    measureReal_def, Real.volume_Ioc]
+  rw [show a + 1 / 2 - a = (1 / 2 : ℝ) by ring,
+    ENNReal.toReal_ofReal (by norm_num : (0 : ℝ) ≤ 1 / 2)]
+  ring
+
+/-- The only zero-leakage density with maximal effective bandwidth is uniform. -/
+theorem density_uniform_of_zero_leakage_and_energy_two {w : ℝ → ℝ}
+    (hw : Integrable w) (hw0 : ∀ x, 0 ≤ w x) (hw1 : ∫ x, w x = 1)
+    (hw2 : Integrable (fun x => w x ^ 2))
+    (hδ : quarticCycleLeakage (frequencyDensityLaw w) = 0)
+    (hE : ∫ x, w x ^ 2 = 2) :
+    ∃ a : ℝ, w =ᵐ[volume] (Ioc a (a + 1 / 2)).indicator (fun _ => 2) := by
+  letI := frequencyDensityLaw_isProbabilityMeasure hw hw0 hw1
+  letI := frequencyDensityLaw_noAtoms w
+  obtain ⟨a, ha⟩ := (quarticCycleLeakage_eq_zero_iff (frequencyDensityLaw w)).mp hδ
+  let I := Ioc a (a + 1 / 2)
+  have hIm : MeasurableSet I := measurableSet_Ioc
+  have hIw : Integrable (I.indicator w) := hw.indicator hIm
+  have hIc : Integrable (I.indicator (fun _ : ℝ => (1 : ℝ))) :=
+    (continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self).integrable_indicator hIm
+  have hpoint : (fun x => (w x - I.indicator (fun _ => 2) x) ^ 2) =
+      (fun x => w x ^ 2 - 4 * I.indicator w x + 4 * I.indicator (fun _ => 1) x) := by
+    funext x
+    by_cases hx : x ∈ I
+    · simp only [Set.indicator_of_mem hx]
+      ring
+    · simp only [Set.indicator_of_notMem hx]
+      ring
+  have hInt : Integrable (fun x => (w x - I.indicator (fun _ => 2) x) ^ 2) := by
+    rw [hpoint]
+    exact (hw2.sub (hIw.const_mul 4)).add (hIc.const_mul 4)
+  have hmass : (∫ x, I.indicator w x) = 1 := by
+    rw [integral_indicator hIm, ← frequencyDensityLaw_real hw hw0 hIm]
+    exact ha
+  have hzero : (∫ x, (w x - I.indicator (fun _ => 2) x) ^ 2) = 0 := by
+    rw [hpoint, integral_add (hw2.sub (hIw.const_mul 4)) (hIc.const_mul 4),
+      integral_sub hw2 (hIw.const_mul 4), integral_const_mul, integral_const_mul,
+      hE, hmass, integral_halfInterval_indicator_const a 1]
+    norm_num
+  have hae := (integral_eq_zero_iff_of_nonneg
+    (fun x => sq_nonneg (w x - I.indicator (fun _ => 2) x)) hInt).mp hzero
+  refine ⟨a, ?_⟩
+  filter_upwards [hae] with x hx
+  exact sub_eq_zero.mp (sq_eq_zero_iff.mp hx)
+
+theorem zero_leakage_and_energy_two_iff_uniform {w : ℝ → ℝ}
+    (hw : Integrable w) (hw0 : ∀ x, 0 ≤ w x) (hw1 : ∫ x, w x = 1)
+    (hw2 : Integrable (fun x => w x ^ 2)) :
+    (quarticCycleLeakage (frequencyDensityLaw w) = 0 ∧ ∫ x, w x ^ 2 = 2) ↔
+      ∃ a : ℝ, w =ᵐ[volume] (Ioc a (a + 1 / 2)).indicator (fun _ => 2) := by
+  constructor
+  · rintro ⟨hδ, hE⟩
+    exact density_uniform_of_zero_leakage_and_energy_two hw hw0 hw1 hw2 hδ hE
+  · rintro ⟨a, hae⟩
+    letI := frequencyDensityLaw_isProbabilityMeasure hw hw0 hw1
+    letI := frequencyDensityLaw_noAtoms w
+    let I := Ioc a (a + 1 / 2)
+    have hIm : MeasurableSet I := measurableSet_Ioc
+    have hmass : (frequencyDensityLaw w).real I = 1 := by
+      rw [frequencyDensityLaw_real hw hw0 hIm, ← integral_indicator hIm]
+      have heq : I.indicator w =ᵐ[volume] I.indicator (fun _ => (2 : ℝ)) := by
+        filter_upwards [hae] with x hx
+        change w x = I.indicator (fun _ => (2 : ℝ)) x at hx
+        by_cases hxi : x ∈ I
+        · simpa only [Set.indicator_of_mem hxi] using hx
+        · simp only [Set.indicator_of_notMem hxi]
+      rw [integral_congr_ae heq, integral_halfInterval_indicator_const a 2]
+      norm_num
+    refine ⟨(quarticCycleLeakage_eq_zero_iff (frequencyDensityLaw w)).mpr ⟨a, hmass⟩, ?_⟩
+    have heq : (fun x => w x ^ 2) =ᵐ[volume] I.indicator (fun _ => (4 : ℝ)) := by
+      filter_upwards [hae] with x hx
+      change w x = I.indicator (fun _ => (2 : ℝ)) x at hx
+      by_cases hxi : x ∈ I
+      · simp only [Set.indicator_of_mem hxi] at hx ⊢
+        rw [hx]
+        norm_num
+      · simp only [Set.indicator_of_notMem hxi] at hx ⊢
+        rw [hx]
+        norm_num
+    rw [integral_congr_ae heq, integral_halfInterval_indicator_const a 4]
+    norm_num
 
 end
 

@@ -13,7 +13,7 @@ Write `L=log(T/(2π))`, `X=exp L`, `d=floor(LT/(2π))`,
 `C_T(μ)+C_T(Π_X)+C_T(P_X)`.
 
 The existing taper estimates give `||V||²≤2πL`,
-`|φ̂(r)|r²≤cϱ/w`, and `|Π_X(τ)|≤3√X/(1+|τ|)`.
+`∫r²φ̂(r)²dr≤M=8+2(cϱ/w)²`, and `|Π_X(τ)|≤3√X/(1+|τ|)`.
 The first bound follows from Plancherel, `0≤φ≤1`, its support of length `L`,
 and orthogonality of the grid exponentials.
 
@@ -23,14 +23,14 @@ Split the integral at `J=[T/2,3T]`. On `J`, `|Π_X|≤6√X/T`.
 Since every sampling center belongs to `[T,2T]`,
 
 ```
-∫_{Jᶜ} Σ_{k<d} φ̂(τ−τ_k)² dτ ≤ 3d cϱ²/(w²T³).
+∫_{Jᶜ} Σ_{k<d} φ̂(τ−τ_k)² dτ ≤ 4dM/T².
 ```
 
 Cauchy–Schwarz for the finite sum and `|Π_X|≤3√X` give
 
 ```
 ||C_T(Π_X)|| ≤ 12π√X/(aLT)
-              +9d cϱ²√X/(aw²L²T³).
+              +12dM√X/(aL²T²).
 ```
 
 Thus the full-line pole norm is `O(√X/(LT))`, including the neighborhood of
@@ -56,9 +56,14 @@ Put `B₀=(2πaL)⁻¹V*V`. The sampling bound and diagonal Plancherel identity 
 tr(B₀−I)⁴/d ≤ tr(B₀−I)²/d ≤ a⁻¹−1 = O(w/L).
 ```
 
+The sharper pointwise decay also gives the tail bound
+`3d cϱ²/(w²T³)`, but the existing second spectral moment already suffices.
+
 On `[T/2,3T]`, the existing digamma estimate gives
 `μ(τ)=L/(2π)+O(1)`. Outside this interval the same taper tail estimate,
-with the logarithmic growth of `μ`, gives a vanishing operator error.
+with the existing linear growth bound for `μ`, gives a vanishing operator error:
+on the complement, `|τ−τ_k|≥T/2`, so both `T` and `|τ−τ_k|`
+are bounded by fixed multiples of `(τ−τ_k)²/T`.
 Therefore `C_T(μ)−B₀=O(1/L)` in operator norm and
 `C_T(μ)−I` tends to zero in normalized Schatten fourth norm.
 
