@@ -19,7 +19,7 @@ open Complex Metric Filter Topology
 
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry
 
-open RHTower
+open _root_.RHTower
 open GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
 
 private theorem xi_halfPlane_three_eighths : XiZeroHalfPlaneBound (3 / 8) := by
@@ -50,9 +50,9 @@ private theorem exists_logDeriv_disk_log_bound {r : ℝ}
   obtain ⟨C, hC, hb⟩ :=
     Sieve.exists_logDeriv_zeta_bound_of_xiZeroHalfPlaneBound
       (by norm_num : (0 : ℝ) ≤ 3 / 8) xi_halfPlane_three_eighths
+  have hδ : 0 < (1 : ℝ) / 4 - r := by linarith only [hr]
   refine ⟨2 * C / (1 / 4 - r) + 2048, by positivity, ?_⟩
   intro t ht z hz
-  have hδ : 0 < (1 : ℝ) / 4 - r := by linarith only [hr]
   have hcre : ((9 / 8 : ℂ) + (t : ℂ) * I).re = 9 / 8 := by norm_num
   have hcim : ((9 / 8 : ℂ) + (t : ℂ) * I).im = t := by norm_num
   have hre := Complex.abs_re_le_norm (z - ((9 / 8 : ℂ) + (t : ℂ) * I))
@@ -63,11 +63,15 @@ private theorem exists_logDeriv_disk_log_bound {r : ℝ}
   have hrehi : z.re ≤ 9 / 8 + r := by linarith only [(abs_le.mp (hre.trans hz)).2]
   have himdiff : |z.im - t| ≤ r := him.trans hz
   have htlo : |t| - r ≤ |z.im| := by
-    have h := abs_sub_abs_le_abs_sub t z.im
-    rw [abs_sub_comm t z.im] at h
+    have h : |t| ≤ |z.im - t| + |z.im| := by
+      calc |t| = |(t - z.im) + z.im| := by ring_nf
+        _ ≤ |t - z.im| + |z.im| := abs_add _ _
+        _ = |z.im - t| + |z.im| := by rw [abs_sub_comm t z.im]
     linarith only [h, himdiff]
   have hthi : |z.im| ≤ |t| + r := by
-    have h := abs_sub_abs_le_abs_sub z.im t
+    have h : |z.im| ≤ |z.im - t| + |t| := by
+      calc |z.im| = |(z.im - t) + t| := by ring_nf
+        _ ≤ |z.im - t| + |t| := abs_add _ _
     linarith only [h, himdiff]
   have ht0 : 0 < |t| := by linarith only [ht]
   have hz0 : 0 < |z.im| := by linarith only [htlo, ht, hr]
@@ -107,5 +111,121 @@ private theorem exists_logDeriv_disk_log_bound {r : ℝ}
     have hK0 : 0 ≤ 2 * C / (1 / 4 - r) := by positivity
     have hx := mul_nonneg hK0 (show 0 ≤ Real.log |t| by linarith only [htlog])
     nlinarith only [hbz, htlog, hx]
+
+private theorem differentiableOn_logDeriv_zeta_disk {t : ℝ} (ht : 8 ≤ |t|) :
+    DifferentiableOn ℂ (logDeriv riemannZeta)
+      (ball ((9 / 8 : ℂ) + (t : ℂ) * I) (1 / 4)) := by
+  have hne : ∀ z ∈ ball ((9 / 8 : ℂ) + (t : ℂ) * I) (1 / 4), z ≠ 1 := by
+    intro z hz hzone
+    have hi := Complex.abs_im_le_norm (z - ((9 / 8 : ℂ) + (t : ℂ) * I))
+    rw [hzone] at hi
+    have he : (1 - ((9 / 8 : ℂ) + (t : ℂ) * I)).im = -t := by norm_num
+    rw [he, abs_neg] at hi
+    have hd := mem_ball_iff_norm.mp hz
+    rw [hzone] at hd
+    linarith only [hi, hd, ht]
+  have hdiff : DifferentiableOn ℂ riemannZeta
+      (ball ((9 / 8 : ℂ) + (t : ℂ) * I) (1 / 4)) :=
+    fun z hz => (differentiableAt_riemannZeta (hne z hz)).differentiableWithinAt
+  have hzfree : ∀ z ∈ ball ((9 / 8 : ℂ) + (t : ℂ) * I) (1 / 4),
+      riemannZeta z ≠ 0 := by
+    intro z hz
+    apply riemannZeta_ne_zero_of_seven_eighths_lt_re
+    have hr := Complex.abs_re_le_norm (z - ((9 / 8 : ℂ) + (t : ℂ) * I))
+    have he : (z - ((9 / 8 : ℂ) + (t : ℂ) * I)).re = z.re - 9 / 8 := by norm_num
+    rw [he] at hr
+    have hd := mem_ball_iff_norm.mp hz
+    linarith only [(abs_le.mp hr).1, hd]
+  simpa only [logDeriv_apply] using (hdiff.deriv isOpen_ball).div hdiff hzfree
+
+/-- Three circles turn the zero-free strip into a power saving in the logarithm. -/
+theorem exists_logDeriv_zeta_log_power_bound {σ : ℝ}
+    (hσ : (7 : ℝ) / 8 < σ) (hσ1 : σ < 1) :
+    ∃ K θ : ℝ, 0 < K ∧ 0 ≤ θ ∧ θ < 1 ∧
+      ∀ t : ℝ, 8 ≤ |t| →
+        ‖logDeriv riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖ ≤
+          K * (Real.log |t|) ^ θ := by
+  let r : ℝ := 9 / 8 - σ
+  let r₃ : ℝ := (r + 1 / 4) / 2
+  have hr1 : (1 : ℝ) / 16 < r := by dsimp [r]; linarith only [hσ1]
+  have hr : r < 1 / 4 := by dsimp [r]; linarith only [hσ]
+  have hr0 : 0 < r := by linarith only [hr1]
+  have hrr₃ : r < r₃ := by dsimp [r₃]; linarith only [hr]
+  have hr₃ : r₃ < 1 / 4 := by dsimp [r₃]; linarith only [hr]
+  have hr₃0 : 0 < r₃ := lt_trans hr0 hrr₃
+  obtain ⟨C, hC, hb⟩ := exists_logDeriv_disk_log_bound hr₃0 hr₃
+  let θ : ℝ := (Real.log r - Real.log (1 / 16)) /
+    (Real.log r₃ - Real.log (1 / 16))
+  have hl1 : Real.log (1 / 16) < Real.log r :=
+    Real.log_lt_log (by norm_num) hr1
+  have hl3 : Real.log r < Real.log r₃ := Real.log_lt_log hr0 hrr₃
+  have hden : 0 < Real.log r₃ - Real.log (1 / 16) := by linarith only [hl1, hl3]
+  have hθ0 : 0 ≤ θ := by dsimp [θ]; exact div_nonneg (by linarith only [hl1]) hden.le
+  have hθ1 : θ < 1 := by
+    dsimp [θ]
+    exact (div_lt_one hden).mpr (by linarith only [hl3])
+  refine ⟨(2048 : ℝ) ^ (1 - θ) * C ^ θ, θ, by positivity, hθ0, hθ1, ?_⟩
+  intro t ht
+  let c : ℂ := (9 / 8 : ℂ) + (t : ℂ) * I
+  let z : ℂ := (σ : ℂ) + (t : ℂ) * I
+  have hdist : ‖z - c‖ = r := by
+    have he : z - c = ((σ - 9 / 8 : ℝ) : ℂ) := by dsimp [z, c]; push_cast; ring
+    rw [he, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith only [hσ1])]
+    dsimp [r]
+    ring
+  have hsmall : ∀ w : ℂ, ‖w - c‖ = 1 / 16 →
+      ‖logDeriv riemannZeta w‖ ≤ 2048 := by
+    intro w hw
+    have hwr := Complex.abs_re_le_norm (w - c)
+    have he : (w - c).re = w.re - 9 / 8 := by dsimp [c]; norm_num
+    rw [he, hw] at hwr
+    exact norm_logDeriv_zeta_right_le
+      (by linarith only [(abs_le.mp hwr).1])
+      (by linarith only [(abs_le.mp hwr).2])
+  have hlarge : ∀ w : ℂ, ‖w - c‖ = r₃ →
+      ‖logDeriv riemannZeta w‖ ≤ C * Real.log |t| :=
+    fun w hw => hb t ht w hw.le
+  have hthree := HTGeometry.norm_le_of_three_circles_center
+    (g := logDeriv riemannZeta) (c := c) (r₁ := 1 / 16) (r₃ := r₃) (R := 1 / 4)
+    (by norm_num) (lt_trans hr1 hrr₃) hr₃ (differentiableOn_logDeriv_zeta_disk ht)
+    hsmall hlarge (z := z) (by rw [hdist]; exact hr1.le)
+    (by rw [hdist]; exact hrr₃.le)
+  rw [hdist] at hthree
+  change ‖logDeriv riemannZeta z‖ ≤ (2048 : ℝ) ^ (1 - θ) *
+    (C * Real.log |t|) ^ θ at hthree
+  have hlog : 0 ≤ Real.log |t| := Real.log_nonneg (by linarith only [ht])
+  rw [Real.mul_rpow hC.le hlog] at hthree
+  simpa only [mul_assoc, z] using hthree
+
+/-- On each fixed line right of seven eighths, `ζ'/ζ` is sublogarithmic. -/
+theorem exists_logDeriv_zeta_le_epsilon_log {σ ε : ℝ}
+    (hσ : (7 : ℝ) / 8 < σ) (hσ1 : σ < 1) (hε : 0 < ε) :
+    ∃ T : ℝ, 8 ≤ T ∧ ∀ t : ℝ, T ≤ |t| →
+      ‖logDeriv riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖ ≤ ε * Real.log |t| := by
+  obtain ⟨K, θ, hK, _, hθ, hb⟩ := exists_logDeriv_zeta_log_power_bound hσ hσ1
+  have hlim : Tendsto (fun x : ℝ => K * x ^ (-(1 - θ))) atTop (𝓝 0) := by
+    simpa only [mul_zero] using
+      (tendsto_rpow_neg_atTop (by linarith only [hθ] : 0 < 1 - θ)).const_mul K
+  obtain ⟨A, hA⟩ := Filter.eventually_atTop.mp (hlim.eventually (gt_mem_nhds hε))
+  refine ⟨max 8 (Real.exp (max 1 A)), le_max_left _ _, ?_⟩
+  intro t ht
+  have ht8 : 8 ≤ |t| := (le_max_left _ _).trans ht
+  have hte : Real.exp (max 1 A) ≤ |t| := (le_max_right _ _).trans ht
+  have hlog : max 1 A ≤ Real.log |t| := by
+    have h := Real.log_le_log (Real.exp_pos _) hte
+    simpa only [Real.log_exp] using h
+  have hx : 0 < Real.log |t| := by linarith only [(le_max_left (1 : ℝ) A).trans hlog]
+  have hsmall := hA (Real.log |t|) ((le_max_right _ _).trans hlog)
+  have heq : (K * (Real.log |t|) ^ (-(1 - θ))) * Real.log |t| =
+      K * (Real.log |t|) ^ θ := by
+    calc (K * (Real.log |t|) ^ (-(1 - θ))) * Real.log |t|
+        = K * ((Real.log |t|) ^ (-(1 - θ)) * (Real.log |t|) ^ (1 : ℝ)) := by
+          rw [Real.rpow_one]
+          ring
+      _ = K * (Real.log |t|) ^ (-(1 - θ) + 1) := by rw [← Real.rpow_add hx]
+      _ = K * (Real.log |t|) ^ θ := by congr 2 <;> ring
+  have hmul := mul_le_mul_of_nonneg_right hsmall.le hx.le
+  rw [heq] at hmul
+  exact (hb t ht8).trans hmul
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry

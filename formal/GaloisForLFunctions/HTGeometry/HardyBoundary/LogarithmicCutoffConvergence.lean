@@ -34,7 +34,7 @@ theorem tendsto_logarithmicCutoff_zero
   have ht := tendsto_lpBoundedMulCLM_apply (μ := (volume : Measure ℝ)) hφ
     (ψ := fun _ : ℝ => (0 : ℂ)) measurable_const zero_le_one hφb hzb
     (fun x => by
-      simpa only [Complex.ofReal_zero] using
+      simpa only [Complex.ofReal_zero, Function.comp_apply] using
         (Complex.continuous_ofReal.tendsto 0).comp (hpt x)) f
   have hz : lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ))
       (φ := fun _ : ℝ => (0 : ℂ)) measurable_const zero_le_one hzb f = 0 := by
@@ -43,6 +43,7 @@ theorem tendsto_logarithmicCutoff_zero
       (φ := fun _ : ℝ => (0 : ℂ)) measurable_const zero_le_one hzb f,
       Lp.coeFn_zero ℂ 2 (volume : Measure ℝ)] with x hx hz
     rw [hx, hz, zero_mul]
+    rfl
   rw [hz] at ht
   exact ht
 
@@ -113,7 +114,8 @@ theorem tendsto_logarithmicCutoff_jumpEnergy_zero
     apply Eventually.of_forall
     intro t
     have ht := (((logTranslationCLM t).continuous.tendsto 0).comp hg).sub hg
-    simpa only [map_zero, sub_zero, norm_zero, zero_pow two_ne_zero, mul_zero] using
+    simpa only [Function.comp_apply, map_zero, sub_zero, norm_zero,
+      zero_pow two_ne_zero, mul_zero] using
       (ht.norm.pow 2).const_mul (logReferenceLevyDensity t)
   have h := tendsto_integral_of_dominated_convergence _ hmeas hmajor hbound hpoint
   simpa only [integral_zero] using h
@@ -128,7 +130,9 @@ theorem logarithmicReferenceEnergy_eq_mass_add_jump {f : RealLineL2}
     (∫ ξ : ℝ, positiveLogarithmicSymbol (2 * Real.pi * ξ) * ‖fourierUnitary f ξ‖ ^ 2) =
       ‖f‖ ^ 2 + ∫ t in Ioi (0 : ℝ),
         logReferenceLevyDensity t * ‖logTranslationCLM t f - f‖ ^ 2 := by
-  have hfull := (hasLogarithmicEnergy_iff_integrable f).mp hf
+  have hfull : Integrable (fun ξ : ℝ =>
+      positiveLogarithmicSymbol (2 * Real.pi * ξ) * ‖fourierUnitary f ξ‖ ^ 2) :=
+    (hasLogarithmicEnergy_iff_integrable f).mp hf
   have hsq : Integrable (fun ξ : ℝ => ‖fourierUnitary f ξ‖ ^ 2) :=
     (Lp.memLp (fourierUnitary f)).integrable_norm_pow (by norm_num)
   have hexc : Integrable (fun ξ : ℝ =>

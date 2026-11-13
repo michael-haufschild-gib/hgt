@@ -9,7 +9,8 @@ zero `z` of the de Bruijn–Newman deformation `H_t` with
 
 `|Re z| ≥ exp(10²⁰/ε⁴)` and `|Re z| ≥ 2π e^{(3/2 + ε)/t}`
 
-is real and simple.
+is real and simple. For `ε > 1` the height is `exp(10²⁰)`
+(`riemannHeat_zeros_real_simple_weyl_explicit_of_pos`).
 
 The horizon `riemannHeat_zeros_real_simple_weyl` has the same statement with an unspecified height
 `X₀(ε)`. Its proof has three non-explicit constants, and each is made explicit here.
@@ -452,6 +453,17 @@ theorem riemannHeat_zeros_real_simple_weyl_explicit {ε : ℝ} (hε : 0 < ε) (h
   exact riemannHeat_zeros_real_simple_weyl_of_params (c₀ := 3 / 2 + ε) hη (by linarith)
     (by linarith) hm hmc (by linarith) (norm_xiLine_le_strip_weyl_explicit hη (by linarith)) hK0
     (fun α hα => weyl_errors_small hη hm hK0 hδ (h3.trans hα) (h4.trans hα)) ht ht8 hz hheight hXc
+
+/-- **The explicit height for every `ε > 0`.** For `0 < t ≤ 1/8`, every zero `z` of `H_t` with
+`|Re z| ≥ exp(10²⁰/min(ε,1)⁴)` and `|Re z| ≥ 2π e^{(3/2 + ε)/t}` is real and simple. -/
+theorem riemannHeat_zeros_real_simple_weyl_explicit_of_pos {ε : ℝ} (hε : 0 < ε) {t : ℝ}
+    (ht : 0 < t) (ht8 : t ≤ 1 / 8) {z : ℂ} (hz : riemannHeat t z = 0)
+    (hX₀ : Real.exp (10 ^ 20 / (min ε 1) ^ 4) ≤ |z.re|)
+    (hXc : 2 * Real.pi * Real.exp ((3 / 2 + ε) / t) ≤ |z.re|) :
+    z.im = 0 ∧ deriv (riemannHeat t) z ≠ 0 :=
+  riemannHeat_zeros_real_simple_weyl_explicit (lt_min hε one_pos) (min_le_right _ _) ht ht8 hz hX₀
+    (le_trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 (div_le_div_of_nonneg_right
+      (by linarith only [min_le_left ε 1]) ht.le)) (by positivity)) hXc)
 
 end
 

@@ -418,8 +418,12 @@ theorem density_uniform_of_zero_leakage_and_energy_two {w : ℝ → ℝ}
     rw [integral_indicator hIm, ← frequencyDensityLaw_real hw hw0 hIm]
     exact ha
   have hzero : (∫ x, (w x - I.indicator (fun _ => 2) x) ^ 2) = 0 := by
-    rw [hpoint, integral_add (hw2.sub (hIw.const_mul 4)) (hIc.const_mul 4),
-      integral_sub hw2 (hIw.const_mul 4), integral_const_mul, integral_const_mul,
+    rw [hpoint, integral_add
+      (f := fun x => w x ^ 2 - 4 * I.indicator w x)
+      (g := fun x => 4 * I.indicator (fun _ : ℝ => (1 : ℝ)) x)
+      (hw2.sub (hIw.const_mul 4)) (hIc.const_mul 4),
+      integral_sub (f := fun x => w x ^ 2) (g := fun x => 4 * I.indicator w x)
+        hw2 (hIw.const_mul 4), integral_const_mul, integral_const_mul,
       hE, hmass, integral_halfInterval_indicator_const a 1]
     norm_num
   have hae := (integral_eq_zero_iff_of_nonneg

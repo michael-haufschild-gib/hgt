@@ -75,7 +75,8 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
   have hcsp : Tendsto (fun n => c n ^ 2) atTop (𝓝 (1 : ℝ)) := by
     simpa only [one_pow] using hcp.pow 2
   have hcc : Tendsto (fun n => (c n : ℂ)) atTop (𝓝 (1 : ℂ)) := by
-    simpa only [Complex.ofReal_one] using (Complex.continuous_ofReal.tendsto 1).comp hcp
+    simpa only [Complex.ofReal_one, Function.comp_apply] using
+      (Complex.continuous_ofReal.tendsto 1).comp hcp
   have hUp : Tendsto U atTop (𝓝 v) := by
     simpa only [one_smul] using hcc.smul hgp
   have hp (n : ℕ) : SoftLogarithmicHalfLineDomain (p n) := hv.cutoff_trial (n + N)
@@ -112,7 +113,7 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
   have hMp : Tendsto (fun n => criticalHalfLineFirstMoment (F n)) atTop
       (𝓝 (∫ u : ℝ, |u| * ‖v u‖ ^ 2)) := by
     have h := hcsp.mul (hv.cutoff_firstMoment_tendsto.comp (tendsto_add_atTop_nat N))
-    simpa only [hMscaled, one_mul] using h
+    simpa only [hMscaled, one_mul, Function.comp_apply] using h
   have hPscaled (n : ℕ) : (∫ ξ : ℝ, max (Real.log |ξ|) 0 * ‖fourierUnitary (U n) ξ‖ ^ 2) =
       c n ^ 2 * ∫ ξ : ℝ, max (Real.log |ξ|) 0 * ‖fourierUnitary (g n) ξ‖ ^ 2 := by
     have he : fourierUnitary (U n) = (c n : ℂ) • fourierUnitary (g n) := by
@@ -131,7 +132,7 @@ theorem exists_softLogarithmic_unit_recovery {v : SoninL2}
       ‖fourierUnitary (U n) ξ‖ ^ 2) atTop
       (𝓝 (∫ ξ : ℝ, max (Real.log |ξ|) 0 * ‖fourierUnitary v ξ‖ ^ 2)) := by
     have h := hcsp.mul (hv.cutoff_positiveEnergy_tendsto.comp (tendsto_add_atTop_nat N))
-    simpa only [hPscaled, one_mul] using h
+    simpa only [hPscaled, one_mul, Function.comp_apply] using h
   have hNp := (negativeLog_integral_tendsto_of_softLogarithmic_trials hF hm hUr hUp hMbound).2
   have hE (n : ℕ) : softLogarithmicHalfLineEnergy (F n) =
       8 * criticalHalfLineFirstMoment (F n) +

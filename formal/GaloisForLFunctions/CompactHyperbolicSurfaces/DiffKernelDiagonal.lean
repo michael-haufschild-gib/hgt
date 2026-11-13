@@ -27,11 +27,10 @@ def sinhSqHalf (u : ℝ) : ℝ := sinh (u / 2) ^ 2
 theorem hasDerivAt_sinhSqHalf (u : ℝ) :
     HasDerivAt sinhSqHalf (sinh (u / 2) * cosh (u / 2)) u := by
   have h1 : HasDerivAt (fun u : ℝ => u / 2) (1 / 2) u := (hasDerivAt_id u).div_const 2
-  have h2 : HasDerivAt (fun u => sinh (u / 2)) (cosh (u / 2) * (1 / 2)) u :=
-    (Real.hasDerivAt_sinh (u / 2)).comp u h1
+  have h2 := (Real.hasDerivAt_sinh (u / 2)).comp u h1
   have h3 := h2.pow 2
   refine h3.congr_deriv ?_
-  rw [show (2 : ℕ) - 1 = 1 from rfl, pow_one]
+  rw [show (2 : ℕ) - 1 = 1 from rfl, pow_one, Function.comp_apply]
   push_cast
   ring
 
@@ -115,9 +114,11 @@ theorem hasSum_substituted {a b u : ℝ} (hu : 0 < u) :
     have : exp (u / 2) ≠ 0 := (exp_pos _).ne'
     field_simp
   rw [← hval]
-  convert hg using 1
-  funext k
-  exact (hterm k).symm
+  have hf : (fun k : ℕ => 2 * (exp (-((a + k) * u)) - exp (-((b + k) * u)))) =
+      fun i : ℕ => 2 * (exp (-(a * u)) - exp (-(b * u))) * exp (-u) ^ i :=
+    funext fun k => (hterm k).symm
+  rw [hf]
+  exact hg
 
 theorem lintegral_exp_sub_exp {c d : ℝ} (hc : 0 < c) (hcd : c ≤ d) :
     ∫⁻ u in Ioi (0 : ℝ), ENNReal.ofReal (2 * (exp (-(c * u)) - exp (-(d * u)))) =
@@ -126,8 +127,9 @@ theorem lintegral_exp_sub_exp {c d : ℝ} (hc : 0 < c) (hcd : c ≤ d) :
   have hic := (integrableOn_exp_mul_Ioi (neg_lt_zero.mpr hc) 0)
   have hid := (integrableOn_exp_mul_Ioi (neg_lt_zero.mpr hd) 0)
   have hint : IntegrableOn (fun u => 2 * (exp (-(c * u)) - exp (-(d * u)))) (Ioi 0) := by
-    have h := (hic.sub hid).const_mul 2
-    simpa only [neg_mul, Pi.sub_apply] using h
+    have h : IntegrableOn (fun x => 2 * (rexp (-c * x) - rexp (-d * x))) (Ioi 0) :=
+      (hic.sub hid).const_mul 2
+    simpa only [neg_mul] using h
   rw [← ofReal_integral_eq_lintegral_ofReal hint]
   · congr 1
     rw [integral_const_mul, integral_sub (by simpa only [neg_mul] using hic.integrable)
@@ -220,7 +222,7 @@ theorem diffKernel_zero {a b : ℝ} (ha : 1 / 2 < a) (hab : a ≤ b) :
   rw [hval, ← tsum_mul_left]
   have hs2 := hsum.mul_left (1 / (4 * π))
   have hf : (fun k : ℕ => 1 / (2 * π) * (1 / (a + k) - 1 / (b + k))) =
-      fun k => 1 / (4 * π) * (2 * (1 / (a + k) - 1 / (b + k))) := by
+      fun k : ℕ => 1 / (4 * π) * (2 * (1 / (a + k) - 1 / (b + k))) := by
     funext k; ring
   rw [hf]
   exact hs2.hasSum
