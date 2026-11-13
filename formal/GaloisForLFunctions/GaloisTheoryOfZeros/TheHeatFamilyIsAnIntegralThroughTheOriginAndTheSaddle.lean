@@ -83,8 +83,9 @@ theorem quadratic_le_exp_add {a A B : ℝ} (ha : 0 < a) (hA : 0 ≤ A) (hB : 0 �
     linarith
   have hexp : 4 / 3 * s ^ 3 ≤ Real.exp (2 * s) := by
     have h := Real.pow_div_factorial_le_exp (2 * s) (by linarith) 3
+    have h6 : ((Nat.factorial 3 : ℕ) : ℝ) = 6 := by norm_num [Nat.factorial]
     have e : (2 * s) ^ 3 / ((Nat.factorial 3 : ℕ) : ℝ) = 4 / 3 * s ^ 3 := by
-      rw [show ((Nat.factorial 3 : ℕ) : ℝ) = 6 by norm_num [Nat.factorial]]
+      rw [h6]
       ring
     rwa [e] at h
   have h0 : 0 ≤ a * Real.exp (2 * s) := by positivity
@@ -157,7 +158,9 @@ theorem exists_norm_stripIntegrand_le (τ z : ℂ) {c : ℝ} (hc : c < π / 4) :
       rw [norm_mul, norm_mul, Complex.norm_I, one_mul]
       exact mul_le_mul_of_nonneg_left hnx (norm_nonneg _)
     linarith
-  have hq := quadratic_le_exp_add ha0 (norm_nonneg τ) (by positivity : (0 : ℝ) ≤ B) hre
+  have hq : A * x.re ^ 2 + B * x.re ≤ a * Real.exp (2 * x.re) + C :=
+    quadratic_le_exp_add ha0 (norm_nonneg τ) (by positivity : (0 : ℝ) ≤ B) hre
+  have hBx : B * x.re = ‖z‖ * x.re + 3 / 2 * x.re := by rw [hB]; ring
   rw [stripIntegrand, norm_mul]
   calc ‖kernelC x‖ * ‖cexp (τ * x ^ 2 + I * z * x)‖
       ≤ K * (Real.exp (x.re / 2) * Real.exp (-(a * Real.exp (2 * x.re)))) *
@@ -165,10 +168,9 @@ theorem exists_norm_stripIntegrand_le (τ z : ℂ) {c : ℝ} (hc : c < π / 4) :
         mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
     _ = K * Real.exp (x.re / 2 + -(a * Real.exp (2 * x.re)) +
           (A * (x.re ^ 2 + 1) + ‖z‖ * (x.re + 1))) := by
-        rw [Real.exp_add, Real.exp_add]; ring
+        rw [mul_assoc, ← Real.exp_add, ← Real.exp_add]
     _ ≤ K * Real.exp (A + ‖z‖ + C + -x.re) := by
         refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hK0
-        simp only [hB] at hq
         linarith
     _ = K * Real.exp (A + ‖z‖ + C) * Real.exp (-x.re) := by
         rw [Real.exp_add]; ring

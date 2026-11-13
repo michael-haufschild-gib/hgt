@@ -82,10 +82,10 @@ and monotonicity show, after integrating with `v=u+h`,
 
 All terms for fixed `h` are integrable by `L²` Cauchy–Schwarz and
 translation invariance. The mixed jump integrand is absolutely integrable
-against `ω(h)dh` by Cauchy–Schwarz in the product jump measure. Also
-`Cβ=∫₀¹(exp(βh)+exp(-βh)-2)ω(h)dh<∞`: on `0<h<1`, the parenthesis lies
-between zero and `β exp(β)h`, and the first displacement moment is finite. Thus jumps below
-any `0<δ<1` contribute at least `-Cβ∫FG`.
+against `ω(h)dh` by polarization of the three finite diagonal energies.
+On `0<h≤1`, `exp(βh)+exp(-βh)-2` lies between zero and `β exp(β)h`.
+The finite constant `Cβ=β exp(β)∫₀∞hω(h)dh` therefore bounds the loss
+from jumps below every `0<δ≤1` by `Cβ∫FG`.
 
 **The large Gamma jumps.** Put
 `ρδ=2∫δ∞ω(h)dh` and
@@ -159,13 +159,15 @@ await final source audits:
 - `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential, giving the two diagonal coercivity inequalities.
 - `ExponentialBarrierPoleComparison`: both polar terms are bounded below by the test's half-exponential ordinary mass.
 
-The unchecked helper `HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra`
-proves the weighted row inequality, exact relative-jump decomposition, and
-the pointwise square bound after absorption of both forcing rows.
+`HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra` passes its final
+plain source audit without warnings, with the standard three axioms. It is
+wired and has its required olean. It proves the weighted row inequality,
+exact relative-jump decomposition, and pointwise square bound after
+absorption of both forcing rows.
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. Three of sixteen supporting modules are audited and wired.
+also `L²`. Four of sixteen supporting modules are audited and wired.
 
 `ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
 negation invariance, the full-line weak row identity, vanishing of a high

@@ -178,5 +178,16 @@ crossing operator, without a boundedness premise. The audited two-way
 Gamma/jump bridge should transfer this directly to the actual domain;
 subtracting two half-line cuts gives the terminal collar. Only the
 iterated/product-integral identification and actual-domain assembly remain.
+`CausalReflection/HalfLineSharpCutDomain` contains the unchecked assembly
+for all actual-domain profiles, including the literal terminal cut.
 `SharpRestrictionPreservesTheCompleteComplexWeilDomain.hasLogarithmicEnergy_intervalRestriction`
 provides a second route after a compact Lipschitz localization.
+
+For every actual minimizer, quadratic expansion and its weak equation give
+`Q(F-G)=Q(G)` for every actual-domain `G`. Translating a profile behind
+the wall back to zero and applying the attained ordinary-mass floor gives
+`Q(H)≥a(1-exp(-8h))W(H)`. Hence collar admission yields the exact bound
+`Q(B_h)=Q(F-B_h)≥a(1-exp(-8h))W(F-B_h)`.
+`CausalReflection/ConfiningHalfLineCollarEnergy` contains these unchecked
+proofs. This lower bound requires no trace; its identification with `c²h`
+still depends on the Green bridge and the remaining cross-term asymptotic.
