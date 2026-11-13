@@ -99,6 +99,26 @@ theorem twice_oddCharacterGram_eq_reflection_gap (N : ℕ) {ι : Type*}
   rw [oddCharacterGram_apply]
   exact twice_sum_odd_unitCharacterSum_mul_star N (w i) (w j)
 
+/-- The odd-character energy vanishes exactly on reflection-invariant real profiles. -/
+theorem odd_character_moment_eq_zero_iff_even (N : ℕ) (w : (ZMod (N + 1))ˣ → ℝ) :
+    (∑ χ : DirichletCharacter ℂ (N + 1) with χ.Odd,
+      ‖unitCharacterSum N (fun a => (w a : ℂ)) χ‖ ^ 2) = 0 ↔
+        ∀ a, w (-a) = w a := by
+  have h := four_mul_odd_moment_eq_reflection_defect N w
+  constructor
+  · intro hz a
+    have ht : 0 < ((N + 1).totient : ℝ) := by
+      exact_mod_cast Nat.totient_pos.mpr (by omega : 0 < N + 1)
+    rw [hz, mul_zero] at h
+    have hs : (∑ b, (w b - w (-b)) ^ 2) = 0 :=
+      (mul_eq_zero.mp h.symm).resolve_left ht.ne'
+    have ha := (sum_eq_zero_iff_of_nonneg (fun b _ => sq_nonneg (w b - w (-b)))).mp hs a
+      (mem_univ a)
+    exact (sub_eq_zero.mp (sq_eq_zero_iff.mp ha)).symm
+  · intro he
+    simp only [he, sub_self, zero_pow two_ne_zero, sum_const_zero, mul_zero] at h
+    exact (mul_eq_zero.mp h).resolve_left (by norm_num : (4 : ℝ) ≠ 0)
+
 end
 
 end GaloisForLFunctions.Goldbach
@@ -113,3 +133,4 @@ end GaloisForLFunctions.Goldbach
 #print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_rank_le_totient_div_two
 #print axioms GaloisForLFunctions.Goldbach.oddCharacterGram_apply
 #print axioms GaloisForLFunctions.Goldbach.twice_oddCharacterGram_eq_reflection_gap
+#print axioms GaloisForLFunctions.Goldbach.odd_character_moment_eq_zero_iff_even

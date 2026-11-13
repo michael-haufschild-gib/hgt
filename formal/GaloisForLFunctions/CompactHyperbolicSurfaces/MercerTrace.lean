@@ -333,34 +333,45 @@ theorem diffKer_self_eq_tsum (hab : a < b) (z : ℍ) :
   rw [mercerKer, tsum_congr h2, ← Complex.ofReal_tsum] at h
   exact_mod_cast h
 
+theorem tsum_enorm_normRep_sq (hab : a < b) (z : ℍ) :
+    ∑' j, ‖X.normRep ha (b := b) j z‖ₑ ^ 2 = ENNReal.ofReal (X.diffKer a b z z) := by
+  rw [X.diffKer_self_eq_tsum ha hab z, ENNReal.ofReal_tsum_of_nonneg (fun j => sq_nonneg _)
+    (X.summable_normRep_sq ha hab z)]
+  refine tsum_congr fun j => ?_
+  rw [← ofReal_norm, ENNReal.ofReal_pow (norm_nonneg _)]
+
+theorem tsum_ofReal_nu (hab : a < b) :
+    ∑' j, ENNReal.ofReal (X.nu ha (b := b) j) = ∫⁻ z, ENNReal.ofReal (X.diffKer a b z z) ∂X.μ := by
+  calc ∑' j, ENNReal.ofReal (X.nu ha (b := b) j)
+      = ∑' j, ∫⁻ z, ‖X.normRep ha (b := b) j z‖ₑ ^ 2 ∂X.μ :=
+        tsum_congr fun j => (X.lintegral_normRep_sq ha hab j).symm
+    _ = ∫⁻ z, ∑' j, ‖X.normRep ha (b := b) j z‖ₑ ^ 2 ∂X.μ :=
+        (lintegral_tsum fun j =>
+          ((X.continuous_normRep ha hab j).enorm.measurable.pow_const 2).aemeasurable).symm
+    _ = ∫⁻ z, ENNReal.ofReal (X.diffKer a b z z) ∂X.μ :=
+        lintegral_congr fun z => X.tsum_enorm_normRep_sq ha hab z
+
+theorem continuous_diffKer_diag (hab : a < b) : Continuous fun z => X.diffKer a b z z := by
+  have hd : Continuous fun z : ℍ => (z, z) := continuous_id.prodMk continuous_id
+  exact (X.continuous_diffKer ha hab).comp hd
+
 /-- **The trace of `P = T_a − T_b`.**  `Σ_j ν_j = ∫_F K(z, z) dz`. -/
 theorem hasSum_nu (hab : a < b) :
     HasSum (fun j => X.nu ha (b := b) j) (∫ z, X.diffKer a b z z ∂X.μ) := by
-  have hdiag : ∀ z, ∑' j, ‖X.normRep ha (b := b) j z‖ₑ ^ 2 =
-      ENNReal.ofReal (X.diffKer a b z z) := by
-    intro z
-    rw [X.diffKer_self_eq_tsum ha hab z, ENNReal.ofReal_tsum_of_nonneg (fun j => sq_nonneg _)
-      (X.summable_normRep_sq ha hab z)]
-    refine tsum_congr fun j => ?_
-    rw [← ofReal_norm, ENNReal.ofReal_pow (norm_nonneg _)]
-  have htot : ∑' j, ENNReal.ofReal (X.nu ha (b := b) j) =
-      ∫⁻ z, ENNReal.ofReal (X.diffKer a b z z) ∂X.μ := by
-    simp_rw [← X.lintegral_normRep_sq ha hab, ← hdiag]
-    exact (lintegral_tsum fun j =>
-      ((X.continuous_normRep ha hab j).enorm.measurable.pow_const 2).aemeasurable).symm
-  have hcont : Continuous fun z => X.diffKer a b z z :=
-    (X.continuous_diffKer ha hab).comp (continuous_id.prodMk continuous_id)
   obtain ⟨B, -, hB⟩ := X.exists_diffKer_le ha hab
   have hfin : ∫⁻ z, ENNReal.ofReal (X.diffKer a b z z) ∂X.μ < ∞ := by
     refine lt_of_le_of_lt (lintegral_mono fun z => ENNReal.ofReal_le_ofReal (hB z z)) ?_
     rw [lintegral_const]
     exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (measure_lt_top _ _)
+  have htot := X.tsum_ofReal_nu ha hab
   have hsum : Summable fun j => X.nu ha (b := b) j := by
-    have := ENNReal.summable_toReal (htot ▸ hfin.ne)
-    simpa only [ENNReal.toReal_ofReal (X.nu_pos ha hab _).le] using this
+    have h := ENNReal.summable_toReal (f := fun j => ENNReal.ofReal (X.nu ha (b := b) j))
+      (by rw [htot]; exact hfin.ne)
+    exact h.congr fun j => ENNReal.toReal_ofReal (X.nu_pos ha hab j).le
   have hval : ∑' j, X.nu ha (b := b) j = ∫ z, X.diffKer a b z z ∂X.μ := by
     rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun z => X.diffKer_nonneg hab z z)
-      hcont.aestronglyMeasurable, ← htot, ENNReal.tsum_toReal_eq fun _ => ENNReal.ofReal_ne_top]
+      (X.continuous_diffKer_diag ha hab).aestronglyMeasurable, ← htot,
+      ENNReal.tsum_toReal_eq fun _ => ENNReal.ofReal_ne_top]
     exact tsum_congr fun j => (ENNReal.toReal_ofReal (X.nu_pos ha hab j).le).symm
   rw [← hval]
   exact hsum.hasSum

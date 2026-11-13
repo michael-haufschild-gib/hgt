@@ -21,11 +21,13 @@ reductions "X ⇒ RH" with X weaker than the known equivalents.
 - [x] ground state charges both ends; pole capacity `μ m + W(φ) ≤ cap·m`
 - [x] bounded margin `gap ≤ μ + c₀`; cut law
 - [x] reflection at infinite block size; odd sector unbound ⇔ RH
-- [x] odd sector bounded below ⇔ RH; rate law of the antisymmetric state (module 14)
-- [ ] margin bounded below ⇔ RH at infinite block size (module 15) — compile pending
-- [ ] margin of the window matrices bounded below ⇔ RH; windows `(1, 2M]` suffice; Doob form with additive loss (module 16) — compile pending
-- [ ] exponent law: `𝔚 ≥ −C√K·mass` unconditionally, `𝔚 ≥ −C K^θ·mass` with `θ < ½` ⇒ zero width `≤ θ` (module 17) — compile pending
-- [ ] umbrella wiring of modules 14–17 after their compiles
+- [x] odd sector bounded below ⇔ RH; rate law of the antisymmetric state
+- [x] margin bounded below ⇔ RH, at infinite and at finite block size; windows `(1, 2M]` suffice; Doob form with additive loss
+- [x] exponent law for `𝔚`: `θ = ½` unconditionally, `θ < ½` ⇒ zero width `≤ θ`
+- [x] margin rate `θ < ½` ⇒ zero width `≤ θ`, at infinite and at finite block size
+- [x] dilation process on `(1, Q]` has no gap, for every `Q`
+- [x] curvature of the floor trees is exactly zero (`CD(0,∞)`, no `CD(κ,∞)` with `κ > 0`)
+- [ ] README rewritten as a foundational document (mechanisms grouped by idea, not by module)
 
 ## Approach
 Folder `formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/`, umbrella
@@ -33,10 +35,10 @@ Folder `formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/`, umbrella
 `packetForm`, refinement tower, plane of two negative squares), HFP (comb, block averages, limit
 to the zeros), SRT and SurfaceOfSpecZ (lag structures, Landau from both sides).
 
-Open: converse of the exponent law (zero width `θ` ⇒ `𝔚 ≥ −C ρ^{θ+ε}`); the exponent of the
-margin of `N` inside windows of comparable ratio; additive-loss comparison arguments for the
-Poincaré inequality; unconditional leading constant of μ; shape of the ground state between the
-ends; quantitative overlap law.
+Open: converse of the exponent laws (zero width `θ` ⇒ `𝔚 ≥ −C ρ^{θ+ε}`, margin `≥ −C ρ^{θ+ε}`);
+the Doob energy of the jets on the waves at the common returns of `t log k`; the cut of a window
+of ratio three; canonical paths and trickle-down for the Doob chains; unconditional leading
+constant of μ; quantitative overlap law.
 
 ## Log
-- 2026-11-13 — created; modules 1–17 written
+- 2026-11-13 — created; modules 1–21 compiled and wired

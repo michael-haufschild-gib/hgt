@@ -166,3 +166,4 @@ end GaloisForLFunctions.Goldbach
 #print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_eq_zero_iff
 #print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_critical_iff
 #print axioms GaloisForLFunctions.Goldbach.finiteSpectralSquareProduct_reflect
+#print axioms GaloisForLFunctions.Goldbach.spectralSquareFactor_zero_mem_strip

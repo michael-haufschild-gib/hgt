@@ -71,7 +71,7 @@ theorem integral_cos_mul_exp (s L : ℝ) :
     have h1 : HasDerivAt (fun u => Real.cos (s * u)) (-Real.sin (s * u) * s) u := hl.cos
     have h2 : HasDerivAt (fun u => Real.sin (s * u)) (Real.cos (s * u) * s) u := hl.sin
     have h3 := ((Real.hasDerivAt_exp u).mul (h1.add (h2.const_mul s))).div_const (1 + s ^ 2)
-    exact h3.congr_deriv (by rw [div_eq_iff hs]; ring)
+    exact h3.congr_deriv (by simp only [Pi.add_apply, Pi.mul_apply]; rw [div_eq_iff hs]; ring)
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hF u)
     ((by fun_prop : Continuous fun u => Real.cos (s * u) * Real.exp u).intervalIntegrable _ _)]
   simp only [mul_zero, Real.cos_zero, Real.sin_zero, Real.exp_zero, one_mul, add_zero]
