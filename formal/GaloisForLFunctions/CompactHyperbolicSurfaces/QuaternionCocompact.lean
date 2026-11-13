@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CompactHyperbolicSurfaces.QuaternionGroup
 import GaloisForLFunctions.HTGeometry.LatticeMinkowskiBound
+import GaloisForLFunctions.CompactHyperbolicSurfaces.ResolventOperators
 
 /-!
 # `Γ(N)` is cocompact
@@ -35,12 +36,10 @@ def latMap (h : Matrix (Fin 2) (Fin 2) ℝ) : (Fin 4 → ℝ) →ₗ[ℝ] (Fin 4
   toFun v := flat (h * quatMatR v)
   map_add' v w := by
     funext k
-    fin_cases k <;> simp [flat, quatMatR, Matrix.mul_apply, Fin.sum_univ_two, Matrix.vecHead,
-      Matrix.vecTail] <;> ring
+    fin_cases k <;> simp [flat, quatMatR, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
   map_smul' c v := by
     funext k
-    fin_cases k <;> simp [flat, quatMatR, Matrix.mul_apply, Fin.sum_univ_two, Matrix.vecHead,
-      Matrix.vecTail] <;> ring
+    fin_cases k <;> simp [flat, quatMatR, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
 
 theorem eq_zero_of_flat_eq_zero {M : Matrix (Fin 2) (Fin 2) ℝ} (h : flat M = 0) : M = 0 := by
   ext i j
@@ -89,10 +88,9 @@ theorem det_latBasis (h : SL(2, ℝ)) : (Matrix.of (latBasis h)).det = 24 := by
     ext i j
     fin_cases i <;> fin_cases j <;>
       simp [latBasis_apply, latMap, flat, quatMatR, Matrix.mul_apply, Fin.sum_univ_two,
-        Pi.basisFun_apply, Pi.single_apply, Matrix.vecHead, Matrix.vecTail] <;> ring
+        Pi.basisFun_apply] <;> ring
   rw [hM, Matrix.det_succ_row_zero]
-  simp [Fin.sum_univ_succ, Matrix.det_succ_row_zero, Fin.succAbove, Matrix.submatrix,
-    Matrix.vecHead, Matrix.vecTail]
+  simp [Fin.sum_univ_succ, Matrix.det_succ_row_zero, Fin.succAbove, Matrix.submatrix]
   have key : (h 0 0 * h 1 1 - h 0 1 * h 1 0) ^ 2 = 1 := by rw [hdet]; ring
   linear_combination (exp := 1) (12 * (h 0 0 * h 1 1 - h 0 1 * h 1 0) ^ 2) * hs + 24 * key
 
@@ -115,8 +113,10 @@ theorem exists_short (h : SL(2, ℝ)) : ∃ c : Fin 4 → ℤ, c ≠ 0 ∧
     rw [Real.volume_pi_closedBall _ (by norm_num)]; simp
   obtain ⟨v, hvL, hv0, hvn⟩ := exists_ne_zero_norm_le_of_covolume (μ := volume) hfund (r := 3)
     (by
-      rw [hvol, hball, Module.finrank_fin_fun, ← ENNReal.ofReal_pow (by norm_num),
-        ← ENNReal.ofReal_mul (by norm_num)]
+      rw [hvol, hball, Module.finrank_fin_fun]
+      have e2 : (2 : ENNReal) ^ 4 = ENNReal.ofReal (2 ^ 4) := by
+        rw [ENNReal.ofReal_pow (by norm_num), ENNReal.ofReal_ofNat]
+      rw [e2, ← ENNReal.ofReal_mul (by norm_num)]
       exact (ENNReal.ofReal_lt_ofReal_iff (by norm_num)).mpr (by norm_num))
   obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).mp hvL
   have hvc : v = latMap (h : Matrix (Fin 2) (Fin 2) ℝ) (fun k => (c k : ℝ)) := by
@@ -183,9 +183,9 @@ theorem exists_congGroup_mul_of_quatKey_eq {N : ℕ} {x r : Fin 4 → ℤ} (hr :
   obtain ⟨ε, hε⟩ : ∃ ε : ℤ, m = n * (ε * N) := by
     rcases lt_or_gt_of_ne hr with h | h
     · refine ⟨-1, ?_⟩
-      rw [hmdef]; push_cast; rw [Int.ofNat_natAbs_of_nonpos h.le]; ring
+      rw [hmdef]; push_cast; rw [abs_of_neg h]; ring
     · refine ⟨1, ?_⟩
-      rw [hmdef]; push_cast; rw [Int.natAbs_of_nonneg h.le]; ring
+      rw [hmdef]; push_cast; rw [abs_of_pos h]; ring
   set W := quatMul w (quatConj r)
   set y := quatOne + (N : ℤ) • (ε • W) with hy
   have hnR : (n : ℝ) ≠ 0 := by exact_mod_cast hr
@@ -193,11 +193,15 @@ theorem exists_congGroup_mul_of_quatKey_eq {N : ℕ} {x r : Fin 4 → ℤ} (hr :
     rw [← adjugate_quatMat, Matrix.mul_adjugate, det_quatMat]
   have hadj' : quatMat (quatConj r) * quatMat r = (n : ℝ) • 1 := by
     rw [← adjugate_quatMat, Matrix.adjugate_mul, det_quatMat]
+  have hyM : quatMat y = 1 + (((N : ℤ) : ℝ) * (ε : ℝ)) • quatMat W := by
+    rw [hy, quatMat_add, quatMat_one, quatMat_smul, quatMat_smul, smul_smul]
+  have hxM : quatMat x * quatMat (quatConj r) = (n : ℝ) • 1 + (m : ℝ) • quatMat W := by
+    rw [hxw, quatMat_add, Matrix.add_mul, hadj, quatMat_smul, Matrix.smul_mul, quatMat_mul]
   have hY : (n : ℝ) • quatMat y = quatMat x * quatMat (quatConj r) := by
-    rw [hxw, quatMat_add, Matrix.add_mul, hadj, quatMat_smul, Matrix.smul_mul, quatMat_mul, hy,
-      quatMat_add, quatMat_one, quatMat_smul, quatMat_smul, smul_add, smul_smul, smul_smul, hε]
+    rw [hxM, hyM, smul_add, smul_smul, hε]
+    congr 2
     push_cast
-    ring_nf
+    ring
   have hMat : quatMat y * quatMat r = quatMat x := by
     have h2 : (n : ℝ) • (quatMat y * quatMat r) = (n : ℝ) • quatMat x := by
       rw [← Matrix.smul_mul, hY, Matrix.mul_assoc, hadj', Matrix.mul_smul, Matrix.mul_one]
@@ -285,7 +289,7 @@ theorem exists_compact_congGroup {N : ℕ} (hN : 0 < N) :
   refine ⟨(⟨γ', hγ'⟩ : congGroup N)⁻¹, ?_⟩
   have hz : (toSL2R z) • I = z := toSL2R_smul_I z
   have hact : ((⟨γ', hγ'⟩ : congGroup N)⁻¹ : congGroup N).1 • z = (h * γ')⁻¹ • I := by
-    rw [mul_inv_rev, inv_inv, mul_smul, hz]
+    rw [_root_.mul_inv_rev, inv_inv, mul_smul, hz]
     rfl
   rw [Metric.mem_closedBall, dist_comm, hact,
     dist_le_iff_pairU_le (by positivity : (0 : ℝ) ≤ ρ)]
@@ -296,7 +300,12 @@ theorem exists_compact_congGroup {N : ℕ} (hN : 0 < N) :
       rw [show ((h * γ')⁻¹ : SL(2, ℝ)) i j =
         ((((h * γ')⁻¹ : SL(2, ℝ))) : Matrix (Fin 2) (Fin 2) ℝ) i j from rfl,
         Matrix.SpecialLinearGroup.coe_inv, adjugate_fin_two]
-      fin_cases i <;> fin_cases j <;> simp [abs_neg, hent]
+      fin_cases i <;> fin_cases j <;>
+        first
+        | simpa using hent 0 0
+        | simpa using hent 0 1
+        | simpa using hent 1 0
+        | simpa using hent 1 1
     exact sq_le_sq' (abs_le.mp this).1 (abs_le.mp this).2
   have hU : pairU I ((h * γ')⁻¹ • I) ≤ U := by
     have := hinv 0 0; have := hinv 0 1; have := hinv 1 0; have := hinv 1 1

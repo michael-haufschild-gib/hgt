@@ -19,6 +19,7 @@ import GaloisForLFunctions.goldbach.ReflectedProductConductorGcd
 import GaloisForLFunctions.goldbach.ReflectedProductDeterminant
 import GaloisForLFunctions.goldbach.ReducedResidueAntidiagonal
 import GaloisForLFunctions.goldbach.RiemannHypothesisBridge
+import GaloisForLFunctions.goldbach.SignedBetaReflection
 import GaloisForLFunctions.goldbach.SpectralSquareProduct
 import GaloisForLFunctions.goldbach.SquareDivisorTail
 import GaloisForLFunctions.goldbach.StripBoundaryEnergy

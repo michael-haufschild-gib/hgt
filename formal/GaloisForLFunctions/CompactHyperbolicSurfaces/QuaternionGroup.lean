@@ -44,7 +44,7 @@ theorem isCong_conj {N : ℕ} {x : Fin 4 → ℤ} (hx : IsCong N x) : IsCong N (
   obtain ⟨u, rfl⟩ := hx
   refine ⟨quatConj u, ?_⟩
   funext k
-  fin_cases k <;> simp [quatConj, quatOne, Matrix.vecHead, Matrix.vecTail] <;> ring
+  fin_cases k <;> simp [quatConj, quatOne]
 
 /-- **The congruence subgroup** `Γ(N) = {γ ∈ O¹ : γ ≡ 1 mod N}` of `SL(2, ℝ)`. -/
 def congGroup (N : ℕ) : Subgroup SL(2, ℝ) where

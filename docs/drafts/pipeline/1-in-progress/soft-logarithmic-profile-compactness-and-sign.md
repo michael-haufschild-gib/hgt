@@ -156,8 +156,17 @@ exponential-mass loss. Its derivative at zero suggests
 resolvent. Fourier modulus preservation would then give strict soft-energy
 loss at a positive real Laplace zero. The existing Laplace-ratio argument
 would imply uniqueness of the minimizing line without first proving sign
-rigidity. Extension of this identity to the closed first-moment domain is
-unproved; no uniqueness conclusion follows yet.
+rigidity. The derivative identity remains unformalized. The dominated
+Laplace-derivative proof in `LaplaceTransformMomentDerivative` supplies a
+mechanism using a smaller exponential rate.
+
+For a closed minimizer with a Laplace zero, trial recovery suggests a more
+direct test: cancel each trial's small Laplace value by a compact test
+profile and normalize. The corrected trials should still approach `μ`.
+Reflection would lower their energies by a fixed positive amount if the
+limiting causal resolvent is nonzero. This requires continuity of the
+resolvent in `L²`, an energy bound for the small correction, and the trial
+first-moment defect identity. None of these new bridges is claimed here.
 
 ## Stronger questions exposed by the domain distinction
 

@@ -3,23 +3,25 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.TheLineThroughTheSaddleIsAGaussia
 /-!
 # The heat family at a saddle time is a constant plus a cosine
 
-Let the saddle `a = σ + iη` approach the edge `η = π/4` of the strip of the kernel at the rate
-`1/(4σ) ≤ π/4 − η ≤ 1/σ` (`SaddleRegion`). The time `τ(a) = πe^{2a}/a` is then a forward time close
-to the imaginary direction: `Re τ ≍ e^{2σ}/σ²` against `|τ| ≍ e^{2σ}/σ`. At this time the heat
-family has two stationary contributions of comparable type,
+Let the saddle `a = σ + iη` lie in the wide region `σ ≥ 50`, `η ≥ 0`, `π/4 − η ≥ 1/(4σ)`
+(`WideRegion`). The time `τ(a) = πe^{2a}/a` is a forward time; it is real for the real saddles
+`η = 0`, and close to the imaginary direction on the saddle region `π/4 − η ≤ 1/σ`
+(`SaddleRegion`), where `Re τ ≍ e^{2σ}/σ²` against `|τ| ≍ e^{2σ}/σ`. At this time the heat family
+has two stationary contributions,
 
-`H_{τ(a)}(ζ/a) = B₀(a) + 2S₀(a) cos ζ + O(σ⁵e^{−σ})(|B₀(a)| + |S₀(a)|)`, `|ζ| ≤ 8`:
+`H_{τ(a)}(ζ/a) = B₀(a) + 2S₀(a) cos ζ + O(σ⁵e^{−σ})(|B₀(a)| + |S₀(a)|)`, `|ζ| ≤ R ≤ σ`:
 
 * the bulk term `B₀(a) = iΦ(0)(π/τ)^{1/2}` from the stationary point `x = 0` of `e^{τx²}`;
 * the saddle term `S₀(a)e^{±iζ}`, `S₀(a) = 4π²e^{9a/2 + f(a)}(π/(2P − τ))^{1/2}`, from the saddles
   `±a` of `τx² − πe^{2x}`.
 
-The zeros of the model `B₀ + 2S₀ cos ζ` collide at `ζ ∈ πℤ` when `2S₀ = ±B₀`.
+The two terms are of comparable size on the saddle region; towards the real saddles the saddle
+term dominates. The zeros of the model `B₀ + 2S₀ cos ζ` collide at `ζ ∈ πℤ` when `2S₀ = ±B₀`.
 
-* `SaddleRegion.*`: the sizes of `P`, `τ` and of the kernel constants on the region.
-* `exists_norm_complexHeat_sub_model_le`: the model with the error `Cσ⁵e^{−σ}`.
-* `exists_forall_norm_complexHeat_sub_model_le`: for every `ε > 0` the model holds with the
-  relative error `ε` for `σ` large.
+* `WideRegion.*`: the sizes of `P`, `τ` and of the kernel constants on the region.
+* `exists_norm_complexHeat_sub_wide_model_le`: the model with the error `Cσ⁵e^{−σ}`.
+* `exists_forall_norm_complexHeat_sub_wide_model_le`: for every window `R` and `ε > 0` the model
+  holds with the relative error `ε` for `σ` large.
 -/
 
 open Complex MeasureTheory Filter Topology Set
@@ -34,9 +36,20 @@ set_option autoImplicit false
 /-- The bulk term `B₀(a) = iΦ(0)(π/τ(a))^{1/2}`. -/
 def bulkTerm (a : ℂ) : ℂ := I * kernelC 0 * ((π : ℂ) / saddleTime a) ^ (1 / 2 : ℂ)
 
-/-- The region of the saddles: `Re a ≥ 50` and `1/(4 Re a) ≤ π/4 − Im a ≤ 1/Re a`. -/
+/-- The wide region of the saddles: `Re a ≥ 50`, `Im a ≥ 0` and `π/4 − Im a ≥ 1/(4 Re a)`. It
+contains the real saddles. -/
+def WideRegion (a : ℂ) : Prop :=
+  50 ≤ a.re ∧ 0 ≤ a.im ∧ 1 / (4 * a.re) ≤ π / 4 - a.im
+
+/-- The region of the saddles near the edge of the strip of the kernel: `Re a ≥ 50` and
+`1/(4 Re a) ≤ π/4 − Im a ≤ 1/Re a`. -/
 def SaddleRegion (a : ℂ) : Prop :=
   50 ≤ a.re ∧ 1 / (4 * a.re) ≤ π / 4 - a.im ∧ π / 4 - a.im ≤ 1 / a.re
+
+theorem SaddleRegion.wide {a : ℂ} (h : SaddleRegion a) : WideRegion a := by
+  refine ⟨h.1, ?_, h.2.1⟩
+  have h1 : 1 / a.re ≤ 1 / 50 := one_div_le_one_div_of_le (by norm_num) h.1
+  linarith [h.2.2, Real.pi_gt_three]
 
 theorem kernelC_zero_ne_zero : kernelC 0 ≠ 0 := by
   have h := kernelC_ofReal 0
@@ -55,70 +68,109 @@ theorem two_thirds_pow_le_exp {σ : ℝ} (hσ : 0 ≤ σ) : 2 / 3 * σ ^ 4 ≤ R
   rw [h24] at h
   linarith [show (2 * σ) ^ 4 / 24 = 2 / 3 * σ ^ 4 by ring]
 
-/-! ## The saddle region -/
+theorem saddlePhaseValue_re (a : ℂ) : (saddlePhaseValue a).re =
+    π * Real.exp (2 * a.re) *
+      (Real.cos (2 * a.im) * (a.re - 1) - Real.sin (2 * a.im) * a.im) := by
+  rw [saddlePhaseValue, Complex.mul_re, saddleP_re, saddleP_im, Complex.sub_re, Complex.sub_im,
+    Complex.one_re, Complex.one_im, sub_zero]
+  ring
+
+/-- A crude bound of the segment `[0, iη]`: `|bulkHalf| ≤ e K(η)` for `Re τ ≥ 0`, `|z| ≤ 1`. -/
+theorem norm_bulkHalf_le {τ z : ℂ} {η : ℝ} (hτ : 0 ≤ τ.re) (hη0 : 0 ≤ η) (hη : η < π / 4)
+    (hz : ‖z‖ ≤ 1) : ‖bulkHalf τ η z‖ ≤ stripConst η * Real.exp 1 := by
+  have hK := stripConst_nonneg hη0 hη
+  have hη1 : η ≤ 1 := by linarith [Real.pi_lt_d2]
+  have hbound : ∀ v ∈ Ι (0 : ℝ) η,
+      ‖kernelC (v * I) * cexp (-(τ * (v : ℂ) ^ 2) - z * v)‖ ≤ stripConst η * Real.exp 1 := by
+    intro v hv
+    rw [uIoc_of_le hη0] at hv
+    have hk := norm_kernelC_le_stripConst (x := (v : ℂ) * I) hη
+      (by simpa [abs_of_pos hv.1] using hv.2) (by simp)
+    have hk' : ‖kernelC ((v : ℂ) * I)‖ ≤ stripConst η := by
+      have h0 : ((v : ℂ) * I).re = 0 := by simp
+      rw [h0, zero_div, Real.exp_zero, mul_one] at hk
+      exact hk
+    have hexp : ‖cexp (-(τ * (v : ℂ) ^ 2) - z * v)‖ ≤ Real.exp 1 := by
+      rw [Complex.norm_exp]
+      refine Real.exp_le_exp.mpr ?_
+      have h1 : (-(τ * (v : ℂ) ^ 2) - z * v).re = -(τ.re * v ^ 2) - z.re * v := by
+        have e : -(τ * (v : ℂ) ^ 2) - z * v = -(τ * ((v ^ 2 : ℝ) : ℂ)) - z * ((v : ℝ) : ℂ) := by
+          push_cast
+          ring
+        rw [e, Complex.sub_re, Complex.neg_re, Complex.re_mul_ofReal, Complex.re_mul_ofReal]
+      have h2 : -z.re ≤ 1 := (neg_le_abs z.re).trans ((Complex.abs_re_le_norm z).trans hz)
+      rw [h1]
+      linarith [mul_nonneg hτ (sq_nonneg v), hv.2, mul_le_mul_of_nonneg_right h2 hv.1.le]
+    rw [norm_mul]
+    exact mul_le_mul hk' hexp (norm_nonneg _) hK
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const hbound
+  rw [bulkHalf, norm_mul, Complex.norm_I, one_mul]
+  refine h.trans ?_
+  rw [sub_zero, abs_of_nonneg hη0]
+  exact mul_le_of_le_one_right (by positivity) hη1
+
+/-! ## The regions of the saddles -/
 
 namespace SaddleRegion
-
-variable {a : ℂ}
-
-theorem re_pos (h : SaddleRegion a) : 0 < a.re := by linarith [h.1]
-
-theorem dist_le (h : SaddleRegion a) : π / 4 - a.im ≤ 1 / 50 :=
-  h.2.2.trans (one_div_le_one_div_of_le (by norm_num) h.1)
-
-theorem im_lt (h : SaddleRegion a) : a.im < π / 4 := by
-  have hσ := h.re_pos
-  have h1 : 0 < 1 / (4 * a.re) := by positivity
-  linarith [h.2.1]
-
-theorem half_le_im (h : SaddleRegion a) : 1 / 2 ≤ a.im := by
-  have := Real.pi_gt_three
-  linarith [h.dist_le]
-
-theorem im_le_one (h : SaddleRegion a) : a.im ≤ 1 := by
-  have := h.im_lt
-  have := Real.pi_lt_d2
-  linarith
 
 theorem cos_eq (a : ℂ) : Real.cos (2 * a.im) = Real.sin (2 * (π / 4 - a.im)) := by
   rw [← Real.cos_pi_div_two_sub]
   congr 1
   ring
 
-theorem le_cos (h : SaddleRegion a) : 1 / (4 * a.re) ≤ Real.cos (2 * a.im) := by
+theorem time_re_eq (a : ℂ) : (saddleTime a).re =
+    ((saddleP a).re * a.re + (saddleP a).im * a.im) / Complex.normSq a := by
+  rw [saddleTime, Complex.div_re, ← add_div]
+
+theorem exp_neg_sq_mul_exp (σ : ℝ) : Real.exp (-σ) ^ 2 * Real.exp (2 * σ) = 1 := by
+  rw [sq, ← Real.exp_add, ← Real.exp_add]
+  have : -σ + -σ + 2 * σ = 0 := by ring
+  rw [this, Real.exp_zero]
+
+theorem exp_neg_two_mul_exp (σ : ℝ) : Real.exp (-(2 * σ)) * Real.exp (2 * σ) = 1 := by
+  rw [← Real.exp_add]
+  simp
+
+end SaddleRegion
+
+open SaddleRegion (cos_eq time_re_eq exp_neg_sq_mul_exp exp_neg_two_mul_exp)
+
+namespace WideRegion
+
+variable {a : ℂ}
+
+theorem re_pos (h : WideRegion a) : 0 < a.re := by linarith [h.1]
+
+theorem im_lt (h : WideRegion a) : a.im < π / 4 := by
+  have hσ := h.re_pos
+  have h1 : 0 < 1 / (4 * a.re) := by positivity
+  linarith [h.2.2]
+
+theorem im_le_one (h : WideRegion a) : a.im ≤ 1 := by
+  have := h.im_lt
+  have := Real.pi_lt_d2
+  linarith
+
+theorem le_cos (h : WideRegion a) : 1 / (4 * a.re) ≤ Real.cos (2 * a.im) := by
   have hπ := Real.pi_pos
   have hδ0 : 0 ≤ π / 4 - a.im := by linarith [h.im_lt]
-  have h1 := Real.mul_le_sin (x := 2 * (π / 4 - a.im)) (by linarith)
-    (by linarith [Real.pi_gt_three, h.dist_le])
+  have h1 := Real.mul_le_sin (x := 2 * (π / 4 - a.im)) (by linarith) (by linarith [h.2.1])
   have h2 : π / 4 - a.im ≤ 2 / π * (2 * (π / 4 - a.im)) := by
     rw [div_mul_eq_mul_div, le_div_iff₀ hπ]
     nlinarith [mul_nonneg hδ0 (sub_nonneg.mpr Real.pi_le_four)]
   rw [cos_eq]
-  linarith [h.2.1]
+  linarith [h.2.2]
 
-theorem cos_le (h : SaddleRegion a) : Real.cos (2 * a.im) ≤ 2 / a.re := by
-  have hδ0 : 0 ≤ π / 4 - a.im := by linarith [h.im_lt]
-  have h1 := Real.sin_le (x := 2 * (π / 4 - a.im)) (by linarith)
-  have h2 : 2 * (π / 4 - a.im) ≤ 2 / a.re := by
-    rw [show (2 : ℝ) / a.re = 2 * (1 / a.re) by ring]
-    linarith [h.2.2]
-  rw [cos_eq]
-  linarith
-
-theorem cos_pos (h : SaddleRegion a) : 0 < Real.cos (2 * a.im) := by
+theorem cos_pos (h : WideRegion a) : 0 < Real.cos (2 * a.im) := by
   have hσ := h.re_pos
   exact lt_of_lt_of_le (by positivity) h.le_cos
 
-theorem half_le_sin (h : SaddleRegion a) : 1 / 2 ≤ Real.sin (2 * a.im) := by
-  have hδ0 : 0 ≤ π / 4 - a.im := by linarith [h.im_lt]
-  have hδ1 := h.dist_le
-  have e : Real.sin (2 * a.im) = Real.cos (2 * (π / 4 - a.im)) := by
-    rw [← Real.sin_pi_div_two_sub]
-    congr 1
-    ring
-  have h1 := Real.one_sub_sq_div_two_le_cos (x := 2 * (π / 4 - a.im))
-  rw [e]
-  nlinarith
+theorem sin_nonneg (h : WideRegion a) : 0 ≤ Real.sin (2 * a.im) :=
+  Real.sin_nonneg_of_nonneg_of_le_pi (by linarith [h.2.1]) (by linarith [h.im_lt, Real.pi_pos])
+
+theorem P_im_nonneg (h : WideRegion a) : 0 ≤ (saddleP a).im := by
+  rw [saddleP_im]
+  exact mul_nonneg (mul_pos Real.pi_pos (Real.exp_pos _)).le h.sin_nonneg
 
 /-- `πe^{2σ} ≤ 4σ Re P`. -/
 theorem pi_exp_le (h : SaddleRegion a) :

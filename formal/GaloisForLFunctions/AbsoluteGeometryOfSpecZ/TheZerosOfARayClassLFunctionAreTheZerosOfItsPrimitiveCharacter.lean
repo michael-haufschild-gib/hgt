@@ -74,7 +74,7 @@ theorem differentiable_modulusEulerFactor (ψ : HeckeCharacter 𝔪) :
   show Differentiable ℂ fun s : ℂ => ∏ v ∈ (finite_primes_dvd 𝔪).toFinset,
     (1 - heckeValue (conductorModulus 𝔪 ψ) (primitiveHecke 𝔪 ψ) v.asIdeal *
       (Ideal.absNorm v.asIdeal : ℂ) ^ (-s))
-  exact Differentiable.finsetProd fun (v : HeightOneSpectrum (𝓞 K)) _ =>
+  exact Differentiable.fun_finsetProd fun (v : HeightOneSpectrum (𝓞 K)) _ =>
     differentiable_one_sub_mul_absNorm_cpow v _
 
 theorem modulusEulerFactor_ne_zero (ψ : HeckeCharacter 𝔪) {s : ℂ} (hs : 0 < s.re) :

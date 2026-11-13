@@ -7,8 +7,8 @@ import GaloisForLFunctions.goldbach.ProductResidueProfile
 The complete multiplication profile and its balanced-block realization are
 even under residue negation. Their odd-character moments vanish. More
 precisely, their full multiplicative-character transforms are supported at
-the principal character, although their additive Fourier transforms retain
-the nonconstant gcd spectrum.
+the principal character, while their additive Fourier transforms retain
+the gcd spectrum.
 -/
 
 namespace GaloisForLFunctions.Goldbach
