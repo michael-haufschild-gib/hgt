@@ -70,8 +70,11 @@ Therefore `C_T(μ)−B₀=O(1/L)` in operator norm and
 The quartic inertia polynomial has the exact centered form
 `q⋆(H)=(64/49)[(3/4)I+(1/4)(H−I)²−(H−I)⁴]`.
 Separate cubic asymptotics are unnecessary when the centered fourth source
-moment is controlled directly. Neither pole subtraction nor the
-archimedean term supplies a nonzero limiting correction to that prime moment.
+moment is controlled directly. The archimedean error itself tends to zero
+unconditionally in normalized Schatten fourth norm. Minkowski then transfers
+bounded fourth moments between the centered full source and the pure prime
+source, with the same limits whenever those moments are bounded. No
+unconditional boundedness of either fourth moment is asserted.
 
 ## Gates
 

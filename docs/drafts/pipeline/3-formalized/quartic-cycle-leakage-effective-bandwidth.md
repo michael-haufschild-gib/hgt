@@ -1,7 +1,7 @@
 # Quartic cycle leakage controls effective bandwidth
 
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** B27 frequency-profile design.
 - **Statement:** A probability density with little quartic frequency leakage must have effective bandwidth close to one half.
 
@@ -54,9 +54,20 @@ frequency mass outside the available correlation region. This is a positive
 geometric mass, not a bound on the signed arithmetic contribution. Proving six
 singleton ordinates still needs a source estimate on that region; ζ target remains open.
 
+## Lean declarations
+
+`IncommensurableGaborPinching/QuarticCycleProfileStability.lean` proves:
+
+- `effectiveBandwidth_le_of_quarticCycleLeakage`: stability law.
+- `quarticCycleLeakage_eq_zero_iff`: half-interval support classification for atomless probability measures.
+- `zero_leakage_and_energy_two_iff_uniform`: exact uniform extremizer.
+
+The fourth root is `Real.sqrt (Real.sqrt (8 * δ))`. The current-source check
+passed; each displayed theorem depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
 ## Gates
 
 - [x] Corpus novelty search found no matching cycle/effective-bandwidth stability law.
 - [x] Dependency-closed paper proof.
-- [ ] Exact density theorem, support classification and equality case in Lean.
-- [ ] Transitive axiom audit of new declarations.
+- [x] Exact density theorem, support classification and equality case in Lean.
+- [x] Transitive axiom audit of new declarations.

@@ -207,7 +207,8 @@ theorem exists_exchange (R : ℝ) : ∃ σ₀ : ℝ, ∀ {ε : ℂ} {a : ℝ →
           mul_one]
     have hc : ‖-ε * u‖ = 1 := by rw [norm_mul, norm_neg, hεn, hun, one_mul]
     refine injOn_and_deriv_ne_zero (differentiable_scaledHeat (a s)) (convex_closedBall _ _)
-      (c := -ε * u) (m := 1 / 9) (δ := ‖bulkTerm (a s)‖ / 8192) hc (fun ζ hζ => ?_) ?_
+      (S := saddleTerm (a s)) (c := -ε * u) (m := 1 / 9) (δ := ‖bulkTerm (a s)‖ / 8192) hc
+      (fun ζ hζ => ?_) ?_
       (fun ζ hζ => ?_)
     · rw [Metric.mem_closedBall, dist_eq_norm, ← sub_sub] at hζ
       have hsin : Complex.sin ζ = -ε * Complex.sin (ζ - θ) := by

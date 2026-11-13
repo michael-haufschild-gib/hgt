@@ -10,7 +10,8 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.Cusp.ControlledStratumArithm
 # Fixed Fourier geometry
 
 Fixed cusps and fixed factors of a controlled stratum, the fixed Fourier geometry and level
-bounds; the exact reflected radial series at a fixed cusp and fixed reflection ray counts.
+bounds; amplitudes and static reflection phases of fixed cusp shapes; the exact reflected
+radial series at a fixed cusp and fixed reflection ray counts.
 -/
 
 noncomputable section

@@ -34,8 +34,10 @@ theorem tendsto_logarithmicCutoff_zero
   have ht := tendsto_lpBoundedMulCLM_apply (μ := (volume : Measure ℝ)) hφ
     (ψ := fun _ : ℝ => (0 : ℂ)) measurable_const zero_le_one hφb hzb
     (fun x => by
-      simpa only [Complex.ofReal_zero, Function.comp_apply] using
-        (Complex.continuous_ofReal.tendsto 0).comp (hpt x)) f
+      have hx : Tendsto (fun n => Complex.ofReal (χ n x)) atTop
+          (𝓝 (Complex.ofReal 0)) :=
+        (Complex.continuous_ofReal.tendsto 0).comp (hpt x)
+      exact hx) f
   have hz : lpBoundedMulCLM (p := 2) (μ := (volume : Measure ℝ))
       (φ := fun _ : ℝ => (0 : ℂ)) measurable_const zero_le_one hzb f = 0 := by
     apply Lp.ext

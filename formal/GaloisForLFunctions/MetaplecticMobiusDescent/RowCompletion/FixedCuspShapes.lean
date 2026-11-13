@@ -7,9 +7,9 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.FixedFourierGeome
 /-!
 # Fixed cusp shapes and static phases
 
-Factorization modulo an ideal (`CanonicalCoefficientClass.FactorsModulo`), the amplitude and
-shape factors of fixed cusp shapes and their static reflection phases; the different phase adds
-modulus nine to the arithmetic character.
+Factorization modulo an ideal (`CanonicalCoefficientClass.FactorsModulo`), model dual
+numerators and stratum shape factors of fixed cusp shapes; the different phase adds modulus
+nine to the arithmetic character; fixed theta row coefficients and active cusp data.
 -/
 
 noncomputable section
