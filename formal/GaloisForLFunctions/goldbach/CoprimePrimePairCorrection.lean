@@ -104,4 +104,6 @@ theorem coprimePrimePairWeight_pos_iff (N : ℕ) :
     rw [if_pos hc]
     exact mul_pos ((primeLogWeight_pos_iff p).mpr hp) ((primeLogWeight_pos_iff q).mpr hq)
 
+end
+
 end GaloisForLFunctions.Goldbach

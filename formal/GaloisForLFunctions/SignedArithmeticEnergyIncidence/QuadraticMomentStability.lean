@@ -46,7 +46,8 @@ theorem norm_operator_quadratic_add_sub_le (T : E →L[𝕜] E) (v e : E) :
 theorem norm_operator_quadratic_sub_le (T : E →L[𝕜] E) (u v : E) :
     ‖inner 𝕜 (T u) u - inner 𝕜 (T v) v‖ ≤
       ‖T‖ * (2 * ‖v‖ * ‖u - v‖ + ‖u - v‖ ^ 2) := by
-  simpa only [add_sub_cancel] using norm_operator_quadratic_add_sub_le T v (u - v)
+  simpa only [← add_sub_assoc, add_sub_cancel_left] using
+    norm_operator_quadratic_add_sub_le T v (u - v)
 
 /-- Operator and testing-vector errors have separate, explicit costs. -/
 theorem norm_operator_quadratic_sub_operator_le (T S : E →L[𝕜] E) (u v : E) :
@@ -64,5 +65,7 @@ theorem norm_operator_quadratic_sub_operator_le (T S : E →L[𝕜] E) (u v : E)
       add_le_add (norm_operator_pairing_le (T - S) u u)
         (norm_operator_quadratic_sub_le S u v)
     _ = _ := by ring
+
+end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

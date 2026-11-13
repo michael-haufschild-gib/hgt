@@ -270,17 +270,17 @@ theorem exists_rowEnergy_le {a : ℝ} (ha : 1 < a) : ∃ R : ℝ≥0∞, R < ∞
   calc ∫⁻ ξ in X.F, (autK X.Γ (resKernel a) w ξ) ^ 2
       ≤ ∫⁻ ξ in X.F, 4 * (2 * N₀ * autK X.Γ (fun u => nearRes a u ^ 2) w ξ +
           (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2) := lintegral_mono hpt
-    _ = 4 * (2 * N₀ * ∫⁻ ξ in X.F, autK X.Γ (fun u => nearRes a u ^ 2) w ξ +
+    _ = 4 * (2 * N₀ * (∫⁻ ξ in X.F, autK X.Γ (fun u => nearRes a u ^ 2) w ξ) +
           (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2 * volume X.F) := by
         rw [lintegral_const_mul' _ _ (by norm_num), lintegral_add_right _ measurable_const,
           lintegral_const_mul' _ _ (ENNReal.mul_ne_top (by norm_num) ENNReal.ofReal_ne_top),
           setLIntegral_const, mul_comm ((ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2)]
     _ ≤ 4 * (2 * N₀ * (ENNReal.ofReal (C₈ ^ 2) * L) +
           (ENNReal.ofReal (C₁ * 2 ^ a) * M) ^ 2 * volume X.F) := by
-        refine mul_le_mul_right (add_le_add (mul_le_mul_left ?_ _) le_rfl) _
+        refine mul_le_mul_right (add_le_add (mul_le_mul_right ?_ _) le_rfl) _
         have hmeas : Measurable fun u => nearRes a u ^ 2 :=
           ((measurable_resKernel a).indicator measurableSet_Iic).pow_const 2
-        rw [setLIntegral_autK X.isFundamentalDomain hmeas, lintegral_pairU_eq_I,
+        rw [setLIntegral_autK X.isFundamentalDomain hmeas, lintegral_pairU_eq_I (fun u => nearRes a u ^ 2) w,
           ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
         refine lintegral_mono_ae ?_
         filter_upwards [measure_eq_zero_iff_ae_notMem.mp (volume_singleton I)] with ξ hξ

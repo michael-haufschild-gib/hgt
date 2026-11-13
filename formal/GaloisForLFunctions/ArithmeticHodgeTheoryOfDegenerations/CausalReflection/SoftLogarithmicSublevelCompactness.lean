@@ -37,7 +37,7 @@ theorem SoftLogarithmicHalfLineDomain.sublevel_bounds_of_L2_representative {F : 
     simpa only [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hm
   have hnorm : ‖v‖ ^ 2 = 1 := by
     calc
-      _ = ∫ u, ‖v u‖ ^ 2 := RHTower.norm_sq_eq_integral v
+      _ = ∫ u, ‖v u‖ ^ 2 := _root_.RHTower.norm_sq_eq_integral v
       _ = ∫ u, ‖cx F u‖ ^ 2 := by
         apply integral_congr_ae
         filter_upwards [hv] with u hu
@@ -59,7 +59,7 @@ theorem SoftLogarithmicHalfLineDomain.sublevel_bounds_of_L2_representative {F : 
     have he := coeFn_fourierTransform_eq_fourierIntegral v hv1
     change (fourierUnitary v : ℝ → ℂ) =ᵐ[volume] 𝓕 (v : ℝ → ℂ) at he
     exact he.trans (Eventually.of_forall fun ξ => Real.fourier_congr_ae hv ξ)
-  have hplain := RHTower.integrable_norm_sq_fourier (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
+  have hplain := _root_.RHTower.integrable_norm_sq_fourier (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
     hF.memLp_complex
   have hpositive := hF.integrable_positiveLogarithm
   have hparts : suzukiHlogDensity v =ᵐ[volume]
@@ -77,7 +77,7 @@ theorem SoftLogarithmicHalfLineDomain.sublevel_bounds_of_L2_representative {F : 
       _ = (∫ ξ, ‖𝓕 (cx F) ξ‖ ^ 2) +
           ∫ ξ, max (Real.log |ξ|) 0 * ‖𝓕 (cx F) ξ‖ ^ 2 := integral_add hplain hpositive
       _ = _ := by
-        rw [RHTower.integral_norm_sq_fourier_eq (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
+        rw [_root_.RHTower.integral_norm_sq_fourier_eq (f := cx F) (hF.integrable.ofReal (𝕜 := ℂ))
           hF.memLp_complex, hmc]
   obtain ⟨hphysical, hspectral⟩ := hF.sublevel_bounds hm hE
   refine ⟨?_, ⟨hfirst, ?_⟩, ⟨hlog, ?_⟩⟩

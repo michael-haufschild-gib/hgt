@@ -53,4 +53,6 @@ theorem primePairWeight_odd_character_identity (N : ℕ) :
     coprimePrimePairWeight_odd_character_identity]
   ring
 
+end
+
 end GaloisForLFunctions.Goldbach

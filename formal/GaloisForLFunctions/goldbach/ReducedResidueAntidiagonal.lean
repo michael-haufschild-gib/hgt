@@ -40,7 +40,7 @@ theorem sum_units_eq_coprime_antidiagonal (N : ℕ) (F : ℕ → ℕ → ℝ) :
     exact mem_filter.mpr ⟨mem_antidiagonal.mpr (unit_val_add_neg_val N u),
       ZMod.val_coe_unit_coprime u⟩
   · intro u _ v _ h
-    exact Units.ext (ZMod.val_injective (congrArg Prod.fst h))
+    exact Units.ext (ZMod.val_injective (N + 2) (congrArg Prod.fst h))
   · intro p hp
     obtain ⟨hpN, hc⟩ := mem_filter.mp hp
     have hs := mem_antidiagonal.mp hpN
@@ -61,5 +61,7 @@ theorem sum_units_eq_coprime_antidiagonal (N : ℕ) (F : ℕ → ℕ → ℝ) :
       omega
   · intro u _
     rfl
+
+end
 
 end GaloisForLFunctions.Goldbach
