@@ -122,7 +122,27 @@ Modules in `GaloisTheoryOfZeros/`:
 
 | Module | Content | Status |
 |---|---|---|
-| `AZeroFollowedThroughSimpleZerosIsMovedByTheForwardMonodromy` | theorem 1 | in progress |
+| `AZeroFollowedThroughSimpleZerosIsMovedByTheForwardMonodromy` | theorem 1: `exists_forward_transports_of_simple_lift`, `SimplyJoined` (symm, trans), `simplyJoined_iff_exists_mem_forwardMonodromy` | done |
+| `AZeroAloneInAMovingRegionIsFollowedThroughSimpleZeros` | tool for 3, 5: `exists_simplyJoined_of_alone` (regions `d(s,z) ≤ 0`, no zero on the edge, at most one zero, simple) | done |
+| `TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue`, `TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine` | theorem 2 without the derivative: `WideRegion`, `exists_forall_norm_complexHeat_sub_wide_model_le (R)` | done |
+| signed loops | theorem 4 | open |
+| strips | derivative of the model, theorem 3, strips along a path of saddles | open |
+| real times | theorem 6, order | open |
+| real saddles, exchanges, assembly | theorems 5, 6, 7 | open |
+
+Lean design of the open modules:
+
+- Signed loops: `signSaddle a₁ s t = a₁ + loopShift a₁ s + t·πi/D₁`, `D₁ = P₁(2a₁ − 1)`. On it
+  `Q cos² ξ₀(s) e^{−2πit} ≈ 1`. With `A = 2S₀ cos ξ₀(s) e^{−iπt}`: `A² ≈ B₀²`, so on a path
+  `A ≈ B₀` throughout or `A ≈ −B₀` throughout (`norm_sub_le_or_norm_add_le`). The loops `t = 0`
+  and `t = 1` are joined by the bridge `s = 0`, `t ∈ [0, 1]`, and `e^{−iπ} = −1`: the two loops
+  have opposite signs. No logarithm of `u` is needed.
+- Strips: a strip is given by a real `θ` with `sin θ = 0`: `θ + 1/8 ≤ Re ζ ≤ θ + π − 1/8`,
+  `|Im ζ| ≤ 1`. `Re(cos θ · sin ζ) ≥ sin(1/8)` on it; injectivity by
+  `Bottcher.injOn_of_re_deriv_pos`; the lift along a path of saddles by
+  `exists_simplyJoined_of_alone` with `d = max(|Re(az) − θ − π/2| − (π/2 − 1/8), |Im(az)| − 1)`.
+- Exchanges: `exists_simplyJoined_of_alone` with `d = |a(s)z − θ − ξ₀(s)| − 1/8`.
 
 ## Log
 - 2026-11-13 — created; paper proof written.
+- 2026-11-13 — theorem 1, the tracking tool and the model on the wide region formalized.

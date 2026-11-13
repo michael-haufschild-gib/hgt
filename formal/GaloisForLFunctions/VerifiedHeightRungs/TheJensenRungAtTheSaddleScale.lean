@@ -154,9 +154,8 @@ theorem jensenNonrealCount_eq_zero_of_rhVerifiedThrough_sq {T : ℝ} (hT : 0 ≤
 theorem jensenNonrealCount_eq_zero_of_le {d : ℕ} (hd : d ≤ 17957) : jensenNonrealCount d = 0 := by
   refine jensenNonrealCount_eq_zero_of_rhVerifiedThrough_sq (T := 67) (by norm_num)
     HadamardBudget.rhVerifiedThrough_sixtySeven ?_
-  have : (d : ℝ) ≤ 17957 := by exact_mod_cast hd
-  norm_num
-  exact this
+  calc (d : ℝ) ≤ 17957 := by exact_mod_cast hd
+    _ = 4 * (67 : ℝ) ^ 2 + 1 := by norm_num
 
 /-- **The rung `4T² + 1` is sharp for zero configurations.** For `d > 4T² + 1` there is a point `ρ`
 of height above `T` in the strip `|Im ρ| < ½` whose conjugate pair alone has a Jensen polynomial of
@@ -197,3 +196,7 @@ theorem exists_pair_beyond_rung {T : ℝ} (hT : 0 ≤ T) {d : ℕ} (hd : 4 * T ^
 end
 
 end GaloisForLFunctions.VerifiedHeightRungs
+
+#print axioms GaloisForLFunctions.VerifiedHeightRungs.jensenNonrealCount_eq_zero_of_rhVerifiedThrough_width
+#print axioms GaloisForLFunctions.VerifiedHeightRungs.jensenNonrealCount_eq_zero_of_le
+#print axioms GaloisForLFunctions.VerifiedHeightRungs.exists_pair_beyond_rung

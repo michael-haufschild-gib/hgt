@@ -38,9 +38,20 @@ prime-side control of several profiles, retaining correlations between simple an
 multiple/off-line fibres. Existing disjoint-pair pinching extracts only pairs of
 simple critical zeros; it does not yet supply this constraint.
 
+The higher form factors do not currently close this gap.
+`RHTower.tendsto_tripleFormFactor` bounds a signed triple product by `o(T log T)`;
+its repeated-zero terms cannot be discarded from the signed sum.
+`RHTower.tendsto_fourLevelFormFactor` and `RHTower.tendsto_fourthMoment`
+give leading terms at scale `T log²T`. For a divisor of bounded multiplicity,
+the full collision diagonal has scale `T log T`, below that normalization.
+No sign theorem for the remaining connected terms is supplied.
+
 ## Gates
 
 - [x] Exact target and existing theorem located.
+- [x] Current five-run source checked with `lake --old env lean`; its conclusion,
+  singleton-density input and `Zeta23.paperInputs_zeta` use only `propext`,
+  `Classical.choice`, `Quot.sound`.
 - [ ] Dependency-closed proof of six consecutive singleton ordinates.
 - [ ] Extension to every finite length.
 - [ ] Lean formalization and transitive axiom audit.

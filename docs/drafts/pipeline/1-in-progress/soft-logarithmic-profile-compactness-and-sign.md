@@ -182,7 +182,7 @@ recovers a finite first moment; Fatou first supplies finiteness if the
 quotient integrals are uniformly bounded. This applies to the reflected
 profile before its first-moment integrability is known. The elementary
 exponential slope proof in `HilbertMetric/GaussianJetPositivity` supplies
-the pointwise limit; the integral bridge is drafted, not audited.
+the pointwise limit; the integral bridge remains unformalized.
 
 More precisely, for `0<t<a` let `W_t(G)=∫exp(2πtu)|G(u)|²du` and
 `A_t(G)=(‖G‖₂²-W_t(G))/t`. Equal ordinary masses and the exact reflection

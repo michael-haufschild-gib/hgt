@@ -69,6 +69,44 @@ embeds `B ⊗ ℝ ≅ M₂(ℝ)` with `nrd = det`. `O = ℤ⟨1, i, j, ij⟩`, `
   `θ(z) = Σ_γ ψ(γ⁻¹z) χ̃(γ)` (Γ-partition of unity `ψ`) gives the test function `e^{2πiθ/n}` on
   `Γ_n = ker(χ̃ mod n)`, orthogonal to constants, with Rayleigh quotient `O(1/n²)`.
 
+## Remaining route (paper)
+Notation: `X = Γ\ℍ` a `CompactQuotient` with `|tr γ| > 2` for `γ ≠ 1` (true in `Γ(N)`: `tr = 2x₀`,
+`x₀ ≡ 1 mod N`, `|x₀| ≤ 1` forces `x = 1` by anisotropy of the pure part). `D = k_a − k_s`, `1 < a < s`.
+1. *Hyperbolic elements.* `γ = ±σ dil(N) σ⁻¹`, `N > 1`; `ℓ(γ) = log N`. Commuting with `dil(N)`, `N ≠ 1`,
+   means diagonal. The centralizer `Z(γ)` embeds in `ℝ` by `δ ↦ log M_δ` (`σ⁻¹δσ = ±dil(M_δ)`),
+   injectively (`−1 ∉ Γ`), with finitely many values in bounded sets (`finite_near`, `d(σi, δσi) = |log M_δ|`),
+   so `Z(γ) = ⟨γ₀⟩`. Primitive = generates its centralizer. Classes `≠ 1` ↔ (primitive class, `m ≥ 1`),
+   `[γ₀] , m ↦ [γ₀^m]`, `ℓ = mℓ₀`.
+2. *Class orbital integral.* `A = σ·{1 ≤ |z| < e^{ℓ₀}}` meets each `Z(γ)`-orbit exactly once. Fibres of
+   `δ ↦ δ⁻¹γδ` are cosets `Z(γ)δ₁`, so `Σ_{γ'∈[γ]} ∫_F D(u(z,γ'z)) = Σ_δ ∫_F 1_A(δz) D(u(δz,γδz)) = ∫_A D(u(w,γw))
+   = ℓ₀ 𝒜D(ℓ)/(2 sinh(ℓ/2))` (`RHTower.lintegral_smul_annulus_pairU_conj`, `t = η/(2 sinh(ℓ/2))`).
+3. *Trace formula.* `hasSum_nu` + Tonelli: `Σ_j ν_j = |F|·D(0) + Φ(a)/(2a−1) − Φ(s)/(2s−1)`,
+   `Φ(s) = Σ_{[γ]≠1} ℓ₀ e^{−sℓ}/(1 − e^{−ℓ})`, `D(0) = (1/2π)Σ_k (1/(a+k) − 1/(s+k))`
+   (substitution `w = ((1/x − x)/2)²`: `dw/(w√(1+w)) = −4dx/(1−x²)`). Positivity gives `Φ(a) < ∞` for `a > 1`.
+4. *Euler product.* `Z_E(s) = Π_{prim p, k ≥ 0} (1 − e^{−(s+k)ℓ_p})`, `Re s > 1`, nonvanishing,
+   `logDeriv Z_E = Φ` (`logDeriv_tprod_eq_tsum`, rearrangement through the bijection of 1).
+5. *Continuation to `Re s > 0`.* Identity theorem on `Re s > 1`:
+   `Φ(s) = E'/E(s) + R(s)`, `E = Π_j (1 + w_j) e^{−w_j}`, `w_j = (s(s−1) − c)/(λ_j + c)`, `c = a(a−1)`
+   (`Σ 1/(λ_j+c)² < ∞` from `Σν_j < ∞`); `R(s) = (2s−1)[Φ(a)/(2a−1) + (|F|/2π) Σ_k (1/(a+k) − 1/(s+k))]`
+   with explicit primitive `G = A(s²−s) + (|F|/2π) Σ_k g_k`, `g_k = (s²−s)/(a+k) − 2s + (2k+1) Log(s+k) − g_k(a)`.
+   `Z = κ E e^{G}` on `Re s > 0`, `= Z_E` on `Re s > 1`.
+6. *Functional equation* on `0 < Re s < 1`: `E(1−s) = E(s)`; `R(s) + R(1−s) = |F| v tan πv`, `v = s − ½`
+   (cotangent series), so `Z(1−s) = Z(s) exp(−|F| ∫_0^{s−½} v tan πv dv)`.
+7. *Zeros off the line* in the strip: `λ_j + s(s−1) = 0`, `s ∉ ½ + iℝ` ⇒ `s = ½ ± √(¼ − λ_j)`, `0 < λ_j < ¼`;
+   finitely many (compact `T_a`).
+8. *Walls.* `W = {w ∈ O : trd w = 0, nrd w = −2, w ≡ i mod 23}`, `f_w(z) = (c|z|² − 2a·Re z − b)/Im z`
+   for `w = [[a,b],[c,−a]]`; `f_{γwγ⁻¹}(γz) = f_w(z)`; walls through a bounded set are finitely many
+   (`(a − cx)² + c²y² = 2`). `θ(z) = Σ_w (1[f_w(z)>0] − 1[f_w(z₀)>0])`, `χ(γ) = θ(γz₀)` a homomorphism
+   `Γ(23) → ℤ`. On the axis `A = {|z| = √3}` of `ℤ[j]^×`, `f_w ∝ −(3x₃ + x₁ Re z)`; a sign change on
+   `[0, Re ηi√3]` forces `x₁² > 3x₃²`, hence `x₂ = 0`, `x₁² − 3x₃² = 1`: `w = u i`, `u ∈ ℤ[√3]` of norm 1,
+   `u ≡ 1 mod 23`, so `u = (2+√3)^{11m}` (Pell; `(2+√3)` has order `11` mod 23). For `η = (2+√3)^{11}`:
+   `χ(η) = −2`.
+9. *Small eigenvalue.* `Γ_n = {χ ∈ 2nℤ}` (finite index, cocompact, free). `F = e^{πiθ/n}`: `Γ_n`-invariant,
+   `⟨F, 1⟩ = 0` (`F∘η = e^{−2πi/n}F`), `1/c·‖F‖² − Re⟨T_aF,F⟩ = ½∬k_a(u)|F(z) − F(w)|² ≤ (π²/2n²)·C·|F_n|`
+   (wall count `≲ e^{12 d}`, `a` large). For `n` large some eigenvector `e ⊥ 1` has `μ > 1/(c + ¼)`;
+   `λ ≠ 0` by ergodicity (`T_a e = e/c` ⇒ `∬ K |e(z) − e(w)|² = 0`, `K > 0`).
+10. Gap: entire continuation needs `|F|/2π ∈ ℤ` (Gauss–Bonnet); the Lean statement is on `Re s > 0`.
+
 ## Status
 Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.lean`, wired into
 `MainTheorems.lean`; all compiled, headline axioms `propext, Classical.choice, Quot.sound`):

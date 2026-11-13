@@ -13,6 +13,14 @@
 - `ConjugateDiagonalGeometry.exists_horizontalMultiplicity_le_log_div_log_log_add_heckeDefect` gives `H(γ) ≤ C log|γ|/loglog|γ| + 4 Eγ((1/4)loglog|γ|)`, where `H` counts the entire horizontal fibre. The all-height estimate `Eγ((1/4)loglog|γ|) = o(log|γ|)` is not supplied.
 - `PrimeTorusTheory.NonAlignmentAtEveryLargeHeight` controls finite-word multiplicity and prime phases. No implication from large zeta multiplicity to the forbidden alignment has been identified.
 
+The two displayed multiplicity bounds from `SquareRootThreshold` and `ConjugateDiagonalGeometry` pass `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`, using `lake --old env lean`. No proof of the sublogarithmic target is supplied.
+
+## Heat collision test
+
+High critical multiplicity does not force forward nonreal branches. The sign is `∂t H = −∂z² H`: an order-`m` real zero has forward profile `Q_m(w) = e^(−D²)w^m`, with `m` simple real roots. The nonreal profile is backward, at negative time when the base is `0`; positive-time finiteness does not constrain it.
+
+The existing positive survivor is a real-gap bound `g² ≤ (24/(m+1) + ε)t`: `CollisionsBlowUpToHermiteProfiles.blowup_forward`, `card_profileRoots`, `exists_zero_near_root_forward`, `exists_close_zeros_forward`. Its validity radius depends on the zero, with no lower bound reaching the horizon `t ≍ 1/log γ`. Even at that horizon, `m ≍ log γ` gives `g² ≍ 1/log²γ`, compatible with known spacing. A uniform gap-opening rate `ω(1/log γ)` near every initial collision would be new input.
+
 ## Gates
 
 - [x] Exact target and existing bounds identified.
