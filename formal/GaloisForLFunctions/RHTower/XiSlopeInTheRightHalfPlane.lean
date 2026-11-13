@@ -371,9 +371,11 @@ theorem norm_le_mul_exp_of_re_le {F F' : ℝ → ℂ} {K u w : ℝ} (huw : u ≤
       _ = _ := by ring
   exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp hsq
 
-/-- **Growth to the left.** `‖ξ(s − v)‖ ≤ ‖ξ(s)‖ e^{4v}` while `Re(s − v) ≥ 5`. -/
-theorem norm_xi_sub_le_mul_exp {s : ℂ} {v : ℝ} (hv : 0 ≤ v) (hs : 5 ≤ s.re - v) :
-    ‖xi (s - v)‖ ≤ ‖xi s‖ * Real.exp (4 * v) := by
+/-- **Growth to the left at a given slope.** If `Re ξ'/ξ ≥ K` on the horizontal segment from
+`s − v` to `s`, in `Re ≥ 5`, then `‖ξ(s − v)‖ ≤ ‖ξ(s)‖ e^{−Kv}`. -/
+theorem norm_xi_sub_le_mul_exp_of_le {s : ℂ} {v K : ℝ} (hv : 0 ≤ v) (hs : 5 ≤ s.re - v)
+    (hK : ∀ x ∈ Icc (0 : ℝ) v, K ≤ (logDeriv xi (s - x)).re) :
+    ‖xi (s - v)‖ ≤ ‖xi s‖ * Real.exp (-K * v) := by
   set F : ℝ → ℂ := fun x => xi (s - x) with hF
   set F' : ℝ → ℂ := fun x => -deriv xi (s - x) with hF'
   have hFd : ∀ x ∈ Icc (0 : ℝ) v, HasDerivAt F (F' x) x := by
@@ -383,7 +385,7 @@ theorem norm_xi_sub_le_mul_exp {s : ℂ} {v : ℝ} (hv : 0 ≤ v) (hs : 5 ≤ s.
       simpa using this
     have := (xi_differentiable (s - x)).hasDerivAt.scomp x h1
     simpa [hF, hF', Function.comp_def, smul_eq_mul] using this
-  have hK : ∀ x ∈ Icc (0 : ℝ) v, (F' x * starRingEnd ℂ (F x)).re ≤ 4 * ‖F x‖ ^ 2 := by
+  have hK' : ∀ x ∈ Icc (0 : ℝ) v, (F' x * starRingEnd ℂ (F x)).re ≤ -K * ‖F x‖ ^ 2 := by
     intro x hx
     have hre : 5 ≤ (s - (x : ℂ)).re := by simp; linarith [hx.2]
     have hne : xi (s - x) ≠ 0 := xi_ne_zero_of_one_lt_re (by linarith)
@@ -393,10 +395,17 @@ theorem norm_xi_sub_le_mul_exp {s : ℂ} {v : ℝ} (hv : 0 ≤ v) (hs : 5 ≤ s.
     rw [hderiv, show -(logDeriv xi (s - ↑x) * xi (s - ↑x)) * (starRingEnd ℂ) (xi (s - ↑x)) =
         -(logDeriv xi (s - ↑x)) * (xi (s - ↑x) * (starRingEnd ℂ) (xi (s - ↑x))) by ring,
       Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.re_mul_ofReal, Complex.neg_re]
-    have := neg_four_le_re_logDeriv_xi hre
+    have := hK x hx
     nlinarith [sq_nonneg ‖xi (s - ↑x)‖]
-  have h := norm_le_mul_exp_of_re_le hv hFd hK
+  have h := norm_le_mul_exp_of_re_le hv hFd hK'
   simpa [hF] using h
+
+/-- **Growth to the left.** `‖ξ(s − v)‖ ≤ ‖ξ(s)‖ e^{4v}` while `Re(s − v) ≥ 5`. -/
+theorem norm_xi_sub_le_mul_exp {s : ℂ} {v : ℝ} (hv : 0 ≤ v) (hs : 5 ≤ s.re - v) :
+    ‖xi (s - v)‖ ≤ ‖xi s‖ * Real.exp (4 * v) := by
+  have h := norm_xi_sub_le_mul_exp_of_le (K := -4) hv hs fun x hx =>
+    neg_four_le_re_logDeriv_xi (by simp; linarith [hx.2])
+  rwa [neg_neg] at h
 
 /-- **Growth to the right.** `‖ξ(s + v)‖ ≤ ‖ξ(s)‖ exp(v(½ log(‖s‖ + v) + 5))` for `Re s ≥ 5`. -/
 theorem norm_xi_add_le_mul_exp {s : ℂ} {v : ℝ} (hs : 5 ≤ s.re) (hv : 0 ≤ v) :

@@ -640,10 +640,10 @@ theorem norm_xi_le_base {C : ℝ} (hC : 0 < C)
           ring
 
 /-- **The base point against the saddle value.** `ξ(s + κ)` is smaller than the saddle value by
-`e^{−t₀ (Re a)²}`: one comparison of two values of `ξ` along the segment from the saddle point. -/
-theorem norm_xi_base_le (h : SlopeConfig t₀ T₀ κ τ s a) (hκα : 2 * T₀ + κ ≤ t₀ * a.re) :
+`e^{−Re(τa²)}`: one comparison of two values of `ξ` along the segment from the saddle point. -/
+theorem norm_xi_base_le_of_re (h : SlopeConfig t₀ T₀ κ τ s a) (hκα : 2 * T₀ + κ ≤ t₀ * a.re) :
     ‖xi (s + κ)‖ ≤ ‖xi (s + 2 * τ * a) * cexp (-(τ * a ^ 2))‖ *
-      Real.exp (-t₀ * a.re ^ 2 + (κ + 4 * T₀) * a.re + (κ + 3 * T₀)) := by
+      Real.exp (-(τ * a ^ 2).re + (κ + 2 * T₀) * a.re + (κ + 2 * T₀)) := by
   set w₀ : ℝ := (2 * τ * a).re with hw₀
   set c : ℝ := (2 * τ * a).im with hc
   have hα4 := h.four_le_re
@@ -695,11 +695,18 @@ theorem norm_xi_base_le (h : SlopeConfig t₀ T₀ κ τ s a) (hκα : 2 * T₀ 
     refine (norm_sub_le _ _).trans ?_
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
     linarith
-  have hR := h.le_re_mul_sq
   rw [norm_mul, Complex.norm_exp, Complex.neg_re, mul_assoc, ← Real.exp_add]
   refine hmain.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 ?_) (norm_nonneg _))
   rw [hre]
   linarith
+
+/-- The base point is smaller than the saddle value by `e^{−t₀ (Re a)²}`. -/
+theorem norm_xi_base_le (h : SlopeConfig t₀ T₀ κ τ s a) (hκα : 2 * T₀ + κ ≤ t₀ * a.re) :
+    ‖xi (s + κ)‖ ≤ ‖xi (s + 2 * τ * a) * cexp (-(τ * a ^ 2))‖ *
+      Real.exp (-t₀ * a.re ^ 2 + (κ + 4 * T₀) * a.re + (κ + 3 * T₀)) := by
+  refine (h.norm_xi_base_le_of_re hκα).trans
+    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 ?_) (norm_nonneg _))
+  linarith [h.le_re_mul_sq]
 
 /-- **The unshifted piece is smaller than the saddle value by `e^{−t₀ (Re a)²}`.** -/
 theorem norm_unshifted_le {C : ℝ} (hC : 0 < C)

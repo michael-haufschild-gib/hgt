@@ -1,6 +1,7 @@
 # Logarithmic excess under strong half-line confinement
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Target:** B16, B17; quantitative shape of the actual variational margin.
 - **Statement:** For `a=criticalAliasCoefficient R` tending to infinity, the unit-mass ground energy is `a+log a+O(1)`. Every normalized minimizer satisfies `c/a≤W(F)-1≤C/a` for fixed positive constants.
 
@@ -48,4 +49,8 @@ It has unit mass, belongs to the actual domain, and is supported in `[-1/a,0]`. 
 
 ## Lean status
 
-`ActualHalfLineLevyEnergy`, `ConfiningHalfLineArithmeticBounds`, `HalfLineConfinementLogarithmicCost`, and `HalfLineConfinementDilation` pass final plain source audits, with exactly `propext`, `Classical.choice`, and `Quot.sound`. They give the actual-domain Gamma–Lévy identity, the complete arithmetic remainder bound, `J(F)≥-log(W(F)-1)-5/2`, and matching compressed unit profiles. `HalfLineConfinementCorrelation` has a verified olean; its final plain source audit remains. `ConfiningHalfLineStrongLimit` contains the final energy and mass-scale proof awaiting Lean checks. Not counted.
+`criticalHalfLineGroundEnergy_strong_confinement` proves the stated energy and exponential-excess bounds, uniformly over every normalized minimizer at sufficiently large confinement strength.
+
+All six `CausalReflection` modules pass final plain source audits and are wired: `ActualHalfLineLevyEnergy`, `ConfiningHalfLineArithmeticBounds`, `HalfLineConfinementCorrelation`, `HalfLineConfinementLogarithmicCost`, `HalfLineConfinementDilation`, and `ConfiningHalfLineStrongLimit`. Their audited final declarations depend exactly on `propext`, `Classical.choice`, and `Quot.sound`.
+
+The result does not identify a limiting renormalized energy or rescaled profile. Those are separate conjectures.

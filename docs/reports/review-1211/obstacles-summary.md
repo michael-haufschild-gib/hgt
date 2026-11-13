@@ -118,6 +118,8 @@ The [actual ground-energy branch](../../drafts/pipeline/3-formalized/critical-ha
 
 The floor is [strictly concave in the reciprocal ratio](../../drafts/pipeline/3-formalized/strict-concavity-of-confining-half-line-energy.md). A normalized profile cannot minimize at two positive ratios: subtracting its weak equations would confine its support to one exponential level set. Its minimizing eighth-exponential mass strictly decreases as confinement strengthens. These global variation laws are Lean verified independently of RH.
 
+[Strong confinement](../../drafts/pipeline/3-formalized/strong-confinement-logarithmic-excess.md) has the sharp logarithmic excess `λ(R)=a(R)+log a(R)+O(1)`, where `a(R)=criticalAliasCoefficient R`. Every normalized minimizer satisfies `c/a(R)≤W(F)-1≤C/a(R)` for fixed positive constants at sufficiently large strength. The actual-domain correlation deficit gives the lower cost, and normalized compact-source dilates give the upper cost. Both conclusions are Lean verified independently of RH.
+
 Further objects that exist exactly when RH fails [L*] (log §20): an odd bound state; a defective hard-edge block; a point right of the line with `Re ξ′/ξ<0`; a negative definite Markov plane; an aperture with an empty feasible set; negative paired Li indices in every window of some bounded length.
 
 ### 1.9 Constituents and the zero field
@@ -439,6 +441,8 @@ Every receiver of the scale moves with the answer: the rung, the level, the retu
 - *Its causal energy has an exact positive representation.* [Weighted tail squares](../../drafts/pipeline/3-formalized/critical-causal-energy-factorization.md) compute every finite causal sum, and wall displacement has an explicit sharp weighted energy floor with a unique extremizer line. The [transverse exponential gap](../../drafts/pipeline/3-formalized/critical-half-line-transverse-energy-gap.md) controls every full-domain variation after removing its ground-state component; its polar pairing error is bounded by energy. The ground-state charge remains open.
 
 - *The state lies on an actual variational branch.* [Attainment, differentiability, and stability](../../drafts/pipeline/3-formalized/critical-half-line-ground-energy-branch.md) give derivative `-a(W₀)W(F)/W₀`. [Global simplicity](../../drafts/pipeline/3-formalized/global-confining-half-line-ground-state.md) gives one minimizing line at every positive ratio, with zero-free open-right-half-plane Laplace transform. [Strict concavity](../../drafts/pipeline/3-formalized/strict-concavity-of-confining-half-line-energy.md) excludes a common minimizer at distinct ratios and strictly orders their exponential masses. Weighted convergence near the threshold controls the polar pairing continuously; it does not determine its value there.
+
+- *Its strong-confinement scale is quantified.* The [ground energy is `a+log a+O(1)`](../../drafts/pipeline/3-formalized/strong-confinement-logarithmic-excess.md), and every normalized minimizer has `W-1` of order `1/a`. These bounds combine the full arithmetic form with a logarithmic correlation-deficit cost; no sign condition on the state is needed.
 
 **Question (B104).** *Is the critical half-line state charged: is `∫F·polarSourceProfile≠0`? Equivalently for the classification: does its third case (`R_polar=W₀` finite with a polar-orthogonal state) occur?*
 

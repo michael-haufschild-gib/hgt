@@ -67,7 +67,8 @@ theorem criticalHalfLineFullEnergy_log_defect_lower :
     rw [criticalHalfLineExponentialDefect, hm]
   rw [hm] at h harch
   change archForm F = g * 1 + biScaleLevyEnergy F at harch
-  nlinarith only [h, harch, hcost, hd, neg_abs_le g]
+  rw [hd] at hcost ⊢
+  nlinarith only [h, harch, hcost, neg_abs_le g]
 
 /-- Compressed compact profiles give the matching logarithmic upper bound. -/
 theorem criticalHalfLineGroundEnergy_logarithmic_upper :
