@@ -82,7 +82,7 @@ The elementary bounds `1-1/b≤log b≤b-1` put the limiting lower bound above `
 
 ## Lean status
 
-Thirteen modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
+Fourteen modules pass plain source audits with exactly `propext`, `Classical.choice`, and `Quot.sound`; all are wired:
 
 - `HalfLineConfinementTail`: weighted-tail control and `8M(F)≤W(F)-m(F)`.
 - `WeightedSourceTruncation`, `WeightedSourceLocalizedPairing`: indicator closure, exact restricted masses, and localized weighted Cauchy–Schwarz.
@@ -95,5 +95,6 @@ Thirteen modules pass plain source audits with exactly `propext`, `Classical.cho
 - `HTGeometry/HardyBoundary/LogarithmicFourierDilation`: absolute logarithmic domain invariance and the exact signed-energy scaling law.
 - `SoftLogarithmicHalfLineDomain`: actual-domain inclusion, invariance under positive dilation, and eventual recovery of the actual Gamma domain after compression.
 - `ConfiningPotentialLimit`: compression linearizes the exponential excess to eight times the physical first moment, by an exponential-moment majorant.
+- `ConfiningFixedTrialLimit`: exact dilated Gamma decomposition and convergence of every fixed unit trial's renormalized full energy to the logarithmic-plus-linear form.
 
-Remaining modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`: `ConfiningFixedTrialLimit`, `ConfiningLogarithmicFloor`, `ConfiningRescaledEnergy`, `ConfiningLogarithmicLimit`, and `ConfiningVirialLimit`. Their proofs and source audits remain pending. Not counted.
+Remaining modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`: `ConfiningLogarithmicFloor`, `ConfiningRescaledEnergy`, `ConfiningLogarithmicLimit`, and `ConfiningVirialLimit`. Their proofs and source audits remain pending. Not counted.

@@ -185,10 +185,9 @@ theorem editRem_eq_sum_add {e : ℕ → ℤ} (he : IsEdit e) {k : ℕ} (hk : 1 �
       editRem e s - ∑ j ∈ Icc 2 k, LSeries (fun n => (e n : ℂ)) ((j : ℂ) * s) / j := by
     refine HasSum.tsum_eq ?_
     have h := hB.hasSum.sub (hasSum_sum hEj)
-    rw [editRem]
-    convert h using 1
-    funext p
-    exact hterm p
+    rw [show (fun p : Nat.Primes => (e p : ℂ) * logRemOf k (((p : ℕ) : ℂ) ^ (-s))) = _ from
+      funext hterm]
+    exact h
   rw [hQ]
   ring
 
@@ -214,7 +213,7 @@ theorem analyticOrderAt_comp_mul {F : ℂ → ℂ} {j : ℂ} (hj : j ≠ 0) (s�
     analyticOrderAt (fun s => F (j * s)) s₁ = analyticOrderAt F (j * s₁) := by
   have hg : AnalyticAt ℂ (fun s : ℂ => j * s) s₁ := analyticAt_const.mul analyticAt_id
   have hd : deriv (fun s : ℂ => j * s) s₁ = j := by
-    simpa using ((hasDerivAt_id s₁).const_mul j).deriv
+    simp
   exact analyticOrderAt_comp_of_deriv_ne_zero (f := F) hg (by rw [hd]; exact hj)
 
 /-! ## The order law -/
@@ -284,7 +283,7 @@ theorem factorial_dvd_sum_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ :
   set R : ℂ → ℂ := fun s => P s ^ N * ∏ j ∈ Icc 2 k, F ((j : ℂ) * s) ^ (N / j) with hRdef
   have hR : DifferentiableOn ℂ R {s : ℂ | c < s.re} :=
     (hP.pow N).mul (DifferentiableOn.fun_finsetProd
-      (f := fun j s => F ((j : ℂ) * s) ^ (N / j)) fun j hj => (hFj j hj).pow _)
+      (f := fun (j : ℕ) (s : ℂ) => F ((j : ℂ) * s) ^ (N / j)) fun j hj => (hFj j hj).pow _)
   -- the identity on `Re s > 1`
   have hdiv : ∀ j ∈ Icc 2 k, j ≠ 0 ∧ j ∣ N := fun j hj =>
     ⟨by have := (mem_Icc.mp hj).1; omega,
@@ -420,7 +419,7 @@ theorem prime_dvd_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ : ℝ} (h
   have hlaw := factorial_dvd_sum_order_of_count he hθ hS hβ hβ1 hN hF hFeq p hs₁β hs₁c hs₁θ hn
   -- modulo `p` only the term `j = p` survives
   have hfp : p.factorial / p = (p - 1).factorial := by
-    rw [← Nat.mul_factorial_pred hp.pos, Nat.mul_div_cancel_left _ hp.pos]
+    rw [← Nat.mul_factorial_pred hp.ne_zero, Nat.mul_div_cancel_left _ hp.pos]
   have hI : Icc 2 p = insert p (Ico 2 p) := by
     have := hp.two_le
     ext j; simp only [mem_Icc, mem_insert, mem_Ico]; omega
@@ -431,7 +430,7 @@ theorem prime_dvd_order_of_count {e : ℕ → ℤ} (he : IsEdit e) {θ : ℝ} (h
     refine dvd_sum fun j hj => dvd_mul_of_dvd_left ?_ _
     obtain ⟨hj2, hjp⟩ := mem_Ico.mp hj
     have hjd : j ∣ (p - 1).factorial := Nat.dvd_factorial (by omega) (by omega)
-    rw [← Nat.mul_factorial_pred hp.pos, Nat.mul_div_assoc _ hjd]
+    rw [← Nat.mul_factorial_pred hp.ne_zero, Nat.mul_div_assoc _ hjd]
     exact dvd_mul_right _ _
   have htop : p ∣ (p - 1).factorial * m := by
     rw [hsplit] at hlaw
@@ -459,21 +458,31 @@ theorem dvd_order_of_count_of_ne_zero {e : ℕ → ℤ} (he : IsEdit e) {θ : �
   have hs₁β : β < s₁.re := by rw [hre, lt_div_iff₀ hk0]; linarith
   have hs₁c : c₀ < s₁.re := by rw [hre, lt_div_iff₀ hk0]; linarith
   have hs₁θ : θ / (k + 1) < s₁.re := by rw [hre, lt_div_iff₀ hk0]; linarith
-  set n : ℕ → ℕ := fun j => if j = k then m else 0 with hndef
+  have hs₁0 : 0 < s₁.re := lt_of_le_of_lt (div_pos hθ (by positivity)).le hs₁θ
+  set n : ℕ → ℕ := fun j => (analyticOrderAt F ((j : ℂ) * s₁)).toNat with hndef
   have hn : ∀ j ∈ Icc 2 k, analyticOrderAt F (j * s₁) = n j := fun j hj => by
-    rcases eq_or_ne j k with rfl | hjk
-    · have : (j : ℂ) * s₁ = ρ := by rw [hs₁]; field_simp
-      simp only [hndef, if_pos rfl, this, hm]
-    · have hj : j ∈ Ico 2 k := mem_Ico.mpr ⟨(mem_Icc.mp hj).1, by have := (mem_Icc.mp hj).2; omega⟩
-      simp only [hndef, if_neg hjk, Nat.cast_zero]
-      exact analyticOrderAt_eq_zero.mpr (Or.inr (hiso j hj))
+    have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast (le_trans (by norm_num) (mem_Icc.mp hj).1)
+    have hjre : c₀ < ((j : ℂ) * s₁).re := by
+      have hre' : ((j : ℂ) * s₁).re = j * s₁.re := by simp
+      have := mul_le_mul_of_nonneg_right hj1 hs₁0.le
+      rw [hre']; linarith
+    exact (ENat.coe_toNat (analyticOrderAt_ne_top_of_continuation hF hFeq hjre)).symm
+  have hnk : n k = m := by
+    have : (k : ℂ) * s₁ = ρ := by rw [hs₁]; field_simp
+    simp only [hndef, this, hm, ENat.toNat_coe]
+  have hn0 : ∀ j ∈ Ico 2 k, n j = 0 := fun j hj => by
+    simp only [hndef]
+    rw [analyticOrderAt_eq_zero.mpr (Or.inr (hiso j hj))]
+    rfl
   have hlaw := factorial_dvd_sum_order_of_count he hθ hS hβ hβ1 hN hF hFeq k hs₁β hs₁c hs₁θ hn
+  have hfk : k.factorial / k = (k - 1).factorial := by
+    rw [← Nat.mul_factorial_pred (by omega : k ≠ 0), Nat.mul_div_cancel_left _ (by omega)]
+  have hI : Icc 2 k = insert k (Ico 2 k) := by
+    ext j; simp only [mem_Icc, mem_insert, mem_Ico]; omega
   have hsum : ∑ j ∈ Icc 2 k, k.factorial / j * n j = (k - 1).factorial * m := by
-    rw [sum_eq_single_of_mem k (mem_Icc.mpr ⟨hk, le_rfl⟩) fun j _ hjk => by
-      simp [hndef, if_neg hjk]]
-    simp only [hndef, if_pos rfl]
-    rw [← Nat.mul_factorial_pred (by omega : 0 < k), Nat.mul_div_cancel_left _ (by omega)]
-  rw [hsum, ← Nat.mul_factorial_pred (by omega : 0 < k), mul_comm k] at hlaw
+    rw [hI, sum_insert (by simp), hnk, hfk,
+      sum_eq_zero fun j hj => by rw [hn0 j hj, mul_zero], add_zero]
+  rw [hsum, ← Nat.mul_factorial_pred (by omega : k ≠ 0), mul_comm k] at hlaw
   exact Nat.dvd_of_mul_dvd_mul_left (Nat.factorial_pos _) hlaw
 
 end GaloisForLFunctions.WorldsOfTheZeroConfiguration.BalanceLaw

@@ -53,3 +53,37 @@ Source: `CausalReflection/ConfiningHalfLineWeakEquation.lean`.
 `CausalReflection/ConfiningHalfLineTranslationEnergy.lean` contains unchecked
 proofs of the shifted translation identity and absorption retaining the
 Gamma form. No regularity theorem is verified yet.
+
+## Weighted truncation conjecture
+
+Every actual confining minimizer may satisfy `|F(u)|≤C exp(u)` almost
+everywhere on the negative half-line. This would bound the complete prime
+forcing near the terminal endpoint, since its backward translates then
+carry the summable weight `Λ(n)/n^(3/2)`.
+
+The corpus connection is `TheCompletedWeilRieszVectorsAreBounded.lean`:
+positive-level tests in inverse-Doob coordinates combine divergent
+archimedean row mass with bounded cutoff readouts. For the half-line, the
+candidate barrier is `exp(u)`, with tests `(F-t exp(u))₊` and both signs of
+`F`. The forward prime row grows at most like `exp(-3u/2)` and should be
+absorbed by the actual potential `a exp(-8u)`. Admissibility of these tests
+and the complete weighted row inequality are open; the finite-aperture
+Riesz theorem does not supply them.
+
+For the barrier, the normalized prime row is
+`Σ_{n<exp(-u)}Λ(n)√n + Σ_n Λ(n)/n^(3/2)`; the first term is bounded by
+`6 exp(-3u/2)` using the existing Chebyshev bound. The cutoff Gamma
+readout is bounded by its kernel's L² norm times `‖F‖₂`. Choosing its row
+mass large should leave a coefficient dominating `exp(-u)+exp(-3u/2)`
+after the prime row and eigenvalue are subtracted from `a exp(-8u)`.
+This is the proposed positive-level comparison, not a verified theorem.
+
+Even this bound would not make `exp(-8u)F` globally L², so localization
+remains necessary. `TheLogarithmicCutoffCommutatorHasABoundedKernel.lean`
+already bounds the literal commutator kernel by
+`(Lip(χ)/2)exp(-|x-y|)` and proves an L² operator preserving essential
+boundedness. Thus this commutator estimate need not be reproved. The
+remaining bridge identifies the terminally localized actual weak equation,
+including its prime and confining terms, with the existing Green inverse.
+The boundary coefficient's magnitude and polar identification would still
+remain open.

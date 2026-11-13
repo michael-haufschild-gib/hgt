@@ -57,6 +57,7 @@ def doobMean (φ f : ι → ℝ) : ℝ := ∑ i, φ i ^ 2 * f i
 /-- The second moment of `f` against the stationary weights `φ²`. -/
 def doobMass (φ f : ι → ℝ) : ℝ := ∑ i, φ i ^ 2 * f i ^ 2
 
+omit [Fintype ι] in
 theorem doobConductance_comm {G : Matrix ι ι ℝ} (hG : ∀ i j, G i j = G j i) (φ : ι → ℝ)
     (i j : ι) : doobConductance G φ i j = doobConductance G φ j i := by
   unfold doobConductance
@@ -106,15 +107,15 @@ theorem bilin_mul_eq_doob {G : Matrix ι ι ℝ} (hG : ∀ i j, G i j = G j i) {
       ∑ i, ∑ j, G i j * φ i * φ j * (f i * f j) := by
     unfold bilin
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-  have h2 : doobEnergy G φ f = ∑ i, ∑ j, ((1 / 2) * (G i j * φ i * φ j * f i ^ 2) +
-      (1 / 2) * (G i j * φ i * φ j * f j ^ 2) - G i j * φ i * φ j * (f i * f j)) := by
+  have h2 : doobEnergy G φ f = ∑ i, ∑ j, (G i j * φ i * φ j * (f i * f j) -
+      (1 / 2) * (G i j * φ i * φ j * f i ^ 2) - (1 / 2) * (G i j * φ i * φ j * f j ^ 2)) := by
     unfold doobEnergy doobConductance
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun j _ => by ring
   rw [h2, h1]
-  simp only [Finset.sum_sub_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
+  simp only [Finset.sum_sub_distrib, ← Finset.mul_sum]
   rw [← hA, ← hB]
   ring
 
@@ -433,5 +434,53 @@ theorem two_le_hermNegIndex_of_bottleneck {G : Matrix ι ι ℝ} (hG : ∀ i j, 
   linarith
 
 end Chain
+
+/-! ### Windows -/
+
+/-- **Every window has a positive ground vector.** -/
+theorem exists_groundVector_neutralWindow (Q R : ℕ) {J : ℕ} (hJ : 1 ≤ J) :
+    ∃ φ : Fin J → ℝ, (∀ i, 0 < φ i) ∧ ∃ lam : ℝ, neutralWindow Q R J *ᵥ φ = lam • φ :=
+  haveI : Nonempty (Fin J) := ⟨⟨0, hJ⟩⟩
+  exists_pos_eigenvector (neutralWindow_symm Q R J) fun _ _ hij => neutralWindow_neg_of_ne Q R hij
+
+/-- **A window that contains the dyadic window binds its ground state**: the eigenvalue of a
+positive eigenvector is negative, so the binding energy is positive. -/
+theorem eigenvalue_neg_of_pos_eigenvector (Q : ℕ) {R J : ℕ} (hR : 1 ≤ R) (hRJ : R ≤ J)
+    {φ : Fin J → ℝ} (hφ : ∀ i, 0 < φ i) {lam : ℝ}
+    (heig : neutralWindow Q R J *ᵥ φ = lam • φ) : lam < 0 := by
+  by_contra h
+  have hnn : ∀ y : Fin J → ℝ, 0 ≤ y ⬝ᵥ (neutralWindow Q R J *ᵥ y) := fun y => by
+    rw [dotProduct_mulVec_eq_bilin]
+    have := lam_mul_sum_sq_le_bilin (neutralWindow_symm Q R J)
+      (fun _ _ hij => (neutralWindow_neg_of_ne Q R hij).le) hφ heig y
+    nlinarith [Finset.sum_nonneg fun i (_ : i ∈ Finset.univ) => sq_nonneg (y i)]
+  have h0 := ArithmeticCastelnuovoSeveri.negIndex_le_card_of_nonneg_on_ker
+    ((neutralWindow Q R J).map (↑) : Matrix (Fin J) (Fin J) ℂ)
+    (fun e : Empty => e.elim) fun z _ => by
+      rw [HeckeKreinToeplitz.hermQuad_map_ofReal]
+      exact add_nonneg (hnn _) (hnn _)
+  have h1 := one_le_hermNegIndex_neutralWindow Q hR hRJ
+  simp only [Fintype.card_empty] at h0
+  omega
+
+/-- **The Riemann hypothesis is the Poincaré inequality of the Doob chains of the windows**: it
+holds iff on every window `(R, R + J]` with `R ≤ J` the Doob chain of the neutral part at a
+positive eigenvector has spectral gap at least the binding energy. -/
+theorem riemannHypothesis_iff_forall_doob_poincare :
+    RiemannHypothesis ↔ ∀ Q R J : ℕ, 1 ≤ R → R ≤ J → R + J ≤ Q * R →
+      ∀ φ : Fin J → ℝ, (∀ i, 0 < φ i) → ∀ lam : ℝ, neutralWindow Q R J *ᵥ φ = lam • φ →
+        ∀ f : Fin J → ℝ, doobMean φ f = 0 →
+          -lam * doobMass φ f ≤ doobEnergy (neutralWindow Q R J) φ f := by
+  rw [riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one]
+  constructor
+  · intro h Q R J hR hRJ hQ φ hφ lam heig
+    exact (hermNegIndex_le_one_iff_poincare (neutralWindow_symm Q R J)
+      (fun _ _ hij => (neutralWindow_neg_of_ne Q R hij).le) hφ heig).mp
+      (h Q R J hR hRJ hQ).le
+  · intro h Q R J hR hRJ hQ
+    obtain ⟨φ, hφ, lam, heig⟩ := exists_groundVector_neutralWindow Q R (hR.trans hRJ)
+    exact le_antisymm ((hermNegIndex_le_one_iff_poincare (neutralWindow_symm Q R J)
+      (fun _ _ hij => (neutralWindow_neg_of_ne Q R hij).le) hφ heig).mpr
+      (h Q R J hR hRJ hQ φ hφ lam heig)) (one_le_hermNegIndex_neutralWindow Q hR hRJ)
 
 end GaloisForLFunctions.MixingArithmeticOfTheFloorTrees
