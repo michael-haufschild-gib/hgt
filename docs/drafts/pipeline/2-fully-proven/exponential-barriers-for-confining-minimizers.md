@@ -134,7 +134,7 @@ passes its final plain source audit without warnings, with exactly
 olean exists. It proves both directions of the jump/Gamma domain bridge
 and closure under zero-preserving real contractions.
 
-Twelve further modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
+Thirteen further modules in `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
 await final source audits:
 
 - `NegativeHalfLineExponentialBarrier`: exact exponential autocorrelation, translation defect, and Gamma integrability.
@@ -149,11 +149,12 @@ await final source audits:
 - `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
 - `HalfLineGammaLargeJumps`: the cutoff-kernel realization, both ordinary-mass row bounds, and the exact integrated large-jump identity and lower estimate.
 - `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential.
+- `ExponentialBarrierPoleComparison`: both polar terms are bounded below by the test's half-exponential ordinary mass.
 
 The additional unchecked helper `HTGeometry/HardyBoundary/TranslationKernelPairing`
 justifies Fubini for a nonnegative integrable kernel against arbitrary measurable
 `L²` profiles and bounds the mixed pairing by ordinary mass when the kernel is
-also `L²`. One of fourteen supporting modules is audited and wired.
+also `L²`. One of fifteen supporting modules is audited and wired.
 
 The full Gamma comparison and maximum-principle conclusion remain to be
 formalized. The complete prime comparison and large-jump Gamma estimate are written but unaudited. No barrier theorem or

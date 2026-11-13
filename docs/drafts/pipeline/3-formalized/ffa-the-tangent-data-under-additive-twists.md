@@ -20,6 +20,8 @@
 | tangent data | `tangentDatum_ramanujanTwist`, `tangentDatum_liouvilleRamanujanTwist` |
 | residue numerators | `ramanujanNumerator_div_eq` |
 
+Axioms of the headline theorems: `propext`, `Classical.choice`, `Quot.sound`.
+
 ## Proof
 *Dirichlet series.* `c_q(n) = Σ_{de=q} μ(d) e 1_{e|n}` (`ramanujanSum_eq_sum_moebius`). For `e ≥ 1`,
 `μ(em) = μ(e) 1_e(m) μ(m)` (`1_e` the trivial character mod `e`: multiplicativity on coprime `m`,

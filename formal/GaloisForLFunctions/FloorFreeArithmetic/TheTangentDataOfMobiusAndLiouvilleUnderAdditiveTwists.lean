@@ -550,9 +550,4 @@ theorem ramanujanNumerator_div_eq (c : ℝ) (q : ℕ) (g : ℂ → ℂ) :
   · unfold ramanujanNumerator mobiusNumerator; ring
   · unfold liouvilleRamanujanNumerator liouvilleNumerator mobiusNumerator; ring
 
-#print axioms tangentDatum_ramanujanTwist
-#print axioms tangentDatum_liouvilleRamanujanTwist
-#print axioms signal_liouvilleRamanujanKernel_eq_tsum
-#print axioms signal_ramanujanKernel_eq_tsum
-
 end GaloisForLFunctions.FloorFreeArithmetic
