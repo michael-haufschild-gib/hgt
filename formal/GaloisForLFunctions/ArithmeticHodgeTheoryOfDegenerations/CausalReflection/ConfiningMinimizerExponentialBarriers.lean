@@ -182,6 +182,21 @@ theorem IsHalfLineEnergyMinimizer.exists_exponential_barrier {R : ℝ} (hR : 0 <
   dsimp only at hdu
   exact abs_le.mpr ⟨by nlinarith only [hdu, hce], by nlinarith only [hcu, hde]⟩
 
+/-- Every actual confining minimizer is essentially bounded on the whole line. -/
+theorem IsHalfLineEnergyMinimizer.exists_uniform_abs_bound {R : ℝ} (hR : 0 < R)
+    {F : ℝ → ℝ} (hF : IsHalfLineEnergyMinimizer R F) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ u ∂volume, |F u| ≤ C := by
+  obtain ⟨C, hC, hc⟩ := hF.exists_exponential_barrier hR
+    (show (1 / 2 : ℝ) < 1 by norm_num) (show (1 : ℝ) < 15 / 2 by norm_num)
+  refine ⟨C, hC, ?_⟩
+  filter_upwards [hc] with u hu
+  by_cases hu0 : u ≤ 0
+  · simp only [one_mul] at hu
+    exact hu.trans ((mul_le_mul_of_nonneg_left (Real.exp_le_one_iff.mpr hu0) hC).trans_eq
+      (mul_one C))
+  · rw [hF.1.support u (lt_of_not_ge hu0).le, abs_zero]
+    exact hC
+
 /-- Every confining minimizer has finite exponential square moments of all orders below fifteen. -/
 theorem IsHalfLineEnergyMinimizer.integrable_exponential_square {R : ℝ} (hR : 0 < R)
     {F : ℝ → ℝ} (hF : IsHalfLineEnergyMinimizer R F) {b : ℝ} (hb : b < 15) :
@@ -254,6 +269,7 @@ theorem riemannHypothesis_or_exists_exponentially_bounded_criticalState :
 #print axioms IsHalfLineEnergyMinimizer.weakEquation_rows
 #print axioms IsHalfLineEnergyMinimizer.exists_exponential_upper_bound
 #print axioms IsHalfLineEnergyMinimizer.exists_exponential_barrier
+#print axioms IsHalfLineEnergyMinimizer.exists_uniform_abs_bound
 #print axioms IsHalfLineEnergyMinimizer.integrable_exponential_square
 #print axioms exists_exponentially_bounded_halfLineEnergyMinimizer
 #print axioms criticalHalfLineGroundState_exponential_bounds

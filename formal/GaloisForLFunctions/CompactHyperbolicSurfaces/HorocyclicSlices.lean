@@ -30,8 +30,11 @@ def hpt (x : ℝ) {y : ℝ} (hy : 0 < y) : ℍ := UpperHalfPlane.mk ⟨x, y⟩ h
 @[simp] theorem hpt_re (x : ℝ) {y : ℝ} (hy : 0 < y) : (hpt x hy).re = x := rfl
 @[simp] theorem hpt_im (x : ℝ) {y : ℝ} (hy : 0 < y) : (hpt x hy).im = y := rfl
 
-theorem continuous_hpt {y : ℝ} (hy : 0 < y) : Continuous fun x : ℝ => hpt x hy :=
-  Continuous.subtype_mk (by fun_prop) _
+theorem continuous_hpt {y : ℝ} (hy : 0 < y) : Continuous fun x : ℝ => hpt x hy := by
+  have h : (fun x : ℝ => (⟨x, y⟩ : ℂ)) = fun x : ℝ => (x : ℂ) + (y : ℂ) * Complex.I := by
+    funext x; apply Complex.ext <;> simp
+  have hc : Continuous fun x : ℝ => (⟨x, y⟩ : ℂ) := by rw [h]; fun_prop
+  exact hc.subtype_mk (fun _ => hy)
 
 theorem pairU_eq_coords (z w : ℍ) :
     pairU z w = ((z.re - w.re) ^ 2 + (z.im - w.im) ^ 2) / (4 * z.im * w.im) := by
@@ -48,6 +51,10 @@ theorem continuous_pairU : Continuous fun p : ℍ × ℍ => pairU p.1 p.2 := by
 
 theorem measurable_pairU : Measurable fun p : ℍ × ℍ => pairU p.1 p.2 :=
   continuous_pairU.measurable
+
+theorem measurable_pairU_hpt {k : ℝ → ℝ≥0∞} (hk : Measurable k) (z : ℍ) {y : ℝ} (hy : 0 < y) :
+    Measurable fun x : ℝ => k (pairU z (hpt x hy)) :=
+  hk.comp (continuous_pairU.comp (continuous_const.prodMk (continuous_hpt hy))).measurable
 
 /-- `(y − y')²/(4yy') = sinh²((log y − log y')/2)`. -/
 theorem sq_sub_div_eq_sinh_sq' {y y' : ℝ} (hy : 0 < y) (hy' : 0 < y') :
@@ -108,7 +115,7 @@ theorem lintegral_pairU_slice (k : ℝ → ℝ≥0∞) (z : ℍ) {y : ℝ} (hy :
   rw [← sq_sub_div_eq_sinh_sq' hy hz]
   have h4 : 4 * z.im * y ≠ 0 := by positivity
   field_simp
-  rw [show (c * η) ^ 2 = c ^ 2 * η ^ 2 by ring, hc2]
+  rw [hc2]
   ring
 
 theorem lintegral_slice_pairU (k : ℝ → ℝ≥0∞) (z : ℍ) {y : ℝ} (hy : 0 < y) :
@@ -169,8 +176,7 @@ theorem lintegral_pairU_I_mul_im {k : ℝ → ℝ≥0∞} (hk : Measurable k) {H
       rw [pairUIc_mk x hy]
       ring
     simp_rw [e1]
-    rw [lintegral_const_mul _ (hk.comp ((continuous_pairU.comp
-      (continuous_const.prodMk (continuous_hpt hy))).measurable)), lintegral_pairU_slice k I hy]
+    rw [lintegral_const_mul _ (measurable_pairU_hpt hk I hy), lintegral_pairU_slice k I hy]
     simp only [UpperHalfPlane.I_im, one_mul, Real.log_one, sub_zero]
     rw [ENNReal.ofReal_mul (by positivity)]
     ring
@@ -221,8 +227,7 @@ theorem lintegral_convK_slice {k k' : ℝ → ℝ≥0∞} (hk : Measurable k) (h
       k (pairU I ξ) * (ENNReal.ofReal (Real.sqrt (ξ.im * y)) *
         abelL k' (Real.log y - Real.log ξ.im)) := by
     intro ξ
-    rw [lintegral_const_mul _ (hk'.comp ((continuous_pairU.comp
-      (continuous_const.prodMk (continuous_hpt hy))).measurable)), lintegral_pairU_slice k' ξ hy]
+    rw [lintegral_const_mul _ (measurable_pairU_hpt hk' ξ hy), lintegral_pairU_slice k' ξ hy]
   simp_rw [hin]
   have hHm : Measurable fun η : ℝ => ENNReal.ofReal (Real.sqrt (η * y)) *
       abelL k' (Real.log y - Real.log η) :=
@@ -290,8 +295,8 @@ theorem volume_pairU_I_le {U : ℝ} (hU : 0 ≤ U) :
         refine lintegral_eq_zero_of_ae_eq_zero (Eventually.of_forall fun η => ?_)
         have : ¬ (η ^ 2 / 4 + Real.sinh (τ / 2) ^ 2 ≤ U) := by
           intro h; exact hτ (by nlinarith [sq_nonneg η])
-        simp [k, indicator_apply, this]
-      rw [h0]; exact zero_le _
+        simp [k, this]
+      rw [h0]; exact zero_le
   have hexp : ∀ τ : ℝ, ENNReal.ofReal (Real.exp (-(τ / 2))) ≤
       2 * ENNReal.ofReal |Real.cosh (τ / 2)| := by
     intro τ
@@ -313,7 +318,7 @@ theorem volume_pairU_I_le {U : ℝ} (hU : 0 ≤ U) :
       refine eq_univ_of_forall fun v => ⟨2 * Real.arsinh (v / 2), trivial, ?_⟩
       simp only [f]; rw [mul_div_cancel_left₀ _ two_ne_zero, Real.sinh_arsinh]; ring
     have h := lintegral_image_eq_lintegral_abs_deriv_mul MeasurableSet.univ hd hinj g
-    rw [hsurj, Measure.restrict_univ, Measure.restrict_univ] at h
+    rw [hsurj, Measure.restrict_univ] at h
     exact h.symm
   calc ∫⁻ τ : ℝ, ENNReal.ofReal (Real.exp (-(τ / 2))) * abelL k τ
       ≤ ∫⁻ τ : ℝ, (2 * ENNReal.ofReal |Real.cosh (τ / 2)|) *
@@ -349,7 +354,7 @@ theorem volume_pairU_I_pos {δ : ℝ} (hδ : 0 < δ) : 0 < volume {w : ℍ | pai
     refine ⟨⟨z, by linarith⟩, ?_, rfl⟩
     show pairU I ⟨z, _⟩ ≤ δ
     rw [pairU, Complex.dist_eq]
-    simp only [UpperHalfPlane.I_im, UpperHalfPlane.coe_I, one_mul]
+    simp only [UpperHalfPlane.I_im, UpperHalfPlane.coe_I]
     have hn : ‖Complex.I - z‖ = ‖z - Complex.I‖ := norm_sub_rev _ _
     rw [hn]
     have hr2 : r ^ 2 ≤ δ := by
