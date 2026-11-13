@@ -33,10 +33,14 @@ theorem resOp_comp_of_ne {a s : ℝ} (ha : 1 < a) (hs : 1 < s) (hne : s ≠ a) :
     X.resOp hs ∘L X.resOp ha =
       ((1 / (s * (s - 1) - a * (a - 1)) : ℝ) : ℂ) • (X.resOp ha - X.resOp hs) := by
   rcases lt_or_gt_of_ne hne with h | h
-  · rw [← X.resOp_comm hs h, X.resOp_comp hs h, ← neg_sub (X.resOp hs), smul_neg, ← neg_smul]
-    congr 2
-    push_cast
-    rw [← neg_div, neg_sub]
+  · have hsc : (1 / (a * (a - 1) - s * (s - 1)) : ℝ) = -(1 / (s * (s - 1) - a * (a - 1))) := by
+      rw [show a * (a - 1) - s * (s - 1) = -(s * (s - 1) - a * (a - 1)) by ring,
+        one_div_neg_eq_neg_one_div]
+    calc X.resOp hs ∘L X.resOp ha = X.resOp ha ∘L X.resOp hs := X.resOp_comm hs h
+      _ = ((1 / (a * (a - 1) - s * (s - 1)) : ℝ) : ℂ) • (X.resOp hs - X.resOp ha) :=
+          X.resOp_comp hs h
+      _ = ((1 / (s * (s - 1) - a * (a - 1)) : ℝ) : ℂ) • (X.resOp ha - X.resOp hs) := by
+          rw [hsc, Complex.ofReal_neg, ← neg_sub (X.resOp ha) (X.resOp hs), neg_smul_neg]
   · exact X.resOp_comp ha h
 
 /-- On an eigenvector of `T_a` with eigenvalue `μ ≠ 0`, `T_s` acts by `μ/(1 + cμ)`, and
@@ -50,26 +54,22 @@ theorem resOp_apply_of_eigen {a s : ℝ} (ha : 1 < a) (hs : 1 < s) {e : Lp ℂ 2
     simp only [sub_self, Complex.ofReal_zero, zero_mul, add_zero, div_one, ne_eq, one_ne_zero,
       not_false_eq_true, true_and]
     exact he
-  set c : ℝ := s * (s - 1) - a * (a - 1)
-  have hc : c ≠ 0 := by
+  have hc : s * (s - 1) - a * (a - 1) ≠ 0 := by
     intro h0
-    have : (s - a) * (s + a - 1) = 0 := by simp only [c] at h0; linarith
+    have : (s - a) * (s + a - 1) = 0 := by linarith
     rcases mul_eq_zero.mp this with h1 | h1
     · exact hsa (by linarith)
     · linarith
   have hid := congrArg (fun T => T e) (X.resOp_comp_of_ne ha hs hsa)
-  simp only [ContinuousLinearMap.comp_apply, he, map_smul, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.sub_apply] at hid
+  simp only [ContinuousLinearMap.comp_apply, he, map_smul, smul_apply, sub_apply] at hid
   -- `μ T_s e = c⁻¹ (μ e − T_s e)`, i.e. `(1 + cμ) T_s e = μ e`
-  have hc' : (c : ℂ) ≠ 0 := by exact_mod_cast hc
-  have key : (1 + (c : ℂ) * μ) • X.resOp hs e = μ • e := by
-    have h1 : (c : ℂ) • (μ • X.resOp hs e) = μ • e - X.resOp hs e := by
-      rw [hid, smul_smul]
-      push_cast
-      rw [mul_one_div_cancel hc', one_smul]
+  have key : (1 + ((s * (s - 1) - a * (a - 1) : ℝ) : ℂ) * μ) • X.resOp hs e = μ • e := by
+    have h1 : ((s * (s - 1) - a * (a - 1) : ℝ) : ℂ) • (μ • X.resOp hs e) =
+        μ • e - X.resOp hs e := by
+      rw [hid, smul_smul, ← Complex.ofReal_mul, mul_one_div_cancel hc, Complex.ofReal_one, one_smul]
     rw [add_smul, one_smul, mul_smul, h1]
     abel
-  have hne : 1 + (c : ℂ) * μ ≠ 0 := by
+  have hne : 1 + ((s * (s - 1) - a * (a - 1) : ℝ) : ℂ) * μ ≠ 0 := by
     intro h0
     rw [h0, zero_smul] at key
     exact he0 ((smul_eq_zero.mp key.symm).resolve_left hμ)
@@ -82,8 +82,8 @@ theorem resOp_eq_zero_of_resOp {a s : ℝ} (ha : 1 < a) (hs : 1 < s) {f : Lp ℂ
   by_cases hsa : s = a
   · subst hsa; exact hf
   have hid := congrArg (fun T => T f) (X.resOp_comp_of_ne ha hs hsa)
-  simp only [ContinuousLinearMap.comp_apply, hf, map_zero, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.sub_apply, zero_sub, smul_neg] at hid
+  simp only [ContinuousLinearMap.comp_apply, hf, map_zero, smul_apply, sub_apply, zero_sub,
+    smul_neg] at hid
   have hc : (((1 / (s * (s - 1) - a * (a - 1))) : ℝ) : ℂ) ≠ 0 := by
     have : s * (s - 1) - a * (a - 1) ≠ 0 := by
       intro h0
@@ -135,8 +135,8 @@ theorem specVec_ne_zero (j : X.SpecIndex ha) : X.specVec ha j ≠ 0 :=
 
 /-- **Positivity of the spectrum.**  `λ_j ≥ 0`. -/
 theorem spectralParam_nonneg (j : X.SpecIndex ha) : 0 ≤ X.spectralParam ha j := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra hneg'
+  have hneg : X.spectralParam ha j < 0 := lt_of_not_ge hneg'
   set lam := X.spectralParam ha j
   set s : ℝ := 1 / 2 + Real.sqrt (1 / 4 - lam)
   have hroot : Real.sqrt (1 / 4 - lam) ^ 2 = 1 / 4 - lam := Real.sq_sqrt (by linarith)
@@ -150,6 +150,7 @@ theorem spectralParam_nonneg (j : X.SpecIndex ha) : 0 ≤ X.spectralParam ha j :
     (by exact_mod_cast X.specMu_ne_zero ha j) (X.specVec_ne_zero ha j)
   apply hne
   have hμ := X.specMu_ne_zero ha j
+  have hμc : ((X.specMu ha j : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hμ
   rw [hss]
   have : lam = 1 / X.specMu ha j - a * (a - 1) := rfl
   rw [this]
@@ -179,20 +180,15 @@ theorem resOp_specVec_eq {s : ℝ} (hs : 1 < s) (j : X.SpecIndex ha) :
   have hl := X.spectralParam_nonneg ha j
   have hs2 : 0 < s * (s - 1) := by nlinarith
   have hden : X.spectralParam ha j + s * (s - 1) ≠ 0 := by linarith
-  have hμeq : X.specMu ha j * (X.spectralParam ha j + a * (a - 1)) = 1 := by
-    rw [X.specMu_eq ha j]
-    have : X.spectralParam ha j + a * (a - 1) ≠ 0 := by nlinarith
+  have hne' : 1 + (s * (s - 1) - a * (a - 1)) * X.specMu ha j ≠ 0 := by exact_mod_cast hne
+  have hreal : X.specMu ha j / (1 + (s * (s - 1) - a * (a - 1)) * X.specMu ha j) =
+      1 / (X.spectralParam ha j + s * (s - 1)) := by
+    rw [div_eq_div_iff hne' hden, spectralParam]
     field_simp
+    ring
+  rw [← hreal]
   push_cast
-  have hden' : ((X.spectralParam ha j : ℂ) + (s : ℂ) * ((s : ℂ) - 1)) ≠ 0 := by exact_mod_cast hden
-  have hμ' : (X.specMu ha j : ℂ) ≠ 0 := by exact_mod_cast hμ
-  have hμeq' : (X.specMu ha j : ℂ) * ((X.spectralParam ha j : ℂ) + (a : ℂ) * ((a : ℂ) - 1)) = 1 := by
-    exact_mod_cast hμeq
-  rw [div_eq_div_iff (by
-    intro h0
-    apply hden'
-    linear_combination (X.specMu ha j : ℂ)⁻¹ * h0 - hμeq' * 0) hden']
-  linear_combination hμeq'
+  rfl
 
 /-- **Completeness.**  A vector orthogonal to every `e_j` is killed by every `T_s`. -/
 theorem resOp_eq_zero_of_orthogonal {f : Lp ℂ 2 X.μ}
@@ -209,7 +205,8 @@ theorem resOp_eq_zero_of_orthogonal {f : Lp ℂ 2 X.μ}
       (fun x y hx hy => by rw [inner_add_left, hx, hy, add_zero])
     intro μ v hv
     have hTv : T v = μ • v := Module.End.mem_eigenspace_iff.mp hv
-    rw [← hsym v f, show (T : Lp ℂ 2 X.μ →ₗ[ℂ] Lp ℂ 2 X.μ) v = T v from rfl, hTv, inner_smul_left]
+    have h1 : ⟪v, T f⟫_ℂ = ⟪T v, f⟫_ℂ := (hsym v f).symm
+    rw [h1, hTv, inner_smul_left]
     by_cases hμ : μ = 0
     · simp [hμ]
     · have hspan := mem_span_eigenVec (T := T) ⟨μ, hμ⟩ v hv

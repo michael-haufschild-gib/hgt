@@ -128,7 +128,7 @@ the two-sided bound. Given `b<15`, choose
 
 ## Lean status
 
-**Eight of sixteen supporting modules are audited.** All pass final plain
+**Nine of sixteen supporting modules are audited.** All pass final plain
 source checks without warnings, depend exactly on `propext`,
 `Classical.choice`, and `Quot.sound`, are wired, and have required oleans.
 Paths are under `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
@@ -143,9 +143,10 @@ unless specified otherwise.
 - `ExponentialBarrierPrimeEdges`: mixed-form symmetry and the support-restricted comparison for each prime term.
 - `ExponentialBarrierPrimeRows`: uniform finite forward-row bounds and complete backward-row summability.
 
-Eight supporting modules await final audits:
-
 - `ExponentialBarrierPrimeComparison`: the integrated complete prime mixed-form comparison, passing from finite edge sums by actual-domain absolute summability.
+
+Seven supporting modules await final audits:
+
 - `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
 - `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
 - `HTGeometry/HardyBoundary/TranslationKernelPairing`: Fubini for an integrable kernel against measurable `L²` profiles, and an ordinary-mass bound when the kernel is also `L²`.
@@ -161,8 +162,7 @@ below order `15`. Its final existence theorem is
 `exists_exponentially_bounded_halfLineEnergyMinimizer`.
 The critical-state application is
 `riemannHypothesis_or_exists_exponentially_bounded_criticalState`.
-The complete prime and Gamma comparisons are also written
-but unaudited. No barrier theorem or contribution is counted yet.
+The Gamma comparison remains unaudited. No barrier theorem or contribution is counted yet.
 
 ## Boundary implication and limit
 

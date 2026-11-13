@@ -224,6 +224,15 @@ block size.
     lags `v ≲ log K` (`two_re_lagStructure_le_of_packetForm_ge`), and the rate law of the
     antisymmetric state reads the growth `e^{θ v}`. The trivial exponent `½` is the trivial strip,
     a power saving `ρ^{½ − δ}` is the quasi-Riemann hypothesis, RH is a bounded loss.
+21. *The rate of the margin* (`zetaZeroWidth_le_of_marginRate`): at infinite block size, if every
+    plane of packets on `[−L, L]` contains a nonzero packet with `N ≥ −C e^{2θL}` times its mass,
+    `θ < ½`, then `|Re ρ − ½| ≤ θ` for every zero. The plane pairs the antisymmetric state of the
+    two ends with the **binding state** `U(· + v/2) + U(· − v/2)`, `U` the spline: its charges are
+    `2 cosh(v/4) A(U)` (`charges_twoEndSpline`), so its pole term is at least `2 e^{v/2} A(U)²`,
+    while its sum over the zeros is `2 Re S_U(0) + 2 Re S_U(v) = o(e^{v/2})` because every zero
+    has `Re ρ < 1` (`tendsto_two_re_lagStructure_mul_exp`). Parity diagonalizes the plane also
+    with charges (`neutralForm_even_add_odd_charged`). In Doob terms: a Poincaré inequality
+    `gap ≥ μ − C ρ^θ` with loss `ρ^θ = o(μ)` is a zero-free strip.
 
 ## 5. Pillar theorems
 
@@ -242,6 +251,7 @@ block size.
 | RH iff the margins are bounded below, at infinite and at finite block size; the windows `(1, 2M]` suffice | `riemannHypothesis_iff_margin_bddBelow`, `riemannHypothesis_iff_neutralWindow_margin_bddBelow`, `riemannHypothesis_iff_initialWindow_margin_bddBelow` |
 | RH iff Weil's form on step packets is bounded below by a multiple of the mass | `riemannHypothesis_iff_packetForm_stepPacket_bddBelow` |
 | The trivial exponent `½` of the window matrices; a saving in the exponent is a zero-free strip | `exists_packetForm_stepPacket_ge_sqrt`, `zetaZeroWidth_le_of_packetForm_stepPacket_ge` |
+| A margin of exponential rate `θ < ½` is a zero-free strip (infinite block size) | `zetaZeroWidth_le_of_marginRate` |
 | Bounded margin; Poincaré constant in `[μ, μ + c₀]` under RH | `exists_doob_test_le`, `poincare_constant_mem_of_riemannHypothesis` |
 | Floor-tree components below ratio `9/2` | `floorContact_eq_zero_of_component`, `doobEnergy_component_eq_prime_free`, `poincare_component_of_le_one` |
 | The cut law; under RH every part holds at most its share of the binding | `doobCut_eq`, `doobCut_bottleneck_iff`, `share_law_of_riemannHypothesis` |
@@ -259,7 +269,7 @@ block size.
 | 6 | Does the margin have a limit along the ratios; does a uniform lower bound force RH | a uniform lower bound forces RH, at infinite block size (`riemannHypothesis_iff_margin_bddBelow`) and for the window matrices (`riemannHypothesis_iff_neutralWindow_margin_bddBelow`); calibration: under RH the margin lies in `[0, c₀]` and tends to `0` at infinite block size; the limit at finite block size is open |
 | 7 | The order of the binding energy and which floor maps carry it | answered: `√ρ`; carried by the long floor maps joining the two ends; under RH at most the pole capacity `√ρ − 1/√ρ + log ρ`; the unconditional leading constant is open |
 | 8 | A recursion along doublings | answered in overlap form: a window reduces to two shorter parts and one contraction; the balanced split sends the ratio `ρ` to `2(1 + ρ)/3` and `3ρ/(1 + ρ)` |
-| 9 | Which exponent `θ` in `𝔚 ≥ −C ρ^θ` on the step packets of ratio `ρ` is true | `θ = ½` unconditionally (`exists_packetForm_stepPacket_ge_sqrt`); `θ < ½` implies the zero-free strip `|Re ρ − ½| ≤ θ` (`zetaZeroWidth_le_of_packetForm_stepPacket_ge`); RH is the bound with `θ = 0`; any `θ < ½` is open |
+| 9 | Which exponent `θ` in `𝔚 ≥ −C ρ^θ` on the step packets of ratio `ρ`, or in a margin `−C ρ^θ`, is true | `θ = ½` for `𝔚` unconditionally (`exists_packetForm_stepPacket_ge_sqrt`); `θ < ½` implies the zero-free strip `|Re ρ − ½| ≤ θ`, for `𝔚` on step packets (`zetaZeroWidth_le_of_packetForm_stepPacket_ge`) and for the margin at infinite block size (`zetaZeroWidth_le_of_marginRate`); RH is `θ = 0`; any `θ < ½` is open |
 
 ## 7. Tools
 
@@ -300,10 +310,12 @@ versions of the overlap law (margins of `S₁`, `S₃` and the norm of `X`).
 
 - The contraction of the conditional coupling at ratio three (B192) and at the balanced split of
   every ratio; norms of `X` against `S₁`, `S₃`.
-- The converse of the exponent law: whether `|Re ρ − ½| ≤ θ` gives `𝔚 ≥ −C ρ^θ` on the step
-  packets of ratio `ρ`; and the exponent of the margin of `N` itself, which the plane of AGZ does
-  not see (it lives on windows of unbounded ratio): a construction of two deep bound states
-  inside a window of ratio comparable to the lag.
+- The converse of the exponent laws: whether `|Re ρ − ½| ≤ θ` gives `𝔚 ≥ −C ρ^θ` on the step
+  packets of ratio `ρ`, or a margin `−C ρ^θ`.
+- The rate of the margin at finite block size: the plane of the binding state and the
+  antisymmetric state transferred to the window matrices (the plane of AGZ lives on windows of
+  unbounded ratio and does not see the rate); the block averages of the comb give the needed
+  one-sided bound.
 - Strategies with an additive loss: a comparison or path argument that proves gap `≥ μ − C`
   suffices; which of the known losses (the margin bound `c₀`, the archimedean floor `5.4`, the
   overlap contraction) are additive.

@@ -1,12 +1,13 @@
 import GaloisForLFunctions.MixingArithmeticOfTheFloorTrees.AUniformLowerBoundOnTheMarginForcesTheRiemannHypothesis
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilsFormOnStepPacketsIsDeterminedByItsValuesOnWindows
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # The rate of the margin bounds the abscissa of the zeros
 
 At infinite block size the margin of a window `[−L, L]` is the second eigenvalue of its neutral
-form. Its binding energy, the first eigenvalue, grows like `e^{L}` without hypothesis, carried by
-the poles. RH is a bounded margin (`riemannHypothesis_iff_margin_bddBelow`). A margin that sinks
+form. Its binding energy, the first eigenvalue, is at least of order `e^{L}` without hypothesis,
+carried by the poles. RH is a bounded margin (`riemannHypothesis_iff_margin_bddBelow`). A margin that sinks
 at a smaller exponential rate still confines the zeros:
 
   **if the margin of `[−L, L]` is at least `−C e^{2θL}` with `θ < ½`, every zero has
@@ -63,7 +64,10 @@ theorem tendsto_two_re_lagStructure_mul_exp {b : ℝ → ℂ} (hb : ContDiff ℝ
     Tendsto (fun v : ℝ => 2 * (lagStructure zetaZeroConfig b v).re * Real.exp (-(v / 2))) atTop
       (𝓝 0) := by
   have hZ := SquareRootThreshold.temperedConfig_zetaZeroConfig
-  have hsum := SquareRootThreshold.summable_norm_evenCoeff zetaZeroConfig hZ hb hbs
+  have hsum : Summable fun z : ℂ => ‖evenCoeff zetaZeroConfig b z‖ := by
+    have h0 := (SquareRootThreshold.two_re_lagStructure_eq zetaZeroConfig hZ hb hbs 0).1.norm
+    simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one] at h0
+    exact h0
   have hlim : Tendsto (fun v : ℝ => ∑' z : ℂ,
       evenCoeff zetaZeroConfig b z * cexp ((z - 1 / 2) * v)) atTop (𝓝 (∑' _z : ℂ, (0 : ℂ))) := by
     refine tendsto_tsum_of_dominated_convergence hsum (fun z => ?_) ?_
@@ -75,9 +79,9 @@ theorem tendsto_two_re_lagStructure_mul_exp {b : ℝ → ℂ} (hb : ContDiff ℝ
           have e : (fun v : ℝ => ‖cexp ((z - 1 / 2) * v)‖) =
               fun v => Real.exp (-((1 / 2 - z.re) * v)) := by
             funext v
-            rw [Complex.norm_exp]
+            have hv : ((z - 1 / 2) * (v : ℂ)).re = (z.re - 1 / 2) * v := by simp
+            rw [Complex.norm_exp, hv]
             congr 1
-            simp
             ring
           rw [e]
           exact Real.tendsto_exp_neg_atTop_nhds_zero.comp
@@ -172,6 +176,10 @@ theorem zeroSum_twoEndSpline (v : ℝ) :
   refine h.trans ?_
   ring
 
+theorem integrable_mul_exp_of_vanishing {g : ℝ → ℝ} (hg : Continuous g) {L : ℝ}
+    (hv : ∀ u, L < |u| → g u = 0) (s : ℝ) : Integrable fun u => g u * Real.exp (s * u) :=
+  (hg.mul (by fun_prop)).integrable_of_hasCompactSupport (hasCompactSupport_of_vanishing hv).mul_right
+
 /-- `∫ g(u + c) e^{s u} du = e^{−sc} ∫ g e^{s u}`. -/
 theorem integral_comp_add_mul_exp (g : ℝ → ℝ) (c s : ℝ) :
     ∫ u, g (u + c) * Real.exp (s * u) = Real.exp (-(s * c)) * ∫ u, g u * Real.exp (s * u) := by
@@ -207,72 +215,54 @@ theorem charges_twoEndSpline (v : ℝ) :
         (Real.exp (v / 4) + Real.exp (-(v / 4))) * splineCharge ∧
       (∫ u, twoEndSpline v u * Real.exp (u / 2)) =
         (Real.exp (v / 4) + Real.exp (-(v / 4))) * splineCharge := by
-  have hU : Integrable fun u => spline u * Real.exp (-1 / 2 * u) :=
-    (contDiff_spline.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport
-      (HasCompactSupport.mul_right (hasCompactSupport_of_vanishing (L := 4)
-        fun u hu => spline_eq_zero hu))
-  have hV : Integrable fun u => spline u * Real.exp (1 / 2 * u) :=
-    (contDiff_spline.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport
-      (HasCompactSupport.mul_right (hasCompactSupport_of_vanishing (L := 4)
-        fun u hu => spline_eq_zero hu))
+  have hvan : ∀ u, 4 < |u| → spline u = 0 := fun u hu => spline_eq_zero hu
+  have hU := integrable_mul_exp_of_vanishing contDiff_spline.continuous hvan (-1 / 2)
+  have hV := integrable_mul_exp_of_vanishing contDiff_spline.continuous hvan (1 / 2)
   -- the second charge of the spline equals the first, by evenness
   have hB : ∫ u, spline u * Real.exp (1 / 2 * u) = splineCharge := by
     unfold splineCharge
     rw [← integral_neg_eq_self (fun u => spline u * Real.exp (1 / 2 * u))]
-    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    congr 1
+    funext u
     simp only [spline_neg]
-    congr 2
-    ring
+    rw [show 1 / 2 * -u = -u / 2 by ring]
   have hA : ∫ u, spline u * Real.exp (-1 / 2 * u) = splineCharge := by
     unfold splineCharge
-    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    simp only
-    congr 2
-    ring
-  have hsplit : ∀ s : ℝ, Integrable (fun u => spline u * Real.exp (s * u)) →
+    rw [show (fun u => spline u * Real.exp (-1 / 2 * u)) = fun u => spline u * Real.exp (-u / 2)
+      from funext fun u => by rw [show -1 / 2 * u = -u / 2 by ring]]
+  -- the translates of the spline vanish off a window
+  have hvt : ∀ c : ℝ, ∀ u, 4 + |c| < |u| → spline (u + c) = 0 := fun c u hu => spline_eq_zero (by
+    have h := abs_sub_abs_le_abs_sub u (-c)
+    rw [sub_neg_eq_add, abs_neg] at h
+    linarith)
+  have hsplit : ∀ s : ℝ,
       ∫ u, twoEndSpline v u * Real.exp (s * u) =
-        ∫ u, spline (u + v / 2) * Real.exp (s * u) + ∫ u, spline (u + -(v / 2)) * Real.exp (s * u) := by
-    intro s hs
-    have h1 : Integrable fun u => spline (u + v / 2) * Real.exp (s * u) := by
-      have := (hs.comp_add_right (v / 2)).const_mul (Real.exp (-(s * (v / 2))))
-      refine this.congr (Eventually.of_forall fun u => ?_)
-      simp only
-      rw [show s * (u + v / 2) = s * u + s * (v / 2) by ring, Real.exp_add]
-      have : Real.exp (-(s * (v / 2))) * Real.exp (s * (v / 2)) = 1 := by
-        rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
-      calc Real.exp (-(s * (v / 2))) * (spline (u + v / 2) * (Real.exp (s * u) *
-            Real.exp (s * (v / 2))))
-          = spline (u + v / 2) * Real.exp (s * u) *
-              (Real.exp (-(s * (v / 2))) * Real.exp (s * (v / 2))) := by ring
-        _ = _ := by rw [this, mul_one]
-    have h2 : Integrable fun u => spline (u + -(v / 2)) * Real.exp (s * u) := by
-      have := (hs.comp_add_right (-(v / 2))).const_mul (Real.exp (-(s * -(v / 2))))
-      refine this.congr (Eventually.of_forall fun u => ?_)
-      simp only
-      rw [show s * (u + -(v / 2)) = s * u + s * -(v / 2) by ring, Real.exp_add]
-      have : Real.exp (-(s * -(v / 2))) * Real.exp (s * -(v / 2)) = 1 := by
-        rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
-      calc Real.exp (-(s * -(v / 2))) * (spline (u + -(v / 2)) * (Real.exp (s * u) *
-            Real.exp (s * -(v / 2))))
-          = spline (u + -(v / 2)) * Real.exp (s * u) *
-              (Real.exp (-(s * -(v / 2))) * Real.exp (s * -(v / 2))) := by ring
-        _ = _ := by rw [this, mul_one]
+        (∫ u, spline (u + v / 2) * Real.exp (s * u)) +
+          ∫ u, spline (u + -(v / 2)) * Real.exp (s * u) := by
+    intro s
+    have h1 := integrable_mul_exp_of_vanishing
+      (contDiff_spline.continuous.comp (continuous_id.add continuous_const)) (hvt (v / 2)) s
+    have h2 := integrable_mul_exp_of_vanishing
+      (contDiff_spline.continuous.comp (continuous_id.add continuous_const)) (hvt (-(v / 2))) s
     rw [← integral_add h1 h2]
-    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    simp only [twoEndSpline, sub_eq_add_neg]
+    congr 1
+    funext u
+    simp only [Function.comp, id, twoEndSpline, sub_eq_add_neg]
     ring
   constructor
-  · have h := hsplit (-1 / 2) hU
+  · have h := hsplit (-1 / 2)
     rw [integral_comp_add_mul_exp, integral_comp_add_mul_exp, hA] at h
     rw [show (fun u => twoEndSpline v u * Real.exp (-u / 2)) =
-      fun u => twoEndSpline v u * Real.exp (-1 / 2 * u) from funext fun u => by ring_nf, h]
-    rw [show -(-1 / 2 * (v / 2)) = v / 4 by ring, show -(-1 / 2 * -(v / 2)) = -(v / 4) by ring]
+      fun u => twoEndSpline v u * Real.exp (-1 / 2 * u) from
+        funext fun u => by rw [show -u / 2 = -1 / 2 * u by ring], h,
+      show -(-1 / 2 * (v / 2)) = v / 4 by ring, show -(-1 / 2 * -(v / 2)) = -(v / 4) by ring]
     ring
-  · have h := hsplit (1 / 2) hV
+  · have h := hsplit (1 / 2)
     rw [integral_comp_add_mul_exp, integral_comp_add_mul_exp, hB] at h
     rw [show (fun u => twoEndSpline v u * Real.exp (u / 2)) =
-      fun u => twoEndSpline v u * Real.exp (1 / 2 * u) from funext fun u => by ring_nf, h]
-    rw [show -(1 / 2 * (v / 2)) = -(v / 4) by ring, show -(1 / 2 * -(v / 2)) = v / 4 by ring]
+      fun u => twoEndSpline v u * Real.exp (1 / 2 * u) from
+        funext fun u => by rw [show u / 2 = 1 / 2 * u by ring], h,
+      show -(1 / 2 * (v / 2)) = -(v / 4) by ring, show -(1 / 2 * -(v / 2)) = v / 4 by ring]
     ring
 
 /-- The mass of the binding state is at most four times that of the spline. -/
@@ -305,10 +295,6 @@ theorem integral_twoEndSpline_sq_le (v : ℝ) :
         ring
 
 /-! ### Parity with a charged even part -/
-
-theorem integrable_mul_exp_of_vanishing {g : ℝ → ℝ} (hg : Continuous g) {L : ℝ}
-    (hv : ∀ u, L < |u| → g u = 0) (s : ℝ) : Integrable fun u => g u * Real.exp (s * u) :=
-  (hg.mul (by fun_prop)).integrable_of_hasCompactSupport (hasCompactSupport_of_vanishing hv).mul_right
 
 /-- On a packet of the window, Weil's form `𝔚` is Weil's quadratic form of the real tests. -/
 theorem packetForm_eq_weilQuad {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) {L : ℝ}
@@ -363,16 +349,18 @@ theorem neutralForm_even_add_odd_charged {e o : ℝ → ℝ} (he : ContDiff ℝ 
     rw [e1, integral_add (hie s) ((hio s).const_mul t), integral_const_mul]
   have hA1 := hcharge (-1 / 2)
   have hB1 := hcharge (1 / 2)
-  have hAo' : ∫ u, o u * Real.exp (-1 / 2 * u) = 0 := by
-    rw [← hAo]; congr 1; funext u; congr 2; ring
-  have hBo' : ∫ u, o u * Real.exp (1 / 2 * u) = 0 := by
-    rw [← hBo]; congr 1; funext u; congr 2; ring
+  have hneg : ∀ g : ℝ → ℝ, (∫ u, g u * Real.exp (-u / 2)) = ∫ u, g u * Real.exp (-1 / 2 * u) :=
+    fun g => by
+      rw [show (fun u => g u * Real.exp (-u / 2)) = fun u => g u * Real.exp (-1 / 2 * u) from
+        funext fun u => by rw [show -u / 2 = -1 / 2 * u by ring]]
+  have hpos : ∀ g : ℝ → ℝ, (∫ u, g u * Real.exp (u / 2)) = ∫ u, g u * Real.exp (1 / 2 * u) :=
+    fun g => by
+      rw [show (fun u => g u * Real.exp (u / 2)) = fun u => g u * Real.exp (1 / 2 * u) from
+        funext fun u => by rw [show u / 2 = 1 / 2 * u by ring]]
+  have hAo' : ∫ u, o u * Real.exp (-1 / 2 * u) = 0 := by rw [← hneg]; exact hAo
+  have hBo' : ∫ u, o u * Real.exp (1 / 2 * u) = 0 := by rw [← hpos]; exact hBo
   rw [hAo', mul_zero, add_zero] at hA1
   rw [hBo', mul_zero, add_zero] at hB1
-  have hneg : ∀ g : ℝ → ℝ, (∫ u, g u * Real.exp (-u / 2)) = ∫ u, g u * Real.exp (-1 / 2 * u) :=
-    fun g => by congr 1; funext u; congr 2; ring
-  have hpos : ∀ g : ℝ → ℝ, (∫ u, g u * Real.exp (u / 2)) = ∫ u, g u * Real.exp (1 / 2 * u) :=
-    fun g => by congr 1; funext u; congr 2; ring
   unfold neutralForm
   rw [packetForm_eq_weilQuad (hsmooth t) (hvs t) hQ, packetForm_eq_weilQuad he hve hQ,
     packetForm_eq_weilQuad ho hvo hQ, hexp t, hP, hneg, hpos, hneg, hpos, hneg, hpos, hA1, hB1,
@@ -396,7 +384,7 @@ theorem zetaZeroWidth_le_of_marginRate {C θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ 
   have hE0 : 0 ≤ E := by rw [hE]; positivity
   have hA2 : 0 < 2 * splineCharge ^ 2 := by
     have := pow_pos (abs_pos.mpr splineCharge_ne_zero) 2
-    rw [sq_abs] at this
+    rw [_root_.sq_abs] at this
     linarith
   -- the binding state is eventually deeper than the allowed margin
   have hdeep : ∀ᶠ v : ℝ in atTop,
@@ -408,14 +396,17 @@ theorem zetaZeroWidth_le_of_marginRate {C θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ 
     have h3 : Tendsto (fun v : ℝ => Real.exp (-((1 / 2 - θ) * v))) atTop (𝓝 0) :=
       Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.const_mul_atTop (by linarith))
     have hF := ((h2.const_mul T0).add h1).add (h3.const_mul (4 * E * mU))
-    rw [mul_zero, zero_add, mul_zero, add_zero] at hF
+    simp only [mul_zero, add_zero] at hF
     filter_upwards [hF.eventually (gt_mem_nhds hA2)] with v hv
+    have hv' : T0 * Real.exp (-(v / 2)) +
+        2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
+        4 * E * mU * Real.exp (-((1 / 2 - θ) * v)) < 2 * splineCharge ^ 2 := hv
     have he : 0 < Real.exp (v / 2) := Real.exp_pos _
     have e1 : Real.exp (-(v / 2)) * Real.exp (v / 2) = 1 := by
       rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
     have e2 : Real.exp (-((1 / 2 - θ) * v)) * Real.exp (v / 2) = Real.exp (θ * v) := by
       rw [← Real.exp_add]; congr 1; ring
-    have hmul := mul_lt_mul_of_pos_right hv he
+    have hmul := mul_lt_mul_of_pos_right hv' he
     have e3 : (T0 * Real.exp (-(v / 2)) +
           2 * (lagStructure zetaZeroConfig (cx spline) v).re * Real.exp (-(v / 2)) +
           4 * E * mU * Real.exp (-((1 / 2 - θ) * v))) * Real.exp (v / 2) =
@@ -509,11 +500,15 @@ theorem zetaZeroWidth_le_of_marginRate {C θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ 
       have hsum : a ^ 2 * (neutralForm Q (twoEndSpline v) + D * ∫ u, twoEndSpline v u ^ 2) +
           b ^ 2 * (neutralForm Q (twoEndOdd v) + D * ∫ u, twoEndOdd v u ^ 2) < 0 := by
         rcases hab with ha | hb
-        · have ha2 : 0 < a ^ 2 := by positivity
+        · have ha2 : 0 < a ^ 2 := by
+            have := pow_pos (abs_pos.mpr ha) 2
+            rwa [_root_.sq_abs] at this
           have := mul_neg_of_pos_of_neg ha2 hxdeep
           have := mul_nonpos_of_nonneg_of_nonpos (sq_nonneg b) hneg.le
           linarith
-        · have hb2 : 0 < b ^ 2 := by positivity
+        · have hb2 : 0 < b ^ 2 := by
+            have := pow_pos (abs_pos.mpr hb) 2
+            rwa [_root_.sq_abs] at this
           have := mul_neg_of_pos_of_neg hb2 hneg
           have := mul_nonpos_of_nonneg_of_nonpos (sq_nonneg a) hxdeep.le
           linarith
