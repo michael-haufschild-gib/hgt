@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ActualHalfLineLevyEnergy
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.ArchimedeanTailMassDiverges
 import GaloisForLFunctions.RHTower.WeilLevyCoshPlasticCrossover
+import GaloisForLFunctions.RHTower.WeilLevyHarmonicDoublingPairCoupling
 
 /-!
 # Cutoff Gamma rows and their square-integrable kernels
@@ -16,6 +17,30 @@ open MeasureTheory Filter Set Topology
 open _root_.RHTower
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open WeilLevyCoshCrossover
+
+/-- The singular Gamma density differs from the inverse-distance kernel by a bounded function. -/
+theorem abs_archLevyDensity_sub_inverse_le {h : ℝ} (hh : 0 < h) :
+    |archLevyDensity h - 1 / (2 * h)| ≤ 1 / 2 := by
+  have hdpos : 0 < 1 - Real.exp (-2 * h) :=
+    sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith only [hh]))
+  have hd : 1 - Real.exp (-2 * h) ≤ 2 * h := by
+    linarith only [Real.add_one_le_exp (-2 * h)]
+  have he : archLevyDensity h * (1 - Real.exp (-2 * h)) = Real.exp (-h / 2) := by
+    unfold archLevyDensity
+    field_simp [hdpos.ne']
+  have hmul := mul_le_mul_of_nonneg_left hd (archLevyDensity_pos hh).le
+  rw [he] at hmul
+  have hlo : (1 - h / 2) / (2 * h) ≤ archLevyDensity h := by
+    apply (div_le_iff₀ (mul_pos (by norm_num) hh)).mpr
+    nlinarith only [hmul, Real.add_one_le_exp (-h / 2)]
+  have hid : (1 - h / 2) / (2 * h) = 1 / (2 * h) - 1 / 4 := by
+    field_simp [hh.ne'] <;> ring
+  rw [hid] at hlo
+  have hup := WeilLevyHarmonicDoubling.two_mul_archLevyDensity_le_inv_add_half hh
+  have hinv : 1 / h = 2 * (1 / (2 * h)) := by
+    field_simp [hh.ne']
+  rw [hinv] at hup
+  exact abs_le.mpr ⟨by linarith only [hlo], by linarith only [hup]⟩
 
 /-- Every positive cutoff removes the only obstruction to square integrability of the density. -/
 theorem integrableOn_sq_archLevyDensity {δ : ℝ} (hδ : 0 < δ) :
@@ -66,6 +91,7 @@ theorem abs_integral_cutoff_archLevyDensity_mul_le {δ : ℝ} (hδ : 0 < δ)
   simpa only [sq_abs] using hb
 
 #print axioms integrableOn_sq_archLevyDensity
+#print axioms abs_archLevyDensity_sub_inverse_le
 #print axioms exists_halfLineGamma_cutoffMass_gt
 #print axioms abs_integral_cutoff_archLevyDensity_mul_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
