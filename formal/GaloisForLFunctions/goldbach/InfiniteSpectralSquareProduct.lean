@@ -100,7 +100,7 @@ theorem infiniteSpectralSquareProduct_hasProdLocallyUniformlyOn
       (le_max_left _ _)
   rw [norm_spectral_error]
   have h1 : ‖1 - z‖ ≤ 1 + max R 0 :=
-    (norm_sub_le _ _).trans (by simpa only [norm_one] using add_le_add_left hzR 1)
+    (norm_sub_le _ _).trans (by simpa only [norm_one] using add_le_add (le_refl (1 : ℝ)) hzR)
   gcongr
 
 /-- The spectral product is entire, including at repeated and zero spectral values. -/
