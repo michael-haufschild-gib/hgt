@@ -76,8 +76,11 @@ This avoids any assumed `L¹` convergence of the limiting profile.
 convergent upper bound on a nonnegative weighted square moment, including
 the sum of two moments under separate strong `L²` limits. All four
 declarations pass final plain source audits with the standard three axioms;
-the module is integrated. The actual signed-energy limit still needs the
-negative-part continuity and recovery arguments.
+the module is integrated. `WeightedL2MomentContinuity` also passes its final
+plain source audit with those axioms and is integrated. It proves
+continuity for bounded weights, passage through uniform weighted tails,
+and moment convergence from vanishing weighted error. Applying these
+lemmas to the actual signed energy and proving recovery remain open.
 
 The negative-logarithmic estimate has a homogeneous, adjustable form.
 Writing `m=‖f‖₂²` and `M=∫|u||f(u)|²du`, use the cutoff

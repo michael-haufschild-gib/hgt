@@ -72,6 +72,7 @@ theorem signedBetaReflectionCore_differentiable_left (t : ℂ) :
 /-- The regularized kernel is entire in its second variable. -/
 theorem signedBetaReflectionCore_differentiable_right (r : ℂ) :
     Differentiable ℂ (signedBetaReflectionCore r) := by
+  change Differentiable ℂ (fun t => signedBetaReflectionCore r t)
   simp only [signedBetaReflectionCore_factorization]
   fun_prop
 

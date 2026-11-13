@@ -107,8 +107,9 @@ theorem exists_zero_of_alone {M : ℝ} (hγ : ContinuousOn γ (Icc 0 1))
     {z₀ : ℂ} (h0 : complexHeat (γ 0) z₀ = 0) (hd0 : d 0 z₀ ≤ 0) :
     ∀ s ∈ Icc (0 : ℝ) 1, ∃ z, complexHeat (γ s) z = 0 ∧ d s z ≤ 0 := by
   have hsub : Icc (0 : ℝ) 1 ⊆ {s | ∃ z, complexHeat (γ s) z = 0 ∧ d s z ≤ 0} := by
+    have hmem : (0 : ℝ) ∈ {s | ∃ z, complexHeat (γ s) z = 0 ∧ d s z ≤ 0} := ⟨z₀, h0, hd0⟩
     refine IsClosed.Icc_subset_of_forall_mem_nhdsWithin
-      (isClosed_setOf_exists_zero_inter_Icc hγ hd hM) ⟨z₀, h0, hd0⟩ ?_
+      (isClosed_setOf_exists_zero_inter_Icc hγ hd hM) hmem ?_
     rintro x ⟨⟨z, hz, hdz⟩, hx⟩
     have hxI : x ∈ Icc (0 : ℝ) 1 := ⟨hx.1, hx.2.le⟩
     obtain ⟨ζ, -, -, hev⟩ := exists_local_family_of_simple hγ hd hxI hz
