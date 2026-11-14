@@ -1,4 +1,4 @@
-import Mathlib.LinearAlgebra.Quotient.Basic
+import Mathlib.LinearAlgebra.Isomorphisms
 import Mathlib.Data.Fintype.BigOperators
 
 /-!

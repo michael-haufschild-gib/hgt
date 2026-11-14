@@ -160,7 +160,10 @@ private theorem local_gamma_remainder_ge_cubic_and_quartic {F : ℝ → ℝ}
       retainedGammaRemainderWeight t * D t
     have h := mul_le_mul_of_nonneg_right
       (retainedGammaRemainderWeight_ge_sharper_lags ⟨ht.1, ht.2.trans ha⟩) (hnonneg t)
-    convert h using 1 <;> ring
+    calc
+      t ^ 3 * D t / 864 + t ^ 4 * D t / 176 =
+          (t ^ 3 / 864 + t ^ 4 / 176) * D t := by ring
+      _ ≤ retainedGammaRemainderWeight t * D t := h
   rw [integral_add hi3 hi4, integral_div, integral_div] at hbound
   exact hbound
 

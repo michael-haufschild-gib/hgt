@@ -892,7 +892,7 @@ private theorem legP_envelope_le_one {u : ℝ} (hu : u ^ 2 ≤ 1) :
         (1 - u ^ 2) * legP' (n + 1) u ^ 2 / ((n : ℝ) + 1) ^ 2 := by
       rw [div_le_div_iff₀ hpos2' hpos1]
       have hden_le : ((n : ℝ) + 1) ^ 2 ≤ ((n + 1 : ℕ) + 1 : ℝ) ^ 2 := by
-        push_cast; nlinarith [Nat.cast_nonneg n]
+        push_cast; nlinarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
       exact mul_le_mul_of_nonneg_left hden_le hnn
     linarith
 

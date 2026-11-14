@@ -128,7 +128,7 @@ theorem gaussianSaddle_gomes_quadratic_classification (a b c : ℝ) :
   · subst n; norm_num; ring
   by_cases h2 : n = 2
   · subst n; norm_num
-  simp [coeff_X, coeff_C, h0, h1, h2]
+  simp [coeff_X, coeff_C, h0, Ne.symm h1, h2]
 
 end
 

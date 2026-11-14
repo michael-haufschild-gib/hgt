@@ -756,7 +756,7 @@ private theorem summable_primeNorm_rpow_compl (S : Finset (HeightOneSpectrum O))
 private theorem norm_geom_sum_sub_one_le {M : ℕ} (hM : 2 ≤ M) {Q : ℝ} (hQ : 64 ≤ Q)
     {A s : ℂ} (hA : ‖A‖ ≤ 1) (hs : 2 / 3 < s.re) :
     ‖(∑ r ∈ Finset.range M, (A * (Q : ℂ) ^ (3 - 6 * s)) ^ r) - 1‖ ≤
-      2 * Q ^ (-(6 * s.re - 3)) := by
+      3 * Q ^ (-(6 * s.re - 3)) := by
   set Rv := A * (Q : ℂ) ^ (3 - 6 * s)
   have hQ1 : 1 ≤ Q := by linarith
   have hRv : ‖Rv‖ ≤ Q ^ (-(6 * s.re - 3)) := by
@@ -788,9 +788,9 @@ private theorem norm_geom_sum_sub_one_le {M : ℕ} (hM : 2 ≤ M) {Q : ℝ} (hQ 
   calc ‖Rv‖ * ‖1 - Rv ^ (M - 1)‖
       ≤ Q ^ (-(6 * s.re - 3)) * (5 / 4) :=
         mul_le_mul hRv hnum (norm_nonneg _) (by positivity)
-    _ ≤ 2 * Q ^ (-(6 * s.re - 3)) * (1 / 2) := by
+    _ ≤ 3 * Q ^ (-(6 * s.re - 3)) * (1 / 2) := by
         linarith [Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ Q) (-(6 * s.re - 3))]
-    _ ≤ 2 * Q ^ (-(6 * s.re - 3)) * ‖1 - Rv‖ :=
+    _ ≤ 3 * Q ^ (-(6 * s.re - 3)) * ‖1 - Rv‖ :=
         mul_le_mul_of_nonneg_left h1Rv (by positivity)
 
 private theorem geom_mul_one_sub_inv_eq {M : ℕ} (hM : 1 ≤ M) {Rv : ℂ} (hRv_qtr : ‖Rv‖ ≤ 1 / 4) :
@@ -836,7 +836,7 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
   have hw1 : 1 < (6 * s - 3).re := by
     simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]; exact hw1'
   have hwM1 : 1 < wM.re := by
-    have h1 : wM = ((M : ℝ) : ℂ) * (6 * s - 3) := by dsimp [wM]; push_cast; ring
+    have h1 : wM = ((M : ℝ) : ℂ) * (6 * s - 3) := by dsimp [wM]; ring
     rw [h1, Complex.re_ofReal_mul]
     simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]
     have hM2 : (2 : ℝ) ≤ M := by exact_mod_cast hM
@@ -845,8 +845,8 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
   have hmul_geom : Multipliable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
       ∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r := by
     have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
-        2 * primeNorm v.1 ^ (-(6 * s.re - 3)) :=
-      (summable_primeNorm_rpow_compl S hw1').mul_left 2
+        3 * primeNorm v.1 ^ (-(6 * s.re - 3)) :=
+      (summable_primeNorm_rpow_compl S hw1').mul_left 3
     have hsum : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         (∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r) - 1 :=
       (hmaj.of_nonneg_of_le (fun _ => norm_nonneg _) fun v =>

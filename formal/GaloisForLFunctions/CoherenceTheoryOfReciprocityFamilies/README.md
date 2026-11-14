@@ -120,6 +120,8 @@ the correction of a family as a family of the same theory.
 | the root number of a row: `g̃⁽¹⁾ = μ(c)·(c/|c|)·χ̄_c(4)·g̃⁽³⁾·\overline{g̃⁽²⁾}`, with `|g⁽ʲ⁾_c| = |c|` | `rowRootNumber_eq_angularTwist`, `normSq_sexticGaussPow_prod` | Q1, Q2 |
 | the root number of a row is the square of the theta coefficient: `g̃⁽¹⁾ = G(c) γ₂(c)²`, `g⁽³⁾ = |c| Γ(c)`, `γ₂(c)³ = μ(c) c/|c|`, so `μ(c)(c/|c|)\overline{γ₂(c)} = γ₂(c)²` | `rowRootNumber_eq_thetaPhase_mul_sq`, `rowHasseDavenport`, `thetaGauss_cube`, `moebius_angular_mul_conj_thetaGauss` | Q1, Q2, Q6 |
 | the wall is the price of completion: the local series on cube-free indices is `R`-free, every `R`-term is a joint sixth power of index and frequency, and the uncompleted correction has no wall on `Re s > ½` | `hasSum_localTerm_uncompleted`, `rowLocalSum_sub_uncompleted`, `exists_uncompletedCorrection_cutoff` | Q4 |
+| doubly-incomplete cusp reciprocity retains `J = (1)` and all unit-modulus Gauss root-number phases, beats `X^{1/2}` uniformly on `N(c) ≤ X^{1−δ}` for `1/6 < η < 1/3`, and fails in `N(c) ≥ X^{1+κ}` | `incompleteIdealT_eq_incompleteCuspDual_add_defect`, `exists_uniform_subcubic_reflection_defect_power_saving`, `subconductor_dual_smoothing_obstruction` | Q4 |
+| row-Poisson `Q²` amplification at `z = 1/6` restores the walls under every cutoff: `l < L` (`L ≥ 3`) carries infinitely many zeros of `L(6s−3, ψ₆η⁶)` in `[7/12, 2/3)`, and `N(J) < Z^η` (`η < 1/3`) omits `≥ c Z^{2/3}` in `l = 2`, leaving `2/3` and `3/5` intact | `truncatedFullPrincipalCorrection_mul_grossen_eq`, `exists_continuedTruncatedCorrection_properties`, `exists_subcubic_sixthPower_defect_lower_bound`, `incomplete_reciprocity_producer_classification` | Q4 |
 
 ## 6. Questions
 

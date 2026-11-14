@@ -43,8 +43,7 @@ theorem lattice_extension_intertwines (q a b c d : R) :
 /-- The boundary extension is invisible to the determinant of the generic action. -/
 theorem lattice_extension_det (q a b c d : R) :
     (compactAction q a b c d).det = (openAction q a b c d).det := by
-  simp only [compactAction, openAction, Matrix.det_fin_two]
-  ring
+  simp [compactAction, openAction, Matrix.det_fin_two, mul_assoc, mul_left_comm]
 
 /-- The same is true of the trace. -/
 theorem lattice_extension_trace (q a b c d : R) :
@@ -97,9 +96,11 @@ theorem iwahori_lattice_extension (a b c d : PowerSeries K) :
         ((openAction X a b c d).map (HahnSeries.ofPowerSeries ℤ K)) =
       (compactAction X a b c d).map (HahnSeries.ofPowerSeries ℤ K) := by
   rw [latticeConjugate_entries]
-  ext i j
+  apply Matrix.ext
+  intro i j
   fin_cases i <;> fin_cases j <;>
-    simp [compactAction, openAction, PowerSeries.coe_X, mul_assoc]
+    simp [compactAction, openAction, ← mul_assoc, HahnSeries.single_mul_single,
+      ← HahnSeries.C_apply]
 
 /-- A repeated residual character can be split in the smaller lattice. -/
 theorem compactAction_scalar_residue (m : ℕ) (α : K) :
