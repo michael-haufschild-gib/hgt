@@ -83,10 +83,3 @@ theorem leftEulerFactor_iff (L : PowerSeries ℂ → PowerSeries ℂ) (f : Power
   formalEulerOp_eq_zero_iff _
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalEulerOp_eulerPrimitive
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalEulerOp_eq_zero_iff
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.exists_eulerPrimitive_iff
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.logarithmicEuler_primitive
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.localEulerFactor_primitive
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.leftEulerFactor_iff

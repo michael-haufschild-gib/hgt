@@ -1,9 +1,10 @@
 import GaloisForLFunctions.HTGeometry.SymmetricSquareDeterminantFull
 import Mathlib.Algebra.CharP.Two
 
-/-!+# The quadratic exact sequence in characteristic two
+/-!
+# The quadratic exact sequence in characteristic two
 
-In unordered-pair coordinates, the symmetric square is `Sym2 ι → R` and the tensor square is
+For a finite index set, the symmetric square is `Sym2 ι → R` and the tensor square is
 `Matrix ι ι R`. Diagonal inclusion, symmetrization, and multiplication give the exact sequence
 `0 → R^ι → Sym²(R^ι) → R^ι ⊗ R^ι → Sym²(R^ι) → 0` in characteristic two.
 The first term carries the Frobenius-twisted action. These are the coordinate maps in

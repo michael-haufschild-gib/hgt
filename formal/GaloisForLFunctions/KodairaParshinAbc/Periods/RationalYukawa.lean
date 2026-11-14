@@ -99,10 +99,3 @@ theorem projective_yukawa_solutions :
   ⟨rationalYukawa_solves _ _, rationalYukawa_solves _ _, rationalYukawa_solves _ _⟩
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.yukawaDenominator_ne_zero
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.derivative_yukawaDenominator
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.yukawa_integrating_factor
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.yukawaEquation_eq_zero_iff
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.rationalYukawa_solves
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projective_yukawa_solutions

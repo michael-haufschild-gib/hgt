@@ -1,6 +1,7 @@
 import Mathlib.Algebra.CharP.Frobenius
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Tactic.Ring
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Trace polynomials and Kummer substitution
@@ -19,14 +20,16 @@ def frobeniusTraceSum {A : Type*} [CommSemiring A] (p d m : ℕ) (x : A) : A :=
   ∑ j ∈ range m, x ^ p ^ (d * j)
 
 section Trace
-variable {A : Type*} [CommRing A] (p : ℕ) [ExpChar A p]
+variable {A : Type*} [CommRing A] (p : ℕ) [Fact p.Prime] [CharP A p]
 
 /-- Frobenius telescoping holds before imposing any finite-field equation. -/
 theorem frobeniusTraceSum_sub_pow (d m : ℕ) (x : A) :
     frobeniusTraceSum p d m x - (frobeniusTraceSum p d m x) ^ p ^ d =
       x - x ^ p ^ (d * m) := by
   induction m with
-  | zero => simp [frobeniusTraceSum]
+  | zero =>
+    have hz : (0 : A) ^ p ^ d = 0 := map_zero (iterateFrobenius A p d)
+    simp [frobeniusTraceSum, hz]
   | succ m ih =>
     simp only [frobeniusTraceSum, sum_range_succ] at ih ⊢
     rw [add_pow_char_pow]

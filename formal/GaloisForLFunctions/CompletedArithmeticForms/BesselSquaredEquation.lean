@@ -25,5 +25,3 @@ theorem besselSquared_differential_equation (a : ℝ) (z : ℂ) :
   rw [symmetricSquareD_square, h, map_zero, mul_zero, mul_zero, add_zero]
 
 end GaloisForLFunctions.CompletedArithmeticForms
-
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.besselSquared_differential_equation

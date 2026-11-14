@@ -73,12 +73,3 @@ theorem formalEulerOp_mul_X (f : PowerSeries ℂ) :
       ring
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coeff_eulerPolynomial
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eulerPolynomial_X
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eulerPolynomial_one
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eulerPolynomial_X_pow
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eulerPolynomial_add
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eulerPolynomial_mul
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eulerPolynomial_mul_X
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalEulerOp_mul_X

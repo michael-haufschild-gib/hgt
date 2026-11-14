@@ -7,6 +7,8 @@ import GaloisForLFunctions.EisensteinDegeneration.CalderonWeightedClasses
 import GaloisForLFunctions.EisensteinDegeneration.CharacterCoefficients
 import GaloisForLFunctions.EisensteinDegeneration.AdicInverseLimit
 import GaloisForLFunctions.EisensteinDegeneration.TwoBranchRegularity
+import GaloisForLFunctions.EisensteinDegeneration.MulticoverCoefficients
+import GaloisForLFunctions.EisensteinDegeneration.MulticoverWittGhost
 
 /-!
 # Algebraic mechanisms of irregular Eisenstein degeneration

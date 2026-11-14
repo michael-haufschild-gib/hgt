@@ -153,4 +153,7 @@ theorem exists_avoiding_zero_neg_one {ι : Type*} (s : Finset ι) (A B : ι → 
     (by rw [hT, mul_comm]; exact hcard)
   exact ⟨x, y, fun i hi => ⟨hxy i hi 0 (by simp), hxy i hi (-1) (by simp)⟩⟩
 
+#print axioms prime_pattern_pencil_card
+#print axioms exists_avoiding_zero_neg_one
+
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

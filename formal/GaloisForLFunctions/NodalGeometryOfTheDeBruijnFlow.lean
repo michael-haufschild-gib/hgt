@@ -31,6 +31,7 @@ import GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.TheHalfGaussAtTheCriti
 import GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.TheCentralInequalityAtTheCriticalScale
 import GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.TheZerosAreRealAtTheCriticalScale
 import GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.TheCrystalIsFormedAtTheCriticalScale
+import GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.HermiteSquaredEquation
 
 /-!
 # Nodal geometry of the de Bruijn flow

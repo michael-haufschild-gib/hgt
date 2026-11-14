@@ -110,4 +110,6 @@ theorem finiteValuationSelector_sound {G J : Type*} (g : Finset G) (s : Finset J
     val_finset_sum_ge g _ _ (fun a ha => Or.inr (hall a ha)) hΘ
   omega
 
+#print axioms finiteValuationSelector_sound
+
 end GaloisForLFunctions.HTGeometry.Arithmetic

@@ -122,13 +122,3 @@ theorem spaceEisenstein_primitive (n : ℕ) :
   primitiveCoefficient_multicover _ _ _
 
 end GaloisForLFunctions.EisensteinDegeneration
-
-#print axioms GaloisForLFunctions.EisensteinDegeneration.coeff_multicoverSeries
-#print axioms GaloisForLFunctions.EisensteinDegeneration.multicover_zero
-#print axioms GaloisForLFunctions.EisensteinDegeneration.primitiveCoefficient_multicover
-#print axioms GaloisForLFunctions.EisensteinDegeneration.multicover_injective_positive
-#print axioms GaloisForLFunctions.EisensteinDegeneration.exists_integral_multicover_iff
-#print axioms GaloisForLFunctions.EisensteinDegeneration.planeEisensteinWeight_periodic
-#print axioms GaloisForLFunctions.EisensteinDegeneration.spaceEisensteinWeight_periodic
-#print axioms GaloisForLFunctions.EisensteinDegeneration.planeEisenstein_primitive
-#print axioms GaloisForLFunctions.EisensteinDegeneration.spaceEisenstein_primitive

@@ -36,6 +36,3 @@ theorem chebyshevU_squared_equation (n : ℤ) :
   rw [symmetricSquare_square, h, derivative_zero, mul_zero, mul_zero, add_zero]
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity
-
-#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.chebyshevT_squared_equation
-#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.chebyshevU_squared_equation

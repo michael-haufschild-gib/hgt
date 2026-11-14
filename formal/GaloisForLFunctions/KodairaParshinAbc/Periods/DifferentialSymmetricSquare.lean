@@ -45,6 +45,3 @@ theorem symmetricSquareD_square (δ : Derivation R A A) (a b c f : A) :
   ring
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.symmetricSquareD_product
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.symmetricSquareD_square

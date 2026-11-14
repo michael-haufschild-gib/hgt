@@ -137,16 +137,3 @@ theorem specializedInverse_logarithmicResponses [Algebra ℂ A] (a : ℕ → A) 
   exact reciprocal_logarithmicResponses a
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.constantCoeff_unitPart
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.inverseCoordinate_constantCoeff
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.inverseCoordinate_coeff_one
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coordinate_subst_inverse
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.inverse_subst_coordinate
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coordinate_eq_unitPart_mul_X
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.inverseCoordinate_eq_unitPart_mul_X
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.unitPart_coordinate_subst_inverse
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.derivative_coordinate_subst_inverse
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.reciprocal_logarithmicResponses
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.inverseCoordinate_eq_specializedInverse
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.specializedInverse_logarithmicResponses

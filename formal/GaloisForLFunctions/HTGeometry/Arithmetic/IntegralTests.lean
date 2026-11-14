@@ -31,6 +31,27 @@ theorem nonneg_val_iff_not_dvd_den (p : ℕ) [hp : Fact p.Prime] (q : ℚ) :
     rw [padicValNat.eq_zero_of_not_dvd hd]
     simp
 
+/-- Reduced denominator exponents are the negative parts of the rational
+valuations. This includes zero under the total valuation convention. -/
+theorem den_valuation_eq_negative_part (p : ℕ) [hp : Fact p.Prime] (q : ℚ) :
+    (padicValNat p q.den : ℤ) = max (-padicValRat p q) 0 := by
+  by_cases hq : 0 ≤ padicValRat p q
+  · have hd := (nonneg_val_iff_not_dvd_den p q).mp hq
+    rw [padicValNat.eq_zero_of_not_dvd hd, Nat.cast_zero, max_eq_right (by omega)]
+  · have hd : p ∣ q.den := by
+      by_contra hd
+      exact hq ((nonneg_val_iff_not_dvd_den p q).mpr hd)
+    have hn : ¬ p ∣ q.num.natAbs := by
+      intro hn
+      have h := Nat.dvd_gcd hn hd
+      rw [q.reduced.gcd_eq_one] at h
+      exact hp.out.not_dvd_one h
+    have hnval := padicValNat.eq_zero_of_not_dvd hn
+    change (padicValNat p q.den : ℤ) =
+      max (-((padicValNat p q.num.natAbs : ℤ) - padicValNat p q.den)) 0
+    rw [hnval]
+    simp
+
 /-- The intersection of all prime square-denominator tests is exactly `ℤ`. -/
 theorem forall_prime_squareDenominator_iff_integer (q : ℚ) :
     (∀ p : ℕ, p.Prime → SquareDenominator ((p : ℚ) * q ^ 2)) ↔

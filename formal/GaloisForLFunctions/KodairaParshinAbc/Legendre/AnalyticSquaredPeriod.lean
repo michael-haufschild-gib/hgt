@@ -89,8 +89,3 @@ theorem squaredPeriod_picardFuchs :
       (6 * z * (1 - z) * slope z + 2 * (1 - 2 * z) * period z) * picardFuchs z hz
 
 end GaloisForLFunctions.KodairaParshinAbc.Legendre
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.hasDerivAt_squaredPeriod
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.hasDerivAt_squaredPeriodSlope
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.hasDerivAt_squaredPeriodCurvature
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.squaredPeriod_picardFuchs

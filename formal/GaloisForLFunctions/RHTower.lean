@@ -4069,6 +4069,7 @@ import GaloisForLFunctions.RHTower.Deninger.DeningerPeriodizationSmooth
 import GaloisForLFunctions.RHTower.Deninger.DeningerPeriodizationSplit
 import GaloisForLFunctions.RHTower.Deninger.DeningerPeriodizationQuotient
 import GaloisForLFunctions.RHTower.Deninger.DeningerPermutationShapiro
+import GaloisForLFunctions.RHTower.Deninger.DeningerOrbitShapiro
 import GaloisForLFunctions.RHTower.Deninger.DeningerPermutationSum
 import GaloisForLFunctions.RHTower.Deninger.DeningerPhaseGenerator
 import GaloisForLFunctions.RHTower.Deninger.DeningerPlaceCountable

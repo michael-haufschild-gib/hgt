@@ -81,11 +81,3 @@ theorem factorialRegularization_derivative (f : PowerSeries ℂ) :
       ring
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coeff_factorialRegularization
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coeff_formalBorel
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_formalBorel
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalBorel_factorialRegularization
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_eulerPolynomial
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_mul_X
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_derivative

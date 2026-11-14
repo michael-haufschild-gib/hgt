@@ -21,7 +21,7 @@ theorem val_finset_sum_ge {ι : Type*} (s : Finset ι) (f : ι → ℚ) (k : ℤ
     (hs : ∑ i ∈ s, f i ≠ 0) : k ≤ padicValRat p (∑ i ∈ s, f i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => exact False.elim (hs (sum_empty _))
+  | empty => exact False.elim (hs (by simp))
   | @insert a s ha ih =>
     rw [sum_insert ha] at hs ⊢
     have ht : ∀ i ∈ s, f i = 0 ∨ k ≤ padicValRat p (f i) :=

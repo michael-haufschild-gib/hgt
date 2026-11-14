@@ -1,4 +1,7 @@
-import GaloisForLFunctions.HyperbolicArakelovTheory.TheCoupledLocalProductObstructsOffDiagonalAndTorusInvariance
+import GaloisForLFunctions.HyperbolicArakelovTheory.Heights.RationalHeight
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Exact height growth under a shifted square
@@ -38,10 +41,14 @@ theorem weilHeight_squareShift (N : ℕ) (hN : 1 ≤ N) (q : ℚ) :
   have habs : (((N : ℚ) ^ 2 + q ^ 2).num).natAbs =
       N ^ 2 * q.den ^ 2 + q.num.natAbs ^ 2 := by
     have hnonneg : 0 ≤ (N : ℤ) ^ 2 * (q.den : ℤ) ^ 2 + q.num ^ 2 := by positivity
-    apply Int.natCast_injective
-    rw [squareShift_num, Int.natAbs_of_nonneg hnonneg]
-    push_cast
-    rw [← Int.natAbs_pow, Int.natAbs_of_nonneg (sq_nonneg q.num)]
+    have hz : ((((N : ℚ) ^ 2 + q ^ 2).num).natAbs : ℤ) =
+        ((N ^ 2 * q.den ^ 2 + q.num.natAbs ^ 2 : ℕ) : ℤ) := by
+      rw [squareShift_num, Int.natAbs_of_nonneg hnonneg]
+      simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_pow]
+      have hsq := Int.natAbs_of_nonneg (sq_nonneg q.num)
+      rw [Int.natAbs_pow, Nat.cast_pow] at hsq
+      rw [hsq]
+    exact_mod_cast hz
   rw [weilHeight, habs, squareShift_den]
   apply max_eq_left
   have hN2 : 1 ≤ N ^ 2 := one_le_pow₀ hN
@@ -83,6 +90,12 @@ theorem log_weilHeight_squareShift_ge (N : ℕ) (hN : 1 ≤ N) (q : ℚ) :
   have hq' : (0 : ℝ) < weilHeight q := by exact_mod_cast hq
   rw [← Real.log_mul hq'.ne' hN'.ne']
   apply Real.log_le_log (mul_pos hq' hN')
-  exact_mod_cast (by simpa only [mul_comm] using mul_weilHeight_le_squareShift N hN q)
+  have h : ((N * weilHeight q : ℕ) : ℝ) ≤
+      (weilHeight ((N : ℚ) ^ 2 + q ^ 2) : ℝ) :=
+    Nat.cast_le.mpr (mul_weilHeight_le_squareShift N hN q)
+  simpa only [Nat.cast_mul, mul_comm] using h
+
+#print axioms weilHeight_squareShift
+#print axioms log_weilHeight_squareShift_ge
 
 end GaloisForLFunctions.HyperbolicArakelovTheory.CoupledProductObstruction

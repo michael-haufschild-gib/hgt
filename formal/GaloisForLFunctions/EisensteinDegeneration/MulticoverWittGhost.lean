@@ -107,8 +107,3 @@ theorem multicoverEulerProduct_ghost_coefficient (k : ℕ) (w : ℕ → ℤ) (n 
   exact hsum
 
 end GaloisForLFunctions.EisensteinDegeneration
-
-#print axioms GaloisForLFunctions.EisensteinDegeneration.signedEulerFactor_constantCoeff
-#print axioms GaloisForLFunctions.EisensteinDegeneration.signedEulerFactor_ghost
-#print axioms GaloisForLFunctions.EisensteinDegeneration.multicoverEulerProduct_constantCoeff
-#print axioms GaloisForLFunctions.EisensteinDegeneration.multicoverEulerProduct_ghost_coefficient

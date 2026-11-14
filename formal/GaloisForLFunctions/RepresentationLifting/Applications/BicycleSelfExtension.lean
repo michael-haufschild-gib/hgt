@@ -1,7 +1,8 @@
 import GaloisForLFunctions.RepresentationLifting.ChainSelfExtension
 import GaloisForLFunctions.QECLean.Stabilizer.Framework.Homological.BBChainComplex
 
-/-!+# Square-zero self-extensions of bivariate bicycle codes
+/-!
+# Square-zero self-extensions of bivariate bicycle codes
 
 The original convolution boundaries form a three-term module complex. The canonical
 dual-number self-extension therefore gives an equivariant lift of its total boundary for

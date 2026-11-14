@@ -83,9 +83,3 @@ theorem genericCurve_j :
   ring
 
 end GaloisForLFunctions.KodairaParshinAbc.CubicMirror
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.CubicMirror.c₄
-#print axioms GaloisForLFunctions.KodairaParshinAbc.CubicMirror.discriminant
-#print axioms GaloisForLFunctions.KodairaParshinAbc.CubicMirror.isElliptic_iff
-#print axioms GaloisForLFunctions.KodairaParshinAbc.CubicMirror.c₄_or_discriminant_ne_zero
-#print axioms GaloisForLFunctions.KodairaParshinAbc.CubicMirror.genericCurve_j

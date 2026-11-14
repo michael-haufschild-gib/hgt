@@ -2,7 +2,8 @@ import GaloisForLFunctions.RepresentationLifting.ChainSelfExtension
 import GaloisForLFunctions.EffectiveScalingGeometry.PrimeAugmentedHomology
 import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedAugmentedHomology
 
-/-!+# Self-extensions of prime-cutoff boundary complexes
+/-!
+# Self-extensions of prime-cutoff boundary complexes
 
 The canonical square-zero extension applies to the actual prime-product boundary, its
 augmented empty-face degree, and the integral prime-weighted boundary. Its projection lifts
@@ -42,7 +43,7 @@ theorem primeAugmented_detector_exact (N : ℕ) :
       Function.Surjective (detectorProjection (primeZeroShortComplex R N)) :=
   detector_exact _
 
-/-- Integral prime-weighted chains admit the extension before reduction modulo two. -/
+/-- Integral prime-weighted chains have the extension before reduction modulo two. -/
 theorem primeWeighted_detector_exact (N : ℕ) :
     Function.Injective (detectorInclusion (primeValueZeroShortComplex N)) ∧
       LinearMap.range (detectorInclusion (primeValueZeroShortComplex N)) =

@@ -1,0 +1,17 @@
+import GaloisForLFunctions.RepresentationLifting.QuadraticSequence
+import GaloisForLFunctions.RepresentationLifting.QuadraticNaturality
+import GaloisForLFunctions.RepresentationLifting.ChainSelfExtension
+import GaloisForLFunctions.RepresentationLifting.ModularTrace
+import GaloisForLFunctions.RepresentationLifting.FreeGroupLifting
+import GaloisForLFunctions.RepresentationLifting.AcyclicNormalForm
+import GaloisForLFunctions.RepresentationLifting.AcyclicTrace
+import GaloisForLFunctions.RepresentationLifting.CyclicNormDifferential
+import GaloisForLFunctions.RepresentationLifting.Applications.BicycleSelfExtension
+import GaloisForLFunctions.RepresentationLifting.Applications.BicycleTrace
+
+/-!
+# Representation lifting and quadratic extensions
+
+Characteristic-two quadratic sequences, ideal-power lifts of free-group representations,
+graded self-extensions, cyclic norm differentials, and modular trace formulas.
+-/

@@ -3,7 +3,8 @@ import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.CharP.Two
 
-/-!+# Trace on regular and free dual-number modules
+/-!
+# Trace on regular and free dual-number modules
 
 An endomorphism of a free regular representation has a unique matrix of convolution kernels.
 Its scalar trace is the group order times the sum of the diagonal identity coefficients.

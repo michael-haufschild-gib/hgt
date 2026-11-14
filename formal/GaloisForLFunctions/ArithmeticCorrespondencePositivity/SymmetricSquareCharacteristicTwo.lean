@@ -1,7 +1,8 @@
 import GaloisForLFunctions.RepresentationLifting.QuadraticSequence
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SymmetricSquareDiscriminant
 
-/-!+# The Frobenius plane and determinant quotient of a binary symmetric square
+/-!
+# The Frobenius plane and determinant quotient of a binary symmetric square
 
 In characteristic two, the pure squares form a Frobenius-twisted plane, and the mixed
 coefficient transforms by the determinant. The discriminant conic is the double of that plane.

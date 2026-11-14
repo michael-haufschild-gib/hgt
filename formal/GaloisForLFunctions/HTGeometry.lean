@@ -3,6 +3,8 @@ import GaloisForLFunctions.HTGeometry.Arithmetic.SquareDenominator
 import GaloisForLFunctions.HTGeometry.Arithmetic.ValuationParity
 import GaloisForLFunctions.HTGeometry.Arithmetic.ValuationProducts
 import GaloisForLFunctions.HTGeometry.Arithmetic.IntegralTests
+import GaloisForLFunctions.HTGeometry.Arithmetic.ValuationSums
+import GaloisForLFunctions.HTGeometry.Arithmetic.FiniteValuationSelector
 import GaloisForLFunctions.HTGeometry.BorelResurgence.GaussianAccelerationStep
 import GaloisForLFunctions.HTGeometry.BorelResurgence.GaussianAccelerationExponential
 import GaloisForLFunctions.HTGeometry.BorelResurgence.BorelLevelAcceleration
@@ -2283,6 +2285,7 @@ import GaloisForLFunctions.HTGeometry.BuildingHomologyConcentration
 import GaloisForLFunctions.HTGeometry.BuildingLink
 import GaloisForLFunctions.HTGeometry.BuildingLinkHomology
 import GaloisForLFunctions.HTGeometry.BuildingLinkQuotient
+import GaloisForLFunctions.HTGeometry.Buildings
 import GaloisForLFunctions.HTGeometry.BuildingLowerLink
 import GaloisForLFunctions.HTGeometry.BuildingNonvanishing
 import GaloisForLFunctions.HTGeometry.BuildingNotSpanning

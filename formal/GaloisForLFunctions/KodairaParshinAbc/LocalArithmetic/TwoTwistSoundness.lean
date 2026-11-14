@@ -106,4 +106,7 @@ theorem twoTwistWitness_one_sound (b : ℚ) :
   exact twoTwistWitness_local_sound one_ne_zero one_ne_zero
     padicValRat.one padicValRat.one h
 
+#print axioms twoTwistWitness_local_sound
+#print axioms twoTwistWitness_one_sound
+
 end GaloisForLFunctions.KodairaParshinAbc.LocalArithmetic

@@ -2,7 +2,8 @@ import Mathlib.Algebra.Category.ModuleCat.Abelian
 import Mathlib.Algebra.Homology.ShortComplex.Basic
 import Mathlib.LinearAlgebra.Prod
 
-/-!+# A canonical self-extension of a three-term complex
+/-!
+# A canonical self-extension of a three-term complex
 
 For a complex `U → V → W`, its total differential is `d(u,v,w) = (0,f(u),g(v))`.
 The even-degree projection `h` satisfies `dh + hd = d`, and the grading sign `S`
@@ -64,7 +65,7 @@ theorem chainEven_grading (v : ChainTotal X) :
       chainDifferential X v := by
   simp [chainDifferential, chainEven]
 
-/-- A free dual-number module on the underlying total module. -/
+/-- The doubled total module with its canonical square-zero shift. -/
 abbrev ChainDetector := ChainTotal X × ChainTotal X
 
 /-- Multiplication by the square-zero dual-number parameter. -/

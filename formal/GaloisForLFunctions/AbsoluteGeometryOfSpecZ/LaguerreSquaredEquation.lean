@@ -79,9 +79,3 @@ theorem laguerreProfile_squared_equation (n : ℕ) :
     map_zero, mul_zero, mul_zero, add_zero]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
-
-#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.coeff_laguerreProfileSeries
-#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.laguerreProfileSeries_coeff_above
-#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.laguerreProfile_coefficient_recurrence
-#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.laguerreProfile_differential_equation
-#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.laguerreProfile_squared_equation

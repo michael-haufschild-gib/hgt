@@ -59,7 +59,37 @@ theorem freeGroup_representation_lifts (I : Ideal R) (n : ℕ)
   rw [FreeGroup.lift_apply_of]
   exact Classical.choose_spec (idealPowerGLReduction_surjective I n (ρ (FreeGroup.of a)))
 
+/-- A chosen lift through one ideal-power step. -/
+def freeGroupLiftStep (I : Ideal R) (n : ℕ)
+    (ρ : FreeGroup α →* (Matrix ι ι (R ⧸ I ^ (n + 1)))ˣ) :
+    FreeGroup α →* (Matrix ι ι (R ⧸ I ^ (n + 2)))ˣ :=
+  Classical.choose (freeGroup_representation_lifts I n ρ)
+
+theorem freeGroupLiftStep_reduces (I : Ideal R) (n : ℕ)
+    (ρ : FreeGroup α →* (Matrix ι ι (R ⧸ I ^ (n + 1)))ˣ) :
+    (idealPowerGLReduction I n).comp (freeGroupLiftStep I n ρ) = ρ :=
+  Classical.choose_spec (freeGroup_representation_lifts I n ρ)
+
+/-- A compatible tower lifting an initial representation through every positive ideal power. -/
+def freeGroupLiftTower (I : Ideal R)
+    (ρ : FreeGroup α →* (Matrix ι ι (R ⧸ I ^ 1))ˣ) :
+    (n : ℕ) → FreeGroup α →* (Matrix ι ι (R ⧸ I ^ (n + 1)))ˣ
+  | 0 => ρ
+  | n + 1 => freeGroupLiftStep I n (freeGroupLiftTower I ρ n)
+
+@[simp] theorem freeGroupLiftTower_zero (I : Ideal R)
+    (ρ : FreeGroup α →* (Matrix ι ι (R ⧸ I ^ 1))ˣ) :
+    freeGroupLiftTower I ρ 0 = ρ := rfl
+
+/-- Successive representations in the tower reduce to one another. -/
+theorem freeGroupLiftTower_compatible (I : Ideal R)
+    (ρ : FreeGroup α →* (Matrix ι ι (R ⧸ I ^ 1))ˣ) (n : ℕ) :
+    (idealPowerGLReduction I n).comp (freeGroupLiftTower I ρ (n + 1)) =
+      freeGroupLiftTower I ρ n :=
+  freeGroupLiftStep_reduces I n _
+
 end GaloisForLFunctions.RepresentationLifting
 
 #print axioms GaloisForLFunctions.RepresentationLifting.idealPowerGLReduction_surjective
 #print axioms GaloisForLFunctions.RepresentationLifting.freeGroup_representation_lifts
+#print axioms GaloisForLFunctions.RepresentationLifting.freeGroupLiftTower_compatible

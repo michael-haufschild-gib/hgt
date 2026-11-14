@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheFullAdelicDegreeConfiguration
+import GaloisForLFunctions.HyperbolicArakelovTheory.Heights.RationalHeight
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheCriticalAdelicOrbitRequiresGlobalRenormalization
 import Mathlib.NumberTheory.Pell
 
@@ -1318,10 +1319,6 @@ theorem not_summable_adelicCriticalProduct_torus_noncolliding (m n : ℕ+) :
     exact lt_irrefl _ (hgt.trans hlt)
 
 /-! ## 5. Torus non-invariance of naive rational height cutoffs -/
-
-/-- Standard multiplicative Weil height `max(|num q|, den q)` on `ℚ`. -/
-def weilHeight (q : ℚ) : ℕ :=
-  max q.num.natAbs q.den
 
 private theorem num_den_of_coprime_div {a b : ℕ} (ha : 0 < a) (hb : 0 < b)
     (hcop : Nat.Coprime a b) :

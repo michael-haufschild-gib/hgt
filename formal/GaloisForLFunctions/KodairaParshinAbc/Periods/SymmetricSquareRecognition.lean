@@ -68,9 +68,3 @@ theorem exists_symmetricSquare_iff (b₂ b₁ b₀ : ℚ[X]) :
       (wilczynski_zero_iff_reconstruction b₂ b₁ b₀).mp h⟩
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.recoveredSlope_coefficient
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.recoveredPotential_coefficient
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.wilczynski_reconstruction_defect
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.wilczynski_zero_iff_reconstruction
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.exists_symmetricSquare_iff

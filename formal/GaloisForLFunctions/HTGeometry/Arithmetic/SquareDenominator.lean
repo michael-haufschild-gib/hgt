@@ -36,6 +36,12 @@ private theorem nat_square_iff_even_valuations (n : ℕ) :
     obtain ⟨k, hk⟩ := he
     rw [hk, Nat.mul_div_cancel_left _ two_pos, ← pow_mul, mul_comm k 2]
 
+/-- An integer magnitude is a square exactly when every prime exponent
+is even; the statement includes zero. -/
+theorem nat_isSquare_iff_prime_valuations_even (n : ℕ) :
+    IsSquare n ↔ ∀ p : ℕ, p.Prime → Even (padicValNat p n) :=
+  nat_square_iff_even_valuations n
+
 /-- Coprimality of numerator and denominator turns the valuation test into
 an exact test on the denominator exponent. -/
 theorem even_den_valuation_iff (p : ℕ) [hp : Fact p.Prime] (q : ℚ) :
@@ -152,5 +158,9 @@ theorem squareDenominator_div_prime_odd_pow_iff
       rw [padicValRat.of_nat, padicValNat.eq_zero_of_not_dvd hnd,
         Nat.cast_zero, mul_zero, sub_zero]
       exact Or.inr (even_two_mul _)
+
+#print axioms squareDenominator_iff
+#print axioms squareDenominator_prime_mul_sq_iff
+#print axioms squareDenominator_div_prime_odd_pow_iff
 
 end GaloisForLFunctions.HTGeometry.Arithmetic

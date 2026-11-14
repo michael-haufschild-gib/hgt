@@ -66,10 +66,3 @@ theorem alternating_response_parameterShift (s : ℂ) :
   rw [logarithmicResponse, alternating_derivative]
 
 end GaloisForLFunctions.Hurwitz
-
-#print axioms GaloisForLFunctions.Hurwitz.alternating_tangentSeries
-#print axioms GaloisForLFunctions.Hurwitz.alternating_inverseCoordinate
-#print axioms GaloisForLFunctions.Hurwitz.alternating_reciprocal_logarithmicResponses
-#print axioms GaloisForLFunctions.Hurwitz.alternating_coefficient_shift
-#print axioms GaloisForLFunctions.Hurwitz.alternating_derivative
-#print axioms GaloisForLFunctions.Hurwitz.alternating_response_parameterShift

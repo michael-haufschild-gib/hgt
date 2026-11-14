@@ -153,12 +153,3 @@ theorem projectiveLocalPeriod_picardFuchs (r : ℕ) :
   exact projectivePeriod_picardFuchs r
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
-
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eval_projectiveStepPolynomial
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectivePeriodCoefficient_recurrence
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coeff_projectivePeriod
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectivePeriod_picardFuchs
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectivePeriod_solution_iff
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectiveAmbient_regularization
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectiveLocalPeriod_euler
-#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectiveLocalPeriod_picardFuchs
