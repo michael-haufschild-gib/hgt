@@ -35,7 +35,8 @@ def stableHankelContraction {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n
 /-- Explicit contraction ratio, always strictly below one. -/
 def stableHankelRatio {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ) : ℝ≥0 :=
   ⟨stableHankelBudget logRate residue / (1 + stableHankelBudget logRate residue),
-    div_nonneg (stableHankelBudget_nonneg _ _) (by positivity)⟩
+    div_nonneg (stableHankelBudget_nonneg _ _)
+      (add_nonneg zero_le_one (stableHankelBudget_nonneg _ _))⟩
 
 theorem stableHankelRatio_lt_one {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ) :
     stableHankelRatio logRate residue < 1 := by

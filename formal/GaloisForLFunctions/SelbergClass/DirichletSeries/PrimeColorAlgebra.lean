@@ -16,12 +16,56 @@ open scoped Classical
 
 noncomputable section
 
-variable {C : Type*} [DecidableEq C]
+variable {C : Type*}
+
+/-- Prime-supported arithmetic columns depend linearly on their coefficient vectors. -/
+def arithmeticPrimeColumnLinearMap : (Nat.Primes → ℂ) →ₗ[ℂ] ArithmeticFunction ℂ where
+  toFun := arithmeticOfPrimeColumn
+  map_add' a b := by
+    ext n
+    by_cases hn : n.Prime <;> simp [arithmeticOfPrimeColumn, hn]
+  map_smul' r a := by
+    ext n
+    by_cases hn : n.Prime <;>
+      simp [arithmeticOfPrimeColumn, hn, ArithmeticFunction.smul_map]
+
+/-- The same linear realization inside the fraction field. -/
+def fractionPrimeColumnLinearMap : (Nat.Primes → ℂ) →ₗ[ℂ] arithmeticFunctionFractionField :=
+  (IsScalarTower.toAlgHom ℂ (ArithmeticFunction ℂ) arithmeticFunctionFractionField).toLinearMap.comp
+    arithmeticPrimeColumnLinearMap
 
 /-- The prime-supported series taking a prescribed value on each color fiber. -/
 def primeColorValue (color : Nat.Primes → C) (b : C → ℂ) : arithmeticFunctionFractionField :=
   algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
     (arithmeticOfPrimeColumn (fun p => b (color p)))
+
+/-- Evaluation of finite color values followed by the linear prime-column realization. -/
+def primeColorValueLinearMap (color : Nat.Primes → C) :
+    (C → ℂ) →ₗ[ℂ] arithmeticFunctionFractionField where
+  toFun := primeColorValue color
+  map_add' b d := by
+    change fractionPrimeColumnLinearMap ((fun p => b (color p)) + (fun p => d (color p))) = _
+    exact map_add fractionPrimeColumnLinearMap _ _
+  map_smul' r b := by
+    change fractionPrimeColumnLinearMap (r • (fun p => b (color p))) = _
+    exact LinearMap.map_smul fractionPrimeColumnLinearMap _ _
+
+@[simp] theorem primeColorValueLinearMap_apply
+    (color : Nat.Primes → C) (b : C → ℂ) :
+    primeColorValueLinearMap color b = primeColorValue color b := rfl
+
+/-- Any basis of color functions gives the corresponding exact linear expansion of prime series. -/
+theorem primeColorValue_basisExpansion
+    {I : Type*} [Fintype I] (color : Nat.Primes → C)
+    (B : Module.Basis I ℂ (C → ℂ)) (b : C → ℂ) :
+    primeColorValue color b =
+      ∑ i, algebraMap ℂ arithmeticFunctionFractionField ((B.repr b) i) *
+        primeColorValue color (B i) := by
+  have h := congrArg (primeColorValueLinearMap color) (B.sum_repr b)
+  simpa only [map_sum, LinearMap.map_smul, primeColorValueLinearMap_apply,
+    Algebra.smul_def] using h.symm
+
+variable [DecidableEq C]
 
 /-- The prime-supported indicator of one color fiber. -/
 def primeColorGenerator (color : Nat.Primes → C) (c : C) : arithmeticFunctionFractionField :=

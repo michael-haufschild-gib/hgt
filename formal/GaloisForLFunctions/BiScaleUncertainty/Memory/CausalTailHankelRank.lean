@@ -12,6 +12,7 @@ rectangular tail Hankel block has rank exactly one, uniformly in the
 arithmetic cutoff and the number of observations.
 -/
 
+open MeasureTheory
 open scoped BigOperators Matrix
 
 namespace GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
