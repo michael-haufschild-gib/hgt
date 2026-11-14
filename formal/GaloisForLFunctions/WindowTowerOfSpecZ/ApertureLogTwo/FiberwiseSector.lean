@@ -28,7 +28,6 @@ theorem qeval_eq_zero_of_qzero : ∀ (p : List ℚ), qzero p = true → ∀ x : 
   | c :: cs, h, x => by
     simp only [qzero, List.all_cons, Bool.and_eq_true, decide_eq_true_eq] at h
     have ih := qeval_eq_zero_of_qzero cs h.2 x
-    simp only [qzero] at ih
     rw [qeval_cons, h.1, ih]; simp
 
 theorem qeval_eq_of_qzero_sub {p q : List ℚ} (h : qzero (qsub p q) = true) (x : ℝ) :
@@ -41,11 +40,10 @@ def aLoQ : ℚ := 5849625007211561814537389 / 10000000000000000000000000
 def aHiQ : ℚ := 584962500721156181453739 / 1000000000000000000000000
 
 theorem primeThreeOffset_mem : (aLoQ : ℝ) ≤ primeThreeOffset ∧ primeThreeOffset ≤ (aHiQ : ℝ) := by
-  have h := primeThreeShift_bounds
-  simp only [primeThreeShiftLo, primeThreeShiftHi] at h
-  unfold primeThreeOffset
-  constructor <;> [refine le_trans (le_of_eq ?_) h.1; refine h.2.trans (le_of_eq ?_)] <;>
-    norm_num [aLoQ, aHiQ]
+  have h1 : (aLoQ : ℝ) = primeThreeShiftLo := by norm_num [aLoQ, primeThreeShiftLo]
+  have h2 : (aHiQ : ℝ) = primeThreeShiftHi := by norm_num [aHiQ, primeThreeShiftHi]
+  rw [h1, h2]
+  exact primeThreeShift_bounds
 
 /-- The data of one parity sector. -/
 structure SectorData where
@@ -88,14 +86,18 @@ noncomputable def phiFn (m : Fin S.K → ℝ) (x : ℝ) : ℝ := ∑ k : Fin S.K
 /-- Half-window Legendre moments `mₖ = ∫₀¹ G P_{deg k}`. -/
 noncomputable def moments (G : ℝ → ℝ) (k : Fin S.K) : ℝ := ∫ u in (0 : ℝ)..1, G u * legP (S.deg k) u
 
+def validOffset : Bool :=
+  decide (S.a0 - S.δa ≤ aLoQ) && decide (aHiQ ≤ S.a0 + S.δa) &&
+    decide (0 ≤ S.δa) && decide (S.δa ≤ 1 / 100)
+
+def validEntry (k : ℕ) : Bool :=
+  qzero (qsub (S.phiPoly k) (S.phiComputed k)) &&
+    decide (qabsSum (qsub (qcomp (S.phiPoly k) [S.a0, 1]) (S.sh2.getD k [])) ≤ S.shErr.getD k 0) &&
+    decide (qabsSum (qsub (qcomp (S.phiPoly k) [1 - S.a0, -1]) (S.sh3.getD k [])) ≤
+      S.shErr.getD k 0)
+
 def valid : Bool :=
-  decide (S.a0 - S.δa ≤ aLoQ) && decide (aHiQ ≤ S.a0 + S.δa) && decide (0 ≤ S.δa) &&
-    decide (S.δa ≤ 1 / 100) &&
-    (List.range S.K).all fun k =>
-      qzero (qsub (S.phiPoly k) (S.phiComputed k)) &&
-      decide (qabsSum (qsub (qcomp (S.phiPoly k) [S.a0, 1]) (S.sh2.getD k [])) ≤ S.shErr.getD k 0) &&
-      decide (qabsSum (qsub (qcomp (S.phiPoly k) [1 - S.a0, -1]) (S.sh3.getD k [])) ≤
-        S.shErr.getD k 0)
+  S.validOffset && (List.range S.K).all S.validEntry
 
 private theorem qeval_foldr_qadd (L : List (List ℚ)) (x : ℝ) :
     qeval (L.foldr qadd []) x = (L.map fun p => qeval p x).sum := by
@@ -105,17 +107,26 @@ private theorem qeval_foldr_qadd (L : List (List ℚ)) (x : ℝ) :
 
 theorem qeval_phiComputed (k : ℕ) (x : ℝ) :
     qeval (S.phiComputed k) x = ∑ r : Fin S.K, (matQ S.Λ r k : ℝ) * legP (S.deg r) x := by
-  rw [phiComputed, qeval_foldr_qadd, List.map_map, ← list_sum_range_eq]
-  congr 1
-  refine List.map_congr_left fun r _ => ?_
-  simp [qeval_qsmul, legP_eq_qeval_qleg]
+  rw [phiComputed, qeval_foldr_qadd, List.map_map]
+  have hmap : List.map ((fun p => qeval p x) ∘ fun r => qsmul (matQ S.Λ r k) (qleg (S.deg r)))
+      (List.range S.K) =
+      List.map (fun r => (matQ S.Λ r k : ℝ) * legP (S.deg r) x) (List.range S.K) := by
+    refine List.map_congr_left fun r _ => ?_
+    simp only [Function.comp_apply, qeval_qsmul, legP_eq_qeval_qleg]
+  rw [hmap, list_sum_range_eq]
 
 variable {S}
 
+private theorem validEntry_of_valid (hS : S.valid = true) {k : ℕ} (hk : k < S.K) :
+    S.validEntry k = true := by
+  have h := (Bool.and_eq_true _ _).mp hS
+  exact List.all_eq_true.mp h.2 k (List.mem_range.mpr hk)
+
 theorem qeval_phiPoly (hS : S.valid = true) {k : ℕ} (hk : k < S.K) (x : ℝ) :
     qeval (S.phiPoly k) x = ∑ r : Fin S.K, (matQ S.Λ r k : ℝ) * legP (S.deg r) x := by
-  simp only [valid, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hS
-  rw [qeval_eq_of_qzero_sub (hS.2 k hk).1.1, qeval_phiComputed]
+  have hk' := validEntry_of_valid hS hk
+  simp only [validEntry, Bool.and_eq_true] at hk'
+  rw [qeval_eq_of_qzero_sub hk'.1.1, qeval_phiComputed]
 
 theorem abs_phiPoly_sub_le (hS : S.valid = true) {k : ℕ} (hk : k < S.K) {x y : ℝ}
     (hx : x ∈ Icc (-1 : ℝ) 1) (hy : y ∈ Icc (-1 : ℝ) 1) :
@@ -137,31 +148,34 @@ theorem abs_phiPoly_le (hS : S.valid = true) {k : ℕ} (hk : k < S.K) {x : ℝ} 
 
 theorem abs_sub_sh2_le (hS : S.valid = true) {k : ℕ} (hk : k < S.K) {s : ℝ} (hs : |s| ≤ 1) :
     |qeval (S.phiPoly k) (S.a0 + s) - qeval (S.sh2.getD k []) s| ≤ (S.shErr.getD k 0 : ℝ) := by
-  simp only [valid, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hS
-  have h := (hS.2 k hk).1.2
+  have hk' := validEntry_of_valid hS hk
+  simp only [validEntry, Bool.and_eq_true, decide_eq_true_eq] at hk'
   have hb := abs_qeval_le_qabsSum (qsub (qcomp (S.phiPoly k) [S.a0, 1]) (S.sh2.getD k [])) hs
   rw [qeval_qsub, qeval_qcomp_affine] at hb
   have h' : (qabsSum (qsub (qcomp (S.phiPoly k) [S.a0, 1]) (S.sh2.getD k [])) : ℝ) ≤
-      (S.shErr.getD k 0 : ℝ) := by exact_mod_cast h
-  simpa using hb.trans h'
+      (S.shErr.getD k 0 : ℝ) := Rat.cast_le.mpr hk'.1.2
+  have he : ((S.a0 : ℚ) : ℝ) + ((1 : ℚ) : ℝ) * s = S.a0 + s := by push_cast; ring
+  rw [he] at hb
+  exact hb.trans h'
 
 theorem abs_sub_sh3_le (hS : S.valid = true) {k : ℕ} (hk : k < S.K) {s : ℝ} (hs : |s| ≤ 1) :
     |qeval (S.phiPoly k) (1 - S.a0 - s) - qeval (S.sh3.getD k []) s| ≤
       (S.shErr.getD k 0 : ℝ) := by
-  simp only [valid, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hS
-  have h := (hS.2 k hk).2
+  have hk' := validEntry_of_valid hS hk
+  simp only [validEntry, Bool.and_eq_true, decide_eq_true_eq] at hk'
   have hb := abs_qeval_le_qabsSum (qsub (qcomp (S.phiPoly k) [1 - S.a0, -1]) (S.sh3.getD k [])) hs
   rw [qeval_qsub, qeval_qcomp_affine] at hb
   have h' : (qabsSum (qsub (qcomp (S.phiPoly k) [1 - S.a0, -1]) (S.sh3.getD k [])) : ℝ) ≤
-      (S.shErr.getD k 0 : ℝ) := by exact_mod_cast h
+      (S.shErr.getD k 0 : ℝ) := Rat.cast_le.mpr hk'.2
   have he : ((1 - S.a0 : ℚ) : ℝ) + ((-1 : ℚ) : ℝ) * s = 1 - S.a0 - s := by push_cast; ring
   rw [he] at hb
   exact hb.trans h'
 
 theorem abs_offset_sub_le (hS : S.valid = true) :
     |primeThreeOffset - S.a0| ≤ (S.δa : ℝ) ∧ (S.δa : ℝ) ≤ 1 / 100 := by
-  simp only [valid, Bool.and_eq_true, decide_eq_true_eq] at hS
-  obtain ⟨⟨⟨⟨h1, h2⟩, _⟩, h4⟩, _⟩ := hS
+  have ho : S.validOffset = true := ((Bool.and_eq_true _ _).mp hS).1
+  simp only [validOffset, Bool.and_eq_true, decide_eq_true_eq] at ho
+  obtain ⟨⟨⟨h1, h2⟩, _⟩, h4⟩ := ho
   have h1' : (S.a0 : ℝ) - S.δa ≤ aLoQ := by rw [← Rat.cast_sub]; exact Rat.cast_le.mpr h1
   have h2' : (aHiQ : ℝ) ≤ (S.a0 : ℝ) + S.δa := by rw [← Rat.cast_add]; exact Rat.cast_le.mpr h2
   obtain ⟨ha1, ha2⟩ := primeThreeOffset_mem
@@ -174,9 +188,9 @@ theorem abs_offset_sub_le (hS : S.valid = true) :
 /-- Exact dual pairing `∫₀¹ G · phiFn m = mᵀ Λ m` at the half-window moments of `G`. -/
 theorem integral_mul_phiFn (hS : S.valid = true) {G : ℝ → ℝ} (hG : Continuous G) :
     (∫ u in (0 : ℝ)..1, G u * S.phiFn (S.moments G) u) = quadR S.K S.Λ (S.moments G) := by
-  have hfn : ∀ u, G u * S.phiFn (S.moments G) u =
-      ∑ k : Fin S.K, ∑ r : Fin S.K,
-        (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u) := fun u => by
+  have hfn : (fun u => G u * S.phiFn (S.moments G) u) =
+      fun u => ∑ k : Fin S.K, ∑ r : Fin S.K,
+        (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u) := funext fun u => by
     rw [phiFn, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [qeval_phiPoly hS k.2, Finset.mul_sum, Finset.mul_sum]
@@ -186,8 +200,7 @@ theorem integral_mul_phiFn (hS : S.valid = true) {G : ℝ → ℝ} (hG : Continu
         (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u)) volume 0 1 :=
     fun k _ => (continuous_finsetSum _ fun r _ =>
       continuous_const.mul (hG.mul (continuous_legP _))).intervalIntegrable 0 1
-  simp_rw [hfn]
-  rw [intervalIntegral.integral_finsetSum hi1]
+  rw [hfn, intervalIntegral.integral_finsetSum hi1]
   have hinner : ∀ k : Fin S.K,
       (∫ u in (0 : ℝ)..1, ∑ r : Fin S.K,
         (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u)) =
@@ -198,9 +211,8 @@ theorem integral_mul_phiFn (hS : S.valid = true) {G : ℝ → ℝ} (hG : Continu
       fun r _ => (continuous_const.mul (hG.mul (continuous_legP _))).intervalIntegrable 0 1
     rw [intervalIntegral.integral_finsetSum hi2]
     refine Finset.sum_congr rfl fun r _ => ?_
-    rw [intervalIntegral.integral_const_mul, moments]
-  simp_rw [hinner]
-  rw [quadR, Finset.sum_comm]
+    rw [intervalIntegral.integral_const_mul]; rfl
+  rw [Finset.sum_congr rfl fun k _ => hinner k, quadR, Finset.sum_comm]
   refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun k _ => by ring
 
 end SectorData

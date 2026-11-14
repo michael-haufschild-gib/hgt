@@ -26,7 +26,7 @@ theorem wirtingerAntihol_horizontalPhaseCLM (freq : ℂ) :
       2 * Real.pi * Complex.I * star freq := by
   rw [wirtingerAntihol, horizontalPhaseCLM_apply, horizontalPhaseCLM_apply]
   have h := horizontalPhaseMultiplier_wirtinger freq
-  simpa only [horizontalPhaseMultiplier, div_eq_mul_inv, one_div, mul_comm] using h
+  simpa only [horizontalPhaseMultiplier, div_eq_mul_inv, one_div, one_mul, mul_comm] using h
 
 /-- Every trace character solves a constant-coefficient `∂̄` equation. -/
 theorem dzbar_tracePhase (freq z : ℂ) :
@@ -97,8 +97,10 @@ theorem dzbar_polynomial_cubicBesselTerm (P : Polynomial ℂ)
     dzbar (fun w => P.eval w * cubicBesselTerm c h (v, w)) z =
       (2 * Real.pi * Complex.I * star (cuspFrequency h)) *
         (P.eval z * cubicBesselTerm c h (v, z)) := by
-  have hd : DifferentiableAt ℝ (fun w => cubicBesselTerm c h (v, w)) z :=
-    (tracePhase_hasFDerivAt (cuspFrequency h) z).differentiableAt.const_mul _
+  have hd : DifferentiableAt ℝ (fun w => cubicBesselTerm c h (v, w)) z := by
+    change DifferentiableAt ℝ
+      (fun w => cubicBesselAmplitude c v h * tracePhase (cuspFrequency h * w)) z
+    exact (tracePhase_hasFDerivAt (cuspFrequency h) z).differentiableAt.const_mul _
   rw [dzbar_holomorphic_mul P.differentiableAt hd, dzbar_cubicBesselTerm]
   ring
 
@@ -120,7 +122,10 @@ theorem compensatedTraceMode_mass_not_flat (m : ℕ) (freq : ℂ) :
       =ᶠ[𝓝[>] (0 : ℝ)] fun _ => Real.pi / (m + 1) := by
     filter_upwards [self_mem_nhdsWithin] with r hr
     have hr0 : 0 < r := hr
-    rw [integral_ball_norm_compensatedTraceMode_sq m freq ⟨r, hr0.le⟩]
+    have hmass := integral_ball_norm_compensatedTraceMode_sq m freq ⟨r, hr0.le⟩
+    change (∫ z in Metric.ball (0 : ℂ) r, ‖compensatedTraceMode m freq z‖ ^ 2) =
+      Real.pi * r ^ (2 * m + 2) / (m + 1) at hmass
+    rw [hmass]
     have hpow : r ^ (2 * m + 2) ≠ 0 := pow_ne_zero _ hr0.ne'
     field_simp
   intro h
@@ -140,9 +145,19 @@ theorem l2FlatAt_mul_tracePhase_iff (f : ℂ → ℂ) (freq a : ℂ) :
 theorem l2FlatAt_entire_tracePhase_iff
     (f : GaloisForLFunctions.HTGeometry.entireSubring ℂ) (freq a : ℂ) :
     GaloisForLFunctions.HTGeometry.L2FlatAt
-      (fun z => f z * tracePhase (freq * z)) a ↔ f = 0 := by
+      (fun z => (f : ℂ → ℂ) z * tracePhase (freq * z)) a ↔ f = 0 := by
   rw [l2FlatAt_mul_tracePhase_iff,
     GaloisForLFunctions.HTGeometry.l2FlatAt_iff_eq_zero_of_entire f.property]
   exact ⟨fun h => Subtype.ext h, fun h => congrArg Subtype.val h⟩
+
+/-- Infinite-order local mass agreement determines the entire trace envelope uniquely. -/
+theorem l2FlatAt_entire_tracePhase_sub_iff
+    (f g : GaloisForLFunctions.HTGeometry.entireSubring ℂ) (freq a : ℂ) :
+    GaloisForLFunctions.HTGeometry.L2FlatAt
+      (fun z => ((f : ℂ → ℂ) z - (g : ℂ → ℂ) z) * tracePhase (freq * z)) a ↔ f = g := by
+  change GaloisForLFunctions.HTGeometry.L2FlatAt
+    (fun z => ((f - g : GaloisForLFunctions.HTGeometry.entireSubring ℂ) : ℂ → ℂ) z *
+      tracePhase (freq * z)) a ↔ f = g
+  rw [l2FlatAt_entire_tracePhase_iff, sub_eq_zero]
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

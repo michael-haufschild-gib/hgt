@@ -60,35 +60,39 @@ theorem branch_facts {b : ℕ} (hbr : branchOK S D b = true) {ξ : ℝ} (hξ : �
   set τ := D.tayB b
   set x0 := (D.lowAff b).1
   set x1 := (D.lowAff b).2
-  have hconv : (min x0 (x0 + x1) : ℝ) ≤ (x0 : ℝ) + x1 * ξ := by
-    have h1 : ((min x0 (x0 + x1) : ℚ) : ℝ) ≤ x0 := by exact_mod_cast min_le_left _ _
-    have h2 : ((min x0 (x0 + x1) : ℚ) : ℝ) ≤ ((x0 + x1 : ℚ) : ℝ) := by
-      exact_mod_cast min_le_right _ _
-    push_cast at h1 h2 ⊢
-    nlinarith [hξ.1, hξ.2]
-  have hmin0' : (0 : ℝ) ≤ min (x0 : ℝ) (x0 + x1) := by exact_mod_cast hmin0
+  have hconv : ((min x0 (x0 + x1) : ℚ) : ℝ) ≤ (x0 : ℝ) + x1 * ξ := by
+    have h1 : ((min x0 (x0 + x1) : ℚ) : ℝ) ≤ x0 := Rat.cast_le.mpr (min_le_left _ _)
+    have h2 : ((min x0 (x0 + x1) : ℚ) : ℝ) ≤ (x0 : ℝ) + x1 := by
+      rw [← Rat.cast_add]; exact Rat.cast_le.mpr (min_le_right _ _)
+    have h3 : 0 ≤ (1 - ξ) * ((x0 : ℝ) - ((min x0 (x0 + x1) : ℚ) : ℝ)) +
+        ξ * (((x0 : ℝ) + x1) - ((min x0 (x0 + x1) : ℚ) : ℝ)) :=
+      add_nonneg (mul_nonneg (by linarith only [hξ.2]) (by linarith only [h1]))
+        (mul_nonneg hξ.1 (by linarith only [h2]))
+    linarith only [h3]
+  have hmin0' : (0 : ℝ) ≤ ((min x0 (x0 + x1) : ℚ) : ℝ) := Rat.cast_nonneg.mpr hmin0
   have hlow : 0 ≤ (x0 : ℝ) + x1 * ξ := hmin0'.trans hconv
   have hsq : (τ.t0 : ℝ) ≤ ((x0 : ℝ) + x1 * ξ) ^ 2 := by
-    have h : (τ.t0 : ℝ) ≤ (min (x0 : ℝ) (x0 + x1)) ^ 2 := by exact_mod_cast hmin
+    have h : (τ.t0 : ℝ) ≤ ((min x0 (x0 + x1) : ℚ) : ℝ) ^ 2 := by
+      rw [← Rat.cast_pow]; exact Rat.cast_le.mpr hmin
     exact h.trans (pow_le_pow_left₀ hmin0' hconv 2)
   have hdiff := qeval_nonneg_of_qnonneg _ hnn hξ.1
   rw [qeval_qsub] at hdiff
   have hpoly := qeval_poly_le_vTrue hval S.rOrd x0 x1 hlow hsq hle hx1
-  refine ⟨?_, by linarith⟩
+  refine ⟨?_, by linarith only [hdiff, hpoly]⟩
   have hbase : (τ.base : ℝ) ≤ qeval (τ.poly S.rOrd x0 x1) ξ := by
     rw [qeval_TaylorBranch_poly]
-    have hom' : (0 : ℝ) < τ.om := by exact_mod_cast hom
-    have : 0 ≤ ∑ m ∈ Finset.Icc 1 S.rOrd,
+    have hom' : (0 : ℝ) < τ.om := Rat.cast_pos.mpr hom
+    have hsum : 0 ≤ ∑ m ∈ Finset.Icc 1 S.rOrd,
         ((((x0 : ℝ) + x1 * ξ) ^ 2 - τ.t0) / τ.om) ^ m / (2 * (m : ℝ)) :=
-      Finset.sum_nonneg fun m _ => div_nonneg (pow_nonneg (div_nonneg (by linarith) hom'.le) _)
+      Finset.sum_nonneg fun m _ => div_nonneg (pow_nonneg (div_nonneg (by linarith only [hsq]) hom'.le) _)
         (by positivity)
-    linarith
+    linarith only [hsum]
   have habs := abs_qeval_le_qabsSum (qsub (τ.poly S.rOrd x0 x1) (D.VtB b))
-    (x := ξ) (abs_le.mpr ⟨by linarith [hξ.1], hξ.2⟩)
+    (x := ξ) (abs_le.mpr ⟨by linarith only [hξ.1], hξ.2⟩)
   rw [qeval_qsub] at habs
   have := (abs_le.mp habs).2
   simp only [beta]; push_cast
-  linarith
+  linarith only [hbase, this]
 
 /-! ### The source errors -/
 
@@ -237,8 +241,10 @@ private theorem sq_source_pert_le (hS : S.valid = true) (m : Fin S.K → ℝ) {b
 /-- Pointwise lower bound of the four-branch integrand. -/
 theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (m : Fin S.K → ℝ)
     {ξ : ℝ} (hξ : ξ ∈ Ioo (0 : ℝ) 1) : low S D m ξ ≤ f4Integrand S G m (D.sa + D.ds * ξ) := by
-  simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD
-  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, hbr⟩, hpiv⟩, -⟩, -⟩, -⟩, -⟩ := hD
+  have hg : checkGeom S D = true :=
+    ((Bool.and_eq_true _ _).mp ((Bool.and_eq_true _ _).mp ((Bool.and_eq_true _ _).mp hD).1).1).1
+  simp only [checkGeom, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hg
+  obtain ⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, hbr⟩, hpiv⟩, -⟩ := hg
   have hsa' : (0 : ℝ) ≤ D.sa := Rat.cast_nonneg.mpr hsa
   have hds' : (0 : ℝ) < D.ds := Rat.cast_pos.mpr hds
   have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by
@@ -347,8 +353,10 @@ private theorem sum_sym_avg {K : ℕ} (X : Fin K → Fin K → ℝ) (m : Fin K �
 theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
     (D.ds : ℝ) * (∫ ξ in (0 : ℝ)..1, low S D m ξ) =
       -(quadR S.K (qMat S D) m) - ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 := by
-  simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD
-  obtain ⟨⟨⟨⟨-, hW⟩, hlen⟩, -⟩, -⟩ := hD
+  have h1 := ((Bool.and_eq_true _ _).mp ((Bool.and_eq_true _ _).mp hD).1).1
+  obtain ⟨hg, hlen⟩ := (Bool.and_eq_true _ _).mp h1
+  simp only [checkGeom, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hg
+  obtain ⟨-, hW⟩ := hg
   have hWb : ∀ b : Fin 4, ∀ i < S.K, (D.WB b i).length ≤ 7 := fun b i hi => hW b b.2 i hi
   have hEb : ∀ b : Fin 4, ∀ i < S.K, (er S D b i).length ≤ 32 := fun b i hi =>
     fastEval_lengths S D hlen b.2 hi
@@ -410,9 +418,12 @@ theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (h
     (m : Fin S.K → ℝ) :
     -(quadR S.K D.Qhat m) - ∑ k : Fin S.K, (vecQ D.pertHat k : ℝ) * m k ^ 2 ≤
       ∫ s in (D.sa : ℝ)..(D.sa + D.ds), f4Integrand S G m s := by
-  have hD' := hD
-  simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD'
-  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, -⟩, -⟩, -⟩, -⟩, hdom⟩, hpert⟩ := hD'
+  obtain ⟨h12, hpert0⟩ := (Bool.and_eq_true _ _).mp hD
+  obtain ⟨h1, hdom⟩ := (Bool.and_eq_true _ _).mp h12
+  have hg := ((Bool.and_eq_true _ _).mp h1).1
+  simp only [checkGeom, Bool.and_eq_true, decide_eq_true_eq] at hg
+  obtain ⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, -⟩, -⟩, -⟩ := hg
+  have hpert := List.all_eq_true.mp hpert0
   have hds' : (0 : ℝ) < D.ds := Rat.cast_pos.mpr hds
   have hsa' : (0 : ℝ) ≤ D.sa := Rat.cast_nonneg.mpr hsa
   have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by
@@ -428,14 +439,14 @@ theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (h
       simp only [quadR]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
         rw [fastEval_fst S D i.2 j.2]
-    linarith
+    linarith only [h, he]
   have hP : ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 ≤
       ∑ k : Fin S.K, (vecQ D.pertHat k : ℝ) * m k ^ 2 :=
     Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_right (by
-      have := hpert k k.2
+      have := of_decide_eq_true (hpert k (List.mem_range.mpr k.2))
       rw [fastEval_snd S D k.2] at this
-      exact_mod_cast this) (sq_nonneg _)
-  linarith
+      exact Rat.cast_le.mpr this) (sq_nonneg _)
+  linarith only [hlow, hQ, hP]
 
 end P4Sub
 

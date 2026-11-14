@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.HilbertMetric.GaussianJetPositivity
 import GaloisForLFunctions.HilbertMetric.FiniteOrbitFrames
 import GaloisForLFunctions.HilbertMetric.PolarSupportNormalization
@@ -37,8 +37,9 @@ theorem cox_gaussian_family {ι : Type*} [Fintype ι] {d n : ℕ}
       {b | b ≠ fun i => decide (¬ Function.Injective (y i))}) atTop (𝓝 0) := by
   have h (i : ι) : (gaussianCoherentGram (y i)).det = 0 ↔ ¬ Function.Injective (y i) := by
     simpa only [not_not] using (gaussianCoherentGram_det_ne_zero_iff_injective (y i)).not
-  simpa only [zeroPattern, h] using
-    tendsto_binaryLaw_error (fun i => (gaussianCoherentGram (y i)).det)
+  exact tendsto_classification_error (fun i => (gaussianCoherentGram (y i)).det)
+    (fun i => ¬ Function.Injective (y i)) fun i => by
+    simp only [h]
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
@@ -57,25 +58,25 @@ theorem cox_linear_dependence_family {ι : Type*} [Fintype ι] {n : ℕ}
       {b | b ≠ fun i => decide (¬ LinearIndependent ℂ (v i))}) atTop (𝓝 0) := by
   have h (i : ι) : (gramMatrix (v i)).det = 0 ↔ ¬ LinearIndependent ℂ (v i) := by
     simpa only [not_not] using (det_gramMatrix_ne_zero_iff (v i)).not
-  simpa only [zeroPattern, norm_eq_zero, h] using
-    tendsto_binaryLaw_error (fun i => ‖(gramMatrix (v i)).det‖)
-
-variable [CompleteSpace E]
+  exact tendsto_classification_error (fun i => ‖(gramMatrix (v i)).det‖)
+    (fun i => ¬ LinearIndependent ℂ (v i)) fun i => by
+    simp only [norm_eq_zero, h]
 
 /-- Frame-output detection identifies directions invisible to all frame readings. -/
-theorem cox_frame_invisibility {ι : Type*} [Fintype ι] (v : ι → E) (x : E) :
+theorem cox_frame_invisibility [CompleteSpace E] {ι : Type*} [Fintype ι] (v : ι → E) (x : E) :
     Tendsto (fun K => detection K ‖frameOperator v x‖) atTop
       (𝓝 (if ∀ i, inner ℂ (v i) x = 0 then 1 else 0)) := by
   simpa only [norm_eq_zero, _root_.HilbertMetric.finite_frame_eq_zero_iff] using
     tendsto_detection ‖frameOperator v x‖
 
 /-- Every test direction in a finite list is classified for frame invisibility. -/
-theorem cox_frame_invisibility_family {ι τ : Type*} [Fintype ι] [Fintype τ]
+theorem cox_frame_invisibility_family [CompleteSpace E] {ι τ : Type*} [Fintype ι] [Fintype τ]
     (v : ι → E) (x : τ → E) :
     Tendsto (fun K => (binaryLaw K (fun j => ‖frameOperator v (x j)‖)).real
       {b | b ≠ fun j => decide (∀ i, inner ℂ (v i) (x j) = 0)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, norm_eq_zero, _root_.HilbertMetric.finite_frame_eq_zero_iff] using
-    tendsto_binaryLaw_error (fun j => ‖frameOperator v (x j)‖)
+  exact tendsto_classification_error (fun j => ‖frameOperator v (x j)‖)
+    (fun j => ∀ i, inner ℂ (v i) (x j) = 0) fun j => by
+    simp only [norm_eq_zero, _root_.HilbertMetric.finite_frame_eq_zero_iff]
 
 variable [FiniteDimensional ℂ E]
 
@@ -91,8 +92,9 @@ theorem cox_polar_kernel_family {ι : Type*} [Fintype ι]
     (T : E →L[ℂ] E) (x : ι → E) :
     Tendsto (fun K => (binaryLaw K (fun i => ‖_root_.HilbertMetric.finitePolar T (x i)‖)).real
       {b | b ≠ fun i => decide (T (x i) = 0)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, norm_eq_zero, _root_.HilbertMetric.finitePolar_eq_zero_iff] using
-    tendsto_binaryLaw_error (fun i => ‖_root_.HilbertMetric.finitePolar T (x i)‖)
+  exact tendsto_classification_error (fun i => ‖_root_.HilbertMetric.finitePolar T (x i)‖)
+    (fun i => T (x i) = 0) fun i => by
+    simp only [norm_eq_zero, _root_.HilbertMetric.finitePolar_eq_zero_iff]
 
 /-- Positive Gram shadows detect exactly the operators with nontrivial kernel. -/
 theorem cox_operator_singularity {W : Type*} [NormedAddCommGroup W]
@@ -102,14 +104,15 @@ theorem cox_operator_singularity {W : Type*} [NormedAddCommGroup W]
   simpa only [norm_eq_zero, gramOperator_det_eq_zero_iff] using
     tendsto_detection ‖(gramOperator A).det‖
 
-/-- Finite operator families admit consistent simultaneous rank-loss classification. -/
+/-- Finite operator families have consistent simultaneous rank-loss classification. -/
 theorem cox_operator_singularity_family {ι W : Type*} [Fintype ι]
     [NormedAddCommGroup W] [InnerProductSpace ℂ W] [CompleteSpace W]
     (A : ι → E →L[ℂ] W) :
     Tendsto (fun K => (binaryLaw K (fun i => ‖(gramOperator (A i)).det‖)).real
       {b | b ≠ fun i => decide ((A i).ker ≠ ⊥)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, norm_eq_zero, gramOperator_det_eq_zero_iff] using
-    tendsto_binaryLaw_error (fun i => ‖(gramOperator (A i)).det‖)
+  exact tendsto_classification_error (fun i => ‖(gramOperator (A i)).det‖)
+    (fun i => (A i).ker ≠ ⊥) fun i => by
+    simp only [norm_eq_zero, gramOperator_det_eq_zero_iff]
 
 end GaloisForLFunctions.HilbertMetric
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.KodairaParshinAbc.Periods.CubicMirrorCurve
 
 /-!
@@ -33,8 +33,9 @@ theorem cox_singular_fibre (t : ℝ) :
 theorem cox_singular_fibre_family {ι : Type*} [Fintype ι] (t : ι → ℝ) :
     Tendsto (fun K => (binaryLaw K (fun i => (curve (t i)).Δ)).real
       {b | b ≠ fun i => decide (t i = 0 ∨ t i = 1 / 27)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, real_discriminant_zero_iff] using
-    tendsto_binaryLaw_error (fun i => (curve (t i)).Δ)
+  exact tendsto_classification_error (fun i => (curve (t i)).Δ)
+    (fun i => t i = 0 ∨ t i = 1 / 27) fun i => by
+    simp only [real_discriminant_zero_iff]
 
 end
 end GaloisForLFunctions.KodairaParshinAbc.CubicMirror

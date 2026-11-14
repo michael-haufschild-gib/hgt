@@ -23,9 +23,12 @@ theorem l2FlatAt_reciprocalGamma_affine_iff (a b c : ℂ) :
   have hf : AnalyticOnNhd ℂ (fun w => (Complex.Gamma (a * w + b))⁻¹) univ := by
     have hGamma : AnalyticOnNhd ℂ (fun s => (Complex.Gamma s)⁻¹) univ :=
       Complex.differentiable_one_div_Gamma.differentiableOn.analyticOnNhd isOpen_univ
-    intro w _
-    exact (hGamma (a * w + b) (mem_univ _)).comp
-      ((analyticAt_const.mul analyticAt_id).add analyticAt_const)
+    have hAffine : AnalyticOnNhd ℂ (fun w : ℂ => a * w + b) univ := by
+      intro w _
+      exact (analyticAt_const.mul analyticAt_id).add analyticAt_const
+    change AnalyticOnNhd ℂ
+      ((fun s : ℂ => (Complex.Gamma s)⁻¹) ∘ fun w : ℂ => a * w + b) univ
+    exact hGamma.comp hAffine (by intro w _; exact mem_univ _)
   rw [l2FlatAt_iff_eq_zero_of_entire hf]
   constructor
   · intro hzero
@@ -42,15 +45,18 @@ theorem l2FlatAt_reciprocalGamma_affine_iff (a b c : ℂ) :
   · rintro ⟨rfl, n, hn⟩
     funext w
     simp only [zero_mul, zero_add, Pi.zero_apply, inv_eq_zero]
-    exact Complex.Gamma_eq_zero_iff.mpr ⟨n, hn⟩
+    rw [Complex.Gamma_eq_zero_iff]
+    exact ⟨n, hn⟩
 
 /-- A slice of a multiple-twist denominator is flat exactly along a contained zero hyperplane. -/
 theorem l2FlatAt_reciprocalGammaAffineEntire_line_iff
     (N : ℕ) (L : (Fin N → ℂ) →L[ℂ] ℂ) (b : ℂ)
     (x v : Fin N → ℂ) (c : ℂ) :
-    L2FlatAt (fun w => reciprocalGammaAffineEntire N L b (x + w • v)) c ↔
+    L2FlatAt (fun w => (reciprocalGammaAffineEntire N L b : (Fin N → ℂ) → ℂ)
+      (x + w • v)) c ↔
       L v = 0 ∧ ∃ n : ℕ, L x + b = -(n : ℂ) := by
-  have heq : (fun w => reciprocalGammaAffineEntire N L b (x + w • v)) =
+  have heq : (fun w => (reciprocalGammaAffineEntire N L b : (Fin N → ℂ) → ℂ)
+      (x + w • v)) =
       fun w => (Complex.Gamma (L v * w + (L x + b)))⁻¹ := by
     funext w
     change (Complex.Gamma (L (x + w • v) + b))⁻¹ = _

@@ -63,9 +63,12 @@ theorem exists_power_lower_mass_of_entire {f : ℂ → ℂ}
       Nat.mul_comm m 2]
     rw [mul_comm (‖z‖ ^ (2 * m))]
     gcongr
-  rw [integral_const_mul,
-    integral_ball_norm_even_pow m ⟨r, hr.le⟩] at hle
-  convert hle using 1 <;> ring
+  have hmass := integral_ball_norm_even_pow m ⟨r, hr.le⟩
+  change (∫ z in ball (0 : ℂ) r, ‖z‖ ^ (2 * m)) =
+    Real.pi * r ^ (2 * m + 2) / (m + 1) at hmass
+  rw [integral_const_mul, hmass] at hle
+  convert hle using 1
+  ring
 
 /-- Infinite-order local L² vanishing annihilates an entire function. -/
 theorem eq_zero_of_entire_l2FlatAt {f : ℂ → ℂ}
@@ -88,7 +91,7 @@ theorem eq_zero_of_entire_l2FlatAt {f : ℂ → ℂ}
       c ≤ (∫ z in ball (0 : ℂ) r, ‖f (a + z)‖ ^ 2) / r ^ k := by
     filter_upwards [self_mem_nhdsWithin, hsmall] with r hr hrδ
     exact (le_div_iff₀ (pow_pos hr k)).mpr (hbound r hr hrδ)
-  have hc0 : c ≤ 0 := le_of_tendsto (hflat k) hle
+  have hc0 : c ≤ 0 := ge_of_tendsto (hflat k) hle
   exact (not_le_of_gt hc) hc0
 
 /-- For entire functions, local L² flatness at any point is equivalent to global vanishing. -/

@@ -28,7 +28,8 @@ def primeKloostermanLaw (p : Nat.Primes) : Measure ℝ :=
 instance (p : Nat.Primes) : IsProbabilityMeasure (primeKloostermanLaw p) := by
   constructor
   have hp : (p.val : ℝ≥0∞) ≠ 0 := by exact_mod_cast p.property.ne_zero
-  simp [primeKloostermanLaw, Measure.coe_finsetSum, ZMod.card, hp]
+  simp [primeKloostermanLaw, Measure.coe_finsetSum, ZMod.card]
+  exact ENNReal.inv_mul_cancel hp (by simp)
 
 /-- Finite support makes every real or complex test function integrable. -/
 theorem integrable_primeKloostermanLaw (p : Nat.Primes)
@@ -59,7 +60,7 @@ theorem integral_primeKloostermanLaw_sq (p : Nat.Primes) :
   rw [integral_primeKloostermanLaw]
   simp only [standardizedKloostermanTrace, div_pow, Real.sq_sqrt (by linarith :
     0 ≤ (p.val : ℝ) - 1), ← sum_div, sum_primeKloostermanTrace_sq, smul_eq_mul]
-  field_simp
+  field_simp [ne_of_gt (sub_pos.mpr hp)]
 
 /-- The standardized fourth moment is bounded uniformly, including characteristic two. -/
 theorem integral_primeKloostermanLaw_four_le (p : Nat.Primes) :

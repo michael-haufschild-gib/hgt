@@ -24,7 +24,9 @@ theorem integral_weighted_occupancy {ι : Type*} [Fintype ι]
   intro i _
   change (∫ b, (fun c : Bool => if c then w i else 0) (b i)
     ∂Measure.pi (fun j => bernoulliMeasure true false (parameter K (g j)))) = _
-  rw [integral_comp_eval (Integrable.of_finite.aestronglyMeasurable),
+  rw [integral_comp_eval
+    (μ := fun j => bernoulliMeasure true false (parameter K (g j))) (i := i)
+    (f := fun c : Bool => if c then w i else 0) (Integrable.of_finite.aestronglyMeasurable),
     integral_bernoulliMeasure]
   simp [parameter, mul_comm]
 

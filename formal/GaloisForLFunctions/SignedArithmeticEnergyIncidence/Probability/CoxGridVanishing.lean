@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.TwoTowersAddExactlyOnBoxes
 
 /-!
@@ -36,8 +36,9 @@ theorem cox_grid_vanishing_family {ι : Type*} [Fintype ι]
     (M N : ℕ) (f : ι → ℕ → ℕ → ℝ) :
     Tendsto (fun K => (binaryLaw K (fun i => gridMass M N (f i))).real
       {b | b ≠ fun i => decide (∀ j ≤ M, ∀ k ≤ N, f i j k = 0)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, gridMass_zero_iff] using
-    tendsto_binaryLaw_error (fun i => gridMass M N (f i))
+  exact tendsto_classification_error (fun i => gridMass M N (f i))
+    (fun i => ∀ j ≤ M, ∀ k ≤ N, f i j k = 0) fun i => by
+    simp only [gridMass_zero_iff]
 
 end
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

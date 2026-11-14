@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.GaloisTheoryOfZeros.CenteredJensenDiscriminant
 
 /-!
@@ -34,15 +34,17 @@ theorem cox_oddJensen_collision (n : ℕ) :
 theorem cox_evenJensen_family {ι : Type*} [Fintype ι] (n : ι → ℕ) :
     Tendsto (fun K => (binaryLaw K (fun i => (xiJensenReal (2 * n i)).discr)).real
       {b | b ≠ fun i => decide (¬ (evenCenteredQuotient (n i)).Separable)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, evenJensen_discr_zero_iff] using
-    tendsto_binaryLaw_error (fun i => (xiJensenReal (2 * n i)).discr)
+  exact tendsto_classification_error (fun i => (xiJensenReal (2 * n i)).discr)
+    (fun i => ¬ (evenCenteredQuotient (n i)).Separable) fun i => by
+    simp only [evenJensen_discr_zero_iff]
 
 /-- A finite list of odd degrees is classified simultaneously. -/
 theorem cox_oddJensen_family {ι : Type*} [Fintype ι] (n : ι → ℕ) :
     Tendsto (fun K => (binaryLaw K (fun i => (xiJensenReal (2 * n i + 1)).discr)).real
       {b | b ≠ fun i => decide (¬ (oddCenteredQuotient (n i)).Separable)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, oddJensen_discr_zero_iff] using
-    tendsto_binaryLaw_error (fun i => (xiJensenReal (2 * n i + 1)).discr)
+  exact tendsto_classification_error (fun i => (xiJensenReal (2 * n i + 1)).discr)
+    (fun i => ¬ (oddCenteredQuotient (n i)).Separable) fun i => by
+    simp only [oddJensen_discr_zero_iff]
 
 end
 end GaloisForLFunctions.GaloisTheoryOfZeros

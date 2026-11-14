@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.RHTower.HardyZThetaTrace
 
 /-!
@@ -39,15 +39,17 @@ theorem cox_Xi_hardyZ_gap (t : ℝ) :
 theorem cox_xi_family {ι : Type*} [Fintype ι] (s : ι → ℂ) :
     Tendsto (fun K => (binaryLaw K (fun i => ‖xi (s i)‖)).real
       {b | b ≠ fun i => decide (xi (s i) = 0)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, norm_eq_zero] using
-    tendsto_binaryLaw_error (fun i => ‖xi (s i)‖)
+  exact tendsto_classification_error (fun i => ‖xi (s i)‖)
+    (fun i => xi (s i) = 0) fun i => by
+    simp only [norm_eq_zero]
 
 /-- Critical-line Xi tests consistently recover the Hardy-Z zero pattern. -/
 theorem cox_critical_family {ι : Type*} [Fintype ι] (t : ι → ℝ) :
     Tendsto (fun K => (binaryLaw K (fun i => Xi (t i))).real
       {b | b ≠ fun i => decide (hardyZ (t i) = 0)}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, Xi_eq_zero_iff_hardyZ] using
-    tendsto_binaryLaw_error (fun i => Xi (t i))
+  exact tendsto_classification_error (fun i => Xi (t i))
+    (fun i => hardyZ (t i) = 0) fun i => by
+    simp only [Xi_eq_zero_iff_hardyZ]
 
 end
 end GaloisForLFunctions.GaloisTheoryOfZeros

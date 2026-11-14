@@ -93,6 +93,51 @@ theorem hasDerivAt_detection_zero (r : ℝ) :
   have hd := (((hasDerivAt_id (0 : ℝ)).neg).mul hl).exp.const_sub 1
   simpa [detection, weight, show (1 : ℝ) + 1 = 2 by norm_num] using hd
 
+/-- A lower bound on squared residuals gives one common false-positive envelope. -/
+theorem detection_le_separated_envelope (K r q : ℝ) (hK : 0 ≤ K)
+    (hsep : q ^ 2 ≤ r ^ 2) : detection K r ≤ K * weight K q := by
+  refine (detection_le K r hK).trans (mul_le_mul_of_nonneg_left ?_ hK)
+  apply Real.exp_le_exp.mpr
+  dsimp [weight]
+  nlinarith only [mul_nonneg hK (sub_nonneg.mpr hsep)]
+
+/-- Uniform consistency is restored on every set separated from zero.
+The exponential parametrizes an arbitrary positive residual margin. -/
+theorem uniform_detection_away_zero (s ε : ℝ) (hε : 0 < ε) :
+    ∀ᶠ K : ℝ in atTop, ∀ r : ℝ, (Real.exp s) ^ 2 ≤ r ^ 2 →
+      |detection K r| < ε := by
+  have hb := (tendsto_mean_nonzero (Real.exp s) (Real.exp_ne_zero s)).eventually
+    (eventually_lt_nhds hε)
+  filter_upwards [eventually_ge_atTop (0 : ℝ), hb] with K hK hb r hr
+  rw [abs_of_nonneg (detection_nonneg K r hK)]
+  exact (detection_le_separated_envelope K r (Real.exp s) hK hr).trans_lt hb
+
+/-- Detection decreases with squared residual size at fixed nonnegative concentration. -/
+theorem detection_antitone_sq (K r q : ℝ) (hK : 0 ≤ K)
+    (hsep : q ^ 2 ≤ r ^ 2) : detection K r ≤ detection K q := by
+  have hw : weight K r ≤ weight K q := by
+    apply Real.exp_le_exp.mpr
+    nlinarith only [mul_nonneg hK (sub_nonneg.mpr hsep)]
+  have hl : Real.log (1 + weight K r) ≤ Real.log (1 + weight K q) := by
+    gcongr
+  apply sub_le_sub_left (Real.exp_le_exp.mpr ?_) 1
+  nlinarith only [mul_nonneg hK (sub_nonneg.mpr hl)]
+
+/-- The sharp false-positive ceiling is the true-zero detection probability:
+all residuals lie below it, and nonzero residuals approach it arbitrarily closely. -/
+theorem sharp_false_positive_ceiling (K : ℝ) (hK : 0 ≤ K) :
+    (∀ r : ℝ, detection K r ≤ detection K 0) ∧
+      (∀ a : ℝ, a < detection K 0 → ∃ r : ℝ, 0 < r ∧ a < detection K r) := by
+  constructor
+  · intro r
+    exact detection_antitone_sq K r 0 hK (by simpa using sq_nonneg r)
+  · intro a ha
+    have hlim : Tendsto (detection K) (𝓝[>] (0 : ℝ)) (𝓝 (detection K 0)) :=
+      (continuous_detection_residual K).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    have he := hlim.eventually (eventually_gt_nhds ha)
+    have hpos : ∀ᶠ r : ℝ in 𝓝[>] 0, 0 < r := self_mem_nhdsWithin
+    exact (hpos.and he).exists
+
 end
 end GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox
 
@@ -103,3 +148,7 @@ end GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.nonuniform_detection
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.tendsto_power_detection_gap
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.hasDerivAt_detection_zero
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.detection_le_separated_envelope
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.uniform_detection_away_zero
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.detection_antitone_sq
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.sharp_false_positive_ceiling

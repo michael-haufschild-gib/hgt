@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElasticaRootGeometry
 
 /-!
@@ -31,8 +31,9 @@ theorem cox_root_collision_family {ι : Type*} [Fintype ι] (P : ι → Paramete
     Tendsto (fun K => (binaryLaw K (fun i => discriminant (P i))).real
       {b | b ≠ fun i => decide (e₁ (P i) = e₂ (P i) ∨ e₂ (P i) = e₃ (P i) ∨
         e₁ (P i) = e₃ (P i))}) atTop (𝓝 0) := by
-  simpa only [zeroPattern, ← repeated_root_iff_singular] using
-    tendsto_binaryLaw_error (fun i => discriminant (P i))
+  exact tendsto_classification_error (fun i => discriminant (P i))
+    (fun i => e₁ (P i) = e₂ (P i) ∨ e₂ (P i) = e₃ (P i) ∨ e₁ (P i) = e₃ (P i)) fun i => by
+    simp only [← repeated_root_iff_singular]
 
 end
 end GaloisForLFunctions.HTGeometry.DispersivePDE.BrizardElastica

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
+import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.RepresentationLifting.ModularTrace
 
 /-!
@@ -30,8 +30,10 @@ theorem cox_dualNumber_centralizer_family {τ : Type*} [Fintype τ]
       (fun i => ‖T i * dualNumberShift - dualNumberShift * T i‖)).real
       {b | b ≠ fun i => decide (∃ A B : Matrix ι ι ℝ, T i = Matrix.fromBlocks A B 0 A)})
       atTop (𝓝 0) := by
-  simpa only [zeroPattern, norm_eq_zero, sub_eq_zero, commute_dualNumberShift_iff] using
-    tendsto_binaryLaw_error (fun i => ‖T i * dualNumberShift - dualNumberShift * T i‖)
+  exact tendsto_classification_error
+    (fun i => ‖T i * dualNumberShift - dualNumberShift * T i‖)
+    (fun i => ∃ A B : Matrix ι ι ℝ, T i = Matrix.fromBlocks A B 0 A) fun i => by
+    simp only [norm_eq_zero, sub_eq_zero, commute_dualNumberShift_iff]
 
 end
 end GaloisForLFunctions.RepresentationLifting

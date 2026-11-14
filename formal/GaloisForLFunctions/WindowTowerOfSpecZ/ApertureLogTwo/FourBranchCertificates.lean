@@ -266,13 +266,15 @@ def branchOK (b : ℕ) : Bool :=
   τ.valid && decide (0 < τ.om) && decide (0 ≤ min x0 (x0 + x1)) &&
     decide (τ.t0 ≤ min x0 (x0 + x1) ^ 2) && qnonneg (qsub (τ.poly S.rOrd x0 x1) (D.VtB b))
 
-/-- The certificate check of a four-branch subinterval. -/
-def check : Bool :=
+def checkGeom : Bool :=
   decide (0 ≤ D.sa) && decide (0 < D.ds) && decide (D.sa + D.ds ≤ (1 - aHiQ) / 2) &&
     (List.range 4).all (fun b => branchOK S D b) &&
     pivots4Pos (beta S D 0) (beta S D 1) (beta S D 2) (beta S D 3) S.e2 S.e3 &&
-    (List.range 4).all (fun b => (List.range S.K).all fun i => decide ((D.WB b i).length ≤ 7)) &&
-    (fastEval S D).2.2 && domCheck S.K (subMat S.K D.Qhat (fastEval S D).1) &&
+    (List.range 4).all (fun b => (List.range S.K).all fun i => decide ((D.WB b i).length ≤ 7))
+
+/-- The certificate check of a four-branch subinterval. -/
+def check : Bool :=
+  checkGeom S D && (fastEval S D).2.2 && domCheck S.K (subMat S.K D.Qhat (fastEval S D).1) &&
     (List.range S.K).all fun k => decide (vecQ (fastEval S D).2.1 k ≤ vecQ D.pertHat k)
 
 end P4Sub

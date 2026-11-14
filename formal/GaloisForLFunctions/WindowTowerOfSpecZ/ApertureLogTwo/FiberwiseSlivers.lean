@@ -97,9 +97,12 @@ end Sliver2
 private theorem const_branch_le {τ : TaylorBranch} (hτ : τ.valid = true) {xl : ℚ}
     (h0 : 0 ≤ xl) (ht : τ.t0 ≤ xl ^ 2) {x : ℝ} (hle : (xl : ℝ) ≤ x) (hx1 : x < 1) :
     (τ.base : ℝ) ≤ vTrue x := by
-  have h := qeval_poly_le_vTrue hτ 0 xl 0 (ξ := 0) (by simpa using (show (0 : ℝ) ≤ xl by
-    exact_mod_cast h0)) (by simpa using (show (τ.t0 : ℝ) ≤ (xl : ℝ) ^ 2 by exact_mod_cast ht))
-    (by simpa using hle) hx1
+  have h0' : (0 : ℝ) ≤ (xl : ℝ) + (0 : ℚ) * (0 : ℝ) := by
+    simpa using (Rat.cast_nonneg.mpr h0 : (0 : ℝ) ≤ xl)
+  have ht' : (τ.t0 : ℝ) ≤ ((xl : ℝ) + (0 : ℚ) * (0 : ℝ)) ^ 2 := by
+    have : (τ.t0 : ℝ) ≤ (xl : ℝ) ^ 2 := by rw [← Rat.cast_pow]; exact Rat.cast_le.mpr ht
+    simpa using this
+  have h := qeval_poly_le_vTrue hτ 0 xl 0 (ξ := 0) h0' ht' (by simpa using hle) hx1
   rw [qeval_TaylorBranch_poly] at h
   simpa using h
 

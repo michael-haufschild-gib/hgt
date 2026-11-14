@@ -70,9 +70,9 @@ theorem contDiff_annularAngularMask (k : ℕ) : ContDiff ℝ ∞ (annularAngular
     have hu : ContDiffAt ℝ ∞ (fun w : ℂ => w / (‖w‖ : ℂ)) z := by
       have hr : ContDiffAt ℝ ∞ (fun w : ℂ => (1 : ℝ) / ‖w‖) z :=
         contDiffAt_const.div hn (norm_ne_zero_iff.mpr hz)
-      have h := hr.smul (contDiffAt_id : ContDiffAt ℝ ∞ (fun w : ℂ => w) z)
-      change ContDiffAt ℝ ∞ (fun w : ℂ => ((1 : ℝ) / ‖w‖) • w) z at h
-      simpa only [one_div, Algebra.smul_def, Complex.ofReal_inv, div_eq_mul_inv, mul_comm] using h
+      have hi := Complex.ofRealCLM.contDiff.contDiffAt.comp z hr
+      have h := (contDiffAt_id : ContDiffAt ℝ ∞ (fun w : ℂ => w) z).mul hi
+      simpa [Function.comp_def, one_div, div_eq_mul_inv] using h
     have hb : ContDiff ℝ ∞ (fun w : ℂ => (annularBump (‖w‖ ^ 2) : ℂ)) :=
       Complex.ofRealCLM.contDiff.comp (annularBump.contDiff.comp (contDiff_norm_sq ℝ))
     exact (hu.pow k).mul hb.contDiffAt
@@ -90,6 +90,13 @@ theorem hasCompactSupport_annularAngularMask (k : ℕ) : HasCompactSupport (annu
 /-- The smooth compact angular multiplier as a Schwartz function. -/
 def annularMaskSchwartz (k : ℕ) : 𝓢(ℂ, ℂ) :=
   (hasCompactSupport_annularAngularMask k).toSchwartzMap (contDiff_annularAngularMask k)
+
+/-- Angular localization is nontrivial: every mask takes the value one at the real unit. -/
+theorem annularMaskSchwartz_one (k : ℕ) : annularMaskSchwartz k 1 = 1 := by
+  have hb := annularBump_one (⟨1, by constructor <;> norm_num⟩ : Set.Icc (1 / 2 : ℝ) 2)
+  change (1 / (‖(1 : ℂ)‖ : ℂ)) ^ k * (annularBump (‖(1 : ℂ)‖ ^ 2) : ℂ) = 1
+  simp only [norm_one, Complex.ofReal_one, div_one, one_pow, one_mul]
+  exact congrArg Complex.ofReal hb
 
 /-- Annular angular localization is a continuous linear operator on radial tests. -/
 def annularAngularCLM (k : ℕ) : 𝓢(ℝ, ℂ) →L[ℝ] 𝓢(ℂ, ℂ) :=
