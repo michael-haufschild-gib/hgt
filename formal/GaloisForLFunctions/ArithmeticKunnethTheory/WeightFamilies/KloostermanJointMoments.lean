@@ -31,7 +31,8 @@ theorem sum_primeKloostermanTrace_joint_moment (S : Finset Nat.Primes)
     (fun p => primeResidue_local_periodic p (fun a => primeKloostermanTrace p a ^ r p))]
   apply prod_congr rfl
   intro p _
-  exact (RHTower.Sieve.sum_zmod_eq_sum_range_natCast p.val _).symm
+  exact (RHTower.Sieve.sum_zmod_eq_sum_range_natCast p.val
+    (fun a : ZMod p.val => primeKloostermanTrace p a ^ r p)).symm
 
 /-- Every nonempty product of distinct-prime traces is exactly centered. -/
 theorem sum_primeKloostermanTrace_prod (S : Finset Nat.Primes) :
@@ -42,7 +43,7 @@ theorem sum_primeKloostermanTrace_prod (S : Finset Nat.Primes) :
   simp only [pow_one, sum_primeKloostermanTrace] at h
   rw [h]
   by_cases hS : S = ∅
-  · simp only [hS, prod_empty, if_pos rfl]
+  · simp [hS]
   · rw [if_neg hS]
     obtain ⟨p, hp⟩ := Finset.nonempty_iff_ne_empty.mpr hS
     exact prod_eq_zero_iff.mpr ⟨p, hp, rfl⟩
@@ -69,7 +70,7 @@ theorem mean_primeKloostermanTrace_normalized_prod_sq (S : Finset Nat.Primes) :
   change ((primeSetProduct S : ℝ) * _ / (primeSetProduct S : ℝ)) /
     (primeSetProduct S : ℝ) = _
   rw [mul_div_cancel_left₀ _ hP]
-  change (∏ p ∈ S, ((p.val : ℝ) - 1)) / (∏ p ∈ S, (p.val : ℝ)) = _
+  rw [primeSetProduct, Nat.cast_prod]
   rw [← prod_div_distrib]
   apply prod_congr rfl
   intro p _
@@ -81,7 +82,7 @@ private theorem sum_primeField_nonzero (p : Nat.Primes) (f : ZMod p.val → ℝ)
       ∑ a ∈ (univ : Finset (ZMod p.val)).erase 0, f a := by
   rw [← sum_erase_add (univ : Finset (ZMod p.val))
     (fun a => if a = 0 then 0 else f a) (mem_univ 0)]
-  simp only [if_pos rfl, add_zero]
+  simp only [ite_true, add_zero]
   apply sum_congr rfl
   intro a ha
   exact if_neg (mem_erase.mp ha).1
@@ -99,7 +100,9 @@ theorem sum_primeKloostermanTrace_joint_nonzero_moment (S : Finset Nat.Primes)
       (fun a => if a = 0 then 0 else primeKloostermanTrace p a ^ r p))]
   apply prod_congr rfl
   intro p _
-  rw [← RHTower.Sieve.sum_zmod_eq_sum_range_natCast, sum_primeField_nonzero]
+  exact (RHTower.Sieve.sum_zmod_eq_sum_range_natCast p.val
+    (fun a : ZMod p.val => if a = 0 then 0 else primeKloostermanTrace p a ^ r p)).symm.trans
+      (sum_primeField_nonzero p (fun a => primeKloostermanTrace p a ^ r p))
 
 /-- The punctured joint trace has total one, at every finite prime set. -/
 theorem sum_primeKloostermanTrace_nonzero_prod (S : Finset Nat.Primes) :

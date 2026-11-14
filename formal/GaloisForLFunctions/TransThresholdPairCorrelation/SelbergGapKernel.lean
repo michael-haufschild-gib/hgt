@@ -149,6 +149,51 @@ theorem selbergKernel_le_indicator (x : ℝ) :
     have hs := (sq_le_one_iff_abs_le_one x).not.mpr h
     linarith only [hs]
 
+private theorem selbergKernel_one : selbergKernel 1 = 0 := by
+  have hp (u : ℝ) : HasDerivAt
+      (fun v : ℝ => (1 - v) * sin (2 * π * v) / (2 * π) -
+        cos (2 * π * v) / (2 * π) ^ 2 - cos (2 * (2 * π) * v) / (4 * (2 * π) ^ 2))
+      (selbergProfile u * cos (2 * π * u)) u := by
+    have hi := hasDerivAt_id u
+    have h := (((((hasDerivAt_const u 1).sub hi).mul ((hi.const_mul (2 * π)).sin)).div_const
+      (2 * π)).sub (((hi.const_mul (2 * π)).cos).div_const ((2 * π) ^ 2))).sub
+        (((hi.const_mul (2 * (2 * π))).cos).div_const (4 * (2 * π) ^ 2))
+    convert h using 1 <;> try rfl
+    simp only [id_eq, Pi.sub_apply, mul_one]
+    rw [show 2 * (2 * π) * u = 2 * (2 * π * u) by ring, sin_two_mul]
+    unfold selbergProfile
+    field_simp
+    ring
+  have hi : IntervalIntegrable (fun u => selbergProfile u * cos (2 * π * u)) volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    unfold selbergProfile
+    fun_prop
+  have he := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hp u) hi
+  unfold selbergKernel
+  simp only [mul_one]
+  rw [he]
+  simp only [mul_one, sub_self, zero_mul, mul_zero, sin_zero, cos_zero, zero_div,
+    sub_zero, zero_sub]
+  rw [cos_two_mul (2 * π), cos_two_pi]
+  ring
+
+/-- The cosine transform equals the Selberg quotient, with both removable values equal to zero. -/
+theorem selbergKernel_eq_sinc_quotient (x : ℝ) :
+    selbergKernel x = sinc (π * x) ^ 2 / (1 - x ^ 2) := by
+  by_cases hzero : x = 0
+  · simp [hzero]
+  by_cases hplus : 1 + x = 0
+  · have hx : x = -1 := by linarith only [hplus]
+    have he : selbergKernel (-1) = selbergKernel 1 := by
+      simp only [selbergKernel, mul_neg, neg_mul, cos_neg]
+    rw [hx, he, selbergKernel_one]
+    norm_num
+  by_cases hminus : 1 - x = 0
+  · have hx : x = 1 := by linarith only [hminus]
+    rw [hx, selbergKernel_one]
+    norm_num
+  exact selbergKernel_formula x hzero hplus hminus
+
 /-- The transform satisfies the sinc-square identity at every real argument,
 including the two removable singularities of the quotient formula. -/
 theorem selbergKernel_mul_one_sub_sq (x : ℝ) :
@@ -173,3 +218,5 @@ end GaloisForLFunctions.TransThresholdPairCorrelation
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_le_one
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_le_indicator
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_mul_one_sub_sq
+
+#print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_eq_sinc_quotient

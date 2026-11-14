@@ -42,7 +42,7 @@ def domCheck (K : ℕ) (M : List (List ℚ)) : Bool :=
     decide (((List.range K).map fun j => |matQ M i j|).sum ≤ 2 * matQ M i i) &&
       (List.range K).all fun j => decide (matQ M i j = matQ M j i)
 
-theorem list_sum_range_eq (K : ℕ) (f : ℕ → ℚ) :
+theorem list_sum_range_eq {α : Type*} [AddCommMonoid α] (K : ℕ) (f : ℕ → α) :
     ((List.range K).map f).sum = ∑ j : Fin K, f j := by
   rw [← Finset.sum_range f, Finset.sum_eq_multiset_sum]
   rfl
