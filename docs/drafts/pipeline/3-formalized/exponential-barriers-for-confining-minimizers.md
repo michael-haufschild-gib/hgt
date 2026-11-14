@@ -1,10 +1,10 @@
 # Exponential barriers for confining half-line minimizers
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Target:** B104; regularize the actual arithmetic forcing near the terminal endpoint.
 - **Statement:** For every `R>0`, every actual minimizing profile `F`, and every `1/2<β<15/2`, there is `C≥0` with `|F(u)|≤C exp(βu)` almost everywhere on `u<0`. Consequently `∫F²exp(-bu)<∞` for every `b<15`.
-- **Status:** Paper argument below; Lean formalization in progress. Not counted. No boundary trace or polar-charge conclusion.
+- **Status:** Formalized and verified in Lean, including existence at every positive confinement and the unconditional RH-or-critical-state corollary. No boundary trace or polar-charge conclusion.
 
 ## Corpus connection
 
@@ -126,51 +126,29 @@ argument applies to `-F`, which has the same minimizing energy, and proves
 the two-sided bound. Given `b<15`, choose
 `max(1/2,b/2)<β<15/2`; then `F²exp(-bu)≤C²exp((2β-b)u)` is integrable.
 
-## Lean status
+## Lean formalization
 
-**Nine of sixteen supporting modules are audited.** All pass final plain
-source checks without warnings, depend exactly on `propext`,
-`Classical.choice`, and `Quot.sound`, are wired, and have required oleans.
-Paths are under `ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`
-unless specified otherwise.
+`ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ConfiningMinimizerExponentialBarriers.lean` proves:
 
-- `HalfLineGammaContractions`: two-way jump/Gamma domain bridge and closure under real contractions fixing zero.
-- `NegativeHalfLineExponentialBarrier`: exact autocorrelation, translation defect, and Gamma integrability of positive-rate barriers.
-- `ExponentialBarrierPositiveLevels`: actual-domain admission of nonnegative levels (`exponentialBarrierPositiveLevel_mem`).
-- `HTGeometry/HardyBoundary/WeightedPositiveLevelAlgebra`: weighted edge inequality, relative-jump decomposition, and pointwise square coercivity.
-- `HalfLineGammaMixedEnergy`: absolute mixed-jump integrability and the exact Gamma identity, including its mass offset.
-- `HalfLineExponentialBarrierJumps`: integrated exponential correction bounding each mixed Gamma jump below.
-- `ExponentialBarrierPrimeEdges`: mixed-form symmetry and the support-restricted comparison for each prime term.
-- `ExponentialBarrierPrimeRows`: uniform finite forward-row bounds and complete backward-row summability.
-- `ExponentialBarrierPrimeComparison`: the integrated complete prime mixed-form comparison, passing from finite edge sums by actual-domain absolute summability.
+- `IsHalfLineEnergyMinimizer.exists_exponential_barrier`: the two-sided envelope for every `1/2<β<15/2`.
+- `IsHalfLineEnergyMinimizer.exists_uniform_abs_bound`: essential boundedness on the whole line.
+- `IsHalfLineEnergyMinimizer.integrable_exponential_square`: every square moment of order `b<15`.
+- `exists_exponentially_bounded_halfLineEnergyMinimizer`: a normalized minimizer with all these envelopes and moments for every `R>0`.
+- `criticalHalfLineGroundState_exponential_bounds` and `riemannHypothesis_or_exists_exponentially_bounded_criticalState`: transfer to the actual critical state, with an unconditional dichotomy.
 
-Seven supporting modules await final audits:
-
-- `ExponentialBarrierSmallGammaJumps`: a cutoff-independent bound for the integrated small-jump loss.
-- `HalfLineGammaCutoffKernel`: square integrability of the cutoff kernel, its bounded action on `L²`, and divergence of its row mass.
-- `HTGeometry/HardyBoundary/TranslationKernelPairing`: Fubini for an integrable kernel against measurable `L²` profiles, and an ordinary-mass bound when the kernel is also `L²`.
-- `HalfLineGammaLargeJumps`: the cutoff-kernel realization, both ordinary-mass row bounds, and the exact integrated large-jump identity and lower estimate.
-- `ExponentialBarrierGammaComparison`: the exact split at a positive cutoff and the full Gamma lower bound, retaining the constant mass term.
-- `ExponentialBarrierPotential`: absorption of the growing prime row and both barrier weights by the eighth-exponential potential, giving the two diagonal coercivity inequalities.
-- `ExponentialBarrierPoleComparison`: both polar terms are bounded below by the test's half-exponential ordinary mass.
-
-`ConfiningMinimizerExponentialBarriers` contains the unchecked full assembly:
-negation invariance, the full-line weak row identity, vanishing of a high
-positive level, the two-sided envelope, and exponential square moments
-below order `15`. Its final existence theorem is
-`exists_exponentially_bounded_halfLineEnergyMinimizer`.
-The critical-state application is
-`riemannHypothesis_or_exists_exponentially_bounded_criticalState`.
-The Gamma comparison remains unaudited. No barrier theorem or contribution is counted yet.
+The full module and its supporting modules pass plain Lean source checks
+without warnings. The transitive axiom audits report only `propext`,
+`Classical.choice`, and `Quot.sound`. All modules are imported by their
+umbrellas. Generic positive-level and convolution estimates lie in
+`HTGeometry/HardyBoundary/`; arithmetic applications lie in
+`ArithmeticHodgeTheoryOfDegenerations/CausalReflection/`.
 
 ## Boundary implication and limit
 
-Taking `β=1` bounds the complete prime forcing near `u=0`: forward prime
-shifts vanish in a sufficiently small terminal interval, and backward
-shifts are bounded by a multiple of `ΣΛ(n)/n^(3/2)`. Together with the
-existing bounded logarithmic cutoff commutator, this supplies the regularity
-needed for a localized Green equation. Identifying that equation, its
-normalized trace, and the trace's relationship to the polar source remain
+The envelope with `β=1` supplies the summable majorant
+`Λ(n)/n^(3/2)` for backward prime shifts. Realizing this forcing in the
+actual weak equation, identifying the localized Green solution and its
+normalized trace, and relating that trace to the polar source remain
 separate obligations. The argument does not show that `exp(-8u)F` is
 globally `L²`.
 

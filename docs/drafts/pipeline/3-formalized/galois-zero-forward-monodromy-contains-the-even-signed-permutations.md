@@ -1,8 +1,8 @@
 # The forward monodromy group contains the even signed permutations of the zeros
 
 - **ID:** gtz-forward-monodromy-even-signed
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** programme card `gtz-galois-theory-of-zeros-programme.md`, open core item 5 ("the full
   group: which restricted signed permutations lie in `G₊`"); review-1311 §2.19 question 1.
 - **Statement:** for every forward time `b` off the branch times,
@@ -21,7 +21,7 @@ on the pairs.
 ## Gates
 - [x] 0 → 1
 - [x] 1 → 2  paper proof below
-- [ ] 2 → 3  Lean
+- [x] 2 → 3  Lean (axioms: `propext`, `Classical.choice`, `Quot.sound`)
 
 ## Notation
 
@@ -129,5 +129,37 @@ which commutes with `z ↦ −z`.
 - `G₊` acts on the pairs as a group that contains every 3-cycle: it is highly transitive on the
   pairs and primitive; the pairs are the only nontrivial system of imprimitivity on the zeros.
 
+## Lean
+
+Folder `formal/GaloisForLFunctions/GaloisTheoryOfZeros/`.
+
+| Step | Module | Declarations |
+|---|---|---|
+| A1 | `SeveralZerosFollowedThroughSimpleZerosAreMovedByOneForwardMonodromy` | `IsForwardTrack`, `IsSimpleLift`, `exists_forward_continuation_in_charts`, `exists_forward_transports_of_simple_lifts`, `exists_mem_forwardMonodromy_of_simple_lifts` |
+| A2 | `TheNumberOfAZeroInTheOrderOfTheRealLineIsItsStripAtARealSaddle` | `zeroIndex`, `zeroIndex_neg`, `eq_of_zeroIndex_eq`, `StripWindow`, `LandsIn`, `StripWindow.zeroIndex_eq_of_landsIn`, `StripWindow.landsIn_zeroIndex` |
+| A3 | `OneForwardMonodromyMovesTheZerosOfOneParityOfAWindowDownByOne` | `upPath`, `saddleLoopPath`, `exists_isSimpleLift_upPath`, `exists_mem_forwardMonodromy_zeroIndex_sub_one`, `exists_mem_forwardMonodromy_odd_sub_one`, `exists_mem_forwardMonodromy_even_sub_one` |
+| Steps 1–2 | `AFinitaryGroupOnTheIntegersWithWindowReflectionsContainsEveryThreeCycle` | `HasCycle`, `HasWindowReflections`, `hasCycle_of_windowReflections` |
+| Step 3 | `AFinitaryGroupOfSignedPermutationsWithWindowReflectionsContainsTheEvenOnes` | `PairCoordinate`, `IsWindowedSignedGroup`, `IsWindowedSignedGroup.hasSignedCycle`, `IsWindowedSignedGroup.hasDoubleFlip`, `PairCoordinate.map`, `IsWindowedSignedGroup.map` |
+| Theorem | `TheForwardMonodromyGroupContainsTheEvenSignedPermutationsOfTheZeros` | `pairNumber`, `eighthPairs`, `isWindowedSignedGroup_eighth`, `exists_pairCoordinate_isWindowedSignedGroup`, `exists_mem_forwardMonodromy_signedCycle`, `exists_mem_forwardMonodromy_doubleFlip` |
+
+Lean form of the statement: for zeros `p, q, r` of `H_b` with `q ≠ ±p`, `r ≠ ±q`, `r ≠ ±p` some
+`T ∈ G₊(b)` has `T p = q`, `T q = r`, `T r = p` and fixes every zero `≠ ±p, ±q, ±r`; for
+`q ≠ ±p` some `T ∈ G₊(b)` has `T p = −p`, `T q = −q` and fixes every zero `≠ ±p, ±q`.
+
+**Corollary (multiple transitivity).** If no two of the zeros `p_1, …, p_n` of `H_b` are equal
+or opposite, and no two of `q_1, …, q_n`, one element of `G₊(b)` carries every `p_i` to `q_i`:
+on every finite union of pairs `G₊(b)` induces all signed permutations. Proof: a signed 3-cycle
+through a fresh pair, or a double flip with a fresh pair, moves one point and fixes finitely many
+other pairs; induction on `n`. Lean: `IsWindowedSignedGroup.exists_apply_eq_of_fixed`,
+`IsWindowedSignedGroup.exists_forall_apply_eq`, `exists_mem_forwardMonodromy_forall_apply_eq` in
+`TheForwardMonodromyGroupMovesFinitelyManyZerosInDistinctPairsAtWill`.
+
+Lifts used by A3 (statements of the earlier modules kept, proofs factored):
+`exists_isZeroLift_of_stripFacts`, `exists_exchange_lift`, `exists_stripFacts_to_cosineSide`.
+
+## Open
+
+The two characters of `G₊` on `W/W⁰`: the sign on the zeros and the sign on the pairs.
+
 ## Log
-- 2026-11-14 — created with the paper proof.
+- 2026-11-14 — created with the paper proof; formalized.

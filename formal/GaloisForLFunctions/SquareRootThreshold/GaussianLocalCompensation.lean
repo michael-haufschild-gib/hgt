@@ -52,7 +52,7 @@ theorem exists_gaussian_compensating_copies (ρ : NontrivialZetaZero)
   have hcenter (q) (hq : q ∈ target) : g q = 1 := by
     have hqρ : q.1 = ρ := Finset.mem_singleton.mp (Finset.mem_sigma.mp hq).1
     simp only [g, hqρ, hρ, offAxisSingleContribution, sub_self, zero_pow (by decide : 2 ≠ 0),
-      mul_zero, sub_zero, Real.exp_zero, Real.cos_zero, mul_one]
+      mul_zero, Real.exp_zero, Real.cos_zero, mul_one]
   have hfinite := finite_gaussianZeroCopies_near ρ.1.im hR.le
   let bad := hfinite.toFinset.filter (fun q => g q < 0)
   have hbad (q) : q ∈ bad ↔ |q.1.1.im - ρ.1.im| ≤ R ∧ g q < 0 := by
@@ -74,7 +74,7 @@ theorem exists_gaussian_compensating_copies (ρ : NontrivialZetaZero)
     have heq : A * ((2 * Real.exp (-(ε * R ^ 2 / 2))) /
         (1 + (q.1.1.im - ρ.1.im) ^ 2)) = κ * w q := by
       dsimp [κ, w]
-      rw [sq_sub_comm ρ.1.im q.1.1.im]
+      rw [show (ρ.1.im - q.1.1.im) ^ 2 = (q.1.1.im - ρ.1.im) ^ 2 by ring]
       ring
     rw [heq] at hb
     simpa only [neg_mul] using (abs_le.mp hb).1

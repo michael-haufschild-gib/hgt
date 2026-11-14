@@ -337,19 +337,17 @@ theorem verticalSaddlePath_zero (a : ℂ) : verticalSaddlePath a 0 = (a.re : ℂ
 theorem verticalSaddlePath_one (a : ℂ) : verticalSaddlePath a 1 = a := by
   rw [verticalSaddlePath, clampUnit_one, one_mul, Complex.re_add_im]
 
-/-- **A zero of a strip at a real saddle reaches the cosine side.** Far out, a zero of
-`H_{τ(σ)}` in a strip of the window is joined through simple zeros to a zero of `H_{τ(a)}` in the
-same open strip, for every saddle `a` of the wide region on the cosine side: along the real saddles
-from `σ` to `Re a`, where `4|B₀| ≤ |S₀|`, and up the vertical segment to `a`, where `|Q|` is at
-least `|Q(a)|`. -/
-theorem exists_simplyJoined_to_cosineSide (R : ℝ) : ∃ σ₀ : ℝ, ∀ σ : ℝ, σ₀ ≤ σ →
-    ∀ a : ℂ, WideRegion a → σ₀ ≤ a.re → CosineSide a → ∀ θ : ℝ, Real.sin θ = 0 →
-    |θ| + π + 2 ≤ R → ∀ z : ℂ, complexHeat (saddleTime (σ : ℂ)) z = 0 →
-    (σ : ℂ) * z ∈ cosStrip θ → ∃ z' : ℂ, SimplyJoined (saddleTime (σ : ℂ)) z (saddleTime a) z' ∧
-      complexHeat (saddleTime a) z' = 0 ∧ a * z' ∈ openCosStrip θ := by
+/-- **The saddles from a real saddle to the cosine side carry the strip facts.** Far out, for a
+real saddle `σ` and a saddle `a` of the wide region on the cosine side: the real saddles from `σ`
+to `Re a`, where `4|B₀| ≤ |S₀|`, and the vertical segment up to `a`, where `|Q|` is at least
+`|Q(a)|`, lie in the wide region and have the strip facts. -/
+theorem exists_stripFacts_to_cosineSide (R : ℝ) : ∃ σ₀ : ℝ, ∀ σ : ℝ, σ₀ ≤ σ →
+    ∀ a : ℂ, WideRegion a → σ₀ ≤ a.re → CosineSide a →
+    (∀ s, WideRegion (realSaddlePath σ a.re s)) ∧ (∀ s, StripFacts R (realSaddlePath σ a.re s)) ∧
+      (∀ s, WideRegion (verticalSaddlePath a s)) ∧ ∀ s, StripFacts R (verticalSaddlePath a s) := by
   obtain ⟨σ₁, h50, hdom⟩ := exists_real_dominance
   obtain ⟨σ₂, hfacts⟩ := exists_stripFacts R
-  refine ⟨max σ₁ σ₂, fun σ hσ a ha haσ hside θ hθ hθR z hz hzθ => ?_⟩
+  refine ⟨max σ₁ σ₂, fun σ hσ a ha haσ hside => ?_⟩
   have hσ₁ : σ₁ ≤ σ := (le_max_left _ _).trans hσ
   have hσ₂ : σ₂ ≤ σ := (le_max_right _ _).trans hσ
   have haσ₁ : σ₁ ≤ a.re := (le_max_left _ _).trans haσ
@@ -372,11 +370,6 @@ theorem exists_simplyJoined_to_cosineSide (R : ℝ) : ∃ σ₀ : ℝ, ∀ σ : 
   have hFr : ∀ s, StripFacts R (realSaddlePath σ a.re s) := fun s =>
     hfacts _ (hWr s) (by rw [realSaddlePath, Complex.ofReal_re]; exact (hlow s).2)
       (cosineSide_of_dominance (hdom _ (hlow s).1))
-  obtain ⟨z₁, hj₁, hz₁, hd₁⟩ := exists_simplyJoined_of_stripFacts
-    (continuous_realSaddlePath σ a.re) hWr hFr hθ hθR (z₀ := z)
-    (by rw [realSaddlePath_zero]; exact hz) (by rw [realSaddlePath_zero]; exact hzθ)
-  rw [realSaddlePath_zero, realSaddlePath_one] at hj₁
-  rw [realSaddlePath_one] at hz₁ hd₁
   -- the vertical segment
   have hη0 := ha.2.1
   have hηπ := ha.im_lt
@@ -391,14 +384,31 @@ theorem exists_simplyJoined_to_cosineSide (R : ℝ) : ∃ σ₀ : ℝ, ∀ σ : 
     refine ⟨by rw [hre]; exact ha.1, by rw [him]; exact hge s, ?_⟩
     rw [hre, him]
     linarith [ha.2.2, hle s]
-  have hFv : ∀ s, StripFacts R (verticalSaddlePath a s) := by
-    intro s
-    refine hfacts _ (hWv s) (by rw [hre]; exact haσ₂)
-      (cosineSide_of_norm_saddleRatioSq_le (hWv s) ha hside ?_)
-    have e : verticalSaddlePath a s = (a.re : ℂ) + ((clampUnit s * a.im : ℝ) : ℂ) * I := rfl
-    conv_lhs => rw [← Complex.re_add_im a]
-    rw [e]
-    exact norm_saddleRatioSq_le_of_im_le hσ1 (hge s) (hle s) hηπ.le
+  refine ⟨hWr, hFr, hWv, fun s => ?_⟩
+  refine hfacts _ (hWv s) (by rw [hre]; exact haσ₂)
+    (cosineSide_of_norm_saddleRatioSq_le (hWv s) ha hside ?_)
+  have e : verticalSaddlePath a s = (a.re : ℂ) + ((clampUnit s * a.im : ℝ) : ℂ) * I := rfl
+  conv_lhs => rw [← Complex.re_add_im a]
+  rw [e]
+  exact norm_saddleRatioSq_le_of_im_le hσ1 (hge s) (hle s) hηπ.le
+
+/-- **A zero of a strip at a real saddle reaches the cosine side.** Far out, a zero of
+`H_{τ(σ)}` in a strip of the window is joined through simple zeros to a zero of `H_{τ(a)}` in the
+same open strip, for every saddle `a` of the wide region on the cosine side: along the real saddles
+from `σ` to `Re a` and up the vertical segment to `a`. -/
+theorem exists_simplyJoined_to_cosineSide (R : ℝ) : ∃ σ₀ : ℝ, ∀ σ : ℝ, σ₀ ≤ σ →
+    ∀ a : ℂ, WideRegion a → σ₀ ≤ a.re → CosineSide a → ∀ θ : ℝ, Real.sin θ = 0 →
+    |θ| + π + 2 ≤ R → ∀ z : ℂ, complexHeat (saddleTime (σ : ℂ)) z = 0 →
+    (σ : ℂ) * z ∈ cosStrip θ → ∃ z' : ℂ, SimplyJoined (saddleTime (σ : ℂ)) z (saddleTime a) z' ∧
+      complexHeat (saddleTime a) z' = 0 ∧ a * z' ∈ openCosStrip θ := by
+  obtain ⟨σ₀, h₀⟩ := exists_stripFacts_to_cosineSide R
+  refine ⟨σ₀, fun σ hσ a ha haσ hside θ hθ hθR z hz hzθ => ?_⟩
+  obtain ⟨hWr, hFr, hWv, hFv⟩ := h₀ σ hσ a ha haσ hside
+  obtain ⟨z₁, hj₁, hz₁, hd₁⟩ := exists_simplyJoined_of_stripFacts
+    (continuous_realSaddlePath σ a.re) hWr hFr hθ hθR (z₀ := z)
+    (by rw [realSaddlePath_zero]; exact hz) (by rw [realSaddlePath_zero]; exact hzθ)
+  rw [realSaddlePath_zero, realSaddlePath_one] at hj₁
+  rw [realSaddlePath_one] at hz₁ hd₁
   obtain ⟨z₂, hj₂, hz₂, hd₂⟩ := exists_simplyJoined_of_stripFacts
     (continuous_verticalSaddlePath a) hWv hFv hθ hθR (z₀ := z₁)
     (by rw [verticalSaddlePath_zero]; exact hz₁)

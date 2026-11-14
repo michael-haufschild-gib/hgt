@@ -1,15 +1,18 @@
 # The conductor of a linear Artin character is supported on its ramified primes
 
 - **ID:** agz-conductor-ramification
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.14 (question 5); open item of
   `3-formalized/agz-ray-class-characters-at-their-conductors.md` and of
   `3-formalized/agz-artin-characters-zero-configuration-with-orders.md`
 - **Statement:** Let `L/K` be a Galois extension of number fields with group `G` and `χ` a linear
   character of `G`. There is a primitive ray class character `ψ` of `K` with `(χ, v) = ψ(v)` at
   every prime `v` of `K`. So a prime divides the conductor of `ψ` iff `χ` is ramified at it, and
-  `L(s, χ, L/K) = L(s, ψ)` for `Re s > 1`, with no correcting Euler factor.
+  `L(s, χ, L/K) = L(s, ψ)` for `Re s > 1`, with no correcting Euler factor. Hence every Artin
+  `L`-function is a product of integer powers of `L`-functions of primitive ray class characters,
+  and its completion has a functional equation and, at every point of `ℂ`, the order of its
+  virtual configuration.
 
 ## Goal
 
@@ -22,7 +25,7 @@ Not a statement on the position of the zeros.
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 2 → 3  formalized
 
 ## Proof
 
@@ -78,7 +81,7 @@ divides `1` (formalized: if `Frob^g` fixes `E` then `f(𝔔 | u)` divides `g`). 
 ### 4. Removing an unramified prime from the modulus
 
 **Theorem 4.** Let `L/K` be abelian with group `G`, `I ≠ 0` an ideal of `𝓞_K` such that the
-primes `v ∤ I` are unramified in `L`, `u ∤ I` a prime and `e ≥ 0`. If
+primes `v ∤ I` are unramified in `L`, `u ∤ I` a prime and `e ≥ 1`. If
 `P_{I u^e} ⊂ ker (·, L/K)` then `P_I ⊂ ker (·, L/K)`.
 
 Proof. By 1a it suffices to show `((a), L/K) = 1` for a non-zero integer `a ≡ 1 mod I`, totally
@@ -105,9 +108,8 @@ For `t` large `β` is totally positive, since `(μ m)² q > 0` at every real pla
 
 *The norm.* Let `b = N_{E/K} β ∈ 𝓞_K`. By 2a `b ≡ 1 mod μ m`, so `b ≡ 1 mod I`; `b` is totally
 positive; by 2b, 2c and 3, `b ≡ a mod u^k`. So `b ≠ 0`, `b ∈ K_{I,1}` (1b), and
-`v_u(b) = v_u(a) = j` since `v_u(b − a) ≥ k > j`... precisely `v_u(a/b − 1) = v_u(a − b) − j ≥ e`.
-If `e ≥ 1`, 1c gives `a/b ∈ K_{I u^e,1}`; if `e = 0` there is nothing to add. So
-`((a/b), L/K) = 1` by the hypothesis.
+`v_u(b) = v_u(a) = j` since `v_u(b − a) ≥ k > j`. Hence `v_u(a/b − 1) = v_u(a − b) − j ≥ e`, and
+1c gives `a/b ∈ K_{I u^e,1}`. So `((a/b), L/K) = 1` by the hypothesis.
 
 *The symbol of the norm.* `β ≡ 1 mod μ m`, so `β` is a unit at the primes of `E` above the
 primes dividing `m` or `I` (`μ ∈ I`). The primes of `(β)` therefore lie above primes of `K`
@@ -148,7 +150,8 @@ off the real axis. If `ζ_F(s₀) = 0` then `Ξ(s₀) = 0`, so `Ξ(1 − s₀) =
 `ζ_F(1 − s₀) = 0` with `Re (1 − s₀) = 1`, `1 − s₀ ≠ 1`: excluded.
 
 **Theorem 7.** Let `L/K` be abelian with group `G`. For every character `η` of `G` let
-`(𝔪_η, ψ_η)` be as in Theorem 6 and `ψ'_η` the primitive character of `ψ_η`, of conductor `𝔣_η`.
+`(𝔪_η, ψ_η)` be a modulus and a ray class character with `(η, v) = ψ_η(v)` at every prime `v`
+(they exist by Theorem 6), and `ψ'_η` the primitive character of `ψ_η`, of conductor `𝔣_η`.
 Then every prime dividing `𝔪_η` divides `𝔣_η`.
 
 Proof. For `Re s > 1`
@@ -167,15 +170,84 @@ analytic on `ℂ ∖ {1}`, which is connected: the identity holds there. Let `v�
 
 Let `χ`, `F`, `χ'`, `(𝔪, ψ)` be as in Theorem 6 and `ψ'` the primitive character of `ψ`. For
 `v ∤ 𝔪`: `ψ'(v) = ψ(v) = (χ, v)`. For `v | 𝔪`: `(χ, v) = 0`, and `v` divides the conductor by
-Theorem 7 for the extension `F/K` and its character `χ'`, with the pair `(𝔪, ψ)` (the statement
-of Theorem 7 holds for every pair as in Theorem 6, since two such pairs have the same primitive
-character... not needed: in Theorem 7 take the pairs of Theorem 6 for all characters of
-`G / ker χ`, with the given pair for `χ'`). So `ψ'(v) = 0 = (χ, v)`. ∎
+Theorem 7 for the extension `F/K`: take the pairs of Theorem 6 for the characters of `G / ker χ`,
+with the given pair `(𝔪, ψ)` for `χ'`. So `ψ'(v) = 0 = (χ, v)`. ∎
+
+### 9. The completion and the functional equation
+
+`Ξ(s, ψ)` is the entire completion of a primitive ray class character `ψ`:
+`Ξ = P γ L(·, ψ)` on `Re s > 1`, `P = s(s − 1)` for `ψ = 1` and `1` otherwise, `γ` the conductor
+and Gamma factor; `Ξ(1 − s, ψ) = W(ψ) Ξ(s, ψ⁻¹)`, `|W(ψ)| = 1` (formalized). `Z_ψ` is the
+configuration of the zeros of `Ξ(·, ψ)` with their orders.
+
+**9a.** `(χ⁻¹, v) = conj (χ, v)` at every prime: `χ⁻¹` and `χ` are trivial on the same inertia
+groups and `χ⁻¹(φ) = conj χ(φ)`. So if `ψ` is the primitive character of `χ` (§8) then `ψ⁻¹`,
+primitive of the same conductor with `ψ⁻¹(v) = conj ψ(v)`, is the primitive character of `χ⁻¹`.
+
+**Theorem 9.** For a linear character `χ`, with `ψ` as in §8: `Ξ(·, ψ) = P γ L(·, χ, L/K)` and
+`Ξ(·, ψ⁻¹) = P γ' L(·, χ⁻¹, L/K)` on `Re s > 1`, `Ξ(1 − s, ψ) = W Ξ(s, ψ⁻¹)` on `ℂ`, and the von
+Mangoldt coefficients of `ψ` are `Σ_{N v^k = n} (χ, v)^k log N v`: the explicit formula of `Z_ψ`
+has the Artin symbols of `χ` on its prime side, at every prime. ∎
+
+**9b.** Induction commutes with conjugation: `Ind(conj f) = conj Ind(f)`.
+
+**Theorem 10.** Let `ρ` be a representation of `G` and `ρ*` one with the conjugate character.
+There are integers `n_q` on the Brauer pairs `q = (E_q, χ_q)` and primitive ray class characters
+`ψ_q` of the fixed fields `F_q` of the `E_q`, with `(χ_q, v) = ψ_q(v)` at every prime of `F_q`,
+such that for `Re s > 1`
+
+  `L(s, ρ, L/K) = Π_q L(s, ψ_q)^{n_q}`,  `L(s, ρ*, L/K) = Π_q L(s, ψ_q⁻¹)^{n_q}`.
+
+Let `Ξ_ρ = Π_q Ξ(·, ψ_q)^{n_q}` and `Ξ_{ρ*} = Π_q Ξ(·, ψ_q⁻¹)^{n_q}`, quotients of entire
+functions. Then
+
+* `Ξ_ρ = γ_ρ L(·, ρ)` and `Ξ_{ρ*} = γ_{ρ*} L(·, ρ*)` on `Re s > 1`, with `γ_ρ = Π_q (P_q γ_q)^{n_q}`;
+* `Ξ_ρ(1 − s) = W Ξ_{ρ*}(s)` on `ℂ`, `W = Π_q W(ψ_q)^{n_q}`, `|W| = 1`;
+* if `A`, `B` are entire, `B ≢ 0`, `A = B Ξ_ρ` on `Re s > 1`, then
+  `ord_w A − ord_w B = Σ_q n_q m_{Z_q}(w)` at every `w ∈ ℂ`;
+* `Σ_q n_q W_{Z_q}` has `m` negative squares on some family of `m` tests iff at least `m` points
+  are zeros or poles of `A / B` right of the critical line, or poles on the line.
+
+Proof. Brauer: `χ_ρ = Σ_q n_q Ind χ_q`. Conjugate and use 9b: `χ_{ρ*} = Σ_q n_q Ind χ_q⁻¹`. The
+Euler product is a homomorphism on integer relations between characters and the Euler product of
+an induced character is the Euler product over the fixed field, so
+`L(s, ρ) = Π_q L(s, χ_q, L/F_q)^{n_q}` and `L(s, ρ*) = Π_q L(s, χ_q⁻¹, L/F_q)^{n_q}`; apply §8
+and 9a to each factor. The identities with `γ` and the functional equation are those of the
+factors. For the orders: on `Re s > 1`, where the `Ξ(·, ψ_q)` have no zeros,
+`A Π_{n_q < 0} Ξ_q^{−n_q} = B Π_{n_q > 0} Ξ_q^{n_q}`; both sides are entire, so the identity
+holds on `ℂ`, orders add, and `ord_w Ξ_q = m_{Z_q}(w)`. The index: the form of an integer
+combination of tempered configurations has `m` negative squares on some family iff the
+combination has `m` points right of the line with net multiplicity `≠ 0` or on the line with net
+multiplicity `< 0`. ∎
+
+With a correcting Euler factor `Π_{v | c} (1 − (χ, v) N v^{−s})^{−1}` the continuation has poles
+on `Re s = 0` and no functional equation: §8 is what gives the statement on `ℂ`.
+
+## Lean
+
+Modules in `formal/GaloisForLFunctions/`; every theorem is proved without hypothesis.
+
+| § | Module | Theorems |
+|---|---|---|
+| 1, 2a | `RHTower/Artin/RayElementsAreQuotientsOfIntegersOfTheRay.lean` | `exists_integral_of_mem_rayGroup` (1a), `mk0_mem_rayGroup` (1b), `mem_rayGroup_mul_pow` (1c), `intNorm_sub_intNorm_mem_span` (2a) |
+| 2b, 2c, 3 | `RHTower/Artin/NormsFromTheDecompositionFieldOfAnUnramifiedPrime.lean` | `algebraMap_intNorm_sub_mem_pow`, `exists_intNorm_sub_mem_pow` |
+| 4, 5 | `RHTower/Artin/TheArtinMapIsTrivialOnARayWithOnlyRamifiedPrimesInTheModulus.lean` | `rayPrincipal_le_ker_artinMap_of_mul_pow` (Theorem 4, `e ≥ 1`), `exists_ideal_rayPrincipal_le_ker_artinMap` (Theorem 5) |
+| 6 | `RHTower/Artin/TheArtinSymbolsOfALinearCharacterAreTheValuesOfARayClassCharacterAtEveryPrime.lean` | `exists_heckeCharacter_forall_artinSymbol`, `exists_artinEulerProduct_linearCharacter_eq_heckeL` |
+| 7 | `RHTower/Artin/TheDedekindZetaFunctionOfAnAbelianExtensionIsTheProductOfTheLSeriesOfItsCharacters.lean` | `dedekindZeta_eq_prod_artinEulerProduct` |
+| 7 | `AbsoluteGeometryOfSpecZ/InAFactorizationOfADedekindZetaFunctionEveryPrimeOfAModulusDividesTheConductor.lean` | `heckeXi_ne_zero_of_one_le_re`, `heckeXi_ne_zero_of_re_le_zero` (7a), `dvd_heckeFiniteConductor_of_dedekindZeta_eq_prod` |
+| 7, 8 | `AbsoluteGeometryOfSpecZ/TheArtinLFunctionOfALinearCharacterIsTheLFunctionOfItsPrimitiveRayClassCharacter.lean` | `dvd_heckeFiniteConductor_of_forall_artinSymbol_eq` (Theorem 7), `exists_primitive_heckeCharacter_forall_artinSymbol` (§8) |
+| 9a, 9b | `RHTower/Artin/TheArtinEulerProductOfTheConjugateRepresentationRunsOverTheInverseCharacters.lean` | `artinSymbol_inv`, `inducedFunction_star`, `exists_artinEulerProduct_eq_prod_zpow_abelian_conj` |
+| 9 | `AbsoluteGeometryOfSpecZ/EveryArtinLFunctionHasACompletionWithAFunctionalEquation.lean` | `exists_completion_linearCharacter` (Theorem 9), `exists_artinEulerProduct_eq_prod_zpow_primitive_heckeL`, `exists_completion_artin` (Theorem 10) |
 
 ## What stays open
 
-- The local conductor exponent (the Artin conductor through the higher ramification groups).
+- The conductor exponent at a ramified prime (the Artin conductor through the higher
+  ramification groups).
+- The Gamma factor `γ_ρ` and the conductor of the completion as invariants of `ρ` (here they are
+  products over a Brauer decomposition), and with it the uniqueness of the primitive character
+  of a linear character.
 - `Σ_{q : ψ_q = 1} n_q` is the multiplicity of the trivial character (Brauer pairs).
 
 ## Log
 - 2026-11-14 — created in 1-in-progress with the paper proof
+- 2026-11-14 — formalized; moved to 3-formalized

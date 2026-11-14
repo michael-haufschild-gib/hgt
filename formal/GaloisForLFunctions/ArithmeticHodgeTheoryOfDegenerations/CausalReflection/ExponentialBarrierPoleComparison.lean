@@ -38,6 +38,7 @@ theorem CriticalHalfLineEnergyDomain.abs_polarKernel_pairing_le {G k : ℝ → �
     _ ≤ _ := by
       apply integral_mono hi.abs hG.integrable_polarExponential
       intro u
+      change |G u * k u| ≤ G u * Real.exp (-(u / 2))
       rw [abs_mul, abs_of_nonneg (hG0 u)]
       by_cases hu : u ≤ 0
       · have hh := hb u

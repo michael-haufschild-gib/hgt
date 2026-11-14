@@ -61,7 +61,10 @@ def gaussianZeroCopyEquiv :
 theorem summable_gaussianZeroLorentz (T : ℝ) :
     Summable (fun q : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
       1 / (1 + (T - q.1.1.im) ^ 2)) := by
-  exact (summable_lorentzMassTerm T).comp_injective gaussianZeroCopyEquiv.injective
+  have hs : Summable (fun q : NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity =>
+      lorentzMassTerm T (gaussianZeroCopyEquiv q)) :=
+    (summable_lorentzMassTerm T).comp_injective gaussianZeroCopyEquiv.injective
+  simpa only [lorentzMassTerm, gaussianZeroCopyEquiv_coe] using hs
 
 /-- Exact transport of the Lorentzian mass, with every analytic multiplicity. -/
 theorem tsum_gaussianZeroLorentz (T : ℝ) :

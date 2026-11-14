@@ -179,7 +179,6 @@ theorem IsHalfLineEnergyMinimizer.exists_exponential_barrier {R : ℝ} (hR : 0 <
   filter_upwards [hc, hd] with u hcu hdu
   have hce := mul_nonneg hC (Real.exp_pos (β * u)).le
   have hde := mul_nonneg hD (Real.exp_pos (β * u)).le
-  dsimp only at hdu
   exact abs_le.mpr ⟨by nlinarith only [hdu, hce], by nlinarith only [hcu, hde]⟩
 
 /-- Every actual confining minimizer is essentially bounded on the whole line. -/
@@ -215,7 +214,8 @@ theorem IsHalfLineEnergyMinimizer.integrable_exponential_square {R : ℝ} (hR : 
     C ^ 2 * negativeHalfLineExponentialBarrier (2 * β - b) u
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg (F u)) (Real.exp_pos _).le)]
   by_cases hu0 : u ≤ 0
-  · rw [negativeHalfLineExponentialBarrier, indicator_of_mem hu0]
+  · rw [negativeHalfLineExponentialBarrier,
+      indicator_of_mem (show u ∈ Iic (0 : ℝ) from hu0)]
     have hs := pow_le_pow_left₀ (abs_nonneg (F u)) hu 2
     rw [sq_abs, mul_pow] at hs
     have hh := mul_le_mul_of_nonneg_right hs (Real.exp_pos (-(b * u))).le
@@ -226,7 +226,8 @@ theorem IsHalfLineEnergyMinimizer.integrable_exponential_square {R : ℝ} (hR : 
       ring
     rwa [mul_assoc, he] at hh
   · rw [hF.1.support u (lt_of_not_ge hu0).le, zero_pow two_ne_zero, zero_mul,
-      negativeHalfLineExponentialBarrier, indicator_of_notMem hu0, mul_zero]
+      negativeHalfLineExponentialBarrier,
+      indicator_of_notMem (show u ∉ Iic (0 : ℝ) from hu0), mul_zero]
 
 /-- Every positive confinement has a normalized minimizer with square moments of every order below fifteen. -/
 theorem exists_exponentially_bounded_halfLineEnergyMinimizer {R : ℝ} (hR : 0 < R) :

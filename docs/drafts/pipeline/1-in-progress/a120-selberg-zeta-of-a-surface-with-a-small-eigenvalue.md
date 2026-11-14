@@ -94,18 +94,26 @@ Notation: `X = Γ\ℍ` a `CompactQuotient` with `|tr γ| > 2` for `γ ≠ 1` (tr
    (cotangent series), so `Z(1−s) = Z(s) exp(−|F| ∫_0^{s−½} v tan πv dv)`.
 7. *Zeros off the line* in the strip: `λ_j + s(s−1) = 0`, `s ∉ ½ + iℝ` ⇒ `s = ½ ± √(¼ − λ_j)`, `0 < λ_j < ¼`;
    finitely many (compact `T_a`).
-8. *Walls.* `W = {w ∈ O : trd w = 0, nrd w = −2, w ≡ i mod 23}`, `f_w(z) = (c|z|² − 2a·Re z − b)/Im z`
-   for `w = [[a,b],[c,−a]]`; `f_{γwγ⁻¹}(γz) = f_w(z)`; walls through a bounded set are finitely many
-   (`(a − cx)² + c²y² = 2`). `θ(z) = Σ_w (1[f_w(z)>0] − 1[f_w(z₀)>0])`, `χ(γ) = θ(γz₀)` a homomorphism
-   `Γ(23) → ℤ`. On the axis `A = {|z| = √3}` of `ℤ[j]^×`, `f_w ∝ −(3x₃ + x₁ Re z)`; a sign change on
-   `[0, Re ηi√3]` forces `x₁² > 3x₃²`, hence `x₂ = 0`, `x₁² − 3x₃² = 1`: `w = u i`, `u ∈ ℤ[√3]` of norm 1,
-   `u ≡ 1 mod 23`, so `u = (2+√3)^{11m}` (Pell; `(2+√3)` has order `11` mod 23). For `η = (2+√3)^{11}`:
+8. *Walls.* `W = {w ∈ O : trd w = 0, nrd w = −2, w ≡ i mod 5}`, `H_w(z) = c|z|² − 2a·Re z − b` for
+   `ι(w) = [[a,b],[c,−a]]`; `H_{gMg⁻¹}(gz) = H_M(z)/|cz+d|²`; a wall separating `z, z'` vanishes on the
+   segment `[z, z']`, where `(a − cx)² + c²y² = 2` bounds its entries, so finitely many walls separate points
+   of a compact set. `θ(z) = Σ_w (1[H_w(z)>0] − 1[H_w(z₀)>0])` (measurable, bounded increments over bounded
+   distances), `χ(γ) = θ(γz₀)` a homomorphism `Γ(5) → ℤ`. On `|z|² = 3`, `H_w = −2√2(3x₃ + x₁ Re z)`; a
+   sign change between `z₀ = i√3` and `ηz₀` (`η = 26 + 15j = (2+√3)³`, `Re ηz₀ = 2340/1351`) forces
+   `x₂ = 0`, `x₁² − 3x₃² = 1`, `|x₁| ≤ 1351` (Pell), and mod 5 leaves `26i − 15ij`, `1351i − 780ij`:
    `χ(η) = −2`.
-9. *Small eigenvalue.* `Γ_n = {χ ∈ 2nℤ}` (finite index, cocompact, free). `F = e^{πiθ/n}`: `Γ_n`-invariant,
-   `⟨F, 1⟩ = 0` (`F∘η = e^{−2πi/n}F`), `1/c·‖F‖² − Re⟨T_aF,F⟩ = ½∬k_a(u)|F(z) − F(w)|² ≤ (π²/2n²)·C·|F_n|`
-   (wall count `≲ e^{12 d}`, `a` large). For `n` large some eigenvector `e ⊥ 1` has `μ > 1/(c + ¼)`;
-   `λ ≠ 0` by ergodicity (`T_a e = e/c` ⇒ `∬ K |e(z) − e(w)|² = 0`, `K > 0`).
-10. Gap: entire continuation needs `|F|/2π ∈ ℤ` (Gauss–Bonnet); the Lean statement is on `Re s > 0`.
+9. *Small eigenvalue.* `Γ_n = {γ ∈ Γ(5) : n ∣ χ(γ)}`, `n` odd (cocompact: `ηᵏδ` with `2k ≡ χ(δ) mod n`).
+   `F = e^{2πiθ/n}`: `Γ_n`-invariant, unimodular, `⟨F, 1⟩ = 0` (`η` normalizes `Γ_n`, `F∘η = e^{−4πi/n}F`).
+   Dirichlet form `∬ K_a|f(y) − f(z)|² = 2‖f‖²/c − 2Re⟨f, T_a f⟩`; for `F` it is
+   `≤ |F|(4 tail_a(U) + (2πL_U/n)²/c)` (`|ΔF| ≤ 2` always, `≤ 2πL_U/n` for `u ≤ U`). Choose `U`, then `n`:
+   `Re⟨F, T_aF⟩ > ‖F‖²/(c + ¼)`; the constrained norm of `T_a` on `1^⊥` is an eigenvalue `μ > 1/(c + ¼)`,
+   `λ = 1/μ − c < ¼`, and `λ ≠ 0` by ergodicity (`k_a > 0`).
+10. *Open: entire continuation.* `Z = κE e^{G}`, `e^{G}` has the factor `Π_k (s+k)^{(2k+1)|F|/2π}`: `Z`
+   extends to an entire function iff `|F|/2π ∈ ℤ` (Gauss–Bonnet, `|F| = 4π(g − 1)`). The Lean statement
+   is on `Re s > 0`. Candidate routes: (a) Dirichlet polygon, vertex cycles with angle sum `2π`, fan
+   triangulation and `area(T) = π − Σ angles`, giving `|F| = 2π(E − V − 1)`; (b) weight-`m` Bergman
+   projections: `rank = ∫_F K_m(z,z) = (m−1)|F|/4π` (hyperbolic orbital integrals of holomorphic kernels
+   vanish), `m = 4, 6` give `|F|/4π ∈ ℤ`.
 
 ## Status
 Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.lean`, wired into
@@ -132,11 +140,28 @@ Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.l
   `exists_congGroup_mul_of_quatKey_eq`, `isCocompactFree_congGroup`,
   `exists_compactQuotient_congGroup`.
 
-Open: conjugacy classes and orbital integrals (trace formula), Selberg zeta and functional
-equation, the homomorphism `Γ(N) → ℤ` (crux of Step 1), small eigenvalue on the cyclic covers,
-assembly.
+- `HyperbolicElements`, `Centralizers`, `ClassOrbitalIntegrals`, `PrimitiveClasses`: `γ = ±σ dil σ⁻¹`,
+  cyclic centralizers, class orbital integrals, primitive classes `PClass × ℕ ≃ NClass`.
+- `DiffKernelDiagonal`, `TraceFormula`, `LengthSeries`: `diffKernel_zero`, `trace_formula`,
+  `trace_formula_lengthSeries`.
+- `SelbergEulerProduct`, `SpectralProduct`, `PsiSeries`, `SelbergZeta`: `hasProd_eulerZeta`,
+  `logDeriv_eulerZeta`, `specProd`, `selbergZeta` holomorphic on `Re s > 0`, `eulerZeta_eq_selbergZeta`,
+  `selbergZeta_one_sub`, `selbergZeta_eq_zero_iff`.
+- `QuaternionWalls`, `WallCrossing`: `two_lt_abs_trSL_congGroup`, `hermForm_conj_smul`,
+  `finite_separating`, `wallCount_smul`, `wallHom`, `exists_abs_wallCount_sub_le_of_dist`,
+  `measurable_wallCount`, `wall_cross_classify`, `wallHom_eta` (`χ(η) = −2`).
+- `DirichletEnergy`: `resOp_oneL`, `integral_energy`, `exists_eq_smul_oneL` (ergodicity),
+  `exists_spectralParam_mem_Ioo`.
+- `CyclicCovers`: `coverGroup`, `isCocompactFree_coverGroup`, `integral_testF_eq_zero`,
+  `integral_energy_testL_le`, `exists_coverGroup_small_eigenvalue`.
+- `SmallEigenvalueZeta`: `offLine_zeros_eq`, headline `exists_selbergZeta_small_eigenvalue` (Euler product,
+  holomorphy on `Re s > 0`, functional equation, zeros off the line in the strip = `{½ ± √(¼ − λ_j)}`,
+  finite and nonempty).
+
+Open: entire continuation (step 10, Gauss–Bonnet).
 
 ## Log
 - 2026-11-13 — created; route analysis (compact surface needed; cusped and periodic models fail the
   finite-stratum requirement); plan written.
 - 2026-11-13 — Mercer trace and Step 1 (explicit cocompact free group) formalized; paused by user.
+- 2026-11-14 — steps 1–9 formalized; headline `exists_selbergZeta_small_eigenvalue`; open: step 10.

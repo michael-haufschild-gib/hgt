@@ -53,6 +53,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheSexticGrossencharacterFac
 import GaloisForLFunctions.FamilyContinuationTheory.HarmonicGaussianPoissonGivesGrossencharacterContinuation
 import GaloisForLFunctions.FamilyContinuationTheory.GrossencharacterLFunctionsHaveZerosInTheRightHalfStrip
 import GaloisForLFunctions.FamilyContinuationTheory.TheCubicProbeIsACoupledTowerReachingThreeFifths
+import GaloisForLFunctions.FamilyContinuationTheory.TheMoebiusParityOfAGaussMonomial
+import GaloisForLFunctions.FamilyContinuationTheory.MoebiusSignedGaussPairingsEndAtThreeFifths
 
 /-!
 # Family continuation theory
@@ -203,4 +205,24 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   `k_{r+1} = 6 k_r + 1`) contracts `b ↦ (3 + b)/6` from `1` to `max(σ₀, 3/5)` unconditionally
   (`max(σ₀, 7/12)` under sextic GRH), optimal across all contour shears, `6r`-periodic Gauss
   pairings, and multi-theta cubings.
+* **Classification of Möbius-signed Gauss pairings and the universal three-fifths barrier.**
+  Multiplying `r ≥ 1` nontrivial finite-field Gauss sums `g(χ₁) ⋯ g(χ_r)` (`Π = ∏ χ_i`, `δ_Π = 0`
+  if `Π = 1` and `1` otherwise) factors into `ε · (#F)^P · (∏ J(α_u, β_u)) · g_Π` with exact
+  conservation `r = J_# + 2 P + δ_Π` and Jacobi product `(−1)^{r − δ_Π} + z (μ − 1)²` in `ℤ[μ]`;
+  `−1` and `+1` are distinct modulo `(μ − 1)²` at every odd prime power (`2 ∉ (μ − 1) ℤ[μ]`), and
+  Hasse–Davenport reduces `g(χ) g(χ⁻¹ q) = χ(4) J(χ, χ) g(q)` for all odd-order `χ`. Stripping
+  order-`2` factors over a cyclic unit group preserves `Π² = 1` and `(Π = 1 ∧ Odd r) ∨ (Π ≠ 1 ∧
+  Even r)`, forcing at least two factors of order `≥ 3` and the quadratic-product order trichotomy
+  `(m, 2m)`, `(2m₀, m₀)`, or `(4u, 4u)`. Across all arities `r = a + d`, character orders `m_i ≥ 2`,
+  splits into `a` completed Gauss-sum factors (`(½ − 1/m_i) k`) and `d` Poisson row twists
+  (`k/2 − 1`), and admissible periods `k`, every Möbius-signed Gauss pairing satisfies
+  `(c + 1)/k ≥ 2/3`, `c/(k − 1) ≥ 3/5` (`sInf = 3/5`, attained on `ZMod 7`), and
+  `(c + ½)/k ≥ 7/12`: no Gauss pairing satisfies `c/(k − 1) < 3/5` or reaches `c ≤ (k − 1)/2`, and
+  equality `c/(k − 1) = 3/5` holds if and only if `(c, k) = (3, 6)` (uniquely `[χ]` of order `3` and
+  `[φ]` of order `6` at `k = 6` among reduced row probes). Unfactored prime-sign local series
+  introduce `(1 − X)/(1 − X²)`; `d ≥ 2` row twists have design boundary `≥ 1` (`θ ≥ n/(n − 1) > 1`);
+  every `m ≥ 4` quadratic-product pair with conductor exponent `κ ≥ m − 1` has unslotted corner
+  `(3/2 − 1/n)(2κ − 1)/(2κ + 1) ≥ 25/28 > 7/8` and `θ ≥ 22/21 > 1`; and general `(c, k)` coupled
+  towers `Θ_r ≤ max(σ₀, (c + Θ_{r+1})/k)` contract to `max(σ₀, c/(k − 1))` with stationary solution
+  `Θ_r = c/(k − 1) ≥ 3/5`.
 -/

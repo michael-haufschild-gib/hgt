@@ -48,10 +48,14 @@ private theorem integrable_sech_mul_logarithmic {a σ T C : ℝ} {f : ℝ → �
   rw [show T+(y-T)=y by ring] at hr
   have hh := (div_le_iff₀ hlog).mp hr
   have hb := (hbound y).trans (mul_le_mul_of_nonneg_left hh hC)
+  change ‖sechStripWeight a T ((σ : ℂ)+(y : ℂ)*I)*f y‖ ≤ _
   rw [norm_mul,sech_vertical_translate,hline]
   have hn := mul_le_mul_of_nonneg_left hb
     (norm_nonneg (sechStripWeight a 0 (1/2+((σ-1/2 : ℝ) : ℂ)+((y-T : ℝ) : ℂ)*I)))
-  convert hn using 1 <;> ring
+  calc
+    _ ≤ ‖sechStripWeight a 0 (1/2+((σ-1/2 : ℝ) : ℂ)+((y-T : ℝ) : ℂ)*I)‖ *
+        (C*((2+|y-T|/Real.log 2)*Real.log |T|)) := hn
+    _ = _ := by ring
 
 private theorem integral_sech_translate (a T b : ℝ) (f : ℝ → ℂ) :
     (∫ y : ℝ, sechStripWeight a T (((1/2+b : ℝ) : ℂ)+(y : ℂ)*I)*f y) =
@@ -61,6 +65,7 @@ private theorem integral_sech_translate (a T b : ℝ) (f : ℝ → ℂ) :
   apply integral_congr_ae
   apply Eventually.of_forall
   intro u
+  dsimp only
   rw [sech_vertical_translate]
   congr 2 <;> push_cast <;> ring
 
@@ -103,7 +108,7 @@ theorem sum_fibre_multiplicity_mul_sech_le_boundary {a b T : ℝ}
       (fun y => logDeriv zetaResidueUnit (((1/2+b : ℝ) : ℂ)+(y : ℂ)*I))
     have heql := integral_sech_translate a T (-b)
       (fun y => logDeriv zetaResidueUnit (((1/2-b : ℝ) : ℂ)+(y : ℂ)*I))
-    simp only [add_neg_eq_sub] at heql
+    simp only [← sub_eq_add_neg] at heql
     rw [heqr,heql] at hh
     convert hh using 1
     · funext n
@@ -230,7 +235,7 @@ theorem exists_critical_zeta_multiplicity_bound {ε : ℝ} (hε : 0 < ε) :
   have hδpi : δ/Real.pi ≤ ε/2 := (div_le_iff₀ Real.pi_pos).mpr (by linarith only [hδhi])
   have he : a/Real.pi = 3/(8*Real.pi)+δ/Real.pi := by
     dsimp [a]
-    field_simp <;> ring
+    field_simp
   have hcoef : a/Real.pi+ε/2 ≤ 3/(8*Real.pi)+ε := by rw [he]; linarith only [hδpi]
   exact hs.trans (mul_le_mul_of_nonneg_right hcoef
     (Real.log_nonneg (by linarith only [hT₀.trans hT])))

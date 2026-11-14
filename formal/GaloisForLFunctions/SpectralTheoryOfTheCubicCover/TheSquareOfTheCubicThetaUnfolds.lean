@@ -1,5 +1,7 @@
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheIncompleteEisensteinSeriesReadsTheConstantTerm
-import GaloisForLFunctions.MetaplecticMobiusDescent.WeightedCubicResidualFourierTests
+import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.ResidualGaussFactorization
+import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.CubeAveragesAndNormalizedGauss
+import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.AffineLowerCuspBranches
 
 /-!
 # The square of the cubic theta function unfolds

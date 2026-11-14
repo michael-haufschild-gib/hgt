@@ -122,3 +122,4 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration
 import GaloisForLFunctions.MixingArithmeticOfTheFloorTrees
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow
+import GaloisForLFunctions.RingdownOfTheCubicCover

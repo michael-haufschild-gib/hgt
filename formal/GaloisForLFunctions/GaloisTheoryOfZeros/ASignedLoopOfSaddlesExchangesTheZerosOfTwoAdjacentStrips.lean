@@ -113,16 +113,16 @@ theorem IsSignedLoop.cosineSide {ε : ℂ} {a : ℝ → ℂ} (h : IsSignedLoop �
 
 /-! ## The exchange -/
 
-/-- **A signed loop exchanges the zeros of two adjacent strips.** For every window `R` there is
-`σ₀` such that on a signed loop of sign `ε` beyond `σ₀` and for `θ ∈ πℤ` with `cos θ = −ε` in the
-window: a zero of `H_{τ(a(0))}` in the strip of `θ` is joined through simple zeros to a zero in
-the strip of `θ − π`. -/
-theorem exists_exchange (R : ℝ) : ∃ σ₀ : ℝ, ∀ {ε : ℂ} {a : ℝ → ℂ}, IsSignedLoop ε a →
+/-- **The zero of a strip is carried around a signed loop into the next strip.** For every window
+`R` there is `σ₀` such that on a signed loop of sign `ε` beyond `σ₀` and for `θ ∈ πℤ` with
+`cos θ = −ε` in the window, a continuous family of simple zeros along the loop starts in the strip
+of `θ` and ends in the strip of `θ − π`. -/
+theorem exists_exchange_lift (R : ℝ) : ∃ σ₀ : ℝ, ∀ {ε : ℂ} {a : ℝ → ℂ}, IsSignedLoop ε a →
     (ε = 1 ∨ ε = -1) → (∀ s, σ₀ ≤ (a s).re) → ∀ θ : ℝ, Real.sin θ = 0 →
     (Real.cos θ : ℂ) = -ε → |θ| + π + 2 ≤ R →
-    ∃ z₀ z₁ : ℂ, complexHeat (saddleTime (a 0)) z₀ = 0 ∧ a 0 * z₀ ∈ cosStrip θ ∧
-      complexHeat (saddleTime (a 0)) z₁ = 0 ∧ a 0 * z₁ ∈ cosStrip (θ - π) ∧
-      SimplyJoined (saddleTime (a 0)) z₀ (saddleTime (a 0)) z₁ := by
+    ∃ w : ℝ → ℂ, IsZeroLift (fun s => saddleTime (a s)) 1 w ∧
+      (∀ s ∈ Icc (0 : ℝ) 1, deriv (complexHeat (saddleTime (a s))) (w s) ≠ 0) ∧
+      a 0 * w 0 ∈ cosStrip θ ∧ a 0 * w 1 ∈ cosStrip (θ - π) := by
   obtain ⟨σ₀, hσ₀⟩ := exists_forall_norm_complexHeat_sub_wide_model_le R (ε := 1 / 16384)
     (by norm_num)
   refine ⟨σ₀, fun {ε a} h hε hfar θ hθ hcos hθR => ?_⟩
@@ -270,10 +270,9 @@ theorem exists_exchange (R : ℝ) : ∃ σ₀ : ℝ, ∀ {ε : ℂ} {a : ℝ →
     intro s z hd
     rw [Metric.mem_closedBall, dist_eq_norm, ← sub_sub]
     linarith
-  obtain ⟨z₁, hj, hz₁, hd₁⟩ := exists_simplyJoined_of_alone (γ := fun s => saddleTime (a s))
+  obtain ⟨w, hw, hw0, hprop⟩ := exists_isZeroLift_of_alone (γ := fun s => saddleTime (a s))
     (d := fun s z => ‖a s * z - θ - turnPoint s‖ - 1 / 8) (M := |θ| + 1)
-    (continuous_saddleTime_comp h.continuous h.region).continuousOn
-    (fun s _ => (h.region s).time_re_pos) hdc.continuousOn
+    (continuous_saddleTime_comp h.continuous h.region).continuousOn hdc.continuousOn
     (fun s _ z hd => by
       have h1 := norm_add_le (a s * z - θ - turnPoint s) ((θ : ℂ) + turnPoint s)
       have e : a s * z - θ - turnPoint s + ((θ : ℂ) + turnPoint s) = a s * z := by ring
@@ -291,25 +290,47 @@ theorem exists_exchange (R : ℝ) : ∃ σ₀ : ℝ, ∀ {ε : ℂ} {a : ℝ →
     (fun s hs z _ hd h0 => (hdisc s hs).2 (a s * z) (hball s z hd)
       (by rw [deriv_scaledHeat, hscale, h0, zero_div]))
     hz₀ (by linarith)
-  have hj' : SimplyJoined (saddleTime (a 0)) z₀ (saddleTime (a 1)) z₁ := hj
-  have hz₁' : complexHeat (saddleTime (a 1)) z₁ = 0 := hz₁
-  have hd₁' : ‖a 1 * z₁ - θ - turnPoint 1‖ - 1 / 8 < 0 := hd₁
-  rw [h.closed] at hj' hz₁' hd₁'
-  rw [turnPoint_one] at hd₁'
+  have h11 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+  have hd₁ : ‖a 1 * w 1 - θ - turnPoint 1‖ - 1 / 8 < 0 := (hprop 1 h11).1
+  rw [h.closed, turnPoint_one] at hd₁
   rw [turnPoint_zero] at hz₀d
   have hq : (1 / 4 : ℂ) = ((1 / 4 : ℝ) : ℂ) := by norm_num
-  refine ⟨z₀, z₁, hz₀, ?_, hz₁', ?_, hj'⟩
-  · rw [hq] at hz₀d
+  refine ⟨w, hw, fun s hs => (hprop s hs).2, ?_, ?_⟩
+  · rw [hw0]
+    rw [hq] at hz₀d
     exact mem_cosStrip_of_norm_sub_le (c := 1 / 4) (r := 1 / 16) hz₀d.le (by norm_num)
       (by linarith) (by norm_num)
-  · have e : a 0 * z₁ - ((θ - π : ℝ) : ℂ) - ((π - 1 / 4 : ℝ) : ℂ) =
-        a 0 * z₁ - θ - -(1 / 4) := by
+  · have e : a 0 * w 1 - ((θ - π : ℝ) : ℂ) - ((π - 1 / 4 : ℝ) : ℂ) =
+        a 0 * w 1 - θ - -(1 / 4) := by
       push_cast
       ring
     refine mem_cosStrip_of_norm_sub_le (c := π - 1 / 4) (r := 1 / 8) ?_ (by linarith)
       (by linarith) (by norm_num)
     rw [e]
     linarith
+
+/-- **A signed loop exchanges the zeros of two adjacent strips.** For every window `R` there is
+`σ₀` such that on a signed loop of sign `ε` beyond `σ₀` and for `θ ∈ πℤ` with `cos θ = −ε` in the
+window: a zero of `H_{τ(a(0))}` in the strip of `θ` is joined through simple zeros to a zero in
+the strip of `θ − π`. -/
+theorem exists_exchange (R : ℝ) : ∃ σ₀ : ℝ, ∀ {ε : ℂ} {a : ℝ → ℂ}, IsSignedLoop ε a →
+    (ε = 1 ∨ ε = -1) → (∀ s, σ₀ ≤ (a s).re) → ∀ θ : ℝ, Real.sin θ = 0 →
+    (Real.cos θ : ℂ) = -ε → |θ| + π + 2 ≤ R →
+    ∃ z₀ z₁ : ℂ, complexHeat (saddleTime (a 0)) z₀ = 0 ∧ a 0 * z₀ ∈ cosStrip θ ∧
+      complexHeat (saddleTime (a 0)) z₁ = 0 ∧ a 0 * z₁ ∈ cosStrip (θ - π) ∧
+      SimplyJoined (saddleTime (a 0)) z₀ (saddleTime (a 0)) z₁ := by
+  obtain ⟨σ₀, h₀⟩ := exists_exchange_lift R
+  refine ⟨σ₀, fun {ε a} h hε hfar θ hθ hcos hθR => ?_⟩
+  obtain ⟨w, hw, hsimple, hw0, hw1⟩ := h₀ h hε hfar θ hθ hcos hθR
+  have h01 : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨le_rfl, zero_le_one⟩
+  have h11 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+  have hz₁ : complexHeat (saddleTime (a 1)) (w 1) = 0 := hw.zero 1 h11
+  have hj : SimplyJoined (saddleTime (a 0)) (w 0) (saddleTime (a 1)) (w 1) :=
+    ⟨fun s => saddleTime (a s), w,
+      (continuous_saddleTime_comp h.continuous h.region).continuousOn,
+      fun s _ => (h.region s).time_re_pos, hw, hsimple, rfl, rfl, rfl, rfl⟩
+  rw [h.closed] at hj hz₁
+  exact ⟨w 0, w 1, hw.zero 0 h01, hw0, hz₁, hw1, hj⟩
 
 end
 

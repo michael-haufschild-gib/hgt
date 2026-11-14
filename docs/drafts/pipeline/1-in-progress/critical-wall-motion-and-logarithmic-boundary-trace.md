@@ -72,35 +72,17 @@ barrier belongs to the actual domain.
 
 ## Exponential-barrier route
 
-[Exponential barriers](../2-fully-proven/exponential-barriers-for-confining-minimizers.md)
-has a paper argument for `|F(u)|≤Cβ exp(βu)` whenever `1/2<β<15/2`,
-and hence all exponential square moments of order below `15`. Lean
-formalization is in progress; the argument is not counted as a proof until
-that audit passes.
+[Exponential barriers](../3-formalized/exponential-barriers-for-confining-minimizers.md)
+prove `|F(u)|≤Cβ exp(βu)` for every `1/2<β<15/2`, and exponential
+square moments of every order below `15`. The full prime and Gamma row
+comparisons, potential absorption, and positive-level argument are
+Lean-verified with only `propext`, `Classical.choice`, and `Quot.sound`.
 
-In particular, `|F(u)|≤C exp(u)` on the negative half-line would bound the complete prime
-forcing near the terminal endpoint, since its backward translates then
-carry the summable weight `Λ(n)/n^(3/2)`.
+For `β=1`, the envelope supplies the summable weight `Λ(n)/n^(3/2)`
+for backward prime translates. The remaining task is to realize this
+forcing in the localized weak equation and transfer it to the Green inverse.
 
-The corpus connection is `TheCompletedWeilRieszVectorsAreBounded.lean`:
-positive-level tests in inverse-Doob coordinates combine divergent
-archimedean row mass with bounded cutoff readouts. For the half-line, the
-candidate barrier is `exp(u)`, with tests `(F-t exp(u))₊` and both signs of
-`F`. The forward prime row grows at most like `exp(-3u/2)` and should be
-absorbed by the actual potential `a exp(-8u)`. Admissibility of these tests
-is verified. The complete weighted row inequality and maximum-principle
-assembly are written but unaudited; the finite-aperture Riesz theorem does
-not supply them.
-
-For the barrier, the normalized prime row is
-`Σ_{n<exp(-u)}Λ(n)√n + Σ_n Λ(n)/n^(3/2)`; the first term is bounded by
-`6 exp(-3u/2)` using the existing Chebyshev bound. The cutoff Gamma
-readout is bounded by its kernel's L² norm times `‖F‖₂`. Choosing its row
-mass large should leave a coefficient dominating `exp(-u)+exp(-3u/2)`
-after the prime row and eigenvalue are subtracted from `a exp(-8u)`.
-This is the proposed positive-level comparison, not a verified theorem.
-
-Even this bound would not make `exp(-8u)F` globally L², so localization
+This bound does not make `exp(-8u)F` globally L², so localization
 remains necessary. `TheLogarithmicCutoffCommutatorHasABoundedKernel.lean`
 already bounds the literal commutator kernel by
 `(Lip(χ)/2)exp(-|x-y|)` and proves an L² operator preserving essential

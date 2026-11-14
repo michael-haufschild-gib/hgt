@@ -388,15 +388,16 @@ theorem continuous_saddleTime_comp_wide {a : ℝ → ℂ} (ha : Continuous a)
     continuous_const.mul (Complex.continuous_exp.comp (continuous_const.mul ha))
   exact hP.div ha fun s => (hW s).ne_zero
 
-/-- **A zero of a strip stays in its strip.** Along a path of saddles with the strip facts, a zero
-of `H_{τ(a(0))}` in the strip of `θ` is joined through simple zeros to a zero of `H_{τ(a(1))}` in
+/-- **The zero of a strip as a continuous family.** Along a path of saddles with the strip facts,
+a zero of `H_{τ(a(0))}` in the strip of `θ` is followed by a continuous family of simple zeros in
 the open strip of `θ`. -/
-theorem exists_simplyJoined_of_stripFacts {R : ℝ} {a : ℝ → ℂ} (ha : Continuous a)
+theorem exists_isZeroLift_of_stripFacts {R : ℝ} {a : ℝ → ℂ} (ha : Continuous a)
     (hW : ∀ s, WideRegion (a s)) (hfacts : ∀ s, StripFacts R (a s)) {θ : ℝ}
     (hθ : Real.sin θ = 0) (hθR : |θ| + π + 2 ≤ R) {z₀ : ℂ}
     (h0 : complexHeat (saddleTime (a 0)) z₀ = 0) (hz₀ : a 0 * z₀ ∈ cosStrip θ) :
-    ∃ z₁, SimplyJoined (saddleTime (a 0)) z₀ (saddleTime (a 1)) z₁ ∧
-      complexHeat (saddleTime (a 1)) z₁ = 0 ∧ a 1 * z₁ ∈ openCosStrip θ := by
+    ∃ w : ℝ → ℂ, IsZeroLift (fun s => saddleTime (a s)) 1 w ∧ w 0 = z₀ ∧
+      ∀ s ∈ Icc (0 : ℝ) 1, a s * w s ∈ openCosStrip θ ∧
+        deriv (complexHeat (saddleTime (a s))) (w s) ≠ 0 := by
   have hd : Continuous fun p : ℝ × ℂ => cosStripFn θ (a p.1 * p.2) :=
     (continuous_cosStripFn θ).comp ((ha.comp continuous_fst).mul continuous_snd)
   have hnorm : ∀ s, 1 ≤ ‖a s‖ := fun s => by
@@ -404,10 +405,9 @@ theorem exists_simplyJoined_of_stripFacts {R : ℝ} {a : ℝ → ℂ} (ha : Cont
     linarith [(hW s).1]
   have hwin : ∀ s z, a s * z ∈ cosStrip θ → ‖a s * z‖ ≤ R := fun s z hz => by
     linarith [norm_le_of_mem_cosStrip hz]
-  obtain ⟨z₁, hj, hz₁, hd₁⟩ := exists_simplyJoined_of_alone (γ := fun s => saddleTime (a s))
+  obtain ⟨w, hw, hw0, hprop⟩ := exists_isZeroLift_of_alone (γ := fun s => saddleTime (a s))
     (d := fun s z => cosStripFn θ (a s * z)) (M := |θ| + π + 1)
-    (continuous_saddleTime_comp_wide ha hW).continuousOn (fun s _ => (hW s).time_re_pos)
-    hd.continuousOn
+    (continuous_saddleTime_comp_wide ha hW).continuousOn hd.continuousOn
     (fun s _ z hz => by
       have h1 := norm_le_of_mem_cosStrip (cosStripFn_nonpos_iff.mp hz)
       rw [norm_mul] at h1
@@ -420,7 +420,22 @@ theorem exists_simplyJoined_of_stripFacts {R : ℝ} {a : ℝ → ℂ} (ha : Cont
       (cosStripFn_nonpos_iff.mp hd) (cosStripFn_nonpos_iff.mp hd') (by rw [hz, hz']))
     (fun s _ z _ hd => (hfacts s).simple θ hθ hθR z (cosStripFn_nonpos_iff.mp hd))
     h0 (cosStripFn_nonpos_iff.mpr hz₀)
-  exact ⟨z₁, hj, hz₁, cosStripFn_neg_iff.mp hd₁⟩
+  exact ⟨w, hw, hw0, fun s hs => ⟨cosStripFn_neg_iff.mp (hprop s hs).1, (hprop s hs).2⟩⟩
+
+/-- **A zero of a strip stays in its strip.** Along a path of saddles with the strip facts, a zero
+of `H_{τ(a(0))}` in the strip of `θ` is joined through simple zeros to a zero of `H_{τ(a(1))}` in
+the open strip of `θ`. -/
+theorem exists_simplyJoined_of_stripFacts {R : ℝ} {a : ℝ → ℂ} (ha : Continuous a)
+    (hW : ∀ s, WideRegion (a s)) (hfacts : ∀ s, StripFacts R (a s)) {θ : ℝ}
+    (hθ : Real.sin θ = 0) (hθR : |θ| + π + 2 ≤ R) {z₀ : ℂ}
+    (h0 : complexHeat (saddleTime (a 0)) z₀ = 0) (hz₀ : a 0 * z₀ ∈ cosStrip θ) :
+    ∃ z₁, SimplyJoined (saddleTime (a 0)) z₀ (saddleTime (a 1)) z₁ ∧
+      complexHeat (saddleTime (a 1)) z₁ = 0 ∧ a 1 * z₁ ∈ openCosStrip θ := by
+  obtain ⟨w, hw, hw0, hprop⟩ := exists_isZeroLift_of_stripFacts ha hW hfacts hθ hθR h0 hz₀
+  have h11 : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := ⟨zero_le_one, le_rfl⟩
+  exact ⟨w 1, ⟨fun s => saddleTime (a s), w,
+    (continuous_saddleTime_comp_wide ha hW).continuousOn, fun s _ => (hW s).time_re_pos, hw,
+    fun s hs => (hprop s hs).2, rfl, rfl, hw0, rfl⟩, hw.zero 1 h11, (hprop 1 h11).1⟩
 
 end
 

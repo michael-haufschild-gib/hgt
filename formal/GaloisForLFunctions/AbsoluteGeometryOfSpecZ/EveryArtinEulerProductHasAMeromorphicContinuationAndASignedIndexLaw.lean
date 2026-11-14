@@ -129,6 +129,108 @@ theorem exists_analytic_quotient_and_virtualConfig_artin (ρ : Representation �
   exact ⟨A, B, n, Z, p, hA, hB, hB2 2 (by norm_num), hAB, hZ,
     horders A B hA hB ⟨2, by norm_num, hB2 2 (by norm_num)⟩ hAB⟩
 
+/-- A nonzero analytic function on the right half-plane has finite order there. -/
+private theorem halfPlane_meromorphicOrder_eq_natOrder {f : ℂ → ℂ}
+    (hf : DifferentiableOn ℂ f {s : ℂ | 0 < s.re}) (hf2 : f 2 ≠ 0)
+    {w : ℂ} (hw : 0 < w.re) :
+    meromorphicOrderAt f w = ((analyticOrderNatAt f w : ℕ) : ℤ) := by
+  have hU : IsOpen {s : ℂ | 0 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hUc : IsPreconnected {s : ℂ | 0 < s.re} :=
+    (convex_halfSpace_gt ⟨fun _ _ => rfl, fun a z => by simp⟩ _).isPreconnected
+  have hc : IsConnected {s : ℂ | 0 < s.re} := ⟨⟨2, by norm_num⟩, hUc⟩
+  have h2 : analyticOrderAt f 2 ≠ ⊤ := by
+    rw [analyticOrderAt_eq_zero.mpr (Or.inr hf2)]
+    exact ENat.coe_ne_top 0
+  have htop := ((hf.analyticOnNhd hU).exists_analyticOrderAt_ne_top_iff_forall hc).mp
+    ⟨⟨2, by norm_num⟩, h2⟩ ⟨w, hw⟩
+  rw [(hf.analyticAt (hU.mem_nhds hw)).meromorphicOrderAt_eq,
+    ← Nat.cast_analyticOrderNatAt htop]
+  rfl
+
+/-- Every Artin Euler product has a meromorphic continuation with signed orders
+and an index law expressed directly through its zeros and poles. -/
+theorem exists_meromorphicContinuation_and_signedIndex_artin (ρ : Representation ℂ G V) :
+    ∃ (F : ℂ → ℂ) (n : brauerElementaryMonomialIndex G →₀ ℤ)
+      (Z : brauerElementaryMonomialIndex G → ZeroConfig) (p : ℤ),
+      MeromorphicOn F {s : ℂ | 0 < s.re} ∧
+      (∀ s : ℂ, 1 < s.re → F s =
+        numberFieldFinitePlaceArtinEulerReciprocalProduct (K := K) (L := L) ρ s) ∧
+      (∀ q, SquareRootThreshold.TemperedConfig (Z q)) ∧
+      (∀ w : ℂ, 0 < w.re → w ≠ 1 →
+        meromorphicOrderAt F w = (netMult n Z w : WithTop ℤ)) ∧
+      meromorphicOrderAt F 1 = ((-p : ℤ) : WithTop ℤ) ∧
+      ∀ m : ℕ, (∃ f : Fin m → ℝ → ℂ, (∀ i, ContDiff ℝ 2 (f i)) ∧
+          (∀ i, HasCompactSupport (f i)) ∧
+          m ≤ hermNegIndex (n.sum fun q k => (k : ℂ) • zeroGram (Z q) f)) ↔
+        (m : ℕ∞) ≤ ({w : ℂ | 1 / 2 < w.re ∧ w ≠ 1 ∧ meromorphicOrderAt F w ≠ 0} ∪
+          {w : ℂ | w.re = 1 / 2 ∧ meromorphicOrderAt F w < 0}).encard := by
+  obtain ⟨A, B, hA, hB, hBne, hAB⟩ := exists_analytic_quotient_artin K L ρ
+  obtain ⟨n, Z, p, hZ, ho⟩ := exists_virtualConfig_artin K L ρ
+  obtain ⟨horders, hpole, hindex⟩ := ho A B hA hB
+    ⟨2, by norm_num, hBne 2 (by norm_num)⟩ hAB
+  have hA2 : A 2 ≠ 0 := by
+    rw [hAB 2 (by norm_num)]
+    exact mul_ne_zero (hBne 2 (by norm_num))
+      (numberFieldFinitePlaceArtinEulerReciprocalProduct_ne_zero_of_mem_artinEulerAbsoluteHalfPlane
+        (K := K) (L := L) ρ (by change (1 : ℝ) < (2 : ℂ).re; norm_num))
+  have hU : IsOpen {s : ℂ | 0 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+  let F : ℂ → ℂ := fun s => A s / B s
+  have hord (w : ℂ) (hw : 0 < w.re) : meromorphicOrderAt F w =
+      (((analyticOrderNatAt A w : ℤ) - analyticOrderNatAt B w : ℤ) : WithTop ℤ) := by
+    change meromorphicOrderAt (A / B) w = _
+    rw [meromorphicOrderAt_div (hA.analyticAt (hU.mem_nhds hw)).meromorphicAt
+      (hB.analyticAt (hU.mem_nhds hw)).meromorphicAt,
+      halfPlane_meromorphicOrder_eq_natOrder hA hA2 hw,
+      halfPlane_meromorphicOrder_eq_natOrder hB (hBne 2 (by norm_num)) hw]
+    norm_cast
+  have hne (w : ℂ) (hw : 0 < w.re) :
+      meromorphicOrderAt F w ≠ 0 ↔ analyticOrderNatAt A w ≠ analyticOrderNatAt B w := by
+    rw [hord w hw]
+    constructor
+    · intro h he
+      apply h
+      rw [he, sub_self, WithTop.coe_zero]
+    · intro h he
+      have hi : (analyticOrderNatAt A w : ℤ) - analyticOrderNatAt B w = 0 :=
+        WithTop.coe_injective he
+      exact h (by omega)
+  have hneg (w : ℂ) (hw : 0 < w.re) :
+      meromorphicOrderAt F w < 0 ↔ analyticOrderNatAt A w < analyticOrderNatAt B w := by
+    rw [hord w hw]
+    constructor
+    · intro h
+      have hi : (analyticOrderNatAt A w : ℤ) - analyticOrderNatAt B w < 0 :=
+        WithTop.coe_lt_coe.mp h
+      omega
+    · intro h
+      apply WithTop.coe_lt_coe.mpr
+      omega
+  have hsets : ({w : ℂ | 1 / 2 < w.re ∧ w ≠ 1 ∧
+      analyticOrderNatAt A w ≠ analyticOrderNatAt B w} ∪
+      {w : ℂ | w.re = 1 / 2 ∧ analyticOrderNatAt A w < analyticOrderNatAt B w}) =
+      ({w : ℂ | 1 / 2 < w.re ∧ w ≠ 1 ∧ meromorphicOrderAt F w ≠ 0} ∪
+      {w : ℂ | w.re = 1 / 2 ∧ meromorphicOrderAt F w < 0}) := by
+    ext w
+    simp only [Set.mem_union, Set.mem_setOf_eq]
+    apply or_congr
+    · apply and_congr_right
+      intro hw
+      exact and_congr_right fun _ => (hne w (by linarith only [hw])).symm
+    · apply and_congr_right
+      intro hw
+      exact (hneg w (by rw [hw]; norm_num)).symm
+  refine ⟨F, n, Z, p, ?_, ?_, hZ, ?_, ?_, ?_⟩
+  · intro w hw
+    exact (hA.analyticAt (hU.mem_nhds hw)).meromorphicAt.div
+      (hB.analyticAt (hU.mem_nhds hw)).meromorphicAt
+  · intro s hs
+    exact (div_eq_iff (hBne s hs)).mpr ((hAB s hs).trans (mul_comm _ _))
+  · intro w hw hw1
+    rw [hord w hw, horders w hw hw1]
+  · rw [hord 1 (by norm_num), hpole]
+  · intro m
+    simpa only [hsets] using hindex m
+
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
 #print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.exists_analytic_quotient_artin
@@ -136,3 +238,5 @@ end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 #print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.exists_meromorphicContinuation_artin
 
 #print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.exists_analytic_quotient_and_virtualConfig_artin
+
+#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.exists_meromorphicContinuation_and_signedIndex_artin

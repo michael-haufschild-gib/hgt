@@ -24,6 +24,13 @@ language, criteria and one exact form of RH that uses no sign: the triviality of
 a monodromy group. It supplies a route only through a restriction that the primes or the
 branch divisor impose on that element, and no such restriction is known.
 
+The size of the group carries no restriction. On the cover the group has index at most two in
+the group of all signed permutations of finite support, so every signed permutation of a finite
+set of pairs occurs, and the reflection and the conjugation are determined by the group: `r`
+is its centralizer and the conjugation is its mirror intertwiner. What is left of RH on the
+cover is the position of the real axis among the branch times: a forward loop at a real time
+and its mirror loop must transport the zeros alike.
+
 ## A theory of signed permutations with two marked involutions
 
 Every group of the programme acts on the zeros by signed permutations of pairs, and carries the
@@ -39,7 +46,7 @@ two involutions `c` and `r`. There are three tiers.
    reflections, trivial iff RH.
 3. **The cover.** The zeros as functions of the complex heat time `τ` of the de Bruijn–Newman
    family `H_τ`. The zeros form a cover of the time plane; its branch points are the
-   collisions. `r` is the deck map `z ↦ −z`, and `c` is the antiholomorphic map
+   collisions. `r` is the deck map `z ↦ −z`, and `cr` is the antiholomorphic map
    `(τ, z) ↦ (τ̄, z̄)`. Over the forward half-plane `Re τ > 0` the cover has a monodromy group
    `G₊`, a group of restricted signed permutations of the pairs `{z, −z}`:
    - the *sign part* comes from the collisions at the centre `z = 0`, where the functional
@@ -54,6 +61,17 @@ two involutions `c` and `r`. There are three tiers.
    times of arbitrarily large real part, so `G₊` contains exchanges and is not a group of sign
    flips. These collisions are at nonreal times; RH concerns the positive real axis. `G₊` is
    transitive on the zeros: over the forward half-plane the cover is irreducible.
+
+   The group is known up to one sign. Let `W` be the group of the signed permutations of
+   finite support of the pairs. `G₊` contains every signed 3-cycle and every double flip, so
+   it induces every signed permutation on every finite set of pairs; it contains an odd
+   permutation of the zeros; it is normal of index at most two in `W`; and it is all of `W`
+   as soon as it contains the exchange of two pairs. The cover is rigid: it is connected, its
+   only deck map is `r`, its only mirror maps are `cr` and `c`, no zero is a continuous
+   function of the time or of finitely many other zeros, no finite set of zeros is the root
+   set of a polynomial with coefficients continuous in the time, the configurations of `n`
+   zeros in distinct pairs are connected for every `n`, and the squared zeros are the only
+   intermediate cover.
 
 ## Objects
 
@@ -201,6 +219,41 @@ finitely many zeros).
   genus-one product over its zeros. Dividing the partial fraction of `H_τ'/H_τ` by `z` and
   letting `z → 0` gives the sum of the inverse squares of the zeros as `−H_τ''(0)/H_τ(0)`,
   which the heat equation turns into `c'(τ)/c(τ)`.
+- **Conjugate paths.** The lower half circle around a real time is the conjugate of the upper
+  one, so conjugation of the fibre before a real branch time is conjugation after it times
+  the turn. Passing the real branch times one by one writes conjugation as a word of turns.
+- **Window reflections.** Number the zeros of `H_{1/8}` in the order of the real line. The
+  loop of saddles of one sign moves the zeros with odd number of a window down by one, the
+  other the zeros with even number; several zeros followed through simple zeros along one
+  path are transported by one forward path. On the pairs of the window the two elements are
+  the reflections `m ↦ −m − 1` and `m ↦ −m`.
+- **From window reflections to 3-cycles.** Products of window reflections are translations on
+  windows. The commutator of an element with a translate whose support meets its support in
+  one point is a 3-cycle; two 3-cycles with a common point give a third by conjugation, which
+  is the Euclidean algorithm on the two gaps of a triple; finite support forces the common
+  divisor of the gaps to be one. On the zeros, the fourth power of a lift of a 3-cycle of
+  pairs is a signed 3-cycle, and conjugating by a flip gives the double flips.
+- **A zero of the centre value by the open mapping theorem.** On a disc of saddles
+  `c/B₀` is within `1/1024` of `1 − e^{v/2}`, which has a simple zero at `v = 0`; the open
+  mapping theorem gives a zero of `c` and the Cauchy estimate makes it simple.
+- **Removing exchanges.** Two exchanges of pairs are a product of two signed 3-cycles. An
+  involution of the group that flips exactly one pair therefore reduces to the flip alone or
+  to the flip times one exchange. In the same way signed 3-cycles and double flips clear the
+  moved zeros of any signed permutation off three reference pairs and then on them: modulo
+  the group every signed permutation of finite support is `1`, a flip, an exchange, or both.
+- **Centralizer by transitivity.** A map that commutes with a group containing the signed
+  3-cycles keeps every pair, because a 3-cycle through its value and two further pairs fixes
+  the argument; transitivity makes its sign constant. A continuous map of the cover over its
+  base carries lifts to lifts, so on a fibre it commutes with `G₊`. Applied to the map that is
+  `z` on an open and closed set and `−z` off it, this gives connectedness.
+- **Roots of a monic polynomial.** A monic polynomial of degree `n` has a root within
+  `|P(z₀)|^{1/n}` of `z₀`. So where the roots of a continuous polynomial family are zeros of
+  `H_τ`, the roots form an open and closed subset of the cover.
+- **Stabilizers.** The elements of `G₊` that fix finitely many given zeros still carry any
+  zero outside their pairs to any other. A zero determined by the given ones is one of them.
+- **Doubling of displacements.** If `p^{2 Re ρ}` lies in `B`, every automorphism over `B` keeps
+  `Re(ρ + ρ̄)`; conjugating by conjugation doubles the displacement of the real part of `ρ`,
+  and the displacements are bounded, so they vanish.
 
 ## Pillar theorems
 
@@ -282,14 +335,17 @@ real part `±` the original. `[F_ρ : H_ρ] ≤ 2`, with equality iff some autom
 even number of factors. A zero with rational real part has the orbit `{ρ, ρ̄}`; an orbit that
 meets the line lies on it; `H_ρ = B` iff `Re ρ = ½`, and `H = B` iff RH. The layer of zeros
 with rational real part is abelian of exponent two with conjugation central. Two algebraic
-prime values at a zero force a rational real part.
+prime values at a zero force a rational real part. For any one prime `p`, the orbit of `ρ` is
+contained in `{ρ, ρ̄}` iff `p^{2 Re ρ} ∈ B`, and it contains a zero of another real part iff
+`p^{2 Re ρ} ∉ B`.
 ([spectral field](ThePrimeSpectralFieldOfTheZeros.lean),
 [trace group](ThePrimeTraceGaloisGroupOfTheZeros.lean),
 [residue fields](ThePrimeResidueFieldsOfTheZeros.lean),
 [reflection kernel](ThePrimeReflectionKernelOfTheZeros.lean),
 [rational weights](TheRationalWeightsOfPrimeZeroOrbits.lean),
 [rational layer](TheRationalResidueLayerOfTheZeros.lean),
-[algebraic relations](TheAlgebraicPrimeRelationsOfTheZeros.lean))
+[algebraic relations](TheAlgebraicPrimeRelationsOfTheZeros.lean),
+[weight criterion](TheOrbitOfAZeroIsItsConjugatePairIffItsWeightLiesInThePrimeTraceField.lean))
 
 **Over `ℚ`.** `[ℚ(ρ−½) : K_even] ≤ 2`; the negation of all centred zeros is a field
 automorphism iff an anchor lies outside `K_even`; `K_even ⊆ ℝ` iff RH.
@@ -411,6 +467,48 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   strips, those around `πk` with `cos πk = −ε`, so the two signs together link all strips of
   the window. Along real times `≥ 1/8` the zeros keep sign and order, and a count of the zeros
   of `H_{1/8}` in a disc places every zero of the disc in a strip of the window.
+- *The word of conjugation.* Over a real time `t > 0` off the branch times, `cr` is the
+  product `λ_m ∘ ⋯ ∘ λ₁` of turn lassos around the real branch times `p₁ < … < p_m` above `t`,
+  with tails in a thin box above the real axis. It inverts the turns around real times:
+  `(cr) θ (cr) = θ⁻¹`.
+- *The even signed permutations.* Finitely many zeros followed through simple zeros along a
+  path of forward times, which may cross branch times, are transported by one forward path
+  off the branch times. For every window one element of `G₊(1/8)` moves the zeros with odd
+  number down by one, another the zeros with even number. A group of permutations of `ℤ` of
+  finite support with the window reflections `m ↦ −m − 1`, `m ↦ −m` contains every 3-cycle.
+  So `G₊(b)` contains the signed 3-cycle of any three zeros in distinct pairs and the double
+  flip of any two pairs: `W⁰ ≤ G₊(b) ≤ W`, with `W⁰` the subgroup of index four of the
+  elements even on the zeros and even on the pairs.
+- *Multiple transitivity.* Finitely many zeros, no two equal or opposite, are carried to any
+  such zeros by one element of `G₊(b)`.
+- *The sign of the zeros.* The centre value has simple zeros at forward times of arbitrarily
+  large real part; there one pair collides at the centre. The turn around such a time is an
+  involution that flips exactly one pair. So `G₊(b)` contains the flip of every single pair,
+  or, for all triples of pairs, the flip of one pair times the exchange of the other two. In
+  both cases it contains an odd permutation of the zeros.
+- *Index at most two.* Of two signed permutations of finite support, one lies in `G₊(b)` or
+  their quotient does. `G₊(b)` is normal in `W`. For the exchange `e` of any two pairs
+  `W = G₊(b) ∪ G₊(b)e`, and `G₊(b) = W` as soon as it contains one such exchange. So `G₊` is
+  `W`, or the kernel of the sign on the pairs, or the kernel of the product of the sign on
+  the zeros and the sign on the pairs.
+- *The two involutions from the group.* A map of the fibre that commutes with `G₊(b)` is the
+  identity or `r`, and the centre of `G₊(b)` is trivial. Over a real time `t`, a permutation
+  `σ` with `T_γ̄ = σ T_γ σ⁻¹` for every forward loop `γ` and its mirror loop `γ̄` is `cr` or
+  `c`. The zeros of `H_t` are all real iff `T_γ̄ = T_γ` for every forward loop at `t`, and RH
+  holds iff this is so over every real `t > 0` off the branch times.
+- *Rigidity.* Over the forward times off the branch times the cover is connected. A
+  continuous map of the cover that carries the zeros of `H_τ` to zeros of `H_τ` is `z`
+  everywhere or `−z` everywhere; one that carries them to zeros of `H_τ̄` is `z̄` everywhere or
+  `−z̄` everywhere. No zero is a continuous function of the time. A monic polynomial of fixed
+  degree with coefficients continuous in the time has, at some time, a root that is not a
+  zero. A zero that is a continuous function of the time and of `n` zeros is one of them up
+  to the sign. The configurations of `n` zeros, no two equal or opposite, form a path
+  connected set for every `n`, and a polynomial relation `P_τ(z₁, …, zₙ) = 0` that holds on an
+  open and closed nonempty set of them has `P_τ = 0` at every time: zeros in distinct pairs
+  are algebraically independent over the functions of the time. An equivalence relation on a
+  fibre that `G₊` preserves is equality, the relation `z' = ±z`, or everything: the action on
+  the pairs is primitive, and the cover of the squared zeros is the only cover between the
+  cover of the zeros and the forward times.
 - *Real branch times.* If a segment of real times from `a < 0` to `b > 0` contains no branch
   time, then infinitely many nonreal zeros of `H_a` escape along it. So every real
   neighbourhood of the time `0` contains a branch time, or zeros escape along real times
@@ -466,7 +564,28 @@ collisions.
 [exchange of strips](ASignedLoopOfSaddlesExchangesTheZerosOfTwoAdjacentStrips.lean),
 [real times](TransportAlongRealTimesKeepsTheOrderOfTheZeros.lean),
 [real saddles](AtARealSaddleEachStripOfTheWindowHoldsOneZero.lean),
-[transitivity](TheForwardMonodromyGroupIsTransitiveOnTheZeros.lean))
+[transitivity](TheForwardMonodromyGroupIsTransitiveOnTheZeros.lean),
+[word of conjugation](ConjugationOfTheZerosIsTheWordOfTheTurnsAroundTheRealBranchTimes.lean),
+[several zeros](SeveralZerosFollowedThroughSimpleZerosAreMovedByOneForwardMonodromy.lean),
+[numbering](TheNumberOfAZeroInTheOrderOfTheRealLineIsItsStripAtARealSaddle.lean),
+[parity shifts](OneForwardMonodromyMovesTheZerosOfOneParityOfAWindowDownByOne.lean),
+[3-cycles on `ℤ`](AFinitaryGroupOnTheIntegersWithWindowReflectionsContainsEveryThreeCycle.lean),
+[signed groups](AFinitaryGroupOfSignedPermutationsWithWindowReflectionsContainsTheEvenOnes.lean),
+[even signed permutations](TheForwardMonodromyGroupContainsTheEvenSignedPermutationsOfTheZeros.lean),
+[multiple transitivity](TheForwardMonodromyGroupMovesFinitelyManyZerosInDistinctPairsAtWill.lean),
+[simple centre zero](TheCentreValueHasASimpleZeroAtAForwardTime.lean),
+[one flipped pair](TheTurnAroundACollisionOfOnePairAtTheCentreFlipsExactlyOnePair.lean),
+[removing exchanges](AnInvolutionWithOneFlippedPairGivesTheFlipOfOnePairUpToOneExchange.lean),
+[flip up to exchange](TheForwardMonodromyGroupContainsTheFlipOfEveryPairUpToOneExchange.lean),
+[normal form](ASignedGroupWithTheEvenPermutationsAndAFlipUpToAnExchangeHasIndexAtMostTwo.lean),
+[index two](TheForwardMonodromyGroupHasIndexAtMostTwoInTheSignedPermutationsOfFiniteSupport.lean),
+[parity of the quartets](AnOddNumberOfQuartetsOfNonrealZerosAtARealTimeGivesEverySignedPermutation.lean),
+[centralizer and mirror](TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean),
+[deck maps](TheReflectionIsTheOnlySymmetryOfTheHeatCoverOverTheForwardTimes.lean),
+[connectedness](TheHeatCoverOverTheForwardTimesIsConnectedAndHasNoPolynomialFactor.lean),
+[independence](AZeroThatIsAContinuousFunctionOfFinitelyManyZerosIsOneOfThemUpToTheSign.lean),
+[configurations](TheConfigurationsOfZerosInDistinctPairsOverTheForwardTimesAreConnected.lean),
+[intermediate covers](TheOnlyIntermediateCoverOfTheZerosIsTheCoverOfTheSquaredZeros.lean))
 
 ## Criteria
 
@@ -485,7 +604,7 @@ collisions.
 
 1. **The forward monodromy group (B193).** Is there a collision away from the centre at a
    forward time? (Yes.) Is `G₊` transitive on the zeros? (Yes.) Is it the full group of
-   restricted signed permutations?
+   restricted signed permutations? (It is normal of index at most two in it.)
 
    Settled: `G₊(τ)` is defined, a group of signed permutations of the pairs, the same up to
    conjugation at every base time; `cr ∈ G₊(t)` at real `t > 0`, trivial for all `t` iff RH;
@@ -498,18 +617,28 @@ collisions.
    a loop in a convex region that moves a zero out of its pair certifies one in the region;
    such collisions exist at forward times of arbitrarily large real part, so `G₊` contains
    exchanges, does not preserve the pairs, and the squared zeros are not single-valued
-   functions of the forward time; `G₊` is transitive on the zeros.
+   functions of the forward time; `G₊` is transitive on the zeros; it contains every signed
+   3-cycle and every double flip and is `n`-fold transitive on the pairs with all signs; it
+   contains an odd permutation of the zeros; it is normal of index at most two in `W`; `cr`
+   is the word of the turns around the real branch times.
 
-   Remaining: which restricted signed permutations lie in `G₊`. If it is the full group, the
-   cover is in the position of a generic curve over a finite field, and the remaining problem
-   is the word of conjugation, not the group.
+   Remaining: one sign. `G₊ = W` iff `G₊` contains the exchange of two pairs; otherwise `G₊`
+   is the kernel of the sign on the pairs or of the product of the two signs. One forward
+   branch time whose turn is an odd permutation of the pairs decides it. So does one real
+   time: at a real time `t > 0` conjugation flips no pair (no zero is imaginary) and exchanges
+   the two pairs of every quartet `{z, z̄, −z, −z̄}` of nonreal zeros, so an odd number of
+   quartets at one real time gives `G₊ = W`, and if `G₊ ≠ W` the nonreal zeros form an even
+   number of quartets at every real time. In every case the
+   cover is in the position of a generic curve over a finite field at every finite level,
+   and the remaining problem is the word of conjugation, not the group.
 2. **Independence of the moments.** Are the normalized moments `μ₂/μ₀, …, μ₂ₙ/μ₀` of `Φ`
    algebraically independent at each degree? This decides the group of every Jensen equation:
    it is `C₂ ≀ S_n` over the field of the coefficients unless the moments satisfy a polynomial
    relation over `ℚ`. Already whether `μ₂/μ₀` is a square in `K_J` is not known.
 3. **Orbits (B190).** The orbit of a zero with irrational real part under the embeddings
    that fix `B`: `{ρ, ρ̄}` or the full quartet. An automorphism of a zero field besides
-   conjugation.
+   conjugation. Reduced to one membership: the orbit is `{ρ, ρ̄}` iff `p^{2 Re ρ} ∈ B` for one
+   prime `p`.
 4. **Degree.** Is `[L:K]` one or infinite? A finite nontrivial degree is the Galois form of a
    finite stratum.
 5. **Sums of squares.** Is every squared width a sum of squares in `D`? This holds iff every
@@ -518,6 +647,11 @@ collisions.
    iff some product `δ_q²δ_r²` is not a sum of squares in `D`.
 6. **A restriction.** A restriction, from the prime traces or from the branch divisor, that
    forces the two involutions to agree: `H = B` over the fields, `cr = 1` on the cover.
+
+   On the cover the group gives none and the question has an exact form: `r` is the
+   centralizer of `G₊`, the mirror intertwiners are `cr` and `c`, and RH says that the
+   identity is one: every forward loop at a real time and its mirror loop transport the zeros
+   alike. No property of the branch divisor is known that implies this symmetry.
 
 ## Milestones
 
@@ -529,6 +663,10 @@ collisions.
 | M4 | a collision away from the centre at a forward time | formalized |
 | M5 | independence of the moments at low degree | open |
 | M6 | the dichotomy for the degree over `K` | open |
+| M7 | `W⁰ ≤ G₊`: signed 3-cycles, double flips, multiple transitivity | formalized |
+| M8 | an odd permutation of the zeros in `G₊`; `G₊` normal of index at most two in `W` | formalized |
+| M9 | the two involutions from the group; rigidity and connectedness of the cover | formalized |
+| M10 | the sign on the pairs: whether `G₊` contains the exchange of two pairs | open |
 
 ## Tools
 
@@ -538,7 +676,9 @@ prime powers; specialization and genericity for the finite equations; transport 
 of times, with its homotopy invariance; Hermite blow-ups; words of local monodromies; gluing
 of the monodromy over open regions; subgroups as detectors of collisions; saddle-point
 asymptotics of the heat family at complex times of large modulus, with the minimum-modulus
-principle to place zeros and continuity to follow them. A tool
+principle to place zeros and continuity to follow them; permutation groups of finite support
+(3-cycles from window reflections, normal forms modulo a subgroup, centralizers); the open
+mapping theorem applied to an approximate model; roots of monic polynomials. A tool
 belongs here when it is applied to one of the six questions.
 
 ## Traps
@@ -573,6 +713,14 @@ belongs here when it is applied to one of the six questions.
 - The ratio `2S₀/B₀` of the two terms involves two square roots. Statements about its sign
   go through the square `Q` and a continuity argument, or through a fixed branch on a region
   where the radicands have positive real part.
+- A branch time may carry several collisions. In the two-term model all collisions near
+  `ζ ∈ πℤ` of one sign happen at one time up to the error of the model, so the turn around
+  such a time is known on a window of zeros, not on the fibre, and its sign on the pairs is
+  not known. A statement on a turn must cover every collision at its time.
+- The size of `G₊` is not a form of RH and gives no route to it: at index at most two in `W`
+  every signed permutation of a finite set of pairs occurs. RH is the value of one element.
+- The rigidity statements are on continuous single-valued maps over the forward times off the
+  branch times. They do not exclude multivalued or analytic relations among several zeros.
 - The heat cover has infinitely many sheets and is not proper over the time plane. The local
   theory gives uniqueness of lifts and continuation up to escape; that no zero leaves every
   compact set along a compact path of times is a theorem only for `Re τ > 0`.
@@ -596,16 +744,21 @@ belongs here when it is applied to one of the six questions.
   function of the time, the centre value; for the others no such function is known. The
   known ones lie near the times with `2S₀ = ±B₀`, in the direction of the imaginary axis.
   Which sign occurs on a given loop of saddles.
-- A centre time at which the central collision is double and no other collision happens:
-  there the turn is the sign flip of one pair.
-- `cr` as the word of the turns around the real branch times between a real time and `1/8`.
-- The full group: whether `G₊` contains every finitely supported signed permutation of the
-  pairs, for instance a transposition of two pairs without a sign.
-- Whether conjugation is determined inside `G₊` by its commutation relations.
+- The sign on the pairs: a forward branch time whose turn is an odd permutation of the pairs,
+  for instance one double collision away from the centre and no other collision at its time,
+  or a centre time at which the central collision is double and no other collision happens.
+  The first gives `G₊ = W`; the second gives the flip of a single pair.
+- A property of the branch divisor that makes the transports of a forward loop at a real time
+  and of its mirror loop agree; a mirror-symmetric presentation of `G₊` by turns.
+- Analytic relations among finitely many zeros, holomorphic in the time and the zeros.
+  Continuous single-valued dependence and persistent polynomial relations are excluded; that
+  an analytic relation valid near one configuration persists needs analytic charts of the
+  configurations, which are missing.
 - Non-escape and accumulation of branch times at times with `Re τ ≤ 0`; control of transport
   as `τ → 0`.
-- Simplicity of the zeros of the centre value (all central collisions double), and the
-  position of the centre times inside the forward half-plane.
+- Simplicity of every zero of the centre value (all central collisions double; simple zeros
+  exist at forward times of arbitrarily large real part), and the position of the centre
+  times inside the forward half-plane.
 - Whether the squared widths and their pairwise products are sums of squares in `D`. Orderings
   of `K` and `B`, where the conjugation of an ordering is a class of involutions and needs
   real closures.

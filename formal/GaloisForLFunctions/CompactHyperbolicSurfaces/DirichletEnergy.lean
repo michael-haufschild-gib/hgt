@@ -83,7 +83,8 @@ include ha
 
 /-- **Row mass.**  `∫_F K_a(y, z) dz = 1/(a(a − 1))`. -/
 theorem lintegral_autK_resKernel (y : ℍ) :
-    ∫⁻ z in X.F, autK X.Γ (resKernel a) y z = ENNReal.ofReal (1 / (a * (a - 1))) := by
+    ∫⁻ z, autK X.Γ (resKernel a) y z ∂X.μ = ENNReal.ofReal (1 / (a * (a - 1))) := by
+  show ∫⁻ z in X.F, autK X.Γ (resKernel a) y z = _
   rw [setLIntegral_autK X.isFundamentalDomain (measurable_resKernel a), lintegral_pairU_eq_I,
     lintegral_resKernel_mass ha]
 
@@ -215,7 +216,8 @@ theorem integral_energy (f : Lp ℂ 2 X.μ) :
           refine integral_congr_ae (Eventually.of_forall fun p => ?_)
           simp only [Prod.fst_swap, Prod.snd_swap]
           rw [X.kerA_comm]
-      _ = _ := integral_prod_swap _
+      _ = _ := integral_prod_swap (μ := X.μ) (ν := X.μ)
+            (fun q : ℍ × ℍ => X.kerA a q.1 q.2 * ‖(f : ℍ → ℂ) q.1‖ ^ 2)
   have e3 : ∫ p, ((starRingEnd ℂ) ((f : ℍ → ℂ) p.1) * (X.kerA a p.1 p.2 : ℂ) *
       (f : ℍ → ℂ) p.2).re ∂(X.μ.prod X.μ) = (⟪f, X.resOp ha f⟫_ℂ).re := by
     calc _ = (∫ p, (starRingEnd ℂ) ((f : ℍ → ℂ) p.1) * (X.kerA a p.1 p.2 : ℂ) *
@@ -227,8 +229,9 @@ theorem integral_energy (f : Lp ℂ 2 X.μ) :
       fun p => (X.kerA a p.1 p.2 * ‖(f : ℍ → ℂ) p.1‖ ^ 2 + X.kerA a p.1 p.2 * ‖(f : ℍ → ℂ) p.2‖ ^ 2)
         - 2 * ((starRingEnd ℂ) ((f : ℍ → ℂ) p.1) * (X.kerA a p.1 p.2 : ℂ) * (f : ℍ → ℂ) p.2).re :=
     funext fun p => energy_pointwise _ _ _
-  rw [hpt, integral_sub (h1.add h2) (h3.const_mul 2), integral_add h1 h2, integral_const_mul, e2,
-    e1, e3]
+  have h12 : Integrable (fun p : ℍ × ℍ => X.kerA a p.1 p.2 * ‖(f : ℍ → ℂ) p.1‖ ^ 2 +
+      X.kerA a p.1 p.2 * ‖(f : ℍ → ℂ) p.2‖ ^ 2) (X.μ.prod X.μ) := h1.add h2
+  rw [hpt, integral_sub h12 (h3.const_mul 2), integral_add h1 h2, integral_const_mul, e2, e1, e3]
   ring
 
 /-! ### Ergodicity -/
@@ -238,15 +241,15 @@ its energy `∬ K_a|x(y) − x(z)|²` vanishes and `K_a > 0`. -/
 theorem exists_eq_smul_oneL {x : Lp ℂ 2 X.μ}
     (hx : X.resOp ha x = (((a * (a - 1))⁻¹ : ℝ) : ℂ) • x) : ∃ α : ℂ, x = α • X.oneL := by
   have hE : ∫ p, X.kerA a p.1 p.2 * ‖(x : ℍ → ℂ) p.1 - x p.2‖ ^ 2 ∂(X.μ.prod X.μ) = 0 := by
-    rw [X.integral_energy ha, hx, inner_smul_right, inner_self_eq_norm_sq_to_K,
-      ← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re, div_eq_mul_inv]
+    have hxx : (⟪x, x⟫_ℂ).re = ‖x‖ ^ 2 := inner_self_eq_norm_sq (𝕜 := ℂ) x
+    rw [X.integral_energy ha, hx, inner_smul_right, Complex.re_ofReal_mul, hxx, div_eq_mul_inv]
     ring
   have hz := (integral_eq_zero_iff_of_nonneg
     (fun p => mul_nonneg (X.kerA_nonneg a _ _) (sq_nonneg _)) (X.integrable_energy ha x)).mp hE
   have hfin : ∀ᵐ p ∂(X.μ.prod X.μ), autK X.Γ (resKernel a) p.1 p.2 < ∞ := by
     refine ae_lt_top (measurable_autK (Γ := X.Γ) (measurable_resKernel a)) ?_
-    rw [lintegral_prod _ (measurable_autK (Γ := X.Γ) (measurable_resKernel a)).aemeasurable]
-    simp only [Function.uncurry_apply_pair]
+    rw [lintegral_prod (fun p : ℍ × ℍ => autK X.Γ (resKernel a) p.1 p.2)
+      (measurable_autK (Γ := X.Γ) (measurable_resKernel a)).aemeasurable]
     simp only [X.lintegral_autK_resKernel ha, lintegral_const]
     exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top _ _)
   have hpair : ∀ᵐ p ∂(X.μ.prod X.μ), (x : ℍ → ℂ) p.1 = x p.2 := by
@@ -280,12 +283,11 @@ theorem exists_spectralParam_mem_Ioo {f : Lp ℂ 2 X.μ} (hf0 : f ≠ 0)
     (hf1 : ⟪X.oneL, f⟫_ℂ = 0)
     (hR : ‖f‖ ^ 2 / (a * (a - 1) + 1 / 4) < (⟪f, X.resOp ha f⟫_ℂ).re) :
     ∃ j : X.SpecIndex ha, 0 < X.spectralParam ha j ∧ X.spectralParam ha j < 1 / 4 := by
-  set S := X.resOp ha with hS
   set c := a * (a - 1) with hc
   have hc0 : 0 < c := by simp only [hc]; nlinarith
   have hq0 : 0 < c + 1 / 4 := by linarith
   set v : ℕ → Lp ℂ 2 X.μ := fun _ => X.oneL with hv
-  have hvS : ∀ m < 1, ∃ r : ℝ, S (v m) = (r : ℂ) • v m := fun m _ => ⟨c⁻¹, X.resOp_oneL ha⟩
+  have hvS : ∀ m < 1, ∃ r : ℝ, X.resOp ha (v m) = (r : ℂ) • v m := fun m _ => ⟨c⁻¹, X.resOp_oneL ha⟩
   have hfn : 0 < ‖f‖ := norm_pos_iff.mpr hf0
   -- the normalized test vector
   set y : Lp ℂ 2 X.μ := ((‖f‖⁻¹ : ℝ) : ℂ) • f with hy
@@ -294,23 +296,23 @@ theorem exists_spectralParam_mem_Ioo {f : Lp ℂ 2 X.μ} (hf0 : f ≠ 0)
       inv_mul_cancel₀ hfn.ne']
   have hy2 : ∀ m < 1, ⟪v m, y⟫_ℂ = 0 := fun m _ => by
     simp only [hv, hy, inner_smul_right, hf1, mul_zero]
-  have hRy : ‖f‖ ^ 2 * (⟪y, S y⟫_ℂ).re = (⟪f, S f⟫_ℂ).re := by
+  have hRy : ‖f‖ ^ 2 * (⟪y, X.resOp ha y⟫_ℂ).re = (⟪f, X.resOp ha f⟫_ℂ).re := by
     rw [hy, map_smul, inner_smul_left, inner_smul_right, Complex.conj_ofReal, ← mul_assoc,
       ← Complex.ofReal_mul, Complex.re_ofReal_mul, ← mul_assoc, ← sq, inv_pow,
       mul_inv_cancel₀ (by positivity), one_mul]
-  have hSy : (c + 1 / 4)⁻¹ < ‖S y‖ := by
-    have h1 : (⟪y, S y⟫_ℂ).re ≤ ‖S y‖ := by
-      calc (⟪y, S y⟫_ℂ).re ≤ ‖⟪y, S y⟫_ℂ‖ := Complex.re_le_norm _
-        _ ≤ ‖y‖ * ‖S y‖ := norm_inner_le_norm _ _
-        _ = ‖S y‖ := by rw [hy1, one_mul]
-    have h2 : (c + 1 / 4)⁻¹ < (⟪y, S y⟫_ℂ).re := by
+  have hSy : (c + 1 / 4)⁻¹ < ‖X.resOp ha y‖ := by
+    have h1 : (⟪y, X.resOp ha y⟫_ℂ).re ≤ ‖X.resOp ha y‖ := by
+      calc (⟪y, X.resOp ha y⟫_ℂ).re ≤ ‖⟪y, X.resOp ha y⟫_ℂ‖ := Complex.re_le_norm _
+        _ ≤ ‖y‖ * ‖X.resOp ha y‖ := norm_inner_le_norm _ _
+        _ = ‖X.resOp ha y‖ := by rw [hy1, one_mul]
+    have h2 : (c + 1 / 4)⁻¹ < (⟪y, X.resOp ha y⟫_ℂ).re := by
       have hf2 : 0 < ‖f‖ ^ 2 := by positivity
       rw [← hRy, div_eq_mul_inv] at hR
       exact lt_of_mul_lt_mul_left hR hf2.le
     linarith
-  have hsup : (c + 1 / 4)⁻¹ < ContinuousLinearMap.orthSup S v 1 :=
-    hSy.trans_le (ContinuousLinearMap.le_orthSup S v 1 hy1.le hy2)
-  have hne : ContinuousLinearMap.orthSup S v 1 ≠ 0 := (lt_trans (by positivity) hsup).ne'
+  have hsup : (c + 1 / 4)⁻¹ < ContinuousLinearMap.orthSup (X.resOp ha) v 1 :=
+    hSy.trans_le (ContinuousLinearMap.le_orthSup (X.resOp ha) v 1 hy1.le hy2)
+  have hne : ContinuousLinearMap.orthSup (X.resOp ha) v 1 ≠ 0 := (lt_trans (by positivity) hsup).ne'
   obtain ⟨x, hx1, hx2, μr, hμabs, hSx⟩ := ContinuousLinearMap.exists_signed_eigenvector_orthSup
     (X.isCompactOperator_resOp ha) (X.isSymmetric_resOp ha) v 1 hvS hne
   have hμ0 : (μr : ℂ) ≠ 0 := by
@@ -318,9 +320,10 @@ theorem exists_spectralParam_mem_Ioo {f : Lp ℂ 2 X.μ} (hf0 : f ≠ 0)
     rw [Complex.ofReal_eq_zero] at h
     rw [h, abs_zero] at hμabs
     exact hne hμabs.symm
-  have hxmem : x ∈ nonzeroEigenspace S ⟨(μr : ℂ), hμ0⟩ := Module.End.mem_eigenspace_iff.mpr hSx
+  have hxmem : x ∈ nonzeroEigenspace (X.resOp ha) ⟨(μr : ℂ), hμ0⟩ := Module.End.mem_eigenspace_iff.mpr hSx
   have hx0 : x ≠ 0 := fun h => by rw [h, norm_zero] at hx1; exact zero_ne_one hx1
-  have hrank : 0 < Module.finrank ℂ (nonzeroEigenspace S ⟨(μr : ℂ), hμ0⟩) :=
+  haveI := nonzeroEigenspace_finiteDimensional (T := X.resOp ha) ⟨(μr : ℂ), hμ0⟩
+  have hrank : 0 < Module.finrank ℂ (nonzeroEigenspace (X.resOp ha) ⟨(μr : ℂ), hμ0⟩) :=
     Module.finrank_pos_iff_exists_ne_zero.mpr ⟨⟨x, hxmem⟩, fun h => hx0 (congrArg Subtype.val h)⟩
   set j : X.SpecIndex ha := ⟨⟨(μr : ℂ), hμ0⟩, ⟨0, hrank⟩⟩ with hj
   have hμj : X.specMu ha j = μr := by simp [specMu, hj]
@@ -338,17 +341,15 @@ theorem exists_spectralParam_mem_Ioo {f : Lp ℂ 2 X.μ} (hf0 : f ≠ 0)
       obtain ⟨α, hα⟩ := X.exists_eq_smul_oneL ha (x := x) (by rw [← hμc]; exact hSx)
       have h0 := hx2 0 zero_lt_one
       simp only [hv] at h0
-      rw [hα, inner_smul_right, inner_self_eq_norm_sq_to_K] at h0
+      rw [hα, inner_smul_right] at h0
       rcases mul_eq_zero.mp h0 with h' | h'
       · rw [h', zero_smul] at hα; exact hx0 hα
-      · have : ‖X.oneL‖ = 0 := by exact_mod_cast pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h'
-        rw [norm_eq_zero] at this
-        rw [this, smul_zero] at hα
+      · rw [inner_self_eq_zero.mp h', smul_zero] at hα
         exact hx0 hα
   · rw [hlam]
     have : 1 / μr < c + 1 / 4 := by
       rw [one_div]
-      exact (inv_lt_comm₀ hμpos hq0).mp hμbig
+      exact (inv_lt_comm₀ hq0 hμpos).mp hμbig
     linarith
 
 end CompactQuotient

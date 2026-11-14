@@ -111,7 +111,7 @@ theorem norm_logDeriv_zetaChi_add_log_le_boundary_constant {σ t : ℝ}
   rw [heq]
   exact (norm_add_le _ _).trans (by
     rw [Complex.norm_real, Real.norm_eq_abs]
-    exact add_le_add_right hbase _)
+    exact add_le_add hbase le_rfl)
 
 /-- Reflection gives the full main term on the left boundary of the zero strip. -/
 theorem exists_logDeriv_residueUnit_left_add_log_le_epsilon_log {σ ε : ℝ}
@@ -167,7 +167,7 @@ theorem exists_logDeriv_residueUnit_left_add_log_le_epsilon_log {σ ε : ℝ}
           logDeriv riemannZeta (1 - s) + (s - 1)⁻¹‖
       ≤ ‖logDeriv zetaChi s + (Real.log |t| : ℂ)‖ +
           ‖logDeriv riemannZeta (1 - s)‖ + ‖(s - 1)⁻¹‖ :=
-        (norm_add_le _ _).trans (add_le_add_right (norm_sub_le _ _) _)
+        (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
     _ ≤ ε * Real.log |t| := by linarith only [harch, hright, hp, hc t ht₁]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry

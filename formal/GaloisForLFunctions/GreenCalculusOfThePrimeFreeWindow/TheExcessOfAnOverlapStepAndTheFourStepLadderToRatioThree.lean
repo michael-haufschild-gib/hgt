@@ -142,7 +142,7 @@ theorem neg_windowExcess_mul_le (Q R a b : ℕ) (C : ℝ) (e : Fin a ⊕ Fin b �
       have hsq : r * r = e ⬝ᵥ e := Real.mul_self_sqrt hpos.le
       field_simp [hr.ne', hpos.ne']
       rw [← hsq]; ring
-    rw [hquad, neg_div, div_le_iff₀ hpos] at hle
+    rw [hquad, ← neg_div, div_le_iff₀ hpos] at hle
     linarith
 
 /-- Characterization of upper bounds on `windowExcess`. -/
@@ -220,7 +220,7 @@ theorem dotProduct_overlapCouplingLevel_sq_le_couplingNorm (Q R a b : ℕ) (C : 
         le_csSup (couplingNorm_bddAbove Q R a b C) (Or.inr ⟨u', v', hu1, hv1, rfl⟩)
       have hneg_le : -(u' ⬝ᵥ (overlapCouplingLevel Q R a b C *ᵥ v')) ≤ couplingNorm Q R a b C := by
         have := le_csSup (couplingNorm_bddAbove Q R a b C) (Or.inr ⟨-u', v', hnu1, hv1, rfl⟩)
-        simpa [neg_dotProduct] using this
+        rwa [neg_dotProduct] at this
       have habs : |u' ⬝ᵥ (overlapCouplingLevel Q R a b C *ᵥ v')| ≤ couplingNorm Q R a b C :=
         abs_le.mpr ⟨by linarith, hpos_le⟩
       have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
@@ -232,7 +232,8 @@ theorem dotProduct_overlapCouplingLevel_sq_le_couplingNorm (Q R a b : ℕ) (C : 
       rw [hval, div_pow, div_le_iff₀ (by positivity)] at hsq
       have hprod : (ru * rv) ^ 2 = (u ⬝ᵥ u) * (v ⬝ᵥ v) := by
         rw [mul_pow, sq, sq, Real.mul_self_sqrt hupos.le, Real.mul_self_sqrt hvpos.le]
-      linarith
+      rw [hprod] at hsq
+      exact hsq
 
 theorem couplingNorm_le_iff (Q R a b : ℕ) (C : ℝ) {x : ℝ} (hx : 0 ≤ x) :
     couplingNorm Q R a b C ≤ x ↔
@@ -325,9 +326,13 @@ theorem hilbert_sum_le_six {r : ℝ} (hr : 1 ≤ r) (N : ℕ) :
       have hcast : ((s + 1 : ℕ) : ℝ) = (s : ℝ) + 1 := by push_cast; ring
       rw [hcast, mul_comm (2 / Real.sqrt r), ← mul_div_assoc]
       rw [div_le_div_iff₀ (by positivity) hsr]
-      have hsqc : Real.sqrt r * Real.sqrt r = r := Real.mul_self_sqrt hr0.le
-      have hrs : r ≤ r + ((s : ℝ) + 1) := by positivity
-      nlinarith
+      calc Real.sqrt r * Real.sqrt r
+          = r := Real.mul_self_sqrt hr0.le
+        _ ≤ r + ((s : ℝ) + 1) := by linarith [Nat.cast_nonneg (α := ℝ) s]
+        _ = (r + ((s : ℝ) + 1)) * 1 := (mul_one (r + ((s : ℝ) + 1))).symm
+        _ ≤ (r + ((s : ℝ) + 1)) * (2 * b * (b - a)) :=
+            mul_le_mul_of_nonneg_left h1le (by positivity)
+        _ = (b - a) * 2 * ((r + ((s : ℝ) + 1)) * b) := by ring
     refine (Finset.sum_le_sum hterm).trans ?_
     rw [← Finset.mul_sum, Finset.sum_range_sub (fun k : ℕ => Real.sqrt (k : ℝ)) M,
       Nat.cast_zero, Real.sqrt_zero, sub_zero]
@@ -376,19 +381,24 @@ theorem hilbert_sum_le_six {r : ℝ} (hr : 1 ≤ r) (N : ℕ) :
               div_le_div_of_nonneg_left hsr.le (by positivity) (by nlinarith)
           _ ≤ 2 * Real.sqrt r * ((b - a) / (a * b)) := by
               rw [← mul_div_assoc, div_le_div_iff₀ (by positivity) (by positivity)]
-              nlinarith
+              calc Real.sqrt r * (a * b)
+                  = (Real.sqrt r * b) * a := by ring
+                _ ≤ (Real.sqrt r * b) * (2 * ((s : ℝ) + 1) * (b - a)) :=
+                    mul_le_mul_of_nonneg_left key (by positivity)
+                _ = 2 * Real.sqrt r * (b - a) * (((s : ℝ) + 1) * b) := by ring
       refine (Finset.sum_le_sum hterm).trans ?_
       rw [← Finset.mul_sum, Finset.sum_Ico_eq_sum_range]
       have htel : ∑ k ∈ range (N - M),
           (1 / Real.sqrt ((M + k : ℕ) : ℝ) - 1 / Real.sqrt ((M + k + 1 : ℕ) : ℝ)) =
           1 / Real.sqrt (M : ℝ) - 1 / Real.sqrt ((M + (N - M) : ℕ) : ℝ) := by
-        simpa only [Nat.add_zero] using
-          Finset.sum_range_sub' (fun k : ℕ => 1 / Real.sqrt ((M + k : ℕ) : ℝ)) (N - M)
+        have h := Finset.sum_range_sub' (fun k : ℕ => 1 / Real.sqrt ((M + k : ℕ) : ℝ)) (N - M)
+        simpa only [Nat.add_zero, Nat.add_assoc] using h
       rw [htel]
       have hsub : 1 / Real.sqrt (M : ℝ) - 1 / Real.sqrt ((M + (N - M) : ℕ) : ℝ) ≤
           1 / Real.sqrt (M : ℝ) := by
         linarith [show (0 : ℝ) ≤ 1 / Real.sqrt ((M + (N - M) : ℕ) : ℝ) by positivity]
       have hr4M : Real.sqrt r ≤ 2 * Real.sqrt (M : ℝ) := by
+        have hM1' : (1 : ℝ) ≤ (M : ℝ) := by rw [hM]; exact_mod_cast hM1
         have hlt : r < (M : ℝ) + 1 := by rw [hM]; exact Nat.lt_floor_add_one r
         have hle4 : r ≤ (2 * Real.sqrt (M : ℝ)) ^ 2 := by
           rw [mul_pow, Real.sq_sqrt hMpos.le]
@@ -575,11 +585,12 @@ theorem dotProduct_mulVec_sq_le_of_inv_add {α β : Type*} [Fintype α] [Fintype
       rw [hval, div_pow, div_le_iff₀ (by positivity)] at hsq
       have hprod : (ru * rv) ^ 2 = (u ⬝ᵥ u) * (v ⬝ᵥ v) := by
         rw [mul_pow, sq, sq, Real.mul_self_sqrt hupos.le, Real.mul_self_sqrt hvpos.le]
-      linarith
+      rw [hprod] at hsq
+      exact hsq
 
 /-- **Schur row-column operator-norm bound** for nonnegative matrices. -/
 theorem dotProduct_mulVec_sq_le_of_row_col_sum {α β : Type*} [Fintype α] [Fintype β]
-    (A : Matrix α β ℝ) (hnn : ∀ i j, 0 ≤ A i j) {B : ℝ} (hB : 0 ≤ B)
+    (A : Matrix α β ℝ) (hnn : ∀ i j, 0 ≤ A i j) {B : ℝ} (_hB : 0 ≤ B)
     (hrow : ∀ i, ∑ j, A i j ≤ B) (hcol : ∀ j, ∑ i, A i j ≤ B)
     (u : α → ℝ) (v : β → ℝ) :
     (u ⬝ᵥ (A *ᵥ v)) ^ 2 ≤ B ^ 2 * ((u ⬝ᵥ u) * (v ⬝ᵥ v)) := by
@@ -657,7 +668,8 @@ theorem dotProduct_mulVec_sq_le_of_row_col_sum {α β : Type*} [Fintype α] [Fin
       rw [hval, div_pow, div_le_iff₀ (by positivity)] at hsq
       have hprod : (ru * rv) ^ 2 = (u ⬝ᵥ u) * (v ⬝ᵥ v) := by
         rw [mul_pow, sq, sq, Real.mul_self_sqrt hupos.le, Real.mul_self_sqrt hvpos.le]
-      linarith
+      rw [hprod] at hsq
+      exact hsq
 
 /-- Sum of von Mangoldt weights up to `Q`. -/
 def primeContactSum (Q : ℕ) : ℝ := ∑ k ∈ Icc 2 Q, (Λ k : ℝ)
@@ -673,9 +685,9 @@ theorem sum_floorGraph_injective_le {α : Type*} [Fintype α] {q : α → ℕ}
   have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
   let S : Finset ℕ := insert (x / k) (Ico (k * x) (k * x + k))
   have hcard : (S.card : ℝ) ≤ (k : ℝ) + 1 := by
-    have hc : S.card ≤ 1 + (Ico (k * x) (k * x + k)).card := Finset.card_insert_le _ _
+    have hc : S.card ≤ (Ico (k * x) (k * x + k)).card + 1 := Finset.card_insert_le _ _
     rw [Nat.card_Ico, Nat.add_sub_cancel_left] at hc
-    exact_mod_cast (by omega : S.card ≤ k + 1)
+    exact_mod_cast hc
   have hsub : ∑ j : α, floorGraph k x (q j) ≤ ∑ _y ∈ S, (Λ k : ℝ) / k := by
     let active : Finset α := Finset.filter (fun j : α => max x (q j) / k = min x (q j)) Finset.univ
     have hsplit : ∑ j : α, floorGraph k x (q j) = ∑ j ∈ active, (Λ k : ℝ) / k := by
@@ -709,14 +721,15 @@ theorem sum_floorGraph_injective_le {α : Type*} [Fintype α] {q : α → ℕ}
             exact ⟨by nlinarith, by nlinarith⟩
   rw [Finset.sum_const, nsmul_eq_mul] at hsub
   refine hsub.trans ?_
-  have h1 : (S.card : ℝ) * ((Λ k : ℝ) / k) ≤ ((k : ℝ) + 1) * ((Λ k : ℝ) / k) :=
-    mul_le_mul_of_nonneg_right hcard (div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le)
-  have h2 : ((k : ℝ) + 1) / k ≤ 2 := by
-    rw [div_le_iff₀ hk0]
-    have : (2 : ℝ) ≤ k := by exact_mod_cast hk
-    linarith
-  have h3 := mul_le_mul_of_nonneg_right h2 ArithmeticFunction.vonMangoldt_nonneg
-  linarith [show ((k : ℝ) + 1) * ((Λ k : ℝ) / k) = ((k : ℝ) + 1) / k * (Λ k : ℝ) by ring]
+  calc (S.card : ℝ) * ((Λ k : ℝ) / k)
+      ≤ ((k : ℝ) + 1) * ((Λ k : ℝ) / k) :=
+        mul_le_mul_of_nonneg_right hcard (div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le)
+    _ = (((k : ℝ) + 1) / k) * (Λ k : ℝ) := by ring
+    _ ≤ 2 * (Λ k : ℝ) := by
+        refine mul_le_mul_of_nonneg_right ?_ ArithmeticFunction.vonMangoldt_nonneg
+        rw [div_le_iff₀ hk0]
+        have : (2 : ℝ) ≤ k := by exact_mod_cast hk
+        linarith
 
 theorem sum_floorContact_injective_le {α : Type*} [Fintype α] {q : α → ℕ}
     (hq : Function.Injective q) (Q x : ℕ) :
@@ -756,8 +769,8 @@ theorem dotProduct_endJet_mulVec_sq_le (R a b : ℕ) (w : Fin (R + a) → ℝ)
     simpa only [show (6 * (4 : ℝ)) ^ 2 = 24 ^ 2 by norm_num] using
       dotProduct_mulVec_sq_le_of_inv_add J₁
         (r := fun m : Fin (R + a) => (m : ℕ) + 1) (s := fun i : Fin a => a - (i : ℕ))
-        (fun m₁ m₂ h => Fin.ext (by omega))
-        (fun i₁ i₂ h => by have := i₁.2; have := i₂.2; exact Fin.ext (by omega))
+        (fun m₁ m₂ h => by dsimp only at h; exact Fin.ext (by omega))
+        (fun i₁ i₂ h => by dsimp only at h; have := i₁.2; have := i₂.2; exact Fin.ext (by omega))
         (fun m => by omega) (fun i => by have := i.2; omega) (B := 4) (by norm_num)
         (fun m i => by
           have hi := i.2
@@ -765,21 +778,22 @@ theorem dotProduct_endJet_mulVec_sq_le (R a b : ℕ) (w : Fin (R + a) → ℝ)
           rw [abs_of_pos hpos]
           simp only [J₁, Matrix.of_apply, endJet_apply, middlePos, leftPos, Sum.elim_inl]
           have hlt : R + (i : ℕ) < R + a + (m : ℕ) := by omega
-          rw [min_eq_left hlt.le, max_eq_right hlt.le]
+          rw [min_eq_right hlt.le, max_eq_left hlt.le]
           refine (blockJet_le_two_div hlt).trans ?_
           rw [div_le_div_iff₀ (by exact_mod_cast (by omega : 0 < R + a + (m : ℕ) - (R + (i : ℕ))))
             (by positivity)]
-          have h2 : (((m : ℕ) + 1) + (a - (i : ℕ)) : ℝ) ≤
-              2 * ((R + a + (m : ℕ) - (R + (i : ℕ)) : ℕ) : ℝ) := by
-            have : (m : ℕ) + 1 + (a - (i : ℕ)) ≤ 2 * (R + a + (m : ℕ) - (R + (i : ℕ))) := by omega
-            exact_mod_cast this
+          have hnat : ((m : ℕ) + 1) + (a - (i : ℕ)) ≤
+              2 * (R + a + (m : ℕ) - (R + (i : ℕ))) := by omega
+          have h2 : (((((m : ℕ) + 1) + (a - (i : ℕ)) : ℕ) : ℝ)) ≤
+              (((2 * (R + a + (m : ℕ) - (R + (i : ℕ))) : ℕ) : ℝ)) := Nat.cast_le.mpr hnat
+          rw [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat] at h2
           linarith) w (e ∘ Sum.inl)
   have hR : (w ⬝ᵥ (J₂ *ᵥ (e ∘ Sum.inr))) ^ 2 ≤ 24 ^ 2 * ((w ⬝ᵥ w) * ((e ∘ Sum.inr) ⬝ᵥ (e ∘ Sum.inr))) := by
     simpa only [show (6 * (4 : ℝ)) ^ 2 = 24 ^ 2 by norm_num] using
       dotProduct_mulVec_sq_le_of_inv_add J₂
         (r := fun m : Fin (R + a) => R + a - (m : ℕ)) (s := fun j : Fin b => (j : ℕ) + 1)
-        (fun m₁ m₂ h => by have := m₁.2; have := m₂.2; exact Fin.ext (by omega))
-        (fun j₁ j₂ h => Fin.ext (by omega))
+        (fun m₁ m₂ h => by dsimp only at h; have := m₁.2; have := m₂.2; exact Fin.ext (by omega))
+        (fun j₁ j₂ h => by dsimp only at h; exact Fin.ext (by omega))
         (fun m => by have := m.2; omega) (fun j => by omega) (B := 4) (by norm_num)
         (fun m j => by
           have hm := m.2
@@ -791,11 +805,11 @@ theorem dotProduct_endJet_mulVec_sq_le (R a b : ℕ) (w : Fin (R + a) → ℝ)
           refine (blockJet_le_two_div hlt).trans ?_
           rw [div_le_div_iff₀ (by exact_mod_cast (by omega : 0 < 2 * (R + a) + (j : ℕ) - (R + a + (m : ℕ))))
             (by positivity)]
-          have h2 : ((R + a - (m : ℕ)) + ((j : ℕ) + 1) : ℝ) ≤
-              2 * ((2 * (R + a) + (j : ℕ) - (R + a + (m : ℕ)) : ℕ) : ℝ) := by
-            have : (R + a - (m : ℕ)) + ((j : ℕ) + 1) ≤
-                2 * (2 * (R + a) + (j : ℕ) - (R + a + (m : ℕ))) := by omega
-            exact_mod_cast this
+          have hnat : (R + a - (m : ℕ)) + ((j : ℕ) + 1) ≤
+              2 * (2 * (R + a) + (j : ℕ) - (R + a + (m : ℕ))) := by omega
+          have h2 : ((((R + a - (m : ℕ)) + ((j : ℕ) + 1) : ℕ) : ℝ)) ≤
+              (((2 * (2 * (R + a) + (j : ℕ) - (R + a + (m : ℕ))) : ℕ) : ℝ)) := Nat.cast_le.mpr hnat
+          rw [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat] at h2
           linarith) w (e ∘ Sum.inr)
   have hsplit : w ⬝ᵥ (endJet R a b *ᵥ e) =
       w ⬝ᵥ (J₁ *ᵥ (e ∘ Sum.inl)) + w ⬝ᵥ (J₂ *ᵥ (e ∘ Sum.inr)) := by
@@ -947,8 +961,8 @@ theorem blockPotential_ge_of_ratio {Q R J j : ℕ} (hR : 1 ≤ R) (hj : j < J) {
       have e3 : R + j + (R + l) + 1 = R + j + R + l + 1 := by omega
       by_cases h : j = l
       · subst h
-        rw [neutralBlock, blockMatrix_self (by omega), if_pos rfl, Nat.sub_self, xLogXDiff_zero,
-          blockJet, Nat.sub_self, xLogXDiff_zero]
+        rw [neutralBlock, blockMatrix_self (by omega), if_pos rfl, max_self, min_self,
+          Nat.sub_self, xLogXDiff_zero, blockJet, Nat.sub_self, xLogXDiff_zero, e3]
         ring
       · have hne : R + j ≠ R + l := by omega
         rw [neutralBlock_eq_neg_jet_sub_contact_of_ne 1 hne, floorContact_one, sub_zero,
@@ -985,7 +999,8 @@ theorem blockPotential_ge_of_ratio {Q R J j : ℕ} (hR : 1 ≤ R) (hj : j < J) {
           neutralBlock_eq_neg_jet_sub_contact_of_ne Q h, floorContact_one]
         ring
     linarith [sum_floorContact_injective_le
-      (fun l₁ l₂ h => Fin.ext (by omega) : Function.Injective fun l : Fin J => R + (l : ℕ)) Q (R + j)]
+      (fun l₁ l₂ h => by dsimp only at h; exact Fin.ext (by omega) :
+        Function.Injective fun l : Fin J => R + (l : ℕ)) Q (R + j)]
   have hb_dens : Real.log (((R + j : ℕ) : ℝ) + 1) - 13 / 6 ≤ blockDensity (R + j) := by
     have hρ : blockDensity (R + j) =
         xLogXStep (R + j) - (Real.eulerMascheroniConstant + Real.log (2 * Real.pi)) := rfl
@@ -1013,18 +1028,20 @@ theorem blockPotential_ge_of_ratio {Q R J j : ℕ} (hR : 1 ≤ R) (hj : j < J) {
     have h2 := xLogXStep_le (J - 1 - j)
     have hRpos : (0 : ℝ) < R := by exact_mod_cast hR
     have hj_le : (j : ℝ) + 1 ≤ γ * R := by
-      have : ((j + 1 : ℕ) : ℝ) ≤ ((R + J : ℕ) : ℝ) := by exact_mod_cast (by omega : j + 1 ≤ R + J)
-      push_cast at this; linarith
+      have : ((j + 1 : ℕ) : ℝ) ≤ ((R + J : ℕ) : ℝ) := Nat.cast_le.mpr (by omega)
+      rw [Nat.cast_add, Nat.cast_one] at this
+      linarith
     have hk_le : ((J - 1 - j : ℕ) : ℝ) + 1 ≤ γ * R := by
-      have : ((J - 1 - j + 1 : ℕ) : ℝ) ≤ ((R + J : ℕ) : ℝ) := by
-        exact_mod_cast (by omega : J - 1 - j + 1 ≤ R + J)
-      push_cast at this; linarith
+      have : ((J - 1 - j + 1 : ℕ) : ℝ) ≤ ((R + J : ℕ) : ℝ) := Nat.cast_le.mpr (by omega)
+      rw [Nat.cast_add, Nat.cast_one] at this
+      linarith
     have hl1 := Real.log_le_log (by positivity) hj_le
     have hl2 := Real.log_le_log (by positivity) hk_le
     rw [Real.log_mul (by positivity) hRpos.ne'] at hl1 hl2
     have hlR : Real.log R ≤ Real.log (((R + j : ℕ) : ℝ) + 1) :=
       Real.log_le_log hRpos (by exact_mod_cast (by omega : R ≤ R + j + 1))
     linarith
+  have hl1γ : 0 ≤ Real.log (1 + γ) := Real.log_nonneg (by linarith)
   linarith
 
 theorem inv_norm_le_of_oneBoundState {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -1054,7 +1071,7 @@ theorem inv_norm_le_of_oneBoundState {ι : Type*} [Fintype ι] [DecidableEq ι]
     have hzz_nn : 0 ≤ z ⬝ᵥ z := dotProduct_self_star_nonneg (v := z)
     have hp_nn : 0 ≤ OneBoundState.perp φ w ⬝ᵥ OneBoundState.perp φ w :=
       dotProduct_self_star_nonneg (v := OneBoundState.perp φ w)
-    rw [div_pow, one_pow, le_div_iff₀ (by positivity)]
+    rw [div_pow, one_pow, one_div_mul_eq_div, le_div_iff₀ (by positivity)]
     by_contra hlt
     have hgt : OneBoundState.perp φ w ⬝ᵥ OneBoundState.perp φ w < (z ⬝ᵥ z) * c ^ 2 := not_le.mp hlt
     have hq_nn : 0 ≤ z ⬝ᵥ OneBoundState.perp φ w := by nlinarith
@@ -1065,19 +1082,23 @@ theorem inv_norm_le_of_oneBoundState {ι : Type*} [Fintype ι] [DecidableEq ι]
     have := h.perp_dot_perp g
     change z ⬝ᵥ z = g ⬝ᵥ g - (φ ⬝ᵥ g) ^ 2 at this
     linarith
-  rw [hgg, hφg, h.perp_dot_perp w] at hzz ⊢
+  rw [h.perp_dot_perp w] at hzz
+  change g ⬝ᵥ g ≤ (1 / μ + 1 / c) ^ 2 * (w ⬝ᵥ w)
+  rw [hgg, hφg]
   have hμ := h.depth_pos
   have hc := h.floor_pos
   have hp_nn : 0 ≤ w ⬝ᵥ w - (φ ⬝ᵥ w) ^ 2 := by
     rw [← h.perp_dot_perp w]; exact dotProduct_self_star_nonneg (v := _)
   have h1 : (-(1 / μ) * (φ ⬝ᵥ w)) ^ 2 ≤ (1 / μ + 1 / c) ^ 2 * (φ ⬝ᵥ w) ^ 2 := by
+    have h1c : 0 < 1 / c := by positivity
     have : (1 / μ) ^ 2 ≤ (1 / μ + 1 / c) ^ 2 :=
-      pow_le_pow_left₀ (by positivity) (by positivity) 2
+      pow_le_pow_left₀ (by positivity) (by linarith) 2
     nlinarith [sq_nonneg (φ ⬝ᵥ w)]
   have h2 : (1 / c) ^ 2 * (w ⬝ᵥ w - (φ ⬝ᵥ w) ^ 2) ≤
       (1 / μ + 1 / c) ^ 2 * (w ⬝ᵥ w - (φ ⬝ᵥ w) ^ 2) := by
+    have h1μ : 0 < 1 / μ := by positivity
     refine mul_le_mul_of_nonneg_right ?_ hp_nn
-    exact pow_le_pow_left₀ (by positivity) (by positivity) 2
+    exact pow_le_pow_left₀ (by positivity) (by linarith) 2
   linarith
 
 /-- **Uniform all-block-size upper bound on `couplingNorm`** below `-neutralBlock 1 1 1`. -/
@@ -1105,13 +1126,13 @@ theorem couplingNorm_le_analyticEnvelope {Q R a b : ℕ} (hR : 1 ≤ R) {C : ℝ
     simp only [K, K_jet, K_con, posMatrix, Matrix.of_apply, Matrix.sub_apply, Matrix.neg_apply]
     have hlt : leftPos R a i < rightPos R a b j := by
       simp only [leftPos, rightPos]; have := i.2; omega
-    exact neutralBlock_of_lt hlt
+    exact neutralBlock_of_lt hlt Q
   have hKj : (u ⬝ᵥ (K_jet *ᵥ v)) ^ 2 ≤ 12 ^ 2 * ((u ⬝ᵥ u) * (v ⬝ᵥ v)) := by
     simpa only [show (6 * (2 : ℝ)) ^ 2 = 12 ^ 2 by norm_num] using
       dotProduct_mulVec_sq_le_of_inv_add K_jet
         (r := fun i : Fin a => a - (i : ℕ)) (s := fun j : Fin b => (j : ℕ) + 1)
-        (fun i₁ i₂ h => by have := i₁.2; have := i₂.2; exact Fin.ext (by omega))
-        (fun j₁ j₂ h => Fin.ext (by omega))
+        (fun i₁ i₂ h => by dsimp only at h; have := i₁.2; have := i₂.2; exact Fin.ext (by omega))
+        (fun j₁ j₂ h => by dsimp only at h; exact Fin.ext (by omega))
         (fun i => by have := i.2; omega) (fun j => by omega) (B := 2) (by norm_num)
         (fun i j => by
           have hi := i.2
@@ -1128,9 +1149,12 @@ theorem couplingNorm_le_analyticEnvelope {Q R a b : ℕ} (hR : 1 ≤ R) {C : ℝ
           exact_mod_cast this) u v
   have hKc : (u ⬝ᵥ (K_con *ᵥ v)) ^ 2 ≤ (2 * primeContactSum Q) ^ 2 * ((u ⬝ᵥ u) * (v ⬝ᵥ v)) := by
     refine dotProduct_mulVec_sq_le_of_row_col_sum K_con
-      (fun i j => Finset.sum_nonneg fun k _ => by
-        split_ifs <;> [exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k);
-          exact le_rfl])
+      (fun i j => by
+        simp only [K_con, Matrix.of_apply, floorContact]
+        refine Finset.sum_nonneg fun k _ => ?_
+        split_ifs
+        · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
+        · exact le_rfl)
       (by positivity) (fun i => ?_) (fun j => ?_) u v
     · have hm : ∀ j : Fin b, K_con i j =
           floorContact Q (min (leftPos R a i) (rightPos R a b j))
@@ -1157,11 +1181,11 @@ theorem couplingNorm_le_analyticEnvelope {Q R a b : ℕ} (hR : 1 ≤ R) {C : ℝ
     have hmul : P₁ *ᵥ u = endCoupling Q R a b *ᵥ Sum.elim u 0 := by
       ext m; simp [Matrix.mulVec, dotProduct, endCoupling, joinColumns, P₁]
     rw [hmul]
-    by_cases hw : (endCoupling Q R a b *ᵥ Sum.elim u 0) ⬝ᵥ (endCoupling Q R a b *ᵥ Sum.elim u 0) = 0
-    · rw [hw]; positivity
-    · have hwpos : 0 < _ := lt_of_le_of_ne (dotProduct_self_star_nonneg (v := _)) (Ne.symm hw)
-      have hsq := dotProduct_endCoupling_mulVec_sq_le Q R a b
-        (endCoupling Q R a b *ᵥ Sum.elim u 0) (Sum.elim u 0)
+    set w₁ := endCoupling Q R a b *ᵥ Sum.elim u 0
+    by_cases hw : w₁ ⬝ᵥ w₁ = 0
+    · rw [hw]; exact mul_nonneg (by positivity) (dotProduct_self_star_nonneg (v := u))
+    · have hwpos : 0 < w₁ ⬝ᵥ w₁ := lt_of_le_of_ne (dotProduct_self_star_nonneg (v := w₁)) (Ne.symm hw)
+      have hsq := dotProduct_endCoupling_mulVec_sq_le Q R a b w₁ (Sum.elim u 0)
       have heu : Sum.elim u (0 : Fin b → ℝ) ⬝ᵥ Sum.elim u 0 = u ⬝ᵥ u := by
         rw [sumElim_dotProduct_sumElim, dotProduct_zero, add_zero]
       rw [heu] at hsq
@@ -1170,11 +1194,11 @@ theorem couplingNorm_le_analyticEnvelope {Q R a b : ℕ} (hR : 1 ≤ R) {C : ℝ
     have hmul : P₂ *ᵥ v = endCoupling Q R a b *ᵥ Sum.elim 0 v := by
       ext m; simp [Matrix.mulVec, dotProduct, endCoupling, joinColumns, P₂]
     rw [hmul]
-    by_cases hw : (endCoupling Q R a b *ᵥ Sum.elim 0 v) ⬝ᵥ (endCoupling Q R a b *ᵥ Sum.elim 0 v) = 0
-    · rw [hw]; positivity
-    · have hwpos : 0 < _ := lt_of_le_of_ne (dotProduct_self_star_nonneg (v := _)) (Ne.symm hw)
-      have hsq := dotProduct_endCoupling_mulVec_sq_le Q R a b
-        (endCoupling Q R a b *ᵥ Sum.elim 0 v) (Sum.elim 0 v)
+    set w₂ := endCoupling Q R a b *ᵥ Sum.elim 0 v
+    by_cases hw : w₂ ⬝ᵥ w₂ = 0
+    · rw [hw]; exact mul_nonneg (by positivity) (dotProduct_self_star_nonneg (v := v))
+    · have hwpos : 0 < w₂ ⬝ᵥ w₂ := lt_of_le_of_ne (dotProduct_self_star_nonneg (v := w₂)) (Ne.symm hw)
+      have hsq := dotProduct_endCoupling_mulVec_sq_le Q R a b w₂ (Sum.elim 0 v)
       have hev : Sum.elim (0 : Fin a → ℝ) v ⬝ᵥ Sum.elim 0 v = v ⬝ᵥ v := by
         rw [sumElim_dotProduct_sumElim, zero_dotProduct, zero_add]
       rw [hev] at hsq
@@ -1210,17 +1234,22 @@ theorem couplingNorm_le_analyticEnvelope {Q R a b : ℕ} (hR : 1 ≤ R) {C : ℝ
       _ ≤ ((34 + 2 * primeContactSum Q) ^ 2 * (u ⬝ᵥ u)) *
           ((1 / (-neutralBlock 1 1 1 - C) + 1 / (1 / 5000 + C)) ^ 2 *
             ((34 + 2 * primeContactSum Q) ^ 2 * (v ⬝ᵥ v))) :=
-          mul_le_mul_of_nonneg_right hP₁ (by positivity)
+          mul_le_mul_of_nonneg_right hP₁
+            (mul_nonneg (by positivity)
+              (mul_nonneg (by positivity) (dotProduct_self_star_nonneg (v := v))))
       _ = _ := by ring
   -- Combine the three pieces by triangle inequality on `|·|`
   have hexp : u ⬝ᵥ (overlapCouplingLevel Q R a b C *ᵥ v) =
       -(u ⬝ᵥ (K_jet *ᵥ v)) - u ⬝ᵥ (K_con *ᵥ v) -
         (P₁ *ᵥ u) ⬝ᵥ ((primeFreeMiddle (R + a) + Matrix.diagonal fun _ => C)⁻¹ *ᵥ (P₂ *ᵥ v)) := by
+    have hind : u ⬝ᵥ ((P₁ᵀ * (primeFreeMiddle (R + a) + Matrix.diagonal fun _ => C)⁻¹ * P₂) *ᵥ v) =
+        (P₁ *ᵥ u) ⬝ᵥ ((primeFreeMiddle (R + a) + Matrix.diagonal fun _ => C)⁻¹ *ᵥ (P₂ *ᵥ v)) := by
+      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec,
+        Matrix.vecMul_transpose]
     rw [overlapCouplingLevel]
     change u ⬝ᵥ ((K - P₁ᵀ * _ * P₂) *ᵥ v) = _
     rw [Matrix.sub_mulVec, dotProduct_sub, hKeq, Matrix.sub_mulVec, Matrix.neg_mulVec,
-      dotProduct_sub, dotProduct_neg, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec,
-      Matrix.dotProduct_mulVec, Matrix.vecMul_transpose]
+      dotProduct_sub, dotProduct_neg, hind]
   rw [hexp]
   have sq_sqrt_bound : ∀ {X B' : ℝ}, 0 ≤ B' → X ^ 2 ≤ B' ^ 2 * ((u ⬝ᵥ u) * (v ⬝ᵥ v)) →
       |X| ≤ B' * Real.sqrt ((u ⬝ᵥ u) * (v ⬝ᵥ v)) := by
@@ -1256,7 +1285,7 @@ theorem couplingNorm_le_analyticEnvelope {Q R a b : ℕ} (hR : 1 ≤ R) {C : ℝ
 /-- `(R, 2(R + a) + b]` is a `ρ`-overlap step when both overlapping parts `(R, 2(R + a)]` and
 `(R + a, 2(R + a) + b]` have ratio at most `ρ`. -/
 def IsRatioStep (ρ : ℝ) (R a b : ℕ) : Prop :=
-  1 ≤ R ∧ 2 * ((R + a : ℕ) : ℝ) ≤ ρ * R ∧ ((2 * (R + a) + b : ℕ) : ℝ) ≤ ρ * (R + a)
+  1 ≤ R ∧ 2 * ((R + a : ℕ) : ℝ) ≤ ρ * R ∧ ((2 * (R + a) + b : ℕ) : ℝ) ≤ ρ * ((R + a : ℕ) : ℝ)
 
 /-- At `ρ = 103 / 50 = 2.06`, `IsRatioStep` is the exact condition `1 ≤ R`, `100 a ≤ 3 R`,
 `50 b ≤ 3(R + a)`. -/
@@ -1269,13 +1298,14 @@ theorem isRatioStep_103_div_50_iff (R a b : ℕ) :
     · have : (100 * (R + a) : ℝ) ≤ 103 * R := by push_cast at h1 ⊢; linarith
       exact_mod_cast (by linarith : (100 * a : ℝ) ≤ 3 * R)
     · have : (50 * (2 * (R + a) + b) : ℝ) ≤ 103 * (R + a) := by push_cast at h2 ⊢; linarith
-      exact_mod_cast (by linarith : (50 * b : ℝ) ≤ 3 * ((R + a : ℕ) : ℝ))
+      have hb' : ((50 * b : ℕ) : ℝ) ≤ ((3 * (R + a) : ℕ) : ℝ) := by push_cast; linarith
+      exact Nat.cast_le.mp hb'
   · rintro ⟨hR, ha, hb⟩
     refine ⟨hR, ?_, ?_⟩
     · have : (100 : ℝ) * a ≤ 3 * R := by exact_mod_cast ha
       push_cast; linarith
-    · have : (50 : ℝ) * b ≤ 3 * ((R + a : ℕ) : ℝ) := by exact_mod_cast hb
-      push_cast; linarith
+    · have : ((50 * b : ℕ) : ℝ) ≤ ((3 * (R + a) : ℕ) : ℝ) := Nat.cast_le.mpr hb
+      push_cast at this ⊢; linarith
 
 theorem ratioStep_two_le {ρ : ℝ} {R a b : ℕ} (h : IsRatioStep ρ R a b) : 2 ≤ ρ := by
   have hR : (0 : ℝ) < R := by exact_mod_cast h.1
@@ -1287,7 +1317,8 @@ theorem ratioStep_two_le {ρ : ℝ} {R a b : ℕ} (h : IsRatioStep ρ R a b) : 2
 theorem ratioStep_whole_le {ρ : ℝ} {R a b : ℕ} (h : IsRatioStep ρ R a b) :
     ((2 * (R + a) + b : ℕ) : ℝ) ≤ ρ ^ 2 / 2 * R := by
   have hρ : 0 ≤ ρ := le_trans (by norm_num) (ratioStep_two_le h)
-  nlinarith [h.2.1, h.2.2]
+  have hmul := mul_le_mul_of_nonneg_left h.2.1 hρ
+  linarith [h.2.2, hmul]
 
 /-- **Uniform all-block-size upper bound on `windowExcess`** on every `ρ`-overlap step. -/
 theorem windowExcess_le_analyticEnvelope {Q R a b : ℕ} {ρ C : ℝ} (hstep : IsRatioStep ρ R a b)
@@ -1323,7 +1354,7 @@ theorem windowExcess_le_analyticEnvelope {Q R a b : ℕ} {ρ C : ℝ} (hstep : I
       positivity
     have hww : w ⬝ᵥ w ≤ (34 + 2 * primeContactSum Q) ^ 2 * (e ⬝ᵥ e) := by
       by_cases hw0 : w ⬝ᵥ w = 0
-      · rw [hw0]; positivity
+      · rw [hw0]; exact mul_nonneg (by positivity) (dotProduct_self_star_nonneg (v := e))
       · have hwpos : 0 < w ⬝ᵥ w := lt_of_le_of_ne (dotProduct_self_star_nonneg (v := w)) (Ne.symm hw0)
         have hsq := dotProduct_endCoupling_mulVec_sq_le Q R a b w e
         nlinarith
@@ -1340,6 +1371,21 @@ theorem windowExcess_le_analyticEnvelope {Q R a b : ℕ} {ρ C : ℝ} (hstep : I
     have hsymm : ∀ p q, endForm Q R a b p q = endForm Q R a b q p :=
       fromBlocks_symm (posMatrix_symm (neutralBlock_symm Q) (leftPos R a)) _
         (posMatrix_symm (neutralBlock_symm Q) (rightPos R a b))
+    have hnb_nonpos : ∀ {x y : ℕ}, x ≠ y → neutralBlock Q x y ≤ 0 := by
+      intro x y hxy
+      rw [neutralBlock_eq_neg_jet_sub_contact_of_ne Q hxy]
+      have hlt : min x y < max x y := min_lt_max.mpr hxy
+      have hj : 0 < blockJet (min x y) (max x y) := by
+        rw [blockJet]
+        linarith [xLogXDiff_pos (n := min x y + max x y + 1) (by omega),
+          xLogXDiff_pos (n := max x y - min x y) (by omega)]
+      have hc : 0 ≤ floorContact Q (min x y) (max x y) := by
+        rw [floorContact]
+        refine Finset.sum_nonneg fun k _ => ?_
+        split_ifs
+        · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
+        · exact le_rfl
+      linarith
     have hoff : ∀ p q, p ≠ q → endForm Q R a b p q ≤ 0 := by
       intro p q hpq
       have hval : endForm Q R a b p q =
@@ -1350,22 +1396,15 @@ theorem windowExcess_le_analyticEnvelope {Q R a b : ℕ} {ρ C : ℝ} (hstep : I
         · rfl
         · exact neutralBlock_comm Q _ _
         · rfl
-      rw [hval, neutralBlock_eq_neg_jet_sub_contact_of_ne Q (fun h => hpq (endPos_injective R a b h))]
-      have hlt := min_lt_max.mpr (fun h => hpq (endPos_injective R a b h))
-      have hj : 0 < blockJet (min _ _) (max _ _) := by
-        rw [blockJet]
-        linarith [xLogXDiff_pos (n := min _ _ + max _ _ + 1) (by omega),
-          xLogXDiff_pos (n := max _ _ - min _ _) (by omega)]
-      have hc : 0 ≤ floorContact Q (min _ _) (max _ _) :=
-        Finset.sum_nonneg fun k _ => by
-          split_ifs <;> [exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k);
-            exact le_rfl]
-      linarith
+      rw [hval]
+      exact hnb_nonpos fun h => hpq (endPos_injective R a b h)
     refine form_ge_of_offDiag_nonpos hsymm hoff (fun p => ?_) e
     set J := a + (R + a) + b
     let idx : Fin a ⊕ Fin b → Fin J := fun q => overlapEquiv a (R + a) b (Sum.inr q)
     have hidx : ∀ q, R + (idx q : ℕ) = Sum.elim (leftPos R a) (rightPos R a b) q := by
-      rintro (i | j) <;> simp [idx, overlapEquiv, leftPos, rightPos] <;> omega
+      rintro (i | j)
+      · simp [idx, overlapEquiv, leftPos]
+      · simp [idx, overlapEquiv, rightPos]; omega
     have hwhole_le : ((R + J : ℕ) : ℝ) ≤ ρ ^ 2 / 2 * R := by
       have : R + J = 2 * (R + a) + b := by omega
       rw [this]; exact ratioStep_whole_le hstep
@@ -1379,18 +1418,8 @@ theorem windowExcess_le_analyticEnvelope {Q R a b : ℕ} {ρ C : ℝ} (hstep : I
       refine Finset.sum_nonpos fun m _ => ?_
       have hmpos : R + (overlapEquiv a (R + a) b (Sum.inl m) : ℕ) = middlePos R a m := by
         simp [overlapEquiv, middlePos]; omega
-      rw [hidx p, hmpos, neutralBlock_comm,
-        neutralBlock_eq_neg_jet_sub_contact_of_ne Q (middlePos_ne_endPos R a b m p)]
-      have hlt := min_lt_max.mpr (middlePos_ne_endPos R a b m p)
-      have hj : 0 < blockJet (min _ _) (max _ _) := by
-        rw [blockJet]
-        linarith [xLogXDiff_pos (n := min _ _ + max _ _ + 1) (by omega),
-          xLogXDiff_pos (n := max _ _ - min _ _) (by omega)]
-      have hc : 0 ≤ floorContact Q (min _ _) (max _ _) :=
-        Finset.sum_nonneg fun k _ => by
-          split_ifs <;> [exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k);
-            exact le_rfl]
-      linarith
+      rw [hidx p, hmpos, neutralBlock_comm]
+      exact hnb_nonpos (middlePos_ne_endPos R a b m p)
     have hend_eq : ∑ q : Fin a ⊕ Fin b,
         neutralBlock Q (R + (idx p : ℕ)) (R + (overlapEquiv a (R + a) b (Sum.inr q) : ℕ)) =
         ∑ q : Fin a ⊕ Fin b, endForm Q R a b p q := by
@@ -1559,11 +1588,12 @@ theorem neutralWindow_eq_two_iff_le_two_mul {Q R J : ℕ} (hR : 1 ≤ R) (hQ : 3
     rw [floorContact_eq_sum_floorGraph 2 (by omega), floorContact_eq_sum_floorGraph Q (by omega)]
     have hsplit : Icc 2 Q = insert 2 (insert 3 (Icc 4 Q)) := by
       ext k; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
-    have h2only : Icc 2 2 = {2} := by ext k; simp; omega
+    have h2only : Icc 2 2 = {2} := by ext k; simp
     rw [h2only, Finset.sum_singleton, hsplit, Finset.sum_insert (by simp),
       Finset.sum_insert (by simp)]
     have hg3 : 0 < floorGraph 3 R (3 * R) := by
-      rw [floorGraph_of_le 3 (by omega), if_pos (Nat.mul_div_right 3 hR), vonMangoldt_three]
+      rw [floorGraph_of_le 3 (by omega), if_pos (Nat.mul_div_cancel_left R (by norm_num : 0 < 3)),
+        vonMangoldt_three]
       linarith [log_three_mem.1]
     have hrest : 0 ≤ ∑ k ∈ Icc 4 Q, floorGraph k R (3 * R) :=
       Finset.sum_nonneg fun k _ => by
@@ -1572,6 +1602,22 @@ theorem neutralWindow_eq_two_iff_le_two_mul {Q R J : ℕ} (hR : 1 ≤ R) (hQ : 3
         · exact le_rfl
     linarith
   linarith
+
+private theorem bilin_single_single {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (G : Matrix ι ι ℝ) (i j : ι) :
+    bilin G (Pi.single i 1) (Pi.single j 1) = G i j := by
+  rw [bilin_eq_sum_mul_mulVec]
+  simp only [Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ,
+    if_true, Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero]
+
+private theorem bilin_add_left {ι : Type*} [Fintype ι] (G : Matrix ι ι ℝ) (x y z : ι → ℝ) :
+    bilin G (x + y) z = bilin G x z + bilin G y z := by
+  simp only [bilin_eq_sum_mul_mulVec, Pi.add_apply, add_mul, Finset.sum_add_distrib]
+
+private theorem bilin_add_right {ι : Type*} [Fintype ι] (G : Matrix ι ι ℝ) (x y z : ι → ℝ) :
+    bilin G x (y + z) = bilin G x y + bilin G x z := by
+  simp only [bilin_eq_sum_mul_mulVec, Matrix.mulVec_add, Pi.add_apply, mul_add,
+    Finset.sum_add_distrib]
 
 private theorem bilin_primeTwo_two_six_v2 :
     bilin (neutralWindow 2 2 6)
@@ -1582,11 +1628,10 @@ private theorem bilin_primeTwo_two_six_v2 :
   change bilin (neutralWindow 2 2 6) v₂ v₂ = _
   have hbil : bilin (neutralWindow 2 2 6) v₂ v₂ =
       neutralBlock 2 6 6 + 2 * neutralBlock 2 6 7 + neutralBlock 2 7 7 := by
-    rw [bilin_eq_sum_mul_mulVec]
-    simp only [v₂, Matrix.mulVec_add, Pi.add_apply, add_mul, Finset.sum_add_distrib,
-      Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-      Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow,
-      windowMatrix, Matrix.of_apply]
+    dsimp only [v₂]
+    rw [bilin_add_left, bilin_add_right, bilin_add_right,
+      bilin_single_single, bilin_single_single, bilin_single_single, bilin_single_single]
+    simp only [neutralWindow, windowMatrix, Matrix.of_apply]
     have hc := neutralBlock_comm 2 7 6
     norm_num; linarith
   have hm66 := windowClosed_succ (a := 6) (by norm_num) 2
@@ -1595,7 +1640,7 @@ private theorem bilin_primeTwo_two_six_v2 :
   have hw77 := windowClosed_self (x := 7) (by norm_num) 2
   norm_num at hm66 hm77 hm67
   have hwc68 : windowClosed 2 6 8 = windowSmooth 6 8 := by
-    rw [windowClosed, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
+    rw [windowClosed, show Icc 2 2 = {2} by ext k; simp, Finset.sum_singleton,
       max_eq_right (by norm_num), mul_zero, mul_zero, sub_zero]
   have hl6 : Real.log 6 = Real.log 2 + Real.log 3 := by
     rw [show (6 : ℝ) = 2 * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
@@ -1609,7 +1654,7 @@ private theorem bilin_primeTwo_two_six_v2 :
       -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) := by
     rw [windowSmooth, dyadicDepth]
     simp only [blockDegree]
-    norm_num [hl6, hl8, hl14, Real.log_two]
+    norm_num [hl6, hl8, hl14]
     ring
   linarith
 
@@ -1621,10 +1666,8 @@ theorem two_le_hermNegIndex_primeTwo_two_six :
   let v₁ : Fin 6 → ℝ := Pi.single ⟨0, by omega⟩ 1
   let v₂ : Fin 6 → ℝ := Pi.single ⟨4, by omega⟩ 1 + Pi.single ⟨5, by omega⟩ 1
   have hv₁ : bilin (neutralWindow 2 2 6) v₁ v₁ = -thirdDepth := by
-    rw [bilin_eq_sum_mul_mulVec]
-    simp only [v₁, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, neutralWindow, windowMatrix, Matrix.of_apply]
+    dsimp only [v₁]
+    rw [bilin_single_single]
     exact neutralBlock_two_two 2
   have hv₂_eq : bilin (neutralWindow 2 2 6) v₂ v₂ =
       -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) :=
@@ -1633,17 +1676,14 @@ theorem two_le_hermNegIndex_primeTwo_two_six :
       -(11 * Real.log 11 + 12 * Real.log 2 - 9 * Real.log 3 - 15 * Real.log 5) / 2 := by
     have hbil : bilin (neutralWindow 2 2 6) v₁ v₂ =
         neutralBlock 2 2 6 + neutralBlock 2 2 7 := by
-      rw [bilin_eq_sum_mul_mulVec]
-      simp only [v₁, v₂, Matrix.mulVec_add, Pi.add_apply, Pi.single_apply, ite_mul, one_mul,
-        zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.mulVec, dotProduct,
-        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow, windowMatrix,
-        Matrix.of_apply]
-      norm_num
+      dsimp only [v₁, v₂]
+      rw [bilin_add_right, bilin_single_single, bilin_single_single]
+      simp only [neutralWindow, windowMatrix, Matrix.of_apply]
     have hc26 : floorContact 2 2 6 = 0 := by
-      rw [floorContact, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
+      rw [floorContact, show Icc 2 2 = {2} by ext k; simp, Finset.sum_singleton,
         if_neg (by norm_num)]
     have hc27 : floorContact 2 2 7 = 0 := by
-      rw [floorContact, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
+      rw [floorContact, show Icc 2 2 = {2} by ext k; simp, Finset.sum_singleton,
         if_neg (by norm_num)]
     rw [hbil, neutralBlock_of_lt (by norm_num), neutralBlock_of_lt (by norm_num), hc26, hc27]
     simp only [blockJet, xLogXDiff, xLogX]
@@ -1670,7 +1710,8 @@ theorem two_le_hermNegIndex_primeTwo_two_six :
     rw [hv₁₂_eq]
     constructor <;> linarith [log_eleven_mem.1, log_eleven_mem.2, Real.log_two_gt_d9,
       Real.log_two_lt_d9, log_three_mem.1, log_three_mem.2, log_five_mem.1, log_five_mem.2]
-  refine two_le_hermNegIndex_of_unbound_pair (neutralWindow_symm 2 2 6) (by linarith) ?_
+  refine two_le_hermNegIndex_of_unbound_pair (neutralWindow_symm 2 2 6) (x := v₁) (y := v₂)
+    (by linarith) ?_
   have hsq : bilin (neutralWindow 2 2 6) v₁ v₂ ^ 2 < 0.333 ^ 2 :=
     sq_lt_sq' hv₁₂_mem.1 (by linarith [hv₁₂_mem.2])
   have hprod : 0.6027 * 0.467 <
@@ -1698,7 +1739,8 @@ theorem two_le_hermNegIndex_primeTwo {R J : ℕ} (hR : 2 ≤ R) (hJ : 3 * R + 4 
     let emb : Fin (6 * m') ↪ Fin J :=
       ⟨fun i => ⟨1 + i, by have := i.2; omega⟩, fun i₁ i₂ h => by
         simp only [Fin.ext_iff] at h; exact Fin.ext (by omega)⟩
-    have hsub : ((neutralWindow 2 R J).map (↑) : Matrix (Fin J) (Fin J) ℂ).submatrix emb emb =
+    have hsub : ((neutralWindow 2 (2 * m + 1) J).map (↑) :
+          Matrix (Fin J) (Fin J) ℂ).submatrix emb emb =
         (neutralWindow 2 (2 * m') (6 * m')).map (↑) := by
       ext i l
       simp only [Matrix.submatrix_apply, Matrix.map_apply, neutralWindow, windowMatrix,
@@ -1716,10 +1758,8 @@ theorem primeThree_restores_positivity_two_six {Q : ℕ} (hQ : 3 ≤ Q) :
       bilin (neutralWindow Q 2 6) v₁ v₂ ^ 2 := by
   intro v₁ v₂
   have hv₁ : bilin (neutralWindow Q 2 6) v₁ v₁ = -thirdDepth := by
-    rw [bilin_eq_sum_mul_mulVec]
-    simp only [v₁, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, neutralWindow, windowMatrix, Matrix.of_apply]
+    dsimp only [v₁]
+    rw [bilin_single_single]
     exact neutralBlock_two_two Q
   have hv₂_eq : bilin (neutralWindow Q 2 6) v₂ v₂ = bilin (neutralWindow 2 2 6) v₂ v₂ := by
     have h66 : neutralBlock Q 6 6 = neutralBlock 2 6 6 :=
@@ -1730,16 +1770,17 @@ theorem primeThree_restores_positivity_two_six {Q : ℕ} (hQ : 3 ≤ Q) :
       neutralBlock_eq_of_le (by omega) (by norm_num)
     have h77 : neutralBlock Q 7 7 = neutralBlock 2 7 7 :=
       neutralBlock_eq_of_le (by omega) (by norm_num)
-    rw [bilin_eq_sum_mul_mulVec, bilin_eq_sum_mul_mulVec]
-    simp only [v₂, Matrix.mulVec_add, Pi.add_apply, add_mul, Finset.sum_add_distrib,
-      Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-      Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow,
-      windowMatrix, Matrix.of_apply]
+    dsimp only [v₂]
+    rw [bilin_add_left, bilin_add_right, bilin_add_right,
+      bilin_single_single, bilin_single_single, bilin_single_single, bilin_single_single,
+      bilin_add_left, bilin_add_right, bilin_add_right,
+      bilin_single_single, bilin_single_single, bilin_single_single, bilin_single_single]
+    simp only [neutralWindow, windowMatrix, Matrix.of_apply]
     norm_num [h66, h67, h76, h77]
   have hv₂_gt : -0.478 < bilin (neutralWindow Q 2 6) v₂ v₂ := by
     rw [hv₂_eq, bilin_primeTwo_two_six_v2]
     linarith [dyadicDepth_mem.2, Real.log_two_lt_d9, log_three_mem.2, log_seven_mem.1]
-  have hv₁_gt : -0.604 < bilin (neutralWindow Q 2 6) v₁ v₁ := by
+  have hv₁_gt : -0.61 < bilin (neutralWindow Q 2 6) v₁ v₁ := by
     have h3d : thirdDepth = dyadicDepth + 6 * Real.log 2 + 3 * Real.log 3 - 5 * Real.log 5 := by
       rw [thirdDepth, dyadicDepth]; ring
     rw [hv₁, h3d]
@@ -1747,11 +1788,9 @@ theorem primeThree_restores_positivity_two_six {Q : ℕ} (hQ : 3 ≤ Q) :
   have hv₁₂_lt : bilin (neutralWindow Q 2 6) v₁ v₂ < -1 := by
     have hbil : bilin (neutralWindow Q 2 6) v₁ v₂ =
         neutralBlock 3 2 6 + neutralBlock 3 2 7 := by
-      rw [bilin_eq_sum_mul_mulVec]
-      simp only [v₁, v₂, Matrix.mulVec_add, Pi.add_apply, Pi.single_apply, ite_mul, one_mul,
-        zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.mulVec, dotProduct,
-        mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow, windowMatrix,
-        Matrix.of_apply]
+      dsimp only [v₁, v₂]
+      rw [bilin_add_right, bilin_single_single, bilin_single_single]
+      simp only [neutralWindow, windowMatrix, Matrix.of_apply]
       have h26 : neutralBlock Q 2 6 = neutralBlock 3 2 6 := neutralBlock_eq_of_le hQ (by norm_num)
       have h27 : neutralBlock Q 2 7 = neutralBlock 3 2 7 := neutralBlock_eq_of_le hQ (by norm_num)
       norm_num [h26, h27]
@@ -1816,7 +1855,7 @@ theorem hermNegIndex_le_one_of_sq_div_two (Q : ℕ) {p q : ℕ} (hq : 1 ≤ q) (
       (hcert R J hR hRJ hshort)
   · -- Refine by `m = 2 q²` and split at `a' = q (p − 2 q) R`
     set m : ℕ := 2 * q ^ 2
-    have hm : 1 ≤ m := by nlinarith
+    have hm : 1 ≤ m := by dsimp [m]; nlinarith
     set R' : ℕ := m * R
     set J' : ℕ := m * J
     set a' : ℕ := q * (p - 2 * q) * R
@@ -1828,34 +1867,32 @@ theorem hermNegIndex_le_one_of_sq_div_two (Q : ℕ) {p q : ℕ} (hq : 1 ≤ q) (
           = (2 * q ^ 2 + q * (p - 2 * q)) * R := (Nat.add_mul _ _ R).symm
         _ = q * p * R := by rw [hsub]
     have hlt_mid : 2 * (R' + a') < R' + J' := by
-      have : (2 * q * p * R : ℝ) < (2 * q ^ 2 * (R + J) : ℝ) := by
+      have : ((2 * (R' + a') : ℕ) : ℝ) < ((R' + J' : ℕ) : ℝ) := by
+        rw [hR'a']
+        dsimp [R', J', m]
         dsimp [ρ] at hlong
-        rw [div_mul_eq_mul_div, lt_div_iff₀ hq0] at hlong
+        rw [div_mul_eq_mul_div, div_lt_iff₀ hq0] at hlong
         push_cast at hlong ⊢
         nlinarith
-      have hnat : 2 * q * p * R < m * (R + J) := by exact_mod_cast this
-      rw [hR'a']
-      dsimp [R', J']
-      omega
+      exact Nat.cast_lt.mp this
     have hle_top : R' + J' ≤ p ^ 2 * R := by
-      have : (2 * q ^ 2 * (R + J) : ℝ) ≤ (p ^ 2 * R : ℝ) := by
+      have : ((R' + J' : ℕ) : ℝ) ≤ ((p ^ 2 * R : ℕ) : ℝ) := by
+        dsimp [R', J', m]
         dsimp [ρ] at hJ
         have hq2 : (0 : ℝ) < 2 * (q : ℝ) ^ 2 := by positivity
         have heq : ((p : ℝ) / q) ^ 2 / 2 * R = (p : ℝ) ^ 2 * R / (2 * (q : ℝ) ^ 2) := by ring
         rw [heq, le_div_iff₀ hq2] at hJ
         push_cast at hJ ⊢
         linarith
-      have hnat : m * (R + J) ≤ p ^ 2 * R := by exact_mod_cast this
-      dsimp [R', J']
-      omega
+      exact Nat.cast_le.mp this
     set b' : ℕ := R' + J' - 2 * (R' + a')
     have hJ'_eq : J' = a' + (R' + a') + b' := by omega
     have hstep : IsRatioStep ρ R' a' b' := by
-      refine ⟨by nlinarith, ?_, ?_⟩
+      refine ⟨by dsimp [R']; nlinarith, ?_, ?_⟩
       · rw [hR'a']
         dsimp [ρ, R', m]
-        field_simp [hq0.ne']
-        push_cast; ring
+        have hne := hq0.ne'
+        exact le_of_eq (by field_simp; push_cast; ring)
       · have htot : 2 * (R' + a') + b' = R' + J' := by omega
         rw [htot, hR'a']
         dsimp [ρ]
@@ -1902,16 +1939,17 @@ theorem two_mul_iteratedDen_le_num (k : ℕ) : 2 * iteratedDen k ≤ iteratedNum
 
 theorem iteratedRatio_succ (k : ℕ) : iteratedRatio (k + 1) = (iteratedRatio k) ^ 2 / 2 := by
   simp only [iteratedRatio, iteratedNum, iteratedDen]
-  have hd : (iteratedDen k : ℝ) ≠ 0 := by exact_mod_cast (iteratedDen_pos k).ne'
+  have hd : (iteratedDen k : ℝ) ≠ 0 := by
+    exact_mod_cast (by have := iteratedDen_pos k; omega : iteratedDen k ≠ 0)
   push_cast
-  field_simp [hd]
+  field_simp
 
 /-- Closed-form exponential growth `iteratedRatio k = 2 · (103 / 100) ^ (2 ^ k)`. -/
 theorem iteratedRatio_eq (k : ℕ) : iteratedRatio k = 2 * (103 / 100 : ℝ) ^ (2 ^ k) := by
   induction k with
   | zero => norm_num [iteratedRatio, iteratedNum, iteratedDen]
   | succ k ih =>
-    rw [iteratedRatio_succ, ih, pow_succ, pow_mul]
+    rw [iteratedRatio_succ, ih, mul_pow, ← pow_mul, show 2 ^ k * 2 = 2 ^ (k + 1) from rfl]
     ring
 
 /-- **Milestones of the ratio ladder** (`2.06 → 2.1218 → 2.25 → 2.53 → 3.209 > 3 → 3.21`):
@@ -1952,7 +1990,7 @@ theorem levelAt_nonneg (Q k : ℕ) : 0 ≤ levelAt Q k := by
   | succ k ih => exact add_nonneg ih (schurStepExcess_nonneg Q _ _)
 
 theorem levelAt_mono (Q : ℕ) : Monotone (levelAt Q) :=
-  monotone_nat_of_le_succ fun k => le_add_of_nonneg_right (schurStepExcess_nonneg Q _ _)
+  monotone_nat_of_le_succ fun _ => le_add_of_nonneg_right (schurStepExcess_nonneg Q _ _)
 
 /-- **Inductive propagation along the ratio-squaring ladder**: for every `Q ≥ 2` and `k : ℕ`, if
 `levelAt Q k < -neutralBlock 1 1 1`, then every window of ratio at most `iteratedRatio (k + 1)`
@@ -2092,8 +2130,8 @@ theorem iteratedRatio_succ_le_towerCutoff (k : ℕ) :
     nlinarith [iteratedDen_pos (k + 1)]
   exact_mod_cast hdiv.le
 
-theorem two_le_towerCutoff (k : ℕ) : 2 ≤ towerCutoff k := by
-  unfold towerCutoff; omega
+theorem two_le_towerCutoff (k : ℕ) : 2 ≤ towerCutoff k :=
+  Nat.le_add_left 2 _
 
 theorem levelAt_eq_zero_of_riemannHypothesis (hRH : RiemannHypothesis) {Q : ℕ} (k : ℕ)
     (hQ : iteratedRatio k ≤ Q) : levelAt Q k = 0 := by
@@ -2111,64 +2149,27 @@ theorem levelAt_eq_zero_of_riemannHypothesis (hRH : RiemannHypothesis) {Q : ℕ}
     have hwhole := ratioStep_whole_le hstep
     rw [← iteratedRatio_succ] at hwhole
     have hQR : R + (a + (R + a) + b) ≤ Q * R := by
-      have htot : ((R + (a + (R + a) + b) : ℕ) : ℝ) ≤ (Q * R : ℕ) := by
+      have htot : ((R + (a + (R + a) + b) : ℕ) : ℝ) ≤ ((Q * R : ℕ) : ℝ) := by
         have h1 : R + (a + (R + a) + b) = 2 * (R + a) + b := by omega
-        rw [h1]
+        rw [h1, Nat.cast_mul]
         have hR0 : (0 : ℝ) ≤ R := Nat.cast_nonneg R
-        push_cast
         exact hwhole.trans (mul_le_mul_of_nonneg_right hQ hR0)
-      exact_mod_cast htot
+      exact Nat.cast_le.mp htot
     have hS := overlapSchur_nonneg_of_riemannHypothesis hRH hstep.1 hQR e
     rw [overlapSchur_form_eq_channels Q R a b (by have := hstep.1; omega)] at hS
     linarith
 
-/-- **Global quantization equivalence (zero loss)**: `RiemannHypothesis` holds iff
-`globalTowerLevel k = 0` at every step `k`. -/
-theorem riemannHypothesis_iff_globalTowerLevel_zero :
-    RiemannHypothesis ↔ ∀ k : ℕ, globalTowerLevel k = 0 := by
-  constructor
-  · intro hRH k
-    exact levelAt_eq_zero_of_riemannHypothesis hRH (k + 1) (iteratedRatio_succ_le_towerCutoff k)
-  · intro h0
-    rw [riemannHypothesis_iff_initialWindow_margin_bddBelow]
-    refine ⟨0, fun M hM => ?_⟩
-    -- Choose `k` with `2 M ≤ iteratedRatio (k + 1)` via Bernoulli's inequality
-    set k := 17 * M
-    have h2M_le : (2 * M : ℝ) ≤ iteratedRatio (k + 1) := by
-      rw [iteratedRatio_eq]
-      have hbern := one_add_mul_le_pow (x := (3 / 100 : ℝ)) (by norm_num) (2 ^ (k + 1))
-      rw [show (1 : ℝ) + 3 / 100 = 103 / 100 by norm_num] at hbern
-      have hpow : (k + 1 : ℝ) ≤ (2 ^ (k + 1) : ℕ) := by
-        exact_mod_cast (Nat.lt_two_pow_self (n := k + 1)).le
-      push_cast at hpow
-      dsimp [k] at hpow
-      nlinarith
-    have hQ_ge : M + M ≤ towerCutoff k := by
-      have : ((M + M : ℕ) : ℝ) ≤ (towerCutoff k : ℝ) := by
-        push_cast
-        linarith [h2M_le, iteratedRatio_succ_le_towerCutoff k]
-      exact_mod_cast this
-    have hwin_eq : neutralWindow (M + M) 1 (M + M - 1) =
-        neutralWindow (towerCutoff k) 1 (M + M - 1) := by
-      ext i l
-      simp only [neutralWindow, windowMatrix, Matrix.of_apply]
-      exact (neutralBlock_eq_of_le hQ_ge (by have := i.2; have := l.2; omega)).symm
-    have hk_lt : levelAt (towerCutoff k) k < -neutralBlock 1 1 1 := by
-      have hk0 : levelAt (towerCutoff k) k = 0 :=
-        le_antisymm
-          ((levelAt_mono (towerCutoff k) (Nat.le_succ k)).trans (h0 k).le)
-          (levelAt_nonneg _ _)
-      rw [hk0, neutralBlock_one_one, neg_neg]
-      linarith [dyadicDepth_mem.1]
-    have hle := hermNegIndex_le_one_of_levelAt (two_le_towerCutoff k) k hk_lt le_rfl (by omega)
-      (by
-        have : 1 + (M + M - 1) = 2 * M := by omega
-        rw [this, mul_one]; exact_mod_cast h2M_le)
-    rw [hwin_eq]
-    change hermNegIndex ((neutralWindow (towerCutoff k) 1 (M + M - 1) +
-      Matrix.diagonal fun _ => (0 : ℝ)).map (↑) : Matrix _ _ ℂ) ≤ 1
-    rw [← h0 k]
-    exact hle
+private theorem exists_two_mul_le_iteratedRatio_succ (M : ℕ) :
+    ∃ k : ℕ, 2 * (M : ℝ) ≤ iteratedRatio (k + 1) := by
+  refine ⟨34 * M, ?_⟩
+  rw [iteratedRatio_eq]
+  have hbern := one_add_mul_le_pow (by norm_num : (-2 : ℝ) ≤ 3 / 100) (2 ^ (34 * M + 1))
+  rw [show (1 : ℝ) + 3 / 100 = 103 / 100 by norm_num, Nat.cast_pow, Nat.cast_ofNat] at hbern
+  have hpow : ((34 * M + 1 : ℕ) : ℝ) ≤ ((2 ^ (34 * M + 1) : ℕ) : ℝ) :=
+    Nat.cast_le.mpr (Nat.lt_two_pow_self (n := 34 * M + 1)).le
+  push_cast at hpow
+  have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
+  linarith
 
 /-- **0-or-escape quantization law**: a positive cumulative loss cannot iterate indefinitely below
 the binding energy `-neutralBlock 1 1 1` of the dyadic middle; `globalTowerLevel` stays uniformly
@@ -2181,37 +2182,54 @@ theorem riemannHypothesis_iff_exists_lt_dyadicDepth_globalTowerLevel :
   · intro hRH
     refine ⟨0, ?_, fun k => ?_⟩
     · rw [neutralBlock_one_one, neg_neg]; linarith [dyadicDepth_mem.1]
-    · rw [riemannHypothesis_iff_globalTowerLevel_zero.mp hRH k]
+    · exact (levelAt_eq_zero_of_riemannHypothesis hRH (k + 1) (iteratedRatio_succ_le_towerCutoff k)).le
   · rintro ⟨C, hC_lt, hC⟩
     rw [riemannHypothesis_iff_initialWindow_margin_bddBelow]
     refine ⟨C, fun M hM => ?_⟩
-    set k := 17 * M
-    have h2M_le : (2 * M : ℝ) ≤ iteratedRatio (k + 1) := by
-      rw [iteratedRatio_eq]
-      have hbern := one_add_mul_le_pow (x := (3 / 100 : ℝ)) (by norm_num) (2 ^ (k + 1))
-      rw [show (1 : ℝ) + 3 / 100 = 103 / 100 by norm_num] at hbern
-      have hpow : (k + 1 : ℝ) ≤ (2 ^ (k + 1) : ℕ) := by
-        exact_mod_cast (Nat.lt_two_pow_self (n := k + 1)).le
-      push_cast at hpow
-      dsimp [k] at hpow
-      nlinarith
+    obtain ⟨k, h2M_le⟩ := exists_two_mul_le_iteratedRatio_succ M
     have hQ_ge : M + M ≤ towerCutoff k := by
       have : ((M + M : ℕ) : ℝ) ≤ (towerCutoff k : ℝ) := by
         push_cast
         linarith [h2M_le, iteratedRatio_succ_le_towerCutoff k]
-      exact_mod_cast this
+      exact Nat.cast_le.mp this
     have hwin_eq : neutralWindow (M + M) 1 (M + M - 1) =
         neutralWindow (towerCutoff k) 1 (M + M - 1) := by
       ext i l
       simp only [neutralWindow, windowMatrix, Matrix.of_apply]
-      exact (neutralBlock_eq_of_le hQ_ge (by have := i.2; have := l.2; omega)).symm
+      have hmin : 1 ≤ min (1 + (i : ℕ)) (1 + (l : ℕ)) := by omega
+      have hmax :
+          max (1 + (i : ℕ)) (1 + (l : ℕ)) < (M + M + 1) * min (1 + (i : ℕ)) (1 + (l : ℕ)) := by
+        calc max (1 + (i : ℕ)) (1 + (l : ℕ))
+            < M + M + 1 := by have := i.2; have := l.2; omega
+          _ = (M + M + 1) * 1 := (Nat.mul_one _).symm
+          _ ≤ (M + M + 1) * min (1 + (i : ℕ)) (1 + (l : ℕ)) := Nat.mul_le_mul_left _ hmin
+      exact (neutralBlock_eq_of_le hQ_ge hmax).symm
     have hk_lt : levelAt (towerCutoff k) k < -neutralBlock 1 1 1 :=
       lt_of_le_of_lt ((levelAt_mono (towerCutoff k) (Nat.le_succ k)).trans (hC k)) hC_lt
-    have hle := hermNegIndex_le_one_of_levelAt (two_le_towerCutoff k) k hk_lt le_rfl (by omega)
+    have hle := hermNegIndex_le_one_of_levelAt (two_le_towerCutoff k) k hk_lt
+      (R := 1) (J := M + M - 1) le_rfl (by omega)
       (by
-        have : 1 + (M + M - 1) = 2 * M := by omega
-        rw [this, mul_one]; exact_mod_cast h2M_le)
+        have h1 : ((1 + (M + M - 1) : ℕ) : ℝ) = 2 * (M : ℝ) := by
+          have : 1 + (M + M - 1) = 2 * M := by omega
+          rw [this, Nat.cast_mul, Nat.cast_ofNat]
+        rw [h1, Nat.cast_one, mul_one]
+        exact h2M_le)
+    have hglob : levelAt (towerCutoff k) (k + 1) = globalTowerLevel k := rfl
+    rw [hglob] at hle
     rw [hwin_eq]
-    exact (hermNegIndex_add_diagonal_mono _ (hC k)).trans hle
+    exact (hermNegIndex_add_diagonal_mono (neutralWindow (towerCutoff k) 1 (M + M - 1)) (hC k)).trans hle
+
+/-- **Global quantization equivalence (zero loss)**: `RiemannHypothesis` holds iff
+`globalTowerLevel k = 0` at every step `k`. -/
+theorem riemannHypothesis_iff_globalTowerLevel_zero :
+    RiemannHypothesis ↔ ∀ k : ℕ, globalTowerLevel k = 0 := by
+  constructor
+  · intro hRH k
+    exact levelAt_eq_zero_of_riemannHypothesis hRH (k + 1) (iteratedRatio_succ_le_towerCutoff k)
+  · intro h0
+    refine riemannHypothesis_iff_exists_lt_dyadicDepth_globalTowerLevel.mpr
+      ⟨0, ?_, fun k => (h0 k).le⟩
+    rw [neutralBlock_one_one, neg_neg]
+    linarith [dyadicDepth_mem.1]
 
 end GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow

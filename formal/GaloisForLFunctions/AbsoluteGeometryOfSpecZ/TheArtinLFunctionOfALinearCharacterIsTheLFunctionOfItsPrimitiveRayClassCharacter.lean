@@ -74,7 +74,8 @@ theorem dvd_heckeFiniteConductor_of_forall_artinSymbol_eq_of_comm (χ : LinearCh
   have hζ : ∀ s : ℂ, 1 < s.re →
       dedekindZeta (FixedPoints.intermediateField (⊥ : Subgroup G) : IntermediateField K L) s =
         ∏ η : LinearCharacter G, heckeL (P η).1 (P η).2 s := fun s hs => by
-    rw [dedekindZeta_eq_prod_artinEulerProduct K L _ hs]
+    rw [dedekindZeta_eq_prod_artinEulerProduct K L (G := G)
+      (FixedPoints.intermediateField (⊥ : Subgroup G) : IntermediateField K L) hs]
     exact Finset.prod_congr rfl fun η _ =>
       artinEulerProduct_linearCharacter_eq_heckeL K L η (P η).1 (P η).2 (hP η) hs
   have hmain : v.asIdeal ∣ (P χ).1.fin → v.asIdeal ∣ heckeFiniteConductor (P χ).1 (P χ).2 :=

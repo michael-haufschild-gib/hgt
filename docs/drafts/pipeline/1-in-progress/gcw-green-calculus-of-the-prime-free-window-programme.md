@@ -36,31 +36,121 @@ Window `(R, 2D+b]`, `D = R+a`: ends `E₁ = (R, D]`, `E₂ = (2D, 2D+b]`.
 - P8 exact Green identities: `G_D φ = −φ/μ`, `G_D V_D = 𝟙`, `G_D v_S = χ_S` for sub-windows `S`.
 - P9 magnitude reading (not a theorem): floors at aperture `≈0.36` are of prolate size
   (`10⁻³–10⁻²`), so `‖G₊‖` is large; crude norm bounds cannot give the first step.
+- P10 pole plane: for `M` with one bound state, `x·(M + p⊗q + q⊗p)x = z·Mz +
+  ⟨p,x⟩²((1+β)² − αγ)/α` with `z = x + ⟨p,x⟩(Gq − ((1+β)/α)Gp) ⊥ p`; `M ≥ 0` on `p^⊥` iff
+  `α ≤ 0`. Woodbury with the `2×2` pole matrix gives the inverse.
+- P11 dual elimination: for ends with `16a ≤ R`, `8b ≤ R + a` (the first two steps of the
+  ladder) the ends `E` are narrow, `N_e` has row sums `≥ 3/4` (narrow potential `> 1`; jets
+  between the ends `≤ 2/D` each; no contact since `2x + 2 ≤ y < 3x`), so `N_e ⪰ 3/4` and
+  `N_e⁻¹ ≥ 0` entrywise (negative part of `N_e⁻¹w` has nonpositive energy). Haynsworth over
+  `N_e`: `ind N_W = ind(M_D − P N_e⁻¹ Pᵀ)`. `P < 0` entrywise, so the dressed middle keeps
+  negative entries off the diagonal; AGZ two wells and sink counts apply on the middle.
+- P12 thin end: on `(R, R+J]` with `KJ ≤ R`, `K ≥ 16`, `V_j ≥ log K − 2` (density `log(R+j)`
+  minus half the jets `log j + log(J−j) ≤ 2 log(J/2)`), so `N ⪰ log K − 2` (row sums, entries
+  `≤ 0` off the diagonal). Coupling of adjacent windows: jets `≤ 4/((J−i)+(l+1))`, Hilbert
+  gives norm `≤ 24`; contacts by Schur `≤ 2 Σ_{k≤Q}Λ(k)`. Block form with `A ⪰ c` on `ψ^⊥`,
+  `E ⪰ s`, `‖P‖ ≤ B`: `≥ cx + sy − 2B√(xy) ≥ (c−ε)(x+y)` if `s ≥ c − ε + B²/ε`. So an end of
+  relative width `δ` costs at most `≈ B²/log(1/δ)` of the floor; losses of a chain of thin
+  ends of fixed total width are not summable (one step is the best use).
+- P13 continuity method: gap `c` := form `≥ c` on a hyperplane. Gap decreases with the window
+  (restriction), is lower semicontinuous (P12). At block size `KR`, `log K ≥ c/2 + 2B²/c + 2`,
+  one block is a thin end: from the certified `(KR, 2KR]`, bound ⇒ gap `c` (hypothesis) ⇒
+  next window has gap `c/2 > 0` ⇒ bound; up to `KJ`; refinement gives `(R, R+J]`.
 
 ## Modules
-Formalized (compile clean, wired into the umbrella):
-1. `TheGreenMatrixOfTheDyadicMiddleHasABoundStateChannelAndAPositiveChannel` — `OneBoundState`,
-   `positiveChannel` (`0 ⪯ G₊ ⪯ 1/c` on `φ^⊥`), `primeFreeMiddle` (P1), `bindingEnergy > 1` (P2),
-   `greenMatrix`, `overlapSchur`, overlap law in Green form, `riemannHypothesis_iff_forall_greenForm`.
-2. `TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle` — levels
-   (`OneBoundState.add_diagonal`), Dirichlet principle `positiveChannel_ge`, `S_C` grows at unit
-   speed, P4 (`hermNegIndex_fromBlocks_add_diagonal_le_one`), additive loss law on windows,
-   first step margin `≤ ‖X₀‖`, refinement at a level,
-   `riemannHypothesis_iff_overlapSchur_bddBelow`, `…_forall_overlapSchur_nonneg`,
-   `…_forall_harmonic_nonneg`, `riemannHypothesis_of_level_function`.
-3. `TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies` — certified
-   ground-state and conditional floors, `−1 ⪯ G_D ⪯ 5000`, and an upper binding bound.
-4. `ChargeCancellationPreservesTheCertifiedFloor` — spectral floor also for `J<R`, exact
-   charge-cancellation Schur floor, and the local neutral-orthogonal overlap criterion.
+Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper card
+`../3-formalized/gcw-sliver-bounds-ratio-excess-and-ratio-three.md`, source §2.21).
+1. (M) `TheGreenMatrixOfTheDyadicMiddleHasABoundStateChannelAndAPositiveChannel` — `OneBoundState`,
+   `positiveChannel`, `primeFreeMiddle` (P1), `bindingEnergy > 1` (P2), `greenMatrix`,
+   `overlapSchur`, overlap law in Green form, `riemannHypothesis_iff_forall_greenForm`.
+2. (M) `TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle` — levels, Dirichlet
+   principle `positiveChannel_ge`, `S_C` grows at unit speed, P4, additive loss law, RH forms
+   (`…_overlapSchur_bddBelow`, `…_forall_overlapSchur_nonneg`, `…_of_level_function`).
+3. (P) `ChargeCancellationPreservesTheCertifiedFloor` — floor for `J < R`, charge-cancellation
+   Schur floor, neutral-orthogonal overlap criterion.
+4. (M) `TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies` —
+   `−1 ⪯ G_D ⪯ 5000`, floors of the conditional energies, first step from coupling `≤ 1/5000`.
+5. (M) `TheGreenFormOfABoundWindowGrowsWithTheWindowAndAlongTheRefinementTower` — reversed C–S,
+   compression monotonicity (P5 in compression form), domain monotonicity, `0 ⪯ G_D` on slivers
+   (bulk of ratio `≥ 4/3`), tower law `G_D ⪯ ι_mᵀ G_{mD} ι_m`, `μ_D ≤ μ_{mD}` (P6).
+6. (P) `TheSliverBlocksOfTheGreenMatrixHaveALogarithmicDiagonalAndBulkDipoleCoupling` —
+   `μ_D < 3`, diagonal `Θ(1/log D)` for `D ≥ 2^256`, `endJet`, `endContact`, `pencilCoupling`,
+   failure of weights in `[−4, 0]` on `(R, 3R]`, sign-twin obstruction.
+7. (P) `TheExcessOfAnOverlapStepAndTheFourStepLadderToRatioThree` — excess functions, Hilbert
+   bounds, ladder `2.06 → 3.21`, rigidity `(∀k, level_k = 0) ↔ RH`.
+8. (M) `TheContactPencilOfTheOnePrimeRangeIsConcaveInTheWeightOfThePrimeTwo` — duality of the
+   Green form (`inv_form_nonneg_iff`), `pencilSchur`, normal form
+   `S(t) = S(0) − 2tΞ − t²Π` (P7), `Π ⪰ 0` (`contactGreen_nonneg/_pos`), concavity, admissible
+   weights form an interval, at ratio three all admissible weights have one sign and
+   `not_hermNegIndex_eq_one_of_weight_nonpos`.
+9. (M) `TheGreenMatrixOfTheMiddleIsNegativeOnlyAlongItsPotentialAndPositiveOnChargeFreePackets`
+   — charge formula `⟨w,Gw⟩ = (Σw)²/(D·N(1,1)) + ⟨w₀,Gw₀⟩`, `G_D ≻ 0` on charge-free packets,
+   `OneBoundState.inv` (class closed under inversion), Gershgorin `M_D ⪯ 2 log 2D + 3`,
+   quantitative positivity off a negative vector, lower bounds `1/(8 log 2D + 21)` (charge-free),
+   `1/(152 log 2D + 453)` (slivers, diagonal for `D ≥ 2`, contact form), overlap law and RH in
+   charge form (P8).
+10. (M) `ThePolePlaneAbsorbsTheBoundStateAndTheGreenMatrixOfWeilsFormOnTheMiddleIsPositive` —
+   `withPoles M p q = M + p⊗q + q⊗p`; pole normal form and pole criterion (positive definite
+   iff `[[α, 1+β],[1+β, γ]] ≺ 0`, `α = ⟨p,Gp⟩`, `β = ⟨p,Gq⟩`, `γ = ⟨q,Gq⟩`); inverse through
+   the pole matrix (`poleSolution`), `G ⪯ (M + poles)⁻¹`; `weilMiddle D = M_D + d⊗𝟙 + 𝟙⊗d`;
+   `⟨d,G_D d⟩ < 0`, `(1+⟨d,G_D𝟙⟩)² < ⟨d,G_D d⟩⟨𝟙,G_D𝟙⟩`, `⟨d,G_D𝟙⟩ < −1/2`; `weilGreen D`
+   positive definite, `‖w‖²/(2 log 2D + 5) ≤ ⟨w,𝒢_D w⟩ ≤ 5000‖w‖²`; overlap law for Weil's
+   form (`weilSchur`), `riemannHypothesis_iff_forall_weilSchur_nonneg` (P10).
+11. (M) `TheFirstOverlapStepIsOneBoundStateOfTheMiddleDressedByTheAttractionOfItsTwoEnds` —
+   ends with `16a ≤ R`, `8b ≤ R + a` are `⪰ 3/4` without a certificate (`endForm_form_ge`);
+   inverse of a positive definite matrix with entries `≤ 0` off the diagonal preserves
+   positivity; `endAttraction = P N_e⁻¹ Pᵀ` (PSD, entrywise `≥ 0`, `⪯ (4/3) P Pᵀ`);
+   `dressedMiddle` (negative off the diagonal, `⪯ M_D`, least energy of the window over the end
+   packets); dual overlap law `hermNegIndex_neutralWindow_eq_dressedMiddle`; step ⟺ Hodge index
+   inequality of the dressed form on disjoint positive packets of the middle; certificate by a
+   positive trial vector; each end alone leaves one bound state (P11).
+12. (M) `AThinEndIsLogarithmicallyStiffAndAFloorExtendsTheBoundRange` — potential of a thin
+   window `≥ log K − 2`, form `⪰ log K − 2`; `adjacentCoupling` of two adjacent windows, norm
+   `≤ 24 + 2 Σ_{k≤Q}Λ(k)` at every block size (`≤ 26` up to ratio three); window = first part +
+   adjacent part + coupling (`neutralWindow_submatrix_finSumFinEquiv`); dual law for a thin
+   tail, attraction `⪯ 676/(log K − 2)`; stiff corner lemma; floor `c` ⇒ floor `c − ε` on
+   `(R, R+J+j]`, `Kj ≤ R+J`, `log K ≥ c − ε + B²/ε + 2`; one bound state with floor `1/10000`
+   beyond the certified range (`log K ≥ 6760003`) (P12).
+13. (M) `TheBoundRangeEndsOnlyWhereTheGapOfTheBoundWindowsCloses` — `HasGap`; gap decreases
+   with the window, lower semicontinuous; continuity method
+   `hermNegIndex_neutralWindow_eq_one_of_gap` (cutoff `Q`, ratio `≤ a/b`: bound ⇒ gap `c` for
+   one `c > 0` gives all bound); `exists_bound_window_without_gap` (unconditional: an unbound
+   window is preceded, at smaller ratio, by bound windows without gap `c`, every `c > 0`);
+   `riemannHypothesis_of_gap_of_bound_windows` (P13).
 
-All A162 components have clean transitive axiom audits; see
-`../3-formalized/a162-certified-window-floors-and-overlap-calculus.md`.
+## Status of the questions
+- Q1 sliver blocks: answered. `G_D = −(Σw)²/(D|N(1,1)|) + positive`; on slivers and charge-free
+  packets `‖w‖²/(C log 2D) ≤ ⟨w,G_D w⟩ ≤ 5000‖w‖²`; order `1/log D` attained (P, diagonal).
+- Q2 `μ_D`: `−N(1,1) ≤ μ_D < 3`, nondecreasing along the tower.
+- Q3 first step: open. Reduced to coupling `≤ 1/5000` (M4), to the dipole (M8), to one bound
+  state of the dressed middle (M11: mediator `N_e⁻¹ ∈ [1/‖N_e‖, 4/3]`, positivity
+  preserving), to an a priori gap of the bound windows of ratio `≤ 10609/5000` (M13); small
+  blocks `R ≤ 33` (P). At ratio three the sign of the dipole is necessary (M8, P). The step at
+  every block size is one statement at aperture `½ log(10609/5000)` (refinement). Perturbation
+  from the certified range reaches ends of relative width `exp(−6760003)` only (M12): the
+  coupling of adjacent windows is of order one, the stiffness of an end of width `δ` is
+  `log(1/δ)`.
+- Q4 excess: excess functions and envelopes (P), additive loss law (M2); thin steps: loss of
+  the floor `≤ B²/log(1/δ)` (M12), not summable along a chain.
+- Q5 closed form: open. The continuum form is `log|x| + log|p|` on an interval of ratio two, a
+  truncated convolution in the multiplicative variable with the digamma symbol (infinitely many
+  poles); no closed form found. Normal forms: two channels, charge formula, pole matrix (M10).
 
-Planned:
-5. Sliver blocks of `G_D`; potential theory `M = V + 𝓔` (P3), `μ_D = −⟨V⟩_φ`, P8.
-6. Inversion at equal index, tower monotonicity (P5, P6).
-7. Contact pencil and sign twin (P7).
-8+. Boundary-map norms (Hilbert inequality), first step, no-go for norm bounds.
+## Open after M13
+- Converse of the continuity method: does RH give a common gap of the windows of cutoff `Q`?
+  It is strict decrease of the gap in the ratio (a zero mode of a window that stays a zero
+  mode of a larger bound window must vanish: unique continuation). Not proved.
+- A priori gap on the first step: no estimate known; the Hodge index inequality on a bound
+  window gives gap `≥ 0` only.
+
+## Ideas not yet done
+- Tower limits: `μ_∞ = sup_D μ_D`, limit of the Green form along the tower (bounded, monotone).
+- Composition: Krein formula, Green matrix of a window on its ends is the inverse of the Schur
+  complement; one bound state iff positive there.
+- Excess is quasi-convex in the contact weight (levels + pencil).
+- Explicit charge of the coupling (column sums of `endCoupling` in closed form).
 
 ## Log
-- 2026-11-14 — card created; README first draft written; modules 1–2 formalized.
+- 2026-11-14 — card created; README first draft; modules 1–9 above formalized.
+- 2026-11-14 — modules 10, 11 formalized; README rewritten as the foundational document.
+- 2026-11-14 — module 11 extended to ends `16a ≤ R`, `8b ≤ R + a`; modules 12, 13 formalized.

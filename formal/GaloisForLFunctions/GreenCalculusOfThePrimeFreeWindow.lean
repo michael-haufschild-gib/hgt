@@ -3,6 +3,15 @@ import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheLossOfAnOverlapS
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.ChargeCancellationPreservesTheCertifiedFloor
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGreenFormOfABoundWindowGrowsWithTheWindowAndAlongTheRefinementTower
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheSliverBlocksOfTheGreenMatrixHaveALogarithmicDiagonalAndBulkDipoleCoupling
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheExcessOfAnOverlapStepAndTheFourStepLadderToRatioThree
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheContactPencilOfTheOnePrimeRangeIsConcaveInTheWeightOfThePrimeTwo
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGreenMatrixOfTheMiddleIsNegativeOnlyAlongItsPotentialAndPositiveOnChargeFreePackets
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.ThePolePlaneAbsorbsTheBoundStateAndTheGreenMatrixOfWeilsFormOnTheMiddleIsPositive
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFirstOverlapStepIsOneBoundStateOfTheMiddleDressedByTheAttractionOfItsTwoEnds
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.AThinEndIsLogarithmicallyStiffAndAFloorExtendsTheBoundRange
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheBoundRangeEndsOnlyWhereTheGapOfTheBoundWindowsCloses
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGroundEnergyOfAnApertureIsAGapOfEveryWindowInsideIt
 
 /-!
 # Green calculus of the prime-free window
@@ -11,6 +20,12 @@ Umbrella for the potential theory of the inverse of the neutral part of the dyad
 `(D, 2D]`, the mediator of the overlap law: the bound-state channel and the positive channel of
 the Green matrix, the Schur complement of the middle, levels and the additive loss law, the
 certified floors as a priori bounds, the monotonicity of the Green form in the window and along
-the refinement tower, and the forms of the Riemann hypothesis they give. See
-`GreenCalculusOfThePrimeFreeWindow/README.md`.
+the refinement tower, the sliver blocks, the excess of a step and the ladder to ratio three,
+the contact pencil of the one-prime range, the charge formula of the Green matrix, the pole
+plane and the positive Green matrix of Weil's form on the middle, the middle dressed by the
+attraction of the two ends of the first step, the logarithmic stiffness of a thin end, the gap
+of a bound window and the continuity method, the floor of Weil's form on an aperture as a gap
+of every window inside it and as the excess of its overlap step, the first step as the even
+sector at one aperture, and the forms of the Riemann hypothesis they give.
+See `GreenCalculusOfThePrimeFreeWindow/README.md`.
 -/

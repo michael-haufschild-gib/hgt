@@ -87,12 +87,13 @@ With `ψ'` the primitive character of `ψ`: `(χ, v) = ψ'(v)` for `v ∤ c`, an
 
 ## What stays open
 
-- `χ ≠ 1 ⇒ ψ' ≠ 1` for the character of a linear Artin character (the Artin map is onto), and
-  with it the index law of a linear Artin character on a continuation of its Euler product.
+- The conductor exponent at a ramified prime (the Artin conductor through the higher
+  ramification groups).
 
-- The conductor–ramification theorem: `𝔣(ψ')` is divisible exactly by the primes ramified for
-  `χ`, and `(χ, v) = ψ'(v)` at every prime. With it the finite product in step 7 is `1`.
-- The virtual configuration of a general Artin character (Brauer) with its orders.
+Closed elsewhere: `χ ≠ 1 ⇒ ψ' ≠ 1` and the virtual configuration of a general Artin character
+with its orders (card `agz-artin-characters-zero-configuration-with-orders`); the
+conductor–ramification theorem, `(χ, v) = ψ'(v)` at every prime, with which the finite product
+in step 7 is `1` (card `agz-conductor-ramification`).
 
 ## Log
 - 2026-11-13 — created in 1-in-progress with the paper proof

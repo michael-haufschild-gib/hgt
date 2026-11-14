@@ -1138,7 +1138,7 @@ lemma sourceRowTerm_norm_from_scalar (eta a rho x w z : ℂ)
       linarith
 
 /-- Norm exponent for the four nonzero base positions of the marked local series. -/
-private def sourceBaseExponent (e l k m : ℕ) : ℝ :=
+def sourceBaseExponent (e l k m : ℕ) : ℝ :=
   if e=0 ∧ l=2 then if m=0 then 5 else 6
   else if e=1 ∧ l=0 then 1/2+(k:ℝ)
   else (e:ℝ)+5/2+(k:ℝ)/2
@@ -1209,7 +1209,7 @@ private lemma sourceBase_even (j k m : ℕ) (hj : j<6) (hk : k≤1) :
         sourceBase_kone p hp hg hc 5 (j+6*m) (by decide) (by decide)
 
 include hc in
-private lemma sourceBase_scalar_bound (j e l k m : ℕ) (hj : j<6) (hk : k≤1)
+lemma sourceBase_scalar_bound (j e l k m : ℕ) (hj : j<6) (hk : k≤1)
     (hf : (e=0 ∧ l=2) ∨ (e=1 ∧ l=0) ∨ (e=0 ∧ l=1) ∨ (e=1 ∧ l=1)) :
     ‖sourceScalar p hp hg (e+3*l) k (j+6*m)‖≤
       2*(Ideal.absNorm (Ideal.span {p}):ℝ)^(sourceBaseExponent e l k m) := by

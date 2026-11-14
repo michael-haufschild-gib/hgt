@@ -36,7 +36,12 @@ private theorem continuous_boundary_logDeriv {σ : ℝ}
   apply continuous_iff_continuousAt.mpr
   intro t
   have han := analyticAt_zetaResidueUnit ((σ : ℂ) + (t : ℂ)*I)
-  exact (han.deriv.continuousAt.div han.continuousAt (hz t)).comp (by fun_prop)
+  have hline : ContinuousAt (fun u : ℝ => (σ : ℂ) + (u : ℂ)*I) t := by fun_prop
+  change ContinuousAt (fun u : ℝ =>
+    deriv zetaResidueUnit ((σ : ℂ) + (u : ℂ)*I) /
+      zetaResidueUnit ((σ : ℂ) + (u : ℂ)*I)) t
+  exact ContinuousAt.comp (f := fun u : ℝ => (σ : ℂ) + (u : ℂ)*I) (x := t)
+    (han.deriv.continuousAt.div han.continuousAt (hz t)) hline
 
 /-- The right boundary contains no zeros of the residue unit. -/
 theorem residueUnit_right_boundary_ne_zero {σ : ℝ}
@@ -125,7 +130,8 @@ theorem tendsto_sech_residueUnit_right_boundary {a b σ : ℝ}
       (Real.log |T| : ℂ)) (Filter.comap abs atTop) (𝓝 0) := by
   obtain ⟨C,hC,hgrowth⟩ := exists_residueUnit_right_boundary_log_bound hσ hσ1
   simpa only [mul_zero] using tendsto_integral_mul_log_normalized
-    (T := id) Filter.tendsto_comap (continuous_residueUnit_right_boundary hσ hσ1)
+    (l := Filter.comap (abs : ℝ → ℝ) atTop) (T := fun t : ℝ => t)
+    Filter.tendsto_comap (continuous_residueUnit_right_boundary hσ hσ1)
     (tendsto_residueUnit_right_boundary_log_normalized hσ hσ1) hC hgrowth
     (continuous_sech_vertical ha hb).aestronglyMeasurable
     (integrable_norm_sechStripWeight_vertical_weight ha hb)
@@ -140,7 +146,8 @@ theorem tendsto_sech_residueUnit_left_boundary {a b σ : ℝ}
       (𝓝 (-(∫ u : ℝ, sechStripWeight a 0 (1/2+(b : ℂ)+(u : ℂ)*I)))) := by
   obtain ⟨C,hC,hgrowth⟩ := exists_residueUnit_left_boundary_log_bound hσ0 hσ
   simpa only [mul_neg_one] using tendsto_integral_mul_log_normalized
-    (T := id) Filter.tendsto_comap (continuous_residueUnit_left_boundary hσ0 hσ)
+    (l := Filter.comap (abs : ℝ → ℝ) atTop) (T := fun t : ℝ => t)
+    Filter.tendsto_comap (continuous_residueUnit_left_boundary hσ0 hσ)
     (tendsto_residueUnit_left_boundary_log_normalized hσ0 hσ) hC hgrowth
     (continuous_sech_vertical ha hb).aestronglyMeasurable
     (integrable_norm_sechStripWeight_vertical_weight ha hb)

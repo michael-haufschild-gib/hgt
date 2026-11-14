@@ -31,15 +31,25 @@ The exact arithmetic receiver criterion is `TransHorizonIncidenceMechanics.recei
 
 ## Positive strip test
 
-The corpus theorem `riemannZeta_zero_mem_quasiRH_strip` places nontrivial zeros in `[1/8,7/8]`. A new candidate improvement is `m(1/2+iγ) ≤ (3/(8π)+ε)log|γ|`, through `K_a(z)=sech(πz/(2a))`, `a>3/8`. Its real part is positive on `|Im z|<a`, and its real integral is `2a`. The sharper candidate weights each zero on the horizontal fibre by `sec(π(Reρ−1/2)/(2a))`. The fixed-line sublogarithmic logarithmic derivative and the weighted contour identity still require formalization; see `zeta-sech-strip-multiplicity.md`. This does not close the sublogarithmic target.
+The formalized [positive strip test](../3-formalized/zeta-sech-strip-multiplicity.md)
+gives `m(1/2+iγ) ≤ (3/(8π)+ε)log|γ|` and the stronger uniform envelope
+
+`m(β+iγ) ≤ [(3/(8π))cos((4π/3)(β−1/2))+ε]log|γ|`.
+
+The weighted horizontal-fibre theorem uses the corpus quasi-RH strip,
+fixed-line sublogarithmic logarithmic derivatives, and positive sech residues.
+It gives sublogarithmic multiplicity on the outer boundaries `β=1/8,7/8`.
+All stated consequences are Lean-certified with only `propext`,
+`Classical.choice`, and `Quot.sound`. The critical-line coefficient remains
+positive, so B47 remains open.
 
 ## Gates
 
-The related local-compensation paper derivation is recorded in
-`zeta-large-critical-multiplicity-local-compensation.md`. Its Gaussian explicit
-formula is already unconditional in the corpus. The logarithmic asymptotic
-and finite local compensation theorem remain uncertified; the strip bound
-uses the same quasi-RH dependency closure.
+The formalized [local compensation theorem](../3-formalized/zeta-large-critical-multiplicity-local-compensation.md)
+shows that `m≥c log T` at a critical zero forces `Ω_c(log T)` actual off-line
+zero copies within a fixed height distance and a fixed positive horizontal depth.
+Its exact finite inequality, Gaussian asymptotic, and final counting statement
+pass Lean with standard axioms only. Excluding these configurations remains open.
 
 - [x] Exact target and existing bounds identified.
 - [ ] Independent all-height arithmetic or geometric input proved.

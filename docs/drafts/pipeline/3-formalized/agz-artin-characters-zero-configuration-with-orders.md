@@ -137,9 +137,11 @@ In Lean the order at `1` is `−p` with `p = Σ_{q : ψ_q = 1} n_q`.
 
 ## What stays open
 
-- The conductor–ramification theorem (card `agz-conductor-ramification`): with it the finite
-  products in A3 and B3 are `1`.
 - `Σ_{q : ψ_q = 1} n_q` is the multiplicity of the trivial character in `ρ` (not proved here).
+
+Closed elsewhere: the conductor–ramification theorem (card `agz-conductor-ramification`): the
+finite products in A3 and B3 are `1`, and the orders are those of the virtual configuration at
+every point of `ℂ`.
 
 ## Log
 - 2026-11-13 — created in 1-in-progress with the paper proof

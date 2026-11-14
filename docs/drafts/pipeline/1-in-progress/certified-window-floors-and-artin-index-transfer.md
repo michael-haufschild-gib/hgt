@@ -55,16 +55,29 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
   `TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies`
   supplies first-overlap floors. Its source snapshot and transitive audits passed;
   only `propext`, `Classical.choice`, `Quot.sound`. Umbrella import added.
-- A140: the located full-sector certificate ends at `181/500`; the dilation tower
-  stays below `0.3621`. Neither reaches `1881/5000`.
-  An alternative is the exact Legendre spectrum of the regional logarithmic
-  operator (`LatticeSectionTheory.regionalLogOperator_legP`): retain the prime
-  translations and boundary potential, and prove a finite-dimensional Schur
-  certificate with a quantitative tail bound. Those bounds remain unproved.
+- **A140 odd sector closed at `1881/5000`:**
+  `WindowTowerOfSpecZ.weilQuad_ge_odd_at_aperture_1881_over_5000` proves
+  `weilQuad F ≥ (1/2000)∫F²`. The polynomial comparison, third regional gap,
+  and actual Weil transfer passed direct Lean checks and standard-only axiom
+  audits. See `../3-formalized/a140-odd-certificate-at-1881-over-5000.md`.
+  The even sector, larger apertures, and full-sector transfer remain open;
+  see `a140-even-certificate-at-1881-over-5000.md`.
 - A141: the quotient construction is formalized in
   `EveryArtinEulerProductHasAMeromorphicContinuationAndASignedIndexLaw.lean`:
   `exists_analytic_quotient_artin`, `exists_meromorphicContinuation_artin`,
-  `exists_analytic_quotient_and_virtualConfig_artin`. Direct Lean check passed;
+  `exists_analytic_quotient_and_virtualConfig_artin`, and
+  `exists_meromorphicContinuation_and_signedIndex_artin`. The last theorem
+  identifies actual meromorphic orders and counts zeros and poles directly.
+  Direct Lean check passed;
   transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`.
   The located `7/8` producer uses the Hecke family over `ℚ(ζ₃)`, not arbitrary
-  containing fields. General-field `7/8` and conductor exponents remain open.
+  containing fields. The corpus now supplies primitive-character matching at every prime, including
+  conductor support: see `../3-formalized/agz-conductor-ramification.md`.
+  General-field `7/8` and higher ramification conductor exponents remain open.
+- The general-field analytic receiver already exists:
+  `FamilyContinuationTheory.heckeHalfPlane_of_family_reciprocal_signal`.
+  It uses `heckeZeroFunction`, clearing the pole only for the trivial character.
+  The missing input is a family of actual arithmetic signals with both direct
+  and comparison exponents below each `β>7/8`, uniformly across ray characters.
+  The located cubic reciprocity, sieve, and common-probe producers still use
+  the Eisenstein ring; their field generalization is not supplied by this receiver.
