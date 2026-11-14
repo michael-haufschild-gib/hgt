@@ -77,8 +77,14 @@ theorem popular_subgroup (H : Subgroup G) :
   let A : Finset G := univ.filter fun g => g ∈ H
   have hA : IsSubgroupFinset A := {
     one_mem := by simp [A]
-    mul_mem := by simpa only [A, mem_filter, mem_univ, true_and] using H.mul_mem
-    inv_mem := by simpa only [A, mem_filter, mem_univ, true_and] using H.inv_mem }
+    mul_mem := by
+      intro a b ha hb
+      simp only [A, mem_filter, mem_univ, true_and] at ha hb ⊢
+      exact H.mul_mem ha hb
+    inv_mem := by
+      intro a ha
+      simp only [A, mem_filter, mem_univ, true_and] at ha ⊢
+      exact H.inv_mem ha }
   change popularTranslations A = A
   ext g
   constructor

@@ -50,11 +50,17 @@ theorem sum_centeredResidueFactor_sq {α : Type*} [Fintype α] [DecidableEq α]
 
 private instance primeFieldFact (p : Nat.Primes) : Fact p.val.Prime := ⟨p.property⟩
 
+/-- The centered generating product across the chosen prime coordinates. -/
+def centeredPrimeResidueProduct (S : Finset Nat.Primes)
+    (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) (n : ℕ) : ℝ :=
+  ∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)
+
 /-- Chinese remaindering evaluates the generating product's complete-period first moment. -/
 theorem sum_prime_centered_product (S : Finset Nat.Primes)
     (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) :
-    ∑ n ∈ range (primeSetProduct S), ∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val) =
+    ∑ n ∈ range (primeSetProduct S), centeredPrimeResidueProduct S A t n =
       primeSetProduct S := by
+  unfold centeredPrimeResidueProduct
   rw [sum_primeResidue_product]
   simp only [sum_centeredResidueFactor, ZMod.card, primeSetProduct, Nat.cast_prod]
 
@@ -62,19 +68,27 @@ theorem sum_prime_centered_product (S : Finset Nat.Primes)
 theorem sum_prime_centered_product_sq (S : Finset Nat.Primes)
     (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) :
     ∑ n ∈ range (primeSetProduct S),
-      (∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) ^ 2 =
+      (centeredPrimeResidueProduct S A t n) ^ 2 =
       (primeSetProduct S : ℝ) *
         ∏ p ∈ S, (1 + t p ^ 2 * (A p).card * (p.val - ((A p).card : ℝ))) := by
-  simp_rw [← prod_pow]
-  rw [sum_primeResidue_product]
-  simp only [sum_centeredResidueFactor_sq, ZMod.card, prod_mul_distrib,
-    primeSetProduct, Nat.cast_prod]
+  calc
+    _ = ∑ n ∈ range (primeSetProduct S),
+        ∏ p ∈ S, (centeredResidueFactor (A p) (t p) (n : ZMod p.val)) ^ 2 := by
+      apply sum_congr rfl
+      intro n _
+      exact (prod_pow S 2 (fun p : Nat.Primes =>
+        centeredResidueFactor (A p) (t p) (n : ZMod p.val))).symm
+    _ = ∏ p ∈ S, ∑ a : ZMod p.val, (centeredResidueFactor (A p) (t p) a) ^ 2 :=
+      sum_primeResidue_product S (fun p a => (centeredResidueFactor (A p) (t p) a) ^ 2)
+    _ = _ := by
+      simp only [sum_centeredResidueFactor_sq, ZMod.card, prod_mul_distrib,
+        primeSetProduct, Nat.cast_prod]
 
 /-- Subtracting the exact mean leaves the product variance minus one, without absolute-value loss. -/
 theorem sum_prime_centered_product_variance (S : Finset Nat.Primes)
     (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) :
     ∑ n ∈ range (primeSetProduct S),
-      ((∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1) ^ 2 =
+      ((centeredPrimeResidueProduct S A t n) - 1) ^ 2 =
       (primeSetProduct S : ℝ) *
         ((∏ p ∈ S, (1 + t p ^ 2 * (A p).card * (p.val - ((A p).card : ℝ)))) - 1) := by
   simp_rw [sub_sq, mul_one, one_pow]
@@ -87,21 +101,25 @@ theorem sum_prime_centered_product_variance (S : Finset Nat.Primes)
 theorem prime_centered_product_deviation (S : Finset Nat.Primes)
     (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) (L : NNReal) :
     (L : ℝ) ^ 2 * (((range (primeSetProduct S)).filter fun n =>
-      (L : ℝ) ≤ |(∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1|).card : ℝ) ≤
+      (L : ℝ) ≤ |(centeredPrimeResidueProduct S A t n) - 1|).card : ℝ) ≤
       (primeSetProduct S : ℝ) *
         ((∏ p ∈ S, (1 + t p ^ 2 * (A p).card * (p.val - ((A p).card : ℝ)))) - 1) := by
   rw [← sum_prime_centered_product_variance]
   calc
     _ = ∑ _n ∈ (range (primeSetProduct S)).filter (fun n =>
-        (L : ℝ) ≤ |(∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1|),
+        (L : ℝ) ≤ |(centeredPrimeResidueProduct S A t n) - 1|),
           (L : ℝ) ^ 2 := by rw [sum_const, nsmul_eq_mul, mul_comm]
     _ ≤ ∑ n ∈ (range (primeSetProduct S)).filter (fun n =>
-        (L : ℝ) ≤ |(∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1|),
-          ((∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1) ^ 2 := by
+        (L : ℝ) ≤ |(centeredPrimeResidueProduct S A t n) - 1|),
+          ((centeredPrimeResidueProduct S A t n) - 1) ^ 2 := by
       apply sum_le_sum
       intro n hn
-      have h := pow_le_pow_left₀ L.property (mem_filter.mp hn).2 2
-      simpa only [sq_abs] using h
+      have hbound : (L : ℝ) ≤ |centeredPrimeResidueProduct S A t n - 1| :=
+        (mem_filter.mp hn).2
+      calc
+        _ ≤ |centeredPrimeResidueProduct S A t n - 1| ^ 2 :=
+          pow_le_pow_left₀ L.property hbound 2
+        _ = _ := sq_abs _
     _ ≤ _ := sum_le_sum_of_subset_of_nonneg (filter_subset _ _)
       (fun n _ _ => sq_nonneg _)
 

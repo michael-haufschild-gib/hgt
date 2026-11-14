@@ -150,3 +150,10 @@ theorem cross (u v w z : A) (hu : star u * u = 1) (hv : star v * v = 1)
       rw [x₂, mul_assoc, (hw.mul_right hz).eq]
 
 end GaloisForLFunctions.HTGeometry.Hexablock
+
+#print axioms GaloisForLFunctions.HTGeometry.Hexablock.polarization
+#print axioms GaloisForLFunctions.HTGeometry.Hexablock.energy
+#print axioms GaloisForLFunctions.HTGeometry.Hexablock.cross
+#print axioms GaloisForLFunctions.HTGeometry.Hexablock.slice_brownHalmos_iff
+#print axioms GaloisForLFunctions.HTGeometry.Hexablock.slice_commutant_iff
+#print axioms GaloisForLFunctions.HTGeometry.Hexablock.slice_adjoint_commutant_iff

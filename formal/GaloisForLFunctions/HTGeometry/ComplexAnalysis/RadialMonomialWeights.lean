@@ -29,38 +29,6 @@ theorem integral_logRadius_weight (F : ℝ → ℝ) :
     Real.rpow_neg (Real.exp_pos t).le, Real.rpow_one]
   field_simp
 
-/-- A real-homogeneous observable separates from an arbitrary radial profile. -/
-theorem integral_real_homogeneous_mul_radial
-    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [Nontrivial E]
-    (g : E → ℝ) (a : ℝ) (φ : ℝ → ℝ)
-    (hg : ∀ (r : ℝ), 0 < r → ∀ x : E, g (r • x) = r ^ a * g x) :
-    (∫ x, g x * φ ‖x‖) =
-      (∫ ω : sphere (0 : E) 1, g ω.1 ∂volume.toSphere) *
-        ∫ r in Ioi (0 : ℝ), r ^ ((Module.finrank ℝ E : ℝ) - 1 + a) * φ r := by
-  rw [integral_polar_sphere_radius]
-  have he : (fun p : sphere (0 : E) 1 × Ioi (0 : ℝ) =>
-      g (p.2.1 • p.1.1) * φ ‖p.2.1 • p.1.1‖) =
-      fun p => g p.1.1 * (p.2.1 ^ a * φ p.2.1) := by
-    funext p
-    have hnorm : ‖(p.1.1 : E)‖ = 1 := mem_sphere_zero_iff_norm.mp p.1.2
-    have hr : (0 : ℝ) < p.2.1 := p.2.2
-    simp only [hg _ hr, norm_smul, Real.norm_eq_abs, abs_of_pos hr, hnorm, mul_one]
-    ring
-  rw [he, integral_prod_mul (fun ω : sphere (0 : E) 1 => g ω.1)
-    (fun r : Ioi (0 : ℝ) => r.1 ^ a * φ r.1),
-    integral_volumeIoiPow_comp_subtype (Module.finrank ℝ E - 1)
-      (fun r : ℝ => r ^ a * φ r)]
-  congr 1
-  apply setIntegral_congr_fun measurableSet_Ioi
-  intro r hr
-  have hd : 1 ≤ Module.finrank ℝ E := Module.finrank_pos
-  have hcast : ((Module.finrank ℝ E - 1 : ℕ) : ℝ) = (Module.finrank ℝ E : ℝ) - 1 := by
-    rw [Nat.cast_sub hd, Nat.cast_one]
-  dsimp only
-  rw [Real.rpow_add hr, ← hcast, Real.rpow_natCast]
-  simp only [smul_eq_mul, mul_assoc]
-
 section ComplexBlock
 
 variable (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]

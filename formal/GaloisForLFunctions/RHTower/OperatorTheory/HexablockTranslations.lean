@@ -71,3 +71,6 @@ theorem hexablock_translation_brownHalmos_iff (b : ℝ)
     rw [mul_assoc, h.eq, ← mul_assoc, unitaryOp_star_mul, one_mul]
 
 end RHTower
+
+#print axioms RHTower.hexablock_translation_relations
+#print axioms RHTower.hexablock_translation_brownHalmos_iff

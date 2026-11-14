@@ -21,6 +21,7 @@ private theorem primeSupport_restriction_of_nonzero_primes
     arithmeticPrimeSupport (primeRestrict S f) = {p : Nat.Primes | p.1 ∈ S} := by
   apply Set.Subset.antisymm (arithmeticPrimeSupport_primeRestrict_subset S f)
   intro p hp
+  change p.1 ∈ S at hp
   refine ⟨p.1, ?_, dvd_rfl⟩
   have hvalue : primeRestrict S f p.1 = f p.1 := by
     simpa only [pow_one, Nat.one_ne_zero, false_or, if_pos hp] using

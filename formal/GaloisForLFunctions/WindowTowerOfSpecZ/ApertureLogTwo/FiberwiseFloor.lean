@@ -173,20 +173,23 @@ theorem bound (hS : S.valid = true) (hFC : FC.check S = true) (h4 : ∀ D ∈ FC
   set m := S.moments G
   set a := primeThreeOffset with ha_def
   obtain ⟨haL, haH⟩ := primeThreeOffset_mem
-  have haH1 : (aHiQ : ℝ) ≤ 3 / 5 := by norm_num [aHiQ]
-  have haL1 : (1 / 2 : ℝ) ≤ aLoQ := by norm_num [aLoQ]
+  obtain ⟨haL1, haH1⟩ := aLoQ_HiQ_bounds
   -- sliver endpoints
   have hs4' := hs4
   simp only [Sliver4.check, Bool.and_eq_true, decide_eq_true_eq] at hs4'
   have hlo0 : (0 : ℝ) ≤ FC.s4.lo := Rat.cast_nonneg.mpr hs4'.1.1.1
-  have hlo1 : (FC.s4.lo : ℝ) ≤ (1 - aHiQ) / 2 := by
-    have := Rat.cast_le (K := ℝ).mpr hs4'.1.1.2; push_cast at this; exact this
+  have hlo1 : (FC.s4.lo : ℝ) ≤ (1 - (aHiQ : ℝ)) / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hs4'.1.1.2
+    simp only [Rat.cast_div, Rat.cast_sub, Rat.cast_one, Rat.cast_ofNat] at this; exact this
   have hs2' := hs2
   simp only [Sliver2.check, Bool.and_eq_true, decide_eq_true_eq] at hs2'
-  have hhi0 : (1 - aLoQ : ℝ) ≤ FC.s2.hi := by
-    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1; push_cast at this; exact this
+  have hhi0 : 1 - (aLoQ : ℝ) ≤ FC.s2.hi := by
+    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1
+    simp only [Rat.cast_sub, Rat.cast_one] at this; exact this
   have hhi1 : (FC.s2.hi : ℝ) ≤ 1 / 2 := by
-    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.2; push_cast at this; exact this
+    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.2
+    simp only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] at this; exact this
+  generalize (aLoQ : ℝ) = aL, (aHiQ : ℝ) = aH at haL haH haL1 haH1 hlo1 hhi0
   have hL4 : (FC.s4.lo : ℝ) ≤ (1 - a) / 2 := by linarith only [hlo1, haH]
   -- subinterval and sliver bounds
   have hP4 := integral_chain4 hS hGc hiPot m FC.p4 0 FC.s4.lo hc4 h4 le_rfl hL4

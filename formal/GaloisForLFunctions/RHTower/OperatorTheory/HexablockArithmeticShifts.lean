@@ -79,3 +79,7 @@ theorem hexablock_arithmetic_compact_iff (T : H →L[ℂ] H) :
     simp only [mul_zero, zero_mul]
 
 end RHTower.PrimeCoShift
+
+#print axioms RHTower.PrimeCoShift.hexablock_arithmetic_relations
+#print axioms RHTower.PrimeCoShift.hexablock_arithmetic_brownHalmos_iff
+#print axioms RHTower.PrimeCoShift.hexablock_arithmetic_compact_iff

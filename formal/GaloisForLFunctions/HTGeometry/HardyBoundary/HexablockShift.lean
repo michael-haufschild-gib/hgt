@@ -61,3 +61,7 @@ theorem hexablock_shift_powers_relations (m n r s : ℕ) :
     ((Commute.refl _).pow_pow m s)⟩
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_brownHalmos_iff
+#print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_compact_iff
+#print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_powers_relations

@@ -21,8 +21,16 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 theorem cox_dualNumber_centralizer (T : Matrix (ι ⊕ ι) (ι ⊕ ι) ℝ) :
     Tendsto (fun K => detection K ‖T * dualNumberShift - dualNumberShift * T‖) atTop
       (𝓝 (if ∃ A B : Matrix ι ι ℝ, T = Matrix.fromBlocks A B 0 A then 1 else 0)) := by
-  simpa only [norm_eq_zero, sub_eq_zero, commute_dualNumberShift_iff] using
-    tendsto_detection ‖T * dualNumberShift - dualNumberShift * T‖
+  have hz : ‖T * dualNumberShift - dualNumberShift * T‖ = 0 ↔
+      ∃ A B : Matrix ι ι ℝ, T = Matrix.fromBlocks A B 0 A := by
+    simp only [norm_eq_zero, sub_eq_zero, commute_dualNumberShift_iff]
+  have hi : (if ‖T * dualNumberShift - dualNumberShift * T‖ = 0 then (1 : ℝ) else 0) =
+      (if ∃ A B : Matrix ι ι ℝ, T = Matrix.fromBlocks A B 0 A then 1 else 0) := by
+    by_cases h : ‖T * dualNumberShift - dualNumberShift * T‖ = 0
+    · simp only [if_pos h, if_pos (hz.mp h)]
+    · simp only [if_neg h, if_neg (mt hz.mpr h)]
+  rw [← hi]
+  exact tendsto_detection ‖T * dualNumberShift - dualNumberShift * T‖
 
 /-- Every matrix in a finite list is classified for dual-number linearity. -/
 theorem cox_dualNumber_centralizer_family {τ : Type*} [Fintype τ]

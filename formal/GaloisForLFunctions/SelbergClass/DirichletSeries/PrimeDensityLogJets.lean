@@ -40,6 +40,7 @@ theorem algebraicIndependent_primePolynomialWeights_over_densityField (n : ℕ) 
   apply algebraicIndependent_primePowers_over_densityField _ _ n
   intro p q hpq
   apply Subtype.ext
+  change (p.1 : ℂ) = (q.1 : ℂ) at hpq
   exact_mod_cast hpq
 
 /-- The logarithmic jet of the prime indicator is the corresponding prime-supported power column. -/

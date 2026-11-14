@@ -29,8 +29,7 @@ theorem quadratic_le_log_one_add (t : NNReal) :
     have hlog : HasDerivAt (fun y : ℝ => Real.log (1 + y)) (1 / (1 + x)) x :=
       hbase.log (by positivity)
     have hquad : HasDerivAt (fun y : ℝ => y ^ 2 / 2) (2 * x / 2) x := by
-      simpa only [id_eq, pow_one, mul_one, Nat.cast_ofNat] using
-        ((hasDerivAt_id x).pow 2).div_const 2
+      simpa using ((hasDerivAt_id x).pow 2).div_const 2
     exact (hlog.sub (hasDerivAt_id x)).add hquad
   have hm : MonotoneOn (fun x : ℝ => Real.log (1 + x) - x + x ^ 2 / 2) (Ici 0) := by
     apply monotoneOn_of_hasDerivWithinAt_nonneg (convex_Ici 0)
@@ -105,7 +104,7 @@ theorem log_rankin_ratio_counterexample :
   rw [harg]
   linarith only [hlo, hneg]
 
-/-- A rational lower bound for `log 2` sufficient for the fourth-degree Rankin threshold. -/
+/-- A rational lower bound for `log 2` sufficient for the degree threshold `ceil(4tS)+1`. -/
 theorem log_two_ge_forty_seven_over_seventy_two : (47 / 72 : ℝ) ≤ Real.log 2 := by
   have h₁ := quadratic_le_log_one_add (NNReal.mk (1 / 2) (by positivity))
   have h₂ := quadratic_le_log_one_add (NNReal.mk (1 / 3) (by positivity))
@@ -117,13 +116,14 @@ theorem log_two_ge_forty_seven_over_seventy_two : (47 / 72 : ℝ) ≤ Real.log 2
   simp only [NNReal.coe_mk] at h₁ h₂
   linarith only [h₁, h₂]
 
-/-- The adaptive degree still makes the corrected Rankin exponent at most `-log 2`. -/
-theorem corrected_rankin_exponent (t : Icc (0 : ℝ) (1 / 3)) (S : NNReal) :
+/-- The degree `ceil(4tS)+1` makes the Rankin exponent at most `-log 2`. -/
+theorem rankin_exponent_le_neg_log_two (t : Icc (0 : ℝ) (1 / 3)) (S : NNReal) :
     -((⌈4 * t.1 * (S : ℝ)⌉₊ + 1 : ℕ) : ℝ) * Real.log 2 +
       ((S : ℝ) / 2) * Real.log ((1 + 2 * t.1) / (1 - t.1)) + t.1 * S ≤
         -Real.log 2 := by
   have hlog := log_rankin_ratio_le_three
     (⟨t.1, t.property.1, by linarith only [t.property.2]⟩ : Icc (0 : ℝ) (1 / 2))
+  change Real.log ((1 + 2 * t.1) / (1 - t.1)) ≤ 3 * t.1 at hlog
   have hlocal := mul_le_mul_of_nonneg_left hlog (div_nonneg S.property (by norm_num : (0 : ℝ) ≤ 2))
   have hceil := Nat.le_ceil (4 * t.1 * (S : ℝ))
   have hlower := log_two_ge_forty_seven_over_seventy_two
@@ -133,7 +133,7 @@ theorem corrected_rankin_exponent (t : Icc (0 : ℝ) (1 / 3)) (S : NNReal) :
   have hmain : (S : ℝ) / 2 * Real.log ((1 + 2 * t.1) / (1 - t.1)) + t.1 * S ≤
       4 * t.1 * S * Real.log 2 := by
     calc
-      _ ≤ (S : ℝ) / 2 * (3 * t.1) + t.1 * S := add_le_add_right hlocal _
+      _ ≤ (S : ℝ) / 2 * (3 * t.1) + t.1 * S := add_le_add hlocal le_rfl
       _ = (5 / 2 : ℝ) * (t.1 * S) := by ring
       _ ≤ (4 * Real.log 2) * (t.1 * S) :=
         mul_le_mul_of_nonneg_right (by linarith only [hlower]) hmass
@@ -142,7 +142,7 @@ theorem corrected_rankin_exponent (t : Icc (0 : ℝ) (1 / 3)) (S : NNReal) :
   push_cast
   linarith only [hcombined]
 
-/-- The proposed quadratic coefficient involving `log (3/2)` also fails on the stated interval. -/
+/-- The coefficient `3 log (3/2)-1` fails to give a quadratic upper bound even at one quarter. -/
 theorem quadratic_log_counterexample :
     (1 / 4 : ℝ) + (3 * Real.log (3 / 2) - 1) * (1 / 4 : ℝ) ^ 2 <
       -Real.log (1 - 1 / 4 : ℝ) := by
@@ -168,5 +168,5 @@ end GaloisForLFunctions.BezoutValuationIncidence.Sieve
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.quadratic_le_log_one_add
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.log_rankin_ratio_le_three
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.log_rankin_ratio_counterexample
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.corrected_rankin_exponent
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.rankin_exponent_le_neg_log_two
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.quadratic_log_counterexample

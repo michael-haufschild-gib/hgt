@@ -48,3 +48,7 @@ theorem last_isometry (u v z : A)
   isometry_mul _ _ (isometry_mul _ _ hu hv) hz
 
 end GaloisForLFunctions.HTGeometry.Tetrablock
+
+#print axioms GaloisForLFunctions.HTGeometry.Tetrablock.energy
+#print axioms GaloisForLFunctions.HTGeometry.Tetrablock.cross
+#print axioms GaloisForLFunctions.HTGeometry.Tetrablock.last_isometry
