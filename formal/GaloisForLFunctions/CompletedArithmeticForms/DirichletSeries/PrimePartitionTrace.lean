@@ -34,3 +34,7 @@ theorem eisensteinTrace_prime_partition (S : Set ℕ) (b : ℝ) (n : ℕ) :
     ← eisensteinTrace_complex]
 
 end GaloisForLFunctions.CompletedArithmeticForms
+
+#print axioms GaloisForLFunctions.CompletedArithmeticForms.phaseFunction_prime_partition
+#print axioms GaloisForLFunctions.CompletedArithmeticForms.eisenstein_primeRestriction
+#print axioms GaloisForLFunctions.CompletedArithmeticForms.eisensteinTrace_prime_partition

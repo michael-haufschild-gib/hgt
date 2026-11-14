@@ -19,10 +19,10 @@ variable {N M : ℕ}
 theorem primeRestrict_charTwist (S : Set ℕ) (χ : DirichletCharacter ℂ N)
     (f : ArithmeticFunction ℂ) :
     primeRestrict S (charTwist χ f) = charTwist χ (primeRestrict S f) := by
+  classical
   ext n
-  open scoped Classical in
-    by_cases h : (↑n.primeFactors : Set ℕ) ⊆ S <;>
-      simp [primeRestrict_apply, charTwist, pmul_apply, h]
+  by_cases h : (↑n.primeFactors : Set ℕ) ⊆ S <;>
+    simp [primeRestrict_apply, charTwist, pmul_apply, h]
 
 /-- The Dirichlet coefficients of every character split over any prime partition. -/
 theorem character_prime_partition (S : Set ℕ) (χ : DirichletCharacter ℂ N) :
@@ -50,3 +50,8 @@ theorem restricted_siegelCoeff (S : Set ℕ)
   rw [siegelCoeff, primeRestrict_mul, primeRestrict_charTwist]
 
 end GaloisForLFunctions.SelbergClass.DirichletSeries
+
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.character_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.zetaMul_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.siegelCoeff_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.restricted_siegelCoeff

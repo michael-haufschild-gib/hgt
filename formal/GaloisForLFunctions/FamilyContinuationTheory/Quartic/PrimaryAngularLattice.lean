@@ -1,5 +1,5 @@
 import GaloisForLFunctions.FamilyContinuationTheory.Quartic.GaussianPrimary
-import GaloisForLFunctions.MetaplecticMobiusDescent.Poisson.GaussianAffineAngularBound
+import GaloisForLFunctions.MetaplecticMobiusDescent.Poisson.PositiveAngularCancellation
 
 /-!
 # Primary Gaussian angular lattice sums
@@ -7,7 +7,7 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.Poisson.GaussianAffineAngula
 The primary condition parametrizes exactly the affine lattice
 `1 + (1+i)^3 ℤ[i]`. Its covolume is eight. Affine Poisson summation therefore
 separates the exact density-one-eighth mean from a uniformly bounded remainder.
-For nontrivial angular sectors the mean vanishes, leaving a bound independent
+For every positive angular weight the mean vanishes, leaving a bound independent
 of the complex sampling scale.
 -/
 
@@ -126,6 +126,16 @@ theorem primary_annular_sum_le (n : ℕ) (j : Fin 3) (W : 𝓢(ℝ, ℂ)) (u : �
   have hz := annularFourier_zero n j W
   change (𝓕 (annularAngularCLM (4 * n + (j.val + 1)) W)) 0 = 0 at hz
   have h := primaryLatticeSum_sub_mean_le (annularAngularCLM (4 * n + (j.val + 1)) W) u
+  simpa only [hz, smul_zero, sub_zero] using h
+
+/-- Continuous rotation removes the mean for every positive angular weight,
+including multiples of four, which need not cancel under Gaussian unit averaging. -/
+theorem primary_positive_annular_sum_le (n : ℕ) (W : 𝓢(ℝ, ℂ)) (u : ℂˣ) :
+    ‖primaryLatticeSum (annularAngularCLM (n + 1) W) u‖ ≤
+      1632 * derivativeMass 4 (annularAngularCLM (n + 1) W) := by
+  have hz := annularFourier_positive_zero n W
+  change (𝓕 (annularAngularCLM (n + 1) W)) 0 = 0 at hz
+  have h := primaryLatticeSum_sub_mean_le (annularAngularCLM (n + 1) W) u
   simpa only [hz, smul_zero, sub_zero] using h
 
 end GaloisForLFunctions.FamilyContinuationTheory.Quartic

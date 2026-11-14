@@ -17812,3 +17812,4 @@ import GaloisForLFunctions.HTGeometry.ComplexAnalysis.BallPowerMass
 import GaloisForLFunctions.HTGeometry.ComplexAnalysis.HolomorphicL2Flatness
 import GaloisForLFunctions.HTGeometry.Probability.ComplexBlockSphereMoments
 import GaloisForLFunctions.HTGeometry.Probability.SphereCubicMoment
+import GaloisForLFunctions.HTGeometry.DispersivePDE.CoxElasticaCollisions

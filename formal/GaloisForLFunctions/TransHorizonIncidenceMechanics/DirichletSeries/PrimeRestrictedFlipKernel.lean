@@ -54,3 +54,8 @@ theorem restricted_sign_inverse (S : Set ℕ) (f : UnimodularSign) :
   primeRestrict_inverse_pair S _ _ f.moebiusAF_mul_af
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
+
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.unimodularSign_prime_partition
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.flipKernel_prime_support
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.restricted_flipKernel_transport
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.restricted_sign_inverse

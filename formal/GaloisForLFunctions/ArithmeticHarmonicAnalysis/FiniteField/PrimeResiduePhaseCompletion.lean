@@ -46,8 +46,9 @@ theorem sum_primeResiduePhase_eq_mean (S : Finset Nat.Primes)
     (θ : (p : Nat.Primes) → ZMod p.val → ℝ) :
     ∑ n ∈ range (primeSetProduct S), primeResiduePhase S θ n =
       (primeSetProduct S : ℂ) * primeResiduePhaseMean S θ := by
-  rw [primeResiduePhase, sum_primeResidue_product,
-    primeResiduePhaseMean, prod_div_distrib, ← Nat.cast_prod]
+  refine (sum_primeResidue_product S
+    (fun (p : Nat.Primes) (a : ZMod p.val) => cexp ((θ p a : ℂ) * I))).trans ?_
+  rw [primeResiduePhaseMean, prod_div_distrib, ← Nat.cast_prod]
   have hP : (primeSetProduct S : ℂ) ≠ 0 := by exact_mod_cast (primeSetProduct_pos S).ne'
   change _ = (primeSetProduct S : ℂ) * (_ / (primeSetProduct S : ℂ))
   field_simp [hP]

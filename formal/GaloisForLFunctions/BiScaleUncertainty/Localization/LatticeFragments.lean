@@ -54,6 +54,20 @@ theorem latticeFragment_eq_zero_of_outside (m : ℕ) (j : ℤ) (f : ℝ → ℝ)
       linarith only [hh.2]
   rw [latticeFragment, unitPartition_eq_zero hshift, mul_zero]
 
+/-- The closed support retains the same explicit interval. -/
+theorem tsupport_latticeFragment_subset (m : ℕ) (j : ℤ) (f : ℝ → ℝ) :
+    tsupport (latticeFragment m j f) ⊆
+      Icc ((-(j : ℝ) - 3) / (m + 1)) ((-(j : ℝ) + 3) / (m + 1)) := by
+  apply closure_minimal _ isClosed_Icc
+  intro x hx
+  by_contra hout
+  exact hx (latticeFragment_eq_zero_of_outside m j f x hout)
+
+/-- Every lattice fragment is compactly supported, even for an unrestricted source. -/
+theorem hasCompactSupport_latticeFragment (m : ℕ) (j : ℤ) (f : ℝ → ℝ) :
+    HasCompactSupport (latticeFragment m j f) :=
+  isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (tsupport_latticeFragment_subset m j f)
+
 /-- Smooth sources have smooth fragments at every scale. -/
 theorem contDiff_latticeFragment (m : ℕ) (j : ℤ) {f : ℝ → ℝ}
     (hf : ContDiff ℝ (⊤ : ℕ∞) f) :
@@ -102,3 +116,4 @@ end GaloisForLFunctions.BiScaleUncertainty
 
 #print axioms GaloisForLFunctions.BiScaleUncertainty.sum_latticeFragment_interval
 #print axioms GaloisForLFunctions.BiScaleUncertainty.contDiff_latticeFragment
+#print axioms GaloisForLFunctions.BiScaleUncertainty.hasCompactSupport_latticeFragment

@@ -98,7 +98,6 @@ theorem detection_le_separated_envelope (K r q : ℝ) (hK : 0 ≤ K)
     (hsep : q ^ 2 ≤ r ^ 2) : detection K r ≤ K * weight K q := by
   refine (detection_le K r hK).trans (mul_le_mul_of_nonneg_left ?_ hK)
   apply Real.exp_le_exp.mpr
-  dsimp [weight]
   nlinarith only [mul_nonneg hK (sub_nonneg.mpr hsep)]
 
 /-- Uniform consistency is restored on every set separated from zero.
@@ -120,6 +119,7 @@ theorem detection_antitone_sq (K r q : ℝ) (hK : 0 ≤ K)
     nlinarith only [mul_nonneg hK (sub_nonneg.mpr hsep)]
   have hl : Real.log (1 + weight K r) ≤ Real.log (1 + weight K q) := by
     gcongr
+    exact add_pos zero_lt_one (Real.exp_pos _)
   apply sub_le_sub_left (Real.exp_le_exp.mpr ?_) 1
   nlinarith only [mul_nonneg hK (sub_nonneg.mpr hl)]
 

@@ -45,9 +45,14 @@ theorem finite_euler_cross_relation (p : Nat.Primes) (A : ℝ) :
 theorem finite_euler_relation_coefficients_are_units (p : Nat.Primes) (A : ℝ) :
     IsUnit (primeRestrict {(p : ℕ)} (zeta : ArithmeticFunction ℂ)) ∧
       IsUnit (primeRestrict {(p : ℕ)} (arithmeticCoeffs p A)) := by
-  simp only [isUnit_primeRestrict_iff, ArithmeticFunction.isUnit_iff_isUnit_apply_one,
-    ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply,
-    arithmeticCoeffs_apply, coeff_one p.2, Complex.ofReal_one]
-  simp
+  constructor
+  · rw [ArithmeticFunction.isUnit_iff_isUnit_apply_one, primeRestrict_apply_one]
+    simp
+  · rw [ArithmeticFunction.isUnit_iff_isUnit_apply_one, primeRestrict_apply_one,
+      arithmeticCoeffs_apply, coeff_one p.2 A, Complex.ofReal_one]
+    exact isUnit_one
 
 end GaloisForLFunctions.SelbergClass.PositiveFiniteEuler
+
+#print axioms GaloisForLFunctions.SelbergClass.PositiveFiniteEuler.finite_euler_cross_relation
+#print axioms GaloisForLFunctions.SelbergClass.PositiveFiniteEuler.finite_euler_relation_coefficients_are_units

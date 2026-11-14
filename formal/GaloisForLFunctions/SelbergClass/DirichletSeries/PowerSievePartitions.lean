@@ -41,3 +41,8 @@ theorem restricted_zeta_mul_sievedLiouville (S : Set ℕ) (m : ℕ) :
   rw [← primeRestrict_mul, zeta_mul_sievedLiouville]
 
 end GaloisForLFunctions.SelbergClass.DirichletSeries
+
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.powerIndicator_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.sievedLiouville_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.mFreeIndicator_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.restricted_zeta_mul_sievedLiouville

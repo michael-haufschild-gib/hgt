@@ -217,3 +217,15 @@ theorem liouville_prime_partition (S : Set ℕ) :
   primeRestrict_mul_compl S _ isMultiplicative_liouville.intCast
 
 end GaloisForLFunctions.SelbergClass.DirichletSeries
+
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.primeRestrictionAlgHom
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.primeRestrict_inter
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.primeRestrict_pmul
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.isUnit_primeRestrict_iff
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.euler_cross_relation
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.zeta_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.moebius_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.restricted_moebius_mul_zeta
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.sigma_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.pow_prime_partition
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.liouville_prime_partition

@@ -28,6 +28,13 @@ theorem isHermKernel_hermitianKernelPart (k : G → ℂ) :
   simp only [hermitianKernelPart, inv_inv, map_div₀, map_add, conj_conj, map_ofNat]
   rw [add_comm]
 
+/-- Hermitian symmetrization fixes every already Hermitian kernel. -/
+theorem hermitianKernelPart_eq_self {k : G → ℂ} (hk : IsHermKernel k) :
+    hermitianKernelPart k = k := by
+  funext g
+  rw [hermitianKernelPart, hk g, conj_conj]
+  ring
+
 private theorem columnPair_sub_left {k : G → ℂ} (hk : IsHermKernel k)
     (v w z : kernelColumnSpan k) :
     kernelColumnPairing k (v - w) z = kernelColumnPairing k v z - kernelColumnPairing k w z := by

@@ -76,8 +76,14 @@ theorem charFun_arithmeticKloostermanLaw (S : Finset Nat.Primes) (t : ℝ) :
     rw [charFun_apply_real, integral_primeKloostermanLaw]
     simp [Algebra.smul_def, inv_mul_eq_div]
   rw [charFun_apply_real, integral_arithmeticKloostermanLaw]
-  simp only [hexp, Fin.sum_univ_eq_sum_range]
-  rw [sum_primeResidue_product]
+  simp only [hexp]
+  have hsum := (Fin.sum_univ_eq_sum_range
+    (fun n : ℕ => ∏ p ∈ S,
+      cexp ((u : ℂ) * (standardizedKloostermanTrace p (n : ZMod p.val) : ℂ) * I))
+    (primeSetProduct S)).trans
+      (sum_primeResidue_product S (fun (p : Nat.Primes) (a : ZMod p.val) =>
+        cexp ((u : ℂ) * (standardizedKloostermanTrace p a : ℂ) * I)))
+  refine (congrArg (fun z : ℂ => (primeSetProduct S : ℝ)⁻¹ • z) hsum).trans ?_
   simp only [hlocal, prod_div_distrib]
   have hP : (primeSetProduct S : ℂ) = ∏ p ∈ S, (p.val : ℂ) := by
     simp only [primeSetProduct, Nat.cast_prod]
