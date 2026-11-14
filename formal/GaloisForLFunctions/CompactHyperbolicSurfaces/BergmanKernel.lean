@@ -434,7 +434,6 @@ theorem integral_ball_weight_mul {f : ℂ → ℂ} (hf : DifferentiableOn ℂ f 
     integral_Ioo_mul_one_sub_sq_pow]
   push_cast
   field_simp
-  ring
 
 /-! ### The reproducing identity -/
 
@@ -460,11 +459,13 @@ theorem integral_bergK_I_pow (n : ℕ) (w : ℍ) :
       rw [Complex.normSq_eq_norm_sq]; nlinarith [norm_nonneg ζ]
     have hq' : ((1 - Complex.normSq ζ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hq
     have h4 := one_sub_mul_conj_ne_zero hζ1 hω
-    rw [← mul_pow, ← hwω, bergK_cayley hζ1 hω, Complex.real_smul]
+    rw [← mul_pow, ← hwω, bergK_cayley hζ1 hω, Complex.real_smul, Complex.ofReal_div,
+      Complex.ofReal_pow, Complex.ofReal_ofNat]
     simp only [f]
-    push_cast
+    generalize ((1 - Complex.normSq ζ : ℝ) : ℂ) = a at hq' ⊢
+    generalize 1 - ζ * conj ω = D at h4 ⊢
+    rw [div_pow, mul_pow, pow_add a n 2]
     field_simp
-    ring
   rw [setIntegral_congr_fun measurableSet_ball hpt, integral_const_mul]
   have hf : DifferentiableOn ℂ f (ball 0 1) := by
     intro ζ hζ
