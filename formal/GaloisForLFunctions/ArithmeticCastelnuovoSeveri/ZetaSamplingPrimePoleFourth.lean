@@ -32,6 +32,7 @@ theorem matrixFrobeniusEnergy_zetaSamplingCompression_nuX (P : Params) (T : ℝ)
     ring
   simp only [matrixFrobeniusEnergy, he, Complex.norm_real, Real.norm_eq_abs, sq_abs,
     div_pow, ← Finset.sum_div, Params.trGtildeSq]
+  simp only [div_eq_mul_inv, mul_pow, mul_inv_rev, inv_pow]
   ring
 
 /-- At bandwidth one the full source has a uniformly bounded normalized second moment. -/
