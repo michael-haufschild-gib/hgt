@@ -17,6 +17,8 @@ open MvPolynomial
 
 universe u
 
+noncomputable section
+
 /-- Evaluation of an integer polynomial at rational arguments. -/
 abbrev rationalEval {σ : Type*} (x : σ → ℚ) : MvPolynomial σ ℤ →+* ℚ :=
   eval₂Hom (Int.castRingHom ℚ) x
@@ -24,7 +26,7 @@ abbrev rationalEval {σ : Type*} (x : σ → ℚ) : MvPolynomial σ ℤ →+* �
 /-- Rename auxiliary variables while leaving input variables fixed. -/
 def auxiliaryRename {σ α β : Type*} (f : α → β) :
     MvPolynomial (σ ⊕ α) ℤ →+* MvPolynomial (σ ⊕ β) ℤ :=
-  rename (Sum.map id f)
+  (rename (Sum.map id f)).toRingHom
 
 theorem rationalEval_auxiliaryRename {σ α β : Type*} (f : α → β)
     (p : MvPolynomial (σ ⊕ α) ℤ) (x : σ → ℚ) (w : β → ℚ) :
@@ -82,7 +84,7 @@ def constant (c : ℤ) : QuadraticLift (C c : MvPolynomial σ ℤ) where
   constraints := PEmpty.elim
   output := C c
   constraint_degree := fun a => PEmpty.elim a
-  output_degree := by simp
+  output_degree := by rw [totalDegree_C]; omega
   sound := by intros; simp
   complete := fun _ => ⟨PEmpty.elim, fun a => PEmpty.elim a⟩
 
@@ -115,8 +117,8 @@ def add (L : QuadraticLift p) (R : QuadraticLift q) : QuadraticLift (p + q) wher
     obtain ⟨v, hv⟩ := R.complete x
     refine ⟨Sum.elim u v, ?_⟩
     rintro (a | a)
-    · simpa only [Sum.elim_inl, rationalEval_auxiliaryRename] using hu a
-    · simpa only [Sum.elim_inr, rationalEval_auxiliaryRename] using hv a
+    · simpa only [Sum.elim_inl, rationalEval_auxiliaryRename, Function.comp_def] using hu a
+    · simpa only [Sum.elim_inr, rationalEval_auxiliaryRename, Function.comp_def] using hv a
 
 /-- Multiplication by an input adds one output variable and one quadratic
 equation. The older gates are unchanged after renaming. -/
@@ -163,7 +165,7 @@ def mul_X (L : QuadraticLift p) (i : σ) : QuadraticLift (p * X i) where
       change rationalEval x p * x i - rationalEval (Sum.elim x w) L.output * x i = 0
       rw [L.sound x w hw, sub_self]
     | some a =>
-      simpa only [Option.elim_some, rationalEval_auxiliaryRename] using hw a
+      simpa only [Option.elim_some, rationalEval_auxiliaryRename, Function.comp_def] using hw a
 
 end QuadraticLift
 
@@ -182,5 +184,7 @@ theorem exists_quadraticLift {σ : Type u} (p : MvPolynomial σ ℤ) :
     exact ⟨L.mul_X i⟩
 
 #print axioms exists_quadraticLift
+
+end
 
 end GaloisForLFunctions.HTGeometry.Polynomial

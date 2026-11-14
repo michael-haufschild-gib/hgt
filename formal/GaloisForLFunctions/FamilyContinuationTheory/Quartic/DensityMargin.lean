@@ -1,5 +1,4 @@
-import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
+import GaloisForLFunctions.FamilyContinuationTheory.Quartic.LocalValuationCost
 
 /-!
 # The quartic zero-density exponent margin
@@ -12,6 +11,8 @@ The middle interval is controlled by an explicit positive cubic certificate.
 
 namespace GaloisForLFunctions.FamilyContinuationTheory.Quartic
 
+open scoped NNReal
+
 /-- Quartic family norm exponent, expressed in the abscissa variable. -/
 noncomputable def densityExponent (σ : ℝ) : ℝ :=
   if σ ≤ 3 / 4 then 1 - (2 * σ - 1) / (8 * (1 - σ))
@@ -23,6 +24,13 @@ noncomputable def densityExponent (σ : ℝ) : ℝ :=
 /-- Combined abscissa after fourth-power decomposition and the local Euler loss. -/
 noncomputable def densityTransfer (σ : ℝ) : ℝ :=
   σ + (65 / 144) * (max (densityExponent σ - 1 / 4) 0 + max 0 (1 - 3 * σ / 2))
+
+/-- The transfer uses precisely the local valuation loss at the numerator residue line. -/
+theorem densityTransfer_eq_localLoss (σ : ℝ≥0) :
+    densityTransfer σ = (σ : ℝ) + (65 / 144) *
+      (max (densityExponent σ - 1 / 4) 0 + localLoss σ 1) := by
+  rw [localLoss_one]
+  rfl
 
 private theorem middle_certificate (x : ℝ) (hx : -(4 / 25) ≤ x) :
     0 < 8 * x ^ 3 + (139 / 45) * x ^ 2 + (589 / 90000) * x + 13 / 750000 := by

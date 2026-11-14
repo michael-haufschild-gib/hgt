@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.IntegralCauchySchwarz
 import Mathlib.MeasureTheory.Integral.IntegrableOn
+import Mathlib.MeasureTheory.Function.LocallyIntegrable
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.Topology.ContinuousMap.CompactlySupported
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
@@ -33,7 +35,7 @@ theorem compactEnergy_sub (f g : C_c(ℝ, ℝ)) :
     (f.continuous.mul g.continuous).integrable_of_hasCompactSupport f.hasCompactSupport.mul_right
   have he : (fun u => (f - g) u ^ 2) = fun u => f u ^ 2 + g u ^ 2 - 2 * (f u * g u) := by
     funext u
-    simp only [CompactlySupportedContinuousMap.sub_apply]
+    change (f u - g u) ^ 2 = _
     ring
   unfold compactEnergy
   rw [he, integral_sub ((square_integrable f).add (square_integrable g)) (hi.const_mul 2),

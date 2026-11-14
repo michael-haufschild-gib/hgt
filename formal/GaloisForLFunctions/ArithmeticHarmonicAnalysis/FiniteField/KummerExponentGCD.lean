@@ -103,6 +103,7 @@ theorem kummerExponent_gcd_eq_pow_add_one (q n r : ℕ) (hn : 0 < n)
         conv_lhs => rw [hnfac, ht, pow_mul, pow_add, pow_mul, hsq, one_pow, pow_one, one_mul]
       exact he.symm.trans hN
     apply (ZMod.natCast_eq_zero_iff _ g).mp
+    simp only [Nat.cast_add, Nat.cast_pow, Nat.cast_one]
     change (q : ZMod g) ^ h + 1 = 0
     rw [hsmall, neg_add_cancel]
   · apply Nat.dvd_gcd

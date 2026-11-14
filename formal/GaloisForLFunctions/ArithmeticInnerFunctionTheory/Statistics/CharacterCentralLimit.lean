@@ -56,7 +56,7 @@ theorem identDistrib_satoTateCharacterCoordinate (m i j : ℕ) :
 under independent Sato–Tate sampling. All independence and moment inputs are proved. -/
 theorem tendstoInDistribution_satoTateCharacter (m : ℕ) :
     TendstoInDistribution
-      (fun n ω => (Real.sqrt n)⁻¹ *
+      (fun (n : ℕ) ω => (Real.sqrt n)⁻¹ *
         ∑ i ∈ Finset.range n, satoTateCharacterCoordinate m i ω)
       atTop (id : ℝ → ℝ) (fun _ => satoTateSequenceMeasure) (gaussianReal 0 1) := by
   apply tendstoInDistribution_inv_sqrt_mul_sum HasLaw.id

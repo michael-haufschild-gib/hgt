@@ -49,7 +49,7 @@ theorem integral_eisensteinTrace_phase_centered_sq_mul (p : Nat.Primes) (m n : �
 any sequence of primes and every fixed positive symmetric-power degree. -/
 theorem tendstoInDistribution_eisensteinTrace_phase (p : ℕ → Nat.Primes) (m : ℕ) :
     TendstoInDistribution
-      (fun n (ω : ℕ → ℝ) => (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n,
+      (fun (n : ℕ) (ω : ℕ → ℝ) => (Real.sqrt n)⁻¹ * ∑ i ∈ Finset.range n,
         eisensteinTrace (ω i / Real.log (p i).val) ((p i).val ^ (m + 1)))
       atTop (id : ℝ → ℝ) (fun _ => satoTateSequenceMeasure) (gaussianReal 0 1) := by
   simp_rw [eisensteinTrace_phase]

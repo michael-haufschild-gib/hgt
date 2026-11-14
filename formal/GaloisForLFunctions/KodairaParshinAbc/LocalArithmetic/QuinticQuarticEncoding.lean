@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.KodairaParshinAbc.LocalArithmetic
 open MvPolynomial HTGeometry.Polynomial
 
 /-- Three quadratic gate errors for the quintic equation. -/
-def quinticQuartic : MvPolynomial (Fin 4) ℤ :=
+noncomputable def quinticQuartic : MvPolynomial (Fin 4) ℤ :=
   (X 2 - X 0 ^ 2) ^ 2 + (X 3 - X 0 * X 2) ^ 2 +
     (X 1 ^ 2 + X 1 - X 2 * X 3) ^ 2
 
