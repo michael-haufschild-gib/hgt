@@ -1,5 +1,4 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.ZetaSamplingPoleCompression
-import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonBlockOnTheArithmeticSide
 import Zeta23.GammaFacts.Complete
 
 /-!
@@ -17,12 +16,43 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-private theorem exists_mu_linear_bound :
+/-- Continuity near zero and Stirling away from zero give a global linear majorant. -/
+theorem exists_mu_linear_bound :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ τ : ℝ, |mu τ| ≤ A + |τ| := by
-  obtain ⟨A, hA⟩ := ArithmeticHodgeTheoryOfDegenerations.exists_abs_mu_le_log
-  refine ⟨|A| + 1, by positivity, fun τ => ?_⟩
-  have hl := Real.log_le_sub_one_of_pos (by positivity : 0 < 2 + |τ|)
-  linarith only [hA τ, hl, le_abs_self A]
+  obtain ⟨C, hC⟩ := gammaFacts.stirling
+  obtain ⟨B, hB⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (gammaFacts.smooth.continuous.continuousOn : ContinuousOn mu (Icc (-1 : ℝ) 1))
+  let A := |B| + |C| + Real.log (2 * π)
+  have hp : 0 < 2 * π := by positivity
+  have hp1 : 1 ≤ 2 * π := by linarith only [Real.pi_gt_three]
+  have hlp : 0 ≤ Real.log (2 * π) := Real.log_nonneg hp1
+  refine ⟨A, by dsimp [A]; positivity, fun τ => ?_⟩
+  rcases le_or_gt |τ| 1 with hτ | hτ
+  · have hh := hB τ (abs_le.mp hτ)
+    rw [Real.norm_eq_abs] at hh
+    dsimp [A]
+    linarith only [hh, le_abs_self B, abs_nonneg C, hlp, abs_nonneg τ]
+  · have hs := hC τ hτ.le
+    have ht0 : 0 < |τ| := lt_trans zero_lt_one hτ
+    have ht2 : 1 ≤ τ ^ 2 := by nlinarith only [hτ, sq_abs τ]
+    have hCe : C / τ ^ 2 ≤ |C| := by
+      rw [div_le_iff₀ (lt_of_lt_of_le zero_lt_one ht2)]
+      nlinarith only [le_abs_self C, mul_le_mul_of_nonneg_left ht2 (abs_nonneg C)]
+    have hlog : |Real.log (|τ| / (2 * π))| ≤ |τ| + Real.log (2 * π) := by
+      rw [Real.log_div ht0.ne' hp.ne']
+      have hlo := Real.log_nonneg hτ.le
+      have hhi := Real.log_le_sub_one_of_pos ht0
+      exact abs_le.mpr ⟨by linarith only [hlo, hlp, abs_nonneg τ],
+        by linarith only [hhi, hlp]⟩
+    have hfac : |(1 / (2 * π)) * Real.log (|τ| / (2 * π))| ≤
+        |τ| + Real.log (2 * π) := by
+      rw [abs_mul, abs_of_pos (by positivity : 0 < 1 / (2 * π))]
+      exact (mul_le_mul_of_nonneg_right ((div_le_one hp).mpr hp1)
+        (abs_nonneg _)).trans (by simpa using hlog)
+    have hh := abs_sub_abs_le_abs_sub (mu τ)
+      ((1 / (2 * π)) * Real.log (|τ| / (2 * π)))
+    dsimp [A]
+    linarith only [hs, hCe, hfac, hh, abs_nonneg B]
 
 /-- Stirling gives a height-independent density error on the enlarged sampling window. -/
 theorem exists_mu_sampling_window_bound :
@@ -87,10 +117,10 @@ private theorem density_error_le_quadratic_tail {A T τ t : ℝ}
     have hh : τ < T / 2 ∨ 3 * T < τ := by
       simpa only [mem_Icc, not_and_or, not_le] using hτ
     rcases hh with hh | hh
-    · rw [abs_of_nonpos (by linarith only [ht.1, hh])]
+    · rw [abs_of_nonpos (by linarith only [ht.1, hh, hT0])]
       linarith only [ht.1, hh]
-    · rw [abs_of_nonneg (by linarith only [ht.2, hh])]
-      linarith only [ht.2, hh]
+    · rw [abs_of_nonneg (by linarith only [ht.2, hh, hT0])]
+      linarith only [ht.2, hh, hT0]
   have hτabs : |τ| ≤ |τ - t| + 2 * T := by
     have hh := abs_add_le (τ - t) t
     rw [sub_add_cancel, abs_of_nonneg (hT0.le.trans ht.1)] at hh
@@ -153,7 +183,8 @@ theorem exists_normalizedArchimedeanDeviation_le_inverse_bandwidth
       B * F τ + (4 * A + 14) / T * E * R τ := by
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (show 0 ≤ F τ from sq_nonneg _)]
     by_cases hτ : τ ∈ Icc (T/2) (3*T)
-    · have hh := mul_le_mul_of_nonneg_right (hwindow T τ hT hτ) (sq_nonneg _)
+    · have hh := mul_le_mul_of_nonneg_right (hwindow T τ hT hτ)
+        (show 0 ≤ F τ from sq_nonneg _)
       have hr : 0 ≤ (4 * A + 14) / T * E * R τ := by
         dsimp [R]
         positivity
@@ -165,7 +196,8 @@ theorem exists_normalizedArchimedeanDeviation_le_inverse_bandwidth
       have hsum : (∑ k : Fin (P.d T),
           |mu τ - l T / (2 * π)| * P.phiHatR T (τ-P.tau T k) ^ 2) ≤
           (4 * A + 14) / T * R τ := by
-        rw [R, Finset.mul_sum]
+        dsimp only [R]
+        rw [Finset.mul_sum]
         apply Finset.sum_le_sum
         intro k _
         have hz := mul_le_mul_of_nonneg_right
@@ -186,12 +218,13 @@ theorem exists_normalizedArchimedeanDeviation_le_inverse_bandwidth
       have hbF : 0 ≤ B * F τ := mul_nonneg hB (sq_nonneg _)
       exact hh'.trans (le_add_of_nonneg_left hbF)
   have hmass : (∫ τ, R τ) ≤ (P.d T : ℝ) * M := by
-    rw [R, integral_finsetSum _ (fun k _ => hRi k)]
+    dsimp only [R]
+    rw [integral_finsetSum _ (fun k _ => hRi k)]
     calc
       _ ≤ ∑ _k : Fin (P.d T), M := by
         apply Finset.sum_le_sum
         intro k _
-        rw [integral_sub_right_eq_self]
+        rw [integral_sub_right_eq_self (fun r => P.phiHatR T r ^ 2 * r ^ 2) (P.tau T k)]
         exact Params.integral_phiHatR_sq_mul_sq_le hP hwL
       _ = _ := by simp
   have hbound : |∫ τ, (mu τ - l T / (2 * π)) * F τ| ≤
@@ -216,8 +249,56 @@ theorem exists_normalizedArchimedeanDeviation_le_inverse_bandwidth
     _ ≤ ((B * (2 * π * P.L T) + (4 * A + 14) / T *
         (P.L T * T / (2 * π)) * M) * E) / (P.a T * P.L T ^ 2) := by
       gcongr
-    _ = _ := by dsimp [K, E]; field_simp; ring
+    _ = _ := by dsimp [K, E]; field_simp <;> ring
+
+/-- Every fixed bandwidth threshold is eventually attained. -/
+theorem zetaSampling_bandwidth_eventually_ge {P : Params} (hP : P.Valid) (R : ℝ) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T → R ≤ P.L T := by
+  refine ⟨2 * π * Real.exp (R / P.lam), fun T hT => ?_⟩
+  have hp : 0 < 2 * π := by positivity
+  have he : Real.exp (R / P.lam) ≤ T / (2 * π) :=
+    (le_div_iff₀ hp).mpr (by simpa only [mul_comm] using hT)
+  have hh := Real.log_le_log (Real.exp_pos _) he
+  rw [Real.log_exp] at hh
+  have hm := mul_le_mul_of_nonneg_left hh hP.lam_pos.le
+  change R ≤ P.lam * Real.log (T / (2 * π))
+  simpa only [mul_div_cancel₀ _ hP.lam_pos.ne'] using hm
+
+/-- A fixed multiple of the inverse tapered bandwidth tends to zero. -/
+theorem zetaSampling_inverse_bandwidth_uniformly_small {P : Params} (hP : P.Valid)
+    {K ε : ℝ} (hK : 0 ≤ K) (hε : 0 < ε) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      8 * P.w ≤ P.L T ∧ 2 * π ≤ T ∧ K / (P.a T * P.L T) ≤ ε := by
+  obtain ⟨T₁, hT₁⟩ := zetaSampling_bandwidth_eventually_ge hP (max (8 * P.w) (2*K/ε))
+  refine ⟨max T₁ (2 * π), fun T hT => ?_⟩
+  have hLbound := hT₁ T ((le_max_left _ _).trans hT)
+  have hwL : 8 * P.w ≤ P.L T := (le_max_left _ _).trans hLbound
+  have hL : 0 < P.L T := by linarith only [hwL, hP.one_le_w]
+  have ha := Params.half_le_a hP hwL
+  have ha0 : 0 < P.a T := by linarith only [ha]
+  have hAL : K / ε ≤ P.a T * P.L T := by
+    calc
+      _ = (1/2 : ℝ) * (2*K/ε) := by ring
+      _ ≤ (1/2 : ℝ) * P.L T :=
+        mul_le_mul_of_nonneg_left ((le_max_right _ _).trans hLbound) (by norm_num)
+      _ ≤ _ := mul_le_mul_of_nonneg_right ha hL.le
+  refine ⟨hwL, (le_max_right _ _).trans hT, ?_⟩
+  rw [div_le_iff₀ (mul_pos ha0 hL)]
+  have hh := (div_le_iff₀ hε).mp hAL
+  simpa only [mul_comm] using hh
+
+/-- The actual archimedean error vanishes uniformly on unit coefficient vectors. -/
+theorem normalizedArchimedeanDeviation_uniformly_small {P : Params} (hP : P.Valid)
+    {ε : ℝ} (hε : 0 < ε) : ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      ∀ c : Fin (P.d T) → ℂ,
+      |normalizedArchimedeanDeviation P T c| ≤ ε * ∑ k, ‖c k‖ ^ 2 := by
+  obtain ⟨K, hK, hbound⟩ := exists_normalizedArchimedeanDeviation_le_inverse_bandwidth hP
+  obtain ⟨T₀, hT₀⟩ := zetaSampling_inverse_bandwidth_uniformly_small hP hK hε
+  refine ⟨T₀, fun T hT c => ?_⟩
+  obtain ⟨hwL, htπ, he⟩ := hT₀ T hT
+  exact (hbound T hwL htπ c).trans (mul_le_mul_of_nonneg_right he (by positivity))
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_normalizedArchimedeanDeviation_le_inverse_bandwidth
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.normalizedArchimedeanDeviation_uniformly_small

@@ -4,7 +4,6 @@ See LICENSE and NOTICE in the parent directory for source attribution.
 -/
 import GaloisForLFunctions.MetaplecticMobiusDescent.Reflection.ThreeBlockPhases
 import GaloisForLFunctions.MetaplecticMobiusDescent.Descent.HybridRows
-import GaloisForLFunctions.MetaplecticMobiusDescent.Fourier.PositiveLogProfiles
 
 /-!
 # Pool prime families

@@ -7,9 +7,9 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.Mellin.UniformPolynomialKern
 /-!
 # Positive logarithmic profiles
 
-Supported primary ideal generators of the canonical quadratic sieve and prime indices.
-Positive logarithmic profiles `LocalLogFourier.positiveLogProfile`, their Fourier moments and
-coupled separation constants.
+Supported primary ideal generators of the canonical quadratic sieve. Positive logarithmic
+profiles `LocalLogFourier.positiveLogProfile`, their Fourier moments and coupled separation
+constants.
 -/
 
 noncomputable section
@@ -47,34 +47,6 @@ open MeasureTheory
 open scoped BigOperators Classical ContDiff SchwartzMap FourierTransform
 open MeasureTheory
 open scoped BigOperators Classical SchwartzMap ContDiff
-
-noncomputable section
-open CubicJacobi CubicKubota CubicRamified RationalSource
-open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection
-open scoped BigOperators Classical MatrixGroups Matrix ContDiff
-local notation "Eis" => Eisenstein.O
-namespace CanonicalQuadraticSieve
-abbrev PrimeIndex (I : Ideal O) := {P : Ideal O // P ∈ primeSupport I}
-
-instance primeIndexMaximal (I : Ideal O) (P : PrimeIndex I) : P.val.IsMaximal := by
-  have hp := UniqueFactorizationMonoid.prime_of_normalized_factor P.val
-    (Multiset.mem_toFinset.mp P.property)
-  exact (Ideal.isPrime_of_prime hp).isMaximal hp.ne_zero
-
-theorem primeIndex_good (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0) (P : PrimeIndex I) :
-    lambda ∉ P.val :=
-  (primaryIdealPrime_spec P.val (primaryIdealPrime_factor_ne_zero I P.val hI
-    (Multiset.mem_toFinset.mp P.property))).2.1
-
-theorem primeIndex_le (I : Ideal O) (hI : I ≠ 0) (P : PrimeIndex I) : I ≤ P.val :=
-  ((Ideal.mem_normalizedFactors_iff hI).mp (Multiset.mem_toFinset.mp P.property)).2
-
-def admissiblePrimeGood (K:Ideal Eis) (hK:Admissible K) (P:PrimeIndex K) : lambda∉P.val :=
-  (hK.2.2 P.val (Multiset.mem_toFinset.mp P.property)).1
-
-end CanonicalQuadraticSieve
-
-end
 
 noncomputable section
 open Eisenstein CubicJacobi CubicKubota CubicRamified RationalSource CompletedGauss

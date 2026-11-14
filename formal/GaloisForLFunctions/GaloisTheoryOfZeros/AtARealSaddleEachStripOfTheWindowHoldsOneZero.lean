@@ -57,7 +57,8 @@ theorem WideRegion.bulkTerm_ne_zero {a : ℂ} (h : WideRegion a) : bulkTerm a �
 theorem norm_two_mul_saddleTerm_sq {a : ℂ} (h : WideRegion a) :
     ‖2 * saddleTerm a‖ ^ 2 = ‖saddleRatioSq a‖ * ‖bulkTerm a‖ ^ 2 := by
   have e := congrArg norm (two_mul_saddleTerm_sq h.ne_zero h.two_mul_sub_one_ne_zero)
-  rwa [norm_pow, norm_mul, norm_pow] at e
+  simp only [norm_pow, norm_mul] at e ⊢
+  exact e
 
 /-- **The cosine side passes to a saddle with a larger squared ratio.** The cosine side is
 `1 ≤ (97/100)²|Q|`. -/

@@ -139,8 +139,12 @@ private theorem tendsto_cosh_div_sinh :
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with x hx
   have hs : 0 < Real.sinh x := lt_of_lt_of_le (by positivity)
     (GaloisForLFunctions.HTGeometry.exp_div_four_le_sinh hx)
-  rw [Real.cosh_eq, Real.sinh_eq] at *
-  field_simp <;> ring
+  have he : Real.cosh x = Real.sinh x + Real.exp (-x) := by
+    rw [Real.cosh_eq, Real.sinh_eq]
+    ring
+  change 1 + Real.exp (-x) * (Real.sinh x)⁻¹ = Real.cosh x / Real.sinh x
+  rw [he]
+  field_simp
 
 /-- The inverse diagonal overlap vanishes at large real depth. -/
 theorem tendsto_inv_reflectedDiagonal :
@@ -174,11 +178,11 @@ theorem tendsto_reflectedMixedOverlap_div_diagonal (θ : ℝ) :
     have hre := congrArg Complex.re h
     norm_num at hre
     exact hx0 hre
-  dsimp only [reflectedMixedOverlap, reflectedDiagonal]
+  dsimp only [Pi.div_apply, reflectedMixedOverlap, reflectedDiagonal]
   rw [Complex.sinh_add, Complex.cosh_mul_I, Complex.sinh_mul_I,
     ← Complex.ofReal_sinh, ← Complex.ofReal_cosh,
     ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-  push_cast
+  simp only [Complex.ofReal_div]
   field_simp <;> ring
 
 /-- Exact normalized cubic expression in terms of normalized overlaps. -/
@@ -218,6 +222,7 @@ theorem tendsto_reflectedEvaluation_cubic (θ : ℝ) :
   have hs : 0 < Real.sinh x := lt_of_lt_of_le (by positivity)
     (GaloisForLFunctions.HTGeometry.exp_div_four_le_sinh hx)
   have hg0 : reflectedDiagonal x ≠ 0 := (div_pos hs (by linarith only [hx])).ne'
+  dsimp only [Function.comp_def]
   rw [reflected_cubic_normalized hg0]
   ring
 

@@ -65,8 +65,12 @@ interference defeats cubic positivity even for genuine sinc evaluation vectors.
 For Fourier bandwidth `[-L/2,L/2]`, the physical depth is `2a/L` and the
 two heights are `T±2γ/L`; fixed sufficiently large `a` fits the critical strip
 for all sufficiently large `L`. This is a prescribed divisor configuration,
-not an assertion about ζ zeros. Formula and sign argument are paper-only;
-no new run theorem or Lean theorem is claimed.
+not an assertion about ζ zeros. The literal integral Gram realization, cubic
+formula, limiting coefficient, and negative example are formalized in
+`IncommensurableGaborPinching/ReflectedExponentialCubicInterference.lean`.
+Its final theorem passes Lean with only `propext`, `Classical.choice`,
+`Quot.sound`. The exact interference law is the positive survivor; no new
+run theorem follows.
 
 ## Gates
 

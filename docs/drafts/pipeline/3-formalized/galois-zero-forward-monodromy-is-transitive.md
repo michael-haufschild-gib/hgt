@@ -1,8 +1,8 @@
 # The forward monodromy group is transitive on the zeros
 
 - **ID:** gtz-forward-monodromy-transitive
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** review-1311 §2.19 question 1 (B193), second part; programme card
   `gtz-galois-theory-of-zeros-programme.md`, open core item 6.
 - **Statement:** for every forward time `b` off the branch times and all zeros `z, z'` of `H_b`
@@ -16,8 +16,8 @@ exchange" to the structure of the whole group. Unconditional.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized
 
 ## Objects
 
@@ -48,9 +48,10 @@ Saddle `a = σ + iη`, `δ = π/4 − η`; `P`, `τ(a)`, `f`, `B₀`, `S₀`, `Q
 5. (Exchanges of strips.) Let `ε`, `a(s)` be as in 4, `θ ∈ πℤ` with `cos θ = −ε`, `|θ| ≤ R − 2`.
    A zero of `H_{τ(a(0))}` in the strip of `θ + 1/4` is joined simply, along the loop, to the
    zero in the strip of `θ − 1/4`.
-6. (Real saddles.) For `σ ≥ σ₀(R)` the zeros of `H_{τ(σ)}` with `|σz| ≤ R − 1` are real, one in
-   each strip. For real `t₁ ≤ t₂`, `t₁ ≥ 1/8`, the transport along `[t₁, t₂]` is an increasing
-   bijection of the positive zeros.
+6. (Real saddles.) For `σ ≥ σ₀(R)` each strip of the window at `τ(σ)` holds exactly one zero,
+   and it is real. Along real times `≥ 1/8` lifts keep their sign and their order. A zero of a
+   strip at `τ(σ)` is joined simply to the zero of the same strip at every saddle of the wide
+   region on the `S`-side with `Re a ≥ σ₀(R)`.
 7. (Transitivity.) Statement above.
 
 ## Proof
@@ -96,53 +97,49 @@ Saddle `a = σ + iη`, `δ = π/4 − η`; `P`, `τ(a)`, `f`, `B₀`, `S₀`, `Q
    `|sin(ζ − θ)| ≥ 3/32`, so the derivative `−2S₀ cos θ sin(ζ − θ) + G'` does not vanish: the
    lift is simple. The base `a(0)` is on the `S`-side (`cos(1/4) < 97/100·(1 − 1/4096)`), the
    two discs lie in the strips of `θ ± 1/4`, and each strip has one zero (3).
-6. At a real saddle `B₀/(2S₀)` is `≤ e^{−3σ}`: `S`-side, so the zeros of the window are in the
-   strips, one in each (3; existence by the minimum modulus principle on a disc around
-   `π/2 + πj`, where `|cos ζ| ≥ sin(1/4)·…` on the circle). For `t ≥ 1/8` all zeros of `H_t`
-   are real and simple (`riemannHeat_zeros_real_simple_of_eighth_le`), `H_t(0) > 0`. Lifts
-   along `[t₁, t₂]` are real, never `0`, and two lifts are never equal; so the transport keeps
-   the sign and the order, and it is onto.
-7. Base time `b = 1/8`. For a positive zero `x` of `H_b` let `m` be the number of zeros in
-   `(0, x)` (finite). Take `R ≥ π(m+3) + 2` and `σ ≥ σ₀(R)` with both signed loops beyond it.
-   Along `[b, τ(σ)]` the zero `x` goes to the `m`-th positive zero, which is the zero of strip
-   `m` (6). A path of saddles on the `S`-side keeps every zero of a strip in its strip (3):
-   so along the real saddles and then up the vertical segment to the base `a_ε(0)` of a
-   signed loop (on it `Re f` decreases in `η` and `|2a − 1|` increases, so `|u|` decreases to
-   its value at `a_ε(0)`: the segment is on the `S`-side). There the zero of the strip of
-   `θ + 1/4` is joined to the zero of the strip of `θ − 1/4` (5), and the way back keeps the
-   strip. `ε = −1`: `θ = 2πk`, strips `2k ↔ 2k − 1`; `ε = 1`: `θ = π + 2πk`, strips
-   `2k + 1 ↔ 2k`. All lifts are simple (3, 5, 6). So `(b, x)` is joined simply to the zeros of
-   index `m + 1` and `m − 1` (index `−1` is the negative of index `0`), and by 1 these are in
-   one orbit of `G₊(b)`. Induction on the index: one orbit. Other base times: the groups are
-   conjugate by a transport.
+6. At a real saddle `|B₀| ≤ |Φ(0)|` and `|S₀| ≥ e^{7σ/2}`, so `4|B₀| ≤ |S₀|` far out: `S`-side.
+   Existence in each strip: minimum modulus on the disc of radius `1/2` around `θ + π/2`, where
+   the model is `B₀ − 2S₀ cos θ sin w`, `|sin w| ≥ 9/20` on the circle; uniqueness by 3. The
+   zeros at times `t ≥ 1/8` are real and simple (`riemannHeat_zeros_real_simple_of_eighth_le`),
+   `H_t(0) > 0`; the real part of a lift and the difference of two lifts are continuous and
+   never `0` (two lifts that meet agree), so sign and order are kept. Path to the `S`-side:
+   the real saddles from `σ` to `Re a` (`4|B₀| ≤ |S₀|`), then the vertical segment to `a`. With
+   `|Q| = (64π⁴/Φ(0)²)e^{9σ + 2 Re f}/|2a − 1|`, `Re f = πe^{2σ}(cos 2η(σ − 1) − η sin 2η)`
+   decreases and `|2a − 1|` increases in `η`, so `|Q| ≥ |Q(a)|` on the segment, and the `S`-side
+   is `1 ≤ (97/100)²|Q|`. Along both segments the zero stays in its strip (3).
+7. Base time `b = 1/8`. For zeros `x, x'` of `H_b` let `N` be the number of zeros of `H_b` with
+   `|z| ≤ max(|x|, |x'|)`, `R = π(N + 2) + 2`, and `σ ≥ σ₀(R)` with both signed loops beyond it.
+   Adjacent strips `θ`, `θ − π` of the window, `θ = πk`, are joined at `τ(σ)`: along the path of
+   6 to the base of the signed loop with `cos θ = −ε`, the exchange (5), and back; the zeros at
+   the base are identified by uniqueness in the strips (3). By induction all strips
+   `−N − 1 ≤ k ≤ N` are joined. Along `[b, τ(σ)]` let `x` go to `y`. If `σ|y| ≥ π(N + 1)`, say
+   `y > 0` (else `−x`), the zeros of the strips `0, …, N` lie in `(0, y)` and pull back to
+   `N + 1` distinct zeros of `H_b` in `(0, |x|)`: impossible. So `y` lies in the window, and in a
+   strip `−N − 1 ≤ k ≤ N` (3). Hence `(b, x)` and `(b, x')` are joined simply, and by 1 they are
+   in one orbit of `G₊(b)`. Other base times: a forward path from `b` to `1/8` carries the
+   joins.
 
 ## Formalization
 
+Headline: `exists_mem_forwardMonodromy_apply_eq (b) (hb₀ : 0 < b.re) (hb : b ∉ branchTimes) (p q)
+: ∃ g ∈ forwardMonodromy b hb₀ hb, g p = q` in `TheForwardMonodromyGroupIsTransitiveOnTheZeros`;
+axioms `propext`, `Classical.choice`, `Quot.sound`.
+
 Modules in `GaloisTheoryOfZeros/`:
 
-| Module | Content | Status |
-|---|---|---|
-| `AZeroFollowedThroughSimpleZerosIsMovedByTheForwardMonodromy` | theorem 1: `exists_forward_transports_of_simple_lift`, `SimplyJoined` (symm, trans), `simplyJoined_iff_exists_mem_forwardMonodromy` | done |
-| `AZeroAloneInAMovingRegionIsFollowedThroughSimpleZeros` | tool for 3, 5: `exists_simplyJoined_of_alone` (regions `d(s,z) ≤ 0`, no zero on the edge, at most one zero, simple) | done |
-| `TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue`, `TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine` | theorem 2 without the derivative: `WideRegion`, `exists_forall_norm_complexHeat_sub_wide_model_le (R)` | done |
-| signed loops | theorem 4 | open |
-| strips | derivative of the model, theorem 3, strips along a path of saddles | open |
-| real times | theorem 6, order | open |
-| real saddles, exchanges, assembly | theorems 5, 6, 7 | open |
-
-Lean design of the open modules:
-
-- Signed loops: `signSaddle a₁ s t = a₁ + loopShift a₁ s + t·πi/D₁`, `D₁ = P₁(2a₁ − 1)`. On it
-  `Q cos² ξ₀(s) e^{−2πit} ≈ 1`. With `A = 2S₀ cos ξ₀(s) e^{−iπt}`: `A² ≈ B₀²`, so on a path
-  `A ≈ B₀` throughout or `A ≈ −B₀` throughout (`norm_sub_le_or_norm_add_le`). The loops `t = 0`
-  and `t = 1` are joined by the bridge `s = 0`, `t ∈ [0, 1]`, and `e^{−iπ} = −1`: the two loops
-  have opposite signs. No logarithm of `u` is needed.
-- Strips: a strip is given by a real `θ` with `sin θ = 0`: `θ + 1/8 ≤ Re ζ ≤ θ + π − 1/8`,
-  `|Im ζ| ≤ 1`. `Re(cos θ · sin ζ) ≥ sin(1/8)` on it; injectivity by
-  `Bottcher.injOn_of_re_deriv_pos`; the lift along a path of saddles by
-  `exists_simplyJoined_of_alone` with `d = max(|Re(az) − θ − π/2| − (π/2 − 1/8), |Im(az)| − 1)`.
-- Exchanges: `exists_simplyJoined_of_alone` with `d = |a(s)z − θ − ξ₀(s)| − 1/8`.
+| Module | Content |
+|---|---|
+| `AZeroFollowedThroughSimpleZerosIsMovedByTheForwardMonodromy` | theorem 1: `SimplyJoined` (symm, trans), `simplyJoined_iff_exists_mem_forwardMonodromy` |
+| `AZeroAloneInAMovingRegionIsFollowedThroughSimpleZeros` | tracking tool for 3, 5: `exists_simplyJoined_of_alone` |
+| `TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue`, `TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine` | theorem 2: `WideRegion`, `exists_forall_norm_complexHeat_sub_wide_model_le` |
+| `ForEachSignALoopOfSaddlesTurnsTheRatioOfTheTwoTerms` | theorem 4: `IsSignedLoop`, `exists_isSignedLoop` |
+| `AZeroOfAStripStaysInItsStripWhereTheCosineTermDominates` | theorem 3: derivative of the model, `StripFacts`, `exists_stripFacts`, `exists_simplyJoined_of_stripFacts` |
+| `ASignedLoopOfSaddlesExchangesTheZerosOfTwoAdjacentStrips` | theorem 5: `exists_exchange` |
+| `TransportAlongRealTimesKeepsTheOrderOfTheZeros` | theorem 6, real times: `re_pos_iff_of_lift`, `re_lt_iff_of_lifts`, `SimplyJoined.neg`, `SimplyJoined.refl` |
+| `AtARealSaddleEachStripOfTheWindowHoldsOneZero` | theorem 6, saddles: `exists_real_dominance`, `exists_zero_mem_cosStrip`, `norm_saddleRatioSq_le_of_im_le`, `exists_simplyJoined_to_cosineSide` |
+| `TheForwardMonodromyGroupIsTransitiveOnTheZeros` | theorem 7: `exists_realSaddleWindow`, `RealSaddleWindow.simplyJoined_strips`, `RealSaddleWindow.lt_of_lift`, `simplyJoined_eighth`, `exists_mem_forwardMonodromy_apply_eq` |
 
 ## Log
 - 2026-11-13 — created; paper proof written.
 - 2026-11-13 — theorem 1, the tracking tool and the model on the wide region formalized.
+- 2026-11-14 — theorems 3–7 formalized; transitivity of `G₊` at every forward base time.

@@ -445,6 +445,23 @@ theorem norm_trace_fourth_perturbation_le_fourth {P Q : Matrix n n ℂ}
   norm_num only [norm_mul, Complex.norm_ofNat] at h1 h2 h3 h4
   linarith only [h1, h2, h3, h4, h31, h22, halt, h13, h04]
 
+/-- Frobenius energy of a difference is controlled by the two separate energies. -/
+theorem matrixFrobeniusEnergy_sub_le (A B : Matrix n n ℂ) :
+    matrixFrobeniusEnergy (A-B) ≤ 2 * matrixFrobeniusEnergy A + 2 * matrixFrobeniusEnergy B := by
+  unfold matrixFrobeniusEnergy
+  calc
+    _ ≤ ∑ i, ∑ j, (2 * ‖A i j‖^2 + 2 * ‖B i j‖^2) := by
+      apply Finset.sum_le_sum
+      intro i _
+      apply Finset.sum_le_sum
+      intro j _
+      simp only [Matrix.sub_apply]
+      have hh := norm_sub_le (A i j) (B i j)
+      have hp := norm_nonneg (A i j - B i j)
+      nlinarith only [hh, hp, norm_nonneg (A i j), norm_nonneg (B i j),
+        sq_nonneg (‖A i j‖ - ‖B i j‖)]
+    _ = _ := by simp only [Finset.sum_add_distrib, Finset.mul_sum]
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.norm_trace_fourth_perturbation_le_secondMoment

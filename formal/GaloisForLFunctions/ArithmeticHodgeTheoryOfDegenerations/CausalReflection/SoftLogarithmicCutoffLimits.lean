@@ -47,6 +47,7 @@ theorem tendsto_softLogarithmicCutoffErrorVector (v : SoninL2) :
     (fun n => (continuous_const.sub (continuous_softLogarithmicCutoff n)).measurable)
     softLogarithmicCutoff_error_abs_le
   intro u
+  change Tendsto (fun n => (1 : ℝ) - softLogarithmicCutoff n u) atTop (𝓝 0)
   simpa only [sub_self] using
     (tendsto_const_nhds (x := (1 : ℝ))).sub (tendsto_softLogarithmicCutoff u)
 
@@ -127,6 +128,7 @@ theorem ClosedSoftLogarithmicHalfLineDomain.cutoff_positiveEnergy_tendsto {v : S
       (fun n => (continuous_const.sub (continuous_softLogarithmicCutoff n)).measurable)
       softLogarithmicCutoff_error_abs_le softLogarithmicCutoff_error_lipschitz
       (fun u => by
+        change Tendsto (fun n => (1 : ℝ) - softLogarithmicCutoff n u) atTop (𝓝 0)
         simpa only [sub_self] using
           (tendsto_const_nhds (x := (1 : ℝ))).sub (tendsto_softLogarithmicCutoff u))
       hv.hasReferenceEnergy

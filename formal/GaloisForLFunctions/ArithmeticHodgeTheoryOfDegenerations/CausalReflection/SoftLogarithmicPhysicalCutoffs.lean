@@ -139,9 +139,8 @@ theorem ClosedSoftLogarithmicHalfLineDomain.cutoff_trial {v : SoninL2}
   have hrep := hv.cutoff_representative n
   have hm : Measurable (softLogarithmicCutoffProfile n v) :=
     (continuous_softLogarithmicCutoff n).measurable.mul (measurable_softLogarithmicRealProfile v)
-  have hV2 : MemLp (softLogarithmicCutoffVector n v : ℝ → ℂ) 2 volume :=
-    Lp.memLp (softLogarithmicCutoffVector n v)
-  have hc2 : MemLp (cx (softLogarithmicCutoffProfile n v)) 2 volume := hV2.congr hrep
+  have hc2 : MemLp (cx (softLogarithmicCutoffProfile n v)) 2 volume :=
+    (memLp_congr_ae hrep).mp (Lp.memLp (softLogarithmicCutoffVector n v))
   have hsq : Integrable (fun u => softLogarithmicCutoffProfile n v u ^ 2) := by
     have hi := hc2.integrable_norm_pow (by norm_num)
     apply hi.congr

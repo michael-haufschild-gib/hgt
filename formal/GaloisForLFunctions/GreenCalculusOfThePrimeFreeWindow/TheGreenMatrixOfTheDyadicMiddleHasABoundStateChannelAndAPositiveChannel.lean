@@ -152,8 +152,11 @@ def positiveChannel (M : Matrix ι ι ℝ) (φ : ι → ℝ) (μ : ℝ) : Matrix
 
 theorem positiveChannel_mulVec (M : Matrix ι ι ℝ) (φ : ι → ℝ) (μ : ℝ) (w : ι → ℝ) :
     positiveChannel M φ μ *ᵥ w = M⁻¹ *ᵥ w + ((1 / μ) * (φ ⬝ᵥ w)) • φ := by
-  rw [positiveChannel, Matrix.add_mulVec, Matrix.smul_mulVec, Matrix.vecMulVec_mulVec, smul_smul]
-  rfl
+  rw [positiveChannel, Matrix.add_mulVec, Matrix.smul_mulVec, Matrix.vecMulVec_mulVec]
+  congr 1
+  ext i
+  simp only [Pi.smul_apply, op_smul_eq_mul, smul_eq_mul]
+  ring
 
 variable {M : Matrix ι ι ℝ} {φ : ι → ℝ} {μ c : ℝ}
 

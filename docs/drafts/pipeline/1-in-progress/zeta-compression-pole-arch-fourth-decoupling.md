@@ -80,8 +80,9 @@ unconditional boundedness of either fourth moment is asserted.
 
 - [x] Full-line paper estimates; no fourth-moment assumption.
 - [x] Narrow corpus search: existing source identities and diagonal estimates; no matching operator-tail or fourth-decoupling theorem found.
-- [ ] Concrete Lean sampling estimate and full-line pole bound: estimates pass; final vanishing corollary has one corrected algebraic step awaiting its source check.
-- [ ] Concrete Lean archimedean normalized-fourth approximation.
+- [x] Concrete Lean sampling estimate, full-line pole bound, and uniform vanishing: `ZetaSamplingPoleCompression.lean`; transitive axioms are `propext`, `Classical.choice`, `Quot.sound`.
+- [x] Full-line archimedean density error `O(1/L)` and uniform vanishing: `ZetaSamplingArchimedeanCompression.lean`; standard axioms only.
+- [x] Actual matrix pole-norm vanishing and archimedean normalized-fourth approximation: `ZetaSamplingCompressionMatrix.lean`; standard axioms only.
 - [ ] Direct source checks and transitive axiom audit.
 - [ ] Prime centered fourth upper bound; remains unproved.
 
@@ -98,5 +99,9 @@ finite positive-spectrum edge-defect estimate are formalized in the same module.
 Its three main perturbation theorems pass Lean with only
 `propext`, `Classical.choice`, `Quot.sound`.
 
-The actual archimedean matrix approximation and the prime/pole asymptotic
-application remain unformalized; the matrix estimates alone do not assert them.
+`zetaSamplingCompression_archimedean_centered_fourth_small` in
+`ZetaSamplingCompressionMatrix.lean` proves the actual archimedean approximation.
+Its entries are the literal full-line
+density integrals; the baseline trace is exactly the sampling dimension.
+`zetaSamplingCompression_pole_uniformly_small` proves actual pole operator-norm
+vanishing. The prime/pole fourth-trace application still awaits its source check.

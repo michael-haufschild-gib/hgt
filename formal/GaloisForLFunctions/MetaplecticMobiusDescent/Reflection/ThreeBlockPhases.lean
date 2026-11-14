@@ -9,7 +9,8 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.Descent.MixedReflectedValues
 # Three-block phases
 
 Restriction of prime families, marked active sets and ramified blocks; residual and marked
-phases with frozen cores; the inactive weight splits over three blocks.
+phases with frozen cores; the inactive weight splits over three blocks. Prime indices of the
+canonical quadratic sieve (`CanonicalQuadraticSieve.PrimeIndex`) are maximal ideals.
 -/
 
 noncomputable section
@@ -371,6 +372,34 @@ theorem markedWithFrozen_norm [∀ i, (Ideal.span {p i}).IsMaximal]
 
 end
 end InverseReflectedPhase
+
+end
+
+noncomputable section
+open CubicJacobi CubicKubota CubicRamified RationalSource
+open Eisenstein CompletedGauss SchwartzPlanePoisson CanonicalRowCompletion CanonicalQuadraticSieve NormalizedReflection
+open scoped BigOperators Classical MatrixGroups Matrix ContDiff
+local notation "Eis" => Eisenstein.O
+namespace CanonicalQuadraticSieve
+abbrev PrimeIndex (I : Ideal O) := {P : Ideal O // P ∈ primeSupport I}
+
+instance primeIndexMaximal (I : Ideal O) (P : PrimeIndex I) : P.val.IsMaximal := by
+  have hp := UniqueFactorizationMonoid.prime_of_normalized_factor P.val
+    (Multiset.mem_toFinset.mp P.property)
+  exact (Ideal.isPrime_of_prime hp).isMaximal hp.ne_zero
+
+theorem primeIndex_good (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0) (P : PrimeIndex I) :
+    lambda ∉ P.val :=
+  (primaryIdealPrime_spec P.val (primaryIdealPrime_factor_ne_zero I P.val hI
+    (Multiset.mem_toFinset.mp P.property))).2.1
+
+theorem primeIndex_le (I : Ideal O) (hI : I ≠ 0) (P : PrimeIndex I) : I ≤ P.val :=
+  ((Ideal.mem_normalizedFactors_iff hI).mp (Multiset.mem_toFinset.mp P.property)).2
+
+def admissiblePrimeGood (K:Ideal Eis) (hK:Admissible K) (P:PrimeIndex K) : lambda∉P.val :=
+  (hK.2.2 P.val (Multiset.mem_toFinset.mp P.property)).1
+
+end CanonicalQuadraticSieve
 
 end
 

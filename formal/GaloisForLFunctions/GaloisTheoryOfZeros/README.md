@@ -52,7 +52,8 @@ two involutions `c` and `r`. There are three tiers.
    The turns generate `G₊`, so the first two items describe the whole group. Both parts are
    present: centre times give sign flips, and collisions away from the centre exist at forward
    times of arbitrarily large real part, so `G₊` contains exchanges and is not a group of sign
-   flips. These collisions are at nonreal times; RH concerns the positive real axis.
+   flips. These collisions are at nonreal times; RH concerns the positive real axis. `G₊` is
+   transitive on the zeros: over the forward half-plane the cover is irreducible.
 
 ## Objects
 
@@ -402,6 +403,14 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   there are a time `τ` with `Re τ > T` and a place `ζ ≠ 0` with `H_τ(ζ) = H_τ'(ζ) = 0`. At
   every forward base time off the branch times, `G₊` contains an element that carries a zero
   `z` to a zero other than `±z`: the forward monodromy group does not preserve the pairs.
+- *Transitivity.* For every forward time `b` off the branch times and all zeros `p, q` of
+  `H_b` some element of `G₊(b)` carries `p` to `q`. Mechanism: at a real saddle `σ` far out the
+  cosine term dominates and each strip `πk < Re(σz) < π(k + 1)` of a window holds one zero;
+  a path of saddles on which the cosine term dominates keeps each zero in its strip; for each
+  sign `ε` a loop of saddles with `2S₀ cos ξ₀(s) ≈ εB₀` exchanges the zeros of two adjacent
+  strips, those around `πk` with `cos πk = −ε`, so the two signs together link all strips of
+  the window. Along real times `≥ 1/8` the zeros keep sign and order, and a count of the zeros
+  of `H_{1/8}` in a disc places every zero of the disc in a strip of the window.
 - *Real branch times.* If a segment of real times from `a < 0` to `b > 0` contains no branch
   time, then infinitely many nonreal zeros of `H_a` escape along it. So every real
   neighbourhood of the time `0` contains a branch time, or zeros escape along real times
@@ -449,7 +458,15 @@ collisions.
 [saddle term](TheLineThroughTheSaddleIsAGaussianAtTheSaddleValue.lean),
 [two-term model](TheHeatFamilyAtASaddleTimeIsAConstantPlusACosine.lean),
 [loop of saddles](ALoopOfSaddlesTurnsTheSquaredRatioOfTheTwoTermsAroundOne.lean),
-[collision away from the centre](ACollisionAwayFromTheCentreExistsAtAForwardTime.lean))
+[collision away from the centre](ACollisionAwayFromTheCentreExistsAtAForwardTime.lean),
+[simple joins](AZeroFollowedThroughSimpleZerosIsMovedByTheForwardMonodromy.lean),
+[tracking](AZeroAloneInAMovingRegionIsFollowedThroughSimpleZeros.lean),
+[signed loops](ForEachSignALoopOfSaddlesTurnsTheRatioOfTheTwoTerms.lean),
+[strips](AZeroOfAStripStaysInItsStripWhereTheCosineTermDominates.lean),
+[exchange of strips](ASignedLoopOfSaddlesExchangesTheZerosOfTwoAdjacentStrips.lean),
+[real times](TransportAlongRealTimesKeepsTheOrderOfTheZeros.lean),
+[real saddles](AtARealSaddleEachStripOfTheWindowHoldsOneZero.lean),
+[transitivity](TheForwardMonodromyGroupIsTransitiveOnTheZeros.lean))
 
 ## Criteria
 
@@ -467,8 +484,8 @@ collisions.
 ## Questions
 
 1. **The forward monodromy group (B193).** Is there a collision away from the centre at a
-   forward time? (Yes.) Is `G₊` transitive on the pairs `{z, −z}`, and is it the full group
-   of restricted signed permutations?
+   forward time? (Yes.) Is `G₊` transitive on the zeros? (Yes.) Is it the full group of
+   restricted signed permutations?
 
    Settled: `G₊(τ)` is defined, a group of signed permutations of the pairs, the same up to
    conjugation at every base time; `cr ∈ G₊(t)` at real `t > 0`, trivial for all `t` iff RH;
@@ -481,15 +498,11 @@ collisions.
    a loop in a convex region that moves a zero out of its pair certifies one in the region;
    such collisions exist at forward times of arbitrarily large real part, so `G₊` contains
    exchanges, does not preserve the pairs, and the squared zeros are not single-valued
-   functions of the forward time.
+   functions of the forward time; `G₊` is transitive on the zeros.
 
-   The two remaining answers. *The group is transitive or full:* the cover is in the position
-   of a generic curve over a finite field, and the remaining problem is the word of
-   conjugation, not the group. *The group is intransitive:* the orbits are a partition of the
-   pairs that is defined without a sign. The model at a saddle time shows the mechanism of
-   the first answer: where `2S₀ = −B₀` the zeros near `ζ = 2πk ± ξ` collide for every `k`
-   (`k = 0` is the centre), where `2S₀ = B₀` those near `ζ = π + 2πk ± ξ`, and the two
-   families of exchanges link neighbouring zeros along the whole chain.
+   Remaining: which restricted signed permutations lie in `G₊`. If it is the full group, the
+   cover is in the position of a generic curve over a finite field, and the remaining problem
+   is the word of conjugation, not the group.
 2. **Independence of the moments.** Are the normalized moments `μ₂/μ₀, …, μ₂ₙ/μ₀` of `Φ`
    algebraically independent at each degree? This decides the group of every Jensen equation:
    it is `C₂ ≀ S_n` over the field of the coefficients unless the moments satisfy a polynomial
@@ -582,16 +595,12 @@ belongs here when it is applied to one of the six questions.
 - The collisions away from the centre as a set. The central branch times are the zeros of one
   function of the time, the centre value; for the others no such function is known. The
   known ones lie near the times with `2S₀ = ±B₀`, in the direction of the imaginary axis.
-  Which sign occurs on a given loop of saddles, and loops for a prescribed sign.
-- The two-term model on the whole range `0 ≤ Im a < π/4`, down to the real saddles, where the
-  time is real, the zeros are real and ordered, and the model is a pure cosine: this connects
-  the exchanges near the centre with every zero of a real fibre.
+  Which sign occurs on a given loop of saddles.
 - A centre time at which the central collision is double and no other collision happens:
   there the turn is the sign flip of one pair.
 - `cr` as the word of the turns around the real branch times between a real time and `1/8`.
-- Transitivity of `G₊` on the pairs (irreducibility of the cover of pairs); the full group.
-  The orbits are the classes of the relation generated by the collisions away from the
-  centre.
+- The full group: whether `G₊` contains every finitely supported signed permutation of the
+  pairs, for instance a transposition of two pairs without a sign.
 - Whether conjugation is determined inside `G₊` by its commutation relations.
 - Non-escape and accumulation of branch times at times with `Re τ ≤ 0`; control of transport
   as `τ → 0`.

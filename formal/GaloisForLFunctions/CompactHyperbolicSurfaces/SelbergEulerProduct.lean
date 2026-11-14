@@ -109,8 +109,8 @@ theorem summable_realEuler {σ : ℝ} (hσ : 1 < σ) :
   refine (eventually_cofinite.mpr ?_)
   refine hfin.subset fun p hp => ?_
   simp only [mem_setOf_eq, not_le] at hp ⊢
-  by_contra hge
-  push_neg at hge
+  by_contra hge'
+  have hge : 1 ≤ X.classLen p.1 := not_lt.mp hge'
   apply not_le.mpr hp
   rw [hval, Real.norm_of_nonneg (div_nonneg (exp_pos _).le
     (by have := Real.exp_lt_one_iff.mpr (neg_lt_zero.mpr (pLen_pos hhyp p)); linarith))]
@@ -119,6 +119,7 @@ theorem summable_realEuler {σ : ℝ} (hσ : 1 < σ) :
   rw [div_mul_eq_mul_div]
   exact div_le_div_of_nonneg_right (le_mul_of_one_le_left (exp_pos _).le hge) h1.le
 
+omit hhyp in
 theorem norm_eulerTerm (s : ℂ) (x : X.PClass × ℕ) :
     ‖Complex.exp (-((s + x.2) * X.classLen x.1.1))‖ = exp (-((s.re + x.2) * X.classLen x.1.1)) := by
   rw [Complex.norm_exp]
@@ -127,13 +128,13 @@ theorem norm_eulerTerm (s : ℂ) (x : X.PClass × ℕ) :
 
 theorem summable_eulerTerm {s : ℂ} (hs : 1 < s.re) :
     Summable fun x : X.PClass × ℕ => ‖-Complex.exp (-((s + x.2) * X.classLen x.1.1))‖ := by
-  simpa only [norm_neg, norm_eulerTerm hhyp] using summable_realEuler hhyp hs
+  simpa only [norm_neg, norm_eulerTerm] using summable_realEuler hhyp hs
 
 theorem eulerFactor_ne_zero {s : ℂ} (hs : 1 < s.re) (x : X.PClass × ℕ) : X.eulerFactor x s ≠ 0 := by
   rw [eulerFactor, sub_ne_zero]
   intro h
   have h1 := congrArg norm h
-  rw [norm_one, norm_eulerTerm hhyp] at h1
+  rw [norm_one, norm_eulerTerm] at h1
   have hl := pLen_pos hhyp x.1
   have : exp (-((s.re + x.2) * X.classLen x.1.1)) < 1 :=
     Real.exp_lt_one_iff.mpr (by have : (0 : ℝ) ≤ x.2 := Nat.cast_nonneg _; nlinarith)
@@ -153,7 +154,8 @@ theorem eulerZeta_ne_zero {s : ℂ} (hs : 1 < s.re) : X.eulerZeta s ≠ 0 := by
     (f := fun x : X.PClass × ℕ => -Complex.exp (-((s + x.2) * X.classLen x.1.1)))
     (fun x => by rw [← sub_eq_add_neg]; exact eulerFactor_ne_zero hhyp hs x)
     (summable_eulerTerm hhyp hs)
-  simpa only [← sub_eq_add_neg] using h
+  simp only [← sub_eq_add_neg] at h
+  exact h
 
 theorem multipliableLocallyUniformlyOn_euler {σ : ℝ} (hσ : 1 < σ) :
     MultipliableLocallyUniformlyOn (fun x : X.PClass × ℕ => X.eulerFactor x)
@@ -162,12 +164,13 @@ theorem multipliableLocallyUniformlyOn_euler {σ : ℝ} (hσ : 1 < σ) :
   have h := (summable_realEuler hhyp hσ).multipliableLocallyUniformlyOn_one_add hU
     (f := fun x s => -Complex.exp (-((s + x.2) * X.classLen x.1.1)))
     (Eventually.of_forall fun x s hs => by
-      rw [norm_neg, norm_eulerTerm hhyp]
+      rw [norm_neg, norm_eulerTerm]
       have hl := pLen_pos hhyp x.1
       have : σ < s.re := hs
       exact Real.exp_le_exp.mpr (by nlinarith))
     (fun x => by fun_prop)
-  simpa only [eulerFactor, ← sub_eq_add_neg] using h
+  simp only [← sub_eq_add_neg] at h
+  exact h
 
 /-- **`Z_E` is holomorphic on `Re s > 1`.** -/
 theorem differentiableOn_eulerZeta : DifferentiableOn ℂ X.eulerZeta {s | 1 < s.re} := by
@@ -184,6 +187,7 @@ theorem differentiableOn_eulerZeta : DifferentiableOn ℂ X.eulerZeta {s | 1 < s
           DifferentiableOn.finsetProd (fun _ _ => by unfold eulerFactor; fun_prop)) hU
   exact ((hd s₀ hmem).differentiableAt (hU.mem_nhds hmem)).differentiableWithinAt
 
+omit hhyp in
 theorem logDeriv_eulerFactor (x : X.PClass × ℕ) (s : ℂ) :
     logDeriv (X.eulerFactor x) s = X.classLen x.1.1 * Complex.exp (-((s + x.2) * X.classLen x.1.1)) /
       (1 - Complex.exp (-((s + x.2) * X.classLen x.1.1))) := by
@@ -191,12 +195,11 @@ theorem logDeriv_eulerFactor (x : X.PClass × ℕ) (s : ℂ) :
       Complex.exp (-((s + x.2) * X.classLen x.1.1))) s := by
     have h1 : HasDerivAt (fun s : ℂ => -((s + x.2) * X.classLen x.1.1))
         (-(X.classLen x.1.1 : ℂ)) s := by
-      have := ((hasDerivAt_id s).add_const (x.2 : ℂ)).mul_const (X.classLen x.1.1 : ℂ)
-      simpa using this.neg
+      have := (((hasDerivAt_id s).add_const (x.2 : ℂ)).mul_const (X.classLen x.1.1 : ℂ)).fun_neg
+      simpa using this
     have h2 := (Complex.hasDerivAt_exp _).comp s h1
     have h3 := h2.const_sub 1
-    convert h3 using 1
-    ring
+    exact h3.congr_deriv (by ring)
   rw [logDeriv_apply, hd.deriv]
   rfl
 
@@ -234,7 +237,7 @@ theorem summable_tripleTerm {s : ℂ} (hs : 1 < s.re) : Summable (X.tripleTerm s
       simp_rw [hnorm]
       have hl : 0 < (pn.2 + 1) * X.classLen pn.1 := by
         have := pLen_pos hhyp pn.1; positivity
-      rw [realWeight_primPow, mul_div_assoc, ← (hasSum_exp_shift (σ := s.re) hl).tsum_eq,
+      rw [realWeight_primPow hhyp, mul_div_assoc, ← (hasSum_exp_shift (σ := s.re) hl).tsum_eq,
         ← tsum_mul_left]
       refine tsum_congr fun k => ?_
       congr 2
@@ -256,7 +259,7 @@ theorem logDeriv_eulerZeta {s : ℂ} (hs : 1 < s.re) : logDeriv X.eulerZeta s = 
     rw [logDeriv_eulerFactor]
     set q := Complex.exp (-((s + x.2) * X.classLen x.1.1))
     have hq : ‖q‖ < 1 := by
-      rw [norm_eulerTerm hhyp]
+      rw [norm_eulerTerm]
       have hl := pLen_pos hhyp x.1
       exact Real.exp_lt_one_iff.mpr (by have : (0:ℝ) ≤ x.2 := Nat.cast_nonneg _; nlinarith)
     have hg := (hasSum_geometric_of_norm_lt_one hq).mul_left (X.classLen x.1.1 * q)
@@ -266,26 +269,24 @@ theorem logDeriv_eulerZeta {s : ℂ} (hs : 1 < s.re) : logDeriv X.eulerZeta s = 
     rw [mul_assoc, ← pow_succ', ← Complex.exp_nat_mul]
     push_cast
     ring_nf
-  have hlog : logDeriv X.eulerZeta s = ∑' x : X.PClass × ℕ, logDeriv (X.eulerFactor x) s := by
-    have := logDeriv_tprod_eq_tsum hU hmem (fun x => eulerFactor_ne_zero hhyp hs x)
+  have hlog : logDeriv X.eulerZeta s = ∑' x : X.PClass × ℕ, logDeriv (X.eulerFactor x) s :=
+    logDeriv_tprod_eq_tsum hU hmem (fun x => eulerFactor_ne_zero hhyp hs x)
       (fun x => by unfold eulerFactor; fun_prop)
-      ((summable_prod_of_nonneg (f := fun _ => (0 : ℝ)) le_rfl).mp
-        summable_zero |> fun _ => (hT.prod_factor |> fun _ => ?_))
+      (hT.hasSum.prod_fiberwise hinner).summable
       (multipliableLocallyUniformlyOn_euler hhyp hσ) (eulerZeta_ne_zero hhyp hs)
-    · exact this
-    · exact (HasSum.summable (hT.hasSum.prod_fiberwise hinner))
-  rw [hlog, ← (hT.hasSum.prod_fiberwise hinner).tsum_eq]
+  rw [hlog, (hT.hasSum.prod_fiberwise hinner).tsum_eq]
   -- regroup as `((p, n), k)` and sum over `k`
   let e : (X.PClass × ℕ) × ℕ ≃ (X.PClass × ℕ) × ℕ :=
     ⟨fun y => ((y.1.1, y.2), y.1.2), fun y => ((y.1.1, y.2), y.1.2), fun _ => rfl, fun _ => rfl⟩
-  rw [← e.tsum_eq, Summable.tsum_prod ((e.summable_iff).mpr hT)]
+  rw [← e.tsum_eq, Summable.tsum_prod (f := fun c => X.tripleTerm s (e c))
+    ((e.summable_iff).mpr hT)]
   have hk : ∀ pn : X.PClass × ℕ, ∑' k, X.tripleTerm s (e (pn, k)) =
       X.classWeight s (primPow hhyp pn) := by
     intro pn
     have hl : 0 < (pn.2 + 1) * X.classLen pn.1 := by
       have := pLen_pos hhyp pn.1; positivity
     rw [classWeight, classPrimLen_primPow, classLen_primPow, mul_div_assoc]
-    rw [← ((hasSum_cexp_shift (s * (pn.2 + 1)) hl).mul_left (X.classLen pn.1 : ℂ)).tsum_eq]
+    rw [← ((hasSum_cexp_shift s hl).mul_left (X.classLen pn.1 : ℂ)).tsum_eq]
     refine tsum_congr fun k => ?_
     simp only [tripleTerm, e, Equiv.coe_fn_mk]
     push_cast
