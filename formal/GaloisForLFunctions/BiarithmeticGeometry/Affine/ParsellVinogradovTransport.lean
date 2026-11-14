@@ -95,7 +95,7 @@ theorem centeredPull_comp (θ φ : ι → R) (t s : R)
     centeredPull θ t (centeredPull φ s p) = centeredPull (θ + φ) (t + s) p := by
   have h := DFunLike.congr_fun (pull_comp θ φ t s) p
   simp only [AlgHom.comp_apply] at h
-  simp only [centeredPull, map_sub, pull_constant, h, eval_sub, eval_C]
+  simp only [centeredPull, map_sub, pull_constant, h, eval_C]
   ring
 
 /-- Inverting a centered frame recovers every nonconstant coefficient exactly. -/
@@ -109,6 +109,12 @@ theorem centeredPull_inverse (θ : ι → R) (t : R)
 theorem reconstruction (θ : ι → R) (t : R) (p : MvPolynomial (Option ι) R) :
     centeredPull (-θ) (-t) (centeredPull θ t p) + C (eval 0 p) = p := by
   rw [centeredPull_inverse, sub_add_cancel]
+
+#print axioms pull_comp
+#print axioms shear_translation_commute
+#print axioms relative_pull
+#print axioms centeredPull_comp
+#print axioms reconstruction
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

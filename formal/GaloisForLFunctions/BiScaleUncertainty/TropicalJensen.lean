@@ -1,7 +1,9 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Tropical Jensen identities for finite signed splines
@@ -87,7 +89,11 @@ theorem absolute_jensen (r t : ℝ) :
     (|r - t| + |-r - t|) / 2 - |t| = tentCount r t := by
   unfold tentCount
   rw [show -r - t = -(r + t) by ring, abs_neg]
-  simp only [abs_def, max_def]
+  have habs (x : ℝ) : |x| = if 0 ≤ x then x else -x := by
+    split_ifs with h
+    · exact abs_of_nonneg h
+    · exact abs_of_neg (lt_of_not_ge h)
+  simp only [habs, max_def]
   split_ifs <;> linarith
 
 /-- A continuous finite piecewise-linear function with prescribed slope jumps. -/
@@ -136,6 +142,12 @@ theorem characteristic_neg (s : Finset ℝ) (w : ℝ → ℝ) (a b r : ℝ) :
   unfold characteristic
   rw [hn]
   linarith only [hp, hcount, spline_jensen s w a b r]
+
+#print axioms proximity_signed_scaling
+#print axioms proximity_not_signed_homogeneous
+#print axioms proximity_max_bounds
+#print axioms spline_jensen
+#print axioms characteristic_neg
 
 end
 end GaloisForLFunctions.BiScaleUncertainty.TropicalJensen
