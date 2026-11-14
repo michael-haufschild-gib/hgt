@@ -91,13 +91,11 @@ theorem cyclicIntegralGluing_generator_annihilator (a : ℤ) :
     map_smul, cyclicAugmentation_single, smul_eq_mul, mul_one]
 
 /-- Augmentation reduced modulo the group order. -/
-def cyclicAugmentationResidue : CyclicRegular ℤ G →ₗ[ℤ] ZMod (Fintype.card G) where
-  toFun v := (cyclicAugmentation ℤ G v : ZMod (Fintype.card G))
-  map_add' v w := by simp
-  map_smul' a v := by
-    change ((cyclicAugmentation ℤ G (a • v) : ℤ) : ZMod (Fintype.card G)) = a • _
-    rw [map_smul]
-    simp only [smul_eq_mul, Int.cast_mul]
+def cyclicAugmentationResidue : CyclicRegular ℤ G →ₗ[ℤ] ZMod (Fintype.card G) :=
+  AddMonoidHom.toIntLinearMap
+    { toFun := fun v => (cyclicAugmentation ℤ G v : ZMod (Fintype.card G))
+      map_zero' := by simp
+      map_add' := fun v w => by simp }
 
 /-- The residue map detects precisely the invariant-plus-moving lattice. -/
 theorem cyclicAugmentationResidue_ker :
