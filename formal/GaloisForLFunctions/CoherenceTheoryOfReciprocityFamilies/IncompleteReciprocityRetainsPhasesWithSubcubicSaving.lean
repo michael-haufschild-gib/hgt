@@ -882,7 +882,7 @@ theorem exists_nonreducible_incompleteIdealT_subcubic {a b y₀ η : ℝ} (ha : 
     exact IsUnit.of_mul_eq_one _ hmk
   have hΨ_Jm : Ψc (primaryIdealGenerator Jm) = 1 := by
     rw [hgen_Jm]
-    simp [Ψc, Ψ, hunit_Jm]
+    exact if_pos hunit_Jm
   have hcw1 : columnWeight Ψc 1 / (Real.sqrt (Ideal.absNorm (1 : Ideal O) : ℝ) : ℂ) ≠ 0 := by
     have hsq1 : Squarefree (1 : Ideal O) := squarefree_one
     have hgen1 : primaryIdealGenerator (1 : Ideal O) ≠ 0 := by
@@ -1537,7 +1537,6 @@ theorem milestone_one_subcubic_power_saving (W₀ : ℝ → ℂ) {a b : ℝ} (ha
     refine h1.trans_eq ?_
     rw [Real.mul_rpow hκ₀_pos.le hdiv_pos.le, Real.rpow_neg hdiv_pos.le, Real.rpow_ofNat, div_pow]
     field_simp [hX_pos.ne', hQc_pos.ne']
-    ring
   have hscY_invN : (sc * (X ^ η') ^ 3) ^ (-(N : ℝ)) ≤ κ₀ ^ (-(N : ℝ)) * X ^ (-(δ * N)) := by
     have hlo : κ₀ * X ^ δ ≤ sc * (X ^ η') ^ 3 := by
       calc κ₀ * X ^ δ ≤ κ₀ * ((X / Qc ^ 2) * (X ^ η') ^ 3) :=
@@ -1614,7 +1613,7 @@ exponent `η' ≤ 1/3`, the primitive cusp matrix `M_c = !![1, 0; c, 1] ∈ SL(2
 theorem subconductor_dual_scale_obstruction :
     ∃ C₀ : ℝ, 0 < C₀ ∧
       ∀ (X κ η' : ℝ), 1 ≤ X → 0 < κ → η' ≤ 1 / 3 →
-      ∀ (c : O) (hc : c ≠ 0),
+      ∀ (c : O) (_ : c ≠ 0),
         X ^ (1 + κ) ≤ (Ideal.absNorm (Ideal.span {c}) : ℝ) →
         ∃ (M : Matrix.SpecialLinearGroup (Fin 2) O) (hM : M 1 0 ≠ 0),
           (fixedMatrixCusp M hM).point = 1 / ringComplex c ∧
@@ -1678,3 +1677,13 @@ theorem subconductor_dual_scale_obstruction :
           ring
 
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies
+
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.vstar_complexTwistedWindow_apply
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incompleteIdealT_cusp_reciprocity
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incompleteIdealSummand_retains_target
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incompleteReciprocity_retains_rootNumber_phases
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.exists_nonreducible_incompleteIdealT_subcubic
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.directCubeTail_uniform_box_bound
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.dualCubeTail_uniform_box_bound
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.milestone_one_subcubic_power_saving
+#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.subconductor_dual_scale_obstruction

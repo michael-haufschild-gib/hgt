@@ -54,9 +54,8 @@ theorem integrable_gaussianAccelerationGram_entry {ι : Type*} {d : ℕ}
     (-(∑ k, (y i k - y j k) ^ 2))).mpr
     (lt_of_le_of_lt (neg_nonpos.mpr (Finset.sum_nonneg fun k _ => sq_nonneg _))
       (by positivity))
-  convert h using 1
-  funext x
-  rw [congrFun he x]
+  exact h.congr (ae_of_all _ fun x =>
+    congrArg (gaussianAccelerationKernel (Real.exp s) x * ·) (congrFun he x).symm)
 
 private def accelerationMatrixDensity {ι : Type*} {d : ℕ}
     (y : ι → Fin d → ℝ) (s x : ℝ) : Matrix ι ι ℝ :=

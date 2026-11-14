@@ -161,13 +161,9 @@ theorem primeTwoFactor_conj (α : ℝ) (s : ℂ) :
   have hcpow : ∀ z : ℂ, (2 : ℂ) ^ (starRingEnd ℂ z) = starRingEnd ℂ ((2 : ℂ) ^ z) := by
     intro z
     rw [two_cpow_eq_exp, two_cpow_eq_exp, ← Complex.exp_conj]
-    simp
+    simp only [map_mul, Complex.conj_ofReal]
   unfold primeTwoFactor
-  simp only [map_mul, map_sub, map_one, ← hcpow]
-  congr 3
-  · simp
-  · simp
-  · simp
+  simp only [map_mul, map_sub, map_div₀, map_one, ← hcpow, map_ofNat, Complex.conj_ofReal]
 
 /-- Any zero of `primeTwoFactor α` has real part `α` or `1 - α`. -/
 theorem re_eq_of_primeTwoFactor_eq_zero {α : ℝ} {s : ℂ} (hz : primeTwoFactor α s = 0) :
@@ -202,7 +198,7 @@ theorem re_eq_of_primeTwoFactor_eq_zero {α : ℝ} {s : ℂ} (hz : primeTwoFacto
     simp at hre0
     linarith
 
-theorem primeTwoFactor_ne_zero_of_gt {α : ℝ} (h0 : 0 < α) {s : ℂ}
+theorem primeTwoFactor_ne_zero_of_gt {α : ℝ} (_h0 : 0 < α) {s : ℂ}
     (hs1 : α < s.re) (hs2 : 1 - α < s.re) : primeTwoFactor α s ≠ 0 := by
   intro hz
   rcases re_eq_of_primeTwoFactor_eq_zero hz with h | h <;> linarith
@@ -244,20 +240,27 @@ theorem primeTwoFactor_two_mul_eq_schurNum (α : ℝ) (w : ℂ) :
     primeTwoFactor α (2 * w) =
       (2 : ℂ) ^ (2 * w - 1 / 2) * schurNum 2 (primeTwoTrace α) ((2 : ℂ) ^ (-2 * w)) := by
   set L : ℂ := ((Real.log 2 : ℝ) : ℂ)
-  have hrpow : ∀ r : ℝ, ((2 : ℝ) ^ r : ℂ) = Complex.exp ((r : ℂ) * L) := by
+  have hrpow : ∀ r : ℝ, (((2 : ℝ) ^ r : ℝ) : ℂ) = Complex.exp ((r : ℂ) * L) := by
     intro r
     rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2), Complex.ofReal_exp]
     congr 1; push_cast; ring
-  have hprod : Complex.exp ((α : ℂ) * L) * Complex.exp (((1 - α : ℝ) : ℂ) * L) = 2 := by
-    rw [← hrpow α, ← hrpow (1 - α), ← Complex.ofReal_mul, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-    norm_num
+  have hexpL : Complex.exp L = 2 := by
+    have := hrpow 1
+    simpa using this.symm
+  have hprod : Complex.exp ((α : ℂ) * L) * Complex.exp ((1 - (α : ℂ)) * L) = 2 := by
+    rw [← Complex.exp_add]
+    have : (α : ℂ) * L + (1 - (α : ℂ)) * L = L := by ring
+    rw [this, hexpL]
   unfold primeTwoFactor schurNum primeTwoTrace
-  simp only [two_cpow_eq_exp, Complex.ofReal_add, hrpow]
+  simp only [two_cpow_eq_exp, Complex.ofReal_add]
+  rw [hrpow α, hrpow (1 - α)]
+  push_cast
+  simp only [show ((Real.log 2 : ℝ) : ℂ) = L from rfl]
   have e1 : Complex.exp (((α : ℂ) - 2 * w) * L) =
       Complex.exp ((α : ℂ) * L) * Complex.exp (-2 * w * L) := by
     rw [← Complex.exp_add]; congr 1; ring
-  have e2 : Complex.exp ((((1 - α : ℝ) : ℂ) - 2 * w) * L) =
-      Complex.exp (((1 - α : ℝ) : ℂ) * L) * Complex.exp (-2 * w * L) := by
+  have e2 : Complex.exp ((1 - (α : ℂ) - 2 * w) * L) =
+      Complex.exp ((1 - (α : ℂ)) * L) * Complex.exp (-2 * w * L) := by
     rw [← Complex.exp_add]; congr 1; ring
   rw [e1, e2]
   linear_combination
@@ -267,18 +270,22 @@ theorem primeTwoFactor_one_add_two_mul_eq_schurDen (α : ℝ) (w : ℂ) :
     primeTwoFactor α (1 + 2 * w) =
       (2 : ℂ) ^ (2 * w - 1 / 2) * schurDen 2 (primeTwoTrace α) ((2 : ℂ) ^ (-2 * w)) := by
   set L : ℂ := ((Real.log 2 : ℝ) : ℂ)
-  have hrpow : ∀ r : ℝ, ((2 : ℝ) ^ r : ℂ) = Complex.exp ((r : ℂ) * L) := by
+  have hrpow : ∀ r : ℝ, (((2 : ℝ) ^ r : ℝ) : ℂ) = Complex.exp ((r : ℂ) * L) := by
     intro r
     rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2), Complex.ofReal_exp]
     congr 1; push_cast; ring
   have hexpL : Complex.exp L = 2 := by
     have := hrpow 1
     simpa using this.symm
-  have hprod : Complex.exp ((α : ℂ) * L) * Complex.exp (((1 - α : ℝ) : ℂ) * L) = 2 := by
-    rw [← hrpow α, ← hrpow (1 - α), ← Complex.ofReal_mul, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-    norm_num
+  have hprod : Complex.exp ((α : ℂ) * L) * Complex.exp ((1 - (α : ℂ)) * L) = 2 := by
+    rw [← Complex.exp_add]
+    have : (α : ℂ) * L + (1 - (α : ℂ)) * L = L := by ring
+    rw [this, hexpL]
   unfold primeTwoFactor schurDen primeTwoTrace
-  simp only [two_cpow_eq_exp, Complex.ofReal_add, hrpow]
+  simp only [two_cpow_eq_exp, Complex.ofReal_add]
+  rw [hrpow α, hrpow (1 - α)]
+  push_cast
+  simp only [show ((Real.log 2 : ℝ) : ℂ) = L from rfl]
   have e0 : Complex.exp ((1 + 2 * w - 1 / 2) * L) =
       2 * Complex.exp ((2 * w - 1 / 2) * L) := by
     have : (1 + 2 * w - 1 / 2) * L = L + (2 * w - 1 / 2) * L := by ring
@@ -290,16 +297,15 @@ theorem primeTwoFactor_one_add_two_mul_eq_schurDen (α : ℝ) (w : ℂ) :
     rw [Complex.exp_add, Complex.exp_add, hexpL] at hexp
     apply mul_right_cancel₀ (two_ne_zero' ℂ)
     linear_combination hexp
-  have e2 : Complex.exp ((((1 - α : ℝ) : ℂ) - (1 + 2 * w)) * L) =
-      (Complex.exp (((1 - α : ℝ) : ℂ) * L) / 2) * Complex.exp (-2 * w * L) := by
-    have hsum : (((1 - α : ℝ) : ℂ) - (1 + 2 * w)) * L + L =
-        ((1 - α : ℝ) : ℂ) * L + (-2 * w * L) := by ring
+  have e2 : Complex.exp ((1 - (α : ℂ) - (1 + 2 * w)) * L) =
+      (Complex.exp ((1 - (α : ℂ)) * L) / 2) * Complex.exp (-2 * w * L) := by
+    have hsum : (1 - (α : ℂ) - (1 + 2 * w)) * L + L =
+        (1 - (α : ℂ)) * L + (-2 * w * L) := by ring
     have hexp := congrArg Complex.exp hsum
     rw [Complex.exp_add, Complex.exp_add, hexpL] at hexp
     apply mul_right_cancel₀ (two_ne_zero' ℂ)
     linear_combination hexp
   rw [e0, e1, e2]
-  push_cast
   linear_combination
     ((1 / 2 : ℂ) * Complex.exp ((2 * w - 1 / 2) * L) * Complex.exp (-2 * w * L) ^ 2) * hprod
 
@@ -317,20 +323,22 @@ theorem primeTwoFactor_div_eq_primeTwoScatteringGate (α : ℝ) (w : ℂ) :
 /-- Root Factorization of `schurDen 2 (primeTwoTrace α) v`. -/
 theorem schurDen_primeTwo_eq_mul (α : ℝ) (v : ℂ) :
     schurDen 2 (primeTwoTrace α) v =
-      2 * (1 - ((2 : ℝ) ^ (-α) : ℂ) * v) * (1 - ((2 : ℝ) ^ (α - 1) : ℂ) * v) := by
+      2 * (1 - (((2 : ℝ) ^ (-α) : ℝ) : ℂ) * v) *
+        (1 - (((2 : ℝ) ^ (α - 1) : ℝ) : ℂ) * v) := by
   have hprod : (2 : ℝ) ^ (-α) * (2 : ℝ) ^ (α - 1) = 1 / 2 := by
     rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-    norm_num
+    have : -α + (α - 1) = (-1 : ℝ) := by ring
+    rw [this]; norm_num
   have hsum : 2 * ((2 : ℝ) ^ (-α) + (2 : ℝ) ^ (α - 1)) = primeTwoTrace α := by
     have h1 : (2 : ℝ) * (2 : ℝ) ^ (-α) = (2 : ℝ) ^ (1 - α) := by
-      conv_lhs => rw [← Real.rpow_one 2, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-      congr 1; ring
+      calc (2 : ℝ) * (2 : ℝ) ^ (-α) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (-α) := by norm_num
+        _ = (2 : ℝ) ^ (1 - α) := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
     have h2 : (2 : ℝ) * (2 : ℝ) ^ (α - 1) = (2 : ℝ) ^ α := by
-      conv_lhs => rw [← Real.rpow_one 2, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-      congr 1; ring
+      calc (2 : ℝ) * (2 : ℝ) ^ (α - 1) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (α - 1) := by norm_num
+        _ = (2 : ℝ) ^ α := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
     rw [primeTwoTrace, mul_add, h1, h2, add_comm]
   have hprodC : (((2 : ℝ) ^ (-α) : ℝ) : ℂ) * (((2 : ℝ) ^ (α - 1) : ℝ) : ℂ) = 1 / 2 := by
-    exact_mod_cast hprod
+    rw [← Complex.ofReal_mul, hprod]; push_cast; rfl
   have hsumC : 2 * ((((2 : ℝ) ^ (-α) : ℝ) : ℂ) + (((2 : ℝ) ^ (α - 1) : ℝ) : ℂ)) =
       (primeTwoTrace α : ℂ) := by
     exact_mod_cast hsum
@@ -339,7 +347,7 @@ theorem schurDen_primeTwo_eq_mul (α : ℝ) (v : ℂ) :
   linear_combination (-(v : ℂ)) * hsumC + (-(2 * v ^ 2)) * hprodC
 
 /-- Nonvanishing of `schurDen 2 (primeTwoTrace α) (2^{-2w})` on `-σ ≤ Re w` when `σ < (1 - α)/2`. -/
-theorem schurDen_primeTwo_ne_zero_of_re_gt {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
+theorem schurDen_primeTwo_ne_zero_of_re_gt {α : ℝ} (h0 : 0 < α) (_h1 : α < 1)
     {w : ℂ} (hw1 : α - 1 < 2 * w.re) (hw2 : -α < 2 * w.re) :
     schurDen 2 (primeTwoTrace α) ((2 : ℂ) ^ (-2 * w)) ≠ 0 := by
   have hfac := primeTwoFactor_one_add_two_mul_eq_schurDen α w
@@ -354,6 +362,7 @@ theorem norm_primeTwoScatteringGate_le_one {α : ℝ} (h0 : 0 < α) (h1 : α < 1
   obtain ⟨_, htr⟩ := primeTwoTrace_pos_and_lt_three h0 h1
   set v : ℂ := (2 : ℂ) ^ (-2 * w)
   have hv : ‖v‖ ≤ 1 := by
+    dsimp only [v]
     rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
       Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num)]
     have hre : (-2 * w).re = -2 * w.re := by simp
@@ -371,6 +380,7 @@ theorem norm_primeTwoScatteringGate_axis {α : ℝ} (h0 : 0 < α) (h1 : α < 1) 
     ‖primeTwoScatteringGate α ((t : ℂ) * I)‖ = 1 := by
   set v : ℂ := (2 : ℂ) ^ (-2 * ((t : ℂ) * I))
   have hv1 : Complex.normSq v = 1 := by
+    dsimp only [v]
     rw [Complex.normSq_eq_norm_sq, show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
       Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num)]
     have hre : (-2 * ((t : ℂ) * I)).re = 0 := by simp
@@ -492,7 +502,9 @@ theorem deformedEchoKernel_eq_zero_of_nonpos (α : ℝ) {τ : ℝ} (hτ : τ ≤
     echoKernel_eq_zero_of_nonpos (by
       have : 0 ≤ 2 * ((k + 1 : ℕ) : ℝ) * Real.log 2 := mul_nonneg (by positivity) hlog
       linarith)
-  simp [deformedEchoKernel, echoKernel_eq_zero_of_nonpos hτ, hk]
+  unfold deformedEchoKernel
+  simp_rw [hk, mul_zero]
+  simp [echoKernel_eq_zero_of_nonpos hτ]
 
 theorem summable_abs_deformedEchoCoeff {α : ℝ} (h0 : 1 / 2 < α) (h1 : α < 1) :
     Summable fun k : ℕ => |deformedEchoCoeff α k| := by
@@ -576,17 +588,15 @@ theorem primeTwoScatteringGate_eq_causal_series {α : ℝ} (h0 : 1 / 2 < α) (h1
   simp_rw [hterm]
   rw [(hs1.add hs2).tsum_eq]
   -- Algebraic partial-fraction verification
-  have hr12 : (r₁ : ℂ) * (r₂ : ℂ) = 1 / 2 := by
-    have : r₁ * r₂ = 1 / 2 := by
-      rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]; norm_num
-    exact_mod_cast this
   have hsum_tr : 2 * ((r₁ : ℂ) + (r₂ : ℂ)) = (primeTwoTrace α : ℂ) := by
     have h1' : (2 : ℝ) * r₁ = (2 : ℝ) ^ (1 - α) := by
-      conv_lhs => rw [← Real.rpow_one 2, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-      congr 1; ring
+      dsimp only [r₁]
+      calc (2 : ℝ) * (2 : ℝ) ^ (-α) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (-α) := by norm_num
+        _ = (2 : ℝ) ^ (1 - α) := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
     have h2' : (2 : ℝ) * r₂ = (2 : ℝ) ^ α := by
-      conv_lhs => rw [← Real.rpow_one 2, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
-      congr 1; ring
+      dsimp only [r₂]
+      calc (2 : ℝ) * (2 : ℝ) ^ (α - 1) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (α - 1) := by norm_num
+        _ = (2 : ℝ) ^ α := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
     have : 2 * (r₁ + r₂) = primeTwoTrace α := by rw [primeTwoTrace, mul_add, h1', h2', add_comm]
     exact_mod_cast this
   have hxr1 : (r₂ : ℂ) = (x : ℂ) * (r₁ : ℂ) := by
@@ -595,38 +605,50 @@ theorem primeTwoScatteringGate_eq_causal_series {α : ℝ} (h0 : 1 / 2 < α) (h1
       rw [← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
       congr 1; ring
     exact_mod_cast this
+  have hxr1_sq : (x : ℂ) * (r₁ : ℂ) ^ 2 = 1 / 2 := by
+    have hr : x * r₁ ^ 2 = 1 / 2 := by
+      dsimp only [r₁, x]
+      rw [sq, ← mul_assoc, ← Real.rpow_add (by norm_num : (0 : ℝ) < 2),
+        ← Real.rpow_add (by norm_num : (0 : ℝ) < 2)]
+      have : 2 * α - 1 + -α + -α = (-1 : ℝ) := by ring
+      rw [this]; norm_num
+    rw [← Complex.ofReal_pow, ← Complex.ofReal_mul, hr]; push_cast; rfl
   have hA1 : (echoWeightA1 α : ℂ) = (2 * (x : ℂ) - 1) / (2 * (1 - (x : ℂ))) := by
     unfold echoWeightA1; push_cast; rfl
   have hA2 : (echoWeightA2 α : ℂ) = ((x : ℂ) - 2) / (2 * (1 - (x : ℂ))) := by
     unfold echoWeightA2; push_cast; rfl
-  rw [primeTwoScatteringGate, schurDen_primeTwo_eq_mul, schurNum, hA1, hA2]
-  field_simp
-  linear_combination
-    (4 * (1 - (x : ℂ)) * v ^ 2) * hr12 +
-    (-(1 - (x : ℂ)) * v) * hsum_tr +
-    (-(2 * (2 * (x : ℂ) - 1) * v) + 4 * v ^ 2 * (1 - (x : ℂ)) * (r₁ : ℂ)) * hxr1
-
-private theorem integrable_cexp_mul_echoKernel {w : ℂ} (hw : 1 / 2 < w.re) :
-    Integrable fun τ : ℝ => Complex.exp (-w * (τ : ℂ)) * ((echoKernel τ : ℝ) : ℂ) := by
-  have hw0 : 0 < w.re := by linarith
-  let F : ℕ → ℝ → ℂ := fun c τ => echoCoefficient w c * bounceWave w (τ - echoDelay c)
-  have hint : ∀ c, Integrable (F c) := fun c =>
-    ((integrable_bounceWave hw0).comp_sub_right (echoDelay c)).const_mul _
-  have hnorm : ∀ c, (∫ τ, ‖F c τ‖) = ‖echoCoefficient w c‖ * ∫ v, ‖bounceWave w v‖ := by
-    intro c
-    simp_rw [F, norm_mul]
-    rw [integral_const_mul, integral_sub_right_eq_self (fun v => ‖bounceWave w v‖) (echoDelay c)]
-  have hbase : Summable fun c : ℕ => 1 / (c : ℝ) ^ (2 * w.re) :=
-    Real.summable_one_div_nat_rpow.mpr (by linarith)
-  have hsum : Summable fun c => ∫ τ, ‖F c τ‖ := by
-    simp_rw [hnorm]
-    refine Summable.mul_right _ (Summable.of_norm_bounded hbase fun c => ?_)
-    rw [norm_norm]
-    exact norm_echoCoefficient_le c
-  have htsum := HTGeometry.integrable_tsum_of_summable_integral_norm hint hsum
-  refine htsum.congr (Eventually.of_forall fun τ => ?_)
-  rw [echoKernel, Complex.ofReal_tsum, ← tsum_mul_left]
-  exact tsum_congr fun c => (cexp_mul_echoTerm w c τ).symm
+  have hv_def : (2 : ℂ) ^ (-2 * w) = v := rfl
+  rw [primeTwoScatteringGate, hv_def, schurDen_primeTwo_eq_mul,
+    show (((2 : ℝ) ^ (-α) : ℝ) : ℂ) = (r₁ : ℂ) from rfl,
+    show (((2 : ℝ) ^ (α - 1) : ℝ) : ℂ) = (r₂ : ℂ) from rfl,
+    schurNum, show ((2 : ℝ) : ℂ) = 2 by norm_num, hA1, hA2]
+  set D : ℂ := 2 * (1 - (x : ℂ)) * (1 - (r₁ : ℂ) * v) * (1 - (r₂ : ℂ) * v)
+  have hD : D ≠ 0 := mul_ne_zero (mul_ne_zero (mul_ne_zero two_ne_zero h1xC) h1r1) h1r2
+  apply mul_right_cancel₀ hD
+  have hL : (1 - (primeTwoTrace α : ℂ) * v + 2 * v ^ 2) /
+      (2 * (1 - (r₁ : ℂ) * v) * (1 - (r₂ : ℂ) * v)) * D =
+      (1 - (x : ℂ)) * (1 - (primeTwoTrace α : ℂ) * v + 2 * v ^ 2) := by
+    dsimp only [D]
+    rw [div_mul_eq_mul_div, div_eq_iff (mul_ne_zero (mul_ne_zero two_ne_zero h1r1) h1r2)]
+    ring
+  have hR1 : ((2 * (x : ℂ) - 1) / (2 * (1 - (x : ℂ))) * ((r₁ : ℂ) * v) /
+      (1 - (r₁ : ℂ) * v)) * D =
+      (2 * (x : ℂ) - 1) * ((r₁ : ℂ) * v) * (1 - (r₂ : ℂ) * v) := by
+    dsimp only [D]
+    rw [div_mul_eq_mul_div, div_div, div_mul_eq_mul_div,
+      div_eq_iff (mul_ne_zero (mul_ne_zero two_ne_zero h1xC) h1r1)]
+    ring
+  have hR2 : (((x : ℂ) - 2) / (2 * (1 - (x : ℂ))) * ((r₂ : ℂ) * v) /
+      (1 - (r₂ : ℂ) * v)) * D =
+      ((x : ℂ) - 2) * ((r₂ : ℂ) * v) * (1 - (r₁ : ℂ) * v) := by
+    dsimp only [D]
+    rw [div_mul_eq_mul_div, div_div, div_mul_eq_mul_div,
+      div_eq_iff (mul_ne_zero (mul_ne_zero two_ne_zero h1xC) h1r2)]
+    ring
+  rw [hL, add_mul, add_mul, hR1, hR2]
+  dsimp only [D]
+  rw [← hsum_tr, hxr1]
+  linear_combination (-4 * (1 - (x : ℂ)) * v ^ 2) * hxr1_sq
 
 /-- **Laplace Transform of the Retarded Deformed Echo Kernel.** On `Re w > 1/2` (`1/2 < α < 1`),
 `∫ e^{-wτ} K_α(τ) dτ = primeTwoScatteringGate α w * (Λ(2w) / Λ(2w + 1))`. -/
@@ -651,7 +673,7 @@ theorem integral_cexp_mul_deformedEchoKernel {α : ℝ} (h0 : 1 / 2 < α) (h1 : 
     have hexp : Complex.exp (-w * ((d k : ℝ) : ℂ)) * Complex.exp (-w * ((τ - d k : ℝ) : ℂ)) =
         Complex.exp (-w * (τ : ℂ)) := by
       rw [← Complex.exp_add]; congr 1; push_cast; ring
-    push_cast
+    push_cast at hexp ⊢
     linear_combination
       (((deformedEchoCoeff α k : ℝ) : ℂ) * ((echoKernel (τ - d k) : ℝ) : ℂ)) * hexp
   have hG_int : ∀ k : ℕ, Integrable (G k) := fun k =>
@@ -685,9 +707,9 @@ theorem integral_cexp_mul_deformedEchoKernel {α : ℝ} (h0 : 1 / 2 < α) (h1 : 
         (1 / 2 : ℂ) * Kw τ + ∑' k : ℕ, G k τ := by
     intro τ
     unfold deformedEchoKernel
-    push_cast
-    rw [mul_add, show Complex.exp (-w * (τ : ℂ)) * ((1 / 2 : ℂ) * ((echoKernel τ : ℝ) : ℂ)) =
-      (1 / 2 : ℂ) * Kw τ by simp [Kw]; ring]
+    rw [Complex.ofReal_add, mul_add, Complex.ofReal_mul,
+      show Complex.exp (-w * (τ : ℂ)) * (((1 / 2 : ℝ) : ℂ) * ((echoKernel τ : ℝ) : ℂ)) =
+        (1 / 2 : ℂ) * Kw τ by simp [Kw]; ring]
     congr 1
     rw [Complex.ofReal_tsum, ← tsum_mul_left]
     exact tsum_congr fun k => (hG_eq k τ).symm
@@ -705,15 +727,15 @@ theorem integral_cexp_mul_deformedEchoKernel {α : ℝ} (h0 : 1 / 2 < α) (h1 : 
 /-! ## 3. Complete Eternal-AdS Boundary Dictionary for the Deformed System -/
 
 /-- Retarded, advanced, and two-boundary Wightman correlators of the deformed horizon. -/
-def deformedRetardedCorrelator (α : ℝ) (ω : ℂ) : ℂ :=
-  deformedScatteringPhase α (-I * ω)
+def deformedRetardedCorrelator (α : ℝ) (ν : ℂ) : ℂ :=
+  deformedScatteringPhase α (-I * ν)
 
-def deformedAdvancedCorrelator (α : ℝ) (ω : ℂ) : ℂ :=
-  deformedScatteringPhase α (I * ω)
+def deformedAdvancedCorrelator (α : ℝ) (ν : ℂ) : ℂ :=
+  deformedScatteringPhase α (I * ν)
 
-def deformedWightmanRL (α : ℝ) (ω : ℂ) : ℂ :=
-  (deformedRetardedCorrelator α ω - deformedAdvancedCorrelator α ω) /
-    (2 * I * Complex.sinh (Real.pi * ω))
+def deformedWightmanRL (α : ℝ) (ν : ℂ) : ℂ :=
+  (deformedRetardedCorrelator α ν - deformedAdvancedCorrelator α ν) /
+    (2 * I * Complex.sinh (Real.pi * ν))
 
 /-- Every zero `ρ` of `xiDeformed α` (including every nontrivial zero of `ζ` and `ρ = α`) produces
 an isolated pole of `deformedRetardedCorrelator α` at `ω_ρ = i(ρ - 1)/2` of exact multiplicity
@@ -724,52 +746,52 @@ theorem deformedRetardedCorrelator_order_at_zero {α : ℝ} (h0 : 0 < α) (h1 : 
       -meromorphicOrderAt (xiDeformed α) ρ := by
   have hcoord : -I * (I * (ρ - 1) / 2) = (ρ - 1) / 2 := by
     linear_combination (-(ρ - 1) / 2) * I_sq
-  have hd : HasDerivAt (fun ω : ℂ => -I * ω) (-I) (I * (ρ - 1) / 2) := hasDerivAt_const_mul (-I)
+  have hd : HasDerivAt (fun ν : ℂ => -I * ν) (-I) (I * (ρ - 1) / 2) := hasDerivAt_const_mul (-I)
   have hcomp : meromorphicOrderAt (deformedRetardedCorrelator α) (I * (ρ - 1) / 2) =
       meromorphicOrderAt (deformedScatteringPhase α) ((ρ - 1) / 2) := by
     rw [← hcoord]
     exact meromorphicOrderAt_comp_of_deriv_ne_zero
-      (f := deformedScatteringPhase α) (g := fun ω : ℂ => -I * ω) (by fun_prop)
+      (f := deformedScatteringPhase α) (g := fun ν : ℂ => -I * ν) (by fun_prop)
       (by rw [hd.deriv]; exact neg_ne_zero.mpr I_ne_zero)
   rw [hcomp]
   exact scatteringPhase_meromorphicOrderAt_at_zero (differentiable_xiDeformed α)
     (fun _ => xiDeformed_ne_zero_of_one_le_re h0 h1) (xiDeformed_one_sub α) hρ
 
-/-- Two-boundary eternal-AdS pole order for `deformedWightmanRL α` in `-1/2 < Im ω < 0`. -/
-theorem deformedWightmanRL_order_lower {α : ℝ} (h0 : 0 < α) (h1 : α < 1) {ω : ℂ}
-    (hlo : -(1 / 2 : ℝ) < ω.im) (hhi : ω.im < 0) (hz : xiDeformed α (1 - 2 * I * ω) = 0) :
-    meromorphicOrderAt (deformedWightmanRL α) ω =
-      -meromorphicOrderAt (xiDeformed α) (1 - 2 * I * ω) := by
-  have habs0 : 0 < |ω.im| := abs_pos.mpr hhi.ne
-  have habs1 : |ω.im| < 1 := by rw [abs_of_neg hhi]; linarith
-  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ω) ≠ 0 :=
+/-- Two-boundary eternal-AdS pole order for `deformedWightmanRL α` in `-1/2 < Im ν < 0`. -/
+theorem deformedWightmanRL_order_lower {α : ℝ} (h0 : 0 < α) (h1 : α < 1) {ν : ℂ}
+    (hlo : -(1 / 2 : ℝ) < ν.im) (hhi : ν.im < 0) (hz : xiDeformed α (1 - 2 * I * ν) = 0) :
+    meromorphicOrderAt (deformedWightmanRL α) ν =
+      -meromorphicOrderAt (xiDeformed α) (1 - 2 * I * ν) := by
+  have habs0 : 0 < |ν.im| := abs_pos.mpr hhi.ne
+  have habs1 : |ν.im| < 1 := by rw [abs_of_neg hhi]; linarith
+  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
     mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
       (sinh_pi_mul_ne_zero_of_abs_im_lt_one habs0 habs1)
   have hadv_open : IsOpen {z : ℂ | z ≠ -(I / 2) ∧ xiDeformed α (1 + 2 * I * z) ≠ 0} :=
     isOpen_ne.inter (isOpen_ne.preimage ((differentiable_xiDeformed α).continuous.comp (by fun_prop)))
-  have hadv_mem : ω ∈ {z : ℂ | z ≠ -(I / 2) ∧ xiDeformed α (1 + 2 * I * z) ≠ 0} := by
+  have hadv_mem : ν ∈ {z : ℂ | z ≠ -(I / 2) ∧ xiDeformed α (1 + 2 * I * z) ≠ 0} := by
     refine ⟨fun h => by have := congrArg Complex.im h; simp at this; linarith, ?_⟩
     exact xiDeformed_ne_zero_of_one_le_re h0 h1 (by simp; linarith)
-  have hadv_an : AnalyticAt ℂ (fun z => -deformedAdvancedCorrelator α z) ω := by
+  have hadv_an : AnalyticAt ℂ (fun z => -deformedAdvancedCorrelator α z) ν := by
     refine (AnalyticAt.neg ?_)
-    refine (DifferentiableOn.analyticOnNhd (fun z hz => ?_) hadv_open) ω hadv_mem
+    refine (DifferentiableOn.analyticOnNhd (fun z hz => ?_) hadv_open) ν hadv_mem
     have h2z : 2 * (I * z) - 1 ≠ 0 := fun he => hz.1 (by linear_combination (-I / 2) * he + z * I_sq)
     exact ((((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) (I * z)).div
       (by fun_prop) h2z).mul
         ((((differentiable_xiDeformed α) _).comp (I * z) (by fun_prop)).div
           (((differentiable_xiDeformed α) _).comp (I * z) (by fun_prop))
           (by simpa [mul_assoc] using hz.2))).comp z (by fun_prop)).differentiableWithinAt
-  have hω_eq : ω = I * ((1 - 2 * I * ω) - 1) / 2 := by linear_combination ω * I_sq
-  have hret_ord : meromorphicOrderAt (deformedRetardedCorrelator α) ω =
-      -meromorphicOrderAt (xiDeformed α) (1 - 2 * I * ω) := by
-    nth_rw 1 [hω_eq]
+  have hν_eq : ν = I * ((1 - 2 * I * ν) - 1) / 2 := by linear_combination ν * I_sq
+  have hret_ord : meromorphicOrderAt (deformedRetardedCorrelator α) ν =
+      -meromorphicOrderAt (xiDeformed α) (1 - 2 * I * ν) := by
+    nth_rw 1 [hν_eq]
     exact deformedRetardedCorrelator_order_at_zero h0 h1 hz
   obtain ⟨_, hneg, _⟩ := meromorphicOrderAt_pos_of_entire_zero (differentiable_xiDeformed α)
     (fun _ => xiDeformed_ne_zero_of_one_le_re h0 h1) hz
-  have hlt : meromorphicOrderAt (deformedRetardedCorrelator α) ω <
-      meromorphicOrderAt (fun z => -deformedAdvancedCorrelator α z) ω :=
+  have hlt : meromorphicOrderAt (deformedRetardedCorrelator α) ν <
+      meromorphicOrderAt (fun z => -deformedAdvancedCorrelator α z) ν :=
     lt_of_lt_of_le (by rw [hret_ord]; exact hneg) hadv_an.meromorphicOrderAt_nonneg
-  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ω :=
+  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ν :=
     AnalyticAt.inv (by fun_prop) hsinh_ne
   have hW : deformedWightmanRL α =
       (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) *
@@ -1005,7 +1027,7 @@ private theorem deformedReflectedField_eq_lineField {α : ℝ} (h0 : 0 < α) (h1
       calc s.re * τ ≤ |s.re * τ| := le_abs_self _
         _ = |s.re| * |τ| := abs_mul _ _
         _ ≤ (3 / 8) * |τ| := mul_le_mul_of_nonneg_right habs_re (abs_nonneg _)
-    simp only [hΦ, norm_mul]
+    simp only [hΦ]; rw [norm_mul]
     calc ‖pulseAmplitude h (-I * s) * deformedScatteringPhase α s‖ * ‖Complex.exp (s * (τ : ℂ))‖
         ≤ (B / (1 + s.im ^ 2)) * Real.exp ((3 / 8) * |τ|) :=
           mul_le_mul (hB s hs1 hs2) hexp (norm_nonneg _) (by positivity)
@@ -1081,7 +1103,7 @@ theorem deformed_bilateral_laplace_eq {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     Complex.exp (-(c : ℂ) * (τ : ℂ))).mul hGc
   have hg_pos : IntegrableOn g (Ioi (0 : ℝ)) := by
     have hdom : IntegrableOn (fun τ : ℝ => M₀ * Real.exp (-c * τ)) (Ioi (0 : ℝ)) :=
-      (RingdownRate.integrableOn_exp_mul_Ioi (by linarith) 0).const_mul M₀
+      (integrableOn_exp_mul_Ioi (by linarith) 0).const_mul M₀
     refine hdom.mono' hg_cont.aestronglyMeasurable
       ((ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall fun τ _ => ?_))
     simp only [hg_def]
@@ -1091,7 +1113,7 @@ theorem deformed_bilateral_laplace_eq {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     exact mul_le_mul_of_nonneg_right (hGb τ) (Real.exp_pos _).le
   have hg_neg : IntegrableOn g (Iic (0 : ℝ)) := by
     have hdom_i : IntegrableOn (fun σ : ℝ => Ce * Real.exp (-(3 / 8 - c) * σ)) (Ioi (0 : ℝ)) :=
-      (RingdownRate.integrableOn_exp_mul_Ioi (by linarith) 0).const_mul Ce
+      (integrableOn_exp_mul_Ioi (by linarith) 0).const_mul Ce
     have hdom : IntegrableOn (fun τ : ℝ => Ce * Real.exp ((3 / 8 - c) * τ)) (Iic (0 : ℝ)) := by
       rw [← integrable_indicator_iff measurableSet_Iic]
       have h1' := (integrable_indicator_iff measurableSet_Ioi).mpr hdom_i
@@ -1318,8 +1340,8 @@ theorem deformedReflectedField_decay {α σ : ℝ}
       have him0 := congrArg Complex.im he; simp at him0
       have := hu.2.1; rw [him0, abs_zero] at this; linarith
     have hz0 : riemannZeta (1 + 2 * u) ≠ 0 := hzf_ζ _ (by simp; linarith [hu.1.1])
-    exact ((ContinuousAt.comp (differentiableAt_riemannZeta hne1).continuousAt
-      (by fun_prop)).inv₀ hz0).continuousWithinAt
+    exact ((ContinuousAt.comp (f := fun v : ℂ => 1 + 2 * v)
+      (differentiableAt_riemannZeta hne1).continuousAt (by fun_prop)).inv₀ hz0).continuousWithinAt
   obtain ⟨Mζ, hMζ⟩ := hboxU_c.exists_bound_of_continuousOn hcont_ζU
   have hζ_strip : ∀ u : ℂ, -σ ≤ u.re → u.re ≤ 0 → 1 ≤ |u.im| →
       ‖(riemannZeta (1 + 2 * u))⁻¹‖ ≤ (max (max Mζ 0) (4 / κ₁)) * |u.im| ^ 1 := by
@@ -1425,7 +1447,7 @@ theorem deformedReflectedField_decay {α σ : ℝ}
       have : (s * (τ : ℂ)).re = s.re * τ := by simp
       rw [this]
       exact Real.exp_le_one_iff.2 (mul_nonpos_of_nonpos_of_nonneg hs2 hτ)
-    simp only [hΦ, norm_mul]
+    simp only [hΦ]; rw [norm_mul]
     calc ‖pulseAmplitude h (-I * s) * deformedScatteringPhase α s‖ * ‖Complex.exp (s * (τ : ℂ))‖
         ≤ B / (1 + s.im ^ 2) * 1 := mul_le_mul (hB_left s hs1 hs2) he (norm_nonneg _) (by positivity)
       _ = B / (1 + s.im ^ 2) := mul_one _
@@ -1438,7 +1460,7 @@ theorem deformedReflectedField_decay {α σ : ℝ}
     intro t
     have hre : (((-σ : ℝ) : ℂ) + (t : ℂ) * I).re = -σ := by simp
     have him : (((-σ : ℝ) : ℂ) + (t : ℂ) * I).im = t := by simp
-    simp only [hΦ, norm_mul, Complex.norm_exp]
+    simp only [hΦ]; rw [norm_mul, Complex.norm_exp]
     have : ((((-σ : ℝ) : ℂ) + (t : ℂ) * I) * (τ : ℂ)).re = -σ * τ := by simp
     rw [this]
     have hb := hB_left _ (by rw [hre]) (by rw [hre]; linarith)
@@ -1596,10 +1618,10 @@ theorem universal_causal_ringdown_infimum_zero {δ : ℝ} (hδ : 0 < δ) :
     fun t => norm_deformedScatteringPhase_axis (by linarith) hα1 t, ?_, ?_, ?_⟩
   · intro ρ hρ
     obtain ⟨hr0, hr1⟩ := zero_mem_openStrip_of_xi_eq_zero hρ
-    set ω : ℂ := I * (ρ - 1) / 2 with hω
-    have him : ω.im = (ρ.re - 1) / 2 := by rw [hω]; simp
-    have h12 : 1 - 2 * I * ω = ρ := by rw [hω]; linear_combination (1 - ρ) * I_sq
-    have hz : xiDeformed α (1 - 2 * I * ω) = 0 := by rw [h12, xiDeformed, hρ, mul_zero]
+    set ν : ℂ := I * (ρ - 1) / 2 with hν
+    have him : ν.im = (ρ.re - 1) / 2 := by rw [hν]; simp
+    have h12 : 1 - 2 * I * ν = ρ := by rw [hν]; linear_combination (1 - ρ) * I_sq
+    have hz : xiDeformed α (1 - 2 * I * ν) = 0 := by rw [h12, xiDeformed, hρ, mul_zero]
     rw [deformedWightmanRL_order_lower (by linarith) hα1 (by rw [him]; linarith)
       (by rw [him]; linarith) hz]
     exact (meromorphicOrderAt_pos_of_entire_zero (differentiable_xiDeformed α)
@@ -1651,7 +1673,7 @@ theorem CompactQuotient.meromorphicOrderAt_logDeriv_selbergZeta
       han0.deriv.meromorphicOrderAt_eq, han0.meromorphicOrderAt_eq, hderiv, horder,
       ENat.map_coe, ENat.map_coe]
     exact_mod_cast (show (k : ℤ) - ((k + 1 : ℕ) : ℤ) = -1 by omega)
-  refine ⟨⟨?_, fun hz => by rw [hord_iff hz]; norm_num⟩, hord_iff⟩
+  refine ⟨⟨?_, fun hz => by rw [hord_iff hz]; exact WithTop.coe_lt_coe.mpr (by omega)⟩, hord_iff⟩
   intro hpole
   by_contra hnz
   have hlog_an : AnalyticAt ℂ (logDeriv (X.selbergZeta ha)) s₀ := by
@@ -1723,7 +1745,7 @@ theorem exists_eternalAdS_compact_blackHole_violating_quarter_decay :
     have hnorm := congrArg norm hexp
     rw [norm_one, Complex.norm_exp] at hnorm
     have hre0 : (-((s + (x.2 : ℂ)) * (X.classLen x.1.1 : ℂ))).re = 0 :=
-      Real.exp_eq_one_iff.mp hnorm
+      Real.exp_injective (by rwa [Real.exp_zero])
     have hre_calc : (-((s + (x.2 : ℂ)) * (X.classLen x.1.1 : ℂ))).re =
         -((s.re + x.2) * X.classLen x.1.1) := by simp
     rw [hre_calc, neg_eq_zero, mul_eq_zero] at hre0
@@ -1736,11 +1758,12 @@ theorem exists_eternalAdS_compact_blackHole_violating_quarter_decay :
     have hev : X.selbergZeta ha =ᶠ[𝓝 s] X.eulerZeta :=
       Filter.eventuallyEq_of_mem (hopen.mem_nhds hs) fun z hz =>
         (X.eulerZeta_eq_selbergZeta hhyp ha hz).symm
-    rw [logDeriv_apply, logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds,
+    rw [logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds,
       ← logDeriv_apply, X.logDeriv_eulerZeta hhyp hs]
   · intro s hs
-    exact (X.meromorphicOrderAt_logDeriv_selbergZeta hhyp ha hs).1
-  · exact (X.meromorphicOrderAt_logDeriv_selbergZeta hhyp ha (by linarith)).2 hs₀_mem.2.2.2
+    exact (CompactQuotient.meromorphicOrderAt_logDeriv_selbergZeta hhyp ha hs).1
+  · exact (CompactQuotient.meromorphicOrderAt_logDeriv_selbergZeta hhyp ha (by linarith)).2
+      hs₀_mem.2.2.2
   · linarith
 
 #print axioms primeTwoFactor_div_eq_primeTwoScatteringGate

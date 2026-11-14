@@ -343,3 +343,7 @@ theorem exists_primeTraceZeroMap_eq_reflect (p : Nat.Primes) (ρ : XiDivisorSupp
       rw [Complex.conj_conj]
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
+
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeWidthValue_mem_iff
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.exists_primeTraceZeroMap_eq_reflect
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeTraceZeroMap_mem_quartet

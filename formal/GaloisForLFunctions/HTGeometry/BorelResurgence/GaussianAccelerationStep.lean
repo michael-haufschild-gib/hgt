@@ -61,13 +61,11 @@ theorem integral_gaussianAccelerationKernel_tail (s A : ℝ) :
     rw [mul_pow, ha2, neg_mul, Real.sqrt_mul Real.pi_pos.le]
     dsimp [a]
     field_simp [hp, ht]
-    <;> ring
   simp_rw [hk]
   rw [integral_const_mul, integral_comp_mul_left_Ioi (fun x => Real.exp (-(x ^ 2))) A ha]
   have harg : A / (2 * Real.sqrt (Real.exp s)) = a * A := by dsimp [a]; ring
   rw [harg, gaussianErfc, smul_eq_mul]
   field_simp [ha.ne']
-  <;> ring
 
 /-- A positive Borel threshold accelerates exactly to an error-function discontinuity. -/
 theorem gaussianAcceleration_step (s u : ℝ) :

@@ -25,10 +25,13 @@ A strict floor at `a=log(3)/2` suffices for the first new target:
 aperture. At this boundary the prime-three correlation vanishes. The exact
 Gamma tail is
 `Ω(log 3)=log(2+√3)/2+π/6`.
+Likewise, a strict floor at `a=log(2)` extends above the ratio-four boundary.
+The prime-four term vanishes there; the prime-two/prime-three components
+are still four-vertex paths, together with isolated prime-two pairs.
 
 For the even sector, the next capacity candidate retains Legendre degrees
 `0,2,4,6` and harmonic gap `H₈=761/280`. The proposed diagonal potential is
-`449/500−log(1−x²)/2`. A polynomial reciprocal candidate, with `z=x²`, is
+`449/500−log(1−x²)/2`. A polynomial reciprocal majorant, with `z=x²`, is
 `500/449−31z/50+7z²/200−27z³/500−3z⁴/200−z⁸/10`.
 Its pointwise certificate passed Lean. Reflected products are at most `4/5`
 when `63/50≤x+y≤127/100`, keeping the weighted pair ratio at most `1/5`.

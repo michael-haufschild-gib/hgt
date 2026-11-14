@@ -35,6 +35,11 @@ theorem eta_pos (s : ℝ) : 0 < eta (subcriticalCoupling s) := by
   rw [subcritical_discriminant]
   exact Real.sqrt_pos.mpr (Real.exp_pos s)
 
+theorem eta_sq (s : ℝ) : eta (subcriticalCoupling s) ^ 2 = Real.exp s := by
+  unfold eta
+  rw [subcritical_discriminant]
+  exact Real.sq_sqrt (Real.exp_pos s).le
+
 theorem beta_pos (s : ℝ) : 0 < beta (subcriticalCoupling s) := by
   unfold beta
   exact Real.sqrt_pos.mpr (div_pos (by linarith only [eta_pos s]) (by norm_num))

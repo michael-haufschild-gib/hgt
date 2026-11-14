@@ -12,7 +12,7 @@
 | A1 | Jensen real-rootedness for every degree at most `31922`, from width `3/8` and verified height `67`. | Direct Lean and axiom audits passed |
 | A2 | Common certified floor interfaces for smaller apertures, real/complex tests, step packets, charge-free neutral forms and dressed middles; constants and cutoff ranges explicit. | Direct Lean and axiom audits passed |
 | A3 | Exact rational ladder milestones and decomposition of `levelAt 2 4` into its three remaining nonnegative excesses. | Direct Lean and axiom audits passed |
-| A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | Lean drafts; checks pending |
+| A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | WL/CHMD checked; SZ/HAT-C/PM pending |
 | A5 | The `2^ρ/3^ρ` trace equation, two/three reflection discriminants, realized central sheet exchange and contact ideals at degrees `1,2,3,4,9`. | Lean drafts; checks pending |
 | A6 | Primitive completion and scattering for the actual third-cyclotomic Eisenstein family. | Lean draft; check pending |
 | A7 | Three-even-moment Gram certificate with exact margin `1/1000000`, and strictness exactly for nonzero moment triples. | Public interface drafted in existing moment module; check pending |

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BorelResurgence.GaussianAccelerationStep
 import GaloisForLFunctions.HTGeometry.BorelSeriesConvolution
+import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
 # Acceleration of exponential Borel data
@@ -75,11 +76,11 @@ theorem gaussianAcceleration_exponential (s r : ℝ) :
 /-- The ordinary Borel transform of geometric coefficients is an exponential. -/
 theorem borelSeries_geometric_eq_exp (r x : ℝ) :
     borelSeries (fun n => r ^ n) x = Real.exp (r * x) := by
-  rw [← (Real.hasSum_exp (r * x)).tsum_eq]
+  rw [Real.exp_eq_exp_ℝ, ← (NormedSpace.exp_series_hasSum_exp' (𝕂 := ℝ) (r * x)).tsum_eq]
   unfold borelSeries dividedPowerFn
   apply tsum_congr
   intro n
-  rw [mul_pow]
+  simp only [mul_pow, smul_eq_mul]
   ring
 
 /-- An exact infinite-series Borel-level change for every geometric coefficient sequence. -/
