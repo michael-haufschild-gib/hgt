@@ -64,7 +64,7 @@ survive the filter. No restriction is imposed on composite coefficients. -/
 theorem algebraicIndependent_arithmeticShiftedRotatedJets_over_filterField
     {A : Type*} [Fintype A] [DecidableEq A]
     (F : Filter Nat.Primes) (hF : F ≤ cofinite)
-    (f : ArithmeticFunction ℂ) (hf : ∃ᶠ p in F, f (p : ℕ) ≠ 0)
+    (f : ArithmeticFunction ℂ) (hf : ∃ᶠ (p : Nat.Primes) in F, f (p : ℕ) ≠ 0)
     (alpha : A → ℂ) (hdistinct : Function.Injective (fun a => (alpha a).re)) (m : ℕ) :
     AlgebraicIndependent (primeFilterCoefficientField F)
       (fun ak : A × Fin (m + 1) =>
@@ -85,7 +85,7 @@ theorem algebraicIndependent_arithmeticNaturalShiftedJets_over_densityField
       (fun q : ℕ × ℕ => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
         (arithmeticShiftedRotatedJet f q.1 q.2)) := by
   let F := primeWindowDensityFilter primeCountingWindow
-  have hfreq : ∃ᶠ p in F, f (p : ℕ) ≠ 0 := by
+  have hfreq : ∃ᶠ (p : Nat.Primes) in F, f (p : ℕ) ≠ 0 := by
     change ¬ PrimeWindowDensityZero primeCountingWindow {p : Nat.Primes | ¬ (f (p : ℕ) ≠ 0)}ᶜ
     simpa only [Set.compl_setOf, not_not] using hf
   have hfull : AlgebraicIndependent (primeDensityCoefficientField primeCountingWindow)
@@ -110,7 +110,8 @@ theorem not_densityZero_nonzero_primes
     (f : ArithmeticFunction ℂ) (hf : ∀ p : Nat.Primes, f (p : ℕ) ≠ 0) :
     ¬ PrimeWindowDensityZero primeCountingWindow {p : Nat.Primes | f (p : ℕ) ≠ 0} := by
   haveI := primeWindowDensityFilter_neBot primeCountingWindow primeCountingWindow_card_tendsto
-  have hfreq : ∃ᶠ p in primeWindowDensityFilter primeCountingWindow, f (p : ℕ) ≠ 0 :=
+  have hfreq : ∃ᶠ (p : Nat.Primes) in primeWindowDensityFilter primeCountingWindow,
+      f (p : ℕ) ≠ 0 :=
     Frequently.of_forall hf
   change ¬ PrimeWindowDensityZero primeCountingWindow {p : Nat.Primes | ¬ (f (p : ℕ) ≠ 0)}ᶜ at hfreq
   simpa only [Set.compl_setOf, not_not] using hfreq

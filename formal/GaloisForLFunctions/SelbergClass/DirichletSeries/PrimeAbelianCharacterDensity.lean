@@ -25,7 +25,7 @@ local instance {G : Type*} [CommGroup G] [Finite G] : Fintype (G →* ℂˣ) :=
 
 variable {G : Type*} [CommGroup G] [Fintype G]
 
-/-- The existing finite abelian character table packaged as a function basis. -/
+/-- The complex characters of a finite abelian group form a function basis. -/
 def primeAbelianCharacterBasis : Basis (G →* ℂˣ) ℂ (G → ℂ) :=
   Basis.mk RHTower.deningerCharacter_linearIndependent (by rw [RHTower.deningerCharacter_span])
 
@@ -59,8 +59,13 @@ def primeAbelianCharacterPolynomialEquiv
       ≃ₐ[primeFilterCoefficientField F]
         Algebra.adjoin (primeFilterCoefficientField F)
           (Set.range fun χ : G →* ℂˣ => primeColorValue color (RHTower.deningerCharacterFn χ)) := by
-  simpa only [primeAbelianCharacterBasis_apply] using
-    finiteColorBasisPolynomialEquiv F color (primeAbelianCharacterBasis (G := G))
+  have heq : Algebra.adjoin (primeFilterCoefficientField F)
+      (Set.range fun χ : G →* ℂˣ => primeColorValue color (primeAbelianCharacterBasis χ)) =
+      Algebra.adjoin (primeFilterCoefficientField F)
+        (Set.range fun χ : G →* ℂˣ => primeColorValue color (RHTower.deningerCharacterFn χ)) := by
+    simp only [primeAbelianCharacterBasis_apply]
+  exact (finiteColorBasisPolynomialEquiv F color (primeAbelianCharacterBasis (G := G))).trans
+    (Subalgebra.equivOfEq _ _ heq)
 
 /-- All characters, natural shifts, and logarithmic orders are jointly independent exactly when
 every group-element prime fiber survives density-zero exceptions. -/
@@ -84,8 +89,14 @@ def primeAbelianCharacterInfiniteJetPolynomialEquiv
         Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
           (Set.range (primeColorNaturalShiftLogJet color
             (fun χ g => RHTower.deningerCharacterFn χ g))) := by
-  simpa only [primeAbelianCharacterBasis_apply] using
-    primeColorBasisInfiniteJetPolynomialEquiv color (primeAbelianCharacterBasis (G := G))
+  have heq : Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
+      (Set.range (primeColorNaturalShiftLogJet color (fun χ g => primeAbelianCharacterBasis χ g))) =
+      Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
+        (Set.range (primeColorNaturalShiftLogJet color
+          (fun χ g => RHTower.deningerCharacterFn χ g))) := by
+    simp only [primeAbelianCharacterBasis_apply]
+  exact (primeColorBasisInfiniteJetPolynomialEquiv color
+    (primeAbelianCharacterBasis (G := G))).trans (Subalgebra.equivOfEq _ _ heq)
 
 #print axioms algebraicIndependent_primeAbelianCharacters_over_densityField_iff
 #print axioms algebraicIndependent_primeAbelianCharacterInfiniteJets_over_densityField_iff

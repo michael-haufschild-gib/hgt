@@ -90,8 +90,3 @@ theorem criticalGibbs_error_sq_total_bound (n : ℕ) (β : ℝ)
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
-
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_uniformPearson_eq
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_error_sq_le_collision
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_error_sq_spectral_bound
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_error_sq_total_bound

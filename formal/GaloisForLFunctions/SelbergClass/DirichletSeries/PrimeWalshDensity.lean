@@ -78,8 +78,13 @@ def primeWalshPolynomialEquiv
       ≃ₐ[primeFilterCoefficientField F]
         Algebra.adjoin (primeFilterCoefficientField F)
           (Set.range fun B : Finset I => primeColorValue color (orientationWalshCharacter B)) := by
-  simpa only [primeOrientationWalshBasis_apply] using
-    finiteColorBasisPolynomialEquiv F color (primeOrientationWalshBasis (I := I))
+  have heq : Algebra.adjoin (primeFilterCoefficientField F)
+      (Set.range fun B : Finset I => primeColorValue color (primeOrientationWalshBasis B)) =
+      Algebra.adjoin (primeFilterCoefficientField F)
+        (Set.range fun B : Finset I => primeColorValue color (orientationWalshCharacter B)) := by
+    simp only [primeOrientationWalshBasis_apply]
+  exact (finiteColorBasisPolynomialEquiv F color (primeOrientationWalshBasis (I := I))).trans
+    (Subalgebra.equivOfEq _ _ heq)
 
 #print axioms algebraicIndependent_primeWalsh_over_densityField_iff
 #print axioms primeWalshPolynomialEquiv
@@ -107,8 +112,13 @@ def primeWalshInfiniteJetPolynomialEquiv
       ≃ₐ[primeDensityCoefficientField primeCountingWindow]
         Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
           (Set.range (primeColorNaturalShiftLogJet color (fun B x => orientationWalshCharacter B x))) := by
-  simpa only [primeOrientationWalshBasis_apply] using
-    primeColorBasisInfiniteJetPolynomialEquiv color (primeOrientationWalshBasis (I := I))
+  have heq : Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
+      (Set.range (primeColorNaturalShiftLogJet color (fun B x => primeOrientationWalshBasis B x))) =
+      Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
+        (Set.range (primeColorNaturalShiftLogJet color (fun B x => orientationWalshCharacter B x))) := by
+    simp only [primeOrientationWalshBasis_apply]
+  exact (primeColorBasisInfiniteJetPolynomialEquiv color
+    (primeOrientationWalshBasis (I := I))).trans (Subalgebra.equivOfEq _ _ heq)
 
 #print axioms primeWalshInfiniteJetPolynomialEquiv
 

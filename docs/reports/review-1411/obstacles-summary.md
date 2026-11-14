@@ -1,351 +1,318 @@
-# RH research: obstacles, breakthrough questions and programmes
+# RH research: consolidated frontier and research programmes
 
-The most concrete shared frontier is the passage from certified arithmetic structure to a uniform exclusion theorem. The corpus already has a `7/8` zero-free boundary, a positive full Weil floor through aperture `1881/5000`, a lossless first overlap step at every block size, detailed critical-state structure, and both heat and arithmetic Galois theories. None supplies the remaining all-scale arithmetic estimate. [MMD] [BLOCK-FLOOR] [GREEN-FIRST] [HF] [MONODROMY] [TRACE-FIELD]
+The corpus has a fixed `1/8..7/8` strip, Jensen real-rootedness through degree31922, a complete positive Weil floor at `log 2`, finite overlap control, incomplete reciprocity with retained phases, finite arithmetic/heat comparison, and an actual AdS prime-marked dictionary. These are available research inputs. RH closure still requires arithmetic production, uniform exclusion, or a faithful realization carrying an independently proved structural constraint. [MMD] [JENSEN] [FLOOR] [OVERLAP] [INCOMPLETE] [HEAT-FINITE] [ADS]
 
-Three requirements organize the research: **P — arithmetic production**, **U — uniform exclusion**, and **R — faithful realization and transport**. AAL adds a separate finite-exception question to these requirements. The [route report](route-obstacles.md) records all 38 routes and 12 candidates; the [wall ledger](walls-ledger.md) gives precise boundaries; the [unification ledger](route-unification-ledger.md) distinguishes identities from analogies.
+This document distinguishes **source-supported facts** from **proposed questions and programmes**. Proposals below are not theorems or promises of solvability. “Narrower” means fewer cases or quantifiers, not a proved ordering of mathematical difficulty. Quasi-RH is already supplied by the corpus; seeking a question “easier than quasi-RH” is therefore not an appropriate open frontier. No assertion about everybody's knowledge follows from corpus inspection. No external search result is used.
 
-Research programmes below are proposals, not claimed proofs. “Smaller” means a restricted mathematical target with fewer global quantifiers, not a proved ordering of difficulty. Quasi-RH is already available in this corpus through MMD; an open question cannot honestly be advertised as a necessary preliminary to obtaining that existing result. The original review did not run compilation. Source claims rest on the [fact log](../../../logs/review-1411-facts.txt) and its Lean evidence; external context uses primary sources.
+The [route report](route-obstacles.md) covers all 38 routes and 12 candidates; the [wall ledger](walls-ledger.md) groups obstacles into P/U/R; the [unification ledger](route-unification-ledger.md) records exact bridges. Evidence: [facts](../../../logs/review-1411-current-facts.txt), [Lean search records](../../../logs/review-1411-current-evidence.jsonl), [source manifest](../../../logs/review-1411-current-source-manifest.json). These reports use source inspection, without builds or a fresh kernel/axiom audit.
 
-## 2.1 — Tasks that are work rather than new mathematics
+## 2.1 Solvable tasks: applications and exact work
 
-The list is deliberately shorter than the research list. Applying an RH criterion after assuming its missing input does not solve an obstacle.
+These tasks have available mathematical methods. None warrants classifying an unproved analytic bound as routine.
 
-**A1–A7 are formalized within the stated finite scope.** The [theorem index and proofs](../../drafts/pipeline/3-formalized/review-1411-finite-work-obstacles.md) give exact statements, owning modules and transitive axiom audits. A3 exposes the three remaining excesses; it does not prove their vanishing.
-
-| Task | Concrete deliverable | Why it is work; boundary |
+| Task | Concrete output | Available input |
 |---|---|---|
-| **A1. Combine the strip and Jensen rung** | Formalize real-rootedness through degree `31922` using `w≤3/8`, verified height `67`, and `(d−1)w²≤67²`. | The receiver and both inputs exist; the numerical inequality is rational arithmetic. The source directly states degree `17957`; the assembled corollary reaches `31922`. It is a finite rung. [MMD] [JENSEN-RUNG] |
-| **A2. Export certified floor consequences** | Give common wrappers for smaller apertures, real/complex tests, step packets, neutral charge-free forms and dressed middles, with constants and cutoff ranges explicit. | The first-overlap implications are already theorems. This consolidates usable interfaces; it does not extend the certified aperture. [BLOCK-FLOOR] [GREEN-FIRST] |
-| **A3. Make the finite overlap budget explicit** | Express the ratio-three target using the remaining terms of `levelAt 2 4`, with the first term zero and exact rational ratio milestones. | The recursion and implication are proved. Proving those remaining excesses vanish is B, not part of A3. [GREEN-LADDER] [GREEN-FIRST] |
-| **A4. Preserve completion in route transfers** | Instantiate existing WL, CHMD, SZ, HAT-C and PM dictionaries with their actual pole, Gamma, jump and root-number terms. | These are exact normalization/conversion results. No stronger bound is created by conversion. [WL] [CHMD] [SZ] [HATC] [PM] |
-| **A5. Specialize finite algebraic constructions** | Work out specified finite prime-trace equations, finite reflection-radicand relations, local collision permutations and finite contact ideals. | The algebraic templates exist. An infinite square-class classification, existence of a desired collision, or source-field purity remains B. [TRACE-FIELD] [REFLECTION] [HEAT-TURN] [CONTACT] |
-| **A6. Transfer existing family results within their scope** | Instantiate primitive Hecke/Brauer completion and scattering statements for specified representations or the actual Eisenstein family. | Completion and signed divisor bookkeeping are available. General Artin holomorphy and a new number-field cancellation estimate are excluded from this task. [ARTIN] [MMD] [RINGDOWN] |
-| **A7. Reuse exact finite certificates** | Turn a fully specified rational/Taylor/Gram inequality into a reusable checked certificate and expose its hypotheses. | Certificate evaluation and exact finite algebra are work. Finding a certificate with the desired sign, or proving its remainder bound, may be research. [FLOOR] [CHARGES] |
+| **A1 Fixed-strip specialization** | Supply `Θ≤7/8` or `w≤3/8` to receivers requiring a strict strip; instantiate S3's equivalence. Preserve the defined Hecke-family scope. | [MMD] [S3] |
+| **A2 Finite-height reuse** | Export degree31922 to an admitted Jensen interface; apply other finite-height receivers only with their exact constants and hypotheses. | [JENSEN] [LA] |
+| **A3 Window transfer** | Reuse the `log 2` parity floors, complexification and block transfer within `Q≥3, ratio<4`, or `Q≥2, ratio≤3`. | [FLOOR] [OVERLAP] |
+| **A4 Finite overlap accounting** | Evaluate the proved ladder levels and exact finite Schur identities. Record the `Q=2` fourth excess as an input, not a zero. | [OVERLAP] |
+| **A5 Bound normalization** | Translate an independently supplied rate through lag, μ-signal, fixed-window/long-moment, JAS and physical dictionaries. Keep losses, ε and parameter dependence. | [WL] [WD] [WD-LONG] [SIGNAL-WIDTH] [SIGNAL-JAS] [ADS] |
+| **A6 Completion accounting** | Assemble the published prime/Gamma/pole/jump/variance identities in the receiver's normalization. | [HATC] [SZ] [ACT] [AIP] |
+| **A7 Finite algebra** | Compute specified contact ideals, finite fibre polynomials, residue-field orbit degrees, finite resolution maps and determinant/magnitude data. | [CONTACT-EX] [FIBRES] [ORBIT] [IRK] [WBF] |
+| **A8 Explicit finite accuracy** | Choose an EGC contour horizon for a requested error; apply the certified filter and cofactor remainder bounds to admitted parameters. | [EGC] [COFACTORS] [NEARDIAG] |
+| **A9 Local transport** | Compose supplied finite heat paths and arithmetic actions; compute their turn-parity data without claiming one uniform time. | [HEAT-FINITE] [HEAT-PARITY] |
+| **A10 Conditional finite certificates** | Verify a supplied rational certificate, finite approximation or dark-history accounting. Existence of a certificate with the desired sign remains a separate research question. | [FLOOR] [W1C] [CDC] |
+| **A11 Existing criterion assembly** | Apply integer winding, Newton self-map, character, flag or approximation conclusions once their precise arithmetic input is proved. | [TG] [XN] [ECP] [TH] [CTF] |
+| **A12 Physical specialization** | Translate the available strip into the constructed AdS/Bianchi observables, retaining the distinction between ζ and `ζL(χ₋₃)`. | [ADS] [BIANCHI] |
 
-There is no identified routine final step for WL, MC, WD, ACS or AAL that would close them with present inputs. Their receivers are substantially complete; their missing arithmetic assertions are not.
+There is no identified list of routine tasks whose completion proves RH. Enlarging an aperture, passing to unbounded degree, proving a new signed estimate, or constructing a source with a desired global property belongs to research until a proof is available.
 
-## 2.2 — Open mathematical obstacles
+## 2.2 Open mathematical obstacles
 
-| Problem | Required theorem | Routes affected |
+| Research topic | Exact missing content | Main routes |
 |---|---|---|
-| **P1. Critical signed cancellation** | Actual Möbius/prime/reciprocity sums satisfy the critical subpower bounds with the required length, conductor and phase uniformity. | MC, WD, FU, CTF, CHMD, PBM; quantitative improvements feed PM and JAS. |
-| **P2. A producer outside the classified Gauss mechanism** | A source-retaining reciprocity transform improves the attainable exponent without falling into the completed monomial `3/5` class. | MMD/FCT/CRF and all consumers of improved strips. [GAUSS] |
-| **U1. All-aperture arithmetic sign or margin** | Actual Weil/window forms have the required global bound; equivalently, signed overlap losses remain under the global binding budget. | ACS, RW, HF, EWU, OWU, HAT-C and other sign receivers. [ACS] [GREEN-GLOBAL] |
-| **U2. Exclusion of the critical state** | The explicitly characterized arithmetic critical half-line state cannot occur at positive threshold. | HF and causal/ground-energy variants. [HF] |
-| **U3. Finite-exception rigidity** | Every rightward zero can be transported to arbitrarily high ordinates with arbitrarily small loss of real part; or prove a finite exceptional layer exists. | AAL, tail-only SC/JAS branches, exceptional-layer programmes. [AAL-TRANSPORT] [AAL-LAYER] |
-| **U4. Heat descent and conjugation** | Arithmetic control of positive-time branch/conjugation data that survives the limit to time zero. | ZCG, LA, PTR, TG. [ZCG] [HEAT-HORIZON] |
-| **U5. Actual higher correlations** | Bounds for arithmetic fourth/higher traces or an alternative invariant controlling the zero census, with the correct near-line scale. | Census/IGP, SRT, WD and near-line programmes. [CENSUS] [CENSUS-AMBIGUITY] |
-| **R1. Faithful arithmetic realization** | Construct the proposed field, geometry, history, character or physical observable and identify the full ξ divisor, including exceptions and multiplicities. | ECP, APF, W1C, IRK, WBF, PM and geometry candidates. |
-| **R2. Arithmetic restrictions on Galois actions** | Prime-field relations independently constrain weights/reflection strongly enough to force criticality. | Arithmetic Galois/ZCG interface. [WEIGHT-ORBIT] [REFLECTION] |
-| **R3. Correct absolute intersection theory** | Contacts, jets, logarithmic negative geometric self-pairings and archimedean normalization admit a source-derived global theorem. | F₁/AGZ, ACS and geometric RH programmes. [CONTACT-JET] [SELF-PAIRING] |
+| **Critical arithmetic cancellation** | Critical μ/Λ rates, long-prefix control, complete signed ledger bounds and higher arithmetic correlations. | MC, WD, WL, FU, CFC, RP, SQF, TT, CHMD, LI, PBM, RB, GTA |
+| **Target-preserving family production** | Signed continuation that retains the target while escaping sextic amplification and the formalized `3/5` Gauss-pairing floor. | Producer, MC, JAS |
+| **Complete form at every scale** | All-aperture sign, all-ratio margin, arbitrary critical-ratio polar payment, all-order flags and actual endpoint-character sign. | RW, HF, ACS, EWU, OWU, HAT-C, RN, SZ, ACT, AIP, SC, TH, PA/HJ, HCF, ECP |
+| **Finite and shallow exceptions** | ZAL; Landing; `FiniteOffLine→RH`; arithmetic transport to unbounded heights; signed prime-weighted exceptional-layer cofactor control. | AAL, ZCG, BAG, ACS, SRT, PM |
+| **Heat/approximation uniformity** | Mirror transport, controlled descent to time zero, unbounded unshifted Jensen degree, all small cosine shifts, source-faithful low-defect approximants. | ZCG, LA, PTR, CTF, W1C |
+| **Arithmetic realization** | Global contact/index geometry, restrictive prime-trace field relations, source-selective physical dynamics, global module splitting, phase recovery. | ACS, Galois, PM, IRK, MSC, APF, WBF |
+| **Selective detectors** | Actual Fock bounds, admissible nonescaping dark histories, Newton margins, target recurrence and the needed entropy-to-arithmetic implication. | SEC, CDC/BSH, XN, S3, FEL, TG, EGC, EWJ |
 
-The terminal versions of many entries are RH-equivalent. Smaller stepping stones below are not known to be equivalent. Neither a corpus search nor a literature check establishes that “nobody” has an unpublished solution; the precise claim is that the audited sources do not discharge these inputs and RH remains open in the established literature. [Clay](https://www.claymath.org/millennium/Riemann-Hypothesis/)
+The exact source statements and excluded construction classes are in the other three reports. In particular, full level-one JAS needs no extra chain premise; weaker shell-only formulations have their own additional conditions. [JAS]
 
-## 2.3 — Can a Frankenstein route bypass a single-route blocker?
+## 2.3 Frankenstein routes
 
-**The strongest compatible assembly is a retained-charge window route.** Start with the WTZ analytic certificate; retain its low moments, primitive mass and signed prime autocorrelations; use regional charged gaps and Gamma remainder identities; then apply the exact Green Schur formula and refinement theorem. This avoids the prohibited replacement of a high-rank coupling by a fixed-rank product of charges: the full jet/contact operator remains present. A successful bound would feed ACS, RW, HF and both parity sectors simultaneously. The unpaid theorem is the signed Schur estimate beyond the certified aperture, followed by a global loss budget. Assembling the pieces does not pay it. [FLOOR] [CHARGES] [GAMMA-LAGS] [RANK-WALL] [GREEN-LOSS]
+**Best quantitative assembly: signed family production → μ signal → WD/JAS → RH.** Incomplete reciprocity supplies phases and an explicit defect. The μ signal has a width dictionary and a transfer to ancestry levels; WD gives complementary fixed-window and long-moment readings. One independently obtained signed saving could therefore be tested against several receivers. The missing bridge is a bound on the continued target family itself. Applying the defect estimate to that family without a proof would hide P3 inside the assembly. [INCOMPLETE] [TRUNCATION] [SIGNAL-WIDTH] [SIGNAL-JAS] [WD-LONG]
 
-**A second assembly joins decompletion to signed arithmetic production.** The correction can already be made zero-free near the half-line. Attach a reciprocity identity whose boundary error remains visible, preserve the target and reciprocal phases, and estimate their signed interaction before taking absolute values. This could bypass the completed-monomial barrier because its hypotheses would no longer apply. A reciprocal boundary-error theorem and an actual saving are both missing. [DECOMPLETE] [GAUSS] [AVERAGE]
+**Best geometric assembly: actual contact operators + certified windows + full Schur control → ACS.** Use the existing `log 2` floor as a seed, retain the full growing-rank contact/jet operator, and seek a signed propagation law that controls the neutral margin. Geometry can explain the required logarithmic diagonal; Green calculus can express the exact coupling loss. Neither supplies its global bound yet. Fixed-rank absolute-error gluing is excluded. [FLOOR] [DIAGONAL] [RANK-WALL] [ACS]
 
-**Three useful but incomplete assemblies:**
+**Best finite-exception assembly: exceptional-layer filters + arithmetic cofactor cancellation → AAL; combine with ZAL.** Filter growth and unweighted near-diagonal rows are controlled. A source-specific estimate on the remaining prime-weighted sum could contradict a finite top layer. This would be a real cross-route gain; AAL alone still does not prove RH. [AAL-LAYER] [COFACTORS] [NEARDIAG] [AAL]
 
-- MMD plus the verified-height Jensen theorem gives the finite rung in A1. It does not give unbounded degree. [JENSEN-RUNG]
-- MMD plus the JAS strip-dependent criterion removes that criterion's strip premise. Its double-exponential-window and cofinal-shell inequalities remain. [JAS-STRIP]
-- Prime-trace Galois theory plus heat monodromy could organize a comparison of arithmetic reflection with analytic continuation. No comparison map carrying the necessary arithmetic constraints is currently supplied. Large heat monodromy is compatible with nonreal configurations. [TRACE-FIELD] [ZCG] [HEAT-ODD]
+**Heat/Galois assembly: finite actions → quantitative specialization → Landing/B13.** Finite-window comparison is already available. A uniformity theorem tailored to the actual arithmetic data could constrain off-line support. It must avoid the disproved whole-fibre intertwiners; even finite support then requires B13. [HEAT-FINITE] [HEAT-NOGO] [HEAT-UNIFORM] [INDEX]
 
-No currently assembled combination circumvents every blocker. In particular, AAL plus a fixed `7/8` boundary is not RH; finite-window positivity plus an exact gluing identity is not a global sign theorem; a physical interpretation plus a decay/RH equivalence is not a decay proof.
+No complete assembly presently bypasses all blockers. The opportunity is to share a proved *partial arithmetic input*, not to cycle through equivalent RH endpoints.
 
-## 2.4 — A breakthrough below a global RH problem
+## 2.4 A narrower breakthrough for the whole programme
 
-**Question:** can the actual ratio-three neutral window have exactly one negative square at every block size, by proving `levelAt 2 4 = 0`?
+**Question: can the complete actual Weil form be given an explicit positive floor at `A=½log 5`, including the prime-square contact at four and both parity sectors?**
 
-This asks for a bounded ratio and one finite segment of the overlap ladder. The first loss is zero. The other terms are explicit Schur excesses of actual arithmetic matrices. A proof must retain the full signed end coupling and give estimates uniform in block size; checking finitely many matrices is insufficient. The theorem connecting this target to all ratio-three windows is already available. [GREEN-FIRST] [GREEN-LADDER]
+This is one fixed aperture, with a bound for all admitted profiles and all block sizes after the appropriate transfer. It is much smaller in scope than all-aperture RH. The current complete floor stops at `log 2`; the absolute outward-edge cost remains below one at `½log 5`, but that fact does not pay the full signed Hankel/pole/variance terms. [FLOOR] [EDGE]
 
-The gain would be a complete uniform gluing result well beyond the present certified ratio and a test of whether retained-charge estimates can control the exact Green term. A counterexample to a *specified comparison estimate* would locate its missing charge or phase; it would not refute the actual window claim. There is no demonstrated implication from this single finite-ratio theorem to RH or AAL. Its narrower scope, rather than an asserted complexity theorem, makes it a credible intermediate target.
+The desired result is `W(f)≥c‖f‖²`, with an explicit `c>0`, for the actual complete form. A useful proof must explain which signed interaction pays the prime-square entry. A larger matrix truncation without a controlled remainder does not answer the question. A proof would supply a reusable all-size seed and distinguish competing propagation mechanisms. Failure of a chosen Gamma comparison would only reject that comparison; a negative packet for the **actual** form would instead falsify RH.
 
-## 2.5 — A breakthrough in finding a producer
+## 2.5 A breakthrough in finding a producer
 
-**Question:** can an incompletely completed reciprocity transform retain the Möbius target and all root-number phases while its reflection defect has a genuine power saving, uniformly over the ranges needed by the detector?
+**Question: does the target-mode functional survive the kernel of the actual continued family-residue operator with uniformly controlled arithmetic extraction?**
 
-The relevant starting point is not another search for a zero-free correction: that correction already exists for each `σ>1/2` after truncation. The unknown is compatibility with reflection. Seek an exact identity of the form
+Use the explicit six-phase row factor. Its `ρ⁻¹` coefficient carries the target reciprocal; its principal average loses that target. Define the residue operator from the actual family continuation, including the sextic contribution and boundary terms. Seek extraction weights determined by the arithmetic family, independent of unknown zeros, which normalize the target coefficient to one and cancel the obstructing residue before taking norms. [AVERAGE] [TRUNCATION]
 
-`source(s,w) = phase(s,w) · dualSource(1−s,w′) + boundaryDefect(s,w)`
+A first meaningful theorem would give a strict saving over the `Z^(2/3)` absolute sixth-power scale for this **signed, target-retaining aggregate**, uniformly in the declared conductor range and complex rectangle. It must retain all other terms needed to reach the μ signal. Local phase projection alone is finite algebra; uniform continuation and cancellation are the research.
 
-with every factor independently defined from prime/ideal arithmetic. The target coefficient must be recovered exactly. Specify conductor, sum length, cutoff and complex-parameter ranges before estimating the defect. A saving in a range disjoint from the receiver's requirements is not a producer. [DECOMPLETE]
+A precise no-go would also be valuable: if every bounded residue-killing extraction necessarily kills the target, it retires that whole extraction class and identifies which extra row coupling or larger carrier is necessary. Incomplete reciprocity itself is already proved and is not the question. [INCOMPLETE]
 
-The first milestone is a nontrivial uniform saving in one explicit rectangular range, while retaining the reciprocal target rather than averaging it away. The second is stability under the family continuation used by the detector. Only the third asks whether the resulting exponent beats the classified `3/5` boundary. An exact phase-preserving transform with a controlled defect would be a breakthrough even before the final exponent improves: it creates a mathematically different producer class. A transform reducible to the classified monomial completion, or one whose saving is obtained after deleting the target, fails this test. [GAUSS] [AVERAGE]
+## 2.6 Breakthrough with no positivity, Weil positivity or spectral mechanism
 
-## 2.6 — Breakthrough with positivity and every spectral method excluded
+**Question: can arithmetic identities support a repeatable descent of the local divisor orders of ξ strictly right of the critical line?**
 
-**Question:** does prime arithmetic impose a nontrivial divisibility law on the multiplicity of each individual off-critical zero?
+The proposed mechanism is holomorphic and algebraic: construct a class of source-defined germs, prove off-line local orders even for every member, and construct a square-root descent that stays in that class. Repetition would make every positive off-line order divisible by arbitrarily high powers of two, which is impossible. The first test is one source-preserving square descent on a fixed right-half domain containing possible zeros—not on a domain already assumed zero-free.
 
-Start with the open half-plane `Re s>1/2`. Seek an arithmetic descent operation on local analytic divisor germs that preserves the germ of ξ while making its vanishing order divisible by two. The finite first target is **even multiplicity at every off-critical zero**, derived from prime identities or local algebra, without a positive form, a self-adjoint operator, an eigenvalue argument or a spectral reformulation.
+The source class, its closure under descent and its evenness theorem must come from prime identities. Defining the class as functions with the desired roots is circular. No energy sign, positive kernel, eigenvalue argument, heat-spectrum reality or hidden positive representation may enter this programme.
 
-This target alone is compatible with RH being false. A coherent iteration giving divisibility by arbitrarily large powers of two would force each finite local order to be zero, hence exclude the zeros. That is the proposed path to RH; the existence and iteration of the descent are both unknown. Merely permuting a reflected quartet proves parity of the quartet's total multiplicity, which is already automatic, not parity at one point. [QUARTET-PARITY]
+Global square roots of ξ are excluded by odd critical-line zeros. Regional height-adaptive root criteria are already RH-equivalent receivers; their arithmetic construction is the missing theorem. A single off-line parity result would remove odd defects but leave even multiplicities, so compatibility and iteration are indispensable. [PARITY] [ROOTS]
 
-Global square roots of ξ are the wrong object: the corpus proves an odd-order zero exists. The construction must be regional, allow the critical line as a boundary, and provide prime-defined transition data rather than assume an analytic root. A successful regional multiplicity descent would open a route outside all sign and spectral criteria. No such descent is claimed here. [ROOT-WALL]
+## 2.7 Breakthrough under the AdS modular-horizon hypothesis
 
-## 2.7 — Breakthrough under the AdS/modular-horizon hypothesis
+**Question: what independently derived bulk/horizon sewing law distinguishes the actual prime gates from the causal prime2-deformations, and yields a quantitative improvement beyond the `1/16` thermofield strip?**
 
-**Question:** can a prime-marked modular-horizon observable obey a causal identity that forces quarter-rate reflected-pulse decay, while an independently proved boundary dictionary identifies every relevant ζ pole with an observable singularity?
+The arithmetic two-boundary dictionary exists, including exact pole orders and the quarter-strip RH criterion. The prime2-deformed models retain causality, FE, passivity and axis unitarity while their decay threshold tends to zero. Thus “horizon regularity” must be made into a specific additional mathematical law, with a proved estimate; restating quarter-strip analyticity as regularity would assume the target. [ADS] [ADS-NOGO]
 
-The existing modular and Bianchi models give precise arithmetic scattering dictionaries. They do not establish that RH is an AdS phenomenon. In the pulse normalization, the desired statement is decay at every rate `1/4−ε` for every compact smooth pulse, with constants allowed to depend on pulse and ε. Bianchi's divisor is `ζL(χ₋₃)`, so that version proves the corresponding Dedekind statement as well. The unconditional source rate is `1/16−ε`. [PM] [RINGDOWN]
+First test: derive one source-selective bulk-to-boundary estimate giving a fixed strip `δ>1/16` for the **actual** correlator. Then determine whether the mechanism extends to every `δ<1/4`. Required data include local prime delays, archimedean normalization, boundary conditions and a norm in which the causal response is controlled. Excluding a deformation without obtaining a rate is only a source-selection result. The physical hypothesis is a research premise, not evidence that the rate holds.
 
-The first research target is a complete observable and its arithmetic dictionary, followed by one strictly improved rate obtained from a bulk causal or modular Ward identity. A law that only controls a cuspidal subspace, or misses finitely many resonances, cannot prove RH. The decisive test is whether the decay is derived from independently defined horizon dynamics rather than imposed as “physical stability.”
+## 2.8 Breakthrough under a topology/geometry hypothesis
 
-Maldacena's eternal-AdS construction provides an established setting involving two boundary theories and an entangled state; it supplies no ζ identification. The proposed prime-marked dictionary and decay law are additional hypotheses to construct and test. [Maldacena](https://arxiv.org/abs/hep-th/0106112)
+**Question: can the logarithmic self-pairing required by the arithmetic window be derived canonically from its contact order and an archimedean boundary object, with compatibility under gluing?**
 
-## 2.8 — Breakthrough under a topological/geometric hypothesis
+The finite-prime contact ideals and their conductor interpretation exist. The index obstruction says that the geometric diagonal cannot be chosen nonnegative: the actual arithmetic matrix requires logarithmic negative geometric self-pairings. This identifies a concrete geometric datum that a successful model must explain. [CONTACT] [CONTACT-EX] [DIAGONAL]
 
-**Question:** can the arithmetic square's actual Frobenius contacts and jets be realized by a relative intersection theory whose moving/normal-direction law forces the required index, including its negative logarithmic diagonal?
+First test: construct the diagonal and its gluing law for a multi-contact configuration containing the prime2, prime3 and prime-square contacts, without choosing the diagonal by copying the desired Weil matrix. Verify the full mixed pairing and boundary counterterm. A functorial construction would make a global index theorem a well-posed geometric problem. Matching off-diagonal contacts alone, or proving an index theorem for a different pairing, would not advance the RH endpoint.
 
-The square and contacts are not missing names: finite contact ideals and planar Bézout identities exist. The obstruction is a global realization that carries the exact archimedean correction and proves its index. Ordinary nonnegative geometric self-intersections cannot realize the measured couplings: the two-run law forces negative geometric self-pairing at logarithmic scale. [CONTACT] [CONTACT-JET] [BEZOUT] [SELF-PAIRING]
+## 2.9 Does RH require a new field of mathematics?
 
-A first breakthrough would be an independently defined renormalized normal object whose self-intersection produces the actual diagonal, together with an exact-sequence or moving-law proof on one window containing both prime-two and prime-three contacts. Extending its compatibility under refinement would give a plausible route to global index control. Declaring the desired pairing to have Hodge index merely restates the target. Generic geometry is insufficient: compact Selberg geometry permits finite off-line exceptions. [SELBERG]
+The corpus does not establish that existing mathematics is insufficient. A useful new field would organize missing mechanisms rather than rename RH-equivalent statements. A plausible subject is **arithmetic defect transport**.
 
-## 2.9 — Would RH require a new field of mathematics?
+Its objects would be exact signed prime kernels, zero divisors with multiplicity, compactly supported tests, arithmetic source families and finite-window restriction maps. Its language would track source identity, defect size, exceptional support and quantitative losses together. Its central question: when does an arithmetic operation preserve the source while reducing, transporting or replicating a zero defect?
 
-No known theorem establishes such a necessity. Existing analysis, arithmetic geometry or algebra could contain the missing argument. A useful new discipline would earn its place by solving a problem shared by these routes, rather than by renaming RH.
+Tools should include signed gluing laws, stable renormalized traces, quantitative compactness with explicit exceptional sets, and source-preserving deformation invariants. Success requires a theorem that crosses at least one P/U/R wall from independently verified hypotheses. It must explain the sign-twin separation, distinguish a full form from its contact process, and survive the finite-stratum test. A theory consisting only of new representations of the same unknown sign would not qualify. [TWIN] [TREE-GAP] [INDEX]
 
-**Proposed subject: arithmetic transport across scale.** Its objects would be arithmetic test-function spaces, prime contact operators, completion terms, signed response maps and exact defects between scales. Its language would distinguish a source, a realization of that source, an observable and its loss under transfer. Morphisms would preserve the prime coefficients and record all pole/Gamma corrections.
+## 2.10 A new field for AAL proof or falsification
 
-Its central questions: which signed quantities survive completion? When does local control compose without accumulating an unbounded defect? Which invariants retain a finite exceptional zero? Its tools would include phase-preserving reciprocity, exact Schur/response calculus, conductor-uniform continuation and obstruction classes for source descent.
+AAL suggests **arithmetic persistence of divisors**: a theory of which local zero defects must recur at arbitrarily large heights under exact Euler arithmetic.
 
-Acceptance criteria are concrete: recover the first-overlap theorem and Gauss barrier; explain why fixed-rank gluing and target-blind averaging fail; prove one new uniform signed estimate outside those failures; and make the estimate consumable by two independent receivers. A theory that only translates all routes into “positivity of the arithmetic object” has not advanced the research. [GREEN-FIRST] [GAUSS] [RANK-WALL] [AVERAGE]
+Objects: locally finite reflected divisors, tail equivalence classes, finite exceptional layers, prime-weighted residue currents and filters. Basic invariants: `Θ`, `Θ∞`, layer multiplicities and the transport cost of a local residue. Questions: can exact arithmetic isolate a finite rightmost layer; does a finite positive packet index force more independent defects; can tail approach fail to land at finite height? These separate AAL, B13, Landing and ZAL. [AAL] [AAL-LAYER] [AAL-ATOMS] [INDEX]
 
-## 2.10 — Would AAL proof or falsification require a new field?
+Tools should compare local residues with prime-weighted cofactors, distinguish bounded-height persistence from transport to infinity, and classify source-preserving finite edits. A proof programme must derive transport or exclude every finite top layer for ζ itself. A falsification programme must identify a finite nonempty actual layer **and** prove a strictly smaller tail abscissa. Edited Euler or abstract reflected-zero models test axioms but do not falsify ζ's AAL. Neither direction follows from finding one off-line zero.
 
-Again, necessity is unknown. A focused subject would be **arithmetic rigidity of finite defects**. Its objects would be exact Euler products with completion data, finite divisor edits, infinite tails, and maps preserving or changing the prime source. Its basic invariant must distinguish the genuine source from edit models with the same coarse counting asymptotics.
+## 2.11 A new field without positivity or spectral arguments
 
-The central dichotomy is precise. AAL transports every rightward zero arbitrarily high with arbitrarily small real-part loss. Its failure isolates a finite nonempty layer above a stricter tail boundary. The corpus also identifies failure with a finite-oscillation form of the prime error. These are three descriptions of the same issue, not three independent proofs. [AAL-TRANSPORT] [AAL-LAYER] [AAL-OSCILLATION]
+A possible subject is **arithmetic ramification descent**. Its basic objects are holomorphic germs, local divisor valuations, finite branched root covers, prime-defined coefficient algebras and compatible restrictions between domains. Its language should express divisibility of local orders and the obstruction to descending a cover, without quadratic forms or spectral surrogates.
 
-The existing three-law decomposition provides finer research targets: **finite stratum**, finitely many off-critical zeros imply none; **landing**, approach to the line implies only finitely many off-critical zeros; and the defined **asymptotic Deuring–Heilbronn law**, failure of AAL implies approach to the line. Their conjunction is AAL. A theory should identify which law its arithmetic invariant addresses rather than hide all three in a single rigidity axiom. [AAL-LANDING]
+The field must answer: which Euler identities constrain local ramification; which operations divide off-line orders while retaining an arithmetic class; how do roots glue across overlaps containing zeros; what prevents a formal identity from encoding the desired zero-freeness? Tools would be explicit cocycle calculations, local algebra, functional-equation descent and quantitative contour control.
 
-Required tools: a calculus of finite edit defects; reflection and conductor compatibility tests; source-sensitive asymptotic invariants; and a transport theorem stable under the permitted arithmetic operations. A first benchmark is to separate one explicit tail-twin construction from ζ by a computable-in-principle exact invariant, without using the zero locations as its definition. [EDIT] [EDIT-DEFECT]
+The first nontrivial result should be a source-derived obstruction to an odd right-half local order, together with a candidate descent law. Full closure requires iteration beyond parity. Critical-line odd zeros must remain allowed, and the known regional-root/RH equivalences must be treated as receivers. This is a proposed research language, not evidence that such a closed arithmetic class exists. [PARITY] [ROOTS]
 
-A proof programme must derive height transport for the real source. A falsification programme must exhibit both a top zero and a uniform lower tail abscissa. Finding one off-line zero would refute RH but could leave AAL true. An invariant insensitive to finite edits cannot settle this question.
+## 2.12 A new field for the AdS modular-horizon hypothesis
 
-## 2.11 — A new field with all positivity and spectral methods banned
+A candidate subject is **arithmetic modular-horizon dynamics**. Objects would include prime-marked causal delay systems, modular horizon gluing data, two-boundary correlators, archimedean boundary terms and admissible bulk fields. The already constructed dictionary supplies the arithmetic calibration. [ADS]
 
-**Proposed subject: regional arithmetic divisor descent.** Objects are local analytic rings, effective divisors, prime-defined correspondences, branch cocycles and their integral multiplicities on domains separated from the critical line. The permitted language is algebraic and complex analytic; it excludes Hilbert-space realizations, eigenvalues, positive kernels, Weil positivity and equivalent sign certificates.
+Its defining problem is to derive a dynamical constraint that exact prime arithmetic satisfies and the slow-decay deformation family does not, then turn that constraint into a quantitative response estimate. Tools should connect local gate composition, causal convolution, modular evolution and controlled boundary limits. Finite Euler-tilt and thermal robustness bounds are available; applying them here requires an exact source realization and estimates uniform through the infinite-prime limit. [EULER-ROBUST] [THERMAL-ROBUST] A bulk construction must specify its equations, state/boundary data and observable, rather than declaring a formal correlator to be a complete physical theory.
 
-Its tools should be descent of local units, ramification and multiplicity, compatibility of prime-indexed roots, and obstruction classes for gluing regional analytic roots. The first question is whether an arithmetic operation forces even local order off the line. The next is whether the operation iterates coherently without merely postulating roots of ξ. The terminal mechanism is unbounded divisibility of a finite integer order.
+Criteria: exact ξ divisor and multiplicities; no invisible exceptional modes; correct pole/Gamma factors; stable limit through infinitely many primes; an independently proved decay estimate. Calibration must distinguish the ζ and Bianchi products. The first milestone is one improved arithmetic rate. The terminal target remains every rate below the quarter endpoint; causality and passivity alone cannot supply it. [BIANCHI] [ADS-NOGO]
 
-The framework must explain the known global odd-order obstruction and distinguish local multiplicity from the automatically even size of reflected orbits. It must also work on an explicit class of arithmetic analytic functions where multiplicities can be independently determined, exposing where the descent fails. A theorem about formal divisors with the desired divisibility assumed would not qualify. [ROOT-WALL] [QUARTET-PARITY]
+## 2.13 A new field for a geometric/topological RH
 
-This is a speculative route, with no current arithmetic descent operator. Its value is a sharply different mechanism and a finite first test, not evidence that it will succeed.
+A plausible subject is **renormalized arithmetic intersection geometry**. Objects would combine finite-prime contact orders with an archimedean boundary, arithmetic correspondences, degree functionals and completed pairings. The local ghost/contact construction supplies test cases, including nontrivial prime-square multiplicities and the masked Witt relations. [CONTACT-EX] [WITT]
 
-## 2.12 — A new field under the AdS/modular-horizon hypothesis
+The field must explain the logarithmic diagonal, identify the full prime/Gamma/pole pairing, and prove a global restriction on its index or divisor defects. Tools would include conductor exact sequences, compatible multi-contact gluing, renormalized determinant lines, boundary intersection terms and passage from finite configurations to completed forms.
 
-**Proposed subject: arithmetic causal geometry.** Objects would include an AdS bulk with a specified modular horizon, a boundary observable algebra, prime-marked cycles of length `log p`, completion counterterms, and a scattering map defined before ζ is identified. The construction must state dimension, quotient, boundary conditions and normalization; “AdS” alone determines none of these.
+Criteria: source-defined objects; functoriality under refinement; exact mixed pairings; preservation of finite defects; a global theorem whose hypotheses are independently proved. Nonnegative mixed-area diagonals fail the existing test. Local splitting is not a substitute for global descent. Finite-field models calibrate the geometry but do not provide the characteristic-zero theorem automatically. [DIAGONAL] [LOCAL-GLOBAL] [KUMMER]
 
-Required mechanisms are a derivation of the prime contribution, a geometric account of the archimedean factor, a functional-equation involution and complete detection of divisor singularities. Tools would combine causal propagation, modular identities, renormalized boundary actions and arithmetic gluing. The central dynamical question is why the physical law enforces decay at every rate below a quarter, rather than merely reproducing the arithmetic equivalence.
+## 2.14 Programme: construct an F₁ geometry relevant to RH
 
-Benchmarks: reproduce the exact modular/Bianchi scattering phase and the strip-derived `1/16−ε` bound; identify an observable that sees any finite exceptional resonance; derive a stronger rate from a bulk theorem; then reach the quarter threshold. An imposed stability axiom equivalent to the desired rate fails the independence requirement. [PM] [RINGDOWN]
+**Target.** Construct a category and arithmetic geometry playing the intended role of `𝔽₁`, not a one-element ordinary field: the ordinary requirement `0≠1` already rules that out. An RH-oriented construction must retain arithmetic contacts and archimedean data, rather than merely permit base extension to ℤ.
 
-Existing AdS duality motivates the setting but supplies none of this arithmetic mechanism. A successful theory would explain both the prime source and the decay law; a visual or thermodynamic analogy would not. [Maldacena](https://arxiv.org/abs/hep-th/0106112)
-
-## 2.13 — A new field under the topology/geometry hypothesis
-
-**Proposed subject: renormalized arithmetic intersection topology.** Its objects would be arithmetic squares, prime contact strata, jets along the diagonal, a normal-direction object, and compatible refinements of finite windows. Its language needs signed self-intersection, not only positive degree, and must distinguish geometric incidence from the analytic completion of incidence.
-
-Questions: what geometric operation produces the logarithmic diagonal? Why are the pole plane and archimedean term canonical? Which exact sequences control index when windows overlap? How do contacts survive base change and refinement? A theory must retain the contacts that perfection destroys and account for the rank growth that fixed charge-product gluing misses. [PERFECT] [SELF-PAIRING] [RANK-WALL]
-
-Tools should include relative cohomology or a substitute with exact localization, contact multiplicities, renormalized self-intersection and a moving law compatible with the arithmetic source. The first benchmark is a genuine geometric proof of an actual finite-window inequality not inserted as an axiom. Global compatibility is the second, much harder benchmark.
-
-Deninger's arithmetic dynamical systems demonstrate that primes/periodic-orbits/topology analogies can support precise constructions. They do not establish the specific index theorem required here. [Deninger](https://arxiv.org/abs/2301.11643)
-
-## 2.14 — Research programme for F₁
-
-**Target.** Construct an absolute base and geometry suitable for the arithmetic square and its intersection theory. A nontrivial ordinary field with one element is impossible under the usual `0≠1` field axioms; “F₁” must denote a different categorical base. Existing monoid, semiring and absolute-algebra frameworks are starting points, not absent inventions. Connes–Consani's scaling site provides a precise tropical/arithmetic setting and a Riemann–Roch analogue on its prime periodic orbits. [The Scaling Site](https://arxiv.org/abs/1507.05818)
-
-**Objects and language.** Choose explicitly a category of absolute algebras, its tensor product, modules/sections, prime ideals or points, and a base-change functor to rings. Construct the absolute analogue of `Spec ℤ × Spec ℤ`; identify diagonal and Frobenius graphs; define their contact ideals and normal jets. Compare the chosen category with the corpus's ghost/planar arithmetic square instead of assuming they coincide. [CONTACT] [CONTACT-JET] [BEZOUT]
-
-**Milestones and criteria.**
-
-1. **Algebraic adequacy:** functorial base change to ℤ and finite fields; a meaningful product; exact reproduction of the known prime-power contact divisibilities. A perfected model that erases contacts fails immediately. [PERFECT]
-2. **Sections and degree:** a lattice or replacement for sections, exact local counts, and a degree compatible with products and finite-field specializations. Prove the finite statements before introducing a global intersection law.
-3. **Archimedean completion:** derive jets, the pole contribution and the diagonal counterterm from intrinsic objects. Recover the required negative geometric self-intersection at logarithmic scale. This is a new mathematical construction, not routine base change. [SELF-PAIRING]
-4. **Localization and Riemann–Roch:** build exact localization sequences and an Euler-characteristic/degree formula whose terms match the actual arithmetic square. State the error or defect when they do not.
-5. **RH-relevant theorem:** prove the necessary global index or an alternative source-derived exclusion law. It must be a theorem of the constructed geometry, not an axiom defining “absolute surface.”
-
-The first decisive deliverable is a comparison theorem preserving contacts, jets and the diagonal simultaneously. Construction of a category called F₁ without that comparison does not close AGZ or ACS. Conversely, a comparison on a nontrivial finite window would already be worthwhile without RH.
-
-## 2.15 — Research programme for WD
-
-**Terminal target.** With `M_N(s)=Σ_{n≤N} μ(n)n^(−s)`, prove
-
-`∀ε>0 ∃B≥0 ∀N≥1, ∫₀¹ |ζ(1/2+iu) M_N(1/2+iu)|² du ≤ B N^(2ε)`.
-
-The exact equivalence to RH is available. A pointwise subpower condition on `M_N` at a fixed critical-line height and a positive-proportion low-set condition are alternative receivers with different quantifiers. Choose one as the primary target; do not mix them midway. [WD] [WD-PROPORTION]
-
-An especially useful long-range alternative is also exact: find one `K≥0` such that, for arbitrarily large `θ`, some `C_θ` bounds the `[1,T]` zeta-mollified second moment at length `⌊T^θ⌋` by `C_θ T^K` for cofinally large `T`. The constant may depend on θ; the exponent K may not. This is substantially weaker than demanding a near-unit moment, but it is still an RH-equivalent missing estimate. [WD-COFINAL]
-
-**Objects and tools.** Use the actual convolution coefficients of `ζM_N`, chronological/scale decompositions, completed Ward identities, near-line cameras and phase-preserving bilinear sums. Retain the final scale and cross terms. Short-mollifier second moments and the Euler block factorization are starting estimates within their explicit length ranges, not long-mollifier solutions. [WD-SHORT] [WD-BLOCK]
-
-The short exponent-`13/50` construction already proves a positive proportion of critical odd fibres. This arithmetic result is distinct from the low-set positive-proportion criterion above: the latter concerns arbitrarily long prefixes on every specified height window and at every positive error exponent. A positive fraction of zeros on the line cannot replace it. [MZF-PROPORTION] [WD-PROPORTION]
-
-**Programme.** First derive an exact signed decomposition of the fixed-window error in which each uncontrolled term is named. Next establish a new cancellation estimate on one nontrivial long range, with constants uniform in the variables needed for iteration. Then prove scale stability: the gain must survive the last block rather than being consumed by completion or absolute values. Finally reach every positive exponent and every length in the displayed target.
-
-**Tests and failure criteria.** A bound on raw Möbius polynomials uniform over all lengths at fixed height is not the zeta-mollified target. A near-unit second moment for a fixed `N=T^θ` has a separate lower-bound obstruction; abandon that excessive target rather than declare all long-moment routes dead. A near-line density theorem still leaves exceptional zeros. [WD-RAW] [LONG-MOMENT]
-
-**First breakthrough:** a source-specific signed estimate that improves a terminal-scale cross term beyond its norm bound and remains valid under the required length amplification. That would be a producer contribution, not another reformulation of WD.
-
-## 2.16 — Research programme for ACS
-
-**Terminal target.** Bound the actual neutral-window matrix margin uniformly over all admissible windows. The corpus proves that a single finite lower bound on this margin is equivalent to RH. A uniform positive gap at every aperture is unnecessary and conflicts with the proved long-window behaviour under RH. [ACS] [MARGIN-DECAY]
-
-**Objects.** Neutral matrices `N(Q,R,J)`, their two charges, full jet/contact coupling, the dyadic middle, its Green response, Schur excess and the cumulative level. Preserve exact prime-floor maps; replacing them by a free mixing model loses arithmetic.
+**Objects and language.** Start with degree-labelled correspondences, multiplicative charts, integral ghost orders and their contact conductors. Equip them with restriction, base-change and boundary operations. Treat Frobenius and Verschiebung with the proved masked relation; imposing `VF=FV=k` globally would describe the wrong object. [CONTACT] [WITT]
 
 **Programme.**
 
-1. Use the full `1881/5000` floor to anchor the overlap calculation at every block size. This stage is available. [BLOCK-FLOOR] [GREEN-FIRST]
-2. Prove the remaining zero-loss terms in the ratio-three ladder, or a quantitatively sufficient alternative. Retain moments and primitive mass until after the signed cancellation has been used. [GREEN-LADDER] [CHARGES]
-3. Handle the first window containing both prime-two and prime-three contacts, with a comparison uniform in refinement. Full coupling must remain: the fixed-rank lowered-product model is excluded. [RANK-WALL]
-4. Prove a recurrence for the *actual* losses with a total below the binding ceiling, or establish the equivalent global lower margin directly. The global theorem is the hard closure step. [GREEN-GLOBAL] [GREEN-LOSS]
+1. Assemble the known two-graph orders into a functorial multi-contact category. Prove descent and identify compatibility obstructions, including prime-square contacts.
+2. Define degree, divisor and intersection operations whose finite-prime values recover the known conductor ideals. Construct the archimedean boundary datum that produces the logarithmic self-pairing.
+3. Calibrate finite-field realizations against actual Kummer normalization, inertia fixed fields, distinguished-place counts and complete splitting of nonzero soluble fibres. Rationality has an exact norm-solubility criterion. Separate selected places from all rational points. [KUMMER] [PLACES] [KUMMER-SPLIT]
+4. Define a completed cohomology or intersection object and prove its trace formula equals the complete arithmetic source, with Gamma and pole terms.
+5. Prove an index/effectivity theorem from the category's geometry. This theorem, together with the matching, should feed ACS; it must not be an axiom built into the definition of an F₁ object.
 
-**Tools to develop:** a retained-charge Schur calculus with explicit cross terms; analytic certificates for Gamma remainders; refinement-compatible response estimates; and sharp tests distinguishing an inadequate comparison from a negative actual form. Contact-process gap/curvature alone cannot deliver this. [TREE-GAP] [TREE-CURVATURE]
+**Acceptance tests.** Recover `(1,2)=(2)`, `(2,4)=(4)` and the disjoint `(2,3)` contact; preserve conductor multiplicity under refinement; explain the negative geometric diagonal; distinguish actual Λ from the sign twin. A category passing only the finite-prime tests is a useful partial construction, not an RH proof. [CONTACT-EX] [DIAGONAL] [TWIN]
 
-**Success criterion:** each new aperture theorem is uniform in block size and proved from the actual arithmetic form. A finite matrix certificate at fixed `R`, or an assumption that the desired Schur complement is nonnegative, does not meet it.
+## 2.15 Programme: close WD
 
-## 2.17 — Research programme for ZCG
+Let `M_X(s)=Σ_{n≤X} μ(n)n^(−s)` in the receiver's normalization. The exact target is a common `K≥0` such that for arbitrarily large `θ` there is `Cθ` and unbounded heights T with
 
-**Terminal target.** Establish the conjugation compatibility of the forward heat cover at every positive real nonbranch base, or another theorem forcing the full zero configuration to be real at time zero. The corpus supplies an exact transport criterion for RH. In the usual external heat convention, Rodgers–Tao prove `Λ≥0`; the missing RH bound is `Λ≤0`. Their lower bound cannot be used as an upper bound. [ZCG] [Rodgers–Tao](https://arxiv.org/abs/1801.05914)
+`∫₁ᵀ |ζ(1/2+it) M_⌊T^θ⌋(1/2+it)|² dt ≤ Cθ T^K`.
 
-**Objects and language.** The forward heat cover, branch times, signed zero pairs, real-branch turn words, conjugation, and the boundary fibre at time zero. Keep arithmetic field automorphisms separate from cover monodromy unless a comparison is constructed.
+The pure-mollifier version is equivalent. Fixed `[0,1]` moments over every prefix offer another endpoint. Available upper bounds depend on width: the long pure and mollified versions have exponents `4+2wθ` and `6+2wθ`. Substituting `w≤3/8` is routine; removing that slope is research. [WD] [WD-LONG]
 
-**Programme.** First exploit the explicit local collision laws to classify which branch words can change the real configuration. Next find an arithmetic invariant of those words that is not shared by generic even heat families. Then prove that the invariant controls all relevant branch events and cannot be lost through zeros escaping to arbitrarily large height as time approaches zero. The explicit heat horizon gives useful fixed-time control but grows rapidly as time shrinks. [HEAT-TURN] [HEAT-HORIZON]
+**Objects/tools.** Exact long Dirichlet convolutions, signed off-diagonal correlations, logarithmic windows, exceptional-layer residues and conductor-uniform reciprocity. Preserve the μ signs before Cauchy–Schwarz or absolute summation.
 
-**First breakthrough:** an arithmetic restriction on a specified real-branch turn word, or a uniform zero-height compactness statement in a restricted time/height regime that genuinely reaches a new boundary. Generic transitivity and the index-at-most-two theorem are already available; proving that the group is still larger need not help RH. An odd number of nonreal quartets can produce the full signed group, not a contradiction. [MONODROMY] [HEAT-ODD]
+**Milestones.** First isolate one off-diagonal contribution whose signed bound is stronger than its absolute budget in a genuinely long range. A concrete finite target to investigate is the ζ-mollified bound `C T⁶` at `θ=16` on unbounded heights; this is a proposed estimate, not an available theorem or an asserted equivalent of RH. Then seek a family of such bounds with one K as θ grows. Each extension must prove its constants and height quantifiers.
 
-The full group also follows from one isolated off-centre double collision at a forward complex time. This is a precise conditional classification; the existence of that collision is not established by the theorem and its group-theoretic consequence is not a reality obstruction. [HEAT-TURN]
+**Closure criteria.** Common K; arbitrarily large θ; exactly the arithmetic mollifier; allowed θ-dependent constants; the stated cofinal-height property. A universal constant over all θ,T is excluded. A fixed slope improvement asserted for unbounded θ is already RH-strength, so cannot serve as an independent “easy lemma.” Short-mollifier proportions and a near-unit target answer different questions. [WD-LONG]
 
-**Failure criteria:** a permutation invariant that is automatic for all even heat families; a positive-time theorem with no `t→0` control; or an unsupported claim that generic analytic relations imply algebraic independence at a special fibre. [HEAT-RELATION]
+## 2.16 Programme: close ACS
 
-## 2.18 — Research programme for MC/JAS
+**Target.** Establish one finite scalar C giving the admitted neutral-window lower margin for every cutoff, block size and ratio; equivalently use the matrix-index criterion in [ACS]. Do not seek a strictly positive gap uniform over unbounded apertures: the continuum margin tends to zero under RH. [MARGIN-DECAY]
 
-**Two receivers, one arithmetic agenda.** MC asks for subpower growth of its actual Möbius Hilbert form. JAS can use the available strip, but still asks for double-exponential-window and cofinal-shell inequalities; other JAS formulations split off an off-line-chain or loud-set condition. These conjuncts are not interchangeable. [MC] [JAS-STRIP] [JAS] [JAS-SUM]
+**Objects/tools.** Full neutral matrices, actual floor contacts, Gamma jets, logarithmic diagonals, polar charges, exact Schur complements and arithmetic contact orders. Use the complete `log 2` floor and proved overlap levels as inputs. [FLOOR] [OVERLAP] [DIAGONAL]
 
-**Objects.** Möbius prefixes and Hilbert forms; prime ancestry words with phase and grade; actual shell power sums; and the exceptional-chain indicator. The producer must preserve these data, not replace them with an arbitrary bounded row or a critical-line model.
+**Three connected lines of work.** Extend one complete aperture through the prime-square contact (§2.4). Derive a signed gluing law retaining the full contact operator and estimate its accumulated losses. In parallel, construct the geometric diagonal and an index theorem as in §§2.8/2.14. A theorem in either analytic or geometric form can feed the same margin receiver.
 
-The corpus already proves logarithmic two-point Liouville cancellation for each fixed positive shift. Its proof offers prime-dilation and rational-twist tools, but the terminal statement lacks the quantitative rate and growing-parameter uniformity needed here. Developing those is a new arithmetic estimate, not routine summation of the existing limit. [CHOWLA]
+**Milestones.** Resolve the `Q=2` fourth excess without confusing it with the already proved ratio-three theorem. Obtain a propagation estimate whose total loss is bounded over an unbounded sequence, or verify the fixed-Q gap hypothesis on the already bound windows for every Q. The latter allows the gap to depend on Q. [OVERLAP] [GAP]
 
-**Programme.** Derive an exact coefficient-level bridge for one chosen JAS shell observable to a signed Möbius/reciprocity expression. Specify all weights and ranges, then prove cancellation before taking norms. Use MMD only to remove the fixed-strip premise. Control the remaining shell/window conditions with estimates that are cofinal in the required scale and uniform in the powers appearing in the criterion. Separately settle the finite/tail obstruction when using a criterion with that extra conjunct.
+**Rejection tests.** Fixed-rank absolute-error lowering at ratio four; a gap for the bare dilation process; nonnegative geometric diagonals; omission of the pole channel; profile transfer based only on numerical clock size. All fail to address the exact source. Any successful rule must also explain why the sign twin fails. [RANK-WALL] [TREE-GAP] [DIAGONAL] [TWIN] [BEURLING]
 
-**First breakthrough:** one phase-sensitive shell estimate uniform over a growing family of powers, with no target-blind averaging. A full range matching a terminal criterion would be RH-level; a fixed nontrivial range is a legitimate intermediate target.
+## 2.17 Programme: close ZCG
 
-**Tools:** reciprocity with explicit phase defects, multiscale summation retaining reciprocal targets, and exact comparison between shell observables and prefix errors. Literal reversible all-prime RFHM sewing is ruled out, so the bridge must allow and control its nonreversible defect. [RFHM] [AVERAGE]
+**Target.** Prove equality of forward-loop and conjugate-loop transport at every positive real nonbranch time, or supply another independently proved criterion giving the same all-zero conclusion. The mirror-transport criterion is already equivalent to RH. [ZCG]
 
-## 2.19 — General Galois theory of the nontrivial zeros
+**Objects/tools.** The actual heat cover, local collision divisors, turn characters, finite arithmetic root fields and their continued windows. Available monodromy classification reduces properness to one parity law, but properness itself is not established; even properness permits nonreal mass divisible by eight. [HEAT-PARITY] [HEAT-EIGHT]
 
-The programme starts with existing Galois constructions. An infinite set of zeta zeros cannot be the root set of one nonzero polynomial of finite degree over a field. The viable formulation is a compatible system of finite-fibre equations and an infinite algebraic extension over a specified source field. It does not assert that zeros are algebraic over ℚ.
+**Programme.** Identify arithmetic information retained under local continuation but invisible to the generic signed permutation group. Prove compatibility under enlarging finite windows, with quantitative control of the shrinking time interval. Test whether that control bounds off-line support or gives a uniform Landing threshold under ZAL. Combine any resulting finite-support theorem with a separate B13 theorem; MMD supplies only a fixed strip, not ZAL. [HEAT-FINITE] [HEAT-UNIFORM] [LANDING]
 
-**Available objects.** Complete-fibre source fields, finite equations for widths, normal zero extensions, and the prime-value extension over the mixed prime-trace field. The latter has a faithful zero action preserving absolute ordinate; its base already contains transcendental elements over ℚ. A different complete-fibre field has its own RH-sensitive equality theorem. These fields must not be silently identified. [TRACE-FIELD] [FIBRE-FIELD]
+**First decisive test.** A source-derived bound preventing the relevant collision mass from escaping without control as `t↓0`, under explicitly stated tail assumptions. Fixed-time finiteness is already known and does not answer this question. A failure theorem identifying unavoidable shrinking of the arithmetic specialization window would also constrain the programme.
 
-**Programme.**
+**Rejection tests.** A single whole-fibre intertwiner, global arithmetic conjugation realized by one finitary heat element, or “large group therefore real roots.” The first two are excluded comparisons; the third has no such implication. [HEAT-NOGO]
 
-1. Give the prime-trace field a presentation by arithmetic source germs and explicit relations, with controlled finite subfields/composita. The existing equality with source traces is a starting point; the new objective is usable independent relations.
-2. Classify finite zero orbits and stabilizers through prime-weight membership. The current conjugate-pair criterion does not force weight `p`, hence does not prove `Re ρ=1/2`. [WEIGHT-ORBIT]
-3. Solve the reflection-lift problem through the exact parity condition on finite square relations among its radicands. A lift, if obtained, still needs a theorem identifying it with conjugation to yield criticality. [REFLECTION]
-4. Construct a specialization/comparison mechanism between arithmetic fields and the analytic heat cover. Prove exactly what it preserves. Generic heat monodromy and fixed-fibre field automorphisms have different domains and constraints. [MONODROMY] [HEAT-RELATION]
+## 2.18 Programme: close MC/JAS
 
-**Tools:** infinite Galois theory through finite subextensions, Kummer square classes, divisor-valued source moments, arithmetic presentations and analytic specialization. **First breakthrough:** a source-derived restriction on the reflection square classes or prime weights that is not merely the corresponding zero-location criterion rewritten. Defining coefficients from the desired zeros and observing that they satisfy the resulting polynomial is insufficient.
+**Target.** Produce critical cancellation for the exact μ signal—bounds at every exponent above `1/2`—or prove full dressed JAS level-one PSD above some prime cutoff. The signal/width/positivity dictionaries and the level-one capstones already exist. No extra chain premise belongs to this strongest JAS endpoint. [SIGNAL] [SIGNAL-WIDTH] [SIGNAL-JAS] [JAS]
 
-## 2.20 — Programme assuming RH is false
+**Objects/tools.** The actual reciprocal/μ coefficients, phase-retaining incomplete rows, mixed-row family residues, damped Hilbert forms and full ancestry matrices. Fixed-shift logarithmic Chowla can inform correlation decompositions but supplies no growing-shift rate by itself. Formal jet independence restricts exact sparse-coefficient identities, without providing estimates. [INCOMPLETE] [CHOWLA] [JETS]
 
-The assumption fixes a research direction; it does not provide a counterexample. Two deliverables must be distinguished.
+**Programme.** Start with the extraction question in §2.5. Classify all target-preserving phase projections at the local level, then analyze their global continuation and norms. Retain mixed-row terms until a signed estimate is proved. Transport a valid signal saving to a better width or JAS level; determine which parameters permit iteration without restoring the completion defect.
 
-**(a) Prove falsity.** Seek a finite analytic certificate: a compact arithmetic test with strictly negative actual Weil form, or a contour wholly in `1/2<Re s<1` with nonzero ξ winding. Either would give a theorem rather than numerical evidence. A failed lower bound for the form is not a negative value of the form. A negative form in an edited or Selberg model is not a certificate for ζ. [BLOCK-FLOOR] [SELBERG] [EDIT]
+**Milestones.** A nonzero-target signed saving against the sextic family obstruction; an estimate on the full target rather than its truncation error; a controlled iteration whose limiting exponent is `1/2`. The map `(3+b)/6` has fixed point `3/5`, so repeating it cannot be that iteration. A stronger construction must leave its formalized class. [TRUNCATION] [GAUSS]
 
-**(b) Specify a concrete zero without computation.** Choose explicit rational `a,b,c,d` with `1/2<a<b<1`, and the rectangle `D={a<Re s<b, c<Im s<d}`. Prove analytically that ξ is nonzero on its boundary and has exactly one distinct zero inside, of certified multiplicity `m≥1`. A Rouché comparison giving count one is sufficient in the simple-zero case; the programme must also allow higher multiplicity. Then the contour formula
+**Rejection tests.** Principal averaging, adding more Gauss-monomial factors within the same budget, dropping the first sextic layer while claiming to retain its target, and reversible all-prime sewing. Their exact failures are available. [AVERAGE] [GAUSS] [RFHM]
 
-`ρ = (∮∂D s ξ′(s)/ξ(s) ds) / (∮∂D ξ′(s)/ξ(s) ds)`
+## 2.19 Programme: a Galois theory of ζ zeros
 
-defines the unique zero exactly, and the rectangle proves it is off the line. This is a concrete specification without a decimal search. The difficult step is constructing the explicit rectangle and proving its boundary estimates and uniqueness; the formula does not perform that construction. A positive zero count alone proves falsity in this rectangle, but its normalized first moment could average several zeros, so it is not yet the requested single-zero specification.
+A finite nonzero polynomial cannot have the infinitely many nontrivial ζ zeros as distinct roots. The viable algebraic object is a compatible family of finite equations, or an explicitly defined infinite algebraic construction—not an ordinary single finite equation over ℚ.
 
-**Objects and tools.** Analytic divisors, exact contour estimates, prime-defined comparison functions and finite source certificates. The Galois programme can organize a hypothetical quartet and its orbit, but a nontrivial permutation action does not establish that such a quartet exists. [TRACE-FIELD] [WEIGHT-ORBIT]
+**Available foundation.** Complete ordinate-fibre traces give monic polynomials with the centered zeros as exact roots, including multiplicities. The resulting algebraic normal compositum is over a source field containing zero-fibre information. A separate prime-trace extension encodes `p^ρ`; a zero's residue field is `B(2^ρ,3^ρ)`, its degree equals its finite even orbit size, and degree two alone does not force the line. [FIBRES] [PRIME-FIBRES] [ORBIT] [TWO-THREE]
 
-**AAL falsification is stronger in a different direction:** additionally prove that all sufficiently high zeros lie in a strictly narrower strip. A single off-line rectangle does not supply this tail theorem. [AAL-LAYER]
+**Objects/tools.** Finite fibre algebras, their compatible inclusions, prime-trace generators, square relations, reflection and conjugation actions, and global automorphisms reconstructed from finite data. Develop effective relation ideals and descent criteria; distinguish formal trace functions from specialized values. [TRACE-INDEP]
 
-The first acceptable advance is a strict sign or contour estimate for the actual source in an explicitly stated region. No such counterexample is supplied by this report.
+**Programme.** Derive nontrivial relations among the fibre coefficients directly from Euler arithmetic, without importing the desired zero locations. Characterize the relations necessary and sufficient for a functional-reflection lift. Independently determine prime-weight membership in the base. The proved criterion requires both. Seek an invariant that rules out noncritical orbits, rather than declaring conjugation central and concluding purity. [REFLECTION]
 
-## 2.21 — The one priority question
+**First milestone.** One source-derived relation excluding an explicit class of otherwise admissible off-line fibre configurations. A complete classification of the abstract groups allowed by freely chosen zero data is only a model result. A successful theory must keep the two arithmetic fields distinct and respect the finite-only comparison with heat monodromy. [HEAT-FINITE] [HEAT-NOGO]
 
-**Does the actual Weil form on the first full two-prime window admit a finite retained-charge certificate, uniform under arbitrarily fine block refinement, or can that certificate calculus be proved insufficient?**
+## 2.20 Programme assuming RH is false
 
-Use aperture `A=log 2`, equivalently the ratio-four window, with the actual prime-two and prime-three contacts. The target is finite in aperture and unbounded in resolution. Keep the full jet and contact operator; add finitely many moment charges and the exact pole charges. Predeclare the allowed certificate calculus: retained Gamma Taylor terms with proved remainders, regional charged-gap inequalities, exact autocorrelation identities and signed Schur estimates. The certificate must dominate the complete quadratic form, including all cross terms. “Remainder nonnegative” cannot be an unproved certificate field. [CONTACT-JET] [CHARGES] [GAMMA-LAGS]
+The assumption guides the search; it is not a premise of the final falsification proof. Any witness must concern the actual ζ/ξ source and lie within the proved horizontal strip, beyond the verified critical-line range. An edited Euler product or a negative comparison form is not a witness. [MMD] [JENSEN] [FLOOR]
 
-There are two valuable answers:
+**A. Prove falsity analytically.** Seek one exact negative value of the complete Weil form, one certified nonreal unshifted Jensen root, one actual failure of a full JAS criterion, or a source-derived off-line divisor obstruction. These use established RH criteria, so a strict exact failure would suffice. Preserve every Gamma, pole and prime term. A negative term in a decomposition need not make the full object negative. [FLOOR] [LA] [JAS]
 
-- **Constructive answer:** exhibit a finite charge list and an analytic remainder bound proving the actual form nonnegative at this aperture for every admissible test, hence for all corresponding block sizes. This removes a common obstacle for ACS, RW, HF, EWU and OWU and supplies a serious seed for further overlap. It still needs a global recurrence to prove RH.
-- **Obstruction answer:** give a uniform family of tests showing that every certificate in a precisely bounded version of this calculus loses the required margin. Identify the term responsible and the minimal enlargement forced by it. This would retire several charge-only variants without retiring the full routes. The existing fixed-rank lowered-coupling no-go is already known; the new question retains the full coupling and must go beyond that result. [RANK-WALL]
+**B. Specify a concrete counterexample without numerical search.** Aim for an explicitly defined rational rectangle strictly in `1/2<Re s<1`, with ξ nonzero on its boundary, and an analytic argument-principle count of one inside. The zero itself must satisfy `Re ρ≤7/8` by the proved strip; the rectangle may extend farther to enclose a boundary-line witness. Define the counterexample as its unique ξ zero. This is a concrete specification without a decimal approximation. A count greater than zero proves existence but requires further analytic isolation for uniqueness.
 
-Why this question: it combines actual source arithmetic, the strongest finite floor, the exact overlap mechanism and sharp no-go information. It asks for a theorem that could change several route assessments rather than another terminal equivalence. It has a finite-aperture success criterion and a meaningful negative outcome. Neither answer is claimed to settle AAL or RH, and no proof of a strict difficulty ordering is known. The ratio-three question in §2.4 is its immediate intermediate target. [FLOOR] [GREEN-LADDER] [GREEN-LOSS]
+The research task is to derive the needed boundary comparison from exact arithmetic identities or an analytically dominant term with a rigorous remainder estimate. Rouché/contour machinery converts that estimate; it does not produce it. No sampled contour, numerical root search, assumed root or unverified asymptotic remainder belongs to the requested noncomputational proof. Existing explicit contour-tail bounds are useful ingredients but do not already supply an off-line rectangle. [EGC]
+
+**C. Diagnose the witness algebraically.** Build its finite fibre equations and determine whether the reflection lift or weight-membership condition fails. The Galois action can classify the witness but cannot create one by declaring a permutation admissible. [FIBRES] [REFLECTION]
+
+**AAL distinction.** Such a zero disproves RH. To disprove AAL as well, prove that a finite nonempty top layer lies strictly above the tail abscissa. A falsification programme must therefore retain a separate global tail estimate. [AAL-LAYER]
+
+## 2.21 The single most valuable narrower question
+
+**Does exact ζ arithmetic force `FiniteOffLine → RH`?** Equivalently: **can the actual real packet form have a finite positive negative index?** [INDEX]
+
+This is B13, one precise component of AAL rather than the full AAL transport law or all-zero RH. Its statement only addresses the finite-exception case. There is no established difficulty comparison, but it removes fewer configurations than RH and needs no proof of ZAL or full height transport as part of its conclusion. The receiver equivalence is proved; an arithmetic reason for the dichotomy is missing.
+
+A concrete mechanism to investigate is **defect replication inside the same actual form**: from one nonzero finite defect, use prime-defined operations on larger carriers to construct arbitrarily many independent defect directions, with the mixed pairings controlled. The source and complete prime/Gamma/pole normalization must remain fixed. Tensoring an abstract negative form or replacing ζ by a new Euler product does not achieve this.
+
+First test: an isolated quartet under a finite-support hypothesis. Next: arbitrary finite support without a separation assumption. A proof would remove the finite stratum shared by ACS, ZCG/heat descent, AAL, recurrence, physical decay and approximation routes. Combined with ZAL and Landing it closes RH; without those inputs it is still a substantial independent theorem. A rigorous obstruction to an entire class of source-preserving replication operations would instead prune several proposed assemblies and identify the additional arithmetic structure they require. [INDEX] [LANDING] [AAL-ATOMS]
 
 <!-- source references -->
-[MMD]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L1
-[BLOCK-FLOOR]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheFirstOverlapWindowHasAPositiveWeilFloorAtEveryBlockSize.lean#L1
-[GREEN-FIRST]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheFirstOverlapStepHoldsAtEveryBlockSize.lean#L1
-[HF]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TheCriticalHalfLineStateIsUniqueUpToSign.lean#L96
-[MONODROMY]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyGroupHasIndexAtMostTwoInTheSignedPermutationsOfFiniteSupport.lean#L1
-[TRACE-FIELD]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ThePrimeTraceGaloisGroupOfTheZeros.lean#L850
-[JENSEN-RUNG]: ../../../formal/GaloisForLFunctions/VerifiedHeightRungs/TheJensenRungAtTheSaddleScale.lean#L117
-[GREEN-LADDER]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheExcessOfAnOverlapStepAndTheFourStepLadderToRatioThree.lean#L1957
+[MMD]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L598
+[JENSEN]: ../../../formal/GaloisForLFunctions/VerifiedHeightRungs/TheJensenPolynomialsThroughDegree31922AreRealRooted.lean#L21
+[FLOOR]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheTwoPrimeWindowHasAPositiveWeilFloorAtEveryBlockSize.lean#L39
+[OVERLAP]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheTwoPrimeWindowAndRatioThreeHoldAtEveryBlockSize.lean#L273
+[INCOMPLETE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/IncompleteReciprocityRetainsPhasesWithSubcubicSaving.lean#L1
+[HEAT-FINITE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean#L81
+[ADS]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheEternalAdSPrimeMarkedDictionary.lean#L884
+[S3]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheReturnTransferIsTheRiemannHypothesisUnderAStrip.lean#L44
+[LA]: ../../../formal/GaloisForLFunctions/FiniteFreeProbability/FiniteFreeDeBruijnNewman.lean#L466
 [WL]: ../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean#L868
-[CHMD]: ../../../formal/GaloisForLFunctions/RHTower/CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean#L385
-[SZ]: ../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAlignedGammaCompletion.lean#L380
+[WD]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheWidthIsReadInOneWindow.lean#L85
+[WD-LONG]: ../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean#L659
+[SIGNAL-WIDTH]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsTheZeroAbscissa.lean#L212
+[SIGNAL-JAS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsThePositivityLevel.lean#L165
 [HATC]: ../../../formal/GaloisForLFunctions/HyperbolicArakelovTheory/TheJumpTailFloorNeedsTheFullArithmeticNormalization.lean#L38
-[PM]: ../../../formal/GaloisForLFunctions/RingdownOfTheCubicCover/BianchiHorizonRingdownEquivalence.lean#L1
-[REFLECTION]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ThePrimeReflectionKernelOfTheZeros.lean#L455
-[HEAT-TURN]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheTurnAroundAnIsolatedDoubleCollisionOffTheCentreIsTheExchangeOfTwoPairs.lean#L131
-[CONTACT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheFrobeniusGraphsMeetInThePrimes.lean#L98
-[ARTIN]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/EveryArtinLFunctionHasACompletionWithAFunctionalEquation.lean#L220
-[RINGDOWN]: ../../../formal/GaloisForLFunctions/RingdownOfTheCubicCover/UnconditionalScatteringResonanceBounds.lean#L1
-[FLOOR]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheEvenWeilFormHasAFloorAtAperture1881Over5000.lean#L340
-[CHARGES]: ../../../formal/GaloisForLFunctions/LatticeSectionTheory/WindowJumpCounts/RegionalLogarithmicChargedGaps.lean#L1
-[GAUSS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L586
-[ACS]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis.lean#L505
-[GREEN-GLOBAL]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheExcessOfAnOverlapStepAndTheFourStepLadderToRatioThree.lean#L2178
-[AAL-TRANSPORT]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheAbscissaLawsOfAZeroConfiguration.lean#L106
-[AAL-LAYER]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer.lean#L33
-[ZCG]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean#L186
-[HEAT-HORIZON]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/HeatScaleRepulsion/TheExplicitHeightOfTheWeylHorizon.lean#L356
-[CENSUS]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ZetaSamplingPrimePoleFourth.lean#L262
-[CENSUS-AMBIGUITY]: ../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/SplitBandMomentAmbiguity.lean#L1
-[WEIGHT-ORBIT]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheOrbitOfAZeroIsItsConjugatePairIffItsWeightLiesInThePrimeTraceField.lean#L1
-[CONTACT-JET]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/WeilsOffDiagonalIsContactsPlusJets.lean#L125
-[SELF-PAIRING]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheCouplingsOfAWindowAreNotMixedAreasAndTheIndexForcesLogarithmicSelfPairings.lean#L268
-[GAMMA-LAGS]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheGammaRemainderRetainsHigherLagsThroughRadiusTwo.lean#L1
+[SZ]: ../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAlignedGammaCompletion.lean#L380
+[ACT]: ../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/SingleShiftCompleteness.lean#L177
+[AIP]: ../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCompensatedRemainderOfTheFullLedger.lean#L878
+[CONTACT-EX]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheFirstTwoPrimeContactIdeals.lean#L14
+[FIBRES]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheFieldOfCompleteFibreTraces.lean#L486
+[ORBIT]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheDegreeOfTheResidueFieldOfAZeroIsTheSizeOfItsOrbit.lean#L50
+[IRK]: ../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPrimeRotationResolution.lean#L25
+[WBF]: ../../../formal/GaloisForLFunctions/HTGeometry/PaperGenealogyFredholmRecovery.lean#L50
+[EGC]: ../../../formal/GaloisForLFunctions/SquareRootThreshold/EffectiveHorizons/TheEGCContourIsExplicit.lean#L139
+[COFACTORS]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheGrowingFilterReachesPolynomiallyManyCofactors.lean#L1
+[NEARDIAG]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheNearDiagonalCofactorsHaveASummableRow.lean#L162
+[HEAT-PARITY]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyGroupIsProperExactlyWhenItsTurnsObeyOneParityLaw.lean#L204
+[W1C]: ../../../formal/GaloisForLFunctions/InfiniteRankPurityTheory/TheIndexIsSemicontinuous.lean#L96
+[CDC]: ../../../formal/GaloisForLFunctions/RHTower/XiSourceHistoryPriceEscape.lean#L140
+[TG]: ../../../formal/GaloisForLFunctions/RHTower/FormationAnchoredCubicEndpoint.lean#L220
+[XN]: ../../../formal/GaloisForLFunctions/RHTower/XiNewtonDiscSourceMargin.lean#L219
+[ECP]: ../../../formal/GaloisForLFunctions/RHTower/Representation/EndpointCharacterCriterion.lean#L62
+[TH]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean#L250
+[CTF]: ../../../formal/GaloisForLFunctions/RHTower/ChronologicalRiemannEquivalence.lean#L414
+[BIANCHI]: ../../../formal/GaloisForLFunctions/RingdownOfTheCubicCover/EternalBianchiBoundaryDictionaryAndWardObstruction.lean#L469
+[JAS]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryLevelOneCapstones.lean#L35
+[TRUNCATION]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/FamilyContinuationRestoresTheGaussWallsUnderTruncation.lean#L1101
+[DIAGONAL]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheCouplingsOfAWindowAreNotMixedAreasAndTheIndexForcesLogarithmicSelfPairings.lean#L268
 [RANK-WALL]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheBindingOfTheTwoHalvesOfAWindowOfRatioFourHasRankProportionalToTheBlockSize.lean#L929
-[GREEN-LOSS]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle.lean#L568
-[DECOMPLETE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheWallIsThePriceOfCompletion.lean#L211
-[AVERAGE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheAverageRowIsBlindToTheTarget.lean#L1
-[JAS-STRIP]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryDoubleExpWindowsDyadicShells.lean#L26
-[HEAT-ODD]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AnOddNumberOfQuartetsOfNonrealZerosAtARealTimeGivesEverySignedPermutation.lean#L372
-[QUARTET-PARITY]: ../../../formal/GaloisForLFunctions/RHTower/OrbitParityOffLine.lean#L116
-[ROOT-WALL]: ../../../formal/GaloisForLFunctions/RHTower/GlobalParityWall.lean#L117
-[BEZOUT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/BezoutIsAnEqualityOnThePlanarSquare.lean#L124
-[SELBERG]: ../../../formal/GaloisForLFunctions/CompactHyperbolicSurfaces/SmallEigenvalueZeta.lean#L113
-[AAL-OSCILLATION]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/TheOneOffsAreFiniteOscillationsOfThePrimeError.lean#L736
-[AAL-LANDING]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheLandingLaw.lean#L117
-[EDIT]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/AFiniteLayerWithATailOverTheRationalPrimes.lean#L488
-[EDIT-DEFECT]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/FakeEditsWithSubpolynomialDefectEnergy.lean#L67
-[PERFECT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/APerfectSquareKeepsNoContact.lean#L81
-[WD]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheWidthIsReadInOneWindow.lean#L485
-[WD-PROPORTION]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheExponentOfTheMollifiedErrorIsRigid.lean#L605
-[WD-COFINAL]: ../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean#L704
-[WD-SHORT]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TwistedSecondMomentsBelowSquareRoot.lean#L128
-[WD-BLOCK]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheTwistedMomentFactorsOverBlocks.lean#L585
-[MZF-PROPORTION]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheTwistedMomentGivesAPositiveCriticalProportion.lean#L109
-[WD-RAW]: ../../../formal/GaloisForLFunctions/ArithmeticProduction/LongIntegerPolynomialsSeeParity.lean#L1
-[LONG-MOMENT]: ../../../formal/GaloisForLFunctions/ArithmeticProduction/LongMollifiersImplyCriticalClustering.lean#L422
-[MARGIN-DECAY]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/UnderTheRiemannHypothesisTheMarginOfALongWindowTendsToZero.lean#L442
+[ACS]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis.lean#L505
+[AAL-LAYER]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer.lean#L33
+[AAL]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheAbscissaLawsOfAZeroConfiguration.lean#L106
+[HEAT-NOGO]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean#L62
+[HEAT-UNIFORM]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AUniformSpecializationOfTheOffLineZerosForcesThemToBeFinite.lean#L29
+[INDEX]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheFiniteStratumIsThePacketIndexDichotomy.lean#L85
+[EDGE]: ../../../formal/GaloisForLFunctions/FrustratedArithmeticDirichletForms/TheEdgeLawCrossesOneBetweenLogFiveAndLogSix.lean#L295
+[AVERAGE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheAverageRowIsBlindToTheTarget.lean#L148
+[PARITY]: ../../../formal/GaloisForLFunctions/RHTower/GlobalParityWall.lean#L1
+[ROOTS]: ../../../formal/GaloisForLFunctions/RHTower/XiHeightAdaptiveFiniteLadderClosure.lean#L234
+[ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
+[CONTACT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheConductorOfTwoGraphsIsTheirContact.lean#L22
+[TWIN]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheFirstOverlapStepOfWeilsFormFailsForTheSignTwin.lean#L744
 [TREE-GAP]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/TheDilationProcessHasNoGap.lean#L174
-[TREE-CURVATURE]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/TheFloorTreesHaveCurvatureZero.lean#L1
-[HEAT-RELATION]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AnAnalyticRelationAmongZerosInDistinctPairsHoldsOnEveryConfigurationOrOnADiscreteSet.lean#L1
-[MC]: ../../../formal/GaloisForLFunctions/RHTower/MobiusHilbertFormEquivalence.lean#L219
-[JAS]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryShellAmplitudeAbscissaDuality.lean#L213
-[JAS-SUM]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryShellLoudSetCriterion.lean#L295
+[AAL-ATOMS]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheLandingLaw.lean#L96
+[EULER-ROBUST]: ../../../formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/FiniteGroup/EulerTiltRobustness.lean#L69
+[THERMAL-ROBUST]: ../../../formal/GaloisForLFunctions/HilbertMetric/QuantumInformation/ThermalMatrixRobustness.lean#L69
+[WITT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/Witt/RaynaudOperatorBoundary.lean#L19
+[LOCAL-GLOBAL]: ../../../formal/GaloisForLFunctions/RepresentationLifting/PrimePlaneLocalSplitting.lean#L1
+[KUMMER]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerInertiaFixedFields.lean#L54
+[PLACES]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerDistinguishedPlaceCount.lean#L144
+[KUMMER-SPLIT]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerUnramifiedSplitting.lean#L20
+[MARGIN-DECAY]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/UnderTheRiemannHypothesisTheMarginOfALongWindowTendsToZero.lean#L442
+[GAP]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheBoundRangeEndsOnlyWhereTheGapOfTheBoundWindowsCloses.lean#L308
+[BEURLING]: ../../../formal/GaloisForLFunctions/RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean#L134
+[ZCG]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean#L186
+[HEAT-EIGHT]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ARealCollisionOfMassNotDivisibleByEightGivesEverySignedPermutation.lean#L165
+[LANDING]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L68
+[SIGNAL]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalOfTheZetaKernelIsAMoebiusSum.lean#L1
 [CHOWLA]: ../../../formal/GaloisForLFunctions/LogarithmicChowla/LogarithmicChowlaTheorem.lean#L90
-[RFHM]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryAllPrimeReversibleRFHMSewingNoGo.lean#L132
-[FIBRE-FIELD]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheFieldOfCompleteFibreTraces.lean#L409
+[JETS]: ../../../formal/GaloisForLFunctions/SelbergClass/DirichletSeries/PrimeDensityArithmeticJets.lean#L121
+[GAUSS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L586
+[RFHM]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryAllPrimeReversibleRFHMSewingNoGo.lean#L37
+[PRIME-FIBRES]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheFibreFieldsOverThePrimeTracesAreFiniteGaloisAndGenerateTheSpectralField.lean#L1
+[TWO-THREE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ThePrimeTwoThreeTraceEquationAndReflectionRelation.lean#L35
+[TRACE-INDEP]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheTracesOfRationallyIndependentHeightsAreAlgebraicallyIndependent.lean#L201
+[REFLECTION]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ALiftOfTheReflectionIsConjugationExactlyWhereTheWeightLiesInThePrimeTraceField.lean#L55

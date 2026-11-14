@@ -89,10 +89,3 @@ theorem eulerTilt_expectation_shift_sq_le_primeClock (δ : ℝ≥0) (N : ℕ)
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.eulerTiltVariance_nonneg
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.eulerTiltExpectation_sub_const
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.eulerTiltVariance_eq_covariance
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.eulerTiltVariance_linearStat
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.eulerTilt_expectation_shift_sq_le_variance
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.eulerTilt_expectation_shift_sq_le_primeClock

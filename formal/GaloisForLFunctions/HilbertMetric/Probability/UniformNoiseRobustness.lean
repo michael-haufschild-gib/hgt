@@ -85,10 +85,3 @@ theorem mixed_uniform_expectation_shift_sq_le [DecidableEq ι] (p : FiniteProbab
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
-
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniformPearsonDivergence_eq_energy
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniformPearsonDivergence_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniformPearsonDivergence_mix_le
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniform_likelihood_expectation
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniform_expectation_shift_sq_le
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.mixed_uniform_expectation_shift_sq_le

@@ -75,9 +75,3 @@ theorem likelihood_expectation_shift_abs_le (p : FiniteProbabilityLaw ι) (r f :
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
-
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.pearsonEnergy_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.pearsonEnergy_eq_zero_iff
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.pearsonEnergy_eq_secondMoment
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.likelihood_expectation_shift_sq_le
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.likelihood_expectation_shift_abs_le

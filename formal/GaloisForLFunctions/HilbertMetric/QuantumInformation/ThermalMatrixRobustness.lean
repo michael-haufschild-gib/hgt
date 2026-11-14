@@ -122,11 +122,3 @@ theorem thermal_hilbertSchmidt_robustness_attained (β : ℝ) (E : ι → ℝ)
 
 end
 end GaloisForLFunctions.HilbertMetric.QuantumInformation
-
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermalInverseQuadratic_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.hsInner_re_eq_sum
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_hilbertSchmidt_robustness
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_hilbertSchmidt_robustness_deflated
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermalInverseQuadratic_worstDirection
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.hsInner_thermalWorstDirection
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_hilbertSchmidt_robustness_attained

@@ -124,11 +124,3 @@ theorem thermal_temperature_shift_sq_le (β γ : ℝ) (E f : ι → ℝ) :
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
-
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_likelihood_expectation
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_likelihood_mass
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermalPearsonDivergence_eq
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermalPearsonDivergence_thermalLaw
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_expectation_shift_sq_le
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_expectation_shift_abs_le
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_temperature_shift_sq_le
