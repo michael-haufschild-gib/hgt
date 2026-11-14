@@ -12,9 +12,9 @@ every nonzero charge removes it.
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry.AdSGaussBonnet
 
-def turningPolynomial (λ q y : ℝ) : ℝ :=
-  3 * y ^ 2 * (2 * y ^ 2 + (12 * λ - 1) * y + 2 * λ) +
-    q ^ 2 * (5 * y + 6 * λ)
+def turningPolynomial (ℓ q y : ℝ) : ℝ :=
+  3 * y ^ 2 * (2 * y ^ 2 + (12 * ℓ - 1) * y + 2 * ℓ) +
+    q ^ 2 * (5 * y + 6 * ℓ)
 
 /-- A sharp algebraic decomposition, including the neutral threshold. -/
 theorem turningPolynomial_threshold (a q y : ℝ) :
@@ -42,7 +42,7 @@ theorem turningPolynomial_above_threshold_pos (v q u : ℝ) :
   rw [turningPolynomial_threshold]
   positivity
 
-/-- The remaining degeneracy is precisely the neutral point `λ=1/36`, `x²=1/6`. -/
+/-- The remaining degeneracy is precisely the neutral point `ℓ=1/36`, `x²=1/6`. -/
 theorem turningPolynomial_zero_iff (a q u : ℝ) :
     turningPolynomial (1 / 36 + a ^ 2) q (Real.exp u) = 0 ↔
       a = 0 ∧ q = 0 ∧ Real.exp u = 1 / 6 := by

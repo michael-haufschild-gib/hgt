@@ -36,8 +36,6 @@ local notation "B" => primeTraceField
 local notation "E" => primeTraceExtension
 local notation "G" => (E ≃ₐ[B] E)
 local notation "Δ" => rawZeroRelationGroup
-local notation "p₂" => (⟨2, Nat.prime_two⟩ : Nat.Primes)
-local notation "p₃" => (⟨3, Nat.prime_three⟩ : Nat.Primes)
 local instance : IsGalois B E := ⟨⟩
 
 /-! ## The fixed field and the fixed exponents -/
@@ -57,11 +55,17 @@ theorem coe_mem_primeTraceField_iff_fixed (x : E) : (x : ℂ) ∈ B ↔ ∀ σ :
 
 /-- The prime values at `2` and `3` determine an element of `Δ`. -/
 theorem primeTraceExponentValue_two_three_ext {z w : Δ}
-    (h2 : primeTraceExponentValue p₂ z = primeTraceExponentValue p₂ w)
-    (h3 : primeTraceExponentValue p₃ z = primeTraceExponentValue p₃ w) : z = w := by
+    (h2 : primeTraceExponentValue ⟨2, Nat.prime_two⟩ z =
+      primeTraceExponentValue ⟨2, Nat.prime_two⟩ w)
+    (h3 : primeTraceExponentValue ⟨3, Nat.prime_three⟩ z =
+      primeTraceExponentValue ⟨3, Nat.prime_three⟩ w) : z = w := by
   apply Subtype.ext
   apply two_prime_exponential_injective Nat.prime_two Nat.prime_three (by decide)
-  exact Prod.ext (congrArg (fun x : E => (x : ℂ)) h2) (congrArg (fun x : E => (x : ℂ)) h3)
+  have e2 : (primeTraceExponentValue ⟨2, Nat.prime_two⟩ z : ℂ) =
+      (primeTraceExponentValue ⟨2, Nat.prime_two⟩ w : ℂ) := congrArg (fun x : E => (x : ℂ)) h2
+  have e3 : (primeTraceExponentValue ⟨3, Nat.prime_three⟩ z : ℂ) =
+      (primeTraceExponentValue ⟨3, Nat.prime_three⟩ w : ℂ) := congrArg (fun x : E => (x : ℂ)) h3
+  exact Prod.ext e2 e3
 
 /-- The prime values of a fixed element of `Δ` lie in `B`. -/
 theorem primeTraceExponentValue_mem_of_fixed {z : Δ}
@@ -74,7 +78,8 @@ theorem primeTraceExponentValue_mem_of_fixed {z : Δ}
 arithmetic automorphism iff its prime values at `2` and `3` lie in `B`. -/
 theorem primeTraceExponentHom_fixed_iff (z : Δ) :
     (∀ σ : G, primeTraceExponentHom σ z = z) ↔
-      (primeTraceExponentValue p₂ z : ℂ) ∈ B ∧ (primeTraceExponentValue p₃ z : ℂ) ∈ B := by
+      (primeTraceExponentValue ⟨2, Nat.prime_two⟩ z : ℂ) ∈ B ∧
+        (primeTraceExponentValue ⟨3, Nat.prime_three⟩ z : ℂ) ∈ B := by
   constructor
   · intro h
     exact ⟨primeTraceExponentValue_mem_of_fixed h _, primeTraceExponentValue_mem_of_fixed h _⟩
@@ -116,8 +121,11 @@ theorem primeOrdinateValue_coe (p : Nat.Primes) (ρ : XiDivisorSupport) :
   have h1 : (primeOrdinateValue p ρ : ℂ) =
       Complex.exp ((Real.log (p : ℕ) : ℂ) * ((ρ : ℂ) - starRingEnd ℂ (ρ : ℂ))) +
         Complex.exp ((Real.log (p : ℕ) : ℂ) * (-((ρ : ℂ) - starRingEnd ℂ (ρ : ℂ)))) := rfl
-  rw [h1, Complex.sub_conj, Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_cos,
-    Complex.two_cos]
+  have h2 : ((2 * Real.cos (2 * (ρ : ℂ).im * Real.log ((p : ℕ) : ℝ)) : ℝ) : ℂ) =
+      Complex.exp (((2 * (ρ : ℂ).im * Real.log ((p : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I) +
+        Complex.exp (-((2 * (ρ : ℂ).im * Real.log ((p : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I) := by
+    rw [← Complex.two_cos, Complex.ofReal_mul 2, Complex.ofReal_cos, Complex.ofReal_ofNat]
+  rw [h1, Complex.sub_conj, h2]
   congr 1 <;> congr 1 <;> push_cast <;> ring
 
 /-- The action of an automorphism on the ordinate of a zero. -/

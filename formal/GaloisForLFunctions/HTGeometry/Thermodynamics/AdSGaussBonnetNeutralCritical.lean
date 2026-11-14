@@ -38,7 +38,7 @@ theorem neutral_critical_potential_quartic (x : ℝ) :
     potential neutralCriticalTemperature 0 (1 / 36) 0 x =
       3 * (x - neutralCriticalRadius) ^ 4 := by
   unfold potential energy entropy neutralCriticalTemperature neutralCriticalRadius
-  simp only [zero_pow (by decide : 2 ≠ 0), zero_div, add_zero, zero_mul, sub_zero]
+  simp only [zero_pow (by norm_num : 2 ≠ 0), zero_div, add_zero, zero_mul, sub_zero]
   field_simp [Real.pi_ne_zero]
   ring_nf
   rw [Real.sq_sqrt (by positivity : (0 : ℝ) ≤ 6), sqrt_six_cube, sqrt_six_fourth]
@@ -55,7 +55,7 @@ theorem neutral_critical_potential_zero_iff (x : ℝ) :
       x = neutralCriticalRadius := by
   rw [neutral_critical_potential_quartic]
   simp only [mul_eq_zero, OfNat.ofNat_ne_zero, false_or,
-    pow_eq_zero_iff (by decide : 4 ≠ 0), sub_eq_zero]
+    pow_eq_zero_iff (by norm_num : 4 ≠ 0), sub_eq_zero]
 
 /-- The critical thermal state has positive entropy, unlike thermal AdS. -/
 theorem neutral_critical_entropy :

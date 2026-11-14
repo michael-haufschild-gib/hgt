@@ -1,5 +1,7 @@
+import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
@@ -17,26 +19,26 @@ nonnegative couplings by `a²`, so the first-law identities need no premises.
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry.AdSGaussBonnet
 
-def energy (λ q x : ℝ) : ℝ := 3 * (x ^ 4 + x ^ 2 + λ) + q ^ 2 / x ^ 2
+def energy (ℓ q x : ℝ) : ℝ := 3 * (x ^ 4 + x ^ 2 + ℓ) + q ^ 2 / x ^ 2
 
-def entropy (λ x : ℝ) : ℝ := 4 * Real.pi * (x ^ 3 + 6 * λ * x)
+def entropy (ℓ x : ℝ) : ℝ := 4 * Real.pi * (x ^ 3 + 6 * ℓ * x)
 
-def temperature (λ q x : ℝ) : ℝ :=
+def temperature (ℓ q x : ℝ) : ℝ :=
   (6 * x ^ 6 + 3 * x ^ 4 - q ^ 2) /
-    (6 * Real.pi * x ^ 3 * (x ^ 2 + 2 * λ))
+    (6 * Real.pi * x ^ 3 * (x ^ 2 + 2 * ℓ))
 
 /-- Radius and coupling are independent variables in the reduced potential. -/
-def potential (t z λ q x : ℝ) : ℝ := energy λ q x - t * entropy λ x - z * λ
+def potential (t z ℓ q x : ℝ) : ℝ := energy ℓ q x - t * entropy ℓ x - z * ℓ
 
 /-- Coupling work at fixed entropy, after eliminating the radial variation. -/
-def couplingResponse (λ q x : ℝ) : ℝ :=
-  3 - 24 * Real.pi * x * temperature λ q x
+def couplingResponse (ℓ q x : ℝ) : ℝ :=
+  3 - 24 * Real.pi * x * temperature ℓ q x
 
-theorem entropy_hasDerivAt (λ x : ℝ) :
-    HasDerivAt (entropy λ) (12 * Real.pi * (x ^ 2 + 2 * λ)) x := by
+theorem entropy_hasDerivAt (ℓ x : ℝ) :
+    HasDerivAt (entropy ℓ) (12 * Real.pi * (x ^ 2 + 2 * ℓ)) x := by
   convert (((hasDerivAt_id x).pow 3).add
-    ((hasDerivAt_id x).const_mul (6 * λ))).const_mul (4 * Real.pi) using 1 <;>
-    dsimp [entropy] <;> ring
+    ((hasDerivAt_id x).const_mul (6 * ℓ))).const_mul (4 * Real.pi) using 1 <;>
+    (try dsimp [entropy]) <;> ring
 
 theorem entropy_pos (a u : ℝ) : 0 < entropy (a ^ 2) (Real.exp u) := by
   unfold entropy
@@ -45,14 +47,14 @@ theorem entropy_pos (a u : ℝ) : 0 < entropy (a ^ 2) (Real.exp u) := by
 theorem entropy_radial_response_pos (a u : ℝ) :
     0 < 12 * Real.pi * (Real.exp u ^ 2 + 2 * a ^ 2) := by positivity
 
-theorem energy_hasDerivAt (λ q u : ℝ) :
-    HasDerivAt (energy λ q)
+theorem energy_hasDerivAt (ℓ q u : ℝ) :
+    HasDerivAt (energy ℓ q)
       (12 * Real.exp u ^ 3 + 6 * Real.exp u - 2 * q ^ 2 / Real.exp u ^ 3)
       (Real.exp u) := by
   have hp := ((((hasDerivAt_id (Real.exp u)).pow 4).add
-    ((hasDerivAt_id (Real.exp u)).pow 2)).add_const λ).const_mul 3
+    ((hasDerivAt_id (Real.exp u)).pow 2)).add_const ℓ).const_mul 3
   have hq := (hasDerivAt_const (Real.exp u) (q ^ 2)).div
-    ((hasDerivAt_id (Real.exp u)).pow 2) (by positivity)
+    ((hasDerivAt_id (Real.exp u)).pow 2) (by dsimp; positivity)
   apply (hp.add hq).congr_deriv
   dsimp
   field_simp
@@ -88,20 +90,20 @@ theorem radial_stationary_iff (a q u t z : ℝ) :
   rw [(potential_radial_hasDerivAt a q u t z).deriv, mul_eq_zero]
   simp only [ne_of_gt (entropy_radial_response_pos a u), or_false, sub_eq_zero]
 
-theorem potential_coupling_hasDerivAt (t z λ q x : ℝ) :
+theorem potential_coupling_hasDerivAt (t z ℓ q x : ℝ) :
     HasDerivAt (fun l => potential t z l q x)
-      (3 - 24 * Real.pi * x * t - z) λ := by
-  have he := (((hasDerivAt_id λ).const_add (x ^ 4 + x ^ 2)).const_mul 3).add_const
+      (3 - 24 * Real.pi * x * t - z) ℓ := by
+  have he := (((hasDerivAt_id ℓ).const_add (x ^ 4 + x ^ 2)).const_mul 3).add_const
     (q ^ 2 / x ^ 2)
-  have hs := (((hasDerivAt_id λ).mul_const (6 * x)).const_add (x ^ 3)).const_mul
+  have hs := (((hasDerivAt_id ℓ).mul_const (6 * x)).const_add (x ^ 3)).const_mul
     (4 * Real.pi)
-  have h := (he.sub (hs.const_mul t)).sub ((hasDerivAt_id λ).mul_const z)
-  convert h using 1 <;> dsimp [potential, energy, entropy] <;> ring
+  have h := (he.sub (hs.const_mul t)).sub ((hasDerivAt_id ℓ).mul_const z)
+  convert h using 1 <;> (try dsimp [potential, energy, entropy]) <;> ring
 
 /-- On a thermal saddle the coupling equation matches the prescribed source. -/
-theorem coupling_stationary_iff (z λ q x : ℝ) :
-    deriv (fun l => potential (temperature λ q x) z l q x) λ = 0 ↔
-      couplingResponse λ q x = z := by
+theorem coupling_stationary_iff (z ℓ q x : ℝ) :
+    deriv (fun l => potential (temperature ℓ q x) z l q x) ℓ = 0 ↔
+      couplingResponse ℓ q x = z := by
   rw [(potential_coupling_hasDerivAt _ _ _ _ _).deriv]
   exact sub_eq_zero
 
@@ -112,9 +114,9 @@ theorem temperature_pos_iff (a q u : ℝ) :
     positivity
   rw [temperature, div_pos_iff_of_pos_right hd, sub_pos]
 
-theorem entropy_gap (λ x y : ℝ) :
-    entropy λ y - entropy λ x =
-      4 * Real.pi * (y - x) * (y ^ 2 + y * x + x ^ 2 + 6 * λ) := by
+theorem entropy_gap (ℓ x y : ℝ) :
+    entropy ℓ y - entropy ℓ x =
+      4 * Real.pi * (y - x) * (y ^ 2 + y * x + x ^ 2 + 6 * ℓ) := by
   unfold entropy
   ring
 

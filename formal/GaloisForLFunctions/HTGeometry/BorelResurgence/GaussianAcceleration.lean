@@ -78,7 +78,7 @@ theorem gaussianAcceleration_quadratic (s a : ℝ) :
   have hq : (4 * Real.exp s)⁻¹ - a =
       (1 - 4 * Real.exp s * a) / (4 * Real.exp s) := by
     field_simp [ht]
-  rw [hq, div_div]
+  rw [hq, div_div_eq_mul_div]
   have he : Real.pi * (4 * Real.exp s) / (1 - 4 * Real.exp s * a) =
       (Real.pi * Real.exp s) * (4 / (1 - 4 * Real.exp s * a)) := by ring
   rw [he, Real.sqrt_mul (by positivity), Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 4)]
@@ -89,7 +89,7 @@ theorem gaussianAcceleration_quadratic (s a : ℝ) :
 /-- Every positive-time kernel has total mass one on the positive ray. -/
 theorem integral_gaussianAccelerationKernel (s : ℝ) :
     (∫ x in Ioi (0 : ℝ), gaussianAccelerationKernel (Real.exp s) x) = 1 := by
-  simpa only [gaussianAcceleration, zero_mul, Real.exp_zero, mul_one, sub_zero,
+  simpa only [gaussianAcceleration, zero_mul, mul_zero, Real.exp_zero, mul_one, sub_zero,
     Real.sqrt_one, inv_one] using gaussianAcceleration_quadratic s 0
 
 /-- Gaussian damping gives an everywhere-convergent inverse-square-root family. -/
