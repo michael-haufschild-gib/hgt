@@ -81,7 +81,8 @@ theorem gaussianAcceleration_quadratic (s a : ℝ) :
   rw [hq, div_div_eq_mul_div]
   have he : Real.pi * (4 * Real.exp s) / (1 - 4 * Real.exp s * a) =
       (Real.pi * Real.exp s) * (4 / (1 - 4 * Real.exp s * a)) := by ring
-  rw [he, Real.sqrt_mul (by positivity), Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 4)]
+  rw [he, Real.sqrt_mul (show 0 ≤ Real.pi * Real.exp s by positivity)
+    (4 / (1 - 4 * Real.exp s * a)), Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 4)]
   rw [show Real.sqrt 4 = 2 by norm_num]
   have hs : Real.sqrt (Real.pi * Real.exp s) ≠ 0 := by positivity
   field_simp [hs]

@@ -39,7 +39,16 @@ theorem lower_endpoint_le_iff (H₀ H₁ a k z : ℝ) :
 theorem upper_endpoint_le_iff (H₀ H₁ a k z : ℝ) :
     H₁ - z * (a + Real.exp k) ≤ H₀ - z * a ↔
       coexistenceSource H₀ H₁ k ≤ z := by
-  rw [← sub_nonpos, endpoint_gap, mul_nonpos_iff_of_pos_left (Real.exp_pos k), sub_nonpos]
+  rw [← sub_nonpos, endpoint_gap]
+  constructor
+  · intro h
+    have hz : coexistenceSource H₀ H₁ k - z ≤ 0 := by
+      by_contra hn
+      have hp := mul_pos (Real.exp_pos k) (lt_of_not_ge hn)
+      exact (not_lt_of_ge h) hp
+    linarith only [hz]
+  · intro h
+    exact mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos k).le (sub_nonpos.mpr h)
 
 theorem endpointPotential_eq_lower_iff (H₀ H₁ a k z : ℝ) :
     endpointPotential H₀ H₁ a k z = H₀ - z * a ↔

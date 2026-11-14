@@ -172,9 +172,7 @@ theorem ambientForm_kruskalEmbedding {U V : ℝ} (hUV : 1 + U * V ≠ 0) (x : �
 theorem kruskalEmbedding_neg (U V x y : ℝ) :
     kruskalEmbedding (-U) (-V) x y = wedgeReflection (kruskalEmbedding U V x y) := by
   funext i
-  fin_cases i <;>
-    · simp [kruskalEmbedding, wedgeReflection]
-      ring
+  fin_cases i <;> simp [kruskalEmbedding, wedgeReflection] <;> ring
 
 /-- On the bifurcate Killing horizon `U V = 0`, `X₃² = X₄²`. -/
 theorem kruskalEmbedding_horizon_null {U V : ℝ} (h0 : U * V = 0) (x y : ℝ) :
@@ -292,14 +290,13 @@ theorem kruskalEmbedding_smul_SL2R (U V : ℝ) (g : SL(2, ℝ)) (z : UpperHalfPl
       UpperHalfPlane.coe_re, UpperHalfPlane.coe_im, zero_mul, sub_zero, Complex.add_im,
       Complex.mul_im, add_zero]
     field_simp
-    ring
   have him : (g • z).im = z.im / D := by
     rw [← UpperHalfPlane.coe_im, hz, Complex.div_im, hnormSq]
     simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
       zero_mul, sub_zero, add_zero, Complex.add_im, Complex.mul_im, UpperHalfPlane.coe_re,
       UpperHalfPlane.coe_im]
     field_simp
-    linear_combination z.im * hdet
+    linear_combination (1 - z.im) * hdet
   have hY := hyperboloid_moebius hdet z.re z.im_pos
   rw [hre, him]
   funext i
@@ -439,7 +436,7 @@ theorem norm_xi_two_mul_le_of_re_nonneg {w : ℂ} (hw : 0 ≤ w.re) :
       (((q.1 : ℂ) - s) * (-I)) / xiSpectralPoint q := by
     intro s
     have hdef : xiSpectralPoint q = ((q.1 : ℂ) - 1 / 2) * (-I) := rfl
-    rw [div_eq_iff hζne, sub_mul, one_mul, div_mul_cancel₀ _ hζne, hdef, xiCenterCoord]
+    rw [eq_div_iff hζne, sub_mul, one_mul, div_mul_cancel₀ _ hζne, hdef, xiCenterCoord]
     ring
   rw [hlin s₁, hlin s₂, norm_div, norm_div, norm_mul, norm_mul, norm_neg, norm_I, mul_one, mul_one]
   refine div_le_div_of_nonneg_right ?_ (norm_nonneg _)
@@ -679,8 +676,7 @@ theorem meromorphicOrderAt_pos_of_entire_zero {Ξ : ℂ → ℂ}
     · exact hp
   rw [han.meromorphicOrderAt_eq, ← hm, ENat.map_coe]
   refine ⟨by exact_mod_cast hmpos, ?_, WithTop.coe_ne_top⟩
-  change ((-(m : ℤ)) : WithTop ℤ) < ((0 : ℤ) : WithTop ℤ)
-  exact WithTop.coe_lt_coe.mpr (by omega)
+  exact WithTop.coe_lt_coe.mpr (by dsimp; linarith)
 
 /-- **Exact retarded boundary dictionary.** Every nontrivial zero `ρ` of `ξ` produces a pole of
 `modularRetardedCorrelator` at `ω_ρ = i(ρ - 1)/2` of exact multiplicity `-ord_ρ ξ < 0`. -/
@@ -807,7 +803,8 @@ theorem modularWightmanRL_order_upper {ω : ℂ}
     analyticAt_modularRetardedCorrelator hret_ne hret_xi
   have hneg_ord : meromorphicOrderAt (fun z => -modularAdvancedCorrelator z) ω =
       -meromorphicOrderAt xi (1 + 2 * I * ω) := by
-    rw [meromorphicOrderAt_neg]
+    rw [show (fun z => -modularAdvancedCorrelator z) = -modularAdvancedCorrelator from rfl,
+      ← meromorphicOrderAt_neg]
     have hadv_eq : modularAdvancedCorrelator = fun z => modularRetardedCorrelator (-z) := by
       funext z; simp [modularAdvancedCorrelator, modularRetardedCorrelator]
     rw [hadv_eq]

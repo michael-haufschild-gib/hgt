@@ -26,23 +26,22 @@ def annihilateLeft (ψ : ℕ × ℕ → ℂ) (p : ℕ × ℕ) : ℂ :=
 
 /-- Right-mode creation, with the vacuum boundary built into the definition. -/
 def createRight (ψ : ℕ × ℕ → ℂ) : ℕ × ℕ → ℂ
-  | (m, 0) => 0
+  | (_, 0) => 0
   | (m, n + 1) => (Real.sqrt (n + 1 : ℝ) : ℂ) * ψ (m, n)
 
 def annihilateRight (ψ : ℕ × ℕ → ℂ) (p : ℕ × ℕ) : ℂ :=
   (Real.sqrt (p.2 + 1 : ℝ) : ℂ) * ψ (p.1, p.2 + 1)
 
 def createLeft (ψ : ℕ × ℕ → ℂ) : ℕ × ℕ → ℂ
-  | (0, n) => 0
+  | (0, _) => 0
   | (m + 1, n) => (Real.sqrt (m + 1 : ℝ) : ℂ) * ψ (m, n)
 
 /-- Successive Schmidt amplitudes have ratio `exp (-βω/2)`. -/
 theorem radiationVector_successor (τ : ℝ) (n : ℕ) :
     radiationVector τ (n + 1) =
       (Real.sqrt (thermalRatio τ) : ℂ) * radiationVector τ n := by
-  rw [radiationVector_apply, radiationMass_successor]
-  rw [Real.sqrt_mul (thermalRatio_pos τ).le]
-  simp only [radiationVector_apply, Complex.ofReal_mul, thermalRatio]
+  simp only [radiationVector_apply, radiationMass_successor, thermalRatio]
+  rw [Real.sqrt_mul (Real.exp_pos (-Real.exp τ)).le, Complex.ofReal_mul]
 
 /-- Annihilating one partner is equivalent to creating the other. -/
 theorem radiationPair_annihilate_left (τ : ℝ) :
@@ -90,7 +89,6 @@ theorem squeezeGain_sq_sub_squeezeMix_sq (τ : ℝ) :
   rw [squeezeMix, mul_pow, Real.sq_sqrt (thermalRatio_pos τ).le,
     squeezeGain, inv_pow, Real.sq_sqrt hq.le]
   field_simp [hq.ne']
-  ring
 
 def bogoliubovLeft (τ : ℝ) (ψ : ℕ × ℕ → ℂ) (p : ℕ × ℕ) : ℂ :=
   (squeezeGain τ : ℂ) * annihilateLeft ψ p -
