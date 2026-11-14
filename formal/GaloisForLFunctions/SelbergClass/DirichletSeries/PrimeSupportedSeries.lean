@@ -26,7 +26,7 @@ theorem lSeriesSummable_primeRestrict (S : Set ℕ) (f : ArithmeticFunction ℂ)
     simp [LSeries.term_def, primeRestrict_apply, h]
 
 /-- Prime restriction as an endomorphism of the algebra of convergent Dirichlet series. -/
-def finitePrimeRestriction (S : Set ℕ) :
+def finiteAbscissaPrimeRestriction (S : Set ℕ) :
     finiteAbscissaArithmeticSubalgebra →ₐ[ℂ] finiteAbscissaArithmeticSubalgebra where
   toFun f := ⟨primeRestrict S f.1, by
     obtain ⟨H, hH⟩ := f.2
@@ -37,29 +37,29 @@ def finitePrimeRestriction (S : Set ℕ) :
   map_mul' f g := Subtype.ext (primeRestrict_mul S f.1 g.1)
   commutes' c := Subtype.ext ((primeRestrictionAlgHom S).commutes c)
 
-@[simp] theorem finitePrimeRestriction_coe (S : Set ℕ)
+@[simp] theorem finiteAbscissaPrimeRestriction_coe (S : Set ℕ)
     (f : finiteAbscissaArithmeticSubalgebra) :
-    (finitePrimeRestriction S f).1 = primeRestrict S f.1 := rfl
+    (finiteAbscissaPrimeRestriction S f).1 = primeRestrict S f.1 := rfl
 
-@[simp] theorem finitePrimeRestriction_idem (S : Set ℕ)
+@[simp] theorem finiteAbscissaPrimeRestriction_idem (S : Set ℕ)
     (f : finiteAbscissaArithmeticSubalgebra) :
-    finitePrimeRestriction S (finitePrimeRestriction S f) = finitePrimeRestriction S f :=
+    finiteAbscissaPrimeRestriction S (finiteAbscissaPrimeRestriction S f) = finiteAbscissaPrimeRestriction S f :=
   Subtype.ext (primeRestrict_idem S f.1)
 
 /-- The complex algebra of finite-abscissa Dirichlet series supported on `S`. -/
 def primeSupportedSeries (S : Set ℕ) : Subalgebra ℂ finiteAbscissaArithmeticSubalgebra where
-  carrier := {f | finitePrimeRestriction S f = f}
+  carrier := {f | finiteAbscissaPrimeRestriction S f = f}
   zero_mem' := map_zero _
   one_mem' := map_one _
   add_mem' := by
     intro f g hf hg
-    change finitePrimeRestriction S (f + g) = f + g
+    change finiteAbscissaPrimeRestriction S (f + g) = f + g
     rw [map_add, hf, hg]
   mul_mem' := by
     intro f g hf hg
-    change finitePrimeRestriction S (f * g) = f * g
+    change finiteAbscissaPrimeRestriction S (f * g) = f * g
     rw [map_mul, hf, hg]
-  algebraMap_mem' c := (finitePrimeRestriction S).commutes c
+  algebraMap_mem' c := (finiteAbscissaPrimeRestriction S).commutes c
 
 /-- The supported algebra has exactly the same unit criterion as the full convergent algebra. -/
 theorem primeSupportedSeries_isUnit_iff (S : Set ℕ) (f : primeSupportedSeries S) :
@@ -71,46 +71,46 @@ theorem primeSupportedSeries_isUnit_iff (S : Set ℕ) (f : primeSupportedSeries 
   · intro hf
     obtain ⟨u, hu⟩ := (RHTower.FiniteAbscissaUnits.isUnit_iff f.1).mpr hf
     let v : primeSupportedSeries S :=
-      ⟨finitePrimeRestriction S (↑u⁻¹), finitePrimeRestriction_idem S _⟩
+      ⟨finiteAbscissaPrimeRestriction S (↑u⁻¹), finiteAbscissaPrimeRestriction_idem S _⟩
     have hfv : f * v = 1 := by
       apply Subtype.ext
-      change f.1 * finitePrimeRestriction S (↑u⁻¹) = 1
+      change f.1 * finiteAbscissaPrimeRestriction S (↑u⁻¹) = 1
       rw [← f.2, ← map_mul, ← hu, Units.mul_inv, map_one]
     exact ⟨⟨f, v, hfv, by rw [mul_comm, hfv]⟩, rfl⟩
 
 /-- Restriction and translation of the Dirichlet variable commute. -/
-theorem finitePrimeRestriction_shift (S : Set ℕ) (a : ℂ)
+theorem finiteAbscissaPrimeRestriction_shift (S : Set ℕ) (a : ℂ)
     (f : finiteAbscissaArithmeticSubalgebra) :
-    finitePrimeRestriction S (finiteAbscissaDirichletShift a f) =
-      finiteAbscissaDirichletShift a (finitePrimeRestriction S f) := by
+    finiteAbscissaPrimeRestriction S (finiteAbscissaDirichletShift a f) =
+      finiteAbscissaDirichletShift a (finiteAbscissaPrimeRestriction S f) := by
   apply Subtype.ext
   ext n
   by_cases h : (↑n.primeFactors : Set ℕ) ⊆ S <;>
-    simp [finitePrimeRestriction_coe, primeRestrict_apply,
+    simp [finiteAbscissaPrimeRestriction_coe, primeRestrict_apply,
       finiteAbscissaDirichletShift_apply, h]
 
 /-- Restriction and the coefficient derivation commute. -/
-theorem finitePrimeRestriction_deriv (S : Set ℕ)
+theorem finiteAbscissaPrimeRestriction_deriv (S : Set ℕ)
     (f : finiteAbscissaArithmeticSubalgebra) :
-    finitePrimeRestriction S (finiteAbscissaRotatedDeriv f) =
-      finiteAbscissaRotatedDeriv (finitePrimeRestriction S f) := by
+    finiteAbscissaPrimeRestriction S (finiteAbscissaRotatedDeriv f) =
+      finiteAbscissaRotatedDeriv (finiteAbscissaPrimeRestriction S f) := by
   apply Subtype.ext
   ext n
   by_cases h : (↑n.primeFactors : Set ℕ) ⊆ S <;>
-    simp [finitePrimeRestriction_coe, primeRestrict_apply,
+    simp [finiteAbscissaPrimeRestriction_coe, primeRestrict_apply,
       finiteAbscissaRotatedDeriv_apply, h]
 
 /-- Every derivative of a prime-supported series has the same permitted prime support. -/
 theorem primeSupportedSeries_iteratedDeriv (S : Set ℕ) (f : primeSupportedSeries S) (k : ℕ) :
     (finiteAbscissaRotatedDeriv^[k]) f.1 ∈ primeSupportedSeries S := by
-  change finitePrimeRestriction S ((finiteAbscissaRotatedDeriv^[k]) f.1) = _
+  change finiteAbscissaPrimeRestriction S ((finiteAbscissaRotatedDeriv^[k]) f.1) = _
   induction k with
   | zero => exact f.2
   | succ k ih =>
-    rw [Function.iterate_succ_apply', finitePrimeRestriction_deriv, ih]
+    rw [Function.iterate_succ_apply', finiteAbscissaPrimeRestriction_deriv, ih]
 
 end GaloisForLFunctions.SelbergClass.DirichletSeries
 
 #print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.primeSupportedSeries_isUnit_iff
 #print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.primeSupportedSeries_iteratedDeriv
-#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.finitePrimeRestriction_shift
+#print axioms GaloisForLFunctions.SelbergClass.DirichletSeries.finiteAbscissaPrimeRestriction_shift

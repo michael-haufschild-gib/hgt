@@ -23,7 +23,7 @@ open SelectivePositivityAndThresholdLaws
 
 section linQ
 
-variable {K : ℕ} (m : Fin K → ℝ) (ξ : ℝ)
+variable {K : ℕ} {m : Fin K → ℝ} {ξ : ℝ}
 
 theorem linQ_qadd (A B : ℕ → List ℚ) :
     linQ (fun i => qadd (A i) (B i)) m ξ = linQ A m ξ + linQ B m ξ := by
@@ -139,13 +139,11 @@ theorem abs_source_err_le (hS : S.valid = true) {b k : ℕ} (hb : b < 4) (hk : k
     simp only [eta, etaOf, vv, show (2 ≤ 2) by omega, if_true]
     push_cast
     rw [← hex] at hsh
-    calc _ ≤ |qeval (S.phiPoly k) (primeThreeOffset + s) - qeval (S.phiPoly k) (S.a0 + s)| +
-          |qeval (S.phiPoly k) (S.a0 + s) - qeval (vvExact S D 2 k) ξ| +
-          |qeval (vvExact S D 2 k) ξ - qeval (roundList (vvExact S D 2 k)) ξ| := by
-          refine (abs_sub_le _ _ _).trans ?_
-          gcongr
-          exact abs_sub_le _ _ _
-      _ ≤ _ := by linarith
+    have htri := (abs_sub_le (qeval (S.phiPoly k) (primeThreeOffset + s))
+      (qeval (vvExact S D 2 k) ξ) (qeval (roundList (vvExact S D 2 k)) ξ)).trans
+      (add_le_add_right (abs_sub_le (qeval (S.phiPoly k) (primeThreeOffset + s))
+        (qeval (S.phiPoly k) (S.a0 + s)) (qeval (vvExact S D 2 k) ξ)) _)
+    linarith [htri, hlip, hlipb, hsh, hround]
   · obtain ⟨hδ, hδ1⟩ := SectorData.abs_offset_sub_le hS
     have hex : qeval (vvExact S D 3 k) ξ = qeval (S.sh3.getD k []) s := by
       simp only [vvExact, qeval_qcomp_affine, s]
@@ -164,13 +162,11 @@ theorem abs_source_err_le (hS : S.valid = true) {b k : ℕ} (hb : b < 4) (hk : k
     simp only [eta, etaOf, vv, show (2 ≤ 3) by omega, if_true]
     push_cast
     rw [← hex] at hsh
-    calc _ ≤ |qeval (S.phiPoly k) (1 - primeThreeOffset - s) - qeval (S.phiPoly k) (1 - S.a0 - s)| +
-          |qeval (S.phiPoly k) (1 - S.a0 - s) - qeval (vvExact S D 3 k) ξ| +
-          |qeval (vvExact S D 3 k) ξ - qeval (roundList (vvExact S D 3 k)) ξ| := by
-          refine (abs_sub_le _ _ _).trans ?_
-          gcongr
-          exact abs_sub_le _ _ _
-      _ ≤ _ := by linarith
+    have htri := (abs_sub_le (qeval (S.phiPoly k) (1 - primeThreeOffset - s))
+      (qeval (vvExact S D 3 k) ξ) (qeval (roundList (vvExact S D 3 k)) ξ)).trans
+      (add_le_add_right (abs_sub_le (qeval (S.phiPoly k) (1 - primeThreeOffset - s))
+        (qeval (S.phiPoly k) (1 - S.a0 - s)) (qeval (vvExact S D 3 k) ξ)) _)
+    linarith [htri, hlip, hlipb, hsh, hround]
 
 /-! ### The pointwise minorant -/
 
@@ -314,8 +310,8 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
           (S.K : ℝ) * ∑ k : Fin S.K, (eta S D 1 k : ℝ) ^ 2 * m k ^ 2 +
           (S.K : ℝ) * ∑ k : Fin S.K, (eta S D 2 k : ℝ) ^ 2 * m k ^ 2 +
           (S.K : ℝ) * ∑ k : Fin S.K, (eta S D 3 k : ℝ) ^ 2 * m k ^ 2) := by
-    simp only [low, Fin.sum_univ_four]
-    norm_num only [Fin.val_zero, Fin.val_one, Fin.val_two]
+    have h3 : ((3 : Fin 4) : ℕ) = 3 := rfl
+    simp only [low, Fin.sum_univ_four, Fin.val_zero, Fin.val_one, Fin.val_two, h3]
     ring
   rw [hlow, linQ_hh, linQ_hh, linQ_hh, linQ_hh, linQ_er, linQ_er, linQ_er, linQ_er,
     hm0, hm1, hm2, hm3]
@@ -371,9 +367,9 @@ theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
         ∑ b : Fin 4, (∫ ξ in (0 : ℝ)..1, linQ (er S D b) m ξ * linQ (er S D b) m ξ) -
         (16 + 10 ^ 22) * ((S.K : ℝ) * ∑ b : Fin 4, ∑ k : Fin S.K, (eta S D b k : ℝ) ^ 2 * m k ^ 2) := by
     unfold low
-    rw [intervalIntegral.integral_sub ((hc _ (continuous_finsetSum _ fun b _ => hcont1 b)).neg.sub
-        (hc _ (continuous_finsetSum _ fun b _ => hcont2 b))) (continuous_const.intervalIntegrable _ _),
-      intervalIntegral.integral_sub (hc _ (continuous_finsetSum _ fun b _ => hcont1 b)).neg
+    rw [intervalIntegral.integral_sub (hc _ ((continuous_finsetSum _ fun b _ => hcont1 b).neg.sub
+        (continuous_finsetSum _ fun b _ => hcont2 b))) (continuous_const.intervalIntegrable _ _),
+      intervalIntegral.integral_sub (hc _ ((continuous_finsetSum _ fun b _ => hcont1 b).neg))
         (hc _ (continuous_finsetSum _ fun b _ => hcont2 b)),
       intervalIntegral.integral_neg,
       intervalIntegral.integral_finsetSum fun b _ => hc _ (hcont1 b),
@@ -383,33 +379,35 @@ theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
   rw [hint]
   simp_rw [integral_lin_mul_lin_gramN (N := 7) _ _ (hWb _) m,
     integral_lin_mul_lin_gramN (N := 32) _ _ (hEb _) m]
-  have hQ : quadR S.K (qMat S D) m = (D.ds : ℝ) * (∑ b : Fin 4,
-      (∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 7 (D.WB b i) (hh S D b j) : ℝ) * m i * m j +
-        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j)) := by
-    have hentry : ∀ i j : Fin S.K, (matQ (qMat S D) i j : ℝ) = (D.ds : ℝ) * ∑ b : Fin 4,
-        (((gramN 7 (D.WB b i) (hh S D b j) : ℝ) + (gramN 7 (D.WB b j) (hh S D b i) : ℝ)) / 2 +
-          (gramN 32 (er S D b i) (er S D b j) : ℝ)) := fun i j => by
+  have hQ : quadR S.K (qMat S D) m = (D.ds : ℝ) * ((∑ b : Fin 4,
+        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 7 (D.WB b i) (hh S D b j) : ℝ) * m i * m j) +
+      ∑ b : Fin 4,
+        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j) := by
+    have hentry : ∀ i j : Fin S.K, (matQ (qMat S D) i j : ℝ) * m i * m j = (D.ds : ℝ) * ∑ b : Fin 4,
+        (((gramN 7 (D.WB b i) (hh S D b j) : ℝ) + (gramN 7 (D.WB b j) (hh S D b i) : ℝ)) / 2 * m i * m j +
+          (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j) := fun i j => by
       rw [qMat, matQ_tabQ _ i.2 j.2, list_sum_range_eq]
-      push_cast; rfl
-    simp only [quadR, hentry, Finset.mul_sum, Finset.sum_mul]
+      push_cast; rw [Finset.mul_sum, Finset.sum_mul, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun b _ => by ring
+    simp only [quadR, hentry, ← Finset.mul_sum]
+    congr 1
     rw [Finset.sum_comm]
     conv_lhs => arg 2; ext i; rw [Finset.sum_comm]
-    rw [Finset.sum_comm]
+    rw [Finset.sum_comm, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun b _ => ?_
-    have hsym := sum_sym_avg (fun i j : Fin S.K => (gramN 7 (D.WB b i) (hh S D b j) : ℝ)) m
-    rw [mul_add, Finset.mul_sum, Finset.mul_sum, ← hsym, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    ring
+    rw [← sum_sym_avg (fun i j : Fin S.K => (gramN 7 (D.WB b i) (hh S D b j) : ℝ)) m,
+      ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun i _ => (Finset.sum_add_distrib _ _).symm
   have hP : ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 = (D.ds : ℝ) * ((16 + 10 ^ 22) *
       ((S.K : ℝ) * ∑ b : Fin 4, ∑ k : Fin S.K, (eta S D b k : ℝ) ^ 2 * m k ^ 2)) := by
-    simp only [pert, list_sum_range_eq]
-    push_cast
-    rw [Finset.sum_comm, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [Finset.sum_mul, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-    exact Finset.sum_congr rfl fun b _ => by ring
+    have hk : ∀ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 =
+        (D.ds : ℝ) * ((16 + 10 ^ 22) * ((S.K : ℝ) * ∑ b : Fin 4, (eta S D b k : ℝ) ^ 2 * m k ^ 2)) :=
+      fun k => by
+        rw [pert, list_sum_range_eq]; push_cast
+        rw [Finset.sum_mul, mul_assoc, mul_assoc, ← Finset.mul_sum]
+        refine congrArg _ (congrArg _ (congrArg _ (Finset.sum_congr rfl fun b _ => by ring)))
+    simp_rw [hk, ← Finset.mul_sum]
+    rw [Finset.sum_comm]
   rw [hQ, hP]; ring
 
 /-- **Four-branch subinterval bound.** -/
@@ -428,7 +426,8 @@ theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (h
   have hsa' : (0 : ℝ) ≤ D.sa := Rat.cast_nonneg.mpr hsa
   have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by
     have := Rat.cast_le (K := ℝ).mpr hsb; push_cast at this; exact this
-  have hf := intervalIntegrable_f4Integrand (S := S) hGc hiPot m hsa' (by linarith only [hsa', hds'])
+  have hf := intervalIntegrable_f4Integrand (S := S) hGc hiPot m (α := (D.sa : ℝ))
+    (β := (D.sa : ℝ) + D.ds) hsa' (by linarith only [hsa', hds'])
     (by linarith only [hsb', primeThreeOffset_mem.2])
   have hlow := integral_ge_of_unit_minorant (continuous_low (S := S) (D := D) m) hds' hf
     (fun ξ hξ => low_le hS hD G m hξ)

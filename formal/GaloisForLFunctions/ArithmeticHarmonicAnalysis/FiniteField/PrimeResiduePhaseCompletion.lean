@@ -51,7 +51,7 @@ theorem sum_primeResiduePhase_eq_mean (S : Finset Nat.Primes)
   rw [primeResiduePhaseMean, prod_div_distrib, ← Nat.cast_prod]
   have hP : (primeSetProduct S : ℂ) ≠ 0 := by exact_mod_cast (primeSetProduct_pos S).ne'
   change _ = (primeSetProduct S : ℂ) * (_ / (primeSetProduct S : ℂ))
-  field_simp [hP]
+  rw [div_eq_mul_inv, mul_left_comm, mul_inv_cancel₀ hP, mul_one]
 
 theorem norm_primeResiduePhaseMean_le_one (S : Finset Nat.Primes)
     (θ : (p : Nat.Primes) → ZMod p.val → ℝ) :

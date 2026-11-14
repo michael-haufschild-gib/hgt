@@ -225,9 +225,9 @@ theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
         ∑ b : Fin 2, (∫ ξ in (0 : ℝ)..1, linQ (er S D b) m ξ * linQ (er S D b) m ξ) -
         (16 + 10 ^ 22) * ((S.K : ℝ) * ∑ b : Fin 2, ∑ k : Fin S.K, (eta S D b k : ℝ) ^ 2 * m k ^ 2) := by
     unfold low
-    rw [intervalIntegral.integral_sub ((hc _ (continuous_finsetSum _ fun b _ => hcont1 b)).neg.sub
-        (hc _ (continuous_finsetSum _ fun b _ => hcont2 b))) (continuous_const.intervalIntegrable _ _),
-      intervalIntegral.integral_sub (hc _ (continuous_finsetSum _ fun b _ => hcont1 b)).neg
+    rw [intervalIntegral.integral_sub (hc _ ((continuous_finsetSum _ fun b _ => hcont1 b).neg.sub
+        (continuous_finsetSum _ fun b _ => hcont2 b))) (continuous_const.intervalIntegrable _ _),
+      intervalIntegral.integral_sub (hc _ ((continuous_finsetSum _ fun b _ => hcont1 b).neg))
         (hc _ (continuous_finsetSum _ fun b _ => hcont2 b)),
       intervalIntegral.integral_neg,
       intervalIntegral.integral_finsetSum fun b _ => hc _ (hcont1 b),
@@ -237,33 +237,35 @@ theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
   rw [hint]
   simp_rw [integral_lin_mul_lin_gramN (N := 7) _ _ (hWb _) m,
     integral_lin_mul_lin_gramN (N := 32) _ _ (hEb _) m]
-  have hQ : quadR S.K (qMat S D) m = (D.du : ℝ) * (∑ b : Fin 2,
-      (∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 7 (D.WB b i) (hh S D b j) : ℝ) * m i * m j +
-        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j)) := by
-    have hentry : ∀ i j : Fin S.K, (matQ (qMat S D) i j : ℝ) = (D.du : ℝ) * ∑ b : Fin 2,
-        (((gramN 7 (D.WB b i) (hh S D b j) : ℝ) + (gramN 7 (D.WB b j) (hh S D b i) : ℝ)) / 2 +
-          (gramN 32 (er S D b i) (er S D b j) : ℝ)) := fun i j => by
+  have hQ : quadR S.K (qMat S D) m = (D.du : ℝ) * ((∑ b : Fin 2,
+        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 7 (D.WB b i) (hh S D b j) : ℝ) * m i * m j) +
+      ∑ b : Fin 2,
+        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j) := by
+    have hentry : ∀ i j : Fin S.K, (matQ (qMat S D) i j : ℝ) * m i * m j = (D.du : ℝ) * ∑ b : Fin 2,
+        (((gramN 7 (D.WB b i) (hh S D b j) : ℝ) + (gramN 7 (D.WB b j) (hh S D b i) : ℝ)) / 2 * m i * m j +
+          (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j) := fun i j => by
       rw [qMat, matQ_tabQ _ i.2 j.2, list_sum_range_eq]
-      push_cast; rfl
-    simp only [quadR, hentry, Finset.mul_sum, Finset.sum_mul]
+      push_cast; rw [Finset.mul_sum, Finset.sum_mul, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun b _ => by ring
+    simp only [quadR, hentry, ← Finset.mul_sum]
+    congr 1
     rw [Finset.sum_comm]
     conv_lhs => arg 2; ext i; rw [Finset.sum_comm]
-    rw [Finset.sum_comm]
+    rw [Finset.sum_comm, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun b _ => ?_
-    have hsym := sum_sym_avg (fun i j : Fin S.K => (gramN 7 (D.WB b i) (hh S D b j) : ℝ)) m
-    rw [mul_add, Finset.mul_sum, Finset.mul_sum, ← hsym, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    ring
+    rw [← sum_sym_avg (fun i j : Fin S.K => (gramN 7 (D.WB b i) (hh S D b j) : ℝ)) m,
+      ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun i _ => (Finset.sum_add_distrib _ _).symm
   have hP : ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 = (D.du : ℝ) * ((16 + 10 ^ 22) *
       ((S.K : ℝ) * ∑ b : Fin 2, ∑ k : Fin S.K, (eta S D b k : ℝ) ^ 2 * m k ^ 2)) := by
-    simp only [pert, list_sum_range_eq]
-    push_cast
-    rw [Finset.sum_comm, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [Finset.sum_mul, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-    exact Finset.sum_congr rfl fun b _ => by ring
+    have hk : ∀ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 =
+        (D.du : ℝ) * ((16 + 10 ^ 22) * ((S.K : ℝ) * ∑ b : Fin 2, (eta S D b k : ℝ) ^ 2 * m k ^ 2)) :=
+      fun k => by
+        rw [pert, list_sum_range_eq]; push_cast
+        rw [Finset.sum_mul, mul_assoc, mul_assoc, ← Finset.mul_sum]
+        refine congrArg _ (congrArg _ (congrArg _ (Finset.sum_congr rfl fun b _ => by ring)))
+    simp_rw [hk, ← Finset.mul_sum]
+    rw [Finset.sum_comm]
   rw [hQ, hP]; ring
 
 /-- **Two-branch subinterval bound.** -/
@@ -282,8 +284,8 @@ theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (h
   have hua' : (0 : ℝ) ≤ D.ua := Rat.cast_nonneg.mpr hua
   have hub' : (D.ua : ℝ) + D.du ≤ 1 / 2 := by
     have := Rat.cast_le (K := ℝ).mpr hub; push_cast at this; exact this
-  have hf := intervalIntegrable_f2Integrand (S := S) hGc hiPot m hua'
-    (by linarith only [hua', hdu']) (by linarith only [hub'])
+  have hf := intervalIntegrable_f2Integrand (S := S) hGc hiPot m (α := (D.ua : ℝ))
+    (β := (D.ua : ℝ) + D.du) hua' (by linarith only [hua', hdu']) (by linarith only [hub'])
   have hlow := integral_ge_of_unit_minorant (continuous_low (S := S) (D := D) m) hdu' hf
     (fun ξ hξ => low_le hS hD G m hξ)
   rw [integral_low hD] at hlow

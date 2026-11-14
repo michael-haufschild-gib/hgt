@@ -6,6 +6,9 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.PrimeResiduePh
 
 The characteristic function on an interval of length `N+1` differs from its
 complete-period law by at most `2P/(N+1)`, uniformly in the starting point.
+For the first `n` primes of any enumeration, windows of length
+`(n+1)P + R + 1` therefore retain the Gaussian limit for arbitrary translations
+and arbitrary nonnegative additional lengths `R`.
 -/
 
 open Finset MeasureTheory ProbabilityTheory Filter Complex
@@ -26,6 +29,13 @@ instance (S : Finset Nat.Primes) (A N : ℕ) :
   constructor
   simpa [arithmeticKloostermanIntervalLaw, Measure.coe_finsetSum] using
     (ENNReal.inv_mul_cancel (a := ((N + 1 : ℕ) : ℝ≥0∞)) (by simp) (by simp))
+
+/-- Finite interval sampling makes every test function integrable. -/
+theorem integrable_arithmeticKloostermanIntervalLaw (S : Finset Nat.Primes) (A N : ℕ)
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (f : ℝ → E) :
+    Integrable f (arithmeticKloostermanIntervalLaw S A N) := by
+  apply Integrable.smul_measure _ (by simp : ((N + 1 : ℕ) : ℝ≥0∞)⁻¹ ≠ ⊤)
+  exact integrable_finsetSum_measure.mpr fun _ _ => integrable_dirac (by simp)
 
 /-- Interval averaging retains every atom with its parameter multiplicity. -/
 theorem integral_arithmeticKloostermanIntervalLaw (S : Finset Nat.Primes) (A N : ℕ)
