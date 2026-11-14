@@ -52,7 +52,8 @@ theorem ncard_eq_two_mul_of_involution {A : Set ℂ} (f : ℂ → ℂ) (hff : �
     rintro z ⟨-, hz⟩ ⟨w, ⟨hw, hpw⟩, rfl⟩
     exact hdisj w hw hpw hz
   have hfin : {z | z ∈ A ∧ P z}.Finite := hA.subset fun z hz => hz.1
-  rw [hU, Set.ncard_union_eq hD hfin (hfin.image f), Set.ncard_image_of_injective _ hinj]
+  conv_lhs => rw [hU]
+  rw [Set.ncard_union_eq hD hfin (hfin.image f), Set.ncard_image_of_injective _ hinj]
   ring
 
 /-- **Quartets.** Off the branch times the nonreal zeros at a real time are four times the zeros
@@ -77,7 +78,7 @@ theorem nonrealZeroCount_eq_four_mul {t : ℝ} (ht : 0 < t) (hb : (t : ℂ) ∉ 
     re_ne_zero_of_complexHeat_ofReal_eq_zero (by rw [hH]; exact hz.1)
   -- split by the sign of the real part, then of the imaginary part
   have h1 : S.ncard = 2 * {z | z ∈ S ∧ 0 < z.re}.ncard := by
-    refine ncard_eq_two_mul_of_involution (fun z => -z) (fun z => neg_neg z) hSfin
+    refine ncard_eq_two_mul_of_involution (A := S) (fun z => -z) (fun z => neg_neg z) hSfin
       (fun z hz => ⟨?_, ?_⟩) (fun z => 0 < z.re) (fun z hz => ?_) (fun z _ h h' => ?_)
     · rw [← hH, complexHeat_neg, hH]
       exact hz.1
@@ -90,7 +91,8 @@ theorem nonrealZeroCount_eq_four_mul {t : ℝ} (ht : 0 < t) (hb : (t : ℂ) ∉ 
       linarith only [h, h']
   have h2 : {z | z ∈ S ∧ 0 < z.re}.ncard =
       2 * {z | z ∈ {z | z ∈ S ∧ 0 < z.re} ∧ 0 < z.im}.ncard := by
-    refine ncard_eq_two_mul_of_involution (starRingEnd ℂ) (fun z => Complex.conj_conj z)
+    refine ncard_eq_two_mul_of_involution (A := {z | z ∈ S ∧ 0 < z.re}) (starRingEnd ℂ)
+      (fun z => Complex.conj_conj z)
       (hSfin.subset fun z hz => hz.1) (fun z hz => ⟨⟨?_, ?_⟩, ?_⟩) (fun z => 0 < z.im)
       (fun z hz => ?_) (fun z _ h h' => ?_)
     · rw [← hH, complexHeat_ofReal_conj, hH, hz.1.1, map_zero]
@@ -121,10 +123,9 @@ theorem exists_nonrealZeroCount_eq_right {t : ℝ} (ht : 0 < t) :
   obtain ⟨δ, hδ, hfree⟩ : ∃ δ > 0, ∀ s, t < s → s < t + δ → collisionMass s = 0 := by
     let C := (finite_collisionTimes ht).toFinset
     by_cases hC : C.Nonempty
-    · refine ⟨C.inf' hC (fun s => s - t), ?_, fun s hs hst => ?_⟩
-      · rw [Finset.lt_inf'_iff]
-        intro s hs
-        have := ((Set.Finite.mem_toFinset _).1 hs).1
+    · refine ⟨C.inf' hC (fun s => s - t), (Finset.lt_inf'_iff hC).2 fun s hs => ?_,
+        fun s hs hst => ?_⟩
+      · have := ((Set.Finite.mem_toFinset _).1 hs).1
         linarith only [this]
       · by_contra hm
         have hsC : s ∈ C := (Set.Finite.mem_toFinset _).2 ⟨hs, hm⟩
@@ -136,10 +137,8 @@ theorem exists_nonrealZeroCount_eq_right {t : ℝ} (ht : 0 < t) :
   -- a time in `(t, t + δ)` off the branch times
   have hcount : ((fun s : ℝ => (s : ℂ)) ⁻¹' branchTimes).Countable :=
     countable_branchTimes.preimage Complex.ofReal_injective
-  obtain ⟨t', ⟨ht1, ht2⟩, ht'⟩ : ∃ t' ∈ Ioo t (t + δ), (t' : ℂ) ∉ branchTimes := by
-    by_contra h
-    push_neg at h
-    exact (Cardinal.not_countable_real_Ioo (by linarith : t < t + δ)) (hcount.mono h) |>.elim
+  obtain ⟨t', ⟨ht1, ht2⟩, ht'⟩ := (hcount.dense_compl ℝ).inter_open_nonempty (Ioo t (t + δ))
+    isOpen_Ioo (nonempty_Ioo.2 (by linarith))
   refine ⟨t', ht1, ht', ?_⟩
   rw [nonrealZeroCount_eq_collisionMassAfter (ht.trans ht1),
     nonrealZeroCount_eq_collisionMassAfter ht, collisionMassAfter, collisionMassAfter,
@@ -153,7 +152,7 @@ theorem exists_nonrealZeroCount_eq_right {t : ℝ} (ht : 0 < t) :
     · rintro ⟨hs, hm⟩
       refine ⟨?_, hm⟩
       by_contra hle
-      exact hm (hfree s hs (by linarith [not_lt.1 hle]))
+      exact hm (hfree s hs (by linarith [not_lt.1 hle, ht2]))
   · exact fun _ _ => rfl
 
 section Proper
@@ -202,5 +201,3 @@ theorem mem_forwardMonodromy_of_not_eight_dvd_collisionMass {s : ℝ} (hs : 0 < 
   exact hm (eight_dvd_collisionMass hw hfin hwG hs)
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.mem_forwardMonodromy_of_not_eight_dvd_collisionMass

@@ -154,7 +154,8 @@ theorem existsUnique_flagShear_iff (A : Submodule K V) (g : V ≃ₗ[K] V) :
   constructor
   · rintro ⟨f, rfl, _⟩
     refine ⟨flagShear_on_submodule A f, fun x => ?_⟩
-    simpa only [flagShear_apply, add_sub_cancel_left] using (f (A.mkQ x)).property
+    simpa only [flagShear_apply, add_sub_cancel_left, flagShearDisplacement_apply] using
+      (f (A.mkQ x)).property
   · rintro ⟨hA, hQ⟩
     let d : V →ₗ[K] A := (g.toLinearMap - LinearMap.id).codRestrict A hQ
     have hd : A ≤ LinearMap.ker d := by

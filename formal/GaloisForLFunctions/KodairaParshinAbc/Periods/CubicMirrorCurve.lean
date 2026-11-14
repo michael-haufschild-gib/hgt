@@ -15,6 +15,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.KodairaParshinAbc.CubicMirror
 
+open Polynomial
+
 variable {K : Type*} [Field K] [CharZero K]
 
 /-- The Weierstrass model after replacing `y` with `2y`. -/
@@ -39,7 +41,7 @@ theorem discriminant (t : K) : (curve t).Δ = 1728 * 27 ^ 3 * t ^ 3 * (1 - 27 * 
 theorem isElliptic_iff (t : K) :
     (curve t).IsElliptic ↔ t ≠ 0 ∧ 1 - 27 * t ≠ 0 := by
   rw [WeierstrassCurve.isElliptic_iff, isUnit_iff_ne_zero, discriminant]
-  simp only [mul_ne_zero_iff, pow_ne_zero_iff]
+  simp only [mul_ne_zero_iff]
   norm_num
 
 /-- No finite singular member has vanishing `c₄`. -/
@@ -63,7 +65,7 @@ instance genericCurve_isElliptic : genericCurve.IsElliptic := by
   have h : (1 - 27 * Polynomial.X : ℚ[X]) ≠ 0 := by
     intro he
     have hc := congrArg (fun p : ℚ[X] => p.coeff 0) he
-    simpa using hc
+    simp at hc
   convert RatFunc.algebraMap_ne_zero h using 1 <;> simp
 
 /-- The generic modular invariant, without any assumed ellipticity input. -/

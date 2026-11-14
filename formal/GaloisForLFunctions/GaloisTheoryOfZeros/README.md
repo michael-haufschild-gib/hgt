@@ -589,7 +589,11 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
 - *The turns and their parity law.* The turn around every forward time is an involution of
   `G₊`. It carries a zero to its negative exactly on the `2k` sheets of the collision at the
   centre, `k` the order of vanishing of the centre value: the sign of a turn on the zeros is
-  `(−1)^k`. It moves `M = 2k + 4c` zeros. `G₊ ≠ W` iff there is `ε ∈ {0, 1}` with `c + εk`
+  `(−1)^k`. It moves `M = 2k + 4c` zeros. Along real times the number of nonreal zeros is four
+  times the number in the first quadrant; if `G₊ ≠ W` it is divisible by `8` at every positive
+  time, so every real collision of the de Bruijn–Newman flow at a positive time has mass divisible
+  by `8`, and a real collision of mass not divisible by `8` (one double zero at `±x₀`) gives
+  `G₊ = W`. `G₊ ≠ W` iff there is `ε ∈ {0, 1}` with `c + εk`
   even at every forward time, and then `G₊` is the kernel of `sgn_pairs · sgn_zerosᵋ`. In that
   case `8 ∣ M` off the centre times, in particular at every real
   time, and `M mod 8` is one number, `2` or `6`, at all simple centre times. A turn around
@@ -695,6 +699,7 @@ collisions.
 [sign of finite support](APermutationOfFiniteSupportHasAMultiplicativeSign.lean),
 [sign characters](TheSignedPermutationsOfFiniteSupportHaveTwoSignCharacters.lean),
 [parity criterion](TheForwardMonodromyGroupIsProperExactlyWhenItsTurnsObeyOneParityLaw.lean),
+[real collisions](ARealCollisionOfMassNotDivisibleByEightGivesEverySignedPermutation.lean),
 [centralizer and mirror](TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean),
 [deck maps](TheReflectionIsTheOnlySymmetryOfTheHeatCoverOverTheForwardTimes.lean),
 [connectedness](TheHeatCoverOverTheForwardTimesIsConnectedAndHasNoPolynomialFactor.lean),
@@ -771,8 +776,10 @@ Each problem names its base. The calibration questions concern the finite equati
    is the word of the turns around the real branch times, `r` is the centralizer of `G₊`, and
    RH says that every forward loop at a real time and its mirror loop transport the zeros
    alike. Open: the sign (one forward time with `8 ∤ M` off the centre times, two simple
-   centre times with different `M mod 8`, or an odd number of quartets of nonreal zeros at one
-   real time gives `G₊ = W`), and a comparison with the groups over `K` and `B`. These act on
+   centre times with different `M mod 8`, an odd number of quartets of nonreal zeros at one
+   real time, or a real collision at a positive time of mass not divisible by `8` gives
+   `G₊ = W`; if RH fails, `G₊ ≠ W` forces every real collision mass to be divisible by `8`,
+   and under RH the real times give no information), and a comparison with the groups over `K` and `B`. These act on
    the zeros of ξ, the fibre at the time `0`, keep every ordinate class and commute with `c`
    or `r`; `G₊` acts on a fibre at a forward time and is primitive on the pairs. Settled: an
    injective identification of the fibres that respects the reflection makes every
@@ -816,6 +823,7 @@ Calibration questions.
 | M13 | `W⁰ ≤ G₊`, an odd permutation, index at most two, `G₊ ≠ W` iff one parity law | formalized |
 | M14 | the two involutions from `G₊`; rigidity and connectedness of the cover | formalized |
 | M15 | the sign: whether `G₊ = W` | open |
+| M15′ | the sign from real collisions: mass `≢ 0 (mod 8)` ⇒ `G₊ = W` | formalized |
 | M16 | `G₊` and the group over `B`: finite windows yes, whole fibres no | formalized |
 | M17 | specialization from the time `0` on continued windows of zeros (multiple zeros included) | formalized |
 | M17′ | a time `t₀` uniform in growing windows (non-escape near the time `0`) | open |

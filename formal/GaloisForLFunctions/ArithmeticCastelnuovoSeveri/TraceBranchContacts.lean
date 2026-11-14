@@ -28,10 +28,16 @@ theorem branch_derivative_mul (f g : R[X]) :
   rw [derivative_mul, map_add, map_mul, map_mul, AdjoinRoot.mk_self,
     zero_mul, add_zero]
 
-/-- Under integral residue duality, the trace functional is the actual derivative element. -/
-theorem residueEquiv_symm_trace {f : R[X]} (hf : f.Monic) :
-    (monicResidueEquiv hf).symm (Algebra.trace R (AdjoinRoot f)) =
-      AdjoinRoot.mk f f.derivative := by
+/-- For arbitrary split sheets, residue duality identifies trace with the full derivative. -/
+theorem split_residueEquiv_symm_trace {ι : Type*} [Fintype ι] (a : ι → R) :
+    (monicResidueEquiv (monic_prod_of_monic univ (fun i => X - C (a i))
+      (fun i _ => monic_X_sub_C (a i)))).symm
+        (Algebra.trace R (AdjoinRoot (∏ i, (X - C (a i))))) =
+      AdjoinRoot.mk (∏ i, (X - C (a i))) (∏ i, (X - C (a i))).derivative := by
+  let f : R[X] := ∏ i, (X - C (a i))
+  have hf : f.Monic := monic_prod_of_monic _ _ (fun i _ => monic_X_sub_C (a i))
+  change (monicResidueEquiv hf).symm (Algebra.trace R (AdjoinRoot f)) =
+    AdjoinRoot.mk f f.derivative
   apply (monicResidueEquiv hf).injective
   rw [LinearEquiv.apply_symm_apply]
   ext x
@@ -70,7 +76,7 @@ theorem split_derivative_mul_order (a : ι → PowerSeries K) (g : (PowerSeries 
 end PowerSeries
 
 #print axioms branch_derivative_mul
-#print axioms residueEquiv_symm_trace
+#print axioms split_residueEquiv_symm_trace
 #print axioms branch_derivative_ideal
 #print axioms split_derivative_order
 #print axioms split_derivative_mul_order

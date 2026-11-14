@@ -27,6 +27,10 @@
   value in the forward half-plane;
   (G) converse: `G₊(b) ≠ W(b)` iff there is `ε ∈ {0, 1}` with `c + εk` even at every forward
   time, and then `G₊(b)` is the kernel of `χ = sgn_pairs · sgn_zerosᵋ` on `W(b)`.
+  (H) real collisions: off the branch times the nonreal zeros of `H_t` (`t > 0` real) number
+  `4 Q(t)`, `Q` the first-quadrant zeros; if `G₊(b) ≠ W(b)` then `8 ∣ N(t)` for all `t > 0` and
+  every real collision time `s > 0` has mass `Σ (m − m mod 2) ≡ 0 (mod 8)`; a real collision of
+  mass `≢ 0 (mod 8)` gives `G₊(b) = W(b)`.
 
 ## Goal
 
@@ -80,6 +84,11 @@ subgroup of index at most two without exchanges. A turn with `k` flips and `c` e
 involution, split as in (B)) has `χ = (−1)^{c + εk}`, so if the parity law holds every conjugated
 turn lies in `ker χ`, and by generation `G₊ ≤ ker χ ≠ W`; with index at most two, `G₊ = ker χ`.
 
+(H) Nonreal zeros at real times are simple off the branch times and none is imaginary; `−z` and
+`z̄` split them into four equal quadrants. `Q` even (index two, quartet parity theorem) gives
+`8 ∣ N`; `N` is constant up to the next collision time and jumps by the collision mass at each
+real collision time (`N(s⁻) = N(s) + mass(s)`). ∎
+
 (E) `k = 0`: `M = 4c` with `c` even. At a real time a zero of `c` would be a central collision,
 and those have nonreal times. (F) `k = 1`: `M = 2 + 4c`, `c + ε` even, so `M ≡ 2 + 4ε (mod 8)`. ∎
 
@@ -93,6 +102,7 @@ and those have nonreal times. (F) `k = 1`: `M = 2 + 4c`, `c + ε` even, so `M �
 | D | `TheTurnsOfAProperForwardMonodromyGroupObeyAParityLaw` | `ncard_permCongr`, `exists_turn_parity_of_not_mem_forwardMonodromy` |
 | E | same | `mem_forwardMonodromy_of_frequently_not_dvd`, `complexHeat_ofReal_center_ne_zero`, `mem_forwardMonodromy_of_real_frequently_not_dvd` |
 | F | same | `exists_forall_simple_centre_time_mod_eight` |
+| H | `ARealCollisionOfMassNotDivisibleByEightGivesEverySignedPermutation` | `ncard_eq_two_mul_of_involution`, `nonrealZeroCount_eq_four_mul`, `exists_nonrealZeroCount_eq_right`, `eight_dvd_nonrealZeroCount`, `eight_dvd_collisionMass`, `mem_forwardMonodromy_of_not_eight_dvd_collisionMass` |
 | G | `APermutationOfFiniteSupportHasAMultiplicativeSign`, `TheSignedPermutationsOfFiniteSupportHaveTwoSignCharacters`, `TheForwardMonodromyGroupIsProperExactlyWhenItsTurnsObeyOneParityLaw` | `finSign`, `finSign_mul`, `pairSign`, `pairSign_mul`, `signedCharacter`, `signedKernel`, `exchange_not_mem_signedKernel`, `flip_mem_signedKernel_iff`, `involution_mem_signedKernel_iff`, `forwardMonodromy_le_signedKernel_of_turn_parity`, `forwardMonodromy_eq_signedKernel_of_not_mem`, `exists_not_mem_forwardMonodromy_iff_exists_turn_parity` |
 
 ## Open

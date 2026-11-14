@@ -15,7 +15,7 @@ noncomputable section
 namespace GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy
 
 open Set Metric MeasureTheory CubicEisenstein
-open scoped ENNReal
+open scoped BigOperators ENNReal
 
 /-- The disk indicator whose periodization counts the unscaled Eisenstein lattice. -/
 def diskIndicator (r : ℝ) : ℂ → ℝ≥0∞ := (closedBall 0 (3 * r)).indicator (fun _ => 1)
@@ -31,7 +31,8 @@ private theorem mem_scaled_disk_iff (z : ℂ) (r : ℝ) (n : O) :
 theorem tsum_diskIndicator (z : ℂ) (r : ℝ) :
     (∑' n : O, diskIndicator r (z + 3 * ringComplex n)) = (points (-z / 3) r).card := by
   classical
-  rw [tsum_eq_sum (s := points (-z / 3) r) (fun n hn =>
+  rw [tsum_eq_sum (f := fun n : O => diskIndicator r (z + 3 * ringComplex n))
+    (s := points (-z / 3) r) (fun n hn =>
     indicator_of_notMem (fun h => hn ((mem_scaled_disk_iff z r n).mp h)) (fun _ => 1))]
   calc
     ∑ n ∈ points (-z / 3) r, diskIndicator r (z + 3 * ringComplex n)
@@ -67,7 +68,7 @@ theorem uniform_occupancy_area_le {r : ℝ} (hr : 0 ≤ r) (k : ℕ)
     (k : ℝ) * (Real.sqrt 3 / 2) ≤ Real.pi * r ^ 2 := by
   have hle : (∫⁻ _z in periodDomain, (k : ℝ≥0∞)) ≤
       ∫⁻ z in periodDomain, ((points (-z / 3) r).card : ℝ≥0∞) :=
-    lintegral_mono (fun z => by exact_mod_cast hk (-z / 3))
+    lintegral_mono (fun z => (Nat.cast_le (α := ℝ≥0∞)).mpr (hk (-z / 3)))
   rw [lintegral_occupancy, lintegral_const, Measure.restrict_apply_univ,
     periodDomain_volume, Complex.volume_closedBall] at hle
   have hleft : (k : ℝ≥0∞) * ENNReal.ofReal (9 * Real.sqrt 3 / 2) =

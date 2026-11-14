@@ -64,7 +64,8 @@ theorem dirichletPairing_self_eq_zero_iff (g : SmoothRiemannianMetric I M)
     apply (laplacian_bijective g).1
     simpa only [map_zero] using hlap
   · rintro rfl
-    simp [dirichletPairing]
+    have h := l2Pairing_laplacian g 0 0
+    simpa [l2Pairing] using h.symm
 
 /-- Zero Green height is equivalent to zero source, with no spectral assumption. -/
 theorem green_height_eq_zero_iff (g : SmoothRiemannianMetric I M) (q : meanZero g) :
@@ -80,7 +81,7 @@ theorem green_height_eq_zero_iff (g : SmoothRiemannianMetric I M) (q : meanZero 
 /-- Every nonzero normalized source has strictly negative Green height. -/
 theorem green_height_neg_iff (g : SmoothRiemannianMetric I M) (q : meanZero g) :
     l2Pairing g (green g q) q < 0 ↔ q ≠ 0 := by
-  rw [lt_iff_le_and_ne, green_height_eq_zero_iff]
+  rw [lt_iff_le_and_ne, Ne, green_height_eq_zero_iff]
   exact and_iff_right (green_nonpositive g q)
 
 /-- The full bilinear radical agrees with the zero-source kernel. -/

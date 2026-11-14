@@ -25,7 +25,7 @@ theorem exists_reduced_centre (r : ℝ) (k : ℕ) :
     obtain ⟨n, hn⟩ := exists_eisenstein_distance_sq_le_third z
     refine ⟨z - ringComplex n, ?_, ?_⟩
     · rw [Complex.normSq_eq_norm_sq] at hn
-      change ‖z - ringComplex n‖ ≤ 1
+      rw [mem_closedBall, dist_zero_right]
       nlinarith only [hn, sq_nonneg (‖z - ringComplex n‖ - 1)]
     · simpa only [map_neg, sub_eq_add_neg] using add_mem_centres hz (-n)
   · rintro ⟨z, _, hz⟩
@@ -68,7 +68,7 @@ def maxCount (r : ℝ) : ℕ := sSup {k : ℕ | ∃ z : ℂ, z ∈ centres r k}
 
 private theorem feasible_nonempty (r : ℝ) :
     ({k : ℕ | ∃ z : ℂ, z ∈ centres r k}).Nonempty :=
-  ⟨0, 0, ∅, rfl, fun _ h => False.elim (Finset.not_mem_empty _ h)⟩
+  ⟨0, 0, ∅, rfl, by simp⟩
 
 private theorem feasible_bddAbove (r : ℝ) :
     BddAbove {k : ℕ | ∃ z : ℂ, z ∈ centres r k} :=

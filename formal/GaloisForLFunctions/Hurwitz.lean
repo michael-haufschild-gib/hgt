@@ -60,3 +60,4 @@ import GaloisForLFunctions.Hurwitz.MulticolumnPowerOrbit
 import GaloisForLFunctions.Hurwitz.PolygammaHurwitzValue
 import GaloisForLFunctions.Hurwitz.ShiftedPowerTailAsymptotic
 import GaloisForLFunctions.Hurwitz.PowerOrbitAdditiveSaturation
+import GaloisForLFunctions.Hurwitz.AlternatingReciprocalCoordinates

@@ -24,8 +24,9 @@ theorem gaussian_exp_second_moment (s ξ : ℝ) :
   rw [gaussMoment_eq (Real.exp_pos s), gaussMoment_eq (Real.exp_pos s),
     gaussJetPoly_two, gaussJetPoly_zero]
   simp only [Polynomial.eval_add, Polynomial.eval_neg, Polynomial.eval_mul,
-    Polynomial.eval_pow, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_one,
+    Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_one,
     pow_zero, one_mul, pow_two, Complex.I_mul_I]
+  have hs : (Real.exp s : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero s)
   push_cast
   field_simp
   ring
@@ -65,8 +66,9 @@ theorem gaussianPlaneDefect_integral (s t ξ η : ℝ) :
   have h (n m : ℕ) :=
     (integrable_gaussMomentIntegrand (Real.exp_pos s) n ξ).mul_prod
       (integrable_gaussMomentIntegrand (Real.exp_pos t) m η)
-  rw [integral_sub (((h 2 0).const_mul _).add ((h 0 2).const_mul _)) (h 0 0),
-    integral_add ((h 2 0).const_mul _) ((h 0 2).const_mul _),
+  rw [integral_sub (((h 2 0).const_mul (Real.exp s : ℂ)).add
+      ((h 0 2).const_mul (Real.exp t : ℂ))) (h 0 0),
+    integral_add ((h 2 0).const_mul (Real.exp s : ℂ)) ((h 0 2).const_mul (Real.exp t : ℂ)),
     integral_const_mul, integral_const_mul,
     integral_prod_mul, integral_prod_mul, integral_prod_mul]
   change (Real.exp s : ℂ) * (gaussMoment (Real.exp s) 2 ξ * gaussMoment (Real.exp t) 0 η) +
@@ -106,10 +108,25 @@ theorem gaussian_line_defect (s : ℝ) :
   field_simp
   ring
 
+/-- The one-dimensional defect is strictly negative, so the lost cancellation is detectable. -/
+theorem gaussian_line_defect_re_neg (s : ℝ) :
+    (∫ x : ℝ, ((Real.exp s : ℂ) * (x : ℂ) ^ 2 - 1) *
+      gaussPhase (Real.exp s) 0 x).re < 0 := by
+  rw [gaussian_line_defect, gaussMoment_zero_freq (Real.exp_pos s), gaussJetPoly_zero]
+  simp only [pow_zero, one_mul, Polynomial.eval_one, Complex.ofReal_one, mul_one]
+  have heq : -(1 / 2 : ℂ) * (Real.sqrt (Real.pi / Real.exp s) : ℂ) =
+      ((-(1 / 2 * Real.sqrt (Real.pi / Real.exp s)) : ℝ) : ℂ) := by
+    push_cast
+    ring
+  rw [heq, Complex.ofReal_re]
+  exact neg_neg_of_pos (mul_pos (one_div_pos.mpr zero_lt_two)
+    (Real.sqrt_pos.mpr (div_pos Real.pi_pos (Real.exp_pos s))))
+
 #print axioms gaussian_exp_second_moment
 #print axioms gaussianPlaneDefect_integrable
 #print axioms gaussianPlaneDefect_integral
 #print axioms gaussianPlaneDefect_zero_mean
 #print axioms gaussian_line_defect
+#print axioms gaussian_line_defect_re_neg
 
 end HilbertMetric

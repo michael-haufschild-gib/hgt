@@ -61,7 +61,7 @@ def squaredPeriodThirdJet (z : ℂ) : ℂ :=
 theorem hasDerivAt_squaredPeriod (z : ℂ) (hz : ‖z‖ₑ < 1) :
     HasDerivAt squaredPeriod (squaredPeriodSlope z) z := by
   convert (hasDerivAt_period z hz).pow 2 using 1 <;>
-    simp [squaredPeriod, squaredPeriodSlope]
+    first | rfl | (dsimp [squaredPeriod, squaredPeriodSlope]; ring)
 
 theorem hasDerivAt_squaredPeriodSlope (z : ℂ) (hz : ‖z‖ₑ < 1) :
     HasDerivAt squaredPeriodSlope (squaredPeriodCurvature z) z := by
