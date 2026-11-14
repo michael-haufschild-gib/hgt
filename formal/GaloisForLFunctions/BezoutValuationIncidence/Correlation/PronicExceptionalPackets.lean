@@ -31,7 +31,8 @@ theorem norm_pronicFeature_sq (T : ℕ) (v : ℕ → ℝ) :
       intro n _
       change ‖v n * Real.sqrt (1 / ((n : ℝ) * ((n : ℝ) + 1)))‖ ^ 2 = _
       rw [Real.norm_eq_abs, sq_abs, mul_pow, Real.sq_sqrt (by positivity), mul_one_div]
-    _ = _ := Finset.sum_coe_sort _ _
+    _ = _ := Finset.sum_coe_sort (Icc 1 T)
+      (fun n : ℕ => v n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)))
 
 private theorem pronicFeature_sum {ι : Type*} (T : ℕ) (s : Finset ι) (v : ι → ℕ → ℝ) :
     pronicFeature T (fun n => ∑ i ∈ s, v i n) = ∑ i ∈ s, pronicFeature T (v i) := by

@@ -4316,6 +4316,7 @@ import GaloisForLFunctions.RHTower.Deninger.DeningerRotateCycRed
 import GaloisForLFunctions.RHTower.Deninger.DeningerRotateLen
 import GaloisForLFunctions.RHTower.Deninger.DeningerRotatePeriodic
 import GaloisForLFunctions.RHTower.Deninger.DeningerSUnitEndpointPage
+import GaloisForLFunctions.RHTower.Deninger.DeningerFinitePrecisionSelector
 import GaloisForLFunctions.RHTower.Deninger.DeningerScaleFactorization
 import GaloisForLFunctions.RHTower.Deninger.DeningerSchemeCharacterSpace
 import GaloisForLFunctions.RHTower.Deninger.DeningerSchwartzNuclear

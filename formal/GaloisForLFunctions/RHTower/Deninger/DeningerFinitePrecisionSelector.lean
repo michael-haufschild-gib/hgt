@@ -76,16 +76,17 @@ theorem deninger_finite_precision_selector {G J : Type*}
     refine ⟨hΘ, (squareDenominator_iff _).mpr ?_⟩
     intro p hp
     letI : Fact p.Prime := ⟨hp⟩
-    have hR := deningerPrecisionParameter_val S ⟨p, hp⟩
     by_cases hmem : (⟨p, hp⟩ : Nat.Primes) ∈ S
-    · rw [if_pos hmem] at hR
+    · have hR : padicValRat p (deningerPrecisionParameter S) = 1 :=
+        (deningerPrecisionParameter_val S ⟨p, hp⟩).trans (if_pos hmem)
       have hres := (valuationSelectorSum_residue_ne_zero_iff g s k
         (deningerPrecisionParameter S) D hR (hcard ⟨p, hp⟩ hmem)).mpr (hpass ⟨p, hp⟩ hmem)
       have hval := val_eq_zero_of_ratRes_ne_zero hres
       left
       rw [padicValRat.div hR0 (pow_ne_zero 2 hΘ), padicValRat.pow, hR, hval]
       norm_num
-    · rw [if_neg hmem] at hR
+    · have hR : padicValRat p (deningerPrecisionParameter S) = 0 :=
+        (deningerPrecisionParameter_val S ⟨p, hp⟩).trans (if_neg hmem)
       right
       rw [padicValRat.div hR0 (pow_ne_zero 2 hΘ), padicValRat.pow, hR]
       refine ⟨-padicValRat p (valuationSelectorSum g s k (deningerPrecisionParameter S) D), ?_⟩

@@ -10,6 +10,7 @@ including the degenerate constant-test case.
 -/
 
 open MeasureTheory ProbabilityTheory Finset Filter
+open scoped ENNReal
 open GaloisForLFunctions.CompletedArithmeticForms (cosSum)
 
 namespace GaloisForLFunctions.ArithmeticInnerFunctionTheory
@@ -90,8 +91,9 @@ theorem variance_characterPolynomialCoordinate (s : Finset ℕ) (a : ℕ → ℝ
   rw [integral_characterPolynomialCoordinate_pow]
   have hmean := integral_characterPolynomialCoordinate_pow s a i 1
   simp only [pow_one] at hmean
-  rw [hmean, ← variance_eq_sub (memLp_characterPolynomial s a 2)]
-  exact variance_characterPolynomial s a
+  rw [hmean]
+  exact (variance_eq_sub (memLp_characterPolynomial s a 2)).symm.trans
+    (variance_characterPolynomial s a)
 
 /-- Every finite character test has a Gaussian fluctuation law with its exact
 coefficient variance. Constant tests converge to the point mass at zero. -/
@@ -111,7 +113,8 @@ theorem tendstoInDistribution_characterPolynomial (s : Finset ℕ) (a : ℕ → 
     (iIndepFun_infinitePi (fun _ : ℕ => (continuous_characterPolynomial s a).measurable))
     (fun i => ((hasLaw_satoTate_eval i).identDistrib (hasLaw_satoTate_eval 0)).comp
       (continuous_characterPolynomial s a).measurable)
-  simpa only [integral_characterPolynomialCoordinate, characterPolynomialCoordinate] using h
+  rw [integral_characterPolynomialCoordinate] at h
+  simpa only [characterPolynomialCoordinate] using h
 
 #print axioms variance_characterPolynomial
 #print axioms variance_characterPolynomial_eq_zero_iff
