@@ -61,8 +61,8 @@ theorem bernoulliCharacterProduct_eq_zero_iff (χ : G →* Circle) (q : ι → G
     bernoulliCharacterProduct χ q I = 0 ↔
       ∃ i ∈ I, ((χ (q i) : Circle) : ℂ) = -1 := by
   simp only [bernoulliCharacterProduct, prod_eq_zero_iff, bernoulliMultiplier,
-    div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false, add_eq_zero_iff_eq_neg,
-    eq_comm (a := (1 : ℂ))]
+    div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false, add_comm (1 : ℂ),
+    add_eq_zero_iff_eq_neg]
 
 /-- Each character value outside the open half-plane contributes a factor of three quarters. -/
 theorem bernoulliCharacterProduct_decay (χ : G →* Circle) (q : ι → G) (I : Finset ι) :
@@ -77,7 +77,7 @@ theorem bernoulliCharacterProduct_decay (χ : G →* Circle) (q : ι → G) (I :
       · rw [bernoulliMultiplier_normSq]
         linarith only [h]
       · exact bernoulliMultiplier_normSq_le_one _
-    _ = _ := by rw [prod_ite]; simp
+    _ = _ := by rw [prod_ite, prod_const, prod_const]; simp only [one_pow, mul_one]
 
 /-- Symmetrizing the Bernoulli convolution squares its spectral decay. -/
 theorem bernoulliCharacterProduct_fourth_decay (χ : G →* Circle) (q : ι → G) (I : Finset ι) :

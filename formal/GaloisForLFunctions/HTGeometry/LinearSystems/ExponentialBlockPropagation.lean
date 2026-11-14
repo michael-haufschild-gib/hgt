@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CausalRationalKernel
+import GaloisForLFunctions.HTGeometry.ExponentialCharacter
 
 /-!
 # Exact block propagation of exponential convolution
@@ -51,6 +52,37 @@ theorem exponentialBlock_zero_eq_causalConv (λ : ℂ) (f : C(ℝ, ℂ)) (t : �
     exponentialBlock λ f 0 t =
       causalConv (fun s => Complex.exp (λ * (s : ℂ))) f t := rfl
 
+/-- Factoring the exponential leaves an ordinary integral primitive. -/
+theorem exponentialBlock_eq_integratingFactor (λ : ℂ) (f : C(ℝ, ℂ)) (a b : ℝ) :
+    exponentialBlock λ f a b = Complex.exp (λ * (b : ℂ)) *
+      ∫ s in a..b, Complex.exp (-λ * (s : ℂ)) * f s := by
+  unfold exponentialBlock
+  rw [← intervalIntegral.integral_const_mul]
+  apply intervalIntegral.integral_congr
+  intro s _
+  rw [← mul_assoc, ← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
+
+/-- Each accumulated mode solves its forced first-order differential equation. -/
+theorem hasDerivAt_exponentialBlock (λ : ℂ) (f : C(ℝ, ℂ)) (a t : ℝ) :
+    HasDerivAt (exponentialBlock λ f a)
+      (λ * exponentialBlock λ f a t + f t) t := by
+  have hc : Continuous (fun s : ℝ => Complex.exp (-λ * (s : ℂ)) * f s) := by fun_prop
+  have hi := intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable a t)
+    hc.stronglyMeasurable.stronglyMeasurableAtFilter hc.continuousAt
+  have hd := (hasDerivAt_cexp_const_mul λ t).mul hi
+  have hcancel : Complex.exp (λ * (t : ℂ)) * Complex.exp (-λ * (t : ℂ)) = 1 := by
+    rw [← Complex.exp_add]
+    simp
+  have hfun : exponentialBlock λ f a = fun b => Complex.exp (λ * (b : ℂ)) *
+      ∫ s in a..b, Complex.exp (-λ * (s : ℂ)) * f s :=
+    funext (exponentialBlock_eq_integratingFactor λ f a)
+  rw [hfun]
+  convert hd using 1
+  linear_combination -(f t) * hcancel
+
 /-- Carrying a modal state reproduces full-window convolution exactly. -/
 theorem causalConv_exponential_split (λ : ℂ) (f : C(ℝ, ℂ)) (t s : ℝ) :
     causalConv (fun x => Complex.exp (λ * (x : ℂ))) f (t + s) =
@@ -96,3 +128,12 @@ theorem modalBlockResponse_eq_integral {n : ℕ} (residue pole : Fin n → ℂ)
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.exponential_propagator_split
+#print axioms GaloisForLFunctions.HTGeometry.exponentialBlock_split
+#print axioms GaloisForLFunctions.HTGeometry.exponentialBlock_zero_eq_causalConv
+#print axioms GaloisForLFunctions.HTGeometry.exponentialBlock_eq_integratingFactor
+#print axioms GaloisForLFunctions.HTGeometry.hasDerivAt_exponentialBlock
+#print axioms GaloisForLFunctions.HTGeometry.causalConv_exponential_split
+#print axioms GaloisForLFunctions.HTGeometry.modalBlockResponse_split
+#print axioms GaloisForLFunctions.HTGeometry.modalBlockResponse_eq_integral

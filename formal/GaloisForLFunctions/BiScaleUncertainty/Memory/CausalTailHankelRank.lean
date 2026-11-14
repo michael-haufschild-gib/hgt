@@ -14,7 +14,7 @@ open scoped BigOperators Matrix
 
 namespace GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
 
-open SignedPrimePolar HTGeometry
+open SignedPrimePolar _root_.HTGeometry
 
 noncomputable section
 
@@ -27,7 +27,7 @@ theorem sampledCausalTail_eq_geometric (N : ℕ) (h : ℝ≥0) (k : ℕ) :
     sampledCausalTail N h k =
       causalResponse N (cutoff N) * Real.exp (-(h : ℝ) / 2) ^ k := by
   unfold sampledCausalTail
-  rw [causalResponse_tail N (by positivity : cutoff N ≤ cutoff N + (k : ℝ) * h)]
+  rw [causalResponse_tail N (le_add_of_nonneg_right (by positivity : 0 ≤ (k : ℝ) * h))]
   rw [← Real.exp_nat_mul]
   rw [show -(cutoff N + (k : ℝ) * h - cutoff N) / 2 =
     (k : ℝ) * (-(h : ℝ) / 2) by ring]
@@ -66,3 +66,9 @@ theorem sampledCausalTail_add (N : ℕ) (h : ℝ≥0) (k l : ℕ) :
 end
 
 end GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
+
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_eq_geometric
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_eq_stateSpace
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.rank_sampledCausalTail_hankel_le_one
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.det_sampledCausalTail_hankel_two
+#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_add

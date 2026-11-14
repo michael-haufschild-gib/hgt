@@ -67,6 +67,7 @@ theorem fourierCoeff_periodizedExponentialPacket {n : ℕ} (residue : Fin n → 
     (∫ x in Set.Ioc (0 : ℝ) 1,
       fourier (-k) (x : UnitAddCircle) * periodizedExponentialPacket residue logRate x) =
       ∑ j, residue j * stableExponentialSymbol (logRate j) k := by
+  have he : Continuous (fun x : ℝ => fourier (-k) (x : UnitAddCircle)) := by fun_prop
   have hint (j : Fin n) : IntegrableOn
       (fun x : ℝ => fourier (-k) (x : UnitAddCircle) *
         (residue j * l1Periodization
@@ -74,7 +75,7 @@ theorem fourierCoeff_periodizedExponentialPacket {n : ℕ} (residue : Fin n → 
       (Set.Ioc (0 : ℝ) 1) := by
     apply ((integrableOn_Ioc_l1Periodization
       (RHTower.causalFourierExponential_integrable (Real.exp_pos (logRate j)))).const_mul
-        (residue j)).bdd_mul (by fun_prop) (c := 1)
+        (residue j)).bdd_mul he.aestronglyMeasurable (c := 1)
     exact Filter.Eventually.of_forall fun x => by simp [fourier_coe_apply, Complex.norm_exp]
   simp only [periodizedExponentialPacket, Finset.mul_sum]
   rw [integral_finsetSum _ (fun j _ => hint j)]
@@ -97,6 +98,51 @@ theorem norm_stableExponentialPacketSymbol_le {n : ℕ} (residue : Fin n → ℂ
   rw [norm_mul]
   exact mul_le_mul_of_nonneg_left (norm_stableExponentialSymbol_le _ _) (norm_nonneg _)
 
+/-- Each real-pole resolvent already has Hermitian frequency symmetry. -/
+theorem stableExponentialSymbol_conj (α ξ : ℝ) :
+    star (stableExponentialSymbol α (-ξ)) = stableExponentialSymbol α ξ := by
+  simp [stableExponentialSymbol, mul_assoc]
+
+/-- Averaging a symbol with its conjugate reflection enforces a real kernel. -/
+def hermitianFrequencyProjection (φ : ℝ → ℂ) (ξ : ℝ) : ℂ :=
+  (φ ξ + star (φ (-ξ))) / 2
+
+/-- For real poles, Hermitian projection keeps exactly the real parts of the residues. -/
+theorem hermitianFrequencyProjection_stablePacket {n : ℕ} (residue : Fin n → ℂ)
+    (logRate : Fin n → ℝ) (ξ : ℝ) :
+    hermitianFrequencyProjection (fun ξ =>
+      ∑ j, residue j * stableExponentialSymbol (logRate j) ξ) ξ =
+      ∑ j, ((residue j).re : ℂ) * stableExponentialSymbol (logRate j) ξ := by
+  unfold hermitianFrequencyProjection
+  simp only [star_sum, star_mul, stableExponentialSymbol_conj,
+    ← Finset.sum_add_distrib, Finset.sum_div]
+  apply Finset.sum_congr rfl
+  intro j _
+  have hr : residue j + star (residue j) = 2 * ((residue j).re : ℂ) := by
+    apply Complex.ext <;> simp <;> ring
+  calc
+    _ = (residue j + star (residue j)) * stableExponentialSymbol (logRate j) ξ / 2 := by ring
+    _ = _ := by rw [hr]; ring
+
+/-- Hermitian completion is idempotent, including the zero-frequency bin. -/
+theorem hermitianFrequencyProjection_idempotent (φ : ℝ → ℂ) :
+    hermitianFrequencyProjection (hermitianFrequencyProjection φ) =
+      hermitianFrequencyProjection φ := by
+  funext ξ
+  simp only [hermitianFrequencyProjection, neg_neg, star_div₀, star_add, star_star,
+    star_ofNat]
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.fourierCoeff_periodized_causalExponential
+#print axioms GaloisForLFunctions.HTGeometry.stableExponentialSymbol_denominator_ne_zero
+#print axioms GaloisForLFunctions.HTGeometry.norm_stableExponentialSymbol_le
+#print axioms GaloisForLFunctions.HTGeometry.norm_normalized_stableExponentialSymbol_le_one
+#print axioms GaloisForLFunctions.HTGeometry.fourierCoeff_periodizedExponentialPacket
+#print axioms GaloisForLFunctions.HTGeometry.norm_stableExponentialPacketSymbol_le
+#print axioms GaloisForLFunctions.HTGeometry.stableExponentialSymbol_conj
+#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_stablePacket
+#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_idempotent

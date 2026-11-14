@@ -56,7 +56,8 @@ def xl : ℕ → ℚ
   | 0 => T.lo
   | 1 => 1 - (1 - aLoQ) / 2
   | 2 => aLoQ + T.lo
-  | _ => 1 - aHiQ - (1 - aLoQ) / 2
+  | 3 => 1 - aHiQ - (1 - aLoQ) / 2
+  | _ => 0
 
 def width : ℚ := (1 - aLoQ) / 2 - T.lo
 
@@ -82,7 +83,8 @@ def tayB (b : ℕ) : TaylorBranch := T.tay.getD b ⟨0, 0, 0, 1, 0⟩
 
 def xl : ℕ → ℚ
   | 0 => 1 - aHiQ
-  | _ => 1 - T.hi
+  | 1 => 1 - T.hi
+  | _ => 0
 
 def width : ℚ := T.hi - (1 - aHiQ)
 

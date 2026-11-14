@@ -108,14 +108,19 @@ theorem stateSpacePastFuture_factorization (A : Matrix (Fin d) (Fin d) K)
       stateSpaceObservation A c p * stateSpaceReachability A b q := by
   ext i j
   rw [stateSpacePastFuture, algebraicStateSpaceResponse_add]
-  simp only [Matrix.mul_apply, stateSpaceObservation, stateSpaceReachability,
-    Matrix.mulVec, dotProduct, Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro k _
-  apply Finset.sum_congr rfl
-  intro l _
-  ring
+  change (∑ l, c l * ∑ k, (A ^ i.val) l k * ((A ^ j.val) *ᵥ b) k) =
+    ∑ k, (∑ l, c l * (A ^ i.val) l k) * ((A ^ j.val) *ᵥ b) k
+  calc
+    _ = ∑ l, ∑ k, (c l * (A ^ i.val) l k) * ((A ^ j.val) *ᵥ b) k := by
+      apply Finset.sum_congr rfl
+      intro l _
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro k _
+      ring
+    _ = ∑ k, ∑ l, (c l * (A ^ i.val) l k) * ((A ^ j.val) *ᵥ b) k :=
+      Finset.sum_comm
+    _ = _ := by simp only [Finset.sum_mul]
 
 /-- A longer observation window cannot increase the required state dimension. -/
 theorem rank_stateSpacePastFuture_le (A : Matrix (Fin d) (Fin d) K)

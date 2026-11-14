@@ -72,8 +72,14 @@ theorem norm_finiteExponentialHankel_exp_le {n : ℕ} (logRate : Fin n → ℝ)
   refine h.trans_eq (Finset.sum_congr rfl fun j _ => ?_)
   rw [Complex.norm_natCast]
   push_cast
-  field_simp
+  field_simp [Real.exp_ne_zero]
 
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_le
+#print axioms GaloisForLFunctions.HTGeometry.stableHankelPacket_sub
+#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_sub_le
+#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_prune_le
+#print axioms GaloisForLFunctions.HTGeometry.norm_finiteExponentialHankel_exp_le

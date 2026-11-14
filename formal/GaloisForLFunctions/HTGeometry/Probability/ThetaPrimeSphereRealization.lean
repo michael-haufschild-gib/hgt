@@ -21,8 +21,9 @@ def thetaPrimeSphereLaw : Measure ℝ :=
 
 /-- The spherical projection realizes the theta–prime beta distribution. -/
 theorem thetaPrimeSphereLaw_eq_beta : thetaPrimeSphereLaw = betaMeasure (3 / 2) 3 := by
-  simpa [thetaPrimeSphereLaw] using
-    blockCoordinateLaw_eq_beta (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6))
+  unfold thetaPrimeSphereLaw
+  convert blockCoordinateLaw_eq_beta
+    (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) using 1 <;> norm_num
 
 /-- Prime-history tails are actual spherical projection moments. -/
 theorem integral_thetaPrimeSphereLaw_pow (k : ℕ) :
@@ -34,7 +35,7 @@ theorem thetaPrimeSphereMellin_eq (k : ℕ) :
     blockSphereMellin (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) k =
       105 / ((2 * (k : ℝ) + 3) * (2 * k + 5) * (2 * k + 7)) := by
   rw [← integral_blockCoordinateLaw_pow]
-  exact integral_thetaPrimeSphereLaw_pow k
+  simpa [thetaPrimeSphereLaw, PrimeHodgeHistory.m] using integral_thetaPrimeSphereLaw_pow k
 
 /-- Theta Mellin-six holonomy is a moment of the three-block projection on `S⁸`. -/
 theorem thetaCuspMellinSixHolonomy_eq_sphereMoment (k : ℕ) :
@@ -47,8 +48,10 @@ theorem thetaCuspMellinSixHolonomy_eq_sphereMoment (k : ℕ) :
 theorem thetaPrimeSphereTilt_eq_beta (k : ℕ) :
     blockCoordinateTilt (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) k =
       betaMeasure ((k : ℝ) + 3 / 2) 3 := by
-  simpa [add_comm] using
-    blockCoordinateTilt_eq_beta (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) k
+  have h := blockCoordinateTilt_eq_beta
+    (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) k
+  norm_num at h
+  simpa only [add_comm (3 / 2 : ℝ) (k : ℝ)] using h
 
 /-- The prime-history exit hazard is the complementary squared block radius after conditioning. -/
 theorem exitHazard_eq_sphereTransverseMean (k : ℕ) :

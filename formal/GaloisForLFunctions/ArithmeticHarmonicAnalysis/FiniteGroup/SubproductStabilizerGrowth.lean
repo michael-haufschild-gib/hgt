@@ -103,8 +103,29 @@ theorem subproduct_hit_or_coset_bound (q : ι → G) (I : Finset ι) (g : G) :
   have hgrowth := subproduct_stabilizer_growth q I
   exact Or.inr (by nlinarith only [htotal, hgrowth])
 
+/-- Every missing target removes its entire stabilizer coset. The product automatically
+counts distinct missing cosets once, even when several targets belong to the same coset. -/
+theorem subproduct_missing_targets_bound (q : ι → G) (I : Finset ι) (T : Finset G) :
+    ((I.filter fun i => q i ∉ mulStab (subproducts q I)).card + 1) *
+        (mulStab (subproducts q I)).card +
+      ((T \ subproducts q I) * mulStab (subproducts q I)).card ≤ Fintype.card G := by
+  have hd : Disjoint (subproducts q I)
+      ((T \ subproducts q I) * mulStab (subproducts q I)) := by
+    rw [disjoint_left]
+    intro x hx hxT
+    obtain ⟨s, hs, k, hk, rfl⟩ := mem_mul.mp hxT
+    have hkinv := (isSubgroupFinset_mulStab (subproducts q I)).inv_mem hk
+    have hmem := mul_mem_mul hx hkinv
+    rw [mul_mulStab] at hmem
+    exact (mem_sdiff.mp hs).2 (by simpa only [mul_inv_cancel_right] using hmem)
+  have htotal := card_le_univ
+    (subproducts q I ∪ (T \ subproducts q I) * mulStab (subproducts q I))
+  rw [card_union_of_disjoint hd] at htotal
+  exact (Nat.add_le_add_right (subproduct_stabilizer_growth q I) _).trans htotal
+
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup
 
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.subproduct_stabilizer_growth
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.stabilizer_subset_subproducts
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.subproduct_hit_or_coset_bound
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.subproduct_missing_targets_bound

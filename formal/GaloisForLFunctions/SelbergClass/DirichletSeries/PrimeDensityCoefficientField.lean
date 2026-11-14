@@ -112,7 +112,7 @@ def primeWindowDensityFilter (W : ℕ → Finset Nat.Primes) : Filter Nat.Primes
     rw [Set.compl_inter]
     exact hS.union hT
 
-/-- Growing windows admit every cofinite set of primes as a large set. -/
+/-- Every cofinite prime set is large for growing windows. -/
 theorem primeWindowDensityFilter_le_cofinite
     (W : ℕ → Finset Nat.Primes)
     (hW : Tendsto (fun n => ((W n).card : ℝ)) atTop atTop) :

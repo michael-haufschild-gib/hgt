@@ -161,7 +161,8 @@ theorem integral_blockCoordinateTilt_transverse (k : ℕ) :
     integral_const, probReal_univ, one_smul, integral_id_betaMeasure ha hb]
   have hden : (Module.finrank ℝ U : ℝ) / 2 + k + (Module.finrank ℝ V : ℝ) / 2 ≠ 0 :=
     (add_pos ha hb).ne'
-  field_simp
+  apply (eq_div_iff hden).mpr
+  rw [sub_mul, one_mul, div_mul_cancel₀ _ hden]
   ring
 
 end Beta
