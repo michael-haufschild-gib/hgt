@@ -37,15 +37,17 @@ theorem norm_stableInitialSolution_sub (α : ℝ) (f : C(ℝ, ℂ)) (z w : ℂ) 
       modalInitialSolution (-(Real.exp α : ℂ)) f w t‖ =
       Real.exp (-Real.exp α * t) * ‖z - w‖ := by
   rw [modalInitialSolution_sub, norm_mul, Complex.norm_exp]
-  simp
+  simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re,
+    Complex.neg_im, Complex.ofReal_im, neg_zero, mul_zero, sub_zero]
 
 /-- The constructed response solves the differential equation at every real time. -/
 theorem hasDerivAt_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) (t : ℝ) :
     HasDerivAt (modalInitialSolution lam f z)
       (lam * modalInitialSolution lam f z t + f t) t := by
-  convert ((hasDerivAt_cexp_const_mul lam t).mul_const z).add
-    (hasDerivAt_exponentialBlock lam f 0 t) using 1 <;>
-    simp only [modalInitialSolution] <;> ring
+  apply (((hasDerivAt_cexp_const_mul lam t).mul_const z).add
+    (hasDerivAt_exponentialBlock lam f 0 t)).congr_deriv
+  dsimp only [modalInitialSolution]
+  ring
 
 /-- Existence and uniqueness are proved, with no spectral or solvability premise. -/
 theorem existsUnique_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) :
@@ -58,7 +60,9 @@ theorem existsUnique_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ
   have hd (t : ℝ) : HasDerivAt g 0 t := by
     have h := ((hu.2 t).sub (hasDerivAt_modalInitialSolution lam f z t)).mul
       (hasDerivAt_cexp_const_mul (-lam) t)
-    convert h using 1 <;> dsimp [g, v] <;> ring
+    apply h.congr_deriv
+    simp only [Pi.sub_apply]
+    ring
   have hg (t : ℝ) : g t = 0 := by
     have h := is_const_of_deriv_eq_zero (fun t => (hd t).differentiableAt)
       (fun t => (hd t).deriv) t 0
@@ -75,7 +79,10 @@ theorem stableEndpoint_denominator_ne_zero (α τ : ℝ) :
       Complex.neg_im, Complex.ofReal_im, neg_zero, mul_zero, sub_zero]
     simpa only [neg_mul] using
       neg_lt_zero.mpr (mul_pos (Real.exp_pos α) (Real.exp_pos τ))
-  exact sub_ne_zero.mpr (fun h => by simpa [← h] using hnorm)
+  intro h
+  have heq := sub_eq_zero.mp h
+  rw [← heq, norm_one] at hnorm
+  exact (lt_irrefl (1 : ℝ)) hnorm
 
 /-- The single state needed to impose equal endpoint values. -/
 def stableEndpointState (α τ : ℝ) (f : C(ℝ, ℂ)) : ℂ :=
@@ -92,8 +99,10 @@ theorem stableEndpointSolution_boundary (α τ : ℝ) (f : C(ℝ, ℂ)) :
   unfold stableEndpointSolution
   rw [modalInitialSolution_zero]
   unfold modalInitialSolution stableEndpointState
-  field_simp [stableEndpoint_denominator_ne_zero α τ]
-  ring
+  have hcancel := div_mul_cancel₀
+    (exponentialBlock (-(Real.exp α : ℂ)) f 0 (Real.exp τ))
+    (stableEndpoint_denominator_ne_zero α τ)
+  linear_combination -hcancel
 
 /-- The endpoint-corrected response solves the forced equation. -/
 theorem hasDerivAt_stableEndpointSolution (α τ : ℝ) (f : C(ℝ, ℂ)) (t : ℝ) :
@@ -138,6 +147,40 @@ theorem stableEndpointSolution_sub_causal_mem_span (α τ : ℝ) (f : C(ℝ, ℂ
   rw [h]
   exact Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_singleton _))
 
+/-- Constant forcing realizes every possible endpoint state. -/
+theorem stableEndpointState_const (α τ : ℝ) (z : ℂ) :
+    stableEndpointState α τ (ContinuousMap.const ℝ ((Real.exp α : ℂ) * z)) = z := by
+  let f := ContinuousMap.const ℝ ((Real.exp α : ℂ) * z)
+  have hc : ∀ t : ℝ, HasDerivAt (fun _ : ℝ => z)
+      (-(Real.exp α : ℂ) * z + f t) t := by
+    intro t
+    apply (hasDerivAt_const t z).congr_deriv
+    dsimp only [f, ContinuousMap.const_apply]
+    ring
+  have hu : stableEndpointSolution α τ f = fun _ : ℝ => z :=
+    (existsUnique_stableEndpointSolution α τ f).unique
+      ⟨stableEndpointSolution_boundary α τ f, hasDerivAt_stableEndpointSolution α τ f⟩
+      ⟨rfl, hc⟩
+  simpa only [stableEndpointSolution, modalInitialSolution_zero] using congrFun hu 0
+
+/-- The boundary corrections fill exactly one exponential direction. -/
+theorem range_stableEndpointCorrection (α τ : ℝ) :
+    Set.range (fun f : C(ℝ, ℂ) => fun t => stableEndpointSolution α τ f t -
+      causalConv (fun s => Complex.exp (-(Real.exp α : ℂ) * (s : ℂ))) f t) =
+      (Submodule.span ℂ {fun t : ℝ => Complex.exp (-(Real.exp α : ℂ) * (t : ℂ))} :
+        Set (ℝ → ℂ)) := by
+  ext v
+  constructor
+  · rintro ⟨f, rfl⟩
+    exact stableEndpointSolution_sub_causal_mem_span α τ f
+  · intro hv
+    obtain ⟨z, rfl⟩ := Submodule.mem_span_singleton.mp hv
+    refine ⟨ContinuousMap.const ℝ ((Real.exp α : ℂ) * z), ?_⟩
+    funext t
+    simp only [stableEndpointSolution, modalInitialSolution, stableEndpointState_const,
+      exponentialBlock_zero_eq_causalConv, add_sub_cancel_right, Pi.smul_apply, smul_eq_mul]
+    exact mul_comm _ _
+
 end
 
 end GaloisForLFunctions.HTGeometry
@@ -152,3 +195,5 @@ end GaloisForLFunctions.HTGeometry
 #print axioms GaloisForLFunctions.HTGeometry.hasDerivAt_stableEndpointSolution
 #print axioms GaloisForLFunctions.HTGeometry.existsUnique_stableEndpointSolution
 #print axioms GaloisForLFunctions.HTGeometry.stableEndpointSolution_sub_causal_mem_span
+#print axioms GaloisForLFunctions.HTGeometry.stableEndpointState_const
+#print axioms GaloisForLFunctions.HTGeometry.range_stableEndpointCorrection

@@ -57,7 +57,7 @@ theorem thermalPopulation_eq_iff (β : ℝ) (E : ι → ℝ) (i j : ι) :
   rw [← NNReal.coe_inj]
   change Real.exp (-β * E i) / finiteGibbsPartition β E =
     Real.exp (-β * E j) / finiteGibbsPartition β E ↔ _
-  rw [div_left_inj' (finiteGibbsPartition_pos β E).ne', Real.exp_inj]
+  rw [div_left_inj' (finiteGibbsPartition_pos β E).ne', Real.exp_eq_exp]
   constructor
   · intro h
     have hz : β * (E i - E j) = 0 := by linarith

@@ -80,7 +80,7 @@ theorem criticalGibbs_error_sq_total_bound (n : ℕ) (β : ℝ)
     convert criticalGibbs_error_sq_le_collision n m β E f using 1 <;> dsimp [K] <;> ring
   have he := Summable.of_nonneg_of_le (fun m => sq_nonneg _) hb hs
   refine ⟨he, ?_⟩
-  have ht := tsum_le_tsum hb he hs
+  have ht := hasSum_le hb he.hasSum hs.hasSum
   rw [tsum_mul_left] at ht
   have hc := mul_le_mul_of_nonneg_left
     (egbFixedChargeAGibbsCollisionExcess_total_bound n β E) hK

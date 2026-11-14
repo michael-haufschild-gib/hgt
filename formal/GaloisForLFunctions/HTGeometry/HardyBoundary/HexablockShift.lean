@@ -89,12 +89,12 @@ theorem scalar_shift_adjoint_commutant_iff (T : VecSeq ℂ →L[ℂ] VecSeq ℂ)
       apply lp.ext
       funext m
       cases m with
-      | zero => simp [e, lp.single_apply]
-      | succ m => simp [e, lp.single_apply]
+      | zero => simp [e, lp.single_apply, Pi.single_apply]
+      | succ m => simp [e, lp.single_apply, Pi.single_apply]
     have hBe : vecBack (e 0) = 0 := by
       apply lp.ext
       funext m
-      simp [e, lp.single_apply]
+      simp [e, lp.single_apply, Pi.single_apply]
     have hBT : vecBack (T (e 0)) = 0 := by
       calc
         vecBack (T (e 0)) = T (vecBack (e 0)) :=
@@ -108,7 +108,7 @@ theorem scalar_shift_adjoint_commutant_iff (T : VecSeq ℂ →L[ℂ] VecSeq ℂ)
       | zero => simp [c, e, lp.single_apply]
       | succ m =>
         have hm := congrArg (fun x : VecSeq ℂ => x m) hBT
-        simpa [e, lp.single_apply] using hm
+        simpa [e, lp.single_apply, Pi.single_apply] using hm
     have hTen (n : ℕ) : T (e n) = c • e n := by
       induction n with
       | zero => exact hTe
@@ -122,7 +122,7 @@ theorem scalar_shift_adjoint_commutant_iff (T : VecSeq ℂ →L[ℂ] VecSeq ℂ)
       have he : (lp.single 2 n a : VecSeq ℂ) = a • e n := by
         apply lp.ext
         funext m
-        simp [e, lp.single_apply]
+        simp [e, lp.single_apply, Pi.single_apply]
       rw [he, map_smul, hTen, smul_comm]
     refine ⟨c, ?_⟩
     apply ContinuousLinearMap.ext

@@ -27,6 +27,7 @@ def primeColorValue (color : Nat.Primes → C) (b : C → ℂ) : arithmeticFunct
 def primeColorGenerator (color : Nat.Primes → C) (c : C) : arithmeticFunctionFractionField :=
   primeColorValue color (fun d => if d = c then 1 else 0)
 
+omit [DecidableEq C] in
 theorem primeFractionDerivation_primeColorValue
     (color : Nat.Primes → C) (b : C → ℂ) (p : Nat.Primes) :
     primeFractionDerivation p (primeColorValue color b) =
@@ -75,7 +76,7 @@ theorem primeColorValue_decomposition
     filter_upwards [hcolor] with p hp
     let q : frequentPrimeColors F color := ⟨color p, hp⟩
     have hcoe : ∀ c : frequentPrimeColors F color, color p = c.1 ↔ q = c :=
-      fun _ => ⟨Subtype.ext, congrArg Subtype.val⟩
+      fun c => ⟨fun h => Subtype.ext (show q.1 = c.1 from h), congrArg Subtype.val⟩
     have hsum : (∑ c : frequentPrimeColors F color,
         b c.1 * (if color p = c.1 then 1 else 0)) = b (color p) := by
       simp [hcoe, q]
@@ -123,8 +124,8 @@ theorem finiteColorPrimeAlgebra_eq_adjoin_frequent
 color that survives the exceptional-prime filter. -/
 def finiteColorPrimePolynomialEquiv
     (F : Filter Nat.Primes) (color : Nat.Primes → C) :
-    MvPolynomial (frequentPrimeColors F color) (primeFilterCoefficientField F) ≃ₐ
-      [primeFilterCoefficientField F] finiteColorPrimeAlgebra F color := by
+    MvPolynomial (frequentPrimeColors F color) (primeFilterCoefficientField F)
+      ≃ₐ[primeFilterCoefficientField F] finiteColorPrimeAlgebra F color := by
   have hAI : AlgebraicIndependent (primeFilterCoefficientField F)
       (fun c : frequentPrimeColors F color => primeColorGenerator color c.1) :=
     algebraicIndependent_frequentPrimeColorIndicators F color

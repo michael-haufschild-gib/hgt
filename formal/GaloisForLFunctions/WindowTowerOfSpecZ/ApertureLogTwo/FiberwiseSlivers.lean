@@ -154,7 +154,7 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
     exact this
   have hxl0 : (T.xl 0 : ℝ) = T.lo := by simp only [Sliver4.xl, ↓reduceIte]
   have hxl1 : (T.xl 1 : ℝ) = 1 - (1 - aLoR) / 2 := by
-    simp only [Sliver4.xl, OfNat.one_ne_zero, ↓reduceIte,
+    simp only [Sliver4.xl, one_ne_zero, ↓reduceIte,
       Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat, cast_aLoQ]
   have hxl2 : (T.xl 2 : ℝ) = aLoR + T.lo := by
     simp only [Sliver4.xl, OfNat.ofNat_ne_zero, OfNat.ofNat_ne_one, ↓reduceIte,
@@ -233,7 +233,7 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
   have hxl0 : (T.xl 0 : ℝ) = 1 - aHiR := by
     simp only [Sliver2.xl, ↓reduceIte, Rat.cast_sub, Rat.cast_one, cast_aHiQ]
   have hxl1 : (T.xl 1 : ℝ) = 1 - (T.hi : ℝ) := by
-    simp only [Sliver2.xl, OfNat.one_ne_zero, ↓reduceIte, Rat.cast_sub, Rat.cast_one]
+    simp only [Sliver2.xl, one_ne_zero, ↓reduceIte, Rat.cast_sub, Rat.cast_one]
   have hwid : (T.width : ℝ) = (T.hi : ℝ) - (1 - aHiR) := by
     simp only [Sliver2.width, Rat.cast_sub, Rat.cast_one, cast_aHiQ]
   set a := primeThreeOffset

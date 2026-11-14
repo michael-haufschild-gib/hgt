@@ -15,8 +15,8 @@ noncomputable section
 variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
 /-- Right-increment noise, complementary to the existing left-increment kernel. -/
-def rightGroupNoise (p : FiniteProbabilityLaw G) : Matrix.doublyStochastic ℝ G := by
-  refine ⟨fun i j => p.prob (j⁻¹ * i), Matrix.mem_doublyStochastic_iff_sum.mpr
+def rightGroupNoise (p : FiniteProbabilityLaw G) : doublyStochastic ℝ G := by
+  refine ⟨fun i j => p.prob (j⁻¹ * i), mem_doublyStochastic_iff_sum.mpr
     ⟨fun i j => p.nonneg _, ?_, ?_⟩⟩
   · intro i
     exact ((Equiv.inv G |>.trans (Equiv.mulRight i)).sum_comp p.prob).trans p.sum_prob

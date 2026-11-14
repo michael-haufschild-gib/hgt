@@ -52,16 +52,23 @@ theorem antiholomorphicPart_ofReal_inner (c : ℝ) (x : E) :
   change ((↑(c * inner ℝ x v) : ℂ) + Complex.I * ↑(c * inner ℝ x (Complex.I • v))) / 2 =
     ↑(c / 2) * conj (inner ℂ x v)
   rw [real_inner_eq_re_inner ℂ, real_inner_eq_re_inner ℂ, inner_smul_right]
+  generalize inner ℂ x v = z
   apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im] <;> ring
+
+private theorem hasFDerivAt_normSq_real (x : E) :
+    HasFDerivAt (fun y : E => ‖y‖ ^ 2) ((2 : ℝ) • innerSL ℝ x) x := by
+  simpa only [two_nsmul, two_smul ℝ] using (hasStrictFDerivAt_norm_sq x).hasFDerivAt
 
 /-- Exact antiholomorphic differential of a profile in squared radius. -/
 theorem dbarDifferential_radial_sq {φ : ℝ → ℝ} {φ' : ℝ} {x : E}
     (hφ : HasDerivAt φ φ' (‖x‖ ^ 2)) :
     dbarDifferential (fun y : E => (φ (‖y‖ ^ 2) : ℂ)) x =
       (φ' : ℂ) • conjugateInnerFunctional x := by
-  have hsq := (hasStrictFDerivAt_norm_sq x).hasFDerivAt
+  have hsq := hasFDerivAt_normSq_real x
   have hr := hφ.comp_hasFDerivAt x hsq
   have hc := Complex.ofRealCLM.hasFDerivAt.comp x hr
+  change HasFDerivAt (fun y : E => (φ (‖y‖ ^ 2) : ℂ))
+    (Complex.ofRealCLM.comp (φ' • ((2 : ℝ) • innerSL ℝ x))) x at hc
   rw [dbarDifferential, hc.fderiv]
   change antiholomorphicPart
     (Complex.ofRealCLM.comp (φ' • ((2 : ℝ) • innerSL ℝ x))) = _
@@ -83,8 +90,10 @@ theorem norm_dbarDifferential_holomorphic_radial_sq
     (hh : DifferentiableAt ℂ h x) (hφ : HasDerivAt φ φ' (‖x‖ ^ 2)) :
     ‖dbarDifferential (fun y : E => h y * (φ (‖y‖ ^ 2) : ℂ)) x‖ =
       ‖h x‖ * (|φ'| * ‖x‖) := by
-  have hr := hφ.comp_hasFDerivAt x (hasStrictFDerivAt_norm_sq x).hasFDerivAt
+  have hr := hφ.comp_hasFDerivAt x (hasFDerivAt_normSq_real x)
   have hc := Complex.ofRealCLM.hasFDerivAt.comp x hr
+  change HasFDerivAt (fun y : E => (φ (‖y‖ ^ 2) : ℂ))
+    (Complex.ofRealCLM.comp (φ' • ((2 : ℝ) • innerSL ℝ x))) x at hc
   rw [dbarDifferential_holomorphic_mul hh hc.differentiableAt,
     norm_smul, norm_dbarDifferential_radial_sq hφ]
 

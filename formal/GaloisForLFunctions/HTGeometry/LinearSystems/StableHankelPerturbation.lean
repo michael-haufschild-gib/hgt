@@ -61,6 +61,36 @@ theorem norm_stableHankelPacket_prune_le {n : ℕ} (logRate : Fin n → ℝ)
   by_cases hj : j ∈ keep <;> simp only [hj, ite_true, ite_false, sub_self, sub_zero,
     norm_zero, zero_div]
 
+/-- A pruned packet acts through the span of its retained exponential features. -/
+theorem hasRankLE_stableHankelPacket_prune {n : ℕ} (logRate : Fin n → ℝ)
+    (residue : Fin n → ℂ) (keep : Finset (Fin n)) :
+    RHTower.HasRankLE
+      (stableHankelPacket logRate (fun j => if j ∈ keep then residue j else 0)) keep.card := by
+  classical
+  let v := fun j => expFeature (Real.exp (logRate j)) (Real.exp_pos _)
+  refine ⟨Submodule.span ℂ ((keep.image v : Finset HalfLineLaplaceL2) : Set HalfLineLaplaceL2),
+    FiniteDimensional.span_of_finite ℂ (Finset.finite_toSet _),
+    (finrank_span_finset_le_card _).trans Finset.card_image_le, ?_⟩
+  intro z
+  unfold stableHankelPacket finiteRankProbe
+  rw [ContinuousLinearMap.sum_apply]
+  refine Submodule.sum_mem _ fun j _ => ?_
+  by_cases hj : j ∈ keep
+  · simp only [if_pos hj, ContinuousLinearMap.smul_apply, InnerProductSpace.rankOne_apply]
+    apply Submodule.smul_mem
+    apply Submodule.smul_mem
+    exact Submodule.subset_span (Finset.mem_coe.mpr (Finset.mem_image_of_mem v hj))
+  · simp only [if_neg hj, zero_smul, ContinuousLinearMap.zero_apply]
+    exact Submodule.zero_mem _
+
+/-- Retaining `k` modes gives a rank-`k` approximation with an explicit spectral error bound. -/
+theorem approxNumber_stableHankelPacket_le_discarded {n : ℕ} (logRate : Fin n → ℝ)
+    (residue : Fin n → ℂ) (keep : Finset (Fin n)) :
+    RHTower.approxNumber (stableHankelPacket logRate residue) keep.card ≤
+      ∑ j, if j ∈ keep then 0 else ‖residue j‖ / (2 * Real.exp (logRate j)) :=
+  (RHTower.approxNumber_le _ _ _ (hasRankLE_stableHankelPacket_prune logRate residue keep)).trans
+    (norm_stableHankelPacket_prune_le logRate residue keep)
+
 /-- The existing multiplicity-weighted packet is controlled above by its total modal mass. -/
 theorem norm_finiteExponentialHankel_exp_le {n : ℕ} (logRate : Fin n → ℝ)
     (m : Fin n → ℕ) :
@@ -82,4 +112,6 @@ end GaloisForLFunctions.HTGeometry
 #print axioms GaloisForLFunctions.HTGeometry.stableHankelPacket_sub
 #print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_sub_le
 #print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_prune_le
+#print axioms GaloisForLFunctions.HTGeometry.hasRankLE_stableHankelPacket_prune
+#print axioms GaloisForLFunctions.HTGeometry.approxNumber_stableHankelPacket_le_discarded
 #print axioms GaloisForLFunctions.HTGeometry.norm_finiteExponentialHankel_exp_le

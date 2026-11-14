@@ -13,7 +13,7 @@ open scoped BigOperators
 namespace GaloisForLFunctions.HilbertMetric.Probability
 open GaloisForLFunctions.HTGeometry
 noncomputable section
-variable {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+variable {ι : Type*} [Fintype ι] [Nonempty ι]
 
 /-- Pearson divergence from uniform, expressed through collision probability. -/
 def uniformPearsonDivergence (p : FiniteProbabilityLaw ι) : ℝ :=
@@ -41,8 +41,8 @@ theorem uniformPearsonDivergence_nonneg (p : FiniteProbabilityLaw ι) :
   exact pearsonEnergy_nonneg _ _
 
 /-- Bistochastic noise contracts the exact divergence governing the certificate. -/
-theorem uniformPearsonDivergence_mix_le (p : FiniteProbabilityLaw ι)
-    (M : Matrix.doublyStochastic ℝ ι) :
+theorem uniformPearsonDivergence_mix_le [DecidableEq ι] (p : FiniteProbabilityLaw ι)
+    (M : doublyStochastic ℝ ι) :
     uniformPearsonDivergence (p.mix M) ≤ uniformPearsonDivergence p := by
   unfold uniformPearsonDivergence
   exact sub_le_sub_right (mul_le_mul_of_nonneg_left (p.collision_mix_le M) (by positivity)) 1
@@ -73,8 +73,8 @@ theorem uniform_expectation_shift_sq_le (p : FiniteProbabilityLaw ι) (f : ι �
     ← uniformPearsonDivergence_eq_energy] at h
 
 /-- After arbitrary bistochastic noise the original collision certificate still applies. -/
-theorem mixed_uniform_expectation_shift_sq_le (p : FiniteProbabilityLaw ι)
-    (M : Matrix.doublyStochastic ℝ ι) (f : ι → ℝ) :
+theorem mixed_uniform_expectation_shift_sq_le [DecidableEq ι] (p : FiniteProbabilityLaw ι)
+    (M : doublyStochastic ℝ ι) (f : ι → ℝ) :
     (finiteWeightedMean (p.mix M).prob f -
         finiteWeightedMean (uniformNoiseLaw (ι := ι)).prob f) ^ (2 : ℕ) ≤
       uniformPearsonDivergence p * finiteWeightedVariance (uniformNoiseLaw (ι := ι)).prob f := by
