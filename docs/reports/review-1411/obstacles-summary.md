@@ -4,15 +4,17 @@ The most concrete shared frontier is the passage from certified arithmetic struc
 
 Three requirements organize the research: **P — arithmetic production**, **U — uniform exclusion**, and **R — faithful realization and transport**. AAL adds a separate finite-exception question to these requirements. The [route report](route-obstacles.md) records all 38 routes and 12 candidates; the [wall ledger](walls-ledger.md) gives precise boundaries; the [unification ledger](route-unification-ledger.md) distinguishes identities from analogies.
 
-All programmes below are proposals, not claimed proofs. “Smaller” means a restricted mathematical target with fewer global quantifiers, not a proved ordering of difficulty. Quasi-RH is already available in this corpus through MMD; an open question cannot honestly be advertised as a necessary preliminary to obtaining that existing result. No compilation was run. Source claims rest on the [fact log](../../../logs/review-1411-facts.txt) and its Lean evidence; external context uses primary sources.
+Research programmes below are proposals, not claimed proofs. “Smaller” means a restricted mathematical target with fewer global quantifiers, not a proved ordering of difficulty. Quasi-RH is already available in this corpus through MMD; an open question cannot honestly be advertised as a necessary preliminary to obtaining that existing result. The original review did not run compilation. Source claims rest on the [fact log](../../../logs/review-1411-facts.txt) and its Lean evidence; external context uses primary sources.
 
 ## 2.1 — Tasks that are work rather than new mathematics
 
 The list is deliberately shorter than the research list. Applying an RH criterion after assuming its missing input does not solve an obstacle.
 
+**A1–A7 are formalized within the stated finite scope.** The [theorem index and proofs](../../drafts/pipeline/3-formalized/review-1411-finite-work-obstacles.md) give exact statements, owning modules and transitive axiom audits. A3 exposes the three remaining excesses; it does not prove their vanishing.
+
 | Task | Concrete deliverable | Why it is work; boundary |
 |---|---|---|
-| **A1. Combine the strip and Jensen rung** | Formalize real-rootedness through degree `31922` using `w≤3/8`, verified height `67`, and `(d−1)w²≤67²`. | The receiver and both inputs exist; the numerical inequality is rational arithmetic. The source directly states degree `17957`; `31922` is a derived corollary to assemble. It is a finite rung. [MMD] [JENSEN-RUNG] |
+| **A1. Combine the strip and Jensen rung** | Formalize real-rootedness through degree `31922` using `w≤3/8`, verified height `67`, and `(d−1)w²≤67²`. | The receiver and both inputs exist; the numerical inequality is rational arithmetic. The source directly states degree `17957`; the assembled corollary reaches `31922`. It is a finite rung. [MMD] [JENSEN-RUNG] |
 | **A2. Export certified floor consequences** | Give common wrappers for smaller apertures, real/complex tests, step packets, neutral charge-free forms and dressed middles, with constants and cutoff ranges explicit. | The first-overlap implications are already theorems. This consolidates usable interfaces; it does not extend the certified aperture. [BLOCK-FLOOR] [GREEN-FIRST] |
 | **A3. Make the finite overlap budget explicit** | Express the ratio-three target using the remaining terms of `levelAt 2 4`, with the first term zero and exact rational ratio milestones. | The recursion and implication are proved. Proving those remaining excesses vanish is B, not part of A3. [GREEN-LADDER] [GREEN-FIRST] |
 | **A4. Preserve completion in route transfers** | Instantiate existing WL, CHMD, SZ, HAT-C and PM dictionaries with their actual pole, Gamma, jump and root-number terms. | These are exact normalization/conversion results. No stronger bound is created by conversion. [WL] [CHMD] [SZ] [HATC] [PM] |

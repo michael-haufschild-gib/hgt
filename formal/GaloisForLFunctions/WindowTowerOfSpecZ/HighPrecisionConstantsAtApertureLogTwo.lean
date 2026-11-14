@@ -325,7 +325,7 @@ private theorem artanhPartialSum_seven_mul (x : ℝ) (h2x : 2 * x + 1 ≠ 0) :
 
 private theorem eulerUpperSeq12_step_pos (y : ℝ) (hy : 0 ≤ y) :
     let x := y + 1
-    1 / (x + 1) + eulerUpperTail x - eulerUpperTail (x + 1) <
+    1 / (x + 1) + eulerUpperTail (x + 1) - eulerUpperTail x <
       artanhPartialSum 7 (1 / (2 * x + 1)) := by
   intro x
   have hx0 : 0 < x := by dsimp [x]; linarith
@@ -334,7 +334,7 @@ private theorem eulerUpperSeq12_step_pos (y : ℝ) (hy : 0 ≤ y) :
   have hden : 0 < x ^ 10 * (x + 1) ^ 10 * (2 * x + 1) ^ 13 := by positivity
   suffices hmul : 0 < x ^ 10 * (x + 1) ^ 10 * (2 * x + 1) ^ 13 *
       (artanhPartialSum 7 (1 / (2 * x + 1)) -
-        (1 / (x + 1) + eulerUpperTail x - eulerUpperTail (x + 1))) by
+        (1 / (x + 1) + eulerUpperTail (x + 1) - eulerUpperTail x)) by
     nlinarith [hmul, hden]
   have hp := artanhPartialSum_seven_mul x h2x.ne'
   have hu0 := eulerUpperTail_mul x hx0.ne'
@@ -343,33 +343,29 @@ private theorem eulerUpperSeq12_step_pos (y : ℝ) (hy : 0 ≤ y) :
       x ^ 10 * (x + 1) ^ 9 * (2 * x + 1) ^ 13 := by field_simp [hx1.ne']
   have halg : x ^ 10 * (x + 1) ^ 10 * (2 * x + 1) ^ 13 *
       (artanhPartialSum 7 (1 / (2 * x + 1)) -
-        (1 / (x + 1) + eulerUpperTail x - eulerUpperTail (x + 1))) =
+        (1 / (x + 1) + eulerUpperTail (x + 1) - eulerUpperTail x)) =
       x ^ 10 * (x + 1) ^ 10 * ((2 * x + 1) ^ 13 * artanhPartialSum 7 (1 / (2 * x + 1))) -
       (x ^ 10 * (x + 1) ^ 10 * (2 * x + 1) ^ 13 * (1 / (x + 1)) +
-        (x + 1) ^ 10 * (2 * x + 1) ^ 13 * (x ^ 10 * eulerUpperTail x) -
-        x ^ 10 * (2 * x + 1) ^ 13 * ((x + 1) ^ 10 * eulerUpperTail (x + 1))) := by ring
-  rw [halg, hp, h1, hu0, hu1]
+        x ^ 10 * (2 * x + 1) ^ 13 * ((x + 1) ^ 10 * eulerUpperTail (x + 1)) -
+        (x + 1) ^ 10 * (2 * x + 1) ^ 13 * (x ^ 10 * eulerUpperTail x)) := by ring
+  rw [halg, hp, h1, hu1, hu0]
   have hpoly : x ^ 10 * (x + 1) ^ 10 *
       (2 * (2 * x + 1) ^ 12 + (2 / 3) * (2 * x + 1) ^ 10 + (2 / 5) * (2 * x + 1) ^ 8 +
         (2 / 7) * (2 * x + 1) ^ 6 + (2 / 9) * (2 * x + 1) ^ 4 + (2 / 11) * (2 * x + 1) ^ 2 +
         2 / 13) -
       (x ^ 10 * (x + 1) ^ 9 * (2 * x + 1) ^ 13 +
-        (x + 1) ^ 10 * (2 * x + 1) ^ 13 *
-          (-x ^ 9 / 2 + x ^ 8 / 12 - x ^ 6 / 120 + x ^ 4 / 252 - x ^ 2 / 240 + 1 / 132) -
         x ^ 10 * (2 * x + 1) ^ 13 *
           (-(x + 1) ^ 9 / 2 + (x + 1) ^ 8 / 12 - (x + 1) ^ 6 / 120 + (x + 1) ^ 4 / 252 -
-            (x + 1) ^ 2 / 240 + 1 / 132)) =
-      (6228589255351 / 10010 : ℝ) + (25478440187301 / 1820 : ℝ) * y + (1735086468487049 / 11440 : ℝ) * y ^ 2 +
-      (63353338754956219 / 60060 : ℝ) * y ^ 3 + (3816031983754648979 / 720720 : ℝ) * y ^ 4 + (12591624365086777 / 616 : ℝ) * y ^ 5 +
-      (2844595554189023119 / 45045 : ℝ) * y ^ 6 + (14593252052908395 / 91 : ℝ) * y ^ 7 + (975821646562000983 / 2860 : ℝ) * y ^ 8 +
-      (3087200798216797923 / 5005 : ℝ) * y ^ 9 + (421326911791020249 / 440 : ℝ) * y ^ 10 + (1840065684782268069 / 1430 : ℝ) * y ^ 11 +
-      (60293725746666477339 / 40040 : ℝ) * y ^ 12 + (30861551616193964153 / 20020 : ℝ) * y ^ 13 + (83173916791485084067 / 60060 : ℝ) * y ^ 14 +
-      (252707493371761724 / 231 : ℝ) * y ^ 15 + (137058826181655607529 / 180180 : ℝ) * y ^ 16 + (4660402998506161317 / 10010 : ℝ) * y ^ 17 +
-      (22574872690390024139 / 90090 : ℝ) * y ^ 18 + (118478200602253874 / 1001 : ℝ) * y ^ 19 + (734368458964659424 / 15015 : ℝ) * y ^ 20 +
-      (369646631192512 / 21 : ℝ) * y ^ 21 + (3800677435063120 / 693 : ℝ) * y ^ 22 + (10273217550112 / 7 : ℝ) * y ^ 23 +
-      (21027236447104 / 63 : ℝ) * y ^ 24 + (2226466697472 / 35 : ℝ) * y ^ 25 + (348933155584 / 35 : ℝ) * y ^ 26 +
-      (6254663168 / 5 : ℝ) * y ^ 27 + (1812140032 / 15 : ℝ) * y ^ 28 + (8429568 : ℝ) * y ^ 29 +
-      (1134592 / 3 : ℝ) * y ^ 30 + (8192 : ℝ) * y ^ 31 := by
+            (x + 1) ^ 2 / 240 + 1 / 132) -
+        (x + 1) ^ 10 * (2 * x + 1) ^ 13 *
+          (-x ^ 9 / 2 + x ^ 8 / 12 - x ^ 6 / 120 + x ^ 4 / 252 - x ^ 2 / 240 + 1 / 132)) =
+      (84307561801 / 10010 : ℝ) + (2205420730857 / 20020 : ℝ) * y + (10970944134925 / 16016 : ℝ) * y ^ 2 +
+      (161714396369989 / 60060 : ℝ) * y ^ 3 + (5407956313979501 / 720720 : ℝ) * y ^ 4 + (4412551312777 / 280 : ℝ) * y ^ 5 +
+      (1165850180811697 / 45045 : ℝ) * y ^ 6 + (170361703988451 / 5005 : ℝ) * y ^ 7 + (728873495272431 / 20020 : ℝ) * y ^ 8 +
+      (160077458065887 / 5005 : ℝ) * y ^ 9 + (71467434426321 / 3080 : ℝ) * y ^ 10 + (19915236674199 / 1430 : ℝ) * y ^ 11 +
+      (276402164547237 / 40040 : ℝ) * y ^ 12 + (5115165483301 / 1820 : ℝ) * y ^ 13 + (5081687421943 / 5460 : ℝ) * y ^ 14 +
+      (25917246112 / 105 : ℝ) * y ^ 15 + (167721593425 / 3276 : ℝ) * y ^ 16 + (208113231 / 26 : ℝ) * y ^ 17 +
+      (1453572451 / 1638 : ℝ) * y ^ 18 + (5660672 / 91 : ℝ) * y ^ 19 + (2830336 / 1365 : ℝ) * y ^ 20 := by
     dsimp [x]
     ring
   rw [hpoly]
@@ -891,11 +887,13 @@ private theorem legP_envelope_le_one {u : ℝ} (hu : u ^ 2 ≤ 1) :
       rw [hL, hR, halg]
     have hnn : 0 ≤ (1 - u ^ 2) * legP' (n + 1) u ^ 2 :=
       mul_nonneg (by linarith) (sq_nonneg _)
-    have hden_le : ((n : ℝ) + 1) ^ 2 ≤ ((n + 1 : ℕ) + 1 : ℝ) ^ 2 := by
-      push_cast; nlinarith [Nat.cast_nonneg n]
+    have hpos2' : (0 : ℝ) < ((n + 1 : ℕ) + 1 : ℝ) ^ 2 := by positivity
     have hdiv_le : (1 - u ^ 2) * legP' (n + 1) u ^ 2 / ((n + 1 : ℕ) + 1 : ℝ) ^ 2 ≤
-        (1 - u ^ 2) * legP' (n + 1) u ^ 2 / ((n : ℝ) + 1) ^ 2 :=
-      div_le_div_of_nonneg_left hnn hpos1 hden_le
+        (1 - u ^ 2) * legP' (n + 1) u ^ 2 / ((n : ℝ) + 1) ^ 2 := by
+      rw [div_le_div_iff₀ hpos2' hpos1]
+      have hden_le : ((n : ℝ) + 1) ^ 2 ≤ ((n + 1 : ℕ) + 1 : ℝ) ^ 2 := by
+        push_cast; nlinarith [Nat.cast_nonneg n]
+      exact mul_le_mul_of_nonneg_left hden_le hnn
     linarith
 
 /-- Every Legendre polynomial satisfies `|legP n u| ≤ 1` on `[-1, 1]`. -/

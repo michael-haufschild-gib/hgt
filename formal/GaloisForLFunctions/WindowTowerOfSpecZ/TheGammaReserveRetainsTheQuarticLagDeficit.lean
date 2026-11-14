@@ -156,6 +156,8 @@ private theorem local_gamma_remainder_ge_cubic_and_quartic {F : ℝ → ℝ}
       ∫ t in Ioc (0 : ℝ) (2 * a), retainedGammaRemainderWeight t * D t := by
     apply setIntegral_mono_on (hi3.add hi4) hiR measurableSet_Ioc
     intro t ht
+    change t ^ 3 * D t / 864 + t ^ 4 * D t / 176 ≤
+      retainedGammaRemainderWeight t * D t
     have h := mul_le_mul_of_nonneg_right
       (retainedGammaRemainderWeight_ge_sharper_lags ⟨ht.1, ht.2.trans ha⟩) (hnonneg t)
     convert h using 1 <;> ring

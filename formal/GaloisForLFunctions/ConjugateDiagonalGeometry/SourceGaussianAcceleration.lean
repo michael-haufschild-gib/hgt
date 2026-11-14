@@ -46,8 +46,7 @@ theorem shiftedSource_realRay_exponential_bound (f : CompactTest) (u : ℝ) :
     nlinarith only [hlin, h]
   rw [shiftedSourceTransform, norm_mul, Complex.norm_exp]
   have he : (((x : ℂ) - 1 / 2) * (u : ℂ)).re = u * (x - 1 / 2) := by
-    simp
-    <;> ring
+    simp; ring
   rw [he]
   calc
     Real.exp (u * (x - 1 / 2)) * ‖tr f.1 ((x : ℂ) - (τ : ℂ) * Complex.I)‖ ≤
@@ -75,7 +74,6 @@ theorem shiftedSource_acceleration_gaussian_bound (f : CompactTest) (u s : ℝ) 
     apply (mul_le_mul_iff_right₀ (show 0 < 2 * b by positivity)).mp
     have he : (2 * b) * (b / 2 * x ^ 2 + R ^ 2 / (2 * b)) = b ^ 2 * x ^ 2 + R ^ 2 := by
       field_simp [hb.ne']
-      <;> ring
     rw [he]
     have hsq := sq_nonneg (b * |x| - R)
     rw [sub_sq, mul_pow, sq_abs] at hsq

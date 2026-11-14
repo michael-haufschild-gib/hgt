@@ -140,7 +140,7 @@ theorem coexistence_stationarity_factor (τ θ x : ℝ) :
   field_simp
   nlinarith only [hf]
 
-/-- Both global minima are smooth thermal saddles at the same positive temperature. -/
+/-- Both global minima match the same positive bath temperature. -/
 theorem coexistence_temperature_matching (τ θ : ℝ) :
     temperature (coexistenceCoupling τ θ) (coexistenceCharge τ θ)
         (CPV.thermalRatio τ * coexistenceRadius τ θ) = coexistenceTemperature τ θ ∧

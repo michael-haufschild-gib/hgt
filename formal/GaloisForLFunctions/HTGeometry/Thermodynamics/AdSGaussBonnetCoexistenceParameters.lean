@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.Thermodynamics.AdSGaussBonnetBoundary
 import GaloisForLFunctions.HTGeometry.CPVThermalRadiation
 
 /-!
-# Constructive parameters for the full coexistence surface
+# Constructive parameters for the coexistence surface
 
 The ratio of the two radii lies in `(0,1)`. Their squared large radius
 interpolates between the neutral and Einstein edges. The resulting

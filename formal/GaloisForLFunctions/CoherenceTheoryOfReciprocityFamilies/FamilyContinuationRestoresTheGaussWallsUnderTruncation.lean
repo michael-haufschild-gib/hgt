@@ -770,10 +770,12 @@ private theorem norm_geom_sum_sub_one_le {M : ℕ} (hM : 2 ≤ M) {Q : ℝ} (hQ 
   have hne : 1 - Rv ≠ 0 := norm_pos_iff.mp (by linarith)
   have hident : (∑ r ∈ Finset.range M, Rv ^ r) - 1 = Rv * (1 - Rv ^ (M - 1)) / (1 - Rv) := by
     rw [eq_div_iff hne]
-    have hg := geom_sum_mul_neg Rv M
-    have hpow : Rv * Rv ^ (M - 1) = Rv ^ M := by
-      rw [← pow_succ', show M - 1 + 1 = M by omega]
-    linear_combination hg - Rv * hpow
+    calc ((∑ r ∈ Finset.range M, Rv ^ r) - 1) * (1 - Rv)
+        = (∑ r ∈ Finset.range M, Rv ^ r) * (1 - Rv) - 1 * (1 - Rv) := sub_mul _ _ _
+      _ = (1 - Rv ^ M) - (1 - Rv) := by rw [geom_sum_mul_neg, one_mul]
+      _ = Rv - Rv ^ M := by abel
+      _ = Rv - Rv * Rv ^ (M - 1) := by rw [← pow_succ', show M - 1 + 1 = M by omega]
+      _ = Rv * (1 - Rv ^ (M - 1)) := by rw [mul_sub, mul_one]
   have hnum : ‖1 - Rv ^ (M - 1)‖ ≤ 5 / 4 := by
     have hp : ‖Rv ^ (M - 1)‖ ≤ 1 / 4 := by
       rw [norm_pow]
@@ -783,7 +785,13 @@ private theorem norm_geom_sum_sub_one_le {M : ℕ} (hM : 2 ≤ M) {Q : ℝ} (hQ 
         _ = 1 / 4 := pow_one _
     have h := norm_sub_le (1 : ℂ) (Rv ^ (M - 1)); rw [norm_one] at h; linarith
   rw [hident, norm_div, norm_mul, div_le_iff₀ (by linarith)]
-  nlinarith [norm_nonneg Rv]
+  calc ‖Rv‖ * ‖1 - Rv ^ (M - 1)‖
+      ≤ Q ^ (-(6 * s.re - 3)) * (5 / 4) :=
+        mul_le_mul hRv hnum (norm_nonneg _) (by positivity)
+    _ ≤ 2 * Q ^ (-(6 * s.re - 3)) * (1 / 2) := by
+        linarith [Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ Q) (-(6 * s.re - 3))]
+    _ ≤ 2 * Q ^ (-(6 * s.re - 3)) * ‖1 - Rv‖ :=
+        mul_le_mul_of_nonneg_left h1Rv (by positivity)
 
 private theorem geom_mul_one_sub_inv_eq {M : ℕ} (hM : 1 ≤ M) {Rv : ℂ} (hRv_qtr : ‖Rv‖ ≤ 1 / 4) :
     (∑ r ∈ Finset.range M, Rv ^ r) * (1 - Rv ^ M)⁻¹ = (1 - Rv)⁻¹ := by
@@ -914,17 +922,17 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
     set Rv := A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)
     have hRv_eq : Rv = idealPsiSix v.1.asIdeal * heckeValue 𝔪 (η ^ 6) v.1.asIdeal *
         (primeNorm v.1 : ℂ) ^ (-(6 * s - 3)) := by
-      dsimp [Rv, A]
-      rw [primeKappaAt_pow_six 𝔪 η hlam, pow_one, show (3 - 6 * s : ℂ) = -(6 * s - 3) by ring]
+      dsimp only [Rv, A]
+      rw [primeKappaAt_pow_six 𝔪 η hlam, show (3 - 6 * s : ℂ) = -(6 * s - 3) by ring]
     have hRvM_eq : Rv ^ M = idealPsiSix v.1.asIdeal ^ M * heckeValue 𝔪 (η ^ (6 * M)) v.1.asIdeal *
         (primeNorm v.1 : ℂ) ^ (-wM) := by
-      dsimp [Rv, A]
+      dsimp only [Rv, A]
       rw [mul_pow, primeKappaAt_pow_six 𝔪 η hlam, mul_pow,
         ← heckeValue_pow_ne_zero 𝔪 (η ^ 6) (by omega : M ≠ 0), ← pow_mul,
         cpow_pow_nat hQ_ne (3 - 6 * s) M]
-      have hexp : (M : ℂ) * (3 - 6 * s) = -wM := by dsimp [wM]; ring
+      have hexp : (M : ℂ) * (3 - 6 * s) = -wM := by dsimp only [wM]; ring
       rw [hexp]
-    rw [← hRvM_eq, ← hRv_eq, pow_one]
+    rw [pow_one, ← hRvM_eq, ← hRv_eq]
     exact geom_mul_one_sub_inv_eq (by omega)
       (norm_R_le_quarter_of_sixty_four_le (hS_64 v) (hA v.1) (by linarith))
   have hgM_split := grossenEulerProductModS_eq_mul_deletedFactors 𝔪 (η ^ (6 * M))
@@ -934,7 +942,10 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
       p_geom * (l_M * del_M) = l_1 * del_1 →
       (p_geom * m_reg * del_S) * (l_M * del_M * res_S) =
         (l_1 * del_1 * (res_S * del_S)) * m_reg :=
-    fun _ _ _ _ _ _ _ _ hp => by linear_combination del_S * res_S * m_reg * hp
+    fun p_geom m_reg del_S l_M del_M res_S l_1 del_1 hp => by
+      calc (p_geom * m_reg * del_S) * (l_M * del_M * res_S)
+          = (p_geom * (l_M * del_M)) * (res_S * del_S) * m_reg := by ring
+        _ = (l_1 * del_1 * (res_S * del_S)) * m_reg := by rw [hp]
   rw [hgM_split, hg1_split] at hprod_id
   unfold truncatedFullPrincipalCorrection continuedProbeCorrection fullResidualCorrection
   change (truncatedPrincipalCorrection (L_nf := K) M A ηv S s * deletedEulerFactors 𝔪 η S s) *
@@ -1212,7 +1223,7 @@ private theorem mul_le_prime_iff {R : Type*} [CommSemiring R] {I J P : Ideal R}
 private theorem prod_ideal_le_of_mem {R : Type*} [CommSemiring R] {ι : Type*}
     [DecidableEq ι] (f : ι → Ideal R) {T : Finset ι} {u₀ : ι} (hu₀ : u₀ ∈ T) :
     (∏ u ∈ T, f u) ≤ f u₀ := by
-  rw [← Finset.insert_erase hu₀, Finset.prod_insert (Finset.not_mem_erase u₀ T)]
+  rw [← Finset.insert_erase hu₀, Finset.prod_insert (Finset.notMem_erase u₀ T)]
   exact Submodule.mul_le.mpr fun a ha b _ => Ideal.mul_mem_right b _ ha
 
 private theorem mem_of_prod_asIdeal_le {R : Type*} [CommRing R] [IsDedekindDomain R]
