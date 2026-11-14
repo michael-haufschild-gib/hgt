@@ -7,6 +7,10 @@ Finite character expansions have diagonal covariance. The Clebsch–Gordan
 product law turns fourth moments into counts of common irreducible summands.
 These are the local moment identities used in the method of moments for
 Frobenius, Hecke and Kloosterman statistics.
+
+The orthogonality and product-law inputs appear in §2.5.2 of
+Pai–Sinha–Thakkar, *Central limit theorems for Frobenius, Hecke and
+Kloosterman angles* (arXiv:2611.16550).
 -/
 
 open MeasureTheory Finset
@@ -208,6 +212,16 @@ theorem cosSum_fluctuation_moments (m : ℕ) :
   · convert integral_cosSum_four (m + 1) using 1
     push_cast
     ring
+
+#print axioms integral_characterPolynomial
+#print axioms integral_characterPolynomial_mul
+#print axioms integral_characterPolynomial_sq
+#print axioms integral_cosSum_cube
+#print axioms integral_cosSum_four
+#print axioms integral_cosSum_sq_mul_sq
+#print axioms integral_centered_cosSum_sq_mul
+#print axioms integral_chiProd_four
+#print axioms cosSum_fluctuation_moments
 
 end
 

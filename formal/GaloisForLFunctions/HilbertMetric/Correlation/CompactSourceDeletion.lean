@@ -25,8 +25,11 @@ def compactEnergy (f : C_c(ℝ, ℝ)) : ℝ := ∫ u, f u ^ 2
 theorem compactEnergy_nonneg (f : C_c(ℝ, ℝ)) : 0 ≤ compactEnergy f :=
   integral_nonneg fun _ => sq_nonneg _
 
-private theorem square_integrable (f : C_c(ℝ, ℝ)) : Integrable (fun u => f u ^ 2) :=
-  (f.continuous.pow 2).integrable_of_hasCompactSupport (f.hasCompactSupport.pow (by omega))
+private theorem square_integrable (f : C_c(ℝ, ℝ)) : Integrable (fun u => f u ^ 2) := by
+  have hc : HasCompactSupport (fun u => f u * f u) := f.hasCompactSupport.mul_right
+  have hi : Integrable (fun u : ℝ => f u * f u) :=
+    (f.continuous.mul f.continuous).integrable_of_hasCompactSupport hc
+  simpa only [pow_two] using hi
 
 /-- Polarization for actual compact sources, with no integrability premises. -/
 theorem compactEnergy_sub (f g : C_c(ℝ, ℝ)) :
@@ -37,8 +40,10 @@ theorem compactEnergy_sub (f g : C_c(ℝ, ℝ)) :
     funext u
     change (f u - g u) ^ 2 = _
     ring
+  have hiadd : Integrable (fun u => f u ^ 2 + g u ^ 2) :=
+    (square_integrable f).add (square_integrable g)
   unfold compactEnergy
-  rw [he, integral_sub ((square_integrable f).add (square_integrable g)) (hi.const_mul 2),
+  rw [he, integral_sub hiadd (hi.const_mul 2),
     integral_add (square_integrable f) (square_integrable g), integral_const_mul]
 
 /-- Sharp centered deletion inequality for a compact-source energy. -/

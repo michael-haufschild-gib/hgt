@@ -49,6 +49,7 @@ import GaloisForLFunctions.ArithmeticInnerFunctionTheory.ThePotentialPastTheBorn
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheQuestionsOfTheField
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.Statistics.CharacterMoments
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.Statistics.CharacterCentralLimit
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.Statistics.DilatedCosineMoments
 
 /-!
 # Arithmetic Inner-Function Theory

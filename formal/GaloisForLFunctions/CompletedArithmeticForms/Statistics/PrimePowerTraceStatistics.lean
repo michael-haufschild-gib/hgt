@@ -55,6 +55,11 @@ theorem tendstoInDistribution_eisensteinTrace_phase (p : ℕ → Nat.Primes) (m 
   simp_rw [eisensteinTrace_phase]
   exact tendstoInDistribution_satoTateCharacter m
 
+#print axioms integral_eisensteinTrace_phase_mul
+#print axioms integral_eisensteinTrace_phase_four
+#print axioms integral_eisensteinTrace_phase_centered_sq_mul
+#print axioms tendstoInDistribution_eisensteinTrace_phase
+
 end
 
 end GaloisForLFunctions.CompletedArithmeticForms

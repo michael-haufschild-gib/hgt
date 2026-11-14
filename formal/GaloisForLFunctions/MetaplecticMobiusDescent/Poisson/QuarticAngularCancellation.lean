@@ -24,6 +24,28 @@ theorem angularRadial_quarter_turn (k : ℕ) (W : ℝ → ℂ) (z : ℂ) :
     angularRadial k W (I * z) = I ^ k * angularRadial k W z := by
   simp only [angularRadial, norm_mul, norm_I, one_mul, mul_div_assoc, mul_pow, mul_assoc]
 
+/-- Angular multiplication does not increase a radial coefficient's magnitude. -/
+theorem norm_angularRadial_le (k : ℕ) (W : ℝ → ℂ) (z : ℂ) :
+    ‖angularRadial k W z‖ ≤ ‖W (‖z‖ ^ 2)‖ := by
+  have hu : ‖z / (‖z‖ : ℂ)‖ ≤ 1 := by
+    by_cases hz : z = 0
+    · simp [hz]
+    · rw [norm_div, Complex.norm_real, Real.norm_of_nonneg (norm_nonneg z),
+        div_self (norm_ne_zero_iff.mpr hz)]
+  rw [angularRadial, norm_mul, norm_pow]
+  simpa only [one_mul] using
+    mul_le_mul_of_nonneg_right (pow_le_one₀ (norm_nonneg _) hu (n := k)) (norm_nonneg _)
+
+/-- Schwartz radial coefficients give genuine integrable angular kernels. -/
+theorem integrable_angularRadial (k : ℕ) (W : SchwartzMap ℝ ℂ) :
+    Integrable (angularRadial k W) := by
+  have hm : Measurable (angularRadial k W) := by
+    unfold angularRadial
+    fun_prop
+  apply (radialTest W).integrable.norm.mono' hm.aestronglyMeasurable
+  filter_upwards [] with z
+  exact norm_angularRadial_le k W z
+
 private theorem paperFourier_const_mul (c : ℂ) (f : ℂ → ℂ) (u : ℂ) :
     paperFourier (fun z => c * f z) u = c * paperFourier f u := by
   unfold paperFourier

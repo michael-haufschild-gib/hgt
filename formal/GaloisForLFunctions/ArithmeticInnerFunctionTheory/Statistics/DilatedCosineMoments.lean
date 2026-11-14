@@ -46,8 +46,7 @@ theorem integral_satoTate_cos_nat (n : ℕ) :
     linarith only [h]
   · simp_rw [cos_nat_add_two_eq_character_difference]
     rw [integral_div, integral_sub]
-    · simp only [integral_cosSum, Nat.add_eq_zero_iff, Nat.succ_ne_zero, and_false,
-        if_false]
+    · simp only [integral_cosSum, Nat.succ_ne_zero, if_false]
       by_cases hn : n = 0
       · subst n
         norm_num
@@ -59,7 +58,8 @@ theorem integral_satoTate_cos_nat (n : ℕ) :
 /-- All positive Fourier modes of dilations by `a+2` have uniform-law mean. -/
 theorem integral_satoTate_dilated_cos (a m : ℕ) :
     ∫ θ, Real.cos ((2 * (a + 2) * (m + 1) : ℕ) * θ) ∂satoTate = 0 := by
-  rw [integral_satoTate_cos_nat, if_neg (by omega : 2 * (a + 2) * (m + 1) ≠ 0),
+  rw [integral_satoTate_cos_nat,
+    if_neg (ne_of_gt (by positivity : 0 < 2 * (a + 2) * (m + 1))),
     if_neg (by nlinarith : 2 * (a + 2) * (m + 1) ≠ 2)]
 
 /-- All frequencies at least two have raw second moment one half. -/
@@ -76,6 +76,11 @@ theorem integral_satoTate_cos_sq (n : ℕ) :
     integral_satoTate_cos_nat]
   rw [if_neg (by omega : 2 * (n + 2) ≠ 0), if_neg (by omega : 2 * (n + 2) ≠ 2)]
   simp
+
+#print axioms cos_nat_add_two_eq_character_difference
+#print axioms integral_satoTate_cos_nat
+#print axioms integral_satoTate_dilated_cos
+#print axioms integral_satoTate_cos_sq
 
 end
 

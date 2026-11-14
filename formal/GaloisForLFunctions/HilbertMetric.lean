@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HilbertMetric.GaussianAccelerationGram
+import GaloisForLFunctions.HilbertMetric.Correlation.ExceptionalEnergy
+import GaloisForLFunctions.HilbertMetric.Correlation.CompactSourceDeletion
 import GaloisForLFunctions.HilbertMetric.BogomolnyPrasadSommerfieldBounds
 import GaloisForLFunctions.HilbertMetric.GradedPartition
 import GaloisForLFunctions.HilbertMetric.GaussianFock

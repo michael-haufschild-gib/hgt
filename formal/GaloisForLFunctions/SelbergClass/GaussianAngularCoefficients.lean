@@ -114,4 +114,59 @@ theorem coefficient_four_mul_bound (m n : ℕ) :
       rw [norm_pow, show 4 * m = 2 * (2 * m) by omega, pow_mul, hnorm]
     _ = _ := by simp
 
+private theorem norm_one_fourth (z : ↥(normSet 1)) : (z.1 : ℂ) ^ 4 = 1 := by
+  have hn := mem_normSet.mp z.2
+  rw [norm_eq] at hn
+  norm_num only [Nat.cast_one] at hn
+  have hab : z.1.re * z.1.im = 0 := by
+    by_cases ha : z.1.re = 0
+    · rw [ha, zero_mul]
+    · have ha2 : 1 ≤ z.1.re ^ 2 := by
+        have hp : 0 < z.1.re ^ 2 := sq_pos_of_ne_zero ha
+        omega
+      have hb2 : z.1.im ^ 2 = 0 := by nlinarith only [hn, ha2, sq_nonneg z.1.im]
+      have hb : z.1.im = 0 := (pow_eq_zero_iff (by norm_num : (2 : ℕ) ≠ 0)).mp hb2
+      rw [hb, mul_zero]
+  have hnC : (z.1.re : ℂ) ^ 2 + (z.1.im : ℂ) ^ 2 = 1 := by exact_mod_cast hn
+  have habC : (z.1.re : ℂ) * (z.1.im : ℂ) = 0 := by exact_mod_cast hab
+  have hz2 : (z.1 : ℂ) ^ 2 = (z.1.re : ℂ) ^ 2 - (z.1.im : ℂ) ^ 2 := by
+    rw [GaussianInt.toComplex_def]
+    linear_combination (z.1.im : ℂ) ^ 2 * I_sq + (2 * I) * habC
+  rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, hz2]
+  linear_combination ((z.1.re : ℂ) ^ 2 + (z.1.im : ℂ) ^ 2 + 1) * hnC -
+    (4 * (z.1.re : ℂ) * (z.1.im : ℂ)) * habC
+
+/-- Every surviving weight has a nonzero first coefficient: the four units all contribute one. -/
+theorem coefficient_four_mul_one (m : ℕ) : coefficient (4 * m) 1 = 4 := by
+  unfold coefficient
+  simp_rw [pow_mul, norm_one_fourth, one_pow]
+  simp only [sum_const, card_univ, Fintype.card_coe, card_normSet_one, nsmul_eq_mul,
+    Nat.cast_ofNat, mul_one]
+
+/-- A complete angular sector vanishes exactly when its weight is not divisible by four. -/
+theorem coefficient_all_zero_iff (k : ℕ) :
+    (∀ n : ℕ, coefficient k n = 0) ↔ ¬4 ∣ k := by
+  constructor
+  · intro h ⟨m, hm⟩
+    have h1 := h 1
+    rw [hm, coefficient_four_mul_one] at h1
+    norm_num at h1
+  · intro h
+    have hrange := Nat.mod_lt k (show 0 < 4 by norm_num)
+    have hmod : k % 4 ≠ 0 := fun hz => h (Nat.dvd_of_mod_eq_zero hz)
+    have hr : k % 4 = 1 ∨ k % 4 = 2 ∨ k % 4 = 3 := by omega
+    rcases hr with hr | hr | hr
+    · have hk : k = 4 * (k / 4) + 1 := by omega
+      intro n
+      rw [hk]
+      exact coefficient_one_mod_four _ _
+    · have hk : k = 4 * (k / 4) + 2 := by omega
+      intro n
+      rw [hk]
+      exact coefficient_two_mod_four _ _
+    · have hk : k = 4 * (k / 4) + 3 := by omega
+      intro n
+      rw [hk]
+      exact coefficient_three_mod_four _ _
+
 end GaloisForLFunctions.SelbergClass.GaussianAngular

@@ -70,6 +70,11 @@ theorem tendstoInDistribution_satoTateCharacter (m : ℕ) :
   · intro i
     exact identDistrib_satoTateCharacterCoordinate m i 0
 
+#print axioms integral_satoTateCharacterCoordinate_pow
+#print axioms iIndepFun_satoTateCharacterCoordinate
+#print axioms identDistrib_satoTateCharacterCoordinate
+#print axioms tendstoInDistribution_satoTateCharacter
+
 end
 
 end GaloisForLFunctions.ArithmeticInnerFunctionTheory

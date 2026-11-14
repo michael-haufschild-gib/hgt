@@ -163,6 +163,34 @@ theorem scalarCohomology_lift (X : ShortComplex (Rep k G)) (hX : X.ShortExact)
   exact hbmem
 
 
+/-- One trace class satisfies the retraction formula after every pullback of the group action. -/
+theorem shortExact_cohomologyTrace_pullback
+    (X : ShortComplex (Rep k G)) (hX : X.ShortExact) (Φ : X.X₁ ⟶ X.X₂)
+    (n : ℕ) (b : groupCohomology (Rep.trivial k G k) n)
+    (hb : ((groupCohomology.functor k G n).map (scalarHom (Φ ≫ X.g))).hom b = 0) :
+    ∃ γ : groupCohomology (Rep.trivial k G k) n,
+      ∀ (H : Type u) [Group H] (f : H →* G) (r : Rep.res f X.X₂ ⟶ Rep.res f X.X₁),
+        (Rep.resFunctor f).map X.f ≫ r = 𝟙 _ →
+        ((groupCohomology.resNatTrans k f n).app (Rep.trivial k G k)).hom γ =
+          LinearMap.trace k X.X₁
+            (((Rep.resFunctor f).map Φ ≫ r).hom.toLinearMap) •
+          ((groupCohomology.resNatTrans k f n).app (Rep.trivial k G k)).hom b := by
+  obtain ⟨Γ, hΓ⟩ := scalarCohomology_lift X hX X.X₁ Φ n b hb
+  refine ⟨((groupCohomology.functor k G n).map (endomorphismTrace X.X₁)).hom Γ, ?_⟩
+  intro H _ f r hr
+  have hl := congrArg
+    (fun m : groupCohomology ((Rep.ihom X.X₁).obj X.X₁) n ⟶
+      groupCohomology (Rep.res f (Rep.trivial k G k)) n => m.hom Γ)
+    (restrictionCohomology_trace_retraction f X.f r hr n)
+  have hr' := congrArg
+    (fun m : groupCohomology (Rep.trivial k G k) n ⟶
+      groupCohomology (Rep.res f (Rep.trivial k G k)) n => m.hom b)
+    (restrictionCohomology_trace_scalar f Φ r n)
+  exact hl.symm.trans ((congrArg (fun y =>
+    ((groupCohomology.functor k H n).map (restrictionHomTrace f r)).hom
+      (((groupCohomology.resNatTrans k f n).app ((Rep.ihom X.X₁).obj X.X₂)).hom y))
+    hΓ).trans hr')
+
 /-- A single global trace class satisfies the trace formula for every subgroup retraction. -/
 theorem shortExact_cohomologyTrace_restriction
     (X : ShortComplex (Rep k G)) (hX : X.ShortExact) (Φ : X.X₁ ⟶ X.X₂)
@@ -175,24 +203,13 @@ theorem shortExact_cohomologyTrace_restriction
           LinearMap.trace k X.X₁
             (((Rep.resFunctor H.subtype).map Φ ≫ r).hom.toLinearMap) •
           ((groupCohomology.resNatTrans k H.subtype n).app (Rep.trivial k G k)).hom b := by
-  obtain ⟨Γ, hΓ⟩ := scalarCohomology_lift X hX X.X₁ Φ n b hb
-  refine ⟨((groupCohomology.functor k G n).map (endomorphismTrace X.X₁)).hom Γ, ?_⟩
-  intro H r hr
-  have hl := congrArg
-    (fun m : groupCohomology ((Rep.ihom X.X₁).obj X.X₁) n ⟶
-      groupCohomology (Rep.res H.subtype (Rep.trivial k G k)) n => m.hom Γ)
-    (restrictionCohomology_trace_retraction H.subtype X.f r hr n)
-  have hr' := congrArg
-    (fun m : groupCohomology (Rep.trivial k G k) n ⟶
-      groupCohomology (Rep.res H.subtype (Rep.trivial k G k)) n => m.hom b)
-    (restrictionCohomology_trace_scalar H.subtype Φ r n)
-  exact hl.symm.trans ((congrArg (fun y =>
-    ((groupCohomology.functor k H n).map (restrictionHomTrace H.subtype r)).hom
-      (((groupCohomology.resNatTrans k H.subtype n).app ((Rep.ihom X.X₁).obj X.X₂)).hom y))
-    hΓ).trans hr')
+  obtain ⟨γ, hγ⟩ := shortExact_cohomologyTrace_pullback X hX Φ n b hb
+  exact ⟨γ, fun H r hr => hγ H H.subtype r hr⟩
 
 end Field
 
 end GaloisForLFunctions.RepresentationLifting
 
 #print axioms GaloisForLFunctions.RepresentationLifting.shortExact_cohomologyTrace_restriction
+
+#print axioms GaloisForLFunctions.RepresentationLifting.shortExact_cohomologyTrace_pullback

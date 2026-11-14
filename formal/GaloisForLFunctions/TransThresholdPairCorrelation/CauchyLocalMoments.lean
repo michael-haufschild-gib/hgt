@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.IntegerSeriesBounds
 import Mathlib.Analysis.MeanInequalitiesPow
+import Mathlib.Algebra.BigOperators.Field
 
 /-!
 # Uniform moments of discrete Cauchy correlations
@@ -9,7 +10,7 @@ Jensen and symmetry transfer every local correlation moment to the next
 occupancy moment, with a constant independent of the finite window.
 -/
 
-open scoped BigOperators
+open scoped BigOperators NNReal
 open Finset
 
 namespace GaloisForLFunctions.TransThresholdPairCorrelation
@@ -23,7 +24,9 @@ theorem cellCauchy_nonneg (j k : ℤ) : 0 ≤ cellCauchy j k := by
   positivity
 
 theorem cellCauchy_symm (j k : ℤ) : cellCauchy j k = cellCauchy k j := by
-  simp only [cellCauchy, sq_sub_comm]
+  unfold cellCauchy
+  congr 2
+  ring
 
 theorem summable_cellCauchy : Summable (fun j : ℤ => cellCauchy j 0) := by
   refine Summable.of_nonneg_of_le (fun j => cellCauchy_nonneg j 0) (fun j => ?_)
@@ -31,7 +34,7 @@ theorem summable_cellCauchy : Summable (fun j : ℤ => cellCauchy j 0) := by
   simp only [cellCauchy, Int.cast_zero, sub_zero]
   have hden : 0 < 1 + (j : ℝ) ^ 2 := by positivity
   have habs : 0 < (1 + |(j : ℝ)|) ^ 2 := by positivity
-  rw [mul_div_assoc, div_le_div_iff₀ hden habs]
+  rw [← mul_div_assoc, mul_one, div_le_div_iff₀ hden habs]
   nlinarith only [sq_nonneg (|(j : ℝ)| - 1), sq_abs (j : ℝ)]
 
 /-- Total lattice mass; it pays every finite row uniformly. -/
@@ -49,7 +52,7 @@ theorem sum_cellCauchy_le (s : Finset ℤ) (j : ℤ) :
       intro k _
       simp only [cellCauchy, Int.cast_sub, Int.cast_zero, sub_zero]
     · intro a _ b _ h
-      omega
+      exact (Equiv.subLeft j).injective h
   rw [he]
   exact summable_cellCauchy.sum_le_tsum _ (fun i _ => cellCauchy_nonneg i 0)
 
@@ -68,8 +71,11 @@ private theorem weighted_power {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
       have hh := single_le_sum hw hi
       change w i ≤ W at hh
       exact le_antisymm (hz ▸ hh) (hw i hi)
-    simp only [hwz, mul_zero, zero_mul, sum_const_zero, zero_pow (Nat.succ_ne_zero q)]
-    positivity
+    have hzero : (∑ i ∈ s, w i * a i) = 0 :=
+      sum_eq_zero fun i hi => by rw [hwz i hi, zero_mul]
+    rw [hzero, zero_pow (Nat.succ_ne_zero q)]
+    exact mul_nonneg (pow_nonneg (sum_nonneg hw) _)
+      (sum_nonneg fun i hi => mul_nonneg (hw i hi) (pow_nonneg (ha i hi) _))
   · have hp : 0 < W := lt_of_le_of_ne hW (Ne.symm hz)
     have hn : ∑ i ∈ s, w i / W = 1 := by rw [← sum_div]; exact div_self hz
     have h := Real.pow_arith_mean_le_arith_mean_pow s (fun i => w i / W) a
@@ -82,7 +88,7 @@ private theorem weighted_power {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
       rw [sum_div]
       exact sum_congr rfl fun _ _ => by ring
     rw [he, he', div_pow, div_le_div_iff₀ (pow_pos hp _) hp] at h
-    rw [pow_succ] at h
+    rw [pow_succ W q] at h
     have hh : (∑ i ∈ s, w i * a i) ^ (q + 1) * W ≤
         (W ^ q * ∑ i ∈ s, w i * a i ^ (q + 1)) * W := by nlinarith only [h]
     exact (mul_le_mul_iff_left₀ hp).mp hh
