@@ -41,7 +41,10 @@ theorem sum_primeResidue_product {R : Type*} [CommRing R] (S : Finset Nat.Primes
   calc
     _ = ∑ n ∈ range (primeSetProduct S),
         ∏ p : S, f p.val (e (n : ZMod (primeSetProduct S)) p) := by
-      simp only [he, Finset.prod_coe_sort]
+      apply sum_congr rfl
+      intro n _
+      simp only [he]
+      exact (Finset.prod_coe_sort S (fun p : Nat.Primes => f p (n : ZMod p.val))).symm
     _ = ∑ a : ZMod (primeSetProduct S), ∏ p : S, f p.val (e a p) :=
       (RHTower.Sieve.sum_zmod_eq_sum_range_natCast (primeSetProduct S)
         (fun a : ZMod (primeSetProduct S) => ∏ p : S, f p.val (e a p))).symm

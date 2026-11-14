@@ -60,7 +60,7 @@ theorem norm_primeResiduePhaseMean_le_one (S : Finset Nat.Primes)
   simp only [norm_primeResiduePhase, sum_const, card_range, nsmul_eq_mul, mul_one,
     Complex.norm_natCast] at h
   have hP : (0 : ℝ) < primeSetProduct S := by exact_mod_cast primeSetProduct_pos S
-  nlinarith only [h, hP]
+  exact (mul_le_mul_iff_right₀ hP).mp (by simpa only [mul_one] using h)
 
 /-- Incomplete complex phase sums differ from the independent mean by at most `2P`. -/
 theorem norm_sum_Ico_primeResiduePhase_sub_mean (S : Finset Nat.Primes)
@@ -94,7 +94,26 @@ theorem norm_sum_Ico_primeResiduePhase_sub_mean (S : Finset Nat.Primes)
         linarith only [norm_primeResiduePhaseMean_le_one S θ])
     _ = _ := by simp only [sum_const, card_range, nsmul_eq_mul]; ring
 
+/-- Characteristic-function averages have boundary error at most `2P/(N+1)`. -/
+theorem norm_average_primeResiduePhase_sub_mean (S : Finset Nat.Primes)
+    (θ : (p : Nat.Primes) → ZMod p.val → ℝ) (A N : ℕ) :
+    ‖(∑ n ∈ Ico A (A + (N + 1)), primeResiduePhase S θ n) / ((N + 1 : ℕ) : ℂ) -
+      primeResiduePhaseMean S θ‖ ≤ 2 * (primeSetProduct S : ℝ) / (N + 1) := by
+  have h := norm_sum_Ico_primeResiduePhase_sub_mean S θ A (A + (N + 1))
+  rw [Nat.add_sub_cancel_left] at h
+  have hN : ((N + 1 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero N
+  have he :
+      (∑ n ∈ Ico A (A + (N + 1)), primeResiduePhase S θ n) / ((N + 1 : ℕ) : ℂ) -
+        primeResiduePhaseMean S θ =
+      ((∑ n ∈ Ico A (A + (N + 1)), primeResiduePhase S θ n) -
+        ((N + 1 : ℕ) : ℂ) * primeResiduePhaseMean S θ) / ((N + 1 : ℕ) : ℂ) := by
+    field_simp [hN]
+  rw [he, norm_div, Complex.norm_natCast]
+  simpa only [Nat.cast_add, Nat.cast_one] using
+    div_le_div_of_nonneg_right h (by positivity : (0 : ℝ) ≤ (N + 1 : ℕ))
+
 #print axioms norm_sum_Ico_primeResiduePhase_sub_mean
+#print axioms norm_average_primeResiduePhase_sub_mean
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

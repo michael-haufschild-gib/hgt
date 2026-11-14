@@ -356,10 +356,10 @@ theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
   have h1 := ((Bool.and_eq_true _ _).mp ((Bool.and_eq_true _ _).mp hD).1).1
   obtain ⟨hg, hlen⟩ := (Bool.and_eq_true _ _).mp h1
   simp only [checkGeom, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hg
+  simp only [checkLen, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hlen
   obtain ⟨-, hW⟩ := hg
   have hWb : ∀ b : Fin 4, ∀ i < S.K, (D.WB b i).length ≤ 7 := fun b i hi => hW b b.2 i hi
-  have hEb : ∀ b : Fin 4, ∀ i < S.K, (er S D b i).length ≤ 32 := fun b i hi =>
-    fastEval_lengths S D hlen b.2 hi
+  have hEb : ∀ b : Fin 4, ∀ i < S.K, (er S D b i).length ≤ 32 := fun b i hi => hlen b b.2 i hi
   have hc : ∀ f : ℝ → ℝ, Continuous f → IntervalIntegrable f volume 0 1 :=
     fun f hf => hf.intervalIntegrable 0 1
   have hcont1 : ∀ b : Fin 4, Continuous fun ξ => linQ (D.WB b) m ξ * linQ (hh S D b) m ξ :=
@@ -435,17 +435,15 @@ theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (h
   rw [integral_low hD] at hlow
   have hQ : quadR S.K (qMat S D) m ≤ quadR S.K D.Qhat m := by
     have h := quad_le_of_domCheck_sub hdom m
-    have he : quadR S.K (fastEval S D).1 m = quadR S.K (qMat S D) m := by
+    have he : quadR S.K (fastQ S D) m = quadR S.K (qMat S D) m := by
       simp only [quadR]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
-        rw [fastEval_fst S D i.2 j.2]
+        rw [fastQ_eq S D i.2 j.2]
     linarith only [h, he]
   have hP : ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 ≤
       ∑ k : Fin S.K, (vecQ D.pertHat k : ℝ) * m k ^ 2 :=
-    Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_right (by
-      have := of_decide_eq_true (hpert k (List.mem_range.mpr k.2))
-      rw [fastEval_snd S D k.2] at this
-      exact Rat.cast_le.mpr this) (sq_nonneg _)
+    Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_right
+      (Rat.cast_le.mpr (of_decide_eq_true (hpert k (List.mem_range.mpr k.2)))) (sq_nonneg _)
   linarith only [hlow, hQ, hP]
 
 end P4Sub

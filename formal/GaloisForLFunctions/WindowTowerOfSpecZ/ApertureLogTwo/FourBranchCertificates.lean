@@ -78,7 +78,7 @@ theorem intervalIntegrable_f4Integrand {S : SectorData} {G : ℝ → ℝ} (hGc :
   set a := primeThreeOffset
   let H : ℝ → ℝ := fun u => (S.c0 + vTrue u) * G u ^ 2
   have hH : IntegrableOn H (Icc (0 : ℝ) 1) :=
-    integrableOn_Icc_iff_integrableOn_Ioo.mpr (hiPot.congr_fun (fun u _ => mul_comm _ _)
+    (integrableOn_Icc_iff_integrableOn_Ioo).mpr (hiPot.congr_fun (fun u _ => mul_comm _ _)
       measurableSet_Ioo)
   have hii : ∀ p q : ℝ, 0 ≤ p → p ≤ q → q ≤ 1 → IntervalIntegrable H volume p q :=
     fun p q hp hpq hq => (intervalIntegrable_iff_integrableOn_Icc_of_le hpq).mpr
@@ -214,45 +214,22 @@ theorem get4_tab4 {K : ℕ} (f : ℕ → ℕ → List ℚ) {b i : ℕ} (hb : b <
     get4 (tab4 K f) b i = f b i := by
   simp [get4, tab4, List.getD_eq_getElem?_getD, hb, hi]
 
-/-- `qMat` and `pert` computed with shared tables (the form evaluated by `decide`). -/
-def fastEval : List (List ℚ) × List ℚ × Bool :=
-  let VX := tab4 S.K fun b k => vvExact S D b k
-  let VR := tab4 S.K fun b k => roundList (get4 VX b k)
-  let MW := tab4 S.K fun b i => mw S D b i
-  let HH := tab4 S.K fun b i =>
-    qadd (qsub (qsmul 2 (get4 VR b i)) (get4 MW b i)) (qsmul pen (D.WB b i))
-  let ER := tab4 S.K fun b i => qsub (get4 MW b i) (get4 VR b i)
-  let HV := tab4 S.K fun b j => hilbVec 7 (get4 HH b j)
-  let EV := tab4 S.K fun b j => hilbVec 32 (get4 ER b j)
-  let Q := tabQ S.K fun i j => D.ds * ((List.range 4).map fun b =>
+/-- `qMat` computed with depth-1 shared tables (the form evaluated by `decide`). -/
+def fastQ : List (List ℚ) :=
+  let HV := tab4 S.K fun b j => hilbVec 7 (hh S D b j)
+  let ER := tab4 S.K (er S D)
+  let EV := tab4 S.K fun b j => hilbVec 32 (er S D b j)
+  tabQ S.K fun i j => D.ds * ((List.range 4).map fun b =>
     (dotQ (D.WB b i) (get4 HV b j) + dotQ (D.WB b j) (get4 HV b i)) / 2 +
       dotQ (get4 ER b i) (get4 EV b j)).sum
-  let P := (List.range S.K).map fun k =>
-    D.ds * (16 + 10 ^ 22) * S.K * ((List.range 4).map fun b => etaOf S b k (get4 VX b k) ^ 2).sum
-  let L := (List.range 4).all fun b => (List.range S.K).all fun i =>
-    decide ((get4 ER b i).length ≤ 32)
-  (Q, P, L)
 
-theorem fastEval_fst {i j : ℕ} (hi : i < S.K) (hj : j < S.K) :
-    matQ (fastEval S D).1 i j = matQ (qMat S D) i j := by
-  simp only [fastEval, qMat, matQ_tabQ _ hi hj]
+theorem fastQ_eq {i j : ℕ} (hi : i < S.K) (hj : j < S.K) :
+    matQ (fastQ S D) i j = matQ (qMat S D) i j := by
+  simp only [fastQ, qMat, matQ_tabQ _ hi hj]
   congr 1
   refine congrArg List.sum (List.map_congr_left fun b hb => ?_)
   have hb' : b < 4 := List.mem_range.mp hb
-  simp only [get4_tab4 _ hb' hi, get4_tab4 _ hb' hj, gramN, vv, hh, er]
-
-theorem fastEval_snd {k : ℕ} (hk : k < S.K) : vecQ (fastEval S D).2.1 k = pert S D k := by
-  simp only [fastEval, pert, vecQ, List.getD_eq_getElem?_getD, List.getElem?_map,
-    List.getElem?_range hk, Option.map_some, Option.getD_some]
-  congr 2
-  refine List.map_congr_left fun b hb => ?_
-  rw [get4_tab4 _ (List.mem_range.mp hb) hk, eta]
-
-theorem fastEval_lengths (h : (fastEval S D).2.2 = true) {b i : ℕ} (hb : b < 4) (hi : i < S.K) :
-    (er S D b i).length ≤ 32 := by
-  simp only [fastEval, List.all_eq_true, List.mem_range, decide_eq_true_eq] at h
-  have := h b hb i hi
-  simpa [get4_tab4 _ hb hi, er, vv] using this
+  simp only [get4_tab4 _ hb' hi, get4_tab4 _ hb' hj, gramN]
 
 /-- Lower bound `β_b` of the polynomial diagonal on `[0, 1]`. -/
 def beta (b : ℕ) : ℚ :=
@@ -272,10 +249,13 @@ def checkGeom : Bool :=
     pivots4Pos (beta S D 0) (beta S D 1) (beta S D 2) (beta S D 3) S.e2 S.e3 &&
     (List.range 4).all (fun b => (List.range S.K).all fun i => decide ((D.WB b i).length ≤ 7))
 
+def checkLen : Bool :=
+  (List.range 4).all fun b => (List.range S.K).all fun i => decide ((er S D b i).length ≤ 32)
+
 /-- The certificate check of a four-branch subinterval. -/
 def check : Bool :=
-  checkGeom S D && (fastEval S D).2.2 && domCheck S.K (subMat S.K D.Qhat (fastEval S D).1) &&
-    (List.range S.K).all fun k => decide (vecQ (fastEval S D).2.1 k ≤ vecQ D.pertHat k)
+  checkGeom S D && checkLen S D && domCheck S.K (subMat S.K D.Qhat (fastQ S D)) &&
+    (List.range S.K).all fun k => decide (pert S D k ≤ vecQ D.pertHat k)
 
 end P4Sub
 

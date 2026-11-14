@@ -30,7 +30,9 @@ theorem sphereSevenComplexMoment_eq (k : ℕ) :
   have h4 : Real.Gamma (4 : ℝ) = 6 := by
     convert Real.Gamma_nat_eq_factorial 3 using 1 <;> norm_num
   have hk : Real.Gamma ((4 : ℝ) + k) = ((k + 3).factorial : ℝ) := by
-    convert Real.Gamma_nat_eq_factorial (k + 3) using 1 <;> push_cast <;> ring
+    convert Real.Gamma_nat_eq_factorial (k + 3) using 1
+    push_cast
+    ring
   norm_num only [Nat.cast_ofNat, show (8 : ℝ) / 2 = 4 by norm_num]
   rw [h4, hk]
   simp only [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one, Nat.cast_ofNat]
@@ -86,7 +88,6 @@ theorem sphereSeven_monomial_concentration (k : ℕ) :
     push_cast
     change (6 / Q) / (6 / P) ^ 2 = P ^ 2 / (6 * Q)
     field_simp
-    ring
   rw [hratio]
   calc
     ((k : ℝ) + 1) ^ 3 / 48 ≤ P / 48 := div_le_div_of_nonneg_right hpow (by positivity)

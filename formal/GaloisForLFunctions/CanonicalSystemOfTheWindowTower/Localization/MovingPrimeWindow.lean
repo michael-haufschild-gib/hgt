@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheTrivialDivisorCouplesOrderedTests
 
-/-!+# Moving prime windows of two restricted sources
+/-!
+# Moving prime windows of two restricted sources
 
 Restricting the sources to `[0,w]` and `[L-w,L]` restricts their correlation
 to `[L-2w,L]`. Consequently the arithmetic interaction is a finite sum over
@@ -34,7 +35,7 @@ theorem crossCorr_intervalSource_eq_zero (a b c d u : ℝ) (f g : ℝ → ℝ)
     simp only [intervalSource, indicator_of_notMem hy, mul_zero, Pi.zero_apply]
   · simp only [intervalSource, indicator_of_notMem hx, zero_mul, Pi.zero_apply]
 
-/-- The separated pair has precisely the allowable lag window from the two-interval geometry. -/
+/-- The separated pair's correlation lies in the lag window from the two-interval geometry. -/
 theorem crossCorr_twoWindow_eq_zero (L w u : ℝ) (f g : ℝ → ℝ)
     (hu : u ∉ Icc (L - 2 * w) L) :
     crossCorr (intervalSource 0 w f) (intervalSource (L - w) L g) u = 0 := by

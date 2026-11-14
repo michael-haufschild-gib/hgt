@@ -120,3 +120,4 @@ import GaloisForLFunctions.HilbertMetric.SeparatedConfigurations
 import GaloisForLFunctions.HilbertMetric.RotationalSubgroupRigidity
 import GaloisForLFunctions.HilbertMetric.PlanarDiskObstruction
 import GaloisForLFunctions.HilbertMetric.EnclosingBallHelly
+import GaloisForLFunctions.HilbertMetric.Probability.CoxDegeneracyDetection

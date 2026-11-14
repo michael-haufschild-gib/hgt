@@ -99,11 +99,11 @@ Make good use of the search tool for our lean corpus to find existing work and g
 
 The goal is met when route ACS is fully closed and formalized unconditionally in lean.
 ## list
-- https://arxiv.org/abs/2611.12541 independence of hasse--weil l-functions over rings of dirichlet series
 - https://arxiv.org/abs/2611.16156 many more odd zeta values are irrational
 - https://arxiv.org/abs/2611.17317 c1a reularity of w22 q-valued maps with small laplacian
-- https://arxiv.org/abs/2611.12500 horizontal estimates for kloosterman sums under hecke eigenvalue constraints
 - https://arxiv.org/abs/2611.13468 a cyclotomic artin-tate formula and sphere packing for K3 surfaces 
+- https://arxiv.org/abs/2611.15808 a short route to diening´s averaging criterion in spaces of homogeneous types
+- https://arxiv.org/abs/2611.12500 horizontal estimates for kloosterman sums under hecke eigenvalue constraints
 - https://arxiv.org/abs/2611.41332 kloosterman sums and pluecker height zeta functions
 - https://arxiv.org/abs/2611.16169 wasserstein rates of all orders for the sato-tate law of kloosterman sums
 - https://arxiv.org/abs/2611.08029 on sufficient conditions for rank zero in families of elliptic curves
@@ -123,8 +123,11 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.16078 simple length multiplicity on X(n)
 - https://arxiv.org/abs/2611.17140 hardy spaces and toeplitz operators on the hexablock
 - https://arxiv.org/abs/2611.13085 time direction entanglement entropy of free fermion ground states
+- https://arxiv.org/abs/2611.16799 nevanlinna theory for generalized tropical meromorphic functions and applications to ultra-discrete equations
 - https://arxiv.org/abs/2611.
 - https://arxiv.org/abs/2611.
+- https://arxiv.org/abs/2611.
+
 
 ## apply external paper to corpus experiment
 do not use the hgtl7 skill
@@ -132,7 +135,7 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.10726
+- https://arxiv.org/abs/2611.12541
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

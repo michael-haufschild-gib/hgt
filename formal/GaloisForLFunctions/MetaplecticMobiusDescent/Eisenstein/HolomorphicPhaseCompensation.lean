@@ -160,4 +160,15 @@ theorem l2FlatAt_entire_tracePhase_sub_iff
       tracePhase (freq * z)) a ↔ f = g
   rw [l2FlatAt_entire_tracePhase_iff, sub_eq_zero]
 
+/-- A horizontal Bessel mode is locally L² flat exactly when its height amplitude vanishes. -/
+theorem l2FlatAt_cubicBesselTerm_iff
+    (c : Eisenstein.O → ℂ) (h : Eisenstein.O) (v : ℝ) (a : ℂ) :
+    GaloisForLFunctions.HTGeometry.L2FlatAt (fun z => cubicBesselTerm c h (v, z)) a ↔
+      cubicBesselAmplitude c v h = 0 := by
+  change GaloisForLFunctions.HTGeometry.L2FlatAt
+    (fun z => cubicBesselAmplitude c v h * tracePhase (cuspFrequency h * z)) a ↔ _
+  rw [l2FlatAt_mul_tracePhase_iff,
+    GaloisForLFunctions.HTGeometry.l2FlatAt_iff_eq_zero_of_entire analyticOnNhd_const]
+  exact ⟨fun hz => congrFun hz 0, fun hz => funext fun _ => hz⟩
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

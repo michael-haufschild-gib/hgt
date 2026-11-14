@@ -25,8 +25,8 @@ def gaussianPairEquiv : GaussianInt ≃ ℤ × ℤ where
   right_inv p := by cases p; rfl
 
 private theorem gaussianPoint_coordinates (z : GaussianInt) :
-    complexPoint (z.re : ℝ) (z.im : ℝ) = (z : ℂ) := by
-  apply Complex.ext <;> simp [complexPoint, GaussianInt.toComplex_def]
+    complexPoint (z.re : ℝ) (z.im : ℝ) = (z : ℂ) :=
+  (GaussianInt.toComplex_def₂ z).symm
 
 /-- Complex Gaussian lattice sums agree exactly with sums over integer coordinates. -/
 theorem gaussian_tsum_eq_pair (F : ℂ → ℂ) :
@@ -192,15 +192,16 @@ private theorem gaussianDualTerm_eq (f : 𝓢(ℂ, ℂ)) (c : ℂˣ) (b : ℂ) :
 /-- Absolute convergence of the complete dual series is established before splitting its zero mode. -/
 theorem summable_gaussianDualTerm (f : 𝓢(ℂ, ℂ)) (c : ℂˣ) (b : ℂ) :
     Summable (gaussianDualTerm f c b) := by
-  have hd : Summable (fun z : GaussianInt => if z = 0 then (𝓕 f) 0 else 0) :=
-    (hasSum_ite_eq (0 : GaussianInt) ((𝓕 f) 0)).summable
+  have hd : Summable (fun z : GaussianInt =>
+      if z = 0 then (𝓕 f : 𝓢(ℂ, ℂ)) 0 else (0 : ℂ)) :=
+    (hasSum_ite_eq (0 : GaussianInt) ((𝓕 f : 𝓢(ℂ, ℂ)) 0)).summable
   rw [gaussianDualTerm_eq]
   exact hd.add (summable_gaussianDualTail f c b)
 
 private theorem gaussianDualSum_eq (f : 𝓢(ℂ, ℂ)) (c : ℂˣ) (b : ℂ) :
     (∑' z : GaussianInt, gaussianDualTerm f c b z) =
       (𝓕 f) 0 + ∑' z : GaussianInt, gaussianDualTail f c b z := by
-  have hd := hasSum_ite_eq (0 : GaussianInt) ((𝓕 f) 0)
+  have hd := hasSum_ite_eq (0 : GaussianInt) ((𝓕 f : 𝓢(ℂ, ℂ)) 0)
   rw [gaussianDualTerm_eq, hd.summable.tsum_add (summable_gaussianDualTail f c b),
     hd.tsum_eq]
 

@@ -20,7 +20,6 @@ def weilEnergyNormalize (f : realTests) : realTests :=
 /-- Scaling both test arguments scales the actual Weil pairing by the product. -/
 theorem weilPair_two_smul (f g : realTests) (a b : ℝ) :
     weilPair (a • f) (b • g) = a * b * weilPair f g := by
-  change weilPair (a • (f : ℝ → ℝ)) (b • (g : ℝ → ℝ)) = _
   rw [weilPair_smul_left, weilPair_comm (f : ℝ → ℝ), weilPair_smul_left,
     weilPair_comm (g : ℝ → ℝ)]
   ring
@@ -57,8 +56,10 @@ theorem weilPair_exists_sign_min (f g : realTests) :
 theorem weilPair_energyNormalize (f g : realTests) :
     weilPair (weilEnergyNormalize f) (weilEnergyNormalize g) =
       weilPair f g / (Real.sqrt |weilPair f f| * Real.sqrt |weilPair g g|) := by
-  rw [weilEnergyNormalize, weilEnergyNormalize, weilPair_two_smul]
-  ring
+  calc
+    _ = (Real.sqrt |weilPair f f|)⁻¹ * (Real.sqrt |weilPair g g|)⁻¹ * weilPair f g :=
+      weilPair_two_smul f g _ _
+    _ = _ := by ring
 
 theorem weilPair_energyNormalize_self (f : realTests) :
     weilPair (weilEnergyNormalize f) (weilEnergyNormalize f) =

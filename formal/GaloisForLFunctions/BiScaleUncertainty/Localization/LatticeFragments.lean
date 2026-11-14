@@ -24,7 +24,8 @@ private theorem unitPartition_eq_zero {x : ℝ} (hx : 3 ≤ |x|) :
     deningerPartitionUnity 1 x = 0 := by
   have hb : (deningerPartitionBump 1 : ℝ → ℝ) x = 0 :=
     (deningerPartitionBump 1).zero_of_le_dist (by
-      simpa only [deningerPartitionBump_rOut, abs_one, Real.dist_eq, sub_zero] using hx)
+      simpa only [deningerPartitionBump_rOut, abs_one, Real.dist_eq, sub_zero,
+        show (1 : ℝ) + 2 = 3 by norm_num] using hx)
   simp only [deningerPartitionUnity, hb, zero_mul]
 
 /-- Lattice fragmentation reconstructs every source pointwise. -/
@@ -98,3 +99,6 @@ theorem sum_latticeFragment_interval (A : ℝ≥0) (m : ℕ) (f : ℝ → ℝ) (
   exact (tsum_eq_sum fun j hj => latticeFragment_interval_eq_zero A m f j hj x).symm
 
 end GaloisForLFunctions.BiScaleUncertainty
+
+#print axioms GaloisForLFunctions.BiScaleUncertainty.sum_latticeFragment_interval
+#print axioms GaloisForLFunctions.BiScaleUncertainty.contDiff_latticeFragment

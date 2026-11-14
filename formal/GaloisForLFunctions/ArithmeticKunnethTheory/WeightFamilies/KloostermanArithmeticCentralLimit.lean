@@ -36,6 +36,24 @@ instance (S : Finset Nat.Primes) : IsProbabilityMeasure (arithmeticKloostermanLa
   simp [arithmeticKloostermanLaw, Measure.coe_finsetSum]
   exact ENNReal.inv_mul_cancel hp (by simp)
 
+/-- Every test function is integrable against the finite arithmetic distribution. -/
+theorem integrable_arithmeticKloostermanLaw (S : Finset Nat.Primes)
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (f : ℝ → E) :
+    Integrable f (arithmeticKloostermanLaw S) := by
+  have hp : (primeSetProduct S : ℝ≥0∞) ≠ 0 := by
+    exact_mod_cast (primeSetProduct_pos S).ne'
+  apply Integrable.smul_measure _ (ENNReal.inv_ne_top.mpr hp)
+  exact integrable_finsetSum_measure.mpr fun _ _ => integrable_dirac (by simp)
+
+/-- Integration against the arithmetic law is complete-period parameter averaging. -/
+theorem integral_arithmeticKloostermanLaw (S : Finset Nat.Primes)
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (f : ℝ → E) :
+    ∫ x, f x ∂arithmeticKloostermanLaw S = (primeSetProduct S : ℝ)⁻¹ •
+      ∑ a : Fin (primeSetProduct S), f (arithmeticKloostermanSum S a) := by
+  rw [arithmeticKloostermanLaw, integral_smul_measure,
+    integral_finsetSum_measure (fun _ _ => integrable_dirac (by simp))]
+  simp only [integral_dirac, ENNReal.toReal_inv, ENNReal.toReal_natCast]
+
 /-- CRT gives exact characteristic-function factorization for the common-parameter family. -/
 theorem charFun_arithmeticKloostermanLaw (S : Finset Nat.Primes) (t : ℝ) :
     charFun (arithmeticKloostermanLaw S) t =
@@ -57,10 +75,8 @@ theorem charFun_arithmeticKloostermanLaw (S : Finset Nat.Primes) (t : ℝ) :
         (p.val : ℂ) := by
     rw [charFun_apply_real, integral_primeKloostermanLaw]
     simp [Algebra.smul_def, inv_mul_eq_div]
-  rw [charFun_apply_real, arithmeticKloostermanLaw, integral_smul_measure,
-    integral_finsetSum_measure (fun _ _ => integrable_dirac (by simp))]
-  simp only [integral_dirac, hexp, ENNReal.toReal_inv, ENNReal.toReal_natCast,
-    Fin.sum_univ_eq_sum_range]
+  rw [charFun_apply_real, integral_arithmeticKloostermanLaw]
+  simp only [hexp, Fin.sum_univ_eq_sum_range]
   rw [sum_primeResidue_product]
   simp only [hlocal, prod_div_distrib]
   have hP : (primeSetProduct S : ℂ) = ∏ p ∈ S, (p.val : ℂ) := by

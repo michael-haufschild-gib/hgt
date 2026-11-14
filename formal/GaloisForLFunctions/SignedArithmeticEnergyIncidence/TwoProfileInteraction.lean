@@ -1,7 +1,8 @@
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.SignedIncidenceForms
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
-/-!+# Two-profile interaction and normalized negative directions
+/-!
+# Two-profile interaction and normalized negative directions
 
 The polarization of an arbitrary incidence matrix depends only on its symmetric
 part. Choosing the relative sign of two profiles gives the exact energy deficit
@@ -135,3 +136,6 @@ theorem incidenceEnergy_normalized_sign_negative_iff (c : ι → ι → ℝ) (f 
       incidenceEnergy_two_sign_negative_iff c (incidenceNormalize c f) (incidenceNormalize c g)
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
+
+#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.incidenceEnergy_normalized_sign_min
+#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.incidenceEnergy_normalized_sign_negative_iff

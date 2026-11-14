@@ -1,7 +1,8 @@
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.TwoProfileInteraction
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.SignChangesNeedAntiAlignedOverlaps
 
-/-!+# Two-profile witnesses for pole-subtracted incidence energies
+/-!
+# Two-profile witnesses for pole-subtracted incidence energies
 
 Subtracting the square of a pole functional subtracts its rank-one matrix from
 the incidence coupling. The exact two-sign threshold therefore uses the mixed
