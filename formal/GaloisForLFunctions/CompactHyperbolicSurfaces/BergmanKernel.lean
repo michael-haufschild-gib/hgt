@@ -470,7 +470,8 @@ theorem integral_bergK_I_pow (n : ℕ) (w : ℍ) :
   have hf : DifferentiableOn ℂ f (ball 0 1) := by
     intro ζ hζ
     have := one_sub_mul_conj_ne_zero (by simpa using hζ) hω
-    exact (DifferentiableAt.inv (by fun_prop) (pow_ne_zero _ this)).differentiableWithinAt
+    have hd : DifferentiableAt ℂ (fun ζ : ℂ => (1 - ζ * conj ω) ^ (n + 2)) ζ := by fun_prop
+    exact (hd.inv (pow_ne_zero _ this)).differentiableWithinAt
   have hB : ∀ ζ ∈ ball (0 : ℂ) 1, ‖f ζ‖ ≤ ((1 - ‖ω‖) ^ (n + 2))⁻¹ := by
     intro ζ hζ
     have hζ1 : ‖ζ‖ < 1 := by simpa using hζ
@@ -497,16 +498,18 @@ theorem integral_bergK_pow (n : ℕ) (z w : ℍ) :
     bergK y (g • w' : ℍ) ^ (n + 2)) (g := g)]
   have hpt : ∀ y : ℍ, bergK (g • I : ℍ) (g • y : ℍ) ^ (n + 2) *
       bergK (g • y : ℍ) (g • w' : ℍ) ^ (n + 2) =
-      (autF g I * conj (autF g w')) ^ (n + 2) *
-        (bergK Complex.I y ^ (n + 2) * bergK y w' ^ (n + 2)) := by
+      (autF g (I : ℍ) * conj (autF g w')) ^ (n + 2) *
+        (bergK (I : ℍ) y ^ (n + 2) * bergK y w' ^ (n + 2)) := by
     intro y
     rw [bergK_smul, bergK_smul, ← mul_pow, ← mul_pow, ← mul_pow]
     congr 1
-    have h := conj_autF_mul_self g y
-    rw [coe_I] at *
-    linear_combination (bergK Complex.I y * bergK y w' * autF g I * conj (autF g w')) * h
+    linear_combination (bergK (I : ℍ) y * bergK y w' * autF g (I : ℍ) * conj (autF g w')) *
+      conj_autF_mul_self g y
   simp_rw [hpt]
-  rw [integral_const_mul, integral_bergK_I_pow, bergK_smul, coe_I]
+  rw [integral_const_mul]
+  simp only [coe_I]
+  rw [integral_bergK_I_pow, bergK_smul]
+  simp only [coe_I]
   ring
 
 /-! ### Finiteness of the kernel masses -/
@@ -523,12 +526,11 @@ theorem one_add_pairUIc_diskToUpper {ζ : ℂ} (hζ : ‖ζ‖ < 1) :
   have hre : (diskToUpper ζ).re ^ 2 + ((diskToUpper ζ).im - 1) ^ 2 =
       4 * Complex.normSq ζ / Complex.normSq (1 - ζ) := by
     have h := congrArg Complex.normSq hsub
-    rw [Complex.normSq_div, Complex.normSq_mul, Complex.normSq_mul, Complex.normSq_I,
+    have h2 : Complex.normSq (2 : ℂ) = 4 := by rw [Complex.normSq_apply]; norm_num
+    rw [Complex.normSq_div, Complex.normSq_mul, Complex.normSq_mul, Complex.normSq_I, h2,
       Complex.normSq_apply] at h
     simp only [Complex.sub_re, Complex.sub_im, Complex.I_re, Complex.I_im, sub_zero] at h
-    rw [← h]
-    norm_num
-    ring
+    linear_combination h
   rw [pairUIc, hre, diskToUpper_im hne]
   field_simp
   ring

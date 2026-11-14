@@ -196,7 +196,7 @@ theorem eventually_ncard_turn_flipped (hτ₀ : 0 < τ₀.re) (hcen : IsCollisio
       refine ⟨?_, hT⟩
       have h := hT.zero_left
       rwa [turnPath_zero] at h
-  rw [hset, Set.ncard_image_of_injOn hinj, ncard_setOf_heatModelFwd_eq_zero]
+  rw [hset, hinj.ncard_image, ncard_setOf_heatModelFwd_eq_zero]
 
 /-! ## The turn as an element of the group -/
 
@@ -240,5 +240,3 @@ theorem eventually_exists_turn_mem_forwardMonodromy (hτ₀ : 0 < τ₀.re)
       exact ⟨⟨z, hz⟩, Subtype.ext (hγ.transports_unique (hact ⟨z, hz⟩) hT), rfl⟩
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.eventually_exists_turn_mem_forwardMonodromy
