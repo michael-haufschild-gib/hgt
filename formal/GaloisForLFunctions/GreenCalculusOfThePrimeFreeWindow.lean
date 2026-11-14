@@ -1,5 +1,6 @@
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGreenMatrixOfTheDyadicMiddleHasABoundStateChannelAndAPositiveChannel
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.ChargeCancellationPreservesTheCertifiedFloor
 
 /-!
 # Green calculus of the prime-free window

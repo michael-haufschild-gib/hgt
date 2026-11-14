@@ -43,9 +43,16 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
 
 ## Existing ingredients and outstanding checks
 
-- GCW's first two modules contain the Green criterion, harmonic criterion, additive
-  loss law and `one_lt_bindingEnergy`; source and transitive axioms require audit.
-- Spectral and conditional-energy floors: proof above, formalization pending.
+- GCW's Green criterion, harmonic criterion, additive loss law and
+  `one_lt_bindingEnergy` passed transitive audits: only `propext`,
+  `Classical.choice`, `Quot.sound`.
+- `ChargeCancellationPreservesTheCertifiedFloor.lean` proves the spectral floor,
+  including `J < R`, exact charge-cancellation Schur transfer and the local
+  harmonic index criterion. Direct Lean check and transitive audits passed;
+  see `../3-formalized/charge-cancellation-preserves-the-certified-floor.md`.
+- The GCW module
+  `TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies`
+  supplies first-overlap floors; its final audit is pending.
 - A140: the located full-sector certificate ends at `181/500`; the dilation tower
   stays below `0.3621`. Neither reaches `1881/5000`.
 - A141: quotient construction above awaits formalization. The located `7/8`

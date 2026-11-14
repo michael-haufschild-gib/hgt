@@ -27,8 +27,11 @@ theorem abs_archLevyDensity_sub_inverse_le {h : ℝ} (hh : 0 < h) :
   have hd : 1 - Real.exp (-2 * h) ≤ 2 * h := by
     linarith only [Real.add_one_le_exp (-2 * h)]
   have he : archLevyDensity h * (1 - Real.exp (-2 * h)) = Real.exp (-h / 2) := by
+    have hden : 1 - Real.exp (-(h * 2)) ≠ 0 := by
+      rw [show -(h * 2) = -2 * h by ring]
+      exact hdpos.ne'
     unfold archLevyDensity
-    field_simp [hdpos.ne']
+    field_simp [hdpos.ne', hden]
   have hmul := mul_le_mul_of_nonneg_left hd (archLevyDensity_pos hh).le
   rw [he] at hmul
   have hlo : (1 - h / 2) / (2 * h) ≤ archLevyDensity h := by
