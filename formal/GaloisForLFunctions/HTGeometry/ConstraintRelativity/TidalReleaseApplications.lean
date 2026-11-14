@@ -73,4 +73,24 @@ theorem measurementRelease_born_coefficient (L : Submodule ℝ H) (x : H) (t : �
   exact congrArg (fun r : ℝ => (t ^ 4 / 4 - t ^ 2) * r)
     (HTGeometry.re_inner_starProjection_eq_norm_sq L x).symm
 
+/-- The inward quadratic kick returns to its original length exactly at
+`t²=4`, at release, or when the measured component vanishes. -/
+theorem measurementRelease_length_eq_iff (L : Submodule ℝ H) (x : H) (t : ℝ) :
+    ‖tidalReleaseJet x (-L.starProjection x) t‖ ^ 2 = ‖x‖ ^ 2 ↔
+      t = 0 ∨ t ^ 2 = 4 ∨ L.starProjection x = 0 := by
+  rw [measurementRelease_norm_sq, add_eq_left,
+    show t ^ 4 / 4 - t ^ 2 = t ^ 2 * (t ^ 2 - 4) / 4 by ring]
+  simp only [mul_eq_zero, div_eq_zero_iff, sq_eq_zero_iff, norm_eq_zero,
+    sub_eq_zero, show (4 : ℝ) ≠ 0 by norm_num, or_false, or_assoc]
+
 end HTGeometry.ConstraintRelativity
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms HTGeometry.ConstraintRelativity.reporterRelease_null
+#print axioms HTGeometry.ConstraintRelativity.reporterRelease_norm_sq
+#print axioms HTGeometry.ConstraintRelativity.reporterRelease_length_nondecreasing
+#print axioms HTGeometry.ConstraintRelativity.reporterRelease_length_eq_iff
+#print axioms HTGeometry.ConstraintRelativity.measurementRelease_norm_sq
+#print axioms HTGeometry.ConstraintRelativity.measurementRelease_born_coefficient
+#print axioms HTGeometry.ConstraintRelativity.measurementRelease_length_eq_iff
+-- END PAPER AXIOM AUDIT

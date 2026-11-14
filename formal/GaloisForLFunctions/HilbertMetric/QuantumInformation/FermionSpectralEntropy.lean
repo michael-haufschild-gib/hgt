@@ -4,7 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 /-!
 # Spectral entropy for finite fermion correlations
 
-The entropy functional in equation (14) of arXiv:2611.13085 is the sum of
+The entropy functional in §II.2 of arXiv:2611.13085 is the sum of
 binary entropies of correlation eigenvalues. Expressing it through the roots
 of the characteristic polynomial makes its invariance under changes of basis
 and the rectangular Gram identity exact, with zero padding contributing nothing.
@@ -30,15 +30,15 @@ theorem fermionSpectralEntropy_diagonal {ι : Type*} [Fintype ι] [DecidableEq �
   unfold fermionSpectralEntropy
   rw [Matrix.charpoly_diagonal, Polynomial.roots_prod]
   · simp
-  · simp only [Finset.prod_ne_zero_iff, Polynomial.X_sub_C_ne_zero, implies_true]
+  · exact Finset.prod_ne_zero_iff.mpr (fun i _ => Polynomial.X_sub_C_ne_zero _)
 
 /-- Empty and full occupations carry zero fermion entropy. -/
 theorem fermionSpectralEntropy_projection_diagonal
     {ι : Type*} [Fintype ι] [DecidableEq ι] (occupied : Finset ι) :
     fermionSpectralEntropy (Matrix.diagonal (fun i => if i ∈ occupied then (1 : ℂ) else 0)) = 0 := by
   have h := fermionSpectralEntropy_diagonal (fun i => if i ∈ occupied then (1 : ℝ) else 0)
-  simpa only [Complex.ofReal_ite, Complex.ofReal_one, Complex.ofReal_zero,
-    apply_ite Real.binEntropy, Real.binEntropy_one, Real.binEntropy_zero,
+  simpa only [apply_ite, Complex.ofReal_one, Complex.ofReal_zero,
+    Real.binEntropy_one, Real.binEntropy_zero,
     ite_self, Finset.sum_const_zero] using h
 
 /-- Multiplication in either order gives the same spectral entropy. -/
@@ -82,3 +82,11 @@ theorem pureStateReduced_fermionEntropies_eq
   fermionSpectralEntropy_gram (HTGeometry.bipartitePureStateMatrix ψ)
 
 end GaloisForLFunctions.HilbertMetric
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_diagonal
+#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_projection_diagonal
+#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_mul_comm
+#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_gram
+#print axioms GaloisForLFunctions.HilbertMetric.pureStateReduced_fermionEntropies_eq
+-- END PAPER AXIOM AUDIT

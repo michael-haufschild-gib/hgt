@@ -74,9 +74,10 @@ theorem arbitrary_minor_zero_of_stateSpace {d q : ℕ} {s : ℕ → K}
 theorem stateSpace_of_recurrence (E : LinearRecurrence K) {s : ℕ → K}
     (hE : E.IsSolution s) : AlgebraicStateSpaceDimensionAtMost E.order s := by
   by_cases h : E.order = 0
-  · have hs : s = 0 := by
+  · letI : IsEmpty (Fin E.order) := ⟨fun i => by have hi := i.isLt; omega⟩
+    have hs : s = 0 := by
       funext n
-      simpa [LinearRecurrence.IsSolution, h] using hE n
+      simpa [h] using hE n
     rw [h, hs]
     refine ⟨0, 0, 0, ?_⟩
     funext n

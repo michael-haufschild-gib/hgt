@@ -101,12 +101,10 @@ theorem exists_weight_cutDegree_le_iff (q : ι → ℤ) (D : ℕ) :
 variable (K : Type*) [Field K]
 open HTGeometry.AddMonoidAlgebraTensorCoefficients
 
-/-- The character of a monomial under opposite scaling of each variable pair. -/
 /-- The polynomial subspace with the specified torus character. -/
 def pairedWeightSpace (q : ι → ℤ) : Submodule K (MvPolynomial (ι ⊕ ι) K) :=
   restrictSupport K {d | pairedWeight d = q}
 
-/-- The character of a monomial under opposite scaling of each variable pair. -/
 /-- The neutral monomial basis parametrizes the entire weight subspace. -/
 def pairedWeightSpaceEquiv (q : ι → ℤ) :
     MvPolynomial ι K ≃ₗ[K] pairedWeightSpace K q :=
@@ -189,4 +187,7 @@ theorem invariantSubstitution_injective : Function.Injective (invariantSubstitut
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
 
-
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.weightExponentEquiv
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.pairedWeightSpace_unique_factor
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.invariantSubstitution_injective
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.exists_weight_cutDegree_le_iff

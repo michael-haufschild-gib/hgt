@@ -82,3 +82,12 @@ theorem schwarzschildTendex_horizon_entropy_determinant (m polar : ℝ) :
     _ = _ := by rw [h]
 
 end GaloisForLFunctions.HTGeometry
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendexCoefficient_pos
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_radial
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_trace
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_determinant
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_null_iff
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_horizon_entropy_determinant
+-- END PAPER AXIOM AUDIT

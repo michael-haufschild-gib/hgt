@@ -1,5 +1,4 @@
 import Mathlib.Algebra.MvPolynomial.Monad
-import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Abel
 
 /-!
@@ -61,7 +60,7 @@ theorem pull_comp (θ φ : ι → R) (t s : R) :
   ext j
   cases j with
   | none => simp only [AlgHom.comp_apply, pull_vertical, map_add, pull_shearForm,
-      pull_constant, shearForm_add]; ring
+      pull_constant, shearForm_add]; abel
   | some i => simp only [AlgHom.comp_apply, pull_horizontal]
 
 @[simp] theorem pull_zero : pull (0 : ι → R) 0 = AlgHom.id R _ := by
@@ -96,7 +95,7 @@ theorem centeredPull_comp (θ φ : ι → R) (t s : R)
   have h := DFunLike.congr_fun (pull_comp θ φ t s) p
   simp only [AlgHom.comp_apply] at h
   simp only [centeredPull, map_sub, pull_constant, h, eval_C]
-  ring
+  abel
 
 /-- Inverting a centered frame recovers every nonconstant coefficient exactly. -/
 theorem centeredPull_inverse (θ : ι → R) (t : R)

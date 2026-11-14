@@ -86,3 +86,13 @@ theorem tidalReleaseJet_inner (x a y b : H) (t : ℝ) :
   ring
 
 end GaloisForLFunctions.HilbertMetric
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_norm_sq
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_neg
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_hasDerivAt
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_quadratic_lower
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_quadratic_eq_iff
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_null_and_length_iff
+#print axioms GaloisForLFunctions.HilbertMetric.tidalReleaseJet_inner
+-- END PAPER AXIOM AUDIT

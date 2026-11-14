@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ZeroEstimate
 import GaloisForLFunctions.RHTower.ZeroEstimateOrder
 import GaloisForLFunctions.PNTPlus.Consequences
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Torus.BoundedWeightMultiplicity
 import Mathlib.LinearAlgebra.Vandermonde
 
 /-!
@@ -27,7 +28,8 @@ degree-`≤ D` exponent vector supported in `S` is at most `P_S^D`, so every for
 * `prod_inv_primeLogHeight_le_abs_det_vandermonde` — (b) the `S`-free determinant size bound;
 * `primeLogHeight_le_pow`, `inv_pow_le_abs_primeLogForm` — (c) the `P_S`-polynomial height and form
   bounds at fixed degree;
-* `card_boundedDegreeMonomials_le` — (c) the monomial count `C(|S|+d, d)`;
+* `card_boundedDegreeMonomials_eq`, `card_boundedDegreeMonomials_le` — (c) the exact monomial
+  count `C(|S|+d, d)`;
 * `eventually_nth_prime_le_two_mul`, `eventually_nth_prime_le_sq` — the PNT link making `P_S`
   polynomial in `|S|` along the canonical exhaustion.
 -/
@@ -287,38 +289,18 @@ theorem count_monomialMode {S : Finset Nat.Primes} {d : ℕ} (m : Nat.Primes →
       exact (modeEncode_eq_some_iff.mpr h.symm).symm
   rw [hfilter, ← Multiset.count_eq_card_filter_eq, Finsupp.count_toMultiset]
 
-/-- **(c) The monomial count.**  Monomials supported in `S` of total degree at most `d` are at most
-`C(|S| + d, d)` in number — polynomial in `|S|` at fixed degree `d`. -/
+/-- Monomials supported in `S` of total degree at most `d` are counted exactly by
+`C(|S| + d, d)`: a padding variable turns bounded degree into fixed degree. -/
+theorem card_boundedDegreeMonomials_eq (S : Finset Nat.Primes) (d : ℕ) :
+    Nat.card {m : Nat.Primes →₀ ℕ // m.support ⊆ S ∧ (m.sum fun _ k => k) ≤ d}
+      = (S.card + d).choose d :=
+  ArithmeticHarmonicAnalysis.card_bounded_supported_exponents S d
+
+/-- The exact monomial count supplies the uniform upper bound. -/
 theorem card_boundedDegreeMonomials_le (S : Finset Nat.Primes) (d : ℕ) :
     Nat.card {m : Nat.Primes →₀ ℕ // m.support ⊆ S ∧ (m.sum fun _ k => k) ≤ d}
-      ≤ (S.card + d).choose d := by
-  classical
-  have hinj : Function.Injective
-      (fun x : {m : Nat.Primes →₀ ℕ // m.support ⊆ S ∧ (m.sum fun _ k => k) ≤ d} =>
-        (⟨monomialMode S d x.1, card_monomialMode x.2.2⟩ :
-          Sym (Option {q : Nat.Primes // q ∈ S}) d)) := by
-    intro x y hxy
-    refine Subtype.ext (Finsupp.ext (fun p => ?_))
-    have hval : monomialMode S d x.1 = monomialMode S d y.1 := congrArg Subtype.val hxy
-    by_cases hp : p ∈ S
-    · have := congrArg (fun t => Multiset.count (some (⟨p, hp⟩ :
-        {q : Nat.Primes // q ∈ S})) t) hval
-      simpa [count_monomialMode] using this
-    · have hx : x.1 p = 0 := by
-        by_contra hne
-        exact hp (x.2.1 (Finsupp.mem_support_iff.mpr hne))
-      have hy : y.1 p = 0 := by
-        by_contra hne
-        exact hp (y.2.1 (Finsupp.mem_support_iff.mpr hne))
-      rw [hx, hy]
-  have hcard : Nat.card {m : Nat.Primes →₀ ℕ // m.support ⊆ S ∧ (m.sum fun _ k => k) ≤ d}
-      ≤ Nat.card (Sym (Option {q : Nat.Primes // q ∈ S}) d) :=
-    Nat.card_le_card_of_injective _ hinj
-  refine hcard.trans (le_of_eq ?_)
-  rw [Nat.card_eq_fintype_card, Sym.card_sym_eq_choose]
-  congr 1
-  simp only [Fintype.card_option, Fintype.card_coe]
-  omega
+      ≤ (S.card + d).choose d :=
+  (card_boundedDegreeMonomials_eq S d).le
 
 /-! ### The prime number theorem link -/
 
@@ -358,3 +340,5 @@ theorem eventually_nth_prime_le_sq :
 end ZeroEstimateUniformity
 
 end GaloisForLFunctions
+
+#print axioms GaloisForLFunctions.ZeroEstimateUniformity.card_boundedDegreeMonomials_eq

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HilbertMetric.Geometry.PlanarTendex
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Exact release dynamics for the constant tidal tensor
@@ -81,4 +82,51 @@ theorem constantTendexFlow_null_length (q a t : ℝ) :
   dsimp
   linear_combination a ^ 2 * hh + 2 * a ^ 2 * hc + a ^ 2 * cos (exp q * t) ^ 2 * hs
 
+/-- Hyperbolic stretching strictly dominates the two transverse oscillatory contributions
+except at zero time. -/
+theorem tendex_null_length_gap (s : ℝ) :
+    0 ≤ sinh (sqrt 2 * s) ^ 2 - 2 * sin s ^ 2 ∧
+      (sinh (sqrt 2 * s) ^ 2 - 2 * sin s ^ 2 = 0 ↔ s = 0) := by
+  by_cases hs : s = 0
+  · subst s
+    simp
+  have hx : sqrt 2 * s ≠ 0 := mul_ne_zero (by positivity) hs
+  have hstrict : |sqrt 2 * s| < |sinh (sqrt 2 * s)| := by
+    rw [abs_sinh]
+    exact self_lt_sinh_iff.mpr (abs_pos.mpr hx)
+  have hh := (sq_lt_sq₀ (abs_nonneg _) (abs_nonneg _)).mpr hstrict
+  simp only [sq_abs, mul_pow, sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)] at hh
+  have hc := (sq_le_sq₀ (abs_nonneg (sin s)) (abs_nonneg s)).mpr abs_sin_le_abs
+  simp only [sq_abs] at hc
+  have hp : 0 < sinh (sqrt 2 * s) ^ 2 - 2 * sin s ^ 2 := by
+    nlinarith only [hh, hc]
+  exact ⟨hp.le, iff_of_false hp.ne' hs⟩
+
+/-- Every initially null separation weakly lengthens under the exact constant-tensor flow. -/
+theorem constantTendexFlow_null_length_ge (q a t : ℝ) :
+    3 * a ^ 2 ≤ euclideanPairing (constantTendexFlow q (a, sqrt 2 * a) t)
+      (constantTendexFlow q (a, sqrt 2 * a) t) := by
+  rw [constantTendexFlow_null_length, mul_assoc (sqrt 2) (exp q) t]
+  exact le_add_of_nonneg_right (mul_nonneg (sq_nonneg a) (tendex_null_length_gap _).1)
+
+/-- Exact finite-time preservation of an initially null separation occurs only at
+zero time or for the zero vector. -/
+theorem constantTendexFlow_null_length_eq_iff (q a t : ℝ) :
+    euclideanPairing (constantTendexFlow q (a, sqrt 2 * a) t)
+      (constantTendexFlow q (a, sqrt 2 * a) t) = 3 * a ^ 2 ↔ a = 0 ∨ t = 0 := by
+  rw [constantTendexFlow_null_length, mul_assoc (sqrt 2) (exp q) t,
+    add_eq_left, mul_eq_zero, sq_eq_zero_iff, (tendex_null_length_gap _).2]
+  simp only [mul_eq_zero, exp_ne_zero, false_or]
+
 end GaloisForLFunctions.HilbertMetric
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_zero
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexVelocity_zero
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_hasDerivAt
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexVelocity_hasDerivAt
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_null_length
+#print axioms GaloisForLFunctions.HilbertMetric.tendex_null_length_gap
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_null_length_ge
+#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_null_length_eq_iff
+-- END PAPER AXIOM AUDIT

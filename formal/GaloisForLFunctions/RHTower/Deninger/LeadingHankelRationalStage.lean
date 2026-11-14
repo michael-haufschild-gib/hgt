@@ -44,7 +44,22 @@ theorem deningerField_leadingTail_iff_exists_rationalWittStage
   (deningerField_leadingTail_iff_hankelRankLT n w).trans
     (deningerField_hankelRankLT_iff_exists_rationalWittStage n w)
 
+/-- Leading determinant bounds alone propagate through Witt multiplication with the
+corrected resultant-degree bound. -/
+theorem deningerField_leadingTail_mul_corrected
+    {K : Type*} [Field K] {n m : ℕ} {u v : DeningerBigWittAdditive K}
+    (hu : ∀ k, n < k → leadingDet (fun i => PowerSeries.coeff i (deningerBigWittSeries u)) k = 0)
+    (hv : ∀ k, m < k → leadingDet (fun i => PowerSeries.coeff i (deningerBigWittSeries v)) k = 0) :
+    ∀ k, deningerCorrectedWittMulStageBound n m < k →
+      leadingDet (fun i => PowerSeries.coeff i
+        (deningerBigWittSeries (deningerBigWittMul u v))) k = 0 :=
+  (deningerField_leadingTail_iff_hankelRankLT _ _).mpr
+    (deningerField_hankelRankLT_mul_corrected
+      ((deningerField_leadingTail_iff_hankelRankLT n u).mp hu)
+      ((deningerField_leadingTail_iff_hankelRankLT m v).mp hv))
+
 #print axioms deningerField_leadingTail_iff_hankelRankLT
 #print axioms deningerField_leadingTail_iff_exists_rationalWittStage
+#print axioms deningerField_leadingTail_mul_corrected
 
 end RHTower

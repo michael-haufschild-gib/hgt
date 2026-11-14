@@ -3862,6 +3862,7 @@ import GaloisForLFunctions.RHTower.Deninger.DeningerKotheSpace
 import GaloisForLFunctions.RHTower.Deninger.DeningerKronecker
 import GaloisForLFunctions.RHTower.Deninger.DeningerKroneckerDense
 import GaloisForLFunctions.RHTower.Deninger.DeningerKroneckerFieldStage
+import GaloisForLFunctions.RHTower.Deninger.LeadingHankelRationalStage
 import GaloisForLFunctions.RHTower.Deninger.DeningerKroneckerTranspose
 import GaloisForLFunctions.RHTower.Deninger.DeningerKummerCompletion
 import GaloisForLFunctions.RHTower.Deninger.DeningerKummerGaussianProbe

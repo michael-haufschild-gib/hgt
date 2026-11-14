@@ -32,12 +32,6 @@ def schwarzschildCauchySlice (u x : ℝ) : ℝ := sqrt (1 + x ^ 2) * tanh u
 def schwarzschildCauchyClock (m T X : ℝ) : ℝ :=
   4 * exp m * artanh (T / sqrt (1 + X ^ 2))
 
-/-- The squared hyperbolic tangent is strictly below one. -/
-private theorem tanh_sq_lt_one (u : ℝ) : tanh u ^ 2 < 1 := by
-  have h := mul_pos (sub_pos.mpr (tanh_lt_one u))
-    (show 0 < 1 + tanh u by linarith [neg_one_lt_tanh u])
-  nlinarith only [h]
-
 /-- Every slice lies strictly inside the maximally extended Kruskal domain. -/
 theorem schwarzschildCauchySlice_domain (u x : ℝ) :
     schwarzschildCauchySlice u x ^ 2 - x ^ 2 < 1 := by
@@ -63,6 +57,30 @@ theorem schwarzschildCauchySlice_injective (x : ℝ) :
   simpa only [schwarzschildCauchyClock_slice, exp_zero, mul_one,
     mul_right_inj' (by norm_num : (4 : ℝ) ≠ 0)] using hclock
 
+/-- The slices cover the full Kruskal domain, exactly once at each spatial coordinate. -/
+theorem schwarzschildCauchySlice_foliation (T X : ℝ) :
+    T ^ 2 - X ^ 2 < 1 ↔ ∃! u, schwarzschildCauchySlice u X = T := by
+  constructor
+  · intro hT
+    have hs : 0 < sqrt (1 + X ^ 2) := by positivity
+    have hs2 : sqrt (1 + X ^ 2) ^ 2 = 1 + X ^ 2 := sq_sqrt (by positivity)
+    have habs : |T| < sqrt (1 + X ^ 2) := by
+      apply (sq_lt_sq₀ (abs_nonneg T) hs.le).mp
+      rw [sq_abs, hs2]
+      linarith only [hT]
+    have hratio : T / sqrt (1 + X ^ 2) ∈ Set.Ioo (-1) 1 := by
+      constructor
+      · apply (lt_div_iff₀ hs).mpr
+        simpa only [neg_one_mul] using (abs_lt.mp habs).1
+      · apply (div_lt_iff₀ hs).mpr
+        simpa only [one_mul] using (abs_lt.mp habs).2
+    have he : schwarzschildCauchySlice (artanh (T / sqrt (1 + X ^ 2))) X = T := by
+      unfold schwarzschildCauchySlice
+      rw [tanh_artanh hratio, mul_div_cancel₀ _ hs.ne']
+    exact ⟨_, he, fun u hu => schwarzschildCauchySlice_injective X (hu.trans he.symm)⟩
+  · rintro ⟨u, rfl, _⟩
+    exact schwarzschildCauchySlice_domain u X
+
 /-- Spatial slope of a slice. -/
 def schwarzschildCauchySlope (u x : ℝ) : ℝ := tanh u * x / sqrt (1 + x ^ 2)
 
@@ -77,7 +95,6 @@ theorem schwarzschildCauchySlice_hasDerivAt (u x : ℝ) :
       schwarzschildCauchySlope u x := by
     unfold schwarzschildCauchySlope
     field_simp
-    ring
   rw [hc] at hm
   exact hm
 
@@ -125,3 +142,17 @@ theorem schwarzschildCauchyNormal_tangent_orthogonal (u x : ℝ) :
   simp [splitForm]
 
 end GaloisForLFunctions.HTGeometry
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_domain
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_slice
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_injective
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_foliation
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_hasDerivAt
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlope_margin
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlope_sq_lt_one
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyNormal_timelike
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyNormal_boost_timelike
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyTangent_spacelike
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyNormal_tangent_orthogonal
+-- END PAPER AXIOM AUDIT
