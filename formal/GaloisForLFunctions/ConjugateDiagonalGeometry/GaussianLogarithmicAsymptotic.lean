@@ -22,7 +22,7 @@ open RiemannGaussian
 /-- The real archimedean density has bounded error on the logarithmic scale,
 uniformly at positive and negative heights. -/
 theorem abs_riemannArchimedeanDensity_sub_log_le {t : ℝ} (ht : 4 ≤ |t|) :
-    |riemannArchimedeanDensity t - Real.log |t|| ≤ 3 := by
+    |riemannArchimedeanDensity t - Real.log (|t|)| ≤ 3 := by
   let z : ℂ := 1 / 4 + I * (t / 2)
   have ht0 : 0 < |t| := by linarith only [ht]
   have hzre : 0 < z.re := by norm_num [z]
@@ -38,22 +38,23 @@ theorem abs_riemannArchimedeanDensity_sub_log_le {t : ℝ} (ht : 4 ≤ |t|) :
   rw [Real.log_div ht0.ne' (by norm_num)] at hloglo
   have hloghi := Real.log_le_log hz0 hnorm
   have hlog2 : Real.log 2 ≤ 1 := by
-    simpa using Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
-  have hgap : |Real.log ‖z‖ - Real.log |t|| ≤ 1 :=
+    have hh := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+    linarith only [hh]
+  have hgap : |Real.log ‖z‖ - Real.log (|t|)| ≤ 1 :=
     abs_le.mpr ⟨by linarith only [hloglo, hlog2], by linarith only [hloghi]⟩
   have hrem := (Complex.abs_re_le_norm (Complex.digamma z - Complex.log z)).trans
     (HTGeometry.norm_digamma_sub_log_le_of_re_pos hzre hz2)
   rw [Complex.sub_re, Complex.log_re] at hrem
   have hquot : 3 / ‖z‖ ≤ 3 / 2 :=
     div_le_div_of_nonneg_left (by norm_num) (by norm_num) hz2
-  calc |riemannArchimedeanDensity t - Real.log |t||
+  calc |riemannArchimedeanDensity t - Real.log (|t|)|
       = |((Complex.digamma z).re - Real.log ‖z‖) +
           (Real.log ‖z‖ - Real.log |t|)| := by
             congr 1
             change (Complex.digamma z).re - _ = _
             ring
     _ ≤ |(Complex.digamma z).re - Real.log ‖z‖| +
-          |Real.log ‖z‖ - Real.log |t|| := abs_add_le _ _
+          |Real.log ‖z‖ - Real.log (|t|)| := abs_add_le _ _
     _ ≤ 3 := by linarith only [hrem, hquot, hgap]
 
 /-- The archimedean density has logarithmic coefficient one at both ends. -/
@@ -84,6 +85,7 @@ theorem exists_riemannArchimedeanDensity_log_bound :
     (K := 4) (by norm_num)
   refine ⟨8, le_rfl, ?_⟩
   intro t ht
+  change ‖(riemannArchimedeanDensity t : ℂ)‖ ≤ 4 * Real.log |t|
   have hl : 1 ≤ Real.log |t| := by
     have he : Real.exp 1 ≤ |t| := by
       have he := Real.exp_one_lt_d9
@@ -93,11 +95,11 @@ theorem exists_riemannArchimedeanDensity_log_bound :
     (by linarith only [ht] : 4 ≤ |t|)
   have ha : |riemannArchimedeanDensity t| ≤ 3 + Real.log |t| := by
     calc |riemannArchimedeanDensity t|
-        = |(riemannArchimedeanDensity t - Real.log |t|) + Real.log |t|| := by ring_nf
-      _ ≤ |riemannArchimedeanDensity t - Real.log |t|| + |Real.log |t|| := abs_add_le _ _
+        = |(riemannArchimedeanDensity t - Real.log |t|) + Real.log (|t|)| := by ring_nf
+      _ ≤ |riemannArchimedeanDensity t - Real.log (|t|)| + |Real.log (|t|)| := abs_add_le _ _
       _ ≤ 3 + Real.log |t| := by
         rw [abs_of_nonneg (by linarith only [hl] : 0 ≤ Real.log |t|)]
-        exact add_le_add_right hb _
+        exact add_le_add hb le_rfl
   rw [Complex.norm_real, Real.norm_eq_abs]
   linarith only [ha, hl]
 
@@ -115,7 +117,7 @@ private theorem integrable_gaussian_log_weight {ε : ℝ} (hε : 0 < ε) :
   have hp' : u ^ 2 * Real.exp (-(ε / 2 * u ^ 2)) ≤ 2 / ε := by
     convert hp using 1 <;> field_simp [hε.ne'] <;> ring
   have he : Real.exp (-(ε / 2 * u ^ 2)) ≤ 1 :=
-    Real.exp_le_one_iff.mpr (by positivity)
+    Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))
   have hu : |u| ≤ 1 + u ^ 2 := by
     nlinarith only [sq_nonneg (|u| - 1), sq_abs u]
   have hweighted : (2 + |u| / Real.log 2) * Real.exp (-(ε / 2 * u ^ 2)) ≤ M := by
@@ -125,7 +127,18 @@ private theorem integrable_gaussian_log_weight {ε : ℝ} (hε : 0 < ε) :
     have hsum : (Real.exp (-(ε / 2 * u ^ 2)) +
         u ^ 2 * Real.exp (-(ε / 2 * u ^ 2))) / Real.log 2 ≤ (1 + 2 / ε) / Real.log 2 :=
       div_le_div_of_nonneg_right (add_le_add he hp') hl.le
-    nlinarith only [hdiv, hsum, he]
+    calc (2 + |u| / Real.log 2) * Real.exp (-(ε / 2 * u ^ 2))
+        = 2 * Real.exp (-(ε / 2 * u ^ 2)) +
+          (|u| * Real.exp (-(ε / 2 * u ^ 2))) / Real.log 2 := by ring
+      _ ≤ 2 * Real.exp (-(ε / 2 * u ^ 2)) +
+          ((1 + u ^ 2) * Real.exp (-(ε / 2 * u ^ 2))) / Real.log 2 :=
+        add_le_add le_rfl hdiv
+      _ = 2 * Real.exp (-(ε / 2 * u ^ 2)) +
+          (Real.exp (-(ε / 2 * u ^ 2)) + u ^ 2 * Real.exp (-(ε / 2 * u ^ 2))) /
+            Real.log 2 := by ring
+      _ ≤ 2 * 1 + (1 + 2 / ε) / Real.log 2 :=
+        add_le_add (mul_le_mul_of_nonneg_left he (by norm_num)) hsum
+      _ = 2 + (1 + 2 / ε) / Real.log 2 := by ring
   calc Real.exp (-ε * u ^ 2) * (2 + |u| / Real.log 2)
       = Real.exp (-(ε / 2 * u ^ 2)) *
           ((2 + |u| / Real.log 2) * Real.exp (-(ε / 2 * u ^ 2))) := by
@@ -143,10 +156,13 @@ private theorem integrable_gaussian_log_weight {ε : ℝ} (hε : 0 < ε) :
 /-- The real density is even by conjugation of the digamma function. -/
 theorem riemannArchimedeanDensity_neg (t : ℝ) :
     riemannArchimedeanDensity (-t) = riemannArchimedeanDensity t := by
+  have htwo : starRingEnd ℂ (2 : ℂ) = 2 := by
+    apply Complex.ext <;> norm_num
   have hz : starRingEnd ℂ (1 / 4 + I * (t / 2 : ℂ)) =
       1 / 4 + I * ((-t) / 2 : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> norm_num [map_add, map_mul, map_div₀, htwo] <;> ring
   unfold riemannArchimedeanDensity
+  push_cast
   rw [← hz, ReflectedDigammaAnomaly.digamma_conj]
   rfl
 
@@ -207,7 +223,7 @@ private theorem tendsto_bounded_div_log {f : ℝ → ℝ} {B : ℝ}
   apply squeeze_zero_norm' ?_ (hl.const_div_atTop B)
   filter_upwards [Filter.tendsto_comap.eventually (eventually_ge_atTop (2 : ℝ))] with T hT
   have hlog : 0 < Real.log |T| := Real.log_pos (by linarith only [hT])
-  simpa only [Real.norm_eq_abs, abs_div, abs_of_pos hlog] using
+  simpa only [Function.comp_def, Real.norm_eq_abs, abs_div, abs_of_pos hlog] using
     div_le_div_of_nonneg_right (hb T) hlog.le
 
 /-- The prime series has a uniform bound in its center. -/
@@ -243,7 +259,7 @@ private theorem bounded_gaussianArchimedeanRemainder {ε : ℝ} (hε : 0 < ε) (
       (mul_le_mul_of_nonneg_left he (by norm_num))
   unfold gaussianArchimedeanContribution
   rw [add_sub_cancel_right]
-  exact (abs_sub _ _).trans (add_le_add_right hp _)
+  exact (abs_sub _ _).trans (add_le_add hp le_rfl)
 
 /-- The arithmetic Gaussian formula has the logarithmic coefficient
 of its archimedean mass; the prime and pole terms have zero coefficient. -/

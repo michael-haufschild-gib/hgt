@@ -18,12 +18,12 @@ state is held on both sides.
   matrix of a bound sub-window, extended by zero, is below the Green matrix of the window. The
   Green matrix of the dyadic middle is below the compression of the inverse of every certified
   window that contains it (`greenMatrix_form_le_neutralWindow_inv`).
-* **Windows of ratio between `3/2` and `2` bind** (`sum_neutralBlock_window_le`,
-  `exists_oneBoundState_neutralWindow_of_ratio`): the flat packet of `(R, R + J]`, `J ≤ R ≤ 2J`,
-  has energy at most `−J/6`; the window has one bound state with floor `1/5000`.
+* **Windows of ratio between `4/3` and `2` bind** (`sum_neutralBlock_window_le`,
+  `exists_oneBoundState_neutralWindow_of_ratio`): the flat packet of `(R, R + J]`, `J ≤ R ≤ 3J`,
+  has energy at most `−J/25`; the window has one bound state with floor `1/5000`.
 * **The Green matrix is nonnegative on the slivers** (`greenMatrix_nonneg_of_sliver`): on the
   vectors supported on a left sliver of `s` blocks and a right sliver of `s'` blocks of the
-  dyadic middle, `3s + 2s' ≤ D`, the Green matrix `G_D` is nonnegative at every block size:
+  dyadic middle, `4s + 3s' ≤ 2D`, the Green matrix `G_D` is nonnegative at every block size:
   there the positive channel dominates the bound-state channel
   (`groundVector_sq_le_greenPositive_of_sliver`).
 * **The tower law** (`greenMatrix_form_le_refined`, `bindingEnergy_le_refined`): refinement by
@@ -53,6 +53,7 @@ theorem dotProduct_mulVec_eq_transpose (T : Matrix κ ι ℝ) (x : κ → ℝ) (
     x ⬝ᵥ (T *ᵥ y) = (Tᵀ *ᵥ x) ⬝ᵥ y := by
   rw [Matrix.dotProduct_mulVec, Matrix.mulVec_transpose]
 
+omit [Fintype ι] in
 /-- A compression of a symmetric matrix is symmetric. -/
 theorem transpose_mul_mul_symm {N : Matrix κ κ ℝ} (hN : ∀ i j, N i j = N j i)
     (T : Matrix κ ι ℝ) (i j : ι) : (Tᵀ * N * T) i j = (Tᵀ * N * T) j i := by
@@ -157,6 +158,7 @@ theorem inv_form_le_of_isometry {M' : Matrix κ κ ℝ} {φ' : κ → ℝ} {μ' 
   have h1 := inv_form_compression_le h' h T hT (T *ᵥ w)
   rwa [Matrix.mulVec_mulVec, hTT, Matrix.one_mulVec] at h1
 
+omit [DecidableEq κ] in
 /-- **The binding energy does not decrease under an isometric extension.** -/
 theorem OneBoundState.depth_le_of_isometry {M' : Matrix κ κ ℝ} {φ' : κ → ℝ} {μ' c' : ℝ}
     (h' : OneBoundState M' φ' μ' c') (h : OneBoundState M φ μ c) (T : Matrix κ ι ℝ)
@@ -225,7 +227,7 @@ theorem neutralWindow_submatrix_shiftFin (Q R s : ℕ) {J' J : ℕ} (h : s + J' 
       neutralWindow Q (R + s) J' := by
   ext i j
   simp only [Matrix.submatrix_apply, neutralWindow, windowMatrix, Matrix.of_apply, shiftFin,
-    Fin.val_mk, Nat.add_assoc]
+    Nat.add_assoc]
 
 /-- **The Green matrix of a bound sub-window is below the Green matrix of the window.** -/
 theorem inv_form_neutralWindow_shift_le {Q R J s J' : ℕ} (hs : s + J' ≤ J)
@@ -257,37 +259,45 @@ theorem greenMatrix_form_le_neutralWindow_inv {Q R J s : ℕ} (hR : 1 ≤ R) (hR
   rw [neutralWindow_dyadic_eq] at h1
   exact h1
 
-/-! ### Windows of ratio between `3/2` and `2` -/
+/-! ### Windows of ratio between `4/3` and `2` -/
 
-/-- **The flat packet of a window of ratio between `3/2` and `2` binds**: on `(R, R + J]` with
-`J ≤ R ≤ 2J` the constant packet has energy at most `−J/6`. The two entropy terms are at most
-`J` and `J log 3`, the jet term is a second difference of the convex `x log x`, and
-`1 + log 3 < γ + log 2π`. -/
-theorem sum_neutralBlock_window_le {Q R J : ℕ} (hJ : 1 ≤ J) (hJR : J ≤ R) (hRJ : R ≤ 2 * J) :
-    ∑ j ∈ range J, ∑ l ∈ range J, neutralBlock Q (R + j) (R + l) ≤ -(1 / 6) * J := by
+/-- **The flat packet of a window of ratio between `4/3` and `2` binds**: on `(R, R + J]` with
+`J ≤ R ≤ 3J` the constant packet has energy at most `−J/25`. The two entropy terms are at most
+`3J log (4/3)` and `J log 4`, the jet term is a second difference of the convex `x log x`, and
+`3 log (4/3) + log 4 < γ + log 2π`. -/
+theorem sum_neutralBlock_window_le {Q R J : ℕ} (hJ : 1 ≤ J) (hJR : J ≤ R) (hRJ : R ≤ 3 * J) :
+    ∑ j ∈ range J, ∑ l ∈ range J, neutralBlock Q (R + j) (R + l) ≤ -(1 / 25) * J := by
   rw [sum_neutralBlock_window hJR]
   have hj : (0 : ℝ) < J := by exact_mod_cast hJ
   have hr : (0 : ℝ) < R := by exact_mod_cast (by omega : 0 < R)
-  have hrj : (R : ℝ) ≤ 2 * J := by exact_mod_cast hRJ
-  have hA : Real.log ((R : ℝ) + J) - Real.log R ≤ J / R := by
-    rw [← Real.log_div (by positivity) hr.ne']
-    have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < ((R : ℝ) + J) / R by positivity)
-    have e : ((R : ℝ) + J) / R - 1 = J / R := by
-      rw [add_div, div_self hr.ne']
-      ring
-    linarith
-  have hA' : (R : ℝ) * (Real.log ((R : ℝ) + J) - Real.log R) ≤ J := by
+  have hr0 : (R : ℝ) ≠ 0 := hr.ne'
+  have hrj : (R : ℝ) ≤ 3 * J := by exact_mod_cast hRJ
+  have hl2 := Real.log_two_gt_d9
+  have hl2' := Real.log_two_lt_d9
+  have hl3 := log_three_mem
+  have h43 : Real.log (4 / 3 : ℝ) = 2 * Real.log 2 - Real.log 3 := by
+    rw [Real.log_div (by norm_num) (by norm_num), log_four]
+  -- `log (1 + J/R)` lies below its tangent at the ratio `4/3`
+  have hA : Real.log ((R : ℝ) + J) - Real.log R - Real.log (4 / 3) ≤
+      ((R : ℝ) + J) / R / (4 / 3) - 1 := by
+    have h := Real.log_le_sub_one_of_pos
+      (show (0 : ℝ) < ((R : ℝ) + J) / R / (4 / 3) by positivity)
+    rwa [Real.log_div (by positivity) (by norm_num), Real.log_div (by positivity) hr0] at h
+  have hA' : (R : ℝ) * (Real.log ((R : ℝ) + J) - Real.log R) ≤
+      3 * J * (2 * Real.log 2 - Real.log 3) := by
     have h := mul_le_mul_of_nonneg_left hA hr.le
-    have e : (R : ℝ) * (J / R) = J := by
-      rw [mul_comm]
-      exact div_mul_cancel₀ _ hr.ne'
-    linarith
-  have hB : Real.log ((R : ℝ) + J) - Real.log J ≤ Real.log 3 := by
-    rw [← Real.log_div (by positivity) hj.ne']
+    have e : (R : ℝ) * (((R : ℝ) + J) / R / (4 / 3) - 1) = 3 / 4 * J - R / 4 := by
+      field_simp
+      ring
+    rw [e, h43] at h
+    nlinarith [mul_le_mul_of_nonneg_right hrj
+      (show (0 : ℝ) ≤ 2 * Real.log 2 - Real.log 3 - 1 / 4 by linarith [hl3.2])]
+  have hB : Real.log ((R : ℝ) + J) - Real.log J ≤ 2 * Real.log 2 := by
+    rw [← Real.log_div (by positivity) hj.ne', ← log_four]
     refine Real.log_le_log (by positivity) ?_
     rw [div_le_iff₀ hj]
     linarith
-  have hB' : (J : ℝ) * (Real.log ((R : ℝ) + J) - Real.log J) ≤ J * Real.log 3 :=
+  have hB' : (J : ℝ) * (Real.log ((R : ℝ) + J) - Real.log J) ≤ J * (2 * Real.log 2) :=
     mul_le_mul_of_nonneg_left hB hj.le
   have h1 : xLogX (R + J) - xLogX R - xLogX J =
       R * (Real.log ((R : ℝ) + J) - Real.log R) +
@@ -312,27 +322,26 @@ theorem sum_neutralBlock_window_le {Q R J : ℕ} (hJ : 1 ≤ J) (hJR : J ≤ R) 
     linarith
   have hγ := Real.one_half_lt_eulerMascheroniConstant
   have hπ : Real.log 3 < Real.log Real.pi := Real.log_lt_log (by norm_num) Real.pi_gt_three
-  have hl2 := Real.log_two_gt_d9
-  have hconst : (J : ℝ) + J * Real.log 3 -
-      J * (Real.eulerMascheroniConstant + (Real.log 2 + Real.log Real.pi)) ≤ -(1 / 6) * J := by
+  have hconst : 3 * (J : ℝ) * (2 * Real.log 2 - Real.log 3) + J * (2 * Real.log 2) -
+      J * (Real.eulerMascheroniConstant + (Real.log 2 + Real.log Real.pi)) ≤ -(1 / 25) * J := by
     nlinarith [mul_pos hj (sub_pos.mpr hπ), mul_pos hj (sub_pos.mpr hγ),
-      mul_pos hj (sub_pos.mpr hl2)]
+      mul_pos hj (sub_pos.mpr hl2'), mul_pos hj (sub_pos.mpr hl3.1)]
   rw [log_two_pi]
   linarith
 
-/-- **Every window of ratio between `3/2` and `2` has one bound state with floor `1/5000`**,
-of binding energy at least `1/6`. -/
+/-- **Every window of ratio between `4/3` and `2` has one bound state with floor `1/5000`**,
+of binding energy at least `1/25`. -/
 theorem exists_oneBoundState_neutralWindow_of_ratio {Q R J : ℕ} (hJ : 1 ≤ J) (hJR : J ≤ R)
-    (hRJ : R ≤ 2 * J) (hQ : 2 ≤ Q) :
+    (hRJ : R ≤ 3 * J) (hQ : 2 ≤ Q) :
     ∃ ψ : Fin J → ℝ, ∃ ν : ℝ, (∀ i, 0 < ψ i) ∧
-      OneBoundState (neutralWindow Q R J) ψ ν (1 / 5000) ∧ 1 / 6 ≤ ν := by
+      OneBoundState (neutralWindow Q R J) ψ ν (1 / 5000) ∧ 1 / 25 ≤ ν := by
   obtain ⟨φ₀, hφ₀, lam, heig⟩ := exists_groundVector_neutralWindow Q R hJ
   have hsymm := neutralWindow_symm Q R J
   have hoff : ∀ i j : Fin J, i ≠ j → neutralWindow Q R J i j ≤ 0 := fun _ _ hij =>
     (neutralWindow_neg_of_ne Q R hij).le
   haveI : Nonempty (Fin J) := ⟨⟨0, hJ⟩⟩
   -- the flat packet bounds the eigenvalue
-  have hlam : lam ≤ -(1 / 6) := by
+  have hlam : lam ≤ -(1 / 25) := by
     have h1 := lam_mul_sum_sq_le_bilin hsymm hoff hφ₀ heig (fun _ => (1 : ℝ))
     have h2 : bilin (neutralWindow Q R J) (fun _ => (1 : ℝ)) (fun _ => (1 : ℝ)) =
         ∑ j ∈ range J, ∑ l ∈ range J, neutralBlock Q (R + j) (R + l) := by
@@ -354,12 +363,12 @@ theorem exists_oneBoundState_neutralWindow_of_ratio {Q R J : ℕ} (hJ : 1 ≤ J)
 /-! ### The slivers of the dyadic middle -/
 
 /-- **The Green matrix of the dyadic middle is nonnegative on its slivers.** Let a vector on
-the blocks of `(D, 2D]` vanish on the sub-window `(D + s, D + s + J']` with `D + s ≤ 2J'`: it is
+the blocks of `(D, 2D]` vanish on the sub-window `(D + s, D + s + J']` with `D + s ≤ 3J'`: it is
 supported on a left sliver of `s` blocks and a right sliver of `s' = D − s − J'` blocks with
-`3s + 2s' ≤ D`. The sub-window still binds, so the Green form of the vector is nonnegative, at
+`4s + 3s' ≤ 2D`. The sub-window still binds, so the Green form of the vector is nonnegative, at
 every block size. -/
 theorem greenMatrix_nonneg_of_sliver {D s J' : ℕ} (hJ' : 1 ≤ J') (hs : s + J' ≤ D)
-    (hbind : D + s ≤ 2 * J') {w : Fin D → ℝ} (hw : ∀ i : Fin J', w (shiftFin s hs i) = 0) :
+    (hbind : D + s ≤ 3 * J') {w : Fin D → ℝ} (hw : ∀ i : Fin J', w (shiftFin s hs i) = 0) :
     0 ≤ w ⬝ᵥ (greenMatrix D *ᵥ w) := by
   obtain ⟨ψ, ν, -, hT, -⟩ := exists_oneBoundState_neutralWindow_of_ratio (Q := 2)
     (R := D + s) hJ' (by omega) hbind le_rfl
@@ -373,7 +382,7 @@ theorem greenMatrix_nonneg_of_sliver {D s J' : ℕ} (hJ' : 1 ≤ J') (hs : s + J
 /-- **On the slivers the positive channel dominates the bound-state channel**: for a vector
 supported on the two slivers, `⟨φ_D, w⟩² / μ_D ≤ ⟨w, G₊ w⟩`. -/
 theorem groundVector_sq_le_greenPositive_of_sliver {D s J' : ℕ} (hJ' : 1 ≤ J')
-    (hs : s + J' ≤ D) (hbind : D + s ≤ 2 * J') {w : Fin D → ℝ}
+    (hs : s + J' ≤ D) (hbind : D + s ≤ 3 * J') {w : Fin D → ℝ}
     (hw : ∀ i : Fin J', w (shiftFin s hs i) = 0) :
     1 / bindingEnergy D * (groundVector D ⬝ᵥ w) ^ 2 ≤ w ⬝ᵥ (greenPositive D *ᵥ w) := by
   have h := greenMatrix_nonneg_of_sliver hJ' hs hbind hw
@@ -393,7 +402,7 @@ theorem extendFin_refineMatrix_mulVec {m J : ℕ} (v : Fin J → ℝ) {n : ℕ} 
     extendFin (refineMatrix m J *ᵥ v) n = refineStep m (extendFin v) n := by
   have hdiv : n / m < J := Nat.div_lt_of_lt_mul hn
   rw [extendFin, dif_pos hn, refineStep, extendFin, dif_pos hdiv]
-  simp only [Matrix.mulVec, dotProduct, refineMatrix, Matrix.of_apply, Fin.val_mk]
+  simp only [Matrix.mulVec, dotProduct, refineMatrix, Matrix.of_apply]
   rw [Finset.sum_eq_single (⟨n / m, hdiv⟩ : Fin J)]
   · rw [if_pos rfl]
     ring

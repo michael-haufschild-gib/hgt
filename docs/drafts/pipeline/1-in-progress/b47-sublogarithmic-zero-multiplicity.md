@@ -36,8 +36,10 @@ The corpus theorem `riemannZeta_zero_mem_quasiRH_strip` places nontrivial zeros 
 ## Gates
 
 The related local-compensation paper derivation is recorded in
-`zeta-large-critical-multiplicity-local-compensation.md`. Its contour inputs
-share the fixed-line dependency blocker; it is not a certified zeta theorem.
+`zeta-large-critical-multiplicity-local-compensation.md`. Its Gaussian explicit
+formula is already unconditional in the corpus. The logarithmic asymptotic
+and finite local compensation theorem remain uncertified; the strip bound
+uses the same quasi-RH dependency closure.
 
 - [x] Exact target and existing bounds identified.
 - [ ] Independent all-height arithmetic or geometric input proved.

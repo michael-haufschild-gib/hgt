@@ -61,5 +61,10 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
   operator (`LatticeSectionTheory.regionalLogOperator_legP`): retain the prime
   translations and boundary potential, and prove a finite-dimensional Schur
   certificate with a quantitative tail bound. Those bounds remain unproved.
-- A141: quotient construction above awaits formalization. The located `7/8`
-  producer uses the Hecke family over `ℚ(ζ₃)`, not arbitrary containing fields.
+- A141: the quotient construction is formalized in
+  `EveryArtinEulerProductHasAMeromorphicContinuationAndASignedIndexLaw.lean`:
+  `exists_analytic_quotient_artin`, `exists_meromorphicContinuation_artin`,
+  `exists_analytic_quotient_and_virtualConfig_artin`. Direct Lean check passed;
+  transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`.
+  The located `7/8` producer uses the Hecke family over `ℚ(ζ₃)`, not arbitrary
+  containing fields. General-field `7/8` and conductor exponents remain open.

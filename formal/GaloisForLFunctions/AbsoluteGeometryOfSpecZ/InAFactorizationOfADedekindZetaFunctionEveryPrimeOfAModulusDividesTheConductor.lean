@@ -255,7 +255,9 @@ theorem dvd_heckeFiniteConductor_of_dedekindZeta_eq_prod (M : Type*) [Field M] [
     hF.eqOn_of_preconnected_of_eventuallyEq hG isPreconnected_univ (mem_univ _) he (mem_univ s₀)
   -- the right side vanishes at `s₀`
   have hi : rayClassEntire (𝔪 i) (ψ i) s₀ = 0 := by rw [rayClassEntire, hzero, mul_zero]
-  rw [Finset.prod_eq_zero (Finset.mem_univ i) hi, mul_zero] at hEq
+  have hG0 : ∏ j, rayClassEntire (𝔪 j) (ψ j) s₀ = 0 :=
+    Finset.prod_eq_zero (Finset.mem_univ i) hi
+  rw [hG0, mul_zero] at hEq
   rcases mul_eq_zero.mp hEq with hE | hP
   · -- `E_M(s₀) = 0` gives a zero of the completion of `ζ_M` on `Re s = 0`
     have h1 := heckeXi_one_mul_gamma_inv (trivialModulus M) s₀

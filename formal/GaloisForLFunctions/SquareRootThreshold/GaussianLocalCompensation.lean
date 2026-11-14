@@ -63,8 +63,10 @@ theorem exists_gaussian_compensating_copies (ρ : NontrivialZetaZero)
       abs_le.mpr ⟨by linarith only [hs.2], by linarith only [hs.1]⟩
     exact abs_gaussianContribution_le_strip_envelope hε0.le hd ρ.1.im q.1.1.im
   have hglobal (q) : |g q| ≤ A := by
-    have he : Real.exp (-ε * (q.1.1.im - ρ.1.im) ^ 2) ≤ 1 :=
-      Real.exp_le_one_iff.mpr (by positivity)
+    have he : Real.exp (-ε * (q.1.1.im - ρ.1.im) ^ 2) ≤ 1 := by
+      apply Real.exp_le_one_iff.mpr
+      have hm := mul_nonneg hε0.le (sq_nonneg (q.1.1.im - ρ.1.im))
+      nlinarith only [hm]
     exact (henv q).trans (mul_le_of_le_one_right hA.le he)
   have htail (q) (hq : R ≤ |q.1.1.im - ρ.1.im|) : -κ * w q ≤ g q := by
     have he := gaussian_lorentz_tail_le hε hR.le hq
@@ -102,6 +104,98 @@ theorem exists_gaussian_compensating_copies (ρ : NontrivialZetaZero)
   have hd := gaussian_negative_depth_ge hε0 hR hn hneg
   simpa only [abs_sub_comm (1 / 2 : ℝ) q.1.1.re] using hd
 
+/-- Every critical zero with multiplicity at least `c log T`, at sufficiently
+large positive height, forces a logarithmic number of nearby off-line copies
+at a horizontal depth bounded below solely in terms of `c`. -/
+theorem exists_local_offLine_compensation {c : ℝ} (hc : 0 < c) :
+    ∃ R d κ T₀ : ℝ, 0 < R ∧ 0 < d ∧ 0 < κ ∧ 8 ≤ T₀ ∧
+      ∀ ρ : NontrivialZetaZero, ρ.1.re = 1 / 2 → T₀ ≤ ρ.1.im →
+        c * Real.log ρ.1.im ≤ (analyticZetaZeroMultiplicity ρ : ℝ) →
+        ∃ F : Finset (NontrivialZetaZeroOccurrence analyticZetaZeroMultiplicity),
+          (∀ q ∈ F, |q.1.1.im - ρ.1.im| ≤ R ∧ d ≤ |q.1.1.re - 1 / 2|) ∧
+          κ * Real.log ρ.1.im ≤ F.card := by
+  let h : ℝ := min 1 (c * Real.sqrt Real.pi)
+  have hh : 0 < h := lt_min (by norm_num) (mul_pos hc (Real.sqrt_pos.mpr Real.pi_pos))
+  have hh1 : h ≤ 1 := min_le_left _ _
+  have hhc : h ≤ c * Real.sqrt Real.pi := min_le_right _ _
+  let ε : ℝ := 1 / h ^ 2
+  have hε0 : 0 < ε := by dsimp [ε]; positivity
+  have hε : 1 ≤ ε := by
+    apply (le_div_iff₀ (by positivity : 0 < h ^ 2)).mpr
+    have hs := pow_le_pow_left₀ hh.le hh1 2
+    simpa using hs
+  let A : ℝ := Real.exp (9 / (64 * h ^ 2))
+  have hA : 0 < A := Real.exp_pos _
+  have hAeq : Real.exp (9 * ε / 64) = A := by
+    dsimp [ε, A]
+    congr 1
+    ring
+  let C : ℝ := 8 * (|xiLineTwoLogDerivConstant| + 2)
+  have hC : 0 < C := by dsimp [C]; positivity
+  let R : ℝ := 1 + 2 * Real.pi * h ^ 2 / 3 +
+    h * Real.sqrt (2 * Real.log (1 + 16 * A * C / c))
+  have hR : 0 < R := by dsimp [R]; positivity
+  let d : ℝ := Real.pi / (4 * ε * R)
+  have hd : 0 < d := by dsimp [d]; positivity
+  let κ : ℝ := c / (4 * A)
+  have hκ : 0 < κ := by dsimp [κ]; positivity
+  let tail : ℝ := 2 * A * Real.exp (-(ε * R ^ 2 / 2))
+  have htail0 : 0 ≤ tail := by dsimp [tail]; positivity
+  have htailC : tail * C ≤ c / 8 := by
+    have he : ε * R ^ 2 / 2 = R ^ 2 / (2 * h ^ 2) := by dsimp [ε]; ring
+    dsimp only [tail]
+    rw [he]
+    exact gaussian_explicit_radius_tail hh hA hC hc
+  have hmass : Real.sqrt (Real.pi / ε) = h * Real.sqrt Real.pi := by
+    have he : Real.pi / ε = Real.pi * h ^ 2 := by dsimp [ε]; field_simp [hh.ne']
+    rw [he, Real.sqrt_mul Real.pi_nonneg, Real.sqrt_sq_eq_abs, abs_of_pos hh]
+    ring
+  have hmain : Real.sqrt (Real.pi / ε) / (2 * Real.pi) ≤ c / 2 := by
+    rw [hmass]
+    apply (div_le_iff₀ (by positivity : 0 < 2 * Real.pi)).mpr
+    have hm := mul_le_mul_of_nonneg_right hhc (Real.sqrt_nonneg Real.pi)
+    have he : c * Real.sqrt Real.pi * Real.sqrt Real.pi = c * Real.pi := by
+      rw [mul_assoc, ← pow_two, Real.sq_sqrt Real.pi_nonneg]
+    rw [he] at hm
+    nlinarith only [hm]
+  have hlim := tendsto_canonicalZetaGaussianZeroSum_log_normalized hε0
+  have he := hlim.eventually (Iio_mem_nhds (show
+      Real.sqrt (Real.pi / ε) / (2 * Real.pi) <
+        Real.sqrt (Real.pi / ε) / (2 * Real.pi) + c / 8 by linarith only [hc]))
+  obtain ⟨U, hU⟩ := eventually_atTop.mp (eventually_comap.mp he)
+  refine ⟨R, d, κ, max 8 U, hR, hd, hκ, le_max_left _ _, ?_⟩
+  intro ρ hρ hheight hmult
+  have ht8 : 8 ≤ ρ.1.im := (le_max_left _ _).trans hheight
+  have ht0 : 0 < ρ.1.im := by linarith only [ht8]
+  have hlog : 0 < Real.log ρ.1.im := Real.log_pos (by linarith only [ht8])
+  have hq := hU ρ.1.im ((le_max_right _ _).trans hheight) ρ.1.im (abs_of_pos ht0)
+  rw [abs_of_pos ht0] at hq
+  have hQ : canonicalZetaGaussianZeroSum ε ρ.1.im ≤ (5 * c / 8) * Real.log ρ.1.im := by
+    apply (div_le_iff₀ hlog).mp
+    exact hq.le.trans (by linarith only [hmain])
+  have hM : lorentzMass ρ.1.im ≤ C * Real.log ρ.1.im := by
+    have hh := gaussianZeroLorentz_le_log ht8
+    rw [tsum_gaussianZeroLorentz] at hh
+    exact hh
+  have htail : tail * lorentzMass ρ.1.im ≤ (c / 8) * Real.log ρ.1.im := by
+    calc tail * lorentzMass ρ.1.im ≤ tail * (C * Real.log ρ.1.im) :=
+        mul_le_mul_of_nonneg_left hM htail0
+      _ = (tail * C) * Real.log ρ.1.im := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_right htailC hlog.le
+  obtain ⟨F, hF, hb⟩ := exists_gaussian_compensating_copies ρ hρ hε hR
+  rw [hAeq] at hb
+  change (analyticZetaZeroMultiplicity ρ : ℝ) ≤
+    canonicalZetaGaussianZeroSum ε ρ.1.im + A * F.card + tail * lorentzMass ρ.1.im at hb
+  have hnegative : (c / 4) * Real.log ρ.1.im ≤ A * F.card := by
+    nlinarith only [hmult, hQ, htail, hb]
+  refine ⟨F, hF, ?_⟩
+  have hcount : ((c / 4) * Real.log ρ.1.im) / A ≤ F.card :=
+    (div_le_iff₀ hA).mpr (by simpa only [mul_comm] using hnegative)
+  convert hcount using 1
+  dsimp [κ]
+  ring
+
 end GaloisForLFunctions.SquareRootThreshold
 
 #print axioms GaloisForLFunctions.SquareRootThreshold.exists_gaussian_compensating_copies
+#print axioms GaloisForLFunctions.SquareRootThreshold.exists_local_offLine_compensation

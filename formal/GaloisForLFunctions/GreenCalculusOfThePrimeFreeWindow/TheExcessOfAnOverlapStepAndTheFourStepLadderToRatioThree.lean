@@ -420,43 +420,61 @@ theorem dotProduct_mulVec_sq_le_of_inv_add {α β : Type*} [Fintype α] [Fintype
     have hrow : ∀ i : α, ∑ j : β,
         Real.sqrt (r i : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (s j : ℝ)) ≤ 6 := by
       intro i
-      refine (Finset.sum_le_sum_of_ne_zero (t := range (Finset.sup Finset.univ s))
-        (f := fun j : β => Real.sqrt (r i : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (s j : ℝ)))
-        (g := fun k : ℕ => Real.sqrt (r i : ℝ) / (((r i : ℝ) + ((k : ℝ) + 1)) * Real.sqrt ((k : ℝ) + 1)))
-        (i := fun j _ => s j - 1) ?_ ?_ ?_).trans
-        (hilbert_sum_le_six (by exact_mod_cast hr1 i) _)
-      · intro j _ _
-        have hjle : s j ≤ Finset.sup Finset.univ s := Finset.le_sup (Finset.mem_univ j)
-        have := hs1 j
-        exact Finset.mem_range.mpr (by omega)
-      · intro j₁ _ _ j₂ _ _ heq
-        have h1 := hs1 j₁; have h2 := hs1 j₂
-        exact hs_inj (by omega)
-      · intro j _ _
-        have hsj : ((s j - 1 : ℕ) : ℝ) + 1 = (s j : ℝ) := by
-          have : s j - 1 + 1 = s j := Nat.sub_add_cancel (hs1 j)
-          exact_mod_cast this
-        rw [hsj]
+      let g : ℕ → ℝ := fun k =>
+        Real.sqrt (r i : ℝ) / (((r i : ℝ) + ((k : ℝ) + 1)) * Real.sqrt ((k : ℝ) + 1))
+      let e : β → ℕ := fun j => s j - 1
+      calc ∑ j : β, Real.sqrt (r i : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (s j : ℝ))
+          ≤ ∑ j : β, g (e j) := by
+            refine Finset.sum_le_sum fun j _ => ?_
+            dsimp [g, e]
+            have hsj : ((s j - 1 : ℕ) : ℝ) + 1 = (s j : ℝ) := by
+              have h1 : s j - 1 + 1 = s j := Nat.sub_add_cancel (hs1 j)
+              have h2 : ((s j - 1 + 1 : ℕ) : ℝ) = (s j : ℝ) := congrArg Nat.cast h1
+              simpa only [Nat.cast_add, Nat.cast_one] using h2
+            rw [hsj]
+        _ = ∑ k ∈ Finset.univ.image e, g k := by
+            refine (Finset.sum_image (f := g) fun j₁ _ j₂ _ heq => ?_).symm
+            dsimp [e] at heq
+            have h1 := hs1 j₁; have h2 := hs1 j₂
+            exact hs_inj (by omega)
+        _ ≤ ∑ k ∈ range (Finset.sup Finset.univ s), g k := by
+            refine Finset.sum_le_sum_of_subset_of_nonneg (fun k hk => ?_) (fun k _ _ => by
+              dsimp [g]; have : (0 : ℝ) < r i := by exact_mod_cast hr1 i
+              positivity)
+            rcases Finset.mem_image.mp hk with ⟨j, _, rfl⟩
+            have hjle : s j ≤ Finset.sup Finset.univ s := Finset.le_sup (Finset.mem_univ j)
+            have := hs1 j
+            exact Finset.mem_range.mpr (by dsimp [e]; omega)
+        _ ≤ 6 := hilbert_sum_le_six (by exact_mod_cast hr1 i) _
     have hcol : ∀ j : β, ∑ i : α,
         Real.sqrt (s j : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ)) ≤ 6 := by
       intro j
-      refine (Finset.sum_le_sum_of_ne_zero (t := range (Finset.sup Finset.univ r))
-        (f := fun i : α => Real.sqrt (s j : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ)))
-        (g := fun k : ℕ => Real.sqrt (s j : ℝ) / (((s j : ℝ) + ((k : ℝ) + 1)) * Real.sqrt ((k : ℝ) + 1)))
-        (i := fun i _ => r i - 1) ?_ ?_ ?_).trans
-        (hilbert_sum_le_six (by exact_mod_cast hs1 j) _)
-      · intro i _ _
-        have hile : r i ≤ Finset.sup Finset.univ r := Finset.le_sup (Finset.mem_univ i)
-        have := hr1 i
-        exact Finset.mem_range.mpr (by omega)
-      · intro i₁ _ _ i₂ _ _ heq
-        have h1 := hr1 i₁; have h2 := hr1 i₂
-        exact hr_inj (by omega)
-      · intro i _ _
-        have hri : ((r i - 1 : ℕ) : ℝ) + 1 = (r i : ℝ) := by
-          have : r i - 1 + 1 = r i := Nat.sub_add_cancel (hr1 i)
-          exact_mod_cast this
-        rw [hri, add_comm (s j : ℝ)]
+      let g : ℕ → ℝ := fun k =>
+        Real.sqrt (s j : ℝ) / (((s j : ℝ) + ((k : ℝ) + 1)) * Real.sqrt ((k : ℝ) + 1))
+      let e : α → ℕ := fun i => r i - 1
+      calc ∑ i : α, Real.sqrt (s j : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ))
+          ≤ ∑ i : α, g (e i) := by
+            refine Finset.sum_le_sum fun i _ => ?_
+            dsimp [g, e]
+            have hri : ((r i - 1 : ℕ) : ℝ) + 1 = (r i : ℝ) := by
+              have h1 : r i - 1 + 1 = r i := Nat.sub_add_cancel (hr1 i)
+              have h2 : ((r i - 1 + 1 : ℕ) : ℝ) = (r i : ℝ) := congrArg Nat.cast h1
+              simpa only [Nat.cast_add, Nat.cast_one] using h2
+            rw [hri, add_comm (s j : ℝ)]
+        _ = ∑ k ∈ Finset.univ.image e, g k := by
+            refine (Finset.sum_image (f := g) fun i₁ _ i₂ _ heq => ?_).symm
+            dsimp [e] at heq
+            have h1 := hr1 i₁; have h2 := hr1 i₂
+            exact hr_inj (by omega)
+        _ ≤ ∑ k ∈ range (Finset.sup Finset.univ r), g k := by
+            refine Finset.sum_le_sum_of_subset_of_nonneg (fun k hk => ?_) (fun k _ _ => by
+              dsimp [g]; have : (0 : ℝ) < s j := by exact_mod_cast hs1 j
+              positivity)
+            rcases Finset.mem_image.mp hk with ⟨i, _, rfl⟩
+            have hile : r i ≤ Finset.sup Finset.univ r := Finset.le_sup (Finset.mem_univ i)
+            have := hr1 i
+            exact Finset.mem_range.mpr (by dsimp [e]; omega)
+        _ ≤ 6 := hilbert_sum_le_six (by exact_mod_cast hs1 j) _
     have hpair : ∑ i : α, ∑ j : β, |u' i| * |v' j| / ((r i : ℝ) + (s j : ℝ)) ≤ 6 := by
       have hamgm : ∀ (i : α) (j : β),
           2 * (|u' i| * |v' j| / ((r i : ℝ) + (s j : ℝ))) ≤
@@ -465,31 +483,26 @@ theorem dotProduct_mulVec_sq_le_of_inv_add {α β : Type*} [Fintype α] [Fintype
         intro i j
         have hri : (0 : ℝ) < r i := by exact_mod_cast hr1 i
         have hsj : (0 : ℝ) < s j := by exact_mod_cast hs1 j
-        have hsri : 0 < Real.sqrt (r i : ℝ) := Real.sqrt_pos.mpr hri
-        have hssj : 0 < Real.sqrt (s j : ℝ) := Real.sqrt_pos.mpr hsj
-        have hden : 0 < ((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ) * Real.sqrt (s j : ℝ) := by
-          positivity
-        rw [← mul_le_mul_left hden]
-        have hlhs : ((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ) * Real.sqrt (s j : ℝ) *
-            (2 * (|u' i| * |v' j| / ((r i : ℝ) + (s j : ℝ)))) =
-            2 * |u' i| * |v' j| * Real.sqrt (r i : ℝ) * Real.sqrt (s j : ℝ) := by
-          field_simp [(by positivity : (0 : ℝ) < (r i : ℝ) + (s j : ℝ)).ne']; ring
-        have hrhs : ((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ) * Real.sqrt (s j : ℝ) *
-            ((u' i) ^ 2 * (Real.sqrt (r i : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (s j : ℝ))) +
-              (v' j) ^ 2 * (Real.sqrt (s j : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ)))) =
-            (u' i) ^ 2 * (r i : ℝ) + (v' j) ^ 2 * (s j : ℝ) := by
-          have hsqi : Real.sqrt (r i : ℝ) * Real.sqrt (r i : ℝ) = (r i : ℝ) := Real.mul_self_sqrt hri.le
-          have hsqj : Real.sqrt (s j : ℝ) * Real.sqrt (s j : ℝ) = (s j : ℝ) := Real.mul_self_sqrt hsj.le
-          field_simp [(by positivity : (0 : ℝ) < (r i : ℝ) + (s j : ℝ)).ne', hsri.ne', hssj.ne']
-          nlinarith
-        rw [hlhs, hrhs]
-        have hsq : 0 ≤ (|u' i| * Real.sqrt (r i : ℝ) - |v' j| * Real.sqrt (s j : ℝ)) ^ 2 :=
-          sq_nonneg _
-        have hsqi : Real.sqrt (r i : ℝ) ^ 2 = (r i : ℝ) := Real.sq_sqrt hri.le
-        have hsqj : Real.sqrt (s j : ℝ) ^ 2 = (s j : ℝ) := Real.sq_sqrt hsj.le
+        have hsri : (Real.sqrt (r i : ℝ)) ≠ 0 := (Real.sqrt_pos.mpr hri).ne'
+        have hssj : (Real.sqrt (s j : ℝ)) ≠ 0 := (Real.sqrt_pos.mpr hsj).ne'
+        have hrs : ((r i : ℝ) + (s j : ℝ)) ≠ 0 := (by positivity : (0 : ℝ) < (r i : ℝ) + (s j : ℝ)).ne'
+        have hsqi : Real.sqrt (r i : ℝ) * Real.sqrt (r i : ℝ) = (r i : ℝ) := Real.mul_self_sqrt hri.le
+        have hsqj : Real.sqrt (s j : ℝ) * Real.sqrt (s j : ℝ) = (s j : ℝ) := Real.mul_self_sqrt hsj.le
         have hu2 : |u' i| ^ 2 = (u' i) ^ 2 := sq_abs _
         have hv2 : |v' j| ^ 2 = (v' j) ^ 2 := sq_abs _
-        nlinarith
+        have hnn : 0 ≤ (|u' i| * Real.sqrt (r i : ℝ) - |v' j| * Real.sqrt (s j : ℝ)) ^ 2 /
+            (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ) * Real.sqrt (s j : ℝ)) := by
+          have : 0 < Real.sqrt (r i : ℝ) := Real.sqrt_pos.mpr hri
+          have : 0 < Real.sqrt (s j : ℝ) := Real.sqrt_pos.mpr hsj
+          positivity
+        have hid : (u' i) ^ 2 * (Real.sqrt (r i : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (s j : ℝ))) +
+            (v' j) ^ 2 * (Real.sqrt (s j : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ))) -
+            2 * (|u' i| * |v' j| / ((r i : ℝ) + (s j : ℝ))) =
+          (|u' i| * Real.sqrt (r i : ℝ) - |v' j| * Real.sqrt (s j : ℝ)) ^ 2 /
+            (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (r i : ℝ) * Real.sqrt (s j : ℝ)) := by
+          field_simp
+          nlinarith
+        linarith
       have hsum : 2 * ∑ i : α, ∑ j : β, |u' i| * |v' j| / ((r i : ℝ) + (s j : ℝ)) ≤
           ∑ i : α, (u' i) ^ 2 *
               (∑ j : β, Real.sqrt (r i : ℝ) / (((r i : ℝ) + (s j : ℝ)) * Real.sqrt (s j : ℝ))) +
@@ -663,26 +676,37 @@ theorem sum_floorGraph_injective_le {α : Type*} [Fintype α] {q : α → ℕ}
     have hc : S.card ≤ 1 + (Ico (k * x) (k * x + k)).card := Finset.card_insert_le _ _
     rw [Nat.card_Ico, Nat.add_sub_cancel_left] at hc
     exact_mod_cast (by omega : S.card ≤ k + 1)
-  have hsub : ∑ j : α, floorGraph k x (q j) ≤ ∑ y ∈ S, (Λ k : ℝ) / k := by
-    refine Finset.sum_le_sum_of_ne_zero (i := fun j _ => q j) ?_ ?_ ?_
-    · intro j _ hne
-      rw [floorGraph] at hne
-      have hdiv : max x (q j) / k = min x (q j) := by
-        by_contra hc; exact hne (if_neg hc)
-      rcases le_total (q j) x with hle | hge
-      · rw [max_eq_left hle, min_eq_right hle] at hdiv
-        exact Finset.mem_insert.mpr (Or.inl hdiv.symm)
-      · rw [max_eq_right hge, min_eq_left hge] at hdiv
-        refine Finset.mem_insert.mpr (Or.inr (Finset.mem_Ico.mpr ?_))
-        have h1 : x * k ≤ q j := (Nat.le_div_iff_mul_le (by omega)).mp hdiv.ge
-        have h2 : q j < (x + 1) * k := (Nat.div_lt_iff_lt_mul (by omega)).mp (by omega)
-        exact ⟨by nlinarith, by nlinarith⟩
-    · intro j₁ _ _ j₂ _ _ heq; exact hq heq
-    · intro j _ _
-      rw [floorGraph]
-      split_ifs
-      · exact le_rfl
-      · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le
+  have hsub : ∑ j : α, floorGraph k x (q j) ≤ ∑ _y ∈ S, (Λ k : ℝ) / k := by
+    let active : Finset α := Finset.filter (fun j : α => max x (q j) / k = min x (q j)) Finset.univ
+    have hsplit : ∑ j : α, floorGraph k x (q j) = ∑ j ∈ active, (Λ k : ℝ) / k := by
+      rw [← Finset.sum_filter_add_sum_filter_not Finset.univ
+        (fun j : α => max x (q j) / k = min x (q j))]
+      have h1 : ∑ j ∈ active, floorGraph k x (q j) = ∑ _j ∈ active, (Λ k : ℝ) / k := by
+        refine Finset.sum_congr rfl fun j hj => ?_
+        rw [floorGraph, if_pos (Finset.mem_filter.mp hj).2]
+      have h2 : ∑ j ∈ Finset.filter (fun j : α => ¬(max x (q j) / k = min x (q j))) Finset.univ,
+          floorGraph k x (q j) = 0 := by
+        refine Finset.sum_eq_zero fun j hj => ?_
+        rw [floorGraph, if_neg (Finset.mem_filter.mp hj).2]
+      rw [h1, h2, add_zero]
+    rw [hsplit]
+    calc ∑ _j ∈ active, (Λ k : ℝ) / k
+        = ∑ _y ∈ active.image q, (Λ k : ℝ) / k := by
+          refine (Finset.sum_image (f := fun _ : ℕ => (Λ k : ℝ) / k)
+            fun j₁ _ j₂ _ heq => hq heq).symm
+      _ ≤ ∑ _y ∈ S, (Λ k : ℝ) / k := by
+          refine Finset.sum_le_sum_of_subset_of_nonneg (fun y hy => ?_)
+            (fun _ _ _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le)
+          rcases Finset.mem_image.mp hy with ⟨j, hj, rfl⟩
+          have hdiv := (Finset.mem_filter.mp hj).2
+          rcases le_total (q j) x with hle | hge
+          · rw [max_eq_left hle, min_eq_right hle] at hdiv
+            exact Finset.mem_insert.mpr (Or.inl hdiv.symm)
+          · rw [max_eq_right hge, min_eq_left hge] at hdiv
+            refine Finset.mem_insert.mpr (Or.inr (Finset.mem_Ico.mpr ?_))
+            have h1 : x * k ≤ q j := (Nat.le_div_iff_mul_le (by omega)).mp hdiv.ge
+            have h2 : q j < (x + 1) * k := (Nat.div_lt_iff_lt_mul (by omega)).mp (by omega)
+            exact ⟨by nlinarith, by nlinarith⟩
   rw [Finset.sum_const, nsmul_eq_mul] at hsub
   refine hsub.trans ?_
   have h1 : (S.card : ℝ) * ((Λ k : ℝ) / k) ≤ ((k : ℝ) + 1) * ((Λ k : ℝ) / k) :=
@@ -1549,13 +1573,53 @@ theorem neutralWindow_eq_two_iff_le_two_mul {Q R J : ℕ} (hR : 1 ≤ R) (hQ : 3
     linarith
   linarith
 
+private theorem bilin_primeTwo_two_six_v2 :
+    bilin (neutralWindow 2 2 6)
+        (Pi.single ⟨4, by omega⟩ 1 + Pi.single ⟨5, by omega⟩ 1)
+        (Pi.single ⟨4, by omega⟩ 1 + Pi.single ⟨5, by omega⟩ 1) =
+      -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) := by
+  let v₂ : Fin 6 → ℝ := Pi.single ⟨4, by omega⟩ 1 + Pi.single ⟨5, by omega⟩ 1
+  change bilin (neutralWindow 2 2 6) v₂ v₂ = _
+  have hbil : bilin (neutralWindow 2 2 6) v₂ v₂ =
+      neutralBlock 2 6 6 + 2 * neutralBlock 2 6 7 + neutralBlock 2 7 7 := by
+    rw [bilin_eq_sum_mul_mulVec]
+    simp only [v₂, Matrix.mulVec_add, Pi.add_apply, add_mul, Finset.sum_add_distrib,
+      Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+      Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow,
+      windowMatrix, Matrix.of_apply]
+    have hc := neutralBlock_comm 2 7 6
+    norm_num; linarith
+  have hm66 := windowClosed_succ (a := 6) (by norm_num) 2
+  have hm77 := windowClosed_succ (a := 7) (by norm_num) 2
+  have hm67 := windowClosed_mixed (a := 6) (b := 7) (by norm_num) 2
+  have hw77 := windowClosed_self (x := 7) (by norm_num) 2
+  norm_num at hm66 hm77 hm67
+  have hwc68 : windowClosed 2 6 8 = windowSmooth 6 8 := by
+    rw [windowClosed, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
+      max_eq_right (by norm_num), mul_zero, mul_zero, sub_zero]
+  have hl6 : Real.log 6 = Real.log 2 + Real.log 3 := by
+    rw [show (6 : ℝ) = 2 * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
+  have hl8 : Real.log 8 = 3 * Real.log 2 := by
+    rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; push_cast; ring
+  have hl14 : Real.log 14 = Real.log 2 + Real.log 7 := by
+    rw [show (14 : ℝ) = 2 * 7 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
+  rw [hbil, neutralBlock, neutralBlock, neutralBlock]
+  have hws : windowSmooth 6 8 -
+      (2 * blockDegree 6 + 2 * (blockDegree 6 + blockDegree 7) + 2 * blockDegree 7) =
+      -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) := by
+    rw [windowSmooth, dyadicDepth]
+    simp only [blockDegree]
+    norm_num [hl6, hl8, hl14, Real.log_two]
+    ring
+  linarith
+
 /-- **Prime `2` alone fails past ratio `3` (`(2, 8]`)**: on the 6-block window `(2, 8]` at `Q = 2`,
 the disjoint packets `e₀` (block `2`) and `e₄ + e₅` (blocks `6, 7`) form an unbound negative pair,
 giving at least two bound states. -/
 theorem two_le_hermNegIndex_primeTwo_two_six :
     2 ≤ hermNegIndex ((neutralWindow 2 2 6).map (↑) : Matrix (Fin 6) (Fin 6) ℂ) := by
-  let v₁ : Fin 6 → ℝ := Pi.single ⟨0, by decide⟩ 1
-  let v₂ : Fin 6 → ℝ := Pi.single ⟨4, by decide⟩ 1 + Pi.single ⟨5, by decide⟩ 1
+  let v₁ : Fin 6 → ℝ := Pi.single ⟨0, by omega⟩ 1
+  let v₂ : Fin 6 → ℝ := Pi.single ⟨4, by omega⟩ 1 + Pi.single ⟨5, by omega⟩ 1
   have hv₁ : bilin (neutralWindow 2 2 6) v₁ v₁ = -thirdDepth := by
     rw [bilin_eq_sum_mul_mulVec]
     simp only [v₁, Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
@@ -1563,44 +1627,8 @@ theorem two_le_hermNegIndex_primeTwo_two_six :
       Finset.sum_ite_eq, neutralWindow, windowMatrix, Matrix.of_apply]
     exact neutralBlock_two_two 2
   have hv₂_eq : bilin (neutralWindow 2 2 6) v₂ v₂ =
-      -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) := by
-    have hbil : bilin (neutralWindow 2 2 6) v₂ v₂ =
-        neutralBlock 2 6 6 + 2 * neutralBlock 2 6 7 + neutralBlock 2 7 7 := by
-      rw [bilin_eq_sum_mul_mulVec]
-      simp only [v₂, Matrix.mulVec_add, Pi.add_apply, add_mul, Finset.sum_add_distrib,
-        Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-        Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow,
-        windowMatrix, Matrix.of_apply]
-      have hc := neutralBlock_comm 2 7 6
-      norm_num; linarith
-    have hm66 := windowClosed_succ (a := 6) (by norm_num) 2
-    have hm77 := windowClosed_succ (a := 7) (by norm_num) 2
-    have hm67 := windowClosed_mixed (a := 6) (b := 7) (by norm_num) 2
-    have hw77 := windowClosed_self (x := 7) (by norm_num) 2
-    norm_num at hm66 hm77 hm67
-    have hsum_bm : blockMatrix 2 6 6 + 2 * blockMatrix 2 6 7 + blockMatrix 2 7 7 =
-        windowClosed 2 6 8 := by linarith
-    have hwc68 : windowClosed 2 6 8 = windowSmooth 6 8 := by
-      rw [windowClosed, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
-        max_eq_right (by norm_num), mul_zero, mul_zero, sub_zero]
-    have hl6 : Real.log 6 = Real.log 2 + Real.log 3 := by
-      rw [show (6 : ℝ) = 2 * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
-    have hl8 : Real.log 8 = 3 * Real.log 2 := by
-      rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; push_cast; ring
-    have hl14 : Real.log 14 = Real.log 2 + Real.log 7 := by
-      rw [show (14 : ℝ) = 2 * 7 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
-    rw [hbil, neutralBlock, neutralBlock, neutralBlock]
-    have hdeg : 2 * blockDegree 6 + 2 * (blockDegree 6 + blockDegree 7) + 2 * blockDegree 7 =
-        4 * (Real.log 8 - Real.log 6) := by
-      simp only [blockDegree]; norm_num; ring
-    have hws : windowSmooth 6 8 - 4 * (Real.log 8 - Real.log 6) =
-        -(2 * (Real.eulerMascheroniConstant + Real.log (2 * Real.pi)) +
-          14 * Real.log 2 + 12 * Real.log 3 - 14 * Real.log 7) := by
-      rw [windowSmooth]
-      norm_num [hl6, hl8, hl14, Real.log_two]
-      ring
-    rw [dyadicDepth]
-    linarith
+      -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) :=
+    bilin_primeTwo_two_six_v2
   have hv₁₂_eq : bilin (neutralWindow 2 2 6) v₁ v₂ =
       -(11 * Real.log 11 + 12 * Real.log 2 - 9 * Real.log 3 - 15 * Real.log 5) / 2 := by
     have hbil : bilin (neutralWindow 2 2 6) v₁ v₂ =
@@ -1682,8 +1710,8 @@ theorem two_le_hermNegIndex_primeTwo {R J : ℕ} (hR : 2 ≤ R) (hJ : 3 * R + 4 
 /-- **Prime `3` restores positivity on `span{e₀, e₄ + e₅}` in `(2, 8]`**: for every `Q ≥ 3`, the
 floor map `x ↦ ⌊x / 3⌋` sends both `6` and `7` to `2`, reversing the discriminant sign. -/
 theorem primeThree_restores_positivity_two_six {Q : ℕ} (hQ : 3 ≤ Q) :
-    let v₁ : Fin 6 → ℝ := Pi.single ⟨0, by decide⟩ 1
-    let v₂ : Fin 6 → ℝ := Pi.single ⟨4, by decide⟩ 1 + Pi.single ⟨5, by decide⟩ 1
+    let v₁ : Fin 6 → ℝ := Pi.single ⟨0, by omega⟩ 1
+    let v₂ : Fin 6 → ℝ := Pi.single ⟨4, by omega⟩ 1 + Pi.single ⟨5, by omega⟩ 1
     bilin (neutralWindow Q 2 6) v₁ v₁ * bilin (neutralWindow Q 2 6) v₂ v₂ <
       bilin (neutralWindow Q 2 6) v₁ v₂ ^ 2 := by
   intro v₁ v₂
@@ -1709,44 +1737,12 @@ theorem primeThree_restores_positivity_two_six {Q : ℕ} (hQ : 3 ≤ Q) :
       windowMatrix, Matrix.of_apply]
     norm_num [h66, h67, h76, h77]
   have hv₂_gt : -0.478 < bilin (neutralWindow Q 2 6) v₂ v₂ := by
-    rw [hv₂_eq]
-    have hbil : bilin (neutralWindow 2 2 6) v₂ v₂ =
-        neutralBlock 2 6 6 + 2 * neutralBlock 2 6 7 + neutralBlock 2 7 7 := by
-      rw [bilin_eq_sum_mul_mulVec]
-      simp only [v₂, Matrix.mulVec_add, Pi.add_apply, add_mul, Finset.sum_add_distrib,
-        Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-        Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow,
-        windowMatrix, Matrix.of_apply]
-      have hc := neutralBlock_comm 2 7 6
-      norm_num; linarith
-    have hm66 := windowClosed_succ (a := 6) (by norm_num) 2
-    have hm77 := windowClosed_succ (a := 7) (by norm_num) 2
-    have hm67 := windowClosed_mixed (a := 6) (b := 7) (by norm_num) 2
-    have hw77 := windowClosed_self (x := 7) (by norm_num) 2
-    norm_num at hm66 hm77 hm67
-    have hwc68 : windowClosed 2 6 8 = windowSmooth 6 8 := by
-      rw [windowClosed, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
-        max_eq_right (by norm_num), mul_zero, mul_zero, sub_zero]
-    have hl6 : Real.log 6 = Real.log 2 + Real.log 3 := by
-      rw [show (6 : ℝ) = 2 * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
-    have hl8 : Real.log 8 = 3 * Real.log 2 := by
-      rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; push_cast; ring
-    have hl14 : Real.log 14 = Real.log 2 + Real.log 7 := by
-      rw [show (14 : ℝ) = 2 * 7 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
-    rw [hbil, neutralBlock, neutralBlock, neutralBlock]
-    have hws : windowSmooth 6 8 -
-        (2 * blockDegree 6 + 2 * (blockDegree 6 + blockDegree 7) + 2 * blockDegree 7) =
-        -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) := by
-      rw [windowSmooth, dyadicDepth]
-      simp only [blockDegree]
-      norm_num [hl6, hl8, hl14, Real.log_two]
-      ring
+    rw [hv₂_eq, bilin_primeTwo_two_six_v2]
     linarith [dyadicDepth_mem.2, Real.log_two_lt_d9, log_three_mem.2, log_seven_mem.1]
   have hv₁_gt : -0.604 < bilin (neutralWindow Q 2 6) v₁ v₁ := by
-    rw [hv₁, thirdDepth]
     have h3d : thirdDepth = dyadicDepth + 6 * Real.log 2 + 3 * Real.log 3 - 5 * Real.log 5 := by
       rw [thirdDepth, dyadicDepth]; ring
-    rw [h3d]
+    rw [hv₁, h3d]
     linarith [dyadicDepth_mem.2, Real.log_two_lt_d9, log_three_mem.2, log_five_mem.1]
   have hv₁₂_lt : bilin (neutralWindow Q 2 6) v₁ v₂ < -1 := by
     have hbil : bilin (neutralWindow Q 2 6) v₁ v₂ =
@@ -1787,38 +1783,7 @@ theorem primeThree_restores_positivity_two_six {Q : ℕ} (hQ : 3 ≤ Q) :
       log_five_mem.2]
   have hv₁_neg : bilin (neutralWindow Q 2 6) v₁ v₁ < 0 := by linarith [hv₁, thirdDepth_gt]
   have hv₂_neg : bilin (neutralWindow Q 2 6) v₂ v₂ < 0 := by
-    rw [hv₂_eq]
-    have hbil : bilin (neutralWindow 2 2 6) v₂ v₂ =
-        neutralBlock 2 6 6 + 2 * neutralBlock 2 6 7 + neutralBlock 2 7 7 := by
-      rw [bilin_eq_sum_mul_mulVec]
-      simp only [v₂, Matrix.mulVec_add, Pi.add_apply, add_mul, Finset.sum_add_distrib,
-        Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
-        Matrix.mulVec, dotProduct, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, neutralWindow,
-        windowMatrix, Matrix.of_apply]
-      have hc := neutralBlock_comm 2 7 6
-      norm_num; linarith
-    have hm66 := windowClosed_succ (a := 6) (by norm_num) 2
-    have hm77 := windowClosed_succ (a := 7) (by norm_num) 2
-    have hm67 := windowClosed_mixed (a := 6) (b := 7) (by norm_num) 2
-    have hw77 := windowClosed_self (x := 7) (by norm_num) 2
-    norm_num at hm66 hm77 hm67
-    have hwc68 : windowClosed 2 6 8 = windowSmooth 6 8 := by
-      rw [windowClosed, show Icc 2 2 = {2} by ext k; simp; omega, Finset.sum_singleton,
-        max_eq_right (by norm_num), mul_zero, mul_zero, sub_zero]
-    have hl6 : Real.log 6 = Real.log 2 + Real.log 3 := by
-      rw [show (6 : ℝ) = 2 * 3 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
-    have hl8 : Real.log 8 = 3 * Real.log 2 := by
-      rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; push_cast; ring
-    have hl14 : Real.log 14 = Real.log 2 + Real.log 7 := by
-      rw [show (14 : ℝ) = 2 * 7 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
-    rw [hbil, neutralBlock, neutralBlock, neutralBlock]
-    have hws : windowSmooth 6 8 -
-        (2 * blockDegree 6 + 2 * (blockDegree 6 + blockDegree 7) + 2 * blockDegree 7) =
-        -(2 * dyadicDepth + 8 * Real.log 2 + 18 * Real.log 3 - 14 * Real.log 7) := by
-      rw [windowSmooth, dyadicDepth]
-      simp only [blockDegree]
-      norm_num [hl6, hl8, hl14, Real.log_two]
-      ring
+    rw [hv₂_eq, bilin_primeTwo_two_six_v2]
     linarith [dyadicDepth_mem.1, Real.log_two_gt_d9, log_three_mem.1, log_seven_mem.2]
   have hprod : bilin (neutralWindow Q 2 6) v₁ v₁ * bilin (neutralWindow Q 2 6) v₂ v₂ < 1 := by
     nlinarith

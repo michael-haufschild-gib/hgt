@@ -102,8 +102,10 @@ theorem neg_three_lt_blockPotential_dyadic {D j : ℕ} (hD : 1 ≤ D) (hj : j < 
     linarith
   have hamgm : 4 * ((j : ℝ) + 1) * (((D - 1 - j : ℕ) : ℝ) + 1) ≤ (((D + j : ℕ) : ℝ) + 1) ^ 2 := by
     have hsub : ((D - 1 - j : ℕ) : ℝ) + 1 = (D : ℝ) - j := by
-      have : D - 1 - j + 1 = D - j := by omega
-      exact_mod_cast this
+      have h1 : D - 1 - j + 1 = D - j := by omega
+      have h2 : ((D - 1 - j + 1 : ℕ) : ℝ) = ((D - j : ℕ) : ℝ) := congrArg Nat.cast h1
+      rw [Nat.cast_add, Nat.cast_one, Nat.cast_sub (by omega : j ≤ D)] at h2
+      exact h2
     rw [hsub]
     push_cast
     have hsq : ((D : ℝ) + 1) ^ 2 - 4 * ((j : ℝ) + 1) * ((D : ℝ) - j) =
@@ -119,7 +121,7 @@ theorem neg_three_lt_blockPotential_dyadic {D j : ℕ} (hD : 1 ≤ D) (hj : j < 
     have hl := Real.log_le_log (by positivity) hamgm
     rw [Real.log_mul (by positivity) hpk.ne', Real.log_mul (by norm_num) hpj.ne',
       show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow, Real.log_pow] at hl
-    push_cast at hl
+    simp only [Nat.cast_ofNat] at hl
     linarith
   have hγ := Real.eulerMascheroniConstant_lt_two_thirds
   have hπ := log_two_pi_lt_two
@@ -155,7 +157,7 @@ theorem sum_range_inv_succ_sq_le (K : ℕ) :
         have hstep : (1 / ((n : ℝ) + 1)) ^ 2 ≤ 1 / (n : ℝ) - 1 / ((n : ℝ) + 1) := by
           rw [div_sub_div _ _ hn0.ne' hn1.ne', one_mul, mul_one, add_sub_cancel_left]
           have : (n : ℝ) * ((n : ℝ) + 1) ≤ ((n : ℝ) + 1) ^ 2 := by nlinarith
-          rw [one_div_pow, one_pow]
+          rw [_root_.one_div_pow]
           exact one_div_le_one_div_of_le (by positivity) this
         push_cast
         linarith
@@ -212,52 +214,69 @@ theorem sum_erase_primeFreeMiddle_sq_le (D : ℕ) (i : Fin D) :
   rw [← Finset.mul_sum]
   -- Split `j ≠ i` into `j < i` and `i < j`, reindexing each side into `range D`.
   have hsplit : (Finset.univ.erase i) =
-      Finset.filter (fun j : Fin D => (j : ℕ) < i) Finset.univ ∪
-        Finset.filter (fun j : Fin D => (i : ℕ) < j) Finset.univ := by
+      Finset.filter (fun j : Fin D => (j : ℕ) < (i : ℕ)) Finset.univ ∪
+        Finset.filter (fun j : Fin D => (i : ℕ) < (j : ℕ)) Finset.univ := by
     ext j
-    simp only [Finset.mem_erase, Finset.mem_univ, and_true, Finset.mem_union, Finset.mem_filter,
-      Fin.ext_iff]
-    omega
-  have hdisj : Disjoint (Finset.filter (fun j : Fin D => (j : ℕ) < i) Finset.univ)
-      (Finset.filter (fun j : Fin D => (i : ℕ) < j) Finset.univ) := by
+    simp only [Finset.mem_erase, Finset.mem_univ, and_true, true_and, Finset.mem_union,
+      Finset.mem_filter]
+    constructor
+    · intro h
+      have hne : (j : ℕ) ≠ (i : ℕ) := fun heq => h (Fin.ext heq)
+      omega
+    · rintro (h | h) heq <;> subst heq <;> omega
+  have hdisj : Disjoint (Finset.filter (fun j : Fin D => (j : ℕ) < (i : ℕ)) Finset.univ)
+      (Finset.filter (fun j : Fin D => (i : ℕ) < (j : ℕ)) Finset.univ) := by
     rw [Finset.disjoint_filter]
     intro j _ h1 h2; omega
   rw [hsplit, Finset.sum_union hdisj]
-  have hleft : ∑ j ∈ Finset.filter (fun j : Fin D => (j : ℕ) < i) Finset.univ,
+  let g : ℕ → ℝ := fun k => (1 / ((k : ℝ) + 1)) ^ 2
+  have hleft : ∑ j ∈ Finset.filter (fun j : Fin D => (j : ℕ) < (i : ℕ)) Finset.univ,
       (1 / ((max (i : ℕ) j - min (i : ℕ) j : ℕ) : ℝ)) ^ 2 ≤ 2 := by
-    refine (Finset.sum_le_sum_of_ne_zero (t := range i)
-      (f := fun j : Fin D => (1 / ((max (i : ℕ) j - min (i : ℕ) j : ℕ) : ℝ)) ^ 2)
-      (g := fun k : ℕ => (1 / ((k : ℝ) + 1)) ^ 2)
-      (i := fun j _ => (i : ℕ) - 1 - j) ?_ ?_ ?_).trans (sum_range_inv_succ_sq_le i)
-    · intro j hj _
-      have hj' := (Finset.mem_filter.mp hj).2
-      exact Finset.mem_range.mpr (by omega)
-    · intro j₁ hj₁ _ j₂ hj₂ _ heq
-      have h1 := (Finset.mem_filter.mp hj₁).2
-      have h2 := (Finset.mem_filter.mp hj₂).2
-      exact Fin.ext (by omega)
-    · intro j hj _
-      have hj' := (Finset.mem_filter.mp hj).2
-      have hd : max (i : ℕ) j - min (i : ℕ) j = ((i : ℕ) - 1 - j) + 1 := by omega
-      rw [hd]; push_cast; exact le_rfl
-  have hright : ∑ j ∈ Finset.filter (fun j : Fin D => (i : ℕ) < j) Finset.univ,
+    let s := Finset.filter (fun j : Fin D => (j : ℕ) < (i : ℕ)) Finset.univ
+    let e : Fin D → ℕ := fun j => (i : ℕ) - 1 - j
+    calc ∑ j ∈ s, (1 / ((max (i : ℕ) j - min (i : ℕ) j : ℕ) : ℝ)) ^ 2
+        ≤ ∑ j ∈ s, g (e j) := by
+          refine Finset.sum_le_sum fun j hj => ?_
+          dsimp [g, e]
+          have hj' := (Finset.mem_filter.mp hj).2
+          have hd : max (i : ℕ) j - min (i : ℕ) j = (i : ℕ) - 1 - j + 1 := by omega
+          rw [hd]; push_cast; exact le_rfl
+      _ = ∑ k ∈ s.image e, g k := by
+          refine (Finset.sum_image (f := g) fun j₁ hj₁ j₂ hj₂ heq => ?_).symm
+          have h1 := (Finset.mem_filter.mp hj₁).2
+          have h2 := (Finset.mem_filter.mp hj₂).2
+          dsimp [e] at heq
+          exact Fin.ext (by omega)
+      _ ≤ ∑ k ∈ range i, g k := by
+          refine Finset.sum_le_sum_of_subset_of_nonneg (fun k hk => ?_) (fun _ _ _ => sq_nonneg _)
+          rcases Finset.mem_image.mp hk with ⟨j, hj, rfl⟩
+          have hj' := (Finset.mem_filter.mp hj).2
+          exact Finset.mem_range.mpr (by dsimp [e]; omega)
+      _ ≤ 2 := sum_range_inv_succ_sq_le i
+  have hright : ∑ j ∈ Finset.filter (fun j : Fin D => (i : ℕ) < (j : ℕ)) Finset.univ,
       (1 / ((max (i : ℕ) j - min (i : ℕ) j : ℕ) : ℝ)) ^ 2 ≤ 2 := by
-    refine (Finset.sum_le_sum_of_ne_zero (t := range (D - 1 - i))
-      (f := fun j : Fin D => (1 / ((max (i : ℕ) j - min (i : ℕ) j : ℕ) : ℝ)) ^ 2)
-      (g := fun k : ℕ => (1 / ((k : ℝ) + 1)) ^ 2)
-      (i := fun j _ => (j : ℕ) - 1 - i) ?_ ?_ ?_).trans (sum_range_inv_succ_sq_le (D - 1 - i))
-    · intro j hj _
-      have hj' := (Finset.mem_filter.mp hj).2
-      have hjD := j.2
-      exact Finset.mem_range.mpr (by omega)
-    · intro j₁ hj₁ _ j₂ hj₂ _ heq
-      have h1 := (Finset.mem_filter.mp hj₁).2
-      have h2 := (Finset.mem_filter.mp hj₂).2
-      exact Fin.ext (by omega)
-    · intro j hj _
-      have hj' := (Finset.mem_filter.mp hj).2
-      have hd : max (i : ℕ) j - min (i : ℕ) j = ((j : ℕ) - 1 - i) + 1 := by omega
-      rw [hd]; push_cast; exact le_rfl
+    let s := Finset.filter (fun j : Fin D => (i : ℕ) < (j : ℕ)) Finset.univ
+    let e : Fin D → ℕ := fun j => (j : ℕ) - 1 - i
+    calc ∑ j ∈ s, (1 / ((max (i : ℕ) j - min (i : ℕ) j : ℕ) : ℝ)) ^ 2
+        ≤ ∑ j ∈ s, g (e j) := by
+          refine Finset.sum_le_sum fun j hj => ?_
+          dsimp [g, e]
+          have hj' := (Finset.mem_filter.mp hj).2
+          have hd : max (i : ℕ) j - min (i : ℕ) j = (j : ℕ) - 1 - i + 1 := by omega
+          rw [hd]; push_cast; exact le_rfl
+      _ = ∑ k ∈ s.image e, g k := by
+          refine (Finset.sum_image (f := g) fun j₁ hj₁ j₂ hj₂ heq => ?_).symm
+          have h1 := (Finset.mem_filter.mp hj₁).2
+          have h2 := (Finset.mem_filter.mp hj₂).2
+          dsimp [e] at heq
+          exact Fin.ext (by omega)
+      _ ≤ ∑ k ∈ range (D - 1 - i), g k := by
+          refine Finset.sum_le_sum_of_subset_of_nonneg (fun k hk => ?_) (fun _ _ _ => sq_nonneg _)
+          rcases Finset.mem_image.mp hk with ⟨j, hj, rfl⟩
+          have hj' := (Finset.mem_filter.mp hj).2
+          have hjD := j.2
+          exact Finset.mem_range.mpr (by dsimp [e]; omega)
+      _ ≤ 2 := sum_range_inv_succ_sq_le (D - 1 - i)
   linarith
 
 /-- **Two-sided logarithmic enclosure of the diagonal of `primeFreeMiddle D`**. -/
@@ -269,9 +288,10 @@ theorem primeFreeMiddle_diag_bounds {D : ℕ} (hD : 1 ≤ D) (i : Fin D) :
       xLogXStep (D + i) - (Real.eulerMascheroniConstant + Real.log (2 * Real.pi)) -
         xLogXDiff (2 * (D + (i : ℕ)) + 1) / 2 := by
     simp only [primeFreeMiddle, neutralWindow, windowMatrix, Matrix.of_apply]
-    rw [neutralBlock_eq_of_lt_two_mul hlt, if_pos rfl, Nat.sub_self, xLogXDiff_zero, add_zero,
-      blockDensity, xLogXStep]
-    congr 2; omega
+    rw [neutralBlock_eq_of_lt_two_mul hlt, if_pos rfl, max_self, min_self, Nat.sub_self,
+      xLogXDiff_zero, add_zero, blockDensity, xLogXStep]
+    have h2 : D + (i : ℕ) + (D + (i : ℕ)) + 1 = 2 * (D + (i : ℕ)) + 1 := by omega
+    rw [h2]
   rw [hdiag]
   have hb_lo := le_xLogXStep (n := D + i) (by omega)
   have hb_hi := xLogXStep_le (D + i)
@@ -371,8 +391,9 @@ theorem positiveChannel_diag_ge {ι : Type*} [Fintype ι] [DecidableEq ι] {M : 
   rw [hdiag, dotProduct_smul, smul_eq_mul, hez₀, Matrix.mulVec_smul, smul_dotProduct,
     dotProduct_smul, smul_eq_mul, smul_eq_mul, hMz₀] at hdir
   refine le_trans (le_of_eq ?_) hdir
+  have hne := hden.ne'
   dsimp [α]
-  field_simp [hden.ne']
+  field_simp
   ring
 
 /-! ### Two-sided `Θ(1 / log D)` diagonal ridge on `greenPositive` and `greenMatrix` -/
@@ -382,8 +403,8 @@ theorem positiveChannel_symm {ι : Type*} [Fintype ι] [DecidableEq ι] {M : Mat
     positiveChannel M φ μ i j = positiveChannel M φ μ j i := by
   have hMt : Mᵀ = M := Matrix.ext fun a b => hM b a
   have hMinv : (M⁻¹)ᵀ = M⁻¹ := by rw [Matrix.transpose_nonsing_inv, hMt]
-  have hinv_symm : M⁻¹ i j = M⁻¹ j i := by
-    rw [← hMinv, Matrix.transpose_apply]
+  have hinv_symm : M⁻¹ i j = M⁻¹ j i :=
+    (Matrix.transpose_apply M⁻¹ j i).symm.trans (congrFun (congrFun hMinv j) i)
   simp only [positiveChannel, Matrix.add_apply, Matrix.smul_apply, Matrix.vecMulVec_apply,
     smul_eq_mul, hinv_symm]
   ring
@@ -399,12 +420,13 @@ theorem greenPositive_col_norm_sq_le {D : ℕ} (hD : 1 ≤ D) (i : Fin D) :
     rw [greenPositive, positiveChannel_mulVec, OneBoundState.perp]
     have hφ : groundVector D ⬝ᵥ ((primeFreeMiddle D)⁻¹ *ᵥ e) =
         -(1 / bindingEnergy D) * (groundVector D ⬝ᵥ e) := by
-      rw [dotProduct_mulVec_symm (fun a b => by
-            have hMt : (primeFreeMiddle D)ᵀ = primeFreeMiddle D :=
-              Matrix.ext fun x y => primeFreeMiddle_symm D y x
-            have hMinv : ((primeFreeMiddle D)⁻¹)ᵀ = (primeFreeMiddle D)⁻¹ := by
-              rw [Matrix.transpose_nonsing_inv, hMt]
-            rw [← hMinv, Matrix.transpose_apply]),
+      have hMt : (primeFreeMiddle D)ᵀ = primeFreeMiddle D :=
+        Matrix.ext fun x y => primeFreeMiddle_symm D y x
+      have hMinv : ((primeFreeMiddle D)⁻¹)ᵀ = (primeFreeMiddle D)⁻¹ := by
+        rw [Matrix.transpose_nonsing_inv, hMt]
+      rw [dotProduct_mulVec_symm (fun a b =>
+            (Matrix.transpose_apply (primeFreeMiddle D)⁻¹ b a).symm.trans
+              (congrFun (congrFun hMinv b) a)),
         h.inv_mulVec_ground, dotProduct_smul, smul_eq_mul, dotProduct_comm]
     rw [hφ, sub_eq_add_neg, ← neg_smul]
     congr 2; ring
@@ -437,7 +459,7 @@ theorem greenPositive_diag_le_of_pos {D : ℕ} (hD : 1 ≤ D) (i : Fin D)
   have hcoord := congrFun hMg i
   simp only [Matrix.mulVec, dotProduct, e, Pi.sub_apply, Pi.single_eq_same, Pi.smul_apply,
     smul_eq_mul, ← sq] at hcoord
-  have hgi : g i = greenPositive D i i := by simp [g, e, Matrix.mulVec]
+  have hgi : g i = greenPositive D i i := by simp [g, e]
   have hsplit : ∑ j : Fin D, primeFreeMiddle D i j * g j =
       primeFreeMiddle D i i * greenPositive D i i +
         ∑ j ∈ Finset.univ.erase i, primeFreeMiddle D i j * g j := by
@@ -456,16 +478,17 @@ theorem greenPositive_diag_le_of_pos {D : ℕ} (hD : 1 ≤ D) (i : Fin D)
         10000 / primeFreeMiddle D i i * (primeFreeMiddle D i j) ^ 2 +
           primeFreeMiddle D i i / 40000 * (g j) ^ 2 := by
     intro j _
-    have hsq : 0 ≤ (20000 * primeFreeMiddle D i j + primeFreeMiddle D i i * g j) ^ 2 := sq_nonneg _
-    have hden : 0 < 40000 * primeFreeMiddle D i i := by positivity
-    rw [← mul_le_mul_left hden]
-    have hrhs : 40000 * primeFreeMiddle D i i *
-        (10000 / primeFreeMiddle D i i * (primeFreeMiddle D i j) ^ 2 +
-          primeFreeMiddle D i i / 40000 * (g j) ^ 2) =
-        400000000 * (primeFreeMiddle D i j) ^ 2 + (primeFreeMiddle D i i) ^ 2 * (g j) ^ 2 := by
-      field_simp [hM.ne']; ring
-    rw [hrhs]
-    nlinarith
+    have hnonneg : 0 ≤ (20000 * primeFreeMiddle D i j + primeFreeMiddle D i i * g j) ^ 2 /
+        (40000 * primeFreeMiddle D i i) := by positivity
+    have hid : (20000 * primeFreeMiddle D i j + primeFreeMiddle D i i * g j) ^ 2 /
+        (40000 * primeFreeMiddle D i i) =
+      10000 / primeFreeMiddle D i i * (primeFreeMiddle D i j) ^ 2 +
+        primeFreeMiddle D i j * g j +
+        primeFreeMiddle D i i / 40000 * (g j) ^ 2 := by
+      have hne := hM.ne'
+      field_simp
+      ring
+    linarith
   have hsum := Finset.sum_le_sum hamgm
   rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum] at hsum
   have hrow := sum_erase_primeFreeMiddle_sq_le D i
@@ -501,7 +524,7 @@ theorem greenMatrix_diag_bounds {D : ℕ} (hD : 2 ^ 256 ≤ D) (i : Fin D) :
   have hlogD : 177 < Real.log D := by
     have hle : ((2 ^ 256 : ℕ) : ℝ) ≤ D := by exact_mod_cast hD
     have hl := Real.log_le_log (by positivity) hle
-    rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow] at hl
+    rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow, Nat.cast_ofNat] at hl
     linarith [Real.log_two_gt_d9]
   have hlog2D_pos : 0 < Real.log (2 * (D : ℝ)) := by
     rw [Real.log_mul two_ne_zero hDpos.ne']
@@ -517,7 +540,7 @@ theorem greenMatrix_diag_bounds {D : ℕ} (hD : 2 ^ 256 ≤ D) (i : Fin D) :
     groundVector_le hD1 (by linarith) i
   have hφ_small : groundVector D i ≤ 1 / 40 := by
     have hden : (0 : ℝ) < Real.log D - 3 / 2 := by linarith
-    rw [div_le_iff₀ hden] at hφ_hi
+    rw [le_div_iff₀ hden] at hφ_hi
     nlinarith
   have hμ := bindingEnergy_lt_three hD1
   have hμ1 := one_lt_bindingEnergy hD1
@@ -594,7 +617,7 @@ theorem abs_greenMatrix_entry_le {D : ℕ} (hD : 2 ^ 256 ≤ D) (i j : Fin D) :
     rw [Real.log_mul two_ne_zero hDpos.ne']
     have hle : ((2 ^ 256 : ℕ) : ℝ) ≤ D := by exact_mod_cast hD
     have hl := Real.log_le_log (by positivity) hle
-    rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow] at hl
+    rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow, Nat.cast_ofNat] at hl
     linarith [Real.log_two_gt_d9]
   have hsymm : ∀ a b, greenPositive D a b = greenPositive D b a :=
     positiveChannel_symm (primeFreeMiddle_symm D) _ _
@@ -637,7 +660,7 @@ theorem abs_greenMatrix_entry_le {D : ℕ} (hD : 2 ^ 256 ≤ D) (i j : Fin D) :
   have hlogD : 177 < Real.log D := by
     have hle : ((2 ^ 256 : ℕ) : ℝ) ≤ D := by exact_mod_cast hD
     have hl := Real.log_le_log (by positivity) hle
-    rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow] at hl
+    rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow, Nat.cast_ofNat] at hl
     linarith [Real.log_two_gt_d9]
   have hlog2D_gt : 177 < Real.log (2 * (D : ℝ)) := by
     rw [Real.log_mul two_ne_zero hDpos.ne']
@@ -932,8 +955,7 @@ theorem endForm_eq_one_of_le_three_mul {R a b : ℕ} (Q : ℕ) (hR : 1 ≤ R)
   rcases p₁ with i₁ | j₁ <;> rcases p₂ with i₂ | j₂
   · exact hblk (Sum.inl i₁) (Sum.inl i₂)
   · exact hblk (Sum.inl i₁) (Sum.inr j₂)
-  · simpa only [endForm, fromBlocks_apply₂₁, Matrix.transpose_apply, posMatrix, Matrix.of_apply,
-      neutralBlock_comm] using hblk (Sum.inr j₁) (Sum.inl i₂)
+  · exact hblk (Sum.inl i₂) (Sum.inr j₁)
   · exact hblk (Sum.inr j₁) (Sum.inr j₂)
 
 /-- The one-parameter coupling pencil `P(t) = −endJet − t • endContact` interpolating between
@@ -974,7 +996,7 @@ theorem pencilCoupling_greenPositive_add_neg (Q R a b : ℕ) (t : ℝ) (e : Fin 
     rw [hmul]
     simp only [Matrix.mulVec_sub, Matrix.mulVec_neg, Matrix.mulVec_smul, sub_dotProduct,
       neg_dotProduct, smul_dotProduct, dotProduct_sub, dotProduct_neg, dotProduct_smul,
-      smul_eq_mul, neg_neg]
+      smul_eq_mul]
     rw [dotProduct_mulVec_symm hsymm (endContact Q R a b *ᵥ e) (endJet R a b *ᵥ e)]
     ring
   rw [expand t, expand (-t)]
@@ -1003,7 +1025,7 @@ theorem pencilCoupling_greenPositive_sub_neg (Q R a b : ℕ) (t : ℝ) (e : Fin 
     rw [hmul]
     simp only [Matrix.mulVec_sub, Matrix.mulVec_neg, Matrix.mulVec_smul, sub_dotProduct,
       neg_dotProduct, smul_dotProduct, dotProduct_sub, dotProduct_neg, dotProduct_smul,
-      smul_eq_mul, neg_neg]
+      smul_eq_mul]
     rw [dotProduct_mulVec_symm hsymm (endContact Q R a b *ᵥ e) (endJet R a b *ᵥ e)]
     ring
   rw [expand t, expand (-t)]
@@ -1110,8 +1132,7 @@ theorem reweightedWindow_submatrix_overlapEquiv_of_le_three_mul {Q R a b : ℕ} 
     rcases p₁ with i₁ | j₁ <;> rcases p₂ with i₂ | j₂
     · exact hblk (Sum.inl i₁) (Sum.inl i₂)
     · exact hblk (Sum.inl i₁) (Sum.inr j₂)
-    · simpa only [endForm, fromBlocks_apply₂₁, Matrix.transpose_apply, posMatrix, Matrix.of_apply]
-        using hblk (Sum.inl i₂) (Sum.inr j₁)
+    · exact hblk (Sum.inl i₂) (Sum.inr j₁)
     · exact hblk (Sum.inr j₁) (Sum.inr j₂)
   rw [hmid, hcoupl, hends]
 
@@ -1129,11 +1150,10 @@ theorem exists_greenForm_gt_of_two_le_hermNegIndex {D : ℕ} (hD : 1 ≤ D) {κ 
   have hpos : hermNegIndex ((N - Pᵀ * (primeFreeMiddle D)⁻¹ * P).map (↑) : Matrix κ κ ℂ) ≠ 0 := by
     omega
   have hnot := mt hermNegIndex_eq_zero_iff_forall.mpr hpos
-  push_neg at hnot
+  simp only [not_forall, not_le] at hnot
   obtain ⟨e, he⟩ := hnot
   refine ⟨e, ?_⟩
-  rw [schur_form_eq_channels hM P N e] at he
-  change _ < (P *ᵥ e) ⬝ᵥ (greenPositive D *ᵥ (P *ᵥ e))
+  rw [schur_form_eq_channels hM P N e, ← greenPositive] at he
   linarith
 
 /-- **Failure of the Green inequality on `(R, 3R]` for every nonpositive contact weight
@@ -1148,8 +1168,8 @@ theorem exists_pencil_greenForm_gt {Q R a b : ℕ} (hR : 1 ≤ R) (hQ : 2 ≤ Q)
   have hsymm : ∀ x y, endForm Q R a b x y = endForm Q R a b y x :=
     fromBlocks_symm (posMatrix_symm (neutralBlock_symm Q) (leftPos R a)) _
       (posMatrix_symm (neutralBlock_symm Q) (rightPos R a b))
-  have hidx := two_le_hermNegIndex_reweighted_of_ratio_three hR hQ (by omega)
-    (fun _ => t) ht1 ht2
+  have hidx := two_le_hermNegIndex_reweighted_of_ratio_three (J := a + (R + a) + b) hR hQ
+    (by omega) (fun _ => t) ht1 ht2
   rw [← hermNegIndex_map_submatrix _ (overlapEquiv a (R + a) b),
     reweightedWindow_submatrix_overlapEquiv_of_le_three_mul hR hQ (by omega) (fun _ => t)] at hidx
   exact exists_greenForm_gt_of_two_le_hermNegIndex (by omega) _ hsymm hidx
@@ -1167,8 +1187,7 @@ theorem exists_primeFree_greenForm_gt {Q R a b : ℕ} (hR : 1 ≤ R) (hQ : 2 ≤
   refine ⟨e, ?_⟩
   have hmul : pencilCoupling Q R a b 0 *ᵥ e = -(endJet R a b *ᵥ e) := by
     rw [pencilCoupling, zero_smul, sub_zero, Matrix.neg_mulVec]
-  rw [hmul, Matrix.mulVec_neg, neg_dotProduct, dotProduct_neg, neg_neg, dotProduct_neg, neg_sq]
-    at he
+  simp only [hmul, Matrix.mulVec_neg, neg_dotProduct, dotProduct_neg, neg_neg, neg_sq] at he
   exact he
 
 /-- **Sign-twin failure (`t = −1`) on `(R, 3R]` at every block size `R ≥ 1`**: flipping the sign of

@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Type:** Paper derivation; not Lean-certified
 - **Target:** For each `c>0`, a sufficiently high critical zero of multiplicity at least `c log T` forces `Ω_c(log T)` off-line zero copies within a fixed height distance and a fixed positive horizontal depth.
-- **Dependencies:** The unconditional `RiemannGaussian.gaussianArithmeticExplicitFormula_eq_canonical`, the quasi-RH strip bound, and `RHTower.lorentzMass_le_log`. The Gaussian logarithmic asymptotic and compensation estimate remain unformalized; no new contour identity is required.
+- **Dependencies:** The unconditional `RiemannGaussian.gaussianArithmeticExplicitFormula_eq_canonical`, the quasi-RH strip bound, and `RHTower.lorentzMass_le_log`. No new contour identity is required.
 
 Put `h=min(1,c√π)` and `A=exp(9/(64h²))`. The Gaussian test at
 horizontal depth `δ` and vertical offset `u` has real part
@@ -27,5 +27,13 @@ Thus the contribution from `|u|>R` is at most `(c/8)log T`.
 The Gaussian sum is eventually at most `(5c/8)log T`, leaving negative mass
 at least `(3c/8)log T` before removing that tail. The remaining negative mass gives at least
 `(c/(4A))log T` copies with `|u|≤R` and `|δ|≥d`.
-The logarithmic asymptotic, tail estimate, and finite-copy conclusion remain
-to be certified in Lean.
+`ConjugateDiagonalGeometry.tendsto_gaussianArithmeticExplicitFormula_log_normalized`
+certifies the arithmetic Gaussian coefficient `sqrt(π/ε)/π`. Its axiom audit
+contains only `propext`, `Classical.choice`, and `Quot.sound`.
+The transfer to the canonical zero sum, tail estimate, and finite-copy conclusion
+remain to be certified.
+
+The remaining Lean drafts are `ConjugateDiagonalGeometry/GaussianZeroCopies.lean`,
+`GaussianCompensationKernel.lean`, and
+`SquareRootThreshold/GaussianLocalCompensation.lean`.
+The final declaration is `exists_local_offLine_compensation`.

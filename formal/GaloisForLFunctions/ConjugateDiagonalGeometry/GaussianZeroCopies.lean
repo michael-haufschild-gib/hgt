@@ -121,7 +121,8 @@ theorem gaussianZeroLorentz_le_log {T : ℝ} (hT : 8 ≤ T) :
       (show T + 4 ≤ 2 * T by linarith only [hT])
     rw [Real.log_mul (by norm_num) (by linarith only [hT] : T ≠ 0)] at hh
     have h2 : Real.log 2 ≤ 1 := by
-      simpa using Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+      have hh := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+      linarith only [hh]
     linarith only [hh, h2, hl]
   have hC : xiLineTwoLogDerivConstant ≤ |xiLineTwoLogDerivConstant| * Real.log T := by
     have hh := mul_le_mul_of_nonneg_left hl (abs_nonneg xiLineTwoLogDerivConstant)
@@ -141,7 +142,7 @@ theorem tendsto_canonicalZetaGaussianZeroSum_log_normalized {ε : ℝ} (hε : 0 
     unfold canonicalZetaSymmetricGaussianZeroSum
     ring
   · congr 1
-    ring
+    rw [div_div, mul_comm Real.pi (2 : ℝ)]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry
 
