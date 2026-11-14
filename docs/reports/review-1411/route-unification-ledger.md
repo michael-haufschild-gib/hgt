@@ -44,7 +44,7 @@ The exact μ kernel signal has exponent controlled by `Θ`: for `1/2≤b<1`, `Θ
 
 The neutral arithmetic form is the complete Weil form with its polar charge contribution separated. A uniform finite scalar lower margin on all admissible neutral matrices is equivalent to RH. Whole-space critical positivity and polar payment have equal thresholds; their infinite-threshold assertion is equivalent to RH. These are exact invariant relations, stronger than a list of unrelated RH criteria. [ACS] [POLAR]
 
-Parity floors at `log 2` transfer to full complex windows and then block matrices. Their stated cutoff/range conditions give zero overlap levels in a finite ladder. A lower gap for every fixed cutoff on its already index-one windows gives another RH receiver. It does not require one gap uniform over all cutoffs, nor establish index one on all windows by definition. [FLOOR] [OVERLAP] [GAP]
+Parity floors at `log 2` transfer to full complex windows and then block matrices. Their stated cutoff/range conditions give zero overlap levels in a finite ladder. A lower gap for every fixed cutoff on its index-one windows gives another RH receiver. It does not require one gap uniform over all cutoffs, nor establish index one on all windows by definition. [FLOOR] [OVERLAP] [GAP]
 
 **Unification:** RW/EWU/OWU, ACS and critical HF/atomic support expose different restrictions or degenerations of a complete arithmetic form. **Limit:** a source-independent geometric index theorem is still missing. Correct contact ideals and logarithmic diagonals constrain such a realization; they do not construct it. The complete contact operator cannot generally be compressed into fixed rank with the specified absolute-error budget. [CONTACT] [DIAGONAL] [RANK-WALL]
 

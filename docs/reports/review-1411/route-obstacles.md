@@ -4,7 +4,7 @@ The corpus supplies an unconditional strip `1/8 ≤ Re ρ ≤ 7/8`, strong finit
 
 Scope: 38 named routes, 12 candidates, and shared supporting programmes. Evidence is current Lean source, with statements, hypotheses and relevant proof interfaces inspected. This is not a fresh compilation or transitive-axiom audit. The [fact log](../../../logs/review-1411-current-facts.txt), [search evidence](../../../logs/review-1411-current-evidence.jsonl) and [source manifest](../../../logs/review-1411-current-source-manifest.json) record the evidence. The two reference maps supply nomenclature, not proof authority. No external search result is used.
 
-**A — work** means an application, normalization or finite calculation with an available mathematical method. It does not include an unproved sign, rate or uniformity claim. **B — open research** means no solution supplied by the inspected corpus; this cannot certify what every mathematician knows. **Excluded** means a precise construction class has a proved obstruction. An excluded construction is not a refutation of its whole route. A dash in A means the receiver is already available and no routine task removes the blocker.
+**A — work** means an application, normalization or finite calculation with an available mathematical method. It does not include an unproved sign, rate or uniformity claim. **B — open research** means no solution supplied by the inspected corpus; this cannot certify what every mathematician knows. **Excluded** means a precise construction class has a proved obstruction. An excluded construction is not a refutation of its whole route. A dash in A means the receiver is available and no routine task removes the blocker.
 
 ## Shared frontier
 

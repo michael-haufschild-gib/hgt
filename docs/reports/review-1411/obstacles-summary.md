@@ -2,7 +2,7 @@
 
 The corpus has a fixed `1/8..7/8` strip, Jensen real-rootedness through degree31922, a complete positive Weil floor at `log 2`, finite overlap control, incomplete reciprocity with retained phases, finite arithmetic/heat comparison, and an actual AdS prime-marked dictionary. These are available research inputs. RH closure still requires arithmetic production, uniform exclusion, or a faithful realization carrying an independently proved structural constraint. [MMD] [JENSEN] [FLOOR] [OVERLAP] [INCOMPLETE] [HEAT-FINITE] [ADS]
 
-This document distinguishes **source-supported facts** from **proposed questions and programmes**. Proposals below are not theorems or promises of solvability. “Narrower” means fewer cases or quantifiers, not a proved ordering of mathematical difficulty. Quasi-RH is already supplied by the corpus; seeking a question “easier than quasi-RH” is therefore not an appropriate open frontier. No assertion about everybody's knowledge follows from corpus inspection. No external search result is used.
+This document distinguishes **source-supported facts** from **proposed questions and programmes**. Proposals below are not theorems or promises of solvability. “Narrower” means fewer cases or quantifiers, not a proved ordering of mathematical difficulty. Quasi-RH is supplied by the corpus; seeking a question “easier than quasi-RH” is therefore not an appropriate open frontier. No assertion about everybody's knowledge follows from corpus inspection. No external search result is used.
 
 The [route report](route-obstacles.md) covers all 38 routes and 12 candidates; the [wall ledger](walls-ledger.md) groups obstacles into P/U/R; the [unification ledger](route-unification-ledger.md) records exact bridges. Evidence: [facts](../../../logs/review-1411-current-facts.txt), [Lean search records](../../../logs/review-1411-current-evidence.jsonl), [source manifest](../../../logs/review-1411-current-source-manifest.json). These reports use source inspection, without builds or a fresh kernel/axiom audit.
 
@@ -49,7 +49,7 @@ The exact source statements and excluded construction classes are in the other t
 
 **Best finite-exception assembly: exceptional-layer filters + arithmetic cofactor cancellation → AAL; combine with ZAL.** Filter growth and unweighted near-diagonal rows are controlled. A source-specific estimate on the remaining prime-weighted sum could contradict a finite top layer. This would be a real cross-route gain; AAL alone still does not prove RH. [AAL-LAYER] [COFACTORS] [NEARDIAG] [AAL]
 
-**Heat/Galois assembly: finite actions → quantitative specialization → Landing/B13.** Finite-window comparison is already available. A uniformity theorem tailored to the actual arithmetic data could constrain off-line support. It must avoid the disproved whole-fibre intertwiners; even finite support then requires B13. [HEAT-FINITE] [HEAT-NOGO] [HEAT-UNIFORM] [INDEX]
+**Heat/Galois assembly: finite actions → quantitative specialization → Landing/B13.** Finite-window comparison is available. A uniformity theorem tailored to the actual arithmetic data could constrain off-line support. It must avoid the disproved whole-fibre intertwiners; even finite support then requires B13. [HEAT-FINITE] [HEAT-NOGO] [HEAT-UNIFORM] [INDEX]
 
 No complete assembly presently bypasses all blockers. The opportunity is to share a proved *partial arithmetic input*, not to cycle through equivalent RH endpoints.
 
@@ -69,7 +69,7 @@ Use the explicit six-phase row factor. Its `ρ⁻¹` coefficient carries the tar
 
 A first meaningful theorem would give a strict saving over the `Z^(2/3)` absolute sixth-power scale for this **signed, target-retaining aggregate**, uniformly in the declared conductor range and complex rectangle. It must retain all other terms needed to reach the μ signal. Local phase projection alone is finite algebra; uniform continuation and cancellation are the research.
 
-A precise no-go would also be valuable: if every bounded residue-killing extraction necessarily kills the target, it retires that whole extraction class and identifies which extra row coupling or larger carrier is necessary. Incomplete reciprocity itself is already proved and is not the question. [INCOMPLETE]
+A precise no-go would also be valuable: if every bounded residue-killing extraction necessarily kills the target, it retires that whole extraction class and identifies which extra row coupling or larger carrier is necessary. Incomplete reciprocity itself is proved and is not the question. [INCOMPLETE]
 
 ## 2.6 Breakthrough with no positivity, Weil positivity or spectral mechanism
 
@@ -123,7 +123,7 @@ The first nontrivial result should be a source-derived obstruction to an odd rig
 
 ## 2.12 A new field for the AdS modular-horizon hypothesis
 
-A candidate subject is **arithmetic modular-horizon dynamics**. Objects would include prime-marked causal delay systems, modular horizon gluing data, two-boundary correlators, archimedean boundary terms and admissible bulk fields. The already constructed dictionary supplies the arithmetic calibration. [ADS]
+A candidate subject is **arithmetic modular-horizon dynamics**. Objects would include prime-marked causal delay systems, modular horizon gluing data, two-boundary correlators, archimedean boundary terms and admissible bulk fields. The constructed dictionary supplies the arithmetic calibration. [ADS]
 
 Its defining problem is to derive a dynamical constraint that exact prime arithmetic satisfies and the slow-decay deformation family does not, then turn that constraint into a quantitative response estimate. Tools should connect local gate composition, causal convolution, modular evolution and controlled boundary limits. Finite Euler-tilt and thermal robustness bounds are available; applying them here requires an exact source realization and estimates uniform through the infinite-prime limit. [EULER-ROBUST] [THERMAL-ROBUST] A bulk construction must specify its equations, state/boundary data and observable, rather than declaring a formal correlator to be a complete physical theory.
 
@@ -165,7 +165,7 @@ The pure-mollifier version is equivalent. Fixed `[0,1]` moments over every prefi
 
 **Milestones.** First isolate one off-diagonal contribution whose signed bound is stronger than its absolute budget in a genuinely long range. A concrete finite target to investigate is the ζ-mollified bound `C T⁶` at `θ=16` on unbounded heights; this is a proposed estimate, not an available theorem or an asserted equivalent of RH. Then seek a family of such bounds with one K as θ grows. Each extension must prove its constants and height quantifiers.
 
-**Closure criteria.** Common K; arbitrarily large θ; exactly the arithmetic mollifier; allowed θ-dependent constants; the stated cofinal-height property. A universal constant over all θ,T is excluded. A fixed slope improvement asserted for unbounded θ is already RH-strength, so cannot serve as an independent “easy lemma.” Short-mollifier proportions and a near-unit target answer different questions. [WD-LONG]
+**Closure criteria.** Common K; arbitrarily large θ; exactly the arithmetic mollifier; allowed θ-dependent constants; the stated cofinal-height property. A universal constant over all θ,T is excluded. A fixed slope improvement asserted for unbounded θ is RH-strength, so cannot serve as an independent “easy lemma.” Short-mollifier proportions and a near-unit target answer different questions. [WD-LONG]
 
 ## 2.16 Programme: close ACS
 
@@ -175,25 +175,25 @@ The pure-mollifier version is equivalent. Fixed `[0,1]` moments over every prefi
 
 **Three connected lines of work.** Extend one complete aperture through the prime-square contact (§2.4). Derive a signed gluing law retaining the full contact operator and estimate its accumulated losses. In parallel, construct the geometric diagonal and an index theorem as in §§2.8/2.14. A theorem in either analytic or geometric form can feed the same margin receiver.
 
-**Milestones.** Resolve the `Q=2` fourth excess without confusing it with the already proved ratio-three theorem. Obtain a propagation estimate whose total loss is bounded over an unbounded sequence, or verify the fixed-Q gap hypothesis on the already bound windows for every Q. The latter allows the gap to depend on Q. [OVERLAP] [GAP]
+**Milestones.** Resolve the `Q=2` fourth excess without confusing it with the proved ratio-three theorem. Obtain a propagation estimate whose total loss is bounded over an unbounded sequence, or verify the fixed-Q gap hypothesis on the bound windows for every Q. The latter allows the gap to depend on Q. [OVERLAP] [GAP]
 
 **Rejection tests.** Fixed-rank absolute-error lowering at ratio four; a gap for the bare dilation process; nonnegative geometric diagonals; omission of the pole channel; profile transfer based only on numerical clock size. All fail to address the exact source. Any successful rule must also explain why the sign twin fails. [RANK-WALL] [TREE-GAP] [DIAGONAL] [TWIN] [BEURLING]
 
 ## 2.17 Programme: close ZCG
 
-**Target.** Prove equality of forward-loop and conjugate-loop transport at every positive real nonbranch time, or supply another independently proved criterion giving the same all-zero conclusion. The mirror-transport criterion is already equivalent to RH. [ZCG]
+**Target.** Prove equality of forward-loop and conjugate-loop transport at every positive real nonbranch time, or supply another independently proved criterion giving the same all-zero conclusion. The mirror-transport criterion is equivalent to RH. [ZCG]
 
 **Objects/tools.** The actual heat cover, local collision divisors, turn characters, finite arithmetic root fields and their continued windows. Available monodromy classification reduces properness to one parity law, but properness itself is not established; even properness permits nonreal mass divisible by eight. [HEAT-PARITY] [HEAT-EIGHT]
 
 **Programme.** Identify arithmetic information retained under local continuation but invisible to the generic signed permutation group. Prove compatibility under enlarging finite windows, with quantitative control of the shrinking time interval. Test whether that control bounds off-line support or gives a uniform Landing threshold under ZAL. Combine any resulting finite-support theorem with a separate B13 theorem; MMD supplies only a fixed strip, not ZAL. [HEAT-FINITE] [HEAT-UNIFORM] [LANDING]
 
-**First decisive test.** A source-derived bound preventing the relevant collision mass from escaping without control as `t↓0`, under explicitly stated tail assumptions. Fixed-time finiteness is already known and does not answer this question. A failure theorem identifying unavoidable shrinking of the arithmetic specialization window would also constrain the programme.
+**First decisive test.** A source-derived bound preventing the relevant collision mass from escaping without control as `t↓0`, under explicitly stated tail assumptions. Fixed-time finiteness is known and does not answer this question. A failure theorem identifying unavoidable shrinking of the arithmetic specialization window would also constrain the programme.
 
 **Rejection tests.** A single whole-fibre intertwiner, global arithmetic conjugation realized by one finitary heat element, or “large group therefore real roots.” The first two are excluded comparisons; the third has no such implication. [HEAT-NOGO]
 
 ## 2.18 Programme: close MC/JAS
 
-**Target.** Produce critical cancellation for the exact μ signal—bounds at every exponent above `1/2`—or prove full dressed JAS level-one PSD above some prime cutoff. The signal/width/positivity dictionaries and the level-one capstones already exist. No extra chain premise belongs to this strongest JAS endpoint. [SIGNAL] [SIGNAL-WIDTH] [SIGNAL-JAS] [JAS]
+**Target.** Produce critical cancellation for the exact μ signal—bounds at every exponent above `1/2`—or prove full dressed JAS level-one PSD above some prime cutoff. The signal/width/positivity dictionaries and the level-one capstones exist. No extra chain premise belongs to this strongest JAS endpoint. [SIGNAL] [SIGNAL-WIDTH] [SIGNAL-JAS] [JAS]
 
 **Objects/tools.** The actual reciprocal/μ coefficients, phase-retaining incomplete rows, mixed-row family residues, damped Hilbert forms and full ancestry matrices. Fixed-shift logarithmic Chowla can inform correlation decompositions but supplies no growing-shift rate by itself. Formal jet independence restricts exact sparse-coefficient identities, without providing estimates. [INCOMPLETE] [CHOWLA] [JETS]
 
