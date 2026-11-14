@@ -25,10 +25,11 @@ theorem integerPolynomial_eval_integral (f : ℤ[X]) {x : ℚ}
   rw [eval₂_eq_sum_range]
   apply val_finset_sum_nonneg
   intro i _
+  change 0 ≤ padicValRat p ((f.coeff i : ℚ) * x ^ i)
   by_cases ht : (f.coeff i : ℚ) * x ^ i = 0
-  · simp only [Int.castRingHom_apply, ht, padicValRat.zero, le_refl]
+  · simp only [ht, padicValRat.zero, le_refl]
   · obtain ⟨hc, hxp⟩ := mul_ne_zero_iff.mp ht
-    rw [Int.castRingHom_apply, padicValRat.mul hc hxp, padicValRat.of_int, padicValRat.pow]
+    rw [padicValRat.mul hc hxp, padicValRat.of_int, padicValRat.pow]
     exact add_nonneg (Nat.cast_nonneg _) (mul_nonneg (Nat.cast_nonneg _) hx)
 
 /-- At a pole, every lower-degree monomial is at least one valuation

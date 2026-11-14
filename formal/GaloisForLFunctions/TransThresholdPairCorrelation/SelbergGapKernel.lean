@@ -149,9 +149,27 @@ theorem selbergKernel_le_indicator (x : ℝ) :
     have hs := (sq_le_one_iff_abs_le_one x).not.mpr h
     linarith only [hs]
 
+/-- The transform satisfies the sinc-square identity at every real argument,
+including the two removable singularities of the quotient formula. -/
+theorem selbergKernel_mul_one_sub_sq (x : ℝ) :
+    selbergKernel x * (1 - x ^ 2) = sinc (π * x) ^ 2 := by
+  by_cases hzero : x = 0
+  · simp [hzero]
+  by_cases hplus : 1 + x = 0
+  · have hx : x = -1 := by linarith only [hplus]
+    simp [hx, sinc_of_ne_zero pi_ne_zero]
+  by_cases hminus : 1 - x = 0
+  · have hx : x = 1 := by linarith only [hminus]
+    simp [hx, sinc_of_ne_zero pi_ne_zero]
+  have hden : 1 - x ^ 2 ≠ 0 := by
+    rw [show 1 - x ^ 2 = (1 - x) * (1 + x) by ring]
+    exact mul_ne_zero hminus hplus
+  rw [selbergKernel_formula x hzero hplus hminus, div_mul_cancel₀ _ hden]
+
 end
 end GaloisForLFunctions.TransThresholdPairCorrelation
 
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergProfile_nonneg
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_le_one
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_le_indicator
+#print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_mul_one_sub_sq

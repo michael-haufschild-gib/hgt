@@ -11,6 +11,7 @@ primary representatives therefore divides the full norm coefficient by four.
 
 noncomputable section
 
+open scoped Classical
 open Complex Finset RHTower.GaussianTwoSquares
 open GaloisForLFunctions.FamilyContinuationTheory.Quartic
 
@@ -19,6 +20,15 @@ namespace GaloisForLFunctions.SelbergClass.GaussianAngular
 /-- Harmonic coefficients summed over the canonical primary representatives. -/
 def primaryCoefficient (k n : ℕ) : ℂ :=
   ∑ z : ↥(normSet n), if IsPrimary z.val then (z.val : ℂ) ^ k else 0
+
+/-- Number of primary representatives on a Gaussian norm fiber. -/
+def primaryCount (n : ℕ) : ℕ :=
+  ∑ z : ↥(normSet n), if IsPrimary z.val then 1 else 0
+
+/-- The weight-zero primary coefficient is an ordinary nonnegative count. -/
+theorem primaryCoefficient_zero (n : ℕ) : primaryCoefficient 0 n = (primaryCount n : ℂ) := by
+  classical
+  simp [primaryCoefficient, primaryCount]
 
 private theorem rotate_gaussian (n : ℕ) (z : ↥(normSet n)) :
     (rotate n z).val = gaussianI * z.val := by
@@ -93,5 +103,21 @@ theorem coefficient_eq_four_primary (m : ℕ) (n : {n : ℕ // n % 2 = 1}) :
 theorem norm_count_eq_four_primary (n : {n : ℕ // n % 2 = 1}) :
     ((normSet n.val).card : ℂ) = 4 * primaryCoefficient 0 n.val := by
   simpa [coefficient] using coefficient_eq_four_primary 0 n
+
+/-- Primary representatives account for exactly a quarter of every odd norm fiber. -/
+theorem card_normSet_eq_four_primaryCount (n : {n : ℕ // n % 2 = 1}) :
+    (normSet n.val).card = 4 * primaryCount n.val := by
+  have h := norm_count_eq_four_primary n
+  rw [primaryCoefficient_zero] at h
+  exact_mod_cast h
+
+/-- Jacobi's divisor sum counts primary Gaussian representatives at every odd norm. -/
+theorem primaryCount_eq_divisorChar (n : {n : ℕ // n % 2 = 1}) :
+    (primaryCount n.val : ℤ) = divisorChar n.val := by
+  have hn : 0 < n.val := by have h := n.property; omega
+  have hc := card_normSet hn
+  rw [card_normSet_eq_four_primaryCount n] at hc
+  push_cast at hc
+  linarith only [hc]
 
 end GaloisForLFunctions.SelbergClass.GaussianAngular

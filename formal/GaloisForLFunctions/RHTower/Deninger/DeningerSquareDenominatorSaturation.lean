@@ -66,7 +66,7 @@ theorem deninger_squareDenominator_product_iff (T : Finset Nat.Primes) (q : ℚ)
       · have hR : padicValRat p (deningerPrecisionParameter T) = 1 :=
           (deningerPrecisionParameter_val T ⟨p, hp⟩).trans (if_pos hmem)
         rw [hR]
-        have hodd := heq.mp hmem
+        have hodd : ¬ Even (padicValRat p q) := heq.mp hmem
         rw [Int.even_iff] at hodd ⊢
         omega
       · have hR : padicValRat p (deningerPrecisionParameter T) = 0 :=

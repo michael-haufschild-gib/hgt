@@ -37,7 +37,8 @@ theorem primarySign_mul (z w : primarySubmonoid) :
     primarySign (z * w) = primarySign z * primarySign w := by
   have hmul : (z.val * w.val).im % 4 =
       ((z.val.re % 4) * (w.val.im % 4) + (z.val.im % 4) * (w.val.re % 4)) % 4 := by
-    rw [Zsqrtd.im_mul, Int.add_emod, Int.mul_emod, Int.mul_emod]
+    rw [Zsqrtd.im_mul, Int.add_emod,
+      Int.mul_emod z.val.re w.val.im 4, Int.mul_emod z.val.im w.val.re 4]
     omega
   rcases primary_residue_dichotomy z with ⟨hr, hi⟩ | ⟨hr, hi⟩ <;>
     rcases primary_residue_dichotomy w with ⟨kr, ki⟩ | ⟨kr, ki⟩ <;>

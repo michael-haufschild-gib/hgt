@@ -146,7 +146,7 @@ theorem abs_average_primeResidueCos_sub_mean (S : Finset Nat.Primes)
   have hN : (0 : ℝ) < N + 1 := by positivity
   have he (x y : ℝ) : x / ((N : ℝ) + 1) - y =
       (x - ((N : ℝ) + 1) * y) / ((N : ℝ) + 1) := by
-    field_simp [ne_of_gt hN]
+    rw [sub_div, mul_div_cancel_left₀ _ (ne_of_gt hN)]
   rw [he, abs_div, abs_of_pos hN]
   exact div_le_div_of_nonneg_right h hN.le
 

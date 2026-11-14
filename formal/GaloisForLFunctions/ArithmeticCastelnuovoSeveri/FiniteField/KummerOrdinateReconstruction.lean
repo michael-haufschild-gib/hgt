@@ -136,6 +136,7 @@ theorem kummerConstructedOrdinate_surjective_on_nonzero_fixed (s d r : ℕ)
     have he : y ^ (p ^ (d + 1) - 1) = 1 := (sub_eq_zero.mp hz).symm
     apply hnon
     rw [← Nat.sub_add_cancel (Nat.one_le_pow _ _ (Fact.out : p.Prime).pos), pow_succ, he, one_mul]
+  -- A fixed branch factor leaves precisely the signed Frobenius equation.
   by_cases hA : A ^ p ^ (s + 1) = A
   · have he := normalizedKummerBranch_fixed_equation p s d r y hy
     change (-1) ^ R * y ^ p ^ (s + 1) * (A ^ p ^ (s + 1)) ^ R = y * A ^ R at he
@@ -148,6 +149,7 @@ theorem kummerConstructedOrdinate_surjective_on_nonzero_fixed (s d r : ℕ)
       · rw [h, neg_one_mul] at hs ⊢
         linear_combination -hs
     exact ⟨Sum.inr ⟨y, hsign, hnon⟩, rfl⟩
+  -- The conjugate ratio gives trace one; division by its geometric power recovers the scalar.
   · let u := squareConjugateRatio p s A
     let a := y / u ^ R
     have hu0 := squareConjugateRatio_ne_zero p s A hA0 hA
@@ -171,14 +173,17 @@ theorem kummerConstructedOrdinate_surjective_on_nonzero_fixed (s d r : ℕ)
       rw [sub_pow_char_pow, one_pow]
       congr 1
       rw [← pow_mul, Nat.mul_comm (p ^ (d + 1) - 1) (p ^ (s + 1)), pow_mul]
+    -- Complementary branch factors force the scalar to be a `(q-1)`-st root of unity.
     have hb := squareConjugateRatio_balance p s A hA
     change u * A + (1 - u) * A ^ p ^ (s + 1) = 0 at hb
     rw [hArQ, hAr, kummer_trace_balance] at hb
     have haroot : a ^ (p ^ (d + 1) - 1) = 1 := (sub_eq_zero.mp hb).symm
+    -- An auxiliary-field parameter would make the original branch value vanish.
     have haux : u ^ (p ^ (d + 1)) ^ (r + 1) ≠ u := by
       intro huf
       have hR : R ≠ 0 := by
-        rw [R, kummerExponent, geom_sum_succ]
+        change kummerExponent (p ^ (d + 1)) (r + 1) ≠ 0
+        rw [kummerExponent, geom_sum_succ]
         omega
       apply normalizedKummerBranch_ne_zero_of_not_fixed p s d r y hnon
       rw [← hrep, normalizedKummerBranch_eval_scale p s d r a _ haroot,
