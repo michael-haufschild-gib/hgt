@@ -30,7 +30,9 @@ theorem norm_dbarDifferential_radialComplexMonomial
     (hx : x ≠ 0) (hχ : HasDerivAt χ χ' (Real.log ‖x‖)) :
     ‖_root_.HTGeometry.dbarDifferential (radialComplexMonomial V m χ) x‖ =
       ‖x.fst‖ ^ m * (|χ'| / (2 * ‖x‖)) := by
-  simpa only [radialComplexMonomial, norm_pow] using
+  change ‖_root_.HTGeometry.dbarDifferential
+    (fun y : BlockSpace ℂ V => y.fst ^ m * (χ (Real.log ‖y‖) : ℂ)) x‖ = _
+  simpa only [norm_pow] using
     _root_.HTGeometry.norm_dbarDifferential_holomorphic_logRadius hx
       (differentiable_complexBlock_coordinate_pow V m x) hχ
 
@@ -86,7 +88,7 @@ theorem integral_critical_weighted_dbarDifferential_radialComplexMonomial
       (‖x‖ ^ (-((m : ℝ) + (Module.finrank ℝ (BlockSpace ℂ V) : ℝ) / p - 1)) *
         ‖_root_.HTGeometry.dbarDifferential (radialComplexMonomial V m χ) x‖) ^ p) =
       (1 / 2 : ℝ) ^ p *
-        (((volume.toSphere : Measure (sphere (0 : BlockSpace ℂ V) 1)).real univ *
+        ((((volume : Measure (BlockSpace ℂ V)).toSphere).real univ *
           complexBlockSphereMellin V ((m : ℝ) * p / 2)) * ∫ t : ℝ, |deriv χ t| ^ p) := by
   rw [integral_weighted_dbarDifferential_radialComplexMonomial V m hχ,
     sub_add_cancel, integral_critical_weighted_radialComplexMonomial V m (deriv χ) hp]

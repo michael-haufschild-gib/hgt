@@ -21,6 +21,11 @@ noncomputable section
 def stableExponentialSymbol (α ξ : ℝ) : ℂ :=
   ((Real.exp α : ℂ) + 2 * I * ξ)⁻¹
 
+private theorem stableDenominator_re (α ξ : ℝ) :
+    ((Real.exp α : ℂ) + 2 * I * ξ).re = Real.exp α := by
+  change Real.exp α + ((2 : ℂ) * I * (ξ : ℂ)).re = Real.exp α
+  simp
+
 /-- Exact circle coefficient of the existing causal exponential kernel. -/
 theorem fourierCoeff_periodized_causalExponential (α : ℝ) (k : ℤ) :
     (∫ x in Set.Ioc (0 : ℝ) 1,
@@ -35,14 +40,16 @@ theorem fourierCoeff_periodized_causalExponential (α : ℝ) (k : ℤ) :
 theorem stableExponentialSymbol_denominator_ne_zero (α ξ : ℝ) :
     (Real.exp α : ℂ) + 2 * I * ξ ≠ 0 := by
   intro h
-  have hr : Real.exp α = 0 := by simpa using congrArg Complex.re h
+  have hr : Real.exp α = 0 := by
+    simpa only [stableDenominator_re, Complex.zero_re] using congrArg Complex.re h
   exact (Real.exp_ne_zero α) hr
 
 /-- A resolvent is bounded by the reciprocal damping at every frequency. -/
 theorem norm_stableExponentialSymbol_le (α ξ : ℝ) :
     ‖stableExponentialSymbol α ξ‖ ≤ (Real.exp α)⁻¹ := by
   have hr : Real.exp α ≤ ‖(Real.exp α : ℂ) + 2 * I * ξ‖ := by
-    simpa using Complex.re_le_norm ((Real.exp α : ℂ) + 2 * I * ξ)
+    simpa only [stableDenominator_re] using
+      Complex.re_le_norm ((Real.exp α : ℂ) + 2 * I * ξ)
   rw [stableExponentialSymbol, norm_inv]
   exact inv_anti₀ (Real.exp_pos α) hr
 

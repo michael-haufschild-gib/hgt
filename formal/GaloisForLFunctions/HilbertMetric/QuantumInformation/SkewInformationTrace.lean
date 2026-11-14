@@ -45,10 +45,9 @@ theorem skewInformation_eq_half_hsInner_commutator (p : ι → ℝ≥0) (A : Mat
   simp_rw [rootStateCommutator_apply, Complex.normSq_mul, Complex.normSq_ofReal,
     ← pow_two]
   unfold skewInformation
-  rw [Finset.sum_div]
+  simp only [div_eq_mul_inv, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro i _
-  rw [Finset.sum_div]
   apply Finset.sum_congr rfl
   intro j _
   ring

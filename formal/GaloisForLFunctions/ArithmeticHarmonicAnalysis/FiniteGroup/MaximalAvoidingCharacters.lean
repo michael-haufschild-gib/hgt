@@ -47,7 +47,8 @@ private theorem character_of_maximal_avoiding (H : Subgroup G) (g : G)
   have hHker : H ≤ χ.ker := by
     intro x hx
     change ψ (QuotientGroup.mk' H x) = 1
-    rw [(QuotientGroup.eq_one_iff x).mpr hx, map_one]
+    have hxq : QuotientGroup.mk' H x = 1 := (QuotientGroup.eq_one_iff x).mpr hx
+    rw [hxq, map_one]
   have hgker : g ∉ χ.ker := hψ
   have hker : χ.ker = H := hmax χ.ker hHker hgker
   have hψinj : Function.Injective ψ := by
@@ -74,11 +75,8 @@ theorem subgroup_target_or_maximal_character (K : Subgroup G) (g : G) :
   · exact Or.inl hg
   obtain ⟨H, hKH, hgH, hmax⟩ := exists_maximal_avoiding K g hg
   obtain ⟨χ, hker, hχ, hcyclic⟩ := character_of_maximal_avoiding H g hgH hmax
-  right
-  refine ⟨χ, ?_, hχ, ?_, ?_⟩
-  · rwa [hker]
-  · rwa [hker]
-  · simpa only [hker] using hmax
+  subst H
+  exact Or.inr ⟨χ, hKH, hχ, hcyclic, hmax⟩
 
 /-- Every subgroup avoiding a target extends to an avoiding subgroup with cyclic quotient. -/
 theorem subgroup_target_or_cyclic_quotient (K : Subgroup G) (g : G) :

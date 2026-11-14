@@ -16,6 +16,23 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Pole displacement has an exact Hilbert-space cost, including coincident poles. -/
+theorem norm_sq_expFeature_exp_sub (α β : ℝ) :
+    ‖expFeature (Real.exp α) (Real.exp_pos α) -
+      expFeature (Real.exp β) (Real.exp_pos β)‖ ^ 2 =
+      (Real.exp α - Real.exp β) ^ 2 /
+        (2 * Real.exp α * Real.exp β * (Real.exp α + Real.exp β)) := by
+  rw [norm_sub_sq (𝕜 := ℂ), norm_sq_expFeature, norm_sq_expFeature, inner_expFeature]
+  have hc : ((Real.exp α : ℂ) + (Real.exp β : ℂ))⁻¹ =
+      (((Real.exp α + Real.exp β)⁻¹ : ℝ) : ℂ) := by
+    push_cast
+    rfl
+  rw [hc]
+  change 1 / (2 * Real.exp α) - 2 * (Real.exp α + Real.exp β)⁻¹ +
+    1 / (2 * Real.exp β) = _
+  field_simp [Real.exp_ne_zero, ne_of_gt (add_pos (Real.exp_pos α) (Real.exp_pos β))]
+  ring
+
 /-- A complex-residue Hankel packet with rates positive by construction. -/
 def stableHankelPacket {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ) :
     HalfLineLaplaceL2 →L[ℂ] HalfLineLaplaceL2 :=
@@ -109,6 +126,7 @@ end
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_le
+#print axioms GaloisForLFunctions.HTGeometry.norm_sq_expFeature_exp_sub
 #print axioms GaloisForLFunctions.HTGeometry.stableHankelPacket_sub
 #print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_sub_le
 #print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_prune_le
