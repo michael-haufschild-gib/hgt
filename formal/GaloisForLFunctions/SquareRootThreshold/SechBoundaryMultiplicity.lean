@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SquareRootThreshold.SechRectangleMultiplicity
 import GaloisForLFunctions.SquareRootThreshold.SechHorizontalExhaustion
 import GaloisForLFunctions.ConjugateDiagonalGeometry.ResidueUnitBoundaryConvolution
+import GaloisForLFunctions.RHTower.ZetaOffLineWeightedDensity
 
 /-!
 # The full sech boundary bounds each horizontal zero fibre
@@ -158,6 +159,94 @@ theorem sum_fibre_multiplicity_mul_sech_le_boundary {a b T : ℝ}
         norm_num at hT
       rw [(zetaResidueUnit_eventuallyEq hs).eq_of_nhds,hρzero,mul_zero]
 
+/-- The complete weighted horizontal fibre has coefficient `a/π` at every
+sufficiently large absolute height. The finite-set formulation includes every
+finite collection of zeros on the fibre without a summability premise. -/
+theorem exists_fibre_sech_multiplicity_bound {a ε : ℝ}
+    (ha : (3:ℝ)/8 < a) (hahalf : a < 1/2) (hε : 0 < ε) :
+    ∃ T₀ : ℝ, 2 ≤ T₀ ∧ ∀ T : ℝ, T₀ ≤ |T| → ∀ F : Finset ℂ,
+      (∀ ρ ∈ F, 0 < ρ.re ∧ riemannZeta ρ = 0 ∧ ρ.im = T) →
+      (∑ ρ ∈ F, ((analyticOrderAt riemannZeta ρ).toNat : ℝ) *
+        (Real.cos (Real.pi/(2*a)*(ρ.re-1/2)))⁻¹) ≤
+          (a/Real.pi+ε)*Real.log |T| := by
+  let b := ((3:ℝ)/8+a)/2
+  have hb : (3:ℝ)/8 < b := by dsimp [b]; linarith only [ha]
+  have hba : b < a := by dsimp [b]; linarith only [ha]
+  have hbhalf : b < 1/2 := hba.trans hahalf
+  have hlim := tendsto_sechResidueUnitBoundary_log_normalized hb hbhalf hba
+  have he := hlim.eventually (Iio_mem_nhds (show a/Real.pi < a/Real.pi+ε by linarith only [hε]))
+  obtain ⟨U,hU⟩ := eventually_atTop.mp (eventually_comap.mp he)
+  refine ⟨max 2 U,le_max_left _ _,fun T hT F hF => ?_⟩
+  have ht2 : 2 ≤ |T| := (le_max_left _ _).trans hT
+  have htU : U ≤ |T| := (le_max_right _ _).trans hT
+  have hbnd := hU |T| htU T rfl
+  rw [← div_div] at hbnd
+  have hlog : 0 < Real.log |T| := Real.log_pos (by linarith only [ht2])
+  have hmain := (div_lt_iff₀ hlog).mp hbnd
+  calc
+    _ = ∑ ρ ∈ F, ((analyticOrderAt zetaResidueUnit ρ).toNat : ℝ) *
+        (sechStripWeight a T ρ).re := by
+      apply Finset.sum_congr rfl
+      intro ρ hρ
+      have hs : ρ ≠ 1 := by
+        intro heq
+        have hi := congrArg Complex.im heq
+        rw [(hF ρ hρ).2.2,Complex.one_im] at hi
+        rw [hi,abs_zero] at ht2
+        norm_num at ht2
+      rw [analyticOrderAt_zetaResidueUnit_eq_zeta hs,
+        sechStripWeight_same_height a T (hF ρ hρ).2.2,Complex.ofReal_re]
+    _ ≤ (sechResidueUnitBoundary a b T).re/(2*Real.pi) :=
+      sum_fibre_multiplicity_mul_sech_le_boundary hb hbhalf hba ht2 F hF
+    _ ≤ _ := hmain.le
+
+/-- Critical-line zeta multiplicities have upper logarithmic coefficient `3/(8π)`. -/
+theorem exists_critical_zeta_multiplicity_bound {ε : ℝ} (hε : 0 < ε) :
+    ∃ T₀ : ℝ, 2 ≤ T₀ ∧ ∀ T : ℝ, T₀ ≤ |T| →
+      riemannZeta (1/2+(T : ℂ)*I) = 0 →
+      ((analyticOrderAt riemannZeta (1/2+(T : ℂ)*I)).toNat : ℝ) ≤
+        (3/(8*Real.pi)+ε)*Real.log |T| := by
+  let δ := min (1/16 : ℝ) (ε*Real.pi/2)
+  let a := (3:ℝ)/8+δ
+  have hδ : 0 < δ := lt_min (by norm_num) (by positivity)
+  have hδlo : δ ≤ 1/16 := min_le_left _ _
+  have hδhi : δ ≤ ε*Real.pi/2 := min_le_right _ _
+  have ha : (3:ℝ)/8 < a := by dsimp [a]; linarith only [hδ]
+  have hahalf : a < 1/2 := by dsimp [a]; linarith only [hδlo]
+  obtain ⟨T₀,hT₀,hbound⟩ := exists_fibre_sech_multiplicity_bound ha hahalf
+    (show 0 < ε/2 by positivity)
+  refine ⟨T₀,hT₀,fun T hT hz => ?_⟩
+  have hf : ∀ ρ ∈ ({1/2+(T : ℂ)*I} : Finset ℂ),
+      0 < ρ.re ∧ riemannZeta ρ = 0 ∧ ρ.im = T := by
+    intro ρ hρ
+    rw [Finset.mem_singleton] at hρ
+    subst ρ
+    exact ⟨by norm_num,hz,by simp⟩
+  have hh := hbound T hT _ hf
+  have hs : ((analyticOrderAt riemannZeta (1/2+(T : ℂ)*I)).toNat : ℝ) ≤
+      (a/Real.pi+ε/2)*Real.log |T| := by simpa using hh
+  have hδpi : δ/Real.pi ≤ ε/2 := (div_le_iff₀ Real.pi_pos).mpr (by linarith only [hδhi])
+  have he : a/Real.pi = 3/(8*Real.pi)+δ/Real.pi := by
+    dsimp [a]
+    field_simp <;> ring
+  have hcoef : a/Real.pi+ε/2 ≤ 3/(8*Real.pi)+ε := by rw [he]; linarith only [hδpi]
+  exact hs.trans (mul_le_mul_of_nonneg_right hcoef
+    (Real.log_nonneg (by linarith only [hT₀.trans hT])))
+
+/-- Completion preserves the same critical-line multiplicity bound. -/
+theorem exists_critical_xi_multiplicity_bound {ε : ℝ} (hε : 0 < ε) :
+    ∃ T₀ : ℝ, 2 ≤ T₀ ∧ ∀ T : ℝ, T₀ ≤ |T| →
+      xi (1/2+(T : ℂ)*I) = 0 →
+      ((analyticOrderAt xi (1/2+(T : ℂ)*I)).toNat : ℝ) ≤
+        (3/(8*Real.pi)+ε)*Real.log |T| := by
+  obtain ⟨T₀,hT₀,hbound⟩ := exists_critical_zeta_multiplicity_bound hε
+  refine ⟨T₀,hT₀,fun T hT hz => ?_⟩
+  rw [xi_analyticOrderAt_eq_riemannZeta_of_mem_strip (by constructor <;> norm_num)]
+  exact hbound T hT (xi_eq_zero_iff_riemannZeta_eq_zero_and_nontrivial.mp hz).1
+
 end GaloisForLFunctions.SquareRootThreshold
 
 #print axioms GaloisForLFunctions.SquareRootThreshold.sum_fibre_multiplicity_mul_sech_le_boundary
+#print axioms GaloisForLFunctions.SquareRootThreshold.exists_fibre_sech_multiplicity_bound
+#print axioms GaloisForLFunctions.SquareRootThreshold.exists_critical_zeta_multiplicity_bound
+#print axioms GaloisForLFunctions.SquareRootThreshold.exists_critical_xi_multiplicity_bound

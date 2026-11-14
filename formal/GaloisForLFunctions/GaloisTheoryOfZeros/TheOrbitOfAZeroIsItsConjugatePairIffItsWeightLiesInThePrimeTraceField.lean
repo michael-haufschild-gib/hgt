@@ -53,7 +53,8 @@ theorem primeWeightValue_coe (p : Nat.Primes) (ρ : XiDivisorSupport) :
     (primeWeightValue p ρ : ℂ) = ((((p : ℕ) : ℝ) ^ (2 * (ρ : ℂ).re) : ℝ) : ℂ) := by
   have hp : (0 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.2.pos
   rw [primeWeightValue, primeTraceExponentValue_coe, primeTraceWeight_coe,
-    Real.rpow_def_of_pos hp, Complex.ofReal_exp, Complex.ofReal_mul]
+    Real.rpow_def_of_pos hp, Complex.ofReal_exp]
+  simp only [Complex.ofReal_mul]
 
 /-! ## From the weight to the real part -/
 

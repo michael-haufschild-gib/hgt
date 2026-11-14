@@ -81,13 +81,12 @@ theorem artinMap_toPrincipalIdeal_eq_one_of_mul_pow {I : Ideal (𝓞 K)}
   -- `μ ∈ I` outside `u`
   obtain ⟨μ, hμI, hμu⟩ : ∃ μ ∈ I, μ ∉ u.asIdeal := by
     by_contra h
-    push_neg at h
-    exact hu (Ideal.dvd_iff_le.mpr h)
+    exact hu (Ideal.dvd_iff_le.mpr fun x hx => by_contra fun hxu => h ⟨x, hx, hxu⟩)
   -- the modulus `m`: the order of `N(u)` modulo `m` is divisible by `[L:K]`
   obtain ⟨m₀, hm₀, hirr⟩ := exists_forall_coprime_irreducible_cyclotomic L
   have hN2 : 2 ≤ Ideal.absNorm u.asIdeal := two_le_absNorm_of_isPrime u.isPrime u.ne_bot
   have ht : m₀ * Ideal.absNorm u.asIdeal ≠ 0 := Nat.mul_ne_zero hm₀ (by omega)
-  obtain ⟨m, -, hm, hmt, harith⟩ :=
+  obtain ⟨m, b, hm, hmt, harith⟩ :=
     exists_modulus_unit_forall_zpow_mul_zpow (n := Fintype.card G) Fintype.card_ne_zero
       {Ideal.absNorm u.asIdeal} (fun x hx => by rw [Finset.mem_singleton.mp hx]; exact hN2) ht
   haveI : NeZero m := ⟨hm⟩
@@ -186,7 +185,7 @@ theorem artinMap_toPrincipalIdeal_eq_one_of_mul_pow {I : Ideal (𝓞 K)}
             push_cast
             ring
         _ ≤ WithZero.exp (-(e : ℤ)) * u.intValuation b :=
-            mul_le_mul_left' (exp_neg_le_intValuation_of_notMem u hb0' hbj) _
+            mul_le_mul_right (exp_neg_le_intValuation_of_notMem u hb0' hbj) _
     rw [h1, map_div₀, valuation_of_algebraMap, valuation_of_algebraMap]
     exact (div_le_iff₀ (zero_lt_iff.mpr (intValuation_ne_zero u b hb0'))).mpr h2
   have hγ : artinMap K L G (toPrincipalIdeal (𝓞 K) K (Units.mk0 _ ha0 / Units.mk0 _ hb0)) = 1 :=
@@ -267,7 +266,7 @@ theorem rayPrincipal_le_ker_artinMap_of_mul_pow {I : Ideal (𝓞 K)}
     artinMap_toPrincipalIdeal_eq_one_of_mul_pow K L G hram hI u hu he hIe hrec h₁0 h₁
       fun w hw => hp₁ ⟨⟨w, hw⟩, Set.mem_univ _⟩,
     artinMap_toPrincipalIdeal_eq_one_of_mul_pow K L G hram hI u hu he hIe hrec h₂0 h₂
-      fun w hw => hp₂ ⟨⟨w, hw⟩, Set.mem_univ _⟩, div_one]
+      fun w hw => hp₂ ⟨⟨w, hw⟩, Set.mem_univ _⟩, _root_.div_one]
 
 /-- The unramified primes of the modulus can be removed, for moduli whose unramified primes lie
 in a given finite set. -/
@@ -291,11 +290,12 @@ theorem exists_ideal_rayPrincipal_le_ker_artinMap_of_subset
     · -- `J = u^e Q` with `u ∤ Q`
       haveI := u.isMaximal
       obtain ⟨Q, hcop, hJQ⟩ := Ideal.eq_prime_pow_mul_coprime hJ u.asIdeal
+      generalize Multiset.count u.asIdeal (UniqueFactorizationMonoid.normalizedFactors J) = e
+        at hJQ
       have huQ : ¬ u.asIdeal ∣ Q := fun h => u.isPrime.ne_top (by
         rw [← hcop]
         exact (sup_eq_left.mpr (Ideal.dvd_iff_le.mp h)).symm)
-      have he : Multiset.count u.asIdeal (UniqueFactorizationMonoid.normalizedFactors J) ≠ 0 :=
-        fun h0 => huQ (by
+      have he : e ≠ 0 := fun h0 => huQ (by
           rw [h0, pow_zero, one_mul] at hJQ
           exact hJQ ▸ hcase.1)
       rw [mul_comm] at hJQ

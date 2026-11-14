@@ -55,8 +55,9 @@ private theorem tendsto_polynomial_exp_height {c : ℝ} (hc : 0 < c) (M : ℝ)
           Real.exp (-(c/2*((n : ℝ)+12))) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hp hM)
         (Real.exp_pos _).le
-  simpa only [mul_zero] using squeeze_zero (fun n => by positivity) hbound
-    (hexp.const_mul (M*(2/(c/2)^2)))
+  have hdecay := hexp.const_mul (M*(2/(c/2)^2))
+  simp only [mul_zero,Function.comp_def] at hdecay
+  exact squeeze_zero (fun n => by positivity) hbound hdecay
 
 private theorem sech_horizontal_tendsto_zero {a b K : ℝ} (hb : 0 < b)
     (hba : b < a) (hK : 0 ≤ K) (T : ℝ) (Y : ℕ → ℝ)

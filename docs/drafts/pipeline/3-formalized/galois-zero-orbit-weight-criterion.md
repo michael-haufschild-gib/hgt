@@ -1,8 +1,8 @@
 # The orbit of a zero is its conjugate pair iff its weight lies in the prime trace field
 
 - **ID:** galois-zero-orbit-weight
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-1311/obstacles-summary.md` §2.19 question 3 (B190); programme card `gtz-galois-theory-of-zeros-programme.md`
 - **Statement:** for a zero `ρ` and one prime `p`: `σρ ∈ {ρ, ρ̄}` for every `σ ∈ Gal(E/B)` ⇔ `p^{2 Re ρ} ∈ B`.
 
@@ -55,10 +55,23 @@ In particular (3) does not depend on the prime.
 **Remark.** The orbit is contained in the complete fibre of the two ordinates `± Im ρ`. That it
 is contained in the quartet `{ρ, ρ̄, 1−ρ, 1−ρ̄}` is known only when the fibre is one quartet.
 
+## Lean
+
+Module `GaloisTheoryOfZeros/TheOrbitOfAZeroIsItsConjugatePairIffItsWeightLiesInThePrimeTraceField.lean`.
+
+| Paper | Lean |
+|---|---|
+| weight, `p^{2 Re ρ}` | `primeTraceWeight`, `primeTraceWeight_coe`, `primeWeightValue`, `primeWeightValue_coe` |
+| Lemma 1 | `primeTraceWeight_re_of_mem` |
+| Lemma 2 | `primeTraceZeroMap_re_of_weight_re` |
+| Lemma 3 | `primeTraceExponentHom_weight_of_re`, `primeWeightValue_mem_of_fixed` |
+| Theorem | `primeWeightValue_mem_iff_orbit`, `primeWeightValue_mem_iff_re`, `primeWeightValue_mem_iff_mem` |
+| Corollaries 1–3 | `exists_re_ne_iff_primeWeightValue_not_mem`, `primeWeightValue_mem_of_rational`, `primeWeightValue_not_mem_of_reflection` |
+
 ## Gates
 - [x] 0 → 1
 - [x] 1 → 2  paper proof above
-- [ ] 2 → 3  Lean: `GaloisTheoryOfZeros/TheOrbitOfAZeroIsItsConjugatePairIffItsWeightLiesInThePrimeTraceField.lean`
+- [x] 2 → 3  `lake --old env lean` clean
 
 ## Log
-- 2026-11-14 — card created with the paper proof.
+- 2026-11-14 — card created with the paper proof; formalized.

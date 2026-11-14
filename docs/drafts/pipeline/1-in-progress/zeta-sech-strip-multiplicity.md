@@ -41,9 +41,14 @@ The fibre estimate would also give the uniform envelope `m(β+iγ)/log|γ| ≤ (
 vertical real mass `2a`, and weighted integrability.
 `ConjugateDiagonalGeometry/LogarithmicConvolution.lean` proves preservation of an
 all-height logarithmic asymptotic under convolution with an integrable first moment.
+`ConjugateDiagonalGeometry/LogarithmicBoundaryNormalization.lean` converts uniform
+epsilon bounds into that all-height limit and extends eventual logarithmic growth
+across the compact interval using continuity.
 `SquareRootThreshold/SechRectangleMultiplicity.lean` bounds the weighted
 multiplicity of every finite subset of enclosed zeros by the rectangle boundary
-integral. All three modules pass Lean and use only `propext`, `Classical.choice`,
+integral. `SquareRootThreshold/SechHorizontalExhaustion.lean` supplies actual
+zero-free upper and lower edges whose weighted horizontal integrals tend to zero.
+All five modules pass Lean and use only `propext`, `Classical.choice`,
 `Quot.sound`.
 
 The fixed-line drafts depend on `Detector/QuasiRiemannHypothesis.lean`; its split

@@ -27,10 +27,26 @@ floor on the resulting vector bounds the end mass, while the added middle energy
 is nonpositive. This retains the exact floor `1/5000` without inverting a matrix
 shifted to a possibly singular spectral endpoint.
 
+## A141 continuation construction
+
+The existing `exists_virtualConfig_artin` identifies orders of an analytic quotient
+but takes that quotient as input. For a Brauer factor `Λ_q` put
+`G_q(s)=(s−1)Λ_q(s)`, which extends analytically to `Re s>0`. Write
+`n_q=n_q⁺−n_q⁻`. Then
+
+`A(s)=∏ G_q(s)^{n_q⁺}(s−1)^{n_q⁻}`,
+`B(s)=∏ G_q(s)^{n_q⁻}(s−1)^{n_q⁺}`
+
+are analytic, `B(2)≠0`, and `A=B·L_Artin` on `Re s>1`. Substitution in the existing
+order theorem discharges the continuation input of the virtual index law. It does
+not supply the general-field `7/8` estimate or conductor/ramification matching.
+
 ## Existing ingredients and outstanding checks
 
 - GCW's first two modules contain the Green criterion, harmonic criterion, additive
   loss law and `one_lt_bindingEnergy`; source and transitive axioms require audit.
 - Spectral and conditional-energy floors: proof above, formalization pending.
-- Larger-aperture certificates and arithmetic transfer: source audit pending;
-  no unproved input may become an assumption of a claimed solution.
+- A140: the located full-sector certificate ends at `181/500`; the dilation tower
+  stays below `0.3621`. Neither reaches `1881/5000`.
+- A141: quotient construction above awaits formalization. The located `7/8`
+  producer uses the Hecke family over `ℚ(ζ₃)`, not arbitrary containing fields.

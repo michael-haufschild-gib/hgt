@@ -286,6 +286,37 @@ theorem floor_orthogonal_of_floor_hyperplane (hM : ∀ i j, M i j = M j i) (hμ 
 
 end Channels
 
+/-- **A positive eigenvector of negative eigenvalue and a floor on the charge-free vectors give
+one bound state**: the normalized eigenvector is the ground vector, and the floor passes to its
+orthogonal complement. -/
+theorem exists_oneBoundState_of_pos_eigenvector {ι : Type*} [Fintype ι] [Nonempty ι]
+    {M : Matrix ι ι ℝ} (hM : ∀ i j, M i j = M j i) {φ₀ : ι → ℝ} (hφ₀ : ∀ i, 0 < φ₀ i)
+    {lam : ℝ} (hlam : lam < 0) (heig : M *ᵥ φ₀ = lam • φ₀) {c : ℝ} (hc : 0 < c)
+    (hfloor : ∀ y : ι → ℝ, ∑ i, y i = 0 → c * (y ⬝ᵥ y) ≤ y ⬝ᵥ (M *ᵥ y)) :
+    ∃ φ : ι → ℝ, (∀ i, 0 < φ i) ∧ OneBoundState M φ (-lam) c := by
+  have hs2 : 0 < φ₀ ⬝ᵥ φ₀ :=
+    Finset.sum_pos (fun i _ => mul_pos (hφ₀ i) (hφ₀ i)) Finset.univ_nonempty
+  set s := Real.sqrt (φ₀ ⬝ᵥ φ₀) with hs
+  have hspos : 0 < s := Real.sqrt_pos.mpr hs2
+  have hss : s * s = φ₀ ⬝ᵥ φ₀ := Real.mul_self_sqrt hs2.le
+  set φ : ι → ℝ := s⁻¹ • φ₀ with hφdef
+  have hφpos : ∀ i, 0 < φ i := fun i => by
+    simp only [hφdef, Pi.smul_apply, smul_eq_mul]
+    exact mul_pos (inv_pos.mpr hspos) (hφ₀ i)
+  have hunit : φ ⬝ᵥ φ = 1 := by
+    rw [hφdef, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul, ← hss]
+    field_simp
+  have heig' : M *ᵥ φ = (-(-lam)) • φ := by
+    rw [neg_neg, hφdef, Matrix.mulVec_smul, heig, smul_comm]
+  have hones : (fun _ : ι => (1 : ℝ)) ⬝ᵥ φ ≠ 0 := by
+    have : 0 < (fun _ : ι => (1 : ℝ)) ⬝ᵥ φ := by
+      simp only [dotProduct, one_mul]
+      exact Finset.sum_pos (fun i _ => hφpos i) Finset.univ_nonempty
+    exact this.ne'
+  exact ⟨φ, hφpos, hM, hunit, heig', neg_pos.mpr hlam, hc,
+    floor_orthogonal_of_floor_hyperplane hM (neg_pos.mpr hlam).le hc.le heig' hones fun y hy =>
+      hfloor y (by simpa [dotProduct] using hy)⟩
+
 /-! ### The dyadic middle -/
 
 /-- **The neutral part of the dyadic window `(D, 2D]`**: density on the diagonal minus the jets.
@@ -380,33 +411,10 @@ theorem exists_groundPair {D : ℕ} (hD : 1 ≤ D) :
       mul_one] at h1
     have hD' : (0 : ℝ) < D := by exact_mod_cast hD
     nlinarith
-  have hμ : 0 < -lam := by linarith [neutralBlock_one_one_neg 1]
-  -- normalization
-  have hs2 : 0 < φ₀ ⬝ᵥ φ₀ :=
-    Finset.sum_pos (fun i _ => mul_pos (hφ₀ i) (hφ₀ i)) Finset.univ_nonempty
-  set s := Real.sqrt (φ₀ ⬝ᵥ φ₀) with hs
-  have hspos : 0 < s := Real.sqrt_pos.mpr hs2
-  have hss : s * s = φ₀ ⬝ᵥ φ₀ := Real.mul_self_sqrt hs2.le
-  set φ : Fin D → ℝ := s⁻¹ • φ₀ with hφdef
-  have hφpos : ∀ i, 0 < φ i := fun i => by
-    simp only [hφdef, Pi.smul_apply, smul_eq_mul]
-    exact mul_pos (inv_pos.mpr hspos) (hφ₀ i)
-  have hunit : φ ⬝ᵥ φ = 1 := by
-    rw [hφdef, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul, ← hss]
-    field_simp
-  have heig' : primeFreeMiddle D *ᵥ φ = (-(-lam)) • φ := by
-    rw [neg_neg, hφdef, primeFreeMiddle, Matrix.mulVec_smul, heig, smul_comm]
-  -- the floor on the orthogonal complement, from the floor on charge-free packets
-  have hones : (fun _ : Fin D => (1 : ℝ)) ⬝ᵥ φ ≠ 0 := by
-    have : 0 < (fun _ : Fin D => (1 : ℝ)) ⬝ᵥ φ := by
-      simp only [dotProduct, one_mul]
-      exact Finset.sum_pos (fun i _ => hφpos i) Finset.univ_nonempty
-    exact this.ne'
-  have hfloor := floor_orthogonal_of_floor_hyperplane (primeFreeMiddle_symm D) hμ.le
-    (by norm_num : (0 : ℝ) ≤ 1 / 5000) heig' hones fun y hy =>
-      primeFreeMiddle_floor_of_sum_eq_zero hD y (by simpa [dotProduct] using hy)
-  exact ⟨φ, -lam, hφpos,
-    ⟨primeFreeMiddle_symm D, hunit, heig', hμ, by norm_num, hfloor⟩, by linarith⟩
+  obtain ⟨φ, hφpos, h⟩ := exists_oneBoundState_of_pos_eigenvector (primeFreeMiddle_symm D) hφ₀
+    (by linarith [neutralBlock_one_one_neg 1] : lam < 0) heig (by norm_num : (0 : ℝ) < 1 / 5000)
+    (primeFreeMiddle_floor_of_sum_eq_zero hD)
+  exact ⟨φ, -lam, hφpos, h, by linarith⟩
 
 /-- The ground vector `φ_D` of the dyadic middle. -/
 def groundVector (D : ℕ) : Fin D → ℝ :=
