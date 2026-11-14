@@ -851,7 +851,6 @@ theorem isPolyDeg_legP (n : ℕ) : isPolyDeg (n + 1) (legP n) := by
           (if k < n + 1 then ((n : ℝ) + 1) * a0 k else 0)) / ((n : ℝ) + 2), fun x => ?_⟩
       dsimp only
       rw [legP_succ_succ n x, ha1 x, ha0 x]
-      have hpos : (0 : ℝ) < (n : ℝ) + 2 := by positivity
       have h1 : (2 * (n : ℝ) + 3) * x * (∑ k ∈ Finset.range (n + 2), a1 k * x ^ k) =
           ∑ k ∈ Finset.range (n + 3),
             (if 0 < k then (2 * (n : ℝ) + 3) * a1 (k - 1) else 0) * x ^ k := by
@@ -869,7 +868,7 @@ theorem isPolyDeg_legP (n : ℕ) : isPolyDeg (n + 1) (legP n) := by
         apply Finset.sum_congr rfl; intro k hk
         rw [if_pos (Finset.mem_range.mp hk)]; ring
       rw [h1, h0, ← Finset.sum_sub_distrib, Finset.sum_div]
-      apply Finset.sum_congr rfl; intro k _; ring
+      apply Finset.sum_congr rfl; intro k _; simp only [div_eq_mul_inv]; ring
 
 theorem isPolyDeg_lowProj (G : ℝ → ℝ) {m : ℕ} (_ : 1 ≤ m) :
     isPolyDeg m (lowProj G m) := by
@@ -1141,7 +1140,7 @@ theorem lag_moment_eq_iterPrim {G : ℝ → ℝ} (hG : Continuous G)
     have hsub' : (∫ t in (0 : ℝ)..(y + 1), (y - (y - t)) ^ n * G (y - t)) =
         ∫ u in (-1 : ℝ)..y, (y - u) ^ n * G u := by
       rw [intervalIntegral.integral_comp_sub_left (fun u => (y - u) ^ n * G u) y,
-        sub_zero, show y - (y + 1) = -1 by ring, intervalIntegral.integral_symm, neg_neg]
+        sub_zero, show y - (y + 1) = -1 by ring]
     simp_rw [sub_sub_cancel] at hsub'
     rw [hsub', cauchy_repeated_integral hG n y]
   rw [setIntegral_congr_fun measurableSet_Icc hinner,

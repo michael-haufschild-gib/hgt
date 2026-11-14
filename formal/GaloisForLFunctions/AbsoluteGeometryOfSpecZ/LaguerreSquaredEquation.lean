@@ -36,7 +36,7 @@ theorem laguerreProfile_coefficient_recurrence (n k : ℕ) :
       ((n : ℝ) - k) * laguerreCoeff (n + 1) k = 0 := by
   by_cases hkn : k ≤ n
   · have h := congrArg (fun t : ℕ => (t : ℝ)) (Nat.choose_succ_right_eq (n + 1) (k + 1))
-    push_cast [Nat.cast_sub (show k + 1 ≤ n + 1 by omega)] at h
+    push_cast [Nat.cast_sub hkn, Nat.cast_sub (show k + 1 ≤ n + 1 by omega)] at h
     have hc : (k + 2 : ℝ) * ((n + 1).choose (k + 2) : ℝ) =
         ((n : ℝ) - k) * ((n + 1).choose (k + 1) : ℝ) := by
       linear_combination h

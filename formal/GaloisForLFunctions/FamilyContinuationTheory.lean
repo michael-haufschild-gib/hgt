@@ -226,3 +226,4 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   towers `Θ_r ≤ max(σ₀, (c + Θ_{r+1})/k)` contract to `max(σ₀, c/(k − 1))` with stationary solution
   `Θ_r = c/(k − 1) ≥ 3/5`.
 -/
+import GaloisForLFunctions.FamilyContinuationTheory.EisensteinNormSquareDescent

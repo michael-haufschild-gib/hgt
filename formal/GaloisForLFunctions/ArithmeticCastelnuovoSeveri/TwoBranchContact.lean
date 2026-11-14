@@ -43,7 +43,7 @@ theorem product_contact_conductor_iff (I : Ideal R) (z : R × R) :
   · rintro ⟨hx, hy⟩ w
     exact I.sub_mem (I.mul_mem_right w.1 hx) (I.mul_mem_right w.2 hy)
 
-/-- Multiplication by a pair sends every normalized pair into the polynomial order
+/-- Multiplication by a pair sends every pair in the product ring into the polynomial order
 exactly when both coordinates vanish to the contact order. -/
 theorem twoBranch_conductor_iff (a x y : R) :
     (∀ u v : R, ∃ p : R[X], p.eval 0 = x * u ∧ p.eval a = y * v) ↔

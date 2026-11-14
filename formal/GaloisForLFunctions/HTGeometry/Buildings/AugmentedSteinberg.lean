@@ -191,6 +191,43 @@ theorem isZero_flagIntervalHomology_of_finrank_le_one (A B : Submodule K V)
       (fun _ f _ => isEmptyElim (f 0))
   exact isZero_homology_of_hasDimensionLT _ 0 R n (Nat.zero_le _)
 
+/-- Degree-one relative homology disappears once the quotient building is connected. -/
+theorem isZero_flagIntervalRelativeHomology_one_of_three_le (A B : Submodule K V)
+    (R : C) (h : 3 ≤ finrank K (flagLayer A B)) :
+    IsZero ((orderConeRelativeChains (flagInterval A B) R).homology 1) := by
+  haveI := isConnected_nerve_properPart_submodule (K := K) (V := flagLayer A B) h
+  have hε : (nerve (flagInterval A B)).homology₀ε R =
+      (flagIntervalHomologyIso A B R 0).hom ≫
+        (nerve (properPart (Submodule K (flagLayer A B)))).homology₀ε R :=
+    (homologyMap_comp_homology₀ε R (orderIsoNerveIso (flagIntervalOrderIso A B).symm).hom).symm
+  haveI : IsIso ((nerve (flagInterval A B)).homology₀ε R) := by
+    rw [hε]
+    infer_instance
+  refine IsZero.of_iso ?_ (orderConeFirstRelativeHomologyIso (flagInterval A B) R)
+  exact IsZero.of_mono_eq_zero (kernel.ι _)
+    (zero_of_comp_mono ((nerve (flagInterval A B)).homology₀ε R) (kernel.condition _))
+
+/-- The augmented flag building is concentrated in the single relative degree `rank - 1`.
+This includes the empty building and the disconnected rank-two building. -/
+theorem augmentedFlagHomology_support (A B : Submodule K V) (R : C) (n : ℕ) :
+    n = finrank K (flagLayer A B) - 1 ∨
+      IsZero ((orderConeRelativeChains (flagInterval A B) R).homology n) := by
+  by_cases ht : n = finrank K (flagLayer A B) - 1
+  · exact Or.inl ht
+  right
+  rcases n with _ | _ | n
+  · haveI := (flagInterval_nonempty_iff A B).mpr (show 2 ≤ finrank K (flagLayer A B) by omega)
+    exact isZero_orderConeRelativeHomology_zero (flagInterval A B) R
+  · by_cases h : 3 ≤ finrank K (flagLayer A B)
+    · exact isZero_flagIntervalRelativeHomology_one_of_three_le A B R h
+    · have hsmall : finrank K (flagLayer A B) ≤ 1 := by omega
+      refine IsZero.of_iso ?_ (orderConeFirstRelativeHomologyIso (flagInterval A B) R)
+      exact IsZero.of_mono_eq_zero (kernel.ι _)
+        ((isZero_flagIntervalHomology_of_finrank_le_one A B R 0 hsmall).eq_of_tgt _ _)
+  · rcases flagIntervalRelativeHomology_support A B R n with h | h
+    · omega
+    · exact h
+
 /-- The Steinberg object of a flag layer, with the reduced augmentation convention. -/
 noncomputable def augmentedFlagSteinbergModule (A B : Submodule K V) (R : C) : C :=
   (orderConeRelativeChains (flagInterval A B) R).homology (finrank K (flagLayer A B) - 1)
