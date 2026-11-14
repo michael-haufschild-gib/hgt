@@ -124,8 +124,9 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
   obtain ⟨haL, haH⟩ := primeThreeOffset_mem
   have haH1 : (aHiQ : ℝ) ≤ 3 / 5 := by norm_num [aHiQ]
   have haL1 : (1 / 2 : ℝ) ≤ aLoQ := by norm_num [aLoQ]
-  have hlo0' : (0 : ℝ) ≤ T.lo := by exact_mod_cast hlo0
-  have hlo' : (T.lo : ℝ) ≤ (1 - aHiQ) / 2 := by exact_mod_cast hlo
+  have hlo0' : (0 : ℝ) ≤ T.lo := Rat.cast_nonneg.mpr hlo0
+  have hlo' : (T.lo : ℝ) ≤ (1 - aHiQ) / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hlo; push_cast at this; exact this
   set a := primeThreeOffset
   set C := (S.K : ℝ) * ∑ k : Fin S.K, (S.sup k : ℝ) ^ 2 * m k ^ 2
   have hC := sum_sup_nonneg S m
@@ -135,34 +136,43 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
     have hb : ∀ b < 4, ∀ x : ℝ, (T.xl b : ℝ) ≤ x → x < 1 →
         (S.c0 + (T.tayB b).base : ℝ) ≤ S.c0 + vTrue x := fun b hb4 x hx hx1 => by
       obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hbr b hb4
-      linarith [const_branch_le hv h0 ht hx hx1]
-    have h0 := hb 0 (by norm_num) s (by simp only [Sliver4.xl]; linarith [hs.1]) (by linarith [hs.2])
-    have h1 := hb 1 (by norm_num) (1 - s) (by simp only [Sliver4.xl]; push_cast; linarith [hs.2])
-      (by linarith)
-    have h2 := hb 2 (by norm_num) (a + s) (by simp only [Sliver4.xl]; push_cast; linarith [hs.1])
-      (by linarith [hs.2])
+      have := const_branch_le hv h0 ht hx hx1
+      rw [Rat.cast_add]; linarith only [this]
+    have h0 := hb 0 (by norm_num) s (by simp only [Sliver4.xl]; linarith only [hs.1])
+      (by linarith only [hs.2, haL, haL1])
+    have h1 := hb 1 (by norm_num) (1 - s)
+      (by simp only [Sliver4.xl]; push_cast; linarith only [hs.2, haL]) (by linarith only [hs0])
+    have h2 := hb 2 (by norm_num) (a + s)
+      (by simp only [Sliver4.xl]; push_cast; linarith only [hs.1, haL])
+      (by linarith only [hs.2, haH, haH1])
     have h3 := hb 3 (by norm_num) (1 - a - s)
-      (by simp only [Sliver4.xl]; push_cast; linarith [hs.2]) (by linarith)
-    have hco := coercive4_of_pivots hpiv (by exact_mod_cast h0) (by exact_mod_cast h1)
-      (by exact_mod_cast h2) (by exact_mod_cast h3)
+      (by simp only [Sliver4.xl]; push_cast; linarith only [hs.2, haL, haH])
+      (by linarith only [hs0, haL, haL1])
+    have hco := coercive4_of_pivots hpiv h0 h1 h2 h3
     have hsl := tridiag4_sliver_ge hco (G s) (G (1 - s)) (G (a + s)) (G (1 - a - s))
       (S.phiFn m s) (S.phiFn m (1 - s)) (S.phiFn m (a + s)) (S.phiFn m (1 - a - s))
-    have hv0 := sq_phiFn_le hS m (x := s) (abs_le.mpr ⟨by linarith, by linarith [hs.2]⟩)
-    have hv1 := sq_phiFn_le hS m (x := 1 - s) (abs_le.mpr ⟨by linarith [hs.2], by linarith⟩)
-    have hv2 := sq_phiFn_le hS m (x := a + s) (abs_le.mpr ⟨by linarith, by linarith [hs.2]⟩)
-    have hv3 := sq_phiFn_le hS m (x := 1 - a - s) (abs_le.mpr ⟨by linarith [hs.2], by linarith⟩)
+    have hv0 := sq_phiFn_le hS m (x := s)
+      (abs_le.mpr ⟨by linarith only [hs0], by linarith only [hs.2, haL, haL1]⟩)
+    have hv1 := sq_phiFn_le hS m (x := 1 - s)
+      (abs_le.mpr ⟨by linarith only [hs.2, haL, haL1], by linarith only [hs0]⟩)
+    have hv2 := sq_phiFn_le hS m (x := a + s)
+      (abs_le.mpr ⟨by linarith only [hs0, haL, haL1], by linarith only [hs.2, haH, haH1]⟩)
+    have hv3 := sq_phiFn_le hS m (x := 1 - a - s)
+      (abs_le.mpr ⟨by linarith only [hs.2, haH, haH1], by linarith only [hs0, haL, haL1]⟩)
     simp only [f4Integrand]; push_cast at hsl
-    linarith
-  have hL4 : (T.lo : ℝ) ≤ (1 - a) / 2 := by linarith
+    linarith only [hsl, hv0, hv1, hv2, hv3]
+  have hL4 : (T.lo : ℝ) ≤ (1 - a) / 2 := by linarith only [hlo', haH]
   have hf := intervalIntegrable_f4Integrand (S := S) hGc hiPot m hlo0' hL4 le_rfl
   have hint := intervalIntegral_mono_on_Ioo' hL4 (continuous_const.intervalIntegrable _ _) hf hpt
   rw [intervalIntegral.integral_const, smul_eq_mul] at hint
-  have hw : (1 - a) / 2 - T.lo ≤ (T.width : ℝ) := by simp only [Sliver4.width]; push_cast; linarith
+  have hw : (1 - a) / 2 - T.lo ≤ (T.width : ℝ) := by
+    simp only [Sliver4.width]; push_cast; linarith only [haL]
   have hP : ∑ k : Fin S.K, (T.pert S k : ℝ) * m k ^ 2 = 4 * (T.width : ℝ) * C := by
     simp only [Sliver4.pert, C, Finset.mul_sum]; push_cast
     exact Finset.sum_congr rfl fun k _ => by ring
   rw [hP]
-  nlinarith [mul_le_mul_of_nonneg_right hw (by linarith : (0 : ℝ) ≤ 4 * C)]
+  have hmul := mul_le_mul_of_nonneg_right hw (by positivity : (0 : ℝ) ≤ 4 * C)
+  linarith only [hint, hmul]
 
 theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT : T.check S = true)
     {G : ℝ → ℝ} (hGc : Continuous G)
@@ -175,8 +185,10 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
   obtain ⟨⟨⟨hhi0, hhi⟩, hbr⟩, hpiv⟩ := hT
   obtain ⟨haL, haH⟩ := primeThreeOffset_mem
   have haH1 : (aHiQ : ℝ) ≤ 3 / 5 := by norm_num [aHiQ]
-  have hhi0' : (1 - aLoQ : ℝ) ≤ T.hi := by exact_mod_cast hhi0
-  have hhi' : (T.hi : ℝ) ≤ 1 / 2 := by exact_mod_cast hhi
+  have hhi0' : (1 - aLoQ : ℝ) ≤ T.hi := by
+    have := Rat.cast_le (K := ℝ).mpr hhi0; push_cast at this; exact this
+  have hhi' : (T.hi : ℝ) ≤ 1 / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hhi; push_cast at this; exact this
   set a := primeThreeOffset
   set C := (S.K : ℝ) * ∑ k : Fin S.K, (S.sup k : ℝ) ^ 2 * m k ^ 2
   have hC := sum_sup_nonneg S m
@@ -185,27 +197,33 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
     have hb : ∀ b < 2, ∀ x : ℝ, (T.xl b : ℝ) ≤ x → x < 1 →
         (S.c0 + (T.tayB b).base : ℝ) ≤ S.c0 + vTrue x := fun b hb2 x hx hx1 => by
       obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hbr b hb2
-      linarith [const_branch_le hv h0 ht hx hx1]
-    have h0 := hb 0 (by norm_num) u (by simp only [Sliver2.xl]; push_cast; linarith [hu.1])
-      (by linarith [hu.2])
-    have h1 := hb 1 (by norm_num) (1 - u) (by simp only [Sliver2.xl]; push_cast; linarith [hu.2])
-      (by linarith [hu.1])
-    have hco := coercive2_of_pivots hpiv (by exact_mod_cast h0) (by exact_mod_cast h1)
+      have := const_branch_le hv h0 ht hx hx1
+      rw [Rat.cast_add]; linarith only [this]
+    have h0 := hb 0 (by norm_num) u (by simp only [Sliver2.xl]; push_cast; linarith only [hu.1, haH])
+      (by linarith only [hu.2, hhi'])
+    have h1 := hb 1 (by norm_num) (1 - u)
+      (by simp only [Sliver2.xl]; push_cast; linarith only [hu.2])
+      (by linarith only [hu.1, haH, haH1])
+    have hco := coercive2_of_pivots hpiv h0 h1
     have hsl := tridiag2_sliver_ge hco (G u) (G (1 - u)) (S.phiFn m u) (S.phiFn m (1 - u))
-    have hv0 := sq_phiFn_le hS m (x := u) (abs_le.mpr ⟨by linarith [hu.1], by linarith [hu.2]⟩)
+    have hv0 := sq_phiFn_le hS m (x := u)
+      (abs_le.mpr ⟨by linarith only [hu.1, haH, haH1], by linarith only [hu.2, hhi']⟩)
     have hv1 := sq_phiFn_le hS m (x := 1 - u)
-      (abs_le.mpr ⟨by linarith [hu.2], by linarith [hu.1]⟩)
+      (abs_le.mpr ⟨by linarith only [hu.2, hhi'], by linarith only [hu.1, haH, haH1]⟩)
     simp only [f2Integrand]; push_cast at hsl
-    linarith
-  have hle : 1 - a ≤ (T.hi : ℝ) := by linarith
-  have hf := intervalIntegrable_f2Integrand (S := S) hGc hiPot m (by linarith) hle (by linarith)
+    linarith only [hsl, hv0, hv1]
+  have hle : 1 - a ≤ (T.hi : ℝ) := by linarith only [hhi0', haL]
+  have hf := intervalIntegrable_f2Integrand (S := S) hGc hiPot m
+    (by linarith only [haH, haH1]) hle (by linarith only [hhi'])
   have hint := intervalIntegral_mono_on_Ioo' hle (continuous_const.intervalIntegrable _ _) hf hpt
   rw [intervalIntegral.integral_const, smul_eq_mul] at hint
-  have hw : (T.hi : ℝ) - (1 - a) ≤ (T.width : ℝ) := by simp only [Sliver2.width]; push_cast; linarith
+  have hw : (T.hi : ℝ) - (1 - a) ≤ (T.width : ℝ) := by
+    simp only [Sliver2.width]; push_cast; linarith only [haH]
   have hP : ∑ k : Fin S.K, (T.pert S k : ℝ) * m k ^ 2 = 2 * (T.width : ℝ) * C := by
     simp only [Sliver2.pert, C, Finset.mul_sum]; push_cast
     exact Finset.sum_congr rfl fun k _ => by ring
   rw [hP]
-  nlinarith [mul_le_mul_of_nonneg_right hw (by linarith : (0 : ℝ) ≤ 2 * C)]
+  have hmul := mul_le_mul_of_nonneg_right hw (by positivity : (0 : ℝ) ≤ 2 * C)
+  linarith only [hint, hmul]
 
 end GaloisForLFunctions.WindowTowerOfSpecZ.ApertureLogTwo

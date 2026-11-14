@@ -118,7 +118,7 @@ private theorem normalizedDoubleZeroTorus_three_eq_lines :
     all_goals obtain ⟨u, _, rfl⟩ := mem_image.mp hx
     all_goals simp [normalizedDoubleZeroTorus, normalizedCoordinateZeroTorus,
       fourthLine0, fourthLine1, fourthLine2, fourthNegOne, fourthNeg,
-      Fin.sum_univ_succ, inv_neg, add_assoc]
+      Fin.sum_univ_succ, inv_neg]
 
 private theorem fourthLines_card (i : Fin 3) :
     (fourthLines (F := F) i).card = Fintype.card F - 1 := by
@@ -231,15 +231,14 @@ theorem normalizedDoubleZeroTorus_three_card :
   have hq := Fintype.one_lt_card (α := F)
   by_cases hc : (1 : F) = -1
   · have hpts := he.mpr hc
-    simp [hpts] at hABC
+    have hpair : ({fourthLine0 fourthOne, fourthLine1 fourthOne} :
+        Finset (MomentTorus F 3)).card = 1 := by simp [hpts]
+    rw [hpair] at hABC
     rw [if_pos hc]
     omega
   · rw [card_pair (fun h => hc (he.mp h))] at hABC
     rw [if_neg hc]
     omega
-
-#print axioms mem_normalizedDoubleZeroTorus_three
-#print axioms normalizedDoubleZeroTorus_three_card
 
 private instance primeFieldFact (p : Nat.Primes) : Fact p.val.Prime := ⟨p.property⟩
 
@@ -262,7 +261,8 @@ theorem sum_primeKloostermanTrace_four (p : Nat.Primes) :
         ((p.val : ℝ) - 1) ^ 3 - 1 := by
     apply Complex.ofReal_injective
     push_cast
-    convert hm using 1 <;> ring
+    convert hm using 1
+    ring
   rw [hmR]
   have hc := normalizedDoubleZeroTorus_three_card (F := ZMod p.val)
   simp only [ZMod.card] at hc
@@ -284,9 +284,6 @@ theorem primeKloostermanTrace_normalized_fourth_le_two (p : Nat.Primes) :
   rw [sum_primeKloostermanTrace_four]
   split_ifs <;> nlinarith only [sq_nonneg (p.val : ℝ), hp]
 
-#print axioms sum_primeKloostermanTrace_four
-#print axioms primeKloostermanTrace_normalized_fourth_le_two
-
 private theorem primeField_one_eq_neg_one_iff (p : Nat.Primes) :
     (1 : ZMod p.val) = -1 ↔ p.val = 2 := by
   constructor
@@ -304,12 +301,27 @@ theorem sum_primeKloostermanTrace_four_explicit (p : Nat.Primes) :
     ∑ a : ZMod p.val, primeKloostermanTrace p a ^ 4 =
       2 * (p.val : ℝ) ^ 3 - 3 * (p.val : ℝ) ^ 2 - 3 * p.val +
         if p.val = 2 then 4 else 0 := by
-  rw [sum_primeKloostermanTrace_four, primeField_one_eq_neg_one_iff]
+  rw [sum_primeKloostermanTrace_four]
   by_cases h : p.val = 2
-  · norm_num [h]
-  · rw [if_neg h]
+  · rw [if_pos ((primeField_one_eq_neg_one_iff p).mpr h), if_pos h]
+    norm_num [h]
+  · rw [if_neg (fun he => h ((primeField_one_eq_neg_one_iff p).mp he)), if_neg h]
 
+/-- Removing the singular parameter subtracts one from the exact fourth moment. -/
+theorem sum_primeKloostermanTrace_four_ne_zero (p : Nat.Primes) :
+    ∑ a ∈ (univ : Finset (ZMod p.val)).erase 0, primeKloostermanTrace p a ^ 4 =
+      2 * (p.val : ℝ) ^ 3 - 3 * (p.val : ℝ) ^ 2 - 3 * p.val - 1 +
+        if p.val = 2 then 4 else 0 := by
+  rw [sum_erase_eq_sub (mem_univ 0), sum_primeKloostermanTrace_four_explicit,
+    primeKloostermanTrace_zero]
+  ring
+
+#print axioms mem_normalizedDoubleZeroTorus_three
+#print axioms normalizedDoubleZeroTorus_three_card
+#print axioms sum_primeKloostermanTrace_four
+#print axioms primeKloostermanTrace_normalized_fourth_le_two
 #print axioms sum_primeKloostermanTrace_four_explicit
+#print axioms sum_primeKloostermanTrace_four_ne_zero
 
 end
 end GaloisForLFunctions.ArithmeticKunnethTheory.WeightFamilies

@@ -162,10 +162,14 @@ theorem abs_offset_sub_le (hS : S.valid = true) :
     |primeThreeOffset - S.a0| ≤ (S.δa : ℝ) ∧ (S.δa : ℝ) ≤ 1 / 100 := by
   simp only [valid, Bool.and_eq_true, decide_eq_true_eq] at hS
   obtain ⟨⟨⟨⟨h1, h2⟩, _⟩, h4⟩, _⟩ := hS
-  have h1' : (S.a0 : ℝ) - S.δa ≤ aLoQ := by exact_mod_cast h1
-  have h2' : (aHiQ : ℝ) ≤ S.a0 + S.δa := by exact_mod_cast h2
+  have h1' : (S.a0 : ℝ) - S.δa ≤ aLoQ := by rw [← Rat.cast_sub]; exact Rat.cast_le.mpr h1
+  have h2' : (aHiQ : ℝ) ≤ (S.a0 : ℝ) + S.δa := by rw [← Rat.cast_add]; exact Rat.cast_le.mpr h2
   obtain ⟨ha1, ha2⟩ := primeThreeOffset_mem
-  exact ⟨abs_le.mpr ⟨by linarith, by linarith⟩, by exact_mod_cast h4⟩
+  have hlo : (S.a0 : ℝ) - S.δa ≤ primeThreeOffset := h1'.trans ha1
+  have hhi : primeThreeOffset ≤ (S.a0 : ℝ) + S.δa := ha2.trans h2'
+  have h4' : (S.δa : ℝ) ≤ 1 / 100 := by
+    have := Rat.cast_le (K := ℝ).mpr h4; push_cast at this; exact this
+  exact ⟨abs_le.mpr ⟨by linarith only [hlo], by linarith only [hhi]⟩, h4'⟩
 
 /-- Exact dual pairing `∫₀¹ G · phiFn m = mᵀ Λ m` at the half-window moments of `G`. -/
 theorem integral_mul_phiFn (hS : S.valid = true) {G : ℝ → ℝ} (hG : Continuous G) :
@@ -173,17 +177,31 @@ theorem integral_mul_phiFn (hS : S.valid = true) {G : ℝ → ℝ} (hG : Continu
   have hfn : ∀ u, G u * S.phiFn (S.moments G) u =
       ∑ k : Fin S.K, ∑ r : Fin S.K,
         (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u) := fun u => by
-    simp only [phiFn, qeval_phiPoly hS (Fin.is_lt _), Finset.mul_sum]
-    refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun r _ => by ring
+    rw [phiFn, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [qeval_phiPoly hS k.2, Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun r _ => by ring
+  have hi1 : ∀ k ∈ (Finset.univ : Finset (Fin S.K)),
+      IntervalIntegrable (fun u => ∑ r : Fin S.K,
+        (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u)) volume 0 1 :=
+    fun k _ => (continuous_finsetSum _ fun r _ =>
+      continuous_const.mul (hG.mul (continuous_legP _))).intervalIntegrable 0 1
   simp_rw [hfn]
-  rw [intervalIntegral.integral_finsetSum fun k _ => (continuous_finsetSum _ fun r _ =>
-    continuous_const.mul (hG.mul (continuous_legP _))).intervalIntegrable 0 1]
-  simp_rw [intervalIntegral.integral_finsetSum fun r _ =>
-    (continuous_const.mul (hG.mul (continuous_legP _))).intervalIntegrable 0 1,
-    intervalIntegral.integral_const_mul]
+  rw [intervalIntegral.integral_finsetSum hi1]
+  have hinner : ∀ k : Fin S.K,
+      (∫ u in (0 : ℝ)..1, ∑ r : Fin S.K,
+        (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u)) =
+      ∑ r : Fin S.K, (S.moments G k * (matQ S.Λ r k : ℝ)) * S.moments G r := fun k => by
+    have hi2 : ∀ r ∈ (Finset.univ : Finset (Fin S.K)),
+        IntervalIntegrable (fun u =>
+          (S.moments G k * (matQ S.Λ r k : ℝ)) * (G u * legP (S.deg r) u)) volume 0 1 :=
+      fun r _ => (continuous_const.mul (hG.mul (continuous_legP _))).intervalIntegrable 0 1
+    rw [intervalIntegral.integral_finsetSum hi2]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    rw [intervalIntegral.integral_const_mul, moments]
+  simp_rw [hinner]
   rw [quadR, Finset.sum_comm]
-  refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun k _ => ?_
-  simp only [moments]; ring
+  refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun k _ => by ring
 
 end SectorData
 

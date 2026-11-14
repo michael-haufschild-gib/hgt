@@ -98,6 +98,31 @@ Do not use web search. Do not run novelty checks.
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
 The goal is met when route ACS is fully closed and formalized unconditionally in lean.
+## list
+- https://arxiv.org/abs/2611.10726 a quantitative two-interval criterion for the riemann hypothesis 
+- https://arxiv.org/abs/2611.12541 independence of hasse--weil l-functions over rings of dirichlet series
+- https://arxiv.org/abs/2611.16156 many more odd zeta values are irrational
+- https://arxiv.org/abs/2611.12500 horizontal estimates for kloosterman sums under hecke eigenvalue constraints
+- https://arxiv.org/abs/2611.13468 a cyclotomic artin-tate formula and sphere packing for K3 surfaces 
+- https://arxiv.org/abs/2611.41332 kloosterman sums and pluecker height zeta functions
+- https://arxiv.org/abs/2611.16169 wasserstein rates of all orders for the sato-tate law of kloosterman sums
+- https://arxiv.org/abs/2611.08029 on sufficient conditions for rank zero in families of elliptic curves
+- https://arxiv.org/abs/2611.11708 derived invariance of the space of holomorphic two-forms
+- https://arxiv.org/abs/2611.14090 equivarent quantisation of hypertoric varieties via symplectic cuts
+- https://arxiv.org/abs/2611.10478 motivic generating functions and l'derivatives of cohomological automorphic representations
+- https://arxiv.org/abs/2611.10255 automorphism of kummer and artin-schreier curves defined by chebyshev polynomials
+- https://arxiv.org/abs/2611.08316 p-parity conjecture for panchishkin galois representations
+- https://arxiv.org/abs/2611.11955 gauge rigdity and holonomy classifications of time-scaled intertwining cocylces on hilbert bundles
+- https://arxiv.org/abs/2611.15605 representation theory and the algebraic k-theory of geometric fields
+- https://arxiv.org/abs/2611.14073 explicit plane models for all galois quotients of the hermitian curve
+- https://arxiv.org/abs/2611.13963 euclidian and hermitian self-orthogonal codes from divisible codes
+- https://arxiv.org/abs/2611.16083 tendex lines and short-time deformations: the geometry of lunar tides
+- https://arxiv.org/abs/2611.15912 entire boosted hypersurfaces of vanishing mean curvature in schwarzschild spacetime
+- https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
+- https://arxiv.org/abs/2611.
+- https://arxiv.org/abs/2611.
+- https://arxiv.org/abs/2611.
+- https://arxiv.org/abs/2611.
 
 ## apply external paper to corpus experiment
 do not use the hgtl7 skill
@@ -105,7 +130,7 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- docs/goldbach-conditional.pdf
+- https://arxiv.org/abs/2611.12449
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -652,9 +677,9 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read docs/reports/review-1311/route-obstacles.md and docs/reports/review-1311/obstacles-summary.md
+read  docs/reports/review-1411/obstacles-summary.md
 
-understand what obstacles A162, A140, A141 and  are about.
+understand what the obstacles under "## 2.1 — Tasks that are work rather than new mathematics" are all about.
 
 your task: find a complete solution for these obstacles and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
@@ -707,9 +732,9 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand fully: docs/reports/review-1311/obstacles-summary.md
+read and understand fully: docs/reports/review-1411/obstacles-summary.md
 
-under "## 2.5 Breakthrough question for the search for a producer: a pairing whose frame reaches the line (B187)" it asks for: "Is there a Möbius-signed pairing `(c,k)` with `c/(k−1)<3/5`; for the line, with `c≤(k−1)/2`?"
+under "## 2.7 — Breakthrough under the AdS/modular-horizon hypothesis" it asks for: "can a prime-marked modular-horizon observable obey a causal identity that forces quarter-rate reflected-pulse decay, while an independently proved boundary dictionary identifies every relevant ζ pole with an observable singularity?"
 
 your task: answer the question, find a complete solution for everything asked and unconditionally formalize the answers and their implications and collaries in lean.
 

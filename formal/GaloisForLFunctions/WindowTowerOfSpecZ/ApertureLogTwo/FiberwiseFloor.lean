@@ -171,12 +171,92 @@ theorem bound (hS : S.valid = true) (hFC : FC.check S = true) (h4 : ∀ D ∈ FC
   simp only [check, Bool.and_eq_true] at hFC
   obtain ⟨⟨⟨hc4, hc2⟩, hs4⟩, hs2⟩ := hFC
   set m := S.moments G
-  set a := primeThreeOffset
+  set a := primeThreeOffset with ha_def
   obtain ⟨haL, haH⟩ := primeThreeOffset_mem
+  have haH1 : (aHiQ : ℝ) ≤ 3 / 5 := by norm_num [aHiQ]
+  have haL1 : (1 / 2 : ℝ) ≤ aLoQ := by norm_num [aLoQ]
+  -- sliver endpoints
   have hs4' := hs4
   simp only [Sliver4.check, Bool.and_eq_true, decide_eq_true_eq] at hs4'
-  have hlo : (S.s4Lo : ℝ) = (S.s4Lo : ℝ) := rfl
-  sorry
+  have hlo0 : (0 : ℝ) ≤ FC.s4.lo := Rat.cast_nonneg.mpr hs4'.1.1.1.1
+  have hlo1 : (FC.s4.lo : ℝ) ≤ (1 - aHiQ) / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hs4'.1.1.1.2; push_cast at this; exact this
+  have hs2' := hs2
+  simp only [Sliver2.check, Bool.and_eq_true, decide_eq_true_eq] at hs2'
+  have hhi0 : (1 - aLoQ : ℝ) ≤ FC.s2.hi := by
+    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1.1; push_cast at this; exact this
+  have hhi1 : (FC.s2.hi : ℝ) ≤ 1 / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1.2; push_cast at this; exact this
+  have hL4 : (FC.s4.lo : ℝ) ≤ (1 - a) / 2 := by linarith only [hlo1, haH]
+  -- subinterval and sliver bounds
+  have hP4 := integral_chain4 hS hGc hiPot m FC.p4 0 FC.s4.lo hc4 h4 le_rfl hL4
+  have hP2 := integral_chain2 hS hGc hiPot m FC.p2 FC.s2.hi (1 / 2) hc2 h2
+    (by have : (0 : ℝ) ≤ FC.s2.hi := by linarith only [hhi0, haL, haL1, haH, haH1]
+        exact Rat.cast_nonneg.mp this) (by norm_num)
+  push_cast at hP4 hP2
+  have hT4 := Sliver4.bound hS hs4 hGc hiPot m
+  have hT2 := Sliver2.bound hS hs2 hGc hiPot m
+  -- splitting the fiber integrals at the sliver endpoints
+  have hf4a := intervalIntegrable_f4Integrand (S := S) hGc hiPot m le_rfl hlo0 (by linarith only [hL4])
+  have hf4b := intervalIntegrable_f4Integrand (S := S) hGc hiPot m hlo0 hL4 le_rfl
+  have hf2a' := intervalIntegrable_f2Integrand (S := S) hGc hiPot m (α := 1 - a) (β := FC.s2.hi)
+    (by linarith only [haH, haH1]) (by linarith only [hhi0, haL]) (by linarith only [hhi1])
+  have hf2b := intervalIntegrable_f2Integrand (S := S) hGc hiPot m (α := FC.s2.hi) (β := 1 / 2)
+    (by linarith only [hhi0, haL, haH, haH1]) hhi1 (by norm_num)
+  have hsplit4 := intervalIntegral.integral_add_adjacent_intervals hf4a hf4b
+  have hsplit2 := intervalIntegral.integral_add_adjacent_intervals hf2a' hf2b
+  -- folding of the potential part and of the prime-two contact
+  have hpc : Continuous (S.phiFn m) :=
+    continuous_finsetSum _ fun _ _ => continuous_const.mul (continuous_qeval _)
+  set H : ℝ → ℝ := fun u => G u ^ 2 * (S.c0 + vTrue u) - 2 * (G u * S.phiFn m u)
+  have hiPhi : IntegrableOn (fun u => G u * S.phiFn m u) (Ioo (0 : ℝ) 1) :=
+    (hGc.mul hpc).integrableOn_Icc.mono_set Ioo_subset_Icc_self
+  have hiH : IntegrableOn H (Ioo (0 : ℝ) 1) := hiPot.sub (hiPhi.const_mul 2)
+  have hH : (∫ u in Ioo (0 : ℝ) 1, H u) =
+      (∫ u in Ioo (0 : ℝ) 1, G u ^ 2 * (S.c0 + vTrue u)) - 2 * quadR S.K S.Λ m := by
+    have hpair := SectorData.integral_mul_phiFn hS hGc
+    rw [intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo] at hpair
+    simp only [H]
+    rw [integral_sub hiPot (hiPhi.const_mul 2), integral_const_mul, hpair]
+  have hFold := six_interval_folding_diag hiH
+  have hFoldP2 := six_interval_folding_primeTwo hGc
+  simp only at hFold hFoldP2
+  rw [← ha_def] at hFold hFoldP2 hT4 hT2
+  have hp4c : Continuous fun s => G s * G (1 - s) + G (a + s) * G (1 - a - s) := by fun_prop
+  have hp3c : Continuous fun s => G (1 - s) * G (a + s) := by fun_prop
+  have hp2c : Continuous fun u => G u * G (1 - u) := by fun_prop
+  have hf4full := intervalIntegrable_f4Integrand (S := S) hGc hiPot m le_rfl
+    (by linarith only [hlo0, hL4] : (0 : ℝ) ≤ (1 - a) / 2) le_rfl
+  have hf2full := intervalIntegrable_f2Integrand (S := S) hGc hiPot m (α := 1 - a) (β := 1 / 2)
+    (by linarith only [haH, haH1]) (by linarith only [haL, haL1]) (by norm_num)
+  have hI4 : (∫ s in (0 : ℝ)..((1 - a) / 2), H s + H (1 - s) + H (a + s) + H (1 - a - s)) =
+      (∫ s in (0 : ℝ)..((1 - a) / 2), f4Integrand S G m s) -
+        2 * S.e2 * (∫ s in (0 : ℝ)..((1 - a) / 2), G s * G (1 - s) + G (a + s) * G (1 - a - s)) -
+        2 * S.e3 * (∫ s in (0 : ℝ)..((1 - a) / 2), G (1 - s) * G (a + s)) := by
+    have hfn : (fun s => H s + H (1 - s) + H (a + s) + H (1 - a - s)) = fun s =>
+        (f4Integrand S G m s - 2 * S.e2 * (G s * G (1 - s) + G (a + s) * G (1 - a - s))) -
+          2 * S.e3 * (G (1 - s) * G (a + s)) := by
+      funext s; simp only [H, f4Integrand, tridiag4Form, ha_def]; ring
+    rw [hfn, intervalIntegral.integral_sub (hf4full.sub ((hp4c.const_mul _).intervalIntegrable _ _))
+      ((hp3c.const_mul _).intervalIntegrable _ _),
+      intervalIntegral.integral_sub hf4full ((hp4c.const_mul _).intervalIntegrable _ _),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+  have hI2 : (∫ u in (1 - a)..(1 / 2), H u + H (1 - u)) =
+      (∫ u in (1 - a)..(1 / 2), f2Integrand S G m u) -
+        2 * S.e2 * (∫ u in (1 - a)..(1 / 2), G u * G (1 - u)) := by
+    have hfn : (fun u => H u + H (1 - u)) = fun u =>
+        f2Integrand S G m u - 2 * S.e2 * (G u * G (1 - u)) := by
+      funext u; simp only [H, f2Integrand, tridiag2Form]; ring
+    rw [hfn, intervalIntegral.integral_sub hf2full ((hp2c.const_mul _).intervalIntegrable _ _),
+      intervalIntegral.integral_const_mul]
+  have hFoldP2' : 2 * (S.e2 : ℝ) * (∫ u in (0 : ℝ)..(1 / 2), G u * G (1 - u)) =
+      2 * (S.e2 : ℝ) *
+          (∫ s in (0 : ℝ)..((1 - a) / 2), G s * G (1 - s) + G (a + s) * G (1 - a - s)) +
+        2 * (S.e2 : ℝ) * (∫ u in (1 - a)..(1 / 2), G u * G (1 - u)) := by
+    rw [hFoldP2, mul_add]
+  have hcost := cost_eq S FC m
+  push_cast at hcost
+  linarith only [hH, hFold, hFoldP2', hI4, hI2, hsplit4, hsplit2, hP4, hP2, hT4, hT2, hcost]
 
 end FiberCert
 

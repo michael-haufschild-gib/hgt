@@ -78,9 +78,6 @@ theorem abs_sum_Ico_normalizedKloosterman_prod (S : Finset Nat.Primes) (A B : �
   exact h.trans (mul_le_mul_of_nonneg_left
     (primeResidueMass_normalizedKloosterman_le S) (by positivity))
 
-#print axioms sum_abs_primeKloostermanTrace_normalized_le
-#print axioms abs_sum_Ico_normalizedKloosterman_prod
-
 /-- Every finite interval average has error at most `2P/N` for normalized traces. -/
 theorem abs_average_normalizedKloosterman_prod (S : Finset Nat.Primes) (A N : ℕ) :
     |(∑ n ∈ Ico A (A + (N + 1)), ∏ p ∈ S,
@@ -96,6 +93,8 @@ theorem abs_average_normalizedKloosterman_prod (S : Finset Nat.Primes) (A N : �
   rw [he, abs_div, abs_of_pos hN]
   exact div_le_div_of_nonneg_right h hN.le
 
+#print axioms sum_abs_primeKloostermanTrace_normalized_le
+#print axioms abs_sum_Ico_normalizedKloosterman_prod
 #print axioms abs_average_normalizedKloosterman_prod
 
 end

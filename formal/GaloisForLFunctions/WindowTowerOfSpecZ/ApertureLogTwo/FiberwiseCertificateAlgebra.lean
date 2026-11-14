@@ -58,9 +58,9 @@ theorem lowMul_le {c lo hi : ℚ} {L : ℝ} (h1 : (lo : ℝ) ≤ L) (h2 : L ≤ 
     (lowMul c lo hi : ℝ) ≤ c * L := by
   unfold lowMul
   split_ifs with hc
-  · push_cast; exact mul_le_mul_of_nonneg_left h1 (by exact_mod_cast hc)
-  · push_cast
-    have : (c : ℝ) < 0 := by exact_mod_cast lt_of_not_ge hc
+  · rw [Rat.cast_mul]; exact mul_le_mul_of_nonneg_left h1 (Rat.cast_nonneg.mpr hc)
+  · rw [Rat.cast_mul]
+    have : (c : ℝ) < 0 := Rat.cast_lt_zero.mpr (lt_of_not_ge hc)
     nlinarith
 
 /-- Taylor data `(p, q, t₀, ω, base)` anchored at `1 - t₀ = ω = 2^p 3^q`. -/
@@ -117,16 +117,19 @@ theorem qeval_poly_le_vTrue {τ : TaylorBranch} (hτ : τ.valid = true) (r : ℕ
     qeval (τ.poly r x0 x1) ξ ≤ vTrue x := by
   simp only [TaylorBranch.valid, Bool.and_eq_true, decide_eq_true_eq] at hτ
   obtain ⟨⟨hom, ht0⟩, hbase⟩ := hτ
-  have hom' : (τ.om : ℝ) = (2 : ℝ) ^ τ.p * (3 : ℝ) ^ τ.q := by rw [hom]; push_cast; rfl
-  have ht0' : (τ.t0 : ℝ) = 1 - τ.om := by rw [ht0]; push_cast; rfl
+  have hom' : (τ.om : ℝ) = (2 : ℝ) ^ τ.p * (3 : ℝ) ^ τ.q := by
+    rw [hom, Rat.cast_mul, Rat.cast_zpow, Rat.cast_zpow]
+    norm_num
+  have ht0' : (τ.t0 : ℝ) = 1 - τ.om := by rw [ht0, Rat.cast_sub, Rat.cast_one]
   have hb : (τ.base : ℝ) ≤ Real.log 2 - ((τ.p : ℝ) * Real.log 2 + (τ.q : ℝ) * Real.log 3) / 2 := by
     have h1 := lowMul_le (c := 1 - (τ.p : ℚ) / 2) log2_bounds_Q.1 log2_bounds_Q.2
     have h2 := lowMul_le (c := -(τ.q : ℚ) / 2) log3_bounds_Q.1 log3_bounds_Q.2
     have hb' : (τ.base : ℝ) ≤ (lowMul (1 - (τ.p : ℚ) / 2) log2LoQ log2HiQ : ℝ) +
-        (lowMul (-(τ.q : ℚ) / 2) log3LoQ log3HiQ : ℝ) := by exact_mod_cast hbase
-    push_cast at h1 h2
-    linarith
-  have hx2 : ((x0 : ℝ) + x1 * ξ) ^ 2 < 1 := by nlinarith
+        (lowMul (-(τ.q : ℚ) / 2) log3LoQ log3HiQ : ℝ) := by
+      rw [← Rat.cast_add]; exact Rat.cast_le.mpr hbase
+    refine (hb'.trans (add_le_add h1 h2)).trans (le_of_eq ?_)
+    push_cast; ring
+  have hx2 : ((x0 : ℝ) + x1 * ξ) ^ 2 < 1 := by nlinarith only [hlow, hle, hx1]
   have htay := exterior_log_potential_ge_shifted_taylor τ.p τ.q τ.t0 τ.om τ.base r hom' ht0' hb
     hmin hx2
   rw [qeval_TaylorBranch_poly]
@@ -175,12 +178,9 @@ theorem tridiag4_complete_sq_all {d0 d1 d2 d3 e2 e3 pen ip : ℝ} (hpi : pen * i
       2 * (w0 * z0 + w1 * z1 + w2 * z2 + w3 * z3)) * hpi
   have h1 : 0 ≤ ip * ((pen * w0 - z0) ^ 2 + (pen * w1 - z1) ^ 2 + (pen * w2 - z2) ^ 2 +
       (pen * w3 - z3) ^ 2) := by positivity
-  nlinarith [sq_nonneg (g0 - w0 + (d0 * w0 + e2 * w1 - v0)),
-    sq_nonneg (g1 - w1 + (e2 * w0 + d1 * w1 + e3 * w2 - v1)),
-    sq_nonneg (g2 - w2 + (e3 * w1 + d2 * w2 + e2 * w3 - v2)),
-    sq_nonneg (g3 - w3 + (e2 * w2 + d3 * w3 - v3)),
-    sq_nonneg ((g0 - w0) / 4 - 4 * z0), sq_nonneg ((g1 - w1) / 4 - 4 * z1),
-    sq_nonneg ((g2 - w2) / 4 - 4 * z2), sq_nonneg ((g3 - w3) / 4 - 4 * z3)]
+  exact sub_nonneg.mp (by
+    rw [key]
+    exact add_nonneg (add_nonneg (add_nonneg (sub_nonneg.mpr hQ) (by positivity)) (by positivity)) h1)
 
 /-- Square completion on a coercive `2 × 2` fiber with perturbed sources. -/
 theorem tridiag2_complete_sq_all {d0 d1 e2 pen ip : ℝ} (hpi : pen * ip = 1) (hip : 0 ≤ ip)
@@ -205,9 +205,9 @@ theorem tridiag2_complete_sq_all {d0 d1 e2 pen ip : ℝ} (hpi : pen * ip = 1) (h
     unfold tridiag2Form
     linear_combination (-(pen * (w0 ^ 2 + w1 ^ 2)) + 2 * (w0 * z0 + w1 * z1)) * hpi
   have h1 : 0 ≤ ip * ((pen * w0 - z0) ^ 2 + (pen * w1 - z1) ^ 2) := by positivity
-  nlinarith [sq_nonneg (g0 - w0 + (d0 * w0 + e2 * w1 - v0)),
-    sq_nonneg (g1 - w1 + (e2 * w0 + d1 * w1 - v1)),
-    sq_nonneg ((g0 - w0) / 4 - 4 * z0), sq_nonneg ((g1 - w1) / 4 - 4 * z1)]
+  exact sub_nonneg.mp (by
+    rw [key]
+    exact add_nonneg (add_nonneg (add_nonneg (sub_nonneg.mpr hQ) (by positivity)) (by positivity)) h1)
 
 /-- Exact `LDLᵀ` pivots `> 0` of a `4 × 4` tridiagonal matrix with diagonal `β - 17/16`. -/
 def pivots4Pos (b0 b1 b2 b3 e2 e3 : ℚ) : Bool :=
@@ -222,11 +222,22 @@ theorem coercive4_of_pivots {b0 b1 b2 b3 e2 e3 : ℚ} (h : pivots4Pos b0 b1 b2 b
     (h3 : (b3 : ℝ) ≤ d3) (u0 u1 u2 u3 : ℝ) :
     (17 / 16 : ℝ) * (u0 ^ 2 + u1 ^ 2 + u2 ^ 2 + u3 ^ 2) ≤
       tridiag4Form d0 d1 d2 d3 e2 e3 u0 u1 u2 u3 := by
+  let p0 : ℚ := b0 - 17 / 16
+  let p1 : ℚ := b1 - 17 / 16 - e2 ^ 2 / p0
+  let p2 : ℚ := b2 - 17 / 16 - e3 ^ 2 / p1
+  let p3 : ℚ := b3 - 17 / 16 - e2 ^ 2 / p2
   simp only [pivots4Pos, Bool.and_eq_true, decide_eq_true_eq] at h
   obtain ⟨⟨⟨hp0, hp1⟩, hp2⟩, hp3⟩ := h
-  exact tridiag4_ge_seventeen_sixteenths h0 h1 h2 h3 rfl (by exact_mod_cast hp0)
-    (by push_cast; rfl) (by exact_mod_cast hp1) (by push_cast; rfl) (by exact_mod_cast hp2)
-    (by push_cast; rfl) (by exact_mod_cast hp3) u0 u1 u2 u3
+  have hp0_eq : (p0 : ℝ) = (b0 : ℝ) - 17 / 16 := by dsimp [p0]; push_cast; ring
+  have hp1_eq : (p1 : ℝ) = ((b1 : ℝ) - 17 / 16) - (e2 : ℝ) ^ 2 / (p0 : ℝ) := by
+    dsimp [p1]; push_cast; ring
+  have hp2_eq : (p2 : ℝ) = ((b2 : ℝ) - 17 / 16) - (e3 : ℝ) ^ 2 / (p1 : ℝ) := by
+    dsimp [p2]; push_cast; ring
+  have hp3_eq : (p3 : ℝ) = ((b3 : ℝ) - 17 / 16) - (e2 : ℝ) ^ 2 / (p2 : ℝ) := by
+    dsimp [p3]; push_cast; ring
+  exact tridiag4_ge_seventeen_sixteenths h0 h1 h2 h3 hp0_eq (by exact_mod_cast hp0)
+    hp1_eq (by exact_mod_cast hp1) hp2_eq (by exact_mod_cast hp2)
+    hp3_eq (by exact_mod_cast hp3) u0 u1 u2 u3
 
 /-- Exact pivots `> 0` of a `2 × 2` matrix with diagonal `β - 17/16`. -/
 def pivots2Pos (b0 b1 e2 : ℚ) : Bool :=
@@ -235,9 +246,14 @@ def pivots2Pos (b0 b1 e2 : ℚ) : Bool :=
 theorem coercive2_of_pivots {b0 b1 e2 : ℚ} (h : pivots2Pos b0 b1 e2 = true) {d0 d1 : ℝ}
     (h0 : (b0 : ℝ) ≤ d0) (h1 : (b1 : ℝ) ≤ d1) (u0 u1 : ℝ) :
     (17 / 16 : ℝ) * (u0 ^ 2 + u1 ^ 2) ≤ tridiag2Form d0 d1 e2 u0 u1 := by
+  let p0 : ℚ := b0 - 17 / 16
+  let p1 : ℚ := b1 - 17 / 16 - e2 ^ 2 / p0
   simp only [pivots2Pos, Bool.and_eq_true, decide_eq_true_eq] at h
-  exact tridiag2_ge_seventeen_sixteenths h0 h1 rfl (by exact_mod_cast h.1)
-    (by push_cast; rfl) (by exact_mod_cast h.2) u0 u1
+  have hp0_eq : (p0 : ℝ) = (b0 : ℝ) - 17 / 16 := by dsimp [p0]; push_cast; ring
+  have hp1_eq : (p1 : ℝ) = ((b1 : ℝ) - 17 / 16) - (e2 : ℝ) ^ 2 / (p0 : ℝ) := by
+    dsimp [p1]; push_cast; ring
+  exact tridiag2_ge_seventeen_sixteenths h0 h1 hp0_eq (by exact_mod_cast h.1)
+    hp1_eq (by exact_mod_cast h.2) u0 u1
 
 /-! ### Gram identities for rational linear combinations -/
 
@@ -254,15 +270,23 @@ theorem integral_lin_mul_lin {K : ℕ} (A B : ℕ → List ℚ) (m : Fin K → �
       ∑ i : Fin K, ∑ j : Fin K, (dotQ (A i) (hilbVec (A i).length (B j)) : ℝ) * m i * m j := by
   have hfn : ∀ ξ, linQ A m ξ * linQ B m ξ =
       ∑ i : Fin K, ∑ j : Fin K, (m i * m j) * (qeval (A i) ξ * qeval (B j) ξ) := fun ξ => by
-    simp only [linQ, Finset.sum_mul, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-  simp_rw [hfn]
-  rw [intervalIntegral.integral_finsetSum fun i _ =>
+    rw [linQ, linQ, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => by ring
+  have hi1 : ∀ i ∈ (Finset.univ : Finset (Fin K)),
+      IntervalIntegrable (fun ξ => ∑ j : Fin K, (m i * m j) * (qeval (A i) ξ * qeval (B j) ξ))
+        volume 0 1 := fun i _ =>
     (continuous_finsetSum _ fun j _ => continuous_const.mul
-      ((continuous_qeval _).mul (continuous_qeval _))).intervalIntegrable 0 1]
+      ((continuous_qeval _).mul (continuous_qeval _))).intervalIntegrable 0 1
+  simp_rw [hfn]
+  rw [intervalIntegral.integral_finsetSum hi1]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [intervalIntegral.integral_finsetSum fun j _ =>
-    (continuous_const.mul ((continuous_qeval _).mul (continuous_qeval _))).intervalIntegrable 0 1]
+  have hi2 : ∀ j ∈ (Finset.univ : Finset (Fin K)),
+      IntervalIntegrable (fun ξ => (m i * m j) * (qeval (A i) ξ * qeval (B j) ξ))
+        volume 0 1 := fun j _ =>
+    (continuous_const.mul ((continuous_qeval _).mul (continuous_qeval _))).intervalIntegrable 0 1
+  rw [intervalIntegral.integral_finsetSum hi2]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [intervalIntegral.integral_const_mul, integral_qeval_mul_qeval]
   ring

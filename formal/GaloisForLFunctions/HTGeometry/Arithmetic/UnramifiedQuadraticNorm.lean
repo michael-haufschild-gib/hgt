@@ -2,7 +2,8 @@ import GaloisForLFunctions.HTGeometry.RationalTameData
 import GaloisForLFunctions.HTGeometry.Arithmetic.ValuationParity
 import GaloisForLFunctions.HTGeometry.Arithmetic.SquareDenominator
 
-/-!+# Quadratic norm tests for simultaneous local integrality
+/-!
+# Quadratic norm tests for simultaneous local integrality
 
 If a rational unit has nonsquare residue at a prime, its binary norm form
 has no cancellation even when the two coordinates have equal valuation.

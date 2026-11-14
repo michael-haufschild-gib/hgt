@@ -239,26 +239,31 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
     {ξ : ℝ} (hξ : ξ ∈ Ioo (0 : ℝ) 1) : low S D m ξ ≤ f4Integrand S G m (D.sa + D.ds * ξ) := by
   simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD
   obtain ⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, hbr⟩, hpiv⟩, -⟩, -⟩, -⟩, -⟩ := hD
-  have hsa' : (0 : ℝ) ≤ D.sa := by exact_mod_cast hsa
-  have hds' : (0 : ℝ) < D.ds := by exact_mod_cast hds
-  have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by exact_mod_cast hsb
+  have hsa' : (0 : ℝ) ≤ D.sa := Rat.cast_nonneg.mpr hsa
+  have hds' : (0 : ℝ) < D.ds := Rat.cast_pos.mpr hds
+  have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hsb; push_cast at this; exact this
   obtain ⟨haL, haH⟩ := primeThreeOffset_mem
   have haH1 : (aHiQ : ℝ) ≤ 3 / 5 := by norm_num [aHiQ]
   have haL1 : (1 / 2 : ℝ) ≤ aLoQ := by norm_num [aLoQ]
   set s : ℝ := (D.sa : ℝ) + D.ds * ξ with hs_def
-  have hs0 : 0 < s := by have := mul_pos hds' hξ.1; linarith
-  have hs1 : s ≤ (1 - aHiQ) / 2 := by nlinarith [hξ.2]
+  have hs0 : 0 < s := by have := mul_pos hds' hξ.1; linarith only [hsa', hs_def, this]
+  have hs1 : s ≤ (1 - aHiQ) / 2 := by
+    have : (D.ds : ℝ) * ξ ≤ D.ds := mul_le_of_le_one_right hds'.le hξ.2.le
+    linarith only [hsb', hs_def, this]
   have hξc : ξ ∈ Icc (0 : ℝ) 1 := ⟨hξ.1.le, hξ.2.le⟩
   set a := primeThreeOffset
   -- branch facts
   have hb0 := branch_facts (hbr 0 (by norm_num)) hξc (x := s)
-    (by simp only [P4Sub.lowAff]; exact le_refl _) (by linarith)
+    (by simp only [P4Sub.lowAff]; exact le_refl _) (by linarith only [hs1, haL, haL1, haH])
   have hb1 := branch_facts (hbr 1 (by norm_num)) hξc (x := 1 - s)
-    (by simp only [P4Sub.lowAff]; push_cast; linarith) (by linarith)
+    (by simp only [P4Sub.lowAff]; push_cast; linarith only [hs_def]) (by linarith only [hs0])
   have hb2 := branch_facts (hbr 2 (by norm_num)) hξc (x := a + s)
-    (by simp only [P4Sub.lowAff]; push_cast; linarith) (by linarith)
+    (by simp only [P4Sub.lowAff]; push_cast; linarith only [hs_def, haL])
+    (by linarith only [hs1, haH, haH1])
   have hb3 := branch_facts (hbr 3 (by norm_num)) hξc (x := 1 - a - s)
-    (by simp only [P4Sub.lowAff]; push_cast; linarith) (by linarith)
+    (by simp only [P4Sub.lowAff]; push_cast; linarith only [hs_def, haH])
+    (by linarith only [hs0, haL, haL1])
   set d0 := (S.c0 : ℝ) + qeval (D.VtB 0) ξ
   set d1 := (S.c0 : ℝ) + qeval (D.VtB 1) ξ
   set d2 := (S.c0 : ℝ) + qeval (D.VtB 2) ξ
@@ -269,7 +274,7 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
       tridiag4Form (S.c0 + vTrue s) (S.c0 + vTrue (1 - s)) (S.c0 + vTrue (a + s))
         (S.c0 + vTrue (1 - a - s)) S.e2 S.e3 (G s) (G (1 - s)) (G (a + s)) (G (1 - a - s)) := by
     unfold tridiag4Form
-    nlinarith [mul_le_mul_of_nonneg_right hb0.2 (sq_nonneg (G s)),
+    linarith only [mul_le_mul_of_nonneg_right hb0.2 (sq_nonneg (G s)),
       mul_le_mul_of_nonneg_right hb1.2 (sq_nonneg (G (1 - s))),
       mul_le_mul_of_nonneg_right hb2.2 (sq_nonneg (G (a + s))),
       mul_le_mul_of_nonneg_right hb3.2 (sq_nonneg (G (1 - a - s)))]
@@ -288,7 +293,7 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
     (S.phiFn m s - v0) (S.phiFn m (1 - s) - v1) (S.phiFn m (a + s) - v2)
     (S.phiFn m (1 - a - s) - v3)
   obtain ⟨hm0, hm1, hm2, hm3⟩ := linQ_mw (S := S) (D := D) m ξ
-  have hs14 : s ≤ 1 / 4 := by linarith
+  have hs14 : s ≤ 1 / 4 := by linarith only [hs1, haL, haL1, haH]
   have hz0 := sq_source_pert_le (D := D) hS m (b := 0) (by norm_num) hξc hs0.le hs14
   have hz1 := sq_source_pert_le (D := D) hS m (b := 1) (by norm_num) hξc hs0.le hs14
   have hz2 := sq_source_pert_le (D := D) hS m (b := 2) (by norm_num) hξc hs0.le hs14
@@ -316,7 +321,9 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
         G (1 - a - s) * (v3 + (S.phiFn m (1 - a - s) - v3))) := by
     simp only [f4Integrand, a]; ring
   rw [hf]
-  nlinarith [hsq, hmono, hz0, hz1, hz2, hz3]
+  have hz_sum := mul_le_mul_of_nonneg_left
+    (add_le_add (add_le_add (add_le_add hz0 hz1) hz2) hz3) (by positivity : (0 : ℝ) ≤ 16 + 10 ^ 22)
+  linarith only [hsq, hmono, hz_sum]
 
 /-! ### Integration in the unit variable -/
 
@@ -406,11 +413,12 @@ theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (h
   have hD' := hD
   simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD'
   obtain ⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, -⟩, -⟩, -⟩, -⟩, hdom⟩, hpert⟩ := hD'
-  have hds' : (0 : ℝ) < D.ds := by exact_mod_cast hds
-  have hsa' : (0 : ℝ) ≤ D.sa := by exact_mod_cast hsa
-  have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by exact_mod_cast hsb
-  have hf := intervalIntegrable_f4Integrand (S := S) hGc hiPot m hsa' (by linarith)
-    (by linarith [primeThreeOffset_mem.2])
+  have hds' : (0 : ℝ) < D.ds := Rat.cast_pos.mpr hds
+  have hsa' : (0 : ℝ) ≤ D.sa := Rat.cast_nonneg.mpr hsa
+  have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by
+    have := Rat.cast_le (K := ℝ).mpr hsb; push_cast at this; exact this
+  have hf := intervalIntegrable_f4Integrand (S := S) hGc hiPot m hsa' (by linarith only [hsa', hds'])
+    (by linarith only [hsb', primeThreeOffset_mem.2])
   have hlow := integral_ge_of_unit_minorant (continuous_low (S := S) (D := D) m) hds' hf
     (fun ξ hξ => low_le hS hD G m hξ)
   rw [integral_low hD] at hlow

@@ -149,7 +149,7 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
   have hmono : tridiag2Form d0 d1 S.e2 (G u) (G (1 - u)) ≤
       tridiag2Form (S.c0 + vTrue u) (S.c0 + vTrue (1 - u)) S.e2 (G u) (G (1 - u)) := by
     unfold tridiag2Form
-    nlinarith [mul_le_mul_of_nonneg_right hb0.2 (sq_nonneg (G u)),
+    linarith only [mul_le_mul_of_nonneg_right hb0.2 (sq_nonneg (G u)),
       mul_le_mul_of_nonneg_right hb1.2 (sq_nonneg (G (1 - u)))]
   set w0 := linQ (D.WB 0) m ξ
   set w1 := linQ (D.WB 1) m ξ
@@ -176,7 +176,8 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
       2 * (G u * (v0 + (S.phiFn m u - v0)) + G (1 - u) * (v1 + (S.phiFn m (1 - u) - v1))) := by
     simp only [f2Integrand]; ring
   rw [hf]
-  nlinarith [hsq, hmono, hz0, hz1]
+  have hz_sum := mul_le_mul_of_nonneg_left (add_le_add hz0 hz1) (by positivity : (0 : ℝ) ≤ 16 + 10 ^ 22)
+  linarith only [hsq, hmono, hz_sum]
 
 private theorem sum_sym_avg {K : ℕ} (X : Fin K → Fin K → ℝ) (m : Fin K → ℝ) :
     ∑ i : Fin K, ∑ j : Fin K, ((X i j + X j i) / 2) * m i * m j =
