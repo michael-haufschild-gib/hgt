@@ -27,7 +27,7 @@ theorem finite_frame_energy (v : ι → E) (x : E) :
   rw [frameOperator_apply Summable.of_finite, tsum_fintype, inner_sum, Complex.re_sum]
   apply sum_congr rfl
   intro i _
-  rw [inner_smul_right, ← inner_conj_symm (v i) x, Complex.mul_conj,
+  rw [inner_smul_right, ← inner_conj_symm x (v i), Complex.mul_conj,
     Complex.ofReal_re, Complex.normSq_eq_norm_sq]
 
 /-- Zero frame output is equivalent to every individual reading vanishing. -/
@@ -48,7 +48,8 @@ theorem finite_frame_eq_zero_iff (v : ι → E) (x : E) :
 theorem finite_frame_ker (v : ι → E) :
     (frameOperator v).ker = (Submodule.span ℂ (Set.range v))ᗮ := by
   ext x
-  rw [LinearMap.mem_ker, finite_frame_eq_zero_iff, Submodule.mem_orthogonal]
+  change frameOperator v x = 0 ↔ x ∈ (Submodule.span ℂ (Set.range v))ᗮ
+  rw [finite_frame_eq_zero_iff, Submodule.mem_orthogonal]
   constructor
   · intro h u hu
     induction hu using Submodule.span_induction with
@@ -62,10 +63,18 @@ theorem finite_frame_ker (v : ι → E) :
 /-- The frame trace counts seed mass, retaining multiplicities in the family. -/
 theorem finite_frame_trace (v : ι → E) :
     opTrace (frameOperator v) = ((∑ i, ‖v i‖ ^ 2 : ℝ) : ℂ) := by
-  have h := opTrace_frameOperator_comp (α := v) Summable.of_finite
-    (ContinuousLinearMap.id ℂ E)
-  simpa only [comp_id, id_apply, tsum_fintype, inner_self_eq_norm_sq_to_K,
-    Complex.ofReal_sum, Complex.ofReal_pow] using h
+  calc
+    opTrace (frameOperator v) =
+        opTrace (frameOperator v ∘L ContinuousLinearMap.id ℂ E) := by rw [comp_id]
+    _ = ∑' i, inner ℂ (v i) (ContinuousLinearMap.id ℂ E (v i)) :=
+      opTrace_frameOperator_comp Summable.of_finite _
+    _ = ∑ i, ((‖v i‖ ^ 2 : ℝ) : ℂ) := by
+      rw [tsum_fintype]
+      apply sum_congr rfl
+      intro i _
+      rw [id_apply, inner_self_eq_norm_sq_to_K, Complex.ofReal_pow]
+      rfl
+    _ = _ := by push_cast; rfl
 
 section Orbit
 variable {G : Type*} [Group G] [Fintype G]
@@ -87,7 +96,9 @@ theorem orbitFrame_equivariant (ρ : G →* (E ≃ₗᵢ[ℂ] E)) (e x : E) (h :
   rw [← hreindex]
   apply sum_congr rfl
   intro g _
-  simp only [Equiv.mulLeft_apply, map_mul]
+  change inner ℂ (ρ (h * g) e) (ρ h x) • ρ (h * g) e =
+    ρ h (inner ℂ (ρ g e) x • ρ g e)
+  simp only [map_mul]
   change inner ℂ (ρ h (ρ g e)) (ρ h x) • ρ h (ρ g e) =
     ρ h (inner ℂ (ρ g e) x • ρ g e)
   rw [LinearIsometryEquiv.inner_map_map, map_smul]

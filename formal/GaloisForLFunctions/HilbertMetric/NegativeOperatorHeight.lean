@@ -17,7 +17,7 @@ open ContinuousLinearMap Matrix Finset
 open GaloisForLFunctions.HTGeometry.PaperNegativePart
 
 namespace HilbertMetric
-variable {ι E F : Type*} [Fintype ι] [DecidableEq ι]
+variable {ι E F : Type*}
   [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
   [NormedAddCommGroup F] [InnerProductSpace ℂ F] [CompleteSpace F]
 
@@ -27,6 +27,8 @@ theorem finiteGram_negAdjoint (T : E →L[ℂ] F) (v : ι → E) :
   ext i j
   change inner ℂ (-(T.adjoint (T (v i)))) (v j) = -inner ℂ (T (v i)) (T (v j))
   rw [inner_neg_left, adjoint_inner_left]
+
+variable [Fintype ι]
 
 /-- Every radical vector is exactly an input combination killed by `T`. -/
 theorem finiteGram_negAdjoint_radical (T : E →L[ℂ] F) (v : ι → E) (c : ι → ℂ) :
@@ -39,6 +41,8 @@ theorem finiteGram_negAdjoint_rank (T : E →L[ℂ] F) (v : ι → E) :
     (finiteGram (-(T.adjoint ∘L T)) v).rank =
       Module.finrank ℂ (Submodule.span ℂ (Set.range fun i => T (v i))) := by
   rw [finiteGram_negAdjoint, negativeHeightGram_rank]
+
+variable [DecidableEq ι]
 
 /-- Signed height determinants are nonnegative, including singular families. -/
 theorem finiteGram_negAdjoint_det_nonneg (T : E →L[ℂ] F) (v : ι → E) :

@@ -35,3 +35,5 @@ import GaloisForLFunctions.KodairaParshinAbc.Legendre.PolynomialDescent
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.RealBranchGeometry
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.DeuringZeros
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.OrdinaryRootLifts
+import GaloisForLFunctions.KodairaParshinAbc.Legendre.EllipticMultiplicity
+import GaloisForLFunctions.KodairaParshinAbc.Periods.ProjectiveHypersurfacePeriods

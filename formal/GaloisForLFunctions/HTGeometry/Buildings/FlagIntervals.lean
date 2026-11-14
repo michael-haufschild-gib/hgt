@@ -37,7 +37,7 @@ def flagIntervalInsideOrderIso (A B : Submodule K V) :
       ⟨A ⊓ B, show A ⊓ B ≤ B from inf_le_right⟩ := by
     apply Subtype.ext
     exact (Submodule.map_comap_subtype B A).trans (inf_comm B A)
-  have hB : B.mapIic ⊤ = ⟨B, le_rfl⟩ := B.mapIic.map_top
+  have hB : B.mapIic ⊤ = ⟨B, show B ≤ B from le_rfl⟩ := B.mapIic.map_top
   refine (OrderIso.subtypeCongr B.mapIic
     (fun U => A.comap B.subtype < U ∧ U < ⊤)
     (fun U : Set.Iic B => A ⊓ B < U.val ∧ U.val < B) ?_).trans ?_

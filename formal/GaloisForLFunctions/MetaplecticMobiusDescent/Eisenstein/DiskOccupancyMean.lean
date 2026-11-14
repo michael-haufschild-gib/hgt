@@ -1,5 +1,6 @@
 import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy
 import GaloisForLFunctions.MetaplecticMobiusDescent.TheCubicCuspPeriodLattice
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Mean disk occupancy from cubic period unfolding
@@ -89,7 +90,30 @@ theorem exists_low_occupancy_of_area_lt {r : ℝ} (hr : 0 ≤ r) (k : ℕ)
     fun z => Nat.le_of_not_gt (fun hz => h ⟨z, hz⟩)
   exact (not_le_of_gt harea) (uniform_occupancy_area_le hr k hk)
 
+/-- The circumscribed regular hexagon has strictly greater area than the unit disk. -/
+private theorem pi_lt_two_sqrt_three : Real.pi < 2 * Real.sqrt 3 := by
+  have ht := Real.lt_tan (show 0 < Real.pi / 6 by positivity)
+    (show Real.pi / 6 < Real.pi / 2 by linarith only [Real.pi_pos])
+  rw [Real.tan_pi_div_six] at ht
+  have hs : 0 < Real.sqrt 3 := by positivity
+  have hh := (lt_div_iff₀ hs).mp ht
+  have hsq := Real.sq_sqrt (by positivity : (0 : ℝ) ≤ 3)
+  by_contra h
+  have hle : 2 * Real.sqrt 3 ≤ Real.pi := le_of_not_gt h
+  have hm := mul_le_mul_of_nonneg_right hle hs.le
+  nlinarith only [hh, hsq, hm]
+
+/-- At the packing-critical radius, some disk contains strictly fewer than `k` points. -/
+theorem exists_low_occupancy_critical (k : ℕ) (hk : 0 < k) :
+    ∃ z : ℂ, (points z (Real.sqrt k / 2)).card < k := by
+  apply exists_low_occupancy_of_area_lt (by positivity) k
+  have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+  have hm := mul_lt_mul_of_pos_right pi_lt_two_sqrt_three hkR
+  rw [div_pow, Real.sq_sqrt (Nat.cast_nonneg k)]
+  nlinarith only [hm]
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy
 
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.lintegral_occupancy
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.exists_low_occupancy_of_area_lt
+#print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.exists_low_occupancy_critical

@@ -25,8 +25,7 @@ def splitTracePairing (A B : Matrix (Fin 2) (Fin 2) ℚ) : ℚ :=
 /-- On the triangular plane the pairing sees only the diagonal coordinate. -/
 theorem upperTrace_pairing (a b c d : ℚ) :
     splitTracePairing (upperTrace a b) (upperTrace c d) = -(a * c) := by
-  simp [splitTracePairing, upperTrace, Matrix.trace, Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring
+  simp [splitTracePairing, upperTrace, Matrix.trace, Fin.sum_univ_two]
 
 /-- The exact radical is the strictly upper triangular, nilpotent line. -/
 theorem upperTrace_radical_iff (a b : ℚ) :
@@ -73,10 +72,29 @@ theorem upperTrace_fibre_gram (b : Fin 2 → ℚ) :
   funext i j
   rw [upperTrace_pairing, one_mul]
 
+/-- The Gram rank stays one even when the two matrices are independent. -/
+theorem upperTrace_fibre_gram_rank (b : Fin 2 → ℚ) :
+    (fun i j => splitTracePairing (upperTrace 1 (b i)) (upperTrace 1 (b j)) :
+      Matrix (Fin 2) (Fin 2) ℚ).rank = 1 := by
+  rw [upperTrace_fibre_gram, Matrix.rank_eq_finrank_span_cols]
+  change Module.finrank ℚ (Submodule.span ℚ
+    (Set.range (fun _ : Fin 2 => fun _ : Fin 2 => (-1 : ℚ)))) = 1
+  rw [Set.range_const]
+  apply finrank_span_singleton
+  intro hz
+  exact (neg_ne_zero.mpr one_ne_zero) (congrFun hz 0)
+
+/-- Every element of the invisible line is square-zero in the ambient matrix algebra. -/
+theorem upperTrace_radical_square_zero (b : ℚ) : upperTrace 0 b * upperTrace 0 b = 0 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [upperTrace, Matrix.mul_apply, Fin.sum_univ_two]
+
 #print axioms upperTrace_pairing
 #print axioms upperTrace_radical_iff
 #print axioms upperTrace_isotropic_iff
 #print axioms upperTrace_fibre_independent_iff
 #print axioms upperTrace_fibre_gram
+#print axioms upperTrace_fibre_gram_rank
+#print axioms upperTrace_radical_square_zero
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

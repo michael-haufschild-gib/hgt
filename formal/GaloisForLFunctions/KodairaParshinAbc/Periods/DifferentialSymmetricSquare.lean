@@ -16,9 +16,11 @@ namespace GaloisForLFunctions.KodairaParshinAbc.Periods
 
 variable {R A : Type*} [CommRing R] [CommRing A] [Algebra R A]
 
+/-- The second-order differential expression `a δ²f + b δf + cf`. -/
 def secondOrderD (δ : Derivation R A A) (a b c f : A) : A :=
   a * δ (δ f) + b * δ f + c * f
 
+/-- The symmetric-square expression after clearing the square of the leading coefficient. -/
 def symmetricSquareD (δ : Derivation R A A) (a b c f : A) : A :=
   a ^ 2 * δ (δ (δ f)) + 3 * a * b * δ (δ f) +
     (a * δ b + 2 * b ^ 2 - δ a * b + 4 * a * c) * δ f +

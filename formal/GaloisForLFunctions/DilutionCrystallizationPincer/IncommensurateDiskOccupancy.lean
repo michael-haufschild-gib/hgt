@@ -1,5 +1,5 @@
 import GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability
-import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy
+import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancyMean
 
 /-!
 # A single excluded centre obstructs an incommensurate crystal
@@ -45,7 +45,32 @@ theorem exists_low_occupancy_on_nonnorm_coset (α c : ℂ) (n : ℕ)
   have hmem : z ∈ centres r k := by rw [hall]; exact mem_univ _
   exact (not_le_of_gt hz) ((mem_centres_iff_card z r k).mp hmem)
 
+/-- The area average supplies the excluded centre needed by the arithmetic obstruction. -/
+theorem exists_low_occupancy_on_nonnorm_coset_of_area_lt (α c : ℂ) (n : ℕ)
+    (hnorm : ‖α‖ ^ 2 = n) (hn : ¬ (normSet n).Nonempty)
+    (r : ℝ) (hr : 0 ≤ r) (k : ℕ)
+    (harea : Real.pi * r ^ 2 < (k : ℝ) * (Real.sqrt 3 / 2)) :
+    ∃ a : O, (points (c + α * ringComplex a) r).card < k := by
+  obtain ⟨z, hz⟩ := exists_low_occupancy_of_area_lt hr k harea
+  exact exists_low_occupancy_on_nonnorm_coset α c n hnorm hn r k z hz
+
+/-- At a nonnorm packing-critical scale, every triangular coset has a deficient disk. -/
+theorem critical_nonnorm_coset_obstruction (α c : ℂ) (n : ℕ)
+    (hnorm : ‖α‖ ^ 2 = n) (hn : ¬ (normSet n).Nonempty) :
+    ∃ a : O, (points (c + α * ringComplex a) (Real.sqrt n / 2)).card < n := by
+  have hn0 : n ≠ 0 := by
+    intro h
+    subst n
+    apply hn
+    refine ⟨0, mem_normSet.mpr ?_⟩
+    change (0 : ℤ) ^ 2 - 0 * 0 + 0 ^ 2 = 0
+    ring
+  obtain ⟨z, hz⟩ := exists_low_occupancy_critical n (Nat.pos_of_ne_zero hn0)
+  exact exists_low_occupancy_on_nonnorm_coset α c n hnorm hn (Real.sqrt n / 2) n z hz
+
 end GaloisForLFunctions.DilutionCrystallizationPincer
 
 #print axioms GaloisForLFunctions.DilutionCrystallizationPincer.all_centres_iff_incommensurate_coset
 #print axioms GaloisForLFunctions.DilutionCrystallizationPincer.exists_low_occupancy_on_nonnorm_coset
+#print axioms GaloisForLFunctions.DilutionCrystallizationPincer.exists_low_occupancy_on_nonnorm_coset_of_area_lt
+#print axioms GaloisForLFunctions.DilutionCrystallizationPincer.critical_nonnorm_coset_obstruction
