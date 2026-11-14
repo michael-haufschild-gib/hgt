@@ -89,7 +89,8 @@ theorem mirror_diagonal (β : ℝ) (E : α → ℝ) (f : α → ℂ) :
   · subst b
     simp only [mirror, Matrix.diagonal_apply_eq, div_self (sqrt_weight_ne_zero β E a),
       one_mul]
-  · simp only [mirror, Matrix.diagonal_apply_ne hab, Matrix.diagonal_apply_ne (Ne.symm hab),
+  · simp only [mirror, Matrix.diagonal_apply_ne f hab,
+      Matrix.diagonal_apply_ne f (Ne.symm hab),
       mul_zero]
 
 end

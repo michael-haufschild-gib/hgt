@@ -56,6 +56,17 @@ theorem completedBianchiZeta_eq_gamma_product {s : ℂ} (hs : 0 < s.re) :
     gammaFactor_chi3D]
   ring
 
+/-- The entire normalization clears both poles, retaining its factor `1/2`. -/
+theorem xiBianchi_eq_gamma_product {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
+    xiBianchi s = s * (s - 1) / 2 *
+      ((3 : ℂ) ^ (s / 2) * (Complex.Gammaℝ s * Complex.Gammaℝ (s + 1)) *
+        (riemannZeta s * DirichletCharacter.LFunction chi3D s)) := by
+  have hs0 : s ≠ 0 := fun h => by simpa [h] using hs
+  have hxi : xiBianchi s = s * (s - 1) / 2 * completedBianchiZeta s := by
+    rw [xiBianchi, _root_.RHTower.xi_eq_half_mul hs0 hs1, completedBianchiZeta]
+    ring
+  rw [hxi, completedBianchiZeta_eq_gamma_product hs]
+
 /-- The primitive trivial Hecke character, with both poles and all completion factors retained. -/
 theorem thirdCyclotomic_primitive_hecke_completion
     (K : Type*) [Field K] [NumberField K] [IsCyclotomicExtension {3} ℚ K] :
@@ -112,6 +123,7 @@ theorem eisenstein_scattering_certificate :
 #print axioms gammaFactor_chi3D
 #print axioms chi3D_primitive_rootNumber
 #print axioms completedBianchiZeta_eq_gamma_product
+#print axioms xiBianchi_eq_gamma_product
 #print axioms thirdCyclotomic_primitive_hecke_completion
 #print axioms bianchiScatteringPhase_axis_eq_completedRatio
 #print axioms eisenstein_scattering_certificate

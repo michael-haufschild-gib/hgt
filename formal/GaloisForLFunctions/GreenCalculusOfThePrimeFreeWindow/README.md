@@ -302,6 +302,10 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
 - The transfer from an aperture to the windows inside it: floors, gaps, the excess of a step,
   its levels (`neutralWindow_floor_of_le_groundEnergy`, `overlapSchur_form_ge_of_floor`,
   `overlapSchurLevel_nonneg_of_floor`).
+- The way back from the windows to the aperture through the comb: block averages with a paid
+  residual (`combForm_ge_blockMean_add_residual`), windows for a test
+  (`exists_window_inside_aperture`), samples (`mul_integral_sq_le_zeroSum_of_eventually`), with a
+  bounded contact added (`abs_doubleContact_sub_le`, `pencilWeilForm_ge_of_stepFloor`).
 
 ## 7. Questions and open topics
 
@@ -400,8 +404,9 @@ The steps at the ratios `2.25, 2.53, 3.21` wait for the ground energies of their
 closed form of the Green kernel.
 
 **Success.** A step proved with a stated excess (reached for the first step, through the
-aperture); a proof of a step that uses the middle and fails for the sign twin (open); an
-excess that sums below the binding energy along the ladder (open, and RH).
+aperture); a proof of a step that fails for the sign twin (reached for the first step in
+Weil's form: every proof does, P17); a proof of a step from the middle (open); an excess that
+sums below the binding energy along the ladder (open, and RH).
 
 **What a contribution must be.**
 - **C1** Uniform in the block size, or monotone along the tower.

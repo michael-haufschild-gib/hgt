@@ -64,7 +64,7 @@ theorem integrable_gaussianAcceleration_quadratic_iff (s a : ℝ) :
     IntegrableOn (fun x => gaussianAccelerationKernel (Real.exp s) x *
       Real.exp (a * x ^ 2)) (Ioi 0) ↔ a < (4 * Real.exp s)⁻¹ := by
   simp_rw [gaussianAccelerationKernel_mul_quadratic]
-  rw [IntegrableOn, integrable_const_mul_iff (by positivity),
+  rw [IntegrableOn, integrable_const_mul_iff (isUnit_iff_ne_zero.mpr (by positivity)),
     ← IntegrableOn, integrableOn_Ioi_exp_neg_mul_sq_iff]
   exact sub_pos
 
@@ -77,14 +77,14 @@ theorem gaussianAcceleration_quadratic (s a : ℝ) :
   have ht : Real.exp s ≠ 0 := (Real.exp_pos s).ne'
   have hq : (4 * Real.exp s)⁻¹ - a =
       (1 - 4 * Real.exp s * a) / (4 * Real.exp s) := by
-    field_simp
+    field_simp [ht]
   rw [hq, div_div]
   have he : Real.pi * (4 * Real.exp s) / (1 - 4 * Real.exp s * a) =
       (Real.pi * Real.exp s) * (4 / (1 - 4 * Real.exp s * a)) := by ring
   rw [he, Real.sqrt_mul (by positivity), Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 4)]
-  norm_num only [Real.sqrt_ofNat]
+  rw [show Real.sqrt 4 = 2 by norm_num]
   have hs : Real.sqrt (Real.pi * Real.exp s) ≠ 0 := by positivity
-  field_simp
+  field_simp [hs]
 
 /-- Every positive-time kernel has total mass one on the positive ray. -/
 theorem integral_gaussianAccelerationKernel (s : ℝ) :
@@ -103,8 +103,9 @@ theorem gaussianAcceleration_gaussian (s r : ℝ) :
 theorem integrable_gaussianAcceleration_gaussian (s r : ℝ) :
     IntegrableOn (fun x => gaussianAccelerationKernel (Real.exp s) x *
       RiemannGaussian.translatedGaussian (r ^ 2) 0 x) (Ioi 0) := by
-  apply (integrable_gaussianAcceleration_quadratic_iff s (-(r ^ 2))).mpr
-  exact lt_of_le_of_lt (neg_nonpos.mpr (sq_nonneg r)) (by positivity)
+  have h := (integrable_gaussianAcceleration_quadratic_iff s (-(r ^ 2))).mpr
+    (lt_of_le_of_lt (neg_nonpos.mpr (sq_nonneg r)) (by positivity))
+  simpa only [RiemannGaussian.translatedGaussian, sub_zero] using h
 
 end
 

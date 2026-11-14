@@ -76,6 +76,20 @@ Window `(R, 2D+b]`, `D = R+a`: ends `E₁ = (R, D]`, `E₂ = (2D, 2D+b]`.
   `≤ ρ²/2`: if `log(ρ²/2) < 2A`, `ρ²/2 < Q + 1`, `c ≤ E(A)`, the excess of the `ρ`-steps
   vanishes at every level `≥ −c`. First step: `ρ = 103/50`, `A = 1881/5000`
   (`log(10609/5000) < 0.7524`), odd floor `1/2000`, even floor `1/50000` (WindowTowerOfSpecZ).
+- P16 the way back: a floor `c` on the step packets of `(R, R+J]` is, up to `η`, a floor on the
+  block functions of the comb `(RB, (R+J)B]`, `B → ∞`; for `log R ≥ C_Q²/η + κ` the form of a
+  divisor is `≥` the form of its block averages `− η·mass + κ·mass(rest)`, so the floor passes
+  to every divisor; the samples of a `C²` packet at scale `rB` live on the comb of a window
+  `(3r, 3r+J]` inside the aperture; comb form → sum over the zeros. Hence
+  `c ≤ E(A) ⟺` floor on the step packets of all windows inside `A` at all block sizes
+  (`Q ≥ e^{2A}`), and `E(A) ≥ 0 ⟺` Weil's overlap law (`weilSchur ⪰ 0`) on those windows.
+- P17 pencil `𝔚_w = 𝔚 + (1 − w)C₂`: `C₂` on combs is `2 log 2 Σ c_m c_{2m}`, bounded by the mass
+  (`|ΔC₂| ≤ pΣs² + (q+1)Σ(c−s)²`, `pq = 1`), exactly the floor graph of two on block functions
+  of even block size, a Riemann sum of `∫f(u)f(u + log 2)` on samples. So P16 holds for every
+  `w`. Below `log 3`: Liouville twist of Weil's functional = pencil at `w = −1`; on windows of
+  ratio `≤ 3` every reweighting = pencil at `ω(2)`, independent of `Q ≥ 2`. The odd witness at
+  `181/500` (Liouville `< −(1/1000)∫F²`) inside aperture `37/100` (`e^{0.74} ≤ 3`,
+  `0.74 ≤ log(10609/5000)`) gives a first-step window with a step packet below `−1/1000`.
 
 ## Modules
 Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper card
@@ -158,6 +172,19 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
    (`hermNegIndex_neutralWindow_firstStep`), gap `1/50000`, Green form with excess `1/50000`,
    dressed middle with one bound state, `schurStepExcess Q (103/50) C = 0` for
    `C ≥ −1/50000`, `levelAt Q 1 = 0` (P15).
+16. (M) `TheGroundEnergyOfAnApertureIsTheFloorOfWeilsFormOnTheWindowsInsideIt` — `StepFloor`;
+   comb transfer (`combForm_ge_blockMean_add_residual`,
+   `eventually_combForm_ge_of_stepPacket_floor`, `mul_integral_sq_le_zeroSum_of_eventually`,
+   `exists_window_inside_aperture`); `WeilFloor.of_stepFloor`, `stepFloor_iff_le_groundEnergy`,
+   `le_groundEnergy_iff_forall_blockWindow_form_ge`, `exists_stepPacket_lt_of_groundEnergy_lt`,
+   `groundEnergy_nonneg_iff_forall_weilSchur_nonneg` (P16).
+17. (M) `TheFirstOverlapStepOfWeilsFormFailsForTheSignTwin` — `doubleContact`,
+   `abs_doubleContact_sub_le`, `two_log_two_mul_doubleContact_blockFunction`,
+   `tendsto_doubleContact_sample`; `pencilStepForm`, `pencilCombForm`, `pencilWeilForm`,
+   `PencilStepFloor`; `pencilWeilForm_ge_of_stepFloor`, `exists_stepPacket_pencil_lt`;
+   `packetForm_stepPacket_eq_two`, `reweightedPacketForm_stepPacket_eq_pencilStepForm`,
+   `re_weilFullFunctional_liouville_eq_pencilWeilForm`, `exists_window_signTwin_pencil_lt`,
+   `exists_firstStep_window_signTwin_lt` (P17).
 
 ## Status of the questions
 - Q1 sliver blocks: answered. `G_D = −(Σw)²/(D|N(1,1)|) + positive`; on slivers and charge-free
@@ -169,27 +196,29 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
   (M14); it does not go through bounds for the Green matrix. Reductions inside the calculus
   (coupling `≤ 1/5000` M4, dipole M8, dressed middle M11, a priori gap M13) stay unproved by
   their own means. Perturbation from the certified range reaches ends of relative width
-  `exp(−6760003)` only (M12).
+  `exp(−6760003)` only (M12). In Weil's form the first step fails for the sign twin: some
+  first-step window carries a step packet below `−1/1000` for every `ω` with `ω(2) = −1` (M17).
 - Q4 excess: excess functions and envelopes (P), additive loss law (M2); thin steps: loss of
   the floor `≤ B²/log(1/δ)` (M12), not summable along a chain; gap = margin (M13); excess of
   the `ρ`-steps is zero down to level `−c` while `ρ²/2` lies inside an aperture of ground
-  energy `≥ c` (M15); RH ⟺ a priori gap of the bound windows (M14).
+  energy `≥ c` (M15); RH ⟺ a priori gap of the bound windows (M14); in Weil's normal form a
+  step at every block size ⟺ sign of the ground energy of its aperture (M16).
 - Q5 closed form: open. The continuum form is `log|x| + log|p|` on an interval of ratio two, a
   truncated convolution in the multiplicative variable with the digamma symbol (infinitely many
   poles); in the multiplicative variable the kernel is the finite part of
   `½[1/|x−y| + 1/(x+y)]`, a regional logarithmic Laplacian; no closed form found. Normal
   forms: two channels, charge formula, pole matrix (M10).
 
-## Open after M15
+## Open after M17
 - A proof of a step through the Green matrix of the middle (coupling bound, dipole sign or a
   priori gap), not through the aperture.
-- Sign of the dipole at the first step (the sign twin has a Liouville-negative odd test at
-  aperture `181/500`; the index of the twin's neutral windows is not decided by it).
+- Neutral part of the sign twin on the first step: a second negative square? (M17 decides
+  Weil's form; the odd witness has uncontrolled charge.)
 - Later steps (`ρ = 2.25, 2.53, 3.21`): ground energies of the apertures `½ log(ρ²/2)`;
   certificates at larger apertures (A140), outside the calculus.
-- Converse at one aperture: does one negative square of the neutral windows inside an aperture
-  at every block size give `E(A) ≥ 0`? (Known for Weil's form of the step packets; the pole
-  plane separates the two.)
+- Converse at one aperture for the neutral part: does one negative square of the neutral
+  windows inside an aperture at every block size give `E(A) ≥ 0`? (Holds for Weil's form, M16;
+  the pole plane separates the two.)
 - A priori gap of a bound window; wide ends; continuum object and closed form.
 
 ## Ideas not yet done
@@ -204,3 +233,4 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
 - 2026-11-14 — modules 10, 11 formalized; README rewritten as the foundational document.
 - 2026-11-14 — module 11 extended to ends `16a ≤ R`, `8b ≤ R + a`; modules 12, 13 formalized.
 - 2026-11-14 — modules 14, 15 formalized: ground energy of an aperture as gap and excess; first step at every block size.
+- 2026-11-14 — modules 16, 17 formalized: ground energy = floor of Weil's form on the windows inside an aperture; first step of Weil's form fails for the sign twin.

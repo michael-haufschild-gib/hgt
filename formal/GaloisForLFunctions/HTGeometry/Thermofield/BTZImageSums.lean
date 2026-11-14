@@ -135,6 +135,17 @@ theorem summable_btzDoubleImages (b a t x : ℝ) :
   rw [summable_prod_of_nonneg (fun _ => (btzKernel_pos _ _).le)]
   exact ⟨fun _ => summable_btzSpatialImages _ _ _, summable_longStringImages _ _ _ _⟩
 
+/-- Exchanging time and space also exchanges their image lattices. -/
+theorem longStringImages_swap (b a t x : ℝ) :
+    longStringImages b a t x = longStringImages a b x t := by
+  unfold longStringImages btzSpatialImages
+  rw [← (summable_btzDoubleImages b a t x).tsum_comm]
+  apply tsum_congr
+  intro n
+  apply tsum_congr
+  intro m
+  exact btzKernel_swap _ _
+
 theorem longStringImages_pos (b a t x : ℝ) : 0 < longStringImages b a t x := by
   apply (btzSpatialImages_pos a (t + Real.exp b * (0 : ℤ)) x).trans_le
   exact (summable_longStringImages b a t x).le_tsum 0
@@ -156,12 +167,8 @@ theorem longStringImages_periodic (b a x : ℝ) :
 
 /-- Every nonnegative integer multiple of the period is an exact return. -/
 theorem longStringImages_returns (b a x : ℝ) (n : ℕ) :
-    longStringImages b a ((n : ℝ) * Real.exp b) x = longStringImages b a 0 x := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [Nat.cast_add, Nat.cast_one, add_mul, one_mul,
-      longStringImages_periodic b a x, ih]
+    longStringImages b a ((n : ℝ) * Real.exp b) x = longStringImages b a 0 x :=
+  (longStringImages_periodic b a x).nat_mul_eq n
 
 /-- The convergent temporal completion cannot share the spatial correlator's
 late-time decay: positive exact returns occur arbitrarily late. -/
@@ -199,6 +206,7 @@ end GaloisForLFunctions.HTGeometry.Thermofield
 #print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_periodic
 #print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_longStringImages
 #print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_btzDoubleImages
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_swap
 #print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_pos
 #print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_periodic
 #print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_returns

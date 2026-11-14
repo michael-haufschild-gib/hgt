@@ -118,10 +118,14 @@ omit [Nonempty α] in
 /-- The exact mean-return limit exists for every finite Gibbs spectrum. -/
 theorem partitionReturnMean_tendsto (β : ℝ) (E : α → ℝ) :
     Tendsto (partitionReturnMean β E) atTop (𝓝 (returnPlateau β E : ℂ)) := by
-  simpa only [partitionReturnMean, returnPlateau, finiteSpectralSurvivalFidelityMean,
-    finiteSpectralSurvivalFidelity, survival_eq_partition_ratio, pow_one] using
-    finiteSpectralSurvivalFidelityMean_tendsto_collisionMass
-      (finiteGibbsStateWeight β E) E 1
+  have heq : partitionReturnMean β E =
+      finiteSpectralSurvivalFidelityMean (finiteGibbsStateWeight β E) E 1 := by
+    funext T
+    simp only [partitionReturnMean, finiteSpectralSurvivalFidelityMean,
+      finiteSpectralSurvivalFidelity, survival_eq_partition_ratio, pow_one]
+  rw [heq]
+  exact finiteSpectralSurvivalFidelityMean_tendsto_collisionMass
+    (finiteGibbsStateWeight β E) E 1
 
 /-- Finite thermal spectra cannot lose all mean return at late times. -/
 theorem partitionReturnMean_not_tendsto_zero (β : ℝ) (E : α → ℝ) :

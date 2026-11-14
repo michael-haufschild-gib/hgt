@@ -59,9 +59,11 @@ theorem not_continuesAcross_iff_affine_coefficients_subsingleton
   · intro h hg
     have hzero : (0 : ℂ) ∈
         {c : ℂ | ContinuesAcross (fun w => (0 : ℂ) + c * g w) D z} := by
-      simpa only [zero_mul, zero_add] using S.zero_mem
+      change ContinuesAcross (fun w => 0 + 0 * g w) D z
+      exact ⟨fun _ => 0, analyticAt_const, Filter.Eventually.of_forall fun _ => by simp⟩
     have hone : (1 : ℂ) ∈
         {c : ℂ | ContinuesAcross (fun w => (0 : ℂ) + c * g w) D z} := by
+      change ContinuesAcross (fun w => 0 + 1 * g w) D z
       simpa only [one_mul, zero_add] using hg
     exact zero_ne_one (h (fun _ => 0) hzero hone)
 
@@ -87,8 +89,8 @@ theorem affine_continuation_coefficients_classification
       simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
       ring
     · right; left
-      exact ⟨c, ((not_continuesAcross_iff_affine_coefficients_subsingleton g D z).mp hg f)
-        .eq_singleton_of_mem hc⟩
+      have hs := (not_continuesAcross_iff_affine_coefficients_subsingleton g D z).mp hg f
+      exact ⟨c, hs.eq_singleton_of_mem hc⟩
   · exact Or.inl (not_nonempty_iff_eq_empty.mp hC)
 
 /-- A continuing germ has a representative on an open neighborhood. -/
@@ -109,8 +111,9 @@ theorem continuesAcross_iff_open_representative (f : ℂ → ℂ) (D : Set ℂ) 
       exact hWsub hw.1.2 hw.2
   · rintro ⟨U, hU, hzU, F, hF, heF⟩
     refine ⟨F, hF.analyticOnNhd hU z hzU, ?_⟩
-    filter_upwards [self_mem_nhdsWithin,
-      (hU.mem_nhds hzU).filter_mono nhdsWithin_le_nhds] with w hwD hwU
+    have heU : ∀ᶠ w in 𝓝[D] z, w ∈ U :=
+      (show ∀ᶠ w in 𝓝 z, w ∈ U from hU.mem_nhds hzU).filter_mono nhdsWithin_le_nhds
+    filter_upwards [self_mem_nhdsWithin, heU] with w hwD hwU
     exact heF ⟨hwU, hwD⟩
 
 /-- The locus of continuation is open, even when the original domain is arbitrary. -/

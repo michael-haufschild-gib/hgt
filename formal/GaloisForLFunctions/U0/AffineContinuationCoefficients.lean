@@ -34,8 +34,8 @@ theorem countable_affine_boundary_exceptions (f : ℂ → ℂ) :
 theorem affine_exact_cancellation (c : ℂ) (θ : ℝ) :
     {d : ℂ | U0NaturalBoundary.ContinuesAcross (fun z => -c * u0 z + d * u0 z)
       Ext (Complex.exp ((θ : ℂ) * I))} = {c} := by
-  apply (affine_continuation_coefficients_subsingleton (fun z => -c * u0 z) θ)
-    .eq_singleton_of_mem
+  have hs := affine_continuation_coefficients_subsingleton (fun z => -c * u0 z) θ
+  apply hs.eq_singleton_of_mem
   refine ⟨fun _ => 0, analyticAt_const, Filter.Eventually.of_forall fun z => ?_⟩
   ring
 
