@@ -25,8 +25,8 @@ private theorem transpose_metricJordanBlock_zero_eq_toeplitz (d : ℕ) :
     have hsub : i.val - j.val = 1 := by omega
     simp [metricJordanBlock, toeplitz_apply, hne, h, hle, hsub]
   · by_cases hle : j.val ≤ i.val
-    · have hsub : i.val - j.val ≠ 1 := by omega
-      simp [metricJordanBlock, toeplitz_apply, h, hle, hsub]
+    · have hsub : 1 ≠ i.val - j.val := by omega
+      simp [metricJordanBlock, toeplitz_apply, Polynomial.coeff_X, h, hle, hsub]
     · simp [metricJordanBlock, toeplitz_apply, h, hle]
 
 theorem factorialTaylorFrame_cyclic_conjugate (n : ℕ) :

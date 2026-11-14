@@ -61,7 +61,8 @@ theorem truncatedShift_mul (N a b : ℕ) :
   apply LinearMap.ext
   intro v
   funext i
-  change truncatedShift (R := R) N a (truncatedShift (R := R) N b v) i = truncatedShift (R := R) N (a + b) v i
+  change truncatedShift (R := R) N a (truncatedShift (R := R) N b v) i =
+    truncatedShift (R := R) N (a + b) v i
   simp only [truncatedShift_apply]
   by_cases ha : a ≤ i.val
   · simp only [dif_pos ha]
