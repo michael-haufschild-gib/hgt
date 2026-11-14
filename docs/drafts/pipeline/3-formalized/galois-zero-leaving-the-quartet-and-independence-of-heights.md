@@ -11,7 +11,9 @@
   (C) if `2cos(2γ log q) ∈ B` for one prime `q`, then `σ(p^{2β}) = p^{2 Re σρ}` for all `σ`, and
   the orbit lies in `Q(ρ)` iff every conjugate of `p^{2β}` is `p^{2β}` or `p^{2−2β}`;
   (D) for a finite set `S` of nonnegative heights and `a : ℝ → ℂ`: if `Σ_{t∈S} a_t T_t(m) = 0`
-  for all prime vectors `m`, then `a_t = 0` at every `t ∈ S` carrying a zero.
+  for all prime vectors `m`, then `a_t = 0` at every `t ∈ S` carrying a zero;
+  (E) if occupied heights `t_1, …, t_k` are linearly independent over `ℤ`, the trace functions
+  `T_{t_1}, …, T_{t_k}` are algebraically independent over `ℂ`.
 
 ## Goal
 
@@ -33,7 +35,12 @@ there; outside `Q(ρ)` the real part differs from `β, 1 − β` (`|Im|` fixed).
 reals. (D) `T_t = Σ_{copies q} χ_q` with `χ_q(m) = n_m^q`; distinct zeros give distinct
 characters (two primes); Dedekind independence makes `Σ_t a_t Σ_q δ_{χ_q} = 0`; the coefficient
 at `χ_ρ`, `Im ρ = t₀ ∈ S`, is `a_{t₀}·#copies(ρ)`, because no other nonnegative height carries
-`ρ`. ∎
+`ρ`. (E) `T_t` is the image of `τ_t = Σ_q [q]` under the injective algebra map `ℂ[ℂ] → functions`
+(Dedekind). Imaginary parts send `τ_t` to `N_t([t] + [−t])`; for `ℤ`-independent heights this is
+the image of `N_i(X_i + X_i⁻¹)` under the injective map of the Laurent ring `ℂ[ℤ^k]`. These are
+independent: if `P(N_i(X_i + X_i⁻¹)) = 0`, evaluating at `a ∈ (ℂ^×)^k` with
+`N_i(a_i + a_i⁻¹) = b_i` (a quadratic over `ℂ`) gives `P(b) = 0` for all `b`. Independence passes
+back along the maps. ∎
 
 ## Lean
 
@@ -42,8 +49,9 @@ at `χ_ρ`, `Im ρ = t₀ ∈ S`, is `a_{t₀}·#copies(ρ)`, because no other n
 | A, B | `AnOrbitLeavesItsQuartetOnlyThroughAnotherOffLineQuartetOfTheSameOrdinate` | `exists_offLine_of_not_mem_quartet`, `mem_quartet_of_offLine_unique`, `sum_prod_mem_of_offLine_unique` |
 | C | same | `primeTraceExponentHom_weight_of_conj`, `primeWeightValue_map_of_ordinate_mem`, `primeWeightValue_eq_iff`, `mem_quartet_iff_weight_conjugates` |
 | D | `TheTracesOfDistinctHeightsAreLinearlyIndependent` | `trace_coeff_eq_zero` |
+| E | `TheTracesOfRationallyIndependentHeightsAreAlgebraicallyIndependent` | `laurentEval`, `laurentEval_var`, `exists_ne_zero_mul_add_inv`, `laurent_algebraicIndependent`, `primeExponentAlgHom`, `primeExponentAlgHom_injective`, `primeExponentAlgHom_traceExponentSum`, `imagExponentAlgHom_traceExponentSum`, `primeTraceFunction_algebraicIndependent` |
 
 ## Open
 
-Algebraic (non-linear) relations among the traces of different heights; whether two off-line
-quartets can share an ordinate.
+Rational relations among the ordinates (the only source of algebraic relations across heights);
+whether two off-line quartets can share an ordinate.

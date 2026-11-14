@@ -28,7 +28,9 @@ theorem formalEulerOp_eulerPrimitive (f : PowerSeries ℂ) :
   | zero => simp [coeff_formalEulerOp, eulerPrimitive]
   | succ n =>
       have hn : ((n + 1 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
-      simp [coeff_formalEulerOp, eulerPrimitive, hn]
+      simp only [coeff_formalEulerOp, eulerPrimitive, coeff_mk, map_sub,
+        coeff_C, Nat.succ_ne_zero, if_false, sub_zero]
+      exact mul_div_cancel₀ _ hn
 
 /-- The only regular Euler-flat series are constants. -/
 theorem formalEulerOp_eq_zero_iff (f : PowerSeries ℂ) :

@@ -34,3 +34,4 @@ import GaloisForLFunctions.KodairaParshinAbc.Legendre.DeuringFrobenius
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.PolynomialDescent
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.RealBranchGeometry
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.DeuringZeros
+import GaloisForLFunctions.KodairaParshinAbc.Legendre.OrdinaryRootLifts

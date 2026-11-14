@@ -69,7 +69,7 @@ theorem isClosed_radius_centres (k : ℕ) :
     (isOpen_lt continuous_fst continuous_const).mem_nhds (by dsimp; linarith)
   have hcentre : {q : ℝ × ℂ | dist q.2 p.2 < 1} ∈ 𝓝 p :=
     (isOpen_lt (continuous_snd.dist continuous_const) continuous_const).mem_nhds
-      (by simp only [dist_self]; exact zero_lt_one)
+      (by change dist p.2 p.2 < 1; rw [dist_self]; exact zero_lt_one)
   have hnhds := Filter.inter_mem (Filter.inter_mem hrad hcentre)
     (hF.isOpen_compl.mem_nhds hpF)
   apply Filter.mem_of_superset hnhds
@@ -79,6 +79,7 @@ theorem isClosed_radius_centres (k : ℕ) :
     intro n hn
     apply (mem_points p.2 (p.1 + 2) n).mpr
     have ht := dist_triangle p.2 q.2 (ringComplex n)
+    change dist q.2 p.2 < 1 at hqz
     have hqz' : dist p.2 q.2 < 1 := by simpa only [dist_comm] using hqz
     change q.1 < p.1 + 1 at hqr
     linarith only [ht, hqz', hqr, hcov n hn]

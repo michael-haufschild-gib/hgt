@@ -80,9 +80,15 @@ theorem activeRepresentative_unique_minimizer (T : D →L[𝕜] W) (x : D) :
         norm_nonneg (y - activeRepresentative T x), hb]
     exact sub_eq_zero.mp (norm_eq_zero.mp hz)
 
+/-- Passing from a map to its Gram loses no information about minimal source representatives. -/
+theorem activeRepresentative_gram [FiniteDimensional 𝕜 W] (T : D →L[𝕜] W) :
+    activeRepresentative (gram T) = activeRepresentative T := by
+  simp only [activeRepresentative, ker_gram]
+
 #print axioms map_activeRepresentative
 #print axioms activeRepresentative_eq_iff
 #print axioms activeRepresentative_norm_split
 #print axioms activeRepresentative_unique_minimizer
+#print axioms activeRepresentative_gram
 
 end HilbertMetric.NomologicalCrossGram

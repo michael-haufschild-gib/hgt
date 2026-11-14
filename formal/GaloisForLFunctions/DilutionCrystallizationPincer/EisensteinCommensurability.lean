@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HilbertMetric.RotationalSubgroupRigidity
 import GaloisForLFunctions.HilbertMetric.SeparatedConfigurations
 import GaloisForLFunctions.MetaplecticMobiusDescent.EisensteinNearestPoint
+import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.LatticeSeparation
 import GaloisForLFunctions.FamilyContinuationTheory.EisensteinNormSquareDescent
 
 /-!
@@ -112,18 +113,6 @@ theorem exists_nat_mul_mem_of_mixedClosure_ne_top (α : ℂ) (hα : mixedClosure
   · exact hpair i j hlt hij
   · exact hpair j i hgt hij.symm
 
-/-- The integral norm makes distinct embedded algebraic integers at least unit distance apart. -/
-private theorem ring_norm_ge_one {a : O} (ha : a ≠ 0) : 1 ≤ ‖ringComplex a‖ := by
-  have hp := Coordinates.coordinate_norm_pos (Coordinates.coords a).1
-    (Coordinates.coords a).2 (by simpa only [Coordinates.eval_coords] using ha)
-  have hi : (1 : ℤ) ≤ (Coordinates.coords a).1 ^ 2 -
-      (Coordinates.coords a).1 * (Coordinates.coords a).2 + (Coordinates.coords a).2 ^ 2 := hp
-  have hr : (1 : ℝ) ≤ ((Coordinates.coords a).1 : ℝ) ^ 2 -
-      ((Coordinates.coords a).1 : ℝ) * (Coordinates.coords a).2 +
-      ((Coordinates.coords a).2 : ℝ) ^ 2 := by exact_mod_cast hi
-  rw [← Coordinates.complex_norm_eval_sq, Coordinates.eval_coords] at hr
-  nlinarith only [hr, norm_nonneg (ringComplex a)]
-
 /-- An integral multiple in the original lattice is also sufficient for discreteness. -/
 theorem mixedClosure_ne_top_of_nat_mul_mem (α : ℂ) {m : ℕ} (hm : 0 < m)
     {a : O} (ha : (m : ℂ) * α = ringComplex a) : mixedClosure α ≠ ⊤ := by
@@ -131,7 +120,7 @@ theorem mixedClosure_ne_top_of_nat_mul_mem (α : ℂ) {m : ℕ} (hm : 0 < m)
     isClosed_of_dist_separated zero_lt_one (by
       rintro x ⟨b, rfl⟩ y ⟨c, rfl⟩ hne
       rw [dist_eq_norm, ← map_sub]
-      exact ring_norm_ge_one (fun h => hne (congrArg ringComplex (sub_eq_zero.mp h))))
+      exact one_le_norm_ringComplex (fun h => hne (congrArg ringComplex (sub_eq_zero.mp h))))
   have hpre : IsClosed ((fun z : ℂ => (m : ℂ) * z) ⁻¹' range ringComplex) :=
     hclosed.preimage (continuous_const.mul continuous_id)
   have hsub : (mixedLattice α : Set ℂ) ⊆
@@ -155,7 +144,7 @@ theorem mixedClosure_ne_top_of_nat_mul_mem (α : ℂ) {m : ℕ} (hm : 0 < m)
     intro h
     rw [h, map_zero] at hb
     norm_num at hb
-  have hnorm := ring_norm_ge_one hb0
+  have hnorm := one_le_norm_ringComplex hb0
   rw [hb, norm_div, norm_one, show ‖(2 : ℂ)‖ = 2 from Complex.norm_natCast 2] at hnorm
   norm_num at hnorm
 

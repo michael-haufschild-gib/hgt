@@ -401,7 +401,9 @@ of the zeros of that height, `[E_t : B]` is even at occupied heights, and `E` is
 the `E_t`. An orbit leaves the quartet of `ρ` only through another off-line zero of the same
 absolute ordinate with a third real part; if the ordinate value lies in `B`, the conjugates of
 `p^{2β}` are the weight values of the orbit. The traces of distinct heights are linearly
-independent functions of the prime vector. For the zeros `U_t` of ordinate `t`, the product
+independent functions of the prime vector, and the traces of occupied heights that are linearly
+independent over `ℚ` are algebraically independent: an algebraic relation across heights forces
+a rational relation among the heights. For the zeros `U_t` of ordinate `t`, the product
 `A_{t,p}` of their reflection radicals satisfies `c(A_{t,p}) = (−1)^{|U_t|} A_{t,p}`, every
 automorphism multiplies it by `±1`, and `|U_t|` is odd iff `½ + it` is a zero; then for a
 suitable prime the product of the radicands of height `t` is a negative non-square of `B`. A lift
@@ -423,6 +425,7 @@ of `r` acts on every `A_{t,p}` as `c` does.
 [fibre layers](TheFibreFieldsOverThePrimeTracesAreFiniteGaloisAndGenerateTheSpectralField.lean),
 [leaving the quartet](AnOrbitLeavesItsQuartetOnlyThroughAnotherOffLineQuartetOfTheSameOrdinate.lean),
 [independence of heights](TheTracesOfDistinctHeightsAreLinearlyIndependent.lean),
+[algebraic independence](TheTracesOfRationallyIndependentHeightsAreAlgebraicallyIndependent.lean),
 [parity of the radicals](TheReflectionRadicalsOfOneHeightCarryTheParityOfItsZeros.lean))
 
 **Arithmetic groups and the heat cover.** Let `φ` be an injective map between the zeros of ξ
@@ -727,10 +730,11 @@ Each problem names its base. The calibration questions concern the finite equati
    counts the zeros of ordinate `±t`; the traces with `t ≥ 0`, `n ≥ 1` generate `B`. The finite
    layers: `F_ρ = B(2^ρ, 3^ρ)` is finite over `B` of degree the size of the orbit, and `E` is the
    compositum of the finite Galois layers `E_t = B(p^ρ : |Im ρ| = |t|)`. Across heights there is
-   no linear relation: the trace functions of distinct heights are linearly independent. Open:
-   algebraic relations among the traces of different heights (a transcendence question), and
-   the position of the prime values of one zero over the field of the traces of finitely many
-   heights. An equality of fields restates the definition;
+   no linear relation: the trace functions of distinct heights are linearly independent, and
+   those of `ℚ`-independent occupied heights are algebraically independent. So algebraic
+   relations across heights are reduced to rational relations among the ordinates (excluded by
+   the linear independence conjecture for the ordinates). Open: the position of the prime
+   values of one zero over the field of the traces of finitely many heights. An equality of fields restates the definition;
    a relation that is not a consequence of the definition and the functional equation is the
    objective.
 2. **Orbits and stabilizers over `B`.** Settled: membership is fixedness; the stabilizer of `ρ`
@@ -803,7 +807,7 @@ Calibration questions.
 | M6 | orbits that leave the quartet: reduced to a coincidence of ordinates of off-line quartets | formalized |
 | M7 | relations among the traces from the functional equation; half the generators | formalized |
 | M8 | relations among the traces of different heights: none linear | formalized |
-| M8′ | algebraic relations among the traces of different heights | open |
+| M8′ | algebraic relations across heights: none for `ℚ`-independent heights | formalized |
 | M9 | RH splits into the reflection lift and the weights; a lift is `c` where the weight is in `B` | formalized |
 | M10 | the source class of the radicands of one height (parity of its zeros) | formalized |
 | M10′ | a source-derived restriction that forces the lift of `r` to be `c` | open |
@@ -905,9 +909,9 @@ problems.
 - Any automorphism of `L/K` or `E/B` other than conjugation, or its exclusion.
 - The square-class relations among the widths of two fibres, and among the reflection
   discriminants of two zeros.
-- Algebraic relations among the mixed prime traces of different heights (linear relations are
-  excluded): the transcendence degree of the field of the traces of finitely many heights, and
-  the degree of the prime values of one zero over such a field.
+- Rational relations among the ordinates, the only possible source of algebraic relations among
+  trace functions across heights; the degree of the prime values of one zero over the field of
+  the traces of finitely many heights.
 - The image of `G` in the signed permutations of the reflection pairs of one height; for an
   isolated quartet the degree `[E_t : B] ∈ {2, 4, 8}` of the three orbit types.
 - Which of the weight, width and ordinate values of a zero with irrational real part lie in `B`;

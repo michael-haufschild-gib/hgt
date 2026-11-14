@@ -44,7 +44,9 @@ theorem primitiveCoefficient_multicover (k : ℕ) (w : ℕ → ℤ) (n : ℕ) :
   have h := (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq.mp
     (show ∀ m : ℕ, m > 0 → ∑ d ∈ m.divisors, (d : ℤ) ^ k * w d = multicover k w m
       from fun _ _ => rfl)) (n + 1) (Nat.succ_pos n)
-  rwa [Nat.sum_divisorsAntidiagonal' (fun a b => (μ a : ℤ) * multicover k w b)] at h
+  have h' : ∑ x ∈ (n + 1).divisorsAntidiagonal, μ x.1 * multicover k w x.2 =
+      (n + 1 : ℤ) ^ k * w (n + 1) := by simpa using h
+  rwa [Nat.sum_divisorsAntidiagonal' (fun a b => (μ a : ℤ) * multicover k w b)] at h'
 
 /-- All positive weights are uniquely determined by the complete coefficient sequence. -/
 theorem multicover_injective_positive (k : ℕ) (u v : ℕ → ℤ) :

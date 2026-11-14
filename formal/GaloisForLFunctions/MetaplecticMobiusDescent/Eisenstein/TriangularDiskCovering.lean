@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HilbertMetric.NonoverlappingCoverObstructions
 import GaloisForLFunctions.MetaplecticMobiusDescent.EisensteinNearestPoint
+import GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.LatticeSeparation
 
 /-!
 # Disk coverings of the actual Eisenstein lattice
@@ -39,6 +40,21 @@ theorem coverableSpacing_zero : CoverableSpacing 0 := by
   refine ⟨fun _ => 0, fun n => ?_, fun _ _ => Or.inl rfl⟩
   simp only [point, Complex.ofReal_zero, zero_mul, dist_self, NNReal.coe_one]
   exact zero_le_one
+
+/-- At spacing at least two, the lattice points themselves are admissible centres. -/
+theorem coverableSpacing_of_two_le {d : ℝ} (hd : 2 ≤ d) : CoverableSpacing d := by
+  have hd0 : 0 ≤ d := (by positivity : (0 : ℝ) ≤ 2).trans hd
+  refine ⟨point d, fun n => ?_, fun n m => ?_⟩
+  · simpa only [dist_self, NNReal.coe_one] using (zero_le_one : (0 : ℝ) ≤ 1)
+  · by_cases hnm : n = m
+    · exact Or.inl (congrArg (point d) hnm)
+    · right
+      simp only [NNReal.coe_one, mul_one, point, dist_eq_norm, ← mul_sub, norm_mul,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hd0]
+      have hnorm : 1 ≤ ‖ringComplex n - ringComplex m‖ := by
+        simpa only [dist_eq_norm] using one_le_dist_ringComplex hnm
+      have hmul := mul_le_mul_of_nonneg_left hnorm hd0
+      linarith only [hmul, hd]
 
 /-- Every obstruction is witnessed by finitely many actual algebraic integers. -/
 theorem noncoverableSpacing_iff_finset (d : ℝ) :
@@ -155,6 +171,7 @@ theorem round_noncoverable_configuration {ι : Type*} (p : ι → ℂ)
 end GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskCovering
 
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskCovering.isClosed_coverableSpacing
+#print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskCovering.coverableSpacing_of_two_le
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskCovering.coverableSpacing_norm_mul
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskCovering.covering_voronoi_bound
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskCovering.round_noncoverable_configuration

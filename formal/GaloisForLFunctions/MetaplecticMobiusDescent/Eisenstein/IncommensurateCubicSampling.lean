@@ -60,6 +60,16 @@ theorem eq_of_nonnorm_samples (α c : ℂ) (n : ℕ) (hnorm : ‖α‖ ^ 2 = n)
   eq_of_incommensurate_samples α c
     (mixedClosure_eq_top_of_norm_not_represented α n hnorm hn) f g hf hg hfper hgper hsample
 
+/-- Sampling on a square-root-of-two triangular coset has no arithmetic side condition. -/
+theorem eq_of_sqrt_two_samples (c : ℂ) (f g : ℂ → Y) (hf : Continuous f) (hg : Continuous g)
+    (hfper : ∀ p : periodLattice, Function.Periodic f (p : ℂ))
+    (hgper : ∀ p : periodLattice, Function.Periodic g (p : ℂ))
+    (hsample : ∀ a : O,
+      f (c + 3 * (Real.sqrt 2 : ℂ) * ringComplex a) =
+        g (c + 3 * (Real.sqrt 2 : ℂ) * ringComplex a)) : f = g :=
+  eq_of_incommensurate_samples (Real.sqrt 2 : ℂ) c mixedClosure_sqrt_two_eq_top
+    f g hf hg hfper hgper hsample
+
 /-- An extra incommensurate pair of triangular periods makes a continuous cubic-periodic function constant. -/
 theorem constant_of_nonnorm_periods (α : ℂ) (n : ℕ) (hnorm : ‖α‖ ^ 2 = n)
     (hn : ¬ (normSet n).Nonempty) (f : ℂ → Y) (hf : Continuous f)
@@ -73,4 +83,5 @@ theorem constant_of_nonnorm_periods (α : ℂ) (n : ℕ) (hnorm : ‖α‖ ^ 2 =
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
 
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein.eq_of_nonnorm_samples
+#print axioms GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein.eq_of_sqrt_two_samples
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein.constant_of_nonnorm_periods

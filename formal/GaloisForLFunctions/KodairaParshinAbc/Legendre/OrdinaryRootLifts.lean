@@ -27,7 +27,7 @@ theorem map_legendreOperator {R S : Type*} [CommRing R] [CommRing S]
     (legendreOperator f).map φ = legendreOperator (f.map φ) := by
   simp [legendreOperator, derivative_map]
 
-/-- Every Deuring residue root lifts in each of the corpus's nonarchimedean local models. -/
+/-- Every Deuring residue root lifts to the valuation ring of a nonarchimedean local field. -/
 theorem binomialSquare_localField_root_lift
     (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K]
     [IsNonarchimedeanLocalField K] (n : ℕ) [CharP (𝒪[K] ⧸ 𝓂[K]) (2 * n + 1)]
@@ -82,7 +82,8 @@ theorem ordinary_numerator_padic_lift (n : ℕ) [Fact (2 * n + 1).Prime]
     let f : (ℤ_[2 * n + 1])[X] := legendreOperator (binomialSquare n)
     have hmap : f.map PadicInt.toZMod =
         legendreOperator (binomialSquare n : (ZMod (2 * n + 1))[X]) := by
-      rw [f, map_legendreOperator, map_binomialSquare]
+      dsimp only [f]
+      rw [map_legendreOperator, map_binomialSquare]
     have hv : PadicInt.toZMod (f.eval a₀) = 0 := by
       have he : PadicInt.toZMod (f.eval a₀) =
           (f.map PadicInt.toZMod).eval (PadicInt.toZMod a₀) := by
@@ -108,8 +109,7 @@ theorem ordinary_numerator_padic_lift (n : ℕ) [Fact (2 * n + 1).Prime]
     exact huniq y hy.1 ((padic_residue_eq_iff y a₀).mp (hy.2.trans ha₀.symm))
   · exact Or.inl hroot
 
-/-- An ordinary numerator root has a unique formal inverse branch `B(y(T)) = T`.
-This realizes the simple-root deformation used by the corpus's local Galois constructions. -/
+/-- An ordinary numerator root has a unique formal inverse branch `B(y(T)) = T`. -/
 theorem ordinary_numerator_formal_inverse {K : Type*} [Field K]
     (n : ℕ) [CharP K (2 * n + 1)] (hn : 2 ≤ n) (z : K) :
     (legendreOperator (binomialSquare n : K[X])).eval z ≠ 0 ∨

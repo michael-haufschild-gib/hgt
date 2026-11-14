@@ -385,7 +385,8 @@ theorem weilQuad_ge_retained_gamma_moments {F : ℝ → ℝ} (hF : ContDiff ℝ 
     apply Finset.sum_congr rfl
     intro q _
     push_cast
-    ring
+    have hq_ne : (2 * (q : ℝ) + 1) ≠ 0 := by positivity
+    field_simp [hq_ne]
   have hpoly_int : (∫ t in Ioc (0 : ℝ) r, retainedGammaPolyRem t * D t) =
       (7 * r ^ 4 / (4 * 5760) - 31 * r ^ 6 / (6 * 967680) + 127 * r ^ 8 / (8 * 154828800) +
         ∑ q ∈ Finset.range 12, gammaAlphaEven q * r ^ (2 * q + 1) / (2 * (q : ℝ) + 1)) * M -
@@ -1127,8 +1128,9 @@ theorem lag_moment_eq_iterPrim {G : ℝ → ℝ} (hG : Continuous G)
     have hy2 : y + 1 ≤ 2 := by linarith [hy.2]
     rw [← intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 2)]
     have hcont_t : Continuous (fun t : ℝ => t ^ n * G (y - t)) := by fun_prop
-    have hsplit := intervalIntegral.integral_add_adjacent_intervals
-      (hcont_t.intervalIntegrable 0 (y + 1)) (hcont_t.intervalIntegrable (y + 1) 2)
+    have hsplit := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+      (hcont_t.intervalIntegrable (μ := volume) 0 (y + 1))
+      (hcont_t.intervalIntegrable (μ := volume) (y + 1) 2)
     have htail_zero : (∫ t in (y + 1)..2, t ^ n * G (y - t)) = 0 := by
       rw [intervalIntegral.integral_of_le hy2]
       refine setIntegral_eq_zero_of_forall_eq_zero fun t ht => ?_
