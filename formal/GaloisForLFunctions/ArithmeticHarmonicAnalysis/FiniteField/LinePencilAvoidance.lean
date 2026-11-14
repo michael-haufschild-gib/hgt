@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.CoordinateBoxLines
 import Mathlib.Data.Fintype.Card
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Fintype.Prod
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!
 # Local counts for linear prime patterns
@@ -33,18 +34,18 @@ theorem linePencilComplement_eq_image (S : Finset F) :
     mem_product, mem_sdiff, mem_singleton]
   constructor
   · rintro ⟨hy, h⟩
-    refine ⟨(x / y, y), ⟨⟨trivial, ?_⟩, trivial, hy⟩, ?_⟩
+    refine ⟨(x / y, y), ⟨?_, hy⟩, ?_⟩
     · intro ha
       exact h (x / y) ha (div_mul_cancel₀ x hy).symm
     · exact Prod.ext (div_mul_cancel₀ x hy) rfl
-  · rintro ⟨⟨a, b⟩, ⟨⟨_, ha⟩, _, hb⟩, heq⟩
+  · rintro ⟨⟨a, b⟩, ⟨ha, hb⟩, heq⟩
     have hx := congrArg Prod.fst heq
     have hy := congrArg Prod.snd heq
     dsimp only at hx hy
     subst y
     refine ⟨hb, ?_⟩
     intro c hc hxc
-    exact ha ((mul_right_cancel₀ hb (hx.trans hxc)) ▸ hc)
+    exact ha ((mul_right_cancel₀ hb (hx.trans hxc)).symm ▸ hc)
 
 /-- Exact number of pairs on which all forms `y` and `x-ay` are nonzero. -/
 theorem linePencilComplement_card (S : Finset F) :
@@ -53,7 +54,8 @@ theorem linePencilComplement_card (S : Finset F) :
   rw [linePencilComplement_eq_image, card_image_iff.mpr ?_, card_product]
   · simp [card_sdiff]
   · intro a ha b _ hab
-    have ha₂ : a.2 ≠ 0 := (mem_sdiff.mp (mem_product.mp ha).2).2
+    have ha₂ : a.2 ≠ 0 := by
+      simpa only [mem_singleton] using (mem_sdiff.mp (mem_product.mp ha).2).2
     have h₂ := congrArg Prod.snd hab
     have h₁ := congrArg Prod.fst hab
     dsimp only at h₁ h₂
@@ -64,8 +66,31 @@ theorem linePencilComplement_card (S : Finset F) :
 /-- Local admissibility for a pencil is equivalent to having an unused slope. -/
 theorem linePencilComplement_nonempty_iff (S : Finset F) :
     (linePencilComplement S).Nonempty ↔ S.card < Fintype.card F := by
-  rw [← card_pos, linePencilComplement_card, Nat.mul_pos_iff, Nat.sub_pos_iff_lt]
-  exact and_iff_left (Nat.sub_pos_of_lt Fintype.one_lt_card)
+  rw [← card_pos, linePencilComplement_card]
+  constructor
+  · intro h
+    have hne : Fintype.card F - S.card ≠ 0 := by
+      intro hz
+      rw [hz, zero_mul] at h
+      exact (lt_irrefl 0) h
+    omega
+  · intro h
+    exact Nat.mul_pos (Nat.sub_pos_of_lt h) (Nat.sub_pos_of_lt Fintype.one_lt_card)
+
+/-- The pencil count applies directly to the prime-pattern forms
+`x`, `y`, and `x-λy`. -/
+theorem mem_prime_pattern_pencil (S : Finset F) (x y : F) :
+    (x, y) ∈ linePencilComplement (insert 0 S) ↔
+      x ≠ 0 ∧ y ≠ 0 ∧ ∀ a ∈ S, x - a * y ≠ 0 := by
+  simp only [linePencilComplement, mem_filter, mem_univ, true_and,
+    mem_insert, forall_eq_or_imp, zero_mul, sub_ne_zero]
+  tauto
+
+/-- Exact local density numerator for distinct nonzero slopes. -/
+theorem prime_pattern_pencil_card (S : Finset F) (hS : 0 ∉ S) :
+    (linePencilComplement (insert 0 S)).card =
+      (Fintype.card F - S.card - 1) * (Fintype.card F - 1) := by
+  rw [linePencilComplement_card, card_insert_of_notMem hS, Nat.sub_add_eq]
 
 /-- Union of prescribed affine lines. -/
 def forbiddenAffineLines {ι : Type*} (s : Finset ι) (A B C : ι → F) : Finset (F × F) :=
@@ -94,10 +119,38 @@ theorem exists_avoiding_affine_lines {ι : Type*} (s : Finset ι) (A B C : ι �
     apply lt_of_le_of_lt (forbiddenAffineLines_card_le s A B C h)
     rw [Fintype.card_prod]
     exact Nat.mul_lt_mul_of_pos_right hs Fintype.card_pos
-  obtain ⟨z, hz⟩ := exists_notMem_of_card_lt_card hcard
+  have hnonempty : (forbiddenAffineLines s A B C)ᶜ.Nonempty := by
+    rw [← card_pos, card_compl]
+    exact Nat.sub_pos_of_lt hcard
+  obtain ⟨z, hz⟩ := hnonempty
+  have hz := mem_compl.mp hz
   refine ⟨z.1, z.2, ?_⟩
   intro i hi heq
   exact hz (mem_biUnion.mpr ⟨i, hi, mem_filter.mpr ⟨mem_product.mpr
     ⟨mem_univ _, mem_univ _⟩, heq⟩⟩)
+
+/-- Simultaneously avoiding a finite set of values for each linear form
+requires fewer than `|F|` form-value pairs. -/
+theorem exists_avoiding_linear_values {ι : Type*} (s : Finset ι) (A B : ι → F)
+    (T : Finset F) (h : ∀ i ∈ s, A i ≠ 0 ∨ B i ≠ 0)
+    (hcard : s.card * T.card < Fintype.card F) :
+    ∃ x y : F, ∀ i ∈ s, ∀ c ∈ T, A i * x + B i * y ≠ c := by
+  obtain ⟨x, y, hxy⟩ := exists_avoiding_affine_lines (s ×ˢ T)
+    (fun j => A j.1) (fun j => B j.1) Prod.snd
+    (fun j hj => h j.1 (mem_product.mp hj).1)
+    (by simpa only [card_product] using hcard)
+  exact ⟨x, y, fun i hi c hc => hxy (i, c) (mem_product.mpr ⟨hi, hc⟩)⟩
+
+/-- Simultaneous exclusions of zero and minus one hold whenever
+the field has more than twice as many elements as there are forms. -/
+theorem exists_avoiding_zero_neg_one {ι : Type*} (s : Finset ι) (A B : ι → F)
+    (h : ∀ i ∈ s, A i ≠ 0 ∨ B i ≠ 0)
+    (hcard : 2 * s.card < Fintype.card F) :
+    ∃ x y : F, ∀ i ∈ s,
+      A i * x + B i * y ≠ 0 ∧ A i * x + B i * y ≠ -1 := by
+  have hT : ({0, -1} : Finset F).card = 2 := by simp
+  obtain ⟨x, y, hxy⟩ := exists_avoiding_linear_values s A B {0, -1} h
+    (by rw [hT, mul_comm]; exact hcard)
+  exact ⟨x, y, fun i hi => ⟨hxy i hi 0 (by simp), hxy i hi (-1) (by simp)⟩⟩
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

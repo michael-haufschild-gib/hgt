@@ -34,7 +34,7 @@ private theorem inverseFactor_ghost (m : ℕ) :
   have hi : constantCoeff (invOfUnit f 1) = 1 := by simp
   have h := deningerBigWittLogGhost_mul f (invOfUnit f 1) hf hi
   have hu := PowerSeries.mul_invOfUnit f 1 hf
-  have he := deningerBigWittLogGhost_congr (by simp [hf, hi]) (by simp) hu
+  have he := deningerBigWittLogGhost_congr (by simp [hf]) (by simp) hu
   have hone : deningerBigWittLogGhost (1 : PowerSeries ℤ) (by simp) = 0 := by
     simp [deningerBigWittLogGhost]
   have hs := h.symm.trans (he.trans hone)
@@ -53,7 +53,8 @@ theorem signedEulerFactor_ghost (m : ℕ) (e : ℤ) :
       have h := deningerBigWittLogGhost_pow
         (invOfUnit (deningerBigWittFactor (1 : ℤ) (m + 1)) 1) (by simp) (e + 1)
       rw [inverseFactor_ghost] at h
-      simpa [signedEulerFactor] using h
+      convert h using 1 <;> simp [signedEulerFactor]
+      ring
 
 /-- The finite product carrying every multicover coefficient through its cutoff. -/
 def multicoverEulerProduct (k : ℕ) (w : ℕ → ℤ) (N : ℕ) : PowerSeries ℤ :=
@@ -72,7 +73,7 @@ theorem multicoverEulerProduct_ghost_coefficient (k : ℕ) (w : ℕ → ℤ) (n 
   rw [deningerBigWittLogGhost_finset_prod _ _ (fun m => signedEulerFactor_constantCoeff m _)]
   simp only [map_sum, signedEulerFactor_ghost, map_zsmul]
   simp only [deningerBigWittLogGhost_factor_coeff (1 : ℤ) (Nat.succ_pos _) (Nat.succ_pos n),
-    one_pow, mul_one, zsmul_eq_mul, Nat.cast_add, Nat.cast_one]
+    one_pow, mul_one, zsmul_eq_mul]
   have hsum : (∑ m ∈ Finset.range (n + 1),
       (m + 1 : ℤ) ^ k * w (m + 1) * (if m + 1 ∣ n + 1 then (m + 1 : ℤ) else 0)) =
       ∑ d ∈ (n + 1).divisors, (d : ℤ) ^ (k + 1) * w d := by
@@ -101,6 +102,7 @@ theorem multicoverEulerProduct_ghost_coefficient (k : ℕ) (w : ℕ → ℤ) (n 
     · intro a ha b hb h
       have hpa := Nat.pos_of_mem_divisors ha
       have hpb := Nat.pos_of_mem_divisors hb
+      change a - 1 = b - 1 at h
       omega
   exact hsum
 

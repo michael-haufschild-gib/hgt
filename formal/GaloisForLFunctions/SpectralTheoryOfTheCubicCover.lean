@@ -46,3 +46,4 @@ linear cusp subtraction of `θ_s`, the rotation `R = diag(ω, ω²)` and the two
 `θ_s(R·)θ_s(R⁻¹·)`, partial cusp subtractions, and the double pole of the rotated correlation
 `Σ T(ωh)T(h)|ξ_h|^{−s}` (leading coefficient `54π³r³`), which reads only the three-divisible layer. See `SpectralTheoryOfTheCubicCover/README.md`.
 -/
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.MaximumDiskOccupancy

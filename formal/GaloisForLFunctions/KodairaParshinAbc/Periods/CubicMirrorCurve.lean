@@ -66,7 +66,7 @@ instance genericCurve_isElliptic : genericCurve.IsElliptic := by
     intro he
     have hc := congrArg (fun p : ℚ[X] => p.coeff 0) he
     simp at hc
-  convert RatFunc.algebraMap_ne_zero h using 1 <;> simp
+  simpa only [map_sub, map_one, map_mul, map_ofNat] using RatFunc.algebraMap_ne_zero h
 
 /-- The generic modular invariant, without any assumed ellipticity input. -/
 theorem genericCurve_j :

@@ -25,14 +25,15 @@ def recoveredPotential (b₂ b₁ : ℚ[X]) : ℚ[X] :=
 theorem recoveredSlope_coefficient (b₂ : ℚ[X]) : 3 * recoveredSlope b₂ = b₂ := by
   apply Polynomial.funext
   intro x
-  simp [recoveredSlope] <;> ring
+  simp [recoveredSlope]
 
 theorem recoveredPotential_coefficient (b₂ b₁ : ℚ[X]) :
     (recoveredSlope b₂).derivative + 2 * recoveredSlope b₂ ^ 2 +
       4 * recoveredPotential b₂ b₁ = b₁ := by
   apply Polynomial.funext
   intro x
-  simp [recoveredSlope, recoveredPotential, derivative_mul, pow_two] <;> ring
+  simp [recoveredSlope, recoveredPotential, derivative_mul, pow_two]
+  ring
 
 /-- The invariant is exactly the defect in the reconstructed zeroth-order coefficient. -/
 theorem wilczynski_reconstruction_defect (b₂ b₁ b₀ : ℚ[X]) :
@@ -41,7 +42,8 @@ theorem wilczynski_reconstruction_defect (b₂ b₁ b₀ : ℚ[X]) :
         4 * recoveredSlope b₂ * recoveredPotential b₂ b₁ - b₀) := by
   apply Polynomial.funext
   intro x
-  simp [wilczynskiNumerator, recoveredSlope, recoveredPotential, derivative_mul, pow_two] <;> ring
+  simp [wilczynskiNumerator, recoveredSlope, recoveredPotential, derivative_mul, pow_two]
+  ring
 
 theorem wilczynski_zero_iff_reconstruction (b₂ b₁ b₀ : ℚ[X]) :
     wilczynskiNumerator b₂ b₁ b₀ = 0 ↔
