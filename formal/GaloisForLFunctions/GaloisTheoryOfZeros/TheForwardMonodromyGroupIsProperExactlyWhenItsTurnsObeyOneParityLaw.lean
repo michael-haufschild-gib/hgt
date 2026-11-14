@@ -153,6 +153,7 @@ theorem forwardMonodromy_le_signedKernel_of_turn_parity {ε : ℕ} (hε : ε = 0
     (finite_setOf_forwardMonodromy_ne hTG) hflip
     ((ncard_setOf_ne_eq_of_transports hT hact).trans hc1) hc2
 
+include hb₀ hb in
 /-- Over a forward time off the branch times two pairs are exchanged by a signed permutation of
 finite support. -/
 theorem exists_exchange_fibre :
@@ -167,7 +168,7 @@ theorem exists_exchange_fibre :
   obtain ⟨a', ha'⟩ := Infinite.exists_notMem_finset ({a, fibreNeg b a} : Finset _)
   rw [Finset.mem_insert, Finset.mem_singleton, not_or] at ha'
   obtain ⟨e, hea, hea', he, heo⟩ :=
-    exists_exchange (fibreNeg_fibreNeg b) (fibreNeg_apply_ne_self hb) ha'.2
+    exists_signedExchange (fibreNeg_fibreNeg b) (fibreNeg_apply_ne_self hb) ha'.2
   refine ⟨e, a, a', ha'.1, ha'.2, hea, hea', he, heo, ?_⟩
   refine (Set.toFinite ({a, fibreNeg b a, a', fibreNeg b a'} : Set _)).subset fun x hx => ?_
   by_contra h

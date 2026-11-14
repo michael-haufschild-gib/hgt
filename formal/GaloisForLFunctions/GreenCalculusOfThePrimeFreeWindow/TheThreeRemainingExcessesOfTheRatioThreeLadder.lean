@@ -1,7 +1,7 @@
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFirstOverlapStepHoldsAtEveryBlockSize
 
 /-!
-# The three unpaid excesses of the ratio-three ladder
+# The three remaining excesses of the ratio-three ladder
 
 The first step costs zero. The four-step budget is therefore exactly the sum
 of the next three nonnegative Schur excesses, at their accumulated levels.
@@ -10,6 +10,9 @@ level zero. The ratios below are exact, with no rounded intermediate values.
 -/
 
 namespace GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow
+
+open GaloisForLFunctions.HTGeometry
+open GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
 /-- Exact rational milestones through the fourth ratio-squaring step. -/
 theorem iteratedRatio_exact_milestones :
@@ -20,7 +23,7 @@ theorem iteratedRatio_exact_milestones :
     iteratedRatio 4 = (103 : ℝ) ^ 16 / (100 ^ 16 / 2) := by
   norm_num [iteratedRatio_eq]
 
-/-- The second cumulative level consists of the first unpaid excess alone. -/
+/-- The second cumulative level consists of the second excess alone. -/
 theorem levelAt_two {Q : ℕ} (hQ : 2 ≤ Q) :
     levelAt Q 2 = schurStepExcess Q (10609 / 5000) 0 := by
   rw [show levelAt Q 2 = levelAt Q 1 +
@@ -74,8 +77,21 @@ theorem levelAt_four_eq_zero_iff_three_excesses {Q : ℕ} (hQ : 2 ≤ Q) :
       rw [h2, iteratedRatio_exact_milestones.2.2.1, he2, add_zero]
     rw [levelAt_four_eq_three_excesses hQ, h2, h3, he1, he2, he3, add_zero, add_zero]
 
+/-- The three explicit zero-level claims are sufficient for every ratio-three window.
+This implication does not assert that the three excesses vanish. -/
+theorem three_excesses_eq_zero_implies_ratio_three_index :
+    (schurStepExcess 2 (10609 / 5000) 0 = 0 ∧
+      schurStepExcess 2 (112550881 / 50000000) 0 = 0 ∧
+      schurStepExcess 2 ((103 : ℝ) ^ 8 / (100 ^ 8 / 2)) 0 = 0) →
+    ∀ Q R J : ℕ, 2 ≤ Q → 1 ≤ R → R ≤ J → J ≤ 2 * R →
+      hermNegIndex ((neutralWindow Q R J).map (↑) : Matrix (Fin J) (Fin J) ℂ) = 1 := by
+  intro h Q R J hQ hR hRJ hJ
+  exact hermNegIndex_ratio_three_eq_one_of_levelAt_zero
+    ((levelAt_four_eq_zero_iff_three_excesses le_rfl).mpr h) hQ hR hRJ hJ
+
 #print axioms iteratedRatio_exact_milestones
 #print axioms levelAt_four_eq_three_excesses
 #print axioms levelAt_four_eq_zero_iff_three_excesses
+#print axioms three_excesses_eq_zero_implies_ratio_three_index
 
 end GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow

@@ -114,6 +114,45 @@ theorem radiationPair_bogoliubov_vacuum (τ : ℝ) :
       Complex.ofReal_mul, Pi.zero_apply]
     ring
 
+private theorem annihilateLeft_row_normSq (τ : ℝ) (m : ℕ) :
+    (∑' n, ‖annihilateLeft (radiationPair τ) (m, n)‖ ^ 2) =
+      ((m + 1 : ℕ) : ℝ) * radiationMass τ (m + 1) := by
+  rw [tsum_eq_single (m + 1)]
+  · simp only [annihilateLeft, radiationPair, thermofieldDiagonalKernel, if_true,
+      radiationVector_apply, norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.sqrt_nonneg _), Nat.cast_add, Nat.cast_one]
+    rw [Real.sq_sqrt (by positivity), Real.sq_sqrt (radiationMass_pos τ _).le]
+  · intro n hn
+    simp [annihilateLeft, radiationPair, thermofieldDiagonalKernel, Ne.symm hn]
+
+/-- The thermal pair belongs to the actual square-summable domain of annihilation. -/
+theorem radiationPair_annihilate_isHS (τ : ℝ) :
+    HilbertSchmidt.IsHS (annihilateLeft (radiationPair τ)) := by
+  rw [HilbertSchmidt.IsHS, summable_prod_of_nonneg (fun _ => sq_nonneg _)]
+  constructor
+  · intro m
+    apply summable_of_ne_finset_zero (s := {m + 1})
+    intro n hn
+    have hnm : n ≠ m + 1 := by simpa using hn
+    simp [annihilateLeft, radiationPair, thermofieldDiagonalKernel, Ne.symm hnm]
+  · simpa only [annihilateLeft_row_normSq] using
+      (summable_nat_add_iff 1).mpr (radiationMass_mean τ).summable
+
+/-- The norm of the annihilated state is the thermal mean occupation. -/
+theorem radiationPair_annihilate_normSq (τ : ℝ) :
+    HilbertSchmidt.hsNormSq (annihilateLeft (radiationPair τ)) =
+      ∑' n : ℕ, (n : ℝ) * radiationMass τ n := by
+  rw [HilbertSchmidt.hsNormSq, (radiationPair_annihilate_isHS τ).tsum_prod]
+  simp only [annihilateLeft_row_normSq]
+  have h := (radiationMass_mean τ).summable.tsum_eq_zero_add
+  simpa only [Nat.cast_zero, zero_mul, zero_add] using h.symm
+
+/-- The excitation norm is the Bose occupation number, with convergence already proved. -/
+theorem radiationPair_annihilate_bose_norm (τ : ℝ) :
+    HilbertSchmidt.hsNormSq (annihilateLeft (radiationPair τ)) =
+      1 / (Real.exp (Real.exp τ) - 1) := by
+  rw [radiationPair_annihilate_normSq, radiationMass_bose_mean]
+
 /-- The left creation and annihilation operators satisfy the actual CCR on coefficients. -/
 theorem left_commutator (ψ : ℕ × ℕ → ℂ) :
     annihilateLeft (createLeft ψ) - createLeft (annihilateLeft ψ) = ψ := by
@@ -151,5 +190,12 @@ theorem primeRadiation_bogoliubov_vacuum (p : Nat.Primes) :
       bogoliubovRight (primeThermalCoordinate p)
         (radiationPair (primeThermalCoordinate p)) = 0 :=
   radiationPair_bogoliubov_vacuum _
+
+/-- The prime occupation law gives the exact excitation norm `1 / (p - 1)`. -/
+theorem primeRadiation_annihilate_norm (p : Nat.Primes) :
+    HilbertSchmidt.hsNormSq
+        (annihilateLeft (radiationPair (primeThermalCoordinate p))) =
+      1 / ((p : ℝ) - 1) := by
+  rw [radiationPair_annihilate_normSq, primeRadiation_mean]
 
 end GaloisForLFunctions.HTGeometry.Thermofield

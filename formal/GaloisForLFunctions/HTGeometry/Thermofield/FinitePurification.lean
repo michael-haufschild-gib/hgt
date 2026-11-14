@@ -78,8 +78,8 @@ theorem reduced_right (β : ℝ) (E : α → ℝ) :
   change (amplitude β E)ᴴ * amplitude β E = density β E
   rw [amplitude_adjoint, amplitude_sq]
 
-/-- Independence of the two operator algebras is independent of the state. -/
 omit [DecidableEq α] [Nonempty α] in
+/-- Independence of the two operator algebras is independent of the state. -/
 theorem left_right_commute (A B Ψ : Matrix α α ℂ) :
     left A (right B Ψ) = right B (left A Ψ) := by
   exact (Matrix.mul_assoc A Ψ Bᵀ).symm
@@ -99,8 +99,8 @@ theorem expectation_one (β : ℝ) (E : α → ℝ) :
     pairExpectation (amplitude β E) 1 1 = 1 := by
   rw [expectation_left, Matrix.mul_one, density_trace]
 
-/-- The existing KMS transition weight is the product of thermofield amplitudes. -/
 omit [DecidableEq α] in
+/-- The existing KMS transition weight is the product of thermofield amplitudes. -/
 theorem sqrt_weight_mul (β : ℝ) (E : α → ℝ) (a b : α) :
     Real.sqrt (finiteGibbsStateWeight β E a) *
         Real.sqrt (finiteGibbsStateWeight β E b) = finiteKMSWightmanWeight β E a b := by
@@ -136,17 +136,61 @@ theorem expectation_conjugate (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ)
     Complex.ofReal_mul, Complex.star_def]
   rw [mul_assoc, Complex.mul_conj]
 
-/-- The difference of the two Hamiltonians kills the thermofield state. -/
 omit [Nonempty α] in
-theorem hamiltonian_difference (β : ℝ) (E : α → ℝ) :
-    left (Matrix.diagonal fun a => (E a : ℂ)) (amplitude β E) -
-      right (Matrix.diagonal fun a => (E a : ℂ)) (amplitude β E) = 0 := by
+/-- Every diagonal conserved quantity agrees on the two copies. -/
+theorem diagonal_difference (β : ℝ) (E Q : α → ℝ) :
+    left (Matrix.diagonal fun a => (Q a : ℂ)) (amplitude β E) -
+      right (Matrix.diagonal fun a => (Q a : ℂ)) (amplitude β E) = 0 := by
   simp only [left, right, amplitude, Matrix.diagonal_transpose,
     Matrix.diagonal_mul_diagonal]
   apply sub_eq_zero.mpr
   congr 1
   funext a
   exact mul_comm _ _
+
+omit [Nonempty α] in
+/-- The difference of the two Hamiltonians kills the thermofield state. -/
+theorem hamiltonian_difference (β : ℝ) (E : α → ℝ) :
+    left (Matrix.diagonal fun a => (E a : ℂ)) (amplitude β E) -
+      right (Matrix.diagonal fun a => (E a : ℂ)) (amplitude β E) = 0 :=
+  diagonal_difference β E E
+
+omit [Nonempty α] in
+/-- The grand-canonical purification satisfies the energy and charge constraints
+separately, even though the Boltzmann exponent couples them. -/
+theorem charged_constraints (β μ : ℝ) (E Q : α → ℝ) :
+    left (Matrix.diagonal fun a => (E a : ℂ)) (amplitude β (fun a => E a + μ * Q a)) -
+        right (Matrix.diagonal fun a => (E a : ℂ))
+          (amplitude β (fun a => E a + μ * Q a)) = 0 ∧
+      left (Matrix.diagonal fun a => (Q a : ℂ)) (amplitude β (fun a => E a + μ * Q a)) -
+        right (Matrix.diagonal fun a => (Q a : ℂ))
+          (amplitude β (fun a => E a + μ * Q a)) = 0 :=
+  ⟨diagonal_difference _ _ _, diagonal_difference _ _ _⟩
+
+/-- The canonical finite thermofield state factors exactly in dimension one.
+Positive Schmidt amplitudes make every two-level diagonal minor nonzero. -/
+theorem amplitude_product_iff (β : ℝ) (E : α → ℝ) :
+    (∃ f g : α → ℂ, ∀ a b, amplitude β E a b = f a * g b) ↔ Subsingleton α := by
+  constructor
+  · rintro ⟨f, g, h⟩
+    refine ⟨fun a b => ?_⟩
+    by_contra hab
+    have hm : amplitude β E a a * amplitude β E b b =
+        amplitude β E a b * amplitude β E b a := by
+      rw [h, h, h, h]
+      ring
+    have ha : (Real.sqrt (finiteGibbsStateWeight β E a) : ℂ) ≠ 0 := by
+      exact_mod_cast (Real.sqrt_pos.mpr (finiteGibbsStateWeight_pos β E a)).ne'
+    have hb : (Real.sqrt (finiteGibbsStateWeight β E b) : ℂ) ≠ 0 := by
+      exact_mod_cast (Real.sqrt_pos.mpr (finiteGibbsStateWeight_pos β E b)).ne'
+    simp only [amplitude, Matrix.diagonal_apply, if_true, if_neg hab,
+      zero_mul] at hm
+    exact mul_ne_zero ha hb hm
+  · intro h
+    letI := h
+    refine ⟨fun a => (Real.sqrt (finiteGibbsStateWeight β E a) : ℂ), fun _ => 1, ?_⟩
+    intro a b
+    simp only [amplitude, Matrix.diagonal_apply, Subsingleton.elim a b, if_true, mul_one]
 
 /-- Purity of the reduced state is the thermal replica ratio. -/
 theorem reduced_purity (β : ℝ) (E : α → ℝ) :

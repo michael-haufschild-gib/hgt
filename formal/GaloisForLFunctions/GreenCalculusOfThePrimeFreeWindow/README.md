@@ -129,6 +129,13 @@ a step is in the continuum: the ground energy of Weil's form on one aperture.
 13. **The sign gives the gap.** The ground energy decreases strictly with the aperture.
    Nonnegative at `A`, it is positive at every smaller aperture, and all windows inside have a
    common positive gap.
+14. **The comb carries a floor back to the tests.** A floor on the step packets of a window is,
+   up to `η`, a floor of Weil's form on the block functions of its comb `(RB, (R + J)B]` for all
+   large `B`. Far from the origin (`log R ≥ C_Q²/η + κ`) the form of a divisor is at least the
+   form of its block averages plus `κ` times the mass of the rest, so the floor passes to every
+   divisor of the comb. The samples of a `C²` packet at the scale `rB` live on the comb of a
+   window inside the aperture, and the comb form tends to the sum over the zeros. Bounded
+   additions to the comb, such as the contact of one prime, pass the same way.
 
 ## 5. Pillar theorems
 
@@ -226,6 +233,17 @@ dressed by both ends holds one bound state. `schurStepExcess_eq_zero_of_le_groun
 level `C ≥ −c`, for `0 ≤ c < 1/5000` at most the ground energy of `A`;
 `schurStepExcess_firstStep`, `levelAt_one`: the first step has no excess down to the level
 `−1/50000`, and the ladder to ratio three starts at its second step without loss.
+
+**P16 The ground energy of an aperture is the floor of Weil's form on the windows inside it.**
+For `Q ≥ e^{2A}`, `stepFloor_iff_le_groundEnergy`: `c ≤ E(A)` iff `c Σσ² ≤ 𝔚(σ)` on the step
+packets of every window inside the aperture, at every block size; equivalently on their block
+matrices (`le_groundEnergy_iff_forall_blockWindow_form_ge`). `WeilFloor.of_stepFloor`: a floor on
+those step packets is a floor on the `C²` tests of every smaller aperture (mechanism 14).
+`exists_stepPacket_lt_of_groundEnergy_lt`: below every level above `E(A)` some window inside,
+at some block size, carries a step packet. `groundEnergy_nonneg_iff_forall_weilSchur_nonneg`:
+for `Q ≥ 2`, `E(A) ≥ 0` iff the overlap law in the normal form of Weil's form (P9) holds on every
+window inside the aperture. A step in Weil's normal form is the sign of one ground energy, no
+less and no more.
 
 ## 6. Tools
 

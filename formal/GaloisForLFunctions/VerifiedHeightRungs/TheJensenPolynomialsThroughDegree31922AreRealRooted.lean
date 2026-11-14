@@ -15,7 +15,7 @@ namespace GaloisForLFunctions
 namespace VerifiedHeightRungs
 
 open SquareRootThreshold
-open RHTower
+open FiniteFreeProbability
 
 /-- Every Jensen polynomial of `Ξ` of degree at most `31922` has only real roots. -/
 theorem jensenNonrealCount_eq_zero_of_le_31922 {d : ℕ} (hd : d ≤ 31922) :

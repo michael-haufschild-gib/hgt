@@ -32,11 +32,11 @@ variable {α : Type*} {n : Perm α}
 
 /-! ## Signed permutations -/
 
-theorem comm_mul {w₁ w₂ : Perm α} (h₁ : ∀ x, w₁ (n x) = n (w₁ x))
+theorem signedPerm_mul {w₁ w₂ : Perm α} (h₁ : ∀ x, w₁ (n x) = n (w₁ x))
     (h₂ : ∀ x, w₂ (n x) = n (w₂ x)) (x : α) : (w₁ * w₂) (n x) = n ((w₁ * w₂) x) := by
   rw [Perm.mul_apply, Perm.mul_apply, h₂, h₁]
 
-theorem comm_inv {w : Perm α} (h : ∀ x, w (n x) = n (w x)) (x : α) :
+theorem signedPerm_inv {w : Perm α} (h : ∀ x, w (n x) = n (w x)) (x : α) :
     w⁻¹ (n x) = n (w⁻¹ x) := by
   rw [Perm.inv_eq_iff_eq, h]
   exact congrArg n (w.apply_symm_apply x).symm
@@ -73,7 +73,7 @@ theorem pair_mk_ne {x a : α} (h1 : x ≠ a) (h2 : x ≠ n a) :
 
 open Classical in
 /-- The permutation of the pairs induced by a signed permutation; `1` for other permutations. -/
-noncomputable def pairPerm (n : Perm α) (hn : ∀ x, n (n x) = x) (w : Perm α) :
+noncomputable def inducedPairPerm (n : Perm α) (hn : ∀ x, n (n x) = x) (w : Perm α) :
     Perm (Quotient (pairSetoid n hn)) :=
   if hw : ∀ x, w (n x) = n (w x) then
     Quotient.congr w (fun a₁ a₂ => by
@@ -81,41 +81,44 @@ noncomputable def pairPerm (n : Perm α) (hn : ∀ x, n (n x) = x) (w : Perm α)
       rw [← hw, w.injective.eq_iff, w.injective.eq_iff])
   else 1
 
-theorem pairPerm_mk {w : Perm α} (hw : ∀ x, w (n x) = n (w x)) (x : α) :
-    pairPerm n hn w (Quotient.mk (pairSetoid n hn) x) = Quotient.mk (pairSetoid n hn) (w x) := by
-  unfold pairPerm
+theorem inducedPairPerm_mk {w : Perm α} (hw : ∀ x, w (n x) = n (w x)) (x : α) :
+    inducedPairPerm n hn w (Quotient.mk (pairSetoid n hn) x) =
+      Quotient.mk (pairSetoid n hn) (w x) := by
+  unfold inducedPairPerm
   rw [dif_pos hw]
   exact Quotient.congr_mk _ _ _
 
-theorem pairPerm_mul {w₁ w₂ : Perm α} (h₁ : ∀ x, w₁ (n x) = n (w₁ x))
+theorem inducedPairPerm_mul {w₁ w₂ : Perm α} (h₁ : ∀ x, w₁ (n x) = n (w₁ x))
     (h₂ : ∀ x, w₂ (n x) = n (w₂ x)) :
-    pairPerm n hn (w₁ * w₂) = pairPerm n hn w₁ * pairPerm n hn w₂ := by
+    inducedPairPerm n hn (w₁ * w₂) = inducedPairPerm n hn w₁ * inducedPairPerm n hn w₂ := by
   refine Perm.ext fun q => ?_
   obtain ⟨x, rfl⟩ := Quotient.exists_rep q
-  rw [Perm.mul_apply, pairPerm_mk (comm_mul h₁ h₂), pairPerm_mk h₂, pairPerm_mk h₁,
+  rw [Perm.mul_apply, inducedPairPerm_mk (signedPerm_mul h₁ h₂), inducedPairPerm_mk h₂,
+    inducedPairPerm_mk h₁,
     Perm.mul_apply]
 
 /-- A signed permutation of finite support moves finitely many pairs. -/
-theorem finite_setOf_pairPerm_ne {w : Perm α} (hw : ∀ x, w (n x) = n (w x))
-    (hfin : {x | w x ≠ x}.Finite) : {q | pairPerm n hn w q ≠ q}.Finite := by
+theorem finite_setOf_inducedPairPerm_ne {w : Perm α} (hw : ∀ x, w (n x) = n (w x))
+    (hfin : {x | w x ≠ x}.Finite) : {q | inducedPairPerm n hn w q ≠ q}.Finite := by
   refine (hfin.image (Quotient.mk (pairSetoid n hn))).subset fun q hq => ?_
   obtain ⟨x, rfl⟩ := Quotient.exists_rep q
   refine ⟨x, fun h => hq ?_, rfl⟩
-  rw [pairPerm_mk hw, h]
+  rw [inducedPairPerm_mk hw, h]
 
 /-! ## The two signs -/
 
 /-- The sign of a signed permutation on the pairs. -/
 noncomputable def pairSign (n : Perm α) (hn : ∀ x, n (n x) = x) (w : Perm α) : ℤˣ :=
-  finSign (pairPerm n hn w)
+  finSign (inducedPairPerm n hn w)
 
 theorem pairSign_mul {w₁ w₂ : Perm α} (h₁ : ∀ x, w₁ (n x) = n (w₁ x))
     (hf₁ : {x | w₁ x ≠ x}.Finite) (h₂ : ∀ x, w₂ (n x) = n (w₂ x))
     (hf₂ : {x | w₂ x ≠ x}.Finite) :
     pairSign n hn (w₁ * w₂) = pairSign n hn w₁ * pairSign n hn w₂ := by
   unfold pairSign
-  rw [pairPerm_mul h₁ h₂]
-  exact finSign_mul (finite_setOf_pairPerm_ne h₁ hf₁) (finite_setOf_pairPerm_ne h₂ hf₂)
+  rw [inducedPairPerm_mul h₁ h₂]
+  exact finSign_mul (finite_setOf_inducedPairPerm_ne h₁ hf₁)
+    (finite_setOf_inducedPairPerm_ne h₂ hf₂)
 
 theorem finite_setOf_swap_ne [DecidableEq α] (a b : α) : {x | swap a b x ≠ x}.Finite :=
   (Set.toFinite ({a, b} : Set α)).subset fun x hx => by
@@ -165,11 +168,11 @@ theorem pairSign_exchange (hn : ∀ x, n (n x) = x) : pairSign n hn e = -1 := by
     rcases pair_mk_eq_iff.1 h with h' | h'
     · exact h1 h'
     · exact h2 h'
-  have heq : pairPerm n hn e =
+  have heq : inducedPairPerm n hn e =
       swap (Quotient.mk (pairSetoid n hn) a) (Quotient.mk (pairSetoid n hn) a') := by
     refine Perm.ext fun q => ?_
     obtain ⟨x, rfl⟩ := Quotient.exists_rep q
-    rw [pairPerm_mk he]
+    rw [inducedPairPerm_mk he]
     by_cases hx1 : x = a
     · rw [hx1, hea, swap_apply_left]
     by_cases hx2 : x = a'
@@ -208,10 +211,10 @@ theorem finSign_flip (hn : ∀ x, n (n x) = x) : finSign f = -1 := by
 
 /-- **The flip of one pair fixes every pair.** -/
 theorem pairSign_flip (hn : ∀ x, n (n x) = x) : pairSign n hn f = 1 := by
-  have heq : pairPerm n hn f = 1 := by
+  have heq : inducedPairPerm n hn f = 1 := by
     refine Perm.ext fun q => ?_
     obtain ⟨x, rfl⟩ := Quotient.exists_rep q
-    rw [pairPerm_mk hfn, Perm.one_apply]
+    rw [inducedPairPerm_mk hfn, Perm.one_apply]
     by_cases hx1 : x = a
     · rw [hx1, hfa, pair_mk_apply]
     by_cases hx2 : x = n a
@@ -226,7 +229,7 @@ end Values
 
 /-- **The exchange of two pairs exists.** Two points `a`, `a'` that are not partners are
 exchanged, with their partners, by a signed permutation that fixes every other point. -/
-theorem exists_exchange (hn : ∀ x, n (n x) = x) (hn0 : ∀ x, n x ≠ x) {a a' : α}
+theorem exists_signedExchange (hn : ∀ x, n (n x) = x) (hn0 : ∀ x, n x ≠ x) {a a' : α}
     (h2 : a' ≠ n a) :
     ∃ e : Perm α, e a = a' ∧ e a' = a ∧ (∀ x, e (n x) = n (e x)) ∧
       ∀ x, x ≠ a → x ≠ n a → x ≠ a' → x ≠ n a' → e x = x := by
@@ -290,7 +293,8 @@ theorem signedCharacter_one : signedCharacter n hn ε (1 : Perm α) = 1 := by
 
 theorem signedCharacter_inv {w : Perm α} (hw : ∀ x, w (n x) = n (w x))
     (hf : {x | w x ≠ x}.Finite) : signedCharacter n hn ε w⁻¹ = signedCharacter n hn ε w := by
-  have h := signedCharacter_mul (hn := hn) (ε := ε) hw hf (comm_inv hw) (finite_setOf_inv_ne hf)
+  have h := signedCharacter_mul (hn := hn) (ε := ε) hw hf (signedPerm_inv hw)
+    (finite_setOf_inv_ne hf)
   rw [mul_inv_cancel, signedCharacter_one] at h
   exact mul_left_cancel (h.symm.trans (Int.units_mul_self (signedCharacter n hn ε w)).symm)
 
@@ -301,12 +305,12 @@ noncomputable def signedKernel (n : Perm α) (hn : ∀ x, n (n x) = x) (ε : ℕ
     signedCharacter n hn ε w = 1}
   mul_mem' := by
     rintro w₁ w₂ ⟨h₁, hf₁, hc₁⟩ ⟨h₂, hf₂, hc₂⟩
-    exact ⟨comm_mul h₁ h₂, finite_setOf_mul_ne hf₁ hf₂, by
+    exact ⟨signedPerm_mul h₁ h₂, finite_setOf_mul_ne hf₁ hf₂, by
       rw [signedCharacter_mul h₁ hf₁ h₂ hf₂, hc₁, hc₂, one_mul]⟩
   one_mem' := ⟨fun _ => rfl, finite_setOf_one_ne, signedCharacter_one⟩
   inv_mem' := by
     rintro w ⟨h, hf, hc⟩
-    exact ⟨comm_inv h, finite_setOf_inv_ne hf, by rw [signedCharacter_inv h hf, hc]⟩
+    exact ⟨signedPerm_inv h, finite_setOf_inv_ne hf, by rw [signedCharacter_inv h hf, hc]⟩
 
 theorem mem_signedKernel {w : Perm α} :
     w ∈ signedKernel n hn ε ↔ (∀ x, w (n x) = n (w x)) ∧ {x | w x ≠ x}.Finite ∧
@@ -323,9 +327,9 @@ theorem mem_signedKernel_or_mem_or_mul_inv_mem {w₁ w₂ : Perm α}
   · exact Or.inl ⟨h₁, hf₁, c1⟩
   rcases Int.units_eq_one_or (signedCharacter n hn ε w₂) with c2 | c2
   · exact Or.inr (Or.inl ⟨h₂, hf₂, c2⟩)
-  · refine Or.inr (Or.inr ⟨comm_mul h₁ (comm_inv h₂),
+  · refine Or.inr (Or.inr ⟨signedPerm_mul h₁ (signedPerm_inv h₂),
       finite_setOf_mul_ne hf₁ (finite_setOf_inv_ne hf₂), ?_⟩)
-    rw [signedCharacter_mul h₁ hf₁ (comm_inv h₂) (finite_setOf_inv_ne hf₂),
+    rw [signedCharacter_mul h₁ hf₁ (signedPerm_inv h₂) (finite_setOf_inv_ne hf₂),
       signedCharacter_inv h₂ hf₂, c1, c2]
     exact Int.units_mul_self (-1)
 

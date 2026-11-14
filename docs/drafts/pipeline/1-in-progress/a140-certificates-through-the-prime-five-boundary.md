@@ -58,11 +58,15 @@ energy between the retained polynomial form and that form plus
 transitive axiom audits passed in
 `TheGammaPolynomialComparisonHasAUniformError.lean`.
 
+The quartic primitive projection retains
+`(m₀−m₂)²/3+(m₂−m₄)²/7+m₄²/11−2m₄m₆/11`, with Wirtinger cost
+`π⁻²(M−m₀²−5m₂²−9m₄²)` only on residual mass.
+`LatticeSectionTheory.primitive_mass_le_quartic_projection` passed its
+direct Lean check and standard-only transitive axiom audit in
+`WindowJumpCounts/TheQuarticProjectionRetainsThePrimitiveMass.lean`.
+
 ## Open obligations
 
-- The quartic primitive projection retains
-  `(m₀−m₂)²/3+(m₂−m₄)²/7+m₄²/11−2m₄m₆/11`, with Wirtinger cost
-  `π⁻²(M−m₀²−5m₂²−9m₄²)` only on residual mass. Its Lean draft awaits checking.
 - For larger diameters, Newton refinement of the reciprocal polynomials uses
   `q↦q(2−Tq)`, where `T` is a Taylor upper bound for the hyperbolic denominator.
   The exact error is `U(1/U−q)²+(T−U)q²`. Three refinements should reduce the
