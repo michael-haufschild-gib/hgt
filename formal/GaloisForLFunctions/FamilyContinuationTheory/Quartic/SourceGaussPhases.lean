@@ -96,4 +96,36 @@ theorem fortyOne_reflection_phase_norm :
   simpa only [ZMod.card, Nat.cast_ofNat] using reflection_phase_norm deningerQ8FortyOneResidueQuarticChar
     fortyOne_ne_one ZMod.stdAddChar (ZMod.isPrimitive_stdAddChar 41)
 
+private theorem character_fourth_scaling {F : Type*} [Field F]
+    (χ : MulChar F ℂ) (hχ : χ ^ 4 = 1) (t : Fˣ) (u : F) :
+    χ ((t : F) ^ 4 * u) = χ u := by
+  have ht : χ (t : F) ^ 4 = 1 := by
+    rw [← MulChar.pow_apply_coe, hχ, MulChar.one_apply_coe]
+  rw [map_mul, map_pow, ht, one_mul]
+
+/-- Fourth powers of units disappear from the reflected source at five. -/
+theorem five_fourth_power_scaling (t : (ZMod 5)ˣ) (u : ZMod 5) :
+    reflectedCubicGauss deningerQ8FiveResidueQuarticChar ZMod.stdAddChar ((t : ZMod 5) ^ 4 * u) =
+      reflectedCubicGauss deningerQ8FiveResidueQuarticChar ZMod.stdAddChar u := by
+  rw [five_reflection, five_reflection,
+    character_fourth_scaling _ deningerQ8FiveResidueQuarticChar_fourth_eq_one]
+
+/-- Fourth powers of units disappear from the reflected source at forty-one. -/
+theorem fortyOne_fourth_power_scaling (t : (ZMod 41)ˣ) (u : ZMod 41) :
+    reflectedCubicGauss deningerQ8FortyOneResidueQuarticChar ZMod.stdAddChar ((t : ZMod 41) ^ 4 * u) =
+      reflectedCubicGauss deningerQ8FortyOneResidueQuarticChar ZMod.stdAddChar u := by
+  rw [fortyOne_reflection, fortyOne_reflection, character_fourth_scaling _ fortyOne_fourth]
+
+/-- Cubic reflection preserves every value's norm at five, including zero. -/
+theorem five_reflection_norm (u : ZMod 5) :
+    ‖reflectedCubicGauss deningerQ8FiveResidueQuarticChar ZMod.stdAddChar u‖ =
+      ‖deningerQ8FiveResidueQuarticChar u‖ := by
+  rw [five_reflection, norm_mul, five_reflection_phase_norm, one_mul]
+
+/-- Cubic reflection preserves every value's norm at forty-one, including zero. -/
+theorem fortyOne_reflection_norm (u : ZMod 41) :
+    ‖reflectedCubicGauss deningerQ8FortyOneResidueQuarticChar ZMod.stdAddChar u‖ =
+      ‖deningerQ8FortyOneResidueQuarticChar u‖ := by
+  rw [fortyOne_reflection, norm_mul, fortyOne_reflection_phase_norm, one_mul]
+
 end GaloisForLFunctions.FamilyContinuationTheory.Quartic

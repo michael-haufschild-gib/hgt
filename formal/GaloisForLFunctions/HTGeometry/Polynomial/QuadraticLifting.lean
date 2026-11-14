@@ -1,4 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.Degrees
+import Mathlib.Data.Fintype.Option
 
 /-!
 # Quadratic equations for arbitrary polynomial values
@@ -31,7 +32,9 @@ theorem rationalEval_auxiliaryRename {σ α β : Type*} (f : α → β)
       rationalEval (Sum.elim x (w ∘ f)) p := by
   change eval₂ _ _ (rename _ p) = eval₂ _ _ p
   rw [eval₂_rename]
-  rfl
+  congr 1
+  funext a
+  cases a <;> rfl
 
 theorem totalDegree_auxiliaryRename_le {σ α β : Type*} (f : α → β)
     (p : MvPolynomial (σ ⊕ α) ℤ) :
@@ -43,7 +46,7 @@ theorem totalDegree_neg_le {σ : Type*} (p : MvPolynomial σ ℤ) :
   calc
     (-p).totalDegree = (C (-1 : ℤ) * p).totalDegree := by simp
     _ ≤ (C (-1 : ℤ) : MvPolynomial σ ℤ).totalDegree + p.totalDegree := totalDegree_mul _ _
-    _ = p.totalDegree := by simp
+    _ = p.totalDegree := by rw [totalDegree_C, zero_add]
 
 theorem totalDegree_sub_le {σ : Type*} (p q : MvPolynomial σ ℤ) :
     (p - q).totalDegree ≤ max p.totalDegree q.totalDegree := by
@@ -144,7 +147,7 @@ def mul_X (L : QuadraticLift p) (i : σ) : QuadraticLift (p * X i) where
       intro a
       simpa only [Option.elim_some, rationalEval_auxiliaryRename] using hw (some a)
     have hn := hw none
-    simp only [Option.elim_none, map_sub, map_mul, eval₂Hom_X, Sum.elim_inl,
+    simp only [Option.elim_none, map_sub, map_mul, eval₂Hom_X', Sum.elim_inl,
       Sum.elim_inr, rationalEval_auxiliaryRename] at hn ⊢
     rw [L.sound x (w ∘ some) hold] at hn
     exact sub_eq_zero.mp hn
@@ -155,7 +158,7 @@ def mul_X (L : QuadraticLift p) (i : σ) : QuadraticLift (p * X i) where
     intro a
     cases a with
     | none =>
-      simp only [Option.elim_none, map_sub, map_mul, eval₂Hom_X, Sum.elim_inl,
+      simp only [Option.elim_none, map_sub, map_mul, eval₂Hom_X', Sum.elim_inl,
         Sum.elim_inr, rationalEval_auxiliaryRename]
       change rationalEval x p * x i - rationalEval (Sum.elim x w) L.output * x i = 0
       rw [L.sound x w hw, sub_self]

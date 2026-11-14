@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.NNReal
+import Mathlib.Data.NNReal.Basic
 import Mathlib.Tactic
 
 /-!

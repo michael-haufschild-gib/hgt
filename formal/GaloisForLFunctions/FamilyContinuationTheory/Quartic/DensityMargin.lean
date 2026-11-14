@@ -44,7 +44,7 @@ private theorem low_density_bound (σ : ℝ) (hσ : 5 / 8 ≤ σ) (hσ' : σ ≤
     linarith only [hσ]
   linarith only [hratio]
 
-private theorem lower_middle_bound (σ : ℝ) (hσ : 2 / 3 ≤ σ) (hσ' : σ ≤ 3 / 4) :
+private theorem lower_middle_bound (σ : ℝ) (hσ' : σ ≤ 3 / 4) :
     σ + (65 / 144) * (densityExponent σ - 1 / 4) ≤ 281 / 288 := by
   rw [densityExponent, if_pos hσ']
   have hd : 0 < 8 * (1 - σ) := by linarith only [hσ']
@@ -97,15 +97,15 @@ theorem densityTransfer_bound (σ : Set.Icc (5 / 8 : ℝ) (599 / 600)) :
   · have hE := low_density_bound σ hlo hlow
     have hmax : max (densityExponent σ - 1 / 4) 0 ≤ 2 / 3 := by
       apply max_le <;> linarith only [hE]
-    rw [max_eq_right (by linarith only [hlow])]
+    rw [max_eq_right (show (0 : ℝ) ≤ 1 - 3 * (σ : ℝ) / 2 by linarith only [hlow])]
     nlinarith only [hmax, hlow]
-  · rw [max_eq_left (by linarith only [hlow])]
+  · rw [max_eq_left (show 1 - 3 * (σ : ℝ) / 2 ≤ (0 : ℝ) by linarith only [hlow])]
     by_cases hE : densityExponent σ - 1 / 4 ≤ 0
     · rw [max_eq_right hE, add_zero, mul_zero, add_zero]
       exact hhi
     · rw [max_eq_left (le_of_not_ge hE), add_zero]
       by_cases hm : (σ : ℝ) ≤ 3 / 4
-      · have hb := lower_middle_bound σ (le_of_not_ge hlow) hm
+      · have hb := lower_middle_bound σ hm
         linarith only [hb]
       · by_cases hh : (σ : ℝ) ≤ 7 / 8
         · exact (middle_bound σ (le_of_not_ge hm) hh hm).le

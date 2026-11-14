@@ -30,7 +30,8 @@ theorem cos_nat_add_two_eq_character_difference (n : ℕ) (θ : ℝ) :
 theorem integrable_cos_nat (n : ℕ) :
     Integrable (fun θ => Real.cos ((n : ℝ) * θ)) satoTate := by
   refine Integrable.of_bound (by fun_prop) 1 (ae_of_all _ fun θ => ?_)
-  exact Real.norm_cos_le_one _
+  rw [Real.norm_eq_abs]
+  exact Real.abs_cos_le_one _
 
 /-- The only nonconstant Sato–Tate cosine coefficient is `-1/2` at frequency two. -/
 theorem integral_satoTate_cos_nat (n : ℕ) :
