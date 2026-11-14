@@ -8,7 +8,9 @@ import GaloisForLFunctions.HTGeometry.SingularGaugeToeplitzHorizon
 The sum and difference channels of the unilateral shift recover exactly the
 usual operator-valued Toeplitz fixed space. Compactness forces every such
 operator to vanish. Arbitrary powers of the shift also satisfy the energy
-and cross-coordinate identities of the hexablock parametrization.
+and cross-coordinate identities of the hexablock parametrization. In the
+scalar case, the coordinate channels and their adjoints have only scalar
+common commutants.
 -/
 
 noncomputable section
@@ -77,6 +79,75 @@ theorem tetrablock_shift_powers_relations (m n r : ℕ) :
       ((Commute.refl _).pow_pow m r) ((Commute.refl _).pow_pow n r),
     Tetrablock.last_isometry _ _ _ (h m) (h n) (h r)⟩
 
+/-- The scalar unilateral shift and its adjoint have only scalar common commutants. -/
+theorem scalar_shift_adjoint_commutant_iff (T : VecSeq ℂ →L[ℂ] VecSeq ℂ) :
+    (Commute T vecForward ∧ Commute T vecBack) ↔ ∃ c : ℂ, T = c • 1 := by
+  constructor
+  · rintro ⟨hS, hB⟩
+    let e : ℕ → VecSeq ℂ := fun n => lp.single 2 n 1
+    have hSe (n : ℕ) : vecForward (e n) = e (n + 1) := by
+      apply lp.ext
+      funext m
+      cases m with
+      | zero => simp [e, lp.single_apply]
+      | succ m => simp [e, lp.single_apply]
+    have hBe : vecBack (e 0) = 0 := by
+      apply lp.ext
+      funext m
+      simp [e, lp.single_apply]
+    have hBT : vecBack (T (e 0)) = 0 := by
+      calc
+        vecBack (T (e 0)) = T (vecBack (e 0)) :=
+          (congrArg (fun R : VecSeq ℂ →L[ℂ] VecSeq ℂ => R (e 0)) hB.eq).symm
+        _ = 0 := by rw [hBe, map_zero]
+    let c : ℂ := T (e 0) 0
+    have hTe : T (e 0) = c • e 0 := by
+      apply lp.ext
+      funext m
+      cases m with
+      | zero => simp [c, e, lp.single_apply]
+      | succ m =>
+        have hm := congrArg (fun x : VecSeq ℂ => x m) hBT
+        simpa [e, lp.single_apply] using hm
+    have hTen (n : ℕ) : T (e n) = c • e n := by
+      induction n with
+      | zero => exact hTe
+      | succ n ih =>
+        rw [← hSe]
+        calc
+          T (vecForward (e n)) = vecForward (T (e n)) :=
+            congrArg (fun R : VecSeq ℂ →L[ℂ] VecSeq ℂ => R (e n)) hS.eq
+          _ = c • vecForward (e n) := by rw [ih, map_smul]
+    have hsingle (n : ℕ) (a : ℂ) : T (lp.single 2 n a) = c • lp.single 2 n a := by
+      have he : (lp.single 2 n a : VecSeq ℂ) = a • e n := by
+        apply lp.ext
+        funext m
+        simp [e, lp.single_apply]
+      rw [he, map_smul, hTen, smul_comm]
+    refine ⟨c, ?_⟩
+    apply ContinuousLinearMap.ext
+    intro x
+    have hs := lp.hasSum_single (p := 2) (by norm_num) x
+    have h₁ := hs.map T T.continuous
+    have h₂ := hs.map (c • (1 : VecSeq ℂ →L[ℂ] VecSeq ℂ))
+      (c • (1 : VecSeq ℂ →L[ℂ] VecSeq ℂ)).continuous
+    apply h₁.unique
+    convert h₂ using 1
+    funext n
+    exact hsingle n (x n)
+  · rintro ⟨c, rfl⟩
+    exact ⟨(Commute.one_left _).smul_left c, (Commute.one_left _).smul_left c⟩
+
+/-- The scalar hexablock slice and its adjoints act irreducibly. -/
+theorem hexablock_scalar_shift_commutant_iff (T : VecSeq ℂ →L[ℂ] VecSeq ℂ) :
+    ((Commute T (halfDiff vecForward 1) ∧ Commute T (halfSum vecForward 1)) ∧
+      (Commute T (star (halfDiff vecForward 1)) ∧
+        Commute T (star (halfSum vecForward 1)))) ↔ ∃ c : ℂ, T = c • 1 := by
+  rw [slice_commutant_iff, slice_adjoint_commutant_iff,
+    _root_.ContinuousLinearMap.star_eq_adjoint, adjoint_vecForward]
+  exact scalar_shift_adjoint_commutant_iff T
+
+
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_brownHalmos_iff
@@ -84,3 +155,5 @@ end GaloisForLFunctions.HTGeometry
 #print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_powers_relations
 
 #print axioms GaloisForLFunctions.HTGeometry.tetrablock_shift_powers_relations
+
+#print axioms GaloisForLFunctions.HTGeometry.hexablock_scalar_shift_commutant_iff

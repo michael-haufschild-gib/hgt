@@ -112,6 +112,7 @@ import GaloisForLFunctions.SelbergClass.Primon.KestenPowerTilt
 import GaloisForLFunctions.SelbergClass.Primon.KestenPowerConcentration
 import GaloisForLFunctions.SelbergClass.Primon.KestenEdgeGammaLaw
 import GaloisForLFunctions.SelbergClass.Primon.SemicircleBetaLaw
+import GaloisForLFunctions.SelbergClass.Primon.SphereSpectralLaw
 import GaloisForLFunctions.SelbergClass.Primon.KestenBetaDeformation
 import GaloisForLFunctions.SelbergClass.Primon.KestenTiltedBetaLaw
 import GaloisForLFunctions.SelbergClass.Primon.KestenSquareSufficiency

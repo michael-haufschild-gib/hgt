@@ -32,7 +32,7 @@ theorem norm_conjugateInnerFunctional (x : E) : ‖conjugateInnerFunctional x‖
     exact norm_inner_le_norm x v
   · by_cases hx : x = 0
     · subst x
-      exact norm_nonneg _
+      simpa only [norm_zero] using norm_nonneg (conjugateInnerFunctional (0 : E))
     have hp : 0 < ‖x‖ := norm_pos_iff.mpr hx
     have h := ContinuousLinearMap.le_opNorm (conjugateInnerFunctional x) x
     rw [conjugateInnerFunctional_apply, norm_conj, inner_self_eq_norm_sq_to_K,
@@ -83,5 +83,48 @@ theorem norm_dbarDifferential_holomorphic_radial_sq
   have hc := Complex.ofRealCLM.hasFDerivAt.comp x hr
   rw [dbarDifferential_holomorphic_mul hh hc.differentiableAt,
     norm_smul, norm_dbarDifferential_radial_sq hφ]
+
+private theorem log_sq_half (r : ℝ) : Real.log (r ^ 2) / 2 = Real.log r := by
+  rw [Real.log_pow]
+  norm_num
+
+private theorem hasDerivAt_logHalfProfile {χ : ℝ → ℝ} {χ' r : ℝ}
+    (hr : 0 < r) (hχ : HasDerivAt χ χ' (Real.log r)) :
+    HasDerivAt (fun t => χ (Real.log t / 2)) (χ' / (2 * r ^ 2)) (r ^ 2) := by
+  have hc : HasDerivAt χ χ' (Real.log (r ^ 2) / 2) := by
+    rw [log_sq_half]
+    exact hχ
+  have h := hc.comp (r ^ 2)
+    ((Real.hasDerivAt_log (pow_ne_zero 2 hr.ne')).div_const 2)
+  change HasDerivAt (fun t => χ (Real.log t / 2)) (χ' * ((r ^ 2)⁻¹ / 2)) (r ^ 2) at h
+  convert h using 1
+  field_simp
+
+/-- A logarithmic radial cutoff has antiholomorphic norm `|χ'(log r)|/(2r)`. -/
+theorem norm_dbarDifferential_logRadius {χ : ℝ → ℝ} {χ' : ℝ} {x : E}
+    (hx : x ≠ 0) (hχ : HasDerivAt χ χ' (Real.log ‖x‖)) :
+    ‖dbarDifferential (fun y : E => (χ (Real.log ‖y‖) : ℂ)) x‖ =
+      |χ'| / (2 * ‖x‖) := by
+  have hr : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  have h := norm_dbarDifferential_radial_sq (hasDerivAt_logHalfProfile hr hχ)
+  dsimp only at h
+  simp_rw [log_sq_half] at h
+  rw [h, abs_div, abs_of_pos (mul_pos two_pos (sq_pos_of_pos hr))]
+  field_simp
+
+/-- The holomorphic amplitude's degree is absent from the logarithmic cutoff derivative. -/
+theorem norm_dbarDifferential_holomorphic_logRadius
+    {h : E → ℂ} {χ : ℝ → ℝ} {χ' : ℝ} {x : E}
+    (hx : x ≠ 0) (hh : DifferentiableAt ℂ h x)
+    (hχ : HasDerivAt χ χ' (Real.log ‖x‖)) :
+    ‖dbarDifferential (fun y : E => h y * (χ (Real.log ‖y‖) : ℂ)) x‖ =
+      ‖h x‖ * (|χ'| / (2 * ‖x‖)) := by
+  have hr : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  have h := norm_dbarDifferential_holomorphic_radial_sq hh (hasDerivAt_logHalfProfile hr hχ)
+  dsimp only at h
+  simp_rw [log_sq_half] at h
+  rw [h, abs_div, abs_of_pos (mul_pos two_pos (sq_pos_of_pos hr))]
+  congr 1
+  field_simp
 
 end HTGeometry

@@ -34,6 +34,7 @@ theorem Vop_mul (p q : ℕ+) : Vop (p * q) = Vop p * Vop q := by
   intro x
   apply lp.ext
   funext m
+  change Vop 1 x m = x m
   simpa only [one_mul] using Vop_apply_mul 1 x m
 
 /-- Powers of a shift are shifts by powers of its positive-integer multiplier. -/
@@ -59,7 +60,9 @@ theorem primeShiftPowers_weak_tendsto (p : Nat.Primes) (v z : H) :
   apply tendsto_inner_lp_of_coord _ (norm_nonneg v)
     (fun n => ((primeShift (primePNat p ^ n)).norm_map v).le)
   intro m
-  exact tendsto_const_nhds.congr' (primeShiftPowers_coordinate p v m).symm
+  have he : (fun n => Vop (primePNat p ^ n) v m) =ᶠ[atTop] fun _ => (0 : ℂ) :=
+    primeShiftPowers_coordinate p v m
+  exact tendsto_const_nhds.congr' he.symm
 
 /-- Compact operators kill every prime-shift orbit in norm. -/
 theorem primeShiftPowers_compact_tendsto (p : Nat.Primes)

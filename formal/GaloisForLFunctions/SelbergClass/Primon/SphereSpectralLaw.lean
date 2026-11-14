@@ -11,7 +11,7 @@ antipodal invariance supplies the vanishing odd moments. Compact moment determin
 identifies the full signed law with the scalar free Fock spectral law.
 -/
 
-open MeasureTheory ProbabilityTheory Set Metric
+open MeasureTheory ProbabilityTheory Set Metric Filter Topology
 open GaloisForLFunctions.HTGeometry
 
 noncomputable section
@@ -89,9 +89,10 @@ theorem integral_sphereThreeSpectralLaw_even (k : ℕ) :
   have he (ω : sphere (0 : SphereSpectralSpace) 1) :
       sphereThreeHeckeCoordinate ω ^ (2 * k) =
         4 ^ k * ‖(ω.1 : SphereSpectralSpace).fst‖ ^ (2 * (k : ℝ)) := by
-    rw [sphereThreeHeckeCoordinate, mul_pow, pow_mul, Real.norm_eq_abs,
+    rw [sphereThreeHeckeCoordinate, mul_pow, Real.norm_eq_abs,
       show 2 * (k : ℝ) = ((2 * k : ℕ) : ℝ) by push_cast; rfl,
-      Real.rpow_natCast, pow_mul, sq_abs]
+      Real.rpow_natCast]
+    simp only [pow_mul, sq_abs]
     norm_num
   simp_rw [he]
   rw [integral_const_mul]
@@ -142,5 +143,12 @@ theorem sphereThreeSpectralLaw_eq_semicircle :
 theorem sphereThreeSpectralLaw_eq_scalarFock :
     sphereThreeSpectralLaw = (scalarFockSpectralLaw : Measure ℝ) := by
   rw [sphereThreeSpectralLaw_eq_semicircle, semicircleSpectralLaw_eq_scalarFockSpectralLaw]
+
+/-- Prime Hecke observables converge to their spherical-coordinate averages. -/
+theorem tendsto_integral_kestenSpectralLaw_sphere (f : C(ℝ, ℝ)) :
+    Tendsto (fun p => ∫ x, f x ∂(kestenSpectralLaw p : Measure ℝ)) cofinite
+      (𝓝 (∫ x, f x ∂sphereThreeSpectralLaw)) := by
+  rw [sphereThreeSpectralLaw_eq_scalarFock]
+  exact tendsto_integral_kestenSpectralLaw f
 
 end GaloisForLFunctions.SelbergClass.Primon

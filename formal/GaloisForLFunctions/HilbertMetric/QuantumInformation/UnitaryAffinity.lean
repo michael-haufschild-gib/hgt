@@ -74,3 +74,8 @@ theorem unitary_affinity_eq_one_iff_commute (p : FiniteProbabilityLaw ι)
 
 end
 end GaloisForLFunctions.HilbertMetric.QuantumInformation
+
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.bornQuadratic_unitary
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.unitary_affinity_add_skew_eq_one
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.unitary_affinity_mem_unitInterval
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.unitary_affinity_eq_one_iff_commute

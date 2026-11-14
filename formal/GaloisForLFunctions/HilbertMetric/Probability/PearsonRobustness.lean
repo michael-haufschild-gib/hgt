@@ -54,7 +54,7 @@ theorem likelihood_expectation_shift_sq_le (p : FiniteProbabilityLaw ι) (r f : 
         p.prob i * f i + p.prob i * finiteWeightedMean p.prob f by intro i; ring]
     rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_sub_distrib,
       ← Finset.sum_mul, ← Finset.sum_mul, p.sum_prob, one_mul]
-    change _ - _ * _ - finiteWeightedMean p.prob f + finiteWeightedMean p.prob f = _
+    unfold finiteWeightedMean
     ring
   rw [← hid]
   apply Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul Finset.univ

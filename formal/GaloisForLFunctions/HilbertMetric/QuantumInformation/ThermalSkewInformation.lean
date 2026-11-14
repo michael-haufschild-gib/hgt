@@ -57,7 +57,7 @@ theorem thermalPopulation_eq_iff (β : ℝ) (E : ι → ℝ) (i j : ι) :
   rw [← NNReal.coe_inj]
   change Real.exp (-β * E i) / finiteGibbsPartition β E =
     Real.exp (-β * E j) / finiteGibbsPartition β E ↔ _
-  rw [div_left_inj (finiteGibbsPartition_pos β E).ne', Real.exp_inj]
+  rw [div_left_inj' (finiteGibbsPartition_pos β E).ne', Real.exp_inj]
   constructor
   · intro h
     have hz : β * (E i - E j) = 0 := by linarith
@@ -84,3 +84,11 @@ theorem thermal_wightman_lt_born_iff (β : ℝ) (E : ι → ℝ) (A : ι → ι 
 
 end
 end GaloisForLFunctions.HilbertMetric.QuantumInformation
+
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermalPopulation_sqrt_mul
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.sandwichedQuadratic_thermal_eq
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_born_sub_wightman_eq_skew
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_wightman_le_born
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermalPopulation_eq_iff
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_skew_eq_zero_iff
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_wightman_lt_born_iff

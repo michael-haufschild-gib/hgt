@@ -18,25 +18,25 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- The modal state accumulated between two endpoints. -/
-def exponentialBlock (λ : ℂ) (f : C(ℝ, ℂ)) (a b : ℝ) : ℂ :=
-  ∫ s in a..b, Complex.exp (λ * ((b - s : ℝ) : ℂ)) * f s
+def exponentialBlock (lam : ℂ) (f : C(ℝ, ℂ)) (a b : ℝ) : ℂ :=
+  ∫ s in a..b, Complex.exp (lam * ((b - s : ℝ) : ℂ)) * f s
 
 /-- An exponential propagator factors across any intermediate endpoint. -/
-theorem exponential_propagator_split (λ : ℂ) (a b s : ℝ) :
-    Complex.exp (λ * ((b - s : ℝ) : ℂ)) =
-      Complex.exp (λ * ((b - a : ℝ) : ℂ)) *
-        Complex.exp (λ * ((a - s : ℝ) : ℂ)) := by
+theorem exponential_propagator_split (lam : ℂ) (a b s : ℝ) :
+    Complex.exp (lam * ((b - s : ℝ) : ℂ)) =
+      Complex.exp (lam * ((b - a : ℝ) : ℂ)) *
+        Complex.exp (lam * ((a - s : ℝ) : ℂ)) := by
   rw [← Complex.exp_add]
   congr 1
   push_cast
   ring
 
 /-- Exact composition of block responses; the endpoints need not be ordered. -/
-theorem exponentialBlock_split (λ : ℂ) (f : C(ℝ, ℂ)) (a b c : ℝ) :
-    exponentialBlock λ f a c =
-      Complex.exp (λ * ((c - b : ℝ) : ℂ)) * exponentialBlock λ f a b +
-        exponentialBlock λ f b c := by
-  have hi : Continuous (fun s : ℝ => Complex.exp (λ * ((c - s : ℝ) : ℂ)) * f s) := by
+theorem exponentialBlock_split (lam : ℂ) (f : C(ℝ, ℂ)) (a b c : ℝ) :
+    exponentialBlock lam f a c =
+      Complex.exp (lam * ((c - b : ℝ) : ℂ)) * exponentialBlock lam f a b +
+        exponentialBlock lam f b c := by
+  have hi : Continuous (fun s : ℝ => Complex.exp (lam * ((c - s : ℝ) : ℂ)) * f s) := by
     fun_prop
   unfold exponentialBlock
   rw [← intervalIntegral.integral_add_adjacent_intervals
@@ -45,52 +45,58 @@ theorem exponentialBlock_split (λ : ℂ) (f : C(ℝ, ℂ)) (a b c : ℝ) :
   rw [← intervalIntegral.integral_const_mul]
   apply intervalIntegral.integral_congr
   intro s _
-  rw [exponential_propagator_split λ b c s, mul_assoc]
+  dsimp only
+  rw [exponential_propagator_split lam b c s, mul_assoc]
 
 /-- The existing causal convolution is the modal block starting at zero. -/
-theorem exponentialBlock_zero_eq_causalConv (λ : ℂ) (f : C(ℝ, ℂ)) (t : ℝ) :
-    exponentialBlock λ f 0 t =
-      causalConv (fun s => Complex.exp (λ * (s : ℂ))) f t := rfl
+theorem exponentialBlock_zero_eq_causalConv (lam : ℂ) (f : C(ℝ, ℂ)) (t : ℝ) :
+    exponentialBlock lam f 0 t =
+      causalConv (fun s => Complex.exp (lam * (s : ℂ))) f t := rfl
 
 /-- Factoring the exponential leaves an ordinary integral primitive. -/
-theorem exponentialBlock_eq_integratingFactor (λ : ℂ) (f : C(ℝ, ℂ)) (a b : ℝ) :
-    exponentialBlock λ f a b = Complex.exp (λ * (b : ℂ)) *
-      ∫ s in a..b, Complex.exp (-λ * (s : ℂ)) * f s := by
+theorem exponentialBlock_eq_integratingFactor (lam : ℂ) (f : C(ℝ, ℂ)) (a b : ℝ) :
+    exponentialBlock lam f a b = Complex.exp (lam * (b : ℂ)) *
+      ∫ s in a..b, Complex.exp (-lam * (s : ℂ)) * f s := by
   unfold exponentialBlock
   rw [← intervalIntegral.integral_const_mul]
   apply intervalIntegral.integral_congr
   intro s _
+  dsimp only
   rw [← mul_assoc, ← Complex.exp_add]
   congr 2
   push_cast
   ring
 
 /-- Each accumulated mode solves its forced first-order differential equation. -/
-theorem hasDerivAt_exponentialBlock (λ : ℂ) (f : C(ℝ, ℂ)) (a t : ℝ) :
-    HasDerivAt (exponentialBlock λ f a)
-      (λ * exponentialBlock λ f a t + f t) t := by
-  have hc : Continuous (fun s : ℝ => Complex.exp (-λ * (s : ℂ)) * f s) := by fun_prop
-  have hi := intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable a t)
-    hc.stronglyMeasurable.stronglyMeasurableAtFilter hc.continuousAt
-  have hd := (hasDerivAt_cexp_const_mul λ t).mul hi
-  have hcancel : Complex.exp (λ * (t : ℂ)) * Complex.exp (-λ * (t : ℂ)) = 1 := by
+theorem hasDerivAt_exponentialBlock (lam : ℂ) (f : C(ℝ, ℂ)) (a t : ℝ) :
+    HasDerivAt (exponentialBlock lam f a)
+      (lam * exponentialBlock lam f a t + f t) t := by
+  have hc : Continuous (fun s : ℝ => Complex.exp (-lam * (s : ℂ)) * f s) := by fun_prop
+  have hi : HasDerivAt
+      (fun b : ℝ => ∫ s in a..b, Complex.exp (-lam * (s : ℂ)) * f s)
+      (Complex.exp (-lam * (t : ℂ)) * f t) t :=
+    intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable a t)
+      hc.stronglyMeasurable.stronglyMeasurableAtFilter hc.continuousAt
+  have hd := (hasDerivAt_cexp_const_mul lam t).mul hi
+  have hcancel : Complex.exp (lam * (t : ℂ)) * Complex.exp (-lam * (t : ℂ)) = 1 := by
     rw [← Complex.exp_add]
     simp
-  have hfun : exponentialBlock λ f a = fun b => Complex.exp (λ * (b : ℂ)) *
-      ∫ s in a..b, Complex.exp (-λ * (s : ℂ)) * f s :=
-    funext (exponentialBlock_eq_integratingFactor λ f a)
+  have hfun : exponentialBlock lam f a = fun b : ℝ => Complex.exp (lam * (b : ℂ)) *
+      ∫ s in a..b, Complex.exp (-lam * (s : ℂ)) * f s :=
+    funext (exponentialBlock_eq_integratingFactor lam f a)
   rw [hfun]
-  convert hd using 1
-  linear_combination -(f t) * hcancel
+  apply hd.congr_deriv
+  dsimp only
+  linear_combination (f t) * hcancel
 
 /-- Carrying a modal state reproduces full-window convolution exactly. -/
-theorem causalConv_exponential_split (λ : ℂ) (f : C(ℝ, ℂ)) (t s : ℝ) :
-    causalConv (fun x => Complex.exp (λ * (x : ℂ))) f (t + s) =
-      Complex.exp (λ * (s : ℂ)) *
-        causalConv (fun x => Complex.exp (λ * (x : ℂ))) f t +
-      exponentialBlock λ f t (t + s) := by
+theorem causalConv_exponential_split (lam : ℂ) (f : C(ℝ, ℂ)) (t s : ℝ) :
+    causalConv (fun x => Complex.exp (lam * (x : ℂ))) f (t + s) =
+      Complex.exp (lam * (s : ℂ)) *
+        causalConv (fun x => Complex.exp (lam * (x : ℂ))) f t +
+      exponentialBlock lam f t (t + s) := by
   simpa only [add_sub_cancel_left, exponentialBlock_zero_eq_causalConv] using
-    exponentialBlock_split λ f 0 t (t + s)
+    exponentialBlock_split lam f 0 t (t + s)
 
 /-- The response of a finite complex modal kernel. -/
 def modalBlockResponse {n : ℕ} (residue pole : Fin n → ℂ)

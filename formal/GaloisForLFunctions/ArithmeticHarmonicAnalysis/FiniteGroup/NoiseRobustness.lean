@@ -30,8 +30,10 @@ theorem groupNoise_right_eq_left (p q : FiniteProbabilityLaw G) :
   change (∑ j, q.prob (j⁻¹ * i) * p.prob j) = ∑ j, p.prob (i * j⁻¹) * q.prob j
   have h := (Equiv.inv G |>.trans (Equiv.mulLeft i)).sum_comp
     (fun j => q.prob (j⁻¹ * i) * p.prob j)
-  simpa only [Equiv.trans_apply, Equiv.inv_apply, Equiv.mulLeft_apply,
-    mul_inv_rev, inv_inv, mul_assoc, inv_mul_cancel, mul_one, mul_comm] using h.symm
+  change (∑ j, q.prob ((i * j⁻¹)⁻¹ * i) * p.prob (i * j⁻¹)) =
+    (∑ j, q.prob (j⁻¹ * i) * p.prob j) at h
+  simpa only [mul_inv_rev, inv_inv, mul_assoc, inv_mul_cancel, mul_one, mul_comm]
+    using h.symm
 
 /-- Group convolution contracts Pearson divergence relative to both input laws. -/
 theorem groupNoise_uniformPearson_le_min (p q : FiniteProbabilityLaw G) :
@@ -55,3 +57,7 @@ theorem groupNoise_expectation_shift_sq_le_min (p q : FiniteProbabilityLaw G) (f
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.groupNoise_right_eq_left
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.groupNoise_uniformPearson_le_min
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.groupNoise_expectation_shift_sq_le_min

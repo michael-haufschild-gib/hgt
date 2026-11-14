@@ -62,3 +62,7 @@ theorem born_sub_sandwiched_eq_half_commutator_energy
 
 end
 end GaloisForLFunctions.HilbertMetric.QuantumInformation
+
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.rootStateCommutator_apply
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.skewInformation_eq_half_hsInner_commutator
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.born_sub_sandwiched_eq_half_commutator_energy

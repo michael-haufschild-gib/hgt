@@ -3,8 +3,8 @@ import GaloisForLFunctions.HTGeometry.LinearSystems.ExponentialBlockPropagation
 /-!
 # First-order solution operators and a rank-one boundary correction
 
-Every continuous forcing has a unique global solution of `u' = λ u + f`
-with any prescribed initial value. For negative real `λ` and positive
+Every continuous forcing has a unique global solution of `u' = lam u + f`
+with any prescribed initial value. For negative real `lam` and positive
 interval length, matching the two endpoint values also has a unique
 solution. Its difference from causal convolution is one exponential times
 one linear boundary state.
@@ -17,32 +17,47 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Variation of constants with prescribed initial value. -/
-def modalInitialSolution (λ : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) (t : ℝ) : ℂ :=
-  Complex.exp (λ * (t : ℂ)) * z + exponentialBlock λ f 0 t
+def modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) (t : ℝ) : ℂ :=
+  Complex.exp (lam * (t : ℂ)) * z + exponentialBlock lam f 0 t
 
-theorem modalInitialSolution_zero (λ : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) :
-    modalInitialSolution λ f z 0 = z := by
+theorem modalInitialSolution_zero (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) :
+    modalInitialSolution lam f z 0 = z := by
   simp [modalInitialSolution, exponentialBlock]
 
+/-- With the same forcing, all initial-state error follows the homogeneous mode. -/
+theorem modalInitialSolution_sub (lam : ℂ) (f : C(ℝ, ℂ)) (z w : ℂ) (t : ℝ) :
+    modalInitialSolution lam f z t - modalInitialSolution lam f w t =
+      Complex.exp (lam * (t : ℂ)) * (z - w) := by
+  simp only [modalInitialSolution]
+  ring
+
+/-- Stable modes forget initial-state error at an exact exponential rate. -/
+theorem norm_stableInitialSolution_sub (α : ℝ) (f : C(ℝ, ℂ)) (z w : ℂ) (t : ℝ) :
+    ‖modalInitialSolution (-(Real.exp α : ℂ)) f z t -
+      modalInitialSolution (-(Real.exp α : ℂ)) f w t‖ =
+      Real.exp (-Real.exp α * t) * ‖z - w‖ := by
+  rw [modalInitialSolution_sub, norm_mul, Complex.norm_exp]
+  simp
+
 /-- The constructed response solves the differential equation at every real time. -/
-theorem hasDerivAt_modalInitialSolution (λ : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) (t : ℝ) :
-    HasDerivAt (modalInitialSolution λ f z)
-      (λ * modalInitialSolution λ f z t + f t) t := by
-  convert ((hasDerivAt_cexp_const_mul λ t).mul_const z).add
-    (hasDerivAt_exponentialBlock λ f 0 t) using 1 <;>
+theorem hasDerivAt_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) (t : ℝ) :
+    HasDerivAt (modalInitialSolution lam f z)
+      (lam * modalInitialSolution lam f z t + f t) t := by
+  convert ((hasDerivAt_cexp_const_mul lam t).mul_const z).add
+    (hasDerivAt_exponentialBlock lam f 0 t) using 1 <;>
     simp only [modalInitialSolution] <;> ring
 
 /-- Existence and uniqueness are proved, with no spectral or solvability premise. -/
-theorem existsUnique_modalInitialSolution (λ : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) :
-    ∃! u : ℝ → ℂ, u 0 = z ∧ ∀ t, HasDerivAt u (λ * u t + f t) t := by
-  refine ⟨modalInitialSolution λ f z,
-    ⟨modalInitialSolution_zero λ f z, hasDerivAt_modalInitialSolution λ f z⟩, ?_⟩
+theorem existsUnique_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) :
+    ∃! u : ℝ → ℂ, u 0 = z ∧ ∀ t, HasDerivAt u (lam * u t + f t) t := by
+  refine ⟨modalInitialSolution lam f z,
+    ⟨modalInitialSolution_zero lam f z, hasDerivAt_modalInitialSolution lam f z⟩, ?_⟩
   intro u hu
-  let v := modalInitialSolution λ f z
-  let g := fun t : ℝ => (u t - v t) * Complex.exp (-λ * (t : ℂ))
+  let v := modalInitialSolution lam f z
+  let g := fun t : ℝ => (u t - v t) * Complex.exp (-lam * (t : ℂ))
   have hd (t : ℝ) : HasDerivAt g 0 t := by
-    have h := ((hu.2 t).sub (hasDerivAt_modalInitialSolution λ f z t)).mul
-      (hasDerivAt_cexp_const_mul (-λ) t)
+    have h := ((hu.2 t).sub (hasDerivAt_modalInitialSolution lam f z t)).mul
+      (hasDerivAt_cexp_const_mul (-lam) t)
     convert h using 1 <;> dsimp [g, v] <;> ring
   have hg (t : ℝ) : g t = 0 := by
     have h := is_const_of_deriv_eq_zero (fun t => (hd t).differentiableAt)
@@ -128,6 +143,8 @@ end
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.modalInitialSolution_zero
+#print axioms GaloisForLFunctions.HTGeometry.modalInitialSolution_sub
+#print axioms GaloisForLFunctions.HTGeometry.norm_stableInitialSolution_sub
 #print axioms GaloisForLFunctions.HTGeometry.hasDerivAt_modalInitialSolution
 #print axioms GaloisForLFunctions.HTGeometry.existsUnique_modalInitialSolution
 #print axioms GaloisForLFunctions.HTGeometry.stableEndpoint_denominator_ne_zero

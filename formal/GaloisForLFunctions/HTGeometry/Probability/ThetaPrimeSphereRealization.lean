@@ -23,7 +23,8 @@ def thetaPrimeSphereLaw : Measure ℝ :=
 theorem thetaPrimeSphereLaw_eq_beta : thetaPrimeSphereLaw = betaMeasure (3 / 2) 3 := by
   unfold thetaPrimeSphereLaw
   convert blockCoordinateLaw_eq_beta
-    (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) using 1 <;> norm_num
+    (EuclideanSpace ℝ (Fin 3)) (EuclideanSpace ℝ (Fin 6)) using 1
+  norm_num
 
 /-- Prime-history tails are actual spherical projection moments. -/
 theorem integral_thetaPrimeSphereLaw_pow (k : ℕ) :

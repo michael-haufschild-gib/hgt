@@ -68,7 +68,9 @@ theorem dbarDifferential_mul {f g : E → ℂ} {x : E}
     (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
     dbarDifferential (fun y => f y * g y) x =
       f x • dbarDifferential g x + g x • dbarDifferential f x := by
-  have h := hf.hasFDerivAt.mul hg.hasFDerivAt
+  have h : HasFDerivAt (fun y => f y * g y)
+      (f x • fderiv ℝ g x + g x • fderiv ℝ f x) x :=
+    hf.hasFDerivAt.mul hg.hasFDerivAt
   rw [dbarDifferential, h.fderiv, antiholomorphicPart_add,
     antiholomorphicPart_smul, antiholomorphicPart_smul]
   rfl
@@ -84,6 +86,9 @@ theorem dbarDifferential_holomorphic_mul {h f : E → ℂ} {x : E}
     (hh : DifferentiableAt ℂ h x) (hf : DifferentiableAt ℝ f x) :
     dbarDifferential (fun y => h y * f y) x = h x • dbarDifferential f x := by
   rw [dbarDifferential_mul (hh.restrictScalars ℝ) hf,
-    dbarDifferential_eq_zero hh, smul_zero, add_zero]
+    dbarDifferential_eq_zero hh]
+  ext v
+  change h x * dbarDifferential f x v + f x * (0 : ℂ) = h x * dbarDifferential f x v
+  ring
 
 end HTGeometry

@@ -14,7 +14,7 @@ exactly the commutant of `U`.
 
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry
-open scoped BigOperators NNReal
+open scoped BigOperators ComplexOrder NNReal
 open Hexablock Matrix
 open _root_.RHTower
 variable {n : ℕ}

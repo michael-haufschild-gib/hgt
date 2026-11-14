@@ -125,8 +125,17 @@ private theorem sum_sup_nonneg (S : SectorData) (m : Fin S.K → ℝ) :
     0 ≤ (S.K : ℝ) * ∑ k : Fin S.K, (S.sup k : ℝ) ^ 2 * m k ^ 2 :=
   mul_nonneg (Nat.cast_nonneg _) (Finset.sum_nonneg fun _ _ => by positivity)
 
-theorem aLoQ_HiQ_bounds : (1 / 2 : ℝ) ≤ aLoQ ∧ (aHiQ : ℝ) ≤ 3 / 5 := by
-  constructor <;> norm_num [aLoQ, aHiQ]
+@[irreducible] noncomputable def aLoR : ℝ := aLoQ
+@[irreducible] noncomputable def aHiR : ℝ := aHiQ
+
+theorem cast_aLoQ : (aLoQ : ℝ) = aLoR := by unfold aLoR; rfl
+theorem cast_aHiQ : (aHiQ : ℝ) = aHiR := by unfold aHiR; rfl
+
+theorem aLoR_HiR_bounds :
+    aLoR ≤ primeThreeOffset ∧ primeThreeOffset ≤ aHiR ∧ (1 / 2 : ℝ) ≤ aLoR ∧ aHiR ≤ 3 / 5 := by
+  unfold aLoR aHiR
+  exact ⟨primeThreeOffset_mem.1, primeThreeOffset_mem.2,
+    by norm_num [aLoQ], by norm_num [aHiQ]⟩
 
 theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT : T.check S = true)
     {G : ℝ → ℝ} (hGc : Continuous G)
@@ -137,25 +146,25 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
   simp only [Sliver4.check, Bool.and_eq_true, List.all_eq_true, List.mem_range,
     decide_eq_true_eq] at hT
   obtain ⟨⟨⟨hlo0, hlo⟩, hbr⟩, hpiv⟩ := hT
-  obtain ⟨haL, haH⟩ := primeThreeOffset_mem
-  obtain ⟨haL1, haH1⟩ := aLoQ_HiQ_bounds
+  obtain ⟨haL, haH, haL1, haH1⟩ := aLoR_HiR_bounds
   have hlo0' : (0 : ℝ) ≤ T.lo := Rat.cast_nonneg.mpr hlo0
-  have hlo' : (T.lo : ℝ) ≤ (1 - (aHiQ : ℝ)) / 2 := by
+  have hlo' : (T.lo : ℝ) ≤ (1 - aHiR) / 2 := by
     have := Rat.cast_le (K := ℝ).mpr hlo
-    simp only [Rat.cast_div, Rat.cast_sub, Rat.cast_one, Rat.cast_ofNat] at this; exact this
+    simp only [Rat.cast_div, Rat.cast_sub, Rat.cast_one, Rat.cast_ofNat, cast_aHiQ] at this
+    exact this
   have hxl0 : (T.xl 0 : ℝ) = T.lo := by simp only [Sliver4.xl, ↓reduceIte]
-  have hxl1 : (T.xl 1 : ℝ) = 1 - (1 - (aLoQ : ℝ)) / 2 := by
+  have hxl1 : (T.xl 1 : ℝ) = 1 - (1 - aLoR) / 2 := by
     simp only [Sliver4.xl, OfNat.one_ne_zero, ↓reduceIte,
-      Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
-  have hxl2 : (T.xl 2 : ℝ) = (aLoQ : ℝ) + T.lo := by
-    simp only [Sliver4.xl, OfNat.ofNat_ne_zero, OfNat.ofNat_ne_one, ↓reduceIte, Rat.cast_add]
-  have hxl3 : (T.xl 3 : ℝ) = 1 - (aHiQ : ℝ) - (1 - (aLoQ : ℝ)) / 2 := by
+      Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat, cast_aLoQ]
+  have hxl2 : (T.xl 2 : ℝ) = aLoR + T.lo := by
+    simp only [Sliver4.xl, OfNat.ofNat_ne_zero, OfNat.ofNat_ne_one, ↓reduceIte,
+      Rat.cast_add, cast_aLoQ]
+  have hxl3 : (T.xl 3 : ℝ) = 1 - aHiR - (1 - aLoR) / 2 := by
     have : (3 : ℕ) ≠ 2 := by decide
     simp only [Sliver4.xl, OfNat.ofNat_ne_zero, OfNat.ofNat_ne_one, this, ↓reduceIte,
-      Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
-  have hwid : (T.width : ℝ) = (1 - (aLoQ : ℝ)) / 2 - T.lo := by
-    simp only [Sliver4.width, Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
-  generalize (aLoQ : ℝ) = aL, (aHiQ : ℝ) = aH at haL haH haL1 haH1 hlo' hxl1 hxl2 hxl3 hwid
+      Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat, cast_aLoQ, cast_aHiQ]
+  have hwid : (T.width : ℝ) = (1 - aLoR) / 2 - T.lo := by
+    simp only [Sliver4.width, Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat, cast_aLoQ]
   set a := primeThreeOffset
   set C := (S.K : ℝ) * ∑ k : Fin S.K, (S.sup k : ℝ) ^ 2 * m k ^ 2
   have hC := sum_sup_nonneg S m
@@ -214,21 +223,19 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
   simp only [Sliver2.check, Bool.and_eq_true, List.all_eq_true, List.mem_range,
     decide_eq_true_eq] at hT
   obtain ⟨⟨⟨hhi0, hhi⟩, hbr⟩, hpiv⟩ := hT
-  obtain ⟨haL, haH⟩ := primeThreeOffset_mem
-  obtain ⟨-, haH1⟩ := aLoQ_HiQ_bounds
-  have hhi0' : 1 - (aLoQ : ℝ) ≤ T.hi := by
+  obtain ⟨haL, haH, -, haH1⟩ := aLoR_HiR_bounds
+  have hhi0' : 1 - aLoR ≤ T.hi := by
     have := Rat.cast_le (K := ℝ).mpr hhi0
-    simp only [Rat.cast_sub, Rat.cast_one] at this; exact this
+    simp only [Rat.cast_sub, Rat.cast_one, cast_aLoQ] at this; exact this
   have hhi' : (T.hi : ℝ) ≤ 1 / 2 := by
     have := Rat.cast_le (K := ℝ).mpr hhi
     simp only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] at this; exact this
-  have hxl0 : (T.xl 0 : ℝ) = 1 - (aHiQ : ℝ) := by
-    simp only [Sliver2.xl, ↓reduceIte, Rat.cast_sub, Rat.cast_one]
+  have hxl0 : (T.xl 0 : ℝ) = 1 - aHiR := by
+    simp only [Sliver2.xl, ↓reduceIte, Rat.cast_sub, Rat.cast_one, cast_aHiQ]
   have hxl1 : (T.xl 1 : ℝ) = 1 - (T.hi : ℝ) := by
     simp only [Sliver2.xl, OfNat.one_ne_zero, ↓reduceIte, Rat.cast_sub, Rat.cast_one]
-  have hwid : (T.width : ℝ) = (T.hi : ℝ) - (1 - (aHiQ : ℝ)) := by
-    simp only [Sliver2.width, Rat.cast_sub, Rat.cast_one]
-  generalize (aLoQ : ℝ) = aL, (aHiQ : ℝ) = aH at haL haH haH1 hhi0' hxl0 hwid
+  have hwid : (T.width : ℝ) = (T.hi : ℝ) - (1 - aHiR) := by
+    simp only [Sliver2.width, Rat.cast_sub, Rat.cast_one, cast_aHiQ]
   set a := primeThreeOffset
   set C := (S.K : ℝ) * ∑ k : Fin S.K, (S.sup k : ℝ) ^ 2 * m k ^ 2
   have hC := sum_sup_nonneg S m

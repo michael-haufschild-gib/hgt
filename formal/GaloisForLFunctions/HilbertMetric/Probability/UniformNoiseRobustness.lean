@@ -28,7 +28,7 @@ theorem uniformPearsonDivergence_eq_energy (p : FiniteProbabilityLaw ι) :
   simp_rw [show ∀ i, (Fintype.card ι : ℝ)⁻¹ *
       ((Fintype.card ι : ℝ) * p.prob i - 1) ^ (2 : ℕ) =
       (Fintype.card ι : ℝ) * p.prob i ^ (2 : ℕ) - 2 * p.prob i +
-        (Fintype.card ι : ℝ)⁻¹ by intro i; field_simp; ring]
+        (Fintype.card ι : ℝ)⁻¹ by intro i; field_simp [hn]; ring]
   rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum,
     ← Finset.mul_sum, p.sum_prob]
   simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_inv_cancel₀ hn]
@@ -56,7 +56,7 @@ theorem uniform_likelihood_expectation (p : FiniteProbabilityLaw ι) (f : ι →
   unfold finiteWeightedMean uniformNoiseLaw
   apply Finset.sum_congr rfl
   intro i _
-  field_simp
+  field_simp [hn]
 
 /-- Collision probability gives a variance-sensitive error bound for every observable. -/
 theorem uniform_expectation_shift_sq_le (p : FiniteProbabilityLaw ι) (f : ι → ℝ) :
@@ -85,3 +85,10 @@ theorem mixed_uniform_expectation_shift_sq_le (p : FiniteProbabilityLaw ι)
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
+
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniformPearsonDivergence_eq_energy
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniformPearsonDivergence_nonneg
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniformPearsonDivergence_mix_le
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniform_likelihood_expectation
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.uniform_expectation_shift_sq_le
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.mixed_uniform_expectation_shift_sq_le
