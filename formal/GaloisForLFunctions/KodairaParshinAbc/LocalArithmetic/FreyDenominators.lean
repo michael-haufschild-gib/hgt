@@ -1,5 +1,6 @@
 import GaloisForLFunctions.KodairaParshinAbc.LocalArithmetic.SplitCurveDenominators
 import Mathlib.Data.Fin.VecNotation
+import Mathlib.Algebra.BigOperators.Fin
 
 /-!
 # Square denominators on the integral Frey equation
@@ -19,6 +20,7 @@ theorem frey_equation_squareDenominator (a b : ℤ) {x y : ℚ}
     (hcurve : y ^ 2 = x * (x - (a : ℚ)) * (x + (b : ℚ))) :
     SquareDenominator x := by
   apply squareDenominator_of_odd_split_curve
+    (x := x) (y := y)
     (Finset.univ : Finset (Fin 3)) ![0, a, -b]
     (by exact ⟨1, by simp⟩)
   simpa [Fin.prod_univ_three] using hcurve

@@ -1,7 +1,8 @@
 import Mathlib.LinearAlgebra.Pi
 import Mathlib.Tactic
 
-/-!+# Complementary powers in a truncated polynomial module
+/-!
+# Complementary powers in a truncated polynomial module
 
 On `M[x]/xᴺM[x]`, multiplication by `xᵃ` has image equal to the kernel of
 multiplication by `xᵇ` whenever `N = a + b`. Coefficient shifts give explicit
@@ -23,11 +24,11 @@ def truncatedShift (N k : ℕ) : Module.End R (Fin N → M) where
   map_add' v w := by
     funext i
     dsimp
-    split <;> rename_i h <;> simp only [h, dite_true, dite_false, Pi.add_apply, add_zero]
+    split <;> simp only [add_zero]
   map_smul' r v := by
     funext i
     dsimp
-    split <;> rename_i h <;> simp only [h, dite_true, dite_false, Pi.smul_apply, smul_zero]
+    split <;> simp only [smul_zero]
 
 /-- Removing the first `k` coefficients gives a canonical preimage on the shift's image. -/
 def truncatedDeshift (N k : ℕ) : Module.End R (Fin N → M) where
@@ -35,11 +36,11 @@ def truncatedDeshift (N k : ℕ) : Module.End R (Fin N → M) where
   map_add' v w := by
     funext i
     dsimp
-    split <;> rename_i h <;> simp only [h, dite_true, dite_false, Pi.add_apply, add_zero]
+    split <;> simp only [add_zero]
   map_smul' r v := by
     funext i
     dsimp
-    split <;> rename_i h <;> simp only [h, dite_true, dite_false, Pi.smul_apply, smul_zero]
+    split <;> simp only [smul_zero]
 
 theorem truncatedShift_apply (N k : ℕ) (v : Fin N → M) (i : Fin N) :
     truncatedShift (R := R) N k v i =
@@ -60,7 +61,7 @@ theorem truncatedShift_mul (N a b : ℕ) :
   apply LinearMap.ext
   intro v
   funext i
-  change truncatedShift N a (truncatedShift N b v) i = truncatedShift (R := R) N (a + b) v i
+  change truncatedShift (R := R) N a (truncatedShift (R := R) N b v) i = truncatedShift (R := R) N (a + b) v i
   simp only [truncatedShift_apply]
   by_cases ha : a ≤ i.val
   · simp only [dif_pos ha]
@@ -68,6 +69,7 @@ theorem truncatedShift_mul (N a b : ℕ) :
     · rw [dif_pos hb, dif_pos (by omega)]
       congr 1
       apply Fin.ext
+      change i.val - a - b = i.val - (a + b)
       omega
     · rw [dif_neg hb, dif_neg (by omega)]
   · rw [dif_neg ha, dif_neg (by omega)]
@@ -99,7 +101,7 @@ theorem truncatedShift_eq_zero_iff (N k : ℕ) (v : Fin N → M) :
     rw [truncatedShift_apply]
     split
     · rename_i hi
-      exact h _ (by omega)
+      exact h _ (by change i.val - k + k < N; omega)
     · rfl
 
 /-- Precisely the vectors with their first `k` coefficients zero are divisible by `xᵏ`. -/
@@ -119,6 +121,7 @@ theorem mem_range_truncatedShift_iff (N k : ℕ) (v : Fin N → M) :
       rw [dif_pos (by omega)]
       congr 1
       apply Fin.ext
+      change i.val - k + k = i.val
       omega
     · exact (h i (by omega)).symm
 

@@ -45,11 +45,14 @@ theorem eq_integer_of_padic_precision {p : ℕ} [Fact p.Prime]
     rw [hcross, padicValRat.mul hdiff hden]
     exact hprecision.trans (le_add_of_nonneg_right (zero_le_padicValRat_of_nat q.den))
   have hval' : k ≤ padicValNat p (q.num - n * (q.den : ℤ)).natAbs := by
+    rw [padicValRat.of_int] at hval
     change (k : ℤ) ≤ (padicValNat p (q.num - n * (q.den : ℤ)).natAbs : ℤ) at hval
     exact_mod_cast hval
   have hdiv : p ^ k ∣ (q.num - n * (q.den : ℤ)).natAbs :=
     (padicValNat_dvd_iff_le (Int.natAbs_ne_zero.mpr hcross_ne)).mpr hval'
   have hlarge := Nat.le_of_dvd (Int.natAbs_pos.mpr hcross_ne) hdiv
   exact (not_lt_of_ge (hlarge.trans (integer_difference_numerator_bound q n))) hheight
+
+#print axioms eq_integer_of_padic_precision
 
 end GaloisForLFunctions.HyperbolicArakelovTheory.CoupledProductObstruction

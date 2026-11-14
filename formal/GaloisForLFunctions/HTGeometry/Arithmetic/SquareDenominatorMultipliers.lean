@@ -26,7 +26,8 @@ private theorem preserving_multiplier_even {q : ℚ} (hq : q ≠ 0)
   let t : ℚ := (p : ℚ) ^ (-k)
   have ht : t ≠ 0 := zpow_ne_zero _ hpQ
   have htv : padicValRat p t = -k := by
-    rw [t, padicValRat.zpow, padicValRat.self hp.out.one_lt, mul_one]
+    dsimp only [t]
+    rw [padicValRat.zpow, padicValRat.self hp.out.one_lt, mul_one]
   have htest := (squareDenominator_iff _).mp (h (t ^ 2) (squareDenominator_sq t)) p hp.out
   rw [padicValRat.mul hq (pow_ne_zero 2 ht), padicValRat.pow, htv] at htest
   have hbound := Int.le_natAbs (a := padicValRat p q)
@@ -83,6 +84,7 @@ theorem preservesSquareDenominators_iff (q : ℚ) :
       intro p hp
       letI : Fact p.Prime := ⟨hp⟩
       have heven := preserving_multiplier_even hq h p
+      rw [padicValRat.of_int] at heven
       change Even (padicValNat p n.natAbs : ℤ) at heven
       exact (Int.even_coe_nat _).mp heven)
     obtain ⟨a, ha⟩ := hsquare

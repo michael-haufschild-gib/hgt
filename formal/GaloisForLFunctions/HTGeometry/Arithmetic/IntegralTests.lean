@@ -81,4 +81,7 @@ theorem finite_prime_tests_iff (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) (q :
   letI : Fact p.Prime := ⟨hS p hp⟩
   rw [squareDenominator_prime_mul_sq_iff, nonneg_val_iff_not_dvd_den]
 
+#print axioms forall_prime_squareDenominator_iff_integer
+#print axioms den_valuation_eq_negative_part
+
 end GaloisForLFunctions.HTGeometry.Arithmetic
