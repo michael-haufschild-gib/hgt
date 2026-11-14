@@ -15,7 +15,7 @@ open GaloisForLFunctions.HTGeometry _root_.HTGeometry
 noncomputable section
 variable {ι : Type*} [Fintype ι] [Nonempty ι]
 
-/-- The corpus's finite Gibbs state as a probability law. -/
+/-- The finite Gibbs state as a probability law. -/
 def thermalLaw (β : ℝ) (E : ι → ℝ) : FiniteProbabilityLaw ι where
   prob := finiteGibbsStateWeight β E
   nonneg i := (finiteGibbsStateWeight_pos β E i).le
@@ -103,7 +103,7 @@ theorem thermal_expectation_shift_sq_le (β : ℝ) (E f : ι → ℝ)
         finiteWeightedMean (finiteGibbsStateWeight β E) f) ^ (2 : ℕ) ≤ _ at h
   rwa [thermal_likelihood_expectation, thermal_likelihood_mass, one_mul] at h
 
-/-- Thermal expectation error obeys the paper's square-root certificate. -/
+/-- Thermal expectation error obeys the square-root divergence--variance certificate. -/
 theorem thermal_expectation_shift_abs_le (β : ℝ) (E f : ι → ℝ)
     (p : FiniteProbabilityLaw ι) :
     |finiteWeightedMean p.prob f - finiteWeightedMean (finiteGibbsStateWeight β E) f| ≤

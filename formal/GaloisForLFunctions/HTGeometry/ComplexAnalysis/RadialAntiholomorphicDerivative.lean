@@ -16,6 +16,8 @@ namespace HTGeometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
 
+local instance : InnerProductSpace ℝ E := InnerProductSpace.rclikeToReal ℂ E
+
 /-- The conjugate-linear inner-product functional, viewed as real continuous linear. -/
 def conjugateInnerFunctional (x : E) : E →L[ℝ] ℂ :=
   Complex.conjCLE.toContinuousLinearMap.comp ((innerSL ℂ x).restrictScalars ℝ)
@@ -35,8 +37,10 @@ theorem norm_conjugateInnerFunctional (x : E) : ‖conjugateInnerFunctional x‖
       simpa only [norm_zero] using norm_nonneg (conjugateInnerFunctional (0 : E))
     have hp : 0 < ‖x‖ := norm_pos_iff.mpr hx
     have h := ContinuousLinearMap.le_opNorm (conjugateInnerFunctional x) x
-    rw [conjugateInnerFunctional_apply, norm_conj, inner_self_eq_norm_sq_to_K,
-      norm_pow, Complex.norm_real, norm_norm] at h
+    rw [conjugateInnerFunctional_apply, norm_conj,
+      inner_self_eq_norm_sq_to_K (𝕜 := ℂ), norm_pow] at h
+    change ‖(‖x‖ : ℂ)‖ ^ 2 ≤ ‖conjugateInnerFunctional x‖ * ‖x‖ at h
+    rw [Complex.norm_real, norm_norm] at h
     nlinarith only [h, hp]
 
 /-- Complexifying a real inner-product functional gives half its conjugate-linear component. -/
@@ -107,7 +111,6 @@ theorem norm_dbarDifferential_logRadius {χ : ℝ → ℝ} {χ' : ℝ} {x : E}
       |χ'| / (2 * ‖x‖) := by
   have hr : 0 < ‖x‖ := norm_pos_iff.mpr hx
   have h := norm_dbarDifferential_radial_sq (hasDerivAt_logHalfProfile hr hχ)
-  dsimp only at h
   simp_rw [log_sq_half] at h
   rw [h, abs_div, abs_of_pos (mul_pos two_pos (sq_pos_of_pos hr))]
   field_simp
@@ -121,7 +124,6 @@ theorem norm_dbarDifferential_holomorphic_logRadius
       ‖h x‖ * (|χ'| / (2 * ‖x‖)) := by
   have hr : 0 < ‖x‖ := norm_pos_iff.mpr hx
   have h := norm_dbarDifferential_holomorphic_radial_sq hh (hasDerivAt_logHalfProfile hr hχ)
-  dsimp only at h
   simp_rw [log_sq_half] at h
   rw [h, abs_div, abs_of_pos (mul_pos two_pos (sq_pos_of_pos hr))]
   congr 1

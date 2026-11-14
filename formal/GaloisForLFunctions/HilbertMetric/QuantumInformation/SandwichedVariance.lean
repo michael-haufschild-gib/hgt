@@ -124,3 +124,11 @@ theorem skewInformation_eq_zero_iff_commute [DecidableEq ι]
 
 end
 end GaloisForLFunctions.HilbertMetric.QuantumInformation
+
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.sandwichedQuadratic_nonneg
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.skewInformation_nonneg
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.born_sub_sandwiched_eq_skewInformation
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.sandwichedQuadratic_le_born
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.skewInformation_eq_zero_iff
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.sandwichedQuadratic_lt_born_iff
+#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.skewInformation_eq_zero_iff_commute

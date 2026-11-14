@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HilbertMetric.Probability
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.CPV _root_.HTGeometry
 noncomputable section
 
-/-- Centered finite variance agrees with the existing thermal Fisher variance. -/
+/-- Centered finite variance agrees with thermal Fisher variance. -/
 theorem thermalWeightedVariance_eq_energyVariance {ι : Type*} [Fintype ι] [Nonempty ι]
     (β : ℝ) (E : ι → ℝ) :
     finiteWeightedVariance (finiteGibbsStateWeight β E) E = finiteGibbsEnergyVariance β E := by
@@ -56,3 +56,8 @@ theorem stringPotential_expectation_shift_sq_le_temperature {n : ℕ}
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
+
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermalWeightedVariance_eq_energyVariance
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.stringPotential_expectation_shift_sq_le_variance
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.stringPotential_expectation_shift_sq_le_radius
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.stringPotential_expectation_shift_sq_le_temperature

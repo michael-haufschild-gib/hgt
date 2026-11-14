@@ -6,7 +6,7 @@ import GaloisForLFunctions.QuantumAlg.Util.HilbertSchmidt
 
 The population-coordinate variance deficit is half the squared
 Hilbert--Schmidt norm of the commutator with the square-root state.
-This identifies the scalar sum with the existing matrix inner product.
+This identifies the scalar sum with the matrix inner product.
 -/
 
 open scoped BigOperators NNReal

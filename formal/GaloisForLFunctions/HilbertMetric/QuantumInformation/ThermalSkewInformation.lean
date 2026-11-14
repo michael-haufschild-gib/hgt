@@ -20,7 +20,7 @@ variable {ι : Type*} [Fintype ι] [Nonempty ι]
 def thermalPopulation (β : ℝ) (E : ι → ℝ) : ι → ℝ≥0 :=
   fun i => ⟨finiteGibbsStateWeight β E i, (finiteGibbsStateWeight_pos β E i).le⟩
 
-/-- The existing Wightman weight is the square root of the population product. -/
+/-- The Wightman weight is the square root of the population product. -/
 theorem thermalPopulation_sqrt_mul (β : ℝ) (E : ι → ℝ) (i j : ι) :
     Real.sqrt (thermalPopulation β E i) * Real.sqrt (thermalPopulation β E j) =
       finiteKMSWightmanWeight β E i j := by
@@ -29,7 +29,7 @@ theorem thermalPopulation_sqrt_mul (β : ℝ) (E : ι → ℝ) (i j : ι) :
   rw [← Real.sqrt_mul (finiteGibbsStateWeight_pos β E i).le,
     ← finiteKMSWightmanWeight_sq, Real.sqrt_sq (finiteKMSWightmanWeight_pos β E i j).le]
 
-/-- Order-two spectral noise is exactly the corpus's thermal Wightman intensity. -/
+/-- Order-two spectral noise is exactly thermal Wightman intensity. -/
 theorem sandwichedQuadratic_thermal_eq (β : ℝ) (E : ι → ℝ) (A : ι → ι → ℂ) :
     sandwichedQuadratic (thermalPopulation β E) A =
       ∑ i, ∑ j, finiteKMSWightmanTransitionIntensity β E A i j := by

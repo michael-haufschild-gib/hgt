@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.MixedEvenTrigMoments
 /-!
 # Radial moments of the two hexablock boundary models
 
-The normalized coordinate moments on the complex two-sphere and the flat
+The normalized coordinate moments on the unit sphere in complex dimension two and the flat
 quarter-circle parameter are respectively `1/(n+1)` and `centralBinom n/4^n`.
 The angular density `π cos(t) sin(t)` transforms every moment into its
 spherical counterpart. Spherical moments admit the sharp upper comparison
@@ -38,7 +38,7 @@ theorem hexablockAngleMoment_eq (n : ℕ) :
 
 theorem hexablockAngleMoment_pos (n : ℕ) : 0 < hexablockAngleMoment n := by
   rw [hexablockAngleMoment_eq, normalizedCentralBinom]
-  positivity
+  exact div_pos (Nat.cast_pos.mpr (Nat.centralBinom_pos n)) (by positivity)
 
 /-- The radial density converting the flat angle parameter to the spherical model. -/
 def hexablockRadialDensity (t : ℝ) : ℝ := Real.pi * Real.cos t * Real.sin t
@@ -54,7 +54,6 @@ private theorem weighted_cos_moment (n : ℕ) :
     rw [show 2 * n + 2 - 1 = 2 * n + 1 by omega, pow_succ]
     push_cast
     field_simp
-    ring
   have hi : IntervalIntegrable
       (fun t => 2 * Real.sin t * Real.cos t * Real.cos t ^ (2 * n)) volume
       (0 : ℝ) (Real.pi / 2) := by
@@ -62,6 +61,7 @@ private theorem weighted_cos_moment (n : ℕ) :
     fun_prop
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hd t) hi]
   simp [F]
+  ring
 
 /-- Every coordinate moment transforms by the paper's radial density. -/
 theorem hexablockSphereMoment_eq_weightedAngleIntegral (n : ℕ) :
@@ -93,7 +93,8 @@ theorem hexablockSphereMoment_le_angle (n : ℕ) :
           (1 / ((n : ℝ) + 1)) * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2) := by
         push_cast
         rw [show (n : ℝ) + 1 + 1 = n + 2 by ring]
-        rw [le_div_iff₀ h₃, div_mul_eq_mul_div, div_le_div_iff₀ h₂ h₁]
+        rw [le_div_iff₀ h₃, div_mul_eq_mul_div, div_mul_eq_mul_div,
+          div_le_div_iff₀ h₂ h₁]
         nlinarith only [hn]
       _ ≤ normalizedCentralBinom n * (2 * (n : ℝ) + 1) / (2 * (n : ℝ) + 2) := by
         gcongr
@@ -115,9 +116,9 @@ theorem tendsto_hexablockMomentRatio_scaled :
       (hexablockSphereMoment n / hexablockAngleMoment n)) atTop (𝓝 (Real.sqrt Real.pi)) := by
   have h := (tendsto_natCast_div_add_atTop (1 : ℝ)).div
     tendsto_sqrtNat_mul_normalizedCentralBinom (by positivity : 1 / Real.sqrt Real.pi ≠ 0)
-  have he : ∀ᶠ n : ℕ in atTop,
-      Real.sqrt n * (hexablockSphereMoment n / hexablockAngleMoment n) =
-        ((n : ℝ) / ((n : ℝ) + 1)) / (Real.sqrt n * normalizedCentralBinom n) := by
+  have he : (fun n : ℕ => Real.sqrt n *
+      (hexablockSphereMoment n / hexablockAngleMoment n)) =ᶠ[atTop]
+        fun n => ((n : ℝ) / ((n : ℝ) + 1)) / (Real.sqrt n * normalizedCentralBinom n) := by
     filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
     have hs : Real.sqrt (n : ℝ) ≠ 0 := (Real.sqrt_pos.2 (Nat.cast_pos.2 hn)).ne'
     have hc : normalizedCentralBinom n ≠ 0 :=
@@ -127,6 +128,8 @@ theorem tendsto_hexablockMomentRatio_scaled :
     field_simp [hs, hc, hn']
     nlinarith only [Real.sq_sqrt (Nat.cast_nonneg n)]
   apply Filter.Tendsto.congr' he.symm
+  change Tendsto (fun n : ℕ => ((n : ℝ) / ((n : ℝ) + 1)) /
+    (Real.sqrt n * normalizedCentralBinom n)) atTop (𝓝 (1 / (1 / Real.sqrt Real.pi))) at h
   simpa only [one_div_one_div] using h
 
 /-- Sphere and flat-angle moments separate asymptotically. -/

@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAGibbsAccumulatedCol
 /-!
 # Observable robustness along critical Gibbs Markov dynamics
 
-The existing collision decay controls every observable through its uniform
+Collision decay controls every observable through its uniform
 variance. Squared expectation errors decay at the spectral rate and have a
 finite accumulated budget, retaining the initial collision information.
 -/
@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HilbertMetric.Probability
 open GaloisForLFunctions.HTGeometry
 noncomputable section
 
-/-- The existing critical Gibbs population as a probability law. -/
+/-- The critical Gibbs population as a probability law. -/
 def criticalGibbsLaw (n m : ℕ) (β : ℝ) (E : Fin (2 ^ (n + 3)) → ℝ) :
     FiniteProbabilityLaw (Fin (2 ^ (n + 3))) where
   prob := egbFixedChargeAGibbsMarkovPopulation n m β E
@@ -27,7 +27,7 @@ def criticalGibbsExpectationError (n m : ℕ) (β : ℝ)
   finiteWeightedMean (egbFixedChargeAGibbsMarkovPopulation n m β E) f -
     finiteWeightedMean (uniformNoiseLaw (ι := Fin (2 ^ (n + 3)))).prob f
 
-/-- The Pearson divergence is the existing collision excess times dimension. -/
+/-- The Pearson divergence is collision excess times dimension. -/
 theorem criticalGibbs_uniformPearson_eq (n m : ℕ) (β : ℝ)
     (E : Fin (2 ^ (n + 3)) → ℝ) :
     uniformPearsonDivergence (criticalGibbsLaw n m β E) =
@@ -90,3 +90,8 @@ theorem criticalGibbs_error_sq_total_bound (n : ℕ) (β : ℝ)
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
+
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_uniformPearson_eq
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_error_sq_le_collision
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_error_sq_spectral_bound
+#print axioms GaloisForLFunctions.HilbertMetric.Probability.criticalGibbs_error_sq_total_bound
